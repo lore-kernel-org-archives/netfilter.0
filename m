@@ -1,76 +1,86 @@
-From: Thomas Jacob <jacob@internet24.de>
-Subject: Re: SMP load balancing of softirqs
-Date: Thu, 29 Jan 2009 13:06:04 +0100
-Message-ID: <1233230764.8230.8.camel@enterprise.ims-firmen.de>
-References: <49817DD4.1010402@redpill-linpro.com>
-	 <1233226181.13705.24.camel@enterprise.ims-firmen.de>
-	 <498191AD.7010302@redpill-linpro.com>
+From: Yoann Juet <yoann.juet@univ-nantes.fr>
+Subject: Re: Second failover failure with conntrackd - INVALID packets
+Date: Thu, 29 Jan 2009 17:10:19 +0100
+Message-ID: <4981D4EB.3060007@univ-nantes.fr>
+References: <497760CB.6090008@univ-nantes.fr> <49778AF4.7000201@netfilter.org> <4978425F.1030003@univ-nantes.fr> <4978A4F8.5060901@netfilter.org> <4979BA72.50405@univ-nantes.fr> <497C4440.7050809@netfilter.org> <497CA7A2.2000906@netfilter.org> <497E0EA9.1020408@univ-nantes.fr> <497E40B0.2090709@netfilter.org>
+Reply-To: yoann.juet@univ-nantes.fr
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------000307040800020201020109"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <498191AD.7010302@redpill-linpro.com>
+In-Reply-To: <497E40B0.2090709@netfilter.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Tore Anderson <tore.anderson@redpill-linpro.com>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter@vger.kernel.org
 
-On Thu, 2009-01-29 at 12:23 +0100, Tore Anderson wrote:
-> * Thomas Jacob
+This is a multi-part message in MIME format.
+--------------000307040800020201020109
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
+
+
+ > Could you try latest conntrack-tools 0.9.10? I released them 
+yesterday > along with accumulated updates/fixes. Thanks!
+
+I experience right now some difficulties to compile version 0.9.10 on 
+lenny. I keep you in touch with test results.
+
+Regards,
+
+Pablo Neira Ayuso wrote:
+> Hi again Yoann,
 > 
-> > Some newer NICs (some of Intel's for instance) support several packet
-> > queues to make it possible to deal with just this problem.
-> > 
-> > Check out http://lwn.net/Articles/289137/ for a start...
+> Yoann Juet wrote:
+>> Hi pablo !
+>>
+>>> that were fixed in the subsequent kernel releases, but I did not know
+>>> any that affected the internal TCP flags set/unset. As these stuff is
+>>> under development, I suggest you to use the latest Linux kernel,
+>>> please let me know if the problem persists.
+>> I still have the same symptoms with a 2.6.28-2 kernel. My testbed is not
+>> so far away from yours:
+>>
+>> You                Me
+>> ----------------------------------
+>> Etch <->         Lenny
+>> 2.6.28 <->         2.6.28-2
+>> conntrack 0.9.9? <->     conntrack 0.9.9
+>> ftfw mode <->         ftfw mode
+>> keepalived 1.1.15 <->     heartbeat 2.1.3
+>> no virtualization <->     KVM with net virtio
 > 
-> Interesting link, thanks!   However, I was under the impression that the
-> problem is incoming (RX) frames, that causes an interrupt to be raised
-> on a certain CPU (core) which in turn causes the frame to be processed
-> by that particular CPU by the NET_RX softirq handler.
-
-Correct... maybe this info isn't quite up to date...
-
-> The multiqueue patch seem to be about being able to submit outgoing (TX)
-> frames to multiple hardware queues.  So I don't think it will make much
-> of a difference for me?
-
-Don't know about the current state of general Linux driver support for
-this, but the Intel hardware also supports multiple RX queues:
-
-http://www.intel.com/network/connectivity/resources/technologies/10_gigabit_ethernet.htm
+> Indeed, very similar.
+> 
+>> On your opinion, could it be the side effect of KVM ? Unfortunately, I
+>> cannot do without KVM, and cannot test easily without...
+> 
+> I'm not familiar with KVM, but before pointing to it as the problem
+> (since I think that it is transparent to conntrackd). Could you try
+> latest conntrack-tools 0.9.10? I released them yesterday along with
+> accumulated updates/fixes. Thanks!
+> 
 
 
-and their current ixgbe driver docs say:
+--------------000307040800020201020109
+Content-Type: text/x-vcard; charset=utf-8;
+ name="yoann_juet.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="yoann_juet.vcf"
+
+begin:vcard
+fn:Yoann Juet
+n:Juet;Yoann
+org;quoted-printable:;DSI Universit=C3=A9 de Nantes
+adr;quoted-printable:BP92208;;2, rue de la Houssini=C3=A8re;Nantes;;44322;France
+email;internet:yoann.juet@univ-nantes.fr
+title;quoted-printable:Ing=C3=A9nieur s=C3=A9curit=C3=A9 & r=C3=A9seau
+tel;work:02.51.12.53.93
+tel;fax:02.51.12.58.60
+x-mozilla-html:FALSE
+version:2.1
+end:vcard
 
 
-RSS - Receive Side Scaling (or multiple queues for receives)
-------------------------------------------------------------
-Valid Range: 0 - 16
-0 = disables RSS
-1 = enables RSS and sets the descriptor queue count to 16 or the number
-of
-    online cpus, whichever is less.
-2-16 = enables RSS, with 2-16 queues
-Default Value: 1
-RSS also effects the number of transmit queues allocated on 2.6.23 and
-newer kernels with CONFIG_NETDEVICES_MULTIQUEUE set in the
-kernel .config file.
-CONFIG_NETDEVICES_MULTIQUEUE only exists from 2.6.23 to 2.6.26.  Other
-options
-enable multiqueue in 2.6.27 and newer kernels.
-
-
-MQ - Multi Queue
-----------------
-Valid Range: 0, 1
-0 = Disables Multiple Queue support
-1 = Enabled Multiple Queue support (a prerequisite for RSS)
-Default Value: 1
-
-
-
-
-
-
-
-
+--------------000307040800020201020109--
