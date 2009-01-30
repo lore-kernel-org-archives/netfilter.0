@@ -1,49 +1,39 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: icmp forward
-Date: Fri, 30 Jan 2009 11:53:04 +0100
-Message-ID: <4982DC10.6020903@plouf.fr.eu.org>
-References: <4982B7F3.4020603@cetrtapot.si> <200901300949.39955.christoph.paasch@gmail.com> <4982C494.50505@cetrtapot.si>
+From: aras as <arunelis007@gmail.com>
+Subject: ebtables filtering inside vlan.
+Date: Fri, 30 Jan 2009 13:09:19 +0200
+Message-ID: <8ffbf9ad0901300309g6b063d43v48de5ced397f4bb9@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4982C494.50505@cetrtapot.si>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=n3v9mXCCLLK+/YoI1ioVm7kePzBMehC6QT9OSziHTVI=;
+        b=ehe5cqYl5PbYi5WhxJR+xNOio+fxKUv3lXjpb4ssRd5CyWhYLQJpke2mc32lGo4uV0
+         5GTx6ljVC3G5nu7MrrSF45XwXkeuc+klyPeii3R2hRAxPMO5dK8gdisg1xYP3fhe/RdI
+         jVaXPwQw84fUYTe4g4uoB6rKtj6wYC3tvoUBA=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hello,
+Hello
 
-Hinko Kocevar a =E9crit :
-> Christoph Paasch wrote:
->>
->> On Fri January 30 2009, Hinko Kocevar wrote:
->>>
->>> Is it possible to 'port forward' ICMP requests?
->>
->> You can match the protocol on ICMP packets with -p icmp and let the =
-port-
->> specific stuff out of it, as ICMP doesn't uses portnumbers. But the =
-problem will=20
->> be, that your external machine won't be reachable for icmp packets. =
-(as every=20
->> icmp packets will get forwarded) It may be ennoying if MTU or ping p=
-ackets=20
->> doesn't reach anymore your machine. That depends on the usage of you=
-r gateway.
->=20
-> Yes, that is what I was afraid of. I think that gateway should still =
-remain
-> available for ICMP echo-reply from external network.
 
-You must not be afraid of redirecting incoming ICMP replies or error=20
-messages originally destined to the gateway to the mobile device. These=
-=20
-messages have the state ESTABLISHED or RELATED, while NAT rules see onl=
-y=20
-packets creating a new "connection", which have the state NEW. Even=20
-though, you could have your DNAT rule match only the echo-request type=20
-with the --icmp-type option. However, if you redirect ICMP echo request=
-=20
-to the device, indeed you cannot ping the gateway any more on the same=20
-external address. You need a separate address.
+Hello i have such setup:
+
+                             Linux BOX
+                           _ _ _ _ _ _ _ _ _
+                          |        | br0 |        |
+      Vlan trunk     |         --------       |   Vlan trunk
+     ---------------------|eth0           eth1 | ----------------------------
+                          |                         |
+                          | _ _ _ _ _ _ _ _ _|
+
+Is it possible to use ebtables to filter arp or ip packages in
+different vlan's. I don't wont to create seperate vlan interface like
+eth0.2 eth0.3 ....  for every VLAN going through the bridge because i
+have 148 vlans going through it.
+
+Thanks.
