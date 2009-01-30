@@ -1,47 +1,39 @@
-From: "Nikolay S. Rybaloff" <nowhere@hakkenden.ath.cx>
-Subject: Re: newbie question: UDP is stateless ... right?
-Date: Sat, 31 Jan 2009 00:04:20 +0300
-Message-ID: <06CF31039D064B51ABB8A0AC1E9BA459@Hakkenden>
-References: <87fa72960901301050n7d982887waadc1fc090fc96ed@mail.gmail.com> <49835151.8010701@www.knutejohnson.com> <573116CBE1A14366854B66613B492596@Hakkenden> <49835F8C.2040803@plouf.fr.eu.org>
+From: Joe Pruett <joey@clean.q7.com>
+Subject: Re: iptables, ipsec, and host2host
+Date: Fri, 30 Jan 2009 13:50:48 -0800 (PST)
+Message-ID: <alpine.LRH.2.00.0901301342230.1946@q7.q7.com>
+References: <alpine.LRH.2.00.0901281117320.7781@q7.q7.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <alpine.LRH.2.00.0901281117320.7781@q7.q7.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed	reply-type=response"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>, netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Thanks for the explanation. For some reason I thought it was server-rel=
-ated,=20
-not client.
+On Wed, 28 Jan 2009, Joe Pruett wrote:
 
+> i have been scouring the net and i can't find any clues to whether i can do 
+> filtering after ipsec has decrypted a packet on a host2host connection. 
+> net2net goes through the filters a second time, but host2host doesn't seem to 
+> do that.  is there some other method i can use to filter the traffic after 
+> being decrypted?
 
---------------------------------------------------
-=46rom: "Pascal Hambourg" <pascal.mail@plouf.fr.eu.org>
-Sent: Friday, January 30, 2009 11:14 PM
-To: <netfilter@vger.kernel.org>
-Subject: Re: newbie question: UDP is stateless ... right?
+ok, i'm following up to myself.  i dug into the kernel source (for 
+redhat/centos 5) and have found that there don't appear to be any hooks in 
+the ah4.c or esp4.c code to pass packets back through netfilter after 
+decapsution/decryption.  from what i can tell tunnel mode (net2net) gets 
+the double pass through netfilter only because of the use of the ip-ip 
+protocol and ipip.c does a netif_rx call after decapsulation.
 
-> Hello,
->
-> Nikolay S. Rybaloff a =E9crit :
->> If you are talking about netbios name resolution via UDP:137, than t=
-his=20
->> is a bit more complex. These packets are mostly network-directed=20
->> broadcasts so AFAIK state rule is not created for them and reply pac=
-kets=20
->> look like NEW.
->
-> Actually the default netfilter UDP conntrack doesn't care about broad=
-cast=20
-> addresses and will create en entry after the initial netbios request =
-to=20
-> the broadcast address. But the reply from a different (unicast) addre=
-ss=20
-> won't match the conntrack entry.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->=20
+so maybe i should go dig into the current (from linus) kernel sources to 
+see if there have been any changes.  but i'm hoping that someone here 
+might know if there is a reason that ah/esp packets aren't passed through 
+netfilter again after being decapsulated/decrypted?  or should i go find 
+the ipsec mailing list?
+
+my underlying goal is for a monitoring system that i want to be able to 
+see into customer sites via ipsec, but i don't want them to be able to 
+come back over the ipsec connection to my system.  i could setup tunnels 
+to each site, but host2host is really more what i want.
