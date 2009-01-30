@@ -1,63 +1,56 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [ANNOUNCE] ipset 2.4.7 released
-Date: Fri, 30 Jan 2009 23:32:10 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.0901302326460.10249@blackhole.kfki.hu>
-References: <alpine.DEB.2.00.0901282210030.22866@blackhole.kfki.hu> <Pine.LNX.4.58.0901301304350.27805@mail3.jubileegroup.co.uk> <Pine.LNX.4.58.0901302206040.5038@mail3.jubileegroup.co.uk>
+From: Michail Zhilkin <myz@csu.ru>
+Subject: ebtables without bridge
+Date: Sat, 31 Jan 2009 03:32:58 +0500 (YEKT)
+Message-ID: <20090131024543.M20230@mail.csu.ru>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.58.0901302206040.5038@mail3.jubileegroup.co.uk>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: "G.W. Haywood" <ged@jubileegroup.co.uk>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Fri, 30 Jan 2009, G.W. Haywood wrote:
+Hi ALL!
 
-> > And it seems to work fine with kernel 2.4.37 ...
-> 
-> Hmmmmm - except for
-> 
-> gcc -D__KERNEL__ -I/mnt/hde3/gwh/src/linux/linux-2.4.37/include -Wall  \
->  -Wstrict-prototypes -Wno-trigraphs -O2 -fno-strict-aliasing           \
->  -fno-common -fno-builtin-strpbrk -fno-builtin-sprintf                 \
->  -fomit-frame-pointer  -pipe -mpreferred-stack-boundary=2 -march=i686  \
->  -nostdinc -iwithprefix include -DKBUILD_BASENAME=ip_set_setlist -c -o \
->  ip_set_setlist.o ip_set_setlist.c
-> ip_set_setlist.c:25: parse error before "next_index_eq"
-> ip_set_setlist.c:26: warning: return type defaults to `int'
-> ip_set_setlist.c:176: parse error before "unshift_setlist"
-> ip_set_setlist.c:177: warning: return type defaults to `int'
-> make[3]: *** [ip_set_setlist.o] Error 1
+I have a box running Fedora 9 Linux with kernel 2.6.26.3 SMP x86_64.
+All necessary Netfilter kernel modules are compiled and loaded.
 
-'bool' is not recognized - I'm going to fix it.
- 
-> This is an otherwise vanilla non-modular kernel.  You're welcome to
-> have the .config if you need it.  I have no need for ip_set_setlist,
-> everything else compiles fine, so I've just disabled it.
-> 
-> $ gcc -v
-> Reading specs from /usr/lib/gcc-lib/i386-redhat-linux/3.2.2/specs
-> Configured with: ../configure --prefix=/usr --mandir=/usr/share/man   \
->  --infodir=/usr/share/info --enable-shared --enable-threads=posix     \
->  --disable-checking --with-system-zlib --enable-__cxa_atexit          \
->  --host=i386-redhat-linux
-> Thread model: posix
-> gcc version 3.2.2 20030222 (Red Hat Linux 3.2.2-5)
-> 
-> I had to tweak the Makefile to compile ipsets with this compiler
-> because your new warning switches aren't recognized, but I'm sure
-> that's of no concern - few people will be using such a compiler so
-> old as this.
+I have no bridge interfaces at all, only one physical Ethernet card.
 
-Could you send me the list of the switches which are not recognized?
-I could add a simple workaround to exclude those at compile time.
+Is it possible to filter incoming and outgoing Layer2 traffic using 
+ebtables in this case?
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+I tried to load simple rules to test ebtables firewall:
+
+[root@space]# ebtables -P INPUT DROP
+[root@space]# ebtables -P OUTPUT DROP
+[root@space]# ebtables -P FORWARD DROP
+[root@space]# ebtables -L --Ln
+Bridge table: filter
+
+Bridge chain: INPUT, entries: 0, policy: DROP
+
+Bridge chain: FORWARD, entries: 0, policy: DROP
+
+Bridge chain: OUTPUT, entries: 0, policy: DROP
+
+
+All traffic should be blocked, but I can send and receive everything... 
+f.e. can ping hosts in my LAN, make connections and so on.
+
+I tried also to set up some rules like: ebtables -A INPUT -i eth0 -j DROP
+but they have the same effect!
+
+What is wrong? Are ebtables really designed for bridges only?
+If so, what cat I do?
+
+I would like to drop all Layer2 traffic except 
+Ethernet frames with IPv4 and ARP protocols. In addition, i need only 
+allow frames with my MAC-address (incoming and outgoing, i.e. locally 
+generated).
+
+The second is possible using iptables firewall (with -m mac), but only for 
+INCOMING frames, not outgoing.
+
+---
+   Mike.
