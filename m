@@ -1,70 +1,49 @@
-From: "=?ISO-8859-1?Q?Cloves=20Pereira=20Costa=20Jr?=" 
-	<cloves.costa@m2sys.com.br>
-Subject: Re: Multiple Incoming connections
-Date: Fri, 30 Jan 2009 08:34:10 -0200
-Message-ID: <20090130103410.16008.qmail@hm668.locaweb.com.br>
-References: <49824032.8050906@chello.at>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: icmp forward
+Date: Fri, 30 Jan 2009 11:53:04 +0100
+Message-ID: <4982DC10.6020903@plouf.fr.eu.org>
+References: <4982B7F3.4020603@cetrtapot.si> <200901300949.39955.christoph.paasch@gmail.com> <4982C494.50505@cetrtapot.si>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49824032.8050906@chello.at>
+In-Reply-To: <4982C494.50505@cetrtapot.si>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Fri, 30 Jan 2009 00:48:02 +0100, Mart Frauenlob <mart.frauenlob@chello.at> escreveu:
+Hello,
 
-> Didster wrote:
-> > Hi there,
-> >
-> > This is probably a very silly question, but here it goes.
-> >
-> > I have a linux box which I am using as an internal router
-> > [2.6.18-6-686].  These machine is connected two multiple ISPs via two
-> > separate NICs.  The connections are not direct, they are via PIX 501
-> > firewalls.  Both NICs use private IPs and the PIXes do address
-> > translation.  A third NIC connects the machine to a LAN.  The default
-> > gateway on the box is set to the private IP of PIX 1..
-> >
-> > I am trying to get incoming connections working from both ISPs.  I
-> > have apache running on the machine.  Both firewalls are set to allow
-> > port 80 though and translate it to the IP of the linux box.
-> >
-> > An incoming connection to the public IP of PIX 1 works just fine
-> > But an incoming connection to the public IP of PIX 2 does not ? unless
-> > I change the default gateway on the box to be the private IP of PIX 2.
-> >
-> > A trace shows the connection coming from PIX 2 and then the reply
-> > going back out on PIX 1
-> >
-> > I have rp_filter switched off and ip_conntrack module loaded.
-> >
-> > Does anyone know how to stop this?  I thought conntrack would send the
-> > related traffic back out of the route the initial request come in on.
-> >   
-> search google for: source based routing linux
-> 
-> greets
-> 
-> mart
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
-> 
-> 
-> 
+Hinko Kocevar a =E9crit :
+> Christoph Paasch wrote:
+>>
+>> On Fri January 30 2009, Hinko Kocevar wrote:
+>>>
+>>> Is it possible to 'port forward' ICMP requests?
+>>
+>> You can match the protocol on ICMP packets with -p icmp and let the =
+port-
+>> specific stuff out of it, as ICMP doesn't uses portnumbers. But the =
+problem will=20
+>> be, that your external machine won't be reachable for icmp packets. =
+(as every=20
+>> icmp packets will get forwarded) It may be ennoying if MTU or ping p=
+ackets=20
+>> doesn't reach anymore your machine. That depends on the usage of you=
+r gateway.
+>=20
+> Yes, that is what I was afraid of. I think that gateway should still =
+remain
+> available for ICMP echo-reply from external network.
 
-You can take a look at http://linux-ip.net/html/linux-ip.html#adv-multi-internet-outbound.
-
-In this site you will find a lot of information about linux routing.
-
-[]s
-
-Cloves Pereira Costa Jr
-
-+55 41 8808-8553
-Skype: clovespcjr
-
+You must not be afraid of redirecting incoming ICMP replies or error=20
+messages originally destined to the gateway to the mobile device. These=
+=20
+messages have the state ESTABLISHED or RELATED, while NAT rules see onl=
+y=20
+packets creating a new "connection", which have the state NEW. Even=20
+though, you could have your DNAT rule match only the echo-request type=20
+with the --icmp-type option. However, if you redirect ICMP echo request=
+=20
+to the device, indeed you cannot ping the gateway any more on the same=20
+external address. You need a separate address.
