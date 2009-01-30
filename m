@@ -1,33 +1,33 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: ebtables filtering inside vlan.
-Date: Fri, 30 Jan 2009 16:28:48 +0100
-Message-ID: <49831CB0.80400@plouf.fr.eu.org>
-References: <8ffbf9ad0901300309g6b063d43v48de5ced397f4bb9@mail.gmail.com>
+From: Mr Vandeley <mr.vandeley@gmail.com>
+Subject: newbie question: UDP is stateless ... right?
+Date: Fri, 30 Jan 2009 15:50:46 -0300
+Message-ID: <87fa72960901301050n7d982887waadc1fc090fc96ed@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <8ffbf9ad0901300309g6b063d43v48de5ced397f4bb9@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=igp9mPRELA/EK79J9ug5apMOxl7y/n2T57teBouPLp8=;
+        b=anTw5vOEmnnO8C+biqh71Pk4YCfr0y1nFMRsI+QubPIvkA5ZjSNhyU5SsMFvKgAMrq
+         aFUECQWOudxX1aYzvli1U4cOiU2TVYjWEM96NnvajjoJo7Oi9vS2GsinK8L7SOWh50kC
+         6fE8JhF6A0VQmTdHU27XdDXie/fTSrAdqLxlk=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: aras as <arunelis007@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Hello,
+Hi,
+Please, excuse me this newbie question, but I don't understand
+correctly. For what I know, UDP connections are not statefull, so I
+can't track them... right?
+What I've been doing on my firewalls was explicitely accepting
+incoming packets from UDP privileged ports and so accepting answers to
+my UDP requests. Now I have found that if I accept RELATED,ESTABLISHED
+traffic without saying anything about the protocol, UDP answers will
+be accepted.
+I know that this isn't a question related to Netfilter but is the only
+place I know to ask about this.
 
-aras as a =E9crit :
->=20
-> Is it possible to use ebtables to filter arp or ip packages in
-> different vlan's. I don't wont to create seperate vlan interface like
-> eth0.2 eth0.3 ....  for every VLAN going through the bridge because i
-> have 148 vlans going through it.
-
-man ebtables
-/vlan
-
-says it is possible using the vlan match extensions. However it may not=
-=20
-be possible to use IPv4 or ARP specific match extensions. For IPv4 or=20
-ARP-specific filtering you may enable bridge-nf to pass VLAN-tagged IPv=
-4=20
-and ARP packets to iptables and arptables respectively.
+thanks.
