@@ -1,52 +1,42 @@
-From: Thomas Jacob <jacob@internet24.de>
-Subject: Re: Best hardware platform for routing/firewalling?
-Date: Fri, 30 Jan 2009 13:28:02 +0100
-Message-ID: <1233318482.21474.18.camel@enterprise.ims-firmen.de>
-References: <4982E7F7.6050500@redpill-linpro.com>
+From: wlet@gmx.net
+Subject: Connectiontracking of IPv6 on modified Fritzbox
+Date: Fri, 30 Jan 2009 14:23:42 +0100
+Message-ID: <20090130132342.207450@gmx.net>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4982E7F7.6050500@redpill-linpro.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Tore Anderson <tore.anderson@redpill-linpro.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Fri, 2009-01-30 at 12:43 +0100, Tore Anderson wrote:
-> Hey list,
-> 
-> does anyone have an opinion on what's the better-performing/suited
-> hardware platform for routing and stateful firewalling with iptables;
-> AMD Opteron or Intel Xeon?  I'm need something that can sustain high
-> pps/bps numbers with as low latency as possible.
+Hello,
 
-Harald gave a talk about that 2 years ago, maybe it's still
-somewhat applicable:
+I'm using a SOHO router called Fritzbox. This box is very popular in germany and is based upon busybox/linux.
 
-http://www.heinlein-support.de/upload/slac/network_performance.pdf
+There is a gnu project called "Freetz" which provides a patchset to enhance the capabilities of this box.
 
-Also you might want to contact the guys from the Bifrost
-distribution:
+I'm using the last svn snapshot which contains IPv6 support via sixxs.net. The kernel running on this box is "2.6.13.1-ohio" (MIPS).
 
-http://bifrost.slu.se/index.en.html
+I want to use ip6tables to restrict the v6 traffic, but there is no possibility to do a connection tracking/stateful filtering. 
+These are the ip6tables modules availible:
+ip6_queue.ko
+ip6_tables.ko
+ip6t_LOG.ko
+ip6t_MARK.ko
+ip6t_dst.ko
+ip6t_ipv6header.ko
+ip6t_length.ko
+ip6t_limit.ko
+ip6t_mark.ko
+ip6t_rt.ko
+ip6table_filter.ko
+ip6table_raw.ko
 
-They seem to be testing for this sort of performance regularly,
-and I've gotten hold of some of there stats last year thanks
-to the help of a friendly Dane:
+x_tables are also not availible. Somebody at the Freetz Forum stated, that the kernel should be able to handle connectiontracking, but I don't know how.
 
-http://robur.slu.se/Linux/net-development/experiments/2008/080623.tyan2927
+Anybody here with a neat little hint?
 
-I've also done some rather unscientific tests myself and apart from best
-sticking with the two onboard PCIe Gigabit NICs (Intel, Broadcom) of
-quality server boards and getting the best main memory performance
-you can get hold of, the main thing seems to be L2/L3 cache size,
-so in my tests Intels current CPU line slightly outperformed
-current Opterons last summer, but traditionally most people advised
-the use of Opterons because of there better SMP memory performance.
+thankyou
 
-But I was only interested in 1GiE-NICs tied to one CPU core each
-at the time, so this might be meaningless in a multiqueue scenario
-with 10GiE NICs.
-
-
+wlet
