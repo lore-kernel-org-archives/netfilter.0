@@ -1,42 +1,30 @@
-From: wlet@gmx.net
-Subject: Connectiontracking of IPv6 on modified Fritzbox
-Date: Fri, 30 Jan 2009 14:23:42 +0100
-Message-ID: <20090130132342.207450@gmx.net>
+From: "G.W. Haywood" <ged@jubileegroup.co.uk>
+Subject: Re: [ANNOUNCE] ipset 2.4.7 released
+Date: Fri, 30 Jan 2009 14:00:20 +0000 (GMT)
+Message-ID: <Pine.LNX.4.58.0901301304350.27805@mail3.jubileegroup.co.uk>
+References: <alpine.DEB.2.00.0901282210030.22866@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <alpine.DEB.2.00.0901282210030.22866@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Hello,
+Hi Jozsef,
 
-I'm using a SOHO router called Fritzbox. This box is very popular in germany and is based upon busybox/linux.
+On Wed, 28 Jan 2009, Jozsef Kadlecsik wrote:
 
-There is a gnu project called "Freetz" which provides a patchset to enhance the capabilities of this box.
+> I'm happy to announce ipset 2.4.7, which contains a compatibility fix for
+> kernels >= 2.6.28
 
-I'm using the last svn snapshot which contains IPv6 support via sixxs.net. The kernel running on this box is "2.6.13.1-ohio" (MIPS).
+And it seems to work fine with kernel 2.4.37 - patches apply cleanly.
 
-I want to use ip6tables to restrict the v6 traffic, but there is no possibility to do a connection tracking/stateful filtering. 
-These are the ip6tables modules availible:
-ip6_queue.ko
-ip6_tables.ko
-ip6t_LOG.ko
-ip6t_MARK.ko
-ip6t_dst.ko
-ip6t_ipv6header.ko
-ip6t_length.ko
-ip6t_limit.ko
-ip6t_mark.ko
-ip6t_rt.ko
-ip6table_filter.ko
-ip6table_raw.ko
+Thank you. :)
 
-x_tables are also not availible. Somebody at the Freetz Forum stated, that the kernel should be able to handle connectiontracking, but I don't know how.
+--
 
-Anybody here with a neat little hint?
-
-thankyou
-
-wlet
+73,
+Ged.
