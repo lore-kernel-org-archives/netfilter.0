@@ -1,38 +1,72 @@
-From: "Sussman, Scott" <ssussman@starentnetworks.com>
-Subject: ip6tables/netfilter question
-Date: Mon, 2 Feb 2009 12:49:43 -0500
-Message-ID: <7CCD07160348804497EF29E9EA5560D705159182@exchtewks2.starentnetworks.com>
+From: Bart Kus <me@bartk.us>
+Subject: Re: Problem with getting reply packets
+Date: Mon, 2 Feb 2009 17:00:06 -0800
+Message-ID: <49879716.7000406@bartk.us>
+References: <4983937B.4060200@bartk.us> <498428BD.2000609@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Class: urn:content-classes:message
+In-Reply-To: <498428BD.2000609@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Cc: netfilter@vger.kernel.org
+
+A-HA!  Thank you for the insight about SYN_RECV.  It led me to think
+about the sanity of my remote test site that I was using to cause these
+inbound connections.  It seems that during the past 3 months the remote
+site's firewall policies have changed and they now block port 22
+outbound!  Tested from an alternate remote site and everything works as
+it should.
+
+Thanks again!
+
+--Bart
 
 
-Hi,
+Pascal Hambourg wrote:
+> Hello,
+>
+> Bart Kus a =E9crit :
+>>
+>> Setup:  Inet -> Netgear -> WifiRouter -> CoreRouter
+>>
+>> Connection comes from inet to Netgear's public IP.  DMZ on Netgear=20
+>> takes it to WifRouter's IP within the internal net of Netgear.  DMZ=20
+>> on WifiRouter takes it to CoreRouter's IP.  CoreRouter is running=20
+>> sshd and replies to WifiRouter.  WifiRouter does NOT forward the=20
+>> packet to Netgear.  A state is established in ip_conntrack but never=
+=20
+>> matures beyond SYN_RECV status.  Here's the iptables of WifiRouter:
+> [...]
+>> And here's the relevant ip_conntrack entry of WifiRouter after a SYN=
+=20
+>> has been sent, and CoreRouter has properly transmitted a SYN+ACK bac=
+k=20
+>> @ WifiRouter:
+>>
+>> tcp      6 59 SYN_RECV src=3D98.233.248.36 dst=3D192.168.1.200=20
+>> sport=3D50587 dport=3D22 src=3D192.168.44.17 dst=3D98.233.248.36 spo=
+rt=3D22=20
+>> dport=3D50587 use=3D1
+> [...]
+>> Why is the reply (SYN+ACK) not being associated with this SYN_RECV=20
+>> state entry
+>
+> It is. The SYN_RECV states indicates that the SYN+ACK was successfull=
+y=20
+> associated to the connection. Otherwise the conntrack entry would sho=
+w=20
+> SYN_SENT and [UNREPLIED] instead.
+>
+>> and being propagated back out to the internet?
+>
+> No clue, sorry. Did you try to trace it through the iptables chains ?
+> --=20
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-I have created an ip tables rule using the ip6tables command that captures all IPv6 packets with a specific source prefix and places the packets into the NFQUEUE queue 0. This appears to be working properly from the ip6tables -L -nv point of view. But when I cat the nfnetlink_queue file it doesn't show any packets being queue'd. The application reading the queue also does not report any incoming packets from the queue. I have been using this same setup for IPv4 for some time now and am familiar with the process. I just recently started with IPv6 and would appreciate any thoughts/help anyone might have.
 
-Thanks,
-
-Scott
-
-Chain OUTPUT (policy ACCEPT 30607 packets, 41M bytes)
- pkts bytes target     prot opt in     out     source               destination         
-   10   720 NFQUEUE    tcp      *      *       dddd::/16            ::/0                NFQUEUE num 0
-
-
-messy24:/localdisk/callgen# cat /proc/net/netfilter/nfnetlink_queue 
-    0  28763     0 2 65535     0     0        0  1
-
-
-messy24:/localdisk/stargen-2.00# cat /proc/net/ip6_tables_targets 
-ERROR
-NFQUEUE
-
-
-This email and any attachments may contain legally privileged and/or confidential information of Starent Networks, Corp. and is intended only for the individual or entity named in the message.  The information transmitted may not be used to create or change any contractual obligations of Starent Networks, Corp.  Any review, retransmission, dissemination or other use of, or taking of any action in reliance upon this e-mail and its attachments by persons or entities other than the intended recipient is prohibited. If you are not the intended recipient, please notify the sender immediately -- by replying to this message or by sending an email to postmaster@starentnetworks.com -- and destroy all copies of this message and any attachments without reading or disclosing their contents. Thank you.
- 
