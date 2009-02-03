@@ -1,34 +1,21 @@
-From: =?UTF-8?B?VmxhZG8gRHLFvsOtaw==?= <vlado@ttx.sk>
-Subject: Re: How to reset routing completely?
-Date: Tue, 03 Feb 2009 21:42:09 +0100
-Message-ID: <4988AC21.7000903@ttx.sk>
-References: <200902031943.58617.Karlis.Repsons@gmail.com>
+From: Rick Jones <rick.jones2@hp.com>
+Subject: Re: Forward packets from one interface to another?
+Date: Tue, 03 Feb 2009 12:45:07 -0800
+Message-ID: <4988ACD3.8050607@hp.com>
+References: <200902031753.59283.Karlis.Repsons@gmail.com>	<4988992f.20038e0a.3b6a.ffffd8a6@mx.google.com>	<200902031940.09273.Karlis.Repsons@gmail.com> <49889fd0.1c078e0a.6cc4.ffff9618@mx.google.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <200902031943.58617.Karlis.Repsons@gmail.com>
+In-Reply-To: <49889fd0.1c078e0a.6cc4.ffff9618@mx.google.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: =?UTF-8?B?S8SBcmxpcyBSZXBzb25z?= <karlis.repsons@gmail.com>
-Cc: 'netfilter' <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Gilad Benjamini <gilad.benjamini@gmail.com>
+Cc: =?UTF-8?B?J0vEgXJsaXMgUmVwc29ucyc=?= <karlis.repsons@gmail.com>, 'netfilter' <netfilter@vger.kernel.org>
 
-There is nothing like initial state. All needs to be initalized by
-insterting proper routes, if you reset it.
-This is more distribution specifics:
-/etc/init.d/network restart (or stop/start)
-/etc/init.d/networking restart
+> You say yourself that your problem is the lack of a switch; i.e. you want
+> your Linux machine to serve as the switch; i.e. you need a Linux bridge
 
-K=C4=81rlis Repsons  wrote / nap=C3=ADsal(a):
-> While experimenting, I managed to reach a state, where I could not ma=
-ke my=20
-> network functional again, even if I deleted all rules and routes with=
- ip and=20
-> did reset firewall.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->=20
+In other words, a "switch" is merely a multi-port bridge.
 
+rick jones
