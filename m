@@ -1,29 +1,25 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Second failover failure with conntrackd - INVALID packets
-Date: Tue, 03 Feb 2009 11:10:08 +0100
-Message-ID: <49881800.20707@netfilter.org>
-References: <497760CB.6090008@univ-nantes.fr> <49778AF4.7000201@netfilter.org> <4978425F.1030003@univ-nantes.fr> <4978A4F8.5060901@netfilter.org> <4979BA72.50405@univ-nantes.fr> <497C4440.7050809@netfilter.org> <497CA7A2.2000906@netfilter.org> <497E0EA9.1020408@univ-nantes.fr> <497E40B0.2090709@netfilter.org> <4981D4EB.3060007@univ-nantes.fr>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: kernel 2.6.28/iptables <=1.4.2 not working together?
+Date: Tue, 03 Feb 2009 13:23:45 +0100
+Message-ID: <49883751.6010700@plouf.fr.eu.org>
+References: <alpine.LNX.2.00.0901311807001.24298@kennis.local.lan>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4981D4EB.3060007@univ-nantes.fr>
+In-Reply-To: <alpine.LNX.2.00.0901311807001.24298@kennis.local.lan>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: yoann.juet@univ-nantes.fr
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: "J.O. Aho" <trizt@iname.com>
 Cc: netfilter@vger.kernel.org
 
-Hi Yoann,
+Hello,
 
-Yoann Juet wrote:
-> 
->> Could you try latest conntrack-tools 0.9.10? I released them yesterday
->> along with accumulated updates/fixes. Thanks!
-> 
-> I experience right now some difficulties to compile version 0.9.10 on
-> lenny. I keep you in touch with test results.
+J.O. Aho a =E9crit :
+>=20
+> Keep in mind that ipt_TOS has been merge into xt_dscp and modinfo on=20
+> xt_dscp gives an alias list with ipt_tos.
 
-Any update? I'm interested in your setup.
-
--- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
+Since kernel 2.6.25, ipt_TOS has been merged into xt_DSCP (target), not=
+=20
+ipt_dscp (match).
