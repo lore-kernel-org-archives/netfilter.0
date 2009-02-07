@@ -1,41 +1,22 @@
-From: Vincent Bernat <bernat@luffy.cx>
-Subject: Re: Empty Target
-Date: Sat, 07 Feb 2009 08:12:07 +0100
-Message-ID: <m3skmq7mbc.fsf@neo.luffy.cx>
-References: <498cb439.20018e0a.3be8.ffffc9e3@mx.google.com>
+From: Pete Whiting <pete@whitings.org>
+Subject: how can I match the first packet after session is established
+Date: Sat, 7 Feb 2009 16:58:42 -0700
+Message-ID: <3ba156dd0902071558k299a0b7dicc14d0bc3c4a8a92@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <498cb439.20018e0a.3be8.ffffc9e3@mx.google.com> (Gilad
-	Benjamini's message of "Fri, 6 Feb 2009 14:05:40 -0800")
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Gilad Benjamini <gilad.benjamini@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-OoO La nuit ayant d=C3=A9j=C3=A0 recouvert  d'encre ce jour du vendredi=
- 06 f=C3=A9vrier
-2009, vers 23:05, "Gilad Benjamini" <gilad.benjamini@gmail.com> disait=C2=
-=A0:
+I would like to match the first packet in a session after the
+connection has been established. So, I'm not interested in the first
+syn, the syn,ack and only the next ack if it is carrying data. I'm
+trying to inspect the first host header in an http session but I am
+not interested in any of the packets that follow.
 
-> I am trying to troubleshoot an iptables rule set, trying to understan=
-d where
-> different packets are going. I have found that using "iptables -L -v"=
- is a
-> useful tool, with the counters telling me what's going on.
-> To "trigger" counters I currently use LOG rules. I would actually pre=
-fer
-> some sort of empty rule; a rule that would do nothing beyond increasi=
-ng the
-> counters.
+Any suggestions on how to accomplish this?
 
-> Does something like that exist ?
-> Seems trivial to implement.=20
-
-You can also use the TRACE target if your kernel is recent enough.
---=20
-I WILL NOT GREASE THE MONKEY BARS
-I WILL NOT GREASE THE MONKEY BARS
-I WILL NOT GREASE THE MONKEY BARS
--+- Bart Simpson on chalkboard in episode 7F17
+thanks.
+pete
