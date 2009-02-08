@@ -1,22 +1,27 @@
-From: Ralf <rm@amitrader.com>
-Subject: Forwarding a TCP connection request
-Date: Sun, 08 Feb 2009 11:58:38 +0100
-Message-ID: <gmmdsv$rgq$1@ger.gmane.org>
+From: Jimbo <l_pool_2003@hotmail.com>
+Subject: RTP  stream before DNAT rule
+Date: Sun, 8 Feb 2009 11:24:53 +0000 (UTC)
+Message-ID: <loom.20090208T105052-760@post.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Is this possible to do:
-a TCP connection request to a specific port
-on this machine comes in. Can this request
-be forwarded to another machine to handle it directly
-with the client (ie. accepting the session and so on),
-but without this machine doing NAT for them
-(except forwarding the initial SYN packet)?
+I have a probably common SIP NAT/NAPT problem and I want to see how others have
+solved this issue:
 
+I want to dynamically create DNAT rules for RTP streams (port-mapping for a SIP
+proxy).
+This works fine when I add a rule before the first packet of the RTP stream hits
+the port. But, if the RTP stream begins before the rule is in place, it never
+matches.
+I can insert the DNAT rule only after I have the SDP part of the 200 OK (or any
+other 1xx with a SDP body).
+
+Rgds
+Jimmy
 
 
