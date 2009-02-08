@@ -1,37 +1,34 @@
-From: Pete <pgm987@gmail.com>
-Subject: Re: Iptables XML
-Date: Sun, 8 Feb 2009 22:23:37 +0000
-Message-ID: <82e95f530902081423u453f53cdhcdec1f20da8bb9b5@mail.gmail.com>
-References: <82e95f530902081417r1c1c4e65ka1c2556ddc765d5e@mail.gmail.com>
+From: "Tim Ritberg" <tim_rit@gmx.de>
+Subject: Re: Incoming packet in wrong chain
+Date: Sun, 08 Feb 2009 23:44:30 +0100
+Message-ID: <20090208224430.207240@gmx.net>
+References: <20090208171752.32010@gmx.net> <498F4E63.8050603@inl.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:content-type
-         :content-transfer-encoding;
-        bh=1R5YKaPv/z4pvMsNvHPHNFo9qqWROlp4AKsQGDziATE=;
-        b=RUYtat40XAhBQuBcXcUiP7Fk58LXOY9gR6LqeirTVN71bvUng0ZUQj/vuHhkE/jWDk
-         vnLc6cZzuLRZViOkmRgnXEpC1Qx2fKbph53BwBMnwbNGrWJIk6oytPAbuPxWrYD2cfso
-         ZLbAWXZb8n5vYkR6FC8/xPZAVhCYK8v0Buj+o=
-In-Reply-To: <82e95f530902081417r1c1c4e65ka1c2556ddc765d5e@mail.gmail.com>
+In-Reply-To: <498F4E63.8050603@inl.fr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-No need to worry I worked it out 2secs after sending the e-mail.
-I used "iptables-save | iptables-xml > rules.xml"
+> For Netfilter connection tracking, a NEW TCP connection does not have=
+ to
+> start with a SYN packet. If
+> /proc/sys/net/netfilter/nf_conntrack_tcp_loose is set to 1 (default),
+> Netfilter will try to pick up connection. By this mean, it is possibl=
+e
+> to recover a connection (in some fail-over case for example), but it
+> introduces this looking-weird-at-first behaviour.
+>=20
+> BR,
+> - --
+> Eric Leblond <eleblond@inl.fr>
 
-Thanks ^_^
-Pete
+because of that netfilter put it in INPUT-Chain?
+and I wonder why it occurs randomly.
+Should I switch  to nf_conntrack_tcp_loose 0?
 
-2009/2/8 Pete <pgm987@gmail.com>:
-> Could someone show me the command to get a XML output of my rules?
-> Iptables-xml says " Use  I/O-redirection  provided by your shell to
-> write to a file." which is good but I don't know how to do that ^_^
->
-> Thanks,
-> Pete
->
+--=20
+Psssst! Schon vom neuen GMX MultiMessenger geh=F6rt? Der kann`s mit all=
+en: http://www.gmx.net/de/go/multimessenger01
