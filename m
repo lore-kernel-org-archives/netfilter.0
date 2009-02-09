@@ -1,7 +1,7 @@
 From: Jan Engelhardt <jengelh@medozas.de>
-Subject: [PATCH 09/16] libxtables: prefix/order - param_act
-Date: Mon,  9 Feb 2009 13:07:27 +0100
-Message-ID: <1234181254-6211-10-git-send-email-jengelh@medozas.de>
+Subject: [PATCH 14/16] libxtables: prefix/order - move check_inverse to xtables.c
+Date: Mon,  9 Feb 2009 13:07:32 +0100
+Message-ID: <1234181254-6211-15-git-send-email-jengelh@medozas.de>
 References: <1234181254-6211-1-git-send-email-jengelh@medozas.de>
 Return-path: <netfilter-owner@vger.kernel.org>
 In-Reply-To: <1234181254-6211-1-git-send-email-jengelh@medozas.de>
@@ -12,1093 +12,1630 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Changes:
-	exittype -> xtables_exittype
-	P_* -> XTF_* flags
+This also adds a warning that intrapositional negation support
+is deprecated.
 
 Signed-off-by: Jan Engelhardt <jengelh@medozas.de>
 ---
- extensions/libxt_CONNMARK.c  |   30 +++++++++++-----------
- extensions/libxt_MARK.c      |   28 ++++++++++----------
- extensions/libxt_TOS.c       |   30 +++++++++++-----------
- extensions/libxt_TPROXY.c    |   22 ++++++++--------
- extensions/libxt_connmark.c  |    8 +++---
- extensions/libxt_conntrack.c |   18 ++++++------
- extensions/libxt_hashlimit.c |   58 +++++++++++++++++++++---------------------
- extensions/libxt_iprange.c   |   24 ++++++++--------
- extensions/libxt_mark.c      |    8 +++---
- extensions/libxt_owner.c     |   46 ++++++++++++++++----------------
- extensions/libxt_tos.c       |    8 +++---
- include/xtables.h.in         |   28 ++++++++++----------
- ip6tables.c                  |    2 +-
- iptables-xml.c               |    2 +-
- iptables.c                   |    2 +-
- xtables.c                    |   34 +++++++++++++++++++++---
- 16 files changed, 186 insertions(+), 162 deletions(-)
+ extensions/libip6t_HL.c         |    2 +-
+ extensions/libip6t_LOG.c        |    4 ++--
+ extensions/libip6t_REJECT.c     |    2 +-
+ extensions/libip6t_ah.c         |    4 ++--
+ extensions/libip6t_dst.c        |    4 ++--
+ extensions/libip6t_frag.c       |    4 ++--
+ extensions/libip6t_hbh.c        |    4 ++--
+ extensions/libip6t_hl.c         |    2 +-
+ extensions/libip6t_icmp6.c      |    2 +-
+ extensions/libip6t_ipv6header.c |    2 +-
+ extensions/libip6t_mh.c         |    2 +-
+ extensions/libip6t_policy.c     |    2 +-
+ extensions/libip6t_rt.c         |    8 ++++----
+ extensions/libipt_DNAT.c        |    2 +-
+ extensions/libipt_LOG.c         |    4 ++--
+ extensions/libipt_MASQUERADE.c  |    2 +-
+ extensions/libipt_NETMAP.c      |    2 +-
+ extensions/libipt_REDIRECT.c    |    2 +-
+ extensions/libipt_REJECT.c      |    2 +-
+ extensions/libipt_SAME.c        |    2 +-
+ extensions/libipt_SET.c         |    2 +-
+ extensions/libipt_SNAT.c        |    2 +-
+ extensions/libipt_TTL.c         |    2 +-
+ extensions/libipt_ULOG.c        |    4 ++--
+ extensions/libipt_addrtype.c    |    8 ++++----
+ extensions/libipt_ah.c          |    2 +-
+ extensions/libipt_ecn.c         |    6 +++---
+ extensions/libipt_icmp.c        |    2 +-
+ extensions/libipt_policy.c      |    2 +-
+ extensions/libipt_realm.c       |    2 +-
+ extensions/libipt_set.c         |    2 +-
+ extensions/libipt_ttl.c         |    2 +-
+ extensions/libxt_NFLOG.c        |    4 ++--
+ extensions/libxt_comment.c      |    2 +-
+ extensions/libxt_connbytes.c    |    2 +-
+ extensions/libxt_connlimit.c    |    2 +-
+ extensions/libxt_connmark.c     |    2 +-
+ extensions/libxt_conntrack.c    |   16 ++++++++--------
+ extensions/libxt_dccp.c         |    8 ++++----
+ extensions/libxt_dscp.c         |    4 ++--
+ extensions/libxt_esp.c          |    2 +-
+ extensions/libxt_hashlimit.c    |   16 ++++++++--------
+ extensions/libxt_helper.c       |    2 +-
+ extensions/libxt_iprange.c      |    4 ++--
+ extensions/libxt_length.c       |    2 +-
+ extensions/libxt_limit.c        |    4 ++--
+ extensions/libxt_mac.c          |    2 +-
+ extensions/libxt_mark.c         |    2 +-
+ extensions/libxt_multiport.c    |   12 ++++++------
+ extensions/libxt_physdev.c      |   10 +++++-----
+ extensions/libxt_pkttype.c      |    2 +-
+ extensions/libxt_quota.c        |    2 +-
+ extensions/libxt_rateest.c      |   20 ++++++++++----------
+ extensions/libxt_recent.c       |    8 ++++----
+ extensions/libxt_sctp.c         |    6 +++---
+ extensions/libxt_state.c        |    2 +-
+ extensions/libxt_string.c       |    4 ++--
+ extensions/libxt_tcp.c          |    8 ++++----
+ extensions/libxt_tcpmss.c       |    2 +-
+ extensions/libxt_udp.c          |    4 ++--
+ include/xtables.h.in            |    3 ++-
+ ip6tables.c                     |   30 +++++-------------------------
+ iptables.c                      |   30 +++++-------------------------
+ xtables.c                       |   28 ++++++++++++++++++++++++++++
+ 64 files changed, 164 insertions(+), 175 deletions(-)
 
-diff --git a/extensions/libxt_CONNMARK.c b/extensions/libxt_CONNMARK.c
-index f979f28..e426e4f 100644
---- a/extensions/libxt_CONNMARK.c
-+++ b/extensions/libxt_CONNMARK.c
-@@ -158,14 +158,14 @@ static int connmark_tg_parse(int c, char **argv, int invert,
- 	switch (c) {
- 	case '=': /* --set-xmark */
- 	case '-': /* --set-mark */
--		param_act(P_ONE_ACTION, "CONNMARK", *flags & F_MARK);
-+		xtables_param_act(XTF_ONE_ACTION, "CONNMARK", *flags & F_MARK);
- 		if (!xtables_strtoui(optarg, &end, &value, 0, UINT32_MAX))
--			param_act(P_BAD_VALUE, "CONNMARK", "--set-xmark/--set-mark", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "CONNMARK", "--set-xmark/--set-mark", optarg);
- 		if (*end == '/')
- 			if (!xtables_strtoui(end + 1, &end, &mask, 0, UINT32_MAX))
--				param_act(P_BAD_VALUE, "CONNMARK", "--set-xmark/--set-mark", optarg);
-+				xtables_param_act(XTF_BAD_VALUE, "CONNMARK", "--set-xmark/--set-mark", optarg);
- 		if (*end != '\0')
--			param_act(P_BAD_VALUE, "CONNMARK", "--set-xmark/--set-mark", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "CONNMARK", "--set-xmark/--set-mark", optarg);
- 		info->mode   = XT_CONNMARK_SET;
- 		info->ctmark = value;
- 		info->ctmask = mask;
-@@ -175,9 +175,9 @@ static int connmark_tg_parse(int c, char **argv, int invert,
- 		return true;
+diff --git a/extensions/libip6t_HL.c b/extensions/libip6t_HL.c
+index 4aed4fd..0a98713 100644
+--- a/extensions/libip6t_HL.c
++++ b/extensions/libip6t_HL.c
+@@ -40,7 +40,7 @@ static int HL_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		exit_error(PARAMETER_PROBLEM, 
+ 				"HL: You must specify a value");
  
- 	case '&': /* --and-mark */
--		param_act(P_ONE_ACTION, "CONNMARK", *flags & F_MARK);
-+		xtables_param_act(XTF_ONE_ACTION, "CONNMARK", *flags & F_MARK);
- 		if (!xtables_strtoui(optarg, NULL, &mask, 0, UINT32_MAX))
--			param_act(P_BAD_VALUE, "CONNMARK", "--and-mark", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "CONNMARK", "--and-mark", optarg);
- 		info->mode   = XT_CONNMARK_SET;
- 		info->ctmark = 0;
- 		info->ctmask = ~mask;
-@@ -185,9 +185,9 @@ static int connmark_tg_parse(int c, char **argv, int invert,
- 		return true;
+-	if (check_inverse(optarg, &invert, NULL, 0))
++	if (xtables_check_inverse(optarg, &invert, NULL, 0))
+ 		exit_error(PARAMETER_PROBLEM,
+ 				"HL: unexpected `!'");
+ 	
+diff --git a/extensions/libip6t_LOG.c b/extensions/libip6t_LOG.c
+index a8ac135..7987735 100644
+--- a/extensions/libip6t_LOG.c
++++ b/extensions/libip6t_LOG.c
+@@ -112,7 +112,7 @@ static int LOG_parse(int c, char **argv, int invert, unsigned int *flags,
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Can't specify --log-level twice");
  
- 	case '|': /* --or-mark */
--		param_act(P_ONE_ACTION, "CONNMARK", *flags & F_MARK);
-+		xtables_param_act(XTF_ONE_ACTION, "CONNMARK", *flags & F_MARK);
- 		if (!xtables_strtoui(optarg, NULL, &value, 0, UINT32_MAX))
--			param_act(P_BAD_VALUE, "CONNMARK", "--or-mark", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "CONNMARK", "--or-mark", optarg);
- 		info->mode   = XT_CONNMARK_SET;
- 		info->ctmark = value;
- 		info->ctmask = value;
-@@ -195,9 +195,9 @@ static int connmark_tg_parse(int c, char **argv, int invert,
- 		return true;
+-		if (check_inverse(optarg, &invert, NULL, 0))
++		if (xtables_check_inverse(optarg, &invert, NULL, 0))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Unexpected `!' after --log-level");
  
- 	case '^': /* --xor-mark */
--		param_act(P_ONE_ACTION, "CONNMARK", *flags & F_MARK);
-+		xtables_param_act(XTF_ONE_ACTION, "CONNMARK", *flags & F_MARK);
- 		if (!xtables_strtoui(optarg, NULL, &value, 0, UINT32_MAX))
--			param_act(P_BAD_VALUE, "CONNMARK", "--xor-mark", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "CONNMARK", "--xor-mark", optarg);
- 		info->mode   = XT_CONNMARK_SET;
- 		info->ctmark = value;
- 		info->ctmask = 0;
-@@ -205,13 +205,13 @@ static int connmark_tg_parse(int c, char **argv, int invert,
- 		return true;
+@@ -125,7 +125,7 @@ static int LOG_parse(int c, char **argv, int invert, unsigned int *flags,
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Can't specify --log-prefix twice");
  
- 	case 'S': /* --save-mark */
--		param_act(P_ONE_ACTION, "CONNMARK", *flags & F_MARK);
-+		xtables_param_act(XTF_ONE_ACTION, "CONNMARK", *flags & F_MARK);
- 		info->mode = XT_CONNMARK_SAVE;
- 		*flags |= F_MARK | F_SR_MARK;
- 		return true;
+-		if (check_inverse(optarg, &invert, NULL, 0))
++		if (xtables_check_inverse(optarg, &invert, NULL, 0))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Unexpected `!' after --log-prefix");
  
- 	case 'R': /* --restore-mark */
--		param_act(P_ONE_ACTION, "CONNMARK", *flags & F_MARK);
-+		xtables_param_act(XTF_ONE_ACTION, "CONNMARK", *flags & F_MARK);
- 		info->mode = XT_CONNMARK_RESTORE;
- 		*flags |= F_MARK | F_SR_MARK;
- 		return true;
-@@ -222,7 +222,7 @@ static int connmark_tg_parse(int c, char **argv, int invert,
- 			           "or --restore-mark is required for "
- 			           "--nfmask");
- 		if (!xtables_strtoui(optarg, NULL, &value, 0, UINT32_MAX))
--			param_act(P_BAD_VALUE, "CONNMARK", "--nfmask", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "CONNMARK", "--nfmask", optarg);
- 		info->nfmask = value;
- 		return true;
+diff --git a/extensions/libip6t_REJECT.c b/extensions/libip6t_REJECT.c
+index 0e21202..1c2be68 100644
+--- a/extensions/libip6t_REJECT.c
++++ b/extensions/libip6t_REJECT.c
+@@ -85,7 +85,7 @@ static int REJECT_parse(int c, char **argv, int invert, unsigned int *flags,
  
-@@ -232,7 +232,7 @@ static int connmark_tg_parse(int c, char **argv, int invert,
- 			           "or --restore-mark is required for "
- 			           "--ctmask");
- 		if (!xtables_strtoui(optarg, NULL, &value, 0, UINT32_MAX))
--			param_act(P_BAD_VALUE, "CONNMARK", "--ctmask", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "CONNMARK", "--ctmask", optarg);
- 		info->ctmask = value;
- 		return true;
+ 	switch(c) {
+ 	case '1':
+-		if (check_inverse(optarg, &invert, NULL, 0))
++		if (xtables_check_inverse(optarg, &invert, NULL, 0))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Unexpected `!' after --reject-with");
+ 		for (i = 0; i < limit; i++) {
+diff --git a/extensions/libip6t_ah.c b/extensions/libip6t_ah.c
+index 63d1573..83ed451 100644
+--- a/extensions/libip6t_ah.c
++++ b/extensions/libip6t_ah.c
+@@ -86,7 +86,7 @@ static int ah_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & IP6T_AH_SPI)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--ahspi' allowed");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_ah_spis(argv[optind-1], ahinfo->spis);
+ 		if (invert)
+ 			ahinfo->invflags |= IP6T_AH_INV_SPI;
+@@ -96,7 +96,7 @@ static int ah_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & IP6T_AH_LEN)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--ahlen' allowed");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		ahinfo->hdrlen = parse_ah_spi(argv[optind-1], "length");
+ 		if (invert)
+ 			ahinfo->invflags |= IP6T_AH_INV_LEN;
+diff --git a/extensions/libip6t_dst.c b/extensions/libip6t_dst.c
+index 43562c1..e19abc4 100644
+--- a/extensions/libip6t_dst.c
++++ b/extensions/libip6t_dst.c
+@@ -125,7 +125,7 @@ static int dst_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & IP6T_OPTS_LEN)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--dst-len' allowed");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		optinfo->hdrlen = parse_opts_num(argv[optind-1], "length");
+ 		if (invert)
+ 			optinfo->invflags |= IP6T_OPTS_INV_LEN;
+@@ -136,7 +136,7 @@ static int dst_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & IP6T_OPTS_OPTS)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--dst-opts' allowed");
+-                check_inverse(optarg, &invert, &optind, 0);
++                xtables_check_inverse(optarg, &invert, &optind, 0);
+                 if (invert)
+                         exit_error(PARAMETER_PROBLEM,
+ 				" '!' not allowed with `--dst-opts'");
+diff --git a/extensions/libip6t_frag.c b/extensions/libip6t_frag.c
+index 7c22429..b55ef26 100644
+--- a/extensions/libip6t_frag.c
++++ b/extensions/libip6t_frag.c
+@@ -94,7 +94,7 @@ static int frag_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & IP6T_FRAG_IDS)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--fragid' allowed");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_frag_ids(argv[optind-1], fraginfo->ids);
+ 		if (invert)
+ 			fraginfo->invflags |= IP6T_FRAG_INV_IDS;
+@@ -105,7 +105,7 @@ static int frag_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & IP6T_FRAG_LEN)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--fraglen' allowed");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		fraginfo->hdrlen = parse_frag_id(argv[optind-1], "length");
+ 		if (invert)
+ 			fraginfo->invflags |= IP6T_FRAG_INV_LEN;
+diff --git a/extensions/libip6t_hbh.c b/extensions/libip6t_hbh.c
+index 6c7458d..3354eae 100644
+--- a/extensions/libip6t_hbh.c
++++ b/extensions/libip6t_hbh.c
+@@ -120,7 +120,7 @@ static int hbh_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & IP6T_OPTS_LEN)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--hbh-len' allowed");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		optinfo->hdrlen = parse_opts_num(argv[optind-1], "length");
+ 		if (invert)
+ 			optinfo->invflags |= IP6T_OPTS_INV_LEN;
+@@ -131,7 +131,7 @@ static int hbh_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & IP6T_OPTS_OPTS)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--hbh-opts' allowed");
+-                check_inverse(optarg, &invert, &optind, 0);
++                xtables_check_inverse(optarg, &invert, &optind, 0);
+                 if (invert)
+                         exit_error(PARAMETER_PROBLEM,
+ 				" '!' not allowed with `--hbh-opts'");
+diff --git a/extensions/libip6t_hl.c b/extensions/libip6t_hl.c
+index 7727581..286f432 100644
+--- a/extensions/libip6t_hl.c
++++ b/extensions/libip6t_hl.c
+@@ -30,7 +30,7 @@ static int hl_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	struct ip6t_hl_info *info = (struct ip6t_hl_info *) (*match)->data;
+ 	u_int8_t value;
  
-@@ -242,7 +242,7 @@ static int connmark_tg_parse(int c, char **argv, int invert,
- 			           "or --restore-mark is required for "
- 			           "--mask");
- 		if (!xtables_strtoui(optarg, NULL, &value, 0, UINT32_MAX))
--			param_act(P_BAD_VALUE, "CONNMARK", "--mask", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "CONNMARK", "--mask", optarg);
- 		info->nfmask = info->ctmask = value;
- 		return true;
- 	}
-diff --git a/extensions/libxt_MARK.c b/extensions/libxt_MARK.c
-index fd28196..8f04e8e 100644
---- a/extensions/libxt_MARK.c
-+++ b/extensions/libxt_MARK.c
-@@ -134,15 +134,15 @@ static int mark_tg_parse(int c, char **argv, int invert, unsigned int *flags,
- 	switch (c) {
- 	case 'X': /* --set-xmark */
- 	case '=': /* --set-mark */
--		param_act(P_ONE_ACTION, "MARK", *flags & F_MARK);
--		param_act(P_NO_INVERT, "MARK", "--set-xmark/--set-mark", invert);
-+		xtables_param_act(XTF_ONE_ACTION, "MARK", *flags & F_MARK);
-+		xtables_param_act(XTF_NO_INVERT, "MARK", "--set-xmark/--set-mark", invert);
- 		if (!xtables_strtoui(optarg, &end, &value, 0, UINT32_MAX))
--			param_act(P_BAD_VALUE, "MARK", "--set-xmark/--set-mark", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "MARK", "--set-xmark/--set-mark", optarg);
- 		if (*end == '/')
- 			if (!xtables_strtoui(end + 1, &end, &mask, 0, UINT32_MAX))
--				param_act(P_BAD_VALUE, "MARK", "--set-xmark/--set-mark", optarg);
-+				xtables_param_act(XTF_BAD_VALUE, "MARK", "--set-xmark/--set-mark", optarg);
- 		if (*end != '\0')
--			param_act(P_BAD_VALUE, "MARK", "--set-xmark/--set-mark", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "MARK", "--set-xmark/--set-mark", optarg);
- 		info->mark = value;
- 		info->mask = mask;
+-	check_inverse(optarg, &invert, &optind, 0);
++	xtables_check_inverse(optarg, &invert, &optind, 0);
+ 	value = atoi(argv[optind-1]);
  
-@@ -151,28 +151,28 @@ static int mark_tg_parse(int c, char **argv, int invert, unsigned int *flags,
- 		break;
+ 	if (*flags) 
+diff --git a/extensions/libip6t_icmp6.c b/extensions/libip6t_icmp6.c
+index 401c278..5af9b02 100644
+--- a/extensions/libip6t_icmp6.c
++++ b/extensions/libip6t_icmp6.c
+@@ -157,7 +157,7 @@ static int icmp6_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags == 1)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "icmpv6 match: only use --icmpv6-type once!");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_icmpv6(argv[optind-1], &icmpv6info->type, 
+ 			     icmpv6info->code);
+ 		if (invert)
+diff --git a/extensions/libip6t_ipv6header.c b/extensions/libip6t_ipv6header.c
+index ea8870a..982e6a7 100644
+--- a/extensions/libip6t_ipv6header.c
++++ b/extensions/libip6t_ipv6header.c
+@@ -192,7 +192,7 @@ ipv6header_parse(int c, char **argv, int invert, unsigned int *flags,
+ 				exit_error(PARAMETER_PROBLEM,
+ 					"Only one `--header' allowed");
  
- 	case '&': /* --and-mark */
--		param_act(P_ONE_ACTION, "MARK", *flags & F_MARK);
--		param_act(P_NO_INVERT, "MARK", "--and-mark", invert);
-+		xtables_param_act(XTF_ONE_ACTION, "MARK", *flags & F_MARK);
-+		xtables_param_act(XTF_NO_INVERT, "MARK", "--and-mark", invert);
- 		if (!xtables_strtoui(optarg, NULL, &mask, 0, UINT32_MAX))
--			param_act(P_BAD_VALUE, "MARK", "--and-mark", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "MARK", "--and-mark", optarg);
- 		info->mark = 0;
- 		info->mask = ~mask;
- 		break;
+-			check_inverse(optarg, &invert, &optind, 0);
++			xtables_check_inverse(optarg, &invert, &optind, 0);
  
- 	case '|': /* --or-mark */
--		param_act(P_ONE_ACTION, "MARK", *flags & F_MARK);
--		param_act(P_NO_INVERT, "MARK", "--or-mark", invert);
-+		xtables_param_act(XTF_ONE_ACTION, "MARK", *flags & F_MARK);
-+		xtables_param_act(XTF_NO_INVERT, "MARK", "--or-mark", invert);
- 		if (!xtables_strtoui(optarg, NULL, &value, 0, UINT32_MAX))
--			param_act(P_BAD_VALUE, "MARK", "--or-mark", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "MARK", "--or-mark", optarg);
- 		info->mark = value;
- 		info->mask = value;
- 		break;
+ 			if (! (info->matchflags = parse_header(argv[optind-1])) )
+ 				exit_error(PARAMETER_PROBLEM, "ip6t_ipv6header: cannot parse header names");
+diff --git a/extensions/libip6t_mh.c b/extensions/libip6t_mh.c
+index f8c4e24..78fc804 100644
+--- a/extensions/libip6t_mh.c
++++ b/extensions/libip6t_mh.c
+@@ -134,7 +134,7 @@ static int mh_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & MH_TYPES)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--mh-type' allowed");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_mh_types(argv[optind-1], mhinfo->types);
+ 		if (invert)
+ 			mhinfo->invflags |= IP6T_MH_INV_TYPE;
+diff --git a/extensions/libip6t_policy.c b/extensions/libip6t_policy.c
+index fa855c1..83ee48e 100644
+--- a/extensions/libip6t_policy.c
++++ b/extensions/libip6t_policy.c
+@@ -160,7 +160,7 @@ static int policy_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	unsigned int naddr = 0;
+ 	int mode;
  
- 	case '^': /* --xor-mark */
--		param_act(P_ONE_ACTION, "MARK", *flags & F_MARK);
--		param_act(P_NO_INVERT, "MARK", "--xor-mark", invert);
-+		xtables_param_act(XTF_ONE_ACTION, "MARK", *flags & F_MARK);
-+		xtables_param_act(XTF_NO_INVERT, "MARK", "--xor-mark", invert);
- 		if (!xtables_strtoui(optarg, NULL, &value, 0, UINT32_MAX))
--			param_act(P_BAD_VALUE, "MARK", "--xor-mark", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "MARK", "--xor-mark", optarg);
- 		info->mark = value;
- 		info->mask = 0;
- 		break;
-diff --git a/extensions/libxt_TOS.c b/extensions/libxt_TOS.c
-index 96eb420..7b1f7f8 100644
---- a/extensions/libxt_TOS.c
-+++ b/extensions/libxt_TOS.c
-@@ -82,10 +82,10 @@ static int tos_tg_parse_v0(int c, char **argv, int invert, unsigned int *flags,
- 
- 	switch (c) {
- 	case '=':
--		param_act(P_ONLY_ONCE, "TOS", "--set-tos", *flags & FLAG_TOS);
--		param_act(P_NO_INVERT, "TOS", "--set-tos", invert);
-+		xtables_param_act(XTF_ONLY_ONCE, "TOS", "--set-tos", *flags & FLAG_TOS);
-+		xtables_param_act(XTF_NO_INVERT, "TOS", "--set-tos", invert);
- 		if (!tos_parse_symbolic(optarg, &tvm, 0xFF))
--			param_act(P_BAD_VALUE, "TOS", "--set-tos", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "TOS", "--set-tos", optarg);
- 		if (tvm.mask != 0xFF)
- 			exit_error(PARAMETER_PROBLEM, "tos match: Your kernel "
- 			           "is too old to support anything besides "
-@@ -107,37 +107,37 @@ static int tos_tg_parse(int c, char **argv, int invert, unsigned int *flags,
- 
- 	switch (c) {
- 	case '=': /* --set-tos */
--		param_act(P_ONLY_ONCE, "TOS", "--set-tos", *flags & FLAG_TOS);
--		param_act(P_NO_INVERT, "TOS", "--set-tos", invert);
-+		xtables_param_act(XTF_ONLY_ONCE, "TOS", "--set-tos", *flags & FLAG_TOS);
-+		xtables_param_act(XTF_NO_INVERT, "TOS", "--set-tos", invert);
- 		if (!tos_parse_symbolic(optarg, &tvm, 0x3F))
--			param_act(P_BAD_VALUE, "TOS", "--set-tos", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "TOS", "--set-tos", optarg);
- 		info->tos_value = tvm.value;
- 		info->tos_mask  = tvm.mask;
- 		break;
- 
- 	case '&': /* --and-tos */
--		param_act(P_ONLY_ONCE, "TOS", "--and-tos", *flags & FLAG_TOS);
--		param_act(P_NO_INVERT, "TOS", "--and-tos", invert);
-+		xtables_param_act(XTF_ONLY_ONCE, "TOS", "--and-tos", *flags & FLAG_TOS);
-+		xtables_param_act(XTF_NO_INVERT, "TOS", "--and-tos", invert);
- 		if (!xtables_strtoui(optarg, NULL, &bits, 0, UINT8_MAX))
--			param_act(P_BAD_VALUE, "TOS", "--and-tos", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "TOS", "--and-tos", optarg);
- 		info->tos_value = 0;
- 		info->tos_mask  = ~bits;
- 		break;
- 
- 	case '|': /* --or-tos */
--		param_act(P_ONLY_ONCE, "TOS", "--or-tos", *flags & FLAG_TOS);
--		param_act(P_NO_INVERT, "TOS", "--or-tos", invert);
-+		xtables_param_act(XTF_ONLY_ONCE, "TOS", "--or-tos", *flags & FLAG_TOS);
-+		xtables_param_act(XTF_NO_INVERT, "TOS", "--or-tos", invert);
- 		if (!xtables_strtoui(optarg, NULL, &bits, 0, UINT8_MAX))
--			param_act(P_BAD_VALUE, "TOS", "--or-tos", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "TOS", "--or-tos", optarg);
- 		info->tos_value = bits;
- 		info->tos_mask  = bits;
- 		break;
- 
- 	case '^': /* --xor-tos */
--		param_act(P_ONLY_ONCE, "TOS", "--xor-tos", *flags & FLAG_TOS);
--		param_act(P_NO_INVERT, "TOS", "--xor-tos", invert);
-+		xtables_param_act(XTF_ONLY_ONCE, "TOS", "--xor-tos", *flags & FLAG_TOS);
-+		xtables_param_act(XTF_NO_INVERT, "TOS", "--xor-tos", invert);
- 		if (!xtables_strtoui(optarg, NULL, &bits, 0, UINT8_MAX))
--			param_act(P_BAD_VALUE, "TOS", "--xor-tos", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "TOS", "--xor-tos", optarg);
- 		info->tos_value = bits;
- 		info->tos_mask  = 0;
- 		break;
-diff --git a/extensions/libxt_TPROXY.c b/extensions/libxt_TPROXY.c
-index 6c5c6b7..d0933ae 100644
---- a/extensions/libxt_TPROXY.c
-+++ b/extensions/libxt_TPROXY.c
-@@ -43,7 +43,7 @@ static void parse_tproxy_lport(const char *s, struct xt_tproxy_target_info *info
- 	if (xtables_strtoui(s, NULL, &lport, 0, UINT16_MAX))
- 		info->lport = htons(lport);
- 	else
--		param_act(P_BAD_VALUE, "TPROXY", "--on-port", s);
-+		xtables_param_act(XTF_BAD_VALUE, "TPROXY", "--on-port", s);
- }
- 
- static void parse_tproxy_laddr(const char *s, struct xt_tproxy_target_info *info)
-@@ -51,7 +51,7 @@ static void parse_tproxy_laddr(const char *s, struct xt_tproxy_target_info *info
- 	struct in_addr *laddr;
- 
- 	if ((laddr = numeric_to_ipaddr(s)) == NULL)
--		param_act(P_BAD_VALUE, "TPROXY", "--on-ip", s);
-+		xtables_param_act(XTF_BAD_VALUE, "TPROXY", "--on-ip", s);
- 
- 	info->laddr = laddr->s_addr;
- }
-@@ -62,12 +62,12 @@ static void parse_tproxy_mark(char *s, struct xt_tproxy_target_info *info)
- 	char *end;
- 
- 	if (!xtables_strtoui(s, &end, &value, 0, UINT32_MAX))
--		param_act(P_BAD_VALUE, "TPROXY", "--tproxy-mark", s);
-+		xtables_param_act(XTF_BAD_VALUE, "TPROXY", "--tproxy-mark", s);
- 	if (*end == '/')
- 		if (!xtables_strtoui(end + 1, &end, &mask, 0, UINT32_MAX))
--			param_act(P_BAD_VALUE, "TPROXY", "--tproxy-mark", s);
-+			xtables_param_act(XTF_BAD_VALUE, "TPROXY", "--tproxy-mark", s);
- 	if (*end != '\0')
--		param_act(P_BAD_VALUE, "TPROXY", "--tproxy-mark", s);
-+		xtables_param_act(XTF_BAD_VALUE, "TPROXY", "--tproxy-mark", s);
- 
- 	info->mark_mask = mask;
- 	info->mark_value = value;
-@@ -80,20 +80,20 @@ static int tproxy_tg_parse(int c, char **argv, int invert, unsigned int *flags,
+-	check_inverse(optarg, &invert, &optind, 0);
++	xtables_check_inverse(optarg, &invert, &optind, 0);
  
  	switch (c) {
  	case '1':
--		param_act(P_ONLY_ONCE, "TPROXY", "--on-port", *flags & PARAM_ONPORT);
--		param_act(P_NO_INVERT, "TPROXY", "--on-port", invert);
-+		xtables_param_act(XTF_ONLY_ONCE, "TPROXY", "--on-port", *flags & PARAM_ONPORT);
-+		xtables_param_act(XTF_NO_INVERT, "TPROXY", "--on-port", invert);
- 		parse_tproxy_lport(optarg, tproxyinfo);
- 		*flags |= PARAM_ONPORT;
- 		return 1;
- 	case '2':
--		param_act(P_ONLY_ONCE, "TPROXY", "--on-ip", *flags & PARAM_ONIP);
--		param_act(P_NO_INVERT, "TPROXY", "--on-ip", invert);
-+		xtables_param_act(XTF_ONLY_ONCE, "TPROXY", "--on-ip", *flags & PARAM_ONIP);
-+		xtables_param_act(XTF_NO_INVERT, "TPROXY", "--on-ip", invert);
- 		parse_tproxy_laddr(optarg, tproxyinfo);
- 		*flags |= PARAM_ONIP;
- 		return 1;
- 	case '3':
--		param_act(P_ONLY_ONCE, "TPROXY", "--tproxy-mark", *flags & PARAM_MARK);
--		param_act(P_NO_INVERT, "TPROXY", "--tproxy-mark", invert);
-+		xtables_param_act(XTF_ONLY_ONCE, "TPROXY", "--tproxy-mark", *flags & PARAM_MARK);
-+		xtables_param_act(XTF_NO_INVERT, "TPROXY", "--tproxy-mark", invert);
- 		parse_tproxy_mark(optarg, tproxyinfo);
- 		*flags |= PARAM_MARK;
- 		return 1;
-diff --git a/extensions/libxt_connmark.c b/extensions/libxt_connmark.c
-index afa63e3..0f47a8f 100644
---- a/extensions/libxt_connmark.c
-+++ b/extensions/libxt_connmark.c
-@@ -54,14 +54,14 @@ connmark_mt_parse(int c, char **argv, int invert, unsigned int *flags,
+diff --git a/extensions/libip6t_rt.c b/extensions/libip6t_rt.c
+index 49d86fa..64c98ef 100644
+--- a/extensions/libip6t_rt.c
++++ b/extensions/libip6t_rt.c
+@@ -158,7 +158,7 @@ static int rt_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & IP6T_RT_TYP)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--rt-type' allowed");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		rtinfo->rt_type = parse_rt_num(argv[optind-1], "type");
+ 		if (invert)
+ 			rtinfo->invflags |= IP6T_RT_INV_TYP;
+@@ -169,7 +169,7 @@ static int rt_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & IP6T_RT_SGS)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--rt-segsleft' allowed");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_rt_segsleft(argv[optind-1], rtinfo->segsleft);
+ 		if (invert)
+ 			rtinfo->invflags |= IP6T_RT_INV_SGS;
+@@ -180,7 +180,7 @@ static int rt_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & IP6T_RT_LEN)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--rt-len' allowed");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		rtinfo->hdrlen = parse_rt_num(argv[optind-1], "length");
+ 		if (invert)
+ 			rtinfo->invflags |= IP6T_RT_INV_LEN;
+@@ -204,7 +204,7 @@ static int rt_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if ( !(*flags & IP6T_RT_TYP) || (rtinfo->rt_type != 0) || (rtinfo->invflags & IP6T_RT_INV_TYP) )
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "`--rt-type 0' required before `--rt-0-addrs'");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		if (invert)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   " '!' not allowed with `--rt-0-addrs'");
+diff --git a/extensions/libipt_DNAT.c b/extensions/libipt_DNAT.c
+index 0d355a0..371ec79 100644
+--- a/extensions/libipt_DNAT.c
++++ b/extensions/libipt_DNAT.c
+@@ -152,7 +152,7 @@ static int DNAT_parse(int c, char **argv, int invert, unsigned int *flags,
  
  	switch (c) {
- 	case '1': /* --mark */
--		param_act(P_ONLY_ONCE, "connmark", "--mark", *flags & F_MARK);
-+		xtables_param_act(XTF_ONLY_ONCE, "connmark", "--mark", *flags & F_MARK);
- 		if (!xtables_strtoui(optarg, &end, &mark, 0, UINT32_MAX))
--			param_act(P_BAD_VALUE, "connmark", "--mark", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "connmark", "--mark", optarg);
- 		if (*end == '/')
- 			if (!xtables_strtoui(end + 1, &end, &mask, 0, UINT32_MAX))
--				param_act(P_BAD_VALUE, "connmark", "--mark", optarg);
-+				xtables_param_act(XTF_BAD_VALUE, "connmark", "--mark", optarg);
- 		if (*end != '\0')
--			param_act(P_BAD_VALUE, "connmark", "--mark", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "connmark", "--mark", optarg);
+ 	case '1':
+-		if (check_inverse(optarg, &invert, NULL, 0))
++		if (xtables_check_inverse(optarg, &invert, NULL, 0))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Unexpected `!' after --to-destination");
  
+diff --git a/extensions/libipt_LOG.c b/extensions/libipt_LOG.c
+index 23790a0..bc7e8a4 100644
+--- a/extensions/libipt_LOG.c
++++ b/extensions/libipt_LOG.c
+@@ -112,7 +112,7 @@ static int LOG_parse(int c, char **argv, int invert, unsigned int *flags,
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Can't specify --log-level twice");
+ 
+-		if (check_inverse(optarg, &invert, NULL, 0))
++		if (xtables_check_inverse(optarg, &invert, NULL, 0))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Unexpected `!' after --log-level");
+ 
+@@ -125,7 +125,7 @@ static int LOG_parse(int c, char **argv, int invert, unsigned int *flags,
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Can't specify --log-prefix twice");
+ 
+-		if (check_inverse(optarg, &invert, NULL, 0))
++		if (xtables_check_inverse(optarg, &invert, NULL, 0))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Unexpected `!' after --log-prefix");
+ 
+diff --git a/extensions/libipt_MASQUERADE.c b/extensions/libipt_MASQUERADE.c
+index 1f93294..0ee155c 100644
+--- a/extensions/libipt_MASQUERADE.c
++++ b/extensions/libipt_MASQUERADE.c
+@@ -90,7 +90,7 @@ static int MASQUERADE_parse(int c, char **argv, int invert, unsigned int *flags,
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Need TCP, UDP, SCTP or DCCP with port specification");
+ 
+-		if (check_inverse(optarg, &invert, NULL, 0))
++		if (xtables_check_inverse(optarg, &invert, NULL, 0))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Unexpected `!' after --to-ports");
+ 
+diff --git a/extensions/libipt_NETMAP.c b/extensions/libipt_NETMAP.c
+index f6c8bfd..9949c99 100644
+--- a/extensions/libipt_NETMAP.c
++++ b/extensions/libipt_NETMAP.c
+@@ -118,7 +118,7 @@ static int NETMAP_parse(int c, char **argv, int invert, unsigned int *flags,
+ 
+ 	switch (c) {
+ 	case '1':
+-		if (check_inverse(optarg, &invert, NULL, 0))
++		if (xtables_check_inverse(optarg, &invert, NULL, 0))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Unexpected `!' after --%s", NETMAP_opts[0].name);
+ 
+diff --git a/extensions/libipt_REDIRECT.c b/extensions/libipt_REDIRECT.c
+index 1ef2b2e..c6afbdc 100644
+--- a/extensions/libipt_REDIRECT.c
++++ b/extensions/libipt_REDIRECT.c
+@@ -97,7 +97,7 @@ static int REDIRECT_parse(int c, char **argv, int invert, unsigned int *flags,
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Need TCP, UDP, SCTP or DCCP with port specification");
+ 
+-		if (check_inverse(optarg, &invert, NULL, 0))
++		if (xtables_check_inverse(optarg, &invert, NULL, 0))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Unexpected `!' after --to-ports");
+ 
+diff --git a/extensions/libipt_REJECT.c b/extensions/libipt_REJECT.c
+index ef404e6..db94306 100644
+--- a/extensions/libipt_REJECT.c
++++ b/extensions/libipt_REJECT.c
+@@ -99,7 +99,7 @@ static int REJECT_parse(int c, char **argv, int invert, unsigned int *flags,
+ 
+ 	switch(c) {
+ 	case '1':
+-		if (check_inverse(optarg, &invert, NULL, 0))
++		if (xtables_check_inverse(optarg, &invert, NULL, 0))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Unexpected `!' after --reject-with");
+ 		for (i = 0; i < limit; i++) {
+diff --git a/extensions/libipt_SAME.c b/extensions/libipt_SAME.c
+index 6882242..007ebc3 100644
+--- a/extensions/libipt_SAME.c
++++ b/extensions/libipt_SAME.c
+@@ -93,7 +93,7 @@ static int SAME_parse(int c, char **argv, int invert, unsigned int *flags,
+ 				   "Too many ranges specified, maximum "
+ 				   "is %i ranges.\n",
+ 				   IPT_SAME_MAX_RANGE);
+-		if (check_inverse(optarg, &invert, NULL, 0))
++		if (xtables_check_inverse(optarg, &invert, NULL, 0))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Unexpected `!' after --to");
+ 
+diff --git a/extensions/libipt_SET.c b/extensions/libipt_SET.c
+index 7ec0c31..45967be 100644
+--- a/extensions/libipt_SET.c
++++ b/extensions/libipt_SET.c
+@@ -57,7 +57,7 @@ parse_target(char **argv, int invert, unsigned int *flags,
+ 		exit_error(PARAMETER_PROBLEM,
+ 			   "--%s can be specified only once", what);
+ 
+-	if (check_inverse(optarg, &invert, NULL, 0))
++	if (xtables_check_inverse(optarg, &invert, NULL, 0))
+ 		exit_error(PARAMETER_PROBLEM,
+ 			   "Unexpected `!' after --%s", what);
+ 
+diff --git a/extensions/libipt_SNAT.c b/extensions/libipt_SNAT.c
+index 0780aa1..96ef56e 100644
+--- a/extensions/libipt_SNAT.c
++++ b/extensions/libipt_SNAT.c
+@@ -152,7 +152,7 @@ static int SNAT_parse(int c, char **argv, int invert, unsigned int *flags,
+ 
+ 	switch (c) {
+ 	case '1':
+-		if (check_inverse(optarg, &invert, NULL, 0))
++		if (xtables_check_inverse(optarg, &invert, NULL, 0))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Unexpected `!' after --to-source");
+ 
+diff --git a/extensions/libipt_TTL.c b/extensions/libipt_TTL.c
+index 6036161..15d23ba 100644
+--- a/extensions/libipt_TTL.c
++++ b/extensions/libipt_TTL.c
+@@ -40,7 +40,7 @@ static int TTL_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		exit_error(PARAMETER_PROBLEM, 
+ 				"TTL: You must specify a value");
+ 
+-	if (check_inverse(optarg, &invert, NULL, 0))
++	if (xtables_check_inverse(optarg, &invert, NULL, 0))
+ 		exit_error(PARAMETER_PROBLEM,
+ 				"TTL: unexpected `!'");
+ 	
+diff --git a/extensions/libipt_ULOG.c b/extensions/libipt_ULOG.c
+index 6e346d8..89d0940 100644
+--- a/extensions/libipt_ULOG.c
++++ b/extensions/libipt_ULOG.c
+@@ -77,7 +77,7 @@ static int ULOG_parse(int c, char **argv, int invert, unsigned int *flags,
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Can't specify --ulog-nlgroup twice");
+ 
+-		if (check_inverse(optarg, &invert, NULL, 0))
++		if (xtables_check_inverse(optarg, &invert, NULL, 0))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Unexpected `!' after --ulog-nlgroup");
+ 		group_d = atoi(optarg);
+@@ -95,7 +95,7 @@ static int ULOG_parse(int c, char **argv, int invert, unsigned int *flags,
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Can't specify --ulog-prefix twice");
+ 
+-		if (check_inverse(optarg, &invert, NULL, 0))
++		if (xtables_check_inverse(optarg, &invert, NULL, 0))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Unexpected `!' after --ulog-prefix");
+ 
+diff --git a/extensions/libipt_addrtype.c b/extensions/libipt_addrtype.c
+index dc43a3f..446cf0f 100644
+--- a/extensions/libipt_addrtype.c
++++ b/extensions/libipt_addrtype.c
+@@ -107,7 +107,7 @@ addrtype_parse_v0(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags&IPT_ADDRTYPE_OPT_SRCTYPE)
+ 			exit_error(PARAMETER_PROBLEM,
+ 			           "addrtype: can't specify src-type twice");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_types(argv[optind-1], &info->source);
  		if (invert)
- 			info->invert = true;
+ 			info->invert_source = 1;
+@@ -117,7 +117,7 @@ addrtype_parse_v0(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags&IPT_ADDRTYPE_OPT_DSTTYPE)
+ 			exit_error(PARAMETER_PROBLEM,
+ 			           "addrtype: can't specify dst-type twice");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_types(argv[optind-1], &info->dest);
+ 		if (invert)
+ 			info->invert_dest = 1;
+@@ -142,7 +142,7 @@ addrtype_parse_v1(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & IPT_ADDRTYPE_OPT_SRCTYPE)
+ 			exit_error(PARAMETER_PROBLEM,
+ 			           "addrtype: can't specify src-type twice");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_types(argv[optind-1], &info->source);
+ 		if (invert)
+ 			info->flags |= IPT_ADDRTYPE_INVERT_SOURCE;
+@@ -152,7 +152,7 @@ addrtype_parse_v1(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & IPT_ADDRTYPE_OPT_DSTTYPE)
+ 			exit_error(PARAMETER_PROBLEM,
+ 			           "addrtype: can't specify dst-type twice");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_types(argv[optind-1], &info->dest);
+ 		if (invert)
+ 			info->flags |= IPT_ADDRTYPE_INVERT_DEST;
+diff --git a/extensions/libipt_ah.c b/extensions/libipt_ah.c
+index 10998d8..31977dd 100644
+--- a/extensions/libipt_ah.c
++++ b/extensions/libipt_ah.c
+@@ -82,7 +82,7 @@ static int ah_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & AH_SPI)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--ahspi' allowed");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_ah_spis(argv[optind-1], ahinfo->spis);
+ 		if (invert)
+ 			ahinfo->invflags |= IPT_AH_INV_SPI;
+diff --git a/extensions/libipt_ecn.c b/extensions/libipt_ecn.c
+index c2276e9..3b9da71 100644
+--- a/extensions/libipt_ecn.c
++++ b/extensions/libipt_ecn.c
+@@ -44,7 +44,7 @@ static int ecn_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & IPT_ECN_OP_MATCH_CWR)
+ 			exit_error(PARAMETER_PROBLEM,
+ 			           "ECN match: can only use parameter ONCE!");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		einfo->operation |= IPT_ECN_OP_MATCH_CWR;
+ 		if (invert)
+ 			einfo->invert |= IPT_ECN_OP_MATCH_CWR;
+@@ -55,7 +55,7 @@ static int ecn_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & IPT_ECN_OP_MATCH_ECE)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "ECN match: can only use parameter ONCE!");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		einfo->operation |= IPT_ECN_OP_MATCH_ECE;
+ 		if (invert)
+ 			einfo->invert |= IPT_ECN_OP_MATCH_ECE;
+@@ -66,7 +66,7 @@ static int ecn_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & IPT_ECN_OP_MATCH_IP)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "ECN match: can only use parameter ONCE!");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		if (invert)
+ 			einfo->invert |= IPT_ECN_OP_MATCH_IP;
+ 		*flags |= IPT_ECN_OP_MATCH_IP;
+diff --git a/extensions/libipt_icmp.c b/extensions/libipt_icmp.c
+index de4c338..0fd132b 100644
+--- a/extensions/libipt_icmp.c
++++ b/extensions/libipt_icmp.c
+@@ -182,7 +182,7 @@ static int icmp_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags == 1)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "icmp match: only use --icmp-type once!");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_icmp(argv[optind-1], &icmpinfo->type, 
+ 			   icmpinfo->code);
+ 		if (invert)
+diff --git a/extensions/libipt_policy.c b/extensions/libipt_policy.c
+index c9ce850..742eeba 100644
+--- a/extensions/libipt_policy.c
++++ b/extensions/libipt_policy.c
+@@ -128,7 +128,7 @@ static int policy_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	unsigned int naddr = 0;
+ 	int mode;
+ 
+-	check_inverse(optarg, &invert, &optind, 0);
++	xtables_check_inverse(optarg, &invert, &optind, 0);
+ 
+ 	switch (c) {
+ 	case '1':
+diff --git a/extensions/libipt_realm.c b/extensions/libipt_realm.c
+index 22cbe27..e602dad 100644
+--- a/extensions/libipt_realm.c
++++ b/extensions/libipt_realm.c
+@@ -157,7 +157,7 @@ static int realm_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	switch (c) {
+ 		char *end;
+ 	case '1':
+-		check_inverse(argv[optind-1], &invert, &optind, 0);
++		xtables_check_inverse(argv[optind-1], &invert, &optind, 0);
+ 		end = optarg = argv[optind-1];
+ 		realminfo->id = strtoul(optarg, &end, 0);
+ 		if (end != optarg && (*end == '/' || *end == '\0')) {
+diff --git a/extensions/libipt_set.c b/extensions/libipt_set.c
+index 9bdb007..5b9e1fd 100644
+--- a/extensions/libipt_set.c
++++ b/extensions/libipt_set.c
+@@ -58,7 +58,7 @@ static int set_parse(int c, char **argv, int invert, unsigned int *flags,
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "--set can be specified only once");
+ 
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		if (invert)
+ 			info->flags[0] |= IPSET_MATCH_INV;
+ 
+diff --git a/extensions/libipt_ttl.c b/extensions/libipt_ttl.c
+index 1fa7bd3..3387e92 100644
+--- a/extensions/libipt_ttl.c
++++ b/extensions/libipt_ttl.c
+@@ -29,7 +29,7 @@ static int ttl_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	struct ipt_ttl_info *info = (struct ipt_ttl_info *) (*match)->data;
+ 	unsigned int value;
+ 
+-	check_inverse(optarg, &invert, &optind, 0);
++	xtables_check_inverse(optarg, &invert, &optind, 0);
+ 
+ 	switch (c) {
+ 		case '2':
+diff --git a/extensions/libxt_NFLOG.c b/extensions/libxt_NFLOG.c
+index bedfbe9..6d8c9dc 100644
+--- a/extensions/libxt_NFLOG.c
++++ b/extensions/libxt_NFLOG.c
+@@ -51,7 +51,7 @@ static int NFLOG_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & NFLOG_GROUP)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Can't specify --nflog-group twice");
+-		if (check_inverse(optarg, &invert, NULL, 0))
++		if (xtables_check_inverse(optarg, &invert, NULL, 0))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Unexpected `!' after --nflog-group");
+ 
+@@ -65,7 +65,7 @@ static int NFLOG_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & NFLOG_PREFIX)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Can't specify --nflog-prefix twice");
+-		if (check_inverse(optarg, &invert, NULL, 0))
++		if (xtables_check_inverse(optarg, &invert, NULL, 0))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Unexpected `!' after --nflog-prefix");
+ 
+diff --git a/extensions/libxt_comment.c b/extensions/libxt_comment.c
+index a7f96d4..9bad125 100644
+--- a/extensions/libxt_comment.c
++++ b/extensions/libxt_comment.c
+@@ -46,7 +46,7 @@ comment_parse(int c, char **argv, int invert, unsigned int *flags,
+ 
+ 	switch (c) {
+ 	case '1':
+-		check_inverse(argv[optind-1], &invert, &optind, 0);
++		xtables_check_inverse(argv[optind-1], &invert, &optind, 0);
+ 		if (invert) {
+ 			exit_error(PARAMETER_PROBLEM,
+ 					"Sorry, you can't have an inverted comment");
+diff --git a/extensions/libxt_connbytes.c b/extensions/libxt_connbytes.c
+index b77ba38..5fc0f2a 100644
+--- a/extensions/libxt_connbytes.c
++++ b/extensions/libxt_connbytes.c
+@@ -52,7 +52,7 @@ connbytes_parse(int c, char **argv, int invert, unsigned int *flags,
+ 
+ 	switch (c) {
+ 	case '1':
+-		if (check_inverse(optarg, &invert, &optind, 0))
++		if (xtables_check_inverse(optarg, &invert, &optind, 0))
+ 			optind++;
+ 
+ 		parse_range(argv[optind-1], sinfo);
+diff --git a/extensions/libxt_connlimit.c b/extensions/libxt_connlimit.c
+index 117222a..f43eada 100644
+--- a/extensions/libxt_connlimit.c
++++ b/extensions/libxt_connlimit.c
+@@ -63,7 +63,7 @@ static int connlimit_parse(int c, char **argv, int invert, unsigned int *flags,
+ 			exit_error(PARAMETER_PROBLEM,
+ 				"--connlimit-above may be given only once");
+ 		*flags |= 0x1;
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		info->limit   = strtoul(argv[optind-1], NULL, 0);
+ 		info->inverse = invert;
+ 		break;
+diff --git a/extensions/libxt_connmark.c b/extensions/libxt_connmark.c
+index 0f47a8f..d5ca4e0 100644
+--- a/extensions/libxt_connmark.c
++++ b/extensions/libxt_connmark.c
+@@ -82,7 +82,7 @@ connmark_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	switch (c) {
+ 		char *end;
+ 	case '1':
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 
+ 		markinfo->mark = strtoul(optarg, &end, 0);
+ 		markinfo->mask = 0xffffffffUL;
 diff --git a/extensions/libxt_conntrack.c b/extensions/libxt_conntrack.c
-index 2b98ab0..facd0fc 100644
+index 958f842..914b253 100644
 --- a/extensions/libxt_conntrack.c
 +++ b/extensions/libxt_conntrack.c
-@@ -269,13 +269,13 @@ conntrack_ps_expires(struct xt_conntrack_mtinfo1 *info, const char *s)
- 	char *end;
+@@ -297,7 +297,7 @@ static int conntrack_parse(int c, char **argv, int invert, unsigned int *flags,
  
- 	if (!xtables_strtoui(s, &end, &min, 0, UINT32_MAX))
--		param_act(P_BAD_VALUE, "conntrack", "--expires", s);
-+		xtables_param_act(XTF_BAD_VALUE, "conntrack", "--expires", s);
- 	max = min;
- 	if (*end == ':')
- 		if (!xtables_strtoui(s, &end, &max, 0, UINT32_MAX))
--			param_act(P_BAD_VALUE, "conntrack", "--expires", s);
-+			xtables_param_act(XTF_BAD_VALUE, "conntrack", "--expires", s);
- 	if (*end != '\0')
--		param_act(P_BAD_VALUE, "conntrack", "--expires", s);
-+		xtables_param_act(XTF_BAD_VALUE, "conntrack", "--expires", s);
+ 	switch (c) {
+ 	case '1':
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
  
- 	if (min > max)
- 		exit_error(PARAMETER_PROBLEM,
-@@ -482,7 +482,7 @@ conntrack_mt_parse(int c, char **argv, int invert, unsigned int *flags,
- 
- 	case 'a': /* --ctorigsrcport */
- 		if (!xtables_strtoui(optarg, NULL, &port, 0, UINT16_MAX))
--			param_act(P_BAD_VALUE, "conntrack",
-+			xtables_param_act(XTF_BAD_VALUE, "conntrack",
- 			          "--ctorigsrcport", optarg);
- 		info->match_flags |= XT_CONNTRACK_ORIGSRC_PORT;
- 		info->origsrc_port = htons(port);
-@@ -492,7 +492,7 @@ conntrack_mt_parse(int c, char **argv, int invert, unsigned int *flags,
- 
- 	case 'b': /* --ctorigdstport */
- 		if (!xtables_strtoui(optarg, NULL, &port, 0, UINT16_MAX))
--			param_act(P_BAD_VALUE, "conntrack",
-+			xtables_param_act(XTF_BAD_VALUE, "conntrack",
- 			          "--ctorigdstport", optarg);
- 		info->match_flags |= XT_CONNTRACK_ORIGDST_PORT;
- 		info->origdst_port = htons(port);
-@@ -502,7 +502,7 @@ conntrack_mt_parse(int c, char **argv, int invert, unsigned int *flags,
- 
- 	case 'c': /* --ctreplsrcport */
- 		if (!xtables_strtoui(optarg, NULL, &port, 0, UINT16_MAX))
--			param_act(P_BAD_VALUE, "conntrack",
-+			xtables_param_act(XTF_BAD_VALUE, "conntrack",
- 			          "--ctreplsrcport", optarg);
- 		info->match_flags |= XT_CONNTRACK_REPLSRC_PORT;
- 		info->replsrc_port = htons(port);
-@@ -512,7 +512,7 @@ conntrack_mt_parse(int c, char **argv, int invert, unsigned int *flags,
- 
- 	case 'd': /* --ctrepldstport */
- 		if (!xtables_strtoui(optarg, NULL, &port, 0, UINT16_MAX))
--			param_act(P_BAD_VALUE, "conntrack",
-+			xtables_param_act(XTF_BAD_VALUE, "conntrack",
- 			          "--ctrepldstport", optarg);
- 		info->match_flags |= XT_CONNTRACK_REPLDST_PORT;
- 		info->repldst_port = htons(port);
-@@ -521,7 +521,7 @@ conntrack_mt_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		parse_states(argv[optind-1], sinfo);
+ 		if (invert) {
+@@ -307,7 +307,7 @@ static int conntrack_parse(int c, char **argv, int invert, unsigned int *flags,
  		break;
  
- 	case 'e': /* --ctdir */
--		param_act(P_NO_INVERT, "conntrack", "--ctdir", invert);
-+		xtables_param_act(XTF_NO_INVERT, "conntrack", "--ctdir", invert);
- 		if (strcasecmp(optarg, "ORIGINAL") == 0) {
- 			info->match_flags  |= XT_CONNTRACK_DIRECTION;
- 			info->invert_flags &= ~XT_CONNTRACK_DIRECTION;
-@@ -529,7 +529,7 @@ conntrack_mt_parse(int c, char **argv, int invert, unsigned int *flags,
- 			info->match_flags  |= XT_CONNTRACK_DIRECTION;
- 			info->invert_flags |= XT_CONNTRACK_DIRECTION;
- 		} else {
--			param_act(P_BAD_VALUE, "conntrack", "--ctdir", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "conntrack", "--ctdir", optarg);
- 		}
+ 	case '2':
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 
+ 		if(invert)
+ 			sinfo->invflags |= XT_CONNTRACK_PROTO;
+@@ -328,7 +328,7 @@ static int conntrack_parse(int c, char **argv, int invert, unsigned int *flags,
  		break;
  
+ 	case '3':
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 
+ 		if (invert)
+ 			sinfo->invflags |= XT_CONNTRACK_ORIGSRC;
+@@ -348,7 +348,7 @@ static int conntrack_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		break;
+ 
+ 	case '4':
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 
+ 		if (invert)
+ 			sinfo->invflags |= XT_CONNTRACK_ORIGDST;
+@@ -368,7 +368,7 @@ static int conntrack_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		break;
+ 
+ 	case '5':
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 
+ 		if (invert)
+ 			sinfo->invflags |= XT_CONNTRACK_REPLSRC;
+@@ -388,7 +388,7 @@ static int conntrack_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		break;
+ 
+ 	case '6':
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 
+ 		if (invert)
+ 			sinfo->invflags |= XT_CONNTRACK_REPLDST;
+@@ -408,7 +408,7 @@ static int conntrack_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		break;
+ 
+ 	case '7':
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 
+ 		parse_statuses(argv[optind-1], sinfo);
+ 		if (invert) {
+@@ -418,7 +418,7 @@ static int conntrack_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		break;
+ 
+ 	case '8':
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 
+ 		parse_expires(argv[optind-1], sinfo);
+ 		if (invert) {
+diff --git a/extensions/libxt_dccp.c b/extensions/libxt_dccp.c
+index 9be0658..dbf6223 100644
+--- a/extensions/libxt_dccp.c
++++ b/extensions/libxt_dccp.c
+@@ -141,7 +141,7 @@ dccp_parse(int c, char **argv, int invert, unsigned int *flags,
+ 			exit_error(PARAMETER_PROBLEM,
+ 			           "Only one `--source-port' allowed");
+ 		einfo->flags |= XT_DCCP_SRC_PORTS;
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_dccp_ports(argv[optind-1], einfo->spts);
+ 		if (invert)
+ 			einfo->invflags |= XT_DCCP_SRC_PORTS;
+@@ -153,7 +153,7 @@ dccp_parse(int c, char **argv, int invert, unsigned int *flags,
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--destination-port' allowed");
+ 		einfo->flags |= XT_DCCP_DEST_PORTS;
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_dccp_ports(argv[optind-1], einfo->dpts);
+ 		if (invert)
+ 			einfo->invflags |= XT_DCCP_DEST_PORTS;
+@@ -165,7 +165,7 @@ dccp_parse(int c, char **argv, int invert, unsigned int *flags,
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--dccp-types' allowed");
+ 		einfo->flags |= XT_DCCP_TYPE;
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		einfo->typemask = parse_dccp_types(argv[optind-1]);
+ 		if (invert)
+ 			einfo->invflags |= XT_DCCP_TYPE;
+@@ -177,7 +177,7 @@ dccp_parse(int c, char **argv, int invert, unsigned int *flags,
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--dccp-option' allowed");
+ 		einfo->flags |= XT_DCCP_OPTION;
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		einfo->option = parse_dccp_option(argv[optind-1]);
+ 		if (invert)
+ 			einfo->invflags |= XT_DCCP_OPTION;
+diff --git a/extensions/libxt_dscp.c b/extensions/libxt_dscp.c
+index fce14c2..e57c267 100644
+--- a/extensions/libxt_dscp.c
++++ b/extensions/libxt_dscp.c
+@@ -82,7 +82,7 @@ dscp_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags)
+ 			exit_error(PARAMETER_PROBLEM,
+ 			           "DSCP match: Only use --dscp ONCE!");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_dscp(argv[optind-1], dinfo);
+ 		if (invert)
+ 			dinfo->invert = 1;
+@@ -93,7 +93,7 @@ dscp_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags)
+ 			exit_error(PARAMETER_PROBLEM,
+ 					"DSCP match: Only use --dscp-class ONCE!");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_class(argv[optind - 1], dinfo);
+ 		if (invert)
+ 			dinfo->invert = 1;
+diff --git a/extensions/libxt_esp.c b/extensions/libxt_esp.c
+index 34df876..2cc6b60 100644
+--- a/extensions/libxt_esp.c
++++ b/extensions/libxt_esp.c
+@@ -88,7 +88,7 @@ esp_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & ESP_SPI)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--espspi' allowed");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_esp_spis(argv[optind-1], espinfo->spis);
+ 		if (invert)
+ 			espinfo->invflags |= XT_ESP_INV_SPI;
 diff --git a/extensions/libxt_hashlimit.c b/extensions/libxt_hashlimit.c
-index 06d026a..f63db64 100644
+index f63db64..b05e8c8 100644
 --- a/extensions/libxt_hashlimit.c
 +++ b/extensions/libxt_hashlimit.c
-@@ -217,7 +217,7 @@ hashlimit_parse(int c, char **argv, int invert, unsigned int *flags,
+@@ -219,7 +219,7 @@ hashlimit_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	case '%':
+ 		xtables_param_act(XTF_ONLY_ONCE, "hashlimit", "--hashlimit",
+ 		          *flags & PARAM_LIMIT);
+-		if (check_inverse(argv[optind-1], &invert, &optind, 0)) break;
++		if (xtables_check_inverse(argv[optind-1], &invert, &optind, 0)) break;
+ 		if (!parse_rate(optarg, &r->cfg.avg))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "bad rate `%s'", optarg);
+@@ -229,7 +229,7 @@ hashlimit_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	case '$':
+ 		xtables_param_act(XTF_ONLY_ONCE, "hashlimit", "--hashlimit-burst",
+ 		          *flags & PARAM_BURST);
+-		if (check_inverse(argv[optind-1], &invert, &optind, 0)) break;
++		if (xtables_check_inverse(argv[optind-1], &invert, &optind, 0)) break;
+ 		if (!xtables_strtoui(optarg, NULL, &num, 0, 10000))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "bad --hashlimit-burst `%s'", optarg);
+@@ -239,7 +239,7 @@ hashlimit_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	case '&':
+ 		xtables_param_act(XTF_ONLY_ONCE, "hashlimit", "--hashlimit-htable-size",
+ 		          *flags & PARAM_SIZE);
+-		if (check_inverse(argv[optind-1], &invert, &optind, 0)) break;
++		if (xtables_check_inverse(argv[optind-1], &invert, &optind, 0)) break;
+ 		if (!xtables_strtoui(optarg, NULL, &num, 0, UINT32_MAX))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				"bad --hashlimit-htable-size: `%s'", optarg);
+@@ -249,7 +249,7 @@ hashlimit_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	case '*':
+ 		xtables_param_act(XTF_ONLY_ONCE, "hashlimit", "--hashlimit-htable-max",
+ 		          *flags & PARAM_MAX);
+-		if (check_inverse(argv[optind-1], &invert, &optind, 0)) break;
++		if (xtables_check_inverse(argv[optind-1], &invert, &optind, 0)) break;
+ 		if (!xtables_strtoui(optarg, NULL, &num, 0, UINT32_MAX))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				"bad --hashlimit-htable-max: `%s'", optarg);
+@@ -260,7 +260,7 @@ hashlimit_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		xtables_param_act(XTF_ONLY_ONCE, "hashlimit",
+ 		          "--hashlimit-htable-gcinterval",
+ 		          *flags & PARAM_GCINTERVAL);
+-		if (check_inverse(argv[optind-1], &invert, &optind, 0)) break;
++		if (xtables_check_inverse(argv[optind-1], &invert, &optind, 0)) break;
+ 		if (!xtables_strtoui(optarg, NULL, &num, 0, UINT32_MAX))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				"bad --hashlimit-htable-gcinterval: `%s'", 
+@@ -272,7 +272,7 @@ hashlimit_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	case ')':
+ 		xtables_param_act(XTF_ONLY_ONCE, "hashlimit",
+ 		          "--hashlimit-htable-expire", *flags & PARAM_EXPIRE);
+-		if (check_inverse(argv[optind-1], &invert, &optind, 0)) break;
++		if (xtables_check_inverse(argv[optind-1], &invert, &optind, 0)) break;
+ 		if (!xtables_strtoui(optarg, NULL, &num, 0, UINT32_MAX))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				"bad --hashlimit-htable-expire: `%s'", optarg);
+@@ -283,7 +283,7 @@ hashlimit_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	case '_':
+ 		xtables_param_act(XTF_ONLY_ONCE, "hashlimit", "--hashlimit-mode",
+ 		          *flags & PARAM_MODE);
+-		if (check_inverse(argv[optind-1], &invert, &optind, 0)) break;
++		if (xtables_check_inverse(argv[optind-1], &invert, &optind, 0)) break;
+ 		if (parse_mode(&r->cfg.mode, optarg) < 0)
+ 			exit_error(PARAMETER_PROBLEM, 
+ 				   "bad --hashlimit-mode: `%s'\n", optarg);
+@@ -292,7 +292,7 @@ hashlimit_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	case '"':
+ 		xtables_param_act(XTF_ONLY_ONCE, "hashlimit", "--hashlimit-name",
+ 		          *flags & PARAM_NAME);
+-		if (check_inverse(argv[optind-1], &invert, &optind, 0)) break;
++		if (xtables_check_inverse(argv[optind-1], &invert, &optind, 0)) break;
+ 		if (strlen(optarg) == 0)
+ 			exit_error(PARAMETER_PROBLEM, "Zero-length name?");
+ 		strncpy(r->name, optarg, sizeof(r->name));
+diff --git a/extensions/libxt_helper.c b/extensions/libxt_helper.c
+index 23025cd..569ad69 100644
+--- a/extensions/libxt_helper.c
++++ b/extensions/libxt_helper.c
+@@ -31,7 +31,7 @@ helper_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags)
+ 			exit_error(PARAMETER_PROBLEM,
+ 					"helper match: Only use --helper ONCE!");
+-		check_inverse(optarg, &invert, &invert, 0);
++		xtables_check_inverse(optarg, &invert, &invert, 0);
+ 		strncpy(info->name, optarg, 29);
+ 		info->name[29] = '\0';
+ 		if (invert)
+diff --git a/extensions/libxt_iprange.c b/extensions/libxt_iprange.c
+index de079cb..df6be14 100644
+--- a/extensions/libxt_iprange.c
++++ b/extensions/libxt_iprange.c
+@@ -70,7 +70,7 @@ static int iprange_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		*flags |= IPRANGE_SRC;
+ 
+ 		info->flags |= IPRANGE_SRC;
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		if (invert)
+ 			info->flags |= IPRANGE_SRC_INV;
+ 		parse_iprange(optarg, &info->src);
+@@ -84,7 +84,7 @@ static int iprange_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		*flags |= IPRANGE_DST;
+ 
+ 		info->flags |= IPRANGE_DST;
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		if (invert)
+ 			info->flags |= IPRANGE_DST_INV;
+ 
+diff --git a/extensions/libxt_length.c b/extensions/libxt_length.c
+index d039904..cf944e2 100644
+--- a/extensions/libxt_length.c
++++ b/extensions/libxt_length.c
+@@ -70,7 +70,7 @@ length_parse(int c, char **argv, int invert, unsigned int *flags,
+ 				exit_error(PARAMETER_PROBLEM,
+ 				           "length: `--length' may only be "
+ 				           "specified once");
+-			check_inverse(optarg, &invert, &optind, 0);
++			xtables_check_inverse(optarg, &invert, &optind, 0);
+ 			parse_lengths(argv[optind-1], info);
+ 			if (invert)
+ 				info->invert = 1;
+diff --git a/extensions/libxt_limit.c b/extensions/libxt_limit.c
+index 1df9114..7edfa3d 100644
+--- a/extensions/libxt_limit.c
++++ b/extensions/libxt_limit.c
+@@ -94,14 +94,14 @@ limit_parse(int c, char **argv, int invert, unsigned int *flags,
  
  	switch(c) {
  	case '%':
--		param_act(P_ONLY_ONCE, "hashlimit", "--hashlimit",
-+		xtables_param_act(XTF_ONLY_ONCE, "hashlimit", "--hashlimit",
- 		          *flags & PARAM_LIMIT);
- 		if (check_inverse(argv[optind-1], &invert, &optind, 0)) break;
- 		if (!parse_rate(optarg, &r->cfg.avg))
-@@ -227,7 +227,7 @@ hashlimit_parse(int c, char **argv, int invert, unsigned int *flags,
+-		if (check_inverse(argv[optind-1], &invert, &optind, 0)) break;
++		if (xtables_check_inverse(argv[optind-1], &invert, &optind, 0)) break;
+ 		if (!parse_rate(optarg, &r->avg))
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "bad rate `%s'", optarg);
  		break;
  
  	case '$':
--		param_act(P_ONLY_ONCE, "hashlimit", "--hashlimit-burst",
-+		xtables_param_act(XTF_ONLY_ONCE, "hashlimit", "--hashlimit-burst",
- 		          *flags & PARAM_BURST);
- 		if (check_inverse(argv[optind-1], &invert, &optind, 0)) break;
+-		if (check_inverse(argv[optind-1], &invert, &optind, 0)) break;
++		if (xtables_check_inverse(argv[optind-1], &invert, &optind, 0)) break;
  		if (!xtables_strtoui(optarg, NULL, &num, 0, 10000))
-@@ -237,7 +237,7 @@ hashlimit_parse(int c, char **argv, int invert, unsigned int *flags,
- 		*flags |= PARAM_BURST;
- 		break;
- 	case '&':
--		param_act(P_ONLY_ONCE, "hashlimit", "--hashlimit-htable-size",
-+		xtables_param_act(XTF_ONLY_ONCE, "hashlimit", "--hashlimit-htable-size",
- 		          *flags & PARAM_SIZE);
- 		if (check_inverse(argv[optind-1], &invert, &optind, 0)) break;
- 		if (!xtables_strtoui(optarg, NULL, &num, 0, UINT32_MAX))
-@@ -247,7 +247,7 @@ hashlimit_parse(int c, char **argv, int invert, unsigned int *flags,
- 		*flags |= PARAM_SIZE;
- 		break;
- 	case '*':
--		param_act(P_ONLY_ONCE, "hashlimit", "--hashlimit-htable-max",
-+		xtables_param_act(XTF_ONLY_ONCE, "hashlimit", "--hashlimit-htable-max",
- 		          *flags & PARAM_MAX);
- 		if (check_inverse(argv[optind-1], &invert, &optind, 0)) break;
- 		if (!xtables_strtoui(optarg, NULL, &num, 0, UINT32_MAX))
-@@ -257,7 +257,7 @@ hashlimit_parse(int c, char **argv, int invert, unsigned int *flags,
- 		*flags |= PARAM_MAX;
- 		break;
- 	case '(':
--		param_act(P_ONLY_ONCE, "hashlimit",
-+		xtables_param_act(XTF_ONLY_ONCE, "hashlimit",
- 		          "--hashlimit-htable-gcinterval",
- 		          *flags & PARAM_GCINTERVAL);
- 		if (check_inverse(argv[optind-1], &invert, &optind, 0)) break;
-@@ -270,7 +270,7 @@ hashlimit_parse(int c, char **argv, int invert, unsigned int *flags,
- 		*flags |= PARAM_GCINTERVAL;
- 		break;
- 	case ')':
--		param_act(P_ONLY_ONCE, "hashlimit",
-+		xtables_param_act(XTF_ONLY_ONCE, "hashlimit",
- 		          "--hashlimit-htable-expire", *flags & PARAM_EXPIRE);
- 		if (check_inverse(argv[optind-1], &invert, &optind, 0)) break;
- 		if (!xtables_strtoui(optarg, NULL, &num, 0, UINT32_MAX))
-@@ -281,7 +281,7 @@ hashlimit_parse(int c, char **argv, int invert, unsigned int *flags,
- 		*flags |= PARAM_EXPIRE;
- 		break;
- 	case '_':
--		param_act(P_ONLY_ONCE, "hashlimit", "--hashlimit-mode",
-+		xtables_param_act(XTF_ONLY_ONCE, "hashlimit", "--hashlimit-mode",
- 		          *flags & PARAM_MODE);
- 		if (check_inverse(argv[optind-1], &invert, &optind, 0)) break;
- 		if (parse_mode(&r->cfg.mode, optarg) < 0)
-@@ -290,7 +290,7 @@ hashlimit_parse(int c, char **argv, int invert, unsigned int *flags,
- 		*flags |= PARAM_MODE;
- 		break;
- 	case '"':
--		param_act(P_ONLY_ONCE, "hashlimit", "--hashlimit-name",
-+		xtables_param_act(XTF_ONLY_ONCE, "hashlimit", "--hashlimit-name",
- 		          *flags & PARAM_NAME);
- 		if (check_inverse(argv[optind-1], &invert, &optind, 0)) break;
- 		if (strlen(optarg) == 0)
-@@ -317,63 +317,63 @@ hashlimit_mt_parse(struct xt_hashlimit_mtinfo1 *info, unsigned int *flags,
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "bad --limit-burst `%s'", optarg);
+diff --git a/extensions/libxt_mac.c b/extensions/libxt_mac.c
+index f4128c0..b516d80 100644
+--- a/extensions/libxt_mac.c
++++ b/extensions/libxt_mac.c
+@@ -57,7 +57,7 @@ mac_parse(int c, char **argv, int invert, unsigned int *flags,
  
- 	switch(c) {
- 	case '%': /* --hashlimit / --hashlimit-below */
--		param_act(P_ONLY_ONCE, "hashlimit", "--hashlimit-upto",
-+		xtables_param_act(XTF_ONLY_ONCE, "hashlimit", "--hashlimit-upto",
- 		          *flags & PARAM_LIMIT);
+ 	switch (c) {
+ 	case '1':
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_mac(argv[optind-1], macinfo);
  		if (invert)
- 			info->cfg.mode |= XT_HASHLIMIT_INVERT;
- 		if (!parse_rate(optarg, &info->cfg.avg))
--			param_act(P_BAD_VALUE, "hashlimit",
-+			xtables_param_act(XTF_BAD_VALUE, "hashlimit",
- 			          "--hashlimit-upto", optarg);
- 		*flags |= PARAM_LIMIT;
- 		return true;
- 
- 	case '^': /* --hashlimit-above == !--hashlimit-below */
--		param_act(P_ONLY_ONCE, "hashlimit", "--hashlimit-above",
-+		xtables_param_act(XTF_ONLY_ONCE, "hashlimit", "--hashlimit-above",
- 		          *flags & PARAM_LIMIT);
- 		if (!invert)
- 			info->cfg.mode |= XT_HASHLIMIT_INVERT;
- 		if (!parse_rate(optarg, &info->cfg.avg))
--			param_act(P_BAD_VALUE, "hashlimit",
-+			xtables_param_act(XTF_BAD_VALUE, "hashlimit",
- 			          "--hashlimit-above", optarg);
- 		*flags |= PARAM_LIMIT;
- 		return true;
- 
- 	case '$': /* --hashlimit-burst */
--		param_act(P_ONLY_ONCE, "hashlimit", "--hashlimit-burst",
-+		xtables_param_act(XTF_ONLY_ONCE, "hashlimit", "--hashlimit-burst",
- 		          *flags & PARAM_BURST);
- 		if (!xtables_strtoui(optarg, NULL, &num, 0, 10000))
--			param_act(P_BAD_VALUE, "hashlimit",
-+			xtables_param_act(XTF_BAD_VALUE, "hashlimit",
- 			          "--hashlimit-burst", optarg);
- 		info->cfg.burst = num;
- 		*flags |= PARAM_BURST;
- 		return true;
- 
- 	case '&': /* --hashlimit-htable-size */
--		param_act(P_ONLY_ONCE, "hashlimit", "--hashlimit-htable-size",
-+		xtables_param_act(XTF_ONLY_ONCE, "hashlimit", "--hashlimit-htable-size",
- 		          *flags & PARAM_SIZE);
- 		if (!xtables_strtoui(optarg, NULL, &num, 0, UINT32_MAX))
--			param_act(P_BAD_VALUE, "hashlimit",
-+			xtables_param_act(XTF_BAD_VALUE, "hashlimit",
- 			          "--hashlimit-htable-size", optarg);
- 		info->cfg.size = num;
- 		*flags |= PARAM_SIZE;
- 		return true;
- 
- 	case '*': /* --hashlimit-htable-max */
--		param_act(P_ONLY_ONCE, "hashlimit", "--hashlimit-htable-max",
-+		xtables_param_act(XTF_ONLY_ONCE, "hashlimit", "--hashlimit-htable-max",
- 		          *flags & PARAM_MAX);
- 		if (!xtables_strtoui(optarg, NULL, &num, 0, UINT32_MAX))
--			param_act(P_BAD_VALUE, "hashlimit",
-+			xtables_param_act(XTF_BAD_VALUE, "hashlimit",
- 			          "--hashlimit-htable-max", optarg);
- 		info->cfg.max = num;
- 		*flags |= PARAM_MAX;
- 		return true;
- 
- 	case '(': /* --hashlimit-htable-gcinterval */
--		param_act(P_ONLY_ONCE, "hashlimit",
-+		xtables_param_act(XTF_ONLY_ONCE, "hashlimit",
- 		          "--hashlimit-htable-gcinterval",
- 		          *flags & PARAM_GCINTERVAL);
- 		if (!xtables_strtoui(optarg, NULL, &num, 0, UINT32_MAX))
--			param_act(P_BAD_VALUE, "hashlimit",
-+			xtables_param_act(XTF_BAD_VALUE, "hashlimit",
- 			          "--hashlimit-htable-gcinterval", optarg);
- 		/* FIXME: not HZ dependent!! */
- 		info->cfg.gc_interval = num;
-@@ -381,10 +381,10 @@ hashlimit_mt_parse(struct xt_hashlimit_mtinfo1 *info, unsigned int *flags,
- 		return true;
- 
- 	case ')': /* --hashlimit-htable-expire */
--		param_act(P_ONLY_ONCE, "hashlimit",
-+		xtables_param_act(XTF_ONLY_ONCE, "hashlimit",
- 		          "--hashlimit-htable-expire", *flags & PARAM_EXPIRE);
- 		if (!xtables_strtoui(optarg, NULL, &num, 0, UINT32_MAX))
--			param_act(P_BAD_VALUE, "hashlimit",
-+			xtables_param_act(XTF_BAD_VALUE, "hashlimit",
- 			          "--hashlimit-htable-expire", optarg);
- 		/* FIXME: not HZ dependent */
- 		info->cfg.expire = num;
-@@ -392,16 +392,16 @@ hashlimit_mt_parse(struct xt_hashlimit_mtinfo1 *info, unsigned int *flags,
- 		return true;
- 
- 	case '_':
--		param_act(P_ONLY_ONCE, "hashlimit", "--hashlimit-mode",
-+		xtables_param_act(XTF_ONLY_ONCE, "hashlimit", "--hashlimit-mode",
- 		          *flags & PARAM_MODE);
- 		if (parse_mode(&info->cfg.mode, optarg) < 0)
--			param_act(P_BAD_VALUE, "hashlimit",
-+			xtables_param_act(XTF_BAD_VALUE, "hashlimit",
- 			          "--hashlimit-mode", optarg);
- 		*flags |= PARAM_MODE;
- 		return true;
- 
- 	case '"': /* --hashlimit-name */
--		param_act(P_ONLY_ONCE, "hashlimit", "--hashlimit-name",
-+		xtables_param_act(XTF_ONLY_ONCE, "hashlimit", "--hashlimit-name",
- 		          *flags & PARAM_NAME);
- 		if (strlen(optarg) == 0)
- 			exit_error(PARAMETER_PROBLEM, "Zero-length name?");
-@@ -411,20 +411,20 @@ hashlimit_mt_parse(struct xt_hashlimit_mtinfo1 *info, unsigned int *flags,
- 		return true;
- 
- 	case '<': /* --hashlimit-srcmask */
--		param_act(P_ONLY_ONCE, "hashlimit", "--hashlimit-srcmask",
-+		xtables_param_act(XTF_ONLY_ONCE, "hashlimit", "--hashlimit-srcmask",
- 		          *flags & PARAM_SRCMASK);
- 		if (!xtables_strtoui(optarg, NULL, &num, 0, maxmask))
--			param_act(P_BAD_VALUE, "hashlimit",
-+			xtables_param_act(XTF_BAD_VALUE, "hashlimit",
- 			          "--hashlimit-srcmask", optarg);
- 		info->cfg.srcmask = num;
- 		*flags |= PARAM_SRCMASK;
- 		return true;
- 
- 	case '>': /* --hashlimit-dstmask */
--		param_act(P_ONLY_ONCE, "hashlimit", "--hashlimit-dstmask",
-+		xtables_param_act(XTF_ONLY_ONCE, "hashlimit", "--hashlimit-dstmask",
- 		          *flags & PARAM_DSTMASK);
- 		if (!xtables_strtoui(optarg, NULL, &num, 0, maxmask))
--			param_act(P_BAD_VALUE, "hashlimit",
-+			xtables_param_act(XTF_BAD_VALUE, "hashlimit",
- 			          "--hashlimit-dstmask", optarg);
- 		info->cfg.dstmask = num;
- 		*flags |= PARAM_DSTMASK;
-diff --git a/extensions/libxt_iprange.c b/extensions/libxt_iprange.c
-index 09e9fb7..0fe2b4f 100644
---- a/extensions/libxt_iprange.c
-+++ b/extensions/libxt_iprange.c
-@@ -110,15 +110,15 @@ iprange_mt4_parse(int c, char **argv, int invert, unsigned int *flags,
- 	case '1': /* --src-range */
- 		end = strchr(optarg, '-');
- 		if (end == NULL)
--			param_act(P_BAD_VALUE, "iprange", "--src-range", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "iprange", "--src-range", optarg);
- 		*end = '\0';
- 		ia = numeric_to_ipaddr(optarg);
- 		if (ia == NULL)
--			param_act(P_BAD_VALUE, "iprange", "--src-range", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "iprange", "--src-range", optarg);
- 		memcpy(&info->src_min.in, ia, sizeof(*ia));
- 		ia = numeric_to_ipaddr(end+1);
- 		if (ia == NULL)
--			param_act(P_BAD_VALUE, "iprange", "--src-range", end + 1);
-+			xtables_param_act(XTF_BAD_VALUE, "iprange", "--src-range", end + 1);
- 		memcpy(&info->src_max.in, ia, sizeof(*ia));
- 		info->flags |= IPRANGE_SRC;
- 		if (invert)
-@@ -129,15 +129,15 @@ iprange_mt4_parse(int c, char **argv, int invert, unsigned int *flags,
- 	case '2': /* --dst-range */
- 		end = strchr(optarg, '-');
- 		if (end == NULL)
--			param_act(P_BAD_VALUE, "iprange", "--dst-range", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "iprange", "--dst-range", optarg);
- 		*end = '\0';
- 		ia = numeric_to_ipaddr(optarg);
- 		if (ia == NULL)
--			param_act(P_BAD_VALUE, "iprange", "--dst-range", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "iprange", "--dst-range", optarg);
- 		memcpy(&info->dst_min.in, ia, sizeof(*ia));
- 		ia = numeric_to_ipaddr(end + 1);
- 		if (ia == NULL)
--			param_act(P_BAD_VALUE, "iprange", "--dst-range", end + 1);
-+			xtables_param_act(XTF_BAD_VALUE, "iprange", "--dst-range", end + 1);
- 		memcpy(&info->dst_max.in, ia, sizeof(*ia));
- 		info->flags |= IPRANGE_DST;
- 		if (invert)
-@@ -160,15 +160,15 @@ iprange_mt6_parse(int c, char **argv, int invert, unsigned int *flags,
- 	case '1': /* --src-range */
- 		end = strchr(optarg, '-');
- 		if (end == NULL)
--			param_act(P_BAD_VALUE, "iprange", "--src-range", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "iprange", "--src-range", optarg);
- 		*end = '\0';
- 		ia = numeric_to_ip6addr(optarg);
- 		if (ia == NULL)
--			param_act(P_BAD_VALUE, "iprange", "--src-range", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "iprange", "--src-range", optarg);
- 		memcpy(&info->src_min.in, ia, sizeof(*ia));
- 		ia = numeric_to_ip6addr(end+1);
- 		if (ia == NULL)
--			param_act(P_BAD_VALUE, "iprange", "--src-range", end + 1);
-+			xtables_param_act(XTF_BAD_VALUE, "iprange", "--src-range", end + 1);
- 		memcpy(&info->src_max.in, ia, sizeof(*ia));
- 		info->flags |= IPRANGE_SRC;
- 		if (invert)
-@@ -179,15 +179,15 @@ iprange_mt6_parse(int c, char **argv, int invert, unsigned int *flags,
- 	case '2': /* --dst-range */
- 		end = strchr(optarg, '-');
- 		if (end == NULL)
--			param_act(P_BAD_VALUE, "iprange", "--dst-range", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "iprange", "--dst-range", optarg);
- 		*end = '\0';
- 		ia = numeric_to_ip6addr(optarg);
- 		if (ia == NULL)
--			param_act(P_BAD_VALUE, "iprange", "--dst-range", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "iprange", "--dst-range", optarg);
- 		memcpy(&info->dst_min.in, ia, sizeof(*ia));
- 		ia = numeric_to_ip6addr(end + 1);
- 		if (ia == NULL)
--			param_act(P_BAD_VALUE, "iprange", "--dst-range", end + 1);
-+			xtables_param_act(XTF_BAD_VALUE, "iprange", "--dst-range", end + 1);
- 		memcpy(&info->dst_max.in, ia, sizeof(*ia));
- 		info->flags |= IPRANGE_DST;
- 		if (invert)
+ 			macinfo->invert = 1;
 diff --git a/extensions/libxt_mark.c b/extensions/libxt_mark.c
-index 31957e7..08bc9d9 100644
+index 08bc9d9..1143ba9 100644
 --- a/extensions/libxt_mark.c
 +++ b/extensions/libxt_mark.c
-@@ -34,14 +34,14 @@ static int mark_mt_parse(int c, char **argv, int invert, unsigned int *flags,
+@@ -62,7 +62,7 @@ mark_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	switch (c) {
+ 		char *end;
+ 	case '1':
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		markinfo->mark = strtoul(optarg, &end, 0);
+ 		if (*end == '/') {
+ 			markinfo->mask = strtoul(end+1, &end, 0);
+diff --git a/extensions/libxt_multiport.c b/extensions/libxt_multiport.c
+index a7db2a8..d0e830d 100644
+--- a/extensions/libxt_multiport.c
++++ b/extensions/libxt_multiport.c
+@@ -161,7 +161,7 @@ __multiport_parse(int c, char **argv, int invert, unsigned int *flags,
  
  	switch (c) {
- 	case '1': /* --mark */
--		param_act(P_ONLY_ONCE, "mark", "--mark", *flags & F_MARK);
-+		xtables_param_act(XTF_ONLY_ONCE, "mark", "--mark", *flags & F_MARK);
- 		if (!xtables_strtoui(optarg, &end, &mark, 0, UINT32_MAX))
--			param_act(P_BAD_VALUE, "mark", "--mark", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "mark", "--mark", optarg);
- 		if (*end == '/')
- 			if (!xtables_strtoui(end + 1, &end, &mask, 0, UINT32_MAX))
--				param_act(P_BAD_VALUE, "mark", "--mark", optarg);
-+				xtables_param_act(XTF_BAD_VALUE, "mark", "--mark", optarg);
- 		if (*end != '\0')
--			param_act(P_BAD_VALUE, "mark", "--mark", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "mark", "--mark", optarg);
+ 	case '1':
+-		check_inverse(argv[optind-1], &invert, &optind, 0);
++		xtables_check_inverse(argv[optind-1], &invert, &optind, 0);
+ 		proto = check_proto(pnum, invflags);
+ 		multiinfo->count = parse_multi_ports(argv[optind-1],
+ 						     multiinfo->ports, proto);
+@@ -169,7 +169,7 @@ __multiport_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		break;
  
- 		if (invert)
- 			info->invert = true;
-diff --git a/extensions/libxt_owner.c b/extensions/libxt_owner.c
-index 54d841c..bf26f35 100644
---- a/extensions/libxt_owner.c
-+++ b/extensions/libxt_owner.c
-@@ -112,11 +112,11 @@ owner_mt_parse_v0(int c, char **argv, int invert, unsigned int *flags,
+ 	case '2':
+-		check_inverse(argv[optind-1], &invert, &optind, 0);
++		xtables_check_inverse(argv[optind-1], &invert, &optind, 0);
+ 		proto = check_proto(pnum, invflags);
+ 		multiinfo->count = parse_multi_ports(argv[optind-1],
+ 						     multiinfo->ports, proto);
+@@ -177,7 +177,7 @@ __multiport_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		break;
  
- 	switch (c) {
- 	case 'u':
--		param_act(P_ONLY_ONCE, "owner", "--uid-owner", *flags & FLAG_UID_OWNER);
-+		xtables_param_act(XTF_ONLY_ONCE, "owner", "--uid-owner", *flags & FLAG_UID_OWNER);
- 		if ((pwd = getpwnam(optarg)) != NULL)
- 			id = pwd->pw_uid;
- 		else if (!xtables_strtoui(optarg, NULL, &id, 0, UINT32_MAX - 1))
--			param_act(P_BAD_VALUE, "owner", "--uid-owner", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "owner", "--uid-owner", optarg);
- 		if (invert)
- 			info->invert |= IPT_OWNER_UID;
- 		info->match |= IPT_OWNER_UID;
-@@ -125,11 +125,11 @@ owner_mt_parse_v0(int c, char **argv, int invert, unsigned int *flags,
- 		return true;
- 
- 	case 'g':
--		param_act(P_ONLY_ONCE, "owner", "--gid-owner", *flags & FLAG_GID_OWNER);
-+		xtables_param_act(XTF_ONLY_ONCE, "owner", "--gid-owner", *flags & FLAG_GID_OWNER);
- 		if ((grp = getgrnam(optarg)) != NULL)
- 			id = grp->gr_gid;
- 		else if (!xtables_strtoui(optarg, NULL, &id, 0, UINT32_MAX - 1))
--			param_act(P_BAD_VALUE, "owner", "--gid-owner", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "owner", "--gid-owner", optarg);
- 		if (invert)
- 			info->invert |= IPT_OWNER_GID;
- 		info->match |= IPT_OWNER_GID;
-@@ -138,9 +138,9 @@ owner_mt_parse_v0(int c, char **argv, int invert, unsigned int *flags,
- 		return true;
- 
- 	case 'p':
--		param_act(P_ONLY_ONCE, "owner", "--pid-owner", *flags & FLAG_PID_OWNER);
-+		xtables_param_act(XTF_ONLY_ONCE, "owner", "--pid-owner", *flags & FLAG_PID_OWNER);
- 		if (!xtables_strtoui(optarg, NULL, &id, 0, INT_MAX))
--			param_act(P_BAD_VALUE, "owner", "--pid-owner", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "owner", "--pid-owner", optarg);
- 		if (invert)
- 			info->invert |= IPT_OWNER_PID;
- 		info->match |= IPT_OWNER_PID;
-@@ -149,9 +149,9 @@ owner_mt_parse_v0(int c, char **argv, int invert, unsigned int *flags,
- 		return true;
- 
- 	case 's':
--		param_act(P_ONLY_ONCE, "owner", "--sid-owner", *flags & FLAG_SID_OWNER);
-+		xtables_param_act(XTF_ONLY_ONCE, "owner", "--sid-owner", *flags & FLAG_SID_OWNER);
- 		if (!xtables_strtoui(optarg, NULL, &id, 0, INT_MAX))
--			param_act(P_BAD_VALUE, "owner", "--sid-value", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "owner", "--sid-value", optarg);
- 		if (invert)
- 			info->invert |= IPT_OWNER_SID;
- 		info->match |= IPT_OWNER_SID;
-@@ -161,7 +161,7 @@ owner_mt_parse_v0(int c, char **argv, int invert, unsigned int *flags,
- 
- #ifdef IPT_OWNER_COMM
- 	case 'c':
--		param_act(P_ONLY_ONCE, "owner", "--cmd-owner", *flags & FLAG_COMM);
-+		xtables_param_act(XTF_ONLY_ONCE, "owner", "--cmd-owner", *flags & FLAG_COMM);
- 		if (strlen(optarg) > sizeof(info->comm))
- 			exit_error(PARAMETER_PROBLEM, "owner match: command "
- 			           "\"%s\" too long, max. %zu characters",
-@@ -191,12 +191,12 @@ owner_mt6_parse_v0(int c, char **argv, int invert, unsigned int *flags,
+ 	case '3':
+-		check_inverse(argv[optind-1], &invert, &optind, 0);
++		xtables_check_inverse(argv[optind-1], &invert, &optind, 0);
+ 		proto = check_proto(pnum, invflags);
+ 		multiinfo->count = parse_multi_ports(argv[optind-1],
+ 						     multiinfo->ports, proto);
+@@ -228,21 +228,21 @@ __multiport_parse_v1(int c, char **argv, int invert, unsigned int *flags,
  
  	switch (c) {
- 	case 'u':
--		param_act(P_ONLY_ONCE, "owner", "--uid-owner",
-+		xtables_param_act(XTF_ONLY_ONCE, "owner", "--uid-owner",
- 		          *flags & FLAG_UID_OWNER);
- 		if ((pwd = getpwnam(optarg)) != NULL)
- 			id = pwd->pw_uid;
- 		else if (!xtables_strtoui(optarg, NULL, &id, 0, UINT32_MAX - 1))
--			param_act(P_BAD_VALUE, "owner", "--uid-owner", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "owner", "--uid-owner", optarg);
+ 	case '1':
+-		check_inverse(argv[optind-1], &invert, &optind, 0);
++		xtables_check_inverse(argv[optind-1], &invert, &optind, 0);
+ 		proto = check_proto(pnum, invflags);
+ 		parse_multi_ports_v1(argv[optind-1], multiinfo, proto);
+ 		multiinfo->flags = XT_MULTIPORT_SOURCE;
+ 		break;
+ 
+ 	case '2':
+-		check_inverse(argv[optind-1], &invert, &optind, 0);
++		xtables_check_inverse(argv[optind-1], &invert, &optind, 0);
+ 		proto = check_proto(pnum, invflags);
+ 		parse_multi_ports_v1(argv[optind-1], multiinfo, proto);
+ 		multiinfo->flags = XT_MULTIPORT_DESTINATION;
+ 		break;
+ 
+ 	case '3':
+-		check_inverse(argv[optind-1], &invert, &optind, 0);
++		xtables_check_inverse(argv[optind-1], &invert, &optind, 0);
+ 		proto = check_proto(pnum, invflags);
+ 		parse_multi_ports_v1(argv[optind-1], multiinfo, proto);
+ 		multiinfo->flags = XT_MULTIPORT_EITHER;
+diff --git a/extensions/libxt_physdev.c b/extensions/libxt_physdev.c
+index 6152cb3..4275a1a 100644
+--- a/extensions/libxt_physdev.c
++++ b/extensions/libxt_physdev.c
+@@ -43,7 +43,7 @@ physdev_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	case '1':
+ 		if (*flags & XT_PHYSDEV_OP_IN)
+ 			goto multiple_use;
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		xtables_parse_interface(argv[optind-1], info->physindev,
+ 				(unsigned char *)info->in_mask);
  		if (invert)
- 			info->invert |= IP6T_OWNER_UID;
- 		info->match |= IP6T_OWNER_UID;
-@@ -205,12 +205,12 @@ owner_mt6_parse_v0(int c, char **argv, int invert, unsigned int *flags,
- 		return true;
- 
- 	case 'g':
--		param_act(P_ONLY_ONCE, "owner", "--gid-owner",
-+		xtables_param_act(XTF_ONLY_ONCE, "owner", "--gid-owner",
- 		          *flags & FLAG_GID_OWNER);
- 		if ((grp = getgrnam(optarg)) != NULL)
- 			id = grp->gr_gid;
- 		else if (!xtables_strtoui(optarg, NULL, &id, 0, UINT32_MAX - 1))
--			param_act(P_BAD_VALUE, "owner", "--gid-owner", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "owner", "--gid-owner", optarg);
+@@ -55,7 +55,7 @@ physdev_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	case '2':
+ 		if (*flags & XT_PHYSDEV_OP_OUT)
+ 			goto multiple_use;
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		xtables_parse_interface(argv[optind-1], info->physoutdev,
+ 				(unsigned char *)info->out_mask);
  		if (invert)
- 			info->invert |= IP6T_OWNER_GID;
- 		info->match |= IP6T_OWNER_GID;
-@@ -219,10 +219,10 @@ owner_mt6_parse_v0(int c, char **argv, int invert, unsigned int *flags,
- 		return true;
- 
- 	case 'p':
--		param_act(P_ONLY_ONCE, "owner", "--pid-owner",
-+		xtables_param_act(XTF_ONLY_ONCE, "owner", "--pid-owner",
- 		          *flags & FLAG_PID_OWNER);
- 		if (!xtables_strtoui(optarg, NULL, &id, 0, INT_MAX))
--			param_act(P_BAD_VALUE, "owner", "--pid-owner", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "owner", "--pid-owner", optarg);
+@@ -67,7 +67,7 @@ physdev_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	case '3':
+ 		if (*flags & XT_PHYSDEV_OP_ISIN)
+ 			goto multiple_use;
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		info->bitmask |= XT_PHYSDEV_OP_ISIN;
  		if (invert)
- 			info->invert |= IP6T_OWNER_PID;
- 		info->match |= IP6T_OWNER_PID;
-@@ -231,10 +231,10 @@ owner_mt6_parse_v0(int c, char **argv, int invert, unsigned int *flags,
- 		return true;
- 
- 	case 's':
--		param_act(P_ONLY_ONCE, "owner", "--sid-owner",
-+		xtables_param_act(XTF_ONLY_ONCE, "owner", "--sid-owner",
- 		          *flags & FLAG_SID_OWNER);
- 		if (!xtables_strtoui(optarg, NULL, &id, 0, INT_MAX))
--			param_act(P_BAD_VALUE, "owner", "--sid-owner", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "owner", "--sid-owner", optarg);
+ 			info->invert |= XT_PHYSDEV_OP_ISIN;
+@@ -77,7 +77,7 @@ physdev_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	case '4':
+ 		if (*flags & XT_PHYSDEV_OP_ISOUT)
+ 			goto multiple_use;
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		info->bitmask |= XT_PHYSDEV_OP_ISOUT;
  		if (invert)
- 			info->invert |= IP6T_OWNER_SID;
- 		info->match |= IP6T_OWNER_SID;
-@@ -252,13 +252,13 @@ static void owner_parse_range(const char *s, unsigned int *from,
- 
- 	/* -1 is reversed, so the max is one less than that. */
- 	if (!xtables_strtoui(s, &end, from, 0, UINT32_MAX - 1))
--		param_act(P_BAD_VALUE, "owner", opt, s);
-+		xtables_param_act(XTF_BAD_VALUE, "owner", opt, s);
- 	*to = *from;
- 	if (*end == '-' || *end == ':')
- 		if (!xtables_strtoui(end + 1, &end, to, 0, UINT32_MAX - 1))
--			param_act(P_BAD_VALUE, "owner", opt, s);
-+			xtables_param_act(XTF_BAD_VALUE, "owner", opt, s);
- 	if (*end != '\0')
--		param_act(P_BAD_VALUE, "owner", opt, s);
-+		xtables_param_act(XTF_BAD_VALUE, "owner", opt, s);
- }
- 
- static int owner_mt_parse(int c, char **argv, int invert, unsigned int *flags,
-@@ -271,7 +271,7 @@ static int owner_mt_parse(int c, char **argv, int invert, unsigned int *flags,
+ 			info->invert |= XT_PHYSDEV_OP_ISOUT;
+@@ -87,7 +87,7 @@ physdev_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	case '5':
+ 		if (*flags & XT_PHYSDEV_OP_BRIDGED)
+ 			goto multiple_use;
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		if (invert)
+ 			info->invert |= XT_PHYSDEV_OP_BRIDGED;
+ 		*flags |= XT_PHYSDEV_OP_BRIDGED;
+diff --git a/extensions/libxt_pkttype.c b/extensions/libxt_pkttype.c
+index ab2e225..8caba91 100644
+--- a/extensions/libxt_pkttype.c
++++ b/extensions/libxt_pkttype.c
+@@ -91,7 +91,7 @@ static int pkttype_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	switch(c)
+ 	{
+ 		case '1':
+-			check_inverse(optarg, &invert, &optind, 0);
++			xtables_check_inverse(optarg, &invert, &optind, 0);
+ 			parse_pkttype(argv[optind-1], info);
+ 			if(invert)
+ 				info->invert=1;
+diff --git a/extensions/libxt_quota.c b/extensions/libxt_quota.c
+index 90da1cd..8c91fb8 100644
+--- a/extensions/libxt_quota.c
++++ b/extensions/libxt_quota.c
+@@ -60,7 +60,7 @@ quota_parse(int c, char **argv, int invert, unsigned int *flags,
  
  	switch (c) {
- 	case 'u':
--		param_act(P_ONLY_ONCE, "owner", "--uid-owner",
-+		xtables_param_act(XTF_ONLY_ONCE, "owner", "--uid-owner",
- 		          *flags & FLAG_UID_OWNER);
- 		if ((pwd = getpwnam(optarg)) != NULL)
- 			from = to = pwd->pw_uid;
-@@ -286,7 +286,7 @@ static int owner_mt_parse(int c, char **argv, int invert, unsigned int *flags,
- 		return true;
- 
- 	case 'g':
--		param_act(P_ONLY_ONCE, "owner", "--gid-owner",
-+		xtables_param_act(XTF_ONLY_ONCE, "owner", "--gid-owner",
- 		          *flags & FLAG_GID_OWNER);
- 		if ((grp = getgrnam(optarg)) != NULL)
- 			from = to = grp->gr_gid;
-@@ -301,7 +301,7 @@ static int owner_mt_parse(int c, char **argv, int invert, unsigned int *flags,
- 		return true;
- 
- 	case 'k':
--		param_act(P_ONLY_ONCE, "owner", "--socket-exists",
-+		xtables_param_act(XTF_ONLY_ONCE, "owner", "--socket-exists",
- 		          *flags & FLAG_SOCKET_EXISTS);
- 		if (invert)
- 			info->invert |= XT_OWNER_SOCKET;
-diff --git a/extensions/libxt_tos.c b/extensions/libxt_tos.c
-index 9f8d6fa..a611840 100644
---- a/extensions/libxt_tos.c
-+++ b/extensions/libxt_tos.c
-@@ -50,9 +50,9 @@ static int tos_mt_parse_v0(int c, char **argv, int invert, unsigned int *flags,
+ 	case '1':
+-		if (check_inverse(optarg, &invert, NULL, 0))
++		if (xtables_check_inverse(optarg, &invert, NULL, 0))
+ 			exit_error(PARAMETER_PROBLEM, "quota: unexpected '!'");
+ 		if (!parse_quota(optarg, &info->quota))
+ 			exit_error(PARAMETER_PROBLEM,
+diff --git a/extensions/libxt_rateest.c b/extensions/libxt_rateest.c
+index 285b7ba..8a8836b 100644
+--- a/extensions/libxt_rateest.c
++++ b/extensions/libxt_rateest.c
+@@ -118,7 +118,7 @@ rateest_parse(int c, char **argv, int invert, unsigned int *flags,
  
  	switch (c) {
- 	case 't':
--		param_act(P_ONLY_ONCE, "tos", "--tos", *flags & FLAG_TOS);
-+		xtables_param_act(XTF_ONLY_ONCE, "tos", "--tos", *flags & FLAG_TOS);
- 		if (!tos_parse_symbolic(optarg, &tvm, 0xFF))
--			param_act(P_BAD_VALUE, "tos", "--tos", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "tos", "--tos", optarg);
- 		if (tvm.mask != 0xFF)
- 			exit_error(PARAMETER_PROBLEM, "tos: Your kernel is "
- 			           "too old to support anything besides /0xFF "
-@@ -74,9 +74,9 @@ static int tos_mt_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	case OPT_RATEEST1:
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		if (invert)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "rateest: rateest can't be inverted");
+@@ -132,7 +132,7 @@ rateest_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		break;
+ 
+ 	case OPT_RATEEST2:
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		if (invert)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "rateest: rateest can't be inverted");
+@@ -147,7 +147,7 @@ rateest_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		break;
+ 
+ 	case OPT_RATEEST_BPS1:
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		if (invert)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "rateest: rateest-bps can't be inverted");
+@@ -171,7 +171,7 @@ rateest_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		break;
+ 
+ 	case OPT_RATEEST_PPS1:
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		if (invert)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "rateest: rateest-pps can't be inverted");
+@@ -196,7 +196,7 @@ rateest_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		break;
+ 
+ 	case OPT_RATEEST_BPS2:
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		if (invert)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "rateest: rateest-bps can't be inverted");
+@@ -220,7 +220,7 @@ rateest_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		break;
+ 
+ 	case OPT_RATEEST_PPS2:
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		if (invert)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "rateest: rateest-pps can't be inverted");
+@@ -245,7 +245,7 @@ rateest_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		break;
+ 
+ 	case OPT_RATEEST_DELTA:
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		if (invert)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "rateest: rateest-delta can't be inverted");
+@@ -259,7 +259,7 @@ rateest_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		break;
+ 
+ 	case OPT_RATEEST_EQ:
+-		check_inverse(argv[optind-1], &invert, &optind, 0);
++		xtables_check_inverse(argv[optind-1], &invert, &optind, 0);
+ 
+ 		if (*flags & (1 << c))
+ 			exit_error(PARAMETER_PROBLEM,
+@@ -272,7 +272,7 @@ rateest_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		break;
+ 
+ 	case OPT_RATEEST_LT:
+-		check_inverse(argv[optind-1], &invert, &optind, 0);
++		xtables_check_inverse(argv[optind-1], &invert, &optind, 0);
+ 
+ 		if (*flags & (1 << c))
+ 			exit_error(PARAMETER_PROBLEM,
+@@ -285,7 +285,7 @@ rateest_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		break;
+ 
+ 	case OPT_RATEEST_GT:
+-		check_inverse(argv[optind-1], &invert, &optind, 0);
++		xtables_check_inverse(argv[optind-1], &invert, &optind, 0);
+ 
+ 		if (*flags & (1 << c))
+ 			exit_error(PARAMETER_PROBLEM,
+diff --git a/extensions/libxt_recent.c b/extensions/libxt_recent.c
+index 1ae9013..1646705 100644
+--- a/extensions/libxt_recent.c
++++ b/extensions/libxt_recent.c
+@@ -73,7 +73,7 @@ static int recent_parse(int c, char **argv, int invert, unsigned int *flags,
+ 				exit_error(PARAMETER_PROBLEM,
+ 					"recent: only one of `--set', `--rcheck' "
+ 					"`--update' or `--remove' may be set");
+-			check_inverse(optarg, &invert, &optind, 0);
++			xtables_check_inverse(optarg, &invert, &optind, 0);
+ 			info->check_set |= XT_RECENT_SET;
+ 			if (invert) info->invert = 1;
+ 			*flags |= XT_RECENT_SET;
+@@ -84,7 +84,7 @@ static int recent_parse(int c, char **argv, int invert, unsigned int *flags,
+ 				exit_error(PARAMETER_PROBLEM,
+ 					"recent: only one of `--set', `--rcheck' "
+ 					"`--update' or `--remove' may be set");
+-			check_inverse(optarg, &invert, &optind, 0);
++			xtables_check_inverse(optarg, &invert, &optind, 0);
+ 			info->check_set |= XT_RECENT_CHECK;
+ 			if(invert) info->invert = 1;
+ 			*flags |= XT_RECENT_CHECK;
+@@ -95,7 +95,7 @@ static int recent_parse(int c, char **argv, int invert, unsigned int *flags,
+ 				exit_error(PARAMETER_PROBLEM,
+ 					"recent: only one of `--set', `--rcheck' "
+ 					"`--update' or `--remove' may be set");
+-			check_inverse(optarg, &invert, &optind, 0);
++			xtables_check_inverse(optarg, &invert, &optind, 0);
+ 			info->check_set |= XT_RECENT_UPDATE;
+ 			if (invert) info->invert = 1;
+ 			*flags |= XT_RECENT_UPDATE;
+@@ -106,7 +106,7 @@ static int recent_parse(int c, char **argv, int invert, unsigned int *flags,
+ 				exit_error(PARAMETER_PROBLEM,
+ 					"recent: only one of `--set', `--rcheck' "
+ 					"`--update' or `--remove' may be set");
+-			check_inverse(optarg, &invert, &optind, 0);
++			xtables_check_inverse(optarg, &invert, &optind, 0);
+ 			info->check_set |= XT_RECENT_REMOVE;
+ 			if (invert) info->invert = 1;
+ 			*flags |= XT_RECENT_REMOVE;
+diff --git a/extensions/libxt_sctp.c b/extensions/libxt_sctp.c
+index 6348a2f..2ee4861 100644
+--- a/extensions/libxt_sctp.c
++++ b/extensions/libxt_sctp.c
+@@ -270,7 +270,7 @@ sctp_parse(int c, char **argv, int invert, unsigned int *flags,
+ 			exit_error(PARAMETER_PROBLEM,
+ 			           "Only one `--source-port' allowed");
+ 		einfo->flags |= XT_SCTP_SRC_PORTS;
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_sctp_ports(argv[optind-1], einfo->spts);
+ 		if (invert)
+ 			einfo->invflags |= XT_SCTP_SRC_PORTS;
+@@ -282,7 +282,7 @@ sctp_parse(int c, char **argv, int invert, unsigned int *flags,
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--destination-port' allowed");
+ 		einfo->flags |= XT_SCTP_DEST_PORTS;
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_sctp_ports(argv[optind-1], einfo->dpts);
+ 		if (invert)
+ 			einfo->invflags |= XT_SCTP_DEST_PORTS;
+@@ -293,7 +293,7 @@ sctp_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & XT_SCTP_CHUNK_TYPES)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--chunk-types' allowed");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 
+ 		if (!argv[optind] 
+ 		    || argv[optind][0] == '-' || argv[optind][0] == '!')
+diff --git a/extensions/libxt_state.c b/extensions/libxt_state.c
+index 66af518..5182230 100644
+--- a/extensions/libxt_state.c
++++ b/extensions/libxt_state.c
+@@ -71,7 +71,7 @@ state_parse(int c, char **argv, int invert, unsigned int *flags,
  
  	switch (c) {
- 	case 't':
--		param_act(P_ONLY_ONCE, "tos", "--tos", *flags & FLAG_TOS);
-+		xtables_param_act(XTF_ONLY_ONCE, "tos", "--tos", *flags & FLAG_TOS);
- 		if (!tos_parse_symbolic(optarg, &tvm, 0x3F))
--			param_act(P_BAD_VALUE, "tos", "--tos", optarg);
-+			xtables_param_act(XTF_BAD_VALUE, "tos", "--tos", optarg);
- 		info->tos_value = tvm.value;
- 		info->tos_mask  = tvm.mask;
+ 	case '1':
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 
+ 		state_parse_states(argv[optind-1], sinfo);
  		if (invert)
+diff --git a/extensions/libxt_string.c b/extensions/libxt_string.c
+index 0408c23..6bd27c0 100644
+--- a/extensions/libxt_string.c
++++ b/extensions/libxt_string.c
+@@ -199,7 +199,7 @@ string_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & STRING)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Can't specify multiple --string");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_string(argv[optind-1], stringinfo);
+ 		if (invert) {
+ 			if (revision == 0)
+@@ -216,7 +216,7 @@ string_parse(int c, char **argv, int invert, unsigned int *flags,
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Can't specify multiple --hex-string");
+ 
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_hex_string(argv[optind-1], stringinfo);  /* sets length */
+ 		if (invert) {
+ 			if (revision == 0)
+diff --git a/extensions/libxt_tcp.c b/extensions/libxt_tcp.c
+index bb66747..069bb7f 100644
+--- a/extensions/libxt_tcp.c
++++ b/extensions/libxt_tcp.c
+@@ -150,7 +150,7 @@ tcp_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & TCP_SRC_PORTS)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--source-port' allowed");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_tcp_ports(argv[optind-1], tcpinfo->spts);
+ 		if (invert)
+ 			tcpinfo->invflags |= XT_TCP_INV_SRCPT;
+@@ -161,7 +161,7 @@ tcp_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & TCP_DST_PORTS)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--destination-port' allowed");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_tcp_ports(argv[optind-1], tcpinfo->dpts);
+ 		if (invert)
+ 			tcpinfo->invflags |= XT_TCP_INV_DSTPT;
+@@ -182,7 +182,7 @@ tcp_parse(int c, char **argv, int invert, unsigned int *flags,
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one of `--syn' or `--tcp-flags' "
+ 				   " allowed");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 
+ 		if (!argv[optind]
+ 		    || argv[optind][0] == '-' || argv[optind][0] == '!')
+@@ -199,7 +199,7 @@ tcp_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & TCP_OPTION)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--tcp-option' allowed");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_tcp_option(argv[optind-1], &tcpinfo->option);
+ 		if (invert)
+ 			tcpinfo->invflags |= XT_TCP_INV_OPTION;
+diff --git a/extensions/libxt_tcpmss.c b/extensions/libxt_tcpmss.c
+index d30aa24..5c013a7 100644
+--- a/extensions/libxt_tcpmss.c
++++ b/extensions/libxt_tcpmss.c
+@@ -65,7 +65,7 @@ tcpmss_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--mss' allowed");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_tcp_mssvalues(argv[optind-1],
+ 				    &mssinfo->mss_min, &mssinfo->mss_max);
+ 		if (invert)
+diff --git a/extensions/libxt_udp.c b/extensions/libxt_udp.c
+index 4012841..8f57f4e 100644
+--- a/extensions/libxt_udp.c
++++ b/extensions/libxt_udp.c
+@@ -72,7 +72,7 @@ udp_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & UDP_SRC_PORTS)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--source-port' allowed");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_udp_ports(argv[optind-1], udpinfo->spts);
+ 		if (invert)
+ 			udpinfo->invflags |= XT_UDP_INV_SRCPT;
+@@ -83,7 +83,7 @@ udp_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & UDP_DST_PORTS)
+ 			exit_error(PARAMETER_PROBLEM,
+ 				   "Only one `--destination-port' allowed");
+-		check_inverse(optarg, &invert, &optind, 0);
++		xtables_check_inverse(optarg, &invert, &optind, 0);
+ 		parse_udp_ports(argv[optind-1], udpinfo->dpts);
+ 		if (invert)
+ 			udpinfo->invflags |= XT_UDP_INV_DSTPT;
 diff --git a/include/xtables.h.in b/include/xtables.h.in
-index e1f9c92..e5737cb 100644
+index c3c960b..c1bf6d5 100644
 --- a/include/xtables.h.in
 +++ b/include/xtables.h.in
-@@ -158,6 +158,17 @@ enum xtables_tryload {
- 	XTF_LOAD_MUST_SUCCEED,
- };
- 
-+enum xtables_exittype {
-+	OTHER_PROBLEM = 1,
-+	PARAMETER_PROBLEM,
-+	VERSION_PROBLEM,
-+	RESOURCE_PROBLEM,
-+	XTF_ONLY_ONCE,
-+	XTF_NO_INVERT,
-+	XTF_BAD_VALUE,
-+	XTF_ONE_ACTION,
-+};
-+
- extern const char *xtables_program_name;
- extern const char *xtables_modprobe_program;
- extern struct xtables_match *xtables_matches;
-@@ -188,24 +199,13 @@ extern u_int16_t parse_port(const char *port, const char *proto);
- extern void
- parse_interface(const char *arg, char *vianame, unsigned char *mask);
- 
--enum exittype {
--	OTHER_PROBLEM = 1,
--	PARAMETER_PROBLEM,
--	VERSION_PROBLEM,
--	RESOURCE_PROBLEM,
--	P_ONLY_ONCE,
--	P_NO_INVERT,
--	P_BAD_VALUE,
--	P_ONE_ACTION,
--};
--
+@@ -202,7 +202,8 @@ xtables_parse_interface(const char *arg, char *vianame, unsigned char *mask);
  /* this is a special 64bit data type that is 8-byte aligned */
  #define aligned_u64 u_int64_t __attribute__((aligned(8)))
  
- int check_inverse(const char option[], int *invert, int *my_optind, int argc);
--void exit_error(enum exittype, const char *, ...)__attribute__((noreturn,
--							  format(printf,2,3)));
--extern void param_act(unsigned int, const char *, ...);
-+void exit_error(enum xtables_exittype, const char *, ...)
-+	__attribute__((noreturn, format(printf,2,3)));
-+extern void xtables_param_act(unsigned int, const char *, ...);
- 
- extern const char *ipaddr_to_numeric(const struct in_addr *);
- extern const char *ipaddr_to_anyname(const struct in_addr *);
+-int check_inverse(const char option[], int *invert, int *my_optind, int argc);
++int xtables_check_inverse(const char option[], int *invert,
++	int *my_optind, int argc);
+ void exit_error(enum xtables_exittype, const char *, ...)
+ 	__attribute__((noreturn, format(printf,2,3)));
+ extern void xtables_param_act(unsigned int, const char *, ...);
 diff --git a/ip6tables.c b/ip6tables.c
-index 0464185..cbacd89 100644
+index 48a6bec..903e005 100644
 --- a/ip6tables.c
 +++ b/ip6tables.c
-@@ -365,7 +365,7 @@ exit_printhelp(struct ip6tables_rule_match *matches)
+@@ -450,26 +450,6 @@ add_command(unsigned int *cmd, const int newcmd, const int othercmds,
+ 	*cmd |= newcmd;
  }
  
- void
--exit_error(enum exittype status, const char *msg, ...)
-+exit_error(enum xtables_exittype status, const char *msg, ...)
- {
- 	va_list args;
+-int
+-check_inverse(const char option[], int *invert, int *my_optind, int argc)
+-{
+-	if (option && strcmp(option, "!") == 0) {
+-		if (*invert)
+-			exit_error(PARAMETER_PROBLEM,
+-				   "Multiple `!' flags not allowed");
+-		*invert = TRUE;
+-		if (my_optind != NULL) {
+-			++*my_optind;
+-			if (argc && *my_optind > argc)
+-				exit_error(PARAMETER_PROBLEM,
+-					   "no argument following `!'");
+-		}
+-
+-		return TRUE;
+-	}
+-	return FALSE;
+-}
+-
+ /*
+  *	All functions starting with "parse" should succeed, otherwise
+  *	the program fails.
+@@ -1618,7 +1598,7 @@ int do_command6(int argc, char *argv[], char **table, struct ip6tc_handle **hand
+ 			 * Option selection
+ 			 */
+ 		case 'p':
+-			check_inverse(optarg, &invert, &optind, argc);
++			xtables_check_inverse(optarg, &invert, &optind, argc);
+ 			set_option(&options, OPT_PROTOCOL, &fw.ipv6.invflags,
+ 				   invert);
  
-diff --git a/iptables-xml.c b/iptables-xml.c
-index a3f6987..307845c 100644
---- a/iptables-xml.c
-+++ b/iptables-xml.c
-@@ -30,7 +30,7 @@ const char *program_version;
+@@ -1644,14 +1624,14 @@ int do_command6(int argc, char *argv[], char **table, struct ip6tc_handle **hand
+ 			break;
  
- #ifndef IPTABLES_MULTI
- int line = 0;
--void exit_error(enum exittype status, const char *msg, ...)
-+void exit_error(enum xtables_exittype status, const char *msg, ...)
- {
- 	va_list args;
+ 		case 's':
+-			check_inverse(optarg, &invert, &optind, argc);
++			xtables_check_inverse(optarg, &invert, &optind, argc);
+ 			set_option(&options, OPT_SOURCE, &fw.ipv6.invflags,
+ 				   invert);
+ 			shostnetworkmask = argv[optind-1];
+ 			break;
  
+ 		case 'd':
+-			check_inverse(optarg, &invert, &optind, argc);
++			xtables_check_inverse(optarg, &invert, &optind, argc);
+ 			set_option(&options, OPT_DESTINATION, &fw.ipv6.invflags,
+ 				   invert);
+ 			dhostnetworkmask = argv[optind-1];
+@@ -1697,7 +1677,7 @@ int do_command6(int argc, char *argv[], char **table, struct ip6tc_handle **hand
+ 
+ 
+ 		case 'i':
+-			check_inverse(optarg, &invert, &optind, argc);
++			xtables_check_inverse(optarg, &invert, &optind, argc);
+ 			set_option(&options, OPT_VIANAMEIN, &fw.ipv6.invflags,
+ 				   invert);
+ 			xtables_parse_interface(argv[optind-1],
+@@ -1706,7 +1686,7 @@ int do_command6(int argc, char *argv[], char **table, struct ip6tc_handle **hand
+ 			break;
+ 
+ 		case 'o':
+-			check_inverse(optarg, &invert, &optind, argc);
++			xtables_check_inverse(optarg, &invert, &optind, argc);
+ 			set_option(&options, OPT_VIANAMEOUT, &fw.ipv6.invflags,
+ 				   invert);
+ 			xtables_parse_interface(argv[optind-1],
 diff --git a/iptables.c b/iptables.c
-index 15b5b6f..9adc209 100644
+index 925464c..ea765b0 100644
 --- a/iptables.c
 +++ b/iptables.c
-@@ -367,7 +367,7 @@ exit_printhelp(struct iptables_rule_match *matches)
+@@ -452,26 +452,6 @@ add_command(unsigned int *cmd, const int newcmd, const int othercmds,
+ 	*cmd |= newcmd;
  }
  
- void
--exit_error(enum exittype status, const char *msg, ...)
-+exit_error(enum xtables_exittype status, const char *msg, ...)
- {
- 	va_list args;
+-int
+-check_inverse(const char option[], int *invert, int *my_optind, int argc)
+-{
+-	if (option && strcmp(option, "!") == 0) {
+-		if (*invert)
+-			exit_error(PARAMETER_PROBLEM,
+-				   "Multiple `!' flags not allowed");
+-		*invert = TRUE;
+-		if (my_optind != NULL) {
+-			++*my_optind;
+-			if (argc && *my_optind > argc)
+-				exit_error(PARAMETER_PROBLEM,
+-					   "no argument following `!'");
+-		}
+-
+-		return TRUE;
+-	}
+-	return FALSE;
+-}
+-
+ /*
+  *	All functions starting with "parse" should succeed, otherwise
+  *	the program fails.
+@@ -1631,7 +1611,7 @@ int do_command(int argc, char *argv[], char **table, struct iptc_handle **handle
+ 			 * Option selection
+ 			 */
+ 		case 'p':
+-			check_inverse(optarg, &invert, &optind, argc);
++			xtables_check_inverse(optarg, &invert, &optind, argc);
+ 			set_option(&options, OPT_PROTOCOL, &fw.ip.invflags,
+ 				   invert);
  
+@@ -1649,14 +1629,14 @@ int do_command(int argc, char *argv[], char **table, struct iptc_handle **handle
+ 			break;
+ 
+ 		case 's':
+-			check_inverse(optarg, &invert, &optind, argc);
++			xtables_check_inverse(optarg, &invert, &optind, argc);
+ 			set_option(&options, OPT_SOURCE, &fw.ip.invflags,
+ 				   invert);
+ 			shostnetworkmask = argv[optind-1];
+ 			break;
+ 
+ 		case 'd':
+-			check_inverse(optarg, &invert, &optind, argc);
++			xtables_check_inverse(optarg, &invert, &optind, argc);
+ 			set_option(&options, OPT_DESTINATION, &fw.ip.invflags,
+ 				   invert);
+ 			dhostnetworkmask = argv[optind-1];
+@@ -1702,7 +1682,7 @@ int do_command(int argc, char *argv[], char **table, struct iptc_handle **handle
+ 
+ 
+ 		case 'i':
+-			check_inverse(optarg, &invert, &optind, argc);
++			xtables_check_inverse(optarg, &invert, &optind, argc);
+ 			set_option(&options, OPT_VIANAMEIN, &fw.ip.invflags,
+ 				   invert);
+ 			xtables_parse_interface(argv[optind-1],
+@@ -1711,7 +1691,7 @@ int do_command(int argc, char *argv[], char **table, struct iptc_handle **handle
+ 			break;
+ 
+ 		case 'o':
+-			check_inverse(optarg, &invert, &optind, argc);
++			xtables_check_inverse(optarg, &invert, &optind, argc);
+ 			set_option(&options, OPT_VIANAMEOUT, &fw.ip.invflags,
+ 				   invert);
+ 			xtables_parse_interface(argv[optind-1],
 diff --git a/xtables.c b/xtables.c
-index 642c04b..3ffefa2 100644
+index 8a79c5b..19e746c 100644
 --- a/xtables.c
 +++ b/xtables.c
-@@ -676,7 +676,31 @@ void xtables_register_target(struct xtables_target *me)
- 	me->tflags = 0;
+@@ -1257,3 +1257,31 @@ void xtables_save_string(const char *value)
+ 		printf("\" ");
+ 	}
  }
- 
--void param_act(unsigned int status, const char *p1, ...)
++
 +/**
-+ * xtables_param_act - act on condition
-+ * @status:	a constant from enum xtables_exittype
-+ *
-+ * %XTF_ONLY_ONCE: print error message that option may only be used once.
-+ * @p1:		module name (e.g. "mark")
-+ * @p2(...):	option in conflict (e.g. "--mark")
-+ * @p3(...):	condition to match on (see extensions/ for examples)
-+ *
-+ * %XTF_NO_INVERT: option does not support inversion
-+ * @p1:		module name
-+ * @p2:		option in conflict
-+ * @p3:		condition to match on
-+ *
-+ * %XTF_BAD_VALUE: bad value for option
-+ * @p1:		module name
-+ * @p2:		option with which the problem occured (e.g. "--mark")
-+ * @p3:		string the user passed in (e.g. "99999999999999")
-+ *
-+ * %XTF_ONE_ACTION: two mutually exclusive actions have been specified
-+ * @p1:		module name
-+ *
-+ * Displays an error message and exits the program.
++ * Check for option-intrapositional negation.
++ * Do not use in new code.
 + */
-+void xtables_param_act(unsigned int status, const char *p1, ...)
- {
- 	const char *p2, *p3;
- 	va_list args;
-@@ -685,7 +709,7 @@ void param_act(unsigned int status, const char *p1, ...)
- 	va_start(args, p1);
- 
- 	switch (status) {
--	case P_ONLY_ONCE:
-+	case XTF_ONLY_ONCE:
- 		p2 = va_arg(args, const char *);
- 		b  = va_arg(args, unsigned int);
- 		if (!b)
-@@ -694,7 +718,7 @@ void param_act(unsigned int status, const char *p1, ...)
- 		           "%s: \"%s\" option may only be specified once",
- 		           p1, p2);
- 		break;
--	case P_NO_INVERT:
-+	case XTF_NO_INVERT:
- 		p2 = va_arg(args, const char *);
- 		b  = va_arg(args, unsigned int);
- 		if (!b)
-@@ -702,14 +726,14 @@ void param_act(unsigned int status, const char *p1, ...)
- 		exit_error(PARAMETER_PROBLEM,
- 		           "%s: \"%s\" option cannot be inverted", p1, p2);
- 		break;
--	case P_BAD_VALUE:
-+	case XTF_BAD_VALUE:
- 		p2 = va_arg(args, const char *);
- 		p3 = va_arg(args, const char *);
- 		exit_error(PARAMETER_PROBLEM,
- 		           "%s: Bad value for \"%s\" option: \"%s\"",
- 		           p1, p2, p3);
- 		break;
--	case P_ONE_ACTION:
-+	case XTF_ONE_ACTION:
- 		b = va_arg(args, unsigned int);
- 		if (!b)
- 			return;
++int xtables_check_inverse(const char option[], int *invert,
++			  int *my_optind, int argc)
++{
++	if (option && strcmp(option, "!") == 0) {
++		fprintf(stderr, "Using intrapositioned negation "
++		        "(`--option ! this`) is deprecated in favor of "
++		        "extrapositioned (`! --option this`).\n");
++
++		if (*invert)
++			exit_error(PARAMETER_PROBLEM,
++				   "Multiple `!' flags not allowed");
++		*invert = true;
++		if (my_optind != NULL) {
++			++*my_optind;
++			if (argc && *my_optind > argc)
++				exit_error(PARAMETER_PROBLEM,
++					   "no argument following `!'");
++		}
++
++		return true;
++	}
++	return false;
++}
 -- 
 1.6.1.2
 
