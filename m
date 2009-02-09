@@ -1,10 +1,8 @@
 From: Jan Engelhardt <jengelh@medozas.de>
-Subject: [PATCH 03/16] libxt_owner: use correct UID/GID boundaries
-Date: Mon,  9 Feb 2009 13:07:21 +0100
-Message-ID: <1234181254-6211-4-git-send-email-jengelh@medozas.de>
-References: <1234181254-6211-1-git-send-email-jengelh@medozas.de>
+Subject: libxtables rework
+Date: Mon,  9 Feb 2009 13:07:18 +0100
+Message-ID: <1234181254-6211-1-git-send-email-jengelh@medozas.de>
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1234181254-6211-1-git-send-email-jengelh@medozas.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 MIME-Version: 1.0
@@ -12,70 +10,114 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
--1 is a reserved number (chown uses it to denote "do not change"),
-so the maximum libxt_owner should permit is up to UINT32_MAX-1.
+Jan Engelhardt (16):
+      src: remove redundant returns at end of void-returning functions
+      src: remove redundant casts
+      libxt_owner: use correct UID/GID boundaries
+      extensions: use UINT_MAX constants over open-coded bits (1/2)
+      extensions: use UINT_MAX constants over open-coded numbers (2/2)
+      libxtables: prefix/order - libdir
+      libxtables: prefix/order - strtoui
+      libxtables: prefix/order - program_name
+      libxtables: prefix/order - param_act
+      libxtables: prefix/order - ipaddr/ipmask to ascii output
+      libxtables: prefix/order - ascii to ipaddr/ipmask input
+      libxtables: prefix - misc functions
+      libxtables: prefix - parse and escaped output func
+      libxtables: prefix/order - move check_inverse to xtables.c
+      libxtables: prefix/order - move parse_protocol to xtables.c
+      libxtables: move afinfo around
 
-Signed-off-by: Jan Engelhardt <jengelh@medozas.de>
----
- extensions/libxt_owner.c |   14 +++++++-------
- 1 files changed, 7 insertions(+), 7 deletions(-)
-
-diff --git a/extensions/libxt_owner.c b/extensions/libxt_owner.c
-index 4cd173e..c8677a8 100644
---- a/extensions/libxt_owner.c
-+++ b/extensions/libxt_owner.c
-@@ -110,7 +110,7 @@ owner_mt_parse_v0(int c, char **argv, int invert, unsigned int *flags,
- 		param_act(P_ONLY_ONCE, "owner", "--uid-owner", *flags & FLAG_UID_OWNER);
- 		if ((pwd = getpwnam(optarg)) != NULL)
- 			id = pwd->pw_uid;
--		else if (!strtonum(optarg, NULL, &id, 0, ~(uid_t)0))
-+		else if (!strtonum(optarg, NULL, &id, 0, UINT32_MAX - 1))
- 			param_act(P_BAD_VALUE, "owner", "--uid-owner", optarg);
- 		if (invert)
- 			info->invert |= IPT_OWNER_UID;
-@@ -123,7 +123,7 @@ owner_mt_parse_v0(int c, char **argv, int invert, unsigned int *flags,
- 		param_act(P_ONLY_ONCE, "owner", "--gid-owner", *flags & FLAG_GID_OWNER);
- 		if ((grp = getgrnam(optarg)) != NULL)
- 			id = grp->gr_gid;
--		else if (!strtonum(optarg, NULL, &id, 0, ~(gid_t)0))
-+		else if (!strtonum(optarg, NULL, &id, 0, UINT32_MAX - 1))
- 			param_act(P_BAD_VALUE, "owner", "--gid-owner", optarg);
- 		if (invert)
- 			info->invert |= IPT_OWNER_GID;
-@@ -190,7 +190,7 @@ owner_mt6_parse_v0(int c, char **argv, int invert, unsigned int *flags,
- 		          *flags & FLAG_UID_OWNER);
- 		if ((pwd = getpwnam(optarg)) != NULL)
- 			id = pwd->pw_uid;
--		else if (!strtonum(optarg, NULL, &id, 0, ~(uid_t)0))
-+		else if (!strtonum(optarg, NULL, &id, 0, UINT32_MAX - 1))
- 			param_act(P_BAD_VALUE, "owner", "--uid-owner", optarg);
- 		if (invert)
- 			info->invert |= IP6T_OWNER_UID;
-@@ -204,7 +204,7 @@ owner_mt6_parse_v0(int c, char **argv, int invert, unsigned int *flags,
- 		          *flags & FLAG_GID_OWNER);
- 		if ((grp = getgrnam(optarg)) != NULL)
- 			id = grp->gr_gid;
--		else if (!strtonum(optarg, NULL, &id, 0, ~(gid_t)0))
-+		else if (!strtonum(optarg, NULL, &id, 0, UINT32_MAX - 1))
- 			param_act(P_BAD_VALUE, "owner", "--gid-owner", optarg);
- 		if (invert)
- 			info->invert |= IP6T_OWNER_GID;
-@@ -245,12 +245,12 @@ static void owner_parse_range(const char *s, unsigned int *from,
- {
- 	char *end;
- 
--	/* 4294967295 is reserved, so subtract one from ~0 */
--	if (!strtonum(s, &end, from, 0, (~(uid_t)0) - 1))
-+	/* -1 is reversed, so the max is one less than that. */
-+	if (!strtonum(s, &end, from, 0, UINT32_MAX - 1))
- 		param_act(P_BAD_VALUE, "owner", opt, s);
- 	*to = *from;
- 	if (*end == '-' || *end == ':')
--		if (!strtonum(end + 1, &end, to, 0, (~(uid_t)0) - 1))
-+		if (!strtonum(end + 1, &end, to, 0, UINT32_MAX - 1))
- 			param_act(P_BAD_VALUE, "owner", opt, s);
- 	if (*end != '\0')
- 		param_act(P_BAD_VALUE, "owner", opt, s);
--- 
-1.6.1.2
-
+ .gitignore                      |    1 +
+ Makefile.am                     |    2 +-
+ configure.ac                    |   26 +--
+ extensions/libip6t_HL.c         |    4 +-
+ extensions/libip6t_LOG.c        |    8 +-
+ extensions/libip6t_REJECT.c     |    2 +-
+ extensions/libip6t_ah.c         |    6 +-
+ extensions/libip6t_dst.c        |   11 +-
+ extensions/libip6t_frag.c       |    6 +-
+ extensions/libip6t_hbh.c        |   11 +-
+ extensions/libip6t_hl.c         |    2 +-
+ extensions/libip6t_icmp6.c      |    6 +-
+ extensions/libip6t_ipv6header.c |    8 +-
+ extensions/libip6t_mh.c         |    4 +-
+ extensions/libip6t_policy.c     |    8 +-
+ extensions/libip6t_rt.c         |   10 +-
+ extensions/libipt_CLUSTERIP.c   |   10 +-
+ extensions/libipt_DNAT.c        |   10 +-
+ extensions/libipt_ECN.c         |    6 +-
+ extensions/libipt_LOG.c         |   10 +-
+ extensions/libipt_MASQUERADE.c  |    2 +-
+ extensions/libipt_NETMAP.c      |   12 +-
+ extensions/libipt_REDIRECT.c    |    4 +-
+ extensions/libipt_REJECT.c      |    2 +-
+ extensions/libipt_SAME.c        |   14 +-
+ extensions/libipt_SET.c         |    2 +-
+ extensions/libipt_SNAT.c        |   10 +-
+ extensions/libipt_TTL.c         |    4 +-
+ extensions/libipt_ULOG.c        |    6 +-
+ extensions/libipt_addrtype.c    |    8 +-
+ extensions/libipt_ah.c          |    4 +-
+ extensions/libipt_ecn.c         |    8 +-
+ extensions/libipt_icmp.c        |    6 +-
+ extensions/libipt_policy.c      |   16 +-
+ extensions/libipt_realm.c       |    4 +-
+ extensions/libipt_set.c         |    2 +-
+ extensions/libipt_ttl.c         |    8 +-
+ extensions/libxt_CONNMARK.c     |   56 +++---
+ extensions/libxt_DSCP.c         |    7 +-
+ extensions/libxt_MARK.c         |   50 +++---
+ extensions/libxt_NFLOG.c        |    6 +-
+ extensions/libxt_NFQUEUE.c      |    3 +-
+ extensions/libxt_TCPMSS.c       |    3 +-
+ extensions/libxt_TCPOPTSTRIP.c  |    3 +-
+ extensions/libxt_TOS.c          |   36 ++--
+ extensions/libxt_TPROXY.c       |   36 ++--
+ extensions/libxt_comment.c      |    2 +-
+ extensions/libxt_connbytes.c    |    2 +-
+ extensions/libxt_connlimit.c    |    2 +-
+ extensions/libxt_connmark.c     |   16 +-
+ extensions/libxt_conntrack.c    |   91 +++++-----
+ extensions/libxt_dccp.c         |   18 +-
+ extensions/libxt_dscp.c         |   11 +-
+ extensions/libxt_esp.c          |    4 +-
+ extensions/libxt_hashlimit.c    |   98 +++++-----
+ extensions/libxt_helper.c       |    4 +-
+ extensions/libxt_iprange.c      |   80 ++++----
+ extensions/libxt_length.c       |    6 +-
+ extensions/libxt_limit.c        |    6 +-
+ extensions/libxt_mac.c          |    2 +-
+ extensions/libxt_mark.c         |   16 +-
+ extensions/libxt_multiport.c    |   18 +-
+ extensions/libxt_owner.c        |   73 ++++----
+ extensions/libxt_physdev.c      |   14 +-
+ extensions/libxt_pkttype.c      |    2 +-
+ extensions/libxt_quota.c        |    4 +-
+ extensions/libxt_rateest.c      |   27 ++--
+ extensions/libxt_recent.c       |    8 +-
+ extensions/libxt_sctp.c         |   12 +-
+ extensions/libxt_state.c        |    2 +-
+ extensions/libxt_statistic.c    |    9 +-
+ extensions/libxt_string.c       |    6 +-
+ extensions/libxt_tcp.c          |   18 +-
+ extensions/libxt_tcpmss.c       |    6 +-
+ extensions/libxt_time.c         |    1 -
+ extensions/libxt_tos.c          |    8 +-
+ extensions/libxt_u32.c          |    2 -
+ extensions/libxt_udp.c          |   10 +-
+ extensions/tos_values.c         |    8 +-
+ include/xtables.h.in            |  115 +++++++------
+ include/xtables/internal.h      |   36 ----
+ include/xtables/internal.h.in   |   17 ++
+ ip6tables-restore.c             |   17 +--
+ ip6tables-save.c                |   17 +--
+ ip6tables-standalone.c          |   15 +-
+ ip6tables.c                     |  149 +++------------
+ iptables-restore.c              |   17 +--
+ iptables-save.c                 |   17 +--
+ iptables-standalone.c           |   15 +-
+ iptables-xml.c                  |    8 +-
+ iptables.c                      |  140 +++-----------
+ xtables.c                       |  387 +++++++++++++++++++++++++++------------
+ 92 files changed, 963 insertions(+), 1036 deletions(-)
