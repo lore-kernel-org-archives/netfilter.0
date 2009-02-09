@@ -1,7 +1,7 @@
 From: Jan Engelhardt <jengelh@medozas.de>
-Subject: [PATCH 02/16] src: remove redundant casts
-Date: Mon,  9 Feb 2009 13:07:20 +0100
-Message-ID: <1234181254-6211-3-git-send-email-jengelh@medozas.de>
+Subject: [PATCH 04/16] extensions: use UINT_MAX constants over open-coded bits (1/2)
+Date: Mon,  9 Feb 2009 13:07:22 +0100
+Message-ID: <1234181254-6211-5-git-send-email-jengelh@medozas.de>
 References: <1234181254-6211-1-git-send-email-jengelh@medozas.de>
 Return-path: <netfilter-owner@vger.kernel.org>
 In-Reply-To: <1234181254-6211-1-git-send-email-jengelh@medozas.de>
@@ -12,336 +12,317 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-All of them are implicitly convertable without any wanted side effects.
+~0 depends on the sizeof(int), so it is better to use UINT32_MAX.
 
 Signed-off-by: Jan Engelhardt <jengelh@medozas.de>
 ---
- extensions/libip6t_LOG.c        |    2 +-
- extensions/libip6t_ah.c         |    2 +-
- extensions/libip6t_dst.c        |    7 +++----
- extensions/libip6t_frag.c       |    2 +-
- extensions/libip6t_hbh.c        |    7 +++----
- extensions/libip6t_ipv6header.c |    2 +-
- extensions/libip6t_rt.c         |    2 +-
- extensions/libipt_CLUSTERIP.c   |    4 ++--
- extensions/libipt_LOG.c         |    2 +-
- extensions/libipt_ah.c          |    2 +-
- extensions/libipt_realm.c       |    2 +-
- extensions/libxt_DSCP.c         |    4 ++--
- extensions/libxt_dccp.c         |    2 +-
- extensions/libxt_dscp.c         |    4 ++--
- extensions/libxt_esp.c          |    2 +-
- extensions/libxt_length.c       |    2 +-
- extensions/libxt_tcp.c          |    2 +-
- extensions/libxt_tcpmss.c       |    2 +-
- xtables.c                       |    2 +-
- 19 files changed, 26 insertions(+), 28 deletions(-)
+ extensions/libxt_CONNMARK.c  |   26 +++++++++++++-------------
+ extensions/libxt_MARK.c      |   12 ++++++------
+ extensions/libxt_TPROXY.c    |    2 +-
+ extensions/libxt_connmark.c  |    6 +++---
+ extensions/libxt_conntrack.c |   10 +++++-----
+ extensions/libxt_mark.c      |    6 +++---
+ extensions/libxt_quota.c     |    2 +-
+ extensions/libxt_string.c    |    2 +-
+ 8 files changed, 33 insertions(+), 33 deletions(-)
 
-diff --git a/extensions/libip6t_LOG.c b/extensions/libip6t_LOG.c
-index 40a551f..1b21d5d 100644
---- a/extensions/libip6t_LOG.c
-+++ b/extensions/libip6t_LOG.c
-@@ -91,7 +91,7 @@ parse_level(const char *level)
- 				   "log-level `%s' unknown", level);
- 	}
- 
--	return (u_int8_t)lev;
-+	return lev;
- }
- 
- #define IP6T_LOG_OPT_LEVEL 0x01
-diff --git a/extensions/libip6t_ah.c b/extensions/libip6t_ah.c
-index 0bbd475..63d1573 100644
---- a/extensions/libip6t_ah.c
-+++ b/extensions/libip6t_ah.c
-@@ -45,7 +45,7 @@ parse_ah_spi(const char *spistr, const char *typestr)
- 		exit_error(PARAMETER_PROBLEM,
- 			   "AH error parsing %s `%s'", typestr, spistr);
- 
--	return (u_int32_t) spi;
-+	return spi;
- }
- 
- static void
-diff --git a/extensions/libip6t_dst.c b/extensions/libip6t_dst.c
-index 215e2d9..43562c1 100644
---- a/extensions/libip6t_dst.c
-+++ b/extensions/libip6t_dst.c
-@@ -49,7 +49,7 @@ parse_opts_num(const char *idstr, const char *typestr)
- 		exit_error(PARAMETER_PROBLEM,
- 		           "dst: error parsing %s `%s'", typestr, idstr);
- 	}
--	return (u_int32_t) id;
-+	return id;
+diff --git a/extensions/libxt_CONNMARK.c b/extensions/libxt_CONNMARK.c
+index 2ad2759..d5d963d 100644
+--- a/extensions/libxt_CONNMARK.c
++++ b/extensions/libxt_CONNMARK.c
+@@ -90,8 +90,8 @@ static void connmark_tg_init(struct xt_entry_target *target)
+ 	 * Need these defaults for --save-mark/--restore-mark if no
+ 	 * --ctmark or --nfmask is given.
+ 	 */
+-	info->ctmask = ~0U;
+-	info->nfmask = ~0U;
++	info->ctmask = UINT32_MAX;
++	info->nfmask = UINT32_MAX;
  }
  
  static int
-@@ -78,13 +78,12 @@ parse_options(const char *optsstr, u_int16_t *opts)
-                         *range++ = '\0';
-                 }
+@@ -152,17 +152,17 @@ static int connmark_tg_parse(int c, char **argv, int invert,
+                              struct xt_entry_target **target)
+ {
+ 	struct xt_connmark_tginfo1 *info = (void *)(*target)->data;
+-	unsigned int value, mask = ~0U;
++	unsigned int value, mask = UINT32_MAX;
+ 	char *end;
  
--                opts[i] = (u_int16_t)((parse_opts_num(cp,"opt") & 0x000000FF)<<8); 
-+		opts[i] = (parse_opts_num(cp, "opt") & 0xFF) << 8;
-                 if (range) {
- 			if (opts[i] == 0)
-         			exit_error(PARAMETER_PROBLEM,
- 					"PAD0 hasn't got length");
--                        opts[i] |= (u_int16_t)(parse_opts_num(range,"length") &
--					0x000000FF);
-+			opts[i] |= parse_opts_num(range, "length") & 0xFF;
-                 } else
-                         opts[i] |= (0x00FF);
+ 	switch (c) {
+ 	case '=': /* --set-xmark */
+ 	case '-': /* --set-mark */
+ 		param_act(P_ONE_ACTION, "CONNMARK", *flags & F_MARK);
+-		if (!strtonum(optarg, &end, &value, 0, ~0U))
++		if (!strtonum(optarg, &end, &value, 0, UINT32_MAX))
+ 			param_act(P_BAD_VALUE, "CONNMARK", "--set-xmark/--set-mark", optarg);
+ 		if (*end == '/')
+-			if (!strtonum(end + 1, &end, &mask, 0, ~0U))
++			if (!strtonum(end + 1, &end, &mask, 0, UINT32_MAX))
+ 				param_act(P_BAD_VALUE, "CONNMARK", "--set-xmark/--set-mark", optarg);
+ 		if (*end != '\0')
+ 			param_act(P_BAD_VALUE, "CONNMARK", "--set-xmark/--set-mark", optarg);
+@@ -176,7 +176,7 @@ static int connmark_tg_parse(int c, char **argv, int invert,
  
-diff --git a/extensions/libip6t_frag.c b/extensions/libip6t_frag.c
-index 5ded1c6..7c22429 100644
---- a/extensions/libip6t_frag.c
-+++ b/extensions/libip6t_frag.c
-@@ -51,7 +51,7 @@ parse_frag_id(const char *idstr, const char *typestr)
- 		exit_error(PARAMETER_PROBLEM,
- 			   "FRAG error parsing %s `%s'", typestr, idstr);
- 	}
--	return (u_int32_t) id;
-+	return id;
- }
+ 	case '&': /* --and-mark */
+ 		param_act(P_ONE_ACTION, "CONNMARK", *flags & F_MARK);
+-		if (!strtonum(optarg, NULL, &mask, 0, ~0U))
++		if (!strtonum(optarg, NULL, &mask, 0, UINT32_MAX))
+ 			param_act(P_BAD_VALUE, "CONNMARK", "--and-mark", optarg);
+ 		info->mode   = XT_CONNMARK_SET;
+ 		info->ctmark = 0;
+@@ -186,7 +186,7 @@ static int connmark_tg_parse(int c, char **argv, int invert,
  
- static void
-diff --git a/extensions/libip6t_hbh.c b/extensions/libip6t_hbh.c
-index 419c250..6c7458d 100644
---- a/extensions/libip6t_hbh.c
-+++ b/extensions/libip6t_hbh.c
-@@ -52,7 +52,7 @@ parse_opts_num(const char *idstr, const char *typestr)
- 		exit_error(PARAMETER_PROBLEM,
- 			   "hbh: error parsing %s `%s'", typestr, idstr);
- 	}
--	return (u_int32_t) id;
-+	return id;
- }
+ 	case '|': /* --or-mark */
+ 		param_act(P_ONE_ACTION, "CONNMARK", *flags & F_MARK);
+-		if (!strtonum(optarg, NULL, &value, 0, ~0U))
++		if (!strtonum(optarg, NULL, &value, 0, UINT32_MAX))
+ 			param_act(P_BAD_VALUE, "CONNMARK", "--or-mark", optarg);
+ 		info->mode   = XT_CONNMARK_SET;
+ 		info->ctmark = value;
+@@ -196,7 +196,7 @@ static int connmark_tg_parse(int c, char **argv, int invert,
  
- static int
-@@ -75,12 +75,11 @@ parse_options(const char *optsstr, u_int16_t *opts)
-                                            "too many ports specified");
-                         *range++ = '\0';
-                 }
--                opts[i] = (u_int16_t)((parse_opts_num(cp,"opt") & 0x000000FF)<<8); 
-+		opts[i] = (parse_opts_num(cp, "opt") & 0xFF) << 8;
-                 if (range) {
- 			if (opts[i] == 0)
-         			exit_error(PARAMETER_PROBLEM, "PAD0 hasn't got length");
--                        opts[i] |= (u_int16_t)(parse_opts_num(range,"length") &
--					0x000000FF);
-+			opts[i] |= parse_opts_num(range, "length") & 0xFF;
-                 } else {
-                         opts[i] |= (0x00FF);
- 		}
-diff --git a/extensions/libip6t_ipv6header.c b/extensions/libip6t_ipv6header.c
-index 1fc9b7e..ea8870a 100644
---- a/extensions/libip6t_ipv6header.c
-+++ b/extensions/libip6t_ipv6header.c
-@@ -110,7 +110,7 @@ name_to_proto(const char *s)
-         			s);
-         }
- 
--        return (u_int16_t)proto;
-+        return proto;
- }
- 
- static unsigned int 
-diff --git a/extensions/libip6t_rt.c b/extensions/libip6t_rt.c
-index 9468da1..49d86fa 100644
---- a/extensions/libip6t_rt.c
-+++ b/extensions/libip6t_rt.c
-@@ -58,7 +58,7 @@ parse_rt_num(const char *idstr, const char *typestr)
- 		exit_error(PARAMETER_PROBLEM,
- 			   "RT error parsing %s `%s'", typestr, idstr);
- 	}
--	return (u_int32_t) id;
-+	return id;
- }
- 
- static void
-diff --git a/extensions/libipt_CLUSTERIP.c b/extensions/libipt_CLUSTERIP.c
-index 4718496..e93290a 100644
---- a/extensions/libipt_CLUSTERIP.c
-+++ b/extensions/libipt_CLUSTERIP.c
-@@ -122,7 +122,7 @@ static int CLUSTERIP_parse(int c, char **argv, int invert, unsigned int *flags,
- 			exit_error(PARAMETER_PROBLEM, "Can only specify total node number once\n");
- 		if (string_to_number(optarg, 1, CLUSTERIP_MAX_NODES, &num) < 0)
- 			exit_error(PARAMETER_PROBLEM, "Unable to parse `%s'\n", optarg);
--		cipinfo->num_total_nodes = (u_int16_t)num;
-+		cipinfo->num_total_nodes = num;
- 		*flags |= PARAM_TOTALNODE;
+ 	case '^': /* --xor-mark */
+ 		param_act(P_ONE_ACTION, "CONNMARK", *flags & F_MARK);
+-		if (!strtonum(optarg, NULL, &value, 0, ~0U))
++		if (!strtonum(optarg, NULL, &value, 0, UINT32_MAX))
+ 			param_act(P_BAD_VALUE, "CONNMARK", "--xor-mark", optarg);
+ 		info->mode   = XT_CONNMARK_SET;
+ 		info->ctmark = value;
+@@ -221,7 +221,7 @@ static int connmark_tg_parse(int c, char **argv, int invert,
+ 			exit_error(PARAMETER_PROBLEM, "CONNMARK: --save-mark "
+ 			           "or --restore-mark is required for "
+ 			           "--nfmask");
+-		if (!strtonum(optarg, NULL, &value, 0, ~0U))
++		if (!strtonum(optarg, NULL, &value, 0, UINT32_MAX))
+ 			param_act(P_BAD_VALUE, "CONNMARK", "--nfmask", optarg);
+ 		info->nfmask = value;
+ 		return true;
+@@ -231,7 +231,7 @@ static int connmark_tg_parse(int c, char **argv, int invert,
+ 			exit_error(PARAMETER_PROBLEM, "CONNMARK: --save-mark "
+ 			           "or --restore-mark is required for "
+ 			           "--ctmask");
+-		if (!strtonum(optarg, NULL, &value, 0, ~0U))
++		if (!strtonum(optarg, NULL, &value, 0, UINT32_MAX))
+ 			param_act(P_BAD_VALUE, "CONNMARK", "--ctmask", optarg);
+ 		info->ctmask = value;
+ 		return true;
+@@ -241,7 +241,7 @@ static int connmark_tg_parse(int c, char **argv, int invert,
+ 			exit_error(PARAMETER_PROBLEM, "CONNMARK: --save-mark "
+ 			           "or --restore-mark is required for "
+ 			           "--mask");
+-		if (!strtonum(optarg, NULL, &value, 0, ~0U))
++		if (!strtonum(optarg, NULL, &value, 0, UINT32_MAX))
+ 			param_act(P_BAD_VALUE, "CONNMARK", "--mask", optarg);
+ 		info->nfmask = info->ctmask = value;
+ 		return true;
+@@ -317,7 +317,7 @@ connmark_tg_print(const void *ip, const struct xt_entry_target *target,
+ 			       info->ctmark, info->ctmask);
  		break;
- 	case '5':
-@@ -133,7 +133,7 @@ static int CLUSTERIP_parse(int c, char **argv, int invert, unsigned int *flags,
- 		if (string_to_number(optarg, 1, CLUSTERIP_MAX_NODES, &num) < 0)
- 			exit_error(PARAMETER_PROBLEM, "Unable to parse `%s'\n", optarg);
- 		cipinfo->num_local_nodes = 1;
--		cipinfo->local_nodes[0] = (u_int16_t)num;
-+		cipinfo->local_nodes[0] = num;
- 		*flags |= PARAM_LOCALNODE;
+ 	case XT_CONNMARK_SAVE:
+-		if (info->nfmask == ~0U && info->ctmask == ~0U)
++		if (info->nfmask == UINT32_MAX && info->ctmask == UINT32_MAX)
+ 			printf("CONNMARK save ");
+ 		else if (info->nfmask == info->ctmask)
+ 			printf("CONNMARK save mask 0x%x ", info->nfmask);
+@@ -326,7 +326,7 @@ connmark_tg_print(const void *ip, const struct xt_entry_target *target,
+ 			       info->nfmask, info->ctmask);
  		break;
- 	case '6':
-diff --git a/extensions/libipt_LOG.c b/extensions/libipt_LOG.c
-index 668b565..2aee910 100644
---- a/extensions/libipt_LOG.c
-+++ b/extensions/libipt_LOG.c
-@@ -91,7 +91,7 @@ parse_level(const char *level)
- 				   "log-level `%s' unknown", level);
- 	}
+ 	case XT_CONNMARK_RESTORE:
+-		if (info->ctmask == ~0U && info->nfmask == ~0U)
++		if (info->ctmask == UINT32_MAX && info->nfmask == UINT32_MAX)
+ 			printf("CONNMARK restore ");
+ 		else if (info->ctmask == info->nfmask)
+ 			printf("CONNMARK restore mask 0x%x ", info->ctmask);
+diff --git a/extensions/libxt_MARK.c b/extensions/libxt_MARK.c
+index 95bce89..b02322b 100644
+--- a/extensions/libxt_MARK.c
++++ b/extensions/libxt_MARK.c
+@@ -126,7 +126,7 @@ static int mark_tg_parse(int c, char **argv, int invert, unsigned int *flags,
+                          const void *entry, struct xt_entry_target **target)
+ {
+ 	struct xt_mark_tginfo2 *info = (void *)(*target)->data;
+-	unsigned int value, mask = ~0U;
++	unsigned int value, mask = UINT32_MAX;
+ 	char *end;
  
--	return (u_int8_t)lev;
-+	return lev;
- }
+ 	switch (c) {
+@@ -134,10 +134,10 @@ static int mark_tg_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	case '=': /* --set-mark */
+ 		param_act(P_ONE_ACTION, "MARK", *flags & F_MARK);
+ 		param_act(P_NO_INVERT, "MARK", "--set-xmark/--set-mark", invert);
+-		if (!strtonum(optarg, &end, &value, 0, ~0U))
++		if (!strtonum(optarg, &end, &value, 0, UINT32_MAX))
+ 			param_act(P_BAD_VALUE, "MARK", "--set-xmark/--set-mark", optarg);
+ 		if (*end == '/')
+-			if (!strtonum(end + 1, &end, &mask, 0, ~0U))
++			if (!strtonum(end + 1, &end, &mask, 0, UINT32_MAX))
+ 				param_act(P_BAD_VALUE, "MARK", "--set-xmark/--set-mark", optarg);
+ 		if (*end != '\0')
+ 			param_act(P_BAD_VALUE, "MARK", "--set-xmark/--set-mark", optarg);
+@@ -151,7 +151,7 @@ static int mark_tg_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	case '&': /* --and-mark */
+ 		param_act(P_ONE_ACTION, "MARK", *flags & F_MARK);
+ 		param_act(P_NO_INVERT, "MARK", "--and-mark", invert);
+-		if (!strtonum(optarg, NULL, &mask, 0, ~0U))
++		if (!strtonum(optarg, NULL, &mask, 0, UINT32_MAX))
+ 			param_act(P_BAD_VALUE, "MARK", "--and-mark", optarg);
+ 		info->mark = 0;
+ 		info->mask = ~mask;
+@@ -160,7 +160,7 @@ static int mark_tg_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	case '|': /* --or-mark */
+ 		param_act(P_ONE_ACTION, "MARK", *flags & F_MARK);
+ 		param_act(P_NO_INVERT, "MARK", "--or-mark", invert);
+-		if (!strtonum(optarg, NULL, &value, 0, ~0U))
++		if (!strtonum(optarg, NULL, &value, 0, UINT32_MAX))
+ 			param_act(P_BAD_VALUE, "MARK", "--or-mark", optarg);
+ 		info->mark = value;
+ 		info->mask = value;
+@@ -169,7 +169,7 @@ static int mark_tg_parse(int c, char **argv, int invert, unsigned int *flags,
+ 	case '^': /* --xor-mark */
+ 		param_act(P_ONE_ACTION, "MARK", *flags & F_MARK);
+ 		param_act(P_NO_INVERT, "MARK", "--xor-mark", invert);
+-		if (!strtonum(optarg, NULL, &value, 0, ~0U))
++		if (!strtonum(optarg, NULL, &value, 0, UINT32_MAX))
+ 			param_act(P_BAD_VALUE, "MARK", "--xor-mark", optarg);
+ 		info->mark = value;
+ 		info->mask = 0;
+diff --git a/extensions/libxt_TPROXY.c b/extensions/libxt_TPROXY.c
+index deb214f..e9a41a1 100644
+--- a/extensions/libxt_TPROXY.c
++++ b/extensions/libxt_TPROXY.c
+@@ -58,7 +58,7 @@ static void parse_tproxy_laddr(const char *s, struct xt_tproxy_target_info *info
  
- #define IPT_LOG_OPT_LEVEL 0x01
-diff --git a/extensions/libipt_ah.c b/extensions/libipt_ah.c
-index fec87a7..10998d8 100644
---- a/extensions/libipt_ah.c
-+++ b/extensions/libipt_ah.c
-@@ -41,7 +41,7 @@ parse_ah_spi(const char *spistr)
- 		exit_error(PARAMETER_PROBLEM,
- 			   "AH error parsing spi `%s'", spistr);
- 	}
--	return (u_int32_t) spi;
-+	return spi;
- }
+ static void parse_tproxy_mark(char *s, struct xt_tproxy_target_info *info)
+ {
+-	unsigned int value, mask = ~0U;
++	unsigned int value, mask = UINT32_MAX;
+ 	char *end;
  
- static void
-diff --git a/extensions/libipt_realm.c b/extensions/libipt_realm.c
-index 5af2fd4..22cbe27 100644
---- a/extensions/libipt_realm.c
-+++ b/extensions/libipt_realm.c
-@@ -173,7 +173,7 @@ static int realm_parse(int c, char **argv, int invert, unsigned int *flags,
- 			if (id == -1)
- 				exit_error(PARAMETER_PROBLEM,
- 					   "Realm `%s' not found", optarg);
--			realminfo->id = (u_int32_t)id;
-+			realminfo->id = id;
- 			realminfo->mask = 0xffffffff;
- 		}
- 		if (invert)
-diff --git a/extensions/libxt_DSCP.c b/extensions/libxt_DSCP.c
-index c9b0327..409fa19 100644
---- a/extensions/libxt_DSCP.c
-+++ b/extensions/libxt_DSCP.c
-@@ -56,7 +56,7 @@ parse_dscp(const char *s, struct xt_DSCP_info *dinfo)
- 		exit_error(PARAMETER_PROBLEM,
- 			   "DSCP `%d` out of range\n", dscp);
+ 	if (!strtonum(s, &end, &value, 0, UINT_MAX))
+diff --git a/extensions/libxt_connmark.c b/extensions/libxt_connmark.c
+index bc7ef45..fbd3e62 100644
+--- a/extensions/libxt_connmark.c
++++ b/extensions/libxt_connmark.c
+@@ -49,16 +49,16 @@ connmark_mt_parse(int c, char **argv, int invert, unsigned int *flags,
+                   const void *entry, struct xt_entry_match **match)
+ {
+ 	struct xt_connmark_mtinfo1 *info = (void *)(*match)->data;
+-	unsigned int mark, mask = ~0U;
++	unsigned int mark, mask = UINT32_MAX;
+ 	char *end;
  
--    	dinfo->dscp = (u_int8_t )dscp;
-+	dinfo->dscp = dscp;
- }
+ 	switch (c) {
+ 	case '1': /* --mark */
+ 		param_act(P_ONLY_ONCE, "connmark", "--mark", *flags & F_MARK);
+-		if (!strtonum(optarg, &end, &mark, 0, ~0U))
++		if (!strtonum(optarg, &end, &mark, 0, UINT32_MAX))
+ 			param_act(P_BAD_VALUE, "connmark", "--mark", optarg);
+ 		if (*end == '/')
+-			if (!strtonum(end + 1, &end, &mask, 0, ~0U))
++			if (!strtonum(end + 1, &end, &mask, 0, UINT32_MAX))
+ 				param_act(P_BAD_VALUE, "connmark", "--mark", optarg);
+ 		if (*end != '\0')
+ 			param_act(P_BAD_VALUE, "connmark", "--mark", optarg);
+diff --git a/extensions/libxt_conntrack.c b/extensions/libxt_conntrack.c
+index d5dee7e..532f5ee 100644
+--- a/extensions/libxt_conntrack.c
++++ b/extensions/libxt_conntrack.c
+@@ -272,7 +272,7 @@ conntrack_ps_expires(struct xt_conntrack_mtinfo1 *info, const char *s)
+ 		param_act(P_BAD_VALUE, "conntrack", "--expires", s);
+ 	max = min;
+ 	if (*end == ':')
+-		if (!strtonum(s, &end, &max, 0, ~0U))
++		if (!strtonum(s, &end, &max, 0, UINT32_MAX))
+ 			param_act(P_BAD_VALUE, "conntrack", "--expires", s);
+ 	if (*end != '\0')
+ 		param_act(P_BAD_VALUE, "conntrack", "--expires", s);
+@@ -481,7 +481,7 @@ conntrack_mt_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		break;
  
+ 	case 'a': /* --ctorigsrcport */
+-		if (!strtonum(optarg, NULL, &port, 0, ~(u_int16_t)0))
++		if (!strtonum(optarg, NULL, &port, 0, UINT16_MAX))
+ 			param_act(P_BAD_VALUE, "conntrack",
+ 			          "--ctorigsrcport", optarg);
+ 		info->match_flags |= XT_CONNTRACK_ORIGSRC_PORT;
+@@ -491,7 +491,7 @@ conntrack_mt_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		break;
  
-@@ -66,7 +66,7 @@ parse_class(const char *s, struct xt_DSCP_info *dinfo)
- 	unsigned int dscp = class_to_dscp(s);
+ 	case 'b': /* --ctorigdstport */
+-		if (!strtonum(optarg, NULL, &port, 0, ~(u_int16_t)0))
++		if (!strtonum(optarg, NULL, &port, 0, UINT16_MAX))
+ 			param_act(P_BAD_VALUE, "conntrack",
+ 			          "--ctorigdstport", optarg);
+ 		info->match_flags |= XT_CONNTRACK_ORIGDST_PORT;
+@@ -501,7 +501,7 @@ conntrack_mt_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		break;
  
- 	/* Assign the value */
--	dinfo->dscp = (u_int8_t)dscp;
-+	dinfo->dscp = dscp;
- }
+ 	case 'c': /* --ctreplsrcport */
+-		if (!strtonum(optarg, NULL, &port, 0, ~(u_int16_t)0))
++		if (!strtonum(optarg, NULL, &port, 0, UINT16_MAX))
+ 			param_act(P_BAD_VALUE, "conntrack",
+ 			          "--ctreplsrcport", optarg);
+ 		info->match_flags |= XT_CONNTRACK_REPLSRC_PORT;
+@@ -511,7 +511,7 @@ conntrack_mt_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		break;
  
+ 	case 'd': /* --ctrepldstport */
+-		if (!strtonum(optarg, NULL, &port, 0, ~(u_int16_t)0))
++		if (!strtonum(optarg, NULL, &port, 0, UINT16_MAX))
+ 			param_act(P_BAD_VALUE, "conntrack",
+ 			          "--ctrepldstport", optarg);
+ 		info->match_flags |= XT_CONNTRACK_REPLDST_PORT;
+diff --git a/extensions/libxt_mark.c b/extensions/libxt_mark.c
+index 811cc77..5a95d51 100644
+--- a/extensions/libxt_mark.c
++++ b/extensions/libxt_mark.c
+@@ -29,16 +29,16 @@ static int mark_mt_parse(int c, char **argv, int invert, unsigned int *flags,
+                          const void *entry, struct xt_entry_match **match)
+ {
+ 	struct xt_mark_mtinfo1 *info = (void *)(*match)->data;
+-	unsigned int mark, mask = ~0U;
++	unsigned int mark, mask = UINT32_MAX;
+ 	char *end;
  
-diff --git a/extensions/libxt_dccp.c b/extensions/libxt_dccp.c
-index 24bf6f7..b1ae62e 100644
---- a/extensions/libxt_dccp.c
-+++ b/extensions/libxt_dccp.c
-@@ -125,7 +125,7 @@ static u_int8_t parse_dccp_option(char *optstring)
- 		exit_error(PARAMETER_PROBLEM, "Bad DCCP option `%s'",
- 			   optstring);
+ 	switch (c) {
+ 	case '1': /* --mark */
+ 		param_act(P_ONLY_ONCE, "mark", "--mark", *flags & F_MARK);
+-		if (!strtonum(optarg, &end, &mark, 0, ~0U))
++		if (!strtonum(optarg, &end, &mark, 0, UINT32_MAX))
+ 			param_act(P_BAD_VALUE, "mark", "--mark", optarg);
+ 		if (*end == '/')
+-			if (!strtonum(end + 1, &end, &mask, 0, ~0U))
++			if (!strtonum(end + 1, &end, &mask, 0, UINT32_MAX))
+ 				param_act(P_BAD_VALUE, "mark", "--mark", optarg);
+ 		if (*end != '\0')
+ 			param_act(P_BAD_VALUE, "mark", "--mark", optarg);
+diff --git a/extensions/libxt_quota.c b/extensions/libxt_quota.c
+index 5007f7c..90da1cd 100644
+--- a/extensions/libxt_quota.c
++++ b/extensions/libxt_quota.c
+@@ -46,7 +46,7 @@ parse_quota(const char *s, u_int64_t * quota)
+ 	printf("Quota: %llu\n", *quota);
+ #endif
  
--	return (u_int8_t)ret;
-+	return ret;
- }
- 
- static int
-diff --git a/extensions/libxt_dscp.c b/extensions/libxt_dscp.c
-index bb794f5..315e219 100644
---- a/extensions/libxt_dscp.c
-+++ b/extensions/libxt_dscp.c
-@@ -56,7 +56,7 @@ parse_dscp(const char *s, struct xt_dscp_info *dinfo)
- 		exit_error(PARAMETER_PROBLEM,
- 			   "DSCP `%d` out of range\n", dscp);
- 
--    	dinfo->dscp = (u_int8_t )dscp;
-+	dinfo->dscp = dscp;
- }
- 
- 
-@@ -66,7 +66,7 @@ parse_class(const char *s, struct xt_dscp_info *dinfo)
- 	unsigned int dscp = class_to_dscp(s);
- 
- 	/* Assign the value */
--	dinfo->dscp = (u_int8_t)dscp;
-+	dinfo->dscp = dscp;
- }
- 
- 
-diff --git a/extensions/libxt_esp.c b/extensions/libxt_esp.c
-index 999733c..34df876 100644
---- a/extensions/libxt_esp.c
-+++ b/extensions/libxt_esp.c
-@@ -43,7 +43,7 @@ parse_esp_spi(const char *spistr)
- 		exit_error(PARAMETER_PROBLEM,
- 			   "ESP error parsing spi `%s'", spistr);
- 	}
--	return (u_int32_t) spi;
-+	return spi;
- }
- 
- static void
-diff --git a/extensions/libxt_length.c b/extensions/libxt_length.c
-index 98e8167..e350431 100644
---- a/extensions/libxt_length.c
-+++ b/extensions/libxt_length.c
-@@ -29,7 +29,7 @@ parse_length(const char *s)
- 	if (string_to_number(s, 0, 0xFFFF, &len) == -1)
- 		exit_error(PARAMETER_PROBLEM, "length invalid: `%s'\n", s);
+-	if (*quota == (u_int64_t)-1)
++	if (*quota == UINT64_MAX)
+ 		exit_error(PARAMETER_PROBLEM, "quota invalid: '%s'\n", s);
  	else
--		return (u_int16_t )len;
-+		return len;
+ 		return 1;
+diff --git a/extensions/libxt_string.c b/extensions/libxt_string.c
+index b440fc9..0408c23 100644
+--- a/extensions/libxt_string.c
++++ b/extensions/libxt_string.c
+@@ -57,7 +57,7 @@ static void string_init(struct xt_entry_match *m)
+ 	struct xt_string_info *i = (struct xt_string_info *) m->data;
+ 
+ 	if (i->to_offset == 0)
+-		i->to_offset = (u_int16_t) ~0UL;
++		i->to_offset = UINT16_MAX;
  }
  
- /* If a single value is provided, min and max are both set to the value */
-diff --git a/extensions/libxt_tcp.c b/extensions/libxt_tcp.c
-index 14d8c18..a9039f0 100644
---- a/extensions/libxt_tcp.c
-+++ b/extensions/libxt_tcp.c
-@@ -124,7 +124,7 @@ parse_tcp_option(const char *option, u_int8_t *result)
- 	if (string_to_number(option, 1, 255, &ret) == -1)
- 		exit_error(PARAMETER_PROBLEM, "Bad TCP option `%s'", option);
- 
--	*result = (u_int8_t)ret;
-+	*result = ret;
- }
- 
- static void tcp_init(struct xt_entry_match *m)
-diff --git a/extensions/libxt_tcpmss.c b/extensions/libxt_tcpmss.c
-index 000d85a..a720c42 100644
---- a/extensions/libxt_tcpmss.c
-+++ b/extensions/libxt_tcpmss.c
-@@ -27,7 +27,7 @@ parse_tcp_mssvalue(const char *mssvalue)
- 	unsigned int mssvaluenum;
- 
- 	if (string_to_number(mssvalue, 0, 65535, &mssvaluenum) != -1)
--		return (u_int16_t)mssvaluenum;
-+		return mssvaluenum;
- 
- 	exit_error(PARAMETER_PROBLEM,
- 		   "Invalid mss `%s' specified", mssvalue);
-diff --git a/xtables.c b/xtables.c
-index 849dc7d..10a2268 100644
---- a/xtables.c
-+++ b/xtables.c
-@@ -265,7 +265,7 @@ u_int16_t parse_port(const char *port, const char *proto)
- 
- 	if ((string_to_number(port, 0, 65535, &portnum)) != -1 ||
- 	    (portnum = service_to_port(port, proto)) != (unsigned)-1)
--		return (u_int16_t)portnum;
-+		return portnum;
- 
- 	exit_error(PARAMETER_PROBLEM,
- 		   "invalid port/service `%s' specified", port);
+ static void
 -- 
 1.6.1.2
 
