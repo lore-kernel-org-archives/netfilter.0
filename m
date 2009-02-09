@@ -1,108 +1,118 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Second failover failure with conntrackd - INVALID packets
-Date: Mon, 09 Feb 2009 12:29:24 +0100
-Message-ID: <49901394.30504@netfilter.org>
-References: <497760CB.6090008@univ-nantes.fr> <49778AF4.7000201@netfilter.org> <4978425F.1030003@univ-nantes.fr> <4978A4F8.5060901@netfilter.org> <4979BA72.50405@univ-nantes.fr> <497C4440.7050809@netfilter.org> <497CA7A2.2000906@netfilter.org> <497E0EA9.1020408@univ-nantes.fr> <497E40B0.2090709@netfilter.org> <4981D4EB.3060007@univ-nantes.fr> <49881800.20707@netfilter.org> <49896FEA.3050803@univ-nantes.fr> <4989713B.2010502@netfilter.org> <498C004A.20506@univ-nantes.fr>
-Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------080805090203030709090201"
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: [PATCH 01/16] src: remove redundant returns at end of void-returning functions
+Date: Mon,  9 Feb 2009 13:07:19 +0100
+Message-ID: <1234181254-6211-2-git-send-email-jengelh@medozas.de>
+References: <1234181254-6211-1-git-send-email-jengelh@medozas.de>
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <498C004A.20506@univ-nantes.fr>
+In-Reply-To: <1234181254-6211-1-git-send-email-jengelh@medozas.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: yoann.juet@univ-nantes.fr
-Cc: netfilter@vger.kernel.org
-
-This is a multi-part message in MIME format.
---------------080805090203030709090201
-Content-Type: text/plain; charset=ISO-8859-1
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hi again Yoann,
+Signed-off-by: Jan Engelhardt <jengelh@medozas.de>
+---
+ extensions/libip6t_ipv6header.c |    4 ----
+ extensions/libxt_DSCP.c         |    1 -
+ extensions/libxt_NFQUEUE.c      |    1 -
+ extensions/libxt_dscp.c         |    1 -
+ extensions/libxt_u32.c          |    2 --
+ iptables-xml.c                  |    2 --
+ 6 files changed, 0 insertions(+), 11 deletions(-)
 
-Yoann Juet wrote:
-> I'm still facing the same difficulties with conntrack-tools 0.9.10 and
-> kernel 2.6.28.
-> 
-> Log on FW1 after the second failover:
-> 
-> Feb  6 09:55:46 FW-DSI-1-IRT kernel: [ 1352.601798] RULE -1 -- DENY
-> IN=eth0 OUT=eth1 SRC=193.52.101.32 DST=172.18.244.10 LEN=255 TOS=0x00
-> PREC=0x00 TTL=62 ID=8698 DF PROTO=TCP SPT=5222 DPT=34189 WINDOW=501
-> RES=0x00 ACK PSH URGP=0
-> 
-> As you can see, this TCP connection is present:
-> 
-> root@fw1-irt:~# conntrack -L  |grep 34189
-> conntrack v0.9.10 (conntrack-tools): 14 flow entries has been shown.
-> tcp      6 10581 ESTABLISHED src=172.18.244.10 dst=193.52.101.32
-> sport=34189 dport=5222 packets=63 bytes=12039 src=193.52.101.32
-> dst=172.18.244.10 sport=5222 dport=34189 packets=58 bytes=22146
-> [ASSURED] mark=0 secmark=0 use=1
-
-This is weird, look like some problem in your scripts or the commit is
-not working in node fw1-irt. The packet counters of the entry above show
-that this is the old entry which is stuck in the cache after the second
-failover. This should be deleted when fw1-irt's script issues the commit
-(conntrackd -c). Does the log file tells that the commit was successful?
-
-The following attached patch adds more verbose output to tell you that
-some old entries has been deleted. Just in case that you need more
-information for troubleshooting.
-
+diff --git a/extensions/libip6t_ipv6header.c b/extensions/libip6t_ipv6header.c
+index 3006124..1fc9b7e 100644
+--- a/extensions/libip6t_ipv6header.c
++++ b/extensions/libip6t_ipv6header.c
+@@ -262,8 +262,6 @@ static void ipv6header_print(const void *ip,
+ 
+ 	if (info->modeflag)
+ 		printf("soft ");
+-
+-	return;
+ }
+ 
+ static void ipv6header_save(const void *ip, const struct xt_entry_match *match)
+@@ -276,8 +274,6 @@ static void ipv6header_save(const void *ip, const struct xt_entry_match *match)
+ 	printf(" ");
+ 	if (info->modeflag)
+ 		printf("--soft ");
+-
+-	return;
+ }
+ 
+ static struct xtables_match ipv6header_mt6_reg = {
+diff --git a/extensions/libxt_DSCP.c b/extensions/libxt_DSCP.c
+index 6625db1..c9b0327 100644
+--- a/extensions/libxt_DSCP.c
++++ b/extensions/libxt_DSCP.c
+@@ -57,7 +57,6 @@ parse_dscp(const char *s, struct xt_DSCP_info *dinfo)
+ 			   "DSCP `%d` out of range\n", dscp);
+ 
+     	dinfo->dscp = (u_int8_t )dscp;
+-    	return;
+ }
+ 
+ 
+diff --git a/extensions/libxt_NFQUEUE.c b/extensions/libxt_NFQUEUE.c
+index 7daed18..5880785 100644
+--- a/extensions/libxt_NFQUEUE.c
++++ b/extensions/libxt_NFQUEUE.c
+@@ -38,7 +38,6 @@ parse_num(const char *s, struct xt_NFQ_info *tinfo)
+ 			   "Invalid queue number `%s'\n", s);
+ 
+     	tinfo->queuenum = num & 0xffff;
+-    	return;
+ }
+ 
+ static int
+diff --git a/extensions/libxt_dscp.c b/extensions/libxt_dscp.c
+index eefb186..bb794f5 100644
+--- a/extensions/libxt_dscp.c
++++ b/extensions/libxt_dscp.c
+@@ -57,7 +57,6 @@ parse_dscp(const char *s, struct xt_dscp_info *dinfo)
+ 			   "DSCP `%d` out of range\n", dscp);
+ 
+     	dinfo->dscp = (u_int8_t )dscp;
+-    	return;
+ }
+ 
+ 
+diff --git a/extensions/libxt_u32.c b/extensions/libxt_u32.c
+index 256d15f..f0bb61a 100644
+--- a/extensions/libxt_u32.c
++++ b/extensions/libxt_u32.c
+@@ -254,7 +254,6 @@ static void u32_print(const void *ip, const struct xt_entry_match *match,
+ 	if (data->invert)
+ 		printf("! ");
+ 	u32_dump(data);
+-	return;
+ }
+ 
+ static void u32_save(const void *ip, const struct xt_entry_match *match)
+@@ -264,7 +263,6 @@ static void u32_save(const void *ip, const struct xt_entry_match *match)
+ 		printf("! ");
+ 	printf("--u32 ");
+ 	u32_dump(data);
+-	return;
+ }
+ 
+ static struct xtables_match u32_match = {
+diff --git a/iptables-xml.c b/iptables-xml.c
+index 8aee5c2..6481b8e 100644
+--- a/iptables-xml.c
++++ b/iptables-xml.c
+@@ -531,8 +531,6 @@ do_rule_part(char *leveltag1, char *leveltag2, int part, int argc,
+ 	if (level1)
+ 		printf("%s", leveli1);
+ 	CLOSE_LEVEL(1);
+-
+-	return;
+ }
+ 
+ static int
 -- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
+1.6.1.2
 
---------------080805090203030709090201
-Content-Type: text/plain;
- name="y"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="y"
-
-diff --git a/include/cache.h b/include/cache.h
-index 371170d..4d2bbe8 100644
---- a/include/cache.h
-+++ b/include/cache.h
-@@ -82,6 +82,7 @@ struct cache {
- 		uint32_t	upd_fail_enoent;
- 
- 		uint32_t	commit_ok;
-+		uint32_t	commit_delete;
- 		uint32_t	commit_fail;
- 
- 		uint32_t	flush;
-diff --git a/src/cache_iterators.c b/src/cache_iterators.c
-index e16a621..54613b9 100644
---- a/src/cache_iterators.c
-+++ b/src/cache_iterators.c
-@@ -134,6 +134,7 @@ retry:
- 		if (errno == EEXIST && retry == 1) {
- 			ret = nl_destroy_conntrack(tmp->h, ct);
- 			if (ret == 0 || (ret == -1 && errno == ENOENT)) {
-+				tmp->c->stats.commit_delete++;
- 				if (retry) {
- 					retry = 0;
- 					goto retry;
-@@ -179,6 +180,7 @@ void cache_commit(struct cache *c)
- {
- 	unsigned int commit_ok = c->stats.commit_ok;
- 	unsigned int commit_fail = c->stats.commit_fail;
-+	unsigned int commit_delete = c->stats.commit_delete;
- 	struct __commit_container tmp;
- 	struct timeval commit_start, commit_stop, res;
- 
-@@ -199,6 +201,11 @@ void cache_commit(struct cache *c)
- 	/* calculate new entries committed */
- 	commit_ok = c->stats.commit_ok - commit_ok;
- 	commit_fail = c->stats.commit_fail - commit_fail;
-+	commit_delete = c->stats.commit_delete - commit_delete;
-+
-+	if (commit_delete)
-+		dlog(LOG_NOTICE, "%u old entries deleted before "
-+				 "commit", c->stats.commit_delete);
- 
- 	/* log results */
- 	dlog(LOG_NOTICE, "Committed %u new entries", commit_ok);
-
---------------080805090203030709090201--
