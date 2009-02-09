@@ -1,59 +1,66 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Cannot get Netfilter to forward to port 80
-Date: Mon, 09 Feb 2009 22:58:57 +0100
-Message-ID: <4990A721.80208@plouf.fr.eu.org>
-References: <3803f73b0902091315g2425fa11s7174c4f3ca9d4a39@mail.gmail.com>
+From: Alan Stern <stern@rowland.harvard.edu>
+Subject: [BUG] SNAT allows packets through when it shouldn't
+Date: Mon, 9 Feb 2009 17:09:45 -0500 (EST)
+Message-ID: <Pine.LNX.4.44L0.0902091648460.29419-100000@iolanthe.rowland.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <3803f73b0902091315g2425fa11s7174c4f3ca9d4a39@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hello,
+I'm seeing some strange behavior on my firewall, which is running
+Fedora 8's version of the 2.6.26.6 kernel.  Packets with private source
+addresses are sometimes leaking out through the public interface.
 
-David Gowdy a =E9crit :
-> I'm using a Linux system running Netfilter a the primary gateway for
-> my Internet service.  This includes the use of port forwarding (DNAT)
-> for accessing some servers.  Right now the servers include FTP (port
-> 21) and HTTP/HTTPS (port 80/443).  It all seems to work nicely with
-> one notable exception.  I cannot forward anything to port 80.  I've
-> tried using several different external ports (i.e., 21, 60, 81) but
-> nothing works.=20
+This seems to happen only with TCP packets and when the kernel has 
+reason to think the connection has been closed.  For example:
 
-(I reordered the rule listing in the order chains are traversed by a=20
-forwarded packet)
+	Internal host A (using a private address) connects to
+	external host B.  The firewall applies SNAT to the
+	connection.
 
-> Chain PREROUTING (policy ACCEPT)
-> target     prot opt source               destination
-> DNAT       tcp  --  anywhere
-> pool-71-163-168-209.washdc.fios.verizon.nettcp dpt:81 to:10.0.0.12:80
+	Data goes back and forth.
 
-So port 81 is DNATed to port 80.
+	Host B sends a FIN packet, which is ACKed by host A.
 
-> Chain FORWARD (policy DROP)
-> target     prot opt source               destination
-[...]
-> ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:8=
-1
-> state NEW,RELATED,ESTABLISHED
+	Host A sends a FIN packet but there's no response from
+	host B.  Nevertheless, the conntrack code seems to believe
+	the connection is closed.
 
-The FORWARD chains are traversed after the PREROUTING chains, so the=20
-port has already been translated and the rule should match the final=20
-destination port 80, not the original port 81.
+	A few seconds later, host A resends the FIN packet.  This
+	sails through the filtering and connection-tracking routines
+	completely unscathed, and is sent out the public interface
+	with host A's private source address.
 
-Also, for better security the rule should only match the destination=20
-address 10.0.0.12, not any address.
+(I sometimes see the same sort of thing happening with TCP RESET 
+packets.)
 
-=46inally, the RELATED state is superfluous : an HTTP packet would neve=
-r=20
-be in that state.
+Now, this looks like a bug in the SNAT implementation.  If the kernel
+has erased its record of the connection then it should apply a new SNAT
+transformation to the FIN packet.  Or, if the kernel is smart enough to
+realize that a non-SYN packet can't be the start of a new connection,
+then it should drop the packet entirely.  Under no circumstances should
+the packet be passed through unchanged.
 
-> ACCEPT     all  --  anywhere             anywhere           state
-> RELATED,ESTABLISHED
+Is this a known problem?  Has it been fixed in later kernel versions?  
 
-Note : this rule should be at the beginning of the chain instead of the=
-=20
-end because it matches most of the traffic.
+Could it be the result of a mistake in the firewall's iptables setup?
+For reference, here is a lightly-edited extract from my iptables 
+script:
+
+
+OUTIP=... #the IP address of the firewall's public interface "net1"
+iptables -t nat -N startnat
+iptables -t nat -A startnat -p tcp -j SNAT --to-source $OUTIP:7000-65500
+iptables -t nat -A startnat -p udp -j SNAT --to-source $OUTIP:7000-65500
+iptables -t nat -A startnat -j DROP
+
+iptables -t nat -A POSTROUTING -o net1 -s 10.0.0.0/8 -j startnat
+
+
+Thank you,
+
+Alan Stern
+
