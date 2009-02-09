@@ -1,7 +1,7 @@
 From: Jan Engelhardt <jengelh@medozas.de>
-Subject: [PATCH 12/16] libxtables: prefix - misc functions
-Date: Mon,  9 Feb 2009 13:07:30 +0100
-Message-ID: <1234181254-6211-13-git-send-email-jengelh@medozas.de>
+Subject: [PATCH 08/16] libxtables: prefix/order - program_name
+Date: Mon,  9 Feb 2009 13:07:26 +0100
+Message-ID: <1234181254-6211-9-git-send-email-jengelh@medozas.de>
 References: <1234181254-6211-1-git-send-email-jengelh@medozas.de>
 Return-path: <netfilter-owner@vger.kernel.org>
 In-Reply-To: <1234181254-6211-1-git-send-email-jengelh@medozas.de>
@@ -12,267 +12,495 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
+Split XTABLES_VERSION into xtables and iptables, and encode the
+xtables soversion into the extensions instead. This makes it possible
+to upgrade iptables without having to recompile 3rd-party extensions
+(if the libxtables version matches, of course).
+
 Signed-off-by: Jan Engelhardt <jengelh@medozas.de>
 ---
- extensions/libipt_REDIRECT.c |    2 +-
- extensions/libxt_dccp.c      |    6 +++---
- extensions/libxt_multiport.c |    6 +++---
- extensions/libxt_physdev.c   |    4 ++--
- extensions/libxt_sctp.c      |    6 +++---
- extensions/libxt_tcp.c       |    6 +++---
- extensions/libxt_udp.c       |    6 +++---
- include/xtables.h.in         |    6 +++---
- ip6tables.c                  |    4 ++--
- iptables.c                   |    4 ++--
- xtables.c                    |    9 +++++----
- 11 files changed, 30 insertions(+), 29 deletions(-)
+ .gitignore                    |    1 +
+ Makefile.am                   |    2 +-
+ configure.ac                  |   26 ++++++++++----------------
+ include/xtables.h.in          |   13 ++++++++-----
+ include/xtables/internal.h    |   34 ----------------------------------
+ include/xtables/internal.h.in |   41 +++++++++++++++++++++++++++++++++++++++++
+ ip6tables-restore.c           |    5 +++--
+ ip6tables-save.c              |    5 +++--
+ ip6tables-standalone.c        |    3 ++-
+ iptables-restore.c            |    5 +++--
+ iptables-save.c               |    5 +++--
+ iptables-standalone.c         |    3 ++-
+ iptables-xml.c                |    4 ++--
+ xtables.c                     |   37 +++++++++++++++++++++++--------------
+ 14 files changed, 102 insertions(+), 82 deletions(-)
+ delete mode 100644 include/xtables/internal.h
+ create mode 100644 include/xtables/internal.h.in
 
-diff --git a/extensions/libipt_REDIRECT.c b/extensions/libipt_REDIRECT.c
-index 64ab737..1ef2b2e 100644
---- a/extensions/libipt_REDIRECT.c
-+++ b/extensions/libipt_REDIRECT.c
-@@ -48,7 +48,7 @@ parse_ports(const char *arg, struct ip_nat_multi_range *mr)
+diff --git a/.gitignore b/.gitignore
+index 741f972..116de2c 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -18,6 +18,7 @@ Makefile.in
+ /extensions/targets?.man
  
- 	port = atoi(arg);
- 	if (port == 0)
--		port = service_to_port(arg, NULL);
-+		port = xtables_service_to_port(arg, NULL);
+ /include/xtables.h
++/include/xtables/internal.h
  
- 	if (port == 0 || port > 65535)
- 		exit_error(PARAMETER_PROBLEM, "Port `%s' not valid\n", arg);
-diff --git a/extensions/libxt_dccp.c b/extensions/libxt_dccp.c
-index b7b55e2..9be0658 100644
---- a/extensions/libxt_dccp.c
-+++ b/extensions/libxt_dccp.c
-@@ -62,14 +62,14 @@ parse_dccp_ports(const char *portstring,
- 	buffer = strdup(portstring);
- 	DEBUGP("%s\n", portstring);
- 	if ((cp = strchr(buffer, ':')) == NULL) {
--		ports[0] = ports[1] = parse_port(buffer, "dccp");
-+		ports[0] = ports[1] = xtables_parse_port(buffer, "dccp");
- 	}
- 	else {
- 		*cp = '\0';
- 		cp++;
+ /aclocal.m4
+ /autom4te*.cache
+diff --git a/Makefile.am b/Makefile.am
+index 83ab3bb..0ffb978 100644
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -14,7 +14,7 @@ libiptc_libiptc_a_SOURCES = libiptc/libip4tc.c libiptc/libip6tc.c
  
--		ports[0] = buffer[0] ? parse_port(buffer, "dccp") : 0;
--		ports[1] = cp[0] ? parse_port(cp, "dccp") : 0xFFFF;
-+		ports[0] = buffer[0] ? xtables_parse_port(buffer, "dccp") : 0;
-+		ports[1] = cp[0] ? xtables_parse_port(cp, "dccp") : 0xFFFF;
+ lib_LTLIBRARIES       = libxtables.la
+ libxtables_la_SOURCES = xtables.c
+-libxtables_la_LDFLAGS = -version-info 1:0:0
++libxtables_la_LDFLAGS = -version-info ${libxtables_vcurrent}:0:${libxtables_vage}
  
- 		if (ports[0] > ports[1])
- 			exit_error(PARAMETER_PROBLEM,
-diff --git a/extensions/libxt_multiport.c b/extensions/libxt_multiport.c
-index dae6e33..a7db2a8 100644
---- a/extensions/libxt_multiport.c
-+++ b/extensions/libxt_multiport.c
-@@ -81,7 +81,7 @@ parse_multi_ports(const char *portstring, u_int16_t *ports, const char *proto)
- 	{
- 		next=strchr(cp, ',');
- 		if (next) *next++='\0';
--		ports[i] = parse_port(cp, proto);
-+		ports[i] = xtables_parse_port(cp, proto);
- 	}
- 	if (cp) exit_error(PARAMETER_PROBLEM, "too many ports specified");
- 	free(buffer);
-@@ -113,10 +113,10 @@ parse_multi_ports_v1(const char *portstring,
- 					   "too many ports specified");
- 			*range++ = '\0';
- 		}
--		multiinfo->ports[i] = parse_port(cp, proto);
-+		multiinfo->ports[i] = xtables_parse_port(cp, proto);
- 		if (range) {
- 			multiinfo->pflags[i] = 1;
--			multiinfo->ports[++i] = parse_port(range, proto);
-+			multiinfo->ports[++i] = xtables_parse_port(range, proto);
- 			if (multiinfo->ports[i-1] >= multiinfo->ports[i])
- 				exit_error(PARAMETER_PROBLEM,
- 					   "invalid portrange specified");
-diff --git a/extensions/libxt_physdev.c b/extensions/libxt_physdev.c
-index 0572aba..6152cb3 100644
---- a/extensions/libxt_physdev.c
-+++ b/extensions/libxt_physdev.c
-@@ -44,7 +44,7 @@ physdev_parse(int c, char **argv, int invert, unsigned int *flags,
- 		if (*flags & XT_PHYSDEV_OP_IN)
- 			goto multiple_use;
- 		check_inverse(optarg, &invert, &optind, 0);
--		parse_interface(argv[optind-1], info->physindev,
-+		xtables_parse_interface(argv[optind-1], info->physindev,
- 				(unsigned char *)info->in_mask);
- 		if (invert)
- 			info->invert |= XT_PHYSDEV_OP_IN;
-@@ -56,7 +56,7 @@ physdev_parse(int c, char **argv, int invert, unsigned int *flags,
- 		if (*flags & XT_PHYSDEV_OP_OUT)
- 			goto multiple_use;
- 		check_inverse(optarg, &invert, &optind, 0);
--		parse_interface(argv[optind-1], info->physoutdev,
-+		xtables_parse_interface(argv[optind-1], info->physoutdev,
- 				(unsigned char *)info->out_mask);
- 		if (invert)
- 			info->invert |= XT_PHYSDEV_OP_OUT;
-diff --git a/extensions/libxt_sctp.c b/extensions/libxt_sctp.c
-index 37a6423..6348a2f 100644
---- a/extensions/libxt_sctp.c
-+++ b/extensions/libxt_sctp.c
-@@ -85,14 +85,14 @@ parse_sctp_ports(const char *portstring,
- 	buffer = strdup(portstring);
- 	DEBUGP("%s\n", portstring);
- 	if ((cp = strchr(buffer, ':')) == NULL) {
--		ports[0] = ports[1] = parse_port(buffer, "sctp");
-+		ports[0] = ports[1] = xtables_parse_port(buffer, "sctp");
- 	}
- 	else {
- 		*cp = '\0';
- 		cp++;
+ # iptables, dynamic
+ iptables_SOURCES          = iptables-standalone.c iptables.c
+diff --git a/configure.ac b/configure.ac
+index 8c9c30d..bb32130 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -1,11 +1,10 @@
+-define([_XTABLES_VERSION_MAJOR], 1)
+-define([_XTABLES_VERSION_MINOR], 4)
+-define([_XTABLES_VERSION_PATCH], 3)
+-define([_XTABLES_VERSION_EXTRA], -rc1)
  
--		ports[0] = buffer[0] ? parse_port(buffer, "sctp") : 0;
--		ports[1] = cp[0] ? parse_port(cp, "sctp") : 0xFFFF;
-+		ports[0] = buffer[0] ? xtables_parse_port(buffer, "sctp") : 0;
-+		ports[1] = cp[0] ? xtables_parse_port(cp, "sctp") : 0xFFFF;
+-define([_XTABLES_VERSION],_XTABLES_VERSION_MAJOR._XTABLES_VERSION_MINOR._XTABLES_VERSION_PATCH[]_XTABLES_VERSION_EXTRA)
++AC_INIT([iptables], [1.4.3-rc1])
++
++# See libtool.info "Libtool's versioning system"
++libxtables_vcurrent=1
++libxtables_vage=0
  
- 		if (ports[0] > ports[1])
- 			exit_error(PARAMETER_PROBLEM,
-diff --git a/extensions/libxt_tcp.c b/extensions/libxt_tcp.c
-index 56bdba5..bb66747 100644
---- a/extensions/libxt_tcp.c
-+++ b/extensions/libxt_tcp.c
-@@ -44,13 +44,13 @@ parse_tcp_ports(const char *portstring, u_int16_t *ports)
+-AC_INIT([iptables], _XTABLES_VERSION)
+ AC_CONFIG_HEADERS([config.h])
+ AC_CONFIG_MACRO_DIR([m4])
+ AC_PROG_INSTALL
+@@ -74,16 +73,11 @@ AC_SUBST([kbuilddir])
+ AC_SUBST([ksourcedir])
+ AC_SUBST([xtlibdir])
+ AC_SUBST([pkgconfigdir])
+-
+-XTABLES_VERSION_MAJOR=_XTABLES_VERSION_MAJOR
+-XTABLES_VERSION_MINOR=_XTABLES_VERSION_MINOR
+-XTABLES_VERSION_PATCH=_XTABLES_VERSION_PATCH
+-XTABLES_VERSION_EXTRA=_XTABLES_VERSION_EXTRA
+-AC_SUBST([XTABLES_VERSION_MAJOR])
+-AC_SUBST([XTABLES_VERSION_MINOR])
+-AC_SUBST([XTABLES_VERSION_PATCH])
+-AC_SUBST([XTABLES_VERSION_EXTRA])
++AC_SUBST([libxtables_vcurrent])
++AC_SUBST([libxtables_vage])
++libxtables_vmajor=$(($libxtables_vcurrent - $libxtables_vage));
++AC_SUBST([libxtables_vmajor])
  
- 	buffer = strdup(portstring);
- 	if ((cp = strchr(buffer, ':')) == NULL)
--		ports[0] = ports[1] = parse_port(buffer, "tcp");
-+		ports[0] = ports[1] = xtables_parse_port(buffer, "tcp");
- 	else {
- 		*cp = '\0';
- 		cp++;
- 
--		ports[0] = buffer[0] ? parse_port(buffer, "tcp") : 0;
--		ports[1] = cp[0] ? parse_port(cp, "tcp") : 0xFFFF;
-+		ports[0] = buffer[0] ? xtables_parse_port(buffer, "tcp") : 0;
-+		ports[1] = cp[0] ? xtables_parse_port(cp, "tcp") : 0xFFFF;
- 
- 		if (ports[0] > ports[1])
- 			exit_error(PARAMETER_PROBLEM,
-diff --git a/extensions/libxt_udp.c b/extensions/libxt_udp.c
-index f64fd1c..4012841 100644
---- a/extensions/libxt_udp.c
-+++ b/extensions/libxt_udp.c
-@@ -36,13 +36,13 @@ parse_udp_ports(const char *portstring, u_int16_t *ports)
- 
- 	buffer = strdup(portstring);
- 	if ((cp = strchr(buffer, ':')) == NULL)
--		ports[0] = ports[1] = parse_port(buffer, "udp");
-+		ports[0] = ports[1] = xtables_parse_port(buffer, "udp");
- 	else {
- 		*cp = '\0';
- 		cp++;
- 
--		ports[0] = buffer[0] ? parse_port(buffer, "udp") : 0;
--		ports[1] = cp[0] ? parse_port(cp, "udp") : 0xFFFF;
-+		ports[0] = buffer[0] ? xtables_parse_port(buffer, "udp") : 0;
-+		ports[1] = cp[0] ? xtables_parse_port(cp, "udp") : 0xFFFF;
- 
- 		if (ports[0] > ports[1])
- 			exit_error(PARAMETER_PROBLEM,
+ AC_CONFIG_FILES([Makefile extensions/GNUmakefile libipq/Makefile
+-	include/xtables.h xtables.pc])
++	include/xtables.h include/xtables/internal.h xtables.pc])
+ AC_OUTPUT
 diff --git a/include/xtables.h.in b/include/xtables.h.in
-index 936bbcc..abde4d8 100644
+index f372d33..e1f9c92 100644
 --- a/include/xtables.h.in
 +++ b/include/xtables.h.in
-@@ -194,10 +194,10 @@ extern bool xtables_strtoul(const char *, char **, unsigned long *,
- 	unsigned long, unsigned long);
- extern bool xtables_strtoui(const char *, char **, unsigned int *,
- 	unsigned int, unsigned int);
--extern int service_to_port(const char *name, const char *proto);
--extern u_int16_t parse_port(const char *port, const char *proto);
-+extern int xtables_service_to_port(const char *name, const char *proto);
-+extern u_int16_t xtables_parse_port(const char *port, const char *proto);
- extern void
--parse_interface(const char *arg, char *vianame, unsigned char *mask);
-+xtables_parse_interface(const char *arg, char *vianame, unsigned char *mask);
+@@ -1,6 +1,11 @@
+ #ifndef _XTABLES_H
+ #define _XTABLES_H
  
- /* this is a special 64bit data type that is 8-byte aligned */
- #define aligned_u64 u_int64_t __attribute__((aligned(8)))
-diff --git a/ip6tables.c b/ip6tables.c
-index f741c52..fd73276 100644
---- a/ip6tables.c
-+++ b/ip6tables.c
-@@ -1700,7 +1700,7 @@ int do_command6(int argc, char *argv[], char **table, struct ip6tc_handle **hand
- 			check_inverse(optarg, &invert, &optind, argc);
- 			set_option(&options, OPT_VIANAMEIN, &fw.ipv6.invflags,
- 				   invert);
--			parse_interface(argv[optind-1],
-+			xtables_parse_interface(argv[optind-1],
- 					fw.ipv6.iniface,
- 					fw.ipv6.iniface_mask);
++/*
++ * Changing any structs/functions may incur a needed change
++ * in libxtables_vcurrent/vage too.
++ */
++
+ #include <sys/socket.h> /* PF_* */
+ #include <sys/types.h>
+ #include <stdbool.h>
+@@ -20,10 +25,8 @@
+ #define IPPROTO_UDPLITE	136
+ #endif
+ 
+-#define XTABLES_VERSION "@PACKAGE_VERSION@"
+-#define XTABLES_VERSION_CODE (0x10000 * @XTABLES_VERSION_MAJOR@ + 0x100 * @XTABLES_VERSION_MINOR@ + @XTABLES_VERSION_PATCH@)
+-
+-#define XTABLES_API_VERSION(x,y,z)    (0x10000*(x) + 0x100*(y) + z)
++#define XTABLES_VERSION "libxtables.so.@libxtables_vmajor@"
++#define XTABLES_VERSION_CODE @libxtables_vmajor@
+ 
+ struct in_addr;
+ 
+@@ -155,6 +158,7 @@ enum xtables_tryload {
+ 	XTF_LOAD_MUST_SUCCEED,
+ };
+ 
++extern const char *xtables_program_name;
+ extern const char *xtables_modprobe_program;
+ extern struct xtables_match *xtables_matches;
+ extern struct xtables_target *xtables_targets;
+@@ -202,7 +206,6 @@ int check_inverse(const char option[], int *invert, int *my_optind, int argc);
+ void exit_error(enum exittype, const char *, ...)__attribute__((noreturn,
+ 							  format(printf,2,3)));
+ extern void param_act(unsigned int, const char *, ...);
+-extern const char *program_name, *program_version;
+ 
+ extern const char *ipaddr_to_numeric(const struct in_addr *);
+ extern const char *ipaddr_to_anyname(const struct in_addr *);
+diff --git a/include/xtables/internal.h b/include/xtables/internal.h
+deleted file mode 100644
+index 21c4401..0000000
+--- a/include/xtables/internal.h
++++ /dev/null
+@@ -1,34 +0,0 @@
+-#ifndef _XTABLES_INTERNAL_H
+-#define _XTABLES_INTERNAL_H 1
+-
+-#ifndef XT_LIB_DIR
+-#	define XT_LIB_DIR "/usr/local/lib/iptables"
+-#endif
+-
+-/* protocol family dependent informations */
+-struct afinfo {
+-	/* protocol family */
+-	int family;
+-
+-	/* prefix of library name (ex "libipt_" */
+-	char *libprefix;
+-
+-	/* used by setsockopt (ex IPPROTO_IP */
+-	int ipproto;
+-
+-	/* kernel module (ex "ip_tables" */
+-	char *kmod;
+-
+-	/* optname to check revision support of match */
+-	int so_rev_match;
+-
+-	/* optname to check revision support of match */
+-	int so_rev_target;
+-};
+-
+-/* This is decleared in ip[6]tables.c */
+-extern struct afinfo afinfo;
+-
+-extern void _init(void);
+-
+-#endif /* _XTABLES_INTERNAL_H */
+diff --git a/include/xtables/internal.h.in b/include/xtables/internal.h.in
+new file mode 100644
+index 0000000..2143829
+--- /dev/null
++++ b/include/xtables/internal.h.in
+@@ -0,0 +1,41 @@
++#ifndef _XTABLES_INTERNAL_H
++#define _XTABLES_INTERNAL_H 1
++
++#define IPTABLES_VERSION "@PACKAGE_VERSION@"
++
++#ifndef XT_LIB_DIR
++#	define XT_LIB_DIR "/usr/local/lib/iptables"
++#endif
++
++/* protocol family dependent informations */
++struct afinfo {
++	/* protocol family */
++	int family;
++
++	/* prefix of library name (ex "libipt_" */
++	char *libprefix;
++
++	/* used by setsockopt (ex IPPROTO_IP */
++	int ipproto;
++
++	/* kernel module (ex "ip_tables" */
++	char *kmod;
++
++	/* optname to check revision support of match */
++	int so_rev_match;
++
++	/* optname to check revision support of match */
++	int so_rev_target;
++};
++
++/* This is decleared in ip[6]tables.c */
++extern struct afinfo afinfo;
++
++/**
++ * Program's own name and version.
++ */
++extern const char *program_name, *program_version;
++
++extern void _init(void);
++
++#endif /* _XTABLES_INTERNAL_H */
+diff --git a/ip6tables-restore.c b/ip6tables-restore.c
+index 6be1a36..beb640b 100644
+--- a/ip6tables-restore.c
++++ b/ip6tables-restore.c
+@@ -127,9 +127,10 @@ int main(int argc, char *argv[])
+ 	int in_table = 0, testing = 0;
+ 
+ 	program_name = "ip6tables-restore";
+-	program_version = XTABLES_VERSION;
++	program_version = IPTABLES_VERSION;
+ 	line = 0;
+ 
++	xtables_program_name = program_name;
+ 	xtables_init();
+ #ifdef NO_SHARED_LIBS
+ 	init_extensions();
+@@ -151,7 +152,7 @@ int main(int argc, char *argv[])
+ 				break;
+ 			case 'h':
+ 				print_usage("ip6tables-restore",
+-					    XTABLES_VERSION);
++					    IPTABLES_VERSION);
+ 				break;
+ 			case 'n':
+ 				noflush = 1;
+diff --git a/ip6tables-save.c b/ip6tables-save.c
+index 1b9d00a..86ec6b2 100644
+--- a/ip6tables-save.c
++++ b/ip6tables-save.c
+@@ -76,7 +76,7 @@ static int do_output(const char *tablename)
+ 		time_t now = time(NULL);
+ 
+ 		printf("# Generated by ip6tables-save v%s on %s",
+-		       XTABLES_VERSION, ctime(&now));
++		       IPTABLES_VERSION, ctime(&now));
+ 		printf("*%s\n", tablename);
+ 
+ 		/* Dump out chain names first,
+@@ -137,8 +137,9 @@ int main(int argc, char *argv[])
+ 	int c;
+ 
+ 	program_name = "ip6tables-save";
+-	program_version = XTABLES_VERSION;
++	program_version = IPTABLES_VERSION;
+ 
++	xtables_program_name = program_name;
+ 	xtables_init();
+ #ifdef NO_SHARED_LIBS
+ 	init_extensions();
+diff --git a/ip6tables-standalone.c b/ip6tables-standalone.c
+index 9543557..3ab114e 100644
+--- a/ip6tables-standalone.c
++++ b/ip6tables-standalone.c
+@@ -50,8 +50,9 @@ main(int argc, char *argv[])
+ 	struct ip6tc_handle *handle = NULL;
+ 
+ 	program_name = "ip6tables";
+-	program_version = XTABLES_VERSION;
++	program_version = IPTABLES_VERSION;
+ 
++	xtables_program_name = program_name;
+ 	xtables_init();
+ #ifdef NO_SHARED_LIBS
+ 	init_extensions();
+diff --git a/iptables-restore.c b/iptables-restore.c
+index d982fca..56812ee 100644
+--- a/iptables-restore.c
++++ b/iptables-restore.c
+@@ -129,9 +129,10 @@ main(int argc, char *argv[])
+ 	const char *tablename = NULL;
+ 
+ 	program_name = "iptables-restore";
+-	program_version = XTABLES_VERSION;
++	program_version = IPTABLES_VERSION;
+ 	line = 0;
+ 
++	xtables_program_name = program_name;
+ 	xtables_init();
+ #ifdef NO_SHARED_LIBS
+ 	init_extensions();
+@@ -153,7 +154,7 @@ main(int argc, char *argv[])
+ 				break;
+ 			case 'h':
+ 				print_usage("iptables-restore",
+-					    XTABLES_VERSION);
++					    IPTABLES_VERSION);
+ 				break;
+ 			case 'n':
+ 				noflush = 1;
+diff --git a/iptables-save.c b/iptables-save.c
+index e615de9..d08ec4b 100644
+--- a/iptables-save.c
++++ b/iptables-save.c
+@@ -74,7 +74,7 @@ static int do_output(const char *tablename)
+ 		time_t now = time(NULL);
+ 
+ 		printf("# Generated by iptables-save v%s on %s",
+-		       XTABLES_VERSION, ctime(&now));
++		       IPTABLES_VERSION, ctime(&now));
+ 		printf("*%s\n", tablename);
+ 
+ 		/* Dump out chain names first,
+@@ -137,8 +137,9 @@ main(int argc, char *argv[])
+ 	int c;
+ 
+ 	program_name = "iptables-save";
+-	program_version = XTABLES_VERSION;
++	program_version = IPTABLES_VERSION;
+ 
++	xtables_program_name = program_name;
+ 	xtables_init();
+ #ifdef NO_SHARED_LIBS
+ 	init_extensions();
+diff --git a/iptables-standalone.c b/iptables-standalone.c
+index c06b286..9190873 100644
+--- a/iptables-standalone.c
++++ b/iptables-standalone.c
+@@ -51,8 +51,9 @@ main(int argc, char *argv[])
+ 	struct iptc_handle *handle = NULL;
+ 
+ 	program_name = "iptables";
+-	program_version = XTABLES_VERSION;
++	program_version = IPTABLES_VERSION;
+ 
++	xtables_program_name = program_name;
+ 	xtables_init();
+ #ifdef NO_SHARED_LIBS
+ 	init_extensions();
+diff --git a/iptables-xml.c b/iptables-xml.c
+index 6481b8e..a3f6987 100644
+--- a/iptables-xml.c
++++ b/iptables-xml.c
+@@ -643,7 +643,7 @@ main(int argc, char *argv[])
+ 	FILE *in;
+ 
+ 	program_name = "iptables-xml";
+-	program_version = XTABLES_VERSION;
++	program_version = IPTABLES_VERSION;
+ 	line = 0;
+ 
+ 	while ((c = getopt_long(argc, argv, "cvh", options, NULL)) != -1) {
+@@ -656,7 +656,7 @@ main(int argc, char *argv[])
+ 			verbose = 1;
  			break;
-@@ -1709,7 +1709,7 @@ int do_command6(int argc, char *argv[], char **table, struct ip6tc_handle **hand
- 			check_inverse(optarg, &invert, &optind, argc);
- 			set_option(&options, OPT_VIANAMEOUT, &fw.ipv6.invflags,
- 				   invert);
--			parse_interface(argv[optind-1],
-+			xtables_parse_interface(argv[optind-1],
- 					fw.ipv6.outiface,
- 					fw.ipv6.outiface_mask);
+ 		case 'h':
+-			print_usage("iptables-xml", XTABLES_VERSION);
++			print_usage("iptables-xml", IPTABLES_VERSION);
  			break;
-diff --git a/iptables.c b/iptables.c
-index d3906fc..aeb40d8 100644
---- a/iptables.c
-+++ b/iptables.c
-@@ -1705,7 +1705,7 @@ int do_command(int argc, char *argv[], char **table, struct iptc_handle **handle
- 			check_inverse(optarg, &invert, &optind, argc);
- 			set_option(&options, OPT_VIANAMEIN, &fw.ip.invflags,
- 				   invert);
--			parse_interface(argv[optind-1],
-+			xtables_parse_interface(argv[optind-1],
- 					fw.ip.iniface,
- 					fw.ip.iniface_mask);
- 			break;
-@@ -1714,7 +1714,7 @@ int do_command(int argc, char *argv[], char **table, struct iptc_handle **handle
- 			check_inverse(optarg, &invert, &optind, argc);
- 			set_option(&options, OPT_VIANAMEOUT, &fw.ip.invflags,
- 				   invert);
--			parse_interface(argv[optind-1],
-+			xtables_parse_interface(argv[optind-1],
- 					fw.ip.outiface,
- 					fw.ip.outiface_mask);
- 			break;
+ 		}
+ 	}
 diff --git a/xtables.c b/xtables.c
-index 859a82a..a387ae0 100644
+index 9e57679..642c04b 100644
 --- a/xtables.c
 +++ b/xtables.c
-@@ -236,7 +236,7 @@ bool xtables_strtoui(const char *s, char **end, unsigned int *value,
- 	return ret;
- }
+@@ -44,6 +44,11 @@
+ #define PROC_SYS_MODPROBE "/proc/sys/kernel/modprobe"
+ #endif
  
--int service_to_port(const char *name, const char *proto)
-+int xtables_service_to_port(const char *name, const char *proto)
++/**
++ * Program will set this to its own name.
++ */
++const char *xtables_program_name;
++
+ /* Search path for Xtables .so files */
+ static const char *xtables_libdir;
+ 
+@@ -529,23 +534,25 @@ void xtables_register_match(struct xtables_match *me)
  {
- 	struct servent *service;
+ 	struct xtables_match **i, *old;
  
-@@ -246,19 +246,20 @@ int service_to_port(const char *name, const char *proto)
- 	return -1;
- }
+-	if (strcmp(me->version, program_version) != 0) {
+-		fprintf(stderr, "%s: match `%s' v%s (I'm v%s).\n",
+-			program_name, me->name, me->version, program_version);
++	if (strcmp(me->version, XTABLES_VERSION) != 0) {
++		fprintf(stderr, "%s: match \"%s\" has version \"%s\", "
++		        "but \"%s\" is required.\n",
++			xtables_program_name, me->name,
++			me->version, XTABLES_VERSION);
+ 		exit(1);
+ 	}
  
--u_int16_t parse_port(const char *port, const char *proto)
-+u_int16_t xtables_parse_port(const char *port, const char *proto)
+ 	/* Revision field stole a char from name. */
+ 	if (strlen(me->name) >= XT_FUNCTION_MAXNAMELEN-1) {
+ 		fprintf(stderr, "%s: target `%s' has invalid name\n",
+-			program_name, me->name);
++			xtables_program_name, me->name);
+ 		exit(1);
+ 	}
+ 
+ 	if (me->family >= NPROTO) {
+ 		fprintf(stderr,
+ 			"%s: BUG: match %s has invalid protocol family\n",
+-			program_name, me->name);
++			xtables_program_name, me->name);
+ 		exit(1);
+ 	}
+ 
+@@ -559,7 +566,7 @@ void xtables_register_match(struct xtables_match *me)
+ 		    old->family == me->family) {
+ 			fprintf(stderr,
+ 				"%s: match `%s' already registered.\n",
+-				program_name, me->name);
++				xtables_program_name, me->name);
+ 			exit(1);
+ 		}
+ 
+@@ -583,7 +590,7 @@ void xtables_register_match(struct xtables_match *me)
+ 
+ 	if (me->size != XT_ALIGN(me->size)) {
+ 		fprintf(stderr, "%s: match `%s' has invalid size %u.\n",
+-			program_name, me->name, (unsigned int)me->size);
++			xtables_program_name, me->name, (unsigned int)me->size);
+ 		exit(1);
+ 	}
+ 
+@@ -600,23 +607,25 @@ void xtables_register_target(struct xtables_target *me)
  {
- 	unsigned int portnum;
+ 	struct xtables_target *old;
  
- 	if (xtables_strtoui(port, NULL, &portnum, 0, UINT16_MAX) ||
--	    (portnum = service_to_port(port, proto)) != (unsigned)-1)
-+	    (portnum = xtables_service_to_port(port, proto)) != (unsigned)-1)
- 		return portnum;
+-	if (strcmp(me->version, program_version) != 0) {
+-		fprintf(stderr, "%s: target `%s' v%s (I'm v%s).\n",
+-			program_name, me->name, me->version, program_version);
++	if (strcmp(me->version, XTABLES_VERSION) != 0) {
++		fprintf(stderr, "%s: target \"%s\" has version \"%s\", "
++		        "but \"%s\" is required.\n",
++			xtables_program_name, me->name,
++			me->version, XTABLES_VERSION);
+ 		exit(1);
+ 	}
  
- 	exit_error(PARAMETER_PROBLEM,
- 		   "invalid port/service `%s' specified", port);
- }
+ 	/* Revision field stole a char from name. */
+ 	if (strlen(me->name) >= XT_FUNCTION_MAXNAMELEN-1) {
+ 		fprintf(stderr, "%s: target `%s' has invalid name\n",
+-			program_name, me->name);
++			xtables_program_name, me->name);
+ 		exit(1);
+ 	}
  
--void parse_interface(const char *arg, char *vianame, unsigned char *mask)
-+void xtables_parse_interface(const char *arg, char *vianame,
-+			     unsigned char *mask)
- {
- 	int vialen = strlen(arg);
- 	unsigned int i;
+ 	if (me->family >= NPROTO) {
+ 		fprintf(stderr,
+ 			"%s: BUG: target %s has invalid protocol family\n",
+-			program_name, me->name);
++			xtables_program_name, me->name);
+ 		exit(1);
+ 	}
+ 
+@@ -632,7 +641,7 @@ void xtables_register_target(struct xtables_target *me)
+ 		    old->family == me->family) {
+ 			fprintf(stderr,
+ 				"%s: target `%s' already registered.\n",
+-				program_name, me->name);
++				xtables_program_name, me->name);
+ 			exit(1);
+ 		}
+ 
+@@ -656,7 +665,7 @@ void xtables_register_target(struct xtables_target *me)
+ 
+ 	if (me->size != XT_ALIGN(me->size)) {
+ 		fprintf(stderr, "%s: target `%s' has invalid size %u.\n",
+-			program_name, me->name, (unsigned int)me->size);
++			xtables_program_name, me->name, (unsigned int)me->size);
+ 		exit(1);
+ 	}
+ 
 -- 
 1.6.1.2
 
