@@ -1,7 +1,7 @@
 From: Jan Engelhardt <jengelh@medozas.de>
-Subject: [PATCH 11/16] libxtables: prefix/order - ascii to ipaddr/ipmask input
-Date: Mon,  9 Feb 2009 13:07:29 +0100
-Message-ID: <1234181254-6211-12-git-send-email-jengelh@medozas.de>
+Subject: [PATCH 12/16] libxtables: prefix - misc functions
+Date: Mon,  9 Feb 2009 13:07:30 +0100
+Message-ID: <1234181254-6211-13-git-send-email-jengelh@medozas.de>
 References: <1234181254-6211-1-git-send-email-jengelh@medozas.de>
 Return-path: <netfilter-owner@vger.kernel.org>
 In-Reply-To: <1234181254-6211-1-git-send-email-jengelh@medozas.de>
@@ -14,272 +14,265 @@ To: netfilter@vger.kernel.org
 
 Signed-off-by: Jan Engelhardt <jengelh@medozas.de>
 ---
- extensions/libipt_DNAT.c   |    4 ++--
- extensions/libipt_NETMAP.c |    4 ++--
- extensions/libipt_SAME.c   |    4 ++--
- extensions/libipt_SNAT.c   |    4 ++--
- extensions/libxt_TPROXY.c  |    2 +-
- extensions/libxt_iprange.c |   20 ++++++++++----------
- include/xtables.h.in       |    6 +++---
- xtables.c                  |   14 +++++++-------
- 8 files changed, 29 insertions(+), 29 deletions(-)
+ extensions/libipt_REDIRECT.c |    2 +-
+ extensions/libxt_dccp.c      |    6 +++---
+ extensions/libxt_multiport.c |    6 +++---
+ extensions/libxt_physdev.c   |    4 ++--
+ extensions/libxt_sctp.c      |    6 +++---
+ extensions/libxt_tcp.c       |    6 +++---
+ extensions/libxt_udp.c       |    6 +++---
+ include/xtables.h.in         |    6 +++---
+ ip6tables.c                  |    4 ++--
+ iptables.c                   |    4 ++--
+ xtables.c                    |    9 +++++----
+ 11 files changed, 30 insertions(+), 29 deletions(-)
 
-diff --git a/extensions/libipt_DNAT.c b/extensions/libipt_DNAT.c
-index 42695bb..0d355a0 100644
---- a/extensions/libipt_DNAT.c
-+++ b/extensions/libipt_DNAT.c
-@@ -117,13 +117,13 @@ parse_to(char *arg, int portok, struct ipt_natinfo *info)
- 	if (dash)
- 		*dash = '\0';
+diff --git a/extensions/libipt_REDIRECT.c b/extensions/libipt_REDIRECT.c
+index 64ab737..1ef2b2e 100644
+--- a/extensions/libipt_REDIRECT.c
++++ b/extensions/libipt_REDIRECT.c
+@@ -48,7 +48,7 @@ parse_ports(const char *arg, struct ip_nat_multi_range *mr)
  
--	ip = numeric_to_ipaddr(arg);
-+	ip = xtables_numeric_to_ipaddr(arg);
- 	if (!ip)
- 		exit_error(PARAMETER_PROBLEM, "Bad IP address `%s'\n",
- 			   arg);
- 	range.min_ip = ip->s_addr;
- 	if (dash) {
--		ip = numeric_to_ipaddr(dash+1);
-+		ip = xtables_numeric_to_ipaddr(dash+1);
- 		if (!ip)
- 			exit_error(PARAMETER_PROBLEM, "Bad IP address `%s'\n",
- 				   dash+1);
-diff --git a/extensions/libipt_NETMAP.c b/extensions/libipt_NETMAP.c
-index 33f48c9..f6c8bfd 100644
---- a/extensions/libipt_NETMAP.c
-+++ b/extensions/libipt_NETMAP.c
-@@ -75,14 +75,14 @@ parse_to(char *arg, struct ip_nat_range *range)
- 	if (slash)
- 		*slash = '\0';
+ 	port = atoi(arg);
+ 	if (port == 0)
+-		port = service_to_port(arg, NULL);
++		port = xtables_service_to_port(arg, NULL);
  
--	ip = numeric_to_ipaddr(arg);
-+	ip = xtables_numeric_to_ipaddr(arg);
- 	if (!ip)
- 		exit_error(PARAMETER_PROBLEM, "Bad IP address `%s'\n",
- 			   arg);
- 	range->min_ip = ip->s_addr;
- 	if (slash) {
- 		if (strchr(slash+1, '.')) {
--			ip = numeric_to_ipmask(slash+1);
-+			ip = xtables_numeric_to_ipmask(slash+1);
- 			if (!ip)
- 				exit_error(PARAMETER_PROBLEM, "Bad netmask `%s'\n",
- 					   slash+1);
-diff --git a/extensions/libipt_SAME.c b/extensions/libipt_SAME.c
-index 1ca38ff..6882242 100644
---- a/extensions/libipt_SAME.c
-+++ b/extensions/libipt_SAME.c
-@@ -56,14 +56,14 @@ parse_to(char *arg, struct ip_nat_range *range)
- 	if (dash)
- 		*dash = '\0';
+ 	if (port == 0 || port > 65535)
+ 		exit_error(PARAMETER_PROBLEM, "Port `%s' not valid\n", arg);
+diff --git a/extensions/libxt_dccp.c b/extensions/libxt_dccp.c
+index b7b55e2..9be0658 100644
+--- a/extensions/libxt_dccp.c
++++ b/extensions/libxt_dccp.c
+@@ -62,14 +62,14 @@ parse_dccp_ports(const char *portstring,
+ 	buffer = strdup(portstring);
+ 	DEBUGP("%s\n", portstring);
+ 	if ((cp = strchr(buffer, ':')) == NULL) {
+-		ports[0] = ports[1] = parse_port(buffer, "dccp");
++		ports[0] = ports[1] = xtables_parse_port(buffer, "dccp");
+ 	}
+ 	else {
+ 		*cp = '\0';
+ 		cp++;
  
--	ip = numeric_to_ipaddr(arg);
-+	ip = xtables_numeric_to_ipaddr(arg);
- 	if (!ip)
- 		exit_error(PARAMETER_PROBLEM, "Bad IP address `%s'\n",
- 			   arg);
- 	range->min_ip = ip->s_addr;
+-		ports[0] = buffer[0] ? parse_port(buffer, "dccp") : 0;
+-		ports[1] = cp[0] ? parse_port(cp, "dccp") : 0xFFFF;
++		ports[0] = buffer[0] ? xtables_parse_port(buffer, "dccp") : 0;
++		ports[1] = cp[0] ? xtables_parse_port(cp, "dccp") : 0xFFFF;
  
- 	if (dash) {
--		ip = numeric_to_ipaddr(dash+1);
-+		ip = xtables_numeric_to_ipaddr(dash+1);
- 		if (!ip)
- 			exit_error(PARAMETER_PROBLEM, "Bad IP address `%s'\n",
- 				   dash+1);
-diff --git a/extensions/libipt_SNAT.c b/extensions/libipt_SNAT.c
-index 2afcbb1..0780aa1 100644
---- a/extensions/libipt_SNAT.c
-+++ b/extensions/libipt_SNAT.c
-@@ -117,13 +117,13 @@ parse_to(char *arg, int portok, struct ipt_natinfo *info)
- 	if (dash)
- 		*dash = '\0';
+ 		if (ports[0] > ports[1])
+ 			exit_error(PARAMETER_PROBLEM,
+diff --git a/extensions/libxt_multiport.c b/extensions/libxt_multiport.c
+index dae6e33..a7db2a8 100644
+--- a/extensions/libxt_multiport.c
++++ b/extensions/libxt_multiport.c
+@@ -81,7 +81,7 @@ parse_multi_ports(const char *portstring, u_int16_t *ports, const char *proto)
+ 	{
+ 		next=strchr(cp, ',');
+ 		if (next) *next++='\0';
+-		ports[i] = parse_port(cp, proto);
++		ports[i] = xtables_parse_port(cp, proto);
+ 	}
+ 	if (cp) exit_error(PARAMETER_PROBLEM, "too many ports specified");
+ 	free(buffer);
+@@ -113,10 +113,10 @@ parse_multi_ports_v1(const char *portstring,
+ 					   "too many ports specified");
+ 			*range++ = '\0';
+ 		}
+-		multiinfo->ports[i] = parse_port(cp, proto);
++		multiinfo->ports[i] = xtables_parse_port(cp, proto);
+ 		if (range) {
+ 			multiinfo->pflags[i] = 1;
+-			multiinfo->ports[++i] = parse_port(range, proto);
++			multiinfo->ports[++i] = xtables_parse_port(range, proto);
+ 			if (multiinfo->ports[i-1] >= multiinfo->ports[i])
+ 				exit_error(PARAMETER_PROBLEM,
+ 					   "invalid portrange specified");
+diff --git a/extensions/libxt_physdev.c b/extensions/libxt_physdev.c
+index 0572aba..6152cb3 100644
+--- a/extensions/libxt_physdev.c
++++ b/extensions/libxt_physdev.c
+@@ -44,7 +44,7 @@ physdev_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & XT_PHYSDEV_OP_IN)
+ 			goto multiple_use;
+ 		check_inverse(optarg, &invert, &optind, 0);
+-		parse_interface(argv[optind-1], info->physindev,
++		xtables_parse_interface(argv[optind-1], info->physindev,
+ 				(unsigned char *)info->in_mask);
+ 		if (invert)
+ 			info->invert |= XT_PHYSDEV_OP_IN;
+@@ -56,7 +56,7 @@ physdev_parse(int c, char **argv, int invert, unsigned int *flags,
+ 		if (*flags & XT_PHYSDEV_OP_OUT)
+ 			goto multiple_use;
+ 		check_inverse(optarg, &invert, &optind, 0);
+-		parse_interface(argv[optind-1], info->physoutdev,
++		xtables_parse_interface(argv[optind-1], info->physoutdev,
+ 				(unsigned char *)info->out_mask);
+ 		if (invert)
+ 			info->invert |= XT_PHYSDEV_OP_OUT;
+diff --git a/extensions/libxt_sctp.c b/extensions/libxt_sctp.c
+index 37a6423..6348a2f 100644
+--- a/extensions/libxt_sctp.c
++++ b/extensions/libxt_sctp.c
+@@ -85,14 +85,14 @@ parse_sctp_ports(const char *portstring,
+ 	buffer = strdup(portstring);
+ 	DEBUGP("%s\n", portstring);
+ 	if ((cp = strchr(buffer, ':')) == NULL) {
+-		ports[0] = ports[1] = parse_port(buffer, "sctp");
++		ports[0] = ports[1] = xtables_parse_port(buffer, "sctp");
+ 	}
+ 	else {
+ 		*cp = '\0';
+ 		cp++;
  
--	ip = numeric_to_ipaddr(arg);
-+	ip = xtables_numeric_to_ipaddr(arg);
- 	if (!ip)
- 		exit_error(PARAMETER_PROBLEM, "Bad IP address `%s'\n",
- 			   arg);
- 	range.min_ip = ip->s_addr;
- 	if (dash) {
--		ip = numeric_to_ipaddr(dash+1);
-+		ip = xtables_numeric_to_ipaddr(dash+1);
- 		if (!ip)
- 			exit_error(PARAMETER_PROBLEM, "Bad IP address `%s'\n",
- 				   dash+1);
-diff --git a/extensions/libxt_TPROXY.c b/extensions/libxt_TPROXY.c
-index 2398c84..54ae96d 100644
---- a/extensions/libxt_TPROXY.c
-+++ b/extensions/libxt_TPROXY.c
-@@ -50,7 +50,7 @@ static void parse_tproxy_laddr(const char *s, struct xt_tproxy_target_info *info
- {
- 	struct in_addr *laddr;
+-		ports[0] = buffer[0] ? parse_port(buffer, "sctp") : 0;
+-		ports[1] = cp[0] ? parse_port(cp, "sctp") : 0xFFFF;
++		ports[0] = buffer[0] ? xtables_parse_port(buffer, "sctp") : 0;
++		ports[1] = cp[0] ? xtables_parse_port(cp, "sctp") : 0xFFFF;
  
--	if ((laddr = numeric_to_ipaddr(s)) == NULL)
-+	if ((laddr = xtables_numeric_to_ipaddr(s)) == NULL)
- 		xtables_param_act(XTF_BAD_VALUE, "TPROXY", "--on-ip", s);
+ 		if (ports[0] > ports[1])
+ 			exit_error(PARAMETER_PROBLEM,
+diff --git a/extensions/libxt_tcp.c b/extensions/libxt_tcp.c
+index 56bdba5..bb66747 100644
+--- a/extensions/libxt_tcp.c
++++ b/extensions/libxt_tcp.c
+@@ -44,13 +44,13 @@ parse_tcp_ports(const char *portstring, u_int16_t *ports)
  
- 	info->laddr = laddr->s_addr;
-diff --git a/extensions/libxt_iprange.c b/extensions/libxt_iprange.c
-index 9fdc70a..de079cb 100644
---- a/extensions/libxt_iprange.c
-+++ b/extensions/libxt_iprange.c
-@@ -40,14 +40,14 @@ parse_iprange(char *arg, struct ipt_iprange *range)
- 	if (dash != NULL)
- 		*dash = '\0';
+ 	buffer = strdup(portstring);
+ 	if ((cp = strchr(buffer, ':')) == NULL)
+-		ports[0] = ports[1] = parse_port(buffer, "tcp");
++		ports[0] = ports[1] = xtables_parse_port(buffer, "tcp");
+ 	else {
+ 		*cp = '\0';
+ 		cp++;
  
--	ip = numeric_to_ipaddr(arg);
-+	ip = xtables_numeric_to_ipaddr(arg);
- 	if (!ip)
- 		exit_error(PARAMETER_PROBLEM, "iprange match: Bad IP address `%s'\n",
- 			   arg);
- 	range->min_ip = ip->s_addr;
+-		ports[0] = buffer[0] ? parse_port(buffer, "tcp") : 0;
+-		ports[1] = cp[0] ? parse_port(cp, "tcp") : 0xFFFF;
++		ports[0] = buffer[0] ? xtables_parse_port(buffer, "tcp") : 0;
++		ports[1] = cp[0] ? xtables_parse_port(cp, "tcp") : 0xFFFF;
  
- 	if (dash != NULL) {
--		ip = numeric_to_ipaddr(dash+1);
-+		ip = xtables_numeric_to_ipaddr(dash+1);
- 		if (!ip)
- 			exit_error(PARAMETER_PROBLEM, "iprange match: Bad IP address `%s'\n",
- 				   dash+1);
-@@ -112,11 +112,11 @@ iprange_mt4_parse(int c, char **argv, int invert, unsigned int *flags,
- 		if (end == NULL)
- 			xtables_param_act(XTF_BAD_VALUE, "iprange", "--src-range", optarg);
- 		*end = '\0';
--		ia = numeric_to_ipaddr(optarg);
-+		ia = xtables_numeric_to_ipaddr(optarg);
- 		if (ia == NULL)
- 			xtables_param_act(XTF_BAD_VALUE, "iprange", "--src-range", optarg);
- 		memcpy(&info->src_min.in, ia, sizeof(*ia));
--		ia = numeric_to_ipaddr(end+1);
-+		ia = xtables_numeric_to_ipaddr(end+1);
- 		if (ia == NULL)
- 			xtables_param_act(XTF_BAD_VALUE, "iprange", "--src-range", end + 1);
- 		memcpy(&info->src_max.in, ia, sizeof(*ia));
-@@ -131,11 +131,11 @@ iprange_mt4_parse(int c, char **argv, int invert, unsigned int *flags,
- 		if (end == NULL)
- 			xtables_param_act(XTF_BAD_VALUE, "iprange", "--dst-range", optarg);
- 		*end = '\0';
--		ia = numeric_to_ipaddr(optarg);
-+		ia = xtables_numeric_to_ipaddr(optarg);
- 		if (ia == NULL)
- 			xtables_param_act(XTF_BAD_VALUE, "iprange", "--dst-range", optarg);
- 		memcpy(&info->dst_min.in, ia, sizeof(*ia));
--		ia = numeric_to_ipaddr(end + 1);
-+		ia = xtables_numeric_to_ipaddr(end + 1);
- 		if (ia == NULL)
- 			xtables_param_act(XTF_BAD_VALUE, "iprange", "--dst-range", end + 1);
- 		memcpy(&info->dst_max.in, ia, sizeof(*ia));
-@@ -162,11 +162,11 @@ iprange_mt6_parse(int c, char **argv, int invert, unsigned int *flags,
- 		if (end == NULL)
- 			xtables_param_act(XTF_BAD_VALUE, "iprange", "--src-range", optarg);
- 		*end = '\0';
--		ia = numeric_to_ip6addr(optarg);
-+		ia = xtables_numeric_to_ip6addr(optarg);
- 		if (ia == NULL)
- 			xtables_param_act(XTF_BAD_VALUE, "iprange", "--src-range", optarg);
- 		memcpy(&info->src_min.in, ia, sizeof(*ia));
--		ia = numeric_to_ip6addr(end+1);
-+		ia = xtables_numeric_to_ip6addr(end+1);
- 		if (ia == NULL)
- 			xtables_param_act(XTF_BAD_VALUE, "iprange", "--src-range", end + 1);
- 		memcpy(&info->src_max.in, ia, sizeof(*ia));
-@@ -181,11 +181,11 @@ iprange_mt6_parse(int c, char **argv, int invert, unsigned int *flags,
- 		if (end == NULL)
- 			xtables_param_act(XTF_BAD_VALUE, "iprange", "--dst-range", optarg);
- 		*end = '\0';
--		ia = numeric_to_ip6addr(optarg);
-+		ia = xtables_numeric_to_ip6addr(optarg);
- 		if (ia == NULL)
- 			xtables_param_act(XTF_BAD_VALUE, "iprange", "--dst-range", optarg);
- 		memcpy(&info->dst_min.in, ia, sizeof(*ia));
--		ia = numeric_to_ip6addr(end + 1);
-+		ia = xtables_numeric_to_ip6addr(end + 1);
- 		if (ia == NULL)
- 			xtables_param_act(XTF_BAD_VALUE, "iprange", "--dst-range", end + 1);
- 		memcpy(&info->dst_max.in, ia, sizeof(*ia));
+ 		if (ports[0] > ports[1])
+ 			exit_error(PARAMETER_PROBLEM,
+diff --git a/extensions/libxt_udp.c b/extensions/libxt_udp.c
+index f64fd1c..4012841 100644
+--- a/extensions/libxt_udp.c
++++ b/extensions/libxt_udp.c
+@@ -36,13 +36,13 @@ parse_udp_ports(const char *portstring, u_int16_t *ports)
+ 
+ 	buffer = strdup(portstring);
+ 	if ((cp = strchr(buffer, ':')) == NULL)
+-		ports[0] = ports[1] = parse_port(buffer, "udp");
++		ports[0] = ports[1] = xtables_parse_port(buffer, "udp");
+ 	else {
+ 		*cp = '\0';
+ 		cp++;
+ 
+-		ports[0] = buffer[0] ? parse_port(buffer, "udp") : 0;
+-		ports[1] = cp[0] ? parse_port(cp, "udp") : 0xFFFF;
++		ports[0] = buffer[0] ? xtables_parse_port(buffer, "udp") : 0;
++		ports[1] = cp[0] ? xtables_parse_port(cp, "udp") : 0xFFFF;
+ 
+ 		if (ports[0] > ports[1])
+ 			exit_error(PARAMETER_PROBLEM,
 diff --git a/include/xtables.h.in b/include/xtables.h.in
-index 3099de8..936bbcc 100644
+index 936bbcc..abde4d8 100644
 --- a/include/xtables.h.in
 +++ b/include/xtables.h.in
-@@ -210,12 +210,12 @@ extern void xtables_param_act(unsigned int, const char *, ...);
- extern const char *xtables_ipaddr_to_numeric(const struct in_addr *);
- extern const char *xtables_ipaddr_to_anyname(const struct in_addr *);
- extern const char *xtables_ipmask_to_numeric(const struct in_addr *);
--extern struct in_addr *numeric_to_ipaddr(const char *);
--extern struct in_addr *numeric_to_ipmask(const char *);
-+extern struct in_addr *xtables_numeric_to_ipaddr(const char *);
-+extern struct in_addr *xtables_numeric_to_ipmask(const char *);
- extern void ipparse_hostnetworkmask(const char *, struct in_addr **,
- 	struct in_addr *, unsigned int *);
+@@ -194,10 +194,10 @@ extern bool xtables_strtoul(const char *, char **, unsigned long *,
+ 	unsigned long, unsigned long);
+ extern bool xtables_strtoui(const char *, char **, unsigned int *,
+ 	unsigned int, unsigned int);
+-extern int service_to_port(const char *name, const char *proto);
+-extern u_int16_t parse_port(const char *port, const char *proto);
++extern int xtables_service_to_port(const char *name, const char *proto);
++extern u_int16_t xtables_parse_port(const char *port, const char *proto);
+ extern void
+-parse_interface(const char *arg, char *vianame, unsigned char *mask);
++xtables_parse_interface(const char *arg, char *vianame, unsigned char *mask);
  
--extern struct in6_addr *numeric_to_ip6addr(const char *);
-+extern struct in6_addr *xtables_numeric_to_ip6addr(const char *);
- extern const char *xtables_ip6addr_to_numeric(const struct in6_addr *);
- extern const char *xtables_ip6addr_to_anyname(const struct in6_addr *);
- extern const char *xtables_ip6mask_to_numeric(const struct in6_addr *);
+ /* this is a special 64bit data type that is 8-byte aligned */
+ #define aligned_u64 u_int64_t __attribute__((aligned(8)))
+diff --git a/ip6tables.c b/ip6tables.c
+index f741c52..fd73276 100644
+--- a/ip6tables.c
++++ b/ip6tables.c
+@@ -1700,7 +1700,7 @@ int do_command6(int argc, char *argv[], char **table, struct ip6tc_handle **hand
+ 			check_inverse(optarg, &invert, &optind, argc);
+ 			set_option(&options, OPT_VIANAMEIN, &fw.ipv6.invflags,
+ 				   invert);
+-			parse_interface(argv[optind-1],
++			xtables_parse_interface(argv[optind-1],
+ 					fw.ipv6.iniface,
+ 					fw.ipv6.iniface_mask);
+ 			break;
+@@ -1709,7 +1709,7 @@ int do_command6(int argc, char *argv[], char **table, struct ip6tc_handle **hand
+ 			check_inverse(optarg, &invert, &optind, argc);
+ 			set_option(&options, OPT_VIANAMEOUT, &fw.ipv6.invflags,
+ 				   invert);
+-			parse_interface(argv[optind-1],
++			xtables_parse_interface(argv[optind-1],
+ 					fw.ipv6.outiface,
+ 					fw.ipv6.outiface_mask);
+ 			break;
+diff --git a/iptables.c b/iptables.c
+index d3906fc..aeb40d8 100644
+--- a/iptables.c
++++ b/iptables.c
+@@ -1705,7 +1705,7 @@ int do_command(int argc, char *argv[], char **table, struct iptc_handle **handle
+ 			check_inverse(optarg, &invert, &optind, argc);
+ 			set_option(&options, OPT_VIANAMEIN, &fw.ip.invflags,
+ 				   invert);
+-			parse_interface(argv[optind-1],
++			xtables_parse_interface(argv[optind-1],
+ 					fw.ip.iniface,
+ 					fw.ip.iniface_mask);
+ 			break;
+@@ -1714,7 +1714,7 @@ int do_command(int argc, char *argv[], char **table, struct iptc_handle **handle
+ 			check_inverse(optarg, &invert, &optind, argc);
+ 			set_option(&options, OPT_VIANAMEOUT, &fw.ip.invflags,
+ 				   invert);
+-			parse_interface(argv[optind-1],
++			xtables_parse_interface(argv[optind-1],
+ 					fw.ip.outiface,
+ 					fw.ip.outiface_mask);
+ 			break;
 diff --git a/xtables.c b/xtables.c
-index 07275f6..859a82a 100644
+index 859a82a..a387ae0 100644
 --- a/xtables.c
 +++ b/xtables.c
-@@ -860,12 +860,12 @@ static struct in_addr *__numeric_to_ipaddr(const char *dotted, bool is_mask)
- 	return &addr;
+@@ -236,7 +236,7 @@ bool xtables_strtoui(const char *s, char **end, unsigned int *value,
+ 	return ret;
  }
  
--struct in_addr *numeric_to_ipaddr(const char *dotted)
-+struct in_addr *xtables_numeric_to_ipaddr(const char *dotted)
+-int service_to_port(const char *name, const char *proto)
++int xtables_service_to_port(const char *name, const char *proto)
  {
- 	return __numeric_to_ipaddr(dotted, false);
+ 	struct servent *service;
+ 
+@@ -246,19 +246,20 @@ int service_to_port(const char *name, const char *proto)
+ 	return -1;
  }
  
--struct in_addr *numeric_to_ipmask(const char *dotted)
-+struct in_addr *xtables_numeric_to_ipmask(const char *dotted)
+-u_int16_t parse_port(const char *port, const char *proto)
++u_int16_t xtables_parse_port(const char *port, const char *proto)
  {
- 	return __numeric_to_ipaddr(dotted, true);
- }
-@@ -914,7 +914,7 @@ ipparse_hostnetwork(const char *name, unsigned int *naddrs)
- {
- 	struct in_addr *addrptmp, *addrp;
+ 	unsigned int portnum;
  
--	if ((addrptmp = numeric_to_ipaddr(name)) != NULL ||
-+	if ((addrptmp = xtables_numeric_to_ipaddr(name)) != NULL ||
- 	    (addrptmp = network_to_ipaddr(name)) != NULL) {
- 		addrp = xtables_malloc(sizeof(struct in_addr));
- 		memcpy(addrp, addrptmp, sizeof(*addrp));
-@@ -938,7 +938,7 @@ static struct in_addr *parse_ipmask(const char *mask)
- 		maskaddr.s_addr = 0xFFFFFFFF;
- 		return &maskaddr;
- 	}
--	if ((addrp = numeric_to_ipmask(mask)) != NULL)
-+	if ((addrp = xtables_numeric_to_ipmask(mask)) != NULL)
- 		/* dotted_to_addr already returns a network byte order addr */
- 		return addrp;
- 	if (!xtables_strtoui(mask, NULL, &bits, 0, 32))
-@@ -1068,7 +1068,7 @@ const char *xtables_ip6mask_to_numeric(const struct in6_addr *addrp)
- 	return buf;
+ 	if (xtables_strtoui(port, NULL, &portnum, 0, UINT16_MAX) ||
+-	    (portnum = service_to_port(port, proto)) != (unsigned)-1)
++	    (portnum = xtables_service_to_port(port, proto)) != (unsigned)-1)
+ 		return portnum;
+ 
+ 	exit_error(PARAMETER_PROBLEM,
+ 		   "invalid port/service `%s' specified", port);
  }
  
--struct in6_addr *numeric_to_ip6addr(const char *num)
-+struct in6_addr *xtables_numeric_to_ip6addr(const char *num)
+-void parse_interface(const char *arg, char *vianame, unsigned char *mask)
++void xtables_parse_interface(const char *arg, char *vianame,
++			     unsigned char *mask)
  {
- 	static struct in6_addr ap;
- 	int err;
-@@ -1136,7 +1136,7 @@ ip6parse_hostnetwork(const char *name, unsigned int *naddrs)
- {
- 	struct in6_addr *addrp, *addrptmp;
- 
--	if ((addrptmp = numeric_to_ip6addr(name)) != NULL ||
-+	if ((addrptmp = xtables_numeric_to_ip6addr(name)) != NULL ||
- 	    (addrptmp = network_to_ip6addr(name)) != NULL) {
- 		addrp = xtables_malloc(sizeof(struct in6_addr));
- 		memcpy(addrp, addrptmp, sizeof(*addrp));
-@@ -1160,7 +1160,7 @@ static struct in6_addr *parse_ip6mask(char *mask)
- 		memset(&maskaddr, 0xff, sizeof maskaddr);
- 		return &maskaddr;
- 	}
--	if ((addrp = numeric_to_ip6addr(mask)) != NULL)
-+	if ((addrp = xtables_numeric_to_ip6addr(mask)) != NULL)
- 		return addrp;
- 	if (!xtables_strtoui(mask, NULL, &bits, 0, 128))
- 		exit_error(PARAMETER_PROBLEM,
+ 	int vialen = strlen(arg);
+ 	unsigned int i;
 -- 
 1.6.1.2
 
