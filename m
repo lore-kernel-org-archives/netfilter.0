@@ -1,96 +1,59 @@
-From: David Gowdy <receiver@gowdygroup.net>
-Subject: Cannot get Netfilter to forward to port 80
-Date: Mon, 9 Feb 2009 16:15:40 -0500
-Message-ID: <3803f73b0902091315g2425fa11s7174c4f3ca9d4a39@mail.gmail.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Cannot get Netfilter to forward to port 80
+Date: Mon, 09 Feb 2009 22:58:57 +0100
+Message-ID: <4990A721.80208@plouf.fr.eu.org>
+References: <3803f73b0902091315g2425fa11s7174c4f3ca9d4a39@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <3803f73b0902091315g2425fa11s7174c4f3ca9d4a39@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-2022-jp"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter <netfilter@vger.kernel.org>
 
-I'm using a Linux system running Netfilter a the primary gateway for
-my Internet service.  This includes the use of port forwarding (DNAT)
-for accessing some servers.  Right now the servers include FTP (port
-21) and HTTP/HTTPS (port 80/443).  It all seems to work nicely with
-one notable exception.  I cannot forward anything to port 80.  I've
-tried using several different external ports (i.e., 21, 60, 81) but
-nothing works.  Verizon is blocking port 80.  Therefore, it does no
-good to try it.  If I change my HTTP server to listen on port 60
-instead of 80 everything works fine.
+Hello,
 
-I've run network analyzers on both the external (WAN) interface as
-well as the LAN segment on which the destination servers are located.
-This has confirmed that packets addressed to the respective ports are
-being received on the WAN interface but in the case where I attempt
-forwarding to port 80 nothing appears on the internal LAN segment.  My
-conclusion is that Netfilter is doing something different when 80 is
-specified as the target port for DNAT.
+David Gowdy a =E9crit :
+> I'm using a Linux system running Netfilter a the primary gateway for
+> my Internet service.  This includes the use of port forwarding (DNAT)
+> for accessing some servers.  Right now the servers include FTP (port
+> 21) and HTTP/HTTPS (port 80/443).  It all seems to work nicely with
+> one notable exception.  I cannot forward anything to port 80.  I've
+> tried using several different external ports (i.e., 21, 60, 81) but
+> nothing works.=20
 
-Can anyone explain what is going on?
+(I reordered the rule listing in the order chains are traversed by a=20
+forwarded packet)
 
-Here is a list showing one configuration of iptables that I tried as
-described above (try to forward port 81 to port 80) →
+> Chain PREROUTING (policy ACCEPT)
+> target     prot opt source               destination
+> DNAT       tcp  --  anywhere
+> pool-71-163-168-209.washdc.fios.verizon.nettcp dpt:81 to:10.0.0.12:80
 
-Chain INPUT (policy DROP)
-target     prot opt source               destination
-ACCEPT     all  --  anywhere             anywhere
-ACCEPT     all  --  10.0.0.0/24          anywhere
-drop-and-log-it  all  --  10.0.0.0/24          anywhere
-ACCEPT     icmp --  anywhere
-pool-71-163-168-209.washdc.fios.verizon.net
-ACCEPT     all  --  anywhere
-pool-71-163-168-209.washdc.fios.verizon.netstate RELATED,ESTABLISHED
-ACCEPT     tcp  --  anywhere
-pool-71-163-168-209.washdc.fios.verizon.netstate
-NEW,RELATED,ESTABLISHED tcp dpt:ssh
-drop-and-log-it  all  --  anywhere             anywhere
+So port 81 is DNATed to port 80.
 
-Chain FORWARD (policy DROP)
-target     prot opt source               destination
-ACCEPT     tcp  --  anywhere             anywhere           tcp
-dpt:ftp state NEW,RELATED,ESTABLISHED
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:81
-state NEW,RELATED,ESTABLISHED
-ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:60
-state NEW,RELATED,ESTABLISHED
-ACCEPT     tcp  --  anywhere             anywhere           tcp
-dpt:https state NEW,RELATED,ESTABLISHED
-ACCEPT     all  --  anywhere             anywhere           state
-RELATED,ESTABLISHED
-ACCEPT     all  --  anywhere             anywhere
-drop-and-log-it  all  --  anywhere             anywhere
+> Chain FORWARD (policy DROP)
+> target     prot opt source               destination
+[...]
+> ACCEPT     tcp  --  anywhere             anywhere           tcp dpt:8=
+1
+> state NEW,RELATED,ESTABLISHED
 
-Chain OUTPUT (policy DROP)
-target     prot opt source               destination
-ACCEPT     all  --  anywhere             anywhere
-ACCEPT     all  --  pool-71-163-168-209.washdc.fios.verizon.net
-10.0.0.0/24
-ACCEPT     all  --  10.0.0.0/24          10.0.0.0/24
-drop-and-log-it  all  --  anywhere             10.0.0.0/24
-ACCEPT     all  --  pool-71-163-168-209.washdc.fios.verizon.net
-anywhere
-drop-and-log-it  all  --  anywhere             anywhere
+The FORWARD chains are traversed after the PREROUTING chains, so the=20
+port has already been translated and the rule should match the final=20
+destination port 80, not the original port 81.
 
-Chain drop-and-log-it (5 references)
-target     prot opt source               destination
-DROP       all  --  anywhere             anywhere
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-DNAT       tcp  --  anywhere
-pool-71-163-168-209.washdc.fios.verizon.nettcp dpt:ftp to:10.0.0.12:21
-DNAT       tcp  --  anywhere
-pool-71-163-168-209.washdc.fios.verizon.nettcp dpt:81 to:10.0.0.12:80
-DNAT       tcp  --  anywhere
-pool-71-163-168-209.washdc.fios.verizon.nettcp dpt:60 to:10.0.0.12:21
-DNAT       tcp  --  anywhere
-pool-71-163-168-209.washdc.fios.verizon.nettcp dpt:https
-to:10.0.0.12:443
+Also, for better security the rule should only match the destination=20
+address 10.0.0.12, not any address.
 
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-SNAT       all  --  anywhere             anywhere           to:71.163.168.209
+=46inally, the RELATED state is superfluous : an HTTP packet would neve=
+r=20
+be in that state.
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
+> ACCEPT     all  --  anywhere             anywhere           state
+> RELATED,ESTABLISHED
+
+Note : this rule should be at the beginning of the chain instead of the=
+=20
+end because it matches most of the traffic.
