@@ -1,66 +1,41 @@
-From: Alan Stern <stern@rowland.harvard.edu>
-Subject: [BUG] SNAT allows packets through when it shouldn't
-Date: Mon, 9 Feb 2009 17:09:45 -0500 (EST)
-Message-ID: <Pine.LNX.4.44L0.0902091648460.29419-100000@iolanthe.rowland.org>
+From: Ralf <rm@amitrader.com>
+Subject: Re: Error when adding an entry to mangle/PREROUTING
+Date: Tue, 10 Feb 2009 10:59:06 +0100
+Message-ID: <gmrj5a$i9t$1@ger.gmane.org>
+References: <gmq2gg$g63$1@ger.gmane.org> <49909453.18068e0a.3fb8.fffff08f@mx.google.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <49909453.18068e0a.3fb8.fffff08f@mx.google.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-I'm seeing some strange behavior on my firewall, which is running
-Fedora 8's version of the 2.6.26.6 kernel.  Packets with private source
-addresses are sometimes leaking out through the public interface.
+Gilad Benjamini wrote:
+> Quoting from man iptables: " This  target is only valid in the INPUT,
+> FORWARD and OUTPUT chains"
+> 
+> Since the validation is done by the kernel module, you don't see the error
+> message directly, but rather via syslog; e.g. in my case, in
+> /var/log/messages you see " kernel: ip_tables: REJECT target: only valid in
+> filter table, not mangle"
 
-This seems to happen only with TCP packets and when the kernel has 
-reason to think the connection has been closed.  For example:
-
-	Internal host A (using a private address) connects to
-	external host B.  The firewall applies SNAT to the
-	connection.
-
-	Data goes back and forth.
-
-	Host B sends a FIN packet, which is ACKed by host A.
-
-	Host A sends a FIN packet but there's no response from
-	host B.  Nevertheless, the conntrack code seems to believe
-	the connection is closed.
-
-	A few seconds later, host A resends the FIN packet.  This
-	sails through the filtering and connection-tracking routines
-	completely unscathed, and is sent out the public interface
-	with host A's private source address.
-
-(I sometimes see the same sort of thing happening with TCP RESET 
-packets.)
-
-Now, this looks like a bug in the SNAT implementation.  If the kernel
-has erased its record of the connection then it should apply a new SNAT
-transformation to the FIN packet.  Or, if the kernel is smart enough to
-realize that a non-SYN packet can't be the start of a new connection,
-then it should drop the packet entirely.  Under no circumstances should
-the packet be passed through unchanged.
-
-Is this a known problem?  Has it been fixed in later kernel versions?  
-
-Could it be the result of a mistake in the firewall's iptables setup?
-For reference, here is a lightly-edited extract from my iptables 
-script:
+DROP works, but REJECT does not work.
+Maybe it is a bug/oversight, because IMHO I don't see any reason
+why REJECT shouldn't be allowed here.
 
 
-OUTIP=... #the IP address of the firewall's public interface "net1"
-iptables -t nat -N startnat
-iptables -t nat -A startnat -p tcp -j SNAT --to-source $OUTIP:7000-65500
-iptables -t nat -A startnat -p udp -j SNAT --to-source $OUTIP:7000-65500
-iptables -t nat -A startnat -j DROP
-
-iptables -t nat -A POSTROUTING -o net1 -s 10.0.0.0/8 -j startnat
-
-
-Thank you,
-
-Alan Stern
+>> -----Original Message-----
+>> From: netfilter-owner@vger.kernel.org [mailto:netfilter-
+>> owner@vger.kernel.org] On Behalf Of Ralf
+>> Sent: Monday, February 09, 2009 12:08 PM
+>> To: netfilter@vger.kernel.org
+>> Subject: Error when adding an entry to mangle/PREROUTING
+>>
+>> The following command brings an error ("iptables: Invalid argument"):
+>>
+>>    $IPTABLES -t mangle -A PREROUTING -p tcp --dport 9999 -j REJECT
+>>
+>> What's wrong here?
 
