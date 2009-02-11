@@ -1,31 +1,17 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset-2.4.9
-Date: Wed, 11 Feb 2009 14:24:31 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.0902111416470.15665@blackhole.kfki.hu>
+From: David Gowdy <receiver@gowdygroup.net>
+Subject: Re: Cannot get Netfilter to forward to port 80
+Date: Wed, 11 Feb 2009 15:56:10 -0500
+Message-ID: <49933B6A.1040403@GowdyGroup.net>
+References: <3803f73b0902091315g2425fa11s7174c4f3ca9d4a39@mail.gmail.com> <4990A721.80208@plouf.fr.eu.org>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4990A721.80208@plouf.fr.eu.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-Hello,
-
-(Daily releases, what a pace! :-).
-
-In the previous release, the old include file was referred instead of the 
-new one, so the faster/better hash function was *not* in use. In 2.4.9 the 
-header include is fixed and now the hash types benefit from the new hash 
-function.
-
-You can download the new tarball from http://ipset.netfilter.org/ or 
-directly from git://git.netfilter.org/ipset.git.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Many thanks to Pascal for finding my error and offering other worthy 
+suggestions.  It is working much better now.
