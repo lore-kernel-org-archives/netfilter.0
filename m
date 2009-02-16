@@ -1,76 +1,98 @@
-From: Karl Hiramoto <karl@hiramoto.org>
+From: Jarek Poplawski <jarkao2@gmail.com>
 Subject: Re: problem with IPoA (CLIP),  NAT, and VLANS
-Date: Mon, 16 Feb 2009 16:02:02 +0100
-Message-ID: <49997FEA.9040300@hiramoto.org>
-References: <49942409.4080506@hiramoto.org>
+Date: Tue, 17 Feb 2009 00:20:16 +0100
+Message-ID: <20090216232016.GA4803@ami.dom.local>
+References: <49997FEA.9040300@hiramoto.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49942409.4080506@hiramoto.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:date:from:to:cc:subject
+         :message-id:mime-version:content-type:content-disposition
+         :in-reply-to:user-agent;
+        bh=4MP5U/hgzKnDAtX2ylphXcNHuwIXjP9eg3OST7gRDu8=;
+        b=ttzb3fwN2LloprNKJpwCSHlwzkf3EKfZfyJ0NuNWELjeGNvcZgR8mkDnttFgDdw6Yx
+         8JPPhfq7HPvsUMTcVRwmGcn3cxWkJaOSkPUGV0cjRoYeOB3o5/+5Lk37br9NxytQl9D8
+         jkDMQVVyeawOwYKq6Y1P6KaVCLrl8qJGu1nt0=
+Content-Disposition: inline
+In-Reply-To: <49997FEA.9040300@hiramoto.org>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netdev@vger.kernel.org, netfilter@vger.kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: Karl Hiramoto <karl@hiramoto.org>
+Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
 
-Karl Hiramoto wrote:
->    
-> Hi all,
->
-> I have a scenario with  CLIP  IPoA(RFC1577) atm link over ADSL on the
-> WAN, 801.1q  VLANs on the LAN, and  NAT/MASQUERADE   that does not work.
->
->
-> Network config:
-> Nat_host <-->  router <---> server
->
-> a ping from the Nat_host  reaches the server on the WAN fine, and the
-> ping comes back to the  router, but the ping response never reaches the
-> Nat_Host.    Using TRACE rules it seems the ICMP ping response gets lost
-> inside the router.   I see the same behavior with TCP and UDP.
->
->   
+Karl Hiramoto wrote, On 02/16/2009 04:02 PM:
+...
+> The problem ended up being the packet being corrupted when the vlan tag
+> was being added and skb_cow_head()  was being called.
+> 
+> Anyone know why skb_cow_head() would corrupt the packet?  Perhaps it was
+> not allocated correctly?     I'm using a big-endian ARM IXP435 board.
 
-The problem ended up being the packet being corrupted when the vlan tag
-was being added and skb_cow_head()  was being called.
+Hi,
+Very nice debugging, but I think your patch doesn't look like enough:
+1) it skips copy for cloned skbs,
+2) this skb_cow_head() is needed anyway, sometimes.
+So the real bug should be found in skb_cow_head() or elsewhere.
 
-Anyone know why skb_cow_head() would corrupt the packet?  Perhaps it was
-not allocated correctly?     I'm using a big-endian ARM IXP435 board.
+I attach here 2 patches for testing:
+1) skb->mac_header update: it looks like needed, but I don't know if
+   it matters here,
+2) an extention of your patch but with pskb_expand_head() called for
+   one to one copy.
 
-NET_SKB_PAD change was already discussed:
-http://kerneltrap.org/mailarchive/linux-netdev/2009/2/7/4919204
+BTW, if it's not a big problem it would be nice to try this e.g. on
+2.6.29-rc5.
 
+Thanks,
+Jarek P.
 
-Signed-off by: Karl Hiramoto <karl@hiramoto.org>
+---> patch #1
 
---- linux-2.6.28.4.a/include/linux/if_vlan.h    2009-02-06
-22:47:45.000000000 +0100
-+++ linux-2.6.28.4.b/include/linux/if_vlan.h    2009-02-16
-13:55:35.000000000 +0100
-@@ -183,9 +183,12 @@ static inline struct sk_buff *__vlan_put
+ include/linux/if_vlan.h |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/include/linux/if_vlan.h b/include/linux/if_vlan.h
+index f8ff918..e1ff5b1 100644
+--- a/include/linux/if_vlan.h
++++ b/include/linux/if_vlan.h
+@@ -210,6 +210,7 @@ static inline struct sk_buff *__vlan_put_tag(struct sk_buff *skb, u16 vlan_tci)
+ 
+ 	/* Move the mac addresses to the beginning of the new header. */
+ 	memmove(skb->data, skb->data + VLAN_HLEN, 2 * VLAN_ETH_ALEN);
++	skb->mac_header -= VLAN_HLEN;
+ 
+ 	/* first, the ethernet type */
+ 	veth->h_vlan_proto = htons(ETH_P_8021Q);
+
+---> patch #2
+
+ include/linux/if_vlan.h |   13 ++++++++++---
+ 1 files changed, 10 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/if_vlan.h b/include/linux/if_vlan.h
+index f8ff918..e9a5eb1 100644
+--- a/include/linux/if_vlan.h
++++ b/include/linux/if_vlan.h
+@@ -202,9 +202,16 @@ static inline struct sk_buff *__vlan_put_tag(struct sk_buff *skb, u16 vlan_tci)
  {
-        struct vlan_ethhdr *veth;
-
--       if (skb_cow_head(skb, VLAN_HLEN) < 0) {
--               kfree_skb(skb);
--               return NULL;
-+       /* If not enough headroom for vlan tag */
-+       if (skb_headroom(skb) < VLAN_HLEN) {
-+               if (skb_cow_head(skb, VLAN_HLEN) < 0) {
-+                       kfree_skb(skb);
-+                       return NULL;
-+               }
-        }
-        veth = (struct vlan_ethhdr *)skb_push(skb, VLAN_HLEN)
-
---- linux-2.6.28.4.a/include/linux/skbuff.h     2009-02-06
-22:47:45.000000000 +0100
-+++ linux-2.6.28.4.b/include/linux/skbuff.h     2009-02-16
-13:52:54.000000000 +0100
-@@ -1263,7 +1263,7 @@ static inline int skb_network_offset(con
-  * headroom, you should not reduce this.
-  */
- #ifndef NET_SKB_PAD
--#define NET_SKB_PAD    16
-+#define NET_SKB_PAD    32
- #endif
+ 	struct vlan_ethhdr *veth;
+ 
+-	if (skb_cow_head(skb, VLAN_HLEN) < 0) {
+-		kfree_skb(skb);
+-		return NULL;
++	if (skb_headroom(skb) < VLAN_HLEN) {
++		if (skb_cow_head(skb, VLAN_HLEN) < 0) {
++			kfree_skb(skb);
++			return NULL;
++		}
++	} else {
++		if (pskb_expand_head(skb, 0, 0, GFP_ATOMIC) < 0) {
++			kfree_skb(skb);
++			return NULL;
++		}
+ 	}
+ 	veth = (struct vlan_ethhdr *)skb_push(skb, VLAN_HLEN);
+ 
