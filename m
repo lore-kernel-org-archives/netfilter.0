@@ -1,55 +1,76 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Second failover failure with conntrackd - INVALID packets
-Date: Fri, 13 Feb 2009 16:20:07 +0100
-Message-ID: <49958FA7.1030702@netfilter.org>
-References: <497760CB.6090008@univ-nantes.fr> <49778AF4.7000201@netfilter.org> <4978425F.1030003@univ-nantes.fr> <4978A4F8.5060901@netfilter.org> <4979BA72.50405@univ-nantes.fr> <497C4440.7050809@netfilter.org> <497CA7A2.2000906@netfilter.org> <497E0EA9.1020408@univ-nantes.fr> <497E40B0.2090709@netfilter.org> <4981D4EB.3060007@univ-nantes.fr> <49881800.20707@netfilter.org> <49896FEA.3050803@univ-nantes.fr> <4989713B.2010502@netfilter.org> <498C004A.20506@univ-nantes.fr> <49901394.30504@netfilter.org> <49917D90.8090706@univ-nantes.fr> <49929106.8080006@netfilter.org> <49952D6E.4020501@univ-nantes.fr>
+From: Karl Hiramoto <karl@hiramoto.org>
+Subject: Re: problem with IPoA (CLIP),  NAT, and VLANS
+Date: Mon, 16 Feb 2009 16:02:02 +0100
+Message-ID: <49997FEA.9040300@hiramoto.org>
+References: <49942409.4080506@hiramoto.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49952D6E.4020501@univ-nantes.fr>
+In-Reply-To: <49942409.4080506@hiramoto.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: yoann.juet@univ-nantes.fr
-Cc: netfilter@vger.kernel.org
+To: netdev@vger.kernel.org, netfilter@vger.kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>
 
-Yoann Juet wrote:
-> Pablo Neira Ayuso wrote:
->> Yoann Juet wrote:
->>> Pablo Neira Ayuso wrote:
->>>>> As you can see, this TCP connection is present:
->>>>>
->>>>> root@fw1-irt:~# conntrack -L  |grep 34189
->>>>> conntrack v0.9.10 (conntrack-tools): 14 flow entries has been shown.
->>>>> tcp      6 10581 ESTABLISHED src=172.18.244.10 dst=193.52.101.32
->>>>> sport=34189 dport=5222 packets=63 bytes=12039 src=193.52.101.32
->>>>> dst=172.18.244.10 sport=5222 dport=34189 packets=58 bytes=22146
->>>>> [ASSURED] mark=0 secmark=0 use=1
->>>> This is weird, look like some problem in your scripts or the commit is
->>>> not working in node fw1-irt. The packet counters of the entry above
->>>> show
->>>> that this is the old entry which is stuck in the cache after the second
->>>> failover. This should be deleted when fw1-irt's script issues the
->>>> commit
->>>> (conntrackd -c). Does the log file tells that the commit was
->>>> successful?
->>>>
->>> I confirm that "conntrackd -c" is executed on FW1-IRT on the second
->>> failover. FYI, my LSB script executes the following instructions (start=
->>> new active node ; stop = new passive node):
->>>
->>> ...
->>> case "$1" in
->>>         start)
->>>                 conntrackd -c -C /etc/conntrackd.conf
->>>                 conntrackd -f -C /etc/conntrackd.conf
->>>                 conntrackd -R -C /etc/conntrackd.conf
+Karl Hiramoto wrote:
+>    
+> Hi all,
+>
+> I have a scenario with  CLIP  IPoA(RFC1577) atm link over ADSL on the
+> WAN, 801.1q  VLANs on the LAN, and  NAT/MASQUERADE   that does not work.
+>
+>
+> Network config:
+> Nat_host <-->  router <---> server
+>
+> a ping from the Nat_host  reaches the server on the WAN fine, and the
+> ping comes back to the  router, but the ping response never reaches the
+> Nat_Host.    Using TRACE rules it seems the ICMP ping response gets lost
+> inside the router.   I see the same behavior with TCP and UDP.
+>
+>   
 
-Please, add the following line here to your scripts:
+The problem ended up being the packet being corrupted when the vlan tag
+was being added and skb_cow_head()  was being called.
 
-conntrackd -B -C /etc/conntrackd.conf
+Anyone know why skb_cow_head() would corrupt the packet?  Perhaps it was
+not allocated correctly?     I'm using a big-endian ARM IXP435 board.
 
-Let me now if that fixes your problem.
+NET_SKB_PAD change was already discussed:
+http://kerneltrap.org/mailarchive/linux-netdev/2009/2/7/4919204
 
--- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
+
+Signed-off by: Karl Hiramoto <karl@hiramoto.org>
+
+--- linux-2.6.28.4.a/include/linux/if_vlan.h    2009-02-06
+22:47:45.000000000 +0100
++++ linux-2.6.28.4.b/include/linux/if_vlan.h    2009-02-16
+13:55:35.000000000 +0100
+@@ -183,9 +183,12 @@ static inline struct sk_buff *__vlan_put
+ {
+        struct vlan_ethhdr *veth;
+
+-       if (skb_cow_head(skb, VLAN_HLEN) < 0) {
+-               kfree_skb(skb);
+-               return NULL;
++       /* If not enough headroom for vlan tag */
++       if (skb_headroom(skb) < VLAN_HLEN) {
++               if (skb_cow_head(skb, VLAN_HLEN) < 0) {
++                       kfree_skb(skb);
++                       return NULL;
++               }
+        }
+        veth = (struct vlan_ethhdr *)skb_push(skb, VLAN_HLEN)
+
+--- linux-2.6.28.4.a/include/linux/skbuff.h     2009-02-06
+22:47:45.000000000 +0100
++++ linux-2.6.28.4.b/include/linux/skbuff.h     2009-02-16
+13:52:54.000000000 +0100
+@@ -1263,7 +1263,7 @@ static inline int skb_network_offset(con
+  * headroom, you should not reduce this.
+  */
+ #ifndef NET_SKB_PAD
+-#define NET_SKB_PAD    16
++#define NET_SKB_PAD    32
+ #endif
