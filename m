@@ -1,39 +1,38 @@
-From: Jarek Poplawski <jarkao2@gmail.com>
-Subject: Re: problem with IPoA (CLIP),  NAT, and VLANS
-Date: Tue, 17 Feb 2009 13:37:07 +0000
-Message-ID: <20090217133707.GA6802@ff.dom.local>
-References: <20090216232016.GA4803@ami.dom.local> <499AA433.8070308@hiramoto.org> <20090217122052.GB6130@ff.dom.local> <499AB345.3070904@hiramoto.org>
+From: tengaman@wolke7.net
+Subject: NAT not for filtering - problem
+Date: Tue, 17 Feb 2009 16:28:40 +0100
+Message-ID: <20090217152840.GA3683@localhost>
 Mime-Version: 1.0
-Return-path: <netdev-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:date:from:to:cc:subject
-         :message-id:references:mime-version:content-type:content-disposition
-         :in-reply-to:user-agent;
-        bh=hldC1K1fyclgViq3VcsJtC4nRxUk8dpbGwEn/H7V5VA=;
-        b=OT9CZxvwbcb4HKLjwxC8jt2atORm4GHO+AzaRt7wsJhdxYWTVnrUeWNm5KDjnCgnIe
-         0SH9y8SzYc9nC/UQfU4LKzj1O4+ockGcvOwfX9CGFNQ80Dq+9+FChmRV78OKSOwlugyB
-         ovGgqG3CfQUe9b9/jSZh9t90vs+N/o+wSP+mo=
+Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <499AB345.3070904@hiramoto.org>
-Sender: netdev-owner@vger.kernel.org
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Karl Hiramoto <karl@hiramoto.org>
-Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On Tue, Feb 17, 2009 at 01:53:25PM +0100, Karl Hiramoto wrote:
-> Jarek Poplawski wrote:
-> > On Tue, Feb 17, 2009 at 12:49:07PM +0100, Karl Hiramoto wrote:
-> > ...
-> >   
-> >> A side note:  so far the original patch i sent works in all cases i have
-> >> tested, but fails with tcpdump.   I suspect its because the skb gets cloned.
+Hello,
 
-Hmm... I would like to make sure: if tcpdump breaks it too, then
-we don't need to blame skb_cow_head(), do we? If it's like this then
-it looks like the driver's problem with copied/cloned skbs?! (Maybe
-because some "private" offset is overwritten?)
+recently my Debian system promted this message:
+>The "nat" table is not intended for filtering, hence the use of DROP is
+>deprecated and will permanently be disabled in the next iptables
+>release. Please adjust your scripts.
 
-Jarek P.
+What im doing in the nat-table is redirecting the traffic to the
+tor-programm (www.torproject.org) listening on local port 9040 to form a transparent proxy.
+Now, the DROP target makes sure that non-redirected and thus "non-anonymized" packages are
+impossible.
+
+To distinguish anonymized traffic from normal traffic I do have a
+special user: 'tor-user' (-m -uid-owner tor-user).
+The tor programm itself is run by the user 'debian-tor'.
+
+The Problem:
+--uid-owner debian-tor does not match the redirected traffic.
+Meaning although the traffic is processed by a process owned by a
+different user --uid-owner still maches the orignal user of the data.
+My sytem seems to lack the --cmd-owner match, was this cut out?
+
+I hope you have any idea.
+
+Sebastian R.
