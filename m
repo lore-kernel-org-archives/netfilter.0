@@ -1,73 +1,68 @@
-From: Jarek Poplawski <jarkao2@gmail.com>
-Subject: Re: problem with IPoA (CLIP),  NAT, and VLANS
-Date: Wed, 18 Feb 2009 00:12:55 +0100
-Message-ID: <20090217231255.GA3389@ami.dom.local>
-References: <499AB345.3070904@hiramoto.org>
+From: tengaman@wolke7.net
+Subject: Re: NAT not for filtering - problem
+Date: Wed, 18 Feb 2009 00:27:44 +0100
+Message-ID: <20090217232744.GA5471@localhost>
+References: <20090217152840.GA3683@localhost>
 Mime-Version: 1.0
-Return-path: <netdev-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:date:from:to:cc:subject
-         :message-id:mime-version:content-type:content-disposition
-         :in-reply-to:user-agent;
-        bh=hPhsHmJKiNjYf9+ajtswC6G1mrUtxRNK+FRaWIvCPmQ=;
-        b=YomZi89pfSbGHXi/oMoOcB7yAuVPR0Nx0aGsZbJhsORRZNeN4ViqaUuw9A5eGz10w0
-         RicHtDGZ/iLmr1S9W8aTHc5xWIW0eBByyhmRTXBOppyndNKURDwM2CuiEh27B9HwFE3F
-         EcQBQg1gYyBNcEEFbq9oG7feBmtzDmJN1d9+E=
-Content-Disposition: inline
-In-Reply-To: <499AB345.3070904@hiramoto.org>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: attachment; filename="mail.1"
+In-Reply-To: <20090217152840.GA3683@localhost>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Karl Hiramoto <karl@hiramoto.org>
-Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Karl Hiramoto wrote, On 02/17/2009 01:53 PM:
+Hello again,
+being more graphic this time:
 
-> Jarek Poplawski wrote:
->> On Tue, Feb 17, 2009 at 12:49:07PM +0100, Karl Hiramoto wrote:
->> ...
->>   
->>> A side note:  so far the original patch i sent works in all cases i have
->>> tested, but fails with tcpdump.   I suspect its because the skb gets cloned.
->>>     
->> If there is something readable from this tcpdump, it should be helpful
->> to see a packet for working and non-working case during such ping
->> (with -nXX option).
->> Jarek P.
->>   
-> 
-> Note:  I have the patches i sent applied,  plus the  "skb->mac_header -=
-> VLAN_HLEN;"   patch from Jarek on 2.6.28.4
-> 
-> Doing a tcpdump simultaneously  on the atm and eth0.1 on the linux router.
+>--uid-owner debian-tor does not match the redirected traffic.
+>Meaning although the traffic is processed by a process owned by a
+>different user --uid-owner still maches the orignal user of the data.
 
-Nice job. Since tcpdump sees corrupted data, and we don't know if it's
-before or after hitting the driver I'd suggest to try full skb_copy()
-yet. So could you try if with your patch + the patch below tcpdump
-still breaks these things?
+I figured out myself, that can't be, because:
+After redirecting the traffic the packages are used by the
+tor-programm not 'piped through'!
+tor generates completely new packages that should be matched by
+"--uid-owner 'user of the daemon process'" - am I right?
 
-BTW, I wonder what IXP400 config options do you use (especially
-CONFIG_IXP400_ETH_SKB_RECYCLE)?
+Original Setup: all tables empty with POLICY ACCEPT
+>iptables -t nat -A OUTPUT -p tcp -m owner --uid-owner tor-user -j \
+>REDIRECT --to-ports 9040
 
-Jarek P.
+>iptables -t nat -A OUTPUT -p udp -m owner \
+>--uid-owner tor-user -m udp --dport 53 -j REDIRECT --to-ports 53
 
---- patch #3 (for debugging only)
+>iptables -t nat -A OUTPUT -m owner --uid-owner \
+>tor-user -j DROP
 
- net/core/dev.c |    2 +-
- 1 files changed, 1 insertions(+), 1 deletions(-)
+The funny thing is, it isn't working: I'm able to ping a remote host
+although ICMP should be dropped, why is that?
+But the transparent-proxy does work!
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index a17e006..b822a5d 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -1346,7 +1346,7 @@ static void dev_queue_xmit_nit(struct sk_buff *skb, struct net_device *dev)
- 		if ((ptype->dev == dev || !ptype->dev) &&
- 		    (ptype->af_packet_priv == NULL ||
- 		     (struct sock *)ptype->af_packet_priv != skb->sk)) {
--			struct sk_buff *skb2= skb_clone(skb, GFP_ATOMIC);
-+			struct sk_buff *skb2= skb_copy(skb, GFP_ATOMIC);
- 			if (!skb2)
- 				break;
- 
+By the way, the hole concept comes from:
+https://wiki.torproject.org/noreply/TheOnionRouter/TransparentProxy?highlight=%2528transparent%2529
+
+
+Ok, new idea: again all tables empty with POLICY ACCEPT
+
+>iptables -t nat -A OUTPUT -p tcp -m owner \
+>--uid-owner tor-user -j REDIRECT --to-ports 9040
+
+>iptables -t nat -A OUTPUT -p udp -m owner \
+>--uid-owner tor-user -m udp --dport 53 -j REDIRECT --to-ports 53
+
+>iptables -t filter -A OUTPUT -m owner --uid-owner \
+>debian-tor -j ACCEPT
+
+>iptables -t filter -A OUTPUT -m owner --uid-owner \
+>debian-tor -j DROP
+
+I don't get any connection with this setup.
+
+I also tried to mark the traffic but - yeah - I don't understand whats
+happening - any idea?
+
+
+regards
+Sebastian R.
