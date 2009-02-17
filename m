@@ -1,38 +1,59 @@
-From: Jarek Poplawski <jarkao2@gmail.com>
-Subject: Re: problem with IPoA (CLIP),  NAT, and VLANS
-Date: Tue, 17 Feb 2009 09:52:00 +0000
-Message-ID: <20090217095200.GA5538@ff.dom.local>
-References: <20090216232016.GA4803@ami.dom.local> <499A7D7D.1090607@trash.net>
+From: Karl Hiramoto <karl@hiramoto.org>
+Subject: Re: [PATCH v2] Re: problem with IPoA (CLIP),  NAT, and VLANS
+Date: Tue, 17 Feb 2009 12:05:24 +0100
+Message-ID: <499A99F4.60405@hiramoto.org>
+References: <20090216232016.GA4803@ami.dom.local> <499A7D7D.1090607@trash.net> <20090217093908.GB5341@ff.dom.local>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netdev-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:date:from:to:cc:subject
-         :message-id:references:mime-version:content-type:content-disposition
-         :in-reply-to:x-mutt-references:x-mutt-fcc:user-agent;
-        bh=TRUirMNwPam+kDx/uK/WEHJLKJJ/spjwR8nvHyeYTgY=;
-        b=bYiXy2o8ogISbELhphMtRDIrfjxUYWVpA0Wn4AsTpO7OLFOCbScZsH2EdO4G5kfrWk
-         8vhZz+6kZc55KbUG7kBE4tL2LtFI7vtYsBuT/ypWjuQbLH1pkZNzHlDqYrwdrR4eE37A
-         RFRKq7LdRczyFyMgF3D8WN84IUK7Na1C9lEYk=
-Content-Disposition: inline
-In-Reply-To: <499A7D7D.1090607@trash.net>
+In-Reply-To: <20090217093908.GB5341@ff.dom.local>
 Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>
-Cc: Karl Hiramoto <karl@hiramoto.org>, netdev@vger.kernel.org, netfilter@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: Jarek Poplawski <jarkao2@gmail.com>
+Cc: Patrick McHardy <kaber@trash.net>, netdev@vger.kernel.org, netfilter@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, David Miller <davem@davemloft.net>
 
-On Tue, Feb 17, 2009 at 10:03:57AM +0100, Patrick McHardy wrote:
-...
-> The first patch looks fine. As for the second one, I would like
-> to understand why we're seing these packets. The VLAN driver uses
-> the original headroom plus the space it needs itself, which suggests
-> that the underlying driver specifies an incorrect headroom.
-> The driver doesn't appear to be part of the mainline kernel though.
 
-On the other hand, if Karl added his patch it seems this change of
-NET_SKB_PAD isn't enough, and if omitting skb_cow_head() works, then
-the headroom isn't the main problem?
 
-Jarek P.
+Jarek Poplawski wrote:
+> Sorry:
+> -----------------> take 2: changelog fix only
+>
+> vlan: Update skb->mac_header in __vlan_put_tag().
+>
+> After moving mac addresses in __vlan_put_tag() skb->mac_header needs
+> to be updated.
+>   
+This works on IPoE.  I notice no change with or w/o this patch on IPoE
+only routing.    However has no effect on the original problem i
+reported with  IPoA --> NAT --> VLAN
+
+Tested-by: Karl Hiramoto <karl@hiramoto.org>
+
+> Reported-by: Karl Hiramoto <karl@hiramoto.org>
+> Signed-off-by: Jarek Poplawski <jarkao2@gmail.com>
+> ---
+>
+>  include/linux/if_vlan.h |    1 +
+>  1 files changed, 1 insertions(+), 0 deletions(-)
+>
+> diff --git a/include/linux/if_vlan.h b/include/linux/if_vlan.h
+> index f8ff918..e1ff5b1 100644
+> --- a/include/linux/if_vlan.h
+> +++ b/include/linux/if_vlan.h
+> @@ -210,6 +210,7 @@ static inline struct sk_buff *__vlan_put_tag(struct sk_buff *skb, u16 vlan_tci)
+>  
+>  	/* Move the mac addresses to the beginning of the new header. */
+>  	memmove(skb->data, skb->data + VLAN_HLEN, 2 * VLAN_ETH_ALEN);
+> +	skb->mac_header -= VLAN_HLEN;
+>  
+>  	/* first, the ethernet type */
+>  	veth->h_vlan_proto = htons(ETH_P_8021Q);
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe netdev" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
+>   
+
