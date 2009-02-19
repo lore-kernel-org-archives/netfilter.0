@@ -1,32 +1,22 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH v2] Re: problem with IPoA (CLIP), NAT, and VLANS
-Date: Wed, 18 Feb 2009 23:31:45 -0800 (PST)
-Message-ID: <20090218.233145.66997963.davem@davemloft.net>
-References: <20090216232016.GA4803@ami.dom.local>
-	<499A7D7D.1090607@trash.net>
-	<20090217093908.GB5341@ff.dom.local>
+From: Colin Davis <col@colsmemory.co.uk>
+Subject: iptables - how to create a rule that expires automatically
+Date: Thu, 19 Feb 2009 17:10:42 +0000
+Message-ID: <499D9292.902@colsmemory.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20090217093908.GB5341@ff.dom.local>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
-To: jarkao2@gmail.com
-Cc: kaber@trash.net, karl@hiramoto.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-From: Jarek Poplawski <jarkao2@gmail.com>
-Date: Tue, 17 Feb 2009 09:39:08 +0000
 
-> vlan: Update skb->mac_header in __vlan_put_tag().
-> 
-> After moving mac addresses in __vlan_put_tag() skb->mac_header needs
-> to be updated.
-> 
-> Reported-by: Karl Hiramoto <karl@hiramoto.org>
-> Signed-off-by: Jarek Poplawski <jarkao2@gmail.com>
+Hi,
 
-Patch applied, this is correct even though it doesn't fix the bug.
+Not sure if this is possible. I wish to create a rule that once created will
+automatically expire (and be removed) after say 10 minutes.
 
-I'm pretty sure that packet corruption is a driver error of
-some kind rather than some kind of generic problem.
+Please
+
+Many thanks,
+Colin.
