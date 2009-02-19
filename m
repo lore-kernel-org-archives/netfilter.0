@@ -1,35 +1,43 @@
-From: Colin Davis <col@colsmemory.co.uk>
+From: Peter Renzland <peter@dancing.org>
 Subject: Re: iptables - how to create a rule that expires automatically
-Date: Thu, 19 Feb 2009 18:14:06 +0000
-Message-ID: <499DA16E.8060909@colsmemory.co.uk>
+Date: Thu, 19 Feb 2009 13:15:10 -0500
+Message-ID: <D79585C9-E130-4D0C-8CDD-739C32374FD6@dancing.org>
 References: <499D9292.902@colsmemory.co.uk> <d39744a20902190936u48f082d9p7c0da22a6948e6d8@mail.gmail.com> <499D99F4.2010400@colsmemory.co.uk> <84965006-A4F7-41DD-8C6F-ED62AA82B2F9@dancing.org>
-Mime-Version: 1.0
+Mime-Version: 1.0 (Apple Message framework v930.3)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 In-Reply-To: <84965006-A4F7-41DD-8C6F-ED62AA82B2F9@dancing.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Peter Renzland <peter@dancing.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
+To: Colin Davis <col@colsmemory.co.uk>, netfilter@vger.kernel.org
+
+On second thought:
+
+iptemp NN ...
+where ... are the iptables arguments
+
+or, if needed very occasionally, do it "by hand":
+
+run the rule,
+arrow up, append ")&", arrow left to ... change -I (etc) to -D (etc),  
+prepend "(sleep nnn;"
+
+Peter
 
 
-Thanks Peter, definitely pointed me in a better direction.
+On 09  Feb 19, at 12:56 , Peter Renzland wrote:
 
-Colin.
-
-
-Peter Renzland wrote:
-> I would write a simple script "ipoff NN" which takes the same 
-> arguments as iptables (after NN), converts -I and -A to -D, etc, and 
+> I would write a simple script "ipoff NN" which takes the same  
+> arguments as iptables (after NN), converts -I and -A to -D, etc, and  
 > sleeps NN minutes before doing the cancel.
 >
-> Then, after running the command that sets up the rule, I would just 
+> Then, after running the command that sets up the rule, I would just  
 > arrow up and change iptables to ipoff NN.
 > That would be *very usable*, IMHO.
 >
-> (I most definitely would not use cron or at, since those tools do not 
-> naturally match the problem at all.)
+> (I most definitely would not use cron or at, since those tools do  
+> not naturally match the problem at all.)
 >
 >
 > Peter
@@ -39,8 +47,8 @@ Peter Renzland wrote:
 >
 >>
 >> Thanks Ivan, I was hoping to be able to do this directly using a rule
->> without writing a script / using cron but looks like that's what I'm 
->> going
+>> without writing a script / using cron but looks like that's what  
+>> I'm going
 >> to have to do.
 >>
 >> Colin.
@@ -49,17 +57,18 @@ Peter Renzland wrote:
 >> Ivan Petrushev wrote:
 >>> I'm not sure if that can be done with the netfilter itself.
 >>> You could always get a script into crontab to check if the rule is
->>> matched (iptables ... -L -n -v will show you number of packets matched
+>>> matched (iptables ... -L -n -v will show you number of packets  
+>>> matched
 >>> by the rule) and set up some sort of a timer.
 >>>
 >>> Ivan
 >>>
->>> On Thu, Feb 19, 2009 at 7:10 PM, Colin Davis <col@colsmemory.co.uk> 
->>> wrote:
+>>> On Thu, Feb 19, 2009 at 7:10 PM, Colin Davis  
+>>> <col@colsmemory.co.uk> wrote:
 >>>
 >>>> Hi,
 >>>>
->>>> Not sure if this is possible. I wish to create a rule that once 
+>>>> Not sure if this is possible. I wish to create a rule that once  
 >>>> created will
 >>>> automatically expire (and be removed) after say 10 minutes.
 >>>>
@@ -67,18 +76,25 @@ Peter Renzland wrote:
 >>>>
 >>>> Many thanks,
 >>>> Colin.
->>>> -- 
->>>> To unsubscribe from this list: send the line "unsubscribe 
+>>>> --
+>>>> To unsubscribe from this list: send the line "unsubscribe  
 >>>> netfilter" in
 >>>> the body of a message to majordomo@vger.kernel.org
 >>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 >>>>
 >>>>
 >>
->> -- 
->> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe  
+>> netfilter" in
 >> the body of a message to majordomo@vger.kernel.org
 >> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 >>
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter"  
+> in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 >
 
