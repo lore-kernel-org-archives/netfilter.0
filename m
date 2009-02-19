@@ -1,87 +1,138 @@
-From: Jarek Poplawski <jarkao2@gmail.com>
-Subject: Re: problem with IPoA (CLIP),  NAT, and VLANS
-Date: Wed, 18 Feb 2009 22:05:07 +0100
-Message-ID: <20090218210507.GA2698@ami.dom.local>
-References: <20090217231255.GA3389@ami.dom.local> <499C49CD.3000709@hiramoto.org>
+From: =?windows-1251?B?3/Du8evg4iDC6O3t6Pb86ujp?= <yaroslav65@ukr.net>
+Subject: Two WAN interfaces. Route traffic based on --uid-owner
+Date: Thu, 19 Feb 2009 06:24:57 +0200
+Message-ID: <567612571.20090219062457@ukr.net>
+Reply-To: =?windows-1251?B?3/Du8evg4iDC6O3t6Pb86ujp?= <yaroslav65@ukr.net>
 Mime-Version: 1.0
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1752967AbZBRVG6@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:date:from:to:cc:subject
-         :message-id:references:mime-version:content-type:content-disposition
-         :in-reply-to:user-agent;
-        bh=G+8fpLcXmIuuobcbUe3ARq+Yh5Qh3n4NLjvKR5KcfO4=;
-        b=GbT4UmxzdFkpGJ2dcizNVQOSU0y6X+L+zyOrnBXSNeCy+1gCJuG++gjRejKQM2olci
-         5jMdd+/OMHLrwvsUGCdOt3xWM0PKWDZT+Z0psQcokbUeKHSv6RBKcgy5FXru/gwEHXCs
-         dvdYgg3V5JdiVlQooufsSrF0khhJQ3/d+aHak=
-Content-Disposition: inline
-In-Reply-To: <499C49CD.3000709@hiramoto.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Karl Hiramoto <karl@hiramoto.org>
-Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On Wed, Feb 18, 2009 at 06:47:57PM +0100, Karl Hiramoto wrote:
-...
-> Thanks for the replies.  Jarek, the last debugging patch you sent did
-> not work.  It did give me a good hint though.  The attached patch in for
-> AF_PACKET   receive in the when tcpdump is active and which calls
-> skb_clone() did fix my issue.
+Hello. Please help me. I have one linux box with two WAN's, both
+PPPoE: ppp0 and ppp1. My goal is to route particular user's traffic
+through ppp1. Here are the relevant rules:
 
-Yes, good point!
+#! With this rule we mark traffic
+iptables -t mangle -A OUTPUT -m owner --uid-owner myuser -j MARK --set-mark 1
 
-> CONFIG_IXP400_ETH_SKB_RECYCLE does not exist in the code i have..  From
-> what i downloaded from intel,  i stripped out all the stuff that is not
-> having to do with ATM.  The functionalities of ixp4xx_qmgr ixp4xx_npe
-> and ixp4xx_eth  are now in the mainline kernel.    Ideally it would be
-> nice to get what this library does with the atm hardware into the
-> mainline, however the code in it's current state would not meet kernel
-> standards, and is quite a mess.
-> 
-> 
-> But yes,  the skb->data is   recycled  in a memory pool,   and i think i
-> noticed a few times packets that were corrupt, were really pointing to
-> old recycled packets.   I haven't confirmed this yet though.
-> 
-> 
-> I did eliminate the first  patch i sent 
-> http://lkml.org/lkml/2009/2/16/163    to  __vlan_put_tag()
-> 
-> And now only use the patch Jarek sent:  http://lkml.org/lkml/2009/2/17/104
+#!user-generated traffic goes to ppp1 (table b)
+ip rule add fwmark 1 pref 100 table b
 
-Yes, this patch looks like formally needed, but I guess currently it
-isn't used by any path: otherwise we would know about it earlier.
+#!Cloning remaining routes to our new table
+ip route show table main | grep -Ev ^default | grep -v "$IP_GATEWAY_B" | while read ROUTE; do ip route add table b $ROUTE; done
 
-> 
-> Now i don't have any problems with the vlan tags after changing my atm
-> driver to do skb_reserve() like:
-> 
-> skb = dev_alloc_skb(size + NET_SKB_PAD);
-> 
-> skb_reserve(skb, NET_SKB_PAD);
-> 
-> 
-> So something with my driver causes skb_clone() to corrupt the packet
-> but  calling skb_copy() instead  keeps everything working.   There are
-> definitely other cases where skb_clone() is called so really have to fix
-> this in the atm_dev, but not really sure at the moment where to look next.
+#!Adding default route to table "b"
+ip route add default dev ppp1 table b
 
-Alas I've been mostly interested in verifying your first suspicion of
-skb_cow_head() bug, and not so much in this driver ;-) IMHO after your
-current findings the driver definitely looks like the main sinner. I'm
-glad you found these hacks to make it workable, but I hope you realize
-your data could be still corrupted in more or less visible way.
+At first it seemed fine, but there are some problems. When i've tried
+to patch up the firewall i discovered that rule
+iptables -A INPUT -i ppp1 -s 0.0.0.0/0 -d IP_OF_ppp1 -m state --state ESTABLISHED,RELATED -j ACCEPT
+(when we have following catch-all rule)
+iptables -A INPUT -s 0.0.0.0/0 -d 0.0.0.0/0 -j REJECT
+does not suffice and this traffic gets blocked.
 
-I looked only a bit into ixp400_eth.c without tracking libraries and
-there are some rather strange things I didn't found in other drivers
-like skb->truesize use. It looks like both skb and skb->header could
-be used together for this recycling without respect for clones. If
-so, this could still break in many places e.g.: if it affected you in
-__vlan_put_tag() it seems this dev_queue_xmit_nit() could hit you too,
-depending on your config or even size of packets. So I guess, knowing
-this all, you should better try to hack this driver more yet.
+However, when i've changed IP_OF_ppp1 to IP_OF_ppp0 in the above rule everything
+"worked" with the exception that ppp1-traffic is somehow dependant on
+ppp0 interface (when ppp0 goes down, so do ppp1-connections). I think
+it's not the way.
+I don't know how and when these packets get IP of ppp0. I give up.
+I've read lartc.org etc. and can't figure this out. I've tried to mark
+outgoing connection with CONNMARK and DNAT coming back (as packet in INPUT chain
+seems to have different IP) packets to
+IP_OF_ppp1, but to no avail:
 
-Cheers,
-Jarek P.
+iptables -t mangle -A OUTPUT -m mark --mark 1 -j CONNMARK --save-mark
+iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark
+iptables -t nat -A PREROUTING -j DNAT --to-destination IP_OF_ppp1
+
+My full iptables/iproute2 script adding below. Thanks.
+
+
+
+
+
+
+
+
+
+
+
+#!/bin/sh
+IP_OF_ppp0="`ifconfig ppp0 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'`"
+IP_OF_ppp1="`ifconfig ppp1 | grep 'inet addr:' | cut -d: -f2 | awk '{ print $1}'`"
+IP_GATEWAY_ppp0="`ifconfig ppp0 | grep 'inet addr:' | cut -d: -f3 | awk '{ print $1}'`"
+IP_GATEWAY_ppp1="`ifconfig ppp1 | grep 'inet addr:' | cut -d: -f3 | awk '{ print $1}'`"
+UNIVERSE="0.0.0.0/0"
+
+echo "1" > /proc/sys/net/ipv4/ip_forward
+echo "1" > /proc/sys/net/ipv4/ip_dynaddr
+
+#! Clearing any existing rules and setting default policy to DROP
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
+iptables -F -t mangle
+iptables -F -t nat
+iptables -F -t filter
+#! Delete all User-specified chains
+iptables -X
+#! Reset all IPTABLES counters
+iptables -Z -t mangle
+iptables -Z -t nat
+iptables -Z -t filter
+
+##############See http://lartc.org/howto/lartc.rpdb.multiple-links.html
+ip route add $IP_GATEWAY_ppp0 dev ppp0 src $IP_OF_ppp0 table u
+ip route add default via $IP_GATEWAY_ppp0 table u
+ip route add $IP_GATEWAY_ppp1 dev ppp1 src $IP_OF_ppp1 table b
+ip route add default via $IP_GATEWAY_ppp1 table b
+ip rule add from $IP_OF_ppp0 pref 100 table u
+ip rule add from $IP_OF_ppp1 pref 101 table b
+##############End http://lartc.org/howto/lartc.rpdb.multiple-links.html
+
+#! With this rule we mark traffic
+iptables -t mangle -A OUTPUT -m owner --uid-owner myuser -j MARK --set-mark 1
+
+#!user-generated traffic goes to ppp1 (table b)
+ip rule add fwmark 1 pref 99 table b
+
+#!Cloning remaining routes to our new table
+ip route show table main | grep -Ev ^default | grep -v "$IP_GATEWAY_B" | while read ROUTE; do ip route add table b $ROUTE; done
+
+#!Adding default route to table "b"
+ip route add default dev ppp1 table b
+
+#! --------------- START OF INPUT RULES ---------------- #
+#! loopback interfaces are valid
+iptables -A INPUT -i lo -s $UNIVERSE -d $UNIVERSE -j ACCEPT
+#! If you would like your machine to "ping" from the Internet, enable these next lines
+iptables -A INPUT -i ppp0 -p ICMP -s $UNIVERSE -d $IP_OF_ppp0 -j ACCEPT
+iptables -A INPUT -i ppp1 -p ICMP -s $UNIVERSE -d $IP_OF_ppp1 -j ACCEPT
+#! Allow any related traffic coming back to the MASQ server in
+iptables -A INPUT             -s $UNIVERSE -d $IP_OF_ppp0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -i ppp1 -s $UNIVERSE -d $IP_OF_ppp1 -m state --state ESTABLISHED,RELATED -j ACCEPT
+#! Catch all rule, all other incoming is denied
+iptables -A INPUT -s $UNIVERSE -d $UNIVERSE -j REJECT
+#! --------------- END OF INPUT RULES ----------------
+
+#! --------------- START OF OUTPUT RULES ---------------- #
+#! Workaround bug in netfilter
+iptables -A OUTPUT -m state -p icmp --state INVALID -j DROP
+#! loopback interface is valid.
+iptables -A OUTPUT -o lo -s $UNIVERSE -d $UNIVERSE -j ACCEPT
+#! anything else outgoing on remote interface is valid
+iptables -A OUTPUT -o ppp0 -s $IP_OF_ppp0 -d $UNIVERSE -j ACCEPT
+iptables -A OUTPUT -o ppp1 -s $IP_OF_ppp1 -d $UNIVERSE -j ACCEPT
+#! Catch all rule, all other outgoing is denied
+iptables -A OUTPUT -s $UNIVERSE -d $UNIVERSE -j REJECT
+#! --------------- END OF OUTPUT RULES ----------------
+
+#! --------------- START OF NAT RULES ---------------- #
+iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to $IP_OF_ppp0
+iptables -t nat -A POSTROUTING -o ppp1 -j SNAT --to $IP_OF_ppp1
+#! --------------- END OF NAT RULES ---------------- #
+
+
