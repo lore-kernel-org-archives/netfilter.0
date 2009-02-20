@@ -1,72 +1,29 @@
-From: Michael Schwartzkopff <misch@multinet.de>
-Subject: Problem with conntrackd: TCP RST sent on NAT connections
-Date: Fri, 20 Feb 2009 13:34:34 +0100
-Message-ID: <200902201334.34830.misch@multinet.de>
+From: Ralf <rm@amitrader.com>
+Subject: Cannot get data out of the QUEUE
+Date: Fri, 20 Feb 2009 16:53:41 +0100
+Message-ID: <gnmjm9$a92$1@ger.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi,
+On my Linux virtual box only the QUEUE option of iptables is working.
+I guess this is a compatibility mode with old versions.
+The packet queuing is working (one can see it in iptables counters (-vL)),
+but the problem is getting the packets from the queue.
 
-I have a strange problem here. I set up a testbed like in the on on the=
-=20
-website, except that I have NAT im my scenario.
+I tried the libipq sample but the function ipq_set_mode() gives 
+an error "Failed to send netlink message: Connection refused".
 
-When I test a SSH connection everything goes fine.
+How can I use at least the old QUEUE method (ie. queue 0) ?
 
-When I download a file via HTTP the first failover works, but the failb=
-ack=20
-breaks the connection and the download stops. Tracing the connection sh=
-ow that=20
-during the failback the HTTP Server sends a package to the virtual NAT =
-address=20
-of my firewall and the firewall send a TCP RST back and thus stops the=20
-connection.
+Loading of any newer kernel modules (NFQUEUE etc) is unfortunately 
+not possible because it is a rented box and the hoster rejects 
+to load any other modules.
 
-Of course I tried first to sync the connection table and after that set=
- up my=20
-virtual addresses, but it seems that it does not help.
+Just one queue would be sufficient for me.
+Any help very much appreciated, also info about alternative methods/libraries.
 
-A similar problem was described from Abhijit Menon-Sen on Oct, 30th 200=
-7 on=20
-the nf-failover mailing list. But I did not find any solution there.
-
-My system:
-debian lenny.
-Kernel 2.6.26-1-686
-conntrackd version 0.9.6-4
-
-Mode: FTFW, heartbeat as HA solution.
-
-My firewall does allow everything. The only rule is the NAT rule that t=
-ranslats=20
-all packets comming from internal to the virtual external address.
-
-Any idea what could be wrong? How could I trace the problem further? Th=
-anks=20
-for any help.
-
---=20
-Dr. Michael Schwartzkopff
-MultiNET Services GmbH
-Addresse: Bretonischer Ring 7; 85630 Grasbrunn; Germany
-Tel: +49 - 89 - 45 69 11 0
-=46ax: +49 - 89 - 45 69 11 21
-mob: +49 - 174 - 343 28 75
-
-mail: misch@multinet.de
-web: www.multinet.de
-
-Sitz der Gesellschaft: 85630 Grasbrunn
-Registergericht: Amtsgericht M=FCnchen HRB 114375
-Gesch=E4ftsf=FChrer: G=FCnter Jurgeneit, Hubert Martens
-
----
-
-PGP Fingerprint: F919 3919 FF12 ED5A 2801 DEA6 AA77 57A4 EDD8 979B
-Skype: misch42
