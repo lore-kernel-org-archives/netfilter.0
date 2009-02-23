@@ -1,54 +1,71 @@
-From: Robby Workman <rw@rlworkman.net>
-Subject: Re: [ANNOUNCE] conntrack-tools 0.9.11 released
-Date: Mon, 23 Feb 2009 09:34:16 -0600
-Message-ID: <20090223093416.2c63fc02@liberty.rlwhome.lan>
-References: <49A03C73.8010004@netfilter.org>
-	<20090222233433.0dc8f396@liberty.rlwhome.lan>
-	<alpine.LSU.2.00.0902230815570.20446@fbirervta.pbzchgretzou.qr>
-	<49A26A3E.5020707@netfilter.org>
+From: Yoann Juet <yoann.juet@univ-nantes.fr>
+Subject: Re: Second failover failure with conntrackd - INVALID packets
+Date: Mon, 23 Feb 2009 16:38:26 +0100
+Message-ID: <49A2C2F2.2050604@univ-nantes.fr>
+References: <497760CB.6090008@univ-nantes.fr> <49778AF4.7000201@netfilter.org> <4978425F.1030003@univ-nantes.fr> <4978A4F8.5060901@netfilter.org> <4979BA72.50405@univ-nantes.fr> <497C4440.7050809@netfilter.org> <497CA7A2.2000906@netfilter.org> <497E0EA9.1020408@univ-nantes.fr> <497E40B0.2090709@netfilter.org> <4981D4EB.3060007@univ-nantes.fr> <49881800.20707@netfilter.org> <49896FEA.3050803@univ-nantes.fr> <4989713B.2010502@netfilter.org> <498C004A.20506@univ-nantes.fr> <49901394.30504@netfilter.org> <49917D90.8090706@univ-nantes.fr> <49929106.8080006@netfilter.org> <49952D6E.4020501@univ-nantes.fr> <49958FA7.1030702@netfilter.org> <499B0696.2020300@netfilter.org>
+Reply-To: yoann.juet@univ-nantes.fr
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------050709030209030908010202"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49A26A3E.5020707@netfilter.org>
+In-Reply-To: <499B0696.2020300@netfilter.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter@vger.kernel.org
 
-On Mon, 23 Feb 2009 10:19:58 +0100
-Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+This is a multi-part message in MIME format.
+--------------050709030209030908010202
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> Jan Engelhardt wrote:
-> > On Monday 2009-02-23 06:34, Robby Workman wrote:
-> >> On Sat, 21 Feb 2009 18:40:03 +0100
-> >> Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> >>
-> >>> The netfilter project presents another development release of the
-> >>> conntrack-tools...
-> >> I thought I recalled seeing discussion about this already, but I
-> >> don't see it in my archives, so maybe not.   With glibc-2.7, this
-> >> release builds fine; however, with glibc-2.9, both src/mcast.c and
-> >> src/sync-mode.c need limits.h included, or else INT_MAX is
-> >> undefined.
-> > 
-> > This builds fine for me - and I am on glibc 2.9.
-> > Just *what* is it in (which distro? Debian/Ubuntu again?)
-> > again to constantly fail on INT_MAX?
+Pablo Neira Ayuso wrote:
+> Pablo Neira Ayuso wrote:
+>> Please, add the following line here to your scripts:
+>>
+>> conntrackd -B -C /etc/conntrackd.conf
+>>
+>> Let me now if that fixes your problem.
 > 
-> Indeed. This also compiles fine for me in debian. I have committed a
-> patch for this [1]. This issue is unfortunate. Gentoo bugzilla on
-> conntrack-tools had a patch but nobody has sent it to me. I notice it
-> after the release.
+> Updates? I'm intrigued with your problem. Some more info for
+> troubleshooting. You have the commands:
 > 
-> [1]
-> http://git.netfilter.org/cgi-bin/gitweb.cgi?p=conntrack-tools.git;a=commit;h=9bf002ff7935e7dff625683787fc3a06ac2ef2cb
+> display internal cache (states that belong to this node)
+> # conntrackd -i
+> 
+> display external cache (states that belong to other nodes)
+> # conntrackd -e
+> 
+> While trigering fail-overs, you should see the same states in the
+> active's internal cache and the backup's external cache. If that does
+> happen, there's a problem somewhere.
+> 
+> I'm about to release 0.9.11 but before I'd like to close pending issues.
+> 
+
+The issue is solved by adding "conntrackd -B" to my script. According to 
+the logs, such instruction sends bulk update. What is it for exactly ?
+
+Best regards,
+
+--------------050709030209030908010202
+Content-Type: text/x-vcard; charset=utf-8;
+ name="yoann_juet.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="yoann_juet.vcf"
+
+begin:vcard
+fn:Yoann Juet
+n:Juet;Yoann
+org;quoted-printable:;DSI Universit=C3=A9 de Nantes
+adr;quoted-printable:BP92208;;2, rue de la Houssini=C3=A8re;Nantes;;44322;France
+email;internet:yoann.juet@univ-nantes.fr
+title;quoted-printable:Ing=C3=A9nieur s=C3=A9curit=C3=A9 & r=C3=A9seau
+tel;work:02.51.12.53.93
+tel;fax:02.51.12.58.60
+x-mozilla-html:FALSE
+version:2.1
+end:vcard
 
 
-Weird that it's not affecting Jan then, because it's definitely
-something specific to newer glibc (or perhaps gcc, but it's not
-immediately obvious how that would be the case). I'm on Slackware 
-rather than Gentoo, running quite a bit of prerelease development 
-builds (including gcc-4.3.3 and glibc-2.9 along with 2.6.28.7 kernel).
-
--RW
+--------------050709030209030908010202--
