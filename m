@@ -1,63 +1,70 @@
-From: Robby Workman <rw@rlworkman.net>
-Subject: Re: [ANNOUNCE] conntrack-tools 0.9.11 released
-Date: Tue, 24 Feb 2009 08:10:42 -0600
-Message-ID: <20090224081042.0f37580e@liberty.rlwhome.lan>
-References: <49A03C73.8010004@netfilter.org>
-	<20090222233433.0dc8f396@liberty.rlwhome.lan>
-	<alpine.LSU.2.00.0902230815570.20446@fbirervta.pbzchgretzou.qr>
-	<49A26A3E.5020707@netfilter.org>
-	<20090223093416.2c63fc02@liberty.rlwhome.lan>
-	<49A3C3FE.2000403@netfilter.org>
+From: Wei Yongjun <yjwei@cn.fujitsu.com>
+Subject: [PATCH] netfilter: remove some pointless conditionals before kfree_skb()
+Date: Wed, 25 Feb 2009 18:44:06 +0800
+Message-ID: <49A520F6.1010404@cn.fujitsu.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=PGP-SHA1;
- boundary="Sig_/C.eVs6lQz=iz_yxwNXrum5H"; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49A3C3FE.2000403@netfilter.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Patrick McHardy <kaber@trash.net>
+Cc: netfilter@vger.kernel.org, Wei Yongjun <yjwei@cn.fujitsu.com>
 
---Sig_/C.eVs6lQz=iz_yxwNXrum5H
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Remove some pointless conditionals before kfree_skb().
 
-On Tue, 24 Feb 2009 10:55:10 +0100
-Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+Signed-off-by: Wei Yongjun <yjwei@cn.fujitsu.com>
+---
+ net/decnet/netfilter/dn_rtmsg.c         |    3 +--
+ net/ipv6/netfilter/nf_conntrack_reasm.c |    3 +--
+ net/netfilter/nfnetlink_queue.c         |    3 +--
+ 3 files changed, 3 insertions(+), 6 deletions(-)
 
-> Robby Workman wrote:
-> >=20
-> > Weird that it's not affecting Jan then, because it's definitely
-> > something specific to newer glibc (or perhaps gcc, but it's not
-> > immediately obvious how that would be the case). I'm on Slackware=20
-> > rather than Gentoo, running quite a bit of prerelease development=20
-> > builds (including gcc-4.3.3 and glibc-2.9 along with 2.6.28.7
-> > kernel).
->=20
-> I'm don't mind too much as long as the following patch (which is
-> already in git to fix the gentoo's problem) fixes also yours:
->=20
-> http://git.netfilter.org/cgi-bin/gitweb.cgi?p=3Dconntrack-tools.git;a=3Dc=
-ommitdiff;h=3D9bf002ff7935e7dff625683787fc3a06ac2ef2cb;hp=3D87c8c090e1b64ea=
-c27edb968845cb1e8ee65b06b
->=20
-> Please, confirm that the problem is resolved.
+diff --git a/net/decnet/netfilter/dn_rtmsg.c b/net/decnet/netfilter/dn_rtmsg.c
+index 6d2bd32..17cbc4c 100644
+--- a/net/decnet/netfilter/dn_rtmsg.c
++++ b/net/decnet/netfilter/dn_rtmsg.c
+@@ -53,8 +53,7 @@ static struct sk_buff *dnrmg_build_message(struct sk_buff *rt_skb, int *errp)
+ 	return skb;
+ 
+ nlmsg_failure:
+-	if (skb)
+-		kfree_skb(skb);
++	kfree_skb(skb);
+ 	*errp = -ENOMEM;
+ 	if (net_ratelimit())
+ 		printk(KERN_ERR "dn_rtmsg: error creating netlink message\n");
+diff --git a/net/ipv6/netfilter/nf_conntrack_reasm.c b/net/ipv6/netfilter/nf_conntrack_reasm.c
+index ed4d79a..37f7954 100644
+--- a/net/ipv6/netfilter/nf_conntrack_reasm.c
++++ b/net/ipv6/netfilter/nf_conntrack_reasm.c
+@@ -112,8 +112,7 @@ static unsigned int nf_hashfn(struct inet_frag_queue *q)
+ 
+ static void nf_skb_free(struct sk_buff *skb)
+ {
+-	if (NFCT_FRAG6_CB(skb)->orig)
+-		kfree_skb(NFCT_FRAG6_CB(skb)->orig);
++	kfree_skb(NFCT_FRAG6_CB(skb)->orig);
+ }
+ 
+ /* Memory Tracking Functions. */
+diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
+index 8c86011..6f4c970 100644
+--- a/net/netfilter/nfnetlink_queue.c
++++ b/net/netfilter/nfnetlink_queue.c
+@@ -379,8 +379,7 @@ nfqnl_build_packet_message(struct nfqnl_instance *queue,
+ 
+ nlmsg_failure:
+ nla_put_failure:
+-	if (skb)
+-		kfree_skb(skb);
++	kfree_skb(skb);
+ 	if (net_ratelimit())
+ 		printk(KERN_ERR "nf_queue: error creating packet message\n");
+ 	return NULL;
+-- 
+1.5.3.8
 
 
-Yes, that's exactly what I did locally to fix it -- confirmed.
 
--RW
 
---Sig_/C.eVs6lQz=iz_yxwNXrum5H
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Disposition: attachment; filename=signature.asc
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.10 (GNU/Linux)
-
-iEYEARECAAYFAkmj/+MACgkQvGy9tf6lsvv/3wCgkdHw2SgOud+RKb7MuWr84AoZ
-eRAAoKopdg16IEKYQq8+ZUhOERlSZb4m
-=GlTE
------END PGP SIGNATURE-----
-
---Sig_/C.eVs6lQz=iz_yxwNXrum5H--
