@@ -1,57 +1,47 @@
-From: Alexander Kolesnik <Alexander.Kolesnik@awanti.com>
-Subject: ulog: losing packets
-Date: Fri, 27 Feb 2009 17:26:54 +0300
-Message-ID: <547716004.20090227172654@awanti.com>
-Reply-To: Alexander Kolesnik <Alexander.Kolesnik@awanti.com>
+From: sean darcy <seandarcy2@gmail.com>
+Subject: Howto setup one machine for specific ip pipe?
+Date: Fri, 27 Feb 2009 19:01:34 -0500
+Message-ID: <go9usv$db0$1@ger.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello,
+I have an asterisk voip server in the local network. I have two outgoing 
+connections, a large verizon pipe, and small, low latency pipe from 
+broadview. I'd like traffic generally to use the verizon pipe, but 
+traffic from the voip server should use the low latency broadview pipe.
 
-We're accounting traffic for users by ULOG-ipcad chain. Some time ago
-I've found that some of users traffic does not appear in ipcad. To
-check that this is not ipcad's problem I've installed ulogd and found
-following in its log:
-Fri Feb 27 15:25:56 2009 <3> ulogd.c:487 ulogd Version 1.22 starting
-Fri Feb 27 15:25:56 2009 <5> ulogd.c:766 initialization finished, entering main loop
-Fri Feb 27 15:27:00 2009 <7> ulogd.c:777 ipulog_read == -1! ipulog_errno == 6, errno = 105
-Fri Feb 27 15:27:02 2009 <7> ulogd.c:777 ipulog_read == -1! ipulog_errno == 6, errno = 105
-...
+I've set up table 128:
 
-I have following settings for ulog and other stuff:
-/etc/modprobe.conf:
-options nf_conntrack hashsize=2097152
-options ipt_ULOG nlbufsiz=65535 flushtimeout=100
 
-# sysctl -a|grep rmem
-net.ipv4.tcp_rmem = 4096        87380   174760
-net.core.rmem_default = 221184
-net.core.rmem_max = 4194304
+## eth0 is static to broadview
+ETH0_IP_GATEWAY=xx.yy.zz.ww
+ETH0_IP_ADDR=xxx.yy.zz.ww1
+ip rule delete from $ETH0_IP_ADDR/32 table 128 priority 128
+ip rule add    from $ETH0_IP_ADDR/32 table 128 priority 128
+## this is the route through broadview gateway ip
+ip route add default via $ETH0_IP_GATEWAY table 128
 
-/etc/ulogd.conf:
-rmem=442368
-bufsize=1000000
+ip rule add    fwmark 0x1 table 128 prio 126
 
-/etc/ipcad.conf:
-buffers = 4194304;
+ip rule add    fwmark 0x2 table 128 prio 127
 
-# uname -a
-Linux host.mydomain 2.6.20.20-2 #2 SMP Mon Oct 15 15:26:52 MSD 2007 i686 i686 i386 GNU/Linux
+and then set-mark 0x1 to all packets from the voip server:
 
-# free
-             total       used       free     shared    buffers     cached
-Mem:       1033124     980912      52212          0      83132     507860
--/+ buffers/cache:     389920     643204
+$IPT -t mangle -A PREROUTING -i eth1 \
+   -s $AST_IP_ADDR -j MARK --set-mark 0x1
 
-Please, let me know what should be tuned to fix this problem!
 
-Thanks in advance!
+But the asterisk server can't access the internet. I assume the problem 
+is that iptable server isn't NAT'ing the voip server. That is, it routes 
+the packet out through the broadview pipe, but doesn't send any of the 
+responses back to the asterisk server.
 
--- 
-Alexander
+Any help appreciated.
+
+sean
 
