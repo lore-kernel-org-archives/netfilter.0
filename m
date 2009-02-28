@@ -1,60 +1,63 @@
-From: Brian Austin - Standard Universal <brian@standarduniversal.com.au>
+From: sean darcy <seandarcy2@gmail.com>
 Subject: Re: Howto setup one machine for specific ip pipe?
-Date: Sat, 28 Feb 2009 11:07:43 +1100
-Message-ID: <49A8804F.9000502@standarduniversal.com.au>
-References: <go9usv$db0$1@ger.gmane.org>
+Date: Fri, 27 Feb 2009 19:27:14 -0500
+Message-ID: <49A884E2.1030706@gmail.com>
+References: <go9usv$db0$1@ger.gmane.org> <49A8804F.9000502@standarduniversal.com.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <go9usv$db0$1@ger.gmane.org>
+In-Reply-To: <49A8804F.9000502@standarduniversal.com.au>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: sean darcy <seandarcy2@gmail.com>
+To: Brian Austin - Standard Universal <brian@standarduniversal.com.au>
 Cc: netfilter@vger.kernel.org
 
-which computers have IP addresses that are public/private?
+Brian Austin - Standard Universal wrote:
+> which computers have IP addresses that are public/private?
+> 
+> b
+> 
+> sean darcy wrote:
+>> I have an asterisk voip server in the local network. I have two 
+>> outgoing connections, a large verizon pipe, and small, low latency 
+>> pipe from broadview. I'd like traffic generally to use the verizon 
+>> pipe, but traffic from the voip server should use the low latency 
+>> broadview pipe.
+>>
+>> I've set up table 128:
+>>
+>>
+>> ## eth0 is static to broadview
+>> ETH0_IP_GATEWAY=xx.yy.zz.ww
+>> ETH0_IP_ADDR=xxx.yy.zz.ww1
+>> ip rule delete from $ETH0_IP_ADDR/32 table 128 priority 128
+>> ip rule add    from $ETH0_IP_ADDR/32 table 128 priority 128
+>> ## this is the route through broadview gateway ip
+>> ip route add default via $ETH0_IP_GATEWAY table 128
+>>
+>> ip rule add    fwmark 0x1 table 128 prio 126
+>>
+>> ip rule add    fwmark 0x2 table 128 prio 127
+>>
+>> and then set-mark 0x1 to all packets from the voip server:
+>>
+>> $IPT -t mangle -A PREROUTING -i eth1 \
+>>   -s $AST_IP_ADDR -j MARK --set-mark 0x1
+>>
+>>
+>> But the asterisk server can't access the internet. I assume the 
+>> problem is that iptable server isn't NAT'ing the voip server. That is, 
+>> it routes the packet out through the broadview pipe, but doesn't send 
+>> any of the responses back to the asterisk server.
+>>
+>> Any help appreciated.
+>>
+>> sean
+>>
 
-b
+The asterisk server has no public address. Everything goes through the 
+one machine running iptables which has the two public addresses - 
+verizon and broadvoice.
 
-sean darcy wrote:
-> I have an asterisk voip server in the local network. I have two 
-> outgoing connections, a large verizon pipe, and small, low latency 
-> pipe from broadview. I'd like traffic generally to use the verizon 
-> pipe, but traffic from the voip server should use the low latency 
-> broadview pipe.
->
-> I've set up table 128:
->
->
-> ## eth0 is static to broadview
-> ETH0_IP_GATEWAY=xx.yy.zz.ww
-> ETH0_IP_ADDR=xxx.yy.zz.ww1
-> ip rule delete from $ETH0_IP_ADDR/32 table 128 priority 128
-> ip rule add    from $ETH0_IP_ADDR/32 table 128 priority 128
-> ## this is the route through broadview gateway ip
-> ip route add default via $ETH0_IP_GATEWAY table 128
->
-> ip rule add    fwmark 0x1 table 128 prio 126
->
-> ip rule add    fwmark 0x2 table 128 prio 127
->
-> and then set-mark 0x1 to all packets from the voip server:
->
-> $IPT -t mangle -A PREROUTING -i eth1 \
->   -s $AST_IP_ADDR -j MARK --set-mark 0x1
->
->
-> But the asterisk server can't access the internet. I assume the 
-> problem is that iptable server isn't NAT'ing the voip server. That is, 
-> it routes the packet out through the broadview pipe, but doesn't send 
-> any of the responses back to the asterisk server.
->
-> Any help appreciated.
->
-> sean
->
-> -- 
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+sean
