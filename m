@@ -1,49 +1,31 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: ulog: losing packets
-Date: Sun, 01 Mar 2009 11:14:16 +0100
-Message-ID: <49AA5FF8.5010409@netfilter.org>
-References: <547716004.20090227172654@awanti.com>
+From: Piyush Joshi <pj.netfilter@gmail.com>
+Subject: How to block proxing https connection ??
+Date: Mon, 2 Mar 2009 10:40:31 +0530
+Message-ID: <52da25120903012110p23d6d3b4l4a568eaf8af6c495@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <547716004.20090227172654@awanti.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=aFAWHikMAb0Pm1Gk9E+is/481UVVTZr4+7c2/4003/4=;
+        b=QMwDoqMT/onc/mykZpxKByPMOKbKLvcSv3NTL1yJ0Gg8GVbWSS2M8imX/4yvGfOx2g
+         SmehGIUKLOD9Zg9p5LJxsRF8Q8dvGOBC5jmBgUnxAk56NndBNfUxqPX9M9BMlwU/71Aj
+         5ZnXJiQx3VaA86q7Kd79WEnU8q/S6JIfB3OMU=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Alexander Kolesnik <Alexander.Kolesnik@awanti.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Alexander Kolesnik wrote:
-> Hello,
-> 
-> We're accounting traffic for users by ULOG-ipcad chain. Some time ago
-> I've found that some of users traffic does not appear in ipcad. To
-> check that this is not ipcad's problem I've installed ulogd and found
-> following in its log:
-> Fri Feb 27 15:25:56 2009 <3> ulogd.c:487 ulogd Version 1.22 starting
-> Fri Feb 27 15:25:56 2009 <5> ulogd.c:766 initialization finished, entering main loop
-> Fri Feb 27 15:27:00 2009 <7> ulogd.c:777 ipulog_read == -1! ipulog_errno == 6, errno = 105
-> Fri Feb 27 15:27:02 2009 <7> ulogd.c:777 ipulog_read == -1! ipulog_errno == 6, errno = 105
+Dear All Expert,
+                         I am new to this list and have a question
+regarding netfilter. We are successfully running netfilter and now we
+are seeing that some users using malicious tools to go to the internet
+by creating https connection to outside proxy and open banned sites,
+Is there any patch for iptables to prevent this ??
 
-That means that netlink cannot back off as it is hitting ENOBUFS, thus,
-you are losing log messages. Hm, ulog <= 1.24 does a primitive netlink
-error handling.
 
-> I have following settings for ulog and other stuff:
-> /etc/modprobe.conf:
-> options nf_conntrack hashsize=2097152
-> options ipt_ULOG nlbufsiz=65535 flushtimeout=100
-> 
-> # sysctl -a|grep rmem
-> net.ipv4.tcp_rmem = 4096        87380   174760
-> net.core.rmem_default = 221184
-> net.core.rmem_max = 4194304
-> 
-> /etc/ulogd.conf:
-> rmem=442368
-       ^^^^^^
-Rising this value will delay hitting ENOBUFS. This is the size of the
-receiver buffer.
+Thanks Regards
 
--- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
+Piyush Joshi
