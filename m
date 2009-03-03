@@ -1,7 +1,7 @@
 From: "Ethy H. Brito" <ethy.brito@inexo.com.br>
 Subject: -j LOG not logging to /var/log/messages
-Date: Tue, 3 Mar 2009 15:47:20 -0300
-Message-ID: <20090303154720.7077a9b1@pulsar.inexo.com.br>
+Date: Tue, 3 Mar 2009 16:51:43 -0300
+Message-ID: <20090303165143.7d672c7a@pulsar.inexo.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -9,7 +9,6 @@ Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
-
 
 Hi all
 
@@ -45,3 +44,4 @@ Any clue about what is going wrong??
 Regards
 
 Ethy
+
