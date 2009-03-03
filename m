@@ -1,53 +1,47 @@
-From: dstorvik <dstorvik@consultech.net>
-Subject: RE: ULOGD:  suddenly not recording ANY connections
-Date: Tue, 3 Mar 2009 11:48:20 -0500
-Message-ID: <F5E47532014E8E45A339717AF42215342F2B942BC9@hild.consultech.local>
-References: <F5E47532014E8E45A339717AF42215342F2B942BC3@hild.consultech.local>
- <49AD558E.7010101@netfilter.org>
+From: "Ethy H. Brito" <ethy.brito@inexo.com.br>
+Subject: -j LOG not logging to /var/log/messages
+Date: Tue, 3 Mar 2009 15:47:20 -0300
+Message-ID: <20090303154720.7077a9b1@pulsar.inexo.com.br>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49AD558E.7010101@netfilter.org>
-Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-
-> -----Original Message-----
-> From: Pablo Neira Ayuso [mailto:pablo@netfilter.org]
-> Sent: Tuesday, March 03, 2009 11:07 AM
-> To: dstorvik
-> Cc: netfilter@vger.kernel.org
-> Subject: Re: ULOGD: suddenly not recording ANY connections
->
-> dstorvik wrote:
-> > I setup ULOGD and everything was working, log was rotating nightly,
-> everything was good. A few weeks later ( after a reboot) it stopped
-> working.  The ulogd.conf file shows it is starting correctly and
-> showing no errors but there is nothing output to the file.   I have
-> checked all the configs and they look fine and every time I start it,
-> it shows that it is starting fine but not a single packet gets
-> recorded. The box it is running on is running as a NAT firewall for a
-> saturated 25 Mbit connection so there is plenty to log( hence the
-> nightly rotation).
-> > This is a fedora Core 9 System
-> >
-> > Below is a copy of the once working conf file and the output of
-> ulogd.log for a start of the daemon.  I only have one stack using
-> ULOGEMU. Can anyone see why I would simply not get any output?
->
-> Are the kernel modules 'nf_conntrack_netlink' and 'nf_conntrack_ipv4'
-> loaded?
->
-> --
-> "Los honestos son inadaptados sociales" -- Les Luthiers
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
 
-Well I believe they were....I can't check now.  In the process of getting ready to upgrade conntrack-tools yesterday I upgraded the Libnfnetlink  to 0.0.40 from 0.0.39  and libnetfilter-conntrack to 0.0.99 from 0.0.97.
- I noticed this morning that ULOGD mysteriously started logging again as of around the time I was installing those newer libraries.... So I guess we're fixed but not sure exactly why it broke nor why it is now fixed... very frustrating.
+Hi all
 
-Thanks for the quick response.
+Environment:
+	Slackware 10.2.0
+	iptables v1.3.3
+	syslogd 1.4.1
+	klogd 1.4.1
 
-Derek
+Test rule:
+
+$IPTABLES -A INPUT  -s SOME_IP  -m state --state NEW  -j RULE_23
+$IPTABLES -A RULE_23  -j LOG  --log-level info --log-prefix "R.23/ACCEPT/global/RULE_23 "
+$IPTABLES -A RULE_23  -j ACCEPT 
+
+I can see LOG messages in dmesg but not in /var/log/messages:
+
+R.23/ACCEPT/global/RULE_23 IN=eth0 OUT= MAC=x:x:x... SRC=SOME_IP
+DST=X.X.X.X LEN=84 TOS=0x00 PREC=0x00 TTL=54 ID=2 DF PROTO=ICMP TYPE=8
+CODE=0 ID=12070 SEQ=512 
+
+syslogd.conf relevant line is:
+
+# Log anything 'info' or higher, but lower than 'warn'.
+# Exclude authpriv, cron, mail, and news.  These are logged elsewhere.
+*.info;*.!warn;\
+        authpriv.none;cron.none;mail.none;news.none     -/var/log/messages
+
+I have another system with these same config (I think they are the same!)
+and it is working ok.
+Any clue about what is going wrong??
+
+Regards
+
+Ethy
