@@ -1,47 +1,18 @@
-From: "Ethy H. Brito" <ethy.brito@inexo.com.br>
-Subject: -j LOG not logging to /var/log/messages
-Date: Tue, 3 Mar 2009 16:51:43 -0300
-Message-ID: <20090303165143.7d672c7a@pulsar.inexo.com.br>
+From: dstorvik <dstorvik@consultech.net>
+Subject: ULOGD: Log file size limitation?
+Date: Thu, 5 Mar 2009 10:36:40 -0500
+Message-ID: <F5E47532014E8E45A339717AF42215342F2B942C49@hild.consultech.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi all
+I have ulogd running to track netfilter nat connections.  When my log file reaches 2147483647, exactly 2 gb it stops writing with no errors or warnings.  It then picks back up when logrotate rotates the file and kicks ulogd.  I am rotating daily so other than rotating on an intraday period, which I'd rather not do, I'm not sure what to do.   The file system is a Logical volume group with EXT3 filesystem, and I believe 1K blocks which should lead to a maximum file size of 16 Gigabytes from what I understood. Is that not true and I simply have a file system problem or is this some limitation or bug in ULogd?
 
-Environment:
-	Slackware 10.2.0
-	iptables v1.3.3
-	syslogd 1.4.1
-	klogd 1.4.1
-
-Test rule:
-
-$IPTABLES -A INPUT  -s SOME_IP  -m state --state NEW  -j RULE_23
-$IPTABLES -A RULE_23  -j LOG  --log-level info --log-prefix "R.23/ACCEPT/global/RULE_23 "
-$IPTABLES -A RULE_23  -j ACCEPT 
-
-I can see LOG messages in dmesg but not in /var/log/messages:
-
-R.23/ACCEPT/global/RULE_23 IN=eth0 OUT= MAC=x:x:x... SRC=SOME_IP
-DST=X.X.X.X LEN=84 TOS=0x00 PREC=0x00 TTL=54 ID=2 DF PROTO=ICMP TYPE=8
-CODE=0 ID=12070 SEQ=512 
-
-syslogd.conf relevant line is:
-
-# Log anything 'info' or higher, but lower than 'warn'.
-# Exclude authpriv, cron, mail, and news.  These are logged elsewhere.
-*.info;*.!warn;\
-        authpriv.none;cron.none;mail.none;news.none     -/var/log/messages
-
-I have another system with these same config (I think they are the same!)
-and it is working ok.
-Any clue about what is going wrong??
-
-Regards
-
-Ethy
+Thanks
+   Derek
 
