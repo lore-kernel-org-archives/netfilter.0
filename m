@@ -1,38 +1,35 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: ULOGD: Log file size limitation?
-Date: Thu, 05 Mar 2009 17:51:39 +0100
-Message-ID: <49B0031B.5060500@inl.fr>
-References: <F5E47532014E8E45A339717AF42215342F2B942C49@hild.consultech.local>
-Reply-To: eric@inl.fr
+From: Mr Vandeley <mr.vandeley@gmail.com>
+Subject: Nated connection behavior
+Date: Thu, 5 Mar 2009 15:02:05 -0300
+Message-ID: <87fa72960903051002g75faf755vcf16d10241de04dc@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <F5E47532014E8E45A339717AF42215342F2B942C49@hild.consultech.local>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=zizJrC4ab8YvrarOvumO8WGeA0Mnjb1jziITdTbQQTI=;
+        b=RvVGzQ0xArCroWTbfs8WyNgNMtXzkfRU5uWpaLfcIYvoR5xFuCH61qdBU204AGrclT
+         td2tbJmZ+w6jqrN59u6/Pje49Db9UklmO+9M9YMSH/5xWkVjYH8mGq82vOk6jYIsqBs1
+         z4U0V+YfAx8gWxIToV6B2GtcozvIy/EzBP3ac=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: dstorvik <dstorvik@consultech.net>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
 Hi,
+I have a question related to a NAT connection behavior:
 
-dstorvik wrote:
-> I have ulogd running to track netfilter nat connections.  When my log file reaches 2147483647, exactly 2 gb it stops writing with no errors or warnings.  It then picks back up when logrotate rotates the file and kicks ulogd.  I am rotating daily so other than rotating on an intraday period, which I'd rather not do, I'm not sure what to do.   The file system is a Logical volume group with EXT3 filesystem, and I believe 1K blocks which should lead to a maximum file size of 16 Gigabytes from what I understood. Is that not true and I simply have a file system problem or is this some limitation or bug in ULogd?
->   
+|CLIENT|<----->[ROUTER/IPTABLES/NAT]<---->|SERVER|
 
-This is quiet strange because AC_SYS_LARGEFILE is put in ulogd2
-configure.ac.
+Why is it that if I ping SERVER from CLIENT, I see answers comming
+from SERVER internal IP instead of ROUTER external IP.
 
-Has autoconf put in your config.h :
+NAT rule on ROUTER is:
 
-    /* Number of bits in a file offset, on hosts where this is settable. */
-    #define _FILE_OFFSET_BITS 64
+iptables -t nat -A POSTROUTING -s <IP SERVER> -o <external eth of
+ROUTER> -j SNAT --to-source <external IP of ROUTER>
 
-BR,
-
--- 
-Eric Leblond <eric@inl.fr>
-INL: http://www.inl.fr/
-NuFW: http://www.nufw.org/
-EdenWall: http://www.edenwall.com/
-
+I know that it is awful too basic question for you guys, but if
+someone could explain that I'll be much appreciative.
