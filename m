@@ -1,33 +1,56 @@
-From: "Andrew O. Zhukov" <andre@telegroup.com.ua>
-Subject: conntrack modules in fedora
-Date: Fri, 06 Mar 2009 16:27:37 +0200
-Message-ID: <49B132D9.3090303@telegroup.com.ua>
-References: <49B122A0.7080905@telegroup.com.ua>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnfnetlink 0.0.41 release
+Date: Fri, 06 Mar 2009 17:59:50 +0100
+Message-ID: <49B15686.4050508@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49B122A0.7080905@telegroup.com.ua>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/mixed;
+ boundary="------------010908090305020401070304"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
+Cc: netfilter-announce@lists.netfilter.org, netfilter-devel@vger.kernel.org, lwn@lwn.net
 
-=EBernel 2.6.25.14-69.fc8
-iptables-1.4.1.1-1.fc8.x86_64.rpm
+This is a multi-part message in MIME format.
+--------------010908090305020401070304
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-Is it somehow possible to switch off conntrack modules in this=20
-configuration.
+Hi!
 
-conntrack_ftp =C1nd conntrack_sip possible exclude by rmod, modprobe -r
-lsmod don't show it. In iptables.config IPTABLES_MODULES=3D""
-Multiple reload iptables and linux itself. No result.
+The netfilter project proudly presents:
 
-In any case I can access outside passive ftp and
-I see corrected SIP packets on the outside registar.
+  * libnfnetlink-0.0.41
 
-Any ideas?
+libnfnetlink is the low-level library for netfilter related
+kernel/userspace communication. It provides a generic messaging
+infrastructure for in-kernel netfilter subsystems (such as
+nfnetlink_log, nfnetlink_queue, nfnetlink_conntrack) and their
+respective users and/or management tools in userspace.
+
+See ChangeLog (file attached) for more details on this release. You can
+download it from:
+
+http://www.netfilter.org/projects/libnfnetlink/downloads.html
+ftp://ftp.netfilter.org/pub/libnfnetlink/
+
+Regards,
+Pablo
+
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
 
 
---=20
-Andrew O. Zhukov
-Telegroup Ukraine
+--------------010908090305020401070304
+Content-Type: text/plain;
+ name="ChangeLog-libnfnetlink-0.0.41"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ChangeLog-libnfnetlink-0.0.41"
+
+Pablo Neira Ayuso (2):
+      nfnl: allow disabling and enabling sequence tracking
+      nfnl: tag nfnl_talk() and nfnl_listen() as deprecated
+
+
+--------------010908090305020401070304--
