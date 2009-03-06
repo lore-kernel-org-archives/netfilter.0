@@ -1,65 +1,36 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [ANNOUNCE] libnetfilter_queue 0.0.17 release
-Date: Fri, 06 Mar 2009 18:11:46 +0100
-Message-ID: <49B15952.4060909@netfilter.org>
-References: <49B1586A.8060308@netfilter.org>
+From: paulobruck1 <paulobruck1@gmail.com>
+Subject: route local packages
+Date: Fri, 06 Mar 2009 14:14:41 -0300
+Message-ID: <1236359681.3844.26.camel@pauloric.contatogs.com.br>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------060509010409030603060602"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49B1586A.8060308@netfilter.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:subject:from:to:content-type
+         :date:message-id:mime-version:x-mailer:content-transfer-encoding;
+        bh=yQCUmT3A2KeKTu6YpFwHtvQFXxnfglQxmxnEH9UJ03g=;
+        b=mTKzDnxx44I4aL9K+nNT1LxeHnycCn3jnXRumSchU3mkinlSs7k7v3prSL3GynuvJI
+         TpHjY1h0B+MP7NNWFD6SEFEZBNdzflo2UoQzyDd7snIYlSopdWgPYJkvN9O+HiMWRIwi
+         NPOASHUXoAoFa/gC+cBrKLl2W1ayOXICOozjY=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
-Cc: netfilter-announce@lists.netfilter.org, netfilter-devel@vger.kernel.org, lwn@lwn.net
 
-This is a multi-part message in MIME format.
---------------060509010409030603060602
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Hi Guys
 
-Pablo Neira Ayuso wrote:
-> Hi!
-> 
-> The netfilter project proudly presents:
-> 
->   * libnetfilter_queue-0.0.17
-> 
-> libnetfilter_queue is a userspace library providing an API to packets
-> that have been queued by the kernel packet filter. It is is part of a
-> system that deprecates the old ip_queue / libipq mechanism.
-> 
-> ChangeLog of this release is attached for more details.
+reading
+http://iptables-tutorial.frozentux.net/iptables-tutorial.html#NATINTRO
 
-Sorry, I forgot to attach the changelog.
+and man iptables  I can't figure out how to route local packages. For
+example:
 
--- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
+----------LAN ( eth0) -----Firewall/proxy  ------eth1 ( wan1)
+					   ------eth2 ( wan2)
 
---------------060509010409030603060602
-Content-Type: text/plain;
- name="ChangeLog-libnetfilter_queue-0.0.17"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="ChangeLog-libnetfilter_queue-0.0.17"
+Knowing that my route default is wan1, how can I alter some local
+packages ( only proxy, for example) to be delivery to eth2????
 
-Bart De Schuymer (1):
-      nfqnl_test: add hw src address, physindev and physoutdev support
+best regards
 
-Eric Leblond (6):
-      doc: complete missing function documentation
-      Change variable name to have an homogeneous naming
-      Use nfq_fd function instead of call to nfnetlink function.
-      Suppress double call of nfnl_subsys_close()
-      Switch documentation style to doxygen.
-      Add doxygen config file.
-
-Pablo Neira Ayuso (5):
-      conditional compilation of testsuite utils
-      doc: add library documentation from Brad Fisher
-      doc: put doxygen configuration file into diet
-      nfq: replace nfnl_talk by nfnl_query and disable sequence tracking
-      build: bump version to 0.0.17
-
-
---------------060509010409030603060602--
