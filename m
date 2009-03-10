@@ -1,36 +1,39 @@
-From: Erik Wasser <erik.wasser@iquer.net>
+From: jason.faulkner@mailtrust.com
 Subject: Re: Determining number of active connections
-Date: Tue, 10 Mar 2009 16:22:35 +0100
-Message-ID: <200903101622.35671.erik.wasser@iquer.net>
-References: <1236694715.945517171@192.168.1.202>
+Date: Tue, 10 Mar 2009 11:30:40 -0400 (EDT)
+Message-ID: <1236699040.83825693@192.168.1.202>
+References: <1236694715.945517171@192.168.1.202> 
+ <200903101622.35671.erik.wasser@iquer.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1236694715.945517171@192.168.1.202>
-Content-Disposition: inline
+In-Reply-To: <200903101622.35671.erik.wasser@iquer.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
+
+-----Original Message-----
+From: "Erik Wasser" <erik.wasser@iquer.net>
+Sent: Tuesday, March 10, 2009 11:22am
+To: netfilter@vger.kernel.org
 Cc: jason.faulkner@mailtrust.com
+Subject: Re: Determining number of active connections
 
-On Tuesday 10 March 2009, jason.faulkner@mailtrust.com wrote:
-> Hi all,
+>check out the following files:
 >
-> I'd like to be able to monitor (trend) the number of tracked
-> connections in iptables; however, doing something like "cat
-> /proc/net/ip_conntrack | wc -l" eats up too much CPU to run with
-> regularity (we track somewhere in the realm of 200,000 connections).
->
-> Is there a way to just pull the total number? It'd be nice to know
-> that we aren't even getting close to the number of connections set in
-> the sysctl.
+>/proc/sys/net/ipv4/netfilter/{ip_conntrack_count,ip_conntrack_max}
 
-Hi,
+Thanks for this information :) This is awesome for my new firewalls.
 
-check out the following files:
+However, I have a few old 2.4 kernel firewalls (RHEL3), and they don't seem to have an ip_conntrack_count anywhere. Is there something for those? 
 
-/proc/sys/net/ipv4/netfilter/{ip_conntrack_count,ip_conntrack_max}
 
--- 
-So long... Fuzz
+
+
+--
+Jason Faulkner 
+Linux Systems Engineer
+Mailtrust, a division of Rackspace
+
+
