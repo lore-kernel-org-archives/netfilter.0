@@ -1,44 +1,54 @@
-From: "Nikolay S. Rybalov" <nowhere@hakkenden.ath.cx>
-Subject: Re: torrent client traffic shaping question
-Date: Wed, 11 Mar 2009 13:40:00 +0300
-Message-ID: <613D287C978A4801B3C3F0C890C7E29B@compot>
-References: <49B77ABF.4020406@gmail.com>
+From: martin f krafft <madduck@madduck.net>
+Subject: Re: RFC 4890 (icmpv6 firewall recommendations) and ip6tables (was:
+	ip6tables icmp conntracking on 2.6.18 vs 2.6.24)
+Date: Wed, 11 Mar 2009 13:44:05 +0100
+Message-ID: <20090311124405.GA5688@piper.oerlikon.madduck.net>
+References: <20080403081822.GA13254@piper.oerlikon.madduck.net> <47F4A36A.2010600@plouf.fr.eu.org> <20080403102632.GA22035@piper.oerlikon.madduck.net> <47F4F2B0.9020205@plouf.fr.eu.org> <873aq3ymr1.fsf@petole.dyndns.org> <20080403153847.GA17170@piper.oerlikon.madduck.net> <Pine.LNX.4.64.0804031747120.18275@blackhole.kfki.hu> <20080404073230.GA22259@piper.oerlikon.madduck.net> <Pine.LNX.4.64.0804041039280.20943@blackhole.kfki.hu> <20080404111550.GA1950@piper.oerlikon.madduck.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="xHFwDpU9dbj6ez1V"
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20080404111550.GA1950@piper.oerlikon.madduck.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
-To: Brent Clark <brentgclarklist@gmail.com>, netfilter@vger.kernel.org
-
-If you read from socket at fixed rate, it's TCP receive buffer is emptied at 
-same rate. TCP announces free buffer in receive window field, so congestion 
-window on sender side is also adjusted, thus limiting send speed to the rate 
-you read from socket on receiver side.
-
------ Original Message ----- 
-From: "Brent Clark" <brentgclarklist@gmail.com>
-To: <netfilter@vger.kernel.org>
-Sent: Wednesday, March 11, 2009 11:47 AM
-Subject: torrent client traffic shaping question
+To: netfilter@vger.kernel.org
 
 
-> Hiya
->
-> I got this question to ask, and I was hoping the TCP/IP gurus would be 
-> able to help me understand this.
->
-> K you know how with traffic shapping you can control only the traffic 
-> leaving you, how it is that torrent clients say they can control the 
-> download as well as the upload. I would think the client can only control 
-> the upload.
->
-> TIA
->
-> Brent Clark
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+--xHFwDpU9dbj6ez1V
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
+also sprach martin f krafft <madduck@madduck.net> [2008.04.04.1315 +0200]:
+> With all your help and, it's quite conceivable that I will end up
+> providing this. Possibly not a script, since I just like
+> iptables-save format, but an annotated ruleset.
+
+So this is long overdue, and it's not a script, but it's an IPv6
+guideline, based on Debian but probably applicable to all other
+distros: http://ipv6.debian.net
+
+--=20
+martin | http://madduck.net/ | http://two.sentenc.es/
+=20
+only by counting could humans demonstrate
+their independence of computers.
+            -- douglas adams, "the hitchhiker's guide to the galaxy"
+=20
+spamtraps: madduck.bogus@madduck.net
+
+--xHFwDpU9dbj6ez1V
+Content-Type: application/pgp-signature; name="digital_signature_gpg.asc"
+Content-Description: Digital signature (see http://martin-krafft.net/gpg/)
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkm3shEACgkQIgvIgzMMSnXoTQCfeYM96ktmTKAq+lT5GH0Qu8Bb
+w5EAn31Ascnh6gekthDzk3hhPB15DQk7
+=ZExx
+-----END PGP SIGNATURE-----
+
+--xHFwDpU9dbj6ez1V--
