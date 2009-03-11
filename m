@@ -1,68 +1,31 @@
-From: "Nikolay S. Rybaloff" <nowhere@hakkenden.ath.cx>
-Subject: RE: Help with whitelist
-Date: Wed, 11 Mar 2009 22:22:38 +0300
-Message-ID: <000401c9a27e$c05959f0$410c0dd0$@ath.cx>
-References: <000301c9a276$33669010$9a33b030$@net>
+From: "Vitor =?iso-8859-1?Q?Ant=F3nio?= das Neves Pinto" <vpinto@av.it.pt>
+Subject: Iptables special config
+Date: Wed, 11 Mar 2009 18:09:12 +0000
+Message-ID: <web-35176238@av.it.pt>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <000301c9a276$33669010$9a33b030$@net>
-Content-Language: ru
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Joey' <Joey@Web56.net>, 'IPTables' <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+To: netfilter@vger.kernel.org
 
-You seem to have lots of entries in your lists. Did you consider using ipset?
+Dear all,
 
-As for the question. Look at iptables -L. Fail2ban adds it's rules to the head of the INPUT chain of the filter table by default, so it's rules trigger before whitelist.
+I have a question regarding a special configuration with=20
+iptables, I hope you can help me:
+-	Behind the NAT there=92s a terminal with IP1 that sends a=20
+UDP packet to a host outside the NAT with IP2 (Source=20
+port=3D1033 Dport=3D 123)
+-	The response to this packet (due to load balancing=20
+issues) comes from a machine outside the NAT with IP3 (not=20
+from IP2!!) with Source port=3D123 Dport=3D1033
 
+Since iptables is configured as a port restricted NAT the=20
+response packet is dropped not reaching terminal with IP1=85=20
+Any idea how to make the packet reach the terminal with=20
+IP1?
+I know that with a full cone nat this wouldn=92t happen=85
 
------Original Message-----
-From: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.kernel.org] On Behalf Of Joey
-Sent: Wednesday, March 11, 2009 9:21 PM
-To: IPTables
-Subject: Help with whitelist
-
-Hello All,
-
- 
-
-Im having a problem with a whitelist I am trying to implement with iptables
-and apparently we still block IP's on the whitelist.
-
-I am basically blocking port 25 traffic to blocked IP's but also need to
-whitelist some as well insuring they never get blocked by accident.
-
-I have my iptables rules posted here: http://web56.net/iptables.txt
-
- 
-
-We also use fail2ban which blocks other IP's which fail password, so my
-whitelist is to hopefully protect against false bocking of legit clients.
-
- 
-
-I must be missing something stupid, but I just cant see it.
-
- 
-
-Any help is greatly appreciated!
-
- 
-
-Thanks!
-
- 
-
- 
-
- 
-
-
-
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
+Best regards,
+Vitor Pinto
