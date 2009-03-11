@@ -1,15 +1,28 @@
-From: "Joey" <Joey@Web56.net>
-Subject: Help with whitelist
-Date: Wed, 11 Mar 2009 14:21:29 -0400
-Message-ID: <000301c9a276$33669010$9a33b030$@net>
+From: "Nikolay S. Rybaloff" <nowhere@hakkenden.ath.cx>
+Subject: RE: Help with whitelist
+Date: Wed, 11 Mar 2009 22:22:38 +0300
+Message-ID: <000401c9a27e$c05959f0$410c0dd0$@ath.cx>
+References: <000301c9a276$33669010$9a33b030$@net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-us
+In-Reply-To: <000301c9a276$33669010$9a33b030$@net>
+Content-Language: ru
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: IPTables <netfilter@vger.kernel.org>
+To: 'Joey' <Joey@Web56.net>, 'IPTables' <netfilter@vger.kernel.org>
+
+You seem to have lots of entries in your lists. Did you consider using ipset?
+
+As for the question. Look at iptables -L. Fail2ban adds it's rules to the head of the INPUT chain of the filter table by default, so it's rules trigger before whitelist.
+
+
+-----Original Message-----
+From: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.kernel.org] On Behalf Of Joey
+Sent: Wednesday, March 11, 2009 9:21 PM
+To: IPTables
+Subject: Help with whitelist
 
 Hello All,
 
@@ -47,4 +60,9 @@ Thanks!
  
 
 
+
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
