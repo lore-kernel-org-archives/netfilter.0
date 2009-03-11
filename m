@@ -1,25 +1,30 @@
-From: Brent Clark <brentgclarklist@gmail.com>
-Subject: torrent client traffic shaping question
-Date: Wed, 11 Mar 2009 10:47:59 +0200
-Message-ID: <49B77ABF.4020406@gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Determining number of active connections
+Date: Wed, 11 Mar 2009 10:16:37 +0100
+Message-ID: <49B78175.7010608@netfilter.org>
+References: <1236694715.945517171@192.168.1.202>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <1236694715.945517171@192.168.1.202>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: jason.faulkner@mailtrust.com
+Cc: netfilter@vger.kernel.org
 
-Hiya
+jason.faulkner@mailtrust.com wrote:
+> Hi all,
+> 
+> I'd like to be able to monitor (trend) the number of tracked connections in iptables; however, doing something like "cat /proc/net/ip_conntrack | wc -l" eats up too much CPU to run with regularity (we track somewhere in the realm of 200,000 connections).
+> 
+> Is there a way to just pull the total number? It'd be nice to know that we aren't even getting close to the number of connections set in the sysctl. 
 
-I got this question to ask, and I was hoping the TCP/IP gurus would be 
-able to help me understand this.
+$ cat /proc/sys/net/netfilter/nf_conntrack_count
 
-K you know how with traffic shapping you can control only the traffic 
-leaving you, how it is that torrent clients say they can control the 
-download as well as the upload. I would think the client can only 
-control the upload.
+or with the conntrack-tools-0.9.11
 
-TIA
+# conntrack -C
 
-Brent Clark
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
