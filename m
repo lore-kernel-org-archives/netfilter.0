@@ -1,40 +1,44 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: ulogd2 / IPFIX
-Date: Wed, 11 Mar 2009 10:18:25 +0100
-Message-ID: <49B781E1.2020208@netfilter.org>
-References: <200903110947.10044.andy-lists@bourges.de>
+From: "Nikolay S. Rybalov" <nowhere@hakkenden.ath.cx>
+Subject: Re: torrent client traffic shaping question
+Date: Wed, 11 Mar 2009 13:40:00 +0300
+Message-ID: <613D287C978A4801B3C3F0C890C7E29B@compot>
+References: <49B77ABF.4020406@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <200903110947.10044.andy-lists@bourges.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Andreas Bourges <andy-lists@bourges.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
+To: Brent Clark <brentgclarklist@gmail.com>, netfilter@vger.kernel.org
 
-Andreas Bourges wrote:
-> Hi,
-> 
-> ..I just compiled ulogd-2.0.0.beta3 and tried to figure out if IPFIX support 
-> is already included (as mentioned on the web). Unluckily I couldn't find any 
-> documentation on this topic.
-> 
-> Is IPFIX export (udp is sufficient) currently supported? If yes - can someone 
-> point me to a piece of documentation?
-> 
-> What I currently get:
-> 
-> root@hal:/usr/local/sbin# ./ulogd --info ../lib/ulogd/ulogd_output_IPFIX.so
-> Wed Mar 11 09:45:34 2009 <7> ulogd.c:599 load_plugin: 
-> '../lib/ulogd/ulogd_output_IPFIX.so': ../lib/ulogd/ulogd_output_IPFIX.so: 
-> undefined symbol: list_add
-> root@hal:/usr/local/sbin#
-> 
-> ?? seems to be broken?
+If you read from socket at fixed rate, it's TCP receive buffer is emptied at 
+same rate. TCP announces free buffer in receive window field, so congestion 
+window on sender side is also adjusted, thus limiting send speed to the rate 
+you read from socket on receiver side.
 
-Yes, that problem is known, the IPFIX plugin is not finished yet, it
-will be fixed in the next release.
+----- Original Message ----- 
+From: "Brent Clark" <brentgclarklist@gmail.com>
+To: <netfilter@vger.kernel.org>
+Sent: Wednesday, March 11, 2009 11:47 AM
+Subject: torrent client traffic shaping question
 
--- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
+
+> Hiya
+>
+> I got this question to ask, and I was hoping the TCP/IP gurus would be 
+> able to help me understand this.
+>
+> K you know how with traffic shapping you can control only the traffic 
+> leaving you, how it is that torrent clients say they can control the 
+> download as well as the upload. I would think the client can only control 
+> the upload.
+>
+> TIA
+>
+> Brent Clark
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
+
