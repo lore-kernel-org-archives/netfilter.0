@@ -1,7 +1,7 @@
 From: "Vitor =?iso-8859-1?Q?Ant=F3nio?= das Neves Pinto" <vpinto@av.it.pt>
 Subject: Iptables special config
-Date: Wed, 11 Mar 2009 18:09:12 +0000
-Message-ID: <web-35176238@av.it.pt>
+Date: Thu, 12 Mar 2009 11:32:50 +0000
+Message-ID: <web-35205651@av.it.pt>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -14,10 +14,10 @@ Dear all,
 
 I have a question regarding a special configuration with=20
 iptables, I hope you can help me:
--	Behind the NAT there=92s a terminal with IP1 that sends a=20
+- Behind the NAT there=92s a terminal with IP1 that sends a=20
 UDP packet to a host outside the NAT with IP2 (Source=20
 port=3D1033 Dport=3D 123)
--	The response to this packet (due to load balancing=20
+- The response to this packet (due to load balancing=20
 issues) comes from a machine outside the NAT with IP3 (not=20
 from IP2!!) with Source port=3D123 Dport=3D1033
 
