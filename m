@@ -1,44 +1,48 @@
-From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
-	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
-Subject: Re: Iptables special config
-Date: Thu, 12 Mar 2009 16:41:53 +0200
-Message-ID: <1236868913.4151.61.camel@casper.meteor.dp.ua>
-References: <web-35205651@av.it.pt>
-Reply-To: casper@meteor.dp.ua
+From: "J.O. Aho" <trizt@iname.com>
+Subject: Re: kernel 2.6.28/iptables <=1.4.2 not working together?
+Date: Sat, 14 Mar 2009 11:04:42 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.0903141103050.20196@quad.local.lan>
+References: <alpine.LNX.2.00.0901311807001.24298@kennis.local.lan> <49883751.6010700@plouf.fr.eu.org>
+Reply-To: "J.O. Aho" <trizt@iname.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: MULTIPART/MIXED; BOUNDARY="8323328-1781105998-1237025083=:20196"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <web-35205651@av.it.pt>
+In-Reply-To: <49883751.6010700@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Vitor =?ISO-8859-1?Q?Ant=F3nio?= das Neves Pinto <vpinto@av.it.pt>
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Cc: netfilter@vger.kernel.org
 
-=D0=92 =D0=A7=D1=82=D0=B2, 12/03/2009 =D0=B2 11:32 +0000, Vitor Ant=C3=B3=
-nio das Neves Pinto =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> Dear all,
->=20
-> I have a question regarding a special configuration with=20
-> iptables, I hope you can help me:
-> - Behind the NAT there=E2=80=99s a terminal with IP1 that sends a=20
-> UDP packet to a host outside the NAT with IP2 (Source=20
-> port=3D1033 Dport=3D 123)
-> - The response to this packet (due to load balancing=20
-> issues) comes from a machine outside the NAT with IP3 (not=20
-> from IP2!!) with Source port=3D123 Dport=3D1033
->=20
-> Since iptables is configured as a port restricted NAT the=20
-> response packet is dropped not reaching terminal with IP1=E2=80=A6=20
-> Any idea how to make the packet reach the terminal with=20
-> IP1?
-> I know that with a full cone nat this wouldn=E2=80=99t happen=E2=80=A6
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-On machine with IP3 try to do SNAT to IP2 for those packets. This shoul=
-d
-fix your problem.
+--8323328-1781105998-1237025083=:20196
+Content-Type: TEXT/PLAIN; charset="iso-8859-15"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
+
+On Tue, 3 Feb 2009, Pascal Hambourg wrote:
+> J.O. Aho a =E9crit :
+
+>> The one of the lines (the others are similar, different port numbers)=20
+>> looks like this:
+>> iptables -t mangle -A OUTPUT -p tcp --dport 20:21 -j TOS --set-tos 16
+>>  Keep in mind that ipt_TOS has been merge into xt_dscp and modinfo on
+>>  xt_dscp gives an alias list with ipt_tos.
+> Since kernel 2.6.25, ipt_TOS has been merged into xt_DSCP (target), not=20
+> ipt_dscp (match).
+
+So back to my question, how to rewrite the rule to work with target=20
+instead of the old match?
+
 
 --=20
-=D0=9F=D0=BE=D0=BA=D0=BE=D1=82=D0=B8=D0=BB=D0=B5=D0=BD=D0=BA=D0=BE =D0=9A=
-=D0=BE=D1=81=D1=82=D0=B8=D0=BA <casper@meteor.dp.ua>
+      //Aho
 
+  ------------------------------------------------------------------------
+   E-Mail: trizt@iname.com            URL: http://www.kotiaho.net/~trizt/
+      ICQ: 13696780                                         Skype: jo_aho
+   System: Linux System                        (PPC7447/1000 AMD K8/2500)
+  ------------------------------------------------------------------------
+             EU forbids you to send spam without my permission
+  ------------------------------------------------------------------------
+--8323328-1781105998-1237025083=:20196--
