@@ -1,60 +1,78 @@
-From: "J.O. Aho" <trizt@iname.com>
-Subject: Re: kernel 2.6.28/iptables <=1.4.2 not working together?
-Date: Sat, 14 Mar 2009 11:59:01 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.0903141157460.20463@quad.local.lan>
-References: <alpine.LNX.2.00.0901311807001.24298@kennis.local.lan> <49883751.6010700@plouf.fr.eu.org> <alpine.LNX.2.00.0903141103050.20196@quad.local.lan> <49BB87C0.4030200@plouf.fr.eu.org>
-Reply-To: "J.O. Aho" <trizt@iname.com>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Creating an equivalent to ESFQ using flow classifier
+Date: Sun, 15 Mar 2009 16:29:23 +0000
+Message-ID: <328bad7c0259fd816ae31c8405313e1e@localhost>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323328-2120603283-1237028342=:20463"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49BB87C0.4030200@plouf.fr.eu.org>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=andybev.com; h=
+	mime-version:date:from:to:subject:message-id:content-type:
+	content-transfer-encoding; q=dns/txt; s=selector1; bh=AQw06tUUc/
+	xpemyCyXivexiuTtg=; b=ukPWzUtZ8/NI94TyfxolIoWAC/d3aKZ8ZQ5jNofxRE
+	3BnVhrMExoO8Wb2UqRKdSsqdvgixU/9jbFh9w6J5lHNpEztzFvYvD1WZLAmwRPyU
+	S3IAP9eiLVb7p3PVnCL+45J/QiO73B0Ej2dv2nxmn15YVfmfuCpOuZxWPXIFkjVu
+	s=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+I have a server which I am using to share an ADSL line between a number of
+users. I am successfully shaping traffic based on type using 4 different
+classes, but I also want to share traffic within those classes evenly
+between computers (rather than between connections). I used to use ESFQ for
+this, but am trying to move to the new flow classifier as described in
+http://www.mail-archive.com/netdev@vger.kernel.org/msg60634.html
 
---8323328-2120603283-1237028342=:20463
-Content-Type: TEXT/PLAIN; charset="iso-8859-15"; format="flowed"
-Content-Transfer-Encoding: quoted-printable
+I have set up the following rules. However, if I start 4 downloads on one
+PC and 1 download on another PC, then the first PC will get 4/5 of the
+available bandwidth and the second PC one 1/5. I would expect them to get
+half each. I am using HTB to shape between each class.
 
-On Sat, 14 Mar 2009, Pascal Hambourg wrote:
+# Add a HTB qdisc to the root device
+tc qdisc add dev eth0 root handle 1: htb
 
-> J.O. Aho a =E9crit :
->>  On Tue, 3 Feb 2009, Pascal Hambourg wrote:
->> >  J.O. Aho a =E9crit :
->> > >=20
->> > >  iptables -t mangle -A OUTPUT -p tcp --dport 20:21 -j TOS --set-tos =
-16
->> > >   Keep in mind that ipt_TOS has been merge into xt_dscp and modinfo =
-on
->> > >   xt_dscp gives an alias list with ipt_tos.
->> >  Since kernel 2.6.25, ipt_TOS has been merged into xt_DSCP (target), n=
-ot=20
->> >  ipt_dscp (match).
->>
->>  So back to my question, how to rewrite the rule to work with target
->>  instead of the old match?
->
-> You do not have to rewrite the rule. But since the TOS target is now hand=
-led=20
-> by the xt_DSCP kernel module, you must have this module enabled in your=20
-> kernel configuration (CONFIG_NETFILTER_XT_TARGET_DSCP=3Dy or m).
+# Rate limit it
+tc class add dev eth0 parent 1: classid 1:1 htb rate 2200kbit
 
-Thanks for the reply, I was so sure that I had enabled the module when I=20
-built the kernel, but I guess I checked the kernel config for a virtual=20
-machine.
+# Add 4 classes to it for different traffic
+tc class add dev eth0 parent 1:1  classid 1:10 htb \
+        rate 100kbit ceil 100kbit prio 0
+tc class add dev eth0 parent 1:1  classid 1:30 htb \
+        rate 1000kbit ceil 1000kbit prio 1
+tc class add dev eth0 parent 1:1  classid 1:40 htb \
+        rate 1000kbit ceil 1000kbit prio 2
+tc class add dev eth0 parent 1:1  classid 1:60 htb \
+        rate 100kbit ceil 100kbit prio 3
 
---=20
-      //Aho
+# Add SFQ qdisc to each HTB class
+tc qdisc add dev eth0 parent 1:10 handle 10: sfq perturb 10
+tc qdisc add dev eth0 parent 1:30 handle 30: sfq perturb 10
+tc qdisc add dev eth0 parent 1:40 handle 40: sfq perturb 10
+tc qdisc add dev eth0 parent 1:60 handle 60: sfq perturb 10
 
-  ------------------------------------------------------------------------
-   E-Mail: trizt@iname.com            URL: http://www.kotiaho.net/~trizt/
-      ICQ: 13696780                                         Skype: jo_aho
-   System: Linux System                        (PPC7447/1000 AMD K8/2500)
-  ------------------------------------------------------------------------
-             EU forbids you to send spam without my permission
-  ------------------------------------------------------------------------
---8323328-2120603283-1237028342=:20463--
+# Filter the traffic to each class based on MARK
+tc filter add dev eth0 parent 1:0 protocol ip handle 10 fw flowid 1:10
+tc filter add dev eth0 parent 1:0 protocol ip handle 30 fw flowid 1:30
+tc filter add dev eth0 parent 1:0 protocol ip handle 40 fw flowid 1:40
+tc filter add dev eth0 parent 1:0 protocol ip handle 60 fw flowid 1:60
+
+# Share traffic between each PC evenly
+tc filter add dev eth0 parent 10: protocol ip handle 10 flow hash keys \
+        nfct-src,nfct-dst,proto,nfct-proto-src,nfct-proto-dst divisor 1024
+tc filter add dev eth0 parent 30: protocol ip handle 30 flow hash keys \
+        nfct-src,nfct-dst,proto,nfct-proto-src,nfct-proto-dst divisor 1024
+tc filter add dev eth0 parent 40: protocol ip handle 40 flow hash keys \
+        nfct-src,nfct-dst,proto,nfct-proto-src,nfct-proto-dst divisor 1024
+tc filter add dev eth0 parent 60: protocol ip handle 60 flow hash keys \
+        nfct-src,nfct-dst,proto,nfct-proto-src,nfct-proto-dst divisor 1024
+
+
+It is the last part that I am unsure about. I do not get any errors with
+the commands, but they do not seem to make any difference to the shaping.
+
+I am using linux-2.6.26 on Debian Lenny but have also tried linux-2.6.28
+
+Thanks in advance
+
+Andy Beverley
