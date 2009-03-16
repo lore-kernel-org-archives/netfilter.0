@@ -1,74 +1,52 @@
-From: Tom Eastep <teastep@shorewall.net>
-Subject: Re: Creating an equivalent to ESFQ using flow classifier
-Date: Sun, 15 Mar 2009 11:53:15 -0700
-Message-ID: <49BD4E9B.8070100@shorewall.net>
-References: <328bad7c0259fd816ae31c8405313e1e@localhost> <1237140472.28333.10.camel@hakkenden>
+From: Nick Martin <martinn6@cs.man.ac.uk>
+Subject: Forwarding packets that have your IP as source
+Date: Mon, 16 Mar 2009 18:32:20 +0000
+Message-ID: <20090316183220.GA3616@lf002.cs.man.ac.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig809BD79F07F7B01D5FCC62E8"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1237140472.28333.10.camel@hakkenden>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "Nikolay S. Rybaloff" <nowhere@hakkenden.ath.cx>
-Cc: Andrew Beverley <andy@andybev.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig809BD79F07F7B01D5FCC62E8
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-Nikolay S. Rybaloff wrote:
+I'm having some trouble with a strange setup I have. I have 2 virtual 
+devices which have a test program sitting in between that print some 
+info from the headers into logs. I also have a real ethernet device that 
+connects me to the outside world (eth1).
 
->>
->> It is the last part that I am unsure about. I do not get any errors wi=
-th
->> the commands, but they do not seem to make any difference to the shapi=
-ng.
+                                      --------------------
+        ------------INTERNET----------|CORRESPONDENT NODE|
+        |                             --------------------
+        |
+   -----+-----
+   |localhost|
+   -+-------+-
+    |       |
+   -+-------+-
+   |test prog|
+   -----------
 
-You are fortunate. Every time that I've tried to use the 'flow'
-classifier with SFQ, the SFQ qdisc eventually drops 100% of the packets
-presented to it.
+I want to route traffic to the correspondent node through the first 
+virtual device (tun0), the test program then prints out some info, then 
+puts the packet back into the second virtual device (tun1).
 
-Example:
+I have 2 different routing tables, a main routing table, and a test_out 
+routing table which is used for traffic coming from tun1.
 
-tc qdisc add dev wlan0 root handle 1: sfq quantum 1514 limit 127
-tc filter add dev wlan0 protocol ip pref 1 parent 1: handle 1 flow \
-   hash keys src,dst,proto-src divisor 1024
+The tables are identical except for the rule which routes traffic with 
+destination as the correspondent node through tun0, which is in the main 
+table only to avoid sending packets in a loop.
 
-ursa:~ # tc -s  qdisc ls dev wlan0
-qdisc sfq 1: root limit 127p quantum 1514b
- Sent 161724244 bytes 107284 pkt (dropped 200, overlimits 0 requeues 2131=
-3)
- rate 0bit 0pps backlog 0b 0p requeues 21313
-ursa:~ # tc -s  qdisc ls dev wlan0
-qdisc sfq 1: root limit 127p quantum 1514b
- Sent 161724320 bytes 107285 pkt (dropped 205, overlimits 0 requeues 2131=
-3)
- rate 0bit 0pps backlog 0b 0p requeues 21313
-ursa:~ #
+Using LOG rules in the PREROUTING chain in the mangle table, I can see 
+that packets arrive from tun1, but they are not being routed.
 
--Tom
---=20
-Tom Eastep        \ When I die, I want to go like my Grandfather who
-Shoreline,         \ died peacefully in his sleep. Not screaming like
-Washington, USA     \ all of the passengers in his car
-http://shorewall.net \________________________________________________
+The packets arriving from tun1 have the IP address that is assigned to 
+eth1, could this be why they are not being routed? If so, is there a way
+to tell the kernel to route these packets?
 
-
---------------enig809BD79F07F7B01D5FCC62E8
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.9 (GNU/Linux)
-Comment: Using GnuPG with SUSE - http://enigmail.mozdev.org
-
-iEYEARECAAYFAkm9TqAACgkQO/MAbZfjDLKIhwCfRhCCTcZ2GLwX0CDAJdaoonfT
-Nm0AnjL0/YojoN4cqsXBGijAJy6r2dyK
-=ciDc
------END PGP SIGNATURE-----
-
---------------enig809BD79F07F7B01D5FCC62E8--
+Thanks for any help,
+Nick Martin
