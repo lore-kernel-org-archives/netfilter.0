@@ -1,52 +1,63 @@
-From: Nick Martin <martinn6@cs.man.ac.uk>
-Subject: Forwarding packets that have your IP as source
-Date: Mon, 16 Mar 2009 18:32:20 +0000
-Message-ID: <20090316183220.GA3616@lf002.cs.man.ac.uk>
+From: Leonardo Carneiro <lscarneiro@veltrac.com.br>
+Subject: access problem
+Date: Mon, 16 Mar 2009 16:41:05 -0300
+Message-ID: <49BEAB51.9070406@veltrac.com.br>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi,
+Hi everyone.
 
-I'm having some trouble with a strange setup I have. I have 2 virtual 
-devices which have a test program sitting in between that print some 
-info from the headers into logs. I also have a real ethernet device that 
-connects me to the outside world (eth1).
+I'm new in the list and hope have a nice time here.
+First of all, sorry about my poor enlgish, i'm from Brasil.
 
-                                      --------------------
-        ------------INTERNET----------|CORRESPONDENT NODE|
-        |                             --------------------
-        |
-   -----+-----
-   |localhost|
-   -+-------+-
-    |       |
-   -+-------+-
-   |test prog|
-   -----------
+I've got a standard scenario with a private network (192.168.1.0/24) 
+beeing natted by a internet server (192.168.1.1) running iptables 1.3.0.
 
-I want to route traffic to the correspondent node through the first 
-virtual device (tun0), the test program then prints out some info, then 
-puts the packet back into the second virtual device (tun1).
+In the private network I have a application server (192.168.1.2) running 
+a service on port 5222. The port is properly forwarded in internet 
+server, and users across the internet can access the service through the 
+public IP of the internet server.
 
-I have 2 different routing tables, a main routing table, and a test_out 
-routing table which is used for traffic coming from tun1.
+Users on the private network can access the service through the private 
+IP of the server, but cannot access using the public ip. Accessing using 
+the public ip would be very usefull, since lots of users have notebooks 
+and they access the service inside and outside the private network
 
-The tables are identical except for the rule which routes traffic with 
-destination as the correspondent node through tun0, which is in the main 
-table only to avoid sending packets in a loop.
+those are interface infos and the rules forwarding the port to the 
+application server:
+eth0: public IP
+eth1: private network, 192.168.1.1
 
-Using LOG rules in the PREROUTING chain in the mangle table, I can see 
-that packets arrive from tun1, but they are not being routed.
+iptables -A PREROUTING -p tcp -m tcp -d [private_ip] -i eth0 --dport 
+5222 -j DNAT --to-destination 192.168.1.2
+iptables -A FORWARD -p tcp -m tcp -d 192.168.1.2 -i eth0 -o eth1 --dport 
+5222 -j ACCEPT
 
-The packets arriving from tun1 have the IP address that is assigned to 
-eth1, could this be why they are not being routed? If so, is there a way
-to tell the kernel to route these packets?
+I've done some tests, adding some rules like
 
-Thanks for any help,
-Nick Martin
+iptables -A PREROUTING -p tcp -m tcp -d [private_ip] -i eth1 --dport 
+5222 -j DNAT --to-destination 192.168.1.2
+iptables -A FORWARD -p tcp -m tcp -d 192.168.1.2 -i eth0 -o eth1 --dport 
+5222 -j ACCEPT
+
+or just
+
+iptables -A PREROUTING -p tcp -m tcp -d [private_ip] -i eth1 --dport 
+5222 -j DNAT --to-destination 192.168.1.2
+
+but i just cannot connect using the public ip =S
+
+sometimes the server answer the request, but using the private ip, no 
+the public ip requested by the host, and sometimes the server just not 
+answer the request.
+
+any ideas how can i solve this?
+
+tks in advance.
+
+
