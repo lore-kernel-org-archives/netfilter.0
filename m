@@ -1,38 +1,23 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: Creating an equivalent to ESFQ using flow classifier
-Date: Mon, 16 Mar 2009 23:35:38 +0000
-Message-ID: <8e76d4ceb304242debfb0a0c500976e3@localhost>
-References: <328bad7c0259fd816ae31c8405313e1e@localhost> <1237140472.28333.10.camel@hakkenden>
+From: Xin Huang <xhuang2001@yahoo.com>
+Subject: newbie question: log all packets to closed ports?
+Date: Mon, 16 Mar 2009 23:02:28 -0700 (PDT)
+Message-ID: <499103.50011.qm@web81807.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=andybev.com; h=
-	mime-version:date:from:to:cc:subject:in-reply-to:references:
-	message-id:content-type:content-transfer-encoding; q=dns/txt; s=
-	selector1; bh=EVPKlJhl1iIrXRqMQqLg7BNt/AA=; b=dCReJBHUgEuONE2pja
-	BNBoHA8HDHAHrv2ShR0BLS08nj4xs/hqr8GimFMCB3Zl17IlaswWvszaVcc8XCYN
-	9MmkFpB0y5FaKDT482oHoNqKB61GJI6nAxjd0AzumaIAzoNnkfewIVp1Hv9Eb0XD
-	P9P2nssstjEPWgO5BgQQrnXNo=
-In-Reply-To: <1237140472.28333.10.camel@hakkenden>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1237269748; bh=nsZIb8fdfyPbl24GeizwIczOSLDBpZazJFaisZ6U6/8=; h=Message-ID:Received:X-Mailer:Date:From:Subject:To:MIME-Version:Content-Type; b=r7e5YZuN4276522uQ0isHjhVnj4fcdP+JtaRvHyPxCy3ILVA93cBD413LN7oR3m5aUwDoN+1QZGWnKDc/dMinaiL2JZ3TtnDO8rfgdRFEEZpARxa/8fQZvRVBDoxBjj4N2LIGqAuzJ+qic0CBnxdFmUk05PMuJYVOaquH9PzY3g=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "Nikolay S. Rybaloff" <nowhere@hakkenden.ath.cx>
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-> That's right, you have configured hashing based on src/dst address +
-> src/dst port + protocol, which is almost classical SFQ hash. In your
-> case you should try only nfct-src, which will create queues per source
-> IP and service these queues fairly within htb class.
 
-Thanks, that makes perfect sense now. I have to admit I didn't really
-understand the rules I was writing!
+I just tried iptables on my Linux box. It's working great. Now I want to use it to log any incoming TCP/UDP packets to any closed ports (not binded to any socket). How should I write the rules?
 
-I have tried it with just nfct-src for the ppp0 device going from the
-server to the internet, and nfct-dst for the eth0 device going to the
-individual machines. This seems to work a lot more as I would expect.
+The server applications running on my Linux box are VOIP related and have TCP/UDP ports dynamically opened and closed. Is it possible to write some simple iptables rules to monitor those unwanted incoming packets destined to all the closed ports?
 
-Thanks,
+Thanks!
 
-Andy Beverley
 
+
+      
