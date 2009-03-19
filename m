@@ -1,86 +1,89 @@
-From: Christoph Paasch <christoph.paasch@student.uclouvain.be>
-Subject: Re: Outgoing redirection with iptables - TCP skips NAT?
-Date: Thu, 19 Mar 2009 16:19:01 +0100
-Message-ID: <200903191619.06420.christoph.paasch@student.uclouvain.be>
-References: <17e3a8f80903190409w3b5d8822qef94af9106f08f21@mail.gmail.com> <20090319144343.312510@gmx.net>
+From: Data Shock <datashock@hotmail.com>
+Subject: iptables - Trying to understand "no longer support implicit source
+ local NAT"
+Date: Thu, 19 Mar 2009 15:43:03 -0400
+Message-ID: <BLU149-W20F12BA9B98E9D4E82C7CBA3960@phx.gbl>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart5294704.shyRqvbHSU";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=uclouvain.be; h=from:to:
-	subject:date:references:in-reply-to:cc:mime-version:
-	content-type:content-transfer-encoding:message-id; q=dns/txt; s=
-	selucl; bh=n57OHm8cDwMqkPLITPZq5WOITUI=; b=JUDSAu02WMWCxTQ7zSUt2
-	nsd9gyvbVxf+43jibZuyrmb+ymrJ0UKDpYZexTWM6wXfC20jfvUiC1whM9KgNuO9
-	Opdtv9FnZL25OHMiUHj/KOH9FM2/7oYhHF6P2/txK1KwX35qbC1SnrO07XHf84wk
-	9ru/F2YA8RBbUbKOKnY1FM=
-In-Reply-To: <20090319144343.312510@gmx.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="windows-1252"
 To: netfilter@vger.kernel.org
-Cc: Kristian Evensen <kristian.evensen@gmail.com>, wlet@gmx.net
 
---nextPart5294704.shyRqvbHSU
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Content-Disposition: inline
 
-Hi,
+Hello,
 
-sorry, but the reasoning is wrong.
+I
+have been trying to understand a new error message I've been seeing
+since I updated to a new version of Linux.  The message is:  "kernel:
+NAT: no longer support implicit source local NAT".  It shows up once in
+/var/log/messages, and on my console screen, when the offending rule is
+used for the first time.
 
-UDP has a state in the netfilter connection tracking statetable, but it rem=
-ains=20
-in the NEW state (as long as there isn't any reply traffic).
+I've had a heck of a time trying to
+find any information at all about this change.  I can't seem to find
+any definitive post/thread about the reason for the change and what to
+do about the message.  I've searched the mail archives, the
+documentation, and googled for hours.
 
-And your rule won't work, because DNAT checks, if the packet you try to cha=
-nge=20
-is associated to a connection in the NEW or RELATED state.
-As the connection is established, DNAT won't work.
+Here is my situation:
 
-Christoph
+My
+linux box has a finicky program (let's call it the "Sender") on it that
+refuses to send to 127.0.0.1.  However, I have another program running
+on that same box that needs to receive the UDP traffic from the
+Sender.  We'll call that one the "Receiver".  These two programs must
+reside on the same device.
 
-On Thu March 19 2009 wrote wlet@gmx.net:
-> Hi,
->
-> I guess this won't work because if you connection is established it will =
-be
-> stored in a TCP State table which is used for filtering and forwarding. If
-> you connection already exists it makes no sense to check it against all
-> rules from the ruleset.
->
-> UDP doesn't have a statetable (cuz it's stateless) and that is the reason
-> why this works.
->
-> wlet
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+So to get around this software quirk,
+the Sender is configured with a bogus destination address.  I then have
+the following iptables NAT rules to dnat the UDP packets to the local
+address:
 
-=2D-
-Christoph Paasch
+*nat
+-A POSTROUTING -d 127.0.0.1 -p udp -m udp --dport 1234 -j SNAT --to-sou=
+rce 127.0.0.1
+-A OUTPUT -p udp -m udp --dport 1234 -j sendtolocal
+-A sendtolocal -d 10.1.2.3 -j DNAT --to-destination 127.0.0.1
 
-=C9cole Polytechnique de Louvain
-D=E9partement d'ing=E9nierie informatique
 
-www.rollerbulls.be
-=2D-
+A few notes:
+1)
+The "sendtolocal" chain was made for ease of modifying the DNAT rule
+programatically since the bogus address can change at any time.  (The
+whole chain can be cleared and a new rule added in its place).
+2) I am explicitly SNAT-ing the packet to 127.0.0.1 (it gets discarded =
+otherwise)
+3) The bogus address in this example is 10.1.2.3
+4) The communication is one way, so the Sender does not expect replies =
+from the Receiver.
 
---nextPart5294704.shyRqvbHSU
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
+This set up worked fine previously, and curiously, still seems to work =
+fine despite the error message.
 
-iEYEABECAAYFAknCYmcACgkQLHtZTroOLZuOEgCeN9ZNZuQaojlgNsE5Q+XxSBQK
-1X0AnA9I1B7NvrzMz/jd5QK8IzHLDx6/
-=m/Jr
------END PGP SIGNATURE-----
+=46rom
+what I've read, I'm guessing that iptables complains when the source
+address of the original packet doesn't match the address that will be
+used to route the packet to its new destination.  That's fine, but I'm
+SNAT-ing it myself.  Is it really necessary to spit out a message like
+that when no actual error occured?  I'm sure I'm missing something here=
+=2E
 
---nextPart5294704.shyRqvbHSU--
+So the questions are:
+1) What the heck was the actual reason and impact of the change?
+2) What can I do to stop the error message?
+3) Am I actually doing anything wrong with my rules?
+
+I sure hope someone can help me.
+
+
+Many thanks,
+
+=46rank
+_________________________________________________________________
+Windows Live=99 Contacts: Organize your contact list.=20
+http://windowslive.com/connect/post/marcusatmicrosoft.spaces.live.com-B=
+log-cns!503D1D86EBB2B53C!2285.entry?ocid=3DTXT_TAGLM_WL_UGC_Contacts_03=
+2009
