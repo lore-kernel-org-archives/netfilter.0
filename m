@@ -1,39 +1,46 @@
-From: Jonathan Knight <j.knight@kis.keele.ac.uk>
-Subject: Re: iptables - Trying to understand "no longer support implicit source
- local NAT"
-Date: Thu, 19 Mar 2009 20:04:05 +0000
-Message-ID: <49C2A535.1040700@kis.keele.ac.uk>
+From: Data Shock <datashock@hotmail.com>
+Subject: RE: iptables - Trying to understand "no longer support implicit
+ source local NAT"
+Date: Thu, 19 Mar 2009 17:06:48 -0400
+Message-ID: <BLU149-W849B5068E4BA2E436CB5E8A3960@phx.gbl>
 References: <BLU149-W20F12BA9B98E9D4E82C7CBA3960@phx.gbl>
+ <49C2A535.1040700@kis.keele.ac.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BLU149-W20F12BA9B98E9D4E82C7CBA3960@phx.gbl>
+In-Reply-To: <49C2A535.1040700@kis.keele.ac.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-Data Shock wrote:
-> My
-> linux box has a finicky program (let's call it the "Sender") on it that
-> refuses to send to 127.0.0.1.  However, I have another program running
-> on that same box that needs to receive the UDP traffic from the
-> Sender.  We'll call that one the "Receiver".  These two programs must
-> reside on the same device.
->   
 
-Is it that it can't send to 127.0.0.1 or is it the loopback interface 
-that's the problem?
-
-If it's just the IP number then you could use a stub host on a 
-non-routed network.  I.e.
-
-ifconfig lo\:1 10.1.1.1 netmask 255.255.255.255 up
-
-Now, if you can get your Receiver to listen to all the interfaces 
-including the lo:1 interface and you can get your Sender to talk to 
-10.1.1.1 then you don't need to use NAT at all.
+Thank you for the reply Jon.  I didn't expect any replies so soon.  :)
 
 
-Jon.
+> Is it that it can't send to 127.0.0.1 or is it the loopback interface
+> that's the problem?
 
+
+Well, actually, the Sender program refuses to send to "itself", so it w=
+on't use any address on the device.  I appologize, I should have been m=
+ore specific about that.
+
+
+I really would LOVE to get an answer to the actual iptables issue.  The=
+re seems to be no real information on this, so I'm hoping that this thr=
+ead will lead to some conclusive information.
+
+=46or the sake of this thread, lets assume that iptables is the only so=
+lution.  Assuming that, and given my iptables configuration, what is th=
+e reason for the error message? And how can I correct it?
+
+Many thanks,
+
+=46rank
+
+_________________________________________________________________
+Express your personality in color! Preview and select themes for Hotmai=
+l=AE.=20
+http://www.windowslive-hotmail.com/LearnMore/personalize.aspx?ocid=3DTX=
+T_MSGTX_WL_HM_express_032009#colortheme
