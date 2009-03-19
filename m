@@ -1,46 +1,20 @@
-From: Data Shock <datashock@hotmail.com>
-Subject: RE: iptables - Trying to understand "no longer support implicit
- source local NAT"
-Date: Thu, 19 Mar 2009 17:06:48 -0400
-Message-ID: <BLU149-W849B5068E4BA2E436CB5E8A3960@phx.gbl>
-References: <BLU149-W20F12BA9B98E9D4E82C7CBA3960@phx.gbl>
- <49C2A535.1040700@kis.keele.ac.uk>
+From: whiplash <whiplash@bofhland.org>
+Subject: Re: Outgoing redirection with iptables - TCP skips NAT?
+Date: Thu, 19 Mar 2009 23:57:23 +0100
+Message-ID: <49C2CDD3.5050202@bofhland.org>
+References: <17e3a8f80903190409w3b5d8822qef94af9106f08f21@mail.gmail.com>	 <20090319144343.312510@gmx.net> <17e3a8f80903190755m58be3d8ere3b3392c8e0c98d6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49C2A535.1040700@kis.keele.ac.uk>
+In-Reply-To: <17e3a8f80903190755m58be3d8ere3b3392c8e0c98d6@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
+Kristian Evensen ha scritto:
 
-Thank you for the reply Jon.  I didn't expect any replies so soon.  :)
+> found out that it sort of works using conntrack -F and rules
 
-
-> Is it that it can't send to 127.0.0.1 or is it the loopback interface
-> that's the problem?
-
-
-Well, actually, the Sender program refuses to send to "itself", so it w=
-on't use any address on the device.  I appologize, I should have been m=
-ore specific about that.
-
-
-I really would LOVE to get an answer to the actual iptables issue.  The=
-re seems to be no real information on this, so I'm hoping that this thr=
-ead will lead to some conclusive information.
-
-=46or the sake of this thread, lets assume that iptables is the only so=
-lution.  Assuming that, and given my iptables configuration, what is th=
-e reason for the error message? And how can I correct it?
-
-Many thanks,
-
-=46rank
-
-_________________________________________________________________
-Express your personality in color! Preview and select themes for Hotmai=
-l=AE.=20
-http://www.windowslive-hotmail.com/LearnMore/personalize.aspx?ocid=3DTX=
-T_MSGTX_WL_HM_express_032009#colortheme
+There's no reason to flush the whole table when you can
+flush single states by using conntrack -D .
