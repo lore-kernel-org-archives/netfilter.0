@@ -1,27 +1,66 @@
-From: Chris Hills <chaz@chaz6.com>
-Subject: Re: RFC 4890 (icmpv6 firewall recommendations) and ip6tables
-Date: Sat, 21 Mar 2009 14:43:25 +0100
-Message-ID: <gq2qtu$v2u$1@ger.gmane.org>
-References: <20080403081822.GA13254@piper.oerlikon.madduck.net> <47F4A36A.2010600@plouf.fr.eu.org> <20080403102632.GA22035@piper.oerlikon.madduck.net> <47F4F2B0.9020205@plouf.fr.eu.org> <873aq3ymr1.fsf@petole.dyndns.org> <20080403153847.GA17170@piper.oerlikon.madduck.net> <Pine.LNX.4.64.0804031747120.18275@blackhole.kfki.hu> <20080404073230.GA22259@piper.oerlikon.madduck.net> <Pine.LNX.4.64.0804041039280.20943@blackhole.kfki.hu> <20080404111550.GA1950@piper.oerlikon.madduck.net> <20090311124405.GA5688@piper.oerlikon.madduck.net>
+From: Yun Lin <overcloud@gmail.com>
+Subject: HELP!! responded Tuple doesn't match after MASQUERADE, and marked
+ as IP_CT_NEW,therefor no DNAT will be applied
+Date: Sat, 21 Mar 2009 14:54:58 +0100
+Message-ID: <49C4F1B2.9070306@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20090311124405.GA5688@piper.oerlikon.madduck.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from
+         :user-agent:mime-version:to:subject:content-type
+         :content-transfer-encoding;
+        bh=SckoqceCTu/7rnVMPMrErbJvxMPvXnLXWJVQGaxxgdM=;
+        b=ceVBBEcNhRoUHJMn6qIuxz3spvJRHOke4N1TfQ7zAyuBoU6q/M2ijjbl16ii6qi8VI
+         E04nXRenZAI9D0XGl8pVM4P3XswYoTHexRMmCvjsUM4KhmYWJnHVThH7kb4D47mC1Jy7
+         YyTiTkwbDdIlz+6O0N3xx+GkCDx5a6EVSImMQ=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-On 11/03/09 13:44, martin f krafft wrote:
-> So this is long overdue, and it's not a script, but it's an IPv6
-> guideline, based on Debian but probably applicable to all other
-> distros: http://ipv6.debian.net
+I am going to conntrack and NAT for a udp traffic with destination port
+4. So I just changed very a little lines of helper structer in the
+nf_conntrack_ftp.c :
+ftp[i][j].tuple.src.u.udp.port =3D 4;
+ftp[i][j].tuple.dst.protonum =3D IPPROTP_UDP;
 
-This is the basis of my firewall taking into account RFC 4890:-
+and right after it enters the conntrack_helper i printed out the tuple
+content of the skbuff.
+It looks like this:
+for the initiatted Query,
+ctinfo =3D IP_CT_NEW;
+the original tuple is:
+0x0a151615:4 -> 0x0a161717:4 l3num:2 protonum:17
+the reply tuple:
+0x0a161717:4 -> 0x0a161716:4 l3num:2 protonum:17(here the ipt_MASQUERAD=
+E
+has altered the reply tuple after SNAT).
 
-http://www.chaz6.com/files/ipv6-firewall-v0.01.txt
+and when the Response comes, the output is then:
+ctinfo =3D IP_CT_NEW(which i think should be IP_CT_IS_REPLY)
+original tuple:
+0x0a161717:4 -> 0x0a161716:4 l3num:2 protonum:17
+reply tuple:
+0x0a161716:4 -> 0x0a161717:4 l3num:2 protonum:17
 
-Regards,
+I think the promblem here is that when the Response get into
+"resolve_normal_ct()", it couldn't find the right tuple it belongs to,
+so the netfilter initiated a new tuple for it as what i'v printed out.
+But the original tuple of Response matched exactly the reply tuple of
+Query. It should find the right tuple when it get into PREROUTING hooks=
+,
+but not initiated a new tuple of it..
 
-Chris Hills
+Is there someone could help me figure this out??
+
+best regards!!
+
+
+--=20
+Yun Lin
+76137 Karlsruhe
+Baden-W=A8=B9rttemberg
+overcloud@gmail.com
 
