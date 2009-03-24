@@ -1,57 +1,54 @@
-From: Kuzin Andrey <kuzinandrey@yandex.ru>
-Subject: [PATCH]: drop packet without verdict from nfqueue after timeout
-Date: Mon, 23 Mar 2009 21:43:13 +0300
-Message-ID: <1723655470.20090323214313@yandex.ru>
-Reply-To: Kuzin Andrey <kuzinandrey@yandex.ru>
+From: Pranav Desai <pranavadesai@gmail.com>
+Subject: Use string match to make routing decision on a proxy
+Date: Mon, 23 Mar 2009 17:27:27 -0700
+Message-ID: <cc64e8ce0903231727o39cbb1deia8b446af11fb181a@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=4VWovZBMuAIDeyfh07A86R2XP0Q2ZMhF4uaS8zugLf8=;
+        b=DlwcSbZR8203g01xdeVUJW9w67FM+iKdz0rKL901XtJXaWbzh+2Kxv+E3IlCJlw7yV
+         4nRrjNRQKiQ/+BWdnfjlD3i4noADTrHXpr0x9E5HaryN4ZtOeHR0WhtqWN7W2nScWLFf
+         DXtkXLJuQP0f/wjr6aoOgFzNnHdBESpfw870k=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-This is patch for problem with stucked packets in nf_queue if
-something going wrong in userspace program. Automatically drop packets
-without any verdict after timeout defined by NFQNL_TIMEOUT_ENTRY_DROP.
+Hello All,
 
-Who may create patch for menu config for this feature ?
-
-
-diff --git a/net/netfilter/nfnetlink_queue.c b/net/netfilter/nfnetlink_queue.c
-index 8c86011..74fc322 100644
---- a/net/netfilter/nfnetlink_queue.c
-+++ b/net/netfilter/nfnetlink_queue.c
-@@ -169,17 +169,29 @@ __enqueue_entry(struct nfqnl_instance *queue, struct nf_queue_entry *entry)
-        queue->queue_total++;
- }
-
-+#define NFQNL_TIMEOUT_ENTRY_DROP 30
-+
- static struct nf_queue_entry *
- find_dequeue_entry(struct nfqnl_instance *queue, unsigned int id)
- {
--       struct nf_queue_entry *entry = NULL, *i;
-+       struct nf_queue_entry *entry = NULL, *next, *i;
-+       ktime_t kt = ktime_get_real();
-
-        spin_lock_bh(&queue->lock);
-
--       list_for_each_entry(i, &queue->queue_list, list) {
-+       list_for_each_entry_safe(i, next, &queue->queue_list, list) {
-                if (i->id == id) {
-                        entry = i;
-                        break;
-+                } else {
-+                       struct timeval tv = ktime_to_timeval(ktime_sub(kt, i->skb->tstamp));
-+                       if (tv.tv_sec > NFQNL_TIMEOUT_ENTRY_DROP) {
-+                               printk(KERN_ERR "nf_queue: drop timeouted packet "
-+                                       "(queue_num=%u seq_id=%u)\n", queue->queue_num, i->id);
-+                               list_del(&i->list);
-+                               queue->queue_total--;
-+                               nf_reinject(i, NF_DROP);
-+                       }
-                }
-        }
+I am trying to figure out a setup for an http proxy to send only
+selected connections to the userland and forward the other
+connections.
+                       proxy
+                       ------
+                       user
+                          ^
+                           | GET /test1
+                           |
+client ---------- kernel ----------------all other requests
+--------------> server
 
 
+Anything that matches GET /test1 should be sent to user land to be
+served by the proxy and the rest should be forwarded on to the origin
+server.
+
+Here is my iptables rule.
+
+iptables -t mangle -A PREROUTING -p tcp --dport 80 -m string --string
+"GET /test1" --algo bm -j QUEUE
+
+Obviously this is not working, since the SYN/SYN-ACK is already been
+processed so the connection is already set to the origin server. With
+the above rule only GET packet is QUEUEd which doesnt help.
+
+Whats a good way to set this up.
+
+Any ideas ?
+
+Thanks
+-- Pranav
