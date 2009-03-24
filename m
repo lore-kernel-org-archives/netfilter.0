@@ -1,59 +1,60 @@
-From: Kai Wang <w2w2k2k2@gmail.com>
-Subject: getsockopt with SO_ORIGINAL_DST failed with ENOENT
-Date: Tue, 24 Mar 2009 10:30:55 +0800
-Message-ID: <8b129cf50903231930w2ae78d73g49750426bb825f1a@mail.gmail.com>
+From: Changli Gao <xiaosuo@gmail.com>
+Subject: Re: [ANNOUNCE] Xtables-addons 1.13 released
+Date: Tue, 24 Mar 2009 13:27:01 +0800
+Message-ID: <412e6f7f0903232227rd1fe891xaf90b0bc1bc67748@mail.gmail.com>
+References: <alpine.LSU.2.00.0903231816540.25130@fbirervta.pbzchgretzou.qr>
+	 <20090323134327.35e9a8dc@liberty.rlwhome.lan>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type:content-transfer-encoding;
-        bh=i4pShCPZa7SEne0gOhTA2hOU96D2q8E4ZEtvtm6be0U=;
-        b=n930r2u27DFXjo8htdn/Z285RdKjoaxxKCx2FUSWG37dVm8QdwjugkgcA9yR/pfYt4
-         RTmaHknQnEemHp5Os2pyCAHkW7E/qgaQwzkwLxOt2s40+CTAp7JtQO5ZP71J93M9HMG9
-         FDn0ja8mVvEOHRgavWh+MPjVLbxDBOZDyQc2o=
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=68Ahk5xfUF9bxcNV1Y1n93GBrlocdmJzpuijjcQKEpo=;
+        b=OyWetuNXxzSwxiR8wOhMDMyDWx1HPu1w0OR8aVFEPPGRQy1wWgjAIgkOAeOol6Rv6x
+         xfZPHnu+PPSk+AAz7eLxZMSSHQuCVSG0uCjwnV+nUHfjVKC66MGzSBz3kkRjcZZrRoRZ
+         xzpPcL02UslCLZxzr35x/6ofKgzFF21Gjm3ZQ=
+In-Reply-To: <20090323134327.35e9a8dc@liberty.rlwhome.lan>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-2022-jp"
+To: Robby Workman <rw@rlworkman.net>
+Cc: Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
 
-[Seems the same mail I sent yesterday had some formatting error, so
-send it again. Sorry for spam...]
+When reviewing the code, I found there maybe a bug in libxt_fuzzy.c.
+If an user want to delete this match module, he will got an error
+reporting, and faile. As the fileds after maximum_rate in
+xt_fuzzy_mtinfo will be altered in kernel space, we should assign the
+userspacesize with the value offsetof(struct xt_fuzzy_mtinfo,
+packets_total) instead.
 
-Hi everyone,
+On Tue, Mar 24, 2009 at 2:43 AM, Robby Workman <rw@rlworkman.net> wrote:
+> On Mon, 23 Mar 2009 19:17:43 +0100 (CET)
+> Jan Engelhardt <jengelh@medozas.de> wrote:
+>
+>> Overview: http://freshmeat.net/projects/xtables-addons/
+>> src (for the quick ones):
+>>   http://downloads.sf.net/xtables-addons/xtables-addons-1.13.tar.bz2
+>>
+>> This release adds a reworked version of the "ipv4options" match, and
+>> works with the recently-released iptables 1.4.3.
+>>
+>> (1.4.3 is a hard minimum requirement now.)
+>
+>
+> Thanks, Jan.  Built and working just fine here, best I can tell.
+>
+> -RW
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter-devel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
 
-I'm new to iptables and recently met a problem when trying to get
-original IP address with getsockopt.
 
-I'm using iptables 1.3.3 on linux 2.6. Here's the rule:
-iptables -t nat -A OUTPUT -m owner  --uid-owner <my_user_name>  -p tcp
--d 10.0.0.0/8 -j REDIRECT --to-port 9000
 
-It will redirect all tcp packages to my proxy process listening on
-9000 port. And my proxy will handles the real connection with out
-world.
-Here's my code snippet of my proxy app to get the original destination address:
-
-struct sockaddr_in addr;
-socklen_t addr_sz = sizeof(addr);
-
-bzero(reinterpret_cast<char*>(&addr), addr_sz);
-addr.sin_family = AF_INET;
-
-if (getsockopt(fd, SOL_IP, SO_ORIGINAL_DST, &addr, &addr_sz) != 0) {
-  int err = errno;
-  LOG << "Couldn't read SO_ORIGINAL_DST from socket " << fd
-            << " Detail: " << strerror(err);
-  return false;
-}
-
-For most connections this works well. But it randomly returns -1 and
-gives ENOENT errno: "No such file or directory"...
-I totally don't know why or in which condition this will happen. Could
-anyone enlighten me?
-
-Thanks in advance!
---
-Best Regards!
-Kai Wang
+-- 
+Regards，
+Changli Gao(xiaosuo@gmail.com)
