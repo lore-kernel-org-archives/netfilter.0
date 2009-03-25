@@ -1,51 +1,39 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: [ANNOUNCE] Xtables-addons 1.13 released
-Date: Tue, 24 Mar 2009 19:58:09 +0100 (CET)
-Message-ID: <alpine.LSU.2.00.0903241935370.15076@fbirervta.pbzchgretzou.qr>
-References: <alpine.LSU.2.00.0903231816540.25130@fbirervta.pbzchgretzou.qr> <gqb743$3k2$1@ger.gmane.org>
+From: "Mihamina Rakotomandimby (R12y)" <mihamina@lab.vectoris.fr>
+Subject: not ip address
+Date: Wed, 25 Mar 2009 08:55:00 +0300
+Message-ID: <49C9C734.3020601@lab.vectoris.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <gqb743$3k2$1@ger.gmane.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: =?UTF-8?Q?Jir=28=C3=AD_Moravec?= <jim.lkml@gmail.com>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
+Hi all
+I would like to write this sentence in iptables rule:
+  "REJECT everything having port #443 (httpS) as destination except
+   if the IP address that query it are one of 192.168.0.18 or 192.168.0.50"
 
-On Tuesday 2009-03-24 19:00, Jir(=C3=AD Moravec wrote:
+I'd like to forbid httpS/443 traffic except for those two IP addresses.
 
->Jan Engelhardt napsal(a):
->>=20
->> Overview: http://freshmeat.net/projects/xtables-addons/
->> src (for the quick ones):=20
->>   http://downloads.sf.net/xtables-addons/xtables-addons-1.13.tar.bz2
->>=20
->> This release adds a reworked version of the "ipv4options" match, and=
-=20
->> works with the recently-released iptables 1.4.3.
->>=20
->> (1.4.3 is a hard minimum requirement now.)
->> --
->> To unsubscribe from this list: send the line "unsubscribe netfilter-=
-devel" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>=20
->
->Latest available version of the ipv4options kernel part is from
->pomng-20081130. Or I missed something and there is newer?
+I made:
 
-Perhaps my language skill came a bit short this time, I thought
-"reworked" does the job. In light of a well-known hacker mantra,
-trying to beat nature is futile. :)
+$IPT -t nat -A PREROUTING  ! --source 192.168.0.50  \
+      -p tcp --dport 443 -j REJECT
 
-Other stuff to be aware of:
-	http://tinyurl.com/cbby8b
-	http://jengelh.medozas.de/documents/IntroXta.pdf
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+and
+
+$IPT -t nat -A PREROUTING  --source ! 192.168.0.50  \
+      -p tcp --dport 443 -j REJECT
+
+But they are all bad syntax.
+
+Would you please help me to find my mistake?
+I'm running iptables v1.4.0
+
+-- 
+                              Chef de projet chez Vectoris
+                                  Phone: +261 33 11 207 36
+System: xUbuntu 8.10 with almost all from package install
+    http://www.google.com/search?q=mihamina+rakotomandimby
