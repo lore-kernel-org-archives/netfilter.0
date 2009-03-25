@@ -1,39 +1,26 @@
-From: "Mihamina Rakotomandimby (R12y)" <mihamina@lab.vectoris.fr>
-Subject: not ip address
-Date: Wed, 25 Mar 2009 08:55:00 +0300
-Message-ID: <49C9C734.3020601@lab.vectoris.fr>
-Mime-Version: 1.0
+From: "Robert M. Albrecht" <linux@romal.de>
+Subject: User specific ip addresses
+Date: Wed, 25 Mar 2009 07:19:40 +0100
+Message-ID: <17E09B19-465C-4861-BE9B-551377A2ECD2@romal.de>
+Mime-Version: 1.0 (Apple Message framework v930.3)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
 To: netfilter@vger.kernel.org
 
-Hi all
-I would like to write this sentence in iptables rule:
-  "REJECT everything having port #443 (httpS) as destination except
-   if the IP address that query it are one of 192.168.0.18 or 192.168.0.50"
+Hi,
 
-I'd like to forbid httpS/443 traffic except for those two IP addresses.
+I have a tricky problem. I need a dual-homed linux box, one nic is  
+connected to our network, the other nic is connected to the customer  
+network.
 
-I made:
+Several users from us are logging in via our interface and are leaving  
+the system on the customers interface. BUT I need them to leave with  
+different IP-addresses (al in the same subnet).
 
-$IPT -t nat -A PREROUTING  ! --source 192.168.0.50  \
-      -p tcp --dport 443 -j REJECT
+Is there some netfilter or virtual ip addresses magic to do this ?
 
-and
+cu romal
 
-$IPT -t nat -A PREROUTING  --source ! 192.168.0.50  \
-      -p tcp --dport 443 -j REJECT
-
-But they are all bad syntax.
-
-Would you please help me to find my mistake?
-I'm running iptables v1.4.0
-
--- 
-                              Chef de projet chez Vectoris
-                                  Phone: +261 33 11 207 36
-System: xUbuntu 8.10 with almost all from package install
-    http://www.google.com/search?q=mihamina+rakotomandimby
