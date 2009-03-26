@@ -1,62 +1,82 @@
-From: Kristian Evensen <kristian.evensen@gmail.com>
-Subject: Re: Identifiying and modifying packets
-Date: Thu, 26 Mar 2009 21:45:09 +0100
-Message-ID: <49CBE955.7030507@gmail.com>
-References: <e4bd24ae0b0148637ca48bf14e29b27a.squirrel@www.dcsnow.com>    <49CBD634.4000203@gmail.com> <c8c16aac285fb28dc9a3c09a70855718.squirrel@www.dcsnow.com>
+From: "Scott Miller" <srmiller@interbel.net>
+Subject: Verify rules
+Date: Thu, 26 Mar 2009 14:54:33 -0600
+Message-ID: <0d6001c9ae55$10b9e040$322da0c0$@net>
+References: <e4bd24ae0b0148637ca48bf14e29b27a.squirrel@www.dcsnow.com>    <49CBD634.4000203@gmail.com> <c8c16aac285fb28dc9a3c09a70855718.squirrel@www.dcsnow.com> <49CBE955.7030507@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from
-         :user-agent:mime-version:to:cc:subject:references:in-reply-to
-         :content-type:content-transfer-encoding;
-        bh=NOimBLxCSkfm4NS0telwunqomwoZjs1ujDOn0lcqrkk=;
-        b=ic8aNOdOOa0PFEhLTgwl6SwHffdbd2bvFzztqHHtdVqMYt0Ou/+sUQilXr2KLoDQht
-         fJ3ThgKT+Yy/NqZW3tM5XBkY0VGgGkLff2ZPhhKlgke/fZWA2NzjN/S1vq7+LI1xL41m
-         1cwWFDdi2lI5DM+6omzZeTy9BNIZtp+P2XDrg=
-In-Reply-To: <c8c16aac285fb28dc9a3c09a70855718.squirrel@www.dcsnow.com>
+In-Reply-To: <49CBE955.7030507@gmail.com>
+Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: aragonx@dcsnow.com
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-aragonx@dcsnow.com skrev:
->> Hi,
->>     
->>> Can someone tell me what tools I could use to examine outbound packet
->>> data
->>> for the usernames and modify it if it matches a list of accounts we want
->>> to block?
->>>
->>>
->>>       
->> I suggest writing your own netfilter-module that does the packet
->> inspection, and if a packet matches you can simply return NF_DROP to
->> instruct the kernel to drop the packet. A good tutorial/book is
->> available here: http://jengelh.medozas.de/
->>
->> Maybe you can do something similar with libpcap, but I am not sure if
->> you can drop packets.
->>     
->
-> I would love to just drop the packets but this causes the client
-> application to crash.  So I think I need to modify ones that match to an
-> invalid user name.  I've seen it mentioned that libpcap can capture the
-> traffic, I have not seen where it can modify and then send it on.  Can it
-> do that?
->
->   
-Yes, with Netfilter your modules recieve the skb and it will not be 
-passed on until the module is finished with it. You can then toy around 
-with it (including the payload) as much as you want. Section 5.6 in [1] 
-shows an example of modifying the payload.
+I was wondering if I could get someone to verify my rules.  What I am trying
+to do to start with, is make only certain ports available on my outgoing
+mail server - essentially blocking all other ports not listed.  I have the
+below on my server in an inactive state because when I activate it, it locks
+it completely down.
 
-I am not sure about libpcap, I haven't used it for a while, but I think 
-you only receive a copy and thus cannot change what is sent over the 
-network.
+Could someone please take a look at my rules and share with me what I did
+wrong?  Here is my entire config file:
 
--Kristian
 
-[1] - http://jengelh.medozas.de/documents/Netfilter_Modules.pdf
+-----------------------------
+
+*mangle
+:PREROUTING ACCEPT [6:948]
+:INPUT ACCEPT [6:948]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [7:3269]
+:POSTROUTING ACCEPT [7:3269]
+COMMIT
+*nat
+:OUTPUT ACCEPT [0:0]
+:PREROUTING ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+COMMIT
+*filter
+:FORWARD ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+# HTTP
+-A INPUT -p tcp -m tcp -m state NEW,ESTABLISHED --dport 80 --state NEW -j
+ACCEPT
+# SSH
+-A INPUT -p tcp -m tcp -m state NEW,ESTABLISHED --dport 22 --state NEW -j
+ACCEPT
+# DNS
+-A INPUT -p tcp -m tcp -m state NEW,ESTABLISHED --dport 53 --state NEW -j
+ACCEPT
+# TIME
+-A INPUT -p udp -m udp -m state NEW,ESTABLISHED --dport 123 --state NEW -j
+ACCEPT
+# WEBMIN
+-A INPUT -p tcp -m tcp -m state NEW,ESTABLISHED --dport 10000 --state NEW -j
+ACCEPT
+# SMTP
+-A INPUT -p tcp -m tcp -m state NEW,ESTABLISHED --dport 25 --state NEW -j
+ACCEPT
+# POP3
+-A INPUT -p tcp -m tcp -m state NEW,ESTABLISHED --dport 110 --state NEW -j
+ACCEPT
+# IMAP
+-A INPUT -p tcp -m tcp -m state NEW,ESTABLISHED --dport 993 --state NEW -j
+ACCEPT
+# RSYNC-TCP
+-A INPUT -p tcp -m tcp -m state NEW,ESTABLISHED --dport 873 --state NEW -j
+ACCEPT
+# RSYNC-UDP
+-A INPUT -p udp -m udp -m state NEW,ESTABLISHED --dport 873 --state NEW -j
+ACCEPT
+# DENY ALL OTHERS
+-A INPUT -i eth0 -j REJECT --reject-with icmp-net-unreachable
+COMMIT
+
+--------------------------
+
+Thanks,
+Scott Miller
+
