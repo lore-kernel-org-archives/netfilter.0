@@ -1,38 +1,28 @@
-From: Andrew Schulman <andrex-cmaem7PIVQQM4YKboWzA4l6hYfS7NtTn@public.gmane.org>
-Subject: Re: User specific ip addresses
-Date: Wed, 25 Mar 2009 09:55:02 -0400
-Message-ID: <1ddks4t2gjtti5839156qb5nucp82rjb21@4ax.com>
-References: <17E09B19-465C-4861-BE9B-551377A2ECD2@romal.de>
-Mime-Version: 1.0
+From: Ingmar Schuster <ingmar.schuster@first.fraunhofer.de>
+Subject: poll() call gives POLLERR, then hangs
+Date: Thu, 26 Mar 2009 13:02:07 +0100
+Message-ID: <EE574442-8086-41C7-B537-29681D1EA574@first.fraunhofer.de>
+Mime-Version: 1.0 (Apple Message framework v930.3)
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: netfilter-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
+To: netfilter@vger.kernel.org
 
-> I have a tricky problem. I need a dual-homed linux box, one nic is  
-> connected to our network, the other nic is connected to the customer  
-> network.
-> 
-> Several users from us are logging in via our interface and are leaving  
-> the system on the customers interface. BUT I need them to leave with  
-> different IP-addresses (al in the same subnet).
-> 
-> Is there some netfilter or virtual ip addresses magic to do this ?
+Hi all,
 
-If your clients have distinct IP addresses, then maybe the NETMAP or SAME
-targets will do what you want.  The descriptions in iptables(8) aren't entirely
-clear, but maybe they'll do it.
+in a userspace firewall (using libnetfilter_queue-0.0.17,  
+libnfnetlink-0.0.41) I'm writing some strange behavior appeared when  
+testing with tcpreplay.
+Starting tcpreplay on another computer to replay packets onto the  
+firewall, the packets are received in userspace at first. After a  
+while the poll() call sets POLLERR in revents, and after a while calls  
+to poll() just wont return to the calling function. More exactly, it  
+is  __kernel_vsyscall() that doesn't return. Starting netcat in  
+parallel to tcpreplay makes poll() on the firewall return.
 
-If you really want to do NAT based on user IDs, then vanilla iptables can't do
-it.  Except for packets that originate on localhost, the owner of a packet is in
-general unknown.  NuFW claims to solve this problem, but it's complex.
+Does anybody have an idea what's causing this?
 
-Good luck,
-Andrew.
-
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks
+Ingmar
