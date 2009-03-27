@@ -1,8 +1,9 @@
-From: Mike Wright <mike.wright@mailinator.com>
+From: Mart Frauenlob <mart.frauenlob@chello.at>
 Subject: Re: Verify rules
-Date: Thu, 26 Mar 2009 16:35:37 -0700
-Message-ID: <49CC1149.3020604@mailinator.com>
+Date: Fri, 27 Mar 2009 09:05:16 +0100
+Message-ID: <49CC88BC.8090201@chello.at>
 References: <e4bd24ae0b0148637ca48bf14e29b27a.squirrel@www.dcsnow.com>    <49CBD634.4000203@gmail.com> <c8c16aac285fb28dc9a3c09a70855718.squirrel@www.dcsnow.com> <49CBE955.7030507@gmail.com> <0d6001c9ae55$10b9e040$322da0c0$@net>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -12,19 +13,19 @@ List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Scott Miller wrote:
+netfilter-owner@vger.kernel.org wrote:
 > I was wondering if I could get someone to verify my rules.  What I am trying
 > to do to start with, is make only certain ports available on my outgoing
 > mail server - essentially blocking all other ports not listed.  I have the
 > below on my server in an inactive state because when I activate it, it locks
 > it completely down.
-> 
+>
 > Could someone please take a look at my rules and share with me what I did
 > wrong?  Here is my entire config file:
-> 
-> 
+>
+>
 > -----------------------------
-> 
+>
 > *mangle
 > :PREROUTING ACCEPT [6:948]
 > :INPUT ACCEPT [6:948]
@@ -74,50 +75,30 @@ Scott Miller wrote:
 > # DENY ALL OTHERS
 > -A INPUT -i eth0 -j REJECT --reject-with icmp-net-unreachable
 > COMMIT
-> 
+>
 > --------------------------
+>   
 
-Hi Scott,
+The state match syntax is wrong.
 
-No expert here but I'll give this a try.  This is very basic but 
-hopefully may provide some ideas.
+correct: -m state --state NEW,ESTABLISHED
 
-You say you want to run a server so that means you should lock down 
-everything you specifically don't want to serve.  That's accomplished by 
-setting the INPUT chain's default policy to DROP.
+you can write all your input allow rules in one line by using multiport 
+match:
+-A INPUT -p tcp -m multiport --dports 22,25,110,873,993,10000 -m state 
+--state NEW,ESTABLISHED -j ACCEPT
+same for udp...
 
-#> iptables -P INPUT DROP
+Also I suggest setting INPUT policy to DROP.
+Personally I'm not a friend of 'reject all unmatched'.
+I prefer plain DROP, as I don't really like to send a packet for each 
+not accepted connection attempt.
 
-Let the network gossip
+Read the iptables tutorial at frozentux, if you want to continue writing 
+your own ruleset.
+Otherwise I suggest to use a firewalling program to manage iptables. 
+There's lots of them out there.
 
-#> iptables -A INPUT -p icmp -m icmp --icmp-type any -j ACCEPT
+greets
 
-We have to be able to talk to ourselves...
-
-#> iptables -A INPUT -i lo -j ACCEPT
-
-...and carry on a conversation.
-
-#> iptables -A INPUT -m state --state ESTABLISHED,RELATED --j ACCEPT
-
-With regard to unwanted traffic: UDP is stateless so we'll let the 
-default DROP policy discard that.  TCP is stateful so we may or may not 
-want to let the default DROP policy apply.  If we decide against 
-dropping unwanted TCP traffic we may want to cleanly terminate those 
-connections by resetting them
-
-#> iptables -A INPUT -p tcp -j REJECT --reject-with  tcp-reset
-
-
-We're ready.  Let's open for business and allow NEW customers
-
-(this one is shopping for SMTP)
-
-#> iptables -A INPUT -p tcp --dport 25 --state NEW -j ACCEPT
-
-(this one is shopping for HTTP)
-
-#> iptables -A INPUT -p tcp --dport 80 --state NEW -j ACCEPT
-
-
-Hope that is enough to get you going  :m)
+Mart
