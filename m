@@ -1,30 +1,27 @@
-From: John Conner <bs7799@gmail.com>
-Subject: relaying tcp traffic?
-Date: Fri, 27 Mar 2009 14:28:49 -0500
-Message-ID: <12e4ae820903271228v7375a673m3444aa4050bf834c@mail.gmail.com>
+From: =?windows-1252?Q?Rob_Sterenborg?= <rob@sterenborg.org>
+Subject: RE: Verify rules
+Date: Fri, 27 Mar 2009 20:25:56 +0100
+Message-ID: <vmime.49cd2844.bf9.646cfca12f3d6c6@kshira.sterenborg.org>
+References: <15a901c9aeff$9bc91570$d35b4050$@net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type:content-transfer-encoding;
-        bh=p5A7r+GBGGeDx0scxUl2XnKZ4no0JUoHTXck/5ScS14=;
-        b=a04McSQc65+niJg9lI2s4MfJd38wD40rjAEOGaVtMxFKlVWyH00BvqA/a+6gN9thkj
-         i4kf3b1vDg0xiN9JR5NxyhFu3VySiacWbViSCTkNR61KbY7v+dg6+EKFDPE8iRBuVft1
-         oOd8G3xrjZLf0Qu/xhgdpFGiVqh8xlE6LkB8k=
+In-Reply-To: <49CD1FBC.4020604@mailinator.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hello everyone,
+> you may also want to rate limit the number of attempts from the
+> same IP to connect to SSH or you WILL get hammered.  If you
+> search the archives I think *Joanne Dow* posted an example of
+> how to do so.
 
-I am trying to setup a relaying box which will be used to relay
-tacacs+ accounting traffic(TCP) to a central server,=A0 I have been
-using iptable for a while, but only on the firewall side, so before I
-spend a lot time researching this, can any of you tell me if it is
-possible for iptable to perform such functionality? and which keyword
-should i be looking for? thanks a lot!
+If you don't need everyone to be able to reach the ssh port, you can lock the source IP's that must be able to reach the SSH port down to only the ones that should be able.
+Also/or, you could create 2 sshd_config's (with of course 2 separate sshd's on the inet and lan/dmz interfaces) and configure the inet sshd to only accept a pubkey instead of password authentication. It isn't too hard to do and you're rid of password guessing attacks.
 
-Pro
+
+Grts,
+Rob
+
+
