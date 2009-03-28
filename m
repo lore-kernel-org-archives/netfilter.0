@@ -1,51 +1,35 @@
-From: "Nikolay S. Rybaloff" <nowhere@hakkenden.ath.cx>
-Subject: RE: NAT and openvpn
-Date: Sat, 28 Mar 2009 12:24:51 +0300
-Message-ID: <000501c9af87$0f47cfa0$2dd76ee0$@ath.cx>
-References: <20090327211404.aa4d4e6d.g@imagination.eu.org>	<1238207986.285131659@192.168.1.202> <20090328025132.56657521.g@imagination.eu.org>
+From: "G.W. Haywood" <ged@rowlescourt.co.uk>
+Subject: Re: NAT and openvpn
+Date: Sat, 28 Mar 2009 11:04:16 +0000 (GMT)
+Message-ID: <Pine.LNX.4.58.0903281102060.27458@mail3.jubileegroup.co.uk>
+References: <20090327211404.aa4d4e6d.g@imagination.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20090328025132.56657521.g@imagination.eu.org>
-Content-Language: ru
+In-Reply-To: <20090327211404.aa4d4e6d.g@imagination.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "'G. Skillen'" <g@imagination.eu.org>, jason.faulkner@mailtrust.com
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "G. Skillen" <g@imagination.eu.org>
 Cc: netfilter@vger.kernel.org
 
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+Hi there,
 
-SNAT is only valid in POSTROUTING chain, DNAT - in PREROUTING. 
+On Fri, 27 Mar 2009, G. Skillen wrote:
 
-These rules should be:
+> I have set up a vpn (openvpn) from my home computer to a remote
+> server, I have several unused public IPs on the server and I would
+> like to know how to transparently send all traffic from e.g
+> 123.123.123.123 (one of the spare public ips) to 10.8.0.2 (the vpn
+> ip of my home machine), and vice versa i guess.
+>
+> Basically my home ISP doesn't allow me any incoming connections so
+> this would be a workaround for me to run a web/ftp server.
 
-iptables -t nat -A PREROUTING -d $PUBIP -j DNAT --to-destination $VPNIP		# for incoming traffic
-iptables -t nat -A POSTROUTING -s $VPNIP -j SNAT --to-source $PUBIP			# for outgoing traffic
+Would it not make more sense to run the servers on the remote machine?
+The sytem you describe would be unnecessarily fragile.
 
------Original Message-----
-From: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.kernel.org] On Behalf Of G. Skillen
-Sent: Saturday, March 28, 2009 5:52 AM
-To: jason.faulkner@mailtrust.com
-Cc: netfilter@vger.kernel.org
-Subject: Re: NAT and openvpn
-
-> % iptables -t nat -A PREROUTING -s $VPNIP -j SNAT --to-source $PUBIP
-> % iptables -t nat -A POSTROUTING -s $PUBIP -j DNAT --to-destination $VPNIP 
-
-Thanks for the reply ... when I try that I get:
-
-	mothership:~# iptables -t nat -A PREROUTING -s 10.8.0.2 -j SNAT --to-source <ip omitted>
-	iptables: Invalid argument
-
-(same for the next line)
-
-Any ideas?
-
--- 
-G. Skillen <g@imagination.eu.org>
 --
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
+73,
+Ged.
