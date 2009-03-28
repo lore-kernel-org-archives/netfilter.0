@@ -1,30 +1,27 @@
-From: "G. Skillen" <g@imagination.eu.org>
+From: jason.faulkner@mailtrust.com
 Subject: Re: NAT and openvpn
-Date: Sat, 28 Mar 2009 02:51:32 +0000
-Message-ID: <20090328025132.56657521.g@imagination.eu.org>
-References: <20090327211404.aa4d4e6d.g@imagination.eu.org>
-	<1238207986.285131659@192.168.1.202>
+Date: Sat, 28 Mar 2009 02:03:57 -0400 (EDT)
+Message-ID: <1238220237.911422960@192.168.1.202>
+References: <20090327211404.aa4d4e6d.g@imagination.eu.org> 
+ <1238207986.285131659@192.168.1.202> 
+ <20090328025132.56657521.g@imagination.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1238207986.285131659@192.168.1.202>
+In-Reply-To: <20090328025132.56657521.g@imagination.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: jason.faulkner@mailtrust.com
+To: "G. Skillen" <g@imagination.eu.org>
 Cc: netfilter@vger.kernel.org
 
-> % iptables -t nat -A PREROUTING -s $VPNIP -j SNAT --to-source $PUBIP
-> % iptables -t nat -A POSTROUTING -s $PUBIP -j DNAT --to-destination $VPNIP 
+> iptables: Invalid argument
 
-Thanks for the reply ... when I try that I get:
+Perhaps this? http://www.netfilter.org/documentation/FAQ/netfilter-faq-3.html#ss3.20
 
-	mothership:~# iptables -t nat -A PREROUTING -s 10.8.0.2 -j SNAT --to-source <ip omitted>
-	iptables: Invalid argument
+--
+Jason Faulkner 
+Linux Systems Engineer
+Mailtrust, a division of Rackspace
 
-(same for the next line)
 
-Any ideas?
-
--- 
-G. Skillen <g@imagination.eu.org>
