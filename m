@@ -1,52 +1,36 @@
-From: Stephen Hemminger <shemminger@vyatta.com>
-Subject: Re: Regression caused by commit "netfilter: iptables: lock free
- counters"
-Date: Mon, 30 Mar 2009 07:56:19 -0700
-Message-ID: <20090330075619.23677280@nehalam>
-References: <20090329234702.4988017f@desktop.r000n.info>
-	<49D075A3.1050202@cosmosbay.com>
-	<20090330145031.2dfd854e@desktop.r000n.info>
-	<49D0B628.5000501@trash.net>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: conntrackd and counters
+Date: Mon, 30 Mar 2009 20:19:47 +0200
+Message-ID: <49D10D43.9090506@netfilter.org>
+References: <49D0D597.50007@dbamsystems.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49D0B628.5000501@trash.net>
+In-Reply-To: <49D0D597.50007@dbamsystems.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Patrick McHardy <kaber@trash.net>
-Cc: Roman Mindalev <r000n@r000n.net>, Eric Dumazet <dada1@cosmosbay.com>, LKML <linux-kernel@vger.kernel.org>, netfilter@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Sam Gardner <sgardner@dbamsystems.com>
+Cc: netfilter@vger.kernel.org
 
-On Mon, 30 Mar 2009 14:08:08 +0200
-Patrick McHardy <kaber@trash.net> wrote:
+Hi Sam,
 
-> Roman Mindalev wrote:
-> > On Mon, 30 Mar 2009 09:32:51 +0200
-> > Eric Dumazet <dada1@cosmosbay.com> wrote:
-> > 
-> >> Could you try following patch ?
-> >>
-> >> [PATCH] netfilter: use rcu_read_bh() in ipt_do_table()
-> >>
-> >> Commit 784544739a25c30637397ace5489eeb6e15d7d49
-> >> (netfilter: iptables: lock free counters) forgot to disable BH
-> >> in arpt_do_table(), ipt_do_table() and  ip6t_do_table()
-> >>
-> >> Use rcu_read_lock_bh() instead of rcu_read_lock() cures the problem.
-> >>
-> >> Reported-and-bisected-by: Roman Mindalev <r000n@r000n.net>
-> >> Signed-off-by: Eric Dumazet <dada1@cosmosbay.com>
-> >> ---
-> > 
-> > 2.6.29-git4 and 2.6.29-git6 both works fine for me with this patch. 
-> > Thanks, Eric!
-> 
-> Thanks indeed Eric :) Dave, please apply.
-> 
-> Acked-by: Patrick McHardy <kaber@trash.net>
-> 
-> 
-Acked-by: Stephen Hemminger <shemminger@vyatta.com>
+I'm cc'ing netfilter user to keep this message for the record.
 
-The original version had rcu_read_lock_bh() but someone (not sure who)
-talked me into removing it.
+Sam Gardner wrote:
+> Hi Pablo,
+> 
+> I have just started using the conntrack tools. In particular, I am 
+> running conntrackd to support failover. When I perform a conntrackd -c I 
+> can see the connections I am expecting on the backup machine. However, 
+> the packet and byte counts seem to have been reset. Is it possible to 
+> synchronise the packet and byte counts too? Do you already have code 
+> that can do this?
+
+This is not be feasible since every packet would require one 
+synchronization message containing the counter update. However, I can 
+add it this in an approximate way (losing some precision). However, I'm 
+not sure how useful this would be.
+
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
