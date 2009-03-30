@@ -1,40 +1,28 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: Regression caused by commit "netfilter: iptables: lock free counters"
-Date: Mon, 30 Mar 2009 14:08:08 +0200
-Message-ID: <49D0B628.5000501@trash.net>
-References: <20090329234702.4988017f@desktop.r000n.info>	<49D075A3.1050202@cosmosbay.com> <20090330145031.2dfd854e@desktop.r000n.info>
+From: "Mihamina Rakotomandimby (R12y)" <mihamina@lab.vectoris.fr>
+Subject: filter bittorent and so on
+Date: Mon, 30 Mar 2009 15:50:28 +0300
+Message-ID: <49D0C014.7010508@lab.vectoris.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1756824AbZC3MI0@vger.kernel.org>
-In-Reply-To: <20090330145031.2dfd854e@desktop.r000n.info>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Roman Mindalev <r000n@r000n.net>
-Cc: Eric Dumazet <dada1@cosmosbay.com>, Stephen Hemminger <shemminger@vyatta.com>, LKML <linux-kernel@vger.kernel.org>, netfilter@vger.kernel.org, "David S. Miller" <davem@davemloft.net>
+To: netfilter@vger.kernel.org
 
-Roman Mindalev wrote:
-> On Mon, 30 Mar 2009 09:32:51 +0200
-> Eric Dumazet <dada1@cosmosbay.com> wrote:
-> 
->> Could you try following patch ?
->>
->> [PATCH] netfilter: use rcu_read_bh() in ipt_do_table()
->>
->> Commit 784544739a25c30637397ace5489eeb6e15d7d49
->> (netfilter: iptables: lock free counters) forgot to disable BH
->> in arpt_do_table(), ipt_do_table() and  ip6t_do_table()
->>
->> Use rcu_read_lock_bh() instead of rcu_read_lock() cures the problem.
->>
->> Reported-and-bisected-by: Roman Mindalev <r000n@r000n.net>
->> Signed-off-by: Eric Dumazet <dada1@cosmosbay.com>
->> ---
-> 
-> 2.6.29-git4 and 2.6.29-git6 both works fine for me with this patch. 
-> Thanks, Eric!
+Hi,
 
-Thanks indeed Eric :) Dave, please apply.
+I know it's not the real usage of netfilter/iptables, but I am looking for 
+something in order to filter (block) all traffic related to some usage of 
+the network.
+Especially, I target those using much bandwidth (P2P, VoiIP/Skype,...)
+Those things can be encapsulated into some other protocol or be used 
+through some authurized ports (such as 80).
+What would you recommend in order to filter that out?
 
-Acked-by: Patrick McHardy <kaber@trash.net>
-
+Thank you.
+-- 
+                              Chef de projet chez Vectoris
+                                  Phone: +261 33 11 207 36
+System: xUbuntu 8.10 with almost all from package install
+    http://www.google.com/search?q=mihamina+rakotomandimby
