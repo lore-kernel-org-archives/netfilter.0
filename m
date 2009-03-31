@@ -1,36 +1,67 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: conntrackd and counters
-Date: Mon, 30 Mar 2009 20:19:47 +0200
-Message-ID: <49D10D43.9090506@netfilter.org>
-References: <49D0D597.50007@dbamsystems.com>
+From: Lewis Shobbrook <lew@redgrid.net>
+Subject: esp mark not working
+Date: Tue, 31 Mar 2009 11:59:21 +1100 (EST)
+Message-ID: <23930137.5021238461161128.JavaMail.root@mail.redgrid.net>
+References: <15684317.5001238460885010.JavaMail.root@mail.redgrid.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49D0D597.50007@dbamsystems.com>
+In-Reply-To: <15684317.5001238460885010.JavaMail.root@mail.redgrid.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Sam Gardner <sgardner@dbamsystems.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Hi Sam,
+Hi all,
 
-I'm cc'ing netfilter user to keep this message for the record.
+Much to my surprise, I've not been able to mark esp packets in the mangle table.
+Although esp packets are traversing as they should, the iptables counters are unmoved from zero and as you'd expect rules applied against the mark fail also.
 
-Sam Gardner wrote:
-> Hi Pablo,
-> 
-> I have just started using the conntrack tools. In particular, I am 
-> running conntrackd to support failover. When I perform a conntrackd -c I 
-> can see the connections I am expecting on the backup machine. However, 
-> the packet and byte counts seem to have been reset. Is it possible to 
-> synchronise the packet and byte counts too? Do you already have code 
-> that can do this?
+I've tried with ubuntu 2.6.24 & 2.6.27 kernels as well as a debian 2.6.26 all seem to suffer the same problem, all different machines.
+Non esp packets mark no problem.
 
-This is not be feasible since every packet would require one 
-synchronization message containing the counter update. However, I can 
-add it this in an approximate way (losing some precision). However, I'm 
-not sure how useful this would be.
+I don't seem to be able to google anyone else having this problem, so I'm hoping someone can help point out where I'm going wrong.
 
--- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
+iptables -t mangle -A PREROUTING -i eth0 -p esp -j MARK --set-mark 0x1
+with a couple of manual module loads upon apparent failure of the automatic module loading ...
+cat /proc/net/ip_tables_targets 
+SECMARK
+CONNMARK
+CONNMARK
+DNAT
+SNAT
+MARK
+MARK
+MARK
+ERROR
+
+On another ....
+cat /proc/net/ip_tables_targets
+TCPMSS
+LOG
+REJECT
+DNAT
+SNAT
+ERROR
+REDIRECT
+ECN
+SECMARK
+TRACE
+NFQUEUE
+NFLOG
+DSCP
+CONNSECMARK
+MARK
+MARK
+CONNMARK
+CLASSIFY
+NETMAP
+MASQUERADE
+TOS
+I've tried manually loading every possible netfilter module and googled endlessly.
+Seems I'm missing something or it is broken.
+Can anyone let me in on this?
+
+Cheers,
+
+Lew
