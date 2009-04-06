@@ -1,22 +1,25 @@
 From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [PATCH] Fix selection of "LED" target in netfilter
-Date: Mon, 06 Apr 2009 17:11:06 +0200
-Message-ID: <49DA1B8A.5000103@trash.net>
-References: <20090328143637.GA8903@blimp.localdomain>
+Subject: Re: esp mark not working
+Date: Mon, 06 Apr 2009 17:16:45 +0200
+Message-ID: <49DA1CDD.3070006@trash.net>
+References: <23930137.5021238461161128.JavaMail.root@mail.redgrid.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20090328143637.GA8903@blimp.localdomain>
+In-Reply-To: <23930137.5021238461161128.JavaMail.root@mail.redgrid.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Alex Riesen <fork0@users.sourceforge.net>
-Cc: Adam Nielsen <a.nielsen@shikadi.net>, Subrata Modak <tosubrata@gmail.com>, netfilter@vger.kernel.org
+To: Lewis Shobbrook <lew@redgrid.net>
+Cc: netfilter@vger.kernel.org
 
-Alex Riesen wrote:
-> It's plural, not LED_TRIGGERS.
+Lewis Shobbrook wrote:
+> Hi all,
 > 
-> Signed-off-by: Alex Riesen <raa@blimp.localhost>
+> Much to my surprise, I've not been able to mark esp packets in the mangle table.
+> Although esp packets are traversing as they should, the iptables counters are unmoved from zero and as you'd expect rules applied against the mark fail also.
 
-Applied, thanks. I've replaced your email address by the one you
-sent this patch from.
+That indicates a problem in the matching rules, the counters are
+unaffected by the target. I'd suggest to use the TRACE target to
+figure out what is happening.
+
