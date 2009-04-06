@@ -1,49 +1,127 @@
-From: "bldrnorth@gmail.com" <bldrnorth@gmail.com>
-Subject: Transparent bridge and proxy - with only lo?
-Date: Mon, 6 Apr 2009 13:49:37 -0600
-Message-ID: <127d8b5e0904061249h4426b860n14cfcb6f3299a0ee@mail.gmail.com>
+From: Mart Frauenlob <mart.frauenlob@chello.at>
+Subject: Re: iptables - Trying to understand "no longer support implicit source
+ local NAT"
+Date: Mon, 06 Apr 2009 23:51:30 +0200
+Message-ID: <49DA7962.6050600@chello.at>
+References: <BLU149-W20F12BA9B98E9D4E82C7CBA3960@phx.gbl> <49C2A535.1040700@kis.keele.ac.uk>    <BLU149-W849B5068E4BA2E436CB5E8A3960@phx.gbl>   <BLU149-W19F71A94268C5665748337A3910@phx.gbl>  <BLU149-W50503F474EE1377D0A838A3840@phx.gbl> <BLU149-W698B4E09B730ADF7B6660A3840@phx.gbl>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type:content-transfer-encoding;
-        bh=e+7bJHecQxmBEuTTNo07MdPxECJFbYE9cil/z+OwVi0=;
-        b=Q87+eaWn8S9SFMOiAZuB2PKWJ3uXaHFugyCl1Ky2oQn53o2sMcQpH8CD9zytX0K4TD
-         wkyJx4mcn6WMIkP0bOJJT8UjLmxmhQ2oqj7WM/fhAqawlMMy7CWyebiOi91zyg9TxcqJ
-         GV5z7O98peRchRwjyIb/63aMNZ7Mgrah9xVJY=
+In-Reply-To: <BLU149-W698B4E09B730ADF7B6660A3840@phx.gbl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi:
+netfilter-owner@vger.kernel.org wrote:
+>> * bump *
+>>
+>> There must be someone out there who knows why this message is written out. Have I sent this inquiry to the correct list? Should I send this to the devel list instead?
+>>
+>> Perhaps I should submit this as a bug.
+>>     
+>  
+>  
+> My apologies.  It would appear that I either goofed my e-mail somehow or threads don't survive the transition from one month to the next (this question is 2.5 weeks old now).
+>  
+> Here is the content of my original question:
+>  
+>  
+> -----
+> List:       netfilter
+> Subject:    iptables - Trying to understand "no longer support implicit source
+> From:       Data Shock 
+> Date:       2009-03-19 19:43:03
+> Message-ID: BLU149-W20F12BA9B98E9D4E82C7CBA3960 () phx ! gbl
+> -----
+>  
+> Hello,
+>  
+> I have been trying to understand a new error message I've been seeing
+> since I updated to a new version of Linux.  The message is:  "kernel:
+> NAT: no longer support implicit source local NAT".  It shows up once in
+> /var/log/messages, and on my console screen, when the offending rule is
+> used for the first time.
+>  
+> I've had a heck of a time trying to
+> find any information at all about this change.  I can't seem to find
+> any definitive post/thread about the reason for the change and what to
+> do about the message.  I've searched the mail archives, the
+> documentation, and googled for hours.
+>  
+> Here is my situation:
+>  
+> My linux box has a finicky program (let's call it the "Sender") on it that
+> refuses to send to 127.0.0.1.  However, I have another program running
+> on that same box that needs to receive the UDP traffic from the
+> Sender.  We'll call that one the "Receiver".  These two programs must
+> reside on the same device.
+>  
+> So to get around this software quirk,
+> the Sender is configured with a bogus destination address.  I then have
+> the following iptables NAT rules to dnat the UDP packets to the local
+> address:
+>  
+> *nat
+> -A POSTROUTING -d 127.0.0.1 -p udp -m udp --dport 1234 -j SNAT --to-source 127.0.0.1
+> -A OUTPUT -p udp -m udp --dport 1234 -j sendtolocal
+> -A sendtolocal -d 10.1.2.3 -j DNAT --to-destination 127.0.0.1
+>  
+>  
+> A few notes:
+> 1) The "sendtolocal" chain was made for ease of modifying the DNAT rule
+> programatically since the bogus address can change at any time.  (The
+> whole chain can be cleared and a new rule added in its place).
+> 2) I am explicitly SNAT-ing the packet to 127.0.0.1 (it gets discarded otherwise)
+> 3) The bogus address in this example is 10.1.2.3
+> 4) The communication is one way, so the Sender does not expect replies from the Receiver.
+>  
+>  
+> This set up worked fine previously, and curiously, still seems to work fine despite the error message.
+>  
+> >From what I've read, I'm guessing that iptables complains when the source
+> address of the original packet doesn't match the address that will be
+> used to route the packet to its new destination.  That's fine, but I'm
+> SNAT-ing it myself.  Is it really necessary to spit out a message like
+> that when no actual error occured?  I'm sure I'm missing something here.
+>  
+> So the questions are:
+> 1) What the heck was the actual reason and impact of the change?
+> 2) What can I do to stop the error message?
+> 3) Am I actually doing anything wrong with my rules?
+>  
+> I sure hope someone can help me.
+>  
+>  
+> Many thanks,
+>  
+> Frank
+>
+>   
+Hello,
 
-While there is no shortage of documentation on setting up a
-transparent bridge with Squid proxy, I have only seen examples that
-assign an IP address to the bridge interface.  In my circumstances,
-the bridge is between the ISP's bridge and our own router, such as:
-(ISP Bridge) <--->(Our Bridge)<--->(Our router).  Typical I'm sure,
-but Our router is assigned only 1 IP address so I really don't have an
-IP address to assign the bridge interface.  Here's how I'm setup:
+I'm not 100% sure, but maybe the REDIRECT target is of use for that 
+particular case:
 
-brctl addbr br0
-brctl addif br0 eth0
-brctl addif br0 eth1
-ip link set br0 up
-# Normally, would assign an IP address to br0 and a default route
+from `man iptables':
 
-I was thinking I should be able to re-direct to the localhost
-interface 127.0.0.1, or perhaps assign an address like 127.0.0.2 to
-br0, but then could not figure out the appropriate iptables and route
-command.  I'm sure I could assign br0 a private ip address, but then
-wouldn't be sure how to tell it to route.  Here's all I have so far...
+   REDIRECT
+       This  target  is  only  valid  in the nat table, in the 
+PREROUTING and OUTPUT chains, and user-defined chains which are only 
+called from those chains.  It
+       redirects the packet to the machine itself by changing the 
+destination IP to the primary address of the incoming interface 
+(locally-generated packets  are
+       mapped to the 127.0.0.1 address).  It takes one option:
 
-ebtables -t broute -A BROUTING -p IPv4 --ip-protocol 6 \
-       --ip-destination-port 80 -j redirect --redirect-target ACCEPT
+       --to-ports port[-port]
+              This  specifies  a  destination port or range of ports to 
+use: without this, the destination port is never altered.  This is only 
+valid if the rule
+              also specifies -p tcp or -p udp.
 
-If I've completely missed where this has been addressed somewhere else
-I'd appreciate a link or some advice here.
 
-Thanks!
+Greets
+
+Mart
