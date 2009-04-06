@@ -1,69 +1,57 @@
-From: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
-Subject: Re: [netfilter bug] BUG: using smp_processor_id() in preemptible
-	[00000000] code: ssh/9115, caller is ipt_do_table+0xc8/0x559
-Date: Sat, 4 Apr 2009 10:23:02 -0700
-Message-ID: <20090404172302.GA9600@linux.vnet.ibm.com>
-References: <20090402200128.GA21805@elte.hu> <49D51D86.9030906@cosmosbay.com> <20090402203220.GA30375@elte.hu> <20090402211606.GC4076@elte.hu>
-Reply-To: paulmck@linux.vnet.ibm.com
+From: Pranav Desai <pranavadesai@gmail.com>
+Subject: Need some suggestions for doing l7 routing
+Date: Sun, 5 Apr 2009 19:07:37 -0700
+Message-ID: <cc64e8ce0904051907k5c29bb34kb101f4e2f8d9ae3@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20090402211606.GC4076@elte.hu>
-Sender: netdev-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=+PgbL5UgSvlAu10LE110r4SN4Z0oqaZInNjd80vABAA=;
+        b=amcP/t/vvS5X8IYRVPoiJb7Xo4+vsKaJO2jbao3VXpBatVXxAHiH6rK5NBJQlv/JoJ
+         +T6wYYm/MHbgVs3AsUbu9Yh35T2ZIAuGCLwzRphAapmucdVyBbi1n/1utxgyyYYl4dJc
+         0voN6UBJNMsw1DJt5ffWrmRsm+YBjjPkXMfpo=
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ingo Molnar <mingo@elte.hu>
-Cc: Eric Dumazet <dada1@cosmosbay.com>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Patrick McHardy <kaber@trash.net>, Rusty Russell <rusty@rustcorp.com.au>, coreteam@netfilter.org
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Thu, Apr 02, 2009 at 11:16:06PM +0200, Ingo Molnar wrote:
-> * Ingo Molnar <mingo@elte.hu> wrote:
-> > * Eric Dumazet <dada1@cosmosbay.com> wrote:
-> > > David put into its tree fix for that a few hours ago
-> > > 
-> > > commit fa9a86ddc8ecd2830a5e773facc250f110300ae7
-> > > 
-> > > (netfilter: iptables: lock free counters) forgot to disable BH
-> > > in arpt_do_table(), ipt_do_table() and  ip6t_do_table()
-> > > 
-> > > Use rcu_read_lock_bh() instead of rcu_read_lock() cures the problem.
-> > 
-> > ok, got your fix (attached below), thanks Eric for the pointer.
-> > 
-> > But i think my fix might be slightly better, because it does not 
-> > manipulate the preempt counter and leaves preemption enabled.
-> > 
-> > There's no BH context worries since this code did not seem to have 
-> > BH protection before either. (it used a plain read_lock(), not 
-> > read_lock_bh(), AFAICS)
-> > 
-> > I dont see any preemption worries either. I must be missing 
-> > something :)
-> 
-> as per the other mail - what i missed was that the old code _did_ 
-> use read_lock_bh(), which did not get carried over into the 
-> rcu_read_lock().
-> 
-> So this fix affects basically all things netfilter, not just 
-> rcu-preempt - a plain rcu_read_lock() doesnt protect against BH 
-> context interaction.
+Hello All,
 
-Strangely enough, the original motivation for rcu_read_lock_bh() does not
-apply to -rt kernels.  The problem was that denial-of-service workloads
-could apply such a heavy interrupt load to a given CPU that it never
-got back to process-level execution, thus never passing through any
-quiescent states.
+I have a squid proxy running in transparent mode so the destination of
+the pkts is the origin server. I dont want squid to handle all the
+traffic coming to the machine, so I am trying to do some layer 7
+routing of HTTP flows based on the GET request to either the local
+stack or forward it as is for the origin server.
 
-So rcu-bh has softirq-level quiescent states, solving that problem,
-but by disabling softirq (and thus preemption) across the read-side
-critical sections.
+I am thinking that I can use an iptables/kernel netfilter module like
+string match to capture the flows I am interested in and route it up
+the stack. The problem I see is that the connection is already
+established by the time I see the GET request, either to the origin
+server (in case I forward the pkts) or to the local stack (in case
+squid handles it) but I want that decision to be made based on the GET
+request, so does that mean I have to save the connection packets and
+replay them to either the origin server or the local stack ?
 
-But -rt has every point in the code not covered by rcu_read_lock()
-as a quiescent state, so should not be vulnerable to that particular
-denial-of-service attack.  But rcu-bh has the additional semantic of
-excluding BH execution while under rcu_read_lock_bh(), which appears
-to be used in this case, and probably others as well.
+The other options I can think of is to accept the connection from the
+client and establish another connection to the origin server, so make
+the kernel like a TCP proxy and handle it that way without involving
+the application layer.
 
-Interesting corner we have painted ourselves into here...
+Is this feasible ?
+Are there a better way of doing this ?
 
-							Thanx, Paul
+I understand that it can be done fairly easily in the application
+itself, but I want to avoid the uncessary load on the application for
+traffic that it doesnt need to handle. Also I think it can be done
+much faster in the kernel itself especially when both the options,
+forwarding and redirect (iptables -j REDIRECT) are available
+independently, but the problem is that they need to be applied based
+on some pkts which come in after the connection is established.
+
+Sorry for the long email and thank you for your time. Please let me
+know if I can provide any more information that might be useful.
+
+-- Pranav
