@@ -1,57 +1,70 @@
-From: Pranav Desai <pranavadesai@gmail.com>
-Subject: Need some suggestions for doing l7 routing
-Date: Sun, 5 Apr 2009 19:07:37 -0700
-Message-ID: <cc64e8ce0904051907k5c29bb34kb101f4e2f8d9ae3@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] Release of iptables-1.4.3.2
+Date: Mon, 06 Apr 2009 13:38:14 +0200
+Message-ID: <49D9E9A6.7010303@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type:content-transfer-encoding;
-        bh=+PgbL5UgSvlAu10LE110r4SN4Z0oqaZInNjd80vABAA=;
-        b=amcP/t/vvS5X8IYRVPoiJb7Xo4+vsKaJO2jbao3VXpBatVXxAHiH6rK5NBJQlv/JoJ
-         +T6wYYm/MHbgVs3AsUbu9Yh35T2ZIAuGCLwzRphAapmucdVyBbi1n/1utxgyyYYl4dJc
-         0voN6UBJNMsw1DJt5ffWrmRsm+YBjjPkXMfpo=
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/mixed;
+ boundary="------------090700010709050000090606"
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
+Cc: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, Linux Netdev List <netdev@vger.kernel.org>, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
-Hello All,
+This is a multi-part message in MIME format.
+--------------090700010709050000090606
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 7bit
 
-I have a squid proxy running in transparent mode so the destination of
-the pkts is the origin server. I dont want squid to handle all the
-traffic coming to the machine, so I am trying to do some layer 7
-routing of HTTP flows based on the GET request to either the local
-stack or forward it as is for the origin server.
+The netfilter coreteam presents:
 
-I am thinking that I can use an iptables/kernel netfilter module like
-string match to capture the flows I am interested in and route it up
-the stack. The problem I see is that the connection is already
-established by the time I see the GET request, either to the origin
-server (in case I forward the pkts) or to the local stack (in case
-squid handles it) but I want that decision to be made based on the GET
-request, so does that mean I have to save the connection packets and
-replay them to either the origin server or the local stack ?
+     iptables version 1.4.3.2
 
-The other options I can think of is to accept the connection from the
-client and establish another connection to the origin server, so make
-the kernel like a TCP proxy and handle it that way without involving
-the application layer.
+the iptables release for the 2.6.29 kernel. This version includes
+accumulated bugfixes for the previous release from Jan Engelhardt and
+Peter Volkov. Check the Changelog file for more details.
 
-Is this feasible ?
-Are there a better way of doing this ?
+Remember that iptables >= 1.4.3 starts enforcing the deprecation of NAT
+filtering that was added in 1.4.2-rc1, filtering rules in the NAT tables
+will cause an error instead of a warning from now on. Please make sure
+your rulesets are update appropriately.
 
-I understand that it can be done fairly easily in the application
-itself, but I want to avoid the uncessary load on the application for
-traffic that it doesnt need to handle. Also I think it can be done
-much faster in the kernel itself especially when both the options,
-forwarding and redirect (iptables -j REDIRECT) are available
-independently, but the problem is that they need to be applied based
-on some pkts which come in after the connection is established.
+Version 1.4.3.2 can be obtained from:
 
-Sorry for the long email and thank you for your time. Please let me
-know if I can provide any more information that might be useful.
+http://www.netfilter.org/projects/iptables/downloads.html
+ftp://ftp.netfilter.org/pub/iptables/
+git://git.netfilter.org/iptables.git
 
--- Pranav
+On behalf of the Netfilter Core Team.
+Happy firewalling!
+
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
+
+
+--------------090700010709050000090606
+Content-Type: text/plain;
+ name="changes-iptables-1.4.3.2.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="changes-iptables-1.4.3.2.txt"
+
+Jan Engelhardt (12):
+      libxt_tcpmss: fix an inversion while parsing --mss
+      iptables-multi: support "iptables-static" as a callable name
+      libxtables: reorder .version member
+      build: do not run ldconfig for DESTDIR installations
+      build: add configure option to disable ip6tables
+      build: add configure option to disable ipv4 iptables
+      libxtables: provide IPv6 zero address variable
+      iptables: print negation extrapositioned
+      Merge commit 'v1.4.3'
+      Merge branch 'plus'
+      CLASSIFY: document non-standard interpretation behavior
+      libxt_conntrack: properly output negation symbol
+
+Pablo Neira Ayuso (1):
+      build: bump version to 1.4.3.2
+
+
+--------------090700010709050000090606--
