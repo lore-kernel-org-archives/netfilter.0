@@ -1,68 +1,85 @@
 From: Data Shock <datashock@hotmail.com>
 Subject: RE: iptables - Trying to understand "no longer support implicit
  source local NAT"
-Date: Mon, 6 Apr 2009 17:52:09 -0400
-Message-ID: <BLU149-W292E6B73061694354D1B53A3840@phx.gbl>
+Date: Mon, 6 Apr 2009 18:30:37 -0400
+Message-ID: <BLU149-W217A490D4492B6FD80862BA3840@phx.gbl>
 References: <BLU149-W20F12BA9B98E9D4E82C7CBA3960@phx.gbl>
  <49C2A535.1040700@kis.keele.ac.uk>
     <BLU149-W849B5068E4BA2E436CB5E8A3960@phx.gbl>
    <BLU149-W19F71A94268C5665748337A3910@phx.gbl>
   <BLU149-W50503F474EE1377D0A838A3840@phx.gbl>
- <BLU149-W698B4E09B730ADF7B6660A3840@phx.gbl>
- <49DA5AEE.5010902@mailinator.com>
+ <BLU149-W698B4E09B730ADF7B6660A3840@phx.gbl> <49DA7962.6050600@chello.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49DA5AEE.5010902@mailinator.com>
+In-Reply-To: <49DA7962.6050600@chello.at>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
 
-Hi Mike,
+Hot diggity!  Thanks Mart.
 
-Thank you for the reply.  I have added my comments into your message.
+This seems to be the solution.
 
+I replaced the nat rule:
 
->
-> I'm not certain about the meaning of "implicit source local NAT" but the
-> second rule may be the culprit. Rather than imply 127.1 perhaps the
-> rule needs to specifically mention the source IP: e.g.
->
-> -A OUTPUT -s 127.0.0.1 -p udp -mudp --dport 1234 -j sendtolocal
+-A sendtolocal -d 10.1.2.3 -j DNAT --to-destination 127.0.0.1
 
 
-Unfortunately, that won't work because the source address at this point in the chain is not actually 127.0.0.1, but an outside interface, so it won't match the rule.  I did try replacing "127.0.0.1" in your suggested rule with the external interface, and that did function.  However I still see the message "NAT: no longer support implicit source local NAT" in /var/log/messages.
+with:
+
+-A sendtolocal -d 10.1.2.3 -j REDIRECT
 
 
-That error message (warning, friendly reminder, nagging pain in the fanny?) actually seems to happen the first time the "sendtolocal" chain is traversed.  It doesn't seem to be about matching the source address.  It seems to be complaining about changing the destination address without changing the source address.  However, I have a POSTROUTING rule that does the SNAT.  If I could SNAT from an OUTPUT chain I would, but that's not allowed.  SNAT has to be in the POSTROUTING chain.
+and that did it.  WooHoo!  It seems so simple now.  Why didn't I find t=
+hat? :)
 
-I believe it is complaining about something a later chain is about to do anyway.  It's like a preemptive nag, assuming you are going to mess up.  Since you can't SNAT in the OUTPUT chain, how the heck can I get around this?
-
-
->
-> Out of curiosity, does the following work and not produce an error?
->
-> *nat
-> -A PREROUTING -p udp --dport 1234 -j DNAT --to-destination 127.0.0.1
-> -A POSTROUTING -p udp --sport 1234 -j SNAT --to-source 10.1.2.3
+I'll experiment some more with this approach and then try it with our l=
+ive system.  I'll report back with the final verdict.
 
 
-The first PREROUTING rule won't match because the packets are generated locally, and thus don't traverse the PREROUTING chain.  It must be a rule on the OUTPUT chain.
+=46YI:  I tried this on an older Linux box too (with iptables v1.2.8) a=
+nd found that it automatically SNATed the packet to 127.0.0.1.  However=
+ on my newer box (with iptables v1.3.5), it didn't SNAT the packet.  It=
+s source remained the external interface of the box.  Interesting...
 
-The second rule doesn't really make a difference.  I get this error message if that rule is there, not there at all, or if there is one like my original (which SNATed to 127.0.0.1).
 
-
-
-I really appreciate the response Mike.  I'm beginning to lean towards entering a bug for this.
-
-Perhaps our comments will help to get the conversation going.  :)
-
+Thanks,
 
 -Frank
 
 
+>
+> I'm not 100% sure, but maybe the REDIRECT target is of use for that
+> particular case:
+>
+> from `man iptables':
+>
+> REDIRECT
+> This target is only valid in the nat table, in the
+> PREROUTING and OUTPUT chains, and user-defined chains which are only
+> called from those chains. It
+> redirects the packet to the machine itself by changing the
+> destination IP to the primary address of the incoming interface
+> (locally-generated packets are
+> mapped to the 127.0.0.1 address). It takes one option:
+>
+> --to-ports port[-port]
+> This specifies a destination port or range of ports to
+> use: without this, the destination port is never altered. This is onl=
+y
+> valid if the rule
+> also specifies -p tcp or -p udp.
+>
+>
+> Greets
+>
+> Mart
+
+
 _________________________________________________________________
-Quick access to your favorite MSN content and Windows Live with Internet Explorer 8. 
-http://ie8.msn.com/microsoft/internet-explorer-8/en-us/ie8.aspx?ocid=B037MSN55C0701A
+Rediscover Hotmail=AE: Get quick friend updates right in your inbox.=20
+http://windowslive.com/RediscoverHotmail?ocid=3DTXT_TAGLM_WL_HM_Redisco=
+ver_Updates1_042009
