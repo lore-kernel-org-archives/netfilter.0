@@ -1,72 +1,94 @@
-From: Tim Verhoeven <tim.verhoeven.be@gmail.com>
-Subject: Compiling ebtables statically or dynamically results in different 
-	behaviour
-Date: Wed, 8 Apr 2009 10:51:12 +0200
-Message-ID: <2a7fce340904080151u36088438v54a1b0d999f55561@mail.gmail.com>
-References: <2a7fce340904070653h14f05a32y5bcb7f2b9713403a@mail.gmail.com>
+From: Mart Frauenlob <mart.frauenlob@chello.at>
+Subject: Re: [ANNOUNCE] Release of iptables-1.4.3.2
+Date: Thu, 09 Apr 2009 10:31:06 +0200
+Message-ID: <49DDB24A.80400@chello.at>
+References: <49D9E9A6.7010303@netfilter.org> <49DA0F49.4090802@conversis.de> <49DAD5E0.9020303@caf.com.tr>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:content-type
-         :content-transfer-encoding;
-        bh=EG47JAb8j54YZyhg7aFSFMBa5q2YuFJg7ND2izUIjfE=;
-        b=JdElXlVz2oYq6TVS0vRxN/ePdGj2igbZUsqMQ9IU2wD1zk1CsaiP7wfqTWPNbNEjQc
-         u5ZD7ufc6y44U1Q8k2u5ahXd7SCnjha6GFNXzRKVgrA+RPxlkeVQpUnlMljq5DwaATjn
-         5oVxa6UQFypOGdMMdcWX9kb3Ebc5hZgDI6Oto=
-In-Reply-To: <2a7fce340904070653h14f05a32y5bcb7f2b9713403a@mail.gmail.com>
+In-Reply-To: <49DAD5E0.9020303@caf.com.tr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi,
+Eray Aslan wrote:
+> On 06.04.2009 17:18, Dennis J. wrote:
+>   
+>> What does "deprecation of NAT filtering" entail exactly?
+>>     
+>
+> # /sbin/iptables -V
+> iptables v1.4.2
+> # /sbin/iptables -t nat -A OUTPUT -p tcp --dport 10000 -j DROP
+>
+> The "nat" table is not intended for filtering, hence the use of DROP is
+> deprecated and will permanently be disabled in the next iptables
+> release. Please adjust your scripts.
+>
+> # /sbin/iptables -L -nvx -t nat
+> [...]
+> Chain OUTPUT (policy ACCEPT 45827 packets, 3301166 bytes)
+>     pkts      bytes target     prot opt in     out     source
+>     destination
+>        0        0 DROP       tcp  --  *      *       0.0.0.0/0
+>   0.0.0.0/0           tcp dpt:10000
+> #
+>
+> versus
+>
+> # /sbin/iptables -V
+> iptables v1.4.3.1
+> # /sbin/iptables -t nat -A OUTPUT -p tcp --dport 10000 -j DROP
+> iptables v1.4.3.1:
+> The "nat" table is not intended for filtering, the use of DROP is
+> therefore inhibited.
+>
+>
+> Try `iptables -h' or 'iptables --help' for more information.
+> # /sbin/iptables -L -nvx -t nat
+> [...]
+> Chain OUTPUT (policy ACCEPT 5115 packets, 415189 bytes)
+>     pkts      bytes target     prot opt in     out     source
+>     destination
+> #
+>
+> Do not filter in the nat table and you will be fine.
+>
+>   
+Hello,
 
-I have a very strange problem with ebtables. I'm using it on CentOS 5
-(2.6.18 kernel) and when using the dynamically compiled version
-(version 2.0.8-2) I can't create a new chain. When using the same
-version but compiled statically it works. The difference is clearly to
-see when using a strace :
+what about the 'policy' in the 'nat' table? Will it allow 'DROP'?
 
-Good behavior (statically compiled) :
+what about the other non 'filter' tables?
+Will it be possible to 'DROP' in the mangle table? Or set it's policy to 
+'DROP'?
+Isn't dropping in the mangle table almost the same thing as doing that 
+in the nat table?
+At least it violates the concept of filtering in the filter table.
 
-setsockopt(3, SOL_IP, 0x80 /* IP_??? */,
-"filter\0\0\0\352tv;\0\0\0\0\0\0\0\0\0\0\0008\2\0\0\0\0\0\0"..., 312)
-=3D 0
-exit_group(0) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =3D ?
+What if someone uses 'DROP' rules and policy in the 'raw' table?
+Especially setting a drop policy there turns the concept upside down.
+I've been reading some advices to do 'blacklisting' in the raw table, 
+which does sound quite reasonable to me, as the raw table is the first 
+to be process, thus speeding up the processing.
+Though the raw table has been introduces to allow 'NOTRACK'. So, the 
+concept violation makes sense here?
+But again, a 'DROP' policy? Needed?
 
+I must say I've always been wondering why the other tables (formerly 
+just mangle and nat) would have the DROP policy available, and why they 
+allow dropping rules, although the iptables concept says to do filtering 
+in the filter table.
+I've seen quite some people (mostly unexperienced) mess up their box 
+with that, most of them ending up asking for public help.
+It seems misleading to me, to make that options available.
 
-Bad behavior (dynamically compiled) :
+Thanks for any information you want to share with me.
 
-setsockopt(3, SOL_IP, 0x80 /* IP_??? */,
-"filter\0\0\0\352tv;\0\0\0\0\0\0\0\0\0\0\0e\3\0\0\0\0\0\0"..., 312) =3D
--1 EINVAL (Invalid argument)
-write(2, "The kernel doesn't support a cer"..., 113The kernel doesn't
-support a certain ebtables extension, consider recompiling your kernel
-or insmod the extension) =3D 113
-write(2, ".\n", 2.
-) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0=3D 2
-exit_group(-1) =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =
-=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=3D ?
+Thanks to the developers spending their time and energy.
 
-=46or some reason the one version sets different options then the other=
-=2E
-I've tried different things (compiling against the standard kernel
-include files (kernel-devel), compiling against the included include
-files, using some gcc options, ...). But none of those worked. Any
-hints are appreciated.
+Greets
 
-Regards,
-Tim
-
---
-Tim Verhoeven - tim.verhoeven.be@gmail.com - 0479 / 88 11 83
-
-Hoping the problem =C2=A0magically goes away =C2=A0by ignoring it is th=
-e
-"microsoft approach to programming" and should never be allowed.
-(Linus Torvalds)
+Mart
