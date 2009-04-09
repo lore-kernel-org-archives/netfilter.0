@@ -1,7 +1,7 @@
-From: Eray Aslan <eray.aslan@caf.com.tr>
+From: Eray Aslan <erayaslan@gmail.com>
 Subject: Re: [ANNOUNCE] Release of iptables-1.4.3.2
-Date: Thu, 09 Apr 2009 16:29:50 +0300
-Message-ID: <49DDF84E.2010302@caf.com.tr>
+Date: Thu, 09 Apr 2009 16:27:30 +0300
+Message-ID: <49DDF7C2.80008@gmail.com>
 References: <49D9E9A6.7010303@netfilter.org> <49DA0F49.4090802@conversis.de> <49DAD5E0.9020303@caf.com.tr> <49DDB24A.80400@chello.at>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
