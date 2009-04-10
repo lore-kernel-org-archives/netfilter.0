@@ -1,84 +1,56 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: iptables - full cone
-Date: Fri, 10 Apr 2009 09:57:32 +0200
-Message-ID: <49DEFBEC.1030408@chello.at>
-References: <47A7F67C62706041BC49DB7822B1C9DB1506FB38FD@INOAVREX11.ptin.corpPT.com> <49DEFA34.6040207@chello.at>
-Reply-To: netfilter@vger.kernel.org
+From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Subject: The death of policy  (WAS -> Re: [ANNOUNCE] Release of iptables-1.4.3.2)
+Date: Fri, 10 Apr 2009 12:54:54 +0200
+Message-ID: <49DF257E.3020702@freemail.hu>
+References: <49D9E9A6.7010303@netfilter.org> <49DA0F49.4090802@conversis.de> <49DAD5E0.9020303@caf.com.tr> <49DDB24A.80400@chello.at> <49DDF84E.2010302@caf.com.tr> <49DEF36A.8010509@chello.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49DEFA34.6040207@chello.at>
+In-Reply-To: <49DEF36A.8010509@chello.at>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Mart Frauenlob wrote:
-> netfilter-owner@vger.kernel.org wrote:
->> Dear all,
->>
->> I'm using iptables 1.3.8, and I need to implement a full cone NAT 
->> which had to be capable of doing the following:
->> 1. A packet is sent from a machine in the LAN from Address1:port100 
->> to a machine in the WAN with Address3:port200, the NAT converts the 
->> local Address1:port100 to Address2:port100 which is the address 
->> assigned to the home router by the ISP. So this packet is sent with 
->> source: Address2:port100 and destination: Address3:port200.
->> 2. The packet received by the machine in the WAN in 1) is processed 
->> and then the answer comes from a different machine with a different 
->> address but using the same ports. So the response packet is sent by 
->> Address4:port200 to Address2:port100. So this packet has source: 
->> Address4:port200 and destination: Address2:port100.
->> 3. When the home router receives the response packet it has to ignore 
->> the sending address in the matching table, so that all traffic 
->> received in Address2:port100 is simply forward to Address1:port100. 
->> This is just a Full Cone NAT.
->>
->> I have read some tutorials about iptables and the only way I have 
->> found to do this is make rule that forwards all traffic that arrives 
->> in Address2:port100 to Address1:port100. This does the work for just 
->> one machine on the LAN which has a static ip and will always contact 
->> the same machine on the WAN.
->> What I really want to do is implement a Full Cone NAT in which a 
->> packet sent from Address1:port100 which is translated to 
->> Address2:port100 by the NAT and goes to Address3:port200, activates 
->> port100 in the home router so that any packets arriving in port100 
->> will be forwarded to Address1:por100. And this would just work for 
->> any number of machines.
->>
->> Is there anyway of doing so in the actual iptables or I will have to 
->> add this feature to iptables?
->>
->> Best Regards
->>
->> Hugo Mendes
->>   
+Mart Frauenlob =EDrta:
+> More continuous would be IMHO:
 >
-> Just for curiosity:
+> - filter table - DROP allowed and right - DROP policy =3D good
+> - mangle table - DROP  prohibited - DROP policy =3D prohibited
+> - nat table - DROP prohibited - DROP policy =3D prohibited
+> - raw table - DROP allowed and right for avoiding conntrack - DROP=20
+> policy =3D prohibited
+If I follow you then I would say that we do not need any policy in=20
+mangle, nat, raw table...
+Just simply accept any packet..
+> Again, why allow, what is considered wrong?
+> If you know what you are doing, filtering in the nat table will do=20
+> what you want, because you know about the special behaviour.
+> Only the lack of knowledge makes things go wrong.
+(nod)
+> And that is the point. If you know iptables, you do your filtering in=
+=20
+> the filter table, or in the raw table (to avoid conntrack for some=20
+> blacklist kind of stuff).
+Maybe we could delete that conntrack entry if we drop a packet in the=20
+filter table...
+
+> Many of them are unexperienced. Therefor the concept should be clear,=
+=20
+> continuous and error messages should be understandable.
+(nod)
+> Preventing the user from doing nonsense. It's about the security, not=
+=20
+> some trivial thing...
+(nod)(nod)
 >
-> sorry if I write complete nonsense, I've never ever hacked with 
-> libnetfilter...
-> This is based on the assumption, that it's possible to create 
-> conntrack entries from within libnetfilter, which may be completely 
-> wrong...
+> Well, just thoughts about my favorite software... :)
 >
-> ok trying to figure:
->
-> Lan host A1:100 sends packet to WAN host A3:200. packet arriving at 
-> the router, it is sent to nfqueue.
-> There a conntrack entry is created, to expect the answer from WAN host 
-> A4:200.
-> The NAT to A3 is still done.
-> Packet goes to A3, comes back from A4:200, conntrack sees the entry we 
-> created in our nfqueue.
-> Now a rule should NAT that packet as coming from A2 (so client A1 will 
-> not talk back to A4).
-> Finally the packet gets forwarded to the client, which only sees his 
-> talking with A2.
-> The whole thing iterates again...
->
-should be:
-Now a rule should NAT that packet as coming from A3 (so client A1 will 
-not talk back to A4).
-Finally the packet gets forwarded to the client, which only sees his 
-talking with A3.
+lol
+
+One more thing...
+If there is no policy in the tables (except filter) then the ACCEPT=20
+target is (MAYBE) useless in those tables...
+
+Swifty
+
