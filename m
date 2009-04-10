@@ -1,128 +1,60 @@
 From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: [ANNOUNCE] Release of iptables-1.4.3.2
-Date: Fri, 10 Apr 2009 09:21:14 +0200
-Message-ID: <49DEF36A.8010509@chello.at>
-References: <49D9E9A6.7010303@netfilter.org> <49DA0F49.4090802@conversis.de> <49DAD5E0.9020303@caf.com.tr> <49DDB24A.80400@chello.at> <49DDF84E.2010302@caf.com.tr>
+Subject: Re: iptables - full cone
+Date: Fri, 10 Apr 2009 09:50:12 +0200
+Message-ID: <49DEFA34.6040207@chello.at>
+References: <47A7F67C62706041BC49DB7822B1C9DB1506FB38FD@INOAVREX11.ptin.corpPT.com>
 Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49DDF84E.2010302@caf.com.tr>
+In-Reply-To: <47A7F67C62706041BC49DB7822B1C9DB1506FB38FD@INOAVREX11.ptin.corpPT.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Eray Aslan wrote:
-> On 09.04.2009 11:31, Mart Frauenlob wrote:
+netfilter-owner@vger.kernel.org wrote:
+> Dear all,
+>
+> I'm using iptables 1.3.8, and I need to implement a full cone NAT which had to be capable of doing the following:
+> 1. A packet is sent from a machine in the LAN from Address1:port100 to a machine in the WAN with Address3:port200, the NAT converts the local Address1:port100 to Address2:port100 which is the address assigned to the home router by the ISP. So this packet is sent with source: Address2:port100 and destination: Address3:port200.
+> 2. The packet received by the machine in the WAN in 1) is processed and then the answer comes from a different machine with a different address but using the same ports. So the response packet is sent by Address4:port200 to Address2:port100. So this packet has source: Address4:port200 and destination: Address2:port100.
+> 3. When the home router receives the response packet it has to ignore the sending address in the matching table, so that all traffic received in Address2:port100 is simply forward to Address1:port100. This is just a Full Cone NAT.
+>
+> I have read some tutorials about iptables and the only way I have found to do this is make rule that forwards all traffic that arrives in Address2:port100 to Address1:port100. This does the work for just one machine on the LAN which has a static ip and will always contact the same machine on the WAN.
+> What I really want to do is implement a Full Cone NAT in which a packet sent from Address1:port100 which is translated to Address2:port100 by the NAT and goes to Address3:port200, activates port100 in the home router so that any packets arriving in port100 will be forwarded to Address1:por100. And this would just work for any number of machines.
+>
+> Is there anyway of doing so in the actual iptables or I will have to add this feature to iptables?
+>
+> Best Regards
+>
+> Hugo Mendes
 >   
->> what about the 'policy' in the 'nat' table? Will it allow 'DROP'?
->>     
->
-> # /sbin/iptables -V
-> iptables v1.4.3.1
-> # /sbin/iptables -t nat -P OUTPUT DROP
-> iptables v1.4.3.1:
-> The "nat" table is not intended for filtering, the use of DROP is
-> therefore inhibited.
->
->
-> Try `iptables -h' or 'iptables --help' for more information.
-> # echo $?
-> 2
-> # /sbin/iptables -t nat -L|grep OUTPUT
-> Chain OUTPUT (policy ACCEPT)
->
->   
->> what about the other non 'filter' tables?
->> Will it be possible to 'DROP' in the mangle table? Or set it's policy to
->> 'DROP'?
->>     
->
-> Yes
->
->   
->> Isn't dropping in the mangle table almost the same thing as doing that
->> in the nat table?
->>     
->
-> No.  Not all packets in a connection traverse the nat table.
->   
-Yes I know...
 
->> At least it violates the concept of filtering in the filter table.
->>     
->
-> Yes.  Correct place to filter in in the filter table.  But if you insist
-> on doing the "wrong" thing, who is to interfere?
->
->   
-The programmer...
-It's not me insisting in doing the wrong thing. I know these things.
-I write this, because of all the people who do not.
-And this lack of knowledge must be the reason why filtering in the nat 
-table was prohibited.
-Because people were doing the wrong thing, because they do not know 
-better...
+Just for curiosity:
 
-So now we have:
+sorry if I write complete nonsense, I've never ever hacked with 
+libnetfilter...
+This is based on the assumption, that it's possible to create conntrack 
+entries from within libnetfilter, which may be completely wrong...
 
-- filter table - DROP allowed and right - DROP policy = good
-- mangle table - DROP allowed but wrong - DROP policy = bad
-- nat table - DROP prohibited and wrong - DROP policy = prohibited
-- raw table - DROP allowed and right for avoiding conntrack - DROP 
-policy = bad?
+ok trying to figure:
 
-That is a little chaotic...
+Lan host A1:100 sends packet to WAN host A3:200. packet arriving at the 
+router, it is sent to nfqueue.
+There a conntrack entry is created, to expect the answer from WAN host 
+A4:200.
+The NAT to A3 is still done.
+Packet goes to A3, comes back from A4:200, conntrack sees the entry we 
+created in our nfqueue.
+Now a rule should NAT that packet as coming from A2 (so client A1 will 
+not talk back to A4).
+Finally the packet gets forwarded to the client, which only sees his 
+talking with A2.
+The whole thing iterates again...
 
-More continuous would be IMHO:
+Is that doable? Or just waste of brain?
 
-- filter table - DROP allowed and right - DROP policy = good
-- mangle table - DROP  prohibited - DROP policy = prohibited
-- nat table - DROP prohibited - DROP policy = prohibited
-- raw table - DROP allowed and right for avoiding conntrack - DROP 
-policy = prohibited
-
-> [...]
->   
->> I've seen quite some people (mostly unexperienced) mess up their box
->> with that, most of them ending up asking for public help.
->> It seems misleading to me, to make that options available.
->>     
->
-> Well, software does not grow on trees.  Someone has to write it but is
-> it really worth the effort to ban filtering in mangle et al?  Filtering
-> in the nat table was especially wrong because it didnot give the
-> expected result and I suppose that is reason for the patch/revized
-> behaviour.
->   
-Again, why allow, what is considered wrong?
-If you know what you are doing, filtering in the nat table will do what 
-you want, because you know about the special behaviour.
-Only the lack of knowledge makes things go wrong.
-And that is the point. If you know iptables, you do your filtering in 
-the filter table, or in the raw table (to avoid conntrack for some 
-blacklist kind of stuff).
-If you don't, it happens... You may start setting mangle, raw policies 
-to DROP, filter in mangle table, do weird stuff, an experienced user 
-would (most likely) never do.
-
-Is it really worth the hassle for approx. hundreds of people every year 
-falling into those pitfalls?
-Many end up here or on similar places, needs effort for anyone involved.
-Iptables is installed on like any linux box out there, and there's  
-always a lot of people trying to write their own ruleset.
-Many of them are unexperienced. Therefor the concept should be clear, 
-continuous and error messages should be understandable.
-Preventing the user from doing nonsense. It's about the security, not 
-some trivial thing...
-
-Well, just thoughts about my favorite software... :)
-
-btw: if I could (write C), I'd become a software tree... :-;
-
-
-Good day
+greets
 
 Mart
-
