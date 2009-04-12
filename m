@@ -1,56 +1,84 @@
-From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: The death of policy  (WAS -> Re: [ANNOUNCE] Release of iptables-1.4.3.2)
-Date: Fri, 10 Apr 2009 12:54:54 +0200
-Message-ID: <49DF257E.3020702@freemail.hu>
-References: <49D9E9A6.7010303@netfilter.org> <49DA0F49.4090802@conversis.de> <49DAD5E0.9020303@caf.com.tr> <49DDB24A.80400@chello.at> <49DDF84E.2010302@caf.com.tr> <49DEF36A.8010509@chello.at>
+From: my mail <amfpg@yahoo.com>
+Subject: question about table filter, nat and mangle with chain default policy
+Date: Sat, 11 Apr 2009 23:32:37 -0700 (PDT)
+Message-ID: <549735.16160.qm@web46114.mail.sp1.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49DEF36A.8010509@chello.at>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1239517957; bh=cxG4WWNMv7hlttUuNBmZJ/L7eD2Tvgwx7dbkKXE9mlU=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Subject:To:MIME-Version:Content-Type; b=euIbEmlnlxQ7k6urmTsJP6GjoglO0bX6kyFCU1sqmJR9DF0CMQ6e6I7Otgk4SeApkeDK8j4LJ+7jfREQ2jdsqlAQZ2yu9xsdvGR9EIcc1R5WTNKJkKt2n1HesORszoHvvWVrw07rticVXXA2RRMqqL9ARiaTqSKTjmvHoRdVnEw=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Mart Frauenlob =EDrta:
-> More continuous would be IMHO:
->
-> - filter table - DROP allowed and right - DROP policy =3D good
-> - mangle table - DROP  prohibited - DROP policy =3D prohibited
-> - nat table - DROP prohibited - DROP policy =3D prohibited
-> - raw table - DROP allowed and right for avoiding conntrack - DROP=20
-> policy =3D prohibited
-If I follow you then I would say that we do not need any policy in=20
-mangle, nat, raw table...
-Just simply accept any packet..
-> Again, why allow, what is considered wrong?
-> If you know what you are doing, filtering in the nat table will do=20
-> what you want, because you know about the special behaviour.
-> Only the lack of knowledge makes things go wrong.
-(nod)
-> And that is the point. If you know iptables, you do your filtering in=
-=20
-> the filter table, or in the raw table (to avoid conntrack for some=20
-> blacklist kind of stuff).
-Maybe we could delete that conntrack entry if we drop a packet in the=20
-filter table...
 
-> Many of them are unexperienced. Therefor the concept should be clear,=
-=20
-> continuous and error messages should be understandable.
-(nod)
-> Preventing the user from doing nonsense. It's about the security, not=
-=20
-> some trivial thing...
-(nod)(nod)
->
-> Well, just thoughts about my favorite software... :)
->
-lol
+I have rule like this
 
-One more thing...
-If there is no policy in the tables (except filter) then the ACCEPT=20
-target is (MAYBE) useless in those tables...
+----- rule iptables -----
+# Remove any existing rules from all chains
+$IPT --flush
+$IPT -t nat --flush
+$IPT -t mangle --flush
+# Delete any user defined chains
+$IPT -X
+$IPT -t nat -X
+$IPT -t mangle -X
+# Reset default policy to ACCEPT
+$IPT --policy INPUT ACCEPT
+$IPT --policy OUTPUT ACCEPT
+$IPT --policy FORWARD ACCEPT
+$IPT -t nat --policy PREROUTING ACCEPT
+$IPT -t nat --policy OUTPUT ACCEPT
+$IPT -t nat --policy POSTROUTING ACCEPT
+$IPT -t mangle --policy PREROUTING ACCEPT
+$IPT -t mangle --policy INPUT ACCEPT
+$IPT -t mangle --policy FORWARD ACCEPT
+$IPT -t mangle --policy OUTPUT ACCEPT
+$IPT -t mangle --policy POSTROUTING ACCEPT
 
-Swifty
+# Unlimited traffic on the loopback interface
+$IPT -A INPUT -i lo -j ACCEPT
+$IPT -A OUTPUT -o lo -j ACCEPT
+
+# Default policy to DROP
+$IPT --policy INPUT DROP
+$IPT --policy OUTPUT DROP
+$IPT --policy FORWARD DROP
+#$IPT -t nat --policy PREROUTING DROP
+$IPT -t nat --policy OUTPUT DROP
+#$IPT -t nat --policy POSTROUTING DROP
+#$IPT -t mangle --policy PREROUTING DROP
+#$IPT -t mangle --policy INPUT DROP
+#$IPT -t mangle --policy FORWARD DROP
+#$IPT -t mangle --policy OUTPUT DROP
+#$IPT -t mangle --policy POSTROUTING DROP
+
+# For SSH Connection into Firewall
+$IPT -A INPUT -i $LAN_IF -p tcp --sport $SSH_PORTS -d $IPADDR --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
+$IPT -A OUTPUT -o $LAN_IF -p tcp ! --syn -s $IPADDR --sport 22 --dport $SSH_PORTS -m state --state ESTABLISHED -j ACCEPT
+
+---------- end rule --------------
+
+this rule ok, because i can ssh-ing into this machine. But if i remove the # from default policy like this
+
+# Default policy to DROP
+$IPT --policy INPUT DROP
+$IPT --policy OUTPUT DROP
+$IPT --policy FORWARD DROP
+$IPT -t nat --policy PREROUTING DROP
+$IPT -t nat --policy OUTPUT DROP
+$IPT -t nat --policy POSTROUTING DROP
+$IPT -t mangle --policy PREROUTING DROP
+$IPT -t mangle --policy INPUT DROP
+$IPT -t mangle --policy FORWARD DROP
+$IPT -t mangle --policy OUTPUT DROP
+$IPT -t mangle --policy POSTROUTING DROP
+
+i can't ssh-ing into this machine. so is the ssh using nat and mangle table to connect into this machine?
+i litle bit confuse about this, why i can ssh-ing into this machine when i drop the nat and mangle table.
+
+thx in advance for your help
+
+
+      
 
