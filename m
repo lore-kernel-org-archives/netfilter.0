@@ -1,31 +1,31 @@
-From: Andrew Schulman <andrex-cmaem7PIVQQM4YKboWzA4l6hYfS7NtTn@public.gmane.org>
-Subject: Re: HELP ME PLEEEEEASE!
-Date: Mon, 13 Apr 2009 10:48:00 -0400
-Message-ID: <psj6u4dvmtlfvfjtjlpjupjm5tbhbnsiqi@4ax.com>
-References: <E1Lt0dS-0004ni-00.gold_dolphin-mail-ru@f255.mail.ru>
+From: "Paul Rice" <paul.rice@boomerang-networks.com>
+Subject: NATed internal IP leaking
+Date: Mon, 13 Apr 2009 11:49:13 -0500
+Message-ID: <76F066FACCF040F783FA28B9230036C9@PaulPC>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
-Sender: netfilter-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: netfilter@vger.kernel.org
 
-> I'd like to use iptables for PAT (Port Address Translation), how to do this?
+Hi Guys,
 
-Here are a few pointers to get you started:
+I'm using kernel version 2.6.25.16 and attempted this on 2.6.29 as well.
 
-(1) Don't shout.
-(2) Provide a descriptive subject to your post.
-(3) Tell us what you mean by PAT.  Maybe others have heard of it, but I haven't.
-(4) Show us some effort.  What have you tried?  What have you investigated but
-haven't been able to make work yet?
+I'm using ppp0 to connect to verizon wireless and when using Masquerade
+NAT, I'm being told by verizon that my client IP's are coming across the
+ppp0 interface and they are terminating the connection.  I have used 2.4
+kernel doing the same thing with no issue like this.
 
-If you don't do these things, you're not very likely to get any help here.
+iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE is what I've used
+with success in the past.
 
-Andrew.
+My question is: Is there a way to keep internal ip's from leaking?  I've 
+experimented with dropping everything 192.168.0.0/24 on ppp0 interface but 
+no joy.
 
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks,
+Paul Rice
+
