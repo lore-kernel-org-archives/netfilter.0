@@ -1,31 +1,54 @@
-From: "Paul Rice" <paul.rice@boomerang-networks.com>
-Subject: NATed internal IP leaking
-Date: Mon, 13 Apr 2009 11:49:13 -0500
-Message-ID: <76F066FACCF040F783FA28B9230036C9@PaulPC>
+From: Zhenwen Xu <helight.xu@gmail.com>
+Subject: Re: HELP ME PLEEEEEASE!
+Date: Tue, 14 Apr 2009 10:14:53 +0800
+Message-ID: <20090414021453.GA4151@helight>
+References: <E1Lt0dS-0004ni-00.gold_dolphin-mail-ru@f255.mail.ru> <psj6u4dvmtlfvfjtjlpjupjm5tbhbnsiqi@4ax.com>
+Reply-To: Zhenwen Xu <helight.xu@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:date:from:to:cc:subject
+         :message-id:reply-to:references:mime-version:content-type
+         :content-disposition:in-reply-to:user-agent;
+        bh=ujuCNpEN+oLJrihkq5U2Jg78oYoBqYtcdEyWEsrSN4o=;
+        b=dDXrNKCIv0UcuZ/jB/LFI4IEs2XxU/v5Waw73Ssi7laGYHrECaZpRxaaUXVnXJeUtM
+         oJrEge0i+kR6lWpCVXtrXnQ/YX2PdXfWGqq6ZkZ96O7uMCxbDohgdYnZF6aS+iaJlVwB
+         WdIRNaapM2MFCJ2HKl9ZeFEU5Ac2yDsVb1+SI=
+Content-Disposition: inline
+In-Reply-To: <psj6u4dvmtlfvfjtjlpjupjm5tbhbnsiqi@4ax.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Andrew Schulman <andrex@alumni.utexas.net>
+Cc: netfilter@vger.kernel.org
 
-Hi Guys,
+On Mon, Apr 13, 2009 at 10:48:00AM -0400, Andrew Schulman wrote:
+> > I'd like to use iptables for PAT (Port Address Translation), how to do this?
+Is PAT similar with NAT?
 
-I'm using kernel version 2.6.25.16 and attempted this on 2.6.29 as well.
+if that is ture! try NAT!
+> 
+> Here are a few pointers to get you started:
+> 
+> (1) Don't shout.
+> (2) Provide a descriptive subject to your post.
+> (3) Tell us what you mean by PAT.  Maybe others have heard of it, but I haven't.
+> (4) Show us some effort.  What have you tried?  What have you investigated but
+> haven't been able to make work yet?
+> 
+> If you don't do these things, you're not very likely to get any help here.
+> 
+> Andrew.
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-I'm using ppp0 to connect to verizon wireless and when using Masquerade
-NAT, I'm being told by verizon that my client IP's are coming across the
-ppp0 interface and they are terminating the connection.  I have used 2.4
-kernel doing the same thing with no issue like this.
-
-iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE is what I've used
-with success in the past.
-
-My question is: Is there a way to keep internal ip's from leaking?  I've 
-experimented with dropping everything 192.168.0.0/24 on ppp0 interface but 
-no joy.
-
-Thanks,
-Paul Rice
-
+-- 
+---------------------------------
+Zhenwen Xu - Open and Free
+Home Page:	http://zhwen.org
+My Studio:	http://dim4.cn
