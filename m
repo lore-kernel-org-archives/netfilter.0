@@ -1,84 +1,136 @@
-From: "Nikolay S. Rybaloff" <nowhere@hakkenden.ath.cx>
+From: Martin Millnert <millnert@csbnet.se>
 Subject: Re: mask 10 -> 29
-Date: Wed, 15 Apr 2009 21:06:55 +0400
-Message-ID: <9B8BF8CA2B1E41E293257EDDEA92EFEA@nowherePC>
-References: <49E6044F.5070305@lab.vectoris.fr> <49E60D5F.9070806@freemail.hu>
+Date: Wed, 15 Apr 2009 19:22:30 +0200
+Message-ID: <1239816150.15363.38.camel@localhost.localdomain>
+References: <49E6044F.5070305@lab.vectoris.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-1D8AB4/hjxQa3xHDcbPy"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49E60D5F.9070806@freemail.hu>
+In-Reply-To: <49E6044F.5070305@lab.vectoris.fr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed	reply-type=response"
 To: "Mihamina Rakotomandimby (R12y)" <mihamina@lab.vectoris.fr>
 Cc: netfilter@vger.kernel.org
 
-Yeah, that is exactly why no one use decimals for network subdivision.
 
-192.168.0.10-192.168.0.30 can not be matched with a single VLSM express=
-ion.=20
-The exact match would be a set:
+--=-1D8AB4/hjxQa3xHDcbPy
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, 2009-04-15 at 18:59 +0300, Mihamina Rakotomandimby (R12y) wrote:
+> Hi,
+> I have this kind of shell script in order to set something on a bunch of =
+IP=20
+> addresses:
+>=20
+> for ACCEPTED_MACHINE in \
+>      192.168.0.10 \
+>      192.168.0.11 \
+>      192.168.0.12 \
+>      192.168.0.13 \
+>      192.168.0.14 \
+>      192.168.0.15 \
+>      192.168.0.16 \
+>      192.168.0.17 \
+>      192.168.0.18 \
+>      192.168.0.19 \
+>      192.168.0.20 \
+>      192.168.0.21 \
+>      192.168.0.22 \
+>      192.168.0.23 \
+>      192.168.0.24 \
+>      192.168.0.25 \
+>      192.168.0.26 \
+>      192.168.0.27 \
+>      192.168.0.28 \
+>      192.168.0.29
+> do
+> $IPTABLES [...]
+> done
+>=20
+>=20
+> How could I use a mask such as 192.168.0.0/NN to exactly match the list?
+> Thank you.
+>=20
+
+Hi Mihamina,
+
+Possible exact solutions include either:
+  aggregate - { ftp://ftp.isc.org/isc/aggregate/ |
+http://packages.debian.org/aggregate }  - cidr aggregation
+  or,
+  iptables -m iprange  - non-cidr consecutive IP-ranges matching
+
+Examples:
+
+  aggregate
+
+anticimex@natalie:/tmp$ awk '{print $1 "/32"}' << EOF | aggregate
+> 192.168.0.10
+> 192.168.0.11
+> 192.168.0.12
+> 192.168.0.13
+> 192.168.0.14
+> 192.168.0.15
+> 192.168.0.16
+> 192.168.0.17
+> 192.168.0.18
+> 192.168.0.19
+> 192.168.0.20
+> 192.168.0.21
+> 192.168.0.22
+> 192.168.0.23
+> 192.168.0.24
+> 192.168.0.25
+> 192.168.0.26
+> 192.168.0.27
+> 192.168.0.28
+> 192.168.0.29
+> EOF
+aggregate: maximum prefix length permitted will be 32
 192.168.0.10/31
 192.168.0.12/30
 192.168.0.16/29
 192.168.0.24/30
 192.168.0.28/31
+anticimex@natalie:/tmp$=20
 
 
+  iptables -m iprange
 
---------------------------------------------------
-=46rom: "G=E1sp=E1r Lajos" <swifty@freemail.hu>
-Sent: Wednesday, April 15, 2009 8:37 PM
-To: "Mihamina Rakotomandimby (R12y)" <mihamina@lab.vectoris.fr>
-Cc: <netfilter@vger.kernel.org>
-Subject: Re: mask 10 -> 29
+natalie:~# iptables -A INPUT -i eth2 -m iprange --src-range 192.168.0.10-19=
+2.168.0.29   =20
+natalie:~# iptables -nvL INPUT=20
+Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               destina=
+tion        =20
+    0     0            all  --  eth2   *       0.0.0.0/0            0.0.0.0=
+/0           source IP range 192.168.0.10-192.168.0.29=20
+natalie:~#=20
 
-> Hi,
->
-> Mihamina Rakotomandimby (R12y) =EDrta:
->> Hi,
->> I have this kind of shell script in order to set something on a bunc=
-h of=20
->> IP addresses:
->>
->> for ACCEPTED_MACHINE in \
->>     192.168.0.10 \
-> ...
->>    192.168.0.29
->> do
->> $IPTABLES [...]
->> done
->>
->>
->> How could I use a mask such as 192.168.0.0/NN to exactly match the l=
-ist?
->> Thank you.
->>
-> Use ipcalc!
->
-> The closest subnet is:
->
-> ipcalc 192.168.0.10/27
-> Address:   192.168.0.10         11000000.10101000.00000000.000 01010
-> Netmask:   255.255.255.224 =3D 27 11111111.11111111.11111111.111 0000=
-0
-> Wildcard:  0.0.0.31             00000000.00000000.00000000.000 11111
-> =3D>
-> Network:   192.168.0.0/27       11000000.10101000.00000000.000 00000
-> HostMin:   192.168.0.1          11000000.10101000.00000000.000 00001
-> HostMax:   192.168.0.30         11000000.10101000.00000000.000 11110
-> Broadcast: 192.168.0.31         11000000.10101000.00000000.000 11111
-> Hosts/Net: 30                    Class C, Private Internet
->
-> Check HosMin and HostMax!
->
-> Swifty
->
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->=20
+anticimex@natalie:/tmp$ /sbin/iptables -m iprange -h
+<snip>
+iprange match options:
+[!] --src-range ip-ip        Match source IP in the specified range
+[!] --dst-range ip-ip        Match destination IP in the specified range
+
+
+Hope this helps.
+
+Regards,
+--=20
+Martin Millnert <millnert@csbnet.se>
+
+--=-1D8AB4/hjxQa3xHDcbPy
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEABECAAYFAknmF9QACgkQApq14zkeZkwWIwCeLFzRyxudnzYHFMn6RCiBnM0d
+0KYAoJxsqi4ojYXfkqnT5A3LaMCIMFJM
+=aNCG
+-----END PGP SIGNATURE-----
+
+--=-1D8AB4/hjxQa3xHDcbPy--
