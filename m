@@ -1,42 +1,84 @@
-From: sgmayo@mail.bloomfield.k12.mo.us
-Subject: NAT and a public IP
-Date: Wed, 15 Apr 2009 11:46:59 -0500 (CDT)
-Message-ID: <4658.204.184.27.217.1239814019.squirrel@mail.bloomfield.k12.mo.us>
+From: "Nikolay S. Rybaloff" <nowhere@hakkenden.ath.cx>
+Subject: Re: mask 10 -> 29
+Date: Wed, 15 Apr 2009 21:06:55 +0400
+Message-ID: <9B8BF8CA2B1E41E293257EDDEA92EFEA@nowherePC>
+References: <49E6044F.5070305@lab.vectoris.fr> <49E60D5F.9070806@freemail.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <49E60D5F.9070806@freemail.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed	reply-type=response"
+To: "Mihamina Rakotomandimby (R12y)" <mihamina@lab.vectoris.fr>
+Cc: netfilter@vger.kernel.org
 
-I have my machines on a private network that are then NATed to one of my
-public IPs.
+Yeah, that is exactly why no one use decimals for network subdivision.
 
-i.e.
-IPTABLES -t nat -A POSTROUTING -o eth0 -j SNAT --to-source $Public_IP
+192.168.0.10-192.168.0.30 can not be matched with a single VLSM express=
+ion.=20
+The exact match would be a set:
 
-Every once in a bit I need to do something with a public IP other than the
-one that is SNATed.  I usually just plug the machine into the public side
-of the switch and let it have a public IP.
-
-I was just curious if there was a way that I could stick the public IP
-machine inside my private network and have my IPTABLEs route anything
-coming from ETH1 (my private network card) with a public IP that is within
-my public IP range, to just go on to the outside world without getting
-SNATed.
-
-In othewords if I put public ip xx.xx.xx.xx in a windows machine and stuck
-it in my private network then it would still have public ip xx.xx.xx.xx
-instead of $Public_IP (from the above SNAT) when it came out of my box.
-
-Thanks.
+192.168.0.10/31
+192.168.0.12/30
+192.168.0.16/29
+192.168.0.24/30
+192.168.0.28/31
 
 
--- 
-Scott Mayo - System Administrator
-Bloomfield Schools
 
-Question: Because it reverses the logical flow of conversation.
-Answer: Why is putting a reply at the top of the message frowned upon?
+--------------------------------------------------
+=46rom: "G=E1sp=E1r Lajos" <swifty@freemail.hu>
+Sent: Wednesday, April 15, 2009 8:37 PM
+To: "Mihamina Rakotomandimby (R12y)" <mihamina@lab.vectoris.fr>
+Cc: <netfilter@vger.kernel.org>
+Subject: Re: mask 10 -> 29
 
+> Hi,
+>
+> Mihamina Rakotomandimby (R12y) =EDrta:
+>> Hi,
+>> I have this kind of shell script in order to set something on a bunc=
+h of=20
+>> IP addresses:
+>>
+>> for ACCEPTED_MACHINE in \
+>>     192.168.0.10 \
+> ...
+>>    192.168.0.29
+>> do
+>> $IPTABLES [...]
+>> done
+>>
+>>
+>> How could I use a mask such as 192.168.0.0/NN to exactly match the l=
+ist?
+>> Thank you.
+>>
+> Use ipcalc!
+>
+> The closest subnet is:
+>
+> ipcalc 192.168.0.10/27
+> Address:   192.168.0.10         11000000.10101000.00000000.000 01010
+> Netmask:   255.255.255.224 =3D 27 11111111.11111111.11111111.111 0000=
+0
+> Wildcard:  0.0.0.31             00000000.00000000.00000000.000 11111
+> =3D>
+> Network:   192.168.0.0/27       11000000.10101000.00000000.000 00000
+> HostMin:   192.168.0.1          11000000.10101000.00000000.000 00001
+> HostMax:   192.168.0.30         11000000.10101000.00000000.000 11110
+> Broadcast: 192.168.0.31         11000000.10101000.00000000.000 11111
+> Hosts/Net: 30                    Class C, Private Internet
+>
+> Check HosMin and HostMax!
+>
+> Swifty
+>
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>=20
