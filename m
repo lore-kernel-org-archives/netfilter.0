@@ -1,136 +1,87 @@
-From: Martin Millnert <millnert@csbnet.se>
-Subject: Re: mask 10 -> 29
-Date: Wed, 15 Apr 2009 19:22:30 +0200
-Message-ID: <1239816150.15363.38.camel@localhost.localdomain>
-References: <49E6044F.5070305@lab.vectoris.fr>
+From: no doubt <hell.no.doubt@gmail.com>
+Subject: Re: need help on *nat filter for multiple source IP
+Date: Thu, 16 Apr 2009 03:00:52 +0800
+Message-ID: <5a7ba2310904151200m29b7c633g5f5326f00bc825b1@mail.gmail.com>
+References: <5a7ba2310904122005k6606f6falba0b74b118f42090@mail.gmail.com>
+	 <49E2C80C.1030406@chello.at>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-1D8AB4/hjxQa3xHDcbPy"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49E6044F.5070305@lab.vectoris.fr>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=vD/Ihp8lyHcVAZvyIZJgXYaTiXyCtpJhVfhyxYlWulA=;
+        b=m5AOtR5AarV0sZd9TxKs9GmCevFtFHbIrQEfUI1J/TahTjNBRz1M0NEbjKbHJ6z5WE
+         sNqpRZ7L8iTKdq1Surkm9VTadpna8rD5hyTB1bJ1aKDcaEQ2lez8vfGCxhCepxz28+MU
+         L/KyNiz/mIIWsS2JzSldkb/MxI+iijhnx03/o=
+In-Reply-To: <49E2C80C.1030406@chello.at>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "Mihamina Rakotomandimby (R12y)" <mihamina@lab.vectoris.fr>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
+Hello Mart,
 
---=-1D8AB4/hjxQa3xHDcbPy
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Thanks for the guide. It now works.
 
-On Wed, 2009-04-15 at 18:59 +0300, Mihamina Rakotomandimby (R12y) wrote:
-> Hi,
-> I have this kind of shell script in order to set something on a bunch of =
-IP=20
-> addresses:
->=20
-> for ACCEPTED_MACHINE in \
->      192.168.0.10 \
->      192.168.0.11 \
->      192.168.0.12 \
->      192.168.0.13 \
->      192.168.0.14 \
->      192.168.0.15 \
->      192.168.0.16 \
->      192.168.0.17 \
->      192.168.0.18 \
->      192.168.0.19 \
->      192.168.0.20 \
->      192.168.0.21 \
->      192.168.0.22 \
->      192.168.0.23 \
->      192.168.0.24 \
->      192.168.0.25 \
->      192.168.0.26 \
->      192.168.0.27 \
->      192.168.0.28 \
->      192.168.0.29
-> do
-> $IPTABLES [...]
-> done
->=20
->=20
-> How could I use a mask such as 192.168.0.0/NN to exactly match the list?
-> Thank you.
->=20
+-khairul
 
-Hi Mihamina,
-
-Possible exact solutions include either:
-  aggregate - { ftp://ftp.isc.org/isc/aggregate/ |
-http://packages.debian.org/aggregate }  - cidr aggregation
-  or,
-  iptables -m iprange  - non-cidr consecutive IP-ranges matching
-
-Examples:
-
-  aggregate
-
-anticimex@natalie:/tmp$ awk '{print $1 "/32"}' << EOF | aggregate
-> 192.168.0.10
-> 192.168.0.11
-> 192.168.0.12
-> 192.168.0.13
-> 192.168.0.14
-> 192.168.0.15
-> 192.168.0.16
-> 192.168.0.17
-> 192.168.0.18
-> 192.168.0.19
-> 192.168.0.20
-> 192.168.0.21
-> 192.168.0.22
-> 192.168.0.23
-> 192.168.0.24
-> 192.168.0.25
-> 192.168.0.26
-> 192.168.0.27
-> 192.168.0.28
-> 192.168.0.29
-> EOF
-aggregate: maximum prefix length permitted will be 32
-192.168.0.10/31
-192.168.0.12/30
-192.168.0.16/29
-192.168.0.24/30
-192.168.0.28/31
-anticimex@natalie:/tmp$=20
-
-
-  iptables -m iprange
-
-natalie:~# iptables -A INPUT -i eth2 -m iprange --src-range 192.168.0.10-19=
-2.168.0.29   =20
-natalie:~# iptables -nvL INPUT=20
-Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               destina=
-tion        =20
-    0     0            all  --  eth2   *       0.0.0.0/0            0.0.0.0=
-/0           source IP range 192.168.0.10-192.168.0.29=20
-natalie:~#=20
-
-anticimex@natalie:/tmp$ /sbin/iptables -m iprange -h
-<snip>
-iprange match options:
-[!] --src-range ip-ip        Match source IP in the specified range
-[!] --dst-range ip-ip        Match destination IP in the specified range
-
-
-Hope this helps.
-
-Regards,
---=20
-Martin Millnert <millnert@csbnet.se>
-
---=-1D8AB4/hjxQa3xHDcbPy
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEABECAAYFAknmF9QACgkQApq14zkeZkwWIwCeLFzRyxudnzYHFMn6RCiBnM0d
-0KYAoJxsqi4ojYXfkqnT5A3LaMCIMFJM
-=aNCG
------END PGP SIGNATURE-----
-
---=-1D8AB4/hjxQa3xHDcbPy--
+On Mon, Apr 13, 2009 at 1:05 PM, Mart Frauenlob
+<mart.frauenlob@chello.at> wrote:
+> no doubt wrote:
+>>
+>> Hi,
+>>
+>> Currently Im running a gw firewall for internal soho network.
+>>
+>> I would like to achieve that for all IP's in 192.168.4.0/24 that are
+>> accessing outside internet address port 80, will be directed to
+>> 192.168.3.10 port 80 EXCEPT for few IPs namely 192.168.4.10,
+>> 192.168.4.100 and 192.168.4.20
+>>
+>> my rules in nat filter read like this.
+>> *nat
+>> :PREROUTING ACCEPT [4314:569235]
+>> :POSTROUTING ACCEPT [42:12421]
+>> :OUTPUT ACCEPT [2807:264498]
+>>
+>> iptables -A PREROUTING -s ! 192.168.4.10/32 -d ! 192.168.0.0/16 -i
+>> eth2 -p tcp -m tcp --dport 80 -j DNAT --to-destination 192.168.3.10
+>> iptables -A PREROUTING -s ! 192.168.4.20/32 -d ! 192.168.0.0/16 -i
+>> eth2 -p tcp -m tcp --dport 80 -j DNAT --to-destination 192.168.3.10
+>> iptables -A PREROUTING -s ! 192.168.4.100/32 -d ! 192.168.0.0/16 -i
+>> eth2 -p tcp -m tcp --dport 80 -j DNAT --to-destination 192.168.3.10
+>>
+>> -A POSTROUTING -o ppp+ -j MASQUERADE
+>> COMMIT
+>>
+>> somehoe it doesnt work. but if I left only 1st line, it works.
+>>
+>> is there anything i can modify the rules ?
+>>
+>
+> try this:
+>
+> iptables -t nat -N my_dnat
+> iptables -t nat -A PREROUTING -i eth2 -s 192.168.4.10 -p tcp --dport =
+80 -j
+> my_dnat
+> [...]
+>
+> iptables -t nat -A my_dnat -j DNAT --to-destination 192.168.3.10
+>
+> -A POSTROUTING -o ppp+ -j MASQUERADE
+>
+>
+>
+> greets
+>
+> Mart
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
