@@ -1,66 +1,44 @@
-From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
-	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
-Subject: unregister_netdevice: waiting for tun1 to become free.
-Date: Thu, 16 Apr 2009 02:36:48 +0300
-Message-ID: <1239838608.4307.26.camel@casper.meteor.dp.ua>
-Reply-To: casper@meteor.dp.ua
+From: no doubt <hell.no.doubt@gmail.com>
+Subject: Re: need help on *nat filter for multiple source IP
+Date: Thu, 16 Apr 2009 16:38:47 +0800
+Message-ID: <5a7ba2310904160138i57b8867ct9c4a2130e6ffebe1@mail.gmail.com>
+References: <5a7ba2310904122005k6606f6falba0b74b118f42090@mail.gmail.com>
+	 <49E2C80C.1030406@chello.at>
+	 <5a7ba2310904151200m29b7c633g5f5326f00bc825b1@mail.gmail.com>
+	 <49E64AC5.4050400@chello.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=Y1BGdiZNOl9YIhS4ZFMtB1tOmRiTEfV9o61DyzER/xk=;
+        b=QIhbdEwcRx1I/Rw1Xgpcnyk4M+dM9eMufTECxoStn+V/525EI5QjSjA2iwfTq4izmz
+         5SazRQCLYVBtSa11jfiSTPAytbYxbSwk/Y32R61dekxaqgmzpNtc8oiCQGBtTBFixTaO
+         o7osBChcl0i/leghlFuFHuwYaQxV/IXz5gJFs=
+In-Reply-To: <49E64AC5.4050400@chello.at>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="koi8-r"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi there.
+Hello Mart,
+Yeah, I just tweak around your config.
 
-I'm finally got chance to setup advanced IMQ shaping on my router. As
-far as I can see shaping works as expected. BUT, there is a problem to
-reboot/shutdown router, it gets flooded by this message, and there is n=
-o
-way to correctly shutdown, only hard poweroff:
+Here they are..
 
-unregister_netdevice: waiting for tun1 to become free. Usage count =3D =
-2
-unregister_netdevice: waiting for tun1 to become free. Usage count =3D =
-2
-unregister_netdevice: waiting for tun1 to become free. Usage count =3D =
-2
-unregister_netdevice: waiting for tun1 to become free. Usage count =3D =
-2
+iptables -t nat -n MY80FWD
+iptables -A PREROUTING -s 192.168.4.20/32 -i eth2 -p tcp -m tcp
+--dport 80 -j MY80FWD
+iptables -A PREROUTING -s 192.168.4.10/32 -i eth2 -p tcp -m tcp
+--dport 80 -j MY80FWD
+iptables -A PREROUTING -s 192.168.4.100/32 -i eth2 -p tcp -m tcp
+--dport 80 -j MY80FWD
+iptables -A MY80FWD -p tcp -j DNAT --to-destination 192.168.3.10:80
 
-Google shows there were problems like this on 2.6.8 with CBQ, which is
-belived to be fixed long ago. But, also, I don't use CBQ.
+iptables -A POSTROUTING -o ppp+ -j MASQUERADE
 
-About my system:
 
-Debian Etch with custom kernel
-
-# uname -a
-Linux router 2.6.18.set+ipm+cond+conl+time+esfq+imq02 #1 SMP Tue Feb 24
-18:53:56 EET 2009 i686 GNU/Linux
-
-this is Etch kernel rebuild with support for ipmark, condition,
-connlimit, time, esfq, imq.
-
-patch-o-matic-ng-20080929
-esfq-2.6.19.2
-iptables-1.3.6-imq.diff
-linux-2.6.18-imq.diff
-
-I've prepared and installed this kernel/iptables/iproute few months ago=
-,
-there were no problems. imq, esfq was not used until today.
-
-I use 2 imq devices, one for PREROUTING shaping at input and one for
-POSTROUTING shaping at output.
-
-Shaping is done with HTB and ESFQ. Input classifiers are -j MARK + tc
-fwmark, output classifiers are just -j CLASSIFY.
-
-What I'm doing wrong?
-
---=20
-=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
-ua>
-
+--khairul
