@@ -1,39 +1,29 @@
-From: "Mihamina Rakotomandimby (R12y)" <mihamina@lab.vectoris.fr>
-Subject: FORWARD -P DROP + allow MSN
-Date: Thu, 16 Apr 2009 12:30:27 +0300
-Message-ID: <49E6FAB3.90304@lab.vectoris.fr>
+From: Petr Pisar <petr.pisar@atlas.cz>
+Subject: Re: How to block DHCPv4/v6, ARP, RADVD with ebtables/iptables on bridge?
+Date: Thu, 16 Apr 2009 09:57:57 +0000 (UTC)
+Message-ID: <slrngue095.o48.petr.pisar@album.ics.muni.cz>
+References: <20090414205007.GA5663@Linus-Debian>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-Hi,
-These are my current rules:
-http://lab.vectoris.fr/projects/vectoris/browser/IPTables/trunk/firewall
-(It's a big mess yet because I miss one feature: MSN. I'll clean it later)
+On 2009-04-14, Linus L=FCssing <linus.luessing@web.de> wrote:
+>
+> So now I'm having more trouble to find the right rules to block
+> DHCPv6 and radvd over bat0. Thanks for the help in advance.
+>
+DHCPv6 uses UDP/547 on server and UDP/546 on client with link scope
+unicast or mutlicast addresses.
 
-The box it's running on is the gateway of the LAN to the Internet.
+Router Advertisment utilizes ICMP6, Router solicitation type to
+link scope multicast ff02::02 by client and Router advertisment type to
+link scope multicast ff01::01 by server. Source addresses are link scop=
+e
+unicast addresses in both directions.
 
-As you noticed, FORWARD is DROP by default.
+-- Petr
 
-I would like to allow MSN to my LAN users.
-
-The problem:
-If I "FORWARD -P ACCEPT", MSN works for the LAN users.
-
-If I use it as it is now, MSN doesnt work.
-
-Anyway, when setting the MSN LAN clients to use HTTP, it's OK with this config.
-
-Any tips?
-Thank you.
-
-PS: no comments on the crappy Facebook DROP ;-).
--- 
-                              Chef de projet chez Vectoris
-                                  Phone: +261 33 11 207 36
-System: xUbuntu 8.10 with almost all from package install
-    http://www.google.com/search?q=mihamina+rakotomandimby
