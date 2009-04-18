@@ -1,26 +1,59 @@
-From: "Lloyd Standish" <lloyd@crnatural.net>
-Subject: Re: still can't route using fwmark
-Date: Sat, 18 Apr 2009 17:14:59 -0600
-Message-ID: <op.usluusgxx1lyi3@localhost>
-References: <op.uskfabufx1lyi3@localhost>
- <20090418082314.GA12566@internet24.de> <op.usld3aqfx1lyi3@localhost>
- <20090418184809.GA15649@internet24.de> <op.uslkl80px1lyi3@localhost>
- <20090418205802.GA16790@internet24.de>
+From: Amos Jeffries <squid3@treenet.co.nz>
+Subject: Re: Learning iptables
+Date: Sun, 19 Apr 2009 11:34:32 +1200
+Message-ID: <49EA6388.6010406@treenet.co.nz>
+References: <49E9C87A.1030509@veltrac.com.br> <20090418125916.GA14236@internet24.de> <49E9D3AC.5030801@veltrac.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20090418205802.GA16790@internet24.de>
+In-Reply-To: <49E9D3AC.5030801@veltrac.com.br>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Thomas Jacob <jacob@internet24.de>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Leonardo Carneiro <lscarneiro@veltrac.com.br>
 Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Sat, 18 Apr 2009 14:58:02 -0600, Thomas Jacob <jacob@internet24.de> wrote:
+Leonardo Carneiro wrote:
+> Tks Thomas and Brian. It was very helpful.
+> Now i'll follow with my jorney _o/
+> 
+> tks again! =)
 
-> Are you forwarding packets via this box, or do you want to loadbalance
-> packets from the local machine? In the latter case the PREROUTING
-> stuff needs to go into INPUT/OUTPUT.
+People rarely mention this but I've found it extremely helpful for 
+groking some of the tutorials:
+   http://l7-filter.sourceforge.net/PacketFlow.png
 
-Thomas, I would like this to load balance all traffic going out of the local machine (which is gateway for the home LAN), including locally-generated packets.  I was under the impression that PREROUTING happens before everything else and affects all packets, both locally-generated ones and forwarded ones.  My conntrack tables show that locally-generated packets are getting the fwmark.   Could you explain why PREROUTING isn't the right place for the marking rules?
+AYJ
 
+> 
+> Thomas Jacob escreveu:
+>> On Sat, Apr 18, 2009 at 09:32:58AM -0300, Leonardo Carneiro wrote:
+>>  
+>>> Is there any good reason why someone would set an ACCEPT policy for 
+>>> all  chains first to withdraw some later? What the benefit of doing 
+>>> this?
+>>>     
+>>
+>> If I'd have to guess at the ruleset authors intentions, I'd say
+>> s/he wanted to prevent service disruptions when reloading the
+>> firewall scripts.
+>>
+>> Loading a lot of rules without iptables-restore can take quite some time,
+>> and if you have a DROP policy during the rule loading time,
+>> some packets that your final ruleset would pass thru will be dropped.
+>> Also, if your scripts terminate prematurely, you might not be able
+>> to remote access your machine anymore.
+>>
+>> But then again, you should load your ruleset before you bring up
+>> your network, so the first reason should be irrelevant. And the
+>> second shouldn't really matter after the initial testing phase.
+>>
+>>   
+> 
+> 
+
+
+-- 
+Please be using
+   Current Stable Squid 2.7.STABLE6 or 3.0.STABLE14
+   Current Beta Squid 3.1.0.7
