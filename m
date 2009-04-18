@@ -1,93 +1,103 @@
-From: Bruno Moreira Guedes <thbmatrix@gmail.com>
-Subject: Re: Learning iptables
-Date: Sat, 18 Apr 2009 12:55:11 -0300
-Message-ID: <3fdd6ce00904180855o42882e61ubbf424680b543a8e@mail.gmail.com>
-References: <49E9C87A.1030509@veltrac.com.br>
+From: "Lloyd Standish" <lloyd@crnatural.net>
+Subject: Re: still can't route using fwmark
+Date: Sat, 18 Apr 2009 11:12:36 -0600
+Message-ID: <op.usld3aqfx1lyi3@localhost>
+References: <op.uskfabufx1lyi3@localhost>
+ <20090418082314.GA12566@internet24.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:content-type
-         :content-transfer-encoding;
-        bh=xahD83n7KJjjWGrr2pEFiP95ZyOoUi1CSDIsllpJkBw=;
-        b=Q1pP8BMkhc4YShEKxvA9GnEbvWZdyZWls2HGd8elNKz4yJKQ0ukpJ2hffRuCg0ldPT
-         /nE38iHiybwN3vVA6uAQ2403C1glY4ovsvjUX9XSYPj01J5p03f0uTVhY9/92P98+uwZ
-         EerhubL3EC6ZGEmlug/uFt1f8lqih3lUm1Ut8=
-In-Reply-To: <49E9C87A.1030509@veltrac.com.br>
+In-Reply-To: <20090418082314.GA12566@internet24.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Thomas Jacob <jacob@internet24.de>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-2009/4/18 Leonardo Carneiro <lscarneiro@veltrac.com.br>:
-> Hi everyone,
->
-> I'm have a avarage-to-good linux knowlegde, but i'm quite noob when i=
-t comes
-> about iptables, so i decided to study about.
-> I'm reading a lot of articles and blogs, and testing some rules, so f=
-ar it's
-> all going well.
-> Right now i'm running a server with tons of rules written by the admi=
-n that
-> worked here before me, and in the policies session of the script i've=
- found
-> theses rules:
->
-> =A0 $IPTABLES -P INPUT ACCEPT
-> =A0 $IPTABLES -P OUTPUT ACCEPT
-> =A0 $IPTABLES -P FORWARD ACCEPT
-> =A0 $IPTABLES -F
-> =A0 $IPTABLES -t nat -F
-> =A0 $IPTABLES -t mangle -F
-> =A0 $IPTABLES -X
->
-> =A0 $IPTABLES -A INPUT -s $LO_IP -j ACCEPT
-> =A0 $IPTABLES -A OUTPUT -d $LO_IP -j ACCEPT
-> =A0 $IPTABLES -A INPUT -s $LAN_IP -j ACCEPT
-> =A0 $IPTABLES -A OUTPUT -d $LAN_IP -j ACCEPT
-> =A0 $IPTABLES -A INPUT -s $INET_IP_DIN -j ACCEPT
-> =A0 $IPTABLES -A OUTPUT -d $INET_IP_DIN -j ACCEPT
->
-> =A0 $IPTABLES -P INPUT DROP
-> =A0 $IPTABLES -P OUTPUT ACCEPT
-> =A0 $IPTABLES -P FORWARD DROP
+Thanks for the reply, Thomas.  I've got iptables 1.3.8 because I downloaded it (and the patch-o-matic stuff) quite a while back when it was the most current version.  I'm using it because my kernel is not the stock Etch kernel (it is in fact a Ubuntu kernel, necessary to get a module that Debian removed over licensing issues).  I recompiled my kernel and installed itables 1.3.8 out of desperation, since I have studied this load-balancing  stuff pretty thoroughly and it seems what I have ought to work.
 
-The main thing I couldn't understand is why add just three ACCEPT
-rules on a chain, and after set this chains default policy to ACCEPT.
-And also, why set OUTPUT to ACCEPT twice!! Is the iptables deaf??
+My kernel 2.6.20.3 does not have a CONFIG_IP_ROUTE_FWMARK configuration setting!  Has this been absorbed into another configuration setting?  How can I be sure fwmark is working?  Judging by my setup, which is very simple, packets and connections are being marked, but routing is not affected by fwmark.
 
+I have the kernel config options IP_NF_CONNTRACK_SUPPORT and XFRM_SUB_POLICY both set OFF.  Might this be a problem?
+
+--
+Lloyd
+
+On Sat, 18 Apr 2009 02:23:15 -0600, Thomas Jacob <jacob@internet24.de> wrote:
+
+> On Fri, Apr 17, 2009 at 10:40:49PM -0600, Lloyd Standish wrote:
+>> Hello,
+>>
+>> I am still having trouble doing load balancing over ppp0 and ppp1 for a Debian Etch PC (kernel 2.6.20.3, iptables 1.3.8).  I used patch-o-matic to update my kernel sources and recompiled the kernel, and compiled and installed iptables 1.3.8.  Also all the netfilter-related kernel configuration options I need are set, I believe.
 >
-> Is there any good reason why someone would set an ACCEPT policy for a=
-ll
-> chains first to withdraw some later? What the benefit of doing this?
+> Why the strange versions? There are neither the ones that comes with Etch nor
+> are they anything current? Anyway, Etch's stock kernel and iptables (2.6.18/v1.3.6 based)
+> are fine for what you want to do.
 >
-> Sorry about my poor english.
+> You need the iptables (conn)marking stuff, and advanced router + policy/fw routing,
+> and that's all part of stock packages.
 >
-> Tks in advance
+> /boot/config-2.6.18-6-686
+>
+> CONFIG_IP_ADVANCED_ROUTER=y
+> CONFIG_ASK_IP_FIB_HASH=y
+> # CONFIG_IP_FIB_TRIE is not set
+> CONFIG_IP_FIB_HASH=y
+> CONFIG_IP_MULTIPLE_TABLES=y
+> CONFIG_IP_ROUTE_FWMARK=y
+> CONFIG_IP_ROUTE_MULTIPATH=y
+> # CONFIG_IP_ROUTE_MULTIPATH_CACHED is not set
+> CONFIG_IP_ROUTE_VERBOSE=y
+>
+> dpkg -L iptables | grep -i mark
+>  /lib/iptables/libipt_connmark.so
+>  /lib/iptables/libipt_mark.so
+>  /lib/iptables/libipt_CONNMARK.so
+>  /lib/iptables/libipt_MARK.so
+>  /lib/iptables/libipt_SECMARK.so
+>  /lib/iptables/libipt_CONNSECMARK.so
+>  /lib/iptables/libip6t_connmark.so
+>  /lib/iptables/libip6t_mark.so
+>  /lib/iptables/libip6t_CONNMARK.so
+>  /lib/iptables/libip6t_MARK.so
+>  /lib/iptables/libip6t_SECMARK.so
+>  /lib/iptables/libip6t_CONNSECMARK.so
+>
+> Here's what I used some time ago to do something similar (either with Etch
+> or maybe even Sarge), sending outgoing packets back to the router the
+> corresponding incoming packets of a connection came from, for a single machine.
+>
+>
+> #!/bin/sh
+>
+> iptables=iptables
+>
+>
+> $iptables -t mangle -A INPUT -m mac --mac <ROUTERMAC1> -j CONNMARK --set-mark 1
+> $iptables -t mangle -A INPUT -m mac --mac <ROUTERMAC2> -j CONNMARK --set-mark 2
+>
+>
+> $iptables -t mangle -N TONET
+> $iptables -t mangle -F TONET
+> $iptables -t mangle -A OUTPUT -o <DEVICE> -d ! <LOCAL_NET> -j TONET
+>
+> $iptables -t mangle -A TONET -m connmark ! --mark 0 -j CONNMARK --restore-mark
+>
+>
+> The route/rule stuff was more or less what you've got. If you want to
+> forward packets for other hosts, this need to go into PREROUTING of
+> course.
+>
+>     Thomas
+>
 > --
->
-> *Leonardo de Souza Carneiro*
-> *Veltrac - Tecnologia em Log=EDstica.*
-> lscarneiro@veltrac.com.br <mailto:lscarneiro@veltrac.com.br>
-> http://www.veltrac.com.br <http://www.veltrac.com.br/>
-> /Fone Com.: (43)2105-5600/
-> /Av. Higien=F3polis 1601 Ed. Eurocenter Sl. 803/
-> /Londrina- PR/
-> /Cep: 86015-010/
->
->
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
 > the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 >
+> !DSPAM:49e992ac62591343511188!
+>
+> 
 
-Anymore, be careful when trusting in the old admins script, get
-ensured your firewall is safe by reviewing it.
 
-[]'s
+
