@@ -1,118 +1,215 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: FORWARD -P DROP + allow MSN
-Date: Thu, 16 Apr 2009 15:31:40 +0200
-Message-ID: <49E7333C.6070404@chello.at>
-References: <49E6FAB3.90304@lab.vectoris.fr> <49E703FD.80100@chello.at> <49E716BD.9070205@lab.vectoris.fr>
-Reply-To: netfilter@vger.kernel.org
+From: "Lloyd Standish" <lloyd@crnatural.net>
+Subject: still can't route using fwmark
+Date: Fri, 17 Apr 2009 22:40:49 -0600
+Message-ID: <op.uskfabufx1lyi3@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49E716BD.9070205@lab.vectoris.fr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Mihamina Rakotomandimby (R12y) wrote:
-> Mart Frauenlob wrote:
->> - The whole forwarding is stateless!
->> I strongly suggest to change that.
->> Allow that ports for your lan with something like that:
->> iptables -A FORWARD -i $WAN -o $LAN -d $ACCEPTED_MACHINE -m state 
->> --state ESTABLISHED,RELATED -j ACCEPT
->
-> Done.
->
->> this is the general 'allow all back in, which is tracked by the state 
->> machine' match.
->> now your ports:
->> iptables -A FORWARD -i $LAN -o $WAN -s $ACCEPTED_MACHINE -p tcp -m 
->> multiport --dports x,y,z... -m state --state NEW,ESTABLISHED -j ACCEPT
->>
->> [...]
->> Same thing maybe on your $ACCEPTED_PORT in INPUT chain.
->
-> Erm, supposing I will have to add some more ports, I'd rather add them 
-> in one place than in each line, so, for that purpose, looping seems 
-> better for me.
->
->> - Don't allow all icmp. Do you want your firewall to accept icmp 
->> redirects? Guess not...
->
-> Okay, It's just in order to debug, because we make several traceroutes.
->
->> - I will say some about the Facebook drop:
->> $IPT -A INPUT   -p tcp -i $LAN         --destination  $IP_FACEBOOK -j 
->> DROP
->
-> It was for the following REDIRECT.
-> I did not filter REDIRECTing to the HTTP proxy, I filter when it 
-> INPUTs after the REDIRECT.
->
-> It's just a notice, not from a documentation reading.
-> Look at my ACCEPTED_PORT, it does not list 80, and web browsing fails 
-> if I block INPUTs. So, I guessed REDIRECTed packets are INPUT ones 
-> after REDIRECTion.
->
-ah, yes... didn't think of that, but than maybe the FORWARD rule is not 
-needed....
->> Now, let me think about the MSN thing. Personally I never used it, 
->> and don't know what configuration it may need. Didn't try to look it 
->> up now too.
->
-> Happy you! Some collegues refuse to use Jabber.
->
->> But, one thing I noticed:
->> You REDIRECT all port 80 traffic to the local port 3128. HTTP proxy I 
->> guess...
->
-> IT's the running SQUID, yes.
->
->> Now MSN uses all those ports and as it looks port 80.
->
-> I did not understand this sentence.
->
-because you said in your first post:
-'Anyway, when setting the MSN LAN clients to use HTTP, it's OK with this 
-config. '
-And you have those iptables rules opening a lot of ports for MSN traffic.
->> If now port 80 traffic goes over the http proxy and the rest of the 
->> traffic does not, that may cause the MSN applications to fail.
-It might happen that a part of the MSN traffic goes over the http proxy 
-while the rest not, and that may cause a failure.
+Hello,
 
->> How about a socks proxy for MSN? 
->
-> Never heard about...
->
->> I just guess client applications will have such a feature. In that 
->> case, your socks proxy does all the work, 
->
-> I'll try: http://www.google.com/search?q=Ubuntu+SOCKS+proxy+MSN is not 
-> the right query yet, if you have a more powerful query, please tell ;-)
->
-What clients are you using on the LAN side to connect to the MSN network?
-If I open up Windows messenger on xp, under extras, options, network, I 
-can specify a socks server.
-Your client application(s) should also provide such an option....
+I am still having trouble doing load balancing over ppp0 and ppp1 for a Debian Etch PC (kernel 2.6.20.3, iptables 1.3.8).  I used patch-o-matic to update my kernel sources and recompiled the kernel, and compiled and installed iptables 1.3.8.  Also all the netfilter-related kernel configuration options I need are set, I believe.
 
-Now if you setup a socks server on your router (there are some 
-available), and instruct your clients to use the socks server for MSN, 
-you don't need to open up firewall ports.
+My basic problem is that no matter how packets and connections are marked with the MARK and CONNMARK targets, only the interface with a "default" entry in the main routing table is used.   In this case, that is ppp0.  It is set as the default route using "ip route add default dev ppp0."   After that, ONLY ppp0 is used for outgoing/incoming packets, even though packets/connections carry fwmark 2, which I have associated with a user-defined routing table whose default route specifies ppp1.
 
-If you don't want that, you need to find out what tcp/udp ports to open 
-up for MSN.
-Quickly searching brings me this i.e.
-http://www.gentoo-wiki.info/Iptables_port_reference#MSN_Messenger
+For example, my /etc/iproute2/rt_tables looks like this:
 
-But maybe more is required, I don't know...
+debiandesk:/home/lloyd/data/loadbal# cat /etc/iproute2/rt_tables
+#
+# reserved values
+#
+255     local
+254     main
+253     default
+0       unspec
+#
+# local
+#
+#1      inr.ruhep
+251     rt_link1
+252     rt_link2
 
-One more thing.
-I suggest to only REJECT to your LAN(s) as final rule, doing the reject 
-thing other than on port 113 (auth) to the outside (untrusted) world, 
-can lead to DOS attacks.
+If $gw0 is the ppp0 gateway, and $gw1 is the ppp1 gateway, I understand the following commands set up custom tables rt_link1 and rt_link2 to use ppp0 and ppp1, respectively:
 
-greets
+ip route flush table rt_link1 2>/dev/null
+ip route add $gw0 dev ppp0 table rt_link1
+ip route add default via $gw0 dev ppp0 table rt_link1
 
-Mart
+ip route flush table rt_link2 2>/dev/null
+ip route add $gw1 dev ppp1 table rt_link2
+ip route add default via $gw1 dev ppp1 table rt_link2
 
+(Actually, I think only a default route for each table should be enough, and that it could be set for example as follows: ip route add table rt_link1 default dev ppp0)
+
+I also added the following rules to link the fwmark to tables rt_link1 and rt_link2 (Is this correct?)
+
+ip rule add fwmark 1 table rt_link1
+ip rule add fwmark 2 table rt_link2
+
+I did this to made the rules take effect:
+ip route flush cache
+
+10.60.255.254 is the gateway IP for both ppp0 and ppp1.  The local IP address for ppp0 is 10.60.10.106, and for ppp1 it is 10.60.0.249.  The following commands verify that the settings are all correct:
+
+debiandesk:/home/lloyd/data/loadbal# ip route show
+10.60.255.254 dev ppp0  proto kernel  scope link  src 10.60.10.106
+10.60.255.254 dev ppp1  proto kernel  scope link  src 10.60.0.249
+192.168.1.0/24 dev eth0  proto kernel  scope link  src 192.168.1.1
+default dev ppp0  scope link
+debiandesk:/home/lloyd/data/loadbal# ip rule show
+0:      from all lookup 255
+32764:  from all fwmark 0x2 lookup rt_link2
+32765:  from all fwmark 0x1 lookup rt_link1
+32766:  from all lookup main
+32767:  from all lookup default
+
+(I am also doing SNAT to set the destination IP to that of the proper interface.)
+
+And yet, it appears that packets marked with fwmark 2 do NOT leave through ppp1, as I expect:
+
+debiandesk:/home/lloyd/data/loadbal# cat /proc/net/ip_conntrack
+tcp      6 431978 ESTABLISHED src=10.60.10.106 dst=94.229.68.32 sport=54788 dport=5223 packets=181 bytes=19054 src=94.229.68.32 dst=10.60.10.106 sport=5223 dport=54788 packets=176 bytes=21161 [ASSURED] mark=2 secmark=0 use=1
+<snip>
+
+And:
+debiandesk:/home/lloyd/data/loadbal# netstat -i
+Kernel Interface table
+Iface   MTU Met   RX-OK RX-ERR RX-DRP RX-OVR    TX-OK TX-ERR TX-DRP TX-OVR Flg
+eth0   1500 0         0      0      0      0     3036      0      0      0 BMRU
+lo    16436 0       708      0      0      0      708      0      0      0 LRU
+ppp0   1500 0      3466      0      0      0     3605      0      0      0 MOPRU
+ppp1   1500 0        60      0      0      0        3      0      0      0 MOPRU
+
+(Most packets, regardless of fwmark, are routed through ppp0, the default route.  But what about the 60 RX-OK figure for ppp1?)
+
+Please, can someone help me find the error here?  Is some sort of configuration setting necessary to make fwmark kick in?  I do not find a kernel config option to turn FWMARK on.  Nor do I find a "multiple routing tables" setting for IPv4.  Here are my netfilter-related kernel config settings:
+
+# Core Netfilter Configuration
+#
+CONFIG_NETFILTER_NETLINK=m
+CONFIG_NETFILTER_NETLINK_QUEUE=m
+CONFIG_NETFILTER_NETLINK_LOG=m
+CONFIG_NF_CONNTRACK_ENABLED=m
+CONFIG_NF_CONNTRACK_SUPPORT=y
+# CONFIG_IP_NF_CONNTRACK_SUPPORT is not set
+CONFIG_NF_CONNTRACK=m
+CONFIG_NF_CT_ACCT=y
+CONFIG_NF_CONNTRACK_MARK=y
+CONFIG_NF_CONNTRACK_SECMARK=y
+CONFIG_NF_CONNTRACK_EVENTS=y
+CONFIG_NF_CT_PROTO_GRE=m
+# CONFIG_NF_CT_PROTO_SCTP is not set
+# CONFIG_NF_CONNTRACK_AMANDA is not set
+CONFIG_NF_CONNTRACK_FTP=m
+CONFIG_NF_CONNTRACK_H323=m
+CONFIG_NF_CONNTRACK_IRC=m
+CONFIG_NF_CONNTRACK_NETBIOS_NS=m
+CONFIG_NF_CONNTRACK_PPTP=m
+CONFIG_NF_CONNTRACK_SIP=m
+CONFIG_NF_CONNTRACK_TFTP=m
+CONFIG_NF_CT_NETLINK=m
+CONFIG_NETFILTER_XTABLES=m
+CONFIG_NETFILTER_XT_TARGET_CLASSIFY=m
+CONFIG_NETFILTER_XT_TARGET_CONNMARK=m
+CONFIG_NETFILTER_XT_TARGET_DSCP=m
+CONFIG_NETFILTER_XT_TARGET_MARK=m
+CONFIG_NETFILTER_XT_TARGET_NFQUEUE=m
+CONFIG_NETFILTER_XT_TARGET_NFLOG=m
+CONFIG_NETFILTER_XT_TARGET_NOTRACK=m
+CONFIG_NETFILTER_XT_TARGET_SECMARK=m
+CONFIG_NETFILTER_XT_TARGET_CONNSECMARK=m
+CONFIG_NETFILTER_XT_MATCH_COMMENT=m
+CONFIG_NETFILTER_XT_MATCH_CONNBYTES=m
+CONFIG_NETFILTER_XT_MATCH_CONNMARK=m
+CONFIG_NETFILTER_XT_MATCH_CONNTRACK=m
+CONFIG_NETFILTER_XT_MATCH_DCCP=m
+CONFIG_NETFILTER_XT_MATCH_DSCP=m
+CONFIG_NETFILTER_XT_MATCH_ESP=m
+CONFIG_NETFILTER_XT_MATCH_HELPER=m
+CONFIG_NETFILTER_XT_MATCH_LENGTH=m
+CONFIG_NETFILTER_XT_MATCH_LIMIT=m
+# CONFIG_NETFILTER_XT_MATCH_MAC is not set
+CONFIG_NETFILTER_XT_MATCH_MARK=m
+CONFIG_NETFILTER_XT_MATCH_POLICY=m
+CONFIG_NETFILTER_XT_MATCH_MULTIPORT=m
+CONFIG_NETFILTER_XT_MATCH_PHYSDEV=m
+CONFIG_NETFILTER_XT_MATCH_PKTTYPE=m
+CONFIG_NETFILTER_XT_MATCH_QUOTA=m
+CONFIG_NETFILTER_XT_MATCH_REALM=m
+CONFIG_NETFILTER_XT_MATCH_SCTP=m
+CONFIG_NETFILTER_XT_MATCH_STATE=m
+CONFIG_NETFILTER_XT_MATCH_STATISTIC=m
+CONFIG_NETFILTER_XT_MATCH_STRING=m
+CONFIG_NETFILTER_XT_MATCH_TCPMSS=m
+# CONFIG_NETFILTER_XT_MATCH_HASHLIMIT is not set
+
+#
+# IP: Netfilter Configuration
+#
+CONFIG_NF_CONNTRACK_IPV4=m
+CONFIG_NF_CONNTRACK_PROC_COMPAT=y
+CONFIG_IP_NF_QUEUE=m
+CONFIG_IP_NF_IPTABLES=m
+CONFIG_IP_NF_MATCH_IPRANGE=m
+CONFIG_IP_NF_MATCH_TOS=m
+CONFIG_IP_NF_MATCH_RECENT=m
+CONFIG_IP_NF_MATCH_ECN=m
+CONFIG_IP_NF_MATCH_AH=m
+CONFIG_IP_NF_MATCH_TTL=m
+CONFIG_IP_NF_MATCH_OWNER=m
+CONFIG_IP_NF_MATCH_ADDRTYPE=m
+CONFIG_IP_NF_FILTER=m
+CONFIG_IP_NF_TARGET_REJECT=m
+CONFIG_IP_NF_TARGET_LOG=m
+CONFIG_IP_NF_TARGET_ULOG=m
+CONFIG_IP_NF_TARGET_TCPMSS=m
+CONFIG_NF_NAT=m
+CONFIG_NF_NAT_NEEDED=y
+CONFIG_IP_NF_TARGET_MASQUERADE=m
+CONFIG_IP_NF_TARGET_REDIRECT=m
+CONFIG_IP_NF_TARGET_NETMAP=m
+CONFIG_IP_NF_TARGET_SAME=m
+CONFIG_NF_NAT_SNMP_BASIC=m
+CONFIG_NF_NAT_PROTO_GRE=m
+CONFIG_NF_NAT_FTP=m
+CONFIG_NF_NAT_IRC=m
+CONFIG_NF_NAT_TFTP=m
+# CONFIG_NF_NAT_AMANDA is not set
+CONFIG_NF_NAT_PPTP=m
+CONFIG_NF_NAT_H323=m
+CONFIG_NF_NAT_SIP=m
+CONFIG_IP_NF_MANGLE=m
+CONFIG_IP_NF_TARGET_TOS=m
+CONFIG_IP_NF_TARGET_ECN=m
+CONFIG_IP_NF_TARGET_TTL=m
+CONFIG_IP_NF_TARGET_CLUSTERIP=m
+CONFIG_IP_NF_RAW=m
+CONFIG_IP_NF_ARPTABLES=m
+CONFIG_IP_NF_ARPFILTER=m
+CONFIG_IP_NF_ARP_MANGLE=m
+
+Here are the relevant modules loaded:
+
+Module                  Size  Used by
+ipt_MASQUERADE          3584  1
+ipt_LOG                 6912  5
+xt_CONNMARK             3328  3
+xt_MARK                 2560  2
+iptable_mangle          3072  1
+iptable_filter          3200  0
+xt_state                2688  1
+iptable_nat             7684  1
+ip_tables              12616  3 iptable_mangle,iptable_filter,iptable_nat
+nf_nat                 18604  2 ipt_MASQUERADE,iptable_nat
+nf_conntrack_ipv4      17932  6 iptable_nat
+xt_mark                 2048  1
+nf_conntrack_ftp        9984  0
+xt_statistic            2560  1
+xt_connmark             2560  0
+nf_conntrack           60248  8 ipt_MASQUERADE,xt_CONNMARK,xt_state,iptable_nat,nf_nat,nf_conntrack_ipv4,nf_conntrack_ftp,xt_connmark
+nfnetlink               6936  3 nf_nat,nf_conntrack_ipv4,nf_conntrack
+x_tables               15236  10 ipt_MASQUERADE,ipt_LOG,xt_CONNMARK,xt_MARK,xt_state,iptable_nat,ip_tables,xt_mark,xt_statistic,xt_connmark
