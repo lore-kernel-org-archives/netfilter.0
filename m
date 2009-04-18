@@ -1,81 +1,62 @@
-From: Thomas Jacob <jacob@internet24.de>
-Subject: Re: still can't route using fwmark
-Date: Sat, 18 Apr 2009 10:23:15 +0200
-Message-ID: <20090418082314.GA12566@internet24.de>
-References: <op.uskfabufx1lyi3@localhost>
+From: Leonardo Carneiro <lscarneiro@veltrac.com.br>
+Subject: Learning iptables
+Date: Sat, 18 Apr 2009 09:32:58 -0300
+Message-ID: <49E9C87A.1030509@veltrac.com.br>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <op.uskfabufx1lyi3@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Lloyd Standish <lloyd@crnatural.net>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Fri, Apr 17, 2009 at 10:40:49PM -0600, Lloyd Standish wrote:
-> Hello,
-> 
-> I am still having trouble doing load balancing over ppp0 and ppp1 for a Debian Etch PC (kernel 2.6.20.3, iptables 1.3.8).  I used patch-o-matic to update my kernel sources and recompiled the kernel, and compiled and installed iptables 1.3.8.  Also all the netfilter-related kernel configuration options I need are set, I believe.
+Hi everyone,
 
-Why the strange versions? There are neither the ones that comes with Etch nor
-are they anything current? Anyway, Etch's stock kernel and iptables (2.6.18/v1.3.6 based)
-are fine for what you want to do. 
+I'm have a avarage-to-good linux knowlegde, but i'm quite noob when it=20
+comes about iptables, so i decided to study about.
+I'm reading a lot of articles and blogs, and testing some rules, so far=
+=20
+it's all going well.
+Right now i'm running a server with tons of rules written by the admin=20
+that worked here before me, and in the policies session of the script=20
+i've found theses rules:
 
-You need the iptables (conn)marking stuff, and advanced router + policy/fw routing,
-and that's all part of stock packages.
+    $IPTABLES -P INPUT ACCEPT
+    $IPTABLES -P OUTPUT ACCEPT
+    $IPTABLES -P FORWARD ACCEPT
+    $IPTABLES -F
+    $IPTABLES -t nat -F
+    $IPTABLES -t mangle -F
+    $IPTABLES -X
 
-/boot/config-2.6.18-6-686
+    $IPTABLES -A INPUT -s $LO_IP -j ACCEPT
+    $IPTABLES -A OUTPUT -d $LO_IP -j ACCEPT
+    $IPTABLES -A INPUT -s $LAN_IP -j ACCEPT
+    $IPTABLES -A OUTPUT -d $LAN_IP -j ACCEPT
+    $IPTABLES -A INPUT -s $INET_IP_DIN -j ACCEPT
+    $IPTABLES -A OUTPUT -d $INET_IP_DIN -j ACCEPT
 
-CONFIG_IP_ADVANCED_ROUTER=y
-CONFIG_ASK_IP_FIB_HASH=y
-# CONFIG_IP_FIB_TRIE is not set
-CONFIG_IP_FIB_HASH=y
-CONFIG_IP_MULTIPLE_TABLES=y
-CONFIG_IP_ROUTE_FWMARK=y
-CONFIG_IP_ROUTE_MULTIPATH=y
-# CONFIG_IP_ROUTE_MULTIPATH_CACHED is not set
-CONFIG_IP_ROUTE_VERBOSE=y
+    $IPTABLES -P INPUT DROP
+    $IPTABLES -P OUTPUT ACCEPT
+    $IPTABLES -P FORWARD DROP
 
-dpkg -L iptables | grep -i mark
- /lib/iptables/libipt_connmark.so
- /lib/iptables/libipt_mark.so
- /lib/iptables/libipt_CONNMARK.so
- /lib/iptables/libipt_MARK.so
- /lib/iptables/libipt_SECMARK.so
- /lib/iptables/libipt_CONNSECMARK.so
- /lib/iptables/libip6t_connmark.so
- /lib/iptables/libip6t_mark.so
- /lib/iptables/libip6t_CONNMARK.so
- /lib/iptables/libip6t_MARK.so
- /lib/iptables/libip6t_SECMARK.so
- /lib/iptables/libip6t_CONNSECMARK.so
+Is there any good reason why someone would set an ACCEPT policy for all=
+=20
+chains first to withdraw some later? What the benefit of doing this?
 
-Here's what I used some time ago to do something similar (either with Etch
-or maybe even Sarge), sending outgoing packets back to the router the
-corresponding incoming packets of a connection came from, for a single machine.
+Sorry about my poor english.
 
+Tks in advance
+--=20
 
-#!/bin/sh
+*Leonardo de Souza Carneiro*
+*Veltrac - Tecnologia em Log=EDstica.*
+lscarneiro@veltrac.com.br <mailto:lscarneiro@veltrac.com.br>
+http://www.veltrac.com.br <http://www.veltrac.com.br/>
+/Fone Com.: (43)2105-5600/
+/Av. Higien=F3polis 1601 Ed. Eurocenter Sl. 803/
+/Londrina- PR/
+/Cep: 86015-010/
 
-iptables=iptables
-
-
-$iptables -t mangle -A INPUT -m mac --mac <ROUTERMAC1> -j CONNMARK --set-mark 1
-$iptables -t mangle -A INPUT -m mac --mac <ROUTERMAC2> -j CONNMARK --set-mark 2
-
-
-$iptables -t mangle -N TONET 
-$iptables -t mangle -F TONET 
-$iptables -t mangle -A OUTPUT -o <DEVICE> -d ! <LOCAL_NET> -j TONET
-
-$iptables -t mangle -A TONET -m connmark ! --mark 0 -j CONNMARK --restore-mark
-
-
-The route/rule stuff was more or less what you've got. If you want to
-forward packets for other hosts, this need to go into PREROUTING of
-course.
-
-    Thomas
+=09
 
