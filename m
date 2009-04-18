@@ -1,33 +1,58 @@
-From: Thomas Jacob <jacob@internet24.de>
+From: Leonardo Carneiro <lscarneiro@veltrac.com.br>
 Subject: Re: Learning iptables
-Date: Sat, 18 Apr 2009 14:59:17 +0200
-Message-ID: <20090418125916.GA14236@internet24.de>
-References: <49E9C87A.1030509@veltrac.com.br>
+Date: Sat, 18 Apr 2009 10:20:44 -0300
+Message-ID: <49E9D3AC.5030801@veltrac.com.br>
+References: <49E9C87A.1030509@veltrac.com.br> <20090418125916.GA14236@internet24.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <49E9C87A.1030509@veltrac.com.br>
+In-Reply-To: <20090418125916.GA14236@internet24.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Leonardo Carneiro <lscarneiro@veltrac.com.br>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Sat, Apr 18, 2009 at 09:32:58AM -0300, Leonardo Carneiro wrote:
-> Is there any good reason why someone would set an ACCEPT policy for all  
-> chains first to withdraw some later? What the benefit of doing this?
+Tks Thomas and Brian. It was very helpful.
+Now i'll follow with my jorney _o/
 
-If I'd have to guess at the ruleset authors intentions, I'd say
-s/he wanted to prevent service disruptions when reloading the
-firewall scripts.
+tks again! =3D)
 
-Loading a lot of rules without iptables-restore can take quite some time,
-and if you have a DROP policy during the rule loading time,
-some packets that your final ruleset would pass thru will be dropped.
-Also, if your scripts terminate prematurely, you might not be able
-to remote access your machine anymore.
+Thomas Jacob escreveu:
+> On Sat, Apr 18, 2009 at 09:32:58AM -0300, Leonardo Carneiro wrote:
+>  =20
+>> Is there any good reason why someone would set an ACCEPT policy for =
+all =20
+>> chains first to withdraw some later? What the benefit of doing this?
+>>    =20
+>
+> If I'd have to guess at the ruleset authors intentions, I'd say
+> s/he wanted to prevent service disruptions when reloading the
+> firewall scripts.
+>
+> Loading a lot of rules without iptables-restore can take quite some t=
+ime,
+> and if you have a DROP policy during the rule loading time,
+> some packets that your final ruleset would pass thru will be dropped.
+> Also, if your scripts terminate prematurely, you might not be able
+> to remote access your machine anymore.
+>
+> But then again, you should load your ruleset before you bring up
+> your network, so the first reason should be irrelevant. And the
+> second shouldn't really matter after the initial testing phase.
+>
+>  =20
 
-But then again, you should load your ruleset before you bring up
-your network, so the first reason should be irrelevant. And the
-second shouldn't really matter after the initial testing phase.
+
+--=20
+
+*Leonardo de Souza Carneiro*
+*Veltrac - Tecnologia em Log=EDstica.*
+lscarneiro@veltrac.com.br <mailto:lscarneiro@veltrac.com.br>
+http://www.veltrac.com.br <http://www.veltrac.com.br/>
+/Fone Com.: (43)2105-5600/
+/Av. Higien=F3polis 1601 Ed. Eurocenter Sl. 803/
+/Londrina- PR/
+/Cep: 86015-010/
+
+=09
+
