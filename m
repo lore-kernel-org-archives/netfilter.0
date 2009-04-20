@@ -1,56 +1,46 @@
 From: Thomas Jacob <jacob@internet24.de>
 Subject: Re: still can't route using fwmark
-Date: Mon, 20 Apr 2009 20:59:19 +0200
-Message-ID: <20090420185918.GA1158@internet24.de>
-References: <op.uslkl80px1lyi3@localhost> <20090418205802.GA16790@internet24.de> <op.uslqwresx1lyi3@localhost> <20090419090016.GA19987@internet24.de> <op.usn740lix1lyi3@localhost> <145d4e1a0904200148p23d66274h8c0eb0a28ccf568b@mail.gmail.com> <1240227862.27336.43.camel@enterprise.ims-firmen.de> <145d4e1a0904200608i45d9cf09sce1c38ab42cd316@mail.gmail.com> <1240234658.27336.66.camel@enterprise.ims-firmen.de> <145d4e1a0904200815q3176c9e2m2dfef314b205f348@mail.gmail.com>
+Date: Mon, 20 Apr 2009 21:26:01 +0200
+Message-ID: <20090420192600.GB1158@internet24.de>
+References: <20090418082314.GA12566@internet24.de> <op.usld3aqfx1lyi3@localhost> <20090418184809.GA15649@internet24.de> <op.uslkl80px1lyi3@localhost> <20090418205802.GA16790@internet24.de> <op.uslqwresx1lyi3@localhost> <20090419090016.GA19987@internet24.de> <op.usn740lix1lyi3@localhost> <1240225752.27336.25.camel@enterprise.ims-firmen.de> <op.usoy1zlxx1lyi3@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <145d4e1a0904200815q3176c9e2m2dfef314b205f348@mail.gmail.com>
+In-Reply-To: <op.usoy1zlxx1lyi3@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Javier =?iso-8859-1?Q?G=E1lvez?= Guerrero <javier.galvez.guerrero@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Lloyd Standish <lloyd@crnatural.net>
 Cc: netfilter@vger.kernel.org
 
-On Mon, Apr 20, 2009 at 05:15:21PM +0200, Javier G=E1lvez Guerrero wrot=
-e:
-> $ sudo iptables -L -t mangle
-> Chain PREROUTING (policy ACCEPT)
-> target     prot opt source               destination
-> CONNMARK   tcp  --  anywhere             anywhere            state NE=
-W
-> tcp spt:rtsp CONNMARK set 0x1
+On Mon, Apr 20, 2009 at 09:38:13AM -0600, Lloyd Standish wrote:
+> Thomas, somehow I had the erroneous idea that ALL packets, even those originating at the local machine, go through PREROUTING.  I finally understand now why I need the OUTPUT statements.  As soon as I added those, the load balancing started to work!
 
-If you are forwarding packets via this host you need the CONNMARK resto=
-re
-here as well, then you can also drop the CONNMARK restore from the INPU=
-T chain,
-PREROUTING is also traversed for packets destined for the local host.
+Great
 
-> With this environment I get the same results. I send the first TCP
-> packet (SYN, dport 8554) through the interface ra1 (OK) with the IP
-> bound to this interface (SNAT OK) and I get the (SYN,ACK) to the same
-> IP and through the same interface (OK!), but my application does not
-> send the final acknowledgement to the TCP connection establishment
-> (ACK), so the RTSP messages are not sent and the client retries over
-> and over again the TCP session establishment.=20
+> # restore the fwmark on packets that belong to an existing connection
+> # this prerouting stuff would only be for connections initiated on the LAN
+> 
+> iptables -A PREROUTING -i eth0  -t mangle -m state --state ESTABLISHED,RELATED -j RESTOREMARK
 
-Your application does not send the ACK in the 3 way handshake, the
-client kernel does. Somehow it doesn't receive the SYN,ACK or
-the ACK does not reach the point where you're tcpdumping packets.=20
-Try to sniff as  close to your client app as possible. Could be
-a NAT issue. Or maybe rp_filter or something else is breaking
-it for you, you could try to enable /proc/sys/net/ipv4/conf/*/log_marti=
-ans
-to see any issues.
+This is too restrictive, drop the -i eth0, your forwarded packets from the internet
+will not arrive thru eth0 but still need a CONNMARK -> MARK restore.
 
-> messing up old connections with other videos. I can't understand how
-> this can be so difficult to configure. I must be missing something in
-> my rules...
+> iptables -A PREROUTING -i eth0 -t mangle -m mark ! --mark 0 -j RETURN
+> iptables -A PREROUTING -t mangle -j CONNMARK1
+> iptables -A PREROUTING -t mangle -m statistic --mode nth --every 2 --packet 0 -j CONNMARK2
 
-=46ind another general purpose OS where you can do this AT ALL without =
-additional
-products. Then we'll talk about what is difficult or not ;=3D)
+Otherwise you might assign a different mark again here, and that doesn't work
+with NATed connections. Possibly you should also use -m state --state NEW to prevent
+the marking stuff taking place on any other packets than the initial ones.
 
+> Once this is working for LAN I want to try load balancing according the byte count of each interface, if that is possible.
+
+Hmm, I don't see how to do this with out using some kind of script
+that constantly checks the load of your links and then modifies iptables
+rules accordingly. Don't forget that you are loadbalancing connections, not
+individual packets. But maybe you can cook something up the recent match or
+something, if you do, please keep the list posted ;)
+
+   Thomas
