@@ -1,46 +1,45 @@
-From: Thomas Jacob <jacob@internet24.de>
-Subject: Re: still can't route using fwmark
-Date: Mon, 20 Apr 2009 21:26:01 +0200
-Message-ID: <20090420192600.GB1158@internet24.de>
-References: <20090418082314.GA12566@internet24.de> <op.usld3aqfx1lyi3@localhost> <20090418184809.GA15649@internet24.de> <op.uslkl80px1lyi3@localhost> <20090418205802.GA16790@internet24.de> <op.uslqwresx1lyi3@localhost> <20090419090016.GA19987@internet24.de> <op.usn740lix1lyi3@localhost> <1240225752.27336.25.camel@enterprise.ims-firmen.de> <op.usoy1zlxx1lyi3@localhost>
+From: "Pablo Pita Leira" <pablo.pita@pitagoral.com>
+Subject: how to connect from outside to several identical networks
+Date: Tue, 21 Apr 2009 10:08:47 +0200
+Message-ID: <op.usp8wx2p7q4g76@nllt0003.terma.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <op.usoy1zlxx1lyi3@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Lloyd Standish <lloyd@crnatural.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; format="flowed"; delsp="yes"; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Mon, Apr 20, 2009 at 09:38:13AM -0600, Lloyd Standish wrote:
-> Thomas, somehow I had the erroneous idea that ALL packets, even those originating at the local machine, go through PREROUTING.  I finally understand now why I need the OUTPUT statements.  As soon as I added those, the load balancing started to work!
 
-Great
+The systems that we are integrating and testing have their own
+private networks. The IPs of both A1, A2 and A3 systems are in network
+172.16.X.X. Those 3 networks are equal but independent of each other, that  
+is,
+they do not need to be connected to each other, so there is no problem
+for the testers or for the integration work that they have the same ip
+addresses. Those systems are in enclosed areas, without much space
+inside. It is nice to be able to access them from the office network.
+The IPs for this one are in the 10.99.64.X range.
 
-> # restore the fwmark on packets that belong to an existing connection
-> # this prerouting stuff would only be for connections initiated on the LAN
-> 
-> iptables -A PREROUTING -i eth0  -t mangle -m state --state ESTABLISHED,RELATED -j RESTOREMARK
+So the basic cuestion I am posing is how to make them accessible,
+without changing anything in A1, A2 and A3.
 
-This is too restrictive, drop the -i eth0, your forwarded packets from the internet
-will not arrive thru eth0 but still need a CONNMARK -> MARK restore.
+We have a PC with opensuse 11.0 installed and have initially configured
+its firewall software to make just one such network available.
 
-> iptables -A PREROUTING -i eth0 -t mangle -m mark ! --mark 0 -j RETURN
-> iptables -A PREROUTING -t mangle -j CONNMARK1
-> iptables -A PREROUTING -t mangle -m statistic --mode nth --every 2 --packet 0 -j CONNMARK2
+I checked the mailing list archives and documentation of iptables to check
+for rules for doing the appropriate SNAT - DNAT based on the ethernet card
+handling the traffic, but well, it is not easy at all and seems just  
+beyond my
+understanding. I thought I found a solution when I saw a posting about
+chain RAWNAT in the xtables-addons package. I downloaded the binaries and
+the source, and well, I did not find any RAWNAT capabilities there
+(version 1.14). That chain would have allowed SNAT before all other tables
+get involved, and similarly, I would have done DNAT once the packet got  
+routed
+to the appropriate interface card.
 
-Otherwise you might assign a different mark again here, and that doesn't work
-with NATed connections. Possibly you should also use -m state --state NEW to prevent
-the marking stuff taking place on any other packets than the initial ones.
+I wonder if someone can put some light into all this.
 
-> Once this is working for LAN I want to try load balancing according the byte count of each interface, if that is possible.
-
-Hmm, I don't see how to do this with out using some kind of script
-that constantly checks the load of your links and then modifies iptables
-rules accordingly. Don't forget that you are loadbalancing connections, not
-individual packets. But maybe you can cook something up the recent match or
-something, if you do, please keep the list posted ;)
-
-   Thomas
+-- 
+Pablo Pita Leira
