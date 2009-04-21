@@ -1,159 +1,46 @@
-From: Julien Vehent <julien@linuxwall.info>
-Subject: Re: traffic shaping documentation
-Date: Tue, 21 Apr 2009 17:23:29 +0200
-Message-ID: <635b1be78ba247d2c8eefbf31caedf50@localhost>
-References: <49ED88BD.4070406@lab.vectoris.fr> <154d9336a3c358635883b5c3972a149b@localhost> <010701c9c284$b6810470$3202a8c0@p4w2000> <e830fd8f70c1e99dd819976ed5656081@localhost> <015b01c9c28c$cc3a90d0$3202a8c0@p4w2000>
+From: "Lloyd Standish" <lloyd@crnatural.net>
+Subject: Re: still can't route using fwmark
+Date: Tue, 21 Apr 2009 13:54:02 -0600
+Message-ID: <op.usq1orvex1lyi3@localhost>
+References: <20090418082314.GA12566@internet24.de>
+ <op.usld3aqfx1lyi3@localhost> <20090418184809.GA15649@internet24.de>
+ <op.uslkl80px1lyi3@localhost> <20090418205802.GA16790@internet24.de>
+ <op.uslqwresx1lyi3@localhost> <20090419090016.GA19987@internet24.de>
+ <op.usn740lix1lyi3@localhost>
+ <1240225752.27336.25.camel@enterprise.ims-firmen.de>
+ <op.usoy1zlxx1lyi3@localhost> <20090420192600.GB1158@internet24.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <015b01c9c28c$cc3a90d0$3202a8c0@p4w2000>
+In-Reply-To: <20090420192600.GB1158@internet24.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: SISINT BA <INFO@SISINT.COM.AR>
-Cc: netfilter <netfilter@vger.kernel.org>
+To: Thomas Jacob <jacob@internet24.de>
+Cc: netfilter@vger.kernel.org
 
-Pfff.... I'm way too influenceable. Here's your translation. :)
+On Mon, 20 Apr 2009 13:26:01 -0600, Thomas Jacob <jacob@internet24.de> wrote:
 
-http://wiki.linuxwall.info/doku.php?id=ressources:dossiers:advanced_networking:2_qos_traffic_control_english
-
-I realize I'm posting this to a list full of QOS, firewall and network
-experts, so I need to warn you that there may be mistakes and
-misunderstanding in this document. If you find any, please let me know ;)
-
-Julien
-
-On Tue, 21 Apr 2009 11:23:53 -0300, "SISINT BA" <INFO@SISINT.COM.AR> wrote:
-> Julien:
-> 
-> Former Thanks  for answer so fast,
-> 
-> what a pity htat you don't have these time to write!!!!
->  seems that you  will not trasnlate it , but domains the subject , if you
-> colud sure  will be so helpfull. ,
-> 
-> Thanks lot for have take your time to write , because the doc  "talks by
-> itself" trough the commands in the examples . but on  my mind always is
-> better get the info right from the source  :-)
-> 
-> and unlucky for me i don't speck French,    just speak spanish and got
-the
-> wrost english in the world.
-> Thanks aagain.
-> 
-> 
-> Marcos
-> 
-> 
-> 
-> 
-> 
-> ----- Original Message -----
-> From: "Julien Vehent" <julien@linuxwall.info>
-> To: "SISINT BA" <INFO@sisint.com.ar>
-> Cc: "netfilter" <netfilter@vger.kernel.org>
-> Sent: Tuesday, April 21, 2009 11:09 AM
-> Subject: Re: traffic shaping documentation
-> 
-> 
->> I fear not... which's lame, I admit, but I never found the time and
->> motivation to write in english...
 >>
->> A quick try on google trad gives good results though.... :)
->>
->>
->> On Tue, 21 Apr 2009 10:26:00 -0300, "SISINT BA" <INFO@SISINT.COM.AR>
-> wrote:
->> > I was seeing your doc in French , do you have an englsih version ???
->> >
->> > Thanks a lot
->> > Marcos
->> >
->> > ----- Original Message -----
->> > From: "Julien Vehent" <julien@linuxwall.info>
->> > To: "Mihamina Rakotomandimby (R12y)" <mihamina@lab.vectoris.fr>
->> > Cc: <netfilter@vger.kernel.org>
->> > Sent: Tuesday, April 21, 2009 8:18 AM
->> > Subject: Re: traffic shaping documentation
->> >
->> >
->> >> Hello,
->> >>
->> >> By your signature, I suppose you read french. Then, maybe you will
->> >> find
->> >> some useful information in the doc I wrote a few months ago :
->> >>
->> >
->>
+>> iptables -A PREROUTING -i eth0  -t mangle -m state --state ESTABLISHED,RELATED -j RESTOREMARK
 >
-http://wiki.linuxwall.info/doku.php?id=ressources:dossiers:advanced_networki
->> > ng:2_qos_traffic_control
->> >>
->> >> Hope it helps...
->> >>
->> >> Julien
->> >>
->> >> On Tue, 21 Apr 2009 11:50:05 +0300, "Mihamina Rakotomandimby (R12y)"
->> >> <mihamina@lab.vectoris.fr> wrote:
->> >> > Hi all,
->> >> > I have a gateway on which I would like to implement traffic
-shapping
->> >> based
->> >> > only on ports.
->> >> > The simple schema:
->> >> >
->> >> >      15-PCs-LAN <-> (eth0)[Gateway](eth1) <-> Internet
->> >> >
->> >> > The gateway is also my workstation and it holds many services
->> > accessibles
->> >>
->> >> > from the LAN and from Internet.
->> >> >
->> >> > The problem is HTTP traffic is so much that SSH connection to the
->> >> > remote
->> >> > servers I manage are slow.
->> >> >
->> >> > Therefore, I would like to give:
->> >> > - highest priority to SSH (INPUT/OUTPUT/FORWARD dport 22)
->> >> > - normal priority to others (INPUT/OUTPUT/FORWARD dport:FTP,
->> >> > SVN,...)
->> >> > - lowest priority to HTTP
->> >> >    (dport 80 REDIRECTed INPUT on squid's 3128, OUTPUT dport 80)
->> >> >
->> >> > The perfect would be to shape it on the OUTPUT chain, because I
->> >> > would
->> >> like
->> >> > also the shape affects my (Gateway) behaviour.
->> >> >
->> >> > I am not asking for the direct solution, I am first asking if what
-I
->> >> want:
->> >> >   - is a good idea
->> >> >   - implementable
->> >> >   - is documented in another place than lartc.org
->> >> >     (which is good but too much big for my simple needs)
->> >> >
->> >> > Thank you for any tips.
->> >>
->> >> --
->> >> julien
->> >> http://jve.linuxwall.info/blog
->> >> --
->> >> To unsubscribe from this list: send the line "unsubscribe netfilter"
->> >> in
->> >> the body of a message to majordomo@vger.kernel.org
->> >> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->> >>
->>
->> --
->> julien
->> http://jve.linuxwall.info/blog
->> --
->> To unsubscribe from this list: send the line "unsubscribe netfilter" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>
+> This is too restrictive, drop the -i eth0, your forwarded packets from the internet
+> will not arrive thru eth0 but still need a CONNMARK -> MARK restore.
 
--- 
-julien
-http://jve.linuxwall.info/blog
+Thanks for your help.
+
+I tightened up the policies and added rules to pass any packets, for new connections or otherwise, to or from eth0 (the LAN), and drop NEW connection packets except those from the local machine and from LAN. :
+
+iptables -t filter -P INPUT DROP
+iptables -t filter -P OUTPUT ACCEPT
+iptables -t filter -P FORWARD DROP
+
+iptables -t mangle -A INPUT -i eth0 -j ACCEPT
+iptables -t mangle -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -t mangle -A FORWARD -i eth0 -j ACCEPT
+iptables -t mangle -A FORWARD -o eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+However, there is a mistake here.  I am finding that I cannot access local files on the router box from a LAN connected machine (nor can I connect from the router box to Internet) unless I set the policy for INPUT to be ACCEPT.
+
+--
+Lloyd
