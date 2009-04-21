@@ -1,47 +1,91 @@
-From: "Mihamina Rakotomandimby (R12y)" <mihamina@lab.vectoris.fr>
-Subject: traffic shaping documentation
-Date: Tue, 21 Apr 2009 11:50:05 +0300
-Message-ID: <49ED88BD.4070406@lab.vectoris.fr>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: warnings in current tree
+Date: Tue, 21 Apr 2009 12:54:06 +0200
+Message-ID: <49EDA5CE.4010108@netfilter.org>
+References: <20090421.014357.219275555.davem@davemloft.net> <20090421.014427.86938853.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------020805000307010507060301"
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20090421.014427.86938853.davem@davemloft.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: David Miller <davem@davemloft.net>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Hi all,
-I have a gateway on which I would like to implement traffic shapping based 
-only on ports.
-The simple schema:
+This is a multi-part message in MIME format.
+--------------020805000307010507060301
+Content-Type: text/plain; charset=us-ascii
+Content-Transfer-Encoding: 7bit
 
-     15-PCs-LAN <-> (eth0)[Gateway](eth1) <-> Internet
+Hi David!
 
-The gateway is also my workstation and it holds many services accessibles 
-from the LAN and from Internet.
+David Miller wrote:
+> From: David Miller <davem@davemloft.net>
+> Date: Tue, 21 Apr 2009 01:43:57 -0700 (PDT)
+> 
+> Sorry, duh, meant netfilter-devel :-)
+> 
+>> Can someone fix these up?  Thanks!
+>>
+>> net/netfilter/nf_conntrack_netlink.c:1234: warning: 'helpname' may be used uninitialized in this function
+>> net/netfilter/nf_conntrack_netlink.c:991: warning: 'helpname' may be used uninitialized in this function
 
-The problem is HTTP traffic is so much that SSH connection to the remote 
-servers I manage are slow.
+Hm, weird, is this a "bogus punch"? I don't remember to have seen those
+here and that code has not been modified recently.
 
-Therefore, I would like to give:
-- highest priority to SSH (INPUT/OUTPUT/FORWARD dport 22)
-- normal priority to others (INPUT/OUTPUT/FORWARD dport:FTP, SVN,...)
-- lowest priority to HTTP
-   (dport 80 REDIRECTed INPUT on squid's 3128, OUTPUT dport 80)
-
-The perfect would be to shape it on the OUTPUT chain, because I would like 
-also the shape affects my (Gateway) behaviour.
-
-I am not asking for the direct solution, I am first asking if what I want:
-  - is a good idea
-  - implementable
-  - is documented in another place than lartc.org
-    (which is good but too much big for my simple needs)
-
-Thank you for any tips.
+Anyway, patch attached :).
 
 -- 
-                              Chef de projet chez Vectoris
-                                  Phone: +261 33 11 207 36
-System: xUbuntu 8.10 with almost all from package install
-    http://www.google.com/search?q=mihamina+rakotomandimby
+"Los honestos son inadaptados sociales" -- Les Luthiers
+
+--------------020805000307010507060301
+Content-Type: text/x-diff;
+ name="ctnl-fix-warning-gcc.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="ctnl-fix-warning-gcc.patch"
+
+netfilter: ctnetlink: fix gcc warning during compilation
+
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+
+This patch fixes a (bogus?) gcc warning during compilation:
+
+net/netfilter/nf_conntrack_netlink.c:1234: warning: 'helpname' may be used uninitialized in this function
+net/netfilter/nf_conntrack_netlink.c:991: warning: 'helpname' may be used uninitialized in this function
+
+In fact, helpname is initialized by ctnetlink_parse_help() so
+I cannot see a way to use it without being initialized.
+
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+
+ net/netfilter/nf_conntrack_netlink.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+
+diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
+index 0ea36e0..fcf6e3b 100644
+--- a/net/netfilter/nf_conntrack_netlink.c
++++ b/net/netfilter/nf_conntrack_netlink.c
+@@ -988,7 +988,7 @@ ctnetlink_change_helper(struct nf_conn *ct, struct nlattr *cda[])
+ {
+ 	struct nf_conntrack_helper *helper;
+ 	struct nf_conn_help *help = nfct_help(ct);
+-	char *helpname;
++	char *helpname = NULL;
+ 	int err;
+ 
+ 	/* don't change helper of sibling connections */
+@@ -1231,7 +1231,7 @@ ctnetlink_create_conntrack(struct nlattr *cda[],
+ 
+ 	rcu_read_lock();
+  	if (cda[CTA_HELP]) {
+- 		char *helpname;
++ 		char *helpname = NULL;
+  
+  		err = ctnetlink_parse_help(cda[CTA_HELP], &helpname);
+  		if (err < 0)
+
+--------------020805000307010507060301--
