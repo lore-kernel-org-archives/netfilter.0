@@ -1,176 +1,86 @@
-From: Leonardo Rodrigues <leolistas@solutti.com.br>
+From: "Jorge Bastos" <mysql.jorge@decimal.pt>
 Subject: Re: How to do nat filtering in 1.4.3.2
-Date: Wed, 22 Apr 2009 18:59:19 -0300
-Message-ID: <49EF9337.7000304@solutti.com.br>
+Date: Wed, 22 Apr 2009 23:18:27 +0100 (WEST)
+Message-ID: <3404.87.196.144.12.1240438707.squirrel@webmail.decimal.pt>
 References: <3276.87.196.144.12.1240436887.squirrel@webmail.decimal.pt>
+    <49EF9337.7000304@solutti.com.br>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms010209080703080400070403"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <3276.87.196.144.12.1240436887.squirrel@webmail.decimal.pt>
+In-Reply-To: <49EF9337.7000304@solutti.com.br>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Jorge Bastos <mysql.jorge@decimal.pt>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Leonardo Rodrigues <leolistas@solutti.com.br>
 Cc: netfilter@vger.kernel.org
 
-This is a cryptographically signed message in MIME format.
+(sending the second time 'cause message got bloqued 1st)
+Hum well,
+I'm doing the ACCEPT to the ports I want to be reachable to the out wor=
+ld,
+and in the end add a DROP so that the rest of the ports get unreachable=
+,
+well it was working.
+In fact I didn't spent many time when I've built this rules, and they h=
+ave
+about 5 years, I'm just checking this 'cause of this new situation.
 
---------------ms010209080703080400070403
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+Going to try the FORWARD and report success or not.
 
-Jorge Bastos escreveu:
+Thanks,
+Jorge,
+
+PS:Already tested and works perfectly. I guess this should be the place=
+ i
+should used the rules to do nat filtering from the beginning, correct?
+
+
+> Jorge Bastos escreveu:
+>>
+>> I use this, to allow the users that are using my linux machine, acti=
+on
+>> as
+>> a router, to connect to the outside world only to the ports I want, =
+and
+>> block some stuff.
+>> How to do this now on?
+>>
+>>
 >
-> I use this, to allow the users that are using my linux machine, action =
-as
-> a router, to connect to the outside world only to the ports I want, and=
-
-> block some stuff.
-> How to do this now on?
+>     now you'll have to do it on the place you should have done that:
 >
->  =20
+> iptables -t filter -A FORWARD ......
+>
+> or simply
+>
+> iptables -A FORWARD
+>
+> if not specified, -t filter is used.
+>
+>
+>     your rules are strange .... usually default action for NAT tables
+> are ACCEPT. Of course that can be changed, but that would require tha=
+t
+> you really understand what you're doing. Your default policy is proba=
+bly
+> ACCEPT and, in that case, ACCEPT rules arent necessary at all.
+>
+>
+> --
+>
+>
+> 	Atenciosamente / Sincerily,
+> 	Leonardo Rodrigues
+> 	Solutti Tecnologia
+> 	http://www.solutti.com.br
+>
+> 	Minha armadilha de SPAM, N=C3O mandem email
+> 	gertrudes@solutti.com.br
+> 	My SPAMTRAP, do not email it
+>
+>
+>
+>
+>
 
-    now you'll have to do it on the place you should have done that:
 
-iptables -t filter -A FORWARD ......
-
-or simply
-
-iptables -A FORWARD
-
-if not specified, -t filter is used.
-
-
-    your rules are strange .... usually default action for NAT tables=20
-are ACCEPT. Of course that can be changed, but that would require that=20
-you really understand what you're doing. Your default policy is probably =
-
-ACCEPT and, in that case, ACCEPT rules arent necessary at all.
-
-
---=20
-
-
-	Atenciosamente / Sincerily,
-	Leonardo Rodrigues
-	Solutti Tecnologia
-	http://www.solutti.com.br
-
-	Minha armadilha de SPAM, N=C3O mandem email
-	gertrudes@solutti.com.br
-	My SPAMTRAP, do not email it
-
-
-
-
-
---------------ms010209080703080400070403
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIRQjCC
-BIowggNyoAMCAQICECf06hH0eobEbp27bqkXBwcwDQYJKoZIhvcNAQEFBQAwbzELMAkGA1UE
-BhMCU0UxFDASBgNVBAoTC0FkZFRydXN0IEFCMSYwJAYDVQQLEx1BZGRUcnVzdCBFeHRlcm5h
-bCBUVFAgTmV0d29yazEiMCAGA1UEAxMZQWRkVHJ1c3QgRXh0ZXJuYWwgQ0EgUm9vdDAeFw0w
-NTA2MDcwODA5MTBaFw0yMDA1MzAxMDQ4MzhaMIGuMQswCQYDVQQGEwJVUzELMAkGA1UECBMC
-VVQxFzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNUIE5l
-dHdvcmsxITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UEAxMtVVRO
-LVVTRVJGaXJzdC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsMIIBIjANBgkqhkiG
-9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsjmFpPJ9q0E7YkY3rs3BYHW8OWX5ShpHornMSMxqmNVN
-NRm5pELlzkniii8efNIxB8dOtINknS4p1aJkxIW9hVE1eaROaJB7HHqkkqgX8pgV8pPMyaQy
-lbsMTzC9mKALi+VuG6JG+ni8om+rWV6lL8/K2m2qL+usobNqqrcuZzWLeeEeaYji5kbNoKXq
-vgvOdjp6Dpvq/NonWz1zHyLmSGHGTPNpsaguG7bUMSAsvIKKjqQOpdeJQ/wWWq8dcdcRWdq6
-hw2v+vPhwvCkxWeM1tZUOt4KpLoDd7NlyP0e03RiqhjKaJMeoYV+9Udly/hNVyh00jT/MLbu
-9mIwFIws6wIDAQABo4HhMIHeMB8GA1UdIwQYMBaAFK29mHo0tCb3+sQmVO8DveAky1QaMB0G
-A1UdDgQWBBSJgmd9xJ0mcABLtFBIfN49rgRufTAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/
-BAUwAwEB/zB7BgNVHR8EdDByMDigNqA0hjJodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9BZGRU
-cnVzdEV4dGVybmFsQ0FSb290LmNybDA2oDSgMoYwaHR0cDovL2NybC5jb21vZG8ubmV0L0Fk
-ZFRydXN0RXh0ZXJuYWxDQVJvb3QuY3JsMA0GCSqGSIb3DQEBBQUAA4IBAQAZ2IkRbyispgCi
-54fBm5AD236hEv0e8+LwAamUVEJrmgnEoG3XkJIEA2Z5Q3H8+G+v23ZF4jcaPd3kWQR4rBz0
-g0bzes9bhHIt5UbBuhgRKfPLSXmHPLptBZ2kbWhPrXIUNqi5sf2/z3/wpGqUNVCPz4FtVbHd
-WTBK322gnGQfSXzvNrv042n0+DmPWq1LhTq3Du3Tzw1EovsEv+QvcI4l+1pUBrPQxLxtjftz
-Mizpm4QkLdZ/kXpoAlAfDj9N6cz1u2fo3BwuO/xOzf4CjuOoEwqlJkRl6RDyTVKnrtw+ymsy
-XEFs/vVdoOr/0fqbhlhtPZZH5f4ulQTCAMyOofK7MIIGVjCCBT6gAwIBAgIQQFpTnts/ZrM2
-QpaoboeKrjANBgkqhkiG9w0BAQUFADCBrjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAlVUMRcw
-FQYDVQQHEw5TYWx0IExha2UgQ2l0eTEeMBwGA1UEChMVVGhlIFVTRVJUUlVTVCBOZXR3b3Jr
-MSEwHwYDVQQLExhodHRwOi8vd3d3LnVzZXJ0cnVzdC5jb20xNjA0BgNVBAMTLVVUTi1VU0VS
-Rmlyc3QtQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBFbWFpbDAeFw0wODA2MDkwMDAwMDBa
-Fw0wOTA2MDkyMzU5NTlaMIHwMTUwMwYDVQQLEyxDb21vZG8gVHJ1c3QgTmV0d29yayAtIFBF
-UlNPTkEgTk9UIFZBTElEQVRFRDFGMEQGA1UECxM9VGVybXMgYW5kIENvbmRpdGlvbnMgb2Yg
-dXNlOiBodHRwOi8vd3d3LmNvbW9kby5uZXQvcmVwb3NpdG9yeTEfMB0GA1UECxMWKGMpMjAw
-MyBDb21vZG8gTGltaXRlZDElMCMGA1UEAxMcTGVvbmFyZG8gUm9kcmlndWVzIE1hZ2FsaGFl
-czEnMCUGCSqGSIb3DQEJARYYbGVvbGlzdGFzQHNvbHV0dGkuY29tLmJyMIIBIjANBgkqhkiG
-9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw05KcNe9SNakX11fOnTzkNsXWY4pS6sXsh2d7LI+LIpu
-AyebSLY8kGSMq2BmcK6XEHETMgefa5qxXwCa9mybez2OrfhsaXkNXiC/nIQj2RX4OebigPbE
-osgFKT3kW+CJpl/LXSm1mPEq54r7O6ajB8uwnBrCh521mM2wf4evEJEePjDrqI08f76TBGPv
-c96Cs1B1noJQvrw4bTcF8vtK7CzrKpcBJNkO6/DneeZ3cKx+aO8YlzXLpHCmFS88TZlc2cUx
-f9ta14rSwyMrmINhEJwcmMo2dbzGSIigauozed0YaOi9xV8NgXda1qce+yt8uliRD4vqV2HA
-AIhDkZL+EQIDAQABo4ICKjCCAiYwHwYDVR0jBBgwFoAUiYJnfcSdJnAAS7RQSHzePa4Ebn0w
-HQYDVR0OBBYEFFa9PpPImE4tpP7eG3M71zx4GXCjMA4GA1UdDwEB/wQEAwIFoDAMBgNVHRMB
-Af8EAjAAMCAGA1UdJQQZMBcGCCsGAQUFBwMEBgsrBgEEAbIxAQMFAjARBglghkgBhvhCAQEE
-BAMCBSAwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAQEwKzApBggrBgEFBQcCARYdaHR0cHM6
-Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwgaUGA1UdHwSBnTCBmjBMoEqgSIZGaHR0cDovL2Ny
-bC5jb21vZG9jYS5jb20vVVROLVVTRVJGaXJzdC1DbGllbnRBdXRoZW50aWNhdGlvbmFuZEVt
-YWlsLmNybDBKoEigRoZEaHR0cDovL2NybC5jb21vZG8ubmV0L1VUTi1VU0VSRmlyc3QtQ2xp
-ZW50QXV0aGVudGljYXRpb25hbmRFbWFpbC5jcmwwfAYIKwYBBQUHAQEEcDBuMDYGCCsGAQUF
-BzAChipodHRwOi8vY3J0LmNvbW9kb2NhLmNvbS9VVE5BQUFDbGllbnRDQS5jcnQwNAYIKwYB
-BQUHMAKGKGh0dHA6Ly9jcnQuY29tb2RvLm5ldC9VVE5BQUFDbGllbnRDQS5jcnQwIwYDVR0R
-BBwwGoEYbGVvbGlzdGFzQHNvbHV0dGkuY29tLmJyMA0GCSqGSIb3DQEBBQUAA4IBAQBhtTRE
-pJ1HapBjVPXj9xA2yVx14oO0ncvyoYm3wYfw6yP4nNjXs25nu78KPnGRxYSmzlDNqenzs4XX
-dsFMsNeiHgC1wtLc7gGSHwCf12B2eMWhW+gl13832ULv++vuvWult91JlMHqm2/aB73fZFJO
-H60HKAVYkeHQYMhE2vigmmNSvzjL4Lf1o61P3cm1QkfQHSKa1dx0e/hcZ1nK53eb4xhhayH0
-6mP0jtGbenlkWUhAnxFE/3IoxxCdtmxJYU/J4OkvImMLaldfKu3GGaSVIB4Vkcj32OuhCaMF
-nnIC36f/xGiM3iPuNA3ekP/POXYL16n7zeN9IFbO7Ulkk7nhMIIGVjCCBT6gAwIBAgIQQFpT
-nts/ZrM2QpaoboeKrjANBgkqhkiG9w0BAQUFADCBrjELMAkGA1UEBhMCVVMxCzAJBgNVBAgT
-AlVUMRcwFQYDVQQHEw5TYWx0IExha2UgQ2l0eTEeMBwGA1UEChMVVGhlIFVTRVJUUlVTVCBO
-ZXR3b3JrMSEwHwYDVQQLExhodHRwOi8vd3d3LnVzZXJ0cnVzdC5jb20xNjA0BgNVBAMTLVVU
-Ti1VU0VSRmlyc3QtQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBFbWFpbDAeFw0wODA2MDkw
-MDAwMDBaFw0wOTA2MDkyMzU5NTlaMIHwMTUwMwYDVQQLEyxDb21vZG8gVHJ1c3QgTmV0d29y
-ayAtIFBFUlNPTkEgTk9UIFZBTElEQVRFRDFGMEQGA1UECxM9VGVybXMgYW5kIENvbmRpdGlv
-bnMgb2YgdXNlOiBodHRwOi8vd3d3LmNvbW9kby5uZXQvcmVwb3NpdG9yeTEfMB0GA1UECxMW
-KGMpMjAwMyBDb21vZG8gTGltaXRlZDElMCMGA1UEAxMcTGVvbmFyZG8gUm9kcmlndWVzIE1h
-Z2FsaGFlczEnMCUGCSqGSIb3DQEJARYYbGVvbGlzdGFzQHNvbHV0dGkuY29tLmJyMIIBIjAN
-BgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAw05KcNe9SNakX11fOnTzkNsXWY4pS6sXsh2d
-7LI+LIpuAyebSLY8kGSMq2BmcK6XEHETMgefa5qxXwCa9mybez2OrfhsaXkNXiC/nIQj2RX4
-OebigPbEosgFKT3kW+CJpl/LXSm1mPEq54r7O6ajB8uwnBrCh521mM2wf4evEJEePjDrqI08
-f76TBGPvc96Cs1B1noJQvrw4bTcF8vtK7CzrKpcBJNkO6/DneeZ3cKx+aO8YlzXLpHCmFS88
-TZlc2cUxf9ta14rSwyMrmINhEJwcmMo2dbzGSIigauozed0YaOi9xV8NgXda1qce+yt8uliR
-D4vqV2HAAIhDkZL+EQIDAQABo4ICKjCCAiYwHwYDVR0jBBgwFoAUiYJnfcSdJnAAS7RQSHze
-Pa4Ebn0wHQYDVR0OBBYEFFa9PpPImE4tpP7eG3M71zx4GXCjMA4GA1UdDwEB/wQEAwIFoDAM
-BgNVHRMBAf8EAjAAMCAGA1UdJQQZMBcGCCsGAQUFBwMEBgsrBgEEAbIxAQMFAjARBglghkgB
-hvhCAQEEBAMCBSAwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAQEwKzApBggrBgEFBQcCARYd
-aHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwgaUGA1UdHwSBnTCBmjBMoEqgSIZGaHR0
-cDovL2NybC5jb21vZG9jYS5jb20vVVROLVVTRVJGaXJzdC1DbGllbnRBdXRoZW50aWNhdGlv
-bmFuZEVtYWlsLmNybDBKoEigRoZEaHR0cDovL2NybC5jb21vZG8ubmV0L1VUTi1VU0VSRmly
-c3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRFbWFpbC5jcmwwfAYIKwYBBQUHAQEEcDBuMDYG
-CCsGAQUFBzAChipodHRwOi8vY3J0LmNvbW9kb2NhLmNvbS9VVE5BQUFDbGllbnRDQS5jcnQw
-NAYIKwYBBQUHMAKGKGh0dHA6Ly9jcnQuY29tb2RvLm5ldC9VVE5BQUFDbGllbnRDQS5jcnQw
-IwYDVR0RBBwwGoEYbGVvbGlzdGFzQHNvbHV0dGkuY29tLmJyMA0GCSqGSIb3DQEBBQUAA4IB
-AQBhtTREpJ1HapBjVPXj9xA2yVx14oO0ncvyoYm3wYfw6yP4nNjXs25nu78KPnGRxYSmzlDN
-qenzs4XXdsFMsNeiHgC1wtLc7gGSHwCf12B2eMWhW+gl13832ULv++vuvWult91JlMHqm2/a
-B73fZFJOH60HKAVYkeHQYMhE2vigmmNSvzjL4Lf1o61P3cm1QkfQHSKa1dx0e/hcZ1nK53eb
-4xhhayH06mP0jtGbenlkWUhAnxFE/3IoxxCdtmxJYU/J4OkvImMLaldfKu3GGaSVIB4Vkcj3
-2OuhCaMFnnIC36f/xGiM3iPuNA3ekP/POXYL16n7zeN9IFbO7Ulkk7nhMYIEUDCCBEwCAQEw
-gcMwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2FsdCBMYWtlIENp
-dHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMYaHR0cDovL3d3
-dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgRW1haWwCEEBaU57bP2azNkKWqG6Hiq4wCQYFKw4DAhoFAKCCAmEwGAYJ
-KoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDkwNDIyMjE1OTE5WjAj
-BgkqhkiG9w0BCQQxFgQU5/vA6IhLya0K+3LBzXNNDutufi8wUgYJKoZIhvcNAQkPMUUwQzAK
-BggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYI
-KoZIhvcNAwICASgwgdQGCSsGAQQBgjcQBDGBxjCBwzCBrjELMAkGA1UEBhMCVVMxCzAJBgNV
-BAgTAlVUMRcwFQYDVQQHEw5TYWx0IExha2UgQ2l0eTEeMBwGA1UEChMVVGhlIFVTRVJUUlVT
-VCBOZXR3b3JrMSEwHwYDVQQLExhodHRwOi8vd3d3LnVzZXJ0cnVzdC5jb20xNjA0BgNVBAMT
-LVVUTi1VU0VSRmlyc3QtQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBFbWFpbAIQQFpTnts/
-ZrM2QpaoboeKrjCB1gYLKoZIhvcNAQkQAgsxgcaggcMwga4xCzAJBgNVBAYTAlVTMQswCQYD
-VQQIEwJVVDEXMBUGA1UEBxMOU2FsdCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJV
-U1QgTmV0d29yazEhMB8GA1UECxMYaHR0cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQD
-Ey1VVE4tVVNFUkZpcnN0LUNsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgRW1haWwCEEBaU57b
-P2azNkKWqG6Hiq4wDQYJKoZIhvcNAQEBBQAEggEABify+1NMfzL13HE9b2OXYSAkkr2I66hv
-ahO8hK21W/Mlgikfy7Q4u++nNB442sKum5xC5SX4k6pa+qZmaOERWYT2QLEbDtueq5Bv4JVy
-tmJQ7dyqz7mao76HmE0mKlbew88IgLl/QVRl+sEMMKjf+bgZ+jhFBD5tzH12riRvG7sjuwua
-OnWDmN7o36crJraNNNHOTBvktQkri0tRyYiYBt7rlE3Yn7dDxoHN3AUXOyW2909FtU8BKrHU
-Gu1eqvjiy+PAgJKy71lLSvFIruvVK6s3DxsqSVTLMoP5xlmFJBwxEFdb1RKk9p1mO6/cZKqY
-wp6bKjSOahqeDL1ZLhqScwAAAAAAAA==
---------------ms010209080703080400070403--
