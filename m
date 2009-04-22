@@ -1,86 +1,55 @@
-From: "Jorge Bastos" <mysql.jorge@decimal.pt>
+From: Leonardo Rodrigues <leolistas@solutti.com.br>
 Subject: Re: How to do nat filtering in 1.4.3.2
-Date: Wed, 22 Apr 2009 23:18:27 +0100 (WEST)
-Message-ID: <3404.87.196.144.12.1240438707.squirrel@webmail.decimal.pt>
-References: <3276.87.196.144.12.1240436887.squirrel@webmail.decimal.pt>
-    <49EF9337.7000304@solutti.com.br>
+Date: Wed, 22 Apr 2009 19:22:24 -0300
+Message-ID: <49EF98A0.2030505@solutti.com.br>
+References: <3276.87.196.144.12.1240436887.squirrel@webmail.decimal.pt>    <49EF9337.7000304@solutti.com.br> <3404.87.196.144.12.1240438707.squirrel@webmail.decimal.pt>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49EF9337.7000304@solutti.com.br>
+In-Reply-To: <3404.87.196.144.12.1240438707.squirrel@webmail.decimal.pt>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Leonardo Rodrigues <leolistas@solutti.com.br>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Jorge Bastos <mysql.jorge@decimal.pt>
 Cc: netfilter@vger.kernel.org
 
-(sending the second time 'cause message got bloqued 1st)
-Hum well,
-I'm doing the ACCEPT to the ports I want to be reachable to the out wor=
-ld,
-and in the end add a DROP so that the rest of the ports get unreachable=
-,
-well it was working.
-In fact I didn't spent many time when I've built this rules, and they h=
-ave
-about 5 years, I'm just checking this 'cause of this new situation.
+Jorge Bastos escreveu:
+> PS:Already tested and works perfectly. I guess this should be the pla=
+ce i
+> should used the rules to do nat filtering from the beginning, correct=
+?
+>
+>  =20
 
-Going to try the FORWARD and report success or not.
+    absolutely !!! -t filter is the place to filter. -t nat is the plac=
+e=20
+to do NAT-related stuff, and not filtering.
 
-Thanks,
-Jorge,
+    if you wanna filter packets coming TO your firewall machine, then=20
+your rules should be in INPUT chain
 
-PS:Already tested and works perfectly. I guess this should be the place=
- i
-should used the rules to do nat filtering from the beginning, correct?
+    if you wanna filter packets going out FROM your firewall machine,=20
+then your rules should be in OUTPUT chain
+
+    if you wanna filter packets passing your firewall (ie, getting=20
+routed), then your rules should be in FORWARD chain. Remember that=20
+packets go and come, so depending the case, 2 rules are necessary to=20
+fully accept a forwarded packet
 
 
-> Jorge Bastos escreveu:
->>
->> I use this, to allow the users that are using my linux machine, acti=
-on
->> as
->> a router, to connect to the outside world only to the ports I want, =
-and
->> block some stuff.
->> How to do this now on?
->>
->>
->
->     now you'll have to do it on the place you should have done that:
->
-> iptables -t filter -A FORWARD ......
->
-> or simply
->
-> iptables -A FORWARD
->
-> if not specified, -t filter is used.
->
->
->     your rules are strange .... usually default action for NAT tables
-> are ACCEPT. Of course that can be changed, but that would require tha=
-t
-> you really understand what you're doing. Your default policy is proba=
-bly
-> ACCEPT and, in that case, ACCEPT rules arent necessary at all.
->
->
-> --
->
->
-> 	Atenciosamente / Sincerily,
-> 	Leonardo Rodrigues
-> 	Solutti Tecnologia
-> 	http://www.solutti.com.br
->
-> 	Minha armadilha de SPAM, N=C3O mandem email
-> 	gertrudes@solutti.com.br
-> 	My SPAMTRAP, do not email it
->
->
->
->
->
+
+--=20
+
+
+	Atenciosamente / Sincerily,
+	Leonardo Rodrigues
+	Solutti Tecnologia
+	http://www.solutti.com.br
+
+	Minha armadilha de SPAM, N=C3O mandem email
+	gertrudes@solutti.com.br
+	My SPAMTRAP, do not email it
+
+
 
 
