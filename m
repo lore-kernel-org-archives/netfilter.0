@@ -1,59 +1,44 @@
-From: Bruno Fiss <bruno_fiss@yahoo.com.br>
-Subject: Help to schedule nf_register_hook
-Date: Wed, 22 Apr 2009 09:31:10 -0700 (PDT)
-Message-ID: <254744.23543.qm@web52410.mail.re2.yahoo.com>
-Reply-To: bruno_fiss@yahoo.com.br
+From: "Jorge Bastos" <mysql.jorge@decimal.pt>
+Subject: How to do nat filtering in 1.4.3.2
+Date: Wed, 22 Apr 2009 22:48:07 +0100 (WEST)
+Message-ID: <3276.87.196.144.12.1240436887.squirrel@webmail.decimal.pt>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com.br; s=s1024; t=1240417870; bh=z2IUNAASZelfLP+9Mq4kdo+UmKjXWe76RenqTCRvHjA=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Reply-To:Subject:To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=1GoXr8pB9mt/Z+6MzQ+4mOtiIaAQ7Fk3uOoCU9CMxk+HMN2m/gJFmlvHff+2m2U40hPeEgrabLEs+k0TdVA3RhW97i4VEbzHbz5lKgCMRJYBkG3ug1Oc1NObAd6xFWVeE+gWqsp4hH2RAWHLpfVKVYJ+7RC+u5PMmpX6zl9r0jY=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
+Hi people,
 
-Hi,
+Before in 1.4.2 and older, I used to do some filtering in the nat table,
+and I saw a warning about that feature going to be disabled, and saw that
+in 1.4.3.2 already is.
 
-I want to schedule the registration of a hook. I tried using kernel's s=
-truct timer_list, but I've been having problems with that. I thought th=
-at maybe you are not supposed to call nf_register_hook from within a fu=
-nction that's been registered in a kernel timer (wonder if it has to do=
- with being or not being in the userspace). I'd like some help on that.
+In 1.4.2:
+--
+The "nat" table is not intended for filtering, hence the use of DROP is
+deprecated and will permanently be disabled in the next iptables release.
+Please adjust your scripts.
+--
 
-I'll give an example of what I'm trying to do:
+In 1.4.3.2:
+--
+iptables -t nat -A PREROUTING -p tcp --dport 1863 -j ACCEPT # msn iptables
+-t nat -A PREROUTING -p tcp --dport 5900 -j ACCEPT # vnc iptables -t nat
+-I PREROUTING -d 193.164.158.105 -j DROP iptables -t nat -A PREROUTING -j
+DROP iptables v1.4.3.2:
+The "nat" table is not intended for filtering, the use of DROP is
+therefore inhibited.
+--
 
-void foo () {=20
-        unsigned long parameter;
-        ...
-        DEFINE_TIMER( timer, secfoo, jiffies + 250, parameter);
-        ...
-        add_timer(timer);
-}
+I use this, to allow the users that are using my linux machine, action as
+a router, to connect to the outside world only to the ports I want, and
+block some stuff.
+How to do this now on?
 
-void secfoo( unsigned long param ) {
-        ...
-        nf_register_hook(...);
-        ...
-}
-
-If I comment the "add_timer(timer);", and put this line instead:
-
-secfoo( parameter );
-
-It works out as I intended. But if I do it like it is written, I get a =
-kernel panic.
-
-I realize this may be simple, or maybe foolish, but I've been wanting t=
-o solve this problem for a while. If this panic was not supposed to hap=
-pen, then I'll try to give all the information possible about the probl=
-em.       =20
-
-Thanks in advance,
-
-Bruno Fiss
+Thanks,
+Jorge,
 
 
-
-      Veja quais s=E3o os assuntos do momento no Yahoo! +Buscados
-http://br.maisbuscados.yahoo.com
