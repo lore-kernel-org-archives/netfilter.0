@@ -1,35 +1,41 @@
-From: Jedy <jedywu@gmail.com>
-Subject: module string doesn't work without any error
-Date: Fri, 24 Apr 2009 11:01:37 +0800
-Message-ID: <29d7de5f0904232001t46e0ac24o74fecd69bc0511f7@mail.gmail.com>
+From: Tino Keitel <tkeitel@innominate.com>
+Subject: How to use mark and connmark in one rule
+Date: Fri, 24 Apr 2009 15:32:35 +0200
+Message-ID: <20090424133235.GA14156@tkeitel002.bln.innominate.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:from:date:message-id
-         :subject:to:content-type:content-transfer-encoding;
-        bh=pXzb3KBeqQPRHynkPMh1HCOfCI7L6ZsoxauXO3hbs5A=;
-        b=UxaavNoeGKxZ+aasuGN0zdP3PXMO/41uuL+rdrxz13x3Hv0xfopTQX3ZbAzGIU7J93
-         jvMK0e1llpdx/2oel2myzBU8eXBXtABTC1GQziN+Xc3r5JIbo4WD8ImDTdTp70z2NWRF
-         tTsyMe3lT8NjB71qaPpYVkLT3mjyIumGVA46E=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi,
+Hi folks,
 
-The following command returns no error
-# iptables -A OUTPUT -m string --algo bm --string show -j LOG
-But it doesn't log anything when I'm sure package contains 'show'.
+when I try to use the mark and connmark extensions in one rule, I get
+an error:
 
-My system is RHEL4, compiled iptables 1.4.2,
-I also recompile kernel 2.6.29.1 to support module string with
-"CONFIG_NETFILTER_XT_MATCH_STRING=m".
+$ iptables -A INPUT -m mark --mark 1 -m connmark --mark 2
+iptables v1.4.2: mark: "--mark" option may only be specified once
 
-Does anyone know what the problem is?
+Is this intended? If not, is there a way to make this work with a stock
+iptables, or do I have to patch the source and rename one of the
+options?
 
-Thanks.
+Regards,
 
-Jedy
+-- 
+Tino Keitel
+Software Engineer
+ 
+Innominate Security Technologies AG
+/protecting industrial networks/
+Tel: +49.30.921028-206
+Fax: +49.30.921028-020
+Rudower Chaussee 13
+12489 Berlin / Germany
+http://www.innominate.com/
+
+Register Court: AG Charlottenburg, HRB 81603 Management Board: Dirk
+Seewald, Chairman of the Supervisory Board: Volker Bibelhausen
