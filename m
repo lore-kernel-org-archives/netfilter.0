@@ -1,98 +1,35 @@
-From: Data Shock <datashock@hotmail.com>
-Subject: RE: iptables - Trying to understand "no longer support implicit
- source local NAT"
-Date: Thu, 23 Apr 2009 16:55:04 -0400
-Message-ID: <BLU149-W79AC0311DCF953433463CA3750@phx.gbl>
-References: <BLU149-W20F12BA9B98E9D4E82C7CBA3960@phx.gbl>
- <49C2A535.1040700@kis.keele.ac.uk>
-     <BLU149-W849B5068E4BA2E436CB5E8A3960@phx.gbl>
-    <BLU149-W19F71A94268C5665748337A3910@phx.gbl>
-   <BLU149-W50503F474EE1377D0A838A3840@phx.gbl>
-  <BLU149-W698B4E09B730ADF7B6660A3840@phx.gbl> <49DA7962.6050600@chello.at> 
- <BLU149-W217A490D4492B6FD80862BA3840@phx.gbl>
+From: Jedy <jedywu@gmail.com>
+Subject: module string doesn't work without any error
+Date: Fri, 24 Apr 2009 11:01:37 +0800
+Message-ID: <29d7de5f0904232001t46e0ac24o74fecd69bc0511f7@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BLU149-W217A490D4492B6FD80862BA3840@phx.gbl>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:from:date:message-id
+         :subject:to:content-type:content-transfer-encoding;
+        bh=pXzb3KBeqQPRHynkPMh1HCOfCI7L6ZsoxauXO3hbs5A=;
+        b=UxaavNoeGKxZ+aasuGN0zdP3PXMO/41uuL+rdrxz13x3Hv0xfopTQX3ZbAzGIU7J93
+         jvMK0e1llpdx/2oel2myzBU8eXBXtABTC1GQziN+Xc3r5JIbo4WD8ImDTdTp70z2NWRF
+         tTsyMe3lT8NjB71qaPpYVkLT3mjyIumGVA46E=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
+Hi,
 
-I have now had a chance to exercise this new iptable rule, and it has w=
-orked out well.  I no longer see the strange error message.
+The following command returns no error
+# iptables -A OUTPUT -m string --algo bm --string show -j LOG
+But it doesn't log anything when I'm sure package contains 'show'.
 
-It is unfortunate that nobody seems to know why this message is there, =
-or really what it means.  However, I'm past the message now and I'm hap=
-py with the solution that Mart provided.
+My system is RHEL4, compiled iptables 1.4.2,
+I also recompile kernel 2.6.29.1 to support module string with
+"CONFIG_NETFILTER_XT_MATCH_STRING=m".
 
-Many thanks to all.
+Does anyone know what the problem is?
 
--Frank
+Thanks.
 
-
-----------------------------------------
-> Hot diggity! Thanks Mart.
->
-> This seems to be the solution.
->
-> I replaced the nat rule:
->
-> -A sendtolocal -d 10.1.2.3 -j DNAT --to-destination 127.0.0.1
->
->
-> with:
->
-> -A sendtolocal -d 10.1.2.3 -j REDIRECT
->
->
-> and that did it. WooHoo! It seems so simple now. Why didn't I find th=
-at? :)
->
-> I'll experiment some more with this approach and then try it with our=
- live system. I'll report back with the final verdict.
->
->
-> FYI: I tried this on an older Linux box too (with iptables v1.2.8) an=
-d found that it automatically SNATed the packet to 127.0.0.1. However o=
-n my newer box (with iptables v1.3.5), it didn't SNAT the packet. Its s=
-ource remained the external interface of the box. Interesting...
->
->
-> Thanks,
->
-> -Frank
->
->
->>
->> I'm not 100% sure, but maybe the REDIRECT target is of use for that
->> particular case:
->>
->> from `man iptables':
->>
->> REDIRECT
->> This target is only valid in the nat table, in the
->> PREROUTING and OUTPUT chains, and user-defined chains which are only
->> called from those chains. It
->> redirects the packet to the machine itself by changing the
->> destination IP to the primary address of the incoming interface
->> (locally-generated packets are
->> mapped to the 127.0.0.1 address). It takes one option:
->>
->> --to-ports port[-port]
->> This specifies a destination port or range of ports to
->> use: without this, the destination port is never altered. This is on=
-ly
->> valid if the rule
->> also specifies -p tcp or -p udp.
->>
->>
->> Greets
->>
->> Mart
-
-_________________________________________________________________
-Rediscover Hotmail=AE: Get quick friend updates right in your inbox.=20
-http://windowslive.com/RediscoverHotmail?ocid=3DTXT_TAGLM_WL_HM_Redisco=
-ver_Updates2_042009
+Jedy
