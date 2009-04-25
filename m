@@ -1,39 +1,30 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Should "Transparent web-caching" work with ppp0/pptp? (It doesn't...)
-Date: Sat, 25 Apr 2009 12:11:33 +0200
-Message-ID: <49F2E1D5.1060302@plouf.fr.eu.org>
-References: <d17c5b140904250034x4b73cd8dsf91846eb5f9dda32@mail.gmail.com>
+From: "Paddie O'Brien" <paddieobrien@gmail.com>
+Subject: Dynamic IP address in a rule?
+Date: Sat, 25 Apr 2009 13:12:37 +0100
+Message-ID: <3e67fcb10904250512s67c79f70ref8af8655d33c8da@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <d17c5b140904250034x4b73cd8dsf91846eb5f9dda32@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=aWk9lEAE0QJ/FWTnnkrKPFJPyeblYkEfnEGJU4QOe6M=;
+        b=RnjparD+XBa42cLN7tj6zW/HRl8SkjS6FzfohASzQMXJssROLuo2IBlNVkD+cWj2mk
+         nAz7WdnKwIOS7ehLtR+ShpN4zJLrIcEw9fLW2olIBWBkjKP7+eOMRMxUr7oXV/omjwJ6
+         FzyEzhp169yUJOfvFBiKB6cergSVgc8cllFx8=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Aleksey Tsalolikhin a =E9crit :
->=20
-> I've tried following the example at
-> http://lartc.org/howto/lartc.cookbook.squid.html
-> but from the remote web site's viewpoint, the request comes from the
-> eth0 address of my server, instead of through the VPN.
+Hi,
 
-Oops, I forgot to comment on this. The default source address of a=20
-locally generated datagram or connection is selected before the OUTPUT=20
-chain, before the mark was set :
+My IP is dynamically assigned and I want a rule like this one:
 
-1) initial routing without using the mark selects the output interface=20
-and source address
-2) iptables changes the mark in the OUTPUT chain
-3) rerouting using the mark updates the output interface but not the=20
-source address
+iptables -I INPUT 1 -d my_ip_address  -m state --state NEW -j ULOG
 
-Rerouting through a different interface does not change the source=20
-address accordingly, so it is normal that packets have eth0's address a=
-s=20
-source even though they are rerouted through ppp0. If you want to chang=
-e=20
-the source address, you may use iptables' SNAT or MASQUERADE. (I fear=20
-this will be a problem with IPv6 which has no - and must not have - NAT=
-).
+Can a rule work out the IP address of its host?
+
+Thanks,
+P
