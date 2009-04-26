@@ -1,40 +1,38 @@
-From: "Jorge Bastos" <mysql.jorge@decimal.pt>
-Subject: Re: Dynamic IP address in a rule?
-Date: Mon, 27 Apr 2009 09:30:57 +0100 (WEST)
-Message-ID: <1822.192.168.1.3.1240821057.squirrel@webmail.decimal.pt>
-References: <3e67fcb10904250512s67c79f70ref8af8655d33c8da@mail.gmail.com>
-    <3678.87.196.49.84.1240774988.squirrel@webmail.decimal.pt>
-    <3fdd6ce00904261538m20468fedudf11ffd6448c8473@mail.gmail.com>
+From: Maxim Koshelev <chuchelo@gmail.com>
+Subject: SNAT and multiple ISP problem
+Date: Sun, 26 Apr 2009 17:45:20 +0400
+Message-ID: <40e8da40904260645x601a22a4obb942a30e3428d31@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <3fdd6ce00904261538m20468fedudf11ffd6448c8473@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=J4gysNU7RLTJIV29F2BkbQVR7G4dSOJT5xoiQ85St0c=;
+        b=aUUniuc1VkWuaY9eznHMIYTFXekjEiBFVr4tnvSlR8UBcEyBdCJ4yDHn6WXh9BNqHU
+         +wjii9M6WNWZxL7sRD0EUwfCCaxhSUztQq2voW+KXhVDgujitm2F6HSEnUXNhuwuqAPX
+         ar7FtYcIeGneT/bRoGEOwFyoswPPZaVKCQcxA=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Bruno Moreira Guedes <thbmatrix@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-> Just because of that I don't like dynamic IPs. But, are you using more
-> than one IP on that interface?? So, if you use more than one, there
-> are only one you don't know(probably), specify the rules for the ones
-> you know first!!
-> If you have only one IP address, try simply doing the rule for the
-> incoming interface and be happy ;)
->
-> Another way is to set your after-dhcp script to reload your firewall!!
+Hi all,
+I have a problem that I can't find working way to do some kind of load
+balance beetween two internet channels using SNAT. I've tried various
+schemes to do this but in all of them kernel makes wrong routing.
+For example if I try to add such rules in nat:
 
-That is no solution. it may be for your cenario but not for the most of
-people. Just think, if who makes the connection is a modem, and you have
-your *unix machine on nat, that won't work.
-Second, imagine that you have Fixed IP, and want to allow for a situation
-somebody that has a dynamic IP, and allow it with it's dynamic host, how
-would you? You wouldn't, the best was is to write some sort of script to
-check when the IP on the host changes, and remove/reinsert the rule with
-the dynamic host.
+iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to $ETH0IP
+iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to $PPP0IP
 
-For iptables to do a DNS query every time a packet comes, that's a disaster.
-But other thing cames in mind, when doing: "iptables -L" it does a reverse
-lookup on the IP's, is iptables doing a reverse lookup on every packet? or
-only when listing the rules?
+kernel will do SNAT only according default route in table main. It is
+ok. But if I try to change default routing selection (e.g. by adding
+in 'mangle' table some marks and adding 'ip rules' with this marks)
+kernel begins to route some packets nated to ppp0 into eth0 and
+vice-versa! I can simple monitor this ugly behavior using tcpdump. It
+brings to lost packets and connections drops ( because one of IP's is
+192.168... but second one is real )
 
+Is there any way to make right routing?
