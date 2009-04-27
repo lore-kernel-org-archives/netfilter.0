@@ -1,83 +1,69 @@
-From: "Juan Antonio" <pushakk@limbo.ari.es>
-Subject: Re: Ugly problem with ebtables
-Date: Mon, 27 Apr 2009 22:26:48 +0200 (CEST)
-Message-ID: <07d1b2f79cd9ef9765046bb4503bc658.squirrel@limbo.ari.es>
-References: <c5f74e0f56607a07b993f7b3e858a659.squirrel@limbo.ari.es>
-    <49F5B376.2090101@plouf.fr.eu.org>
-Reply-To: pushakk@limbo.ari.es
+From: samsonpablo@yahoo.com
+Subject: Limiting outbound connections and using the QUEUE target
+Date: Mon, 27 Apr 2009 16:00:46 -0700 (PDT)
+Message-ID: <625965.25951.qm@web45309.mail.sp1.yahoo.com>
+Reply-To: samsonpablo@yahoo.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49F5B376.2090101@plouf.fr.eu.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1240873246; bh=n2//EJfLYLbO0aA7vIvO6dt1a2quUrunY6DsYwXOu3o=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Reply-To:Subject:To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=EH5WyKMlRBBO5yG4en4Xrx+Z9/vbPaXM8uumTfkqEKERnRd7+/5IwmfoR2zWtyotNm+AGEVlfn6s9BMHjRJRWKopmUL/kmZXV6kWbaMfwr4AilV5hlYCAsGZlSGl2GSExxzwvqjTBl4NdF0zOzaS6O/2Wx41AwFiOV5Sskd6VIQ=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter List <netfilter@vger.kernel.org>
-
-> Hello,
-
-Hello and thanks for your reply,
-
->
-> Juan Antonio Rodriguez Moreno a =E9crit :
->>
->> I have a linux bridged machine, with eth1 and eth2 port on br0. I'm
->> using
->> ebtables to up smtp traffic on routing process and iptables to mark =
-it.
->> I
->> route this traffic over openvpn tunnel tun0.
->>
->> That's all right but when IP fragment a packet and send the former f=
-rame
->> without the PUSH flag, this frame dissapear.
->
-> What your traces shows below is not IP fragmentation (which has nothi=
-ng
-> to do with PUSH which is a TCP flag) but TCP segmentation.
-
-Ok. excuses the mistake.
-
->> I can see all traffic on the sending point of the tunel, but the fra=
-mes
->> without the PUSH flag set don't arrive on the another side.
->
-> IIUC, some packets enter the bridge, are routed through the tunnel an=
-d
-> don't arrive at the other end. What makes you think that ebtables is
-> involved ?
-
-I was not sure wherefrom the issue was, I should have been a bit more
-careful to explain the problem.
-
-> Couldn't it be an MTU problem in the tunnel ? AFAIK, when TCP transmi=
-ts
-> a message which must be segmented, it sends maximum-size segments
-> without the PUSH flag and a last smaller segment with the PUSH flag s=
-et
-> containing the remaining data.
-
-I know that, really this is the problem. The first segments without the
-PUSH flag dissapear completely in spite of these go out for the tunnel =
-=2E
-The MTU is the first thing that I verified and this is 1500 in both sid=
-es.
-
-I'm so confuse becouse the same config is in another linux box with the
-same config, same version for all packages, etc ..  and this works real=
-ly
-good.
-
-I have been looking for some sysctl value in /proc/sys/net/ipv4 related
-but I can see anything about this.
-
-Thank you.
-
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+To: netfilter@vger.kernel.org
 
 
+i'm using a linux host as a router to perform some security testing. Th=
+e testing is typically towards tcp based services. Currently the router=
+ is setup like this, with my test traffic coming into the box on eth0, =
+exiting on eth1:
+
+eth0 192.168.1.1/30
+eth1 10.1.0.1/23
+
+Due to policy from a networking group, I need to ensure that the number=
+ of established connections during my testing never exceeds 20 connecti=
+ons thru other devices that i may traverse beyond my linux router. I'm =
+not as concerned with bandwidth as i am with state tables on downstream=
+ devices i have no control over. It seems to me that this could be acco=
+mplished if i can ensure that established connections from eth1 do not =
+exceed 20 connections.
+
+So, after a really quick peek at iptables(8) i came up with:
+
+iptables -A OUTPUT -o eth1 -p tcp -m connlimit --connlimit-above 20 -j =
+LOG --log-prefix "rl-queue: "
+iptables -A OUTPUT -o eth1 -p tcp -m connlimit --connlimit-above 20 -j =
+QUEUE
+
+and maybe better using --syn:
+
+iptables -A OUTPUT -o eth1 -p tcp --syn -m connlimit --connlimit-above =
+20=A0 -j LOG --log-prefix "rl-queue: "
+iptables -A OUTPUT -o eth1 -p tcp --syn -m connlimit --connlimit-above =
+20 -j QUEUE
+
+This definitely seems to be limiting traffic, but i'm not really sure i=
+f it's what i'm after and if the QUEUE target is working like i think i=
+t is (probably not). I guess my questions are:
+
+- does anyone have any suggestions on rules that will help me limit the=
+ number of connections outbound
+
+- can the QUEUE target act as a fifo queue, or is it entirely dependent=
+ on something in userspace to queue the packets up and send them back t=
+o iptables when the rate limiting numbers have dropped below the thresh=
+old?
+
+I'm really concerned with the queuing aspect because i don't want poten=
+tially important packets from a portscan to get dropped on my side and =
+an open port go undetected.
+
+
+thanks for any suggestions!
+
+-samson
+
+
+
+     =20
