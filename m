@@ -1,71 +1,46 @@
-From: "Juan Antonio Rodriguez Moreno" <pushakk@limbo.ari.es>
-Subject: Ugly problem with ebtables
-Date: Mon, 27 Apr 2009 12:02:15 +0200 (CEST)
-Message-ID: <c5f74e0f56607a07b993f7b3e858a659.squirrel@limbo.ari.es>
-Reply-To: pushakk@limbo.ari.es
+From: =?ISO-8859-1?Q?Vlado_Drz=28=EDk?= <vlado@ttx.sk>
+Subject: Re: SNAT and multiple ISP problem
+Date: Mon, 27 Apr 2009 12:14:25 +0200
+Message-ID: <49F58581.3020705@ttx.sk>
+References: <40e8da40904260645x601a22a4obb942a30e3428d31@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <40e8da40904260645x601a22a4obb942a30e3428d31@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Maxim Koshelev <chuchelo@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+Maxim Koshelev  wrote / nap=EDsal(a):
+> Hi all,
+> I have a problem that I can't find working way to do some kind of loa=
+d
+> balance beetween two internet channels using SNAT. I've tried various
+> schemes to do this but in all of them kernel makes wrong routing.
+> For example if I try to add such rules in nat:
+>=20
+> iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to $ETH0IP
+> iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to $PPP0IP
+>=20
+> kernel will do SNAT only according default route in table main. It is
+> ok. But if I try to change default routing selection (e.g. by adding
+> in 'mangle' table some marks and adding 'ip rules' with this marks)
+> kernel begins to route some packets nated to ppp0 into eth0 and
+> vice-versa! I can simple monitor this ugly behavior using tcpdump. It
+> brings to lost packets and connections drops ( because one of IP's is
+> 192.168... but second one is real )
+>=20
+> Is there any way to make right routing?
 
-excuse me about my bad english, I'll try to explain my ugly issue
+Please post your routing table and mark setup. For me it seems that you
+don't have routing tables setup up correctly (or is not doing what you
+want). For example imcomming packets that are marked are using
+alternative routing table and that doesn't include your internal networ=
+k
+routes (and so is sent outside to default route after un-NATing).
 
-I have a linux bridged machine, with eth1 and eth2 port on br0. I'm using
-ebtables to up smtp traffic on routing process and iptables to mark it. I
-route this traffic over openvpn tunnel tun0.
-
-That's all right but when IP fragment a packet and send the former frame
-without the PUSH flag, this frame dissapear.
-I can see all traffic on the sending point of the tunel, but the frames
-without the PUSH flag set don't arrive on the another side.
-
-For example I send a mail and this is the trace
-
-On client  #ngrep -d tun0 host 192.168.11.150 and port 25
-
-... Traffic ....
-
-T xxx.xxx.xxx.xxx:25 -> 192.168.11.150:2286 [AP]
-  354 End data with <CR><LF>.<CR><LF>..
-
-192.168.11.150:2286 -> xxx.xxx.xxx.xxx:25 [A]
-From: "copperpot" <copperpot@xxxx.com>..To:
-<jrodriguez@xxxx.com>..Subject: Prueba de correo..Date: Mon, 27 Apr 2009
-11:24:21 +0200..Message-ID: <006e01c9c719$f37dfd80$da79f880$@com> [ ...
-Continue .....]
-
-T 192.168.11.150:2286 -> xxx.xxx.xxx.xxx:25 [AP]
-...font-size:11.0pt;...font-family:"Calibri","sans-serif";}..a:link,
-span.MsoHyperlink...{mso-style-priority:99;...color:blue; [ .... continue
-.....]
-
-... Traffic ....
-
-On server side  #ngrep -d tun1 host 192.168.11.150 and port 25
-
-... Traffic ....
-
-T xxx.xxx.xxx.xxx:25 -> 192.168.11.150:2258 [AP]
-  354 End data with <CR><LF>.<CR><LF>..
-
-T 192.168.11.150:2258 -> xxx..xxx.xxx.xxx:25 [AP]
-  ...font-size:11.0pt;...font-family:"Calibri","sans-serif";}..a:link [
-...Coninue ... ]
-
-... Traffic ...
-
-Like will see the frame
-
-192.168.11.150:2286 -> xxx.xxx.xxx.xxx:25 [A]
-From: "copperpot" <copperpot@xxxx.com>..To: <jrodriguez@xxxx.com>..Subject:
-
-dissapear so the mail proccess fail.
-
-Thank you very much.
-
+Regards,
+Vlado.
 
