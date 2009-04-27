@@ -1,46 +1,48 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Ugly problem with ebtables
-Date: Mon, 27 Apr 2009 15:30:30 +0200
-Message-ID: <49F5B376.2090101@plouf.fr.eu.org>
-References: <c5f74e0f56607a07b993f7b3e858a659.squirrel@limbo.ari.es>
-Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: mopsosforum <mopsosforum@gmail.com>
+Subject: drop all packet on one interface of a bridge.
+Date: Mon, 27 Apr 2009 17:05:42 +0100
+Message-ID: <6EFFAB74-FFB0-4793-B702-1BA3DC56545D@gmail.com>
+Mime-Version: 1.0 (Apple Message framework v930.3)
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <c5f74e0f56607a07b993f7b3e858a659.squirrel@limbo.ari.es>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:from:to
+         :content-type:content-transfer-encoding:mime-version:subject:date
+         :x-mailer;
+        bh=6dSAI5mbcbZL3nlniOjr8ABr6yvF3g3+Cpq9UufcC2k=;
+        b=hcHrr7AWFMXgGhzscc391eTOaIQOTVF9JaGZXSELXftmqX9UxK79mpUi/hDCUYMziO
+         Jc9LGFzm7oLBS31b/BPWBQIxOM+D67oFVHS+zigt+z18LeNNVmKYluvtIpOMfxJJIgRt
+         AwfPh/hp1zdBmuDKxNZpPmatjijMaKi1w96ME=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
 To: netfilter@vger.kernel.org
 
 Hello,
 
-Juan Antonio Rodriguez Moreno a =E9crit :
->=20
-> I have a linux bridged machine, with eth1 and eth2 port on br0. I'm u=
-sing
-> ebtables to up smtp traffic on routing process and iptables to mark i=
-t. I
-> route this traffic over openvpn tunnel tun0.
->=20
-> That's all right but when IP fragment a packet and send the former fr=
-ame
-> without the PUSH flag, this frame dissapear.
+I have a bridge (on debian) with 2 interfaces.
+eth1, eth2
 
-What your traces shows below is not IP fragmentation (which has nothing=
-=20
-to do with PUSH which is a TCP flag) but TCP segmentation.
+eth2 is connected to an other server and eth1 is connected to  a  
+switch for my computers.
+Everythings is ok.
 
-> I can see all traffic on the sending point of the tunel, but the fram=
-es
-> without the PUSH flag set don't arrive on the another side.
+But I want to add another interface, eth3 on the bridge and for the  
+moment, drop all the packet.
 
-IIUC, some packets enter the bridge, are routed through the tunnel and=20
-don't arrive at the other end. What makes you think that ebtables is=20
-involved ?
+I tried :
 
-Couldn't it be an MTU problem in the tunnel ? AFAIK, when TCP transmits=
-=20
-a message which must be segmented, it sends maximum-size segments=20
-without the PUSH flag and a last smaller segment with the PUSH flag set=
-=20
-containing the remaining data.
+ebtables -A INPUT -i eth3 -j DROP
+ebtables -A OUPUT -o eth3 -j DROP
+ebtables -A FORWARD -i eth3 -j DROP
+ebtables -A FORWARD -o eth3 -j DROP
+
+But I have always some packet :
+arp and msdns what always allow.
+
+How is it possible?
+How Can I drop this type on packet?
+
+Best Regards.
+
