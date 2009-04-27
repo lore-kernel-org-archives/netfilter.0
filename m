@@ -1,46 +1,37 @@
-From: =?ISO-8859-1?Q?Vlado_Drz=28=EDk?= <vlado@ttx.sk>
-Subject: Re: SNAT and multiple ISP problem
-Date: Mon, 27 Apr 2009 12:14:25 +0200
-Message-ID: <49F58581.3020705@ttx.sk>
-References: <40e8da40904260645x601a22a4obb942a30e3428d31@mail.gmail.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Dynamic IP address in a rule?
+Date: Mon, 27 Apr 2009 13:57:37 +0200
+Message-ID: <49F59DB1.1060007@plouf.fr.eu.org>
+References: <3e67fcb10904250512s67c79f70ref8af8655d33c8da@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <40e8da40904260645x601a22a4obb942a30e3428d31@mail.gmail.com>
+In-Reply-To: <3e67fcb10904250512s67c79f70ref8af8655d33c8da@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Maxim Koshelev <chuchelo@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Maxim Koshelev  wrote / nap=EDsal(a):
-> Hi all,
-> I have a problem that I can't find working way to do some kind of loa=
-d
-> balance beetween two internet channels using SNAT. I've tried various
-> schemes to do this but in all of them kernel makes wrong routing.
-> For example if I try to add such rules in nat:
+Hello,
+
+Paddie O'Brien a =E9crit :
 >=20
-> iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to $ETH0IP
-> iptables -t nat -A POSTROUTING -o ppp0 -j SNAT --to $PPP0IP
+> My IP is dynamically assigned and I want a rule like this one:
 >=20
-> kernel will do SNAT only according default route in table main. It is
-> ok. But if I try to change default routing selection (e.g. by adding
-> in 'mangle' table some marks and adding 'ip rules' with this marks)
-> kernel begins to route some packets nated to ppp0 into eth0 and
-> vice-versa! I can simple monitor this ugly behavior using tcpdump. It
-> brings to lost packets and connections drops ( because one of IP's is
-> 192.168... but second one is real )
->=20
-> Is there any way to make right routing?
+> iptables -I INPUT 1 -d my_ip_address  -m state --state NEW -j ULOG
 
-Please post your routing table and mark setup. For me it seems that you
-don't have routing tables setup up correctly (or is not doing what you
-want). For example imcomming packets that are marked are using
-alternative routing table and that doesn't include your internal networ=
-k
-routes (and so is sent outside to default route after un-NATing).
+Why ? What do you want to achieve exactly ?
 
-Regards,
-Vlado.
+> Can a rule work out the IP address of its host?
 
+What address ? A node may have more than one single address, and usuall=
+y=20
+does : typically the loopback address range 127.0.0.0/8 and one or more=
+=20
+addresses assigned to each "real" interface. If a packets arrives in th=
+e=20
+INPUT chain, it implies that its destination address is assigned to the=
+=20
+node. Otherwise the packet is discarded if the node is a simple host, o=
+r=20
+sent in the FORWARD chain if the node is a router.
