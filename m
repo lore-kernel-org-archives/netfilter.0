@@ -1,61 +1,41 @@
-From: Ivan Petrushev <ivanatora@gmail.com>
+From: Daniel Huhardeaux <daniel.huhardeaux@tootai.com>
 Subject: Re: Dynamic IP address in a rule?
-Date: Mon, 27 Apr 2009 10:08:22 +0300
-Message-ID: <d39744a20904270008h380ccf26q990c13b56ac8daf6@mail.gmail.com>
-References: <3e67fcb10904250512s67c79f70ref8af8655d33c8da@mail.gmail.com> 
-	<3678.87.196.49.84.1240774988.squirrel@webmail.decimal.pt> 
-	<000001c9c703$2d3cabf0$87b603d0$@info> <d39744a20904262346p41c1b5fcy2f754a9263d09df3@mail.gmail.com> 
-	<000a01c9c705$5c4c2db0$14e48910$@info>
+Date: Mon, 27 Apr 2009 10:52:26 +0200
+Message-ID: <49F5724A.80509@tootai.com>
+References: <3e67fcb10904250512s67c79f70ref8af8655d33c8da@mail.gmail.com>    <3678.87.196.49.84.1240774988.squirrel@webmail.decimal.pt>    <3fdd6ce00904261538m20468fedudf11ffd6448c8473@mail.gmail.com> <1822.192.168.1.3.1240821057.squirrel@webmail.decimal.pt>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :from:date:message-id:subject:to:cc:content-type
-         :content-transfer-encoding;
-        bh=CMiTJWcjm9NrHNp49ZT3oxO4tiD3qUi8KTGRZGAO7Gw=;
-        b=afIOcOtDQSbgwDnsCR7sboJSYNXw2BVrc9KmEnp8ej1OVkwruZ6fs7nM+WfN9Lps6j
-         NxON8hTrE+UdNmBU0f5ikPEEqMnNIADsFOBtS1i6/0ZyXjEM1xlIu0B1t3qD7NzQqdJS
-         IXrguZ7gdFI3NKsVI3L6NgQcm/7d9jbI/Bt3U=
-In-Reply-To: <000a01c9c705$5c4c2db0$14e48910$@info>
+In-Reply-To: <1822.192.168.1.3.1240821057.squirrel@webmail.decimal.pt>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: lists@sterenborg.info
-Cc: Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Yes, ofcourse it won't work in that way :)
-I can't think of a solution that does not include ruleset reloading
-after X time... It would be best if you can bypass the changeable
-"address" part of the rules with something else - like in/out
-interface. It would work if your station doesn't have aliases and the
-rules are not targetting specific host if the machine is a router.
-
-On Mon, Apr 27, 2009 at 9:56 AM,  <lists@sterenborg.info> wrote:
->> > If iptables would have to perform a DNS lookup everytime a packet
->> > passes, I think it would be terribly slow and probably not usable
->> > for packetfiltering.
+Jorge Bastos a =E9crit :
+>> [...]
 >>
->> Actually the DNS lookup is performed only once - in the time the
->> ruleis inserted/appended. If the DNS returns more than one IP per
->> name, a number of rules is inserted with each IP returned.
+>> Another way is to set your after-dhcp script to reload your firewall=
+!!
+>>    =20
 >
-> Yes, that's more or less what Jorge described. My point was that if t=
-he
-> Netfilter framework had to perform a DNS lookup for each (new?) packe=
-t
-> that it has to check, I think it would be quite slow (think about DNS
-> query timeouts, etc) and not so usable as it is now.
->
->
-> Grts,
-> Rob
->
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
+> That is no solution. it may be for your cenario but not for the most =
+of
+> people. Just think, if who makes the connection is a modem, and you h=
+ave
+> your *unix machine on nat, that won't work
+It works. You can:
+
+a) run a script to connect to your modem via http (eg wget), extract=20
+your IP and reload iptables rules
+b) if you can't connect to your modem, run a script to go to=20
+http://www.whatismyip.com/tools/ip-address-lookup.asp and do the same=20
+that above
+
+--=20
+Daniel Huhardeaux       _____ ____ ____ _____ _____ _
+enum   +33 368 460 088 (_  __) _  ) _  (_  __) _  _(_)  +48 222 472 472
+iaxtel  1-700-849-6983  / / / // / // / / / / /_/ / /  GIZMO,SKYPE,GTAL=
+K
+sip/iax:callto 101@sip./_/ ( ___( ___/ /_/ (_/ (_/_/.net   tootaiNET
+
