@@ -1,77 +1,90 @@
-From: "Juan Antonio" <pushakk@limbo.ari.es>
-Subject: Re: Ugly problem with ebtables
-Date: Tue, 28 Apr 2009 13:56:13 +0200 (CEST)
-Message-ID: <16d4b3592f68db5e01ba40a2c61c3192.squirrel@limbo.ari.es>
-References: <c5f74e0f56607a07b993f7b3e858a659.squirrel@limbo.ari.es>
-    <49F5B376.2090101@plouf.fr.eu.org>
-    <07d1b2f79cd9ef9765046bb4503bc658.squirrel@limbo.ari.es>
-    <49F6CF16.2060508@plouf.fr.eu.org>
-Reply-To: pushakk@limbo.ari.es
+From: Martin Millnert <millnert@csbnet.se>
+Subject: Re: Select chain from set?
+Date: Tue, 28 Apr 2009 14:27:25 +0200
+Message-ID: <1240921645.14474.141.camel@hsa.vpn.anti>
+References: <33be4bb30904280221x9156f26t43ddfff0f083925f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-4KeTHE2HZfG7zN0WIsFx"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49F6CF16.2060508@plouf.fr.eu.org>
+In-Reply-To: <33be4bb30904280221x9156f26t43ddfff0f083925f@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter List <netfilter@vger.kernel.org>
-
-> Juan Antonio a =E9crit :
->>
->>> Couldn't it be an MTU problem in the tunnel ? AFAIK, when TCP trans=
-mits
->>> a message which must be segmented, it sends maximum-size segments
->>> without the PUSH flag and a last smaller segment with the PUSH flag=
- set
->>> containing the remaining data.
->>
->> I know that, really this is the problem. The first segments without =
-the
->> PUSH flag dissapear completely in spite of these go out for the tunn=
-el .
->> The MTU is the first thing that I verified and this is 1500 in both
->> sides.
->
-> Did you check that the tunnel can actually handle packets of that siz=
-e,
-> for example by sending pings of various sizes up to 1500 through it ?
-> Tunnel encapsulation adds overhead, which might create fragmentation =
-or
-> other issues.
-
-Hello,
-
-I can send pings to exactly 1370 bytes, and over 1440 bytes but I can't
-ping between this interval.
-
-ping 10.8.1.1 -c 1 -s 1450
-PING 10.8.1.1 (10.8.1.1) 1450(1478) bytes of data.
-1458 bytes from 10.8.1.1: icmp_seq=3D1 ttl=3D64 time=3D61.1 ms
-1 packets transmitted, 1 received, 0% packet loss, time 0ms
-
-ping 10.8.1.1 -c 1 -s 1440
-PING 10.8.1.1 (10.8.1.1) 1440(1468) bytes of data.
-1 packets transmitted, 0 received, 100% packet loss, time 0ms
-
-However the MTU is 1500 in both sides and I can send ping without probl=
-em
-in this size.
-
-ping 10.8.1.1 -c 1 -s 1500
-PING 10.8.1.1 (10.8.1.1) 1500(1528) bytes of data.
-1508 bytes from 10.8.1.1: icmp_seq=3D1 ttl=3D64 time=3D60.7 ms
-1 packets transmitted, 1 received, 0% packet loss, time 0ms
-
-Now I'm really lost, I'll look for some parameter in openvpn config.
-
-Thank you very much
+To: Oskar Berggren <oskar.berggren@gmail.com>
+Cc: netfilter@vger.kernel.org
 
 
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+--=-4KeTHE2HZfG7zN0WIsFx
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, 2009-04-28 at 11:21 +0200, Oskar Berggren wrote:
+> Hello,
+>=20
+> is it possible to have iptables query a set of some sort to quickly
+> look up a chain to jump to for a specific packet?
+>=20
+> For example the set would contain a mapping from ip-address ->
+> chain-name. Then the destination address is looked up in the set and
+> iptables would jump to the specified chain.
+>=20
+> Is it possible, or how difficult would it be to implement something
+> like this? I'd imagine it would be implemented as a target, that would
+> have the ability to "redirect" to another target, which would be a
+> chain.
+>=20
+>=20
+> /Oskar
+
+Hi Oskar,
+
+to my knowledge there is no current such functionality. But I second the
+usefulness of such a function. It would be especially useful to replace
+traditional "match trees" of today, to reach down to a per
+customer-chain for inwards and outwards matching.
+
+It seems like it would be beneficial to let it be very similar to the
+ipset of today, in that you would be very well of in having multiple
+such sets to jump to as a target.  Thus you could easily use normal
+matchings to decide whether or not to perform this sort of look-up.
+  It would be useful if each such set would contain the possibility to
+match on either source address/netmask and destination address/netmask.
+
+This all begs the question on how effective some tree structure with -g
+is implemented, to figure out how much of a performance benefit such a
+new target would have over a treelike chain structure. =20
+
+It would indeed be useful to have it all as a single target however,
+save a lot of rules and also be much more readable.
+
+Is it possible to easily extend ipset to perform this?
+
+More input appreciated.
+
+Regards,
+--=20
+Martin Millnert <millnert@csbnet.se>
+
+--=-4KeTHE2HZfG7zN0WIsFx
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iQIcBAABAgAGBQJJ9vYlAAoJEKregIBmHNFOdnMQAN+zfIdynCv/EQPEw61NCiNZ
+RajBXXCbhqRT54f8iDtOC97bHeUAbldC1eEGxp1SS0ZV+PZMDXlnx3FSvZEVSLbA
+FS57W9csdYlbAuW7DhbOgJGXrmXrHaPRz7kgW3jUF8DZa7Wq+LCrIsXeAAwBuiDY
+yU520DWFTuf+asNN+HuV0ZO47MLVafNpztFsWW1MZQ5GhWs7FQHlxFoJmG8LUJjl
+mjAb19Vb3MB0bgMGLW1Ax6aGwEChCkhJf0JWRbrj9UezebyP+jWOmfcwk/7FUIwM
+6mlQLrIhsuvs0gvAdXJM3qRMTibG6c2U7bYblwOEA56xJkWonhlb1BnYnNxsgl55
+S51MpSwVE/CbgssqskEfzZoaKuDUmaR5kdXxrD0vCEMo1uJHVMHMkO6aA17IqJSd
+5iQuEv73MlqITguXedSeWlpVBzjc72fSSTIWDlAedsLyWGMtzehEupHvSXufcJZu
+pHheBngfTnNVeAXi8kvwlkYmg6mhd7hLAeRZqg7SMRYwoiLd8r0FM2dNcpPw3ppK
+XYHmef1iEQaY4CiSGNAe4aLd4uHeugiY0eVv7J0ELO3G46j8avjWpHLFRkHWmXBm
+z2OuE+lyE3M0YKT72cYi2SQEUSru+yKxLUfI9SbPXu4kzUQYQtexHVQaX2stepLD
+eilT5GgF6HmsVSTu2iHQ
+=uY9B
+-----END PGP SIGNATURE-----
+
+--=-4KeTHE2HZfG7zN0WIsFx--
 
