@@ -1,109 +1,41 @@
-From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
-	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
-Subject: Re: Problems with DNAT'ing in PREROUTING
-Date: Tue, 28 Apr 2009 19:20:40 +0300
-Message-ID: <1240935640.8365.4.camel@casper.meteor.dp.ua>
-References: <3a8740fd0904280800t357f2531gfd5bfa9d37649587@mail.gmail.com>
-Reply-To: casper@meteor.dp.ua
+From: Susan Hinrichs <shinrich@thought-mesh.net>
+Subject: Re: Select chain from set?
+Date: Tue, 28 Apr 2009 10:39:00 -0500
+Message-ID: <1240933140.12894.366.camel@chichi>
+References: <33be4bb30904280221x9156f26t43ddfff0f083925f@mail.gmail.com>
+	 <1240921645.14474.141.camel@hsa.vpn.anti>
+	 <1240925694.4256.32.camel@casper.meteor.dp.ua>
+Reply-To: shinrich@ieee.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <3a8740fd0904280800t357f2531gfd5bfa9d37649587@mail.gmail.com>
+In-Reply-To: <1240925694.4256.32.camel@casper.meteor.dp.ua>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="koi8-r"
-To: Subhadeep Ghosh <subhadeep.ghosh@uniken.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: casper@meteor.dp.ua
+Cc: Martin Millnert <millnert@csbnet.se>, Oskar Berggren <oskar.berggren@gmail.com>, netfilter@vger.kernel.org
 
-=F7 =F7=D4=CF, 28/04/2009 =D7 20:30 +0530, Subhadeep Ghosh =D0=C9=DB=C5=
-=D4:
-> Hello,
->=20
-> I am trying to build a custom firewall kernel module for Linux. The
-> module registers itself in the pre-routing chain as the first module.
-> In the NetFilter callback function I check if the skb is for a tcp
-> connection and the port is 80. If the two requirements are meant, I
-> modify the destination address and the checksum of the IP as well as
-> the TCP header to the ip address of the machine where this (DNAT) is
-> taking place in the ip header and let the packet pass. Unfortunately,
-> this is not working. I've put a great deal of effort trying to
-> understand the DNAT'ing code in xtables but again of no use. As far a=
-s
-> I've read, at the time of pre-routing nothing in the skb, excepting
-> the ethernet, ip and protocol headers along with the payload is set.
-> If that is the case (and if the checksums are all right), I don't see
-> a reason why a packet should be dropped.
->=20
-> Following is the NetFilter callback function code (I am not including
-> the rest of the code as it is trivial).
->=20
-> static unsigned int _rfw_prerouting_hook(unsigned int             _nH=
-ook,
->                      struct sk_buff*          _pSKB,
->                      const struct net_device* _pInNIC,
->                      const struct net_device* _pOutNIC,
->                      int (*_pOkFn)(struct sk_buff*))
-> {
->   if(!strcmp(_pInNIC->name, "eth1"))
->     {
->       if(_pSKB)
->     {
->       struct iphdr* _pIPHeader =3D ip_hdr(_pSKB);
->=20
->       if(_pIPHeader)
->         {
->           switch(_pIPHeader->protocol)
->         {
->         case IPPROTO_TCP:
->           {
->             struct tcphdr* _pTCPHeader =3D (struct tcphdr*)(_pSKB->da=
-ta
-> + (_pIPHeader->ihl << 2));
->=20
->=20
->             if(_pTCPHeader &&
->                (_pIPHeader->daddr !=3D ((1 << 24) + 10)) &&
->                (_pTCPHeader->dest =3D=3D htons(80)))
->               {
->             // Only modifying TCP packets whose destination IP is not
-> 10.0.0.1 and destination port is 80
->             _pIPHeader->daddr =3D (1 << 24) + 10; // Hopefully this
-> translates to 10.0.0.1
->             _pIPHeader->check =3D 0;
->             _pIPHeader->check =3D ip_fast_csum((unsigned
-> char*)_pIPHeader, _pIPHeader->ihl);
->=20
->             _pTCPHeader->check =3D 0;
->             _pTCPHeader->check =3D tcp_v4_check(_pTCPHeader->doff << =
-2,
-> _pIPHeader->saddr,
->                               _pIPHeader->daddr,
->                               csum_partial((char*)_
-> pTCPHeader,
->                                        _pTCPHeader->doff << 2,
->                                        0));
->               }
->           } break;
->         }
->         }
->     }
->     }
->=20
->   return NF_ACCEPT;
-> }
->=20
-> One might say that this task can be easily done using a trivial
-> iptables rule, but my problem does not end at this point. What I am
-> expected to do is eventually conditionally do a DNAT for just a
-> specified, dynamic set of IP addresses.
+I also agree that a runtime structure to track traffic attributes and
+match them to targets would be great.  I created my own match-tree table
+generator to achieve a similar effect.  It works, but updating large
+static structures can be rather time consuming and fragile.
 
-If the task needed is usual DNAT and the problem is in the fact
-that addresses are dynamic then "ipset" would solve your task.
+I have a question about the '-g' terminology used by Casper and Oscar.
+Is this a new piece of functionality?  Or are you talking about the
+--goto option?
 
-It is much more simple and easy to add/remove IPs to/from ipset
-in combination with static DNAT rules even from withing C program.
+Susan
 
---=20
-=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
-ua>
+> > This all begs the question on how effective some tree structure with -g
+> > is implemented, to figure out how much of a performance benefit such a
+> > new target would have over a treelike chain structure.  
+> 
+> If we compare many linear -g with just one function gettarget(ip) the
+> different is many/one. Tree-like -g structure would save most
+> comparitions, but is hard to write for every task. Function-like target
+> is real fast and fully automatic, the only disadvantage is in fact it
+> doesn't exist :)
+> 
+
 
