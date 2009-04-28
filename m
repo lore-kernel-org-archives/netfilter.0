@@ -1,85 +1,108 @@
-From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
-	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
-Subject: Re: Select chain from set?
-Date: Tue, 28 Apr 2009 16:34:54 +0300
-Message-ID: <1240925694.4256.32.camel@casper.meteor.dp.ua>
-References: <33be4bb30904280221x9156f26t43ddfff0f083925f@mail.gmail.com>
-	 <1240921645.14474.141.camel@hsa.vpn.anti>
-Reply-To: casper@meteor.dp.ua
+From: Subhadeep Ghosh <subhadeep.ghosh@uniken.com>
+Subject: Problems with DNAT'ing in PREROUTING
+Date: Tue, 28 Apr 2009 20:30:14 +0530
+Message-ID: <3a8740fd0904280800t357f2531gfd5bfa9d37649587@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1240921645.14474.141.camel@hsa.vpn.anti>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="koi8-r"
-To: Martin Millnert <millnert@csbnet.se>
-Cc: Oskar Berggren <oskar.berggren@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-=F7 =F7=D4=CF, 28/04/2009 =D7 14:27 +0200, Martin Millnert =D0=C9=DB=C5=
-=D4:
-> On Tue, 2009-04-28 at 11:21 +0200, Oskar Berggren wrote:
-> > Hello,
-> >=20
-> > is it possible to have iptables query a set of some sort to quickly
-> > look up a chain to jump to for a specific packet?
-> >=20
-> > For example the set would contain a mapping from ip-address ->
-> > chain-name. Then the destination address is looked up in the set an=
-d
-> > iptables would jump to the specified chain.
-> >=20
-> > Is it possible, or how difficult would it be to implement something
-> > like this? I'd imagine it would be implemented as a target, that wo=
-uld
-> > have the ability to "redirect" to another target, which would be a
-> > chain.
-> >=20
-> >=20
-> > /Oskar
->=20
-> Hi Oskar,
->=20
-> to my knowledge there is no current such functionality. But I second =
-the
-> usefulness of such a function. It would be especially useful to repla=
-ce
-> traditional "match trees" of today, to reach down to a per
-> customer-chain for inwards and outwards matching.
->=20
-> It seems like it would be beneficial to let it be very similar to the
-> ipset of today, in that you would be very well of in having multiple
-> such sets to jump to as a target.  Thus you could easily use normal
-> matchings to decide whether or not to perform this sort of look-up.
->   It would be useful if each such set would contain the possibility t=
-o
-> match on either source address/netmask and destination address/netmas=
-k.
+Hello,
 
-This functionality is more related to a special target than ipset
-feature. -j CLASSIFY does half of the work and as to me is the most
-ideal to be taken as the base for the new target.
+I am trying to build a custom firewall kernel module for Linux. The
+module registers itself in the pre-routing chain as the first module.
+In the NetFilter callback function I check if the skb is for a tcp
+connection and the port is 80. If the two requirements are meant, I
+modify the destination address and the checksum of the IP as well as
+the TCP header to the ip address of the machine where this (DNAT) is
+taking place in the ip header and let the packet pass. Unfortunately,
+this is not working. I've put a great deal of effort trying to
+understand the DNAT'ing code in xtables but again of no use. As far as
+I've read, at the time of pre-routing nothing in the skb, excepting
+the ethernet, ip and protocol headers along with the payload is set.
+If that is the case (and if the checksums are all right), I don't see
+a reason why a packet should be dropped.
 
-> This all begs the question on how effective some tree structure with =
--g
-> is implemented, to figure out how much of a performance benefit such =
-a
-> new target would have over a treelike chain structure. =20
+=46ollowing is the NetFilter callback function code (I am not including
+the rest of the code as it is trivial).
 
-If we compare many linear -g with just one function gettarget(ip) the
-different is many/one. Tree-like -g structure would save most
-comparitions, but is hard to write for every task. Function-like target
-is real fast and fully automatic, the only disadvantage is in fact it
-doesn't exist :)
+static unsigned int _rfw_prerouting_hook(unsigned int=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0 _nHook,
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0struct sk_buff*=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0 _pSKB,
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0const struct net_d=
+evice* _pInNIC,
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0const struct net_d=
+evice* _pOutNIC,
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0int (*_pOkFn)(stru=
+ct sk_buff*))
+{
+=A0 if(!strcmp(_pInNIC->name, "eth1"))
+=A0=A0=A0 {
+=A0=A0=A0=A0=A0 if(_pSKB)
+=A0=A0=A0 {
+=A0=A0=A0 =A0 struct iphdr* _pIPHeader =3D ip_hdr(_pSKB);
 
-> It would indeed be useful to have it all as a single target however,
-> save a lot of rules and also be much more readable.
+=A0=A0=A0 =A0 if(_pIPHeader)
+=A0=A0=A0 =A0=A0=A0 {
+=A0=A0=A0 =A0=A0=A0=A0=A0 switch(_pIPHeader->protocol)
+=A0=A0=A0 =A0=A0=A0 {
+=A0=A0=A0 =A0=A0=A0 case IPPROTO_TCP:
+=A0=A0=A0 =A0=A0=A0 =A0 {
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 struct tcphdr* _pTCPHeader =3D (struct tc=
+phdr*)(_pSKB->data
++ (_pIPHeader->ihl << 2));
 
-Also, something is telling me that if the deal is comming to write new
-target it is good idea to review the whole task as it probably can be
-solved in a more effective way.
 
---=20
-=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
-ua>
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 if(_pTCPHeader &&
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0=A0=A0=A0 (_pIPHeader->daddr !=3D ((1 << 2=
+4) + 10)) &&
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0=A0=A0=A0 (_pTCPHeader->dest =3D=3D htons(=
+80)))
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0=A0=A0 {
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 // Only modifying TCP packets whose desti=
+nation IP is not
+10.0.0.1 and destination port is 80
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 _pIPHeader->daddr =3D (1 << 24) + 10; // =
+Hopefully this
+translates to 10.0.0.1
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 _pIPHeader->check =3D 0;
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 _pIPHeader->check =3D ip_fast_csum((unsig=
+ned
+char*)_pIPHeader, _pIPHeader->ihl);
 
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 _pTCPHeader->check =3D 0;
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 _pTCPHeader->check =3D tcp_v4_check(_pTCP=
+Header->doff << 2,
+_pIPHeader->saddr,
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=
+ _pIPHeader->daddr,
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=
+ csum_partial((char*)_
+pTCPHeader,
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=
+=A0=A0 =A0=A0=A0=A0=A0=A0 _pTCPHeader->doff << 2,
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=A0=A0 =A0=
+=A0=A0 =A0=A0=A0=A0=A0=A0 0));
+=A0=A0=A0 =A0=A0=A0 =A0=A0=A0=A0=A0 }
+=A0=A0=A0 =A0=A0=A0 =A0 } break;
+=A0=A0=A0 =A0=A0=A0 }
+=A0=A0=A0 =A0=A0=A0 }
+=A0=A0=A0 }
+=A0=A0=A0 }
+
+=A0 return NF_ACCEPT;
+}
+
+One might say that this task can be easily done using a trivial
+iptables rule, but my problem does not end at this point. What I am
+expected to do is eventually conditionally do a DNAT for just a
+specified, dynamic set of IP addresses.
+
+It would be great if someone could point me in the right direction.
+
+Thank you and regards,
+Subhadeep Ghosh
