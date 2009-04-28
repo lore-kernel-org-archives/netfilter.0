@@ -1,36 +1,41 @@
-From: Oskar Berggren <oskar.berggren@gmail.com>
-Subject: Select chain from set?
-Date: Tue, 28 Apr 2009 11:21:11 +0200
-Message-ID: <33be4bb30904280221x9156f26t43ddfff0f083925f@mail.gmail.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: drop all packet on one interface of a bridge.
+Date: Tue, 28 Apr 2009 11:36:47 +0200
+Message-ID: <49F6CE2F.3040501@plouf.fr.eu.org>
+References: <6EFFAB74-FFB0-4793-B702-1BA3DC56545D@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type:content-transfer-encoding;
-        bh=0GO16MiTGJUZtct6v3U3DsxmzE3fBLvm6IiD2YTbdM8=;
-        b=pTKj9C82csH7DxnCxOAwHt7NX491eR/tAZabD8eF0GiEFiR6bNKTbb5DvwP2evNlGI
-         uxWGt5Md2IAfiCfL8wnzwZ/JMAb3vdrejD8g2nWpSA4kwjem1ms8ObeiT0YSHx3mRuXj
-         LotJsvcUr0jlOnFcqHl/EhjJPBOgiBs8EwrC8=
+In-Reply-To: <6EFFAB74-FFB0-4793-B702-1BA3DC56545D@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: mopsosforum <mopsosforum@gmail.com>
+Cc: netfilter@vger.kernel.org
 
 Hello,
 
-is it possible to have iptables query a set of some sort to quickly
-look up a chain to jump to for a specific packet?
+mopsosforum a =E9crit :
+>=20
+> But I want to add another interface, eth3 on the bridge and for the=20
+> moment, drop all the packet.
+>=20
+> I tried :
+>=20
+> ebtables -A INPUT -i eth3 -j DROP
+> ebtables -A OUPUT -o eth3 -j DROP
+> ebtables -A FORWARD -i eth3 -j DROP
+> ebtables -A FORWARD -o eth3 -j DROP
+>=20
+> But I have always some packet :
+> arp and msdns what always allow.
+>=20
+> How is it possible?
 
-For example the set would contain a mapping from ip-address ->
-chain-name. Then the destination address is looked up in the set and
-iptables would jump to the specified chain.
+Thes packets may be sent directly on eth3, not on the bridge. ebtables=20
+sees only packets which enter the bridge.
 
-Is it possible, or how difficult would it be to implement something
-like this? I'd imagine it would be implemented as a target, that would
-have the ability to "redirect" to another target, which would be a
-chain.
+> How Can I drop this type on packet?
 
-
-/Oskar
+You can drop outgoing IP traffic on eth3 with iptables, or stop the=20
+application or service sending this trafic from doing so.
