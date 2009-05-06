@@ -1,41 +1,53 @@
-From: "Slansky Lukas" <Lukas.Slansky@upce.cz>
-Subject: PostgreSQL x iptables
-Date: Wed, 6 May 2009 11:13:23 +0200
-Message-ID: <7F27BA389269BB47A79525510325A35F6F9253@se02.upce.cz>
+From: Mart Frauenlob <mart.frauenlob@chello.at>
+Subject: Re: iptables 1.4.x and xt_recent: my rules have fallen and they can't
+ get up!
+Date: Wed, 06 May 2009 19:07:41 +0200
+Message-ID: <4A01C3DD.1000900@chello.at>
+References: <49FBFDB7.4070204@gmail.com> <49FC0ED6.1050102@chello.at>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <49FC0ED6.1050102@chello.at>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello,
-we're using PG and Application Server (JBoss) on separate CentOS servers
-with Cisco PIX in between. On DB side is iptable with following relevant
-rules:
+Mart Frauenlob wrote:
+> Weedy wrote:
+>> So apparently this has become illegal, and neither google or me 
+>> playing around has figured out how to update it. Input is most welcome.
+>>
+>> + iptables -t nat -A prerouting_rule -i br-lan -p tcp --dport 80 -j 
+>> REDIRECT --to-port 3128
+>> + iptables -t nat -A prerouting_rule -p tcp --dport 2020 -m state 
+>> --state NEW -m recent --name ATTACKER_SSH --rsource --update 
+>> --seconds 120 --hitcount 5 -j DROP
+>> iptables v1.4.3.2:
+>> The "nat" table is not intended for filtering, the use of DROP is 
+>> therefore inhibited.
+>>
+>> Try `iptables -h' or 'iptables --help' for more information.
+>>
+>> This is a openwrt router running the old firewall (not supported or I 
+>> would have asked on their mailing list) I will attach it encase 
+>> anyone wants to give it a quick peek and finds anything terribly 
+>> wrong/outdated (but it does currently work fine).
+>>
+>> Thank you for your time.
+> Hello,
+>
+> since iptables 1.4.3.2 DROP is prohibited in the nat table.
+> It actually was never intended to be used for 'filtering'. Filtering 
+> should be done in the 'filter' table (hence the name).
+> The nat table only 'sees' state NEW connections, hence the --state NEW 
+> is obsolete.
+> Change your rules, to DROP / ACCEPT in the filter table.
+>
+> greets
+>
+> Mart
+>
+> P.S. didn't take a look at the attached ruleset...
 
-1. -A RH-Firewall-1-INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-2. -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp -s
-aaa.bbb.ccc.ddd --dport 5432 -j ACCEPT
-3. -A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
-
-I was wondering when these rules are not OK for our environment. It
-seems that rules 1 and 2 sometimes (probably for complicated queries)
-pass packets and therefore these packets are rejected by rule 3. Such
-connection is then in some weird state, doesn't communicate (obviously -
-packets are dropped) and psql (or JBoss) connection is blocking for a
-long time (at least few hours).
-
-Everything seems to be OK when I have changed rule 2 to  "-A
-RH-Firewall-1-INPUT -m tcp -p tcp -s aaa.bbb.ccc.ddd --dport 5432 -j
-ACCEPT".
-
-I'm really confused - what other states are possible for iptables except
-ESTABLISHED, RELATED or NEW? In iptables manpage is only INVALID, but
-why is this state emerging?
-
-Any idea?
-
-Lukas
