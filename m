@@ -1,53 +1,40 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: iptables 1.4.x and xt_recent: my rules have fallen and they can't
- get up!
-Date: Wed, 06 May 2009 19:07:41 +0200
-Message-ID: <4A01C3DD.1000900@chello.at>
-References: <49FBFDB7.4070204@gmail.com> <49FC0ED6.1050102@chello.at>
-Reply-To: netfilter@vger.kernel.org
+From: Aaron Clausen <mightymartianca@gmail.com>
+Subject: Port Forwarding Question
+Date: Wed, 6 May 2009 11:25:26 -0700
+Message-ID: <8ec0428d0905061125n7aad6c74nc3b63bfedf890fa8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <49FC0ED6.1050102@chello.at>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=navwF/bBcAg7aPRdqAo64v7+KMF47sXz5O1qWdMYATk=;
+        b=mN/SuqAaR38jbaZcGlNV9sqy04qrIq5VgNcWIDD2ocpiX1hZReXrJ+Bf2Y56tKoYRp
+         XD6c5CYJE2/glK/BXgNdNAzskdIq+NarYHhL8zSPx+xMbY0bIixgxYU/m2/TDnfTAmP/
+         7LHULZ9NHsHVs4i9O7iJ6Os3/d3h1pEYLDT5g=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Mart Frauenlob wrote:
-> Weedy wrote:
->> So apparently this has become illegal, and neither google or me 
->> playing around has figured out how to update it. Input is most welcome.
->>
->> + iptables -t nat -A prerouting_rule -i br-lan -p tcp --dport 80 -j 
->> REDIRECT --to-port 3128
->> + iptables -t nat -A prerouting_rule -p tcp --dport 2020 -m state 
->> --state NEW -m recent --name ATTACKER_SSH --rsource --update 
->> --seconds 120 --hitcount 5 -j DROP
->> iptables v1.4.3.2:
->> The "nat" table is not intended for filtering, the use of DROP is 
->> therefore inhibited.
->>
->> Try `iptables -h' or 'iptables --help' for more information.
->>
->> This is a openwrt router running the old firewall (not supported or I 
->> would have asked on their mailing list) I will attach it encase 
->> anyone wants to give it a quick peek and finds anything terribly 
->> wrong/outdated (but it does currently work fine).
->>
->> Thank you for your time.
-> Hello,
->
-> since iptables 1.4.3.2 DROP is prohibited in the nat table.
-> It actually was never intended to be used for 'filtering'. Filtering 
-> should be done in the 'filter' table (hence the name).
-> The nat table only 'sees' state NEW connections, hence the --state NEW 
-> is obsolete.
-> Change your rules, to DROP / ACCEPT in the filter table.
->
-> greets
->
-> Mart
->
-> P.S. didn't take a look at the attached ruleset...
+I'm in the process of replacing a crappy old 3Com router.  I did a
+test run last night with the new Linux router last night, but there is
+one issue that I can't quite get my head around.  On the old 3Com, a
+user inside the internal NATed network, when he accesses a forwarded
+port, can contact the internal device in question.  For instance, I
+have a web server on the internal network with port 80 forwarded to
+it.  With the 3Com router, I can, from another internal computer,
+access that server via the external interface (ie, by going
+http://publicaddress).  When I throw in my Linux router, it does not
+do that, and user's have to use the internal IP or host name to access
+the device.
 
+Now, if need be, I'll just toss in Bind 9 views, so that internal
+users get fed the internal IP, but is there a way to do this under
+iptables (I'm assuming there is, as I'm fairly certain the old 3Com
+router is running a version of iptables)?
+
+-- 
+Aaron Clausen
+mightymartianca@gmail.com
