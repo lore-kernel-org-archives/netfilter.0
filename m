@@ -1,85 +1,86 @@
-From: Elvir Kuric <omasnjak@gmail.com>
-Subject: Re: PostgreSQL x iptables
-Date: Wed, 6 May 2009 20:36:37 +0200
-Message-ID: <1814bfe70905061136r1df845b9h7e3f3de816993f80@mail.gmail.com>
-References: <7F27BA389269BB47A79525510325A35F6F9253@se02.upce.cz>
+From: "Barry A Rich" <barich@trisectrix.com>
+Subject: How to reset everything
+Date: Wed, 6 May 2009 18:03:38 -0400
+Message-ID: <002c01c9ce96$8336c230$89a44690$@com>
+Reply-To: <barich@trisectrix.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=GP2R+4d7JEX61IQxT+mz6wqwm+T7aewvQw82wROOObg=;
-        b=qe/lidTDFxSwhiOr79hC2aUsQrgaKXvhkx2Bm4IuGrPlWF2fyX+3BIPvdvT82wLFek
-         Lu8y0BpohfyLSRHaZSSHzXRXrgqkAh8bgSiCQx1i0Hr6s3SghxuFcGL4cN79jsTzGKiw
-         t5QFatmYl8KKzRZISGTk622jk0dBj8L08z/6k=
-In-Reply-To: <7F27BA389269BB47A79525510325A35F6F9253@se02.upce.cz>
+Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Slansky Lukas <Lukas.Slansky@upce.cz>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Hi Lukas,
+We use Netfilter to load balance UDP packets across multiple uplinks (ppp0,
+ppp1, ppp2, ppp3). Uplinks can be added or removed on the fly. When this
+happens, we reset everything and run the firewall/routing script that
+matches the new uplink configuration. The reset looks like this:
 
-you should accept NEW connection for traffic you need. Rule "1" accept
-only connections which are initiated
-from " original host"---host which already sent NEW.
-You can to receive all trafic on particular port/from particular host
-and I think it will not be problem to make what you want
-Also, please take care that is necessary to reload rules ( do iptables
--X -F -Z ) after you change something.
+######################### Begin reset #########################
 
-Take a look into Cisco PIX, maybe there you have some limit
+iptables -F INPUT
+iptables -P INPUT DROP
+iptables -F OUTPUT
+iptables -P OUTPUT DROP
+iptables -F FORWARD
+iptables -P FORWARD DROP
+iptables -F -t raw
+iptables -F -t nat
+iptables -F -t mangle
 
-=46or iptables reference see man iptables or Oscar Anderson Iptables ma=
-nual
+ip route del default
+ip route flush table uplink1
+ip route flush table uplink2
+ip route flush table uplink3
+ip route flush table uplink4
+ip route flush dev ppp0
+ip route flush dev ppp1
+ip route flush dev ppp2
+ip route flush dev ppp3
 
-Regards/Ahoj
+tc qdisc del dev ppp0 root
+tc qdisc del dev ppp1 root
+tc qdisc del dev ppp2 root
+tc qdisc del dev ppp3 root
 
-Elvir Kuric
+ip route flush cache
 
-On Wed, May 6, 2009 at 11:13 AM, Slansky Lukas <Lukas.Slansky@upce.cz> =
-wrote:
-> Hello,
-> we're using PG and Application Server (JBoss) on separate CentOS serv=
-ers
-> with Cisco PIX in between. On DB side is iptable with following relev=
-ant
-> rules:
->
-> 1. -A RH-Firewall-1-INPUT -m state --state ESTABLISHED,RELATED -j ACC=
-EPT
-> 2. -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp -s
-> aaa.bbb.ccc.ddd --dport 5432 -j ACCEPT
-> 3. -A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibite=
-d
->
-> I was wondering when these rules are not OK for our environment. It
-> seems that rules 1 and 2 sometimes (probably for complicated queries)
-> pass packets and therefore these packets are rejected by rule 3. Such
-> connection is then in some weird state, doesn't communicate (obviousl=
-y -
-> packets are dropped) and psql (or JBoss) connection is blocking for a
-> long time (at least few hours).
->
-> Everything seems to be OK when I have changed rule 2 to =A0"-A
-> RH-Firewall-1-INPUT -m tcp -p tcp -s aaa.bbb.ccc.ddd --dport 5432 -j
-> ACCEPT".
->
-> I'm really confused - what other states are possible for iptables exc=
-ept
-> ESTABLISHED, RELATED or NEW? In iptables manpage is only INVALID, but
-> why is this state emerging?
->
-> Any idea?
->
-> Lukas
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
+######################### End reset #########################
+
+For two uplinks, the setup looks like this:
+
+######################### Begin setup #########################
+
+iptables -t raw -A PREROUTING -i eth0 -p udp --sport 6970 -j NOTRACK
+
+iptables -t mangle -A PREROUTING -p udp --sport 6970 -m statistic --mode nth
+--every 2 --packet 0 -j MARK --set-mark 1
+
+iptables -t mangle -A PREROUTING -p udp --sport 6970 -m statistic --mode nth
+--every 2 --packet 1 -j MARK --set-mark 2
+
+tc qdisc add dev ppp0 root handle 1: prio
+
+tc qdisc add dev ppp1 root handle 1: prio
+
+tc filter add dev ppp0 parent 1:0 protocol ip prio 1 \
+    handle 1 fw flowid 1:1 action nat egress x.x.x.x/32 y.y.y.y
+
+tc filter add dev ppp1 parent 1:0 protocol ip prio 1 \
+    handle 2 fw flowid 1:1 action nat egress x.x.x.x/32 z.z.z.z
+
+######################### End setup #########################
+
+The UDP stream continues to be received on the LAN interface during the
+reset/setup. The reset/setup works most of the time, but occasionally the
+packets going out ppp0 do not get NAT'd after a reset/setup. Repeating the
+setup/reset sequence a second time seems to make it work, but I'd rather
+understand what's wrong and fix it.
+
+All help is appreciated.
+
+Thanks.
+
+
+
