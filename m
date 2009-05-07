@@ -1,70 +1,54 @@
-From: Subhadeep Ghosh <subhadeep.ghosh@uniken.com>
-Subject: Reg: TCP Packet Modification
-Date: Thu, 7 May 2009 10:26:43 +0530
-Message-ID: <3a8740fd0905062156l3fff40b9u2001ff9d4b4b44db@mail.gmail.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: =?ISO-8859-1?Q?Fredrik_Str=F6mberg?= <stromberg@insto.org>
+Subject: Block outgoing spam from a network using iptables?
+Date: Thu, 7 May 2009 11:36:20 +0200
+Message-ID: <E83DD376-AB3F-472D-B8DF-18F37B27D788@insto.org>
+Mime-Version: 1.0 (Apple Message framework v930.3)
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="windows-1252"; format="flowed	delsp=yes"
 To: netfilter@vger.kernel.org
 
 Hello,
 
-I am trying to write a xtables hook which would append a 32bit packet
-signature in a TCP packet. To achieve this, what I do is...
+I=B4m using iptables on a gateway for a lot of computers. I want to =20
+block spam that goes out through the gateway, namely, I want to block =20
+certain traffic to dport 25.
 
-1. I copy the SKB into a new SKB with the additional tail-room using
-skb_copy_expand.
-2. I calculate the signature of the packet.
-3. Update the 'tot_len' field in the IP header.
-4. Calculate the checksum of the IP header using ip_send_check.
-5. Append the signature to the packet and update the checksum of the
-sk_buff using skb_add_data.
-6. Attach the Netfilter connection tracking details of the old sk_buff
-to the new sk_buff
-7. Call the dst->output of the new sk_buff.
-8. Drop the old sk_buff.
+Scanning the contents of the emails is not an option, so I need some =20
+kind of rules that say something like "If ip-adress X sends more than =20
+Y emails within Z minutes, that ip will be logged and blocked from =20
+sending mail for C hours, and if the sending persists for D minutes, =20
+log that too".
 
-I have placed this target hook in the 'nat' table with hook number as
-NF_INET_LOCAL_OUT.
-The problem is that the hook receives the packet, modifies it
-successfully but after sending the packet does not reach its
-destination. I have tried out many possibilities but none of them
-worked. It would be great if someone could point out what I am doing
-wrong. Following is the code snippet...
+I=B4ve googled my problem but have been unable to find much. I don=B4t =
+=20
+expect a complete solution, just suggestions and hints. Although, a =20
+complete solution would be nice to study and learn from, if someone =20
+here is able to do it.
 
-[struct sk_buff* _pOldSKB]
-[const struct xt_target_param* _pParam]
+Maybe logging how many emails is impossible. If so, what is the best =20
+solution you can think of that doesn=B4t involve scanning the contents?
 
-struct iphdr* _pIPHeader = ip_hdr(_pOldSKB);
+I found this but I don=B4t understand how it does what he says it does.=
+ =20
+- http://marti.dimerge.net/blog/tag/ipt_recent :
 
-if(_pParam && _pIPHeader &&
-   (_pParam->hooknum == NF_INET_LOCAL_OUT) &&
-   (_pIPHeader->protocol == IPPROTO_TCP))
-{
-    struct sk_buff* _pNewSKB = skb_copy_expand(_pOldSKB, 0,
-sizeof(unsigned int), GFP_ATOMIC);
+modprobe ipt_recent ip_list_tot=3D32 #ip_list_tot - defines the size of=
+ =20
+ip_recent file
+iptables -A FORWARD -p tcp =96dport 25 -m recent =96name SMTP =96second=
+s 30 =96=20
+update -j DROP
+iptables -A FORWARD -p tcp =96dport 25 -m limit =96limit 1/second =96li=
+mit-=20
+burst 5 -j LOG =96log-level info =96log-prefix =93smtp-log =94
+iptables -A FORWARD -p tcp =96dport 25 -m recent =96name SMTP =96set -j=
+ ACCEPT
 
-    if(_pNewSKB)
-    {
-        struct iphdr*     _pNewIPHeader = ip_hdr(_pNewSKB);
-        unsigned char* _pStart              = (unsigned
-char*)(_pNewSKB->data + _pNewIPHeader->ihl + sizeof(struct tcphdr));
-        unsigned int      _nSignature      =
-calculate_signature((const unsigned char*)_pStart, (unsigned
-int)(_pNewSKB->tail - _pStart));
+If this is the wrong list and I should look for help somewhere else, =20
+please say so.
 
-        _pNewIPHeader->tot_len = htons(ntohs(_pNewIPHeader->tot_len) +
-sizeof(unsigned int));
-        ip_send_check(_pNewIPHeader);
-        skb_add_data(_pNewSKB, (char*)&_nSignature, sizeof(unsigned int));
-        nf_ct_attach(_pNewSKB, _pOldSKB);
-        _pNewSKB->dst->output(_pNewSKB);
-        return NF_DROP;
-    }
-}
 
-Thank you and regards,
-Subhadeep Ghosh
+Kind regards, stromberg
