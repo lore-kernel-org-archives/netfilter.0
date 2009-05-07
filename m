@@ -1,99 +1,47 @@
-From: "Slansky Lukas" <Lukas.Slansky@upce.cz>
-Subject: RE: PostgreSQL x iptables
-Date: Thu, 7 May 2009 16:56:17 +0200
-Message-ID: <7F27BA389269BB47A79525510325A35F6F92E1@se02.upce.cz>
-References: <7F27BA389269BB47A79525510325A35F6F9253@se02.upce.cz> <1814bfe70905061136r1df845b9h7e3f3de816993f80@mail.gmail.com>
+From: Thomas Jacob <jacob@internet24.de>
+Subject: Re: Select chain from set?
+Date: Thu, 07 May 2009 16:57:20 +0200
+Message-ID: <1241708240.12279.28.camel@enterprise.ims-firmen.de>
+References: <33be4bb30904280221x9156f26t43ddfff0f083925f@mail.gmail.com>
+	 <1240921645.14474.141.camel@hsa.vpn.anti>
+	 <1240925694.4256.32.camel@casper.meteor.dp.ua>
+	 <1240933140.12894.366.camel@chichi>
+	 <1240992704.4235.1.camel@casper.meteor.dp.ua>
+	 <1241106752.2778.91.camel@chichi>
+	 <1241690844.5166.3.camel@casper.meteor.dp.ua>
+	 <1241703893.2778.297.camel@chichi>
+	 <1241704875.12279.13.camel@enterprise.ims-firmen.de>
+	 <1241706663.2778.302.camel@chichi>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-class: urn:content-classes:message
-In-Reply-To: <1814bfe70905061136r1df845b9h7e3f3de816993f80@mail.gmail.com>
+In-Reply-To: <1241706663.2778.302.camel@chichi>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: 
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: shinrich@ieee.org
+Cc: casper@meteor.dp.ua, Martin Millnert <millnert@csbnet.se>, Oskar Berggren <oskar.berggren@gmail.com>, netfilter@vger.kernel.org
 
-Hello,
-as you maybe see there is rule 2 that accepts new connections. Unfortun=
-ately we have found that CISCO works really badly with SACK packets and=
- these are then recognized as INVALID and dropped. We still don't know =
-what is wrong and why SACKs are produced by I suspect PIX too. The work=
-around is and some explanation is mentioned in LKML: http://lkml.org/lk=
-ml/2007/7/29/174
+On Thu, 2009-05-07 at 09:31 -0500, Susan Hinrichs wrote:
+> > Nftables will let you do that in the future
+> > 
+> > http://lwn.net/Articles/324251/
+> > 
+> 
+> Great! Looking forward to it.  The dictionaries look great.  I'll have
+> to start playing with the first version on a test machine.  Do you know
+> what kind of MAC address support there is?  Similar to the source mac
+> support in iptables?
 
-Now after turning SACKs off seems connection stabile. But we'll try to =
-figure out why are such packets produced. But it will probably take tim=
-e...
+Sorry, can't help you there. It's probably best to ask concrete question
+about the planned features of nftables on netfilter-devel list, AFAIK
+it's still under heavy development. But as far as I understand the
+dictionary concept, mac address matching should become available at
+one point. 
 
-Thanks,
-Lukas
+" Sets (as everything else) operate on generic
+data and thus can be used for any kind of match."
 
------Original Message-----
-=46rom: Elvir Kuric [mailto:omasnjak@gmail.com]=20
-Sent: Wednesday, May 06, 2009 8:37 PM
-To: Slansky Lukas
-Cc: netfilter@vger.kernel.org
-Subject: Re: PostgreSQL x iptables
+Until nftables becomes stable enough for production I myself am sticking
+with the chain tree approach (and ipset for simple IP match sets)
 
-Hi Lukas,
-
-you should accept NEW connection for traffic you need. Rule "1" accept
-only connections which are initiated
-from " original host"---host which already sent NEW.
-You can to receive all trafic on particular port/from particular host
-and I think it will not be problem to make what you want
-Also, please take care that is necessary to reload rules ( do iptables
--X -F -Z ) after you change something.
-
-Take a look into Cisco PIX, maybe there you have some limit
-
-=46or iptables reference see man iptables or Oscar Anderson Iptables ma=
-nual
-
-Regards/Ahoj
-
-Elvir Kuric
-
-On Wed, May 6, 2009 at 11:13 AM, Slansky Lukas <Lukas.Slansky@upce.cz> =
-wrote:
-> Hello,
-> we're using PG and Application Server (JBoss) on separate CentOS serv=
-ers
-> with Cisco PIX in between. On DB side is iptable with following relev=
-ant
-> rules:
->
-> 1. -A RH-Firewall-1-INPUT -m state --state ESTABLISHED,RELATED -j ACC=
-EPT
-> 2. -A RH-Firewall-1-INPUT -m state --state NEW -m tcp -p tcp -s
-> aaa.bbb.ccc.ddd --dport 5432 -j ACCEPT
-> 3. -A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibite=
-d
->
-> I was wondering when these rules are not OK for our environment. It
-> seems that rules 1 and 2 sometimes (probably for complicated queries)
-> pass packets and therefore these packets are rejected by rule 3. Such
-> connection is then in some weird state, doesn't communicate (obviousl=
-y -
-> packets are dropped) and psql (or JBoss) connection is blocking for a
-> long time (at least few hours).
->
-> Everything seems to be OK when I have changed rule 2 to =A0"-A
-> RH-Firewall-1-INPUT -m tcp -p tcp -s aaa.bbb.ccc.ddd --dport 5432 -j
-> ACCEPT".
->
-> I'm really confused - what other states are possible for iptables exc=
-ept
-> ESTABLISHED, RELATED or NEW? In iptables manpage is only INVALID, but
-> why is this state emerging?
->
-> Any idea?
->
-> Lukas
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
