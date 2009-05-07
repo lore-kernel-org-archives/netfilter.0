@@ -1,59 +1,131 @@
-From: Susan Hinrichs <shinrich@thought-mesh.net>
-Subject: Re: Select chain from set?
-Date: Thu, 07 May 2009 08:44:53 -0500
-Message-ID: <1241703893.2778.297.camel@chichi>
-References: <33be4bb30904280221x9156f26t43ddfff0f083925f@mail.gmail.com>
-	 <1240921645.14474.141.camel@hsa.vpn.anti>
-	 <1240925694.4256.32.camel@casper.meteor.dp.ua>
-	 <1240933140.12894.366.camel@chichi>
-	 <1240992704.4235.1.camel@casper.meteor.dp.ua>
-	 <1241106752.2778.91.camel@chichi>
-	 <1241690844.5166.3.camel@casper.meteor.dp.ua>
-Reply-To: shinrich@ieee.org
+From: "Barry A Rich" <barich@trisectrix.com>
+Subject: RE: How to reset everything
+Date: Thu, 7 May 2009 09:49:59 -0400
+Message-ID: <004301c9cf1a$b6f92390$24eb6ab0$@com>
+References: <002c01c9ce96$8336c230$89a44690$@com> <1241690640.5166.1.camel@casper.meteor.dp.ua>
+Reply-To: <barich@trisectrix.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1241690844.5166.3.camel@casper.meteor.dp.ua>
+In-Reply-To: <1241690640.5166.1.camel@casper.meteor.dp.ua>
+Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="koi8-r"
 To: casper@meteor.dp.ua
-Cc: Martin Millnert <millnert@csbnet.se>, Oskar Berggren <oskar.berggren@gmail.com>, netfilter@vger.kernel.org
+Cc: netfilter@vger.kernel.org
 
-
-On Thu, 2009-05-07 at 13:07 +0300, =D0=9F=D0=BE=D0=BA=D0=BE=D1=82=D0=B8=
-=D0=BB=D0=B5=D0=BD=D0=BA=D0=BE =D0=9A=D0=BE=D1=81=D1=82=D0=B8=D0=BA wro=
-te:
-> =D0=92 =D0=A7=D1=82=D0=B2, 30/04/2009 =D0=B2 10:52 -0500, Susan Hinri=
-chs =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Wed, 2009-04-29 at 11:11 +0300, =D0=9F=D0=BE=D0=BA=D0=BE=D1=82=D0=
-=B8=D0=BB=D0=B5=D0=BD=D0=BA=D0=BE =D0=9A=D0=BE=D1=81=D1=82=D0=B8=D0=BA =
-wrote:
-> > > =D0=92 =D0=92=D1=82=D0=BE, 28/04/2009 =D0=B2 10:39 -0500, Susan H=
-inrichs =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > > > I also agree that a runtime structure to track traffic attribut=
-es and
-> > > > match them to targets would be great.  I created my own match-t=
-ree table
-> > > > generator to achieve a similar effect.  It works, but updating =
-large
-> > > > static structures can be rather time consuming and fragile.
-> > >=20
-> > > Can you share details?
-> > >=20
-> >=20
-> > Sure, I have a tool that takes a list of IP's, MACs, or marks, and
-> > builds a prefix-based binary tree of the data.  It generates the tr=
-ee in
-> > linked chains.  It operates in bulk and incremental model.
+> -----Original Message-----
+> From: =F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB [mailto:ca=
+sper@meteor.dp.ua]
+> Sent: Thursday, May 07, 2009 6:04 AM
+> To: barich@trisectrix.com
+> Cc: netfilter@vger.kernel.org
+> Subject: Re: How to reset everything
 >=20
-> What is the purpose of this?
+> =F7 =F3=D2=C4, 06/05/2009 =D7 18:03 -0400, Barry A Rich =D0=C9=DB=C5=D4=
+:
+> > We use Netfilter to load balance UDP packets across multiple uplink=
+s
+(ppp0,
+> > ppp1, ppp2, ppp3). Uplinks can be added or removed on the fly. When=
+ this
+> > happens, we reset everything and run the firewall/routing script th=
+at
+> > matches the new uplink configuration. The reset looks like this:
+> >
+> > ######################### Begin reset #########################
+> >
+> > iptables -F INPUT
+> > iptables -P INPUT DROP
+> > iptables -F OUTPUT
+> > iptables -P OUTPUT DROP
+> > iptables -F FORWARD
+> > iptables -P FORWARD DROP
+> > iptables -F -t raw
+> > iptables -F -t nat
+> > iptables -F -t mangle
+> >
+> > ip route del default
+> > ip route flush table uplink1
+> > ip route flush table uplink2
+> > ip route flush table uplink3
+> > ip route flush table uplink4
+> > ip route flush dev ppp0
+> > ip route flush dev ppp1
+> > ip route flush dev ppp2
+> > ip route flush dev ppp3
+> >
+> > tc qdisc del dev ppp0 root
+> > tc qdisc del dev ppp1 root
+> > tc qdisc del dev ppp2 root
+> > tc qdisc del dev ppp3 root
+> >
+> > ip route flush cache
+> >
+> > ######################### End reset #########################
+> >
+> > For two uplinks, the setup looks like this:
+> >
+> > ######################### Begin setup #########################
+> >
+> > iptables -t raw -A PREROUTING -i eth0 -p udp --sport 6970 -j NOTRAC=
+K
+> >
+> > iptables -t mangle -A PREROUTING -p udp --sport 6970 -m statistic -=
+-mode
+nth
+> > --every 2 --packet 0 -j MARK --set-mark 1
+> >
+> > iptables -t mangle -A PREROUTING -p udp --sport 6970 -m statistic -=
+-mode
+nth
+> > --every 2 --packet 1 -j MARK --set-mark 2
+> >
+> > tc qdisc add dev ppp0 root handle 1: prio
+> >
+> > tc qdisc add dev ppp1 root handle 1: prio
+> >
+> > tc filter add dev ppp0 parent 1:0 protocol ip prio 1 \
+> >     handle 1 fw flowid 1:1 action nat egress x.x.x.x/32 y.y.y.y
+> >
+> > tc filter add dev ppp1 parent 1:0 protocol ip prio 1 \
+> >     handle 2 fw flowid 1:1 action nat egress x.x.x.x/32 z.z.z.z
+> >
+> > ######################### End setup #########################
+> >
+> > The UDP stream continues to be received on the LAN interface during=
+ the
+> > reset/setup. The reset/setup works most of the time, but occasional=
+ly
+the
+> > packets going out ppp0 do not get NAT'd after a reset/setup. Repeat=
+ing
+the
+> > setup/reset sequence a second time seems to make it work, but I'd r=
+ather
+> > understand what's wrong and fix it.
+> >
+> > All help is appreciated.
+> >
+> > Thanks.
+>=20
+> Try adding to your reset script:
+>=20
+> conntrack -F conntrack
+> conntrack -F expect
+>=20
+> --
+> =F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.d=
+p.ua>
 
-The tree lets you efficiently match a packet and do something unique fo=
-r
-each "client" or "grouping".  So set a mark or set a class ID or update
-a unique recent set. As was noted in this thread earlier, ipset lets yo=
-u
-efficiently match a packet basic on an address, but it doesn't let you
-do anything unique for each match.=20
+That did not solve the problem. Could it be packets that get queued up =
+while
+the reset is in progress? Should the uplink queues get flushed? If so, =
+how
+is that done?
+
+
+
+
 
