@@ -1,36 +1,38 @@
-From: Michele Petrazzo - Unipex <michele.petrazzo@unipex.it>
-Subject: Re: Port Forwarding Question
-Date: Fri, 08 May 2009 17:57:20 +0200
-Message-ID: <4A045660.3070605@unipex.it>
-References: <8ec0428d0905061125n7aad6c74nc3b63bfedf890fa8@mail.gmail.com>
+From: Mark Ryden <markryde@gmail.com>
+Subject: netlink sockets and NETFILTER_FIREWALL
+Date: Sun, 10 May 2009 15:17:42 +0300
+Message-ID: <dac45060905100517j63fe6f13v6c623635f6c4ef6@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <8ec0428d0905061125n7aad6c74nc3b63bfedf890fa8@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=ePG2hYXm8J+VR0TCNyPg6FIbo6C8pwxL+OyrEx2w4Lo=;
+        b=TTj8kesQ1LhRKtNkELlkDu23R7mvQYXftxYOFx2x3x2wcHqjggXQDWPYBxhFmcUuc9
+         XmTYjJb67t8CAsJZ2u6GcX1pLeE1Hcc2GtqcFBy9lbq+FBofyQIxVpwAYWFecyif5XRn
+         xKp9YXcc8Kizmivj8/DO+6ic+EyaVDev4erk0=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Aaron Clausen <mightymartianca@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Aaron Clausen wrote:
->  With the 3Com router, I can, from another internal computer,
-> access that server via the external interface (ie, by going
-> http://publicaddress).  When I throw in my Linux router, it does not
-> do that, and user's have to use the internal IP or host name to access
-> the device.
->
+Hello,
+I saw that there is a way to pass packets to user space by this
+iptables rule (on Linux):
 
-What rules have you wrote?
-an
-iptables -t nat -A PREROUTING -s local_addrs/mask -d ip_addrs \
-	 -p tcp --dport http -j DNAT --to-destionation internal_web
-and the respective
-iptables -t nat -A POSTROUTING -d internal_web -p tcp --dport http -j 
-SNAT --to-source gw_ip
+iptables -A FORWARD -t filter -j QUEUE
+and running:
+modprobe iptable_filter
+modprobe ip_queue
 
-must to the trick.
 
-So the request stay inside the lan and there is no "loops"
+My question is: I want to open a user space application
+which opens socket and catch these packets.
+Is there some good link demonstrating how to do it ?
+I saw some sites which talk about NETFILTER_FIREWALL and netlink sockets, but
+I am not sure. Any ideas?
 
-Michele
+Rgs,
+Mark
