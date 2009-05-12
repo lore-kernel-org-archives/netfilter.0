@@ -1,38 +1,49 @@
-From: Mark Ryden <markryde@gmail.com>
-Subject: netlink sockets and NETFILTER_FIREWALL
-Date: Sun, 10 May 2009 15:17:42 +0300
-Message-ID: <dac45060905100517j63fe6f13v6c623635f6c4ef6@mail.gmail.com>
+From: Tino Keitel <tkeitel@innominate.com>
+Subject: Re: How to use mark and connmark in one rule
+Date: Tue, 12 May 2009 15:00:28 +0200
+Message-ID: <20090512130028.GA19645@tkeitel002.bln.innominate.local>
+References: <20090424133235.GA14156@tkeitel002.bln.innominate.local> <49F1C0B4.8010809@standarduniversal.com.au> <49F1C120.8090802@standarduniversal.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type:content-transfer-encoding;
-        bh=ePG2hYXm8J+VR0TCNyPg6FIbo6C8pwxL+OyrEx2w4Lo=;
-        b=TTj8kesQ1LhRKtNkELlkDu23R7mvQYXftxYOFx2x3x2wcHqjggXQDWPYBxhFmcUuc9
-         XmTYjJb67t8CAsJZ2u6GcX1pLeE1Hcc2GtqcFBy9lbq+FBofyQIxVpwAYWFecyif5XRn
-         xKp9YXcc8Kizmivj8/DO+6ic+EyaVDev4erk0=
+Content-Disposition: inline
+In-Reply-To: <49F1C120.8090802@standarduniversal.com.au>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello,
-I saw that there is a way to pass packets to user space by this
-iptables rule (on Linux):
+On Fri, Apr 24, 2009 at 23:39:44 +1000, Brian Austin - Standard Universal wrote:
+> that should be 2 separate lines.. stupid email
+>
+> iptables -A INPUT -m mark --mark 1
+>
+> iptables -A INPUT -m connmark --mark 2
 
-iptables -A FORWARD -t filter -j QUEUE
-and running:
-modprobe iptable_filter
-modprobe ip_queue
+I want to match packets with both a specific nfmark _and_ a specific
+connmark, so I need both matches in one rule.
 
+Regards,
 
-My question is: I want to open a user space application
-which opens socket and catch these packets.
-Is there some good link demonstrating how to do it ?
-I saw some sites which talk about NETFILTER_FIREWALL and netlink sockets, but
-I am not sure. Any ideas?
+-- 
+Tino Keitel
+Software Engineer
+ 
+Innominate Security Technologies AG
+/protecting industrial networks/
+Tel: +49.30.921028-206
+Fax: +49.30.921028-020
+Rudower Chaussee 13
+12489 Berlin / Germany
+http://www.innominate.com/
 
-Rgs,
-Mark
+----------------------------------------------------------------
+Visit us at the Hannover Messe in Germany
+20 - 24 April 2009, Hall 9, Stand F54
+----------------------------------------------------------------
+
+Register Court: AG Charlottenburg, HRB 81603 Management Board: Dirk
+Seewald, Chairman of the Supervisory Board: Volker Bibelhausen
+
+INNOMINATE HAS MOVED. PLEASE NOTE THAT OUR BUSINESS CONTACT DATA HAS
+CHANGED.
