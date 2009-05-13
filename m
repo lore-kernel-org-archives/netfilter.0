@@ -1,28 +1,18 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: How to use mark and connmark in one rule
-Date: Tue, 12 May 2009 15:13:51 +0200
-Message-ID: <4A09760F.1070507@plouf.fr.eu.org>
-References: <20090424133235.GA14156@tkeitel002.bln.innominate.local> <49F1C0B4.8010809@standarduniversal.com.au> <49F1C120.8090802@standarduniversal.com.au> <20090512130028.GA19645@tkeitel002.bln.innominate.local>
+From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Subject: Dead mailinglist ???
+Date: Wed, 13 May 2009 13:51:03 +0200
+Message-ID: <4A0AB427.6030102@freemail.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20090512130028.GA19645@tkeitel002.bln.innominate.local>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter list <netfilter@vger.kernel.org>
 
-Tino Keitel a =E9crit :
-> On Fri, Apr 24, 2009 at 23:39:44 +1000, Brian Austin - Standard Unive=
-rsal wrote:
->>
->> iptables -A INPUT -m mark --mark 1
->> iptables -A INPUT -m connmark --mark 2
->=20
-> I want to match packets with both a specific nfmark _and_ a specific
-> connmark, so I need both matches in one rule.
+Hi list,
 
-Not necessarily. For example with user-defined chains :
+I do not receive any mail from this list in the last 7 days....
+Is there a problem?
 
-iptables -A INPUT -m mark --mark 1 -j mark1
-iptables -A mark1 -m connmark --mark 2
+Swifty
