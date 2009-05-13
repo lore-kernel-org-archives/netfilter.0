@@ -1,28 +1,41 @@
-From: "Mihamina Rakotomandimby (R12y)" <mihamina@lab.vectoris.fr>
+From: Thomas Jacob <jacob@internet24.de>
 Subject: Re: Dead mailinglist ???
-Date: Wed, 13 May 2009 15:57:55 +0300
-Message-ID: <4A0AC3D3.3030902@lab.vectoris.fr>
+Date: Wed, 13 May 2009 15:08:19 +0200
+Message-ID: <1242220099.10622.36.camel@enterprise.ims-firmen.de>
 References: <4A0AB427.6030102@freemail.hu>
+	 <4A0AC3D3.3030902@lab.vectoris.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4A0AB427.6030102@freemail.hu>
+In-Reply-To: <4A0AC3D3.3030902@lab.vectoris.fr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: "Mihamina Rakotomandimby (R12y)" <mihamina@lab.vectoris.fr>
+Cc: netfilter@vger.kernel.org
 
-On 05/13/2009 02:51 PM, G=E1sp=E1r Lajos wrote:
-> I do not receive any mail from this list in the last 7 days....
+On Wed, 2009-05-13 at 15:57 +0300, Mihamina Rakotomandimby (R12y) wrote:
+> > Is there a problem?
+> 
+> Iptables rules became user friendly! ;-)
 
-Last message for me is May 10th
+I cannot leave that unreplied. I'd really like to know of a system which
+offers the same or better fine grained control and so many features
+which is significantly more user friendly than iptables ;-)
 
-> Is there a problem?
+The complexity of iptables stems for the most part from the complexity
+of the problem at hand. Sure you can hide that complexity behind fancy
+web front ends and there are plenty of those for iptables, in fact, the
+firewall configurations in many consumer router boxes today are just
+that.
 
-Iptables rules became user friendly! ;-)
+But doing this also takes away most of the power of iptables or indeed
+any other sophisticated firewalling system, and being reduced to that
+would be a terrible thing for me at least ;)
 
---=20
-                              Chef de projet chez Vectoris
-                                  Phone: +261 33 11 207 36
-System: xUbuntu 8.10 with almost all from package install
-    http://www.google.com/search?q=3Dmihamina+rakotomandimby
+In summary, iptables is appropriately user friendly for its feature set,
+and if you don't need most of that feature set, simply use a front end
+instead.
+
+     Thomas
+
