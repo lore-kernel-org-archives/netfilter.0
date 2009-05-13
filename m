@@ -1,30 +1,66 @@
-From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
-	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
+From: Billy Crook <billycrook@gmail.com>
 Subject: Re: Dead mailinglist ???
-Date: Wed, 13 May 2009 15:08:24 +0300
-Message-ID: <1242216504.8744.0.camel@casper.meteor.dp.ua>
-References: <4A0AB427.6030102@freemail.hu>
-Reply-To: casper@meteor.dp.ua
+Date: Wed, 13 May 2009 10:49:57 -0500
+Message-ID: <a43edf1b0905130849o1d45bccdqf9b0d1bf473d68fe@mail.gmail.com>
+References: <4A0AB427.6030102@freemail.hu> <4A0AC3D3.3030902@lab.vectoris.fr> 
+	<1242220099.10622.36.camel@enterprise.ims-firmen.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4A0AB427.6030102@freemail.hu>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :from:date:message-id:subject:to:cc:content-type
+         :content-transfer-encoding;
+        bh=TgVYL6bFs3JQf37XK6qeK6eTGmeyLwvSjP3wQdYVVfc=;
+        b=Yn9YgohXvWyEFNuKi4xpXCebq9jIr1+my2GSsFrzRv6tITv+4tobzakDiUjpH1T7/0
+         AfnkYKeJoZOktc2ldzdOqN/nVns3dROxsX43EmLi7d+bs8mCDK/hwnNx6fz+rnERSB40
+         j+aIkcKvQzwyZGeuRelG4YfJcdIGOLT1+GfBE=
+In-Reply-To: <1242220099.10622.36.camel@enterprise.ims-firmen.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: =?ISO-8859-1?Q?G=E1sp=E1r?= Lajos <swifty@freemail.hu>
-Cc: Netfilter list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Thomas Jacob <jacob@internet24.de>
+Cc: "Mihamina Rakotomandimby (R12y)" <mihamina@lab.vectoris.fr>, netfilter@vger.kernel.org
 
-=D0=92 =D0=A1=D1=80=D0=B4, 13/05/2009 =D0=B2 13:51 +0200, G=C3=A1sp=C3=A1=
-r Lajos =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> Hi list,
->=20
-> I do not receive any mail from this list in the last 7 days....
-> Is there a problem?
+On Wed, May 13, 2009 at 08:08, Thomas Jacob <jacob@internet24.de> wrote=
+:
+> On Wed, 2009-05-13 at 15:57 +0300, Mihamina Rakotomandimby (R12y) wro=
+te:
+>> > Is there a problem?
+>>
+>> Iptables rules became user friendly! ;-)
+>
+> I cannot leave that unreplied. I'd really like to know of a system wh=
+ich
+> offers the same or better fine grained control and so many features
+> which is significantly more user friendly than iptables ;-)
+>
+> The complexity of iptables stems for the most part from the complexit=
+y
+> of the problem at hand. Sure you can hide that complexity behind fanc=
+y
+> web front ends and there are plenty of those for iptables, in fact, t=
+he
+> firewall configurations in many consumer router boxes today are just
+> that.
+>
+> But doing this also takes away most of the power of iptables or indee=
+d
+> any other sophisticated firewalling system, and being reduced to that
+> would be a terrible thing for me at least ;)
+>
+> In summary, iptables is appropriately user friendly for its feature s=
+et,
+> and if you don't need most of that feature set, simply use a front en=
+d
+> instead.
+>
+> =A0 =A0 Thomas
 
-Last I've got is dated yesterday. Local problems?
-
---=20
-=D0=9F=D0=BE=D0=BA=D0=BE=D1=82=D0=B8=D0=BB=D0=B5=D0=BD=D0=BA=D0=BE =D0=9A=
-=D0=BE=D1=81=D1=82=D0=B8=D0=BA <casper@meteor.dp.ua>
-
+Agreed.  It's just lists of if-match-then-act rules.  iptables is
+already quite easy and simple.  How could it be any simpler?  I can
+imagine very little that one could remove or change without reducing
+functionality.  A good example would be -j REJECT in -t nat, and
+that's already been resolved.  It might be nice to merge ip and eb,
+and as I understand, that work is already under way.
