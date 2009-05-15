@@ -1,66 +1,53 @@
-From: Billy Crook <billycrook@gmail.com>
-Subject: Re: Dead mailinglist ???
-Date: Wed, 13 May 2009 10:49:57 -0500
-Message-ID: <a43edf1b0905130849o1d45bccdqf9b0d1bf473d68fe@mail.gmail.com>
-References: <4A0AB427.6030102@freemail.hu> <4A0AC3D3.3030902@lab.vectoris.fr> 
-	<1242220099.10622.36.camel@enterprise.ims-firmen.de>
+From: Michael Douglass <mikedoug@mikedoug.net>
+Subject: Routing before LOCAL
+Date: Fri, 15 May 2009 17:02:38 -0500
+Message-ID: <87ad04f0905151502l42fb74ebw364992fc7cd31dc0@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :from:date:message-id:subject:to:cc:content-type
-         :content-transfer-encoding;
-        bh=TgVYL6bFs3JQf37XK6qeK6eTGmeyLwvSjP3wQdYVVfc=;
-        b=Yn9YgohXvWyEFNuKi4xpXCebq9jIr1+my2GSsFrzRv6tITv+4tobzakDiUjpH1T7/0
-         AfnkYKeJoZOktc2ldzdOqN/nVns3dROxsX43EmLi7d+bs8mCDK/hwnNx6fz+rnERSB40
-         j+aIkcKvQzwyZGeuRelG4YfJcdIGOLT1+GfBE=
-In-Reply-To: <1242220099.10622.36.camel@enterprise.ims-firmen.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Thomas Jacob <jacob@internet24.de>
-Cc: "Mihamina Rakotomandimby (R12y)" <mihamina@lab.vectoris.fr>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Wed, May 13, 2009 at 08:08, Thomas Jacob <jacob@internet24.de> wrote=
-:
-> On Wed, 2009-05-13 at 15:57 +0300, Mihamina Rakotomandimby (R12y) wro=
-te:
->> > Is there a problem?
->>
->> Iptables rules became user friendly! ;-)
->
-> I cannot leave that unreplied. I'd really like to know of a system wh=
-ich
-> offers the same or better fine grained control and so many features
-> which is significantly more user friendly than iptables ;-)
->
-> The complexity of iptables stems for the most part from the complexit=
-y
-> of the problem at hand. Sure you can hide that complexity behind fanc=
-y
-> web front ends and there are plenty of those for iptables, in fact, t=
-he
-> firewall configurations in many consumer router boxes today are just
-> that.
->
-> But doing this also takes away most of the power of iptables or indee=
-d
-> any other sophisticated firewalling system, and being reduced to that
-> would be a terrible thing for me at least ;)
->
-> In summary, iptables is appropriately user friendly for its feature s=
-et,
-> and if you don't need most of that feature set, simply use a front en=
-d
-> instead.
->
-> =A0 =A0 Thomas
+I am attempting to setup multiple networks on a single system which
+are completely isolated from one another.=A0 Here is the configuration:
 
-Agreed.  It's just lists of if-match-then-act rules.  iptables is
-already quite easy and simple.  How could it be any simpler?  I can
-imagine very little that one could remove or change without reducing
-functionality.  A good example would be -j REJECT in -t nat, and
-that's already been resolved.  It might be nice to merge ip and eb,
-and as I understand, that work is already under way.
+    eth0: ip 10.0.0.10/24 gw 10.0.0.1
+    eth1: ip 192.168.0.10/24 gw 192.168.0.1
+
+There will be PPTP connections to the 10.0.0.10/24 interface/network.
+I want ALL traffic for the ppp interfaces to be routed out to 10.0.0.1
+-- EVEN if the traffic is destined for 192.168.0.10 (a LOCAL interface
+on the same box).
+
+My first thought was to use ip rules such as this:
+
+    ip rule add from 10.0.0.0/24 table vpn
+    ip rule add from all to 10.0.0.0/24 lookup vpn
+    ip route add default table vpn via 10.0.0.1
+    ip route delete 10.0.0.0/24=A0 # Removes this network from default
+routing table
+
+This works for everything that I want EXCEPTtraffic to the local
+interface (192.168.0.10) doesn't hit my 'vpn' routing table because
+the route for it is in the LOCAL routing table which is rule 0 in the
+ip rule list.
+
+Is there a "right" way to do what I want to do?
+
+I've been looking at the ROUTE target in the netfilter extentions --
+but compiling them into my kernel has proven troublesome (though I am
+still hacking away at getting it to work). I've read and heard that
+the ROUTE target is not necessarily the best way to go -- however it
+sounds like it answers my problem PERFECTLY.  With the ROUTE target, I
+can specify that any traffic coming FROM 10.0.0.0/24 has a --gw
+10.0.0.1, and I'd be done.
+
+=46urther, the "fwmark" doesn't appear to answer my problem because I
+still need a way to check the fwmark in my ip rule list BEFORE the
+local table which is hard coded at 0 -- so I don't believe that is the
+answer to my problem.
+
+Thanks in advance for any and all assistance!
+MikeDoug
