@@ -1,117 +1,58 @@
-From: Brian Austin - Standard Universal <brian@standarduniversal.com.au>
-Subject: Re: Anyone achieved BSD natd(8) compatibility with Linux netfilter
- or 	Solaris ipf - ie. single-address-on-same-interface bidirectional mapping
- to 	DMZ private subnet ?
-Date: Sun, 17 May 2009 18:14:02 +1000
-Message-ID: <4A0FC74A.4080503@standarduniversal.com.au>
-References: <102f5c010905151710m7bf674e9s6abb5d36b8c4fcca@mail.gmail.com>
+From: Aaron Clausen <mightymartianca@gmail.com>
+Subject: Re: Port Forwarding Question
+Date: Sun, 17 May 2009 14:54:10 -0700
+Message-ID: <8ec0428d0905171454yd2919d0o90e6977d99d626ff@mail.gmail.com>
+References: <8ec0428d0905061125n7aad6c74nc3b63bfedf890fa8@mail.gmail.com>
+	 <4A045660.3070605@unipex.it>
+	 <8ec0428d0905171444q4e8a75dj6e60bfbab93bc75d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <102f5c010905151710m7bf674e9s6abb5d36b8c4fcca@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=5RzXBTj5FogyATXdMJc1OZM2FCTdZety5Htdwf8KGSo=;
+        b=GSvvsmLC/NlrJ5znSVoy9OwBLC8Nvqqf2TyatEgyjoh9FiwYq4tsHDIG6EU3u9CbiC
+         0Q3YCxLLpzWO2TArHPSQ46hFcQwG4K0+KYVzl6M2feszuW2aedoUR0K8mHx1lxeaXXQg
+         XliNTh7evLXLwsePf/ykhn835dZ2T/WdOXALY=
+In-Reply-To: <8ec0428d0905171444q4e8a75dj6e60bfbab93bc75d@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jason Vas Dias <jason.vas.dias@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-Hi,
+On Fri, May 8, 2009 at 08:57, Michele Petrazzo - Unipex
+<michele.petrazzo@unipex.it> wrote:
+> Aaron Clausen wrote:
+>>
+>> =A0With the 3Com router, I can, from another internal computer,
+>> access that server via the external interface (ie, by going
+>> http://publicaddress). =A0When I throw in my Linux router, it does n=
+ot
+>> do that, and user's have to use the internal IP or host name to acce=
+ss
+>> the device.
+>>
+>
+> What rules have you wrote?
+> an
+> iptables -t nat -A PREROUTING -s local_addrs/mask -d ip_addrs \
+> =A0 =A0 =A0 =A0 -p tcp --dport http -j DNAT --to-destionation interna=
+l_web
+> and the respective
+> iptables -t nat -A POSTROUTING -d internal_web -p tcp --dport http -j=
+ SNAT
+> --to-source gw_ip
+>
+> must to the trick.
+>
+> So the request stay inside the lan and there is no "loops"
 
-this seems very simple, google for source nat, destination nat and 
-masquerade
- 
-http://www.howtoforge.com/internet-connection-sharing-masquerading-on-linux
-
-portforwarding is also rather simple.
-
-regards
-
-Brian
+How do write this if the WAN IP is supplied via DHCP?
 
 
-Jason Vas Dias wrote:
-> Hi -
->
-> This is my first post to this list, so please excuse me if I miss something or
-> if this is an inappropriate posting for this list.
->
-> Question :
->
-> I am trying to replace an ancient MacOSX box, whose natd(8) does a
-> really great job of
-> "Connection Sharing" - becoming a router for the "External Internet"
-> to my local LAN
-> subnet whose addresses it has provided with DHCP ( 192.168.2.2 - 4 ) .
->
-> So natd(8) maps the IP source address in packets originating from the
-> local 192.168.2.{2,3.4} subnet
-> that appear from the en0 interface, to the external internet address
-> given to the single interface en0 by
-> my DSL modem , and sends such packets out on en0 with the destination
-> address and port mapped back
-> to natd's address and port on the external internet .   natd(8)
-> maintains a table of all such packets sent
-> out to the external internet, such that when a response for such a
-> packet it received, the destination
-> IP address is mapped back to the original packet originator, and is
-> then sent back out on en0 to the
-> local DMZ subnet host that originated it,  as in this diagram :
->
->    MacOS Host:
->    single IP interface  en0:
->         ipv4 address 192.168.2.1
->         ipv4 address 66.68.31.192 (assigned from DSL router)
->    natd:
->         listens on      66.68.31.192:natd
->   bootpd:
->         listens on      192.168.2.1:bootps
->
->     DMZ   hosts:  192.168.2.2, 192.168.2.3,   192.168.2.4
->
->   All these hosts are connected to the same hub, whose uplink cable is
-> connected to the DSL Router.
->
->   natd(8) reads a raw socket to receive every packet that is received
-> on interface  en0.
->   When a packet is received from a 192.168.2.x source address  with a
-> destination address
->    that is not  in subnet 192.168.2/24 , it replaces the 192.168.2/24
-> address with 66.68.31.192,
->    and the destination address and port with 66.68.31.192:natd , and
-> sends the packet back out on en0;
->    the DSL router sends such packets on to the external internet, and
-> the external internet host sends
->    responses back to 66.68.31.192:natd;  natd can then use  the packet
->  identifiers it generated
->   for the request packets to the response packet (it could  even use a
-> separate port to receive
->   response packets  for each separate DMZ  host, so the mapping
-> becomes trivial).
->
-> My  question is : how can this be achieved with Linux netfilter or
-> Solaris IP Filter / ipnat(4) ?
-> I have either a Solaris host or Linux host I can use for this job. The
-> old MacOSX ppc32 host is
-> too slow, and does not support more than two other hosts on the DMZ .
->
-> What I don't understand from the netfilter / ipfilter documentation is
-> precisely how a response
-> from the external internet , whit a destination IP + port on the
-> gateway , is translated into a response
-> for a DMZ host in the same way as netd does.
->
-> I have looked  at the open-source firestarter project, which can
-> construct NAT rules to do this for a gateway
->  host with two physical interfaces, but all my hosts have only one
-> physical ethernet interface.
->
-> Could anyone please explain how response packets can be routed back to
-> the DMZ host with Linux netfilter or Solaris ipfilter rules ?
->
-> Thanks in advance,
-> Jason.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->   
+--
+Aaron Clausen
+mightymartianca@gmail.com
