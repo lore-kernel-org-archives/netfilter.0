@@ -1,78 +1,64 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+From: Robert L Mathews <lists@tigertech.com>
 Subject: Re: conntrack and RSTs received during CLOSE_WAIT
-Date: Sat, 16 May 2009 23:57:27 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.0905162348430.4156@blackhole.kfki.hu>
-References: <4A0DE859.7000209@tigertech.com>
+Date: Sat, 16 May 2009 20:09:34 -0700
+Message-ID: <4A0F7FEE.3010405@tigertech.com>
+References: <4A0DE859.7000209@tigertech.com> <alpine.DEB.2.00.0905162348430.4156@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4A0DE859.7000209@tigertech.com>
+In-Reply-To: <alpine.DEB.2.00.0905162348430.4156@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Robert L Mathews <lists@tigertech.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hi,
+Jozsef Kadlecsik wrote:
 
-On Fri, 15 May 2009, Robert L Mathews wrote:
-
-> I'm using Linux kernel 2.6.26 with conntrack/connlimit to prevent people from
-> DOSing our Web servers by opening up too many simultaneous connections from
-> one IP address. This is mostly for protection against unintentional DOSes from
-> broken proxy servers that try to open up literally hundreds of simultaneous
-> connections; we DROP their syn packets if they already have 40 connections
-> open.
+> The TCP session seems to be totally broken. After the client sends
 > 
-> This is generally working well (and thanks to folks on this list for the hard
-> work that makes this possible).
+> client > server [FIN,ACK] Seq=421 Ack=1449 Len=0
 > 
-> However: Some clients send evil TCP RSTs that confuse conntrack and break
-> connlimit in a way that I'll detail below. First, here's a sample recreation:
+> it should send the RST packet with Seq=422 and not Seq=421. The RST 
+> segment won't be accepted by the server.
+
+Okay. The client is definitely sending exactly that (I'm pretty sure 
+it's a SonicWall firewall). That explains why the connection stays in 
+the CLOSE_WAIT state according to netstat.
+
+So the problem can be described as:
+
+Some buggy clients send an out-of-sequence RST. When that happens, 
+conntrack forgets about the connection ten seconds later, even though 
+the TCP stack doesn't.
+
+If nf_conntrack_tcp_loose is set to 0, this gives clients a trivial way 
+to bypass connlimit, because the client then has open connections that 
+aren't counted.
+
+If nf_conntrack_tcp_loose is set to 1, subsequent packets sent more than 
+ten seconds later will result in conntrack seeing a new ESTABLISHED 
+connection. Unfortunately, if the subsequent packets were merely TCP 
+retransmits (which is likely), the "new connection" will not really 
+exist. Connlimit counts a nonexistent connection as being open for five 
+days until it times out.
+
+Both of these outcomes are obviously undesirable. Any suggestions how to 
+avoid this, or to minimize the impact?
+
+
+> And I don't get the server either: after sending Ack=422 it can't send 
+> Ack=421.
 > 
->  client > server [SYN] Seq=0 Len=0
->  server > client [SYN,ACK] Seq=0 Ack=1 Len=0
->  client > server [ACK] Seq=1 Ack=1 Len=0
->  client > server [PSH,ACK] Seq=1 Ack=1 Len=420 (HTTP GET request)
->  server > client [ACK] Seq=1 Ack=421 Len=0
->  server > client [ACK] Seq=1 Ack=421 Len=1448    (HTTP response)
->  server > client [ACK] Seq=1449 Ack=421 Len=1448 (more HTTP response)
->  server > client [ACK] Seq=2897 Ack=421 Len=1448 (more HTTP response)
->  client > server [FIN,ACK] Seq=421 Ack=1449 Len=0
->  server > client [ACK] Seq=4345 Ack=422 Len=1448 (more HTTP response)
->  server > client [ACK] Seq=5793 Ack=422 Len=1448 (more HTTP response)
->  client > server [RST] Seq=421 Len=0
->  server > client [ACK] Seq=2897 Ack=421 Len=1448 (retr HTTP response)
->  server > client [ACK] Seq=2897 Ack=421 Len=1448 (retr HTTP response)
->  server > client [ACK] Seq=2897 Ack=421 Len=1448 (retr HTTP response)
->  server > client [ACK] Seq=2897 Ack=421 Len=1448 (retr HTTP response)
->  server > client [ACK] Seq=2897 Ack=421 Len=1448 (retr HTTP response)
->  server > client [ACK] Seq=2897 Ack=421 Len=1448 (retr HTTP response)
->  server > client [ACK] Seq=2897 Ack=421 Len=1448 (retr HTTP response)
->  server > client [ACK] Seq=2897 Ack=421 Len=1448 (retr HTTP response)
->  server > client [ACK] Seq=2897 Ack=421 Len=1448 (retr HTTP response)
->  server > client [ACK] Seq=2897 Ack=421 Len=1448 (retr HTTP response)
-> 
-> Everything up to and including the "RST" takes place in under a tenth of a
-> second. The remaining ten retransmits take place over 5 minutes.
+> Is it a real TCP session recording or a mistyped one?
 
-The TCP session seems to be totally broken. After the client sends
+You're right; that was a typo on my part, for which I apologize. I had 
+to retype it from Wireshark, and I copied the wrong line. The ten 
+retransmitted packets at the end do indeed send Ack=422, just as you say 
+they should.
 
-client > server [FIN,ACK] Seq=421 Ack=1449 Len=0
+(However, the client problem is not a typo. The client definitely did 
+send Seq=421 in the RST, which explains why netstat shows the connection 
+remaining in CLOSE_WAIT and why the server continues to retransmit packets.)
 
-it should send the RST packet with Seq=422 and not Seq=421. The RST 
-segment won't be accepted by the server.
-
-And I don't get the server either: after sending Ack=422 it can't send 
-Ack=421. Or there is an active device between the firewall and the server 
-which reorders the packets.
-
-Is it a real TCP session recording or a mistyped one?
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+-- 
+Robert L Mathews, Tiger Technologies     http://www.tigertech.net/
