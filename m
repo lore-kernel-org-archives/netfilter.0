@@ -1,170 +1,98 @@
-From: "Barry A Rich" <barich@trisectrix.com>
-Subject: RE: How to reset everything
-Date: Mon, 18 May 2009 08:55:12 -0400
-Message-ID: <002701c9d7b7$e2310460$a6930d20$@com>
-References: <002c01c9ce96$8336c230$89a44690$@com>	 <1241690640.5166.1.camel@casper.meteor.dp.ua>	 <004301c9cf1a$b6f92390$24eb6ab0$@com> <1241711493.5166.14.camel@casper.meteor.dp.ua>
-Reply-To: <barich@trisectrix.com>
+From: Miguel Ghobangieno <mikeeusa@yahoo.com>
+Subject: Bridge firewall that allows ssh in, and allows http/https out, but nothing else... ebtable ruleset isn't working :(
+Date: Mon, 18 May 2009 08:09:22 -0700 (PDT)
+Message-ID: <422564.43800.qm@web44812.mail.sp1.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1241711493.5166.14.camel@casper.meteor.dp.ua>
-Content-Language: en-us
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1242659363; bh=bMJfZwzKzyt2+6tFkeoeEvLFSUPtWI9rzl+Cj4jWGu8=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Subject:To:MIME-Version:Content-Type; b=pN8Vr9lOFa6VNVHA6KYYpUxc/1nOPs69m79VxKR2PnMes87YRN+Pm81knBAUZpUCZIGxxghA7X6PsSCMr9iiQsyMHAmUX7aDa7m30+KszNm2CAjAWjmH2JW8gvEKv21PsyJq8+iQZpIJl/YA7ToWJwSt726owSLtutaVJXNKTzQ=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="koi8-r"
-To: casper@meteor.dp.ua
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-> -----Original Message-----
-> From: netfilter-owner@vger.kernel.org
-[mailto:netfilter-owner@vger.kernel.org]
-> On Behalf Of ??????????? ??????
-> Sent: Thursday, May 07, 2009 11:52 AM
-> To: barich@trisectrix.com
-> Cc: netfilter@vger.kernel.org
-> Subject: RE: How to reset everything
->=20
-> =F7 =FE=D4=D7, 07/05/2009 =D7 09:49 -0400, Barry A Rich =D0=C9=DB=C5=D4=
-:
-> > > -----Original Message-----
-> > > From: =F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB [mailt=
-o:casper@meteor.dp.ua]
-> > > Sent: Thursday, May 07, 2009 6:04 AM
-> > > To: barich@trisectrix.com
-> > > Cc: netfilter@vger.kernel.org
-> > > Subject: Re: How to reset everything
-> > >
-> > > =F7 =F3=D2=C4, 06/05/2009 =D7 18:03 -0400, Barry A Rich =D0=C9=DB=
-=C5=D4:
-> > > > We use Netfilter to load balance UDP packets across multiple up=
-links
-> > (ppp0,
-> > > > ppp1, ppp2, ppp3). Uplinks can be added or removed on the fly. =
-When
-this
-> > > > happens, we reset everything and run the firewall/routing scrip=
-t
-that
-> > > > matches the new uplink configuration. The reset looks like this=
-:
-> > > >
-> > > > ######################### Begin reset #########################
-> > > >
-> > > > iptables -F INPUT
-> > > > iptables -P INPUT DROP
-> > > > iptables -F OUTPUT
-> > > > iptables -P OUTPUT DROP
-> > > > iptables -F FORWARD
-> > > > iptables -P FORWARD DROP
-> > > > iptables -F -t raw
-> > > > iptables -F -t nat
-> > > > iptables -F -t mangle
-> > > >
-> > > > ip route del default
-> > > > ip route flush table uplink1
-> > > > ip route flush table uplink2
-> > > > ip route flush table uplink3
-> > > > ip route flush table uplink4
-> > > > ip route flush dev ppp0
-> > > > ip route flush dev ppp1
-> > > > ip route flush dev ppp2
-> > > > ip route flush dev ppp3
-> > > >
-> > > > tc qdisc del dev ppp0 root
-> > > > tc qdisc del dev ppp1 root
-> > > > tc qdisc del dev ppp2 root
-> > > > tc qdisc del dev ppp3 root
-> > > >
-> > > > ip route flush cache
-> > > >
-> > > > ######################### End reset #########################
-> > > >
-> > > > For two uplinks, the setup looks like this:
-> > > >
-> > > > ######################### Begin setup #########################
-> > > >
-> > > > iptables -t raw -A PREROUTING -i eth0 -p udp --sport 6970 -j NO=
-TRACK
-> > > >
-> > > > iptables -t mangle -A PREROUTING -p udp --sport 6970 -m statist=
-ic
---mode
-> > nth
-> > > > --every 2 --packet 0 -j MARK --set-mark 1
-> > > >
-> > > > iptables -t mangle -A PREROUTING -p udp --sport 6970 -m statist=
-ic
---mode
-> > nth
-> > > > --every 2 --packet 1 -j MARK --set-mark 2
-> > > >
-> > > > tc qdisc add dev ppp0 root handle 1: prio
-> > > >
-> > > > tc qdisc add dev ppp1 root handle 1: prio
-> > > >
-> > > > tc filter add dev ppp0 parent 1:0 protocol ip prio 1 \
-> > > >     handle 1 fw flowid 1:1 action nat egress x.x.x.x/32 y.y.y.y
-> > > >
-> > > > tc filter add dev ppp1 parent 1:0 protocol ip prio 1 \
-> > > >     handle 2 fw flowid 1:1 action nat egress x.x.x.x/32 z.z.z.z
-> > > >
-> > > > ######################### End setup #########################
-> > > >
-> > > > The UDP stream continues to be received on the LAN interface du=
-ring
-the
-> > > > reset/setup. The reset/setup works most of the time, but
-occasionally
-> > the
-> > > > packets going out ppp0 do not get NAT'd after a reset/setup.
-Repeating
-> > the
-> > > > setup/reset sequence a second time seems to make it work, but I=
-'d
-rather
-> > > > understand what's wrong and fix it.
-> > > >
-> > > > All help is appreciated.
-> > > >
-> > > > Thanks.
-> > >
-> > > Try adding to your reset script:
-> > >
-> > > conntrack -F conntrack
-> > > conntrack -F expect
-> > >
-> > > --
-> > > =F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@mete=
-or.dp.ua>
-> >
-> > That did not solve the problem. Could it be packets that get queued=
- up
-while
-> > the reset is in progress?
->=20
-> If this is the case the delay shouldn't be long. Also, if this is the
-> case next packets should behave as you expected and you wouldn't be
-> reseting second time.
->=20
-> >  Should the uplink queues get flushed? If so, how
-> > is that done?
->=20
-> tc qdics del && tc qdisc add(???)
->=20
-> --
-> =F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.d=
-p.ua>
 
-When this problem occurs after a reset/setup, the UDP packets are still
-routed to the both ppp0 and ppp1. They just are not NAT'd on ppp0.
+I'm trying to make a bridge firewall that allows ssh in, and allows http/https out, but nothing else... ebtable ruleset isn't working :(
 
-This seems to indicate:
+This is what I have so far. When I set the default policy to allow everything gets through, when deny nothing gets through:
 
-- The statistic module is correctly marking the packets, and
-- The packets are being routed correctly, and
-- The traffic control filter is not NAT'ing the packets.
+Here is the net setup: squid/sshserver --> eth1 [firewall] eth0 ---> Internet
 
-Is there a way to log the packets (with the marks) as they exit traffic
-control to verify this?
+What is supposed to be allowed:
+ssh server (port 22 TCP) <--eth1 [firewall] eth0 <--- Internet
+ssh/squidserver --> eth1 [firewall] eth0 --> Internet (ports 80 and 443 TCP)
 
+What is supposed to be disallowed
+(spoofed ip w/o proper squidserver mac address going out)
+(anything else coming in)
+(probably anything else going out aswell (maybe allow dns, dhcp)
+
+Here is the ruleset right now:
+ebtables -L
+Bridge table: filter
+
+Bridge chain: INPUT, entries: 0, policy: ACCEPT
+
+Bridge chain: FORWARD, entries: 8, policy: DROP
+-p IPv4 --ip-proto icmp -j DROP
+-p IPv4 -i eth0 -o eth1 --ip-dst 192.168.0.22 --ip-proto tcp --ip-dport 22 -j ACCEPT
+-p IPv4 -i eth1 -o eth0 --ip-src 192.168.0.22 --ip-proto tcp --ip-sport 22 -j ACCEPT
+-p IPv4 -d 0:8:d:54:13:c9 -i eth0 -o eth1 --ip-dst 192.168.0.22 --ip-proto tcp --ip-sport 80 -j ACCEPT
+-p IPv4 -s 0:8:d:54:13:c9 -i eth1 -o eth0 --ip-src 192.168.0.22 --ip-proto tcp --ip-dport 80 -j ACCEPT
+-p IPv4 -d 0:8:d:54:13:c9 -i eth0 -o eth1 --ip-dst 192.168.0.22 --ip-proto tcp --ip-sport 443 -j ACCEPT
+-p IPv4 -s 0:8:d:54:13:c9 -i eth1 -o eth0 --ip-src 192.168.0.22 --ip-proto tcp --ip-dport 443 -j ACCEPT
+-p IPv4 -i eth0 --ip-src 192.168.0.22 -j DROP
+
+Bridge chain: OUTPUT, entries: 0, policy: ACCEPT
+
+
+Here are the commands used:
+
+###The invisible bridge way:
+
+/usr/sbin/brctl addbr br0
+/usr/sbin/brctl addif br0 eth0
+/usr/sbin/brctl addif br0 eth1
+/sbin/ip link set br0 up
+/sbin/ip link set eth0 up # don't ask me why
+/sbin/ip link set eth1 up # don't ask me why
+#/sbin/ip addr add 192.168.0.6 brd + dev br0
+#/sbin/route add default gw 192.168.0.1 dev br0 ##Only needed if eth2 hasn't allready set default gateway
+
+# ebtables...
+# example rule: block all ICMP
+ebtables -F FORWARD
+ebtables -P FORWARD DROP
+ebtables -A FORWARD -p ip --ip-proto icmp -j DROP ## block all ICMP
+#ebtables -A FORWARD -i eth0 -j DROP
+
+##Here We allow SSH to pass through to the ssh server
+#Incoming Connection From Internet #ebtables -i eth0 -o eth1 -p ip --ip-proto tcp --ip-destination-port 22 --ip-destination ip-of-the-ssh-server -j ACCEPT
+#Reply by the server To Internet   #ebtables -i eth1 -o eth0 -p ip --ip-proto tcp --ip-source-port 22 --ip-source ip-of-the-ssh-server -j ACCEPT
+ebtables -A FORWARD -i eth0 -o eth1 -p ip --ip-proto tcp --ip-destination-port 22 --ip-destination 192.168.0.22 -j ACCEPT
+ebtables -A FORWARD -i eth1 -o eth0 -p ip --ip-proto tcp --ip-source-port 22 --ip-source 192.168.0.22 -j ACCEPT
+
+##Allow squid server to access HTTP and HTTPS servers on standard ports.
+#Incoming Packets From HTTP Server on Internet#   ebtables -i eth0 -o eth1 -p ip --ip-destination squidserver -d macaddress-of-squidserver --ip-proto tcp --i$
+#Outgoing Packets From Clients on School Network# ebtables -i eth1 -o eth0 -p ip --ip-source squidserver -s macaddress-of-squidserver --ip-proto tcp --ip-des$
+#Incoming Packets From HTTP Server on Internet#   ebtables -i eth0 -o eth1 -p ip --ip-destination squidserver -d macaddress-of-squidserver --ip-proto tcp --i$
+#Outgoing Packets From Clients on School Network# ebtables -i eth1 -o eth0 -p ip --ip-source squidserver -s macaddress-of-squidserver --ip-proto tcp --ip-des$
+##Anti-spoofing rule (Only matches the IP address of squidserver, not MAC address)
+ebtables -A FORWARD -i eth0 -o eth1 -p ip --ip-destination 192.168.0.22 -d 00:08:0D:54:13:C9 --ip-proto tcp --ip-source-port 80 -j ACCEPT
+ebtables -A FORWARD -i eth1 -o eth0 -p ip --ip-source 192.168.0.22 -s 00:08:0D:54:13:C9 --ip-proto tcp --ip-destination-port 80 -j ACCEPT
+ebtables -A FORWARD -i eth0 -o eth1 -p ip --ip-destination 192.168.0.22 -d 00:08:0D:54:13:C9 --ip-proto tcp --ip-source-port 443 -j ACCEPT
+ebtables -A FORWARD -i eth1 -o eth0 -p ip --ip-source 192.168.0.22 -s 00:08:0D:54:13:C9 --ip-proto tcp --ip-destination-port 443 -j ACCEPT
+##Anti-spoofing rule (Only matches the IP address of squidserver, not MAC address)
+ebtables -A FORWARD -i eth0 -p ip --ip-source 192.168.0.22 -j DROP
+
+#ebtables -A FORWARD -i eth0 -j DROP
+#ebtables -A FORWARD -p ip -j DROP ## block everything else
+#ebtables -A FORWARD -i eth0 -o eth1 -p ip -j DROP
+
+
+The bridge works, but the filtering is either all or nothing :/
+
+
+
+      
 
