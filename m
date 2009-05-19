@@ -1,49 +1,57 @@
 From: Miguel Ghobangieno <mikeeusa@yahoo.com>
-Subject: Re: iptables to add same rule
-Date: Tue, 19 May 2009 08:29:30 -0700 (PDT)
-Message-ID: <960581.95193.qm@web44815.mail.sp1.yahoo.com>
+Subject: Ebtables ruleset isn't working, any ideas?
+Date: Tue, 19 May 2009 08:32:53 -0700 (PDT)
+Message-ID: <740443.89728.qm@web44813.mail.sp1.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1242746970; bh=5sTHjeON4CF5Mx6gAV4OkpfsSP0YnM3mMtmEtAnThZg=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Subject:To:MIME-Version:Content-Type; b=z7gays/Rn1/MX57q33qNJ8fgOp8CB16z9BuZQVr1rcoEvzJvj/PLWRbvn8HZCgTJW6sw+NxArZ5mpjBMi6zXqWfmP5nwp558M2V58riaWQgal4+wiqKDJB8yAnTJRbZZWHxfuEklmMvFY5rHOtaOd1F5NzU3HCKpxScOoC8g3js=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1242747173; bh=XwFs4NJp+ULbKEn/cVwKdoBpH3LKxXjml0TIFvwkxik=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Subject:To:MIME-Version:Content-Type; b=N/EpJ0Zo3vrF2f0tyOtHKYVbKVy2dj67ZgX5LLMVqpE7gvfntONVSnLpu7oXQadso0QBAUVOsuWN1nISXp70fddU96Jr6YHDx//nDmerQpfonkbJyszCFavnSNycwvPo/R9qGzW3QXlqZqK67Tmd7b2usydxV2O8dqKvakGG/BI=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: openssl-users@openssl.org, netfilter@vger.kernel.org, pageexec@freemail.hu, bdschuym@pandora.be, nick@fedchik.org.ua, grzes@gnu.univ.gda.pl
 
 
-Just forget it, no one is going to help you. No one helps ANYONE on this fucking list.
+I'm trying to make a bridge firewall that allows ssh in, and allows http/https out, but nothing else... ebtable ruleset isn't working Sad
+
+This is what I have so far. When I set the default policy to allow everything gets through, when deny nothing gets through:
+
+Here is the net setup: squid/sshserver --> eth1 [firewall] eth0 ---> Internet
+
+What is supposed to be allowed:
+ssh server (port 22 TCP) <--eth1 [firewall] eth0 <--- Internet
+ssh/squidserver --> eth1 [firewall] eth0 --> Internet (ports 80 and 443 TCP)
+
+What is supposed to be disallowed
+(spoofed ip w/o proper squidserver mac address going out)
+(anything else coming in)
+(probably anything else going out aswell (maybe allow dns, dhcp) 
 
 
---- On Tue, 5/19/09, Sudarshan Soma <sudarshan12s@gmail.com> wrote:
 
-> From: Sudarshan Soma <sudarshan12s@gmail.com>
-> Subject: iptables to add same rule
-> To: netfilter@vger.kernel.org
-> Date: Tuesday, May 19, 2009, 6:29 AM
-> Hi All,
-> I am trying to present WUI for iptables with simple
-> functionality such
-> as add/delete rule. For adding rule, can i avoid adding the
-> same rule
-> again.
-> Suppose, if the user tries to block ftp from outside. I
-> will add
-> iptable rule as below:
-> iptables -A INPUT -p tcp --dport 21 -j DROP
-> 
-> If the user tries to add the same rule again, can i somehow
-> determine
-> through iptables , if the rule is already added.
-> 
-> Thanks and Regards,
-> Pavan
-> --
-> To unsubscribe from this list: send the line "unsubscribe
-> netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+This blocks EVERYTHING. It COMPLETELY IGNORES THE RULESET  :( :( (The only thing it doesn't ignore is the policy)
+
+[code]
+ebtables -F FORWARD
+ebtables -P FORWARD DROP
+ebtables -A FORWARD -p ip --ip-proto icmp -j DROP ## block all ICMP
+
+ebtables -A FORWARD -i eth0 -o eth1 -p ip --ip-proto tcp --ip-destination-port 22 --ip-destination 192.168.0.21 -j ACCEPT
+ebtables -A FORWARD -i eth1 -o eth0 -p ip --ip-proto tcp --ip-source-port 22 --ip-source 192.168.0.21 -j ACCEPT
+
+ebtables -A FORWARD -p ip --ip-src 192.168.0.21 -s ! 00:08:0D:54:13:C9 -j DROP
+ebtables -A FORWARD -i eth0 -o eth1 -p ip --ip-destination 192.168.0.21 --ip-proto tcp --ip-source-port 80 -j ACCEPT
+ebtables -A FORWARD -i eth1 -o eth0 -p ip --ip-source 192.168.0.21 --ip-proto tcp --ip-destination-port 80 -j ACCEPT
+ebtables -A FORWARD -i eth0 -o eth1 -p ip --ip-destination 192.168.0.21 --ip-proto tcp --ip-source-port 443 -j ACCEPT
+ebtables -A FORWARD -i eth1 -o eth0 -p ip --ip-source 192.168.0.21 --ip-proto tcp --ip-destination-port 443 -j ACCEPT
+[/code]
+
+
+
+Why doesn't this work? Isn't it supposed to consider the exception rules?
+(I'm testing by trying to SSH to the box, and trying to go to the IP of a webserver across the bridge from the box)
+
+
 
 
       
