@@ -1,34 +1,36 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Ebtables ruleset isn't working, any ideas?
-Date: Tue, 19 May 2009 21:08:09 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.0905192100250.8786@blackhole.kfki.hu>
-References: <740443.89728.qm@web44813.mail.sp1.yahoo.com>
+Subject: Re: iptables to add same rule
+Date: Tue, 19 May 2009 21:12:53 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.0905192108340.8786@blackhole.kfki.hu>
+References: <de72ca4e0905182329qe701121ud7377177687be7f3@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <740443.89728.qm@web44813.mail.sp1.yahoo.com>
+In-Reply-To: <de72ca4e0905182329qe701121ud7377177687be7f3@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Miguel Ghobangieno <mikeeusa@yahoo.com>
+To: Sudarshan Soma <sudarshan12s@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-On Tue, 19 May 2009, Miguel Ghobangieno wrote:
+On Tue, 19 May 2009, Sudarshan Soma wrote:
 
-> I'm trying to make a bridge firewall that allows ssh in, and allows 
-> http/https out, but nothing else... ebtable ruleset isn't working Sad
+> I am trying to present WUI for iptables with simple functionality such
+> as add/delete rule. For adding rule, can i avoid adding the same rule
+> again.
+> Suppose, if the user tries to block ftp from outside. I will add
+> iptable rule as below:
+> iptables -A INPUT -p tcp --dport 21 -j DROP
 > 
-> This is what I have so far. When I set the default policy to allow 
-> everything gets through, when deny nothing gets through:
-[...]
+> If the user tries to add the same rule again, can i somehow determine
+> through iptables , if the rule is already added.
 
-Why don't you add log watchers to every of your rules as the last "match"? 
-Thus you could see at least which rules match. Your rules seem to be OK 
-but with logging enabled that'd be definitely answered. Without more 
-information, nobody could help you.
+IMHO this is just a wrong approach.
 
-[And don't spam mailing lists like openssl-users which has nothing to do 
-with ebtables, even if you are desperate.]
+You have to get (list) all the rules from the kernel anyway to present the 
+user with the exact ruleset. So why don't you simply generate the new 
+tables in iptables-restore format after the user added/deleted whatever 
+rules, and push it back to the kernel in one step?
 
 Best regards,
 Jozsef
