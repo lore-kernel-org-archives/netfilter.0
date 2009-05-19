@@ -1,7 +1,8 @@
-From: Ricardo Faria <ricardo.faria@fe.up.pt>
-Subject: Ebtables build frames howto
-Date: Tue, 19 May 2009 01:22:39 +0100
-Message-ID: <4A11FBCF.3000605@fe.up.pt>
+From: Azher Mughal <azher@hep.caltech.edu>
+Subject: Iptables only on specified interface
+Date: Mon, 18 May 2009 17:33:15 -0700
+Message-ID: <4A11FE4B.8050902@hep.caltech.edu>
+Reply-To: azher@hep.caltech.edu
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -10,33 +11,18 @@ List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hello,
-I' new in this and i was searching for something that could solve my
-problem.
-I am doing a network with several terminal machines ( this have IPs) and
-to connect all i have a layer 2 network made by computers that are going
-to route the traffic using MPLS. I need to know, in this middle
-computers, the neightbours MAC to build the path between the terminal
-machines ( that have IPS). My problem is that ARP need to associate a
-MAC to a IP, which i do not have in this middle  computers.
-So i was wondering if ebtables could help me build a "arp" table, i.e.,
-the computer PC2 that is connected to one final terminal PC1 ( that has
-an IP) sends back to the network, in broadcast, a specific frame with is
-own  PC2-MAC, and the terminal PC1 MAC-IP pair. The PC3 listen to this
-frame and stores that the route to the IP of PC1 is using PC2. PC3 does
-exactly the same and so on. PC4 does the as PC2 when PC5 connects to it.
-I want to know if ebtables could help me build specific frames and how
-to send them to the network and how to catch them.
+Hi,
 
+I have a server with 1G NIC for management (with public ip) and 10G
+NIC for data transfers on internal network. When i apply iptables (i
+simply restrict ssh for few networks, no fancy stuff) on external
+NIC and allow the 10GE nic, it seems that system still does some
+sort of processing.
 
-EX.:
+I am using CentOS 5.3. Without any of the iptables applied i can get
+the line rate on 10GE without any trouble with stable cpu usage.
 
-   PC1----------PC2--------PC3------PC4--------PC5
-(MAC/IP)   (MAC)    (MAC)  (MAC)   (MAC/IP)
+Any thoughts ?
 
-
-
-
-If someone could help me i would appreciated.
-Thank you and sorry for the bad spelling english.
-
+Thanks
+-Azher
