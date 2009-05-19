@@ -1,164 +1,186 @@
-From: Miguel Ghobangieno <mikeeusa@yahoo.com>
-Subject: Can someone PLEASE help me? Please please please? Re: Bridge firewall that allows ssh in, and allows http/https out, but nothing else... ebtable ruleset isn't working :(
-Date: Mon, 18 May 2009 11:00:39 -0700 (PDT)
-Message-ID: <987963.79622.qm@web44807.mail.sp1.yahoo.com>
+From: Jason Vas Dias <jason.vas.dias@gmail.com>
+Subject: Re: Anyone achieved BSD natd(8) compatibility with Linux netfilter or 
+ =?iso-8859-1?q?=09Solaris_ipf_-_ie=2E_single-address-on-same-interface?=
+ =?iso-8859-1?q?_bidirectional_mapping_to_=09DMZ_private_subnet?= ?
+Date: Mon, 18 May 2009 20:07:51 -0400
+Message-ID: <200905182007.52087.jason.vas.dias@gmail.com>
+References: <102f5c010905151710m7bf674e9s6abb5d36b8c4fcca@mail.gmail.com> <4A0FC74A.4080503@standarduniversal.com.au>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1242669639; bh=SYHr6Ede6rpS4zkBmYE1JJbvWduRDoJ6snh2W3JS2wI=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Subject:To:MIME-Version:Content-Type; b=qBj7S97eGfKGAUIWkDHpjP73uNCxDqVyWfgJ8wo3QXaheSpAzN7T2eX5UGQ8GzjRsIOCJPyrJzcfC5WVjUaonhwo9a9T5p9h/lJSgKYBZLak6I04ZiS6PN5/kj2aGDVXoC+PJV1zobyFmZ00bJTG+Sd2nFaR3s957l0p1ITO5rI=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:from:organization:to:subject
+         :date:user-agent:cc:references:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:message-id;
+        bh=wd90AEeZkTw+ndJ2mWS9bn3W0kstuU1rW9Rs2+wAt28=;
+        b=iC9jiXi6qQ4uWQup1/d47MAj2Fv6KFt5JyCORzWBZYKsryPv/YmTKJg+QX3Lw7oXS0
+         iAqlsoa/btcGMlmHsRhfhVYLkI9yyb9zcapJQwSCjomAkscT16I0Ao2KIxoKPoelSJ9l
+         HF6afEx8Wrvgf0MQQb0o6tcdH7LG3viE4pT6Y=
+In-Reply-To: <4A0FC74A.4080503@standarduniversal.com.au>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: Brian Austin - Standard Universal <brian@standarduniversal.com.au>
+Cc: netfilter@vger.kernel.org
+
+Thanks for the response. 
+
+I finally figured out how to do this on Solaris :
+
+  $  echo 'map hme0 192.168.2.0/24 -> 0/32' 
+
+does the job for primary interface hme0 , configured by DHCP,
+with static logical interface hme0:1 configured as 192.168.2.1
+and dhcpsvc.conf containing "INTERFACES=hme0:1' and 
+dhcptab set up to serve the 192.168.2/24 network, setting
+the default-router option to 192.168.2.1 , and with 
+   "ifconfig hme0 dhcp
+    ifconfig hme0 addif 192.168.2.1 netmask 255.255.255.0 broadcast 
+192.168.2.255 up arp
+    ifconfig hme0 router
+    ifconfig hme0:1 router
+    svcadm enable svc:/network/dhcp-server
+    svcadm enable svc:network/ipfilter
+  '
+somewhere in startup scripts .
+
+The Solaris box is my only non-laptop box so problem solved (for me) -
+but I'd still like to know:
+
+Please, could anyone answer :
+ o is there / what is the equivalent netfilter rule for Linux ?
+ o why do the firestarter rules  require two physical ethernet
+    interfaces in order to enable "internet connection sharing" ?
+ o Is it possible to do internet connection sharing with NAT on Linux
+   with only one physical etjhernet interface ? 
+  All the documentation I can find assumes two interfaces.
+  I want to know how to be able to create  a similar configuration
+ on Linux, ie:
+  - single primary physical ethernet interface (eth0) configured with 
+DHCP
+  - a "private" ip also configured on eth0:
+   $ ip addr add dev eth0 192.168.2.1/24 ...
+  - DHCP set up to serve 192.168.2/24 net ( I can do this OK !)
+  - create NAT rules to replace source address of packets with
+   dest addr not on subnet 192.168.2/24 with DHCP address
+   of eth0, maintainence of state for such packets, and mapping
+   the destination address of packets received from non-192.168.2/24
+   network to the 192.168.2/24 address of the originating host for
+   the 'ESTABLISHED' packet session. 
+   Is this possible with a single ethernet interface on Linux or not? 
+   
+Thanks & Regards,
+Jason
 
 
-Can someone PLEASE help me with this. Everyone I talk to says the rules SHOULD work. But they don't.
-
---- On Mon, 5/18/09, Miguel Ghobangieno <mikeeusa@yahoo.com> wrote:
-
-> From: Miguel Ghobangieno <mikeeusa@yahoo.com>
-> Subject: Bridge firewall that allows ssh in, and allows http/https out, but nothing else... ebtable ruleset isn't working :(
-> To: netfilter@vger.kernel.org
-> Date: Monday, May 18, 2009, 3:09 PM
-> 
-> I'm trying to make a bridge firewall that allows ssh in,
-> and allows http/https out, but nothing else... ebtable
-> ruleset isn't working :(
-> 
-> This is what I have so far. When I set the default policy
-> to allow everything gets through, when deny nothing gets
-> through:
-> 
-> Here is the net setup: squid/sshserver --> eth1
-> [firewall] eth0 ---> Internet
-> 
-> What is supposed to be allowed:
-> ssh server (port 22 TCP) <--eth1 [firewall] eth0 <---
-> Internet
-> ssh/squidserver --> eth1 [firewall] eth0 --> Internet
-> (ports 80 and 443 TCP)
-> 
-> What is supposed to be disallowed
-> (spoofed ip w/o proper squidserver mac address going out)
-> (anything else coming in)
-> (probably anything else going out aswell (maybe allow dns,
-> dhcp)
-> 
-> Here is the ruleset right now:
-> ebtables -L
-> Bridge table: filter
-> 
-> Bridge chain: INPUT, entries: 0, policy: ACCEPT
-> 
-> Bridge chain: FORWARD, entries: 8, policy: DROP
-> -p IPv4 --ip-proto icmp -j DROP
-> -p IPv4 -i eth0 -o eth1 --ip-dst 192.168.0.22 --ip-proto
-> tcp --ip-dport 22 -j ACCEPT
-> -p IPv4 -i eth1 -o eth0 --ip-src 192.168.0.22 --ip-proto
-> tcp --ip-sport 22 -j ACCEPT
-> -p IPv4 -d 0:8:d:54:13:c9 -i eth0 -o eth1 --ip-dst
-> 192.168.0.22 --ip-proto tcp --ip-sport 80 -j ACCEPT
-> -p IPv4 -s 0:8:d:54:13:c9 -i eth1 -o eth0 --ip-src
-> 192.168.0.22 --ip-proto tcp --ip-dport 80 -j ACCEPT
-> -p IPv4 -d 0:8:d:54:13:c9 -i eth0 -o eth1 --ip-dst
-> 192.168.0.22 --ip-proto tcp --ip-sport 443 -j ACCEPT
-> -p IPv4 -s 0:8:d:54:13:c9 -i eth1 -o eth0 --ip-src
-> 192.168.0.22 --ip-proto tcp --ip-dport 443 -j ACCEPT
-> -p IPv4 -i eth0 --ip-src 192.168.0.22 -j DROP
-> 
-> Bridge chain: OUTPUT, entries: 0, policy: ACCEPT
-> 
-> 
-> Here are the commands used:
-> 
-> ###The invisible bridge way:
-> 
-> /usr/sbin/brctl addbr br0
-> /usr/sbin/brctl addif br0 eth0
-> /usr/sbin/brctl addif br0 eth1
-> /sbin/ip link set br0 up
-> /sbin/ip link set eth0 up # don't ask me why
-> /sbin/ip link set eth1 up # don't ask me why
-> #/sbin/ip addr add 192.168.0.6 brd + dev br0
-> #/sbin/route add default gw 192.168.0.1 dev br0 ##Only
-> needed if eth2 hasn't allready set default gateway
-> 
-> # ebtables...
-> # example rule: block all ICMP
-> ebtables -F FORWARD
-> ebtables -P FORWARD DROP
-> ebtables -A FORWARD -p ip --ip-proto icmp -j DROP ## block
-> all ICMP
-> #ebtables -A FORWARD -i eth0 -j DROP
-> 
-> ##Here We allow SSH to pass through to the ssh server
-> #Incoming Connection From Internet #ebtables -i eth0 -o
-> eth1 -p ip --ip-proto tcp --ip-destination-port 22
-> --ip-destination ip-of-the-ssh-server -j ACCEPT
-> #Reply by the server To Internet   #ebtables
-> -i eth1 -o eth0 -p ip --ip-proto tcp --ip-source-port 22
-> --ip-source ip-of-the-ssh-server -j ACCEPT
-> ebtables -A FORWARD -i eth0 -o eth1 -p ip --ip-proto tcp
-> --ip-destination-port 22 --ip-destination 192.168.0.22 -j
-> ACCEPT
-> ebtables -A FORWARD -i eth1 -o eth0 -p ip --ip-proto tcp
-> --ip-source-port 22 --ip-source 192.168.0.22 -j ACCEPT
-> 
-> ##Allow squid server to access HTTP and HTTPS servers on
-> standard ports.
-> #Incoming Packets From HTTP Server on
-> Internet#   ebtables -i eth0 -o eth1 -p ip
-> --ip-destination squidserver -d macaddress-of-squidserver
-> --ip-proto tcp --i$
-> #Outgoing Packets From Clients on School Network# ebtables
-> -i eth1 -o eth0 -p ip --ip-source squidserver -s
-> macaddress-of-squidserver --ip-proto tcp --ip-des$
-> #Incoming Packets From HTTP Server on
-> Internet#   ebtables -i eth0 -o eth1 -p ip
-> --ip-destination squidserver -d macaddress-of-squidserver
-> --ip-proto tcp --i$
-> #Outgoing Packets From Clients on School Network# ebtables
-> -i eth1 -o eth0 -p ip --ip-source squidserver -s
-> macaddress-of-squidserver --ip-proto tcp --ip-des$
-> ##Anti-spoofing rule (Only matches the IP address of
-> squidserver, not MAC address)
-> ebtables -A FORWARD -i eth0 -o eth1 -p ip --ip-destination
-> 192.168.0.22 -d 00:08:0D:54:13:C9 --ip-proto tcp
-> --ip-source-port 80 -j ACCEPT
-> ebtables -A FORWARD -i eth1 -o eth0 -p ip --ip-source
-> 192.168.0.22 -s 00:08:0D:54:13:C9 --ip-proto tcp
-> --ip-destination-port 80 -j ACCEPT
-> ebtables -A FORWARD -i eth0 -o eth1 -p ip --ip-destination
-> 192.168.0.22 -d 00:08:0D:54:13:C9 --ip-proto tcp
-> --ip-source-port 443 -j ACCEPT
-> ebtables -A FORWARD -i eth1 -o eth0 -p ip --ip-source
-> 192.168.0.22 -s 00:08:0D:54:13:C9 --ip-proto tcp
-> --ip-destination-port 443 -j ACCEPT
-> ##Anti-spoofing rule (Only matches the IP address of
-> squidserver, not MAC address)
-> ebtables -A FORWARD -i eth0 -p ip --ip-source 192.168.0.22
-> -j DROP
-> 
-> #ebtables -A FORWARD -i eth0 -j DROP
-> #ebtables -A FORWARD -p ip -j DROP ## block everything
-> else
-> #ebtables -A FORWARD -i eth0 -o eth1 -p ip -j DROP
-> 
-> 
-> The bridge works, but the filtering is either all or
-> nothing :/
-> 
-> 
-> 
->       
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe
-> netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
-
-
-      
+On Sunday May 17 2009 04:14:02 Brian Austin - Standard Universal 
+wrote:
+> Hi,
+>
+> this seems very simple, google for source nat, destination nat and
+> masquerade
+>
+> http://www.howtoforge.com/internet-connection-sharing-
+masquerading-on-linux
+>
+> portforwarding is also rather simple.
+>
+> regards
+>
+> Brian
+>
+> Jason Vas Dias wrote:
+> > Hi -
+> >
+> > This is my first post to this list, so please excuse me if I miss
+> > something or if this is an inappropriate posting for this list.
+> >
+> > Question :
+> >
+> > I am trying to replace an ancient MacOSX box, whose natd(8) does a
+> > really great job of
+> > "Connection Sharing" - becoming a router for the "External Internet"
+> > to my local LAN
+> > subnet whose addresses it has provided with DHCP ( 192.168.2.2 - 4 
+) .
+> >
+> > So natd(8) maps the IP source address in packets originating from the
+> > local 192.168.2.{2,3.4} subnet
+> > that appear from the en0 interface, to the external internet address
+> > given to the single interface en0 by
+> > my DSL modem , and sends such packets out on en0 with the 
+destination
+> > address and port mapped back
+> > to natd's address and port on the external internet .   natd(8)
+> > maintains a table of all such packets sent
+> > out to the external internet, such that when a response for such a
+> > packet it received, the destination
+> > IP address is mapped back to the original packet originator, and is
+> > then sent back out on en0 to the
+> > local DMZ subnet host that originated it,  as in this diagram :
+> >
+> >    MacOS Host:
+> >    single IP interface  en0:
+> >         ipv4 address 192.168.2.1
+> >         ipv4 address 66.68.31.192 (assigned from DSL router)
+> >    natd:
+> >         listens on      66.68.31.192:natd
+> >   bootpd:
+> >         listens on      192.168.2.1:bootps
+> >
+> >     DMZ   hosts:  192.168.2.2, 192.168.2.3,   192.168.2.4
+> >
+> >   All these hosts are connected to the same hub, whose uplink cable is
+> > connected to the DSL Router.
+> >
+> >   natd(8) reads a raw socket to receive every packet that is received
+> > on interface  en0.
+> >   When a packet is received from a 192.168.2.x source address  with 
+a
+> > destination address
+> >    that is not  in subnet 192.168.2/24 , it replaces the 192.168.2/24
+> > address with 66.68.31.192,
+> >    and the destination address and port with 66.68.31.192:natd , and
+> > sends the packet back out on en0;
+> >    the DSL router sends such packets on to the external internet, and
+> > the external internet host sends
+> >    responses back to 66.68.31.192:natd;  natd can then use  the 
+packet
+> >  identifiers it generated
+> >   for the request packets to the response packet (it could  even use a
+> > separate port to receive
+> >   response packets  for each separate DMZ  host, so the mapping
+> > becomes trivial).
+> >
+> > My  question is : how can this be achieved with Linux netfilter or
+> > Solaris IP Filter / ipnat(4) ?
+> > I have either a Solaris host or Linux host I can use for this job. The
+> > old MacOSX ppc32 host is
+> > too slow, and does not support more than two other hosts on the 
+DMZ .
+> >
+> > What I don't understand from the netfilter / ipfilter documentation 
+is
+> > precisely how a response
+> > from the external internet , whit a destination IP + port on the
+> > gateway , is translated into a response
+> > for a DMZ host in the same way as netd does.
+> >
+> > I have looked  at the open-source firestarter project, which can
+> > construct NAT rules to do this for a gateway
+> >  host with two physical interfaces, but all my hosts have only one
+> > physical ethernet interface.
+> >
+> > Could anyone please explain how response packets can be routed 
+back to
+> > the DMZ host with Linux netfilter or Solaris ipfilter rules ?
+> >
+> > Thanks in advance,
+> > Jason.
+> > --
+> > To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> > the body of a message to majordomo@vger.kernel.org
+> > More majordomo info at  http://vger.kernel.org/majordomo-
+info.html
 
