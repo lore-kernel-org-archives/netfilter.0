@@ -2,22 +2,20 @@ From: Jason Vas Dias <jason.vas.dias@gmail.com>
 Subject: Re: Anyone achieved BSD natd(8) compatibility with Linux netfilter or 
  =?iso-8859-1?q?=09Solaris_ipf_-_ie=2E_single-address-on-same-interface?=
  =?iso-8859-1?q?_bidirectional_mapping_to_=09DMZ_private_subnet?= ?
-Date: Mon, 18 May 2009 20:07:51 -0400
-Message-ID: <200905182007.52087.jason.vas.dias@gmail.com>
-References: <102f5c010905151710m7bf674e9s6abb5d36b8c4fcca@mail.gmail.com> <4A0FC74A.4080503@standarduniversal.com.au>
+Date: Mon, 18 May 2009 20:09:15 -0400
+Message-ID: <200905182009.15851.jason.vas.dias@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:from:organization:to:subject
-         :date:user-agent:cc:references:in-reply-to:mime-version:content-type
+        h=domainkey-signature:received:received:to:subject:cc:from
+         :organization:date:mime-version:content-type
          :content-transfer-encoding:message-id;
-        bh=wd90AEeZkTw+ndJ2mWS9bn3W0kstuU1rW9Rs2+wAt28=;
-        b=iC9jiXi6qQ4uWQup1/d47MAj2Fv6KFt5JyCORzWBZYKsryPv/YmTKJg+QX3Lw7oXS0
-         iAqlsoa/btcGMlmHsRhfhVYLkI9yyb9zcapJQwSCjomAkscT16I0Ao2KIxoKPoelSJ9l
-         HF6afEx8Wrvgf0MQQb0o6tcdH7LG3viE4pT6Y=
-In-Reply-To: <4A0FC74A.4080503@standarduniversal.com.au>
+        bh=1l8CR3t1Y+VYKqC/d3mKuu4xD8ExeNoZK4PU+ajyHHY=;
+        b=l7K24bn8Ebdxthajw90H4tE+UKxC+HS4mH1PVAcgk2LMp75UgMpo+zeNMHXxPO3T0U
+         5DJbwAM09+boVQrsmi7dJWuI/nJvBcyYbdW/570B+bb0K/JYQMbNxMvUskR8hFuNFa6K
+         91HTmpeYpsrHSuZ45cq9JakDe6yTMm/hHvGfM=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: Text/Plain; charset="us-ascii"
@@ -28,7 +26,7 @@ Thanks for the response.
 
 I finally figured out how to do this on Solaris :
 
-  $  echo 'map hme0 192.168.2.0/24 -> 0/32' 
+  $  echo 'map hme0 192.168.2.0/24 -> 0/32' | ipnat -f -
 
 does the job for primary interface hme0 , configured by DHCP,
 with static logical interface hme0:1 configured as 192.168.2.1
@@ -183,4 +181,5 @@ back to
 > > the body of a message to majordomo@vger.kernel.org
 > > More majordomo info at  http://vger.kernel.org/majordomo-
 info.html
+
 
