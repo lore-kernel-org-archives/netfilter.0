@@ -1,97 +1,78 @@
-From: Leonardo Carneiro <lscarneiro@veltrac.com.br>
-Subject: Re: ftp port forwarding
-Date: Wed, 20 May 2009 17:30:06 -0300
-Message-ID: <4A14684E.3000009@veltrac.com.br>
-References: <4A145057.7040900@veltrac.com.br>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: conntrack and RSTs received during CLOSE_WAIT
+Date: Wed, 20 May 2009 23:40:23 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.0905202327240.11796@blackhole.kfki.hu>
+References: <4A0DE859.7000209@tigertech.com> <alpine.DEB.2.00.0905162348430.4156@blackhole.kfki.hu> <4A0F7FEE.3010405@tigertech.com> <4A139222.2020505@tigertech.com> <alpine.DEB.2.00.0905200904310.10018@blackhole.kfki.hu> <4A1466F6.8070304@tigertech.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4A145057.7040900@veltrac.com.br>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <4A1466F6.8070304@tigertech.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Robert L Mathews <lists@tigertech.com>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-and by the way, the script also load the follwing modules:
+[Cc-ing netfilter-devel]
 
-    /sbin/modprobe ip_conntrack_ftp
-    /sbin/modprobe ip_nat_ftp
+On Wed, 20 May 2009, Robert L Mathews wrote:
 
-ip_nat_ftp i assume it's a module that allow doing nat on ftp, but i'm=20
-too noob in iptables and still don't now what conntrack is, so, i'm not=
-=20
-sure if this is have some meaning on this problem or don't.
+> > It seems that all an attacker needs to do is send invalid RST packets 
+> > with a sequence number one less than the last ACK received from the 
+> > server. Then conntrack will forget about the connection, allowing the 
+> > attacker to open as many connections as desired, regardless of 
+> > connlimit limits.
+> >
+> > I wrote a little perl script that I can leave running in the 
+> > background on the client to send the necessary RST packets. In my 
+> > testing, it does allow me to bypass connlimit restrictions on a 
+> > server:
+> > 
+> >  http://www.tigertech.net/patches/rawip.pl
+> > 
+> > This seems to make connlimit less useful than I'd previously believed. 
+> > Am I just misunderstanding something?
+> 
+> > No, you are correct.
+> 
+> Hmmm, okay. I must say I'm a little surprised by that. I've seen plenty 
+> of people using connlimit and connbytes (for example) to protect against 
+> all kinds of things, and I don't think it's widely known that it's 
+> trivial for an attacker to bypass those restrictions.
 
-Leonardo Carneiro escreveu:
-> Hi fellows,
->
-> i'm having a (very basic and noob) problem.
->
-> i have a server on a internal network running a ftp server=20
-> authenticating on a ldap backend. the ftp setup is running fine and i=
-=20
-> can access when i'm on the internal network or over the openvpn link=20
-> that links my network with the server network (btw, the openvpn serve=
-r=20
-> runs on the same machine).
->
-> but i need to my users to have access to this service over the=20
-> internet. the gateway of that network is a linux box with 2 internet=20
-> links. i've put the following rules on the iptables script:
->
->    $IPTABLES -A FORWARD -p TCP -i $INET_IFACE -o $LAN_IFACE --dport 2=
-1
->    -j ACCEPT
->    $IPTABLES -A FORWARD -p TCP -i $INET_IFACE_DIN -o $LAN_IFACE --dpo=
-rt
->    21 -j ACCEPT
->    $IPTABLES -A FORWARD -p TCP -i $INET_IFACE -o $LAN_IFACE --dport 2=
-0
->    -j ACCEPT
->    $IPTABLES -A FORWARD -p TCP -i $INET_IFACE_DIN -o $LAN_IFACE --dpo=
-rt
->    20 -j ACCEPT
->
->
-> (INET_IFACE is the interface with the static ip and low bandwitch,=20
-> INET_IFACE_DIN is the interface with dynamic ip (and a dynamic dns=20
-> running on it) and higher bandwitch.)
->
->    $IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE -d $INET_IP
->    --dport 21 -j DNAT --to-destination $FTPSERVER
->    $IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE_DIN -d
->    $INET_IP_DIN --dport 21 -j DNAT --to-destination $FTPSERVER
->    $IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE -d $INET_IP
->    --dport 20 -j DNAT --to-destination $FTPSERVER
->    $IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE_DIN -d
->    $INET_IP_DIN --dport 20 -j DNAT --to-destination $FTPSERVER
->
->    $IPTABLES -t mangle -A PREROUTING -p TCP -i $LAN_IFACE -s
->    $FTPSERVER/32 --sport 21 -d 0/0 -j MARK --set-mark 1
->    $IPTABLES -t mangle -A PREROUTING -p TCP -i $LAN_IFACE -s
->    $FTPSERVER/32 --sport 20 -d 0/0 -j MARK --set-mark 1
->
->
-> (mark 1 send the ftp traffic through the higher bandwitch interface=20
-> INET_IFACE_DIN)
->
-> i tried to connect over the internet, while running tcpdump on the=20
-> ftpserver. the server exchange packets with the client, but do not=20
-> stabilish a connection. is there something wrong with the rules?
->
->
->
+I think because it is *not* widely known. The credit is yours for 
+discovering how to bypass connlimit/connbytes.
+ 
+> > If you want to eliminate the possibility to bypass connlimit with 
+> > properly crafted RST segments, probably you should use the recent 
+> > match and count the created NEW connections.
+> 
+> My goal with connlimit is to limit simultaneous connections so that it
+> prevents a single client from using up all the Apache process slots.
+> 
+> However, I don't want to limit how many connections they can open in a 
+> period of time.
+> 
+> For example, it's perfectly fine for someone to open, say, 500 
+> connections per minute, as long as they don't open more than 40 at a 
+> time. But I do need to block the 41st simultaneous connection even from 
+> people who open up connections very slowly, such as someone who opens up 
+> just five connections per hour and never closes them.
+> 
+> Is that something the "recent" feature can help with? I'm not seeing how
+> that's possible, but perhaps I'm missing something.
 
---=20
+No, that's not possible with "recent".
 
-*Leonardo de Souza Carneiro*
-*Veltrac - Tecnologia em Log=EDstica.*
-lscarneiro@veltrac.com.br <mailto:lscarneiro@veltrac.com.br>
-http://www.veltrac.com.br <http://www.veltrac.com.br/>
-/Fone Com.: (43)2105-5601/
-/Av. Higien=F3polis 1601 Ed. Eurocenter Sl. 803/
-/Londrina- PR/
-/Cep: 86015-010/
+Because connlimit/connbytes rely on conntrack, the latter should be 
+"fixed". However I do not see any way to make it resistant against such 
+attacks: if we shrink the window (by which alogrithm?) we may block valid 
+RST segments and thus cause connections to hang instead of termination.
 
-=09
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
