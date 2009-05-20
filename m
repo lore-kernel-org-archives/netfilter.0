@@ -1,60 +1,34 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: (DHCP) Ebtables ruleset isn't working, any ideas?
-Date: Wed, 20 May 2009 15:58:57 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.0905201539300.10018@blackhole.kfki.hu>
-References: <545248.94047.qm@web44810.mail.sp1.yahoo.com>
+From: Fabio Marcone <fabio.marcone@duet.it>
+Subject: tc and priority
+Date: Wed, 20 May 2009 18:29:43 +0200
+Message-ID: <4A142FF7.1050700@duet.it>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <545248.94047.qm@web44810.mail.sp1.yahoo.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Miguel Ghobangieno <mikeeusa@yahoo.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Wed, 20 May 2009, Miguel Ghobangieno wrote:
+Hi all,
+I'm studying traffic shaping and I need some informations.
+I studied HTB and I had no problem to limit bandwidth (with and without 
+borrowing). Then I would undestand how assign different priorities to 
+packets: I test qdisc PRIO and prio paramenter in CBQ (and HTB) but 
+without success.
 
-> I can't get DHCP to work through the firewall, I've tried everything, even:
-> ebtables -A FORWARD -p IPv4 --ip-sport 67:68 -j ACCEPT
-> ebtables -A FORWARD -p IPv4 --ip-dport 67:68 -j ACCEPT
+with CBQ, I create 2 two classes with different priority and I filter 
+traffic to send different traffic (source port) to a particular queue. 
+Then I run 2 connections having different priority and I see that a 
+connection stalls and the other uses all bandwidth then it succeeds the 
+opposite.
 
-You deduced that you have to use numbers and not names. Why don't you 
-follow that? Probably you need
+The same behaviour I see using PRIO qdisc.
 
-ebtables -A FORWARD -p 0x800 --ip-proto udp --ip-sport 67:68 -j ACCEPT
+Instead, I would get that che higher priority connection uses all 
+bandwidth until its queue is full (so che lower priority  connection 
+waits until the other finish).
+What's wrong? Suggestions?
 
-But it's really strange and suspicious that names do not work,
-something is really broken on your system. Have you got a correct  
-/etc/ethertypes file? Does you run the ebtables commands in chroot?
- 
-> Other things I tried:
-> ebtables -A FORWARD -i eth0 -o eth1 -p 0x800 --ip-src 192.168.0.1 --ip-proto udp --ip-sport 67:68 -j ACCEPT
-> ebtables -A FORWARD -i eth1 -o eth0 -p 0x800 --ip-dst 255.255.255.255/255.255.255.255 --ip-proto udp --ip-dport 67:68 -j ACCEPT
-
-Could you draw the topology of your network? For example, if your firewall 
-is the dhcp server, then the chains are definitely wrong above. Or maybe 
-the interfaces are mixed up.
-
-Why don't you log the packets??
- 
-> and before that:
-> ebtables -A FORWARD -p 0x800 --ip-src 192.168.0.1 --ip-proto udp --ip-sport 68 -j ACCEPT
-> ebtables -A FORWARD -p 0x800 --ip-dst 192.168.0.1 --ip-proto udp --ip-dport 67 -j ACCEPT
-
-These rules makes no sense to me.
-
-> Kernel (newest stable w/grsecurity patch):
-> 
-> 2.6.29.3-grsec
-
-If you have got grsecurity enabled and the dhcp server runs on the 
-firewall, then grsec must be tuned too.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Thanks,
+Fabio
