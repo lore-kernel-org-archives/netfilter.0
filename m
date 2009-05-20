@@ -1,80 +1,44 @@
-From: Leonardo Carneiro <lscarneiro@veltrac.com.br>
-Subject: ftp port forwarding
-Date: Wed, 20 May 2009 15:47:51 -0300
-Message-ID: <4A145057.7040900@veltrac.com.br>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: (DHCP) Ebtables ruleset isn't working, any ideas?
+Date: Wed, 20 May 2009 22:22:47 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.0905202211320.11627@blackhole.kfki.hu>
+References: <594168.503.qm@web44807.mail.sp1.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <594168.503.qm@web44807.mail.sp1.yahoo.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Miguel Ghobangieno <mikeeusa@yahoo.com>
+Cc: netfilter@vger.kernel.org
 
-Hi fellows,
+On Wed, 20 May 2009, Miguel Ghobangieno wrote:
 
-i'm having a (very basic and noob) problem.
+> I did log, with tcpdump though
 
-i have a server on a internal network running a ftp server=20
-authenticating on a ldap backend. the ftp setup is running fine and i=20
-can access when i'm on the internal network or over the openvpn link=20
-that links my network with the server network (btw, the openvpn server=20
-runs on the same machine).
+Makes no use when rules are not working.
 
-but i need to my users to have access to this service over the internet=
-=2E=20
-the gateway of that network is a linux box with 2 internet links. i've=20
-put the following rules on the iptables script:
+> (ethertype file seems fine, shown below):
 
-    $IPTABLES -A FORWARD -p TCP -i $INET_IFACE -o $LAN_IFACE --dport 21
-    -j ACCEPT
-    $IPTABLES -A FORWARD -p TCP -i $INET_IFACE_DIN -o $LAN_IFACE --dpor=
-t
-    21 -j ACCEPT
-    $IPTABLES -A FORWARD -p TCP -i $INET_IFACE -o $LAN_IFACE --dport 20
-    -j ACCEPT
-    $IPTABLES -A FORWARD -p TCP -i $INET_IFACE_DIN -o $LAN_IFACE --dpor=
-t
-    20 -j ACCEPT
+Just for a simple test, I cut&paste one of your rules:
 
+ebtables -A FORWARD -p IPv4 --ip-sport 67:68 -j ACCEPT
 
-(INET_IFACE is the interface with the static ip and low bandwitch,=20
-INET_IFACE_DIN is the interface with dynamic ip (and a dynamic dns=20
-running on it) and higher bandwitch.)
+Why don't you pay attention to the error message(s) reported by ebtables?
 
-    $IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE -d $INET_IP
-    --dport 21 -j DNAT --to-destination $FTPSERVER
-    $IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE_DIN -d
-    $INET_IP_DIN --dport 21 -j DNAT --to-destination $FTPSERVER
-    $IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE -d $INET_IP
-    --dport 20 -j DNAT --to-destination $FTPSERVER
-    $IPTABLES -t nat -A PREROUTING -p TCP -i $INET_IFACE_DIN -d
-    $INET_IP_DIN --dport 20 -j DNAT --to-destination $FTPSERVER
+> > >       Why don't you log the packets??
+> > 
+> > Third times I write: why don't you log the packets?
 
-    $IPTABLES -t mangle -A PREROUTING -p TCP -i $LAN_IFACE -s
-    $FTPSERVER/32 --sport 21 -d 0/0 -j MARK --set-mark 1
-    $IPTABLES -t mangle -A PREROUTING -p TCP -i $LAN_IFACE -s
-    $FTPSERVER/32 --sport 20 -d 0/0 -j MARK --set-mark 1
+Fourth times: why don't you log the packets (by >>ebtables<<): insert a 
+just logging rule as the first one into the FORWARD chain and add logging
+to every of your rules, with meaningful unique log prefixes everywhere.
 
-
-(mark 1 send the ftp traffic through the higher bandwitch interface=20
-INET_IFACE_DIN)
-
-i tried to connect over the internet, while running tcpdump on the=20
-ftpserver. the server exchange packets with the client, but do not=20
-stabilish a connection. is there something wrong with the rules?
-
-
-
---=20
-
-*Leonardo de Souza Carneiro*
-*Veltrac - Tecnologia em Log=EDstica.*
-lscarneiro@veltrac.com.br <mailto:lscarneiro@veltrac.com.br>
-http://www.veltrac.com.br <http://www.veltrac.com.br/>
-/Fone Com.: (43)2105-5601/
-/Av. Higien=F3polis 1601 Ed. Eurocenter Sl. 803/
-/Londrina- PR/
-/Cep: 86015-010/
-
-=09
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
