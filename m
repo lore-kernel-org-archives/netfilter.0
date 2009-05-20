@@ -1,78 +1,24 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: conntrack and RSTs received during CLOSE_WAIT
-Date: Wed, 20 May 2009 23:40:23 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.0905202327240.11796@blackhole.kfki.hu>
-References: <4A0DE859.7000209@tigertech.com> <alpine.DEB.2.00.0905162348430.4156@blackhole.kfki.hu> <4A0F7FEE.3010405@tigertech.com> <4A139222.2020505@tigertech.com> <alpine.DEB.2.00.0905200904310.10018@blackhole.kfki.hu> <4A1466F6.8070304@tigertech.com>
+From: "Jorge Bastos" <mysql.jorge@decimal.pt>
+Subject: Re: NAT64
+Date: Wed, 20 May 2009 23:16:26 +0100 (WEST)
+Message-ID: <4494.87.196.176.122.1242857786.squirrel@webmail.decimal.pt>
+References: <4A13B386.7030902@redpill-linpro.com>
+    <slrnh17nob.fg3.petr.pisar@album.ics.muni.cz>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4A1466F6.8070304@tigertech.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7BIT
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <slrnh17nob.fg3.petr.pisar@album.ics.muni.cz>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Robert L Mathews <lists@tigertech.com>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Petr Pisar <petr.pisar@atlas.cz>
+Cc: netfilter@vger.kernel.org
 
-[Cc-ing netfilter-devel]
+I think this is something that could be part of iptables.
+What do you guys say?
 
-On Wed, 20 May 2009, Robert L Mathews wrote:
+> There also exists wrapsix <http://wrapsix.tuxportal.cz/>. However
+> I don't know wheter it's TRT or NAT64. According talks to its developer
+> it looks like NAT64 and it does not do ALG too.
+>
 
-> > It seems that all an attacker needs to do is send invalid RST packets 
-> > with a sequence number one less than the last ACK received from the 
-> > server. Then conntrack will forget about the connection, allowing the 
-> > attacker to open as many connections as desired, regardless of 
-> > connlimit limits.
-> >
-> > I wrote a little perl script that I can leave running in the 
-> > background on the client to send the necessary RST packets. In my 
-> > testing, it does allow me to bypass connlimit restrictions on a 
-> > server:
-> > 
-> >  http://www.tigertech.net/patches/rawip.pl
-> > 
-> > This seems to make connlimit less useful than I'd previously believed. 
-> > Am I just misunderstanding something?
-> 
-> > No, you are correct.
-> 
-> Hmmm, okay. I must say I'm a little surprised by that. I've seen plenty 
-> of people using connlimit and connbytes (for example) to protect against 
-> all kinds of things, and I don't think it's widely known that it's 
-> trivial for an attacker to bypass those restrictions.
-
-I think because it is *not* widely known. The credit is yours for 
-discovering how to bypass connlimit/connbytes.
- 
-> > If you want to eliminate the possibility to bypass connlimit with 
-> > properly crafted RST segments, probably you should use the recent 
-> > match and count the created NEW connections.
-> 
-> My goal with connlimit is to limit simultaneous connections so that it
-> prevents a single client from using up all the Apache process slots.
-> 
-> However, I don't want to limit how many connections they can open in a 
-> period of time.
-> 
-> For example, it's perfectly fine for someone to open, say, 500 
-> connections per minute, as long as they don't open more than 40 at a 
-> time. But I do need to block the 41st simultaneous connection even from 
-> people who open up connections very slowly, such as someone who opens up 
-> just five connections per hour and never closes them.
-> 
-> Is that something the "recent" feature can help with? I'm not seeing how
-> that's possible, but perhaps I'm missing something.
-
-No, that's not possible with "recent".
-
-Because connlimit/connbytes rely on conntrack, the latter should be 
-"fixed". However I do not see any way to make it resistant against such 
-attacks: if we shrink the window (by which alogrithm?) we may block valid 
-RST segments and thus cause connections to hang instead of termination.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
