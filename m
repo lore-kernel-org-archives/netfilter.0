@@ -1,57 +1,38 @@
-From: Matthew Schumacher <mschumacher@design-pt.com>
-Subject: Iptables statistic module and nth seems broken in 2.6.29.2
-Date: Tue, 19 May 2009 20:26:29 -0800
-Message-ID: <4A138675.7040004@design-pt.com>
+From: Robert L Mathews <lists@tigertech.com>
+Subject: Re: conntrack and RSTs received during CLOSE_WAIT
+Date: Tue, 19 May 2009 22:16:18 -0700
+Message-ID: <4A139222.2020505@tigertech.com>
+References: <4A0DE859.7000209@tigertech.com> <alpine.DEB.2.00.0905162348430.4156@blackhole.kfki.hu> <4A0F7FEE.3010405@tigertech.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4A0F7FEE.3010405@tigertech.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Group,
+I haven't received any more followups on this, so I'll try to hack some 
+solution around the problem.
 
-I have some pretty simple syntax that does nothing more than mark every
-nth packet:
+But I will mention that I'm surprised that this didn't generate more 
+discussion. Unless I'm confused (which is possible), sending 
+out-of-sequence RST packets appears to be a trivial way to bypass connlimit.
 
-iptables -t mangle -A PREROUTING -d x.x.x.x -p tcp --dport 3389 -m
-statistic --mode nth --every 4 --packet 0 -m state --state new -j
-CONNMARK --set-mark 1
+It seems that all an attacker needs to do is send invalid RST packets 
+with a sequence number one less than the last ACK received from the 
+server. Then conntrack will forget about the connection, allowing the 
+attacker to open as many connections as desired, regardless of connlimit 
+limits.
 
-iptables -t mangle -A PREROUTING -d x.x.x.x -p tcp --dport 3389 -m
-statistic --mode nth --every 4 --packet 1 -m state --state new -j
-CONNMARK --set-mark 2
+I wrote a little perl script that I can leave running in the background 
+on the client to send the necessary RST packets. In my testing, it does 
+allow me to bypass connlimit restrictions on a server:
 
-iptables -t mangle -A PREROUTING -d x.x.x.x -p tcp --dport 3389 -m
-statistic --mode nth --every 4 --packet 2 -m state --state new -j
-CONNMARK --set-mark 3
+  http://www.tigertech.net/patches/rawip.pl
 
-iptables -t mangle -A PREROUTING -d x.x.x.x -p tcp --dport 3389 -m
-statistic --mode nth --every 4 --packet 3 -m state --state new -j
-CONNMARK --set-mark 4
+This seems to make connlimit less useful than I'd previously believed. 
+Am I just misunderstanding something?
 
-But I'm finding that the packet first rule matched is rarely the first
-one like it should be, and rules matched after it are random.  This
-output clearly shows that the 4th rule was matched twice before any others.
-
-pkts bytes target     prot opt in     out     source
-destination
-2   120 CONNMARK   tcp  --  *      *       0.0.0.0/0            x.x.x.x
-     tcp dpt:3389 statistic mode nth every 4 packet 3 state NEW CONNMARK
-xset 0x4
-
-This should never be since the code shows:
-
-                spin_lock_bh(&nth_lock);
-                if (info->u.nth.count++ == info->u.nth.every) {
-                        info->u.nth.count = 0;
-                        ret = !ret;
-                }
-                spin_unlock_bh(&nth_lock);
-
-Which means that when the that packet count was 3 to match the 3rd rule,
-then the counter should have been incremented, which == the every value
-which should have caused the counter to reset.
-
-Anyone know whats up with this module and why it's not working for me?
+-- 
+Robert L Mathews, Tiger Technologies     http://www.tigertech.net/
