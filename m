@@ -1,75 +1,63 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re:(ebtables log) (DHCP) Ebtables ruleset isn't working, any
- ideas?
-Date: Thu, 21 May 2009 12:47:40 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.0905211214390.12731@blackhole.kfki.hu>
-References: <238541.5612.qm@web44808.mail.sp1.yahoo.com>
+From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
+	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
+Subject: Re: tc and priority
+Date: Thu, 21 May 2009 12:00:45 +0300
+Message-ID: <1242896445.4763.1.camel@casper.meteor.dp.ua>
+References: <4A142FF7.1050700@duet.it>
+	 <38db14850905202353r3c494d15se7f53f4b508f1ba0@mail.gmail.com>
+	 <4A150D46.6090806@duet.it>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <238541.5612.qm@web44808.mail.sp1.yahoo.com>
+In-Reply-To: <4A150D46.6090806@duet.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Miguel Ghobangieno <mikeeusa@yahoo.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="koi8-r"
+To: Fabio Marcone <fabio.marcone@duet.it>
+Cc: Anatoly Muliarski <x86ever@gmail.com>, netfilter@vger.kernel.org
 
-On Wed, 20 May 2009, Miguel Ghobangieno wrote:
+=F7 =FE=D4=D7, 21/05/2009 =D7 10:13 +0200, Fabio Marcone =D0=C9=DB=C5=D4=
+:
+> Thanks for your reply.
+> I have just testing your script and I have some questions...
+>=20
+> Anatoly Muliarski wrote:
+> > Hi Fabio,
+> >
+> > You should do something like this:
+> >
+> > tc qdisc add dev eth0 root handle 1: prio bands 3
+> > tc qdisc add dev eth0 parent 1:1 handle 2 sfq perturb 10
+> > tc qdisc add dev eth0 parent 1:2 handle 3 sfq perturb 10
+> > tc qdisc add dev eth0 parent 1:3 handle 4 sfq perturb 10
+> > tc filter add dev eth0 protocol ip parent 1: prio 1 <your
+> > criteria_high> flowid 1:1
+> > tc filter add dev eth0 protocol ip parent 1: prio 2 <your
+> > criteria_middle> flowid 1:2
+> > tc filter add dev eth0 protocol ip parent 1: prio 3 <your
+> > criteria_low> flowid 1:3
+> >  =20
+> why do you set a priority on filters? In my tests I always have been=20
+> used packet marking instead of "u32 match" method without prio=20
+> parameter. It is the same with priority?
+>=20
+> > That works in my system.
+> >  =20
+> With your script I get the same result as mine: 2 parallel connection=
+s=20
+> (with different priority), one uses all bandwitdh and the other stall=
+s=20
+> alternatively.
+>=20
+> perhaps there is a timeout mechanims that forse sending queued packet=
+s=20
+> although lower priority?
 
-> /usr/sbin/brctl addbr br0
-> /usr/sbin/brctl addif br0 eth0
-> /usr/sbin/brctl addif br0 eth1
-> /sbin/ip link set br0 up
-> /sbin/ip link set eth0 up # don't ask me why
-> /sbin/ip link set eth1 up # don't ask me why
-> #/sbin/ip addr add 192.168.0.6 brd + dev br0
-> #/sbin/route add default gw 192.168.0.1 dev br0 ##Only needed if eth2 hasn't allready set default gateway
-> 
-> # ebtables...
-> # example rule: block all ICMP
-> ebtables -F FORWARD
-> ebtables -P FORWARD DROP
-> ebtables -A FORWARD -p ip --log --log-ip --log-arp --log-prefix MISC
-> ebtables -A FORWARD -p ip --ip-proto icmp -j DROP --log --log-ip --log-arp --log-prefix ICMP ## block all ICMP
-> 
-> ebtables -A FORWARD -p 0x800 --ip-proto udp --ip-sport 67:68 -j ACCEPT --log --log-ip --log-arp --log-prefix a67
-> ebtables -A FORWARD -p 0x800 --ip-proto udp --ip-dport 67:68 -j ACCEPT --log --log-ip --log-arp --log-prefix b67
-[...]
+This is exactly how PRIO works. Higher priority classes get dequeued
+first, so if there is something to dequeue forever then the lower
+priority classes would never dequeue.
 
-> May 21 01:03:46 debian-firewall-0 kernel: MISC IN=eth1 OUT=eth0 MAC source = 00:08:0d:54:13:c9 MAC dest = ff:ff:ff:ff:ff:ff proto = 0x0800 IP SRC=0.0.0.0 IP DST=255.255.255.255, IP tos=0x10, IP proto=17 SPT=68 DPT=67
+--=20
+=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
+ua>
 
-Here comes a DHCP request, prefixed as "MISC".
-
-> May 21 01:03:46 debian-firewall-0 kernel: a67 IN=eth1 OUT=eth0 MAC source = 00:08:0d:54:13:c9 MAC dest = ff:ff:ff:ff:ff:ff proto = 0x0800 IP SRC=0.0.0.0 IP DST=255.255.255.255, IP tos=0x10, IP proto=17 SPT=68 DPT=67
-
-The DHCP request is allowed through your bridging firewall, via eth0. 
-According to your logs, never answered by a DHCP server.
-
-> May 21 01:03:47 debian-firewall-0 kernel: ARP IN=eth1 OUT=eth0 MAC source = 00:08:0d:54:13:c9 MAC dest = ff:ff:ff:ff:ff:ff proto = 0x0806 ARP HTYPE=1, PTYPE=0x0800, OPCODE=1 ARP MAC SRC=00:08:0d:54:13:c9  ARP IP SRC=169.254.5.88 ARP MAC DST=00:00:00:00:00:00  ARP IP DST=167.206.3.203
-> May 21 01:03:48 debian-firewall-0 kernel: ARP IN=eth1 OUT=eth0 MAC source = 00:08:0d:54:13:c9 MAC dest = ff:ff:ff:ff:ff:ff proto = 0x0806 ARP HTYPE=1, PTYPE=0x0800, OPCODE=1 ARP MAC SRC=00:08:0d:54:13:c9  ARP IP SRC=169.254.5.88 ARP MAC DST=00:00:00:00:00:00  ARP IP DST=167.206.3.203
-> May 21 01:03:49 debian-firewall-0 kernel: ARP IN=eth1 OUT=eth0 MAC source = 00:08:0d:54:13:c9 MAC dest = ff:ff:ff:ff:ff:ff proto = 0x0806 ARP HTYPE=1, PTYPE=0x0800, OPCODE=1 ARP MAC SRC=00:08:0d:54:13:c9  ARP IP SRC=169.254.5.88 ARP MAC DST=00:00:00:00:00:00  ARP IP DST=167.206.3.203
-> May 21 01:03:51 debian-firewall-0 kernel: ARP IN=eth1 OUT=eth0 MAC source = 00:08:0d:54:13:c9 MAC dest = ff:ff:ff:ff:ff:ff proto = 0x0806 ARP HTYPE=1, PTYPE=0x0800, OPCODE=1 ARP MAC SRC=00:08:0d:54:13:c9  ARP IP SRC=169.254.5.88 ARP MAC DST=00:00:00:00:00:00  ARP IP DST=192.168.1.1
-> May 21 01:03:52 debian-firewall-0 kernel: ARP IN=eth1 OUT=eth0 MAC source = 00:08:0d:54:13:c9 MAC dest = ff:ff:ff:ff:ff:ff proto = 0x0806 ARP HTYPE=1, PTYPE=0x0800, OPCODE=1 ARP MAC SRC=00:08:0d:54:13:c9  ARP IP SRC=169.254.5.88 ARP MAC DST=00:00:00:00:00:00  ARP IP DST=192.168.1.1
-> May 21 01:03:53 debian-firewall-0 kernel: ARP IN=eth1 OUT=eth0 MAC source = 00:08:0d:54:13:c9 MAC dest = ff:ff:ff:ff:ff:ff proto = 0x0806 ARP HTYPE=1, PTYPE=0x0800, OPCODE=1 ARP MAC SRC=00:08:0d:54:13:c9  ARP IP SRC=169.254.5.88 ARP MAC DST=00:00:00:00:00:00  ARP IP DST=192.168.1.1
-
-Unanswered ARP requests.
-
-In your description, you network behind br0 (eth0, eth1) is 
-192.168.0.0(/24). So where come IP addresses 169.254.5.88 and 
-167.206.3.203 in an ARP request from this network?
-
-> May 21 01:03:57 debian-firewall-0 dhclient: DHCPREQUEST on eth2 to 192.168.0.1 port 67
-
-According to your settings above the firewall has got the interfaces eth0, 
-eth1 and br0 activated. From where comes the interface eth2 then? Why does 
-the dhcp client on the firewall send the dhcp request via eth2 to 
-192.168.0.1, when - again, according to your own drawing - 192.168.0.1 is 
-behind eth0.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
