@@ -1,46 +1,69 @@
-From: Robert L Mathews <lists@tigertech.com>
-Subject: Re: conntrack and RSTs received during CLOSE_WAIT
-Date: Thu, 21 May 2009 11:07:14 -0700
-Message-ID: <4A159852.8080609@tigertech.com>
-References: <4A0DE859.7000209@tigertech.com>  <alpine.DEB.2.00.0905162348430.4156@blackhole.kfki.hu>  <4A0F7FEE.3010405@tigertech.com> <4A139222.2020505@tigertech.com>  <alpine.DEB.2.00.0905200904310.10018@blackhole.kfki.hu>  <4A1466F6.8070304@tigertech.com>  <alpine.DEB.2.00.0905202327240.11796@blackhole.kfki.hu> <38db14850905210117u762600abifae41ce448363644@mail.gmail.com> <alpine.DEB.2.00.0905211058160.12567@blackhole.kfki.hu>
+From: Anatoly Muliarski <x86ever@gmail.com>
+Subject: Re: tc and priority
+Date: Thu, 21 May 2009 21:15:56 +0300
+Message-ID: <38db14850905211115h68364107vef2ff69c9dc1f0f2@mail.gmail.com>
+References: <4A142FF7.1050700@duet.it>
+	 <38db14850905202353r3c494d15se7f53f4b508f1ba0@mail.gmail.com>
+	 <4A150D46.6090806@duet.it>
+	 <38db14850905210414p41bba89exda7aacd88d905637@mail.gmail.com>
+	 <4A15423C.5070208@duet.it>
+	 <38db14850905210607s11fd9126i4bce902a668dfc6@mail.gmail.com>
+	 <4A15572D.3000303@duet.it>
+	 <38db14850905210722k7818822en4d9ceb072ad1c6b6@mail.gmail.com>
+	 <4A156620.6050904@duet.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.0905211058160.12567@blackhole.kfki.hu>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=oMCP3DaQT0/vsS5Zvw26pOkFkTUd5DIIwWw/33RR+Ew=;
+        b=OI7LMxJsfBPD279hmX0E6/+zg63wSAvSzaiDYyTgc18ilBqm+vp/ME7H8ls+UV/zKD
+         2odp6Kp3uT9gXPCETAchw7PUMsYYvu0cxOG5WBoI0O6Sng6VxHx1XM1td4FaidbH5vRZ
+         IA4OExQ3ij8oZXLCEL5Oj/NEhRxE6ySzEC4AA=
+In-Reply-To: <4A156620.6050904@duet.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Fabio Marcone <fabio.marcone@duet.it>
+Cc: netfilter@vger.kernel.org
 
-Jozsef Kadlecsik wrote:
+2009/5/21 Fabio Marcone <fabio.marcone@duet.it>:
+>
+>>
+>> OK.
+>> The starnge thing is: =A0match 00500000/ffff0000 at 20.
+>> I suppose you try to match on dst_ip - there =A0must be 'at 16'!
+>>
+>
+> what does it mean?
+>
+> this is my filter code:
+> tc filter add dev eth0 protocol ip parent 1: prio 1 u32 match ip spor=
+t 80
+> 0xffff flowid 1:1
+> tc filter add dev eth0 protocol ip parent 1: prio 3 u32 match ip spor=
+t 81
+> 0xffff flowid 1:3
+>
+> and packets are queued in the right queue. If you prefer I can filter=
+ using
+> iptables mangle, I think it's the same.
+>
+>
+> Fabio
 
-> The TCP sequence numbers *are* tracked and checked - but with the limit of 
-> a node being in the middle of the two communicating endpoints. That limit 
-> is physical and cannot be discarded.
+That's warmer :)
+Try the next:
+tc filter add dev eth0 protocol ip parent 1: prio 1 u32 match ip
+protocol 6 0xFF ip sport 80 0xFFFF flowid 1:1
+tc filter add dev eth0 protocol ip parent 1: prio 2 u32 match ip
+protocol 6 0xFF ip sport 81 0xFFFF flowid 1:3
+tc filter add dev eth0 protocol ip parent 1: prio 3 u32 match u8 0 0 fl=
+owid 1:2
 
-That said, would it be safe to say that if conntrack has already seen a 
-certain sequence number in one direction, then a RST packet with less 
-than sequence number + 1 is automatically invalid?
-
-To take my original example, if the client sends a legitimate packet 
-with sequence number 421, then sends a following RST packet that also 
-has sequence number 421, the RST packet *must* be bogus, and will 
-(hopefully) be ignored by the server.
-
-I realize that in practice, when our node-in-the-middle forwards the two 
-seq=421 packets to the server, the first ("real") packet could be lost. 
-Or perhaps the two packets arrive at the server in the other order. 
-Either case will cause the server to see the bogus RST packet before it 
-sees the "real" packet, and the server will "incorrectly" accept the 
-bogus RST. And I don't see a way for conntrack to detect whether this 
-happened.
-
-However, it seems much more likely that the server will "correctly" 
-reject the RST. Perhaps conntrack should assume that, instead? It would 
-be correct more often, and it's also less harmful if we're wrong: when 
-we receive data that violates the TCP standard, it seems better for 
-conntrack to decide that a connection is still open when it's not, than 
-to decide that a connection is closed when it isn't.
-
--- 
-Robert L Mathews, Tiger Technologies    http://www.tigertech.net/
+--=20
+Best regards
+Anatoly Muliarski
