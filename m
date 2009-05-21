@@ -1,50 +1,48 @@
-From: Fabio Marcone <fabio.marcone@duet.it>
-Subject: Re: tc and priority
-Date: Thu, 21 May 2009 10:13:58 +0200
-Message-ID: <4A150D46.6090806@duet.it>
-References: <4A142FF7.1050700@duet.it> <38db14850905202353r3c494d15se7f53f4b508f1ba0@mail.gmail.com>
+From: Anatoly Muliarski <x86ever@gmail.com>
+Subject: Re: conntrack and RSTs received during CLOSE_WAIT
+Date: Thu, 21 May 2009 11:17:04 +0300
+Message-ID: <38db14850905210117u762600abifae41ce448363644@mail.gmail.com>
+References: <4A0DE859.7000209@tigertech.com>
+	 <alpine.DEB.2.00.0905162348430.4156@blackhole.kfki.hu>
+	 <4A0F7FEE.3010405@tigertech.com> <4A139222.2020505@tigertech.com>
+	 <alpine.DEB.2.00.0905200904310.10018@blackhole.kfki.hu>
+	 <4A1466F6.8070304@tigertech.com>
+	 <alpine.DEB.2.00.0905202327240.11796@blackhole.kfki.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <38db14850905202353r3c494d15se7f53f4b508f1ba0@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=WLj0pzEx5ZmpC+MUm2gOTOJVvQH7I7CP2rO3qGLgQjg=;
+        b=OsVbr+naYcDivkYXblVD8XOVghueRakbtOPEMfzuDcN+qeMflDVq+OaCUupLgswnR1
+         amBg7XLQQodABkbTo+wkNqM7c7gzkYRV+XXNfnFCyrexCIm1izrirKmgVYZ39zd9e/8B
+         lE+IYtdcIbqfeYkC3nX6q2RxkhMfefh5YERCQ=
+In-Reply-To: <alpine.DEB.2.00.0905202327240.11796@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Anatoly Muliarski <x86ever@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Thanks for your reply.
-I have just testing your script and I have some questions...
+I would like to put in some words.
+Obviously the problem is in conntrack code.
+IMHO, to solve this issue the code should track tcp sequence number
+and check it correctness on receiving RST packet and on the following
+decision about removing the conntrack entry.
 
-Anatoly Muliarski wrote:
-> Hi Fabio,
+2009/5/21, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>:
 >
-> You should do something like this:
+> Because connlimit/connbytes rely on conntrack, the latter should be
+> "fixed". However I do not see any way to make it resistant against such
+> attacks: if we shrink the window (by which alogrithm?) we may block valid
+> RST segments and thus cause connections to hang instead of termination.
 >
-> tc qdisc add dev eth0 root handle 1: prio bands 3
-> tc qdisc add dev eth0 parent 1:1 handle 2 sfq perturb 10
-> tc qdisc add dev eth0 parent 1:2 handle 3 sfq perturb 10
-> tc qdisc add dev eth0 parent 1:3 handle 4 sfq perturb 10
-> tc filter add dev eth0 protocol ip parent 1: prio 1 <your
-> criteria_high> flowid 1:1
-> tc filter add dev eth0 protocol ip parent 1: prio 2 <your
-> criteria_middle> flowid 1:2
-> tc filter add dev eth0 protocol ip parent 1: prio 3 <your
-> criteria_low> flowid 1:3
->   
-why do you set a priority on filters? In my tests I always have been 
-used packet marking instead of "u32 match" method without prio 
-parameter. It is the same with priority?
-
-> That works in my system.
->   
-With your script I get the same result as mine: 2 parallel connections 
-(with different priority), one uses all bandwitdh and the other stalls 
-alternatively.
-
-perhaps there is a timeout mechanims that forse sending queued packets 
-although lower priority?
+> Best regards,
+> Jozsef
 
 
-Thanks in advance,
-Fabio
+-- 
+Best regards
+Anatoly Muliarski
