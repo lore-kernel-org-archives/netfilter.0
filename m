@@ -1,94 +1,142 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: conntrack and RSTs received during CLOSE_WAIT
-Date: Thu, 21 May 2009 17:31:30 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.0905211729090.13699@blackhole.kfki.hu>
-References: <4A0DE859.7000209@tigertech.com> <alpine.DEB.2.00.0905162348430.4156@blackhole.kfki.hu> <4A0F7FEE.3010405@tigertech.com> <4A139222.2020505@tigertech.com> <alpine.DEB.2.00.0905200904310.10018@blackhole.kfki.hu> <4A1466F6.8070304@tigertech.com>
- <alpine.DEB.2.00.0905202327240.11796@blackhole.kfki.hu>
+From: Miguel Ghobangieno <mikeeusa@yahoo.com>
+Subject: Re:(ebtables log) (DHCP) Ebtables ruleset isn't working, any ideas?
+Date: Thu, 21 May 2009 08:46:16 -0700 (PDT)
+Message-ID: <408810.56442.qm@web44812.mail.sp1.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.0905202327240.11796@blackhole.kfki.hu>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1242920776; bh=nIQHxtsBjg7dTNQY91TPr6wKiBqn1CqGjisUF7Ac6rM=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Subject:To:Cc:MIME-Version:Content-Type; b=flLxFBP7cIGKOOwWw9MuSy6d/MluZVxOKMI5o5cvHxMTeFipL8QSilFiGjirIMuGWvOFZCCZ/pOke+p9/c3NqH5VIKo+eCzbS1Mj0BgyQozs2g+qK4fzADnwrWVqckqVV8eWgshXtNNYHmWaL39/mFSxXId5BQwDI3dPlfIKSJE=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Robert L Mathews <lists@tigertech.com>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
-
-On Wed, 20 May 2009, Jozsef Kadlecsik wrote:
-
-> Because connlimit/connbytes rely on conntrack, the latter should be 
-> "fixed". However I do not see any way to make it resistant against such 
-> attacks: if we shrink the window (by which alogrithm?) we may block valid 
-> RST segments and thus cause connections to hang instead of termination.
-
-OK, here is a patch. Could you test it with your script and in your 
-environment?
-
-The patch below introduces a new flag for TCP conntrack to mark that RST 
-segment was seen. If retransmitted packets detected from the other 
-direction after the RST segment detected, the timeout of the conntrack 
-entry is linearly increased up to a hardcoded value. Thus we can both 
-catch the retransmitted packets and preserve the effectiveness of 
-connlimit/connbytes.
----
-diff --git a/include/linux/netfilter/nf_conntrack_tcp.h b/include/linux/netfilter/nf_conntrack_tcp.h
-index 3066789..465d346 100644
---- a/include/linux/netfilter/nf_conntrack_tcp.h
-+++ b/include/linux/netfilter/nf_conntrack_tcp.h
-@@ -35,6 +35,9 @@ enum tcp_conntrack {
- /* Has unacknowledged data */
- #define IP_CT_TCP_FLAG_DATA_UNACKNOWLEDGED	0x10
- 
-+/* Has seen RST */
-+#define IP_CT_TCP_FLAG_RST_SEEN			0x20
-+
- struct nf_ct_tcp_flags {
- 	__u8 flags;
- 	__u8 mask;
-diff --git a/net/netfilter/nf_conntrack_proto_tcp.c b/net/netfilter/nf_conntrack_proto_tcp.c
-index b5ccf2b..fca7caa 100644
---- a/net/netfilter/nf_conntrack_proto_tcp.c
-+++ b/net/netfilter/nf_conntrack_proto_tcp.c
-@@ -84,6 +84,10 @@ static unsigned int tcp_timeouts[TCP_CONNTRACK_MAX] __read_mostly = {
- 	[TCP_CONNTRACK_CLOSE]		= 10 SECS,
- };
- 
-+/* Max timeout when retransmitted packets detected after RST was seen
-+   from the other direction */
-+#define TCP_TIMEOUT_RETRANS_AFTER_RST		2 MINS
-+
- #define sNO TCP_CONNTRACK_NONE
- #define sSS TCP_CONNTRACK_SYN_SENT
- #define sSR TCP_CONNTRACK_SYN_RECV
-@@ -918,6 +922,8 @@ static int tcp_packet(struct nf_conn *ct,
- 				  "nf_ct_tcp: invalid state ");
- 		return -NF_ACCEPT;
- 	case TCP_CONNTRACK_CLOSE:
-+		if (index == TCP_RST_SET)
-+			ct->proto.tcp.seen[dir].flags |= IP_CT_TCP_FLAG_RST_SEEN;
- 		if (index == TCP_RST_SET
- 		    && ((test_bit(IPS_SEEN_REPLY_BIT, &ct->status)
- 			 && ct->proto.tcp.last_index == TCP_SYN_SET)
-@@ -963,7 +969,12 @@ static int tcp_packet(struct nf_conn *ct,
- 	    && new_state == TCP_CONNTRACK_FIN_WAIT)
- 		ct->proto.tcp.seen[dir].flags |= IP_CT_TCP_FLAG_CLOSE_INIT;
- 
--	if (ct->proto.tcp.retrans >= nf_ct_tcp_max_retrans &&
-+	if (ct->proto.tcp.seen[!dir].flags & IP_CT_TCP_FLAG_RST_SEEN
-+	    && ct->proto.tcp.retrans > 1)
-+	    	timeout = min_t(unsigned int,
-+	    			tcp_timeouts[sCL] * ct->proto.tcp.retrans,
-+	    			TCP_TIMEOUT_RETRANS_AFTER_RST);
-+	else if (ct->proto.tcp.retrans >= nf_ct_tcp_max_retrans &&
- 	    tcp_timeouts[new_state] > nf_ct_tcp_timeout_max_retrans)
- 		timeout = nf_ct_tcp_timeout_max_retrans;
- 	else if ((ct->proto.tcp.seen[0].flags | ct->proto.tcp.seen[1].flags) &
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter@vger.kernel.org
 
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Eth2 is the management interface. The box should be sending whatever comes in via eth1 to eth2.
+
+--- On Thu, 5/21/09, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu> wrote:
+
+> From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+> Subject: Re:(ebtables log) (DHCP) Ebtables ruleset isn't working, any ideas?
+> To: "Miguel Ghobangieno" <mikeeusa@yahoo.com>
+> Cc: netfilter@vger.kernel.org
+> Date: Thursday, May 21, 2009, 10:47 AM
+> On Wed, 20 May 2009, Miguel
+> Ghobangieno wrote:
+> 
+> > /usr/sbin/brctl addbr br0
+> > /usr/sbin/brctl addif br0 eth0
+> > /usr/sbin/brctl addif br0 eth1
+> > /sbin/ip link set br0 up
+> > /sbin/ip link set eth0 up # don't ask me why
+> > /sbin/ip link set eth1 up # don't ask me why
+> > #/sbin/ip addr add 192.168.0.6 brd + dev br0
+> > #/sbin/route add default gw 192.168.0.1 dev br0 ##Only
+> needed if eth2 hasn't allready set default gateway
+> > 
+> > # ebtables...
+> > # example rule: block all ICMP
+> > ebtables -F FORWARD
+> > ebtables -P FORWARD DROP
+> > ebtables -A FORWARD -p ip --log --log-ip --log-arp
+> --log-prefix MISC
+> > ebtables -A FORWARD -p ip --ip-proto icmp -j DROP
+> --log --log-ip --log-arp --log-prefix ICMP ## block all
+> ICMP
+> > 
+> > ebtables -A FORWARD -p 0x800 --ip-proto udp --ip-sport
+> 67:68 -j ACCEPT --log --log-ip --log-arp --log-prefix a67
+> > ebtables -A FORWARD -p 0x800 --ip-proto udp --ip-dport
+> 67:68 -j ACCEPT --log --log-ip --log-arp --log-prefix b67
+> [...]
+> 
+> > May 21 01:03:46 debian-firewall-0 kernel: MISC IN=eth1
+> OUT=eth0 MAC source = 00:08:0d:54:13:c9 MAC dest =
+> ff:ff:ff:ff:ff:ff proto = 0x0800 IP SRC=0.0.0.0 IP
+> DST=255.255.255.255, IP tos=0x10, IP proto=17 SPT=68 DPT=67
+> 
+> Here comes a DHCP request, prefixed as "MISC".
+> 
+> > May 21 01:03:46 debian-firewall-0 kernel: a67 IN=eth1
+> OUT=eth0 MAC source = 00:08:0d:54:13:c9 MAC dest =
+> ff:ff:ff:ff:ff:ff proto = 0x0800 IP SRC=0.0.0.0 IP
+> DST=255.255.255.255, IP tos=0x10, IP proto=17 SPT=68 DPT=67
+> 
+> The DHCP request is allowed through your bridging firewall,
+> via eth0. 
+> According to your logs, never answered by a DHCP server.
+> 
+> > May 21 01:03:47 debian-firewall-0 kernel: ARP IN=eth1
+> OUT=eth0 MAC source = 00:08:0d:54:13:c9 MAC dest =
+> ff:ff:ff:ff:ff:ff proto = 0x0806 ARP HTYPE=1, PTYPE=0x0800,
+> OPCODE=1 ARP MAC SRC=00:08:0d:54:13:c9  ARP IP
+> SRC=169.254.5.88 ARP MAC DST=00:00:00:00:00:00  ARP IP
+> DST=167.206.3.203
+> > May 21 01:03:48 debian-firewall-0 kernel: ARP IN=eth1
+> OUT=eth0 MAC source = 00:08:0d:54:13:c9 MAC dest =
+> ff:ff:ff:ff:ff:ff proto = 0x0806 ARP HTYPE=1, PTYPE=0x0800,
+> OPCODE=1 ARP MAC SRC=00:08:0d:54:13:c9  ARP IP
+> SRC=169.254.5.88 ARP MAC DST=00:00:00:00:00:00  ARP IP
+> DST=167.206.3.203
+> > May 21 01:03:49 debian-firewall-0 kernel: ARP IN=eth1
+> OUT=eth0 MAC source = 00:08:0d:54:13:c9 MAC dest =
+> ff:ff:ff:ff:ff:ff proto = 0x0806 ARP HTYPE=1, PTYPE=0x0800,
+> OPCODE=1 ARP MAC SRC=00:08:0d:54:13:c9  ARP IP
+> SRC=169.254.5.88 ARP MAC DST=00:00:00:00:00:00  ARP IP
+> DST=167.206.3.203
+> > May 21 01:03:51 debian-firewall-0 kernel: ARP IN=eth1
+> OUT=eth0 MAC source = 00:08:0d:54:13:c9 MAC dest =
+> ff:ff:ff:ff:ff:ff proto = 0x0806 ARP HTYPE=1, PTYPE=0x0800,
+> OPCODE=1 ARP MAC SRC=00:08:0d:54:13:c9  ARP IP
+> SRC=169.254.5.88 ARP MAC DST=00:00:00:00:00:00  ARP IP
+> DST=192.168.1.1
+> > May 21 01:03:52 debian-firewall-0 kernel: ARP IN=eth1
+> OUT=eth0 MAC source = 00:08:0d:54:13:c9 MAC dest =
+> ff:ff:ff:ff:ff:ff proto = 0x0806 ARP HTYPE=1, PTYPE=0x0800,
+> OPCODE=1 ARP MAC SRC=00:08:0d:54:13:c9  ARP IP
+> SRC=169.254.5.88 ARP MAC DST=00:00:00:00:00:00  ARP IP
+> DST=192.168.1.1
+> > May 21 01:03:53 debian-firewall-0 kernel: ARP IN=eth1
+> OUT=eth0 MAC source = 00:08:0d:54:13:c9 MAC dest =
+> ff:ff:ff:ff:ff:ff proto = 0x0806 ARP HTYPE=1, PTYPE=0x0800,
+> OPCODE=1 ARP MAC SRC=00:08:0d:54:13:c9  ARP IP
+> SRC=169.254.5.88 ARP MAC DST=00:00:00:00:00:00  ARP IP
+> DST=192.168.1.1
+> 
+> Unanswered ARP requests.
+> 
+> In your description, you network behind br0 (eth0, eth1) is
+> 
+> 192.168.0.0(/24). So where come IP addresses 169.254.5.88
+> and 
+> 167.206.3.203 in an ARP request from this network?
+> 
+> > May 21 01:03:57 debian-firewall-0 dhclient:
+> DHCPREQUEST on eth2 to 192.168.0.1 port 67
+> 
+> According to your settings above the firewall has got the
+> interfaces eth0, 
+> eth1 and br0 activated. From where comes the interface eth2
+> then? Why does 
+> the dhcp client on the firewall send the dhcp request via
+> eth2 to 
+> 192.168.0.1, when - again, according to your own drawing -
+> 192.168.0.1 is 
+> behind eth0.
+> 
+> Best regards,
+> Jozsef
+> -
+> E-mail  : kadlec@blackhole.kfki.hu,
+> kadlec@mail.kfki.hu
+> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+> Address : KFKI Research Institute for Particle and Nuclear
+> Physics
+>           H-1525 Budapest 114,
+> POB. 49, Hungary
+> 
+
+
+      
+
