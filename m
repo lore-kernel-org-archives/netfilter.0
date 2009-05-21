@@ -1,63 +1,46 @@
-From: Miguel Ghobangieno <mikeeusa@yahoo.com>
-Subject: Re:(ebtables log) (DHCP) Ebtables ruleset isn't working, any ideas?
-Date: Thu, 21 May 2009 10:19:46 -0700 (PDT)
-Message-ID: <559852.1656.qm@web44806.mail.sp1.yahoo.com>
+From: Robert L Mathews <lists@tigertech.com>
+Subject: Re: conntrack and RSTs received during CLOSE_WAIT
+Date: Thu, 21 May 2009 11:07:14 -0700
+Message-ID: <4A159852.8080609@tigertech.com>
+References: <4A0DE859.7000209@tigertech.com>  <alpine.DEB.2.00.0905162348430.4156@blackhole.kfki.hu>  <4A0F7FEE.3010405@tigertech.com> <4A139222.2020505@tigertech.com>  <alpine.DEB.2.00.0905200904310.10018@blackhole.kfki.hu>  <4A1466F6.8070304@tigertech.com>  <alpine.DEB.2.00.0905202327240.11796@blackhole.kfki.hu> <38db14850905210117u762600abifae41ce448363644@mail.gmail.com> <alpine.DEB.2.00.0905211058160.12567@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1242926386; bh=itHIQ8z86RD6Qzc6nMRsVtnFBzUnFAyuQeEjvdnFFvA=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Subject:To:MIME-Version:Content-Type; b=tr8zVjr4R8Eag4KnVstVyWtzw7CHmq5nwf727vMDdbHEsOebreg8qQ4fD+BI9jXTe42vFXFXeteP8B9a5HocKw42NvjeSwvA4TsqOp5Ajp9urv4VTPNMTarBPDgumF/1bcf1aJz0TIYNNBXzpy3hAGQaryaqCjIv2tWbfMGSxko=
+In-Reply-To: <alpine.DEB.2.00.0905211058160.12567@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
+Jozsef Kadlecsik wrote:
 
-I can't fix it. I don't know how.
+> The TCP sequence numbers *are* tracked and checked - but with the limit of 
+> a node being in the middle of the two communicating endpoints. That limit 
+> is physical and cannot be discarded.
 
-Here is the config
+That said, would it be safe to say that if conntrack has already seen a 
+certain sequence number in one direction, then a RST packet with less 
+than sequence number + 1 is automatically invalid?
 
-[laptop]--->[eth1](firewall)(br0 (bridge interface)[eth0]---router
-******************(firewall)[eth2 (management interface)]-----A
+To take my original example, if the client sends a legitimate packet 
+with sequence number 421, then sends a following RST packet that also 
+has sequence number 421, the RST packet *must* be bogus, and will 
+(hopefully) be ignored by the server.
 
-Eth2 has an IP address.
-Eth1 and Eth0 are just for the bridge.
-Eth2 is ment to be connected to whatever segment the admin wants it on: it's so he can ssh into the firewall and configure things: that is supposed to be it's only use.
+I realize that in practice, when our node-in-the-middle forwards the two 
+seq=421 packets to the server, the first ("real") packet could be lost. 
+Or perhaps the two packets arrive at the server in the other order. 
+Either case will cause the server to see the bogus RST packet before it 
+sees the "real" packet, and the server will "incorrectly" accept the 
+bogus RST. And I don't see a way for conntrack to detect whether this 
+happened.
 
---- On Thu, 5/21/09, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu> wrote:
+However, it seems much more likely that the server will "correctly" 
+reject the RST. Perhaps conntrack should assume that, instead? It would 
+be correct more often, and it's also less harmful if we're wrong: when 
+we receive data that violates the TCP standard, it seems better for 
+conntrack to decide that a connection is still open when it's not, than 
+to decide that a connection is closed when it isn't.
 
-> From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-> Subject: Re:(ebtables log) (DHCP) Ebtables ruleset isn't working, any ideas?
-> To: "Miguel Ghobangieno" <mikeeusa@yahoo.com>
-> Cc: netfilter@vger.kernel.org
-> Date: Thursday, May 21, 2009, 5:08 PM
-> On Thu, 21 May 2009, Miguel
-> Ghobangieno wrote:
-> 
-> > Eth2 is the management interface. The box should be
-> sending whatever 
-> > comes in via eth1 to eth2.
-> 
-> Your network setup makes no sense to me. Good luck in
-> fixing your 
-> configuration.
-> 
-> Best regards,
-> Jozsef
-> -
-> E-mail  : kadlec@blackhole.kfki.hu,
-> kadlec@mail.kfki.hu
-> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-> Address : KFKI Research Institute for Particle and Nuclear
-> Physics
->           H-1525 Budapest 114,
-> POB. 49, Hungary
-> --
-> To unsubscribe from this list: send the line "unsubscribe
-> netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
-
-
-      
-
+-- 
+Robert L Mathews, Tiger Technologies    http://www.tigertech.net/
