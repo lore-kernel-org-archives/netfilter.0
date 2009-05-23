@@ -1,32 +1,36 @@
-From: Stefano <stefano1981@gmail.com>
-Subject: Ebtables NAT (OUTPUT)
-Date: Fri, 22 May 2009 19:49:28 +0100
-Message-ID: <c60ab7b20905221149g43c71dfbk9246cb2c0e6a2be2@mail.gmail.com>
+From: Michal Soltys <soltys@ziu.info>
+Subject: Re: hfsc guide
+Date: Sat, 23 May 2009 12:26:00 +0200
+Message-ID: <4A17CF38.1020002@ziu.info>
+References: <4A16B5B6.6040902@duet.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type:content-transfer-encoding;
-        bh=Z5uhAirNMymHRP4UfULonFINLqRvaL9fRAD2aXwbdeQ=;
-        b=ATbhdTcthxwqaMR1apwrgEycy0HUGVkS3C6FaaJFnAs/FjPylKm+V5GywcYu3DXbqx
-         4iV1i8uTxyG++X5Jx1vYTnWaljFCvk/Q+6QUpzrOWvtLuc9EYKrGA9xThOl5iPJ/k3Ch
-         m9J8W3JQRpzzfxm4JzJPmZPdmjsc8UWykglLs=
+In-Reply-To: <4A16B5B6.6040902@duet.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Fabio Marcone <fabio.marcone@duet.it>
+Cc: netfilter@vger.kernel.org
 
-Hi everybody,
+Fabio Marcone wrote:
+> Hi *,
+> I read http://linux-ip.net/articles/hfsc.en/ on hfsc qdisc, but I don't 
+> understand this qdisc very well. Is there other documents about that? I 
+> didn't find.
+> 
+> Thanks in advance,
+> Fabio
 
-I read in the tutorial "ebtables/iptables interaction on a Linux-based
-bridge" --> http://ebtables.sourceforge.net/br_fw_ia/br_fw_ia.htm
-that the nat OUTPUT chain is traversed after the bridging decision
-which is too late and the intention was to change this behavior. I'd
-like to know
-if in the last version of ebtables this has been modified.
+I've been preparing man pages, but they still need a bit of work. Either 
+way -
 
-Cheers,
+http://marc.info/?l=linux-netdev&m=123569055526101&w=2
 
-Stefano
+(feedback welcome)
+
+Other links:
+
+http://marc.info/?t=107799591400001&r=1&w=2
+http://www.cs.cmu.edu/~istoica/hfsc-tr.ps.gz (this is better version of 
+sigcom97 document in Ivan's reply).
