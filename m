@@ -1,36 +1,64 @@
-From: Michal Soltys <soltys@ziu.info>
-Subject: Re: hfsc guide
-Date: Sat, 23 May 2009 12:26:00 +0200
-Message-ID: <4A17CF38.1020002@ziu.info>
-References: <4A16B5B6.6040902@duet.it>
+From: Jesse Molina <jesse@opendreams.net>
+Subject: How do we arp for NAT?  Secondary IPs, proxy arp? something else?
+Date: Sun, 24 May 2009 03:37:19 -0700
+Message-ID: <4A19235F.4070306@opendreams.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4A16B5B6.6040902@duet.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Fabio Marcone <fabio.marcone@duet.it>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Fabio Marcone wrote:
-> Hi *,
-> I read http://linux-ip.net/articles/hfsc.en/ on hfsc qdisc, but I don't 
-> understand this qdisc very well. Is there other documents about that? I 
-> didn't find.
-> 
-> Thanks in advance,
-> Fabio
 
-I've been preparing man pages, but they still need a bit of work. Either 
-way -
+Hello
 
-http://marc.info/?l=linux-netdev&m=123569055526101&w=2
+I've googled all over and I don't really see an obvious answer to the 
+question that I have.
 
-(feedback welcome)
+Here is my situation:  I have a GNU/Linux host performing very typical 
+firewall duties;  two interfaces, one with an Internet public IP and 
+another interface on an RFC1918 net.  Hosts on the RFC1918 net have 
+iptables SNATs to public IPs and then I filter to allow some services in 
+and others not, with stateful inspection in forwarding.
 
-Other links:
+Normally, in order to get the multiple public IPs for these SNAT'ed 
+hosts to respond to arp requests from the firewall, I simply add them as 
+secondary IPs on the public interface of the firewall (eth0:1, eth0:2,...).
 
-http://marc.info/?t=107799591400001&r=1&w=2
-http://www.cs.cmu.edu/~istoica/hfsc-tr.ps.gz (this is better version of 
-sigcom97 document in Ivan's reply).
+The problem with this is that the firewall itself runs some services and 
+they have the potential to use these secondary IPs as their ephemeral 
+source addresses when they reach out to something on the Internet! 
+That's bad, as those IPs should be exclusively used by only the hosts 
+for which they were designed for.  Assume I have no control over the 
+applications which bind to a local interface to use for their outbound 
+session traffic.
+
+It seems like using these secondary addresses is not the right thing to do.
+
+Is there a better way to make the firewall arp for these public IPs that 
+are SNAT mapped to the internal RFC1918 IPs?  This is a little like 
+proxy arp, but that involves the same layer 3 IP network physically 
+split by interfaces (think dialup NAS), and since these are different 
+networks, I don't imagine this is applicable.
+
+What else is there?  Loop interfaces with proxy arping?  I've been 
+reading about some functionality for NAT in the ip tool (ip route add 
+nat ...) but it looks depreciated.  There also seems to be something 
+like "ip rule add nat ..." but I've not figured that out yet.  I had 
+read somewhere that "ip route add nat ..." specifically would arp for 
+the translated address, but again, the man pages says that's depreciated 
+in the 2.6 kernel.
+
+How do others handle this?
+
+
+
+-- 
+# Jesse Molina
+# Mail = jesse@opendreams.net
+# Page = page-jesse@opendreams.net
+# Cell = 1.602.323.7608
+# Web  = http://www.opendreams.net/jesse/
+
+
