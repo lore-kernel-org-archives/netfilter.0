@@ -1,71 +1,58 @@
 From: Jesse Molina <jesse@opendreams.net>
 Subject: Re: How do we arp for NAT?  Secondary IPs, proxy arp? something else?
-Date: Sun, 24 May 2009 14:02:41 -0700
-Message-ID: <4A19B5F1.4080000@opendreams.net>
-References: <4A19235F.4070306@opendreams.net> <4A192D38.90008@redpill-linpro.com>
+Date: Sun, 24 May 2009 14:15:06 -0700
+Message-ID: <4A19B8DA.8020108@opendreams.net>
+References: <4A19235F.4070306@opendreams.net> <20090524164956.6f3fa24e@catlap>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4A192D38.90008@redpill-linpro.com>
+In-Reply-To: <20090524164956.6f3fa24e@catlap>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Tore Anderson <tore.anderson@redpill-linpro.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
 
-That's a pretty good suggestion, but it's more of a workaround than 
-something that actually addresses the issue at hand.  I'm looking for a 
-solution on the GNU/Linux host, not in the world around it.
+Assume we have no control over the services -- they pick any old IP (and 
+I assure you, they do, this isn't just academic) from that public-facing 
+IP physical interface and start using ephemeral ports, which then can 
+conflict with RPC or whatever for the SNAT/DNAT host that the IP is 
+supposed to exclusively support.
 
-To restate my question:  What alternative ways are there to make the 
-GNU/Linux system reply to ARP requests for an IP, without that IP being 
-an actual interface on the host, or that interface must not be used by 
-local services *in any way*, for the reasons of using it via SNAT/DNAT?
+Furthermore, let's say that an upstream firewall counts packets from 
+source/destination IPs for the purposes of auditing traffic.  By a local 
+service on the GNU/Linux firewall using these IPs that they are not 
+supposed to, it creates the false illusion that the host for which the 
+IP is supposed to be exclusively used for is sending/receiving traffic. 
+  If we had such upstream filtering going on, this could even 
+permit/deny traffic unintended from policy.
 
-Here is an example where the solution you suggested would not work:  I 
-have a Qwest ADSL line with a /29 network.  That's what we have, and 
-it's not going to change.  Qwest will not issue you a /30 for the 
-point-to-point between the ADSL router device and your GNU/Linux 
-firewall.  The ADSL router's filtering and firewall capabilities suck or 
-just don't exist.  A bridge firewall would work here, but we could not 
-use NAT and RFC1918 addresses.  We have 100 actual hosts on that RFC1918 
-network, but only four of them need a public resource, and they are all 
-tcp/80 web servers.
-
-All commercial firewall products that I know of can do this.  You don't 
-give your Cisco ASA/PIX a secondary IP -- the nat or static statement 
-induces the host to ARP for the IP that you have assigned for the 
-translation.  Same thing with Checkpoint, same thing with NetScreen.
-
-Thanks for the suggestion though -- that's certainly a good one, but it 
-still seems like there is functionality missing from the Linux kernel to 
-handle this, or it's somewhere that I don't know of.
+There might be some other unintended consequences that I've not thought 
+of.  Either way, it just seems wrong that there isn't a way to do this 
+if GNU/Linux is going intended to be used as a modern fully featureless 
+firewall that can perform NAT/PAT.
 
 
 
-Tore Anderson wrote:
-> Hi Jesse,
+M**** K**** wrote:
+> Hello,
 > 
-> * Jesse Molina
+>> The problem with this is that the firewall itself runs some services
+>> and they have the potential to use these secondary IPs as their
+>> ...
+>> It seems like using these secondary addresses is not the right thing to
+>> do.
 > 
->> What else is there?  Loop interfaces with proxy arping?  I've been
->> reading about some functionality for NAT in the ip tool (ip route add
->> nat ...) but it looks depreciated.  There also seems to be something
->> like "ip rule add nat ..." but I've not figured that out yet.  I had
->> read somewhere that "ip route add nat ..." specifically would arp for
->> the translated address, but again, the man pages says that's depreciated
->> in the 2.6 kernel.
+> One non-invasive approach is to launch local services on firewall box
+> specifying bind address (0.0.0.0 is default and binds to all
+> addressess).
 > 
-> I'd simply route the IP adresses used for NAT to your Linux-based
-> firewall, if I were you.  That way you'll only need a /30 link network
-> to be used on the public interface, while the addresses used for NAT do
-> not have to be local to the firewall in any way.  As an added bonus
-> you'll get less ARP traffic on the public interface, as the upstream
-> router only needs to learn the L2-address of the next-hop router (your
-> firewall, that is).
+> Method mentioned by Tore Anderson is the cleanest way out, but you'd
+> have to persuade your upstream provider to route a subnet of public IPs
+> throu your firewall box. This way you wouldn't have to assing secondary
+> addresses for SNAT/DNAT to work.
 > 
-> BR,
+> Cheers,
 
 -- 
 # Jesse Molina
