@@ -1,7 +1,7 @@
-From: Marek Kierdelewicz <marek@piasta.pl>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 Subject: Re: Firewall in Load Balance - Active/Active
-Date: Mon, 25 May 2009 14:13:21 +0200
-Message-ID: <20090525141321.0b41719e@catlap>
+Date: Mon, 25 May 2009 15:04:22 +0200
+Message-ID: <4A1A9756.6040401@netfilter.org>
 References: <3e7107590905250446g2f3aa95dua9691dc63cc3dfec@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -13,24 +13,22 @@ Content-Type: text/plain; charset="us-ascii"
 To: Eduardo Sachs <edu.sachs@gmail.com>
 Cc: netfilter@vger.kernel.org
 
+Eduardo Sachs wrote:
+> Hi Friends!
 > 
->Hi Friends!
+> I'm looking for firewall solution for active/active, the clients use
+> the firewalls randomly.
+> 
+> The conntrackd help me to replicate the state of the connection.
+> 
+> What help to "load balance" the firewalls?
 
-Hi Bro,
+Have a look at the "cluster match" in the git tree:
 
->I'm looking for firewall solution for active/active, the clients use
->the firewalls randomly.
+http://git.netfilter.org/cgi-bin/gitweb.cgi?p=iptables.git;a=commit;h=cd958a6c92c84095a439780b53832bb3aae2d512
 
-Interesting. How does client choose firewall? Where the randomization
-occurs?
+It will be available in 2.6.30. I'm still finishing some user-level
+documentation about it. The integration with conntrackd is also on the way.
 
->The conntrackd help me to replicate the state of the connection.
->What help to "load balance" the firewalls?
-
-You can use keepalived [1] to have two virtual gateway IP addresses on
-the network - GW1 and GW2. Assign half of the clients staticly to GW1,
-another half to GW2. If one of the boxes fails, keepalived brings up
-missing GWX address on another box. This way you are provided with
-redundancy and load balancing.
-
-[1] http://www.keepalived.org/
+-- 
+"Los honestos son inadaptados sociales" -- Les Luthiers
