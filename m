@@ -1,33 +1,32 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: How do we arp for NAT?  Secondary IPs, proxy arp? something else?
-Date: Mon, 25 May 2009 11:14:32 +0200
-Message-ID: <4A1A6178.8080907@plouf.fr.eu.org>
-References: <4A19235F.4070306@opendreams.net> <4A192D38.90008@redpill-linpro.com> <4A19B5F1.4080000@opendreams.net>
+From: Eduardo Sachs <edu.sachs@gmail.com>
+Subject: Firewall in Load Balance - Active/Active
+Date: Mon, 25 May 2009 08:46:17 -0300
+Message-ID: <3e7107590905250446g2f3aa95dua9691dc63cc3dfec@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4A19B5F1.4080000@opendreams.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=hALoqQZZ0Dvhj3uEGsxM0Yie0F1bKji2R+6bMsgWjUA=;
+        b=TgDELJgbBMTBufFYvEEswWlTyzsYtEUPNa10xbpMgV+CKX1bdXSoqLBVDq6aoPLKfM
+         ou4XfM5NMIRjcVoX4jx5I1exDaIjmMsUicsQ36J3foyopQrWkZuCH+so90REEjhY/+EQ
+         sGBBoogMRSOEAaxoKVYAg1ApTe0x5NY+NNkdc=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hello,
+Hi Friends!
 
-Jesse Molina a =E9crit :
->=20
-> To restate my question:  What alternative ways are there to make the=20
-> GNU/Linux system reply to ARP requests for an IP, without that IP bei=
-ng=20
-> an actual interface on the host, or that interface must not be used b=
-y=20
-> local services *in any way*, for the reasons of using it via SNAT/DNA=
-T?
+I'm looking for firewall solution for active/active, the clients use
+the firewalls randomly.
 
-ip route add local <address>/<mask> table local dev <interface>
+The conntrackd help me to replicate the state of the connection.
 
-This way <address>/<mask> will be considered local by the system which=20
-will reply to ARP requests for it, actually usable by any local process=
-,=20
-but won't appear assigned to <interface> so chances are that no local=20
-process will use it unless told explicitly.
+What help to "load balance" the firewalls?
+
+My english is very terrible.. :)
+
+Thanks!
