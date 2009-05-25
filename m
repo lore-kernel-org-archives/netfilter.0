@@ -1,26 +1,49 @@
-From: Fabio Marcone <fabio.marcone@duet.it>
-Subject: Re: tc and priority
-Date: Mon, 25 May 2009 13:58:01 +0200
-Message-ID: <4A1A87C9.9030007@duet.it>
-References: <4A142FF7.1050700@duet.it> <4A150D46.6090806@duet.it>	 <38db14850905210414p41bba89exda7aacd88d905637@mail.gmail.com>	 <4A15423C.5070208@duet.it>	 <38db14850905210607s11fd9126i4bce902a668dfc6@mail.gmail.com>	 <4A15572D.3000303@duet.it>	 <38db14850905210722k7818822en4d9ceb072ad1c6b6@mail.gmail.com>	 <4A156620.6050904@duet.it>	 <38db14850905211115h68364107vef2ff69c9dc1f0f2@mail.gmail.com>	 <4A16937B.8020405@duet.it> <38db14850905221105l3e940df8y5eae3688f5a9028d@mail.gmail.com>
+From: Eduardo Sachs <edu.sachs@gmail.com>
+Subject: Re: Firewall in Load Balance - Active/Active
+Date: Mon, 25 May 2009 09:29:52 -0300
+Message-ID: <3e7107590905250529o686b331do322e7e5b8849478b@mail.gmail.com>
+References: <3e7107590905250446g2f3aa95dua9691dc63cc3dfec@mail.gmail.com>
+	 <20090525141321.0b41719e@catlap>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <38db14850905221105l3e940df8y5eae3688f5a9028d@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=yAMRmeKM20oEy6FLF6hKhJ5FcslQ2nqpS+UhigAFewY=;
+        b=KZ9CwnF18y0RxhOe5mj2WziDij+wI4xpy/bNftNGD2+K+ZKudqIixdNxA3J4dtpWky
+         orAhcxzMz+OAkQ4Jcbpsqtxy9HVipTvO0OnQi5Ai4rMRexkA4jLxVXyR4PGfULBHKglq
+         dXw0F/s1/m0rtxEN1qRBdRrMvT3sPJtdTF9fY=
+In-Reply-To: <20090525141321.0b41719e@catlap>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi,
->
-> Sorry, there was my error.
-> The correct version:
-> tc filter add dev eth0 protocol ip parent 1: prio 1 u32 classid 1:1
-> match ip protocol 6 0xFF match ip sport 80 0xFFFF
-> tc filter add dev eth0 protocol ip parent 1: prio 2 u32 classid 1:3
-> match ip protocol 6 0xFF ip sport 81 0xFFFF
-> tc filter add dev eth0 protocol ip parent 1: prio 3 u32 match u8 0 0 flowid 1:2
-Very thanks, I will try it soon.
+> Hi Bro,
 
-Fabio
+Hi!
+
+> Interesting. How does client choose firewall? Where the randomization
+> occurs?
+
+Could have a Virtual IP for sending the requests to the two firewalls.
+Could have a ldirectord for gateways. Remember that the ldirectord is
+"load balance" only for ports TCP/UDP.
+
+> You can use keepalived [1] to have two virtual gateway IP addresses on
+> the network - GW1 and GW2. Assign half of the clients staticly to GW1,
+> another half to GW2. If one of the boxes fails, keepalived brings up
+> missing GWX address on another box. This way you are provided with
+> redundancy and load balancing.
+
+How would I disclose two gateways in the network if I have only one
+DHCP? Could create VLANs. Correct?
+
+>
+> [1] http://www.keepalived.org/
+>
+
+Thanks!
