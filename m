@@ -1,32 +1,26 @@
-From: Eduardo Sachs <edu.sachs@gmail.com>
-Subject: Firewall in Load Balance - Active/Active
-Date: Mon, 25 May 2009 08:46:17 -0300
-Message-ID: <3e7107590905250446g2f3aa95dua9691dc63cc3dfec@mail.gmail.com>
+From: Fabio Marcone <fabio.marcone@duet.it>
+Subject: Re: tc and priority
+Date: Mon, 25 May 2009 13:58:01 +0200
+Message-ID: <4A1A87C9.9030007@duet.it>
+References: <4A142FF7.1050700@duet.it> <4A150D46.6090806@duet.it>	 <38db14850905210414p41bba89exda7aacd88d905637@mail.gmail.com>	 <4A15423C.5070208@duet.it>	 <38db14850905210607s11fd9126i4bce902a668dfc6@mail.gmail.com>	 <4A15572D.3000303@duet.it>	 <38db14850905210722k7818822en4d9ceb072ad1c6b6@mail.gmail.com>	 <4A156620.6050904@duet.it>	 <38db14850905211115h68364107vef2ff69c9dc1f0f2@mail.gmail.com>	 <4A16937B.8020405@duet.it> <38db14850905221105l3e940df8y5eae3688f5a9028d@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type:content-transfer-encoding;
-        bh=hALoqQZZ0Dvhj3uEGsxM0Yie0F1bKji2R+6bMsgWjUA=;
-        b=TgDELJgbBMTBufFYvEEswWlTyzsYtEUPNa10xbpMgV+CKX1bdXSoqLBVDq6aoPLKfM
-         ou4XfM5NMIRjcVoX4jx5I1exDaIjmMsUicsQ36J3foyopQrWkZuCH+so90REEjhY/+EQ
-         sGBBoogMRSOEAaxoKVYAg1ApTe0x5NY+NNkdc=
+In-Reply-To: <38db14850905221105l3e940df8y5eae3688f5a9028d@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi Friends!
+Hi,
+>
+> Sorry, there was my error.
+> The correct version:
+> tc filter add dev eth0 protocol ip parent 1: prio 1 u32 classid 1:1
+> match ip protocol 6 0xFF match ip sport 80 0xFFFF
+> tc filter add dev eth0 protocol ip parent 1: prio 2 u32 classid 1:3
+> match ip protocol 6 0xFF ip sport 81 0xFFFF
+> tc filter add dev eth0 protocol ip parent 1: prio 3 u32 match u8 0 0 flowid 1:2
+Very thanks, I will try it soon.
 
-I'm looking for firewall solution for active/active, the clients use
-the firewalls randomly.
-
-The conntrackd help me to replicate the state of the connection.
-
-What help to "load balance" the firewalls?
-
-My english is very terrible.. :)
-
-Thanks!
+Fabio
