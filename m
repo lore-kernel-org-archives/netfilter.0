@@ -1,47 +1,47 @@
-From: Mike Wright <mike.wright@mailinator.com>
+From: Robert Nichols <rnicholsNOSPAM@comcast.net>
 Subject: Re: How do we arp for NAT?  Secondary IPs, proxy arp? something else?
-Date: Sun, 24 May 2009 16:27:11 -0700
-Message-ID: <4A19D7CF.4010002@mailinator.com>
-References: <4A19235F.4070306@opendreams.net> <4A192D38.90008@redpill-linpro.com> <4A19B5F1.4080000@opendreams.net>
+Date: Sun, 24 May 2009 23:51:23 -0500
+Message-ID: <gvd84b$urq$1@ger.gmane.org>
+References: <4A19235F.4070306@opendreams.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4A19B5F1.4080000@opendreams.net>
+In-Reply-To: <4A19235F.4070306@opendreams.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jesse Molina <jesse@opendreams.net>
-Cc: Tore Anderson <tore.anderson@redpill-linpro.com>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
 Jesse Molina wrote:
 > 
-> That's a pretty good suggestion, but it's more of a workaround than 
-> something that actually addresses the issue at hand.  I'm looking for a 
-> solution on the GNU/Linux host, not in the world around it.
+> Hello
 > 
-> To restate my question:  What alternative ways are there to make the 
-> GNU/Linux system reply to ARP requests for an IP, without that IP being 
-> an actual interface on the host, or that interface must not be used by 
-> local services *in any way*, for the reasons of using it via SNAT/DNAT?
+> I've googled all over and I don't really see an obvious answer to the 
+> question that I have.
+> 
+> Here is my situation:  I have a GNU/Linux host performing very typical 
+> firewall duties;  two interfaces, one with an Internet public IP and 
+> another interface on an RFC1918 net.  Hosts on the RFC1918 net have 
+> iptables SNATs to public IPs and then I filter to allow some services in 
+> and others not, with stateful inspection in forwarding.
+> 
+> Normally, in order to get the multiple public IPs for these SNAT'ed 
+> hosts to respond to arp requests from the firewall, I simply add them as 
+> secondary IPs on the public interface of the firewall (eth0:1, eth0:2,...).
+> 
+> The problem with this is that the firewall itself runs some services and 
+> they have the potential to use these secondary IPs as their ephemeral 
+> source addresses when they reach out to something on the Internet! 
+> That's bad, as those IPs should be exclusively used by only the hosts 
+> for which they were designed for.  Assume I have no control over the 
+> applications which bind to a local interface to use for their outbound 
+> session traffic.
 
-Hi Jesse,
+Packets that originate on the firewall machine itself go through the
+OUTPUT chain.  Forwarded packets from the RFC1918 net do not.  Block
+the packets in the OUTPUT chain of the filter table.
 
-Looking through the ebtables man pages this is found:
+-- 
+Bob Nichols     "NOSPAM" is really part of my email address.
+                 Do NOT delete it.
 
-    arpreply
-        The arpreply target can be used in the PREROUTING chain of the 
-nat table.  If this target sees an ARP request it will automatically 
-reply with an ARP reply. The used MAC address for the reply can be 
-specified.
-
-This is also available as a qualifier:
-     --ip-destination   The destination IP address.
-
-You'll need to catch the specified macs when the traffic comes in. 
-Those targets are also available in ebtables.
-
-Seems like all the pieces you want are available.
-
-Hope that is useful in some way.
-
-:m)
