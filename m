@@ -1,54 +1,52 @@
-From: Marek Kierdelewicz <marek@piasta.pl>
-Subject: Re: Firewall in Load Balance - Active/Active
-Date: Mon, 25 May 2009 16:57:20 +0200
-Message-ID: <20090525165720.39188eb5@catlap>
-References: <3e7107590905250446g2f3aa95dua9691dc63cc3dfec@mail.gmail.com>
-	<20090525141321.0b41719e@catlap>
-	<3e7107590905250529o686b331do322e7e5b8849478b@mail.gmail.com>
+From: Tore Anderson <tore.anderson@redpill-linpro.com>
+Subject: Re: Choices for virtual IP failover (was Re: Firewall in Load Balance
+ - Active/Active)
+Date: Mon, 25 May 2009 16:58:50 +0200
+Message-ID: <4A1AB22A.60807@redpill-linpro.com>
+References: <3e7107590905250446g2f3aa95dua9691dc63cc3dfec@mail.gmail.com>	 <4A1A9756.6040401@netfilter.org>	 <3e7107590905250635w5c3b78a6m59acf268b5d57a5@mail.gmail.com> <1243260797.11783.29.camel@enterprise.ims-firmen.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <3e7107590905250529o686b331do322e7e5b8849478b@mail.gmail.com>
+In-Reply-To: <1243260797.11783.29.camel@enterprise.ims-firmen.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Eduardo Sachs <edu.sachs@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: Thomas Jacob <jacob@internet24.de>
+Cc: Eduardo Sachs <edu.sachs@gmail.com>, netfilter@vger.kernel.org
 
->Could have a Virtual IP for sending the requests to the two firewalls.
->Could have a ldirectord for gateways. Remember that the ldirectord is
->"load balance" only for ports TCP/UDP.
+Hi,
 
-So you use third box. Solution I presented allows you to do
-load-balancing on routers alone. Without ldirector.
+* Thomas Jacob
 
->> You can use keepalived [1] to have two virtual gateway IP addresses
->> on the network - GW1 and GW2. Assign half of the clients staticly to
->> GW1,
->>...
->How would I disclose two gateways in the network if I have only one
->DHCP? Could create VLANs. Correct?
+> Keepalived does not have IPv6 support (yet, VRRP for IPv6 is fairly
+> recent) but otherwise provides all the features and also can watch
+> the link states of network devices. The major drawback is that it also
+> has a IPVS module which is printing harmless error messages when the
+> underlying kernel doesn't support IPVS but I suppose you could prevent
+> that if you'd compile keepalived yourself.
 
-Vlans are not required. You can define more then one router-gateway on
-one ethernet segment in dhcp server, example from one of my boxes:
+I knowthat keepalived has a command line option to only start the VRRP
+parts of the code (-P).  Perhaps that will silence the warnings?
 
-shared-network seg1{
+The lack of IPv6 support is something I miss, too.  I plan to deal with
+it by adding/removing the HA IPv6 addresses from shell scripts ithat
+runs when the state changes (the settings notify_{master,backup,fault}).
+I didn't try it yet but I see no reason why it wouldn't work.  You'll
+need to piggy-back it on an IPv4 VIP though (just use dummy addresses
+from 169.254.0.0/16 or RFC1918 space for single-stack IPv6 networks).
 
-  subnet 10.32.0.0 netmask 255.255.254.0 {
-   option subnet-mask 255.255.254.0;
-   option broadcast-address 10.32.1.255;
-   option routers 10.32.1.254;   <---- first gateway definition
+> Finally the problem with all these implementations is that they don't
+> support virtual MAC addresses in the way VRRP is usually provides
+> by router vendors and thus have to send gratuitous ARP requests
+> to inform their networks about the new MAC address after a failover.
 
-   range 10.32.1.128 10.32.1.191;
-   }
+I think this is due to a limitation in the Linux kernel - it is simply
+not possible to have a multiple unicast layer-2 addresses assigned to a
+single network interface.  Go bug the people on netdev - I'm sure
+keepalived will support VMAC immediately after the necessary kernel
+changes have been made.
 
-
-  subnet xx.xx.177.0 netmask 255.255.255.224 {
-   option subnet-mask 255.255.255.224;
-   option broadcast-address xx.xx.177.31;
-   option routers xx.xx.177.30; <---- second gateway definition
-   }
-}
-
-Cheers,
-Marek Kierdelewicz
+BR,
+-- 
+Tore Anderson
+Redpill Linpro AS - http://www.redpill-linpro.com/
