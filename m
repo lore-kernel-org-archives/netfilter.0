@@ -1,30 +1,65 @@
-From: Fabio Marcone <fabio.marcone@duet.it>
-Subject: Re: tc and priority
-Date: Tue, 26 May 2009 09:32:27 +0200
-Message-ID: <4A1B9B0B.7090009@duet.it>
-References: <4A142FF7.1050700@duet.it>	 <38db14850905210607s11fd9126i4bce902a668dfc6@mail.gmail.com>	 <4A15572D.3000303@duet.it>	 <38db14850905210722k7818822en4d9ceb072ad1c6b6@mail.gmail.com>	 <4A156620.6050904@duet.it>	 <38db14850905211115h68364107vef2ff69c9dc1f0f2@mail.gmail.com>	 <4A16937B.8020405@duet.it>	 <38db14850905221105l3e940df8y5eae3688f5a9028d@mail.gmail.com>	 <4A1A87C9.9030007@duet.it> <4A1AB178.2010107@duet.it> <38db14850905260010w7cfd2259q8fb291b36aec55f6@mail.gmail.com>
+From: Eric Leblond <eric@inl.fr>
+Subject: Re: NAT + (libnfqueue || libipq): There are some documents about
+	it?
+Date: Tue, 26 May 2009 08:57:29 +0200
+Message-ID: <1243321049.27090.22.camel@khasse.inl.fr>
+References: <3fdd6ce00905252153h2b83319q818cc0b1c9a7dfb5@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-ZzckymgFHxnc1+MYDe6p"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <38db14850905260010w7cfd2259q8fb291b36aec55f6@mail.gmail.com>
+In-Reply-To: <3fdd6ce00905252153h2b83319q818cc0b1c9a7dfb5@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Bruno Moreira Guedes <thbmatrix@gmail.com>
+Cc: Netfilter <netfilter@vger.kernel.org>
+
+
+--=-ZzckymgFHxnc1+MYDe6p
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
 Hi,
-I run the same test witth this configuration:
- client ---------- server
 
-with a 100 Mbs link. In this case high priority process has about 11 
-MB/s and  low priority one has 400 KB/s. EUREKA! here the prio is correct!
+Le mardi 26 mai 2009 =C3=A0 01:53 -0300, Bruno Moreira Guedes a =C3=A9crit =
+:
+> Hi all,
+>=20
+> I need to do some tasks about translating address in user-space. So, I
+> first tried using libipq because it seems to me a library present in a
+> great variety of linux distros. But it was unsuccessful, the changes
+> done on packets appeared to be simply 'ignored'.
+>=20
+> So, now I want to do it with libnfqueue. Before starting a possibly
+> unsuccessful try, I want to know if is there any documents about it,
+> and if anybody should give me some idea about it.
 
-I think that in the other tests using:
-> ( client --- INTERNET--- router --- shaper1 --- server )
->   
-with prio set in the server, high priority queue is not always full, maybe.
+It is a really good idea to switch to nfqueue...
 
-Now I will run some other test to deep understand the situation.
+The thing to know is that you need to compute the checksum of the packet
+after modification before setting the verdict.
 
-Thanks a lot,
-Fabio
+If you want to code a Proof of concept, you can simply use=20
+	http://software.inl.fr/trac/wiki/nfqueue-bindings
+Which provide high level langage binding to libnfnetlink_queue.
+
+BR,
+--=20
+=C3=89ric Leblond <eric@inl.fr>
+INL, http://www.inl.fr/
+NuFW, http://www.nufw.org
+
+--=-ZzckymgFHxnc1+MYDe6p
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Description: Ceci est une partie de message
+	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEABECAAYFAkobktUACgkQnxA7CdMWjzLVKgCeKwXvfyidb37WsBRK5MWwb5uK
+HmMAnRDSmECcmN52WqkbkDKRHSbkCuiE
+=B6+0
+-----END PGP SIGNATURE-----
+
+--=-ZzckymgFHxnc1+MYDe6p--
+
