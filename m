@@ -1,57 +1,68 @@
-From: Thomas Jacob <jacob@internet24.de>
-Subject: Re: ftp and nat
-Date: Wed, 27 May 2009 14:13:08 +0200
-Message-ID: <1243426388.1634.46.camel@enterprise.ims-firmen.de>
-References: <3e4778d50905270448o4a10936bi37acf8eea86be692@mail.gmail.com>
+From: Bruno Moreira Guedes <thbmatrix@gmail.com>
+Subject: Re: NAT + (libnfqueue || libipq): There are some documents about it?
+Date: Wed, 27 May 2009 11:53:13 -0300
+Message-ID: <3fdd6ce00905270753g5ca270c3kfbc7985f8f3524f3@mail.gmail.com>
+References: <3fdd6ce00905252153h2b83319q818cc0b1c9a7dfb5@mail.gmail.com>
+	 <1243321049.27090.22.camel@khasse.inl.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <3e4778d50905270448o4a10936bi37acf8eea86be692@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=5czfaYI3OzyHX/WlAeIMEdNyAqDYOnvC9uzKEQeHtBA=;
+        b=gOKoAJx3bcgLAShKMBv+tiYK1qvnjEwl+VFDsjqy1Q0oSvB4lOPfdJLzYiqmySyQ7K
+         AV32cNQADMmwi6Z7lhWXsDu7i7erqDpPg4+sP4yaQ+QYF7422pMrsOOyrj/Qdm4ltEJH
+         IESRvlqyRr3eDudCS+EnrBvYcyKilZSKpJd6E=
+In-Reply-To: <1243321049.27090.22.camel@khasse.inl.fr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: matthias <mensch0815@googlemail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Netfilter <netfilter@vger.kernel.org>
 
-On Wed, 2009-05-27 at 13:48 +0200, matthias wrote:
-> Hi all,
-> 
-> i have a network like this:
-> client <-> router <-> server
-> 
-> the router is linked via eth0 to the client-network and via tun0 to the server.
-> when i try to log from the client into the server via ftp I get a
-> delay of about 30 seconds.
-> does anyone tell me why, is it, that iptables doesn't support active ftp?
-> 
-> here are tcpdump extracts taken by the router:
-> 
-> root@router# tcpdump -i eth0
-> listening on eth0, link-type EN10MB (Ethernet), capture size 96 bytes
-> 15:57:01.949614 IP client.43278 > router.ftp: S
-> 2612647763:2612647763(0) win 5840 <mss 1460,sackOK,timestamp 538163918
-> 0,nop,wscale 2>
-> 15:57:01.951314 IP router.ftp > client.43278: S
-> 3833629446:3833629446(0) ack 2612647764 win 5792 <sackOK,timestamp
-> 109271440 538163918,mss 1460,nop,wscale 2>
-> 15:57:01.951615 IP client.43278 > router.ftp: . ack 1 win 1460
-> <nop,nop,timestamp 538163921 109271440>
+2009/5/26 Eric Leblond <eric@inl.fr>:
+> Hi,
+>
+> Le mardi 26 mai 2009 =E0 01:53 -0300, Bruno Moreira Guedes a =E9crit =
+:
+>> Hi all,
+>>
+>> I need to do some tasks about translating address in user-space. So,=
+ I
+>> first tried using libipq because it seems to me a library present in=
+ a
+>> great variety of linux distros. But it was unsuccessful, the changes
+>> done on packets appeared to be simply 'ignored'.
+>>
+>> So, now I want to do it with libnfqueue. Before starting a possibly
+>> unsuccessful try, I want to know if is there any documents about it,
+>> and if anybody should give me some idea about it.
+>
+> It is a really good idea to switch to nfqueue...
+>
+> The thing to know is that you need to compute the checksum of the pac=
+ket
+> after modification before setting the verdict.
+>
+> If you want to code a Proof of concept, you can simply use
+> =A0 =A0 =A0 =A0http://software.inl.fr/trac/wiki/nfqueue-bindings
+> Which provide high level langage binding to libnfnetlink_queue.
+>
+> BR,
+> --
+> =C9ric Leblond <eric@inl.fr>
+> INL, http://www.inl.fr/
+> NuFW, http://www.nufw.org
+>
 
-3 way handshake is complete here
+Ohh, of course... I'm forgiving to recalculate both IP and TCP packet
+checksums...
+Thank you by the information. I'll try this now.
 
-> 15:57:32.417873 IP router.ftp > client.43278: P 1:99(98) ack 1 win
-> 1448 <nop,nop,timestamp 109279056 538163921>
+PS: is there any related library which provides the needed checksums?
 
-And then your router does not send the FTP ready message for about
-30s, at this point nothing FTP specific has yet taken place.
+Thank you all.
 
-Suggest you look into your "ident"-checks in the FTP server config
-and disable them.
-
-Once you get the FTP prompt right away, don't forget to load the FTP
-support modules for iptables/NAT:
- 
-  modprobe nf_conntrack_ftp
-  modprobe nf_nat_ftp
- 
-
+Bruno
