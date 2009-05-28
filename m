@@ -1,47 +1,101 @@
-From: Emiliano Romero <emilianoromero@gmail.com>
-Subject: iptables+nat+Tcp KeepAlive Problem
-Date: Thu, 28 May 2009 18:19:11 -0300
-Message-ID: <4A1EFFCF.9030500@gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: TCP simultaneous open using iptables NAT?
+Date: Thu, 28 May 2009 23:24:08 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.0905282225200.28204@blackhole.kfki.hu>
+References: <4ddb24250905271506qb50323etf3f7deb4e240ff72@mail.gmail.com>  <alpine.DEB.2.00.0905281014090.26723@blackhole.kfki.hu>  <4ddb24250905281258i68374aa6w858aaf088b96c1b9@mail.gmail.com> <4ddb24250905281300l5ca0a6fcse1f38d36f3d9abb8@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from
-         :user-agent:mime-version:to:subject:content-type
-         :content-transfer-encoding;
-        bh=EvbSe6YVx3y1G8qt1yROjiaIdXxaMqKYSYPOT4rE6t0=;
-        b=x7O+t5Pad5gFxRSJ8Kv03UtITLbp2XguxolRDZpcD5ZihdDhTlK7RkATaLuVKlkOdO
-         tO0VzAzeKqQOWzU08uGC7vG5o3URthBpvnvT3D0lH6vhPxDrAaZ2cvWeSaOgrOTzqhhi
-         Mqd61onPZ70Ug1Wh2SU+PdnsJtQRDiRcbr2S8=
+In-Reply-To: <4ddb24250905281300l5ca0a6fcse1f38d36f3d9abb8@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Saatvik Agarwal <saatvik.agarwal@stanford.edu>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Hi List!, I'm having some issue with iptables when I use DNAT. Using 
-DNAT, when my router (iptables) gets a tcp KeepAlive Packet from remote 
-site, it don't forward the tcp KeepAlive Request and responds with a TCP 
-packet with ACK=1 and RST=1. So remote site thinks that there is no 
-connection after some time. The problem is only with KeepAlive Packets, 
-If I send normal Tcp Packets with data, they arrive to the destination I 
-used in DNAT.
+On Thu, 28 May 2009, Saatvik Agarwal wrote:
 
-Any help or idea of where start looking? Iptables support Tcp KeepAlive 
-redirects?
+> On 5/28/09, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu> wrote:
+> >  On Wed, 27 May 2009, Saatvik Agarwal wrote:
+> >
+> >  > For my research project in school, I am trying to establish TCP
+> >  > connections when both hosts are behind full-cone NATs using TCP's
+> >  > simultaneous open functionality. Unfortunately, it seems that iptables
+> >   > does not support TCP simultaneous open. For my test environment, I
+> >  > simulate a full-cone NAT using iptables. My iptables rule is exactly
+> >  > as follows:
+> >  >
+> >  > iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+> >
+> >
+> > That rule cannot simulate full-cone NAT, because netfilter implements
+> >  port-restricted cone NAT.
+> 
+> Would both SNAT and DNAT together simulate a full-cone NAT?
 
-iptables version: v1.4.1.1
-Kernel: 2.6.28-11-generic
+I think you could emulate full-cone NAT that way. But of course it is not 
+a viable solution in practice because every rule has to be set up in 
+advance and one can't handle all hosts behind the firewall.
 
-iptable rule:
-iptables -t nat -A PREROUTING -p tcp --dport 5555 -j DNAT 
---to-destination 192.168.1.100
+As soon as you want to deal with more than one host behind the firewall, 
+you'll hit the *practical* problem of clashing (the issue which is simply 
+ignored in those BEHAVE RFCs). And because you haven't got as many IP 
+addresses at the external side of the firewall as inside to map the 
+internal addesses to (that is the very reason why NAT was needed), 
+clashing will happen.
 
-Wireshark TCP Packets:
-186449	11772.258110	200.49.201.26=>172.16.102.11	TCP	[TCP ZeroWindow] 
-[TCP Keep-Alive] 14032 > 5555 [] Seq=10 Win=0 Len=0
-188417	11835.763745	172.16.102.11=>200.49.201.26	TCP	5555 > 48538 [RST, 
-ACK] Seq=1012825070 Ack=10 Win=0 Len=0
+> >   > According to the BEHAVE requirements outlined in IETF RFC 5382, TCP
+> >  > simultaneous open must be supported by "well behaved NATs". So is
+> >  > there a mistake in my rules or does iptables not support simultaneous
+> >   > open?
+> >
+> > The connection tracking subsystem does not support TCP simultaneous open.
+> >
+> >  As far as I'm concerned, I do not care whatever RFC is created in trying
+> >  to push NAT over its limits - that is just a totally wrong track. NAT was
+> >   invented solely to slow down the depletion of the IPv4 address space in
+> >  the hope to give more time introducing and *deploying* IPv6 world-wide.
+> >  And everyone was fully aware that NAT breaks one of the key concempts of
+> >   IP, the end-to-end connectivity. These "NAT behavioral requirements" RFCs
+> >  are the results of that breakage (and written exclusively from the point
+> >  of view of the application designers).
+> 
+> Agreed. I was trying to develop a NAT traversal library solely for 
+> application developers.
 
+Application developers would do much more good for themselves by designing 
+their applications with IPv6 support and clearly declaring: "Hey, if you 
+have got IPv6 connectivity, you get the full power of the application, 
+otherwise you may have to live with limitations, when being behind NAT." 
+That way they could help in backing and spreading IPv6.
 
-Thanks and Regards.
+Please note, we (where I mean the whole Internet) are already too late in 
+the transition to IPv6 - the IPv4 address space will have been depleted 
+sooner than IPv6 will be deployed everywhere. And the "solutions" for the 
+interregnum when there won't be allocatable IPv4 addresses and IPv6 is 
+still not there everywhere are worse and worse. Which one would like to 
+choose anyone?:
+
+- Multilevel NATs at the ISPs (how will any NAT traversal cope with 
+  *that*?)
+- Much more stronger binding to the ISP - newcomers are forced to use
+  the servers of the ISP to run any of their public services
+- IPv4 address market (which is limited to the regions, otherwise the core 
+  routers won't be able to cope with the inflation of the routing tables)
+
+Don't need to pick: any or all of them will come, because we are too late. 
+So in order to *minimize* the damage, everyone should work on the 
+transition to IPv6 and not waste time on "fixing" the unfixable NAT.
+
+> I guess I'll test with actual NATs/routers instead of iptables.
+
+I'd be glad to see some summary on your findings with other NAT 
+implementations.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
