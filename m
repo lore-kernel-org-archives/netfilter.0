@@ -1,84 +1,49 @@
-From: "Barry A Rich" <barich@trisectrix.com>
-Subject: Port Forwarding
-Date: Thu, 28 May 2009 15:50:12 -0400
-Message-ID: <002201c9dfcd$83cd7660$8b686320$@com>
-Reply-To: <barich@trisectrix.com>
+From: Sharevon <sharevon@gmail.com>
+Subject: Does nat rules take effect on local ip traffic?
+Date: Fri, 29 May 2009 03:58:36 +0800
+Message-ID: <a4ece3070905281258i66f6e1d1l352284fd756755b4@mail.gmail.com>
+References: <a4ece3070905281247l18c3276epf1cfd116267b913f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-us
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=9J00cbgL0fOhuA/3F9tmavSq9zAdlci/pQDcJNLjLHw=;
+        b=wUvkDRV3Bo0TG7bzik906myaJuITOmssjK6WA+Y74yqcBO6aTe1AnVUvXCewZOXsRz
+         5y1Fzn078+8ny0I4ixwQr1Mk5R2YqBFq622U9fO8lfsfVI2Ce6rb5aZnKMz73S3FF362
+         1mgBQqz+TrvQsLhWm7675gNW3uctTjbI8Vmgk=
+In-Reply-To: <a4ece3070905281247l18c3276epf1cfd116267b913f@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-Our basic configuration load balances connections across two uplink modems.
-The IP addressing looks like this:
+Hi,
 
-                    |-------------| 192.168.4.1         192.168.4.2
-        192.160.0.1 |        eth1 |-------------------------------- Modem 1
-LAN ----------------| eth0        |
-                    |        eth2 |-------------------------------- Modem 2
-                    |-------------| 192.168.5.1         192.168.5.2
+The scenario is like,
 
+There=A0is a=A0system, which has a LAN=A0interface with ip 192.168.1.1/=
+32
+and a WAN interface with ip, let's say, 10.0.0.1/32.
+There are some nat rules in nat table, trying to map traffic from
+{src:192.168.1.1:5000, dst:192.168.1.1:6000} to {src:10.0.0.1:6000,
+dst:10.0.0.2:5000}.
+Will this nat rules take effect on this local ip traffic?
 
-The basic setup for the load balancing is as follows:
+I mean if an application send a ip traffic with src:192.168.1.1:5000
+and dst:192.168.1.1:6000. Was nat rule supposed to be applied to
+change it to an ip traffic with src:10.0.0.1:6000 and
+dst:10.0.0.2:5000? or the system just send the ip traffic to
+192.168.1.1:6000 directly without nat rules taking effect.
 
-iptables -A INPUT -i eth0 -s 192.168.0.0/24 -d 0.0.0.0/0 -j ACCEPT
+In my system, it seems like nat rules didn't apply to the traffic,
+because another application on the other system with ip 10.0.0.2
+didn't receive any traffic on port 5000. But I'm not sure if other
+factors impact=A0this, making it looks like the nat rules never=A0be
+applied.
 
-iptables -A INPUT -i eth1 -s 192.168.4.0/24 -d 0.0.0.0/0 -j ACCEPT
-
-iptables -A INPUT -i eth2 -s 192.168.5.0/24 -d 0.0.0.0/0 -j ACCEPT
-
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-iptables -A OUTPUT -o eth0 -s 192.168.4.1 -d 192.168.0.0/24 -j ACCEPT
-
-iptables -A OUTPUT -o eth0 -s 192.168.5.1 -d 192.168.0.0/24 -j ACCEPT
-
-iptables -A OUTPUT -o eth1 -s 192.168.4.1 -d 0.0.0.0/0 -j ACCEPT
-
-iptables -A OUTPUT -o eth2 -s 192.168.5.1 -d 0.0.0.0/0 -j ACCEPT
-
-iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to 192.168.4.1
-
-iptables -t nat -A POSTROUTING -o eth2 -j SNAT --to 192.168.5.1
-
-ip route add 192.168.4.2 dev eth1 table uplink1
-
-ip route add default via 192.168.4.1 table uplink1
-
-ip route add 192.168.5.2 dev eth1 table uplink2
-
-ip route add default via 192.168.5.1 table uplink2
-
-ip route add 192.168.4.2 dev eth1
-
-ip route add 192.168.5.2 dev eth2
-
-ip rule add from 192.168.4.1 table uplink1
-
-ip rule add from 192.168.5.1 table uplink2
-
-ip route add default scope global nexthop dev eth1 weight 1 nexthop dev eth2
-weight 1
-
-This is all working. Connections are balanced across the uplinks. It turns
-out the modems have a TCP control port (5000). The port number cannot be
-changed on the modems. I want LAN hosts to be able to connect to both modem
-control ports. The port number can be changed on the host software, so I
-assigned different ports on the LAN (5000 and 5001) and tried to redirect
-the ports as follows:
-
-iptables -t nat -A PREROUTING -p tcp -d 192.168.0.1 --dport 5000 -j DNAT
---to 192.168.4.2:5000
-
-iptables -t nat -A PREROUTING -p tcp -d 192.168.0.1 --dport 5001 -j DNAT
---to 192.168.5.2:5000
-
-It does not work and I'm not sure what's wrong. What is the correct way to
-do this?
-
-Thanks.
-
-
+Thanks
+Sean Feng
