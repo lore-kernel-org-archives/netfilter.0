@@ -1,57 +1,84 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: TCP simultaneous open using iptables NAT?
-Date: Thu, 28 May 2009 12:39:27 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.0905281204270.26723@blackhole.kfki.hu>
-References: <4ddb24250905271506qb50323etf3f7deb4e240ff72@mail.gmail.com>  <alpine.DEB.2.00.0905281014090.26723@blackhole.kfki.hu> <17923cc80905280300n2efa5bcfqed0661da291300@mail.gmail.com>
+From: "Barry A Rich" <barich@trisectrix.com>
+Subject: Port Forwarding
+Date: Thu, 28 May 2009 15:50:12 -0400
+Message-ID: <002201c9dfcd$83cd7660$8b686320$@com>
+Reply-To: <barich@trisectrix.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <17923cc80905280300n2efa5bcfqed0661da291300@mail.gmail.com>
+Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: sachin sanap <sachin.sanap.1gb@gmail.com>
-Cc: Saatvik Agarwal <saatvik.agarwal@stanford.edu>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Thu, 28 May 2009, sachin sanap wrote:
+Our basic configuration load balances connections across two uplink modems.
+The IP addressing looks like this:
 
-> On Thu, May 28, 2009 at 2:28 PM, Jozsef Kadlecsik
-> <kadlec@blackhole.kfki.hu> wrote:
-> > On Wed, 27 May 2009, Saatvik Agarwal wrote:
-> >
-> >> For my research project in school, I am trying to establish TCP
-> >> connections when both hosts are behind full-cone NATs using TCP's
-> >> simultaneous open functionality. Unfortunately, it seems that iptables
-> >> does not support TCP simultaneous open. For my test environment, I
-> >> simulate a full-cone NAT using iptables. My iptables rule is exactly
-> >> as follows:
-> >>
-> >> iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-> >
-> > That rule cannot simulate full-cone NAT, because netfilter implements
-> > port-restricted cone NAT.
-> I agree to most of stuff that you have said but the above statement of
-> "port-restricted cone NAT" confuses me.
-> If we look at different types of NATs as mentioned here
-> www.crfreenet.org/~martin/referaty/stun/naty.pdf , i think the
-> netfilter implementation is really a symmetric NAT.
-> Iam I missing some thing?
+                    |-------------| 192.168.4.1         192.168.4.2
+        192.160.0.1 |        eth1 |-------------------------------- Modem 1
+LAN ----------------| eth0        |
+                    |        eth2 |-------------------------------- Modem 2
+                    |-------------| 192.168.5.1         192.168.5.2
 
-It depends.
 
-With MASQUERADE it's a port-restricted cone NAT.
+The basic setup for the load balancing is as follows:
 
-Using the --random flag with SNAT you can almost create a symmetric NAT 
-with netfilter, except that the "requirements" of the symmetric NAT (RFC 
-3489) includes mapping to an unique source IP address and port whenever 
-the same internal host connects to different external hosts. However 
-netfilter creates an unique tuple (mapped src IP, mapped src port, dst IP, 
-dst port) not just an unique pair of (mapped src IP, mapped src port).
+iptables -A INPUT -i eth0 -s 192.168.0.0/24 -d 0.0.0.0/0 -j ACCEPT
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+iptables -A INPUT -i eth1 -s 192.168.4.0/24 -d 0.0.0.0/0 -j ACCEPT
+
+iptables -A INPUT -i eth2 -s 192.168.5.0/24 -d 0.0.0.0/0 -j ACCEPT
+
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+iptables -A OUTPUT -o eth0 -s 192.168.4.1 -d 192.168.0.0/24 -j ACCEPT
+
+iptables -A OUTPUT -o eth0 -s 192.168.5.1 -d 192.168.0.0/24 -j ACCEPT
+
+iptables -A OUTPUT -o eth1 -s 192.168.4.1 -d 0.0.0.0/0 -j ACCEPT
+
+iptables -A OUTPUT -o eth2 -s 192.168.5.1 -d 0.0.0.0/0 -j ACCEPT
+
+iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to 192.168.4.1
+
+iptables -t nat -A POSTROUTING -o eth2 -j SNAT --to 192.168.5.1
+
+ip route add 192.168.4.2 dev eth1 table uplink1
+
+ip route add default via 192.168.4.1 table uplink1
+
+ip route add 192.168.5.2 dev eth1 table uplink2
+
+ip route add default via 192.168.5.1 table uplink2
+
+ip route add 192.168.4.2 dev eth1
+
+ip route add 192.168.5.2 dev eth2
+
+ip rule add from 192.168.4.1 table uplink1
+
+ip rule add from 192.168.5.1 table uplink2
+
+ip route add default scope global nexthop dev eth1 weight 1 nexthop dev eth2
+weight 1
+
+This is all working. Connections are balanced across the uplinks. It turns
+out the modems have a TCP control port (5000). The port number cannot be
+changed on the modems. I want LAN hosts to be able to connect to both modem
+control ports. The port number can be changed on the host software, so I
+assigned different ports on the LAN (5000 and 5001) and tried to redirect
+the ports as follows:
+
+iptables -t nat -A PREROUTING -p tcp -d 192.168.0.1 --dport 5000 -j DNAT
+--to 192.168.4.2:5000
+
+iptables -t nat -A PREROUTING -p tcp -d 192.168.0.1 --dport 5001 -j DNAT
+--to 192.168.5.2:5000
+
+It does not work and I'm not sure what's wrong. What is the correct way to
+do this?
+
+Thanks.
+
+
