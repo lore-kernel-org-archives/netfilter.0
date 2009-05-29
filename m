@@ -1,60 +1,51 @@
-From: Richard Horton <arimus.uk@googlemail.com>
-Subject: dumb question on NAT and multicast
-Date: Fri, 29 May 2009 14:21:40 +0100
-Message-ID: <56378e320905290621x2890b876xfb15c79a31b11e85@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: TCP simultaneous open using iptables NAT?
+Date: Sat, 30 May 2009 01:10:59 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.0905300051320.30481@blackhole.kfki.hu>
+References: <4ddb24250905271506qb50323etf3f7deb4e240ff72@mail.gmail.com> <alpine.DEB.2.00.0905281014090.26723@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type:content-transfer-encoding;
-        bh=jEIAgTOMLLzYR2tPl+iaHv6LARXSDkPJcCCToA3b0s0=;
-        b=RfenA/aEOr5u2b7etFw9mxLjwqOjAFP2C6P1DkFeMOyl5zRnMn88LCNxiFv0oAIS1b
-         DNR6tFZlThDfsOULpdrqdpCM+lcIHPlXrQPbGDcyLHa5liuiWgXDp6HluLms2RLOVtMX
-         ifQqB+iS3cD62Mg/LYBVtNy2qSjBq3alb//PU=
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <alpine.DEB.2.00.0905281014090.26723@blackhole.kfki.hu>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Saatvik Agarwal <saatvik.agarwal@stanford.edu>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Probably the wrong list... but here goes.
+On Thu, 28 May 2009, Jozsef Kadlecsik wrote:
 
-We have some linux PC's acting as routers. We have some dumber
-terminals which do not support multicast, but for our application we
-need to support multicast (groan).
+> On Wed, 27 May 2009, Saatvik Agarwal wrote:
+> 
+> > For my research project in school, I am trying to establish TCP
+> > connections when both hosts are behind full-cone NATs using TCP's
+> > simultaneous open functionality. Unfortunately, it seems that iptables
+> > does not support TCP simultaneous open. For my test environment, I
+> > simulate a full-cone NAT using iptables. My iptables rule is exactly
+> > as follows:
+> > 
+> > iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+> 
+> That rule cannot simulate full-cone NAT, because netfilter implements 
+> port-restricted cone NAT.
 
-Anyway, using iptables on the routers I can easily convert traffic
-from the terminals to multicast:
-  iptables -t nat -A PREROUTING -i eth0 -d 172.168.0.0/24 -j DNAT
---to-destination 224.0.1.1
+In order to describe the mapping and filtering behaviour of netfilter as 
+complete as possible, I have to add the following:
 
-(So any traffic to our backbone network from one of the terminals will
-get NAT'd to the mcast address).
+- According to the terminology of RFC 3489, netfilter implements port 
+  restricted cone NAT. If the --random flag is specified to the 
+  SNAT/MASQUERADE/... targets, it's better described as a symmetric NAT.
+- According to the terminology of RFC 4787 and RFC 5382, netfilter
+  implements
+  - endpoint-independent mapping, if the --random flag is not 
+    specified to the SNAT/MASQUERADE/... targets, otherwise it's an
+    address and port-dependent mapping.
+  - address and port-dependent filtering.
 
-All the various routers are members of the multicast group and happily
-receive the multicast traffic (using iptables logging I can see the
-traffic in the various parts of netfilter).
-
-The problem that we're facing is converting the Multicast address back
-to a unicast address -
- iptables -t nat -A PREROUTING -d 224.0.1.1 -j DNAT --to-destination
-192.168.0.2
-doesn't work (192.168.0.2 is a terminal address, so on each router
-this would be different).
-
-Using various log directives as soon as the traffic hits the DNAT rule
-above it drops out of sight... I've got log directives in the raw,
-'normal' and nat tables - only the ones before it hits the dnat rule
-are tripped, the rest aren't (and there is no filtering on the logs -
-just the log prefix so I know where in the chains it came from).
-
-Any ideas?
-
-
--- 
-Richard Horton
-Users are like a virus: Each causing a thousand tiny crises until the
-host finally dies.
-http://www.solstans.co.uk - Solstans Japanese Bobtails and Norwegian Forest Cats
-http://www.pbase.com/arimus - My online photogallery
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
