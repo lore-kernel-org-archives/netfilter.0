@@ -1,32 +1,60 @@
-From: Bruno Moreira Guedes <thbmatrix@gmail.com>
-Subject: libnfqueue: What about performance?
-Date: Fri, 29 May 2009 09:45:52 -0300
-Message-ID: <3fdd6ce00905290545g527ca7fdv560afc6a8c383e10@mail.gmail.com>
+From: Richard Horton <arimus.uk@googlemail.com>
+Subject: dumb question on NAT and multicast
+Date: Fri, 29 May 2009 14:21:40 +0100
+Message-ID: <56378e320905290621x2890b876xfb15c79a31b11e85@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
+        d=googlemail.com; s=gamma;
         h=domainkey-signature:mime-version:received:date:message-id:subject
          :from:to:content-type:content-transfer-encoding;
-        bh=hKcg+GX3Xb3jKWHZ5/npYy5zkzDwWS+PUVoYM9LnPEo=;
-        b=tK8r2sYXZxP6DNi3PCUMklI04Bq19hpbvM/65AOZ2eCZ//suBFDtNZgoDFWjeAoNrp
-         d8Xv3abyLpdq/UiLRGunQPR8Cm4E0XzZ6/7uLLMvgSG0njaP/Wxjlv2KEBNdHHtbcVeG
-         GXHbKGXd190p1ZRDbCnzlZ8VhwlXP1uuv5+DQ=
+        bh=jEIAgTOMLLzYR2tPl+iaHv6LARXSDkPJcCCToA3b0s0=;
+        b=RfenA/aEOr5u2b7etFw9mxLjwqOjAFP2C6P1DkFeMOyl5zRnMn88LCNxiFv0oAIS1b
+         DNR6tFZlThDfsOULpdrqdpCM+lcIHPlXrQPbGDcyLHa5liuiWgXDp6HluLms2RLOVtMX
+         ifQqB+iS3cD62Mg/LYBVtNy2qSjBq3alb//PU=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Hi all,
+Probably the wrong list... but here goes.
 
-I want to know, just by curiosity, if somebody already have been done
-some benchmarks on the libnfqueue, or even in libipq, in some
-different cases, to check if there are some performance loss.
-What I really want to know is, if I filter just the SYN packets on a
-network firewall, will I feel some loss??
-There are performance loss if I get the packet payload?
+We have some linux PC's acting as routers. We have some dumber
+terminals which do not support multicast, but for our application we
+need to support multicast (groan).
 
-What do you think about it??
+Anyway, using iptables on the routers I can easily convert traffic
+from the terminals to multicast:
+  iptables -t nat -A PREROUTING -i eth0 -d 172.168.0.0/24 -j DNAT
+--to-destination 224.0.1.1
 
-Thank you all
+(So any traffic to our backbone network from one of the terminals will
+get NAT'd to the mcast address).
+
+All the various routers are members of the multicast group and happily
+receive the multicast traffic (using iptables logging I can see the
+traffic in the various parts of netfilter).
+
+The problem that we're facing is converting the Multicast address back
+to a unicast address -
+ iptables -t nat -A PREROUTING -d 224.0.1.1 -j DNAT --to-destination
+192.168.0.2
+doesn't work (192.168.0.2 is a terminal address, so on each router
+this would be different).
+
+Using various log directives as soon as the traffic hits the DNAT rule
+above it drops out of sight... I've got log directives in the raw,
+'normal' and nat tables - only the ones before it hits the dnat rule
+are tripped, the rest aren't (and there is no filtering on the logs -
+just the log prefix so I know where in the chains it came from).
+
+Any ideas?
+
+
+-- 
+Richard Horton
+Users are like a virus: Each causing a thousand tiny crises until the
+host finally dies.
+http://www.solstans.co.uk - Solstans Japanese Bobtails and Norwegian Forest Cats
+http://www.pbase.com/arimus - My online photogallery
