@@ -1,116 +1,32 @@
-From: Saatvik Agarwal <saatvik.agarwal@stanford.edu>
-Subject: Re: TCP simultaneous open using iptables NAT?
-Date: Sat, 30 May 2009 15:10:27 -0700
-Message-ID: <4ddb24250905301510p1f9a1d81w564530ce5a8a198e@mail.gmail.com>
-References: <4ddb24250905271506qb50323etf3f7deb4e240ff72@mail.gmail.com>
-	 <200905301849.58608.christoph.paasch@gmail.com>
-	 <alpine.DEB.2.00.0905302005460.31469@blackhole.kfki.hu>
-	 <200905302159.09851.christoph.paasch@gmail.com>
-	 <alpine.DEB.2.00.0905302323400.32263@blackhole.kfki.hu>
-Reply-To: saatvik.agarwal@stanford.edu
+From: Michael Mefford <meffordm@gmail.com>
+Subject: netfilter queue
+Date: Sat, 30 May 2009 23:56:10 -0600
+Message-ID: <4A221BFA.20507@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:sender:reply-to:received
-         :in-reply-to:references:date:x-google-sender-auth:message-id:subject
-         :from:to:cc:content-type:content-transfer-encoding;
-        bh=yPi3jJYTUHufzxuzkrfGnuCPUjj0ev4OMF68t4lzvTQ=;
-        b=Io469oLOn7NccpflvVC6a3ThcpzO+9C70tneZNTvWwNVbQscE1HSNuR26qeqZ1kQMk
-         BAZ9oGLCAApEd5vlGc6Hgfm6mg7pT7qwzK6LuMLPP6ZIr492X2SNwo9YEl30gPI+DgNA
-         nldFpEWLsDFsevDrZx1nklD/b45gAWjoTl27M=
-In-Reply-To: <alpine.DEB.2.00.0905302323400.32263@blackhole.kfki.hu>
+        h=domainkey-signature:received:received:message-id:date:from
+         :user-agent:mime-version:to:subject:content-type
+         :content-transfer-encoding;
+        bh=u+Ne4U4v0tL0eSzlnOJgzWfADEO4aAfwrv3uyPnW1Us=;
+        b=CxW5IwHxPSvewrFyXOwJYAex+XJrO6Td82JpVilbuzM5Vk5J0oBLTz2TOgVLAOxoIM
+         UdvbyEC6mv3vCSqtD1Mn7fQ+Aa7L8+lqXiDT82fVZLRd8FbNz8G7O0klCsLYoYXO+hHP
+         UbH1lRg2c1UJmg8fMbcD6owvcEhLb2mpFteaI=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: Christoph Paasch <christoph.paasch@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Now I am confused. The behavior I am seeing is that despite the timing
-being correct, simultaneous open does not function as intended:
-
-A's SYN reaches B's NAT *after* B's SYN has left B's NAT and the same
-is true of B - B's SYN reaches A's NAT *after* A's SYN has left A's
-NAT. This is the correct case for simultaneous open. What I was
-originally saying was that this does not work if one does iptables
-SNAT without DNAT (of course, with a full-cone NAT it works; you don't
-even have to do a simultaneous open).
-
-My program basically does a SYN flood (though it waits for RSTs before
-sending out more SYNs) from both sides with the hope that one of these
-will cross in the network and create the appropriate timing conditions
-for a simultaneous open, i.e., what you mentioned below. From my
-testing, even with very small round trip times of less than 1 ms, one
-can generate numerous instances of simultaneous open. Note that this
-is with single layer NATting. With multi-level NAT, simultaneous open
-might be more difficult. Section 2.3 on this page -
-http://nutss.gforge.cis.cornell.edu/pub/imc05-tcpnat/ - sort of
-describes the approach I am using. Furthermore, the same authors
-concluded that about 85% of NATs in the wild actually do support
-simultaneous open. So things may not be as bleak.
-
-Best,
-Saatvik
+I need to know how to interact with the netfilter queue.  My project 
+needs to capture TCP packets from the queue, process them in userspace, 
+and then re-insert them back into the firewall to forwarded on.  
+However, I can't find any recent documentation that explains how to do 
+this.  The most I can find is about 3 years old (and seemingly out of 
+date).  Does anyone have good working knowledge that might help me 
+understand this?
 
 
-On 5/30/09, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu> wrote:
-> On Sat, 30 May 2009, Christoph Paasch wrote:
->
->
-> > Hmm, I don't understand...
->  >
->  > As both hosts are NATed, this would mean that the NAT would allow =
-the SYN to
->  > pass (coming from the "Internet" going to the LAN).
->  >
->  > But this is not possible, as no state has been created on this one=
- of the two
->  > NATs (the host hasn't sent out a SYN yet).
->  >
->  > Can you explain me, what I'm missing here?
->
->
-> The intended packet flow is as follows:
->
->  Time/action=A0=A0 Host A=A0=A0=A0=A0=A0=A0NAT A=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0 NAT B=A0=A0=A0=A0 Host B
->  Send SYN=A0=A0=A0=A0=A0=A0A SYN ->=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0<- B SYN
->  SYN NATed=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 A SYN ->=A0=
-=A0=A0=A0 <- B SYN
->  Cross other fw=A0=A0=A0=A0=A0=A0=A0=A0 <- B SYN=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0 A SYN ->
->  SYN arrives=A0=A0 B SYN=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0A SYN
->  Reply=A0=A0=A0=A0=A0=A0=A0=A0 A SYN/ACK->=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 <- B SYN/ACK
->  ...
->
->  When the SYNs arrive to the other firewall, it's already opened up f=
-rom
->  inside. Of course both communicating party must know in advance the =
-mapped
->  IP address and source port of the other side.
->
->  Because RST packets were generated by the hosts, it means the timing=
- was
->  not appropriate and A SYN reached B before it had sent its SYN. But =
-it
->  means we have to assume DNAT/REDIRECT rules was set up as well, othe=
-rwise
->  B NAT would not let pass the SYN from A to B.
->
->  But this is assumption because we do not know the full details of th=
-e
->  settings.
->
->
->  Best regards,
->  Jozsef
->  -
->  E-mail=A0=A0: kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
->  PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
->  Address : KFKI Research Institute for Particle and Nuclear Physics
-> =A0=A0=A0=A0=A0=A0=A0=A0=A0=A0H-1525 Budapest 114, POB. 49, Hungary
->
+Michael.
+
