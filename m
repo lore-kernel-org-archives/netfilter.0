@@ -1,41 +1,62 @@
-From: =?ISO-8859-1?Q?Fl=E1vio_Costa?= <fcosta75@gmail.com>
-Subject: UDP filter with 2 public interfaces
-Date: Mon, 1 Jun 2009 13:52:01 -0300
-Message-ID: <9b7febdd0906010952ofa86bc4uf5217f01b433e844@mail.gmail.com>
+From: Paul Evans <paul@mxtelecom.com>
+Subject: Atomic get-and-watch of conntrack table
+Date: Mon, 1 Jun 2009 18:36:00 +0100
+Message-ID: <20090601183600.579332c1@nacelle.mxtelecom.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=PGP-SHA1;
+ boundary="Sig_/OinUc60uTo_o3OjHuCIkz4r"; protocol="application/pgp-signature"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type:content-transfer-encoding;
-        bh=Gey8jnN9at2/ke4R+gcftFBQGV7P/czhrTRI31XLsYU=;
-        b=g0gs1huVQMuxyd09ootkzTEXazqHZU2rfLfyuewY8hBnCDFThkGM41zwOgAl6ot3Ng
-         oabmo7FKc6H1P0+lR0f10e6Kv/fyTJZR6rgGhwg3Y2PpBqZhw4xn81eBvXM7mnp6C6QK
-         RzkqJkLBWb2BGIoCZIUiaZN0ycaaUl5bXy9EM=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi all.
+--Sig_/OinUc60uTo_o3OjHuCIkz4r
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I want to host a OpenVPN server in a machine with 2 public interfaces.
-It uses UDP as transport layer.
+I'd like to write a long-running program that regularly reports
+statistics on conntrack usage (total number of connections, number of
+NATs, etc...). To do this, the program needs to start up, grab the
+current state of the table, and be informed of updates.
 
-1st interface is a Cable with dynamic IP, and other is frame relay
-fixed IP. The default route go through dynamic IP, and selectivity
-traffic goes through frame relay.
+This presents a problem. You can't pass conntrack -L -E together.
 
-OpenVPN runs on the same machine that runs iptables, and I want to
-host VPN over frame relay, but it only works on dynamic interface. I
-try to filter packets, try to mark packets with "mangle", but nothing
-works.
+So either:
 
-I have other services that work over frame relay, but all uses TCP.
-Only UDP does not work. I also have an internal terminal services
-machine that work over the frame relay, but it uses TCP also.
+ a: I run "conntrack -L", then watch "conntrack -E", with the inherent
+    race condition inbetween where state might change while I'm not
+    looking
 
-Any suggestions?
+or
 
-Thanks
+ b: I start watching "conntrack -E", then run "conntrack -L", with more
+    subtle race conditions involved in the fact that I might get events
+    from the -E command which set the state I've already seen by the -L
+    list; so having to filter those out somehow.
+
+Is there any alternative to this; can I atomically get the current
+table, and watch for updates to it? If not I guess I'll have to go for
+a careful implementation of case b- start watching, scrape the current
+table, and be prepared for "DELETE" or "UPDATE" events to touch items
+in the table I don't yet know about, or "NEW" or "UPDATE" events to set
+state that I've now already seen... tricky indeed...
+
+--=20
+Paul Evans <paul@mxtelecom.com>
+Tel: +44 (0) 845 666 7778
+Fax: +44 (0) 870 163 4694
+http://www.mxtelecom.com
+
+--Sig_/OinUc60uTo_o3OjHuCIkz4r
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Disposition: attachment; filename=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkokEYAACgkQcGehlx3Gqx4KhACgj4oRGDyfssPmowHtVZxPJQeC
+JAUAn26S1w1ynEF3wBaDrADT/RCF+lqh
+=zqpu
+-----END PGP SIGNATURE-----
+
+--Sig_/OinUc60uTo_o3OjHuCIkz4r--
