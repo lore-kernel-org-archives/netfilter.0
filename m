@@ -1,102 +1,41 @@
-From: vitry <vitry.es@gmail.com>
-Subject: Possible bug in owner match
-Date: Mon, 01 Jun 2009 18:36:42 +0200
-Message-ID: <4A24039A.3080006@gmail.com>
+From: =?ISO-8859-1?Q?Fl=E1vio_Costa?= <fcosta75@gmail.com>
+Subject: UDP filter with 2 public interfaces
+Date: Mon, 1 Jun 2009 13:52:01 -0300
+Message-ID: <9b7febdd0906010952ofa86bc4uf5217f01b433e844@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from
-         :user-agent:mime-version:to:subject:content-type
-         :content-transfer-encoding;
-        bh=xPqGEfKeB/vjWM7C6nuJSl9zDvVSD6i/WL7xehmgq3U=;
-        b=ftezmdTNuLabM8InU14dAQ+RVtjMonR+pemrF5c95HPCYEEP+nFxlumIwzhXS7XUOy
-         ynxHUzWX0lCmbGDK7xq3ZsI1/znM1PHNVWksltF3bfKefQUoXDaG4pV16fNB1E50lYz+
-         TtZ/cEvX8NgxKnY+DSeDcGHv0/+kE6ukwT/dk=
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=Gey8jnN9at2/ke4R+gcftFBQGV7P/czhrTRI31XLsYU=;
+        b=g0gs1huVQMuxyd09ootkzTEXazqHZU2rfLfyuewY8hBnCDFThkGM41zwOgAl6ot3Ng
+         oabmo7FKc6H1P0+lR0f10e6Kv/fyTJZR6rgGhwg3Y2PpBqZhw4xn81eBvXM7mnp6C6QK
+         RzkqJkLBWb2BGIoCZIUiaZN0ycaaUl5bXy9EM=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi to all,
+Hi all.
 
-I want to report a possible bug in owner match with uid test not submit
-in iptables.git (in olders versions it works fine)
+I want to host a OpenVPN server in a machine with 2 public interfaces.
+It uses UDP as transport layer.
 
-host: Linux iris 2.6.26-2-amd64 #1 SMP Fri Mar 27 04:02:59 UTC 2009
-x86_64 GNU/Linux
-          iptables v1.4.3.1
+1st interface is a Cable with dynamic IP, and other is frame relay
+fixed IP. The default route go through dynamic IP, and selectivity
+traffic goes through frame relay.
 
-fw:     Linux Firewall-2 2.6.28.9 #5 Fri Mar 27 06:52:33 CET 2009 mips
-unknown
-          iptables v1.4.3.1
+OpenVPN runs on the same machine that runs iptables, and I want to
+host VPN over frame relay, but it only works on dynamic interface. I
+try to filter packets, try to mark packets with "mangle", but nothing
+works.
 
-Problem with UID (Not match):
+I have other services that work over frame relay, but all uses TCP.
+Only UDP does not work. I also have an internal terminal services
+machine that work over the frame relay, but it uses TCP also.
 
-/iris:~# iptables -t mangle -L OUTPUT -v -n
-Chain OUTPUT (policy ACCEPT 3538K packets, 216M bytes)
- pkts bytes target     prot opt in     out     source              
-destination        
- 1806  152K TOS        all  --  *      *       0.0.0.0/0
-<http://0.0.0.0/0>            0.0.0.0/0 <http://0.0.0.0/0>          
-owner UID match 1002 TOS set 0x40/0xc0
+Any suggestions?
 
-
-root@Firewall-2:~# iptables -t mangle -Z
-
-
-1002:1002@iris//# ping -c 1 192.168.10.1
-
-
-root@Firewall-2:~# iptables -t mangle -L PREROUTING -v
--n                         
-Chain PREROUTING (policy ACCEPT 226 packets, 76471 bytes)
- pkts bytes target     prot opt in     out     source              
-destination        
-    0     0 MARK       all  --  eth0.0 *       0.0.0.0/0
-<http://0.0.0.0/0>            0.0.0.0/0 <http://0.0.0.0/0>           tos
-match 0x40/0xc0 MARK xset 0x2/0xffffffff
-    0     0 MARK       all  --  eth0.0 *       0.0.0.0/0
-<http://0.0.0.0/0>            0.0.0.0/0 <http://0.0.0.0/0>           tos
-match 0x80/0xc0 MARK xset 0x3/0xffffffff
-    0     0 MARK       all  --  eth0.0 *       0.0.0.0/0
-<http://0.0.0.0/0>            0.0.0.0/0 <http://0.0.0.0/0>           tos
-match 0xc0/0xc0 MARK xset 0x4/0xffffffff
-
-
-/Solved with GID (Match correctly):
-
-/iris:~# iptables -t mangle -L OUTPUT -v -n
-Chain OUTPUT (policy ACCEPT 3538K packets, 216M bytes)
- pkts bytes target     prot opt in     out     source              
-destination        
- 1806  152K TOS        all  --  *      *       0.0.0.0/0
-<http://0.0.0.0/0>            0.0.0.0/0 <http://0.0.0.0/0>          
-owner GID match 1002 TOS set 0x40/0xc0
-
-
-root@Firewall-2:~# iptables -t mangle -Z
-
-
-1002:1002@iris//# ping -c 1 192.168.10.1
-
-
-root@Firewall-2:~# iptables -t mangle -L PREROUTING -v -n
-Chain PREROUTING (policy ACCEPT 7151 packets, 4273K bytes)
- pkts bytes target     prot opt in     out     source              
-destination        
-    1    84 MARK       all  --  eth0.0 *       0.0.0.0/0
-<http://0.0.0.0/0>            0.0.0.0/0 <http://0.0.0.0/0>           tos
-match 0x40/0xc0 MARK xset 0x2/0xffffffff
-    0     0 MARK       all  --  eth0.0 *       0.0.0.0/0
-<http://0.0.0.0/0>            0.0.0.0/0 <http://0.0.0.0/0>           tos
-match 0x80/0xc0 MARK xset 0x3/0xffffffff
-    0     0 MARK       all  --  eth0.0 *       0.0.0.0/0
-<http://0.0.0.0/0>            0.0.0.0/0 <http://0.0.0.0/0>           tos
-match 0xc0/0xc0 MARK xset 0x4/0xffffffff
-
-/
-
-Best regards,
-vitry
+Thanks
