@@ -1,35 +1,31 @@
-From: Leonardo Carneiro <lscarneiro@veltrac.com.br>
-Subject: what is the '-m' flag?
-Date: Tue, 02 Jun 2009 17:23:22 -0300
-Message-ID: <4A258A3A.8080200@veltrac.com.br>
+From: Ivan Petrushev <ivanatora@gmail.com>
+Subject: Re: what is the '-m' flag?
+Date: Tue, 2 Jun 2009 23:30:34 +0300
+Message-ID: <d39744a20906021330g258da21drf879151a200a5e5f@mail.gmail.com>
+References: <4A258A3A.8080200@veltrac.com.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :from:date:message-id:subject:to:cc:content-type
+         :content-transfer-encoding;
+        bh=+pYZfy6h0/8qhCcZEzXr/AQmwWneNMkbdaul1HG1m4Q=;
+        b=pQuAPcreaA+oYi1sJZMpytFycaMpdcKWT4Ms6JX05IWpRFgXeGCFaAaRfG8Uu+WNfV
+         zjk2mOxjrDdGmw/kcrO8WM9je+zgaDeRD48MPKH14YKNkVQf8nx9jimbulbZNNMBnFCL
+         nQ7gOo7M7oxkD7KdiJ5TeeIujJikr6LcFkg34=
+In-Reply-To: <4A258A3A.8080200@veltrac.com.br>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Leonardo Carneiro <lscarneiro@veltrac.com.br>
+Cc: netfilter@vger.kernel.org
 
-what the '-m' flag does in iptables? i'd search google and read the=20
-manual, but did not found anything.
-
-a old script running in a firewall of my network have some rules like t=
-hese:
-iptables -A PREROUTING -p udp -m udp -d $inet_ip -i eth0 --dport 8282 -=
-j=20
-DNAT --to-destination 192.168.1.102
-
-tks in
---=20
-
-*Leonardo de Souza Carneiro*
-*Veltrac - Tecnologia em Log=EDstica.*
-lscarneiro@veltrac.com.br <mailto:lscarneiro@veltrac.com.br>
-http://www.veltrac.com.br <http://www.veltrac.com.br/>
-/Fone Com.: (43)2105-5601/
-/Av. Higien=F3polis 1601 Ed. Eurocenter Sl. 803/
-/Londrina- PR/
-/Cep: 86015-010/
-
-=09
-
+man iptables v.1.3.7
+MATCH EXTENSIONS
+       iptables can use  extended  packet  matching  modules.   These  are
+       loaded in two ways: implicitly, when -p or --protocol is specified,
+       or with the -m or --match options, followed by the matching  module
+       name; after these, various extra command line options become avail-
+       able, depending on the specific module.
