@@ -1,75 +1,84 @@
-From: =?us-ascii?Q?Xesc_Arbona?= <X.Arbona@topdesk.com>
-Subject: Re: conntrack INVALID packets
-Date: Tue, 2 Jun 2009 18:19:01 +0200
-Message-ID: <vmime.4a2550f5.5fdc.8868102d67fdfa5b@mona.topdesk.com>
+From: "Jason Pyeron" <jpyeron@pdinc.us>
+Subject: RE: Parts of firewall disappearing under load
+Date: Tue, 2 Jun 2009 14:12:33 -0400
+Message-ID: <A67DFD641F7847289C151D78D48E99BF@phoenix>
+References: <20090602135200.GA3494@chris-laptop.a2hosting.com> <0E343D269189485382D3A75C20D236B3@phoenix> <20090602153117.GA3549@chris-laptop.a2hosting.com> <1243957429.10053.7.camel@enterprise.ims-firmen.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <1243957429.10053.7.camel@enterprise.ims-firmen.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-> Olivier Sessink wrote:
->> Roman Ledovskiy wrote:
->> Hi,
->> 
->> I have linux firewall in between internet and my network, diagram is
->> following:
->> 
->> Upstream
->>    |
->> Firewall server
->>    |
->> my network
->>  
->> "My network" hosts many different email/web servers.
->> 
->> Firewall server is not a bridge, it has 2 interfaces (one to upstream, one
->> to internal network)
->> Not much kernel configuration, kernel is default kernel from Centos5 x64
->> repo: 2.6.18-8.1.10.el5
->> 
->> On this server I get quite a lot of INVALID packets, about 0.07% of all and
->> I can't figure out why..
->
-> same thing here. most of the INVALID packets seem to have RST or FIN ACK
-> set. So what I did, I increased the timeouts to setup a connection, and
-> I increased the timeouts for connection closing. That helped a lot.
->
+FYI, please don't cc me use the list. 
 
-Hi,
+> -----Original Message-----
+> From: netfilter-owner@vger.kernel.org 
+> [mailto:netfilter-owner@vger.kernel.org] On Behalf Of Thomas Jacob
+> Sent: Tuesday, June 02, 2009 11:44
+> To: Chris
+> Cc: netfilter@vger.kernel.org; Jason Pyeron
+> Subject: Re: Parts of firewall disappearing under load
+> 
+> On Tue, 2009-06-02 at 11:31 -0400, Chris wrote:
+> > On Tue, Jun 02, 2009 at 10:10:31AM -0400, Jason Pyeron wrote:
+> > > > We've got quite a few heavily loaded boxes (ISP shared
+> > > > servers) which have firewalls enabled.  The firewalls basically 
+> > > > allow certain ports, block some naughty IPs, and use limit and 
+> > > > recent to keep some services under control.
+> > > > 
+> > > > What we've noticed is that on rare occasions, a box will
+> > > 
+> > > Can you make a test case? Does it happen on more than one machine?
+> > 
+> > That's the tricky part.  It happens maybe once or twice a 
+> month, and 
+> > on different machines.  I don't know of a way to reproduce it.  Any 
+> > pointers on information that would be useful to gather at 
+> the time it 
+> > happens would be extremely useful, since at this point it 
+> is a mystery 
+> > to me.
+> 
+> If you can actually see that you have a different active 
+> rulesets when it "works" than when it doesn't work, then your 
+> problem most likely is with the ruleset loading/creation 
+> process. I am not aware of any component of netfilter that 
+> can change the ruleset by itself without user space 
+> interaction. Of course various dynamic memory tables can get 
+> exhausted (connection tracking, neighbor caches, routing 
+> cache etc), but when this happens you usually get messages in 
+> your kernel log that clearly say so.
+> 
+> How do you manage your ruleset? Check the logs of that solution....
+> 
 
-I have a similar problem, but increasing the timeouts didn't help me. Our situation is:
+If each machine is rhel/centos it would be managed by the
+/etc/sysconfig/iptables file.
 
-We have several Windows backend webservers on an internal network, connected to a Debian machine (kernel 2.6.18.dfsg.1-24) which has a direct connection to Internet and acts as Reverse-Proxy. No traffic is forwarded, incoming requests are proxied to the backend servers. We use iptables 1.3.6.0debian1-5 and ferm as firewall on the same machine.
+Now there are several utilities which may modify it, but all are user run.
 
-We have been experiencing timeouts between the proxy and the backend servers. I've looked at the firewall configuration, and several packets were dropped because itpables marks their state as INVALID. On the INPUT chain I've changed the rules:
+/etc/init.d/iptables is how the file is loaded in to memory.
 
-  mod state state INVALID DROP;
-  mod state state (ESTABLISHED RELATED) ACCEPT;
-
-by
-
-  mod state state INVALID goto DEBUG; 
-  mod state state (ESTABLISHED RELATED) ACCEPT;
-
-and created a DEBUG function that logs information about the packets. Most packets being marked as INVALID are RST, but also SYN-ACK, FIN-ACK and ACK. 
-
-/proc/sys/net/ipv4/netfilter/ip_conntrack_count is 6177
-/proc/sys/net/ipv4/netfilter/ip_conntrack_max is 32768
-
-Jun  2 17:58:27 proxy003 kernel: TCP DEBUG: IN=eth0 OUT= MAC=00:0c:29:4a:b9:e8:00:0c:29:0e:d8:f8:08:00 SRC=10.231.0.55 DST=10.231.0.203 LEN=64 TOS=0x00 PREC=0x00 TTL=128 ID=27512 PROTO=TCP SPT=82 DPT=40508 WINDOW=64240 RES=0x00 ACK SYN URGP=0
-Jun  2 17:58:31 proxy003 kernel: TCP DEBUG: IN=eth0 OUT= MAC=00:0c:29:4a:b9:e8:00:0c:29:0e:d8:f8:08:00 SRC=10.231.0.55 DST=10.231.0.203 LEN=64 TOS=0x00 PREC=0x00 TTL=128 ID=27893 PROTO=TCP SPT=82 DPT=40574 WINDOW=64240 RES=0x00 ACK SYN URGP=0
-Jun  2 17:58:31 proxy003 kernel: TCP DEBUG: IN=eth0 OUT= MAC=00:0c:29:4a:b9:e8:00:0c:29:0e:d8:f8:08:00 SRC=10.231.0.55 DST=10.231.0.203 LEN=52 TOS=0x00 PREC=0x00 TTL=128 ID=27903 DF PROTO=TCP SPT=82 DPT=40574 WINDOW=63875 RES=0x00 ACK URGP=0
-Jun  2 17:58:31 proxy003 kernel: TCP DEBUG: IN=eth0 OUT= MAC=00:0c:29:4a:b9:e8:00:0c:29:0e:d8:f8:08:00 SRC=10.231.0.55 DST=10.231.0.203 LEN=52 TOS=0x00 PREC=0x00 TTL=128 ID=27904 DF PROTO=TCP SPT=82 DPT=40574 WINDOW=63875 RES=0x00 ACK FIN URGP=0
-
-* Does someone know what can be causing this? and how to solve it?
-
-* When sending a SYN packet (via OUTPUT chain) to a backend server, shouldn't a connection appear as state NEW on /proc/net/ip_conntrack? And when a SYN-ACK comes from the backend server, shoudln't be marked as ESTABLISHED?
-
-Thanks a lot!
+>     Thomas
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe 
+> netfilter" in the body of a message to 
+> majordomo@vger.kernel.org More majordomo info at  
+> http://vger.kernel.org/majordomo-info.html
+> 
 
 --
-Xesc
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+-                                                               -
+- Jason Pyeron                      PD Inc. http://www.pdinc.us -
+- Principal Consultant              10 West 24th Street #100    -
+- +1 (443) 269-1555 x333            Baltimore, Maryland 21218   -
+-                                                               -
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
+This message is copyright PD Inc, subject to license 20080407P00.
+
 
