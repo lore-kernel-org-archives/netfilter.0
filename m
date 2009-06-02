@@ -1,66 +1,47 @@
-From: Christoph Paasch <christoph.paasch@gmail.com>
+From: Leonardo Carneiro <lscarneiro@veltrac.com.br>
 Subject: Re: what is the '-m' flag?
-Date: Tue, 2 Jun 2009 22:36:49 +0200
-Message-ID: <200906022236.54167.christoph.paasch@gmail.com>
-References: <4A258A3A.8080200@veltrac.com.br>
+Date: Tue, 02 Jun 2009 17:51:38 -0300
+Message-ID: <4A2590DA.9040709@veltrac.com.br>
+References: <4A258A3A.8080200@veltrac.com.br> <a43edf1b0906021329q4bf99135lc9b4846c1d17efea@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart1289579.WeDWiiJbyp";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha1
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:from:to:subject:date
-         :user-agent:cc:references:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:message-id;
-        bh=uz4+5rS0UQrxLx5o6DYnlrBtzMteooCunVt7Ym+O6A4=;
-        b=CQcX9Y4I9jgglaffSlFytatfd+S0kFuyvTTQ7xK9tsyxVtxm6HQySzpRZg4b3evcE3
-         V4KnwpoAqNNbe2FRpYloy4dJPMMLC9ZfUBS52WVu7FYLb25C1bZno+OKRupV8BxL2QHX
-         n+LvovHPFh8uDMkiDUUPFhb8Mt0Yju//1JNdA=
-In-Reply-To: <4A258A3A.8080200@veltrac.com.br>
+In-Reply-To: <a43edf1b0906021329q4bf99135lc9b4846c1d17efea@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Leonardo Carneiro <lscarneiro@veltrac.com.br>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Billy Crook <billycrook@gmail.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
---nextPart1289579.WeDWiiJbyp
-Content-Type: text/plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+in the manual version in the server the flag was not present. a more=20
+updated version has the description, but was not together with the othe=
+r=20
+flags. sorry for the mistake, anyway.
 
-Look in the manpage of iptables.
-
--m loads the iptables extension.
-
-On Tue June 2 2009 wrote Leonardo Carneiro:
-> what the '-m' flag does in iptables? i'd search google and read the
-> manual, but did not found anything.
+Billy Crook escreveu:
+> On Tue, Jun 2, 2009 at 15:23, Leonardo Carneiro
+> <lscarneiro@veltrac.com.br> wrote:
+>  =20
+>> what the '-m' flag does in iptables? i'd search google and read the =
+manual,
+>>    =20
 >
-> a old script running in a firewall of my network have some rules like
-> these: iptables -A PREROUTING -p udp -m udp -d $inet_ip -i eth0 --dport
-> 8282 -j DNAT --to-destination 192.168.1.102
+> Evidently not.
 >
-> tks in
+> man iptables
+> [/] then [Spacebar] then [-] then [m] then [Enter]
+>
+>  =20
 
---
-Christoph Paasch
+--=20
 
-www.rollerbulls.be
---
+*Leonardo de Souza Carneiro*
+*Veltrac - Tecnologia em Log=EDstica.*
+lscarneiro@veltrac.com.br <mailto:lscarneiro@veltrac.com.br>
+http://www.veltrac.com.br <http://www.veltrac.com.br/>
+/Fone Com.: (43)2105-5601/
+/Av. Higien=F3polis 1601 Ed. Eurocenter Sl. 803/
+/Londrina- PR/
+/Cep: 86015-010/
 
---nextPart1289579.WeDWiiJbyp
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
+=09
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEABECAAYFAkoljWEACgkQLHtZTroOLZuGEwCfZZ1Otcv2kcacWd7p2SnbLO29
-gWYAn0LK4YA9U91cLib6+fCK9/CUKqBV
-=2t1N
------END PGP SIGNATURE-----
-
---nextPart1289579.WeDWiiJbyp--
