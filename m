@@ -1,91 +1,71 @@
-From: matthias <mensch0815@googlemail.com>
-Subject: Re: ftp and nat
-Date: Wed, 3 Jun 2009 13:17:29 +0200
-Message-ID: <3e4778d50906030417x1a3feef9i3ea2de0d421d9786@mail.gmail.com>
-References: <3e4778d50905270448o4a10936bi37acf8eea86be692@mail.gmail.com>
-	 <1243426388.1634.46.camel@enterprise.ims-firmen.de>
+From: william fitzgerald <wfitzgerald@tssg.org>
+Subject: Can Blocking Reserved RFC1918 and RFC3330 Spoofing be simplified?
+Date: Wed, 03 Jun 2009 14:30:28 +0100
+Message-ID: <4A267AF4.9030103@tssg.org>
+Reply-To: wfitzgerald@tssg.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=Fh/88kqVDUrNfRxkJgyGonBGO+Vqv8TCqY3L87L9mvM=;
-        b=lZPeaaBcgGovV3hlgf78GN1KGHw/aedvyYh7WL5Kd1c4Y9bm7aka67B8Vvp7YAOZuU
-         TWzamQswSg3nRsNXVCV8KqcMk1Haxm7MeQcCIVY6O5kRGqiRAWNia1us5aCQuTnUSraN
-         mWdb5JEgvGlFaJhPAaH/lSNOYYEHWxwSi5L9g=
-In-Reply-To: <1243426388.1634.46.camel@enterprise.ims-firmen.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Thomas Jacob <jacob@internet24.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hi all,
+Dear all,
 
-2009/5/27 Thomas Jacob <jacob@internet24.de>:
-> On Wed, 2009-05-27 at 13:48 +0200, matthias wrote:
->> Hi all,
->>
->> i have a network like this:
->> client <-> router <-> server
->>
->> the router is linked via eth0 to the client-network and via tun0 to =
-the server.
->> when i try to log from the client into the server via ftp I get a
->> delay of about 30 seconds.
->> does anyone tell me why, is it, that iptables doesn't support active=
- ftp?
->>
->> here are tcpdump extracts taken by the router:
->>
->> root@router# tcpdump -i eth0
->> listening on eth0, link-type EN10MB (Ethernet), capture size 96 byte=
-s
->> 15:57:01.949614 IP client.43278 > router.ftp: S
->> 2612647763:2612647763(0) win 5840 <mss 1460,sackOK,timestamp 5381639=
-18
->> 0,nop,wscale 2>
->> 15:57:01.951314 IP router.ftp > client.43278: S
->> 3833629446:3833629446(0) ack 2612647764 win 5792 <sackOK,timestamp
->> 109271440 538163918,mss 1460,nop,wscale 2>
->> 15:57:01.951615 IP client.43278 > router.ftp: . ack 1 win 1460
->> <nop,nop,timestamp 538163921 109271440>
->
-> 3 way handshake is complete here
->
->> 15:57:32.417873 IP router.ftp > client.43278: P 1:99(98) ack 1 win
->> 1448 <nop,nop,timestamp 109279056 538163921>
->
-> And then your router does not send the FTP ready message for about
-> 30s, at this point nothing FTP specific has yet taken place.
->
-> Suggest you look into your "ident"-checks in the FTP server config
-> and disable them.
->
-> Once you get the FTP prompt right away, don't forget to load the FTP
-> support modules for iptables/NAT:
->
-> =C2=A0modprobe nf_conntrack_ftp
-> =C2=A0modprobe nf_nat_ftp
+If I wanted to block incoming IP address ranges from RFC1918 and RFC3330 
+must I create rules for each of the reserved addresses along the INPUT 
+and FORWARD chains?
 
-=46irstly I missed to caputer auth communication on eth0. After changin=
-g
-the tcpdump call (tcpdump -i eth0 port ftp or port ftp-data or port
-auth) I recongnized, that the auth-messages from the server are
-delivered to the client without changing the corresponding ip adress,
-so that the client received a auth-request with source-ip=3Dserver.
-I think this happens due to the fact that iptables couldn't recognize
-the answer of the server, because it uses a different port.
+(It would be around 30plus rules when applying to both INPUT and FORWARD 
+chains)
 
-As a workaround I added the folowing rule to my iptables initalization =
-script:
-iptables -A FORWARD -i tun0 -o eth0 -p tcp --dport 113 -j REJECT -v
+Would the following equally work?
 
-So that I get a ftp prompt right away. Seems as if the FTP server
-doesn't have any config flag to disable ident-checks.
+Suppose I have an internal class C network 192.168.1.* and imagine I was 
+running a web server for public use. Interface eth1 is the internet 
+facing NIC port and eth0 is the internal port NIC.
 
-Thanks,
-Matthias
+Could I not just have 2 kinds of rules to block all RFC1918 and RFC3330 
+spoofed packets.
+
+First KIND: DROP EVERYTHING BY DEFAULT VIA CHAIN POLICY
+
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+
+SECOND KIND: DROP INDIVIDUAL PACKET TYPES
+
+% Rule 1: Drop everything from outside.
+iptables -A INPUT -i eth1 -j DROP
+
+% Rule 2: Drop my internal IP range arriving from outside
+iptables -A FORWARD -i eth1 -s 192.168.1.0/24 -j DROP
+
+% Rule 3: allow access to web server from all IP addresses.
+% note this rule must come after Rule 2.
+iptables -A FORWARD -i eth1 -s 0/0 -d 192.168.1.2 -j ACCEPT
+
+% Rule 4: Drop all other packets arriving on the FORWARD chain port eth1
+% The default FORWARD Policy SHOULD cover this! But add it just in case.
+iptables -A FORWARD -i eth1 -j DROP
+
+kind regards,
+Will.
+
+-- 
+________________________________________
+William M. Fitzgerald (MSc, BSc)
+PhD Student,
+Cork Constraint Computation Centre,
+Computer Science Dept.,
+University College Cork,
+Cork,
+Ireland.
+----------------------------------------
+www.williamfitzgerald.net
+www.williamfitzgerald.info
+www.linkedin.com/in/williamfitzgerald
+http://4c.ucc.ie/web/people.jsp?id=143
+www.tssg.org/people/wfitzgerald/
+________________________________________
