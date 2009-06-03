@@ -1,71 +1,99 @@
-From: william fitzgerald <wfitzgerald@tssg.org>
-Subject: Can Blocking Reserved RFC1918 and RFC3330 Spoofing be simplified?
-Date: Wed, 03 Jun 2009 14:30:28 +0100
-Message-ID: <4A267AF4.9030103@tssg.org>
-Reply-To: wfitzgerald@tssg.org
+From: Bruno Moreira Guedes <thbmatrix@gmail.com>
+Subject: Re: NAT + (libnfqueue || libipq): There are some documents about it?
+Date: Wed, 3 Jun 2009 10:41:44 -0300
+Message-ID: <3fdd6ce00906030641xb4605f9u4579ca8865bdec21@mail.gmail.com>
+References: <3fdd6ce00905252153h2b83319q818cc0b1c9a7dfb5@mail.gmail.com>
+	 <1243321049.27090.22.camel@khasse.inl.fr>
+	 <3fdd6ce00905270753g5ca270c3kfbc7985f8f3524f3@mail.gmail.com>
+	 <3fdd6ce00905311605k6815936ct6dd19d49cbf30668@mail.gmail.com>
+	 <1243889365.6398.19.camel@ice-age>
+	 <3fdd6ce00906012047r1671e005n55c51835d67ee39d@mail.gmail.com>
+	 <1243919086.6398.25.camel@ice-age>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=fYsbdgwJWdRtFZwA0KE6uyO9J6Z7/iHp/+XljhMFsEw=;
+        b=ZRgzdfrVZmzRV0KdpcaxpgQ1Ub98MXotpuT3WjnVEa1ETg2ojAs+FGiEBzXc1Q6muO
+         dNNG7osw5DKYGjpvmBqC0dwqMssjSdZXXdQeq095OnDbKMhdxG/yt5bnSckm/KOJt0kZ
+         jSalNhYAUL81EuylovvJTv4natHVFeeqZwiYQ=
+In-Reply-To: <1243919086.6398.25.camel@ice-age>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Netfilter <netfilter@vger.kernel.org>
 
-Dear all,
+2009/6/2 Eric Leblond <eric@inl.fr>:
+> Hi,
+>
+> Le mardi 02 juin 2009 =E0 00:47 -0300, Bruno Moreira Guedes a =E9crit=
+ :
+>> 2009/6/1 Eric Leblond <eric@inl.fr>:
+>> > Hi,
+>> >
+>> > Le dimanche 31 mai 2009 =E0 20:05 -0300, Bruno Moreira Guedes a =E9=
+crit :
+>> >> 2009/5/27 Bruno Moreira Guedes <thbmatrix@gmail.com>:
+>> >> > 2009/5/26 Eric Leblond <eric@inl.fr>:
+>> >> >> Hi,
+>> >
+>> > If you accept the packet in POSTROUTING nat, it will discard any N=
+AT
+>> > action done after the NFQUEUE rule. Thus you will need to do NAT b=
+y
+>> > yourself.
+>>
+>> Do you have any hint to do the NAT by myself? Where do I start? Than=
+k
+>> you in the advance.
+>
+> You can try to set-up NAT by yourself by modyfing the connection
+> tracking entry of your packet. You can do so by using
+> libnetfilter_conntrack.
+>
+> I've never tested IP modification via libnetfilter_conntrack but it
+> should work.
+>
+> The painful way is too manually do the translation (ie QUEUE packet i=
+n
+> PREROUTING nat) but has ths chain is placed after connection tracking=
+ it
+> can led to the packet being detected as INVALID by connection trackin=
+g
+> system.
+>
+> BR,
+> --
+> Eric Leblond <eric@inl.fr>
+> INL: http://www.inl.fr/
+> NuFW: http://www.nufw.org/
+>
 
-If I wanted to block incoming IP address ranges from RFC1918 and RFC3330 
-must I create rules for each of the reserved addresses along the INPUT 
-and FORWARD chains?
+I'm taking a look into libnetfilter_conntrack. It's really
+interesting, but I have another question to ask... Do I need to worry
+about performance on doing it?
 
-(It would be around 30plus rules when applying to both INPUT and FORWARD 
-chains)
+My first idea is to use the following ip tables ruleset:
 
-Would the following equally work?
+nat::PREROUTING, nat:POSTROUTING
+1 jump to QUEUE
 
-Suppose I have an internal class C network 192.168.1.* and imagine I was 
-running a web server for public use. Interface eth1 is the internet 
-facing NIC port and eth0 is the internal port NIC.
+filter::INPUT, filter::OUTPUT, filter::FORWARD
+1 ACCEPT ESTABLISHED,RELATED
+2 jump to QUEUE
 
-Could I not just have 2 kinds of rules to block all RFC1918 and RFC3330 
-spoofed packets.
+But in order to doing "every packet" nat meaning using connection
+tracking, I need to review this idea to something like:
 
-First KIND: DROP EVERYTHING BY DEFAULT VIA CHAIN POLICY
+filter::INPUT, filter::OUTPUT, filter::FORWARD
+1 jump to QUEUE
 
-iptables -P INPUT DROP
-iptables -P FORWARD DROP
+and also doing all the work here. This is the main reason of my fear.
 
-SECOND KIND: DROP INDIVIDUAL PACKET TYPES
+Thank you again!!
 
-% Rule 1: Drop everything from outside.
-iptables -A INPUT -i eth1 -j DROP
-
-% Rule 2: Drop my internal IP range arriving from outside
-iptables -A FORWARD -i eth1 -s 192.168.1.0/24 -j DROP
-
-% Rule 3: allow access to web server from all IP addresses.
-% note this rule must come after Rule 2.
-iptables -A FORWARD -i eth1 -s 0/0 -d 192.168.1.2 -j ACCEPT
-
-% Rule 4: Drop all other packets arriving on the FORWARD chain port eth1
-% The default FORWARD Policy SHOULD cover this! But add it just in case.
-iptables -A FORWARD -i eth1 -j DROP
-
-kind regards,
-Will.
-
--- 
-________________________________________
-William M. Fitzgerald (MSc, BSc)
-PhD Student,
-Cork Constraint Computation Centre,
-Computer Science Dept.,
-University College Cork,
-Cork,
-Ireland.
-----------------------------------------
-www.williamfitzgerald.net
-www.williamfitzgerald.info
-www.linkedin.com/in/williamfitzgerald
-http://4c.ucc.ie/web/people.jsp?id=143
-www.tssg.org/people/wfitzgerald/
-________________________________________
+--Bruno
