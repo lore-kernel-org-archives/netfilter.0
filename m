@@ -1,99 +1,68 @@
-From: Bruno Moreira Guedes <thbmatrix@gmail.com>
-Subject: Re: NAT + (libnfqueue || libipq): There are some documents about it?
-Date: Wed, 3 Jun 2009 10:41:44 -0300
-Message-ID: <3fdd6ce00906030641xb4605f9u4579ca8865bdec21@mail.gmail.com>
-References: <3fdd6ce00905252153h2b83319q818cc0b1c9a7dfb5@mail.gmail.com>
-	 <1243321049.27090.22.camel@khasse.inl.fr>
-	 <3fdd6ce00905270753g5ca270c3kfbc7985f8f3524f3@mail.gmail.com>
-	 <3fdd6ce00905311605k6815936ct6dd19d49cbf30668@mail.gmail.com>
-	 <1243889365.6398.19.camel@ice-age>
-	 <3fdd6ce00906012047r1671e005n55c51835d67ee39d@mail.gmail.com>
-	 <1243919086.6398.25.camel@ice-age>
+From: william fitzgerald <wfitzgerald@tssg.org>
+Subject: Query: stateless versus statefull best practice choices
+Date: Wed, 03 Jun 2009 17:31:42 +0100
+Message-ID: <4A26A56E.3080404@tssg.org>
+Reply-To: wfitzgerald@tssg.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:content-type
-         :content-transfer-encoding;
-        bh=fYsbdgwJWdRtFZwA0KE6uyO9J6Z7/iHp/+XljhMFsEw=;
-        b=ZRgzdfrVZmzRV0KdpcaxpgQ1Ub98MXotpuT3WjnVEa1ETg2ojAs+FGiEBzXc1Q6muO
-         dNNG7osw5DKYGjpvmBqC0dwqMssjSdZXXdQeq095OnDbKMhdxG/yt5bnSckm/KOJt0kZ
-         jSalNhYAUL81EuylovvJTv4natHVFeeqZwiYQ=
-In-Reply-To: <1243919086.6398.25.camel@ice-age>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-2009/6/2 Eric Leblond <eric@inl.fr>:
-> Hi,
->
-> Le mardi 02 juin 2009 =E0 00:47 -0300, Bruno Moreira Guedes a =E9crit=
- :
->> 2009/6/1 Eric Leblond <eric@inl.fr>:
->> > Hi,
->> >
->> > Le dimanche 31 mai 2009 =E0 20:05 -0300, Bruno Moreira Guedes a =E9=
-crit :
->> >> 2009/5/27 Bruno Moreira Guedes <thbmatrix@gmail.com>:
->> >> > 2009/5/26 Eric Leblond <eric@inl.fr>:
->> >> >> Hi,
->> >
->> > If you accept the packet in POSTROUTING nat, it will discard any N=
-AT
->> > action done after the NFQUEUE rule. Thus you will need to do NAT b=
-y
->> > yourself.
->>
->> Do you have any hint to do the NAT by myself? Where do I start? Than=
-k
->> you in the advance.
->
-> You can try to set-up NAT by yourself by modyfing the connection
-> tracking entry of your packet. You can do so by using
-> libnetfilter_conntrack.
->
-> I've never tested IP modification via libnetfilter_conntrack but it
-> should work.
->
-> The painful way is too manually do the translation (ie QUEUE packet i=
-n
-> PREROUTING nat) but has ths chain is placed after connection tracking=
- it
-> can led to the packet being detected as INVALID by connection trackin=
-g
-> system.
->
-> BR,
-> --
-> Eric Leblond <eric@inl.fr>
-> INL: http://www.inl.fr/
-> NuFW: http://www.nufw.org/
->
+Dear all,
 
-I'm taking a look into libnetfilter_conntrack. It's really
-interesting, but I have another question to ask... Do I need to worry
-about performance on doing it?
+What is *best practice* when it comes to choosing either stateless 
+versus statefull rules (or perhaps combinations) to protect services.
 
-My first idea is to use the following ip tables ruleset:
+For example:
 
-nat::PREROUTING, nat:POSTROUTING
-1 jump to QUEUE
+Internet --> Firewall --> Web server
 
-filter::INPUT, filter::OUTPUT, filter::FORWARD
-1 ACCEPT ESTABLISHED,RELATED
-2 jump to QUEUE
+STATELESS
+% allow anyone initiate access to web server
 
-But in order to doing "every packet" nat meaning using connection
-tracking, I need to review this idea to something like:
+% Rule 1
+iptables -A FORWARD -i eth1 -s 0/0 -d 192.168.1.2 -p tcp --dport 80 
+--tcp-flags !SYN -j DROP
 
-filter::INPUT, filter::OUTPUT, filter::FORWARD
-1 jump to QUEUE
+%Rule 2
+iptables -A FORWARD -i eth1 -s 0/0 -d 192.168.1.2 -p tcp --dport 80 -j 
+ACCEPT
 
-and also doing all the work here. This is the main reason of my fear.
+% allow web server to reply back to internet
 
-Thank you again!!
+% Rule 3: filter for ACK flag, web server should not send a SYN
+iptables -A FORWARD -o eth0 -s 192.168.1.2 -d 0/0 -p tcp --sport 80 
+--tcp-flags !ACK -j DROP
 
---Bruno
+% Rule 4: used after 3-way handshake established
+iptables -A FORWARD -o eth0 -s 192.168.1.2 -d 0/0 -p tcp --sport 80 -j 
+ACCEPT
+
+(Note maybe rules 1 and 3 above are ineffective but I guess rules 2 and 
+4 provide simplistic stateless access after the 3-way handshake)
+
+STATEFULL
+% allow anyone initiate access to web server
+
+% Rule 1
+iptables -A FORWARD -i eth1 -s 0/0 -d 192.168.1.2 -p tcp --dport 80 -m 
+state --state NEW -j ACCEPT
+
+% Rule 2: allow on going communication after 3 way handshake.
+% note: sure if this rule is even needed given Rule 1 is part of the 
+state match process
+iptables -A FORWARD -i eth1 -s 0/0 -d 192.168.1.2 -p tcp --dport 80 -m 
+state --state ESTABLISHED -j ACCEPT
+
+% allow web server to reply back to internet
+% Rule 3
+iptables -A FORWARD -o eth0 -s 192.168.1.2 -d 0/0 -p tcp --sport 80 -m 
+state --state ESTABLISHED -j ACCEPT
+
+
+So why would I choose one over the other here?
+regards,
+Will.
