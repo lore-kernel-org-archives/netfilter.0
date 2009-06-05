@@ -1,28 +1,24 @@
-From: Technical Support <support@bluenorthernsoftware.com>
-Subject: Re: "new not syn" packets.. false positive?
-Date: Fri, 5 Jun 2009 04:16:59 -0500
-Message-ID: <200906050417.00552.support@bluenorthernsoftware.com>
+From: Rakotomandimby Mihamina <mihamina@gulfsat.mg>
+Subject: DNAT vs REDIRECT
+Date: Fri, 05 Jun 2009 13:01:44 +0300
+Message-ID: <4A28ED08.3090104@gulfsat.mg>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
 
-  Paul Evans replied:
-> 'not syn' packets are any TCP packets that don't contain the SYN flag.
-> "NEW" packets are ones for which conntrack cannot find an existing
-> entry in the conntrack table.
+Hi,
+On my gateway, I usually made a
+   -A INPUT ... -dport 80 ... -j REDIRECT 192.168.x.y:80
+In order to reach the webserver located on the LAN.
+What would be the difference if I use a DNAT instead?
 
-Thanks, Paul.  I guess with all that said the question I still have is, is it 
-safe to assume that there is a problem on the remote end, given that with 
-virtually every contact with those sites, at least one packet is always 
-dropped per the 'new not syn' rule?  Or is it still possible that, regardless 
-of the frequency of the dropped packets from those sites, that there still 
-could be a 'legitimate' cause for it to happen?  I'm just trying to get out 
-of being the damp middle-man in a whizzing contest between the clients and 
-the mighty keepers of the servers. :)  Thanks for the reply and info!
+What's the diferences between those?
 
-Chuck Logan
+--=20
+Architecte Informatique:
+Administration Syst=E8me, Recherche et D=E9veloppement.
+Phone: +261 33 11 207 36
