@@ -1,45 +1,35 @@
-From: Leonardo Carneiro <lscarneiro@veltrac.com.br>
-Subject: Re: blocking only https access
-Date: Mon, 08 Jun 2009 14:23:06 -0300
-Message-ID: <4A2D48FA.1070503@veltrac.com.br>
-References: <4A2D43F6.3000309@veltrac.com.br> <20090608191742.58ddfe8a@catlap>
+From: Bruno Moreira Guedes <thbmatrix@gmail.com>
+Subject: Packet, Netfilter and libnetfilter_conntrack
+Date: Mon, 8 Jun 2009 18:25:45 -0300
+Message-ID: <3fdd6ce00906081425t1883d2b6l3dc2dac6fd1ed818@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20090608191742.58ddfe8a@catlap>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=sDW43oYnv2fbbrPjxZnxAnZozCAQSoZt3N3wMN0vC+g=;
+        b=rSsATCehZZNYIJMHC3jEGZybZgjeAUWpsZoVOzCzFN38XlhRKkSA/jQWh/lnlDGCQO
+         qK7Hse7L3bHuE5w7pyZaWVXmg/uiZ273QPsvobRFpWjAf+c+2cvfs+cKQHW6qWQr00r0
+         1LRYXdtaln1HQzmxCmz4K2ENCZKyjVIa+K8j4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Marek Kierdelewicz <marek@piasta.pl>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter <netfilter@vger.kernel.org>
 
-Marek Kierdelewicz escreveu:
->> Hi everyone,
->>     
->
-> Hi,
->
->   
->> I have readed a lot here in the list and in other places that i SHOULD 
->> NOT use domain names in iptables, cause it will result in a dns
->> request to every packet that reachs that rule.
->>     
->
-> Not really. Domainname is resolved at the time of rule addition to a
-> ruleset. Netfilter stores the destination address in numerical form.
->
-> You can use CRON to restart firewall every night or even every hour.
-> This would allow you to have the current server addresses in a
-> ruleset.
->
->   
-Ok, tks Marek. I'll try this.
+Hello all,
 
-> Cheers,
-> Marek Kierdelewicz
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
->   
+In order to do NAT at user-space, I need to know about some aspects
+related to connection tracking and NAT.
+-With the "normal" kernel nat, where does the packet really get changed??
+-The "normal" nat packet change happens before or after the packet is
+enqueued to user-space by libnetfiltet_queue?
+-How do I look for a TCP/IPv4 connection in the conntrack table using
+packet's payload?
+-What exactally does the ATTR_SNAT_IPV4, ATTR_DNAT_IPV4,
+ATTR_SNAT_PORT and ATTR_DNAT_PORT attributes in the conntrack entry?
+
+If somebody may help me, thanks in the advance.
+
+--Bruno Moreira Guedes
