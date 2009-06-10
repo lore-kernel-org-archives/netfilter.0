@@ -1,82 +1,49 @@
-From: Dongsheng Song <dongsheng.song@gmail.com>
-Subject: strange incoming speed behaver of hashlimit
-Date: Wed, 10 Jun 2009 10:31:23 +0800
-Message-ID: <4A2F1AFB.2000206@gmail.com>
+From: Mark Ryden <markryde@gmail.com>
+Subject: Why doesn't the UDP source port change?
+Date: Wed, 10 Jun 2009 14:09:41 +0300
+Message-ID: <dac45060906100409m9614b66if48f11eb5d425a3d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="------------enig7CDE4172064353BDDDD78980"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from
-         :user-agent:mime-version:to:subject:x-enigmail-version:openpgp
-         :content-type;
-        bh=qDfLbwfewUyvB5u0H94ZenzdV7v+ExIS/SMPNDDxPgQ=;
-        b=ALyiSphLWlazoCaX/unpqg9m+y16wMblF6weHGZeZVHVMJtYV9oEXq9/J1/e9qELSi
-         EtFO7vXQDx6g4SS3aksK7HRpPd0ytTgQOudmfwG2v08tfV09BlXWB2G/hiU8QEwlkKSE
-         ZuCIQyYJyFKNPlsgAG+UVQH3YY2bHENrSxleQ=
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=nu1VK+imGWwOg+n7gZJfjGK5v9NcgrlfyjbvhF2nzlk=;
+        b=M4xJoQYqJXdWyNmrIQec8y0V/LD9tCQEa4LMtEqlQiJkpun7JPSq++iEFxlKVuyiFA
+         uhODgcImV+0OGCycc6oqQGLP/szdnXZnZR2K57x4ebOEQdlMFEOQD+IuGnc3ERag2Ygs
+         Pv0yd2SYmmiVpKFKrINydR2+jNVuJYdtJtZQ8=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig7CDE4172064353BDDDD78980
-Content-Type: text/plain; charset=GB2312
-Content-Transfer-Encoding: quoted-printable
+Hello,
+I am trying and having success to build a NAT using MASQUERADE target;
 
-I'm want use hashlimit to limit incoming/download speed:
+I have a machine with two interfaces. eth0 is an internal IP of
+192.168.0.45 (internal)
+network. eth1 is 10.0.0.1 (also intenal network)
 
-iptables -t filter -A FORWARD -d 10.10.0.0/16 -m hashlimit
---hashlimit-above 10/sec --hashlimit-burst 2 --hashlimit-mode dstip
---hashlimit-name pkt_limit --hashlimit-htable-max 270
---hashlimit-htable-expire 60000 -j REJECT --reject-with icmp-host-prohibi=
-ted
+On this machine I run this:
 
-iptables -t filter -A FORWARD -d 10.10.0.0/16 -m hashlimit
---hashlimit-above 12/sec --hashlimit-burst 2 --hashlimit-mode dstip
---hashlimit-name pkt_limit --hashlimit-htable-max 270
---hashlimit-htable-expire 60000 -j ULOG --ulog-cprange 100
---ulog-qthreshold 1 --ulog-prefix "[test-hashlimit]"
+iptables -A POSTROUTING -t nat -o eth0 -s 10.0.0.0/24 -d 0/0 -j MASQUERADE
+iptables -A FORWARD -i eth1 -j ACCEPT
 
-iptables -t filter -A FORWARD -s 10.10.0.0/16 -j ACCEPT
+I have a second machine, 10.0.0.189. This machine is connected directly to
+10.0.0.1. (I can ping 10.0.0.1). It has only one nic.
+On this machine, the default gw is 10.0.0.1
 
-I can verified hashlimit take effect by ulog, but I still observed
-download speed above 300kbyte/s !
-The theory speed limit shoud be: (10 + 2) * 1460 bytes/s =3D 17kbyte/s,
-is't it ?
+Now, when I send from 10.0.0.189 a UDP packet to a different machine
+on 192.168.0 network (for example,
+192.168.0.10) , it goes through the NAT on 10.0.0.1. I see that the
+source and destination UDP ports stay the same
+in the sender **and** in the receiver. When dealing with real NAT (when one
+side has external IP address), than the UDP **source** is changed by the NAT,
+and it is not the same on the receiver and the sender.
 
-Can someone tell me the ipt_hashlimit file format ?
-
-# cat /proc/net/ipt_hashlimit/pkt_limit
-35 0.0.0.0:0->10.10.7.103:0 3200 3200 64
-4 0.0.0.0:0->10.10.7.104:0 3200 3200 64
-59 0.0.0.0:0->10.10.2.112:0 3200 3200 64
-=2E..
-
-Thanks for some help,
-
---
-Dongsheng Song
-
-
-
---------------enig7CDE4172064353BDDDD78980
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.7 (MingW32)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org
-
-iQEVAwUBSi8bAAQBqiBG05f/AQggfwf/YbsfDDETpcPiR8n9FfDi4Z0ctVxCatQ1
-cFoGAcpNbNwHCkpZdChUaG4BBbzgi6ts7Idp3v+BenEYrzr37V23NVLlPtVGvBJh
-A6rxsBaCK07pzB8IrZ7tRg7xZd7tnAjIKXGoY3WVfiGpx1g1roVhbRGdvObpuVxz
-HbdH3ZMnYFGzzHePlKaJZWv4owBhn41ekegOG1o8XnbjAeZPAHdWb1jAPvkTvFO4
-6ew28W98gsetmuZedZdwFUBMyHOzmNxRE0nNjNsiHwoHhgzZb8yVsr7U/PN/JRwN
-F5J7viHVp+GNNLjlNKHpqDeCBhYWwUmJ6eEehfz3gCSZkpPPh/oYfg==
-=tzZf
------END PGP SIGNATURE-----
-
---------------enig7CDE4172064353BDDDD78980--
+My question is: how should I configure the rules so that the UDP
+source port will
+be changed by the NAT so it will not be the same on the receiver and the sender?
+rgs,
+Mark
