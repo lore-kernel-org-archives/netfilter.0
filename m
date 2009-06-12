@@ -1,62 +1,92 @@
-From: vitry <vitry.es@gmail.com>
-Subject: Re: REG: ROUTE Target
-Date: Fri, 12 Jun 2009 03:19:17 +0200
-Message-ID: <4A31AD15.8000001@gmail.com>
-References: <1417.117.193.164.97.1244738965.squirrel@mail.benchmarkgroup.com>
+From: Jesse Molina <jesse@opendreams.net>
+Subject: Re: How do we arp for NAT?  Secondary IPs, proxy arp? something else?
+Date: Fri, 12 Jun 2009 00:12:53 -0700
+Message-ID: <4A31FFF5.1030703@opendreams.net>
+References: <4A19235F.4070306@opendreams.net> <4A192D38.90008@redpill-linpro.com> <4A19B5F1.4080000@opendreams.net> <4A1A6178.8080907@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from
-         :user-agent:mime-version:to:cc:subject:references:in-reply-to
-         :content-type:content-transfer-encoding;
-        bh=KSkHpf/eaGOv1FbD54aOmKK/Kq1z4cznoP5ba83PiQ0=;
-        b=Y6xrHli1vQjRMJmUZzrmfkCwymjn97HHewTPOoWaBEQ8j4JQ5Pdc0Ru4MWglvRhdGt
-         +krUQK2CRcjpaXypOUNX0u6nsT5twCjRmhfUPicEpKIlUMVQHyYpehona9gZtCew3Zn2
-         v8vMn/jNBTQ1T9U2N+zU1NVRh40vES0oqRkXA=
-In-Reply-To: <1417.117.193.164.97.1244738965.squirrel@mail.benchmarkgroup.com>
+In-Reply-To: <4A1A6178.8080907@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: geethanjali.ns@benchmarkgroup.com
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@vger.kernel.org
+Cc: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 
-Hi geethanjali,
 
-geethanjali.ns@benchmarkgroup.com escribi=C3=B3:
-> Dear All
->
-> I want to use ROUTE target of iptables. I need to use the tee option =
-to
-> copy the traffic from one interface to another.
-> My kernel version is 2.6.28.9 and iptables version is 1.4.3.
-> In recent patch-o-matic-ng repository the ROUTE target is removed.
->  =20
-Not is removed. In new version of path-of-matic for use extra targets
-you have to download it from path-o-matic source directory run:
+Just wanted to reply again for documentation purposes regarding this ol=
+d=20
+thread.  This was EXACTLY what I was looking for.
 
-#./runme =E2=80=93download
-Successfully downloaded external patch geoip
-Successfully downloaded external patch condition
-Successfully downloaded external patch IPMARK
-Successfully downloaded external patch ROUTE
-=2E..
-> What is the steps or how to compile this target in to recent kernel f=
-rom
-> some old patches.
-Very bad Idea.
->  I am trying this option for the past 15 days, but i am
-> not success in this. Please some one help me to complete  this one.
-> Thank you in advance
-> regards
-> geethanjali
->
-> --
+Here are some sample commands to replicate this;
+
+# Add the IP 1.2.3.4 to eth1
+# sudo ip route add local 1.2.3.4 table local dev eth1
+#
+# Show the local table
+# sudo ip route show table local
+#
+# Delete the IP 1.2.3.4 from eth1
+# sudo ip route delete local 1.2.3.4 table local dev eth1
+
+
+
+I have not observed any daemon or service using the IPs that I=20
+configured with this method for ephemeral (outbound) services.  My=20
+upstream packet accounting confirms this.
+
+Yes, the system replies to ARP requests for these IPs.
+
+Unfortunately, local daemons that glob onto all addresses are still=20
+answering to services on these IPs if you don't filter or re-direct the=
+=20
+traffic via iptables DNAT/SNAT, but that's not a major issue since it=20
+can be controlled as mentioned here.
+
+
+
+I have been using this for a couple of weeks, works great.  I recommend=
+=20
+this procedure over using secondary IPs on regular interfaces.
+
+I hope this is useful to someone in the future.
+
+
+
+Pascal Hambourg wrote:
+> Hello,
+>=20
+> Jesse Molina a =E9crit :
+>>
+>> To restate my question:  What alternative ways are there to make the=
+=20
+>> GNU/Linux system reply to ARP requests for an IP, without that IP=20
+>> being an actual interface on the host, or that interface must not be=
+=20
+>> used by local services *in any way*, for the reasons of using it via=
+=20
+>> SNAT/DNAT?
+>=20
+> ip route add local <address>/<mask> table local dev <interface>
+>=20
+> This way <address>/<mask> will be considered local by the system whic=
+h=20
+> will reply to ARP requests for it, actually usable by any local proce=
+ss,=20
+> but won't appear assigned to <interface> so chances are that no local=
+=20
+> process will use it unless told explicitly.
+> --=20
 > To unsubscribe from this list: send the line "unsubscribe netfilter" =
 in
 > the body of a message to majordomo@vger.kernel.org
 > More majordomo info at  http://vger.kernel.org/majordomo-info.html
->  =20
-lucky,
-vitry
+
+--=20
+# Jesse Molina
+# Mail =3D jesse@opendreams.net
+# Page =3D page-jesse@opendreams.net
+# Cell =3D 1.602.323.7608
+# Web  =3D http://www.opendreams.net/jesse/
+
+
