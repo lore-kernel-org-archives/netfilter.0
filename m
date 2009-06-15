@@ -1,25 +1,54 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Information of people.netfilter.org
-Date: Sat, 13 Jun 2009 03:11:45 +0200
-Message-ID: <4A32FCD1.9000707@netfilter.org>
-References: <42aa10760906101936i89dba3elfb39947341ed83d2@mail.gmail.com> <42aa10760906101945l4693968asb70409eeaae8b1cc@mail.gmail.com>
+From: David Madore <david+ml@madore.org>
+Subject: workaround for no DROP in table nat ?
+Date: Mon, 15 Jun 2009 18:59:04 +0200
+Message-ID: <20090615165904.GA29477@regulus.madore.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <42aa10760906101945l4693968asb70409eeaae8b1cc@mail.gmail.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Joffily Ferreira <kelserific@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Joffily Ferreira wrote:
-> Hello friend, I'm using iptables/netfilter in my dedicated server for
-> filter packets and I need GeoIP form people.netfilter.org, but this
-> link is dead or offline, It will stay online again? If no, where I can
-> download the Geoip plugin for my iptables?
+Hi list,
 
-Sorry, we've got a major failure in our servers, it will be up again soon.
+Recent versions of iptables have forbidden the use of DROP in the nat
+table.  I can't understand, however, how one is supposed to work
+around this limitation: is there a howto or some kind of documentation
+somewhere which explains how to deal with this change?
+
+Suppose my current rules look something like this:
+
+-t nat -A OUTPUT -p tcp -d somenetwork -m tcp --syn --dport 80 -j CONTROLLED
+-t nat -A CONTROLLED -m limit --limit 10/hour -j RETURN
+-t nat -A CONTROLLED -p tcp -m statistic --mode random --probability 0.1 -j REDIRECT --to-ports 80
+-t nat -A CONTROLLED -j DROP
+
+In other words, the point is that connections which are outbound to
+somenetwork should be dropped beyond a certain rate, except for a
+small portion of them which should be redirected to a local port for
+capturing.
+
+I'm confused about what I should do to achieve the same effect under
+the modified rules.  I can't put the whole thing in the filter table
+because of the REDIRECT: but now I also can't put the whole thing in
+the nat table because of the DROP.  I also fail to see how I can split
+the rules across tables (if I replace -j DROP by -j RETURN in nat and
+then replicate the limit check in the filter table, I'm afraid the
+latter might not stay synchronized with the one in the nat table).
+
+If the nat table is not allowed to just drop a packet, would it be
+possible to have a -j MUSTBEDROPPEDINFILTERTABLE or something of the
+sort, which ensures that the filter table will necessarily drop that
+packet?  This would be a convenient workaround for the new limitation
+(cleaner than, say, redirecting the packet to some absurd port and
+then dropping on that port).
+
+Any suggestions?
+
+Happy hacking,
 
 -- 
-"Los honestos son inadaptados sociales" -- Les Luthiers
+     David A. Madore
+   ( http://www.madore.org/~david/ )
