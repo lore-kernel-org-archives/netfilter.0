@@ -1,37 +1,26 @@
 From: Patrick McHardy <kaber@trash.net>
 Subject: Re: [ANNOUNCE]: Release of iptables-1.4.4
-Date: Tue, 16 Jun 2009 16:38:37 +0200
-Message-ID: <4A37AE6D.9020900@trash.net>
-References: <4A3787DB.1040704@trash.net> <x6ski01g7t@gzp> <4A379FC2.7060004@trash.net> <alpine.LSU.2.00.0906161629360.3418@fbirervta.pbzchgretzou.qr>
+Date: Tue, 16 Jun 2009 16:54:05 +0200
+Message-ID: <4A37B20D.7070106@trash.net>
+References: <4A3787DB.1040704@trash.net> <x6ski01g7t@gzp> <4A379FC2.7060004@trash.net> <alpine.LSU.2.00.0906161629360.3418@fbirervta.pbzchgretzou.qr> <4A37AE6D.9020900@trash.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LSU.2.00.0906161629360.3418@fbirervta.pbzchgretzou.qr>
+In-Reply-To: <4A37AE6D.9020900@trash.net>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: Jan Engelhardt <jengelh@medozas.de>
 Cc: "Gabor Z. Papp" <gzp@papp.hu>, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, Linux Netdev List <netdev@vger.kernel.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, netfilter-announce@lists.netfilter.org
 
-Jan Engelhardt wrote:
-> On Tuesday 2009-06-16 15:36, Patrick McHardy wrote:
->   
->> Gabor Z. Papp wrote:
->>     
->>> * Patrick McHardy <kaber@trash.net>:
->>>
->>> | The netfilter coreteam presents:
->>>
->>> |     iptables version 1.4.4
->>>
->>> config.h:#define PACKAGE_VERSION "1.4.3.2"
->>>       
->> Run configure.
+Patrick McHardy wrote:
+> Jan Engelhardt wrote:
+>> Nope, see `git show v1.4.4:configure.ac`.
+>> AC_INIT in configure.ac was indeed not updated.
+>>   
 >>     
 >
-> Nope, see `git show v1.4.4:configure.ac`.
-> AC_INIT in configure.ac was indeed not updated.
+> Damn, the release script fooled me. I'll fix up the tarballs.
 >   
 
-Damn, the release script fooled me. I'll fix up the tarballs.
-
+All should be fixed now, including the git tag.
