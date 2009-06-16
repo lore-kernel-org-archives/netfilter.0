@@ -1,87 +1,21 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: [ANNOUNCE]: Release of iptables-1.4.4
-Date: Tue, 16 Jun 2009 13:54:03 +0200
-Message-ID: <4A3787DB.1040704@trash.net>
+From: "Gabor Z. Papp" <gzp@papp.hu>
+Subject: Re: [ANNOUNCE]: Release of iptables-1.4.4
+Date: Tue, 16 Jun 2009 15:05:42 +0200
+Message-ID: <x6ski01g7t@gzp>
+References: <4A3787DB.1040704@trash.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------040303070709050308040806"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, Linux Netdev List <netdev@vger.kernel.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, netfilter
-
-This is a multi-part message in MIME format.
---------------040303070709050308040806
-Content-Type: text/plain; charset=ISO-8859-15; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: Patrick McHardy <kaber@trash.net>
+Cc: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, Linux Netdev List <netdev@vger.kernel.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, netfilter-announce@lists.netfilter.org
 
-The netfilter coreteam presents:
+* Patrick McHardy <kaber@trash.net>:
 
-     iptables version 1.4.4
+| The netfilter coreteam presents:
 
-the iptables release for the 2.6.30 kernel. Changes include:
+|     iptables version 1.4.4
 
-- support for the new features in the 2.6.30 kernel, namely the
-   cluster match and persistent multi-range NAT mappings
-
-- support for the ipset set match and target
-
-- various minor fixes and cleanups
-
-- documentation updates
-
-Version 1.4.4 can be obtained from:
-
-http://www.netfilter.org/projects/iptables/downloads.html
-ftp://ftp.netfilter.org/pub/iptables/
-git://git.netfilter.org/iptables.git
-
-On behalf of the Netfilter Core Team.
-Happy firewalling!
-
---------------040303070709050308040806
-Content-Type: text/plain;
- name="changes-iptables-1.4.4.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="changes-iptables-1.4.4.txt"
-
-Frank Tobin (1):
-      libxt_tcp: fix a manpage syntax typo
-
-Ian Bruce (1):
-      libxt_tcp: manpage corrections and suggestions
-
-Jan Engelhardt (15):
-      Add new COMMIT_NOTES document
-      xtables: use extern "C"
-      extensions: add const qualifiers in print/save functions
-      iptables: replace open-coded sizeof by ARRAY_SIZE
-      addrtype: fix one manpage type
-      manpages: do not include v4-only modules in ip6tables manpage
-      libip6t_policy: remove redundant functions
-      policy: use direct xt_policy_info instead of ipt/ip6t
-      policy: merge ipv6 and ipv4 variant
-      build: fix manpage collection
-      extensions: use NFPROTO_UNSPEC for .family field
-      DNAT/SNAT: add manpage documentation for --persistent flag
-      extensions: remove redundant casts
-      iptables: close open file descriptors
-      manpages: markup corrections
-
-Jozsef Kadlecsik (1):
-      Updated set/SET match and target to support multiple ipset protocols.
-
-Pablo Neira Ayuso (2):
-      extensions: add `cluster' match support
-      xtables: fix segfault if incorrect protocol name is used
-
-Patrick McHardy (2):
-      SNAT/DNAT: add support for persistent multi-range NAT mappings
-      Merge branch 'stable' of git://dev.medozas.de/iptables
-
-kd6lvw (1):
-      libxt_connlimit: initialize v6_mask
-
-
---------------040303070709050308040806--
+config.h:#define PACKAGE_VERSION "1.4.3.2"
