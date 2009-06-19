@@ -1,45 +1,63 @@
-From: =?windows-1252?Q?David_Bala=9Eic?= <xerces9@gmail.com>
-Subject: Re: Problem with IPv6 tunnel
-Date: Fri, 19 Jun 2009 15:37:54 +0200
-Message-ID: <9948385e0906190637n6e8d8203uc16eda958f7ce3fb@mail.gmail.com>
-References: <9948385e0906190131q58ba27c6ye625b662945f63ac@mail.gmail.com>
-	 <200906191413.43513.ben@differentialschokolade.org>
-	 <9948385e0906190557q20f28cf4l118b70a6f5132a0a@mail.gmail.com>
-	 <200906191508.18236.ben@differentialschokolade.org>
+From: carrug <carrug@gmail.com>
+Subject: [Libipq] packet_id what does it means?
+Date: Fri, 19 Jun 2009 21:31:09 +0200
+Message-ID: <op.uvsdt7b3po25i8@posillipo>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=ab0J/3Ggdd//fiHG9t2LpS7mOLC3hj1rlToIFDMe39o=;
-        b=CqJGzzBgL81V7IYBI9qVqFHr8INfQvGmBRZ2/zXbAc7sOpwKJ4TkhdY+xNJXm5vFP3
-         mzFZgw+MW1R9p1foe0mhSKwN5wB2c4EAnDXhvjL0836Ov13OizJlyuzpUNrwSv6Aqdig
-         36EPoZhT1FbaB2/c88KWbUuPNWGjE85QRKCW0=
-In-Reply-To: <200906191508.18236.ben@differentialschokolade.org>
+        h=domainkey-signature:received:received:date:to:subject:from
+         :content-type:mime-version:content-transfer-encoding:message-id
+         :user-agent;
+        bh=T5tSLKss0ibjLOLO8PcQwA1lo0jfTXzdI3pxaYAiSAs=;
+        b=D6zUdZnCGpVUrk6AL25wPee8uAX/W6PUuOLfsNFuwAEEd907vXNLqHbVxmRjGGxU5A
+         KACAQytgKgHnQAROtYVM0M/B5TpnvCxSfvfZbSy+LRP1aLwrSb3xlBqmI7HIyX4EbGP4
+         LH81XDhNc25rn/yaOAmqCpOpSN7dA0V9vGiiA=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Benedikt Gollatz <ben@differentialschokolade.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; format="flowed"; delsp="yes"; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-2009/6/19 Benedikt Gollatz <ben@differentialschokolade.org>:
->> > Why do you want to conntrack proto-41 packets at all?
->>
->> I don't.
->> That is why I started this thread: How do I make proto 41 not being
->> screwed by netfilter ?
->
-> As I've told you before: By replacing your MASQUERADE rule with the one that
-> you can find in the SixXS FAQ.
+Hi to everybody,
+I'm new to the mailinglist and I have a little question.
+I have an application that take packet from the QUEUE target by libipq API.
+This application take this packets and send them in a specific order  
+selected by me.
+when I send this packets I print its packet_id with this line of code:
 
-Aha, I misunderstood you then...
-I already did that. Now I just have to wait and see if it works or
-will it block after some timeout.
+ipq_set_verdict(h, queue[elem]->packet_id,NF_ACCEPT, 0, NULL);
+fprintf(stderr,"I'm sending packet number: %d with packet_id:  
+%lu\n",elem+1,queue[elem]->packet_id);
 
+note that queue is a standard vector where i copy packet got from QUEUE  
+for my elaboration.
 
-Thanks for the assistance.
+I'm wondering that some of this packet_id have the same id!
+for example, this is my output:
 
-David
+I'm sending packet number: 1 -> packet_id: 4154682432
+count_tot_pkt: 1
+/proc/net/ip_queue: 2
+I'm sending packet number: 1 -> packet_id: 4019277504
+I'm sending packet number: 2 -> packet_id: 4148198144
+I'm sending packet number: 3 -> packet_id: 4154682432
+count_tot_pkt: 4
+/proc/net/ip_queue: 4
+I'm sending packet number: 1 -> packet_id: 4154682432
+I'm sending packet number: 2 -> packet_id: 4148198144
+I'm sending packet number: 3 -> packet_id: 4020406400
+I'm sending packet number: 4 -> packet_id: 4021517504
+...
+and so on
+
+as you can see some of this packet have the same packet_id,but i'm sure  
+that this packet (send from another application) are not equal (for  
+example have different payload) now my question is:
+what dose esactly means packet_id?
+why some of this are the same?
+
+I try to find out some documentation about packet_id, but I'm not lucky :(
+tnx in advance
+
+ps.sorry for my bad english
