@@ -1,70 +1,69 @@
-From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
-	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
-Subject: Re: workaround for no DROP in table nat ?
-Date: Tue, 16 Jun 2009 10:08:11 +0300
-Message-ID: <1245136091.4045.0.camel@casper.meteor.dp.ua>
-References: <20090615165904.GA29477@regulus.madore.org>
-	 <m33aa1v29x.fsf@neo.luffy.cx>
-	 <778caabff9c5013ee945219bcae424c6@mail.treenet.co.nz>
+From: =?windows-1252?Q?David_Bala=9Eic?= <xerces9@gmail.com>
+Subject: Problem with IPv6 tunnel
+Date: Fri, 19 Jun 2009 10:31:22 +0200
+Message-ID: <9948385e0906190131q58ba27c6ye625b662945f63ac@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <778caabff9c5013ee945219bcae424c6@mail.treenet.co.nz>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=arYmLIfn73QwUWtuUfT6OxZxigoiDyJNZCk/jROoxq0=;
+        b=Wj+YF2qLRfvbNsa1R8TiuVs9ncXWJoYsP/xR96Lm6hYbwTVIY7MCbLemoSh9hkZumX
+         B+MS0a6nCUTJuv4hLNKmjMhf7PaHcBXH37Pdv6V/CTea6NSi6t3hLxYpK8reHcwW/6T5
+         OlSMzSp5iha7jkyr6xA+xjD4upmZnqUemzKT8=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Amos Jeffries <squid3@treenet.co.nz>
-Cc: Vincent Bernat <bernat@luffy.cx>, David Madore <david+ml@madore.org>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-=D0=92 =D0=92=D1=82=D0=BE, 16/06/2009 =D0=B2 16:29 +1200, Amos Jeffries=
- =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> On Mon, 15 Jun 2009 19:24:10 +0200, Vincent Bernat <bernat@luffy.cx> =
-wrote:
-> > OoO Lors de la soir=C3=A9e naissante du lundi 15 juin 2009, vers 18=
-:59, David
-> > Madore <david+ml@madore.org> disait :
-> >=20
-> >> Recent versions of iptables have forbidden the use of DROP in the =
-nat
-> >> table.  I can't understand, however, how one is supposed to work
-> >> around this limitation: is there a howto or some kind of documenta=
-tion
-> >> somewhere which explains how to deal with this change?
-> >=20
-> >> Suppose my current rules look something like this:
-> >=20
-> >> -t nat -A OUTPUT -p tcp -d somenetwork -m tcp --syn --dport 80 -j
-> >> CONTROLLED
-> >> -t nat -A CONTROLLED -m limit --limit 10/hour -j RETURN
-> >> -t nat -A CONTROLLED -p tcp -m statistic --mode random --probabili=
-ty 0.1
-> >> -j REDIRECT --to-ports 80
-> >> -t nat -A CONTROLLED -j DROP
-> >=20
-> > You can DROP in the mangle table instead.
-> >=20
-> > -t mangle -A OUTPUT -p tcp -d ... -j CONTROLLED
-> > -t mangle -j CONTROLLED -m limit --limit ... -j RETURN
-> > -t mangle -j CONTROLLED -p tcp -m statistic --mode random --probabi=
-lity
-> 0.9
-> > -j DROP
-> > -t mangle -j CONTROLLED -j MARK --set-mark 1
-> > -t nat -A OUTPUT -m mark --mark 1 -j REDIRECT --to-ports 80
-> >=20
-> > You can also  DROP in the raw table,  but I think you cannot  set a=
- mark
-> > here.
->=20
-> Would this not begin to drop n% packets instead of n% connections? du=
-e to
-> the nat table only receiving NEW packets and mangle receiving all.
->=20
-> I think you may also need to add state NEW to the rule somehow.
+Hi!
 
-Anyways, what is the reason for a such big change?
+I have set up a (SixXS[1]) IPv6 tunnel on my linux router and have the
+problem, that after a while I become unavailable over IPv6 for the
+outside world.
+Then I I perform some IPv6 activity, like "ping6 ipv6.google.com" I
+become accessible again for a while.
 
---=20
-=D0=9F=D0=BE=D0=BA=D0=BE=D1=82=D0=B8=D0=BB=D0=B5=D0=BD=D0=BA=D0=BE =D0=9A=
-=D0=BE=D1=81=D1=82=D0=B8=D0=BA <casper@meteor.dp.ua>
+A SixXS FAQ entry[2] suggests adding an iptables rule:
+ iptables -t nat -A POSTROUTING --proto ! 41 -o [Your IPv4 Interface]
+-j MASQUERADE
 
+This way I get (iptables -t nat -L ...):
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+postrouting_rule  all  --  anywhere             anywhere
+MASQUERADE  all  --  anywhere             anywhere
+MASQUERADE !ipv6 --  anywhere             anywhere  # the added rule
+
+I am not an iptables expert, but to me it seems the first MASQUERADE
+rule matches all packets and the new one does not make any difference.
+Can someone confirm that ?
+
+
+More info:
+
+kernel 2.4.30 (OpenWRT 1.0 - update is not really an option, unfortunately)
+iptables v1.3.3
+
+tunnel set up by AICCU 2007.01.15-console by Jeroen Massar
+tunnel config excerpt:
+
+# Protocol and server to use for setting up the tunnel (defaults: none)
+#protocol <tic|tsp|l2tp>
+#server <server to use>
+protocol tic
+server tic.sixxs.net
+
+ipv6_interface sixxs
+
+Tunnel type: 6in4-heartbeat
+
+Regards,
+David
+
+
+[1] https://www.sixxs.net/
+[2] https://www.sixxs.net/faq/connectivity/?faq=conntracking
