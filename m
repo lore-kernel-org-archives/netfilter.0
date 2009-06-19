@@ -1,41 +1,48 @@
-From: =?windows-1252?Q?David_Bala=9Eic?= <xerces9@gmail.com>
-Subject: Re: TCP simultaneous open using iptables NAT?
-Date: Fri, 19 Jun 2009 10:50:30 +0200
-Message-ID: <9948385e0906190150p3e735fa5jf8f9179e5f5e93e4@mail.gmail.com>
+From: Brent Clark <brentgclarklist@gmail.com>
+Subject: 1.17 xtables woes
+Date: Fri, 19 Jun 2009 10:33:43 +0200
+Message-ID: <4A3B4D67.6030800@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type:content-transfer-encoding;
-        bh=qhDdIIbRHIlW/6z4ru6hwHYm2CnyIRSFxLemgRJpwps=;
-        b=aYoLCjJmrMAfaIGiVCulSfTv62eI2LlKLK3IoO4yrRbT1Gzfrj4KQwFGr8qLPvaUpA
-         23qpv+JYHY79GuLdqa1tsK1yLM18IKlzoec0f3a1hKicLk76MPsw7OoPSXkQYtC9xIpx
-         yQn9rL0+jctlD8/88+vCQIYhDtDnQyvdtqRn8=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: 'Mail List - Netfilter' <netfilter@vger.kernel.org>
 
-Hi!
+Hiya
 
-First, sorry if this message is not threaded correctly. I am sending
-it with gmail and beng new to gmail, I haven't figured out yet
-how to make it inject the correct In-Reply-To header.
+Anyone have problems with the new 1.17 xtables.
 
-Second, I did some simultaneous open tests myself, and succeeded
-making such a connection between varoius NAT-ed and
-firewalled hosts.
-Including two winows PCs both behind a linux router using iptables.
-One was running OpenWRT 1.0 (linux 2.4.30) and the other was a Linksys
-WRT54GL running some version of linux too.
+Compiled perfectly fine, but if I use ipp2p module, I get
 
-I took a few tries (manually running "nc --local-port X remote.host
-remote_port") that always succeeded in like five seconds.
+root@zion:/lib/xtables# iptables -A INPUT -m ipp2p --bit -j REJECT
+iptables: No chain/target/match by that name.
 
-The routers were out of the box, that is the deafult iptables
-configuration for NAT.
+Heres the odd thing :
 
-Regards,
-David
+root@zion:/lib/xtables# iptables -m ipp2p --help
+snippet
+
+ipp2p v0.10 match options:
+  --edk    [tcp,udp]  All known eDonkey/eMule/Overnet packets
+  --dc     [tcp]      All known Direct Connect packets
+  --kazaa  [tcp,udp]  All known KaZaA packets
+  --gnu    [tcp,udp]  All known Gnutella packets
+  --bit    [tcp,udp]  All known BitTorrent packets
+  --apple  [tcp]      All known AppleJuice packets
+  --winmx  [tcp]      All known WinMX
+  --soul   [tcp]      All known SoulSeek
+  --ares   [tcp]      All known Ares
+
+EXPERIMENTAL protocols:
+  --mute   [tcp]      All known Mute packets
+  --waste  [tcp]      All known Waste packets
+  --xdcc   [tcp]      All known XDCC packets (only xdcc login)
+
+Im bit at a loss right now.
+
+I ran depmod -a, and im running iptables 1.4.4.
+
+Regards
+Brent Clark
