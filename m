@@ -1,7 +1,7 @@
 From: Benedikt Gollatz <ben@differentialschokolade.org>
 Subject: Re: Problem with IPv6 tunnel
-Date: Fri, 19 Jun 2009 12:18:26 +0200
-Message-ID: <200906191218.27220.ben@differentialschokolade.org>
+Date: Fri, 19 Jun 2009 12:18:02 +0200
+Message-ID: <200906191218.03217.ben@differentialschokolade.org>
 References: <9948385e0906190131q58ba27c6ye625b662945f63ac@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
@@ -11,7 +11,8 @@ Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: Text/Plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+To: David =?utf-8?q?Bala=C5=BEic?= <xerces9@gmail.com>
+Cc: netfilter@vger.kernel.org
 
 On Friday 19 June 2009, 10:31 David Bala=C5=BEic wrote:
 > I have set up a (SixXS[1]) IPv6 tunnel on my linux router and have th=
