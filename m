@@ -1,63 +1,63 @@
-From: carrug <carrug@gmail.com>
-Subject: [Libipq] packet_id what does it means?
-Date: Fri, 19 Jun 2009 21:31:09 +0200
-Message-ID: <op.uvsdt7b3po25i8@posillipo>
+From: ulmo@sonic.net
+Subject: How to route per process?
+Date: Sat, 20 Jun 2009 19:10:58 -0700 (PDT)
+Message-ID: <3cda010470e818a0d5c1c025716ded6e.squirrel@webmail.sonic.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:date:to:subject:from
-         :content-type:mime-version:content-transfer-encoding:message-id
-         :user-agent;
-        bh=T5tSLKss0ibjLOLO8PcQwA1lo0jfTXzdI3pxaYAiSAs=;
-        b=D6zUdZnCGpVUrk6AL25wPee8uAX/W6PUuOLfsNFuwAEEd907vXNLqHbVxmRjGGxU5A
-         KACAQytgKgHnQAROtYVM0M/B5TpnvCxSfvfZbSy+LRP1aLwrSb3xlBqmI7HIyX4EbGP4
-         LH81XDhNc25rn/yaOAmqCpOpSN7dA0V9vGiiA=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; delsp="yes"; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
+Cc: ulmo@sonic.net
 
-Hi to everybody,
-I'm new to the mailinglist and I have a little question.
-I have an application that take packet from the QUEUE target by libipq API.
-This application take this packets and send them in a specific order  
-selected by me.
-when I send this packets I print its packet_id with this line of code:
+How do I route per process?  I found
+<http://blog.sebastien.raveau.name/2009/04/per-process-routing.html>, but
+when the packets come back, the local process gets them.  I think the
+problem is that "netstat -an" shows the packets in the hostwide default
+address, but the packets coming back are for the correct new #.
 
-ipq_set_verdict(h, queue[elem]->packet_id,NF_ACCEPT, 0, NULL);
-fprintf(stderr,"I'm sending packet number: %d with packet_id:  
-%lu\n",elem+1,queue[elem]->packet_id);
+I've tried a bunch of things, but none of them work.  How do I further
+diagnose this, and does anybody know how to do it?
 
-note that queue is a standard vector where i copy packet got from QUEUE  
-for my elaboration.
+The goal is analagous to getting a second computer and running the process
+in that computer with a seperate interface as desired, but the difference
+between the analogy and what I'm trying to accomplish is sans the actual
+second computer:  i.e., to do it virtually.  I definately do not want to
+use vmware, since there are all sorts of overhead inefficiencies with
+that.
 
-I'm wondering that some of this packet_id have the same id!
-for example, this is my output:
+The software in question has the capability to bind to specified
+addresses, but not to send packets out over specified interfaces, which is
+necessary.
 
-I'm sending packet number: 1 -> packet_id: 4154682432
-count_tot_pkt: 1
-/proc/net/ip_queue: 2
-I'm sending packet number: 1 -> packet_id: 4019277504
-I'm sending packet number: 2 -> packet_id: 4148198144
-I'm sending packet number: 3 -> packet_id: 4154682432
-count_tot_pkt: 4
-/proc/net/ip_queue: 4
-I'm sending packet number: 1 -> packet_id: 4154682432
-I'm sending packet number: 2 -> packet_id: 4148198144
-I'm sending packet number: 3 -> packet_id: 4020406400
-I'm sending packet number: 4 -> packet_id: 4021517504
-...
-and so on
+Here's a copy of the script I have run which doesn't work (numbers
+anonymized):
 
-as you can see some of this packet have the same packet_id,but i'm sure  
-that this packet (send from another application) are not equal (for  
-example have different payload) now my question is:
-what dose esactly means packet_id?
-why some of this are the same?
+dev=eth3
+ifaceaddr=$(ip a s dev $dev |egrep 75|sed -e 's%.* inet \([^/]*\)/.*%\1%')
+if [ "$ifaceaddr" = "" ];then ifaceaddr=75.1.2.3;fi
+gw=75.1.1.1
 
-I try to find out some documentation about packet_id, but I'm not lucky :(
-tnx in advance
+iptables -t mangle -A OUTPUT -m owner --uid-owner asterisk -j MARK
+--set-mark 42 &&
+iptables -t nat -A POSTROUTING -o $dev -m mark --mark 42 -j SNAT
+--to-source $ifaceaddr &&
+ip rule add fwmark 42 table 42 &&
+ip route add default via $gw dev $dev table 42
 
-ps.sorry for my bad english
+To wit, all the above works, except that when the packets come back, the
+process in question doesn't receive them.  tcpdump shows everything
+working as desired up to that point:  the packets go out, they get
+responses which come back.  The disconnect is somewhere between the return
+packets coming back and them being put into the process's connection as
+desired inside the OS, I'm pretty sure.  tcpdump is being run in the local
+machine on the interface in question (eth3), so yes, "coming back" means
+it reaches the right computer and gets inside it to the point tcpdump sees
+it clear as day, with the destination address = the source address, as
+modified to use that interface, obviously (else how would it get there).
+
+Debugging tools desired could be to see what SNAT is doing to the return
+packets, and/or to see what packet to process debugging could be done.  I
+don't know about those types of tools.
+
