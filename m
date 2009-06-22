@@ -1,43 +1,55 @@
-From: Bruno Moreira Guedes <thbmatrix@gmail.com>
-Subject: libnetfilter_queue+libnetfilter_conntrack: Performance
-Date: Mon, 22 Jun 2009 13:13:39 -0300
-Message-ID: <3fdd6ce00906220913v4f9a4957hca6dceccd948693a@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnfnetlink 1.0.0 release
+Date: Mon, 22 Jun 2009 20:08:38 +0200
+Message-ID: <4A3FC8A6.4050904@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type:content-transfer-encoding;
-        bh=aT+kdlbxhRf62yDV7BZUTidx2vfT1gVN4nUwdcfIruE=;
-        b=A6MHGXMteu3VZR5mhvzbuCYnDYmOCcCQkTGo9zm9J7WzEN5SVHpUfy3fKwNN1KsA3q
-         eptDa4q200lexQM7dQR8iT78iJMwLUHDaBATeFkOkoWvYq5VW8R+36er6lyK/QB9Xj3F
-         BShYXZdPmrcmr+N0qgWrT/3xg0mrpqwp3KWNY=
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/mixed;
+ boundary="------------070303000004020308060001"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
+Cc: netfilter-announce@lists.netfilter.org, netfilter-devel@vger.kernel.org, lwn@lwn.net
 
-Hello all,
+This is a multi-part message in MIME format.
+--------------070303000004020308060001
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-During some time I was trying to do NAT at user-space. Now I have done
-it, and works 'fine'(thanks to Eric, which answered me at this list
-about libnetfilter_conntrack).
-The code does what it need to do, but it seems to have a few
-performance loss. I'm capturing by libnetfilter_queue the first packet
-of each new connection(--state NEW -j NFQUEUE). I get the payload,
-create the conntrack entry, and set the verdict to NF_ACCEPT.
+Hi!
 
-It happens too fast, and a little time after the proccess it's blocked
-and ready to receive the next packet. But the packet seems to pass by
-just after a few seconds(about 3,4..) later.
+The Netfilter project presents:
 
-When I simply accept the packet, and don't create any conntrack entry,
-the packet seems to be sent/received in the same time I accept it. So,
-I think there's anything to do with connection tracking.
+  * libnfnetlink-1.0.0
 
-What may I try to do about it?? Any idea??
+libnfnetlink is the low-level library for netfilter related
+kernel/userspace communication. It provides a generic messaging
+infrastructure for in-kernel netfilter subsystems (such as
+nfnetlink_log, nfnetlink_queue, nfnetlink_conntrack) and their
+respective users and/or management tools in userspace.
 
-Thank you all.
+See ChangeLog (file attached) for more details on this release. You can
+download it from:
 
-[]'s
+http://www.netfilter.org/projects/libnfnetlink/downloads.html
+ftp://ftp.netfilter.org/pub/libnfnetlink/
+
+Happy firewalling,
+Pablo (on behalf of the Netfilter Core Team)
+
+--------------070303000004020308060001
+Content-Type: text/plain;
+ name="changes-libnfnetlink-1.0.0.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="changes-libnfnetlink-1.0.0.txt"
+
+Pablo Neira Ayuso (5):
+      rtnl: fix wrong netlink group bindings in the interface API
+      nfnl: add nfnl_portid() to get the Netlink portID of a socket
+      include: add recently added Netlink socket options
+      nfnl: add nfnl_addattr8() function
+      nfnl: release libnfnetlink 1.0 version
+
+
+--------------070303000004020308060001--
