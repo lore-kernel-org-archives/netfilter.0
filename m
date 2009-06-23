@@ -1,48 +1,50 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: How to route per process?
-Date: Tue, 23 Jun 2009 11:12:22 +0200
-Message-ID: <4A409C76.103@plouf.fr.eu.org>
-References: <3cda010470e818a0d5c1c025716ded6e.squirrel@webmail.sonic.net>
+From: =?ISO-8859-1?Q?Javier_G=E1lvez_Guerrero?= 
+	<javier.galvez@entel.upc.edu>
+Subject: Trying to add RTP proxy extension
+Date: Tue, 23 Jun 2009 13:03:30 +0200
+Message-ID: <145d4e1a0906230403td01d6d8s2541d99ca07e9c6@mail.gmail.com>
+Reply-To: javier.galvez@entel.upc.edu
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <3cda010470e818a0d5c1c025716ded6e.squirrel@webmail.sonic.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:sender:reply-to:received:date
+         :x-google-sender-auth:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=JMX+5slQH9jkn3m2V1v7BwtfOSCCqWGynvj//ukzPFY=;
+        b=k/VDLuqjrY7gZMkzcw6RPXNCmFDPjM3cWLhMgHiEPzsz9ZLsBgovz9Pp0dJXcLe4HT
+         UfgaUn146YyQIM/2l9fcU6Xts4H1Pb9DbuS70JsgPqwz5wenrGUvnXJo0rzdrfld4nQ2
+         I6JBlBdZNo6Ut5qJZFEDWhCjJVXAe2KkYBJ6I=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hello,
+Hi all,
 
-ulmo@sonic.net a =E9crit :
->=20
-> The software in question has the capability to bind to specified
-> addresses, but not to send packets out over specified interfaces, whi=
-ch is
-> necessary.
+I'm trying to add the Netfilter RTP proxy extension provided here:
+http://www.2p.cz/en/netfilter_rtp_proxy. As install notes say, it must
+be done with p-o-m, but I have a problem when running ./runme: the
+iptables source directory is not accepted. I've seen many questions on
+the web regarding this issue but I got no solution at all.
 
-It is easy to do source address-based routing.
-ip rule from <address> lookup <table>
+However, AFAIK, p-o-m is 'deprecated' and Xtables-addons should be
+used instead of it. Anyway, I don't know how to 'port' the
+installation from p-o-m to xtables-addons as the files included in the
+RTP proxy extension package seem to be organized for p-o-m.
 
-> iptables -t mangle -A OUTPUT -m owner --uid-owner asterisk -j MARK
-> --set-mark 42 &&
-> iptables -t nat -A POSTROUTING -o $dev -m mark --mark 42 -j SNAT
-> --to-source $ifaceaddr &&
-> ip rule add fwmark 42 table 42 &&
-> ip route add default via $gw dev $dev table 42
->=20
-> To wit, all the above works, except that when the packets come back, =
-the
-> process in question doesn't receive them.  tcpdump shows everything
-> working as desired up to that point:  the packets go out, they get
-> responses which come back.  The disconnect is somewhere between the r=
-eturn
-> packets coming back and them being put into the process's connection =
-as
-> desired inside the OS, I'm pretty sure.
+I'm using Debian Lenny 2.6.18 with iptables 1.4.2 and I'm trying to
+install Netfilter RTP proxy extension 0.4. Can anybody help me to get
+it installed?
 
-Check your iptables filtering rules, and that source validation by=20
-reverse path filtering is disabled on the alternate interface=20
-(/proc/sys/net/ipv4/conf/<interface>/rp_filter=3D0). It is disabled by=20
-default in the kernel, but startup scripts in some distributions enable=
- it.
+BTW, is there any other iptables-based solution to mangle
+SIP/NAT/SDP/RTP sessions issues in multimedia streaming applications
+such as VoIP?
+
+
+Hope you can help me. Thanks a lot for your time.
+
+
+Regards,
+Javi
