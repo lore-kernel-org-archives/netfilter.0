@@ -1,99 +1,69 @@
-From: =?ISO-8859-1?Q?Javier_G=E1lvez_Guerrero?= 
-	<javier.galvez@entel.upc.edu>
-Subject: Re: Trying to add RTP proxy extension
-Date: Tue, 23 Jun 2009 14:27:37 +0200
-Message-ID: <145d4e1a0906230527w42aec1b1mcbb0362195f36b54@mail.gmail.com>
-References: <145d4e1a0906230403td01d6d8s2541d99ca07e9c6@mail.gmail.com>
-	 <4A40C7DE.4090309@msm.ru>
-Reply-To: javier.galvez@entel.upc.edu
+From: Alex Samad <alex@samad.com.au>
+Subject: Help with set-mark and sip calls
+Date: Tue, 23 Jun 2009 22:17:55 +1000
+Message-ID: <20090623121755.GA12228@samad.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="WIyZ46R2i8wDzkSu"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:sender:reply-to:received
-         :in-reply-to:references:date:x-google-sender-auth:message-id:subject
-         :from:to:cc:content-type:content-transfer-encoding;
-        bh=8f0T1juoLhhkVqf6JW7lZYViXiBo7HdYWvYpAUYifvk=;
-        b=wUKrGq66egBHMFVFF8ErnktSHbgRter6lenj7u2WoG3jBtbHm5bKvyDUsgbEUuKMKv
-         3J/BXmLoZQg7DotW1pVxJjJcPCKEKS5hlOf9ijy+oDt4Njj8UwnU+WO4F8bTeOi9CsAi
-         NqubN0jjgsUh+AmUyVoiaTnzc6WoRATXf2jOY=
-In-Reply-To: <4A40C7DE.4090309@msm.ru>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?KOI8-R?B?88HN1dPFzsvPIOHOxNLFyg==?= <samusenko@msm.ru>
-Cc: netfilter@vger.kernel.org
-
-Hi,
-
-2009/6/23 =A7=B3=A7=D1=A7=DE=A7=E5=A7=E3=A7=D6=A7=DF=A7=DC=A7=E0 =A7=A1=
-=A7=DF=A7=D5=A7=E2=A7=D6=A7=DB <samusenko@msm.ru>:
-> Hi.
-> For ./runme need Makefile in iptables directory. But anyone pom not w=
-orking.
-> Better way to use kernel source.
->
-
-Could you please elaborate a little more on this? What do you mean?
-What do I need to do?
-
-> Why you not use nf_conntrack_sip / nf_nat_sip?
-> I am not understand why need xt_RTPPROXY.
->
-
-I'm not using nf_conntrack_sip / nf_nat_sip because I don't know them
-=3D). I'll take a look at them. Anyway, do you know where can I get som=
-e
-info/tutorial about these extensions?
+To: netfilter@vger.kernel.org
 
 
-Thanks a lot,
-Javi
-> Javier G=A8=A2lvez Guerrero wrote:
->>
->> Hi all,
->>
->> I'm trying to add the Netfilter RTP proxy extension provided here:
->> http://www.2p.cz/en/netfilter_rtp_proxy. As install notes say, it mu=
-st
->> be done with p-o-m, but I have a problem when running ./runme: the
->> iptables source directory is not accepted. I've seen many questions =
-on
->> the web regarding this issue but I got no solution at all.
->>
->> However, AFAIK, p-o-m is 'deprecated' and Xtables-addons should be
->> used instead of it. Anyway, I don't know how to 'port' the
->> installation from p-o-m to xtables-addons as the files included in t=
-he
->> RTP proxy extension package seem to be organized for p-o-m.
->>
->> I'm using Debian Lenny 2.6.18 with iptables 1.4.2 and I'm trying to
->> install Netfilter RTP proxy extension 0.4. Can anybody help me to ge=
-t
->> it installed?
->>
->> BTW, is there any other iptables-based solution to mangle
->> SIP/NAT/SDP/RTP sessions issues in multimedia streaming applications
->> such as VoIP?
->>
->>
->> Hope you can help me. Thanks a lot for your time.
->>
->>
->> Regards,
->> Javi
->> --
->> To unsubscribe from this list: send the line "unsubscribe netfilter"=
- in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>
->>
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+--WIyZ46R2i8wDzkSu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi
+
+I am using tc with htb + cfq to do some outbound traffic shaping, I
+have a high priority band which I want to put all my voip traffic.
+
+Currently I mark with 0x1 all traffic doing to the main sip server, but
+what I have noticed is that is not the destination of the rtp traffic -
+which is usually udp based - some where in the 10000 - 20000 range.
+
+My question is does the nf_conntrack_sip follow the initial tcp 5060 sip
+setup and associated the udp traffic with it and if so can I some how
+use the related conntrack to mark the udp packets ?
+
+i have something like
+
+iptables -I POSTROUTING -d 125.213.160.81 -j MARK --set-mark 0x1
+
+if i changed it to=20
+
+
+iptables -I POSTROUTING -j CONNMARK --restore-mark=20
+iptables -I POSTROUTING -d 125.213.160.81 -j CONNMARK  --set-mark 0x1
+
+
+
+so is the connmark setmark the same as mark setmark - used by tc
+
+and will nf_conntrack_sip understand its a related packet even though it
+is to a different server.
+
+Thanks
+
+Alex Samad
+PS please CC me as I am not on the mailing list
+
+
+--WIyZ46R2i8wDzkSu
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkpAx/AACgkQkZz88chpJ2MJtwCeNUKmctA5bVyKpyh3yyVC7vn8
+zlYAoNkN1XnnUSyY66qUx71Y82qUR7GQ
+=861y
+-----END PGP SIGNATURE-----
+
+--WIyZ46R2i8wDzkSu--
