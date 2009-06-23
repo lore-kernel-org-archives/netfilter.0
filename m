@@ -1,55 +1,48 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] libnfnetlink 1.0.0 release
-Date: Mon, 22 Jun 2009 20:08:38 +0200
-Message-ID: <4A3FC8A6.4050904@netfilter.org>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: How to route per process?
+Date: Tue, 23 Jun 2009 11:12:22 +0200
+Message-ID: <4A409C76.103@plouf.fr.eu.org>
+References: <3cda010470e818a0d5c1c025716ded6e.squirrel@webmail.sonic.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------070303000004020308060001"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <3cda010470e818a0d5c1c025716ded6e.squirrel@webmail.sonic.net>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
-Cc: netfilter-announce@lists.netfilter.org, netfilter-devel@vger.kernel.org, lwn@lwn.net
 
-This is a multi-part message in MIME format.
---------------070303000004020308060001
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
+Hello,
 
-Hi!
+ulmo@sonic.net a =E9crit :
+>=20
+> The software in question has the capability to bind to specified
+> addresses, but not to send packets out over specified interfaces, whi=
+ch is
+> necessary.
 
-The Netfilter project presents:
+It is easy to do source address-based routing.
+ip rule from <address> lookup <table>
 
-  * libnfnetlink-1.0.0
+> iptables -t mangle -A OUTPUT -m owner --uid-owner asterisk -j MARK
+> --set-mark 42 &&
+> iptables -t nat -A POSTROUTING -o $dev -m mark --mark 42 -j SNAT
+> --to-source $ifaceaddr &&
+> ip rule add fwmark 42 table 42 &&
+> ip route add default via $gw dev $dev table 42
+>=20
+> To wit, all the above works, except that when the packets come back, =
+the
+> process in question doesn't receive them.  tcpdump shows everything
+> working as desired up to that point:  the packets go out, they get
+> responses which come back.  The disconnect is somewhere between the r=
+eturn
+> packets coming back and them being put into the process's connection =
+as
+> desired inside the OS, I'm pretty sure.
 
-libnfnetlink is the low-level library for netfilter related
-kernel/userspace communication. It provides a generic messaging
-infrastructure for in-kernel netfilter subsystems (such as
-nfnetlink_log, nfnetlink_queue, nfnetlink_conntrack) and their
-respective users and/or management tools in userspace.
-
-See ChangeLog (file attached) for more details on this release. You can
-download it from:
-
-http://www.netfilter.org/projects/libnfnetlink/downloads.html
-ftp://ftp.netfilter.org/pub/libnfnetlink/
-
-Happy firewalling,
-Pablo (on behalf of the Netfilter Core Team)
-
---------------070303000004020308060001
-Content-Type: text/plain;
- name="changes-libnfnetlink-1.0.0.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="changes-libnfnetlink-1.0.0.txt"
-
-Pablo Neira Ayuso (5):
-      rtnl: fix wrong netlink group bindings in the interface API
-      nfnl: add nfnl_portid() to get the Netlink portID of a socket
-      include: add recently added Netlink socket options
-      nfnl: add nfnl_addattr8() function
-      nfnl: release libnfnetlink 1.0 version
-
-
---------------070303000004020308060001--
+Check your iptables filtering rules, and that source validation by=20
+reverse path filtering is disabled on the alternate interface=20
+(/proc/sys/net/ipv4/conf/<interface>/rp_filter=3D0). It is disabled by=20
+default in the kernel, but startup scripts in some distributions enable=
+ it.
