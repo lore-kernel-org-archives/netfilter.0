@@ -1,56 +1,63 @@
-From: "Rob Sterenborg" <rob@sterenborg.info>
-Subject: RE: Question about nat filtering with FORWARD
-Date: Wed, 24 Jun 2009 12:54:48 +0200
-Message-ID: <001d01c9f4ba$316a3c30$943eb490$@info>
-References: <4161.192.168.1.3.1245837879.squirrel@webmail.decimal.pt>    <33be4bb30906240322x1934b045g5e74e16f012ffcd7@mail.gmail.com> <1072.192.168.1.3.1245839976.squirrel@webmail.decimal.pt>
+From: Christoph Paasch <christoph.paasch@gmail.com>
+Subject: Re: Question about nat filtering with FORWARD
+Date: Wed, 24 Jun 2009 13:20:10 +0200
+Message-ID: <200906241320.13779.christoph.paasch@gmail.com>
+References: <4161.192.168.1.3.1245837879.squirrel@webmail.decimal.pt> <1072.192.168.1.3.1245839976.squirrel@webmail.decimal.pt> <001d01c9f4ba$316a3c30$943eb490$@info>
 Mime-Version: 1.0
+Content-Type: multipart/signed;
+  boundary="nextPart1926532.7QlATTEuJR";
+  protocol="application/pgp-signature";
+  micalg=pgp-sha1
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1072.192.168.1.3.1245839976.squirrel@webmail.decimal.pt>
-Content-Language: en-us
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:from:to:subject:date
+         :user-agent:cc:references:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:message-id;
+        bh=yi1MGunSaZsu1YUqOW1kdIc1K4nctU8ec9+TZ3ronFM=;
+        b=svlcjzBCwZDFRrBHzx0GRQHqvQ0ejyTbibwU2Ixzv7NKmNWJshalpR6aW2AZHxsVZ8
+         t/iXM7g05HBub82L8Sv4a8C1R3CcG3PS7+IPhsu+2GoCTwcGP+T0geH+tKgfDzPWUpQI
+         3g1lKlrPRWU4FMCA5vADFCf8TzmmkQtzmznds=
+In-Reply-To: <001d01c9f4ba$316a3c30$943eb490$@info>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Rob Sterenborg <rob@sterenborg.info>
+Cc: netfilter@vger.kernel.org
 
-> > You need to allow the return traffic also. This can be done with
-> > connection tracking and the state match.
-> >
-> > /Oskar
+--nextPart1926532.7QlATTEuJR
+Content-Type: text/plain;
+  charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
 
-> Forgive me, but i'm a bit confused in a gray area right now.
-> With the PREROUTING it wasn't needed to add that and it worked, for
-> this
-> new scenario, i tried:
-> 
-> #allow all (??)
-> iptables -t filter -A FORWARD -j ALLOW
-> #allow TCP PORT 22
-> iptables -t filter -A FORWARD -p tcp --dport 22 -j ACCEPT # ssh
-> #block everything else
-> iptables -t filter -A FORWARD -j DROP
+On Wed June 24 2009 wrote Rob Sterenborg:
+> $ipt -P FORWARD DROP
+> $ipt -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+> $ipt -A FORWARD -m state --state NEW -p tcp --dport 22 -j ACCEPT
+Watch out, that with these rules, you will allow any traffic to pass, that =
+has=20
+destination port 22. Thus, the outside can contact you to port 22. And the=
+=20
+inside can contact any host on the Internet on port 22.
 
-I think you want this:
+Best regards,
+=2D-
+Christoph Paasch
 
-$ipt -P FORWARD DROP
-$ipt -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-$ipt -A FORWARD -m state --state NEW -p tcp --dport 22 -j ACCEPT
+www.rollerbulls.be
+=2D-
 
-- You don't need to specify "-t filter". It's the default table.
-- All packets that are not explicitly allowed will be dropped in the
-FORWARD chain (policy = DROP).
-- Any reply packet in an established connection will be accepted using
-"--state RELATED,ESTABLISHED". Actually, you don't need RELATED here,
-but it doesn't hurt either and you do need it if you want to forward FTP
-and such protocols.
-- The first packet in a connection for port 22/tcp will be accepted.
-(Any subsequent packets will be accepted by the previous rule.)
+--nextPart1926532.7QlATTEuJR
+Content-Type: application/pgp-signature; name=signature.asc 
+Content-Description: This is a digitally signed message part.
 
-For more info, you might want to read (parts of) Oskar Andreasson's
-IPTables Tutorial at:
-http://iptables-tutorial.frozentux.net/iptables-tutorial.html
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
 
+iEYEABECAAYFAkpCC+oACgkQLHtZTroOLZvc4ACgmdobMA16QfAtjNnUDGS7PkHA
+loQAoJx6HGnuqG81tVS9GOweD0QJpHl1
+=+est
+-----END PGP SIGNATURE-----
 
--- Rob
-
-
+--nextPart1926532.7QlATTEuJR--
