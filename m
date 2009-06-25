@@ -1,39 +1,45 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: iptables ERROR
-Date: Thu, 25 Jun 2009 20:08:32 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.0906252007200.19928@blackhole.kfki.hu>
-References: <1245934611.4518.58.camel@ripper.synapse.com> <1245938452.4518.63.camel@ripper.synapse.com> <alpine.LSU.2.00.0906251710030.20659@fbirervta.pbzchgretzou.qr>
+From: netfilterdomo.20.miller_2555@spamgourmet.com
+Subject: Use of datestamp in ipt_recent kernel hook
+Date: Thu, 25 Jun 2009 15:16:36 -0400
+Message-ID: <1dd941090906251216x2bdbe106scaf4988bc03e1588@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LSU.2.00.0906251710030.20659@fbirervta.pbzchgretzou.qr>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Ritesh Majumdar <r.majumdar@globallogic.com>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=O8mt3n4z4i8wLfcDU7nHfJFK1v3CLAJ7HKwlLUO6UQs=;
+        b=bSRiU9ukIWrBPlU7CQ49GHVUMaSYvn28r2HIw1Qv9wxibPsk4HXpb3JTX0K/hH2nHT
+         40mtn4dsBzMkbfkluGXmLg/bxQv1ft3cxbTSryzclA1ZunuJmU1GFbtbGKnaQr9380V4
+         dNqwg+vMrkpeKMH+08wUKPhmGtKSOvlLuamN4=
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Thu, 25 Jun 2009, Jan Engelhardt wrote:
+Hi -
 
-> On Thursday 2009-06-25 16:00, Ritesh Majumdar wrote:
-> 
-> >As per my earlier mail.
-> >
-> >Here is error I get on my /var/log/messages.
-> >
-> >kernel: ip_tables: set match: invalid size 96 != 32
-> 
-> This could be related to http://markmail.org/message/dijxb6i6325t6hge
-> So be sure to use ipset 3.0 (it's out now) with iptables 1.4.4.
+I posted a question on FedoraForums related to the use of the
+timestamp in the kernel hook at /proc/net/ipt_recent/ (specifically
+piping to the `date` command), though there were no takers. For the
+sake of brevity, the discussion occurs here:
+http://forums.fedoraforum.org/showthread.php?t=224461. To highlight,
+running the following command:
+    cat /proc/net/ipt_recent/iplist | awk '{print ($1 ,system("date -d
+@" $5));}'
+yields human readable datestamps that are inconsistent with actual
+activity. Even without running the above command (which may not use
+the '@' symbol correctly), a visual comparison of date +'%s' to a
+logged IP address for that day is off by a factor of 10.
 
-Yes, exactly: with ipset 3.0 you need iptables 1.4.4.
+Please advise as to how iptables timestamps IP activity in the
+ipt_recent hook (provided it's not strictly a kernel operation), and
+whether the current build handles the architecture below (if known).
 
-I'm sorry for breaking backward compatibility.
+Thanks!
+Linux version 2.6.27.19-170.2.35.fc10.x86_64
+(mockbuild@xenbuilder2.fedora.redhat.com) (gcc version 4.3.2 20081105
+(Red Hat 4.3.2-7) (GCC) ) #1 SMP Mon Feb 23 13:00:23 EST 2009.
+Intel(R) Core(TM)2 Quad CPU    Q6600  @ 2.40GHz
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
