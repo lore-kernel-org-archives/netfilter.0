@@ -1,29 +1,38 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Question about nat filtering with FORWARD
-Date: Thu, 25 Jun 2009 12:18:48 +0200
-Message-ID: <4A434F08.4050102@plouf.fr.eu.org>
-References: <4161.192.168.1.3.1245837879.squirrel@webmail.decimal.pt>    <33be4bb30906240322x1934b045g5e74e16f012ffcd7@mail.gmail.com> <1072.192.168.1.3.1245839976.squirrel@webmail.decimal.pt> <001d01c9f4ba$316a3c30$943eb490$@info> <4A434DCA.3020503@plouf.fr.eu.org>
+From: Ramunas Vabolis <ramuva@openoffice.lt>
+Subject: raw table and NOTRACK target
+Date: Thu, 25 Jun 2009 16:05:56 +0300
+Message-ID: <20090625130555.GB9856@openoffice.lt>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4A434DCA.3020503@plouf.fr.eu.org>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Pascal Hambourg a =E9crit :
->=20
-> ICMP error messages (destination unreachable, TTL exceeded,=20
-> fragmentation needed...) are in the RELATED state. So you need RELATE=
-D=20
-> if you don't want to break ICMP error signalling and mechanisms which=
-=20
-> rely on it such as Path MTU Detection (PMTUD).
 
-Oops, s/Detection/Discovery/
+	Hello there,
 
-Note that ICMP error signalling is a mandatory part of IP operation, an=
-d=20
-path MTU discovery is enabled by default in Linux, and possibly other=20
-operating systems.
+I'm looking after a pretty busy router. Right now everyting in
+PREROUTING chain is joined to NOTRACK.:
+
+/sbin/iptables -t raw -A PREROUTING -j NOTRACK
+I need to intercept and redirect tcp http sessions. But right now I'm
+stuck while trying to add exceptions to NOTRACK.
+
+I've tried adding one test on local IP (real one) and use RETURN target:
+/sbin/iptables -t raw -I PREROUTING -p tcp -s host.ip --dport 80 -j RETURN
+/sbin/iptables -t raw -I PREROUTING -p tcp -d host.ip --sport 80 -j RETURN
+
+Does not work. (Tried -j ACCEPT too). Tried creating another chain, jump
+from PREROUTING to that chain and RETURN or ACCEPT in there. Same thing.
+iptables -vxnL shows increase only in first rule
+
+When I add any of these rules, tcpdump shows that packet arrives to
+inner interface, but does not travel to outgoing one. 
+
+I'm using Debian Lenny with stock packets (kernel icluding). 
+
+What am I missing or doing wrong? From what I gather packets are 
+discarded at raw table. 
