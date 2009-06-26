@@ -1,36 +1,56 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: nf_nat_sip & nf_conntrack_sip
-Date: Fri, 26 Jun 2009 14:57:22 +0200
-Message-ID: <4A44C5B2.9030408@trash.net>
-References: <1982.192.168.1.3.1246005268.squirrel@webmail.decimal.pt>
+From: Ramunas Vabolis <ramuva@openoffice.lt>
+Subject: Re: raw table and NOTRACK target
+Date: Fri, 26 Jun 2009 16:09:44 +0300
+Message-ID: <20090626130944.GA18792@openoffice.lt>
+References: <20090625130555.GB9856@openoffice.lt> <1246000121.3985.5.camel@casper.meteor.dp.ua> <20090626074317.GA11753@openoffice.lt> <1246020740.3985.11.camel@casper.meteor.dp.ua>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1982.192.168.1.3.1246005268.squirrel@webmail.decimal.pt>
+Content-Disposition: inline
+In-Reply-To: <1246020740.3985.11.camel@casper.meteor.dp.ua>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jorge Bastos <mysql.jorge@decimal.pt>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Jorge Bastos wrote:
-> Howdy,
-> 
-> I use a program from my mobile company, to make call's in my PC, this
-> program uses SIP for the connection.
-> The problem is:
-> 
-> -When i have these two modules loaded, when the person from the other side
-> disconnects, the program doesn't end the call, plus, the call's go down
-> very often!!
-> -When none of this modules are loaded, everything works as expected when
-> the person from the other side disconnects, and no call dies (unless i get
-> of my internet connection).
-> 
-> Any guess? I can work without the modules as i am right now, i just want
-> to help if there's something wrong with the modules and help.
 
-Which kernel version are you using? The versions before 2.6.26 are
-known not to work properly. With later kernels you might have to
-set the sip_direct_media/signalling options to 0.
+Hello again, 
 
+> If I've got it right you are trying to do DNAT. The problem was that
+> everything was not being traced by conntrack, this is what you've
+> already fixed.
+	Yes, I'm trying to do some DNAT, but still got a long way to go.
+ 
+> Next, as you've told in further message nothing block that traffic in -t
+> filter, that's good.
+> 
+> Next, show as the actual DNAT rules and check the counters encrease as
+> you trying to connect.
+> 
+> You can also check whether the connection is actually being tracked by
+> analizing output of "conntrack -L" or "conntrack -E"
+	
+	The problem is that I'm stuck at step.1 - excluding items from
+NOTRACK. As soon as I add rules with RETURN in raw table, packets are
+dropped somewhere. To reproduce:
+
+I've got a host, which connects with lynx to any website.
+
+In router there no DROP rules in FORWARD and single line in raw table:
+/sbin/iptables -t raw -A PREROUTING -j NOTRACK
+
+Host connects to any remote host port 80.
+
+As soon as I add two lines with -j RETURN in raw table (so the entries 
+are tracked) I experience the same effect as I've added -j DROP: 
+
+/sbin/iptables -t raw -I PREROUTING -p tcp -s host.ip --dport 80 -j RETURN
+/sbin/iptables -t raw -I PREROUTING -p tcp -d host.ip --sport 80 -j RETURN
+
+are acting as I've made these rules:
+
+/sbin/iptables -t raw -I PREROUTING -p tcp -s host.ip --dport 80 -j DROP
+/sbin/iptables -t raw -I PREROUTING -p tcp -d host.ip --sport 80 -j DROP
+
+I've tried replacing RETURN with ACCEPT with same results. As soon as I
+remove those 2 rules, host.ip can connect to remote 80 port. 
