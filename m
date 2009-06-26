@@ -1,45 +1,82 @@
-From: netfilterdomo.20.miller_2555@spamgourmet.com
-Subject: Use of datestamp in ipt_recent kernel hook
-Date: Thu, 25 Jun 2009 15:16:36 -0400
-Message-ID: <1dd941090906251216x2bdbe106scaf4988bc03e1588@mail.gmail.com>
+From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
+	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
+Subject: Re: raw table and NOTRACK target
+Date: Fri, 26 Jun 2009 10:08:41 +0300
+Message-ID: <1246000121.3985.5.camel@casper.meteor.dp.ua>
+References: <20090625130555.GB9856@openoffice.lt>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type:content-transfer-encoding;
-        bh=O8mt3n4z4i8wLfcDU7nHfJFK1v3CLAJ7HKwlLUO6UQs=;
-        b=bSRiU9ukIWrBPlU7CQ49GHVUMaSYvn28r2HIw1Qv9wxibPsk4HXpb3JTX0K/hH2nHT
-         40mtn4dsBzMkbfkluGXmLg/bxQv1ft3cxbTSryzclA1ZunuJmU1GFbtbGKnaQr9380V4
-         dNqwg+vMrkpeKMH+08wUKPhmGtKSOvlLuamN4=
+In-Reply-To: <20090625130555.GB9856@openoffice.lt>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="koi8-r"
+To: Ramunas Vabolis <ramuva@openoffice.lt>
+Cc: netfilter@vger.kernel.org
 
-Hi -
+=F7 =FE=D4=D7, 25/06/2009 =D7 16:05 +0300, Ramunas Vabolis =D0=C9=DB=C5=
+=D4:
+> 	Hello there,
+>=20
+> I'm looking after a pretty busy router. Right now everyting in
+> PREROUTING chain is joined to NOTRACK.:
+>=20
+> /sbin/iptables -t raw -A PREROUTING -j NOTRACK
+> I need to intercept and redirect tcp http sessions. But right now I'm
+> stuck while trying to add exceptions to NOTRACK.
+>=20
+> I've tried adding one test on local IP (real one) and use RETURN targ=
+et:
+> /sbin/iptables -t raw -I PREROUTING -p tcp -s host.ip --dport 80 -j R=
+ETURN
+> /sbin/iptables -t raw -I PREROUTING -p tcp -d host.ip --sport 80 -j R=
+ETURN
+>=20
+> Does not work. (Tried -j ACCEPT too). Tried creating another chain, j=
+ump
+> from PREROUTING to that chain and RETURN or ACCEPT in there. Same thi=
+ng.
+> iptables -vxnL shows increase only in first rule
 
-I posted a question on FedoraForums related to the use of the
-timestamp in the kernel hook at /proc/net/ipt_recent/ (specifically
-piping to the `date` command), though there were no takers. For the
-sake of brevity, the discussion occurs here:
-http://forums.fedoraforum.org/showthread.php?t=224461. To highlight,
-running the following command:
-    cat /proc/net/ipt_recent/iplist | awk '{print ($1 ,system("date -d
-@" $5));}'
-yields human readable datestamps that are inconsistent with actual
-activity. Even without running the above command (which may not use
-the '@' symbol correctly), a visual comparison of date +'%s' to a
-logged IP address for that day is off by a factor of 10.
+Pay attention to order. As far as I understood your rule order is like
+this:
 
-Please advise as to how iptables timestamps IP activity in the
-ipt_recent hook (provided it's not strictly a kernel operation), and
-whether the current build handles the architecture below (if known).
+-t raw -A PREROUTING -j NOTRACK
+-t raw -A PREROUTING -p tcp -s host.ip --dport 80 -j RETURN
+-t raw -A PREROUTING -p tcp -d host.ip --sport 80 -j RETURN
 
-Thanks!
-Linux version 2.6.27.19-170.2.35.fc10.x86_64
-(mockbuild@xenbuilder2.fedora.redhat.com) (gcc version 4.3.2 20081105
-(Red Hat 4.3.2-7) (GCC) ) #1 SMP Mon Feb 23 13:00:23 EST 2009.
-Intel(R) Core(TM)2 Quad CPU    Q6600  @ 2.40GHz
+first rule matches any packet setting an action of NOTRACK. You should =
+change the order to be like this:
+
+-t raw -A PREROUTING -p tcp -s host.ip --dport 80 -j RETURN
+-t raw -A PREROUTING -p tcp -d host.ip --sport 80 -j RETURN
+-t raw -A PREROUTING -j NOTRACK
+
+assuming you already have this rule:
+
+/sbin/iptables -t raw -A PREROUTING -j NOTRACK
+
+then you should add rest to the top (at posision 1) by:
+
+/sbin/iptables -t raw -I PREROUTING 1 -p tcp -s host.ip --dport 80 -j R=
+ETURN
+/sbin/iptables -t raw -I PREROUTING 1 -p tcp -d host.ip --sport 80 -j R=
+ETURN
+
+> I add any of these rules, tcpdump shows that packet arrives to
+> inner interface, but does not travel to outgoing one.=20
+>=20
+> I'm using Debian Lenny with stock packets (kernel icluding).=20
+>=20
+> What am I missing or doing wrong? From what I gather packets are=20
+> discarded at raw table.=20
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+--=20
+=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
+ua>
 
