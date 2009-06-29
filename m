@@ -1,26 +1,33 @@
-From: Ramunas Vabolis <ramuva@openoffice.lt>
-Subject: Re: raw table and NOTRACK target
-Date: Mon, 29 Jun 2009 10:33:55 +0300
-Message-ID: <20090629073355.GA1897@openoffice.lt>
-References: <20090625130555.GB9856@openoffice.lt> <1246000121.3985.5.camel@casper.meteor.dp.ua> <20090626074317.GA11753@openoffice.lt> <1246020740.3985.11.camel@casper.meteor.dp.ua> <20090626130944.GA18792@openoffice.lt> <1246023084.3985.17.camel@casper.meteor.dp.ua>
+From: "Jorge Bastos" <mysql.jorge@decimal.pt>
+Subject: Re: nf_nat_sip & nf_conntrack_sip
+Date: Mon, 29 Jun 2009 09:22:08 +0100 (WEST)
+Message-ID: <1892.192.168.1.3.1246263728.squirrel@webmail.decimal.pt>
+References: <1982.192.168.1.3.1246005268.squirrel@webmail.decimal.pt>
+    <4A44C5B2.9030408@trash.net>
+    <2164.87.196.204.28.1246043247.squirrel@webmail.decimal.pt>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1246023084.3985.17.camel@casper.meteor.dp.ua>
+In-Reply-To: <2164.87.196.204.28.1246043247.squirrel@webmail.decimal.pt>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Patrick McHardy <kaber@trash.net>
+Cc: netfilter@vger.kernel.org
 
-> Is host.ip the host from which you are trying to run lynx?
-> 
-> This is strange behaviour, but it seems that problems occur when you are
-> trying to use conntack. Maybe conntrack modules are not loaded or some
-> rules in -t nat are acting like this. Does the nat table have rules? Can
-> you show it (iptables-save -t nat)? Show output of "lsmod | grep conn".
-	Thank you for your suggestions. I've left DNAT rule in nat table - 
-forgot about it. Then started retracing the steps again. 
-	The problem was with SNAT rule. With added additional entry in raw 
-table for DNAT target everything started working. 
-	Thank you for your time.
+> Hi Patrick,
+> kernel 2.6.30
+> Well, I'm going to test it with those parameters and let you know starting
+> next Monday.
+> One question, without the module everything works OK, the module are
+> really necessary? If so for what?
+
+ok,
+tested and when the person from the other side disconnect's the sessions
+remains alive with the module loaded with:
+
+/sbin/modprobe nf_nat_sip
+/sbin/modprobe nf_conntrack_sip sip_direct_signalling=0 sip_direct_media=0
+
+
+
