@@ -1,56 +1,26 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: DHCP issue - iptables rules not hit when using ebtables - MAC
- based   firewall bypass
-Date: Sat, 27 Jun 2009 11:36:52 +0200
-Message-ID: <4A45E834.5080604@plouf.fr.eu.org>
-References: <4A45D0EE.50400@telenet.be>
+From: Ramunas Vabolis <ramuva@openoffice.lt>
+Subject: Re: raw table and NOTRACK target
+Date: Mon, 29 Jun 2009 10:33:55 +0300
+Message-ID: <20090629073355.GA1897@openoffice.lt>
+References: <20090625130555.GB9856@openoffice.lt> <1246000121.3985.5.camel@casper.meteor.dp.ua> <20090626074317.GA11753@openoffice.lt> <1246020740.3985.11.camel@casper.meteor.dp.ua> <20090626130944.GA18792@openoffice.lt> <1246023084.3985.17.camel@casper.meteor.dp.ua>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4A45D0EE.50400@telenet.be>
+Content-Disposition: inline
+In-Reply-To: <1246023084.3985.17.camel@casper.meteor.dp.ua>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello,
-
-fvancrae@telenet.be a =E9crit :
->=20
-> I am using ebtables on my firewall to have one consumer device (clien=
-t)=20
-> bypass the firewall entirely and act as if it is directly connected t=
-o=20
-> the internet.
->=20
-> For this I create a bridge (non transparant) and specify a MAC based=20
-> rule in the BROUTING chain
-> -s MAC -i eth1 -j ACCEPT
-> -d MAC -i eth0 -j ACCEPT
-> BROUTING POLICY DROP
-
-This seems incomplete to me. How do you deal with broadcast frames=20
-received on eth0 such as ARP requests for your device IP address ?
-
-> eth0 is my routers WLAN interface
-> eth1 is my routers LAN interface
->=20
-> Then I wanted to block the DHCP request for that MAC on my firewall (=
-who=20
-> is DHCPD)
-> but it seems that no iptable or ebtable rule can be used to block thi=
-s=20
-> packet (or even an outgoing packet of my DHCPD)
->=20
-> My client always gets an IP inside my LAN.
-
-Does the DHCP server listen on eth0 or the bridge interface ? Some DHCP=
-=20
-softwares (either client or server side) are bound directly to the=20
-network interface and thus bypass iptables and ebtables. So I guess you=
-=20
-might either blacklist the device MAC address in the DHCP server=20
-configuration if possible, or have it listening on the bridge interface=
-=20
-(and add ebtables rules to avoid DHCP traffic from leaking through eth0=
-).
+> Is host.ip the host from which you are trying to run lynx?
+> 
+> This is strange behaviour, but it seems that problems occur when you are
+> trying to use conntack. Maybe conntrack modules are not loaded or some
+> rules in -t nat are acting like this. Does the nat table have rules? Can
+> you show it (iptables-save -t nat)? Show output of "lsmod | grep conn".
+	Thank you for your suggestions. I've left DNAT rule in nat table - 
+forgot about it. Then started retracing the steps again. 
+	The problem was with SNAT rule. With added additional entry in raw 
+table for DNAT target everything started working. 
+	Thank you for your time.
