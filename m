@@ -1,44 +1,63 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: arptables ruleset not working when compiling on  fedora6,7,8/centos
- 5/redhat 5
-Date: Wed, 01 Jul 2009 13:18:53 +0200
-Message-ID: <4A4B461D.5050407@trash.net>
-References: <b2d58cb80906290712k33c1ebbvfc8e661cb34c502c@mail.gmail.com>  <56378e320906290721i63f969edm90aed19619decf71@mail.gmail.com>  <b2d58cb80906290751j7fb3976bx9d04fed852c8b451@mail.gmail.com>  <4A48D6AD.4010005@trash.net>  <b2d58cb80906290818t66616f70k2fe7596b906a8a4e@mail.gmail.com>  <4A48E14A.3060708@trash.net>  <b2d58cb80906290918q2da5af1ap87772755b3363032@mail.gmail.com> <b2d58cb80906300108q2ee5a060gf8013a88560d8820@mail.gmail.com> <4A4B32C4.8050800@trash.net> <alpine.LSU.2.00.0907011302390.3504@fbirervta.pbzchgretzou.qr>
+From: Richard Horton <arimus.uk@googlemail.com>
+Subject: Re: rate limit by MAC
+Date: Wed, 1 Jul 2009 12:48:47 +0100
+Message-ID: <56378e320907010448n2a02fa6cxf9653518f7eff428@mail.gmail.com>
+References: <4A4B42C6.4060103@msm.ru>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LSU.2.00.0907011302390.3504@fbirervta.pbzchgretzou.qr>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=8kLeVVSs4Vp1VWHQqcy34sRBxV3ilNOcVJwWfE2fRQA=;
+        b=BimH6UvhIBq21wXGm2NJ31nObfbNdDPDTxk7Qcfox0WGIt9cQIVz/FbJTLU6G0F99t
+         wBs2pa3Yu1tiG7ksW6xQxxsz+JtcFd0QuAOf+fvEp8EMs5y3RGZmv4sWCr11zItLOtIO
+         Zjm4B3Nr2FIbVfV4nIKwMiAcGOfkvecV/FMqw=
+In-Reply-To: <4A4B42C6.4060103@msm.ru>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Nishit Shah <nsshah.82@gmail.com>, Richard Horton <arimus.uk@googlemail.com>, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, netfilter@vger.kernel.org, Bart De Schuymer <bdschuym@pandora.be>, Jay Fenlason <fenlason@redhat.com>, mt@suse.de, jskala@redhat.com
+Content-Type: text/plain; charset="koi8-r"
+To: netfilter@vger.kernel.org
 
-Jan Engelhardt wrote:
-> On Wednesday 2009-07-01 11:56, Patrick McHardy wrote:
->> Nishit Shah wrote:
->>> On Mon, Jun 29, 2009 at 9:48 PM, Nishit Shah<nsshah.82@gmail.com> w=
-rote:
->>>> -/usr/include/linux/netfilter.h:#define NF_MAX_VERDICT NF_REPEAT
->>>> +/usr/include/linux/netfilter.h:#define NF_MAX_VERDICT NF_STOP
->>>>
->>> I am adding the patch for the same.
->> Please send this to Bart (CCed), who is maintaining arptables.
->=20
-> There is also a rogue arptables_jf clone by some RedHat person =E2=80=
-=94
-> no homepage, no point of download except distro .src.rpms =E2=80=94
-> and used by Fedora and openSUSE.
->=20
-> Ccing the relevant persons responsible for that clone, which I am als=
-o=20
-> hereby accusing of failing to submit their stuff upstream causing=20
-> unnecessary extra hurdles for users.
+2009/7/1 =F3=C1=CD=D5=D3=C5=CE=CB=CF =E1=CE=C4=D2=C5=CA <samusenko@msm.=
+ru>:
+> Hi!
+>
+> Can iptables limit rate by MAC? Think it no.
+>
+> What on Linux can do how i need?
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =9Ahttp://vger.kernel.org/majordomo-info.html
+>
 
-Thanks for pointing this out. Jay, please elaborate on why you've
-chosen to fork this instead of working with upstream.
+You might be able to...
+
+iptables -A FORWARD -m mac --mac-source <<mac address>> -m limit
+--limit 100/s -j ACCEPT would restrict the given mac address to 100
+packets per second... but depending on how many mac addresses you have
+it might be too much to enter each rule...
+
+The hashlimit might be better if you can use ip addresses instead of
+mac addresses.
+
 --
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Richard Horton
+Users are like a virus: Each causing a thousand tiny crises until the
+host finally dies.
+http://www.solstans.co.uk - Solstans Japanese Bobtails and Norwegian Fo=
+rest Cats
+http://www.pbase.com/arimus - My online photogallery
+
+--=20
+Richard Horton
+Users are like a virus: Each causing a thousand tiny crises until the
+host finally dies.
+http://www.solstans.co.uk - Solstans Japanese Bobtails and Norwegian Fo=
+rest Cats
+http://www.pbase.com/arimus - My online photogallery
