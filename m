@@ -1,39 +1,31 @@
-From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
-	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
+From: "Jorge Bastos" <mysql.jorge@decimal.pt>
 Subject: Re: rate limit by MAC
-Date: Wed, 01 Jul 2009 19:19:30 +0300
-Message-ID: <1246465170.4124.6.camel@casper.meteor.dp.ua>
+Date: Wed, 1 Jul 2009 18:54:09 +0100 (WEST)
+Message-ID: <3184.192.168.1.3.1246470849.squirrel@webmail.decimal.pt>
 References: <4A4B42C6.4060103@msm.ru>
-	 <56378e320907010448n2a02fa6cxf9653518f7eff428@mail.gmail.com>
-	 <1125.192.168.1.3.1246463064.squirrel@webmail.decimal.pt>
+    <56378e320907010448n2a02fa6cxf9653518f7eff428@mail.gmail.com>
+    <1125.192.168.1.3.1246463064.squirrel@webmail.decimal.pt>
+    <1246465170.4124.6.camel@casper.meteor.dp.ua>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1125.192.168.1.3.1246463064.squirrel@webmail.decimal.pt>
+In-Reply-To: <1246465170.4124.6.camel@casper.meteor.dp.ua>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="koi8-r"
-To: Jorge Bastos <mysql.jorge@decimal.pt>
-Cc: Richard Horton <arimus.uk@googlemail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: =?iso-8859-1?Q?=BF=DE=DA=DE=E2=D8=DB=D5=DD=DA=DE_=BA=DE=E1=E2=D8=DA?= <casper@meteor.dp.ua>
+Cc: Jorge Bastos <mysql.jorge@decimal.pt>, Richard Horton <arimus.uk@googlemail.com>, netfilter@vger.kernel.org
 
-=F7 =F3=D2=C4, 01/07/2009 =D7 16:44 +0100, Jorge Bastos =D0=C9=DB=C5=D4=
-:
-> > You might be able to...
-> >
-> > iptables -A FORWARD -m mac --mac-source <<mac address>> -m limit
-> > --limit 100/s -j ACCEPT would restrict the given mac address to 100
-> > packets per second... but depending on how many mac addresses you h=
-ave
-> > it might be too much to enter each rule...
->=20
-> Sawing this thread,
-> Iptables doesn't (still) have the capacity to do rate limit by itself=
-,
-> does it?
+>> Sawing this thread,
+>> Iptables doesn't (still) have the capacity to do rate limit by itself,
+>> does it?
+>
+> Depends on what the "rate" is, packets/time - yes, bytes/time - no.
+>
+Sorry forgot to specify.
+It's bytes.
+Oh i see, i use "tc", no problem about it, maybe in the future netfilter
+will have this builtin and more simplier than tc/iproute tools.
 
-Depends on what the "rate" is, packets/time - yes, bytes/time - no.
-
---=20
-=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
-ua>
+Jorge,
 
