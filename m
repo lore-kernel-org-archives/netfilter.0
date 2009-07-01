@@ -1,41 +1,59 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: nf_conntrack_sip problem
-Date: Wed, 01 Jul 2009 14:03:40 +0200
-Message-ID: <4A4B509C.3080600@trash.net>
-References: <20090701113701.GZ9285@Redstar.dorchain.net>
+From: =?KOI8-R?Q?=F3=C1=CD=D5=D3=C5=CE=CB=CF_=E1=CE=C4=D2=C5=CA?= 
+	<samusenko@msm.ru>
+Subject: Re: rate limit by MAC
+Date: Wed, 01 Jul 2009 17:19:53 +0400
+Message-ID: <4A4B6279.6040504@msm.ru>
+References: <4A4B42C6.4060103@msm.ru> <56378e320907010448n2a02fa6cxf9653518f7eff428@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20090701113701.GZ9285@Redstar.dorchain.net>
+In-Reply-To: <56378e320907010448n2a02fa6cxf9653518f7eff428@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Joerg Dorchain <joerg@dorchain.net>
+Content-Type: text/plain; charset="koi8-r"; format="flowed"
+To: Richard Horton <arimus.uk@googlemail.com>
 Cc: netfilter@vger.kernel.org
 
-Joerg Dorchain wrote:
-> Hello,
-> 
-> I have some problems understanding nf_conntrack_sip. I want to
-> use it avoid having static entries for the rtp stream, as IMHO
-> those should be catched by a RELATED rules when nf_conntrack_sip
-> works properly.
-> 
-> I have a machine with a pppoe interface connected to the
-> internet, with asterisk running on it, and a small local network
-> behind it on eth1, where I want to force sip traffic going
-> through the local asterisk.
-> 
-> Unfortunately it doesn't work as expected. I use vanilla kernel
-> 2.6.30. My iptable rules that do not work look like this:
-> 
-> Maybe I am missing something obvious, but I'd appreciate a hint.
-> (yes, nf_conntrack_sip is loaded)
+Thank you, Richard.
+I don't knew about changing MAC on each router.
+My question have not sense.
+How to fight with IP spoofing? =3D)
 
-Depending on how your SIP provider works, you might need to set the
-sip_direct_signalling option to zero (in case signalling connections
-can arrive from different addresses than the one registered with),
-additionally you might need to set the sip_direct_media option to
-0 in case the RTP streams arrive from different addresses than the
-signalling endpoint.
-
+Richard Horton wrote:
+> 2009/7/1 =F3=C1=CD=D5=D3=C5=CE=CB=CF =E1=CE=C4=D2=C5=CA <samusenko@ms=
+m.ru>:
+>  =20
+>> Hi!
+>>
+>> Can iptables limit rate by MAC? Think it no.
+>>
+>> What on Linux can do how i need?
+>>
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe netfilter"=
+ in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>>
+>>    =20
+>
+> You might be able to...
+>
+> iptables -A FORWARD -m mac --mac-source <<mac address>> -m limit
+> --limit 100/s -j ACCEPT would restrict the given mac address to 100
+> packets per second... but depending on how many mac addresses you hav=
+e
+> it might be too much to enter each rule...
+>
+> The hashlimit might be better if you can use ip addresses instead of
+> mac addresses.
+>
+> --
+> Richard Horton
+> Users are like a virus: Each causing a thousand tiny crises until the
+> host finally dies.
+> http://www.solstans.co.uk - Solstans Japanese Bobtails and Norwegian =
+=46orest Cats
+> http://www.pbase.com/arimus - My online photogallery
+>
+>  =20
