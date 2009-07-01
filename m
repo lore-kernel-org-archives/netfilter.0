@@ -1,149 +1,76 @@
-From: Joerg Dorchain <joerg@dorchain.net>
+From: Patrick McHardy <kaber@trash.net>
 Subject: Re: nf_conntrack_sip problem
-Date: Wed, 1 Jul 2009 18:10:29 +0200
-Message-ID: <20090701161029.GC9285@Redstar.dorchain.net>
-References: <20090701113701.GZ9285@Redstar.dorchain.net> <4A4B509C.3080600@trash.net> <20090701144321.GB9285@Redstar.dorchain.net> <4A4B7B4D.5090900@trash.net>
+Date: Wed, 01 Jul 2009 18:16:21 +0200
+Message-ID: <4A4B8BD5.6060907@trash.net>
+References: <20090701113701.GZ9285@Redstar.dorchain.net> <4A4B509C.3080600@trash.net> <20090701144321.GB9285@Redstar.dorchain.net> <4A4B7B4D.5090900@trash.net> <20090701161029.GC9285@Redstar.dorchain.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="VjP/dwTbBl6I9PQk"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorchain.net;
-	s=redstar; t=1246464629;
-	bh=OyTxdOKuzQJjp8N5bMJuTFLi/v1fbj91cxK3NXtfM1w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:In-Reply-To;
-	b=IpTNZGQN2iqhcoSCO4h/OpRRaDFBKMDKXGj5oqjuyRvGZq/JojQBaAX4akVhjsFuT
-	 asVi5ksBEmI+vw0BpvZqJk6kwwqm6zvmIXrWgfKhejLV8P8UVbR6PfHt/6TzE+ZIlq
-	 fViN2yXOBvySsosh4l+jptE1svXPBmu2Y7FfdXhk=
-Content-Disposition: inline
-In-Reply-To: <4A4B7B4D.5090900@trash.net>
+In-Reply-To: <20090701161029.GC9285@Redstar.dorchain.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Patrick McHardy <kaber@trash.net>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Joerg Dorchain <joerg@dorchain.net>
 Cc: netfilter@vger.kernel.org
 
+Joerg Dorchain wrote:
+> On Wed, Jul 01, 2009 at 05:05:49PM +0200, Patrick McHardy wrote:
+>>> I tried this. Actually, it makes things worse. Now Asterisk
+>>> complains: [Jul  1 16:17:46] WARNING[20516]: chan_sip.c:1787 
+>>> __sip_xmit:
+>>> sip_xmit of 0x86f8de0 (len 384) to 217.10.79.9:5060 returned -1:
+>>> Operation not permitted
+>>>
+>>> (Trying to register with sipgate.de; registration in parallel
+>>> with tel.lu seems to work)
+>> sipgate needs sip_direct_media=0 since the RTP streams originate from
+>> a seperate cluster.
+> 
+> I loaded the module with sip_direct_signalling=0 and
+> sip_direct_media=0 to get these messages.
 
---VjP/dwTbBl6I9PQk
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+That should be fine. Possibly related to NAT without the helper,
+see below.
 
-On Wed, Jul 01, 2009 at 05:05:49PM +0200, Patrick McHardy wrote:
->>
->> I tried this. Actually, it makes things worse. Now Asterisk
->> complains: [Jul  1 16:17:46] WARNING[20516]: chan_sip.c:1787=20
->> __sip_xmit:
->> sip_xmit of 0x86f8de0 (len 384) to 217.10.79.9:5060 returned -1:
->> Operation not permitted
->>
->> (Trying to register with sipgate.de; registration in parallel
->> with tel.lu seems to work)
->
-> sipgate needs sip_direct_media=3D0 since the RTP streams originate from
-> a seperate cluster.
+>> Did you load the NAT module before the conntrack module?
+> 
+> I did not load the nat modules at all. As said, I am only
+> interested in dynamically accepting the rtp streams.
+>>> nf_conntrack_sip without options on a trial incoming call however gives:
+>>>
+>>> # conntrack -E expect
+>>> 180 proto=17 src=85.93.219.114 dst=212.88.133.153 sport=0 dport=7070
+>>> 180 proto=17 src=85.93.219.114 dst=212.88.133.153 sport=0 dport=7071
+> 
+> Also for tel.lu the expected IP should be 85.93.219.122.
 
-I loaded the module with sip_direct_signalling=3D0 and
-sip_direct_media=3D0 to get these messages.
->
-> Did you load the NAT module before the conntrack module?
+It takes the addresses from the SDP payload. The gateway seems to be
+handling RTP stream with a different server as well.
 
-I did not load the nat modules at all. As said, I am only
-interested in dynamically accepting the rtp streams.
->
->> nf_conntrack_sip without options on a trial incoming call however gives:
->>
->> # conntrack -E expect
->> 180 proto=3D17 src=3D85.93.219.114 dst=3D212.88.133.153 sport=3D0 dport=
-=3D7070
->> 180 proto=3D17 src=3D85.93.219.114 dst=3D212.88.133.153 sport=3D0 dport=
-=3D7071
+> BTW, it seems that combining an SER for the handling the sip part
+> with an asterisk for the dial-in part seems to be common. Here it
+> means the RTP stream is coming typically from a different IP than
+> the register endpoint.
 
-Also for tel.lu the expected IP should be 85.93.219.122.
+Thats what the sip_direct_media=0 option is meant for.
 
-BTW, it seems that combining an SER for the handling the sip part
-with an asterisk for the dial-in part seems to be common. Here it
-means the RTP stream is coming typically from a different IP than
-the register endpoint.
->
-> Besides the direct_media option, I assume you're accepting EXPECTED
-> and RELATED packets?
+>> Besides the direct_media option, I assume you're accepting EXPECTED
+>> and RELATED packets?
+> 
+> No, only RELATED. I repeat the line: -A checkblock -m state
+> --state RELATED,ESTABLISHED -j RETURN
 
-No, only RELATED. I repeat the line: -A checkblock -m state
---state RELATED,ESTABLISHED -j RETURN
-Man page says: RELATED meaning that the  packet is starting a new
-connection, but is associated with an existing connection, such as
-an FTP data transfer, or an ICMP error.
+Sorry, my mistake :) That should be fine.
 
-As it works for ftp connection tracking, I'd assume it should
-also work for sip connection tracking.
+> For reference, again the complete iptables:
+> # Generated by iptables-save v1.4.3.2 on Wed Jul  1 13:26:32 2009
+> *nat
+> :PREROUTING ACCEPT [1385:93589]
+> :POSTROUTING ACCEPT [319:26979]
+> :OUTPUT ACCEPT [5114:401834]
+> -A PREROUTING ! -i ppp0 -p udp -m udp --dport 5060 -j REDIRECT=20
+> -A POSTROUTING -o ppp0 -j MASQUERADE=20
+> COMMIT
 
-For reference, again the complete iptables:
-# Generated by iptables-save v1.4.3.2 on Wed Jul  1 13:26:32 2009
-*nat
-:PREROUTING ACCEPT [1385:93589]
-:POSTROUTING ACCEPT [319:26979]
-:OUTPUT ACCEPT [5114:401834]
--A PREROUTING ! -i ppp0 -p udp -m udp --dport 5060 -j REDIRECT=3D20
--A POSTROUTING -o ppp0 -j MASQUERADE=3D20
-COMMIT
-# Completed on Wed Jul  1 13:26:32 2009
-# Generated by iptables-save v1.4.3.2 on Wed Jul  1 13:26:32 2009
-*filter
-:INPUT DROP [0:0]
-:FORWARD DROP [0:0]
-:OUTPUT ACCEPT [32081:6020561]
-:blocknlog - [0:0]
-:checkblock - [0:0]
--A INPUT -i lo -j ACCEPT=3D20
--A INPUT -i ppp0 -p icmp -m icmp --icmp-type 8 -m limit --limit 1/sec -j AC=
-=3D
-CEPT=3D20
--A INPUT -i ppp0 -p tcp -m multiport --dports 22,25,53,80,443,993 -j ACCEPT=
-=3D
-=3D20
--A INPUT -i ppp0 -p udp -m multiport --dports 53,123,5060 -j ACCEPT=3D20
--A INPUT -s 212.88.128.10/32 -p udp -m udp --sport 53 -j ACCEPT=3D20
--A INPUT -s 212.224.0.188/32 -i ppp0 -p ipv6 -j ACCEPT=3D20
--A INPUT -s 192.88.99.1/32 -i ppp0 -p ipv6 -j ACCEPT=3D20
--A INPUT -j checkblock=3D20
--A INPUT -j ACCEPT=3D20
--A FORWARD -j checkblock=3D20
--A FORWARD -o ppp0 -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-=
-=3D
-mss-to-pmtu=3D20
--A FORWARD -j ACCEPT=3D20
--A blocknlog -m limit --limit 1/sec -j LOG --log-prefix "Bad Packet: " --lo=
-=3D
-g-level 5=3D20
--A blocknlog -j REJECT --reject-with icmp-net-prohibited=3D20
--A checkblock -m state --state RELATED,ESTABLISHED -j RETURN=3D20
--A checkblock -m state --state INVALID -j LOG --log-prefix "Invalid match: =
-=3D
-" --log-level 5=3D20
--A checkblock ! -i ppp0 -j RETURN=3D20
--A checkblock -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -j RETURN=3D20
--A checkblock -p udp -m limit --limit 1/min -m ttl --ttl-lt 3 -j blocknlog=
-=3D
-=3D20
-COMMIT
-# Completed on Wed Jul  1 13:26:32 2009
-
-Bye,
-
-Joerg
-
---VjP/dwTbBl6I9PQk
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iHcEARECADcFAkpLinUwFIAAAAAAFQAScGthLWFkZHJlc3NAZ251cGcub3Jnam9l
-cmdAZG9yY2hhaW4ubmV0AAoJEI2OPuD3c7zg8CYAn2g3gex6To2IEbCxook2DdUt
-W1BHAJ9iXNhhP+1Cv6fdb0y7n1DS7TPHVA==
-=wZ3j
------END PGP SIGNATURE-----
-
---VjP/dwTbBl6I9PQk--
+So you are using NAT? You *need* the NAT helper in that case for
+remapping clashing ports.
