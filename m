@@ -1,52 +1,43 @@
-From: Terry Burton <tez@terryburton.co.uk>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: Disabling conntrack on an interface
-Date: Thu, 2 Jul 2009 22:35:20 +0100
-Message-ID: <2d1f9a6b0907021435q521c3db5pde46cc6b9543c694@mail.gmail.com>
-References: <2d1f9a6b0907020810x49f483a9j855d373b776571c6@mail.gmail.com>
-	 <1246548394.17132.19.camel@enterprise.ims-firmen.de>
-	 <2d1f9a6b0907020906g207b273fr125cc75d022db638@mail.gmail.com>
-	 <4A4D0051.4040900@plouf.fr.eu.org>
+Date: Fri, 03 Jul 2009 01:46:00 +0200
+Message-ID: <4A4D46B8.4070401@plouf.fr.eu.org>
+References: <2d1f9a6b0907020810x49f483a9j855d373b776571c6@mail.gmail.com> <1246548394.17132.19.camel@enterprise.ims-firmen.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:sender:received:in-reply-to
-         :references:date:x-google-sender-auth:message-id:subject:from:to:cc
-         :content-type:content-transfer-encoding;
-        bh=R4oOckHxcnfxHcLrSgPXTLcaTMpCyAoKV2rj42b4HIQ=;
-        b=K1LbwwXZPYx4iYyKvUxM/13TKYlJmCtC7ohs56UazV1NR5jkMLs0G3kW46f3LctoYt
-         1cA2hxyNhUD25Ht/mBlFF64o/leQr21zOxihG8W0GzAyCP42R105GCXw8TWUCA7iAmas
-         AZ8b4WM+G2yWomqpTNlNA0mSm3TCZtPLSmyO4=
-In-Reply-To: <4A4D0051.4040900@plouf.fr.eu.org>
+In-Reply-To: <1246548394.17132.19.camel@enterprise.ims-firmen.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Thu, Jul 2, 2009 at 7:45 PM, Pascal
-Hambourg<pascal.mail@plouf.fr.eu.org> wrote:
-> Terry Burton a =E9crit :
->> As soon as I bind the (unaddressed) interface into the bridge the
->> packets are conntracked.
->
-> This is because by default bridged IPv4 traffic is passed to iptables=
-=2E So
-> another method is to set /proc/sys/net/bridge/bridge-nf-call-iptables=
- to 0
-> to disable this.
+Thomas Jacob a =E9crit :
+>=20
+> I do not get any conntrack entries from mirrored ports when
+> I am port mirroring packets onto a Linux interface that is up
+> but has no configured addresses.
 
-Hi Pascal,
+You could get some, under some conditions.
 
-I had discovered this method, but since this is a global (vs per
-interface) conferable I chose to disregard this option.
+> As long as these packets are not addressed to your machine the netfil=
+ter
+> code never gets to see them, AFAIK.
 
+The netfilter code, including conntrack, sees IPv4 packets on an=20
+interface as soon as it is bound to the IPv4 stack. An interface does=20
+not need to have an IP address to be bound to the IPv4 stack. Before=20
+kernel 2.6.21, it just required that the interface had had an address i=
+n=20
+the past (even though it was later removed) ; "ifconfig <interface>=20
+0.0.0.0" did the trick too. Since kernel 2.6.21, interfaces are=20
+automatically bound to the IPv4 (and IPv6) stack when they are created.
 
-Thanks!
-
-Terry
-
-
-P.S. Nice to find a mailing list that is backed by a responsive
-community. Kudos.
+However... if a packet is not addressed to the machine *and* the machin=
+e=20
+does not know what to do with it (e.g. IP forwarding is disabled or=20
+there is no route to the destination), the packet will be dropped at th=
+e=20
+input routing stage after PREROUTING, thus the conntrack entry won't be=
+=20
+confirmed and will be deleted.
