@@ -1,41 +1,71 @@
-From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
-	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
-Subject: Re: rate limit by MAC
-Date: Thu, 02 Jul 2009 11:33:10 +0300
-Message-ID: <1246523590.21366.2.camel@casper.meteor.dp.ua>
-References: <4A4B42C6.4060103@msm.ru>
-	 <56378e320907010448n2a02fa6cxf9653518f7eff428@mail.gmail.com>
-	 <1125.192.168.1.3.1246463064.squirrel@webmail.decimal.pt>
-	 <1246465170.4124.6.camel@casper.meteor.dp.ua>
-	 <3184.192.168.1.3.1246470849.squirrel@webmail.decimal.pt>
+From: Joerg Dorchain <joerg@dorchain.net>
+Subject: Re: nf_conntrack_sip problem
+Date: Thu, 2 Jul 2009 11:04:40 +0200
+Message-ID: <20090702090440.GI9285@Redstar.dorchain.net>
+References: <20090701113701.GZ9285@Redstar.dorchain.net> <4A4B509C.3080600@trash.net> <20090701144321.GB9285@Redstar.dorchain.net> <4A4B7B4D.5090900@trash.net> <20090701161029.GC9285@Redstar.dorchain.net> <4A4B8BD5.6060907@trash.net> <20090701205616.GE9285@Redstar.dorchain.net> <20090702081741.GH9285@Redstar.dorchain.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="hSsVBZHIO2Q9XETc"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <3184.192.168.1.3.1246470849.squirrel@webmail.decimal.pt>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorchain.net;
+	s=redstar; t=1246525481;
+	bh=l+aABkR75LlMCzyCD6QCWzZOzYsaH1FFGIrQYtFNYsY=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:In-Reply-To;
+	b=DDkaOmHWFFtoVuohuHUfCYNWJ7/xIkMq+CWT7QyY35pvPt4Fk8EWLkFJRdgR2b5i4
+	 8RmrYFmVsvpoGBSdMIE5qEy3AN7SjlSvTG4kZO8NVoQVXzjTuWgXRDzGXvZFVCMVt+
+	 VM+xzbkLxvgnmihe1lCHZ58SxKMKN041Gn5BaVZ8=
+Content-Disposition: inline
+In-Reply-To: <20090702081741.GH9285@Redstar.dorchain.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="koi8-r"
-To: Jorge Bastos <mysql.jorge@decimal.pt>
-Cc: Richard Horton <arimus.uk@googlemail.com>, netfilter@vger.kernel.org
+To: Patrick McHardy <kaber@trash.net>, netfilter@vger.kernel.org
 
-=F7 =F3=D2=C4, 01/07/2009 =D7 18:54 +0100, Jorge Bastos =D0=C9=DB=C5=D4=
-:
-> >> Sawing this thread,
-> >> Iptables doesn't (still) have the capacity to do rate limit by its=
-elf,
-> >> does it?
-> >
-> > Depends on what the "rate" is, packets/time - yes, bytes/time - no.
-> >
-> Sorry forgot to specify.
-> It's bytes.
-> Oh i see, i use "tc", no problem about it, maybe in the future netfil=
-ter
-> will have this builtin and more simplier than tc/iproute tools.
 
-That's big question. Those two are too different.
+--hSsVBZHIO2Q9XETc
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
---=20
-=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
-ua>
+On Thu, Jul 02, 2009 at 10:17:41AM +0200, Joerg Dorchain wrote:
+>=20
+> I works, but somewhat ugly.
+> # conntrack -E expect
+> 180 proto=3D17 src=3D0.0.0.0 dst=3D85.93.219.122 sport=3D0 dport=3D11080
+> 180 proto=3D17 src=3D0.0.0.0 dst=3D85.93.219.122 sport=3D0 dport=3D11081
+> 180 proto=3D17 src=3D0.0.0.0 dst=3D212.88.133.153 sport=3D0 dport=3D7076
+> 180 proto=3D17 src=3D0.0.0.0 dst=3D212.88.133.153 sport=3D0 dport=3D7077
+>=20
+> All the places where the ip is 0.0.0.0 or the port is 0 could be
+> filled more specifically. The necessary information is available
+> in the same SIP/SDP flow as the used information. Besides the two
+> RTP stream are unidirectional, so I'd like to have something like
+> this:
+> 180 proto=3D17 src=3D212.88.133.153 dst=3D85.93.219.122 sport=3D7076 dpor=
+t=3D11080
+> 180 proto=3D17 src=3D85.93.219.122 dst=3D212.88.133.153 sport=3D11081 dpo=
+rt=3D7077
 
+Sorry for replying to often to myself, I have another addendum:
+In case of asterisk reinvites in order to have to RTP stream
+moved away from the machine, there are still connections expected
+despite that these invites are explicitly meant to stop rtp
+streams to the local machine.
+
+Joerg
+
+--hSsVBZHIO2Q9XETc
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iHcEARECADcFAkpMeCgwFIAAAAAAFQAScGthLWFkZHJlc3NAZ251cGcub3Jnam9l
+cmdAZG9yY2hhaW4ubmV0AAoJEI2OPuD3c7zghZcAmwWZKyJGfSHVc/80JweVxOjb
+WAxzAJ4h+6ZqH07+Zcp/IHCVzBoYZF3AHA==
+=GJ3N
+-----END PGP SIGNATURE-----
+
+--hSsVBZHIO2Q9XETc--
