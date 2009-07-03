@@ -1,38 +1,36 @@
-From: Eray Aslan <eray.aslan@caf.com.tr>
-Subject: Re: Ipsec/L2tp with NETKEY
-Date: Sat, 04 Jul 2009 07:14:56 +0300
-Message-ID: <4A4ED740.9050104@caf.com.tr>
-References: <1246666906.5753.31.camel@localhost>
+From: "Jorge Bastos" <mysql.jorge@decimal.pt>
+Subject: A bit offtopic question
+Date: Fri, 3 Jul 2009 20:47:18 +0100 (WEST)
+Message-ID: <2620.87.196.192.131.1246650438.squirrel@webmail.decimal.pt>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1246666906.5753.31.camel@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-On 04.07.2009 03:21, Martin wrote:
-[...]
-> Here is a diagram, just for fun ;)
-> 
-> MS-client ==== /ext interface/ Linux GW /internal interface/ ==== LAN
-> 
-> 
-> What I see is that user completes ipsec auth, and then tries to connect
-> to the l2tpd's port (7101) on the external interface, and then I must
-> accept connections in that port, or the vpn connection fails.
-> 
-> 
-> Any suggestions how to let connections on udp 1701 only to connections
-> before authenticated by ipsec?
+Howdy people,
 
-On the openswan machine, mark the ESP packets and accept only marked
-packets to l2tpd daemon:
+I've asked something on the linux-ppp mailing list but it seems to be king
+of dead.
+I need you guys help, the story is:
+I had a crash with ppp_async when using the PPTPD VPN with PPPD, and it
+crashed the whole kernel, this followed me to two question on the
+linux-ppp mailing list:
 
-# iptables -t mangle -A PREROUTING -i $EXT_INT -p 50 -j MARK --set-mark 1
-# iptables -A INPUT -i $EX_INT -m mark --mark 1 -j ACCEPT
-# iptables -A INPUT -i $EX_INT -p udp --dport 1701 -j DROP
+1-when the kernel crashes, it doesn't write the crash information to any
+of the log files, syslog/messages/etc, where can i get that info or where
+can that be defined?
 
--- 
-Eray
+2-A friend told me that with the 2.6x kernels a new option was introduced,
+when a particular modules crashes, it's possible to configure the kernel
+to not make crash everything and just that module, well I've searched and
+didn't found nothing, also don't know for which name to search to, my
+question:
+Is this really true, if so where to configure it?
+
+Thanks in advanced for this bit of offtopic!
+
+Jorge,
+
