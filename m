@@ -1,38 +1,25 @@
-From: "Victor A. Safronov" <vitek@vitek.tomsk.ru>
-Subject: Re: ipset nethash with cidr 32
-Date: Fri, 10 Jul 2009 00:34:42 +0700
-Message-ID: <4A562A32.1050006@vitek.tomsk.ru>
-References: <4A2362FE.7040905@vitek.tomsk.ru> <alpine.DEB.2.00.0906021042280.11925@blackhole.kfki.hu>
+From: Bart De Schuymer <bdschuym@pandora.be>
+Subject: Re: arptables ruleset not working when compiling on 	fedora6,7,8/centos
+ 5/redhat 5
+Date: Thu, 09 Jul 2009 19:50:01 +0200
+Message-ID: <4A562DC9.7080000@pandora.be>
+References: <b2d58cb80906290712k33c1ebbvfc8e661cb34c502c@mail.gmail.com>	 <b2d58cb80906290818t66616f70k2fe7596b906a8a4e@mail.gmail.com>	 <4A48E14A.3060708@trash.net>	 <b2d58cb80906290918q2da5af1ap87772755b3363032@mail.gmail.com>	 <b2d58cb80906300108q2ee5a060gf8013a88560d8820@mail.gmail.com>	 <4A4B32C4.8050800@trash.net> <4A50A3BA.8060905@pandora.be>	 <alpine.LSU.2.00.0907051758550.22722@fbirervta.pbzchgretzou.qr>	 <4A52567A.3080202@pandora.be>	 <alpine.LSU.2.00.0907062200500.27775@fbirervta.pbzchgretzou.qr> <b2d58cb80907072357p55cc6bbbt81b107be50d5c46@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.0906021042280.11925@blackhole.kfki.hu>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <b2d58cb80907072357p55cc6bbbt81b107be50d5c46@mail.gmail.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@vger.kernel.org
+To: Nishit Shah <nsshah.82@gmail.com>
+Cc: Jan Engelhardt <jengelh@medozas.de>, Patrick McHardy <kaber@trash.net>, Richard Horton <arimus.uk@googlemail.com>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-Jozsef Kadlecsik wrote:
-> You can maintain one set for the network 
-> addresses, one for the IP addresses and create a setlist type of 
-> set with both "subsets" as members.
-Now I have a trouble with 'setlist'.
-For example:
-[root@tomgate /]# ipset -N pool1 ipmap --network 192.168.0.0/24
-[root@tomgate /]# ipset -A pool1 192.168.0.1
-[root@tomgate /]# ipset -N myset setlist
-[root@tomgate /]# ipset -A myset pool1
-[root@tomgate /]# ipset -T pool1 192.168.0.1
-192.168.0.1 is in set pool1.
-[root@tomgate /]# ipset -T pool1 192.168.0.2
-192.168.0.2 is NOT in set pool1.
-[root@tomgate /]# ipset -T myset 192.168.0.1
-192.168.0.1 is in set myset.
-[root@tomgate /]# ipset -T myset 192.168.0.2
-192.168.0.2 is in set myset.
-[root@tomgate /]# ipset -T myset stupidgarbage
-stupidgarbage is in set myset.
+Nishit Shah schreef:
+> Should I wait for another version to test ?
+>
+>   
+I'll have a look this weekend.
 
-When testing my setlist I always get "is in set".
-I suppose that is not normal.
+cheers,
+Bart
+
