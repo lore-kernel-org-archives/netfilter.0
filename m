@@ -1,80 +1,43 @@
-From: =?ISO-8859-1?Q?Jorge_D=E1vila?= <jorgedavilalopez@gmail.com>
-Subject: Re: tc and virtual interfaces
-Date: Fri, 10 Jul 2009 07:22:27 -0600
-Message-ID: <bf0e93a30907100622y6b8a620ek2c2330aaeb0bc472@mail.gmail.com>
-References: <4A572D8C.7010703@duet.it>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Problem with IPv6 tunnel
+Date: Fri, 10 Jul 2009 15:40:43 +0200
+Message-ID: <4A5744DB.4070303@plouf.fr.eu.org>
+References: <9948385e0906190131q58ba27c6ye625b662945f63ac@mail.gmail.com> <9948385e0907090448j566df6cdv961973e398b8b73b@mail.gmail.com> <9948385e0907090606x1d33d7abw64c38e7ac6238cc3@mail.gmail.com> <5b933efdfd09476e4b00a15fe5dc3ac0@localhost> <4A560E0D.40806@plouf.fr.eu.org> <23412bf8079dabef19ddd9fbe9022f66@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=uIKChG/Y4Ho/QaQ4TtdTnwC8ZDartCLwWErh67RRm80=;
-        b=f5NYDOjseQcm3Z9n+t2so3+VbDwqjR/wr569oqu6dfujFoNugt7v7Ocv38Ncnph9ER
-         mJxU0ftZGMQkZJddfV4CJajqyW43LVzEhPCWpsKnHB9UB5eR8ddd0xyZz2V6XM2XIuy/
-         vSKVlwegtTE8W80nhuFv7JCVp/T1kN1MVa+4c=
-In-Reply-To: <4A572D8C.7010703@duet.it>
+In-Reply-To: <23412bf8079dabef19ddd9fbe9022f66@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Fabio Marcone <fabio.marcone@duet.it>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Good morning,
-
-AFAIK iptables does not allow rules applied to eth0:x, the rules must
-be applied to the physical interface ( eth0 ).
-
-My suggestion for you is apply traffic shapping to the physical
-interface and create rules in table mangle of iptables to identify the
-traffic.
-
-By example, create a class with tc to limit the ipsec traffic going
-through the ipsec interface and other class for the traffic going
-through the tun devices.
-
-Then, using filters created with tc or by rules in the mangle table,
-you can identify the traffic, set the class.
-
-The scenary will be a little bit more complicated if you want filter
-traffic going through the tunnels both I think that can be acomplished
-but this will be added unnecesary complexity to the environment.
-
-Jorge D=E1vila.
-
-
-On Fri, Jul 10, 2009 at 6:01 AM, Fabio Marcone<fabio.marcone@duet.it> w=
-rote:
-> Hi all,
-> I need to add traffic shaping in a linux router (debian) and I need t=
-o
-> understand tc behaviour with virtual interfaces.
+Benedikt Gollatz a =C3=A9crit :
 >
-> Examples:
-> I have eth0 and eth0:0, if I set a limit on eth0 datarate, is also et=
-h0:0
-> involved?
-> ...or...
-> If I have a tunnel OpenVPN (tun0) on eth0, how is managed data rate l=
-imit?
->
-> Thanks in advance,
-> Fabio (I hope this post is not OT)
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
+>>> You need to accept proto-41
+>>> packets in the PREROUTING chain to stop the connection tracker from
+>>> looking at them.
+>>=20
+>> Wrong. Connection tracking happens anyway.
+>=20
+> You'll have to tell that to the authors of the SixXS FAQ.
+
+Maybe. I just read the FAQ entry about connection tracking, and I didn'=
+t=20
+think it was so clueless about Linux conntrack. But I'm so lazy, and=20
+SixXS puts so many requirements about how to contact them.
+
+>> Anyway what David need is to allow 6in4 traffic from the tunnel=20
+>> endpoint. This has nothing to do with connection tracking.
+>=20
+> Traffic passing through at first and after a certain time not being a=
+ble to
+> pass anymore is a classic symptom of problems with connection trackin=
+g.
+
+It less about connection tracking than about how connection tracking=20
+states are used in filtering rules. Connection tracking does not matter=
+=20
+if you accept all traffic. So it is a mostly a filtering issue.
 
 
-
---=20
-Jorge Isaac D=E1vila L=F3pez
-+505 8430 5462
-jorgedavilalopez@gmail.com
----
-Esta tierra es Linux. En las noches calladas puede escucharse a las
-m=E1quinas Windows re-inici=E1ndose...
