@@ -1,43 +1,30 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Problem with IPv6 tunnel
-Date: Fri, 10 Jul 2009 15:40:43 +0200
-Message-ID: <4A5744DB.4070303@plouf.fr.eu.org>
-References: <9948385e0906190131q58ba27c6ye625b662945f63ac@mail.gmail.com> <9948385e0907090448j566df6cdv961973e398b8b73b@mail.gmail.com> <9948385e0907090606x1d33d7abw64c38e7ac6238cc3@mail.gmail.com> <5b933efdfd09476e4b00a15fe5dc3ac0@localhost> <4A560E0D.40806@plouf.fr.eu.org> <23412bf8079dabef19ddd9fbe9022f66@localhost>
+From: Fabio Marcone <fabio.marcone@duet.it>
+Subject: Re: tc and virtual interfaces
+Date: Fri, 10 Jul 2009 15:54:04 +0200
+Message-ID: <4A5747FC.1040509@duet.it>
+References: <4A572D8C.7010703@duet.it> <4A573D34.7080100@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <23412bf8079dabef19ddd9fbe9022f66@localhost>
+In-Reply-To: <4A573D34.7080100@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Benedikt Gollatz a =C3=A9crit :
+thanks for your reply,
 >
->>> You need to accept proto-41
->>> packets in the PREROUTING chain to stop the connection tracker from
->>> looking at them.
->>=20
->> Wrong. Connection tracking happens anyway.
->=20
-> You'll have to tell that to the authors of the SixXS FAQ.
+> eth0:0 is not an interface, it is an IPv4 alias on eth0. The real and 
+> only interface here is eth0.
+ok, so I can't set up a queue on it, isn't it?
 
-Maybe. I just read the FAQ entry about connection tracking, and I didn'=
-t=20
-think it was so clueless about Linux conntrack. But I'm so lazy, and=20
-SixXS puts so many requirements about how to contact them.
-
->> Anyway what David need is to allow 6in4 traffic from the tunnel=20
->> endpoint. This has nothing to do with connection tracking.
->=20
-> Traffic passing through at first and after a certain time not being a=
-ble to
-> pass anymore is a classic symptom of problems with connection trackin=
-g.
-
-It less about connection tracking than about how connection tracking=20
-states are used in filtering rules. Connection tracking does not matter=
-=20
-if you accept all traffic. So it is a mostly a filtering issue.
+>
+> tun0 is an interface on its own. However, if encapsulating traffic 
+> happens to go through eth0, it will be affected by traffic shaping 
+> just as any other traffic going through eth0.
+ok, and I can limit datarate on tun0 and on eth0 ? the first is applied 
+only on vpn packets and the last on all eth0 outgoinig traffic I think...
 
 
+thanks,
+Fabio
