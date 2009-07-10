@@ -1,26 +1,77 @@
-From: Karel Rericha <karel@maxtel.cz>
-Subject: Re: tc and virtual interfaces
-Date: Fri, 10 Jul 2009 16:06:31 +0200
-Message-ID: <5b19ed110907100706ifafdba2p77b4873345260fb4@mail.gmail.com>
-References: <4A572D8C.7010703@duet.it> <4A573D34.7080100@plouf.fr.eu.org>
-	 <4A5747FC.1040509@duet.it>
-	 <bf0e93a30907100656o7388cbdbw984f3e90786033d5@mail.gmail.com>
+From: =?UTF-8?Q?David_Bala=C5=BEic?= <xerces9@gmail.com>
+Subject: Re: Problem with IPv6 tunnel
+Date: Fri, 10 Jul 2009 17:00:29 +0200
+Message-ID: <9948385e0907100800j7ea04888h46663f94ff0dfc54@mail.gmail.com>
+References: <9948385e0906190131q58ba27c6ye625b662945f63ac@mail.gmail.com>
+	 <9948385e0907090448j566df6cdv961973e398b8b73b@mail.gmail.com>
+	 <9948385e0907090606x1d33d7abw64c38e7ac6238cc3@mail.gmail.com>
+	 <5b933efdfd09476e4b00a15fe5dc3ac0@localhost>
+	 <4A560E0D.40806@plouf.fr.eu.org>
+	 <23412bf8079dabef19ddd9fbe9022f66@localhost>
+	 <4A5744DB.4070303@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <bf0e93a30907100656o7388cbdbw984f3e90786033d5@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=66bn4QTeIp7oU2EqguvgTgea+W4/YA/IoTqfiNVdTaE=;
+        b=pxir2nS2khTW/UGyIiTllEd8WiFPjMgY5YmcpXoCAiaN7m9TjuOPRpmHc28JOTNAwB
+         mnsM4dDqwDkaCMkB2Zi5VIUz2d8Vn3n7N7V24MU4djw1WvalAI+NBo2EKhoZxWXxGHEr
+         U1YOmntuyhtG6PR/PX4FZlrf2jCWM66wxA/Xk=
+In-Reply-To: <4A5744DB.4070303@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Cc: netfilter@vger.kernel.org
 
-2009/7/10 Jorge D=E1vila <jorgedavilalopez@gmail.com>:
-> The traffic shapping must be applied to the physical interface ( eth0
-> in this case).
+Just for info, I report that after I "opened" protocol 41 for input
+(and removed the nat table changes) my IPv6 tunnel is working fine for
+more than 24 hours.
 
-It is not exactly correct. AFAIK you can bind traffic shaping to
-bridged interface, imq or  ifb. Maybe even more I am not aware of.
+David
 
-But I dont know if it will help in this case.
-
-Karel
+2009/7/10 Pascal Hambourg <pascal.mail@plouf.fr.eu.org>:
+> Benedikt Gollatz a =E9crit :
+>>
+>>>> You need to accept proto-41
+>>>> packets in the PREROUTING chain to stop the connection tracker fro=
+m
+>>>> looking at them.
+>>>
+>>> Wrong. Connection tracking happens anyway.
+>>
+>> You'll have to tell that to the authors of the SixXS FAQ.
+>
+> Maybe. I just read the FAQ entry about connection tracking, and I did=
+n't
+> think it was so clueless about Linux conntrack. But I'm so lazy, and =
+SixXS
+> puts so many requirements about how to contact them.
+>
+>>> Anyway what David need is to allow 6in4 traffic from the tunnel end=
+point.
+>>> This has nothing to do with connection tracking.
+>>
+>> Traffic passing through at first and after a certain time not being =
+able
+>> to
+>> pass anymore is a classic symptom of problems with connection tracki=
+ng.
+>
+> It less about connection tracking than about how connection tracking =
+states
+> are used in filtering rules. Connection tracking does not matter if y=
+ou
+> accept all traffic. So it is a mostly a filtering issue.
+>
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
