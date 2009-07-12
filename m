@@ -1,43 +1,45 @@
-From: "Jorge Bastos" <mysql.jorge@decimal.pt>
-Subject: Re: nf_nat_sip & nf_conntrack_sip
-Date: Sun, 12 Jul 2009 19:02:32 +0100 (WEST)
-Message-ID: <2487.87.196.17.191.1247421752.squirrel@webmail.decimal.pt>
-References: <1982.192.168.1.3.1246005268.squirrel@webmail.decimal.pt>
-    <4A44C5B2.9030408@trash.net>
-    <2164.87.196.204.28.1246043247.squirrel@webmail.decimal.pt>
-    <1892.192.168.1.3.1246263728.squirrel@webmail.decimal.pt>
-    <4A48B3F4.8000705@trash.net>
-    <2152.192.168.1.3.1246280022.squirrel@webmail.decimal.pt>
-    <4A48B97C.1060803@trash.net>
-    <3238.192.168.1.3.1247247415.squirrel@webmail.decimal.pt>
-    <4A58C81E.4010606@trash.net>
-    <2026.87.196.17.191.1247346190.squirrel@webmail.decimal.pt>
-    <4A59F314.6010309@trash.net>
+From: Ante Blaskovic <ante.blaskovic@gmail.com>
+Subject: Routing traffic between two computers (3 network cards).
+Date: Mon, 13 Jul 2009 00:59:02 +0200
+Message-ID: <5b5eff110907121559i678a05far81567a7618d6c9c8@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4A59F314.6010309@trash.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=rrDMw1iQTA3TreoXY0cViZxd6Y03gLXzaGRMW65trJg=;
+        b=UoIvUHEXvGFPbw46E65GLVH8JDXEOhhhi3C/M7KBs9wUiG/aLEYmndRXqD+qjO+2qU
+         INjOtRNC9GHrxgrJekgd0HWnOejP4SYcvmnpGRJKWTcwWM5XYe7yXzlDEc14w+Tb2e+Y
+         3H3dcckbt+inJ2lYVMcZIW1ag4Wjt2MJKKjPw=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Patrick McHardy <kaber@trash.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
->> Let me see if i can explain myself.
->> When I'm on a call, and the person for the other side ends the call, the
->> sessions remains active.
->> Without loadling the modules, it works fine.
->
-> That sounds like some packets are dropped by the helper. You could
-> try this patch in combination with ulogd(2) to capture the packet
-> in pcap format.
+I have two computers Comp1 and Comp2 with one virtual machine with
+local IP. How can I make rule that will route traffic between
+Comp1-78.x.x.234=C2=A0 and=C2=A0 Comp2-188.x.x.111 so that I can access=
+ virtual
+machine on Comp2. If I try to access Comp2 directly with rule bellow I
+can reach machine on local IP 192.168.0.2 but I made rule to route
+traffic in one direction (Comp1=C2=A0 to Comp2) but I don't know how to
+link Comp2 to Comp1.
 
-Patrick,
-I can test that, you just have to explain to me how to i get that pcap
-file for you.
-I have no idea how... i'm not familiar with that!
-I'm going to patch kernel with your patch as you tell me howto get the
-pcap file.
+Comp1 - 78.x.x.234
+*nat
+-A PREROUTING -d 78.x.x.234/32 -j DNAT --to-destination 188.x.x.111
+-A POSTROUTING -s 188.x.x.111/32 -j SNAT --to-source 78.x.x.234
 
-Jorge,
+Comp2 - 188.x.x.111 - this computer has virtual machine in host only
+with local IP 192.168.0.2
 
+*nat
+-A PREROUTING -d 188.x.x.111/32 -m state --state
+NEW,RELATED,ESTABLISHED -j DNAT --to-destination 192.168.0.2
+-A POSTROUTING -s 192.168.0.2/32 -j SNAT --to-source 188.x.x.111
+
+
+Regards,
+Ante
