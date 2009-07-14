@@ -1,54 +1,33 @@
-From: Susan Hinrichs <shinrich@thought-mesh.net>
-Subject: Re: tc problems
-Date: Tue, 14 Jul 2009 12:22:01 -0500
-Message-ID: <1247592121.2769.601.camel@chichi>
-References: <4A5C99BB.4080405@duet.it>
-Reply-To: shinrich@ieee.org
+From: Simion Onea <simionea@gmail.com>
+Subject: Re: Forwarding packets over the same LAN
+Date: Tue, 14 Jul 2009 21:50:49 +0300
+Message-ID: <e1ba8dde0907141150y62e4e112t4bef1ae15c48711a@mail.gmail.com>
+References: <1247493655.2316.104.camel@TestField.intranet.bem.md>
+	 <1247494451.25529.52.camel@enterprise.ims-firmen.de>
+	 <1247558286.7214.16.camel@TestField.intranet.bem.md>
+	 <4A5CA53A.40703@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4A5C99BB.4080405@duet.it>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=lsNi4btx+p4BcOh4ewcnOzolJNArsNs7Exwl8vM4m+Q=;
+        b=UdfCweflaHZKm+hrjid7Zdn3EwQtGF0mnMDV+m50u2B3SOttwjnWkYUx4QeebYjrpi
+         fiPCocz1n3XwwrH1JTleHVgCx8+BkBvHitVGpllloTWcxY+lwnvdxENp57BKgdddGT0w
+         vV0X2n0ay3/h61lxIJ9kdMobUBbVuRV8sZUM0=
+In-Reply-To: <4A5CA53A.40703@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Fabio Marcone <fabio.marcone@duet.it>
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Cc: netfilter@vger.kernel.org
 
-You can indeed use the MAC addess in a u32 match by using negative
-offsets.  See the faq article for details.
-http://www.docum.org/docum.org/faq/cache/62.html
+2009/7/14 Pascal Hambourg <pascal.mail@plouf.fr.eu.org>:
+> man iptables
+> DNAT is a terminal target, so after a match the next rules in the chain are
+> not examined.
 
-This will work to enforce your w1/w2 based download limits on the LAN
-interface.
-
-However, when your upload packets leave the WAN interface, the original
-workstation MACs will be long gone before the TC processing occurs.  You
-could use the mac source tests in iptables and marks to propagate the
-information to the TC phase.
-
-Susan
-
-On Tue, 2009-07-14 at 16:44 +0200, Fabio Marcone wrote:
-> Hi!
-> I have a problem setting traffic shaping rules for routing packets.
-> 
-> scenario:
-> I have a linux router and two workstation that generate traffic to web 
-> server in Internet.
-> I need to limit:
->   - w1 to 100Kb/s in upload and 1MB/s in download
->   - w2 to 200 Kb/s in upload and 2 MB/s in download
-> 
-> I know that I have to set upload limit on wan interface and download 
-> limit on lan interface.
-> The problem is in download: how can I setup tc filter to recognize 
-> response packets to w1 and to w2? only by ip? and if I use dhcp? Does 
-> exist a way to use mac address?
-> 
-> Thanks in advance,
-> Fabio
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
+Thanks for pointing that out. I didn't know about this.
