@@ -1,49 +1,61 @@
-From: Anatoly Muliarski <x86ever@gmail.com>
-Subject: Re: Rate-Limiting (tc/CBQ) & Load Balancing Question
-Date: Tue, 14 Jul 2009 09:07:36 +0300
-Message-ID: <38db14850907132307p2fa82469k7a48dc3d021ff999@mail.gmail.com>
-References: <ba0063890907131239m1a883373yc31ad66241a5e1c8@mail.gmail.com>
+From: Simion Onea <simionea@gmail.com>
+Subject: Re: Forwarding packets over the same LAN
+Date: Tue, 14 Jul 2009 10:58:06 +0300
+Message-ID: <1247558286.7214.16.camel@TestField.intranet.bem.md>
+References: <1247493655.2316.104.camel@TestField.intranet.bem.md>
+	 <1247494451.25529.52.camel@enterprise.ims-firmen.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:content-type
-         :content-transfer-encoding;
-        bh=rq9v0A4wTDQ6BCQznsfnl2gKi387JHddU1yB5/HQ1Eg=;
-        b=uuILsajGTqiKf8L6fOcZQcfRhYWqn++aMGHdx+BmeFMTWZSY9Vb8Zca4cKHi5BwJqn
-         ET6DypWN3n5vU8WkEAJyMMa6cP9MnITTLrMFd3LFRRJkXIANA+rdjEZxn2tDJPEqWF6l
-         MTjnDcMV7Id9T5umkplW5riV8m6Z3HI/cTpFM=
-In-Reply-To: <ba0063890907131239m1a883373yc31ad66241a5e1c8@mail.gmail.com>
+        h=domainkey-signature:received:received:subject:from:to:cc
+         :in-reply-to:references:content-type:date:message-id:mime-version
+         :x-mailer:content-transfer-encoding;
+        bh=wPLndIGFEXq19MS7BHxWJpsGPlxZOHqoSU3Q2yxI/H0=;
+        b=Qw+lme7MBwVCy0xxMPDA6bWhLhHY+rKXFwgvQuh6CVJs4P23YFEgqO/VyfaIg5tm6J
+         BzOCh+zwpSj9uMKaQfw9YOIxAXlYFjGDBHMXLgs2gxYHncY9a21WzL5wFrBij1wc08VM
+         QGER0kBgvHSQZLD+l1GGETuxXsMwUW+5ljgIs=
+In-Reply-To: <1247494451.25529.52.camel@enterprise.ims-firmen.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Thomas Jacob <jacob@internet24.de>
+Cc: netfilter@vger.kernel.org
 
-Hi Chris,
+On Mon, 2009-07-13 at 16:14 +0200, Thomas Jacob wrote:
+> You need DNAT+SNAT for this:
+> 
+> # Redirect to IP:Port
+> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 10025 \
+> 	 -j DNAT --to-destination 172.20.1.254:25
+> 
+> # Ensure that the replies come back to us
+> iptables -t nat -A POSTROUTING -o eth0 -p tcp --dport 25 \
+>          -d 172.20.1.254  -j SNAT --to-source 172.20.1.245
 
-The way I am using now is to create ifb0 interface on input of the
-inside interface( I call it downlink ). So you can shape all upstream
-traffic on a single interface. Suppose eth0 is your downlink
-interface. Here is a piece of my perl script:
+Hi Thomas!
+
+I tried these rules but it seems that packets to not pass the first
+rule. To test this I put two LOG targets before and after the PREROUTING
+rule like this:
+
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 10025 -j LOG
+--log-tcp-options --log-prefix PREROUTING_before:
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 10025 -j DNAT
+--to-destination 172.20.1.254:25
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 25 -j LOG
+--log-tcp-options --log-prefix PREROUTING_after:
+iptables -t nat -A POSTROUTING -o eth0 -p tcp -d 172.20.1.254 --dport 25
+-j SNAT --to-source 172.20.1.245
+
+As a result I received in the log three messages with
+"PREROUTING_before" -- these were SYN packets. And no message with
+"PREROUTING_after" :-(
+
+What could be wrong ?
+
+Regards,
+Simion.
 
 
-  system("$ETC qdisc add dev $dev ingress");
-# Filter local traffic( INPUT ) - to distinguish the Global one by IP!
-  system("$ETC filter add dev $dev parent FFFF: protocol ip prio 1 u32
-match ip dst $ip flowid :1");
-  system("$ETC filter add dev $dev parent FFFF: protocol ip prio 1 u32
-match ip dst $bcast flowid :1");
-# Redirect FORWARDING traffic( not destined to us ) - to shape by ifb0 rules
-  system("$ETC filter add dev $dev parent FFFF: protocol ip prio 2 u32
-match u8 0 0 flowid :1 action mirred egress redirect dev ifb0
-
-where $dev is eth0, $ETC means tc :), $ip is IP of downlink interface,
-$bcast is its broadcast( ip & broadcast rules need only to separate
-router destined traffic from forwarding one ).
-
-Then you can use any qdisc you need on ifb0 device.
--- 
-Best regards
-Anatoly Muliarski
