@@ -1,61 +1,31 @@
-From: Thomas Jacob <jacob@internet24.de>
-Subject: Re: Forwarding packets over the same LAN
-Date: Tue, 14 Jul 2009 17:34:46 +0200
-Message-ID: <1247585686.1173.7.camel@enterprise.ims-firmen.de>
-References: <1247493655.2316.104.camel@TestField.intranet.bem.md>
-	 <1247494451.25529.52.camel@enterprise.ims-firmen.de>
-	 <1247558286.7214.16.camel@TestField.intranet.bem.md>
+From: Anatoly Muliarski <x86ever@gmail.com>
+Subject: Re: tc problems
+Date: Tue, 14 Jul 2009 20:41:08 +0300
+Message-ID: <38db14850907141041i7865662by63e121e6490672a2@mail.gmail.com>
+References: <4A5C99BB.4080405@duet.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1247558286.7214.16.camel@TestField.intranet.bem.md>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=f70aNfjyLieQfbhoCJPkzYCoGB115dT7geVwSvd8JjU=;
+        b=v0tmt/ZrUQOWhkC9cII5o4LL7ER9aI9scrjSH8S0KBANGYM97Df8QjaIPP9oIpkp1t
+         cl3ZAmIVucfuVlFrAMih0mjEgr5c3gCgVDPw9QBqwsS8NfOSbUWVVV9pRWH3PyaCHa5x
+         C/spn0j5j8k5XqIS/EcPx8pTBYF8IA/ZeqjmA=
+In-Reply-To: <4A5C99BB.4080405@duet.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Simion Onea <simionea@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
+Cc: fabio.marcone@duet.it
 
-On Tue, 2009-07-14 at 10:58 +0300, Simion Onea wrote:
-> On Mon, 2009-07-13 at 16:14 +0200, Thomas Jacob wrote:
-> > You need DNAT+SNAT for this:
-> > 
-> > # Redirect to IP:Port
-> > iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 10025 \
-> > 	 -j DNAT --to-destination 172.20.1.254:25
-> > 
-> > # Ensure that the replies come back to us
-> > iptables -t nat -A POSTROUTING -o eth0 -p tcp --dport 25 \
-> >          -d 172.20.1.254  -j SNAT --to-source 172.20.1.245
-> 
-> Hi Thomas!
-> 
-> I tried these rules but it seems that packets to not pass the first
-> rule. To test this I put two LOG targets before and after the PREROUTING
-> rule like this:
-> 
-> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 10025 -j LOG
-> --log-tcp-options --log-prefix PREROUTING_before:
-> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 10025 -j DNAT
-> --to-destination 172.20.1.254:25
-> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 25 -j LOG
-> --log-tcp-options --log-prefix PREROUTING_after:
-> iptables -t nat -A POSTROUTING -o eth0 -p tcp -d 172.20.1.254 --dport 25
-> -j SNAT --to-source 172.20.1.245
-> 
-> As a result I received in the log three messages with
-> "PREROUTING_before" -- these were SYN packets. And no message with
-> "PREROUTING_after" :-(
+Hi Fabio,
 
-Reading it again, of course you don't get that second message. That's
-what happens when rule matches, the DNAT entry stops processing of the
-packet in the PREROUTING chain. Your log also appears to contain the
-right packets.
+Look at http://mailman.ds9a.nl/pipermail/lartc/2005q4/017633.html
 
-You need to switch on forwarding though, I guess that is what is
-missing. Otherwise your system will just drop the packet after
-the Prerouting changes.
-
-i.e : echo 1 > /proc/sys/net/ipv4/ip_forward 
-
-I've just tried these rules for myself again, and they work nicely.
-
+-- 
+Best regards
+Anatoly Muliarski
