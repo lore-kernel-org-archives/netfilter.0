@@ -1,61 +1,67 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: Forwarding packets over the same LAN
-Date: Tue, 14 Jul 2009 11:25:18 +0200
-Message-ID: <4A5C4EFE.7000700@chello.at>
-References: <1247493655.2316.104.camel@TestField.intranet.bem.md>	 <1247494451.25529.52.camel@enterprise.ims-firmen.de> <1247558286.7214.16.camel@TestField.intranet.bem.md>
-Reply-To: netfilter@vger.kernel.org
+From: Vects <netfilter@vects.com>
+Subject: Re: iptables/ipset caused packet drops on interfaces
+Date: Tue, 14 Jul 2009 13:10:53 +0300
+Message-ID: <1247566253.5215.106.camel@vects1.nivki.net>
+References: <1247562280.5215.97.camel@vects1.nivki.net>
+	 <4A5C4CC5.1080107@vitek.tomsk.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1247558286.7214.16.camel@TestField.intranet.bem.md>
+In-Reply-To: <4A5C4CC5.1080107@vitek.tomsk.ru>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
-Cc: simionea@gmail.com
+Content-Type: text/plain; charset="utf-8"
+To: Victor Safronov <vitek@vitek.tomsk.ru>
+Cc: netfilter@vger.kernel.org
 
-Simion Onea wrote:
-> On Mon, 2009-07-13 at 16:14 +0200, Thomas Jacob wrote:
->   
->> You need DNAT+SNAT for this:
->>
->> # Redirect to IP:Port
->> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 10025 \
->> 	 -j DNAT --to-destination 172.20.1.254:25
->>
->> # Ensure that the replies come back to us
->> iptables -t nat -A POSTROUTING -o eth0 -p tcp --dport 25 \
->>          -d 172.20.1.254  -j SNAT --to-source 172.20.1.245
->>     
->
-> Hi Thomas!
->
-> I tried these rules but it seems that packets to not pass the first
-> rule. To test this I put two LOG targets before and after the PREROUTING
-> rule like this:
->
-> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 10025 -j LOG
-> --log-tcp-options --log-prefix PREROUTING_before:
-> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 10025 -j DNAT
-> --to-destination 172.20.1.254:25
-> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 25 -j LOG
-> --log-tcp-options --log-prefix PREROUTING_after:
-> iptables -t nat -A POSTROUTING -o eth0 -p tcp -d 172.20.1.254 --dport 25
-> -j SNAT --to-source 172.20.1.245
->
-> As a result I received in the log three messages with
-> "PREROUTING_before" -- these were SYN packets. And no message with
-> "PREROUTING_after" :-(
->
-> What could be wrong ?
->
-> Regards,
-> Simion.
->   
-Remember for the POSTROUTING rule, the previously redirected packets 
-come from the host:port, NOT go to the host again.
-You need `-s xxx.xxx.xxx.xxx --sport xx' -j SNAT ....
+On Tue, 2009-07-14 at 16:15 +0700, Victor Safronov wrote:
+> Vects =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > Hello there,
+> > I'm using iptables/ipsets on busy linux firewall, this firewall han=
+dles
+> > 300-400 Mb/s during the working hours, time to time I see significa=
+nt
+> > traffic drop and ksoftirqd/1 uses 100% cpu, in this situation I do
+> > stop/start iptables, after that network traffic and ksoftirqd retur=
+ned
+> > to be normal.
+> > First I thought this is a problem with network card driver, changin=
+g the
+> > driver didn't help, then I found that it depends from the number of
+> > ipsets in iptables.=20
+> >
+> > I'm using iptables 1.4.4 and ipset 3.0, I tested it on centos with
+> > original kernel and custom compiled 2.6.31, the same result.
+> >
+> > There's an output of ifconfig=20
+> >
+> > eth0      Link encap:Ethernet  HWaddr 00:19:BB:2D:98:D4 =20
+> >           inet addr:x.x.x.x  Bcast:x.x.x.x  Mask:255.255.255.248
+> >           inet6 addr: fe80::219:bbff:fe2d:98d4/64 Scope:Link
+> >           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+> >           RX packets:34773084524 errors:0 dropped:19709680 overruns=
+:0 frame:0
+> >           TX packets:26672945752 errors:0 dropped:0 overruns:0 carr=
+ier:0
+> >           collisions:0 txqueuelen:3000=20
+> >           RX bytes:34484441962468 (31.3 TiB)  TX bytes:727771297741=
+9 (6.6 TiB)
+> >           Interrupt:185 Memory:f8000000-f8012800=20
+> >
+> >
+> > What else I can do in order to solve that problem? I'll appreciate =
+any
+> > input.
+> >
+> > Thanks, Serge.
+> >  =20
+> You can use oprofile to determine what exactly 'eats' your processor =
+time.
+> This problem is well known for me.
+This is a production server, I can't do anything on it.=20
+You said you familiar with that problem, what was a reason in your case=
+?
 
-Greets
+Thanks, Serge.
 
-Mart
+
