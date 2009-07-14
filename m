@@ -1,51 +1,62 @@
-From: Simion Onea <simionea@gmail.com>
+From: Thomas Jacob <jacob@internet24.de>
 Subject: Re: Forwarding packets over the same LAN
-Date: Tue, 14 Jul 2009 15:20:25 +0300
-Message-ID: <1247574025.7214.36.camel@TestField.intranet.bem.md>
+Date: Tue, 14 Jul 2009 14:27:45 +0200
+Message-ID: <1247574465.30915.31.camel@enterprise.ims-firmen.de>
 References: <1247493655.2316.104.camel@TestField.intranet.bem.md>
 	 <1247494451.25529.52.camel@enterprise.ims-firmen.de>
 	 <1247558286.7214.16.camel@TestField.intranet.bem.md>
-	 <4A5C4EFE.7000700@chello.at>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:subject:from:to:in-reply-to
-         :references:content-type:date:message-id:mime-version:x-mailer
-         :content-transfer-encoding;
-        bh=9LpD8RZTpXNZv6ggerDAydGbXy9NubeVYV1CEFbSzzA=;
-        b=i3qHsfTeMYTnHU5vNFGojXDWUdoj58toqW+KkA8ogKbp/StKWm73su8iRT3HV1i8qE
-         bDKBbFTol5RQU9v9SpA8sxgFQ08AxD5vFGsK/IRxoQ8DmGQskHs1qUOM+S0Z7hhf0MQF
-         ToC64HHH2zrJEbVfYDqHGZ7TF/G7Myw6IEHyc=
-In-Reply-To: <4A5C4EFE.7000700@chello.at>
+In-Reply-To: <1247558286.7214.16.camel@TestField.intranet.bem.md>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Simion Onea <simionea@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-On Tue, 2009-07-14 at 11:25 +0200, Mart Frauenlob wrote:
-> Remember for the POSTROUTING rule, the previously redirected packets 
-> come from the host:port, NOT go to the host again.
-> You need `-s xxx.xxx.xxx.xxx --sport xx' -j SNAT ....
+On Tue, 2009-07-14 at 10:58 +0300, Simion Onea wrote:
+> On Mon, 2009-07-13 at 16:14 +0200, Thomas Jacob wrote:
+> > You need DNAT+SNAT for this:
+> > 
+> > # Redirect to IP:Port
+> > iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 10025 \
+> > 	 -j DNAT --to-destination 172.20.1.254:25
+> > 
+> > # Ensure that the replies come back to us
+> > iptables -t nat -A POSTROUTING -o eth0 -p tcp --dport 25 \
+> >          -d 172.20.1.254  -j SNAT --to-source 172.20.1.245
+> 
+> Hi Thomas!
+> 
+> I tried these rules but it seems that packets to not pass the first
+> rule. To test this I put two LOG targets before and after the PREROUTING
+> rule like this:
 
-Hi Mart!
+Is eth0 your actual interface then? This was just an example to give you
+the general idea, of course you need to adjust that to your case.
 
-But this rule is for the packets leaving host 172.20.1.245 not for the
-packets coming back from 172.20.1.254.
-The first rule changes packets' destination address and port (DNAT) so
-that they go to the other host. And the second rule changes packets'
-source address (SNAT) so that the other host returns the packets back to
-this host (172.20.1.245) not to the originating host from the LAN
-(172.20.1.xxx).
-When the packets return back from 172.20.1.254 to 172.20.1.245 the
-kernel it is supposed to recognize that these packets were previously
-DNAT-ed and SNAT-ed and to reverse back their source and destination
-addresses and send them back to the originating host from the LAN
-(172.20.1.xxx).
-This is the way I understand the process.
+Maybe you could post the LOG output from the rules below here, so we can
+see what's wrong
 
-Regards,
-Simion.
 
+> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 10025 -j LOG
+> --log-tcp-options --log-prefix PREROUTING_before:
+> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 10025 -j DNAT
+> --to-destination 172.20.1.254:25
+> iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 25 -j LOG
+> --log-tcp-options --log-prefix PREROUTING_after:
+> iptables -t nat -A POSTROUTING -o eth0 -p tcp -d 172.20.1.254 --dport 25
+> -j SNAT --to-source 172.20.1.245
+> 
+> As a result I received in the log three messages with
+> "PREROUTING_before" -- these were SYN packets. And no message with
+> "PREROUTING_after" :-(
+> 
+> What could be wrong ?
+> 
+> Regards,
+> Simion.
+> 
+> 
 
