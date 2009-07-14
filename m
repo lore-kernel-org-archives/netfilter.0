@@ -1,86 +1,51 @@
-From: Vects <netfilter@vects.com>
-Subject: Re: iptables/ipset caused packet drops on interfaces
-Date: Tue, 14 Jul 2009 13:26:55 +0300
-Message-ID: <1247567215.5215.122.camel@vects1.nivki.net>
-References: <1247562280.5215.97.camel@vects1.nivki.net>
-	 <alpine.DEB.2.00.0907141116030.32574@blackhole.kfki.hu>
+From: Simion Onea <simionea@gmail.com>
+Subject: Re: Forwarding packets over the same LAN
+Date: Tue, 14 Jul 2009 15:20:25 +0300
+Message-ID: <1247574025.7214.36.camel@TestField.intranet.bem.md>
+References: <1247493655.2316.104.camel@TestField.intranet.bem.md>
+	 <1247494451.25529.52.camel@enterprise.ims-firmen.de>
+	 <1247558286.7214.16.camel@TestField.intranet.bem.md>
+	 <4A5C4EFE.7000700@chello.at>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.0907141116030.32574@blackhole.kfki.hu>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:subject:from:to:in-reply-to
+         :references:content-type:date:message-id:mime-version:x-mailer
+         :content-transfer-encoding;
+        bh=9LpD8RZTpXNZv6ggerDAydGbXy9NubeVYV1CEFbSzzA=;
+        b=i3qHsfTeMYTnHU5vNFGojXDWUdoj58toqW+KkA8ogKbp/StKWm73su8iRT3HV1i8qE
+         bDKBbFTol5RQU9v9SpA8sxgFQ08AxD5vFGsK/IRxoQ8DmGQskHs1qUOM+S0Z7hhf0MQF
+         ToC64HHH2zrJEbVfYDqHGZ7TF/G7Myw6IEHyc=
+In-Reply-To: <4A5C4EFE.7000700@chello.at>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Tue, 2009-07-14 at 11:19 +0200, Jozsef Kadlecsik wrote:
-> On Tue, 14 Jul 2009, Vects wrote:
-> 
-> > I'm using iptables/ipsets on busy linux firewall, this firewall handles
-> > 300-400 Mb/s during the working hours, time to time I see significant
-> > traffic drop and ksoftirqd/1 uses 100% cpu, in this situation I do
-> > stop/start iptables, after that network traffic and ksoftirqd returned
-> > to be normal.
-> > First I thought this is a problem with network card driver, changing the
-> > driver didn't help, then I found that it depends from the number of
-> > ipsets in iptables. 
-> 
-> How did you verify that? What kind of sets do you use?
-I set up similar test environment, generated traffic by iperf, set up
-iptables/ipset rules with all accept, started to get drops, removed few
-rules until it got back to normal. 
-Another day I did the same sort of tests with some commercial traffic
-generator tool and got the same result.
-Mostly I'm using iphash ipsets with few nethash type, the biggest ipset
-has 4000 IPs
+On Tue, 2009-07-14 at 11:25 +0200, Mart Frauenlob wrote:
+> Remember for the POSTROUTING rule, the previously redirected packets 
+> come from the host:port, NOT go to the host again.
+> You need `-s xxx.xxx.xxx.xxx --sport xx' -j SNAT ....
 
->  
-> > I'm using iptables 1.4.4 and ipset 3.0, I tested it on centos with
-> > original kernel and custom compiled 2.6.31, the same result.
-> > 
-> > There's an output of ifconfig 
-> > 
-> > eth0      Link encap:Ethernet  HWaddr 00:19:BB:2D:98:D4  
-> >           inet addr:x.x.x.x  Bcast:x.x.x.x  Mask:255.255.255.248
-> >           inet6 addr: fe80::219:bbff:fe2d:98d4/64 Scope:Link
-> >           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-> >           RX packets:34773084524 errors:0 dropped:19709680 overruns:0 frame:0
-> >           TX packets:26672945752 errors:0 dropped:0 overruns:0 carrier:0
-> >           collisions:0 txqueuelen:3000 
-> >           RX bytes:34484441962468 (31.3 TiB)  TX bytes:7277712977419 (6.6 TiB)
-> >           Interrupt:185 Memory:f8000000-f8012800 
-> 
-> It'd be good to know the type of the network card and any settings to 
-> tune the driver or the stack.
-This is HP ProLiant DL360 G5, there are two Broadcom NetXtreme II
-Gigabit Ethernet Driver bnx2 v1.8.5b (Feb 9, 2009).
+Hi Mart!
 
-I set up max rx ring 
+But this rule is for the packets leaving host 172.20.1.245 not for the
+packets coming back from 172.20.1.254.
+The first rule changes packets' destination address and port (DNAT) so
+that they go to the other host. And the second rule changes packets'
+source address (SNAT) so that the other host returns the packets back to
+this host (172.20.1.245) not to the originating host from the LAN
+(172.20.1.xxx).
+When the packets return back from 172.20.1.254 to 172.20.1.245 the
+kernel it is supposed to recognize that these packets were previously
+DNAT-ed and SNAT-ed and to reverse back their source and destination
+addresses and send them back to the originating host from the LAN
+(172.20.1.xxx).
+This is the way I understand the process.
 
-Ring parameters for eth1/eth0:
-Pre-set maximums:
-RX:             4080
-RX Mini:        0
-RX Jumbo:       16320
-TX:             255
-Current hardware settings:
-RX:             4080
-RX Mini:        0
-RX Jumbo:       0
-TX:             255
+Regards,
+Simion.
 
-txqueuelen increased to 3000
-
-net.ipv4.netfilter.ip_conntrack_max=14316556
-
-Thanks, Serge.
-> 
-> Best regards,
-> Jozsef
-> -
-> E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-> Address : KFKI Research Institute for Particle and Nuclear Physics
->           H-1525 Budapest 114, POB. 49, Hungary
 
