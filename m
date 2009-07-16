@@ -1,15 +1,8 @@
 From: Simion Onea <simionea@gmail.com>
-Subject: Re: Forwarding packets over the same LAN
-Date: Thu, 16 Jul 2009 08:59:57 +0300
-Message-ID: <1247723997.15457.46.camel@TestField.intranet.bem.md>
-References: <1247493655.2316.104.camel@TestField.intranet.bem.md>
-	 <1247494451.25529.52.camel@enterprise.ims-firmen.de>
-	 <1247558286.7214.16.camel@TestField.intranet.bem.md>
-	 <1247585686.1173.7.camel@enterprise.ims-firmen.de>
-	 <e1ba8dde0907141201i5647546r78c2a66e24cad18f@mail.gmail.com>
-	 <4A5D8626.6060002@plouf.fr.eu.org>
-	 <1247643654.11785.6.camel@TestField.intranet.bem.md>
-	 <cfb4555b0907151312w371c0aa3j7fc5db21d301a38a@mail.gmail.com>
+Subject: Re: state ESTABLISHED, RELATED
+Date: Thu, 16 Jul 2009 09:42:40 +0300
+Message-ID: <1247726560.15457.77.camel@TestField.intranet.bem.md>
+References: <4A5E3B43.4050408@darkarts.no-ip.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -18,56 +11,61 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         h=domainkey-signature:received:received:subject:from:to:cc
          :in-reply-to:references:content-type:date:message-id:mime-version
          :x-mailer:content-transfer-encoding;
-        bh=6Nyb/iE88gXip+ZxZuz3z+zSOq4ohAeL7rjowmRzVfE=;
-        b=rZbeaPnT98jOt+ulMGrncTtdhCw+A+eiuhikmCTPFTm2bEV3Hogd7jDyUp82MVMClg
-         zjMwIkks6ZtRIHHLuAWQkqKdRbX8ckMah0TJPEpZvi3+qATjy7bmmVevMytFAUF/Qsfo
-         ygpMrJwNbfnY1Jv8Oh20di53oiNYxtwETBojA=
-In-Reply-To: <cfb4555b0907151312w371c0aa3j7fc5db21d301a38a@mail.gmail.com>
+        bh=27uM8MpLxokZ5SCCsLiyOdQxdrLVdYKQbsbdlq8Ieds=;
+        b=EF02Bxr4/roDfEWvWgjQNm01p4k58GefICPxFyeMwe7iRSWh4Khz3ztpgUn/sJE+Rq
+         5UWzFrItO7QbvG+8a5wagGS0+nIRiOdGtnkOuUUZJuIGguJ+G+gGHPj2RXVzUm3inSis
+         P0+QyL5ktG+YrTH1QZAiB4NYQx8w2Lu74Dfx8=
+In-Reply-To: <4A5E3B43.4050408@darkarts.no-ip.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Mike Williams <dmikewilliams@gmail.com>
+To: Andrew Kolt <andrew_kolt@darkarts.no-ip.org>
 Cc: netfilter@vger.kernel.org
 
-On Wed, 2009-07-15 at 16:12 -0400, Mike Williams wrote:
-> Simon,
+On Wed, 2009-07-15 at 23:25 +0300, Andrew Kolt wrote:
+> As a temp solution i added the following to the INPUT chain, in order to 
+> let those replies in:
 > 
-> Hi there.  Would you mind posting the output of iptables-save?  After
-> reading about your battle with this it would be nice to see the
-> complete set of working rules.  Also, having the final solution in the
-> archives may help someone else.
+> -A INPUT -i eth0 -p tcp -s 0/0 -d zzz.zzz.zzz.zzz -m state --state 
+> ESTABLISHED,RELATED -j ACCEPT
 > 
-> Thanks,
-> 
-> Mike
+> Everything works well now, but i'd like to know if there's any other way 
+> to go about this and if the line above is "good" practice as far
+> as security goes.
 
-Hi Mike!
+Hi Andrew!
 
-Well, our set of iptables rules is rather large. It performs several
-tasks like blocking access to some ports on the server, blocking access
-to some hosts, performing NAT for other hosts, etc.
-To be useful for the community, this set of rules would require a
-detailed explanation which I am not prepared to give because our
-company's policies do not allow me to do so.
-But the solution to my problem were the couple of rules proposed by
-Thomas Jacob:
-> On Mon, 2009-07-13 at 16:14 +0200, Thomas Jacob wrote:
-> > You need DNAT+SNAT for this:
-> > 
-> > # Redirect to IP:Port
-> > iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 10025 \
-> >      -j DNAT --to-destination 172.20.1.254:25
-> > 
-> > # Ensure that the replies come back to us
-> > iptables -t nat -A POSTROUTING -o eth0 -p tcp --dport 25 \
-> >          -d 172.20.1.254  -j SNAT --to-source 172.20.1.245
+In my opinion it is good practice. We have been using such a rule for
+some time. In our set of iptables rules we have these in the beginning:
 
-These rules did the job, but there was another one that I didn't notice
-at first. This rule was blocking traffic to port 25:
+#------------------------------------------------------------------
+# Drop invalid packets, unrelated to any connection
+iptables -t filter -A INPUT -m state --state INVALID -j DROP
 
-# iptables -A FORWARD -p tcp -s 172.20.1.245 -d 0/0 --dport 25 -j DROP
+# Block and log several types of network scans that use malformed packets
+# FIN / URG / PSH
+iptables -t filter -A INPUT -p tcp --tcp-flags ALL FIN,URG,PSH -m limit --limit 5/minute \
+  -j LOG --log-level notice --log-prefix "NMAP-XMAS:"
+iptables -t filter -A INPUT -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP
 
-As soon as I removed this rule everything went fine.
+# SYN / RST
+iptables -t filter -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -m limit --limit 5/minute \
+  -j LOG --log-level notice --log-prefix "SYN/RST:"
+iptables -t filter -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+
+# SYN / FIN -- scan (probably)
+iptables -t filter -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -m limit --limit 5/minute \
+  -j LOG --log-level notice --log-prefix "SYN/FIN:"
+iptables -t filter -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+
+# Accept packets related to previously established connections
+iptables -t filter -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# Accept locally generated packets unconditionally
+iptables -t filter -A INPUT -i lo -j ACCEPT
+#------------------------------------------------------------------
+
+The same rules can also be applied to FORWARD chain.
 
 Regards,
 Simion.
