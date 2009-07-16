@@ -1,73 +1,54 @@
-From: Simion Onea <simionea@gmail.com>
+From: Richard Horton <arimus.uk@googlemail.com>
 Subject: Re: state ESTABLISHED, RELATED
-Date: Thu, 16 Jul 2009 09:42:40 +0300
-Message-ID: <1247726560.15457.77.camel@TestField.intranet.bem.md>
+Date: Thu, 16 Jul 2009 09:21:44 +0100
+Message-ID: <56378e320907160121wc060b93sd193f2ba4fdb88c2@mail.gmail.com>
 References: <4A5E3B43.4050408@darkarts.no-ip.org>
+	 <1247726560.15457.77.camel@TestField.intranet.bem.md>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:subject:from:to:cc
-         :in-reply-to:references:content-type:date:message-id:mime-version
-         :x-mailer:content-transfer-encoding;
-        bh=27uM8MpLxokZ5SCCsLiyOdQxdrLVdYKQbsbdlq8Ieds=;
-        b=EF02Bxr4/roDfEWvWgjQNm01p4k58GefICPxFyeMwe7iRSWh4Khz3ztpgUn/sJE+Rq
-         5UWzFrItO7QbvG+8a5wagGS0+nIRiOdGtnkOuUUZJuIGguJ+G+gGHPj2RXVzUm3inSis
-         P0+QyL5ktG+YrTH1QZAiB4NYQx8w2Lu74Dfx8=
-In-Reply-To: <4A5E3B43.4050408@darkarts.no-ip.org>
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=w6sMVQdhmcpVbJCwylevCYWH3px9I7fUNyaU8VhdqdY=;
+        b=iZMwfNxhwIRR0aI1NLv5hKQVm6bEj3VpWLyDoHFcK8bnVgjaumABMn93AgEeF0Hhqw
+         0hbNKIlU6ahigs4SvRC/xnxsHJOlQvpGjYBzi5fGNX7KmZOdLDHgoRKn56iKcA9Fb6/D
+         tZVUn0JEMeIfwn84pqm8ToSTiZpLFHR8c/T+s=
+In-Reply-To: <1247726560.15457.77.camel@TestField.intranet.bem.md>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Andrew Kolt <andrew_kolt@darkarts.no-ip.org>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Wed, 2009-07-15 at 23:25 +0300, Andrew Kolt wrote:
-> As a temp solution i added the following to the INPUT chain, in order to 
-> let those replies in:
-> 
-> -A INPUT -i eth0 -p tcp -s 0/0 -d zzz.zzz.zzz.zzz -m state --state 
-> ESTABLISHED,RELATED -j ACCEPT
-> 
-> Everything works well now, but i'd like to know if there's any other way 
-> to go about this and if the line above is "good" practice as far
-> as security goes.
+2009/7/16 Simion Onea <simionea@gmail.com>:!
+>
+> In my opinion it is good practice. We have been using such a rule for
+> some time. In our set of iptables rules we have these in the beginning:
+>
+> #------
+.... snip  long set of rules...
 
-Hi Andrew!
+> The same rules can also be applied to FORWARD chain.
+>
 
-In my opinion it is good practice. We have been using such a rule for
-some time. In our set of iptables rules we have these in the beginning:
+As a thought could you add those to a custom tables, say for the sake
+of example shared:
 
-#------------------------------------------------------------------
-# Drop invalid packets, unrelated to any connection
-iptables -t filter -A INPUT -m state --state INVALID -j DROP
+iptables -N shared
+iptables -A shared <whatever>
 
-# Block and log several types of network scans that use malformed packets
-# FIN / URG / PSH
-iptables -t filter -A INPUT -p tcp --tcp-flags ALL FIN,URG,PSH -m limit --limit 5/minute \
-  -j LOG --log-level notice --log-prefix "NMAP-XMAS:"
-iptables -t filter -A INPUT -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP
+then in the input chain and forward chains make the first rule a jump to shared.
 
-# SYN / RST
-iptables -t filter -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -m limit --limit 5/minute \
-  -j LOG --log-level notice --log-prefix "SYN/RST:"
-iptables -t filter -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
-
-# SYN / FIN -- scan (probably)
-iptables -t filter -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -m limit --limit 5/minute \
-  -j LOG --log-level notice --log-prefix "SYN/FIN:"
-iptables -t filter -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
-
-# Accept packets related to previously established connections
-iptables -t filter -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-# Accept locally generated packets unconditionally
-iptables -t filter -A INPUT -i lo -j ACCEPT
-#------------------------------------------------------------------
-
-The same rules can also be applied to FORWARD chain.
-
-Regards,
-Simion.
+This makes it easier to manage the 'common' rule set as you only need
+to change it at a single point rather than having to remember to
+change both occurances...
 
 
+-- 
+Richard Horton
+Users are like a virus: Each causing a thousand tiny crises until the
+host finally dies.
+http://www.solstans.co.uk - Solstans Japanese Bobtails and Norwegian Forest Cats
+http://www.pbase.com/arimus - My online photogallery
