@@ -1,39 +1,49 @@
-From: Michael Mefford <meffordm@gmail.com>
-Subject: questions about nfqnl_test.c
-Date: Fri, 17 Jul 2009 23:00:30 -0600
-Message-ID: <4A6156EE.60909@gmail.com>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: HFSC scheduling and Linux vlans
+Date: Sat, 18 Jul 2009 08:22:04 +0200
+Message-ID: <4A616A0C.4000005@trash.net>
+References: <bf0e93a30907172138lea3f7efu9656f58e360a64eb@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from
-         :user-agent:mime-version:to:subject:content-type
-         :content-transfer-encoding;
-        bh=1/3n8cIGMsVOlVSGGfqPbJzbpdCMoTicMylivQJAIP0=;
-        b=auy4r4uPEGgFc6335FwL0Y60mNLIFiOTNGEmsYDxB3UF+XhCITMeRxDmEBl1LMvBj2
-         T9JYcEJKWLV7hP1+jroa8PLgvcjyv5upwNpRl6azJ9Qdryo2FKHS+h9LwTEv/u/UA5eZ
-         r5q3gJYnrtK2NRz7T8jKT+oi+8xrE6anlmivA=
+In-Reply-To: <bf0e93a30907172138lea3f7efu9656f58e360a64eb@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?ISO-8859-15?Q?Jorge_D=E1vila?= <jorgedavilalopez@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-I just have two quick questions.
+Jorge D=E1vila wrote:
+> The actual configuration works using HTB scheduling but when I tried
+> apply the HFSC configuration there is no traffic through any
+> interfaces.
+>=20
+> This is the output
+>=20
+> tc -s filter show dev eth1; tc -s class show dev eth1
+> filter parent 1: protocol ip pref 1 fw
+> filter parent 1: protocol ip pref 1 fw handle 0x17 classid 1:23
+> filter parent 1: protocol ip pref 1 fw handle 0x30 classid 1:48
+> filter parent 1: protocol ip pref 2 fw
+> filter parent 1: protocol ip pref 2 fw handle 0x10 classid 1:16
+> filter parent 1: protocol ip pref 3 fw
+> filter parent 1: protocol ip pref 3 fw handle 0x20 classid 1:32
+> filter parent 1: protocol ip pref 3 fw handle 0x80 classid 1:128
+> filter parent 1: protocol ip pref 4 fw
+> filter parent 1: protocol ip pref 4 fw handle 0x5 classid 1:5
+> filter parent 1: protocol ip pref 4 fw handle 0x15 classid 1:21
+> filter parent 1: protocol ip pref 6 fw
+> filter parent 1: protocol ip pref 6 fw handle 0x4 classid 1:4
+> filter parent 1: protocol ip pref 6 fw handle 0x6 classid 1:6
+> filter parent 1: protocol ip pref 6 fw handle 0x9 classid 1:9
+> filter parent 1: protocol ip pref 7 fw
+> filter parent 1: protocol ip pref 7 fw handle 0x2 classid 1:102
+> filter parent 1: protocol ip pref 7 fw handle 0x3 classid 1:3
+> filter parent 1: protocol ip pref 7 fw handle 0x7 classid 1:7
+> filter parent 1: protocol ip pref 7 fw handle 0x8 classid 1:8
+> filter parent 1: protocol ip pref 7 fw handle 0xa classid 1:10
+> filter parent 1: protocol ip pref 7 fw handle 0xe classid 1:14
+> filter parent 1: protocol ip pref 7 fw handle 0x11 classid 1:17
+> filter parent 1: protocol ip pref 7 fw handle 0x13 classid 1:19
 
-Towards the bottom of nfqnl_test.c there is the following:
-
-#ifdef INSANE
-    /* normally, applications SHOULD NOT issue this command, since
-     * it detaches other programs/sockets from AF_INET, too ! */
-    printf("unbinding from AF_INET\n");
-    nfq_unbind_pf(h, AF_INET);
-#endif
-
-Why?  If this should not be 'normally' done, then why is it in here?
-
-Second, what does INSANE mean?  I've never seen this before.
-
-
-Michael.
-
+You're missing arp classification.
