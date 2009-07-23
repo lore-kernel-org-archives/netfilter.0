@@ -1,29 +1,32 @@
-From: Fabio Marcone <fabio.marcone@duet.it>
-Subject: info on IMQ and routing
-Date: Thu, 23 Jul 2009 12:51:16 +0200
-Message-ID: <4A6840A4.5080206@duet.it>
+From: pedrocostaarma@sapo.pt
+Subject: error with iptables
+Date: Thu, 23 Jul 2009 12:32:24 +0100
+Message-ID: <20090723123224.10213oznyn3rqslk@w0.mail.sapo.pt>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; delsp="Yes"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi!
-I need to understand how are routed packets outgoing from a imq 
-interface, because I have a router with some eth interfaces and I need 
-to undestand:
-- if I have to set up a imq for each eth, or
-- if I can set up just one eth and then use tc to create some classes 
-and related filters.
 
-What are pros and cons of these choices?
+Hello,
 
-I'm googled around but without success.
+I?m Pedro Costa from Portugal and I use Ubuntu 9.04. I have a problem  
+when i try to add a new rule to my iptables, that is, i can?t use  
+""dport" because the result is everytime "bad argument".
 
-thanks in advance,
-Fabio
+For example, when i try add a new rule like this: " iptables -A INPUT  
+-p tcp -i $IF --dport 12345:12346 -j LDROP" have every time this  
+error: "Bad argument `12345:12346'".
 
+Please help me.What i have to do ?
 
+waiting awser
 
+Sorry for the bad english
+
+Pedro Costa
+Thanks
