@@ -1,93 +1,38 @@
-From: "Wilbert J. Rojas O." <sysadmin@ideay.net.ni>
-Subject: MASQUERADE MAIL SERVER
-Date: Thu, 23 Jul 2009 11:02:53 -0600
-Message-ID: <4A6897BD.8000805@ideay.net.ni>
+From: Jamie Orzechowski <jamie.orzechowski@gmail.com>
+Subject: IPTables forward before redirection
+Date: Thu, 23 Jul 2009 13:14:34 -0400
+Message-ID: <a32a580b0907231014r21946493mabe5e31e58aeae8d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=HOkWpEgD7HReEsWUPAzuqlGqImJaWm/Z/L7idyP5dac=;
+        b=eTKpngVHxkpbCiBN4zYstlWIQJQWzsTZMuKRvlDh5GELxnMcGNcC6LvSyvX28fBzGg
+         mtvUTKi+blsqbUafo17NSeRjXbujFjB7LEyxoNtj6JFrYCCrWSUJiZCsIqblEIvMs5sG
+         NKcMhPs+SfiYw+ILFcOZdwT2s9u+a7kacTExY=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-  Hello,
+I am running Squid Cache with TPROXY Support ... the problem is my
+iptables rules are passing all port 80 traffic to squid.  I want to
+add a rule to bypass a local subnet so it is not intercepted and goes
+direct to the destination ... here is my rule but it's not working ..
+it's still being intercepted.  All traffic occurs on eth1 ... any
+ideas?
 
-My Network configuration is that:
+iptables -t mangle -N DIVERT
+iptables -t mangle -A DIVERT -j MARK --set-mark 1
+iptables -t mangle -A DIVERT -j ACCEPT
 
+#Bypass This destination
+iptables -t mangle -A PREROUTING -p tcp -m tcp -i eth1 --dport 80 -d
+66.78.96.0/255.255.255.0 -j ACCEPT
 
-ISP
-|
-|
-|
-|  *eth0 200.9.190.20* *eth0:1* 200.9.190.21 *eth0:2* 200.9.190.23=20
-*eth0:3* 200.9.190.24 *eth0:4* 200.9.190.25
-LINUX BOX
-|  *eth1 10.24.54.1/32*
-|
-|
-LAN  10.24.54.0/24  gw 10.24.54.1
-|
-|
-MAIL SERVER 10.54.24.96/32  gw 10.24.54.1
-
-
-
-All machines to get out to INTERNET through my LINUX BOX included my=20
-MAIL SERVER but i want that MAIL SERVER to get out to INTERNET with IP=20
-Public Address different like 200.9.190.25 and my all rest network get=20
-out through 200.9.190.20
-
-The rules i have applied like this but i don't know how to do that:
-
-/sbin/iptables -t nat -A PREROUTING -i eth1 -s 10.24.54.0/255.255.255.0=
-=20
--d 0/0 -p tcp --dport 80 -j REDIRECT --to-port 8080
-/sbin/iptables -t nat -A PREROUTING -i eth1 -s 10.24.54.0/255.255.255.0=
-=20
--d 0/0 -p tcp --dport 8080 -j REDIRECT --to-port 8080
-
-/sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-
-/sbin/iptables -t nat -A PREROUTING -p tcp -i eth0 -d 200.9.190.20=20
---dport 25 -j DNAT --to-destination 10.24.54.96:25
-/sbin/iptables -t nat -A PREROUTING -p tcp -i eth0 -d 200.9.190.20=20
---dport 110 -j DNAT --to-destination 10.24.54.96:110
-/sbin/iptables -t nat -A PREROUTING -p tcp -i eth0 -d 200.9.190.20=20
---dport 143 -j DNAT --to-destination 10.24.54.96:143
-
-
-Any help or suggestions ??
-
-Regards.
-
-
-
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-Ing. Wilbert Jos=E9 Rojas Ochoa.
-Administrador de Sistemas
-Ideay ~ Equipos y Sistemas.
-Managua, Nicaragua.
-Telf. +(505) 2277-4000 Ext: 115.
-=46ax   +(505) 2277-4411.
-USA:  +(305) 735-8364.
-Cel.  +(505) 8883-2877.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-
-
-
---=20
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-Ing. Wilbert Jos=E9 Rojas Ochoa.
-Administrador de Sistemas
-Ideay ~ Equipos y Sistemas.
-Managua, Nicaragua.
-Telf. +(505) 2277-4000 Ext: 115.
-=46ax   +(505) 2277-4411.
-USA:  +(305) 735-8364.
-Cel.  +(505) 8883-2877.
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D
-
+iptables -t mangle -A PREROUTING -p tcp -m socket -j DIVERT
+iptables -t mangle -A PREROUTING -p tcp --dport 80 -j TPROXY
+--tproxy-mark 0x1/0x1 --on-port 3129 --on-ip 66.78.102.2
