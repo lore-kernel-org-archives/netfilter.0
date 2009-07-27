@@ -1,57 +1,61 @@
 From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
 	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
-Subject: Re: info on IMQ and routing
-Date: Mon, 27 Jul 2009 11:11:56 +0300
-Message-ID: <1248682316.4090.11.camel@casper.meteor.dp.ua>
-References: <4A6840A4.5080206@duet.it>
+Subject: Re: IMQ and marking
+Date: Mon, 27 Jul 2009 11:23:36 +0300
+Message-ID: <1248683016.4090.14.camel@casper.meteor.dp.ua>
+References: <4A65A1A4.4020805@duet.it>  <4A65CEE6.9050004@duet.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4A6840A4.5080206@duet.it>
+In-Reply-To: <4A65CEE6.9050004@duet.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="koi8-r"
 To: Fabio Marcone <fabio.marcone@duet.it>
 Cc: netfilter@vger.kernel.org
 
-=F7 =FE=D4=D7, 23/07/2009 =D7 12:51 +0200, Fabio Marcone =D0=C9=DB=C5=D4=
+=F7 =F7=D4=CF, 21/07/2009 =D7 16:21 +0200, Fabio Marcone =D0=C9=DB=C5=D4=
 :
-> Hi!
-> I need to understand how are routed packets outgoing from a imq=20
-> interface, because I have a router with some eth interfaces and I nee=
-d=20
-> to undestand:
-> - if I have to set up a imq for each eth, or
-> - if I can set up just one eth and then use tc to create some classes=
+> In a post in a forum I see this:
+> iptables -t mangle -A PREROUTING -m owner --pid-owner <PID of process=
+> -=20
+> -j MARK --set-mark 2
+
+
+> iptables -t mangle -A PREROUTING -j IMQ --todev 0
+
+This rule just tells the kernel to put this packet to imq0 device just
+after the mangle table is processed, not immediatelly. So it is safe an=
+d
+good practice to place those rules closer to the top.
+
+> the second rule is used? so, rule matching in mangle table is not blo=
+cking?
+>=20
+> Fabio
+> > Hi!
+> > I'm studying how to introduce traffic shaping in a linux router=20
+> > (debian). I mark packets in prerouting using mac source to forward=20
+> > packets on a selected WAN interface.
+> > I need to use mangle in PREROUTING to send packects (in input) to a=
 =20
-> and related filters.
+> > imqX interface.
+> > Is there a conflict between mark and IMQ?
+> > If so, how it can be solved?
+> >
+> > Thanks in advance,
+> > Fabio Marcone
+> > --=20
+> > To unsubscribe from this list: send the line "unsubscribe netfilter=
+" in
+> > the body of a message to majordomo@vger.kernel.org
+> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
 >=20
-> What are pros and cons of these choices?
->=20
-> I'm googled around but without success.
-
-
-In case of using IMQ things works as usual, except:
-
-- you can direct traffic from many interfaces to one imq virtual device=
-,
-for example to direct incoming traffic to imq0 and outgoing to imq1:
-
-iptables -t mangle -A PREROUTING -i eth0 -j IMQ --todev 0
-iptables -t mangle -A PREROUTING -i eth1 -j IMQ --todev 0
-
-iptables -t mangle -A POSTROUTING -o eth0 -j IMQ --todev 1
-iptables -t mangle -A POSTROUTING -o eth1 -j IMQ --todev 1
-
-- you can shape on imq (imq0 and imq1) device with tc just as usual
-- after traffic has been shaped it's being reinjected back to the place
-it has been taken for shaping (just after -t mangle, POSTROUTING or
-PREROUTING).
-
-The main purpose of IMQ is the ability to shape several interfaces by
-one tc qdisc. So the is probably very less sense of setting up one imq
-per one interface.
-
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 --=20
 =F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
 ua>
