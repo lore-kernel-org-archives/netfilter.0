@@ -1,45 +1,54 @@
-From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
-	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
-Subject: Re: Different routes decided by source and/or dest. port
-Date: Mon, 27 Jul 2009 12:51:56 +0300
-Message-ID: <1248688316.11438.3.camel@casper.meteor.dp.ua>
-References: <cffd2ab0907270216o625c4934p2fcda2cc843e81f9@mail.gmail.com>
+From: Michael Mefford <meffordm@gmail.com>
+Subject: Re: netfilter + perl payload mangling in userspace
+Date: Mon, 27 Jul 2009 09:44:39 -0600
+Message-ID: <4A6DCB67.7080004@gmail.com>
+References: <1248667055.5801.355.camel@trixeee>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <cffd2ab0907270216o625c4934p2fcda2cc843e81f9@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from
+         :user-agent:mime-version:to:cc:subject:references:in-reply-to
+         :content-type:content-transfer-encoding;
+        bh=VNF+/bWfP8InuO4eowTMymnCMesMXxdZKv+IwJPQKKA=;
+        b=PHYze/rnnsrD/ZfMCki659hkITtZ6J6Xwr2Tl4V53GHJSBrG4HAlg2v/qWo1jQ/y6M
+         d82ENVUSb6qcKordO7UnexzXvTmj7SlAfQJ8qHk8Q8OiEcOhPHf+S1rMeG+Dx/oi2X2A
+         OxIacsBqZoSvt88LvWSyXDwRyYyzNvzMbwY2Y=
+In-Reply-To: <1248667055.5801.355.camel@trixeee>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="koi8-r"
-To: Michael Mattsson <michael.mattsson@gmail.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: trixter@0xdecafbad.com
 Cc: netfilter@vger.kernel.org
 
-=F7 =F0=CE=C4, 27/07/2009 =D7 11:16 +0200, Michael Mattsson =D0=C9=DB=C5=
-=D4:
-> Hi!
-> I'm trying to determine if it's possible to have different routes
-> (interfaces) of traffic through an iptables NAT firewall.
->=20
-> The use case is that I've recently bought a VPN service to protect ou=
-r
-> privacy due to the EU directive IPRED.
-> (http://en.wikipedia.org/wiki/IPRED) I have several hosts on my
-> network and I'm not interested in sending all traffic through the
-> tunnel, only traffic I'm interested in protecting. The only way I can
-> determine that is by looking at port ranges in and some cases source
-> host on my network.
->=20
-> I'm interested in getting pointers to what documentation that might b=
-e
-> relevant in accomplishing what I want to do. I'm quite novice in usin=
-g
-> iptables as I use firewall builder to deploy my rules.
+Trixter aka Bret McDanel wrote:
+> I wanted to modify the payload of packets in userspace, preferably with
+> perl.  I have tried to google to find something, encountered some dead
+> links.  I have not be able to get the example Net::Divert to work,
+> however it appears that I am not able to divert properly.  I cant find
+> any working examples of how to do the iptables command to divert.  
+>
+> Is there any other way to modify the payload of a packet from userspace,
+> preferably with perl?
+>
+> can someone provide me with a working example of how to do iptables to
+> divert?
+>
+>
+> I have iptables 1.4.1.1 on eeebuntu (ubuntu base) and a kernel of 2.6.27
+>
+> Thank you
+>   
 
-One solution could be to use iptables marks and ip rules (ip rule help)
-to use different routing tables for packets with different iptables
-marks.
+Have you tried using NFQUEUE?  The queue is provided to 'queue' packets 
+for userspace processing.  To use the queue, you'll need the 
+libnetfilter_queue API.  Start here:
 
---=20
-=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
-ua>
+http://www.netfilter.org/projects/libnetfilter_queue/index.html
+
+If you need more help, let me know.
+
+
+Michael.
 
