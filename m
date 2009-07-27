@@ -1,52 +1,58 @@
-From: Zhiyun Qian <zhiyunq@umich.edu>
-Subject: Source IP or Dest IP rewriting failed with correct TCP and IP checksum
-Date: Mon, 27 Jul 2009 03:17:03 -0400
-Message-ID: <4A6D546F.8010606@umich.edu>
+From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
+	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
+Subject: Re: info on IMQ and routing
+Date: Mon, 27 Jul 2009 11:11:56 +0300
+Message-ID: <1248682316.4090.11.camel@casper.meteor.dp.ua>
+References: <4A6840A4.5080206@duet.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4A6840A4.5080206@duet.it>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="koi8-r"
+To: Fabio Marcone <fabio.marcone@duet.it>
+Cc: netfilter@vger.kernel.org
 
-Hi all,
+=F7 =FE=D4=D7, 23/07/2009 =D7 12:51 +0200, Fabio Marcone =D0=C9=DB=C5=D4=
+:
+> Hi!
+> I need to understand how are routed packets outgoing from a imq=20
+> interface, because I have a router with some eth interfaces and I nee=
+d=20
+> to undestand:
+> - if I have to set up a imq for each eth, or
+> - if I can set up just one eth and then use tc to create some classes=
+=20
+> and related filters.
+>=20
+> What are pros and cons of these choices?
+>=20
+> I'm googled around but without success.
 
-Sorry about sending the question to both lists cause I am not sure which 
-one is the best list.
 
-I am using the latest libnetfilter_queue and other dependencies 
-(downloaded a couple of days ago).
+In case of using IMQ things works as usual, except:
 
-I've spent some time trying to rewrite the packets (specifically, the 
-source IP address or the destination IP address) and reinject it back to 
-the network. I think I got the code right. However, after I did the 
-modification on the packets, although with the correct checksum at both 
-IP and TCP layer (I have tried several fixed packet headers where the 
-checksum is known beforehand and make sure checksum is computed 
-correctly), the packet was not successfully reinjected (not captured by 
-tcpdump).
+- you can direct traffic from many interfaces to one imq virtual device=
+,
+for example to direct incoming traffic to imq0 and outgoing to imq1:
 
-The weird thing is that they fail deterministically but randomly (to me) 
-for different IP addresses. For example, if I rewrite the destination IP 
-to 1.1.1.1, it succeeded, but if I rewrite the destination IP to 
-1.1.1.2, it then failed. And for source IPs, it always fails. I've 
-tested the other fields like TTL or source port and destination port, it 
-always succeeded.
+iptables -t mangle -A PREROUTING -i eth0 -j IMQ --todev 0
+iptables -t mangle -A PREROUTING -i eth1 -j IMQ --todev 0
 
-One possibility that can partially explain this is that my machine is 
-not allowing spoofed IP address. But then I use hping to spoof other IPs 
-and the packets are indeed captured by tcpdump (I also checked my 
-iptables configuration). I then think if hping is using a different 
-mechanism to send out packets than libnetfilter_queue. But I couldn't 
-find the answer until I dive into the corresponding kernel module (I 
-think hping is just using raw socket). I am wondering if there's a way 
-to get the result of the injected packet (whether or not it is delivered 
-out). I don't know what the return value of nfq_set_verdict() means, it 
-is always some value larger than 0 (e.g. 32, 72 ...).
+iptables -t mangle -A POSTROUTING -o eth0 -j IMQ --todev 1
+iptables -t mangle -A POSTROUTING -o eth1 -j IMQ --todev 1
 
-Can anybody shed some lights on this? Thanks a lot! I can post my code 
-here if needed.
+- you can shape on imq (imq0 and imq1) device with tc just as usual
+- after traffic has been shaped it's being reinjected back to the place
+it has been taken for shaping (just after -t mangle, POSTROUTING or
+PREROUTING).
 
-Regards.
--Zhiyun
+The main purpose of IMQ is the ability to shape several interfaces by
+one tc qdisc. So the is probably very less sense of setting up one imq
+per one interface.
+
+--=20
+=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
+ua>
+
