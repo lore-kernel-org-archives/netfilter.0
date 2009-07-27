@@ -1,62 +1,38 @@
-From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
-	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
-Subject: Re: IMQ and marking
-Date: Mon, 27 Jul 2009 11:23:36 +0300
-Message-ID: <1248683016.4090.14.camel@casper.meteor.dp.ua>
-References: <4A65A1A4.4020805@duet.it>  <4A65CEE6.9050004@duet.it>
+From: Michael Mattsson <michael.mattsson@gmail.com>
+Subject: Different routes decided by source and/or dest. port
+Date: Mon, 27 Jul 2009 11:16:20 +0200
+Message-ID: <cffd2ab0907270216o625c4934p2fcda2cc843e81f9@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4A65CEE6.9050004@duet.it>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=h7xyikbIUbOMtAHxVuGgBRFOIRDaKSXH6Zqfy06VQd0=;
+        b=eo3ete+1+SiTwS9lcTajRUc2TMOVZb22OuzCB0OnELbFEgy+51Zv5ifzJZQeiZNt8w
+         /7zD+kLW4tVLDNo29VBTynuNsxy/xj6fwYDGEbsgh3xgLVfHEsQBC0BwtIBF0tYwi7S4
+         hv+kffMg7h7m6UhjYAV/nVLUagcDFU6ZEelao=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="koi8-r"
-To: Fabio Marcone <fabio.marcone@duet.it>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-=F7 =F7=D4=CF, 21/07/2009 =D7 16:21 +0200, Fabio Marcone =D0=C9=DB=C5=D4=
-:
-> In a post in a forum I see this:
-> iptables -t mangle -A PREROUTING -m owner --pid-owner <PID of process=
-> -=20
-> -j MARK --set-mark 2
+Hi!
+I'm trying to determine if it's possible to have different routes
+(interfaces) of traffic through an iptables NAT firewall.
 
+The use case is that I've recently bought a VPN service to protect our
+privacy due to the EU directive IPRED.
+(http://en.wikipedia.org/wiki/IPRED) I have several hosts on my
+network and I'm not interested in sending all traffic through the
+tunnel, only traffic I'm interested in protecting. The only way I can
+determine that is by looking at port ranges in and some cases source
+host on my network.
 
-> iptables -t mangle -A PREROUTING -j IMQ --todev 0
+I'm interested in getting pointers to what documentation that might be
+relevant in accomplishing what I want to do. I'm quite novice in using
+iptables as I use firewall builder to deploy my rules.
 
-This rule just tells the kernel to put this packet to imq0 device just
-after the mangle table is processed, not immediatelly. So it is safe an=
-d
-good practice to place those rules closer to the top.
-
-> the second rule is used? so, rule matching in mangle table is not blo=
-cking?
->=20
-> Fabio
-> > Hi!
-> > I'm studying how to introduce traffic shaping in a linux router=20
-> > (debian). I mark packets in prerouting using mac source to forward=20
-> > packets on a selected WAN interface.
-> > I need to use mangle in PREROUTING to send packects (in input) to a=
-=20
-> > imqX interface.
-> > Is there a conflict between mark and IMQ?
-> > If so, how it can be solved?
-> >
-> > Thanks in advance,
-> > Fabio Marcone
-> > --=20
-> > To unsubscribe from this list: send the line "unsubscribe netfilter=
-" in
-> > the body of a message to majordomo@vger.kernel.org
-> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
->=20
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
---=20
-=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
-ua>
-
+Many thanks,
+Michael
