@@ -1,34 +1,52 @@
-From: Trixter aka Bret McDanel <trixter@0xdecafbad.com>
-Subject: netfilter + perl payload mangling in userspace
-Date: Sun, 26 Jul 2009 20:57:35 -0700
-Message-ID: <1248667055.5801.355.camel@trixeee>
-Reply-To: trixter@0xdecafbad.com
+From: Zhiyun Qian <zhiyunq@umich.edu>
+Subject: Source IP or Dest IP rewriting failed with correct TCP and IP checksum
+Date: Mon, 27 Jul 2009 03:17:03 -0400
+Message-ID: <4A6D546F.8010606@umich.edu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-I wanted to modify the payload of packets in userspace, preferably with
-perl.  I have tried to google to find something, encountered some dead
-links.  I have not be able to get the example Net::Divert to work,
-however it appears that I am not able to divert properly.  I cant find
-any working examples of how to do the iptables command to divert.  
+Hi all,
 
-Is there any other way to modify the payload of a packet from userspace,
-preferably with perl?
+Sorry about sending the question to both lists cause I am not sure which 
+one is the best list.
 
-can someone provide me with a working example of how to do iptables to
-divert?
+I am using the latest libnetfilter_queue and other dependencies 
+(downloaded a couple of days ago).
 
+I've spent some time trying to rewrite the packets (specifically, the 
+source IP address or the destination IP address) and reinject it back to 
+the network. I think I got the code right. However, after I did the 
+modification on the packets, although with the correct checksum at both 
+IP and TCP layer (I have tried several fixed packet headers where the 
+checksum is known beforehand and make sure checksum is computed 
+correctly), the packet was not successfully reinjected (not captured by 
+tcpdump).
 
-I have iptables 1.4.1.1 on eeebuntu (ubuntu base) and a kernel of 2.6.27
+The weird thing is that they fail deterministically but randomly (to me) 
+for different IP addresses. For example, if I rewrite the destination IP 
+to 1.1.1.1, it succeeded, but if I rewrite the destination IP to 
+1.1.1.2, it then failed. And for source IPs, it always fails. I've 
+tested the other fields like TTL or source port and destination port, it 
+always succeeded.
 
-Thank you
--- 
-Trixter http://www.0xdecafbad.com     Bret McDanel
-pgp key: http://pgp.mit.edu:11371/pks/lookup?op=get&search=0x8AE5C721
+One possibility that can partially explain this is that my machine is 
+not allowing spoofed IP address. But then I use hping to spoof other IPs 
+and the packets are indeed captured by tcpdump (I also checked my 
+iptables configuration). I then think if hping is using a different 
+mechanism to send out packets than libnetfilter_queue. But I couldn't 
+find the answer until I dive into the corresponding kernel module (I 
+think hping is just using raw socket). I am wondering if there's a way 
+to get the result of the injected packet (whether or not it is delivered 
+out). I don't know what the return value of nfq_set_verdict() means, it 
+is always some value larger than 0 (e.g. 32, 72 ...).
 
+Can anybody shed some lights on this? Thanks a lot! I can post my code 
+here if needed.
 
+Regards.
+-Zhiyun
