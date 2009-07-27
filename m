@@ -1,7 +1,8 @@
-From: Thorben Went <info@dokumenteundeinstellungen.de>
-Subject: string match on AVM-Router Fritz!Box Fon WLAN 7050
-Date: Sun, 26 Jul 2009 00:07:40 +0200
-Message-ID: <4A6B822C.7070008@dokumenteundeinstellungen.de>
+From: Trixter aka Bret McDanel <trixter@0xdecafbad.com>
+Subject: netfilter + perl payload mangling in userspace
+Date: Sun, 26 Jul 2009 20:57:35 -0700
+Message-ID: <1248667055.5801.355.camel@trixeee>
+Reply-To: trixter@0xdecafbad.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -10,15 +11,24 @@ List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi guys,
+I wanted to modify the payload of packets in userspace, preferably with
+perl.  I have tried to google to find something, encountered some dead
+links.  I have not be able to get the example Net::Divert to work,
+however it appears that I am not able to divert properly.  I cant find
+any working examples of how to do the iptables command to divert.  
 
-i want to play with string match on my Fritz!Box Fon WLAN 7050 from AVM.
-With a modified FW builded with the freetz-project (freetz.org), i have
-all lots of tools. iptables is one of them. Using latest svn-revision of
-freetz.
+Is there any other way to modify the payload of a packet from userspace,
+preferably with perl?
 
-Because the kernel of the 7050 is 2.6.13 i asking my is there a way to
-use string match? The manpage on my local PC says i need >2.6.14.
+can someone provide me with a working example of how to do iptables to
+divert?
 
-Maybe someone have free time and can look at the modified FW to say if
-its working  (maybe with a patch?).
+
+I have iptables 1.4.1.1 on eeebuntu (ubuntu base) and a kernel of 2.6.27
+
+Thank you
+-- 
+Trixter http://www.0xdecafbad.com     Bret McDanel
+pgp key: http://pgp.mit.edu:11371/pks/lookup?op=get&search=0x8AE5C721
+
+
