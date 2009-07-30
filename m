@@ -1,37 +1,47 @@
-From: "Richard C. Hesse" <richard@mochimedia.com>
-Subject: ClusterIP logging "no conntrack" messages
-Date: Wed, 29 Jul 2009 16:45:34 -0700
-Message-ID: <2A8D2BD2-5D76-4AD0-91B4-AB625AA0ACCF@mochimedia.com>
-Mime-Version: 1.0 (Apple Message framework v935.3)
+From: Gergely Buday <gbuday@gmail.com>
+Subject: newbie question
+Date: Thu, 30 Jul 2009 20:03:51 +0200
+Message-ID: <90d975d30907301103n391ef332mf0d299eacf884af7@mail.gmail.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=2Jmvk+UdihylBapIQYg6XTDpwbY5xG0MZhLVziygnjU=;
+        b=LDMHSz+QcylZaku8eaCfLY60JFZu+gAibdpiikav8FIdgJ2YYIyFVgdcqryb2c3e/H
+         jV9hQfpAFRq6L26ssCQFnbydPgCVJkTRvB8FVV3lfksPARQ0JeRnCu0eeqdwk8tjX1y2
+         y6/zOA+X2rgPjM/aAo7q4zHne3vnRXIgimRwA=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Running a 2.6.30.3 kernel, Cluster IP traffic is logging this message  
-for every incoming connection per node: "CLUSTERIP: no conntrack!"
+Dear All,
 
-conntrack is loaded and it's loaded before ClusterIP :
-nf_conntrack version 0.5.0 (32768 buckets, 262144 max)
-CONFIG_NF_CT_ACCT is deprecated and will be removed soon. Please use
-nf_conntrack.acct=1 kernel paramater, acct=1 nf_conntrack module  
-option or
-sysctl net.netfilter.nf_conntrack_acct=1 to enable it.
-ClusterIP Version 0.8 loaded successfully
+I have a basic question: I need to enable a cvs server to telnet back
+to port 2401 as described at
 
-lsmod | grep conn
-xt_conntrack            4520  0
-nf_conntrack_ipv4      15328  5
-nf_defrag_ipv4          2440  1 nf_conntrack_ipv4
-nf_conntrack           70720  4  
-ipt_CLUSTERIP,xt_conntrack,nf_conntrack_ipv4,xt_state
-x_tables               22544  7  
-ipt_CLUSTERIP 
-,xt_conntrack,ipt_LOG,xt_state,xt_tcpudp,xt_iprange,ip_tables
+http://forums.fedoraforum.org/archive/index.php/t-37342.html
 
-Was ClusterIP updated to use the new connection tracking modules?
+---
+> $ cvs login
+> Logging in to :pserver:rob@<hostname>:2401/home/repository
+> CVS password:
+> cvs [login aborted]: connect to <hostname>(<IP address>):2401
+> failed: No route to host
+>
+> i've verified that the network is up, that i can ssh into the
+> server, that xinetd is running, that cvspserver is on, that the
+> CVS repo is unchanged from what it was before the re-install,
+> etc. i'm not sure what else i might be checking.
 
-TIA,
--richard
+You should be able to telnet into your server from a remote system
+on port 2401 to your pserver box. If not, perhaps you haven't
+opened up your iptables firewall for access to this port?
+---
+
+how can I do that with iptables temporarily?
+
+- Gergely
