@@ -1,68 +1,34 @@
-From: Kortheo <kortheo@kwanta.net>
-Subject: linking problem
-Date: Fri, 31 Jul 2009 17:03:44 +0200
-Message-ID: <60051.1249052624@kwanta.net>
-Reply-To: kortheo@kwanta.net
+From: Thomas Jacob <jacob@internet24.de>
+Subject: Re: Local to Local via firewall
+Date: Fri, 31 Jul 2009 18:06:21 +0200
+Message-ID: <1249056381.27177.12.camel@enterprise.ims-firmen.de>
+References: <20090731144247.01a4f9bb@zeus.int.pccl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20090731144247.01a4f9bb@zeus.int.pccl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Andrew Clayton <andrew@digital-domain.net>
+Cc: netfilter@vger.kernel.org
 
-Hey netfilter guys
+On Fri, 2009-07-31 at 14:42 +0100, Andrew Clayton wrote:
+[.. accessing outside IPs on a NAT router from
+the inside network ...]
 
-I am tryin to write java binding for a little program of mine to netfilter_queue
+> I can't help but think I'm missing something simple. Then again does
+> what I'm trying to do make sense?
 
-here is source code for jnetfilter.c:
+Just don't DNAT/SNAT packets from the internal network to
+your public IPs, there is no need for it anyway.
 
+e.g. do something like this before your other DNATs
 
-JNIEXPORT jlong JNICALL Java_com_kwanta_firewall_NetfilterQueue_nfqOpen
-  (JNIEnv * env, jclass clazz)
-{
-	jlong pointer;
-	struct nfq_handle* handle;
-	handle = nfq_open();
-	//pointer = &handle;
-	return pointer;
-}
+$IPTABLES -t nat -A PREROUTING -i eth1 -s 192.168.0.0/16 -p tcp -d
+$HOST_E -j RETURN
 
-
-Everything compiles fine:
-
-
-**** Build of configuration Debug for project libjnetfilter ****
-
-make all 
-Building file: ../jnetfilter.c
-Invoking: GCC C Compiler
-gcc -I/usr/lib/jvm/java-6-sun/include -I/usr/lib/jvm/java-6-sun/include/linux -O0 -g3 -Wall -c -fmessage-length=0 -MMD -MP -MF"jnetfilter.d" -MT"jnetfilter.d" -o"jnetfilter.o" "../jnetfilter.c"
-Finished building: ../jnetfilter.c
- 
-Building target: libjnetfilter.so
-Invoking: GCC C Linker
-gcc -shared -Wl,-soname=libjnetfilter.so -o"libjnetfilter.so"  ./jnetfilter.o   
-Finished building target: libjnetfilter.so
- 
-
-but it the code does not run, and ldd gave me this:
+Plus, of course, you need to allow access to that IP/port from the
+internal network in the INPUT chain of the filter table.
 
 
-ldd -d libjnetfilter.so
-undefined symbol: nfq_open	(./libjnetfilter.so)
-	linux-gate.so.1 =>  (0xb7f06000)
-	libc.so.6 => /lib/tls/i686/cmov/libc.so.6 (0xb7da7000)
-	/lib/ld-linux.so.2 (0xb7f07000)
-
-
-im using ubuntu 8.04
-
-can you please help me. Kind Regards
-
-Kortheo
-
-
-
-
-Message sent via Atmail Open - http://atmail.org/
