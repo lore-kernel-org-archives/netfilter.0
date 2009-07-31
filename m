@@ -1,47 +1,78 @@
-From: Gergely Buday <gbuday@gmail.com>
-Subject: newbie question
-Date: Thu, 30 Jul 2009 20:03:51 +0200
-Message-ID: <90d975d30907301103n391ef332mf0d299eacf884af7@mail.gmail.com>
+From: Andrew Clayton <andrew@digital-domain.net>
+Subject: Local to Local via firewall
+Date: Fri, 31 Jul 2009 14:42:47 +0100
+Message-ID: <20090731144247.01a4f9bb@zeus.int.pccl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type:content-transfer-encoding;
-        bh=2Jmvk+UdihylBapIQYg6XTDpwbY5xG0MZhLVziygnjU=;
-        b=LDMHSz+QcylZaku8eaCfLY60JFZu+gAibdpiikav8FIdgJ2YYIyFVgdcqryb2c3e/H
-         jV9hQfpAFRq6L26ssCQFnbydPgCVJkTRvB8FVV3lfksPARQ0JeRnCu0eeqdwk8tjX1y2
-         y6/zOA+X2rgPjM/aAo7q4zHne3vnRXIgimRwA=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Dear All,
+Hi,
 
-I have a basic question: I need to enable a cvs server to telnet back
-to port 2401 as described at
+Starting to bang my head against the proverbial wall ;)
 
-http://forums.fedoraforum.org/archive/index.php/t-37342.html
+The set up is relatively simple.
 
----
-> $ cvs login
-> Logging in to :pserver:rob@<hostname>:2401/home/repository
-> CVS password:
-> cvs [login aborted]: connect to <hostname>(<IP address>):2401
-> failed: No route to host
->
-> i've verified that the network is up, that i can ssh into the
-> server, that xinetd is running, that cvspserver is on, that the
-> CVS repo is unchanged from what it was before the re-install,
-> etc. i'm not sure what else i might be checking.
+Internet <----> Firewall <----> Office.
 
-You should be able to telnet into your server from a remote system
-on port 2401 to your pserver box. If not, perhaps you haven't
-opened up your iptables firewall for access to this port?
----
+The office network is on a 192.168.1.x range. And outgoing traffic is
+SNAT'd.
 
-how can I do that with iptables temporarily?
+The firewall is set as the default gateway for all office machines.
 
-- Gergely
+We also have internet routeable IP addresses, that allow us to access
+various machines in the office from outside with rules like (names
+changed to protect the innocent)
+
+$IPTABLES -t nat -A PREROUTING -s $SOME_EXTERNAL_HOST -p tcp -d $HOST_E
+ --dport 22 -j DNAT --to-destination $HOST_I
+
+$HOST_E is the internet routeable IP address, this IP is configured on the firewall.
+$HOST_I is the 192.168.1,x address that we use to access the machine by in the office.
+
+So we have host.foo.co.uk ($HOST_E) when accessing it from outside the office and host.foo.bar 
+($HOST_I) when accessing it from inside the office and doesn't go via the firewall.
+
+This works OK. But it would be much nicer if we could just use host.foo.co.uk 
+all the time. 
+
+Without adding any extra rules, an ssh to host.foo.co.uk naturally just lands on the 
+firewall. What I've been trying to do is add a rule that will allow an ssh to host.foo.co.uk
+(which resolves to its internet IP address) but make the connection go to its internal IP
+address.
+
+I've tried many different things, with one of two usual outcomes.
+
+1) The ssh just goes to the firewall
+2) No ssh connection is made and I get the following logged.
+
+IN=eth1 OUT=eth1 SRC=192.168.1.20 DST=192.168.1.128 LEN=60 
+TOS=0x00 PREC=0x00 TTL=63 ID=53892 DF PROTO=TCP SPT=39355 
+DPT=22 WINDOW=5840 RES=0x00 CWR ECE SYN URGP=0 
+
+192.168.1.20 is my workstation and 192.168.1.128 is the internal IP
+of the machine I'm trying to ssh to as host.foo.co.uk (that I can ssh 
+in on host.foo.bar).
+ 
+The rule that does 2 from above is
+
+$IPTABLES -t nat -A PREROUTING -s 192.168.0.0/16 -p tcp -d $HOST_E --dport 22 -j 
+DNAT --to-destination $HOST_I
+
+Which is basically the same as our other DNAT rules for accessing
+internal machines from outside the office. Which is probably not right
+seeing as it's coming from the internal network in the first place.
+
+I can't help but think I'm missing something simple. Then again does
+what I'm trying to do make sense?
+
+This is on a stock CentOS 5.3 with iptables v1.3.5
+
+Any insights would be greatly appreciated.
+
+
+Cheers,
+Andrew
