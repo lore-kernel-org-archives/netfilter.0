@@ -1,40 +1,54 @@
-From: "/dev/rob0" <rob0@gmx.co.uk>
+From: Andrew Clayton <andrew@digital-domain.net>
 Subject: Re: Local to Local via firewall
-Date: Fri, 31 Jul 2009 13:22:05 -0500
-Message-ID: <200907311322.05834.rob0@gmx.co.uk>
-References: <20090731144247.01a4f9bb@zeus.int.pccl> <1249056381.27177.12.camel@enterprise.ims-firmen.de> <20090731172419.669eb256@zeus.int.pccl>
+Date: Fri, 31 Jul 2009 21:52:35 +0100
+Message-ID: <20090731215235.06a83d26@digital-domain.net>
+References: <20090731144247.01a4f9bb@zeus.int.pccl>
+	<1249056381.27177.12.camel@enterprise.ims-firmen.de>
+	<20090731172419.669eb256@zeus.int.pccl>
+	<1249062563.27177.25.camel@enterprise.ims-firmen.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20090731172419.669eb256@zeus.int.pccl>
-Content-Disposition: inline
+In-Reply-To: <1249062563.27177.25.camel@enterprise.ims-firmen.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Thomas Jacob <jacob@internet24.de>
+Cc: netfilter@vger.kernel.org, Robby Workman <rw@rlworkman.net>
 
-On Friday 31 July 2009 11:24:19 Andrew Clayton wrote:
-> On Fri, 31 Jul 2009 18:06:21 +0200, Thomas Jacob wrote:
-> > On Fri, 2009-07-31 at 14:42 +0100, Andrew Clayton wrote:
-> > [.. accessing outside IPs on a NAT router from
-> > the inside network ...]
+On Fri, 31 Jul 2009 19:49:23 +0200, Thomas Jacob wrote:
 
-> But I do think the firewall is the proper place to do this.
+> Ah yes, the ssh  server is on a DNATed internal machine, sorry about.
+> 
+> In that case you need to SNAT your request to the local machine as
+> well, and also keep the original DNAT rule:
+> 
+> So:
+> 
+> $IPTABLES -t nat -A PREROUTING -i eth1 -s 192.168.0.0/16 -p tcp -d
+> $HOST_E --dport 22 -j DNAT --to-destination $HOST_I
+> 
+> +
+> 
+> $IPTABLES -t nat -A POSTROUTING -o eth1 -s 192.168.0.0/16 -p tcp -d
+> $HOST_I --dport 22 -j SNAT --to-destination <Internal-Router-IP>
+> 
+> 
+> should get you there.
+> 
+> Just tried that on a similar setup and it worked well for me, I can
+> ssh to myself via the NAT router by contacting the NAT routers public
+> IP ;)
 
-To elaborate a bit on *why* Robby is right in his not-so-humble
-opinion: the SNAT+DNAT solution makes your logs meaningless. There's
-really no way to tell who's doing what, and from where.
+Thanks again, but after trying this and numerous variations I still
+can't make this work, and I've read plenty of other stuff that says to
+do what you say, but no cigar :(
 
-I've seen cases in which people put too many eggs in a single DNS RR
-basket ... like http://foo.example.com/ being SNAT'ed to LAN host
-web.example.lan, and smtp:foo.example.com being SNAT'ed to a different
-LAN host, mail.example.lan.
+It's annoying and I'd like to get it working at the firewall. But for
+now I think I'm going to take Robby's advice and have a look at split
+views with Bind. This also does seem to be the recommended way to do it.
 
-In a case like that, the SNAT+DNAT solution is the only one that will
-keep foo.example.com working for clients behind the NAT. But there,
-your real fix would be to use more names ... www.example.com and
-mail.example.com in the above. If your DNS provider is charging you
-extra for adding more names, find a reasonable DNS provider!
--- 
-    Offlist mail to this address is discarded unless
-    "/dev/rob0" or "not-spam" is in Subject: header
+Still, I must have learnt something from all this! ;)
+
+Cheers,
+Andrew
