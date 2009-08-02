@@ -1,42 +1,61 @@
-From: Andrew Clayton <andrew@digital-domain.net>
-Subject: Re: Local to Local via firewall
-Date: Sat, 1 Aug 2009 13:25:29 +0100
-Message-ID: <20090801132529.1838dae9@digital-domain.net>
-References: <20090731144247.01a4f9bb@zeus.int.pccl>
-	<1249056381.27177.12.camel@enterprise.ims-firmen.de>
-	<20090731172419.669eb256@zeus.int.pccl>
-	<1249062563.27177.25.camel@enterprise.ims-firmen.de>
-	<20090731215235.06a83d26@digital-domain.net>
-	<20090801115253.GA29918@internet24.de>
+From: "Zhiyun Qian" <zhiyunq@umich.edu>
+Subject: Source IP or Dest IP rewriting failed with correct TCP and IP checksum
+Date: Sun, 2 Aug 2009 00:00:18 -0400
+Message-ID: <000001ca1325$c2075aa0$e76ed48d@zhiyunpc>
+References: <4A6D546F.8010606@umich.edu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20090801115253.GA29918@internet24.de>
+In-Reply-To: <4A6D546F.8010606@umich.edu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Thomas Jacob <jacob@internet24.de>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Sat, 1 Aug 2009 13:52:53 +0200, Thomas Jacob wrote:
+Hi all,
 
-> NAT routers always hide some source addresses from at least one
-> machine, otherwise they wouldn't be NAT routers ;)
-> 
-> But sure, if you have a 1000 people behind your NAT router, NATing
-> local requests to local services just for the sole reason of not
-> having to use different names for services from the inside or a split
-> DNS server might not be such a good idea.
+Sorry about sending the question to both lists cause I am not sure which 
+one is the best list.
 
-Thanks for the help guys.
+I am using the latest libnetfilter_queue and other dependencies 
+(downloaded a couple of days ago).
 
-I've got "views" set up in BIND on one of our internal DNS servers
-(which is also our secondary nameserver for all our domains).
+I've spent some time trying to rewrite the packets (specifically, the 
+source IP address or the destination IP address) and reinject it back to 
+the network. I think I got the code right. However, after I did the 
+modification on the packets, although with the correct checksum at both 
+IP and TCP layer (I have tried several fixed packet headers where the 
+checksum is known beforehand and make sure checksum is computed 
+correctly), the packet was not successfully reinjected (not captured by 
+tcpdump).
 
-Seem to be working a treat.
+The weird thing is that they fail deterministically but randomly (to me) 
+for different IP addresses. For example, if I rewrite the destination IP 
+to 1.1.1.1, it succeeded, but if I rewrite the destination IP to 
+1.1.1.2, it then failed. And for source IPs, it always fails. I've 
+tested the other fields like TTL or source port and destination port, it 
+always succeeded.
 
-host.foo.bar will return a different IP address depending on if
-the query come in externally or internally.
-  
-Cheers,
-Andrew
+One possibility that can partially explain this is that my machine is 
+not allowing spoofed IP address. But then I use hping to spoof other IPs 
+and the packets are indeed captured by tcpdump (I also checked my 
+iptables configuration). I then think if hping is using a different 
+mechanism to send out packets than libnetfilter_queue. But I couldn't 
+find the answer until I dive into the corresponding kernel module (I 
+think hping is just using raw socket). I am wondering if there's a way 
+to get the result of the injected packet (whether or not it is delivered 
+out). I don't know what the return value of nfq_set_verdict() means, it 
+is always some value larger than 0 (e.g. 32, 72 ...).
+
+Can anybody shed some lights on this? Thanks a lot! I can post my code 
+here if needed.
+
+Regards.
+-Zhiyun
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+
+
