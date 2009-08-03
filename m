@@ -1,61 +1,113 @@
-From: "Zhiyun Qian" <zhiyunq@umich.edu>
-Subject: Source IP or Dest IP rewriting failed with correct TCP and IP checksum
-Date: Sun, 2 Aug 2009 00:00:18 -0400
-Message-ID: <000001ca1325$c2075aa0$e76ed48d@zhiyunpc>
-References: <4A6D546F.8010606@umich.edu>
-Mime-Version: 1.0
+From: Lance Lesslie <llesslie@comcast.net>
+Subject: Masquerade and active FTP ... help!
+Date: Mon, 3 Aug 2009 10:39:07 -0500
+Message-ID: <2F22C6DE-3311-47E2-B7C8-E7B95326B089@comcast.net>
+Mime-Version: 1.0 (Apple Message framework v935.3)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4A6D546F.8010606@umich.edu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
 To: netfilter@vger.kernel.org
 
-Hi all,
+I've been trying to get active FTP to work through my linux server  
+from computers on my internal network, but I haven't been able to get  
+it working.  I've read the documentation, and I think I'm doing  
+everything right.  Still, it won't work, and I'm not sure why not.   
+I'm running Fedora Core 11, and /sbin/iptables -V gives "iptables  
+v1.4.3.1".  Running uname -a shows:
 
-Sorry about sending the question to both lists cause I am not sure which 
-one is the best list.
+Linux unimatrix01 2.6.29.6-213.fc11.x86_64 #1 SMP Tue Jul 7 21:02:57  
+EDT 2009 x86_64 x86_64 x86_64 GNU/Linux
 
-I am using the latest libnetfilter_queue and other dependencies 
-(downloaded a couple of days ago).
+I created a stripped-down ruleset that accepts nearly everything, just  
+in case it was some rule issue.  That didn't work.  My stripped-down  
+rules are:
 
-I've spent some time trying to rewrite the packets (specifically, the 
-source IP address or the destination IP address) and reinject it back to 
-the network. I think I got the code right. However, after I did the 
-modification on the packets, although with the correct checksum at both 
-IP and TCP layer (I have tried several fixed packet headers where the 
-checksum is known beforehand and make sure checksum is computed 
-correctly), the packet was not successfully reinjected (not captured by 
-tcpdump).
+#!/bin/sh
+EXT_IF=eth0
+INT_IF=eth1
+/sbin/iptables -F
+/sbin/iptables -F -t nat
+/sbin/iptables -F -t mangle
+/sbin/iptables -X
+/sbin/iptables -X -t nat
+/sbin/iptables -X -t mangle
+/sbin/iptables -Z
+/sbin/iptables -P INPUT ACCEPT
+/sbin/iptables -P FORWARD ACCEPT
+/sbin/iptables -P OUTPUT ACCEPT
+/sbin/iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -o $EXT_IF -j  
+MASQUERADE
 
-The weird thing is that they fail deterministically but randomly (to me) 
-for different IP addresses. For example, if I rewrite the destination IP 
-to 1.1.1.1, it succeeded, but if I rewrite the destination IP to 
-1.1.1.2, it then failed. And for source IPs, it always fails. I've 
-tested the other fields like TTL or source port and destination port, it 
-always succeeded.
+I load the appropriate nat and conntrack modules via /etc/sysconfig/ 
+iptables-config:
 
-One possibility that can partially explain this is that my machine is 
-not allowing spoofed IP address. But then I use hping to spoof other IPs 
-and the packets are indeed captured by tcpdump (I also checked my 
-iptables configuration). I then think if hping is using a different 
-mechanism to send out packets than libnetfilter_queue. But I couldn't 
-find the answer until I dive into the corresponding kernel module (I 
-think hping is just using raw socket). I am wondering if there's a way 
-to get the result of the injected packet (whether or not it is delivered 
-out). I don't know what the return value of nfq_set_verdict() means, it 
-is always some value larger than 0 (e.g. 32, 72 ...).
+# Load additional iptables modules (nat helpers)
+#   Default: -none-
+# Space separated list of nat helpers (e.g. 'ip_nat_ftp ip_nat_irc'),  
+which
+# are loaded after the firewall rules are applied. Options for the  
+helpers are
+# stored in /etc/modprobe.conf.
+IPTABLES_MODULES="iptable_nat nf_nat nf_nat_ftp nf_nat_irc  
+ipt_MASQUERADE nf_conntrack_ftp nf_conntrack_irc"
 
-Can anybody shed some lights on this? Thanks a lot! I can post my code 
-here if needed.
+# Unload modules on restart and stop
+#   Value: yes|no,  default: yes
+# This option has to be 'yes' to get to a sane state for a firewall
+# restart or stop. Only set to 'no' if there are problems unloading  
+netfilter
+# modules.
+IPTABLES_MODULES_UNLOAD="yes"
 
-Regards.
--Zhiyun
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+# Save current firewall rules on stop.
+#   Value: yes|no,  default: no
+# Saves all firewall rules to /etc/sysconfig/iptables if firewall gets  
+stopped
+# (e.g. on system shutdown).
+IPTABLES_SAVE_ON_STOP="no"
 
+# Save current firewall rules on restart.
+#   Value: yes|no,  default: no
+# Saves all firewall rules to /etc/sysconfig/iptables if firewall gets
+# restarted.
+IPTABLES_SAVE_ON_RESTART="no"
 
+# Save (and restore) rule and chain counter.
+#   Value: yes|no,  default: no
+# Save counters for rules and chains to /etc/sysconfig/iptables if
+# 'service iptables save' is called or on stop or restart if  
+SAVE_ON_STOP or
+# SAVE_ON_RESTART is enabled.
+IPTABLES_SAVE_COUNTER="no"
+
+# Numeric status output
+#   Value: yes|no,  default: yes
+# Print IP addresses and port numbers in numeric format in the status  
+output.
+IPTABLES_STATUS_NUMERIC="yes"
+
+# Verbose status output
+#   Value: yes|no,  default: yes
+# Print info about the number of packets and bytes plus the "input-" and
+# "outputdevice" in the status output.
+IPTABLES_STATUS_VERBOSE="no"
+
+# Status output with numbered lines
+#   Value: yes|no,  default: yes
+# Print a counter/number for every rule in the status output.
+IPTABLES_STATUS_LINENUMBERS="yes"
+
+I believe the modules are loaded, because lsmod | grep ftp returns:
+
+nf_nat_ftp              3120  0
+nf_conntrack_ftp        8280  1 nf_nat_ftp
+nf_nat                 18628  4  
+nf_nat_irc,nf_nat_ftp,ipt_MASQUERADE,iptable_nat
+
+I just don't understand why active FTP doesn't work.  Any advice would  
+be greatly appreciated.  Thanks.
+
+Lance
 
