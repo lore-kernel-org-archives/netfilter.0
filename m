@@ -1,142 +1,124 @@
-From: "John Lister" <john.lister@kickstone.com>
-Subject: Help configuring "load balancing" firewall router using netfilter
-Date: Mon, 3 Aug 2009 19:51:08 +0100
-Message-ID: <8589B6F11C664288A76D6FA9C308CAE4@squarepi.com>
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: netlink socket -- set mode fails ???
+Date: Tue, 4 Aug 2009 12:59:39 +0530
+Message-ID: <cfeab66d0908040029x155db45o981b0f7d46918e03@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=1jmkJH1AO2PX8SsLRlHFNfsoRUYFd1UdE7qYN7+uqok=;
+        b=K3mDyZoyHLZycAezELTu7kPfTm99Az/tKuDKK0gXNIcui+g3ER8lDubDItgNeGb5L6
+         RVMVljLFSYL3LSq736WCofwlUmEtB78niPhxQKG+z/5ZU2F5QlKoqhvjHQUa+G2uGvvY
+         0VH7M+2/3YGYAVLeVAV6pOtdMWn6kJdXAZ2Pg=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+Content-Type: text/plain; charset="windows-1252"
 To: netfilter@vger.kernel.org
 
-Hi, i'm trying to create a firewall/router that will randomly route 
-outgoing/forwarded connections on different interfaces, at the same time i'd 
-like each connection to be given a random ip address (from a distinct 
-range). I'm using the following script below to setup my box and it seems to 
-work fine some of the time, but every so often it seems to break and 
-connections are sent out of the box, but no responses seem to come back in. 
-I wondered if anyone had any ideas on what i've done wrong...
+I compiled and tried to execute below program . But it exit with an
+error message "unable to send mode message: connection refused" .
+I have registered NETLINK_FIREWALL by loading ip_queue.ko module .
 
-Also note i've used the "random" statistic mode instead of "nth",  as when i 
-originally tried "nth", i'm sure it didn't work as expected, in that once it 
-had gone through each value it stuck at the end instead of looping.. Also 
-there seems to be no way with "nth" to specify different counters any more.
-
-Thanks
+Thanks,
+Ratheesh
 
 
-==================================
-#!/bin/sh -x
 
 
-# reset everything
-ip route flush table 101
-ip route flush table 102
-ip route flush table main
-ip rule del fwmark 1 table 101
-ip rule del fwmark 2 table 102
-ip route add 192.168.1.0/24 dev eth0
-ip route add x.x.180.0/22 dev eth1
-ip route add x.x.30.96.32/29 dev eth4
+#include <unistd.h>
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <sys/socket.h>
+#include <linux/rtnetlink.h>
+//#include <linux/if.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <errno.h>
+#include <stdio.h>
+#include <getopt.h>
+#include <sys/ioctl.h>
+#include <syslog.h>
+#include <net/if.h>
+#include <linux/netfilter_ipv4/ip_queue.h>
 
-ip addr del x.x.183.72/22 dev eth1
-ip addr del x.x.183.73/22 dev eth1
-ip addr del x.x.183.74/22 dev eth1
-ip addr del x.x.183.75/22 dev eth1
-
-ip addr del x.x.96.35/29 dev eth4
-ip addr del x.x.96.36/29 dev eth4
-ip addr del x.x.96.37/29 dev eth4
-ip addr del x.x.96.38/29 dev eth4
-
-iptables -F
-iptables -t nat -F
-iptables -t mangle -F
-iptables -t mangle -X MATCH1
-iptables -t mangle -X MATCH2
-iptables -t nat -X SNAT1
-iptables -t nat -X SNAT2
+#include <linux/in.h>
+#include <linux/in6.h>
 
 
-# create virtual devices
-ip addr add x.x.183.72/22 dev eth1
-ip addr add x.x.183.73/22 dev eth1
-ip addr add x.x.183.74/22 dev eth1
-ip addr add x.x.183.75/22 dev eth1
-
-ip addr add x.x.96.35/29 dev eth4
-ip addr add x.x.96.36/29 dev eth4
-ip addr add x.x.96.37/29 dev eth4
-ip addr add x.x.96.38/29 dev eth4
-
-# setup routing
-ip route add x.x.180.0/22 dev eth1 table 101
-ip route add 192.168.1.0/24 dev eth0 table 101
-ip route add default via x.x.180.1 dev eth1 table 101
-
-ip route add x.x.96.32/29 dev eth4 table 102
-ip route add 192.168.1.0/24 dev eth0 table 102
-ip route add default via x.x.96.33 dev eth4 table 102
-
-# now route based on the mark
-ip rule add fwmark 1 table 101
-ip rule add fwmark 2 table 102
-
-# mark the packets
-iptables -t mangle -N MATCH1
-iptables -t mangle -N MATCH2
-iptables -t mangle -A MATCH1 -j MARK --set-mark  1
-iptables -t mangle -A MATCH1 -j CONNMARK --save-mark
-iptables -t mangle -A MATCH2 -j MARK --set-mark  2
-iptables -t mangle -A MATCH2 -j CONNMARK --save-mark
-
-# based on 50/50 split
-iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark
-iptables -t mangle -A PREROUTING -m mark --mark 0 -m state --state NEW -m 
-statistic --mode random --probability 0.5 -j MATCH1
-iptables -t mangle -A PREROUTING -m mark --mark 0 -m state --state NEW  -j 
-MATCH2
-
-# snat the packets on if eth1
-iptables -t nat -N SNAT1
-iptables -t nat -A SNAT1 -m statistic --mode random --probability 0.20 -j 
-SNAT --to-source x.x.181.60
-iptables -t nat -A SNAT1 -m statistic --mode random --probability 0.25 -j 
-SNAT --to-source x.x.183.72
-iptables -t nat -A SNAT1 -m statistic --mode random --probability 0.33 -j 
-SNAT --to-source x.x.183.73
-iptables -t nat -A SNAT1 -m statistic --mode random --probability 0.50 -j 
-SNAT --to-source x.x.183.74
-iptables -t nat -A SNAT1                                               -j 
-SNAT --to-source x.x.183.75
-
-# snat the packets on if eth4
-iptables -t nat -N SNAT2
-iptables -t nat -A SNAT2 -m statistic --mode random --probability 0.20 -j 
-SNAT --to-source x.x.96.34
-iptables -t nat -A SNAT2 -m statistic --mode random --probability 0.25 -j 
-SNAT --to-source x.x.96.35
-iptables -t nat -A SNAT2 -m statistic --mode random --probability 0.33 -j 
-SNAT --to-source x.x.96.36
-iptables -t nat -A SNAT2 -m statistic --mode random --probability 0.50 -j 
-SNAT --to-source x.x.96.37
-iptables -t nat -A SNAT2                                               -j 
-SNAT --to-source x.x.96.38
-
-# snat based on destination if
-iptables -t nat -A POSTROUTING -o eth1 -j SNAT1
-iptables -t nat -A POSTROUTING -o eth4 -j SNAT2
-
-# configure forwarding
-echo 0 > /proc/sys/net/ipv4/conf/all/rp_filter
-echo 1 > /proc/sys/net/ipv4/ip_forward
-ip route flush cache
-
-===============================================
 
 
---
+int main(int argc, char **argv)
+{
 
-Got needs? Get Goblin'! - http://www.pricegoblin.co.uk/ 
 
+int netlink_socket;
+int seq=3D0;
+struct sockaddr_nl addr;
+struct nlmsghdr *nl_header =3D NULL;
+struct ipq_mode_msg *mode_data =3D NULL;
+struct ipq_packet_msg *pkt_data =3D NULL;
+struct ipq_verdict_msg *ver_data =3D NULL;
+unsigned char buf1[128];
+unsigned char buf2[128];
+/*create the socket*/
+netlink_socket =3D socket(AF_NETLINK,SOCK_RAW,NETLINK_FIREWALL);
+
+/*set up the socket address structure*/
+memset(&addr,0,sizeof(struct sockaddr_nl));
+addr.nl_family=3DAF_NETLINK;
+addr.nl_pid=3D0;/*packets are destined for the kernel*/
+addr.nl_groups=3D0;/*we don=92t need any multicast groups*/
+
+
+nl_header=3D(struct nlsmghdr *)buf1;
+nl_header->nlmsg_type=3DIPQM_MODE;
+nl_header->nlmsg_len=3DNLMSG_LENGTH(sizeof(struct ipq_mode_msg));
+nl_header->nlmsg_flags=3D(NLM_F_REQUEST);
+nl_header->nlmsg_pid=3Dgetpid();
+nl_header->nlmsg_seq=3Dseq++;
+mode_data=3DNLMSG_DATA(nl_header);
+mode_data->value=3DIPQ_COPY_META;
+mode_data->range=3D0;/*when mode is PACKET, 0 here means copy whole pac=
+ket*/
+if(sendto(netlink_socket,(void
+*)nl_header,nl_header->nlmsg_len,0,(struct sockaddr
+*)&addr,sizeof(struct sockaddr_nl)) < 0) {
+   perror("unable to send mode message");
+   exit(0);
+ }
+/*
+ *  *we=92re ready to fileter packets
+ *   */
+for(;;) {
+   if(recvfrom(netlink_socket,buf1,NLMSG_LENGTH(sizeof(struct
+ipq_packet_msg)),0,&addr,sizeof(struct sockaddr_nl)) < 0) {
+      perror("Unable to receive packet message");
+      exit(0);
+   }
+
+  nl_header=3D(struct nlmsghdr *)buf1;
+  pkt_data=3DNLMSG_DATA(nl_header);
+  /*for the example just forward all packets*/
+  nl_header=3Dbuf2;
+  nl_header->nlmsg_type=3DIPQM_VERDICT;
+  nl_header->nlmsg_len=3DNLMSG_LENGTH(sizeof(struct ipq_verdict_msg));
+  nl_header->nlmsg_flags=3D(NLM_F_REQUEST);
+  nl_header->nlmsg_pid=3Dgetpid();
+  nl_header->nlmsg_seq=3Dseq++;
+  ver_data=3D(struct ipq_verdict_msg *)NLMSG_DATA(nl_header);
+  ver_data->value=3DNF_ACCEPT;
+  ver_data->id=3Dpkt_data->packet_id;
+  if(sendto(netlink_socket,(void *)nl_header,nl_header->nlmsg_len,0,
+	(struct sockaddr *)&addr,sizeof(struct sockaddr_nl)) < 0){
+     perror("unable to send mode message");
+     exit(0);
+  }
+}
+
+}
