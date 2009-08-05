@@ -1,91 +1,103 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Port redirection
-Date: Wed, 05 Aug 2009 16:04:11 +0200
-Message-ID: <4A79915B.7050407@plouf.fr.eu.org>
-References: <7d7f2e8c0908042157y4e80136ct82efd1dd2446db2c@mail.gmail.com>
+From: Mart Frauenlob <mart.frauenlob@chello.at>
+Subject: Re: Firewall Configuration Help
+Date: Wed, 05 Aug 2009 16:05:20 +0200
+Message-ID: <4A7991A0.8000002@chello.at>
+References: <4399fd970907271056m24713eecj5d6f20aed572cc36@mail.gmail.com> <47ae5fdc6d1c4a93d1035f61774996ec@localhost> <4A798712.3040406@chello.at> <248de9c714c7f5a1b003ba7f31325955@localhost>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <7d7f2e8c0908042157y4e80136ct82efd1dd2446db2c@mail.gmail.com>
+In-Reply-To: <248de9c714c7f5a1b003ba7f31325955@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello,
+Julien Vehent wrote:
+> On Wed, 05 Aug 2009 15:20:18 +0200, Mart Frauenlob
+> <mart.frauenlob@chello.at> wrote:
+>   
+>> Julien Vehent wrote:
+>>     
+>>> Hello Nicholas,
+>>>
+>>>
+>>> On Mon, 27 Jul 2009 13:56:59 -0400, NICHOLAS KLINE <nkline@kent.edu>
+>>> wrote:
+>>>   
+>>>       
+>>>> Hi,
+>>>>
+>>>> I have a fresh install of Ubuntu 8.x desktop edition running on a
+>>>> laptop. Before I plug the laptop into a public network and proceed to
+>>>> patch it, I want to make sure I have a secure firewall in place.
+>>>>
+>>>> This particular system will not be running any server services such as
+>>>> HTTPD, SSH, FTP, etc. Inbound traffic should be denied unless an
+>>>> outbound connection was first established.
+>>>> I will mostly be using a wired internet connection but I might switch
+>>>> to wireless once in awhile.
+>>>>
+>>>> After reading a few Linux security books, I have a decent set of
+>>>> firewall rules almost ready to put into place. The only rule
+>>>> preventing me from putting the firewall in place is:
+>>>>     
+>>>>         
+>> ...
+>>
+>>     
+>>>> # Set default-deny policies for all chains.
+>>>> # User-defined chains cannot be assigned default policies.
+>>>> $IPTABLES -P INPUT DROP
+>>>> $IPTABLES -P FORWARD DROP
+>>>> $IPTABLES -P OUTPUT DROP
+>>>>
+>>>> $IPTABLES -t nat -P PREROUTING DROP
+>>>> $IPTABLES -t nat -P OUTPUT DROP
+>>>> $IPTABLES -t nat -P POSTROUTING DROP
+>>>>
+>>>> $IPTABLES -t mangle -P PREROUTING DROP
+>>>> $IPTABLES -t mangle -P OUTPUT DROP
+>>>>
+>>>>     
+>>>>         
+>>> I don't like the default policy because you can't log anything in these
+>>> rules.
+>>> I prefer to put at the end of the ruleset something like
+>>> --------
+>>>    echo "Default log drop, at the end so we just drop what doesn't
+>>>       
+> match
+>   
+>>> the
+>>> previous rules"
+>>>    $IPT -N LOGDROP
+>>>    $IPT -A LOGDROP -j LOG --log-prefix "DROP => " --log-level debug
+>>>    $IPT -A LOGDROP -j DROP
+>>>
+>>>    $IPT -A INPUT -i $NETCARD -j LOGDROP
+>>>    $IPT -A OUTPUT -o $NETCARD -j LOGDROP
+>>> --------
+>>> that allows you to log and then drop, instead of just dropping.
+>>>
+>>>
+>>>   
+>>>       
+>> Why not just put a log rule as the final rule and let the policy drop 
+>> the packet? That way there's less rules and traffic gets logged and
+>> dropped.
+>>
+>>     
+>
+> You would not log the firewall's decision then. Only the packet details.
+>
+>   
+iptables -A INPUT -j LOG --log-prefix "INPUT_POLICY_DROP: " ...
+iptables -A OUTPUT -j LOG --log-prefix "OUTPUT_POLICY_DROP: " ...
+iptables -A FORWARD -j LOG --log-prefix "FORWARD_POLICY_DROP: " ...
 
-Steve Fink a =E9crit :
-> I am trying to redirect all traffic generated on box $SRC to a
-> particular UDP port to a different host $SPY. I've done similar thing=
-s
-> with whole TCP connections using DNAT and SNAT, but this time I want
-> UDP and I want to be able to start up the redirection after the
-> "connection" has been established. (I never see these packets in the
-> 'nat' table.)
+policies do the rest. IMHO you get to know everything you need.
 
-You don't see these packets in the 'nat' table because the "connection"=
-=20
-already exists and has an an entry in the conntrack table. You can=20
-delete a conntrack entry with the conntrack command from the=20
-conntrack-tools package. You can also prevent the packets to create a=20
-conntrack entry by using the NOTRACK target in the 'raw' table until=20
-after you add the NAT rules. Make sure to match packets in both=20
-directions. After you remove the NOTRACK rules, the next packet will=20
-enter the 'nat' chains and hit the NAT rules.
+greets
 
-> The only option that seemed viable, me not knowing much about
-> networking, was to use the 'mangle' table to set a mark on the
-> outgoing packets, then use 'ip' to route the packet to $SPY. I've use=
-d
-> iptables a fair amount, but ip not at all.
->=20
-> On $SRC, I ran:
->  iptables -t mangle -A OUTPUT -p udp --dport 8765 -j MARK --set-mark =
-1
->  ip rule add fwmark 1 table 50
->  ip route add via $SPY table 50
->  sysctl net.ipv4.ip_forward=3D1 # Dunno if this matters
-
-It doesn't matter. Packets are locally generated, the box does not act=20
-as a router.
-
->  ip route flush cache
->=20
-> On $SPY, I ran:
->  sysctl net.ipv4.ip_forward=3D1 # Makes sense here
->=20
-> $SRC, $SPY, and $ORIG_DEST (the original destination) can all reach e=
-ach other.
->=20
-> According to iptables, the mark is getting set on the packets I want
-> redirected. But tcpdump shows packets still going to the original
-> destination, not $SPY. I am testing by running this on $SRC
->=20
->   nc -v -u $ORIG_DEST 8765
->=20
-> And I trigger packets to be sent by hitting enter in that window. The
-> packets are making it to my dummy server on $ORIG_DEST. They do not
-> show up to tcpdump on $SPY.
->=20
-> I don't know how to read the output of 'ip route show cache', but it =
-includes
->=20
-> $SPY from $SRC tos lowdelay dev tun0
->     cache  mtu 1412 advmss 1372 hoplimit 64
-> local $SRC from $SPY tos lowdelay dev lo  src $SRC
->     cache <local,src-direct>  iif tun0
->=20
-> (I'm testing this over a VPN, hence the tun0 device. Both $ORIG_DEST
-> and $SPY are accessible via the VPN.)
-
-This matters a lot : for both $ORIG_DEST and $SPY, the actual next hop=20
-is the VPN endpoint.
-
-> The only thing I can think of is that $SPY needs to be reachable in a
-> single hop
-
-Indeed, otherwise the actual next hop will forward the packets based on=
-=20
-the destination address. Whether the packet is marked or not, the next=20
-hop is the VPN endpoint anyway, and it forwards the packets to=20
-$ORIG_DEST, not $SPY.
+Mart
