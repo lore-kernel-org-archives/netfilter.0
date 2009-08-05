@@ -1,157 +1,102 @@
 From: Mart Frauenlob <mart.frauenlob@chello.at>
 Subject: Re: Firewall Configuration Help
-Date: Wed, 05 Aug 2009 14:56:31 +0200
-Message-ID: <4A79817F.1070705@chello.at>
-References: <4399fd970907271056m24713eecj5d6f20aed572cc36@mail.gmail.com>
+Date: Wed, 05 Aug 2009 15:20:18 +0200
+Message-ID: <4A798712.3040406@chello.at>
+References: <4399fd970907271056m24713eecj5d6f20aed572cc36@mail.gmail.com> <47ae5fdc6d1c4a93d1035f61774996ec@localhost>
 Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4399fd970907271056m24713eecj5d6f20aed572cc36@mail.gmail.com>
+In-Reply-To: <47ae5fdc6d1c4a93d1035f61774996ec@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-NICHOLAS KLINE wrote:
-> Hi,
->
-> I have a fresh install of Ubuntu 8.x desktop edition running on a
-> laptop. Before I plug the laptop into a public network and proceed to
-> patch it, I want to make sure I have a secure firewall in place.
->
-> This particular system will not be running any server services such as
-> HTTPD, SSH, FTP, etc. Inbound traffic should be denied unless an
-> outbound connection was first established.
-> I will mostly be using a wired internet connection but I might switch
-> to wireless once in awhile.
->
-> After reading a few Linux security books, I have a decent set of
-> firewall rules almost ready to put into place. The only rule
-> preventing me from putting the firewall in place is:
->
-> $IPTABLES -A INPUT -s $IP_LOCAL -j LOG --log-prefix "Spoofed source IP"
-> $IPTABLES -A INPUT -s $IP_LOCAL -j DROP
->
-> Which says to drop any incoming packet which has my source IP address
-> on it. The reason this rule is preventing me from putting the firewall
-> in place is because my IP address is not always the same or I will be
-> occasionally using a public wireless network. The complete version of
-> my firewall rules are below.
->
-> My questions are:
->
-> 1.) What are the risks of excluding the firewall rule mentioned above?
-> 2.) How can my firewall adapt to a changing IP address?
-> 3.) Please critique my complete firewall rules
->
-> Thank you for your help!
+Julien Vehent wrote:
+> Hello Nicholas,
 >
 >
-> Complete Firewall Rules
-> -------------------------------
->
-> # Establish some variables:
->
-> # Location of IPTABLES on your system
-> IPTABLES="/sbin/iptables"
->
-> # Reserved loopback address range
-> LOOPBACK="127.0.0.0/8"
->
-> # Class A private networks
-> CLASS_A="10.0.0.0/8"
->
-> # Class B private networks
-> CLASS_B="172.16.0.0/12"
->
-> # Class C private networks
-> CLASS_C="192.168.0.0/16"
->
->
-> # SETUP
->
-> # Flush active rules and custom tables
-> $IPTABLES --flush
-> $IPTABLES -t nat --flush
-> $IPTABLES -t mangle --flush
->
-> $IPTABLES --delete-chain
-> $IPTABLES -t nat --delete-chain
-> $IPTABLES -t mangle --delete-chain
->
-> # Give free reign to the loopback interfaces, i.e. local processes may connect
-> # to other processes' listening-ports.
-> $IPTABLES -A INPUT  -i lo -j ACCEPT
-> $IPTABLES -A OUTPUT -o lo -j ACCEPT
->
-> # Set default-deny policies for all chains.
-> # User-defined chains cannot be assigned default policies.
-> $IPTABLES -P INPUT DROP
-> $IPTABLES -P FORWARD DROP
-> $IPTABLES -P OUTPUT DROP
->
-> $IPTABLES -t nat -P PREROUTING DROP
-> $IPTABLES -t nat -P OUTPUT DROP
-> $IPTABLES -t nat -P POSTROUTING DROP
->
-> $IPTABLES -t mangle -P PREROUTING DROP
-> $IPTABLES -t mangle -P OUTPUT DROP
->  
+> On Mon, 27 Jul 2009 13:56:59 -0400, NICHOLAS KLINE <nkline@kent.edu> wrote:
+>   
+>> Hi,
+>>
+>> I have a fresh install of Ubuntu 8.x desktop edition running on a
+>> laptop. Before I plug the laptop into a public network and proceed to
+>> patch it, I want to make sure I have a secure firewall in place.
+>>
+>> This particular system will not be running any server services such as
+>> HTTPD, SSH, FTP, etc. Inbound traffic should be denied unless an
+>> outbound connection was first established.
+>> I will mostly be using a wired internet connection but I might switch
+>> to wireless once in awhile.
+>>
+>> After reading a few Linux security books, I have a decent set of
+>> firewall rules almost ready to put into place. The only rule
+>> preventing me from putting the firewall in place is:
+>>     
+...
 
-Set policies in for nat and mangle table to the default ACCEPT. Just
-drop in filter table.
-In newer versions of iptables DROP in nat table is prohibited. Dropping
-everything in mangle table creates more hassle, because you need to
-explicitely allow in mangle and in the filter table.
-The filter table is the place meant to do the filtering work.
-
-> # Do some rudimentary anti-IP-spoofing drops. The rule of thumb is "drop
-> # any source IP address which is impossible"
+>> # Set default-deny policies for all chains.
+>> # User-defined chains cannot be assigned default policies.
+>> $IPTABLES -P INPUT DROP
+>> $IPTABLES -P FORWARD DROP
+>> $IPTABLES -P OUTPUT DROP
+>>
+>> $IPTABLES -t nat -P PREROUTING DROP
+>> $IPTABLES -t nat -P OUTPUT DROP
+>> $IPTABLES -t nat -P POSTROUTING DROP
+>>
+>> $IPTABLES -t mangle -P PREROUTING DROP
+>> $IPTABLES -t mangle -P OUTPUT DROP
+>>
+>>     
 >
-> # Refuse packets claiming to be from the loopback interface
-> $IPTABLES -A INPUT -s $LOOPBACK -j LOG --log-prefix "Spoofed source IP"
-> $IPTABLES -A INPUT -s $LOOPBACK -j DROP
+> I don't like the default policy because you can't log anything in these
+> rules.
+> I prefer to put at the end of the ruleset something like
+> --------
+>    echo "Default log drop, at the end so we just drop what doesn't match
+> the
+> previous rules"
+>    $IPT -N LOGDROP
+>    $IPT -A LOGDROP -j LOG --log-prefix "DROP => " --log-level debug
+>    $IPT -A LOGDROP -j DROP
 >
-> # Refuse packets claiming to be from a Class A private network
-> $IPTABLES -A INPUT -s $CLASS_A -j LOG --log-prefix " Spoofed source IP"
-> $IPTABLES -A INPUT -s $CLASS_A -j DROP
+>    $IPT -A INPUT -i $NETCARD -j LOGDROP
+>    $IPT -A OUTPUT -o $NETCARD -j LOGDROP
+> --------
+> that allows you to log and then drop, instead of just dropping.
 >
-> # Refuse packets claiming to be from a Class B private network
-> $IPTABLES -A INPUT -s $CLASS_B -j LOG --log-prefix "Spoofed source IP"
-> $IPTABLES -A INPUT -s $CLASS_B -j DROP
->
-> # Refuse packets claiming to be from a Class C private network
-> $IPTABLES -A INPUT -s $CLASS_C -j LOG --log-prefix "Spoofed source IP"
-> $IPTABLES -A INPUT -s $CLASS_C -j DROP
->
-> $IPTABLES -A INPUT -s 255.0.0.0/8 -j LOG --log-prefix "Spoofed source IP"
-> $IPTABLES -A INPUT -s 255.0.0.0/8 -j DROP
-> $IPTABLES -A INPUT -s 0.0.0.0/8 -j LOG --log-prefix "Spoofed source IP"
-> $IPTABLES -A INPUT -s 0.0.0.0/8 -j DROP
->
-> # The following will NOT interfere with local inter-process traffic, whose
-> # packets have the source IP of the local loopback interface, e.g. 127.0.0.1
->
-> $IPTABLES -A INPUT -s $IP_LOCAL -j LOG --log-prefix "Spoofed source IP"
-> $IPTABLES -A INPUT -s $IP_LOCAL -j DROP
 >
 >   
-
-$IPTABLES -N SPOOFED_SOURCE
-$IPTABLES -A SPOOFED_SOURCE -m limit --limit 'value-of_choice' 
---limit-burst 'value-of_choice' -j LOG --log-prefix "Spoofed source IP"
-$IPTABLES -A SPOOFED_SOURCE -j DROP
-
-now put your INPUT rules and send them to the SPOOFED_SOURCE chain.
-i.e.
-$IPTABLES -A INPUT -s 255.0.0.0/8 -j SPOOFED_SOURCE
-
-saves writing and elaborating lots of rules.
+Why not just put a log rule as the final rule and let the policy drop 
+the packet? That way there's less rules and traffic gets logged and dropped.
 
 ...
+>> # Log & drop ALL incoming packets destined anywhere but here.
+>> # (We already set the default FORWARD policy to DROP. But this is
+>> # yet another free, reassuring redundancy, so why not throw it in?)
+>>
+>> $IPTABLES -A FORWARD -j LOG --log-prefix "Attempted FORWARD? Dropped
+>> by default:"
+>> $IPTABLES -A FORWARD -j DROP
+>>     
+>
+>
+> FORWARD is processed after INPUT and OUTPUT. If you drop in those two
+> chains, you shouldn't need to do anything in FORWARD.
+>
+>
+>   
+hm, I think this is not right.
+After the routing deciscion, packets either go to INPUT, OUTPUT or 
+FORWARD chain.
+If the OP is not 'routing' traffic not originated from his box, the 
+FORWARD chain will not be used at all, so a simple policy drop will do 
+the job (log before if wanted).
+Correct me if I'm wrong please.
 
 greets
 
 Mart
-
