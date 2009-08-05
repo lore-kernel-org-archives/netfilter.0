@@ -1,143 +1,70 @@
-From: "Christoph A." <casmls@gmail.com>
-Subject: Re: Firewall Configuration Help
-Date: Wed, 05 Aug 2009 20:21:01 +0200
-Message-ID: <4A79CD8D.4030005@gmail.com>
-References: <4399fd970907271056m24713eecj5d6f20aed572cc36@mail.gmail.com> <47ae5fdc6d1c4a93d1035f61774996ec@localhost>
+From: Steve Fink <sphink@gmail.com>
+Subject: Re: Port redirection
+Date: Wed, 5 Aug 2009 11:30:23 -0700
+Message-ID: <7d7f2e8c0908051130j2c43ed4cv73163e980dba6222@mail.gmail.com>
+References: <7d7f2e8c0908042157y4e80136ct82efd1dd2446db2c@mail.gmail.com>
+	 <4A79915B.7050407@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="------------enig42B0AF1C75654D9BE51DFDB7"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from
-         :user-agent:mime-version:to:cc:subject:references:in-reply-to
-         :x-enigmail-version:content-type;
-        bh=k+SX9+hkKkh7/CaETE+mRL94QqzXWtlCiQgZBRVcpho=;
-        b=wpqAugqZdrLSmnjYw8+5cZyKrlBlvvPri5sYMNSJVM81WJPTxYMaRaIZnZlSP14kEY
-         qBdStx7E6dfADlIumEiPlnMCsf+hxCMIucS8/1jnUJmlOYfQqn92UHYT3RFKXWSNlAob
-         D2IPRoJbh0/w9gQKznm77MXWco1ddOyU8DS54=
-In-Reply-To: <47ae5fdc6d1c4a93d1035f61774996ec@localhost>
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=AqXu4H8jAmliV37IuC4J/vA7fNuV8lgtKXBsPsWIEsA=;
+        b=mbetOIzWj2Yly5eW/ff9nEBucm9+mUpGAnEMz9/H0q7FssQHmn3p/l3H9yP6IA4iPR
+         ZykFS8BS/RUvG80CW/j1kZltYvebqAxtRRL0D3jgZ94zbaVMtFqwXHBIjZknpkv7WWpR
+         DjXOWnnxrPbudXJB45clnSXYJ1WjdeswPO0N4=
+In-Reply-To: <4A79915B.7050407@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
-Cc: Julien Vehent <julien@linuxwall.info>, NICHOLAS KLINE <nkline@kent.edu>, "Christoph A." <casmls@gmail.com>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Cc: netfilter@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig42B0AF1C75654D9BE51DFDB7
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-
-On 28.07.2009 11:09, Julien Vehent wrote:
->> # The following will NOT interfere with local inter-process traffic,
-> whose
->> # packets have the source IP of the local loopback interface, e.g.
->> 127.0.0.1
->>
->> $IPTABLES -A INPUT -s $IP_LOCAL -j LOG --log-prefix "Spoofed source IP=
-"
->> $IPTABLES -A INPUT -s $IP_LOCAL -j DROP
->>
->> # Tell netfilter that all TCP sessions do indeed begin with SYN
->>
->> $IPTABLES -A INPUT -p tcp ! --syn -m state --state NEW -j LOG
->> --log-prefix "Stealth scan attempt?"
->> $IPTABLES -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
->>
->>
->=20
-> My understanding of the conntrack subsystem is that a connection cannot=
- be
-> in the state NEW without a syn packet, therefore I don't think this is
-> useful.
-
-
-I also thought that such a packet has the state INVALID, but after
-making some tests I saw that such TCP packets (! --syn with state NEW)
-are possible, but considering his hole ruleset these packets would be
-DROPed anyway by his default policy, because he has no
--A INPUT ... --state NEW -j ACCEPT
-rules in his ruleset.
-This means that the rule is redundant and should be removed to minimize
-the number of rules.
-
-Just for the record, I tested it like this:
-I generated a packet with hping that has only the ACK flag set and
-to see the state I created some logging rules:
-
-iptables -A INPUT -p tcp --sport 9999 ! --syn -m state --state NEW -j
-LOG --log-prefix "NEW_: "
-iptables -A INPUT -p tcp --sport 9999 ! --syn -m state --state RELATED
--j LOG --log-prefix "RELATED_: "
-iptables -A INPUT -p tcp --sport 9999 ! --syn -m state --state
-ESTABLISHED -j LOG --log-prefix "ESTABLISHED_: "
-iptables -A INPUT -p tcp --sport 9999 ! --syn -m state --state INVALID
--j LOG --log-prefix "INVALID_: "
-
-
-test #1: (ACK flag set)
-hping3 -c 1 -I wlan0 -A -s 9999 -p 1110 localhost
-
-Logging output:
-NEW_: IN=3Dlo OUT=3D MAC=3D00:00:00:00:00:00:00:00:00:00:00:00:08:00
-SRC=3D192.168.1.33 DST=3D127.0.0.1 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D=
-64 ID=3D4943
-PROTO=3DTCP SPT=3D9999 DPT=3D1110 WINDOW=3D512 RES=3D0x00 ACK URGP=3D0
-
-state =3D> NEW
-------------------------------------------------------
-test #2 (no TCP flags set):
-hping command:
-
-hping -c 1 -I wlan0 -s 9999 -p 1111 localhost
-
-Logging output:
-INVALID_: IN=3Dlo OUT=3D MAC=3D00:00:00:00:00:00:00:00:00:00:00:00:08:00
-SRC=3D192.168.1.33 DST=3D127.0.0.1 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D=
-64 ID=3D9687
-PROTO=3DTCP SPT=3D9999 DPT=3D1111 WINDOW=3D512 RES=3D0x00 URGP=3D0
-
-(test was made with iptables v1.4.3.1)
-
-
-On 05.08.2009 15:35, Mart Frauenlob wrote:
-> Wrong, from the iptables tutorial 1.2.2 at frozentux:
-> http://iptables-tutorial.frozentux.net/iptables-tutorial.html#STATEMACH=
-INE
+On Wed, Aug 5, 2009 at 7:04 AM, Pascal
+Hambourg<pascal.mail@plouf.fr.eu.org> wrote:
 >
-> The NEW state tells us that the packet is the first packet that we see.=
+> You don't see these packets in the 'nat' table because the "connectio=
+n"
+> already exists and has an an entry in the conntrack table. You can de=
+lete a
+> conntrack entry with the conntrack command from the conntrack-tools p=
+ackage.
+> You can also prevent the packets to create a conntrack entry by using=
+ the
+> NOTRACK target in the 'raw' table until after you add the NAT rules. =
+Make
+> sure to match packets in both directions. After you remove the NOTRAC=
+K
+> rules, the next packet will enter the 'nat' chains and hit the NAT ru=
+les.
 
-> This means that the first packet that the conntrack module sees, within=
+Thank you! That works perfectly. Both approaches are useful to me (as
+is doing NOTRACK and then waiting the 30 seconds for the conntrack
+entry to expire; installing conntrack-tools is a bit of a pain on
+these boxes.)
 
-> a specific connection, will be matched. For example, if we see a SYN
-> packet and it is the first packet in a connection that we see, it will
-> match. However, the packet may as well not be a SYN packet and still be=
+I don't need to match packets in both directions, because there aren't
+any coming back -- I'm streaming MPEG data out and no response is
+desired or necessary.
 
-> considered NEW.
+>> =A0sysctl net.ipv4.ip_forward=3D1 # Dunno if this matters
+>
+> It doesn't matter. Packets are locally generated, the box does not ac=
+t as a
+> router.
 
-Given this fact I'm reconsidering my rules like:
+Right. That's what I thought, but I tend to cargo-cult that line
+because it's usually the thing I forget when I'm bouncing packets
+around a network.
 
-iptables -A INPUT -p tcp --dport 80 -m state --state NEW -j ACCEPT
+>> (I'm testing this over a VPN, hence the tun0 device. Both $ORIG_DEST
+>> and $SPY are accessible via the VPN.)
+>
+> This matters a lot : for both $ORIG_DEST and $SPY, the actual next ho=
+p is
+> the VPN endpoint.
 
-to be changed to:
-iptables -A INPUT -p tcp --dport 80 --syn -j ACCEPT
-(because this is the samller group of packets and works as well)
-
-best regards,
-Christoph A.
-
-
---------------enig42B0AF1C75654D9BE51DFDB7
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iEYEAREKAAYFAkp5zZMACgkQrq+riTAIEg0VWgCg1Ae3V0xfZZ+1/XssyzJGgCMQ
-CgkAn22ikVeka35bUugZDns24GMhgBOB
-=3hzY
------END PGP SIGNATURE-----
-
---------------enig42B0AF1C75654D9BE51DFDB7--
+Ok, that makes sense. 'ip' is only routing, not rewriting.
