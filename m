@@ -1,70 +1,49 @@
-From: Steve Fink <sphink@gmail.com>
-Subject: Re: Port redirection
-Date: Wed, 5 Aug 2009 11:30:23 -0700
-Message-ID: <7d7f2e8c0908051130j2c43ed4cv73163e980dba6222@mail.gmail.com>
-References: <7d7f2e8c0908042157y4e80136ct82efd1dd2446db2c@mail.gmail.com>
-	 <4A79915B.7050407@plouf.fr.eu.org>
+From: "Jack Knowlton" <jknowlton@vp44.com>
+Subject: Building network
+Date: Thu, 6 Aug 2009 09:55:47 +0200
+Message-ID: <ca067d757753e0893cbebd61d2c90c8c.squirrel@webmail.vp44.net>
+Reply-To: jknowlton@vp44.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=AqXu4H8jAmliV37IuC4J/vA7fNuV8lgtKXBsPsWIEsA=;
-        b=mbetOIzWj2Yly5eW/ff9nEBucm9+mUpGAnEMz9/H0q7FssQHmn3p/l3H9yP6IA4iPR
-         ZykFS8BS/RUvG80CW/j1kZltYvebqAxtRRL0D3jgZ94zbaVMtFqwXHBIjZknpkv7WWpR
-         DjXOWnnxrPbudXJB45clnSXYJ1WjdeswPO0N4=
-In-Reply-To: <4A79915B.7050407@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
+Cc: debian-firewall@lists.debian.org
 
-On Wed, Aug 5, 2009 at 7:04 AM, Pascal
-Hambourg<pascal.mail@plouf.fr.eu.org> wrote:
->
-> You don't see these packets in the 'nat' table because the "connectio=
-n"
-> already exists and has an an entry in the conntrack table. You can de=
-lete a
-> conntrack entry with the conntrack command from the conntrack-tools p=
-ackage.
-> You can also prevent the packets to create a conntrack entry by using=
- the
-> NOTRACK target in the 'raw' table until after you add the NAT rules. =
-Make
-> sure to match packets in both directions. After you remove the NOTRAC=
-K
-> rules, the next packet will enter the 'nat' chains and hit the NAT ru=
-les.
+Hi all.
+I have just switched to a new DSL provider and I need some serious help
+re-building my iptables/routing setup for the new connection.
+The ISP now provides me with a /29 subnet that I want to use for some of
+the computers on my LAN.
 
-Thank you! That works perfectly. Both approaches are useful to me (as
-is doing NOTRACK and then waiting the 30 seconds for the conntrack
-entry to expire; installing conntrack-tools is a bit of a pain on
-these boxes.)
+The access device, a DSL bridge, is attached to the debian routing box
+(currently with 2 interfaces). According to the ISP tech department (they
+are referring to a standard soho router) I have to set the internal (LAN)
+interface to xxx.xxx.xxx.153 and the outside interface (WAN) will get the
+IP assigned by their DHCP. I then have 5 more IPs that I want to assign to
+different computers (static addressing - no internal DHCP needed).
 
-I don't need to match packets in both directions, because there aren't
-any coming back -- I'm streaming MPEG data out and no response is
-desired or necessary.
+Since I want to host various servers, all of the computers that get public
+IPs will have to be accessible on whatever service they're hosting. In the
+case of the mailserver, the outgoing IP has to be the real one (and not
+the routing box's) because of rdns and dnsbl issues.
+Basically I think I do not need NAT. Unfortunately I have no idea how to
+implement that..
 
->> =A0sysctl net.ipv4.ip_forward=3D1 # Dunno if this matters
->
-> It doesn't matter. Packets are locally generated, the box does not ac=
-t as a
-> router.
+Next: there's a bunch of wifi clients that connect to an internal AP. To
+be on the safe side I decided to keep the AP in a local LAN (10.0.1.0/24)
+and have the debian box to do NAT for them.
+My idea would be to add a third network interface to the routing box and
+give it a local LAN address, then use a basic iptables setup to have it
+NAT for any local client that requests it.
 
-Right. That's what I thought, but I tend to cargo-cult that line
-because it's usually the thing I forget when I'm bouncing packets
-around a network.
+If someone has had some experience with this I would really appreciate
+some guidence with what I'm trying to set-up.
+Regards,
 
->> (I'm testing this over a VPN, hence the tun0 device. Both $ORIG_DEST
->> and $SPY are accessible via the VPN.)
->
-> This matters a lot : for both $ORIG_DEST and $SPY, the actual next ho=
-p is
-> the VPN endpoint.
+-JK
 
-Ok, that makes sense. 'ip' is only routing, not rewriting.
+
+
