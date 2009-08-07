@@ -1,32 +1,25 @@
-From: Rakotomandimby Mihamina <mihamina@gulfsat.mg>
-Subject: bandwidth management with DPI based on iptables
-Date: Thu, 06 Aug 2009 16:01:20 +0300
-Message-ID: <4A7AD420.2080705@gulfsat.mg>
+From: Philip Craig <philipc@snapgear.com>
+Subject: Re: MARK unexpectedly changed
+Date: Fri, 07 Aug 2009 10:52:38 +1000
+Message-ID: <4A7B7AD6.6030808@snapgear.com>
+References: <1249560042.6492.52.camel@jaspav.missionsit.net.missionsit.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <1249560042.6492.52.camel@jaspav.missionsit.net.missionsit.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Cc: netfilter@vger.kernel.org
 
-Hi all,
+John A. Sullivan III wrote:
+> What is going on? What is changing the marks? I was under the impression
+> marks were only set in the mangle table.  I've scoured the mangle table
+> and the only rule setting a mark is the one mention above which sets
+> 0x80000000.
 
-We know "ipoque" [1] and "allot" [2]
-We are using their appliance at the moment, but we intend to switch to
-something fully _opensource_ and _linux_ based.
-
-Would you know any companies providing providing something usable?
-We have about 10.000 customers "to bandwidth manage".
-
-l7 is a starting point... nothing more?
-
-Thank you.
-
-[1] http://www.ipoque.com/
-[2] http://www.allot.com/
--- 
-                             Architecte Informatique:
-    Administration Systeme, Recherche & Developpement
-                                   + 261 32 11 401 65
-Pensez a l'environnement avant d'imprimer ce message
+It will be a bug in the OpenSWAN code when it decompresses/decrypts the
+packet.  It has its own skb copy code which seems to be badly out of date.
+I've found one bug in the decompression path where it wasn't setting
+the mark at all, but it seems like there is another bug somewhere too.
