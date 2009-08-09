@@ -1,68 +1,122 @@
-From: Thomas Jacob <jacob@internet24.de>
-Subject: Re: types of NAT with netfilter
-Date: Sun, 9 Aug 2009 13:57:00 +0200
-Message-ID: <20090809115700.GA4861@internet24.de>
-References: <cfeab66d0908070422i40b6efb9x901d3d839a6fee03@mail.gmail.com> <1249647001.29388.25.camel@enterprise.ims-firmen.de> <cfeab66d0908070819p66d977beo7ae1a0276c1487ff@mail.gmail.com>
+From: Remi Pieternella <remi.pieternella@gmail.com>
+Subject: Diverting part of the traffic over a bridged network
+Date: Sun, 9 Aug 2009 16:26:27 +0200
+Message-ID: <9c567de70908090726s72bb3678j4c24db8f2c89a1ef@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <cfeab66d0908070819p66d977beo7ae1a0276c1487ff@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=8JheFjGnROqBb4PKpD6sYHPYgPUerxzJU9TKqbN4W2I=;
+        b=Ti6Syww/BuyQDhyMp3+QJxl9xYTsZKcsbbJwfHrZjHQiAt8GHdq1F/t4/r2bHvy7OD
+         o/FVsZ5cp6J0Polr0R/xjuS0Y+8lf0s3MBJvWviSqvclTzQ3sRkL6HCyxeNsie7gJ4S+
+         ke2TjznXZ67inRu017S5xhkDlxxXDMdKf9wiI=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: ratheesh k <ratheesh.ksz@gmail.com>
-Cc: Thomas Jacob <jacob@internet24.de>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Fri, Aug 07, 2009 at 08:49:35PM +0530, ratheesh k wrote:
-> My aim is to test whether my router supports what kind of NAT ..and t=
-o
-> know abt how we can make  nat types that are not supported  ,working
-> .....
->=20
->=20
-> A { client computer } --------------------------> Router
-> ------------------------> internet ...
->=20
-> This is my   setup .
+Hi
 
-So it isn't much about iptables anyway ..
+I'm fairly new to ebtables and netfiltering so I will start by
+describing what I would like to achieve.
 
-> On Fri, Aug 7, 2009 at 5:40 PM, Thomas Jacob<jacob@internet24.de> wro=
-te:
-> >> =A0 iptables -t nat -A POSTROUTING -i eth0 -o eth1 -j MASQUERADE
+My setup is rougly the one below:
 
-This rule just gives you the NAT translation (and only deals
-with the first packet of a connection), in the "nat" table.
+                /----------br0----------\           rest of computers
+192.168.0.x
+                |                       |                  |
+Music box -----eth1-- xubuntu machine --eth0----------- router
+--------> Internet
+192.168.0.x     |                   192.168.0.x      192.168.0.1(DHCP server)
+                \-----------------------/
+                           |
+                           | Non local 192.168.0.x traffic
+                           |
+                           \----> different internet gateway or VPN
 
-> >> =A03 . i installed windows STUC and tested . Test results show it =
-is a
-> >> portrestricted nat ... But if i make default policy for wan INPUT =
-and
-> >> wan PREROUING as REJECT , test =A0got failed ??? is it iptables
-> >> dependend ??
 
-You also need to allow traffic to pass your system. If you REJECT every=
-thing
-in the PREROUTING/INPUT chains (in the nat table, I presume), you will =
-basically
-prevent all NEW connections via/to the router.
+On my network I have a music box (Sonos) which needs to be visible on
+my 192.168.0.x subnet (other wise my other computers will not be able
+find it). But for which I would like to divert all non local to an
+external gateway (possibly through a VPN connection)
 
-E.g. something like that (in the INPUT table) should get you started
+The bridge now seems to work properly which mean that as soon as my
+xubuntu machine (actually a virtual machine) starts the Sonos show up
+on the network.
 
-iptables -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
-iptables -A FORWARD -m state --state NEW -i eth0 -o eth1 -j ACCEPT
-iptables -P FORWARD REJECT
-iptables -P INPUT REJECT
+Next step however is to divert the non local traffic to a 2nd gateway.
 
-Also check out this diagram that shows you how a packet is passed
-thru the netfilter/iptables system:
+Judging form what i have read so far I am assuming I will need ebtables for this
 
-http://ebtables.sourceforge.net/br_fw_ia/bridge3b.png
+I found the following example but am not quite sure whether this
+indeed what I need.
 
-Maybe you should also read at least some of the docs :-)
+http://ebtables.sourceforge.net/examples/example3.html
 
- =3D> http://netfilter.org/documentation/index.html
+Any help on the next step is appreciated!
 
-   Regards,
-       Thomas
+p.s.
+below some settings I am currently using
+
+/etc/network/interfaces
+
+----------------------
+auto lo
+iface lo inet loopback
+
+# Bridge between eth0 and eth1
+auto br0
+iface br0 inet dhcp
+
+  pre-up ifconfig eth0 down
+  pre-up ifconfig eth1 down
+  pre-up brctl addbr br0
+  pre-up brctl addif br0 eth0
+  pre-up brctl addif br0 eth1
+  pre-up ifconfig eth0 0.0.0.0
+  pre-up ifconfig eth1 0.0.0.0
+  post-down ifconfig eth0 down
+  post-down ifconfig eth1 down
+  post-down ifconfig br0 down
+  post-down brctl delif br0 eth0
+  post-down brctl delif br0 eth1
+  post-down brctl delbr br0
+--------------------------------
+
+I currently also have shorewall setup but basically this has been
+setup to allow everything
+(I was planning to tighten things up once i have got things working)
+
+/etc/shorewall/policy
+-------------------------
+#SOURCE        DEST        POLICY        LOG LEVEL    LIMIT:BURST
+
+loc        net        ACCEPT
+loc        $FW        ACCEPT
+loc        all        ACCEPT
+
+$FW        net        ACCEPT
+$FW        loc        ACCEPT
+$FW        all        ACCEPT
+
+net        $FW        ACCEPT
+net        loc        ACCEPT
+net        all        ACCEPT
+
+all        all        ACCEPT
+----------------------------------
+
+
+Also I used to have masquerading setup
+/etc/shorewall/masq
+---------------------------
+
+#INTERFACE        SOURCE        ADDRESS        PROTO    PORT(S)    IPSEC    MARK
+eth0                    eth1
+--------------------------
+
+I guess I don't need this anymore since I have since setup the bridge
+to bridge the traffic form eth1 to eth0 (i.s.o. routing it)
