@@ -1,43 +1,83 @@
-From: "Gun Akkor" <gakkor@patton.com>
-Subject: problem loading kernel modules on iptables 1.4.0 with 2.6.25.5 kernel.
-Date: Mon, 10 Aug 2009 12:34:30 -0400
-Message-ID: <005401ca19d8$71cc86a0$556593e0$@com>
+From: Steve Brown <sbrown25@gmail.com>
+Subject: Poor upload speed with NAT
+Date: Mon, 10 Aug 2009 16:43:14 -0500
+Message-ID: <1f4ef0970908101443i28bf4c1hc6b280d4096fd100@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-us
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=hnmrN2XC87dsmYqhjuhUJhDM5ZhLT9aK74UBmSZ3evw=;
+        b=GEp9rkrfRbbTLaOQkR5sS063QdAlInDcvjG/kFfr4XT5oWMSKvT0JvSlikaQ/8vS4W
+         LQJ0l9rOfN6n0OrBJKQxx119sScchqe74/VjF7hcz3m1t5mYblIlE6MUV0+aO1cHtmXv
+         IhdqW0w+TmtDXMTy/XFLV1IUB4Gb4iGSCMw4w=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hello --
+I have a linux box acting as a router/gateway between the internet, a
+public network and a private LAN. We are using iptables to SNAT our
+LAN. The setup for this is quite simple:
 
-I used to run iptables 1.3.8 on an older kernel with most of the
-iptables/netfilter extensions build as modules. I never had any problem with
-auto-loading of those modules when iptables needed them for a rule -- for
-example protocol match, state match, iprange match, etc.
+IPTABLES=`which iptables`
+LAN=eth0
+WAN=eth1
+PUB=eth2
+LAN_BLOCK=192.168.16.0/24
+NAT_SOURCE=1.2.3.4
 
-Recently, I moved to iptables 1.4.0 on a 2.6.25.5 kernel and although all
-the modules are built correctly and iptables works correctly, kernel modules
-are no longer loaded dynamically. I have to load them manually using insmod
-or modprobe depending on the rule I am writing after which everything works
-fine -- but of course this defies the purpose of having them as modules in
-the first place.
+$IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+$IPTABLES -A FORWARD -i $LAN -o $WAN -m state --state NEW -j ACCEPT
+$IPTABLES -A FORWARD -i $LAN -o $PUB -m state --state NEW -j ACCEPT
+$IPTABLES -A FORWARD -i $PUB -o $LAN -m state --state NEW -j ACCEPT
+$IPTABLES -t nat -A POSTROUTING -o $WAN -s $LAN_BLOCK -j SNAT
+--to-source $NAT_SOURCE
 
-I searched the list and the Internet and did not come across any posting on
-this issue so it is very likely that I am doing something wrong and hence
-would appreciate the help of the list.
+With these rules, I get great download performance, regardless of
+protocol (sftp, ftp, http, etc).
 
-Could you tell me where I might have a problem?
+Uploads, however, are a different story. I believe that the source of
+this issue is the NATing because, if I upload to the same server from
+a box that isn't being NATed (e.g. in the public block), upload speeds
+are an order of magnitude greater when not being NATed, regardless of
+protocol. For example, if I upload a file from one of our public
+servers to a remote location, it will upload at about 500Kb/s. The
+same upload to the same location with within the LAN won't see more
+than 60Kb/s.
 
-I have the kernel modules under /lib/modules/2.6.25.5/kernel/net/netfilter
-for all x_tables support and under
-/lib/modules/2.6.25.5/kernel/net/ipv4/netfilter for the rest of the modules.
-I am having difficulty dynamically loading modules from either location.
+I'm not doing any kind of fancy traffic control or anything like that.
+I would expect to see some slowdown because of the NAT (for example,
+downloads are 600Kb/s vs 500Kb/s through the NAT), but this kind of
+slowdown seems a bit ridiculous.
 
-BTW, I have the same problem running kernel 2.6.23.1.
+I'm running a custom 2.6.30.3 kernel.  I've also installed
+conntrack-tools thinking that my connection table might be getting
+full.  However, according to conntrack -S:
 
-Thanks in advance,
-Gun Akkor
+entries                 455
+searched                84375
+found                   10970723
+new                     242106
+invalid                 15039
+ignore                  53722
+delete                  241522
+delete_list             225919
+insert                  226270
+insert_failed           0
+drop                    0
+early_drop              0
+icmp_error              5741
+expect_new              28
+expect_create           43
+expect_delete           34
 
+So I am well below the table max:
+
+# sysctl net.netfilter.nf_conntrack_max
+net.netfilter.nf_conntrack_max = 65536
+
+Is this kind of performance drop to be expected w/ netfilter and
+iptables?  Any suggestions on things I can do to increase performance?
