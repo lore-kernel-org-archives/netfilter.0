@@ -1,7 +1,7 @@
 From: ratheesh k <ratheesh.ksz@gmail.com>
 Subject: Re: types of NAT with netfilter
-Date: Mon, 10 Aug 2009 12:05:30 +0530
-Message-ID: <cfeab66d0908092335s53f4f2ceo19ecbed6e521fe95@mail.gmail.com>
+Date: Mon, 10 Aug 2009 12:09:08 +0530
+Message-ID: <cfeab66d0908092339t79159d12m446dbffa4ec025ac@mail.gmail.com>
 References: <cfeab66d0908070422i40b6efb9x901d3d839a6fee03@mail.gmail.com>
 	 <1249647001.29388.25.camel@enterprise.ims-firmen.de>
 	 <cfeab66d0908070819p66d977beo7ae1a0276c1487ff@mail.gmail.com>
@@ -14,10 +14,10 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         h=domainkey-signature:mime-version:received:in-reply-to:references
          :date:message-id:subject:from:to:cc:content-type
          :content-transfer-encoding;
-        bh=5nTB1Ol7yOhQ5eXbZ1K6On7LaqFbYVL3ARygaSW6ThE=;
-        b=AfOLjkGgLUvsE6SZpPAQJbvpmFLRWLjC36bPCq6vCii1xKKiu9f5kaOY0/tCrzzOzb
-         J7kr4++Gwo85rNVMycvYAn5yRLvWWBFNM78xh3hZ5Xr33QPyhKjbdOX65xIS5MJY4yGz
-         yPcjwrqUWwrF7NEo0ELbxgebilhlyK0S+nIVE=
+        bh=P1/dfBrBq0qYqedxwL/rMu+7zsaC+J+x/SOh5mm/JNc=;
+        b=ChnVF+mH9qD4BdiddoYjEPCBxp732hDW1nZ5dHO5gNBZw1+Tw2krxqxlFJ1OKjtjXa
+         aMWqwq62PkTwue4nnkGCWV9U0T5Sczs9664CF25N1wEnTYe0EvXLY3sZGSVk2yva73rt
+         2NZ+XOnnQGpxVwivLaHrYqhbD/kmNx8yxQ+PM=
 In-Reply-To: <20090809115700.GA4861@internet24.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
@@ -26,6 +26,20 @@ To: Thomas Jacob <jacob@internet24.de>
 Cc: netfilter@vger.kernel.org
 
 Thomas ,
+ Thanks a ton for ur quick response .
+
+windows stunc show its is a port restricted nat ......Is it correct
+???? How do i know if its a portrestricted or symmetric ........???
+
+As per your points , i presume its a symetric nat .........
+
+Thanks,
+Ratheesh
+
+
+
+
+
 
 
 
