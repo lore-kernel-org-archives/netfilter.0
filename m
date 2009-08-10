@@ -1,73 +1,84 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: libnetfilter_queue ---- set_mode function not returning .
-Date: Mon, 10 Aug 2009 23:56:08 +0200
-Message-ID: <1249941368.17184.17.camel@ice-age>
-References: <cfeab66d0908100126g54834d7au51f7444d6edcefcb@mail.gmail.com>
-	 <1249899383.7133.13.camel@khasse.inl.fr>
-	 <cfeab66d0908100357v1b3e6718l3299a390982ac8ca@mail.gmail.com>
+From: Amos Jeffries <squid3@treenet.co.nz>
+Subject: Re: Poor upload speed with NAT
+Date: Tue, 11 Aug 2009 11:43:04 +1200
+Message-ID: <6808368f3857f867cd0735df99bacdd8@mail.treenet.co.nz>
+References: <1f4ef0970908101443i28bf4c1hc6b280d4096fd100@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-lbiiRvvhF/rv4czPrQeG"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <cfeab66d0908100357v1b3e6718l3299a390982ac8ca@mail.gmail.com>
+In-Reply-To: <1f4ef0970908101443i28bf4c1hc6b280d4096fd100@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: ratheesh k <ratheesh.ksz@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+To: Steve Brown <sbrown25@gmail.com>
 Cc: netfilter@vger.kernel.org
 
+On Mon, 10 Aug 2009 16:43:14 -0500, Steve Brown <sbrown25@gmail.com> wrote:
+> I have a linux box acting as a router/gateway between the internet, a
+> public network and a private LAN. We are using iptables to SNAT our
+> LAN. The setup for this is quite simple:
+> 
+> IPTABLES=`which iptables`
+> LAN=eth0
+> WAN=eth1
+> PUB=eth2
+> LAN_BLOCK=192.168.16.0/24
+> NAT_SOURCE=1.2.3.4
+> 
+> $IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> $IPTABLES -A FORWARD -i $LAN -o $WAN -m state --state NEW -j ACCEPT
+> $IPTABLES -A FORWARD -i $LAN -o $PUB -m state --state NEW -j ACCEPT
+> $IPTABLES -A FORWARD -i $PUB -o $LAN -m state --state NEW -j ACCEPT
+> $IPTABLES -t nat -A POSTROUTING -o $WAN -s $LAN_BLOCK -j SNAT
+> --to-source $NAT_SOURCE
+> 
+> With these rules, I get great download performance, regardless of
+> protocol (sftp, ftp, http, etc).
+> 
+> Uploads, however, are a different story. I believe that the source of
+> this issue is the NATing because, if I upload to the same server from
+> a box that isn't being NATed (e.g. in the public block), upload speeds
+> are an order of magnitude greater when not being NATed, regardless of
+> protocol. For example, if I upload a file from one of our public
+> servers to a remote location, it will upload at about 500Kb/s. The
+> same upload to the same location with within the LAN won't see more
+> than 60Kb/s.
+> 
+> I'm not doing any kind of fancy traffic control or anything like that.
+> I would expect to see some slowdown because of the NAT (for example,
+> downloads are 600Kb/s vs 500Kb/s through the NAT), but this kind of
+> slowdown seems a bit ridiculous.
+> 
+> I'm running a custom 2.6.30.3 kernel.  I've also installed
+> conntrack-tools thinking that my connection table might be getting
+> full.  However, according to conntrack -S:
+> 
+> entries                 455
+> searched                84375
+> found                   10970723
+> new                     242106
+> invalid                 15039
+> ignore                  53722
+> delete                  241522
+> delete_list             225919
+> insert                  226270
+> insert_failed           0
+> drop                    0
+> early_drop              0
+> icmp_error              5741
+> expect_new              28
+> expect_create           43
+> expect_delete           34
+> 
+> So I am well below the table max:
+> 
+> # sysctl net.netfilter.nf_conntrack_max
+> net.netfilter.nf_conntrack_max = 65536
+> 
+> Is this kind of performance drop to be expected w/ netfilter and
+> iptables?  Any suggestions on things I can do to increase performance?
 
---=-lbiiRvvhF/rv4czPrQeG
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
+I always *NAT in PREROUTING and MASQUERADE in POSTROUTING if needed.
+Have never seen any such performance drop on multiple NIC.
 
-Hi,
-
-Le lundi 10 ao=FBt 2009 =E0 16:27 +0530, ratheesh k a =E9crit :
-> Eric ,
->=20
->   I am running this program on 2.6.25 kernel on qemu emulation . But
-> if i run this on my     fedora linux desktop computer , i am not
-> facing this problem .
->=20
->  I dont know  whether call is reaching till sendmsg of netlink socket
-> in af_netlink.c ??? is there any other tool or s/w to test netlink
-> socket is working fine ???
-
-You could give a try to conntrack-tools (conntrack binary in
-particular). They also use libnfnetlink.
-
-By the way what happen if you only try to get the first bytes :
-
-	if (nfq_set_mode(qh, NFQNL_COPY_PACKET, 0xff) < 0) {
-
-
-> i already posted a program ( this i got from internet ) to check
-> nwtlink socket is working fine .
-> http://marc.info/?l=3Dnetfilter&m=3D124937098723617&w=3D2
-> but this program is not working on my fedora 9 linux desktop also ......
-
-Your code (after some minor unrelated fix, like cb missing in what you
-send) is correct. It is working correctly on my computer. Further more,
-the logic is the same as the one used in NuFW which is know to work fine
-in most (if not all) setup.
-
-BR,
---=20
-Eric Leblond <eric@inl.fr>
-INL: http://www.inl.fr/
-NuFW: http://www.nufw.org/
-
---=-lbiiRvvhF/rv4czPrQeG
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Ceci est une partie de message
- =?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
-
-iD8DBQBKgJd0nxA7CdMWjzIRAoWAAJ9GUhoHkm2j61Z5KlyPjXgJxvE5QwCfTx+y
-VgyseTdrXOJ5Q6DPaC056Jw=
-=+u2w
------END PGP SIGNATURE-----
-
---=-lbiiRvvhF/rv4czPrQeG--
-
+AYJ
