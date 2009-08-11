@@ -1,62 +1,49 @@
-From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: Re: Get source IP of packet through PREROUTING CHAIN
-Date: Tue, 11 Aug 2009 14:36:11 +0200
-Message-ID: <4A8165BB.7060702@freemail.hu>
-References: <21df6cb70908102139i1f0f21besc94740ed507615da@mail.gmail.com>
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: Re: libnetfilter_queue ---- set_mode function not returning .
+Date: Tue, 11 Aug 2009 09:43:06 +0530
+Message-ID: <cfeab66d0908102113h143f5f9cv488614c2c52d00fa@mail.gmail.com>
+References: <cfeab66d0908100126g54834d7au51f7444d6edcefcb@mail.gmail.com>
+	 <1249899383.7133.13.camel@khasse.inl.fr>
+	 <cfeab66d0908100357v1b3e6718l3299a390982ac8ca@mail.gmail.com>
+	 <1249941368.17184.17.camel@ice-age>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <21df6cb70908102139i1f0f21besc94740ed507615da@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=XBzWguK2jN8ZbMMDfydEJGTVnFq556MrPfuxBy2lXZ8=;
+        b=n5bln60tu1HqrS/unSOwj24MyfG+0vAnPB+pODDmHRlxAo21ZllQgkOd6zmFqsc2vi
+         CfxZKzO2h1kUh4+9x5yqfC0KbeYJOuNljV7fJKNr2e0Ql4arIZJnl3xvWwJlKu8jSEEv
+         Sa0hU5WWO+WRy5nvail8fiFhXwCQbVkqVMIKM=
+In-Reply-To: <1249941368.17184.17.camel@ice-age>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Elison Niven <elison.niven@gmail.com>
-Cc: netfilter@vger.kernel.org, elison.niven@matrixtelesol.com
+Content-Type: text/plain; charset="us-ascii"
+To: Eric Leblond <eric@inl.fr>
+Cc: netfilter@vger.kernel.org
 
-Hi Elison,
+> Your code (after some minor unrelated fix, like cb missing in what you
+> send) is correct. It is working correctly on my computer. Further more,
+> the logic is the same as the one used in NuFW which is know to work fine
+> in most (if not all) setup.
 
-The conntrack subsystem knows about every connection.
-So maybe you need to check that.
+can u send me the working program (after fix u done ) .
 
-Elison Niven =EDrta:
-> Hi List,
+> By the way what happen if you only try to get the first bytes :
 >
-> I have two interfaces eth0 and eth1 on my machine.
+>        if (nfq_set_mode(qh, NFQNL_COPY_PACKET, 0xff) < 0) {
 >
-> My machine has eth0 =3D 192.168.1.100 and eth1 =3D 172.16.1.100
 >
-> The scenario is that I will be receiving packets at port 10000 on eth=
-0
-> of my machine. I do not know from which IP the packets are being
-> received (Can be any machine - I do not need to apply a source addres=
-s
-> matching rule).
->  =20
-You may not know the source IP, but your machine will, because it sees=20
-the packets coming from eth0's network.
-> I need to forward these packets to another machine B that I do so wit=
-h
-> this rule:
->
-> iptables -t nat -I PREROUTING -i eth0 -p udp \
->        --dport 10000 -j DNAT --to-destination 172.16.1.200
->
-> Note that I have not added any -s option to the rule for source
-> address matching.
->
-> This also works properly. Now I need to _know_ the source IP and
-> source Port of the packets that are being received at port 10000 on
-> eth0. (For example to send some data back to the _same_machine_ that
-> is sending packets at port 10000)
->  =20
-Again. If the conntrack (in your machine) knows the source IP/port=20
-numbers then it will automagically replace them on the backroute.
-It may be also a problem if your response packets are not SNAT-ed. (In=20
-the case the sender machines sending the packets directly to your machi=
-ne.)
-> How do I achieve this?
->
-> Best Regards,
-> Elison
->  =20
-Swifty
+
+i will try this . and get back to u ... ..
+do u want me to try
+    NFQNL_COPY_META,
+    NFQNL_COPY_PACKET,
+these also ???
+
+
+Thanks,
+ratheesh.
