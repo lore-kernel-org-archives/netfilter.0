@@ -1,84 +1,50 @@
-From: Amos Jeffries <squid3@treenet.co.nz>
-Subject: Re: Poor upload speed with NAT
-Date: Tue, 11 Aug 2009 11:43:04 +1200
-Message-ID: <6808368f3857f867cd0735df99bacdd8@mail.treenet.co.nz>
-References: <1f4ef0970908101443i28bf4c1hc6b280d4096fd100@mail.gmail.com>
+From: Elison Niven <elison.niven@gmail.com>
+Subject: Get source IP of packet through PREROUTING CHAIN
+Date: Tue, 11 Aug 2009 10:09:19 +0530
+Message-ID: <21df6cb70908102139i1f0f21besc94740ed507615da@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1f4ef0970908101443i28bf4c1hc6b280d4096fd100@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:cc:content-type:content-transfer-encoding;
+        bh=LyYehhnBagiHhtuZb9VS9HXGcAxYH6VjHCuuQYwooHk=;
+        b=DxnYVKfSli64wa85xLFsrgeRCNlAJtA7uI/BToEKWqDn7phzJe2513qKUy1gDW7O5j
+         PLHrqYcmDQ3wW1FbK53heIbX7gf7DAFLsxXChWGhdyUaz2IFxY+hwwYkIByqoRrIDzl2
+         DaYN+05rkQR+7/bQaA2YkzVOsvOqWXRf+gkRY=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Steve Brown <sbrown25@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
+Cc: elison.niven@matrixtelesol.com
 
-On Mon, 10 Aug 2009 16:43:14 -0500, Steve Brown <sbrown25@gmail.com> wrote:
-> I have a linux box acting as a router/gateway between the internet, a
-> public network and a private LAN. We are using iptables to SNAT our
-> LAN. The setup for this is quite simple:
-> 
-> IPTABLES=`which iptables`
-> LAN=eth0
-> WAN=eth1
-> PUB=eth2
-> LAN_BLOCK=192.168.16.0/24
-> NAT_SOURCE=1.2.3.4
-> 
-> $IPTABLES -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> $IPTABLES -A FORWARD -i $LAN -o $WAN -m state --state NEW -j ACCEPT
-> $IPTABLES -A FORWARD -i $LAN -o $PUB -m state --state NEW -j ACCEPT
-> $IPTABLES -A FORWARD -i $PUB -o $LAN -m state --state NEW -j ACCEPT
-> $IPTABLES -t nat -A POSTROUTING -o $WAN -s $LAN_BLOCK -j SNAT
-> --to-source $NAT_SOURCE
-> 
-> With these rules, I get great download performance, regardless of
-> protocol (sftp, ftp, http, etc).
-> 
-> Uploads, however, are a different story. I believe that the source of
-> this issue is the NATing because, if I upload to the same server from
-> a box that isn't being NATed (e.g. in the public block), upload speeds
-> are an order of magnitude greater when not being NATed, regardless of
-> protocol. For example, if I upload a file from one of our public
-> servers to a remote location, it will upload at about 500Kb/s. The
-> same upload to the same location with within the LAN won't see more
-> than 60Kb/s.
-> 
-> I'm not doing any kind of fancy traffic control or anything like that.
-> I would expect to see some slowdown because of the NAT (for example,
-> downloads are 600Kb/s vs 500Kb/s through the NAT), but this kind of
-> slowdown seems a bit ridiculous.
-> 
-> I'm running a custom 2.6.30.3 kernel.  I've also installed
-> conntrack-tools thinking that my connection table might be getting
-> full.  However, according to conntrack -S:
-> 
-> entries                 455
-> searched                84375
-> found                   10970723
-> new                     242106
-> invalid                 15039
-> ignore                  53722
-> delete                  241522
-> delete_list             225919
-> insert                  226270
-> insert_failed           0
-> drop                    0
-> early_drop              0
-> icmp_error              5741
-> expect_new              28
-> expect_create           43
-> expect_delete           34
-> 
-> So I am well below the table max:
-> 
-> # sysctl net.netfilter.nf_conntrack_max
-> net.netfilter.nf_conntrack_max = 65536
-> 
-> Is this kind of performance drop to be expected w/ netfilter and
-> iptables?  Any suggestions on things I can do to increase performance?
+Hi List,
 
-I always *NAT in PREROUTING and MASQUERADE in POSTROUTING if needed.
-Have never seen any such performance drop on multiple NIC.
+I have two interfaces eth0 and eth1 on my machine.
 
-AYJ
+My machine has eth0 = 192.168.1.100 and eth1 = 172.16.1.100
+
+The scenario is that I will be receiving packets at port 10000 on eth0
+of my machine. I do not know from which IP the packets are being
+received (Can be any machine - I do not need to apply a source address
+matching rule).
+
+I need to forward these packets to another machine B that I do so with
+this rule:
+
+iptables -t nat -I PREROUTING -i eth0 -p udp \
+       --dport 10000 -j DNAT --to-destination 172.16.1.200
+
+Note that I have not added any -s option to the rule for source
+address matching.
+
+This also works properly. Now I need to _know_ the source IP and
+source Port of the packets that are being received at port 10000 on
+eth0. (For example to send some data back to the _same_machine_ that
+is sending packets at port 10000)
+
+How do I achieve this?
+
+Best Regards,
+Elison
