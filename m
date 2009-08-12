@@ -1,18 +1,21 @@
 From: paulobruck1 <paulobruck1@gmail.com>
-Subject: iptables + mangle for vlan not working
-Date: Wed, 12 Aug 2009 19:54:22 -0300
-Message-ID: <1250117662.4133.12.camel@pauloric.contatogs.com.br>
+Subject: Re: iptables + mangle for vlan not working
+Date: Wed, 12 Aug 2009 20:15:37 -0300
+Message-ID: <1250118937.4080.15.camel@pauloric.contatogs.com.br>
+References: <1250117662.4133.12.camel@pauloric.contatogs.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:subject:from:to:content-type
-         :date:message-id:mime-version:x-mailer:content-transfer-encoding;
+        h=domainkey-signature:received:received:subject:from:to:in-reply-to
+         :references:content-type:date:message-id:mime-version:x-mailer
+         :content-transfer-encoding;
         bh=06XGutNH+lCxUp44yL3AX9Wal7EAM2IHK3BayD8IWDM=;
-        b=pstJBlW+D6dOnh3gQ79QG1E9dXnxJUpOFEzMvUo8WcaA6djGsMzRDkO8sDYavVmC8O
-         GYOZwZzzR/rRp8SQMg2vArY68h0Cvy+PrLBzAjyucHJNL9ysCJxR8HwYek9z3njaaz48
-         HpjLXWelq8Tp1C8xtzPjKsSvPvHjtsZ126utw=
+        b=KxqAmtueHEOabmhKndOtRhsCe/bpE7XGuuehLiM7+2sn9UfVUWqiTZuUQjr7Owc+6x
+         v3TlqyoGl9VWt+RejWORG+KRuMhWH2YiugpR2ndOCw6AuCAWyKQ4yly+lm35d3LgZb7U
+         WmyRLwVdaQgEHC9aE4Fn1+iDmWUIF3nigE9xQ=
+In-Reply-To: <1250117662.4133.12.camel@pauloric.contatogs.com.br>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"
@@ -133,6 +136,5 @@ I would appreciate any help
 
 
 thanks in advanced
-
 
 
