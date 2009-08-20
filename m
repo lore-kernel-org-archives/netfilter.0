@@ -1,37 +1,25 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCEMENT] ipset-3.1
-Date: Tue, 18 Aug 2009 20:54:13 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.0908182049460.3452@blackhole.kfki.hu>
+From: "J. Bakshi" <joydeep@infoservices.in>
+Subject: How to cope with port scanner ?
+Date: Thu, 20 Aug 2009 10:42:44 +0530
+Message-ID: <4A8CDB4C.6010604@infoservices.in>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Hello,
+Dear list,
 
-I'm happy to announce ipset release 3.1. A few minor bugs were fixed and 
-some cleanups added:
+Is there any way in iptables to fool a port scanner and os finger
+printing detection ?
+I like to implement such rules which can
 
-- Nonexistent sets were reported as existing sets when testing
-  from userspace in setlist type of sets (bug reported by Victor A.
-  Safronov)
-- When saving sets, setlist type of sets must come last in order
-  to satisfy the dependency from the elements (bug reported by Marty B.)
-- Sparse insists that the flags argument to kmalloc() is gfp_t
-  (Stephen Hemminger)
-- Correct format specifiers and change %i to %d (Jan Engelhardt)
-- Fix the definition of 'bool' for kernels <= 2.6.18 (Jan Engelhardt)
+1> make my linux box appear as window box to the port scanner
+2> Freeze the port scanner
+3> not to display the filtered ports at all.
 
-As usual, you can download it from http://ipset.netfilter.org or from 
-git://git.netfilter.org/ipset.git
+Please suggest.
+Thanks
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
