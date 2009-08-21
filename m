@@ -1,64 +1,82 @@
-From: Simon Ruderich <simon@ruderich.org>
-Subject: Re: nmap scan makes my apache connection  super slow
-Date: Fri, 21 Aug 2009 16:57:30 +0200
-Message-ID: <20090821145730.GA16700@ruderich.org>
-References: <4A8E638D.8040006@infoservices.in>
- <4A8EB06A.6060400@plouf.fr.eu.org>
+From: NICHOLAS KLINE <nkline@kent.edu>
+Subject: Firewall Rules Help
+Date: Fri, 21 Aug 2009 11:41:56 -0400
+Message-ID: <4399fd970908210841j1213b83di98e4ea3d53d1082f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256; protocol="application/pgp-signature"; boundary="=_zucker.schokokeks.org-27653-1250866639-0001-2"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4A8EB06A.6060400@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-This is a MIME-formatted message.  If you see this text it means that your
-E-mail software does not support MIME-formatted messages.
+Hi,
 
---=_zucker.schokokeks.org-27653-1250866639-0001-2
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Thanks to everyone who constructively critiqued my previous firewall
+rules and provided advice. After reading through all of the feedback,
+I revised my firewall rules. I would appreciate it if you would please
+critique them again.
 
-On Fri, Aug 21, 2009 at 04:34:18PM +0200, Pascal Hambourg wrote:
-> Make an exception to the syn flood protection for TCP port 80 (or any
-> port apache listens on), with at least a much higher limit than 1/s. How
-> high ? Well, as high as your system can take without choking.
+The situation remains the same:
+- laptop running desktop version of Ubuntu 8.x
+- laptop will be used on either a private LAN or public network
+- laptop will switch between wired and wireless network
+- no server services will be running (HTTPD, FTP, etc.)
 
-As a side note somebody doesn't need to SYN-flood Apache to bring
-it down, have a look at Slowloris [1].
+Remaining Questions:
+1.) If I change from wired to wireless, will these rules still apply?
 
-Simon
 
-[1]: http://ha.ckers.org/slowloris/
---=20
-+ privacy is necessary
-+ using http://gnupg.org
-+ public key id: 0x92FEFDB7E44C32F9
+Revised Firewall Rules
+-----------------------------
 
---=_zucker.schokokeks.org-27653-1250866639-0001-2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Transfer-Encoding: 7bit
-Content-Description: Digital signature
-Content-Disposition: inline
+# Establish some variables:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
+# Location of IPTABLES on your system
+IPTABLES="/sbin/iptables"
 
-iQIcBAEBCAAGBQJKjrXaAAoJEJL+/bfkTDL5ShkP/AtasPx5+wU9ZfEFo4hZkD+6
-bngm0EIXtZ0jJX3NZC4Vp93tdx3Ps3jJMSbfjTbWO2+Jc3Bf40QBfU2quaTa4vru
-KlMw4OQkANfZoJYcYN8IdXwfV3H5xDgn/3XzVmYvZFyrP60TrPZ28pAST1LmPnn4
-wxFinjRWRXDNXpvgyIBezNZRc8HJt/iv+M/4FfGyA/XKNwZKjLcY6ooIWe7rbCq4
-wu8eukFdGAaQ7VRiZSVKzz8PwDMj8HhPI1YVlh+UObxzzYFfVGblQGOYCagvdWtS
-VPIhWrPrG23e9VDsv8GvUx4B6uCMheg0NhujSxudYm3/cuUPN6p+5l3OpO/+93g+
-1KCztqDiDZ+IGeYrH3GTrIwACvYUzSAW2gq4JFV/JX4uoAAtVoS5rQ7KtywpuLX3
-0y2HhPJ+Y37eRBiDuAWRDQuZcN+O7TCMX0FpzzmVcSHX4Cq26W37qgOi8yl46tcF
-QprwTUGNNkVBmfxjfYZnSWUBx+mURfYvBCqZjewPPxLPaIIKnapGeACFtUwlhdch
-g24ZU48u8SbkaSX96xBpwTc+STCRnzBu6nMUL37/1OagbFixUx3qYGlsJ22AdO8y
-zaOJGphpbF8Np4Qz0dLL7GKuqmaTANRd0LDVSzwnwpIyqzMSrooNudHU1p/YYP7h
-7JSlB7kzxhJyrDhp0W2p
-=jo3Q
------END PGP SIGNATURE-----
 
---=_zucker.schokokeks.org-27653-1250866639-0001-2--
+# SETUP:
+
+# Flush active rules and custom tables
+$IPTABLES --flush
+$IPTABLES -t nat --flush
+$IPTABLES -t mangle --flush
+
+$IPTABLES --delete-chain
+$IPTABLES -t nat --delete-chain
+$IPTABLES -t mangle --delete-chain
+
+# Give free reign to the loopback interfaces, i.e. local processes may connect
+# to other processes' listening-ports.
+$IPTABLES -A INPUT  -i lo -j ACCEPT
+$IPTABLES -A OUTPUT -o lo -j ACCEPT
+
+# Set default policies for all chains.
+# User-defined chains cannot be assigned default policies.
+# NAT and mangle tables use default ACCEPT policies.
+# DROP in nat table is prohibited in newer iptables.
+# DROP in mangle table creates hassle.
+$IPTABLES -P INPUT DROP
+$IPTABLES -P FORWARD DROP
+$IPTABLES -P OUTPUT ACCEPT
+
+
+# INBOUND POLICY:
+
+# Accept inbound packets that are part of previously-OK'ed sessions
+$IPTABLES -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+# Log and drop anything not accepted above
+$IPTABLES -A INPUT -j LOG --log-prefix "Dropped by default (INPUT):"
+
+
+# OUTBOUND POLICY:
+# Allow all outbound traffic.
+
+
+# Log & drop ALL incoming packets destined anywhere but here.
+$IPTABLES -A FORWARD -j LOG --log-prefix "Attempted FORWARD? Dropped
+by default:"
+
+--- End of rules ---
