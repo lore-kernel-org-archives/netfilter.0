@@ -1,50 +1,47 @@
-From: "J. Bakshi" <joydeep@infoservices.in>
+From: Richard Horton <arimus.uk@googlemail.com>
 Subject: Re: try to change os fingerprint
-Date: Fri, 21 Aug 2009 17:30:06 +0530
-Message-ID: <4A8E8C46.7080702@infoservices.in>
-References: <4A8E5BD6.5040904@infoservices.in> <1250855388.6489.21.camel@jaspav.missionsit.net.missionsit.net>
+Date: Fri, 21 Aug 2009 13:07:56 +0100
+Message-ID: <56378e320908210507te174de0x7f2ad1331929346f@mail.gmail.com>
+References: <4A8E5BD6.5040904@infoservices.in>
+	 <1250855388.6489.21.camel@jaspav.missionsit.net.missionsit.net>
+	 <4A8E8C46.7080702@infoservices.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1250855388.6489.21.camel@jaspav.missionsit.net.missionsit.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=wQ6DSPMYHe52sxZ/mqB62+xtFfsfnvOb1V9mVWG+drY=;
+        b=pz2L/BLupi9e/JeaJCN5EvALwJs0meKqbMItl/vvxr6wQlrx1RCJLdLrDnJTJh7cx2
+         f3wrmALPIZ9EHQRGoQcIlbF3gm4b5Ov2lgXjOMp8aHAcPBBECDBzS+LBSMBceK5Q9aVr
+         K5MyZ5Z3ibQC2mkzPDh71kLDZG/39XD5QkN80=
+In-Reply-To: <4A8E8C46.7080702@infoservices.in>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-John A. Sullivan III wrote:
-> On Fri, 2009-08-21 at 14:03 +0530, J. Bakshi wrote:
->   
->> Hello,
->>
->> I am trying to change the OS fingerprint with iptables. Here are two
->> rule set which I have constructed to do the same
->>
->> ````````
->> iptables -t mangle -A PREROUTING - -j PERS --tweak dst --local --conf
->> example/win9x.conf
->> iptables -t mangle -A OUTPUT -j PERS --tweak src --local --conf
->> example/win9x.conf
->> ````````````
->>
->> But it throws an error like
->>
->> ``````````
->> iptables v1.4.2-rc1: Unknown arg `--tweak'
->> Try `iptables -h' or 'iptables --help' for more information.
->> ```````````````
->>
->> What might be the problem here ?
->> Thanks
->>     
-> <snip>
-> I'm not familiar with the PERS target.  It does not show up in my
-> iptables.  Is it available in your kernel or do you need to load and
-> perhaps compile a module for it? - John
->   
+2009/8/21 J. Bakshi <joydeep@infoservices.in>
+>
+> I am not very sure but maybe we need to patch the kernel. Any clue from
+> anyone ?
+>
+>
 
-I am not very sure but maybe we need to patch the kernel. Any clue from
-anyone ?
+The package required to change the IP personality can be found here...
+http://ippersonality.sourceforge.net/
 
-Thanks
+Follow their directions and your distributions module build process to
+make sure you have the required modules/user space libraries (if
+needed) compiled and working.
+
+
+
+--
+Richard Horton
+Users are like a virus: Each causing a thousand tiny crises until the
+host finally dies.
+http://www.solstans.co.uk - Solstans Japanese Bobtails and Norwegian Forest Cats
+http://www.pbase.com/arimus - My online photogallery
