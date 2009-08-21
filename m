@@ -1,132 +1,44 @@
-From: "J. Bakshi" <joydeep@infoservices.in>
-Subject: nmap scan makes my apache connection  super slow
-Date: Fri, 21 Aug 2009 14:36:21 +0530
-Message-ID: <4A8E638D.8040006@infoservices.in>
-Mime-Version: 1.0
+From: Egon Burgener <egon.burgener@terreactive.ch>
+Subject: conntrackd external cache does not contain NAT information
+Date: Fri, 21 Aug 2009 11:16:32 +0200
+Message-ID: <3E64FDDA-1B89-4548-8A52-B7D15BCF3E40@terreactive.ch>
+Mime-Version: 1.0 (Apple Message framework v935.3)
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
 To: netfilter@vger.kernel.org
 
-Dear list,
+Hi
 
-nmap scan " nmap -P0 ...."  makes my apache connection super slow !!!
+I am building a firewall with
+   kernel 2.6.29.6
+   iptables 2.4.4
+   conntrack-tools 0.9.13 (FTFW mode)
+   heartbeat version 1
 
-The iptables rule sets to cope with scanners  I have in my server is
+conntrack synchronisation works fine except NAT traffic. If I do
+conntrackd -i on the active node I see the NAT information in it:
 
-`````````
-## SYN-FLOODING PROTECTION
-iptables -N syn-flood
-iptables -A INPUT -i $IFACE -p tcp --syn -j syn-flood
-iptables -A syn-flood -m limit --limit 1/s --limit-burst 4 -j RETURN
-iptables -A syn-flood -j DROP
+tcp      6 ESTABLISHED src=192.168.12.20 dst=12.129.147.65 sport=2403  
+dport=80 src=12.129.147.65 dst=84.73.54.61 sport=80 dport=2403  
+[ASSURED] [active since 48s]
 
-## Make sure NEW tcp connections are SYN packets
-iptables -A INPUT -i $IFACE -p tcp ! --syn -m state --state NEW -j DROP
+On the standby node I am missing the NAT information (conntrackd -e):
 
-## FRAGMENTS
-iptables -A INPUT -i $IFACE -f -j LOG --log-prefix "IPTABLES FRAGMENTS: "
-iptables -A INPUT -i $IFACE -f -j DROP
+tcp      6 ESTABLISHED src=192.168.12.20 dst=12.129.147.65 sport=2403  
+dport=80 [ASSURED] [active since 91s]
 
-#XMAS packets
-#Incoming malformed XMAS packets. Drop them:
-iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
+Has anybody a hint?
 
-#Drop all NULL packets
-#Incoming malformed NULL packets:
-iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
-
-#block commonly used port-scanning technique.
-
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL FIN,URG,PSH -j LOG \
-           --log-prefix "NMAP-XMAS SCAN:" --log-tcp-options --log-ip-options
-
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL NONE -j LOG \
-           --log-prefix "NMAP-NULL SCAN:" --log-tcp-options --log-ip-options
-
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,RST SYN,RST -j LOG \
-         --log-prefix "SYN/RST SCAN:" --log-tcp-options --log-ip-options
-
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,FIN SYN,FIN -j LOG \
-          --log-prefix "SYN/FIN SCAN:" --log-tcp-options --log-ip-options
-
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL NONE -j DROP
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
-ipt#XMAS packets
-#Incoming malformed XMAS packets. Drop them:
-iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
-
-#Drop all NULL packets
-#Incoming malformed NULL packets:
-iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
-
-#block commonly used port-scanning technique.
-
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL FIN,URG,PSH -j LOG \
-           --log-prefix "NMAP-XMAS SCAN:" --log-tcp-options --log-ip-options
-
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL NONE -j LOG \
-           --log-prefix "NMAP-NULL SCAN:" --log-tcp-options --log-ip-options
-
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,RST SYN,RST -j LOG \
-         --log-prefix "SYN/RST SCAN:" --log-tcp-options --log-ip-options
-
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,FIN SYN,FIN -j LOG \
-          --log-prefix "SYN/FIN SCAN:" --log-tcp-options --log-ip-options
-
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL NONE -j DROP
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
-
-#XMAS packets
-#Incoming malformed XMAS packets. Drop them:
-iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
-
-#Drop all NULL packets
-#Incoming malformed NULL packets:
-iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
-
-#block commonly used port-scanning technique.
-
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL FIN,URG,PSH -j LOG \
-           --log-prefix "NMAP-XMAS SCAN:" --log-tcp-options --log-ip-options
-
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL NONE -j LOG \
-           --log-prefix "NMAP-NULL SCAN:" --log-tcp-options --log-ip-options
-
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,RST SYN,RST -j LOG \
-         --log-prefix "SYN/RST SCAN:" --log-tcp-options --log-ip-options
-
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,FIN SYN,FIN -j LOG \
-          --log-prefix "SYN/FIN SCAN:" --log-tcp-options --log-ip-options
-
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL NONE -j DROP
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
-iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
-ables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
-ables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
-
-## malformed packets
-
-iptables -A INPUT -i $IFACE -p tcp -m tcp --tcp-flags
-FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
-iptables -A INPUT -i $IFACE -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j
-DROP
-iptables -A INPUT -i $IFACE -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j
-DROP
-iptables -A INPUT -i $IFACE -p tcp -m tcp --tcp-flags FIN,RST FIN,RST -j
-DROP
-iptables -A INPUT -i $IFACE -p tcp -m tcp --tcp-flags FIN,ACK FIN -j DROP
-iptables -A INPUT -i $IFACE -p tcp -m tcp --tcp-flags ACK,URG URG -j DROP
-````````````````
-
-But nmap scan on the server makes apache connection running on it super
-slow !!!
-If I stop the scan apache again become normal.
-Is there any trick to keep the connection normal even with scanners are
-doing their job ? Please suggest how to cope with it.
-Thanks
+Thx
+Egon
+-- 
+-----------------------------------------------------------------------------------------
+addr://Kasinostrasse 30, CH-5001 Aarau   fon://++41 62 823 9355
+http://www.terreactive.com                             fax://++41 62  
+823 9356
+------------------------------------------------------------------------------------------
+Wir sichern Ihren Erfolg.                                 terreActive AG
+------------------------------------------------------------------------------------------
