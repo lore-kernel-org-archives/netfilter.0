@@ -1,82 +1,49 @@
-From: NICHOLAS KLINE <nkline@kent.edu>
-Subject: Firewall Rules Help
-Date: Fri, 21 Aug 2009 11:41:56 -0400
-Message-ID: <4399fd970908210841j1213b83di98e4ea3d53d1082f@mail.gmail.com>
+From: "/dev/rob0" <rob0@gmx.co.uk>
+Subject: Re: bad argument state
+Date: Fri, 21 Aug 2009 12:42:41 -0500
+Message-ID: <200908211242.42352.rob0@gmx.co.uk>
+References: <4A8E5924.2050302@infoservices.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4A8E5924.2050302@infoservices.in>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi,
+On Friday 21 August 2009 03:21:56 J. Bakshi wrote:
+> But whenevr I insert these rules in my existing iptables rule it
+> reports "bad argument state"
+>
+> Any clue ?
 
-Thanks to everyone who constructively critiqued my previous firewall
-rules and provided advice. After reading through all of the feedback,
-I revised my firewall rules. I would appreciate it if you would please
-critique them again.
+Looks like shell scripting failure.
 
-The situation remains the same:
-- laptop running desktop version of Ubuntu 8.x
-- laptop will be used on either a private LAN or public network
-- laptop will switch between wired and wireless network
-- no server services will be running (HTTPD, FTP, etc.)
+root@chestnut:~# iptables -vA INPUT -p tcp -i $IFACE -m state
+Bad argument `state'
 
-Remaining Questions:
-1.) If I change from wired to wireless, will these rules still apply?
+That's what I get when $IFACE is not set.
 
+> ``````````````````
+> IFACE=eth0
+> iptables -A INPUT -p tcp -i $IFACE -m state --state NEW -m recent --set
 
-Revised Firewall Rules
------------------------------
+Is this exactly and completely what you tried, to get that result? I
+bet not.
 
-# Establish some variables:
+> iptables -A INPUT -p tcp -i $IFACE -m state --state NEW -m recent
+> --update --seconds 30 --hitcount   10 -j DROP
+> iptables -A FORWARD -p tcp -i $IFACE -m state --state NEW -m recent --set
+> iptables -A FORWARD -p tcp -i $IFACE -m state --state NEW -m recent
+> --update --seconds 30 --hitcoun  10 -j DROP
+> `````````````````````````````
 
-# Location of IPTABLES on your system
-IPTABLES="/sbin/iptables"
+"--hitcoun" is definitely wrong too.
 
-
-# SETUP:
-
-# Flush active rules and custom tables
-$IPTABLES --flush
-$IPTABLES -t nat --flush
-$IPTABLES -t mangle --flush
-
-$IPTABLES --delete-chain
-$IPTABLES -t nat --delete-chain
-$IPTABLES -t mangle --delete-chain
-
-# Give free reign to the loopback interfaces, i.e. local processes may connect
-# to other processes' listening-ports.
-$IPTABLES -A INPUT  -i lo -j ACCEPT
-$IPTABLES -A OUTPUT -o lo -j ACCEPT
-
-# Set default policies for all chains.
-# User-defined chains cannot be assigned default policies.
-# NAT and mangle tables use default ACCEPT policies.
-# DROP in nat table is prohibited in newer iptables.
-# DROP in mangle table creates hassle.
-$IPTABLES -P INPUT DROP
-$IPTABLES -P FORWARD DROP
-$IPTABLES -P OUTPUT ACCEPT
-
-
-# INBOUND POLICY:
-
-# Accept inbound packets that are part of previously-OK'ed sessions
-$IPTABLES -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-# Log and drop anything not accepted above
-$IPTABLES -A INPUT -j LOG --log-prefix "Dropped by default (INPUT):"
-
-
-# OUTBOUND POLICY:
-# Allow all outbound traffic.
-
-
-# Log & drop ALL incoming packets destined anywhere but here.
-$IPTABLES -A FORWARD -j LOG --log-prefix "Attempted FORWARD? Dropped
-by default:"
-
---- End of rules ---
+I think Jan's "Perfect Ruleset" document might be helpful for you:
+    http://jengelh.medozas.de/documents/Perfect_Ruleset.pdf
+-- 
+    Offlist mail to this address is discarded unless
+    "/dev/rob0" or "not-spam" is in Subject: header
