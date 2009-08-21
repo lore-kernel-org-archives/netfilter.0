@@ -1,46 +1,53 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: conntrackd external cache does not contain NAT information
-Date: Fri, 21 Aug 2009 16:28:24 +0200
-Message-ID: <4A8EAF08.9020807@netfilter.org>
-References: <3E64FDDA-1B89-4548-8A52-B7D15BCF3E40@terreactive.ch>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: nmap scan makes my apache connection  super slow
+Date: Fri, 21 Aug 2009 16:34:18 +0200
+Message-ID: <4A8EB06A.6060400@plouf.fr.eu.org>
+References: <4A8E638D.8040006@infoservices.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <3E64FDDA-1B89-4548-8A52-B7D15BCF3E40@terreactive.ch>
+In-Reply-To: <4A8E638D.8040006@infoservices.in>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Egon Burgener <egon.burgener@terreactive.ch>
+Content-Type: text/plain; charset="iso-8859-1"
+To: "J. Bakshi" <joydeep@infoservices.in>
 Cc: netfilter@vger.kernel.org
 
-Hi,
+Hello,
 
-Egon Burgener wrote:
-> Hi
-> 
-> I am building a firewall with
->   kernel 2.6.29.6
->   iptables 2.4.4
->   conntrack-tools 0.9.13 (FTFW mode)
->   heartbeat version 1
-> 
-> conntrack synchronisation works fine except NAT traffic. If I do
-> conntrackd -i on the active node I see the NAT information in it:
-> 
-> tcp      6 ESTABLISHED src=192.168.12.20 dst=12.129.147.65 sport=2403
-> dport=80 src=12.129.147.65 dst=84.73.54.61 sport=80 dport=2403 [ASSURED]
-> [active since 48s]
-> 
-> On the standby node I am missing the NAT information (conntrackd -e):
-> 
-> tcp      6 ESTABLISHED src=192.168.12.20 dst=12.129.147.65 sport=2403
-> dport=80 [ASSURED] [active since 91s]
-> 
-> Has anybody a hint?
+J. Bakshi a =E9crit :
+>=20
+> nmap scan " nmap -P0 ...."  makes my apache connection super slow !!!
 
-The NAT information is there but not listed when you do `conntrackd -e'
-but it's built during the commit phase that occurs when your HA manager
-calls `conntrackd -c' (see the primary-backup.sh script).
+What do you mean exactly by "slow" ? Low tranfer rate ? It takes longer
+to establish a connection ?
 
-You can verify this by invoking `conntrack -L' to see the result of the
-commit. You should see the NAT information at that stage.
+> ## SYN-FLOODING PROTECTION
+> iptables -N syn-flood
+> iptables -A INPUT -i $IFACE -p tcp --syn -j syn-flood
+> iptables -A syn-flood -m limit --limit 1/s --limit-burst 4 -j RETURN
+
+1/s is much too strict. Even in normal use a server may receive much
+more connection requests in one second.
+
+> ## FRAGMENTS
+> iptables -A INPUT -i $IFACE -f -j LOG --log-prefix "IPTABLES FRAGMENT=
+S: "
+> iptables -A INPUT -i $IFACE -f -j DROP
+
+Useless. Fragment reassembly occurs before the INPUT chains (and even
+before PREROUTING chains - except the 'raw' table - when conntrack is
+enabled), so there are no fragments there.
+
+> But nmap scan on the server makes apache connection running on it sup=
+er
+> slow !!!
+> If I stop the scan apache again become normal.
+> Is there any trick to keep the connection normal even with scanners a=
+re
+> doing their job ? Please suggest how to cope with it.
+
+Make an exception to the syn flood protection for TCP port 80 (or any
+port apache listens on), with at least a much higher limit than 1/s. Ho=
+w
+high ? Well, as high as your system can take without choking.
