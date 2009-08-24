@@ -1,35 +1,133 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: [ANNOUNCEMENT] ipset-3.2
-Date: Sun, 23 Aug 2009 00:21:43 +0200 (CEST)
-Message-ID: <alpine.LSU.2.00.0908222330200.2057@fbirervta.pbzchgretzou.qr>
-References: <alpine.DEB.2.00.0908211609150.6879@blackhole.kfki.hu>  <alpine.LSU.2.00.0908212012250.24079@fbirervta.pbzchgretzou.qr>  <alpine.DEB.2.00.0908221527190.7819@blackhole.kfki.hu>  <alpine.LSU.2.00.0908221549540.11168@fbirervta.pbzchgretzou.qr>
- <1250969455.12729.4.camel@kushiel.sterenborg.org>
+From: "J. Bakshi" <joydeep@infoservices.in>
+Subject: nmap scan makes my apache connection  super slow
+Date: Mon, 24 Aug 2009 10:19:35 +0530
+Message-ID: <4A921BDF.3030801@infoservices.in>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1250969455.12729.4.camel@kushiel.sterenborg.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Rob Sterenborg <rob@sterenborg.info>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
+Dear list,
 
-On Saturday 2009-08-22 21:30, Rob Sterenborg wrote:
+nmap scan " nmap -P0 ...."  makes my apache connection super slow !!!
 
->On Sat, 2009-08-22 at 15:57 +0200, Jan Engelhardt wrote:
->> Ah right. CentOS. Should have known. The platform where you can't
->> deploy any modules, because during their backport spree, they failed
->> to realize that external modules do rely on, say, < 2.6.22 _not_
->> having skb_*_header(), but skb->nh. I've given up on them.
->> 
->> But thanks for the reminder. :)
->
->Since, as far as I understood, Centos is supposed to be a free and as
->much as possible binary compatible replacement for RHEL, does this also
->go for RHEL or is this behaviour Centos specific?
+The iptables rule sets to cope with scanners  I have in my server is
 
-With high probability this breakage extends to all RedHat Enterprise 
-products with 2.6.18.
-(As a side note, they are not running a -stable either.
-v2.6.18.4-7-gfaed318 is absent, for example.)
+`````````
+## SYN-FLOODING PROTECTION
+iptables -N syn-flood
+iptables -A INPUT -i $IFACE -p tcp --syn -j syn-flood
+iptables -A syn-flood -m limit --limit 1/s --limit-burst 4 -j RETURN
+iptables -A syn-flood -j DROP
+
+## Make sure NEW tcp connections are SYN packets
+iptables -A INPUT -i $IFACE -p tcp ! --syn -m state --state NEW -j DROP
+
+## FRAGMENTS
+iptables -A INPUT -i $IFACE -f -j LOG --log-prefix "IPTABLES FRAGMENTS: "
+iptables -A INPUT -i $IFACE -f -j DROP
+
+#XMAS packets
+#Incoming malformed XMAS packets. Drop them:
+iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
+
+#Drop all NULL packets
+#Incoming malformed NULL packets:
+iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
+
+#block commonly used port-scanning technique.
+
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL FIN,URG,PSH -j LOG \
+           --log-prefix "NMAP-XMAS SCAN:" --log-tcp-options --log-ip-options
+
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL NONE -j LOG \
+           --log-prefix "NMAP-NULL SCAN:" --log-tcp-options --log-ip-options
+
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,RST SYN,RST -j LOG \
+         --log-prefix "SYN/RST SCAN:" --log-tcp-options --log-ip-options
+
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,FIN SYN,FIN -j LOG \
+          --log-prefix "SYN/FIN SCAN:" --log-tcp-options --log-ip-options
+
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL NONE -j DROP
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+ipt#XMAS packets
+#Incoming malformed XMAS packets. Drop them:
+iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
+
+#Drop all NULL packets
+#Incoming malformed NULL packets:
+iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
+
+#block commonly used port-scanning technique.
+
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL FIN,URG,PSH -j LOG \
+           --log-prefix "NMAP-XMAS SCAN:" --log-tcp-options --log-ip-options
+
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL NONE -j LOG \
+           --log-prefix "NMAP-NULL SCAN:" --log-tcp-options --log-ip-options
+
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,RST SYN,RST -j LOG \
+         --log-prefix "SYN/RST SCAN:" --log-tcp-options --log-ip-options
+
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,FIN SYN,FIN -j LOG \
+          --log-prefix "SYN/FIN SCAN:" --log-tcp-options --log-ip-options
+
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL NONE -j DROP
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+
+#XMAS packets
+#Incoming malformed XMAS packets. Drop them:
+iptables -A INPUT -p tcp --tcp-flags ALL ALL -j DROP
+
+#Drop all NULL packets
+#Incoming malformed NULL packets:
+iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
+
+#block commonly used port-scanning technique.
+
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL FIN,URG,PSH -j LOG \
+           --log-prefix "NMAP-XMAS SCAN:" --log-tcp-options --log-ip-options
+
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL NONE -j LOG \
+           --log-prefix "NMAP-NULL SCAN:" --log-tcp-options --log-ip-options
+
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,RST SYN,RST -j LOG \
+         --log-prefix "SYN/RST SCAN:" --log-tcp-options --log-ip-options
+
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,FIN SYN,FIN -j LOG \
+          --log-prefix "SYN/FIN SCAN:" --log-tcp-options --log-ip-options
+
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL FIN,URG,PSH -j DROP
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags ALL NONE -j DROP
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+iptables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+ables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+ables -t mangle -A PREROUTING -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+
+## malformed packets
+
+iptables -A INPUT -i $IFACE -p tcp -m tcp --tcp-flags
+FIN,SYN,RST,PSH,ACK,URG NONE -j DROP
+iptables -A INPUT -i $IFACE -p tcp -m tcp --tcp-flags FIN,SYN FIN,SYN -j
+DROP
+iptables -A INPUT -i $IFACE -p tcp -m tcp --tcp-flags SYN,RST SYN,RST -j
+DROP
+iptables -A INPUT -i $IFACE -p tcp -m tcp --tcp-flags FIN,RST FIN,RST -j
+DROP
+iptables -A INPUT -i $IFACE -p tcp -m tcp --tcp-flags FIN,ACK FIN -j DROP
+iptables -A INPUT -i $IFACE -p tcp -m tcp --tcp-flags ACK,URG URG -j DROP
+````````````````
+
+But nmap scan on the server makes apache connection running on it super
+slow !!!
+If I stop the scan apache again become normal.
+Is there any trick to keep the connection normal even with scanners are
+doing their job ? Please suggest how to cope with it.
+Thanks
+
