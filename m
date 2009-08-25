@@ -1,78 +1,94 @@
-From: Egon Burgener <egon.burgener@terreactive.ch>
-Subject: Re: conntrackd external cache does not contain NAT information
-Date: Tue, 25 Aug 2009 13:39:21 +0200
-Message-ID: <9FBB2D79-0F10-4C11-AEB5-E989C1C2086F@terreactive.ch>
-References: <3E64FDDA-1B89-4548-8A52-B7D15BCF3E40@terreactive.ch> <4A8EAF08.9020807@netfilter.org>
-Mime-Version: 1.0 (Apple Message framework v935.3)
-Content-Transfer-Encoding: 7bit
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: Re: bridge tc fw filter
+Date: Tue, 25 Aug 2009 17:09:33 +0530
+Message-ID: <cfeab66d0908250439k158c0b13sc2106add5cdde386@mail.gmail.com>
+References: <cfeab66d0908200831r4148a9e8gc67647ba600c3850@mail.gmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4A8EAF08.9020807@netfilter.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=K5qAjjqPAgPMgBkSMhu3zJiJ3iWBEeunYGQZVSBGfiA=;
+        b=OIFCsQVSR0cRzSV+9ykmrYGNnGkp1rz90hRpTgFfCCiW7QKykAxl6E5JRT5MQxIjYd
+         N9EiKoQ7An7+nyv9G+nDEbxIlVjnL/0dEJlPoB0AgSAFmaAdXYHptYa63SmlicBFZNsf
+         CMxSIsSzmsZuvkZ19D4/R260a8I1kOP0YYhXU=
+In-Reply-To: <cfeab66d0908200831r4148a9e8gc67647ba600c3850@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-Hi  Pablo
+i can see this bug in 2.6.22.18 but not in 2.6.26.8 ....any clue is
+greatly appreciated ///
 
-Yes, you are right. The NAT information is not displayed with  
-conntrackd -e but is there and gets pushed into the conntrack table  
-with conntrackd -c.
-Therefore, my NAT sync problem is somewhere else. I have to debug  
-further.
-
-Thanks for your assistance
-Egon
-
-
-On Aug 21, 2009, at 4:28 PM, Pablo Neira Ayuso wrote:
-
-> Hi,
+On Thu, Aug 20, 2009 at 9:01 PM, ratheesh k<ratheesh.ksz@gmail.com> wro=
+te:
+> I have two interfaces , eth0 and ap0 bridged together to form br0 .
+> And another interfaces eth1 on wan side .
 >
-> Egon Burgener wrote:
->> Hi
->>
->> I am building a firewall with
->>  kernel 2.6.29.6
->>  iptables 2.4.4
->>  conntrack-tools 0.9.13 (FTFW mode)
->>  heartbeat version 1
->>
->> conntrack synchronisation works fine except NAT traffic. If I do
->> conntrackd -i on the active node I see the NAT information in it:
->>
->> tcp      6 ESTABLISHED src=192.168.12.20 dst=12.129.147.65 sport=2403
->> dport=80 src=12.129.147.65 dst=84.73.54.61 sport=80 dport=2403  
->> [ASSURED]
->> [active since 48s]
->>
->> On the standby node I am missing the NAT information (conntrackd -e):
->>
->> tcp      6 ESTABLISHED src=192.168.12.20 dst=12.129.147.65 sport=2403
->> dport=80 [ASSURED] [active since 91s]
->>
->> Has anybody a hint?
 >
-> The NAT information is there but not listed when you do `conntrackd - 
-> e'
-> but it's built during the commit phase that occurs when your HA  
-> manager
-> calls `conntrackd -c' (see the primary-backup.sh script).
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0br0 <------------------------> eth=
+1
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0( eth0 , ap0)
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0{ =A0lan =A0} =A0 =A0 =A0 =A0 =A0 =A0 =
+=A0 =A0 =A0 =A0 =A0 =A0 {wan}
 >
-> You can verify this by invoking `conntrack -L' to see the result of  
-> the
-> commit. You should see the NAT information at that stage.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter"  
-> in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
--- 
------------------------------------------------------------------------------------------
-addr://Kasinostrasse 30, CH-5001 Aarau   fon://++41 62 823 9355
-http://www.terreactive.com                             fax://++41 62  
-823 9356
-------------------------------------------------------------------------------------------
-Wir sichern Ihren Erfolg.                                 terreActive AG
-------------------------------------------------------------------------------------------
+> packets from lan side are nated =A0to eth1 . =A0i have qos rules on b=
+oth
+> br0 and eth1 . =A0when i googled i found that "mangling packets on br=
+0
+> and using fw filters wont work on linux bridge ".. Is this true ?? Ca=
+n
+> you tell me why ??
+>
+> But the funny thing is i colored packets =A0in prerouting chain =A0on=
+ly
+> specifying protocol ( not specifying interface )
+>
+> =A0iptables =A0-t mangle -A PREROTUING -p icmp -j MARK --set-mark 2 =A0=
+ and
+> i have filter rule to put =A0packets tat are fw marked as 2 to put in=
+to
+> some flow . This works fine , when i send an icmp packet from lan to
+> wan side !!!!!!! ??????????
+>
+> But if =A0try any of below rules =A0intsead of above , =A0it wont wor=
+k
+>
+> iptables =A0-t mangle -A PREROTUING -p icmp -i br0 -j MARK --set-mark=
+ 2
+> iptables =A0-t mangle -A PREROTUING -p icmp =A0-s 192.168.1.0/24 =A0-=
+d !
+> 192.168.1.0/24 -j MARK --set-mark 2
+> iptables =A0-t mangle -A FORWARD =A0-p icmp =A0-i br0 -o eth1 -j MARK=
+ --set-mark 2
+>
+> i dont know y ????????
+>
+> in linux kernel =A0, in =A0net/sched/cls_fw.c =A0file =A0, fw_classif=
+y is
+> called every time =A0tc filter =A0is hit .
+> skb->mark is =A0zero when u use rules like
+>
+> iptables =A0-t mangle -A PREROTUING -p icmp -i br0 -j MARK --set-mark=
+ 2
+> iptables =A0-t mangle -A PREROTUING -p icmp =A0-s 192.168.1.0/24 =A0-=
+d !
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 192.168.1.0/24 -j MARK --set-mark 2
+> iptables =A0-t mangle -A FORWARD =A0-p icmp =A0-i br0 -o eth1 -j MARK=
+ --set-mark 2
+>
+> But if u use
+> iptables =A0-t mangle -A PREROTUING -p icmp -j MARK --set-mark 2
+>
+> the skb->mark is 2 =A0, correct value .
+>
+> This problem happens only with bridge . when i tried with one of the
+> interface it works perfectly .
+>
+> Thanks,
+> Ratheesh
+>
