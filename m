@@ -1,44 +1,50 @@
-From: =?iso-8859-2?Q?Sewera_Micha=B3?= <MSewera@era.pl>
-Subject: nf_conntrack_count issue - request for support
-Date: Wed, 26 Aug 2009 09:35:52 +0200
-Message-ID: <01EFC4015080274DA160B999E3D4581C12CD142C03@BASTET.corponet.era.pl>
+From: tom murphy <tommurphy105@gmail.com>
+Subject: What category of Firewall does Netfilter fall under?
+Date: Wed, 26 Aug 2009 09:47:45 +0100
+Message-ID: <f66b95be0908260147k3676be79h10842cc9a49754ef@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: pl-PL
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=7b29AT1tEUH9VHBZ4DatY/yyu3ejMb6wwVdkcipXAWc=;
+        b=JiogjNR189liOWLEnW1KrdhFmWJkOiE+FyEN0TuP127jDDMyuR/FJh//OXJdefadYS
+         1HuY9XuwUbDHaSLvlQgBD/FFv/Jd0y4AB0u/5fwrGApwcPhSEjRp1UUiJPUkAOwkcVJv
+         wWm/gDNPRdkNadd70bTlq0Y9hz0Fzfytfddy4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Hi,
+Dear experts,
 
-I've a problem with nf_conntrack_count value, which is not decrementing=
- almost at all (even if all sessions are removed, which is visible in c=
-onntrack). So eventually of course I've ge the table full message in lo=
-g.
+How would one classify netfilter?
 
-=46rom my perspective I think, that number of visible connections in nf=
-_conntrack and value of nf_conntrack_count shoud be qual...
-
-
-I would be very very gratefull in case of any support here,
-
-thanks
-m
+Its seems there are at least 3 categories of firewall:
+1) packet filter (stateless filtering)
+2) stateful filter
+3) appliaction-level filter (aka. proxy filter)
 
 
-Polska Telefonia Cyfrowa Sp. z o.o.
-Al. Jerozolimskie 181
-02-222 Warszawa
-KRS 29159
-S=B1d Rejonowy dla m. st. Warszawy XII Wydzia=B3 Gospodarczy Krajowego =
-Rejestru S=B1dowego
-NIP 526-10-40-567
-Kapita=B3 zak=B3adowy 471 mln z=B3otych
-Regon 011417295
+most literature, seems to refer to netfilter as a packet filter.
 
-Ta wiadomo=B6=E6 i jej tre=B6=E6 s=B1 zastrze=BFone w szczeg=F3=B3owym =
-zakresie dost=EApnym na http://www.era.pl/stopka
-This e-mail and its contents are subject to a DISCLAIMER with important=
- RESERVATIONS: see http://www.era.pl/stopka
+From the main netfilter website and the man pages it appears it can be
+classified as a stateful packet filter.
+
+However, I also see it can do deep packet inspection at the
+application layer with the L7-Filter module and from what I can tell,
+with the normal String match module.
+
+So, can netfilter be classifed as a proxy firewall as a default classification.
+
+I can clearly see (well at least for the first 2 classifications) that
+netfilter can play various roles depending on your requirements. That
+is it can be either of 1,2 or 3 defined above.
+
+Any opinions or comments on helping me pigion hole Netfilter/iptables.
+Perhaps stateful filter implies packet filter also.
+
+regards,
+Tom.
