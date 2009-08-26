@@ -1,60 +1,66 @@
-From: Oskar Berggren <oskar.berggren@gmail.com>
-Subject: Re: really need your help about iptables
-Date: Tue, 25 Aug 2009 16:09:42 +0200
-Message-ID: <33be4bb30908250709i5750f6a6ma86a27dc1f0829fc@mail.gmail.com>
-References: <4A93CC1C.3070100@infoservices.in>
+From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Subject: SIP conntrack defeating Asterisk canreinvite
+Date: Tue, 25 Aug 2009 21:04:28 -0400
+Message-ID: <1251248668.6450.59.camel@jaspav.missionsit.net.missionsit.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=LbTn24S2By2/RVAte6/A6oOnFnDQqoP7BrtevzQJYCI=;
-        b=iN4ObD/lgschoEuoNUDGIjoUHNSPOO4soEqEx41WDw3MLoYkz7FUK0/U/TGq+bdAnS
-         4a56ujP2jhrV5ee0IrJb+JQf41jBw9ecEgq85MZNpPyeeyLp6iA0Vrsv8teyy2wb2A6e
-         NV1CCZGY7eHlVf5JSrn3o3FRNJ7+nsMUBffoE=
-In-Reply-To: <4A93CC1C.3070100@infoservices.in>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "J. Bakshi" <joydeep@infoservices.in>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Use a higher limit for SYN packets to those services. IIRC your
-ruleset from before.
+Hello, all.  Since implementing an iptables firewall between the
+Asterisk PBX and several SIP phones, the Asterisk PBX ability to
+"reinvite", i.e., to redirect the media stream from passing through the
+PBX to be directly between the phones has been broken even when the
+phones are on the same network (i.e., no firewall between the phones).
+We've been beating our heads against the wall thinking it was the
+complex rule set but it appears the issue is ip_conntrack_sip.
 
-/Oskar
+Before I drop another day into verifying this, may I ask if anyone else
+has had a similar problem and found a solution?
 
+The reinvite works by the Asterisk server sending a SIP invite after the
+call has been set up. The new invite contains the address of the phone
+in the SDP portion of the packet rather than the address of the PBX.
+This should redirect the media stream to flow directly between the
+phones.  However, it appears conntrack is rewriting the SDP so that the
+address is reverted to the PBX address.
 
-2009/8/25 J. Bakshi <joydeep@infoservices.in>:
-> Dear list,
->
-> I really really need your help to configure iptables to cope with
-> "connection time out problem" =A0Here what actually the situation is.
->
-> I have configured iptables to drop nmap and other port scanning
-> techniques ( collected from internet, like XMAS scan, FIN scan etc...=
-).
-> If I run nmap against the server ( like nmap -P0 <myserver> or nmap -=
-P0
-> -sT <myserver> ) then the firewall successfully dropping the scan
-> packets and =A0make the nmap scan =A0to wait for *looooong* . =A0Good=
-=2E =A0But on
-> the other hand =A0the =A0http and mail server running on the =A0serve=
-r
-> providing "time out error" hence it is not possible to connect the ma=
-il
-> /apache and other services running on that =A0server during port scan=
-ning
-> against it. Could any one kindly suggest how to cope with this situia=
-tion ?
->
-> Thanks for your time.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
+Here are the relevant SDP portion of a reinvite captured on the PBX
+using tcpdump and displayed in Wireshark.  The PBX is at 172.x.x.8 and
+the phone is at 10.x.x.193:
+
+Owner/Creator, Session Id (o): root 1417450700 1417450701 IN IP4
+10.68.6.183
+Owner Address: 10.68.6.183
+Connection Information (c): IN IP4 10.68.6.183
+Connection Address: 10.68.6.183
+
+Here is a similar sequence but captured from the phone itself:
+Owner/Creator, Session Id (o): root 595629021 595629022 IN IP4
+172.30.14.8
+Owner Address: 172.30.14.8
+Connection Information (c): IN IP4 172.30.14.8
+Connection Address: 172.30.14.8
+
+It would appear conntrack is incorrectly "fixed" the packet.
+
+I noticed newer kernels have sip_direct_media and sip_direct_signalling
+options.  I don't know if those apply but they do not seem to be present
+in our CentOS 5.3 kernel.
+
+I'll probably spend most of tomorrow confirming this hypothesis and
+investigating solutions so I'd be deeply appreciative for any
+time-saving advice.  Thanks - John
+
+-- 
+John A. Sullivan III
+Open Source Development Corporation
++1 207-985-7880
+jsullivan@opensourcedevel.com
+
+http://www.spiritualoutreach.com
+Making Christianity intelligible to secular society
+
