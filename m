@@ -1,116 +1,53 @@
-From: "J. Bakshi" <joydeep@infoservices.in>
-Subject: Re:[possible solution]  really need your help about iptables
-Date: Wed, 26 Aug 2009 18:06:25 +0530
-Message-ID: <4A952C49.3010206@infoservices.in>
-References: <4A93CC1C.3070100@infoservices.in> <33be4bb30908250709i5750f6a6ma86a27dc1f0829fc@mail.gmail.com> <4A952739.9030605@infoservices.in>
+From: =?ISO-8859-2?Q?Micha=B3_Sewera?= <michal.sewera@gmail.com>
+Subject: nf_conntrack -> table full, dropping packet; problem with counting 
+	sessions
+Date: Thu, 27 Aug 2009 13:13:45 +0200
+Message-ID: <875a14c20908270413y3849eabdq3f1465288d024943@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4A952739.9030605@infoservices.in>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type:content-transfer-encoding;
+        bh=wcWY4qjuxqkmAVpCCPEOInB35M7E3bTZfFo/WkFhyw0=;
+        b=wRGqx2Wd8LbWWznJ1CvmPAa30zCR0+1MsGXm+YBGlIxfaxViJyqhn5WfbUzzp89yBY
+         OYtd1u1LkQvyEXnf345BfVoOu5rG52wm4wnN9WVLQVRtwoCUI/+NtEBhwrzWHT64+kid
+         FW985hJH59g/dbRAY5TAyANGM3+VNVGpjuF/M=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Oskar Berggren <oskar.berggren@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-J. Bakshi wrote:
-> Oskar Berggren wrote:
->   
->> Use a higher limit for SYN packets to those services. IIRC your
->> ruleset from before.
->>
->> /Oskar
->>   
->>     
->
-> Hello,
->
-> Thanks for your hint. I have  googled based on your hint and found a lot
-> of solution for rate limit incoming connection. one  ruleset  valid for
-> me are
->
-> ````````````````````````
->  iptables -I INPUT -p tcp --dport 995 -i eth0 -m state --state NEW -m
-> recent \
->   --set
->
-> iptables -I INPUT -p tcp --dport 995 -i eth0 -m state --state NEW -m
-> recent \
->   --update --seconds 60 --hitcount 4 -j DROP
->  
->  iptables -I INPUT -p tcp --dport 995 -i eth0 -j ACCEPT
-> `````````````````````````````````
->
-> But the problem with my iptables is default policy--> drop.  I have also
-> tested with
->
-> ````````````
-> iptables -A INPUT -i eth0 -m state --state NEW -p tcp --dport 995 -m
-> limit --limit 1/minute --limit-burst 2 -j ACCEPT
-> ``````````
-> This works fine and limiting the connection 1/min but  a brute force
-> attack ( like nmap scan) make the port  not useable any more.
->
-> What can be the solution for such an iptables ?
->
-> Thanks
->
->   
+Hi,
 
-One possible solution might be for a default *dropped* firewall; placing
-the incoming rate limit rules before syn flood protection and port
-scanner protection rules. Like
+I have a strange problem with nf_conntrack:
 
-````````````````````
-rules set to make default polict drop
+If I will try to generate small amount of TCP sessions, (i.e. 10
+sessions), then after closing this sessions (on the client side, by
+closing application) output from:
+wc /proc/net/ip_conntrack
+and
+cat /proc/sys/net/nf_conntrack_count
 
-## limiting incoming pop3s connection
-iptables -A INPUT -i eth0 -m state --state NEW -p tcp --dport 995 -m
-limit --limit 10/minute --limit-burst 2 -j ACCEPT
-
- limiting other incoming connection
-
-ruleset for syn-flood  prevention
-
-ruleset to delayed nmap scan etc...
-
-````````````````````````
-
-Please suggest if my approach is right.
-
-Thanks
+is the same -> so I can see the same amount of sessions tracked by nf_conntrack.
 
 
->   
->> 2009/8/25 J. Bakshi <joydeep@infoservices.in>:
->>   
->>     
->>> Dear list,
->>>
->>> I really really need your help to configure iptables to cope with
->>> "connection time out problem"  Here what actually the situation is.
->>>
->>> I have configured iptables to drop nmap and other port scanning
->>> techniques ( collected from internet, like XMAS scan, FIN scan etc...).
->>> If I run nmap against the server ( like nmap -P0 <myserver> or nmap -P0
->>> -sT <myserver> ) then the firewall successfully dropping the scan
->>> packets and  make the nmap scan  to wait for *looooong* .  Good.  But on
->>> the other hand  the  http and mail server running on the  server
->>> providing "time out error" hence it is not possible to connect the mail
->>> /apache and other services running on that  server during port scanning
->>> against it. Could any one kindly suggest how to cope with this situiation ?
->>>
->>> Thanks for your time.
->>> --
->>> To unsubscribe from this list: send the line "unsubscribe netfilter" in
->>> the body of a message to majordomo@vger.kernel.org
->>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>>
->>>     
->>>       
->>   
->>     
->
->
->   
+But during testing the system with i.e. 100 new TCP sessions/sec
+(terminated to the same server), after closing the sessions output
+from wc /proc/net/ip_conntrack if correct (near 0), but all this
+sessions seems to be staying in cat /proc/sys/net/nf_conntrack_count.
 
+After exceeding the condition nf_conntrack_count < nf_conntrack_max,
+of course I am getting table full, dropping packet info in log.
+
+Some workaround is to set max value to very huge number i.e.
+1000000000, but after some times eventually I will get the same
+problem and reebot will be required.
+
+So, if anyone from experts here will know anything about the cause of
+this problem I will be very gratefull,
+
+thanks for any support
+
+m
