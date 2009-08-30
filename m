@@ -1,68 +1,52 @@
-From: Eric Leblond <eleblond@inl.fr>
-Subject: Re: nf_conntrack -> table full, dropping packet; problem with
- counting   sessions
-Date: Sat, 29 Aug 2009 12:22:27 +0200
-Message-ID: <1251541347.31688.5.camel@ice-age>
-References: <875a14c20908270413y3849eabdq3f1465288d024943@mail.gmail.com>
+From: Gothmolly <gothmolly@gmail.com>
+Subject: mangle vs. nat problem?
+Date: Sun, 30 Aug 2009 19:51:13 -0400
+Message-ID: <5427726c0908301651y59ef1babv7bbbe625f915ca01@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <875a14c20908270413y3849eabdq3f1465288d024943@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type;
+        bh=kEMbKxFD/YnqPKlT5r53PtIGgPg2/acYRXteLNDPAc8=;
+        b=lW1mKtV3C8cp1dXNE7ill+ysc0alNhzQPQetRp38prhwFe0JTqw4GA8oeWLFMsNuv8
+         ZL7qN4ZkyLc7NW1m0AzlgcjhnlzYcvxc84qj4Q9/sfCmWHPOzrXzlPpxkXlvbQ9Rfcpj
+         wdb3LvWhrQWfQ5R2UQjVOD5ZTYrD5C7EvCYSk=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: =?UTF-8?Q?Micha=C5=82?= Sewera <michal.sewera@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hi,
+Hello all, I am having trouble with a combination of the nat and
+mangle tables in the PREROUTING chain.   What I'd like to do is use
+mangle  and connmark to mark every other packet coming in on a port,
+then use nat to do a DNAT to 2 separate local ports, based on the
+connmark entries.
 
-Could you please specify your kernel version ?
+I use the following:
+iptables -t mangle -A PREROUTING -p udp --dport 514 -m statistic
+--mode nth --every 2 --packet 0 -j CONNMARK --set-mark 1
+iptables -t mangle -A PREROUTING -p udp --dport 514 -m statistic
+--mode nth --every 2 --packet 1 -j CONNMARK --set-mark 2
 
-BR,
+then
 
-Le jeudi 27 ao=C3=BBt 2009 =C3=A0 13:13 +0200, Micha=C5=82 Sewera a =C3=
-=A9crit :
-> Hi,
->=20
-> I have a strange problem with nf_conntrack:
->=20
-> If I will try to generate small amount of TCP sessions, (i.e. 10
-> sessions), then after closing this sessions (on the client side, by
-> closing application) output from:
-> wc /proc/net/ip_conntrack
-> and
-> cat /proc/sys/net/nf_conntrack_count
->=20
-> is the same -> so I can see the same amount of sessions tracked by nf=
-_conntrack.
->=20
->=20
-> But during testing the system with i.e. 100 new TCP sessions/sec
-> (terminated to the same server), after closing the sessions output
-> from wc /proc/net/ip_conntrack if correct (near 0), but all this
-> sessions seems to be staying in cat /proc/sys/net/nf_conntrack_count.
->=20
-> After exceeding the condition nf_conntrack_count < nf_conntrack_max,
-> of course I am getting table full, dropping packet info in log.
->=20
-> Some workaround is to set max value to very huge number i.e.
-> 1000000000, but after some times eventually I will get the same
-> problem and reebot will be required.
->=20
-> So, if anyone from experts here will know anything about the cause of
-> this problem I will be very gratefull,
->=20
-> thanks for any support
->=20
-> m
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
---=20
-Eric Leblond <eleblond@inl.fr>
-INL: http://www.inl.fr/
-NuFW: http://www.nufw.org/
-EdenWall: http://www.edenwall.com/
+iptables -t nat -A PREROUTING -m connmark --mark 1 -j DNAT
+--to-destination 192.168.8.207:1514
+ptables -t nat -A PREROUTING -m connmark --mark 2 -j DNAT
+--to-destination 192.168.8.207:1515
 
+(the machine is 192.168.8.207)
+
+When I send traffic to the machine from a remote machine, I see that
+the count of the rules in the mangle table update perfectly - every
+other packet goes to every other rule.
+
+On the nat table, I see far fewer packets matching, and most tend to
+go to the first rule.
+
+Is there some conflict between nat and mangle in PREROUTING?  Or am I
+just doing this wrong ?
+
+I am running the distribution included iptables on Ubuntu 9.04 x64
