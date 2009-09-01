@@ -1,23 +1,27 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: ULOG The kernel doesn't support a certain ebtables extension,
- consider recompiling your kernel or insmod the extension.
-Date: Tue, 01 Sep 2009 15:21:41 +0200
-Message-ID: <4A9D1FE5.70300@trash.net>
-References: <4A9C2F4C.9050405@branndal.se> <200908311534.19700.rob0@gmx.co.uk> <4A9CD19C.6040107@branndal.se> <4A9D08FF.7070705@trash.net> <4A9D10DF.1050307@branndal.se> <4A9D151D.30808@trash.net> <4A9D1F98.7030100@branndal.se>
+From: =?ISO-8859-2?Q?Micha=B3_Sewera?= <michal.sewera@gmail.com>
+Subject: how to log NAT for overloaded (many to one) nat
+Date: Tue, 1 Sep 2009 15:26:11 +0200
+Message-ID: <875a14c20909010626u49a4dfacj4ade5e27b0862a99@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4A9D1F98.7030100@branndal.se>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type;
+        bh=kfLp5eqRzec9BjQrQADWwpjsDoQTX+/+sZ9FBXNXj6U=;
+        b=GfEJNC/dgZWcAidWwrDKXZtsPuBd/j/YjhLRPhlGTLcfhJsoSu/91HCzNFgkGL/WX2
+         mB9NBu2R/P4hRLhxa2jE26MF+PlNw1QM/LYBPWOtKb1LeBhbMhYWruEem+HOL7bdaw0g
+         VXgSnghHiNE35Dtdlf7iQcGJ0Ks6sGe0V+6Ps=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Thomas Berg <thomas.berg@branndal.se>
-Cc: /dev/rob0 <rob0@gmx.co.uk>, netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Thomas Berg wrote:
-> Do you think this patch will be inckluden in debian unstble release soon
-> or do I have to complie a new kernel to get it working?
+Hi,
 
-It will be sent to the -stable kernel once it has hit upstream, when the
-next merge window opens. So its probably going to be something like 2-3
-weeks. Not sure how long it then takes for Debian to pick it up.
+How to log the full information required to identify what source port
+and ip address was assigned for translation for many to one NAT ?
+
+thanks
+m
