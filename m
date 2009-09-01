@@ -1,55 +1,44 @@
-From: "J. Bakshi" <joydeep@infoservices.in>
-Subject: hashtable configuration issue
-Date: Tue, 01 Sep 2009 20:21:07 +0530
-Message-ID: <4A9D34DB.4080209@infoservices.in>
+From: =?ISO-8859-2?Q?Micha=B3_Sewera?= <michal.sewera@gmail.com>
+Subject: unknown conntrack layer 3 protocol
+Date: Tue, 1 Sep 2009 18:34:16 +0200
+Message-ID: <875a14c20909010934g4fc1f61fo33241fd95ba67486@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type;
+        bh=udcjxBVnbuRFj4Py+a7DKYnenisv5muzwtdk5e+hwAA=;
+        b=ZCVn+AKHcpET+vDeXAeZ6WR+kMw0N93VqgPCOSgVS2oifVIuV1lxDXBbvEDC6mz8eP
+         qWB6824iSXyqHbv2KeQ6495xjl15wUyAyRrBLxgsTnmqhmJ6e6o4XXZBgFom+kQCEVGk
+         /S/b+f8iyrNcGmVmPTkImaikI+yhKn9ta4Cxw=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Dear Marek and all,
+Hi,
 
-First of all my thanks to all of you to make me familiar with the great
-hashtable module. According to Marek's  suggestion I have a ruleset with
-synflood protection along with IP blacklist
+after starting conntrackd in statistics mode in conntrack.log I see
+lot of "unknown conntrack layer 3 protocol" messages, and output from
+statistics is empty, as seen below:
 
-````````````````````
-# default policy drop ##
+conntrackd -s
+cache stats:
+current active connections:                0
+connections created:                       0    failed:            0
+connections updated:                       0    failed:            0
+connections destroyed:                     0    failed:            0
 
-# accept related , establish ##
-
-
-# Set blacklist #
-echo "blacklist initialization"
-iptables -A INPUT -m recent --name blacklist --rcheck --seconds
-$BLACKLIST_INTERVAL  -j DROP
-
-## some other anti nmap rule##
-
-##syncflood protection with IP blacklist ##
-
-iptables -N syn-flood
-iptables -A INPUT -i $IFACE -p tcp --syn -j syn-flood
-iptables -A INPUT -p tcp --syn  -m hashlimit \
---hashlimit 1/sec --hashlimit-burst 4 --hashlimit-htable-expire 300000 \
---hashlimit-mode srcip --hashlimit-name testlimit -j RETURN
-
-# Drop bad IP and put themin blacklist ############
-iptables -A syn-flood -m recent --name blacklist --set -j DROP
-iptables -A INPUT -j syn-flood
-
-## my incoming and outgoing rules ##
-
-## DROP other ##
-```````````````````````````````````
-
-But this time firewall totally blocks all incoming connection. If I
-change the RETURN (above) to ACCEPT then then firewall accept *all*
-incoming even the ports are blocked in the firewall !!!   I  am very
-confused. Could any one enlighten me ? I missed something or
-mis-configuration ?
+traffic processed:
+                   0 Bytes                         0 Pckts
 
 
+In the same time conntrack -L lists all connections, so it seems
+tracking is working...
+
+Does anyone knows what could be the reason ?
+
+thanks
+m
