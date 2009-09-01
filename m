@@ -1,39 +1,55 @@
-From: =?ISO-8859-2?Q?Micha=B3_Sewera?= <michal.sewera@gmail.com>
-Subject: conntrack-tools: conntrack -L --> Operation failed: Connection 
-	refused
-Date: Tue, 1 Sep 2009 15:30:21 +0200
-Message-ID: <875a14c20909010630s7500ca60hcb9084641a338211@mail.gmail.com>
+From: "J. Bakshi" <joydeep@infoservices.in>
+Subject: hashtable configuration issue
+Date: Tue, 01 Sep 2009 20:21:07 +0530
+Message-ID: <4A9D34DB.4080209@infoservices.in>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type;
-        bh=29Gihl64pE82LUEs+eS8bCvS4i9ZJsNBYRd72KRKIv8=;
-        b=WtAa+9FT7EQzx4qd36iBZIJWRxcNIpBsdAvXz5BzshveNCdhI5byabnkHe7Df9HQy3
-         mkDUS+ZomFZ4EA6LnAIjIdL3Epumn28RAkK62ft6aK/iofHTohItrAjd0zXaIfTspNYA
-         nEHJl2DUZmvQwn2z4izp5GI3xlcXOZNHKOuPA=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi,
+Dear Marek and all,
 
-I'm using the conntrack-tools Version 0.9.4 and linux kernel version
-2.6.23. I've installed libnetfilter_conntrack and libnfnetlink, but
-for conntrack -L command I have following error:
+First of all my thanks to all of you to make me familiar with the great
+hashtable module. According to Marek's  suggestion I have a ruleset with
+synflood protection along with IP blacklist
 
-/ # conntrack -L
-Operation failed: Connection refused
+````````````````````
+# default policy drop ##
 
-For conntrack -E I have:
+# accept related , establish ##
 
-/ # conntrack -E
-conntrack v0.9.4: Can't open handler
 
-Does anyone know what could be the issue ?
+# Set blacklist #
+echo "blacklist initialization"
+iptables -A INPUT -m recent --name blacklist --rcheck --seconds
+$BLACKLIST_INTERVAL  -j DROP
 
-thanks
-m
+## some other anti nmap rule##
+
+##syncflood protection with IP blacklist ##
+
+iptables -N syn-flood
+iptables -A INPUT -i $IFACE -p tcp --syn -j syn-flood
+iptables -A INPUT -p tcp --syn  -m hashlimit \
+--hashlimit 1/sec --hashlimit-burst 4 --hashlimit-htable-expire 300000 \
+--hashlimit-mode srcip --hashlimit-name testlimit -j RETURN
+
+# Drop bad IP and put themin blacklist ############
+iptables -A syn-flood -m recent --name blacklist --set -j DROP
+iptables -A INPUT -j syn-flood
+
+## my incoming and outgoing rules ##
+
+## DROP other ##
+```````````````````````````````````
+
+But this time firewall totally blocks all incoming connection. If I
+change the RETURN (above) to ACCEPT then then firewall accept *all*
+incoming even the ports are blocked in the firewall !!!   I  am very
+confused. Could any one enlighten me ? I missed something or
+mis-configuration ?
+
+
