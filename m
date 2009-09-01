@@ -1,74 +1,41 @@
-From: "J. Bakshi" <joydeep@infoservices.in>
-Subject: Re: Hot to design syn-flood protection based on ip ?
-Date: Tue, 01 Sep 2009 14:20:22 +0530
-Message-ID: <4A9CE04E.6020005@infoservices.in>
-References: <4A967DE2.2060601@infoservices.in>	<4A9CBF27.1070600@infoservices.in>	<20090901085801.428359f0@catlap>	<4A9CCF5C.8050100@infoservices.in> <20090901101216.06ced847@catlap>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: ULOG The kernel doesn't support a certain ebtables extension,
+ consider recompiling your kernel or insmod the extension.
+Date: Tue, 01 Sep 2009 13:43:59 +0200
+Message-ID: <4A9D08FF.7070705@trash.net>
+References: <4A9C2F4C.9050405@branndal.se> <200908311534.19700.rob0@gmx.co.uk> <4A9CD19C.6040107@branndal.se>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20090901101216.06ced847@catlap>
+In-Reply-To: <4A9CD19C.6040107@branndal.se>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Marek Kierdelewicz <marek@piasta.pl>
-Cc: netfilter@vger.kernel.org
+To: Thomas Berg <thomas.berg@branndal.se>
+Cc: /dev/rob0 <rob0@gmx.co.uk>, netfilter@vger.kernel.org
 
-Marek Kierdelewicz wrote:
-> Hello,
->
->   
->> Thanks a lot, what about this ruleset ?
->> iptables -A INPUT -p tcp --syn  -m hashlimit \
->> --hashlimit 1/sec --hashlimit-burst 4 --hashlimit-htable-expire 300000
->> \ --hashlimit-mode srcip --hashlimit-name testlimit -j ACCEPT
->> iptables -A INPUT -j DROP
->> The concept here the blocked ip doing the syn-flood will be blacklisted
->> for 5 min and will be checked again after that interval.
->>     
->
-> I think it won't work as a blacklist just drop syns that are above
-> 1/sec. Option htable-expire is not for blacklisting but for setting
-> timeframe in which hashlimit is operating (eg. it won't work well if you
-> set htable-expire to 300s and have hashlimit set to 20/hour). To obtain
-> desired effect you can use recent module (great work by Stephen Frost
-> by the way):
->
-> iptables -A INPUT -m recent --name blacklist --rcheck --seconds 300 \
-> -j DROP
-> iptables -A INPUT -p tcp --syn  -m hashlimit \
->  --hashlimit 1/sec --hashlimit-burst 4 --hashlimit-htable-expire 300000\
->  --hashlimit-mode srcip --hashlimit-name testlimit -j ACCEPT
-> iptables -A INPUT -m recent --name blacklist --set -j DROP
->
-> You can find more information about recent here:
-> - http://snowman.net/projects/ipt_recent/
-> - and in manpage;
->
-> Best regards,
-> Marek
->   
+Thomas Berg wrote:
+>>> ebt_ip                  1752  29
+>>> ebt_log                 3268  32
+>>> ebtable_broute          1740  0
+>>> ebtable_nat             2000  0
+>>> ebtable_filter          2028  1
+>>> ebtables               14108  3
+>>> ebtable_broute,ebtable_nat,ebtable_filter
+>>> ipt_ULOG                6684  1
+>>> x_tables               14108  4 ebt_ip,ebt_log,ebtables,ipt_ULOG
+>>> bridge                 39968  1 ebtable_broute
+>>> 8021q                  17932  0
+>>> garp                    6996  1 8021q
+>>> stp                     2112  2 bridge,garp
+>>>     
+> br0:/lib/modules/2.6.26-1-686/kernel/net/bridge/netfilter# modprobe
+> ebt_ulog
+> FATAL: Error inserting ebt_ulog
+> (/lib/modules/2.6.30-1-686/kernel/net/bridge/netfilter/ebt_ulog.ko):
+> Cannot allocate memory
 
-Dear Marek,
-
-millions and millions of thanks to you. You have provided the solution
-which I was searching since looong.  a syn-flood protection along with
-IP-blacklist ( psad style arrangement) is something which I love to have
-in my servers.   I think I can modify my DROP rules where ever required
-to pass it through blacklist as
-
-````````````````````
-iptables -A INPUT -m recent --name blacklist --set -j DROP
- ``````````````````````
-
-and place
-
-`````````````
-iptables -A INPUT -m recent --name blacklist --rcheck --seconds 300 -j DROP
-
-```````````````
-
-at the beginning of my firewall rule set.
-
-A great learning for me.
-Marek once again thanks a lot.
-
+ebt_ulog and ipt_ULOG can't be used simultaneously since they both use
+the same netlink unit. I don't think we can fix it at this point since
+both are obsolete and this would break existing setups. You can use
+nfnetlink_log and xt_NFLOG/ebt_NFLOG as a replacement.
