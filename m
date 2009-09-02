@@ -1,48 +1,50 @@
-From: Diogo Sperb Schneider <vonsperb@live.com>
-Subject: RE: Routing HTTP Through Another Link
-Date: Tue, 1 Sep 2009 19:42:33 +0300
-Message-ID: <BLU116-W2A7824EB05C8C413B3AA3A2F10@phx.gbl>
-References: <BLU116-W25EED7BAB4A40766109367A2F20@phx.gbl>
-	<20090901075506.478a8a6c@catlap>
-   	<BLU116-W61B4883A90045AEF7BDB6A2F10@phx.gbl> 
-   <20090901135848.793936a7@catlap>
+From: rohin kumar <rohinkumars@gmail.com>
+Subject: NF_DROP/NF_ACCEPT -- TCP retransmission
+Date: Tue, 1 Sep 2009 20:30:45 -0400
+Message-ID: <ceb65aa00909011730g3d85372fx55fa40018b71f04a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20090901135848.793936a7@catlap>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type;
+        bh=WWM/zwAAG1wmB/sh6orfNHBl+C9i5AVFwrT9flz6gM8=;
+        b=VuYEA2kH+w43z1XajJE4569rXEntSyu2Pu0QUqAw/QUXbykYqCH68zEVvecq7rdG76
+         238WTZ7IzbAm7COYDxANKps1vdv/lIlKo2dzStOCHcB8im4kSIZwehmU5QQ/hmq2hKDI
+         2wG4txmebR0QRCckLMM9L04bHPWmCrLjdfSHc=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
+Hello,
 
-Hello, Marek!
 
-> iptables -t mangle -A PREROUTING -i LAN_INTERFACE -m multiport --dpor=
-t
-> 80,443 -j ROUTE --oif WWW_ONLY_LINK
-> iptables -t nat -A POSTROUTING -o WWW_ONLY_LINK -j MASQUERADE
+In my netfilter hook, I am creating a new broadcast packet and
+dropping the actual unicast packet. I have tried NF_DROP and NF_STOLEN
+to drop unicast packet. But Both times I can see the original packet
+in wire shark along with the new broadcast packet.  There are no TCP
+dup acks from the receiver side before unicast packet is sent. Does
+netfilter frame work informs TCP about the packet drop  and because of
+that TCP is sending the packet again ? Or else the original packet
+itself is not dropped.
 
-I tried that, adding "-p tcp" on the first command, because iptables co=
-mplained about it.
 
-It didn't work, making my navigation completely stop. I don't get insta=
-nt errors from the browser, but it tries to connect endlessly.
+Following is the  code line where I defined nf_hook_ops.
 
-I've tried tuning a few rules and changing orders with the existing rul=
-es for the main link, but the result is the same. I'm kinda clueless ab=
-out what to do next, so if you have any more tips I'd really appreciate=
-=2E
+static struct nf_hook_ops trm_ops = {(struct list_head) {NULL, NULL},
+(nf_hookfn *)trm_hook, (struct module*)THIS_MODULE, (uint8_t) PF_INET,
+(unsigned int)NF_IP_POST_ROUTING, (int)NF_IP_PRI_LAST };
 
-By the way, the web interface doesn't allow me to specify the --oif opt=
-ion, just --gw so I have set it to the gateway of the alternative link.=
- I thought the basic routing table should take care of the rest.
 
-PS: I've just realized our conversation has gone off the list, so I'm p=
-utting it back on it again.
 
-_________________________________________________________________
-Voc=EA sabia que com o Hotmail voc=EA tem espa=E7o ilimitado para guard=
-ar seus e-mails? Come=E7e a usar j=E1!
-http://www.microsoft.com/brasil/windows/windowslive/products/hotmail.as=
-px
+When I receive packet in my hook, the packet has  TCP and IP headers.
+
+Any help greatly appreciated.
+
+
+
+Thanks
+
+Rohin Sudini
