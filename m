@@ -1,49 +1,187 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+From: Thomas Jacob <jacob@internet24.de>
 Subject: Re: Checking line status
-Date: Wed, 02 Sep 2009 16:29:02 +0200
-Message-ID: <4A9E812E.2060601@plouf.fr.eu.org>
-References: <4A93CC1C.3070100@infoservices.in> <58261217A1E14FCCB2F0CF27FA977252@squarepi.com> <4A93DDA0.6000900@trash.net> <591B070B9C3D465CA4CCE1B11024DBEA@squarepi.com> <1251895652.23708.37.camel@enterprise.ims-firmen.de> <0DB67FCC2A774AFCA834C6CD4BE5DB12@squarepi.com>
+Date: Wed, 02 Sep 2009 16:30:31 +0200
+Message-ID: <1251901831.10035.8.camel@enterprise.ims-firmen.de>
+References: <4A93CC1C.3070100@infoservices.in>
+	 <58261217A1E14FCCB2F0CF27FA977252@squarepi.com>
+	 <4A93DDA0.6000900@trash.net>
+	 <591B070B9C3D465CA4CCE1B11024DBEA@squarepi.com>
+	 <1251895652.23708.37.camel@enterprise.ims-firmen.de>
+	 <0DB67FCC2A774AFCA834C6CD4BE5DB12@squarepi.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=sha1; protocol="application/x-pkcs7-signature"; boundary="=-dHI4vhqAm5Tx1iIESaOl"
 Return-path: <netfilter-owner@vger.kernel.org>
 In-Reply-To: <0DB67FCC2A774AFCA834C6CD4BE5DB12@squarepi.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
 To: John Lister <john.lister@kickstone.com>
 Cc: netfilter@vger.kernel.org
 
-Hello,
 
-John Lister a =E9crit :
-> I thought local packets went through this chain
+--=-dHI4vhqAm5Tx1iIESaOl
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+
+On Wed, 2009-09-02 at 15:02 +0100, John Lister wrote:
+> >You need to ensure that your ping packets come from the right IP and get
+> >routed to the right interface. Useless comment maybe, but without
+> >you posting your details here it is difficult to say more specific
+> >things ;)
 >=20
-> mangle(OUTPUT) -> nat (OUTPUT) -> OUTPUT -> routing decision -> mangl=
-e=20
-> (POSTROUTING) -> nat (POSTROUTING)
+> One more thing, I had this (simplified) configuration, but none of the ru=
+les=20
+> seem to be triggered, I thought local packets went through this chain
+>
+> mangle(OUTPUT) -> nat (OUTPUT) -> OUTPUT -> routing decision -> mangle (P=
+OSTROUTING) -> nat (POSTROUTING)
 
-Actually there is an initial decision routing when the packet is create=
-d
-before the OUTPUT chains, in order to select the output interface and
-source address. Also after "nat (OUTPUT)" it should be "filter (OUTPUT)=
-".
+Nope: The (initial) routing decision is taken first and then the chains
+are traversed as follows.
 
-[...]
+http://ebtables.sourceforge.net/br_fw_ia/br_fw_ia.html#section3
+
+But apparently when you set fwmarks the kernel then reconsiders
+its routing  decision later on, don't ask me how that works, maybe
+some of the developers can answer that.
+
+> ip route add 87.194.A.B/22 dev eth1 table 111
+> ip route add 192.168.2.0/24 dev eth0 table 111
+> ip route add default via 87.194.a.b dev eth1 table 111
+>=20
+> ip route add 94.30.X.Y/29 dev eth4 table 222
+> ip route add 192.168.2.0/24 dev eth0 table 222
+> ip route add default via 94.30.x.y dev eth4 table 222
+>=20
 > ip rule add fwmark 111 table 111
 > ip rule add fwmark 222 table 222
 >=20
 > iptables -t mangle -A OUTPUT -j CONNMARK --restore-mark
-> iptables -t mangle -A OUTPUT -m mark --mark 0 -m state --state NEW -m=
-=20
+> iptables -t mangle -A OUTPUT -m mark --mark 0 -m state --state NEW -m=20
 > statistic --mode nth --every 2 --packet 0 -j MARK --set-mark 111
 > iptables -t mangle -A OUTPUT -m mark --mark 0 -m state --state=20
 >     -j MARK --set-mark 111
+> iptables -t mangle -A OUTPUT -j CONNMARK --save-mark
 
-Isn't something missing in that rule ?
-Also, I can see no iptables rule setting mark 222.
+Google dragged up this:
 
-> I would hope that the first set of iptables rules mark the packets be=
-fore=20
-> the routing rules forward them on their way
+http://rumytaulu.wordpress.com/2009/05/23/linux-loadbalancing-with-two-adsl=
+-modems/
 
-This is normally what happens.
+
+> iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to-source 87.194.a.b
+> iptables -t nat -A POSTROUTING -o eth4 -j SNAT --to-source 94.30.x.y
+>=20
+>=20
+> I would hope that the first set of iptables rules mark the packets before=
+=20
+> the routing rules forward them on their way (via a bit of SNATting), howe=
+ver=20
+> it looks like the mangle OUTPUT table is skipped and no marks are added..=
+.
+
+
+
+--=-dHI4vhqAm5Tx1iIESaOl
+Content-Type: application/x-pkcs7-signature; name=smime.p7s
+Content-Disposition: attachment; filename=smime.p7s
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIRLTCCBN0w
+ggPFoAMCAQICEHGS++YZX6xNEoV0cTSiGKcwDQYJKoZIhvcNAQEFBQAwezELMAkGA1UEBhMCR0Ix
+GzAZBgNVBAgMEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBwwHU2FsZm9yZDEaMBgGA1UECgwR
+Q29tb2RvIENBIExpbWl0ZWQxITAfBgNVBAMMGEFBQSBDZXJ0aWZpY2F0ZSBTZXJ2aWNlczAeFw0w
+NDAxMDEwMDAwMDBaFw0yODEyMzEyMzU5NTlaMIGuMQswCQYDVQQGEwJVUzELMAkGA1UECBMCVVQx
+FzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNUIE5ldHdvcmsx
+ITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UEAxMtVVROLVVTRVJGaXJz
+dC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
+MIIBCgKCAQEAsjmFpPJ9q0E7YkY3rs3BYHW8OWX5ShpHornMSMxqmNVNNRm5pELlzkniii8efNIx
+B8dOtINknS4p1aJkxIW9hVE1eaROaJB7HHqkkqgX8pgV8pPMyaQylbsMTzC9mKALi+VuG6JG+ni8
+om+rWV6lL8/K2m2qL+usobNqqrcuZzWLeeEeaYji5kbNoKXqvgvOdjp6Dpvq/NonWz1zHyLmSGHG
+TPNpsaguG7bUMSAsvIKKjqQOpdeJQ/wWWq8dcdcRWdq6hw2v+vPhwvCkxWeM1tZUOt4KpLoDd7Nl
+yP0e03RiqhjKaJMeoYV+9Udly/hNVyh00jT/MLbu9mIwFIws6wIDAQABo4IBJzCCASMwHwYDVR0j
+BBgwFoAUoBEKIz6W8Qfs4q8p74Klf9AwpLQwHQYDVR0OBBYEFImCZ33EnSZwAEu0UEh83j2uBG59
+MA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdJQQWMBQGCCsGAQUFBwMCBggr
+BgEFBQcDBDARBgNVHSAECjAIMAYGBFUdIAAwewYDVR0fBHQwcjA4oDagNIYyaHR0cDovL2NybC5j
+b21vZG9jYS5jb20vQUFBQ2VydGlmaWNhdGVTZXJ2aWNlcy5jcmwwNqA0oDKGMGh0dHA6Ly9jcmwu
+Y29tb2RvLm5ldC9BQUFDZXJ0aWZpY2F0ZVNlcnZpY2VzLmNybDARBglghkgBhvhCAQEEBAMCAQYw
+DQYJKoZIhvcNAQEFBQADggEBAJ2Vyzy4fqUJxB6/C8LHdo45PJTGEKpPDMngq4RdiVTgZTvzbRx8
+NywlVF+WIfw3hJGdFdwUT4HPVB1rbEVgxy35l1FM+WbKPKCCjKbI8OLp1Er57D9Wyd12jMOCAU9s
+APMeGmF0BEcDqcZAV5G8ZSLFJ2dPV9tkWtmNH7qGL/QGrpxp7en0zykX2OBKnxogL5dMUbtGB8SK
+N04g4wkxaMeexIud6H4RvDJoEJYRmETYKlFgTYjrdDrfQwYyyDlWjDoRUtNBpEMD9O3vMyfbOeAU
+TibJ2PU54om4k123KSZB6rObroP8d3XK6Mq1/uJlSmM+RMTQw16Hc6mYHK9/FX8wggYiMIIFCqAD
+AgECAhBSb3nPLwYVgYX7faItOKbyMA0GCSqGSIb3DQEBBQUAMIGuMQswCQYDVQQGEwJVUzELMAkG
+A1UECBMCVVQxFzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
+IE5ldHdvcmsxITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UEAxMtVVRO
+LVVTRVJGaXJzdC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsMB4XDTA5MDgyNjAwMDAw
+MFoXDTExMDgyNjIzNTk1OVowggEqMQswCQYDVQQGEwJERTEOMAwGA1UEERMFMDEwNjkxEDAOBgNV
+BAgTB1NhY2hzZW4xEDAOBgNVBAcTB0RyZXNkZW4xGjAYBgNVBAkTEUJheXJpc2NoZSBTdHIuIDE4
+MSgwJgYDVQQKEx9JTVMgSW50ZXJuZXQtTWVkaWEtU2VydmljZSBHbWJIMUUwQwYDVQQLEzxJc3N1
+ZWQgdGhyb3VnaCBJTVMgSW50ZXJuZXQtTWVkaWEtU2VydmljZSBHbWJIIEUtUEtJIE1hbmFnZXIx
+HzAdBgNVBAsTFkNvcnBvcmF0ZSBTZWN1cmUgRW1haWwxFTATBgNVBAMTDFRob21hcyBKYWNvYjEi
+MCAGCSqGSIb3DQEJARYTamFjb2JAaW50ZXJuZXQyNC5kZTCB3zANBgkqhkiG9w0BAQEFAAOBzQAw
+gckCgcEAnBr8Ofv/KgWvnP7jvCXiVcFjhQ/Tl4ZIvoG6Ku9D+ecI9D+9Rqg6nxv3KbyTtRL75Kws
+HYEaIv8NYWQl+nn1VQUZjwq/afE4qsGQEkFu/w3hG8ceOIZt6H2FiLOoF3SeGbhl8K4fSDiLKCBf
+KmJhTwYeg+VBUb0lovOjHHL44qasJSl3DXNaezyl79LJOmWqclrxDNOf6fLw7bXJ0K870qDV0gWZ
+aOKYvnXfNNnNfd6RzhdBNNgUM4MhmiHA7K0zAgMBAAGjggH/MIIB+zAfBgNVHSMEGDAWgBSJgmd9
+xJ0mcABLtFBIfN49rgRufTAdBgNVHQ4EFgQUqH1PlrTv+W5g+fiKAlxT/DO0LaowDgYDVR0PAQH/
+BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMCMEYGA1Ud
+IAQ/MD0wOwYMKwYBBAGyMQECAQMFMCswKQYIKwYBBQUHAgEWHWh0dHBzOi8vc2VjdXJlLmNvbW9k
+by5uZXQvQ1BTMIGlBgNVHR8EgZ0wgZowTKBKoEiGRmh0dHA6Ly9jcmwuY29tb2RvY2EuY29tL1VU
+Ti1VU0VSRmlyc3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRFbWFpbC5jcmwwSqBIoEaGRGh0dHA6
+Ly9jcmwuY29tb2RvLm5ldC9VVE4tVVNFUkZpcnN0LUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kRW1h
+aWwuY3JsMGwGCCsGAQUFBwEBBGAwXjA2BggrBgEFBQcwAoYqaHR0cDovL2NydC5jb21vZG9jYS5j
+b20vVVROQUFBQ2xpZW50Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5j
+b20wHgYDVR0RBBcwFYETamFjb2JAaW50ZXJuZXQyNC5kZTANBgkqhkiG9w0BAQUFAAOCAQEAXAH3
+We4u5Qazu+coCaP0qCQofv8wuGkBprdk24uktrrCSYf2MJIPQefBrOnhTB4Q5+21hoCHkrnJnwdw
+e2HlsSClv4dLmEIqle+KNmG8A40yBQqEndAGjgg1gX368nIIb7gUmDbxHXZTn3rLU5B4TY8ip/ao
+L9BCUPUCQQGQhzbR5qBv+VlQ8Txkpc3eWHHNlvb4Hpyw5xezfAbcgRNkHsbtJX9+04w8bqKSXBPV
+BC/jfXP3Ao03xd8EFBj3Th9mSAldIrExFqBIe4dOLIChVjigZI49lrTlURayawi12JEWJM/sRgrj
+MeARHOiPDiuSwFy5KAMszNM1m1S9ImoTkzCCBiIwggUKoAMCAQICEFJvec8vBhWBhft9oi04pvIw
+DQYJKoZIhvcNAQEFBQAwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2Fs
+dCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMYaHR0
+cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBBdXRo
+ZW50aWNhdGlvbiBhbmQgRW1haWwwHhcNMDkwODI2MDAwMDAwWhcNMTEwODI2MjM1OTU5WjCCASox
+CzAJBgNVBAYTAkRFMQ4wDAYDVQQREwUwMTA2OTEQMA4GA1UECBMHU2FjaHNlbjEQMA4GA1UEBxMH
+RHJlc2RlbjEaMBgGA1UECRMRQmF5cmlzY2hlIFN0ci4gMTgxKDAmBgNVBAoTH0lNUyBJbnRlcm5l
+dC1NZWRpYS1TZXJ2aWNlIEdtYkgxRTBDBgNVBAsTPElzc3VlZCB0aHJvdWdoIElNUyBJbnRlcm5l
+dC1NZWRpYS1TZXJ2aWNlIEdtYkggRS1QS0kgTWFuYWdlcjEfMB0GA1UECxMWQ29ycG9yYXRlIFNl
+Y3VyZSBFbWFpbDEVMBMGA1UEAxMMVGhvbWFzIEphY29iMSIwIAYJKoZIhvcNAQkBFhNqYWNvYkBp
+bnRlcm5ldDI0LmRlMIHfMA0GCSqGSIb3DQEBAQUAA4HNADCByQKBwQCcGvw5+/8qBa+c/uO8JeJV
+wWOFD9OXhki+gboq70P55wj0P71GqDqfG/cpvJO1EvvkrCwdgRoi/w1hZCX6efVVBRmPCr9p8Tiq
+wZASQW7/DeEbxx44hm3ofYWIs6gXdJ4ZuGXwrh9IOIsoIF8qYmFPBh6D5UFRvSWi86Mccvjipqwl
+KXcNc1p7PKXv0sk6ZapyWvEM05/p8vDttcnQrzvSoNXSBZlo4pi+dd802c193pHOF0E02BQzgyGa
+IcDsrTMCAwEAAaOCAf8wggH7MB8GA1UdIwQYMBaAFImCZ33EnSZwAEu0UEh83j2uBG59MB0GA1Ud
+DgQWBBSofU+WtO/5bmD5+IoCXFP8M7QtqjAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAd
+BgNVHSUEFjAUBggrBgEFBQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUw
+KzApBggrBgEFBQcCARYdaHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwgaUGA1UdHwSBnTCB
+mjBMoEqgSIZGaHR0cDovL2NybC5jb21vZG9jYS5jb20vVVROLVVTRVJGaXJzdC1DbGllbnRBdXRo
+ZW50aWNhdGlvbmFuZEVtYWlsLmNybDBKoEigRoZEaHR0cDovL2NybC5jb21vZG8ubmV0L1VUTi1V
+U0VSRmlyc3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRFbWFpbC5jcmwwbAYIKwYBBQUHAQEEYDBe
+MDYGCCsGAQUFBzAChipodHRwOi8vY3J0LmNvbW9kb2NhLmNvbS9VVE5BQUFDbGllbnRDQS5jcnQw
+JAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNqYWNvYkBp
+bnRlcm5ldDI0LmRlMA0GCSqGSIb3DQEBBQUAA4IBAQBcAfdZ7i7lBrO75ygJo/SoJCh+/zC4aQGm
+t2Tbi6S2usJJh/Ywkg9B58Gs6eFMHhDn7bWGgIeSucmfB3B7YeWxIKW/h0uYQiqV74o2YbwDjTIF
+CoSd0AaOCDWBffrycghvuBSYNvEddlOfestTkHhNjyKn9qgv0EJQ9QJBAZCHNtHmoG/5WVDxPGSl
+zd5Ycc2W9vgenLDnF7N8BtyBE2Qexu0lf37TjDxuopJcE9UEL+N9c/cCjTfF3wQUGPdOH2ZICV0i
+sTEWoEh7h04sgKFWOKBkjj2WtOVRFrJrCLXYkRYkz+xGCuMx4BEc6I8OK5LAXLkoAyzM0zWbVL0i
+ahOTMYIDuzCCA7cCAQEwgcMwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMO
+U2FsdCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMY
+aHR0cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBB
+dXRoZW50aWNhdGlvbiBhbmQgRW1haWwCEFJvec8vBhWBhft9oi04pvIwCQYFKw4DAhoFAKCCAg0w
+GAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDkwOTAyMTQzMDI4WjAj
+BgkqhkiG9w0BCQQxFgQUiwbGXPULm5b/b7Y7JuE0uE7qN84wgdQGCSsGAQQBgjcQBDGBxjCBwzCB
+rjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAlVUMRcwFQYDVQQHEw5TYWx0IExha2UgQ2l0eTEeMBwG
+A1UEChMVVGhlIFVTRVJUUlVTVCBOZXR3b3JrMSEwHwYDVQQLExhodHRwOi8vd3d3LnVzZXJ0cnVz
+dC5jb20xNjA0BgNVBAMTLVVUTi1VU0VSRmlyc3QtQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBF
+bWFpbAIQUm95zy8GFYGF+32iLTim8jCB1gYLKoZIhvcNAQkQAgsxgcaggcMwga4xCzAJBgNVBAYT
+AlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2FsdCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBV
+U0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMYaHR0cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYD
+VQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgRW1haWwCEFJvec8v
+BhWBhft9oi04pvIwDQYJKoZIhvcNAQEBBQAEgcAk6beWXVQjfNpHDpd6T3fIDOkSptkHDFEVSD3X
+NFuVoutWxr9VIJb0JL8JneIZw8JkmiM8W0UgzpnvUSy7+0Wzyo7vlETMXk1ZtFMepgqfEBc1Z8Fx
+I5fDNNQBihjaTdN5FklsbG+9YWD2KRDf8oVCi77v33d7hDfs17d1v13MFbfvZJEPoCMu36SzZP+x
+U6BEQNHnQR+guTd3c/GBYMcfoEsWPWwNTadRUy0AEonUq4xAHKLMhD3lIz0lyhw8R6kAAAAAAAA=
+
+
+--=-dHI4vhqAm5Tx1iIESaOl--
+
