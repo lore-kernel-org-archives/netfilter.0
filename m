@@ -1,50 +1,38 @@
-From: rohin kumar <rohinkumars@gmail.com>
-Subject: NF_DROP/NF_ACCEPT -- TCP retransmission
-Date: Tue, 1 Sep 2009 20:30:45 -0400
-Message-ID: <ceb65aa00909011730g3d85372fx55fa40018b71f04a@mail.gmail.com>
+From: "John Lister" <john.lister@kickstone.com>
+Subject: Checking line status
+Date: Wed, 2 Sep 2009 10:23:27 +0100
+Message-ID: <591B070B9C3D465CA4CCE1B11024DBEA@squarepi.com>
+References: <4A93CC1C.3070100@infoservices.in> <58261217A1E14FCCB2F0CF27FA977252@squarepi.com> <4A93DDA0.6000900@trash.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type;
-        bh=WWM/zwAAG1wmB/sh6orfNHBl+C9i5AVFwrT9flz6gM8=;
-        b=VuYEA2kH+w43z1XajJE4569rXEntSyu2Pu0QUqAw/QUXbykYqCH68zEVvecq7rdG76
-         238WTZ7IzbAm7COYDxANKps1vdv/lIlKo2dzStOCHcB8im4kSIZwehmU5QQ/hmq2hKDI
-         2wG4txmebR0QRCckLMM9L04bHPWmCrLjdfSHc=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@vger.kernel.org
 
-Hello,
+Hi, I have a multihomed machine to which i'd like to check the status of 
+each line periodically. I want to do this so that I can modify the iptables 
+rules and send new connections out over the active lines and restore service 
+when the line comes back up.
 
+I thought I could use ping with the -I option, but that doesn't seem to 
+work, it always uses the default route. However if I get rid of the default 
+route and modify the rules to match the packets I get a "network 
+unreachable" message without it ever hitting iptables. For example adding 
+something like this never gets matched for the ping.
 
-In my netfilter hook, I am creating a new broadcast packet and
-dropping the actual unicast packet. I have tried NF_DROP and NF_STOLEN
-to drop unicast packet. But Both times I can see the original packet
-in wire shark along with the new broadcast packet.  There are no TCP
-dup acks from the receiver side before unicast packet is sent. Does
-netfilter frame work informs TCP about the packet drop  and because of
-that TCP is sending the packet again ? Or else the original packet
-itself is not dropped.
+iptables -t mangle -I OUTPUT -j LOG --log-prefix "output: "
 
+Normally ping results in ICMP messages being traversed, but not this time.
 
-Following is the  code line where I defined nf_hook_ops.
-
-static struct nf_hook_ops trm_ops = {(struct list_head) {NULL, NULL},
-(nf_hookfn *)trm_hook, (struct module*)THIS_MODULE, (uint8_t) PF_INET,
-(unsigned int)NF_IP_POST_ROUTING, (int)NF_IP_PRI_LAST };
-
-
-
-When I receive packet in my hook, the packet has  TCP and IP headers.
-
-Any help greatly appreciated.
-
+Could someone explain what is going on and I'd be grateful if there were any 
+suggestions on other ways to detect if a line is down - simply looking in 
+/proc/net/dev or similar wouldn't help as the local connection is likely to 
+be up, but the physical line to the ISP may be down.
 
 
 Thanks
 
-Rohin Sudini
+John 
+
