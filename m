@@ -1,24 +1,66 @@
-From: John Lister <john.lister@kickstone.com>
-Subject: Re: Checking line status
-Date: Wed, 02 Sep 2009 17:48:03 +0100
-Message-ID: <4A9EA1C3.9030108@kickstone.com>
-References: <4A93CC1C.3070100@infoservices.in> <58261217A1E14FCCB2F0CF27FA977252@squarepi.com> <4A93DDA0.6000900@trash.net> <591B070B9C3D465CA4CCE1B11024DBEA@squarepi.com> <1251895652.23708.37.camel@enterprise.ims-firmen.de> <0DB67FCC2A774AFCA834C6CD4BE5DB12@squarepi.com> <4A9E812E.2060601@plouf.fr.eu.org> <24462D0647E440E0A4E0ED3861DCB074@squarepi.com> <4A9E8C51.9070108@plouf.fr.eu.org>
+From: "J. Bakshi" <joydeep@infoservices.in>
+Subject: Re: iptables traffic shaping question
+Date: Thu, 03 Sep 2009 10:13:41 +0530
+Message-ID: <4A9F497D.4070507@infoservices.in>
+References: <4A9E6804.3060300@infoservices.in> <9151ac2a0909020608g3139b1detc505b80e5d609ced@mail.gmail.com> <666660245e57b9ee21d773e20fb95411@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4A9E8C51.9070108@plouf.fr.eu.org>
+In-Reply-To: <666660245e57b9ee21d773e20fb95411@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Julien Vehent <julien@linuxwall.info>
+Cc: Filip Sneppe <filip.sneppe@gmail.com>, netfilter@vger.kernel.org
 
-
-> And the state after --state too.
+Julien Vehent wrote:
+> On Wed, 2 Sep 2009 15:08:39 +0200, Filip Sneppe <filip.sneppe@gmail.com>
+> wrote:
 >   
-copy and pasting without looking...
-> Do your MARK rules match some packets (counters increase) ?
+>> Hi,
+>>
+>> On Wed, Sep 2, 2009 at 2:41 PM, J. Bakshi<joydeep@infoservices.in>
+>>     
+> wrote:
+>   
+>>> Dear list,
+>>>
+>>>
+>>> I like to get a good response ( min wait ) from my ssh and  stable (
+>>>       
+> max
+>   
+>>> throughput ) connection from the apache running at a remote server. Is
+>>> there any setting  in iptables which allow me to set in my server
+>>> accordingly ?
+>>>
+>>>       
+>> iptables isn't really the tool for this. look into the "tc" command of
+>>     
+> the
+>   
+>> iproute package.
+>>
+>> I used to go to this site:
+>>
+>> http://lartc.org/
+>>
+>> It's still, up although it looks unmaintained.
+>>     
+>
+> LARTC is unmaintained, but, AFAIK, none of the components regarding
+> traffic control described there have changed.
+> Maybe somebody more aware of the recent developments could confirm...
+>
+>
+> Julien
 >   
 
-I haven't checked this, but i did have similar rules which wrote to the 
-log file and these were never triggered...
+Hello Julien and Filip,
+
+thanks a lot for pointing out LARTC site. It is a great site.
+I got there the solution of my doubt.  It is TOS adjustment.
+
+regards,
+
+
