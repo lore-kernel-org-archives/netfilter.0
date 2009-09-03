@@ -1,33 +1,29 @@
 From: "J. Bakshi" <joydeep@infoservices.in>
-Subject: Re: is there any module to track total connection ?
-Date: Thu, 03 Sep 2009 10:20:08 +0530
-Message-ID: <4A9F4B00.6020107@infoservices.in>
-References: <4A9E4E46.9000008@infoservices.in>
+Subject: confusion with  dport and sport
+Date: Thu, 03 Sep 2009 11:53:42 +0530
+Message-ID: <4A9F60EE.60908@infoservices.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4A9E4E46.9000008@infoservices.in>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Any clue ??
+Hello,
 
+I have found that TOS is helpful for traffic shaping. But some guide use
+--sport where other use --dport the handle the same thing hence I am
+very confusd !!
+To get a good response from the ssh running on a remote server the rule
+can be placed in the remote server can be
 
-J. Bakshi wrote:
-> Hello list,
->
-> I am searching for a module which can track the total connection at any
-> time and block  more incoming packets. Say dropping the new ssh
-> connection if the total ssh connection is already 4. any such module in
-> iptable ?
->
-> Thanks
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
->   
+``````````````````
+iptables -t mangle -A PREROUTING -p tcp --dport  $SSH_PORT -j TOS
+--set-tos Minimize-Delay
+`````````````````````
 
+BUT some site do the same by replacing --dport to --sport
+
+Which one should be the right value ? Please enlighten me.
+Thanks
