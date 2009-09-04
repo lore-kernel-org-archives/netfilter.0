@@ -1,36 +1,42 @@
-From: "J. Bakshi" <joydeep@infoservices.in>
-Subject: site becomes slow dut to syn-flood protection
-Date: Fri, 04 Sep 2009 18:47:57 +0530
-Message-ID: <4AA11385.6050102@infoservices.in>
+From: Silva Paulo <psdasilva@yahoo.com>
+Subject: Problem with unaccepted rules!
+Date: Fri, 4 Sep 2009 15:38:39 -0700 (PDT)
+Message-ID: <112176.44749.qm@web112010.mail.gq1.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1252103919; bh=vIHdekoxlNkhyLRIhY+UsMns7ilyvMoZC6g7SJYKmu0=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Subject:To:MIME-Version:Content-Type; b=a+sNt37rNmvfmv8RqSM95KmAeLvV66CkAeEDA5pUzGoB1efxMMQLYFjTUVWW3AGXohL33mHxuQwkOXfTr1q3Y7Pft2PxkbMG3MuqUJtw+TuGqn5KG5DViS6w7KszSnQuZUG/2MSxAfuSs69+6gJotxAKdvciC27FuwSlRZ4qZbQ=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello list ,
+I'm having the following problems with iptables 1.4.3.2 on gentoo linux. Also tried with  masked (unstable) version 1.4.4 with the same results.
 
-I have these codes before my incoming rules as a sync flood protection
+1. Guarddog generated script fragment
++ iptables -N logdrop2
++ iptables -A logdrop2 -j LOG --log-prefix 'DROPPED ' --log-level 4 --log-ip-options --log-tcp-options --log-tcp-sequence
++ iptables -A logdrop2 -j DROP
++ iptables -N logdrop
++ iptables -A logdrop -m limit --limit 1/second --limit-burst 10 -j logdrop2
+iptables: No chain/target/match by that name.
++ iptables -A logdrop -m limit --limit 2/minute --limit-burst 1 -j LOG --log-prefix 'LIMITED ' --log-level 4
+iptables: No chain/target/match by that name.
++ iptables -A logdrop -j DROP
 
-`````````````
-# Check hashlimit-htable-expire after 5 min ( 300000 mili second )
-iptables -N syn-flood
-iptables -A INPUT -i $IFACE -p tcp --syn -j syn-flood
-iptables -A syn-flood -p tcp --syn  -m hashlimit \
---hashlimit 4/sec --hashlimit-burst 4 --hashlimit-htable-expire 300000 \
---hashlimit-mode srcip --hashlimit-name testlimit -j RETURN
-# Drop IP bad IP and put then in blacklist
-iptables -A syn-flood -m recent --name blacklist --set -j DROP
-iptables -A INPUT -j syn-flood
-````````````````````````````````````
+2. A rule of a script I wrote
+# iptables -A OUTPUT -j ACCEPT -m state --state NEW,ESTABLISHED,RELATED
+-o wlan0 -p tcp -m multiport --dports 80,443 -m multiport --sports
+1024:65535
+iptables v1.4.3.2: invalid port/service `1024:65535' specified
+Try `iptables -h' or 'iptables --help' for more information.
 
-and this makes the sites running at the server very slow, if I comment
-the above again the sites running well.  What might be the safe options of
+I have tried several combinations of this command with no success!
+On open suse 11.1 box of a friend ran the command without any problem with iptables 1.4.2-rc1!
 
---hashlimit 4/sec --hashlimit-burst 4  
-
-to get back the normal apache connection ?
-
+Any help on this?
 Thanks
+
+
+
+      
