@@ -1,40 +1,36 @@
 From: "J. Bakshi" <joydeep@infoservices.in>
-Subject: Re: is there any module to track total connection ?
-Date: Fri, 04 Sep 2009 13:12:14 +0530
-Message-ID: <4AA0C4D6.1010207@infoservices.in>
-References: <4A9E4E46.9000008@infoservices.in>
+Subject: site becomes slow dut to syn-flood protection
+Date: Fri, 04 Sep 2009 18:47:57 +0530
+Message-ID: <4AA11385.6050102@infoservices.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4A9E4E46.9000008@infoservices.in>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-J. Bakshi wrote:
-> Hello list,
->
-> I am searching for a module which can track the total connection at any
-> time and block  more incoming packets. Say dropping the new ssh
-> connection if the total ssh connection is already 4. any such module in
-> iptable ?
->   
+Hello list ,
 
-I am answering my own question. the module is connlimit.  but it is not
-working here properly. I have done as
+I have these codes before my incoming rules as a sync flood protection
 
 `````````````
-# default policy drop for in/out/forward#
-###############################
+# Check hashlimit-htable-expire after 5 min ( 300000 mili second )
+iptables -N syn-flood
+iptables -A INPUT -i $IFACE -p tcp --syn -j syn-flood
+iptables -A syn-flood -p tcp --syn  -m hashlimit \
+--hashlimit 4/sec --hashlimit-burst 4 --hashlimit-htable-expire 300000 \
+--hashlimit-mode srcip --hashlimit-name testlimit -j RETURN
+# Drop IP bad IP and put then in blacklist
+iptables -A syn-flood -m recent --name blacklist --set -j DROP
+iptables -A INPUT -j syn-flood
+````````````````````````````````````
 
-iptables -A INPUT -p tcp --syn -i $IFACE --dport $SSH_PORT -m connlimit
-! --connlimit-above 2 -j ACCEPT
-``````````````
+and this makes the sites running at the server very slow, if I comment
+the above again the sites running well.  What might be the safe options of
 
-It should block ssh connection from same source IP if already 2
-connections are active from that source. But it is not working as
-expected. I can log in even 10 ssh with out any problem. Don't know what
-might be wron. iptables version is v1.4.2-rc1 in suse 11 box. Any clue ?
+--hashlimit 4/sec --hashlimit-burst 4  
+
+to get back the normal apache connection ?
 
 Thanks
