@@ -1,26 +1,40 @@
-From: Nicholas Couchman <nick.couchman@yahoo.com>
-Subject: Windows/NetBIOS & SNAT
-Date: Thu, 3 Sep 2009 16:28:29 -0700 (PDT)
-Message-ID: <651562.95010.qm@web33406.mail.mud.yahoo.com>
+From: "J. Bakshi" <joydeep@infoservices.in>
+Subject: Re: is there any module to track total connection ?
+Date: Fri, 04 Sep 2009 13:12:14 +0530
+Message-ID: <4AA0C4D6.1010207@infoservices.in>
+References: <4A9E4E46.9000008@infoservices.in>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1252020509; bh=aVyLeXc0Bk9Li/TRdWm17zF78fm9vMmlISpwAoMTUqk=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Subject:To:MIME-Version:Content-Type; b=qDK6xhuXkMNFUwQn3Ev3DF2Rw02PbyA5otuj1x2SIAKcriiQ4iVABv0b25JnCObjwI8mamLYyJpZbxcGVLBWwu+bIQuRjunktc8Ddb9ioUdvjkI5BzgM+HVjC+xIRWJsmgVxXnnp3HUUAlenKQUZTE12WgV8xl0xH24vJy0nmp8=
+In-Reply-To: <4A9E4E46.9000008@infoservices.in>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-I've done quite a bit of Google searching and haven't turned up anything definitive hear.  I have a few Windows XP machines that I want to put behind a Linux/iptables NAT configuration.  The domain controllers and WINS servers sit outside the NAT configuration.  On the Linux side, I've enabled ip forwarding, and added the following rule with iptables:
+J. Bakshi wrote:
+> Hello list,
+>
+> I am searching for a module which can track the total connection at any
+> time and block  more incoming packets. Say dropping the new ssh
+> connection if the total ssh connection is already 4. any such module in
+> iptable ?
+>   
 
-iptables -t nat -A POSTROUTING -s 172.16.34.0/24 -j SNAT --to-source 192.168.100.100
+I am answering my own question. the module is connlimit.  but it is not
+working here properly. I have done as
 
-However, I'm getting the following error when trying to log on to Windows:
-The system cannot log you on now because the domain DOMAIN is not
-available.  I've loaded the nf_conntrack and nf_conntrack_netbios_ns modules in Linux, but this hasn't helped.  I've done some packet tracing, and when I look at tcpdump, on the "inside" interface, I see requests to the WINS system but never any replies.  When I look at packets on the "outside" interface, I see the SNAT'd requests from the 192.168.100.100 interface going to the WINS server on port 138, and I see the replies coming from the WINS server to the 192.168.100.100 IP address, port 138.  Herein lies my problem - I'm guessing that the Linux system itself isn't actually expecting the reply on port 138, and so it's discarding the packet.  My question is this: is there some rule I ought to put somewhere else in iptables to have these packets returned to the "inside" network, to the co
- rrect host?
+`````````````
+# default policy drop for in/out/forward#
+###############################
 
-Oh, yeah, one other thing - all iptables is doing is NAT - there are no firewall rules that would block trafffic, and the default policy is "ACCEPT".
+iptables -A INPUT -p tcp --syn -i $IFACE --dport $SSH_PORT -m connlimit
+! --connlimit-above 2 -j ACCEPT
+``````````````
 
-Thanks,
-Nick
+It should block ssh connection from same source IP if already 2
+connections are active from that source. But it is not working as
+expected. I can log in even 10 ssh with out any problem. Don't know what
+might be wron. iptables version is v1.4.2-rc1 in suse 11 box. Any clue ?
+
+Thanks
