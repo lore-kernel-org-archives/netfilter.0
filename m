@@ -1,46 +1,50 @@
-From: Jason Frisvold <xenophage0@gmail.com>
-Subject: ulogd compile problems
-Date: Sat, 5 Sep 2009 23:31:09 -0400
-Message-ID: <4F548017-89C1-42AE-87F1-68F92C62A8D4@gmail.com>
-Mime-Version: 1.0 (Apple Message framework v1075.2)
-Content-Transfer-Encoding: 7bit
+From: rohin kumar <rohinkumars@gmail.com>
+Subject: NF_DROP/NF_STOLEN -- TCP retransmit issue.
+Date: Sun, 6 Sep 2009 15:20:09 -0400
+Message-ID: <ceb65aa00909061220v92fde8em814fde4481f84057@mail.gmail.com>
+Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:from:content-type
-         :content-transfer-encoding:subject:date:message-id:to:mime-version
-         :x-mailer;
-        bh=kze04b9tcdycP1hNIX5Vtxut/wtOt7P0/oko3mk88Go=;
-        b=l2hfNSPKAvSxzpyGcoKoSEsHLafhbtWZZN47m3rA02qHFNf8Wu9hXTYH+Y7K7hBV/1
-         Is9KZOiIdlaKvr0Qo7303qLNZ4JOY8DpfXkHA4hgs9BiJHLa/yIEzeNtAUqpQSfM/n9P
-         wF1O7hCib9yTSz3nIcrC8GFOWJ2DiwGQcM0ZA=
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type;
+        bh=WWM/zwAAG1wmB/sh6orfNHBl+C9i5AVFwrT9flz6gM8=;
+        b=myqI/QWUXciWTEfT+yAk/V4uoQGug+PHbBMR0yTXNOXkWM9o2tWFST5i/2gFYi1sVh
+         yxZA20x96ZHMRtmWHZFANK2sPN1VPNNTvSelheHFRTUmwrFe7qXr5C4WRjCJXbo/RzZX
+         l2MlI0tUkoSiPdgd9Ap8DbGkSd/eQXm22MFmw=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-I'm having a problem compiling ulogd 1.24.  I believe I have all of  
-the appropriate development libraries installed, but I'm receiving the  
-error below.  This is a CentOS 5.3 system with MySQL 5.0.67  
-installed.  Can someone please shed some light on how to resolve this?
-
-make[1]: Entering directory `/home/friz/ulogd-1.24/mysql'
-gcc -I-I/usr/include/mysql -DOLD_MYSQL=1  -g -O2  -Wall - 
-DULOGD_CONFIGFILE=\"/usr/local/etc/ulogd.conf\" -I/lib/modules/`uname - 
-r`/build/include -I.. -I../libipulog/include -I../include -fPIC -o  
-ulogd_MYSQL_sh.o -c ulogd_MYSQL.c
-ld -shared -rdynamic -L/usr/lib/mysql -lmysqlclient -lz -lcrypt -lnsl - 
-lm  -o ulogd_MYSQL.so ulogd_MYSQL_sh.o -lc
-ld: bad -rpath option
-make[1]: *** [ulogd_MYSQL.so] Error 1
-make[1]: Leaving directory `/home/friz/ulogd-1.24/mysql'
-make: *** [recurse] Error 1
+Hello,
 
 
-Thanks,
+In my netfilter hook, I am creating a new broadcast packet and
+dropping the actual unicast packet. I have tried NF_DROP and NF_STOLEN
+to drop unicast packet. But Both times I can see the original packet
+in wire shark along with the new broadcast packet.  There are no TCP
+dup acks from the receiver side before unicast packet is sent. Does
+netfilter frame work informs TCP about the packet drop  and because of
+that TCP is sending the packet again ? Or else the original packet
+itself is not dropped.
 
--- 
-Jason 'XenoPhage' Frisvold
-XenoPhage0@gmail.com
-http://blog.godshell.com
 
+Following is the  code line where I defined nf_hook_ops.
+
+static struct nf_hook_ops trm_ops = {(struct list_head) {NULL, NULL},
+(nf_hookfn *)trm_hook, (struct module*)THIS_MODULE, (uint8_t) PF_INET,
+(unsigned int)NF_IP_POST_ROUTING, (int)NF_IP_PRI_LAST };
+
+
+
+When I receive packet in my hook, the packet has  TCP and IP headers.
+
+Any help greatly appreciated.
+
+
+
+Thanks
+
+Rohin Sudini
