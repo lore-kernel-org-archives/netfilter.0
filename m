@@ -1,40 +1,45 @@
-From: Gregory Ray <gregr@seekmobileinteractive.com>
+From: y c <nuynehc@gmail.com>
 Subject: Re: Using IPTables to route both dynamic local address and static 
 	addresses provided by ISP?
-Date: Mon, 7 Sep 2009 09:51:20 -0700
-Message-ID: <2b4d96e00909070951r2c2003f0of1c916b34877da0f@mail.gmail.com>
+Date: Tue, 8 Sep 2009 00:30:27 +0800
+Message-ID: <ce2e34750909070930w4f6e1d66v5c768fd1629dac7c@mail.gmail.com>
 References: <2b4d96e00909061414v270d580i56e1613d75886f4@mail.gmail.com>
 	 <4AA4D2EC.4030801@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=OflCEJexfpwGS20Su90dc9XLfA+qRHxdi7G5hC6Dczg=;
+        b=v5iy5Ojm2YMqAJZTdRDZE3qy31KjAil5B7vSU9o0+/nroLTFA+Ns3hQuwYaOujFc6k
+         TMRPAHPlfsNnU6UmPQi5DwwCmdPEip777jl14dBYmwgN8s5SsE3/t98Gm9IBxD+gx5cN
+         Km2tzrr6GoFSwqMnhXNdcdCHmj2T7wmzk4/lI=
 In-Reply-To: <4AA4D2EC.4030801@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
 To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Cc: Gregory Ray <gregr@seekmobileinteractive.com>, netfilter@vger.kernel.org
 
-Yes, sorry for the confusion and my newbness, I am using a linux box
-(Ubuntu distro) as a DHCP server. I have eth0 to internet via pppoe
-(high speed fiber).
+Here is an idea using brctl & ebtables, not iptables. Looks like you
+need your box runs as a router and switch. It's very common use on DSL
+routers called "Triple Play", or port based VLAN. I assume your
+topology as: eth0(Internet), eth1(Server), eth2, eth3(private LAN).
+1) Create a bridge for eth2 & eth3 with "brctl". Call it br0.
+2) Dial out with eth0, you will get ppp0 for Internet.
+3) Create a bridge for eth0 & eth1 with "brctl". Call it br1.
+4) Set up rules with "ebtables", INPUT chain to DROP packets from eth1.
+I didn't try it on my box, but I suppose it works.
+Any feed back is appreciated.
+Thanks
 
-The second option sounds best since I already have the public
-addresses assigned to the server but I don't know what to assign to it
-for a gateway.
-
-The ISP provided us with 8 or 10 (I forget exactly how many) public
-IPs. I have the servers (two of them) plugged directly into the switch
-(which is plugged into the linux box). I then have multiple wireless
-routers also plugged into the switch to provide internet access over
-wifi to different parts of the building (around 20 workstations in
-total).
-
-On Mon, Sep 7, 2009 at 2:31 AM, Pascal
-Hambourg<pascal.mail@plouf.fr.eu.org> wrote:
+2009/9/7, Pascal Hambourg <pascal.mail@plouf.fr.eu.org>:
 > Hello,
 >
-> Gregory Ray a =E9crit :
+> Gregory Ray a =C3=A9crit :
 >> I am running iptables as a dhcp router from a pppoe connection
 >
 > Iptables is neither a router nor a DHCP server. Do you mean "I am
@@ -58,19 +63,14 @@ e
 > What is the size of the public static block and how many public serve=
 rs
 > do you have ?
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 >
 
 
-
 --=20
-Gregory Ray
-CTO, Seek Mobile Interactive, Inc.
-
----
-
-This e-mail message, including any attachments, is for the sole use of
-the intended recipient(s) and may contain information that is
-confidential and protected by law from unauthorized disclosure. Any
-unauthorized review, use, disclosure or distribution is prohibited. If
-you are not the intended recipient, please contact the sender by reply
-e-mail and destroy all copies of the original message.
+BRs
+nuynehc@gmail.com
