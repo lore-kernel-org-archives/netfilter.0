@@ -1,76 +1,44 @@
-From: y c <nuynehc@gmail.com>
-Subject: Re: Using IPTables to route both dynamic local address and static 
-	addresses provided by ISP?
-Date: Tue, 8 Sep 2009 00:30:27 +0800
-Message-ID: <ce2e34750909070930w4f6e1d66v5c768fd1629dac7c@mail.gmail.com>
-References: <2b4d96e00909061414v270d580i56e1613d75886f4@mail.gmail.com>
-	 <4AA4D2EC.4030801@plouf.fr.eu.org>
+From: Anatoly Muliarski <x86ever@gmail.com>
+Subject: Re: How to view blacklist ip ?
+Date: Mon, 7 Sep 2009 21:37:33 +0300
+Message-ID: <38db14850909071137l3b70e3ecp7eb4b21fd9bffcf6@mail.gmail.com>
+References: <4AA4A0D4.3080109@infoservices.in>
+	 <4AA4B741.7010209@plouf.fr.eu.org> <4AA4B9B3.6020409@infoservices.in>
+	 <4AA4BD7D.3080405@infoservices.in> <4AA4C0E6.9050101@plouf.fr.eu.org>
+	 <4AA4C3B8.7080309@infoservices.in> <4AA4D05E.5050909@infoservices.in>
+	 <4AA4E1AD.4040200@plouf.fr.eu.org> <4AA4FA86.2020601@infoservices.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=OflCEJexfpwGS20Su90dc9XLfA+qRHxdi7G5hC6Dczg=;
-        b=v5iy5Ojm2YMqAJZTdRDZE3qy31KjAil5B7vSU9o0+/nroLTFA+Ns3hQuwYaOujFc6k
-         TMRPAHPlfsNnU6UmPQi5DwwCmdPEip777jl14dBYmwgN8s5SsE3/t98Gm9IBxD+gx5cN
-         Km2tzrr6GoFSwqMnhXNdcdCHmj2T7wmzk4/lI=
-In-Reply-To: <4AA4D2EC.4030801@plouf.fr.eu.org>
+         :date:message-id:subject:from:to:cc:content-type;
+        bh=WkehDZKlIK6M+0D2fpS16A4MHsFqdz/LFGcBEBh8Alg=;
+        b=CwY8nOL6VdzwbNx6AOs6RDNZ8eSNKEHfXHlHCJiLNEEZf11sQnY45hH5lnqlKlcftG
+         DzK31oenA0PHRn7NrmdiILbdgJPJcr/Ub41Gb7N374XF6sFtBsUFMCQY3C9DoFKXmIoL
+         tEmvSliHo46eGjqAnoFeMlvonatgJBPE8jMZ8=
+In-Reply-To: <4AA4FA86.2020601@infoservices.in>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: Gregory Ray <gregr@seekmobileinteractive.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "J. Bakshi" <joydeep@infoservices.in>
+Cc: netfilter@vger.kernel.org
 
-Here is an idea using brctl & ebtables, not iptables. Looks like you
-need your box runs as a router and switch. It's very common use on DSL
-routers called "Triple Play", or port based VLAN. I assume your
-topology as: eth0(Internet), eth1(Server), eth2, eth3(private LAN).
-1) Create a bridge for eth2 & eth3 with "brctl". Call it br0.
-2) Dial out with eth0, you will get ppp0 for Internet.
-3) Create a bridge for eth0 & eth1 with "brctl". Call it br1.
-4) Set up rules with "ebtables", INPUT chain to DROP packets from eth1.
-I didn't try it on my box, but I suppose it works.
-Any feed back is appreciated.
-Thanks
+2009/9/7 J. Bakshi <joydeep@infoservices.in>:
+> Could anyone suggest me how to get time in jiffies ? Tried with "date
+> +%s" but it is not the jiffie value. Any clue please ?
 
-2009/9/7, Pascal Hambourg <pascal.mail@plouf.fr.eu.org>:
-> Hello,
->
-> Gregory Ray a =C3=A9crit :
->> I am running iptables as a dhcp router from a pppoe connection
->
-> Iptables is neither a router nor a DHCP server. Do you mean "I am
-> running a Linux box working as a DHCP server and as a router" ?
->
->> can I have it route the standard local ips to the
->> workstations but also have my other servers utilize the static ips
->> available in the block from my isp?
->
-> Sure. I suppose that the privante addresses are masqueraded with the
-> PPPoE public address. For the public static block, you have two optio=
-ns.
->
-> 1) Assign private addresses to the servers and use DNAT+SNAT to creat=
-e
-> 1:1 mapppings with public addresses from the static block.
->
-> 2) Assign public addresses from the static block to the servers.
->
-> Are the servers and workstations on the same LAN ?
-> What is the size of the public static block and how many public serve=
-rs
-> do you have ?
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+You may use the first field in /proc/uptime - that gives you uptime in seconds.
 
+IMHO, the recent module should be used for filtering purpose only not
+for managing black lists.
+The right way is ipset :)
+And it does not require you to recompile your kernel - you may install
+it as a module.
+And yes, to use it you should recompile iptables if it does not
+support it by default.
 
---=20
-BRs
-nuynehc@gmail.com
+-- 
+Best regards
+Anatoly Muliarski
