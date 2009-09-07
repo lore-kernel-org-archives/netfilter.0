@@ -1,31 +1,41 @@
-From: "J. Bakshi" <joydeep@infoservices.in>
-Subject: A very basic chain question
-Date: Mon, 07 Sep 2009 12:28:29 +0530
-Message-ID: <4AA4AF15.8000602@infoservices.in>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: How to view blacklist ip ?
+Date: Mon, 07 Sep 2009 09:33:21 +0200
+Message-ID: <4AA4B741.7010209@plouf.fr.eu.org>
+References: <4AA4A0D4.3080109@infoservices.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4AA4A0D4.3080109@infoservices.in>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-Hello list,
+Hello,
 
-Please bother  with me as this time I have a very basic question about
-iptables chain and I have not found any answer yet.  I am in a process
-to create a complex  ssh checking rule where conditions are checked one
-by one and finally the valid packets are accepted.  The scenario is like
+J. Bakshi a =E9crit :
+>=20
+> iptables -A INPUT -m recent --name blacklist --rcheck --seconds
+> $BLACKLIST_INTERVAL -j DROP
+>=20
+> and it is working really well. But is there any way to manage the
+> blacklisted ip ? Manage means
 
-````````````
-check limit ( say 10/min) --> check connlimit ( 2 per ip ) --> check
-hashlimit ( 2 attempt per min) ---> ACCEPT.
-````````````````````
+man iptables
 
-I have made a chain called sshrate but don't find the way to append the
-rules in that chain one by one. If I simply append the rules as accept
-then the very first rule is working bypassing the other two and my
-objective is to pass the rules in a pipe one by one and finally accept
-the valid packets. Could any one enlighten me in that direction ?
+> 1> view the ips which are blacklisted
 
-Thanks
+Read /proc/net/ipt_recent/<name>.
+
+> 2> manually remove an IP from blacklist
+
+Write "-a.b.c.d" into /proc/net/ipt_recent/<name> where a.b.c.d is the
+address to remove. You can also write "clear" to flush the list.
+
+> 3> manually insert an IP as blacklist
+
+Write "+a.b.c.d" or "a.b.c.d" into /proc/net/ipt_recent/<name> where
+a.b.c.d is the address to add or update.
+
+Warning : ipt_recent may have been renamed xt_recent in recent kernels.
