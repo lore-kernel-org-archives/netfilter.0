@@ -1,59 +1,49 @@
-From: "J. Bakshi" <joydeep@infoservices.in>
-Subject: iptree question
-Date: Tue, 08 Sep 2009 11:59:00 +0530
-Message-ID: <4AA5F9AC.8000701@infoservices.in>
+From: Anatoly Muliarski <x86ever@gmail.com>
+Subject: Re: How to view blacklist ip ?
+Date: Tue, 8 Sep 2009 10:48:25 +0300
+Message-ID: <38db14850909080048h781ea05eqaae04dd9b88eb676@mail.gmail.com>
+References: <4AA4A0D4.3080109@infoservices.in>
+	 <4AA4BD7D.3080405@infoservices.in> <4AA4C0E6.9050101@plouf.fr.eu.org>
+	 <4AA4C3B8.7080309@infoservices.in> <4AA4D05E.5050909@infoservices.in>
+	 <4AA4E1AD.4040200@plouf.fr.eu.org> <4AA4FA86.2020601@infoservices.in>
+	 <38db14850909071137l3b70e3ecp7eb4b21fd9bffcf6@mail.gmail.com>
+	 <4AA5DF29.9070008@infoservices.in> <4AA5EB75.5060301@infoservices.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:cc:content-type;
+        bh=97zxdfaQE0NfH19lNCDhfbAZr7Bofv0G+BrhiAEVbEE=;
+        b=R8DmsdacmTZyRk4dDlqhVsWFi0zbjxvCvRlClK1HlS+9luA6Yp6z30RDbtad8TNlsq
+         Rw5UKdJNa5qIl32RHeYuRCA5uN6XXC9QhlMMz4AZ6dbASRjPXABNXalVN4pbRPPlBq+N
+         jhNuh8yrLVI/H+3QFgR4EdlaD5hi70MCvqxjs=
+In-Reply-To: <4AA5EB75.5060301@infoservices.in>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: "J. Bakshi" <joydeep@infoservices.in>
+Cc: netfilter@vger.kernel.org
 
-Hello list,
+An example is quite simple:
 
-I am opening this new thread as I am working in a new direction with
-ipset ( as many of you suggested ).
+# Create iptree set to lock bad guys for 5 minutes
+ipset -N BAD_GUYS iptree --timeout 300
+# to add a bad guy( classified by source ip ) into the set
+iptables -A SOMEWHERE <your_conditions> -j SET --add-set BAD_GUYS src
+# to manually delete a bad guy( classified by source ip ) from the set
+iptables -A SOMEWHERE <your_conditions> -j SET --del-set BAD_GUYS src
+# to view the list content
+ipset -L BAD_GUYS
+# to check ip in the list
+ipset -T BAD_GUYS <ip>
+OR
+iptables -A SOMEWHERE -m set --set BAD_GUYS src
 
-The present rules I am using to auto blacklist ips is like below
+If you do not need a timeout you may use iphash set type or ipmap for
+/16 network.
 
-````````````````````````````
-iptables -N syn-flood
-iptables -A INPUT -i $IFACE -p tcp --syn -j syn-flood
-iptables -A syn-flood -p tcp --syn  -m hashlimit \
---hashlimit 4/sec --hashlimit-burst 4 --hashlimit-htable-expire 300000 \
---hashlimit-mode srcip --hashlimit-name testlimit -j RETURN
-
-# Drop bad IP and put then in blacklist
-iptables -A syn-flood -m recent --name blacklist --set -j DROP
-`````````````````````````````````
-
-To manage the ips properly I like to save ips  in iptree which is an
-option from ipset. Is there any way to migrate the ips from ipt_recent
-to iptree ?
-
-Or a new way as below  ?
-
-```````````````````
-ipset --create  blacklistIP   iptree --timeout 3600
-
-iptables   -A PREROUTING    blacklistIP   -j DROP
-
-
-iptables -N syn-flood
-iptables -A INPUT -i $IFACE -p tcp --syn -j syn-flood
-iptables -A syn-flood -p tcp --syn  -m hashlimit \
---hashlimit 4/sec --hashlimit-burst 4 --hashlimit-htable-expire 300000 \
---hashlimit-mode srcip --hashlimit-name testlimit -j RETURN
-
-# Drop bad IP
-iptables  -A  syn-flood  -j DROP
-
-# save the src IP
-ipset -N blacklistIP -j SET --add-set src
-ipset -N blacklistIP -j syn-flood
-``````````````````````
-
-Am I on the right way ?
-
-
+-- 
+Best regards
+Anatoly Muliarski
