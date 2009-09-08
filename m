@@ -1,88 +1,34 @@
-From: Jason Frisvold <xenophage0@gmail.com>
-Subject: Re: ulogd compile problems
-Date: Tue, 08 Sep 2009 17:13:55 -0400
-Message-ID: <4AA6C913.504@gmail.com>
-References: <4F548017-89C1-42AE-87F1-68F92C62A8D4@gmail.com> <22C0D408-B9FD-4B04-9CD8-E077E45C7F3A@gmail.com> <4AA68560.1080006@unipex.it>
+From: Nicholas Couchman <nick.couchman@yahoo.com>
+Subject: Re: Windows/NetBIOS & SNAT
+Date: Tue, 8 Sep 2009 16:50:02 -0700 (PDT)
+Message-ID: <185948.38077.qm@web33403.mail.mud.yahoo.com>
+References: <651562.95010.qm@web33406.mail.mud.yahoo.com> <4AA62E6A.4030501@chello.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4AA68560.1080006@unipex.it>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1252453803; bh=B3NqMwwSqEUYP2uK6rk6p4kF6YyT34WzYu15Tx6Pvuw=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:References:Date:From:Subject:To:In-Reply-To:MIME-Version:Content-Type; b=MogMXykzGTtQKR1lQZyG8IBuAfpEnFBLLLq8JvY6SkxJ64qtxOIm5yOIb7Ds9Oxkr3lMMXrbKopWP6XoaNYxD1uCH4H8KBiPppGZhWsUepg7owKrK2fVOmqs9XV/ss46weEtY2bOUNiJjV1TvI7gxvqn06ehjS7Cqn0W0xTjUco=
+In-Reply-To: <4AA62E6A.4030501@chello.at>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Michele Petrazzo - Unipex <michele.petrazzo@unipex.it>
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 09/08/2009 12:25 PM, Michele Petrazzo - Unipex wrote:
-> I think that it's the right one, but the developers can be busy sometime...
-
-Understood.  I didn't see any comments on it, so I figured I'd ask.
-
-> However, "ld: bad -rpath option " can be only a linker option so trying
-> to googleing a bit, I found this: http://tinyurl.com/nqewau
-
-> Modify the Makefile with that options and, if it work, try to submit a
-> patch to the devels.
-
-I did modify the makefile and change the -rdynamic flag to -rpath.  I
-compiled and it seems to run now, though I need to test more.
-
-I'm a bit confused, though, because mysql_config defined -rdynamic,
-which I'm inclined to believe.
-
-Also, configure seems to be "broken" when it comes to mysql anyway
-because of this :
-
-checking for mysql_real_escape_string support... strings: invalid option
--- r
-Usage: strings [option(s)] [file(s)]
- Display printable strings in [file(s)] (stdin by default)
- The options are:
-  -a - --all                Scan the entire file, not just the data section
-  -f --print-file-name      Print the name of the file before each string
-  -n --bytes=[number]       Locate & print any NUL-terminated sequence of at
-  -<number>                 least [number] characters (default 4).
-  -t --radix={o,d,x}        Print the location of the string in base 8,
-10 or 16
-  -o                        An alias for --radix=o
-  -T --target=<BFDNAME>     Specify the binary file format
-  -e --encoding={s,S,b,l,B,L} Select character size and endianness:
-                            s = 7-bit, S = 8-bit, {b,l} = 16-bit, {B,L}
-= 32-bit
-  @<file>                   Read options from <file>
-  -h --help                 Display this information
-  -v --version              Print the program's version number
-strings: supported targets: elf32-i386 a.out-i386-linux efi-app-ia32
-elf32-little elf32-big srec symbolsrec tekhex binary ihex trad-core
+> Hello,
 
 
-The source of this problem is line 1750 of configure :
+> I'm just guessing, but as you do source nat, the wins server will only see requests from the nat source and will only reply to that address - trying to assign a netbios name to 192.168.100.100. I 
+> don't know about nf_conntrack_netbios_ns, but maybe you would need something like nf_conntrack_nat_netbios_ns, which I don't know if it exists.
+> But, do you really need the nat? Why not add the proper routes for the networks? There nf_conntrack_netbios_ns may do it's job within a simple filtering ruleset.
 
-   MYSQL_FUNCTION_TEST=`strings ${MYSQLLIBS}/libmysqlclient.so | grep
-mysql_real_escape_string`
+> Regards,
 
-This would work, if MYSQLLIBS wasn't defined above as :
+> Mart
 
-MYSQLLIBS=`$d/mysql_config --libs`
+Well, I think I've found part of the problem.  The nf_conntrack_netbios_ns module only operates on port 137, not on port 138.  I don't know exactly what the difference is, but it seems that all my WINS queries are attempting to go across on port 138.  So, this explains why loading the nf_conntrack_netbios_ns module was not helping.  I've now taken to trying to write a conntrack module that will cover port 138, but this isn't so simple a task as I had first imagined.  Upon loading my newly written module, I start to see packets show up in the conntrack table, but no replies are ever registered.  Weird, but I'll keep working.
 
-I'm not sure why they would try to use MYSQLLIBS as a path in the
-function test as mysql_config --libs returns something similar to this:
+As far as the nf_conntrack_nat_netbios_ns module goes, no, it doesn't exist in the kernel, but I don't see any nf_conntrack_nat* modules their, either, so I'm thinking that the standard nf_conntrack modules are supposed to cover NAT in addition to standard routing.
 
-[user@example ulogd-1.24]$ /usr/bin/mysql_config --libs
--rdynamic -L/usr/lib/mysql -lmysqlclient -lz -lcrypt -lnsl -lm
+The reason I'm resisting creating another subnet with proper routes is because there are only 6 machines on this subnet.  Sure I would save myself some time - it'd be done by now - but it' be nice to get this working, both to save myself another route/subnet and for future endeavors.
 
-And there's that pesky -rdynamic, too.  I wonder, perhaps, if it should
-be -Bdynamic instead.. that would make more sense to me..
+-Nick
 
-Actually, the -rdynamic is ok for GCC, but not LD ...  So perhaps the
-Makefile is wrong?  Or outdated?
-
-> Michele
-
--- 
----------------------------
-Jason Frisvold
-xenophage0@gmail.com
----------------------------
-"I love deadlines. I like the whooshing sound they make as they fly by."
-   - Douglas Adams
