@@ -1,55 +1,59 @@
 From: "J. Bakshi" <joydeep@infoservices.in>
-Subject: Re: How to view blacklist ip ?
-Date: Tue, 08 Sep 2009 10:58:21 +0530
-Message-ID: <4AA5EB75.5060301@infoservices.in>
-References: <4AA4A0D4.3080109@infoservices.in>	 <4AA4B741.7010209@plouf.fr.eu.org> <4AA4B9B3.6020409@infoservices.in>	 <4AA4BD7D.3080405@infoservices.in> <4AA4C0E6.9050101@plouf.fr.eu.org>	 <4AA4C3B8.7080309@infoservices.in> <4AA4D05E.5050909@infoservices.in>	 <4AA4E1AD.4040200@plouf.fr.eu.org> <4AA4FA86.2020601@infoservices.in> <38db14850909071137l3b70e3ecp7eb4b21fd9bffcf6@mail.gmail.com> <4AA5DF29.9070008@infoservices.in>
+Subject: iptree question
+Date: Tue, 08 Sep 2009 11:59:00 +0530
+Message-ID: <4AA5F9AC.8000701@infoservices.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4AA5DF29.9070008@infoservices.in>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Anatoly Muliarski <x86ever@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-J. Bakshi wrote:
-> Anatoly Muliarski wrote:
->   
->> 2009/9/7 J. Bakshi <joydeep@infoservices.in>:
->>   
->>     
->>> Could anyone suggest me how to get time in jiffies ? Tried with "date
->>> +%s" but it is not the jiffie value. Any clue please ?
->>>     
->>>       
->> You may use the first field in /proc/uptime - that gives you uptime in seconds.
->>
->> IMHO, the recent module should be used for filtering purpose only not
->> for managing black lists.
->> The right way is ipset :)
->> And it does not require you to recompile your kernel - you may install
->> it as a module.
->> And yes, to use it you should recompile iptables if it does not
->> support it by default.
->>
->>   
->>     
->
-> Hello Anatoly,
->
-> Thanks for your enlightenment.  I have to check if iptables supports
-> ipset by default in suse and debian. BTW any good tutorial to start with
-> ipset ?
->
-> regards
->   
+Hello list,
 
-Hello,
+I am opening this new thread as I am working in a new direction with
+ipset ( as many of you suggested ).
 
-find iptree of ipset.  seems it can do the job.   iptree can store ip
-addresses with a timeout value.  So the next thing is to migrate the
-blacklisted ip from ipt_recent module to the iptree of ipset. I hope I
-am on te right track. need some guidance from you list.
+The present rules I am using to auto blacklist ips is like below
 
-regards.
+````````````````````````````
+iptables -N syn-flood
+iptables -A INPUT -i $IFACE -p tcp --syn -j syn-flood
+iptables -A syn-flood -p tcp --syn  -m hashlimit \
+--hashlimit 4/sec --hashlimit-burst 4 --hashlimit-htable-expire 300000 \
+--hashlimit-mode srcip --hashlimit-name testlimit -j RETURN
+
+# Drop bad IP and put then in blacklist
+iptables -A syn-flood -m recent --name blacklist --set -j DROP
+`````````````````````````````````
+
+To manage the ips properly I like to save ips  in iptree which is an
+option from ipset. Is there any way to migrate the ips from ipt_recent
+to iptree ?
+
+Or a new way as below  ?
+
+```````````````````
+ipset --create  blacklistIP   iptree --timeout 3600
+
+iptables   -A PREROUTING    blacklistIP   -j DROP
+
+
+iptables -N syn-flood
+iptables -A INPUT -i $IFACE -p tcp --syn -j syn-flood
+iptables -A syn-flood -p tcp --syn  -m hashlimit \
+--hashlimit 4/sec --hashlimit-burst 4 --hashlimit-htable-expire 300000 \
+--hashlimit-mode srcip --hashlimit-name testlimit -j RETURN
+
+# Drop bad IP
+iptables  -A  syn-flood  -j DROP
+
+# save the src IP
+ipset -N blacklistIP -j SET --add-set src
+ipset -N blacklistIP -j syn-flood
+``````````````````````
+
+Am I on the right way ?
+
+
