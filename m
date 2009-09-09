@@ -1,34 +1,21 @@
 From: Nicholas Couchman <nick.couchman@yahoo.com>
 Subject: Re: Windows/NetBIOS & SNAT
-Date: Tue, 8 Sep 2009 16:50:02 -0700 (PDT)
-Message-ID: <185948.38077.qm@web33403.mail.mud.yahoo.com>
-References: <651562.95010.qm@web33406.mail.mud.yahoo.com> <4AA62E6A.4030501@chello.at>
+Date: Tue, 8 Sep 2009 17:54:42 -0700 (PDT)
+Message-ID: <235149.15070.qm@web33406.mail.mud.yahoo.com>
+References: <651562.95010.qm@web33406.mail.mud.yahoo.com> <8ed551510909061501v5a2812d0sd46efd3a5ec07904@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1252453803; bh=B3NqMwwSqEUYP2uK6rk6p4kF6YyT34WzYu15Tx6Pvuw=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:References:Date:From:Subject:To:In-Reply-To:MIME-Version:Content-Type; b=MogMXykzGTtQKR1lQZyG8IBuAfpEnFBLLLq8JvY6SkxJ64qtxOIm5yOIb7Ds9Oxkr3lMMXrbKopWP6XoaNYxD1uCH4H8KBiPppGZhWsUepg7owKrK2fVOmqs9XV/ss46weEtY2bOUNiJjV1TvI7gxvqn06ehjS7Cqn0W0xTjUco=
-In-Reply-To: <4AA62E6A.4030501@chello.at>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1252457682; bh=Kj+gEEX1WQeLd1LmnE6+oMdn2lohwwJLvFBlJVUHhDU=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:References:Date:From:Subject:To:In-Reply-To:MIME-Version:Content-Type; b=BkYrEpIpjIb+n6EImicXBGrfX/W9U7skYKKMyn7AQkL+tovt8cE5qpWQmnfb+Sig+CD8SinS6Z/K48tboZk6LvpFPeVj29+T4wh8psZ0gJATF53rAH/smj+6GRLSPwe3Xuucqjlu84rEF6ewR8KSeBU1a0x6bLVVRtpiKjrQNx4=
+In-Reply-To: <8ed551510909061501v5a2812d0sd46efd3a5ec07904@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Gerardo Fernandez <gfhgfh@gmail.com>, netfilter@vger.kernel.org
 
-> Hello,
-
-
-> I'm just guessing, but as you do source nat, the wins server will only see requests from the nat source and will only reply to that address - trying to assign a netbios name to 192.168.100.100. I 
-> don't know about nf_conntrack_netbios_ns, but maybe you would need something like nf_conntrack_nat_netbios_ns, which I don't know if it exists.
-> But, do you really need the nat? Why not add the proper routes for the networks? There nf_conntrack_netbios_ns may do it's job within a simple filtering ruleset.
-
-> Regards,
-
-> Mart
-
-Well, I think I've found part of the problem.  The nf_conntrack_netbios_ns module only operates on port 137, not on port 138.  I don't know exactly what the difference is, but it seems that all my WINS queries are attempting to go across on port 138.  So, this explains why loading the nf_conntrack_netbios_ns module was not helping.  I've now taken to trying to write a conntrack module that will cover port 138, but this isn't so simple a task as I had first imagined.  Upon loading my newly written module, I start to see packets show up in the conntrack table, but no replies are ever registered.  Weird, but I'll keep working.
-
-As far as the nf_conntrack_nat_netbios_ns module goes, no, it doesn't exist in the kernel, but I don't see any nf_conntrack_nat* modules their, either, so I'm thinking that the standard nf_conntrack modules are supposed to cover NAT in addition to standard routing.
-
-The reason I'm resisting creating another subnet with proper routes is because there are only 6 machines on this subnet.  Sure I would save myself some time - it'd be done by now - but it' be nice to get this working, both to save myself another route/subnet and for future endeavors.
+-Sigh- Well, Microsoft has done it, again.  I think I've finally located the problem, and the solution is going to be a bit more difficult - maybe impossible - for SNAT to handle (I think).  I was doing some packet sniffing and noticed that I was not getting any attempts to reply to messages sent on port 138 for my machines by my NAT router.  I started looking into the packets, and, guess what?  On NetBIOS datagram packets (port 138), Microsoft has decided to embed the IP address of the original requesting machine in the packet, rather than just using the information already on the IP header.  I'm guessing they did this to try to make an already unsecure protocol a bit more secure, but it is defeating the SNAT'ing I'm trying to do on my network.  In looking at the packet in Wireshark, the 
+ "NetBIOS Datagram Service" portion of the packet has Source IP and Source Port fields.  So, in addition to standard NAT'ing, I'm going to have to "mangle" these fields
+ in the packet, too.  I'm not even sure that's possible, even in a connection tracking helper module - any hints would be greatly appreciated.
 
 -Nick
 
