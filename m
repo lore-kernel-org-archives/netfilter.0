@@ -1,7 +1,7 @@
 From: "J. Bakshi" <joydeep@infoservices.in>
-Subject: kernel compilation issue
-Date: Thu, 10 Sep 2009 10:25:43 +0530
-Message-ID: <4AA886CF.9030508@infoservices.in>
+Subject: how to get ipset in remote suse 11 box ?
+Date: Thu, 10 Sep 2009 10:28:42 +0530
+Message-ID: <4AA88782.8030709@infoservices.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -12,7 +12,10 @@ To: netfilter@vger.kernel.org
 
 Hello list,
 
-What  are the options which one should enable during kernel compilation
-to provide best support to iptables and ipset ? I have compiled latest
-2.6.30 kernel but I have seen that ipt_recent module is not working here
-at all.
+ipset is not included in the repo of a suse 11 box which is located at a
+remote place. How to get ipset in that box ? I have tried to install
+.rpm and it displayed huge library dependency problem ? Is compilation
+the only alternative then ?
+
+Thanks
+
