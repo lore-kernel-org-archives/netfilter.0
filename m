@@ -1,130 +1,56 @@
-From: Jacob Svensson <me@jacobsvensson.se>
-Subject: Iptables-restore removing the wrong rules?
-Date: Fri, 11 Sep 2009 15:44:10 +0200
-Message-ID: <9e00edfe0909110644w3766019fn698aa61c7047271@mail.gmail.com>
+From: Julien Vehent <julien@linuxwall.info>
+Subject: SFQ hash question
+Date: Fri, 11 Sep 2009 15:50:45 +0200
+Message-ID: <0322d4853c39162f0819db9263a210ed@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@vger.kernel.org>
 
-Hello,
+Hi there,
 
-I'm having some troubles with a set of iptable rules. When setting the
-sequence with iptables everything is fine, but if I'm using
-iptables-restore, the wrong rules get removed at a certain point.
-This is the smallest subset of rules that i have been able to find
-that reproduce the problem.
-As you can see, when trying to remove the rules ending with 60007, the
-60009 are removed.
+Since LARTC is down, I believe the best place to ask traffic control
+questions is here.
+I hope you guys won't mind...
 
-Is this a bug, or do I miss use iptables-restore?
+I was reading the code of SFQ, and since I'm no C expert I don't
+understand exactly on what the hash is computed:
 
--------------------------
 
-user@user-laptop:~$ sudo iptables -t nat -L -n
-Chain PREROUTING (policy ACCEPT)
-target=A0=A0=A0=A0 prot opt source=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0 destination
+-------
+static unsigned sfq_hash(struct sfq_sched_data *q, struct sk_buff *skb)
+{
+	u32 h, h2;
 
-Chain POSTROUTING (policy ACCEPT)
-target=A0=A0=A0=A0 prot opt source=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0 destination
-test_POSTROUTING=A0 all=A0 --=A0 0.0.0.0/0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0 0.0.0.0/0
+	switch (skb->protocol) {
+	case htons(ETH_P_IP):
+	{
+		const struct iphdr *iph = ip_hdr(skb);
+		h = iph->daddr;
+		h2 = iph->saddr ^ iph->protocol;
+		if (!(iph->frag_off&htons(IP_MF|IP_OFFSET)) &&
+		    (iph->protocol == IPPROTO_TCP ||
+		     iph->protocol == IPPROTO_UDP ||
+		     iph->protocol == IPPROTO_UDPLITE ||
+		     iph->protocol == IPPROTO_SCTP ||
+		     iph->protocol == IPPROTO_DCCP ||
+		     iph->protocol == IPPROTO_ESP))
+			h2 ^= *(((u32*)iph) + iph->ihl);
+		break;
+	}
+------
 
-Chain OUTPUT (policy ACCEPT)
-target=A0=A0=A0=A0 prot opt source=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0 destination
-test_OUTPUT=A0 all=A0 --=A0 0.0.0.0/0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =
-0.0.0.0/0
+OK for "h" and h2" before the "if", but what does this "if
+(!(iph->frag_off&htons(IP_MF|IP_OFFSET))" really does?
 
-Chain test_OUTPUT (1 references)
-target=A0=A0=A0=A0 prot opt source=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0 destination
+And, also, I'm not sure about this: "h2 ^= *(((u32*)iph) + iph->ihl);"
 
-Chain test_POSTROUTING (1 references)
-target=A0=A0=A0=A0 prot opt source=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0 destination
-user@user-laptop:~$ sudo iptables-restore -n
-*nat
--F
-COMMIT
-*mangle
--F
-COMMIT
-*nat
--X
-COMMIT
-*mangle
--X
-COMMIT
-*nat
--N test_POSTROUTING
--I POSTROUTING -j test_POSTROUTING
--N test_OUTPUT
--I OUTPUT -j test_OUTPUT
-COMMIT
-*mangle
--N test_POSTROUTING
--I POSTROUTING -j test_POSTROUTING
-COMMIT
-*nat
--I test_POSTROUTING -p udp -s 192.168.1.5 --sport 50001 -d 192.168.1.5
---dport 40001 -j SNAT --to 192.168.1.1:60007
--I test_POSTROUTING -p udp -s 192.168.1.5 --sport 40001 -d 192.168.1.5
---dport 50001 -j SNAT --to 10.76.50.70:60007
-COMMIT
-*mangle
--I test_POSTROUTING -p udp -s 192.168.1.5 --sport 40000 -d 192.168.1.5
---dport 50000 -j DSCP --set-dscp 46
-COMMIT
-*nat
--I test_POSTROUTING -p udp -s 192.168.1.5 --sport 50001 -d 192.168.1.5
---dport 40001 -j SNAT --to 192.168.1.1:60009
--I test_POSTROUTING -p udp -s 192.168.1.5 --sport 40001 -d 192.168.1.5
---dport 50001 -j SNAT --to 10.76.50.70:60009
-COMMIT
-*nat
--D test_POSTROUTING -p udp -s 192.168.1.5 --sport 50001 -d 192.168.1.5
---dport 40001 -j SNAT --to 192.168.1.1:60007
--D test_POSTROUTING -p udp -s 192.168.1.5 --sport 40001 -d 192.168.1.5
---dport 50001 -j SNAT --to 10.76.50.70:60007
-COMMIT
-user@user-laptop:~$ sudo iptables -t nat -L -n
-Chain PREROUTING (policy ACCEPT)
-target=A0=A0=A0=A0 prot opt source=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0 destination
+Does it XOR h2 with the first 32 bits of the L4 protocol header ?
 
-Chain POSTROUTING (policy ACCEPT)
-target=A0=A0=A0=A0 prot opt source=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0 destination
-test_POSTROUTING=A0 all=A0 --=A0 0.0.0.0/0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0 0.0.0.0/0
 
-Chain OUTPUT (policy ACCEPT)
-target=A0=A0=A0=A0 prot opt source=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0 destination
-test_OUTPUT=A0 all=A0 --=A0 0.0.0.0/0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =
-0.0.0.0/0
+Thanks,
+Julien
 
-Chain test_OUTPUT (1 references)
-target=A0=A0=A0=A0 prot opt source=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0 destination
-
-Chain test_POSTROUTING (1 references)
-target=A0=A0=A0=A0 prot opt source=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0 destination
-SNAT=A0=A0=A0=A0=A0=A0 udp=A0 --=A0 192.168.1.5=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0 192.168.1.5=A0=A0=A0=A0=A0=A0=A0=A0 udp
-spt:40001 dpt:50001 to:10.76.50.70:60007
-SNAT=A0=A0=A0=A0=A0=A0 udp=A0 --=A0 192.168.1.5=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0 192.168.1.5=A0=A0=A0=A0=A0=A0=A0=A0 udp
-spt:50001 dpt:40001 to:192.168.1.1:60007
-
-----------------------------------
-
-Best Regards
-Jacob Svensson
