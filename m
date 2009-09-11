@@ -1,39 +1,24 @@
-From: Julien Vehent <julien@linuxwall.info>
-Subject: Re: SFQ hash question
-Date: Fri, 11 Sep 2009 17:53:24 +0200
-Message-ID: <ae7bd0d6efc754477dbee35dedeaf6db@localhost>
-References: <0322d4853c39162f0819db9263a210ed@localhost> <4AAA68F6.6020804@ziu.info> <2643b2d5a75307da3d00e97e0245bcf9@localhost> <4AAA70A4.8030707@ziu.info>
+From: Diogo Sperb Schneider <diogo@kildare.ind.br>
+Subject: Re: Routing HTTP Through Another Link
+Date: Fri, 11 Sep 2009 15:19:50 -0300
+Message-ID: <3b71447d0909111119s73f379f0s8f397f6849e9aad7@mail.gmail.com>
+References: <3b71447d0909110730k71e340e2uec06d35c842fd73d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4AAA70A4.8030707@ziu.info>
+In-Reply-To: <3b71447d0909110730k71e340e2uec06d35c842fd73d@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Fri, 11 Sep 2009 17:45:40 +0200, Michal Soltys <soltys@ziu.info> wrote:
-> Julien Vehent wrote:
->> Hey Michal,
->> 
->> 
->> OK, so I believe the man page I read was not up to date.
->> 
->> http://linux.die.net/man/8/tc-sfq
->> 
->> As it been updated? Where can I find the last version?
->> 
-> 
-> A lot of man pages from iproute2 is not updated or documentation doesn't
+Well, I ended up separating link usage between servers and
+workstations, rather than by service.
 
-> exist in the first place (u32, sfq, flow, hfsc, and many more) :)
-> 
-> Commandline help is usually more up to date.
+A few magic words did the trick for me:
 
-You are giving me lots of homework for the week end :)
+ip route add default via $WAN_IP_ADDR dev eth1 table WAN
+ip route add default via $ADSL_IP_ADDR dev eth2 table ADSL
+ip rule add from $SERVER_NETWORK table WAN
 
-One theoritical question: imagine I would like to give a hand on the man
-pages, who should I contact?
-
-
-
+Thanks anyway!
