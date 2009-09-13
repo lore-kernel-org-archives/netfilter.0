@@ -1,48 +1,71 @@
-From: Michal Soltys <soltys@ziu.info>
-Subject: Re: SFQ hash question
-Date: Sun, 13 Sep 2009 00:12:09 +0200
-Message-ID: <4AAC1CB9.40806@ziu.info>
-References: <0322d4853c39162f0819db9263a210ed@localhost> <4AAA68F6.6020804@ziu.info> <2643b2d5a75307da3d00e97e0245bcf9@localhost> <4AAA70A4.8030707@ziu.info> <ae7bd0d6efc754477dbee35dedeaf6db@localhost>
+From: david@lang.hm
+Subject: need to send packet out when I have the destination ip address as
+ a clusterIP
+Date: Sat, 12 Sep 2009 22:08:47 -0700 (PDT)
+Message-ID: <alpine.DEB.2.00.0909122158320.1361@asgard.lang.hm>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <ae7bd0d6efc754477dbee35dedeaf6db@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Julien Vehent <julien@linuxwall.info>
-Cc: netfilter <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; format="flowed"; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Julien Vehent wrote:
-> 
-> One theoritical question: imagine I would like to give a hand on the man
-> pages, who should I contact?
-> 
+I am using the clusterip target to have several sets of machines all 
+receive copies of syslog messages. to do this I have defined one VIP and 
+MAC combination and have it defined on multiple machines.
 
-Well, the maintainer of respective utility/ies + proper devel mailing list. 
-Note, that tc, ip, ss - things related to iproute2 in general - belong to netdev, 
-not netfilter-devel. Similary user questions about iproute2 -> net, not netfilter. 
-AFAIK. Don't remove CC entries either.
+this is working perfectly for log messages comeing from other machines.
 
+but I have a need for the machines that have the clusterIP defined on them 
+to send messages out over the wire so that they are received by other 
+machines that have the same clusterIP defined.
 
-As for docs in general, be sure to peek over:
+what appears to be happening is that the IP stack is detecting that the 
+address is local and just delivering it locally instead of putting it on 
+the wire to be dealt with properly
 
+is there a way to force this type of traffic to go out over the wire?
 
-http://www.linuxfoundation.org/en/Net
-http://ace-host.stuart.id.au/russell/files/tc/doc/
-http://b42.cz/notes/u32_classifier/
-http://www.stearns.org/doc/iptables-u32.v0.1.7.html (note that negative offsets don't work though)
-http://jengelh.medozas.de/images/nf-packet-flow.png
-http://marc.info/?l=lartc&m=117569441229800&w=2 (basic matches)
-http://marc.info/?l=linux-netdev&m=120180241422360&w=2 (external hashing, for sfq mainly)
-doc subdirectory of iproute2
-Documentation[/networking] subdirectory of kernel tree
-book: "Understanding Linux Network Internals"
-http://www.policyrouting.org/PolicyRoutingBook/ONLINE/TOC.html
-http://www.cs.cmu.edu/~istoica/hfsc-tr.ps.gz
-  ( depending on gs version, you might need: sed "s|\[FontBBox\]|/FontBBox load |" )
-http://www.sonycsl.co.jp/~kjc/software/TIPS.txt (*BSD oriented, still interesting tidbits)
+some config info to give a concrete example
 
 
-Some of the above will feel pretty heavy.
+VIP 1.1.1.1 MAC 01:02:03:04:05:06
+
+system 1
+real IP 1.1.1.2
+clusterIP local-node 1 total-nodes 1
+
+system 2
+real IP 1.1.1.3
+clusterIP local-node 1 total-nodes 2
+
+system 3
+real IP 1.1.1.4
+clusterIP local-node 2 total-nodes 2
+
+system 4 (syslog relay)
+real IP 1.1.1.5
+
+
+when system 4 sends UDP syslog messages
+   system 1 sees and records all of them
+   system 2 sees and records approximatly half of them
+   system 3 sees and records approximatly half of them
+
+so far so good
+
+however is systems 1-3 send a syslog message, the local machine sees it 
+and neither of the other two systems see it.
+
+what I would like to see happen is a packet get out on the wire with a 
+source IP of the local box's real IP and a destination of 1.1.1.1 that 
+then gets received and processed as like the packets sent from system 4.
+
+how can I make this happen?
+
+David Lang
+
+P.S. I already have things configured so that the systems don't both send 
+and receive the same message so there's no potential of a message loop.
 
