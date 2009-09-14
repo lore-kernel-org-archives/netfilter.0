@@ -1,82 +1,97 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Blocking DHCP with ebtables
-Date: Sun, 13 Sep 2009 21:52:00 +0200
-Message-ID: <4AAD4D60.6000401@plouf.fr.eu.org>
-References: <4AAC026A.9000208@softhome.net>
+From: Patrick McHardy <kaber@trash.net>
+Subject: : Release of iptables-1.4.5
+Date: Mon, 14 Sep 2009 19:05:11 +0200
+Message-ID: <4AAE77C7.200@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4AAC026A.9000208@softhome.net>
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: multipart/mixed; boundary="------------000005020408020500020003"
+Return-path: <netfilter-announce-bounces@lists.netfilter.org>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-announce>,
+	<mailto:netfilter-announce-request@lists.netfilter.org?subject=unsubscribe>
+List-Archive: <http://lists.netfilter.org/pipermail/netfilter-announce>
+List-Post: <mailto:netfilter-announce@lists.netfilter.org>
+List-Help: <mailto:netfilter-announce-request@lists.netfilter.org?subject=help>
+List-Subscribe: <https://lists.netfilter.org/mailman/listinfo/netfilter-announce>,
+	<mailto:netfilter-announce-request@lists.netfilter.org?subject=subscribe>
+Sender: netfilter-announce-bounces@lists.netfilter.org
+Errors-To: netfilter-announce-bounces@lists.netfilter.org
+To: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, Linux Netdev List <netdev@vger.kernel.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, netfilter
 
-Hello,
+This is a multi-part message in MIME format.
+--------------000005020408020500020003
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 7bit
 
-Eddie a =E9crit :
-[...]
-> # Drop everything and build up Input and Output to accept IP and ARP
-> ebtables -P FORWARD DROP
-> ebtables -P INPUT DROP
-> ebtables -P OUTPUT DROP
-> ebtables -A INPUT -p IPv4 -j ACCEPT
-> ebtables -A INPUT -p ARP -j ACCEPT
-> ebtables -A INPUT --log-level info --log-ip --log-prefix EBFW
-> ebtables -A OUTPUT -p IPv4 -j ACCEPT
-> ebtables -A OUTPUT -p ARP -j ACCEPT
-> ebtables -A OUTPUT --log-level info --log-ip --log-arp --log-prefix E=
-BFW=20
-> -j DROP
+The netfilter coreteam presents:
 
-Why log IP and ARP info after accepting IP and ARP packets ? Obviously,
-only non-(IP or ARP) packets would reach the log rules, so there is no
-IP or ARP information to log.
+    iptables version 1.4.5
 
-> #drop DHCP broadcast
-> ebtables -A FORWARD -d ff:ff:ff:ff:ff:ff/ff:ff:ff:ff:ff:ff -p IPv4=20
-> --ip-prot udp --ip-dport 67:68 --log-level info --log-ip --log-prefix=
-=20
-> EBFWbc -j DROP
+the iptables release for the 2.6.31 kernel. Changes include:
 
-What is this rule for ? The second rule below already matches all DHCP
-traffic.
+- support for nfnetlink_queue queue balancing
 
-> ebtables -A FORWARD -p ipv4 --ip-proto tcp --ip-destination-port 67:6=
-8=20
-> --log-level info --log-ip --log-prefix EBFWtcp -j DROP
+- support for revision 2 of the conntrack match, which fixes a
+  regression in state matching
 
-What is this rule for ? DHCP uses only UDP, not TCP.
+- support for multiple IP address specifications with -s/-d
 
-> ebtables -A FORWARD -p ipv4 --ip-proto udp --ip-destination-port 67:6=
-8=20
-> --log-level info --log-ip --log-prefix EBFWudp -j DROP
+- various internal cleanups and improvements
 
-[...]
-> Sep 12 19:05:09 firewall kernel: EBFWbc IN=3Dtap0 OUT=3Deth1 MAC sour=
-ce =3D=20
-> 00:10:dc:e3:2e:64 MAC dest =3D ff:ff:ff:ff:ff:ff proto =3D 0x0800 IP=20
-> SRC=3D192.168.8.22 IP DST=3D255.255.255.255, IP tos=3D0x00, IP proto=3D=
-17 SPT=3D68=20
-> DPT=3D67
-> Sep 12 19:05:09 firewall dhcpd: DHCPINFORM from 192.168.8.22 via br0
-[...]
-> ebtables seems to want to block the packets, but dhcpd gets them anyw=
-ay=20
-> and responds.  Note that on both sides of the connection have dhcpd=20
-> running on br0, on with different ranges. (both eth1 and tap0 are=20
-> bridged to br0)
+- manpage updates
 
-As in iptables, the FORWARD chain sees only bridged packets. Packets
-received by the local host go through the INPUT chain, and
-locally-generated packets go through the OUTPUT table.
+Version 1.4.5 can be obtained from:
 
-The broadcast DHCP request is both bridged through the FORWARD chain an=
-d
-received locally through the INPUT chain. Your ruleset drops only the
-copy in the FORWARD chain, not the one in the INPUT chain which is
-received by the local dhcpd. The locally-generated DHCP reply is sent
-through the OUTPUT chain and is not dropped either.
+http://www.netfilter.org/projects/iptables/downloads.html
+ftp://ftp.netfilter.org/pub/iptables/
+git://git.netfilter.org/iptables.git
 
-Bottom line : you must drop DHCP traffic on the TAP interface in the
-INPUT and OUTPUT chains too. Or drop it on the "main side".
+On behalf of the Netfilter Core Team.
+Happy firewalling!
+
+
+--------------000005020408020500020003
+Content-Type: text/plain;
+ name="changes-iptables-1.4.5.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="changes-iptables-1.4.5.txt"
+
+Florian Westphal (1):
+      libxt_NFQUEUE: add new v1 version with queue-balance option
+
+Jan Engelhardt (18):
+      xt_conntrack: revision 2 for enlarged state_mask member
+      libxt_helper: fix invalid passed option to check_inverse
+      libiptc: split v4 and v6
+      extensions: collapse registration structures
+      iptables: allow for parse-less extensions
+      iptables: allow for help-less extensions
+      extensions: remove empty help and parse functions
+      xtables: add multi-registration functions
+      extensions: collapse data variables to use multi-reg calls
+      xtables: warn of missing version identifier in extensions
+      COMMIT_NOTES: notice to check for soversion bumps
+      build: order of dependent libs is sensitive
+      multi binary: allow subcommand via argv[1]
+      build: fix struct size mismatch
+      build: combine iptables-multi and iptables-static
+      build: build only iptables-multi
+      Merge branch 'stable'
+      manpages: more fixes to minuses, hyphens, dashes
+
+Laurence J. Lane (1):
+      manpage: fix lintian warnings
+
+Michael Granzow (1):
+      iptables: accept multiple IP address specifications for -s, -d
+
+Patrick McHardy (2):
+      man: fix incorrect plural in libipt_set.man
+      Bump version number to 1.4.5
+
+Trent W. Buck (1):
+      ipt_set: fix a typo in the manpage
+
+
+--------------000005020408020500020003--
+
