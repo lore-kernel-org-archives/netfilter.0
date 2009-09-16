@@ -1,114 +1,29 @@
-From: Julien Vehent <julien@linuxwall.info>
-Subject: Re: Process filtering
-Date: Mon, 14 Sep 2009 22:00:31 +0200
-Message-ID: <4AAEA0DF.3080301@linuxwall.info>
-References: <9066fa250909141238o6a81ef53s90b3f79e76ed4a7b@mail.gmail.com>
+From: Lucas Willian Bocchi <challado@ampernet.com.br>
+Subject: Rate Estimator per destination IP
+Date: Wed, 16 Sep 2009 09:08:06 -0300
+Message-ID: <4AB0D526.2020002@ampernet.com.br>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg=sha1; boundary="------------ms010506070502000303070408"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <9066fa250909141238o6a81ef53s90b3f79e76ed4a7b@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Yang Zhang <yanghatespam@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-This is a cryptographically signed message in MIME format.
-
---------------ms010506070502000303070408
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
-
-Hello,
-
-Yang Zhang wrote:
-> Hi, is it possible to filter (local origin/destination) packets on
-> process or application? My understanding is that iptables doesn't do
-> this, but are there any other system facilities in Linux that make
-> this possible? Thanks in advance.
-
-The owner module (xt_owner) matches the owner of the socket
-
-# iptables -m owner --help
-iptables v1.4.4
-[...]
-owner match options:
-[!] --uid-owner userid[-userid]      Match local UID
-[!] --gid-owner groupid[-groupid]    Match local GID
-[!] --socket-exists                  Match if socket exists
+Hi Folks. I need your help again!
 
 
-man iptables for more details ;)
+My question is simple: I can use the rateest module to calculate the 
+rate estimator per destination ip?
+My idea is calculate the IP connection > 128kbit, mark the packet and 
+send it to a TBF to slow down the connections to this IP.
 
---------------ms010506070502000303070408
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
+To exemplify:
+I have a 192.168.0.0/24 network. For EACH HOST, summarizing all active 
+connections, the speed > 128, mark packet.
 
-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
-SAFlAwQBAjAKBggqhkiG9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYF
-Kw4DAgcwDQYIKoZIhvcNAwICASgwgbgGCSsGAQQBgjcQBDGBqjCBpzCBoTELMAkGA1UEBhMC
-RlIxDzANBgNVBAgTBkZyYW5jZTEOMAwGA1UEBxMFUGFyaXMxEjAQBgNVBAoTCUxpbnV4d2Fs
-bDE5MDcGA1UEAxMwTGludXh3YWxsIENlcnRpZmljYXRlIEF1dGhvcml0eSBSb290IENlcnRp
-ZmljYXRlMSIwIAYJKoZIhvcNAQkBFhNyb290QGxpbnV4d2FsbC5pbmZvAgECMIG6BgsqhkiG
-9w0BCRACCzGBqqCBpzCBoTELMAkGA1UEBhMCRlIxDzANBgNVBAgTBkZyYW5jZTEOMAwGA1UE
-BxMFUGFyaXMxEjAQBgNVBAoTCUxpbnV4d2FsbDE5MDcGA1UEAxMwTGludXh3YWxsIENlcnRp
-ZmljYXRlIEF1dGhvcml0eSBSb290IENlcnRpZmljYXRlMSIwIAYJKoZIhvcNAQkBFhNyb290
-QGxpbnV4d2FsbC5pbmZvAgECMA0GCSqGSIb3DQEBAQUABIIBAKUjE/2rV/ffzyBeNdPTP1Yl
-bqB94THLUJwbfYZ+OAbLpKZ/ipBDDbhe7cIeas6iOIlwdmqmAeZsOrdYqJFj97Or9JaAPPpw
-L9WFrk5WRBy1lnswgp5Dj3ZzljIxGA05zYAmhZ7qZKzmqwHPPPA8CQXLZwjDVU55iQ/QoYtG
-yEyYHrookBxeaykQI7FbTKvOR6HIHvVBH34p10e8SMtkPa+STC60iwLhiNBTJtDGvVnSg5Dv
-6mEqcYdZNS16EY9F1OQHxv9sJDs07mWwV2kNxb6P8yJTu1FbQLaqFV7xBbISySJp5qEEbcay
-60ml2fGHVqx6/GprH3W8VfT2YN/USsgAAAAAAAA=
---------------ms010506070502000303070408--
+It's possible? I try to do these with tc filter, without sucess.
+My idea is not create queues for each host. I think that have more 
+elegant solution.
+
 
