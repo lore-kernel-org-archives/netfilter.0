@@ -1,91 +1,58 @@
-From: "Tim Evans" <tkevans@tkevans.com>
-Subject: Odd Results with RHN/RHEL 5.4 yum; iptables doing?
-Date: Wed, 16 Sep 2009 11:08:12 -0400 (EDT)
-Message-ID: <33684.199.173.225.25.1253113692.squirrel@tkevans.com>
+From: =?UTF-8?B?Vmluw61jaXVzIE1hc3N1Y2hldHRv?= <viniciusandre@gmail.com>
+Subject: Sharing ppp connection with wlan interface
+Date: Sun, 20 Sep 2009 18:43:10 -0300
+Message-ID: <4AB6A1EE.1040201@gmail.com>
+Reply-To: viniciusandre@gmail.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from:reply-to
+         :user-agent:mime-version:to:subject:content-type
+         :content-transfer-encoding;
+        bh=hzL3BLMPxy4wQxPgCWVyaE4vQwf1TRASZIOh2i20bNc=;
+        b=KsJ7BuRBg+jKRCwaTojq4m+GZvuRWYl1D5wXOd2Oalubc1Lo8ic1tQl1IF2/kjDMgR
+         6sodFlXYn/sVY6KWr2WbdOUyhtJgWZdrkxw6o3F1DfdgV3h+ce15bCiFcNK+QhpE7KXE
+         U8yzwuCUPHUefWtCix6sNkAOotCQxjEAKBvt8=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="macroman"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Been seeing odd behavior with yum/RHN in my firewall since my 5.4 upgrade
-was done, and wonder if something that would change iptables' behavior has
-happened.  See below.
+Dear all.
 
-[root@www ~]# yum clean all
-Loaded plugins: rhnplugin
-Cleaning up Everything
-[root@www ~]# yum list updates
-Loaded plugins: rhnplugin
-rhel-i386-server-5                                       | 1.3 kB     00:00
-rhel-i386-server-5/primary                               | 2.3 MB     00:11
-rhel-i386-server-5
-6106/6106
-Updated Packages
-net-snmp-libs.i386            1:5.3.2.2-7.el5_4.2
-rhel-i386-server-5
-nspr.i386                     4.7.5-1.el5_4
-rhel-i386-server-5
+I'm on Debian Sid, and I've been trying to serve a=20
+ppp0 internet connection through a wireless=20
+network. I made a small script to be ran when i=20
+want to do that:
 
-OK, so far, but now...
+ifdown wlan0
+iwconfig wlan0 essid "VinaNET" mode Ad-Hoc
+ifconfig wlan0 192.168.0.254
+echo 1 > /proc/sys/net/ipv4/ip_forward
+/etc/init.d/dnsmasq stop
+/etc/init.d/dnsmasq start
+iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
 
-[root@www ~]# yum -y update
-Loaded plugins: rhnplugin
-Setting up Update Process
-Resolving Dependencies
---> Running transaction check
----> Package net-snmp-libs.i386 1:5.3.2.2-7.el5_4.2 set to be updated
----> Package nspr.i386 0:4.7.5-1.el5_4 set to be updated
---> Finished Dependency Resolution
+The script goes just fine and the client computer=20
+can see the wireless network but can't connect, it=20
+only keeps trying:
 
-Dependencies Resolved
+DHCPDISCOVER on ath0 to 255.255.255.255 port 67=20
+interval x
 
-================================================================================
- Package          Arch    Version                   Repository
-Size
-================================================================================
-Updating:
- net-snmp-libs    i386    1:5.3.2.2-7.el5_4.2       rhel-i386-server-5
-1.3 M
- nspr             i386    4.7.5-1.el5_4             rhel-i386-server-5
-119 k
+Here's my dnsmasq.conf file:
 
-Transaction Summary
-================================================================================
-Install      0 Package(s)
-Update       2 Package(s)
-Remove       0 Package(s)
+domain-needed
+bogus-priv
+interface=3Dwlan0
+dhcp-range=3D192.168.0.1,192.169.0.100,12h
 
-Total download size: 1.4 M
-Downloading Packages:
+I'm not quite sure if that's an iptables or a=20
+dnsmasq problem.
 
-
-Error Downloading Packages:
-  1:net-snmp-libs-5.3.2.2-7.el5_4.2.i386: failed to retrieve
-getPackage/net-snmp-libs-5.3.2.2-7.el5_4.2.i386.rpm from
-rhel-i386-server-5
-error was [Errno 12] Timeout: <urlopen error timed out>
-  nspr-4.7.5-1.el5_4.i386: failed to retrieve
-getPackage/nspr-4.7.5-1.el5_4.i386.rpm from rhel-i386-server-5
-error was [Errno 12] Timeout: <urlopen error timed out>
-
-Even so, /var/log/up2date confirms yum's communicating with RHN (and that
-my entitlement's valid):
-
-[Wed Sep 16 10:52:46 2009] up2date updateLoginInfo() login info
-[Wed Sep 16 10:52:46 2009] up2date logging into up2date server
-[Wed Sep 16 10:52:47 2009] up2date successfully retrieved authentication
-token from up2date server
-
-Ideas?  Thanks.
-
--- 
-Tim Evans, TKEvans.com, Inc.    |   5 Chestnut Court
-UNIX System Admin Consulting    |   Owings Mills, MD 21117
-http://www.tkevans.com/         |   443-394-3864
-http://www.come-here.com/News/  |   tkevans@tkevans.com
-
-
-
+Thanks!
+--
+Vin=C3=ADcius Massuchetto
+http://vinicius.soylocoporti.org.br
