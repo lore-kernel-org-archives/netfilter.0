@@ -1,162 +1,58 @@
-From: Thomas Jacob <jacob@internet24.de>
-Subject: Re: IPv6 policy routing not working on Ubuntu 8.04.3
-Date: Mon, 21 Sep 2009 17:12:13 +0200
-Message-ID: <1253545933.3590.17.camel@enterprise.ims-firmen.de>
-References: <4AB783B5.2000802@swartzlander.org>
+From: Alex Bligh <alex@alex.org.uk>
+Subject: netfilter + masquerade, mutliple i/fs sharing an IP
+Date: Tue, 22 Sep 2009 17:23:59 +0100
+Message-ID: <C427FC06DA4331C494D72BCA@Ximines.local>
+Reply-To: Alex Bligh <alex@alex.org.uk>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=sha1; protocol="application/x-pkcs7-signature"; boundary="=-lSpfKdNMarubAIFtlJPn"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4AB783B5.2000802@swartzlander.org>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Ben Swartzlander <ben@swartzlander.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
+Cc: Alex Bligh <alex@alex.org.uk>
 
+Hi,
 
---=-lSpfKdNMarubAIFtlJPn
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+I'm trying to set up masquerading on linux with a somewhat unusual 
+requirement.
+Essentially, I have multiple p2p interfaces (let's call them tun0 .. tun99),
+and want them all to NAPT to eth0's IP address (for outgoing connectivity).
+Now, that's nice and easy if tun0 .. tun99 have distinct IP addresses. For
+reasons we need	not go into, I want to have them all having the same IP
+address, i.e. (for ASCII art fans)
 
-On Mon, 2009-09-21 at 09:46 -0400, Ben Swartzlander wrote:
-> I'm trying to setup some routing policy rules for IPv6 on Ubuntu 8.04.3,=20
-> and it appears to be broken.
->=20
-> root@asura /root
-> % uname -a
-> Linux asura 2.6.24-23-generic #1 SMP Wed Apr 1 21:47:28 UTC 2009 i686=20
-> GNU/Linux
->=20
-> root@asura /root
-> % ip -6 rule list
->=20
-> root@asura /root
-> % ip -6 rule add from fd2e:51e9:65d3::/48 table 17 prio 700
-> RTNETLINK answers: Unknown error 4294967199
->=20
->=20
-> Notice how there are no rules listed when I run "ip -6 rule list", not=20
-> even the normal local/main rules. I have no idea what the unknown error=20
-> is from RTNETLINK. Anyways I have no problem with ip6tables, ipv6=20
-> routing, or ipv4 policy routing on this machine, and ipv6 policy routing=20
-> does work on some of my other machines (with newer kernels). I'm=20
-> wondering if I'm missing some module or if I have bad configuration, or=20
-> is upgrading the kernel my only hope?
+                                          [------------------]
+                          192.168.1.0/24  [   NAPT gateway   ]
+ [ Host A  192.168.1.2] ------------------[ 192.168.1.1      ]
+                                     tun0 [                  ] 1.2.3.0/24
+                                          [          1.2.3.4 ]---->
+                                          [                  ] eth0
+ [ Host B  192.168.1.2] ------------------[ 192.168.1.1      ]
+                                     tun1 [                  ]
+                                          [------------------]
 
-The ipv6 routing stack inside the kernel is a separate
-being that doesn't share much with the ipv4 stack (in those
-kernel versions at least), and still lacks  some of the nicer features
-that the iproute interface pretends exists also for ipv6 (especially in
-old kernel versions). So in general, expect problems if you try to
-use the more exotic features of ip -6/ip6tables.
+Now, I appreciate that duplicating IP addresses is not in general
+a good idea. However, in theory this could work. The complex
+part is that when a packet traverses the NAPT left to right, it
+needs to record both the input i/f, together with the source IP	
+and port. When the reply is translated back, the packet is
+going to be destined for 192.168.1.2, but it must be sent out
+the same interface as the NAPT table shows the packet is received on,
 
-But in your case the problem is simply that the -generic Ubuntu 8.04
-kernels are compiled without CONFIG_IPV6_MULTIPLE_TABLES. You could
-try the -server kernels instead, they might work for this particular
-feature.
+Doing this the standard way (i.e.
+  iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE	
+  iptables -A FORWARD -i tun0 -o eth0 -j ACCEPT
+  iptables -A FORWARD -i tun1 -o eth0 -j ACCEPT
+  )
+only appears to work when either tun0 OR tun1 are up (but not both).
+I suspect this is because on NAPT traversal of the reply packet,
+the kernel looks up a next hop, and uses that next hop to determine
+which interface to use (using first subnet match).
 
+Is there any way around this? For instance can I used multiple
+NAPT tables, one for each inbound i/f?
 
-
---=-lSpfKdNMarubAIFtlJPn
-Content-Type: application/x-pkcs7-signature; name=smime.p7s
-Content-Disposition: attachment; filename=smime.p7s
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIRLTCCBN0w
-ggPFoAMCAQICEHGS++YZX6xNEoV0cTSiGKcwDQYJKoZIhvcNAQEFBQAwezELMAkGA1UEBhMCR0Ix
-GzAZBgNVBAgMEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBwwHU2FsZm9yZDEaMBgGA1UECgwR
-Q29tb2RvIENBIExpbWl0ZWQxITAfBgNVBAMMGEFBQSBDZXJ0aWZpY2F0ZSBTZXJ2aWNlczAeFw0w
-NDAxMDEwMDAwMDBaFw0yODEyMzEyMzU5NTlaMIGuMQswCQYDVQQGEwJVUzELMAkGA1UECBMCVVQx
-FzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNUIE5ldHdvcmsx
-ITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UEAxMtVVROLVVTRVJGaXJz
-dC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
-MIIBCgKCAQEAsjmFpPJ9q0E7YkY3rs3BYHW8OWX5ShpHornMSMxqmNVNNRm5pELlzkniii8efNIx
-B8dOtINknS4p1aJkxIW9hVE1eaROaJB7HHqkkqgX8pgV8pPMyaQylbsMTzC9mKALi+VuG6JG+ni8
-om+rWV6lL8/K2m2qL+usobNqqrcuZzWLeeEeaYji5kbNoKXqvgvOdjp6Dpvq/NonWz1zHyLmSGHG
-TPNpsaguG7bUMSAsvIKKjqQOpdeJQ/wWWq8dcdcRWdq6hw2v+vPhwvCkxWeM1tZUOt4KpLoDd7Nl
-yP0e03RiqhjKaJMeoYV+9Udly/hNVyh00jT/MLbu9mIwFIws6wIDAQABo4IBJzCCASMwHwYDVR0j
-BBgwFoAUoBEKIz6W8Qfs4q8p74Klf9AwpLQwHQYDVR0OBBYEFImCZ33EnSZwAEu0UEh83j2uBG59
-MA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdJQQWMBQGCCsGAQUFBwMCBggr
-BgEFBQcDBDARBgNVHSAECjAIMAYGBFUdIAAwewYDVR0fBHQwcjA4oDagNIYyaHR0cDovL2NybC5j
-b21vZG9jYS5jb20vQUFBQ2VydGlmaWNhdGVTZXJ2aWNlcy5jcmwwNqA0oDKGMGh0dHA6Ly9jcmwu
-Y29tb2RvLm5ldC9BQUFDZXJ0aWZpY2F0ZVNlcnZpY2VzLmNybDARBglghkgBhvhCAQEEBAMCAQYw
-DQYJKoZIhvcNAQEFBQADggEBAJ2Vyzy4fqUJxB6/C8LHdo45PJTGEKpPDMngq4RdiVTgZTvzbRx8
-NywlVF+WIfw3hJGdFdwUT4HPVB1rbEVgxy35l1FM+WbKPKCCjKbI8OLp1Er57D9Wyd12jMOCAU9s
-APMeGmF0BEcDqcZAV5G8ZSLFJ2dPV9tkWtmNH7qGL/QGrpxp7en0zykX2OBKnxogL5dMUbtGB8SK
-N04g4wkxaMeexIud6H4RvDJoEJYRmETYKlFgTYjrdDrfQwYyyDlWjDoRUtNBpEMD9O3vMyfbOeAU
-TibJ2PU54om4k123KSZB6rObroP8d3XK6Mq1/uJlSmM+RMTQw16Hc6mYHK9/FX8wggYiMIIFCqAD
-AgECAhBSb3nPLwYVgYX7faItOKbyMA0GCSqGSIb3DQEBBQUAMIGuMQswCQYDVQQGEwJVUzELMAkG
-A1UECBMCVVQxFzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
-IE5ldHdvcmsxITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UEAxMtVVRO
-LVVTRVJGaXJzdC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsMB4XDTA5MDgyNjAwMDAw
-MFoXDTExMDgyNjIzNTk1OVowggEqMQswCQYDVQQGEwJERTEOMAwGA1UEERMFMDEwNjkxEDAOBgNV
-BAgTB1NhY2hzZW4xEDAOBgNVBAcTB0RyZXNkZW4xGjAYBgNVBAkTEUJheXJpc2NoZSBTdHIuIDE4
-MSgwJgYDVQQKEx9JTVMgSW50ZXJuZXQtTWVkaWEtU2VydmljZSBHbWJIMUUwQwYDVQQLEzxJc3N1
-ZWQgdGhyb3VnaCBJTVMgSW50ZXJuZXQtTWVkaWEtU2VydmljZSBHbWJIIEUtUEtJIE1hbmFnZXIx
-HzAdBgNVBAsTFkNvcnBvcmF0ZSBTZWN1cmUgRW1haWwxFTATBgNVBAMTDFRob21hcyBKYWNvYjEi
-MCAGCSqGSIb3DQEJARYTamFjb2JAaW50ZXJuZXQyNC5kZTCB3zANBgkqhkiG9w0BAQEFAAOBzQAw
-gckCgcEAnBr8Ofv/KgWvnP7jvCXiVcFjhQ/Tl4ZIvoG6Ku9D+ecI9D+9Rqg6nxv3KbyTtRL75Kws
-HYEaIv8NYWQl+nn1VQUZjwq/afE4qsGQEkFu/w3hG8ceOIZt6H2FiLOoF3SeGbhl8K4fSDiLKCBf
-KmJhTwYeg+VBUb0lovOjHHL44qasJSl3DXNaezyl79LJOmWqclrxDNOf6fLw7bXJ0K870qDV0gWZ
-aOKYvnXfNNnNfd6RzhdBNNgUM4MhmiHA7K0zAgMBAAGjggH/MIIB+zAfBgNVHSMEGDAWgBSJgmd9
-xJ0mcABLtFBIfN49rgRufTAdBgNVHQ4EFgQUqH1PlrTv+W5g+fiKAlxT/DO0LaowDgYDVR0PAQH/
-BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMCMEYGA1Ud
-IAQ/MD0wOwYMKwYBBAGyMQECAQMFMCswKQYIKwYBBQUHAgEWHWh0dHBzOi8vc2VjdXJlLmNvbW9k
-by5uZXQvQ1BTMIGlBgNVHR8EgZ0wgZowTKBKoEiGRmh0dHA6Ly9jcmwuY29tb2RvY2EuY29tL1VU
-Ti1VU0VSRmlyc3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRFbWFpbC5jcmwwSqBIoEaGRGh0dHA6
-Ly9jcmwuY29tb2RvLm5ldC9VVE4tVVNFUkZpcnN0LUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kRW1h
-aWwuY3JsMGwGCCsGAQUFBwEBBGAwXjA2BggrBgEFBQcwAoYqaHR0cDovL2NydC5jb21vZG9jYS5j
-b20vVVROQUFBQ2xpZW50Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5j
-b20wHgYDVR0RBBcwFYETamFjb2JAaW50ZXJuZXQyNC5kZTANBgkqhkiG9w0BAQUFAAOCAQEAXAH3
-We4u5Qazu+coCaP0qCQofv8wuGkBprdk24uktrrCSYf2MJIPQefBrOnhTB4Q5+21hoCHkrnJnwdw
-e2HlsSClv4dLmEIqle+KNmG8A40yBQqEndAGjgg1gX368nIIb7gUmDbxHXZTn3rLU5B4TY8ip/ao
-L9BCUPUCQQGQhzbR5qBv+VlQ8Txkpc3eWHHNlvb4Hpyw5xezfAbcgRNkHsbtJX9+04w8bqKSXBPV
-BC/jfXP3Ao03xd8EFBj3Th9mSAldIrExFqBIe4dOLIChVjigZI49lrTlURayawi12JEWJM/sRgrj
-MeARHOiPDiuSwFy5KAMszNM1m1S9ImoTkzCCBiIwggUKoAMCAQICEFJvec8vBhWBhft9oi04pvIw
-DQYJKoZIhvcNAQEFBQAwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2Fs
-dCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMYaHR0
-cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgRW1haWwwHhcNMDkwODI2MDAwMDAwWhcNMTEwODI2MjM1OTU5WjCCASox
-CzAJBgNVBAYTAkRFMQ4wDAYDVQQREwUwMTA2OTEQMA4GA1UECBMHU2FjaHNlbjEQMA4GA1UEBxMH
-RHJlc2RlbjEaMBgGA1UECRMRQmF5cmlzY2hlIFN0ci4gMTgxKDAmBgNVBAoTH0lNUyBJbnRlcm5l
-dC1NZWRpYS1TZXJ2aWNlIEdtYkgxRTBDBgNVBAsTPElzc3VlZCB0aHJvdWdoIElNUyBJbnRlcm5l
-dC1NZWRpYS1TZXJ2aWNlIEdtYkggRS1QS0kgTWFuYWdlcjEfMB0GA1UECxMWQ29ycG9yYXRlIFNl
-Y3VyZSBFbWFpbDEVMBMGA1UEAxMMVGhvbWFzIEphY29iMSIwIAYJKoZIhvcNAQkBFhNqYWNvYkBp
-bnRlcm5ldDI0LmRlMIHfMA0GCSqGSIb3DQEBAQUAA4HNADCByQKBwQCcGvw5+/8qBa+c/uO8JeJV
-wWOFD9OXhki+gboq70P55wj0P71GqDqfG/cpvJO1EvvkrCwdgRoi/w1hZCX6efVVBRmPCr9p8Tiq
-wZASQW7/DeEbxx44hm3ofYWIs6gXdJ4ZuGXwrh9IOIsoIF8qYmFPBh6D5UFRvSWi86Mccvjipqwl
-KXcNc1p7PKXv0sk6ZapyWvEM05/p8vDttcnQrzvSoNXSBZlo4pi+dd802c193pHOF0E02BQzgyGa
-IcDsrTMCAwEAAaOCAf8wggH7MB8GA1UdIwQYMBaAFImCZ33EnSZwAEu0UEh83j2uBG59MB0GA1Ud
-DgQWBBSofU+WtO/5bmD5+IoCXFP8M7QtqjAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAd
-BgNVHSUEFjAUBggrBgEFBQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUw
-KzApBggrBgEFBQcCARYdaHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwgaUGA1UdHwSBnTCB
-mjBMoEqgSIZGaHR0cDovL2NybC5jb21vZG9jYS5jb20vVVROLVVTRVJGaXJzdC1DbGllbnRBdXRo
-ZW50aWNhdGlvbmFuZEVtYWlsLmNybDBKoEigRoZEaHR0cDovL2NybC5jb21vZG8ubmV0L1VUTi1V
-U0VSRmlyc3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRFbWFpbC5jcmwwbAYIKwYBBQUHAQEEYDBe
-MDYGCCsGAQUFBzAChipodHRwOi8vY3J0LmNvbW9kb2NhLmNvbS9VVE5BQUFDbGllbnRDQS5jcnQw
-JAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNqYWNvYkBp
-bnRlcm5ldDI0LmRlMA0GCSqGSIb3DQEBBQUAA4IBAQBcAfdZ7i7lBrO75ygJo/SoJCh+/zC4aQGm
-t2Tbi6S2usJJh/Ywkg9B58Gs6eFMHhDn7bWGgIeSucmfB3B7YeWxIKW/h0uYQiqV74o2YbwDjTIF
-CoSd0AaOCDWBffrycghvuBSYNvEddlOfestTkHhNjyKn9qgv0EJQ9QJBAZCHNtHmoG/5WVDxPGSl
-zd5Ycc2W9vgenLDnF7N8BtyBE2Qexu0lf37TjDxuopJcE9UEL+N9c/cCjTfF3wQUGPdOH2ZICV0i
-sTEWoEh7h04sgKFWOKBkjj2WtOVRFrJrCLXYkRYkz+xGCuMx4BEc6I8OK5LAXLkoAyzM0zWbVL0i
-ahOTMYIDuzCCA7cCAQEwgcMwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMO
-U2FsdCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMY
-aHR0cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBB
-dXRoZW50aWNhdGlvbiBhbmQgRW1haWwCEFJvec8vBhWBhft9oi04pvIwCQYFKw4DAhoFAKCCAg0w
-GAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDkwOTIxMTUxMjEzWjAj
-BgkqhkiG9w0BCQQxFgQU5lYOCcpd45BlNIudwEGHMIDz878wgdQGCSsGAQQBgjcQBDGBxjCBwzCB
-rjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAlVUMRcwFQYDVQQHEw5TYWx0IExha2UgQ2l0eTEeMBwG
-A1UEChMVVGhlIFVTRVJUUlVTVCBOZXR3b3JrMSEwHwYDVQQLExhodHRwOi8vd3d3LnVzZXJ0cnVz
-dC5jb20xNjA0BgNVBAMTLVVUTi1VU0VSRmlyc3QtQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBF
-bWFpbAIQUm95zy8GFYGF+32iLTim8jCB1gYLKoZIhvcNAQkQAgsxgcaggcMwga4xCzAJBgNVBAYT
-AlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2FsdCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBV
-U0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMYaHR0cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYD
-VQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgRW1haWwCEFJvec8v
-BhWBhft9oi04pvIwDQYJKoZIhvcNAQEBBQAEgcAfsVsL/Bx6/HNfwERuckLDcN3zTf9rsGBMqlDL
-37FwhF8TqEWjygMQDz1vxIJfWMps8/RJnE345eL7VNQftiR1GguGfzRyKdRu34gdsyMBUJ6Bmlbf
-2g0cmbzYVrhfb1L40RzE0hP9yulkYBDr7ufOI6Zlmclnob9G/VV9xFIea0b4FPe35ITBovBMdNRs
-zn6cX9YFWJKjG3BFSD82uogIdCNTRjALEkSoc4C8sKaP3Ft4Q5tqY3WL4PXIv22/iq8AAAAAAAA=
-
-
---=-lSpfKdNMarubAIFtlJPn--
-
+-- 
+Alex Bligh
