@@ -1,58 +1,61 @@
-From: Alex Bligh <alex@alex.org.uk>
-Subject: netfilter + masquerade, mutliple i/fs sharing an IP
-Date: Tue, 22 Sep 2009 17:23:59 +0100
-Message-ID: <C427FC06DA4331C494D72BCA@Ximines.local>
-Reply-To: Alex Bligh <alex@alex.org.uk>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: netfilter + masquerade, mutliple i/fs sharing an IP
+Date: Wed, 23 Sep 2009 00:50:04 +0200
+Message-ID: <4AB9549C.5040508@plouf.fr.eu.org>
+References: <C427FC06DA4331C494D72BCA@Ximines.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <C427FC06DA4331C494D72BCA@Ximines.local>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
-Cc: Alex Bligh <alex@alex.org.uk>
 
-Hi,
+Hello,
 
-I'm trying to set up masquerading on linux with a somewhat unusual 
-requirement.
-Essentially, I have multiple p2p interfaces (let's call them tun0 .. tun99),
-and want them all to NAPT to eth0's IP address (for outgoing connectivity).
-Now, that's nice and easy if tun0 .. tun99 have distinct IP addresses. For
-reasons we need	not go into, I want to have them all having the same IP
-address, i.e. (for ASCII art fans)
+Alex Bligh a =E9crit :
+>=20
+>                                           [------------------]
+>                           192.168.1.0/24  [   NAPT gateway   ]
+>  [ Host A  192.168.1.2] ------------------[ 192.168.1.1      ]
+>                                      tun0 [                  ] 1.2.3.=
+0/24
+>                                           [          1.2.3.4 ]---->
+>                                           [                  ] eth0
+>  [ Host B  192.168.1.2] ------------------[ 192.168.1.1      ]
+>                                      tun1 [                  ]
+>                                           [------------------]
+>=20
+> Now, I appreciate that duplicating IP addresses is not in general
+> a good idea. However, in theory this could work. The complex
+> part is that when a packet traverses the NAPT left to right, it
+> needs to record both the input i/f, together with the source IP=09
+> and port. When the reply is translated back, the packet is
+> going to be destined for 192.168.1.2, but it must be sent out
+> the same interface as the NAPT table shows the packet is received on,
+>=20
+> Doing this the standard way (i.e.
+>   iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE=09
+>   )
+> only appears to work when either tun0 OR tun1 are up (but not both).
+> I suspect this is because on NAPT traversal of the reply packet,
 
-                                          [------------------]
-                          192.168.1.0/24  [   NAPT gateway   ]
- [ Host A  192.168.1.2] ------------------[ 192.168.1.1      ]
-                                     tun0 [                  ] 1.2.3.0/24
-                                          [          1.2.3.4 ]---->
-                                          [                  ] eth0
- [ Host B  192.168.1.2] ------------------[ 192.168.1.1      ]
-                                     tun1 [                  ]
-                                          [------------------]
+No, this has nothing to do with NAT but with routing.
 
-Now, I appreciate that duplicating IP addresses is not in general
-a good idea. However, in theory this could work. The complex
-part is that when a packet traverses the NAPT left to right, it
-needs to record both the input i/f, together with the source IP	
-and port. When the reply is translated back, the packet is
-going to be destined for 192.168.1.2, but it must be sent out
-the same interface as the NAPT table shows the packet is received on,
+> the kernel looks up a next hop, and uses that next hop to determine
+> which interface to use (using first subnet match).
 
-Doing this the standard way (i.e.
-  iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE	
-  iptables -A FORWARD -i tun0 -o eth0 -j ACCEPT
-  iptables -A FORWARD -i tun1 -o eth0 -j ACCEPT
-  )
-only appears to work when either tun0 OR tun1 are up (but not both).
-I suspect this is because on NAPT traversal of the reply packet,
-the kernel looks up a next hop, and uses that next hop to determine
-which interface to use (using first subnet match).
+Correct. Just plain routing. No NAT involved here.
 
-Is there any way around this? For instance can I used multiple
-NAPT tables, one for each inbound i/f?
+> Is there any way around this? For instance can I used multiple
+> NAPT tables, one for each inbound i/f?
 
--- 
-Alex Bligh
+I repeat : this has nothing to do with NAT.
+You might be interested in the CONNMARK target and the connmark match.
+
+1) Mark packets received on each tunX interface with MARK.
+2) Copy the packet mark into the connection mark with CONNMARK.
+3) Copy the connection mark of packets received on eth0 into the packet
+mark with CONNMARK.
+4) Route the packets according to their mark with ip rule & ip route.
