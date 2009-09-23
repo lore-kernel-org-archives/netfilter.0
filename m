@@ -1,59 +1,51 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: NAT overlaps with ports
-Date: Wed, 23 Sep 2009 12:46:10 +0200
-Message-ID: <4AB9FC72.9000906@plouf.fr.eu.org>
-References: <4AB9EF8F.4020307@edu.physics.uoc.gr>
+From: Richard Horton <arimus.uk@googlemail.com>
+Subject: Limited logging by dest ip address
+Date: Wed, 23 Sep 2009 12:08:59 +0100
+Message-ID: <56378e320909230408v41cd97b0n70afdb5d4a0824c2@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4AB9EF8F.4020307@edu.physics.uoc.gr>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type;
+        bh=pqUJMyB1gx+8v+VV22+mhAJ4I3idDzs6gwDB/DKb4MI=;
+        b=eJB8dgioYRgin+8w9rjFbJ2PpueN2Zq31Rop6w57axEhaVgDuzBeqOrZbYz/+AH8B2
+         WRHeHw5YQ17xpA6+3xQQypFJyM3PHU6LRgqNI6J+fkumEDJ4+6TmMhQLsgZS0ut5Kq18
+         dFHyr8TyBKKGLGLRuAqmDRkaxzKALKEAT1a9k=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello,
+I'm setting up a firewall on an embedded linux router/firewall with
+limited (well relatively) log space.
 
-Kapetanakis Giannis a =E9crit :
->=20
-> 192.168.1.0/24 is my public  IP range (eth0)
+I'd like to limit the firewall logging for dropped packets to 1 packet
+per minute per destination ip address.
 
-This IP range is private, not public.
-If you made it up, please use the 192.0.2.0/24 range reserved for
-examples and documentation instead.
+I can easily limit the logging to 1 per minute using
+iptables -A LOGDROP -m limit --limit 1/min --limit-burst 1 -j LOG
+--log-prefix "FW-DROP" --log-level warn
 
-> 10.0.0.0/24 is my private IP range (eth1)
-> 192.168.1.1 public IP of server
-> 10.0.0.1 private IP of server
->=20
-> I'd like to add the following rules in the nat table:
->=20
-> [1] -A PREROUTING -i eth0 -d 192.168.1.1 -p tcp --dport 8080 -j DNAT=20
-> --to-destination 10.0.0.1:8080
-> [2] -A POSTROUTING -o eth0 -s 10.0.0.1 -p tcp --sport 8080 -j SNAT=20
-> --to-source 192.168.1.1:8080
-> [3] -A POSTROUTING -o eth0 -s 10.0.0.0/24 --to-source=20
-> 192.168.1.1-192.168.1.10
+What I can't see an easy way to do is limit logging based on
+destination IP address...
 
-Rule [2] is pointless. Packets with source port 8080 are obviously
-replies, and Netfilter NAT implicitly takes care of reply packets
-packets. Actually, the 'nat' chains don't even see reply packets.
+iplimit is more about limiting connections by address rather than
+throttling the logging back and works on concurrent connections not
+the number of connections in a given time period.
 
-> According to http://www.netfilter.org/documentation/HOWTO/NAT-HOWTO-6=
-=2Ehtml
-> iptables is clever enough to avoid overlaps and clashes.
-> Are we sure that there isn't any chance to map a random packet (not f=
-rom=20
-> the server)
-> to 192.168.1.1:8080 in rule [3]?
+If I can easily limit logging by destination ip address and a time
+period then fine, otherwise I'll just limit logging to a time period.
 
-No. That could happen as long as it does not create a collision with an
-existing mapping. Why do you worry about it ?
-The important point is that netfilter avoids collisions between existin=
-g
-NAT mappings. Rules do not create mappings by themselves, a mapping is
-created only for each new connection created by a packet.
+(Note: dest ip address is unknown so its in effect something akin to
+pool based matching but I don't know the number of pools I'd need...)
 
-> I mean, does rule [2] reserve port 8080 of 192.168.1.1 ?
 
-No. NAT rules do not reserve anything.
+
+-- 
+Richard Horton
+Users are like a virus: Each causing a thousand tiny crises until the
+host finally dies.
+http://www.solstans.co.uk - Solstans Japanese Bobtails and Norwegian Forest Cats
+http://www.pbase.com/arimus - My online photogallery
