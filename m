@@ -1,59 +1,110 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+From: Daniel Huhardeaux <daniel.huhardeaux@tootai.com>
 Subject: Re: Port forwarding on host interface
-Date: Wed, 23 Sep 2009 16:09:36 +0200
-Message-ID: <4ABA2C20.30800@plouf.fr.eu.org>
-References: <4ABA00DD.70205@tootai.com>
+Date: Thu, 24 Sep 2009 10:17:51 +0200
+Message-ID: <4ABB2B2F.8050902@tootai.com>
+References: <4ABA00DD.70205@tootai.com> <4ABA2C20.30800@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4ABA00DD.70205@tootai.com>
+In-Reply-To: <4ABA2C20.30800@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Daniel Huhardeaux a =E9crit :
->=20
-> I would like to redirect an external port to another port on the same=
+Pascal Hambourg a =E9crit :
+
+Good day,
+> Daniel Huhardeaux a =E9crit :
+>> I would like to redirect an external port to another port on the sam=
+e=20
+>> machine.
+>
+> REDIRECT is your friend.
+Thanks to Mart and you I got it work :-)
+>> I read on some documents that the kernel doesn't allow DNAT to=20
+>> 127.0.0.1 so I ended up with following setup:
+>
+> This is not exactly right. NAT allows any address you like, but the
+> kernel routing prohibits packets with an address in the loopback rang=
+e
+> on a non-loopback interface, regardless of NAT. It might be worth
+> mentionning that the routing decision occurs after the PREROUTING cha=
+in
+> and does not know about the original destination address. However DNA=
+T
+> to 127.x.y.z works fine in the OUTPUT chain because the packets are
+> rerouted through the loopback interface and don't leave the host.
+My rules are:
+            [snip]
+
+            [ -z $IP   ] &&=20
+IP=3D$EXTERNAL_MAIN_IP                                                 =
+                                  =20
+
+            [ -z $PORT ] &&=20
+PORT=3D$EXT_PORT                                                       =
+                                  =20
+
+
+            $IPTABLES -t mangle -A PREROUTING   -p tcp  -i=20
+$EXTERNAL_MAIN_DEVICE -d $EXTERNAL_MAIN_NET  --dport $PORT           -j=
 =20
-> machine.
+                    DROP
 
-REDIRECT is your friend.
+            if [ "$IP" =3D=3D "$EXTERNAL_MAIN_IP" ]; then
+                $IPTABLES -t nat        -A PREROUTING   -p tcp  -i=20
+$EXTERNAL_MAIN_DEVICE -d $IP         --dport $EXT_PORT       -j        =
+=20
+                REDIRECT --to-port $PORT
+                $IPTABLES               -A INPUT        -p tcp  -i=20
+$EXTERNAL_MAIN_DEVICE -d $IP         --dport $PORT           -j        =
+=20
+                ACCEPT                =20
+            else
+                # To inhibed when IP is 127.0.0.1              =20
+                $IPTABLES -t nat -A PREROUTING  -p tcp  -i=20
+$EXTERNAL_MAIN_DEVICE -d $EXTERNAL_MAIN_NET  --dport $EXT_PORT       -j=
+=20
+                        DNAT --to $IP:$PORT   =20
+                $IPTABLES        -A FORWARD     -p tcp  -m=20
+tcp                                          --dport $PORT           -j=
+=20
+                        ACCEPT                =20
+                # Test for redirection to localhost, to activate when I=
+P=20
+is 127.0.0.1                                =20
+                #$IPTABLES -t nat -A OUTPUT     -p tcp  -o=20
+$EXTERNAL_MAIN_DEVICE        -d $IP          --dport $EXT_PORT       -j=
+=20
+                        DNAT --to $IP:$PORT
+                #$IPTABLES       -A [INPUT|FORWARD]     -p tcp  -m=20
+tcp                                  --dport $PORT           -j        =
+=20
+            ACCEPT
+            fi
 
-> I read on some documents that the kernel doesn't allow DNAT to=20
-> 127.0.0.1 so I ended up with following setup:
+This is working fine when $IP is the public one or the Intranet one. Bu=
+t=20
+when I put the localhost 127.0.0.1 and activate the right stuff, it's=20
+not working (tried with both INPUT and FORWARD). Telnet to the EXT_PORT=
+=20
+shows try to connect ... From the host, telnet localhost $PORT is worki=
+ng.
 
-This is not exactly right. NAT allows any address you like, but the
-kernel routing prohibits packets with an address in the loopback range
-on a non-loopback interface, regardless of NAT. It might be worth
-mentionning that the routing decision occurs after the PREROUTING chain
-and does not know about the original destination address. However DNAT
-to 127.x.y.z works fine in the OUTPUT chain because the packets are
-rerouted through the loopback interface and don't leave the host.
+Concerning mark of packets, as I told in my original mail, they are=20
+already marked in the mangle table, prerouting rule for my 2 ISP. I=20
+tried to find a solution with save/restore but problem is that mangle=20
+can't use user define target, so how to restore original mark AND accep=
+t=20
+the packet?
 
-> let's say I want to redirect 59000 port on my 1.2.3.4 public IP to 59=
-00=20
-> port on the same public IP *but a direct connection to 5900 port on t=
-he=20
-> public IP* is forbidden. At this time my packets are marked for iprou=
-te2=20
-> (2 ISP), mark 201 (isp1) or 202 (Isp2).
->=20
-> Has someone a tip for me?
+Thanks to you and Mart for your time
 
-You can drop packets to port 5900 in the mangle table before the nat
-table. Or you can mark them in the mangle table and drop or reject them
-later in the filter table (preferred).
+--=20
+Daniel Huhardeaux       _____ ____ ____ _____ _____ _
+enum   +33 368 460 088 (_  __) _  ) _  (_  __) _  _(_)  +48 222 472 472
+iaxtel  1-700-849-6983  / / / // / // / / / / /_/ / /  GIZMO,SKYPE,GTAL=
+K
+sip/iax:callto 101@sip./_/ ( ___( ___/ /_/ (_/ (_/_/.net   tootaiNET
 
-> Is it true that forwarding to 127.0.0.1 can't be done?
-
-If you mean IP forwarding, yes, for the same reason as above because IP
-forwarding involves non-loopback interfaces. Note that what you want to
-do is not IP forwarding.
-
-If you mean what is commonly called "port forwarding" which is a form o=
-f
-destination NAT, you can use loopback addresses as long as packets don'=
-t
-leave or enter the host. As I wrote above, DNAT to 127.x.y.z works fine
-in the OUTPUT chain.
