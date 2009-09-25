@@ -1,300 +1,35 @@
-From: Thomas Jacob <jacob@internet24.de>
+From: Kapetanakis Giannis <bilias@edu.physics.uoc.gr>
 Subject: Re: NAT wont work for my OpenVPN
-Date: Fri, 25 Sep 2009 16:25:46 +0200
-Message-ID: <1253888746.11249.10.camel@enterprise.ims-firmen.de>
+Date: Fri, 25 Sep 2009 18:59:27 +0300
+Message-ID: <4ABCE8DF.6020002@edu.physics.uoc.gr>
 References: <200909251540.21114.Thomas.Hluchnik@netcologne.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=sha1; protocol="application/x-pkcs7-signature"; boundary="=-h5ylATqjjSDabSdxScqB"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 In-Reply-To: <200909251540.21114.Thomas.Hluchnik@netcologne.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Thomas.Hluchnik@netcologne.de
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-
---=-h5ylATqjjSDabSdxScqB
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-There is nothing which is specific to OpenVPN here, you only
-need to set up NAT in the standard Linux way, i.e. just
-read some of the many how-tos that google will come
-up with.
-
-Something along the lines of
-
-iptables -t nat -A POSTROUTING -s 10.47.11.0/24=20
-  -o eth0 -j SNAT --to-source 61.169.136.16
-
-should probably work
-
- =09
-
-On Fri, 2009-09-25 at 15:40 +0200, Thomas.Hluchnik@netcologne.de wrote:
+On 25/09/09 16:40, Thomas.Hluchnik@netcologne.de wrote:
 > Hello,
->=20
-> I am a bit new to ipfilter stuff and didnt succeed in forwarding my OpenV=
-PN traffic. Maybe someone is able to tell me the iptables commands.
->=20
-> Situation: I got a dedicated Rootserver with one network interface. Some =
-days ago I setup a OpenVPN server (IP-Range 10.47.11.0/24) on that box whic=
-h works for itself. At home I have a OpenVPN client connected to the server=
-, which works, too. I can ping the tun Interface of the server, I can login=
- through the VPN channel on the server and I can dig @tun-interface any-dom=
-ain.
->=20
-> The routing table of my client shows the default gateway is VPN:
->=20
-> client:~ # netstat -rn
-> Kernel IP routing table
-> Ziel            Router          Genmask         Flags   MSS Fenster irtt =
-Iface
-> 10.47.11.1      10.47.11.5      255.255.255.255 UGH       0 0          0 =
-tun0
-> 61.169.136.161  192.168.1.64    255.255.255.255 UGH       0 0          0 =
-eth2 # my DSL-Box internal IP
-> 10.47.11.5      0.0.0.0         255.255.255.255 UH        0 0          0 =
-tun0
-> 192.168.128.0   0.0.0.0         255.255.255.0   U         0 0          0 =
-eth2
-> 192.168.1.0     0.0.0.0         255.255.255.0   U         0 0          0 =
-eth2
-> 169.254.0.0     0.0.0.0         255.255.0.0     U         0 0          0 =
-eth2
-> 127.0.0.0       0.0.0.0         255.0.0.0       U         0 0          0 =
-lo
-> 0.0.0.0         10.47.11.5      0.0.0.0         UG        0 0          0 =
-tun0
->=20
->=20
-> My problem: at the server there has to be set a FORWARD rule to NAT all t=
-raffic and send it to the default gateway. I dont get this to work. Anybody=
- out the who can explain my fault and tell me the right iptable commands? T=
-hanks in advance for any help.
->=20
-> server:~ # netstat -rn
-> Kernel IP routing table
-> Destination     Gateway         Genmask         Flags   MSS Window  irtt =
-Iface
-> 10.47.11.2      0.0.0.0         255.255.255.255 UH        0 0          0 =
-tun0
-> 61.169.136.1    0.0.0.0         255.255.255.255 UH        0 0          0 =
-eth0
-> 10.47.11.0      10.47.11.2      255.255.255.0   UG        0 0          0 =
-tun0
-> 169.254.0.0     0.0.0.0         255.255.0.0     U         0 0          0 =
-eth0
-> 127.0.0.0       0.0.0.0         255.0.0.0       U         0 0          0 =
-lo
-> 0.0.0.0         61.169.136.1    0.0.0.0         UG        0 0          0 =
-eth0
->=20
-> server:~ # ifconfig tun0
-> tun0      Link encap:UNSPEC  HWaddr 00-00-00-00-00-00-00-00-00-00-00-00-0=
-0-00-00-00
->           inet addr:10.47.11.1  P-t-P:10.47.11.2  Mask:255.255.255.255
->           UP POINTOPOINT RUNNING NOARP MULTICAST  MTU:1500  Metric:1
->           RX packets:3601 errors:0 dropped:0 overruns:0 frame:0
->           TX packets:3514 errors:0 dropped:0 overruns:0 carrier:0
->           collisions:0 txqueuelen:100
->           RX bytes:163083 (159.2 Kb)  TX bytes:144786 (141.3 Kb)
->=20
-> server:~ # ifconfig eth0
-> eth0      Link encap:Ethernet  HWaddr 00:0E:A6:76:C4:36
->           inet addr:61.169.136.161  Bcast:61.169.136.161  Mask:255.255.25=
-5.255
->           inet6 addr: fe80::20e:a6ff:fe76:c436/64 Scope:Link
->           UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
->           RX packets:2833852643 errors:0 dropped:0 overruns:0 frame:0
->           TX packets:2928710841 errors:0 dropped:0 overruns:0 carrier:0
->           collisions:0 txqueuelen:1000
->           RX bytes:1070053355 (1020.4 Mb)  TX bytes:1932364652 (1842.8 Mb=
-)
->=20
->=20
-> The iptables output:
->=20
-> server:~ # iptables -L
-> Chain INPUT (policy DROP)
-> target     prot opt source               destination
-> ACCEPT     all  --  anywhere             anywhere            state RELATE=
-D,ESTABLISHED
-> REJECT     tcp  --  anywhere             anywhere            tcp flags:!F=
-IN,SYN,RST,ACK/SYN reject-with tcp-reset
-> DROP       all  --  anywhere             anywhere            state INVALI=
-D
-> ACCEPT     all  --  anywhere             anywhere
-> ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:pcsy=
-nc-https
-> ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:cddb=
-p-alt
-> ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:http
-> ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:http=
-s
-> ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:ftp
-> ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:ssh
-> ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:smtp
-> ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:smtp=
-s
-> ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:pop3
-> ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:pop3=
-s
-> ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:imap
-> ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:imap=
-s
-> DROP       tcp  --  anywhere             anywhere            tcp dpt:popp=
-assd
-> DROP       tcp  --  anywhere             anywhere            tcp dpt:mysq=
-l
-> DROP       tcp  --  anywhere             anywhere            tcp dpt:post=
-gresql
-> DROP       tcp  --  anywhere             anywhere            tcp dpt:9008
-> DROP       tcp  --  anywhere             anywhere            tcp dpt:glrp=
-c
-> DROP       udp  --  anywhere             anywhere            udp dpt:netb=
-ios-ns
-> DROP       udp  --  anywhere             anywhere            udp dpt:netb=
-ios-dgm
-> DROP       tcp  --  anywhere             anywhere            tcp dpt:netb=
-ios-ssn
-> DROP       tcp  --  anywhere             anywhere            tcp dpt:micr=
-osoft-ds
-> ACCEPT     udp  --  anywhere             anywhere            udp dpt:open=
-vpn
-> ACCEPT     udp  --  anywhere             anywhere            udp dpt:doma=
-in
-> ACCEPT     tcp  --  anywhere             anywhere            tcp dpt:doma=
-in
-> ACCEPT     icmp --  anywhere             anywhere            icmp type 8 =
-code 0
-> ACCEPT     all  --  anywhere             anywhere
->=20
-> Chain FORWARD (policy DROP)
-> target     prot opt source               destination
-> ACCEPT     all  --  anywhere             anywhere            state RELATE=
-D,ESTABLISHED
-> REJECT     tcp  --  anywhere             anywhere            tcp flags:!F=
-IN,SYN,RST,ACK/SYN reject-with tcp-reset
-> DROP       all  --  anywhere             anywhere            state INVALI=
-D
-> ACCEPT     all  --  anywhere             anywhere
-> ACCEPT     udp  --  10.47.11.0/24        anywhere
-> ACCEPT     tcp  --  10.47.11.0/24        anywhere
-> DROP       all  --  anywhere             anywhere
->=20
-> Chain OUTPUT (policy DROP)
-> target     prot opt source               destination
-> ACCEPT     all  --  anywhere             anywhere            state RELATE=
-D,ESTABLISHED
-> REJECT     tcp  --  anywhere             anywhere            tcp flags:!F=
-IN,SYN,RST,ACK/SYN reject-with tcp-reset
-> DROP       all  --  anywhere             anywhere            state INVALI=
-D
-> ACCEPT     all  --  anywhere             anywhere
-> ACCEPT     all  --  anywhere             anywhere
+>
+> I am a bit new to ipfilter stuff and didnt succeed in forwarding my OpenVPN traffic. Maybe someone is able to tell me the iptables commands.
+>
+> Situation: I got a dedicated Rootserver with one network interface. Some days ago I setup a OpenVPN server (IP-Range 10.47.11.0/24) on that box which works for itself. At home I have a OpenVPN client connected to the server, which works, too. I can ping the tun Interface of the server, I can login through the VPN channel on the server and I can dig @tun-interface any-domain.
+>    
 
---=-h5ylATqjjSDabSdxScqB
-Content-Type: application/x-pkcs7-signature; name=smime.p7s
-Content-Disposition: attachment; filename=smime.p7s
-Content-Transfer-Encoding: base64
+Check that you have ip forwarding enabled.
+cat /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/ipv4/ip_forward (to enable it)
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIRLTCCBN0w
-ggPFoAMCAQICEHGS++YZX6xNEoV0cTSiGKcwDQYJKoZIhvcNAQEFBQAwezELMAkGA1UEBhMCR0Ix
-GzAZBgNVBAgMEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBwwHU2FsZm9yZDEaMBgGA1UECgwR
-Q29tb2RvIENBIExpbWl0ZWQxITAfBgNVBAMMGEFBQSBDZXJ0aWZpY2F0ZSBTZXJ2aWNlczAeFw0w
-NDAxMDEwMDAwMDBaFw0yODEyMzEyMzU5NTlaMIGuMQswCQYDVQQGEwJVUzELMAkGA1UECBMCVVQx
-FzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNUIE5ldHdvcmsx
-ITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UEAxMtVVROLVVTRVJGaXJz
-dC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
-MIIBCgKCAQEAsjmFpPJ9q0E7YkY3rs3BYHW8OWX5ShpHornMSMxqmNVNNRm5pELlzkniii8efNIx
-B8dOtINknS4p1aJkxIW9hVE1eaROaJB7HHqkkqgX8pgV8pPMyaQylbsMTzC9mKALi+VuG6JG+ni8
-om+rWV6lL8/K2m2qL+usobNqqrcuZzWLeeEeaYji5kbNoKXqvgvOdjp6Dpvq/NonWz1zHyLmSGHG
-TPNpsaguG7bUMSAsvIKKjqQOpdeJQ/wWWq8dcdcRWdq6hw2v+vPhwvCkxWeM1tZUOt4KpLoDd7Nl
-yP0e03RiqhjKaJMeoYV+9Udly/hNVyh00jT/MLbu9mIwFIws6wIDAQABo4IBJzCCASMwHwYDVR0j
-BBgwFoAUoBEKIz6W8Qfs4q8p74Klf9AwpLQwHQYDVR0OBBYEFImCZ33EnSZwAEu0UEh83j2uBG59
-MA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdJQQWMBQGCCsGAQUFBwMCBggr
-BgEFBQcDBDARBgNVHSAECjAIMAYGBFUdIAAwewYDVR0fBHQwcjA4oDagNIYyaHR0cDovL2NybC5j
-b21vZG9jYS5jb20vQUFBQ2VydGlmaWNhdGVTZXJ2aWNlcy5jcmwwNqA0oDKGMGh0dHA6Ly9jcmwu
-Y29tb2RvLm5ldC9BQUFDZXJ0aWZpY2F0ZVNlcnZpY2VzLmNybDARBglghkgBhvhCAQEEBAMCAQYw
-DQYJKoZIhvcNAQEFBQADggEBAJ2Vyzy4fqUJxB6/C8LHdo45PJTGEKpPDMngq4RdiVTgZTvzbRx8
-NywlVF+WIfw3hJGdFdwUT4HPVB1rbEVgxy35l1FM+WbKPKCCjKbI8OLp1Er57D9Wyd12jMOCAU9s
-APMeGmF0BEcDqcZAV5G8ZSLFJ2dPV9tkWtmNH7qGL/QGrpxp7en0zykX2OBKnxogL5dMUbtGB8SK
-N04g4wkxaMeexIud6H4RvDJoEJYRmETYKlFgTYjrdDrfQwYyyDlWjDoRUtNBpEMD9O3vMyfbOeAU
-TibJ2PU54om4k123KSZB6rObroP8d3XK6Mq1/uJlSmM+RMTQw16Hc6mYHK9/FX8wggYiMIIFCqAD
-AgECAhBSb3nPLwYVgYX7faItOKbyMA0GCSqGSIb3DQEBBQUAMIGuMQswCQYDVQQGEwJVUzELMAkG
-A1UECBMCVVQxFzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
-IE5ldHdvcmsxITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UEAxMtVVRO
-LVVTRVJGaXJzdC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsMB4XDTA5MDgyNjAwMDAw
-MFoXDTExMDgyNjIzNTk1OVowggEqMQswCQYDVQQGEwJERTEOMAwGA1UEERMFMDEwNjkxEDAOBgNV
-BAgTB1NhY2hzZW4xEDAOBgNVBAcTB0RyZXNkZW4xGjAYBgNVBAkTEUJheXJpc2NoZSBTdHIuIDE4
-MSgwJgYDVQQKEx9JTVMgSW50ZXJuZXQtTWVkaWEtU2VydmljZSBHbWJIMUUwQwYDVQQLEzxJc3N1
-ZWQgdGhyb3VnaCBJTVMgSW50ZXJuZXQtTWVkaWEtU2VydmljZSBHbWJIIEUtUEtJIE1hbmFnZXIx
-HzAdBgNVBAsTFkNvcnBvcmF0ZSBTZWN1cmUgRW1haWwxFTATBgNVBAMTDFRob21hcyBKYWNvYjEi
-MCAGCSqGSIb3DQEJARYTamFjb2JAaW50ZXJuZXQyNC5kZTCB3zANBgkqhkiG9w0BAQEFAAOBzQAw
-gckCgcEAnBr8Ofv/KgWvnP7jvCXiVcFjhQ/Tl4ZIvoG6Ku9D+ecI9D+9Rqg6nxv3KbyTtRL75Kws
-HYEaIv8NYWQl+nn1VQUZjwq/afE4qsGQEkFu/w3hG8ceOIZt6H2FiLOoF3SeGbhl8K4fSDiLKCBf
-KmJhTwYeg+VBUb0lovOjHHL44qasJSl3DXNaezyl79LJOmWqclrxDNOf6fLw7bXJ0K870qDV0gWZ
-aOKYvnXfNNnNfd6RzhdBNNgUM4MhmiHA7K0zAgMBAAGjggH/MIIB+zAfBgNVHSMEGDAWgBSJgmd9
-xJ0mcABLtFBIfN49rgRufTAdBgNVHQ4EFgQUqH1PlrTv+W5g+fiKAlxT/DO0LaowDgYDVR0PAQH/
-BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMCMEYGA1Ud
-IAQ/MD0wOwYMKwYBBAGyMQECAQMFMCswKQYIKwYBBQUHAgEWHWh0dHBzOi8vc2VjdXJlLmNvbW9k
-by5uZXQvQ1BTMIGlBgNVHR8EgZ0wgZowTKBKoEiGRmh0dHA6Ly9jcmwuY29tb2RvY2EuY29tL1VU
-Ti1VU0VSRmlyc3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRFbWFpbC5jcmwwSqBIoEaGRGh0dHA6
-Ly9jcmwuY29tb2RvLm5ldC9VVE4tVVNFUkZpcnN0LUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kRW1h
-aWwuY3JsMGwGCCsGAQUFBwEBBGAwXjA2BggrBgEFBQcwAoYqaHR0cDovL2NydC5jb21vZG9jYS5j
-b20vVVROQUFBQ2xpZW50Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5j
-b20wHgYDVR0RBBcwFYETamFjb2JAaW50ZXJuZXQyNC5kZTANBgkqhkiG9w0BAQUFAAOCAQEAXAH3
-We4u5Qazu+coCaP0qCQofv8wuGkBprdk24uktrrCSYf2MJIPQefBrOnhTB4Q5+21hoCHkrnJnwdw
-e2HlsSClv4dLmEIqle+KNmG8A40yBQqEndAGjgg1gX368nIIb7gUmDbxHXZTn3rLU5B4TY8ip/ao
-L9BCUPUCQQGQhzbR5qBv+VlQ8Txkpc3eWHHNlvb4Hpyw5xezfAbcgRNkHsbtJX9+04w8bqKSXBPV
-BC/jfXP3Ao03xd8EFBj3Th9mSAldIrExFqBIe4dOLIChVjigZI49lrTlURayawi12JEWJM/sRgrj
-MeARHOiPDiuSwFy5KAMszNM1m1S9ImoTkzCCBiIwggUKoAMCAQICEFJvec8vBhWBhft9oi04pvIw
-DQYJKoZIhvcNAQEFBQAwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2Fs
-dCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMYaHR0
-cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgRW1haWwwHhcNMDkwODI2MDAwMDAwWhcNMTEwODI2MjM1OTU5WjCCASox
-CzAJBgNVBAYTAkRFMQ4wDAYDVQQREwUwMTA2OTEQMA4GA1UECBMHU2FjaHNlbjEQMA4GA1UEBxMH
-RHJlc2RlbjEaMBgGA1UECRMRQmF5cmlzY2hlIFN0ci4gMTgxKDAmBgNVBAoTH0lNUyBJbnRlcm5l
-dC1NZWRpYS1TZXJ2aWNlIEdtYkgxRTBDBgNVBAsTPElzc3VlZCB0aHJvdWdoIElNUyBJbnRlcm5l
-dC1NZWRpYS1TZXJ2aWNlIEdtYkggRS1QS0kgTWFuYWdlcjEfMB0GA1UECxMWQ29ycG9yYXRlIFNl
-Y3VyZSBFbWFpbDEVMBMGA1UEAxMMVGhvbWFzIEphY29iMSIwIAYJKoZIhvcNAQkBFhNqYWNvYkBp
-bnRlcm5ldDI0LmRlMIHfMA0GCSqGSIb3DQEBAQUAA4HNADCByQKBwQCcGvw5+/8qBa+c/uO8JeJV
-wWOFD9OXhki+gboq70P55wj0P71GqDqfG/cpvJO1EvvkrCwdgRoi/w1hZCX6efVVBRmPCr9p8Tiq
-wZASQW7/DeEbxx44hm3ofYWIs6gXdJ4ZuGXwrh9IOIsoIF8qYmFPBh6D5UFRvSWi86Mccvjipqwl
-KXcNc1p7PKXv0sk6ZapyWvEM05/p8vDttcnQrzvSoNXSBZlo4pi+dd802c193pHOF0E02BQzgyGa
-IcDsrTMCAwEAAaOCAf8wggH7MB8GA1UdIwQYMBaAFImCZ33EnSZwAEu0UEh83j2uBG59MB0GA1Ud
-DgQWBBSofU+WtO/5bmD5+IoCXFP8M7QtqjAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAd
-BgNVHSUEFjAUBggrBgEFBQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUw
-KzApBggrBgEFBQcCARYdaHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwgaUGA1UdHwSBnTCB
-mjBMoEqgSIZGaHR0cDovL2NybC5jb21vZG9jYS5jb20vVVROLVVTRVJGaXJzdC1DbGllbnRBdXRo
-ZW50aWNhdGlvbmFuZEVtYWlsLmNybDBKoEigRoZEaHR0cDovL2NybC5jb21vZG8ubmV0L1VUTi1V
-U0VSRmlyc3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRFbWFpbC5jcmwwbAYIKwYBBQUHAQEEYDBe
-MDYGCCsGAQUFBzAChipodHRwOi8vY3J0LmNvbW9kb2NhLmNvbS9VVE5BQUFDbGllbnRDQS5jcnQw
-JAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNqYWNvYkBp
-bnRlcm5ldDI0LmRlMA0GCSqGSIb3DQEBBQUAA4IBAQBcAfdZ7i7lBrO75ygJo/SoJCh+/zC4aQGm
-t2Tbi6S2usJJh/Ywkg9B58Gs6eFMHhDn7bWGgIeSucmfB3B7YeWxIKW/h0uYQiqV74o2YbwDjTIF
-CoSd0AaOCDWBffrycghvuBSYNvEddlOfestTkHhNjyKn9qgv0EJQ9QJBAZCHNtHmoG/5WVDxPGSl
-zd5Ycc2W9vgenLDnF7N8BtyBE2Qexu0lf37TjDxuopJcE9UEL+N9c/cCjTfF3wQUGPdOH2ZICV0i
-sTEWoEh7h04sgKFWOKBkjj2WtOVRFrJrCLXYkRYkz+xGCuMx4BEc6I8OK5LAXLkoAyzM0zWbVL0i
-ahOTMYIDuzCCA7cCAQEwgcMwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMO
-U2FsdCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMY
-aHR0cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBB
-dXRoZW50aWNhdGlvbiBhbmQgRW1haWwCEFJvec8vBhWBhft9oi04pvIwCQYFKw4DAhoFAKCCAg0w
-GAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDkwOTI1MTQyNTQ2WjAj
-BgkqhkiG9w0BCQQxFgQU/PGTHsAODqqNxQKIzQ3tHNEnIncwgdQGCSsGAQQBgjcQBDGBxjCBwzCB
-rjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAlVUMRcwFQYDVQQHEw5TYWx0IExha2UgQ2l0eTEeMBwG
-A1UEChMVVGhlIFVTRVJUUlVTVCBOZXR3b3JrMSEwHwYDVQQLExhodHRwOi8vd3d3LnVzZXJ0cnVz
-dC5jb20xNjA0BgNVBAMTLVVUTi1VU0VSRmlyc3QtQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBF
-bWFpbAIQUm95zy8GFYGF+32iLTim8jCB1gYLKoZIhvcNAQkQAgsxgcaggcMwga4xCzAJBgNVBAYT
-AlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2FsdCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBV
-U0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMYaHR0cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYD
-VQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgRW1haWwCEFJvec8v
-BhWBhft9oi04pvIwDQYJKoZIhvcNAQEBBQAEgcBmgqF6jIPqRWykDN2ruVCW+tWUdC8AC+663QFl
-CJJAJWZKT5KqG81Zi12tUGKn8KOKgxHfB1PxYJ5Y8vbiXjgNSQGLVH/g378iJMltSyvXL1ZB/l7h
-l29ffZCpao5wxtIc/JCKj5wYsL36/j5gdelP/luBmaczxXPBLeNGvEIi1hsqSnwNtkpEehAWBaCv
-+bEIJfhW0FcVZuuWTeZdne9PjLhWRQczDhAWRq4eNpNNEcrx/7LXMu1BfKX79CRGpFkAAAAAAAA=
+man sysctl (also check openvpn startup script)
+to make the changes permanent.
 
+There should also be a FORWARD line in you firewall
+something like this (if you use the tun interface):
 
---=-h5ylATqjjSDabSdxScqB--
+iptables -A FORWARD -i tun+ -s 10.47.11.0/24 -j ACCEPT
 
+Giannis
