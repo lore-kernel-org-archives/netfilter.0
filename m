@@ -1,27 +1,54 @@
-From: Dave Sparks <Dave.Sparks@Sophos.com>
-Subject: Multiple --to-source not supported
-Date: Fri, 25 Sep 2009 23:57:10 +0100
-Message-ID: <B7A55E8C969B974FBC89274E565B8B2D019DFBCA0A@US-COL-EXCHMBX1.green.sophos>
+From: Bob Miller <bob@computerisms.ca>
+Subject: bandwidth counting
+Date: Fri, 25 Sep 2009 20:29:20 -0700
+Message-ID: <1253935760.26388.1092.camel@laplaplian>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-I am trying to setup SNAT for a large network to roundrobin over two different /28s which are on the same interface.  The obvious way to do this with iptables doesn't like the dis-contiguous cidrs and complains:
+Greetings,
+I am not sure what it is about iptables, to me it's like a level 7 spell
+and I am only a level 6 mage.  I (think I) understand the concepts when
+I read them, but whenever I try to implement them, they seldom come out
+as I expect them too.
+I have a debian box I use as a firewall, I use the ipmasq package to
+manage my iptables setup.
+I saw an article some time ago on how to set up bandwidth monitoring
+using iptables.  I wanted to use this idea to track how much data is
+being passed across my external interface to see if it matches what my
+ISP says, as well as to find out which computers on my lan were using
+the data.  I also wanted to measure only the internet traffic from the
+lan, and avoid counting the data destined for other lan targets - I am
+not concerned with the intranet bandwidth.
+I think the forward chain of the filter table should pass all packets I
+want to keep track of, so I sent all packets on the forward chain to a
+custom chain to count bandwidth, and I sent all the packets with a
+source/dest ip from the lan passing through the forward chain to another
+custom chain for counting.  
+But the numbers dont' add up, I get a total of just over 2 GB for the
+lan ips in both directions, but the total count on the forward chain is
+11 GB.  I expected them to be very close to the same. 
+So, obviously I don't have the understanding of the level 7 spell that I
+thought I did.
+I also think (thought) that the input and output chains of the filter
+table should give me a total count of bandwidth on my external
+interface, but some documentation I have been reading has me rethinking
+that perhaps the prerouting chain on the raw table for incoming and
+postrouting on the nat table for outgoing would give me a more accurate
+count of what my ISP will count.
+I am sure there are more ways to approach this than I wish to count, but
+I would very much welcome some suggestions and comments on which
+tables/chains would be best for my purposes...
+Thank you :)
 
-/sbin/iptables -t nat -A eth1_masq -s 10.0.0.0/24 -d 0.0.0.0/0 -j SNAT --to-source 1.2.3.210-1.2.3.222 --to-source 4.5.6.50-4.5.6.62
-
-iptables v1.4.3.2: Multiple --to-source not supported
-
-
-This used to work in earlier 2.6 kernels, why doesn't it work anymore?
-
-Any tips for workarounds?
-
-Thanks!
-
+Bob Miller
+334-7117/633-3760
+http://computerisms.ca
+bob@computerisms.ca
+Network, Internet, Server,
+and Open Source Solutions
 
