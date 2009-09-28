@@ -1,54 +1,62 @@
-From: patriceetstephanie@free.fr
-Subject: Question about IPTABLES and NETBIOS
-Date: Sun, 27 Sep 2009 14:11:24 +0200
-Message-ID: <1254053484.4abf566cc0ed2@imp.free.fr>
+From: Simon Tennant <simon@imaginator.com>
+Subject: corrupted netfilter logging using ulogd
+Date: Mon, 28 Sep 2009 10:29:26 +0200
+Message-ID: <4AC073E6.7060009@imaginator.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hello,
-I have for my work a PC with 3 network cards:
-the first is used to grant access to port 80 on an IIS server (connected to the
-third card), the second for access to port 80, 137:139, 445 (to update the site)
-and port SQL (for connecting to SQL Server) on the IIS server.
+I've been trying to debug the reason for my netfilter  (kernel version
+2.6.24-19)  using:
 
-For resuming:
-Card 1: 192.168.5.254 (not implemented at this time)
-Card 2: 192.168.1.2544
-Card 3: 192.168.3.254/32 (Windows Server 2008 with IIS and SQL Server IP of this
-server: 192.168.3.1)
+    " -j ULOG --ulog-prefix drop-inbound:"
 
-The first card is not yet implemented. My problem is the second card (access
-from the local network should forward ports 80,137:139 and 445.
+logs being corrupted.  By corrupted, I mean they look like:
+> Jan  1 00:00:00 cave IN=<87><9B> OUT= MAC= SRC=0.0.0.0 DST=0.0.0.0
+> LEN=0 TOS=00 PREC=0x00 TTL=0 ID=0 PROTO=0
+> Jan  1 00:00:00 cave IN=]<99> OUT= MAC= SRC=0.0.0.0 DST=0.0.0.0 LEN=0
+> TOS=00 PREC=0x00 TTL=0 ID=0 PROTO=0
+> Jan  1 00:00:00 cave IN=<D0>_^F OUT= MAC= SRC=0.0.0.0 DST=0.0.0.0
+> LEN=0 TOS=00 PREC=0x00 TTL=0 ID=0 PROTO=0
+> Jan  1 00:00:00 cave IN=/^A^G OUT= MAC= SRC=0.0.0.0 DST=0.0.0.0 LEN=0
+> TOS=00 PREC=0x00 TTL=0 ID=0 PROTO=0
+> Jan  1 00:00:00 cave IN=<E0><99> OUT= MAC= SRC=0.0.0.0 DST=0.0.0.0
+> LEN=0 TOS=00 PREC=0x00 TTL=0 ID=0 PROTO=0
 
-I tried to do in my PREROUTING iptables rules to redirect port 80 to port 80 of
-the third card. I did the same for ports 137 to 139 and 445 and also the port of
-SQL Server.
+    * Times are always the start of the unix epoch,
+    * the interface is always non-ascii characters. (actual interface is
+      eth0).
+    * "drop-inbound" prefix is missing
 
-The problem when I use the PREROUTING is that the network is very slow. If I
-transfer a file from one computer on the network 192.168.1.0/24 to
-192.168.3.0/24, I have access, but it's slow. If two stations using this
-partition at the same time, then the first cut which is transferred and an error
-message appears in Windows.
+I'm currently logging with ulogd (ulogd Version 1.23):
 
-So I tried to use the masquerade on the third card (192.168.3.0/24) and make a
-road on my network 192.168.1.0/24. The connection is much faster, but like when
-I use the PREROUTING, when I do a transfer on 2 machines simultaneously via
-ports 137:139, the transfert cut on the first machine and an error appair.
+modprobe ipt_ULOG nlbufsiz=65535 flushtimeout=100
 
-I can send you the script iptables application.
+and ulogd.conf contains:
 
-What can I do to resolve my concerns?
+bufsize=150000
+rmem=131071
+file="/var/log/firewall.log"
+plugin="/usr/lib/ulogd/ulogd_BASE.so"
+plugin="/usr/lib/ulogd/ulogd_LOGEMU.so"
 
-For information, I tried to open all ports but the problem persists. The
-ip_forward is 1.
+Other information is that this box is an Ubuntu Intrepid Xen virtual
+machine.  The other virtual machines have no problem with logging
+packets,  just this one.
 
-Thank you in advance for your help.
+I'm now somewhat at a loss for how to debug this further so any pointers
+would really help.
 
-Sorry for my english
+S.
 
-Patrice.
+-- 
+Simon Tennant _____________________________________________
+
+fixed: .uk +44 20 7043 6756          .de +49 89 420 955 854  
+  mob: .uk +44 78 5335 6047          .de +49 17 8545 0880
+ xmpp: simon@buddycloud.com
+
