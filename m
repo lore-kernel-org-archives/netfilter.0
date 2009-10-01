@@ -1,83 +1,76 @@
-From: John Little <jlittle_97@yahoo.com>
-Subject: Re: Using iptables with high volume mail
-Date: Thu, 1 Oct 2009 05:45:08 -0700 (PDT)
-Message-ID: <806519.62905.qm@web53107.mail.re2.yahoo.com>
-References: <594040.85734.qm@web53111.mail.re2.yahoo.com> <56378e320910010454v7a200e8evb7b39f1923637dd4@mail.gmail.com>
-Reply-To: John Little <jlittle_97@yahoo.com>
+From: Bill Hendrickson <wjhendrickson@gmail.com>
+Subject: Re: SSH Port Forwarding with iptables
+Date: Thu, 1 Oct 2009 11:24:10 -0400
+Message-ID: <a0017e7e0910010824x697f1e82h57abe8df7ca68208@mail.gmail.com>
+References: <a0017e7e0909290816i35c5e55dw77ec8517232ef276@mail.gmail.com>
+	 <a0017e7e0909290914v7a4efac0u69f7cfdeaf7bb4e2@mail.gmail.com>
+	 <4AC4864E.4020404@plouf.fr.eu.org>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1254401108; bh=hbj3/8ZNHi9diDAcNSctk0EZG3tqucYZh1hjauhWtEo=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:References:Date:From:Reply-To:Subject:To:Cc:In-Reply-To:MIME-Version:Content-Type; b=NfDvO+QK/2Yqzk+l7Cd+y1KI+TKWMocgCeYVKzG5Hv+MAFg0s4UCVPiTeikn2AabwpmICmBNXiKQWOxlnxstVT2Ptd3rHuDziD1MYTrU0BSOpcibMGwS2tpa2X6eg3FDIk8Bx4VM7gcRCECCNHk9G6FHl681z6k74k26RS+fNkI=
-In-Reply-To: <56378e320910010454v7a200e8evb7b39f1923637dd4@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:cc:content-type;
+        bh=639rHK+ll1tqFJ83zML0V6sizpX7Hg4bqxrh4SjqM3A=;
+        b=ughgBnsQheUNi7tGOv6VWz35Ju+MW/4l+doNRTmwo1KTQwowyCt/Vq5jQ/B3nOpIm9
+         YS2MHAKd6xXhdFG9AM2Z7UlK2jVvM9ZDUEd52nwhfb7K65h3gVtYKeoJiUH3hl3/mdem
+         jDi85cvhY6/kA04mnVKQO/IkO8gBLPli/BPjc=
+In-Reply-To: <4AC4864E.4020404@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Richard Horton <arimus.uk@googlemail.com>
-Cc: netfilter@vger.kernel.org
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Cc: netfilter list <netfilter@vger.kernel.org>
 
+Hi Pascal,
 
+> Because MASQUERADE replaces the original source address (which the SSH
+> server cannot reach due to a missing default or subnet route) with the
+> address of the output interface eth1 (which the SSH server can reach).
+>
+> You don't need SNAT nor masquerade. It hides the real source address
+> from the server. You just need to add a proper route on the server so it
+> knows how to reach the client address via the router.
 
------ Original Message ----
-> From: Richard Horton <arimus.uk@googlemail.com>
-> To: John Little <jlittle_97@yahoo.com>
-> Cc: netfilter@vger.kernel.org
-> Sent: Thursday, October 1, 2009 7:54:06 AM
-> Subject: Re: Using iptables with high volume mail
-> 
-> 2009/10/1 John Little :
-> 
-> > What modules, tables and rules to use to optimize iptables for this type 
-> volume?  All of the mail is sent on the standard port 25.  We need to optimize 
-> for quick deliverability.  (I've read the man page and looked at TOS with the 
-> mangle table.  I read somewhere that this only for udp.)
-> 
-> Setting the DSCP / ToS field via mangle will work with IP traffic
-> regardless of payload type (UDP/TCP/IPSEC Tunnelled/etc). However,
-> there is only any point in applying it for 'quick' delivery if the
-> upstream routers are configured to apply a diffserv policy on a per
-> hop basis.
-> 
-> Apart from that 'quick delivery' isn't really something diffserv can
-> give you: EF traffic (Expedited forwarding) is intended for real-time
-> jitter sensitive traffic where loss is less of an issue than excessive
-> inter-packet delay. For reliable delivery use an AFxx class. However I
-> don't believe applying diffserv / tos in your case will achieve the
-> end results you are looking for unless you have control over all the
-> hops along the mail path, or SLA's in place with the network
-> provider(s) -- and usually once you exceed your purchased amount of
-> traffic within a class its either remarked or dropped - and strictly
-> under diffserv should be dropped as you should not remark outside of a
-> class.
-> 
-> -- 
-> Richard Horton
-> Users are like a virus: Each causing a thousand tiny crises until the
-> host finally dies.
-> http://www.solstans.co.uk - Solstans Japanese Bobtails and Norwegian Forest Cats
-> http://www.pbase.com/arimus - My online photogallery
+Yes, I really should have remembered the default gateway - that's
+bitten me before.
 
+> Besides, the SNAT rule proposed by Gaspar could not help because it
+> works on the external interface, while the missing route on the server
+> requires SNAT/MASQUERADE on the internal interface.
 
-Hi Richard
+I'll remove that rule and try it out next chance I get - people are
+already using the connection.
 
-Good point.  We don't control the hops on the mail path.  We also
-strictly observe the traffic rules that we have agreed to with the
-upstream providers.  
+>>> $IPT -A OUTPUT -o $EXT_IFACE -m state --state ESTABLISHED,RELATED -j ACCEPT
+>>> $IPT -A OUTPUT -o $INT_IFACE -m state --state ESTABLISHED,RELATED -j ACCEPT
+>
+> You don't need all the ACCEPT rules when the default policies are ACCEPT
+> and there are no DROP/REJECT rules.
 
-As I think about my question and your answers the next part would be
-that we want to "streamline" our iptables rules so that they are
-working efficiently and not consuming any more resources than are
-necessary.  To that end I would think that I would probably need to have some rules written and post them here for review.  
+yeah, I set those default ACCEPT policies when I was trouble-shooting,
+i need to remove them...
 
-Resource consumption has been a major issue with the commercial devices
-we have tried.  This has led to the question of building the machines
-with iptables that are tuned specifically for our environment.  
+>>> $IPT -t nat -A PREROUTING -p tcp -i $EXT_IFACE -d $EXT_IP --dport
+>>> $SSH_PORT --sport 1024:65535 -j DNAT --to $SSH_HOST:22
+>>> $IPT -A FORWARD -p tcp -i $EXT_IFACE -o $INT_IFACE -d $SSH_HOST
+>>> --dport $SSH_PORT --sport 1024:65535 -m state --state NEW -j ACCEPT
+>
+> In the FORWARD chain the destination port has already been changed by
+> the DNAT rule just like the destination address, so this rule must match
+> on destination port 22, not on the original destination port.
+>
 
-I realize that other kernel tuning parameters need to be factored in as
-well.  I'm just want to make sure we have all of our bases covered.
+So you're saying it needs to be this?
 
-Thanks,
-John
+$IPT -A FORWARD -p tcp -i $EXT_IFACE -o $INT_IFACE -d $SSH_HOST
+--dport 22 --sport 1024:65535 -m state --state NEW -j ACCEPT
 
+For now, I've actually got it like this (which is working, but I
+should lock it down):
 
+-A FORWARD -p tcp -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
 
-      
+thx,
+-bill
