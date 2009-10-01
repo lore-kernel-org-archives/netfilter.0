@@ -1,69 +1,44 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: SSH Port Forwarding with iptables
-Date: Thu, 01 Oct 2009 12:37:02 +0200
-Message-ID: <4AC4864E.4020404@plouf.fr.eu.org>
-References: <a0017e7e0909290816i35c5e55dw77ec8517232ef276@mail.gmail.com> <a0017e7e0909290914v7a4efac0u69f7cfdeaf7bb4e2@mail.gmail.com>
+From: John Little <jlittle_97@yahoo.com>
+Subject: Using iptables with high volume mail
+Date: Thu, 1 Oct 2009 04:42:31 -0700 (PDT)
+Message-ID: <594040.85734.qm@web53111.mail.re2.yahoo.com>
+Reply-To: John Little <jlittle_97@yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <a0017e7e0909290914v7a4efac0u69f7cfdeaf7bb4e2@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1254397351; bh=k/f6LYsEPsZHs0AP+irrC36FiQ9FJUWDLlYPauQr0kc=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Reply-To:Subject:To:MIME-Version:Content-Type; b=skGJqgmkDPiesgbfYUugZg3H7XSch/AxL6EkkO0moYbHx2XS26ssoamasmmB6lrS+FJ6iKFpAaWPfe9ZhLjIr9iogpaSX7YAWlyWxQ9VGDIAzMLKP7U/qLca5Ao3Z4i/EaFP1BnS7nnDLRbxOfzIk0+WEYQ+1JxjPT+ZL+QNfAc=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Bill Hendrickson <wjhendrickson@gmail.com>
-Cc: netfilter list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hello,
+Hi all,
 
-Bill Hendrickson a =E9crit :
-> okay, i simplified my script, and tried MASQUERADE vs FORWARD, and go=
-t
-> it to work:
->=20
-> iptables -t nat -P PREROUTING ACCEPT
-> iptables -t nat -P POSTROUTING ACCEPT
-> iptables -t nat -P OUTPUT ACCEPT
-> iptables -t nat -A PREROUTING -p tcp -m tcp --dport 2022 -j DNAT
-> --to-destination 172.16.0.101:22
-> iptables -t nat -A POSTROUTING -j MASQUERADE
->=20
-> why does this way work?
+I work for a major email service provider.  Our
+management has asked us to investigate using iptables as "NAT engine"
+for outbound mail.
 
-Because MASQUERADE replaces the original source address (which the SSH
-server cannot reach due to a missing default or subnet route) with the
-address of the output interface eth1 (which the SSH server can reach).
+The outbound mail is the only traffic the
+server will see.  No inbound mail, web, etc.  The machine(s) will have
+a public facing NIC and a NIC for the internal LAN.
 
-The server did not reply to the SYN packets because there is no route i=
-n
-its routing table for the client address.
+The machines will see over 1 million emails in a 24 hour period.
 
-> what are the ramifications of using
-> masquerading, i.e., any reason i shouldn't adopt this method?
+My questions are:
+Can iptables handle this volume?
 
-You don't need SNAT nor masquerade. It hides the real source address
-from the server. You just need to add a proper route on the server so i=
-t
-knows how to reach the client address via the router.
+What modules, tables and rules to use to optimize iptables for this type volume?  All of the mail is sent on the standard port 25.  We need to optimize for quick deliverability.  (I've read the man page and looked at TOS with the mangle table.  I read somewhere that this only for udp.) 
 
-Besides, the SNAT rule proposed by Gaspar could not help because it
-works on the external interface, while the missing route on the server
-requires SNAT/MASQUERADE on the internal interface.
+Is there a way to estimate how much hardware we would need for a given volume of mail?
 
->> $IPT -A OUTPUT -o $EXT_IFACE -m state --state ESTABLISHED,RELATED -j=
- ACCEPT
->> $IPT -A OUTPUT -o $INT_IFACE -m state --state ESTABLISHED,RELATED -j=
- ACCEPT
+Are there any use cases that I can show management?
 
-You don't need all the ACCEPT rules when the default policies are ACCEP=
-T
-and there are no DROP/REJECT rules.
+Is there commercial support available?
 
->> $IPT -t nat -A PREROUTING -p tcp -i $EXT_IFACE -d $EXT_IP --dport
->> $SSH_PORT --sport 1024:65535 -j DNAT --to $SSH_HOST:22
->> $IPT -A FORWARD -p tcp -i $EXT_IFACE -o $INT_IFACE -d $SSH_HOST
->> --dport $SSH_PORT --sport 1024:65535 -m state --state NEW -j ACCEPT
+We really want to sell this to management.  We have gone through 2 major brands of commercial devices for NATting that aren't making the gradefor what we are paying.  Any ideas and insights appreciated.
 
-In the FORWARD chain the destination port has already been changed by
-the DNAT rule just like the destination address, so this rule must matc=
-h
-on destination port 22, not on the original destination port.
+Thanks,
+John
+
+
+      
