@@ -1,7 +1,7 @@
-From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <gaspar.lajos@whb.hu>
 Subject: Re: Mapping multiple interfaces to a single IP address (cont.)
-Date: Thu, 01 Oct 2009 18:17:24 +0200
-Message-ID: <4AC4D614.9020701@freemail.hu>
+Date: Thu, 01 Oct 2009 18:11:40 +0200
+Message-ID: <4AC4D4BC.7020305@whb.hu>
 References: <145d4e1a0910010330r216e68cch763b6c7a4b954992@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -28,7 +28,6 @@ Destination     Gateway         Genmask         Flags  Iface
 
 
 Swifty
-
 
 
 
