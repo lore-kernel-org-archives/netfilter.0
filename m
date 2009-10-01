@@ -1,44 +1,57 @@
-From: John Little <jlittle_97@yahoo.com>
-Subject: Using iptables with high volume mail
-Date: Thu, 1 Oct 2009 04:42:31 -0700 (PDT)
-Message-ID: <594040.85734.qm@web53111.mail.re2.yahoo.com>
-Reply-To: John Little <jlittle_97@yahoo.com>
+From: Richard Horton <arimus.uk@googlemail.com>
+Subject: Re: Using iptables with high volume mail
+Date: Thu, 1 Oct 2009 12:54:06 +0100
+Message-ID: <56378e320910010454v7a200e8evb7b39f1923637dd4@mail.gmail.com>
+References: <594040.85734.qm@web53111.mail.re2.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1254397351; bh=k/f6LYsEPsZHs0AP+irrC36FiQ9FJUWDLlYPauQr0kc=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Reply-To:Subject:To:MIME-Version:Content-Type; b=skGJqgmkDPiesgbfYUugZg3H7XSch/AxL6EkkO0moYbHx2XS26ssoamasmmB6lrS+FJ6iKFpAaWPfe9ZhLjIr9iogpaSX7YAWlyWxQ9VGDIAzMLKP7U/qLca5Ao3Z4i/EaFP1BnS7nnDLRbxOfzIk0+WEYQ+1JxjPT+ZL+QNfAc=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=zhsGkmuXeyV31W20IqFUMHQS8zZylHA8QUkrMiQkdlA=;
+        b=csckgMpAzNFiU7W94+zGHSwOq7RErXYTJPapdzDr6SVERwD8NMI3EIrTriu7WHIWg5
+         94o1PcaVRfnE6E+hK7fEnkegRlgm4hDZmeaHN5ERamD9C8Xemv+YjzwSCwAEX6i18sCl
+         avJ/nsQcuEPNuRYrgfPaTKL318GwhR/nt32kU=
+In-Reply-To: <594040.85734.qm@web53111.mail.re2.yahoo.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: John Little <jlittle_97@yahoo.com>
+Cc: netfilter@vger.kernel.org
 
-Hi all,
+2009/10/1 John Little <jlittle_97@yahoo.com>:
 
-I work for a major email service provider.  Our
-management has asked us to investigate using iptables as "NAT engine"
-for outbound mail.
+> What modules, tables and rules to use to optimize iptables for this t=
+ype volume? =A0All of the mail is sent on the standard port 25. =A0We n=
+eed to optimize for quick deliverability. =A0(I've read the man page an=
+d looked at TOS with the mangle table. =A0I read somewhere that this on=
+ly for udp.)
 
-The outbound mail is the only traffic the
-server will see.  No inbound mail, web, etc.  The machine(s) will have
-a public facing NIC and a NIC for the internal LAN.
+Setting the DSCP / ToS field via mangle will work with IP traffic
+regardless of payload type (UDP/TCP/IPSEC Tunnelled/etc). However,
+there is only any point in applying it for 'quick' delivery if the
+upstream routers are configured to apply a diffserv policy on a per
+hop basis.
 
-The machines will see over 1 million emails in a 24 hour period.
+Apart from that 'quick delivery' isn't really something diffserv can
+give you: EF traffic (Expedited forwarding) is intended for real-time
+jitter sensitive traffic where loss is less of an issue than excessive
+inter-packet delay. For reliable delivery use an AFxx class. However I
+don't believe applying diffserv / tos in your case will achieve the
+end results you are looking for unless you have control over all the
+hops along the mail path, or SLA's in place with the network
+provider(s) -- and usually once you exceed your purchased amount of
+traffic within a class its either remarked or dropped - and strictly
+under diffserv should be dropped as you should not remark outside of a
+class.
 
-My questions are:
-Can iptables handle this volume?
-
-What modules, tables and rules to use to optimize iptables for this type volume?  All of the mail is sent on the standard port 25.  We need to optimize for quick deliverability.  (I've read the man page and looked at TOS with the mangle table.  I read somewhere that this only for udp.) 
-
-Is there a way to estimate how much hardware we would need for a given volume of mail?
-
-Are there any use cases that I can show management?
-
-Is there commercial support available?
-
-We really want to sell this to management.  We have gone through 2 major brands of commercial devices for NATting that aren't making the gradefor what we are paying.  Any ideas and insights appreciated.
-
-Thanks,
-John
-
-
-      
+--=20
+Richard Horton
+Users are like a virus: Each causing a thousand tiny crises until the
+host finally dies.
+http://www.solstans.co.uk - Solstans Japanese Bobtails and Norwegian Fo=
+rest Cats
+http://www.pbase.com/arimus - My online photogallery
