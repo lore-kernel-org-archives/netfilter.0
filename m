@@ -1,56 +1,88 @@
-From: John Little <jlittle_97@yahoo.com>
-Subject: Re: Using iptables with high volume mail
-Date: Thu, 1 Oct 2009 12:39:40 -0700 (PDT)
-Message-ID: <900981.20015.qm@web53108.mail.re2.yahoo.com>
-References: <594040.85734.qm@web53111.mail.re2.yahoo.com> <1254412984.11386.63.camel@enterprise.ims-firmen.de> <4AC4DB93.6060707@freemail.hu>
-Reply-To: John Little <jlittle_97@yahoo.com>
+From: "Brent Kuster" <Brent.Kuster@wane.com>
+Subject: Migrating machines from old subnet to multiple new subnets
+Date: Thu, 1 Oct 2009 16:38:50 -0400
+Message-ID: <F7AE1DB54FEEEC4CA35163A99A7DF36403565EA6@WANEMAIL.WANE.LINTV.COM>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1254425980; bh=HS/jvBdkvMPBE5Er1JrGrlDCE8+WZgcXlcDuwZXal3M=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:References:Date:From:Reply-To:Subject:To:Cc:In-Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=Xa8b2qtzTDA3STpzW1Nhn1cz1AE8rGdIzfyCpMmFp+ELIS1mXT8wnApLi/fVO+SOe+Bt/uaiAG2x1UdvzkSsFB+NiRahQjNWvWjj8X1aYhQx7DvEYbBgcA1jzZc7J+/UiSm413fCwIU3wkVi+Qn1cEbOdrEUNeV8X7hEJ67o4XY=
-In-Reply-To: <4AC4DB93.6060707@freemail.hu>
+Content-class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>, Thomas Jacob <jacob@internet24.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
 
 
------ Original Message ----
-> From: G=E1sp=E1r Lajos <swifty@freemail.hu>
-> To: Thomas Jacob <jacob@internet24.de>
-> Cc: John Little <jlittle_97@yahoo.com>; netfilter@vger.kernel.org
-> Sent: Thursday, October 1, 2009 12:40:51 PM
-> Subject: Re: Using iptables with high volume mail
->=20
-> Thomas Jacob =EDrta:
-> > This all really depends on the number of new connections and packet=
-s per
-> > time, rather than the number of emails.
-> > =20
-> Agree.
-> But I would also check the upstream bandwidth and concurrent connecti=
-ons per=20
-> time or per destination.
->=20
-> Swifty
+So there I was....
 
-@swifty - Yes we have agreements with upstream and manage our connectio=
-ns there with throttling so that we don't exceed our allotted connectio=
-ns is a given time period.
+Having walked into the place, it was clear, that the old Sys Admin had
+used up all the space- IP Space that it.  Everything in the building was
+operating on a /24 network, and I mean everything.  It was a small
+building, so we were slumping along, but we were quickly running out of
+available IP's.
 
-@thomas Thanks for those metrics.  We are looking to see if the connect=
-ions per second is generated with our current devices.  What we do know=
- is that our max outbound connections will get as high as 16000 for a p=
-eriod of time (maybe 2-4 hours) and will occasionally burst up to aroun=
-d 20000.
+I decided that I had better change things, and fast.  So, I asked corp
+for a new /16 space, which they gave me after much complaining and
+grinding of teeth, which I have divided up into several /24 spaces.
+	Not exhaustive, but something like this:
 
-How does that compare to the metrics that you mentioned earlier?
+		Server 1	192.168.10.5  ->	10.10.1.10
+		Server 2	192.168.10.6  ->	10.10.1.11
+		Acct 1	192.168.10.7  ->	10.10.20.10
+		Eng 2		192.168.10.8  ->	10.10.30.10
+		Sales 1	192.168.10.21  ->	10.10.50.10
+		Sales 2	192.168.10.22  ->	10.10.50.11
+		Etc.
 
-Thanks,
-John =20
+Now, I've been in the shop getting to know some of the tools that I'd
+need- 	iptables
+	ebtables
+	brouting
+	proxy_arp
+	ip_forward
+	DNAT / SNAT / MASQUERADE
+	
+but alas, I need you're help to solve the mystery:
 
 
+How can I migrate hosts from a 192.168.10.0/24 network to a selection of
+10.10.x.0/24 networks in a fashion that will allow machines in new space
+trying to contact old machines in OLD space to be redirected AND at the
+same time, allow old machines in old space to contact migrated host on
+new network?
+	Example:
+	Server 1 (old = 192.168.10.5) gets moved to the new IP
+10.10.1.10.
+	Now, when server 2 (still in old space) tries to contact the old
+IP 192.168.10.5 it gets redirected to the new 10.10.1.10, AND when a
+host in the new space tries to contact Server 1 at the old address, it
+also gets redirected to the new IP.
 
-     =20
+There are so many hard coded items in existence today, that I need to
+find a way to track the hosts/apps that are trying to contact the old IP
+and forward/redirect/masquerade & log to the new IP.  Simply waiting for
+DNS caches to update with the new IP will not be sufficient.  We have
+many systems with hand coded lmhosts files that will be trying to reach
+machines on the old subnet even though DNS has been updated.
+
+I've had some limited success with iptables, but only for connections
+routing at layer 3 through my ubuntu router, but not for hosts still on
+the old subnet at layer 2.  Then I tried proxy_arp, but that stopped the
+routing, because the server was acting as the MAC of the old IP, and not
+forwarding it on.
+
+
+In a perfect world, I _think_ I would want to do this:
+
+Configure the Ubuntu (or other linux) router to fully masquerade all
+ports (untouched implicitly or otherwise) from old to new IP on a 1to1
+basis.  Unfortunately, I've read that masquerade is for 1-to-many, and
+not many-to-many.
+
+I need a solution that will allow for stateful and secure connections to
+work.  In particular, I'm concerned that my IP security will fail
+because of detected 'spoofing'.
+
+Any suggestions?
+
+
