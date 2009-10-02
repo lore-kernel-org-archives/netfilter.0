@@ -1,57 +1,50 @@
-From: Michele Petrazzo - Unipex <michele.petrazzo@unipex.it>
-Subject: Re: Using iptables with high volume mail
-Date: Fri, 02 Oct 2009 17:08:13 +0200
-Message-ID: <4AC6175D.4020600@unipex.it>
-References: <594040.85734.qm@web53111.mail.re2.yahoo.com>  <1254412984.11386.63.camel@enterprise.ims-firmen.de>  <4AC4DB93.6060707@freemail.hu>  <900981.20015.qm@web53108.mail.re2.yahoo.com> <1254486676.19832.20.camel@enterprise.ims-firmen.de> <150303.95092.qm@web53112.mail.re2.yahoo.com>
+From: Marcel Laverdet <marcel@laverdet.com>
+Subject: Re: Problems getting NOTRACK to do anything at all
+Date: Fri, 02 Oct 2009 11:43:55 -0500
+Message-ID: <4d3950064f1ab4c86937b59d8a1a3a99@localhost>
+References: <0d99e50d4f57cd74439c228559a6738c@localhost> <4AC604F7.6060907@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <150303.95092.qm@web53112.mail.re2.yahoo.com>
+In-Reply-To: <4AC604F7.6060907@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: John Little <jlittle_97@yahoo.com>
-Cc: Thomas Jacob <jacob@internet24.de>, =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>, netfilter@vger.kernel.org
-
-John Little wrote:
->> What matters most is what happens in each time slice, not so much
->> how many connections you have in the connection hash table (you can
->> tune that table with with
->> /proc/sys/net/ipv4/netfilter/ip_conntrack_max and
->> /sys/module/ip_conntrack/parameters/hashsize).
->> 
-
-Except that if the table fill up you'll see some "table full" kernel
-messages and the connections will be refused!
-
->> However, emails per time should be pretty much the same as
->> connections per time, unless you open several tcp connections over
->> the nat box for each email, and I see no reason why you would need
->> to do that ;)
-> 
-> We have some stats now:
-> Packets per second:  avg 6221 max 41,810
-> Connections peak: avg 7263  max 22,981
-> 
-> New connections per second: avg 102 max 1029
-
-> If I allocate 500 bytes per connection at the max
-> connections I would need ~87Mb + machine overhead.  That's not much
-> in today's world of servers.
+Content-Type: text/plain; charset="iso-8859-1"
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Cc: netfilter@vger.kernel.org
 
 
-Only for add some real numbers that hope pacify your heart, with the
-lnstat tool (lnstat -f ip_conntrack) I have here:
-
-100k entries into ip_conntrack, about 700 new conn/sec, 8k iptables
-rules, 0.5/0.8 cpu load, with a xeon 4 cores and 2 gb ram and e1000e
-card and no problems at all.
-The unique think that I can say you to do with this cards it's to
-_update_ the drivers with the last one found on the site because that on
-the kernel vanilla aren't so stable and can (who say for sure?) *oops*
-your server.
-
-> Thanks, John
-> 
-
-Michele
+=0D
+Yes, that was it! This was also the hint I needed to get some more comp=
+lex=0D
+rules setup and now everything is working just the way I want.=0D
+=0D
+Merci!=0D
+=0D
+On Fri, 02 Oct 2009 15:49:43 +0200, Pascal Hambourg=0D
+<pascal.mail@plouf.fr.eu.org> wrote:=0D
+> Hello,=0D
+> =0D
+> Marcel Laverdet a =C3=A9crit :=0D
+>> =0D
+>> For some reason I can't seem to get the NOTRACK iptables rule to do=0D
+>> anything at all. Can anyone make sense of the following session whic=
+h I=0D
+>> think describes the problem better than words could. The session bel=
+ow=0D
+>> was=0D
+>> carried out on a reasonably busy server, and I didn't waste much tim=
+e=0D
+in=0D
+>> between each command.=0D
+> [...]=0D
+>> fantasma marcel # iptables -t raw -A PREROUTING -i lo -j NOTRACK=0D
+> =0D
+> I guess the raw/PREROUTING chain is too late for local traffic. Local=
+ly=0D
+> generated packets are processed by conntrack in the NF_IP_LOCAL_OUT h=
+ook=0D
+> unless the NOTRACK target was used in the raw/OUTPUT chain.=0D
+> =0D
+> Try this instead :=0D
+> iptables -t raw -A OUTPUT -o lo -j NOTRACK
