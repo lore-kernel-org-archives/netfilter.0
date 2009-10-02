@@ -1,164 +1,190 @@
-From: Thomas Jacob <jacob@internet24.de>
-Subject: Re: Using iptables with high volume mail
-Date: Fri, 02 Oct 2009 14:31:16 +0200
-Message-ID: <1254486676.19832.20.camel@enterprise.ims-firmen.de>
-References: <594040.85734.qm@web53111.mail.re2.yahoo.com>
-	 <1254412984.11386.63.camel@enterprise.ims-firmen.de>
-	 <4AC4DB93.6060707@freemail.hu>
-	 <900981.20015.qm@web53108.mail.re2.yahoo.com>
+From: Marcel Laverdet <marcel@laverdet.com>
+Subject: Problems getting NOTRACK to do anything at all
+Date: Fri, 02 Oct 2009 07:40:48 -0500
+Message-ID: <0d99e50d4f57cd74439c228559a6738c@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=sha1; protocol="application/x-pkcs7-signature"; boundary="=-nTqXXxtNf8jiEVvben9t"
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <900981.20015.qm@web53108.mail.re2.yahoo.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: John Little <jlittle_97@yahoo.com>
-Cc: =?ISO-8859-1?Q?G=E1sp=E1r?= Lajos <swifty@freemail.hu>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
 
---=-nTqXXxtNf8jiEVvben9t
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
-
-> @thomas Thanks for those metrics.  We are looking to see if the connectio=
-ns per second is
-> generated with our current devices.  What we do know is that our max
->outbound connections will get as high as 16000 for a period of time >
->(maybe 2-4 hours) and will occasionally burst up to around 20000.
-
-I am guessing that means existing parallel connections, not new
-connections per second (cps), the kind of server box I was referring
-to can easily sustain millions of those, given enough
-memory for the tables (The last number I remember was <300byte per
-connection in the conntrack table + space for entries into the routing
-cache for each different IP). Slabtop is your friend here.
-
-What matters most is
-what happens in each time slice, not so much how many connections
-you have in the connection hash table (you can tune that table with
-with /proc/sys/net/ipv4/netfilter/ip_conntrack_max
-and /sys/module/ip_conntrack/parameters/hashsize).
-
-> How does that compare to the metrics that you mentioned earlier?
-
-Well, any Switch/Router with SNMP support allows you to track bytes and
-packets per second, so you could collect some data on the current
-situation with that (www.cacti.net is a very nice tool).
-
-As for new connections per second, once you have the iptables box
-running you can get this info with lnstat -f ip_conntrack/column new.
-
-If you have a reasonably good switch/router in the datapath, you could
-also use port mirroring to get a copy of the data stream and then
-count all tcp/syn packets to port 25 to give you a rough idea
-about the number of connections per second.
-
-However, emails per time should be pretty much the same as connections
-per time, unless you open several tcp connections over the nat box
-for each email, and I see no reason why you would need to do that ;)
-     =20
-
---=-nTqXXxtNf8jiEVvben9t
-Content-Type: application/x-pkcs7-signature; name=smime.p7s
-Content-Disposition: attachment; filename=smime.p7s
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIRLTCCBN0w
-ggPFoAMCAQICEHGS++YZX6xNEoV0cTSiGKcwDQYJKoZIhvcNAQEFBQAwezELMAkGA1UEBhMCR0Ix
-GzAZBgNVBAgMEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBwwHU2FsZm9yZDEaMBgGA1UECgwR
-Q29tb2RvIENBIExpbWl0ZWQxITAfBgNVBAMMGEFBQSBDZXJ0aWZpY2F0ZSBTZXJ2aWNlczAeFw0w
-NDAxMDEwMDAwMDBaFw0yODEyMzEyMzU5NTlaMIGuMQswCQYDVQQGEwJVUzELMAkGA1UECBMCVVQx
-FzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNUIE5ldHdvcmsx
-ITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UEAxMtVVROLVVTRVJGaXJz
-dC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
-MIIBCgKCAQEAsjmFpPJ9q0E7YkY3rs3BYHW8OWX5ShpHornMSMxqmNVNNRm5pELlzkniii8efNIx
-B8dOtINknS4p1aJkxIW9hVE1eaROaJB7HHqkkqgX8pgV8pPMyaQylbsMTzC9mKALi+VuG6JG+ni8
-om+rWV6lL8/K2m2qL+usobNqqrcuZzWLeeEeaYji5kbNoKXqvgvOdjp6Dpvq/NonWz1zHyLmSGHG
-TPNpsaguG7bUMSAsvIKKjqQOpdeJQ/wWWq8dcdcRWdq6hw2v+vPhwvCkxWeM1tZUOt4KpLoDd7Nl
-yP0e03RiqhjKaJMeoYV+9Udly/hNVyh00jT/MLbu9mIwFIws6wIDAQABo4IBJzCCASMwHwYDVR0j
-BBgwFoAUoBEKIz6W8Qfs4q8p74Klf9AwpLQwHQYDVR0OBBYEFImCZ33EnSZwAEu0UEh83j2uBG59
-MA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdJQQWMBQGCCsGAQUFBwMCBggr
-BgEFBQcDBDARBgNVHSAECjAIMAYGBFUdIAAwewYDVR0fBHQwcjA4oDagNIYyaHR0cDovL2NybC5j
-b21vZG9jYS5jb20vQUFBQ2VydGlmaWNhdGVTZXJ2aWNlcy5jcmwwNqA0oDKGMGh0dHA6Ly9jcmwu
-Y29tb2RvLm5ldC9BQUFDZXJ0aWZpY2F0ZVNlcnZpY2VzLmNybDARBglghkgBhvhCAQEEBAMCAQYw
-DQYJKoZIhvcNAQEFBQADggEBAJ2Vyzy4fqUJxB6/C8LHdo45PJTGEKpPDMngq4RdiVTgZTvzbRx8
-NywlVF+WIfw3hJGdFdwUT4HPVB1rbEVgxy35l1FM+WbKPKCCjKbI8OLp1Er57D9Wyd12jMOCAU9s
-APMeGmF0BEcDqcZAV5G8ZSLFJ2dPV9tkWtmNH7qGL/QGrpxp7en0zykX2OBKnxogL5dMUbtGB8SK
-N04g4wkxaMeexIud6H4RvDJoEJYRmETYKlFgTYjrdDrfQwYyyDlWjDoRUtNBpEMD9O3vMyfbOeAU
-TibJ2PU54om4k123KSZB6rObroP8d3XK6Mq1/uJlSmM+RMTQw16Hc6mYHK9/FX8wggYiMIIFCqAD
-AgECAhBSb3nPLwYVgYX7faItOKbyMA0GCSqGSIb3DQEBBQUAMIGuMQswCQYDVQQGEwJVUzELMAkG
-A1UECBMCVVQxFzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
-IE5ldHdvcmsxITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UEAxMtVVRO
-LVVTRVJGaXJzdC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsMB4XDTA5MDgyNjAwMDAw
-MFoXDTExMDgyNjIzNTk1OVowggEqMQswCQYDVQQGEwJERTEOMAwGA1UEERMFMDEwNjkxEDAOBgNV
-BAgTB1NhY2hzZW4xEDAOBgNVBAcTB0RyZXNkZW4xGjAYBgNVBAkTEUJheXJpc2NoZSBTdHIuIDE4
-MSgwJgYDVQQKEx9JTVMgSW50ZXJuZXQtTWVkaWEtU2VydmljZSBHbWJIMUUwQwYDVQQLEzxJc3N1
-ZWQgdGhyb3VnaCBJTVMgSW50ZXJuZXQtTWVkaWEtU2VydmljZSBHbWJIIEUtUEtJIE1hbmFnZXIx
-HzAdBgNVBAsTFkNvcnBvcmF0ZSBTZWN1cmUgRW1haWwxFTATBgNVBAMTDFRob21hcyBKYWNvYjEi
-MCAGCSqGSIb3DQEJARYTamFjb2JAaW50ZXJuZXQyNC5kZTCB3zANBgkqhkiG9w0BAQEFAAOBzQAw
-gckCgcEAnBr8Ofv/KgWvnP7jvCXiVcFjhQ/Tl4ZIvoG6Ku9D+ecI9D+9Rqg6nxv3KbyTtRL75Kws
-HYEaIv8NYWQl+nn1VQUZjwq/afE4qsGQEkFu/w3hG8ceOIZt6H2FiLOoF3SeGbhl8K4fSDiLKCBf
-KmJhTwYeg+VBUb0lovOjHHL44qasJSl3DXNaezyl79LJOmWqclrxDNOf6fLw7bXJ0K870qDV0gWZ
-aOKYvnXfNNnNfd6RzhdBNNgUM4MhmiHA7K0zAgMBAAGjggH/MIIB+zAfBgNVHSMEGDAWgBSJgmd9
-xJ0mcABLtFBIfN49rgRufTAdBgNVHQ4EFgQUqH1PlrTv+W5g+fiKAlxT/DO0LaowDgYDVR0PAQH/
-BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMCMEYGA1Ud
-IAQ/MD0wOwYMKwYBBAGyMQECAQMFMCswKQYIKwYBBQUHAgEWHWh0dHBzOi8vc2VjdXJlLmNvbW9k
-by5uZXQvQ1BTMIGlBgNVHR8EgZ0wgZowTKBKoEiGRmh0dHA6Ly9jcmwuY29tb2RvY2EuY29tL1VU
-Ti1VU0VSRmlyc3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRFbWFpbC5jcmwwSqBIoEaGRGh0dHA6
-Ly9jcmwuY29tb2RvLm5ldC9VVE4tVVNFUkZpcnN0LUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kRW1h
-aWwuY3JsMGwGCCsGAQUFBwEBBGAwXjA2BggrBgEFBQcwAoYqaHR0cDovL2NydC5jb21vZG9jYS5j
-b20vVVROQUFBQ2xpZW50Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5j
-b20wHgYDVR0RBBcwFYETamFjb2JAaW50ZXJuZXQyNC5kZTANBgkqhkiG9w0BAQUFAAOCAQEAXAH3
-We4u5Qazu+coCaP0qCQofv8wuGkBprdk24uktrrCSYf2MJIPQefBrOnhTB4Q5+21hoCHkrnJnwdw
-e2HlsSClv4dLmEIqle+KNmG8A40yBQqEndAGjgg1gX368nIIb7gUmDbxHXZTn3rLU5B4TY8ip/ao
-L9BCUPUCQQGQhzbR5qBv+VlQ8Txkpc3eWHHNlvb4Hpyw5xezfAbcgRNkHsbtJX9+04w8bqKSXBPV
-BC/jfXP3Ao03xd8EFBj3Th9mSAldIrExFqBIe4dOLIChVjigZI49lrTlURayawi12JEWJM/sRgrj
-MeARHOiPDiuSwFy5KAMszNM1m1S9ImoTkzCCBiIwggUKoAMCAQICEFJvec8vBhWBhft9oi04pvIw
-DQYJKoZIhvcNAQEFBQAwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2Fs
-dCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMYaHR0
-cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgRW1haWwwHhcNMDkwODI2MDAwMDAwWhcNMTEwODI2MjM1OTU5WjCCASox
-CzAJBgNVBAYTAkRFMQ4wDAYDVQQREwUwMTA2OTEQMA4GA1UECBMHU2FjaHNlbjEQMA4GA1UEBxMH
-RHJlc2RlbjEaMBgGA1UECRMRQmF5cmlzY2hlIFN0ci4gMTgxKDAmBgNVBAoTH0lNUyBJbnRlcm5l
-dC1NZWRpYS1TZXJ2aWNlIEdtYkgxRTBDBgNVBAsTPElzc3VlZCB0aHJvdWdoIElNUyBJbnRlcm5l
-dC1NZWRpYS1TZXJ2aWNlIEdtYkggRS1QS0kgTWFuYWdlcjEfMB0GA1UECxMWQ29ycG9yYXRlIFNl
-Y3VyZSBFbWFpbDEVMBMGA1UEAxMMVGhvbWFzIEphY29iMSIwIAYJKoZIhvcNAQkBFhNqYWNvYkBp
-bnRlcm5ldDI0LmRlMIHfMA0GCSqGSIb3DQEBAQUAA4HNADCByQKBwQCcGvw5+/8qBa+c/uO8JeJV
-wWOFD9OXhki+gboq70P55wj0P71GqDqfG/cpvJO1EvvkrCwdgRoi/w1hZCX6efVVBRmPCr9p8Tiq
-wZASQW7/DeEbxx44hm3ofYWIs6gXdJ4ZuGXwrh9IOIsoIF8qYmFPBh6D5UFRvSWi86Mccvjipqwl
-KXcNc1p7PKXv0sk6ZapyWvEM05/p8vDttcnQrzvSoNXSBZlo4pi+dd802c193pHOF0E02BQzgyGa
-IcDsrTMCAwEAAaOCAf8wggH7MB8GA1UdIwQYMBaAFImCZ33EnSZwAEu0UEh83j2uBG59MB0GA1Ud
-DgQWBBSofU+WtO/5bmD5+IoCXFP8M7QtqjAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAd
-BgNVHSUEFjAUBggrBgEFBQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUw
-KzApBggrBgEFBQcCARYdaHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwgaUGA1UdHwSBnTCB
-mjBMoEqgSIZGaHR0cDovL2NybC5jb21vZG9jYS5jb20vVVROLVVTRVJGaXJzdC1DbGllbnRBdXRo
-ZW50aWNhdGlvbmFuZEVtYWlsLmNybDBKoEigRoZEaHR0cDovL2NybC5jb21vZG8ubmV0L1VUTi1V
-U0VSRmlyc3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRFbWFpbC5jcmwwbAYIKwYBBQUHAQEEYDBe
-MDYGCCsGAQUFBzAChipodHRwOi8vY3J0LmNvbW9kb2NhLmNvbS9VVE5BQUFDbGllbnRDQS5jcnQw
-JAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNqYWNvYkBp
-bnRlcm5ldDI0LmRlMA0GCSqGSIb3DQEBBQUAA4IBAQBcAfdZ7i7lBrO75ygJo/SoJCh+/zC4aQGm
-t2Tbi6S2usJJh/Ywkg9B58Gs6eFMHhDn7bWGgIeSucmfB3B7YeWxIKW/h0uYQiqV74o2YbwDjTIF
-CoSd0AaOCDWBffrycghvuBSYNvEddlOfestTkHhNjyKn9qgv0EJQ9QJBAZCHNtHmoG/5WVDxPGSl
-zd5Ycc2W9vgenLDnF7N8BtyBE2Qexu0lf37TjDxuopJcE9UEL+N9c/cCjTfF3wQUGPdOH2ZICV0i
-sTEWoEh7h04sgKFWOKBkjj2WtOVRFrJrCLXYkRYkz+xGCuMx4BEc6I8OK5LAXLkoAyzM0zWbVL0i
-ahOTMYIDuzCCA7cCAQEwgcMwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMO
-U2FsdCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMY
-aHR0cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBB
-dXRoZW50aWNhdGlvbiBhbmQgRW1haWwCEFJvec8vBhWBhft9oi04pvIwCQYFKw4DAhoFAKCCAg0w
-GAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDkxMDAyMTIzMTA4WjAj
-BgkqhkiG9w0BCQQxFgQUigxNb5TLzhkqd5ZueKb3qlf/j4IwgdQGCSsGAQQBgjcQBDGBxjCBwzCB
-rjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAlVUMRcwFQYDVQQHEw5TYWx0IExha2UgQ2l0eTEeMBwG
-A1UEChMVVGhlIFVTRVJUUlVTVCBOZXR3b3JrMSEwHwYDVQQLExhodHRwOi8vd3d3LnVzZXJ0cnVz
-dC5jb20xNjA0BgNVBAMTLVVUTi1VU0VSRmlyc3QtQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBF
-bWFpbAIQUm95zy8GFYGF+32iLTim8jCB1gYLKoZIhvcNAQkQAgsxgcaggcMwga4xCzAJBgNVBAYT
-AlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2FsdCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBV
-U0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMYaHR0cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYD
-VQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgRW1haWwCEFJvec8v
-BhWBhft9oi04pvIwDQYJKoZIhvcNAQEBBQAEgcBl1zKpeZf49M4iuUPc8ZkMleIiBIFoiEJ242Fp
-y3PzARG1643Z3G696dK9CESgmCdzYi4atIGwUtxBPEq46NTzDlDGIdLT7AfE4ZiCftvqfmQJaP5O
-99E+s6AfN31Wn6sDrBviOyRVw/qhG0Uc08/AX/yAYOEzBBymzDQkQoIv4TCW3SzLa5yd5Qn+ndhv
-iMgB99lzBmZlo2yw6NMRUy2f4MKsgA4BM1OYAT7xuFphhw99FlcSYdrfoDnCYg6jHhAAAAAAAAA=
 
 
---=-nTqXXxtNf8jiEVvben9t--
+For some reason I can't seem to get the NOTRACK iptables rule to do
 
+anything at all. Can anyone make sense of the following session which I
+
+think describes the problem better than words could. The session below was
+
+carried out on a reasonably busy server, and I didn't waste much time in
+
+between each command.
+
+
+
+
+
+fantasma marcel # iptables-save
+
+# Generated by iptables-save v1.4.2 on Fri Oct  2 07:28:30 2009
+
+*filter
+
+:INPUT ACCEPT [3195003:612499850]
+
+:FORWARD ACCEPT [0:0]
+
+:OUTPUT ACCEPT [2555099:4249706524]
+
+COMMIT
+
+# Completed on Fri Oct  2 07:28:30 2009
+
+# Generated by iptables-save v1.4.2 on Fri Oct  2 07:28:30 2009
+
+*raw
+
+:PREROUTING ACCEPT [3604504:692724983]
+
+:OUTPUT ACCEPT [2885938:4764142471]
+
+COMMIT
+
+# Completed on Fri Oct  2 07:28:30 2009
+
+
+
+fantasma marcel # grep '127.0.0.1' /proc/net/ip_conntrack | wc
+
+grep: /proc/net/ip_conntrack: No such file or directory
+
+      0       0       0
+
+
+
+fantasma marcel # iptables -t raw -A PREROUTING -i lo -j NOTRACK
+
+
+
+fantasma marcel # grep '127.0.0.1' /proc/net/ip_conntrack | wc
+
+grep: /proc/net/ip_conntrack: No such file or directory
+
+      0       0       0
+
+
+
+fantasma marcel # modprobe nf_conntrack_ipv4
+
+
+
+fantasma marcel # grep '127.0.0.1' /proc/net/ip_conntrack | wc
+
+     74    1405   14295
+
+
+
+fantasma marcel # grep '127.0.0.1' /proc/net/ip_conntrack | wc
+
+    178    3381   34425
+
+
+
+fantasma marcel # grep '127.0.0.1' /proc/net/ip_conntrack | tail
+
+tcp      6 114 TIME_WAIT src=127.0.0.1 dst=127.0.0.1 sport=44537
+
+dport=11211 packets=9 bytes=1164 src=127.0.0.1 dst=127.0.0.1 sport=11211
+
+dport=44537 packets=8 bytes=948 [ASSURED] mark=0 use=1
+
+tcp      6 113 TIME_WAIT src=127.0.0.1 dst=127.0.0.1 sport=44462
+
+dport=11211 packets=11 bytes=2003 src=127.0.0.1 dst=127.0.0.1 sport=11211
+
+dport=44462 packets=10 bytes=1936 [ASSURED] mark=0 use=1
+
+tcp      6 117 TIME_WAIT src=127.0.0.1 dst=127.0.0.1 sport=44742
+
+dport=11211 packets=8 bytes=477 src=127.0.0.1 dst=127.0.0.1 sport=11211
+
+dport=44742 packets=7 bytes=1535 [ASSURED] mark=0 use=1
+
+tcp      6 115 TIME_WAIT src=127.0.0.1 dst=127.0.0.1 sport=44621
+
+dport=11211 packets=9 bytes=837 src=127.0.0.1 dst=127.0.0.1 sport=11211
+
+dport=44621 packets=8 bytes=621 [ASSURED] mark=0 use=1
+
+tcp      6 119 TIME_WAIT src=127.0.0.1 dst=127.0.0.1 sport=44851
+
+dport=11211 packets=8 bytes=477 src=127.0.0.1 dst=127.0.0.1 sport=11211
+
+dport=44851 packets=7 bytes=1535 [ASSURED] mark=0 use=1
+
+tcp      6 115 TIME_WAIT src=127.0.0.1 dst=127.0.0.1 sport=44599
+
+dport=11211 packets=9 bytes=837 src=127.0.0.1 dst=127.0.0.1 sport=11211
+
+dport=44599 packets=8 bytes=621 [ASSURED] mark=0 use=1
+
+tcp      6 117 TIME_WAIT src=127.0.0.1 dst=127.0.0.1 sport=44714
+
+dport=11211 packets=13 bytes=849 src=127.0.0.1 dst=127.0.0.1 sport=11211
+
+dport=44714 packets=12 bytes=5310 [ASSURED] mark=0 use=1
+
+tcp      6 113 TIME_WAIT src=127.0.0.1 dst=127.0.0.1 sport=44501
+
+dport=11211 packets=12 bytes=5103 src=127.0.0.1 dst=127.0.0.1 sport=11211
+
+dport=44501 packets=12 bytes=39594 [ASSURED] mark=0 use=1
+
+tcp      6 119 TIME_WAIT src=127.0.0.1 dst=127.0.0.1 sport=44865
+
+dport=11211 packets=8 bytes=477 src=127.0.0.1 dst=127.0.0.1 sport=11211
+
+dport=44865 packets=7 bytes=1535 [ASSURED] mark=0 use=1
+
+tcp      6 113 TIME_WAIT src=127.0.0.1 dst=127.0.0.1 sport=44479
+
+dport=11211 packets=9 bytes=1193 src=127.0.0.1 dst=127.0.0.1 sport=11211
+
+dport=44479 packets=8 bytes=977 [ASSURED] mark=0 use=1
+
+
+
+fantasma marcel # iptables -t raw -A PREROUTING -s 127.0.0.1 -j NOTRACK
+
+
+
+fantasma marcel # grep '127.0.0.1' /proc/net/ip_conntrack | wc
+
+   1698   32261  327594
+
+
+
+fantasma marcel # grep '127.0.0.1' /proc/net/ip_conntrack | wc
+
+   1733   32926  334299
+
+
+
+fantasma marcel # grep '127.0.0.1' /proc/net/ip_conntrack | wc
+
+   1782   33852  343672
+
+
+
+
+
+As you can see I've tried NOTRACK'ing both lo and 127.0.0.1 and the rules
+
+just seem to be NOOP's.
+
+
+
+Any help would be appreciated. Thanks.
