@@ -1,36 +1,42 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: SSH Port Forwarding with iptables
-Date: Fri, 02 Oct 2009 00:07:34 +0200
-Message-ID: <4AC52826.3030800@plouf.fr.eu.org>
-References: <a0017e7e0909290816i35c5e55dw77ec8517232ef276@mail.gmail.com>	 <a0017e7e0909290914v7a4efac0u69f7cfdeaf7bb4e2@mail.gmail.com>	 <4AC4864E.4020404@plouf.fr.eu.org> <a0017e7e0910010824x697f1e82h57abe8df7ca68208@mail.gmail.com>
+From: Andrew Kraslavsky <andykras@hotmail.com>
+Subject: match for limit on bytes per second?
+Date: Fri, 2 Oct 2009 01:46:43 -0700
+Message-ID: <COL115-W26948C4C123AB36007B7C7D6D20@phx.gbl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <a0017e7e0910010824x697f1e82h57abe8df7ca68208@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Bill Hendrickson <wjhendrickson@gmail.com>
-Cc: netfilter list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Bill Hendrickson a =E9crit :
->> In the FORWARD chain the destination port has already been changed b=
-y
->> the DNAT rule just like the destination address, so this rule must m=
-atch
->> on destination port 22, not on the original destination port.
->=20
-> So you're saying it needs to be this?
->=20
-> $IPT -A FORWARD -p tcp -i $EXT_IFACE -o $INT_IFACE -d $SSH_HOST
-> --dport 22 --sport 1024:65535 -m state --state NEW -j ACCEPT
 
-Correct.
-
-> For now, I've actually got it like this (which is working, but I
-> should lock it down):
->=20
-> -A FORWARD -p tcp -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
-
-This is much too permissive, it allows any connection through the route=
-r.
+Hello,
+=20
+I am looking for a way to throttle throughput:
+=20
+1) globally as opposed to per interface
+=20
+- AND -
+=20
+2) in terms of bytes (or bits) per second as opposed to in terms of pac=
+kets
+=20
+Since the goal is a global limit and not a  per interface limit, as use=
+ful and powerful as tc is, tc does not appear to be an option so I am w=
+ondering if there is a way to do this using an iptables match.
+=20
+The closest match I have found is the "limit" match but it seems to onl=
+y deal with traffic at the packet level.
+=20
+Is there an alternate match that can basically do what "limit" does (no=
+t necessarily using a token bucket filter implementation but that would=
+ probably be best) except in terms of bytes per second?
+=20
+Thanks,
+=20
+- Andrew 		 	   		 =20
+_________________________________________________________________
+Microsoft brings you a new way to search the web.  Try  Bing=99 now
+http://www.bing.com?form=3DMFEHPG&publ=3DWLHMTAG&crea=3DTEXT_MFEHPG_Cor=
+e_tagline_try bing_1x1
