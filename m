@@ -1,7 +1,7 @@
-From: Roman Fiedler <roman.fiedler@ait.ac.at>
-Subject: Understanding conntrack: Delete and manual readd of same entry possible?
-Date: Mon, 5 Oct 2009 09:55:20 +0200
-Message-ID: <4AC9A668.3050009@ait.ac.at>
+From: Fabio Marcone <fabio.marcone@duet.it>
+Subject: tc and CONNMARK
+Date: Mon, 05 Oct 2009 11:32:30 +0200
+Message-ID: <4AC9BD2E.301@duet.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -10,31 +10,29 @@ List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi list,
+Hi!
+I'm building a firewall/traffic shaper using tc and connmark but I note 
+a strange behaviour.
 
-The failure to conduct a simple test with conntrack makes me believe, 
-that I misunderstood some part of the concept.
+Configuration:
+eth0 - lan interface - rate 600kbit/s connection with mark X (download)
+eth1 - wan interface - rate 600kbit/s connection with mark X (upload)
 
-The testcase:
+Starting a single connection (upload or download) traffic is limited 
+correctly but if I start two connection (one in upload and the other in 
+download) I note that the one in upload runs correctly (how in the 
+previous test) but the one in download stalls and then send some packets 
+and then stalls alternatively.
 
-* Create one forwarded tcp connection via iptables-firewall and leave it 
-open
-* Delete the conntrack entry of this connection
-* Readd the same conntrack entry with conntrack -I
-* Verify, that old and new entry looked the same (conntrack -L)
-* Send one more byte over the still open tcp connection
+I don't understand why!
 
-The expected result:
-* TCP flow continues without creating a new conntrack entry, using the 
-one added manually
-* ACCEPT via ESTABLISHED rule because of valid conntrack entry
+always (and only) the download connection has this behaviour.
 
-The actual result:
-* Conntrack code seems to believe, that packets do not belong to 
-conntrack entry
-* Conntrack code does not create new conntrack entry
-* Conntrack code cannot update conntrack-entry even when packet is accepted.
 
-Can someone enlighten me, if manual entry creation is possible?
+two connection have the same mark (in netfilter table), is it a problem 
+for the shaper?
+also I think about ack packets but they have a very short size (66 
+bytes) so I believe they are not the cause for this problem.
 
-Thanks, Roman
+thanks in advance,
+Fabio Marcone
