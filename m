@@ -1,40 +1,60 @@
-From: "Beyer, Philipp" <Philipp.Beyer@alliedvisiontec.com>
-Subject: evaluating kernel-mode packet processing (netfilter target extension?)
-Date: Mon, 5 Oct 2009 16:56:13 +0200
-Message-ID: <96837AF99C543646B54E8DA1A0315D5677B183@ahr-mail.avtnet.local>
+From: Michele Petrazzo - Unipex <michele.petrazzo@unipex.it>
+Subject: Re: tc and CONNMARK
+Date: Mon, 05 Oct 2009 18:22:45 +0200
+Message-ID: <4ACA1D55.1020304@unipex.it>
+References: <4AC9BD2E.301@duet.it> <4AC9FF4E.5010307@unipex.it> <4ACA04DF.3030006@duet.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <4ACA04DF.3030006@duet.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Fabio Marcone <fabio.marcone@duet.it>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+Fabio Marcone ha scritto:
+> Thanks for your reply,
+> 
+>> A first idea, without saw your rules, it's that you limit the wrong
+>>  side of communication, however no one can help you without 
+>> understand better your environment.
+> it's not possible because if I test only download flow or upload 
+> flow, limit rate is ok.
+> 
+>> Post your tc/iptables rules and commands.
+> 
+> I'm developing a firewall/router with some services and configuration
+>  it's not so easy to understand.
+> 
 
-I'm doing preliminary evaluations, how one could write a cpu-friendly receiver for UDP packets arriving at high data rates, which may possibly saturate the bandwidth of a Gigabyte Ethernet port.
+Ok, but at least an environment where we can test or understand it's need!
 
-With some simplification, the payload of subsequent UDP packets needs to be assembled to bigger buffers. The existing Windows-based solution is realized as a NDIS filter driver, which processes and removes incoming packets and manages a set of buffers to forward data to user mode. Using a big enough packet size, this can also be done in user mode with bearable cpu-load. I'm also pretty sure that doing such things in kernel mode wouldn't earn the broadest acceptance from linux kernel programmers.
+>> 
+>> P.s. Use two different mark for different update/download traffic
+> I'm using connmark so both flow of connection are marked with same 
+> mark (CONNMARK) but shaper rule are set on different interfaces: mark
+>  10 on eth0 -> classid 1:6 mark 10 on eth1 -> classid 2:6
 
-Nevertheless, I have the task to evaluate "how the linux-version of this driver would look like". I don't expect overwhelming help on projects like this from the linux community, so I'll try not to ask for long explanations. ;-)
+For me it's better if you use different marks.
 
+After, where do you mark the packets (in iptables)? iptables/kernel
+version?
 
-My Questions:
-- Thinking of the described NDIS filter driver ( processing and dropping packets, merging payload, moving big buffers to userland), what would be the best fitting equivalent in the linux world? As far as I have read, this could be a netfilter target extension. Would that work? Is there anything that keeps me from doing buffer-based data streaming to userland from inside a netfilter extension? Is there already some code doing anything like this?
+> 
+> where classes are build with these commands: tc class add dev eth0 
+> parent 1:1 classid 1:6 htb rate 600kbit ceil 600kbit burst 6k cburst 
+> 64k quantum 1600 tc class add dev eth0 parent 2:1 classid 2:6 htb 
+> rate 600kbit ceil 600kbit burst 6k cburst 64k quantum 1600
+> 
+> and filters are: tc filter add dev eth0 parent 1: protocol ip handle 
+> 10 fw flowid 1:6 tc filter add dev eth1 parent 2: protocol ip handle 
+> 10 fw flowid 2:6
+> 
+> do you think is a connmark problem?
 
-- "My Packets" can easily identified by their destination port number, but this is only a temporary arrangement. Netfilter/iptable configurations are meant to be used for the long term. I'm afraid that customers will hate it when our application messes with their firewall rules. For me this starts looking like a bad hack here. From another point of view, I need something like a Layer-7 protocol module, where only Level-4 protocols are expected to be used. (I also caught a glimpse of l7-filter, which does not seem to fit my needs, unfortunately.)
-This is a big topic I need to look further into by myself. But given the case it's obvious that all I can discover is a big 'No-Go', it would be great to get a hint.
+Normally I don't use connmark because when I try some time ago to use
+it, I found some "not marked" problems, so I switch to classid. Better
+and cleaner for me.
 
-- The big performance bottleneck for usermode processing is the rate of incoming packets. This is true for the given application as well as for any packet capturing solution I have found. But I may have overlooked something. Is there a packet capturing module working around this by combining several packets before calling user mode?
-
-Thank You for Reading!
-
-Philipp Beyer - Software Developer
----------------------///------------------------
-Allied Vision Technologies GmbH www.alliedvisiontec.com 
-branch office Ahrensburg - Klaus-Groth-Str. 1
-22926 Ahrensburg - Germany
-phone: +49 4102/6688-0 
-President/CEO: Frank Grube; Amtsgericht Jena HRB 208962
-headquarters: Taschenweg 2a, 07646 Stadtroda 
+Michele
