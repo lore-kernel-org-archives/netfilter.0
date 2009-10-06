@@ -1,83 +1,116 @@
-From: Fabio Marcone <fabio.marcone@duet.it>
-Subject: Re: tc and CONNMARK
-Date: Tue, 06 Oct 2009 15:32:02 +0200
-Message-ID: <4ACB46D2.7090703@duet.it>
-References: <4AC9BD2E.301@duet.it> <4AC9FF4E.5010307@unipex.it> <4ACA04DF.3030006@duet.it> <4ACA1D55.1020304@unipex.it> <4ACB2FA0.30301@duet.it> <4ACB4156.5030608@unipex.it>
+From: Thomas Jacob <jacob@internet24.de>
+Subject: Re: Correctly classifying iptables NAT beahaviour...
+Date: Tue, 06 Oct 2009 16:01:54 +0200
+Message-ID: <1254837714.6248.17.camel@enterprise.ims-firmen.de>
+References: <4ACB3F84.1090107@ideaworkslabs.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4ACB4156.5030608@unipex.it>
+In-Reply-To: <4ACB3F84.1090107@ideaworkslabs.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Toby Bradshaw <Toby.Bradshaw@ideaworkslabs.com>
+Cc: netfilter@vger.kernel.org
 
-Hello,
->
->> iptables -t mangle -A PREROUTING -p TCP -m mac --mac-source 
->> xx:xx:xx:xx:xx:xx--dport 443 -j MARK --set-mark 8
->>
->
-> Why not forward or postrouting? Do you choose prerouting for use the 
-> mac addrs?
+I suspect that you are mixing up some things here.
 
-yes, I recognize workstation by macaddress and workstations are divided 
-into groups. Different groups can use different rates related at the 
-same IP/protocol/port. So, to limit traffic in upload I need to know if 
-a packet is related to a connection or an another one.
+As far as I understand, the major difference between port restricted
+NATs and Symmetic NATs is that the latter will allocate a second
+external port for a each new internal request from the same source port
+but to a different external address, while the first will use the same
+port.
 
->
->> iptables version: 1.4.3.2 kernel version: 2.6.29.3
->>
->> both patched to use IMQ devices.
->
-> Haven't you said this!
-> In _all_ my installations, I always skip to use imq. I don't know why,
-> but it's simple to use that are already included inside the vanilla 
-> kernel
-I use IMQ for services exported by router (like http, smtp, ecc ecc) so 
-I can limit upload and download traffic of a particular service 
-available on a particular interface.
+I: internal IP, E: External IP, S1/S2: Outside (Server) IPs
 
->
->>>
->>> Normally I don't use connmark because when I try some time ago to 
->>> use it, I found some "not marked" problems, so I switch to classid.
->>>  Better and cleaner for me.
->> what kind of problems?
->
-> ip filter don't match my data. But it's true that I didn't lost a lot of
-> time following that solution because... I find CLASSIFY
->
->> What do you mean with "I switch to classid" ?
->>
->
-> It's a wrong definition, sorry. The right one it CLASSIFY!
->
-> Simple example, assuming that you have 192.168.1.0/24, need to limit 
-> at 5mb
-> the ip .100 on both sides on flow and all the others goes at 1mbit all
-> together. eth0 lan, eth1 are wan.
->
-> tc qdisc add dev eth0 root handle 1: htb default 1000
-> tc class add dev eth0 parent 1: classid 1:1 htb rate 100mbit ceil 100mbit
-> tc class add dev eth0 parent 1:1 classid 1:100 htb rate 1mbit ceil 5mbit
-> tc class add dev eth0 parent 1:1 classid 1:1000 htb rate 1mbit ceil 1mbit
->
-> tc qdisc add dev eth1 root handle 2: htb default 1000
-> tc class add dev eth1 parent 2: classid 2:1 htb rate 100mbit ceil 100mbit
-> tc class add dev eth1 parent 2:1 classid 2:100 htb rate 1mbit ceil 5mbit
-> tc class add dev eth1 parent 2:1 classid 2:1000 htb rate 1mbit ceil 1mbit
->
-> iptables -t mangle -F FORWARD
-> iptables -t mangle -A FORWARD -o eth0 -d 192.168.1.100 -j CLASSIFY
-> --set-class 1:100
-> iptables -t mangle -A FORWARD -o eth1 -s 192.168.1.100 -j CLASSIFY
-> --set-class 5:100
-> #not need since class [12]:1000 are already a fetch-all for the 
-> unclassified
-> iptables -t mangle -A OUTPUT -o eth0 -j CLASSIFY --set-class 1:1000
-> iptables -t mangle -A OUTPUT -o eth1 -j CLASSIFY --set-class 5:1000
-Thanks a lot I didn't known CLASSIFY.
 
-Fabio
+Port restricted 
+
+ C1: I:iport ->  < E:eport1 > => S1:sport1
+ C2: I:iport ->  < E:eport1 > => S2:sport2
+
+Symmetric
+
+ C1: I:iport ->  < E:eport1 > => S1:sport1 
+ C2: I:iport ->  < E:eport2 > => S2:sport2
+
+
+That's how I understand the Wikipedia-Article
+http://en.wikipedia.org/wiki/Network_address_translation
+
+Iptables does the second thing.
+
+
+Whether or not eport is actually equal to iport is an implementation
+detail. Iptables historically made iport=eport, if that port wasn't
+already allocated to a different connection, in recent versions there
+is the --random-Option to change that.
+
+As far as I can see, to distinguish the two types, one has to make
+two requests from the internal IP and iport to 2 ports on the same
+server IP (or to 2 server IPs). If they get mapped to 2 different eports
+then it is a symmetric NAT.
+
+On Tue, 2009-10-06 at 14:00 +0100, Toby Bradshaw wrote:
+> That old chesnut.
+> 
+> I notice that the default iptables MASQ and SNAT behaviour appears to be 
+> an odd hybrid of both port restricted and symmetric NATs. As long as the 
+> host behind the iptables NAT is the first sender then the external 
+> firewall port becomes open and packets sent from in reply from the right 
+> ip:port will pass through the firewall. This is classic port restricted 
+> behaviour. However, if a packet is sent first from an external host to 
+> the ip:port address that would have been used by an internal host then 
+> when the internal host attempts to send to the same external host it's 
+> port becomes changed on the way through NAT (usually to 1024 in my 
+> experience). This is classic symmetric behaviour.
+> 
+> More succinctly:
+> 
+> Two hosts, A and B where A=IPa:PORTa, B=IPb:PORTb. A is behind an 
+> iptables NAT. B is, for all intents, open.
+> 
+> If A sends to B first then B can reply to A.
+> If B sends to A first then B will get ICMP port unreachable. If A now 
+> sends to B within a short space of time the port on packets form A will 
+> be changed (A=IPa:PORTx). If B were to be behind a port restricted NAT 
+> then A would receive ICMP port unreachable since B was sending to IPa:PORTa.
+> 
+> Can anyone confirm that this in fact the intended, correct behaviour and 
+> that I haven't got some part of my setup wrong ?
+> 
+> I'm in the middle of writing a NAT traversal library and would have 
+> liked to use iptables to model the typical consumer router gateway. This 
+> is a multiplayer game application.
+> 
+> The problem that this behaviour presents to me is that anything behind a 
+> this NAT will report itself as behind a port restricted NAT when in 
+> practice it's actually behind a symmetric NAT.  With the increasing 
+> popularity of iptables based gateway routers in domestic setups this is 
+> a real problem to anyone implementing NAT traversal. If I could detect 
+> that a host is behind such a NAT I can arrange for it to always send the 
+> first packet. If I can't then it's likely I'll never be able to reliably 
+> make a connection to it.
+> 
+> So.. my questions are:
+> 
+> Is it at all possible to at least get pure port restricted behaviour 
+> from iptables? i.e. Regardless of who sends the first packet if the host 
+> behind the NAT sends to ip:port then ip:port will be guaranteed to be 
+> able to reply.
+> 
+> Does anyone have any knowledge of an alternative traversal technique 
+> that does not involve a relay that might be able to form a connection 
+> under these conditions.
+> 
+> Thanks in advance,
+> 
+> --
+> t o b e
+> 
+> London, UK.
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
