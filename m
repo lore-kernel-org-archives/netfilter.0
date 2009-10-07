@@ -1,56 +1,55 @@
-From: Rick Jones <rick.jones2@hp.com>
+From: Oskar Berggren <oskar.berggren@gmail.com>
 Subject: Re: Multiple interfaces with the same IP address
-Date: Wed, 07 Oct 2009 14:15:22 -0700
-Message-ID: <4ACD04EA.5040303@hp.com>
-References: <4ACCEDDA.9020508@spacex.net> <4ACCF3F0.5040703@hp.com> <4ACCFF8F.1010000@spacex.net>
+Date: Wed, 7 Oct 2009 23:21:57 +0200
+Message-ID: <33be4bb30910071421s3410e8e4jdadedbc216de958a@mail.gmail.com>
+References: <4ACCEDDA.9020508@spacex.net> <4ACCF3F0.5040703@hp.com>
+	 <4ACCFF8F.1010000@spacex.net> <4ACD04EA.5040303@hp.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4ACCFF8F.1010000@spacex.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=6nXu/3Ino7sHrVegLwXL+5JN8n1UnaYqQpLh12+b6vQ=;
+        b=BrBrOCbVSnHms3TjX9xRuSIW5UQfRfpwbms0a/nLOwEGd4GJauXsdh/7ncbEU4WHqF
+         82NRlWxp/b8yf8zxqURtt91UyDBIWbLSSTqz4jVKueoIup+6vC4jkySgUPJEXPsy0u7T
+         eYWPC6RJqm6GlnNNr7XDBZQzffNjrR7EmqknE=
+In-Reply-To: <4ACD04EA.5040303@hp.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Greg Wilson-Lindberg <gregw@spacex.net>
-Cc: Greg Wilson-Lindberg <Greg.Wilson-Lindberg@spacex.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Greg Wilson-Lindberg wrote:
-> 
-> Rick Jones wrote:
-> ...
-> 
+2009/10/7 Rick Jones <rick.jones2@hp.com>:
+> Greg Wilson-Lindberg wrote:
 >>
->> Is there a specific reason you cannot further subnet the 10.0.0.0/8 
->> network for your HDLC channels and eschew the NAT?  Then at least 
->> ignoring the issue of "routing" broadcast datagrams (these are IP 
->> broadcasts and not simply ethernet broadcasts right?) reaching-out and 
->> touching the HDLC devices from the WAN would seem to be more 
->> straightforward.
+>> Rick Jones wrote:
+>> ...
 >>
->> rick jones
->> visions of many static routing table entries floating through his head
-> 
-> 
-> The 10.0.0.0/8 network is an existing network that has 100's of 
-> computers on it. 
 
-Not knowing (perhaps I just missed it) "the rest of the story" (a la Paul 
-Harvey), simply 100's of computers doesn't sound like all that much for a 
-renumbering - should it come to that.
+>
+> I have not fully parsed the manpage for the ip command, but it does h=
+ave
+> tidbits which suggest being able to specify interfaces by name when
+> manipulating routing tables. =A0If that is correct you should be able=
+ to add
+> specific host routes pointing-out specific interface names if you are=
+ indeed
+> forced to put assign the same IP address to each of the HCLC interfac=
+es on
+> the "gateway."
+>
 
-Are the IPs of the "HDLC machines" similarly constrained?
+Yes,
 
-> We are planning on  using some 10.x.0.0/16 addresses 
-> to NETMAP to the 172.16.0.0/16 addresses in some limited situations, but 
-> this doesn't solve the problem of routing to the correct HDLC channel to 
-> get to the final destination.
+  ip route add x.x.x.x/x dev eth1
 
-I have not fully parsed the manpage for the ip command, but it does have tidbits 
-which suggest being able to specify interfaces by name when manipulating routing 
-tables.  If that is correct you should be able to add specific host routes 
-pointing-out specific interface names if you are indeed forced to put assign the 
-same IP address to each of the HCLC interfaces on the "gateway."
+or similar works fine.
 
-Earlier you mentioned broadcasts that needed to reach through and touch the HDLC 
-systems - did you actually mean IP multicast?
+If you like, you can also use ip addr add x.x.x.x/32 dev eth1 to set
+an ip-address without having the kernel automatically install a subnet
+route. Then manage the routing tables complete by yourself.
 
-rick jones
+/Oskar
