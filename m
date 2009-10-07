@@ -1,88 +1,37 @@
-From: Robin Wood <robin@digininja.org>
-Subject: Re: transparent proxy and iptables failing
-Date: Wed, 7 Oct 2009 14:12:10 +0100
-Message-ID: <7de411230910070612u55050aa5mae98dfd0e32032d@mail.gmail.com>
-References: <7de411230910070245s23552d36v66496187db666440@mail.gmail.com> 
-	<7de411230910070444u50e7c638m968350c6da1ce6e1@mail.gmail.com> 
-	<4ACC83EC.9040801@gulfsat.mg> <4ACC8A26.1050709@standarduniversal.com.au>
+From: Kostas Pelechrinis <kpele_ntua@yahoo.com>
+Subject: Forward traffic between two interfaces on the same host
+Date: Wed, 7 Oct 2009 07:56:01 -0700 (PDT)
+Message-ID: <43743.45717.qm@web31601.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4ACC8A26.1050709@standarduniversal.com.au>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1254927362; bh=RvRKuw7Ah2lCF+ae3em3RAZmsTS//AXg1mU0C16uew4=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Subject:To:Cc:MIME-Version:Content-Type; b=Ki+A5e53yzJU48LLdqXFLDmG9Re02JYpXGQ1fzPRuAwlg4Hi26aPvxo1jlrfQTJLJmBoR+fhjrholxW1svw6MJ0ZL3UJIelzslxOh8PnMP6VWvs4OU6+yyBPDnlEZxkh0tgnyt4NQ2EjR6tSWcp51lirRt2XWf95SPARdZHDsNQ=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Brian Austin - Standard Universal <brian@standarduniversal.com.au>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
+Cc: kpele_ntua@yahoo.com
 
-2009/10/7 Brian Austin - Standard Universal <brian@standarduniversal.co=
-m.au>:
-> you could list your rules to prove that they look ok.
->
-> iptables -t nat --list -V
->
+Hi all,
 
-I've tried changing br-lan to br0 and enclosing it in quotes but neithe=
-r work.
+I am new in using iptables so I would like to do a few questions for something that maybe many of you find easy :) 
 
-Here is the output from the above
+In particular, I have a laptop with two wireless interfaces, a Wifi and a 3G.  I would like to share the 3G broadband connection available on this laptop with other machines within my home/internal network through the wifi interface.  I would like to ask if such functionality is possible to be implemented using iptables.  
 
-# iptables -L -v -t nat
-Chain PREROUTING (policy ACCEPT 4 packets, 532 bytes)
- pkts bytes target     prot opt in     out     source               des=
-tination
-    0     0 REDIRECT   tcp  --  br0    any     anywhere
-anywhere            tcp dpt:80 redir ports 3128
+Even more specific what I need is a 'relay'-like functionality.  Let's assume that laptop A has the two interfaces and laptop B has only a wifi interface.  Laptop-B will be connected with laptop A through the wifi and laptop A needs to serve all the internet requests of laptop B through the 3G usb modem interface.  
 
-Chain POSTROUTING (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               des=
-tination
+I think that I need to use rules like the following for laptop A :
 
-Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               des=
-tination
+(I use the names wifi0 and 3g0 for the corresponding interfaces and xxx.yyy.zzz.www for the ip of the 3G interface)
+iptables -A FORWARD -i wifi0 -o 3g0 -j ACCEPT
+iptables -A FORWARD -i 3g0 -o wifi0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A POSTROUTING -t nat -s 192.168.0.0/24 -o eth0 -j SNAT --to-source xxx.yyy.zzz.www
 
-And again, testing DROPing instead
+Do I miss something here ?  Do I need to take care of something else as well?
 
-# iptables -L -v -t nat
-Chain PREROUTING (policy ACCEPT 4 packets, 532 bytes)
- pkts bytes target     prot opt in     out     source               des=
-tination
-    0     0 DROP       tcp  --  br0    any     anywhere
-anywhere            tcp dpt:80
-
-Chain POSTROUTING (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               des=
-tination
-
-Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               des=
-tination
+Thanks a lot for the help
 
 
-With both these rules in place I've ran tcpdump and watched traffic go
-over br0 on port 80.
 
-What does the 4 packets and 532 bytes mean? That doesn't seem to be
-increasing as I do anything and isn't reset when I do a flush.
 
-Robin
-
->
->
-> Rakotomandimby Mihamina wrote:
->>
->> 10/07/2009 02:44 PM, Robin Wood::
->>>
->>> br-lan
->>> What am I doing wrong?
->>
->> IMHO, the "-" in br-lan is wrong.
->> escape/protect it with "br-lan" or something like that.
->>
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
+      
