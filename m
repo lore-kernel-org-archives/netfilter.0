@@ -1,26 +1,42 @@
-From: Fabio Marcone <fabio.marcone@duet.it>
-Subject: Re: tc and CONNMARK [SOLVED]
-Date: Wed, 07 Oct 2009 13:41:35 +0200
-Message-ID: <4ACC7E6F.5050106@duet.it>
-References: <4AC9BD2E.301@duet.it>
+From: Robin Wood <robin@digininja.org>
+Subject: transparent proxy and iptables failing
+Date: Wed, 7 Oct 2009 12:44:18 +0100
+Message-ID: <7de411230910070444u50e7c638m968350c6da1ce6e1@mail.gmail.com>
+References: <7de411230910070245s23552d36v66496187db666440@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4AC9BD2E.301@duet.it>
+In-Reply-To: <7de411230910070245s23552d36v66496187db666440@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Thanks to all for your help.
->
-> Starting a single connection (upload or download) traffic is limited 
-> correctly but if I start two connection (one in upload and the other 
-> in download) I note that the one in upload runs correctly (how in the 
-> previous test) but the one in download stalls and then send some 
-> packets and then stalls alternatively.
+Hi
+I'm trying to setup a transparent proxy so I've got a linux device
+with two NICs which are bridged using brctl. Traffic flows happily
+across the bridge so I know it is working fine.
 
-I solve using sfq to htb leaves, in this way this two flows share the 
-bandwidth correctly.
+Now when I try to setup the iptables rules they are being ignored. The
+rule I want to use is:
 
-Fabio
+iptables -t nat -A PREROUTING -i br-lan -p tcp --dport 80 -j REDIRECT
+--to-port 3128
+
+but nothing gets redirected. I've also tried changing 3128 to a port
+that is closed to see what would happen, nothing, the packets kept
+flowing.
+
+I've also tried clearing the list and then adding
+
+iptables -t nat -A PREROUTING -i br-lan -p tcp --dport 80 -j DROP
+
+which should kill all web traffic but it doesn't. As a last resort I tried
+
+iptables -t nat -A PREROUTING -i br-lan -p tcp -j DROP
+
+which should kill all TCP traffic but again, nothing.
+
+What am I doing wrong?
+
+Robin
