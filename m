@@ -1,37 +1,40 @@
-From: Andrei Moraru <matagou@gmail.com>
-Subject: tc doesn't shape correctly -->> iproute2-latest + iptables 1.4.3.2 
-	+linux-kernel 2.6.29.4 + imq support
-Date: Thu, 8 Oct 2009 16:49:51 +0300
-Message-ID: <2f88d4dd0910080649p21768c82k5a81292bb6013c88@mail.gmail.com>
+From: Karel Rericha <karel@maxtel.cz>
+Subject: Re: tc doesn't shape correctly -->> iproute2-latest + iptables 
+	1.4.3.2 +linux-kernel 2.6.29.4 + imq support
+Date: Thu, 8 Oct 2009 17:47:33 +0200
+Message-ID: <5b19ed110910080847q3bed17d3u9ae6dd42061917c8@mail.gmail.com>
+References: <2f88d4dd0910080649p21768c82k5a81292bb6013c88@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type:content-transfer-encoding;
-        bh=j4GQvEbUv7hanA2apRsgrP9EKuGu7cQuqw8XVvbP8n0=;
-        b=AxSUERB/Lhst4otOOVS53JJyZtaC45mScxEs6+/Rh05L6bf42NLpaxyh5AtoAucHD/
-         UyYazG8IQr/mj9BAPau9TZgphZLLzrgYCIWNmCrbQJGFLk2lMd2l9Nbkg5TRlAMckoTl
-         scnFcf9438rtC7cNFzGRHJbILpkffJi0bxH0o=
+In-Reply-To: <2f88d4dd0910080649p21768c82k5a81292bb6013c88@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello
-I am running a Linux gateway, with details written in title.
-The kernel is patched for imq support.
-The gateway has 2 interfaces, eth0 --> ISP, , eth1 -->LAN.
-Also there w virtual devices, imq0 atached to eth0 for download from
-the world, , imq1 atached to eth1 for upload from the LAN.
-I have a problem with traffic shaping:
-1) the ceil value for the root class atached to imq0 is not respected;
-currently the ceil value is 3200 kbits but the bandwitdh goes near
-3700 kbits.
-Some details of my system that might be helpful:
-CONFIG_HZ=3D1000
-net.ipv4.netfilter.ip_conntrack_max =3D 262140
-The discipline for queueing is HFSC.
-Best regards,
-=A0 matagou
+2009/10/8 Andrei Moraru <matagou@gmail.com>:
+> I have a problem with traffic shaping:
+> 1) the ceil value for the root class atached to imq0 is not respected;
+> currently the ceil value is 3200 kbits but the bandwitdh goes near
+> 3700 kbits.
+
+Same here,
+
+I can confirm that similar setup (no imq) on Gentoo quadcore AMD64
+2.6.29 HFSC root class overflows where HTB is ok. This situation
+persist for about year and few last kernels and I havent found a
+solution except some notices about HFSC in current linux incarnation
+being buggy.
+
+Our solution was return back to HTB :-)
+
+If anyone knows why HFSC overflows, please post.
+
+Karel
+
+P.S.: Half year back we tested simple HFSC setup on bench with 3
+classes (5, 10 and 15Mbits with root class 20Mbits) and when we
+saturated all classes, total flow was 20Mbit for few seconds (5-30)
+and then it overflowed to about 25Mbit, and sometimes returned back to
+20Mbit after few minutes. VERY strange.
