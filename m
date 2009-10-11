@@ -1,31 +1,27 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+From: jen140@gmail.com
 Subject: Re: Port Forwarding
-Date: Sun, 11 Oct 2009 10:37:46 +0200
-Message-ID: <4AD1995A.9020601@plouf.fr.eu.org>
-References: <1572887654.20091011013039@gmail.com>
+Date: Sun, 11 Oct 2009 14:56:49 +0100
+Message-ID: <143238421.20091011145649@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1572887654.20091011013039@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:date:from:x-priority
+         :message-id:to:cc:subject:mime-version:content-type
+         :content-transfer-encoding;
+        bh=w/A7dWYw4yBrg2v+kVhk+5nr5T1SfjD8rQuzQcBWp/s=;
+        b=avhLq//LWfZxD3KKc1Ln7D8uR/uDM61Tv886IVeMYUfeAJaLl7/42bALsrD6eKMcNe
+         p9fbr3h037VnD83mIWIq/Gf+5gcWTYyHfXRMqm5bJ2M+W4e/uUq0HLGHSJr5UM0GiyOO
+         9cCwr79FIVntN5dOhRXuVVt+HEIUHLmE4wETs=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
+Cc: Brian Austin - Standard Universal <brian@standarduniversal.com.au>
 
-Hello,
+It is enabled.
+jen140@server:~$ cat /proc/sys/net/ipv4/ip_forward
+1
+But still doesnt work =(.
 
-jen140@gmail.com a =E9crit :
-> I  wanted  to configure port forwarding, and forward port 135 from An=
-y
-> address  that  comes from eth0 (internet) to ip 192.168.0.200 and sam=
-e
-> port(135).
-[...]
-> But   the   problem   is   that  it  is  filtered  (I  check  it  wit=
-h
-> nmap-online.com service).
-
-Did you check with a packet sniffer that these packets are actually
-received by the internet interface ? They may be filtered by either you=
-r
-ISP or the sender's ISP.
