@@ -1,39 +1,65 @@
-From: exnix.com@gmail.com
-Subject: Non-blocking access to packets via queue libraries
-Date: Tue, 13 Oct 2009 23:15:15 +0300
-Message-ID: <dc68ffce0910131315p4297b925qc9f627e7c8db03e@mail.gmail.com>
+From: Robin Wood <robin@digininja.org>
+Subject: Re: transparent proxy and iptables (and ebtables) failing
+Date: Tue, 13 Oct 2009 22:27:00 +0100
+Message-ID: <7de411230910131427t26e7a84cg181329b8c32d62f9@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type:content-transfer-encoding;
-        bh=xb/3aLZcTQqGTRXfpnFb6ui/Xn7ABEWWfmpETiysTCg=;
-        b=hobYaXKR4uciAKleBgOd4ff9zRh8bnRQ2zbM34nolvBX3Tf9r5ttm/FHpOLaWpmLyJ
-         3H2Yz2yAoSV17lBx45p/wFOrWLLasgCkU3A8M60rb24GVwQT7NQCdWJIpvQbdK6OQfBd
-         7KY0BNRfuWo3ON2KAJBvhD/1Cz44lViYHN1GM=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello guys !
+2009/10/7 Robin Wood <robin@digininja.org>:
+> 2009/10/7 Robin Wood <robin@digininja.org>:
+>> Hi
+>> I'm trying to setup a transparent proxy so I've got a linux device
+>> with two NICs which are bridged using brctl. Traffic flows happily
+>> across the bridge so I know it is working fine.
+>>
+>> Now when I try to setup the iptables rules they are being ignored. The
+>> rule I want to use is:
+>>
+>> iptables -t nat -A PREROUTING -i br-lan -p tcp --dport 80 -j REDIRECT
+>> --to-port 3128
+>>
+>> but nothing gets redirected. I've also tried changing 3128 to a port
+>> that is closed to see what would happen, nothing, the packets kept
+>> flowing.
+>
+> Various people have suggested using ebtables rather than iptables
+> because I want to act on traffic over the bridge rather than between
+> interfaces. If this is correct, how would I rewrite the above rule in
+> ebtables speak?
 
-=A0 I'm trying to writing a simple program which will delay the packets
-amenably to the rules. (rules are code of this program).
+I'm back to playing with this and I've now tried ebtables (which I
+hope is covered by this list) and I'm still not managing to trap
+traffic. The bridge is as follows
 
-=A0 I have a VERY BIG problem with implementing this because queue
-libraries working in blocking mode. It waits when callback returns
-something and goes further.
+# brctl show
+bridge name     bridge id               STP enabled     interfaces
+br-lan          8000.001884d0a060       no              eth0.0
+                                                        eth0.1
 
-=A0 Of course I guess this packets going through netfilter without any
-queueing, working by the scheme : first in, fist out, second in,
-second out. Even if it's true, how can I implement parallel processing
-of the packets, through another things ?
+And the two rules I've tried are
 
+# ebtables -L
+Bridge table: filter
 
-=A0 Hope for your help!
-=A0sorry for my english %)
+Bridge chain: INPUT, entries: 1, policy: ACCEPT
+-p IPv4 --ip-dst 192.168.0.8 -j DROP
 
-Thank you.
+Bridge chain: FORWARD, entries: 1, policy: ACCEPT
+-p IPv4 --ip-proto tcp --ip-dport 80 -j DROP
+
+Bridge chain: OUTPUT, entries: 0, policy: ACCEPT
+
+The first I think should intercept all ipv4 traffic going to
+192.168.0.8 and drop it, it doesn't.
+
+The second should drop all ipv4 tcp traffic on port 80. Again, this
+doesn't work.
+
+Any suggestions as to what could be happening?
+
+Robin
