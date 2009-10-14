@@ -1,65 +1,46 @@
-From: Robin Wood <robin@digininja.org>
-Subject: Re: transparent proxy and iptables (and ebtables) failing
-Date: Tue, 13 Oct 2009 22:27:00 +0100
-Message-ID: <7de411230910131427t26e7a84cg181329b8c32d62f9@mail.gmail.com>
+From: Gary Smith <gary.smith@holdstead.com>
+Subject: Ramdom NAT drop
+Date: Tue, 13 Oct 2009 17:12:36 -0700
+Message-ID: <034DEBCAE934A74991E6E76B8DA72D14182B54DFB0@HSSBS.holdstead.local>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
 
-2009/10/7 Robin Wood <robin@digininja.org>:
-> 2009/10/7 Robin Wood <robin@digininja.org>:
->> Hi
->> I'm trying to setup a transparent proxy so I've got a linux device
->> with two NICs which are bridged using brctl. Traffic flows happily
->> across the bridge so I know it is working fine.
->>
->> Now when I try to setup the iptables rules they are being ignored. The
->> rule I want to use is:
->>
->> iptables -t nat -A PREROUTING -i br-lan -p tcp --dport 80 -j REDIRECT
->> --to-port 3128
->>
->> but nothing gets redirected. I've also tried changing 3128 to a port
->> that is closed to see what would happen, nothing, the packets kept
->> flowing.
->
-> Various people have suggested using ebtables rather than iptables
-> because I want to act on traffic over the bridge rather than between
-> interfaces. If this is correct, how would I rewrite the above rule in
-> ebtables speak?
+Hello, 
 
-I'm back to playing with this and I've now tried ebtables (which I
-hope is covered by this list) and I'm still not managing to trap
-traffic. The bridge is as follows
+I have a scenario where we are NAT'ing multiple ports and in some cases entire IP addresses to our internal private range.  Some time ago we noticed that web pages from one of the web servers would randomly fail.  Investigating it we found that conntrack was full and that packets were being dropped.
 
-# brctl show
-bridge name     bridge id               STP enabled     interfaces
-br-lan          8000.001884d0a060       no              eth0.0
-                                                        eth0.1
+So, since the server has ram, we upped the max bucket and conntrack to 1048576 and 4194304, respectably.  The problem appears to go away as we watched the counter go above 40k connections.  It has since then been hovering around 40k (currently 35k).
 
-And the two rules I've tried are
+About two weeks later, I noticed that I started getting the failures again.  Checking the firewall, connections looked good (once again, 40k or so).  Checked the web server logs, request never hit.  What I found is that after about 20 minutes or so I will see this failure randomly.  I think it's in conjunction with some type of keep alive in IE/Firefox.  So, when the problem happens in IE, and the pages continually fail, if I open up Firefox the page comes up fine.  This issue comes up when hitting the page from internally on the network through NAT
 
-# ebtables -L
-Bridge table: filter
+To me is looks like NAT is dropping the connection that has been established and doesn't want to reconnect.  A tcpdump on the external interface shows the request stopping at the iptables firewall and not going beyond that.  But then everything will clear up for a few days.
 
-Bridge chain: INPUT, entries: 1, policy: ACCEPT
--p IPv4 --ip-dst 192.168.0.8 -j DROP
+Here are the relevant rules:
 
-Bridge chain: FORWARD, entries: 1, policy: ACCEPT
--p IPv4 --ip-proto tcp --ip-dport 80 -j DROP
+-A PREROUTING -d 208.209.210.211 -j DNAT --to-destination 192.168.0.10
+-A INPUT -d 208.209.210.211 -i eth1 -p tcp -m tcp --sport 20 --dport 1024:65535 -j ACCEPT 
+-A INPUT -d 208.209.210.211 -i eth1 -p tcp -m tcp -m multiport --dports 80,443,21,20 -j ACCEPT
+-A OUTPUT -d 208.209.210.211 -j DNAT --to-destination 192.168.0.10
 
-Bridge chain: OUTPUT, entries: 0, policy: ACCEPT
+The final rule is a log and drop for anything coming in on this particular IP address (which I know works as we see a lot of attempts for 445).
 
-The first I think should intercept all ipv4 traffic going to
-192.168.0.8 and drop it, it doesn't.
+I'm just trying to find any logic reason on why the connections are getting dropped.  I'm thinking it's NAT, but that's just a WAG at this point.  
 
-The second should drop all ipv4 tcp traffic on port 80. Again, this
-doesn't work.
+OS is CentOS 5, 2.6.18-128.el5, iptables v1.3.5, minimal install, firewall only.  Machine has 512mb ram.
 
-Any suggestions as to what could be happening?
+             total       used       free     shared    buffers     cached
+Mem:        515444     483240      32204          0     141504     296208
+-/+ buffers/cache:      45528     469916
+Swap:      1052248          0    1052248
 
-Robin
+Any advice?
+
+
+
+
