@@ -1,46 +1,49 @@
-From: Gary Smith <gary.smith@holdstead.com>
-Subject: Ramdom NAT drop
-Date: Tue, 13 Oct 2009 17:12:36 -0700
-Message-ID: <034DEBCAE934A74991E6E76B8DA72D14182B54DFB0@HSSBS.holdstead.local>
+From: Karel Rericha <karel@maxtel.cz>
+Subject: Re: tc doesn't shape correctly -->> iproute2-latest + iptables 
+	1.4.3.2 +linux-kernel 2.6.29.4 + imq support
+Date: Wed, 14 Oct 2009 11:02:18 +0200
+Message-ID: <5b19ed110910140202t23a3fd11kcc754220de041ccd@mail.gmail.com>
+References: <2f88d4dd0910080649p21768c82k5a81292bb6013c88@mail.gmail.com>
+	 <5b19ed110910080847q3bed17d3u9ae6dd42061917c8@mail.gmail.com>
+	 <4AD4087D.5060208@ziu.info>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+In-Reply-To: <4AD4087D.5060208@ziu.info>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Michal Soltys <soltys@ziu.info>
+Cc: netfilter@vger.kernel.org
 
-Hello, 
+2009/10/13 Michal Soltys <soltys@ziu.info>:
+>>
+>> I can confirm that similar setup (no imq) on Gentoo quadcore AMD64
+>> 2.6.29 HFSC root class overflows where HTB is ok. This situation
+>> persist for about year and few last kernels and I havent found a
+>> solution except some notices about HFSC in current linux incarnation
+>> being buggy.
+>>
+>
+> Mind giving a pointer to such notices ?
 
-I have a scenario where we are NAT'ing multiple ports and in some cases entire IP addresses to our internal private range.  Some time ago we noticed that web pages from one of the web servers would randomly fail.  Investigating it we found that conntrack was full and that packets were being dropped.
+Sorry, I dont have links to such notices I read when I did tests, but
+quick Google search for "hfsc overflows" is giving results like this:
+http://patchwork.ozlabs.org/patch/27303/
 
-So, since the server has ram, we upped the max bucket and conntrack to 1048576 and 4194304, respectably.  The problem appears to go away as we watched the counter go above 40k connections.  It has since then been hovering around 40k (currently 35k).
+>> P.S.: Half year back we tested simple HFSC setup on bench with 3
+>> classes (5, 10 and 15Mbits with root class 20Mbits) and when we
+>> saturated all classes, total flow was 20Mbit for few seconds (5-30)
+>> and then it overflowed to about 25Mbit, and sometimes returned back to
+>> 20Mbit after few minutes. VERY strange.
+>
+> What exactly was your setup and how did you test it ?
+>
 
-About two weeks later, I noticed that I started getting the failures again.  Checking the firewall, connections looked good (once again, 40k or so).  Checked the web server logs, request never hit.  What I found is that after about 20 minutes or so I will see this failure randomly.  I think it's in conjunction with some type of keep alive in IE/Firefox.  So, when the problem happens in IE, and the pages continually fail, if I open up Firefox the page comes up fine.  This issue comes up when hitting the page from internally on the network through NAT
+Not sure (long time ago), but I think gentoo-sources 2.6.27 AMD64 on
+dual dualcore Opteron 2214, 2x Intel 82571EB, 2x Broadcom BCM5754,
+tested without bonding (but in production setup bonding is used),
+without packet offloading, no imq nor ifb used. HFSC overflowed but
+HTB was ok.
 
-To me is looks like NAT is dropping the connection that has been established and doesn't want to reconnect.  A tcpdump on the external interface shows the request stopping at the iptables firewall and not going beyond that.  But then everything will clear up for a few days.
-
-Here are the relevant rules:
-
--A PREROUTING -d 208.209.210.211 -j DNAT --to-destination 192.168.0.10
--A INPUT -d 208.209.210.211 -i eth1 -p tcp -m tcp --sport 20 --dport 1024:65535 -j ACCEPT 
--A INPUT -d 208.209.210.211 -i eth1 -p tcp -m tcp -m multiport --dports 80,443,21,20 -j ACCEPT
--A OUTPUT -d 208.209.210.211 -j DNAT --to-destination 192.168.0.10
-
-The final rule is a log and drop for anything coming in on this particular IP address (which I know works as we see a lot of attempts for 445).
-
-I'm just trying to find any logic reason on why the connections are getting dropped.  I'm thinking it's NAT, but that's just a WAG at this point.  
-
-OS is CentOS 5, 2.6.18-128.el5, iptables v1.3.5, minimal install, firewall only.  Machine has 512mb ram.
-
-             total       used       free     shared    buffers     cached
-Mem:        515444     483240      32204          0     141504     296208
--/+ buffers/cache:      45528     469916
-Swap:      1052248          0    1052248
-
-Any advice?
-
-
-
-
+Karel
