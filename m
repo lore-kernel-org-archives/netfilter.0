@@ -1,30 +1,40 @@
-From: Kevin Bailey <ke-linux@retriever.dyndns.org>
-Subject: Pre-routing re-write
-Date: Wed, 14 Oct 2009 16:10:17 -0700
-Message-ID: <20091014231016.GA4580@retriever.dyndns.org>
+From: Mallika Gautam <mallika.gautam@gmail.com>
+Subject: Re: ipt ROUTE extension
+Date: Thu, 15 Oct 2009 10:06:35 +0100
+Message-ID: <9041a1390910150206x1a715060j4b017bc43669cf05@mail.gmail.com>
+References: <9041a1390910141008v26bb354idfcffb173ac87110@mail.gmail.com> 
+	<4AD642C3.2070900@gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :from:date:message-id:subject:to:cc:content-type;
+        bh=A6ELQzppo9mUB4+X5crWNmaWZMD5c1D9+RJ4DUrKAvM=;
+        b=Tv/hC/Lel8xZ9YIcBAiBK8oxZHVlxtcIsOOXzugsQhiBJqEUM3lmb1TNKOVJsRED6J
+         PUq1Q2mCgxHOiPlJEfBgWtJyvWtNOorNT5UQQ8gYoQu/RVDPPkfFkuFP8r2vFrc2GTLS
+         EXwTU19xrEtZyagHyR7F94YkOaz1P9K1vE3yI=
+In-Reply-To: <4AD642C3.2070900@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Saikiran Madugula <hummerbliss@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-I'm trying to get a re-write rule to occur after routing has occured.
-My host has the address 192.168.10.1 and a gateway of 192.168.10.2
-to 192.168.11.0/24.
+On Wed, Oct 14, 2009 at 10:29 PM, Saikiran Madugula
+<hummerbliss@gmail.com> wrote:
+> Mallika Gautam wrote:
+>> Hi,
+>>
+>> I am trying to find ipt_ROUTE patch for kernel 2.6.20 version. Can any
+>> one kindly point me to the site.
+>>
+> AFAIK its been replaced with xt_TEE (http://xtables-addons.sourceforge.net/).
+>
+Thanks for your response.
+I did check the addons releases but I could not find ROUTE target there.
+Last I know was that it was in experimental state. Does anyone know if
+it has been removed completely. Any pointer will be of help.
 
-The re-write rule I have is:
-
-# Map 11 net to 10 net
-iptables -t nat -A OUTPUT -d 192.168.11.0/24 -j NETMAP --to 192.168.10.0/24
-
-It does the re-write but, as far as I can tell, isn't using the
-default gateway to 192.168.11.0/24.
-
-I assume a POSTROUTING rule might do this, but when I use the
-POSTROUTING queue, it doesn't do the translation. Using mangle
-or DNAT produce an error, not surprisingly.
-
-Is there any way to do this ?
+Thanks
