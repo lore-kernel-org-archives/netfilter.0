@@ -1,41 +1,89 @@
-From: Saikiran Madugula <hummerbliss@gmail.com>
-Subject: Re: ipt ROUTE extension
-Date: Thu, 15 Oct 2009 10:35:39 +0100
-Message-ID: <4AD6ECEB.20505@gmail.com>
-References: <9041a1390910141008v26bb354idfcffb173ac87110@mail.gmail.com> 	<4AD642C3.2070900@gmail.com> <9041a1390910150206x1a715060j4b017bc43669cf05@mail.gmail.com>
+From: "Roderick Groesbeek" <r.groesbeek@triple-it.nl>
+Subject: conntrack generates UDP 'ghost traffic'
+Date: Thu, 15 Oct 2009 18:23:45 +0200
+Message-ID: <3F6AD08836AD044C935E9FAC3A764742024241BE@pandora.triple.lan>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from
-         :user-agent:mime-version:to:cc:subject:references:in-reply-to
-         :content-type:content-transfer-encoding;
-        bh=+U8xPcdmw1e+w4ugKoXaMP6BbQAnV+1uIGDsmIMHtGE=;
-        b=OVYLdW1NLEesawhDkjgDT5aY8kuRaG6PvFDDg8uEmnzjm38aQcIZihKCCdatYhmSrc
-         YvjQ+iZKPOKpqfF6bBqDWM2ltKMc6k//6VToLRdfteaKZuZjX7PNww2b5nW6Pjm5MeUk
-         alByRP5qI8knb20SBQT2aS2YIXWRK0agUoFZE=
-In-Reply-To: <9041a1390910150206x1a715060j4b017bc43669cf05@mail.gmail.com>
+Content-class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Mallika Gautam <mallika.gautam@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-Mallika Gautam wrote:
-> On Wed, Oct 14, 2009 at 10:29 PM, Saikiran Madugula
-> <hummerbliss@gmail.com> wrote:
->> Mallika Gautam wrote:
->>> Hi,
->>>
->>> I am trying to find ipt_ROUTE patch for kernel 2.6.20 version. Can any
->>> one kindly point me to the site.
->>>
->> AFAIK its been replaced with xt_TEE (http://xtables-addons.sourceforge.net/).
->>
-> Thanks for your response.
-> I did check the addons releases but I could not find ROUTE target there.
-> Last I know was that it was in experimental state. Does anyone know if
-> it has been removed completely. Any pointer will be of help.
+Hi list,
 
-http://www.gossamer-threads.com/lists/iptables/devel/68870.
+We have a situation where the result is that UDP traffic is flooded to =
+all our ports on our switch infrastructure.
+
+Situation:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+Android <-> {wifi} <-> Linux Nat <-> Tiss (Triple streaming server prod=
+uct)
+
+We have an ESTABLISHED TCP connection...
+
+[root@pollux conntrack-tools-0.9.13 ]# conntrack -L -p tcp --dport 554
+tcp      6 405224 ESTABLISHED src=3D192.168.14.57 dst=3D93.187.9.29 spo=
+rt=3D54148 dport=3D554 packets=3D11 bytes=3D1733 src=3D93.187.9.29 dst=3D=
+213.132.176.3 sport=3D554 dport=3D54148 packets=3D7 bytes=3D1877 [ASSUR=
+ED] mark=3D0 secmark=3D0 use=3D1
+conntrack v0.9.13 (conntrack-tools): 1 flow entries have been shown.
+
+And running UDP connections with it...
+[root@pollux conntrack-tools-0.9.13 ]# cat nf_conntrack|grep 93.187.9.2=
+9|grep udp
+ipv4     2 udp      17 178 src=3D192.168.14.57 dst=3D93.187.9.29 sport=3D=
+8634 dport=3D13104 packets=3D3 bytes=3D120 src=3D93.187.9.29 dst=3D213.=
+132.176.3 sport=3D13104 dport=3D8634 packets=3D100514 bytes=3D34886806 =
+[ASSURED] mark=3D0 secmark=3D0 use=3D1
+ipv4     2 udp      17 179 src=3D192.168.14.57 dst=3D93.187.9.29 sport=3D=
+8632 dport=3D13102 packets=3D3 bytes=3D120 src=3D93.187.9.29 dst=3D213.=
+132.176.3 sport=3D13102 dport=3D8632 packets=3D333066 bytes=3D266119819=
+ [ASSURED] mark=3D0 secmark=3D0 use=3D1
+ipv4     2 udp      17 28 src=3D93.187.9.29 dst=3D213.132.176.3 sport=3D=
+13105 dport=3D8635 packets=3D6251 bytes=3D525064 [UNREPLIED] src=3D213.=
+132.176.3 dst=3D93.187.9.29 sport=3D8635 dport=3D13105 packets=3D0 byte=
+s=3D0 mark=3D0 secmark=3D0 use=3D1
+ipv4     2 udp      17 29 src=3D93.187.9.29 dst=3D213.132.176.3 sport=3D=
+13103 dport=3D8633 packets=3D28080 bytes=3D2358680 [UNREPLIED] src=3D21=
+3.132.176.3 dst=3D93.187.9.29 sport=3D8633 dport=3D13103 packets=3D0 by=
+tes=3D0 mark=3D0 secmark=3D0 use=3D1
+[root@pollux conntrack-tools-0.9.13 ]#=20
+(Btw the RTCP are UNREPLIED, that's probably because the android is not=
+ sending RTCP back? At least not on the same ports?)
+
+But the SOURCE is dead!
+[root@pollux conntrack-tools-0.9.13 ]# ping  -w 3 192.168.14.57
+PING 192.168.14.57 (192.168.14.57) 56(84) bytes of data.
+--- 192.168.14.57 ping statistics ---
+4 packets transmitted, 0 received, 100% packet loss, time 2999ms
+[root@pollux conntrack-tools-0.9.13 ]#
+[root@pollux conntrack-tools-0.9.13 ]# arp -na |grep 192.168.14.57
+[root@pollux conntrack-tools-0.9.13 ]#
+
+Problem:
+=3D=3D=3D=3D=3D=3D=3D=3D
+In this situation the UDP traffic is flooded through our SWITCH infrast=
+ructure!
+
+
+Question:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D
+How can we avoid this?
+
+--
+Vriendelijke Groeten/Kind Regards,
+
+Roderick
+--
+TRIPLE IT
+straat://Keesomstraat 10e
+postcode://1821 BS
+plaats://Alkmaar=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=20
+tel://+31(0)72-5129516
+fax://+31(0)72-5129520=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0
+http://www.triple-it.nl=A0 "Laat uw Net Werken!"=20
+
