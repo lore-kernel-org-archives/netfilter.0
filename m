@@ -1,91 +1,61 @@
-From: Ralph Blach <rcblach@gmail.com>
-Subject: Re: propper logging and dropping
-Date: Fri, 16 Oct 2009 12:18:55 -0400
-Message-ID: <4AD89CEF.2000509@gmail.com>
-References: <4AD7E857.6020100@gmail.com> <4AD821BB.6060205@chello.at>
+From: "Gareth Williams" <gwilliams@ubicom.com>
+Subject: Contrack hook sees each UDP packet as a new connection but proc/net/nf_conntrack shows correctly - what am I doing wrong?
+Date: Fri, 16 Oct 2009 09:50:19 -0700
+Message-ID: <CB2DD11991B27C4F99935E6229450D3204B4DC44@STORK.scenix.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from
-         :user-agent:mime-version:to:subject:references:in-reply-to
-         :content-type:content-transfer-encoding;
-        bh=k8XyMjxHuWb0FgXU7dzyMyuzc2pSirbIpYI8J8hwp18=;
-        b=ORmZre4Ae/MAcAS42oGrk1FhQCaWIFuz7PLEpFf02Lm8ynmRbty4BoPS3Zaevzvh5Y
-         VmEzR7hNsgU/fcy4ggiVpMlshIllk3qUpqycmRTjrdVyQJf0zzXJmPGz5+MTexXtNYnU
-         CsujVRafDl3u+2h1QvEAGHJrnZXYM84dmsCWw=
-In-Reply-To: <4AD821BB.6060205@chello.at>
+Content-class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org, mart.frauenlob@chello.at
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Mart,
+Hello all.
 
-Here is my network setup
-my local internet address of my home natted network is 10.0.0.0/255.255.255
-My linux server is 10.0.0.2
+I register two hooks into conntrack as follows:
 
-I want to leave port 22 open so I can remotely ssh into my system.
-As you are probably aware there are lots of port probing going on port 22.
+static struct nf_hook_ops ipv4_ops_post_routing[] __read_mostly = {
+	{
+		.hook           = post_routing_hook,
+		.owner          = THIS_MODULE,
+		.pf             = PF_INET,
+		.hooknum        = NF_INET_POST_ROUTING,
+		.priority       = NF_IP_PRI_NAT_SRC + 1,
+	},
+};
 
-What I want to do is this
-accept all packets which are local to 10.0.0.0/255.255.255.0 network 
-with logging or dropping
-accept packets and log packets from the internet, logging them, except 
-if they are from certain IP address, like the ntp server, or dns server,
-log and drop all packets from a networks which through inspection of the 
-logs have tried to break into my server.
+static struct nf_hook_ops ipv4_ops_local_in[] __read_mostly = {
+	{
+		.hook           = local_in_hook,
+		.owner          = THIS_MODULE,
+		.pf             = PF_INET,
+		.hooknum        = NF_INET_LOCAL_IN,
+		.priority       = NF_IP_PRI_NAT_SRC + 1,
+	},
+};
 
-Thanks
-PS. the reason I sent out the test packet, was because my were not 
-getting echo'ed back to me.
-The showed up on the list but I never saw them.
+        result = nf_register_hooks(ipv4_ops_post_routing,
+ARRAY_SIZE(ipv4_ops_post_routing));
+	//...
+        result = nf_register_hooks(ipv4_ops_local_in,
+ARRAY_SIZE(ipv4_ops_local_in));
+	//...
 
+And check for new connections in the hooks as follows:
 
+	if ((ctinfo % IP_CT_IS_REPLY) == IP_CT_NEW) {	
+		//....
+	}
 
+I seem to be getting a new connection for every UDP packet through the
+system.  TCP does not have this problem.  This is to monitor lan<->wan
+connections in a NAT system.
 
-interernet | linsys-firewall|------------
+Also when I cat nf_conntrack it correctly shows only one connection for
+each port/addr src/dst arrangement so what am I doing wrong in my hook?
 
-Mart Frauenlob wrote:
-> netfilter-owner@vger.kernel.org wrote:
->> Good evening,
->>
->> I currently have the following macro.
->>
->> /sbin/iptables -N LOGDROP
->> /sbin/iptables -A LOGDROP    -i wlan0 ! -s 10.0.0.2 -j LOG 
->> --log-level info
->> /sbin/iptables -A LOGDROP -j DROP
->> /sbin/iptables -A INPUT -i wlan0 -s    58.102.198.29/255.255.255.0 -j 
->> LOGDROP
->>
->> What I really wan to do is log address and excluding certain subnets, 
->> and address, but drop others on offending networks.
->> So I want to log addresses to wlan0 whose source address is not 
->> 10.0.0.2, but drop subnets which I exclude.
->>
->> What is the best way to do this
->>
->>  Thanks
->>
->> Chip
->>
->
-> If I get your question right:
->
-> $IPT -N LOGDROP
-> $IPT -A LOGDROP -s 10.0.0.2 -j RETURN
-> $IPT -A LOGDROP -j LOG --log-level INFO
-> $IPT -A LOGDROP -j DROP
->
-> $IPT -A INPUT -i wlan0 -s 10.0.0.0/24 -j LOGDROP
-> $IPT -A INPUT -i wlan0 -s 58.102.198.29/24 -j LOGDROP
-> ...
->
-> Regards
->
-> Mart
->
+Cheers
+
+Gareth
 
