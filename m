@@ -1,65 +1,69 @@
-From: Michele Petrazzo - Unipex <michele.petrazzo@unipex.it>
+From: Lucas Willian Bocchi <challado@ampernet.com.br>
 Subject: Re: Best Kernel QoS Parameters
-Date: Fri, 16 Oct 2009 15:04:14 +0200
-Message-ID: <4AD86F4E.90301@unipex.it>
-References: <4AD48D3F.6000502@ampernet.com.br> <4AD858F4.4050709@unipex.it> <4AD86551.4050201@ampernet.com.br>
+Date: Fri, 16 Oct 2009 10:10:13 -0300
+Message-ID: <4AD870B5.7060309@ampernet.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4AD86551.4050201@ampernet.com.br>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
-Cc: Lucas Willian Bocchi <challado@ampernet.com.br>
 
-Lucas Willian Bocchi wrote:
-> Dear Michelle
-> 
+Dear Michelle
 
-Ciao,
-Lucas
+Even when you choose your shaper, you need to use the "granularity" of 
+kernel to more exact QoS.
 
-(I think you forgot to include the netfilter address into the sent)
+The preferences that I know is
 
-> Even when you choose your shaper, you need to use the "granularity" of
-> kernel to more exact QoS.
-> 
-> The preferences that I know is
-> 
-> 1) Preemptible Kernel
-> 2) Tickless System
-> 3) 1000 HZ Kernel
-> 
-> With these parameters on, the shaper precision is very, very increased.
-> But I think that have another parameters that improve more the speed.
-> 
+1) Preemptible Kernel
+2) Tickless System
+3) 1000 HZ Kernel
 
-If you talk with hard precision in mind, I'm with you. But into a real
-systems like mine, where p.e. if a user as 1Mb bw and the shaper wrong
-for 1 or 2 kb, for me it's not a real problem. (admitting that the shape
-wrong by a simple 1/2%)
+With these parameters on, the shaper precision is very, very increased.
+But I think that have another parameters that improve more the speed.
 
-However I didn't know the exists of those parameters... No one doc or
-books that I study mentioned them. Also on this ml, if I remember
-correctly, no one say to use them.
-Seeing like now the default .config found on
-arch/x86/configs/x86_64_defconfig anyway the 1000hz and preemptible are
-already set. So I'm feeling like!
-Next time I'll upgrade my kernel I'll take care to enable also the
-tickless parameter!
+Un saluto a tutti italian.
+
+I'm italian descendent. My father was bird in Napole and bring from 
+Brazil very young.
+
+Cheers.
+
+Michele Petrazzo - Unipex escreveu:
+> Lucas Willian Bocchi wrote:
+>> Hello all!
+>>
+>
+> Hi,
+>
+>> My question is simple: to a linux router, how are the kernel 
+>> parameters (2.6 kernel tree) to set to make a good and responsive 
+>> kernel to best QoS Shaping (HTB, HFSC, etc)?
+>>
+>
+> From my point of view, into a  normal environment, the last problem is
+> which packet scheduler choose. All those are so well builds that when
+> your setup don't work like you want, the right question must be "where
+> I'm wrong?" and not "can be the shaper wrong or there is a bug inside?"
+>
+> For me, for a newbie, the right one are htb. Simple and with a good
+> documentation / cookbook.
+>
+>> Another question is: how are the effect of TX and RX Ring Buffer 
+>> (hardware packet buffer) in QoS? The algoritms use these parameters 
+>> in the QoS configuration? I presume that this parameters can affect 
+>> the performance, because the hardware buffer can borrow the QoS 
+>> configuration.
+>
+> I haven't read the sources and I'm not a kernel devel, so I don't know
+> exactly how are the hw buffer use, but I can ensure you that I tried
+> more than one type of ethernet cards into a heavy use systems (google
+> for ml archives) and a good card it's one of the best buys that you 
+> can do
+>
+> Michele
+>
 
 
-> Un saluto a tutti italian.
-> 
-
-You forgot the last "i" into "italiani". Italian are in English :)
-
-> I'm italian descendent. My father was bird in Napole and bring from
-> Brazil very young.
-> 
-
-I'm a bit far from Napole, talking with Italian distances, about 1k km.
-For understand, near Austria.
-
-Michele
