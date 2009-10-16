@@ -1,177 +1,77 @@
-From: Thomas Jacob <jacob@internet24.de>
+From: "Roderick Groesbeek" <r.groesbeek@triple-it.nl>
 Subject: RE: conntrack generates UDP 'ghost traffic'
-Date: Fri, 16 Oct 2009 13:29:52 +0200
-Message-ID: <1255692592.21398.15.camel@enterprise.ims-firmen.de>
-References: <3F6AD08836AD044C935E9FAC3A764742024241BE@pandora.triple.lan>
-	 <1255686963.25297.22.camel@enterprise.ims-firmen.de>
-	 <3F6AD08836AD044C935E9FAC3A76474201366842@pandora.triple.lan>
+Date: Fri, 16 Oct 2009 14:26:26 +0200
+Message-ID: <3F6AD08836AD044C935E9FAC3A764742024241FB@pandora.triple.lan>
+References: <3F6AD08836AD044C935E9FAC3A764742024241BE@pandora.triple.lan> <1255686963.25297.22.camel@enterprise.ims-firmen.de> <3F6AD08836AD044C935E9FAC3A76474201366842@pandora.triple.lan> <1255692592.21398.15.camel@enterprise.ims-firmen.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=sha1; protocol="application/x-pkcs7-signature"; boundary="=-sEy1Bj+rhybuGXQrOdyb"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <3F6AD08836AD044C935E9FAC3A76474201366842@pandora.triple.lan>
+Content-class: urn:content-classes:message
+In-Reply-To: <1255692592.21398.15.camel@enterprise.ims-firmen.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Roderick Groesbeek <r.groesbeek@triple-it.nl>
+Content-Type: text/plain; charset="us-ascii"
+To: Thomas Jacob <jacob@internet24.de>
 Cc: netfilter@vger.kernel.org
 
+> -----Original Message-----
+> From: Thomas Jacob [mailto:jacob@internet24.de]
+> 
+> AFAIK, these are end to end settings, i.e. they are only
+> relevant when your Linux box is the target or source of the connection
+> (your NAT box isn't). So if you want to use TCP keepalive,
+> you'd need to tune Tiss or the Android device.
+> 
+> If you want to tune the NAT/conntrack/netfilter behavior, you
+> need to fiddle around with these settings:
+> 
+> find /proc/sys/net | fgrep netfilter
+> 
+> Dunno of a nice place where those are documented in detail,
+> maybe someone else on the list can chime in.
 
---=-sEy1Bj+rhybuGXQrOdyb
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Thomas,
+How 'scary' do you think it would be to set this on say: 75 seconds?
 
-On Fri, 2009-10-16 at 12:57 +0200, Roderick Groesbeek wrote:
-> But the Android Mobile is down!
-> Attaching that IP to some other device (or faking arp) will indeed fix=20
-> the FLOODING issue, but I'm
-> more interested into solving this issue, so that it cannot occur.
+[root@pollux net ]# cat
+/proc/sys/net/netfilter/nf_conntrack_tcp_timeout_established
+432000
+[root@pollux net ]#
 
-I see. Adding your own keepalive to the application isn't an option?
+And is this setting operational 'both ways' (too the masqued connection
+and the internal connection)?
 
-> Something I can come up with is: automatic lower TCP KEEPALIVE=20
-> established time for NF_CONNTRACK_RTSP connections.
-> Currently it is 43200 seconds.
->=20
-> But I would think that the tcp_keepalive_intvl=20
-> (http://www.frozentux.net/ipsysctl-tutorial/ipsysctl-tutorial.html#AEN37
-> 5)
-> would have kicked in at every 75 seconds. But it looks like that is not
-> for NAT'ed TCP connections.
+> 
+> Don't know much about RTP (H323?) but also check
+> out the module options
+> 
+> "modinfo nf_conntrack_h323"
+> 
+> maybe they can help you.
+> 
 
-AFAIK, these are end to end settings, i.e. they are only
-relevant when your Linux box is the target or source of the connection
-(your NAT box isn't). So if you want to use TCP keepalive,
-you'd need to tune Tiss or the Android device.=20
+Know all about RTP/RTCP/RTSP/etc.
 
-If you want to tune the NAT/conntrack/netfilter behavior, you
-need to fiddle around with these settings:
+We build H.323 applications too! :)
+We even sell H.324m gateways, and build them for Tandberg (now Cisco):
+http://www.triple-it.nl/wp-content/uploads/2009/03/factsheet_gateway.pdf
 
-find /proc/sys/net | fgrep netfilter
+It does look like that NF_CONNTRACK modules for H.323 and RTSP are still
+pretty much unmaintained for Linux.
 
-Dunno of a nice place where those are documented in detail,
-maybe someone else on the list can chime in.
+For instance:
+I had to patch & build the RTSP conntrack module for our pollux, it
+didn't worked out of the box.
 
-Don't know much about RTP (H323?) but also check
-out the module options=20
+--
+Vriendelijke Groet,
 
-"modinfo nf_conntrack_h323"
-
-maybe they can help you.
-
-
-
-> If the TCP connections breaks, TISS will stop sending UDP packets.
-> (It is not in the RTP/RTSP standard though, but quite common for RTSP
-> streaming servers, and we have implemented it so.)
->=20
->=20
-> But the NAT router is "keeping the TCP connection alive".
-> Result: 5 days (432100 seconds) of UDP floods inside our network :)
->=20
->=20
-> GR,
-> RG
-
---=-sEy1Bj+rhybuGXQrOdyb
-Content-Type: application/x-pkcs7-signature; name=smime.p7s
-Content-Disposition: attachment; filename=smime.p7s
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIRLTCCBN0w
-ggPFoAMCAQICEHGS++YZX6xNEoV0cTSiGKcwDQYJKoZIhvcNAQEFBQAwezELMAkGA1UEBhMCR0Ix
-GzAZBgNVBAgMEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBwwHU2FsZm9yZDEaMBgGA1UECgwR
-Q29tb2RvIENBIExpbWl0ZWQxITAfBgNVBAMMGEFBQSBDZXJ0aWZpY2F0ZSBTZXJ2aWNlczAeFw0w
-NDAxMDEwMDAwMDBaFw0yODEyMzEyMzU5NTlaMIGuMQswCQYDVQQGEwJVUzELMAkGA1UECBMCVVQx
-FzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNUIE5ldHdvcmsx
-ITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UEAxMtVVROLVVTRVJGaXJz
-dC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A
-MIIBCgKCAQEAsjmFpPJ9q0E7YkY3rs3BYHW8OWX5ShpHornMSMxqmNVNNRm5pELlzkniii8efNIx
-B8dOtINknS4p1aJkxIW9hVE1eaROaJB7HHqkkqgX8pgV8pPMyaQylbsMTzC9mKALi+VuG6JG+ni8
-om+rWV6lL8/K2m2qL+usobNqqrcuZzWLeeEeaYji5kbNoKXqvgvOdjp6Dpvq/NonWz1zHyLmSGHG
-TPNpsaguG7bUMSAsvIKKjqQOpdeJQ/wWWq8dcdcRWdq6hw2v+vPhwvCkxWeM1tZUOt4KpLoDd7Nl
-yP0e03RiqhjKaJMeoYV+9Udly/hNVyh00jT/MLbu9mIwFIws6wIDAQABo4IBJzCCASMwHwYDVR0j
-BBgwFoAUoBEKIz6W8Qfs4q8p74Klf9AwpLQwHQYDVR0OBBYEFImCZ33EnSZwAEu0UEh83j2uBG59
-MA4GA1UdDwEB/wQEAwIBBjAPBgNVHRMBAf8EBTADAQH/MB0GA1UdJQQWMBQGCCsGAQUFBwMCBggr
-BgEFBQcDBDARBgNVHSAECjAIMAYGBFUdIAAwewYDVR0fBHQwcjA4oDagNIYyaHR0cDovL2NybC5j
-b21vZG9jYS5jb20vQUFBQ2VydGlmaWNhdGVTZXJ2aWNlcy5jcmwwNqA0oDKGMGh0dHA6Ly9jcmwu
-Y29tb2RvLm5ldC9BQUFDZXJ0aWZpY2F0ZVNlcnZpY2VzLmNybDARBglghkgBhvhCAQEEBAMCAQYw
-DQYJKoZIhvcNAQEFBQADggEBAJ2Vyzy4fqUJxB6/C8LHdo45PJTGEKpPDMngq4RdiVTgZTvzbRx8
-NywlVF+WIfw3hJGdFdwUT4HPVB1rbEVgxy35l1FM+WbKPKCCjKbI8OLp1Er57D9Wyd12jMOCAU9s
-APMeGmF0BEcDqcZAV5G8ZSLFJ2dPV9tkWtmNH7qGL/QGrpxp7en0zykX2OBKnxogL5dMUbtGB8SK
-N04g4wkxaMeexIud6H4RvDJoEJYRmETYKlFgTYjrdDrfQwYyyDlWjDoRUtNBpEMD9O3vMyfbOeAU
-TibJ2PU54om4k123KSZB6rObroP8d3XK6Mq1/uJlSmM+RMTQw16Hc6mYHK9/FX8wggYiMIIFCqAD
-AgECAhBSb3nPLwYVgYX7faItOKbyMA0GCSqGSIb3DQEBBQUAMIGuMQswCQYDVQQGEwJVUzELMAkG
-A1UECBMCVVQxFzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNU
-IE5ldHdvcmsxITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UEAxMtVVRO
-LVVTRVJGaXJzdC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsMB4XDTA5MDgyNjAwMDAw
-MFoXDTExMDgyNjIzNTk1OVowggEqMQswCQYDVQQGEwJERTEOMAwGA1UEERMFMDEwNjkxEDAOBgNV
-BAgTB1NhY2hzZW4xEDAOBgNVBAcTB0RyZXNkZW4xGjAYBgNVBAkTEUJheXJpc2NoZSBTdHIuIDE4
-MSgwJgYDVQQKEx9JTVMgSW50ZXJuZXQtTWVkaWEtU2VydmljZSBHbWJIMUUwQwYDVQQLEzxJc3N1
-ZWQgdGhyb3VnaCBJTVMgSW50ZXJuZXQtTWVkaWEtU2VydmljZSBHbWJIIEUtUEtJIE1hbmFnZXIx
-HzAdBgNVBAsTFkNvcnBvcmF0ZSBTZWN1cmUgRW1haWwxFTATBgNVBAMTDFRob21hcyBKYWNvYjEi
-MCAGCSqGSIb3DQEJARYTamFjb2JAaW50ZXJuZXQyNC5kZTCB3zANBgkqhkiG9w0BAQEFAAOBzQAw
-gckCgcEAnBr8Ofv/KgWvnP7jvCXiVcFjhQ/Tl4ZIvoG6Ku9D+ecI9D+9Rqg6nxv3KbyTtRL75Kws
-HYEaIv8NYWQl+nn1VQUZjwq/afE4qsGQEkFu/w3hG8ceOIZt6H2FiLOoF3SeGbhl8K4fSDiLKCBf
-KmJhTwYeg+VBUb0lovOjHHL44qasJSl3DXNaezyl79LJOmWqclrxDNOf6fLw7bXJ0K870qDV0gWZ
-aOKYvnXfNNnNfd6RzhdBNNgUM4MhmiHA7K0zAgMBAAGjggH/MIIB+zAfBgNVHSMEGDAWgBSJgmd9
-xJ0mcABLtFBIfN49rgRufTAdBgNVHQ4EFgQUqH1PlrTv+W5g+fiKAlxT/DO0LaowDgYDVR0PAQH/
-BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMCMEYGA1Ud
-IAQ/MD0wOwYMKwYBBAGyMQECAQMFMCswKQYIKwYBBQUHAgEWHWh0dHBzOi8vc2VjdXJlLmNvbW9k
-by5uZXQvQ1BTMIGlBgNVHR8EgZ0wgZowTKBKoEiGRmh0dHA6Ly9jcmwuY29tb2RvY2EuY29tL1VU
-Ti1VU0VSRmlyc3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRFbWFpbC5jcmwwSqBIoEaGRGh0dHA6
-Ly9jcmwuY29tb2RvLm5ldC9VVE4tVVNFUkZpcnN0LUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kRW1h
-aWwuY3JsMGwGCCsGAQUFBwEBBGAwXjA2BggrBgEFBQcwAoYqaHR0cDovL2NydC5jb21vZG9jYS5j
-b20vVVROQUFBQ2xpZW50Q0EuY3J0MCQGCCsGAQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5j
-b20wHgYDVR0RBBcwFYETamFjb2JAaW50ZXJuZXQyNC5kZTANBgkqhkiG9w0BAQUFAAOCAQEAXAH3
-We4u5Qazu+coCaP0qCQofv8wuGkBprdk24uktrrCSYf2MJIPQefBrOnhTB4Q5+21hoCHkrnJnwdw
-e2HlsSClv4dLmEIqle+KNmG8A40yBQqEndAGjgg1gX368nIIb7gUmDbxHXZTn3rLU5B4TY8ip/ao
-L9BCUPUCQQGQhzbR5qBv+VlQ8Txkpc3eWHHNlvb4Hpyw5xezfAbcgRNkHsbtJX9+04w8bqKSXBPV
-BC/jfXP3Ao03xd8EFBj3Th9mSAldIrExFqBIe4dOLIChVjigZI49lrTlURayawi12JEWJM/sRgrj
-MeARHOiPDiuSwFy5KAMszNM1m1S9ImoTkzCCBiIwggUKoAMCAQICEFJvec8vBhWBhft9oi04pvIw
-DQYJKoZIhvcNAQEFBQAwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2Fs
-dCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMYaHR0
-cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBBdXRo
-ZW50aWNhdGlvbiBhbmQgRW1haWwwHhcNMDkwODI2MDAwMDAwWhcNMTEwODI2MjM1OTU5WjCCASox
-CzAJBgNVBAYTAkRFMQ4wDAYDVQQREwUwMTA2OTEQMA4GA1UECBMHU2FjaHNlbjEQMA4GA1UEBxMH
-RHJlc2RlbjEaMBgGA1UECRMRQmF5cmlzY2hlIFN0ci4gMTgxKDAmBgNVBAoTH0lNUyBJbnRlcm5l
-dC1NZWRpYS1TZXJ2aWNlIEdtYkgxRTBDBgNVBAsTPElzc3VlZCB0aHJvdWdoIElNUyBJbnRlcm5l
-dC1NZWRpYS1TZXJ2aWNlIEdtYkggRS1QS0kgTWFuYWdlcjEfMB0GA1UECxMWQ29ycG9yYXRlIFNl
-Y3VyZSBFbWFpbDEVMBMGA1UEAxMMVGhvbWFzIEphY29iMSIwIAYJKoZIhvcNAQkBFhNqYWNvYkBp
-bnRlcm5ldDI0LmRlMIHfMA0GCSqGSIb3DQEBAQUAA4HNADCByQKBwQCcGvw5+/8qBa+c/uO8JeJV
-wWOFD9OXhki+gboq70P55wj0P71GqDqfG/cpvJO1EvvkrCwdgRoi/w1hZCX6efVVBRmPCr9p8Tiq
-wZASQW7/DeEbxx44hm3ofYWIs6gXdJ4ZuGXwrh9IOIsoIF8qYmFPBh6D5UFRvSWi86Mccvjipqwl
-KXcNc1p7PKXv0sk6ZapyWvEM05/p8vDttcnQrzvSoNXSBZlo4pi+dd802c193pHOF0E02BQzgyGa
-IcDsrTMCAwEAAaOCAf8wggH7MB8GA1UdIwQYMBaAFImCZ33EnSZwAEu0UEh83j2uBG59MB0GA1Ud
-DgQWBBSofU+WtO/5bmD5+IoCXFP8M7QtqjAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0TAQH/BAIwADAd
-BgNVHSUEFjAUBggrBgEFBQcDBAYIKwYBBQUHAwIwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAwUw
-KzApBggrBgEFBQcCARYdaHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwgaUGA1UdHwSBnTCB
-mjBMoEqgSIZGaHR0cDovL2NybC5jb21vZG9jYS5jb20vVVROLVVTRVJGaXJzdC1DbGllbnRBdXRo
-ZW50aWNhdGlvbmFuZEVtYWlsLmNybDBKoEigRoZEaHR0cDovL2NybC5jb21vZG8ubmV0L1VUTi1V
-U0VSRmlyc3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRFbWFpbC5jcmwwbAYIKwYBBQUHAQEEYDBe
-MDYGCCsGAQUFBzAChipodHRwOi8vY3J0LmNvbW9kb2NhLmNvbS9VVE5BQUFDbGllbnRDQS5jcnQw
-JAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAeBgNVHREEFzAVgRNqYWNvYkBp
-bnRlcm5ldDI0LmRlMA0GCSqGSIb3DQEBBQUAA4IBAQBcAfdZ7i7lBrO75ygJo/SoJCh+/zC4aQGm
-t2Tbi6S2usJJh/Ywkg9B58Gs6eFMHhDn7bWGgIeSucmfB3B7YeWxIKW/h0uYQiqV74o2YbwDjTIF
-CoSd0AaOCDWBffrycghvuBSYNvEddlOfestTkHhNjyKn9qgv0EJQ9QJBAZCHNtHmoG/5WVDxPGSl
-zd5Ycc2W9vgenLDnF7N8BtyBE2Qexu0lf37TjDxuopJcE9UEL+N9c/cCjTfF3wQUGPdOH2ZICV0i
-sTEWoEh7h04sgKFWOKBkjj2WtOVRFrJrCLXYkRYkz+xGCuMx4BEc6I8OK5LAXLkoAyzM0zWbVL0i
-ahOTMYIDuzCCA7cCAQEwgcMwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMO
-U2FsdCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMY
-aHR0cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBB
-dXRoZW50aWNhdGlvbiBhbmQgRW1haWwCEFJvec8vBhWBhft9oi04pvIwCQYFKw4DAhoFAKCCAg0w
-GAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMDkxMDE2MTEyOTQ5WjAj
-BgkqhkiG9w0BCQQxFgQUnapr/mGgrpRG+YMA07weF8B3J4YwgdQGCSsGAQQBgjcQBDGBxjCBwzCB
-rjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAlVUMRcwFQYDVQQHEw5TYWx0IExha2UgQ2l0eTEeMBwG
-A1UEChMVVGhlIFVTRVJUUlVTVCBOZXR3b3JrMSEwHwYDVQQLExhodHRwOi8vd3d3LnVzZXJ0cnVz
-dC5jb20xNjA0BgNVBAMTLVVUTi1VU0VSRmlyc3QtQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBF
-bWFpbAIQUm95zy8GFYGF+32iLTim8jCB1gYLKoZIhvcNAQkQAgsxgcaggcMwga4xCzAJBgNVBAYT
-AlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2FsdCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBV
-U0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMYaHR0cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYD
-VQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgRW1haWwCEFJvec8v
-BhWBhft9oi04pvIwDQYJKoZIhvcNAQEBBQAEgcB5ZiAhIRzfG4o07zl7Fjc+s3XzieHhqkuXTYk6
-rQ733SdEU9S3zHn+GcdMSqyPx3szUzpilc/aBSbTlZPvKv0G1NmmnN3B3YpRN/8ZfmQNpIjq5fVN
-csF5i1kD/VAqKxY5NbjsPo8vgkvgFQ2pgc/FtuqzvKkwOmxvCaxWaINBGEcgg0TkkSuMFBbsqoYk
-O2ojFOTSZeJ1iPy0gLr2NLZfj5aWT9pztS78igXMq9U2sl2NH6Uqd1sk03AxsOeZZiAAAAAAAAA=
-
-
---=-sEy1Bj+rhybuGXQrOdyb--
-
+Roderick
+--
+TRIPLE IT
+straat://Keesomstraat 10e
+postcode://1821 BS
+plaats://Alkmaar                                         
+tel://+31(0)72-5129516
+fax://+31(0)72-5129520                             
+http://www.triple-it.nl  "Laat uw Net Werken!"
