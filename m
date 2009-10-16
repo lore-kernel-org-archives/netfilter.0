@@ -1,69 +1,126 @@
 From: Lucas Willian Bocchi <challado@ampernet.com.br>
 Subject: Re: Best Kernel QoS Parameters
-Date: Fri, 16 Oct 2009 10:10:13 -0300
-Message-ID: <4AD870B5.7060309@ampernet.com.br>
+Date: Fri, 16 Oct 2009 10:25:52 -0300
+Message-ID: <4AD87460.2010201@ampernet.com.br>
+References: <4AD48D3F.6000502@ampernet.com.br> <4AD858F4.4050709@unipex.it> <4AD86551.4050201@ampernet.com.br> <4AD86F4E.90301@unipex.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4AD86F4E.90301@unipex.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Michele Petrazzo - Unipex <michele.petrazzo@unipex.it>
+Cc: netfilter@vger.kernel.org
 
-Dear Michelle
+Yep. I forgot to include netfilter really. I resend the message to 
+netfilter to see this.
 
-Even when you choose your shaper, you need to use the "granularity" of 
-kernel to more exact QoS.
+The documentation, really, is very poor in this question.
 
-The preferences that I know is
+I think that
+1) Preemptible Kernel - Hability to the kernel "interrupt" a process to 
+insert the scheduler in the processor again (more accuracy)
+2) Tickless System - Generate a "timer interrupt" when it is more 
+needed. In the scheduler case, make it more "fast".
+3) 1000 HZ Kernel - Generate more granularity, inserting a 1ms max 
+latency to the tick.
 
-1) Preemptible Kernel
-2) Tickless System
-3) 1000 HZ Kernel
+I think that, in the newest version of the kernel, these are the more 
+important parameters.
 
-With these parameters on, the shaper precision is very, very increased.
-But I think that have another parameters that improve more the speed.
+Now, about the hardware: I have, for example:
+ ~#~ ethtool -g eth0
+Ring parameters for eth0:
+Pre-set maximums:
+RX:             4096
+RX Mini:        0
+RX Jumbo:       0
+TX:             4096
+Current hardware settings:
+RX:             256
+RX Mini:        0
+RX Jumbo:       0
+TX:             80
 
-Un saluto a tutti italian.
+My preocupation is: the Shaper (htb, hfsc, etc) use this parameters in 
+your configuration? The programmers have in mind that this buffer can 
+affect the eficiency of shaper?
+Because if I can enqueue/dequeue packets in the hardware, obviously that 
+the Kernel won't have any acknowledgement about these packets. But it 
+will affect the QoS in slow lines, such ADSL and others, when the one, 
+two or three packets inserted in the hardware layer and ignored by the 
+QoS can borrow all the configuration, inserting unknown latencies and 
+other problems.
 
-I'm italian descendent. My father was bird in Napole and bring from 
-Brazil very young.
+To me, it's very important the precision, because I have clients with 1 
+or more MB of link and 56, 48 kbps clients too, and I need to have these 
+in mind.
 
-Cheers.
+Thanks a lot for all help!
+
+
+
 
 Michele Petrazzo - Unipex escreveu:
 > Lucas Willian Bocchi wrote:
->> Hello all!
+>   
+>> Dear Michelle
 >>
+>>     
 >
-> Hi,
+> Ciao,
+> Lucas
 >
->> My question is simple: to a linux router, how are the kernel 
->> parameters (2.6 kernel tree) to set to make a good and responsive 
->> kernel to best QoS Shaping (HTB, HFSC, etc)?
+> (I think you forgot to include the netfilter address into the sent)
+>
+>   
+>> Even when you choose your shaper, you need to use the "granularity" of
+>> kernel to more exact QoS.
 >>
+>> The preferences that I know is
+>>
+>> 1) Preemptible Kernel
+>> 2) Tickless System
+>> 3) 1000 HZ Kernel
+>>
+>> With these parameters on, the shaper precision is very, very increased.
+>> But I think that have another parameters that improve more the speed.
+>>
+>>     
 >
-> From my point of view, into a  normal environment, the last problem is
-> which packet scheduler choose. All those are so well builds that when
-> your setup don't work like you want, the right question must be "where
-> I'm wrong?" and not "can be the shaper wrong or there is a bug inside?"
+> If you talk with hard precision in mind, I'm with you. But into a real
+> systems like mine, where p.e. if a user as 1Mb bw and the shaper wrong
+> for 1 or 2 kb, for me it's not a real problem. (admitting that the shape
+> wrong by a simple 1/2%)
 >
-> For me, for a newbie, the right one are htb. Simple and with a good
-> documentation / cookbook.
+> However I didn't know the exists of those parameters... No one doc or
+> books that I study mentioned them. Also on this ml, if I remember
+> correctly, no one say to use them.
+> Seeing like now the default .config found on
+> arch/x86/configs/x86_64_defconfig anyway the 1000hz and preemptible are
+> already set. So I'm feeling like!
+> Next time I'll upgrade my kernel I'll take care to enable also the
+> tickless parameter!
 >
->> Another question is: how are the effect of TX and RX Ring Buffer 
->> (hardware packet buffer) in QoS? The algoritms use these parameters 
->> in the QoS configuration? I presume that this parameters can affect 
->> the performance, because the hardware buffer can borrow the QoS 
->> configuration.
 >
-> I haven't read the sources and I'm not a kernel devel, so I don't know
-> exactly how are the hw buffer use, but I can ensure you that I tried
-> more than one type of ethernet cards into a heavy use systems (google
-> for ml archives) and a good card it's one of the best buys that you 
-> can do
+>   
+>> Un saluto a tutti italian.
+>>
+>>     
+>
+> You forgot the last "i" into "italiani". Italian are in English :)
+>
+>   
+>> I'm italian descendent. My father was bird in Napole and bring from
+>> Brazil very young.
+>>
+>>     
+>
+> I'm a bit far from Napole, talking with Italian distances, about 1k km.
+> For understand, near Austria.
 >
 > Michele
 >
-
+>   
 
