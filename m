@@ -1,7 +1,7 @@
 From: Ralph Blach <rcblach@gmail.com>
 Subject: Re: propper logging and dropping
-Date: Fri, 16 Oct 2009 10:36:16 -0400
-Message-ID: <4AD884E0.2080507@gmail.com>
+Date: Fri, 16 Oct 2009 12:18:55 -0400
+Message-ID: <4AD89CEF.2000509@gmail.com>
 References: <4AD7E857.6020100@gmail.com> <4AD821BB.6060205@chello.at>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -11,35 +11,43 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         h=domainkey-signature:received:received:message-id:date:from
          :user-agent:mime-version:to:subject:references:in-reply-to
          :content-type:content-transfer-encoding;
-        bh=H1DB4FF9mQ8IHFEjvfLkgfo5T+h1G0rkA1ITpXz7gos=;
-        b=Wvng/bHyh1mc22HDECAJd308LfammpfD83vjYFf0DJUpXWVB46vFybA5kPmUWkYUn1
-         xzCEvqbkHRbeAYbyO1T7YAzC+A9qotpu+9gQYjeI767wzJDIbqHx+Wf7HhPt2enblYNs
-         c2YY1qEKdkEC5fHHOZUNw/q/bhvah169baUJc=
+        bh=k8XyMjxHuWb0FgXU7dzyMyuzc2pSirbIpYI8J8hwp18=;
+        b=ORmZre4Ae/MAcAS42oGrk1FhQCaWIFuz7PLEpFf02Lm8ynmRbty4BoPS3Zaevzvh5Y
+         VmEzR7hNsgU/fcy4ggiVpMlshIllk3qUpqycmRTjrdVyQJf0zzXJmPGz5+MTexXtNYnU
+         CsujVRafDl3u+2h1QvEAGHJrnZXYM84dmsCWw=
 In-Reply-To: <4AD821BB.6060205@chello.at>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org, mart.frauenlob@chello.at
 
 Mart,
 
-Not Quite, 
-                        10.0.0.1          10.0.0.2       ---rest of home 
-network 10.0.0.x     
-----internet----| firewal | -------Linux server
+Here is my network setup
+my local internet address of my home natted network is 10.0.0.0/255.255.255
+My linux server is 10.0.0.2
 
-What I want to do is allow the 10.0.0.x network.
-Log packets that are not whose source address are not the  10.0.0.x 
-network, with certain exceptions, like the time server and dns server,
-Drop and log specifially designated subnets that seem to pound probe 
-port 22.
+I want to leave port 22 open so I can remotely ssh into my system.
+As you are probably aware there are lots of port probing going on port 22.
 
-Chip
+What I want to do is this
+accept all packets which are local to 10.0.0.0/255.255.255.0 network 
+with logging or dropping
+accept packets and log packets from the internet, logging them, except 
+if they are from certain IP address, like the ntp server, or dns server,
+log and drop all packets from a networks which through inspection of the 
+logs have tried to break into my server.
+
+Thanks
+PS. the reason I sent out the test packet, was because my were not 
+getting echo'ed back to me.
+The showed up on the list but I never saw them.
 
 
 
 
-What I want to do is allow all 10.
+interernet | linsys-firewall|------------
+
 Mart Frauenlob wrote:
 > netfilter-owner@vger.kernel.org wrote:
 >> Good evening,
