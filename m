@@ -1,61 +1,29 @@
-From: "Gareth Williams" <gwilliams@ubicom.com>
-Subject: Contrack hook sees each UDP packet as a new connection but proc/net/nf_conntrack shows correctly - what am I doing wrong?
-Date: Fri, 16 Oct 2009 09:50:19 -0700
-Message-ID: <CB2DD11991B27C4F99935E6229450D3204B4DC44@STORK.scenix.com>
+From: Kevin Bailey <ke-linux@retriever.dyndns.org>
+Subject: Re: Pre-routing re-write
+Date: Fri, 16 Oct 2009 20:43:03 -0700
+Message-ID: <20091017034303.GB27400@retriever.dyndns.org>
+References: <20091014231016.GA4580@retriever.dyndns.org> <4AD8555A.1080301@unipex.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <4AD8555A.1080301@unipex.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello all.
+On Fri, Oct 16, 2009 at 01:13:30PM +0200, Michele Petrazzo - Unipex wrote:
+>
+> Sorry, but this can be possible. The gw for a network class must be
+> inside the _same_ class!
 
-I register two hooks into conntrack as follows:
+The gateway of 192.168.10.2 is quite reachable from 192.168.10.1.
 
-static struct nf_hook_ops ipv4_ops_post_routing[] __read_mostly = {
-	{
-		.hook           = post_routing_hook,
-		.owner          = THIS_MODULE,
-		.pf             = PF_INET,
-		.hooknum        = NF_INET_POST_ROUTING,
-		.priority       = NF_IP_PRI_NAT_SRC + 1,
-	},
-};
+> Where the packet starts? If you use nat + output you are saying to the
+> kernel to do a thing when a packet are generated locally.
+> Are you the gateway for another network (lan)?
+> However, It's not so well explained what you want to achieve.
 
-static struct nf_hook_ops ipv4_ops_local_in[] __read_mostly = {
-	{
-		.hook           = local_in_hook,
-		.owner          = THIS_MODULE,
-		.pf             = PF_INET,
-		.hooknum        = NF_INET_LOCAL_IN,
-		.priority       = NF_IP_PRI_NAT_SRC + 1,
-	},
-};
-
-        result = nf_register_hooks(ipv4_ops_post_routing,
-ARRAY_SIZE(ipv4_ops_post_routing));
-	//...
-        result = nf_register_hooks(ipv4_ops_local_in,
-ARRAY_SIZE(ipv4_ops_local_in));
-	//...
-
-And check for new connections in the hooks as follows:
-
-	if ((ctinfo % IP_CT_IS_REPLY) == IP_CT_NEW) {	
-		//....
-	}
-
-I seem to be getting a new connection for every UDP packet through the
-system.  TCP does not have this problem.  This is to monitor lan<->wan
-connections in a NAT system.
-
-Also when I cat nf_conntrack it correctly shows only one connection for
-each port/addr src/dst arrangement so what am I doing wrong in my hook?
-
-Cheers
-
-Gareth
-
+The packet will be originated locally. I was just asking if it was
+possible for a packet that got re-written to be routed beforehand.
