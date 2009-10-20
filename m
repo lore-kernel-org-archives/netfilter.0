@@ -1,79 +1,40 @@
-From: Gary Smith <gary.smith@holdstead.com>
-Subject: RE: Ramdom NAT drop
-Date: Tue, 20 Oct 2009 07:39:01 -0700
-Message-ID: <034DEBCAE934A74991E6E76B8DA72D14185DD50990@HSSBS.holdstead.local>
-References: <034DEBCAE934A74991E6E76B8DA72D14182B54DFB0@HSSBS.holdstead.local>
+From: veerasena reddy <veeruyours@yahoo.com>
+Subject: ebtables filtering based on destination MAC match doesn't work with FORWARD chain
+Date: Tue, 20 Oct 2009 08:32:19 -0700 (PDT)
+Message-ID: <697388.24536.qm@web56403.mail.re3.yahoo.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <034DEBCAE934A74991E6E76B8DA72D14182B54DFB0@HSSBS.holdstead.local>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1256052739; bh=E0R5jSJWQPyy7k5+hSNNVkwciQP8VYYCHpsFgXkyric=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Subject:To:MIME-Version:Content-Type; b=aTxRlrrmibi6pPLm7TZ7iqS8ES73bLEjUwjwy4dYo95Qkfa4B+Sl6oiGcaJCgY9B43bQuUBdsOZpbn0pHGPoiIYsAGga76IswO7LDaXYPJtYZRCuBc+Dxbtv+z2dv59FrBgmSmTw2qu9Q9wb2tRdLZn7hYY7D09HTjObAn5xnyU=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Anyone?
+Hello,
 
-> -----Original Message-----
-> From: netfilter-owner@vger.kernel.org [mailto:netfilter-
-> owner@vger.kernel.org] On Behalf Of Gary Smith
-> Sent: Tuesday, October 13, 2009 5:13 PM
-> To: 'netfilter@vger.kernel.org'
-> Subject: Ramdom NAT drop
-> 
-> Hello,
-> 
-> I have a scenario where we are NAT'ing multiple ports and in some cases
-> entire IP addresses to our internal private range.  Some time ago we
-> noticed that web pages from one of the web servers would randomly fail.
-> Investigating it we found that conntrack was full and that packets were
-> being dropped.
-> 
-> So, since the server has ram, we upped the max bucket and conntrack to
-> 1048576 and 4194304, respectably.  The problem appears to go away as we
-> watched the counter go above 40k connections.  It has since then been
-> hovering around 40k (currently 35k).
-> 
-> About two weeks later, I noticed that I started getting the failures
-> again.  Checking the firewall, connections looked good (once again, 40k
-> or so).  Checked the web server logs, request never hit.  What I found
-> is that after about 20 minutes or so I will see this failure randomly.
-> I think it's in conjunction with some type of keep alive in IE/Firefox.
-> So, when the problem happens in IE, and the pages continually fail, if
-> I open up Firefox the page comes up fine.  This issue comes up when
-> hitting the page from internally on the network through NAT
-> 
-> To me is looks like NAT is dropping the connection that has been
-> established and doesn't want to reconnect.  A tcpdump on the external
-> interface shows the request stopping at the iptables firewall and not
-> going beyond that.  But then everything will clear up for a few days.
-> 
-> Here are the relevant rules:
-> 
-> -A PREROUTING -d 208.209.210.211 -j DNAT --to-destination 192.168.0.10
-> -A INPUT -d 208.209.210.211 -i eth1 -p tcp -m tcp --sport 20 --dport
-> 1024:65535 -j ACCEPT
-> -A INPUT -d 208.209.210.211 -i eth1 -p tcp -m tcp -m multiport --dports
-> 80,443,21,20 -j ACCEPT
-> -A OUTPUT -d 208.209.210.211 -j DNAT --to-destination 192.168.0.10
-> 
-> The final rule is a log and drop for anything coming in on this
-> particular IP address (which I know works as we see a lot of attempts
-> for 445).
-> 
-> I'm just trying to find any logic reason on why the connections are
-> getting dropped.  I'm thinking it's NAT, but that's just a WAG at this
-> point.
-> 
-> OS is CentOS 5, 2.6.18-128.el5, iptables v1.3.5, minimal install,
-> firewall only.  Machine has 512mb ram.
-> 
->              total       used       free     shared    buffers
-> cached
-> Mem:        515444     483240      32204          0     141504
-> 296208
-> -/+ buffers/cache:      45528     469916
-> Swap:      1052248          0    1052248
-> 
-> Any advice?
+I configured a ebtables rule to DROP all the frames going through FORWARD chain matching the destination entry "0:b:db:da:34:c":
+/ # ebtables -t filter -A FORWARD -d 00:0b:db:da:34:0c -i eth0 -o eth1 -j DROP
+
+My test setup is as below:
+PC1<--->eth0---My_bridge---eth1<-->PC2
+PC2 MAC address: 00:0b:db:da:34:0c
+
+With this, if i try to send PING traffic from PC1 (connected to eth0) to PC2 (connected to eth1) the PING traffic goes fine. I do not see any DROP in the traffic.
+My observations are as below:
+1. first the ARP request from PC1 (with dmac: ff:ff:...:ff) reaches PC2 and PC2 sends the ARP reply back to PC1.
+2. Now the echo request frame sent by PC1 has been received by PC2 and PC2 sending echo replies back to PC1.
+3. If i configure ebtables with source MAC match rule as below, it works fine (ARP wont get resolved as all the ARP reply messages from PC2 will be dropped by ebatables).
+/ # ebtables -t filter -A FORWARD -s 00:0b:db:da:34:0c -i eth1 -j DROP
+
+Can someone tell if the ebtable confiugration command given above is correct or i need to load some ebtables modules?
+Also, please tell if more information is required to understand the issue?
+
+Thanks in advance.
+
+Regards,
+Veerasena.
+
+
+
+      
