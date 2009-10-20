@@ -1,104 +1,63 @@
-From: Robin Wood <robin@digininja.org>
-Subject: Re: transparent proxy and iptables (and ebtables) failing
-Date: Sun, 18 Oct 2009 23:03:04 +0100
-Message-ID: <7de411230910181503s3be59470sd2a3cddfc54d327@mail.gmail.com>
-References: <7de411230910131427t26e7a84cg181329b8c32d62f9@mail.gmail.com>
+From: "Dhyanesh Ramaiya" <dhyanesh.ramaiya@satconet.com>
+Subject: FIN packets not getting NAT-ed
+Date: Tue, 20 Oct 2009 12:42:29 +0300
+Message-ID: <200910200942.n9K9gTUS030470@dsmstclfw01.stcl.com.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <7de411230910131427t26e7a84cg181329b8c32d62f9@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-2009/10/13 Robin Wood <robin@digininja.org>:
-> 2009/10/7 Robin Wood <robin@digininja.org>:
->> 2009/10/7 Robin Wood <robin@digininja.org>:
->>> Hi
->>> I'm trying to setup a transparent proxy so I've got a linux device
->>> with two NICs which are bridged using brctl. Traffic flows happily
->>> across the bridge so I know it is working fine.
->>>
->>> Now when I try to setup the iptables rules they are being ignored. =
-The
->>> rule I want to use is:
->>>
->>> iptables -t nat -A PREROUTING -i br-lan -p tcp --dport 80 -j REDIRE=
-CT
->>> --to-port 3128
->>>
->>> but nothing gets redirected. I've also tried changing 3128 to a por=
-t
->>> that is closed to see what would happen, nothing, the packets kept
->>> flowing.
->>
->> Various people have suggested using ebtables rather than iptables
->> because I want to act on traffic over the bridge rather than between
->> interfaces. If this is correct, how would I rewrite the above rule i=
-n
->> ebtables speak?
->
-> I'm back to playing with this and I've now tried ebtables (which I
-> hope is covered by this list) and I'm still not managing to trap
-> traffic. The bridge is as follows
->
-> # brctl show
-> bridge name =A0 =A0 bridge id =A0 =A0 =A0 =A0 =A0 =A0 =A0 STP enabled=
- =A0 =A0 interfaces
-> br-lan =A0 =A0 =A0 =A0 =A08000.001884d0a060 =A0 =A0 =A0 no =A0 =A0 =A0=
- =A0 =A0 =A0 =A0eth0.0
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0=
- =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0eth0.1
->
-> And the two rules I've tried are
->
-> # ebtables -L
-> Bridge table: filter
->
-> Bridge chain: INPUT, entries: 1, policy: ACCEPT
-> -p IPv4 --ip-dst 192.168.0.8 -j DROP
->
-> Bridge chain: FORWARD, entries: 1, policy: ACCEPT
-> -p IPv4 --ip-proto tcp --ip-dport 80 -j DROP
->
-> Bridge chain: OUTPUT, entries: 0, policy: ACCEPT
->
-> The first I think should intercept all ipv4 traffic going to
-> 192.168.0.8 and drop it, it doesn't.
->
-> The second should drop all ipv4 tcp traffic on port 80. Again, this
-> doesn't work.
->
-> Any suggestions as to what could be happening?
->
-> Robin
->
+Greetings,
 
-I've done some more investigating on this and moved a little further
-forward. I wondered if it were the device I'm using as even though it
-has two NICs they don't seem to be two distinct devices as the come up
-as eth0.0 and eth0.1 with an eth0 which sees traffic on both
-interfaces.
+I have setup a Linux firewall on the edge of the network and doing SNAT for
+internal IPs. When I sniff on external interface for internal source IPs,I
+am seeing FIN packets from internal IPs going out without being NAT-ed.
+Below is an extract of my sniffer capture:
 
-So, I added a USB NIC to give me a completely separate interface and
-tried again but with the standard transparent bridge iptables line
-nothing happened. So I started playing with the ebtables commands and
-found a way to intercept traffic. If I run
+[root@edge01 ~]# tcpdump -i eth0 -fne net 192.168.0.0 mask 255.255.0.0 or
+net 172.16.0.0 mask 255.240.0.0
 
-ebtables -t broute -A BROUTING  -j DROP
+12:30:35.222174 00:18:8b:f7:b4:05 > 00:21:d7:ae:9c:c8, ethertype IPv4
+(0x0800), length 54: 172.16.122.182.tht-treasure > 64.59.88.178.http: F
+0:0(0) ack 1 win 31557
+12:30:35.336943 00:18:8b:f7:b4:05 > 00:21:d7:ae:9c:c8, ethertype IPv4
+(0x0800), length 54: 192.168.125.67.63623 > 67.215.65.132.http: F 0:0(0) ack
+1 win 65305
+12:30:35.885919 00:18:8b:f7:b4:05 > 00:21:d7:ae:9c:c8, ethertype IPv4
+(0x0800), length 54: 172.16.128.165.netmagic > 67.195.183.4.http: F 0:0(0)
+ack 1 win 16862
+12:30:37.182876 00:18:8b:f7:b4:05 > 00:21:d7:ae:9c:c8, ethertype IPv4
+(0x0800), length 54: 172.16.123.18.miva-mqs > 213.215.116.226.http: R 0:0(0)
+win 0
 
-All traffic on the bridge is dropped. However, when I put in the IPv4 p=
-rotocol,
+1900 packets captured
+1928 packets received by filter
+0 packets dropped by kernel
 
-ebtables -t broute -A BROUTING -p IPv4  -j DROP
+Below are the SNAT rules that I have setup on iptables (actual --to-source
+IP has been changed to dummy IP):
+-A POSTROUTING -s 192.168.0.0/16 -o eth0 -j SNAT  --to-source 1.2.3.4
+-A POSTROUTING -s 172.16.0.0/12 -o eth0 -j SNAT  --to-source 1.2.3.5
+-A POSTROUTING -s 10.0.0.0/8 -o eth0 -j SNAT  --to-source 1.2.3.6
 
-the traffic can flow again. I tried adding IPv6 as well, just in case
-but that didn't do anything. I also tried capturing some traffic with
-tcpdump and checking that it shows normal traffic when sniffing either
-the bridge or individual interfaces. There doesn't seem to be any
-unusual encapsulation going on.
+I have also added the rules to block traffic sourced from my internal
+network destined to RFC1918 IP subnets as below:
+-A Blocked -p all -o eth0 --destination 10.0.0.0/8 -j DROP
+-A Blocked -p all -o eth0 --destination 172.16.0.0/12 -j DROP
+-A Blocked -p all -o eth0 --destination 192.168.0.0/16 -j DROP
 
-Can anyone suggest any other debug/testing I can do?
+Please assist to identify the source of this problem whereby FIN packets are
+going out without being NAT-ed.
 
-Robin
+Thank you.
+
+Dhyanesh Ramaiya
+dhyanesh.ramaiya@satconet.com
+
+Satcom Networks Africa Ltd.
+Tel.: +255 22 2183961
+Cel.: +255 784 514623
+
