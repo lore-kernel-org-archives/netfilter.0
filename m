@@ -1,71 +1,47 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: Query: Stateful parameters Explicitly and Implicitly defined,
- which is it?
-Date: Wed, 21 Oct 2009 12:08:07 +0200
-Message-ID: <4ADEDD87.3020203@chello.at>
-References: <4ADE2689.4070707@tssg.org> <4ADEBF52.7050602@chello.at> <4ADECA4A.5000907@tssg.org> <4ADED583.1060407@chello.at> <4ADED869.2000200@tssg.org>
-Reply-To: netfilter@vger.kernel.org
+From: veerasena reddy <veeruyours@yahoo.com>
+Subject: filtering frames based on destiantion MAC address using ebtables
+Date: Wed, 21 Oct 2009 03:41:08 -0700 (PDT)
+Message-ID: <638627.72853.qm@web56403.mail.re3.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4ADED869.2000200@tssg.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1256121668; bh=9WPSxbj7GVenUpyLEdgP3wszd1v7rstmv6iveHcMJdw=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Subject:To:MIME-Version:Content-Type; b=uR1dRYvyrIQUqDifZd1FWclhKOu6F6oDr3wsm99Xaf0QkErZPwXFInpj2mIEeXj8IxD+TIlV2ajUALBvSXd1s46y10Py6Qq/RdHyQr1kU/xxCXhczLbIZj/fF3jWWmqa6qZxMXj7pkSceDHG11heacpd1g5hyo6nVx/pRAC6o5g=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-netfilter-owner@vger.kernel.org wrote:
-> Mart Frauenlob wrote:
->>>
->>>> Usually I normalize TCP traffic, even before it hits the rules for 
->>>> the servers, but if i wouldn't do it globally, I'd rather write the 
->>>> rule like this:
->>>> iptables -A FORWARD -i eth0 -m tcp --dport 80 --tcp-flags SYN -m 
->>>> state --state NEW -j ACCEPT
->>>>
->>> I see your using stateful operators also in the above rule. Why 
->>> would there be a need to use the stateless SYN flag operator given 
->>> the NEW operaror implicitly handles this?
->>>
->>
->> Because NEW to the connection tracker means any new packet, which is 
->> not ESTABLISHED,RELATED, or INVALID.
->> So it's not necessarily a tcp syn packet. Explicitly defining  -m tcp 
->> --syn makes sure it's a valid tcp connection attempt.
-> I understand you now, I hope!
->
-> Although, given the protocol is TCP we know explicitly its not a UDP 
-> new connection attempt. But forcing the syn check ensures that the 
-> particular TCP packet is the kind we want.
->
-> So in all, its a further set of "checks and balances" that provide 
-> additional security, perhaps from various packet crafting situations 
-> where a packet may have both the syn and ack for example set.
->
->> That's why I talked about normalizing  the tcp traffic. Many rulesets 
->> place a rule like this (quite on top) to remove bad tcp packets:
->> iptables -N bad_tcp
->> iptables -A bad_tcp -p tcp ! --syn -m state --state NEW -j DROP
->>
->> for c in INPUT FORWARD; do
->>    iptables -A $c -p tcp -j bad_tcp
->> done
->>
-Yes another common rule that's on top of the bad_tcp chain is:
- -p tcp --tcp-flags SYN,ACK SYN,ACK -m state --state NEW -j REJECT 
---reject-with tcp-reset
+Hello,
 
-but you can read that in the tutorials ;-)
+I am using 2.6.28.8 kernel and ebtables version v2.0.9-1. I am trying to configure ebtables to filter (DROP) all the frames from LAN to a WAN PC with specific destination MAC address.
 
->> You might check out the iptables tutorial on frozentux, which may 
->> answer many of your questions:
->> http://www.frozentux.net/documents/iptables-tutorial/
->>
->> and also read this:
->> http://jengelh.medozas.de/documents/Perfect_Ruleset.pdf
->>
-> perfect, thanks.
+My test setup is as below:
 
-Regards
+LAN_PC <--> eth0--My_bridge--eth1 <--> WAN_PC(MAC addr: 00:0b:db:da:34:0c)
 
-Mart
+My_bridge with eth0 and eth1 as its ports is configured as below:
+/# ifconfig eth0 0.0.0.0 up
+/# ifconfig eth1 0.0.0.0 up
+/# brctl addbr test
+/# brctl addif test eth0
+/# brctl addif test eth1
+/# ifconfig test 0.0.0.0 up
+
+I have configured below ebtables rule to filter all the packets from LAN_PC to WAN_PC with MAC address 00:0b:db:da:34:0c:
+
+/# ebtables -t filter -A FORWARD -d 00:0b:db:da:34:0c -i eth0 -o eth1 -j DROP
+
+With this configuration, i tried PING from LAN_PC (192.168.10.100) to WAN_PC (192.168.10.200) and the PING is successful; the configured ebtables rule could not DROP ICMP echo requests from LAN to WAN PC.
+But at the same time, this rule able to DROP UDP traffic from LAN_PC to WAN_PC.
+
+What I observed in PING case is the LAN PC  is able to resolve IP of WAN through ARP and then the "ICMP echo request" from LAN to WAN doesn't enter ebtables match API ebt_do_table() in net/bridge/netfilter/ebtables.c
+
+Could any one help in understanding why the PING traffic is not DROPped as configured and doesn't enter ebt_do_table() in net/bridge/netfilter/ebtables.c ???
+
+Thanks in advance.
+
+Regards,
+Veerasena.
+
+
+      
