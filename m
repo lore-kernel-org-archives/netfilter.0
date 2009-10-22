@@ -1,44 +1,35 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: simple question about state vs conntrack modules
-Date: Thu, 22 Oct 2009 21:17:23 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.0910222115350.5982@blackhole.kfki.hu>
-References: <4ADF844A.3090106@solutti.com.br>
+From: Carl Michal <michal@physics.ubc.ca>
+Subject: ssh connections stalling
+Date: Thu, 22 Oct 2009 11:45:47 -0700 (PDT)
+Message-ID: <alpine.LNX.2.00.0910221138180.21365@spider.phas.ubc.ca>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4ADF844A.3090106@solutti.com.br>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: TEXT/PLAIN; format="flowed"; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Leonardo Rodrigues <leolistas@solutti.com.br>
-Cc: ML netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On Wed, 21 Oct 2009, Leonardo Rodrigues wrote:
+I'm having some troubles with what should be a very simple firewall to 
+simply protect a local machine.  When the firewall is enabled, ssh and scp 
+connections will sometimes hang indefinitely.  I've tried configuring the 
+firewall (which blocks all incoming requests to ports 0:1023 except ssh 
+and icmp) with several different tools: firehol, ufw and lutelwall.  If 
+the firewall is turned off, the problem disappears.  With lutelwall there 
+is an option to create a non-stateful firewall - if that is done, the 
+problem also disappears.
 
->    recently i have read a nice documentation with some hints for making good
-> rulesets .... and one caught my attention
-> 
-> http://jengelh.medozas.de/documents/Perfect_Ruleset.pdf
-> 
-> Towards the perfect ruleset
-> Jan Engelhardt
-> August 2009
-> 
-> 5 Modern extensions
-> De-facto obsolete extensions:
-> * -m state: replaced by -m conntrack
-> 
->    i must confess i dont recall reading about state module being obsoleted by
-> conntrack one ..... is that true ??? I know conntrack has more options ....
-> but that it obsoleted state, that i dont remember ....
+My syslog does show dropped packets that appear to be the cause of the 
+problem.  From tcpdumps at both ends of the connection it looks like the 
+problem happens if large packets are sent out from behind the firewall and 
+then arrive in pieces at the other end with a piece missing.  ack 
+packets coming back in are dropped, and the connection never recovers.
 
-Technically the conntrack match supersedes - and so obsoletes - the state 
-match. But practically the state match is not obsoleted in any way.
+Any help in diagnosing this would be much appreciated.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Carl
+
+
+
+
+
