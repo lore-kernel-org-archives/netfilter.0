@@ -1,29 +1,27 @@
-From: Tanguy Ropitault <tanguy.ropitault@telecom-bretagne.eu>
-Subject: Timeout for dynamic Nat
-Date: Thu, 22 Oct 2009 11:23:16 +0200
-Message-ID: <4AE02484.5020404@telecom-bretagne.eu>
+From: whiplash <whiplash@bofhland.org>
+Subject: Re: A little question about the RATEEST target.
+Date: Thu, 22 Oct 2009 15:12:22 +0200
+Message-ID: <4AE05A36.5040701@bofhland.org>
+References: <4AD4A58D.9010305@bofhland.org> <4AD85633.7050901@unipex.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4AD85633.7050901@unipex.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi,
-I was asking myself how are managed dynamic NAT timeout i.e how the 
-duration of an association "private address+private port" <->public 
-address/port is set.
-I dont have a great knowledge about netfilter but after browsing Linux 
-code, I have in mind that it has something to do with the conntrack 
-mechanism but I do not understand.
-Is it in /usr/src/linux/net/ipv4/netfilter/ip_conntrack_proto_tcp.c for 
-example for TCP? And if it's the cas, how does it work?
+Michele Petrazzo - Unipex ha scritto:
 
-I halso see the struct nf_conn structure and particularly the timeout 
-field but I dont see where this timeout is set.
+> Like also you can read, there is no direct possibility...
 
-Thanks for your answers,
-Tanguy.
+Ok, I suspected, since I searched widely both in /proc and in /sys...
 
+> There is no
+> external (proc|sys) interfaces. May be if someone create a simple patch...
+
+Yes, it could be really useful. ;-)
+
+TY.
 
