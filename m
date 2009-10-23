@@ -1,67 +1,79 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: ssh connections stalling
-Date: Fri, 23 Oct 2009 10:05:10 +0200
-Message-ID: <4AE163B6.9040706@chello.at>
-References: <alpine.LNX.2.00.0910221138180.21365@spider.phas.ubc.ca>
-Reply-To: netfilter@vger.kernel.org
+From: =?ISO-8859-1?Q?Vlado_Drz=28=EDk?= <vlado@ttx.sk>
+Subject: Re: access to terminal server in DMZ with 2 isp
+Date: Fri, 23 Oct 2009 12:22:31 +0200
+Message-ID: <4AE183E7.7010300@ttx.sk>
+References: <000301ca51ac$5efe4f70$7600a8c0@VALFREDO>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.00.0910221138180.21365@spider.phas.ubc.ca>
+In-Reply-To: <000301ca51ac$5efe4f70$7600a8c0@VALFREDO>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: alfredo <asa@euroval.com>
+Cc: netfilter@vger.kernel.org
 
-netfilter-owner@vger.kernel.org wrote:
-> I'm having some troubles with what should be a very simple firewall to 
-> simply protect a local machine.  When the firewall is enabled, ssh and 
-> scp connections will sometimes hang indefinitely.  I've tried 
-> configuring the firewall (which blocks all incoming requests to ports 
-> 0:1023 except ssh and icmp) with several different tools: firehol, ufw 
-> and lutelwall.  If the firewall is turned off, the problem 
-> disappears.  With lutelwall there is an option to create a 
-> non-stateful firewall - if that is done, the problem also disappears.
->
-> My syslog does show dropped packets that appear to be the cause of the 
-> problem.  From tcpdumps at both ends of the connection it looks like 
-> the problem happens if large packets are sent out from behind the 
-> firewall and then arrive in pieces at the other end with a piece 
-> missing.  ack packets coming back in are dropped, and the connection 
-> never recovers.
->
-> Any help in diagnosing this would be much appreciated.
->
-> Carl
+Hi,
 
-Hello,
+It's definitely a routing problem as you see and you have probably
+noticed it already..
 
-The rules you showed us, would all allow a local ssh server, so the 
-ruleset is not the problem.
-What confuses me, you talk about packets from behind the firewall, but 
-your rulesets don't show any FORWARD rules that would even allow ssh.
-If you would have, I'd say the problem may be fixable using the TCPMSS 
-target:
+You are using fwmark to send packets to your spacial tables but it seems
+that your local network is missing inside neo and ono tables.
 
-TCPMSS
-       [...]
-       This target is used to overcome criminally braindead ISPs or 
-servers which block "ICMP Fragmentation Needed" or "ICMPv6  Packet  Too  
-Big"  packets.   The
-       symptoms of this problem are that everything works fine from your 
-Linux firewall/router, but machines behind it can never exchange large 
-packets:
-        1) Web browsers connect, then hang with no data received.
-        2) Small mail works fine, but large emails hang.
-        3) ssh works fine, but scp hangs after initial handshaking.
-       [...]
+Please verify the by:
+ip route show table ono
+ip route show table neo
 
-If you need rules for a non routing (forwarding) machine, why do you 
-talk about 'behind the firewall'?
-Otherwise it's something else, than the ruleset.
-Log outputs? tcpdumps? Distro? Kernel? iptables version?
+>                # neo
+>                IP1="213.172.XXXX"
+>                P1_NET="213.172.XXXX/29"
+>                P1="213.172.XXXX"
+>                IF1="eth1"
+> 
+>                # ono
+>                IP2="84.124.XXXXX"
+>                P2_NET="84.124.87.224/29"
+>                P2="84.124.XXXX"
+>                IF2="eth2"
+>                IP0="192.168.0.249"
+>                P0_NET="192.168.0.0/24"
+>                #P0=
+>                IF2="eth0"
+                 ^^^^^^^^^^
+Seems like typo should be IF0="eth0"
 
-Regards
+> 
+>                ip route add $P2_NET dev $IF2 src $IP2 table ono
+>                ip route add default via $P2 table ono
+>                ip route add $P1_NET dev $IF1 src $IP1 table neo
+>                ip route add default via $P1 table neo
+>                ip route add $P1_NET dev $IF1 src $IP1
+>                ip route add $P2_NET dev $IF2 src $IP2
+>                ip route add default via $P1
+>                ip route add $P0_NET     dev $IF0 table neo
+>                ip route add $P2_NET     dev $IF2 table neo
+>                ip route add 127.0.0.0/8 dev lo   table neo
+>                ip route add $P0_NET     dev $IF0 table ono
+>                ip route add $P1_NET     dev $IF1 table ono
+>                ip route add 127.0.0.0/8 dev lo   table ono
+> 
+> 
+>                ip rule add fwmark 2 table ono
+>                ip rule add fwmark 1 table neo
+>                ip rule add from $IP2 table ono
+>                ip rule add from $IP1 table neo
+>                # -----------
+> 
+> When I try to connect from outside to each of my isps, for example ono,
+> I see packets entering eth2 and then
+> going out eth2 immediately without being routed to eth0.
+> I see dnat has changed the destination ip so packets go out eth2 having
+> the source ip from which I'm connecting from (not the ip of the
+> 
 
-Mart
+Everything else seems to be correct to me..
 
+
+Regarsd,
+Vlado
