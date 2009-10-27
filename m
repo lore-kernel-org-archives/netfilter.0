@@ -1,131 +1,48 @@
-From: =?iso-8859-1?Q?Alfredo_S=E1nchez?= <Alfredo.Sanchez@ua.es>
-Subject: one server, two isp
-Date: Tue, 27 Oct 2009 13:59:01 +0100
-Message-ID: <92C120E544E143C8AB18261ED93CC963@campus.ua.es>
+From: Gary Smith <gary.smith@holdstead.com>
+Subject: RE: one server, two isp
+Date: Tue, 27 Oct 2009 08:02:53 -0700
+Message-ID: <034DEBCAE934A74991E6E76B8DA72D14185DD509E7@HSSBS.holdstead.local>
+References: <92C120E544E143C8AB18261ED93CC963@campus.ua.es>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <92C120E544E143C8AB18261ED93CC963@campus.ua.es>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: =?iso-8859-1?Q?=27Alfredo_S=E1nchez=27?= <Alfredo.Sanchez@ua.es>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
 
-I have been trying to configure access to a terminal server from several 
-days without any luck. I have two routers from 2 diferrent isp (called ono 
-and neo) with a range of public in each. I want to access my terminal server 
-from internet from each isp, so as if one is down I can use the other one.
-
-
-  /-------\  neo(isp1)  eth1 +----------+
- /         \            +----+          | 
-+-----------------+
-/ Internet |------------|    | Firewall |---eth0-+-- DMZ -| Terminal Server 
-|
-\          /            +----+          | 
-+-----------------+
- \--------/  ono (isp2) eth2 +----------+
-
-
-IP1 is the public ip of eth1
-P1 is the ip of the neo's router
-IP2 is the public ip of eth2
-P2 is the ip of the ono's router
-
-
-My script to configure the firewall is as follows:
-#eth0 -> Internal network (DMZ) 192.168.0.0/24
-#eth1 -> Neo (First ISP)
-#eth2 -> Ono (Second ISP)
-set -x#Script:
-
-                echo 255 local > /etc/iproute2/rt_tables
-                echo 254 main >> /etc/iproute2/rt_tables
-                echo 253 default >> /etc/iproute2/rt_tables
-                echo 0 unspec >> /etc/iproute2/rt_tables
-                echo 200 neo >> /etc/iproute2/rt_tables
-                echo 201 ono >> /etc/iproute2/rt_tables
-
-                iptables -F
-                iptables -t nat -F
-                iptables -t mangle -F
-
-                # neo
-                IP1="213.172.XXXX"
-                P1_NET="213.172.XXXX/29"
-                P1="213.172.XXXX"
-                IF1="eth1"
-
-                # ono
-                IP2="84.124.XXXXX"
-                P2_NET="84.124.87.224/29"
-                P2="84.124.XXXX"
-                IF2="eth2"
-                IP0="192.168.0.249"
-                P0_NET="192.168.0.0/24"
-                #P0=
-                IF2="eth0"
-
-                ip route add $P2_NET dev $IF2 src $IP2 table ono
-                ip route add default via $P2 table ono
-                ip route add $P1_NET dev $IF1 src $IP1 table neo
-                ip route add default via $P1 table neo
-                ip route add $P1_NET dev $IF1 src $IP1
-                ip route add $P2_NET dev $IF2 src $IP2
-                ip route add default via $P1
-                ip route add $P0_NET     dev $IF0 table neo
-                ip route add $P2_NET     dev $IF2 table neo
-                ip route add 127.0.0.0/8 dev lo   table neo
-                ip route add $P0_NET     dev $IF0 table ono
-                ip route add $P1_NET     dev $IF1 table ono
-                ip route add 127.0.0.0/8 dev lo   table ono
+> # Redirecciono el puerto de las publicas a la privada
+> iptables -A PREROUTING -t nat -p tcp -i eth2 --dport
+> 3389 -j
+> DNAT --to 192.168.0.118:3389
+> iptables -A PREROUTING -t nat -p tcp -i eth1 --dport
+> 3389 -j
+> DNAT --to 192.168.0.118:3389
+> #iptables -A PREROUTING -t nat -p tcp --dport 3389 -j
+> DNAT --to 192.168.0.118:3389
+> #iptables -A PREROUTING -t nat -p tcp --dport 6000 -j
+> DNAT --to 192.168.0.118:6666
+> 
+> When I try to connect from outside to each of my isps, for example ono,
+> I
+> see packets entering eth2 and then
+> going out eth2 immediately without being routed to eth0.
+> I see dnat has changed the destination ip so packets go out eth2 having
+> the
+> source ip from which I'm connecting from (not the ip of the adapter)
+> and
+> destination ip 192.168.0.118 (the internal server) but through the
+> wrong
+> interface.
+> These packets should have being sent by eth0 and not eth2. If I connect
+> to
+> the other isp, neo, it's the same but packets going out eth1
+>  instead of eth0.
+> Any suggestions?
 
 
-                ip rule add fwmark 2 table ono
-                ip rule add fwmark 1 table neo
-                ip rule add from $IP2 table ono
-                ip rule add from $IP1 table neo
-                # -----------
-                echo 1 > /proc/sys/net/ipv4/ip_forward
-                iptables -F
-                iptables -t nat -F
-                iptables -t mangle -F
-
-                #iptables -t mangle -A PREROUTING -m conntrack --ctstate 
-DNAT --ctorigdst $IP1 -j MARK --set-mark 1
-                #iptables -t mangle -A PREROUTING -m conntrack --ctstate 
-DNAT --ctorigdst $IP2 -j MARK --set-mark 2
-                iptables -t mangle -A PREROUTING -m conntrack --ctorigdst 
-$IP1 -j MARK --set-mark 1
-                iptables -t mangle -A PREROUTING -m conntrack --ctorigdst 
-$IP2 -j MARK --set-mark 2
-
-                # Habilito el NAT para que la red interna pueda salir
-                iptables -t nat -A POSTROUTING -o $IF1 -s $P0_NET -d 
-0.0.0.0/0 -j SNAT --to $IP1
-                iptables -t nat -A POSTROUTING -o $IF2 -s $P0_NET -d 
-0.0.0.0/0 -j SNAT --to $IP2
-                #iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -d 
-0.0.0.0/0  -j MASQUERADE
-                # Redirecciono el puerto de las publicas a la privada
-                iptables -A PREROUTING -t nat -p tcp -i eth2 --dport 3389 -j 
-DNAT --to 192.168.0.118:3389
-                iptables -A PREROUTING -t nat -p tcp -i eth1 --dport 3389 -j 
-DNAT --to 192.168.0.118:3389
-                #iptables -A PREROUTING -t nat -p tcp --dport 3389 -j 
-DNAT --to 192.168.0.118:3389
-                #iptables -A PREROUTING -t nat -p tcp --dport 6000 -j 
-DNAT --to 192.168.0.118:6666
-
-When I try to connect from outside to each of my isps, for example ono, I 
-see packets entering eth2 and then
-going out eth2 immediately without being routed to eth0.
-I see dnat has changed the destination ip so packets go out eth2 having the 
-source ip from which I'm connecting from (not the ip of the adapter) and 
-destination ip 192.168.0.118 (the internal server) but through the wrong 
-interface.
-These packets should have being sent by eth0 and not eth2. If I connect to 
-the other isp, neo, it's the same but packets going out eth1
- instead of eth0.
-Any suggestions? 
+Yes, as per the email of a different subject 7 days ago, assign two IP's to the terminal server, route incoming IP on eth1 to IP 1 and incoming IP on eth2 to IP 2.  This will simplify the SNAT and use the MARK's that you have set.
 
 
