@@ -1,48 +1,39 @@
-From: Gary Smith <gary.smith@holdstead.com>
-Subject: RE: one server, two isp
-Date: Tue, 27 Oct 2009 08:02:53 -0700
-Message-ID: <034DEBCAE934A74991E6E76B8DA72D14185DD509E7@HSSBS.holdstead.local>
-References: <92C120E544E143C8AB18261ED93CC963@campus.ua.es>
+From: Richard Horton <richard.horton@solstans.co.uk>
+Subject: Stupid on state match
+Date: Tue, 27 Oct 2009 16:01:19 +0000
+Message-ID: <56378e320910270901q23369ecdxbc8e63e3a44e9031@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <92C120E544E143C8AB18261ED93CC963@campus.ua.es>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:mime-version:sender:received:date
+         :x-google-sender-auth:message-id:subject:from:to:content-type;
+        bh=geklGbE9q0wUdwyHW2GHsbE9WjRtOO2SugTEcyle3nk=;
+        b=sC6JrC2XLxnSTsfC9WZIvQfnu0754o3yZRSfwIae5pLx8x04CGpJgvmc0PaKiP0WFC
+         zKQSnTJNWCqapSe5TC2Yt9Uq/f9E1qzcFRVLJYtSUKHU54UMMBqbxLqre1c0EbEC9/US
+         VS+3x0ktWMi0Rf+SWxcejrCHvIqrbXNVwSe+0=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: =?iso-8859-1?Q?=27Alfredo_S=E1nchez=27?= <Alfredo.Sanchez@ua.es>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-> # Redirecciono el puerto de las publicas a la privada
-> iptables -A PREROUTING -t nat -p tcp -i eth2 --dport
-> 3389 -j
-> DNAT --to 192.168.0.118:3389
-> iptables -A PREROUTING -t nat -p tcp -i eth1 --dport
-> 3389 -j
-> DNAT --to 192.168.0.118:3389
-> #iptables -A PREROUTING -t nat -p tcp --dport 3389 -j
-> DNAT --to 192.168.0.118:3389
-> #iptables -A PREROUTING -t nat -p tcp --dport 6000 -j
-> DNAT --to 192.168.0.118:6666
-> 
-> When I try to connect from outside to each of my isps, for example ono,
-> I
-> see packets entering eth2 and then
-> going out eth2 immediately without being routed to eth0.
-> I see dnat has changed the destination ip so packets go out eth2 having
-> the
-> source ip from which I'm connecting from (not the ip of the adapter)
-> and
-> destination ip 192.168.0.118 (the internal server) but through the
-> wrong
-> interface.
-> These packets should have being sent by eth0 and not eth2. If I connect
-> to
-> the other isp, neo, it's the same but packets going out eth1
->  instead of eth0.
-> Any suggestions?
+Quick one: Does the state match 'INVALID' include tcp connections in
+an invalid state (e.g. fin when there is no valid connection, rst
+without a valid connection etc)?
 
 
-Yes, as per the email of a different subject 7 days ago, assign two IP's to the terminal server, route incoming IP on eth1 to IP 1 and incoming IP on eth2 to IP 2.  This will simplify the SNAT and use the MARK's that you have set.
+The man entry "Possible states are INVALID meaning that the packet
+could not be identified for some reason which includes running out of
+memory and ICMP errors which don't correspond to any known
+connection," doesn't really clarify whether it will or will not...
 
+(I know I can easily set up a test to prove it but just about to leave
+for the day and just struck me I didn't know the answer)
 
+-- 
+Richard Horton
+Users are like a virus: Each causing a thousand tiny crises until the
+host finally dies.
+http://www.solstans.co.uk - Solstans Japanese Bobtails and Norwegian Forest Cats
+http://www.pbase.com/arimus - My online photogallery
