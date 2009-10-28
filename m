@@ -1,63 +1,53 @@
 From: Jeff Jensen <jjensen@unyalli.com>
 Subject: Re: explanation of the syslog LEN and WINDOW entries
-Date: Wed, 28 Oct 2009 08:56:09 -0600
-Message-ID: <b376a78e0910280756h4ba10f1oea023c6b870fe0cb@mail.gmail.com>
+Date: Wed, 28 Oct 2009 09:21:49 -0600
+Message-ID: <b376a78e0910280821u179357del5c93069706391461@mail.gmail.com>
 References: <b376a78e0910280653y6312fc63yb2d20414d76a1ce0@mail.gmail.com>
 	 <56378e320910280720q79cd3dma8eee31f3512a6c0@mail.gmail.com>
+	 <b376a78e0910280756h4ba10f1oea023c6b870fe0cb@mail.gmail.com>
+	 <56378e320910280811t48e13264nb8992e2be9492f1a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <56378e320910280720q79cd3dma8eee31f3512a6c0@mail.gmail.com>
+In-Reply-To: <56378e320910280811t48e13264nb8992e2be9492f1a@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Richard Horton <richard.horton@solstans.co.uk>, netfilter@vger.kernel.org
 
-Thanks Richard, So there is no parameter (or combination of
-parameters) in the syslog entry stating actual packet size?
+So for TCP do I add all the LEN fields only?
 
-Hmmmm????
+If I have a thousand log entries and all the LEN fields are 60 did I
+use 60,000 bit's?
 
-The boss wants to know how much bandwidth is used by the different
-app's we allow. I have some unique app's that run on unique port(s)
-and rules that log all packets. I set the --log-prefix=3D to something
-unique to that app and every day sort it out into individual files. I
-was hoping to aggregate all the entries to a total bandwidth out and
-it.
+Or is it Bytes?
+
+In UDP do I add both LEN fields?
 
 
 
-On Wed, Oct 28, 2009 at 8:20 AM, Richard Horton
+On Wed, Oct 28, 2009 at 9:11 AM, Richard Horton
 <richard.horton@solstans.co.uk> wrote:
 >
 >
-> 2009/10/28 Jeff Jensen <jjensen@unyalli.com>:
->> Is there an explanation of the LEN and WINDOW fields in an
->> iptables/netfilter syslog entry?
+> 2009/10/28 Jeff Jensen <jjensen@unyalli.com>
 >>
-> First example: LEN is the length of the TCP datagram
->
-> The Window=C2=A0field applies to TCP packets and is the receive windo=
-w size =C2=A0-
-> the amount of data the receiver will process before having to send an=
- ack
-> message.
->
-> Second example I believe LEN 1 is the length of the IP datagram, LEN =
-2 is
-> the lenght of the UDP payload.
->
-> I would be wary of using this to estimate bandwith useage.
+>> Thanks Richard, So there is no parameter (or combination of
+>> parameters) in the syslog entry stating actual packet size?
+>>
+>> Hmmmm????
+>>
+>> The boss wants to know how much bandwidth is used by the different
+>> app's we allow. I have some unique app's that run on unique port(s)
+>> and rules that log all packets. I set the --log-prefix= to something
+>> unique to that app and every day sort it out into individual files. I
+>> was hoping to aggregate all the entries to a total bandwidth out and
+>> it.
 >
 >
-> --
-> Richard Horton
-> Users are like a virus: Each causing a thousand tiny crises until the=
- host
-> finally dies.
-> http://www.solstans.co.uk - Solstans Japanese Bobtails and Norwegian =
-=46orest
-> Cats
-> http://www.pbase.com/arimus - My online photogallery
+> For estimating individual application usage they'll be fine, was thinking
+> more along not using the len fields for estimating total consumed bandwidth
+> (as IP tables only deals with ip traffic and so will miss other forms of
+> traffic, ipx, appletalk, arp etc)
 >
 >
