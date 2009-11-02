@@ -1,32 +1,39 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: Multiple nf_bind_pf to the same protocol
-Date: Mon, 02 Nov 2009 16:30:43 +0100
-Message-ID: <4AEEFB23.407@trash.net>
-References: <87iqdtnetv.fsf@isengard.friendlyfire.se>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Beginner Question on restricting traffic within the same subnet.
+Date: Mon, 02 Nov 2009 16:51:31 +0100
+Message-ID: <4AEF0003.5060404@plouf.fr.eu.org>
+References: <ac5c74140911020721i5edef35el911d700a6017f7eb@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <87iqdtnetv.fsf@isengard.friendlyfire.se>
+In-Reply-To: <ac5c74140911020721i5edef35el911d700a6017f7eb@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: =?ISO-8859-15?Q?Mattias_R=F6nnblom?= <hofors@lysator.liu.se>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Mattias R=F6nnblom wrote:
-> Hi,
->=20
-> with NFQUEUE and the libnetfilter_queue library, is it possible to
-> bind several applications to same protocol (for example, AF_INET)?
->=20
-> That would be useful if you want to do load balancing on a multicore
-> system, with a thread/process serving each NFQUEUE queue.
->=20
-> After having a brief look at the NFQUEUE/libnetfilter_queue code, it
-> looks like there's only single netlink fd for all queues, and the
-> library does the demultiplexing. Would that mean I have to have a
-> "front-end" thread distributing different servering threads?
+Hello,
 
-You can bind them to different group numbers for the same AF.
-The latest version of the NFQUEUE target even supports automatic
-balancing between those groups based on a simple flow hash.
+paddy joesoap a =E9crit :
+>=20
+> Normally I think of firewalls as controlling packet flows that pass
+> through it (for example:Internet to Intranet).
+>=20
+> Can netfilter also control traffic on the same subnet?
+
+Yes, if the traffic passes through it. This can be done by setting up a
+filtering bridge using bridge-nf : the IP packets in bridged ethernet
+frames will be filtered by iptables rules.
+
+> Suppose I had the following set up:
+> Internal Machines 1,2 and 3 are on the same subnet governed by the
+> netfilter firewall.
+>=20
+>                                    ---------- Machine1
+> Internet ------ Netfilter Firewall ---------- Machine2
+>                                    ---------- Machine3
+
+Does the Firewall bridge Machine1-3 together (and thus have a separate
+ethernet interface for each one) or is there an ethernet switch between
+them ? A switch won't pass the traffic between Machine1-3 to the Firewa=
+ll.
