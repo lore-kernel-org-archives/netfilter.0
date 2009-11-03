@@ -1,54 +1,46 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: Multiple nf_bind_pf to the same protocol
-Date: Tue, 03 Nov 2009 11:50:29 +0100
-Message-ID: <4AF00AF5.9070205@trash.net>
-References: <87iqdtnetv.fsf@isengard.friendlyfire.se> <4AEEFB23.407@trash.net> <87639rhq7t.fsf@isengard.friendlyfire.se>
+From: Jon Lewis <jlewis@lewis.org>
+Subject: ebtables counters oddity
+Date: Tue, 3 Nov 2009 11:03:05 -0500 (EST)
+Message-ID: <Pine.LNX.4.61.0911031044040.22812@soloth.lewis.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <87639rhq7t.fsf@isengard.friendlyfire.se>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?ISO-8859-15?Q?Mattias_R=F6nnblom?= <hofors@lysator.liu.se>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Mattias R=F6nnblom wrote:
-> Patrick McHardy <kaber@trash.net> writes:
->=20
->> Mattias R=F6nnblom wrote:
->>> Hi,
->>>
->>> with NFQUEUE and the libnetfilter_queue library, is it possible to
->>> bind several applications to same protocol (for example, AF_INET)?
->>>
->>> That would be useful if you want to do load balancing on a multicor=
-e
->>> system, with a thread/process serving each NFQUEUE queue.
->>>
->>> After having a brief look at the NFQUEUE/libnetfilter_queue code, i=
-t
->>> looks like there's only single netlink fd for all queues, and the
->>> library does the demultiplexing. Would that mean I have to have a
->>> "front-end" thread distributing different servering threads?
->> You can bind them to different group numbers for the same AF.
->> The latest version of the NFQUEUE target even supports automatic
->> balancing between those groups based on a simple flow hash.
->=20
-> Do you by "group number" mean NFQUEUE queue number? If so, how would =
-I
-> do that?
+I'm using ebtables-v2.0.9-1.tar.gz with CentOS 5.3
+2.6.18-164.el5xen #1 SMP Thu Sep 3 04:03:03 EDT 2009 x86_64 x86_64 x86_64 
+GNU/Linux
 
-Yes. You can specify the netlink group number in the nfq_create_queue()
-call.
+Using ebtables, I've setup a number of user-defined chains.  In the INPUT 
+and FORWARD chains, I have rules to jump to these user-defined chains.
 
-> The data comes on a single netlink fd, which is serviced by
-> one thread, which is suppose to give the data chunk to
-> libnetfilter_queue (nfq_handle_packet). The libary executes a callbac=
-k
-> (depending on queue number) in the context of that thread. At least
-> that is my understanding of NFQUEUE/libnetfilter_queue.
+While getting ready to setup graphing of the counters provided by ebtables 
+-L --Lc, I noticed that any change (adding or deleting a rule) to any 
+table (at least the INPUT, FORWARD, or any other user-defined one) causes 
+the counters for the last user-defined table to be reset to 0's.
 
-You can start multiple processes and bind each one to a seperate queue.
-Alternatively you can create multiple queue handles in a multithreaded
-programm.
+Has anyone else encountered this?
+
+I just verified the same behavior on a RHEL 5.4 system running
+2.6.18-164.2.1.el5 #1 SMP Mon Sep 21 04:37:42 EDT 2009 x86_64 x86_64 
+x86_64 GNU/Linux
+with
+
+Name        : ebtables                     Relocations: (not relocatable)
+Version     : 2.0.8.2                           Vendor: Dag Apt Repository, http://dag.wieers.com/apt/
+Release     : 1.el5.rf                      Build Date: Fri 14 Mar 2008 12:17:48 AM EDT
+Install Date: Sat 31 Oct 2009 03:09:00 PM EDT      Build Host: lisse.leuven.wieers.com
+Group       : System Environment/Base       Source RPM: ebtables-2.0.8.2-1.el5.rf.src.rpm
+Size        : 558998                           License: GPL
+Signature   : DSA/SHA1, Sat 15 Mar 2008 12:52:06 AM EDT, Key ID a20e52146b8d79e6
+Packager    : Dag Wieers <dag@wieers.com>
+URL         : http://ebtables.sourceforge.net/
+
+----------------------------------------------------------------------
+  Jon Lewis                   |  I route
+  Senior Network Engineer     |  therefore you are
+  Atlantic Net                |
+_________ http://www.lewis.org/~jlewis/pgp for PGP public key_________
