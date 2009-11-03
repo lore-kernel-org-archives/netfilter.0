@@ -1,38 +1,31 @@
-From: aidan mcgurn <a_mcgurn@yahoo.co.uk>
-Subject: iptables ipt_ROUTE
-Date: Tue, 3 Nov 2009 11:03:42 -0800 (PST)
-Message-ID: <490093.21027.qm@web24104.mail.ird.yahoo.com>
+From: Eray Aslan <eray.aslan@caf.com.tr>
+Subject: Re: iptables ipt_ROUTE
+Date: Tue, 03 Nov 2009 21:25:06 +0200
+Message-ID: <4AF08392.1040504@caf.com.tr>
+References: <490093.21027.qm@web24104.mail.ird.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.co.uk; s=s1024; t=1257275022; bh=XGv7m5RgCyQwvqymCbruCYkUtnr+t/CmXvX+C3RILmw=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Subject:To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=CxtEHgBzOf7tNJiNmoT5m6vQLmMzIUoLi63d0iTSwoxUXdBsJHI7+0bubqkpaeOHJO3rL0NSqoAPw+qlIyHbEmMq2sfcUVJyiFIv20OzUhaz21U1Of6BJ9Q3VcTwa0mYc4oNXzvCOsos8jFQOPPTIx3W+lwb0BW05mmRNqcBBX4=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=caf.com.tr; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:references:subject:subject:mime-version:user-agent:from:from
+	:date:date:message-id:received:received; s=originating; t=
+	1257276310; bh=VU5wGX2N2Gy3Omt9eFUJHVi4J3geOLOcdUAqXnXEVkw=; b=i
+	wCSOZ1dIOzGK1fXmw25bhzjQTXheKHNhTBb3qSPwHYgZqRiQ97/Ghru7RjNsc6z6
+	+bEPgX49OZUnq+o7XqtiIut1fwjkbLu/BAZmaIf/ugumy8fA70guwentps2pM75D
+	CB1cBASOK/NHHTkhld85PsGSoYa9L4mE4BKpmi5OrM=
+In-Reply-To: <490093.21027.qm@web24104.mail.ird.yahoo.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi,
+On 03.11.2009 21:03, aidan mcgurn wrote:
+[...]
+> Ideally i need this facility to route packets via different gateways based on port number unless theres anther way to do besides ipt_ROUTE.
 
-I want to use the libipt_ROUTE facility which is currently not availabl=
-e in my linux iptables install.
+Search the archives:
+http://marc.info/?l=netfilter&w=2&r=1&s=ipt_route&q=t
 
-I did download the =E2=80=9Ciptables_1.3.5/ iptables-1.3.5.tar.bz2=E2=80=
-=9D source code and build the .so (despite the ipt_ROUTE.h missing from=
- here).=20
-
-However i=E2=80=99m wondering if u know how i get this to work on my sy=
-stem.=20
-
-e.g. i presume i need to build this as a kernel object and insmod it? H=
-ow do i buid this from the source i got from 1.3.5?
-
-Ideally i need this facility to route packets via different gateways ba=
-sed on port number unless theres anther way to do besides ipt_ROUTE.
-
-Thanks,
-
-/aidan
-
-
-
-     =20
+-- 
+Eray
