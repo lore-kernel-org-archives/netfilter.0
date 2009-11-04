@@ -1,55 +1,109 @@
-From: =?ISO-8859-1?Q?Fran=E7ois?= Delawarde 
-	<fdelawarde@wirelessmundi.com>
-Subject: Re: kernel panic when adding QUEUE to OUTGOING
-Date: Wed, 04 Nov 2009 13:31:31 +0100
-Message-ID: <1257337891.1254.220.camel@francois.tc.commsmundi.com>
-References: <1257332494.1254.218.camel@francois.tc.commsmundi.com>
-	 <4AF163EE.7060306@trash.net>
-Reply-To: fdelawarde@wirelessmundi.com
+From: Ralph de Boom <lkml@deboom.biz>
+Subject: Re: Iptables v1.4.4 + kernel 2.6.31 mangle marking changed?
+Date: Wed, 04 Nov 2009 14:15:03 +0100
+Message-ID: <4AF17E57.2060206@deboom.biz>
+References: <4AF0CF8C.7000602@deboom.biz> <4AF1628D.5080401@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4AF163EE.7060306@trash.net>
+In-Reply-To: <4AF1628D.5080401@trash.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Patrick McHardy <kaber@trash.net>
 Cc: netfilter@vger.kernel.org
 
-Tell me if this one helps:
-http://imagebin.org/70463
+Patrick McHardy schreef:
+> Ralph de Boom wrote:
+>   
+>> Hi there,
+>>
+>> Excuse me if this email might go wrong, it's my first message to a
+>> mailing list.
+>>
+>> But here's my problem: (And I hope you guys could shed light for me...)
+>>
+>> I originally ran Debian Lenny on kernel 2.6.18.
+>> Since today I reinstalled it to Ubuntu Server 9.10 with kernel  2.6.31.
+>>
+>> Now I used to do this in lenny:
+>>
+>> iptables -t mangle -A PREROUTING -s 192.168.1.0/24 -d 81.4.97.0/24 -j
+>> MARK --set-mark 0x1
+>>
+>> This would cause relevant packets to be marked 0x1, which in return I
+>> had a 'ip rule':
+>>
+>> my rules look like this:
+>>
+>> ip rule show
+>> 0:      from all lookup local
+>> 32760:  from all fwmark 0x2 lookup upc
+>> 32761:  from all fwmark 0x1 lookup xs4all
+>> 32762:  from 192.168.1.XX lookup xs4all
+>> 32763:  from 192.168.1.XX lookup upc
+>> 32764:  from 24.132.104.XXX lookup upc
+>> 32765:  from 192.168.2.XX lookup xs4all
+>> 32766:  from all lookup main
+>> 32767:  from all lookup default
+>>
+>> And my 'xs4all' table looks like:
+>>
+>> ip route show table xs4all
+>> 192.168.2.0/24 dev eth0  proto kernel  scope link  src 192.168.2.XX
+>> default via 192.168.2.X dev eth0
+>>
+>>
+>> I know the rule matches packets i make:
+>>
+>> iptables -t mangle -v -L
+>> Chain PREROUTING (policy ACCEPT 3111K packets, 1861M bytes)
+>> pkts bytes target     prot opt in     out     source              
+>> destination
+>>   16  1100 MARK       all  --  any    any     192.168.1.0/24      
+>> ip-space.by.proserve.nl/24 MARK xset 0x1/0xffffffff
+>>
+>> But somehow the connection is never relayed over the xs4all table...
+>>
+>> The changes I've noticed compared to lenny:
+>>
+>> iptables now likes to mark my --set-mark 0x1 as a --set-xmark
+>> 0x1/0xffffffff
+>> whereas in lenny it would stay a --set-mark 0x1
+>>
+>> Would be very pleased if someone could help me in this matter.
+>>     
+>
+> Please try adding a LOG rule directly after the marking rule and
+> see what it prints out for the MARK= value.
+>
+>   
+At first, thanks for helping me out!
 
-Regards,
-=46ran=C3=A7ois.
+Here's the info:
 
+ iptables -t mangle -v -L
+Chain PREROUTING (policy ACCEPT 42M packets, 25G bytes)
+ pkts bytes target     prot opt in     out     source               
+destination
+  362 84150 MARK       all  --  any    any     192.168.1.0/24       
+ip-space.by.proserve.nl/24 MARK xset 0x1/0xffffffff
+  362 84150 LOG        all  --  any    any     192.168.1.0/24       
+ip-space.by.proserve.nl/24 LOG level debug prefix `fwmark 0x1: '
 
-On Wed, 2009-11-04 at 12:22 +0100, Patrick McHardy wrote:
-> Fran=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
-=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
-=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
-=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
-=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
-=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD w=
-rote:
-> > Hello,
-> >=20
-> > I got a kernel panic trying the following command on two different
-> > computers with vanila kernel 2.6.30.9, and as soon as some traffic =
-is
-> > sent. Curriously I could not reproduce in QEMU.
-> >=20
-> > There is no user space program handling the QUEUE (I did not have t=
-he
-> > chance to get to that part).
-> >=20
-> > # iptables -I OUTPUT -j QUEUE
-> >=20
-> > Sorry I could only get a picture of the screen:
-> > http://imagebin.org/70454
->=20
-> I can't reproduce this here. Unfortunately your screenshot only
-> includes the end of the backtrace, so its hard to tell what
-> exactly happened. It crashes in packet_rcv(), so it doesn't
-> look related to NFQUEUE. If you can reproduce this, please try
-> to capture a full backtrace.
+kern.log:
+Nov  4 14:12:58 sakura kernel: [52836.368503] fwmark 0x1: IN=eth1 OUT= 
+MAC=00:1b:21:2d:a9:fa:00:1b:21:32:99:5f:08:00 SRC=192.168.1.30 
+DST=81.4.97.200 LEN=52 TOS=0x00 PREC=0x00 TTL=128 ID=9696 DF PROTO=TCP 
+SPT=61860 DPT=80 WINDOW=8192 RES=0x00 SYN URGP=0 MARK=0x1
+Nov  4 14:13:01 sakura kernel: [52839.368034] fwmark 0x1: IN=eth1 OUT= 
+MAC=00:1b:21:2d:a9:fa:00:1b:21:32:99:5f:08:00 SRC=192.168.1.30 
+DST=81.4.97.200 LEN=52 TOS=0x00 PREC=0x00 TTL=128 ID=11490 DF PROTO=TCP 
+SPT=61860 DPT=80 WINDOW=8192 RES=0x00 SYN URGP=0 MARK=0x1
+Nov  4 14:13:07 sakura kernel: [52845.370049] fwmark 0x1: IN=eth1 OUT= 
+MAC=00:1b:21:2d:a9:fa:00:1b:21:32:99:5f:08:00 SRC=192.168.1.30 
+DST=81.4.97.200 LEN=48 TOS=0x00 PREC=0x00 TTL=128 ID=15001 DF PROTO=TCP 
+SPT=61860 DPT=80 WINDOW=8192 RES=0x00 SYN URGP=0 MARK=0x1
+
+Thanks!
 
