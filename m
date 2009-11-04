@@ -1,56 +1,28 @@
-From: Paul Evans <paul@mxtelecom.com>
-Subject: Automatic DNAT+SNAT fixup
-Date: Wed, 4 Nov 2009 14:24:11 +0000
-Message-ID: <20091104142411.04aff20f@nacelle.mxtelecom.com>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: kernel panic when adding QUEUE to OUTGOING
+Date: Wed, 04 Nov 2009 15:54:13 +0100
+Message-ID: <4AF19595.10803@trash.net>
+References: <1257332494.1254.218.camel@francois.tc.commsmundi.com>	 <4AF163EE.7060306@trash.net>	 <1257337891.1254.220.camel@francois.tc.commsmundi.com>	 <4AF183A7.5060005@trash.net>	 <1257342875.1254.224.camel@francois.tc.commsmundi.com>	 <4AF18937.5010901@trash.net>	 <1257345155.1254.245.camel@francois.tc.commsmundi.com>	 <4AF19253.5050107@trash.net> <1257345852.1254.254.camel@francois.tc.commsmundi.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=PGP-SHA1;
- boundary="Sig_/iTNg9JVNhs07=YRWVc26B=9"; protocol="application/pgp-signature"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <1257345852.1254.254.camel@francois.tc.commsmundi.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: fdelawarde@wirelessmundi.com
+Cc: netfilter@vger.kernel.org
 
---Sig_/iTNg9JVNhs07=YRWVc26B=9
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+=46ran=E7ois Delawarde wrote:
+> On Wed, 2009-11-04 at 15:40 +0100, Patrick McHardy wrote:
+>>> It might be worth noting that the kernel is patched with IMQ, lates=
+t
+>>> version from linux-imq.net, but the IMQ device is not used.
+>> This is most likely the cause.
+>=20
+> Does it affect even if the devices are not used at all? I can still
+> reproduce doing an "rmmod imq" before anything.
+>=20
 
-We have a lot of DNAT rules in place on a shared cluster of routers,
-to direct traffic to virtual "role IPs" to specific backend machines
-to handle them. In order to ensure that the replies come to the right
-router, we then SNAT as well.
-
-This results in rules like the following:
-
-  for IP in (lots of role IPs); do
-    iptables -A POSTROUTING -m conntrack --ctstate DNAT --ctorigdest $IP \
-      -j SNAT --to-source $IP
-  done
-
-I wonder if, instead of doing that, it might be possible to create a
-single target, perhaps called FIXNAT, which applies the obvious logic.
-It could be used something like
-
-  iptables -A POSTROUTING -m conntrack --ctstate DNAT -j FIXNAT
-
-and would apply an SNAT to whatever source address the original
-destination was.
-
---=20
-Paul Evans <paul@mxtelecom.com>
-Tel: +44 (0) 845 666 7778
-Fax: +44 (0) 870 163 4694
-http://www.mxtelecom.com
-
---Sig_/iTNg9JVNhs07=YRWVc26B=9
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Disposition: attachment; filename=signature.asc
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAkrxjosACgkQcGehlx3Gqx7z1gCeJY1o6/rpE5/PLU2USropyAc6
-/FUAoJnRUh5PHWmtPV2nAfLdeXbvvz6B
-=KGiX
------END PGP SIGNATURE-----
-
---Sig_/iTNg9JVNhs07=YRWVc26B=9--
+Probably, it adds weird code all over the place and from a quick look
+it can't even compile cleanly.
