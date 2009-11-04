@@ -1,41 +1,55 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: SNAT with ipsec => return packets not de-natted
-Date: Wed, 04 Nov 2009 13:27:21 +0100
-Message-ID: <4AF17329.7010506@trash.net>
-References: <a906663d0911011050w59ae675dmc70ee93132cf6990@mail.gmail.com>	 <a906663d0911022254w6642c66aw17b9609624086a36@mail.gmail.com> <a906663d0911031105g1f8a8a27o67cf77ab5fe73e54@mail.gmail.com>
+From: =?ISO-8859-1?Q?Fran=E7ois?= Delawarde 
+	<fdelawarde@wirelessmundi.com>
+Subject: Re: kernel panic when adding QUEUE to OUTGOING
+Date: Wed, 04 Nov 2009 13:31:31 +0100
+Message-ID: <1257337891.1254.220.camel@francois.tc.commsmundi.com>
+References: <1257332494.1254.218.camel@francois.tc.commsmundi.com>
+	 <4AF163EE.7060306@trash.net>
+Reply-To: fdelawarde@wirelessmundi.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <a906663d0911031105g1f8a8a27o67cf77ab5fe73e54@mail.gmail.com>
+In-Reply-To: <4AF163EE.7060306@trash.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jari Laurila <jari.laurila@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+To: Patrick McHardy <kaber@trash.net>
 Cc: netfilter@vger.kernel.org
 
-Jari Laurila wrote:
-> On Tue, Nov 3, 2009 at 8:54 AM, Jari Laurila <jari.laurila@gmail.com> wrote:
->> Don't anyone have any clues for the problem I sent to the list on sunday?
->>
->> I find it really strange that decrypted packets coming from ipsec
->> tunnel with destination address xx.xx.xx.42 are sent through interface
->> ext1 even though ip -s route get xx.xx.xx.42 says that packet should
->> go through interface ext0b. Ipsec tunnel itself is going through
->> inteface ext1 but shouldn't packets get routed after they come from
->> tunnel? I even tried to look at kernel code to figure out why this
->> happens but I don't know enough about kernel and my c skills are a bit
->> lacking, so I couldn't find the cause.
->>
-> 
-> Update Netfilter sees packet at mangle table in PREROUTING chain (I
-> added LOG rule), but nat table does not see the packet.
-> 
-> I also have fwd policy defined for the connection in question:
-> 
-> src srcip.srcip.srcip.secip/32 dst dstip.dstip.dstip.42/32
->         dir fwd priority 0
->         tmpl src gwip.gwip.gwip.gwip dst remgw.remgw.remgw.remgw
->                 proto esp reqid 0 mode tunnel
+Tell me if this one helps:
+http://imagebin.org/70463
 
-Try adding a TRACE rule to see how the packet traverses the netfilter
-hooks.
+Regards,
+=46ran=C3=A7ois.
+
+
+On Wed, 2009-11-04 at 12:22 +0100, Patrick McHardy wrote:
+> Fran=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
+=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
+=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
+=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
+=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
+=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD w=
+rote:
+> > Hello,
+> >=20
+> > I got a kernel panic trying the following command on two different
+> > computers with vanila kernel 2.6.30.9, and as soon as some traffic =
+is
+> > sent. Curriously I could not reproduce in QEMU.
+> >=20
+> > There is no user space program handling the QUEUE (I did not have t=
+he
+> > chance to get to that part).
+> >=20
+> > # iptables -I OUTPUT -j QUEUE
+> >=20
+> > Sorry I could only get a picture of the screen:
+> > http://imagebin.org/70454
+>=20
+> I can't reproduce this here. Unfortunately your screenshot only
+> includes the end of the backtrace, so its hard to tell what
+> exactly happened. It crashes in packet_rcv(), so it doesn't
+> look related to NFQUEUE. If you can reproduce this, please try
+> to capture a full backtrace.
+
