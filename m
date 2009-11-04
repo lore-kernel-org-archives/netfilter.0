@@ -1,69 +1,41 @@
-From: aidan mcgurn <a_mcgurn@yahoo.co.uk>
-Subject: ipt ROUTE
-Date: Wed, 4 Nov 2009 04:15:45 -0800 (PST)
-Message-ID: <917815.12910.qm@web24108.mail.ird.yahoo.com>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: SNAT with ipsec => return packets not de-natted
+Date: Wed, 04 Nov 2009 13:27:21 +0100
+Message-ID: <4AF17329.7010506@trash.net>
+References: <a906663d0911011050w59ae675dmc70ee93132cf6990@mail.gmail.com>	 <a906663d0911022254w6642c66aw17b9609624086a36@mail.gmail.com> <a906663d0911031105g1f8a8a27o67cf77ab5fe73e54@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.co.uk; s=s1024; t=1257336945; bh=xGOT/Ox96uyR7a23ByAGWxY3xVjEvWDYbhvKPny467I=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Subject:To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=gHkZkqa4iyW71GXcz6uUuSm8AJkUUcKeCyYh6mKYU1AUPSjewDdCuAtUH0j875vJutjqrULeLteSy5gEihTVB0se1rtgHyB9APxCYCZ4fO78nB9AvXyXd0Zipd+kpgML5iQpoMRxxLQ4wQCyd06DILuSXObBZqD8HBzbMGrfYpk=
+In-Reply-To: <a906663d0911031105g1f8a8a27o67cf77ab5fe73e54@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jari Laurila <jari.laurila@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hi,
-(apologies in advance - don't seem to have the option to reply within t=
-he same thread so re-sending this)
-thanks for the response.
-I had looked through the archives and did again but i'm fairly new to n=
-etfilters iptables and i can't see=20
-any other way of routing using dst:port via different gateways besides =
-using the ipt ROUTE lib.
+Jari Laurila wrote:
+> On Tue, Nov 3, 2009 at 8:54 AM, Jari Laurila <jari.laurila@gmail.com> wrote:
+>> Don't anyone have any clues for the problem I sent to the list on sunday?
+>>
+>> I find it really strange that decrypted packets coming from ipsec
+>> tunnel with destination address xx.xx.xx.42 are sent through interface
+>> ext1 even though ip -s route get xx.xx.xx.42 says that packet should
+>> go through interface ext0b. Ipsec tunnel itself is going through
+>> inteface ext1 but shouldn't packets get routed after they come from
+>> tunnel? I even tried to look at kernel code to figure out why this
+>> happens but I don't know enough about kernel and my c skills are a bit
+>> lacking, so I couldn't find the cause.
+>>
+> 
+> Update Netfilter sees packet at mangle table in PREROUTING chain (I
+> added LOG rule), but nat table does not see the packet.
+> 
+> I also have fwd policy defined for the connection in question:
+> 
+> src srcip.srcip.srcip.secip/32 dst dstip.dstip.dstip.42/32
+>         dir fwd priority 0
+>         tmpl src gwip.gwip.gwip.gwip dst remgw.remgw.remgw.remgw
+>                 proto esp reqid 0 mode tunnel
 
-That been the case, can u please directme on how to build the ipt_ROUTE=
- kernel object for this or is it a patch thats required?
-As i said i downloaded 1.3.5 iptables code from netfilter and did a mak=
-e but it only builds the shared objects, no kernel objects which
-i presume i need to install a ipt_ROUTE.ko to get the -j ROUTE option t=
-o work?
-alternatively is there any iptables package which includes this?
-
-
-thanks for any help here,
-/aidan
-
-
-=3D=3D=3D=3D=3D=3D=3D=3D
-Search the
- archives:
-
---=20
-Eray
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>>Hi,
-
-I want to use the libipt_ROUTE facility which is currently not availabl=
-e in my linux \
-iptables install.
-
-I did download the =C3=A2=E2=82=AC=C5=93iptables_1.3.5/
- iptables-1.3.5.tar.bz2=C3=A2=E2=82=AC source code and build \
-the .so (despite the ipt_ROUTE.h missing from here).=20
-
-However i=C3=A2=E2=82=AC=E2=84=A2m wondering if u know how i get this t=
-o work on my system.=20
-
-e.g. i presume i need to build this as a kernel object and insmod it? H=
-ow do i buid \
-this from the source i got from 1.3.5?
-
-Ideally i need this facility to route packets via different gateways ba=
-sed on port \
-number unless theres anther way to do besides ipt_ROUTE.
-
-Thanks,
-
-/aidan
-
-
-     =20
+Try adding a TRACE rule to see how the packet traverses the netfilter
+hooks.
