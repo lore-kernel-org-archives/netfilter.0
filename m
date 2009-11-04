@@ -1,75 +1,71 @@
-From: "fakessh@fakessh.eu" <fakessh@fakessh.eu>
-Subject: Re: HTTP Access Blocked After iptables Update
-Date: Tue, 3 Nov 2009 22:06:17 +0100
-Message-ID: <200911032206.18489.fakessh@fakessh.eu>
-References: <9A16A4503EA74DCAAF2C8A53A0DBF60F@RomoPC>
+From: Ralph de Boom <lkml@deboom.biz>
+Subject: Iptables v1.4.4 + kernel 2.6.31 mangle marking changed?
+Date: Wed, 04 Nov 2009 01:49:16 +0100
+Message-ID: <4AF0CF8C.7000602@deboom.biz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=simple; d=fakessh.eu; h=from:to
-	:subject:date:cc:references:in-reply-to:mime-version
-	:content-type:content-transfer-encoding:message-id; s=mail; bh=h
-	8DjeLIoqMGhUEhIYvcJv6nzN4s=; b=dIZ8KsAlOe522nJr19ek1hQNPkyee6j8z
-	3UgRSMgiiPVdbzDjuwdS2BExQPk17Eig5JZOyXmD8vSuMHLrokRQvU+fFHZG+CAd
-	iLxmMcTEUC+3DRPg6WZMwJu7i9tEpYOqLFPVyCGiabqudfULphi5/MWvkNCeWH5g
-	fABw5KbpS4=
-In-Reply-To: <9A16A4503EA74DCAAF2C8A53A0DBF60F@RomoPC>
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: JR <jdnromao@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-after upgrade iptables via yum on my box Centos 5.4
+Hi there,
 
-I did not encounter such problems
-described in your post
+Excuse me if this email might go wrong, it's my first message to a 
+mailing list.
 
-iptables work fine on my box
+But here's my problem: (And I hope you guys could shed light for me...)
 
-Le mardi 3 novembre 2009 20:23, JR a =E9crit=A0:
-> Hello!
->
-> Today I updated various things in my production server, one of them w=
-as
-> iptables (via yum)
->
-> I'm running CentOS 5.
->
-> 1) After the update I was not able to access any site hosted on my se=
-rver.
->
-> 2) I try to stop iptables and than I gain access again.
->
-> 3) Than I've started iptables and no access again.
->
-> 4) I rebooted my server.
->
-> 5) After the reboot I verify if iptables was active, it was and all m=
-y
-> sites were accesible.
->
-> 6) I've restarted iptables.
->
-> 7) All sites went down again.
->
-> 8) Rebooted my server and sites were accessible.
->
-> 9) iptables was also running
->
-> Basically the problem is, if I restart iptables, I have to reboot my =
-server
-> because my sites become offline.
->
-> So, what can be the problem here? Any ideas?
->
-> Help is highly appreciated!!!!
->
-> Many thanks in advance.
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I originally ran Debian Lenny on kernel 2.6.18.
+Since today I reinstalled it to Ubuntu Server 9.10 with kernel  2.6.31.
+
+Now I used to do this in lenny:
+
+iptables -t mangle -A PREROUTING -s 192.168.1.0/24 -d 81.4.97.0/24 -j 
+MARK --set-mark 0x1
+
+This would cause relevant packets to be marked 0x1, which in return I 
+had a 'ip rule':
+
+my rules look like this:
+
+ip rule show
+0:      from all lookup local
+32760:  from all fwmark 0x2 lookup upc
+32761:  from all fwmark 0x1 lookup xs4all
+32762:  from 192.168.1.XX lookup xs4all
+32763:  from 192.168.1.XX lookup upc
+32764:  from 24.132.104.XXX lookup upc
+32765:  from 192.168.2.XX lookup xs4all
+32766:  from all lookup main
+32767:  from all lookup default
+
+And my 'xs4all' table looks like:
+
+ip route show table xs4all
+192.168.2.0/24 dev eth0  proto kernel  scope link  src 192.168.2.XX
+default via 192.168.2.X dev eth0
+
+
+I know the rule matches packets i make:
+
+ iptables -t mangle -v -L
+Chain PREROUTING (policy ACCEPT 3111K packets, 1861M bytes)
+ pkts bytes target     prot opt in     out     source               
+destination
+   16  1100 MARK       all  --  any    any     192.168.1.0/24       
+ip-space.by.proserve.nl/24 MARK xset 0x1/0xffffffff
+
+But somehow the connection is never relayed over the xs4all table...
+
+The changes I've noticed compared to lenny:
+
+iptables now likes to mark my --set-mark 0x1 as a --set-xmark 
+0x1/0xffffffff
+whereas in lenny it would stay a --set-mark 0x1
+
+Would be very pleased if someone could help me in this matter.
+
+Greetings,
+Ralph de Boom
