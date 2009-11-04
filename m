@@ -1,54 +1,44 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: ipt ROUTE
-Date: Wed, 04 Nov 2009 14:56:38 +0100
-Message-ID: <4AF18816.201@chello.at>
-References: <917815.12910.qm@web24108.mail.ird.yahoo.com>
-Reply-To: netfilter@vger.kernel.org
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: kernel panic when adding QUEUE to OUTGOING
+Date: Wed, 04 Nov 2009 15:01:27 +0100
+Message-ID: <4AF18937.5010901@trash.net>
+References: <1257332494.1254.218.camel@francois.tc.commsmundi.com>	 <4AF163EE.7060306@trash.net>	 <1257337891.1254.220.camel@francois.tc.commsmundi.com>	 <4AF183A7.5060005@trash.net> <1257342875.1254.224.camel@francois.tc.commsmundi.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <917815.12910.qm@web24108.mail.ird.yahoo.com>
+In-Reply-To: <1257342875.1254.224.camel@francois.tc.commsmundi.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: fdelawarde@wirelessmundi.com
+Cc: netfilter@vger.kernel.org
 
-aidan mcgurn wrote:
-> Hi,
-> (apologies in advance - don't seem to have the option to reply within the same thread so re-sending this)
-> thanks for the response.
-> I had looked through the archives and did again but i'm fairly new to netfilters iptables and i can't see 
-> any other way of routing using dst:port via different gateways besides using the ipt ROUTE lib.
->
-> That been the case, can u please directme on how to build the ipt_ROUTE kernel object for this or is it a patch thats required?
-> As i said i downloaded 1.3.5 iptables code from netfilter and did a make but it only builds the shared objects, no kernel objects which
-> i presume i need to install a ipt_ROUTE.ko to get the -j ROUTE option to work?
-> alternatively is there any iptables package which includes this?
->
->   
-Hello,
+=46ran=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
+=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
+=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
+=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
+=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
+=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD w=
+rote:
+> On Wed, 2009-11-04 at 14:37 +0100, Patrick McHardy wrote:
+>> Fran=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
+=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
+=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
+=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
+=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=
+=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD w=
+rote:
+>>> Tell me if this one helps:
+>>> http://imagebin.org/70463
+>> Not sure yet. What does /proc/net/netfilter/nf_queue contain?
+>=20
+> # cat /proc/net/netfilter/nf_queue
+>  0 NONE
+> ...
 
-ipt_ROUTE has been removed, some functionality moved to the TEE  target 
-from xtables-addons (but that's not what you need).
+I can't find anything which could cause this. Please post full
+information (all netfilter rules, ping version, qdiscs and whatever
+else might seem important).
 
-The way to do it, is to use the MARK target to set marks (--set-mark 
-0xX), like i.e:
-iptables -t mangle -A PREROUTING -i eth1 -p tcp --dport 22 -j MARK 
---set-mark 0x1
-
-Then use the iproute utility to add routing tables/rules per gateway i.e.
-
-echo X GW1 >> /etc/iproute2/rt_tables
-...
-ip route add table X <whatever-route>
-....
-ip rule add from all fwmark 0x1 table X
-...
-
-It should not be hard to find valuable examples on the internet. i.e:
-http://linux-ip.net/html/adv-multi-internet.html
-http://lartc.org/howto/lartc.rpdb.html
-
-Regards
-
-Mart
+Also, your kernel is already tainted (D), please retry with
+a cleanly booted kernel.
