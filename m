@@ -1,44 +1,112 @@
-From: Javier Almillategui <jalmillategui@mac.com>
-Subject: Re: kernel panic when adding QUEUE to OUTGOING
-Date: Wed, 04 Nov 2009 09:45:39 -0500
-Message-ID: <EA91EDDC-4606-40CA-8244-D8DE576FFBA9@mac.com>
-References: <1257332494.1254.218.camel@francois.tc.commsmundi.com>
- <4AF163EE.7060306@trash.net>
- <1257337891.1254.220.camel@francois.tc.commsmundi.com>
- <4AF183A7.5060005@trash.net>
- <1257342875.1254.224.camel@francois.tc.commsmundi.com>
- <4AF18937.5010901@trash.net>
- <1257345155.1254.245.camel@francois.tc.commsmundi.com>
- <4AF19253.5050107@trash.net>
- <1257345852.1254.254.camel@francois.tc.commsmundi.com>
+From: Ralph de Boom <lkml@deboom.biz>
+Subject: Re: Iptables v1.4.4 + kernel 2.6.31 mangle marking changed?
+Date: Wed, 04 Nov 2009 16:53:59 +0100
+Message-ID: <4AF1A397.90806@deboom.biz>
+References: <4AF0CF8C.7000602@deboom.biz> <4AF1628D.5080401@trash.net> <4AF17E57.2060206@deboom.biz> <4AF18B57.6060707@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-reply-to: <1257345852.1254.254.camel@francois.tc.commsmundi.com>
+In-Reply-To: <4AF18B57.6060707@trash.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed	delsp=yes"
-To: fdelawarde@wirelessmundi.com
-Cc: Patrick McHardy <kaber@trash.net>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Patrick McHardy <kaber@trash.net>
+Cc: netfilter@vger.kernel.org
 
-or putting imq in the module blacklist so it is not loaded by default.
-
-On Nov 4, 2009, at 9:44 AM, Fran=E7ois Delawarde wrote:
-
-> On Wed, 2009-11-04 at 15:40 +0100, Patrick McHardy wrote:
->>> It might be worth noting that the kernel is patched with IMQ, lates=
-t
->>> version from linux-imq.net, but the IMQ device is not used.
+Patrick McHardy schreef:
+> Ralph de Boom wrote:
+>   
+>> Patrick McHardy schreef:
+>>     
+>>> Ralph de Boom wrote:
+>>>  
+>>>       
+>>>> Hi there,
+>>>>
+>>>> Excuse me if this email might go wrong, it's my first message to a
+>>>> mailing list.
+>>>>
+>>>> But here's my problem: (And I hope you guys could shed light for me...)
+>>>>
+>>>> I originally ran Debian Lenny on kernel 2.6.18.
+>>>> Since today I reinstalled it to Ubuntu Server 9.10 with kernel  2.6.31.
+>>>>
+>>>> Now I used to do this in lenny:
+>>>>
+>>>> iptables -t mangle -A PREROUTING -s 192.168.1.0/24 -d 81.4.97.0/24 -j
+>>>> MARK --set-mark 0x1
+>>>>
+>>>> This would cause relevant packets to be marked 0x1, which in return I
+>>>> had a 'ip rule':
+>>>>
+>>>> my rules look like this:
+>>>>
+>>>> ip rule show
+>>>> 0:      from all lookup local
+>>>> 32760:  from all fwmark 0x2 lookup upc
+>>>> 32761:  from all fwmark 0x1 lookup xs4all
+>>>> 32762:  from 192.168.1.XX lookup xs4all
+>>>> 32763:  from 192.168.1.XX lookup upc
+>>>> 32764:  from 24.132.104.XXX lookup upc
+>>>> 32765:  from 192.168.2.XX lookup xs4all
+>>>> 32766:  from all lookup main
+>>>> 32767:  from all lookup default
+>>>>
+>>>> And my 'xs4all' table looks like:
+>>>>
+>>>> ip route show table xs4all
+>>>> 192.168.2.0/24 dev eth0  proto kernel  scope link  src 192.168.2.XX
+>>>> default via 192.168.2.X dev eth0
+>>>>
+>>>>
+>>>> I know the rule matches packets i make:
+>>>>
+>>>> iptables -t mangle -v -L
+>>>> Chain PREROUTING (policy ACCEPT 3111K packets, 1861M bytes)
+>>>> pkts bytes target     prot opt in     out     source             
+>>>> destination
+>>>>   16  1100 MARK       all  --  any    any     192.168.1.0/24     
+>>>> ip-space.by.proserve.nl/24 MARK xset 0x1/0xffffffff
+>>>>
+>>>> But somehow the connection is never relayed over the xs4all table...
+>>>>
+>>>> The changes I've noticed compared to lenny:
+>>>>
+>>>> iptables now likes to mark my --set-mark 0x1 as a --set-xmark
+>>>> 0x1/0xffffffff
+>>>> whereas in lenny it would stay a --set-mark 0x1
+>>>>
+>>>> Would be very pleased if someone could help me in this matter.
+>>>>     
+>>>>         
+>>> Please try adding a LOG rule directly after the marking rule and
+>>> see what it prints out for the MARK= value.
+>>>
+>>>   
+>>>       
+>> At first, thanks for helping me out!
 >>
->> This is most likely the cause.
+>> Here's the info:
+>>
+>> iptables -t mangle -v -L
+>> Chain PREROUTING (policy ACCEPT 42M packets, 25G bytes)
+>> pkts bytes target     prot opt in     out     source              
+>> destination
+>>  362 84150 MARK       all  --  any    any     192.168.1.0/24      
+>> ip-space.by.proserve.nl/24 MARK xset 0x1/0xffffffff
+>>  362 84150 LOG        all  --  any    any     192.168.1.0/24      
+>> ip-space.by.proserve.nl/24 LOG level debug prefix `fwmark 0x1: '
+>>
+>> kern.log:
+>> Nov  4 14:12:58 sakura kernel: [52836.368503] fwmark 0x1: IN=eth1 OUT=
+>> MAC=00:1b:21:2d:a9:fa:00:1b:21:32:99:5f:08:00 SRC=192.168.1.30
+>>     
 >
-> Does it affect even if the devices are not used at all? I can still
-> reproduce doing an "rmmod imq" before anything.
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-=20
-> in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> This looks fine, it also works properly for me. Perhaps the
+> packets are already delivered locally through the "local"
+> table. The TRACE target should be able to tell you more.
+>   
+Right, at this point you've lost me, how I will manage to do that, and 
+where does the infomation get stored?
+
 
