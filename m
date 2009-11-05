@@ -1,29 +1,43 @@
-From: Karel Rericha <karel@maxtel.cz>
-Subject: Re: force a MAC to have one IP
-Date: Thu, 5 Nov 2009 09:27:12 +0100
-Message-ID: <5b19ed110911050027j18f5232w9f80447022ca1ab0@mail.gmail.com>
-References: <4AF24F56.6010308@gulfsat.mg>
+From: Richard Horton <richard.horton@solstans.co.uk>
+Subject: Re: Iptables v1.4.4 + kernel 2.6.31 mangle marking changed?
+Date: Thu, 5 Nov 2009 11:52:51 +0000
+Message-ID: <56378e320911050352p64455be8ga21655668c361d95@mail.gmail.com>
+References: <4AF0CF8C.7000602@deboom.biz> <4AF1628D.5080401@trash.net>
+	 <4AF17E57.2060206@deboom.biz> <4AF18B57.6060707@trash.net>
+	 <4AF1A397.90806@deboom.biz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4AF24F56.6010308@gulfsat.mg>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:mime-version:sender:received:in-reply-to
+         :references:date:x-google-sender-auth:message-id:subject:from:to:cc
+         :content-type;
+        bh=ZFurDLDdoT3kU0WLGCW33lOSfMM21jYGMAIGge8EW3k=;
+        b=ISeyWvBibw2yYoGlr8pNV6i6uo2a8EBrewVg3Fo3JfaQMtMmbyqNR4oyzBhCuYOg8o
+         6QxLBRhTPoEhhvtWQu3EvR09lLTo+1N5at1GuTntRZOgCvCUt3F5qxZts0W7oY3nuD44
+         FIA2jgSS7YFYdRxcTjeU+W898uU8t8hrRt1o8=
+In-Reply-To: <4AF1A397.90806@deboom.biz>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Rakotomandimby Mihamina <mihamina@gulfsat.mg>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Ralph de Boom <lkml@deboom.biz>
+Cc: Patrick McHardy <kaber@trash.net>, netfilter@vger.kernel.org
 
-2009/11/5 Rakotomandimby Mihamina <mihamina@gulfsat.mg>:
-> We would like to ensure one IP adress is used by the assigned MAC.
-> (QoS matter)
 >
-> Is this a good enough solution:
-> -A INPUT =A0 -m mac --mac-source 00:15:C5:F4:29:7C -s ! 192.168.1.13 =
--j REJECT
-> -A FORWARD -m mac --mac-source 00:15:C5:F4:29:7C -s ! 192.168.1.13 -j=
- REJECT
->
-> Is there any better one?
+> Right, at this point you've lost me, how I will manage to do that, and where
+> does the infomation get stored?
 
-Use ipsets, probably macipmap.
+You will need to turn trace on...
+iptables -A PREROUTING -t raw -J TRACE will turn tracing on for everything.
 
-Karel
+The information is then stored in the syslog as per your syslog
+configuration - TRACE will show which rules etc your packets have
+encountered.
+
+-- 
+Richard Horton
+Users are like a virus: Each causing a thousand tiny crises until the
+host finally dies.
+http://www.solstans.co.uk - Solstans Japanese Bobtails and Norwegian Forest Cats
+http://www.pbase.com/arimus - My online photogallery
