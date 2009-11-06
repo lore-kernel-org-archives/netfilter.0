@@ -1,45 +1,38 @@
-From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: Re: [HELP] forward ppp0 to eth1
-Date: Fri, 06 Nov 2009 16:59:11 +0100
-Message-ID: <4AF447CF.9050209@freemail.hu>
-References: <fe4bdfcf0911050532h5a954b63s43f01a7eff0b4aa9@mail.gmail.com>
+From: Kapetanakis Giannis <bilias@edu.physics.uoc.gr>
+Subject: Re: Round robin load balance to local port range
+Date: Fri, 06 Nov 2009 18:07:55 +0200
+Message-ID: <4AF449DB.1040600@edu.physics.uoc.gr>
+References: <4AF44128.5000301@edu.physics.uoc.gr> <4AF446D7.1070406@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <fe4bdfcf0911050532h5a954b63s43f01a7eff0b4aa9@mail.gmail.com>
+In-Reply-To: <4AF446D7.1070406@trash.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Sandy Sumitro <sandysumitro@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi,
+On 06/11/09 17:55, Patrick McHardy wrote:
+> The manpage is incorrect (patches welcome :), it will use the first
+> port as long as the tuples don't clash. The --random option can be
+> used to randomly select a port from the range.
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>    
 
-Sandy Sumitro =EDrta:
-> iptables -F INPUT
-> iptables -F OUTPUT
-> iptables -F FORWARD
-> iptables -P INPUT ACCEPT
-> iptables -P OUTPUT ACCEPT
-> iptables -P FORWARD ACCEPT
-> iptables -t nat -F
-> iptables -t nat -A PREROUTING -i ppp0 -j DNAT --to-destination 192.16=
-8.1.252
-> iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-> iptables -t nat -A POSTROUTING -s 192.168.1.252 -o ppp0 -j MASQUERADE
->
->  =20
-Seems good... Except the last rule is not going to get hit by any=20
-packet... :D
+--random does the job both for DNAT and REDIRECT
+I guess random is better that nothing :)
 
-> PS: i have set /proc/sys/net/ipv4/ip_forward to 1
-> (echo 1 > /proc/sys/net/ipv4/ip_forward)
->
->  =20
-Good... :D
+Just for clarification: the state of the packet will be remembered right?
+I don't want to send it first to one port and later to another.
 
-1. Check the default gateway setting on the DMZ (1.252)
-2. Check the routing on gateway (1.251)
-3. Setup a firewall on DMZ too !!!
+regards and thanks for the quick answer
 
-Swifty
+Giannis
+
+ps. I found another bug
+--random in DNAT has to be put at the end of the rule
+otherwise if you put it before --to-destination
+error: "Multiple --to-destination not supported"
