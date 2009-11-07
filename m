@@ -1,40 +1,77 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: Round robin load balance to local port range
-Date: Fri, 06 Nov 2009 17:16:19 +0100
-Message-ID: <4AF44BD3.3050103@trash.net>
-References: <4AF44128.5000301@edu.physics.uoc.gr> <4AF446D7.1070406@trash.net> <4AF449DB.1040600@edu.physics.uoc.gr>
+From: Mart Frauenlob <mart.frauenlob@chello.at>
+Subject: TCPMSS - valid only in mangle table?
+Date: Sat, 07 Nov 2009 13:33:04 +0100
+Message-ID: <4AF56900.9040501@chello.at>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4AF449DB.1040600@edu.physics.uoc.gr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Kapetanakis Giannis <bilias@edu.physics.uoc.gr>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Kapetanakis Giannis wrote:
-> On 06/11/09 17:55, Patrick McHardy wrote:
->> The manpage is incorrect (patches welcome :), it will use the first
->> port as long as the tuples don't clash. The --random option can be
->> used to randomly select a port from the range.
->> -- 
->> To unsubscribe from this list: send the line "unsubscribe netfilter" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>    
-> 
-> --random does the job both for DNAT and REDIRECT
-> I guess random is better that nothing :)
-> 
-> Just for clarification: the state of the packet will be remembered right?
-> I don't want to send it first to one port and later to another.
+Hello,
 
-Correct.
+the man page of iptables says:
 
-> ps. I found another bug
-> --random in DNAT has to be put at the end of the rule
-> otherwise if you put it before --to-destination
-> error: "Multiple --to-destination not supported"
+TCPMSS
+       This target allows to alter the MSS value of TCP SYN packets, to 
+control the maximum size for that connection (usually limiting it to 
+your outgoing inter-
+       face's  MTU  minus  40 for IPv4 or 60 for IPv6, respectively).  
+Of course, it can only be used in conjunction with -p tcp.  It is only 
+valid in the mangle
+       table.
 
-Thanks, fixed in git.
+but when i put a TCPMSS rule into the filter table:
+
+eris:~# iptables -I FORWARD -o eth2 -p tcp --syn -j TCPMSS --set-mss 1440
+
+it shows up inserted:
+
+eris:~# iptables -vnL FORWARD
+Chain FORWARD (policy DROP 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               
+destination
+    2   104 TCPMSS     tcp  --  *      eth2    0.0.0.0/0            
+0.0.0.0/0           tcp flags:0x17/0x02 TCPMSS set 1440
+10758 6553K ACCEPT     all  --  *      *       0.0.0.0/0            
+0.0.0.0/0           state ESTABLISHED
+    0     0 GLOBAL_INVALID_STATE  all  --  *      *       
+0.0.0.0/0            0.0.0.0/0           state INVALID
+  341 17732 BAD_TCP_PACKETS  tcp  --  *      *       
+0.0.0.0/0            0.0.0.0/0
+    0     0 eth2_to_eth1  all  --  eth2   eth1    0.0.0.0/0            
+0.0.0.0/0
+  341 17732 eth1_to_eth2  all  --  eth1   eth2    0.0.0.0/0            
+0.0.0.0/0
+    0     0 ACCEPT     all  --  *      *       0.0.0.0/0            
+0.0.0.0/0           state RELATED
+    0     0 LOG        all  --  *      *       0.0.0.0/0            
+0.0.0.0/0           limit: avg 1/sec burst 3 LOG flags 0 level 6 prefix 
+`IPT_DROP_FORWARD '
+eris:~#
+
+and it actually seems to work:
+
+eris:~# tshark -n -i eth2 tcp port 80
+273.366753 62.178.111.127 -> 193.99.144.85 TCP 1989 > 80 [SYN] Seq=0 
+Len=0 MSS=1440 WS=0
+
+So is the man page wrong?
+ From what i know from the netfilter concept, packet alteration should 
+be done in the mangle table, so the man page is right from theory, but 
+practically the target extension does not care?
+
+eris:~# uname -a
+Linux eris 2.6.24-etchnhalf.1-686 #1 SMP Sat Aug 15 16:51:49 UTC 2009 
+i686 GNU/Linux
+eris:~# iptables --version
+iptables v1.4.5
+
+Thank you for clarification,
+
+regards
+
+Mart
