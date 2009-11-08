@@ -1,72 +1,51 @@
-From: "/dev/rob0" <rob0@gmx.co.uk>
-Subject: Re: ssh tunnel to port forwarded over localhost
-Date: Sun, 8 Nov 2009 13:28:36 -0500
-Message-ID: <200911081228.39416.rob0@gmx.co.uk>
-References: <4AD5B1C9.6020609@gmail.com>
+From: Theodore Tso <tytso@mit.edu>
+Subject: Re: [PATCH v4 12/12] tree-wide: convert open calls
+	to remove spaces to skip_spaces() lib function
+Date: Sun, 8 Nov 2009 13:47:22 -0500
+Message-ID: <20091108184722.GA1647@mit.edu>
+References: <cover.1257602781.git.andre.goddard@gmail.com>
+	<7d5883637aa976b54e944998f635d47a41618a75.1257602781.git.andre.goddard@gmail.com>
+Reply-To: Linux filesystem caching discussion list <linux-cachefs@redhat.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4AD5B1C9.6020609@gmail.com>
+Content-Transfer-Encoding: quoted-printable
+Return-path: <linux-cachefs-bounces@redhat.com>
 Content-Disposition: inline
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@vger.kernel.org
+In-Reply-To: <7d5883637aa976b54e944998f635d47a41618a75.1257602781.git.andre.goddard@gmail.com>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://www.redhat.com/mailman/listinfo/linux-cachefs>,
+	<mailto:linux-cachefs-request@redhat.com?subject=unsubscribe>
+List-Archive: <https://www.redhat.com/archives/linux-cachefs>
+List-Post: <mailto:linux-cachefs@redhat.com>
+List-Help: <mailto:linux-cachefs-request@redhat.com?subject=help>
+List-Subscribe: <https://www.redhat.com/mailman/listinfo/linux-cachefs>,
+	<mailto:linux-cachefs-request@redhat.com?subject=subscribe>
+Sender: linux-cachefs-bounces@redhat.com
+Errors-To: linux-cachefs-bounces@redhat.com
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?iso-8859-1?Q?Andr=E9?= Goddard Rosa <andre.goddard@gmail.com>
+Cc: Pavel Roskin <proski@gnu.org>, Stefan Haberland <stefan.haberland@de.ibm.com>, Jan Kara <jack@suse.cz>, linux-cachefs@redhat.com, Mike Snitzer <snitzer@redhat.com>, Neil Brown <neilb@suse.de>, Frederic Weisbecker <fweisbec@gmail.com>, Jens Axboe <jens.axboe@oracle.com>, Heiko Carstens <heiko.carstens@de.ibm.com>, "James E . J . Bottomley" <jejb@parisc-linux.org>, ibm-acpi-devel@lists.sourceforge.net, dm-devel@redhat.com, Julia Lawall <julia@diku.dk>, "H . Peter Anvin" <hpa@zytor.com>, Daire Byrne <Daire.Byrne@framestore.com>, Alasdair G Kergon <agk@redhat.com>, Greg Banks <gnb@melbourne.sgi.com>, Stefan Weinhuber <wein@de.ibm.com>, Eric Sandeen <sandeen@redhat.com>, Adam Belay <abelay@mit.edu>, Helge Deller <deller@gmx.de>, x86@kernel.org, James Morris <jmorris@namei.org>, Takashi Iwai <tiwai@suse.de>, Ingo Molnar <mingo@redhat.com>, Alan Cox <alan@lxorguk.ukuu.org.uk>
 
-[reply-to ignored, posted to the list where I read the OP]
+On Sat, Nov 07, 2009 at 01:16:20PM -0200, Andr=E9 Goddard Rosa wrote:
+> Makes use of skip_spaces() defined in lib/string.c for removing leading
+> spaces from strings all over the tree.
+>=20
+> Also, while at it, if we see (*str && isspace(*str)), we can be sure to
+> remove the first condition (*str) as the second one (isspace(*str)) als=
+o
+> evaluates to 0 whenever *str =3D=3D 0, making it redundant. In other wo=
+rds,
+> "a char equals zero is never a space".
 
-On Wednesday 14 October 2009 06:11:05 Tito wrote:
-> First, I would like to say that I have searched really long time
-> through historical list archive of netfilter and other forums but
-> I was not able to find the functionality I was searching for!
+There are a number of places that have the pattern of skipping
+whitespace, calling simpler_strtoul(), and then skipping whitespace
+afterwards.  And thinkpad_acpi.c and fs/ext4/super.c both have an
+indentical function, parse_strotul(), which basically does this plus
+doing actual error checking (a number of callers of simple_strtoul
+aren't checking to see if the user passed in a valid number or not,
+boo.)
 
-Was any of your searching done in man pages? Specifically
-ssh_config(5):
+I would suggest that we should lift parse_strtoul() into lib/, both to
+save a bit of code, as well as encouraging people to do proper input
+validation, while we are doing this tree-wide cleanup.
 
-    GatewayPorts
-             Specifies whether remote hosts are allowed to connect
-             to local forwarded ports.  By default, ssh(1) binds
-             local port forwardings to the loopback address.  This
-             prevents other remote hosts from connecting to
-             forwarded ports.  GatewayPorts can be used to specify
-             that ssh should bind local port forwardings to the
-             wildcard address, thus allowing remote hosts to
-             connect to forwarded ports.  The argument must be
-             ``yes'' or ``no''.  The default is ``no''.
-
-
-> I have found only this =E2=80=9Cport forwarding through localhost =E2=
-=80=9D
->
-> http://marc.info/?t=3D116984915600001&r=3D1&w=3D2 but it is not exact=
-ly that!
->
-> Here is the situation:
->
-> Host A (Germany - my home laptop =E2=80=93 Windows XP)
-> Router (Bulgaria - public ip ) =E2=80=93 Linux openSuse 11.1 Xen Linu=
-x
-> clients-pools 2.6.27.29-0.1-xen #1 SMP 2009-08-15 17:53:59 +0200 x86_=
-64
-> x86_64 x86_64 GNU/Linux
-> Host B (192.168.1.10  which is a Xen virtual host installed on a Rout=
-er
->   itself - Windows XP )Host B can ping any public ip address and can
-> reslov dns names.
->
-> The Router  have 2 open port:
->   55431  openSSH
->   54322 forwarded to HostB - 192.168.1.10 to port 3389 for remote des=
-ktop!
->
-> Now, the port forwarding is working just great, I can reach  the remo=
-te
-> desktop of Host B from Host A, but I want to close that port and let
-> everything be forwarded over a ssh tunnel. I have done this for squid
-snip
-
-(I had started this reply 3 weeks ago, it was forgotten, but here it
-is now, in the hope that it might be useful.)
---=20
-    Offlist mail to this address is discarded unless
-    "/dev/rob0" or "not-spam" is in Subject: header
+						- Ted
