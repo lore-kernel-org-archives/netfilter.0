@@ -1,80 +1,73 @@
-From: paddy joesoap <paddyjoesoap@gmail.com>
-Subject: When writing rules for multiple sequenced firewalls, does the source 
-	IP of client need to be modified at each firewall
-Date: Sun, 8 Nov 2009 11:35:34 +0000
-Message-ID: <ac5c74140911080335t3c58400t653b8eaaf3343f4d@mail.gmail.com>
+From: Mart Frauenlob <mart.frauenlob@chello.at>
+Subject: Re: Forward Chain: is Inbound traffic on eth0 not also Outbound depending
+ 	on your view?
+Date: Sun, 08 Nov 2009 12:54:20 +0100
+Message-ID: <4AF6B16C.506@chello.at>
+References: <ac5c74140911080311g21df128fte32b05d90b233a33@mail.gmail.com>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type;
-        bh=AizK2W28pIohCA8YMSWVFzrUQuwYULR0gOEjLvhUot4=;
-        b=IRmjhFBffv63j0mPmBcWZMqxyNCq0QgKJC6iRcJ9IJy4WEmi/Fxky/QQjcw4+ScrgI
-         Oi2U3yans+3gTxFauwhFXuRDBvwPOMGOppDJ07PQwVBZSKD7cbVHXQygqnHflp/7ZBRC
-         +SY8Ba98pcEFbno/hUg7/6EvRhliV/yTtDJYY=
+In-Reply-To: <ac5c74140911080311g21df128fte32b05d90b233a33@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Dear Experts,
+paddy joesoap wrote:
+> Dear Experts
+>
+> I am curious to know more about what FORWARD chain inbound and
+> outbound actually mean.
+>
+> Example firewall set-up below:
+>
+> Internet --- Firewall --- PC
+>
+> Firewall has 2 interfaces: eth0 = External and eth1 = Internal
+>
+> >From what I can gather from the Netfilter website, all I need to do is
+> create are inbound and outbound rules on the FORWARD chain.
+>
+> To allow inbound Internet access, I specify:
+>
+> FORWARD -i eth0
+>
+> To allow outbound PC access, I specify:
+>
+> FORWARD -o eth1
+>
+> The question is from whose perspective do you view what is inbound and
+> what is outbound?
+>
+> For example, in the case of the Internet client, traffic flowing
+> towards the firewall is indeed Inbound so naturally "FORWARD -i eth0"
+> is required. However, isn't it also Outbound on eth1, given that it
+> leaves interface eth1 to get to PC?
+>
+> Similarly, clients on the internal network think of their traffic as
+> being outbound only, but when traffic is being "forwarded" from eth1
+> to eth0 heading for the Internet, isn't that traffic classed as
+> Inbound on eth0?
+>
+> Do I need to create rules for this scenario also or is Netfilter
+> handling these implied situations?
+>
+> Beginner questions so apologies in advance.
+> Paddy.
+>   
+Please read this carefully and if you still have questions, ask them 
+afterwards:
 
-Suppose I have two firewalls in the network and suppose the network
-consisted of the following:
+http://www.frozentux.net/iptables-tutorial/iptables-tutorial.html#TRAVERSINGOFTABLES
+http://jengelh.medozas.de/images/nf-packet-flow.png
 
-Internet -- gwFirewall -- tier2firewall -- sshServer
+but in short:
+INPUT chain = packets destined to your host
+OUTPUT chain = source of packets is your host
+FORWARD chain = source is external - destination is external address 
+(forwarded, routed)
 
-gwFirewall has two interfaces:
-eth0 = Internet facing (IP address 1.2.3.4)
-eth1 = Internal facing (IP address 192.168.1.1)
+regards
 
-tier2firewall has two interfaces:
-eth2 = gwFirewall facing (IP address 192.168.1.4)
-eth3 = deep internal facing (IP address 192.168.2.1)
-
-sshServer = IP address 192.168.2.2, Port 22
-
-Now suppose the two firewalls where a typical SOHO box like the
-linksys 54G WRT runnning dd-wrt, so they handle my Netfilter firewalls
-rules and NAT etc.
-Or the Firewalls could be any PC's converted to a netfilter firewall
-(filter, nat and mangle enabled).
-
-My question is, when writing rules to permit Internet access to a
-system deep in the network, do you keep the original source IP address
-of the internet client in your firewall rules for each firewall in the
-path?
-
-That is, if a internet client (source IP address 94.108.94.75) needs
-to access a ssh server (destination IP address 192.168.2.2) across two
-firewalls how should the inbound rules look?
-
-
-Scenario 1)
-
-On the gwFirewall you permit the internet client access to
-tier2Firewall on the IP address of eth2 and from there, tier2Firewall
-will permit that same client IP to the ssh sever.
-
-For example:
-
-iptables -A FORWARD -i eth0 -s 94.108.94.75 -d 192.168.1.4 --dport 22  -j ACCEPT
-iptables -A FORWARD -i eth2 -s 94.108.94.75 -d 192.168.2.2 --dport 22  -j ACCEPT
-
-Scenario 2)
-
-On the gwFirewall you permit the internet client access to
-tier2Firewall on the IP address of eth2 and from there, tier2Firewall
-will permit the *gwFirewall* internal IP to the ssh sever. Because of
-NAT etc I wonder will the source IP addresses etc be changed.
-
-For example
-
-iptables -A FORWARD -i eth0 -s 94.108.94.75 -d 192.168.1.4 --dport 22  -j ACCEPT
-iptables -A FORWARD -i eth2 -s 192.168.1.1 -d 192.168.2.2 --dport 22  -j ACCEPT
-
-I presume its Scenario 1 above is correct and the original source IP
-address of requesting Internet client is carried through the chain of
-firewalls towards the destination.
+Mart
