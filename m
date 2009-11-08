@@ -1,77 +1,61 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: TCPMSS - valid only in mangle table?
-Date: Sat, 07 Nov 2009 13:33:04 +0100
-Message-ID: <4AF56900.9040501@chello.at>
-Reply-To: netfilter@vger.kernel.org
+From: paddy joesoap <paddyjoesoap@gmail.com>
+Subject: Forward Chain: is Inbound traffic on eth0 not also Outbound depending 
+	on your view?
+Date: Sun, 8 Nov 2009 11:11:44 +0000
+Message-ID: <ac5c74140911080311g21df128fte32b05d90b233a33@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type;
+        bh=hiZ69zc3u4SHHlRpbMkhtRZnTBdsF2fgHRoyBdND0Zs=;
+        b=d0I07edRfVjoN0c4659+0nUV7lUVgVXaAToy8iYsUJdpRqafMOVLSbCXQRY6VbKv8l
+         /gihrtx7A6pfGle2Uec17mRnOrDeiZEsM9EwRdsCKZe81OUpaezTsBJX2gnWOQch8p6v
+         5UP2mkNmKCBcZnsagNYVygg0y71x9nEE7OvWI=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello,
+Dear Experts
 
-the man page of iptables says:
+I am curious to know more about what FORWARD chain inbound and
+outbound actually mean.
 
-TCPMSS
-       This target allows to alter the MSS value of TCP SYN packets, to 
-control the maximum size for that connection (usually limiting it to 
-your outgoing inter-
-       face's  MTU  minus  40 for IPv4 or 60 for IPv6, respectively).  
-Of course, it can only be used in conjunction with -p tcp.  It is only 
-valid in the mangle
-       table.
+Example firewall set-up below:
 
-but when i put a TCPMSS rule into the filter table:
+Internet --- Firewall --- PC
 
-eris:~# iptables -I FORWARD -o eth2 -p tcp --syn -j TCPMSS --set-mss 1440
+Firewall has 2 interfaces: eth0 = External and eth1 = Internal
 
-it shows up inserted:
+From what I can gather from the Netfilter website, all I need to do is
+create are inbound and outbound rules on the FORWARD chain.
 
-eris:~# iptables -vnL FORWARD
-Chain FORWARD (policy DROP 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               
-destination
-    2   104 TCPMSS     tcp  --  *      eth2    0.0.0.0/0            
-0.0.0.0/0           tcp flags:0x17/0x02 TCPMSS set 1440
-10758 6553K ACCEPT     all  --  *      *       0.0.0.0/0            
-0.0.0.0/0           state ESTABLISHED
-    0     0 GLOBAL_INVALID_STATE  all  --  *      *       
-0.0.0.0/0            0.0.0.0/0           state INVALID
-  341 17732 BAD_TCP_PACKETS  tcp  --  *      *       
-0.0.0.0/0            0.0.0.0/0
-    0     0 eth2_to_eth1  all  --  eth2   eth1    0.0.0.0/0            
-0.0.0.0/0
-  341 17732 eth1_to_eth2  all  --  eth1   eth2    0.0.0.0/0            
-0.0.0.0/0
-    0     0 ACCEPT     all  --  *      *       0.0.0.0/0            
-0.0.0.0/0           state RELATED
-    0     0 LOG        all  --  *      *       0.0.0.0/0            
-0.0.0.0/0           limit: avg 1/sec burst 3 LOG flags 0 level 6 prefix 
-`IPT_DROP_FORWARD '
-eris:~#
+To allow inbound Internet access, I specify:
 
-and it actually seems to work:
+FORWARD -i eth0
 
-eris:~# tshark -n -i eth2 tcp port 80
-273.366753 62.178.111.127 -> 193.99.144.85 TCP 1989 > 80 [SYN] Seq=0 
-Len=0 MSS=1440 WS=0
+To allow outbound PC access, I specify:
 
-So is the man page wrong?
- From what i know from the netfilter concept, packet alteration should 
-be done in the mangle table, so the man page is right from theory, but 
-practically the target extension does not care?
+FORWARD -o eth1
 
-eris:~# uname -a
-Linux eris 2.6.24-etchnhalf.1-686 #1 SMP Sat Aug 15 16:51:49 UTC 2009 
-i686 GNU/Linux
-eris:~# iptables --version
-iptables v1.4.5
+The question is from whose perspective do you view what is inbound and
+what is outbound?
 
-Thank you for clarification,
+For example, in the case of the Internet client, traffic flowing
+towards the firewall is indeed Inbound so naturally "FORWARD -i eth0"
+is required. However, isn't it also Outbound on eth1, given that it
+leaves interface eth1 to get to PC?
 
-regards
+Similarly, clients on the internal network think of their traffic as
+being outbound only, but when traffic is being "forwarded" from eth1
+to eth0 heading for the Internet, isn't that traffic classed as
+Inbound on eth0?
 
-Mart
+Do I need to create rules for this scenario also or is Netfilter
+handling these implied situations?
+
+Beginner questions so apologies in advance.
+Paddy.
