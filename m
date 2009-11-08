@@ -1,44 +1,72 @@
-From: Alan Cox <alan@lxorguk.ukuu.org.uk>
-Subject: Re: [PATCH v4 10/12] string: factorize skip_spaces
- and export it to be generally available
-Date: Sun, 8 Nov 2009 16:50:00 +0000
-Message-ID: <20091108165000.374714cb@lxorguk.ukuu.org.uk>
-References: <cover.1257602781.git.andre.goddard@gmail.com>
-	<c7d3b02b5e28eaa54a5360d57dfd177c44320187.1257602781.git.andre.goddard@gmail.com>
-Reply-To: Linux filesystem caching discussion list <linux-cachefs@redhat.com>
+From: "/dev/rob0" <rob0@gmx.co.uk>
+Subject: Re: ssh tunnel to port forwarded over localhost
+Date: Sun, 8 Nov 2009 13:28:36 -0500
+Message-ID: <200911081228.39416.rob0@gmx.co.uk>
+References: <4AD5B1C9.6020609@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Return-path: <linux-cachefs-bounces@redhat.com>
-In-Reply-To: <c7d3b02b5e28eaa54a5360d57dfd177c44320187.1257602781.git.andre.goddard@gmail.com>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://www.redhat.com/mailman/listinfo/linux-cachefs>,
-	<mailto:linux-cachefs-request@redhat.com?subject=unsubscribe>
-List-Archive: <https://www.redhat.com/archives/linux-cachefs>
-List-Post: <mailto:linux-cachefs@redhat.com>
-List-Help: <mailto:linux-cachefs-request@redhat.com?subject=help>
-List-Subscribe: <https://www.redhat.com/mailman/listinfo/linux-cachefs>,
-	<mailto:linux-cachefs-request@redhat.com?subject=subscribe>
-Sender: linux-cachefs-bounces@redhat.com
-Errors-To: linux-cachefs-bounces@redhat.com
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?ISO-8859-14?B?QW5kcuk=?= Goddard Rosa <andre.goddard@gmail.com>
-Cc: Andreas Dilger <adilger@sun.com>, Mike Snitzer <snitzer@redhat.com>, Takashi Iwai <tiwai@suse.de>, Kysela <perex@perex.cz>, Jan, Stefan Weinhuber <wein@de.ibm.com>, Eric Sandeen <sandeen@redhat.com>, "James E .
-	J . Bottomley" <jejb@parisc-linux.org>, linux-cachefs@redhat.com, WANG Cong <wangcong@zeuux.org>, Len Brown <len.brown@intel.com>, Trond Myklebust <Trond.Myklebust@netapp.com>, Rusty Russell <rusty@rustcorp.com.au>, netfilter@vger.kernel.org, Al Viro <viro@zeniv.linux.org.uk>, Thomas Gleixner <tglx@linutronix.de>, Engelhardt <jengelh@medozas.de>, Bjorn Helgaas <bjorn.helgaas@hp.com>, =?ISO-8859-14?B?QW5k?=, "Martin K .
-	Petersen" <martin.petersen@oracle.com>, linux-kernel@vger.kernel.org, Stoyan Gaydarov <stoyboyker@gmail.com>, Kyle McMartin <kyle@mcmartin.ca>, netfilter-devel@vger.kernel.org, Joe Perches <joe@perches.com>, Andrew Morton <akpm@linux-foundation.org>
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4AD5B1C9.6020609@gmail.com>
+Content-Disposition: inline
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-On Sat,  7 Nov 2009 13:16:18 -0200
-Andr=E9 Goddard Rosa <andre.goddard@gmail.com> wrote:
+[reply-to ignored, posted to the list where I read the OP]
 
-> On the following sentence:
->     while (*s && isspace(*s))
->         s++;
+On Wednesday 14 October 2009 06:11:05 Tito wrote:
+> First, I would like to say that I have searched really long time
+> through historical list archive of netfilter and other forums but
+> I was not able to find the functionality I was searching for!
 
-Looks fine but for one thing: it's actually shorter inline than moved
-into /lib so at the very least it should be a header inline not a
-function call.
+Was any of your searching done in man pages? Specifically
+ssh_config(5):
 
-Second minor comment. Although it never made it into the final ANSI C,
-the proposed name (and the one used in a lot of other non Linux code for
-this) is stpblk().
+    GatewayPorts
+             Specifies whether remote hosts are allowed to connect
+             to local forwarded ports.  By default, ssh(1) binds
+             local port forwardings to the loopback address.  This
+             prevents other remote hosts from connecting to
+             forwarded ports.  GatewayPorts can be used to specify
+             that ssh should bind local port forwardings to the
+             wildcard address, thus allowing remote hosts to
+             connect to forwarded ports.  The argument must be
+             ``yes'' or ``no''.  The default is ``no''.
 
-Alan
+
+> I have found only this =E2=80=9Cport forwarding through localhost =E2=
+=80=9D
+>
+> http://marc.info/?t=3D116984915600001&r=3D1&w=3D2 but it is not exact=
+ly that!
+>
+> Here is the situation:
+>
+> Host A (Germany - my home laptop =E2=80=93 Windows XP)
+> Router (Bulgaria - public ip ) =E2=80=93 Linux openSuse 11.1 Xen Linu=
+x
+> clients-pools 2.6.27.29-0.1-xen #1 SMP 2009-08-15 17:53:59 +0200 x86_=
+64
+> x86_64 x86_64 GNU/Linux
+> Host B (192.168.1.10  which is a Xen virtual host installed on a Rout=
+er
+>   itself - Windows XP )Host B can ping any public ip address and can
+> reslov dns names.
+>
+> The Router  have 2 open port:
+>   55431  openSSH
+>   54322 forwarded to HostB - 192.168.1.10 to port 3389 for remote des=
+ktop!
+>
+> Now, the port forwarding is working just great, I can reach  the remo=
+te
+> desktop of Host B from Host A, but I want to close that port and let
+> everything be forwarded over a ssh tunnel. I have done this for squid
+snip
+
+(I had started this reply 3 weeks ago, it was forgotten, but here it
+is now, in the hope that it might be useful.)
+--=20
+    Offlist mail to this address is discarded unless
+    "/dev/rob0" or "not-spam" is in Subject: header
