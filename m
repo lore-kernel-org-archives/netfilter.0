@@ -1,50 +1,38 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset 4.0 released
-Date: Tue, 10 Nov 2009 22:15:58 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.0911102208000.23130@blackhole.kfki.hu>
+From: Kristian Evensen <kristian.evensen@gmail.com>
+Subject: Target in two chains simultaneously
+Date: Tue, 10 Nov 2009 23:32:40 +0100
+Message-ID: <4AF9EA08.6090709@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from
+         :user-agent:mime-version:to:subject:content-type
+         :content-transfer-encoding;
+        bh=xI2PZ0AxLMkU2VjNVW55Bu6ZS/K54aS1R3ruejpU57A=;
+        b=gbdZWEmR0GniT8ilebcCs1vQ1PToooUY9eMAiKAfz8j7K798UZqmm/YT2jVOLDkNXJ
+         GAgHO7NYfaqNSrMpNTjtgZCcC8pr9S7aeEEc6pRUAcqSWveRVq/hiKOIJGWyNhlfhKL7
+         8MAp6JSWhIYwtAy/IOrzoHaZsgeCZQst11Ov4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hi,
+Hello,
 
-I'm happy to announce the new ipset release which fixes kernel version 
-compatibility and alignment issues:
+I am working on a small project where I need (or at least want) to base 
+outgoing TCP load balancing on incoming ACKs. My first idea was to write 
+a threaded kernel module using netfilter, but I am not sure if that is 
+needed. Also, since every outgoing/incoming packet has to go through 
+that module it might affect performance severly.
 
-Userspace changes:
-  - New protocol is introduced to handle aligment issues properly
-    (bug reported by Georg Chini)
-  - Binding support is removed
+I am not too familiar with the iptables-architecture, but would it make 
+sense to use the same module in two chains (for example OUTPUT and 
+INPUT) simultaneously and then share data structures between them? How 
+will this perform, and would I need to do any syncronization between the 
+shared structures? For example, can the processing of an outgoing packet 
+be interrupted by an incoming?
 
-Kernel part changes:
-  - Compilation of ip_set_iptree.c fails with kernel 2.6.20 due to
-    missing include of linux/jiffies.h (Jan Engelhardt)
-  - Do not use DECLARE_MUTEX (compatibility fix on 2.6.31-rt, Jan
-    Engelhardt)
-  - Flushing iptreemap type of sets caused high ksoftirqd load due to
-    zeroed out gc parameter (bug reported by Georg Chini)
-  - New protocol is introduced to handle aligment issues properly
-    (bug reported by Georg Chini)
-  - Binding support is removed
-
-Except the removed binding support, the new release contains backward 
-compatibility support both in userspace (i.e. ipset 4.0 work with kernel 
-modules from the 3.x releases) and in kernel space (similarly, kernel 
-modules from 4.0 work with ipset binaries from the 3.x releases).
-
-As usual, the source can be download from
-
-	http://ipset.netfilter.org
-	git://git.netfilter.org/ipset.git
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Thanks in advance for any help,
+Kristian
