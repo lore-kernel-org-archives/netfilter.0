@@ -1,31 +1,36 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset 4.1 released
-Date: Wed, 11 Nov 2009 20:35:47 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.0911112030200.25564@blackhole.kfki.hu>
+Subject: Re: [ANNOUNCE] ipset 4.0 released
+Date: Wed, 11 Nov 2009 20:59:34 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.0911112056100.25719@blackhole.kfki.hu>
+References: <alpine.DEB.2.00.0911102208000.23130@blackhole.kfki.hu> <20091111095700.5b621878@s6510>
 Mime-Version: 1.0
 Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <20091111095700.5b621878@s6510>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: Stephen Hemminger <shemminger@vyatta.com>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Hi,
+Hi Stephen,
 
-A minor fix and little improvement, but it worths a new release :-):
+On Wed, 11 Nov 2009, Stephen Hemminger wrote:
 
-Kernel part changes:
-  - Do not use init_MUTEX either (Jan Engelhardt)
-  - Improve listing/saving hash type of sets by not copying empty
-    entries unnecessarily to userspace.
+> On Tue, 10 Nov 2009 22:15:58 +0100 (CET)
+> Jozsef Kadlecsik <kadlec@blackhole.kfki.hu> wrote:
+> 
+> > I'm happy to announce the new ipset release which fixes kernel version 
+> > compatibility and alignment issues:
+> 
+> I would like to see ipset submitted for upstream kernel. It would mean 
+> one less kernel patch that we would have to maintain in the our distro 
+> kernel, and get wider usage.
 
-Userspace changes:
-  - Manpage fixes and corrections (Jan Engelhardt)
-
-As usual, the source code can be download from
-
-        http://ipset.netfilter.org
-        git://git.netfilter.org/ipset.git
+Considering the over-long delay the new branch suffered so far, let me say 
+the following: if I won't be able to finish the new branch by the end of 
+this year, I'll submit the current branch in the beginning of the next 
+year.
 
 Best regards,
 Jozsef
