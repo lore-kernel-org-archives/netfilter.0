@@ -1,30 +1,27 @@
-From: Jan Engelhardt <jengelh@medozas.de>
+From: Stephen Hemminger <shemminger@vyatta.com>
 Subject: Re: [ANNOUNCE] ipset 4.0 released
-Date: Wed, 11 Nov 2009 14:14:41 +0100 (CET)
-Message-ID: <alpine.LSU.2.00.0911111413460.14207@obet.zrqbmnf.qr>
+Date: Wed, 11 Nov 2009 09:57:00 -0800
+Message-ID: <20091111095700.5b621878@s6510>
 References: <alpine.DEB.2.00.0911102208000.23130@blackhole.kfki.hu>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.0911102208000.23130@blackhole.kfki.hu>
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <alpine.DEB.2.00.0911102208000.23130@blackhole.kfki.hu>
+Sender: netfilter-devel-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
+On Tue, 10 Nov 2009 22:15:58 +0100 (CET)
+Jozsef Kadlecsik <kadlec@blackhole.kfki.hu> wrote:
 
-On Tuesday 2009-11-10 22:15, Jozsef Kadlecsik wrote:
+> Hi,
+> 
+> I'm happy to announce the new ipset release which fixes kernel version 
+> compatibility and alignment issues:
 
->Hi,
->
->I'm happy to announce the new ipset release which fixes kernel version 
->compatibility and alignment issues:
->
->Kernel part changes:
->  - Do not use DECLARE_MUTEX (compatibility fix on 2.6.31-rt, Jan
->    Engelhardt)
+I would like to see ipset submitted for upstream kernel. It would mean one
+less kernel patch that we would have to maintain in the our distro kernel, and
+get wider usage.
 
-This is partially missing from ipset4 -- there is still a
-call to init_MUTEX(...) in __init, which is not possible in -rt;
-it should be sema_init(&lock, 1).
