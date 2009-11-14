@@ -1,94 +1,82 @@
-From: Byoungyoung Lee <override@postech.ac.kr>
-Subject: structure padding mismatches
-Date: Fri, 13 Nov 2009 20:57:00 +0900
-Message-ID: <ba3207a80911130357r401977dapf2cc5cddc6319eca@mail.gmail.com>
+From: Justin Piszcz <jpiszcz@lucidpixels.com>
+Subject: iptables/when loading a webpage, get subsequent firewall block(s)?
+Date: Sat, 14 Nov 2009 08:20:13 -0500 (EST)
+Message-ID: <alpine.DEB.2.00.0911140807540.27423@p34.internal.lan>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:sender:received:date
-         :x-google-sender-auth:message-id:subject:from:to:content-type;
-        bh=Q/7MtUhc1aqwtFP+Ugs1X/myXFM4hlzGCZ/oaQSYWdY=;
-        b=bS4GEehDpvVVPvPqsjvd1HnLp6G58zK4SmIHrtLWH0UGcn4EQsIf5EZJblEvpCwM5o
-         PP/lM7i1mbE9GZdeedlL3+tbV+4JHtWgynxJhN6DUsQIOo5vPD5mMhP8/ktHh9qJZlsk
-         2z7EevwKOLQlsjHWeRQAPIuEuAguEtHbfl4H4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; format="flowed"; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-I'm trying to install iptables 1.4.5 on embedded ARM machine, which
-runs Linux kernel 2.6.15.7,
-but I have a problem that kernel module (netfilter) and iptables see
-the structure in a different way.
+Hello,
 
+Using kernel: 2.6.31.5
+Using iptables: 1.4.4-2
 
-----------------------------------------------------------------------
-// in ip_tables.h
-/* The argument to IPT_SO_GET_ENTRIES. */
-struct ipt_get_entries
-{
-   /* Which table: user fills this in. */
-   char name[IPT_TABLE_MAXNAMELEN];
+When I load [some] web pages I get firewall blocks after the page has 
+loaded, for example:
 
-   /* User fills this in: total entry size. */
-   unsigned int size;
+$ lynx http://www.hardwaresecrets.com/
+..
+< page loads fine.. >
 
-   /* The entries. */
-   struct ipt_entry entrytable[0];
-};
-----------------------------------------------------------------------
-For example, from the above codes, iptables thinks the size of the
-structure as '40',
-but netfilter thiks the size of it as '36'.
+A few seconds later, I get a firewall block:
 
-I tried to solve this problem by appending '__attributed ((packed))'
-to the structure,
-and I could force iptables to think the structure size as '36',
-but it turned out that so many structures which have such size mismatches !
+Nov 14 08:09:16 p34 INPUT_BLOCK IN=eth1 OUT= MAC=00:1b:21:43:7b:9e:00:13:f7:5e:77:56:08:00 SRC=69.41.161.35 DST=75.144.35.66 LEN=43 TOS=00 PREC=0x20 TTL=17 ID=0 PROTO=TCP SPT=80 DPT=46184 SEQ=4140823093 ACK=0 WINDOW=0 ACK RST URGP=0
 
-I also tried to give the same compiling option (definitely I'm using
-the same compiler, arm-linux-gcc, to build),
-but iptables still have a structure padding problem.
+Why does this occur?
 
-The below dumps are what I got when I compiled iptables. It complains
-that there are structure padding problems.
--------------------------------------------------------------
-arm-linux-gcc -DHAVE_CONFIG_H -I.    -D_LARGEFILE_SOURCE=1
--D_LARGE_FILES -D_FILE_OFFSET_BITS=64   -D_REENTRANT -Wall
--Waggregate-return -Wmissing-declarations       -Wmissing-prototypes
--Wredundant-decls -Wshadow -Wstrict-prototypes  -Winline -pipe
-       -DXTABLES_LIBDIR=\"/home/takkyun/trunk/iptables-1.4.5/my_install/libexec/xtables\"
--DXTABLES_INTERNAL -I./include -I./include -I
-/home/takkyun/CMEST/PATH/linux-2.6.15.7_2008-01-31/include -I
-/home/takkyun/CMEST/PATH/linux-2.6.15.7_2008-01-31/include
--DIPTABLES_MULTI -DALL_INCLUSIVE -ggdb3 -O2 -Wpadded -Wpacked
--mlittle-endian -Wall -Wundef -Wstrict-prototypes -Wno-trigraphs
--fno-strict-aliasing -fno-common -ffreestanding -g -O2
--fno-omit-frame-pointer -fno-optimize-sibling-calls
--fno-omit-frame-pointer -mapcs -mno-sched-prolog -mapcs-32
--mno-thumb-interwork -march=armv5te -mtune=xscale -Wa,-mcpu=xscale
--malignment-traps -msoft-float -Uarm -Wdeclaration-after-statement
--MT iptables_multi-xshared.o -MD -MP -MF
-.deps/iptables_multi-xshared.Tpo -c -o iptables_multi-xshared.o `test
--f 'xshared.c' || echo './'`xshared.c
-In file included from ./include/xtables.h:17,
-                from xshared.c:2:
-./include/linux/netfilter/x_tables.h:22: warning: padding struct to
-align 'match'
-./include/linux/netfilter/x_tables.h:47: warning: padding struct to
-align 'target'
-./include/linux/netfilter/x_tables.h:78: warning: padding struct size
-to alignment boundary
-./include/linux/netfilter/x_tables.h:94: warning: padding struct to align 'u16'
--------------------------------------------------------------
+At first, I thought it was my firewall script, which is quite large, but then
+I used the first one I ever made back in 2001 (very primitive) but it works:
+http://installkernel.tripod.com/ipls/files/rc.firewall
 
-How could I make these two programs see the structure as the same?
+This is your most basic firewall configuration, yet, the problem still occurs.
 
+1. I checked ECN settings/MTU, tried a few things there with no success.
 
--- 
-Byoungyoung Lee
-HPC Lab., Dept. of Computer Science & Engineering, POSTECH, Pohang
-Korea 790-784
-Tel: +82-54-279-2915, Mobile: +82-10-9260-6720
+This occurs on various web pages but not many; however, I would still like to
+find the root cause, tcpdump and corresponding firewall block is shown below:
+
+Firewall block:
+Nov 14 08:13:19 p34 INPUT_BLOCK IN=eth1 OUT= MAC=00:1b:21:43:7b:9e:00:13:f7:5e:77:56:08:00 SRC=69.41.161.35 DST=75.144.35.66 LEN=43 TOS=00 PREC=0x20 TTL=17 ID=0 PROTO=TCP SPT=80 DPT=38582 SEQ=3671564445 ACK=0 WINDOW=0 ACK RST URGP=0
+
+The last few packets of a tcpdump:
+# tcpdump -XX -S -s 0 -vv -i eth1 -n host 69.41.161.35
+
+08:13:08.482191 IP (tos 0x0, ttl 64, id 27054, offset 0, flags [DF], proto TCP (6), length 40)
+     75.144.35.66.38582 > 69.41.161.35.80: Flags [F.], cksum 0x8d3c (correct), seq 4037481634, ack 2462267876, win 25728, length 0
+         0x0000:  0013 f75e 7756 001b 2143 7b9e 0800 4500  ...^wV..!C{...E.
+         0x0010:  0028 69ae 4000 4006 7c03 4b90 2342 4529  .(i.@.@.|.K.#BE)
+         0x0020:  a123 96b6 0050 f0a7 14a2 92c3 39e4 5011  .#...P......9.P.
+         0x0030:  6480 8d3c 0000                           d..<..
+
+08:13:08.533200 IP (tos 0x20, ttl 49, id 25885, offset 0, flags [DF], proto TCP (6), length 40)
+     69.41.161.35.80 > 75.144.35.66.38582: Flags [.], cksum 0xd89c (correct), seq 2462267876, ack 4037481635, win 6432, length 0
+         0x0000:  001b 2143 7b9e 0013 f75e 7756 0800 4520  ..!C{....^wV..E.
+         0x0010:  0028 651d 4000 3106 8f74 4529 a123 4b90  .(e.@.1..tE).#K.
+         0x0020:  2342 0050 96b6 92c3 39e4 f0a7 14a3 5010  #B.P....9.....P.
+         0x0030:  1920 d89c 0000 0000 0000 0000            ............
+
+08:13:19.123062 IP (tos 0x20, ttl 17, id 0, offset 0, flags [none], proto TCP (6), length 43)
+     69.41.161.35.80 > 75.144.35.66.38582: Flags [R.], cksum 0x7bc7 (correct), seq 3671564445:3671564448, ack 0, win 0, length 3 [RST cki]
+         0x0000:  001b 2143 7b9e 0013 f75e 7756 0800 4520  ..!C{....^wV..E.
+         0x0010:  002b 0000 0000 1106 548f 4529 a123 4b90  .+......T.E).#K.
+         0x0020:  2342 0050 96b6 dad7 a09d 0000 0000 5014  #B.P..........P.
+         0x0030:  0000 7bc7 0000 636b 6900 0000            ..{...cki...
+
+This last packet at 08:13:19 appears to be what gets blocked by iptables,
+even though ESTABLISHED,RELATED is in effect.
+
+Why does this occur, why is it not being related?
+
+Some additional details:
+1. When lynx is used, I usually get 1 block.
+2. When I load the page in firefox I get 3-4 blocks.
+
+It is almost as if netfilter is losing track of a packet or two?
+
+Thoughts/ideas on how to debug/look into this issue further?
+
+Justin.
