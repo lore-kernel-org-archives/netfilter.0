@@ -1,36 +1,34 @@
-From: Justin Piszcz <jpiszcz@lucidpixels.com>
-Subject: Re: iptables/when loading a webpage, get subsequent firewall
- block(s)?
-Date: Mon, 16 Nov 2009 06:16:34 -0500 (EST)
-Message-ID: <alpine.DEB.2.00.0911160615450.12141@p34.internal.lan>
-References: <alpine.DEB.2.00.0911140807540.27423@p34.internal.lan> <4AFEF457.6080208@plouf.fr.eu.org>
+From: Cameron Smith <velvetpixel@gmail.com>
+Subject: Help deleting a rule
+Date: Mon, 16 Nov 2009 13:39:38 -0800
+Message-ID: <edc0e50f0911161339x1ceed507vc4baffa428cad1b7@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4AFEF457.6080208@plouf.fr.eu.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type;
+        bh=/+xn4RAr7EJ8iI67kUehDAKEGsnRYOlJVr1CQFHMDQc=;
+        b=T5mBiGTJ0KHBp0KgXePdJMLV94ouJqM05UuzXRAsaQ5oIpXdXIk5E2u1bMQfMevxqk
+         Fa7BDo+gmoHRuKmOVHZoo6WT1O9m9affznModO/cKnLM3YPbwJVIlg36itw6uy9CecEu
+         0kDZNuja+TQ+UgrKt0fheNmjge54OYTInnkf0=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
+Hello,
 
+If I run:
+iptables -L -n -v |grep xx.xx.xx.xx
 
-On Sat, 14 Nov 2009, Pascal Hambourg wrote:
+I get:
+112  6272 DROP       all  --  eth+   *       xx.xx.xx.xx         0.0.0.0/0
 
-> Hello,
->
-> That's a RST for an already closed connection -> state INVALID.
->
->> This last packet at 08:13:19 appears to be what gets blocked by iptables,
->> even though ESTABLISHED,RELATED is in effect.
+I want to delete this specific rule.
+From what is printed above how do I know what line this is to use this command?
 
-Pascal,
+iptables -D INPUT x
 
-Thanks for the explanation.
-
-Do you know what would cause a RST for an already closed connection?
-
-Is this normal, do you/others see this as well?
-
-Justin.
+Where x is the line number?
