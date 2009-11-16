@@ -1,37 +1,41 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: Help deleting a rule
-Date: Mon, 16 Nov 2009 22:45:35 +0100
-Message-ID: <4B01C7FF.9050200@chello.at>
-References: <edc0e50f0911161339x1ceed507vc4baffa428cad1b7@mail.gmail.com>
-Reply-To: netfilter@vger.kernel.org
+From: Gary Smith <gary.smith@holdstead.com>
+Subject: RE: Disabling conntrack for local net
+Date: Mon, 16 Nov 2009 15:32:39 -0800
+Message-ID: <034DEBCAE934A74991E6E76B8DA72D14185DD50A7F@HSSBS.holdstead.local>
+References: <034DEBCAE934A74991E6E76B8DA72D14185DD509DA@HSSBS.holdstead.local>
+ <4AE13AA6.5080509@chello.at> <4AE14B9E.9050705@chello.at>
+ <034DEBCAE934A74991E6E76B8DA72D14185DD509DD@HSSBS.holdstead.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <edc0e50f0911161339x1ceed507vc4baffa428cad1b7@mail.gmail.com>
+In-Reply-To: <034DEBCAE934A74991E6E76B8DA72D14185DD509DD@HSSBS.holdstead.local>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Gary Smith <gary.smith@holdstead.com>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
 
-Cameron Smith wrote:
-> Hello,
->
-> If I run:
-> iptables -L -n -v |grep xx.xx.xx.xx
->
-> I get:
-> 112  6272 DROP       all  --  eth+   *       xx.xx.xx.xx         0.0.0.0/0
->
-> I want to delete this specific rule.
-> >From what is printed above how do I know what line this is to use this command?
->
-> iptables -D INPUT x
->
-> Where x is the line number?
->   
+Can anyone tackle the problem below?  I need to NAT an external IP/Port internally (actually multiple, but one sample will do).  I also need to access these from internally as well through the NAT'ing (because we don't control DNS).  The final caveat is that we would like to skip conntrack for everything else (like MySql connections originating from one of the NAT'd boxes going to a non-NAT'd box internal, etc).
 
-iptables -h
-
-look for --line-numbers
+> Here is an example of the rules we are running right now:
+> 
+> _A PREROUTING -d 208.35.34.20 -p tcp -m tcp --dport 53 -j DNAT --to-
+> destination 10.40.16.21
+> -A PREROUTING -d 208.35.34.20 -p udp -m udp --dport 53 -j DNAT --to-
+> destination 10.40.16.21
+> -A PREROUTING -d 208.35.34.20 -j DNAT --to-destination 10.40.16.29
+> ...
+> -A POSTROUTING -s 10.40.16.21 -o eth1 -p tcp -m tcp --sport 53 -j SNAT --to-
+> source 208.35.34.20
+> -A POSTROUTING -s 10.40.16.21 -o eth1 -p udp -m udp --sport 53 -j SNAT --to-
+> source 208.35.34.20
+> -A POSTROUTING -s 10.40.16.29 -o eth1 -j SNAT --to-source 208.35.34.20
+> ...
+> -A POSTROUTING -s 10.0.0.0/255.0.0.0 -o eth1 -j SNAT --to-source 208.35.34.2
+> 
+> 
+> Given this, can someone whip up the proper raw/nat/filter on how to make this
+> NOTRACK and be able to route back inside?
+>
 
 
