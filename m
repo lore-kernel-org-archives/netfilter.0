@@ -1,60 +1,38 @@
-From: homer_2008@gmx.net
-Subject: Firewallrules for a gentoo box with 4 nics
-Date: Tue, 24 Nov 2009 20:45:47 +0100
-Message-ID: <20091124194547.155180@gmx.net>
+From: Mekabe Ramein <mrmrmrmr@gmail.com>
+Subject: LED trigger in iptables
+Date: Tue, 24 Nov 2009 23:59:59 +0200
+Message-ID: <5c0c5c050911241359m7c8aeccqad728fe3272cb3e3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type;
+        bh=/VKppA15dUr2v5eyQ7X2UsrGSKTQgcW0MG0taY/1t5Q=;
+        b=STh+Q/x4h4I3fMXl2XZhbogv96REMWVqhcYcWN/GYtj9G8A35EYFR9bfy0t2Zm3eO4
+         rgpsjV42HpyjRS4PoawBJHPGz6ywui2cJRc+dS9kLPkNHpYO8RrPUldtNmQ+wXh+Q3Ld
+         oNOfefkWUgE+h294bYFXksfPkHb3vyM5Jk9pQ=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hi list,
+Hi,
 
-I am playing with a little gentoo box installed on a pcengine alix boar=
-d with four nics. I need to secure it with the iptables firewall. Here =
-is the configuration of the nics:
-------------------------------------------------------------
-1. eth0 (internal trusted network)
-2. eth1,ppp0 (internet DSL (ppp0) with DHCP IP address changing every 2=
-4 hours)
-3. eth2 (a DMZ Zone with a single Webserver)
-4. wlan0 (miniPCI atheros card)(Wireless LAN interface only webtraffic =
-should be enabled)
+I am trying to use xt_LED module which is included in my kernel.
+However, "iptables" does not accept the "--led-trigger-id" parameter
+in the following command (which is an example given in module
+description):
 
-------------------------------------------------------------
-InternetDSL --> eth1(carrier)ppp0=20
-Internal network --> eth0
-DMZ --> eth2
-------------------------------------------------------------
-=46rom the internet all ports should be closed accept all related,estab=
-lished connections. One port should be open for openvpn 1194/udp.
+iptables -A OUTPUT -p udp --dport 5060 -j LED --led-trigger-id sip
+--led-delay 100
 
-The internal network should have open the DHCP,DNS,HTTP ports.
+My iptables version is 1.4.5 but it does not have the extension xt_LED in it.
+So I searched for this and found a patch which adds this feature. But
+I don't know where to apply the patch.
+How can I make use of it ?
 
-The wireless wlan0 nic should only have open the port 80 for webtraffic=
-=2E
+Should I include it in iptables source or another package ?
 
-The DMZ should only have the ports open for the webserver.
-
-NAT should be from the internet (ppp0,eth1) to the internal network (et=
-h0) and eth2(DMZ)
-------------------------------------------------------------
-the ips for the nics should be the following:
-
-eth0 - internal - 192.168.0.0/24
-eth1(ppp0) - DHCP because DSL IP is changing every 24 hours.
-eth2 - 172-16.0.0/24
-
-------------------------------------------------------------
-
-My question to the list is, how can I realize this idea with iptables?
-
-I hope you help me on this task.
-
-Homer
-
---=20
-Preisknaller: GMX DSL Flatrate f=FCr nur 16,99 Euro/mtl.!
-http://portal.gmx.net/de/go/dsl02
+Thanks,
