@@ -1,38 +1,42 @@
-From: Mekabe Ramein <mrmrmrmr@gmail.com>
-Subject: LED trigger in iptables
-Date: Tue, 24 Nov 2009 23:59:59 +0200
-Message-ID: <5c0c5c050911241359m7c8aeccqad728fe3272cb3e3@mail.gmail.com>
+From: Richard Horton <arimus.uk@googlemail.com>
+Subject: Re: bonding-related problem with DNAT/SNAT
+Date: Wed, 25 Nov 2009 07:54:06 +0000
+Message-ID: <56378e320911242354p1e97649r1fbd881add2de2e8@mail.gmail.com>
+References: <200911241855.nAOItoF7006140@post.webmailer.de>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type;
-        bh=/VKppA15dUr2v5eyQ7X2UsrGSKTQgcW0MG0taY/1t5Q=;
-        b=STh+Q/x4h4I3fMXl2XZhbogv96REMWVqhcYcWN/GYtj9G8A35EYFR9bfy0t2Zm3eO4
-         rgpsjV42HpyjRS4PoawBJHPGz6ywui2cJRc+dS9kLPkNHpYO8RrPUldtNmQ+wXh+Q3Ld
-         oNOfefkWUgE+h294bYFXksfPkHb3vyM5Jk9pQ=
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:cc:content-type;
+        bh=na/FLvz3liSw6vwwXu0TaE86+MlDngwNvMLEKJu4srA=;
+        b=WYFHM8Za4WLvbQ9/3O4TU4+4dJmQWVI0BC6Rcueovltt6TzcX0eKGZtOUpllgK6Ttp
+         dDPOIs61UICbxZldLvlo2QDIHK9RT01L7yXivScZBpGvkLopGbfIt6foFN1fpWGuc5Yl
+         2g69e8LM8TchBpcGNC1RG9xmGpACQWDNVU51U=
+In-Reply-To: <200911241855.nAOItoF7006140@post.webmailer.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Craig Craig <craig@haquarter.de>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+2009/11/24 Craig Craig <craig@haquarter.de>:
+> Dear netfilter List,
+>
+> I have two machines running Kernel 2.6.29.5, one has bonding-related problem.
+>
+>
 
-I am trying to use xt_LED module which is included in my kernel.
-However, "iptables" does not accept the "--led-trigger-id" parameter
-in the following command (which is an example given in module
-description):
+Might be worth sticking trace on and seeing which rules are met...
 
-iptables -A OUTPUT -p udp --dport 5060 -j LED --led-trigger-id sip
---led-delay 100
+iptables -t raw -A PREROUTING -j TRACE
 
-My iptables version is 1.4.5 but it does not have the extension xt_LED in it.
-So I searched for this and found a patch which adds this feature. But
-I don't know where to apply the patch.
-How can I make use of it ?
+and then post the resulting trace logs...
 
-Should I include it in iptables source or another package ?
-
-Thanks,
+-- 
+Richard Horton
+Users are like a virus: Each causing a thousand tiny crises until the
+host finally dies.
+http://www.solstans.co.uk - Solstans Japanese Bobtails and Norwegian Forest Cats
+http://www.pbase.com/arimus - My online photogallery
