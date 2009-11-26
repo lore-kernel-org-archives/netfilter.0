@@ -1,43 +1,49 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: An ping issue on Linux kernel 2.6.25
-Date: Thu, 26 Nov 2009 14:15:01 +0100
-Message-ID: <4B0E7F55.9030707@plouf.fr.eu.org>
-References: <fa33c8ee24ace.24acefa33c8ee@huawei.com>
+From: Mekabe Ramein <mrmrmrmr@gmail.com>
+Subject: Re: LED trigger in iptables
+Date: Thu, 26 Nov 2009 23:15:55 +0200
+Message-ID: <5c0c5c050911261315h2daea812rac027c51fd4df2bd@mail.gmail.com>
+References: <5c0c5c050911241359m7c8aeccqad728fe3272cb3e3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <fa33c8ee24ace.24acefa33c8ee@huawei.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type;
+        bh=3Pran7KiS67mz6Dve4pQJ988yRdnMjzQ8gUbx8mnR18=;
+        b=GnnsCsuBeoyKkNtlgthkJp2vXMW4dVCKcgRXxD3qW7CZwHUT3FYGN0xURKHPB5pEmb
+         u9GVcF6pML8EaEhhdxIQZX+ZdG0JDnaLrxvvRnYw9rolxdPhHdbsHOu8EGzdcY60yF5Z
+         0kOGU94Xsc2xhoJs4FH0nUcfKFJXjCthTe4sY=
+In-Reply-To: <5c0c5c050911241359m7c8aeccqad728fe3272cb3e3@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello,
+Hi,
 
-jiazhida 00102231 a =E9crit :
->=20
->   I have met an issue about Netfilter. The version of my Linux kernel=
- is 2.6.25.
->=20
->   Connect to the internet, and then open the command prompt and ping
-> using "ping wwwlclix.pt -t". In the beginning I can get respose but
-> after disconnect and connect the internet never responds again, but i=
-f I
-> try to open the site in the web brower it works.
+I'd appreciate any ideas.
 
-So you have an issue. Maybe it is related to your setup. But you do not
-tell anything about your setup, how could one tell ? Is netfilter
-running on the machine which sends the ping or on another machine actin=
-g
-as a routeur ? Is there some NAT or masquerading ? What is the ruleset =
-?
-What do you mean by "disconnect and connect" ? Do you have a variable I=
-P
-address ?
+Thanks,
+ilker
 
->   I have checked the nf_conntrack table, it seems that the nf_conntra=
-ck
-> item for icmp had not been updated.
-
-What do you mean by "updated" ? What did you expect, and what do you
-observe instead ?
+On Tue, Nov 24, 2009 at 11:59 PM, Mekabe Ramein <mrmrmrmr@gmail.com> wrote:
+> Hi,
+>
+> I am trying to use xt_LED module which is included in my kernel.
+> However, "iptables" does not accept the "--led-trigger-id" parameter
+> in the following command (which is an example given in module
+> description):
+>
+> iptables -A OUTPUT -p udp --dport 5060 -j LED --led-trigger-id sip
+> --led-delay 100
+>
+> My iptables version is 1.4.5 but it does not have the extension xt_LED in it.
+> So I searched for this and found a patch which adds this feature. But
+> I don't know where to apply the patch.
+> How can I make use of it ?
+>
+> Should I include it in iptables source or another package ?
+>
+> Thanks,
+>
