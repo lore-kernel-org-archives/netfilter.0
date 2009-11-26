@@ -1,36 +1,43 @@
-From: Saikiran Madugula <hummerbliss@gmail.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: An ping issue on Linux kernel 2.6.25
-Date: Thu, 26 Nov 2009 11:14:30 +0000
-Message-ID: <4B0E6316.7060104@gmail.com>
+Date: Thu, 26 Nov 2009 14:15:01 +0100
+Message-ID: <4B0E7F55.9030707@plouf.fr.eu.org>
 References: <fa33c8ee24ace.24acefa33c8ee@huawei.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from
-         :user-agent:mime-version:to:cc:subject:references:in-reply-to
-         :content-type:content-transfer-encoding;
-        bh=cz9FNKhADi40ioF2HVLJcUdkxWGT+fCqcRAYbSq6vDE=;
-        b=WvbaAtHGLYVKWatVdwupkPxbR3/y7oq4PFqYRFEjX0wJFS1w4eq5Hwp6CcSSIOWdGW
-         liZXULa7RdL9qqyRDqbxZoCTtkIpfbS7W6XT3ib6XsOcxhDGtOEsaLTD+E+9w2QIJTep
-         Y0iKAwWqPjybgGnn3b6wwT9wpIrbdMTH2GgCI=
 In-Reply-To: <fa33c8ee24ace.24acefa33c8ee@huawei.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: jiazhida 00102231 <jiazhida@huawei.com>
-Cc: netfilter@vger.kernel.org, vivianpu@huawei.com
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-jiazhida 00102231 wrote:
-> Dear Sir:
-> 
->   I have met an issue about Netfilter. The version of my Linux kernel is 2.6.25.
-> 
->   Connect to the internet, and then open the command prompt and ping using "ping wwwlclix.pt -t". In the beginning I can get respose but after disconnect and connect the internet never responds again, but if I try to open the site in the web brower it works.
-> 
->   I have checked the nf_conntrack table, it seems that the nf_conntrack item for icmp had not been updated.
+Hello,
 
-If you are talking about packet and byte counters being 0 in reply direction
-then it might be a bug that was fixed after 2.6.26 kernel. Check commit
-718d4ad98e272daebc258e49dc02f52a6a8de9d3.
+jiazhida 00102231 a =E9crit :
+>=20
+>   I have met an issue about Netfilter. The version of my Linux kernel=
+ is 2.6.25.
+>=20
+>   Connect to the internet, and then open the command prompt and ping
+> using "ping wwwlclix.pt -t". In the beginning I can get respose but
+> after disconnect and connect the internet never responds again, but i=
+f I
+> try to open the site in the web brower it works.
+
+So you have an issue. Maybe it is related to your setup. But you do not
+tell anything about your setup, how could one tell ? Is netfilter
+running on the machine which sends the ping or on another machine actin=
+g
+as a routeur ? Is there some NAT or masquerading ? What is the ruleset =
+?
+What do you mean by "disconnect and connect" ? Do you have a variable I=
+P
+address ?
+
+>   I have checked the nf_conntrack table, it seems that the nf_conntra=
+ck
+> item for icmp had not been updated.
+
+What do you mean by "updated" ? What did you expect, and what do you
+observe instead ?
