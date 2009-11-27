@@ -1,41 +1,76 @@
-From: Udo Schneider <Udo.Schneider@homeaddress.de>
-Subject: Re: conntrack/state with QUEUE target
-Date: Fri, 27 Nov 2009 16:54:11 +0100
-Message-ID: <heosno$ngc$1@ger.gmane.org>
-References: <heoprj$dpr$1@ger.gmane.org>
+From: Mart Frauenlob <mart.frauenlob@chello.at>
+Subject: [patch] iptables.8 - add UNTRACKED state
+Date: Fri, 27 Nov 2009 21:05:09 +0100
+Message-ID: <4B1030F5.7030702@chello.at>
+Reply-To: mart.frauenlob@chello.at
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------040500080207040900080107"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <heoprj$dpr$1@ger.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-All,
+This is a multi-part message in MIME format.
+--------------040500080207040900080107
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-> This worked fine. Now however we have the requirement for more granular 
-> "stateful" Rules. I though it should be possible to combine 
-> state/conntrack with the QUEUE target ... but this doesn't seem to work.
-> 
-> -t mangle -A FORWARD -p tcp --dport 80 -m state --state NEW,ESTABLISHED 
-> -j QUEUE
+Hello,
 
-I think I got it.
+I hope the diff is useful. It adds the UNTRACKED state to the state and 
+conntrack --ctstate descriptions.
 
--t mangle -A FORWARD -p tcp --dport 80 -m state --state NEW,ESTABLISHED 
--j QUEUE
--t mangle -A FORWARD -p tcp --sport 80 -m state --state ESTABLISHED
--j QUEUE
+diff -cB /usr/local/src/iptables-1.4.5/iptables.8 /tmp/iptables.8 > 
+iptables.8.diff
 
-This combination seems to work. Coming from a Check Point Background I 
-assumed that the statefulness provided by state/conntrack means that I 
-only have to specify the initiating connection - replies are 
-accepted/queued automagically based on connection data.
+Best regards
 
-However I seem to be wrong - or did I completely miss the point?
+Mart
 
-CU,
+--------------040500080207040900080107
+Content-Type: text/plain;
+ name="iptables.8.diff"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="iptables.8.diff"
 
-Udo
+*** /usr/local/src/iptables-1.4.5/iptables.8	2009-10-19 19:50:25.000000000 +0200
+--- /tmp/iptables.8	2009-11-27 20:45:08.000000000 +0100
+***************
+*** 607,614 ****
+  .PP
+  States for \fB\-\-ctstate\fP:
+  .TP
+  \fBINVALID\fR
+! meaning that the packet is associated with no known connection
+  .TP
+  \fBNEW\fR
+  meaning that the packet has started a new connection, or otherwise associated
+--- 607,618 ----
+  .PP
+  States for \fB\-\-ctstate\fP:
+  .TP
++ \fBUNTRACKED\fR
++ meaning that the packet will not to be tracked by connection tracking.
++ This state can be set using the \fBNOTRACK\fP target.
++ .TP
+  \fBINVALID\fR
+! meaning that the packet is associated with no known connection.
+  .TP
+  \fBNEW\fR
+  meaning that the packet has started a new connection, or otherwise associated
+***************
+*** 1189,1194 ****
+--- 1193,1201 ----
+  [\fB!\fP] \fB\-\-state\fP \fIstate\fP
+  Where state is a comma separated list of the connection states to
+  match.  Possible states are
++ .B UNTRACKED
++ meaning that the packet will not to be tracked by connection tracking.
++ This state can be set using the \fBNOTRACK\fP target.
+  .B INVALID
+  meaning that the packet could not be identified for some reason which
+  includes running out of memory and ICMP errors which don't correspond to any
 
+--------------040500080207040900080107--
