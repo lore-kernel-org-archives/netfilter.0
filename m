@@ -1,37 +1,39 @@
-From: Gary Smith <gary.smith@holdstead.com>
-Subject: FTP port mode, client and server behind iptables
-Date: Mon, 30 Nov 2009 13:50:32 -0800
-Message-ID: <034DEBCAE934A74991E6E76B8DA72D14185DD50B01@HSSBS.holdstead.local>
+From: sinkyh@onid.orst.edu
+Subject: pinging and routing tables
+Date: Mon, 30 Nov 2009 17:53:24 -0800
+Message-ID: <20091130175324.71602i65gacqf30g@webmail.oregonstate.edu>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; delsp="Yes"; format="flowed"
+To: netfilter@vger.kernel.org
 
-As per the subject, I have a proftp server running behind iptables.  I'm NAT'ing in the entire IP to the ftp server.  
+Hello all,
 
-I have the following rules in place on the server (where eth0 is internal, eth1 is external):
-*nat
--A PREROUTING -d x.x.x.x -p tcp -m tcp -j DNAT --to-destination 10.20.0.12
-*filter
--A FORWARD -d 10.20.0.12 -i eth1 -p tcp -m tcp --dport 1025:65535 -j ACCEPT 
--A FORWARD -d 10.20.0.12 -i eth1 -p tcp -m tcp -m multiport --dports 80,443,21,20,22 -j ACCEPT
--A FORWARD -j LOG --log-prefix "FW-F: " 
--A FORWARD -i eth1 -j REJECT --reject-with icmp-port-unreachable
-ip_conntrack_ftp and ip_nat_ftp are loaded
+I have, I hope, a simple question. From my understanding, by default  
+ping looks up up the IP address in the Linux kernel routing tables.  
+What happens if the IP is not in the routing table? Is the ping packet  
+simply dropped?
 
-On the client side (where eth0 is internal, eth1 is external), 
--A FORWARD -I eth0 -j ACCEPT 
--A FORWARD -m conntrack --ctstate ESTABLISHED -j ACCEPT
--A FORWARD -j LOG --log-prefix "FW-F: " 
--A FORWARD -i eth1 -j REJECT --reject-with icmp-port-unreachable
-ip_conntrack_ftp and ip_nat_ftp are loaded
+The reason I ask this is that I have a few wireless devices for  
+testing purposes and I am using iptables to mimic a particular  
+topology. Mainly forcing the presence of only two possible routes from  
+a source to a destination over a series of hops. These devices have  
+their own routing protocol and basically routes are added/ deleted  
+from the Linux kernel routing tables based on metric measurements bla  
+bla bla. That is just fine and normal.
 
-I'm not seeing any hits in the log file (which logs on each chain before reject).
+However, since the devices are all in range of each other (due to  
+space restriction), if lets say the destination node IP is temporarily  
+lost from the source's routing table, for some reason the source is  
+still able to ping the destination directly. I assumed that if an IP  
+is not in the source's routing table that the outgoing ping would be  
+dropped/ ignored until the IP reappears. Not continue on ignoring  
+routing tables....
 
-Anyway, what am I missing for PORT mode for FTP.  The windows command line users seem to be the only ones affected by this (as pretty much everything else allows passive).
+Can anyone shed some light on this?
 
-Any ideas?
+Thanks for your help and suggestions.
