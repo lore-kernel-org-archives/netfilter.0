@@ -1,92 +1,41 @@
 From: Eric Dumazet <eric.dumazet@gmail.com>
 Subject: Re: [PATCH] tcp: Fix a connect() race with timewait sockets
-Date: Wed, 02 Dec 2009 10:23:50 +0100
-Message-ID: <4B163226.50801@gmail.com>
-References: <99d458640911301802i4bde20f4wa314668d543e3170@mail.gmail.com>	<4B152F97.1090409@gmail.com> <20091202.005937.177088443.davem@davemloft.net>
+Date: Wed, 02 Dec 2009 11:33:55 +0100
+Message-ID: <4B164293.7070804@gmail.com>
+References: <99d458640911301802i4bde20f4wa314668d543e3170@mail.gmail.com>	<4B152F97.1090409@gmail.com> <20091202.005937.177088443.davem@davemloft.net> <4B163226.50801@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20091202.005937.177088443.davem@davemloft.net>
+In-Reply-To: <4B163226.50801@gmail.com>
 Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
 To: David Miller <davem@davemloft.net>
 Cc: kdakhane@gmail.com, netdev@vger.kernel.org, netfilter@vger.kernel.org, zbr@ioremap.net
 
-David Miller a =E9crit :
-> From: Eric Dumazet <eric.dumazet@gmail.com>
-> Date: Tue, 01 Dec 2009 16:00:39 +0100
+Eric Dumazet a =E9crit :
 >=20
->> [PATCH] tcp: Fix a connect() race with timewait sockets
->=20
-> This condition would only trigger if the timewait recycling sysctl is
-> enabled.
->=20
-> It is off by default, and I can't find any mention in this bug report
-> that it has been turned on.
+> But even if sysctl_tw_reuse is cleared, we might trigger the bug if
+> local port is bound to a value.
 
-Very true. I know nothing about context of the reporter, he didnt
-answered to my queries.
+Oh well, that's more subtle than that.
 
-Yes, if sysctl_tw_reuse is set, bug can triggers without any extra cond=
-itions.
+__inet_check_established() is called not only with bh disabled,
+but also with a lock on bind list if twp !=3D NULL.
 
-But even if sysctl_tw_reuse is cleared, we might trigger the bug if
-local port is bound to a value.
+However, if twp is NULL, lock is not held by caller.
 
-[User application called bind( port=3DXXX) before connect() ]
+[ Thats the final
+  ret =3D check_established(death_row, sk, snum, NULL);
+  in __inet_hash_connect()]
 
+So triggering this bug with tw_reuse clear is tricky :
 
-__inet_hash_connect() can indeed call check_established(... twp =3D NUL=
-L)
+You need several threads, using sockets with REUSEADDR set,
+and bind() to same address/port before connect() to same target.
 
-=2E..
-        head =3D &hinfo->bhash[inet_bhashfn(net, snum, hinfo->bhash_siz=
-e)];
-        tb  =3D inet_csk(sk)->icsk_bind_hash;
-        spin_lock_bh(&head->lock);
-        if (sk_head(&tb->owners) =3D=3D sk && !sk->sk_bind_node.next) {
-                hash(sk);
-                spin_unlock_bh(&head->lock);
-                return 0;
-        } else {
-                spin_unlock(&head->lock);
-                /* No definite answer... Walk to established hash table=
- */
-                ret =3D check_established(death_row, sk, snum, NULL);  =
-       <<< HERE >>>
-out:
-                local_bh_enable();
-                return ret;
-        }
+We need another patch to correct this.
 
+I wonder if always hold lock before calling check_established()
+would be cleaner.
 
-
-In this case, we call tcp_twsk_unique() with twp =3D NULL,
-this bypass the sysctl_tcp_tw_reuse test.
-
-
-int tcp_twsk_unique(struct sock *sk, struct sock *sktw, void *twp)
-{
-        const struct tcp_timewait_sock *tcptw =3D tcp_twsk(sktw);
-        struct tcp_sock *tp =3D tcp_sk(sk);
-
-        /* With PAWS, it is safe from the viewpoint
-           of data integrity. Even without PAWS it is safe provided seq=
-uence
-           spaces do not overlap i.e. at data rates <=3D 80Mbit/sec.
-
-           Actually, the idea is close to VJ's one, only timestamp cach=
-e is
-           held not per host, but per port pair and TW bucket is used a=
-s state
-           holder.
-
-           If TW bucket has been already destroyed we fall back to VJ's=
- scheme
-           and use initial timestamp retrieved from peer table.
-         */
-        if (tcptw->tw_ts_recent_stamp &&
-<<HERE>>       (twp =3D=3D NULL || (sysctl_tcp_tw_reuse &&
-                             get_seconds() - tcptw->tw_ts_recent_stamp =
-> 1))) {
