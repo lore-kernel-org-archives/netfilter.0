@@ -1,61 +1,36 @@
-From: Mattias =?utf-8?Q?R=C3=B6nnblom?= <hofors@lysator.liu.se>
-Subject: Re: nat problem: What's so special with traffic from audibank.de?
-Date: Thu, 03 Dec 2009 23:22:47 +0100
-Message-ID: <87ljhj3dfs.fsf@isengard.friendlyfire.se>
-References: <20091203154831.ac38cf77.lars.taeuber@gmx.net>
+From: Mekabe Ramein <mrmrmrmr@gmail.com>
+Subject: Re: LED trigger in iptables
+Date: Fri, 4 Dec 2009 00:53:37 +0200
+Message-ID: <5c0c5c050912031453y6bb1a1fbhf9dfd34cd7a7c465@mail.gmail.com>
+References: <5c0c5c050911241359m7c8aeccqad728fe3272cb3e3@mail.gmail.com>
+	 <5c0c5c050911261315h2daea812rac027c51fd4df2bd@mail.gmail.com>
+	 <4B0F94D4.7020002@trash.net>
+	 <5c0c5c050911280039y623e8c40pbe69ce7fa57965fb@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20091203154831.ac38cf77.lars.taeuber@gmx.net> ("Lars
- =?utf-8?Q?T=C3=A4uber=22's?= message of "Thu\, 3 Dec 2009 15\:48\:31
- +0100")
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type;
+        bh=hG2wi8UFZTPFW2OaISi5S9wYAi1fMwQEK/W63q/V+F0=;
+        b=tpd2AtDrW/YRhZvPADan7NfWyltsK8vVMTucZkNfkpIwhdzbTzR4zmd8+3hV7mLi45
+         KU+v1/3KNFJvl9Dqta6PmbCVmtztg14K/RZo4GWf1/N0BKJ0B3PJEWAG9E6bZmRORavz
+         pEfBl6P6LMCWP07KKIbimfFkQf9Y5gubstnY4=
+In-Reply-To: <5c0c5c050911280039y623e8c40pbe69ce7fa57965fb@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Lars =?utf-8?Q?T=C3=A4uber?= <lars.taeuber@gmx.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Lars T=C3=A4uber <lars.taeuber@gmx.net> writes:
-
-> Hi there.
+On Sat, Nov 28, 2009 at 10:39 AM, Mekabe Ramein <mrmrmrmr@gmail.com> wrote:
+> On Fri, Nov 27, 2009 at 10:59 AM, Patrick McHardy <kaber@trash.net> wrote:
+>> The LED extension hasn't been merged yet because of some open problems.
 >
-> Since some years I have experience with the firewall systems inside l=
-inux.
-> But now I have a case where I don't know how to debug this.
->
-> I exchanged my hand written firewall rules with rules generated from =
-fwbuilder 3.0.5. The kernel used is the one from ubuntu 8.04 (2.6.24-25=
--server).
->
-> $ iptables -V
-> iptables v1.3.8
->
-> Maybe it's an already known bug in iptables from this old kernel?
->
-> All http(s) traffic works exept the one from audibank.de. The start s=
-ide doesn't show up when called from a computer on the natted side of t=
-he local network. When called from the computer doing the firewall/nat =
-it just works.
->>
-
-/../
-
-> Attached is the tcpdump of the http traffic related to audibank.de
->
-> What's wrong? Can someone enlighten me please?
+> Thanks for that information.
+> But isn't it interesting to see it added to stable kernel sources ?
+> The module is there but iptables does not support it. How can I use it ?
 >
 
-I'll do some guessing here. It looks like the first large (MSS-sized)
-segment is lost. I've seen this happening in networks where Path MTU
-Discovery didn't work (because ICMP Fragmentation Needed was
-filtered).
-
-What I would try is to "clamp" the advertised MSS for upstream TCP
-segments to something low (like 300 bytes), to see if that solves your
-problem. See iptables(8) for details on how to do that.
-
-(Low MSS will increase protocol overhead, so you probably don't want
-to clamp MMSes for all outgoing traffic.)
-
-Best regards,
-     Mattias
+Any idea about this issue ?
+How can I use the LED trigger feature which is available in kernel ?
