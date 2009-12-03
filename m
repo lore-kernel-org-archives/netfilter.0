@@ -1,44 +1,61 @@
-From: Dave Malhotra <davemalhotra@gmail.com>
-Subject: SNAT on local interfaces?
-Date: Thu, 3 Dec 2009 12:47:37 -0500
-Message-ID: <bbade2c10912030947x5aca86eap8bcc9936e128c519@mail.gmail.com>
-References: <bbade2c10912030945ufb7dd78rac68fbb3147cc08f@mail.gmail.com>
+From: Mattias =?utf-8?Q?R=C3=B6nnblom?= <hofors@lysator.liu.se>
+Subject: Re: nat problem: What's so special with traffic from audibank.de?
+Date: Thu, 03 Dec 2009 23:22:47 +0100
+Message-ID: <87ljhj3dfs.fsf@isengard.friendlyfire.se>
+References: <20091203154831.ac38cf77.lars.taeuber@gmx.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:content-type;
-        bh=BrCr3H7hcDwOxf+jPgu/DSh/J/EJZ9sVviPCvfkEfUY=;
-        b=tH7WRhaXTcLU4Q4i6+JuYJV3xCVmT9k6J2ftNMMpAJvaX33tBnTv6VNwkeHJBfgeUa
-         qEpIYeC7qMwLMd+FVgLLBTLBXiqrbG8TBxlxAU/Nr3q7VXaehXhFX4meW9tsmhmaz7qH
-         vVZT2UaeXRDdjJI0Q8BiF/Gd13PJ+pjpTAhnc=
-In-Reply-To: <bbade2c10912030945ufb7dd78rac68fbb3147cc08f@mail.gmail.com>
+In-Reply-To: <20091203154831.ac38cf77.lars.taeuber@gmx.net> ("Lars
+ =?utf-8?Q?T=C3=A4uber=22's?= message of "Thu\, 3 Dec 2009 15\:48\:31
+ +0100")
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Lars =?utf-8?Q?T=C3=A4uber?= <lars.taeuber@gmx.net>
+Cc: netfilter@vger.kernel.org
 
- I have a custom proxy which is being used to direct traffic based on
-application layer data. The proxy receives connections from foreign
-addresses and then proxies them to applications running on the local
-machine--the same machine the proxy is running on.
+Lars T=C3=A4uber <lars.taeuber@gmx.net> writes:
 
-The problem is that all the connections to applications appear to come
-from the proxy server's ip address instead of the originating foreign
-address. We need the source address to be the foreign address and
-tried to use SNAT to do it. But apparent SNAT doesn't work when the
-source and destination addresses are all on local interfaces.
+> Hi there.
+>
+> Since some years I have experience with the firewall systems inside l=
+inux.
+> But now I have a case where I don't know how to debug this.
+>
+> I exchanged my hand written firewall rules with rules generated from =
+fwbuilder 3.0.5. The kernel used is the one from ubuntu 8.04 (2.6.24-25=
+-server).
+>
+> $ iptables -V
+> iptables v1.3.8
+>
+> Maybe it's an already known bug in iptables from this old kernel?
+>
+> All http(s) traffic works exept the one from audibank.de. The start s=
+ide doesn't show up when called from a computer on the natted side of t=
+he local network. When called from the computer doing the firewall/nat =
+it just works.
+>>
 
-When I do a tcpdump I see all the traffic that should be caught by the
-SNAT rule appears on the loopback interface. When I check the rule no
-packets are caught by it.
+/../
 
-Is there anyway to get SNAT to work for local source and destination
-address? Or is this some sort of limitation imposed by the kernel or
-iptables?
+> Attached is the tcpdump of the http traffic related to audibank.de
+>
+> What's wrong? Can someone enlighten me please?
+>
 
- thanks,
+I'll do some guessing here. It looks like the first large (MSS-sized)
+segment is lost. I've seen this happening in networks where Path MTU
+Discovery didn't work (because ICMP Fragmentation Needed was
+filtered).
 
- Dave
+What I would try is to "clamp" the advertised MSS for upstream TCP
+segments to something low (like 300 bytes), to see if that solves your
+problem. See iptables(8) for details on how to do that.
+
+(Low MSS will increase protocol overhead, so you probably don't want
+to clamp MMSes for all outgoing traffic.)
+
+Best regards,
+     Mattias
