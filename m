@@ -1,36 +1,35 @@
-From: Mekabe Ramein <mrmrmrmr@gmail.com>
-Subject: Re: LED trigger in iptables
-Date: Fri, 4 Dec 2009 00:53:37 +0200
-Message-ID: <5c0c5c050912031453y6bb1a1fbhf9dfd34cd7a7c465@mail.gmail.com>
-References: <5c0c5c050911241359m7c8aeccqad728fe3272cb3e3@mail.gmail.com>
-	 <5c0c5c050911261315h2daea812rac027c51fd4df2bd@mail.gmail.com>
-	 <4B0F94D4.7020002@trash.net>
-	 <5c0c5c050911280039y623e8c40pbe69ce7fa57965fb@mail.gmail.com>
+From: Lars =?UTF-8?B?VMOkdWJlcg==?= <lars.taeuber@gmx.net>
+Subject: Re: nat problem: What's so special with traffic from audibank.de?
+Date: Thu, 3 Dec 2009 23:54:43 +0100
+Message-ID: <20091203235443.9d5bb632.lars.taeuber@gmx.net>
+References: <20091203154831.ac38cf77.lars.taeuber@gmx.net>
+	<87ljhj3dfs.fsf@isengard.friendlyfire.se>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:content-type;
-        bh=hG2wi8UFZTPFW2OaISi5S9wYAi1fMwQEK/W63q/V+F0=;
-        b=tpd2AtDrW/YRhZvPADan7NfWyltsK8vVMTucZkNfkpIwhdzbTzR4zmd8+3hV7mLi45
-         KU+v1/3KNFJvl9Dqta6PmbCVmtztg14K/RZo4GWf1/N0BKJ0B3PJEWAG9E6bZmRORavz
-         pEfBl6P6LMCWP07KKIbimfFkQf9Y5gubstnY4=
-In-Reply-To: <5c0c5c050911280039y623e8c40pbe69ce7fa57965fb@mail.gmail.com>
+In-Reply-To: <87ljhj3dfs.fsf@isengard.friendlyfire.se>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-On Sat, Nov 28, 2009 at 10:39 AM, Mekabe Ramein <mrmrmrmr@gmail.com> wrote:
-> On Fri, Nov 27, 2009 at 10:59 AM, Patrick McHardy <kaber@trash.net> wrote:
->> The LED extension hasn't been merged yet because of some open problems.
->
-> Thanks for that information.
-> But isn't it interesting to see it added to stable kernel sources ?
-> The module is there but iptables does not support it. How can I use it ?
->
+Hi Mattias,
 
-Any idea about this issue ?
-How can I use the LED trigger feature which is available in kernel ?
+On Thu, 03 Dec 2009 23:22:47 +0100 Mattias R=C3=B6nnblom <hofors@lysato=
+r.liu.se> wrote:
+> I'll do some guessing here. It looks like the first large (MSS-sized)
+> segment is lost. I've seen this happening in networks where Path MTU
+> Discovery didn't work (because ICMP Fragmentation Needed was
+> filtered).
+
+you're absolutely right.
+I could solve my problem with either allow any icmp traffic from outsid=
+e to any destination or use the clamp-to-pmtu in the server settings fo=
+r the firewall. This is a switch in fwbuilder.
+
+Why is such an ICMP message not RELATED in the meaning of
+   echo "-A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT"
+with a _related_ tcp connection?
+
+Thanks a lot anyway!!
+Lars
