@@ -1,49 +1,44 @@
-From: rebeca.martinez-garcia@estudiant.upc.edu
-Subject: NAT issue, help
-Date: Thu,  3 Dec 2009 17:38:56 +0100
-Message-ID: <20091203173856.97035zl2wcptve04@ek2pim.upc.edu>
+From: Dave Malhotra <davemalhotra@gmail.com>
+Subject: SNAT on local interfaces?
+Date: Thu, 3 Dec 2009 12:47:37 -0500
+Message-ID: <bbade2c10912030947x5aca86eap8bcc9936e128c519@mail.gmail.com>
+References: <bbade2c10912030945ufb7dd78rac68fbb3147cc08f@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type;
+        bh=BrCr3H7hcDwOxf+jPgu/DSh/J/EJZ9sVviPCvfkEfUY=;
+        b=tH7WRhaXTcLU4Q4i6+JuYJV3xCVmT9k6J2ftNMMpAJvaX33tBnTv6VNwkeHJBfgeUa
+         qEpIYeC7qMwLMd+FVgLLBTLBXiqrbG8TBxlxAU/Nr3q7VXaehXhFX4meW9tsmhmaz7qH
+         vVZT2UaeXRDdjJI0Q8BiF/Gd13PJ+pjpTAhnc=
+In-Reply-To: <bbade2c10912030945ufb7dd78rac68fbb3147cc08f@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; delsp="Yes	format=flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
-Cc: vhuertas@indra.es
 
-Hi all,
+ I have a custom proxy which is being used to direct traffic based on
+application layer data. The proxy receives connections from foreign
+addresses and then proxies them to applications running on the local
+machine--the same machine the proxy is running on.
 
-I am trying to set up the following configuration, so a SIP client in  
-the private LAN can communicate with any client outside (Client C):
+The problem is that all the connections to applications appear to come
+from the proxy server's ip address instead of the originating foreign
+address. We need the source address to be the foreign address and
+tried to use SNAT to do it. But apparent SNAT doesn't work when the
+source and destination addresses are all on local interfaces.
 
-Client A
-    |          private LAN           public
--------------------------- Gateway ----------------------
-    |      192.168.xx.xx/24          10.1.xx.xx/24       |
-Client B                                            Client C
+When I do a tcpdump I see all the traffic that should be caught by the
+SNAT rule appears on the loopback interface. When I check the rule no
+packets are caught by it.
 
-The gateway makes NAT correctly, but so far it has been impossible  
-that it changes the private IP in the Contact field of the clients in  
-the LAN for the public IP of the gateway outside. In consequence,  
-Client C always faces a non-routable IP.
+Is there anyway to get SNAT to work for local source and destination
+address? Or is this some sort of limitation imposed by the kernel or
+iptables?
 
-I am using nf_conntrack_sip and nf_nat_sip loaded in my iptables  
-config script but they seem not been working.
+ thanks,
 
-My iptables config script is like this:
-
-/sbin/modprobe nf_conntrack
-/sbin/modprobe nf_conntrack_sip sip_direct_signalling=0 sip_direct_media=0
-/sbin/modprobe nf_nat_sip
-
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A INPUT -p udp --dport 5060 -j ACCEPT
-iptables -A FORWARD -o eth0 -p udp --dport 5060 -j ACCEPT
-iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 10.1.xx.xx
-
-I really appreciate any help.
-
-Thanks in advance,
-Rebeca Martinez
-
+ Dave
