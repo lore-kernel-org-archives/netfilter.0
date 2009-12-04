@@ -1,29 +1,37 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: LED trigger in iptables
-Date: Fri, 04 Dec 2009 07:15:16 +0100
-Message-ID: <4B18A8F4.7040902@trash.net>
-References: <5c0c5c050911241359m7c8aeccqad728fe3272cb3e3@mail.gmail.com>	 <5c0c5c050911261315h2daea812rac027c51fd4df2bd@mail.gmail.com>	 <4B0F94D4.7020002@trash.net>	 <5c0c5c050911280039y623e8c40pbe69ce7fa57965fb@mail.gmail.com> <5c0c5c050912031453y6bb1a1fbhf9dfd34cd7a7c465@mail.gmail.com>
+From: Eric Dumazet <eric.dumazet@gmail.com>
+Subject: Re: [PATCH] tcp: fix a timewait refcnt race
+Date: Fri, 04 Dec 2009 07:29:05 +0100
+Message-ID: <4B18AC31.3040800@gmail.com>
+References: <99d458640911301802i4bde20f4wa314668d543e3170@mail.gmail.com>	 <4B152F97.1090409@gmail.com>	 <20091202.005937.177088443.davem@davemloft.net>	 <4B163226.50801@gmail.com> <4B164293.7070804@gmail.com>	 <20091202113213.GA18453@ioremap.net>	 <99d458640912021118y42a6fe4bm7b742a2046ad7a3b@mail.gmail.com>	 <99d458640912021843y21ad07a4j724003328da07e9@mail.gmail.com>	 <4B17979D.4040301@gmail.com> <99d458640912031920n7e4e0f39o4c04e9c51b46efd@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <5c0c5c050912031453y6bb1a1fbhf9dfd34cd7a7c465@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <99d458640912031920n7e4e0f39o4c04e9c51b46efd@mail.gmail.com>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Mekabe Ramein <mrmrmrmr@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: kapil dakhane <kdakhane@gmail.com>
+Cc: David Miller <davem@davemloft.net>, netdev@vger.kernel.org, netfilter@vger.kernel.org, Evgeniy Polyakov <zbr@ioremap.net>
 
-Mekabe Ramein wrote:
-> On Sat, Nov 28, 2009 at 10:39 AM, Mekabe Ramein <mrmrmrmr@gmail.com> wrote:
->> On Fri, Nov 27, 2009 at 10:59 AM, Patrick McHardy <kaber@trash.net> wrote:
->>> The LED extension hasn't been merged yet because of some open problems.
->> Thanks for that information.
->> But isn't it interesting to see it added to stable kernel sources ?
->> The module is there but iptables does not support it. How can I use it ?
->>
-> 
-> Any idea about this issue ?
-> How can I use the LED trigger feature which is available in kernel ?
+kapil dakhane a =E9crit :
+>=20
+> I applied your changes are suggested above. It appears that the patch
+> successfully resolves the race condition it addressed. I managed to
+> push the system to 1.9 gbps, previously I could not push it beyond 1.=
+6
+> gbps. Unfortunately, there appear to be more race conditions, as the
+> fault happened again when I attempted to push it to 2.3 gbps. This
+> time I did not get any error message in /var/log/messages, although
+> they appear on the console the same way as before.
+>=20
 
-I suggested a fix to the author of the LED target, but still waiting
-to hear back about it.
+Thanks for testing Kapil
+
+I am not sure of exact set of changes you have in your kernel.
+
+David, could you push your net-next-2.6 tree with pending changes so th=
+at
+I can work on bind() side (interaction with timewait) and be sure Kapil
+can work on latest net-next-2.6 ?
+
+Thanks
