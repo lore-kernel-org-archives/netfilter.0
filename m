@@ -1,38 +1,29 @@
 From: Patrick McHardy <kaber@trash.net>
-Subject: Re: nat problem: What's so special with traffic from audibank.de?
-Date: Fri, 04 Dec 2009 07:14:44 +0100
-Message-ID: <4B18A8D4.901@trash.net>
-References: <20091203154831.ac38cf77.lars.taeuber@gmx.net>	<87ljhj3dfs.fsf@isengard.friendlyfire.se> <20091203235443.9d5bb632.lars.taeuber@gmx.net>
+Subject: Re: LED trigger in iptables
+Date: Fri, 04 Dec 2009 07:15:16 +0100
+Message-ID: <4B18A8F4.7040902@trash.net>
+References: <5c0c5c050911241359m7c8aeccqad728fe3272cb3e3@mail.gmail.com>	 <5c0c5c050911261315h2daea812rac027c51fd4df2bd@mail.gmail.com>	 <4B0F94D4.7020002@trash.net>	 <5c0c5c050911280039y623e8c40pbe69ce7fa57965fb@mail.gmail.com> <5c0c5c050912031453y6bb1a1fbhf9dfd34cd7a7c465@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20091203235443.9d5bb632.lars.taeuber@gmx.net>
+In-Reply-To: <5c0c5c050912031453y6bb1a1fbhf9dfd34cd7a7c465@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?ISO-8859-15?Q?Lars_T=E4uber?= <lars.taeuber@gmx.net>
+Content-Type: text/plain; charset="us-ascii"
+To: Mekabe Ramein <mrmrmrmr@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-Lars T=E4uber wrote:
-> Hi Mattias,
->=20
-> On Thu, 03 Dec 2009 23:22:47 +0100 Mattias R=F6nnblom <hofors@lysator=
-=2Eliu.se> wrote:
->> I'll do some guessing here. It looks like the first large (MSS-sized=
-)
->> segment is lost. I've seen this happening in networks where Path MTU
->> Discovery didn't work (because ICMP Fragmentation Needed was
->> filtered).
->=20
-> you're absolutely right.
-> I could solve my problem with either allow any icmp traffic from outs=
-ide to any destination or use the clamp-to-pmtu in the server settings =
-for the firewall. This is a switch in fwbuilder.
->=20
-> Why is such an ICMP message not RELATED in the meaning of
->    echo "-A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT"
-> with a _related_ tcp connection?
+Mekabe Ramein wrote:
+> On Sat, Nov 28, 2009 at 10:39 AM, Mekabe Ramein <mrmrmrmr@gmail.com> wrote:
+>> On Fri, Nov 27, 2009 at 10:59 AM, Patrick McHardy <kaber@trash.net> wrote:
+>>> The LED extension hasn't been merged yet because of some open problems.
+>> Thanks for that information.
+>> But isn't it interesting to see it added to stable kernel sources ?
+>> The module is there but iptables does not support it. How can I use it ?
+>>
+> 
+> Any idea about this issue ?
+> How can I use the LED trigger feature which is available in kernel ?
 
-It should be. Please post a dump of the relevant ICMP message
-and the connection tuples from /proc/net/nf_conntrack for the
-original TCP connection.
+I suggested a fix to the author of the LED target, but still waiting
+to hear back about it.
