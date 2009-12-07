@@ -1,26 +1,111 @@
-From: Ilya Barsukov <mzfk.0xff@gmail.com>
-Subject: Dynamic bidirectinal nat. Possible ?
-Date: Mon, 7 Dec 2009 17:54:24 +0500
-Message-ID: <14434f350912070454s38ec6903wcd78e0679ac0859d@mail.gmail.com>
+From: Randy Dunlap <rdunlap@xenotime.net>
+Subject: Re: [PATCH] tcp: documents timewait refcnt tricks
+Date: Mon, 07 Dec 2009 08:06:58 -0800
+Message-ID: <4B1D2822.5030704@xenotime.net>
+References: <99d458640911301802i4bde20f4wa314668d543e3170@mail.gmail.com> <4B152F97.1090409@gmail.com> <4B1912CE.5040304@gmail.com> <20091205212148.GA26270@ioremap.net> <4B1CD20D.8030407@gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type;
-        bh=Eqpq4tBQj44jvavLrPrVp/zoapLV7lyiWTcNOiypwC4=;
-        b=TAZGjYKBK+YidNBxETOhj2thr0NJsyU08p/UgnQtS6jwww7te7575aQZpQKgiOoYwE
-         FgUf4LOf0skpvFIAkQobUbIwJio9KOpBp8fMLrJGlWMci3t4zSnVO8LrVUYAowvF7vMD
-         dq+r0fCPCQQHj9loL+EynTEPsvKdgeShF4Kfc=
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <4B1CD20D.8030407@gmail.com>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Eric Dumazet <eric.dumazet@gmail.com>
+Cc: Evgeniy Polyakov <zbr@ioremap.net>, kapil dakhane <kdakhane@gmail.com>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, netfilter@vger.kernel.org
 
-Hi guys, i search for analog Cisco dynamic binat for iptables and
-didn't found anything about it. It's really doesn't exist some
-implementation of this mechanism ?
-I have a simple task: create binat for three "/16" networks into one
-"/16" network, i don't know how to get this with static translations
-(e.g. NETMAP), i think, it's possible only with dynamic nat.
+Eric Dumazet wrote:
+> Evgeniy Polyakov a =E9crit :
+>> Hi Eric.
+>>
+>> On Fri, Dec 04, 2009 at 02:46:54PM +0100, Eric Dumazet (eric.dumazet=
+@gmail.com) wrote:
+>>> First patch changes __inet_hash_nolisten() and __inet6_hash()
+>>> to get a timewait parameter to be able to unhash it from ehash
+>>> at same time the new socket is inserted in hash.
+>>>
+>>> This makes sure timewait socket wont be found by a concurrent
+>>> writer in __inet_check_established()
+>> Both patches look good, although trick with returning reference coun=
+ter
+>> may look like a hack especially when only viewing into ip code and n=
+ot
+>> hashtable itself. Can you please cook up a documentation update for =
+hash
+>> function that it is supposed to return refcnt when socket was in has=
+h
+>> table.
+>>
+>=20
+> Sure, here it is :
+>=20
+> Thanks !
+>=20
+> [PATCH] tcp: documents timewait refcnt tricks=20
+>=20
+> Adds kerneldoc for inet_twsk_unhash() & inet_twsk_bind_unhash().
+>=20
+> Suggested-by: Evgeniy Polyakov <zbr@ioremap.net>
+> Signed-off-by: Eric Dumazet <eric.dumazet@gmail.com>
+> ---
+>=20
+> diff --git a/net/ipv4/inet_timewait_sock.c b/net/ipv4/inet_timewait_s=
+ock.c
+> index 1958cf5..cf719c2 100644
+> --- a/net/ipv4/inet_timewait_sock.c
+> +++ b/net/ipv4/inet_timewait_sock.c
+> @@ -15,9 +15,13 @@
+>  #include <net/ip.h>
+> =20
+> =20
+> -/*
+> - * unhash a timewait socket from established hash
+> - * lock must be hold by caller
+> +/**
+> + *	inet_twsk_unhash - unhash a timewait socket from established hash
+> + *	@tw: timewait socket
+> + *
+> + *	unhash a timewait socket from established hash, if hashed.
+> + *	ehash lock must be hold by caller.
+
+	                   held
+
+> + *	Returns 1 if caller should call inet_twsk_put() after lock releas=
+e.
+>   */
+>  int inet_twsk_unhash(struct inet_timewait_sock *tw)
+>  {
+> @@ -26,12 +30,21 @@ int inet_twsk_unhash(struct inet_timewait_sock *t=
+w)
+> =20
+>  	hlist_nulls_del_rcu(&tw->tw_node);
+>  	sk_nulls_node_init(&tw->tw_node);
+> +	/*
+> +	 * We cannot call inet_twsk_put() ourself under lock,
+> +	 * caller must call it for us.
+> +	 */
+>  	return 1;
+>  }
+> =20
+> -/*
+> - * unhash a timewait socket from bind hash
+> - * lock must be hold by caller
+> +/**
+> + *	inet_twsk_bind_unhash - unhash a timewait socket from bind hash
+> + *	@tw: timewait socket
+> + *	@hashinfo: hashinfo pointer
+> + *
+> + *	unhash a timewait socket from bind hash, if hashed.
+> + *	bind hash lock must be hold by caller.
+
+	                       held
+
+> + *	Returns 1 if caller should call inet_twsk_put() after lock releas=
+e.
+>   */
+>  int inet_twsk_bind_unhash(struct inet_timewait_sock *tw,
+>  			  struct inet_hashinfo *hashinfo)
+
+
+thanks.
+--=20
+~Randy
