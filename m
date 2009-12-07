@@ -1,111 +1,51 @@
-From: Randy Dunlap <rdunlap@xenotime.net>
-Subject: Re: [PATCH] tcp: documents timewait refcnt tricks
-Date: Mon, 07 Dec 2009 08:06:58 -0800
-Message-ID: <4B1D2822.5030704@xenotime.net>
-References: <99d458640911301802i4bde20f4wa314668d543e3170@mail.gmail.com> <4B152F97.1090409@gmail.com> <4B1912CE.5040304@gmail.com> <20091205212148.GA26270@ioremap.net> <4B1CD20D.8030407@gmail.com>
+From: Aviad Lahav <aviad.lahav@gmail.com>
+Subject: Netfilter injects network headers?
+Date: Mon, 7 Dec 2009 21:05:41 +0200
+Message-ID: <85ce6a220912071105s7706f877k9547362aefd76056@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <4B1CD20D.8030407@gmail.com>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:sender:received:date
+         :x-google-sender-auth:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=eP4A97HH+wxwvgI5hzZYV57lofkXsSgNyxyeCKRsnK4=;
+        b=emoQSu2q/wGELe9joFpRheDWXaNWowhazJCaBeM8os3fDhBeb/A/tSQscmebnk9kzq
+         gKCFHU6s69O5HBguMywouU4I3JT5svxItZn95TgO/VxVhzg2mJ5Uh3Mbh6nfp45/uoRZ
+         QWJWSrTJeu5rXoNbP0KFXJ1FiLyr5UeT0IgwM=
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Eric Dumazet <eric.dumazet@gmail.com>
-Cc: Evgeniy Polyakov <zbr@ioremap.net>, kapil dakhane <kdakhane@gmail.com>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Eric Dumazet wrote:
-> Evgeniy Polyakov a =E9crit :
->> Hi Eric.
->>
->> On Fri, Dec 04, 2009 at 02:46:54PM +0100, Eric Dumazet (eric.dumazet=
-@gmail.com) wrote:
->>> First patch changes __inet_hash_nolisten() and __inet6_hash()
->>> to get a timewait parameter to be able to unhash it from ehash
->>> at same time the new socket is inserted in hash.
->>>
->>> This makes sure timewait socket wont be found by a concurrent
->>> writer in __inet_check_established()
->> Both patches look good, although trick with returning reference coun=
-ter
->> may look like a hack especially when only viewing into ip code and n=
-ot
->> hashtable itself. Can you please cook up a documentation update for =
-hash
->> function that it is supposed to return refcnt when socket was in has=
-h
->> table.
->>
->=20
-> Sure, here it is :
->=20
-> Thanks !
->=20
-> [PATCH] tcp: documents timewait refcnt tricks=20
->=20
-> Adds kerneldoc for inet_twsk_unhash() & inet_twsk_bind_unhash().
->=20
-> Suggested-by: Evgeniy Polyakov <zbr@ioremap.net>
-> Signed-off-by: Eric Dumazet <eric.dumazet@gmail.com>
-> ---
->=20
-> diff --git a/net/ipv4/inet_timewait_sock.c b/net/ipv4/inet_timewait_s=
-ock.c
-> index 1958cf5..cf719c2 100644
-> --- a/net/ipv4/inet_timewait_sock.c
-> +++ b/net/ipv4/inet_timewait_sock.c
-> @@ -15,9 +15,13 @@
->  #include <net/ip.h>
-> =20
-> =20
-> -/*
-> - * unhash a timewait socket from established hash
-> - * lock must be hold by caller
-> +/**
-> + *	inet_twsk_unhash - unhash a timewait socket from established hash
-> + *	@tw: timewait socket
-> + *
-> + *	unhash a timewait socket from established hash, if hashed.
-> + *	ehash lock must be hold by caller.
+Hi all,
+I'm trying to set up an SSL transparent proxy, and=A0I've seen very
+bizarre behavior on my system.
+I've added two NAT rules to =A0the PREROUTING chain, looking like this:
 
-	                   held
+# iptables -L -v -t nat
+Chain PREROUTING (policy ACCEPT 561 packets, 70236 bytes)
+=A0pkts bytes target =A0 =A0 prot opt in =A0 =A0 out =A0 =A0 source =A0=
+ =A0 =A0 =A0 =A0 =A0 =A0 destination
+=A0=A0 20 =A01280 REDIRECT =A0 tcp =A0-- =A0ppp0 =A0 any =A0 =A0 anywhe=
+re
+anywhere =A0 =A0 =A0 =A0 =A0 =A0tcp dpt:4309 redir ports 4443
+=A0=A0 =A08 =A0 512 REDIRECT =A0 tcp =A0-- =A0ppp0 =A0 any =A0 =A0 anyw=
+here
+anywhere =A0 =A0 =A0 =A0 =A0 =A0tcp dpt:https redir ports 4443
 
-> + *	Returns 1 if caller should call inet_twsk_put() after lock releas=
-e.
->   */
->  int inet_twsk_unhash(struct inet_timewait_sock *tw)
->  {
-> @@ -26,12 +30,21 @@ int inet_twsk_unhash(struct inet_timewait_sock *t=
-w)
-> =20
->  	hlist_nulls_del_rcu(&tw->tw_node);
->  	sk_nulls_node_init(&tw->tw_node);
-> +	/*
-> +	 * We cannot call inet_twsk_put() ourself under lock,
-> +	 * caller must call it for us.
-> +	 */
->  	return 1;
->  }
-> =20
-> -/*
-> - * unhash a timewait socket from bind hash
-> - * lock must be hold by caller
-> +/**
-> + *	inet_twsk_bind_unhash - unhash a timewait socket from bind hash
-> + *	@tw: timewait socket
-> + *	@hashinfo: hashinfo pointer
-> + *
-> + *	unhash a timewait socket from bind hash, if hashed.
-> + *	bind hash lock must be hold by caller.
+So I've got a listener on port 4443, accepting connections from both
+ports 443 and 4309.
+When I'm doing the first recv() in my accepting server, I get the
+incoming connections to port 443 very well, BUT:
+Incoming connections to port 4309 gets *3 extra bytes* in the
+beginning of the connection (maybe also to subsequent packets, but I
+haven't had the chance to see this data yet...()
 
-	                       held
+The first 3 bytes I'm getting is:
+0x00 0x01 0x05
 
-> + *	Returns 1 if caller should call inet_twsk_put() after lock releas=
-e.
->   */
->  int inet_twsk_bind_unhash(struct inet_timewait_sock *tw,
->  			  struct inet_hashinfo *hashinfo)
-
-
-thanks.
---=20
-~Randy
+My machine is an up-to-date Ubuntu 9.10 (karmic), and the packets are
+coming from a client connected thru pptpd.
+Anyone has a clue?
