@@ -1,59 +1,23 @@
-From: "J. Bakshi" <joydeep@infoservices.in>
-Subject: can single linux box with dual gateway provide two separate connection
- ?
-Date: Mon, 07 Dec 2009 15:08:07 +0530
-Message-ID: <4B1CCCFF.9080205@infoservices.in>
+From: Slava Garaschenko <slava@maze.ambernet.kiev.ua>
+Subject: Re: kernel panic when adding QUEUE to OUTGOING
+Date: Mon, 07 Dec 2009 11:56:12 +0200
+Message-ID: <4B1CD13C.4000905@maze.ambernet.kiev.ua>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello list,
+I have the same problem. Kernel 2.6.31 FC12, x86_64
+Problem appear ONLY then first packet go into imq, which connected to
+outgoing. If I add IMQ to OUTGOOING to interface which don`t have any
+routing to it, and not connected (no packets sent to this interface) -
+all OK, but then first packet send to this interface - I have "kernel
+trap". If it will be help, I can try to make screen-shot of screen then
+"kernel trap".
 
-This is not the traditional load-balancing or fail over technique which
-I like to achieve through iptables but the objective is different.  I
-have 2 different ISP connections. The Linux server is presently using
-one ISP as well as do ip-forward to make it available for the LAN
-users.  I have achieved this by
+-- 
+     Garashchenko Vyacheslav
 
-` ` `
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-iptables -A FORWARD -i ${WAN_IFACE} -o ${LAN_IFACE} -s 192.168.0.0/24 -=
-m \
-conntrack --ctstate NEW -j ACCEPT
-iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEP=
-T
-iptables -A POSTROUTING -t nat -j MASQUERADE
-` ` `
-
-cool. Now Some thing extra which I like to achieve. I like to put the
-second ISP too into the server and use the above style iptables to
-forward it to another lan card so that both the connection will be
-available *separately* from the same server. Obviously server can choos=
-e
-any one of these as its own gateway. Got the idea ? not a load-balancin=
-g
-setup but the server will act as two separate modem actually to provide
-two connections. I have followed
-
- http://www.generationip.com/documentation/network-documentation/93-how=
-to-setup-multi-default-gateway-on-linux
-
-
-to configure the routing tables for these two ISPs. Frankly telling you
-I have become a little confused now. Shall I now simply apply the above
-iptable rules for the two connections or some thing more is required to
-achieve this ? Obviously I can continue doing experiment to know the
-answer but the server where I am working is acting as the default
-gateway;  hence my liberty is also restricted to do this very
-experiment.  could any one help me out to come out from this very
-confusing stage ?
-Thanks
-
---=20
-=E0=A6=9C=E0=A7=9F=E0=A6=A6=E0=A7=80=E0=A6=AA =E0=A6=AC=E0=A6=95=E0=A7=8D=
-=E0=A6=B8=E0=A7=80
