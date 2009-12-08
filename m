@@ -1,51 +1,73 @@
-From: Aviad Lahav <aviad.lahav@gmail.com>
-Subject: Netfilter injects network headers?
-Date: Mon, 7 Dec 2009 21:05:41 +0200
-Message-ID: <85ce6a220912071105s7706f877k9547362aefd76056@mail.gmail.com>
+From: "J. Bakshi" <joydeep@infoservices.in>
+Subject: Re: can single linux box with dual gateway provide two separate connection
+ ?
+Date: Tue, 08 Dec 2009 15:25:13 +0530
+Message-ID: <4B1E2281.3040109@infoservices.in>
+References: <4B1CCCFF.9080205@infoservices.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:sender:received:date
-         :x-google-sender-auth:message-id:subject:from:to:content-type
-         :content-transfer-encoding;
-        bh=eP4A97HH+wxwvgI5hzZYV57lofkXsSgNyxyeCKRsnK4=;
-        b=emoQSu2q/wGELe9joFpRheDWXaNWowhazJCaBeM8os3fDhBeb/A/tSQscmebnk9kzq
-         gKCFHU6s69O5HBguMywouU4I3JT5svxItZn95TgO/VxVhzg2mJ5Uh3Mbh6nfp45/uoRZ
-         QWJWSrTJeu5rXoNbP0KFXJ1FiLyr5UeT0IgwM=
+In-Reply-To: <4B1CCCFF.9080205@infoservices.in>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="utf-8"
 To: netfilter@vger.kernel.org
 
-Hi all,
-I'm trying to set up an SSL transparent proxy, and=A0I've seen very
-bizarre behavior on my system.
-I've added two NAT rules to =A0the PREROUTING chain, looking like this:
+J. Bakshi wrote:
+> Hello list,
+>
+> This is not the traditional load-balancing or fail over technique whi=
+ch
+> I like to achieve through iptables but the objective is different.  I
+> have 2 different ISP connections. The Linux server is presently using
+> one ISP as well as do ip-forward to make it available for the LAN
+> users.  I have achieved this by
+>
+> ` ` `
+> echo 1 > /proc/sys/net/ipv4/ip_forward
+>
+> iptables -A FORWARD -i ${WAN_IFACE} -o ${LAN_IFACE} -s 192.168.0.0/24=
+ -m \
+> conntrack --ctstate NEW -j ACCEPT
+> iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACC=
+EPT
+> iptables -A POSTROUTING -t nat -j MASQUERADE
+> ` ` `
+>
+> cool. Now Some thing extra which I like to achieve. I like to put the
+> second ISP too into the server and use the above style iptables to
+> forward it to another lan card so that both the connection will be
+> available *separately* from the same server. Obviously server can cho=
+ose
+> any one of these as its own gateway. Got the idea ? not a load-balanc=
+ing
+> setup but the server will act as two separate modem actually to provi=
+de
+> two connections. I have followed
+>
+>  http://www.generationip.com/documentation/network-documentation/93-h=
+owto-setup-multi-default-gateway-on-linux
+>
+>
+> to configure the routing tables for these two ISPs. Frankly telling y=
+ou
+> I have become a little confused now. Shall I now simply apply the abo=
+ve
+> iptable rules for the two connections or some thing more is required =
+to
+> achieve this ? Obviously I can continue doing experiment to know the
+> answer but the server where I am working is acting as the default
+> gateway;  hence my liberty is also restricted to do this very
+> experiment.  could any one help me out to come out from this very
+> confusing stage ?
+> Thanks
+>
+>  =20
 
-# iptables -L -v -t nat
-Chain PREROUTING (policy ACCEPT 561 packets, 70236 bytes)
-=A0pkts bytes target =A0 =A0 prot opt in =A0 =A0 out =A0 =A0 source =A0=
- =A0 =A0 =A0 =A0 =A0 =A0 destination
-=A0=A0 20 =A01280 REDIRECT =A0 tcp =A0-- =A0ppp0 =A0 any =A0 =A0 anywhe=
-re
-anywhere =A0 =A0 =A0 =A0 =A0 =A0tcp dpt:4309 redir ports 4443
-=A0=A0 =A08 =A0 512 REDIRECT =A0 tcp =A0-- =A0ppp0 =A0 any =A0 =A0 anyw=
-here
-anywhere =A0 =A0 =A0 =A0 =A0 =A0tcp dpt:https redir ports 4443
+Any hints from anyone ?
 
-So I've got a listener on port 4443, accepting connections from both
-ports 443 and 4309.
-When I'm doing the first recv() in my accepting server, I get the
-incoming connections to port 443 very well, BUT:
-Incoming connections to port 4309 gets *3 extra bytes* in the
-beginning of the connection (maybe also to subsequent packets, but I
-haven't had the chance to see this data yet...()
 
-The first 3 bytes I'm getting is:
-0x00 0x01 0x05
+--=20
+=E0=A6=9C=E0=A7=9F=E0=A6=A6=E0=A7=80=E0=A6=AA =E0=A6=AC=E0=A6=95=E0=A7=8D=
+=E0=A6=B8=E0=A7=80
 
-My machine is an up-to-date Ubuntu 9.10 (karmic), and the packets are
-coming from a client connected thru pptpd.
-Anyone has a clue?
