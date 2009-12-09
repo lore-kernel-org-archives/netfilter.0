@@ -1,96 +1,43 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: [ANNOUNCE]: Release of iptables-1.4.6
-Date: Wed, 09 Dec 2009 15:48:08 +0100
-Message-ID: <4B1FB8A8.10505@trash.net>
+From: Gurvan Le Guernic <gleguern@gmail.com>
+Subject: configure iptables on lo for transparent proxy avoiding infinite 
+	loops
+Date: Wed, 9 Dec 2009 17:19:15 +0100
+Message-ID: <b8d5c3c40912090819p982db8fta9c9f475bb5ff667@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------040609050500060703000306"
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type;
+        bh=evQvrY0Nj6zTfC+/rxq7PzjPNhJ3GtLGOwk4WYqq2tQ=;
+        b=Kylx9i6J0gGxjNit7l7fszqtM+YoaDSGmkc1a+0nQ7FVFiHB6zSWZ0hfqXbQKgIwrs
+         6+QpWWbraagMbf+6TTS47DKfTUxcuXcvtPExTndhHSapsf1zYfN4tPCzYZ6c+TQ1Er/J
+         PGuemQsSmGrRMVA1G48MApgcpJNbNi32eHTvc=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
-Cc: Linux Netdev List <netdev@vger.kernel.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, netfilter-announce@lists.netfilter.org
-
-This is a multi-part message in MIME format.
---------------040609050500060703000306
-Content-Type: text/plain; charset=ISO-8859-15
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-The netfilter coreteam presents:
+   Hi,
+ I need to test a network application for data integrity on a single computer.
+ I have 2 instance of the program, A listens to 127.0.0.1:xxx0 and B
+listens to 127.0.0.1:xxx1. When A send a tcp message to B, I want to
+capture it, modify the payload (changing all 'f' characters to 'b',
+for examples), and send it back to B.
+ I was thinking about using netsed which needs packets to be
+redirected to a port that it listens to. Let's say netsed listens to
+127.0.0.1:xxx2.
+ What I am afraid of is that if I redirect packets going to
+127.0.0.1:xxx1 (B) to 127.0.0.1:xxx2 (netsed), when netsed will send
+back the packet after modification, it will send the packet to
+127.0.0.1:xxx1, which would then be redirected once again to
+127.0.0.1:xxx2. That would create an infinite rerouting loop.
+ Is there a way to configure iptables to do what I want ? Maybe by
+marking packets so that they are rerouted only once (but the netsed
+modification may break the marking)
+   Thanks,
+   Gurvan
 
-    iptables version 1.4.6
-
-the iptables release for the 2.6.32 kernel. Changes include:
-
-- manpage updates
-
-- multiple smaller fixes for xt_iprange, xt_conntrack, iptables
-  rule deletion and replacement, inverted argument parsing
-
-- addition of the xt_osf extension
-
-- code cleanups
-
-See the changelog for more details.
-
-Version 1.4.6 can be obtained from:
-
-http://www.netfilter.org/projects/iptables/downloads.html
-ftp://ftp.netfilter.org/pub/iptables/
-git://git.netfilter.org/iptables.git
-
-On behalf of the Netfilter Core Team.
-Happy firewalling!
-
---------------040609050500060703000306
-Content-Type: text/plain;
- name="changes-iptables-1.4.6.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="changes-iptables-1.4.6.txt"
-
-Jan Engelhardt (20):
-      iptables: manpage updates for augmented -Z syntax
-      doc: mention maximum mark size in manpages
-      Support for nommu arches
-      realm: remove static initializations
-      libiptc: remove unused functions
-      libiptc: avoid strict-aliasing warnings
-      iprange: do accept non-ranges for xt_iprange v1
-      iprange: warn on reverse range
-      iprange: roll address parsing into a loop
-      iprange: do accept non-ranges for xt_iprange v1 (log)
-      iprange: warn on reverse range (log)
-      libiptc: fix wrong maptype of base chain counters on restore
-      iptables: fix undersized deletion mask creation
-      style: reduce indent in xtables_check_inverse
-      libxtables: hand argv to xtables_check_inverse
-      iptables/extensions: make bundled options work again
-      CONNMARK: print mark rules with mask 0xffffffff as set instead of xset
-      iptables: take masks into consideration for replace command
-      doc: explain experienced --hitcount limit
-      doc: name resolution clarification
-
-Mohit Mehta (1):
-      iptables: expose option to zero packet/byte counters for a specific rule
-
-Olaf Rempel (1):
-      build: restore --disable-ipv6 functionality on system w/o v6 headers
-
-Patrick McHardy (7):
-      Merge branch 'zero' of git://dev.medozas.de/iptables
-      MARK: print mark rules with mask 0xffffffff as --set-mark instead of --set-xmark
-      DNAT: fix incorrect check during parsing
-      extensions: add osf extension
-      conntrack: fix --expires parsing
-      Merge branch 'master' of git://dev.medozas.de/iptables
-      Bump version to v1.4.6
-
-Tim Small (1):
-      doc: update TCPMSS manpage with Linux 2.6.25 changes
-
-sobtwmxt (1):
-      doc: fix typo in length manpage
-
-
---------------040609050500060703000306--
+PS: is there a better utility than netsed to replace a string by
+another in the payload of tcp packets?
