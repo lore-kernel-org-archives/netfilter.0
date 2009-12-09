@@ -1,43 +1,59 @@
-From: Gurvan Le Guernic <gleguern@gmail.com>
-Subject: configure iptables on lo for transparent proxy avoiding infinite 
-	loops
-Date: Wed, 9 Dec 2009 17:19:15 +0100
-Message-ID: <b8d5c3c40912090819p982db8fta9c9f475bb5ff667@mail.gmail.com>
+From: =?UTF-8?B?R8Ohc3DDoXIgTGFqb3M=?= <swifty@freemail.hu>
+Subject: Re: Iptables 1.3.6 outgoing dns issue
+Date: Wed, 09 Dec 2009 17:35:02 +0100
+Message-ID: <4B1FD1B6.1090205@freemail.hu>
+References: <1260360604.2853.35.camel@office-nmg03-v200>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type;
-        bh=evQvrY0Nj6zTfC+/rxq7PzjPNhJ3GtLGOwk4WYqq2tQ=;
-        b=Kylx9i6J0gGxjNit7l7fszqtM+YoaDSGmkc1a+0nQ7FVFiHB6zSWZ0hfqXbQKgIwrs
-         6+QpWWbraagMbf+6TTS47DKfTUxcuXcvtPExTndhHSapsf1zYfN4tPCzYZ6c+TQ1Er/J
-         PGuemQsSmGrRMVA1G48MApgcpJNbNi32eHTvc=
+In-Reply-To: <1260360604.2853.35.camel@office-nmg03-v200>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: "M. Arts - Rootnet" <marco@rootnet.nl>
+Cc: netfilter@vger.kernel.org
 
-   Hi,
- I need to test a network application for data integrity on a single computer.
- I have 2 instance of the program, A listens to 127.0.0.1:xxx0 and B
-listens to 127.0.0.1:xxx1. When A send a tcp message to B, I want to
-capture it, modify the payload (changing all 'f' characters to 'b',
-for examples), and send it back to B.
- I was thinking about using netsed which needs packets to be
-redirected to a port that it listens to. Let's say netsed listens to
-127.0.0.1:xxx2.
- What I am afraid of is that if I redirect packets going to
-127.0.0.1:xxx1 (B) to 127.0.0.1:xxx2 (netsed), when netsed will send
-back the packet after modification, it will send the packet to
-127.0.0.1:xxx1, which would then be redirected once again to
-127.0.0.1:xxx2. That would create an infinite rerouting loop.
- Is there a way to configure iptables to do what I want ? Maybe by
-marking packets so that they are rerouted only once (but the netsed
-modification may break the marking)
-   Thanks,
-   Gurvan
+Hi!
 
-PS: is there a better utility than netsed to replace a string by
-another in the payload of tcp packets?
+Could you please tell us in which table - which chain is this rule?
+
+Swifty
+
+M. Arts - Rootnet =C3=ADrta:
+> IPTables Version: 1.3.6 running on Debian Etch
+> Kernel Version: 2.6.18.8.xs5.5.0.13.442
+>
+> I'm having some issues capturing outgoing DNS traffic, I've tried
+> capturing it by means of both sport and dport, but the rules simply
+> don't get triggered, instead they get logged by my logfile trying to
+> catch anything i've missed.=20
+>
+> An example of this:
+> pkts bytes target     prot opt in     out     source
+> destination        =20
+>   0     0 ACCEPT     udp  --  any    eth0    anywhere
+> anywhere            udp dpt:domain=20
+>
+> Logs:
+> Dec  9 12:16:48 vps kernel: IN=3D OUT=3Deth0 SRC=3Da.b.c.d DST=3D80.2=
+47.205.5
+> LEN=3D63 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D61646 DF PROTO=3DUDP SP=
+T=3D33702 DPT=3D53
+> LEN=3D43=20
+> Dec  9 12:16:53 vps kernel: IN=3D OUT=3Deth0 SRC=3Da.b.c.d DST=3D212.=
+79.236.165
+> LEN=3D63 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D62146 DF PROTO=3DUDP SP=
+T=3D33703 DPT=3D53
+> LEN=3D43=20
+>
+>
+> Anyone got any idea what might be causing this?=20
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
+>  =20
+
