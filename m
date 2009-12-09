@@ -1,31 +1,36 @@
 From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH 1/2] tcp: Fix a connect() race with timewait sockets
-Date: Tue, 08 Dec 2009 20:18:50 -0800 (PST)
-Message-ID: <20091208.201850.06581533.davem@davemloft.net>
+Subject: Re: [PATCH 2/2] tcp: Fix a connect() race with timewait sockets
+Date: Tue, 08 Dec 2009 20:19:00 -0800 (PST)
+Message-ID: <20091208.201900.109640288.davem@davemloft.net>
 References: <99d458640911301802i4bde20f4wa314668d543e3170@mail.gmail.com>
 	<4B152F97.1090409@gmail.com>
-	<4B1912CE.5040304@gmail.com>
+	<4B1912FE.9020600@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <4B1912CE.5040304@gmail.com>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4B1912FE.9020600@gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: Text/Plain; charset="us-ascii"
 To: eric.dumazet@gmail.com
 Cc: kdakhane@gmail.com, netdev@vger.kernel.org, netfilter@vger.kernel.org, zbr@ioremap.net
 
 From: Eric Dumazet <eric.dumazet@gmail.com>
-Date: Fri, 04 Dec 2009 14:46:54 +0100
+Date: Fri, 04 Dec 2009 14:47:42 +0100
 
-> First patch changes __inet_hash_nolisten() and __inet6_hash()
-> to get a timewait parameter to be able to unhash it from ehash
-> at same time the new socket is inserted in hash.
+> When we find a timewait connection in __inet_hash_connect() and reuse
+> it for a new connection request, we have a race window, releasing bind
+> list lock and reacquiring it in __inet_twsk_kill() to remove timewait
+> socket from list.
 > 
-> This makes sure timewait socket wont be found by a concurrent
-> writer in __inet_check_established()
+> Another thread might find the timewait socket we already chose, leading to
+> list corruption and crashes.
+> 
+> Fix is to remove timewait socket from bind list before releasing the bind lock.
+> 
+> Note: This problem happens if sysctl_tcp_tw_reuse is set.
 > 
 > Reported-by: kapil dakhane <kdakhane@gmail.com>
 > Signed-off-by: Eric Dumazet <eric.dumazet@gmail.com>
 
-Applied and queued up for -stable.
+Applied and queued up for -stable, thanks!
