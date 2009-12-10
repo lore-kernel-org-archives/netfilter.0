@@ -1,45 +1,33 @@
-From: Richard Horton <arimus.uk@googlemail.com>
-Subject: slip interfaces
-Date: Thu, 10 Dec 2009 10:29:38 +0000
-Message-ID: <56378e320912100229k2ef6000bhc6d06d27ae512d96@mail.gmail.com>
+From: =?UTF-8?Q?Fran=C3=A7ois_Legal?= <devel@thom.fr.eu.org>
+Subject: SIP Helper
+Date: Thu, 10 Dec 2009 15:24:55 +0100
+Message-ID: <9f5567f3c2cc479f6aa065e0d0606a3a@thom.fr.eu.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type;
-        bh=zkiaA2AbT0cOHQqa7oKsPxJHLzSeWW7cBF5eqEYPSUk=;
-        b=SPmQbq3MK4d4SWU9pXOlq0aQNUzpsPKLL6dxQeggDV82Y4swdw4LbDDv8LbH7tBpLH
-         WlNJ0p6xHtayudd0e2DOA4rPjXdEsue1shKfIHrkfGKecdnBIjIYf+OdPxMQ37SeFAWB
-         URezIbGbEGumEoruqwtYHIH0y/NHsZSzGjQdA=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="macroman"
 To: netfilter@vger.kernel.org
 
-Hi,
+Hello,=20
 
-Slightly offtopic but this list is probably the most likely to have
-people who know the answer...
+I'm starting to use the SIP conntrack helper.=20
 
-I've got a requirement to filter traffic for a given SERIAL DEVICE
-connected via slip..
+I'm using freeswitch for my internal lan, but need to use an external S=
+IP
+gateway to pass calls.=20
 
-Now as people may or may not know slattach creates sl# interfaces in
-the order slattach was called... on our system there is no certainty
-that sl0 will always be /dev/ttyM3 for instance.
+As I was not able to configure it so that the RTP stream could flow in =
+&
+out, I took a look at the code.=20
 
-Is there anyway to identify from anywhere (inc the /proc and
-/sys/class/net fs) which sl# maps to which /dev/ttyM# number?
+=46rom what I could read, it seems to me that this helper module has be=
+en
+developped for the opposite need (an external UA registering through th=
+e
+netfilter gateway to a SIP registrar/proxy).=20
 
-Thanks,
+Is that assumption correct ?=20
 
-Richard.
-
--- 
-Richard Horton
-Users are like a virus: Each causing a thousand tiny crises until the
-host finally dies.
-http://www.solstans.co.uk - Solstans Japanese Bobtails and Norwegian Forest Cats
-http://www.pbase.com/arimus - My online photogallery
+=46ran=C3=A7ois
