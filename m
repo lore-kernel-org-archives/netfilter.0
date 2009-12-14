@@ -1,74 +1,86 @@
-From: rebeca.martinez-garcia@estudiant.upc.edu
-Subject: nf_conntrack_sip and nf_nat_sip not working
-Date: Mon, 14 Dec 2009 10:45:26 +0100
-Message-ID: <20091214104526.93556bb1q7xj41s0@ek2pim.upc.edu>
+From: "J. Bakshi" <joydeep@infoservices.in>
+Subject: Re: ip_forwarding in a more restricted way
+Date: Mon, 14 Dec 2009 16:19:54 +0530
+Message-ID: <4B261852.7000409@infoservices.in>
+References: <4B25DF30.5010607@infoservices.in> <4B25E21C.4020902@infoservices.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <4B25E21C.4020902@infoservices.in>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; delsp="Yes	format=flowed"
+Content-Type: text/plain; charset="utf-8"
 To: netfilter@vger.kernel.org
-Cc: vhuertas@indra.es
 
+J. Bakshi wrote:
+> J. Bakshi wrote:
+>  =20
+>> Dear list,
+>>
+>> I have ip_forwarding running well on my gateway since long. The
+>> configuration is simple to allow a linux box to work as a gateway.
+>>
+>> #### my old ip_forwarding rule ########
+>>
+>> echo 1 >  /proc/sys/net/ipv4/ip_forward
+>>
+>> iptables -A FORWARD -i ${WAN_IFACE} -o ${LAN_IFACE} -s 192.168.1.0/2=
+4 -m
+>> conntrack --ctstate NEW -j ACCEPT
+>> iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j AC=
+CEPT
+>> iptables -A POSTROUTING -t nat -j MASQUERADE
+>> ##############
+>>
+>> With a 2.6.X series of kernel and 2 NIC cards the box is working as =
+a
+>> gateway.  But now I like to add some more fine tuned control.  I hav=
+e
+>> created a routing table at  /etc/iproute2/rt_tables and I want to
+>> *force* the traffic to pass within ${WAN_IFACE} and ${LAN_IFACE} or =
+to
+>> go through the table I have created for routing.
+>> It might me
+>>
+>> 1] ${WAN_IFACE}  <--- ip_forwarding always between these two interfa=
+ces
+>> ---> ${LAN_IFACE}
+>>
+>>                                    OR
+>>
+>> 2]  ${WAN_IFACE} <--> [routing table]  <--- route  always via these
+>> table from these two interfaces  ---> ${LAN_IFACE}
+>>
+>>
+>> Could any one kindly suggest any possible modification of the above =
+rule ?
+>>
+>> One possible solution can be ( collected from net )
+>>
+>> ` ` `
+>> # iptables --table ${tablename} --append POSTROUTING --out-interface
+>> ${WAN_IFACE} -j MASQUERADE
+>> # iptables --append FORWARD --in-interface ${LAN_IFACE} -j ACCEPT
+>> ` ` `
+>>
+>> But I have no idea if it can do the job in right way. Any more robus=
+t
+>> configuration ?
+>>  =20
+>>    =20
+>
+> PS:   And the requirement is two implement dual gateway is a single b=
+ox
+>
+>
+>  =20
 
-Hi all,
+Did some more reading. It is called "multi homed linux router" . Could
+any one provide a working configuration please ?
 
-I am tired of googling and try all the options I have found.
-I have loaded moduls nf_conntrack_sip and nf_nat_sip:
+Thanks
 
-cng@cng:~$ lsmod | grep nf
-nf_nat_sip              6300  0
-nf_conntrack_sip       17872  1 nf_nat_sip
-nf_nat                 17808  2 nf_nat_sip,iptable_nat
-nf_conntrack_ipv4      13352  7 iptable_nat,nf_nat
-nf_conntrack           67608  7  
-xt_helper,xt_state,nf_nat_sip,nf_conntrack_sip,iptable_nat,nf_nat,nf_conntrack_ipv4
-nf_defrag_ipv4          1756  1 nf_conntrack_ipv4
-binfmt_misc             8356  1
+--=20
+=E0=A6=9C=E0=A7=9F=E0=A6=A6=E0=A7=80=E0=A6=AA =E0=A6=AC=E0=A6=95=E0=A7=8D=
+=E0=A6=B8=E0=A7=80
 
-but they are not working.
-I am facing oneway audio problem due to NAT because it does not change  
-the private IP of the client in its Contact Field of the SIP message  
-although that modules are loaded.
-Maybe it is because of my iptables configuration (Am I forgetting to  
-include some rules?):
-
-#! /bin/bash
-
-# The script is saved in /etc/firewall.bash
-
-# Load modules:
-/sbin/modprobe ip_tables
-/sbin/modprobe iptable_nat
-/sbin/modprobe iptable_filter
-/sbin/modprobe nf_conntrack
-/sbin/modprobe nf_conntrack_sip sip_direct_signalling=0 sip_direct_media=0
-/sbin/modprobe nf_nat_sip
-
-# Remove all rules and chains:
-iptables -F
-iptables -X
-
-# Accept input connections:
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A INPUT -p udp -m multiport --dport 1025:60000 -j ACCEPT
-
-# Forward:
-iptables -A FORWARD -o eth0 -p udp -m multiport --dport 1025:60000 -j ACCEPT
-iptables -A FORWARD -p udp -m multiport --dport 1025:60000 -d  
-192.168.50.0/24 -j ACCEPT
-iptables -t mangle -A FORWARD -m helper --helper sip -j CLASSIFY  
---set-class 1:1
-
-# MASQUERADE:
-iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 10.1.3.207
-
-# End message:
-echo " [End iptables rules setting]"
-
-Please, I really need help.
-
-Thanks in advance,
-Rebeca Martinez
