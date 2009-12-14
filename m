@@ -1,33 +1,65 @@
-From: Avi Kivity <avi@redhat.com>
-Subject: Re: KVM related crash
-Date: Sun, 13 Dec 2009 12:15:24 +0200
-Message-ID: <4B24BEBC.2020207@redhat.com>
-References: <ec55d96f0912090600u4ff02e06m1506530d4161f280@mail.gmail.com> <20091212191101.669ba881.akpm@linux-foundation.org>
+From: "J. Bakshi" <joydeep@infoservices.in>
+Subject: ip_forwarding in a more restricted way
+Date: Mon, 14 Dec 2009 12:16:08 +0530
+Message-ID: <4B25DF30.5010607@infoservices.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20091212191101.669ba881.akpm@linux-foundation.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Adam Huffman <adam.huffman.lkml@gmail.com>, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-On 12/13/2009 05:11 AM, Andrew Morton wrote:
-> (networking cc's added)
->
-> On Wed, 9 Dec 2009 14:00:04 +0000 Adam Huffman<adam.huffman.lkml@gmail.com>  wrote:
->
->    
->> Have seen multiple crashes on a new Dell Precision T7500 workstation,
->> seemingly related to KVM:
->>      
-> Looks like a networking crash to me - that CPU just happened to be
-> running some KVM code when the interrupt happened.
->    
+Dear list,
 
-Yes - and I've seen a similar report earlier (also with kvm).
+I have ip_forwarding running well on my gateway since long. The
+configuration is simple to allow a linux box to work as a gateway.
 
--- 
-error compiling committee.c: too many arguments to function
+#### my old ip_forwarding rule ########
+
+echo 1 >  /proc/sys/net/ipv4/ip_forward
+
+iptables -A FORWARD -i ${WAN_IFACE} -o ${LAN_IFACE} -s 192.168.1.0/24 -=
+m
+conntrack --ctstate NEW -j ACCEPT
+iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEP=
+T
+iptables -A POSTROUTING -t nat -j MASQUERADE
+##############
+
+With a 2.6.X series of kernel and 2 NIC cards the box is working as a
+gateway.  But now I like to add some more fine tuned control.  I have
+created a routing table at  /etc/iproute2/rt_tables and I want to
+*force* the traffic to pass within ${WAN_IFACE} and ${LAN_IFACE} or to
+go through the table I have created for routing.
+It might me
+
+1] ${WAN_IFACE}  <--- ip_forwarding always between these two interfaces
+---> ${LAN_IFACE}
+
+                                   OR
+
+2]  ${WAN_IFACE} <--> [routing table]  <--- route  always via these
+table from these two interfaces  ---> ${LAN_IFACE}
+
+
+Could any one kindly suggest any possible modification of the above rul=
+e ?
+
+One possible solution can be ( collected from net )
+
+` ` `
+# iptables --table ${tablename} --append POSTROUTING --out-interface
+${WAN_IFACE} -j MASQUERADE
+# iptables --append FORWARD --in-interface ${LAN_IFACE} -j ACCEPT
+` ` `
+
+But I have no idea if it can do the job in right way. Any more robust
+configuration ?
+
+Thanks
+
+--=20
+=E0=A6=9C=E0=A7=9F=E0=A6=A6=E0=A7=80=E0=A6=AA =E0=A6=AC=E0=A6=95=E0=A7=8D=
+=E0=A6=B8=E0=A7=80
 
