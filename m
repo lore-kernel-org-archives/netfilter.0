@@ -1,30 +1,38 @@
-From: "J. Bakshi" <joydeep@infoservices.in>
-Subject: multi homed linux router configuration
-Date: Mon, 14 Dec 2009 16:24:57 +0530
-Message-ID: <4B261981.7060105@infoservices.in>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: conntrack_sip messages showing up in 2.6.32
+Date: Mon, 14 Dec 2009 12:20:47 +0100
+Message-ID: <4B261F8F.9090806@trash.net>
+References: <20091210151923.GT5634@Redstar.dorchain.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20091210151923.GT5634@Redstar.dorchain.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Joerg Dorchain <joerg@dorchain.net>
+Cc: netfilter@vger.kernel.org
 
-Dear list,
+Joerg Dorchain wrote:
+> Hello all,
+> 
+> after upgrading to kernel 2.6.32 I see some new message I did not
+> see before (i.e. 2.6.31).
+> 
+> I am using just nf_conntrack_sip (options sip_direct_media=0)
+> in order to have sip and related
+> rtp connection accepted as related connections, no nat
+> involved. On a different machine I am running twinkle as a sip
+> client, registering to an asterisk running on the machine in
+> question[1].
+> 
+> When twinkle is just idling and renewing its registration once in
+> a while, I get kernel: nf_ct_sip: dropping packet.. messsages
+> several times a day.
+> 
+> Do anyone have an idea where this comes from and what can be done
+> about it?
 
-I may be permitted to open a new thread. I have found the exact
-terminology which I am actually trying to achieve. It is " multi homed
-linux router"  .
-By any luck;  any one of you have a working iptables+iproute2
-configuration to achieve this ?
-
-I have found
-http://blog.khax.net/2009/11/28/multi-gateway-routing-with-iptables-and=
--iproute2/ =20
-but now I am so much confused now :-(
-What is your though on this guide ?
-
-
-=E0=A6=9C=E0=A7=9F=E0=A6=A6=E0=A7=80=E0=A6=AA =E0=A6=AC=E0=A6=95=E0=A7=8D=
-=E0=A6=B8=E0=A7=80
-
+Conntrack logs packets dropped by helpers automatically starting in
+2.6.32. If you can capture those packets (either using tcpdump or
+the ULOG pcap output plugin) I can have a look at why they are dropped.
