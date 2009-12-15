@@ -1,59 +1,61 @@
-From: "System Support" <support@microtechniques.com>
-Subject: Selecting -m recent --seconds values
-Date: Mon, 14 Dec 2009 12:46:46 -0500
-Message-ID: <4B267A06.23470.4604E47@support.microtechniques.com>
-References: <4B1EA562.25180.3396C0B@support.microtechniques.com>
-Reply-To: support@MicroTechniques.com
+From: Tanguy Ropitault <tanguy.ropitault@telecom-bretagne.eu>
+Subject: SNAT and QUEUE target problem for IPv4 in IPv6 encapsulation
+Date: Tue, 15 Dec 2009 10:44:14 +0100
+Message-ID: <4B275A6E.7000006@telecom-bretagne.eu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=MicroTechniques.com;
-	s=MT_email; t=1260812807;
-	bh=YXo/+9D+Fheu2nYZW9tuBcSBY6k62OqDtdRQr4YmM9Y=;
-	h=From:To:Date:MIME-Version:Subject:Reply-to:Message-ID:In-reply-to:
-	 References:Content-type:Content-transfer-encoding:
-	 Content-description;
-	b=MPVe0sU0qc+Ph361SgHXkWojrKnJTXWuWeBufmzy7F0a14y4AaHkBviO6nwDaH7pj
-	 fgjTQCtM7IXEUQDpZIbg8zszN1bPMMIC2j//2m7qkI8BdgAYjv1hZljV3HtynFEh9i
-	 3q2dndTNPhuCJiwiG2rzerEsPBVFgbdynmN3MnU0=
-In-reply-to: <4B1EA562.25180.3396C0B@support.microtechniques.com>
-Content-description: Mail message body
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-The following is probably old hat for members of this list, but I did not find any similar comments 
-in the archives.
+SNAT and QUEUE target
 
-I recently updated a system that has been in place since 2000.  It had a number of very large 
-static chains used to block suspicious addresses.  The chains were updated several times a day 
-and populated with addresses gleaned from various system, snort, and HTTP logs.  
+Hi,
+I have the following problem. I am implementing an IPv4 in IPv6 
+encapsulation solution. For that, I'm using libipq (I know that IPv4 in 
+IPv6 tunnel exists in Linux but I have to do it by myself for specific 
+purposes). So I have a router and a client in my architecture. The 
+client uses private addressing and the routeur has its ingress interface 
+in private addressing and its egress interface in public addressing.
 
-I now have a number of -m recent and ipset rules to classify and block sites attempting scans or 
-attacks.  The -seconds and -hits values for the -m recent rules and the timeout values for the 
-ipset tables were either taken from various examples, or just arbitrary values such as 60 
-seconds, or 172800 seconds (2 days).  To hold all of the active entries, I had expanded the sizes 
-of the -m recent lists from the default of 100.  My ipset tables were for obvious and egregious 
-attackers (multiple sign-on attempts to port 22 for example) and typically had 10,000 active 
-entries (new entries being added about 3/minute).  I wanted to select better values based on my 
-actual usage.
 
-I used the packet times recorded in /proc/net/xt_recent/ to calculate the delay between the hits 
-and plotted the results.  I also plotted the number of hits, and last_seen times.   I also created 
-some temporary -m recent lists to track the matches on the ipset tables.
+                              eth0                                 eth1
+[Client]                 [                   Router               ]
+Private @V4        Ingress Private @V4             Egress: Public @V4 
+192.109.118.27
+192.168.1.2        192.168.1.1                            @V6 x:y:z::1
 
-I found that 90% of the identifiable scans from the same address had delays of less than 10 
-seconds between packets and 99% of the scans did not continue beyond 3620 seconds.  By 
-adjusting the -seconds, --hits and timeout values to reflect the above, I reduced the active 
-entries in my -m recent lists to less than 150 and the active entries in my ipset tables to less than 
-200.
+The goal is to encapsulate Client traffic IPv4 traffic in the @V6 of the 
+router. I need also to do SNAT from the client private address to router 
+public address. My primary idea was to use iptables with snat target.
+So for example:
 
-Removing the large chains from the 2000 configuration had a measurable impact on 
-performance, and reflection seems to indicate that probably 97% of the entries in either 
-configuration were of no value in blocking attacks and just wasted resources. 
+iptables -t nat -A POSTROUTING -p tcp -o eth0 -j SNAT --to-source 
+192.109.118.27
 
-...don
+This rule does not work. After browsing on iptables doc, I figured out 
+that it's normal because traffic is forwarded (I activate forwarding in 
+proc/sys/net) from eth0 to eth1 so it never hits POSTROUTING target.
 
-support (at) microtechniques.com
+So I use this rules:
+
+iptables -t nat -A POSTROUTING -p tcp -o eth1 -j SNAT --to-source 
+192.109.118.27
+
+So OK, my IPv4 traffic is correctly SNATed but the problem is that I 
+still have to do my encapsulation. For that, normally, I add a rule 
+which said, put in the queue traffic which comes from 192.168.1.2 and 
+then I handle encapsulation with libipq the encapsulation. But 
+POSTROUTING is the last target hit before leaving the interface so if 
+the traffic is SNATed, I can't put SNATed traffic in QUEUE target. And 
+conversely, If I put the rule which said to put the IPv4 traffic in 
+QUEUE, the traffic will be encaspulated but never SNATed because it 
+becomes IPv6 traffic...
+The solution will be to SNAT in PREROUTING target but after googling, it 
+seems to be impossible. Does anyone has a clue for this problem?
+
+Cheers,
+Tanguy
 
