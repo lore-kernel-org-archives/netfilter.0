@@ -1,61 +1,269 @@
-From: Tanguy Ropitault <tanguy.ropitault@telecom-bretagne.eu>
-Subject: SNAT and QUEUE target problem for IPv4 in IPv6 encapsulation
-Date: Tue, 15 Dec 2009 10:44:14 +0100
-Message-ID: <4B275A6E.7000006@telecom-bretagne.eu>
+From: Joerg Dorchain <joerg@dorchain.net>
+Subject: Re: conntrack_sip messages showing up in 2.6.32
+Date: Tue, 15 Dec 2009 12:24:18 +0100
+Message-ID: <20091215112418.GB5634@Redstar.dorchain.net>
+References: <20091210151923.GT5634@Redstar.dorchain.net>
+ <4B261F8F.9090806@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="qySB1iFW++5nzUxH"
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dorchain.net;
+	s=redstar; t=1260876259;
+	bh=c7mNLwBc/RJq3lRVwEhjZn5cgDGpYHE7WKkoN17Tfw0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:In-Reply-To;
+	b=GkJJJs5OfzjmLwXap+RSvlzTyPJxmHgz5yQ3TfWFBQkkTaAdxf++245nrGF8k1KNs
+	 +Eb+yT4fqY1tTqP0rRRoWm4bSeQ1xJz/GuUGsHgVhMAmnnjewcctxaqJ+FTno6gKoJ
+	 X5e0Xs/ZIG0RiOQ7H4YtbszPo9FOmIHCadDcNJBg=
+Content-Disposition: inline
+In-Reply-To: <4B261F8F.9090806@trash.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
-
-SNAT and QUEUE target
-
-Hi,
-I have the following problem. I am implementing an IPv4 in IPv6 
-encapsulation solution. For that, I'm using libipq (I know that IPv4 in 
-IPv6 tunnel exists in Linux but I have to do it by myself for specific 
-purposes). So I have a router and a client in my architecture. The 
-client uses private addressing and the routeur has its ingress interface 
-in private addressing and its egress interface in public addressing.
+To: Patrick McHardy <kaber@trash.net>
+Cc: netfilter@vger.kernel.org
 
 
-                              eth0                                 eth1
-[Client]                 [                   Router               ]
-Private @V4        Ingress Private @V4             Egress: Public @V4 
-192.109.118.27
-192.168.1.2        192.168.1.1                            @V6 x:y:z::1
+--qySB1iFW++5nzUxH
+Content-Type: multipart/mixed; boundary="bFUYW7mPOLJ+Jd2A"
+Content-Disposition: inline
 
-The goal is to encapsulate Client traffic IPv4 traffic in the @V6 of the 
-router. I need also to do SNAT from the client private address to router 
-public address. My primary idea was to use iptables with snat target.
-So for example:
 
-iptables -t nat -A POSTROUTING -p tcp -o eth0 -j SNAT --to-source 
-192.109.118.27
+--bFUYW7mPOLJ+Jd2A
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-This rule does not work. After browsing on iptables doc, I figured out 
-that it's normal because traffic is forwarded (I activate forwarding in 
-proc/sys/net) from eth0 to eth1 so it never hits POSTROUTING target.
+On Mon, Dec 14, 2009 at 12:20:47PM +0100, Patrick McHardy wrote:
+>=20
+> Conntrack logs packets dropped by helpers automatically starting in
+> 2.6.32. If you can capture those packets (either using tcpdump or
+> the ULOG pcap output plugin) I can have a look at why they are dropped.
 
-So I use this rules:
+Attached. The first 4 packets are ok, I'd say.
 
-iptables -t nat -A POSTROUTING -p tcp -o eth1 -j SNAT --to-source 
-192.109.118.27
+The other (dropped) attempts might have something to do with the
+fact the the machine in question has several interfaces with
+several ip addresses, and the internal DNS resolves to all of
+them, as they are reachable from intern.
 
-So OK, my IPv4 traffic is correctly SNATed but the problem is that I 
-still have to do my encapsulation. For that, normally, I add a rule 
-which said, put in the queue traffic which comes from 192.168.1.2 and 
-then I handle encapsulation with libipq the encapsulation. But 
-POSTROUTING is the last target hit before leaving the interface so if 
-the traffic is SNATed, I can't put SNATed traffic in QUEUE target. And 
-conversely, If I put the rule which said to put the IPv4 traffic in 
-QUEUE, the traffic will be encaspulated but never SNATed because it 
-becomes IPv6 traffic...
-The solution will be to SNAT in PREROUTING target but after googling, it 
-seems to be impossible. Does anyone has a clue for this problem?
+Bye,
 
-Cheers,
-Tanguy
+Joerg
 
+--bFUYW7mPOLJ+Jd2A
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: attachment; filename=sipdrop
+Content-Transfer-Encoding: quoted-printable
+
+=D4=C3=B2=A1=02=00=04=00=00=00=00=00=00=00=00=00=DC=05=00=00=01=00=00=00]]'=
+KZh=06=00=F7=01=00=00=F7=01=00=00=00=0Bj=13)=D9=00=1C%=14=C6=CF=08=00E=00=
+=01=E9=00=00@=00@=11=DC=D9=AC=11=02=07=AC=11=02=01=13=C4=13=C4=01=D5=A5=ABR=
+EGISTER sip:dorchain.net SIP/2.0=0D
+Via: SIP/2.0/UDP 172.17.2.7;rport;branch=3Dz9hG4bKrowvfuqz=0D
+Max-Forwards: 70=0D
+To: "Joerg" <sip:joerg-intern@dorchain.net>=0D
+=46rom: "Joerg" <sip:joerg-intern@dorchain.net>;tag=3Dcdyak=0D
+Call-ID: stkvrcjwnjpljph@whisker.dorchain.net=0D
+CSeq: 546 REGISTER=0D
+Contact: <sip:joerg-intern@172.17.2.7>;expires=3D3600=0D
+Allow: INVITE,ACK,BYE,CANCEL,OPTIONS,PRACK,REFER,NOTIFY,SUBSCRIBE,INFO,MESS=
+AGE=0D
+User-Agent: Twinkle/1.4.2=0D
+Content-Length: 0=0D
+=0D
+]]'K=17k=06=00>=02=00=00>=02=00=00=00=1C%=14=C6=CF=00=0Bj=13)=D9=08=00E`=02=
+0=97w=00=00@=11=84=BB=AC=11=02=01=AC=11=02=07=13=C4=13=C4=02=1C=D7-SIP/2.0 =
+401 Unauthorized=0D
+Via: SIP/2.0/UDP 172.17.2.7;branch=3Dz9hG4bKrowvfuqz;received=3D172.17.2.7;=
+rport=3D5060=0D
+=46rom: "Joerg" <sip:joerg-intern@dorchain.net>;tag=3Dcdyak=0D
+To: "Joerg" <sip:joerg-intern@dorchain.net>;tag=3Das3c9168c7=0D
+Call-ID: stkvrcjwnjpljph@whisker.dorchain.net=0D
+CSeq: 546 REGISTER=0D
+Server: Asterisk PBX 1.6.2.0~rc7-1=0D
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, SUBSCRIBE, NOTIFY, INFO=0D
+Supported: replaces, timer=0D
+WWW-Authenticate: Digest algorithm=3DMD5, realm=3D"dorchain.net", nonce=3D"=
+5ddd6bd6"=0D
+Content-Length: 0=0D
+=0D
+]]'K=FCr=06=00=9D=02=00=00=9D=02=00=00=00=0Bj=13)=D9=00=1C%=14=C6=CF=08=00E=
+=00=02=8F=00=00@=00@=11=DC3=AC=11=02=07=AC=11=02=01=13=C4=13=C4=02{@=1BREGI=
+STER sip:dorchain.net SIP/2.0=0D
+Via: SIP/2.0/UDP 172.17.2.7;rport;branch=3Dz9hG4bKhctucsvj=0D
+Max-Forwards: 70=0D
+To: "Joerg" <sip:joerg-intern@dorchain.net>=0D
+=46rom: "Joerg" <sip:joerg-intern@dorchain.net>;tag=3Dcdyak=0D
+Call-ID: stkvrcjwnjpljph@whisker.dorchain.net=0D
+CSeq: 547 REGISTER=0D
+Contact: <sip:joerg-intern@172.17.2.7>;expires=3D3600=0D
+Authorization: Digest username=3D"joerg-intern",realm=3D"dorchain.net",nonc=
+e=3D"5ddd6bd6",uri=3D"sip:dorchain.net",response=3D"8b65512b41ea901a90575ca=
+b8971eb68",algorithm=3DMD5=0D
+Allow: INVITE,ACK,BYE,CANCEL,OPTIONS,PRACK,REFER,NOTIFY,SUBSCRIBE,INFO,MESS=
+AGE=0D
+User-Agent: Twinkle/1.4.2=0D
+Content-Length: 0=0D
+=0D
+]]'K=0D=80=06=00K=02=00=00K=02=00=00=00=1C%=14=C6=CF=00=0Bj=13)=D9=08=00E`=
+=02=3D=97x=00=00@=11=84=AD=AC=11=02=01=AC=11=02=07=13=C4=13=C4=02)=0FfSIP/2=
+=2E0 200 OK=0D
+Via: SIP/2.0/UDP 172.17.2.7;branch=3Dz9hG4bKhctucsvj;received=3D172.17.2.7;=
+rport=3D5060=0D
+=46rom: "Joerg" <sip:joerg-intern@dorchain.net>;tag=3Dcdyak=0D
+To: "Joerg" <sip:joerg-intern@dorchain.net>;tag=3Das3c9168c7=0D
+Call-ID: stkvrcjwnjpljph@whisker.dorchain.net=0D
+CSeq: 547 REGISTER=0D
+Server: Asterisk PBX 1.6.2.0~rc7-1=0D
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, SUBSCRIBE, NOTIFY, INFO=0D
+Supported: replaces, timer=0D
+Expires: 3600=0D
+Contact: sip:joerg-intern@172.17.2.7;expires=3D3600=0D
+Date: Tue, 15 Dec 2009 09:56:45 GMT=0D
+Content-Length: 0=0D
+=0D
+hk'K=DB.=05=00=F7=01=00=00=F7=01=00=00=00=0Bj=13)=D9=00=1C%=14=C6=CF=08=00E=
+=00=01=E9=00=00@=00@=110=FA=AC=11=02=07=D4X=85=99=13=C4=13=C4=01=D5=17=A4RE=
+GISTER sip:dorchain.net SIP/2.0=0D
+Via: SIP/2.0/UDP 172.17.2.7;rport;branch=3Dz9hG4bKzlguqamq=0D
+Max-Forwards: 70=0D
+To: "Joerg" <sip:joerg-intern@dorchain.net>=0D
+=46rom: "Joerg" <sip:joerg-intern@dorchain.net>;tag=3Duyhuk=0D
+Call-ID: stkvrcjwnjpljph@whisker.dorchain.net=0D
+CSeq: 548 REGISTER=0D
+Contact: <sip:joerg-intern@172.17.2.7>;expires=3D3600=0D
+Allow: INVITE,ACK,BYE,CANCEL,OPTIONS,PRACK,REFER,NOTIFY,SUBSCRIBE,INFO,MESS=
+AGE=0D
+User-Agent: Twinkle/1.4.2=0D
+Content-Length: 0=0D
+=0D
+hk'K=83=D0=0C=00=F7=01=00=00=F7=01=00=00=00=0Bj=13)=D9=00=1C%=14=C6=CF=08=
+=00E=00=01=E9=00=00@=00@=110=FA=AC=11=02=07=D4X=85=99=13=C4=13=C4=01=D5=17=
+=A4REGISTER sip:dorchain.net SIP/2.0=0D
+Via: SIP/2.0/UDP 172.17.2.7;rport;branch=3Dz9hG4bKzlguqamq=0D
+Max-Forwards: 70=0D
+To: "Joerg" <sip:joerg-intern@dorchain.net>=0D
+=46rom: "Joerg" <sip:joerg-intern@dorchain.net>;tag=3Duyhuk=0D
+Call-ID: stkvrcjwnjpljph@whisker.dorchain.net=0D
+CSeq: 548 REGISTER=0D
+Contact: <sip:joerg-intern@172.17.2.7>;expires=3D3600=0D
+Allow: INVITE,ACK,BYE,CANCEL,OPTIONS,PRACK,REFER,NOTIFY,SUBSCRIBE,INFO,MESS=
+AGE=0D
+User-Agent: Twinkle/1.4.2=0D
+Content-Length: 0=0D
+=0D
+ik'KT=D1=0C=00=F7=01=00=00=F7=01=00=00=00=0Bj=13)=D9=00=1C%=14=C6=CF=08=00E=
+=00=01=E9=00=00@=00@=110=FA=AC=11=02=07=D4X=85=99=13=C4=13=C4=01=D5=17=A4RE=
+GISTER sip:dorchain.net SIP/2.0=0D
+Via: SIP/2.0/UDP 172.17.2.7;rport;branch=3Dz9hG4bKzlguqamq=0D
+Max-Forwards: 70=0D
+To: "Joerg" <sip:joerg-intern@dorchain.net>=0D
+=46rom: "Joerg" <sip:joerg-intern@dorchain.net>;tag=3Duyhuk=0D
+Call-ID: stkvrcjwnjpljph@whisker.dorchain.net=0D
+CSeq: 548 REGISTER=0D
+Contact: <sip:joerg-intern@172.17.2.7>;expires=3D3600=0D
+Allow: INVITE,ACK,BYE,CANCEL,OPTIONS,PRACK,REFER,NOTIFY,SUBSCRIBE,INFO,MESS=
+AGE=0D
+User-Agent: Twinkle/1.4.2=0D
+Content-Length: 0=0D
+=0D
+kk'K=85=E9=0C=00=F7=01=00=00=F7=01=00=00=00=0Bj=13)=D9=00=1C%=14=C6=CF=08=
+=00E=00=01=E9=00=00@=00@=110=FA=AC=11=02=07=D4X=85=99=13=C4=13=C4=01=D5=17=
+=A4REGISTER sip:dorchain.net SIP/2.0=0D
+Via: SIP/2.0/UDP 172.17.2.7;rport;branch=3Dz9hG4bKzlguqamq=0D
+Max-Forwards: 70=0D
+To: "Joerg" <sip:joerg-intern@dorchain.net>=0D
+=46rom: "Joerg" <sip:joerg-intern@dorchain.net>;tag=3Duyhuk=0D
+Call-ID: stkvrcjwnjpljph@whisker.dorchain.net=0D
+CSeq: 548 REGISTER=0D
+Contact: <sip:joerg-intern@172.17.2.7>;expires=3D3600=0D
+Allow: INVITE,ACK,BYE,CANCEL,OPTIONS,PRACK,REFER,NOTIFY,SUBSCRIBE,INFO,MESS=
+AGE=0D
+User-Agent: Twinkle/1.4.2=0D
+Content-Length: 0=0D
+=0D
+ok'KP=D2=0C=00=F7=01=00=00=F7=01=00=00=00=0Bj=13)=D9=00=1C%=14=C6=CF=08=00E=
+=00=01=E9=00=00@=00@=110=FA=AC=11=02=07=D4X=85=99=13=C4=13=C4=01=D5=17=A4RE=
+GISTER sip:dorchain.net SIP/2.0=0D
+Via: SIP/2.0/UDP 172.17.2.7;rport;branch=3Dz9hG4bKzlguqamq=0D
+Max-Forwards: 70=0D
+To: "Joerg" <sip:joerg-intern@dorchain.net>=0D
+=46rom: "Joerg" <sip:joerg-intern@dorchain.net>;tag=3Duyhuk=0D
+Call-ID: stkvrcjwnjpljph@whisker.dorchain.net=0D
+CSeq: 548 REGISTER=0D
+Contact: <sip:joerg-intern@172.17.2.7>;expires=3D3600=0D
+Allow: INVITE,ACK,BYE,CANCEL,OPTIONS,PRACK,REFER,NOTIFY,SUBSCRIBE,INFO,MESS=
+AGE=0D
+User-Agent: Twinkle/1.4.2=0D
+Content-Length: 0=0D
+=0D
+ok'K=A6=D4=0C=00>=02=00=00>=02=00=00=00=1C%=14=C6=CF=00=0Bj=13)=D9=08=00E`=
+=020W1=00=00@=11=19"=D4X=85=99=AC=11=02=07=13=C4=13=C4=02=1C3=06SIP/2.0 401=
+ Unauthorized=0D
+Via: SIP/2.0/UDP 172.17.2.7;branch=3Dz9hG4bKzlguqamq;received=3D172.17.2.7;=
+rport=3D5060=0D
+=46rom: "Joerg" <sip:joerg-intern@dorchain.net>;tag=3Duyhuk=0D
+To: "Joerg" <sip:joerg-intern@dorchain.net>;tag=3Das4d9e6bef=0D
+Call-ID: stkvrcjwnjpljph@whisker.dorchain.net=0D
+CSeq: 548 REGISTER=0D
+Server: Asterisk PBX 1.6.2.0~rc7-1=0D
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, SUBSCRIBE, NOTIFY, INFO=0D
+Supported: replaces, timer=0D
+WWW-Authenticate: Digest algorithm=3DMD5, realm=3D"dorchain.net", nonce=3D"=
+392b99bd"=0D
+Content-Length: 0=0D
+=0D
+ok'K[=D9=0C=00=9D=02=00=00=9D=02=00=00=00=0Bj=13)=D9=00=1C%=14=C6=CF=08=00E=
+=00=02=8F=00=00@=00@=110T=AC=11=02=07=D4X=85=99=13=C4=13=C4=02{=A0=93REGIST=
+ER sip:dorchain.net SIP/2.0=0D
+Via: SIP/2.0/UDP 172.17.2.7;rport;branch=3Dz9hG4bKrksmokjy=0D
+Max-Forwards: 70=0D
+To: "Joerg" <sip:joerg-intern@dorchain.net>=0D
+=46rom: "Joerg" <sip:joerg-intern@dorchain.net>;tag=3Duyhuk=0D
+Call-ID: stkvrcjwnjpljph@whisker.dorchain.net=0D
+CSeq: 549 REGISTER=0D
+Contact: <sip:joerg-intern@172.17.2.7>;expires=3D3600=0D
+Authorization: Digest username=3D"joerg-intern",realm=3D"dorchain.net",nonc=
+e=3D"392b99bd",uri=3D"sip:dorchain.net",response=3D"2a7c353d7e0dca7f05c9095=
+befb03b58",algorithm=3DMD5=0D
+Allow: INVITE,ACK,BYE,CANCEL,OPTIONS,PRACK,REFER,NOTIFY,SUBSCRIBE,INFO,MESS=
+AGE=0D
+User-Agent: Twinkle/1.4.2=0D
+Content-Length: 0=0D
+=0D
+ok'K=CB=E6=0C=00K=02=00=00K=02=00=00=00=1C%=14=C6=CF=00=0Bj=13)=D9=08=00E`=
+=02=3DW2=00=00@=11=19=14=D4X=85=99=AC=11=02=07=13=C4=13=C4=02),=F5SIP/2.0 2=
+00 OK=0D
+Via: SIP/2.0/UDP 172.17.2.7;branch=3Dz9hG4bKrksmokjy;received=3D172.17.2.7;=
+rport=3D5060=0D
+=46rom: "Joerg" <sip:joerg-intern@dorchain.net>;tag=3Duyhuk=0D
+To: "Joerg" <sip:joerg-intern@dorchain.net>;tag=3Das4d9e6bef=0D
+Call-ID: stkvrcjwnjpljph@whisker.dorchain.net=0D
+CSeq: 549 REGISTER=0D
+Server: Asterisk PBX 1.6.2.0~rc7-1=0D
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, SUBSCRIBE, NOTIFY, INFO=0D
+Supported: replaces, timer=0D
+Expires: 3600=0D
+Contact: sip:joerg-intern@172.17.2.7;expires=3D3600=0D
+Date: Tue, 15 Dec 2009 10:56:47 GMT=0D
+Content-Length: 0=0D
+=0D
+
+--bFUYW7mPOLJ+Jd2A--
+
+--qySB1iFW++5nzUxH
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iHcEARECADcFAksnceIwFIAAAAAAFQAScGthLWFkZHJlc3NAZ251cGcub3Jnam9l
+cmdAZG9yY2hhaW4ubmV0AAoJEI2OPuD3c7zgNSoAnRcAZ6QQQqksXvxX3Ee0SPOW
+NZBeAJ9GGcd0Nkn/fuWMFfs3HRtA8nFRmw==
+=YAhC
+-----END PGP SIGNATURE-----
+
+--qySB1iFW++5nzUxH--
