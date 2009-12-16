@@ -1,42 +1,42 @@
-From: Richard Hartmann <richih.mailinglist@gmail.com>
-Subject: Does someone have statistics about/experience with tc/qdisk on a few 
-	hundred ppp interfaces?
-Date: Wed, 16 Dec 2009 10:34:22 +0100
-Message-ID: <2d460de70912160134t7a7c387aj9efd315622fcce3f@mail.gmail.com>
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: connection tracking module
+Date: Wed, 16 Dec 2009 21:57:32 +0530
+Message-ID: <cfeab66d0912160827m729076bbx95189395cd4529a8@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type;
-        bh=Rh+ykcDfJyWu26n7KIpHSa+wv4dcjvEv+bFO3CUCjcQ=;
-        b=Dt6eKpg1xTwGB7D5GNTi81UPcVbtJxzfLBMeaahIIRVsO7LCGtHnLz8SjJG9tDdJVr
-         J9nU36RiotwQadu/sjPKiPesIPNk0Qr3MIx7K3+B6jLYSR21dBFxzbBRrZzEmp4+Pi10
-         16ZxmPrD3ANjScsbjasbAHgbVvhjpbQd1scNE=
+         :from:to:cc:content-type;
+        bh=c9b58dD7g0prxtTuTO2HJM9dzYRFH5Bg9KdxE8bo2QI=;
+        b=DPTGS+VwIHIen9nY7tKS+3DvzfH+jvaSKtyItVucE6S+Jo8MJtznE6nMWJ2DjLBKwB
+         fo4Sdh+c/XvL10ukhel1p4fFuxRVoopJMzVp/eg4OHi0OaF41EO1MmtY1ZwM7kBrZZ49
+         B+MvSJ34qlZQIjJ+oXe2OkpK2G3E6NdrMdEZg=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
+Cc: netfilter-devel@vger.kernel.org
 
-Hi all,
+Hi ,
 
-we are terminating a few hundred DSL customers on Linux machines and
-want to introduce traffic shaping for voice, etc.
-
-As we have a full Linux stack both on the CPEs and on our termination
-equipment, we are extremely flexible in what and how we want to shape.
-
-The obvious choice is tc/qdisc and while I do have experience with it, I
-could not find any numbers about scalability. While I assume that our
-workload is not a problem on today's hardware, I'd rather be safe than
-sorry.
-
-On reasonably new hardware, how does tc/qdisc handle between one and two
-hundred Mbit/s on a few hundred ppp interfaces? If anyone has some
-ballpark figures about their own usage and/or a link to a statistics
-document, it would be much appreciated!
+      I am a little confused about connection tracking .  I would like
+to clarify those with your valuable inputs . If you can find some time
+, i will be grateful .
 
 
-Thanks a lot,
-Richard
+      1. Each connection tacking module ( example  - nf_conntrack_ftp
+) will keep its own independent tuple hash tables ??
+      2. Suppose i have  nf_conntrack_ftp , nf_conntrack_proto_tcp
+modules  loaded . If i initiate a data transfer using ftp protocol ,
+which connection tracking module will have tuple information .?
+          { My question is :- > if i dont have nf_conntrack_proto_ftp
+loaded , it will be tracked by nf_conntrack_proto_tcp }
+      3. for the question 2 , which will be skb->nfct contains ?
+      4. what exactly helper routines does ? is it only find out
+related connection .or any other functionality ?
+      5. nf_conntrack_proto_tcp also has helper routines ?
+
+Thanks,
+Ratheesh
