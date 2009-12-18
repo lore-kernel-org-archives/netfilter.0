@@ -1,34 +1,62 @@
-From: Lorenzo Allegrucci <lorenzo.allegrucci@forinicom.it>
-Subject: Re: SIP vs NAT, the configuration
-Date: Thu, 17 Dec 2009 13:06:41 +0100
-Message-ID: <4B2A1ED1.5030609@forinicom.it>
+From: Sharevon <sharevon@gmail.com>
+Subject: What's the default NAT type by using MASQUERADE target.
+Date: Fri, 18 Dec 2009 14:28:22 +0800
+Message-ID: <a4ece3070912172228j734a9a74yeb7f6f99640192d1@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type;
+        bh=StuFWfMeBoUG0XGoto0ye0C/e+aNT/hKvoZ2az4zI2c=;
+        b=cKS5YLlk5q6nibx4luouI43Ku3E5XRVsX/xQ3Dfo8s7qhpWlGEbWBqQ5BsK7kavFoB
+         pxLqC/edJ3GZqgc2/l+/m9Hx4JeIzPYC/SLtv/99xbvEUJMiRMwczguNikWAuBPVD1d2
+         0MGNmmMmekRfq4fgNGD7pxcwXmSvwLG0KX3gM=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: rebeca.martinez-garcia@estudiant.upc.edu
-Cc: netfilter@vger.kernel.org, vhuertas@indra.es
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-=46ran=E7ois Legal wrote:
- > I guess yes, but most of the packets will go through the RELATED mat=
-ch,
- > and depending on your setup, a lot of packets not related at all to
- > SIP/VOIP could go through that match.
+Hi,
 
-my setup:
+Look at this topology.
 
-no NAT, static routing, my soft-phones can call each other without prob=
-lems.
-(I configured a local asterisk server just for this test)
+                          192.168.1.1    10.0.0.1             10.0.0.2
+       172.0.0.1
+      ------------                -------------------
+          --------------                      ------------
+      |   PC 1 |----------------| NAT (linux)
+|---------------------------|   router  |----------------------|  PC 2
+|
+      ------------                -------------------
+          --------------                      ------------
+  192.168.1.100
+                                      172.0.0.100
 
-on my router (debian lenny):
-nf_conntrack_sip ports=3D5060 sip_direct_signalling=3D1 sip_direct_medi=
-a=3D1
-iptables -t mangle -A FORWARD -m helper --helper sip -j CLASSIFY --set-=
-class 1:100
+Configure "iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE" on
+NAT(linux) with two different version kernel.
 
-iptables -L -n -t mangle -v -x does not match all voip traffic, just so=
-me random packets.
-Can anyone reproduce this?
+On PC1, ping 172.0.0.100 -t 3, PC2 can be reached with both kernel version.
+
+ping 172.0.0.100 -t 2, I got 2 different results with 2 different
+kernel version on NAT(linux).
+
+I got ttl-expired icmp response from router with old version, but got
+no response at all with upgrade kernel version.
+No matter with which kernel version, router sends ttl-expired icmp
+response from 10.0.0.2 to 10.0.0.1. It's forwarded to the internal
+network by old version kernel, but considered as the traffic to the
+local process by the upgraded version kernel.
+Notice that ping 172.0.0.100 -t 3 works well in both cases.
+
+It seems like the old version performed as a Cone NAT, well the
+upgraded one performed as a symmetric NAT. So, what's the default NAT
+type if I set rule as "iptables -t nat -A POSTROUTING -o eth0 -j
+MASQUERADE", full cone NAT, port restricted cone NAT, restricted cone
+NAT, or symmetric NAT? Can this be configurable? If it's configurable,
+how to do that?
+
+Thanks.
+
+Sean.
