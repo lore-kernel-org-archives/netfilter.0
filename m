@@ -1,62 +1,30 @@
-From: Sharevon <sharevon@gmail.com>
-Subject: What's the default NAT type by using MASQUERADE target.
-Date: Fri, 18 Dec 2009 14:28:22 +0800
-Message-ID: <a4ece3070912172228j734a9a74yeb7f6f99640192d1@mail.gmail.com>
+From: Lorenzo Allegrucci <lorenzo.allegrucci@forinicom.it>
+Subject: Re: SIP vs NAT, the configuration
+Date: Fri, 18 Dec 2009 15:31:30 +0100
+Message-ID: <4B2B9242.5020904@forinicom.it>
+References: <4B2A1ED1.5030609@forinicom.it> <07b3b533f982b9d160870cba61241e91@thom.fr.eu.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type;
-        bh=StuFWfMeBoUG0XGoto0ye0C/e+aNT/hKvoZ2az4zI2c=;
-        b=cKS5YLlk5q6nibx4luouI43Ku3E5XRVsX/xQ3Dfo8s7qhpWlGEbWBqQ5BsK7kavFoB
-         pxLqC/edJ3GZqgc2/l+/m9Hx4JeIzPYC/SLtv/99xbvEUJMiRMwczguNikWAuBPVD1d2
-         0MGNmmMmekRfq4fgNGD7pxcwXmSvwLG0KX3gM=
+In-Reply-To: <07b3b533f982b9d160870cba61241e91@thom.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: =?UTF-8?B?RnJhbsOnb2lzIExlZ2Fs?= <devel@thom.fr.eu.org>
+Cc: rebeca.martinez-garcia@estudiant.upc.edu, netfilter@vger.kernel.org, vhuertas@indra.es
 
-Hi,
+=46ran=C3=A7ois Legal wrote:
+> Could you log the packets that match instead of marking, then send th=
+e log
+> to the list ?
 
-Look at this topology.
+Hi Fran=C3=A7ois,
 
-                          192.168.1.1    10.0.0.1             10.0.0.2
-       172.0.0.1
-      ------------                -------------------
-          --------------                      ------------
-      |   PC 1 |----------------| NAT (linux)
-|---------------------------|   router  |----------------------|  PC 2
-|
-      ------------                -------------------
-          --------------                      ------------
-  192.168.1.100
-                                      172.0.0.100
-
-Configure "iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE" on
-NAT(linux) with two different version kernel.
-
-On PC1, ping 172.0.0.100 -t 3, PC2 can be reached with both kernel version.
-
-ping 172.0.0.100 -t 2, I got 2 different results with 2 different
-kernel version on NAT(linux).
-
-I got ttl-expired icmp response from router with old version, but got
-no response at all with upgrade kernel version.
-No matter with which kernel version, router sends ttl-expired icmp
-response from 10.0.0.2 to 10.0.0.1. It's forwarded to the internal
-network by old version kernel, but considered as the traffic to the
-local process by the upgraded version kernel.
-Notice that ping 172.0.0.100 -t 3 works well in both cases.
-
-It seems like the old version performed as a Cone NAT, well the
-upgraded one performed as a symmetric NAT. So, what's the default NAT
-type if I set rule as "iptables -t nat -A POSTROUTING -o eth0 -j
-MASQUERADE", full cone NAT, port restricted cone NAT, restricted cone
-NAT, or symmetric NAT? Can this be configurable? If it's configurable,
-how to do that?
-
-Thanks.
-
-Sean.
+I just managed to solve it by setting "directmedia=3Dupdate" on my aste=
+risk configuration.
+If directmedia=3Dyes RTP traffic is between the two clients, with direc=
+tmedia=3Dupdate
+almost all RTP traffic is via asterisk and in this way the nf_conntrack=
+_sip module can match it.
+The sip_direct_media=3D[0|1] parameter of nf_conntrack_sip had no influ=
+ence on my test.
