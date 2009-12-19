@@ -1,18 +1,15 @@
-From: don-temp288@isis.cs3-inc.com (Don Cohen)
-Subject: Re: u32 question
-Date: Sat, 19 Dec 2009 14:05:27 -0800
-Message-ID: <19245.20007.976957.190984@isis.cs3-inc.com>
-References: <65A33300-9897-4864-B702-3572DAAA96D1@kuketz.de>
-	<19244.4533.960384.369148@isis.cs3-inc.com>
-	<224D0884-3AD8-4F64-8D28-5F09D16CBFF4@kuketz.de>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: don-nfil2@isis.cs3-inc.com (Don Cohen)
+Subject: u32 question
+Date: Sat, 19 Dec 2009 15:10:18 -0800 (PST)
+Message-ID: <20091219231018.B79C41A8193@isis.cs3-inc.com>
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <224D0884-3AD8-4F64-8D28-5F09D16CBFF4@kuketz.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
+Cc: Mike Kuketz <mike@kuketz.de>
 
 
 This example doesn't seem to work for me.
@@ -48,9 +45,6 @@ I don't get anything in the log when I do this:
         0x0030:  2966 d6c6 c826 20cd 0b4c 0cf4 39cc 71e0 )f...&...L..9.q.
         0x0040:  ca4a 73c2 1058 d9e4 9cbd deec 0d10 f5f3 .Js..X..........
         0x0050:  0d32                                     .2
- 13:02:48.691819 00:80:c8:b9:a4:2f > 00:21:6b:40:06:7e, ethertype IPv4
- (0x0800), length 114: 66.166.0.98.ssh > 10.0.2.100.33306: P 1:49(48)
- ack 48 win 60816 <nop,nop,timestamp 694607611 3419089842>
  ...
 several more packets that ought to show up in the log
 
