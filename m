@@ -1,68 +1,56 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Returning nat packets vanishing after mangle:PREROUTING and conntrack
-   processing
-Date: Sat, 19 Dec 2009 19:39:51 +0100
-Message-ID: <4B2D1DF7.1060105@plouf.fr.eu.org>
-References: <7ad63010a18944d3264b5ba158c236df@localhost> <4B2CD13D.504@plouf.fr.eu.org> <40efba0ec31032f27b200a4da7b17ae9@localhost>
+From: don-temp288@isis.cs3-inc.com (Don Cohen)
+Subject: Re: u32 question
+Date: Sat, 19 Dec 2009 14:05:27 -0800
+Message-ID: <19245.20007.976957.190984@isis.cs3-inc.com>
+References: <65A33300-9897-4864-B702-3572DAAA96D1@kuketz.de>
+	<19244.4533.960384.369148@isis.cs3-inc.com>
+	<224D0884-3AD8-4F64-8D28-5F09D16CBFF4@kuketz.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <40efba0ec31032f27b200a4da7b17ae9@localhost>
+In-Reply-To: <224D0884-3AD8-4F64-8D28-5F09D16CBFF4@kuketz.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Scott Shambarger <scott-netfilter@shambarger.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Scott Shambarger a =E9crit :
->=20
-> Fantastic, works great.  Changed to 'net.ipv4.conf.default.rp_filter =
-=3D 0'
-> in sysctl.conf (was set to 1).
->=20
-> Oddly, I had rp_filter enabled on the system in kernel 2.6.30 and it
-> worked.  Has rp_filter changed somehow in the newer kernel (or is it =
-now
-> working 'correctly'?).
 
-(Searching in kernel changelogs...)
-Yes, rp_filter slighly changed in kernel 2.6.31 (commit
-27fed4175acf81ddd91d9a4ee2fd298981f60295). IIUC it is the way that
-net.ipv4.conf.<interface>.rp_filter and net.ipv4.conf.all.rp_filter are
-combined together that changed from a logical AND to an arithmetic MAX.
-This was a fix for a previous patch in kernel 2.6.30 (commit
-c1cf8422f0512c2b14f0d66bce34abb0645c888a) which added support for
-reverse path filtering "loose mode" (actually a route presence check),
-changing rp_filter type from boolean to integer and assigning the value
-2 to the new loose mode (see Documentation/networking/ip-sysctl.txt for
-details).
+This example doesn't seem to work for me.
+Does it work for anyone else out there?  
 
-Before kernel 2.6.31 :
-Actual rp_filter for <interface> =3D net.ipv4.conf.<interface>.rp_filte=
-r
-AND net.ipv4.conf.all.rp_filter
-I.e. reverse path filtering is enabled in strict mode if rp_filter=3D1 =
-for
-both "all" and the interface.
+ $ iptables -A OUTPUT -m u32 --u32 "0>>22&0x3C@12>>26&0x3C@-3&0xFF=0:255"
+  -j LOG --log-prefix "TCP with payload *** "
+I've tried some examples without the @ and they seem to be working but
+I don't get anything in the log when I do this:
 
-Since kernel 2.6.31 :
-Actual rp_filter for <interface> =3D
-MAX(net.ipv4.conf.<interface>.rp_filter, net.ipv4.conf.all.rp_filter)
-I.e. reverse path filtering is enabled in strict mode if rp_filter=3D1 =
-for
-either "all" or the interface.
+ $ iptables -L OUTPUT -n -v
+ Chain OUTPUT (policy ACCEPT 17M packets, 1045M bytes)
+  pkts bytes target     prot opt in     out     source
+ destination         
+     0     0 LOG        all  --  *      *       0.0.0.0/0
+ 0.0.0.0/0           u32
+ 0x0>>0x16&0x3c@0xc>>0x1a&0x3c@0xfffffffd&0xff=0x0:0xff LOG flags 0
+ level 4 prefix `TCP with payload *** ' 
 
-If by "I had rp_filter enabled" you mean that only
-net.ipv4.conf.default.rp_filter was set to 1 and
-net.ipv4.conf.all.rp_filter was left to 0 (default), then with the
-kernel 2.6.30 the resulting AND was 0, so the reverse path filtering wa=
-s
-disabled. But with the kernel 2.6.31 the resulting MAX is 1, so strict
-reverse path filtering is enabled.
+(seems right)
 
-Notes :
-1) "Loose" reverse path filtering may be a bit better than no reverse
-path filtering and should work with your setup.
-2) Reverse path filtering in kernel 2.6.32 uses the mark as in policy
-routing, so strict reverse path filtering may work better in multihomed
-setups like yours.
+ $ tcpdump -lenX -i wlan0 -c 4
+ tcpdump: verbose output suppressed, use -v or -vv for full protocol
+ decode
+ listening on wlan0, link-type EN10MB (Ethernet), capture size 96 bytes
+ 13:02:48.661944 00:21:6b:40:06:7e > 00:80:c8:b9:a4:2f, ethertype IPv4
+ (0x0800), length 114: 10.0.2.100.33306 > 66.166.0.98.ssh: P
+ 3799762522:3799762570(48) ack 1707553806 win 1067 <nop,nop,timestamp
+ 3419089842 694605510>
+        0x0000:  4510 0064 6a44 4000 4006 80d4 0a00 0264 E..djD@.@......d
+        0x0010:  42a6 0062 821a 0016 e27b c65a 65c7 340e B..b.....{.Ze.4.
+        0x0020:  8018 042b 90d1 0000 0101 080a cbcb 2bb2 ...+..........+.
+        0x0030:  2966 d6c6 c826 20cd 0b4c 0cf4 39cc 71e0 )f...&...L..9.q.
+        0x0040:  ca4a 73c2 1058 d9e4 9cbd deec 0d10 f5f3 .Js..X..........
+        0x0050:  0d32                                     .2
+ 13:02:48.691819 00:80:c8:b9:a4:2f > 00:21:6b:40:06:7e, ethertype IPv4
+ (0x0800), length 114: 66.166.0.98.ssh > 10.0.2.100.33306: P 1:49(48)
+ ack 48 win 60816 <nop,nop,timestamp 694607611 3419089842>
+ ...
+several more packets that ought to show up in the log
+
