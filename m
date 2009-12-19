@@ -1,363 +1,148 @@
-From: Scott Shambarger <scott-netfilter@shambarger.net>
-Subject: Returning nat packets vanishing after mangle:PREROUTING and conntrack
- processing
-Date: Fri, 18 Dec 2009 10:23:45 -0800
-Message-ID: <7ad63010a18944d3264b5ba158c236df@localhost>
+From: Mike Kazantsev <mk.fraggod@gmail.com>
+Subject: IPv6 forwarding to TAP-interface with ip6tables fails
+Date: Sat, 19 Dec 2009 16:20:47 +0500
+Message-ID: <20091219162047.04be7ac3@coercion>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=PGP-SHA1;
+ boundary="Sig_/ZDwwwn0XQNOcCoabZC47l77"; protocol="application/pgp-signature"
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:date:from:to:subject
+         :message-id:x-mailer:mime-version:content-type;
+        bh=9eJXu9uYuajtul2KZQgz4+wzzCZzkngbgoPFJpFq20s=;
+        b=YPNXyNcl1nyD1H0ZNvXWcKiEWS2IBu7U+KeBw0glyknVp3Z+xh5T9fuGngVb9Sw1iM
+         tXRxObQzV7j2hFawbIbRZHXpYwdYEQxdeNVWrkJ0YUyP/z63+sCtNW0ua/c/Zi8NcPuK
+         T9lIgEFGaJ7lMzu6W6aPUNDvxcaLSP+KAvR0Y=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
+--Sig_/ZDwwwn0XQNOcCoabZC47l77
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
+
+Hello, list.
+
+
+I wonder if the following problem is a bug in netfilter or I'm just
+doing something wrong, but it wasn't always like that.
+Problem started probably with some kernel update on router machine,
+since I can't trace any network layout updates since the point where it
+still worked, and complete downgrade is quite a bad solution.
+
+
+What I'm trying to do is to connect with ssh and/or ping6 from
+2001:470:1f0b:11de::13 to 2001:470:1f0b:11de::21.
+And it works at first (and worked fine before), but stops after some
+time, which doesn't seem constant or relative to amount of data being
+forwarded.
+
+"tcpdump -i lan" shows a lot of tcp retransmission packets or icmp6 (in
+case of ping6), but "tcpdump -i vde" shows none of them (while showing
+all of them while the connection is still working).
+
+I've tried setting -j LOG to FORWARD chain of ip6tables and it always
+(both while the connection works and not) shows lines like this:
+  Dec 19 14:09:48 kern.warn<4> kernel[-]@damnation: IN=3Dlan OUT=3Dvde
+    SRC=3D2001:0470:1f0b:11de:0000:0000:0000:0013
+    DST=3D2001:0470:1f0b:11de:0000:0000:0000:0021
+    LEN=3D104 TC=3D0 HOPLIMIT=3D63 FLOWLBL=3D0 PROTO=3DICMPv6
+    TYPE=3D128 CODE=3D0 ID=3D29524 SEQ=3D8=20
+
+So, I assume the packet is lost somewhere in netfilter, but I've no
+idea how to tell why it's getting discarded like that.
+
+Strangely enough (for me), when I type "ping6 2001:0470:1f0b:11de::21"
+on router machine it gives "Destination unreachable: Address
+unreachable" for the first packet and then it works for the rest of
+them from both router and remote machine in "lan" network (whole
+forwarding thing starts working).
+When I stop this ping, situation repeats after some time.
+
+IPv4 forwarding works fine over the same link, but it's NAT there.
+
+
+Note that aforementioned "vde" is a tun/tap interface of Virtual
+Distributed Ethernet link, but tcpdump should show the packet on tap
+interface (vde) regardless of other software, monitoring it, so it's
+not a VDE-related bug, right?
+That's the first question that's bothering me.
+
+It worked a few months ago but I haven't used it actively since then,
+and now it doesn't. Same IPs, but different software versions (see below).
+
+Is something wrong with the setup?
+Are there any settings that can induce aforementioned behavior I should
+check, apart from the ones, included in this mail?
+
+And if not...
+Is there any way to debug the problem futher, apart of inserting
+(enabling) debug code in the kernel?
+Does it look like a bug in netfilter forwarding, should I post it to
+bugzilla?
+
+
+Thanks in advance for any answers / suggestions.
+
+
+ip addr:
+  2: lan: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc mq state UP qlen=
+ 1000
+      link/ether 00:22:15:3a:ef:7d brd ff:ff:ff:ff:ff:ff
+      inet 192.168.0.10/29 scope global lan
+      inet6 2001:470:1f0b:11de::10/125 scope global=20
+         valid_lft forever preferred_lft forever
+      inet6 2001:470:1f0b:11de::1/125 scope global=20
+         valid_lft forever preferred_lft forever
+      inet6 fe80::222:15ff:fe3a:ef7d/64 scope link=20
+         valid_lft forever preferred_lft forever
+  7: vde: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state=
+ UNKNOWN qlen 500
+      link/ether b2:f5:e7:68:fd:9e brd ff:ff:ff:ff:ff:ff
+      inet 192.168.0.20/28 scope global vde
+      inet6 2001:470:1f0b:11de::20/125 scope global=20
+         valid_lft forever preferred_lft forever
+
+ip -6 route:
+  2001:470:1f0b:11de::/125 dev lan  proto kernel  metric 256  mtu 1500 advm=
+ss 1440 hoplimit 4294967295
+  2001:470:1f0b:11de::10/125 dev lan  proto kernel  metric 256  mtu 1500 ad=
+vmss 1440 hoplimit 4294967295
+  2001:470:1f0b:11de::20/125 dev vde  proto kernel  metric 256  mtu 1500 ad=
+vmss 1440 hoplimit 4294967295
+  fe80::/64 dev lan  proto kernel  metric 256  mtu 1500 advmss 1440 hoplimi=
+t 4294967295
+  fe80::/64 dev vde  proto kernel  metric 256  mtu 1500 advmss 1440 hoplimi=
+t 4294967295
+
+ip6tables has following rules (at the start of FORWARD chain):
+  -I FORWARD -i vde -j ACCEPT
+  -I FORWARD -i lan -j ACCEPT
 
-I have a multi-homed server, and have been routing packets selectively
+Software:
+  Linux damnation 2.6.32-gentoo-fg.mf_master #1 SMP Sun Dec 13 22:35:05
+    YEKT 2009 x86_64 Intel(R) Xeon(R) CPU L5420 @ 2.50GHz GenuineIntel
+    GNU/Linux (happened with .31 as well, will try official .32.2 today)
+  iptables-1.4.5
+  vde-2.2.3 (shouldn't be relevant?)
 
-between the public interfaces using iptables marking and iproute2 tables.
+IPv6 forwarding is enabled in sysctl.
 
 
+--=20
+Mike Kazantsev // fraggod.net
 
-The setup worked well until I upgraded to 2.6.31 (Fedora 11->12 upgrade),
+--Sig_/ZDwwwn0XQNOcCoabZC47l77
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Disposition: attachment; filename=signature.asc
 
-and then connection tracking apparently broke.  I've struggled with it for
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.13 (GNU/Linux)
 
-some time, but think I may be encountering new/changed kernel behavior
+iEYEARECAAYFAksstxoACgkQASbOZpzyXnHApACaA+mvyy7+o/W3+IxMKqDpHnas
+zaIAoMyQWE50r/Ca1prJ4M/UI22KxVaC
+=vHJ+
+-----END PGP SIGNATURE-----
 
-since 2.6.30 (which worked).
-
-
-
-With the setup below, bringing down either public interface results in
-
-normal conntrack behavior (packets are correctly nat'd back to their
-
-source).
-
-
-
-Sadly, I've been hacking with the settings so much to track the source of
-
-the breakage that I no longer have the iptables/iproute2 setup that worked
-
-in 2.6.30, but I can't see why the setup below shouldn't work as intended.
-
-
-
-My (simplified) setup is as follows:
-
-
-
-Definitions:
-
-PRIV - internal IP on eth0 (PRIV-NET is subnet)
-
-DSL - static public IP on eth1 (DSL-NET is subnet, DSL-GW is gateway)
-
-CABLE - dynamic public IP on eth2 (CABLE-NET is subnet, CABLE-GW is
-
-gateway)
-
-INT - host IP on internal eth0 network
-
-EXT - external host IP (reachable via eth1 or eth2)
-
-
-
-router# tail -2 /etc/iproute2/rt_tables
-
-200	cable
-
-201	dsl
-
-
-
-router# ip rule list
-
-0:	from all lookup local 
-
-32756:	from all fwmark 0x2 lookup cable 
-
-32757:	from all to <cable-dhcp-server> lookup cable 
-
-32758:	from <CABLE> lookup cable 
-
-32759:	from all fwmark 0x1 lookup dsl 
-
-32760:	from <DSL> lookup dsl 
-
-32766:	from all lookup main 
-
-32767:	from all lookup default 
-
-
-
-router# ip route list
-
-<DSL-NET> dev eth1  proto kernel  scope link  src <DSL> 
-
-<PRIV-NET> dev eth0  proto kernel  scope link  src <PRIV> 
-
-<CABLE-NET> dev eth2  proto kernel  scope link  src <CABLE> 
-
-169.254.0.0/16 dev eth0  scope link  metric 1002 
-
-default via <DSL-GW> dev eth1
-
-
-
-router# ip route list table default
-
-default via <CABLE-GW> dev eth2
-
-
-
-router# ip route list table dsl
-
-<PRIV-NET> dev eth0  scope link  src <PRIV> 
-
-<CABLE-NET> dev eth2  scope link  src <CABLE>
-
-default via <DSL-GW> dev eth1
-
-
-
-router# ip route list table cable
-
-<DSL-NET> dev eth1  scope link  src <DSL> 
-
-<PRIV-NET> dev eth0  scope link  src <PRIV> 
-
-default via <CABLE-GW> dev eth2 
-
-
-
-(simplified iptables config)
-
-*raw
-
--A PREROUTING -p tcp -d <EXT> -j TRACE
-
--A PREROUTING -p tcp -s <EXT> -j TRACE
-
-*nat
-
--A POSTROUTING -o eth1 -j SNAT --to-source <DSL>
-
--A POSTROUTING -o eth2 -j MASQUERADE
-
-*mangle
-
--A PREROUTING -m state --state ESTABLISHED,RELATED -j CONNMARK
-
---restore-mark
-
--A PREROUTING -i eth0 -m state --state NEW -j CONNMARK --set-mark 2
-
--A PREROUTING -i eth1 -m state --state NEW -j CONNMARK --set-mark 1
-
--A PREROUTING -i eth2 -m state --state NEW -j CONNMARK --set-mark 2
-
--A PREROUTING -m connmark --mark 1 -j MARK --set-mark 1
-
--A PREROUTING -m connmark --mark 2 -j MARK --set-mark 2
-
--A PREROUTING -m state --state NEW -m connmark ! --mark 0 -j CONNMARK
-
---save-mark
-
--A OUTPUT -m state --state ESTABLISHED,RELATED -j CONNMARK --restore-mark
-
-
-
-Here's the trace output and conntrack details from the following command
-
-issued on the internal host <INT> (on the <PRIV> network):
-
-
-
-<INT># curl -I http://<EXT>
-
-
-
-router# tcpdump -i eth2 -nn 'host <EXT>'
-
-09:08:04.524942 IP <CABLE>.52800 > <EXT>.80: Flags [S], seq 304914632, win
-
-65535, options [mss 1460,nop,wscale 3,nop,nop,TS val 521390037 ecr
-
-0,sackOK,eol], length 0
-
-09:08:04.540042 IP <EXT>.80 > <CABLE>.52800: Flags [S.], seq 2326757745,
-
-ack 304914633, win 5792, options [mss 1460,sackOK,TS val 3283546987 ecr
-
-521390037,nop,wscale 7], length 0
-
-
-
-
-
-router# conntrack -E -p tcp -d <EXT>
-
-    [NEW] tcp      6 120 SYN_SENT src=<INT> dst=<EXT> sport=52800 dport=80
-
-[UNREPLIED] src=<EXT> dst=<CABLE> sport=80 dport=52800 mark=2
-
- [UPDATE] tcp      6 59 SYN_RECV src=<INT> dst=<EXT> sport=52800 dport=80
-
-src=<EXT> dst=<CABLE> sport=80 dport=52800 mark=2
-
-
-
-
-
-router# conntrack -L -p tcp -d <EXT> --sport 52800
-
-tcp      6 55 SYN_RECV src=<INT> dst=<EXT> sport=52800 dport=80 packets=1
-
-bytes=64 src=<EXT> dst=<CABLE> sport=80 dport=52800 packets=6 bytes=360
-
-mark=2 secmark=0 use=2
-
-
-
-
-
-router# cat syslog
-
-Dec 18 09:08:04 home kernel: TRACE: raw:PREROUTING:policy:3 IN=eth0 OUT=
-
-SRC=<INT> DST=<EXT> LEN=64 TOS=0x00 PREC=0x00 TTL=64 ID=45328 DF PROTO=TCP
-
-SPT=52800 DPT=80 SEQ=304914632 ACK=0 WINDOW=65535 RES=0x00 SYN URGP=0 OPT
-
-Dec 18 09:08:04 home kernel: TRACE: mangle:PREROUTING:rule:2 IN=eth0 OUT=
-
-SRC=<INT> DST=<EXT> LEN=64 TOS=0x00 PREC=0x00 TTL=64 ID=45328 DF PROTO=TCP
-
-SPT=52800 DPT=80 SEQ=304914632 ACK=0 WINDOW=65535 RES=0x00 SYN URGP=0 OPT
-
-Dec 18 09:08:04 home kernel: TRACE: mangle:PREROUTING:rule:6 IN=eth0 OUT=
-
-SRC=<INT> DST=<EXT> LEN=64 TOS=0x00 PREC=0x00 TTL=64 ID=45328 DF PROTO=TCP
-
-SPT=52800 DPT=80 SEQ=304914632 ACK=0 WINDOW=65535 RES=0x00 SYN URGP=0 OPT
-
-Dec 18 09:08:04 home kernel: TRACE: mangle:PREROUTING:rule:7 IN=eth0 OUT=
-
-SRC=<INT> DST=<EXT> LEN=64 TOS=0x00 PREC=0x00 TTL=64 ID=45328 DF PROTO=TCP
-
-SPT=52800 DPT=80 SEQ=304914632 ACK=0 WINDOW=65535 RES=0x00 SYN URGP=0 OPT
-
-MARK=0x2 
-
-Dec 18 09:08:04 home kernel: TRACE: mangle:PREROUTING:policy:8 IN=eth0
-
-OUT= SRC=<INT> DST=<EXT> LEN=64 TOS=0x00 PREC=0x00 TTL=64 ID=45328 DF
-
-PROTO=TCP SPT=52800 DPT=80 SEQ=304914632 ACK=0 WINDOW=65535 RES=0x00 SYN
-
-URGP=0 OPT MARK=0x2 
-
-Dec 18 09:08:04 home kernel: TRACE: nat:PREROUTING:policy:1 IN=eth0 OUT=
-
-SRC=<INT> DST=<EXT> LEN=64 TOS=0x00 PREC=0x00 TTL=64 ID=45328 DF PROTO=TCP
-
-SPT=52800 DPT=80 SEQ=304914632 ACK=0 WINDOW=65535 RES=0x00 SYN URGP=0 OPT
-
-MARK=0x2 
-
-Dec 18 09:08:04 home kernel: TRACE: mangle:FORWARD:policy:1 IN=eth0
-
-OUT=eth2 SRC=<INT> DST=<EXT> LEN=64 TOS=0x00 PREC=0x00 TTL=63 ID=45328 DF
-
-PROTO=TCP SPT=52800 DPT=80 SEQ=304914632 ACK=0 WINDOW=65535 RES=0x00 SYN
-
-URGP=0 OPT MARK=0x2 
-
-Dec 18 09:08:04 home kernel: TRACE: filter:FORWARD:policy:1 IN=eth0
-
-OUT=eth2 SRC=<INT> DST=<EXT> LEN=64 TOS=0x00 PREC=0x00 TTL=63 ID=45328 DF
-
-PROTO=TCP SPT=52800 DPT=80 SEQ=304914632 ACK=0 WINDOW=65535 RES=0x00 SYN
-
-URGP=0 OPT MARK=0x2 
-
-Dec 18 09:08:04 home kernel: TRACE: mangle:POSTROUTING:policy:1 IN=
-
-OUT=eth2 SRC=<INT> DST=<EXT> LEN=64 TOS=0x00 PREC=0x00 TTL=63 ID=45328 DF
-
-PROTO=TCP SPT=52800 DPT=80 SEQ=304914632 ACK=0 WINDOW=65535 RES=0x00 SYN
-
-URGP=0 OPT MARK=0x2 
-
-Dec 18 09:08:04 home kernel: TRACE: nat:POSTROUTING:rule:2 IN= OUT=eth2
-
-SRC=<INT> DST=<EXT> LEN=64 TOS=0x00 PREC=0x00 TTL=63 ID=45328 DF PROTO=TCP
-
-SPT=52800 DPT=80 SEQ=304914632 ACK=0 WINDOW=65535 RES=0x00 SYN URGP=0 OPT
-
-MARK=0x2 
-
-Dec 18 09:08:04 home kernel: TRACE: raw:PREROUTING:policy:3 IN=eth2 OUT=
-
-SRC=<EXT> DST=<CABLE> LEN=60 TOS=0x00 PREC=0x20 TTL=55 ID=0 DF PROTO=TCP
-
-SPT=80 DPT=52800 SEQ=2326757745 ACK=304914633 WINDOW=5792 RES=0x00 ACK SYN
-
-URGP=0 OPT
-
-Dec 18 09:08:04 home kernel: TRACE: mangle:PREROUTING:rule:1 IN=eth2 OUT=
-
-SRC=<EXT> DST=<CABLE> LEN=60 TOS=0x00 PREC=0x20 TTL=55 ID=0 DF PROTO=TCP
-
-SPT=80 DPT=52800 SEQ=2326757745 ACK=304914633 WINDOW=5792 RES=0x00 ACK SYN
-
-URGP=0 OPT
-
-Dec 18 09:08:04 home kernel: TRACE: mangle:PREROUTING:rule:6 IN=eth2 OUT=
-
-SRC=<EXT> DST=<CABLE> LEN=60 TOS=0x00 PREC=0x20 TTL=55 ID=0 DF PROTO=TCP
-
-SPT=80 DPT=52800 SEQ=2326757745 ACK=304914633 WINDOW=5792 RES=0x00 ACK SYN
-
-URGP=0 OPT MARK=0x2 
-
-Dec 18 09:08:04 home kernel: TRACE: mangle:PREROUTING:policy:8 IN=eth2
-
-OUT= SRC=<EXT> DST=<CABLE> LEN=60 TOS=0x00 PREC=0x20 TTL=55 ID=0 DF
-
-PROTO=TCP SPT=80 DPT=52800 SEQ=2326757745 ACK=304914633 WINDOW=5792
-
-RES=0x00 ACK SYN URGP=0 OPT MARK=0x2 
-
-
-
-
-
-And that's where the packet dissappears... it apparently has been seen by
-
-conntrack, but fails to appear in the nat:PREROUTING chain.
-
-
-
-Any suggestion on how I can discover what is happening to the packet at
-
-this point?
-
-
-
-Please excuse any mistakes I made sanitizing the output, and let me know
-
-if I can provide any further details that might help.
-
-
-
-Thanks,
-
-Scott
-
-
-
-
+--Sig_/ZDwwwn0XQNOcCoabZC47l77--
