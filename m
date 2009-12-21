@@ -1,61 +1,104 @@
-From: Michal Soltys <soltys@ziu.info>
-Subject: Re: u32 question
-Date: Mon, 21 Dec 2009 08:49:39 +0100
-Message-ID: <4B2F2893.6090905@ziu.info>
-References: <20091219231018.B79C41A8193@isis.cs3-inc.com>	<19245.36072.654916.551426@isis.cs3-inc.com>	<4B2F0D0F.8030100@ziu.info> <19247.5724.521673.970517@isis.cs3-inc.com>
+From: Mike Kazantsev <mk.fraggod@gmail.com>
+Subject: [SOLVED] Re: IPv6 forwarding to TAP-interface fails
+Date: Mon, 21 Dec 2009 14:09:52 +0500
+Message-ID: <20091221140952.63c607f5@malediction>
+References: <20091219162047.04be7ac3@coercion>
+	<4B2CDE84.3060703@plouf.fr.eu.org>
+	<20091221114648.08eede72@malediction>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <19247.5724.521673.970517@isis.cs3-inc.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Type: multipart/signed; micalg=PGP-SHA1;
+ boundary="Sig_/h1G70NmK=uNtPI0q0.xxl_y"; protocol="application/pgp-signature"
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:date:from:to:subject
+         :message-id:in-reply-to:references:x-mailer:mime-version
+         :content-type;
+        bh=boJy3aO0HzuYXIhGHmgYl0iZY3Nl2p5wSMbtmzaSJo4=;
+        b=aYVZCoKWDVNPuAzyYKhtxxXH3+JY+hYsJ0GXC5W0rF1pLpjoXmg4M8rcL/Ls9WdIRu
+         KKQT4z0Z1xqhna32rsAAoaDHzeg7VcK02t98QCJj8S1SPvz3v4cpBKVHBxJ8IPT5AGM0
+         0xxoHPWqhbHlIs+BQXgBYxoggIe23YK5db8YE=
+In-Reply-To: <20091221114648.08eede72@malediction>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Don Cohen <don-nfil2@isis.cs3-inc.com>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>, netfilter-devel@vger.kernel.org, mike@kuketz.de
+To: netfilter@vger.kernel.org
 
-Don Cohen wrote:
-> Michal Soltys writes:
-> 
->  > This match in its current version does plenty of sanity checks, and 
->  > moving back using negative offsets don't work (as negative offsets 
->  > are not allowed and the data is internally treated as big >0 value 
->  > - thus failing the match). You have two options: 
-> 
-> I thought the original version did plenty of checks and specifically 
-> DID allow negative offsets, which is intentional because, as we see 
-> from published examples (that no longer work), that's useful.
-> Is there any reason that capability shouldn't be restored as the
-> normal version that appears in linux distributions?
-> 
+--Sig_/h1G70NmK=uNtPI0q0.xxl_y
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-I'm just reporting - as I can see somebody ran into the same problem as me 
-a while ago. I've added netfilter-devel to CC, as it's a better place for 
-the discussion.
+On Mon, 21 Dec 2009 11:46:48 +0500
+Mike Kazantsev <mk.fraggod@gmail.com> wrote:
 
->  > - patch the xt_u32.c to allow earlier behavior
->  > - use match2 from xtables-addons (separate options for matching)
+> Then I start the simple ping6 from lan network to vde (VM):
+...
+>=20
+>   IP6 2001:470:1f0b:11de::22 > ff02::1:ff00:21: ICMP6, neighbor
+> solicitation, who has 2001:470:1f0b:11de::21, length 32=20
+>   IN=3Dvde OUT=3D MAC=3D33:33:ff:00:00:21:00:16:3e:16:38:41:86:dd
+>    SRC=3D2001:0470:1f0b:11de:0000:0000:0000:0022
+>    DST=3Dff02:0000:0000:0000:0000:0001:ff00:0021
+>    LEN=3D72 TC=3D0 HOPLIMIT=3D255 FLOWLBL=3D0 PROTO=3DICMPv6 TYPE=3D135 C=
+ODE=3D0
+>  =20
+>   IP6 2001:470:1f0b:11de::21 > 2001:470:1f0b:11de::22: ICMP6,
+> neighbor advertisement, tgt is 2001:470:1f0b:11de::21, length 32=20
+>   IN=3D OUT=3Dvde
+>    SRC=3D2001:0470:1f0b:11de:0000:0000:0000:0021
+>    DST=3D2001:0470:1f0b:11de:0000:0000:0000:0022
+>    LEN=3D72 TC=3D0 HOPLIMIT=3D255 FLOWLBL=3D0 PROTO=3DICMPv6 TYPE=3D136 C=
+ODE=3D0
+>  =20
 
-(I meant length2 - separate options for matching 0 payload packets).
+Just looking at these lines as I pasted them actually helped: ICMP6
+neighbor solicitation request was sent from 22 to 21, while the packets
+were originated from 21.
+Made me wondering about what kind of backwards magic is at work here...
 
-> 
->  > For reference:
->  > 
->  > http://xtables-addons.sourceforge.net/
->  > http://marc.info/?t=125219819200001&r=1&w=2
-> 
-> I see that the patch is available here.  It's just relatively
-> inconvenient to use it compared to things working as intended out of
-> the box.  I have to say that it's not all that obvious in EITHER of
-> the two options just what you have to do in order to fix the problem
-> on your own machine.  Where can I find such instructions?
-> 
-> 
-> BTW, in response to some of the comments I see in the second
-> reference, 
-> - I would be very surprised to see frames of 2GB any time in the
-> foreseeable future
-> - If you're worried about that I suggest that (at least on a 64 bit
-> machine) you allow 64 bit offsets so on a 64 bit machine
->  -3 => 0xfffffffffffffffd.
-> --
 
+> ip addr:
+...
+>   7: vde: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast sta=
+te UNKNOWN qlen 500
+>       link/ether b2:f5:e7:68:fd:9e brd ff:ff:ff:ff:ff:ff
+>       inet 192.168.0.20/28 scope global vde
+>       inet6 2001:470:1f0b:11de::20/125 scope global
+>          valid_lft forever preferred_lft forever
+
+And here's the problem: no link-local address on the interface.
+"ip addr flush dev vde" in init.d script setting up interface did that,
+that was the mistake.
+
+With this address added (or rather preserved), router is able to send
+neighbor solicitation requests from it and everything works fine.
+
+Anyway, strange thing is that, apparently, VM on the other side is able
+to send these requests without link-local address, using global one
+instead:
+
+  2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qlen 1000
+      inet6 2001:470:1f0b:11de::22/125 scope global
+         valid_lft forever preferred_lft forever
+
+Guess older kernel (2.6.30.4) there is the cause of it, and that's also
+why it worked before with pretty much the same setup.
+
+Thanks again to Pascal for pointing me in the right direction.
+
+
+--=20
+Mike Kazantsev // fraggod.net
+
+--Sig_/h1G70NmK=uNtPI0q0.xxl_y
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Disposition: attachment; filename=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.13 (GNU/Linux)
+
+iEYEARECAAYFAksvO2cACgkQASbOZpzyXnF6NgCg2SSKS1elHpjiAKNAgJjfBIN1
+Ce4AnA62mwwHQ03fEeCX+0FilRpZ+Mqb
+=49lu
+-----END PGP SIGNATURE-----
+
+--Sig_/h1G70NmK=uNtPI0q0.xxl_y--
