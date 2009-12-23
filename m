@@ -1,53 +1,56 @@
-From: Elison Niven <elison.niven@gmail.com>
-Subject: table full, dropping packets when forwarding
-Date: Wed, 23 Dec 2009 11:48:32 +0530
-Message-ID: <21df6cb70912222218x1effa9ednee786e6c5b1bc70f@mail.gmail.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: IPTABLES and NATTING
+Date: Wed, 23 Dec 2009 12:02:32 +0100
+Message-ID: <4B31F8C8.7070002@plouf.fr.eu.org>
+References: <5f765be60912222021y5de642a4u785aecf0476a2c29@mail.gmail.com>	 <23731b2b0912222115y11417feua2eab5787197d1eb@mail.gmail.com> <5f765be60912222201j2c836482kcd5e3326c03b1358@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:cc:content-type;
-        bh=4M7FjOO6Sz/8droeAljY0g26F005t2P7ozvNSuNppKA=;
-        b=VVOGeipUY7qF8i6EGbLIR2EP3TundAezymPuciBiFG2oX2YPAWgl2iZo3krzX2hHm8
-         UA0ig3kSS6YCo7f07jMKD8+9cgorjinVdoAds3Gm3lMUp1V0MZGzLMaAlnZ6MjqUjERW
-         YyHBebzF6iR/KIG7JKnmZ0co23eJA7pp94xZw=
+In-Reply-To: <5f765be60912222201j2c836482kcd5e3326c03b1358@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
-Cc: elison.niven@matrixtelesol.com
+Content-Type: text/plain; charset="iso-8859-1"
+To: Ajith Adapa <adapa.ajith@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hi List,
+Ajith Adapa a =E9crit :
+> Hi
+>=20
+> Sorry I have some changes in my question as I am confused initially.
+>=20
+>                      linuxbox (p.q.r.t)
+>                             |
+>                             |
+> INTERNAL  ------ ABCD ----- INTERNET
+>  (p.q.r.s)                               (m.n.o.k)
 
-I am running a custom powerpc board with linux kernel 2.6.22.
-It was two interfaces eth0 - 192.168.1.148 and eth1 - 192.168.2.23
+Please use a fixed-size font for ASCII art, otherwise it may appear all
+garbled to readers. Here I see linuxbox linked to INTERNET instead of
+ABCD, and m.n.o.k is linked to nothing.
 
-I have enabled forwarding on my board by writing 1 to
-/proc/sys/net/ipv4/ip_forward and setup masquerading rules on both the
-interfaces means packets leaving eth0 will have source ip =
-192.168.1.148 and packets leaving eth1 will have source ip =
-192.168.2.23.
+> ABCD has 3 interfaces connected to linuxbox, INTERNAL N/W, INTERNET.
+>=20
+> I am able to ping from INTERNAL to linuxbox. So there is a path
+> available in routing table.
+>=20
+> At present I am snatting the packets from linuxbox to INTERNET at
+> ABCD. I have a small doubt regarding the FTP from linuxbox since I
+> have to support ftp from linuxbox to both INTERNAL N/W as well as in
+> INTERNET.
 
-Now in my network I have two machines A - 192.168.1.7 and another
-Machine B - 192.168.2.13.
+What kind of doubt ?
 
-All of the above machines are in the same physical LAN. (means the
-ethernet cables are connected to the same switch)
+> How can I write a rule in iptables present in ABCD where it can decid=
+e
+> if the destination ip-address of ftp server is within INTERNAL N/W or
+> in INTERNET and do natting accordingly.
 
-Now on machine A, I setup routing as
-"route add -net 192.168.2.0 netmask 255.255.255.0 gw 192.168.1.148"
-and ping 192.168.2.13 from Machine A. When i do a flood ping with ping
--f 192.168.2.13, I get "nf_conntrack:table full, dropping packet" on
-my board.
+What kind of rule ? You can check whether the destination address is in
+the internal subnet or you can check the output interface. Usually, SNA=
+T
+rules are based on the output interface.
 
-Taking a look at /proc/net/stat/nf_conntrack it shows the entries as
-0x8000 i.e. 32768 which is the default max specified.
-
-How do I solve/achieve this function?
-
-Once the entries reach 0x8000, they never start to decrease! Am i
-missing something ?
-
-Elison
+Anyway, I do not see the relation with FTP. If you use FTP and NAT, you
+need to load the FTP conntrack and NAT helper modules (nf_conntrack_ftp
+and nf_nat_ftp), but you do not need to write specific NAT rules for FT=
+P.
