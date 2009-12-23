@@ -1,95 +1,53 @@
-From: Ajith Adapa <adapa.ajith@gmail.com>
-Subject: Re: IPTABLES and NATTING
-Date: Wed, 23 Dec 2009 11:31:34 +0530
-Message-ID: <5f765be60912222201j2c836482kcd5e3326c03b1358@mail.gmail.com>
-References: <5f765be60912222021y5de642a4u785aecf0476a2c29@mail.gmail.com>
-	 <23731b2b0912222115y11417feua2eab5787197d1eb@mail.gmail.com>
+From: Elison Niven <elison.niven@gmail.com>
+Subject: table full, dropping packets when forwarding
+Date: Wed, 23 Dec 2009 11:48:32 +0530
+Message-ID: <21df6cb70912222218x1effa9ednee786e6c5b1bc70f@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:cc:content-type;
-        bh=xjINreTx+2/w6uLbbR+qsxHapCf3OWsY/ziKkL143wY=;
-        b=UA2MWtr+oY9Opu+Ddl8f3CTMpm4902nXvY2HCelB7C0KywTRD1wR3VYX52vlkSEo/G
-         53/1QVxa4RZi6cQU5BEaNjB7iO1mfcax2d8CRNJzve+WTD6kNIYjd4LyGIFONmzgmqvg
-         bHJkQs15RqPU6TGZVvYmdHkxz6Wz+ZeY91TQE=
-In-Reply-To: <23731b2b0912222115y11417feua2eab5787197d1eb@mail.gmail.com>
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:cc:content-type;
+        bh=4M7FjOO6Sz/8droeAljY0g26F005t2P7ozvNSuNppKA=;
+        b=VVOGeipUY7qF8i6EGbLIR2EP3TundAezymPuciBiFG2oX2YPAWgl2iZo3krzX2hHm8
+         UA0ig3kSS6YCo7f07jMKD8+9cgorjinVdoAds3Gm3lMUp1V0MZGzLMaAlnZ6MjqUjERW
+         YyHBebzF6iR/KIG7JKnmZ0co23eJA7pp94xZw=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Pieter Smit <mlist2010@vigor.co.za>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
+Cc: elison.niven@matrixtelesol.com
 
-Hi
+Hi List,
 
-Sorry I have some changes in my question as I am confused initially.
+I am running a custom powerpc board with linux kernel 2.6.22.
+It was two interfaces eth0 - 192.168.1.148 and eth1 - 192.168.2.23
 
-                     linuxbox (p.q.r.t)
-                            |
-                            |
-INTERNAL  ------ ABCD ----- INTERNET
- (p.q.r.s)                               (m.n.o.k)
+I have enabled forwarding on my board by writing 1 to
+/proc/sys/net/ipv4/ip_forward and setup masquerading rules on both the
+interfaces means packets leaving eth0 will have source ip =
+192.168.1.148 and packets leaving eth1 will have source ip =
+192.168.2.23.
 
-ABCD has 3 interfaces connected to linuxbox, INTERNAL N/W, INTERNET.
+Now in my network I have two machines A - 192.168.1.7 and another
+Machine B - 192.168.2.13.
 
-I am able to ping from INTERNAL to linuxbox. So there is a path
-available in routing table.
+All of the above machines are in the same physical LAN. (means the
+ethernet cables are connected to the same switch)
 
-At present I am snatting the packets from linuxbox to INTERNET at
-ABCD. I have a small doubt regarding the FTP from linuxbox since I
-have to support ftp from linuxbox to both INTERNAL N/W as well as in
-INTERNET.
+Now on machine A, I setup routing as
+"route add -net 192.168.2.0 netmask 255.255.255.0 gw 192.168.1.148"
+and ping 192.168.2.13 from Machine A. When i do a flood ping with ping
+-f 192.168.2.13, I get "nf_conntrack:table full, dropping packet" on
+my board.
 
-How can I right a rule in iptables present in ABCD where it can decide
-if the destination ip-address of ftp server is within INTERNAL N/W or
-in INTERNET and do natting accordingly.
+Taking a look at /proc/net/stat/nf_conntrack it shows the entries as
+0x8000 i.e. 32768 which is the default max specified.
 
-On 12/23/09, Pieter Smit <mlist2010@vigor.co.za> wrote:
-> Can the internal network ping the Linux box ? (is the routing working)
->
-> On Wed, Dec 23, 2009 at 6:21 AM, Ajith Adapa <adapa.ajith@gmail.com> wrote:
-> > Hi
-> >
-> > Below is my network setup.
-> >
-> >                       linuxbox
-> >                            |
-> >                            |
-> >  INTERNAL  ------ ABCD ----- INTERNET
-> > (p.q.r.s)                               (m.n.o.k)
-> >
-> > ABCD has 3 N/W interfaces connected to linuxbox, INTERNAL N/W, INTERNET.
-> >
-> > Linuxbox has a private-address and it is not in the same subnet as
-> > INTERNAL N/W. I have to do snat packets from linuxbox to INTERNAL N/W
-> > or to INTERNET at ABCD.
-> >
-> > I have a small doubt regarding the FTP from linuxbox since I have to
-> > support ftp from linuxbox to both INTERNAL N/W as well as INTERNET.
-> >
-> > How can I right a rule in iptables present in ABCD where it can decide
-> > if the destination ip-address of ftp server is within INTERNAL N/W or
-> > in INTERNET and do natting accordingly.
-> >
-> > --
-> > Thanks,
-> >
-> > Ajith
-> > ---------------------------------------------
-> > www.codingfreak.blogspot.com
-> > --
-> > To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> > the body of a message to majordomo@vger.kernel.org
-> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> >
->
+How do I solve/achieve this function?
 
+Once the entries reach 0x8000, they never start to decrease! Am i
+missing something ?
 
--- 
-Thanks & Regards
-
-Ajith
----------------------------------------------
-www.codingfreak.blogspot.com
+Elison
