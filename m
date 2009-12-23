@@ -1,93 +1,43 @@
-From: Felipe W Damasio <felipewd@gmail.com>
-Subject: ebtables broute DROP problem in production environment
-Date: Wed, 23 Dec 2009 16:22:50 -0200
-Message-ID: <8a87046f0912231022g438141afpfaa647ac0d01cdda@mail.gmail.com>
-References: <8a87046f0912231019l76e69a9eg52a529023d02237b@mail.gmail.com>
+From: "Demetrios J. Tsillas" <jtsillas@appledor.net>
+Subject: net POSTROUTING with NFQUEUE
+Date: Wed, 23 Dec 2009 13:22:04 -0500
+Message-ID: <c9945ec95a5bdea1b2e3bfbcb4849de8.squirrel@www.appledor.net>
+Reply-To: jtsillas@appledor.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=OZCIkkjqHT6ejx7/F0JKa/kTe2T91N8pOMihe4Cdqfs=;
-        b=XpBJiWjzAIF/FJW1YUS2WN7WnkDtP59uVHbu6m2MeLFZwfLb2Krv0fOj/LQjLK8e5b
-         nKRTavr3gyBhg3C9kLxT604sM8QFZOpVELZWbXWNDs2OORPsb9toeZM/+ivaYNXjnL42
-         zuq0R/y4b5582MGzp30NXGhilUX2BLI33isXs=
-In-Reply-To: <8a87046f0912231019l76e69a9eg52a529023d02237b@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
-Cc: Bruno Gustavo Wallauer <brunogw@gmail.com>
 
-=A0=A0Hi all,
+I am attempting to implement a transparent TCP proxy which can delay the
+sending of SYN,ACK back to the local client machine until the internet
+side server acknowledges the connection.
 
-=A0=A0I'm trying to use ebtables/iptables to implement a tproxy-squid o=
-n my network.
+This is to allow correct operation of TCP services which rely on rejected
+connections from the server.
 
-=A0=A0I have a bridge-setup, with eth0 facing the user and eth1 facing =
-the internet.
+I've got NFQUEUE working with a rule such as (eth1 is my local device):
 
-=A0=A0Everything works great when I have an user connected with a
-cross-over cable on eth0.
+iptables -t mangle -A POSTROUTING -p tcp --tcp-flags SYN,ACK SYN,ACK -o
+eth1 -j NFQUEUE --queue-num 0
 
-=A0=A0But when I plug eth0 on the production environment network (which
-uses multiple VLANs, one for the users and another for the internet),
-http traffic stop working (ie. doesn't get routed to squid).
+The problem is that if I combine the above rule with a NAT rule to
+implement the redirection of TCP to my proxy, the packet headers which
+arrive in the queue contain the source IP-address/port of the proxy rather
+than the internet server's source IP-address/port. Matching the connection
+with out the server's info is not reliable.
 
-=A0=A0We use a Cisco switch 2690 (layer 2).
+I've tried putting the above rule on the nat table but I get no matches.
 
-=A0=A0I'm trying to figure out what's wrong with my setup:
+Is there some way to get what I need?
 
-uname -r : 2.6.29.6
-ebtables --version :=A0ebtables v2.0.9-1 (June 2009)
-iptables --version :=A0iptables v1.4.3.2
+My only other option is to separately track the local's client's source
+IP-address/port and try to match up the SYN,ACK packets using that
+information.
 
-Rules applied:
+thanks!!!!
+-Jim.
 
-iptables -t mangle -N DIVERT
-iptables -t mangle -A PREROUTING -p tcp -m socket -j DIVERT
-iptables -t mangle -A DIVERT -j MARK --set-mark 1
-iptables -t mangle -A DIVERT -j ACCEPT
-iptables -t mangle -A PREROUTING=A0 -i eth0 -p tcp --dport 80=A0 -j TPR=
-OXY
---tproxy-mark 0x1/0x1 --on-port 3128
-ebtables -t broute -A BROUTING -i eth0 -p ipv4 --ip-proto tcp
---ip-dport 80 -j redirect --redirect-target DROP
-ebtables -t broute -A BROUTING -i eth1 -p ipv4 --ip-proto tcp
---ip-sport 80 -j redirect --redirect-target DROP
 
-=A0cd /proc/sys/net/bridge/
-=A0for i in *
-=A0do
-=A0=A0 echo 0 > $i
-=A0done
-=A0unset i
-
-brctl stp br0 off
-brctl setfd br0 1
-brctl sethello br0 1
-ip rule add fwmark 1 lookup 100
-ip route add local 0.0.0.0/0 dev lo table 100
-echo 1 >=A0 /proc/sys/net/ipv4/ip_forward
-echo 0 > /proc/sys/net/ipv4/conf/lo/rp_filter
-echo 1 > /proc/sys/net/ipv4/ip_nonlocal_bind
-echo 1 >=A0 /proc/sys/net/ipv4/tcp_low_latency
-echo 0 > /proc/sys/net/ipv4/conf/eth1/rp_filter
-echo 0 > /proc/sys/net/ipv4/conf/eth0/rp_filter
-echo 0 > /proc/sys/net/ipv4/conf/br0/rp_filter
-
-=A0=A0What am I missing?
-
-=A0=A0FYI, I tried using 2.6.32.2 and didn't work the ebtables even wit=
-h
-cross-over dummy client. Same with 2.6.33-rc1 and -rc1-git3. =A0The
-kernel 2.6.29.6 was the only one I tried that worked correctly.
-
-=A0=A0If you need any other info, please let me know.
-
-=A0=A0Thanks in advance!
-
-=46elipe Damasio
