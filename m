@@ -1,38 +1,49 @@
-From: "Suganthi K" <sukandas@cisco.com>
-Subject: iptable - string matching - from to offset values
-Date: Tue, 22 Dec 2009 12:30:29 +0530
-Message-ID: <002301ca82d4$73c79de0$5b56d9a0$@com>
+From: Ajith Adapa <adapa.ajith@gmail.com>
+Subject: IPTABLES and NATTING
+Date: Wed, 23 Dec 2009 09:51:57 +0530
+Message-ID: <5f765be60912222021y5de642a4u785aecf0476a2c29@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-Content-Language: en-us
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type;
+        bh=O5UacBjfUy85qeVBLL1mk3dUV4gWctOYJYvazz0yNWA=;
+        b=b6lPE2MEnh1OWssnQCBjAjSWzt2sQVCX3piFx9oFKZSGrrqtZfhjudMa6+DoHVCNCC
+         P0Xa8T84uSsW7WG/ftlAEQTyAyzBiU7DF8jTG7hiYKXNwxuGlp3MpsTNtFM8EAJKGTaP
+         dlwswOb2XR3W9IErgOT1tGNHRyuD/orBq43kE=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi,
+Hi
 
-I have a packet with the octets 32,33 having the values 0x21 and 0x12
-respectively.
+Below is my network setup.
 
-I am trying to filter out the packets using iptables rule 
-"iptables -t raw -A INPUT -m string --algo bm --from 31 --to 32 --hex-string
-'|21 12|' -j LOG"
+                       linuxbox
+                            |
+                            |
+ INTERNAL  ------ ABCD ----- INTERNET
+(p.q.r.s)                               (m.n.o.k)
 
-This rule filters the packet and I could find it in the logs.
+ABCD has 3 N/W interfaces connected to linuxbox, INTERNAL N/W, INTERNET.
 
-starting with the first octet of the packet at offset 0, the required
-pattern "21 12" appears at offset 32 and 33 of the packet.
+Linuxbox has a private-address and it is not in the same subnet as
+INTERNAL N/W. I have to do snat packets from linuxbox to INTERNAL N/W
+or to INTERNET at ABCD.
 
-rule "iptables -t raw -A INPUT -m string --algo bm --from 32 --to 33
---hex-string '|21 12|' -j LOG" fails to filter the packet.
+I have a small doubt regarding the FTP from linuxbox since I have to
+support ftp from linuxbox to both INTERNAL N/W as well as INTERNET.
 
-Please let me know if anybody has faced a similar situation before.
-Any help on the --from and --to values for string pattern matching will be
-appreciated.
+How can I right a rule in iptables present in ABCD where it can decide
+if the destination ip-address of ftp server is within INTERNAL N/W or
+in INTERNET and do natting accordingly.
 
-Thanks & Regards,
-Suganthi
+--
+Thanks,
 
+Ajith
+---------------------------------------------
+www.codingfreak.blogspot.com
