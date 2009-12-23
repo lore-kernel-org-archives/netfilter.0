@@ -1,49 +1,48 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: [SOLVED] Re: IPv6 forwarding to TAP-interface fails
-Date: Wed, 23 Dec 2009 14:03:41 +0100
-Message-ID: <4B32152D.60003@plouf.fr.eu.org>
-References: <20091219162047.04be7ac3@coercion>	<4B2CDE84.3060703@plouf.fr.eu.org>	<20091221114648.08eede72@malediction> <20091221140952.63c607f5@malediction>
+From: Nick Peirson <npeirson@depoelconsulting.com>
+Subject: Mapping external to internal IP addresses
+Date: Wed, 23 Dec 2009 15:16:33 +0000
+Message-ID: <C757E4D1.D29%npeirson@depoelconsulting.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20091221140952.63c607f5@malediction>
+Content-Language: en
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Mike Kazantsev <mk.fraggod@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Mike Kazantsev a =E9crit :
->=20
-> And here's the problem: no link-local address on the interface.
+We've got a couple of servers with external IP addresses NAT'd to internal
+IP addresses. Unfortunately the firewall that's performing the NAT isn't
+under our control and we have a problem where the servers can't access each
+other via their external IPs. This causes a problem when we use domain names
+on the servers, as the DNS lookup returns the external IP address. Ideally
+I'd like to avoid maintaing hosts files or an internal DNS server.
 
-Good catch. I didn't notice it.
+I looked to solve this with a iptables rule on each of the servers as
+follows:
+iptables -t mangle -A PREROUTING -d 1.1.1.32/29 -j NETMAP --to 2.2.2.32/29
 
-> With this address added (or rather preserved), router is able to send
-> neighbor solicitation requests from it and everything works fine.
->=20
-> Anyway, strange thing is that, apparently, VM on the other side is ab=
-le
-> to send these requests without link-local address, using global one
-> instead:
-[...]
-> Guess older kernel (2.6.30.4) there is the cause of it, and that's al=
-so
-> why it worked before with pretty much the same setup.
+where 1.1.1.32/29 is the range of external IPs and 2.2.2.32/29 is the range
+of internal IPs. I was expecting this to map the IP address from the
+external to the internal IP.
 
-I observed that when sending a locally generated packet, Linux uses the
-source address (which is one one of its own addresses) of the packet as
-the source address in the neighbour solicitation, whereas when
-forwarding a packet it uses the link-local address attached to the
-output interface. So there may be trouble when forwarding a packet and
-the output interface has no link-local address. The tcpdump trace in
-your previous message shows a neighbour solicitation packet with
-unspecified source address :
+Firstly, I'm not sure if this would work at all, and if I'm heading in
+completely the wrong direction and someone has a better solution, I'd be
+happy to hear it.
 
-> IP6 :: > ff02::1:ff00:22: ICMP6, neighbor solicitation, who has 2001:=
-470:1f0b:11de::22, length 24
+Secondly, if I've got the right idea my implementation is a little wrong.
+When I run the command, I get "iptables: Invalid argument", which doesn't
+provide much info, and I'm not sure how to go about debugging.
 
-This may explain the different results with pings from the LAN and from
-the router, and also why VM does not have the problem even though it ha=
-s
-no link-local address.
+A little system info:
+nick@blade6-dev1:~$ uname -a
+Linux blade6-dev1 2.6.26-2-amd64 #1 SMP Thu Nov 5 02:23:12 UTC 2009 x86_64
+GNU/Linux
+nick@blade6-dev1:~$ sudo iptables -V
+iptables v1.4.2
+
+Any thoughts greatly appreciated.
+
+Thanks
+Nick
+
