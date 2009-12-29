@@ -1,51 +1,107 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Understanding conntrack: Delete and manual readd of same entry
- possible?
-Date: Tue, 29 Dec 2009 18:40:38 +0100
-Message-ID: <4B3A3F16.6060005@netfilter.org>
-References: <4AC9A668.3050009@ait.ac.at> <4B32A248.9070403@netfilter.org> <4B39DCFD.8070808@ait.ac.at>
+From: Julia Lawall <julia@diku.dk>
+Subject: [PATCH 5/5] net/ipv4 : Correct the size argument to kzalloc
+Date: Tue, 29 Dec 2009 20:16:49 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.0912292016230.4001__48247.4652970724$1262114249$gmane$org@ask.diku.dk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B39DCFD.8070808@ait.ac.at>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Roman Fiedler <roman.fiedler@ait.ac.at>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, "Pekka Savola (ipv6)" <pekkas@netcore.fi>, James Morris <>
 
-Roman Fiedler wrote:
-> Thanks for the patch. When I've played with the same problem at home I've
-> guessed that it is something with sequence numbers and that setting 
-> tcp-liberal
-> in a netlink test application is a workaround for the DROP. But I did not
-> bring it to that point that I could create a clean patch because there were
-> still some loose ends. Perhaps someone could help me to fix some of these:
-> 
-> a) When conntrackd inserts the entries, does it set the liberal also? If 
-> yes,
-> is it correct, that a failover via conntrackd would disable sequence number
-> tracking for all existing entries?
+From: Julia Lawall <julia@diku.dk>
 
-Yes, this is the way it works by now, but it would be easy to make a 
-patch not to disable it. I'm going to prepare one now that 
-conntrack-tools 0.9.14 is out. I'll let you know, you may want to help 
-me doing some testing.
+obj has type struct snmp_object **, not struct snmp_object *.  But indeed
+it is not even clear why kmalloc is needed.  The memory is freed by the end
+of the function, so the local variable of pointer type should be sufficient.
 
-> b) Does the netlink api support sequence number parameters? If not, 
-> should it?
+The semantic patch that makes this change is as follows:
+(http://coccinelle.lip6.fr/)
 
-IIRC the kernel already supports it, but user-space support for 
-libnetfilter_conntrack and conntrackd is still missing.
+// <smpl>
+@disable sizeof_type_expr@
+type T;
+T **x;
+@@
 
-> c) If the sequence numbers are not set by the conntrack utility, where 
-> do the
-> values in the kernel space come from? Are they all 0 or is it uninitialized
-> memory from user or kernel space?
+  x =
+  <+...sizeof(
+- T
++ *x
+  )...+>
+// </smpl>
 
-Not sure what you mean. Currently, we are setting the 
-IP_CT_TCP_FLAG_BE_LIBERAL flag so window tracking is disabled for 
-entries created via ctnetlink.
+Signed-off-by: Julia Lawall <julia@diku.dk>
 
-I'm going to look into this so we may have it for the next 
-conntrack-tools release.
+---
+ net/ipv4/netfilter/nf_nat_snmp_basic.c         |   31 +++++++-------------
+ 1 files changed, 11 insertions(+), 20 deletions(-)
+
+diff --git a/net/ipv4/netfilter/nf_nat_snmp_basic.c b/net/ipv4/netfilter/nf_nat_snmp_basic.c
+index d9521f6..0b9c7ce 100644
+--- a/net/ipv4/netfilter/nf_nat_snmp_basic.c
++++ b/net/ipv4/netfilter/nf_nat_snmp_basic.c
+@@ -1038,7 +1038,7 @@ static int snmp_parse_mangle(unsigned char *msg,
+ 	unsigned int cls, con, tag, vers, pdutype;
+ 	struct asn1_ctx ctx;
+ 	struct asn1_octstr comm;
+-	struct snmp_object **obj;
++	struct snmp_object *obj;
+ 
+ 	if (debug > 1)
+ 		hex_dump(msg, len);
+@@ -1148,43 +1148,34 @@ static int snmp_parse_mangle(unsigned char *msg,
+ 	if (cls != ASN1_UNI || con != ASN1_CON || tag != ASN1_SEQ)
+ 		return 0;
+ 
+-	obj = kmalloc(sizeof(struct snmp_object), GFP_ATOMIC);
+-	if (obj == NULL) {
+-		if (net_ratelimit())
+-			printk(KERN_WARNING "OOM in bsalg(%d)\n", __LINE__);
+-		return 0;
+-	}
+-
+ 	while (!asn1_eoc_decode(&ctx, eoc)) {
+ 		unsigned int i;
+ 
+-		if (!snmp_object_decode(&ctx, obj)) {
+-			if (*obj) {
+-				kfree((*obj)->id);
+-				kfree(*obj);
++		if (!snmp_object_decode(&ctx, &obj)) {
++			if (obj) {
++				kfree(obj->id);
++				kfree(obj);
+ 			}
+-			kfree(obj);
+ 			return 0;
+ 		}
+ 
+ 		if (debug > 1) {
+ 			printk(KERN_DEBUG "bsalg: object: ");
+-			for (i = 0; i < (*obj)->id_len; i++) {
++			for (i = 0; i < obj->id_len; i++) {
+ 				if (i > 0)
+ 					printk(".");
+-				printk("%lu", (*obj)->id[i]);
++				printk("%lu", obj->id[i]);
+ 			}
+-			printk(": type=%u\n", (*obj)->type);
++			printk(": type=%u\n", obj->type);
+ 
+ 		}
+ 
+-		if ((*obj)->type == SNMP_IPADDR)
++		if (obj->type == SNMP_IPADDR)
+ 			mangle_address(ctx.begin, ctx.pointer - 4 , map, check);
+ 
+-		kfree((*obj)->id);
+-		kfree(*obj);
++		kfree(obj->id);
++		kfree(obj);
+ 	}
+-	kfree(obj);
+ 
+ 	if (!asn1_eoc_decode(&ctx, eoc))
+ 		return 0;
