@@ -1,128 +1,69 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] conntrack-tools 0.9.14 released
-Date: Mon, 28 Dec 2009 19:56:46 +0100
-Message-ID: <4B38FF6E.3050803@netfilter.org>
+From: Medialy <medialy@gmail.com>
+Subject: Why "No buffer space available"?
+Date: Tue, 29 Dec 2009 10:49:56 +0800
+Message-ID: <cc73a9220912281849qf25a81evdb6082197d037917@mail.gmail.com>
+References: <cc73a9220912281846h6a337b76ud7d9d1f61371f21e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------000407040207040206070607"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=ZnmI/92MyN6pL1oICj4xt6UTf7n5Ey03SP3xv200tzE=;
+        b=sebSWNW7GZfn+gITs0ayBT80P/PEA2b4tNpM2Ub5+DOjuM+mxCg2ASvCBKc+zONWua
+         Kz9BGhXlZWcWZcx1MkQl8AxpdDNl6mUtsrjjWwwc5+uP1SSwm8F/z/hqX7JlGx2Zsmwv
+         dsiw2naWj5/nQD98KiEw5qSRxs03UcPyi5/KQ=
+In-Reply-To: <cc73a9220912281846h6a337b76ud7d9d1f61371f21e@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
-Cc: netfilter-announce@lists.netfilter.org, lwn@lwn.net
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------000407040207040206070607
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi,
+I have written a program to log the nat behavior. the program works
+well when traffic is low. But when the traffic reaches 1Gb, program
+always error.
+According to the previous discussions about this problem, I even set
+the recv buffer size=A0to 50MB and the error still exists.
+=46or every callback, format the data and then put it into the queue
+directly.=A0 The formating of data causes less then 1 second for 0.65
+million records.
+Errors always occurs=A0 when there are less than 10 log records.
+Is anyone who can help?
+Thanks.
 
-Hi!
+Setting:
+=A0=A0=A0 Redhat Enterprise Linux 5
+=A0=A0=A0 libnetfilter_conntrack-0.0.100
+=A0=A0=A0 libnfnetlink-1.0.0
+=A0=A0=A0 recv buffer size: 50MB
+=A0=A0=A0 nfct_open(CONNTRACK,=A0NF_NETLINK_CONNTRACK_NEW|NF_NETLINK_CO=
+NNTRACK_DESTROY)
+=A0=A0=A0 1Gb nat traffic, 0.65 million records per minute
+=A0=A0=A0 circular queue size: 1 million
 
-The Netfilter project presents another development release of the 
-conntrack-tools. This release includes several fixes for the command 
-line tool and lots of improvements for the daemon. Specifically I'd like 
-to thank Hannes Eder, Vincent Jardin and Samuel Gauthier for their 
-suggestions and contributions.
+Error:
+=A0=A0=A0 nfct_catch error: No buffer space available
 
-Please, see changelog attached for more details.
+Program Structure:
+=A0=A0=A0 Callback:
+=A0=A0=A0=A0=A0=A0=A0 lock;
+=A0=A0=A0=A0=A0=A0=A0 if log number > MAX_LOG_NUM:
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 discard
+=A0=A0=A0=A0=A0=A0=A0 else:
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 put log in circular queue
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 log number +=3D 1
+=A0=A0=A0=A0=A0=A0=A0 unlock
 
-I'd also like to thank 6WIND <www.6wind.com> for sponsoring the 
-development of two new features that are included in this release: the 
-new TCP-based state-synchronization approach and a new feature that 
-allows to disable the internal and the external caches. They have also 
-helped auditing the code and doing bug hunting.
-
-Q: How stable are the conntrack-tools?
-A: The daemon that allows to synchronize states between firewalls has 
-been tested in a cluster environment composed of two stateful firewalls 
-running Debian 5.0 (Lenny) with a Linux kernel 2.6.32, keepalived 
-1.1.15, using conntrackd in FT-FW mode. The test consisted of 
-downloading the Linux kernel source code in a tarball file via HTTP and 
-randomly (in periods of 10 seconds) unplugging cablelinks to force the 
-fail-over between the nodes. The results has shown no hangs/closure in 
-any TCP connection.
-
-Q: What are the conntrack-tools?
-A: The conntrack-tools are:
-
-- The userspace daemon so-called conntrackd that covers the specific
-aspects of stateful Linux firewalls to enable high availability
-solutions. It can be used as statistics collector of the firewall use as
-well. The daemon is highly configurable and easily extensible.
-
-- The command line interface (CLI) conntrack that provides an interface
-to add, delete and update flow entries, list current active flows in
-plain text/XML, current IPv4 NAT'ed flows, reset counters, and flush the
-complete connection tracking table among many other.
-
-Q: Where can I download it from?
-A: http://www.netfilter.org/projects/conntrack-tools/downloads.html
-
-Q: Where can I get more information about them?
-A: http://conntrack-tools.netfilter.org
-
-Q: Where can I have a look at the user manual?
-A: http://conntrack-tools.netfilter.org/manual.html
-
-On behalf of the Netfilter Core Team,
-Pablo.
-
---------------000407040207040206070607
-Content-Type: text/plain;
- name="changes-conntrack-tools-0.9.14.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="changes-conntrack-tools-0.9.14.txt"
-
-Hannes Eder (3):
-      conntrack: fix output when no arguments are passed
-      conntrack: avoid error with expectations when using 'conntrack -E -e ALL ...'
-      conntrack: use fscanf() instead of read() for showing counter
-
-Jan Engelhardt (1):
-      doc: spell fix in conntrack(8) manpage
-
-Pablo Neira Ayuso (36):
-      build: update library version requirements
-      local: add LOCAL_RET_* return values for UNIX sockets callbacks
-      conntrackd: add iterators with limited steps in hash and cache types
-      conntrackd: rework commit not to fork a child process
-      conntrackd: improve handling of external messages
-      conntrackd: reset event limit iteration counter
-      conntrackd: add clause to enable ctnetlink reliable event delivery
-      conntrackd: add support for IPv6 kernel-space filtering via BSF
-      conntrackd: use conntrack ID in the cache lookup
-      conntrackd: fix crash for unubuffered channel on exit path
-      conntrackd: more robust sanity checking on synchronization messages
-      conntrackd: add `DisableExternalCache' clause
-      conntrackd: reduce the number of gettimeofday() syscalls
-      conntrackd: allow to remove file descriptors from set
-      conntrackd: add support state-replication based on TCP
-      conntrackd: net message memory allocation is unsafe
-      conntrackd: fix MTU for TCP channels
-      conntrackd: fix return value in notrack_local()
-      conntrackd: improve error handling in tcp_send
-      conntrackd: fix `conf' local variable in channel.c that shadows global
-      conntrackd: fix re-connect with multiple TCP channels
-      conntrackd: break lines at 80 characters in example config files
-      conntrackd: rate-limit the amount of connect() calls
-      conntrackd: add retention queue for TCP errors
-      conntrackd: add alive control messages to notrack mode
-      conntrackd: fix wrong calculation of new maxfd on unregister_fds()
-      conntrackd: add statistics when the external cache is disabled
-      conntrackd: add missing external statistics
-      conntrackd: add `DisableInternalCache' clause
-      conntrackd: use indirect call to build layer 4 protocol information
-      conntrackd: add ICMP support for state-synchronization
-      conntrackd: fix flow-state filtering for TCP
-      conntrackd: document internal cache disabling and TCP-based synchronization
-      conntrack: fix manually created TCP entries with window tracking enabled
-      conntrackd: document `-B' command
-      build: bump version to 0.9.14
-
-Samuel Gauthier (2):
-      conntrackd: better parse_payload protection against corrupted packets
-      conntrackd: fix bad configuration file for DisableExternalCache statement
-
-
---------------000407040207040206070607--
+=A0=A0=A0 Thread 2:
+=A0=A0=A0=A0=A0=A0=A0 lock;
+=A0=A0=A0=A0=A0=A0=A0 if log number >0 :
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 get lock number
+=A0=A0=A0=A0=A0=A0=A0 unlock
+=A0=A0=A0=A0=A0=A0=A0 process log data in circular queue
+=A0=A0=A0=A0=A0=A0=A0 lock
+=A0=A0=A0=A0=A0=A0=A0=A0log number=A0=3D log number - log number proces=
+sed
+=A0=A0=A0=A0=A0=A0=A0 unlock
