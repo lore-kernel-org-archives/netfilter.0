@@ -1,54 +1,52 @@
-From: Felipe W Damasio <felipewd@gmail.com>
-Subject: Re: ebtables broute DROP problem in production environment
-Date: Wed, 30 Dec 2009 02:08:18 -0200
-Message-ID: <8a87046f0912292008t518031e1l8a1e21f8765e4616@mail.gmail.com>
-References: <8a87046f0912231019l76e69a9eg52a529023d02237b@mail.gmail.com>
-	 <8a87046f0912231022g438141afpfaa647ac0d01cdda@mail.gmail.com>
-	 <8a87046f0912240513m4c3cd0f2u565ef8e8b849f58@mail.gmail.com>
-	 <8a87046f0912291418x11b37daen604665a94108f128@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Why "No buffer space available"?
+Date: Wed, 30 Dec 2009 13:10:24 +0100
+Message-ID: <4B3B4330.4050304@netfilter.org>
+References: <cc73a9220912281846h6a337b76ud7d9d1f61371f21e@mail.gmail.com> <cc73a9220912281849qf25a81evdb6082197d037917@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=WJmU9Eu95UU4cm/LbGNAGbfrLZhh6v7QaFs7MBTgu0Y=;
-        b=ifuXxTzIgNPbAzhi9VPiB8DORn1db/o8SzXFOJmRZWLpMxGgEAGaEmYIUaMNLhAEEf
-         RDBl/C7ZEU0ssvXLgqoDZmkwN1Ri9FoeZU+/24oB/uKvRPF7pQwsThtXKJ7EdKkYTW7A
-         alG6NVEpi0SqspTlpe75LgZYcjPT89/53vMik=
-In-Reply-To: <8a87046f0912291418x11b37daen604665a94108f128@mail.gmail.com>
+In-Reply-To: <cc73a9220912281849qf25a81evdb6082197d037917@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
-Cc: Bruno Gustavo Wallauer <brunogw@gmail.com>, pascal.mail@plouf.fr.eu.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Medialy <medialy@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-  Hi All,
+Medialy wrote:
+> Hi,
+> I have written a program to log the nat behavior. the program works
+> well when traffic is low. But when the traffic reaches 1Gb, program
+> always error.
+> According to the previous discussions about this problem, I even set
+> the recv buffer size to 50MB and the error still exists.
 
-2009/12/29 Felipe W Damasio <felipewd@gmail.com>:
-> =A0- The traffic is passing through the bridge just fine;
-> =A0- When I plug a single client everything works great;
-> =A0- When I plug in the CMTS (all the cable modem clients, then),
-> everything stops.
+Increasing the buffer size would not solve the problem, that will only 
+delay the ENOBUFS error. There are several reasons why you may hit ENOBUFS:
 
-  I now see that iptables -t mangle -L -v shows growing matches:
+a) your program is too slow to handle the Netlink messages that you 
+receive from the kernel at a given rate. This is easier to trigger if 
+the handling that you perform on every message takes too long.
+b) the queue size is too small, but this does not seem to be your case.
 
-pkts bytes target     prot opt in     out     source
-destination
- 7508  466K DIVERT     tcp  --  any    any     anywhere
-anywhere            socket
-37713   13M TPROXY     tcp  --  eth0   any     anywhere
-anywhere            tcp dpt:http TPROXY redirect 0.0.0.0:3128 mark
-0x1/0x1
+ENOBUFS basically means that the kernel has to drop Netlink messages 
+because your user-space program cannot back-off.
 
-  So the traffic _seems_ to be routed to port 3128. But how can I make
-sure that squid is getting it?
+> For every callback, format the data and then put it into the queue
+> directly.  The formating of data causes less then 1 second for 0.65
+> million records.
+> Errors always occurs  when there are less than 10 log records.
 
-  I don't get why it's not working....since it works with a single user=
-=2E
+I don't understand what you mean here above.
 
-  Thanks,
+BTW, if you use a recent Linux kernel (>=2.6.30) you can set these two 
+socket options not to get ENOBUFS error and to try to improve ctnetlink 
+reliability.
 
-=46elipe Damasio
+int on = 1;
+
+setsockopt(nfct_fd(h), SOL_NETLINK,
+            NETLINK_BROADCAST_SEND_ERROR, &on, sizeof(int));
+
+setsockopt(nfct_fd(h), SOL_NETLINK,
+            NETLINK_NO_ENOBUFS, &on, sizeof(int));
