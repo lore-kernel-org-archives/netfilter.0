@@ -1,57 +1,26 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Why "No buffer space available"?
-Date: Thu, 31 Dec 2009 12:31:09 +0100
-Message-ID: <4B3C8B7D.8010202@netfilter.org>
-References: <cc73a9220912281846h6a337b76ud7d9d1f61371f21e@mail.gmail.com>	 <cc73a9220912281849qf25a81evdb6082197d037917@mail.gmail.com>	 <4B3B4330.4050304@netfilter.org> <c29e3bea0912301743k7f7bda48o17ce78d4521a7585@mail.gmail.com>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [PATCH 5/5] net/ipv4 : Correct the size argument to kzalloc
+Date: Mon, 04 Jan 2010 15:23:23 +0100
+Message-ID: <4B41F9DB.1010908@trash.net>
+References: <Pine.LNX.4.64.0912292016230.4001@ask.diku.dk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <c29e3bea0912301743k7f7bda48o17ce78d4521a7585@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <Pine.LNX.4.64.0912292016230.4001@ask.diku.dk>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Medialy <medialy@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Julia Lawall <julia@diku.dk>
+Cc: "David S. Miller" <davem@davemloft.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, "Pekka Savola (ipv6)" <pekkas@netcore.fi>, James Morris <jmorris@namei.org>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 
-Medialy wrote:
-> Problem solved. Thanks.
-> BTW, sometimes the program stops at function nfct_close() and never return!
+Julia Lawall wrote:
+> From: Julia Lawall <julia@diku.dk>
+> 
+> obj has type struct snmp_object **, not struct snmp_object *.  But indeed
+> it is not even clear why kmalloc is needed.  The memory is freed by the end
+> of the function, so the local variable of pointer type should be sufficient.
 
-I don't have an explanation for that, but it should not happen.
+Thanks. As this is basically just an unneeded and oversized allocation
+without any bad consequences, I've applied it to nf-next-2.6.git.
 
-> On Wed, Dec 30, 2009 at 8:10 PM, Pablo Neira Ayuso <pablo@netfilter.org 
-> <mailto:pablo@netfilter.org>> wrote:
-> 
->     Medialy wrote:
-> 
->         Hi,
->         I have written a program to log the nat behavior. the program works
->         well when traffic is low. But when the traffic reaches 1Gb, program
->         always error.
->         According to the previous discussions about this problem, I even set
->         the recv buffer size to 50MB and the error still exists.
-> 
-> 
->     Increasing the buffer size would not solve the problem, that will
->     only delay the ENOBUFS error. There are several reasons why you may
->     hit ENOBUFS:
-> 
->     a) your program is too slow to handle the Netlink messages that you
->     receive from the kernel at a given rate. This is easier to trigger
->     if the handling that you perform on every message takes too long.
->     b) the queue size is too small, but this does not seem to be your case.
-> 
->     ENOBUFS basically means that the kernel has to drop Netlink messages
->     because your user-space program cannot back-off.
-> 
->  
-> Medialy:
-> Reason: system was overloaded due to the storage capability.  The 
-> program (2 threads) was set to use last CPU.  When the traffic was 
-> heavy,  most of the computing power of last CPU was occupied by the 
-> thread which wrote Netlink messages to the stroage.
 
-Good analysis. It is a good idea to put the thread that digest the 
-Netlink message in a spare CPU. That reduces the chances to hit ENOBUFS.
-
-I forgot to say but reducing the nice() value also help to avoid ENOBUFS.
