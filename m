@@ -1,73 +1,44 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: Squid Redirection
-Date: Wed, 06 Jan 2010 11:12:27 +0100
-Message-ID: <4B44620B.4040903@chello.at>
-References: <8ec0428d1001041031t5362a011ie9c19ff589cb38c@mail.gmail.com>	 <4B4235A3.2010409@wow-ia.net> <8ec0428d1001051445j60c7a32q25d34e8b0db7560a@mail.gmail.com> <4B43CA2B.40309@wow-ia.net> <4B445AAE.2060501@chello.at>
-Reply-To: netfilter@vger.kernel.org
+From: John Haxby <john.haxby@oracle.com>
+Subject: Re: iptables for bandwidth tracking
+Date: Wed, 06 Jan 2010 12:13:02 +0000
+Message-ID: <4B447E4E.2060505@oracle.com>
+References: <4B44078D.4000103@twentyten.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B445AAE.2060501@chello.at>
+In-Reply-To: <4B44078D.4000103@twentyten.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Michael Nguyen <iptables@twentyten.org>
+Cc: netfilter@vger.kernel.org
 
-On 06.01.2010 10:41, Mart Frauenlob wrote:
-> On 06.01.2010 00:24, Kenneth Sande wrote:
->> Aaron Clausen wrote:
->>> On Mon, Jan 4, 2010 at 10:38, Kenneth Sande <sandekt@wow-ia.net> wrote:
->>>  
->>>> I do it this way for my one internal subnet. There may be more and
->>>> better
->>>> options, but this works for me.
->>>>
->>>> "iptables -t nat -A PREROUTING -i ${INT_INTERFACE} -s ${INT_NETWORK}
->>>> -p tcp
->>>> --dport 80 --sport 1024:65535 -m state --state
->>>> NEW,ESTABLISHED,RELATED -j
->>>> REDIRECT --to-port 3128"
->>>>
->>>> Squid must also be set up to accept transparent connections.
->>>>     
->>>
->>> Thanks.  Now for another question.  I have about a dozen workstations
->>> that I want to bypass squid (they are in the same subnet as the
->>> workstations that I want traffic sent through squid).  Reading squid's
->>> documentation, they recommend that this be done at the client end or
->>> via iptables.  What's the rule to allow these hosts to bypass squid?
->>>
->>>   
->> What I do is have a special portion of my subnet set aside for
->> "unfiltered" access, and I just put an ACCEPT chain in for that portion
->> before the REDIRECT for the whole subnet.
->> So it looks similar to this:
->>
->> "iptables -t nat -A PREROUTING -i ${INT_INTERFACE} -s
->> ${INT_NOSQUID-NETWORK} -p tcp
->> --dport 80 --sport 1024:65535 -m state --state NEW,ESTABLISHED,RELATED
->> -j ACCEPT"
->>
->> "iptables -t nat -A PREROUTING -i ${INT_INTERFACE} -s ${INT_NETWORK} -p tcp
->> --dport 80 --sport 1024:65535 -m state --state NEW,ESTABLISHED,RELATED -j
->> REDIRECT --to-port 3128"
->>
-> 
-> nat table rules 'see' only state 'NEW' packets.
-> Better do filtering in the filter table.
-> 
-> You could use the 'iprange' if the hosts are not in a complete subnet.
-> If that does not match, you could use ipset and the set match.
-> 
-> ipset -N no_squid ipmap
-> 
-> ...add hosts to ipset: ipset --add no_squid ...
-> 
-> iptables -t nat -A PREROUTING -i ... -m set ! --match-set no_squid -j
-> REDIRECT ...
-> 
+On 06/01/10 03:46, Michael Nguyen wrote:
+>
+> - Using one of the many libpcap daemons to monitor and record traffic 
+> patterns
+> - Use iptables
+>
+> Each VPN node has the possibility of 64,000 IP addresses so if I used 
+> iptables, I'd need to create iptables rules for each of those IP 
+> addresses.  That seems silly to me, but am I better off doing that 
+> than running a daemon that at the end of the day will basically do the 
+> same thing?  Thanks in advance.
 
-sorry, forgot the set flag :/
-iptables -t nat -A PREROUTING -i ... -m set ! --match-set no_squid src
--j REDIRECT ...
+Are those 64K addresses all in one subnet?   Then something like
 
+     iptables -A FORWARD -s 10.0.0.0/16 -j node1
+     iptables -A FORWARD -d 10.0.0.0/16 -j node1
+     iptables -A FORWARD -s 10.1.0.0/16 -j node2
+     ... and so on
+
+Then you can just collect the stats as and when you feel the need.
+
+The advantage of that is that it's very easy to do and has very little 
+performance impact (I believe).
+
+On the other hand, the various libpcap daemons that I came across when I 
+was looking for something for home might be better suited to what you're 
+after.
+
+jch
