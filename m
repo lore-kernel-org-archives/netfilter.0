@@ -1,48 +1,27 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH] net/netfilter/xt_osf.c: Change %pi4 to %pI4
-Date: Wed, 06 Jan 2010 18:20:18 -0800
-Message-ID: <1262830818.1872.52.camel@Joe-Laptop.home>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: what should I use for "unassigned" ports?
+Date: Thu, 07 Jan 2010 12:36:33 +0100
+Message-ID: <4B45C741.4060607@plouf.fr.eu.org>
+References: <4B44D277.3000801@verizon.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner+glk-linux-kernel-3=40m.gmane.org-S1756521Ab0AGCUW@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4B44D277.3000801@verizon.net>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Patrick McHardy <kaber@trash.net>
-Cc: "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-commit 8a27f7c90ffcb791eed7574922b51fb60b08fc89
-changed the output style of %pi4 to use fixed
-width leading zero IP addresses "001.002.003.004".
+Hello,
 
-It's useful when printing multiple lines of
-addresses, but was a change in output style for
-some existing uses.
+Anthony Ewell a =E9crit :
+>=20
+> A long time ago, I used
+>=20
+>       unassgn=3D1024:65535
+>=20
+> for my unassigned ports.  As in
+>=20
+>       --sport $unassgn
 
-Using %pI4 restores the previous output style.
-
-Signed-off-by: Joe Perches <joe@perches.com>
-
-diff --git a/net/netfilter/xt_osf.c b/net/netfilter/xt_osf.c
-index 4d1a41b..4169e20 100644
---- a/net/netfilter/xt_osf.c
-+++ b/net/netfilter/xt_osf.c
-@@ -334,7 +334,7 @@ static bool xt_osf_match_packet(const struct sk_buff *skb,
- 			if (info->flags & XT_OSF_LOG)
- 				nf_log_packet(p->family, p->hooknum, skb,
- 					p->in, p->out, NULL,
--					"%s [%s:%s] : %pi4:%d -> %pi4:%d hops=%d\n",
-+					"%s [%s:%s] : %pI4:%d -> %pI4:%d hops=%d\n",
- 					f->genre, f->version, f->subtype,
- 					&ip->saddr, ntohs(tcp->source),
- 					&ip->daddr, ntohs(tcp->dest),
-@@ -349,7 +349,7 @@ static bool xt_osf_match_packet(const struct sk_buff *skb,
- 
- 	if (!fcount && (info->flags & XT_OSF_LOG))
- 		nf_log_packet(p->family, p->hooknum, skb, p->in, p->out, NULL,
--			"Remote OS is not known: %pi4:%u -> %pi4:%u\n",
-+			"Remote OS is not known: %pI4:%u -> %pI4:%u\n",
- 				&ip->saddr, ntohs(tcp->source),
- 				&ip->daddr, ntohs(tcp->dest));
- 
-
+What do you need this for ?
