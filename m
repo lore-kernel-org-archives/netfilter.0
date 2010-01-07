@@ -1,28 +1,47 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: How do I read my state from this log?
-Date: Thu, 07 Jan 2010 12:39:52 +0100
-Message-ID: <4B45C808.8030700@plouf.fr.eu.org>
-References: <4B44E71A.5060301@gmail.com>
+From: Richard Horton <arimus.uk@googlemail.com>
+Subject: Re: what should I use for "unassigned" ports?
+Date: Thu, 7 Jan 2010 11:56:17 +0000
+Message-ID: <56378e321001070356w255ec0bcm90e637403f2ff7fd@mail.gmail.com>
+References: <4B44D277.3000801@verizon.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B44E71A.5060301@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:cc:content-type;
+        bh=8++y3XTrR5c9faejiMGnnCBpi5HDEiIqW2C+BPigGQo=;
+        b=fOgSWLcnjwMZ+KeipiXC2a2W/8nM0F/7yUMcJbyqBNTdEmgAAjZ/vhe9Nk9n0aA5Vk
+         3GN7wD1t1W472CzWPzFGT+dyGRBsK+jh5WoZqjAl8Wl7D+QTh+II6mY9ofFrGInMunaJ
+         pzSJZ9x2LgZh6ePtbFFvYXO6hqlxqKvNX2dcA=
+In-Reply-To: <4B44D277.3000801@verizon.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Anthony Ewell <amewell@verizon.net>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+2010/1/6 Anthony Ewell <amewell@verizon.net>:
+> Hi All,
+>
+>
+> Having taken a more recent look at "/etc/services", I
+> am finding zillions of service ports above 1024.
+>
+> With that in mind, is there a better starting port
+> for my "unassigned" ports?
 
-MargoAndTodd a =E9crit :
->=20
-> How do I determine the "state" from from this logged packet?
->=20
-> kernel: dsl-out Everything Else IN=3D OUT=3Deth1 SRC=3D192.168.1.46=20
-> DST=3Dxxx.yyy.zzz.www LEN=3D60 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D5=
-2504 DF=20
-> PROTO=3DTCP SPT=3D60588 DPT=3D52423 WINDOW=3D5840 RES=3D0x00 SYN URGP=
-=3D0
+If you are purely trying to block traffic which is to services not
+running then you could just change the default policies to drop and
+then only explicitly allow what you want which is alot safer.
 
-LOG does not report the conntrack state. You can create different rules
-with different --log-prefix chains for each state.
+If you need this for logging then place a log rule as the last rule in
+the table.
+
+
+-- 
+Richard Horton
+Users are like a virus: Each causing a thousand tiny crises until the
+host finally dies.
+http://www.solstans.co.uk - Solstans Japanese Bobtails and Norwegian Forest Cats
+http://www.pbase.com/arimus - My online photogallery
