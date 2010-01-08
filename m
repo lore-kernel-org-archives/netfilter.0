@@ -1,42 +1,52 @@
-From: MargoAndTodd <margoandtodd@gmail.com>
-Subject: Re: passive mode ftp high ports driving me nuts
-Date: Fri, 08 Jan 2010 08:09:38 -0800
-Message-ID: <4B4758C2.7050607@gmail.com>
-References: <4B46323E.1050106@gmail.com> <4B4707EA.9010301@chello.at>
+From: Elison Niven <elison.niven@gmail.com>
+Subject: Re: conntrack -F not flushing the table
+Date: Fri, 8 Jan 2010 22:04:46 +0530
+Message-ID: <201001082204.46961.elison.niven@gmail.com>
+References: <201001062301.37395.elison.niven@gmail.com> <4B45D6CD.4090903@netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from
-         :user-agent:mime-version:to:subject:references:in-reply-to
-         :content-type:content-transfer-encoding;
-        bh=dfC4bkk9gTmRLGz4RLW7IderqyC8m+23AsXL0BQM90Q=;
-        b=lmB/33u/VfhJXuBkMGMCpa76JS4Ph6myXgnEKdvUW2dB1rWWF+Z/oEyxGneHW9yosq
-         yQl66Jv72qaEh0/il91oAD7ytqmKbEPHYCa2fZhwnmOU/xk/IxdQbY3EOfJv1T1WkPIm
-         Z4VnmzV658kxiVFffv2xG30IVJYenqAnTIVSo=
-In-Reply-To: <4B4707EA.9010301@chello.at>
+        h=domainkey-signature:received:received:from:to:subject:date
+         :user-agent:references:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:message-id;
+        bh=k2IZNUyXbGb2Uku9VjFf0h8oy3HaStNAI7CI8wBX/sk=;
+        b=E4b+/JKxRG/zX+c1B2BYIV4p//Fgc4xZDR7bny0YYGSoEBSqsS4wlAsTFfSqUqLBMb
+         oBOxGgN40ygx3hHGLNsfeShhPWV1A+Xl2FIMEpLV87CT6O+94C2q76Z1Z7/W71iEM3tp
+         3tvTlMvwtYYTpckHdoHS8h5i89yfkqMemNNrk=
+In-Reply-To: <4B45D6CD.4090903@netfilter.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: Text/Plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
->> It is the "--sport $unassgn --dport $unassgn" that is killing me.
->> How do I restrict the last three to just passive mode ftp?
->>
+Hi,
 
-On 01/08/2010 02:24 AM, Mart Frauenlob wrote:
-> use the 'helper' match extension. i.e: -m helper --helper ftp.
-> if you need to distinguish between active and passive, you still can use
-> the port and state matches for that.
+Thanks for replying but i do not have strace on my board, will build strace 
+for powerpc and post the output.
 
-Hi Mart,
-
-Thank you!
-
-Can you point me to the directions/manual for the
-"-m helper --helper ftp" so I can figure out what
-exactly it is doing and how to install it?
-
-Many thanks,
--T
+On Thursday 07 January 2010 18:12:53 Pablo Neira Ayuso wrote:
+> Elison Niven wrote:
+> > Hi List,
+> >
+> > I am running linux on an embedded powerpc board on which conntrack -F
+> > does not seem to flush the entries as seen below:
+> >
+> > # conntrack -C
+> > 2000
+> >
+> > # # command to flush
+> > # conntrack -F
+> >
+> > #conntrack -C
+> > 2000
+> >
+> > I am able to delete single conntrack entries using conntrack -D but
+> > conntrack -F does not work.
+> >
+> > Any ideas on what could be possibly wrong, Am running linux-2.6.22 with
+> > all conntrack modules built in the kernel.
+> 
+> Could you post the result of `strace conntrack -F'?
+> 
