@@ -1,65 +1,73 @@
-From: "=?utf-8?b?0J/QvtC60L7RgtC40LvQtdC90LrQviA=?=
-	=?utf-8?b?0JrQvtGB0YLQuNC6?=" <casper@example.com>
-Subject: Re: Is it possible to queue same packet into two IMQ interfaces
-	sequentially?
-Date: Fri, 08 Jan 2010 18:24:22 +0200
-Message-ID: <20100108182422.12743lfk9gdwikhs@meteor.dp.ua>
-References: <1262813130.13763.20.camel@casper.meteor.dp.ua>
+From: MargoAndTodd <margoandtodd@gmail.com>
+Subject: Re: passive mode ftp high ports driving me nuts
+Date: Fri, 08 Jan 2010 18:59:41 -0800
+Message-ID: <4B47F11D.1000507@gmail.com>
+References: <4B46323E.1050106@gmail.com> <4B4707EA.9010301@chello.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1262813130.13763.20.camel@casper.meteor.dp.ua>
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from
+         :user-agent:mime-version:to:subject:references:in-reply-to
+         :content-type:content-transfer-encoding;
+        bh=Uo65aCcM+U5t/481Ybt79bdumD22hDPR8jD/ooAokQA=;
+        b=t+USznM9yrAA9qmw07RgHWA+jcCU+PZdc1qbXx3qg636ghuRC4cgUGzOlsWmc0NMiG
+         NQYvdNCT7h+7yfK40rzo1xD2jrdukKxEdY4amddwHDQbeIPqXmU5WOnDw5xsM7Ku7cKl
+         2CIWAMduq31A35oLQL8tkgGwq5rZO8Aft+sAQ=
+In-Reply-To: <4B4707EA.9010301@chello.at>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; delsp="Yes	format=flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-=D0=92 Wed, 06 Jan 2010 23:25:30 +0200, "=D0=9F=D0=BE=D0=BA=D0=BE=D1=82=
-=D0=B8=D0=BB=D0=B5=D0=BD=D0=BA=D0=BE =D0=9A=D0=BE=D1=81=D1=82=D0=B8=D0=BA=
-" =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+On 01/08/2010 02:24 AM, Mart Frauenlob wrote:
 
-Hi, need help with shaping in complex setup.
+>> It is the "--sport $unassgn --dport $unassgn" that is killing me.
+>> How do I restrict the last three to just passive mode ftp?
+>>
+>
+> use the 'helper' match extension. i.e: -m helper --helper ftp.
+> if you need to distinguish between active and passive, you still can use
+> the port and state matches for that.
 
-Is it possible to queue same packet into two IMQ interfaces
-sequentially, so that the packet got queued into imq1, then into imq2?
+Hi Mart,
 
-I know it's possible to do so by putting it in imq1 in PREROUTING and i=
-n
-imq2 in POSTROUTING, but one IMQ device in PREROUTING (imq0) and one IM=
-Q
-device in POSTROUTING (imq1) already occupied for another task.
+Works perfectly.  Thank you!
 
-I have complex HTB channel division between 7 interfaces/vlans/bridge
-made on top of IMQ for both PREROUTING and POSTROUTING. Problem is that
-I also need to rate limit some traffic independently of the rest
-shaping.
+-T
 
-In previous setup there were 2 routers, one did HTB channel division an=
-d
-other did rate limits by "tc filter police rate", now I'm left with onl=
-y
-one router. I was mistakenly(?) thought that I can chain IMQs so that
-same traffic first come to say imq1 then imq2. Are there other ways to
-combine HTB channel division with independant rate limits?
+p.s. my new rules:
 
-I can't do rate limit in existing PREROUTING/POSTROUTING (imq0/imq1)
-classes, because those contain trees with classes for all directions fo=
-r
-incomming/outgoing. So I would have to insert several "tc filter police
-rate" for each direction putting underlimit traffic to apropriate class
-and drop overlimit, but this way I'll get say 256kbit/s to Internet +
-256kbit/s to Servers + 256kbit/s to Router itself which is not what
-really needed. There should be one limit to all directions.
+# ftp passive mode (browser) stuff.  Note: ftp_conntrack module is 
+required, e.g.:
+# /etc/sysconfig/iptables-config:
+# IPTABLES_MODULES="ip_conntrack_ftp"
+#
+$tbls -A dsl-out  -o eth1  -p tcp  -s $eth1_addr --sport $unassgn 
+--dport ftp         -m state --state NEW,ESTABLISHED           -j ACCEPT
+$tbls -A dsl-in   -i eth1  -p tcp  ! --syn --sport ftp -d $eth1_addr 
+--dport $unassgn -m state --state RELATED,ESTABLISHED       -j ACCEPT
+$tbls -A dsl-for  -i eth1  -p tcp  ! --syn --sport ftp -d $internal_net 
+  --dport $unassgn  -m state --state RELATED,ESTABLISHED  -j ACCEPT
+# The "ftpdata" session is a "new" one when it sends the SYN.  However, 
+the ftp_conntrack module marks it as related to its controlling
+# ftp session, so that state=related matches.  This should deny any 
+"ftpdata" session that doesn't have a controlling ftp session.
+#$tbls -A dsl-out  -o eth1  -p tcp  -s $eth1_addr --sport $unassgn -d 
+$ANY_IP --dport $unassgn -m state --state RELATED,ESTABLISHED 
+      -j ACCEPT
+#$tbls -A dsl-in   -i eth1  -p tcp  ! --syn  -s $ANY_IP --sport $unassgn 
+-d $eth1_addr --dport $unassgn  -m state --state RELATED,ESTABLISHED 
+   -j ACCEPT
+#$tbls -A dsl-for  -i eth1  -p tcp  ! --syn  -s $ANY_IP --sport $unassgn 
+-d $internal_net --dport $unassgn   -m state --state RELATED,ESTABLISHED 
+  -j ACCEPT
+$tbls -A dsl-out  -o eth1  -p tcp  -s $eth1_addr       -d $ANY_IP 
+-m helper --helper ftp -m state --state RELATED,ESTABLISHED  -j ACCEPT
+$tbls -A dsl-in   -i eth1  -p tcp  ! --syn  -s $ANY_IP -d $eth1_addr 
+-m helper --helper ftp -m state --state RELATED,ESTABLISHED  -j ACCEPT
+$tbls -A dsl-for  -i eth1  -p tcp  ! --syn  -s $ANY_IP -d $internal_net 
+-m helper --helper ftp -m state --state RELATED,ESTABLISHED  -j ACCEPT
 
-I also can't do that in normal way at egress in each interface b/c each
-rate limit should be across multiple interfaces.
 
-Is there any other solution for this task using only one linux router?
-
---
-=D0=9F=D0=BE=D0=BA=D0=BE=D1=82=D0=B8=D0=BB=D0=B5=D0=BD=D0=BA=D0=BE =D0=9A=
-=D0=BE=D1=81=D1=82=D0=B8=D0=BA <casper@meteor.dp.ua>
-
-----------------------------------------------------------------
-This message was sent using IMP, the Internet Messaging Program.
