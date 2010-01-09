@@ -1,106 +1,81 @@
-From: MargoAndTodd <margoandtodd@gmail.com>
-Subject: Re: passive mode ftp high ports driving me nuts
-Date: Sat, 09 Jan 2010 08:33:09 -0800
-Message-ID: <4B48AFC5.7020003@gmail.com>
-References: <4B46323E.1050106@gmail.com> <4B4707EA.9010301@chello.at> <4B47F11D.1000507@gmail.com> <4B488ABD.6050603@chello.at> <4B488CF4.40506@chello.at>
+From: "=?utf-8?b?0J/QvtC60L7RgtC40LvQtdC90LrQviA=?=
+	=?utf-8?b?0JrQvtGB0YLQuNC6?=" <casper@example.com>
+Subject: Re: Is it possible to queue same packet into two IMQ interfaces
+	sequentially?
+Date: Sat, 09 Jan 2010 22:24:34 +0200
+Message-ID: <20100109222434.11970e5122in0h6o@meteor.dp.ua>
+References: <1262813130.13763.20.camel@casper.meteor.dp.ua>
+	<20100108182422.12743lfk9gdwikhs@meteor.dp.ua>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from
-         :user-agent:mime-version:to:subject:references:in-reply-to
-         :content-type:content-transfer-encoding;
-        bh=dTtyWFAIDpRJopSJZ8bGC/bNNen0C+F4JFDw6XJf4C8=;
-        b=pklY5cRY49XzExtazjduZQKdlFUTPXDkAIewWLbGYgWbuK9n1D8mAC5zTrsZeAMhhP
-         4fTOBS5ihBW+jSD8oDmFp1qc8EZZT8NTKE/GuPfzcLznXdgOo1jMuLPFs4fQ7/ghEIkx
-         1LKTlsxONF/Oh9xA0bRhZLl8bW62/sthEXH6U=
-In-Reply-To: <4B488CF4.40506@chello.at>
+In-Reply-To: <20100108182422.12743lfk9gdwikhs@meteor.dp.ua>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="utf-8"; delsp="Yes	format=flowed"
 To: netfilter@vger.kernel.org
 
-On 01/09/2010 06:04 AM, Mart Frauenlob wrote:
-> On 09.01.2010 14:55, Mart Frauenlob wrote:
->> On 09.01.2010 03:59, MargoAndTodd wrote:
->>> On 01/08/2010 02:24 AM, Mart Frauenlob wrote:
->>>
->>>>> It is the "--sport $unassgn --dport $unassgn" that is killing me.
->>>>> How do I restrict the last three to just passive mode ftp?
->>>>>
->>>>
->>>> use the 'helper' match extension. i.e: -m helper --helper ftp.
->>>> if you need to distinguish between active and passive, you still can use
->>>> the port and state matches for that.
->>>
->>> Hi Mart,
->>>
->>> Works perfectly.  Thank you!
->>>
->>> -T
->>>
->>> p.s. my new rules:
->>>
+Did this message hit the list?
+
+=D0=92 Fri, 08 Jan 2010 18:24:22 +0200, "=D0=9F=D0=BE=D0=BA=D0=BE=D1=82=
+=D0=B8=D0=BB=D0=B5=D0=BD=D0=BA=D0=BE =D0=9A=D0=BE=D1=81=D1=82=D0=B8=D0=BA=
+" =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+
+> =D0=92 Wed, 06 Jan 2010 23:25:30 +0200, "=D0=9F=D0=BE=D0=BA=D0=BE=D1=82=
+=D0=B8=D0=BB=D0=B5=D0=BD=D0=BA=D0=BE =D0=9A=D0=BE=D1=81=D1=82=D0=B8=D0=BA=
+" =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
 >
-> [...]
+> Hi, need help with shaping in complex setup.
 >
->>
->> if you use user-defined chains (which is good), take full advantage of
->> it, by not repeating so many values in your ruleset. i.e. dsl-in will
->> always have -i eth1 and -d $eth1_addr.
->> you don't need -d $ANY_IP, just leave it out, gives the same result.
->> you don't need --syn, if you rely on conntrack helper match.
->>
->> let me suggest a more structured approach:
->>
+> Is it possible to queue same packet into two IMQ interfaces
+> sequentially, so that the packet got queued into imq1, then into imq2=
+?
 >
-> [...]
+> I know it's possible to do so by putting it in imq1 in PREROUTING and=
+ in
+> imq2 in POSTROUTING, but one IMQ device in PREROUTING (imq0) and one =
+IMQ
+> device in POSTROUTING (imq1) already occupied for another task.
 >
->>
->> as an untested example with some additional design considerations for
->> invalid packets and related icmp.
->>
+> I have complex HTB channel division between 7 interfaces/vlans/bridge
+> made on top of IMQ for both PREROUTING and POSTROUTING. Problem is th=
+at
+> I also need to rate limit some traffic independently of the rest
+> shaping.
 >
-> sorry had the naming for dsl-for and dsl-fwd mixed up, again corrected:
+> In previous setup there were 2 routers, one did HTB channel division =
+and
+> other did rate limits by "tc filter police rate", now I'm left with o=
+nly
+> one router. I was mistakenly(?) thought that I can chain IMQs so that
+> same traffic first come to say imq1 then imq2. Are there other ways t=
+o
+> combine HTB channel division with independant rate limits?
 >
-> # assuming DROP policy for INPUT,OUTPUT,FORWARD...
+> I can't do rate limit in existing PREROUTING/POSTROUTING (imq0/imq1)
+> classes, because those contain trees with classes for all directions =
+for
+> incomming/outgoing. So I would have to insert several "tc filter poli=
+ce
+> rate" for each direction putting underlimit traffic to apropriate cla=
+ss
+> and drop overlimit, but this way I'll get say 256kbit/s to Internet +
+> 256kbit/s to Servers + 256kbit/s to Router itself which is not what
+> really needed. There should be one limit to all directions.
 >
+> I also can't do that in normal way at egress in each interface b/c ea=
+ch
+> rate limit should be across multiple interfaces.
 >
-> for x in dsl-in dsl-out dsl-for invalid; do
-> 	$ipt -N $x
-> done
+> Is there any other solution for this task using only one linux router=
+?
 >
-> # sort out the illegal packets - could add more eventually...
-> $ipt -A invalid -p tcp ! --syn -m state --state NEW -j DROP
-> $ipt -A invalid -m state --state INVALID -j DROP
->
-> # global rules:
-> # allow established - speed up processing by placing rule on top
-> # then sort out bad ones
-> # allow related icmp
-> for x in INPUT OUTPUT FORWARD; do
-> 	$ipt -A $x -m state ESTABLISHED -j ACCEPT
-> 	$ipt -A $x -j invalid
-> 	$ipt -A $x -p icmp -m state --state RELATED -j ACCEPT
-> done
->
-> # allow the related ftp packets
-> for x in dsl-in dsl-out dsl-for; do
-> 	$ipt -A $x -m helper --helper ftp -j ACCEPT
-> done
->
-> # allow new outgoing ftp connections
-> $ipt -A dsl-out -p tcp --dport 21 -m state --state NEW -j ACCEPT
-> $ipt -A dsl-for -s $internal_net -p tcp --dport 21 -m state --state NEW
-> -j ACCEPT
->
-> # jump tree
-> $ipt -A INPUT -i eth1 -d $eth1_addr -j dsl-in
-> $ipt -A OUTPUT -o eth1 -s $eth1_addr -j dsl-out
-> $ipt -A FORWARD -i eth1 -d $internal_net -j dsl-for
-> $ipt -A FORWARD -o eth1 -s $internal_net -j dsl-for
->
+> --
+> =D0=9F=D0=BE=D0=BA=D0=BE=D1=82=D0=B8=D0=BB=D0=B5=D0=BD=D0=BA=D0=BE =D0=
+=9A=D0=BE=D1=81=D1=82=D0=B8=D0=BA <casper@meteor.dp.ua>
 
 
-Thank you!
+
+----------------------------------------------------------------
+This message was sent using IMP, the Internet Messaging Program.
