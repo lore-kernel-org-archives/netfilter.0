@@ -1,34 +1,34 @@
-From: "=?windows-1251?b?z+7q7vLo6+Xt6u4g?= =?windows-1251?b?yu7x8ujq?=" 
-	<casper@example.com>
-Subject: What is the "nice" priority of the code runing iptables?
-Date: Sat, 09 Jan 2010 22:34:09 +0200
-Message-ID: <20100109223409.198672z4nx5v19c0@meteor.dp.ua>
+From: Nemeth Denes <nemeth.denes@iit.bme.hu>
+Subject: sequence numbers in conntrack
+Date: Sat, 09 Jan 2010 22:12:38 +0100
+Message-ID: <4B48F146.4040303@iit.bme.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; delsp="Yes"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi,
+Hello,
 
-I have router running on the edge with 100% CPU load most by  
-IRQ/SOFTIRQ. This is causing a number of inconviencies like net load  
-graphics (rrd) not being processed in time, slow command line  
-responce, etc.
+Could someone help me to explain what does the conntack module do
+in TCP connection negotiation in the following three cases: (host N is
+behind the NAT and host P is on the other side of the NAT)
 
-"renice"ing user root to -20 helps, but as I have red this is  
-dangerious. So, I thought I could set "nice" priority for user root to  
-be the same or a bit lesser than the priority of the code running  
-IRQ/netstack/iptables.
+A:
+P sends a SYN to H and H replies with an SYN-ACK with an invalid
+sequence number (If this passes normally through is it possible to
+filter it out?)
 
-So the question is in subj. Also, does somebody know wheather the  
-kernel threads/processes considered the same as userspace regarding  
-"nice" priority?
+B:
+P sends a SYN to H and H replies with non SYN-ACK (3-way-handshake)
+or SYN (TCP simultaneous open) package
 
+C: If the "--random" option is given to the postrouting chain, what happens
+if the clients use up all the ports?
 
-----------------------------------------------------------------
-This message was sent using IMP, the Internet Messaging Program.
+Many thanks,
+Denes Nemeth
+
 
