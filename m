@@ -1,21 +1,19 @@
-From: =?UTF-8?Q?Fran=C3=A7ois_Legal?= <devel@thom.fr.eu.org>
-Subject: =?UTF-8?Q?nf=5Fconntrack=5Fsip=20and=20sip=5Fdirect=5Fsignalling=20option?=
-Date: Mon, 11 Jan 2010 09:08:21 +0100
-Message-ID: <628018f531cbe31bb658845c20e9ac2c@thom.fr.eu.org>
+From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
+	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
+Subject: Test
+Date: Mon, 11 Jan 2010 10:25:58 +0200
+Message-ID: <1263198358.13167.1.camel@casper.meteor.dp.ua>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
+Content-Type: text/plain; charset="koi8-r"
 To: netfilter@vger.kernel.org
 
-Hello,=20
+Let me know if this message hit the list.
 
-I was just wondering one thing with the sip_direct_signalling option se=
-t
-to 0.=20
+--=20
+=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
+ua>
 
-That this setting allow any packet with dest port 5060 through ?=20
-
-=46ran=C3=A7ois
