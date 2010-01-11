@@ -1,34 +1,33 @@
-From: Lars Nooden <lars.curator@gmail.com>
-Subject: REJECT as a default policy
-Date: Mon, 11 Jan 2010 14:02:01 +0200
-Message-ID: <4B4B1339.1040502@gmail.com>
+From: rebeca.martinez-garcia@estudiant.upc.edu
+Subject: nf_conntrack_sip and nf_nat_sip can do this??
+Date: Mon, 11 Jan 2010 13:26:14 +0100
+Message-ID: <20100111132614.14651hiwfxvj3h8k@ek2pim.upc.edu>
+References: <20091214104526.93556bb1q7xj41s0@ek2pim.upc.edu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from
-         :user-agent:mime-version:to:subject:x-enigmail-version:openpgp
-         :content-type:content-transfer-encoding;
-        bh=Z4vyzA+ZmsjBVLUZdXnVNB7DhymhrNNsw+wyZD2LWME=;
-        b=v/iJEJbQwhwmkRTHst0ggyo1CWCYs22Tam9356PP7uMV0uY+cfXauLfS057AjUPaBW
-         dCpzBbHDqgfdlNs/oeZkgQtrtsdWKeGCQJ1uoUtiDbr9cbFHo1vPMRxUE4lEOTMw5ZRB
-         8Z0zWCJLTc69YgCNvNOjTwOH7LOnG9igibzzA=
+In-Reply-To: <20091214104526.93556bb1q7xj41s0@ek2pim.upc.edu>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; delsp="Yes"; format="flowed"
 To: netfilter@vger.kernel.org
-
-I'd like to add the ability to use the REJECT target as a default policy
-to the netfilter / iptables wishlist.
-
-Using REJECT as a default is currently possible as a kludge a few steps
-would be saved by allowing it as a default policy.  Perhaps that might
-even speed up some filtering in some cases.
-
-A good (IMHO) discussion of DROP vs REJECT has been written by Peter Benie :
-	http://www.chiark.greenend.org.uk/~peterb/network/drop-vs-reject
+Cc: vhuertas@indra.es
 
 
-Regards,
-/Lars
+Hi all,
+
+I have been working with nf_conntrack_sip and nf_nat_sip for a while  
+to permit SIP clients in a private LAN can connect to servers outside  
+without problems.
+
+However, in the case of an internal call, I was wondering if it is  
+possible that these two modules detect that the incoming INVITE from  
+the LAN is to another client of the same LAN and so not routing it  
+outside.
+
+Is it possible??
+
+Thanks in advance,
+Rebeca Martinez
+
