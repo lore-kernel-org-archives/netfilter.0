@@ -1,36 +1,32 @@
-From: ratheesh k <ratheesh.ksz@gmail.com>
-Subject: NF_QUEUE and NF_ACCEPT
-Date: Tue, 12 Jan 2010 15:17:39 +0530
-Message-ID: <cfeab66d1001120147y2771412m4a1ebb8fea63eb76@mail.gmail.com>
+From: Marek Kierdelewicz <marek@piasta.pl>
+Subject: Re: How to protect apache benchmarking attack ?
+Date: Tue, 12 Jan 2010 10:28:48 +0100
+Message-ID: <20100112102848.4b427416@catlap>
+References: <4B4C3F37.9010703@infoservices.in>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type;
-        bh=X/cBf0epBuqzlA6E+ho4vSFCp+dnI/c915r8anHA3r8=;
-        b=CVlOTEhBml1VkN822i2viASNzS/GWWOAonG/Qyu5P6lpp3F7yD9M2enwsilKvZ856r
-         u3JHH8tKuqQ2r7TdXQeYwmhZXsKR7DO95Repfz0UtgbLgqhSsA1Msh62GBB9dflM+Nks
-         5YWLlgCGGrOBia2rJpcpU41bywMgtWjC9FW0g=
+In-Reply-To: <4B4C3F37.9010703@infoservices.in>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: "J. Bakshi" <joydeep@infoservices.in>
+Cc: netfilter@vger.kernel.org
 
-R1  -    iptables -A INPUT -j NFQUEUE
-R2  -    iptables  -A INPUT -p tcp -j DROP .
+>Hello all,
 
- Using R1 ,  queue pkt to user space .  If we  set verdict of the
-packet as NF_ACCEPT from user space , the packet wont execute R2 .
+Hello J.,
 
- But , the funny thing is , if we wont set any verdict  . i can see R2
-is getting executed .
+>I am dared to see what "ab" (apache benchmarking too) can do  against
+>an apache server.  I have used the following against my server to check
+>call handling
 
- My question is : - > the packet that executes R2 is same packet , tat
-is copied to userspace .?????
+You can use hashlimit [1] match of iptables to limit concurrent
+connections from single IP.
 
+[1] http://linux.die.net/man/8/iptables -> lookup hashlimit; note:
+current versions of hashlimit can also use srcip as --hashlimit-mode;
+that's probably what you want
 
-
-Thanks,
-Ratheesh
+Cheers,
+Marek Kierdelewicz
