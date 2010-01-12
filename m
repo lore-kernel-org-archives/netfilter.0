@@ -1,46 +1,35 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: REJECT as a default policy
-Date: Tue, 12 Jan 2010 08:53:10 +0100
-Message-ID: <4B4C2A66.3070405@chello.at>
-References: <4B4B1339.1040502@gmail.com>
-Reply-To: netfilter@vger.kernel.org
+From: "J. Bakshi" <joydeep@infoservices.in>
+Subject: How to protect apache benchmarking attack ?
+Date: Tue, 12 Jan 2010 14:51:59 +0530
+Message-ID: <4B4C3F37.9010703@infoservices.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B4B1339.1040502@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 To: netfilter@vger.kernel.org
-Cc: Lars Nooden <lars.curator@gmail.com>
 
-On 11.01.2010 13:02, Lars Nooden wrote:
-> I'd like to add the ability to use the REJECT target as a default policy
-> to the netfilter / iptables wishlist.
-> 
-> Using REJECT as a default is currently possible as a kludge a few steps
-> would be saved by allowing it as a default policy.  Perhaps that might
-> even speed up some filtering in some cases.
-> 
-> A good (IMHO) discussion of DROP vs REJECT has been written by Peter Benie :
-> 	http://www.chiark.greenend.org.uk/~peterb/network/drop-vs-reject
-> 
+Hello all,
+
+I am dared to see what "ab" (apache benchmarking too) can do  against a=
+n
+apache server.  I have used the following against my server to check
+call handling
+
+` ` `
+ab -n 1000 -c 20 http://<site-name>/index.php?no_cache=3D1
+` ` `
 
 
-imagine you get scanned / ddosed / synflooded. For every invalid packet
-coming in, you send out an icmp packet. Your host and line could get
-quite busy with just sending irrelevant responses, making the dos attack
-even more successful.
+and it simply bottle neck the target apache server.  the target server
+is also  over loaded with huge cpu load.  Is there any  precaution to
+prevent this ?  the target  system is already  protected with
+mod_security.=20
 
-you will not have control over how many (limit) and what type of icmp
-error is through'n out (would need new policy handler).
+Thanks
 
-
-that's why i personally prefer to DROP to untrusted, while placing
-REJECT rules with a limit before the drop-policy, to trusted sides.
-
-regards
-
-Mart
-
+--=20
+=E0=A6=9C=E0=A7=9F=E0=A6=A6=E0=A7=80=E0=A6=AA =E0=A6=AC=E0=A6=95=E0=A7=8D=
+=E0=A6=B8=E0=A7=80
 
