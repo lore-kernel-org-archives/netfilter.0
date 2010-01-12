@@ -1,12 +1,12 @@
 From: "J. Bakshi" <joydeep@infoservices.in>
-Subject: Re: How to protect apache benchmarking attack ?
-Date: Tue, 12 Jan 2010 15:33:03 +0530
-Message-ID: <4B4C48D7.9040706@infoservices.in>
-References: <4B4C3F37.9010703@infoservices.in> <20100112102848.4b427416@catlap> <4B4C4389.6010604@infoservices.in>
+Subject: Re: [ Siccess ]How to protect apache benchmarking attack ?
+Date: Tue, 12 Jan 2010 16:38:43 +0530
+Message-ID: <4B4C583B.7000101@infoservices.in>
+References: <4B4C3F37.9010703@infoservices.in> <20100112102848.4b427416@catlap> <4B4C4389.6010604@infoservices.in> <4B4C48D7.9040706@infoservices.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B4C4389.6010604@infoservices.in>
+In-Reply-To: <4B4C48D7.9040706@infoservices.in>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"
@@ -14,61 +14,94 @@ To: Marek Kierdelewicz <marek@piasta.pl>
 Cc: netfilter@vger.kernel.org
 
 J. Bakshi wrote:
-> Marek Kierdelewicz wrote:
+> J. Bakshi wrote:
 >  =20
->>> Hello all,
+>> Marek Kierdelewicz wrote:
+>>  =20
+>>    =20
+>>>> Hello all,
+>>>>    =20
+>>>>      =20
+>>>>        =20
+>>> Hello J.,
+>>>
+>>>  =20
 >>>    =20
 >>>      =20
->> Hello J.,
+>>>> I am dared to see what "ab" (apache benchmarking too) can do  agai=
+nst
+>>>> an apache server.  I have used the following against my server to =
+check
+>>>> call handling
+>>>>    =20
+>>>>      =20
+>>>>        =20
+>>> You can use hashlimit [1] match of iptables to limit concurrent
+>>> connections from single IP.
+>>>
+>>> [1] http://linux.die.net/man/8/iptables -> lookup hashlimit; note:
+>>> current versions of hashlimit can also use srcip as --hashlimit-mod=
+e;
+>>> that's probably what you want
+>>>
+>>> Cheers,
+>>> Marek Kierdelewicz
+>>>
+>>>  =20
+>>>    =20
+>>>      =20
+>> Hello Marek,
+>>
+>> thanks for your prompt reply. I'll look into the hashlimit as you
+>> suggest.  Though a question in mind. Can It somehow affect the web
+>> access from general users. ?  I need the protection but also don't  =
+like
+>> my protection makes the web service block general  users somehow :-)
+>>
+>> Any real-life configuration is always Welcome.
+>>
+>> Thanks
 >>
 >>  =20
 >>    =20
->>> I am dared to see what "ab" (apache benchmarking too) can do  again=
-st
->>> an apache server.  I have used the following against my server to c=
-heck
->>> call handling
->>>    =20
->>>      =20
->> You can use hashlimit [1] match of iptables to limit concurrent
->> connections from single IP.
->>
->> [1] http://linux.die.net/man/8/iptables -> lookup hashlimit; note:
->> current versions of hashlimit can also use srcip as --hashlimit-mode=
-;
->> that's probably what you want
->>
->> Cheers,
->> Marek Kierdelewicz
->>
->>  =20
->>    =20
 >
-> Hello Marek,
+> What about modifying
 >
-> thanks for your prompt reply. I'll look into the hashlimit as you
-> suggest.  Though a question in mind. Can It somehow affect the web
-> access from general users. ?  I need the protection but also don't  l=
-ike
-> my protection makes the web service block general  users somehow :-)
+> iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
 >
-> Any real-life configuration is always Welcome.
+> to
 >
-> Thanks
+> |iptables -A INPUT -m hashlimit -m tcp -p tcp --dport 80  \|
+> |--hashlimit 200/sec --hashlimit-mode srcip --hashlimit-name http \ |
+> |-m state --state NEW -j ACCEPT|
+>
+> ?
 >
 >  =20
 
-What about modifying
+I get success with
 
-iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
+`  `  `
+iptables -A INPUT -m hashlimit -m tcp -p tcp --dport 80  \
+--hashlimit 400/sec   \
+--hashlimit-mode srcip --hashlimit-name http \
+-m state --state NEW -j ACCEPT
 
-to
+`   `   `
 
-|iptables -A INPUT -m hashlimit -m tcp -p tcp --dport 80  \|
-|--hashlimit 200/sec --hashlimit-mode srcip --hashlimit-name http \ |
-|-m state --state NEW -j ACCEPT|
+Now I like to add IP blocking for 1 min.  I have added
 
-?
+
+--hashlimit-burst 200 --hashlimit-htable-expire 60000
+
+and the rule failed to work at all.  I think --hashlimit-burst  need to
+set to work properly. But what is the actual concept of=20
+--hashlimit-burst ? Is it really mandatory here to block IP ? Please
+suggest. My rule is working fine but the IP blocking is missing only.=20
+Please let me know the actual concept behind --hashlimit-burst .
+
+Thanks
+
 
 --=20
 =E0=A6=9C=E0=A7=9F=E0=A6=A6=E0=A7=80=E0=A6=AA =E0=A6=AC=E0=A6=95=E0=A7=8D=
