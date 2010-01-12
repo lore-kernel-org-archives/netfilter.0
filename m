@@ -1,109 +1,46 @@
-From: "J. Bakshi" <joydeep@infoservices.in>
-Subject: Re: [ Siccess ]How to protect apache benchmarking attack ?
-Date: Tue, 12 Jan 2010 16:38:43 +0530
-Message-ID: <4B4C583B.7000101@infoservices.in>
-References: <4B4C3F37.9010703@infoservices.in> <20100112102848.4b427416@catlap> <4B4C4389.6010604@infoservices.in> <4B4C48D7.9040706@infoservices.in>
+From: Lars Nooden <lars.curator@gmail.com>
+Subject: Re: REJECT as a default policy
+Date: Tue, 12 Jan 2010 13:21:37 +0200
+Message-ID: <4B4C5B41.7000500@gmail.com>
+References: <4B4B1339.1040502@gmail.com>	 <034DEBCAE934A74991E6E76B8DA72D141884A1922E@HSSBS.holdstead.local> <56378e321001111408mbeef328j62261c7a0215e122@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B4C48D7.9040706@infoservices.in>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from
+         :user-agent:mime-version:cc:subject:references:in-reply-to
+         :x-enigmail-version:openpgp:content-type:content-transfer-encoding;
+        bh=/Z+3OIpp2IwTIwlvMMnFGc5AsfgDjSHeXy/x7WVg+Ko=;
+        b=V0+KUb6bT9brUU++CA1dJ9iC1NfpJciSu4X7kt8unkqdowurhpLNjrZfmNNxZGRH1L
+         k7WQrtt4ftELA9dq7YKmqYbhfbovZcbtbJR9xcq1pYffGDYJyNcrnPjc1YxvLCNV+MbG
+         QlIx/lERBjGrjIY85h/o6JPI3LiJmtFQVGKlQ=
+In-Reply-To: <56378e321001111408mbeef328j62261c7a0215e122@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Marek Kierdelewicz <marek@piasta.pl>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: 
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-J. Bakshi wrote:
-> J. Bakshi wrote:
->  =20
->> Marek Kierdelewicz wrote:
->>  =20
->>    =20
->>>> Hello all,
->>>>    =20
->>>>      =20
->>>>        =20
->>> Hello J.,
->>>
->>>  =20
->>>    =20
->>>      =20
->>>> I am dared to see what "ab" (apache benchmarking too) can do  agai=
-nst
->>>> an apache server.  I have used the following against my server to =
-check
->>>> call handling
->>>>    =20
->>>>      =20
->>>>        =20
->>> You can use hashlimit [1] match of iptables to limit concurrent
->>> connections from single IP.
->>>
->>> [1] http://linux.die.net/man/8/iptables -> lookup hashlimit; note:
->>> current versions of hashlimit can also use srcip as --hashlimit-mod=
-e;
->>> that's probably what you want
->>>
->>> Cheers,
->>> Marek Kierdelewicz
->>>
->>>  =20
->>>    =20
->>>      =20
->> Hello Marek,
->>
->> thanks for your prompt reply. I'll look into the hashlimit as you
->> suggest.  Though a question in mind. Can It somehow affect the web
->> access from general users. ?  I need the protection but also don't  =
-like
->> my protection makes the web service block general  users somehow :-)
->>
->> Any real-life configuration is always Welcome.
->>
->> Thanks
->>
->>  =20
->>    =20
->
-> What about modifying
->
-> iptables -A INPUT -p tcp -m tcp --dport 80 -j ACCEPT
->
-> to
->
-> |iptables -A INPUT -m hashlimit -m tcp -p tcp --dport 80  \|
-> |--hashlimit 200/sec --hashlimit-mode srcip --hashlimit-name http \ |
-> |-m state --state NEW -j ACCEPT|
->
-> ?
->
->  =20
+Richard Horton wrote:
+> I think all the OP means is DROP is valid policy target where as
+> REJECT isn't. 
 
-I get success with
+Yes.
 
-`  `  `
-iptables -A INPUT -m hashlimit -m tcp -p tcp --dport 80  \
---hashlimit 400/sec   \
---hashlimit-mode srcip --hashlimit-name http \
--m state --state NEW -j ACCEPT
+> The big problem though is that DROP / ACCEPT as policy
+> targets or jump targets require no options where as the REJECT target
+> can take options to control the returned ICMP code, which with the
+> current policy handler you couldn't specifiy.
 
-`   `   `
+Ok.  The limitation is a characteristic of the current policy handler,
+so it's a non-trivial task to allow REJECT as a default policy.
 
-Now I like to add IP blocking for 1 min.  I have added
+Mart Frauenlob wrote:
+> you will not have control over how many (limit) and what type of icmp
+> error is through'n out (would need new policy handler).
 
+Thanks, Mart and Richard.  That answers a pair of question I was going
+to ask but unsure of how to phrase.
 
---hashlimit-burst 200 --hashlimit-htable-expire 60000
-
-and the rule failed to work at all.  I think --hashlimit-burst  need to
-set to work properly. But what is the actual concept of=20
---hashlimit-burst ? Is it really mandatory here to block IP ? Please
-suggest. My rule is working fine but the IP blocking is missing only.=20
-Please let me know the actual concept behind --hashlimit-burst .
-
-Thanks
-
-
---=20
-=E0=A6=9C=E0=A7=9F=E0=A6=A6=E0=A7=80=E0=A6=AA =E0=A6=AC=E0=A6=95=E0=A7=8D=
-=E0=A6=B8=E0=A7=80
-
+/Lars
