@@ -1,26 +1,24 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+From: /dev/rob0 <rob0@gmx.co.uk>
 Subject: Re: Iptables without ipt_state using xt_state
-Date: Tue, 12 Jan 2010 23:43:22 +0100
-Message-ID: <4B4CFB0A.3070407@plouf.fr.eu.org>
-References: <4B4CB29D.9000506@gmail.com> <4B4CC130.40204@chello.at> <4B4CDEBE.2040304@gmail.com>
+Date: Tue, 12 Jan 2010 17:02:05 -0600
+Message-ID: <20100112230205.GX28788@minipax>
+References: <4B4CB29D.9000506@gmail.com>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B4CDEBE.2040304@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <4B4CB29D.9000506@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello,
+On Tue, Jan 12, 2010 at 06:34:21PM +0100, FiloSottile wrote:
+> I am running on a OpenVZ box with static unmodifiable kernel.
 
-=46iloSottile a =E9crit :
->=20
-> root@vps:~# ls /lib/xtables/ | grep state
-> libxt_state.so
->=20
-> Does it assure that i have the xt_state module loaded?
-
-No. This is a shared library, just a piece of the userland iptables.
-If you have access, you can check the kernel config file in /boot or in
-/proc/config.gz.
+I suspect that this comes down to being a support issue with your
+service provider. Did you ask them?
+-- 
+    Offlist mail to this address is discarded unless
+    "/dev/rob0" or "not-spam" is in Subject: header
