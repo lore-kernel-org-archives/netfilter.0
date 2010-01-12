@@ -1,29 +1,46 @@
-From: Gary Smith <gary.smith@holdstead.com>
-Subject: RE: REJECT as a default policy
-Date: Mon, 11 Jan 2010 14:12:34 -0800
-Message-ID: <034DEBCAE934A74991E6E76B8DA72D141884A1922F@HSSBS.holdstead.local>
+From: Mart Frauenlob <mart.frauenlob@chello.at>
+Subject: Re: REJECT as a default policy
+Date: Tue, 12 Jan 2010 08:53:10 +0100
+Message-ID: <4B4C2A66.3070405@chello.at>
 References: <4B4B1339.1040502@gmail.com>
-	 <034DEBCAE934A74991E6E76B8DA72D141884A1922E@HSSBS.holdstead.local>
- <56378e321001111408mbeef328j62261c7a0215e122@mail.gmail.com>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <56378e321001111408mbeef328j62261c7a0215e122@mail.gmail.com>
-Content-Language: en-US
+In-Reply-To: <4B4B1339.1040502@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: 'Richard Horton' <arimus.uk@googlemail.com>
-Cc: 'Lars Nooden' <lars.curator@gmail.com>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
+Cc: Lars Nooden <lars.curator@gmail.com>
 
-> > Or am I not seeing your bigger picture of how REJECT would affect the sub
-> chains?
+On 11.01.2010 13:02, Lars Nooden wrote:
+> I'd like to add the ability to use the REJECT target as a default policy
+> to the netfilter / iptables wishlist.
 > 
-> I think all the OP means is DROP is valid policy target where as
-> REJECT isn't. The big problem though is that DROP / ACCEPT as policy
-> targets or jump targets require no options where as the REJECT target
-> can take options to control the returned ICMP code, which with the
-> current policy handler you couldn't specifiy.
+> Using REJECT as a default is currently possible as a kludge a few steps
+> would be saved by allowing it as a default policy.  Perhaps that might
+> even speed up some filtering in some cases.
+> 
+> A good (IMHO) discussion of DROP vs REJECT has been written by Peter Benie :
+> 	http://www.chiark.greenend.org.uk/~peterb/network/drop-vs-reject
 > 
 
-That makes a little more sense now.
+
+imagine you get scanned / ddosed / synflooded. For every invalid packet
+coming in, you send out an icmp packet. Your host and line could get
+quite busy with just sending irrelevant responses, making the dos attack
+even more successful.
+
+you will not have control over how many (limit) and what type of icmp
+error is through'n out (would need new policy handler).
+
+
+that's why i personally prefer to DROP to untrusted, while placing
+REJECT rules with a limit before the drop-policy, to trusted sides.
+
+regards
+
+Mart
+
+
