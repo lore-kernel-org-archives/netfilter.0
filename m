@@ -1,24 +1,33 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Iptables without ipt_state using xt_state
-Date: Tue, 12 Jan 2010 17:02:05 -0600
-Message-ID: <20100112230205.GX28788@minipax>
-References: <4B4CB29D.9000506@gmail.com>
-Reply-To: netfilter@vger.kernel.org
+From: "J. Bakshi" <joydeep@infoservices.in>
+Subject: hashlimit rule problem with port 80
+Date: Wed, 13 Jan 2010 13:41:11 +0530
+Message-ID: <4B4D801F.2080004@infoservices.in>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4B4CB29D.9000506@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
 To: netfilter@vger.kernel.org
 
-On Tue, Jan 12, 2010 at 06:34:21PM +0100, FiloSottile wrote:
-> I am running on a OpenVZ box with static unmodifiable kernel.
+Hello list,
 
-I suspect that this comes down to being a support issue with your
-service provider. Did you ask them?
--- 
-    Offlist mail to this address is discarded unless
-    "/dev/rob0" or "not-spam" is in Subject: header
+I have configured the hashlimit to protect port 80 (http) from apache
+benchmark and related attack. The rule is
+
+` ` `
+iptables -A INPUT -p tcp -m state --state NEW --dport 80 -m hashlimit \
+--hashlimit 200/sec --hashlimit-burst 5 --hashlimit-htable-expire 18000=
+ \
+--hashlimit-mode srcip --hashlimit-name http -j ACCEPT
+` ` `
+But I have found this rule is not protecting the apache and apache is
+flooded by apache benchmark attack.
+Have I done some thing wrong in my rule set ?
+Please suggest.
+Thanks
+
+--=20
+=E0=A6=9C=E0=A7=9F=E0=A6=A6=E0=A7=80=E0=A6=AA =E0=A6=AC=E0=A6=95=E0=A7=8D=
+=E0=A6=B8=E0=A7=80
+
