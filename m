@@ -1,30 +1,27 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: nf_conntrack_sip and nf_nat_sip can do this??
-Date: Wed, 13 Jan 2010 09:22:58 +0100
-Message-ID: <4B4D82E2.6090405@trash.net>
-References: <20091214104526.93556bb1q7xj41s0@ek2pim.upc.edu> <20100111132614.14651hiwfxvj3h8k@ek2pim.upc.edu>
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: find_best_ips_proto ??
+Date: Wed, 13 Jan 2010 15:36:21 +0530
+Message-ID: <cfeab66d1001130206k1a31dd63nce25e38febb6e947@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20100111132614.14651hiwfxvj3h8k@ek2pim.upc.edu>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type;
+        bh=RGe6NvsxTovL2D/U5nj/RzngxD2BgijuW5Laa4B+unA=;
+        b=BKcOiChuUirXc2TV9HHHDdl7vPukjeWuZd91JT0j1EkRpi8NiWPM1M0Y8NqS5JRW7m
+         Bm/n4ReQMxj+6qY7V5CKMbDcH86Yq+1dYX/cGOxwY1ttBCg10ewgrRqqPXoWjeT9/6zX
+         NWaNuVMWon12bY91/2YGq3WNmE6vMNzyNxwUY=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: rebeca.martinez-garcia@estudiant.upc.edu
-Cc: netfilter@vger.kernel.org, vhuertas@indra.es
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-rebeca.martinez-garcia@estudiant.upc.edu wrote:
-> 
-> Hi all,
-> 
-> I have been working with nf_conntrack_sip and nf_nat_sip for a while to
-> permit SIP clients in a private LAN can connect to servers outside
-> without problems.
-> 
-> However, in the case of an internal call, I was wondering if it is
-> possible that these two modules detect that the incoming INVITE from the
-> LAN is to another client of the same LAN and so not routing it outside.
-> 
-> Is it possible??
+I am looking into 2.6.18 kernel , /net/ipv4/netfilter/ip_nat_core.c .
+I could not understand the function  find_best_ips_proto()  eventhough
+there is some comments on the code . Could anybody please explain a
+little more  ?
 
-Yes, the module does exactly that when the NAT module is loaded.
+Thanks,
+Ratheesh
