@@ -1,70 +1,64 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: nf_conntrack_sip and nf_nat_sip can do this??
-Date: Thu, 14 Jan 2010 11:51:09 +0100
-Message-ID: <4B4EF71D.7010104@trash.net>
-References: <20091214104526.93556bb1q7xj41s0@ek2pim.upc.edu>	<20100111132614.14651hiwfxvj3h8k@ek2pim.upc.edu>	<4B4D82E2.6090405@trash.net>	<20100113143859.18292p3kbz00a60g@ek2pim.upc.edu>	<4B4DD05A.4000606@trash.net> <20100114111329.216832szeqp9zdyc@ek2pim.upc.edu>
+From: =?UTF-8?Q?Henno_T=C3=A4ht?= <henno.taht@diara.ee>
+Subject: Double NAT port forward
+Date: Thu, 14 Jan 2010 22:33:02 +0200
+Message-ID: <6bc5618e1001141233k5cd1513fnbd5a41902aff12c6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20100114111329.216832szeqp9zdyc@ek2pim.upc.edu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: rebeca.martinez-garcia@estudiant.upc.edu
-Cc: netfilter@vger.kernel.org, vhuertas@indra.es, devel@thom.fr.eu.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-rebeca.martinez-garcia@estudiant.upc.edu wrote:
-> I have been investigating and the registration process is done correctly:
-> a private user inside the LAN sends the REGISTER to the Proxy via the
-> gateway and it changes the private IP for the public IP. When the Proxy
-> answers it, the gateway does the same but in the other way round.
-> 
-> It is during the INVITE that I have seen some problems.
-> 
-> When a private client sends an INVITE directed to a client outside the
-> LAN (a public client) again it works ok. However, when a public client
-> sends an INVITE to call a private client there is an error:
-> 
-> Public Client to my Proxy:
-> INVITE sip:private_client@domain_name
->        From:caller@domain_name
->        To:callee@domain_name
->        contact: caller@10.1.x.x
-> 
-> The proxy talks with my server to know the location of the callee and it
-> answers with the public IP of my gateway in a determined port. So the
-> Proxy sends the invite to it:
-> INVITE sip:private_client@10.1.x.y
->        From:caller@domain_name
->        To:callee@domain_name
->        contact: caller@10.1.x.x
-> 
-> And now the gateway redirects the invite to my private client but it
-> DOES NOT change the R-URI. However, when the invite reaches the client,
-> it answers with a "183 Session progress" and then it puts its correct
-> contact:
-> 183 SESSION PROGRESS
->        From:caller@domain_name
->        To:callee@domain_name
->        contact: callee@192.168.x.x
-> 
-> And now, in the following messages between the caller and the callee, it
-> changes correctly the private address for the public one and in the
-> other way round.
-> It is as the gateway only starts to work correctly if the message comes
-> from the LAN.
+Hello!
 
-Please send me a binary tcpdump (-w file -s0) containing the
-traffic of both the incoming and outgoing interface of the
-NAT GW.
+Is it possible to make double nat port forward? Topology:
 
-> I have checked the /proc/net/nf_conntrack_expect and it contains this:
-> 
-> 598000 l3proto = 2 proto=17 src=0.0.0.0 dst=10.1.x.x sport=0 dport=1061
-> PERMANENT
-> 597394 l3proto = 2 proto=17 src=0.0.0.0 dst=10.1.x.x sport=0 dport=1081
-> PERMANENT
-> 
-> Is it correct that the source is 0.0.0.0 in both cases?
+SOME INTERNET MACHINE
+1.1.1.1 (real public IP)
 
-Yes, that's correct since you specified sip_direct_signalling=0.
+       V
+
+OUTER_GW
+eth0: 2.2.2.228/27 (real public IP)
+eth1: 192.168.1.1/24
+
+        V
+
+INNER_GW
+eth0: 192.168.1.2/24
+eth1: 2.2.2.225/27 (fake public IP)
+
+        V
+
+HOST
+eth0: 2.2.2.249/27 (fake public IP)
+
+I'm trying to set up simulated "real" environment for testing my
+webserver. I plan to remote desktop into that subnet through double
+port forwards and see how the server behaves.
+
+While OUTER_GW forwards port 222 to INNER_GW just fine, INNER_GW sees
+the SYN packet the OUTER_GW has passed it but doesn't forward it to
+HOST:
+
+root@pm-inner-gw:~# tshark -Nm -i eth0 host ! 192.168.1.1
+Running as user "root" and group "root". This could be dangerous.
+Capturing on eth0
+  0.000000 1.1.1.1 -> 192.168.1.2  TCP 1271 > 222 [SYN] Seq=3D0
+Win=3D65535 Len=3D0 MSS=3D1460
+  0.439790  192.168.1.2 -> 1.1.1.1 ICMP Destination unreachable (Host
+unreachable)
+  0.440287  192.168.1.2 -> 1.1.1.1 ICMP Destination unreachable (Host
+unreachable)
+  2.964403 1.1.1.1 -> 192.168.1.2  TCP 1271 > 222 [SYN] Seq=3D0
+Win=3D65535 Len=3D0 MSS=3D1460
+  5.969749  192.168.1.2 -> 1.1.1.1 ICMP Destination unreachable (Host
+unreachable)
+
+Is there some sort of "security feature" in the kernel that doesn't
+allow packets to be forwarded from IANA's "private IP" to a "public
+IP"?
+
+TIA,
+Henno T=C3=A4ht
