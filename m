@@ -1,23 +1,54 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: nf_conntrack_sip and nf_nat_sip can do this??
-Date: Fri, 15 Jan 2010 14:57:26 +0100
-Message-ID: <4B507446.9090503@trash.net>
-References: <20091214104526.93556bb1q7xj41s0@ek2pim.upc.edu>	<20100111132614.14651hiwfxvj3h8k@ek2pim.upc.edu>	<4B4D82E2.6090405@trash.net>	<20100113143859.18292p3kbz00a60g@ek2pim.upc.edu>	<4B4DD05A.4000606@trash.net>	<20100114111329.216832szeqp9zdyc@ek2pim.upc.edu>	<4B4EF71D.7010104@trash.net>	<20100115092906.15796e278u2h26os@ek2pim.upc.edu>	<4B503C78.7070405@trash.net> <20100115113829.1720778iyiylgn0g@ek2pim.upc.edu>
+From: Karel Rericha <karel@maxtel.cz>
+Subject: BUG? iptables --datestop inconsistent behaviour
+Date: Fri, 15 Jan 2010 15:56:13 +0100
+Message-ID: <5b19ed111001150656q11dc2f1fj1c7ec5b1cf54016d@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20100115113829.1720778iyiylgn0g@ek2pim.upc.edu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: rebeca.martinez-garcia@estudiant.upc.edu
-Cc: netfilter@vger.kernel.org, vhuertas@indra.es, devel@thom.fr.eu.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-rebeca.martinez-garcia@estudiant.upc.edu wrote:
-> 
-> Hello,
-> 
-> I have gzip'ed them.
-> I hope this time you do not have problems while saving.
+Following script results in inconsistent behaviour of
+iptables-save/iptables-restore. Value of --datestop is sometimes moved
+back and sometimes not.
 
-Works fine, thanks, I'll have a closer look.
+System is dual quadcore Nehalem with Gentoo 2.6.31-r6, timezone is set
+to Europe/Prague:
+
+router ~ # uname -a
+Linux router 2.6.31-gentoo-r6 #1 SMP Wed Jan 6 10:50:58 CET 2010
+x86_64 Intel(R) Xeon(R) CPU E5520 @ 2.27GHz GenuineIntel GNU/Linux
+
+router ~ # emerge -s iptables | grep installed
+      Latest version installed: 1.4.3.2
+
+Repeatedly running following script:
+
+********************************************************************
+#!/bin/bash
+iptables -t mangle -F POSTROUTING
+iptables -t mangle -A POSTROUTING --destination 1.1.1.1 -m time
+--datestop 2038-01-01T01:01:01 -j ACCEPT
+iptables -t mangle -L -v | grep date
+********************************************************************
+
+gives randomly two different outputs:
+
+    0     0 ACCEPT     all  --  any    any     anywhere
+1.1.1.1             TIME until date 2038-01-01 00:01:01
+or
+    0     0 ACCEPT     all  --  any    any     anywhere
+1.1.1.1             TIME until date 2038-01-01 01:01:01
+
+Expected result should be the second one, because --localtz is
+default. Even specifying --localtz or --utc explicitly doesnt help and
+results are still randomly changing from run to run.
+Double checked that /etc/localtime is copy of /usr/share/zoneinfo/Europe/Prague.
+
+Upgrading to masked iptables-1.4.6 doesnt help too, same bahaviour.
+
+Anyone has any idea ?
+
+Karel Rericha
