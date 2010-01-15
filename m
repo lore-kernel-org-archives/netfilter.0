@@ -1,54 +1,38 @@
-From: Karel Rericha <karel@maxtel.cz>
-Subject: BUG? iptables --datestop inconsistent behaviour
-Date: Fri, 15 Jan 2010 15:56:13 +0100
-Message-ID: <5b19ed111001150656q11dc2f1fj1c7ec5b1cf54016d@mail.gmail.com>
+From: Shirley Ong <soap6gal@gmail.com>
+Subject: SNAT - matching original and natted IP addresses
+Date: Fri, 15 Jan 2010 15:33:39 +0000
+Message-ID: <1ef54a181001150733r5b688d27x3feaf7d4cc25128d@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:from:date:message-id
+         :subject:to:content-type;
+        bh=GctsVctA9RFNVsPKm500wDr6FIoubEuFil+MR2J/a1Y=;
+        b=tem3VldEW6xH+MxRHyBQaZMkr7k7Q+NSDyHnrDxHargY5pKjUMkh1YWZ7HANkpqicJ
+         hoihcGmA21UbILI2+o363WY3O+jml+19wuMRsTDhQBkycpVkXiOVF4qM14SI6P1Bjn8e
+         co6jsbB0YxQ+uMvPvW5K8dSrZV/HOYxeKWAv4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Following script results in inconsistent behaviour of
-iptables-save/iptables-restore. Value of --datestop is sometimes moved
-back and sometimes not.
+Hi,
 
-System is dual quadcore Nehalem with Gentoo 2.6.31-r6, timezone is set
-to Europe/Prague:
+I'm trying to map a range of private IP addresses to a range of public
+IP addresses. For this, I'm using SNAT:
 
-router ~ # uname -a
-Linux router 2.6.31-gentoo-r6 #1 SMP Wed Jan 6 10:50:58 CET 2010
-x86_64 Intel(R) Xeon(R) CPU E5520 @ 2.27GHz GenuineIntel GNU/Linux
+    # iptables -t nat -A POSTROUTING -s <private range> -d ! <private
+range> -j SNAT --to-source <public range>
 
-router ~ # emerge -s iptables | grep installed
-      Latest version installed: 1.4.3.2
+The public range is higher than private range. I can see from
+conntrack that the last 2 octets of original and natted IP addresses
+are always the same. Can I be sure that the mapping is always correct
+without parsing conntrack from time to time because it's heavy
+processing? Or is there any other way that I can make sure the mapping
+is always correct?
 
-Repeatedly running following script:
+Thanks.
 
-********************************************************************
-#!/bin/bash
-iptables -t mangle -F POSTROUTING
-iptables -t mangle -A POSTROUTING --destination 1.1.1.1 -m time
---datestop 2038-01-01T01:01:01 -j ACCEPT
-iptables -t mangle -L -v | grep date
-********************************************************************
-
-gives randomly two different outputs:
-
-    0     0 ACCEPT     all  --  any    any     anywhere
-1.1.1.1             TIME until date 2038-01-01 00:01:01
-or
-    0     0 ACCEPT     all  --  any    any     anywhere
-1.1.1.1             TIME until date 2038-01-01 01:01:01
-
-Expected result should be the second one, because --localtz is
-default. Even specifying --localtz or --utc explicitly doesnt help and
-results are still randomly changing from run to run.
-Double checked that /etc/localtime is copy of /usr/share/zoneinfo/Europe/Prague.
-
-Upgrading to masked iptables-1.4.6 doesnt help too, same bahaviour.
-
-Anyone has any idea ?
-
-Karel Rericha
+Shirley
