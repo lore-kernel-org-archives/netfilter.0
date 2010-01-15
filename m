@@ -1,25 +1,66 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: nf_conntrack_sip and nf_nat_sip can do this??
-Date: Fri, 15 Jan 2010 10:59:20 +0100
-Message-ID: <4B503C78.7070405@trash.net>
-References: <20091214104526.93556bb1q7xj41s0@ek2pim.upc.edu>	<20100111132614.14651hiwfxvj3h8k@ek2pim.upc.edu>	<4B4D82E2.6090405@trash.net>	<20100113143859.18292p3kbz00a60g@ek2pim.upc.edu>	<4B4DD05A.4000606@trash.net>	<20100114111329.216832szeqp9zdyc@ek2pim.upc.edu>	<4B4EF71D.7010104@trash.net> <20100115092906.15796e278u2h26os@ek2pim.upc.edu>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Double NAT port forward
+Date: Fri, 15 Jan 2010 12:44:43 +0100
+Message-ID: <4B50552B.5090608@plouf.fr.eu.org>
+References: <6bc5618e1001141233k5cd1513fnbd5a41902aff12c6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20100115092906.15796e278u2h26os@ek2pim.upc.edu>
+In-Reply-To: <6bc5618e1001141233k5cd1513fnbd5a41902aff12c6@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: rebeca.martinez-garcia@estudiant.upc.edu
-Cc: netfilter@vger.kernel.org, vhuertas@indra.es, devel@thom.fr.eu.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-rebeca.martinez-garcia@estudiant.upc.edu wrote:
-> 
-> Hello,
-> 
-> I have attached the network traces you told me to do.
+Hello,
 
-I can't properly save this since it uses text/plain as content-type.
-Please resend as proper attachment. If your client insists on using
-text/plain, gzip'ing it might help.
+Henno T=E4ht a =E9crit :
+>=20
+> Is it possible to make double nat port forward?
 
+Sure it is.
+
+> SOME INTERNET MACHINE
+> 1.1.1.1 (real public IP)
+>=20
+>        V
+>=20
+> OUTER_GW
+> eth0: 2.2.2.228/27 (real public IP)
+> eth1: 192.168.1.1/24
+>=20
+>         V
+>=20
+> INNER_GW
+> eth0: 192.168.1.2/24
+> eth1: 2.2.2.225/27 (fake public IP)
+>=20
+>         V
+>=20
+> HOST
+> eth0: 2.2.2.249/27 (fake public IP)
+
+Consider using addresses in the special range 192.0.2.0/24 reserved for
+examples and documentation instead of random addresses that are not
+allocated to you. See RFC 3330.
+
+> While OUTER_GW forwards port 222 to INNER_GW just fine, INNER_GW sees
+> the SYN packet the OUTER_GW has passed it but doesn't forward it to
+> HOST:
+>=20
+> root@pm-inner-gw:~# tshark -Nm -i eth0 host ! 192.168.1.1
+> Running as user "root" and group "root". This could be dangerous.
+> Capturing on eth0
+>   0.000000 1.1.1.1 -> 192.168.1.2  TCP 1271 > 222 [SYN] Seq=3D0
+> Win=3D65535 Len=3D0 MSS=3D1460
+>   0.439790  192.168.1.2 -> 1.1.1.1 ICMP Destination unreachable (Host
+> unreachable)
+
+ICMP host unreachable usually indicates an ARP failure for the next hop
+address. What happens on INNER_GW's eth1 and HOST's eth0 (IP or ARP) ?
+
+> Is there some sort of "security feature" in the kernel that doesn't
+> allow packets to be forwarded from IANA's "private IP" to a "public
+> IP"?
+
+Not AFAIK.
