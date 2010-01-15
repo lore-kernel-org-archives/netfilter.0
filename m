@@ -1,53 +1,34 @@
-From: Leonardo Rodrigues <leolistas@solutti.com.br>
-Subject: Re: SNAT - matching original and natted IP addresses
-Date: Fri, 15 Jan 2010 14:19:43 -0200
-Message-ID: <4B50959F.4040207@solutti.com.br>
-References: <1ef54a181001150733r5b688d27x3feaf7d4cc25128d@mail.gmail.com>
+From: Daniel Drake <dsd@laptop.org>
+Subject: filtering based on MAC address prefix
+Date: Fri, 15 Jan 2010 13:44:36 -0600
+Message-ID: <818423da1001151144m5d7b698dh2c7ed2a108a0489c@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1ef54a181001150733r5b688d27x3feaf7d4cc25128d@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:sender:received:date
+         :x-google-sender-auth:message-id:subject:from:to:content-type;
+        bh=60BcFNwu4tc4S7ks9rbM2vRWjIeokbLfK5L5UOrV5hg=;
+        b=iAEDtqeEnq4s+qlCetmLCv4Jg7nQLmHILrFg8xQbQx6CP/4tBaGL05DYW9BgLrvUPJ
+         5wbbEF68h6/9vViMxPpa19BsIBM4YjwrGEw9iBWFuK1yFnJxb3Wp3KxD/2Yz1Xrzuw0t
+         giF4DTz/c2+wrNv68UV3qhYWN1tCX5PBNnTHE=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"; format="flowed"
-To: Shirley Ong <soap6gal@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
+Hi,
 
-Shirley Ong escreveu:
-> Hi,
->
-> I'm trying to map a range of private IP addresses to a range of publi=
-c
-> IP addresses. For this, I'm using SNAT:
->
->     # iptables -t nat -A POSTROUTING -s <private range> -d ! <private
-> range> -j SNAT --to-source <public range>
->
-> The public range is higher than private range. I can see from
-> conntrack that the last 2 octets of original and natted IP addresses
-> are always the same. Can I be sure that the mapping is always correct
-> without parsing conntrack from time to time because it's heavy
-> processing? Or is there any other way that I can make sure the mappin=
-g
-> is always correct?
->  =20
+I'm interested in setting up iptables filtering rules based on the OUI
+(i.e. first 3 bytes) of the source MAC address. Is this possible?
 
-    it's seems to me that using NETMAP target will be more interesting=20
-to you than using SNAT. AFAIK, SNAT does not guarantees you that.
+I see that there is a "mac" match extension but it only seems to
+operate with full 6-byte addresses. I also looked at the u32 extension
+but that only seems to operate on the TCP header, not on the ethernet
+header.
 
---=20
+Any ideas/suggestions?
 
-
-	Atenciosamente / Sincerily,
-	Leonardo Rodrigues
-	Solutti Tecnologia
-	http://www.solutti.com.br
-
-	Minha armadilha de SPAM, N=C3=83O mandem email
-	gertrudes@solutti.com.br
-	My SPAMTRAP, do not email it
-
-
-
-
+Thanks,
+Daniel
