@@ -1,42 +1,25 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: Iptables without ipt_state using xt_state
-Date: Sat, 16 Jan 2010 13:34:43 +0100
-Message-ID: <4B51B263.4080301@chello.at>
-References: <4B4DC17D.2010200@gmail.com>
-Reply-To: netfilter@vger.kernel.org
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: filtering based on MAC address prefix
+Date: Sat, 16 Jan 2010 16:43:26 +0100
+Message-ID: <4B51DE9E.1070800@plouf.fr.eu.org>
+References: <818423da1001151144m5d7b698dh2c7ed2a108a0489c@mail.gmail.com> <4B518D2A.2040905@caf.com.tr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B4DC17D.2010200@gmail.com>
+In-Reply-To: <4B518D2A.2040905@caf.com.tr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: 
-Cc: FiloSottile <filosottile.wiki@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-On 13.01.2010 13:50, FiloSottile wrote:
-> I cannot verify if the module is loaded from the config, but if it is
-> loaded the command
-> 
-> # iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-> 
-> should work...
-> So, if don't have that module loaded, how can i do to get a firewall
-> configured?
+Hello,
 
-Patrick McHardy already pointed it out, but this may help to understand:
+Eray Aslan a =E9crit :
+>=20
+> ebtables(8) is usually the better tool to use for dealing with ethern=
+et
+> frames.  Check if its --source and among matches fits.
 
-http://wiki.openvz.org/Setting_up_an_iptables_firewall
-
-chapter:
-'Setting up a firewall that allows per-container configuration '
-
-
-If you can't do it, it comes down to what /dev/rob0 said:
-
-> I suspect that this comes down to being a support issue with your
-> service provider. Did you ask them?
-
-regards
-
-Mart
+But ebtables works only on frames seen by a bridge. So using it require=
+s
+to create a dummy bridge with one member.
