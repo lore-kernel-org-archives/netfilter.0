@@ -1,39 +1,42 @@
-From: Eray Aslan <eray.aslan@caf.com.tr>
-Subject: Re: filtering based on MAC address prefix
-Date: Sat, 16 Jan 2010 11:55:54 +0200
-Message-ID: <4B518D2A.2040905@caf.com.tr>
-References: <818423da1001151144m5d7b698dh2c7ed2a108a0489c@mail.gmail.com>
+From: Mart Frauenlob <mart.frauenlob@chello.at>
+Subject: Re: Iptables without ipt_state using xt_state
+Date: Sat, 16 Jan 2010 13:34:43 +0100
+Message-ID: <4B51B263.4080301@chello.at>
+References: <4B4DC17D.2010200@gmail.com>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=caf.com.tr; h=
-	content-transfer-encoding:content-type:content-type:in-reply-to
-	:references:subject:subject:mime-version:user-agent:from:from
-	:date:date:message-id:received:received; s=originating; t=
-	1263635762; bh=b0oRAdI2RPHq1NVqESwgucxZdYjR3laqIUNP/UqKWUk=; b=o
-	qpqhpCdyuNVJW7+QY2mAvQm4Mq4nSTKzXXmWmSC1oD+g29HYBV0j4ISg80o+aDxe
-	3dwlxquwEs4CNxgL/seUS7n29/8QNCeYfTvugV044kG2eXg5Ysq1B9Chnj7rUskr
-	PxhB1wB9WkNYfJfLN51m6LY8OFbwmUONeFWTIfIZrY=
-In-Reply-To: <818423da1001151144m5d7b698dh2c7ed2a108a0489c@mail.gmail.com>
+In-Reply-To: <4B4DC17D.2010200@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Daniel Drake <dsd@laptop.org>
-Cc: netfilter@vger.kernel.org
+To: 
+Cc: FiloSottile <filosottile.wiki@gmail.com>, netfilter@vger.kernel.org
 
-On 15.01.2010 21:44, Daniel Drake wrote:
-> I'm interested in setting up iptables filtering rules based on the OUI
-> (i.e. first 3 bytes) of the source MAC address. Is this possible?
+On 13.01.2010 13:50, FiloSottile wrote:
+> I cannot verify if the module is loaded from the config, but if it is
+> loaded the command
 > 
-> I see that there is a "mac" match extension but it only seems to
-> operate with full 6-byte addresses. I also looked at the u32 extension
-> but that only seems to operate on the TCP header, not on the ethernet
-> header.
+> # iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
 > 
-> Any ideas/suggestions?
+> should work...
+> So, if don't have that module loaded, how can i do to get a firewall
+> configured?
 
-ebtables(8) is usually the better tool to use for dealing with ethernet
-frames.  Check if its --source and among matches fits.
+Patrick McHardy already pointed it out, but this may help to understand:
 
--- 
-Eray
+http://wiki.openvz.org/Setting_up_an_iptables_firewall
+
+chapter:
+'Setting up a firewall that allows per-container configuration '
+
+
+If you can't do it, it comes down to what /dev/rob0 said:
+
+> I suspect that this comes down to being a support issue with your
+> service provider. Did you ask them?
+
+regards
+
+Mart
