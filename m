@@ -1,87 +1,46 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: iptables MARK + ip rule fwmark on locally generated packets
-Date: Fri, 22 Jan 2010 13:31:14 +0100
-Message-ID: <4B599A92.1030900@chello.at>
-References: <20100122100755.GB23731@ioi.dk> <4B597967.3060603@trash.net> <20100122103118.GG23731@ioi.dk> <4B5983B9.2010106@trash.net>
-Reply-To: netfilter@vger.kernel.org
+From: Konrad Toczylowski <konrad@fortresstech.com>
+Subject: iptables 1.4.1.1 crashes
+Date: Fri, 22 Jan 2010 17:16:34 -0500
+Message-ID: <858674E1611627429CE61D346422273E0B6DA0B2DC@fnexch1.fortresstech.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B5983B9.2010106@trash.net>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 22.01.2010 11:53, netfilter-owner@vger.kernel.org wrote:
-> Fredrik Ax wrote:
->> On Fri, Jan 22, 2010 at 11:09:43AM +0100, Patrick McHardy wrote:
->>
->>> Fredrik Ax wrote:
->>>> Hi guys,
->>>>
->>>> I'm a pretty experienced Linux / network developer and administrator,
->>>> but I can't get my head around this one.
->>>>
->>>> The long story is that I have a box used as router/fw/proxy running
->>>> Debian Squeeze with a customized 2.6.32 x86_64 kernel having three
->>>> interfaces (eth2,eth3,eth4) on the same external subnet. One of the
->>>> interfaces is used for doing masquerading of other
->>>> subnets. Masquerading (not snat) is chosen because the interfaces are
->>>> on dhcp, and I don't want to have to rewrite the fw rules each time I
->>>> get a new addr ... already have enough with dhclient-hooks for fixing
->>>> the routing tables dns-updates, etc ;-) What I basically want to do is
->>>> make the proxy's request to go out the same ifc as the masqueraded
->>>> packets getting a src addr of s41.s42.s43.s44. Other locally generated
->>>> packets should get a src addr s21.s22.s23.s24.
->>>>
->>>> To accomplish this I'm using iptables to mark all, to port 80, locally
->>>> generated tcp packets:
->>>>
->>>> % iptables -t mangle -vnL OUTPUT
->>>> Chain OUTPUT (policy ACCEPT 3234 packets, 2254K bytes)
->>>>  pkts bytes target     prot opt in     out     source               destination         
->>>>  1114  181K MARK       tcp  --  *      *       0.0.0.0/0            0.0.0.0/0           tcp dpt:80 MARK set 0x4 
->>>>
->>>> I have verified that the iptables rule marks them fine enough.
->>>>
->>>> Then the ip rule with prio 99 below should then catch them and route
->>>> according to table eth4 below. That rule however does, for some reason
->>>> not match those packets, instead they are routed according to table
->>>> eth2 below (prio 200 rule), getting src addr s21.s22.s23.s24.  If I
->>>> disable that rule they are routed according the the prio 300 rule
->>>> (getting src addr s31.s32.s33.s34).
->>>>
->>>> ...
->>>>
->>>>
->>>> What am I doing wrong here?
->>> Source address selection happens before the packet is even generated,
->>> so iptables marking in OUTPUT can't affect it.
->>
->> So, to accomplish this I would have to oute it through a dummy
->> interface to make iptables able to mark it before it goes out?
-> 
-> You need some criteria for your routing rules that is available
-> when the socket is routed. That's everything but the packet mark.
-> Using a seperate device will work.
-> 
-> For ethernet, the macvlan device might be a good choice if you
-> don't mind using different MAC addresses for each IP.
+Hi .
 
-sorry to jump in, but when i look at the nf packet flow picture from here:
-http://jengelh.medozas.de/images/nf-packet-flow.png
+I am having problems with iptables and ip6tables coring.
 
-it says in 'output path':
-mangle OUTPUT --> reroute check --> nat OUTPUT
+Here is a sample of the glibc messages:
+*** glibc detected *** ip6tables-restore: double free or corruption (!prev): 0x00451088 ***
+*** glibc detected *** ip6tables: corrupted double-linked list: 0x00452f90 ***
+*** glibc detected *** iptables: corrupted double-linked list: 0x004aafd8 ***
+*** glibc detected *** ip6tables: corrupted double-linked list: 0x00452f90 ***
+*** glibc detected *** ip6tables: corrupted double-linked list: 0x00451fb8 ***
+*** glibc detected *** iptables-restore: double free or corruption (!prev): 0x004a9088 ***
+*** glibc detected *** ip6tables-restore: double free or corruption (!prev): 0x00451088 ***
+*** glibc detected *** ip6tables: free(): invalid pointer: 0x00452018 ***
+*** glibc detected *** ip6tables: corrupted double-linked list: 0x00451fd8 ***
+*** glibc detected *** iptables-restore: free(): invalid pointer: 0x004af068 ***
+*** glibc detected *** iptables: double free or corruption (!prev): 0x004aefd8 ***
+*** glibc detected *** ip6tables-restore: double free or corruption (!prev): 0x00455088 ***
+*** glibc detected *** ip6tables: free(): invalid pointer: 0x00456018 ***
+*** glibc detected *** ip6tables-restore: double free or corruption (!prev): 0x00455088 ***
+*** glibc detected *** ip6tables: corrupted double-linked list: 0x00456f90 ***
+*** glibc detected *** ip6tables-restore: double free or corruption (!prev): 0x00455088 ***
 
-what does the 'reroute check' mean, if not consulting the ip rules ->
-read the fwmark -> use the according routing table?
+I have seen more from iptables as well. All of these are from do_commit().
 
-what am i missing?
+There seems to be nothing wrong with the input - the same iptables command that cored once, usually works the second time if repeated
+I tried to look for potential fixes in release notes for later versions, but I have not noticed any references of fixing problems I am seeing.
+BTW. We are using mips-linux distribution from miips-linux.org
 
-thanks for help
+Any help is appreciated.
 
-best regards
+Thank you,
+Konrad
 
-Mart
