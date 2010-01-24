@@ -1,42 +1,95 @@
 From: "J. Bakshi" <joydeep@infoservices.in>
-Subject: Re: limit module not working with drop policy
-Date: Sun, 24 Jan 2010 20:53:16 +0530
-Message-ID: <20100124205316.098fbcbb@infoservices.in>
-References: <4B591A79.2030600@infoservices.in>
-	<4B5AC554.4040804@chello.at>
-	<20100124121157.2ad8ecec@infoservices.in>
-	<4B5C208F.9090108@chello.at>
+Subject: How to detect nmap scan ?
+Date: Sun, 24 Jan 2010 21:16:08 +0530
+Message-ID: <20100124211608.090639bf@infoservices.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B5C208F.9090108@chello.at>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-On Sun, 24 Jan 2010 11:27:27 +0100
-Mart Frauenlob <mart.frauenlob@chello.at> wrote:
+Dear list,
+
+I am trying to detect nmap scan so that I can apply DROP or blacklisting rules on those. To do my experiment I have written a very basic firewall rule sets with out any special DROP/REJECT and let the packets come into my box. But none of my namp logs are triggered. Only the very first LOG shows that my box is under scan as it logs all incoming packets. I guess that the nmap detection logs are bypassed some how. Could someone provide me an insight to fix it ?
+
+Here is my firewall
+
+```````````
+IFACE=eth0
+## Flush all
+iptables -F
+iptables -X
+
+# Reset the iptables counters
+iptables -Z
+iptables -t nat -Z 2>/dev/null
+iptables -t mangle -Z
+
+## set policy
+echo -e "\E[33;1m Setting default INPUT/FORWARD/OUTPUT policy to DROP"
+
+iptables -P INPUT DROP
+iptables -P OUTPUT DROP
+iptables -P FORWARD DROP
+
+echo -e "\E[33;1mAllow unlimited traffic on the loopback interface"
+iptables -A INPUT  -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+
+echo -e "\E[33;1mAllow already established and related"
+iptables -A INPUT -i $IFACE -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -o $IFACE -m state --state NEW,ESTABLISHED,RELATED  -j ACCEPT
 
 
-> > Thanks for your suggestion and hint. Now I have modified the rule
-> > set as
-> > 
-> > ` ` `
-> > iptables -A INPUT  -p icmp  --icmp-type echo-request -m hashlimit \
-> > --hashlimit 3/minute --hashlimit-name secureping -j ACCEPT
-> > ` ` `
-> > 
-> > but no luck yet :-( Is there anything wrong in my config ?
-> 
-> What exactly are the error symptoms? What is not working?
-> Please provide more information like kernel, iptables version.
-> You could place LOG rules and/or TRACE rules to provide more
-> information on what's going on.
-> 
+#--------------------------------------------------------------#
+echo -e "\E[33;1mMake sure NEW tcp connections are SYN packets"
+iptables -A INPUT -i $IFACE -p tcp ! --syn -m state --state NEW -j DROP
 
-The limit or hashlimit should protect my system by allowing only three ping request per minute ( as -m hashlimit --hashlimit 3/minute or same config by limit) . I saw it working before in debin lenny. I have upgrade my box into debian squeeze now and found the ping protection is not working at all. If I ping my box from outside; my box responds the ping per second !!!
-So the ping protection is not working any more now :-( Just for reminder my firewall is default DROP and I have already posted iptables-save. Kindly ask me if you need any more information.
+#VERY FIRST LOG
+iptables -A INPUT -p tcp   -j LOG --log-prefix ":Allow packets to COME here:" 
+
+iptables -A INPUT -p icmp -j LOG --log-prefix ":Allow ICMP packets to COME here:"
+
+echo -e "\E[33;1mActivating user rules"
+
+# (NMAP) FIN/URG/PSH
+####################
+iptables -A INPUT -p tcp --tcp-flags ALL FIN,URG,PSH -j LOG --log-prefix "Stealth XMAS scan: "
+	  
+
+# SYN/RST/ACK/FIN/URG
+#####################
+iptables -A INPUT -p tcp --tcp-flags ALL SYN,RST,ACK,FIN,URG -j LOG --log-prefix "Stealth XMAS-PSH scan: "	  
+
+# ALL/ALL
+#########
+iptables -A INPUT -p tcp --tcp-flags ALL ALL -j LOG  --log-prefix "Stealth XMAS-ALL scan: "
+
+# NMAP FIN Stealth
+##################
+iptables -A INPUT -p tcp --tcp-flags ALL FIN -j LOG  --log-prefix "Stealth FIN scan: "
+
+# SYN/RST
+#########
+iptables -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j LOG  --log-prefix "Stealth SYN/RST scan: "
+
+# SYN/FIN (probably)
+####################
+iptables -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j LOG  --log-prefix "Stealth SYN/FIN scan?: "
+
+# Null scan
+###########
+iptables -A INPUT -p tcp --tcp-flags ALL NONE -j LOG  --log-prefix "Stealth Null scan: "
+
+iptables -A INPUT  -p icmp  -j ACCEPT
+iptables -A INPUT -j ACCEPT
+`````````````````````````````````
 
 kernel version 2.6.31
 iptables v1.4.6
+
+Thanks
+
+
