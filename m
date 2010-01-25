@@ -1,34 +1,49 @@
 From: paddy joesoap <paddyjoesoap@gmail.com>
-Subject: Can iptables filter WiFi Clients?
-Date: Sun, 24 Jan 2010 19:19:04 +0000
-Message-ID: <ac5c74141001241119h1c6fe806q69da33f3671426b7@mail.gmail.com>
+Subject: Can iptables control what internal LAN clients can configure the 
+	Firewall over UPnP?
+Date: Mon, 25 Jan 2010 09:18:12 +0000
+Message-ID: <ac5c74141001250118w153c23f6n3ff8bcdb18d16a77@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:mime-version:received:date:message-id:subject
          :from:to:content-type;
-        bh=rGtstoxG1THS5Kx60gvmhCxxDoxJMjy6kg1ZmcdRSuk=;
-        b=QaiISs+XEG4JALx+ILMAY5rzQFrydlPXDYaa06/AIk4RJZj+ZHqxKT3U22yQybRidk
-         AYsvcOeGT9dFmgFVRBzy9CLEKae2t8dPo+Jb2PwyCMU9snPCpwkAwq/FiRtrte2zt01D
-         9FnmFFIxqXI4QgVVSjDcKhi6bnQ9NP0Xbn3TQ=
+        bh=HYsJZXK3MoLfq7cXmM+cXK278VZp2byLzly5CCuRYPw=;
+        b=F8msxJhg5Ex+le95NBjXyDP6vR/P7oTMFDkcX/zdOy/Fku5n+OW7QJNwh1dSJzAR84
+         h4Phh6yyD/Z0V1rhMJ8wmuVN69UPWTvMIvxRQbH0nfk9CzI3MrkZE98ruRnuYY7PmBig
+         iiQWcMNfREHPHNKQix/QK00b/VyHqt20FXjAY=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Dear Experts.
+Dear Experts,
 
-I was wondering if iptables particularly the filter table can filter
-MAC addresses regarding verification of WiFi clients?
+Is it possible to control what LAN clients can administer the firewall by UPnP.
 
-I see that on my home router hosting the DD-WRT firmware, that I can
-control access via the GUI to the network, for example, by both WPA
-and MAC filtering.
+I have recently learned that client-to-client filtering will not come
+into play for clients on the same LAN as those client packets don't
+pass through the firewall.
 
-I was just wondering if under the hood that the MAC filtering is
-really a set of iptables rules.
+However, I presume it is possible to filter client-2-firewall on the
+LAN side. Presumably packets would traverse the firewall TCP/IP stack
+thereby triggering iptables into action.
 
-If anyone has any insights as to how iptables can be used to filter
-WiFi scenarios , please let me know.
+That is, clientA (IP address) is allowed to communicate directly with
+the firewall for UPnP but clientB and clientC are not.
+
+If UPnP is enabled then, iptables will provide some protection as to
+what clients can talk to its UPnP ports.
+
+Also, if client-2-firewall on the LAN side is possible, one could
+further lock down the firewall to only allow clientA communicate to
+port http, https and ssh that may also be open on the firewall. A
+defence in depth strategy.
+
+Firewall I am using is WRT54G running dd-wrt. But I guess the question
+is open to all kinds of iptables-ready machines, be they standalone
+PC's converted to a firewall.
+
+All feedback welcomed.
