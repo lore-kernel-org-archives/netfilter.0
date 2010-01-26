@@ -1,41 +1,42 @@
-From: "Steven Kath" <steven.kath@vyatta.com>
-Subject: RE: NOTRACK not working
-Date: Tue, 26 Jan 2010 11:01:14 -0800 (PST)
-Message-ID: <052FF749072D449D80F47E313C5FFD2D@skathlaptop>
+From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
+	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
+Subject: Re: NOTRACK not working
+Date: Tue, 26 Jan 2010 20:49:58 +0200
+Message-ID: <1264531798.4004.67.camel@casper.meteor.dp.ua>
 References: <4B5F36B7.5010004@conversis.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 In-Reply-To: <4B5F36B7.5010004@conversis.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "'Dennis J.'" <dennisml@conversis.de>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="koi8-r"
+To: "Dennis J." <dennisml@conversis.de>
+Cc: netfilter@vger.kernel.org
 
-
-
-> For a while now I excluded two IPs on my firewall from connection
-tracking
-> which works very well. Now I tried adding another IP but that doesn't
-seem
+=F7 =F7=D4=CF, 26/01/2010 =D7 19:38 +0100, Dennis J. =D0=C9=DB=C5=D4:
+> Hi,
+> For a while now I excluded two IPs on my firewall from connection tra=
+cking=20
+> which works very well. Now I tried adding another IP but that doesn't=
+ seem=20
 > to work. I added the following rules:
-> 
+>=20
 > iptables -t raw -A PREROUTING -s 192.168.10.10 -j NOTRACK
 > iptables -t raw -A PREROUTING -d 192.168.10.10 -j NOTRACK
-> 
-> Yet when I look in /proc/net/ip_conntrack I still see 192.168.10.10
-using
+>=20
+> Yet when I look in /proc/net/ip_conntrack I still see 192.168.10.10 u=
+sing=20
 > up most of the entries.
+> Is there something else that needs to be done to exclude this IP comp=
+letely=20
+> from the connection tracking table?
 
-Are the counters for your new rules incrementing?  Are you sure you're not
-looking at entries remaining in the conntrack table from before you
-applied the new rules?  
+Probably conntrack has seen packets from this IP before you added those
+rules, they will remain until connection is "closed" and/or timeout
+occurs. Quick hack is to do "conntrack -F; conntrack -F expect".
 
-Perhaps new conntrack entries are no longer being created, but the old
-ones remain.  I believe that the entries present before you added your
-rule will not time out if the traffic persists.  
+--=20
+=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
+ua>
 
-If so, and you have the conntrack-tools package available, you can use the
-conntrack command to manually purge the undesired entries.  You could also
-flush the table by removing and re-inserting any conntrack-related
-modules, which would be a bit more disruptive. 
