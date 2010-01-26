@@ -1,8 +1,8 @@
 From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
 	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
 Subject: Re: NOTRACK not working
-Date: Tue, 26 Jan 2010 22:35:15 +0200
-Message-ID: <1264538115.4004.71.camel@casper.meteor.dp.ua>
+Date: Tue, 26 Jan 2010 22:43:46 +0200
+Message-ID: <1264538626.10705.1.camel@casper.meteor.dp.ua>
 References: <4B5F36B7.5010004@conversis.de>
 	 <1264531798.4004.67.camel@casper.meteor.dp.ua>  <4B5F4D76.200@conversis.de>
 Mime-Version: 1.0
@@ -48,10 +48,9 @@ r=20
 > centos 5 system but I can't find any packages that contain this comma=
 nd.
 
-In Debian this is in "conntrack" package. I'm not centos user, but you
-will propably find a way to see which package contains a certain file o=
-n
-centos website.
+In Debian it is in "contrack" package. I'm not centos user, but you'll
+probably find a way to see what package contains given file on centos
+website.
 
 --=20
 =F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
