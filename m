@@ -1,63 +1,64 @@
-From: "J. Bakshi" <joydeep@infoservices.in>
-Subject: Re: How to create rule from log file information ?
-Date: Wed, 27 Jan 2010 08:34:26 +0530
-Message-ID: <4B5FAD3A.6050704@infoservices.in>
-References: <20100125230202.60f24a5a@infoservices.in> <4B5DE797.4070801@tana.it> <4B5E110B.90507@chello.at>
+From: "Dennis J." <dennisml@conversis.de>
+Subject: Re: NOTRACK not working
+Date: Wed, 27 Jan 2010 16:47:37 +0100
+Message-ID: <4B606019.9080000@conversis.de>
+References: <4B5F36B7.5010004@conversis.de>	 <1264531798.4004.67.camel@casper.meteor.dp.ua>  <4B5F4D76.200@conversis.de> <1264538115.4004.71.camel@casper.meteor.dp.ua>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B5E110B.90507@chello.at>
+In-Reply-To: <1264538115.4004.71.camel@casper.meteor.dp.ua>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="koi8-r"; format="flowed"
+To: =?KOI8-U?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
+Cc: netfilter@vger.kernel.org
 
-Mart Frauenlob wrote:
-> On 25.01.2010 19:49, netfilter-owner@vger.kernel.org wrote:
->  =20
->> On 25/Jan/10 18:32, J. Bakshi wrote:
->>    =20
->>> I have collected the iptables log against nmap scan. Like
+On 01/26/2010 09:35 PM, =F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=
+=CB wrote:
+> =F7 =F7=D4=CF, 26/01/2010 =D7 21:15 +0100, Dennis J. =D0=C9=DB=C5=D4:
+>> On 01/26/2010 07:49 PM, =F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=
+=C9=CB wrote:
+>>> =F7 =F7=D4=CF, 26/01/2010 =D7 19:38 +0100, Dennis J. =D0=C9=DB=C5=D4=
+:
+>>>> Hi,
+>>>> For a while now I excluded two IPs on my firewall from connection =
+tracking
+>>>> which works very well. Now I tried adding another IP but that does=
+n't seem
+>>>> to work. I added the following rules:
+>>>>
+>>>> iptables -t raw -A PREROUTING -s 192.168.10.10 -j NOTRACK
+>>>> iptables -t raw -A PREROUTING -d 192.168.10.10 -j NOTRACK
+>>>>
+>>>> Yet when I look in /proc/net/ip_conntrack I still see 192.168.10.1=
+0 using
+>>>> up most of the entries.
+>>>> Is there something else that needs to be done to exclude this IP c=
+ompletely
+>>>> from the connection tracking table?
 >>>
->>> [omitted almost identical log lines]
+>>> Probably conntrack has seen packets from this IP before you added t=
+hose
+>>> rules, they will remain until connection is "closed" and/or timeout
+>>> occurs. Quick hack is to do "conntrack -F; conntrack -F expect".
 >>>
->>> Can I make rule-set to prevent the above scan from the info collect=
-ed
->>> at the log ?
->>> Kindly enlighten me. Then I can make more rule sets from the log.
->>>      =20
->> I'm not an nmap expert, but AFAIK nmap is designed to avoid just tha=
-t. I
->> have installed some logging iptables rules, similar to the ones in y=
-our
->> previous message (from Arno's iptables scripts, IIRC) and sometimes =
-some
->> of them fire, presumably because inappropriate flags had been given =
-to
->> nmap.
 >>
->> To recognize a scan, one may look at almost simultaneous TCP syn
->> occurring to several nearby ports/ addresses, and not followed by an
->> ack. This would require specific connection tracking code that I've
->> never heard about. At any rate, you /have/ to respond to syn request=
-s,
->> because they may be legit. You may recognize that they were scans by
->> analyzing the logs some time later, presumably for banning the relev=
-ant
->> IPs from further accessing your server...
->>
->>    =20
+>> Makes sense. Where can I find the conntrack command? This is a regul=
+ar
+>> centos 5 system but I can't find any packages that contain this comm=
+and.
 >
-> I have not tried them yet, but there is are extensions in
-> xtables-addons. Might worth trying:
+> In Debian this is in "conntrack" package. I'm not centos user, but yo=
+u
+> will propably find a way to see which package contains a certain file=
+ on
+> centos website.
 >
-> =20
-Thanks for the info.  Is there anyone already working with the module ?
-Please share your experience.
 
-Thanks
+I didn't find the required packages but rebuilding them from the fedora=
+=20
+versions was easy. After installing I was able to clear the table as=20
+described. Thanks!
 
---=20
-=E0=A6=9C=E0=A7=9F=E0=A6=A6=E0=A7=80=E0=A6=AA =E0=A6=AC=E0=A6=95=E0=A7=8D=
-=E0=A6=B8=E0=A7=80
-
+Regards,
+   Dennis
