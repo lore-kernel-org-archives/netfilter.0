@@ -1,64 +1,35 @@
-From: "Dennis J." <dennisml@conversis.de>
-Subject: Re: NOTRACK not working
-Date: Wed, 27 Jan 2010 16:47:37 +0100
-Message-ID: <4B606019.9080000@conversis.de>
-References: <4B5F36B7.5010004@conversis.de>	 <1264531798.4004.67.camel@casper.meteor.dp.ua>  <4B5F4D76.200@conversis.de> <1264538115.4004.71.camel@casper.meteor.dp.ua>
+From: Matt Hakim <thepigs@gmail.com>
+Subject: fwmark & iptables
+Date: Thu, 28 Jan 2010 21:37:44 +1100
+Message-ID: <fcfe0b071001280237w56be822fo5fb896071faacc3b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1264538115.4004.71.camel@casper.meteor.dp.ua>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type;
+        bh=B8FnGKWrFKUWoi2EbePX20yKEgwph//nq2Ogebh/LI0=;
+        b=G2F07qpxrW6+aBzmYIU/iKiVK5osGbCGV44O42o/dlD9P8K3rXph1vaKEG0B4zyPkC
+         cYwLRMKrPcgae+ihqDLnGU1HhMYpw19erfwM6XUHIR+pwfV2BUTEUzB+74hY+j6+baag
+         OrdjwL6CSgmGlvymMDIxMdwZwJWE//iTrRo5Y=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="koi8-r"; format="flowed"
-To: =?KOI8-U?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 01/26/2010 09:35 PM, =F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=
-=CB wrote:
-> =F7 =F7=D4=CF, 26/01/2010 =D7 21:15 +0100, Dennis J. =D0=C9=DB=C5=D4:
->> On 01/26/2010 07:49 PM, =F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=
-=C9=CB wrote:
->>> =F7 =F7=D4=CF, 26/01/2010 =D7 19:38 +0100, Dennis J. =D0=C9=DB=C5=D4=
-:
->>>> Hi,
->>>> For a while now I excluded two IPs on my firewall from connection =
-tracking
->>>> which works very well. Now I tried adding another IP but that does=
-n't seem
->>>> to work. I added the following rules:
->>>>
->>>> iptables -t raw -A PREROUTING -s 192.168.10.10 -j NOTRACK
->>>> iptables -t raw -A PREROUTING -d 192.168.10.10 -j NOTRACK
->>>>
->>>> Yet when I look in /proc/net/ip_conntrack I still see 192.168.10.1=
-0 using
->>>> up most of the entries.
->>>> Is there something else that needs to be done to exclude this IP c=
-ompletely
->>>> from the connection tracking table?
->>>
->>> Probably conntrack has seen packets from this IP before you added t=
-hose
->>> rules, they will remain until connection is "closed" and/or timeout
->>> occurs. Quick hack is to do "conntrack -F; conntrack -F expect".
->>>
->>
->> Makes sense. Where can I find the conntrack command? This is a regul=
-ar
->> centos 5 system but I can't find any packages that contain this comm=
-and.
->
-> In Debian this is in "conntrack" package. I'm not centos user, but yo=
-u
-> will propably find a way to see which package contains a certain file=
- on
-> centos website.
->
-
-I didn't find the required packages but rebuilding them from the fedora=
-=20
-versions was easy. After installing I was able to clear the table as=20
-described. Thanks!
-
-Regards,
-   Dennis
+Hi,
+I want to mark packets for a particular user (iptables -t mangle -A
+OUTPUT -mowner --uid-owner rtorrent -j MARK --set-mark 1), and then
+route these packets to a VPN (ip rule add fwmark 1 lookup 200; ip
+route add default dev ppp0 table 200). Unfortunately, after I do this
+tcpdump shows that the default interfaces source address is being put
+out on the ppp0 link which I don't understand, as I would have
+expected the ppp0 interface address to be the source address. Anyway
+it fails.
+Without using MARK and ip routing based on destination works OK though
+(from all to 66.102.11.104 lookup 200; ip route add default dev ppp0
+table 200).
+Any tips? I'll hack around in the source now see what i can find.
+Thanks,
+Matt
