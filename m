@@ -1,52 +1,84 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: fwmark & iptables
-Date: Fri, 29 Jan 2010 07:24:12 +0100
-Message-ID: <4B627F0C.8050305@plouf.fr.eu.org>
-References: <fcfe0b071001280237w56be822fo5fb896071faacc3b@mail.gmail.com>	 <4B6176A9.3030404@plouf.fr.eu.org>	 <fcfe0b071001280526t75cdc774x8d3a91497e8af2cf@mail.gmail.com>	 <4B619284.5030905@plouf.fr.eu.org>	 <fcfe0b071001281250u13539aa3o82520e8044dee59f@mail.gmail.com> <fcfe0b071001281506p2380ef45t99cbf9733b074f1@mail.gmail.com>
+From: <koen.news@koca.be>
+Subject: multiple external IP's - virtual NIC - DNAT problems
+Date: Fri, 29 Jan 2010 08:15:30 +0100
+Message-ID: <47b63751ecb9bdee2ada1d1be9deb980@mail.priorweb.be>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <fcfe0b071001281506p2380ef45t99cbf9733b074f1@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Matt Hakim <thepigs@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Matt Hakim a =E9crit :
-> On Fri, Jan 29, 2010 at 7:50 AM, Matt Hakim <thepigs@gmail.com> wrote=
-:
->>
->>> Forgot about that, sorry. Make sure sysctl net.ipv4.conf.ppp0.rp_fi=
-lter
->>> is set to 0 after ppp0 is created, otherwise the packet is discarde=
-d at
->>> the input routing decision stage. sysctl net.ipv4.conf.default.rp_f=
-ilter
->>> contains the value that will be set for any new interface.
->>
->> Didn't seem to help.
->=20
-> OK its working now, after I did various:
->=20
-> echo 0 > /proc/sys/net/ipv4/conf/all/rp_filter
-> echo 0 > /proc/sys/net/ipv4/conf/eth0/rp_filter
 
-What is the kernel version ? In 2.6.31 and newer versions, because of
-the previous addition of "loose mode" to reverse path filtering in
-version 2.6.30 (see Documentation/networking/ip-sysct.txt [1]), the
-combination of net.ipv4.conf.$interface.rp_filter and
-net.ipv4.conf.all.rp_filter to produce the functional value for
-$interface was changed from a logical AND into an arithmetic MAX, so
-net.ipv4.conf.all.rp_filter must also be set to 0 to disable reverse
-path filtering on an interface. However it should not be necessary to
-set rp_filter to 0 for eth0 too if it is not used for advanced routing.
+Debian Lenny IPTABLES firewall.
 
-> Thanks for your help,
 
-You're welcome. This is a common but tricky issue.
 
-[1] Note for myself : ask to change "conf/all/rp_filter must also be se=
-t
-to non-zero to do source validation on the interface" in ip-sysctl.txt
-which is no longer true and thus misleading.
+I'm missing some essential knowledge on how to map multiple external IP's
+
+I got from the ISP to specific internal IP's. 
+
+Everything works qua NAT & redirects for one external IP (eth0) and
+
+multiple internal subnets.
+
+
+
+The external IP pack is available at the untrust interface of the router
+
+(configured by the ISP) where eth0 of the firewall is connected to. 
+
+Until now the firewall works with one of the external IP's. Port
+
+forwarding works without a problem.
+
+
+
+eth0: external IP1
+
+eth1: internal 192.168.1.10/24
+
+
+
+$IPTABLES -t nat -A PREROUTING -p tcp -i eth0 --dport 9999 -j DNAT --to
+
+192.168.2.240:3389) = Works perfect
+
+
+
+I thought I needed to create via /etc/network/interfaces this: eth0:1 an
+
+extra interfaces that matches official IP2 so I can DNAT traffic to a
+
+specific server. 
+
+IPtables doesn't accept eth0:1 as interface. But I can use the IP2. "IP2"
+
+is the official IP e.g. $IPTABLES -t nat -A PREROUTING -p tcp -d "IP2"
+
+--dport 80 -j DNAT --to 192.168.2.240:80 => doesn't work
+
+
+
+1) Is this really necessary? First I tried to $IPTABLES -t nat -A
+
+PREROUTING -p tcp -d "IP2" -j DNAT --to 192.168.2.240 without an virtual
+
+interface but it doesn't work, TCP/IP does need an interface with the
+
+correct IP to send data to I guesss :)
+
+2) No other/better way than to define multiple official IP's to one iFACE?
+
+
+
+This must be a common problem but I can't find a google answer. 
+
+Any pointer on how to solve this problem? Maybe another approach. I will
+
+need to do this for multiple servers. 
+
+
+
+Koen Linders
