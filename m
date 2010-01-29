@@ -1,84 +1,30 @@
-From: <koen.news@koca.be>
-Subject: multiple external IP's - virtual NIC - DNAT problems
-Date: Fri, 29 Jan 2010 08:15:30 +0100
-Message-ID: <47b63751ecb9bdee2ada1d1be9deb980@mail.priorweb.be>
+From: Susant Sahani <ssahani@gmail.com>
+Subject: NF_STOLEN and reinsert in to IP stack
+Date: Fri, 29 Jan 2010 18:08:08 +0530
+Message-ID: <d81115a61001290438x5421fe62m651f9b23680d893f@mail.gmail.com>
+References: <d81115a61001290428j558f6ea9tf5e61dd27b0022af@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :from:date:message-id:subject:to:content-type
+         :content-transfer-encoding;
+        bh=HpDHqfjkcHeBbZdWZrQBSUipzT4LjKkYjgwxBIPgkTs=;
+        b=XH1jl20Q4G5pPKBmfU/2fwrQS+fpGkWMN/D+6dXjm9VCnS7jnBlo3/Glz6GiVccqes
+         nvJS/1Io2QDuFQHzB+Tds6odNLk8XpP2x++I/LBh5PtAb8sTzDDQbK/VJiijcIIbzv12
+         EvGyTv1fH+R3uvgss6zjw/HGfIuMGNCDGIx8Q=
+In-Reply-To: <d81115a61001290428j558f6ea9tf5e61dd27b0022af@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
+ Hi,
+ =A0=A0=A0=A0=A0=A0=A0 How to reinsert a packet into IP stack after usi=
+ng NF_STOLEN.
+If I do a nf_reinject it crashes .
 
-Debian Lenny IPTABLES firewall.
-
-
-
-I'm missing some essential knowledge on how to map multiple external IP's
-
-I got from the ISP to specific internal IP's. 
-
-Everything works qua NAT & redirects for one external IP (eth0) and
-
-multiple internal subnets.
-
-
-
-The external IP pack is available at the untrust interface of the router
-
-(configured by the ISP) where eth0 of the firewall is connected to. 
-
-Until now the firewall works with one of the external IP's. Port
-
-forwarding works without a problem.
-
-
-
-eth0: external IP1
-
-eth1: internal 192.168.1.10/24
-
-
-
-$IPTABLES -t nat -A PREROUTING -p tcp -i eth0 --dport 9999 -j DNAT --to
-
-192.168.2.240:3389) = Works perfect
-
-
-
-I thought I needed to create via /etc/network/interfaces this: eth0:1 an
-
-extra interfaces that matches official IP2 so I can DNAT traffic to a
-
-specific server. 
-
-IPtables doesn't accept eth0:1 as interface. But I can use the IP2. "IP2"
-
-is the official IP e.g. $IPTABLES -t nat -A PREROUTING -p tcp -d "IP2"
-
---dport 80 -j DNAT --to 192.168.2.240:80 => doesn't work
-
-
-
-1) Is this really necessary? First I tried to $IPTABLES -t nat -A
-
-PREROUTING -p tcp -d "IP2" -j DNAT --to 192.168.2.240 without an virtual
-
-interface but it doesn't work, TCP/IP does need an interface with the
-
-correct IP to send data to I guesss :)
-
-2) No other/better way than to define multiple official IP's to one iFACE?
-
-
-
-This must be a common problem but I can't find a google answer. 
-
-Any pointer on how to solve this problem? Maybe another approach. I will
-
-need to do this for multiple servers. 
-
-
-
-Koen Linders
+Thanks,
+ susant
