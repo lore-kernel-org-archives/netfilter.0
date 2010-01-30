@@ -1,26 +1,36 @@
-From: Mike Wright <mike.wright@mailinator.com>
-Subject: Re: multiple external IP's - virtual NIC - DNAT problems
-Date: Fri, 29 Jan 2010 10:36:11 -0800
-Message-ID: <4B632A9B.1070100@mailinator.com>
-References: <47b63751ecb9bdee2ada1d1be9deb980@mail.priorweb.be>    <4B62F4B7.80701@mailinator.com> <62981.81.165.168.224.1264785772.squirrel@webmail.priorweb.be>
+From: Susant Sahani <ssahani@gmail.com>
+Subject: nf_reinject crashes after NF_STOLEN
+Date: Sat, 30 Jan 2010 12:39:16 +0530
+Message-ID: <d81115a61001292309y48cfa9c9u34455269f9597d37@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <62981.81.165.168.224.1264785772.squirrel@webmail.priorweb.be>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:from:date:message-id
+         :subject:to:content-type;
+        bh=QwGWXIUWS013NLkU2KyeDYNAK/iZfJF0qutPYMs2kRo=;
+        b=LLH6Lz2C7EmZw/kQNmHKaoopPbpdVUgjZsEOZ2D+DbZtzftstUffTRjhmsb/XfzqMh
+         R0PpDS2VW5U4RzmCV24Os70xdqtP/hF0ck5g3J24urlDFgtgBcvG0laNQ+oJbFSGs0eh
+         ej+L6kSUbrq8NRTVzfJ18kV63tV1stMzr/RYM=
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: koen.news@koca.be
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, netdev@vger.kernel.org
 
-koen.news@koca.be wrote:
->> The command you seek is "ip".  Here's an example of adding an address to
->> an interface:  "ip address add 1.2.3.4/8 dev eth4".
->>
-> Thx for the reply. That's indeed what I seek!
-> 
-> I guess I can put that command (or the debian variant) in the pre-up
-> command for the interface?
+Hi,
+       If NF_STOLEN is done then how to reinsert the packet after sometime.
 
-I'm Debian ignorant.  In Redhat style systems I  bring up my interfaces 
-without addresses or routes and put my custom code in /etc/rc.local.
+Here is the scenario.
+
+packet1 comes in store return NF_STOLEN
+packet2 comes in store return NF_STOLEN
+packet3 comes in store return NF_STOLEN
+packet4 comes in reinsert All the packets (packet1, packet2, packet3,
+packet4) to IP stack so that it can continue the journey.
+
+But if I do nf_reinject it crashes.
+
+Please let me know how to do it.
+
+susant
