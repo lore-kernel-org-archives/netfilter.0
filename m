@@ -1,41 +1,52 @@
-From: Patrick Chemla <patrick.chemla@perfaction.net>
-Subject: multiple public ips to multiple internal ips
-Date: Sat, 30 Jan 2010 23:10:24 +0200
-Message-ID: <4B64A040.2080300@perfaction.net>
+From: "Helight.Xu" <helight.xu@gmail.com>
+Subject: [REPORT] may be wrong place #endif in include/linux/netfilter_ipv4.h
+Date: Sun, 31 Jan 2010 10:13:06 +0800
+Message-ID: <4B64E732.3090507@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from
+         :user-agent:mime-version:to:cc:subject:content-type
+         :content-transfer-encoding;
+        bh=JSxqjPQ7XSPQpeLGDvLZ7sJawLE8chlDWKOVz2QYA+Y=;
+        b=BYhb0LuPLsLNlb2ey12Yfqom1aGBBHePrbLAqXiZ0BK2tikyCzl+hhXUVp/6sKB4Tg
+         OQZzCzucg+L5JYaOqM+g3dI33UQa/E5qUVesNxHvHL7QzUt4SgwkyWLi5Sc4dWVG2hf0
+         IOujM1cP91lvYdKNWk7WJloVwvM6Dc2DhhbY4=
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Patrick McHardy <kaber@trash.net>, coreteam@netfilter.org
+Cc: linux-kernel@vger.kernel.org
 
-Hi,
+hi all gys:
 
-I need to setup a router to match multiple public ips to multiple 
-internal ips.
+    when I make LKM with netfilter on "NF_IP_PRE_ROUTING" point, but it 
+was reported that "NF_IP_PRE_ROUTING" is not defined.
 
-I need to do it one by one, because I want it to be dynamic.
+    but I am surely including <linux/netfilter_ipv4.h>, when I opened 
+include/linux/netfilter_ipv4.h I found that
+"NF_IP_PRE_ROUTING" is in this lable :
+#ifndef __KERNEL__
+.....
+/* IP Hooks */
+/* After promisc drops, checksum checks. */
+#define NF_IP_PRE_ROUTING       0
+/* If the packet is destined for this box. */
+#define NF_IP_LOCAL_IN          1
+/* If the packet is destined for another interface. */
+#define NF_IP_FORWARD           2
+/* Packets coming from a local process. */
+#define NF_IP_LOCAL_OUT         3
+/* Packets about to hit the wire. */
+#define NF_IP_POST_ROUTING      4
+#define NF_IP_NUMHOOKS          5
+#endif /* ! __KERNEL__ */
 
-I mean: I want to be able to change external ip for a specific server at 
-any time. I am building a set of scripts where an internal server will 
-request from the router to change his external ip. The router will 
-change and reload his configuration dynamically.
+So I think the "endif" is ended a little early!
 
-I have a set of 10 public ip addresses for about 5 internal servers.
-
-My router is a Linux Fedora 11 box, kernel 2.6.30.10-105.fc11.x86_64 
-with iptables-1.4.3.1-1.fc11.x86_64 installed.
-
-Is there somewhere a step by step howto to help me configure iptables? 
-Maybe a thread in this list?
-
-I checked some threads but I found only configurations for range of ips, 
-not for individual ips.
-
-I checked some iptables Howtos: There are a lot about one public ip to 
-multiple internal, I haven't found any on multiple to multiple.
-
-Thanks for help
-Patrick
+-- 
+Zhenwen Xu - Seven Helight
+Home Page: http://zhwen.org
 
