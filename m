@@ -1,64 +1,46 @@
-From: Patrick Chemla <patrick.chemla@perfaction.net>
-Subject: Re: multiple public ips to multiple internal ips
-Date: Sun, 31 Jan 2010 08:42:21 +0200
-Message-ID: <4B65264D.8040508@perfaction.net>
-References: <4B64A040.2080300@perfaction.net>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: [REPORT] may be wrong place #endif in
+ include/linux/netfilter_ipv4.h
+Date: Sun, 31 Jan 2010 10:21:43 +0100 (CET)
+Message-ID: <alpine.LSU.2.01.1001311019430.15188@obet.zrqbmnf.qr>
+References: <4B64E732.3090507@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-reply-to: <4B64A040.2080300@perfaction.net>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <4B64E732.3090507@gmail.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Helight.Xu" <helight.xu@gmail.com>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Patrick McHardy <kaber@trash.net>, coreteam@netfilter.org, linux-kernel@vger.kernel.org
 
-Hi all,
+On Sunday 2010-01-31 03:13, Helight.Xu wrote:
 
-I would like to add a question:
+> hi all gys:
+>
+>   when I make LKM with netfilter on "NF_IP_PRE_ROUTING" point, but it was
+> reported that "NF_IP_PRE_ROUTING" is not defined.
+>
+>   but I am surely including <linux/netfilter_ipv4.h>, when I opened
+> include/linux/netfilter_ipv4.h I found that
+> "NF_IP_PRE_ROUTING" is in this lable :
+> #ifndef __KERNEL__
+> .....
+> /* IP Hooks */
+> /* After promisc drops, checksum checks. */
+> #define NF_IP_PRE_ROUTING       0
+> /* If the packet is destined for this box. */
+> #define NF_IP_LOCAL_IN          1
+> /* If the packet is destined for another interface. */
+> #define NF_IP_FORWARD           2
+> /* Packets coming from a local process. */
+> #define NF_IP_LOCAL_OUT         3
+> /* Packets about to hit the wire. */
+> #define NF_IP_POST_ROUTING      4
+> #define NF_IP_NUMHOOKS          5
+> #endif /* ! __KERNEL__ */
+>
+> So I think the "endif" is ended a little early!
 
-I am quite a newbie in this field.
-
-If one of my network interface is connected to the public side, and=20
-receive 16 public ips from my ISP, do I have to declare 16 alias to my=20
-network interface?
-
-If there are 128 ips, I should declare 128 aliases???
-
-Thanks
-Patrick
-
-
-Le 30/01/2010 23:10, Patrick Chemla a =E9crit :
-> Hi,
->
-> I need to setup a router to match multiple public ips to multiple=20
-> internal ips.
->
-> I need to do it one by one, because I want it to be dynamic.
->
-> I mean: I want to be able to change external ip for a specific server=
-=20
-> at any time. I am building a set of scripts where an internal server=20
-> will request from the router to change his external ip. The router=20
-> will change and reload his configuration dynamically.
->
-> I have a set of 10 public ip addresses for about 5 internal servers.
->
-> My router is a Linux Fedora 11 box, kernel 2.6.30.10-105.fc11.x86_64=20
-> with iptables-1.4.3.1-1.fc11.x86_64 installed.
->
-> Is there somewhere a step by step howto to help me configure iptables=
-?=20
-> Maybe a thread in this list?
->
-> I checked some threads but I found only configurations for range of=20
-> ips, not for individual ips.
->
-> I checked some iptables Howtos: There are a lot about one public ip t=
-o=20
-> multiple internal, I haven't found any on multiple to multiple.
->
-> Thanks for help
-> Patrick
->
-
+Seems so. Are there any out-of-tree nf_ip_hook_priorities users? If not, 
+we could possibly move it further below.
