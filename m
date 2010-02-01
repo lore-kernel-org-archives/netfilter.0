@@ -1,167 +1,96 @@
-From: a.schild@aarboard.ch
-Subject: RE: Re: How to debug RST filter ?
-Date: Mon, 1 Feb 2010 09:13:00 +0100
-Message-ID: <L749C3EBF46964d4a9E404BAF2BFD837F.1265011977.scalix01.aarboard.ch@MHS>
-References: <4B668B62.1090200@gmail.com>
+From: <koen.news@koca.be>
+Subject: Re: multiple external IP's - virtual NIC - DNAT problems
+Date: Mon, 01 Feb 2010 09:43:11 +0100
+Message-ID: <51f1a6a7bd4bbe42e8619e29b7f3aec6@mail.priorweb.be>
+References: <47b63751ecb9bdee2ada1d1be9deb980@mail.priorweb.be>    <4B62F4B7.80701@mailinator.com> <62981.81.165.168.224.1264785772.squirrel@webmail.priorweb.be> <alpine.DEB.2.00.1001301414410.16952@aurora.sdinet.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-	boundary="----=_NextPart_000_0004_01CAA31E.BE3D8690";
-	protocol="application/x-pkcs7-signature";
-	micalg=SHA1
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B668B62.1090200@gmail.com>
-MIME-Version: 1.0
+In-Reply-To: <alpine.DEB.2.00.1001301414410.16952@aurora.sdinet.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: 
-
-This is a multi-part message in MIME format.
-
-------=_NextPart_000_0004_01CAA31E.BE3D8690
-Content-Type: text/plain;
-	charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-Hello,
-
-> Can you see "RULE 17"?
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
 
-Rule 17 is the final deny everything else rule.
-Rule 15 is the one which should allow everything "local" on the firewall
+> Not pre-up, put them in up / post-up
 
-#
-# Rule 15 (global)
-#
-echo "Rule 15 (global)"
-#
-#
-#
-$IPTABLES -N Cid4A4A84F123430.0
-$IPTABLES -A INPUT  -s myip   -m state --state NEW  -j =
-Cid4A4A84F123430.0
-$IPTABLES -A INPUT  -s 127.0.0.1   -m state --state NEW  -j
-Cid4A4A84F123430.0
-$IPTABLES -A Cid4A4A84F123430.0  -d myip   -j ACCEPT
-$IPTABLES -A Cid4A4A84F123430.0  -d 127.0.0.1   -j ACCEPT
-$IPTABLES -N Cid4A4A84F123430.1
-$IPTABLES -A OUTPUT  -s myip    -m state --state NEW  -j =
-Cid4A4A84F123430.1
-$IPTABLES -A OUTPUT  -s 127.0.0.1   -m state --state NEW  -j
-Cid4A4A84F123430.1
-$IPTABLES -A Cid4A4A84F123430.1  -d myip   -j ACCEPT
-$IPTABLES -A Cid4A4A84F123430.1  -d 127.0.0.1   -j ACCEPT
+> 
+
+> You can also use eth0:1 eth0:2 interface definitions in debian 
+
+> /etc/network/interfaces and use "-i eth0 -d $ip" in your firewall 
+
+> config.
+
+> 
+
+> The eth0:X interfaces are not really network interfaces, they are just 
+
+> secondary ip addresses on the base interface with a different label 
+
+> attached to them for ifconfig backward compatibility.
+
+> 
+
+> Example:
+
+> 	ifconfig eth2:2 192.168.19.123 up
+
+> 	ip addr show dev eth2
+
+> 	-> inet 192.168.19.123/24 brd 192.168.19.255 scope global secondary
+
+eth2:2
+
+> 
+
+> 	ip addr add 192.168.19.124/24 dev eth2
+
+> 	ip addr show dev eth2
+
+> 	-> inet 192.168.19.123/24 brd 192.168.19.255 scope global secondary
+
+eth2:2
+
+> 	-> inet 192.168.19.124/24 scope global secondary eth2
+
+> 
+
+> 
+
+> c'ya
+
+> sven
 
 
 
-#
-# Rule 17 (global)
-#
-echo "Rule 17 (global)"
-#
-#
-#
-$IPTABLES -N RULE_17
-$IPTABLES -A OUTPUT  -j RULE_17
-$IPTABLES -A INPUT  -j RULE_17
-$IPTABLES -A RULE_17  -j LOG  --log-level info --log-prefix "RULE 17 -- =
-DENY
-" --log-tcp-sequence  --log-tcp-options  --log-ip-options
-$IPTABLES -A RULE_17  -j DROP
+This is exactly what I needed. Everything works now as expected. 
 
 
-As we normaly can connect, but just a few random connection don't work,
-I assume that there is some timeout or some entries flushed somewhere in
-the filter stuff.
+
+Sidenote: I first created an extra address with:
+
+ip addr add 192.168.19.124/24 dev eth2
 
 
-Andr=E9
+
+And checked that is was there. THen I put everything in the post-up
+
+command including the one I already did.
+
+invoke-rc.d networking restart didn't activate the other addressess. 
+
+I remove the first one:
+
+ip addr del 192.168.19.124/24 dev eth2
 
 
-------=_NextPart_000_0004_01CAA31E.BE3D8690
-Content-Type: application/x-pkcs7-signature;
-	name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="smime.p7s"
 
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIL2TCCAj0w
-ggGmAhEAzbp/VvDf5LxU/iKss3KqVTANBgkqhkiG9w0BAQIFADBfMQswCQYDVQQGEwJVUzEXMBUG
-A1UEChMOVmVyaVNpZ24sIEluYy4xNzA1BgNVBAsTLkNsYXNzIDEgUHVibGljIFByaW1hcnkgQ2Vy
-dGlmaWNhdGlvbiBBdXRob3JpdHkwHhcNOTYwMTI5MDAwMDAwWhcNMjgwODAxMjM1OTU5WjBfMQsw
-CQYDVQQGEwJVUzEXMBUGA1UEChMOVmVyaVNpZ24sIEluYy4xNzA1BgNVBAsTLkNsYXNzIDEgUHVi
-bGljIFByaW1hcnkgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwgZ8wDQYJKoZIhvcNAQEBBQADgY0A
-MIGJAoGBAOUZv22jVmEtmUhx9mfeuY3rt56GgAqRDvo4Ja9GiILlc6igmyRdDR/MZW4MsNBWhBiH
-mgabEKFz37RYOWtuwfYV1aioP6oSBo0xrH+wNNePNGeICc0UEeJORVZpH3gCgNrcR5EpuzbJY1zF
-4Ncth3uhtzKwezC6Ki8xqu6jZ9rbAgMBAAEwDQYJKoZIhvcNAQECBQADgYEATD+4i8Zo3+5DMw5d
-6abLB4RNejP/khv0Nq3YlSI2aBFsfELM85wuxAc/FLAPT/+Qknb54rxK6Y/NoIAK98Up8YIiXbix
-3YEjo3slFUYweRb46gVLlH8dwhzI47f0EEA8E8NfH1PoSOSGtHuhNbB7Jbq4046rPzidADQAmPPR
-cZQwggRGMIIDr6ADAgECAhBm/Ufjwhnk6JrNmd31OsskMA0GCSqGSIb3DQEBBQUAMF8xCzAJBgNV
-BAYTAlVTMRcwFQYDVQQKEw5WZXJpU2lnbiwgSW5jLjE3MDUGA1UECxMuQ2xhc3MgMSBQdWJsaWMg
-UHJpbWFyeSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTAeFw0wNTEwMjgwMDAwMDBaFw0xNTEwMjcy
-MzU5NTlaMIHdMQswCQYDVQQGEwJVUzEXMBUGA1UEChMOVmVyaVNpZ24sIEluYy4xHzAdBgNVBAsT
-FlZlcmlTaWduIFRydXN0IE5ldHdvcmsxOzA5BgNVBAsTMlRlcm1zIG9mIHVzZSBhdCBodHRwczov
-L3d3dy52ZXJpc2lnbi5jb20vcnBhIChjKTA1MR4wHAYDVQQLExVQZXJzb25hIE5vdCBWYWxpZGF0
-ZWQxNzA1BgNVBAMTLlZlcmlTaWduIENsYXNzIDEgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBIC0g
-RzIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDJ36zn6vj4AxTEAJLVwX42wjzvfHIV
-y8CrjD0clc5vHhAsPwDtlybmtsfmrUMdP6SHR0dMPlT4bPjH/LGevTBwvJexAwXqlfGtQMVEeksF
-ovJg/Nc6ZWLv/xB7ola7xU5wLdaiHzztsELoXo1XIaymmdkR6dIaB8B0R0IL/MU06v3muiTRHQgV
-N6LXc88BQS9jsjo/vqUabvTJSls9laYVuzUCGfnU77yPDnF2WbtLtj7W/FoW9NYOifJJ/mwM7RXp
-2Yh1nHnOYCfdua11zi9zlXpAOoV1SbC432i8q80TgoURUKPgPAuuwApTzdcwb4UyRhvkSRDCbOKv
-H3n/27S1AgMBAAGjgf8wgfwwEgYDVR0TAQH/BAgwBgEB/wIBADBEBgNVHSAEPTA7MDkGC2CGSAGG
-+EUBBxcBMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3LnZlcmlzaWduLmNvbS9ycGEwCwYDVR0P
-BAQDAgEGMBEGCWCGSAGG+EIBAQQEAwIBBjAuBgNVHREEJzAlpCMwITEfMB0GA1UEAxMWUHJpdmF0
-ZUxhYmVsMy0yMDQ4LTE1NTAdBgNVHQ4EFgQUEX1eGX08BN9qbNaiiho/Mdg7lFIwMQYDVR0fBCow
-KDAmoCSgIoYgaHR0cDovL2NybC52ZXJpc2lnbi5jb20vcGNhMS5jcmwwDQYJKoZIhvcNAQEFBQAD
-gYEAPKPaAmM6xJOqq3LT3K1QOB4MnhZKiLfu69n/D42VoNa7+moLrmGE2GhHie9PrLIfSUGbSTN2
-k4uebrlDHGC9wtyKLYfBRcARcgQaayQqbG/n/AcTKdB3OiPn9cGFaBm/xgFUIBmuNYLMYjxhCcb0
-1euwD6afM4Wa03GOUI+Z3WIwggVKMIIEMqADAgECAhApVeCUHBNIwNm5wq7jtRcnMA0GCSqGSIb3
-DQEBBQUAMIHdMQswCQYDVQQGEwJVUzEXMBUGA1UEChMOVmVyaVNpZ24sIEluYy4xHzAdBgNVBAsT
-FlZlcmlTaWduIFRydXN0IE5ldHdvcmsxOzA5BgNVBAsTMlRlcm1zIG9mIHVzZSBhdCBodHRwczov
-L3d3dy52ZXJpc2lnbi5jb20vcnBhIChjKTA1MR4wHAYDVQQLExVQZXJzb25hIE5vdCBWYWxpZGF0
-ZWQxNzA1BgNVBAMTLlZlcmlTaWduIENsYXNzIDEgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBIC0g
-RzIwHhcNMDkxMDIwMDAwMDAwWhcNMTAxMDIwMjM1OTU5WjCCARMxFzAVBgNVBAoTDlZlcmlTaWdu
-LCBJbmMuMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMUYwRAYDVQQLEz13d3cudmVy
-aXNpZ24uY29tL3JlcG9zaXRvcnkvUlBBIEluY29ycC4gYnkgUmVmLixMSUFCLkxURChjKTk4MR4w
-HAYDVQQLExVQZXJzb25hIE5vdCBWYWxpZGF0ZWQxMzAxBgNVBAsTKkRpZ2l0YWwgSUQgQ2xhc3Mg
-MSAtIE5ldHNjYXBlIEZ1bGwgU2VydmljZTEVMBMGA1UEAxQMQW5kcukgU2NoaWxkMSMwIQYJKoZI
-hvcNAQkBFhRhLnNjaGlsZEBhYXJib2FyZC5jaDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
-ggEBAMMEkp1Bmbs3GOUv6kqfjsQ8OnLiGsMS+xkuXEHUSqJI+SkzAThSED6RW8LK8lByFhINJ7Y2
-UcDM4oA/Z9SNk9xv3WXWBulRsUdcxAWWHLt6uC0QAkexQzaWgGPmhLh9xeQvm7t02R7sHvuN2YmE
-iTCOJl6kdzRReHcnHAf5tuVMMltXE62CU/jkmb/pjf65eF3Z13NFZkUsTCjWSOO5Kk4R70Il0/NN
-LLhN9dpPPx9fPFJI7mAUWTNXwIwYkx7zQAjI1jCMFROZvtteGMbwg7mQSo/Tv5h0cOCydEW8NxMm
-wJOGeDKAYi+ZHeI28+YYncLaTQ5pRIIC7mjOK/GQJC0CAwEAAaOBzDCByTAJBgNVHRMEAjAAMEQG
-A1UdIAQ9MDswOQYLYIZIAYb4RQEHFwEwKjAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cudmVyaXNp
-Z24uY29tL3JwYTALBgNVHQ8EBAMCBaAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMCMEoG
-A1UdHwRDMEEwP6A9oDuGOWh0dHA6Ly9JbmRDMURpZ2l0YWxJRC1jcmwudmVyaXNpZ24uY29tL0lu
-ZEMxRGlnaXRhbElELmNybDANBgkqhkiG9w0BAQUFAAOCAQEAc2mj3Z4Jkp0GcyEyrYTwOgyi7Myg
-bJiJ6wlJ6PAUEgxho3c+WUeCXKRh5JXMksOHOJRqEOC+TPlKG5s69ZzE1OG/CCtMsdu1jsxFCnbf
-Rp8SxKAU+S29784Si2NeBgnk9oVykeyq2DXxJwDoEHsKWkMscUG1X6mb0snf5DUEt20FWC/BJsqF
-VdXWI5jn3lq0u2P06e/JdnM8+hZdBC14Eavuj53LfsovWO2Fljiv8bRiFMfs56DcL4XP+YiJ0Wfy
-Y3qE07ljR2g9g9FdQAOdMaNQXCIC1FII3JuRhaAHvt/WISwr9nNW9U4hDS4w5GPmuY5Qn1DXSzVt
-aDBsdkcwejGCBUUwggVBAgEBMIHyMIHdMQswCQYDVQQGEwJVUzEXMBUGA1UEChMOVmVyaVNpZ24s
-IEluYy4xHzAdBgNVBAsTFlZlcmlTaWduIFRydXN0IE5ldHdvcmsxOzA5BgNVBAsTMlRlcm1zIG9m
-IHVzZSBhdCBodHRwczovL3d3dy52ZXJpc2lnbi5jb20vcnBhIChjKTA1MR4wHAYDVQQLExVQZXJz
-b25hIE5vdCBWYWxpZGF0ZWQxNzA1BgNVBAMTLlZlcmlTaWduIENsYXNzIDEgSW5kaXZpZHVhbCBT
-dWJzY3JpYmVyIENBIC0gRzICEClV4JQcE0jA2bnCruO1FycwCQYFKw4DAhoFAKCCAycwGAYJKoZI
-hvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTAwMjAxMDgxMjU2WjAjBgkqhkiG
-9w0BCQQxFgQU2df4ar8maNI0vbBER/wnZ+etI8YwgbcGCSqGSIb3DQEJDzGBqTCBpjALBglghkgB
-ZQMEASowCwYJYIZIAWUDBAEWMAoGCCqGSIb3DQMHMAsGCWCGSAFlAwQBAjAOBggqhkiG9w0DAgIC
-AIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwBwYFKw4DAhowCwYJYIZI
-AWUDBAIDMAsGCWCGSAFlAwQCAjALBglghkgBZQMEAgEwCgYIKoZIhvcNAgUwggEDBgkrBgEEAYI3
-EAQxgfUwgfIwgd0xCzAJBgNVBAYTAlVTMRcwFQYDVQQKEw5WZXJpU2lnbiwgSW5jLjEfMB0GA1UE
-CxMWVmVyaVNpZ24gVHJ1c3QgTmV0d29yazE7MDkGA1UECxMyVGVybXMgb2YgdXNlIGF0IGh0dHBz
-Oi8vd3d3LnZlcmlzaWduLmNvbS9ycGEgKGMpMDUxHjAcBgNVBAsTFVBlcnNvbmEgTm90IFZhbGlk
-YXRlZDE3MDUGA1UEAxMuVmVyaVNpZ24gQ2xhc3MgMSBJbmRpdmlkdWFsIFN1YnNjcmliZXIgQ0Eg
-LSBHMgIQKVXglBwTSMDZucKu47UXJzCCAQUGCyqGSIb3DQEJEAILMYH1oIHyMIHdMQswCQYDVQQG
-EwJVUzEXMBUGA1UEChMOVmVyaVNpZ24sIEluYy4xHzAdBgNVBAsTFlZlcmlTaWduIFRydXN0IE5l
-dHdvcmsxOzA5BgNVBAsTMlRlcm1zIG9mIHVzZSBhdCBodHRwczovL3d3dy52ZXJpc2lnbi5jb20v
-cnBhIChjKTA1MR4wHAYDVQQLExVQZXJzb25hIE5vdCBWYWxpZGF0ZWQxNzA1BgNVBAMTLlZlcmlT
-aWduIENsYXNzIDEgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBIC0gRzICEClV4JQcE0jA2bnCruO1
-FycwDQYJKoZIhvcNAQEBBQAEggEAYDWls8wAaOGUTOhecFGWIsBylCji/JDW6O7TIuLFKPogWu2W
-CHiBgEk1qNfCU/uHWb6Fnb9QrH9V5SsDacWa8zcDliSgrHpcIfN2/vglXg0DltEKrdmkZKK0hP3E
-MGHkLHUBZjCz4nfdsOn6xdTbrgAS/n0de7hVaP8zrhVglMbAFJNwwfdEEGxifWr/J/QXM98EtbZv
-geZOCr4Oz0wd3DZD4dnlhujXnhgc+E0jiQM0i0QIchXoDA/b8reMABM1VoaF8Rb5Xzxr54xB0fgY
-vJvfjApNNAgTv5m3+llk/PEMDDhkaSIm8JEe479RUmx3sX1KiP5X6U3/38Y54qSpQQAAAAAAAA==
+then invoke-rc.d networking restart worked.
 
-------=_NextPart_000_0004_01CAA31E.BE3D8690--
+
+
+Many thanks.
+
+Koen
