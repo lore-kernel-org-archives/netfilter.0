@@ -1,40 +1,49 @@
-From: Sven-Haegar Koch <haegar@sdinet.de>
-Subject: Re: multiple public ips to multiple internal ips
-Date: Sun, 31 Jan 2010 22:15:29 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1001312213300.29147@aurora.sdinet.de>
-References: <4B64A040.2080300@perfaction.net> <4B65264D.8040508@perfaction.net>
+From: "Andre Schild" <a.schild@aarboard.ch>
+Subject: How to debug RST filter ?
+Date: Mon, 1 Feb 2010 08:50:15 +0100
+Message-ID: <LB95CFD713BF44ce1B06C76BE068BFE90.1265010613.scalix01.aarboard.ch@MHS>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B65264D.8040508@perfaction.net>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Patrick Chemla <patrick.chemla@perfaction.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-On Sun, 31 Jan 2010, Patrick Chemla wrote:
+Hello,
 
-> I would like to add a question:
-> 
-> I am quite a newbie in this field.
-> 
-> If one of my network interface is connected to the public side, and 
-> receive 16
-> public ips from my ISP, do I have to declare 16 alias to my network 
-> interface?
-> 
-> If there are 128 ips, I should declare 128 aliases???
+we are using Debian 2.6.26-2-amd64 with a database server listening on=20
+tcp port 2638.
+Usually everything works just fine, but sometimes we get connection=20
+errors on the server, and then, each time we see firewall entries like=20
+this in the syslog:
 
-Why not just route the real ips on to the real servers? Why use 
-internal IPs for the servers and DNAT at all on their public side?
 
-Filtering can happen just as good on the real IPs, no need to hassle
-with NAT.
+=46eb  1 07:41:26 sv16 kernel: [34944777.631090] RULE 17 -- DENY IN=3D=20
+OUT=3Dlo SRC=3D188.myip DST=3D188.myip LEN=3D40 TOS=3D0x00 PREC=3D0x00 =
+TTL=3D64 ID
+=3D0 DF PROTO=3DTCP SPT=3D41562 DPT=3D2638 SEQ=3D1506091366 ACK=3D0 WIN=
+DOW=3D0=20
+RES=3D0x00 RST URGP=3D0
+=46eb  1 07:41:29 sv16 kernel: [34944786.286850] RULE 17 -- DENY IN=3D=20
+OUT=3Dlo SRC=3D188.myip DST=3D188.myip LEN=3D40 TOS=3D0x00 PREC=3D0x00 =
+TTL=3D64 ID
+=3D0 DF PROTO=3DTCP SPT=3D41562 DPT=3D2638 SEQ=3D1506091366 ACK=3D0 WIN=
+DOW=3D0=20
+RES=3D0x00 RST URGP=3D0
 
-c'ya
-sven
+In the firewal we even have a rule which allows everything in/out on th=
+e=20
+lo interface.
 
--- 
-Three may keep a secret, if two of them are dead.
-- Ben F.
+It looks like there are some timeouts or state filters which do not wor=
+k=20
+as intended by us.
+
+Any ideas how I can debug this ?
+I can't trace all the traffic on the lo interface, because there is=20
+quite heavy load/traffic
+on that interface.
+
+Andr=E9
