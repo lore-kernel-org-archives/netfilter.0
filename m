@@ -1,54 +1,62 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: How to debug RST filter ?
-Date: Mon, 01 Feb 2010 20:29:03 +0100
-Message-ID: <4B672B7F.4060603@plouf.fr.eu.org>
-References: <4B668B62.1090200@gmail.com> <L749C3EBF46964d4a9E404BAF2BFD837F.1265011977.scalix01.aarboard.ch@MHS>
+From: Serg Buslovsky <serg.buslovsky@gmail.com>
+Subject: policy based routing - leaking packets
+Date: Mon, 1 Feb 2010 21:38:15 +0200
+Message-ID: <91f85b781002011138j8391807xa93f7ae73afddec2@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <L749C3EBF46964d4a9E404BAF2BFD837F.1265011977.scalix01.aarboard.ch@MHS>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type;
+        bh=L35QB5MP+RX9yqtOsiyHPAmP73hBLVy77kLw6YC44Yw=;
+        b=eNKOMyM37DnlVBeOh1EiroPPYIOzXKTbGs3deuBLCUqs01OzxmOqmgP8rUXI3iWCWj
+         pffgaEVWENyrE5w7+9LMQJ5VDRTcfQgkgRFmDH9Nz3ogA3j2QoODLgoltWmf5qU79xQ1
+         PJGfQ4oEGgligCDPz+ySBnmFGbKDHKLJFXHG8=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: a.schild@aarboard.ch
-Cc: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hello,
+Hi, All.
 
-a.schild@aarboard.ch a =E9crit :
->=20
-> Rule 15 is the one which should allow everything "local" on the firew=
-all
->=20
-> #
-> # Rule 15 (global)
-> #
-> echo "Rule 15 (global)"
-> #
-> #
-> #
-> $IPTABLES -N Cid4A4A84F123430.0
-> $IPTABLES -A INPUT  -s myip   -m state --state NEW  -j Cid4A4A84F1234=
-30.0
-> $IPTABLES -A INPUT  -s 127.0.0.1   -m state --state NEW  -j Cid4A4A84=
-=46123430.0
-> $IPTABLES -A Cid4A4A84F123430.0  -d myip   -j ACCEPT
-> $IPTABLES -A Cid4A4A84F123430.0  -d 127.0.0.1   -j ACCEPT
-> $IPTABLES -N Cid4A4A84F123430.1
-> $IPTABLES -A OUTPUT  -s myip    -m state --state NEW  -j Cid4A4A84F12=
-3430.1
-> $IPTABLES -A OUTPUT  -s 127.0.0.1   -m state --state NEW  -j Cid4A4A8=
-4F123430.1
-> $IPTABLES -A Cid4A4A84F123430.1  -d myip   -j ACCEPT
-> $IPTABLES -A Cid4A4A84F123430.1  -d 127.0.0.1   -j ACCEPT
+I've set up policy based routing. All traffic for a specific user goes
+through a specific interface.
+Here's the config:
 
-I do not see here "a rule which allows everything in/out on the
-lo interface". Such rules would be :
+> #!/bin/bash
+>
+> echo 0 > /proc/sys/net/ipv4/conf/all/rp_filter
+> echo 0 > /proc/sys/net/ipv4/conf/eth0/rp_filter
+> echo 0 > /proc/sys/net/ipv4/conf/tun0/rp_filter
+>
+> ip route flush table 201
+>
+> iptables -t mangle -N TUNMARK
+> iptables -t mangle -A TUNMARK -j MARK --set-mark 101
+> iptables -t mangle -A TUNMARK -j CONNMARK --save-mark
+> iptables -t mangle -N RESTOREMARK
+> iptables -t mangle -A RESTOREMARK -j CONNMARK --restore-mark
+>
+> iptables -t mangle -A OUTPUT -p all -m state --state NEW -m owner --uid-owner vpnroute ! -d 192.168.0.0/24 -j TUNMARK
+> iptables -t mangle -A OUTPUT -p all -m state --state ESTABLISHED,RELATED -m owner --uid-owner vpnroute ! -d 192.168.0.0/24 -j RESTOREMARK
+>
+> iptables -t mangle -A OUTPUT -m iprange --src-range "10.10.6.0"-"10.10.6.255" -j TUNMARK
+>
+> iptables -t mangle -A POSTROUTING -o eth0 -m mark --mark 101 -p udp --dport 53 -j ACCEPT
+> iptables -t mangle -A POSTROUTING -o eth0 -m mark --mark 101 -j DROP
+>
+> iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
+>
+> ip rule add fwmark 101 table 201
+> ip route add default dev tun0 table 201
+> ip route flush cache
 
-iptables -A INPUT -i lo -j ACCCEPT
-iptables -A OUTPUT -o lo -j ACCCEPT
+In single-thread mode it works fine, all traffic goes to tun0. When I
+start multi-threaded process rarely some packets go to eth0. (seeing
+that in tcpdump)
 
-Instead, your rules accept only packets in the NEW state (RST packets
-are never in that state) whose source and destination addresses are
-"myip" or 127.0.0.1 (not only 127.0.0.1 but also the whole 127.0.0.0/8
-range may be used on the loopback interface).
+Any ideas?
+
+Thanks,
+Serg
