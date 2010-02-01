@@ -1,49 +1,87 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [REPORT] may be wrong place #endif in include/linux/netfilter_ipv4.h
-Date: Mon, 01 Feb 2010 15:00:02 +0100
-Message-ID: <4B66DE62.8080801@trash.net>
-References: <4B64E732.3090507@gmail.com> <alpine.LSU.2.01.1001311019430.15188@obet.zrqbmnf.qr>
+From: Mart Frauenlob <mart.frauenlob@chello.at>
+Subject: Re: How to debug RST filter ?
+Date: Mon, 01 Feb 2010 19:54:51 +0100
+Message-ID: <4B67237B.4070900@chello.at>
+References: <L749C3EBF46964d4a9E404BAF2BFD837F.1265011977.scalix01.aarboard.ch@MHS>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LSU.2.01.1001311019430.15188@obet.zrqbmnf.qr>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <L749C3EBF46964d4a9E404BAF2BFD837F.1265011977.scalix01.aarboard.ch@MHS>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: "Helight.Xu" <helight.xu@gmail.com>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-Jan Engelhardt wrote:
-> On Sunday 2010-01-31 03:13, Helight.Xu wrote:
-> 
->> hi all gys:
->>
->>   when I make LKM with netfilter on "NF_IP_PRE_ROUTING" point, but it was
->> reported that "NF_IP_PRE_ROUTING" is not defined.
->>
->>   but I am surely including <linux/netfilter_ipv4.h>, when I opened
->> include/linux/netfilter_ipv4.h I found that
->> "NF_IP_PRE_ROUTING" is in this lable :
->> #ifndef __KERNEL__
->> .....
->> /* IP Hooks */
->> /* After promisc drops, checksum checks. */
->> #define NF_IP_PRE_ROUTING       0
->> /* If the packet is destined for this box. */
->> #define NF_IP_LOCAL_IN          1
->> /* If the packet is destined for another interface. */
->> #define NF_IP_FORWARD           2
->> /* Packets coming from a local process. */
->> #define NF_IP_LOCAL_OUT         3
->> /* Packets about to hit the wire. */
->> #define NF_IP_POST_ROUTING      4
->> #define NF_IP_NUMHOOKS          5
->> #endif /* ! __KERNEL__ */
->>
->> So I think the "endif" is ended a little early!
-> 
-> Seems so. Are there any out-of-tree nf_ip_hook_priorities users? If not, 
-> we could possibly move it further below.
+On 01.02.2010 09:13, netfilter-owner@vger.kernel.org wrote:
+> Hello,
+>=20
+>> Can you see "RULE 17"?
+>=20
+>=20
+> Rule 17 is the final deny everything else rule.
+> Rule 15 is the one which should allow everything "local" on the firew=
+all
+>=20
+> #
+> # Rule 15 (global)
+> #
+> echo "Rule 15 (global)"
+> #
+> #
+> #
+> $IPTABLES -N Cid4A4A84F123430.0
+> $IPTABLES -A INPUT  -s myip   -m state --state NEW  -j Cid4A4A84F1234=
+30.0
+> $IPTABLES -A INPUT  -s 127.0.0.1   -m state --state NEW  -j
+> Cid4A4A84F123430.0
+> $IPTABLES -A Cid4A4A84F123430.0  -d myip   -j ACCEPT
+> $IPTABLES -A Cid4A4A84F123430.0  -d 127.0.0.1   -j ACCEPT
+> $IPTABLES -N Cid4A4A84F123430.1
+> $IPTABLES -A OUTPUT  -s myip    -m state --state NEW  -j Cid4A4A84F12=
+3430.1
+> $IPTABLES -A OUTPUT  -s 127.0.0.1   -m state --state NEW  -j
+> Cid4A4A84F123430.1
+> $IPTABLES -A Cid4A4A84F123430.1  -d myip   -j ACCEPT
+> $IPTABLES -A Cid4A4A84F123430.1  -d 127.0.0.1   -j ACCEPT
+>=20
+>=20
+>=20
+> #
+> # Rule 17 (global)
+> #
+> echo "Rule 17 (global)"
+> #
+> #
+> #
+> $IPTABLES -N RULE_17
+> $IPTABLES -A OUTPUT  -j RULE_17
+> $IPTABLES -A INPUT  -j RULE_17
+> $IPTABLES -A RULE_17  -j LOG  --log-level info --log-prefix "RULE 17 =
+-- DENY
+> " --log-tcp-sequence  --log-tcp-options  --log-ip-options
+> $IPTABLES -A RULE_17  -j DROP
+>=20
+>=20
+> As we normaly can connect, but just a few random connection don't wor=
+k,
+> I assume that there is some timeout or some entries flushed somewhere=
+ in
+> the filter stuff.
+>=20
+>=20
+> Andr=E9
 
-Its only available for userspace for compatibility reasons,
-the kernel doesn't use the old definitions.
+shot in the dark, try to insert into rule 17:
+$IPTABLES -I RULE_17 -o lo -m state --state INVALID -j LOG \
+--log-level info --log-prefix "RULE 17 -- INVALID" --log-tcp-sequence \
+--log-tcp-options --log-ip-options
+
+and see if it matches the other logged packets.
+if so, these packets are classified as invalid by the connection tracke=
+r.
+
+best regards
+
+
+Mart
