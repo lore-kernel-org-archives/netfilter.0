@@ -1,53 +1,36 @@
-From: Amos Jeffries <squid3@treenet.co.nz>
+From: Gary Smith <gary.smith@holdstead.com>
 Subject: RE: IPV6 and Pre/post routing
-Date: Wed, 03 Feb 2010 11:52:17 +1300
-Message-ID: <daef896248117c3ad21a515f595273af@mail.treenet.co.nz>
-References: <034DEBCAE934A74991E6E76B8DA72D141884A1929E@HSSBS.holdstead.local> <4B687862.7010204@plouf.fr.eu.org> <034DEBCAE934A74991E6E76B8DA72D141884A192A0@HSSBS.holdstead.local>
+Date: Tue, 2 Feb 2010 15:06:13 -0800
+Message-ID: <034DEBCAE934A74991E6E76B8DA72D141884A192A2@HSSBS.holdstead.local>
+References: <034DEBCAE934A74991E6E76B8DA72D141884A1929E@HSSBS.holdstead.local>
+ <4B687862.7010204@plouf.fr.eu.org>
+ <034DEBCAE934A74991E6E76B8DA72D141884A192A0@HSSBS.holdstead.local>
+ <daef896248117c3ad21a515f595273af@mail.treenet.co.nz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <034DEBCAE934A74991E6E76B8DA72D141884A192A0@HSSBS.holdstead.local>
+In-Reply-To: <daef896248117c3ad21a515f595273af@mail.treenet.co.nz>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Gary Smith <gary.smith@holdstead.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1254"
+To: 'Amos Jeffries' <squid3@treenet.co.nz>
+Cc: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
 
-On Tue, 2 Feb 2010 12:35:43 -0800, Gary Smith <gary.smith@holdstead.com>
-wrote:
->> > What I'm wondering, after reading some old documentation on iptables,
->> > if this is possible with IPV6.
->> 
->> Netfilter has no support for IPv6 NAT, and hopefully never will.
->> Can't the DNS records for mail just point directly to the addresses of
->> the mail servers ?
-> 
-> If there is no support for NAT in IPV6, then we will need to do
-something
-> like that.  The problem is getting clients to update their settings with
-as
-> little intrusion (from us) as possible.  We inherited some of the
-> configuration which has many of the client using a single hostname name
-for
-> most services.  So when we needed to migrated to a split platform (where
-> hosted www, imap, and smtp) are all on different servers NAT was the
-easy
-> part.
-> 
-> But it's good to know what the limitations are (since this is just the
-> information gathering stage) so we can start implementing a plan to get
-> parts of the network onto IPV6.
-> 
-
-Ouch. It's a bit late in the game to be starting the info gathering. I
-hope the network is not large.
-
-There is a side benefit to the absence of service names. You can combine
-the two migrations so the new names can start with IPv6-enabled and old
-legacy systems that can't be converted yet use the old NAT names. This way
-you can avoid the whole annoyance of migrating to intermediary ipv6.foo
-names during initial production testing then migrating a second time back
-to the normal names.
-
-AYJ
-
+PiANCj4gT3VjaC4gSXQncyBhIGJpdCBsYXRlIGluIHRoZSBnYW1lIHRvIGJlIHN0YXJ0aW5nIHRo
+ZSBpbmZvIGdhdGhlcmluZy4gSQ0KPiBob3BlIHRoZSBuZXR3b3JrIGlzIG5vdCBsYXJnZS4NCg0K
+SXQncyBhIG1hbmFnZWFibGUgbnVtYmVyLiAgV2UgYXJlIHR5aW5nIHRoaXMgaW4gd2l0aCBoYXJk
+d2FyZSB1cGdyYWRlIGFzIHdlbGwgc28gd2Ugd2lsbCBiYXNpY2FsbHkgYmUgYnVpbGRpbmcgc2Ny
+YXRjaCBlbnZpcm9ubWVudCBhbmQgdGhlbiBtaWdyYXRpbmcgZGF0YSBvdmVyICh3aGljaCB3ZSBo
+YXZlIGRvbmUgYSBsb3Qgb2YgaW4gdGhlIHBhc3QpLg0KDQo+IFRoZXJlIGlzIGEgc2lkZSBiZW5l
+Zml0IHRvIHRoZSBhYnNlbmNlIG9mIHNlcnZpY2UgbmFtZXMuIFlvdSBjYW4gY29tYmluZQ0KPiB0
+aGUgdHdvIG1pZ3JhdGlvbnMgc28gdGhlIG5ldyBuYW1lcyBjYW4gc3RhcnQgd2l0aCBJUHY2LWVu
+YWJsZWQgYW5kIG9sZA0KPiBsZWdhY3kgc3lzdGVtcyB0aGF0IGNhbid0IGJlIGNvbnZlcnRlZCB5
+ZXQgdXNlIHRoZSBvbGQgTkFUIG5hbWVzLiBUaGlzIHdheQ0KPiB5b3UgY2FuIGF2b2lkIHRoZSB3
+aG9sZSBhbm5veWFuY2Ugb2YgbWlncmF0aW5nIHRvIGludGVybWVkaWFyeSBpcHY2LmZvbw0KPiBu
+YW1lcyBkdXJpbmcgaW5pdGlhbCBwcm9kdWN0aW9uIHRlc3RpbmcgdGhlbiBtaWdyYXRpbmcgYSBz
+ZWNvbmQgdGltZSBiYWNrDQo+IHRvIHRoZSBub3JtYWwgbmFtZXMuDQo+IA0KPiBBWUoNCg0KVGhh
+dCBnaXZlcyBtZSBzb21ldGhpbmcgdG8gdGhpbmsgYWJvdXQuICBJIHdpbGwgaGF2ZSB0byBwbGF5
+IGFyb3VuZCB3aXRoIHRoZSBuYW1pbmcgdG8gc2VlIHdoYXQncyBnb2luZyB0byB3b3JrIGJlc3Qu
+DQoNClRoYW5rcyBldmVyeW9uZSBmb3IgdGhlIGluZm9ybWF0aW9uLiAgDQoNCkdhcnkgU21pdGgN
+Cg0K
