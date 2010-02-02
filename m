@@ -1,62 +1,55 @@
-From: Serg Buslovsky <serg.buslovsky@gmail.com>
-Subject: policy based routing - leaking packets
-Date: Mon, 1 Feb 2010 21:38:15 +0200
-Message-ID: <91f85b781002011138j8391807xa93f7ae73afddec2@mail.gmail.com>
+From: Vikram Ragukumar <vragukumar@signalogic.com>
+Subject: Regarding Iptables Redirect Target rule
+Date: Mon, 01 Feb 2010 20:26:36 -0600
+Message-ID: <4B678D5C.7090701@signalogic.com>
+References: <LB95CFD713BF44ce1B06C76BE068BFE90.1265010613.scalix01.aarboard.ch@MHS>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type;
-        bh=L35QB5MP+RX9yqtOsiyHPAmP73hBLVy77kLw6YC44Yw=;
-        b=eNKOMyM37DnlVBeOh1EiroPPYIOzXKTbGs3deuBLCUqs01OzxmOqmgP8rUXI3iWCWj
-         pffgaEVWENyrE5w7+9LMQJ5VDRTcfQgkgRFmDH9Nz3ogA3j2QoODLgoltWmf5qU79xQ1
-         PJGfQ4oEGgligCDPz+ySBnmFGbKDHKLJFXHG8=
+In-Reply-To: <LB95CFD713BF44ce1B06C76BE068BFE90.1265010613.scalix01.aarboard.ch@MHS>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
+Cc: netfilter-devel@lists.netfilter.org
 
-Hi, All.
+Hello,
 
-I've set up policy based routing. All traffic for a specific user goes
-through a specific interface.
-Here's the config:
+Interface 1                  Interface 2
+9090(encrypted)  ---------  9000(decrypted)
+   ------>-------|Fire wall|--->-----
+   ------>-------|         |--->-----
+9000(unencrypted)--------- 9000(unencrypted)
 
-> #!/bin/bash
->
-> echo 0 > /proc/sys/net/ipv4/conf/all/rp_filter
-> echo 0 > /proc/sys/net/ipv4/conf/eth0/rp_filter
-> echo 0 > /proc/sys/net/ipv4/conf/tun0/rp_filter
->
-> ip route flush table 201
->
-> iptables -t mangle -N TUNMARK
-> iptables -t mangle -A TUNMARK -j MARK --set-mark 101
-> iptables -t mangle -A TUNMARK -j CONNMARK --save-mark
-> iptables -t mangle -N RESTOREMARK
-> iptables -t mangle -A RESTOREMARK -j CONNMARK --restore-mark
->
-> iptables -t mangle -A OUTPUT -p all -m state --state NEW -m owner --uid-owner vpnroute ! -d 192.168.0.0/24 -j TUNMARK
-> iptables -t mangle -A OUTPUT -p all -m state --state ESTABLISHED,RELATED -m owner --uid-owner vpnroute ! -d 192.168.0.0/24 -j RESTOREMARK
->
-> iptables -t mangle -A OUTPUT -m iprange --src-range "10.10.6.0"-"10.10.6.255" -j TUNMARK
->
-> iptables -t mangle -A POSTROUTING -o eth0 -m mark --mark 101 -p udp --dport 53 -j ACCEPT
-> iptables -t mangle -A POSTROUTING -o eth0 -m mark --mark 101 -j DROP
->
-> iptables -t nat -A POSTROUTING -o tun0 -j MASQUERADE
->
-> ip rule add fwmark 101 table 201
-> ip route add default dev tun0 table 201
-> ip route flush cache
+I need to encrypt/decrypt and port translate traffic coming in on a 
+particular port (9090).
 
-In single-thread mode it works fine, all traffic goes to tun0. When I
-start multi-threaded process rarely some packets go to eth0. (seeing
-that in tcpdump)
+I first perform decryption by queuing packets to a userspace program 
+with the following iptables rule
+(a) iptables -t mangle -A PREROUTING -p udp --dport 9090 -j NFQUEUE
 
-Any ideas?
+To achieve port translation i use the REDIRECT target as shown below
+(b) iptables -t nat -A PREROUTING -p udp --dport 9090 -j REDIRECT 
+--to-port 9000
 
-Thanks,
-Serg
+The iptables rule with the REDIRECT target ensures that traffic on port 
+9000 on Interface 2 gets port translated to port 9090 while going out 
+through Interface 1, only if they belong to a connection that was port 
+translated from 9090 to 9000 while coming in on Interface 1.
+
+I would like to know how to construct a rule to intercept packets that 
+belong to the port translated stream, but now are coming from Interface 
+2 and would like to encrypt them before they go out on Interface 1 ? 
+There are other connections that use port 9000, however these do not 
+belong to the port translated stream.
+
+Will the following rule work ?
+
+iptables -t mangle -A POSTROUTING -p udp --sport 9090 -j NFQUEUE
+i.e. Will REDIRECT, ensure that the source port is rewritten from 9000 
+to 9090 by the time the packet hits mangle POSTROUTING ?
+
+Thanks in advance,
+Vikram.
+
+
