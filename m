@@ -1,63 +1,159 @@
-From: "Andre Schild" <a.schild@aarboard.ch>
-Subject: RE: Re: How to debug RST filter ?
-Date: Tue, 2 Feb 2010 07:42:05 +0100
-Message-ID: <L0C87CB4F1E0446438C91652886BDCF5B.1265092923.scalix01.aarboard.ch@MHS>
-References: <4B672B7F.4060603@plouf.fr.eu.org>
+From: a.schild@aarboard.ch
+Subject: RE: RE: Re: How to debug RST filter ?
+Date: Tue, 2 Feb 2010 07:46:26 +0100
+Message-ID: <L42E7F960A3074ab0AF7F49A3B0B60FEB.1265093184.scalix01.aarboard.ch@MHS>
+References: <L0C87CB4F1E0446438C91652886BDCF5B.1265092923.scalix01.aarboard.ch@MHS>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed;
+	protocol="application/x-pkcs7-signature";
+	micalg=SHA1;
+	boundary="----=_NextPart_000_0000_01CAA3DB.D106F5A0"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B672B7F.4060603@plouf.fr.eu.org>
-Content-Disposition: inline
+In-Reply-To: <L0C87CB4F1E0446438C91652886BDCF5B.1265092923.scalix01.aarboard.ch@MHS>
+MIME-Version: 1.0
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+To: 
+
+This is a multi-part message in MIME format.
+
+------=_NextPart_000_0000_01CAA3DB.D106F5A0
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
 Hello Pascal,
 
-> > Rule 15 is the one which should allow everything "local" on the
-> firewall
+> > > $IPTABLES -N Cid4A4A84F123430.0
+> > > $IPTABLES -A INPUT  -s myip   -m state --state NEW  -j
+> > Cid4A4A84F123430.0
+> > > $IPTABLES -A INPUT  -s 127.0.0.1   -m state --state NEW  -j
+> > Cid4A4A84F123430.0
+> > > $IPTABLES -A Cid4A4A84F123430.0  -d myip   -j ACCEPT
+> > > $IPTABLES -A Cid4A4A84F123430.0  -d 127.0.0.1   -j ACCEPT
+> > > $IPTABLES -N Cid4A4A84F123430.1
+> > > $IPTABLES -A OUTPUT  -s myip    -m state --state NEW  -j
+> > Cid4A4A84F123430.1
+> > > $IPTABLES -A OUTPUT  -s 127.0.0.1   -m state --state NEW  -j
+> > Cid4A4A84F123430.1
+> > > $IPTABLES -A Cid4A4A84F123430.1  -d myip   -j ACCEPT
+> > > $IPTABLES -A Cid4A4A84F123430.1  -d 127.0.0.1   -j ACCEPT
 > >
-> > #
-> > # Rule 15 (global)
-> > #
-> > echo "Rule 15 (global)"
-> > #
-> > #
-> > #
-> > $IPTABLES -N Cid4A4A84F123430.0
-> > $IPTABLES -A INPUT  -s myip   -m state --state NEW  -j
-> Cid4A4A84F123430.0
-> > $IPTABLES -A INPUT  -s 127.0.0.1   -m state --state NEW  -j
-> Cid4A4A84F123430.0
-> > $IPTABLES -A Cid4A4A84F123430.0  -d myip   -j ACCEPT
-> > $IPTABLES -A Cid4A4A84F123430.0  -d 127.0.0.1   -j ACCEPT
-> > $IPTABLES -N Cid4A4A84F123430.1
-> > $IPTABLES -A OUTPUT  -s myip    -m state --state NEW  -j
-> Cid4A4A84F123430.1
-> > $IPTABLES -A OUTPUT  -s 127.0.0.1   -m state --state NEW  -j
-> Cid4A4A84F123430.1
-> > $IPTABLES -A Cid4A4A84F123430.1  -d myip   -j ACCEPT
-> > $IPTABLES -A Cid4A4A84F123430.1  -d 127.0.0.1   -j ACCEPT
+> > I do not see here "a rule which allows everything in/out on the
+> > lo interface". Such rules would be :
+> >
+> > iptables -A INPUT -i lo -j ACCCEPT
+> > iptables -A OUTPUT -o lo -j ACCCEPT
+> >
+> > Instead, your rules accept only packets in the NEW state (RST =
+packets
+> > are never in that state) whose source and destination addresses are
+> > "myip" or 127.0.0.1 (not only 127.0.0.1 but also the whole
+> 127.0.0.0/8
+> > range may be used on the loopback interface).
 >=20
-> I do not see here "a rule which allows everything in/out on the
-> lo interface". Such rules would be :
+> Ok,
 >=20
-> iptables -A INPUT -i lo -j ACCCEPT
-> iptables -A OUTPUT -o lo -j ACCCEPT
->=20
-> Instead, your rules accept only packets in the NEW state (RST packets
-> are never in that state) whose source and destination addresses are
-> "myip" or 127.0.0.1 (not only 127.0.0.1 but also the whole 127.0.0.0/=
-8
-> range may be used on the loopback interface).
-
-Ok,
-
-I see what you mean, is the RST not (one of) the last packet when a=20
-connection
-is closed/dropped ?
+> I see what you mean, is the RST not (one of) the last packet when a
+> connection
+> is closed/dropped ?
 
 
+I had a rule as #1 in the chain with:
+
+$IPTABLES -A INPUT  -i lo   -m state --state NEW  -j ACCEPT
+$IPTABLES -A OUTPUT  -o lo   -m state --state NEW  -j ACCEPT
+
+So I assume here also the --state NEW is causing the RTS not be matched,
+even it was related to some established connection...
 
 Andr=E9
+
+
+------=_NextPart_000_0000_01CAA3DB.D106F5A0
+Content-Type: application/x-pkcs7-signature;
+	name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+	filename="smime.p7s"
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIL2TCCAj0w
+ggGmAhEAzbp/VvDf5LxU/iKss3KqVTANBgkqhkiG9w0BAQIFADBfMQswCQYDVQQGEwJVUzEXMBUG
+A1UEChMOVmVyaVNpZ24sIEluYy4xNzA1BgNVBAsTLkNsYXNzIDEgUHVibGljIFByaW1hcnkgQ2Vy
+dGlmaWNhdGlvbiBBdXRob3JpdHkwHhcNOTYwMTI5MDAwMDAwWhcNMjgwODAxMjM1OTU5WjBfMQsw
+CQYDVQQGEwJVUzEXMBUGA1UEChMOVmVyaVNpZ24sIEluYy4xNzA1BgNVBAsTLkNsYXNzIDEgUHVi
+bGljIFByaW1hcnkgQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwgZ8wDQYJKoZIhvcNAQEBBQADgY0A
+MIGJAoGBAOUZv22jVmEtmUhx9mfeuY3rt56GgAqRDvo4Ja9GiILlc6igmyRdDR/MZW4MsNBWhBiH
+mgabEKFz37RYOWtuwfYV1aioP6oSBo0xrH+wNNePNGeICc0UEeJORVZpH3gCgNrcR5EpuzbJY1zF
+4Ncth3uhtzKwezC6Ki8xqu6jZ9rbAgMBAAEwDQYJKoZIhvcNAQECBQADgYEATD+4i8Zo3+5DMw5d
+6abLB4RNejP/khv0Nq3YlSI2aBFsfELM85wuxAc/FLAPT/+Qknb54rxK6Y/NoIAK98Up8YIiXbix
+3YEjo3slFUYweRb46gVLlH8dwhzI47f0EEA8E8NfH1PoSOSGtHuhNbB7Jbq4046rPzidADQAmPPR
+cZQwggRGMIIDr6ADAgECAhBm/Ufjwhnk6JrNmd31OsskMA0GCSqGSIb3DQEBBQUAMF8xCzAJBgNV
+BAYTAlVTMRcwFQYDVQQKEw5WZXJpU2lnbiwgSW5jLjE3MDUGA1UECxMuQ2xhc3MgMSBQdWJsaWMg
+UHJpbWFyeSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTAeFw0wNTEwMjgwMDAwMDBaFw0xNTEwMjcy
+MzU5NTlaMIHdMQswCQYDVQQGEwJVUzEXMBUGA1UEChMOVmVyaVNpZ24sIEluYy4xHzAdBgNVBAsT
+FlZlcmlTaWduIFRydXN0IE5ldHdvcmsxOzA5BgNVBAsTMlRlcm1zIG9mIHVzZSBhdCBodHRwczov
+L3d3dy52ZXJpc2lnbi5jb20vcnBhIChjKTA1MR4wHAYDVQQLExVQZXJzb25hIE5vdCBWYWxpZGF0
+ZWQxNzA1BgNVBAMTLlZlcmlTaWduIENsYXNzIDEgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBIC0g
+RzIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDJ36zn6vj4AxTEAJLVwX42wjzvfHIV
+y8CrjD0clc5vHhAsPwDtlybmtsfmrUMdP6SHR0dMPlT4bPjH/LGevTBwvJexAwXqlfGtQMVEeksF
+ovJg/Nc6ZWLv/xB7ola7xU5wLdaiHzztsELoXo1XIaymmdkR6dIaB8B0R0IL/MU06v3muiTRHQgV
+N6LXc88BQS9jsjo/vqUabvTJSls9laYVuzUCGfnU77yPDnF2WbtLtj7W/FoW9NYOifJJ/mwM7RXp
+2Yh1nHnOYCfdua11zi9zlXpAOoV1SbC432i8q80TgoURUKPgPAuuwApTzdcwb4UyRhvkSRDCbOKv
+H3n/27S1AgMBAAGjgf8wgfwwEgYDVR0TAQH/BAgwBgEB/wIBADBEBgNVHSAEPTA7MDkGC2CGSAGG
++EUBBxcBMCowKAYIKwYBBQUHAgEWHGh0dHBzOi8vd3d3LnZlcmlzaWduLmNvbS9ycGEwCwYDVR0P
+BAQDAgEGMBEGCWCGSAGG+EIBAQQEAwIBBjAuBgNVHREEJzAlpCMwITEfMB0GA1UEAxMWUHJpdmF0
+ZUxhYmVsMy0yMDQ4LTE1NTAdBgNVHQ4EFgQUEX1eGX08BN9qbNaiiho/Mdg7lFIwMQYDVR0fBCow
+KDAmoCSgIoYgaHR0cDovL2NybC52ZXJpc2lnbi5jb20vcGNhMS5jcmwwDQYJKoZIhvcNAQEFBQAD
+gYEAPKPaAmM6xJOqq3LT3K1QOB4MnhZKiLfu69n/D42VoNa7+moLrmGE2GhHie9PrLIfSUGbSTN2
+k4uebrlDHGC9wtyKLYfBRcARcgQaayQqbG/n/AcTKdB3OiPn9cGFaBm/xgFUIBmuNYLMYjxhCcb0
+1euwD6afM4Wa03GOUI+Z3WIwggVKMIIEMqADAgECAhApVeCUHBNIwNm5wq7jtRcnMA0GCSqGSIb3
+DQEBBQUAMIHdMQswCQYDVQQGEwJVUzEXMBUGA1UEChMOVmVyaVNpZ24sIEluYy4xHzAdBgNVBAsT
+FlZlcmlTaWduIFRydXN0IE5ldHdvcmsxOzA5BgNVBAsTMlRlcm1zIG9mIHVzZSBhdCBodHRwczov
+L3d3dy52ZXJpc2lnbi5jb20vcnBhIChjKTA1MR4wHAYDVQQLExVQZXJzb25hIE5vdCBWYWxpZGF0
+ZWQxNzA1BgNVBAMTLlZlcmlTaWduIENsYXNzIDEgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBIC0g
+RzIwHhcNMDkxMDIwMDAwMDAwWhcNMTAxMDIwMjM1OTU5WjCCARMxFzAVBgNVBAoTDlZlcmlTaWdu
+LCBJbmMuMR8wHQYDVQQLExZWZXJpU2lnbiBUcnVzdCBOZXR3b3JrMUYwRAYDVQQLEz13d3cudmVy
+aXNpZ24uY29tL3JlcG9zaXRvcnkvUlBBIEluY29ycC4gYnkgUmVmLixMSUFCLkxURChjKTk4MR4w
+HAYDVQQLExVQZXJzb25hIE5vdCBWYWxpZGF0ZWQxMzAxBgNVBAsTKkRpZ2l0YWwgSUQgQ2xhc3Mg
+MSAtIE5ldHNjYXBlIEZ1bGwgU2VydmljZTEVMBMGA1UEAxQMQW5kcukgU2NoaWxkMSMwIQYJKoZI
+hvcNAQkBFhRhLnNjaGlsZEBhYXJib2FyZC5jaDCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoC
+ggEBAMMEkp1Bmbs3GOUv6kqfjsQ8OnLiGsMS+xkuXEHUSqJI+SkzAThSED6RW8LK8lByFhINJ7Y2
+UcDM4oA/Z9SNk9xv3WXWBulRsUdcxAWWHLt6uC0QAkexQzaWgGPmhLh9xeQvm7t02R7sHvuN2YmE
+iTCOJl6kdzRReHcnHAf5tuVMMltXE62CU/jkmb/pjf65eF3Z13NFZkUsTCjWSOO5Kk4R70Il0/NN
+LLhN9dpPPx9fPFJI7mAUWTNXwIwYkx7zQAjI1jCMFROZvtteGMbwg7mQSo/Tv5h0cOCydEW8NxMm
+wJOGeDKAYi+ZHeI28+YYncLaTQ5pRIIC7mjOK/GQJC0CAwEAAaOBzDCByTAJBgNVHRMEAjAAMEQG
+A1UdIAQ9MDswOQYLYIZIAYb4RQEHFwEwKjAoBggrBgEFBQcCARYcaHR0cHM6Ly93d3cudmVyaXNp
+Z24uY29tL3JwYTALBgNVHQ8EBAMCBaAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMCMEoG
+A1UdHwRDMEEwP6A9oDuGOWh0dHA6Ly9JbmRDMURpZ2l0YWxJRC1jcmwudmVyaXNpZ24uY29tL0lu
+ZEMxRGlnaXRhbElELmNybDANBgkqhkiG9w0BAQUFAAOCAQEAc2mj3Z4Jkp0GcyEyrYTwOgyi7Myg
+bJiJ6wlJ6PAUEgxho3c+WUeCXKRh5JXMksOHOJRqEOC+TPlKG5s69ZzE1OG/CCtMsdu1jsxFCnbf
+Rp8SxKAU+S29784Si2NeBgnk9oVykeyq2DXxJwDoEHsKWkMscUG1X6mb0snf5DUEt20FWC/BJsqF
+VdXWI5jn3lq0u2P06e/JdnM8+hZdBC14Eavuj53LfsovWO2Fljiv8bRiFMfs56DcL4XP+YiJ0Wfy
+Y3qE07ljR2g9g9FdQAOdMaNQXCIC1FII3JuRhaAHvt/WISwr9nNW9U4hDS4w5GPmuY5Qn1DXSzVt
+aDBsdkcwejGCBUUwggVBAgEBMIHyMIHdMQswCQYDVQQGEwJVUzEXMBUGA1UEChMOVmVyaVNpZ24s
+IEluYy4xHzAdBgNVBAsTFlZlcmlTaWduIFRydXN0IE5ldHdvcmsxOzA5BgNVBAsTMlRlcm1zIG9m
+IHVzZSBhdCBodHRwczovL3d3dy52ZXJpc2lnbi5jb20vcnBhIChjKTA1MR4wHAYDVQQLExVQZXJz
+b25hIE5vdCBWYWxpZGF0ZWQxNzA1BgNVBAMTLlZlcmlTaWduIENsYXNzIDEgSW5kaXZpZHVhbCBT
+dWJzY3JpYmVyIENBIC0gRzICEClV4JQcE0jA2bnCruO1FycwCQYFKw4DAhoFAKCCAycwGAYJKoZI
+hvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTAwMjAyMDY0NjIzWjAjBgkqhkiG
+9w0BCQQxFgQUDyE8WfiQktYzlWyMa3s+QerIiTAwgbcGCSqGSIb3DQEJDzGBqTCBpjALBglghkgB
+ZQMEASowCwYJYIZIAWUDBAEWMAoGCCqGSIb3DQMHMAsGCWCGSAFlAwQBAjAOBggqhkiG9w0DAgIC
+AIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwBwYFKw4DAhowCwYJYIZI
+AWUDBAIDMAsGCWCGSAFlAwQCAjALBglghkgBZQMEAgEwCgYIKoZIhvcNAgUwggEDBgkrBgEEAYI3
+EAQxgfUwgfIwgd0xCzAJBgNVBAYTAlVTMRcwFQYDVQQKEw5WZXJpU2lnbiwgSW5jLjEfMB0GA1UE
+CxMWVmVyaVNpZ24gVHJ1c3QgTmV0d29yazE7MDkGA1UECxMyVGVybXMgb2YgdXNlIGF0IGh0dHBz
+Oi8vd3d3LnZlcmlzaWduLmNvbS9ycGEgKGMpMDUxHjAcBgNVBAsTFVBlcnNvbmEgTm90IFZhbGlk
+YXRlZDE3MDUGA1UEAxMuVmVyaVNpZ24gQ2xhc3MgMSBJbmRpdmlkdWFsIFN1YnNjcmliZXIgQ0Eg
+LSBHMgIQKVXglBwTSMDZucKu47UXJzCCAQUGCyqGSIb3DQEJEAILMYH1oIHyMIHdMQswCQYDVQQG
+EwJVUzEXMBUGA1UEChMOVmVyaVNpZ24sIEluYy4xHzAdBgNVBAsTFlZlcmlTaWduIFRydXN0IE5l
+dHdvcmsxOzA5BgNVBAsTMlRlcm1zIG9mIHVzZSBhdCBodHRwczovL3d3dy52ZXJpc2lnbi5jb20v
+cnBhIChjKTA1MR4wHAYDVQQLExVQZXJzb25hIE5vdCBWYWxpZGF0ZWQxNzA1BgNVBAMTLlZlcmlT
+aWduIENsYXNzIDEgSW5kaXZpZHVhbCBTdWJzY3JpYmVyIENBIC0gRzICEClV4JQcE0jA2bnCruO1
+FycwDQYJKoZIhvcNAQEBBQAEggEAe3QEgjx4WqqiZYdBu5+jPY745OGm7k4jUlXQTN2RKxPgjxG5
+AS/8lfzbrYpu9wPFcbVVLGdmxGEaIqNQTsfqUGdRaoo2oDP/GK4mY4u9OmEiiDzmubEuusfZJb3f
+vGE8eXrvgQIFZ5aYMX7+9Msf22g0WAilX0C6HfJnLZCjPazphRE13v4E46eZdW2hIIOfhZO9w9v3
+K4Af+jh7xzkBO/01bOKuXxwd0qxhGPaI/h20B9WnlvGg6AbXfPxugg6VXclWptE/YlImZUDCVTjY
+wne1OEjqC7vfMD8QOnRS3lNHHQLbrM0vxzFmAoXXbg5pLD+Hr9vIbrIWG5rkDp5E6gAAAAAAAA==
+
+------=_NextPart_000_0000_01CAA3DB.D106F5A0--
