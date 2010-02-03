@@ -1,36 +1,25 @@
-From: Gary Smith <gary.smith@holdstead.com>
-Subject: RE: IPV6 and Pre/post routing
-Date: Tue, 2 Feb 2010 15:06:13 -0800
-Message-ID: <034DEBCAE934A74991E6E76B8DA72D141884A192A2@HSSBS.holdstead.local>
-References: <034DEBCAE934A74991E6E76B8DA72D141884A1929E@HSSBS.holdstead.local>
- <4B687862.7010204@plouf.fr.eu.org>
- <034DEBCAE934A74991E6E76B8DA72D141884A192A0@HSSBS.holdstead.local>
- <daef896248117c3ad21a515f595273af@mail.treenet.co.nz>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [patch 1/1] net/ipv4/netfilter/nf_nat_snmp_basic.c: correct the
+ size argument to kzalloc
+Date: Wed, 03 Feb 2010 01:37:20 +0100
+Message-ID: <4B68C540.1060008@trash.net>
+References: <201002022244.o12MiZGL019252@imap1.linux-foundation.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <daef896248117c3ad21a515f595273af@mail.treenet.co.nz>
-Content-Language: en-US
+In-Reply-To: <201002022244.o12MiZGL019252@imap1.linux-foundation.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1254"
-To: 'Amos Jeffries' <squid3@treenet.co.nz>
-Cc: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: akpm@linux-foundation.org
+Cc: netfilter@vger.kernel.org, julia@diku.dk, davem@davemloft.net
 
-PiANCj4gT3VjaC4gSXQncyBhIGJpdCBsYXRlIGluIHRoZSBnYW1lIHRvIGJlIHN0YXJ0aW5nIHRo
-ZSBpbmZvIGdhdGhlcmluZy4gSQ0KPiBob3BlIHRoZSBuZXR3b3JrIGlzIG5vdCBsYXJnZS4NCg0K
-SXQncyBhIG1hbmFnZWFibGUgbnVtYmVyLiAgV2UgYXJlIHR5aW5nIHRoaXMgaW4gd2l0aCBoYXJk
-d2FyZSB1cGdyYWRlIGFzIHdlbGwgc28gd2Ugd2lsbCBiYXNpY2FsbHkgYmUgYnVpbGRpbmcgc2Ny
-YXRjaCBlbnZpcm9ubWVudCBhbmQgdGhlbiBtaWdyYXRpbmcgZGF0YSBvdmVyICh3aGljaCB3ZSBo
-YXZlIGRvbmUgYSBsb3Qgb2YgaW4gdGhlIHBhc3QpLg0KDQo+IFRoZXJlIGlzIGEgc2lkZSBiZW5l
-Zml0IHRvIHRoZSBhYnNlbmNlIG9mIHNlcnZpY2UgbmFtZXMuIFlvdSBjYW4gY29tYmluZQ0KPiB0
-aGUgdHdvIG1pZ3JhdGlvbnMgc28gdGhlIG5ldyBuYW1lcyBjYW4gc3RhcnQgd2l0aCBJUHY2LWVu
-YWJsZWQgYW5kIG9sZA0KPiBsZWdhY3kgc3lzdGVtcyB0aGF0IGNhbid0IGJlIGNvbnZlcnRlZCB5
-ZXQgdXNlIHRoZSBvbGQgTkFUIG5hbWVzLiBUaGlzIHdheQ0KPiB5b3UgY2FuIGF2b2lkIHRoZSB3
-aG9sZSBhbm5veWFuY2Ugb2YgbWlncmF0aW5nIHRvIGludGVybWVkaWFyeSBpcHY2LmZvbw0KPiBu
-YW1lcyBkdXJpbmcgaW5pdGlhbCBwcm9kdWN0aW9uIHRlc3RpbmcgdGhlbiBtaWdyYXRpbmcgYSBz
-ZWNvbmQgdGltZSBiYWNrDQo+IHRvIHRoZSBub3JtYWwgbmFtZXMuDQo+IA0KPiBBWUoNCg0KVGhh
-dCBnaXZlcyBtZSBzb21ldGhpbmcgdG8gdGhpbmsgYWJvdXQuICBJIHdpbGwgaGF2ZSB0byBwbGF5
-IGFyb3VuZCB3aXRoIHRoZSBuYW1pbmcgdG8gc2VlIHdoYXQncyBnb2luZyB0byB3b3JrIGJlc3Qu
-DQoNClRoYW5rcyBldmVyeW9uZSBmb3IgdGhlIGluZm9ybWF0aW9uLiAgDQoNCkdhcnkgU21pdGgN
-Cg0K
+akpm@linux-foundation.org wrote:
+> From: Julia Lawall <julia@diku.dk>
+> 
+> obj has type struct snmp_object **, not struct snmp_object *.  But indeed
+> it is not even clear why kmalloc is needed.  The memory is freed by the
+> end of the function, so the local variable of pointer type should be
+> sufficient.
+
+This one is already queued in nf-next-2.6.git.
