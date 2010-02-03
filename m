@@ -1,65 +1,88 @@
-From: forbiddentransition <forbiddentransition@gmail.com>
-Subject: iptables list command with very verbose option generates `ERROR'
- [64]
-Date: Wed, 03 Feb 2010 13:42:10 -0500
-Message-ID: <4B69C382.4020301@gmail.com>
+From: paddy joesoap <paddyjoesoap@gmail.com>
+Subject: Does stateful filtering automatically prevent nmap and bogon spoofing 
+	or are stateless rules also required?
+Date: Wed, 3 Feb 2010 20:55:46 +0000
+Message-ID: <ac5c74141002031255y10f64f0cq755efac338d55650@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from
-         :user-agent:mime-version:to:subject:content-type
-         :content-transfer-encoding;
-        bh=5nk4scujX/cfIwPYoGiT9yY9i11Wzjl6hyStTFOJQko=;
-        b=KzOZmEUNwEdihy5wLL3w3pPG2WX3GnsGCHCcLEIeq9K5I4GYNmspR6v3uLEiIT4oHA
-         GabcjWR5KfEEcaZ8XA7HeopcOvUB6FqtfkG1CZxPInFrfFyFwJnRmYQRV9pEuK/JL1vO
-         hqITAuTeJT219KLTUmnNncghRcxurIG184z1Y=
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type;
+        bh=wdEjCn4bk1gu2+/BR/NP8zzWmvFa01Hy3zODgNjGKgc=;
+        b=YA48yWs6tQHdLA01RNE/UTQkxLpRXPW+YJN+4IscGJWuDVH6kt4wP1h4lbFI1fnJ/B
+         FXqoJHFza4YjpgxDvncJHsWYEEHW1r9C5Wzk/RVOt1vcj5IVZ6OxuuEuXYiaUyKdtbba
+         puY2iEpHfP42aeeRCdITRu4sEUkHgJosLAeOQ=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Can someone explain the meaning of  "Target name: `ERROR' [64]"?  The 
-error is generated from running the iptables list command with the 'very 
-verbose' option for every custom 'Target name' used in my iptables 
-script.  Two blocks from the output are shown below with the errors 
-highlighted by the arrows.  I have a basic understanding of iptables, 
-though I haven't seen any documentation that details the 'very verbose' 
-output.  I have googled "Target name: `ERROR' [64]" and it appears the 
-last block containing "error='ERROR'" is commonly generated from other 
-customized scripts, though I haven't seen any mention or concern about 
-the error message.  In any case, my custom script appears to function 
-properly.  Any help is appreciated.
+Hi there,
 
-iptables -Ln -vv
+It is advisable to employ anti-spoofing filter rules and nmap scanning
+filter rules inconjuction with a simple stateful firewall rule-set on
+a laptop for example?
 
-=========================OUTPUT=====================
-.
-.
-.
-SRC IP: 0.0.0.0/0.0.0.0
-DST IP: 0.0.0.0/0.0.0.0
-Interface: `'/................to `'/................
-Protocol: 0
-Flags: 00
-Invflags: 00
-Counters: 0 packets, 0 bytes
-Cache: 00000000
-Target name: `ERROR' [64] <<<<<
-error=`IN_ACC' <<<<<
-.
-.
-.
-SRC IP: 0.0.0.0/0.0.0.0 (LAST BLOCK)
-DST IP: 0.0.0.0/0.0.0.0
-Interface: `'/................to `'/................
-Protocol: 0
-Flags: 00
-Invflags: 00
-Counters: 0 packets, 0 bytes
-Cache: 00000000
-Target name: `ERROR' [64] <<<<<
-error=`ERROR' <<<<<
+# drop policy
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
 
-=====================END OF OUTPUT==================
+# Allow unlimited traffic on the loopback interface.
+iptables -A INPUT  -i lo -j ACCEPT
+iptables -A OUTPUT -o lo -j ACCEPT
+
+#Stateful rules:
+# Allow TCP/UDP by stateful tracking
+iptables -A INPUT  -p tcp -m state --state ESTABLISHED  -j ACCEPT
+iptables -A OUTPUT -p tcp -m state --state NEW,ESTABLISHED -j ACCEPT
+iptables -A INPUT  -p udp -m state --state ESTABLISHED  -j ACCEPT
+iptables -A OUTPUT -p udp -m state --state NEW,ESTABLISHED -j ACCEPT
+
+Question: Does stateful tracking handle network ports scans
+automatically. For example, it knows if a packet created by an
+nmap-ack scan has previous history in the state table. If the state
+table has no record, that is, a corresponding SYN packet or other
+related ACK packets then drop the nmap-ack packet.
+
+Or perhaps it is advisable to put these rules in front of the stateful rules.
+Comments?
+
+#Prevent nmap scans
+IPTABLES -A INPUT -p tcp --tcp-flags SYN,ACK SYN,ACK -m state --state
+NEW -j DROP
+iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
+iptables -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
+iptables -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
+iptables -A INPUT -p tcp --tcp-flags ALL SYN,RST,ACK,FIN,URG -j DROP
+iptables -A INPUT -p tcp --tcp-flags FIN,RST FIN,RST -j DROP
+iptables -A INPUT -p tcp --tcp-flags ACK,FIN FIN -j DROP
+iptables -A INPUT -p tcp --tcp-flags ACK,PSH PSH -j DROP
+iptables -A INPUT -p tcp --tcp-flags ACK,URG URG -j DROP
+
+Question: does stateful tracking detect spoofed packets claiming to
+come from the internal network?
+My guess is no, or at least based on the stateful rules I defined above.
+Perhaps I need to place the following RFC1918 and RFC3330
+recommendations before my stateful rules also.
+Comments?
+
+# RFC bogon recommendations
+iptables -A INPUT -s 10.0.0.0/8     -j DROP
+iptables -A INPUT -s 172.16.0.0/12  -j DROP
+#iptables -A INPUT -s 192.168.0.0/16 -j DROP # network laptop operates
+in uses this ip range.
+iptables -A INPUT -s 224.0.0.0/4    -j DROP
+iptables -A INPUT -s 240.0.0.0/5    -j DROP
+iptables -A INPUT -s 127.0.0.0/8    -j DROP
+iptables -A INPUT -s 0.0.0.0/8       -j DROP
+iptables -A INPUT -d 255.255.255.255 -j DROP
+iptables -A INPUT -s 169.254.0.0/16  -j DROP
+
+In addition, perhaps controlling ICMP packets or UDP DNS and DHCP
+traffic flows are also required.
+
+All comments welcome,
+Paddy.
