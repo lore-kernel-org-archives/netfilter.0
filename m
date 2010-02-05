@@ -1,47 +1,70 @@
-From: Christoph Paasch <christoph.paasch@gmail.com>
+From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
+	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
 Subject: Re: IP Forwarding works on local port but not a remote port
-Date: Fri, 5 Feb 2010 21:51:26 +0100
-Message-ID: <201002052151.27303.christoph.paasch@gmail.com>
-References: <81ed8b881002050747s73a79b0fqcb35ac2d15f3ddfd@mail.gmail.com> <1265399439.3910.29.camel@casper.meteor.dp.ua> <81ed8b881002051201x53dea5c4l3665b2036da7713@mail.gmail.com>
+Date: Fri, 05 Feb 2010 22:52:01 +0200
+Message-ID: <1265403121.3910.34.camel@casper.meteor.dp.ua>
+References: <81ed8b881002050747s73a79b0fqcb35ac2d15f3ddfd@mail.gmail.com>
+	 <1265389890.3910.11.camel@casper.meteor.dp.ua>
+	 <81ed8b881002051013n5f020a3fladfda4a5f33aa625@mail.gmail.com>
+	 <1265394296.3910.19.camel@casper.meteor.dp.ua>
+	 <81ed8b881002051114o520f3f92l2fd46ece17900edb@mail.gmail.com>
+	 <1265399439.3910.29.camel@casper.meteor.dp.ua>
+	 <81ed8b881002051201x53dea5c4l3665b2036da7713@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:from:to:subject:date
-         :user-agent:cc:references:in-reply-to:mime-version:content-type
-         :content-transfer-encoding:message-id;
-        bh=X2CBmBwD6pAe4wfhnQH0+JLWz51G4lzAP+fqwoIXtr4=;
-        b=CJnnnut6khfviuU+KCU4kMRvS6UtJY07I93DX89MIYg+7eJDowkHAbbFWemEQPYGb6
-         nHkYNCQVxv6BZu0gkDSgoMVvLegg0inGcorGs0ka3V1Ji/dEPrrTxyxPY/w2wYBwJ8l+
-         Q8BozCl63v+E9drJojYOIBb2CMfRDLochbeoc=
 In-Reply-To: <81ed8b881002051201x53dea5c4l3665b2036da7713@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
+Content-Type: text/plain; charset="koi8-r"
 To: Dan Daugherty <rescue@ddaniscool.com>
-Cc: =?utf-8?b?0J/QvtC60L7RgtC40LvQtdC90LrQviDQmtC+0YHRgtC40Lo=?= <casper@meteor.dp.ua>, netfilter@vger.kernel.org
+Cc: netfilter@vger.kernel.org
 
-
-On Fri 5 February 2010 wrote Dan Daugherty:
-> > Can you reach 10.117.1.205:1521 from sethra (telnet 10.117.1.205 1521)?
-> 
+=F7 =F0=D4=CE, 05/02/2010 =D7 15:01 -0500, Dan Daugherty =D0=C9=DB=C5=D4=
+:
+> > Are you using /16 netmask?
+> No, I just took the 10.117 part off the ip's to shorten the message.
+> >
+> >
+> > None of them got SNATed. Why? Should they go out through eth0? Try =
+to
+> > remove "-o eth0".
+> Removed it and no change
+> >
+> > Also do you have ip.forwarding enabled (sysctl -a | grep forward")?
+> net.ipv6.conf.eth0.forwarding =3D 0
+> net.ipv6.conf.default.forwarding =3D 0
+> net.ipv6.conf.all.forwarding =3D 0
+> net.ipv6.conf.lo.forwarding =3D 0
+> net.ipv4.conf.eth0.mc_forwarding =3D 0
+> net.ipv4.conf.eth0.forwarding =3D 1
+> net.ipv4.conf.lo.mc_forwarding =3D 0
+> net.ipv4.conf.lo.forwarding =3D 1
+> net.ipv4.conf.default.mc_forwarding =3D 0
+> net.ipv4.conf.default.forwarding =3D 1
+> net.ipv4.conf.all.mc_forwarding =3D 0
+> net.ipv4.conf.all.forwarding =3D 1
+>=20
+> >
+> > Can you reach 10.117.1.205:1521 from sethra (telnet 10.117.1.205 15=
+21)?
+> >
 > Negative, but the command from sethra fails immediately with nothing
 > showing in the logs
-As far as I can see, your destination-machine (vlad) has it's IP ending with 
-1.206 (your previous mail) .
 
-Try a simple ping to vlad from sethra.
-If this is not working show us the output of "ip route".
+You should first be able to reach it from sethra.
 
-Cheers,
-Christoph
+What it says when it fails?
 
---
-Christoph Paasch
+What is output of "ifconfig; route -n"? It seems like sethra can't make
+path to 10.117.1.205 or nothing sits there on 1521 port.
 
-Alcatel-Lucent
-IP Development
+> There has also been mention of a FORWARD chain being necessary.  I
+> haven't done anything outside of the commands listed in this thread.
 
-www.rollerbulls.be
---
+Check chain policies not to be DROP. Show output of "iptables-save".
+
+--=20
+=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
+ua>
+
