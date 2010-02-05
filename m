@@ -1,40 +1,60 @@
-From: paddy joesoap <paddyjoesoap@gmail.com>
-Subject: Does the INVALID state filter block port (nmap) scans?
-Date: Thu, 4 Feb 2010 11:41:58 +0000
-Message-ID: <ac5c74141002040341m12a9abeaj9533c77ade2edec8@mail.gmail.com>
+From: Dan Daugherty <rescue@ddaniscool.com>
+Subject: IP Forwarding works on local port but not a remote port
+Date: Fri, 5 Feb 2010 10:47:24 -0500
+Message-ID: <81ed8b881002050747s73a79b0fqcb35ac2d15f3ddfd@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type;
-        bh=t/zFZ1kI9OO1mS45JLG8ItICQ8BpuMfGexIjWXShU40=;
-        b=jd7nmgPL4Z2zdgYpteumSgX1Z+wUZSbTcR2eDtt4P+VDV1PG9ReKxKOfPTtpoKeje3
-         2PCTt4pPtEerd67sAIGdUaDar0B4TVIgS3ZnQW0eyqRJfseFNKEK8scHg8wjb6/kVq/B
-         2KDx6eYVCjN4LDN+W4bquEKboPuEeUhEOwGAo=
+        h=domainkey-signature:mime-version:sender:received:date
+         :x-google-sender-auth:message-id:subject:from:to:content-type;
+        bh=4JWpGLGehRCrez4UULeglnrQglAJ0TirGl83acfcCbA=;
+        b=Twh0PbTdOsEIYm474fxEoJLqxsLl70nREuA4dGD2NS67LE21N7e082Fg/8KIpUka/X
+         V5oyStimbWPvjiKm3d4ykfRGA9mda6bJGX34t2cVwiUeF9bo+JypR+cZZHoPWwGsVwso
+         OSu6+9vBywMli3HUpRw/GPa5+CQy4Z2M3NArI=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi all,
+Normally I wouldn't have a problem with this but I'm doing something a
+bit different than I would normally do.
+I have a RHEL5 server with one NIC that is being used as a router.  My
+problem is that I can't seem to completely forward requests off of
+this box using iptables.  If I specify a port redirection to a local
+port, it works fine but when I specify forwarding that port to another
+machine, it fails.  I think the request is being sent through but the
+response isn't making it back to me.  I can have a clean iptables to
+start and only need to execute one command to make the local forward
+work and since I'm not technically using the machine as a gateway, I'm
+not sure if all the INPUT, OUTPUT and FORWARD chain commands are
+necessary.
 
-Does the INVALID state filter prevent port (nmap) scans?
+10.117.1.205 is the server in question
+10.117.1.203 is the server I am trying to forward to
 
-That is, would the following stateful rule:
+Working command:
+iptables -t nat -A PREROUTING -p tcp --dport 1524 -i eth0 -j DNAT --to
+10.117.1.205:22
 
-iptables -A INPUT -m state --state INVALID -j DROP
+Using telnet to test:
+telnet 10.117.1.205 1524
+Trying 10.117.1.205...
+Connected to -----------.
+Escape character is '^]'.
+SSH-2.0-OpenSSH_4.3
 
-do the same job as the following stateless rules?
+Failing command:
+iptables -t nat -A PREROUTING -p tcp --dport 1524 -i eth0 -j DNAT --to
+10.117.1.203:1524
 
-iptables -A INPUT -p tcp --tcp-flags SYN,ACK SYN,ACK -m  -j DROP
-iptables -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
-iptables -A INPUT -p tcp --tcp-flags SYN,FIN SYN,FIN -j DROP
-iptables -A INPUT -p tcp --tcp-flags SYN,RST SYN,RST -j DROP
-iptables -A INPUT -p tcp --tcp-flags ALL SYN,RST,ACK,FIN,URG -j DROP
-iptables -A INPUT -p tcp --tcp-flags FIN,RST FIN,RST -j DROP
-iptables -A INPUT -p tcp --tcp-flags ACK,FIN FIN -j DROP
-iptables -A INPUT -p tcp --tcp-flags ACK,PSH PSH -j DROP
-iptables -A INPUT -p tcp --tcp-flags ACK,URG URG -j DROP
-etc etc.
+Telnet never completes:
+telnet 10.117.1.205 1524
+Trying 10.117.1.205...
+
+
+Any help is appreciated.
+
+Thanks,
+Dan
