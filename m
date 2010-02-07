@@ -1,69 +1,50 @@
-From: Richard Horton <arimus.uk@googlemail.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
 Subject: Re: Who can give me any existing iptables rules for reference?
-Date: Sat, 6 Feb 2010 13:19:07 +0000
-Message-ID: <56378e321002060519x58825fbby3ff396d5954422f8@mail.gmail.com>
+Date: Sun, 7 Feb 2010 10:15:39 -0600
+Message-ID: <20100207161539.GA21229@minipax>
 References: <28efc0211002060450n782f9273i9489e289dbc62407@mail.gmail.com>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=gBtF9+IK2LzermB4QBXn6lLYnUHM0bKnvUHta//Toj0=;
-        b=sLix9HFQ9kEsxQsnM060zDflLIkW+7cHTU45bQS6MHW7rhuzZQQU0goaDeujPVQ4tj
-         KAw4XLI+oqGqbci9iNhhT+74ZqvHUsb1BkXKxtJmd4xY1UVIGU5g6heovhPj6WtatKrh
-         J2J6mOFp3Yrc4TABM1M6H6n3lmm0ipgOeYWRA=
+Content-Disposition: inline
 In-Reply-To: <28efc0211002060450n782f9273i9489e289dbc62407@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: supercodeing35271 supercodeing35271 <supercodeing35271@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On 6 February 2010 12:50, supercodeing35271 supercodeing35271
-<supercodeing35271@gmail.com> wrote:
-> Hi,i'm a rookie.As learning netfilter/iptables for the first time,i
-> wanna look some good existing iptables rules scripts as that i think
-> reading good rules scripts will be useful.
-> So anyone here can share some rules or tell me where to see any good
-> rules scripts. =A0I must underline that i just need some references,i=
- do
-> not have any other reason about this.
-> Thank every one.
+On Sat, Feb 06, 2010 at 08:50:20PM +0800, supercodeing35271
+   supercodeing35271 wrote:
+> Hi,i'm a rookie.As learning netfilter/iptables for the first time,=20
+> i wanna look some good existing iptables rules scripts as that i=20
+> think reading good rules scripts will be useful.
 
-What kind of rule sets are you looking for?
+A problem in that is that a script is not typically the best way to
+load a set of rules. Race conditions can occur when more than one
+trigger invokes the firewall script, when the first instance wasn't
+completed yet. iptables-restore(8) (of a ruleset which had been
+saved with iptables-save(8)) is the solution to this problem; it
+loads the entire ruleset into memory atomically.
 
-Rules to protect a public facing server are going to be different (to
-varying degrees depending on services etc) to those for a home PC, to
-those for a router/gateway.
+I think a lot of folks who want to learn firewall skills get caught
+up in trying to do fancy bash(1) things. And way too many of the
+ready-made firewall scripts I have seen are clueless and over-
+complicated with silly shell tricks.
 
-One of the best ways to learn would be change the policies to block
-then work out how to allow the traffic you want to flow around while
-not opening up what you don't want...
+> So anyone here can share some rules or tell me where to see any=20
+> good rules scripts. =A0I must underline that i just need some=20
+> references, i do not have any other reason about this.
 
-=46or instance...
+I would start with a tutorial such as the ones at netfilter.org and
+Oskar's frozentux tutorial. Those are slightly out of date, but
+should still give you a good start. The man page is maintained, and
+should be a good reference for syntax and application of the various
+match and target extensions.
 
-iptables -P FORWARD DROP
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -A INPUT -i lo -j ACCEPT
-iptables -A OUTPUT -o lo -j ACCEPT
-
-Lines 1 to 3 changes the policy to DROP  (You can only use DROP or
-ACCEPT as policies) and lines 4 and 5 enable the loopback interface.
-
-(Drop =3D=3D silently discard packets without notifying the originator,
-Accept =3D=3D allow packet through firewall, Reject =3D=3D Returns an I=
-CMP
-message to the orgination, you can vary the return message).
-
-
+Unfortunately I am not aware of a good, up-to-date basic tutorial
+that I could recommend. I have not had the time to try to start one,
+myself.
 --=20
-Richard Horton
-Users are like a virus: Each causing a thousand tiny crises until the
-host finally dies.
-http://www.solstans.co.uk - Solstans Japanese Bobtails and Norwegian Fo=
-rest Cats
-http://www.pbase.com/arimus - My online photogallery
+    Offlist mail to this address is discarded unless
+    "/dev/rob0" or "not-spam" is in Subject: header
