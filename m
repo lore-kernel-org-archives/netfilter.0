@@ -1,107 +1,67 @@
-From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
-	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
-Subject: Re: How do you correctly interpret the FORWARD chain interface 
-	options?
-Date: Tue, 09 Feb 2010 18:00:43 +0200
-Message-ID: <1265731243.3930.43.camel@casper.meteor.dp.ua>
-References: <ac5c74141002090517o5463ed02i3b8c52b553bb462d@mail.gmail.com>
-	 <56378e321002090525p44cfe5a4u3f1c89a355f78322@mail.gmail.com>
-	 <ac5c74141002090723l73bd7ccva8b9e214fe33badc@mail.gmail.com>
-	 <ac5c74141002090750p412dbce1wc1fb8aa447c51e07@mail.gmail.com>
+From: supercodeing35271 supercodeing35271 <supercodeing35271@gmail.com>
+Subject: Re: Who can give me any existing iptables rules for reference?
+Date: Wed, 10 Feb 2010 00:12:08 +0800
+Message-ID: <28efc0211002090812n45a75ea3x62538e7d43f029d9@mail.gmail.com>
+References: <28efc0211002060450n782f9273i9489e289dbc62407@mail.gmail.com>
+	 <20100207161539.GA21229@minipax>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <ac5c74141002090750p412dbce1wc1fb8aa447c51e07@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=7cAq37X1sAIsUWqGM8vtiTjCXB8MIRz+lafxUsJ5uJw=;
+        b=iofxMoPL1nWUCQgqXP53Rr0eRaMm/SeGpSka4H7TyI3jK3SG0DGVMXAaW8A6oJZ648
+         0+BJJo96K9pwmLU0Y+FwTjL8f3uAo0JfnG+Tip84WVHYiK/3pKPfzBWSma+GN4ASZeo4
+         MmRNYh2029tyyXoGdE9FZemGs9PS+8igKiH2Y=
+In-Reply-To: <20100207161539.GA21229@minipax>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="koi8-r"
-To: paddy joesoap <paddyjoesoap@gmail.com>
-Cc: Richard Horton <arimus.uk@googlemail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-=F7 =F7=D4=CF, 09/02/2010 =D7 15:50 +0000, paddy joesoap =D0=C9=DB=C5=D4=
-:
-> On Tue, Feb 9, 2010 at 3:23 PM, paddy joesoap <paddyjoesoap@gmail.com=
-> wrote:
-> > On Tue, Feb 9, 2010 at 1:25 PM, Richard Horton <arimus.uk@googlemai=
-l.com> wrote:
-> >> On 9 February 2010 13:17, paddy joesoap <paddyjoesoap@gmail.com> w=
-rote:
-> >>> Hi All,
-> >>>
-> >>> How should one interpret the inbound ("-i") and outbound ("-o") o=
-f the
-> >>> FORWARD chain.
-> >>>
-> >>
-> >>
-> >> -i refers to the interface the packet is received on.
-> >> -o refers to the interface the packet is routed out on.
-> >>
-> >>
-> >
->=20
-> Ignore last email (spotted an error in the example rules).
->=20
-> I think I get what Richard is saying now.
->=20
-> The following two rules-set are equivalent, it just depends where you
-> decide to filter.
->=20
-> Am I correct?
->=20
->  iptables -A FORWARD -i eth0 -p tcp -s 0/0 -d webServIP --dport 80 -j=
- ACCEPT
->  iptables -A FORWARD -o eth0 -p tcp -s webServIP --sport 80 -d 0/0 -j=
- ACCEPT
->=20
->  iptables -A FORWARD -o eth1 -p tcp -s 0/0 -d webServIP --dport 80 -j=
- ACCEPT
->  iptables -A FORWARD -i eth1 -p tcp -s webServIP --sport 80 -d 0/0 -j=
- ACCEPT
->=20
-> In some sense writing the 4 rules leads to duplication, in that,
-> applying just two will suffice.
+Thank you for your advice,seem that i should
 
-This is correct.
-
-> > Does this mean that both versions below are equivalent or at least =
-do
-> > the same job?
-> >
-> > (1)
-> >
-> > iptables -A FORWARD -i eth0 -p tcp -d webServIP -j ACCEPT
-> > iptables -A FORWARD -o eth1 -p tcp -s webServIP -j ACCEPT
-> >
-> > Because a packet will enter eth0 for internal network and a packet
-> > will leave eth1 (pushed towards eth0).
-> >
-> > (2)
-> >
-> > iptables -A FORWARD -i eth0 -p tcp -d webServIP -j ACCEPT
-> > iptables -A FORWARD -o eth0 -p tcp -s webServIP -j ACCEPT
-> >
-> > Because a packet will enter eth0 to be forwarded internally and a
-> > packet will also enter eth0 when leaving the network.
-> >
-> >
-> >>
-> >> --
-> >> Richard Horton
-> >> Users are like a virus: Each causing a thousand tiny crises until =
-the
-> >> host finally dies.
-> >> http://www.solstans.co.uk - Solstans Japanese Bobtails and Norwegi=
-an Forest Cats
-> >> http://www.pbase.com/arimus - My online photogallery
-> >>
-> >
+On Mon, Feb 8, 2010 at 12:15 AM, /dev/rob0 <rob0@gmx.co.uk> wrote:
+> On Sat, Feb 06, 2010 at 08:50:20PM +0800, supercodeing35271
+> =A0 supercodeing35271 wrote:
+>> Hi,i'm a rookie.As learning netfilter/iptables for the first time,
+>> i wanna look some good existing iptables rules scripts as that i
+>> think reading good rules scripts will be useful.
+>
+> A problem in that is that a script is not typically the best way to
+> load a set of rules. Race conditions can occur when more than one
+> trigger invokes the firewall script, when the first instance wasn't
+> completed yet. iptables-restore(8) (of a ruleset which had been
+> saved with iptables-save(8)) is the solution to this problem; it
+> loads the entire ruleset into memory atomically.
+>
+> I think a lot of folks who want to learn firewall skills get caught
+> up in trying to do fancy bash(1) things. And way too many of the
+> ready-made firewall scripts I have seen are clueless and over-
+> complicated with silly shell tricks.
+>
+>> So anyone here can share some rules or tell me where to see any
+>> good rules scripts. =A0I must underline that i just need some
+>> references, i do not have any other reason about this.
+>
+> I would start with a tutorial such as the ones at netfilter.org and
+> Oskar's frozentux tutorial. Those are slightly out of date, but
+> should still give you a good start. The man page is maintained, and
+> should be a good reference for syntax and application of the various
+> match and target extensions.
+>
+> Unfortunately I am not aware of a good, up-to-date basic tutorial
+> that I could recommend. I have not had the time to try to start one,
+> myself.
+> --
+> =A0 =A0Offlist mail to this address is discarded unless
+> =A0 =A0"/dev/rob0" or "not-spam" is in Subject: header
 > --
 > To unsubscribe from this list: send the line "unsubscribe netfilter" =
 in
 > the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
---=20
-=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
-ua>
-
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
