@@ -1,69 +1,290 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: Default server DNAT port remapping problem
-Date: Tue, 09 Feb 2010 22:04:41 +0100
-Message-ID: <4B71CDE9.6020004@chello.at>
-References: <83EB8CF7119A7C47A6425E352065A72B071F83D6@ct11exm64.ds.mot.com>
-Reply-To: netfilter@vger.kernel.org
+From: "He Jiafu-MPNB73" <JHe@Motorola.com>
+Subject: RE: Default server DNAT port remapping problem
+Date: Tue, 9 Feb 2010 17:28:09 -0500
+Message-ID: <83EB8CF7119A7C47A6425E352065A72B071F8474@ct11exm64.ds.mot.com>
+References: <83EB8CF7119A7C47A6425E352065A72B071F83D6@ct11exm64.ds.mot.com> <4B71CDE9.6020004@chello.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <83EB8CF7119A7C47A6425E352065A72B071F83D6@ct11exm64.ds.mot.com>
+Content-class: urn:content-classes:message
+In-Reply-To: <4B71CDE9.6020004@chello.at>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: 
-Cc: He Jiafu-MPNB73 <JHe@Motorola.com>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
+Cc: Mart Frauenlob <mart.frauenlob@chello.at>
 
-On 09.02.2010 20:33, He Jiafu-MPNB73 wrote:
-> Hi, guys,
+On 09.02.2010, Mart wrote: 
+> Your rules say:
 > 
-> I've got a problem creating default servers using consecutive DNAT port
-> range mapping.
+> a packet coming to any of the ports 80 to 90, DNAT to any of 
+> the ports 8080 to 8090.
+> There is the --persistent option for the DNAT target, but 
+> that is also not what you want.
+
+No, --persistent doesn't work for my purpose here.
+
+> You need a single rule for each port. 80->8080 81->8081, etc.
+
+That is a dirty work-around we can have for now. However, as the range
+grows, the rule list gets very long.
+
 > 
-> Suppose I have a router with a wan (say, 1.2.3.4) and LAN (192.168.1.1)
-> and another internal server (192.168.1.100). I want to setup a couple of
-> default servers to forward the wan access to ports 80-90 towards the
-> internal server ports 8080-8090. I want the port mapping to be 1:1,
-> i.e., 80 -> 8080, 81 -> 8081, ..., 90 -> 8090.
+> If you recognize out of range mappings (should not be), you 
+> should provide system details like:
 > 
-> I tried the following rules:
->     # iptables -A PREROUTING -t nat -p udp -d 1.2.3.4 --dport 80:90 -j
-> DNAT --to 192.168.1.100:8080-8090
->     # iptables -A FORWARD -p udp -d 192.168.1.100 --dport 8080:8090 -j
-> ACCEPT
+> kernel version
+> iptables version
+> logs (LOG and/or TRACE target)
+> tcpdumps
 > 
-> However, the results are pretty inconsistent. In some cases, I got
-> shifted mapping like
->     83 -> 8080, 84 -> 8081, ...
-> And even out-of-range mapping like
->     80 -> 8091, 81 -> 8092, ...
+
+kernel version: 2.6.25.20
+iptables version: v1.4.0
+
+I used "nmap -r -sU -p80-90 1.2.3.4" to scan the ports, at the 2nd
+round, the logs showed the port shifting out-of-range. See the following
+logs for an example. In the logs, 192.168.1.254 is the wan ip and while
+192.168.1.220 is the lan, and the following iptables rules are used:
+    # iptables -A PREROUTING -t nat -p udp -d 192.168.1.254 --dport
+12340:12345 -jNFLOG
+    # iptables -A PREROUTING -t nat -p udp -d 192.168.1.254 --dport
+12340:12345 -j DNAT --to 192.168.1.220:12350-12355
+    # iptables -A FORWARD -p udp -d 192.168.1.220 --dport 12340:13340
+-jNFLOG
+    # iptables -A FORWARD -p udp -d 192.168.1.220 --dport 12340:13340 -j
+ACCEPT
+
+------------- LOGS --------------------
+>>> nmap: 1st round
+2010-02-09T21:53:58Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+MAC=00:00:00:00:00:
+00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.254 LEN=28
+TOS=0x00 P
+REC=0x00 TTL=38 ID=23595 PROTO=UDP SPT=51920 DPT=12343 LEN=8
+2010-02-09T21:53:58Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0
+MAC=00:00:00:00:00
+:00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.220 LEN=28
+TOS=0x00
+PREC=0x00 TTL=37 ID=23595 PROTO=UDP SPT=51920 DPT=12350 LEN=8
+2010-02-09T21:53:58Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+MAC=00:00:00:00:00:
+00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.254 LEN=28
+TOS=0x00 P
+REC=0x00 TTL=57 ID=64686 PROTO=UDP SPT=51920 DPT=12344 LEN=8
+2010-02-09T21:53:58Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0
+MAC=00:00:00:00:00
+:00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.220 LEN=28
+TOS=0x00
+PREC=0x00 TTL=56 ID=64686 PROTO=UDP SPT=51920 DPT=12351 LEN=8
+2010-02-09T21:53:58Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+MAC=00:00:00:00:00:
+00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.254 LEN=28
+TOS=0x00 P
+REC=0x00 TTL=55 ID=15770 PROTO=UDP SPT=51920 DPT=12345 LEN=8
+2010-02-09T21:53:58Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0
+MAC=00:00:00:00:00
+:00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.220 LEN=28
+TOS=0x00
+PREC=0x00 TTL=54 ID=15770 PROTO=UDP SPT=51920 DPT=12352 LEN=8
+2010-02-09T21:53:59Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+MAC=00:00:00:00:00:
+00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.254 LEN=28
+TOS=0x00 P
+REC=0x00 TTL=56 ID=29109 PROTO=UDP SPT=51921 DPT=12345 LEN=8
+2010-02-09T21:53:59Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0
+MAC=00:00:00:00:00
+:00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.220 LEN=28
+TOS=0x00
+PREC=0x00 TTL=55 ID=29109 PROTO=UDP SPT=51921 DPT=12352 LEN=8
+2010-02-09T21:53:59Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+MAC=00:00:00:00:00:
+00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.254 LEN=28
+TOS=0x00 P
+REC=0x00 TTL=41 ID=18198 PROTO=UDP SPT=51921 DPT=12344 LEN=8
+2010-02-09T21:53:59Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0
+MAC=00:00:00:00:00
+:00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.220 LEN=28
+TOS=0x00
+PREC=0x00 TTL=40 ID=18198 PROTO=UDP SPT=51921 DPT=12353 LEN=8
+2010-02-09T21:53:59Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+MAC=00:00:00:00:00:
+00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.254 LEN=28
+TOS=0x00 P
+REC=0x00 TTL=42 ID=37539 PROTO=UDP SPT=51921 DPT=12343 LEN=8
+2010-02-09T21:53:59Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0
+MAC=00:00:00:00:00
+:00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.220 LEN=28
+TOS=0x00
+PREC=0x00 TTL=41 ID=37539 PROTO=UDP SPT=51921 DPT=12354 LEN=8
+2010-02-09T21:53:59Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+MAC=00:00:00:00:00:
+00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.254 LEN=28
+TOS=0x00 P
+REC=0x00 TTL=50 ID=17666 PROTO=UDP SPT=51921 DPT=12342 LEN=8
+2010-02-09T21:53:59Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0
+MAC=00:00:00:00:00
+:00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.220 LEN=28
+TOS=0x00
+PREC=0x00 TTL=49 ID=17666 PROTO=UDP SPT=51921 DPT=12355 LEN=8
+
+>>> nmap: 2nd round
+2010-02-09T21:53:59Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+MAC=00:00:00:00:00:
+00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.254 LEN=28
+TOS=0x00 P
+REC=0x00 TTL=45 ID=15316 PROTO=UDP SPT=51921 DPT=12341 LEN=8
+2010-02-09T21:53:59Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0
+MAC=00:00:00:00:00
+:00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.220 LEN=28
+TOS=0x00
+PREC=0x00 TTL=44 ID=15316 PROTO=UDP SPT=51921 DPT=12356 LEN=8   <<<
+out-of-range
+2010-02-09T21:53:59Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+MAC=00:00:00:00:00:
+00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.254 LEN=28
+TOS=0x00 P
+REC=0x00 TTL=40 ID=62201 PROTO=UDP SPT=51921 DPT=12340 LEN=8
+2010-02-09T21:53:59Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0
+MAC=00:00:00:00:00
+:00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.220 LEN=28
+TOS=0x00
+PREC=0x00 TTL=39 ID=62201 PROTO=UDP SPT=51921 DPT=12357 LEN=8
+2010-02-09T21:54:04Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+MAC=00:00:00:00:00:
+00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.254 LEN=28
+TOS=0x00 P
+REC=0x00 TTL=44 ID=51642 PROTO=UDP SPT=60234 DPT=12340 LEN=8
+2010-02-09T21:54:04Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0
+MAC=00:00:00:00:00
+:00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.220 LEN=28
+TOS=0x00
+PREC=0x00 TTL=43 ID=51642 PROTO=UDP SPT=60234 DPT=12357 LEN=8
+2010-02-09T21:54:04Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+MAC=00:00:00:00:00:
+00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.254 LEN=28
+TOS=0x00 P
+REC=0x00 TTL=40 ID=38513 PROTO=UDP SPT=60234 DPT=12341 LEN=8
+2010-02-09T21:54:04Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0
+MAC=00:00:00:00:00
+:00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.220 LEN=28
+TOS=0x00
+PREC=0x00 TTL=39 ID=38513 PROTO=UDP SPT=60234 DPT=12358 LEN=8
+2010-02-09T21:54:04Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+MAC=00:00:00:00:00:
+00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.254 LEN=28
+TOS=0x00 P
+REC=0x00 TTL=54 ID=46541 PROTO=UDP SPT=60234 DPT=12342 LEN=8
+2010-02-09T21:54:04Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0
+MAC=00:00:00:00:00
+:00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.220 LEN=28
+TOS=0x00
+PREC=0x00 TTL=53 ID=46541 PROTO=UDP SPT=60234 DPT=12359 LEN=8
+2010-02-09T21:54:04Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+MAC=00:00:00:00:00:
+00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.254 LEN=28
+TOS=0x00 P
+REC=0x00 TTL=38 ID=53546 PROTO=UDP SPT=60234 DPT=12343 LEN=8
+2010-02-09T21:54:04Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0
+MAC=00:00:00:00:00
+:00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.220 LEN=28
+TOS=0x00
+PREC=0x00 TTL=37 ID=53546 PROTO=UDP SPT=60234 DPT=12360 LEN=8
+2010-02-09T21:54:04Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+MAC=00:00:00:00:00:
+00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.254 LEN=28
+TOS=0x00 P
+REC=0x00 TTL=37 ID=46568 PROTO=UDP SPT=60234 DPT=12344 LEN=8
+2010-02-09T21:54:04Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0
+MAC=00:00:00:00:00
+:00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.220 LEN=28
+TOS=0x00
+PREC=0x00 TTL=36 ID=46568 PROTO=UDP SPT=60234 DPT=12361 LEN=8
+2010-02-09T21:54:04Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+MAC=00:00:00:00:00:
+00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.254 LEN=28
+TOS=0x00 P
+REC=0x00 TTL=42 ID=37904 PROTO=UDP SPT=60234 DPT=12345 LEN=8
+2010-02-09T21:54:04Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0
+MAC=00:00:00:00:00
+:00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.220 LEN=28
+TOS=0x00
+PREC=0x00 TTL=41 ID=37904 PROTO=UDP SPT=60234 DPT=12362 LEN=8
+2010-02-09T21:54:05Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+MAC=00:00:00:00:00:
+00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.254 LEN=28
+TOS=0x00 P
+REC=0x00 TTL=53 ID=43785 PROTO=UDP SPT=60235 DPT=12345 LEN=8
+2010-02-09T21:54:05Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0
+MAC=00:00:00:00:00
+:00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.220 LEN=28
+TOS=0x00
+PREC=0x00 TTL=52 ID=43785 PROTO=UDP SPT=60235 DPT=12362 LEN=8
+2010-02-09T21:54:05Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+MAC=00:00:00:00:00:
+00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.254 LEN=28
+TOS=0x00 P
+REC=0x00 TTL=53 ID=6305 PROTO=UDP SPT=60235 DPT=12344 LEN=8
+2010-02-09T21:54:05Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0
+MAC=00:00:00:00:00
+:00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.220 LEN=28
+TOS=0x00
+PREC=0x00 TTL=52 ID=6305 PROTO=UDP SPT=60235 DPT=12363 LEN=8
+2010-02-09T21:54:05Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+MAC=00:00:00:00:00:
+00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.254 LEN=28
+TOS=0x00 P
+REC=0x00 TTL=55 ID=60572 PROTO=UDP SPT=60235 DPT=12343 LEN=8
+2010-02-09T21:54:05Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0
+MAC=00:00:00:00:00
+:00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.220 LEN=28
+TOS=0x00
+PREC=0x00 TTL=54 ID=60572 PROTO=UDP SPT=60235 DPT=12364 LEN=8
+2010-02-09T21:54:05Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+MAC=00:00:00:00:00:
+00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.254 LEN=28
+TOS=0x00 P
+REC=0x00 TTL=43 ID=6114 PROTO=UDP SPT=60235 DPT=12342 LEN=8
+2010-02-09T21:54:05Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0
+MAC=00:00:00:00:00
+:00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.220 LEN=28
+TOS=0x00
+PREC=0x00 TTL=42 ID=6114 PROTO=UDP SPT=60235 DPT=12365 LEN=8
+2010-02-09T21:54:05Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+MAC=00:00:00:00:00:
+00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.254 LEN=28
+TOS=0x00 P
+REC=0x00 TTL=49 ID=48857 PROTO=UDP SPT=60235 DPT=12341 LEN=8
+2010-02-09T21:54:05Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0
+MAC=00:00:00:00:00
+:00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.220 LEN=28
+TOS=0x00
+PREC=0x00 TTL=48 ID=48857 PROTO=UDP SPT=60235 DPT=12366 LEN=8
+2010-02-09T21:54:05Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+MAC=00:00:00:00:00:
+00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.254 LEN=28
+TOS=0x00 P
+REC=0x00 TTL=59 ID=39061 PROTO=UDP SPT=60235 DPT=12340 LEN=8
+2010-02-09T21:54:05Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0
+MAC=00:00:00:00:00
+:00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 DST=192.168.1.220 LEN=28
+TOS=0x00
+PREC=0x00 TTL=58 ID=39061 PROTO=UDP SPT=60235 DPT=12367 LEN=8
+---------------------------------
+
+I did a quick look at net/ipv4/netfilter/nf_nat_proto_udp.c, and changed
+the line 44 in function "udp_unique_tuple()":
+    - static u_int16_t port;
+    + u_int16_t port;
+and the out-of-range problem goes away. Not sure what else this change
+might break. Similar changes must also be done for tcp.
+
 > 
-> Has anyone ever seen this before? Is this working as designed or a bug
-> in the NAT code?
+> Btw, what is a default server?
 > 
-> Any suggestion?
 
-Your rules say:
+Oh, Geez, typo typo, I mean "virtual server" here. Sorry for that.
 
-a packet coming to any of the ports 80 to 90, DNAT to any of the ports
-8080 to 8090.
-There is the --persistent option for the DNAT target, but that is also
-not what you want.
-You need a single rule for each port. 80->8080 81->8081, etc.
+Thanks.
 
-If you recognize out of range mappings (should not be), you should
-provide system details like:
-
-kernel version
-iptables version
-logs (LOG and/or TRACE target)
-tcpdumps
-
-
-Btw, what is a default server?
-
-
-Best regards
-
-Mart
-
+Jiafu
