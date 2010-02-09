@@ -1,45 +1,55 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: Who can give me any existing iptables rules for reference?
-Date: Tue, 09 Feb 2010 17:53:26 +0100
-Message-ID: <4B719306.7080709@chello.at>
-References: <28efc0211002060450n782f9273i9489e289dbc62407@mail.gmail.com>
-Reply-To: netfilter@vger.kernel.org
+From: Peter Warasin <peter@endian.com>
+Subject: rules matching whether or not connection passed through QUEUE
+Date: Tue, 09 Feb 2010 18:28:05 +0100
+Message-ID: <4B719B25.1030800@endian.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <28efc0211002060450n782f9273i9489e289dbc62407@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: 
-Cc: netfilter@vger.kernel.org, supercodeing35271@gmail.com
+To: netfilter@vger.kernel.org
 
-On 06.02.2010 13:50, netfilter-owner@vger.kernel.org wrote:
-> Hi,i'm a rookie.As learning netfilter/iptables for the first time,i
-> wanna look some good existing iptables rules scripts as that i think
-> reading good rules scripts will be useful.
-> So anyone here can share some rules or tell me where to see any good
-> rules scripts.  I must underline that i just need some references,i do
-> not have any other reason about this.
-> Thank every one.
+hi guys,
 
-Hello,
+recently I run into a problem using the QUEUE target and I wonder if
+there's a simple solution for it.
 
-you need to understand the concepts for writing good rule-sets.
-Example scripts of course will help to understand.
+Is there an easier way for matching packets of a connection whose
+initiation packet (NEW) has been QUEUE'd?
+Something like -m queue --syn-passed-through-queue 0?
 
-Here's a tutorial (not 100% up to date) including sample scripts:
-http://www.frozentux.net/iptables-tutorial/iptables-tutorial.html
 
-You might also read this one:
-http://jengelh.medozas.de/documents/Perfect_Ruleset.pdf
 
-One page generally helpful:
-http://www.linux-ip.net/
 
-Also i think there are O'reilly books out there.
+I have a snort-inline running which grabs packets from QUEUE target,
+which is working fine.
 
-Best regards
+Now, I have also an accept-all for ESTABLISHED and RELATED in INPUT and
+FORWARD, which is one of the first rules in order to bypass all other
+(many and complex) rules which handle only state NEW.
+Quiet standard setup I would say.
 
-Mart
+Now I would like to pass some connections through QUEUE and other not.
+That's the problem.
+The accept-all should pass all consecutive packets of those connections
+which went through QUEUE, also through QUEUE and other packets whose
+initiating packet has been ACCEPT'ed previously should still be
+ACCEPT'ed without sending through QUEUE.
 
+Ok, I could remove that accept-all and ACCEPT or QUEUE
+ESTABLISHED/RELATED packets before every single NEW accepting rule, but
+then every packet of an accepted connection has to pass through all
+those rules.
+
+
+Thank you in advance
+
+peter
+
+-- 
+:: e n d i a n
+:: open source - open minds
+
+:: peter warasin
+:: http://www.endian.com   :: peter@endian.com
