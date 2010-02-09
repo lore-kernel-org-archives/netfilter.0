@@ -1,55 +1,45 @@
-From: Peter Warasin <peter@endian.com>
-Subject: rules matching whether or not connection passed through QUEUE
-Date: Tue, 09 Feb 2010 18:28:05 +0100
-Message-ID: <4B719B25.1030800@endian.com>
+From: "He Jiafu-MPNB73" <JHe@Motorola.com>
+Subject: Default server DNAT port remapping problem
+Date: Tue, 9 Feb 2010 14:33:39 -0500
+Message-ID: <83EB8CF7119A7C47A6425E352065A72B071F83D6@ct11exm64.ds.mot.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-hi guys,
+Hi, guys,
 
-recently I run into a problem using the QUEUE target and I wonder if
-there's a simple solution for it.
+I've got a problem creating default servers using consecutive DNAT port
+range mapping.
 
-Is there an easier way for matching packets of a connection whose
-initiation packet (NEW) has been QUEUE'd?
-Something like -m queue --syn-passed-through-queue 0?
+Suppose I have a router with a wan (say, 1.2.3.4) and LAN (192.168.1.1)
+and another internal server (192.168.1.100). I want to setup a couple of
+default servers to forward the wan access to ports 80-90 towards the
+internal server ports 8080-8090. I want the port mapping to be 1:1,
+i.e., 80 -> 8080, 81 -> 8081, ..., 90 -> 8090.
 
+I tried the following rules:
+    # iptables -A PREROUTING -t nat -p udp -d 1.2.3.4 --dport 80:90 -j
+DNAT --to 192.168.1.100:8080-8090
+    # iptables -A FORWARD -p udp -d 192.168.1.100 --dport 8080:8090 -j
+ACCEPT
 
+However, the results are pretty inconsistent. In some cases, I got
+shifted mapping like
+    83 -> 8080, 84 -> 8081, ...
+And even out-of-range mapping like
+    80 -> 8091, 81 -> 8092, ...
 
+Has anyone ever seen this before? Is this working as designed or a bug
+in the NAT code?
 
-I have a snort-inline running which grabs packets from QUEUE target,
-which is working fine.
+Any suggestion?
 
-Now, I have also an accept-all for ESTABLISHED and RELATED in INPUT and
-FORWARD, which is one of the first rules in order to bypass all other
-(many and complex) rules which handle only state NEW.
-Quiet standard setup I would say.
+Thanks in advance!
 
-Now I would like to pass some connections through QUEUE and other not.
-That's the problem.
-The accept-all should pass all consecutive packets of those connections
-which went through QUEUE, also through QUEUE and other packets whose
-initiating packet has been ACCEPT'ed previously should still be
-ACCEPT'ed without sending through QUEUE.
+J.
 
-Ok, I could remove that accept-all and ACCEPT or QUEUE
-ESTABLISHED/RELATED packets before every single NEW accepting rule, but
-then every packet of an accepted connection has to pass through all
-those rules.
-
-
-Thank you in advance
-
-peter
-
--- 
-:: e n d i a n
-:: open source - open minds
-
-:: peter warasin
-:: http://www.endian.com   :: peter@endian.com
