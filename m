@@ -1,52 +1,75 @@
-From: Gerardo Fernandez <gfhgfh@gmail.com>
-Subject: Re: Who can give me any existing iptables rules for reference?
-Date: Wed, 10 Feb 2010 22:23:45 +0100
-Message-ID: <8ed551511002101323j54d05820g31fdd4908443fb91@mail.gmail.com>
-References: <28efc0211002060450n782f9273i9489e289dbc62407@mail.gmail.com>
-	 <4B719306.7080709@chello.at>
+From: "He Jiafu-MPNB73" <JHe@Motorola.com>
+Subject: RE: Default server DNAT port remapping problem
+Date: Wed, 10 Feb 2010 17:37:12 -0500
+Message-ID: <83EB8CF7119A7C47A6425E352065A72B071F86E4@ct11exm64.ds.mot.com>
+References: <83EB8CF7119A7C47A6425E352065A72B071F83D6@ct11exm64.ds.mot.com> <4B71CDE9.6020004@chello.at> <83EB8CF7119A7C47A6425E352065A72B071F8474@ct11exm64.ds.mot.com> <4B72F565.202@chello.at>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:content-type;
-        bh=EZGO2xsDNvVrPQBwTJLYb98nADCZYS+Pip4xgfFaKTE=;
-        b=gjz7yKDJ8t8M+GQynRfKdbrWucxPFUAs8EgspVf0kUSPmM08yFbP+ico0FtDArZHGg
-         bRAZHn+8AGUY8McvXHyDbGT++ZKSa2JP6JRhPC6heegbIuAXBQZT0ZiWE04RlHSwybmH
-         NgK+rLgdbd2w+kGAiShA7J7DEhGilw4i3DjWw=
-In-Reply-To: <4B719306.7080709@chello.at>
+Content-class: urn:content-classes:message
+In-Reply-To: <4B72F565.202@chello.at>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
+Cc: Mart Frauenlob <mart.frauenlob@chello.at>
 
-On Tue, Feb 9, 2010 at 5:53 PM, Mart Frauenlob <mart.frauenlob@chello.at> wrote:
-> On 06.02.2010 13:50, netfilter-owner@vger.kernel.org wrote:
->> Hi,i'm a rookie.As learning netfilter/iptables for the first time,i
->> wanna look some good existing iptables rules scripts as that i think
->> reading good rules scripts will be useful.
->
-> you need to understand the concepts for writing good rule-sets.
-> Example scripts of course will help to understand.
->
-> Here's a tutorial (not 100% up to date) including sample scripts:
-> http://www.frozentux.net/iptables-tutorial/iptables-tutorial.html
->
+ 
 
-Oskar Andreasson tutorial is a big source of information not only
-about iptables, but also about TCP/IP. Too deep in my opinion for
-students trying to learn the basics. Being a teacher but not an expert
-in iptables, I use the following notes as an introductory tutorial to
-Netfilter/iptables:
+> On 10.02.2010, Mart wrote: 
+> 
+> > 
+> > kernel version: 2.6.25.20
+> > iptables version: v1.4.0
+> > 
+> > I used "nmap -r -sU -p80-90 1.2.3.4" to scan the ports, at the 2nd 
+> > round, the logs showed the port shifting out-of-range. See the 
+> > following logs for an example. In the logs, 192.168.1.254 
+> is the wan 
+> > ip and while 192.168.1.220 is the lan, and the following 
+> iptables rules are used:
+> >     # iptables -A PREROUTING -t nat -p udp -d 192.168.1.254 --dport
+> > 12340:12345 -jNFLOG
+> >     # iptables -A PREROUTING -t nat -p udp -d 192.168.1.254 --dport
+> > 12340:12345 -j DNAT --to 192.168.1.220:12350-12355
+> >     # iptables -A FORWARD -p udp -d 192.168.1.220 --dport 
+> 12340:13340 
+> > -jNFLOG
+> >     # iptables -A FORWARD -p udp -d 192.168.1.220 --dport 
+> 12340:13340 
+> > -j ACCEPT
+> > 
+> 
+> >>>> nmap: 2nd round
+> > 2010-02-09T21:53:59Z L4  hook=PREROUTING mark=0 IN=eth0 OUT=
+> > MAC=00:00:00:00:00:
+> > 00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 
+> DST=192.168.1.254 LEN=28 
+> > TOS=0x00 P REC=0x00 TTL=45 ID=15316 PROTO=UDP SPT=51921 DPT=12341 
+> > LEN=8 2010-02-09T21:53:59Z L4  hook=FORWARD mark=0 IN=eth0 OUT=eth0 
+> > MAC=00:00:00:00:00 :00:00:0c:29:b2:87:6c:08:00 SRC=192.168.1.220 
+> > DST=192.168.1.220 LEN=28 TOS=0x00
+> > PREC=0x00 TTL=44 ID=15316 PROTO=UDP SPT=51921 DPT=12356 LEN=8   <<<
+> > out-of-range
+> 
+> well, not as it should be...
+> 
+> > I did a quick look at net/ipv4/netfilter/nf_nat_proto_udp.c, and 
+> > changed the line 44 in function "udp_unique_tuple()":
+> >     - static u_int16_t port;
+> >     + u_int16_t port;
+> > and the out-of-range problem goes away. Not sure what else 
+> this change 
+> > might break. Similar changes must also be done for tcp.
+> > 
+> 
+> did you try a newer kernel 2.6.32.x?
 
-http://www.ajedrezvasco.com/infor/iptables_basics.htm
+No, not yet. But I had a quick look at the 2.6.31.6 code and saw the
+"static" gone and the codebase has been changed significantly.
 
-In a really simplified way, I try to make my students grasp the basics
-ideas. Any feedback, correction, sugestion, etc, is welcome and will
-be included when I teach it again in a month or so.
+Thanks for your help so far.
 
--- 
-Saludos.
-Gerardo Fernandez
-http://www.ajedrezvasco.com
+Best regards,
+
+Jiafu
