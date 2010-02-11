@@ -1,47 +1,45 @@
-From: Tino Keitel <tkeitel@innominate.com>
-Subject: Re: Conntrackd and UDP
-Date: Thu, 11 Feb 2010 08:22:18 +0100
-Message-ID: <20100211072218.GA28517@tkeitel002.bln.innominate.local>
-References: <1235464670.9964.13.camel@menhir.cc.uniud.it>
- <49A3FA77.2090305@netfilter.org>
+From: Payam Chychi <pchychi@gmail.com>
+Subject: performance testing iptables...
+Date: Wed, 10 Feb 2010 23:46:40 -0800
+Message-ID: <f08c15d11002102346n6dade2dgd00185620dc373e@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <49A3FA77.2090305@netfilter.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type;
+        bh=MLh0JtAe6QQi9sI05We4W7KiQtOj/JE4cOt3L/MlV7k=;
+        b=OHZjfPJbv0NFQ91kj2bhtY6VFsJM+T+oN2UaJOvI0P2VQhQH6J06CNUY6um2gAz2bP
+         FP+jbOpVqKaLbqAuetGUoXtMEtBm9s6yA4Uz348RDT9QGvHy8eTkZgR0cdfcj6i9Zk0B
+         RN7d9XQAUp3Lwtwbkr5yeHrjR0n3nVICsUs3U=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Tue, Feb 24, 2009 at 14:47:35 +0100, Pablo Neira Ayuso wrote:
+Hi Guys,
 
-[...]
+Ive been reading all over the web on performance tests done against
+iptables and its ability to perform both state and non-state
+filtering. I am setting up a pretty decent server for some testing and
+I was wondering if you guys could give me some ideas on how to fully
+push iptables to its limits (different type of traffic, different
+usage, string matching/u32 module and such...)
 
-> It depends on the UDP traffic and your rule-set, for example, I
-> don't synchronize UDP DNS traffic but you may want to do it for
-> long-standing UDP flows for real-time communications. With regards
+Server consists of:
+Quad Cor Intel(R) Xeon(R) CPU           E5420  @ 2.50GHz
+32gig Ram
+220gig Sata (not worried about this as im trying to keep most things in ram)
+Intel Gig nics
 
-Hi,
+Running:
+Debian 5.0 + grsec
 
-that sounds like other UDP traffic can be synced. However, it looks
-like conntrackd does not support UDP at all. Are there plans to support
-it in upcoming releases?
+I will later post results and poc online for others to view
+Any/All ideas are welcome =)
 
-Regards,
-
+Thanks,
 -- 
-Tino Keitel
-Software Engineer
- 
-Innominate Security Technologies AG
-/protecting industrial networks/
-Tel: +49.30.921028-206
-Fax: +49.30.921028-020
-Rudower Chaussee 13
-12489 Berlin / Germany
-http://www.innominate.com/
-
-Register Court: AG Charlottenburg, HRB 81603 Management Board: Dirk
-Seewald, Chairman of the Supervisory Board: Volker Bibelhausen
+Payam Tarverdyan Chychi
+Network Security Specialist / Network Engineer
