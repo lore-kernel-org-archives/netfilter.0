@@ -1,73 +1,104 @@
-From: Eric Leblond <eric@inl.fr>
-Subject: Re: performance testing iptables...
-Date: Thu, 11 Feb 2010 09:15:34 +0100
-Message-ID: <1265876134.22782.10.camel@khasse.inl.fr>
-References: <f08c15d11002102346n6dade2dgd00185620dc373e@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Conntrackd and UDP
+Date: Thu, 11 Feb 2010 12:01:40 +0100
+Message-ID: <4B73E394.6010405@netfilter.org>
+References: <1235464670.9964.13.camel@menhir.cc.uniud.it> <49A3FA77.2090305@netfilter.org> <20100211072218.GA28517@tkeitel002.bln.innominate.local>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-oWXTTnVb3RFYK0rUE85h"
+Content-Type: multipart/mixed;
+ boundary="------------000001030300080206060401"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <f08c15d11002102346n6dade2dgd00185620dc373e@mail.gmail.com>
+In-Reply-To: <20100211072218.GA28517@tkeitel002.bln.innominate.local>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Payam Chychi <pchychi@gmail.com>
+To: Tino Keitel <tkeitel@innominate.com>
 Cc: netfilter@vger.kernel.org
 
+This is a multi-part message in MIME format.
+--------------000001030300080206060401
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
---=-oWXTTnVb3RFYK0rUE85h
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Tino Keitel wrote:
+> On Tue, Feb 24, 2009 at 14:47:35 +0100, Pablo Neira Ayuso wrote:
+> 
+> [...]
+> 
+>> It depends on the UDP traffic and your rule-set, for example, I
+>> don't synchronize UDP DNS traffic but you may want to do it for
+>> long-standing UDP flows for real-time communications. With regards
+> 
+> Hi,
+> 
+> that sounds like other UDP traffic can be synced. However, it looks
+> like conntrackd does not support UDP at all. Are there plans to support
+> it in upcoming releases?
 
-Hi,
+Ops, it seems that I broken UDP filtering during 0.9.14. This patch
+should fix it. Does it resolve the UDP support or am I missing anything
+else?
 
-Le mercredi 10 f=C3=A9vrier 2010 =C3=A0 23:46 -0800, Payam Chychi a =C3=A9c=
-rit :
-> Hi Guys,
->=20
-> Ive been reading all over the web on performance tests done against
-> iptables and its ability to perform both state and non-state
-> filtering. I am setting up a pretty decent server for some testing and
-> I was wondering if you guys could give me some ideas on how to fully
-> push iptables to its limits (different type of traffic, different
-> usage, string matching/u32 module and such...)
->=20
-> Server consists of:
-> Quad Cor Intel(R) Xeon(R) CPU           E5420  @ 2.50GHz
-> 32gig Ram
-> 220gig Sata (not worried about this as im trying to keep most things in r=
-am)
-> Intel Gig nics
->=20
-> Running:
-> Debian 5.0 + grsec
->=20
-> I will later post results and poc online for others to view
-> Any/All ideas are welcome =3D)
+--------------000001030300080206060401
+Content-Type: text/x-patch;
+ name="udp.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="udp.patch"
 
-There is some interesting read about the topic:
-http://people.netfilter.org/kadlec/nftest.pdf
-http://nfws.inl.fr/nfws_userday/Jesper-Brouer_Large-iptables-rulesets.pdf
+conntrackd: fix UDP filtering in configuration file
 
-Google on "Netfilter performance" seems to bring some other information
-sources.
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-BR,
---=20
-=C3=89ric Leblond <eric@inl.fr>
-EdenWall, http://www.edenwall.com/
-NuFW, http://www.nufw.org
+UDP filtering was broken during the addition of the UDP-based
+synchronization protocol that was introduced in 0.9.14. This
+patch fixes the problem.
 
---=-oWXTTnVb3RFYK0rUE85h
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ doc/sync/ftfw/conntrackd.conf |    1 +
+ src/read_config_yy.y          |   19 +++++++++++++++++++
+ 2 files changed, 20 insertions(+), 0 deletions(-)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
+diff --git a/doc/sync/ftfw/conntrackd.conf b/doc/sync/ftfw/conntrackd.conf
+index df10aca..877ed68 100644
+--- a/doc/sync/ftfw/conntrackd.conf
++++ b/doc/sync/ftfw/conntrackd.conf
+@@ -357,6 +357,7 @@ General {
+ 			TCP
+ 			SCTP
+ 			DCCP
++			# UDP
+ 			# ICMP # This requires a Linux kernel >= 2.6.31
+ 		}
+ 
+diff --git a/src/read_config_yy.y b/src/read_config_yy.y
+index 6dfca98..5f4e6be 100644
+--- a/src/read_config_yy.y
++++ b/src/read_config_yy.y
+@@ -1221,6 +1221,25 @@ filter_protocol_item : T_TCP
+ 				 pent->p_proto);
+ };
+ 
++filter_protocol_item : T_UDP
++{
++	struct protoent *pent;
++
++	pent = getprotobyname("udp");
++	if (pent == NULL) {
++		print_err(CTD_CFG_WARN, "getprotobyname() cannot find "
++					"protocol `udp' in /etc/protocols");
++		break;
++	}
++	ct_filter_add_proto(STATE(us_filter), pent->p_proto);
++
++	__kernel_filter_start();
++
++	nfct_filter_add_attr_u32(STATE(filter),
++				 NFCT_FILTER_L4PROTO,
++				 pent->p_proto);
++};
++
+ filter_item : T_ADDRESS T_ACCEPT '{' filter_address_list '}'
+ {
+ 	ct_filter_set_logic(STATE(us_filter),
 
-iEYEABECAAYFAktzvKIACgkQnxA7CdMWjzJvgwCfZqAiAvTuyqx9ynaJDjLFHfS4
-XmEAmwSSjXXStFoYFOB8n15eDTffdzpN
-=W3RE
------END PGP SIGNATURE-----
-
---=-oWXTTnVb3RFYK0rUE85h--
-
+--------------000001030300080206060401--
