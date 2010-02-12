@@ -1,7 +1,7 @@
 From: Guido Trentalancia <guido@trentalancia.com>
 Subject: Re: Port forwarding with iptables on tunnel interface
-Date: Fri, 12 Feb 2010 16:21:10 +0100
-Message-ID: <1265988070.2980.90.camel@tesla.lan>
+Date: Fri, 12 Feb 2010 18:30:41 +0100
+Message-ID: <1265995841.2980.125.camel@tesla.lan>
 References: <1265912094.2985.44.camel@tesla.lan>
 	 <4B745327.9020806@trash.net> <1265916014.2985.72.camel@tesla.lan>
 	 <4B74E736.2020307@trash.net> <1265981292.2980.67.camel@tesla.lan>
@@ -16,11 +16,100 @@ Content-Type: text/plain; charset="us-ascii"
 To: Patrick McHardy <kaber@trash.net>
 Cc: netfilter@vger.kernel.org
 
-Hello Patrick !
+Hello again !
 
-You are very kind to offer your help and advice...
+There are two things that look odd to me:
 
-My reply follows your quoted text.
+1) packets on port 25 are correctly forwarded (after decapsulation) to
+the redirected host on the 192.168.3.0 network *but* nothing goes back
+on the same network on port 25 (i.e. from interface eth0 to tunl0);
+2) there is a very strange and very long MAC entry in the PREROUTING log
+for IN=tunl0.
+
+I have tried using the target TRACE, but it doesn't help much. I've got
+plenty of LOG targets disseminated everywhere that TRACE doesn't add
+anything. But again, I can't see POSTROUTING from the host where packets
+are being forwarded and I can't see replies going back on eth0 from that
+same machine (the sendmail machine) to the iptables machine.
+
+I also forgot to attach the iptables rules in my previous message, but
+here you go:
+
+*raw
+:PREROUTING ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+-A PREROUTING -p tcp --dport 25 -j TRACE
+-A PREROUTING -p tcp --dport 25 -j TRACE
+COMMIT
+*nat
+:PREROUTING ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+-A PREROUTING -p tcp --dport 25 -j LOG --log-prefix "PREROUTING: "
+-A PREROUTING -p tcp --dport 25 -j DNAT --to-destination 192.168.3.69
+-A PREROUTING -p tcp --dport 587 -j DNAT --to-destination 192.168.3.69
+-A OUTPUT -p tcp --dport 25 -j LOG --log-prefix "OUTPUT: "
+-A OUTPUT -p tcp --dport 25 -j DNAT --to-destination 192.168.3.69
+# The following rule is not related, it's masquerading for another
+network...
+-A POSTROUTING -o eth0 -s 192.168.4.0/24 -j MASQUERADE
+-A POSTROUTING -p tcp --dport 25 -j LOG --log-prefix "POSTROUTING: "
+-A POSTROUTING -o eth0 -p tcp --dport 25 -j MASQUERADE
+-A POSTROUTING -o eth0 -p tcp --dport 587 -j MASQUERADE
+#-A POSTROUTING -o eth0 -p tcp --dport 25 -j SNAT --to-source
+192.168.3.64
+#-A POSTROUTING -o eth0 -p tcp --dport 587 -j SNAT --to-source
+192.168.3.64
+COMMIT
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT ! -i lo -d 127.0.0.0/8 -j REJECT
+-A INPUT -p tcp --dport 25 -j LOG --log-prefix "SMTP (in): "
+-A OUTPUT -p tcp --dport 25 -j LOG --log-prefix "SMTP (out): "
+-A FORWARD -p tcp --dport 25 -j LOG --log-prefix "SMTP (fwd): "
+## ##-A INPUT -m state --state NEW -m tcp -p tcp --dport 25 -j ACCEPT
+## ##-A INPUT -m state --state NEW -m tcp -p tcp --dport 587 -j ACCEPT
+-A FORWARD -i tunl0 -o eth0 -p tcp --dport 25 -j LOG --log-prefix "SMTP
+(fwd tunl0-eth0): "
+-A FORWARD -i tunl0 -o eth0 -p tcp --dport 25 -j ACCEPT
+-A FORWARD -i eth0 -o tunl0 -p tcp --dport 25 -j LOG --log-prefix "SMTP
+(fwd eth0-tunl0): "
+-A FORWARD -i eth0 -o tunl0 -p tcp --dport 25 -j ACCEPT
+-A INPUT -p 4 -j LOG --log-prefix "ipencap (in): "
+-A INPUT -p 4 -i eth0 -j ACCEPT
+-A OUTPUT -p 4 -j LOG --log-prefix "ipencap (out): "
+-A OUTPUT -p 4 -o eth0 -j ACCEPT
+-A INPUT -j REJECT --reject-with icmp-host-prohibited
+-A FORWARD -j REJECT --reject-with icmp-host-prohibited
+COMMIT
+
+Note that I have also tried with a default ACCEPT policy instead of
+default DROP and it doesn't help. Also, I have tried with SNAT instead
+of MASQUERADING (and which probably is more precise) but it didn't help
+either. I am beginning to think there is something wrong with the tunnel
+interface, but I can't think of a possible mistake in its configuration
+as it's just "ifconfig tunl0
+theipaddressoftheiptablesmachineonthetunnelinterface up".
+
+Once again, I can get sendmail on the forwarded host to respond to
+connections originating from the internal 192.168.3.0/24 network, so
+sendmail is up and running and forwarding works within the internal
+network. The problem arise for connection originating from the tunnel
+interface.
+
+I hope that some light on the problem can be shed now that I have posted
+full details !
+
+Thanks again very much for offering to help out. Appreciated.
+
+Regards,
+
+Guido
 
 On Fri, 2010-02-12 at 15:41 +0100, Patrick McHardy wrote:
 > Guido Trentalancia wrote:
@@ -82,13 +171,7 @@ On Fri, 2010-02-12 at 15:41 +0100, Patrick McHardy wrote:
 > > theipaddressoftheiptablesmachineonthetunnelinterface mtu 512 up
 > 
 > So there's no IP address on tunl0?
-
-Yes the IP for tunl0 is
-theipaddressoftheiptablesmachineonthetunnelinterface that I referenced
-elsewhere. Without getting into numbers it's a valid and unique public
-IP address. I prefer not to post public IP addresses on the mailing
-list.
-
+> 
 > > One thing that I have observed is that when rp_filter is set to 0 for
 > > the tunnel, then something appears in the log:
 > > 
@@ -105,60 +188,11 @@ list.
 > ip link list
 > ip addr show
 > ip route show
-
-ip link list:
-
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 16436 qdisc noqueue state UNKNOWN 
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast
-state UP qlen 1000
-    link/ether 00:02:3f:0b:79:a8 brd ff:ff:ff:ff:ff:ff
-3: wmaster0: <UP,LOWER_UP> mtu 0 qdisc pfifo_fast state UNKNOWN qlen
-1000
-    link/ieee802.11 00:07:40:dd:9c:88 brd 00:00:00:00:00:00
-4: wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast
-state UP qlen 1000
-    link/ether 00:07:40:dd:9c:88 brd ff:ff:ff:ff:ff:ff
-5: pan0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN 
-    link/ether 8e:03:0e:7c:f8:28 brd ff:ff:ff:ff:ff:ff
-6: mon.wlan0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc
-pfifo_fast state UNKNOWN qlen 1000
-    link/ieee802.11/radiotap 00:07:40:dd:9c:88 brd ff:ff:ff:ff:ff:ff
-7: tunl0: <NOARP,UP,LOWER_UP> mtu 512 qdisc noqueue state UNKNOWN 
-    link/ipip 0.0.0.0 brd 0.0.0.0
-
-ip addr show (only relevant entries):
-
-2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast
-state UP qlen 1000
-    link/ether 00:02:3f:0b:79:a8 brd ff:ff:ff:ff:ff:ff
-    inet 192.168.3.64/24 brd 192.168.3.255 scope global eth0
-    inet6 fe80::202:3fff:fe0b:79a8/64 scope link 
-       valid_lft forever preferred_lft forever
-7: tunl0: <NOARP,UP,LOWER_UP> mtu 512 qdisc noqueue state UNKNOWN 
-    link/ipip 0.0.0.0 brd 0.0.0.0
-    inet theipaddressoftheiptablesmachineonthetunnelinterface/8 scope
-global tunl0
-
-ip route show (only relevant entries):
-
-192.168.3.0/24 dev eth0  proto kernel  scope link  src 192.168.3.64
-
-tunl0 has 248 entries, I cannot post all of them here and also I don't
-want to expose the public IP addresses of my peers for privacy and
-security reasons. It's basically 248 entries from the same network of
-theipaddressoftheiptablesmachineonthetunnelinterface routed via public
-Internet addresses of other machines.
-
+> 
 > and all iptables rules.
 > 
 > You can also  try tracing the packet's flow through the ruleset
 > using the TRACE target.
-
-I look forward to hearing from you.
-
-Regards,
-
-Guido
+> 
 
 
