@@ -1,53 +1,113 @@
-From: Guido Trentalancia <guido@trentalancia.com>
-Subject: Re: Port forwarding with iptables on tunnel interface
-Date: Fri, 12 Feb 2010 23:27:40 +0100
-Message-ID: <1266013660.2980.150.camel@tesla.lan>
-References: <1265912094.2985.44.camel@tesla.lan>
-	 <4B745327.9020806@trash.net> <1265916014.2985.72.camel@tesla.lan>
-	 <4B74E736.2020307@trash.net> <1265981292.2980.67.camel@tesla.lan>
-	 <4B756895.2060106@trash.net> <1265995841.2980.125.camel@tesla.lan>
-	 <4B75A5A5.1000402@mailinator.com> <1266002586.2980.135.camel@tesla.lan>
-	 <4B75B283.1040300@mailinator.com>
+From: Bojan Sukalo <shukalo83@gmail.com>
+Subject: Natting html traffic
+Date: Sat, 13 Feb 2010 00:03:38 +0100
+Message-ID: <368e93c51002121503y2bf70ddbh85c0c377356a345@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B75B283.1040300@mailinator.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type;
+        bh=Ka6KodRsyc++En1kqI9ZzGR+vp08X3WShvxPXPHDz10=;
+        b=d1jclSw5gZv5QyDhjh9h7hAw1FElB1ulcMpZzbbSFwy2AEnMAOM+v71bIRYivaBIbm
+         xJg3jVT+S2GDhlDnu9KxTgR79OjStFPoBRVSHJhN9kr7xk2FdshJ1HXlAG1iVcbnNwEX
+         +uoiY4d9sLX1tLqYkTVhzyxlAoQK9NwW9qy3U=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Mike Wright <mike.wright@mailinator.com>
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hello again Mike,
+I'am trying to setup nat on RHEL4 box.
 
-On Fri, 2010-02-12 at 11:56 -0800, Mike Wright wrote:
-> >> Salve, Guido.  I gave this a verrrry quick glance and off the top of my 
-> >> head I think something looks fishy in the POSTROUTING rules.
-> >>
-> >> In the PREROUTING you are selecting based on the *destination* port.  On 
-> >> the return trip shouldn't POSTROUTING use *source* port?
-> > 
-> > Hold on a second. The originating caller expects a reply on *its 25
-> > port*. Therefore my originating port could be everything and usually is
-> > an high port (> 1024) different than 25, but the important is that the
-> > destination port is 25 because there is the caller waiting a reply. 
-> > 
-> > Therefore even in the case of SNAT, I am selecting the destination port.
-> > 
-> > Do you convene with me now ?
-> 
-> Yes, indeed.  It seems I have my brain in backwards ;D
-> 
-> Buona fortuna !
+Kernel: Linux 2.6.9-89.ELsmp x86_64x86
+iptables: 1.2.11
 
-You were actually right. The SNAT needs to be done with --sport 25 and
-not with --dport 25. But still I cannot get the mail delivered and
-actually I cannot see POSTROUTING but only untranslated reply packets...
+I have static public ip address on eth0 and 192.168.60.1 address on
+privat LAN (eth1)
 
-Any other idea ?
+Also I have tap0 (192.168.168.1) interface enabled and working openvpn
+connection to all hosts in privat LAN (including NAT box)
 
-Regards,
+I have done this numerous times before. Never the less, I have problem
+now and I am stuck.
 
-Guido
+Current situation is this:
 
+Working ping to www.google.com from servers inside. Also working ping
+with -s 1472 with don't fragment set  (full size packet).
 
+Telnet from inside machine to www.google.com 80 works but I can't get
+any messages after I get connected (Just successfull telnet
+connection)
+
+Accessing web from nat box is ok.
+
+I have tried to sniff traffic and I have seen ACK, SYN ACK, ACK
+packets when trying to hit www.google.com from inside. After that I
+have IP bad-len: 0 messages (When I see inside them, these look like
+packets from google with HTML tags but something is wrong with them)
+
+I found that this can be tcpmss problem and done --clamp-mss-to-mtu
+stuff but that didn't work either.
+Also tried setting mss to low value (250), just in case. Didn't help either.
+
+What is the problem here? I dont see bugs on iptables version 1.2.11
+that can have this kind of impact on traffic.
+
+These are my iptables rules
+
+Quote:
+[root@natbox]# iptables -nvL
+Chain INPUT (policy DROP 1729 packets, 105K bytes)
+pkts bytes target prot opt in out source destination
+611K 239M ACCEPT all -- eth0 * 0.0.0.0/0 0.0.0.0/0 state RELATED,ESTABLISHED
+8311 795K ACCEPT all -- eth1 * 192.168.60.0/24 0.0.0.0/0
+30548 2963K ACCEPT all -- tap0 * 192.168.168.0/24 0.0.0.0/0
+48001 9271K ACCEPT all -- lo * 0.0.0.0/0 0.0.0.0/0
+0 0 DROP all -- eth0 * 192.168.60.0/24 0.0.0.0/0
+0 0 DROP all -- eth0 * 127.0.0.0/8 0.0.0.0/0
+0 0 ACCEPT tcp -- eth0 * allowed_ssh_ip 0.0.0.0/0 tcp dpt:22
+149 6297 ACCEPT udp -- eth0 * 0.0.0.0/0 0.0.0.0/0 udp dpt:1194
+0 0 ACCEPT udp -- * * my_dns_server 0.0.0.0/0 udp spt:53
+
+Chain FORWARD (policy DROP 28 packets, 1120 bytes)
+pkts bytes target prot opt in out source destination
+4741 472K ACCEPT all -- eth1 eth0 0.0.0.0/0 0.0.0.0/0
+398K 177M ACCEPT all -- tap0 eth1 0.0.0.0/0 0.0.0.0/0
+135 20160 ACCEPT all -- eth0 eth1 0.0.0.0/0 0.0.0.0/0 state RELATED,ESTABLISHED
+273K 87M ACCEPT all -- eth1 tap0 0.0.0.0/0 0.0.0.0/0 state RELATED,ESTABLISHED
+
+Chain OUTPUT (policy ACCEPT 544K packets, 139M bytes)
+pkts bytes target prot opt in out source destination
+
+[root@natbox]# iptables -nvL -t nat
+Chain PREROUTING (policy ACCEPT 18221 packets, 1683K bytes)
+pkts bytes target prot opt in out source destination
+
+Chain POSTROUTING (policy ACCEPT 19019 packets, 1435K bytes)
+pkts bytes target prot opt in out source destination
+3612 203K SNAT all -- * eth0 192.168.60.0/24 0.0.0.0/0
+to:my_public_ip
+Chain OUTPUT (policy ACCEPT 18070 packets, 1389K bytes)
+pkts bytes target prot opt in out source destination
+
+[root@natbox]# iptables -nvL -t mangle
+Chain PREROUTING (policy ACCEPT 96895 packets, 30M bytes)
+pkts bytes target prot opt in out source destination
+
+Chain INPUT (policy ACCEPT 67263 packets, 18M bytes)
+pkts bytes target prot opt in out source destination
+
+Chain FORWARD (policy ACCEPT 29470 packets, 12M bytes)
+pkts bytes target prot opt in out source destination
+15 900 TCPMSS tcp -- eth1 eth0 0.0.0.0/0 0.0.0.0/0 tcp flags:0x06/0x02
+TCPMSS clamp to PMTU
+
+Chain OUTPUT (policy ACCEPT 60095 packets, 15M bytes)
+pkts bytes target prot opt in out source destination
+
+Chain POSTROUTING (policy ACCEPT 90014 packets, 27M bytes)
+pkts bytes target prot opt in out source destination
+
+Thank You
