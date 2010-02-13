@@ -1,47 +1,58 @@
-From: Guido Trentalancia <guido@trentalancia.com>
+From: Bojan Sukalo <shukalo83@gmail.com>
 Subject: Re: Natting html traffic
-Date: Sat, 13 Feb 2010 17:19:11 +0100
-Message-ID: <1266077951.2916.58.camel@tesla.lan>
-References: <368e93c51002121503y2bf70ddbh85c0c377356a345@mail.gmail.com>
-	 <1266016722.2980.159.camel@tesla.lan>
-	 <1266027202.3899.1.camel@casper.meteor.dp.ua>
-	 <33be4bb31002130208p53b4db41j1e46b3a3920b1fa4@mail.gmail.com>
-	 <368e93c51002130422la851213ud93649e9ccc5519c@mail.gmail.com>
-	 <1266072434.2916.46.camel@tesla.lan>
-	 <368e93c51002130729n4ef2b669r30c6ee64c2077df7@mail.gmail.com>
+Date: Sat, 13 Feb 2010 17:46:54 +0100
+Message-ID: <368e93c51002130846j1d3d6db9i6247a729ac326418@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <368e93c51002130729n4ef2b669r30c6ee64c2077df7@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:cc:content-type;
+        bh=9txICx+8p+UCnppAF23uCZCZ+Aa/nXR/+sfclO+87Hw=;
+        b=njc7lNaj3Mq8HcAM6X8z3EZYBBvFdwpU5iMs75pSEbxJjwdGi7bfixvl/WuF1YruzF
+         eh9ovVUzhBCsbgN5g+MO5LoOs4Y59DRHz4NlX76fQ3jtvAw9L8iWiMfq7zFDq3d4d+jM
+         aqwkJ4+98SiKS6scathCvzWdVYueD5Jh2i60Y=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Bojan Sukalo <shukalo83@gmail.com>
+Content-Transfer-Encoding: 7bit
+To: Guido Trentalancia <guido@trentalancia.com>
 Cc: netfilter@vger.kernel.org
 
-Hello again !
+Thank You Guido, maybe that's the way to go.
 
-On Sat, 2010-02-13 at 16:29 +0100, Bojan Sukalo wrote:
-> >> iptables -t mangle -A FORWARD -i eth1 -o eth0 -p tcp --tcp-flags
-> >> SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
-> >
-> > What do you want to achieve with the last rule ?
-> 
-> I tried to set mss in my last rule because this type of problem
-> (acording to iptables man page) can happen because of bigger mss
-> values and fragmenting packets after that.
-> When I say this type of problem I mean "established tcp session but no
-> traffic after that"
+Regarding the masquerade I tried that also. Icmp is enabled and what
+bothers me most it works even from inside to internet. (I can ping
+www.google.com from inside - see the first post in thread).
+I 'll try to install newer version of iptables. I hope that
+dependencies won't bother me.
+If I install newer version of iptables do I have to upgrade kernel or
+I can just try and see whether the first update (only iptables) will
+give results?
 
-Well, in the manual page it mentions about "criminally braindead ISPs or
-servers". So, to make sure that is the cause, you could try the existing
-setup with another ISP using one of the many free dial-up connections
-that are generally available.
 
-If the problem persists with other ISPs, then at least you know it might
-be a different cause perhaps something to do with your setup.
 
-Regards,
-
-Guido
-
+On Sat, Feb 13, 2010 at 5:06 PM, Guido Trentalancia
+<guido@trentalancia.com> wrote:
+> On Sat, 2010-02-13 at 00:03 +0100, Bojan Sukalo wrote:
+>> I'am trying to setup nat on RHEL4 box.
+>>
+>> Kernel: Linux 2.6.9-89.ELsmp x86_64x86
+>> iptables: 1.2.11
+>
+> Bojan,
+>
+> why don't you try to upgrade to a more recent version of iptables and if
+> possible to a more recent kernel ? You know, just in case...
+>
+> I have a setup similar to yours (except from POSTROUTING which is of
+> type MASQUERADING rather than SNAT) and it works all right.
+>
+> Also, have you checked other parameters such as TTL ? What about ICMP ?
+> You can enable ICMP with the following rule:
+>
+> -A INPUT -p icmp -j ACCEPT
+>
+> Guido
+>
+>
