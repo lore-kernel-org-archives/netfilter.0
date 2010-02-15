@@ -1,7 +1,7 @@
-From: Brian Schang <netfilter@lists.schang.net>
-Subject: hashlimit not working as expected
-Date: Sun, 14 Feb 2010 23:45:34 -0500
-Message-ID: <4B78D16E.7010101@lists.schang.net>
+From: Nemeth Denes <nemeth.denes@iit.bme.hu>
+Subject: netfilter missing interface name
+Date: Mon, 15 Feb 2010 10:19:26 +0100
+Message-ID: <4B79119E.9090506@iit.bme.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -10,96 +10,27 @@ List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello:
+Hi
 
-I have the following rule in my iptables setup:
+The INPUT chain looks like the following:
 
--A LogLimit -m hashlimit --hashlimit 1/hour --hashlimit-burst 1 
---hashlimit-name loglimit --hashlimit-mode srcip -j LOG --log-level 6 
---log-prefix "LogLimit:1:LOG "
+pkts bytes target     prot opt in     out     source               
+destination
+  35  3235 LOG_DROP   all  --  pub    *       0.0.0.0/0           
+!1.2.3.4      [goto]
+   0  0    LOG_ACC    tcp  --  *      *       127.0.0.1            
+127.0.0.1           state NEW tcp dpt:3000
 
-My goal is to log connections to an incoming port, but restrict the 
-logging to one entry per IP address per hour. But instead, I get log 
-entries from the same IP address as close together as 10 seconds.
+The following packet is dropped:
 
-I have looked at /proc/net/ipt_hashlimit/loglimit and see contents in 
-that file, but the contents only last for ten seconds and then the file 
-is cleared (or the corresponding entry is removed):
+IN= OUT=lo SRC=127.0.0.1 DST=127.0.0.1 LEN=60 TOS=0x10 PREC=0x00 TTL=64 
+ID=31349 DF PROTO=TCP SPT=35130 DPT=3000 WINDOW=32792 RES=0x00 SYN URGP=
 
-Sun Feb 14 23:40:21 EST 2010
-9 65.55.158.80:0->0.0.0.0:0 21632 115200000 115200000
-9 91.113.8.223:0->0.0.0.0:0 23936 115200000 115200000
-Sun Feb 14 23:40:22 EST 2010
-9 65.55.158.80:0->0.0.0.0:0 53760 115200000 115200000
-8 91.113.8.223:0->0.0.0.0:0 56064 115200000 115200000
-Sun Feb 14 23:40:23 EST 2010
-8 65.55.158.80:0->0.0.0.0:0 86016 115200000 115200000
-7 91.113.8.223:0->0.0.0.0:0 88320 115200000 115200000
-Sun Feb 14 23:40:24 EST 2010
-9 65.55.158.80:0->0.0.0.0:0 118144 115200000 115200000
-6 91.113.8.223:0->0.0.0.0:0 120448 115200000 115200000
-Sun Feb 14 23:40:25 EST 2010
-8 65.55.158.80:0->0.0.0.0:0 150272 115200000 115200000
-5 91.113.8.223:0->0.0.0.0:0 152576 115200000 115200000
-Sun Feb 14 23:40:26 EST 2010
-7 65.55.158.80:0->0.0.0.0:0 182400 115200000 115200000
-4 91.113.8.223:0->0.0.0.0:0 184704 115200000 115200000
-Sun Feb 14 23:40:27 EST 2010
-6 65.55.158.80:0->0.0.0.0:0 214656 115200000 115200000
-3 91.113.8.223:0->0.0.0.0:0 216960 115200000 115200000
-Sun Feb 14 23:40:28 EST 2010
-5 65.55.158.80:0->0.0.0.0:0 246784 115200000 115200000
-2 91.113.8.223:0->0.0.0.0:0 249088 115200000 115200000
-Sun Feb 14 23:40:29 EST 2010
-4 65.55.158.80:0->0.0.0.0:0 278912 115200000 115200000
-1 91.113.8.223:0->0.0.0.0:0 281216 115200000 115200000
-Sun Feb 14 23:40:30 EST 2010
-9 65.55.158.80:0->0.0.0.0:0 311040 115200000 115200000
-9 91.113.8.223:0->0.0.0.0:0 313344 115200000 115200000
-Sun Feb 14 23:40:31 EST 2010
-9 65.55.158.80:0->0.0.0.0:0 343168 115200000 115200000
-9 91.113.8.223:0->0.0.0.0:0 345472 115200000 115200000
-Sun Feb 14 23:40:32 EST 2010
-8 65.55.158.80:0->0.0.0.0:0 375424 115200000 115200000
-8 91.113.8.223:0->0.0.0.0:0 377728 115200000 115200000
-Sun Feb 14 23:40:33 EST 2010
-9 65.55.158.80:0->0.0.0.0:0 408960 115200000 115200000
-7 91.113.8.223:0->0.0.0.0:0 411264 115200000 115200000
-Sun Feb 14 23:40:34 EST 2010
-8 65.55.158.80:0->0.0.0.0:0 441088 115200000 115200000
-6 91.113.8.223:0->0.0.0.0:0 443392 115200000 115200000
-Sun Feb 14 23:40:35 EST 2010
-7 65.55.158.80:0->0.0.0.0:0 473344 115200000 115200000
-5 91.113.8.223:0->0.0.0.0:0 475648 115200000 115200000
-Sun Feb 14 23:40:36 EST 2010
-6 65.55.158.80:0->0.0.0.0:0 505472 115200000 115200000
-4 91.113.8.223:0->0.0.0.0:0 507776 115200000 115200000
-Sun Feb 14 23:40:37 EST 2010
-5 65.55.158.80:0->0.0.0.0:0 537600 115200000 115200000
-3 91.113.8.223:0->0.0.0.0:0 539904 115200000 115200000
-Sun Feb 14 23:40:38 EST 2010
-4 65.55.158.80:0->0.0.0.0:0 569728 115200000 115200000
-2 91.113.8.223:0->0.0.0.0:0 572032 115200000 115200000
-Sun Feb 14 23:40:39 EST 2010
-3 65.55.158.80:0->0.0.0.0:0 601856 115200000 115200000
-1 91.113.8.223:0->0.0.0.0:0 604160 115200000 115200000
-Sun Feb 14 23:40:40 EST 2010
-2 65.55.158.80:0->0.0.0.0:0 633984 115200000 115200000
-0 91.113.8.223:0->0.0.0.0:0 636288 115200000 115200000
-Sun Feb 14 23:40:41 EST 2010
-1 65.55.158.80:0->0.0.0.0:0 666240 115200000 115200000
-Sun Feb 14 23:40:42 EST 2010
-0 65.55.158.80:0->0.0.0.0:0 698368 115200000 115200000
-Sun Feb 14 23:40:43 EST 2010
+which was the cause of executing the "telnet localhost 3000" command
+The "pub" interface is a physical ethernet card.
 
-My amateur conclusion is that the 'hashlimit' match is only doing 
-limiting for 10 seconds -- (1) consistent with the duration I see an IP 
-in the ipt_hashlimit directory; and (2) consistent with the fact that I 
-have seen log entries from the same IP 11 seconds apart.
+Why is the "IN=" blanc?
+Why does the packet match to the first rule?
+How is it possible to match only to the second rule?
 
-Am I understanding this correctly? Any suggestions?
-
-Thank you.
-
--- 
-Brian Schang
+Thanks Denes
