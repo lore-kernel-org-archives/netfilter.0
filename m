@@ -1,49 +1,26 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: netfilter missing interface name
-Date: Mon, 15 Feb 2010 10:37:54 +0100
-Message-ID: <4B7915F2.2020406@chello.at>
-References: <4B79119E.9090506@iit.bme.hu>
-Reply-To: netfilter@vger.kernel.org
+From: Alessandro Rizzati <alessandrorizzati@yahoo.it>
+Subject: alter packet length
+Date: Tue, 16 Feb 2010 09:16:03 +0000 (GMT)
+Message-ID: <129802.80232.qm@web25706.mail.ukl.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B79119E.9090506@iit.bme.hu>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.it; s=s1024; t=1266311763; bh=XCBNFBxu0mPjVHvZItpgSkj/RRzK1LlY5ML6sSxxsQ0=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Subject:To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=ygIJZF5W7HKzKD4m9HMMBE/HHxowa7qImWp2PuKnnUNSy5r4R+HUkl9pf9Ycofl4SAGaWtWIPr+Jl8DKW1+XBlCQUpmsNjAe0adDL3lBn6GrdcUkkB2WKc0Mrv2guf84UTHHazTWMSUkJ/4pd7bWTXaM8AOPXZZFW0zvQ/cVCuc=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
-Cc: nemeth.denes@iit.bme.hu
 
-On 15.02.2010 10:27, netfilter-owner@vger.kernel.org wrote:
-> Hi
-> 
-> The INPUT chain looks like the following:
-> 
-> pkts bytes target     prot opt in     out     source              
-> destination
->  35  3235 LOG_DROP   all  --  pub    *       0.0.0.0/0          
-> !1.2.3.4      [goto]
->   0  0    LOG_ACC    tcp  --  *      *       127.0.0.1           
-> 127.0.0.1           state NEW tcp dpt:3000
-> 
-> The following packet is dropped:
-> 
-> IN= OUT=lo SRC=127.0.0.1 DST=127.0.0.1 LEN=60 TOS=0x10 PREC=0x00 TTL=64
-> ID=31349 DF PROTO=TCP SPT=35130 DPT=3000 WINDOW=32792 RES=0x00 SYN URGP=
-> 
-> which was the cause of executing the "telnet localhost 3000" command
-> The "pub" interface is a physical ethernet card.
-> 
-> Why is the "IN=" blanc?
-> Why does the packet match to the first rule?
-> How is it possible to match only to the second rule?
-> 
-> Thanks Denes
+Hello everyone!!
+I am using ip_queue (I know, it is deprecated...) and I want to modify the payload of the packet I get with ipq_get_packet().
+My question is: how can I modify the length of the payload (altering ipq_packet_msg_t structure)? The use of realloc() end up at runtime with a
+"glibc detected....  realloc() invalid pointer..." when I execute my program...
+Any hint?
+The environment is ubuntu karmic 64 bit + gcc.
+
+Thanks in advance!!
+Alessandro
 
 
-Looks like this is dropped in the OUTPUT chain. It never reaches the
-INPUT chain.
+      
 
-Best regards
-
-Mart
