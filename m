@@ -1,241 +1,56 @@
-From: kapil dakhane <kdakhane@gmail.com>
-Subject: Infinite loop in inet_csk_get_port
-Date: Wed, 17 Feb 2010 11:05:26 -0800
-Message-ID: <99d458641002171105n34e3f053vd71941697b463a71@mail.gmail.com>
+From: Oguz Yilmaz <oguzyilmazlist@gmail.com>
+Subject: Transparent http filtering VLAN traffic without being a member of 
+	tagged VLANs
+Date: Wed, 17 Feb 2010 22:16:38 +0200
+Message-ID: <c4ada2161002171216v202474a0obd2ca5c1f22511f1@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:cc:content-type:content-transfer-encoding;
-        bh=/i5BUrAh8vLrEc+97oAmbAGklREY3UZFFUUrLRKe1qI=;
-        b=nFYYpv1JlwzpDx7z1TraWisJwOWfV099/+Xju7GJnkkBuw8hmdI9Xkt48oLexGrSoF
-         sR4jajuJEnrCCQPt7giI9Qx482jtmqkhqGxAEu2F1M/Bny6CVkhdQ3NpfRRRKPCyY8st
-         JEHDafjkMfyoEgnP6sMOUOTt/WHVfYAgJFkLs=
+         :from:to:content-type;
+        bh=ZiU17b3rikiXtn8dcGfMA3d7B4kGI6t3gaSRb64MXnU=;
+        b=sZZuuW0PI6mjEPhu1Rlvz08v1qfNDGFu94ilqcRb1Edx1wKARkjjh83TtDqE7nVoRP
+         MFHupACDKw1CHLgZiSabcn2i7W55R0C8AyY5rCHPSscpDqMqNYG2xpYkg0nFcX1Lasgc
+         Bc2OXW0itUajpwoy7xJ67jCtnpNEH0AiJXdj8=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netdev@vger.kernel.org, David Miller <davem@davemloft.net>, Eric Dumazet <eric.dumazet@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-This is in continuation of my previous mail...
->---------- Forwarded message ----------
->From: kapil dakhane <kdakhane@gmail.com>
->Date: Mon, Nov 30, 2009 at 6:02 PM
->Subject: soft lockup in inet_csk_get_port
->To: netdev@vger.kernel.org
->Cc: netfilter@vger.kernel.org
->
->
->Hello,
->
->I am trying to analyze the capacity of linux network stack on x6270
->which has 16 Hyper threads on two 8-core Intel(r) Xeon(r) CPU.
+On a bridge setup, I want to filter http traffic transparently through
+Squid. br0 bridge is between eth0 and eth1.
+In the bridged traffic there are some tagged VLANs.
 
-This resulted in patch...
+When I run tcpdump on br0 I see all the traffic from VLANs. At this
+point a DNAT (VLAN10Subnet - Any - http => Original - LocalIP -
+8080) does not work.
+
+iptables -t nat -I PREROUTING -p tcp --dport 80 -j DNAT
+--to-destination 10.0.0.1:8080
 
 
->---------- Forwarded message ----------
->From: Eric Dumazet <eric.dumazet@gmail.com>
->Date: Wed, Dec 2, 2009 at 7:08 AM
->Subject: [PATCH net-next-2.6] tcp: connect() race with timewait reuse
->To: David Miller <davem@davemloft.net>
->Cc: kdakhane@gmail.com, netdev@vger.kernel.org, netfilter@vger.kernel.=
-org, Evgeniy Polyakov <zbr@ioremap.net>
->
+When enabled VLANs by vconfig:
 
-The test is exactly same as before, except for following changes:
-1.  linux kernel is now a snapshot of net-next jit maintained by
-dave-miller. The snapshot was downloaded on Jan 28 tarball name is
-net-next-2.6-d74340d.tar.gz, uname shows 2.6.33-rc5 as the kernel
-version. This has all the fixes from the above mentioned patch.
-2. Platform is now HS22, which is an IBM bladecenter blade with add-on
-10 gb ethernet card from broadcom, "Broadcom Corporation NetXtreme II
-BCM57710 10-Gigabit PCIe [Everest]". CPU is same as that in previous
-tests "Intel(R) Xeon(R) CPU X5570  @ 2.93GHz". Test routes both
-ingress and egress traffic through this card, with the help of vlans.
-As in previous tests, traffic was transparently captured, and
-transparently forwarded.
-3. Webproxy application now had business logic enabled as opposed to
-just data forwarding as in previous tests.
+vconfig add br0 26
 
----------- Forwarded message ----------
-=46rom: Eric Dumazet <eric.dumazet@gmail.com>
-Date: Wed, Dec 2, 2009 at 7:08 AM
-Subject: [PATCH net-next-2.6] tcp: connect() race with timewait reuse
-To: David Miller <davem@davemloft.net>
-Cc: kdakhane@gmail.com, netdev@vger.kernel.org,
-netfilter@vger.kernel.org, Evgeniy Polyakov <zbr@ioremap.net>
+I see br0.26 interface in ifconfig output.
 
+And DNAT started to working. When I DNAT the traffic into port 8080 on
+localhost to Squid, I see that Squid gets the traffic and logs it into
+the log file. However, proxying will not happen. Reply can not be
+delivered to the original requester. We broke the connection. On the
+user side, HTTP traffic is cut.
 
-Tuning parameters have remained same...
+I think the problem is not having any IP on br0.26 from VLAN10Subnet.
+Because the whole C class is divided into subnets of 255.252 having 2
+usable IP address and both are used. Do you have any other idea on
+identifiying the problem?
 
-core file size          (blocks, -c) unlimited
-data seg size           (kbytes, -d) unlimited
-scheduling priority             (-e) 0
-file size               (blocks, -f) unlimited
-pending signals                 (-i) 387089
-max locked memory       (kbytes, -l) 64
-max memory size         (kbytes, -m) unlimited
-open files                      (-n) 262144
-pipe size            (512 bytes, -p) 8
-POSIX message queues     (bytes, -q) 819200
-real-time priority              (-r) 0
-stack size              (kbytes, -s) 8192
-cpu time               (seconds, -t) unlimited
-max user processes              (-u) 387089
-virtual memory          (kbytes, -v) unlimited
-file locks                      (-x) unlimited
+If you think the problem is what I see, how can I overcome this? Is it
+possible to nat in another way to include vlan information. Marking
+maybe?
 
-net.ipv4.tcp_keepalive_intvl =3D 5
-net.ipv4.tcp_keepalive_probes =3D 3
-net.ipv4.tcp_keepalive_time =3D 180
-net.ipv4.tcp_fin_timeout =3D 10
-net.ipv4.tcp_max_syn_backlog =3D 8192
-net.ipv4.tcp_max_tw_buckets =3D 512000
-net.ipv4.tcp_tw_reuse =3D 1
-net.ipv4.tcp_tw_recycle =3D 1
-net.ipv4.tcp_syncookies =3D 0
-net.core.netdev_max_backlog =3D 5000
-
-mpstat output shows that CPU 9 is stuck in infinite loop. This was
-observed after the test was terminated.
-10:22:36 AM  CPU   %user   %nice    %sys %iowait    %irq   %soft
-%steal   %idle    intr/s
-10:22:38 AM  all    0.00    0.00    0.00    0.06    0.00    6.25
-0.00   93.69  16533.50
-10:22:38 AM    0    0.00    0.00    0.00    0.00    0.00    0.00
-0.00  100.00      0.00
-10:22:38 AM    1    0.00    0.00    0.00    0.00    0.00    0.00
-0.00  100.00      2.00
-10:22:38 AM    2    0.00    0.00    0.00    0.00    0.00    0.00
-0.00  100.00      0.00
-10:22:38 AM    3    0.00    0.00    0.00    0.00    0.00    0.00
-0.00  100.00      0.50
-10:22:38 AM    4    0.00    0.00    0.00    0.00    0.00    0.00
-0.00  100.00      0.00
-10:22:38 AM    5    0.00    0.00    0.00    0.00    0.00    0.00
-0.00  100.00      3.50
-10:22:38 AM    6    0.00    0.00    0.00    0.00    0.00    0.00
-0.00  100.00      0.00
-10:22:38 AM    7    0.00    0.00    0.00    0.00    0.00    0.00
-0.00  100.00      0.00
-10:22:38 AM    8    0.00    0.00    0.00    0.00    0.00    0.00
-0.00  100.00 2147483647.00
-10:22:38 AM    9    0.00    0.00    0.00    0.00    0.00  100.00
-0.00    0.00      0.00
-10:22:38 AM   10    0.00    0.00    0.00    0.00    0.00    0.00
-0.00  100.00      0.00
-10:22:38 AM   11    0.00    0.00    0.00    0.00    0.00    0.00
-0.00  100.00      0.00
-10:22:38 AM   12    0.00    0.00    0.00    0.00    0.00    0.00
-0.00  100.00      0.00
-10:22:38 AM   13    0.00    0.00    0.00    0.00    0.00    0.00
-0.00  100.00 2147483647.00
-10:22:38 AM   14    0.00    0.00    0.00    0.00    0.00    0.00
-0.00  100.00      0.00
-10:22:38 AM   15    0.00    0.00    0.00    1.00    0.00    0.00
-0.00   99.00      3.50
-10:22:38 AM   16    0.00    0.00    0.00    0.00    0.00    0.00
-0.00    0.00      0.00
-10:22:38 AM   17    0.00    0.00    0.00    0.00    0.00    0.00
-0.00    0.00      0.00
-
-
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: BUG: soft lockup - CPU#9
-stuck for 61s! [webproxy:11957]
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: Modules linked in: xt_TPROXY
-xt_tcpudp xt_MARK xt_socket nf_conntrack nf_defrag_ipv4 nf_tproxy_core
-iptable_mangle ip_tables x_tables autofs4 hidp rfcomm l2cap crc16
-bluetooth rfkill lockd sunrpc 8021q ipv6 dm_multipath scsi_dh video
-output sbs sbshc battery acpi_memhotplug ac parport_pc lp parport
-cdc_ether usbnet sg mii bnx2x serio_raw button tpm_tis tpm rtc_cmos
-rtc_core tpm_bios rtc_lib mdio bnx2 i2c_i801 i2c_core pcspkr
-dm_snapshot dm_zero dm_mirror dm_region_hash dm_log dm_mod shpchp
-mptsas mptscsih mptbase scsi_transport_sas sd_mod scsi_mod ext3 jbd
-uhci_hcd ohci_hcd ehci_hcd [last unloaded: freq_table]
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: CPU 9
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: Pid: 11957, comm: webproxy
-Tainted: G =A0 M =A0 =A0W =A02.6.33-rc5 #1 49Y5114 =A0 =A0 /IBM System =
-x
--[7870AC1]-
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: RIP:
-0010:[<ffffffff8129c590>] =A0[<ffffffff8129c590>]
-inet_csk_bind_conflict+0x5f/0xa6
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: RSP: 0018:ffff880c17929e30
-EFLAGS: 00000202
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: RAX: ffffffff81461a01 RBX:
-ffff880c5d3205a0 RCX: ffff880bd45ef1e8
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: RDX: ffff880bd45ef1c0 RSI:
-0000000000000000 RDI: ffff880674053300
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: RBP: ffffffff810031ce R08:
-000000000001b20d R09: ffff880a8ecba128
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: R10: ffff880674053301 R11:
-ffffffff81132b11 R12: ffff880c17929ee8
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: R13: ffff880c00000000 R14:
-0000000000000000 R15: ffff880c17929d90
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: FS: =A000007fa55a6c6720(0000=
-)
-GS:ffff880028340000(0000) knlGS:0000000000000000
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: CS: =A00010 DS: 0000 ES: 000=
-0
-CR0: 0000000080050033
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: CR2: 00007fa5269c8000 CR3:
-0000000c1bd12000 CR4: 00000000000006e0
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: DR0: 0000000000000000 DR1:
-0000000000000000 DR2: 0000000000000000
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: DR3: 0000000000000000 DR6:
-00000000ffff0ff0 DR7: 0000000000000400
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: Process webproxy (pid: 11957=
-,
-threadinfo ffff880c17928000, task ffff880c17b700c0)
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: Stack:
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: =A0ffffffff8129c789
-0000000000000000 0000000500000000 00000000ffffffff
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: <0> 0000000000000000
-0000000000000000 ffff880674053300 00000000ffffffea
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: <0> 0000000000051005
-0000000000000001 ffff880c17929ec8 00007fa55e4923f0
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: Call Trace:
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: =A0[<ffffffff8129c789>] ?
-inet_csk_get_port+0x1b2/0x29e
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: =A0[<ffffffff812b9368>] ?
-inet_bind+0x10c/0x1c1
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: =A0[<ffffffff8126497b>] ?
-sys_bind+0x6e/0x9e
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: =A0[<ffffffff8106de32>] ?
-audit_syscall_entry+0x1b9/0x1e4
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: =A0[<ffffffff8100286b>] ?
-system_call_fastpath+0x16/0x1b
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: Code: 40 62 10 eb 04 f6 42 5=
-4
-01 75 44 8b 77 20 85 f6 74 0b 8b 42 20 85 c0 74 04 39 c6 75 32 45 84
-d2 74 0d 80 7a 1f 00 74 07 8a 42 1e <3c> 0a 75 20 8a 42 1e 3c 06 74 08
-8b 82 24 02 00 00 eb 03 8b 42
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: Call Trace:
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: =A0[<ffffffff8129c789>] ?
-inet_csk_get_port+0x1b2/0x29e
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: =A0[<ffffffff812b9368>] ?
-inet_bind+0x10c/0x1c1
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: =A0[<ffffffff8126497b>] ?
-sys_bind+0x6e/0x9e
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: =A0[<ffffffff8106de32>] ?
-audit_syscall_entry+0x1b9/0x1e4
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel: =A0[<ffffffff8100286b>] ?
-system_call_fastpath+0x16/0x1b
-=46eb 17 10:23:25 fusion-ch01-bl05 kernel:
-[bnx2x_timer:4677(eth3)]drv_pulse (0x3104) !=3D mcp_pulse (0x3854)
-=46eb 17 10:23:26 fusion-ch01-bl05 kernel:
-[bnx2x_timer:4677(eth3)]drv_pulse (0x3105) !=3D mcp_pulse (0x3854)
-=46eb 17 10:23:27 fusion-ch01-bl05 kernel:
-[bnx2x_timer:4677(eth3)]drv_pulse (0x3106) !=3D mcp_pulse (0x3854)
-=46eb 17 10:23:28 fusion-ch01-bl05 kernel:
-[bnx2x_timer:4677(eth3)]drv_pulse (0x3107) !=3D mcp_pulse (0x3854)
-
-These messages keep repeating every 60 seconds.
-
-To me this feels like that there are more code paths which lead to the
-same corruption as in previous issue.
-
-Kapil
+Best Regards,
+Oguz.
