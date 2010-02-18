@@ -1,55 +1,38 @@
-From: tednolan@bellsouth.net
-Subject: Re: Very basic question about nfqnl_test.c
-Date: Thu, 18 Feb 2010 13:39:38 -0500
-Message-ID: <08.15.04431.5E98D7B4@cdptpa-omtalb.mail.rr.com>
+From: Marek Kierdelewicz <marek@piasta.pl>
+Subject: Re: Transparent http filtering VLAN traffic without being a member
+ of 	tagged VLANs
+Date: Thu, 18 Feb 2010 23:15:28 +0100
+Message-ID: <20100218231528.697221fc@catlap>
+References: <c4ada2161002171216v202474a0obd2ca5c1f22511f1@mail.gmail.com>
+	<20100217215518.2944595e@catlap>
+	<c4ada2161002172323r477f2b23g3b5ed981275d11ca@mail.gmail.com>
+	<20100218113636.6bddb735@catlap>
+	<c4ada2161002180320i373a4931waf29dd22acc5e4db@mail.gmail.com>
+	<4B7D2461.7010703@kpi.ua>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4B7D2461.7010703@kpi.ua>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Yavetskiy Yuriy <yavetskiy@kpi.ua>
+Cc: Oguz Yilmaz <oguzyilmazlist@gmail.com>, netfilter@vger.kernel.org
 
->
->The program seems to set up OK, but it then hangs on the recv() loop.
->My understanding is that I should be seeing printf() output from the
->callback function every time an IPV4 packet is seen, but I can telnet
->out to different ports, ping different things etc, and nothing ever
->is printed by the test program.
->
->Am I missing some very basic setup step like manually loading some
->module?  Am I mistaken in thinking I should be seeing gobs of output
->here?
->
->			Thanks,
->
->			Ted
+>Hello.
 
-OK,
+Hello,
 
-I *was* missing a very basic setup step, as I finally found out from:
+>And what is output of
+>ip ro sho 91.93.179.88/29
+>?
+>If route already exist you must delete it before adding to br0.206.
 
- gicl.cs.drexel.edu/people/tjkopena/wiki/pmwiki.php?n=SWAT.NetfilterQueueNotes
+Yuriy is right to sugest that check.
 
-To be brief, and I certainly didn't see this anywhere in the API reference,
-the "queues" referred to in the libnetfilter_queue documentation are
-tied into iptables queues, so you have to fiddle with iptables before
-you can successfully run nfqnl_test -- it won't suck up all your packets
-by default.
+If "ip ro sho 91.93.179.88/29" won't show anything and you still
+can't add route then there's something wrong with kernel or userspace ip
+tools.
 
-As described in the link above, first
-
-	sudo iptables -A OUTPUT -p icmp -j NFQUEUE --queue-num 0
-
-which sends all icmp (in this case) traffic into libnetfilter_queue
-queue #0
-
-And afterwards
-
-	sudo iptables -D OUTPUT -p icmp -j NFQUEUE --queue-num 0
-
-to undo this.
-
-Substitute, "tcp", "udp", "icmp", or "all" as desired for the argument to "-p".
-
-			Ted
+Best regards,
+Marek
