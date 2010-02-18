@@ -1,54 +1,68 @@
-From: Marek Kierdelewicz <marek@piasta.pl>
-Subject: Re: Transparent http filtering VLAN traffic without being a member
- of  tagged VLANs
-Date: Wed, 17 Feb 2010 21:55:18 +0100
-Message-ID: <20100217215518.2944595e@catlap>
-References: <c4ada2161002171216v202474a0obd2ca5c1f22511f1@mail.gmail.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: tednolan@bellsouth.net
+Subject: Very basic question about nfqnl_test.c
+Date: Thu, 18 Feb 2010 00:15:17 -0500
+Message-ID: <D7.B9.02874.F5DCC7B4@cdptpa-omtalb.mail.rr.com>
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <c4ada2161002171216v202474a0obd2ca5c1f22511f1@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-To: Oguz Yilmaz <oguzyilmazlist@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
 Hello,
 
-Try to solve each of the problems at a time. One question - does squid
-have internet connection on nonbridged interface with dedicated
-IP address?
+I am completely new to netfilter and libnetfilter_queue.  I was looking for
+a way to examine and release network packets, and google and Wikipedia
+eventually led me to libnetfilter_queue.
 
->On a bridge setup, I want to filter http traffic transparently through
->Squid. br0 bridge is between eth0 and eth1.
->In the bridged traffic there are some tagged VLANs.
->When I run tcpdump on br0 I see all the traffic from VLANs. At this
->point a DNAT (VLAN10Subnet - Any - http => Original - LocalIP -
->8080) does not work.
+I found the references to the APIs, and it didn't seem too bad, so I started
+to write a simple test program, then noticed nfqnl_test.c which seems to
+be the "official" simple test program and decided to play with that instead.
 
-What does `cat /proc/sys/net/bridge/bridge-nf-filter-vlan-tagged` show?
-It should be set to 1 if you want tagged traffic to pass iptables. You
-can set this value in runtime by issuing:
-echo 1 > /proc/sys/net/bridge/bridge-nf-filter-vlan-tagged
-or more permamently by adding
-net.bridge.bridge-nf-filter-vlan-tagged=1 to /etc/sysctl.conf
+I have tried this on a number of different versions of Ubuntu Linux with
+several versions of libnetfilter_queue with the same (negative) results.
 
-Anyway you still need to have the route to client as I wrote below.
+This particular sequence of events is on ubuntu-9.04-desktop-i386
 
->I think the problem is not having any IP on br0.26 from VLAN10Subnet.
->Because the whole C class is divided into subnets of 255.252 having 2
->usable IP address and both are used. Do you have any other idea on
->identifiying the problem?
+(uname -a ==
+	Linux attrib 2.6.28-18-generic #59-Ubuntu SMP \
+	Thu Jan 28 01:23:03 UTC 2010 i686 GNU/Linux
+)
 
-One thing is missing for sure. Lets assume you have 10.0.0.0/30 subnet
-on vlan 26. You should add on your bridge such route:
-ip route add 10.0.0.0/30 dev br0.26
+I have used the synaptic package manager to install
 
-This way bridge knows where to send replies to clients (subnet
-10.0.0.0/30 available directly on br0.26 interface).
+	libnetfilter_queue1 0.0.16-1
+	libnetfilter_queue1-dbg 0.0.16-1
+	libnetfilter_queue1-dev 0.0.16-1
 
-Hope that helps.
+I am using the nfqnl_test.c from the libnetfilter_queue-0.0.16/utils
+directory.
 
-Best regards,
-Marek Kierdelewicz
+I can compile with no problem:
+
+	ted@host:~$ gcc -Wall nfqnl_test.c -lnetfilter_queue
+	ted@host:~$ 
+
+But when I run the program, this is what I get:
+
+	ted@host:~$ sudo ./a.out
+	opening library handle
+	unbinding existing nf_queue handler for AF_INET (if any)
+	binding nfnetlink_queue as nf_queue handler for AF_INET
+	binding this socket to queue '0'
+	setting copy_packet mode
+
+The program seems to set up OK, but it then hangs on the recv() loop.
+My understanding is that I should be seeing printf() output from the
+callback function every time an IPV4 packet is seen, but I can telnet
+out to different ports, ping different things etc, and nothing ever
+is printed by the test program.
+
+Am I missing some very basic setup step like manually loading some
+module?  Am I mistaken in thinking I should be seeing gobs of output
+here?
+
+			Thanks,
+
+			Ted
