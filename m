@@ -1,33 +1,51 @@
-From: Richard Horton <richard.horton@solstans.co.uk>
-Subject: LART mailing list substitute
-Date: Fri, 19 Feb 2010 11:07:22 +0000
-Message-ID: <56378e321002190307p3f25890dma2d9dc6841fb90c2@mail.gmail.com>
-Mime-Version: 1.0
+From: timg@tpi.com (Tim Gardner)
+Subject: [PATCH] xt_recent: Fix buffer overflow
+Date: Fri, 19 Feb 2010 10:48:04 -0700 (MST)
+Message-ID: <20100219174804.43CD8F8C3F@sepang.rtg.net>
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:mime-version:sender:received:date
-         :x-google-sender-auth:message-id:subject:from:to:content-type;
-        bh=Wvxsk0+QT9r6skrz+jnqwIboFtAop8adbccaawkOUHM=;
-        b=oFieU1jS1RPHQTl+MzWeCSIDCWZ2O1/9eUzhQ7aEVO9l4amB2wDjMKPs4nqlppZtkB
-         1NgIvLJx10z8s632Eyf0Gyu8ala6SxLhpohzp1umcB5x8CyQBh0+aPp9bP9FkH7UQYCl
-         OYGRjFntsZb5DXZowfZqgMRNYf2L/dNs6sM4M=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: kaber@trash.net
+Cc: coreteam@netfilter.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-Asking in here in the vague hope someone might know of a suitable
-mailing list for linux tc related queries - having problems with
-filters on a mixed htb/prio queue.
+From 478a6cbbd7646c78370da48677e99cc602076dd7 Mon Sep 17 00:00:00 2001
+From: Tim Gardner <tim.gardner@canonical.com>
+Date: Thu, 18 Feb 2010 20:04:51 -0700
+Subject: [PATCH] xt_recent: Fix buffer overflow
 
-The LART mailing list appears to all intents and purposes to be dead
-:( - is there an alternate list?
+e->index overflows e->stamps[] every ip_pkt_list_tot
+packets.
 
+Consider the case when ip_pkt_list_tot==1; the first packet received is stored
+in e->stamps[0] and e->index is initialized to 1. The next received packet
+timestamp is then stored at e->stamps[1] in recent_entry_update(),
+a buffer overflow because the maximum e->stamps[] index is 0.
+
+Signed-off-by: Tim Gardner <tim.gardner@canonical.com>
+Cc: stable@kernel.org
+---
+ net/netfilter/xt_recent.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/net/netfilter/xt_recent.c b/net/netfilter/xt_recent.c
+index fc70a49..1bb0d6c 100644
+--- a/net/netfilter/xt_recent.c
++++ b/net/netfilter/xt_recent.c
+@@ -173,10 +173,10 @@ recent_entry_init(struct recent_table *t, const union nf_inet_addr *addr,
+ 
+ static void recent_entry_update(struct recent_table *t, struct recent_entry *e)
+ {
++	e->index %= ip_pkt_list_tot;
+ 	e->stamps[e->index++] = jiffies;
+ 	if (e->index > e->nstamps)
+ 		e->nstamps = e->index;
+-	e->index %= ip_pkt_list_tot;
+ 	list_move_tail(&e->lru_list, &t->lru_list);
+ }
+ 
 -- 
-Richard Horton
-Users are like a virus: Each causing a thousand tiny crises until the
-host finally dies.
-http://www.solstans.co.uk - Solstans Japanese Bobtails and Norwegian Forest Cats
-http://www.pbase.com/arimus - My online photogallery
+1.6.2.4
+
