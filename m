@@ -1,25 +1,20 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [PATCH] xt_recent: Fix false hit_count match
-Date: Tue, 23 Feb 2010 14:59:46 +0100
-Message-ID: <4B83DF52.5000806@trash.net>
-References: <20100219174904.1F62CF8C3F@sepang.rtg.net>
+From: David Acker <dacker@rajant.com>
+Subject: how to disable building extensions
+Date: Tue, 23 Feb 2010 13:17:32 -0500
+Message-ID: <a970a86d1002231017l54df3e49xebd63fc1afde6d6e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20100219174904.1F62CF8C3F@sepang.rtg.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Tim Gardner <timg@tpi.com>
-Cc: coreteam@netfilter.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Tim Gardner wrote:
->>From 146111514a8c126268e848e45b7dd967329b072f Mon Sep 17 00:00:00 2001
-> From: Tim Gardner <tim.gardner@canonical.com>
-> Date: Thu, 18 Feb 2010 20:33:00 -0700
-> Subject: [PATCH] xt_recent: Fix false match.
-> 
-> A rule with a zero hit_count will always match.
-> 
-
-Also applied, thanks Tim.
+Hello iptables list,
+I would like to disable some iptables extensions at build time.  I
+work on an embedded system and would like to avoid creating any
+libraries that we are not going to use.  I would also like to keep the
+build times for our system as small as possible.  Can this be done
+through a configure call?
+--
+Dave Acker
