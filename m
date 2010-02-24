@@ -1,45 +1,55 @@
-From: ratheesh k <ratheesh.ksz@gmail.com>
-Subject: MASQUERADE and ACCEPT targets
-Date: Wed, 24 Feb 2010 20:15:00 +0530
-Message-ID: <cfeab66d1002240645i632227ccpbe8f3e55cebaf947@mail.gmail.com>
+From: Mart Frauenlob <mart.frauenlob@chello.at>
+Subject: Re: MASQUERADE and ACCEPT targets
+Date: Wed, 24 Feb 2010 15:57:45 +0100
+Message-ID: <4B853E69.9040402@chello.at>
+References: <cfeab66d1002240645i632227ccpbe8f3e55cebaf947@mail.gmail.com>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type;
-        bh=tSIrOebrHMjVXVWHtYFhL8vfxMrvrdZ+KZ7jvUBhjQE=;
-        b=RtUyOBNsJ/jcTp0LgP7TOVQ4PautDafDAye9dUfQFUvPuq6jmwzFBpA3lV+VFK4CWL
-         cFnCM0F2qSsZ9IbuRYzyPaLfPMRmAEIl9o8aOge8EQCcYZau2cxyd+cN9kHEa+BPQN4Q
-         mwJdl449hLcyUjlDeO37uaGPsDo0Ux3GjLDkE=
+In-Reply-To: <cfeab66d1002240645i632227ccpbe8f3e55cebaf947@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-All ,
+On 24.02.2010 15:45, netfilter-owner@vger.kernel.org wrote:
+> All ,
+> 
+>      R1)   iptables -t nat -I POSTROUTING -o eth0 -m state --state
+> ESTABLISHED,RELATED -j ACCEPT
+>      R2)   iptables -t nat -A POSTROUTING   -o eth0 -j MASQERADE
+> 
+> 
+>                                         machine "B"
+>                                      ------------------------------------------
+>                                      |                                        |
+>                                      |                                        |
+> machine "A"   ------> eth0 |
+> |eth1----------------------------------------> internet
+>                                      |                                        |
+>                                      |                                        |
+>                                      ------------------------------------------
+> 
+>  I applied rules R2 and i am able to browse internet from machine A .
+> 
+>  1. Is there any problem if i apply R1 ?
+>  2. if packet state become ESTABLISHED ( not a new packet ) , do we
+> need MASQERADE target for remaing packets ???
+> 
+> Thanks,
+> Ratheesh
 
-     R1)   iptables -t nat -I POSTROUTING -o eth0 -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-     R2)   iptables -t nat -A POSTROUTING   -o eth0 -j MASQERADE
+The nat table only sees state NEW packets.
+A rule with state "ESTABLISHED,RELATED" will never match there.
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE is good (without
+the typo).
 
+Do filtering (ACCEPT/DROP/REJECT) in the filter table.
+iptables -A FORWARD -o eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
 
-                                        machine "B"
-                                     ------------------------------------------
-                                     |                                        |
-                                     |                                        |
-machine "A"   ------> eth0 |
-|eth1----------------------------------------> internet
-                                     |                                        |
-                                     |                                        |
-                                     ------------------------------------------
+same for OUTPUT maybe.
 
- I applied rules R2 and i am able to browse internet from machine A .
+Best regards
 
- 1. Is there any problem if i apply R1 ?
- 2. if packet state become ESTABLISHED ( not a new packet ) , do we
-need MASQERADE target for remaing packets ???
-
-Thanks,
-Ratheesh
+Mart
