@@ -1,55 +1,52 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: MASQUERADE and ACCEPT targets
-Date: Wed, 24 Feb 2010 15:57:45 +0100
-Message-ID: <4B853E69.9040402@chello.at>
-References: <cfeab66d1002240645i632227ccpbe8f3e55cebaf947@mail.gmail.com>
-Reply-To: netfilter@vger.kernel.org
+From: Christoph Paasch <christoph.paasch@gmail.com>
+Subject: Re: multicast packets
+Date: Wed, 24 Feb 2010 19:33:46 +0100
+Message-ID: <201002241933.47105.christoph.paasch@gmail.com>
+References: <cfeab66d1002240643s6c4b87dfl5c3069f1c91cecd8@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <cfeab66d1002240645i632227ccpbe8f3e55cebaf947@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:from:to:subject:date
+         :user-agent:cc:references:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:message-id;
+        bh=/K5g9PEtcjX5MhIk5jrxo46TaV3N+Q3UHoMn+/+1FL4=;
+        b=P3Lb+ASM20whE+uxwMfq18BUcXHw2gn3c6n7Ez/vW7FLm+/mfT88aFPQU520OVRkf/
+         BgNa9LEruB6z8wDoorJ0rTLAAU606IBulXLOYXAqKgQGB9QCDPeJS4q1yoniKIBPcQ2s
+         SkxKca0dOXadgMUK3MWRF/FJMqMb+eanUg1BA=
+In-Reply-To: <cfeab66d1002240643s6c4b87dfl5c3069f1c91cecd8@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: ratheesh k <ratheesh.ksz@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-On 24.02.2010 15:45, netfilter-owner@vger.kernel.org wrote:
-> All ,
+As long as there isn't any return-traffic (as it is the case for multicast-
+udp), udp doesn't go into the established state.
+
+Regards,
+Christoph
+
+On Wed 24 February 2010 wrote ratheesh k:
+> multicast packets are udp packets . But its flowing only from
+> upstream to downstream . So packet state will be always "NEW" . ??
 > 
->      R1)   iptables -t nat -I POSTROUTING -o eth0 -m state --state
-> ESTABLISHED,RELATED -j ACCEPT
->      R2)   iptables -t nat -A POSTROUTING   -o eth0 -j MASQERADE
-> 
-> 
->                                         machine "B"
->                                      ------------------------------------------
->                                      |                                        |
->                                      |                                        |
-> machine "A"   ------> eth0 |
-> |eth1----------------------------------------> internet
->                                      |                                        |
->                                      |                                        |
->                                      ------------------------------------------
-> 
->  I applied rules R2 and i am able to browse internet from machine A .
-> 
->  1. Is there any problem if i apply R1 ?
->  2. if packet state become ESTABLISHED ( not a new packet ) , do we
-> need MASQERADE target for remaing packets ???
+> my question is : whether we can see multicast data packets in
+> ESTABLISHED state ??
 > 
 > Thanks,
 > Ratheesh
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-The nat table only sees state NEW packets.
-A rule with state "ESTABLISHED,RELATED" will never match there.
-iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE is good (without
-the typo).
+--
+Christoph Paasch
 
-Do filtering (ACCEPT/DROP/REJECT) in the filter table.
-iptables -A FORWARD -o eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+Alcatel-Lucent
+IP Development
 
-same for OUTPUT maybe.
-
-Best regards
-
-Mart
+www.rollerbulls.be
+--
