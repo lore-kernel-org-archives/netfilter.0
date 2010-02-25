@@ -1,34 +1,90 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [question] ipt_CLUSTERIP and address length
-Date: Thu, 25 Feb 2010 14:03:13 +0100
-Message-ID: <4B867511.7050204@netfilter.org>
-References: <20100225101257.GC2667@psychotron.lab.eng.brq.redhat.com> <4B864F9A.90207@trash.net> <4B866A7F.7070205@netfilter.org> <alpine.LSU.2.01.1002251347580.11377@obet.zrqbmnf.qr> <20100225125631.GF2667@psychotron.lab.eng.brq.redhat.com>
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: Re: multicast packets
+Date: Thu, 25 Feb 2010 23:22:25 +0530
+Message-ID: <cfeab66d1002250952w58e1651dnd5c104ab10c626d1@mail.gmail.com>
+References: <cfeab66d1002240643s6c4b87dfl5c3069f1c91cecd8@mail.gmail.com>
+	 <201002241933.47105.christoph.paasch@gmail.com>
+	 <cfeab66d1002242238m3216eb64ice0ca627cb30fa39@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20100225125631.GF2667@psychotron.lab.eng.brq.redhat.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=F2WsghMz6uQFU17O6PZ3h9tHavrtlhuOIuw1F1LhRsA=;
+        b=Rhpf7PiS37T8pKLJBqcKrLrJZrixPzezVRVijyj1YMJuGe+PDu9P2UkOHldeXsZpBc
+         27oM/Usz7C9+5w9G1ODsnBJKY3oLPwUwmyX8uoPWAF1vXRvlsffks3LVAZEyTY2F1nEs
+         dkO2cKb7U4+BeFJ/XcOKGEd3/faUUCLvFPgco=
+In-Reply-To: <cfeab66d1002242238m3216eb64ice0ca627cb30fa39@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jiri Pirko <jpirko@redhat.com>
-Cc: Jan Engelhardt <jengelh@medozas.de>, Patrick McHardy <kaber@trash.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-Jiri Pirko wrote:
-> Thu, Feb 25, 2010 at 01:54:50PM CET, jengelh@medozas.de wrote:
->> On Thursday 2010-02-25 13:18, Pablo Neira Ayuso wrote:
->>>>> I want to ask if there is any particular reason for ipt_CLUSTERIP to support
->>>>> only address length of 6 (ETH_ALEN)? It seems to me reasonable for this to work
->>>>> even with another types of network hw with different addr_len.
->>>> None that I'm aware of, but the length is also used in the ABI,
->>>> so you presently can't supply larger addresses.
->>> Not directly related to this but I wanted to discuss this time ago. Now
->>> that we have xt_CLUSTER I think that we can deprecate ipt_CLUSTERIP.
->> xt_CLUSTER - where in the tree would that be?
-> 
-> I was trying to find it too. I guess it stands out of it (at least net-next).
+iptables -A INPUT -m state --state ESTABLISHED,RELATES -j ACCEPT .
 
-sorry, it's xt_cluster, no capitalization.
+This is the only rule . No firewall hole for igmp packets .
 
-pablo@decadence:~/devel/scm/git/nf-2.6$ ls net/netfilter/xt_cluster.c
 
-It's there since quite some time.
+
+On Thu, Feb 25, 2010 at 12:08 PM, ratheesh k <ratheesh.ksz@gmail.com> w=
+rote:
+>>>>>>>>>>udp doesn't go into the established state.
+>
+> I am running "igmpproxy" on my gateway box . I didnot add any rule in
+> INPUT chain to accept igmp packets . But =A0i hve a rule to accept al=
+l
+> ESTABLISHED state packets . It am able to stream igmp from my desktop
+> .
+>
+> I really believe that " We dont need any rule in FORWARD chain " .
+> Because packets are flowing from node to node and routed . So only
+> INPUT and OUTPUT chains are involved .
+>
+> Thanks,
+> Ratheesh
+>
+>
+>
+> On Thu, Feb 25, 2010 at 12:03 AM, Christoph Paasch
+> <christoph.paasch@gmail.com> wrote:
+>> As long as there isn't any return-traffic (as it is the case for mul=
+ticast-
+>> udp), udp doesn't go into the established state.
+>>
+>> Regards,
+>> Christoph
+>>
+>> On Wed 24 February 2010 wrote ratheesh k:
+>>> multicast packets are udp packets . But its flowing only from
+>>> upstream to downstream . So packet state will be always "NEW" . ??
+>>>
+>>> my question is : whether we can see multicast data packets in
+>>> ESTABLISHED state ??
+>>>
+>>> Thanks,
+>>> Ratheesh
+>>> --
+>>> To unsubscribe from this list: send the line "unsubscribe netfilter=
+" in
+>>> the body of a message to majordomo@vger.kernel.org
+>>> More majordomo info at =A0http://vger.kernel.org/majordomo-info.htm=
+l
+>>
+>> --
+>> Christoph Paasch
+>>
+>> Alcatel-Lucent
+>> IP Development
+>>
+>> www.rollerbulls.be
+>> --
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe netfilter"=
+ in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>>
+>
