@@ -1,52 +1,110 @@
-From: Richard Horton <arimus.uk@googlemail.com>
-Subject: Re: tcp dump and DROP
-Date: Thu, 25 Feb 2010 09:46:28 +0000
-Message-ID: <56378e321002250146s638dd7c9y6c3d9c6b909bb0f6@mail.gmail.com>
-References: <cfeab66d1002250143q162340b7w8b36094d77bfca35@mail.gmail.com>
+From: Mart Frauenlob <mart.frauenlob@chello.at>
+Subject: Re: MASQUERADE and ACCEPT targets
+Date: Thu, 25 Feb 2010 10:59:03 +0100
+Message-ID: <4B8649E7.20401@chello.at>
+References: <cfeab66d1002240645i632227ccpbe8f3e55cebaf947@mail.gmail.com>	 <4B853E69.9040402@chello.at> <cfeab66d1002242001m6f3d4367m171577b852d8a590@mail.gmail.com>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=zuohNqFoort7lUCmVIapIuh5wZroJ6GkPGZtue9f+ok=;
-        b=FCjcK+R1zyrKh6FmmRhJUzsiP+AriUAzYvSovmtGjxGV4Baa1onoKd7xCyV5uFGyyY
-         ZwJHsjduaEMHILA1Ep2XB3JcUckZoAeEYZk7KoUHWx0fvSxyI9zT2cyV3vZ1LjFqG0R2
-         bdC86oYGqlYWI7puvoykjwrXElM84DeLbUn44=
-In-Reply-To: <cfeab66d1002250143q162340b7w8b36094d77bfca35@mail.gmail.com>
+In-Reply-To: <cfeab66d1002242001m6f3d4367m171577b852d8a590@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: ratheesh k <ratheesh.ksz@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On 25 February 2010 09:43, ratheesh k <ratheesh.ksz@gmail.com> wrote:
->
-> if i drop a packet using
->
-> =A0 =A0 =A0 =A0 =A0 =A0 iptables -A INPUT -i eth0 -j DROP
->
-> Can i see those packets using =A0 =A0tcpdump -i eth0 =A0?
->
-> IF =A0i drop packets in FORWARD chain
->
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0iptables -A FORWARD -i etho -o eth=
-1 -j DROP
->
-> can i see those packets in =A0tcpdump -i eth0 ?
->
+On 25.02.2010 05:01, netfilter-owner@vger.kernel.org wrote:
+>>>>>>>>>>>>> The nat table only sees state NEW packets.
+> 
+> my default policy for FORWARD chain is ACCEPT .i failed to describe my
+> question .Sorry for my bad english .
+> 
+> 
+> 
+>                                        machine "B"
+>                                     ------------------------------------------
+>                                     |                                        |
+>                                     |                                        |
+> machine "A"   ------> eth0 |
+>                                     |
+>       eth1----------------------------------------> internet
+>                                     |                                        |
+>                                     |                                        |
+>                                     ------------------------------------------
+> 
+> 
+> 
+> Suppose i browse "yahoo.com" from machine A. First sync packet is sent
+> from machine A to Gateway machine "B"
+> Packet state is NEW and masqueraded to eth1 . when a packet comes from
+> internet back , state of packet is set as ESTABLISHED . After the
+> state is truned to ESTABLISHED , do we really require MASQURADE rule
+> for next packets ?
+> 
+> without this MASQUERADE target also , will the connection continue to work ?
+> 
 > Thanks,
 > Ratheesh
+> 
+> 
+> 
+> 
+> 
+> 
+> 
+> On Wed, Feb 24, 2010 at 8:27 PM, Mart Frauenlob
+> <mart.frauenlob@chello.at> wrote:
+>> On 24.02.2010 15:45, netfilter-owner@vger.kernel.org wrote:
+>>> All ,
+>>>
+>>>      R1)   iptables -t nat -I POSTROUTING -o eth0 -m state --state
+>>> ESTABLISHED,RELATED -j ACCEPT
+>>>      R2)   iptables -t nat -A POSTROUTING   -o eth0 -j MASQERADE
+>>>
+>>>
+>>>                                         machine "B"
+>>>                                      ------------------------------------------
+>>>                                      |                                        |
+>>>                                      |                                        |
+>>> machine "A"   ------> eth0 |
+>>> |eth1----------------------------------------> internet
+>>>                                      |                                        |
+>>>                                      |                                        |
+>>>                                      ------------------------------------------
+>>>
+>>>  I applied rules R2 and i am able to browse internet from machine A .
+>>>
+>>>  1. Is there any problem if i apply R1 ?
+>>>  2. if packet state become ESTABLISHED ( not a new packet ) , do we
+>>> need MASQERADE target for remaing packets ???
+>>>
+>>> Thanks,
+>>> Ratheesh
+>>
+>> The nat table only sees state NEW packets.
+>> A rule with state "ESTABLISHED,RELATED" will never match there.
+>> iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE is good (without
+>> the typo).
+>>
+>> Do filtering (ACCEPT/DROP/REJECT) in the filter table.
+>> iptables -A FORWARD -o eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+>>
+>> same for OUTPUT maybe.
+>>
+>> Best regards
 
+Do you read the reply?
+Did you understand it?
+Does not look so.
+Please go and learn netfilter basics. (netfilter.org,
+http://www.frozentux.net/iptables-tutorial/iptables-tutorial.html)
 
-Yes.
+A simple g00gle search will give you ~ 120.000 results about masquerading:
+http://www.google.at/search?q=iptables+nat+masquerade&ie=utf-8&oe=utf-8&aq=t&rls=org.mozilla:en-US:official&client=firefox-a
 
---
-Richard Horton
-Users are like a virus: Each causing a thousand tiny crises until the
-host finally dies.
-http://www.solstans.co.uk - Solstans Japanese Bobtails and Norwegian Fo=
-rest Cats
-http://www.pbase.com/arimus - My online photogallery
+P.S. why CC me if i explicitly set the reply addr. to netfilter@....???
+
+Bye bye
+
+Mart
+
