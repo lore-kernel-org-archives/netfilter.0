@@ -1,48 +1,201 @@
-From: Marek Kierdelewicz <marek@piasta.pl>
-Subject: Re: iptables use only one cpu core.
-Date: Fri, 26 Feb 2010 08:07:20 +0100
-Message-ID: <20100226080720.3a25159d@catlap>
-References: <BLU149-W31E11A0A84D21AC4C9F3B7853F0@phx.gbl>
+From: Christoph Paasch <christoph.paasch@gmail.com>
+Subject: Re: multicast packets
+Date: Fri, 26 Feb 2010 08:20:05 +0100
+Message-ID: <201002260820.06236.christoph.paasch@gmail.com>
+References: <cfeab66d1002240643s6c4b87dfl5c3069f1c91cecd8@mail.gmail.com> <201002260741.43169.christoph.paasch@gmail.com> <cfeab66d1002252250h46989089n2bd68be274123e71@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BLU149-W31E11A0A84D21AC4C9F3B7853F0@phx.gbl>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:from:to:subject:date
+         :user-agent:references:in-reply-to:cc:mime-version:content-type
+         :content-transfer-encoding:message-id;
+        bh=OMyFtd7IoMAkNna/w/e5EH4i3rHgFQuev9a9qzpIdMY=;
+        b=WD6jfS906++AGfKAHmGVQBXAzNy1IaOIXH31JWIuHwYEyPZrE0/IKRn5tW3tJG1GPk
+         uWGE8Myas7s8rftbicwiFY1lC2tzvn5aBXVhETQkkEeE+Ma8DJeS3O6YK/+6AQulTj2t
+         7HcFafvJhOuflO+dSXH4s8otPKtaGRibdW4Es=
+In-Reply-To: <cfeab66d1002252250h46989089n2bd68be274123e71@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: MontyRee <chulmin2@hotmail.com>
+Content-Type: Text/Plain; charset="us-ascii"
+To: ratheesh k <ratheesh.ksz@gmail.com>
 Cc: netfilter@vger.kernel.org
 
->Hi all.
+I don't know the details about igmpproxy.
+Looking a little bit in the source-code it seems that it installs a route 
+inside in the kernel for a certain multicast-stream.
+Thus, multicast-udp will pass your gateway as they don't hit the INPUT chain.
 
-Hello
- 
->When I send lots of queries to the iptables enabled NAT system, 
->I found that NAT system use only 1 cpu core even this system has 4
->cores. So the (TPS)performance result was not good. 
- 
-You probably use just one nic that is singlequeue and capable of
-directing interrupts to one core. There are two good solutions:
+However for the igmp-control traffic I have no idea, why igmpproxy receives 
+these.
 
-1) Put n*NICs into the box, where n-number of cores. Distribute traffic
-between those nics (Etherchannel on switch + bonding[1] on Linux side).
-Then use smp affinity settings to bind different nics (irqs) to
-different Cores. It can be done with simple script below:
+Christoph
 
-ETH0_IRQ=`cat /proc/interrupts|grep eth0|cut -d: -f1`
-ETH1_IRQ=`cat /proc/interrupts|grep eth1|cut -d: -f1`
-ETH2_IRQ=`cat /proc/interrupts|grep eth2|cut -d: -f1`
-ETH3_IRQ=`cat /proc/interrupts|grep eth3|cut -d: -f1`
-echo 1 > /proc/irq/$ETH0_IRQ/smp_affinity
-echo 2 > /proc/irq/$ETH1_IRQ/smp_affinity
-echo 4 > /proc/irq/$ETH2_IRQ/smp_affinity
-echo 8 > /proc/irq/$ETH3_IRQ/smp_affinity
+On Fri 26 February 2010, ratheesh k wrote:
+> I am running  igmp stream  client to stream igmp packets on machine A
+> from internet .I can play files .
+> 
+> note : Is igmpproxy running machine B has anything to do with this  ?
+> 
+> 
+> 
+> On Fri, Feb 26, 2010 at 12:11 PM, Christoph Paasch
+> 
+> <christoph.paasch@gmail.com> wrote:
+> > On Fri 26 February 2010, ratheesh k wrote:
+> >> INPUT  policy is DROP
+> >> FORWARD policy is DROP
+> >> OUTPUT policy is accept
+> >> 
+> >> 
+> >> INPUT chain
+> >> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> >> iptables -A INPUT  -i eth0  -j ACCEPT
+> >> 
+> >> 
+> >> FORWARD
+> >> iptables -A FORWARD  -m state --state ESTABLISHED,RELATED -j ACCEPT
+> >> iptables -A INPUT  -i eth0  -o eth1 -j ACCEPT
+> > 
+> > I imagine that this is a typo and that you meant the FORWARD chain.
+> > 
+> >> machine                    Gateway machine B
+> >>    A -------------------->eth0              eth1 -------------> internet
+> >> 
+> >> I have a machine A . which is connected to a linux gateway machine .
+> >> Ruleset and policy mentioned are for machine B . There is no iptables
+> >> rules in machine A .
+> >> 
+> >> >>>>>>>>>What do you want to achieve ?
+> >> 
+> >> As per the current rule , no igmp packet should come to GATEWAY
+> >> machine , since there is no firewall hole in input chain .
+> >> 
+> >> >>>>>>>>>>what are you observing?
+> >> 
+> >> But i can see , igmp packets flowing into machine B from internet .
+> > 
+> > Where can you see these igmp packets? With wireshark/tcpdump? If it is
+> > one of those, than it is normal, because these capture the packets
+> > before the iptables filter.
+> > 
+> > Seen your ruleset, the packets should not enter, if they are coming from
+> > the internet.
+> > 
+> > Regards,
+> > Christoph
+> > 
+> >> On Fri, Feb 26, 2010 at 4:46 AM, Christoph Paasch
+> >> 
+> >> <christoph.paasch@gmail.com> wrote:
+> >> > Please, provide more information about your setup.
+> >> > 
+> >> > What are the policies of your chains? What is your ruleset?
+> >> > What is your topology?
+> >> > What do you want to achieve, and what are you observing?
+> >> > 
+> >> > Christoph
+> >> > 
+> >> > On Thu 25 February 2010 wrote ratheesh k:
+> >> >> iptables -A INPUT -m state --state ESTABLISHED,RELATES -j ACCEPT .
+> >> >> 
+> >> >> This is the only rule . No firewall hole for igmp packets .
+> >> >> 
+> >> >> On Thu, Feb 25, 2010 at 12:08 PM, ratheesh k <ratheesh.ksz@gmail.com>
+> > 
+> > wrote:
+> >> >> >>>>>>>>>>udp doesn't go into the established state.
+> >> >> > 
+> >> >> > I am running "igmpproxy" on my gateway box . I didnot add any rule
+> >> >> > in INPUT chain to accept igmp packets . But  i hve a rule to
+> >> >> > accept all ESTABLISHED state packets . It am able to stream igmp
+> >> >> > from my desktop .
+> >> >> > 
+> >> >> > I really believe that " We dont need any rule in FORWARD chain " .
+> >> >> > Because packets are flowing from node to node and routed . So only
+> >> >> > INPUT and OUTPUT chains are involved .
+> >> >> > 
+> >> >> > Thanks,
+> >> >> > Ratheesh
+> >> >> > 
+> >> >> > 
+> >> >> > 
+> >> >> > On Thu, Feb 25, 2010 at 12:03 AM, Christoph Paasch
+> >> >> > 
+> >> >> > <christoph.paasch@gmail.com> wrote:
+> >> >> >> As long as there isn't any return-traffic (as it is the case for
+> >> >> >> multicast- udp), udp doesn't go into the established state.
+> >> >> >> 
+> >> >> >> Regards,
+> >> >> >> Christoph
+> >> >> >> 
+> >> >> >> On Wed 24 February 2010 wrote ratheesh k:
+> >> >> >>> multicast packets are udp packets . But its flowing only from
+> >> >> >>> upstream to downstream . So packet state will be always "NEW" .
+> >> >> >>> ??
+> >> >> >>> 
+> >> >> >>> my question is : whether we can see multicast data packets in
+> >> >> >>> ESTABLISHED state ??
+> >> >> >>> 
+> >> >> >>> Thanks,
+> >> >> >>> Ratheesh
+> >> >> >>> --
+> >> >> >>> To unsubscribe from this list: send the line "unsubscribe
+> >> >> >>> netfilter" in the body of a message to majordomo@vger.kernel.org
+> >> >> >>> More majordomo info at
+> >> >> >>>  http://vger.kernel.org/majordomo-info.html
+> >> >> >> 
+> >> >> >> --
+> >> >> >> Christoph Paasch
+> >> >> >> 
+> >> >> >> Alcatel-Lucent
+> >> >> >> IP Development
+> >> >> >> 
+> >> >> >> www.rollerbulls.be
+> >> >> >> --
+> >> >> >> --
+> >> >> >> To unsubscribe from this list: send the line "unsubscribe
+> >> >> >> netfilter" in the body of a message to majordomo@vger.kernel.org
+> >> >> >> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> >> >> 
+> >> >> --
+> >> >> To unsubscribe from this list: send the line "unsubscribe netfilter"
+> >> >> in the body of a message to majordomo@vger.kernel.org
+> >> >> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> >> > 
+> >> > --
+> >> > Christoph Paasch
+> >> > 
+> >> > Alcatel-Lucent
+> >> > IP Development
+> >> > 
+> >> > www.rollerbulls.be
+> >> > --
+> >> 
+> >> --
+> >> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> >> the body of a message to majordomo@vger.kernel.org
+> >> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> > 
+> > --
+> > Christoph Paasch
+> > 
+> > Alcatel-Lucent
+> > IP Development
+> > 
+> > www.rollerbulls.be
+> > --
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--
+Christoph Paasch
 
-2) Use intel nic with chip >=82575 (igb driver) [2]. Those nics support
-MULTIQUEUE. In your case can have 4 separate irq-rx vectors on one
-nic. Basicly hardware on NIC chip is doing the same the
-bonding/etherchannel done in 1).
+Alcatel-Lucent
+IP Development
 
-[1]http://www.linuxfoundation.org/collaborate/workgroups/networking/bonding
-[2]http://download.intel.com/design/network/applnots/319935.pdf
-
+www.rollerbulls.be
+--
