@@ -1,69 +1,36 @@
-From: "U. George" <netbeans@gatworks.com>
-Subject: Re: iptable: obtaining list of tables?
-Date: Thu, 25 Feb 2010 18:45:36 -0500
-Message-ID: <4B870BA0.7030706@gatworks.com>
-References: <4B86EDE6.8000302@gatworks.com> <Pine.GSO.4.64.1002252214190.21439@mail.time-domain.co.uk>
+From: MontyRee <chulmin2@hotmail.com>
+Subject: iptables use only one cpu core.
+Date: Fri, 26 Feb 2010 04:55:29 +0000
+Message-ID: <BLU149-W31E11A0A84D21AC4C9F3B7853F0@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <Pine.GSO.4.64.1002252214190.21439@mail.time-domain.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: andy thomas <andy@time-domain.co.uk>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="euc-kr"
+To: netfilter@vger.kernel.org
 
-As far as I can tell - no. Docs says it just list chains. sample try, 
-suggests that only the default table is used to list a -t "" .
 
-BTW: if u dont use -L -n, the chain is silently ignored - ;-(
-
-===========================================
-[root@MyLaptop gat]# /sbin/iptables  -L -n
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
-
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-
-[root@MyLaptop gat]# /sbin/iptables -t nat -A POSTROUTING -o eth0 -j 
-MASQUERADE
-
-[root@MyLaptop gat]# /sbin/iptables  -L -n
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination
-
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-
-[root@MyLaptop gat]# /sbin/iptables -t nat -L -n
-
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-MASQUERADE  all  --  0.0.0.0/0            0.0.0.0/0
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-
-[root@MyLaptop gat]# /sbin/iptables -t nat -L
-
-Chain PREROUTING (policy ACCEPT)
-target     prot opt source               destination
-
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-MASQUERADE  all  --  anywhere             anywhere
-
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-[root@MyLaptop gat]#
-===========================================
+Hi all.
+=20
+=20
+I did NAT performance test at the iptables enabled system.=20
+=20
+When I send lots of queries to the iptables enabled NAT system,=20
+I found that NAT system use only 1 cpu core even this system has 4 core=
+s.
+=20
+So the (TPS)performance result was not good.=20
+=20
+Anyone who knows about that?=20
+or is there any solution to distribute the core usage?
+=20
+=20
+=20
+Thanks.
+  		 	   		 =20
+_________________________________________________________________
+=C0=A9=B0=C9=C0=C7 =C1=C2=C3=E6=BF=EC=B5=B9 UCC =C1=A6=C0=DB=B1=E2, =C1=
+=F6=B1=DD =C8=AE=C0=CE=C7=D8=BA=B8=BC=BC=BF=E4!
+http://windowslive.msn.co.kr/im/main/mainCoverDetail.asp?BbsCode=3Dbbs0=
+1&Seq=3D4349
