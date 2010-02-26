@@ -1,46 +1,48 @@
-From: ratheesh k <ratheesh.ksz@gmail.com>
-Subject: Re: Port Scanning: Is there a difference between stateful INVALID 
-	filtering and stateless TCP flag filtering?
-Date: Fri, 26 Feb 2010 12:22:22 +0530
-Message-ID: <cfeab66d1002252252o3086bcf3l4be45bc4472239c1@mail.gmail.com>
-References: <ac5c74141002240018pd69e696vce194ed87e90b643@mail.gmail.com>
-	 <4B8509B6.7000408@chello.at> <4B850B88.1070702@chello.at>
+From: Marek Kierdelewicz <marek@piasta.pl>
+Subject: Re: iptables use only one cpu core.
+Date: Fri, 26 Feb 2010 08:07:20 +0100
+Message-ID: <20100226080720.3a25159d@catlap>
+References: <BLU149-W31E11A0A84D21AC4C9F3B7853F0@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:content-type
-         :content-transfer-encoding;
-        bh=WyHhFwWqsajoig9tnj+/Aa9OnaEb9iAThxozhay1ZWs=;
-        b=d4x0doxDBb+3UNDQJGjMmXptf3s6XQt4RoEojfpk3t//UYh4rt9srjFvjJ54XoTVek
-         3DLBbNUTT4ooLBhPqP2644iDqvtga056lRbfulwusWksLFgdiR2LSHbzLy82E5ltU4pT
-         xsyACrKNqNlX0DnvojmAjB/+l4oHfg2FDbVF0=
-In-Reply-To: <4B850B88.1070702@chello.at>
+In-Reply-To: <BLU149-W31E11A0A84D21AC4C9F3B7853F0@phx.gbl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: MontyRee <chulmin2@hotmail.com>
+Cc: netfilter@vger.kernel.org
 
-awesome document .
+>Hi all.
 
-On Wed, Feb 24, 2010 at 4:50 PM, Mart Frauenlob
-<mart.frauenlob@chello.at> wrote:
-> On 24.02.2010 12:14, netfilter-owner@vger.kernel.org wrote:
->> On 24.02.2010 09:18, netfilter-owner@vger.kernel.org wrote:
->>> Hello everyone,
->>>
->
->>
->> iptables -I INPUT -m state --state INVALID -j LOG
->> iptables -I INPUT -m state --state INVALID -j DROP
-> just the other way round...
->
->>
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
+Hello
+ 
+>When I send lots of queries to the iptables enabled NAT system, 
+>I found that NAT system use only 1 cpu core even this system has 4
+>cores. So the (TPS)performance result was not good. 
+ 
+You probably use just one nic that is singlequeue and capable of
+directing interrupts to one core. There are two good solutions:
+
+1) Put n*NICs into the box, where n-number of cores. Distribute traffic
+between those nics (Etherchannel on switch + bonding[1] on Linux side).
+Then use smp affinity settings to bind different nics (irqs) to
+different Cores. It can be done with simple script below:
+
+ETH0_IRQ=`cat /proc/interrupts|grep eth0|cut -d: -f1`
+ETH1_IRQ=`cat /proc/interrupts|grep eth1|cut -d: -f1`
+ETH2_IRQ=`cat /proc/interrupts|grep eth2|cut -d: -f1`
+ETH3_IRQ=`cat /proc/interrupts|grep eth3|cut -d: -f1`
+echo 1 > /proc/irq/$ETH0_IRQ/smp_affinity
+echo 2 > /proc/irq/$ETH1_IRQ/smp_affinity
+echo 4 > /proc/irq/$ETH2_IRQ/smp_affinity
+echo 8 > /proc/irq/$ETH3_IRQ/smp_affinity
+
+2) Use intel nic with chip >=82575 (igb driver) [2]. Those nics support
+MULTIQUEUE. In your case can have 4 separate irq-rx vectors on one
+nic. Basicly hardware on NIC chip is doing the same the
+bonding/etherchannel done in 1).
+
+[1]http://www.linuxfoundation.org/collaborate/workgroups/networking/bonding
+[2]http://download.intel.com/design/network/applnots/319935.pdf
+
