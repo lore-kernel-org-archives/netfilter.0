@@ -1,46 +1,69 @@
-From: Andrea Gelmini <andrea.gelmini@gelma.net>
-Subject: [PATCH 40/66] include/linux/netfilter/nf_conntrack_tuple_common.h: Checkpatch cleanup
-Date: Sat, 27 Feb 2010 17:51:21 +0100
-Message-ID: <1267289508-31031-41-git-send-email-andrea.gelmini@gelma.net>
-References: <1267289508-31031-1-git-send-email-andrea.gelmini@gelma.net>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:sender:from:to:cc:subject
-         :date:message-id:x-mailer:in-reply-to:references;
-        bh=4uxCA/1UV5CtsKs+dCSGJalqATceoOvYhsm+D7GrYG4=;
-        b=xUeh0ReoYEH17GKppsqCMO6ejqJaUEPPQZo2/lbnvBCNIwzYIkplxd0s1faDMalJpc
-         MkJnCmv4WPhDwAV6+oeXBtwNJ1NOsdnJbLg6S+AdUmDzjM5BXZ/NSeLSy5YcpKWYE8/f
-         vLpc+0YUwmcxVYvLRpT+bGT/R/Ik33VIdrxJw=
-In-Reply-To: <1267289508-31031-1-git-send-email-andrea.gelmini@gelma.net>
-Sender: linux-kernel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+From: "Dennis J." <dennisml@conversis.de>
+Subject: Re: multiport needs `-p tcp', `-p udp' - Why?
+Date: Sat, 27 Feb 2010 18:18:53 +0100
+Message-ID: <4B8953FD.6090402@conversis.de>
+References: <4B893433.7020401@gatworks.com> <cfeab66d1002270706m6228860en5d28a2d60a9b311c@mail.gmail.com> <4B894581.10700@gatworks.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-To: linux-kernel@vger.kernel.org
-Cc: Andrea Gelmini <andrea.gelmini@gelma.net>, Patrick McHardy <kaber@trash.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4B894581.10700@gatworks.com>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-include/linux/netfilter/nf_conntrack_tuple_common.h:5: ERROR: open brace '{' following enum go on the same line
+Rules are independent. The port rule does inherit anything from the chain 
+rule so when you tell iptables to block port(s) you have to specify the 
+protocol again.
 
-Signed-off-by: Andrea Gelmini <andrea.gelmini@gelma.net>
----
- .../linux/netfilter/nf_conntrack_tuple_common.h    |    3 +--
- 1 files changed, 1 insertions(+), 2 deletions(-)
+Regards,
+   Dennis
 
-diff --git a/include/linux/netfilter/nf_conntrack_tuple_common.h b/include/linux/netfilter/nf_conntrack_tuple_common.h
-index 8e145f0..2ea22b0 100644
---- a/include/linux/netfilter/nf_conntrack_tuple_common.h
-+++ b/include/linux/netfilter/nf_conntrack_tuple_common.h
-@@ -1,8 +1,7 @@
- #ifndef _NF_CONNTRACK_TUPLE_COMMON_H
- #define _NF_CONNTRACK_TUPLE_COMMON_H
- 
--enum ip_conntrack_dir
--{
-+enum ip_conntrack_dir {
- 	IP_CT_DIR_ORIGINAL,
- 	IP_CT_DIR_REPLY,
- 	IP_CT_DIR_MAX
--- 
-1.7.0.90.g251a4
+On 02/27/2010 05:17 PM, U. George wrote:
+> U'll have to let me know why "-p udp" is needed when the chain can only
+> have udp packets, and therefor can only process udp packets.
+>
+> I dont want to test over (( and over ) and over ) again when I know that
+> the packet is already KNOWN to be from eth1 and of protocol UDP.
+>
+> adding "-p UDP" to multiport does make iptables happy, but appears to be
+> a useless test.
+>
+> On 02/27/2010 10:06 AM, ratheesh k wrote:
+>> Port is in Layer 4 of protocol stack .
+>>
+>>
+>> On Sat, Feb 27, 2010 at 8:33 PM, U. George<netbeans@gatworks.com> wrote:
+>>> In order to get to the chain, the protocol, as well as the interface
+>>> must
+>>> match. PRE_UDP if already filtered for "-p udp" . So why does multiport
+>>> require another check for -p udp? Does it really need to have that
+>>> option in
+>>> order for it to work?
+>>>
+>>>> + /sbin/iptables -t filter -N PRE_UDP
+>>>> + /sbin/iptables -t filter -A INPUT -i eth1 -p udp -j PRE_UDP
+>>>> + /sbin/iptables -t filter -A PRE_UDP -m multiport --dport
+>>>> 137,138,139,512,514,515,1433,1434 -j DROP
+>>>> iptables v1.4.5: multiport needs `-p tcp', `-p udp', `-p udplite', `-p
+>>>> sctp' or `-p dccp'
+>>>> Try `iptables -h' or 'iptables --help' for more information.
+>>>
+>>>
+>>>
+>>> --
+>>> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+>>> the body of a message to majordomo@vger.kernel.org
+>>> More majordomo info at http://vger.kernel.org/majordomo-info.html
+>>>
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at http://vger.kernel.org/majordomo-info.html
+>>
+>>
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at http://vger.kernel.org/majordomo-info.html
+
