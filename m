@@ -1,62 +1,48 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: Howto match the 3rd packet in the 3way handshake
-Date: Sun, 28 Feb 2010 11:27:10 +0100
-Message-ID: <4B8A44FE.7010202@chello.at>
-References: <4B8A3E21.3050708@iit.bme.hu>
-Reply-To: netfilter@vger.kernel.org
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: linux-next netfilter: xt_recent: Add an entry reaper
+Date: Sun, 28 Feb 2010 11:50:55 +0100 (CET)
+Message-ID: <alpine.LSU.2.01.1002281146470.9681@obet.zrqbmnf.qr>
+References: <20100228033841.265CFF8BB0@sepang.rtg.net> <1267331677.9082.46.camel@edumazet-laptop>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B8A3E21.3050708@iit.bme.hu>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <1267331677.9082.46.camel@edumazet-laptop>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
-
-On 28.02.2010 10:58, netfilter-owner@vger.kernel.org wrote:
-> Dear All,
-> 
-> The situation is the following: We have two host A and B, A sends B a
-> SYN packet with a spoofed IP address,
-> since the source IP is spoofed B will not receive the 2. packet of the
-> handshake, but is able
-
-it think you mean A?
-
-> to send back the 3rd: an ACK packet with an invalid acknowledgement
-> number. How is it
-> possible distinguish connections in which the source IP is spoofed in
-> this way.
-> 
-> 1. A ->B : SYN(IP_X, seq(A))
-> 2. B ->A : SYN_ACK(IP_X, ack(A), seq(B))
-> 3. A ->B : ACK(IP_X. seq(A+1), ack(Y))
-> 
-> How is it possible to match the 3rd packet if Y=A+1, and Y!=A+1?
-> 
-> I would like to use this for the following. Let us assume that port 222
-> is a normally closed port, and
-> B executed a port scan on that port.
-> 
-> iptables -A INPUT -p tcp --dport 222 -match <connections in which source
-> IP can be spoofed> -g DROP
-> iptables -A INPUT -p tcp --dport 222 <execute site wide preventive
-> actions against the IP address: iptables -I INPUT -src THISSRC -j DROP>
-> 
-> Thanks Denes
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Eric Dumazet <eric.dumazet@gmail.com>
+Cc: Tim Gardner <timg@tpi.com>, kaber@trash.net, coreteam@netfilter.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
 
-I do not think it is possible to match on spoofed IP addresses.
-But I think you could construct something that matches those hosts which
-sent a SYN and continue with INVALID state traffic.
+On Sunday 2010-02-28 05:34, Eric Dumazet wrote:
+>> One of the problems with the way xt_recent is implemented is that
+>> there is no efficient way to remove expired entries.
 
-1: put tcp syn into a recent set.
-2: match for hosts in the set with state INVALID.
+Oh there is:
 
-Questioning it all:
-A simple -m state --state INVALID -j DROP should silently discard all those.
+	echo "- 2001:db8::1" >/proc/net/xt_recent/foo
 
-Best regards
+>2) All entries are flushed when
+>	echo clear > /proc/net/xt_recent/<tablename>
 
-Mart
+	echo "/" >/proc/net/xt_recent/foo
 
+it is.
+
+>3) You could eventually implement a purge operation to remove all
+>expired entries at will
+>
+>      echo purge > /proc/net/xt_recent/<tablename>
+
+Entries do not expire (except "falling off" the LRU when it's full) -
+there is no counter that tells them when they expired.
+"--seconds" is just a match option, not something that defines
+the LRU's properties. And that's actually good, because that allows
+you to write
+
+	-m recent --name foo --seconds 60 -j do that
+
+	-m recent --name foo --seconds 3600 -j do something else
+
+If you purged "expired" entries after 60 secs, there would be nothing
+left for the 3600 one to check for.
