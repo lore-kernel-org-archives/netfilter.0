@@ -1,64 +1,99 @@
 From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: INVALID state
-Date: Sun, 28 Feb 2010 12:15:27 +0100
-Message-ID: <4B8A504F.6060803@chello.at>
-References: <4B8A3643.6070000@iit.bme.hu> <4B8A410A.7050003@chello.at> <4B8A4AEE.8080007@iit.bme.hu>
+Subject: Re: Howto match the 3rd packet in the 3way handshake
+Date: Sun, 28 Feb 2010 12:36:16 +0100
+Message-ID: <4B8A5530.7050007@chello.at>
+References: <4B8A3E21.3050708@iit.bme.hu> <4B8A44FE.7010202@chello.at> <4B8A4D88.5060901@iit.bme.hu>
 Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B8A4AEE.8080007@iit.bme.hu>
+In-Reply-To: <4B8A4D88.5060901@iit.bme.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-On 28.02.2010 11:52, netfilter-owner@vger.kernel.org wrote:
+On 28.02.2010 12:03, netfilter-owner@vger.kernel.org wrote:
 > Mart Frauenlob wrote:
->> On 28.02.2010 10:31, netfilter-owner@vger.kernel.org wrote:
+>> On 28.02.2010 10:58, netfilter-owner@vger.kernel.org wrote:
 >>
->>> Dear all
+>>> Dear All,
 >>>
->>> Could someone help me to identify the difference between
->>> the following 3 rules.
->>>
->>> 1. iptables -t mangle -A PREROUTING -p tcp ! --syn -m state --state
->>> INVALID -j DROP
->>> 2. iptables -A INPUT -p tcp ! --syn -m state --state INVALID -j DROP
->>> 3. iptables -A INPUP -p tcp ! --syn -m conntrack --cstate INVALID -j
->>> DROP
+>>> The situation is the following: We have two host A and B, A sends B a
+>>> SYN packet with a spoofed IP address,
+>>> since the source IP is spoofed B will not receive the 2. packet of the
+>>> handshake, but is able
 >>>
 >>
+>> it think you mean A?
 >>
->> take a look at this picture, to see, that mangle/PREROUTING may catch
->> different things than filter/INPUT:
->> http://jengelh.medozas.de/images/nf-packet-flow.png
+> yes sorry typo
+>>> to send back the 3rd: an ACK packet with an invalid acknowledgement
+>>> number. How is it
+>>> possible distinguish connections in which the source IP is spoofed in
+>>> this way.
+>>>
+>>> 1. A ->B : SYN(IP_X, seq(A))
+>>> 2. B ->A : SYN_ACK(IP_X, ack(A), seq(B))
+>>> 3. A ->B : ACK(IP_X. seq(A+1), ack(Y))
+>>>
+>>> How is it possible to match the 3rd packet if Y=A+1, and Y!=A+1?
+>>>
+>>> I would like to use this for the following. Let us assume that port 222
+>>> is a normally closed port, and
+>>> B executed a port scan on that port.
+>>>
+>>> iptables -A INPUT -p tcp --dport 222 -match <connections in which source
+>>> IP can be spoofed> -g DROP
+>>> iptables -A INPUT -p tcp --dport 222 <execute site wide preventive
+>>> actions against the IP address: iptables -I INPUT -src THISSRC -j DROP>
+>>>
+>>> Thanks Denes
+>>>
 >>
->> Generally filtering (ACCEPT/DROP/REJECT) should be done in the filter
->> table, unless there is a good reason (and understanding) to do it
->> otherwise (i.e. the nat table does not allow DROP).
->> The mangle table is generally meant for packet manipulation. i.e.
->> marking, changing ip settings, etc...
 >>
->> conntrack supports all states that the state match does, plus some more.
+>> I do not think it is possible to match on spoofed IP addresses.
+>> But I think you could construct something that matches those hosts which
+>> sent a SYN and continue with INVALID state traffic.
 >>
+>> 1: put tcp syn into a recent set.
+>> 2: match for hosts in the set with state INVALID.
 >>
->> More in general:
->> imho the '! --syn' is quite unnecessary, correct me if I'm wrong.
->>
-
-> Thanks for the help.
+>> Questioning it all:
+>> A simple -m state --state INVALID -j DROP should silently discard all
+>> those.
+> Dear All
+> 
+> This is a good idea,
+> 
+> "But I think you could construct something that matches those hosts which
+> sent a SYN and continue with INVALID state traffic.
+> 
+> 1: put tcp syn into a recent set.
+> 2: match for hosts in the set with state INVALID."
+> 
+> , but the real question is what does INVALID mean, because if it will
+> also match case where Y!=A+1, than it will allow an attacker to
+> perform a DoS by easily spoofing valid IP addresses, which will get
+> dropped (sitewide)
 > 
 
-np, but please switch to bottom posting...
+Without being an expert here, imho:
+If there's no existing valid connection from the spoofed ip, what does
+it matter?
+If there is, only those packets will be recognized as INVALID and
+therefor dropped. It does not mean an existing connection marked as
+ESTABLISHED would be closed from the conntrack side.
+Anyone please correct me if I'm wrong.
 
-> Assuming that the a packet reach the 1,2,3 rules is there a
-> difference regards matching between "-m state --state INVALID"
-> applied in 1 and 2 rules or the "-m conntrack --cstate INVALID"
-> statements?
-> 
 
-requoting myself:
-> conntrack supports all states that the state match does, plus some more
+But yes good question, 'what does state INVALID exactly mean?'
+There's not much documentation about it afaik.
+But i think you could say:
+Everything that is not state NEW, ESTABLISHED, RELATED (those last 2
+must be valid traffic (i.e. tcp with no anomalies)), or UNTRACKED (set
+by the NOTRACK target in the raw table).
 
-so, no difference.
+Best regards
+
+Mart
