@@ -1,38 +1,25 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: sync flood and resource utilization .
-Date: Sun, 28 Feb 2010 10:19:03 +0100
-Message-ID: <4B8A3507.9020108@chello.at>
-References: <cfeab66d1002262135x419e1009w8358c8c7f4def7cf@mail.gmail.com>
-Reply-To: netfilter@vger.kernel.org
+From: Nemeth Denes <nemeth.denes@iit.bme.hu>
+Subject: INVALID state
+Date: Sun, 28 Feb 2010 10:24:19 +0100
+Message-ID: <4B8A3643.6070000@iit.bme.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <cfeab66d1002262135x419e1009w8358c8c7f4def7cf@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-On 27.02.2010 06:36, netfilter-owner@vger.kernel.org wrote:
-> iptables -A INPUT -j  DROP .
-> iptables -A OUTPUT -j ACCEPT
-> 
-> When i syn flooded my desktop . I can see all pkts are getting
-> rejected by the rule . But system becomes slow beacuse of this . Is
-> there any way to make system fast ? will black listing will help ?
-> 
+Dear all
 
-g00gle is your friend:
+Could someone help me to identify the difference between
+the following 3 rules.
 
-search: syn flood protection iptables
-or:
-syn flood protection iptables hashlimit recent blacklist
+1. iptables -t mangle -A PREROUTING -p tcp ! --syn -m state --state 
+INVALID -j DROP
+2. iptables -A INPUT -p tcp ! --syn -m state --state INVALID -j DROP
+3. iptables -A INPUP -p tcp ! --syn -m conntrack --cstate INVALID -j DROP
+
+Many thanks
 
 
-you can do some with a simple 'limit'.
-
-or more complex with 'hashlimit' and 'recent'.
-
-Best regards
-
-Mart
