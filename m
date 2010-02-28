@@ -1,50 +1,59 @@
-From: Eric Dumazet <eric.dumazet@gmail.com>
+From: Tim Gardner <timg@tpi.com>
 Subject: Re: linux-next netfilter: xt_recent: Add an entry reaper
-Date: Sun, 28 Feb 2010 21:26:04 +0100
-Message-ID: <1267388764.9082.85.camel@edumazet-laptop>
-References: <20100228033841.265CFF8BB0@sepang.rtg.net>
-	 <1267331677.9082.46.camel@edumazet-laptop>
-	 <alpine.LSU.2.01.1002281146470.9681@obet.zrqbmnf.qr>
+Date: Sun, 28 Feb 2010 15:42:18 -0700
+Message-ID: <4B8AF14A.5030904@tpi.com>
+References: <20100228033841.265CFF8BB0@sepang.rtg.net> <1267331677.9082.46.camel@edumazet-laptop> <alpine.LSU.2.01.1002281146470.9681@obet.zrqbmnf.qr>
+Reply-To: timg@tpi.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:subject:from:to:cc
-         :in-reply-to:references:content-type:date:message-id:mime-version
-         :x-mailer:content-transfer-encoding;
-        bh=5qmQ15E7KkByjkeG97QjI9q2wTP4AuMijUh+yIfXZ5k=;
-        b=IO0YK92D/XY9uMNiKruIYe94nqYOibbjmRTboPn1ea8r0SEQVhlYFl2Tft08m1xltK
-         9n2vV4s06UbEIQrO2R95+IlIVIwdMyKRk9w9kh6eI18YoxrHVsb69UCxHdbM/W+H48B0
-         dsaFDbVr0VlT+Yn64W/5GpHHiKhN6jEUtrOOU=
 In-Reply-To: <alpine.LSU.2.01.1002281146470.9681@obet.zrqbmnf.qr>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Tim Gardner <timg@tpi.com>, kaber@trash.net, coreteam@netfilter.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Cc: Eric Dumazet <eric.dumazet@gmail.com>, kaber@trash.net, coreteam@netfilter.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-Le dimanche 28 f=C3=A9vrier 2010 =C3=A0 11:50 +0100, Jan Engelhardt a =C3=
-=A9crit :
-
+Jan Engelhardt wrote:
+> On Sunday 2010-02-28 05:34, Eric Dumazet wrote:
+>>> One of the problems with the way xt_recent is implemented is that
+>>> there is no efficient way to remove expired entries.
+> 
+> Oh there is:
+> 
+> 	echo "- 2001:db8::1" >/proc/net/xt_recent/foo
+> 
+>> 2) All entries are flushed when
+>> 	echo clear > /proc/net/xt_recent/<tablename>
+> 
+> 	echo "/" >/proc/net/xt_recent/foo
+> 
+> it is.
+> 
+>> 3) You could eventually implement a purge operation to remove all
+>> expired entries at will
+>>
+>>      echo purge > /proc/net/xt_recent/<tablename>
+> 
 > Entries do not expire (except "falling off" the LRU when it's full) -
 > there is no counter that tells them when they expired.
 > "--seconds" is just a match option, not something that defines
 > the LRU's properties. And that's actually good, because that allows
 > you to write
->=20
+> 
 > 	-m recent --name foo --seconds 60 -j do that
->=20
+> 
 > 	-m recent --name foo --seconds 3600 -j do something else
->=20
+> 
 > If you purged "expired" entries after 60 secs, there would be nothing
 > left for the 3600 one to check for.
+> 
 
-Thats right of course, thanks for reminding us how it works !
+I hadn't really considered your example as a valid use case. It seems to
+me that the second rule might also match even after the first rule
+matches, but its also very dependent on how you've crafted your rule set.
 
-
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+rtg
+-- 
+Tim Gardner timg@tpi.com www.tpi.com
+OR 503-601-0234 x102 MT 406-443-5357
