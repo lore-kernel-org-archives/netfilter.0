@@ -1,51 +1,44 @@
-From: "Lentes, Bernd" <bernd.lentes@helmholtz-muenchen.de>
-Subject: AW: module owner does not work
-Date: Mon, 1 Mar 2010 18:03:16 +0100
-Message-ID: <15785B7E063D464C86DD482FCAE4EBA5D794CFF8DB@XCH11.scidom.de>
-References: <15785B7E063D464C86DD482FCAE4EBA5D794CFF8D5@XCH11.scidom.de>
- <56378e321003010306n21050b6dwd01154e0420b666a@mail.gmail.com>
- <4B8BA314.60804@plouf.fr.eu.org>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Using NFQUEUE from userspace with seteuid
+Date: Mon, 01 Mar 2010 21:10:00 +0100
+Message-ID: <4B8C1F18.8010902@netfilter.org>
+References: <1267410505.18948.46.camel@r1>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B8BA314.60804@plouf.fr.eu.org>
-Content-Language: de-DE
+In-Reply-To: <1267410505.18948.46.camel@r1>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: backup95 <backup95@netcabo.pt>
+Cc: netfilter@vger.kernel.org
 
-Hi,
-
-Pascal Hambourg wrote:
-
+backup95 wrote:
 > Hello,
->=20
-> Richard Horton a =E9crit :
-> > On 1 March 2010 09:33, Lentes, Bernd=20
-> <bernd.lentes@helmholtz-muenchen.de> wrote:
-> >>
+> 
+> I wrote a daemon to do packet filtering using libnetfilter-queue.
+> 
+> It works well except that I ran into problems trying to run it
+> seteuid/setegid to an unpriviliged user.
+> 
+> Setup and teardown proceeds as root but when I try running the main loop
+> seteuid/setegid to a regular user (just processing IP addresses and
+> calling nfq_set_verdict really) everything slows to a crawl. I don't get
+> any software errors (packets are apparently received and accepted/denied
+> as usual) but all my connections time out or error out (not sure which
+> yet). Like I said, works fine as root.
+> 
+> I'm at a loss to explain this because as far as I can tell the
+> underlying netlink socket mechanism should not depend on root
+> priviledges to send messages. It's strange enough that there's a
+> significant slow down but no hard errors (and by that I mean
+> nfq_set_verdict returning a negative value).
+> 
+> Can anyone at least please confirm that it should work fine and it is
+> worth investigating or else just forget it and run the whole thing as
+> root?
+> 
+> Any comments would be greatly appreciated.
 
-> >=20
-> > Do pings still work?
->=20
-> Probably, as ping runs with suid root. Better try with=20
-> something like telnet or netcat (nc).
-
-I tried telnet, and it worked ! Thanks for your answer.
-
->=20
-> >> But uid 1000 is still able e.g. to send emails from the=20
-> shell using mail.
-> >
-> > If you have an MTA locally its probably not going out of the box as=
-=20
-> > the uid of the process which called mail but as the uid of=20
-> the MTA...
->=20
-> I agree.
->=20
-
-I also agree.
-
-Bernd
+Could you post the code or a sketch with the relevant section that I
+could use to reproduce the problem here?
