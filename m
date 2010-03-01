@@ -1,43 +1,29 @@
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: linux-next netfilter: xt_recent: Add an entry reaper
-Date: Mon, 01 Mar 2010 21:40:20 +0100
-Message-ID: <1267476020.2843.0.camel@edumazet-laptop>
-References: <20100228033841.265CFF8BB0@sepang.rtg.net>
-	 <1267331677.9082.46.camel@edumazet-laptop>  <4B8AB4BE.7080206@tpi.com>
-	 <1267388436.9082.84.camel@edumazet-laptop>  <4B8AF877.4080001@tpi.com>
-	 <1267409855.9082.103.camel@edumazet-laptop>  <4B8C2264.2040808@tpi.com>
+From: Pasi =?iso-8859-1?Q?K=E4rkk=E4inen?= <pasik@iki.fi>
+Subject: Re: LART mailing list substitute
+Date: Mon, 1 Mar 2010 23:48:02 +0200
+Message-ID: <20100301214802.GV2761@reaktio.net>
+References: <56378e321002190307p3f25890dma2d9dc6841fb90c2@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:subject:from:to:cc
-         :in-reply-to:references:content-type:date:message-id:mime-version
-         :x-mailer:content-transfer-encoding;
-        bh=Ml6ObW7V4CSyIwA5ZKtBvpVxgAEry3c7hJWzIoeKhGg=;
-        b=CRJ+ixB4EydqD4p4XE05WH6AwL7nVHJlnNS6YkZ3G8R6QwNLb9JicFkeSQBpzk7QS7
-         58ZXxRlPRsER/HcjmrZSmNwArmgLbOk7uyQeeqNBEf3ZLjOBQ4CqTmZbyYUv9MEMz/qJ
-         Q0D2HZPl6gMHNqr61n6cYGdXV78SGtchaCrnA=
-In-Reply-To: <4B8C2264.2040808@tpi.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <56378e321002190307p3f25890dma2d9dc6841fb90c2@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: timg@tpi.com
-Cc: kaber@trash.net, coreteam@netfilter.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Richard Horton <richard.horton@solstans.co.uk>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Le lundi 01 mars 2010 =C3=A0 13:24 -0700, Tim Gardner a =C3=A9crit :
+On Fri, Feb 19, 2010 at 11:07:22AM +0000, Richard Horton wrote:
+> Asking in here in the vague hope someone might know of a suitable
+> mailing list for linux tc related queries - having problems with
+> filters on a mixed htb/prio queue.
+> 
+> The LART mailing list appears to all intents and purposes to be dead
+> :( - is there an alternate list?
+> 
 
-> Agreed, see attached.
->=20
+Please let us know if you find one.. :)
 
-This seems fine, thanks
+-- Pasi
 
-Signed-off-by: Eric Dumazet <eric.dumazet@gmail.com>
-
-
-
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
