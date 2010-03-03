@@ -1,119 +1,52 @@
-From: Eric Leblond <eric-n3uEIhE4P3g@public.gmane.org>
-Subject: [Announce] NuFW 2.4.0 is available
-Date: Tue, 02 Mar 2010 19:30:22 +0100
-Message-ID: <1267554622.21904.36.camel@khasse.inl.fr>
+From: Patrick Chemla <patrick.chemla@perfaction.net>
+Subject: Multiple IPs to 2 interfaces problem with default route
+Date: Wed, 03 Mar 2010 10:36:01 +0200
+Message-ID: <4B8E1F71.6060806@perfaction.net>
+References: <4B7A7F39.5090808@perfaction.net> <4B7ABBED.1020404@chello.at>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0708361599=="
-Return-path: <nufw-users-bounces+gcsfnu-nufw-users=m.gmane.org-qX2TKyscuCcdnm+yROfE0A@public.gmane.org>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://lists.nongnu.org/mailman/listinfo/nufw-users>,
-	<mailto:nufw-users-request-qX2TKyscuCcdnm+yROfE0A@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.gnu.org/pipermail/nufw-users>
-List-Post: <mailto:nufw-users-qX2TKyscuCcdnm+yROfE0A@public.gmane.org>
-List-Help: <mailto:nufw-users-request-qX2TKyscuCcdnm+yROfE0A@public.gmane.org?subject=help>
-List-Subscribe: <http://lists.nongnu.org/mailman/listinfo/nufw-users>,
-	<mailto:nufw-users-request-qX2TKyscuCcdnm+yROfE0A@public.gmane.org?subject=subscribe>
-Sender: nufw-users-bounces+gcsfnu-nufw-users=m.gmane.org-qX2TKyscuCcdnm+yROfE0A@public.gmane.org
-Errors-To: nufw-users-bounces+gcsfnu-nufw-users=m.gmane.org-qX2TKyscuCcdnm+yROfE0A@public.gmane.org
-To: NuFW devel <nufw-devel-qX2TKyscuCcdnm+yROfE0A@public.gmane.org>, nufw-announces <nufw-announces-qX2TKyscuCcdnm+yROfE0A@public.gmane.org>, nufw-users-qX2TKyscuCcdnm+yROfE0A@public.gmane.org
-Cc: netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Content-Transfer-Encoding: 7BIT
+Return-path: <netfilter-owner@vger.kernel.org>
+In-reply-to: <4B7ABBED.1020404@chello.at>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
+Hi,
 
---===============0708361599==
-Content-Type: multipart/signed; micalg=pgp-sha1; protocol="application/pgp-signature"; boundary="=-WXwyRDYtpj/s0BdZTa5O"
+I have set up a Fedora 11 NAT server to NAT outgoing traffic to 2 
+interfaces to 2 ISPs.
 
+My internal interface is eth0, the 2 external interfaces are eth1 for 
+ISP1 and eth2 for ISP2, each one with a pool of IP addresses.
 
---=-WXwyRDYtpj/s0BdZTa5O
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+I wrote a script who create for each internal server the corresponding 
+NAT fonction :
 
-Hello,
+interface= outgoing interface for the wanted ISP
+public_ip= public IP address affected to this server on the ISP network
+server_ip= internal server local ip address
 
-NuFW development team is really excited to announce the availability of
-NuFW 2.4.0. This first version of the new stable branch is the result of
-almost two years of development. It contains a bunch of new features and
-improvements:
-      * Evolutive and optimized protocol
-      * Filtering capabilities improvements
-      * Plugin support in client library
-      * Major code refactactoring
-      * And a new website: http://www.nufw.org/projects/nufw/wiki
+/sbin/iptables -t nat -A PREROUTING -p tcp -i $interface -s 
+$public_ip/32 -j DNAT --to-destination $server_ip
+/sbin/iptables -t nat -A POSTROUTING -s $server_ip/32 -j SNAT -o 
+$interface --to-source $public_ip
 
-For record, NuFW adds user-based filtering to Netfilter. Its algorithm
-allows authenticated filtering even on multiuser computers. NuFW can be
-seen as an Identity access management solution, at the network level.
+It works very fine with one interface, but when I try to activate the 
+second interface, I think I get a problem with the default route.
 
-The main new features and major improvements are as follows:
-      * Extensible protocol: NuFW protocol between authentication server
-        and clients has evolved and it is now possible to extend the
-        protocol via plugin (on both client and nuauth side).
-      * Optimized protocol: Client to authentication server protocol has
-        been heavily optimized for laggy network and computer used
-        simultaneously by multiple users. For example, on a 1 sec delay
-        network, authentication is done at worst in 1.2 sec which is
-        only 0.2 sec more than non authenticated flow. With previous
-        protocol authentication was done in more than 3 sec...
-      * Filtering capabilities improvements: Client is now computing
-        hash of application binary for advanced filtering. It is also
-        possible to use an authentication quality in filtering rules.
-        For example, this mean it is possible to accept a packet if and
-        only if the authentication of the user has been done via
-        certificate.
-      * Rewrite and code factorization: A huge code factorization and
-        rewrite has been done. Convenience libraries are now shared
-        between the different components. Cryptography can now be done
-        via openssl or gnutls and all components now share the same
-        configuration file parser.
+When I started the interfaces, eth1 got a public IP and a default 
+gateway. This default gateway is the default gateway for all the server. 
+eth2 has his own public IP, own gateway.
 
-The main changes are as follows:=20
-      * Support for plugin in libnuclient
-      * Improved client-server protocol=20
-      * Protocol extension via plugin
-              * Better performances on bad network
-              * Better error handling
-              * Filtering capabilities improvements:=20
-      * Client compute hash of application for advanced filtering
-              * Authentication quality support
-              * Configuration file for nufw and client
-      * New convenience libraries:
-              * nussl: TLS abstraction library (gnutls or openssl)
-              * nuconfparser: Configuration library
-              * nubase: Common use library
-      * log_ulogd2 module: log packet via ulogd2
-      * postauth_localuser module: sample postauthentication protocol
-        modification
-      * nufw: switch libnetfilter_conntrack code to new API
-      * client proto: negotiate protocol version
+I tried to remove the default gateway, thinking the route will be 
+according to the NAT setup, but no more packet can get out of the server.
 
-Best regards,
---=20
-=C3=89ric Leblond <eric-n3uEIhE4P3g@public.gmane.org>
-EdenWall, http://www.edenwall.com/
-NuFW, http://www.nufw.org
+But I need to split packets to interfaces eth1 and eth2 according to the 
+public IP of the internal server, not according to a default route 
+always pointing to eth1.
 
---=-WXwyRDYtpj/s0BdZTa5O
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Description: Ceci est une partie de message
-	=?ISO-8859-1?Q?num=E9riquement?= =?ISO-8859-1?Q?_sign=E9e?=
+How can I set up these routes?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
+Patrick
 
-iEYEABECAAYFAkuNWTwACgkQnxA7CdMWjzIwcACfQ8/U73WhlsDssZsRUQn3SAUn
-tfkAnjQhbV4kbTA3KVLAJBQCJk9S3kz5
-=UH+r
------END PGP SIGNATURE-----
-
---=-WXwyRDYtpj/s0BdZTa5O--
-
-
-
-
---===============0708361599==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
-
-
---===============0708361599==--
