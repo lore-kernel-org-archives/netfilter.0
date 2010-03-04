@@ -1,49 +1,110 @@
-From: Sven-Haegar Koch <haegar@sdinet.de>
-Subject: Re: Multiple IPs to 2 interfaces problem with default route
-Date: Thu, 4 Mar 2010 03:19:51 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1003040318220.21973@aurora.sdinet.de>
-References: <4B7A7F39.5090808@perfaction.net> <4B7ABBED.1020404@chello.at> <4B8E1F71.6060806@perfaction.net>
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: Re: miscellaneous netfilter questions
+Date: Thu, 4 Mar 2010 11:22:20 +0530
+Message-ID: <cfeab66d1003032152q2e4574dh2ccf3e4d1f753000@mail.gmail.com>
+References: <20100303165419.87692fvlklxfna68@webmail.physik.uni-muenchen.de>
+	 <4B8E94F7.4080908@plouf.fr.eu.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B8E1F71.6060806@perfaction.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=zEOb9WyiF9NGJIF/IUEwHzjHftOshCGr5foGCxopW0s=;
+        b=aSOrD4OMzbnsNQ32WIoHwFlygE3Qb4HJdO2lx26RgRxlsKQw1EL/2o4pGjj5I88DTn
+         7woYNAP3OVgcllSY7uLB0SqLvWIGapguVRPGT03uggy8CyuCgISiHQUpVSg5ETIgAFJ7
+         dBILK6Xl723dxgJ8DrIqktaLdi5upPO51ejoU=
+In-Reply-To: <4B8E94F7.4080908@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Patrick Chemla <patrick.chemla@perfaction.net>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Cc: netfilter@vger.kernel.org
 
-On Wed, 3 Mar 2010, Patrick Chemla wrote:
+>> In that case, what happens to packets for which conntracking was
+>> disabled (NOTRACK in raw)? Are they also de-fragment or not?
+>
+> Good question. I have no answer. This requires some code reading or a
+> bit of testing.
 
-> I have set up a Fedora 11 NAT server to NAT outgoing traffic to 2 interfaces
-> to 2 ISPs.
+for IPV4 .
 
-> It works very fine with one interface, but when I try to activate the second
-> interface, I think I get a problem with the default route.
-> 
-> When I started the interfaces, eth1 got a public IP and a default gateway.
-> This default gateway is the default gateway for all the server. eth2 has his
-> own public IP, own gateway.
-> 
-> I tried to remove the default gateway, thinking the route will be according to
-> the NAT setup, but no more packet can get out of the server.
-> 
-> But I need to split packets to interfaces eth1 and eth2 according to the
-> public IP of the internal server, not according to a default route always
-> pointing to eth1.
-> 
-> How can I set up these routes?
+if we have NAT enabled , packets should be defragmented at PREROUTING
+chain to map to correct destination { ip + port }
 
-Look for "source based routing" or "policy routing" - this hasn't got 
-much to do with NAT or netfilter.
+if dont have NAT also , defaragmented packets doesnt have information
+about ports , i think it should be defragmented . I dont know about
+HOOK in which  it happens .
 
-Something like
-http://lartc.org/howto/lartc.rpdb.html
-may help you.
+Thanks,
+Ratheesh
 
-c'ya
-sven-haegar
 
--- 
-Three may keep a secret, if two of them are dead.
-- Ben F.
+
+On Wed, Mar 3, 2010 at 10:27 PM, Pascal Hambourg
+<pascal.mail@plouf.fr.eu.org> wrote:
+> Hello,
+>
+> Christoph Anton Mitterer a =E9crit :
+>>
+>> 1) If I disable conntracking for packets using NOTRACK in raw what
+>> happens if I e.g. match the state later in filter? Does the rule
+>> simply not match for such packets or is it INVALID?
+>
+> Packets processed with the NOTRACK target have the UNTRACKED state.
+>
+>> 2) The addrtype module provides several address types. Where can I
+>> find which addreses are _exactly_ matched by a given type for a give=
+n
+>> protocol (especially IP4/6).
+>> I'm especiylly (but not only) interested in what LOCAL actually mean=
+s?
+>> Is it all addresses of a hosts network interfaces PLUS the ALL
+>> addresses on that networks (like a "localnets")?
+>> Or is it all the addresses which the kernel thinks the host has itse=
+lf, e.g.
+>
+> The latter, I guess.
+>
+>> 3) --fragment
+>> a) It's quite clear what happens if one uses "-f" or "! -f" but what
+>> happens if neither of the tow is give? Does it mean "! -f" or is it
+>> like "match not fragmented packets AND fragmented packets (both the
+>> first AND further fragments).
+>
+> The latter, obviously. All packets are matched regardless of fragment=
+ation.
+>
+>> b) Is it true, that when conntracking is used, that packets are
+>> automatically defragmented so one doesn't have to care on fragments =
+at
+>> all?
+>
+> For IPv4, indeed when conntrack is enabled incoming fragmented datagr=
+ams
+> are reassembled before the PREROUTING chains. Note that packets which
+> are to be delivered locally are reassembled by the stack (not by
+> conntrack) before the INPUT chains anyway, so you never see fragments=
+ in
+> INPUT chains.
+>
+> AFAIK things work a bit differently for IPv6 : fragmented datagrams a=
+re
+> "virtually" reassembled for conntrack (the reason being that an IPv6
+> router does not handle fragmentation/reassembly), but continue to exi=
+st
+> as fragments through the ip6tables chains and the IPv6 stack.
+>
+>> In that case, what happens to packets for which conntracking was
+>> disabled (NOTRACK in raw)? Are they also defragmented or not?
+>
+> Good question. I have no answer. This requires some code reading or a
+> bit of testing.
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
