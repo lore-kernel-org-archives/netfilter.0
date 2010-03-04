@@ -1,32 +1,49 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Stateful port redirection?
-Date: Thu, 04 Mar 2010 00:32:11 +0100
-Message-ID: <4B8EF17B.3090808@plouf.fr.eu.org>
-References: <653bea161003031448i233ecaap18afa475241b0704@mail.gmail.com>
+From: Sven-Haegar Koch <haegar@sdinet.de>
+Subject: Re: Multiple IPs to 2 interfaces problem with default route
+Date: Thu, 4 Mar 2010 03:19:51 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1003040318220.21973@aurora.sdinet.de>
+References: <4B7A7F39.5090808@perfaction.net> <4B7ABBED.1020404@chello.at> <4B8E1F71.6060806@perfaction.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <653bea161003031448i233ecaap18afa475241b0704@mail.gmail.com>
+In-Reply-To: <4B8E1F71.6060806@perfaction.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Patrick Chemla <patrick.chemla@perfaction.net>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+On Wed, 3 Mar 2010, Patrick Chemla wrote:
 
-=46ar=E9 a =E9crit :
->=20
-> Is it possible using netfilter to
-> a- redirect TCP traffic from port 10000 (visible to the public) to
-> port 10010 (invisible to the public)
+> I have set up a Fedora 11 NAT server to NAT outgoing traffic to 2 interfaces
+> to 2 ISPs.
 
-What do you mean by invisible ?
+> It works very fine with one interface, but when I try to activate the second
+> interface, I think I get a problem with the default route.
+> 
+> When I started the interfaces, eth1 got a public IP and a default gateway.
+> This default gateway is the default gateway for all the server. eth2 has his
+> own public IP, own gateway.
+> 
+> I tried to remove the default gateway, thinking the route will be according to
+> the NAT setup, but no more packet can get out of the server.
+> 
+> But I need to split packets to interfaces eth1 and eth2 according to the
+> public IP of the internal server, not according to a default route always
+> pointing to eth1.
+> 
+> How can I set up these routes?
 
-> b- change the rule so that that traffic to port 10000 is now
-> redirected to port 10020 (also invisible to the public) *except* for
-> packets associated with existing connections, that will remain
-> redirected to port 10010.
+Look for "source based routing" or "policy routing" - this hasn't got 
+much to do with NAT or netfilter.
 
-Yes. This is the way stateful NAT works. Changes in NAT rules apply onl=
-y
-to new connections.
+Something like
+http://lartc.org/howto/lartc.rpdb.html
+may help you.
+
+c'ya
+sven-haegar
+
+-- 
+Three may keep a secret, if two of them are dead.
+- Ben F.
