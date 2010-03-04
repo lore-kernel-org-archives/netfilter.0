@@ -1,101 +1,89 @@
 From: Christoph Anton Mitterer 
 	<christoph.anton.mitterer@physik.uni-muenchen.de>
-Subject: Re: miscellaneous netfilter questions
-Date: Thu, 04 Mar 2010 11:19:03 +0100
-Message-ID: <1267697943.22478.17.camel@etppc09.garching.physik.uni-muenchen.de>
-References: <20100303165419.87692fvlklxfna68@webmail.physik.uni-muenchen.de>
-	 <4B8E94F7.4080908@plouf.fr.eu.org>
+Subject: Re: How does netfilter decide which in/out-interface a packet has
+Date: Thu, 04 Mar 2010 11:28:50 +0100
+Message-ID: <1267698530.22478.27.camel@etppc09.garching.physik.uni-muenchen.de>
+References: <20100303165422.18973x8p8ccy6s84@webmail.physik.uni-muenchen.de>
+	 <4B8E97BA.9070103@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=sha1; protocol="application/x-pkcs7-signature"; boundary="=-GMaihmaGviwrHsuVz/ZJ"
+Content-Type: multipart/signed; micalg=sha1; protocol="application/x-pkcs7-signature"; boundary="=-QucaXlcD91aQWDyG1vIe"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B8E94F7.4080908@plouf.fr.eu.org>
+In-Reply-To: <4B8E97BA.9070103@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 To: netfilter@vger.kernel.org
 
 
---=-GMaihmaGviwrHsuVz/ZJ
+--=-QucaXlcD91aQWDyG1vIe
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-Hi Pascal.
-
-Thanks in advance for your detailed answers :)
+Hello...
 
 
-On Wed, 2010-03-03 at 17:57 +0100, Pascal Hambourg wrote:
-> Packets processed with the NOTRACK target have the UNTRACKED state.
-Ah, nice,... this is not described in the manpage (at least not in
-Debian's 1.4.6 package of iptables).
-Perhaps one should add this?
+On Wed, 2010-03-03 at 18:09 +0100, Pascal Hambourg wrote:=20
+> > How does netfilter decide which in/out-interface a packet has?
+> It doesn't. The packet decides which input interface is arrives on, and
+> the routing decision decides which output interface it leaves.
+ok...
 
 
-> > Or is it all the addresses which the kernel thinks the host has itself,=
- e.g.
-> The latter, I guess.
-I looked through some source files of the kernel and iptables,.. but was
-not able to really find a definite answer on this... seems to be
-"hidden" (well at least to me) ^^
+> > I mean the following:
+> > Image I have a host with the following interfaces and addresses:
+> > lo: 127.x.x.x and :1/128
+> > eth0: 88.88.88.88
+> > 99.99.99.99 is a remote address (packets come in via eth0)
+> >=20
+> > Now consider the following cases (source --> destination):
+> > "internal traffic":
+> > 127.x.x.x   --> 127.x.x.x     =3D> quite clear, in=3Dlo out=3Dlo
+> > 127.x.x.x   --> 88.88.88.88   =3D> in=3D??? out=3D???
+> > 88.88.88.88 --> 88.88.88.88   =3D> in=3D??? out=3D???
+> > 88.88.88.88 --> 127.x.x.x     =3D> in=3D??? out=3D???
+> lo in all cases.
+Even though 88.88.88.88 is the address of the eth0 interface and from
+what you told me just above I'd have guessed, that the (in or out)
+interface is eth0 respectively...
+
+So the kernel basically sees when packets do not leave the box but are
+just "internal traffic" and uses lo for this?
+
+I assume this also applies for byte counters like RX/TX packets and
+they're accounted on lo?
 
 
-> > a) It's quite clear what happens if one uses "-f" or "! -f" but what =20
-> > happens if neither of the tow is give? Does it mean "! -f" or is it =20
-> > like "match not fragmented packets AND fragmented packets (both the =20
-> > first AND further fragments).
-> The latter, obviously. All packets are matched regardless of fragmentatio=
-n.
-Not sure whether this is really so obvious,... anyway, perhaps this
-could also be added to the manpage... e.g. for -o and -i it says what
-happens if the options are omitted. :)
+> > "incoming traffic (from remote):
+> > 99.99.99.99 --> 127.x.x.x     =3D> is that possible at all? how would =20
+> > the in=3D/out=3D be?
+> eth0, but the packet is discarded after PREROUTING by the input routing
+> decision which prohibits receiving a packet with a loopback address from
+> outside (a non loopback interface).
+Ah great,... so I don't have to manually drop such stuff... right?
+
+Are such packets dropped (like DROP) or are the rejected with error
+codes?
 
 
-> For IPv4, indeed when conntrack is enabled incoming fragmented datagrams
-> are reassembled before the PREROUTING chains. Note that packets which
-> are to be delivered locally are reassembled by the stack (not by
-> conntrack) before the INPUT chains anyway, so you never see fragments in
-> INPUT chains.
-ok... well...
-a) What about packages not delivered locally? I assume they're simply
-passed on in the fragmented state as they are? Is this always the case?
-E.g. if the next hop network as an MTU that is smaller than the fragment
-size?
-
-b) All these things which you say that are happening on the stack (e.g.
-the defragmentation here, dropping of packets with bogus addresses or
-source addresses that match the address of a local interface)... these
-things generally happen _before_ netfilter, right? Or at which place are
-they happening?
-
-
-> AFAIK things work a bit differently for IPv6 : fragmented datagrams are
-> "virtually" reassembled for conntrack (the reason being that an IPv6
-> router does not handle fragmentation/reassembly), but continue to exist
-> as fragments through the ip6tables chains and the IPv6 stack.
-Ah... I see... uhm... in this case, how would the following work?
-Image one wants to allow incomming packets for ssh so we have about:
-:INPUT DROP
--A INPUT --protocol tcp -m tcp --destination-port ssh -j ACCEPT
-
-Now packets come in fragmented,... this would not work for later
-fragments right, as the port is not known... so as soon as fragmentation
-happens, the above would not work (as expected).
-
-But it should work with those rules:
-:INPUT DROP
--A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
--A INPUT --protocol tcp -m tcp --destination-port ssh --syn -j ACCEPT
-
-..because contrack still works, and the fragmented packets are accepted
-by the first rule.
-
-Do I understand this correctly?
+> > "outgoing traffic (to remote):
+> > 127.x.x.x --> 99.99.99.99     =3D> is that possible at all?
+> Not possible, the output routing decision prohibits sending a packet
+> with a loopback address outside the host (on a non loopback interface).
+So the same as above,... this is handled automatically and I don't need
+to setup specific rules to block such evil.
 
 
 
-Thanks again,
+Well,.. great :)
+
+Just out of curiosity,... would it be possible to tell the kernel not to
+drop such bogus packets at the respective routing decision points?
+Could be interesting for programs like sniffers or so...
+
+
+Cheers,
 Chris.
 
---=-GMaihmaGviwrHsuVz/ZJ
+--=-QucaXlcD91aQWDyG1vIe
 Content-Type: application/x-pkcs7-signature; name=smime.p7s
 Content-Disposition: attachment; filename=smime.p7s
 Content-Transfer-Encoding: base64
@@ -151,16 +139,16 @@ BlEW7DeK5DwKiny+dbuipMrXwASz4tgnI/s9wwEml8tGXjnQDbyz4uRMa2Xyrzg4iq+vWHLUsRGC
 1Api5FsBfBVTQPqRE1isyk8rPYcBoDk7dirgswhHwcK97TGCAl8wggJbAgEBMDwwNjELMAkGA1UE
 BhMCREUxEzARBgNVBAoTCkdlcm1hbkdyaWQxEjAQBgNVBAMTCUdyaWRLYS1DQQICKYgwCQYFKw4D
 AhoFAKCB+TAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xMDAzMDQx
-MDE5MDNaMCMGCSqGSIb3DQEJBDEWBBQj6pyjV4I/FZG1RRRVOIzEO7UYvTBLBgkrBgEEAYI3EAQx
+MDI4NTBaMCMGCSqGSIb3DQEJBDEWBBQoqn3Fmv9fbKn982qtLwGmPmaWZDBLBgkrBgEEAYI3EAQx
 PjA8MDYxCzAJBgNVBAYTAkRFMRMwEQYDVQQKEwpHZXJtYW5HcmlkMRIwEAYDVQQDEwlHcmlkS2Et
 Q0ECAimIME0GCyqGSIb3DQEJEAILMT6gPDA2MQswCQYDVQQGEwJERTETMBEGA1UEChMKR2VybWFu
-R3JpZDESMBAGA1UEAxMJR3JpZEthLUNBAgIpiDANBgkqhkiG9w0BAQEFAASCAQA50GkZwkhsfzqJ
-OiXKUOeH8HkTSm7LvhwmyDbdBo/qKT9KUXbEe+PYAnrn//MCmCsU4U8C9WHYExKzjkvagPhDMoDU
-IUK0l0bm+sq03UZ6E2LkoErweVp9QtxM7Audcw8/0eyLfeRGoYZlnlqq43Qz5Phce5y5YroxDNdb
-aIAEUtQrIAwsPwoWUrQR2mR3O38/8kG9OOAqdsGOAU3QkcJBw3shZZzzt2ArqYx7PlpgPP5d+87K
-74YUIDbE209PyZ0vray+bzGHHjvxTP0pk3sXVUvGSPD4GcWqSU5qy8gmVW4fUKwLk7cvQNOx4cQS
-cgmIuaVdxzGwDvjuXaZ3aJbLAAAAAAAA
+R3JpZDESMBAGA1UEAxMJR3JpZEthLUNBAgIpiDANBgkqhkiG9w0BAQEFAASCAQA5cZx/HdmkcOq6
+XM8pwsV6COPt6BLF+fONJFYHa5PeTvlRTG60jLj/VKxTiGtR+8LJjExAStuS4baMB9gfZNXbE1wv
+eFdN/bnWCEgbVCbZgKYY1ykq54WxgrNmDyZPaeR+WQPcdrsso6bwlK+xbJ71i4U7icX6SR0DVhbE
+0h+0P3QExC+lP/BG05QnfQ/uG6pCO77NotviFdsazdzxyiQNbaFV06YZaMWTo6oBTFK+fnAXHYYf
+ElmSevosXQ1Su40S/JEYgZLUm6KTIxOjDgqUX0O0zMkw0YaIvdqZkJNhcWo91/ajeWd3zZOgRrnv
+/YoX4Gc5+79VpIv17s4y+WE5AAAAAAAA
 
 
---=-GMaihmaGviwrHsuVz/ZJ--
+--=-QucaXlcD91aQWDyG1vIe--
 
