@@ -1,110 +1,113 @@
-From: ratheesh k <ratheesh.ksz@gmail.com>
-Subject: Re: miscellaneous netfilter questions
-Date: Thu, 4 Mar 2010 11:22:20 +0530
-Message-ID: <cfeab66d1003032152q2e4574dh2ccf3e4d1f753000@mail.gmail.com>
-References: <20100303165419.87692fvlklxfna68@webmail.physik.uni-muenchen.de>
-	 <4B8E94F7.4080908@plouf.fr.eu.org>
+From: "Jean-Damien.Pogolotti@SYNGENTA.COM" 
+	<Jean-Damien.Pogolotti@SYNGENTA.COM>
+Subject: Configuration question
+Date: Thu, 4 Mar 2010 09:58:24 +0100
+Message-ID: <AB69DAA01B729A4CA058A29A69D485F80B209CD4AB@FRIACMSXMB01.EAME.SYNGENTA.ORG>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=zEOb9WyiF9NGJIF/IUEwHzjHftOshCGr5foGCxopW0s=;
-        b=aSOrD4OMzbnsNQ32WIoHwFlygE3Qb4HJdO2lx26RgRxlsKQw1EL/2o4pGjj5I88DTn
-         7woYNAP3OVgcllSY7uLB0SqLvWIGapguVRPGT03uggy8CyuCgISiHQUpVSg5ETIgAFJ7
-         dBILK6Xl723dxgJ8DrIqktaLdi5upPO51ejoU=
-In-Reply-To: <4B8E94F7.4080908@plouf.fr.eu.org>
+Content-Class: urn:content-classes:message
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
->> In that case, what happens to packets for which conntracking was
->> disabled (NOTRACK in raw)? Are they also de-fragment or not?
->
-> Good question. I have no answer. This requires some code reading or a
-> bit of testing.
+Hi there,
 
-for IPV4 .
+I'm new to netfilter, so please excuse my dumb questions.. I'm working on a captive portal appliance and have some issues to understand how to alter the netfilter config to do what I expect :
 
-if we have NAT enabled , packets should be defragmented at PREROUTING
-chain to map to correct destination { ip + port }
+- Eth0 connected to the internet (192.168.70.0/24)
+- Eth1 connected to a wireless network (192.168.69.0/24)
+- Eth2 connected to an enterprise network (172.19.58.128/26)
 
-if dont have NAT also , defaragmented packets doesnt have information
-about ports , i think it should be defragmented . I dont know about
-HOOK in which  it happens .
+I'm already using this captive portal that is working, wireless clients are authenticated then have access to the internet. Domain authentication are done using the Eth2 interface to the enterprise LDAP catalog. I've not done this config and don't really understand how it works.
 
-Thanks,
-Ratheesh
+What I want to achieve may looks really simple for you : I need to have access to the appliance from the enterprise network (Eth2) on the ssh and https ports.
+
+Here is the config file :
 
 
 
-On Wed, Mar 3, 2010 at 10:27 PM, Pascal Hambourg
-<pascal.mail@plouf.fr.eu.org> wrote:
-> Hello,
->
-> Christoph Anton Mitterer a =E9crit :
->>
->> 1) If I disable conntracking for packets using NOTRACK in raw what
->> happens if I e.g. match the state later in filter? Does the rule
->> simply not match for such packets or is it INVALID?
->
-> Packets processed with the NOTRACK target have the UNTRACKED state.
->
->> 2) The addrtype module provides several address types. Where can I
->> find which addreses are _exactly_ matched by a given type for a give=
-n
->> protocol (especially IP4/6).
->> I'm especiylly (but not only) interested in what LOCAL actually mean=
-s?
->> Is it all addresses of a hosts network interfaces PLUS the ALL
->> addresses on that networks (like a "localnets")?
->> Or is it all the addresses which the kernel thinks the host has itse=
-lf, e.g.
->
-> The latter, I guess.
->
->> 3) --fragment
->> a) It's quite clear what happens if one uses "-f" or "! -f" but what
->> happens if neither of the tow is give? Does it mean "! -f" or is it
->> like "match not fragmented packets AND fragmented packets (both the
->> first AND further fragments).
->
-> The latter, obviously. All packets are matched regardless of fragment=
-ation.
->
->> b) Is it true, that when conntracking is used, that packets are
->> automatically defragmented so one doesn't have to care on fragments =
-at
->> all?
->
-> For IPv4, indeed when conntrack is enabled incoming fragmented datagr=
-ams
-> are reassembled before the PREROUTING chains. Note that packets which
-> are to be delivered locally are reassembled by the stack (not by
-> conntrack) before the INPUT chains anyway, so you never see fragments=
- in
-> INPUT chains.
->
-> AFAIK things work a bit differently for IPv6 : fragmented datagrams a=
-re
-> "virtually" reassembled for conntrack (the reason being that an IPv6
-> router does not handle fragmentation/reassembly), but continue to exi=
-st
-> as fragments through the ip6tables chains and the IPv6 stack.
->
->> In that case, what happens to packets for which conntracking was
->> disabled (NOTRACK in raw)? Are they also defragmented or not?
->
-> Good question. I have no answer. This requires some code reading or a
-> bit of testing.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
+# Generated by iptables-save v1.4.5 on Wed Mar  3 12:34:48 2010
+*raw
+:PREROUTING ACCEPT [2728479:934194667]
+:OUTPUT ACCEPT [1108062:571157557]
+COMMIT
+# Completed on Wed Mar  3 12:34:48 2010
+# Generated by iptables-save v1.4.5 on Wed Mar  3 12:34:48 2010
+*nat
+:PREROUTING ACCEPT [1288:104586]
+:POSTROUTING ACCEPT [6:578]
+:OUTPUT ACCEPT [16:1243]
+-A PREROUTING ! -d 192.168.69.1/32 -i tun0 -p tcp -m tcp --dport 80 -m state --state NEW -j ULOG --ulog-prefix "RULE Transfert2 -- ACCEPT "
+-A PREROUTING ! -d 192.168.69.1/32 -i tun0 -p tcp -m tcp --dport 80 -j REDIRECT --to-ports 8080
+-A PREROUTING -d 192.168.69.1/32 -i tun0 -p tcp -m tcp --dport 8080 -j ULOG --ulog-prefix "RULE direct-proxy -- DENY "
+-A POSTROUTING -o eth0 -j MASQUERADE
+COMMIT
+# Completed on Wed Mar  3 12:34:48 2010
+# Generated by iptables-save v1.4.5 on Wed Mar  3 12:34:48 2010
+*mangle
+:PREROUTING ACCEPT [2728480:934194946]
+:INPUT ACCEPT [1141791:637901737]
+:FORWARD ACCEPT [483271:145278163]
+:OUTPUT ACCEPT [1108063:571157645]
+:POSTROUTING ACCEPT [1586481:716229937]
+:tcfor - [0:0]
+:tcout - [0:0]
+:tcpost - [0:0]
+:tcpre - [0:0]
+-A PREROUTING -d 192.168.69.1/32 -i tun0 -p tcp -m tcp --dport 8080 -j MARK --set-xmark 0x1/0xffffffff
+COMMIT
+# Completed on Wed Mar  3 12:34:48 2010
+# Generated by iptables-save v1.4.5 on Wed Mar  3 12:34:48 2010
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [685:203841]
+-A INPUT -i lo -j ACCEPT
+-A INPUT -i eth1 -p udp -m udp --sport 68 --dport 67 -j ACCEPT
+-A INPUT -i eth1 -j ULOG --ulog-prefix "RULE Protect1 -- REJECT "
+-A INPUT -i eth1 -j REJECT --reject-with icmp-port-unreachable
+-A INPUT ! -s 192.168.69.0/24 -i tun0 -j ULOG --ulog-prefix "RULE Antispoof1 -- DENY "
+-A INPUT ! -s 192.168.69.0/24 -i tun0 -j DROP
+-A INPUT -s 192.168.69.0/24 -i eth0 -j ULOG --ulog-prefix "RULE Antispoof2 -- DENY "
+-A INPUT -s 192.168.69.0/24 -i eth0 -j DROP
+-A INPUT -m addrtype --dst-type BROADCAST,MULTICAST -j DROP
+-A INPUT -s 192.168.69.0/24 -i tun0 -p icmp -m icmp --icmp-type 0 -j ACCEPT
+-A INPUT -s 192.168.69.0/24 -i tun0 -p icmp -m icmp --icmp-type 8 -j ACCEPT
+-A INPUT -i tun0 -p tcp -m tcp --dport 3990 -j ACCEPT
+-A INPUT -i tun0 -p udp -m udp --dport 123 -j ACCEPT
+-A INPUT -i tun0 -p tcp -m tcp --dport 443 -j ACCEPT
+-A INPUT -i tun0 -p tcp -m tcp --dport 22 -j ACCEPT
+-A INPUT -i eth2 -p tcp -m tcp --dport 443 -j ACCEPT
+-A INPUT -i eth2 -p tcp -m tcp --dport ssh -j ACCEPT
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -i tun0 -p tcp -m tcp --dport 8080 -m mark --mark 0x1 -j DROP
+-A INPUT -i tun0 -p tcp -m tcp --dport 8080 --tcp-flags FIN,SYN,RST,ACK SYN -m state --state NEW -j ACCEPT
+-A INPUT -i tun0 -j ULOG --ulog-prefix "RULE rej-int -- REJECT "
+-A INPUT -i eth0 -j ULOG --ulog-prefix "RULE rej-ext -- REJECT "
+-A INPUT -p tcp -j REJECT --reject-with tcp-reset
+-A INPUT -p udp -j REJECT --reject-with icmp-port-unreachable
+-A FORWARD -i tun0 -p udp -m udp --dport 53 -j ACCEPT
+-A FORWARD -i tun0 -m state --state NEW -j ULOG --ulog-prefix "RULE Transfert1 -- ACCEPT "
+-A FORWARD -i tun0 -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -o tun0 -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
+COMMIT
+# Completed on Wed Mar  3 12:34:48 2010
+
+
+I've added those lines :
+
+-A INPUT -i eth2 -p tcp -m tcp --dport 443 -j ACCEPT
+-A INPUT -i eth2 -p tcp -m tcp --dport ssh -j ACCEPT
+
+..but no luck.
+
+Can someone give me hand here?
+
+Kind regards,
+JD.
+
+--------------------------------------------------------------------------
+This message may contain confidential information. If you are not the designated recipient, please notify the sender immediately, and delete the original and any copies. Any use of the message by you is prohibited.
