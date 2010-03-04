@@ -1,89 +1,160 @@
 From: Christoph Anton Mitterer 
 	<christoph.anton.mitterer@physik.uni-muenchen.de>
-Subject: Re: How does netfilter decide which in/out-interface a packet has
-Date: Thu, 04 Mar 2010 11:28:50 +0100
-Message-ID: <1267698530.22478.27.camel@etppc09.garching.physik.uni-muenchen.de>
-References: <20100303165422.18973x8p8ccy6s84@webmail.physik.uni-muenchen.de>
-	 <4B8E97BA.9070103@plouf.fr.eu.org>
+Subject: Re: how to harden iptables rules?
+Date: Thu, 04 Mar 2010 12:47:23 +0100
+Message-ID: <1267703243.22478.57.camel@etppc09.garching.physik.uni-muenchen.de>
+References: <20100303172001.149912au9jha5s8g@webmail.physik.uni-muenchen.de>
+	 <4B8E9F4A.9080706@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=sha1; protocol="application/x-pkcs7-signature"; boundary="=-QucaXlcD91aQWDyG1vIe"
+Content-Type: multipart/signed; micalg=sha1; protocol="application/x-pkcs7-signature"; boundary="=-Lf8X/bOegneMKG4N7shE"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B8E97BA.9070103@plouf.fr.eu.org>
+In-Reply-To: <4B8E9F4A.9080706@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 To: netfilter@vger.kernel.org
 
 
---=-QucaXlcD91aQWDyG1vIe
+--=-Lf8X/bOegneMKG4N7shE
 Content-Type: text/plain
 Content-Transfer-Encoding: quoted-printable
 
-Hello...
+Hi.
+
+On Wed, 2010-03-03 at 18:41 +0100, Pascal Hambourg wrote:
+> > #accept outgoing packets by default
+> > :OUTPUT ACCEPT [0:0]
+> ACCEPT as a default policy is not so much hardening IMHO.
+Yeah I know ^^,... but unfortunately software is used on my systems
+which uses random source ports and not even a portrange is
+configurable...
+So I don't see a way to handle this except accepting output per
+default :(
 
 
-On Wed, 2010-03-03 at 18:09 +0100, Pascal Hambourg wrote:=20
-> > How does netfilter decide which in/out-interface a packet has?
-> It doesn't. The packet decides which input interface is arrives on, and
-> the routing decision decides which output interface it leaves.
-ok...
+> > -A INPUT	-m state  --state ESTABLISHED,RELATED	-j ACCEPT
+> Mostly agree, although I would drop some ICMP types such as redirect or
+> source quench that may be harmful.
+Why would ICMP packets match this rule? Are they (well at least errors
+in response to some IP traffic) counted as RELATED?
+But probably not things like echo-request, right? What should it relate
+to?
 
 
-> > I mean the following:
-> > Image I have a host with the following interfaces and addresses:
-> > lo: 127.x.x.x and :1/128
-> > eth0: 88.88.88.88
-> > 99.99.99.99 is a remote address (packets come in via eth0)
+> --reject-with-tcp-reset is more appropriate for TCP packets. DROP is
+> more appropriate for ICMP packets.
+good point,...
+Well I accpeted ICMP before so that should never happen, but as you've
+adviced I'll probably change this and then it makes sense to drop them.
+Well,.. does it really? I've always thought no ICMP error messages would
+be generated on errors with ICMP packets?
+
+
+> > if I block it completely (except echo-request) I also dont't get any =20
+> > ICMP error messages,
+>=20
+> No, valid ICMP error messages have the ESTABLISHED state.
+Ah :-) Great!
+
+
+> > net.ipv6.bindv6only =3D 1
+> This has not much to do with iptables and packet filtering.
+Oh yes,.. it just slipped in when grepping all net stuff :D
+
+btw: Now that I generally block ICMP (except echo-request and
+ESTABLISHED),... would I still need things like:
+net.ipv4.conf.all.accept_redirects =3D 0
+net.ipv6.conf.all.accept_redirects =3D 0
+?
+
+And does someone know whether the log_martians setting only affects
+whether martians are logged or also whether they're really discarded?
+
+
+> > 3) What I never clearly understood: Do I have to handle (drop) =20
+> > "external packets" with:
+> > -a source address of 127.x.x.x or :1
+> > -a destination address of 127.x.x.x or :1
+> > -a source address that matches one of the addresses of my other =20
+> > interfaces (e.g. 88.88.88.88 if that is the address of eth0)
+> This is not critical, because the IP stack already discards such packets.
+Great great,... and I again assumes that this happens "before" netfilter
+comes in place?
+
+
+> > And how would I block these things cleanly? Using addrtype?
+> Possibly. Or by specifying addresses explicitly.
+Well but what I've understood from what you've wrote, this kind of stuff
+is discarded automatically by the kernel anyway,... so no need to take
+manual actions, right?
+
+
+> > 4) Should I generally drop packets with state=3DINVALID or perhaps not =
+=20
+> > for packets from/to lo?
+> Generally, yes. However you may make an exception on lo.
+Yeah,.. I already thought about whether it makes sense to have
+exceptions for lo on this...
+
+
+> > 5) Is it necessary to do this or is it done automatically?
+> > -p tcp ! --syn -m state   --state NEW	-j DROP
+> > and (!) vice versa:
+> > -p tcp   --syn -m state ! --state NEW	-j DROP
+>=20
+> The behaviour of TCP conntrack depends on the kernel version and some
+> kernel parameters (mainly net.netfilter.nf_conntrack_tcp_be_liberal).
+> --state NEW may not imply --syn and vice versa.
+Uhm... well now I don't know what I should do here ^^
+I tried to find some documentation on nf_conntrack_tcp_be_liberal but
+was not really able to do so... :(
+I use always one of the recent kernel versions..
+
+
+> > 6) When I accept packets for dedicated services (e.g. ssh) I can do =20
+> > one of those:
+> > a) -A INPUT	--destination 88.88.88.88 --protocol tcp -m tcp =20
+> > --destination-port ssh --syn	-j ACCEPT
+> > (if 88.88.88.88 is the address of eth0)
+> > b) -A INPUT	--in-interface eth0 --protocol tcp -m tcp =20
+> > --destination-port ssh --syn	-j ACCEPT
+> > c)  -A INPUT	--protocol tcp -m tcp --destination-port ssh --syn	-j ACCE=
+PT
 > >=20
-> > Now consider the following cases (source --> destination):
-> > "internal traffic":
-> > 127.x.x.x   --> 127.x.x.x     =3D> quite clear, in=3Dlo out=3Dlo
-> > 127.x.x.x   --> 88.88.88.88   =3D> in=3D??? out=3D???
-> > 88.88.88.88 --> 88.88.88.88   =3D> in=3D??? out=3D???
-> > 88.88.88.88 --> 127.x.x.x     =3D> in=3D??? out=3D???
-> lo in all cases.
-Even though 88.88.88.88 is the address of the eth0 interface and from
-what you told me just above I'd have guessed, that the (in or out)
-interface is eth0 respectively...
+> > (c) Is probably a bad idea as it would allow ssh also on other interfac=
+es
+> > But is there (from a security point of view) and advantage between (a) =
+=20
+> > and (b)?
+>=20
+> (b) also allow connecting on another interface because Linux enforces
+> the so-called "weak host model". It all depends on your needs. Do you
+> want to filter by interface, address, none or both ?
+Well in principle,.. filtering by interface would be totally ok for
+me,... I just wanna prevent things like this (if they're possible at
+all?!):
+my interface has e.g. again the address 88.88.88.88
+someone sends packets with destination address 88.88.88.11 to that
+interface (which should be not handled by it)...
 
-So the kernel basically sees when packets do not leave the box but are
-just "internal traffic" and uses lo for this?
+Again,.. if such evil is automatically dropped my the kernel I'm totally
+fine with filtering by interface,.. if not I'd guess filtering by
+address would be more secure...
 
-I assume this also applies for byte counters like RX/TX packets and
-they're accounted on lo?
-
-
-> > "incoming traffic (from remote):
-> > 99.99.99.99 --> 127.x.x.x     =3D> is that possible at all? how would =20
-> > the in=3D/out=3D be?
-> eth0, but the packet is discarded after PREROUTING by the input routing
-> decision which prohibits receiving a packet with a loopback address from
-> outside (a non loopback interface).
-Ah great,... so I don't have to manually drop such stuff... right?
-
-Are such packets dropped (like DROP) or are the rejected with error
-codes?
-
-
-> > "outgoing traffic (to remote):
-> > 127.x.x.x --> 99.99.99.99     =3D> is that possible at all?
-> Not possible, the output routing decision prohibits sending a packet
-> with a loopback address outside the host (on a non loopback interface).
-So the same as above,... this is handled automatically and I don't need
-to setup specific rules to block such evil.
+uhm.... Rethinking this scenario, I'd guess that packets with
+dest=3D88.88.88.11 would be considered as packets to be forwarded, right?
+So they should be either dropped because of my:
+:FORWARD DROP
+policy or my:
+net.ipv4.ip_forward=3D0
+right?
 
 
 
-Well,.. great :)
-
-Just out of curiosity,... would it be possible to tell the kernel not to
-drop such bogus packets at the respective routing decision points?
-Could be interesting for programs like sniffers or so...
-
-
+Again,... lots of thanks for your answers :)
 Cheers,
 Chris.
 
---=-QucaXlcD91aQWDyG1vIe
+--=-Lf8X/bOegneMKG4N7shE
 Content-Type: application/x-pkcs7-signature; name=smime.p7s
 Content-Disposition: attachment; filename=smime.p7s
 Content-Transfer-Encoding: base64
@@ -139,16 +210,16 @@ BlEW7DeK5DwKiny+dbuipMrXwASz4tgnI/s9wwEml8tGXjnQDbyz4uRMa2Xyrzg4iq+vWHLUsRGC
 1Api5FsBfBVTQPqRE1isyk8rPYcBoDk7dirgswhHwcK97TGCAl8wggJbAgEBMDwwNjELMAkGA1UE
 BhMCREUxEzARBgNVBAoTCkdlcm1hbkdyaWQxEjAQBgNVBAMTCUdyaWRLYS1DQQICKYgwCQYFKw4D
 AhoFAKCB+TAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xMDAzMDQx
-MDI4NTBaMCMGCSqGSIb3DQEJBDEWBBQoqn3Fmv9fbKn982qtLwGmPmaWZDBLBgkrBgEEAYI3EAQx
+MTQ3MjNaMCMGCSqGSIb3DQEJBDEWBBQfVasPL0ZBMENjWpHQnMHNo0LmoDBLBgkrBgEEAYI3EAQx
 PjA8MDYxCzAJBgNVBAYTAkRFMRMwEQYDVQQKEwpHZXJtYW5HcmlkMRIwEAYDVQQDEwlHcmlkS2Et
 Q0ECAimIME0GCyqGSIb3DQEJEAILMT6gPDA2MQswCQYDVQQGEwJERTETMBEGA1UEChMKR2VybWFu
-R3JpZDESMBAGA1UEAxMJR3JpZEthLUNBAgIpiDANBgkqhkiG9w0BAQEFAASCAQA5cZx/HdmkcOq6
-XM8pwsV6COPt6BLF+fONJFYHa5PeTvlRTG60jLj/VKxTiGtR+8LJjExAStuS4baMB9gfZNXbE1wv
-eFdN/bnWCEgbVCbZgKYY1ykq54WxgrNmDyZPaeR+WQPcdrsso6bwlK+xbJ71i4U7icX6SR0DVhbE
-0h+0P3QExC+lP/BG05QnfQ/uG6pCO77NotviFdsazdzxyiQNbaFV06YZaMWTo6oBTFK+fnAXHYYf
-ElmSevosXQ1Su40S/JEYgZLUm6KTIxOjDgqUX0O0zMkw0YaIvdqZkJNhcWo91/ajeWd3zZOgRrnv
-/YoX4Gc5+79VpIv17s4y+WE5AAAAAAAA
+R3JpZDESMBAGA1UEAxMJR3JpZEthLUNBAgIpiDANBgkqhkiG9w0BAQEFAASCAQC6fDK5kM/eqo3f
+XZEafDsxWezetMRKhHU6s8eNHeEIm8OcSNaBSFK1u3StT+4NkhdIglEf+iRKN26As02NAh8eouD+
+qqvZroCsRFxLX9Nkmc2sIpu7YuwEKBMJVGyOECtIA6QpaMLNTetzvaQLy8jm5EgYpxWT1BFqaRbF
+e9cJ4Papvb0LJoiz2MJxPulvGldh3uhs+e0Ig4TITBqd7wZM/ZdRXj3K37IE9MEqZ3m+Y2eW0Rug
+hiiX0cd4lUR0HWs7d/ye992/6mwqvBrj4RnkCP1wbK7KGeWFJ0LIHv4F8Y6znqBnXYwuhygNg7Iy
+Mxq46tDHzZ5vIbjblhqn7murAAAAAAAA
 
 
---=-QucaXlcD91aQWDyG1vIe--
+--=-Lf8X/bOegneMKG4N7shE--
 
