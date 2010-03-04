@@ -1,65 +1,58 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: How does netfilter decide which in/out-interface a packet has
-Date: Thu, 04 Mar 2010 23:59:27 +0100
-Message-ID: <4B903B4F.2030708@plouf.fr.eu.org>
-References: <20100303165422.18973x8p8ccy6s84@webmail.physik.uni-muenchen.de>	 <4B8E97BA.9070103@plouf.fr.eu.org> <1267698530.22478.27.camel@etppc09.garching.physik.uni-muenchen.de>
+From: Barry Smoke <Barry.Smoke@arklegaudit.gov>
+Subject: untrusted internal(squid/vpn forwarding)
+Date: Thu, 4 Mar 2010 16:20:10 -0600
+Message-ID: <250999BCC487ED429E1673DCFA26CDCC0C5F47020B@postman>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1267698530.22478.27.camel@etppc09.garching.physik.uni-muenchen.de>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+To: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
 
-Christoph Anton Mitterer a =E9crit :
->=20
-> So the kernel basically sees when packets do not leave the box but ar=
-e
-> just "internal traffic" and uses lo for this?
->=20
-> I assume this also applies for byte counters like RX/TX packets and
-> they're accounted on lo?
+I've had an iptables script working for years, but with some recent viruses and such slipping in, and also we've been asked to implement a transparent squid...I got to  looking at the UTIN (untrusted internal network) script as an example...and my head is spinning, I can't see where I have gone wrong...
 
-Yes and yes.
 
->>> "incoming traffic (from remote):
->>> 99.99.99.99 --> 127.x.x.x     =3D> is that possible at all? how wou=
-ld =20
->>> the in=3D/out=3D be?
->> eth0, but the packet is discarded after PREROUTING by the input rout=
-ing
->> decision which prohibits receiving a packet with a loopback address =
-from
->> outside (a non loopback interface).
-> Ah great,... so I don't have to manually drop such stuff... right?
->=20
-> Are such packets dropped (like DROP) or are the rejected with error
-> codes?
+Here is what we are trying to accomplish:
+internal lan, and external internet interfaces aliased to $LAN_IFACE, and $INET_IFACE
 
-They are silently discarded, like DROP. Some of these packets are logge=
-d
-when sysctl net.ipv4.conf.*.log_martians is enabled. Otherwise you can
-log (and drop) them with iptables.
 
->>> "outgoing traffic (to remote):
->>> 127.x.x.x --> 99.99.99.99     =3D> is that possible at all?
->> Not possible, the output routing decision prohibits sending a packet
->> with a loopback address outside the host (on a non loopback interfac=
-e).
-> So the same as above,... this is handled automatically and I don't ne=
-ed
-> to setup specific rules to block such evil.
+1)            a)accept only port 80(apache running a squid reporting engine), and ssh(22) on the squid gateway/firewall
+                b)don't allow either of those on the outside interface
 
-Note that I observed once that the kernel allowed sending IPv6 packets
-outside the host with the source address ::1 (IPv6 loopback address),
-which should be prohibited. I didn't test all "impossible" addresses bu=
-t
-there may be other cases. So it may be worth filtering with ip(6)tables
-anyway.
+here are the rules I've used for this:
+$IPTABLES -A inputrules -p TCP -i $LAN_IFACE -s 10.0.0.0/16 -d 10.0.50.16 --dport 22 -j ACCEPT
+$IPTABLES -A inputrules -p TCP -i $LAN_IFACE -s 10.0.0.0/16 -d 10.0.50.16 --dport 80 -j ACCEPT
 
-> Just out of curiosity,... would it be possible to tell the kernel not=
- to
-> drop such bogus packets at the respective routing decision points?
+2)            prerouting sstp, and pptp vpn's to internal(working 100%) with these rules:
+/sbin/iptables -t nat -A PREROUTING -p tcp -s 0/0 -d 170.94.21.20 --dport 443 -j DNAT  --to-destination 10.0.0.16:443
+/sbin/iptables -t nat -A PREROUTING -p tcp -s 0/0 -d 170.94.21.20 --dport 1723 -j DNAT  --to-destination 10.0.0.16:1723
+/sbin/iptables -t nat -A PREROUTING -p 47 -s 0/0 -d 170.94.21.20 -j DNAT  --to 10.0.0.16
 
-Not without hacking into the kernel source AFAIK.
+3)            redirect squid(but allow 80 requests to the box itself)
+$IPTABLES -t nat -A PREROUTING -p tcp ! -d 10.0.50.16 -i $LAN_IFACE --dport 80  -j REDIRECT --to-port 3128
+
+4)            block any internal requests, but what we allow
+
+5)            forward 443(and possible ssh/ping out)
+$IPTABLES -A FORWARD -p tcp --dport 443 -i $LAN_IFACE -j ACCEPT
+
+
+
+6)            snat everything allowed out.
+$IPTABLES -t nat -A POSTROUTING -o $INET_IFACE -j SNAT --to-source $INET_IP
+
+entire script at:
+http://outside.arklegaudit.gov/rc.firewallUITN.sh
+
+vpn forwarding works, 443 works, 80, I get a single entry in squid log, but nothing else.
+
+Thanks in advance for any help, or suggestions.
+Barry Smoke
+Network Administrator
+AR Division of Legislative Audit
+
+
+
+
