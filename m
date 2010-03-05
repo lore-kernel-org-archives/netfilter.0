@@ -1,23 +1,34 @@
-From: Andrew Kraslavsky <andykras@hotmail.com>
-Subject: IP-in-IP matching
-Date: Thu, 4 Mar 2010 18:48:12 -0800
-Message-ID: <SNT117-W12F2AEEE8E9D0AE07B46BD6380@phx.gbl>
-References: <20100303172001.149912au9jha5s8g@webmail.physik.uni-muenchen.de>
-	 <4B8E9F4A.9080706@plouf.fr.eu.org>
- <1267703243.22478.57.camel@etppc09.garching.physik.uni-muenchen.de>,<4B9049B2.4010000@plouf.fr.eu.org>
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: Traversal of chains for muticast packets .
+Date: Fri, 5 Mar 2010 11:16:04 +0530
+Message-ID: <cfeab66d1003042146p62c3904cncfaedbeca4f41c12@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B9049B2.4010000@plouf.fr.eu.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type;
+        bh=I0PyEAOy6L+HKH0B9d+QD+MjYHWYv3BQ+K0uW6dIJ1U=;
+        b=Acfwaw16iWBAxFSA5hafNiS42TwczXqMYdxpN+Wk/qpcaU6nyoMsG1wcFtIDtmfLEh
+         TfseuaWZoLeChNsdLcscjfs/Qhgtps6UlaAEVGuDEcG8ZEwYvAfRPlwjsV5hl72kz3LJ
+         UAD/ZYCX4jIbTrrfUxNp1UCtAP9pnQYouPWhU=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
+
+Hi,
+
+     "packets those are forwarded traverse thru   "NAT prerouting ->
+Filter Forward -> NAT post Routing chains ."
+
+      But in case of  multicast packets , i can see packets flowing
+thru  "NAT prerouting -> Filter INPUT -> Filtert  Forward -> NAT post
+routing chains . why it is so ?  .
+
+      Note - > I am running igmpproxy for for multicast proxy .
 
 
-For IP-in-IP tunneling (4-in-4, 6-in-6, 4-in-6 and 6-in-4) traffic, is there way to conduct packet filtering on the inner IP packet when the traffic is being forwarded?
-
- 		 	   		  
-_________________________________________________________________
-Hotmail: Free, trusted and rich email service.
-http://clk.atdmt.com/GBL/go/201469228/direct/01/
+Thanks,
+Ratheesh.
