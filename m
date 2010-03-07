@@ -1,117 +1,97 @@
-From: ratheesh k <ratheesh.ksz@gmail.com>
-Subject: Re: Traversal of chains for muticast packets .
-Date: Sun, 7 Mar 2010 12:04:03 +0530
-Message-ID: <cfeab66d1003062234l691f50b2w68dc292b19031435@mail.gmail.com>
-References: <cfeab66d1003042146p62c3904cncfaedbeca4f41c12@mail.gmail.com>
-	 <cfeab66d1003050252n27fb7fa2s5ff92a30b0874566@mail.gmail.com>
-	 <4B90E432.8080802@chello.at>
-	 <cfeab66d1003050337l419ac95es15500603333b6e11@mail.gmail.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: How does netfilter decide which in/out-interface a packet has
+Date: Sun, 07 Mar 2010 13:45:22 +0100
+Message-ID: <4B939FE2.1030208@plouf.fr.eu.org>
+References: <20100303165422.18973x8p8ccy6s84@webmail.physik.uni-muenchen.de>	 <4B8E97BA.9070103@plouf.fr.eu.org>	 <1267698530.22478.27.camel@etppc09.garching.physik.uni-muenchen.de>	 <4B903B4F.2030708@plouf.fr.eu.org> <1267931666.9967.6.camel@fermat.scientia.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:content-type
-         :content-transfer-encoding;
-        bh=Xwr/w0PBj8MpG9AvhffMNlaFVYFWCFMqEHjuPVusiKs=;
-        b=AH8S7xPh/jqhJROCDMjvmExHPMqAyzOv+QXzzN8Pwa6A/UcU0qJcNcLfNVzelFCTNr
-         mX0gH2icJI15ndQ6PeskukhRm+/AGALpX62X/Ncyzsa9rW6cZjtsBVFBBJ2l8Hx9Abar
-         hTEyK5L3jdMuYWrp75m+LxszjAe7oj9f8g3mk=
-In-Reply-To: <cfeab66d1003050337l419ac95es15500603333b6e11@mail.gmail.com>
+In-Reply-To: <1267931666.9967.6.camel@fermat.scientia.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-On Fri, Mar 5, 2010 at 5:07 PM, ratheesh k <ratheesh.ksz@gmail.com> wro=
-te:
-> On Fri, Mar 5, 2010 at 4:30 PM, Mart Frauenlob <mart.frauenlob@chello=
-=2Eat> wrote:
->> On 05.03.2010 11:53, netfilter-owner@vger.kernel.org wrote:
->>> My gateway machine has two interfaces , eth0 is connected to wan an=
-d
->>> eth1 is connected to lan side .
->>>
->>>
->>> iptable -A =A0 =A0INPUT =A0 -i eth0 =A0-p igmp -d 224.0.0.1 -j ACCE=
-PT
->>> iptables -A =A0INPUT =A0 -i eth0 =A0-p igmp -d 224.0.0.2 =A0-j ACCE=
-PT
->>> iptables =A0-A INPUT =A0-i eth0 =A0-j =A0 DROP
->>> iptables =A0-A INPUT -i eth1 -j ACCEPT
->>>
->>>
->>> iptables -A FORWARD -i eth0 -o eth1 -p udp -d =A0mutlicast-address =
--j ACCEPT
->>>
->>> I have above rules , but =A0i cannot see mutlicast packets in my la=
-n
->>> client . But if i have
->>> below rules , it is working . Why i need all rules to be called bot=
-h
->>> in forward and input chain ?
->>> Am i missing something ?
->>>
->>>
->>> iptables -A =A0igmp-rule -i eth0 -p igmp -d 224.0.0.1 -j ACCEPT
->>> iptables -A igmp-rule -i eth0 -p igmp -d 224.0.0.2 =A0-j ACCEPT
->>> iptables -A igmp-rule -i eth0 -o eth1 -p udp -d =A0mutlicast-addres=
-s -j ACCEPT
->>>
->>> iptables -A INPUT -j igmp-rule
->>> iptables -A FORWARD -j igmp-rule
->>>
->>>
->>>
->>>
->>>
->>>
->>> On Fri, Mar 5, 2010 at 11:16 AM, ratheesh k <ratheesh.ksz@gmail.com=
-> wrote:
->>>> Hi,
->>>>
->>>> =A0 =A0 "packets those are forwarded traverse thru =A0 "NAT prerou=
-ting ->
->>>> Filter Forward -> NAT post Routing chains ."
->>>>
->>>> =A0 =A0 =A0But in case of =A0multicast packets , i can see packets=
- flowing
->>>> thru =A0"NAT prerouting -> Filter INPUT -> Filtert =A0Forward -> N=
-AT post
->>>> routing chains . why it is so ? =A0.
->>>>
->>>> =A0 =A0 =A0Note - > I am running igmpproxy for for multicast proxy=
- .
->>>>
->>>>
->>>> Thanks,
->>>> Ratheesh.
->>>>
->>
->> Because you don't do any DNAT, it's your igmproxy which routes the
->> packets. Thus what was INPUT has become FORWARD.
->>
->> Best regards
->>
->> Mart
->> --
->> To unsubscribe from this list: send the line "unsubscribe netfilter"=
- in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->>
->
-> Iif so , can =A0 we remove =A0following rules from FORWARD chain ?
->
-> =A0 iptables -A FORWARD -p igmp -d 224.0.0.1 -j ACCEPT
-> =A0 iptables -A FORWARD -p igmp -d 224.0.0.2 -j ACCEPT
->
-> Thanks,
-> Ratheesh
->
+Christoph Anton Mitterer a =E9crit :
+>=20
+> Before you've said:
+>>> How does netfilter decide which in/out-interface a packet has?
+>> It doesn't. The packet decides which input interface is arrives on, =
+and
+>> the routing decision decides which output interface it leaves.
+>=20
+> So what exactly does it mean?
+> a) If the packet physically arrives on e.g. eth0 ("by wire") it's
+> interface is counted as eth0, regardless of what its destination-addr=
+ess
+> says?
 
-do we need to forward packets destined to 224.0.0.1 , 224.0.0.2 ????
+Short answer : yes.
 
-thanks,
-ratheesh
+Longer answer : more than the physical interface, it is the "logical"
+interface that matters. Such logical interfaces types include bridge
+(br0), bonding (bond0), VLAN (eth0.1), tunnel (tun0, tap0), PPP (ppp0).=
+=2E.
+
+Note that IP aliases such as eth0:1 are just labels and not interfaces,
+neither physical nor logical. They have no existence for the stack and
+netfilter.
+
+> b) If it appears on any interface (e.g. eth0 or eth1) its interface i=
+s
+> counted as that one that matches the destination address on the
+> packet,... even if it appears physically on eth0 but if it still hast
+> the destination address of eth1
+
+No, the address does not matter. In the weak host model, local addresse=
+s
+are considered to be assigned to the host as a whole, not to their
+specific interfaces.
+
+> On Thu, 2010-03-04 at 23:59 +0100, Pascal Hambourg wrote:
+>> Christoph Anton Mitterer a =E9crit :
+>>> So the kernel basically sees when packets do not leave the box but =
+are
+>>> just "internal traffic" and uses lo for this?
+>>> I assume this also applies for byte counters like RX/TX packets and
+>>> they're accounted on lo?
+>> Yes and yes.
+> Do you perhaps know where I can see this in the code?
+
+No, I am just a user, not a developper.
+
+> And is this also the case for v6?
+
+Of course. Why would it be any different ?
+
+>>>>> "incoming traffic (from remote):
+>>>>> 99.99.99.99 --> 127.x.x.x     =3D> is that possible at all? how w=
+ould =20
+>>>>> the in=3D/out=3D be?
+>>>> eth0, but the packet is discarded after PREROUTING by the input ro=
+uting
+>>>> decision which prohibits receiving a packet with a loopback addres=
+s from
+>>>> outside (a non loopback interface).
+>>> Ah great,... so I don't have to manually drop such stuff... right?
+>>> Are such packets dropped (like DROP) or are the rejected with error
+>>> codes?
+>> They are silently discarded, like DROP. Some of these packets are lo=
+gged
+>> when sysctl net.ipv4.conf.*.log_martians is enabled. Otherwise you c=
+an
+>> log (and drop) them with iptables.
+> a) Uhmm... wait... you say "otherwise" does this mean if log_martians=
+ is
+> disabled they are neither logged NOR discarded?
+
+No, they are discarded but not logged. I meant that if a type of packet
+is not considered "martian" by the kernel, you can still log and/or dro=
+p
+it with iptables.
+
+> b) What is all regarded as "martians" here,.. there are different
+> definitions on the web...
+
+Yes, and I don't know for sure what it exactly means. The kernel
+documentation just says "impossible addresses".
