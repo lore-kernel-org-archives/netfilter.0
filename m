@@ -1,154 +1,117 @@
-From: Christoph Anton Mitterer 
-	<christoph.anton.mitterer@physik.uni-muenchen.de>
-Subject: Re: How does netfilter decide which in/out-interface a packet has
-Date: Sun, 07 Mar 2010 04:14:26 +0100
-Message-ID: <1267931666.9967.6.camel@fermat.scientia.net>
-References: <20100303165422.18973x8p8ccy6s84@webmail.physik.uni-muenchen.de>
-	 <4B8E97BA.9070103@plouf.fr.eu.org>
-	 <1267698530.22478.27.camel@etppc09.garching.physik.uni-muenchen.de>
-	 <4B903B4F.2030708@plouf.fr.eu.org>
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: Re: Traversal of chains for muticast packets .
+Date: Sun, 7 Mar 2010 12:04:03 +0530
+Message-ID: <cfeab66d1003062234l691f50b2w68dc292b19031435@mail.gmail.com>
+References: <cfeab66d1003042146p62c3904cncfaedbeca4f41c12@mail.gmail.com>
+	 <cfeab66d1003050252n27fb7fa2s5ff92a30b0874566@mail.gmail.com>
+	 <4B90E432.8080802@chello.at>
+	 <cfeab66d1003050337l419ac95es15500603333b6e11@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="sha1"; protocol="application/x-pkcs7-signature"; boundary="=-yk3j02dLPLBnpzRj05Ej"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B903B4F.2030708@plouf.fr.eu.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=Xwr/w0PBj8MpG9AvhffMNlaFVYFWCFMqEHjuPVusiKs=;
+        b=AH8S7xPh/jqhJROCDMjvmExHPMqAyzOv+QXzzN8Pwa6A/UcU0qJcNcLfNVzelFCTNr
+         mX0gH2icJI15ndQ6PeskukhRm+/AGALpX62X/Ncyzsa9rW6cZjtsBVFBBJ2l8Hx9Abar
+         hTEyK5L3jdMuYWrp75m+LxszjAe7oj9f8g3mk=
+In-Reply-To: <cfeab66d1003050337l419ac95es15500603333b6e11@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
+On Fri, Mar 5, 2010 at 5:07 PM, ratheesh k <ratheesh.ksz@gmail.com> wro=
+te:
+> On Fri, Mar 5, 2010 at 4:30 PM, Mart Frauenlob <mart.frauenlob@chello=
+=2Eat> wrote:
+>> On 05.03.2010 11:53, netfilter-owner@vger.kernel.org wrote:
+>>> My gateway machine has two interfaces , eth0 is connected to wan an=
+d
+>>> eth1 is connected to lan side .
+>>>
+>>>
+>>> iptable -A =A0 =A0INPUT =A0 -i eth0 =A0-p igmp -d 224.0.0.1 -j ACCE=
+PT
+>>> iptables -A =A0INPUT =A0 -i eth0 =A0-p igmp -d 224.0.0.2 =A0-j ACCE=
+PT
+>>> iptables =A0-A INPUT =A0-i eth0 =A0-j =A0 DROP
+>>> iptables =A0-A INPUT -i eth1 -j ACCEPT
+>>>
+>>>
+>>> iptables -A FORWARD -i eth0 -o eth1 -p udp -d =A0mutlicast-address =
+-j ACCEPT
+>>>
+>>> I have above rules , but =A0i cannot see mutlicast packets in my la=
+n
+>>> client . But if i have
+>>> below rules , it is working . Why i need all rules to be called bot=
+h
+>>> in forward and input chain ?
+>>> Am i missing something ?
+>>>
+>>>
+>>> iptables -A =A0igmp-rule -i eth0 -p igmp -d 224.0.0.1 -j ACCEPT
+>>> iptables -A igmp-rule -i eth0 -p igmp -d 224.0.0.2 =A0-j ACCEPT
+>>> iptables -A igmp-rule -i eth0 -o eth1 -p udp -d =A0mutlicast-addres=
+s -j ACCEPT
+>>>
+>>> iptables -A INPUT -j igmp-rule
+>>> iptables -A FORWARD -j igmp-rule
+>>>
+>>>
+>>>
+>>>
+>>>
+>>>
+>>> On Fri, Mar 5, 2010 at 11:16 AM, ratheesh k <ratheesh.ksz@gmail.com=
+> wrote:
+>>>> Hi,
+>>>>
+>>>> =A0 =A0 "packets those are forwarded traverse thru =A0 "NAT prerou=
+ting ->
+>>>> Filter Forward -> NAT post Routing chains ."
+>>>>
+>>>> =A0 =A0 =A0But in case of =A0multicast packets , i can see packets=
+ flowing
+>>>> thru =A0"NAT prerouting -> Filter INPUT -> Filtert =A0Forward -> N=
+AT post
+>>>> routing chains . why it is so ? =A0.
+>>>>
+>>>> =A0 =A0 =A0Note - > I am running igmpproxy for for multicast proxy=
+ .
+>>>>
+>>>>
+>>>> Thanks,
+>>>> Ratheesh.
+>>>>
+>>
+>> Because you don't do any DNAT, it's your igmproxy which routes the
+>> packets. Thus what was INPUT has become FORWARD.
+>>
+>> Best regards
+>>
+>> Mart
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe netfilter"=
+ in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>>
+>
+> Iif so , can =A0 we remove =A0following rules from FORWARD chain ?
+>
+> =A0 iptables -A FORWARD -p igmp -d 224.0.0.1 -j ACCEPT
+> =A0 iptables -A FORWARD -p igmp -d 224.0.0.2 -j ACCEPT
+>
+> Thanks,
+> Ratheesh
+>
 
---=-yk3j02dLPLBnpzRj05Ej
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+do we need to forward packets destined to 224.0.0.1 , 224.0.0.2 ????
 
-Ok... I think I'm confused now ^^
-
-
-Before you've said:
->> How does netfilter decide which in/out-interface a packet has?
->It doesn't. The packet decides which input interface is arrives on, and
->the routing decision decides which output interface it leaves.
-
-So what exactly does it mean?
-a) If the packet physically arrives on e.g. eth0 ("by wire") it's
-interface is counted as eth0, regardless of what its destination-address
-says?
-
-b) If it appears on any interface (e.g. eth0 or eth1) its interface is
-counted as that one that matches the destination address on the
-packet,... even if it appears physically on eth0 but if it still hast
-the destination address of eth1
-
-
-On Thu, 2010-03-04 at 23:59 +0100, Pascal Hambourg wrote:
-> Christoph Anton Mitterer a =C3=A9crit :
-> > So the kernel basically sees when packets do not leave the box but are
-> > just "internal traffic" and uses lo for this?
-> > I assume this also applies for byte counters like RX/TX packets and
-> > they're accounted on lo?
-> Yes and yes.
-Do you perhaps know where I can see this in the code?
-And is this also the case for v6?
-
-
-> >>> "incoming traffic (from remote):
-> >>> 99.99.99.99 --> 127.x.x.x     =3D> is that possible at all? how would=
- =20
-> >>> the in=3D/out=3D be?
-> >> eth0, but the packet is discarded after PREROUTING by the input routin=
-g
-> >> decision which prohibits receiving a packet with a loopback address fr=
-om
-> >> outside (a non loopback interface).
-> > Ah great,... so I don't have to manually drop such stuff... right?
-> > Are such packets dropped (like DROP) or are the rejected with error
-> > codes?
-> They are silently discarded, like DROP. Some of these packets are logged
-> when sysctl net.ipv4.conf.*.log_martians is enabled. Otherwise you can
-> log (and drop) them with iptables.
-a) Uhmm... wait... you say "otherwise" does this mean if log_martians is
-disabled they are neither logged NOR discarded?
-b) What is all regarded as "martians" here,.. there are different
-definitions on the web...
-
-
-> Note that I observed once that the kernel allowed sending IPv6 packets
-> outside the host with the source address ::1 (IPv6 loopback address),
-> which should be prohibited. I didn't test all "impossible" addresses but
-> there may be other cases. So it may be worth filtering with ip(6)tables
-> anyway.
-argl...
-
-
-Thanks,
-Chris.
-
-
---=-yk3j02dLPLBnpzRj05Ej
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIKnjCCBUsw
-ggQzoAMCAQICAimIMA0GCSqGSIb3DQEBBQUAMDYxCzAJBgNVBAYTAkRFMRMwEQYDVQQKEwpHZXJt
-YW5HcmlkMRIwEAYDVQQDEwlHcmlkS2EtQ0EwHhcNMTAwMjAyMTUzODQyWhcNMTEwMzA0MTUzODQy
-WjBTMQswCQYDVQQGEwJERTETMBEGA1UEChMKR2VybWFuR3JpZDEMMAoGA1UECxMDTE1VMSEwHwYD
-VQQDExhDaHJpc3RvcGggQW50b24gTWl0dGVyZXIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEK
-AoIBAQDB2Qx+2tMdrECcbeWidmr8n6M307ZhmRkijL2L4fSfD0tq5dgd6/upKPl/yZszPA9uRnCa
-GJBX+AA5+3GXG9sL/zE88t7c1LdD1rJcO23OO3Z35bWj3zMzhiXFq+rlgqLTixeS4YjEJ45J58BQ
-nvdZW9enAwtF+loQguehemyOv7GTpsbTBzwBcrM2YOdX1DdFBdspvjv/zGbgA8qcVNqKPZ/j1Om0
-nLwDK/q+5yUO4v1m50Y6ApgmGuH9+xCBwKiBhjwR575utKfIBoAYAAZ4GAO0RWB6tsXrLV6OTSj0
-Cvx97+6FbI7btHtLDz62r3KJKHt3YVhLufPPurr6moKfAgMBAAGjggJEMIICQDAMBgNVHRMBAf8E
-AjAAMA4GA1UdDwEB/wQEAwIE8DAdBgNVHQ4EFgQU6mpOncVXSCbY9n7zHlYWcvVMAGcwXgYDVR0j
-BFcwVYAUxnXJKKzRC/w8/7m1HtNfO4BiEjShOqQ4MDYxCzAJBgNVBAYTAkRFMRMwEQYDVQQKEwpH
-ZXJtYW5HcmlkMRIwEAYDVQQDEwlHcmlkS2EtQ0GCAQAwOgYDVR0RBDMwMYEvY2hyaXN0b3BoLmFu
-dG9uLm1pdHRlcmVyQHBoeXNpay51bmktbXVlbmNoZW4uZGUwHwYDVR0SBBgwFoEUZ3JpZGthLWNh
-QGl3ci5memsuZGUwNQYDVR0fBC4wLDAqoCigJoYkaHR0cDovL2dyaWQuZnprLmRlL2NhL2dyaWRr
-YS1jcmwuZGVyMBoGA1UdIAQTMBEwDwYNKwYBBAGUNqssAQEBBTARBglghkgBhvhCAQEEBAMCBaAw
-TgYJYIZIAYb4QgENBEEWP0NlcnRpZmljYXRlIGlzc3VlZCB1bmRlciBDUC9DUFMgdi4gMS41IGF0
-IGh0dHA6Ly9ncmlkLmZ6ay5kZS9jYTAkBglghkgBhvhCAQIEFxYVaHR0cDovL2dyaWQuZnprLmRl
-L2NhMDMGCWCGSAGG+EIBCAQmFiRodHRwOi8vZ3JpZC5memsuZGUvY2EvZ3JpZGthLWNwcy5wZGYw
-MwYJYIZIAYb4QgEDBCYWJGh0dHA6Ly9ncmlkLmZ6ay5kZS9jYS9ncmlka2EtY3JsLmRlcjANBgkq
-hkiG9w0BAQUFAAOCAQEAx4bax1WiHpkiGAtCHawUp7+4CJfRDnrRv5B477+h8ILTY0mzHNumC5Ru
-+RpnfUi4zcbFA8uEnKifTRFeZH6kflC+xhLfg2kiN00Qqy0+IvYcTYo/ZGUhKLV3Q22R8tKpTjuY
-o4svWK0PQoSgcrVccGp7ZzHknKAS3dZjQTSg5JXfeLKrh0JZVRQ2S3CaOGBzTb8hXPSP1iAJ3klw
-hAApYZux9NQmBlEW7DeK5DwKiny+dbuipMrXwASz4tgnI/s9wwEml8tGXjnQDbyz4uRMa2Xyrzg4
-iq+vWHLUsRGC1Api5FsBfBVTQPqRE1isyk8rPYcBoDk7dirgswhHwcK97TCCBUswggQzoAMCAQIC
-AimIMA0GCSqGSIb3DQEBBQUAMDYxCzAJBgNVBAYTAkRFMRMwEQYDVQQKEwpHZXJtYW5HcmlkMRIw
-EAYDVQQDEwlHcmlkS2EtQ0EwHhcNMTAwMjAyMTUzODQyWhcNMTEwMzA0MTUzODQyWjBTMQswCQYD
-VQQGEwJERTETMBEGA1UEChMKR2VybWFuR3JpZDEMMAoGA1UECxMDTE1VMSEwHwYDVQQDExhDaHJp
-c3RvcGggQW50b24gTWl0dGVyZXIwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDB2Qx+
-2tMdrECcbeWidmr8n6M307ZhmRkijL2L4fSfD0tq5dgd6/upKPl/yZszPA9uRnCaGJBX+AA5+3GX
-G9sL/zE88t7c1LdD1rJcO23OO3Z35bWj3zMzhiXFq+rlgqLTixeS4YjEJ45J58BQnvdZW9enAwtF
-+loQguehemyOv7GTpsbTBzwBcrM2YOdX1DdFBdspvjv/zGbgA8qcVNqKPZ/j1Om0nLwDK/q+5yUO
-4v1m50Y6ApgmGuH9+xCBwKiBhjwR575utKfIBoAYAAZ4GAO0RWB6tsXrLV6OTSj0Cvx97+6FbI7b
-tHtLDz62r3KJKHt3YVhLufPPurr6moKfAgMBAAGjggJEMIICQDAMBgNVHRMBAf8EAjAAMA4GA1Ud
-DwEB/wQEAwIE8DAdBgNVHQ4EFgQU6mpOncVXSCbY9n7zHlYWcvVMAGcwXgYDVR0jBFcwVYAUxnXJ
-KKzRC/w8/7m1HtNfO4BiEjShOqQ4MDYxCzAJBgNVBAYTAkRFMRMwEQYDVQQKEwpHZXJtYW5Hcmlk
-MRIwEAYDVQQDEwlHcmlkS2EtQ0GCAQAwOgYDVR0RBDMwMYEvY2hyaXN0b3BoLmFudG9uLm1pdHRl
-cmVyQHBoeXNpay51bmktbXVlbmNoZW4uZGUwHwYDVR0SBBgwFoEUZ3JpZGthLWNhQGl3ci5memsu
-ZGUwNQYDVR0fBC4wLDAqoCigJoYkaHR0cDovL2dyaWQuZnprLmRlL2NhL2dyaWRrYS1jcmwuZGVy
-MBoGA1UdIAQTMBEwDwYNKwYBBAGUNqssAQEBBTARBglghkgBhvhCAQEEBAMCBaAwTgYJYIZIAYb4
-QgENBEEWP0NlcnRpZmljYXRlIGlzc3VlZCB1bmRlciBDUC9DUFMgdi4gMS41IGF0IGh0dHA6Ly9n
-cmlkLmZ6ay5kZS9jYTAkBglghkgBhvhCAQIEFxYVaHR0cDovL2dyaWQuZnprLmRlL2NhMDMGCWCG
-SAGG+EIBCAQmFiRodHRwOi8vZ3JpZC5memsuZGUvY2EvZ3JpZGthLWNwcy5wZGYwMwYJYIZIAYb4
-QgEDBCYWJGh0dHA6Ly9ncmlkLmZ6ay5kZS9jYS9ncmlka2EtY3JsLmRlcjANBgkqhkiG9w0BAQUF
-AAOCAQEAx4bax1WiHpkiGAtCHawUp7+4CJfRDnrRv5B477+h8ILTY0mzHNumC5Ru+RpnfUi4zcbF
-A8uEnKifTRFeZH6kflC+xhLfg2kiN00Qqy0+IvYcTYo/ZGUhKLV3Q22R8tKpTjuYo4svWK0PQoSg
-crVccGp7ZzHknKAS3dZjQTSg5JXfeLKrh0JZVRQ2S3CaOGBzTb8hXPSP1iAJ3klwhAApYZux9NQm
-BlEW7DeK5DwKiny+dbuipMrXwASz4tgnI/s9wwEml8tGXjnQDbyz4uRMa2Xyrzg4iq+vWHLUsRGC
-1Api5FsBfBVTQPqRE1isyk8rPYcBoDk7dirgswhHwcK97TGCAl8wggJbAgEBMDwwNjELMAkGA1UE
-BhMCREUxEzARBgNVBAoTCkdlcm1hbkdyaWQxEjAQBgNVBAMTCUdyaWRLYS1DQQICKYgwCQYFKw4D
-AhoFAKCB+TAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xMDAzMDcw
-MzE0MjNaMCMGCSqGSIb3DQEJBDEWBBTr4boai7kjDnzJHbSTz4cwQy/xTzBLBgkrBgEEAYI3EAQx
-PjA8MDYxCzAJBgNVBAYTAkRFMRMwEQYDVQQKEwpHZXJtYW5HcmlkMRIwEAYDVQQDEwlHcmlkS2Et
-Q0ECAimIME0GCyqGSIb3DQEJEAILMT6gPDA2MQswCQYDVQQGEwJERTETMBEGA1UEChMKR2VybWFu
-R3JpZDESMBAGA1UEAxMJR3JpZEthLUNBAgIpiDANBgkqhkiG9w0BAQEFAASCAQC+WtrPST2hsisU
-HkuJ4z3h3aKFK/xVGiyuUWdC1/3pfzvtpb1q5/YpdhbKS2DXWorVMkA/PKTGm00xGRA+GrLHIux9
-aCRqUFLbcInks9synssR8UXRo2v4B5supjwN0WOyjnNz0kWyUjczfk/FPqMxJZAQlyWCU13vA1pw
-/hooOuDkAoNEVXFk2oJ6vO5iUE7wcIDYcrTb+HayxNq87JTD/U62eUyM9xLrY1Jgy9qMwzF6l9YT
-Ecc4B4DAICnAUacWnQ8ABp2MSBUY2HojbMAJKUmGgy8I4+uVtesoiWSuMCNo1LoC53CdbaO0AeJ7
-wy/IfaEfscoBq8EV6GYW+Uo7AAAAAAAA
-
-
---=-yk3j02dLPLBnpzRj05Ej--
-
+thanks,
+ratheesh
