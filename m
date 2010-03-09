@@ -1,28 +1,43 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [PATCH 40/66] include/linux/netfilter/nf_conntrack_tuple_common.h:
- Checkpatch cleanup
-Date: Mon, 08 Mar 2010 13:13:43 +0100
-Message-ID: <4B94E9F7.4010608@trash.net>
-References: <1267289508-31031-1-git-send-email-andrea.gelmini@gelma.net>	<1267289508-31031-41-git-send-email-andrea.gelmini@gelma.net> <20100228.001235.112611882.davem@davemloft.net>
+From: "Marco Schuth" <marco@it-schuth.net>
+Subject: transparent proxy
+Date: Wed, 10 Mar 2010 00:44:14 +0100
+Message-ID: <21B7BA85E0A248919216BC6546842EFB@sence>
+Reply-To: "Marco Schuth" <marco@it-schuth.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20100228.001235.112611882.davem@davemloft.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: David Miller <davem@davemloft.net>
-Cc: andrea.gelmini@gelma.net, linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed	reply-type=original"
+To: netfilter@vger.kernel.org
 
-David Miller wrote:
-> From: Andrea Gelmini <andrea.gelmini@gelma.net>
-> Date: Sat, 27 Feb 2010 17:51:21 +0100
-> 
->> include/linux/netfilter/nf_conntrack_tuple_common.h:5: ERROR: open brace '{' following enum go on the same line
->>
->> Signed-off-by: Andrea Gelmini <andrea.gelmini@gelma.net>
-> 
-> Acked-by: David S. Miller <davem@davemloft.net>
-> 
 
-Applied, thanks.
+Hello,
+
+Iam using iptables on my router, and have a dedicated proxy server with=
+=20
+squid sarg and squidguard running.
+
+all the clients send the request for a website to the default gw (route=
+r=20
+10.12.0.1) the router redirects (dnat)
+the package to the proxy server ip:10.12.0.250
+but in the logs i get the ip from the router.
+
+so squid guard doesent work and the squid analytic didn=B4t work becaus=
+e it=20
+shows only the ip from the gw (router) with all requestet pages.
+
+how can i change this, that i get in the logs the original ip of the cl=
+ients=20
+?
+
+-----------------------
+maybe: snat with the original ip, but how? and make a second entry in t=
+he=20
+proxy to send all packets back to the proxy ?
+
+no idea.
+
+thanks 4 you help!!!=20
+
