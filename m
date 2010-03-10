@@ -1,38 +1,69 @@
-From: Robert Nichols <rnicholsNOSPAM@comcast.net>
-Subject: Re: drop dhcp request from a particular mac address, after a dhcp
- relay
-Date: Wed, 10 Mar 2010 09:30:26 -0600
-Message-ID: <hn8duq$1kq$1@dough.gmane.org>
-References: <418652.3218.qm@web31505.mail.mud.yahoo.com>
+From: Guillaume Vachon <gvachon@infoglobe.ca>
+Subject: iptables + 2 isp + dnat problem
+Date: Wed, 10 Mar 2010 16:09:50 -0500
+Message-ID: <1268255390.15912.109.camel@gvachon-laptop>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <418652.3218.qm@web31505.mail.mud.yahoo.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-On 03/10/2010 08:30 AM, Ming-Ching Tiew wrote:
->
-> I would like to inhibit a dhcp request from a particular mac address, on the dhcp server.
->
-> If the client is directly LAN connected, I would suppose the following will work :-
->
-> iptables ....... -m mac --mac-source
->
-> But to add a twist to the problem, the machine which must be blocked from obtaining a DHCP IP is connected to a DHCP relay, and therefore, the dhcp server is seeing only the mac adddress of the relay. Can this be accomplished with iptables ?
->
-> Is there a match which works something like this :-
->
->    iptables ..... -m bootp --mac-source 00:08:a1:ab:75:d1 -j DROP ?
->
-> Well, if 'iptables' can't serve the purpose, how about ebtables ?
+Hi all, 
 
-Wouldn't it be a lot easier to adjust the DHCP server's configuration by
-adding a "deny" statement in the pool's permit list?
+I have a Centos5.4 that act as a firewall. I have 2 isp and 3 different
+lan. Everything is working fine using 1 isp. 
 
--- 
-Bob Nichols     "NOSPAM" is really part of my email address.
-                 Do NOT delete it.
+Now this is the first time i configure a second isp on a firewall. Here
+is what i did. (eth4 is my second isp, eth5 my first)
+
+In /etc/iproute2/rt_tables i added :
+201	videotron1
+202	videotron2
+
+In /etc/sysconfig/network-script :
+cat route-eth4
+default via 69.x.x.17 dev eth4 table videotron2 
+add 69.x.x.16/29 dev eth4 src 69.x.x.19 table 202
+
+cat route-eth5
+default via 69.x.x.229 dev eth5 table 201
+add 69.x.x.229/32 dev eth5 src 69.x.x.230 table 201
+
+cat rule-eth4 
+from 69.x.x.16/29 table 202
+fwmark 1 table 202
+
+cat rule-eth5
+from 69.x.x.230/32 table 201
+
+My default gw being eth5
+
+
+With that configured and the proper iptables modification i can now ssh
+on that box from the internet using either my isp1 or isp2 (being eth4
+or eth5)
+
+So that work fine so far. 
+
+Now the point that i dont understant is this. How can i dnat incoming
+traffic on my second isp to a lan server? For example. Im iptables i
+added this :
+-t nat -A PREROUTING -d 69.x.x.18 -p tcp -m tcp --dport 22 -j DNAT
+--to-destination 10.10.200.11:22
+
+Now the traffic gets in my firewall on eth5 that send it localy to
+10.10.200.11 but when the traffic comes back to the firewall it does not
+try to get out using my second isp but the first one. I know i can mark
+packet to solve this. But i dont know how to do it. Should i mark all
+traffic that come in using second isp with a mark so that it can exist
+through that interface?
+
+Thanks in advance
+And i am sorry if i did a bad explanation!
+
+Guillaume Vachon
+
+
 
