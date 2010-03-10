@@ -1,39 +1,34 @@
-From: Amos Jeffries <squid3@treenet.co.nz>
-Subject: Re: transparent proxy
-Date: Wed, 10 Mar 2010 13:23:26 +1300
-Message-ID: <857a760cf2ade9bdadec40329e2e010b@mail.treenet.co.nz>
-References: <21B7BA85E0A248919216BC6546842EFB@sence>
+From: Ming-Ching Tiew <mctiew@yahoo.com>
+Subject: drop dhcp request from a particular mac address, after a dhcp relay
+Date: Wed, 10 Mar 2010 06:30:52 -0800 (PST)
+Message-ID: <418652.3218.qm@web31505.mail.mud.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <21B7BA85E0A248919216BC6546842EFB@sence>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1268231452; bh=DfCspOAAeBExaLsYJa7jG8/iKypIJvVAnkxab2YrjJM=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Subject:To:MIME-Version:Content-Type; b=Sy5yW+a5zBTpT+56MQi/IMOUCelJDuThqWgK8sQd9eQe7Ew55fhe1r01vHRs7VLcnlZhjDsWGzfuGqZOV4vHQZXLIalTdBmeBFECtovOx7Mq9SNlaH+efnM5swrh0XX1hkph2t5x16LQM1xgG9S9kLUGIQHx3zD3zcvts8OLcoU=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Marco Schuth <marco@it-schuth.net>
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Wed, 10 Mar 2010 00:44:14 +0100, "Marco Schuth" <marco@it-schuth.net>
-wrote:
-> Hello,
-> 
-> Iam using iptables on my router, and have a dedicated proxy server with 
-> squid sarg and squidguard running.
-> 
-> all the clients send the request for a website to the default gw (router
 
-> 10.12.0.1) the router redirects (dnat)
-> the package to the proxy server ip:10.12.0.250
-> but in the logs i get the ip from the router.
+I would like to inhibit a dhcp request from a particular mac address, on the dhcp server.
 
-NAT destroys the IP addresses before they leave the machine doing NAT.
-Please read the Squid FAQ examples of how to configure policy routing ...
+If the client is directly LAN connected, I would suppose the following will work :-
 
-Router:
- http://wiki.squid-cache.org/ConfigExamples/Intercept/IptablesPolicyRoute
+iptables ....... -m mac --mac-source 
 
-Squid box:
-  http://wiki.squid-cache.org/ConfigExamples/Intercept/LinuxDnat
+But to add a twist to the problem, the machine which must be blocked from obtaining a DHCP IP is connected to a DHCP relay, and therefore, the dhcp server is seeing only the mac adddress of the relay. Can this be accomplished with iptables ? 
 
-Amos
-Squid Project
+Is there a match which works something like this :-
+
+  iptables ..... -m bootp --mac-source 00:08:a1:ab:75:d1 -j DROP ?
+
+Well, if 'iptables' can't serve the purpose, how about ebtables ?
+
+Regards.
+
+
+
+
+      
