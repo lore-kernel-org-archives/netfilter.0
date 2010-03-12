@@ -1,38 +1,62 @@
-From: Ming-Ching Tiew <mctiew@yahoo.com>
-Subject: Re: drop dhcp request from a particular mac address, after a dhcp relay
-Date: Thu, 11 Mar 2010 18:27:12 -0800 (PST)
-Message-ID: <937499.80494.qm@web31506.mail.mud.yahoo.com>
+From: "Sheepa" <sheepa@sheepa.org>
+Subject: Re: Update delay when using nat table?
+Date: Fri, 12 Mar 2010 04:55:56 +0100
+Message-ID: <3B938449437E420BB7D86FD374AF6BF2@main>
+References: <09084388150B46A2B74F745A8E1272DA@main> <2122a8b921764fb70003e1215e6e38e0@thom.fr.eu.org> <383286BAD7464B6296AB3157C21B3C99@main> <967e5777d730e5c39389a4e554144099@thom.fr.eu.org> <67C8429999B648F983EB141D7A928400@main> <4B9967A5.3070005@chello.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1268360832; bh=BWRRwVbymNE5Nq1o5QFIg242j8Gf1Io4zDX0h/6zOrk=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Subject:To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=kGOMlrD5pRl8Qjttd7UxoRUxomLQ6trNS4iPFBbvuUlT9LHGUjHqTTMD4b5qF56xjK5TPFEo2usHV16WOl0kw4qCUlLuOjK8uyVe3kNQQnYKWZHXzd02kFXgBa3qa1nHLC/aYNCbjWqNFqZWeK+Cp6VGKkmbMDjRLsQ837toqGo=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org, Robert Nichols <rnicholsNOSPAM@comcast.net>
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: netfilter@vger.kernel.org
 
---- On Wed, 3/10/10, Robert Nichols <rnicholsNOSPAM@comcast.net> wrote:
+> On 11.03.2010 19:41, netfilter-owner@vger.kernel.org wrote:
+>> ipset looks intresting but I've no experience of patching the kernel. I
+>> did run an aptitude install ipset.
+>>
+>> ipset -H
+>> I'm of protocol version 2.
+>> Kernel module is not loaded in, cannot verify kernel version.
+>> ipset v2.5.0
+>> ...
+>>
+>> What needs to be done here? I've tried googling around but there's not
+>> that much information available.
+>>
+>
+> Please switch to bottom posting...
+>
+> If on debian, you may need to install netfilter-extensions-modules.
+>
+> Mart
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
- :-
-> >
-> >=A0 =A0 iptables ..... -m bootp --mac-source
-> 00:08:a1:ab:75:d1 -j DROP ?
-> >
-> > Well, if 'iptables' can't serve the purpose, how about
-> ebtables ?
->=20
-> Wouldn't it be a lot easier to adjust the DHCP server's
-> configuration by
-> adding a "deny" statement in the pool's permit list?
->=20
+----- Original Message ----- 
+From: "Mart Frauenlob" <mart.frauenlob@chello.at>
+To: <netfilter@vger.kernel.org>
+Sent: Thursday, March 11, 2010 10:59 PM
+Subject: Re: Update delay when using nat table?
 
-True but manually editing the configuration file will require the dhcp =
-server to be restarted, whereas 'iptables' and/or 'ebtables' can be scr=
-ipted at runtime.
+Ok, sorry.
 
-Cheers.=20
+The only package like that is:
+netfilter-extensions-source                                            - 
+source for netfilter kernel modules derived from patch-o-matic-ng
 
+Source files only I guess.
 
+---
 
+However, i did get conntrack to work. Running this command after i've 
+updated iptables does the trick:
+conntrack -D -p udp --dport 777 --src x.x.x.x
 
-     =20
+This might seem like a noob question. But isn't UDP connectionless? Why/How 
+does it keep track of those connections?
+
+Thanks,
+Sheepa 
