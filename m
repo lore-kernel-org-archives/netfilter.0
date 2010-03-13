@@ -1,54 +1,58 @@
 From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: transparent proxy
-Date: Sat, 13 Mar 2010 09:21:23 +0100
-Message-ID: <4B9B4B03.7000708@chello.at>
-References: <21B7BA85E0A248919216BC6546842EFB@sence> <857a760cf2ade9bdadec40329e2e010b@mail.treenet.co.nz>
+Subject: Re: Update delay when using nat table?
+Date: Sat, 13 Mar 2010 09:38:13 +0100
+Message-ID: <4B9B4EF5.5010700@chello.at>
+References: <09084388150B46A2B74F745A8E1272DA@main> <2122a8b921764fb70003e1215e6e38e0@thom.fr.eu.org> <383286BAD7464B6296AB3157C21B3C99@main> <967e5777d730e5c39389a4e554144099@thom.fr.eu.org> <67C8429999B648F983EB141D7A928400@main> <fb38a2c6c48a619cad79a09967062ef1@thom.fr.eu.org> <12BF43FAE6E84B42B79EC7FF3075058A@main>
 Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <857a760cf2ade9bdadec40329e2e010b@mail.treenet.co.nz>
+In-Reply-To: <12BF43FAE6E84B42B79EC7FF3075058A@main>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 To: netfilter@vger.kernel.org
 
-On 10.03.2010 01:23, netfilter-owner@vger.kernel.org wrote:
-> On Wed, 10 Mar 2010 00:44:14 +0100, "Marco Schuth" <marco@it-schuth.net>
-> wrote:
->> Hello,
+On 12.03.2010 15:14, netfilter-owner@vger.kernel.org wrote:
+>> If you have the kernel build tree, you could simply download ipset f=
+rom
+>> their site ipset.netfilter.org and run make. It works seemlessly.
+>> Otherwise, there is the netfilter-extension-source debian package bu=
+t I
+>> don't know the requirements for this.
 >>
->> Iam using iptables on my router, and have a dedicated proxy server with 
->> squid sarg and squidguard running.
->>
->> all the clients send the request for a website to the default gw (router
-> 
->> 10.12.0.1) the router redirects (dnat)
->> the package to the proxy server ip:10.12.0.250
->> but in the logs i get the ip from the router.
-> 
-> NAT destroys the IP addresses before they leave the machine doing NAT.
-> Please read the Squid FAQ examples of how to configure policy routing ...
-> 
-> Router:
->  http://wiki.squid-cache.org/ConfigExamples/Intercept/IptablesPolicyRoute
-> 
-> Squid box:
->   http://wiki.squid-cache.org/ConfigExamples/Intercept/LinuxDnat
-> 
-> Amos
-> Squid Project
+>> Fran=C3=A7ois
+>=20
+> ----- Original Message ----- From: "Fran=C3=A7ois Legal" <devel@thom.=
+fr.eu.org>
+> To: "Sheepa" <sheepa@sheepa.org>
+> Sent: Friday, March 12, 2010 9:04 AM
+> Subject: Re: Update delay when using nat table?
+>=20
+> This doesn't seem too simple, maybe im getting myself into too deep
+> waters..
+>=20
+> I somewhat followed this guide:
+> http://fxp0.org.ua/2007/jul/29/building-kernel-ipset-support-debian-w=
+ay/
+> but I couldn't get it to work.
+>=20
+> Also, why would there be an ipset package if you still need to downlo=
+ad
+> the source? Can't I just use that one somehow?
+>=20
+> Thanks,
+> Sheepa --
 
 
-Hello,
+if I remember correctly, you need the module-assistant package.
+then install the modules with:
 
-I'd like to ask, if in the above examples, the ACCEPT rules need to be
-placed in the mangle table?
-Is there a specific reason, couldn't it be done in the filter table?
-As that would be the intended/preferred use for filtering?
-If so, don't the examples teach people 'bad manners'?
+module-assistant prepare
+module-assistant auto-install netfilter-extension-modules
+
+I think that's how I did it on debian lenny.
 
 Best regards
 
 Mart
-
