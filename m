@@ -1,64 +1,46 @@
-From: ratheesh k <ratheesh.ksz@gmail.com>
-Subject: Re: udplite and ports
-Date: Sun, 14 Mar 2010 11:13:10 +0530
-Message-ID: <cfeab66d1003132143u76cb0b6i4f88005b9d50d285@mail.gmail.com>
-References: <4B9B568F.7020609@chello.at>
+From: Robert Nichols <rnicholsNOSPAM@comcast.net>
+Subject: Re: drop dhcp request from a particular mac address, after a dhcp
+ relay
+Date: Sun, 14 Mar 2010 16:36:52 -0500
+Message-ID: <hnjktk$lie$1@dough.gmane.org>
+References: <937499.80494.qm@web31506.mail.mud.yahoo.com> <4B9B4860.5010509@chello.at> <hngcvl$e12$1@dough.gmane.org> <alpine.DEB.2.00.1003132023260.16126@aurora.sdinet.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:content-type
-         :content-transfer-encoding;
-        bh=nu2TcUwyVSptP22u1FPM/9TWXWifERKLFoEtm3ag46A=;
-        b=dYOndDlwi5aw/rpIJZNH/aBKRnsQyGuJEqaGm5Z1FQtOXmvViHQaRYOC1NslHZ2tvL
-         RJWp6aJ3ARK+k6sLQMHzjbzaULnR+vGdWSvGYqmtpMTCIQKAhatPgqgkVBE6jqkbil3p
-         yFRhEI2HzQfwXFT+a5P2faXyOsitsPcchiWus=
-In-Reply-To: <4B9B568F.7020609@chello.at>
+In-Reply-To: <alpine.DEB.2.00.1003132023260.16126@aurora.sdinet.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-On Sat, Mar 13, 2010 at 2:40 PM, Mart Frauenlob
-<mart.frauenlob@chello.at> wrote:
-> Hello,
+On 03/13/2010 01:29 PM, Sven-Haegar Koch wrote:
+> On Sat, 13 Mar 2010, Robert Nichols wrote:
 >
-> what am I missing, why is that command not working:
+>> As for iptables, if you're using a high-level firewall builder to
+>> generate the rules, then yes, it will probably reload the entire rule
+>> set if you make any change.  If you work at a lower level and use the
+>> 'iptables' command directly, then only the rule you add or change is
+>> affected.  You can confirm that quite easily by running "iptables -vnL"
+>> before and after the change and observing that the packet counts for
+>> the other rules do not get reset.
 >
-> iptables -A INPUT -i eth2 -p udplite --destination-port 123 -j ACCEPT
-> iptables v1.4.7: unknown option `--destination-port'
-> Try `iptables -h' or 'iptables --help' for more information.
+> No, this is not correct.
 >
+> The iptables command downloads the whole ruleset from the kernel,
+> including current counter values, modifies the downloaded version, and
+> then uploads the whole resulting ruleset (again, with counter
+> values) into the kernel again.
 >
-> uname -a
-> Linux eris 2.6.33-eris-2010-03-06 #1 Sat Mar 6 01:36:52 CET 2010 i686
-> GNU/Linux
->
-> -p udplite -m multiport --ports 123,124 ... works.
->
->
-> Thanks for your help!
->
->
-> Best regards
->
-> Mart
->
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
+> This "download whole ruleset, modify in userspace, upload" cycle is why
+> iptables-restore is so much faster than multiple calls to the iptables
+> program - it only downloads once, applies all changes from the input,
+> and then uploads back to the kernel once.
 
-Could you try option --dport instead of  --destination-port  ?
+Indeed!  I looked at the iptables source, and that's exactly what happens.
 
- These options depends on the iptables librararied . You can do a "nm"
-command on  all the dynamic libraried to see whether it is supported .
-It could be a problem with configuration or  right library might not
-be copied .
+Learn something new every day.  Thanks for the correction.
 
+-- 
+Bob Nichols     "NOSPAM" is really part of my email address.
+                 Do NOT delete it.
 
-Thanks,
-Ratheesh
