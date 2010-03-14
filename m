@@ -1,94 +1,64 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: transparent proxy
-Date: Sat, 13 Mar 2010 22:58:58 +0100
-Message-ID: <4B9C0AA2.1090100@chello.at>
-References: <21B7BA85E0A248919216BC6546842EFB@sence> <857a760cf2ade9bdadec40329e2e010b@mail.treenet.co.nz> <4B9B4B03.7000708@chello.at> <20100313100504.GA10986@minipax> <4B9B804D.7070702@chello.at> <20100313164108.GB10986@minipax>
-Reply-To: netfilter@vger.kernel.org
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: Re: udplite and ports
+Date: Sun, 14 Mar 2010 11:13:10 +0530
+Message-ID: <cfeab66d1003132143u76cb0b6i4f88005b9d50d285@mail.gmail.com>
+References: <4B9B568F.7020609@chello.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20100313164108.GB10986@minipax>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=nu2TcUwyVSptP22u1FPM/9TWXWifERKLFoEtm3ag46A=;
+        b=dYOndDlwi5aw/rpIJZNH/aBKRnsQyGuJEqaGm5Z1FQtOXmvViHQaRYOC1NslHZ2tvL
+         RJWp6aJ3ARK+k6sLQMHzjbzaULnR+vGdWSvGYqmtpMTCIQKAhatPgqgkVBE6jqkbil3p
+         yFRhEI2HzQfwXFT+a5P2faXyOsitsPcchiWus=
+In-Reply-To: <4B9B568F.7020609@chello.at>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-On 13.03.2010 17:41, rob0@gmx.co.uk wrote:
-> On Sat, Mar 13, 2010 at 01:08:45PM +0100, Mart Frauenlob wrote:
->> On 13.03.2010 11:05, netfilter-owner@vger.kernel.org wrote:
-> 
-> NB, your MUA is changing the attribution to the envelope sender.
-> Please don't blame the list owner for what I said! :) In a list
-> reply, the attribution should be the header From: address, not the
-> SMTP envelope sender address.
-> 
-hrm, yes I see that for a while. I use Mozilla Thunderbird on windowz
-(stuck to it here). And it's the only Mailing list where I encounter
-this problem. And it does not occur for all mails. I have no idea why.
-
-
->>> On Sat, Mar 13, 2010 at 09:21:23AM +0100, Mart Frauenlob wrote:
->>>> Amos Jeffries:
->>>>> Please read the Squid FAQ examples of how to configure policy 
->>>>> routing ...
->>>>>
->>>>> Router:
->>>>>  http://wiki.squid-cache.org/ConfigExamples/Intercept/IptablesPolicyRoute
->>>>>
->>>>> Squid box:
->>>>>  http://wiki.squid-cache.org/ConfigExamples/Intercept/LinuxDnat
->>>>
->>>> I'd like to ask, if in the above examples, the ACCEPT
->>>> rules need to be placed in the mangle table?
->>>> Is there a specific reason, couldn't it be done in the
->>>> filter table?
->>>> As that would be the intended/preferred use for filtering?
->>>> If so, don't the examples teach people 'bad manners'?
->>>
->>> I think Mart is misunderstanding the effect of ACCEPT in mangle.
->>> It does not override nor bypass the filter table. It merely
->>> means, "we are done mangling this packet."
->>
->> ACCEPT in mangle differs from ACCEPT in filter?
-> 
-> Strictly speaking, no, ACCEPT is ACCEPT. Look at no more rules,
-> disregard the chain's policy, pass Go, collect $200.
-> 
->> Where is that documented?
->> So you have to ACCEPT it twice? In mangle and in filter table?
-> 
-> And raw, and nat ... the packet hits all relevant chains/tables. Any
-> of these could change a packet's fate. However, IIUC support for the
-> DROP target in nat and mangle has been removed.
+On Sat, Mar 13, 2010 at 2:40 PM, Mart Frauenlob
+<mart.frauenlob@chello.at> wrote:
+> Hello,
+>
+> what am I missing, why is that command not working:
+>
+> iptables -A INPUT -i eth2 -p udplite --destination-port 123 -j ACCEPT
+> iptables v1.4.7: unknown option `--destination-port'
+> Try `iptables -h' or 'iptables --help' for more information.
+>
+>
+> uname -a
+> Linux eris 2.6.33-eris-2010-03-06 #1 Sat Mar 6 01:36:52 CET 2010 i686
+> GNU/Linux
+>
+> -p udplite -m multiport --ports 123,124 ... works.
+>
+>
+> Thanks for your help!
+>
+>
+> Best regards
+>
+> Mart
+>
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
 >
 
+Could you try option --dport instead of  --destination-port  ?
 
-I see. Well thank you! 'Mart' really had some misunderstanding about the
-ACCEPT effect.
-Guess I've always thought about it as the 'opposite' of DROP.
-The man page isn't very clear there.
-'ACCEPT means to let the packet through.'
-would need at least a 'the table' at the end of the sentence.
+ These options depends on the iptables librararied . You can do a "nm"
+command on  all the dynamic libraried to see whether it is supported .
+It could be a problem with configuration or  right library might not
+be copied .
 
->>> The MARK target is one of those sneaky non-terminating targets.
->>> A mark is applied, and the packet continues in that particular
->>> chain. Further -j MARK rules could be applied. The ACCEPT rule
->>> prevents this.
->>
->> Don't we use the RETURN target for that? But yes, that implies a
->> problem, if you RETURN from a user-defined chain.
-> 
-> RETURN in a built-in means "go to the policy." In a user chain it
-> means "go to the next rule in the calling chain". As you point out,
-> there could be issues with that as the example. ACCEPT works. The
-> only minor nitpick I can think of is that the example used -A,
-> whereas -I would have covered more cases of crazy mangle rulesets.
-> 
-> But, -I would fall into the "bad manners" category you were asking
-> about originally. :) If someone has crazy mangle rules, let's hope
-> they understand those rules, because if they don't, they'll have
-> other problems beyond getting their squid working. :)
 
-Best regards
-
-Mart
+Thanks,
+Ratheesh
