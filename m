@@ -1,47 +1,48 @@
-From: Julien Vehent <julien@linuxwall.info>
-Subject: TBF parameters: overhead and linklayer =?UTF-8?Q?=3F?=
-Date: Tue, 16 Mar 2010 07:47:45 +0100
-Message-ID: <26ebdce5177a0bf0b47245b90e6b526c@localhost>
+From: Mart Frauenlob <mart.frauenlob@chello.at>
+Subject: Re: udplite and ports
+Date: Tue, 16 Mar 2010 08:28:29 +0100
+Message-ID: <4B9F331D.4090509@chello.at>
+References: <4B9B568F.7020609@chello.at> <cfeab66d1003132143u76cb0b6i4f88005b9d50d285@mail.gmail.com>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=linuxwall.info; h=
-	mime-version:date:from:to:subject:message-id:content-type:
-	content-transfer-encoding; s=lnw-dkim; bh=HdhxnUUnwlSYdl+rflkVVj
-	WGcHZSLzC68DuaXMsJSI4=; b=oPtrUfMxeWKRuDtkDmRj1Jtq3ucXeX6stTsjUc
-	P+Beml5+2WRRzT+DObFGePIaQDz200flAsxMOkEGEOObzA2IopLJ0ri4Acqp0fvv
-	/fEIqg6+ddFtp+dKUbwQKia9kZIfSbKJhj2s7ei69QBMSzsw4Vo4TaTo/m/SQ3uh
-	3JLkE=
+In-Reply-To: <cfeab66d1003132143u76cb0b6i4f88005b9d50d285@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
+On 14.03.2010 06:43, netfilter-owner@vger.kernel.org wrote:
+> On Sat, Mar 13, 2010 at 2:40 PM, Mart Frauenlob
+> <mart.frauenlob@chello.at> wrote:
+>> Hello,
+>>
+>> what am I missing, why is that command not working:
+>>
+>> iptables -A INPUT -i eth2 -p udplite --destination-port 123 -j ACCEPT
+>> iptables v1.4.7: unknown option `--destination-port'
+>> Try `iptables -h' or 'iptables --help' for more information.
+>>
+>>
+>> uname -a
+>> Linux eris 2.6.33-eris-2010-03-06 #1 Sat Mar 6 01:36:52 CET 2010 i686
+>> GNU/Linux
+>>
+>> -p udplite -m multiport --ports 123,124 ... works.
+>>
+>>
+>> Thanks for your help!
+>>
 
-Hello guys,
+> 
+> Could you try option --dport instead of  --destination-port  ?
+> 
+>  These options depends on the iptables librararied . You can do a "nm"
+> command on  all the dynamic libraried to see whether it is supported .
+> It could be a problem with configuration or  right library might not
+> be copied .
 
-I tried to ask this on netdev, but without luck. Maybe somebody will know
-the answer here.
+of course I tried --dport. Wonder why that should be different in
+regards of libraries.
 
-TC_TBF man page seem outdated (even in latest version of iproute2) and
-doesn't explain what those two parameters do:
-
-# tc qdisc add tbf help
-Usage: ... tbf limit BYTES burst BYTES[/BYTES] rate KBPS [ mtu
-BYTES[/BYTES] ]
-        [ peakrate KBPS ] [ latency TIME ] [ overhead BYTES ] [ linklayer
-TYPE ]
-
-
- - overhead ?
- - linklayer ?
-
-Or did I miss something in the code/manpages?
-
-
-Thanks,
-Julien
---
-To unsubscribe from this list: send the line "unsubscribe netdev" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
