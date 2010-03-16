@@ -1,46 +1,47 @@
-From: Robert Nichols <rnicholsNOSPAM@comcast.net>
-Subject: Re: drop dhcp request from a particular mac address, after a dhcp
- relay
-Date: Sun, 14 Mar 2010 16:36:52 -0500
-Message-ID: <hnjktk$lie$1@dough.gmane.org>
-References: <937499.80494.qm@web31506.mail.mud.yahoo.com> <4B9B4860.5010509@chello.at> <hngcvl$e12$1@dough.gmane.org> <alpine.DEB.2.00.1003132023260.16126@aurora.sdinet.de>
+From: Julien Vehent <julien@linuxwall.info>
+Subject: TBF parameters: overhead and linklayer =?UTF-8?Q?=3F?=
+Date: Tue, 16 Mar 2010 07:47:45 +0100
+Message-ID: <26ebdce5177a0bf0b47245b90e6b526c@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1003132023260.16126@aurora.sdinet.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=linuxwall.info; h=
+	mime-version:date:from:to:subject:message-id:content-type:
+	content-transfer-encoding; s=lnw-dkim; bh=HdhxnUUnwlSYdl+rflkVVj
+	WGcHZSLzC68DuaXMsJSI4=; b=oPtrUfMxeWKRuDtkDmRj1Jtq3ucXeX6stTsjUc
+	P+Beml5+2WRRzT+DObFGePIaQDz200flAsxMOkEGEOObzA2IopLJ0ri4Acqp0fvv
+	/fEIqg6+ddFtp+dKUbwQKia9kZIfSbKJhj2s7ei69QBMSzsw4Vo4TaTo/m/SQ3uh
+	3JLkE=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@vger.kernel.org>
 
-On 03/13/2010 01:29 PM, Sven-Haegar Koch wrote:
-> On Sat, 13 Mar 2010, Robert Nichols wrote:
->
->> As for iptables, if you're using a high-level firewall builder to
->> generate the rules, then yes, it will probably reload the entire rule
->> set if you make any change.  If you work at a lower level and use the
->> 'iptables' command directly, then only the rule you add or change is
->> affected.  You can confirm that quite easily by running "iptables -vnL"
->> before and after the change and observing that the packet counts for
->> the other rules do not get reset.
->
-> No, this is not correct.
->
-> The iptables command downloads the whole ruleset from the kernel,
-> including current counter values, modifies the downloaded version, and
-> then uploads the whole resulting ruleset (again, with counter
-> values) into the kernel again.
->
-> This "download whole ruleset, modify in userspace, upload" cycle is why
-> iptables-restore is so much faster than multiple calls to the iptables
-> program - it only downloads once, applies all changes from the input,
-> and then uploads back to the kernel once.
 
-Indeed!  I looked at the iptables source, and that's exactly what happens.
+Hello guys,
 
-Learn something new every day.  Thanks for the correction.
+I tried to ask this on netdev, but without luck. Maybe somebody will know
+the answer here.
 
--- 
-Bob Nichols     "NOSPAM" is really part of my email address.
-                 Do NOT delete it.
+TC_TBF man page seem outdated (even in latest version of iproute2) and
+doesn't explain what those two parameters do:
 
+# tc qdisc add tbf help
+Usage: ... tbf limit BYTES burst BYTES[/BYTES] rate KBPS [ mtu
+BYTES[/BYTES] ]
+        [ peakrate KBPS ] [ latency TIME ] [ overhead BYTES ] [ linklayer
+TYPE ]
+
+
+ - overhead ?
+ - linklayer ?
+
+Or did I miss something in the code/manpages?
+
+
+Thanks,
+Julien
+--
+To unsubscribe from this list: send the line "unsubscribe netdev" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
