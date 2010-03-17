@@ -1,92 +1,90 @@
-From: Angel Motta <angelmotta@gmail.com>
-Subject: Re: Rules PREROUTING doesn't work
-Date: Wed, 17 Mar 2010 10:20:55 -0500
-Message-ID: <1c1b5a0f1003170820q4cadb03ah4e3f4580f509c5e0@mail.gmail.com>
-References: <1c1b5a0f1003162027s73fe4756yefd48b436375b04b@mail.gmail.com>
-	 <hnqkk4$62v$1@dough.gmane.org>
-	 <alpine.LSU.2.01.1003171419450.6297@obet.zrqbmnf.qr>
+From: Mart Frauenlob <mart.frauenlob@chello.at>
+Subject: Re: Ugly issue with conntrack
+Date: Wed, 17 Mar 2010 16:33:23 +0100
+Message-ID: <4BA0F643.9030903@chello.at>
+References: <4B9FB41C.5000609@limbo.ari.es>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=3+9axiRoLxwUfE3BMW2ikE8r8qB8oiYQM2/AeVlPH9c=;
-        b=prOewjawXbFRKY0qUD0ZW24/SEqEHZPnAK9ciyji6qpl5lTgrdIvk0sgHAW8zfBXEF
-         iwrfipzJIdUYGjq1FkJk29O/S3IgLfj4IU2GVuE3m5jNCuMs2uM5otFCcHxC5TBUafhy
-         vKUJYYSFr7qGRAxmBOorQYQ2cp5HcHpNk1wLE=
-In-Reply-To: <alpine.LSU.2.01.1003171419450.6297@obet.zrqbmnf.qr>
+In-Reply-To: <4B9FB41C.5000609@limbo.ari.es>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Robert Nichols <rnicholsNOSPAM@comcast.net>, netfilter@vger.kernel.org
+To: pushakk@limbo.ari.es
+Cc: netfilter@vger.kernel.org
 
-Thanks for your answers
-
-The explanation of the rule is:
-
- $IPT -t nat -A PREROUTING  -i $IF_EXT -d $TESTVPN -p udp --dport
-5000:6000 -j DNAT --to-destination $IP_DMZ_SERVERVPN
-
-Where:
-IP=3D/sbin/iptables
-IF_EXT=3D external iface
-TEST_VPN=3D Public IP/255.255.255.0 ---> I have noticed this mask is
-incorrect, this may be a cause of problems???
-IP_DMZ_SERVERVPN
-
-When I apply this rule i did iptable-save and I see that NAT and I
-also see my rule with itpables -t nat -L, but the clients vpn still
-are conected to the Firewall with that public IP.
-
-If I stop openvpnserver in Firewall, the clients vpn can ping the
-public IP and still trying conect to the openvpn in Firewall. I can
-see that with the tcpdump the clientsvpn never try to connect to the
-openvpn server behind the firewall, the PREROUTING doesn't work.
-
-Thanks for your assistance.
---
-Angel
-
-2010/3/17 Jan Engelhardt <jengelh@medozas.de>:
-> On Wednesday 2010-03-17 14:14, Robert Nichols wrote:
->> On 03/16/2010 10:27 PM, Angel Motta wrote:
->>> Hi List
->>> This is my first time the I write to this list. I have a problem ca=
-se
->>> with rules PREROUTING.
->>> I am creating a rule PREROUTING from a range of port which request
->>> openvpn client and the problem is that when I apply this rules and
->>> only rules NATs are runing (PREROUTING and POSTROUTING the output o=
+On 16.03.2010 18:15, pushakk@limbo.ari.es wrote:
+> Hello everyone,
+>=20
+> I have a extrange issue with a conntrack entry. There is a nat server
+> configure in this way
+>=20
+>     DMZ  194.139.30.0/23  ---  194.139.30.16  nat 192.168.12.100 ----=
+=20
+> 192.168.12.0/24  private network
+>=20
+> The nat machine does postrouting in all traffic from the private netw=
+ork
+> to DMZ, and there is no problem but in one server in the DMZ with
+> windows 2008 server the traffic doesn't return to the origin, I can s=
+ee
+> the traffic with tcpdump like this
+>=20
+> 17:19:23.971978 IP (tos 0x0, ttl  64, id 0, offset 0, flags [DF], pro=
+to:
+> ICMP (1), length: 84) 192.168.12.91 > 194.139.30.62: ICMP echo reques=
+t,
+> id 12075, seq 1, length 64    <-----   The echo request original OK
+>=20
+> 17:19:23.972094 IP (tos 0x0, ttl  63, id 0, offset 0, flags [DF], pro=
+to:
+> ICMP (1), length: 84) 194.139.30.16 > 194.139.30.62: ICMP echo reques=
+t,
+> id 12075, seq 1, length 64    <------ Masquerade the source IP OK
+>=20
+> 17:19:23.972164 IP (tos 0x0, ttl 128, id 25050, offset 0, flags [none=
+],
+> proto: ICMP (1), length: 84) 194.139.30.62 > 194.139.30.16: ICMP echo
+> reply, id 12075, seq 1, length 64    <------- The echo reply OK
+>=20
+> =BF?=BF?=BF?   <-----------    Lost echo reply not OK
+>=20
+> There isn't the packet from 194.139.30.16 to 192.168.12.91 despite of=
 f
->>> #> =A0iptables -L is blank) the clients openvpn still conect to the
->>> Firewall and not to the SERVERVPN, all requests are processed for
->>> firewall.
->>>
->>> this is the rule:
->>> $IPT -t nat -A PREROUTING =A0-i $IF_EXT -d $TESTVPN -p udp --dport
->>> 5000:6000 -j DNAT --to-destination $IP_DMZ_SERVERVPN
->>
->> That listing command needs to be "iptables -t nat -L". =A0The defaul=
-t is
->> to display only the filter table, which doesn't include the above ru=
-le.
->
-> The listing command should preferably be iptables-save so people get =
-the
-> whole picture, unabridged, and preferably, unobscured.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
+> the conntrack table show
+>=20
+> cat /proc/net/ip_conntrack | grep '30.62'
+> icmp     1 29 src=3D192.168.12.91 dst=3D194.139.30.62 type=3D8 code=3D=
+0 id=3D12075
+> packets=3D11 bytes=3D924 [UNREPLIED] src=3D194.139.30.62 dst=3D194.13=
+9.30.16
+> type=3D0 code=3D0 id=3D12075 packets=3D0 bytes=3D0 mark=3D0 use=3D1
+>=20
+> The packet in tcpdump match on the conntrack entry. "id 12075" in bot=
+h
+> cases, but if I LOG the traffic with the LOG iptables target I see th=
+e
+> reply in INPUT table not in the FORWARD.
+>=20
+> Thank you and sorry for me bad english.
+>=20
+This behaviour indicates, that conntrack classifies the traffic into
+state INVALID. Thus it is not natted, as stateful nat needs traffic to
+be valid for conntrack.
+I don't know why it happens in that particular case, but you can try to
+debug it a little more.
+If your kernel supports it, you can set
+/proc/sys/net/netfilter/nf_conntrack_log_invalid to 1.
 
+-m state --state INVALID -j LOG --log-level debug ....
+in INPUT/FORWARD.
 
+Also providing iptables-save output, kernel version, etc.. is helpful.
 
---=20
-Atte
-Angel Motta Paz
+As this only happens with win2008, you might try to find some IP
+settings there?
+
+Best regards
+
+Mart
