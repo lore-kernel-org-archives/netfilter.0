@@ -1,68 +1,55 @@
 From: ratheesh k <ratheesh.ksz@gmail.com>
-Subject: Re: two default routes
-Date: Mon, 22 Mar 2010 20:35:49 +0530
-Message-ID: <cfeab66d1003220805t41853241jddfa85b54e745315@mail.gmail.com>
-References: <cfeab66d1003220335y1020f343u14097acc1ee50c09@mail.gmail.com>
-	 <4BA784B2.9030406@plouf.fr.eu.org>
+Subject: Nat and firewall holes
+Date: Mon, 22 Mar 2010 21:16:27 +0530
+Message-ID: <cfeab66d1003220846h20c255d4u280ada41d2df1a2b@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=NumM4oZ+I3w+MeV3Yf/L3qnTMsChXBU3SMbi47gs3P4=;
-        b=hxiHIcWEw1TvTGFDQcj41UHfd09HPF6lM64wjuQZTwwe31XF/0WxY9crdlFgcSZCCn
-         eXVJSdi5TMqj+n1mLBErIRNmhibEZJI1SNf0ol6q3dHsB3KECdLRdVzwyqWUg5l9aq7j
-         BZFWhWK8oTzRCCkJKaOks+HhC8P+7GBle/PpQ=
-In-Reply-To: <4BA784B2.9030406@plouf.fr.eu.org>
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type;
+        bh=uxyqIBazKB7ix4n4LCLerW0VW3rbSpl6+69KYL/bkOI=;
+        b=EiNpo9luDEFGFDfMObWyyYGOKEVHsJ8RFokrkSRjyqs15uYqUPpNuYdgf/LGW/Drzl
+         y2NAontoDtY/kQg9pObLMi6YPieif8gwCi6Jn2wNQ+MOpDaDzW4KdlHqFjmJgMc4jqbe
+         LBNXgDc/RHYZW7KFr7L0smCi1t3PtA4+6BoFw=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Mon, Mar 22, 2010 at 8:24 PM, Pascal Hambourg
-<pascal.mail@plouf.fr.eu.org> wrote:
-> Hello,
->
-> ratheesh k a =E9crit :
->>
->> =A0i have two default routes =A0, I used below two commands to add r=
-outes .
->>
->> =A0route add default gw 192.168.1.1 =A0dev eth0 metric 0
->> =A0route add default gw 10.232.18.5 =A0dev eth1 metric 1
->>
->> So =A010.232.18.5 will become the default route since it is added
->> secondly . All packets are routed to this address.
->
-> No. Lower metric wins regardless of route order, so the default gatew=
-ay
-> is 192.168.1.1. You can check with "ip route get <destination>".
->
->> Suppose
->> 10.232.18.5 machine is down =A0, will the packets will use the next
->> default route ?
->
-> No, the kernel has no dead gateway detection AFAIK.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
+hi ,
+
+I have a linux machine'( say B )  with two interfaces ( eth0
+-192.168.1.1  and eth1 - 192.168.55.1 ) .This linux machine works as a
+gateway machine . eth0 is connected to LAN network and eth1 is
+connected to WAN network . below rules are applied on the gateway
+machine .,
+
+    iptables -A  INPUT -i eth0 -j ACCEPT
+    iptables -A INPUT  -i eth1 -j DROP
+
+    iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT
+    iptables -A FORWARD -i eth1 -o eth0 -j DROP
+
+    iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE .
 
 
-Thanks a lot . I have a related question .
-suppose ip  8.8.8.8  is accessible thru gateway 10.232.18.5 and we
-configured the linux machine to accept
-icmp redirect messages ( if we set NET_IPV4_CONF_ACCEPT_REDIRECTS )  .
-Linux will send packet to 8.8.8.8  thru 192.168.1.1 as per default
-route . The gateway machine  ( ip 192.168.1.1 ) will respond back with
-icmp redirect . (I think so ) . So our linux machine can use the other
-route ?
+LAN ---> eth0 : Gateway linux machine :eth1 ---> WAN
 
-thanks,
-ratheesh
+We have machine called A , connected to LAN network and is assigned an
+ip 192.168.1.100 and its gateway is machine B's eth0 interface (
+192.168.1.1 ) .
+if i access "google.com " from machine A , syn packet with dest ip as
+a.b.c.d ( google.com ip ) and  dest port 80 will go to machine B
+(default gateway ) . Since we are masquerading all the packets , it
+will change  source ip with 192.168.55.1 and source port with some
+random port ( say portx ) . Packets from server will be having
+192.18.55.1 ip and port as portx . This will be changed to original ip
+and port by conntrack module .
+
+ My qustion is : if i create a packet with source ip as 192.168.55.1
+and dest port as portx , can i get into the machine B from WAN side .
+
+Thanks,
+Ratheesh.
