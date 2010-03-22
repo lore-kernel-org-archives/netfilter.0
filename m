@@ -1,55 +1,39 @@
-From: ratheesh k <ratheesh.ksz@gmail.com>
-Subject: Nat and firewall holes
-Date: Mon, 22 Mar 2010 21:16:27 +0530
-Message-ID: <cfeab66d1003220846h20c255d4u280ada41d2df1a2b@mail.gmail.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: two default routes
+Date: Mon, 22 Mar 2010 16:47:50 +0100
+Message-ID: <4BA79126.1040903@plouf.fr.eu.org>
+References: <cfeab66d1003220335y1020f343u14097acc1ee50c09@mail.gmail.com>	 <4BA784B2.9030406@plouf.fr.eu.org> <cfeab66d1003220805t41853241jddfa85b54e745315@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:message-id:subject
-         :from:to:content-type;
-        bh=uxyqIBazKB7ix4n4LCLerW0VW3rbSpl6+69KYL/bkOI=;
-        b=EiNpo9luDEFGFDfMObWyyYGOKEVHsJ8RFokrkSRjyqs15uYqUPpNuYdgf/LGW/Drzl
-         y2NAontoDtY/kQg9pObLMi6YPieif8gwCi6Jn2wNQ+MOpDaDzW4KdlHqFjmJgMc4jqbe
-         LBNXgDc/RHYZW7KFr7L0smCi1t3PtA4+6BoFw=
+In-Reply-To: <cfeab66d1003220805t41853241jddfa85b54e745315@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-hi ,
+ratheesh k a =E9crit :
+>=20
+> suppose ip  8.8.8.8  is accessible thru gateway 10.232.18.5 and we
+> configured the linux machine to accept
+> icmp redirect messages ( if we set NET_IPV4_CONF_ACCEPT_REDIRECTS )  =
+=2E
 
-I have a linux machine'( say B )  with two interfaces ( eth0
--192.168.1.1  and eth1 - 192.168.55.1 ) .This linux machine works as a
-gateway machine . eth0 is connected to LAN network and eth1 is
-connected to WAN network . below rules are applied on the gateway
-machine .,
+Do you mean sysctl net.ipv4.conf.<interface>.accept_redirects ?
+Note that this settings is ignored (and so are ICMP redirects) when
+forwarding is enabled, thus when Linux acts as a router.
 
-    iptables -A  INPUT -i eth0 -j ACCEPT
-    iptables -A INPUT  -i eth1 -j DROP
+> Linux will send packet to 8.8.8.8  thru 192.168.1.1 as per default
+> route . The gateway machine  ( ip 192.168.1.1 ) will respond back wit=
+h
+> icmp redirect . (I think so )
 
-    iptables -A FORWARD -i eth0 -o eth1 -j ACCEPT
-    iptables -A FORWARD -i eth1 -o eth0 -j DROP
+If it is configured to do so. If it runs a Linux kernel, see sysctl
+net.ipv4.conf.<interface>.send_redirects.
 
-    iptables -t nat -A POSTROUTING -o eth1 -j MASQUERADE .
+> So our linux machine can use the other route ?
 
+Yes, a temporary redirect route to 8.8.8.8 will be created in the
+routing cache. You can see it with "ip route show cache".
 
-LAN ---> eth0 : Gateway linux machine :eth1 ---> WAN
-
-We have machine called A , connected to LAN network and is assigned an
-ip 192.168.1.100 and its gateway is machine B's eth0 interface (
-192.168.1.1 ) .
-if i access "google.com " from machine A , syn packet with dest ip as
-a.b.c.d ( google.com ip ) and  dest port 80 will go to machine B
-(default gateway ) . Since we are masquerading all the packets , it
-will change  source ip with 192.168.55.1 and source port with some
-random port ( say portx ) . Packets from server will be having
-192.18.55.1 ip and port as portx . This will be changed to original ip
-and port by conntrack module .
-
- My qustion is : if i create a packet with source ip as 192.168.55.1
-and dest port as portx , can i get into the machine B from WAN side .
-
-Thanks,
-Ratheesh.
+Note : This does not seem to be much related to netfilter.
