@@ -1,57 +1,35 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: nf_ct_ftp: dropping packet
-Date: Fri, 19 Mar 2010 16:24:59 +0100
-Message-ID: <4BA3974B.2060404@trash.net>
-References: <201003191310.02079.mm@yuhu.biz> <4BA38C1A.6050103@trash.net> <201003191643.04191.mm@yuhu.biz>
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: two default routes
+Date: Mon, 22 Mar 2010 16:05:24 +0530
+Message-ID: <cfeab66d1003220335y1020f343u14097acc1ee50c09@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <201003191643.04191.mm@yuhu.biz>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:message-id:subject
+         :from:to:content-type;
+        bh=x1lWDwmee9rzL0VLspbrrjsiBa1a6t4AEQEmMZ9b1N8=;
+        b=EY94MajztIkC7IRwwGCdrDb1upG3O7L8JJZLQRdjFJ0yvC+mu8JooTuHE7QiWrZsg7
+         MwqrQu7MCJDp4mFSZXSN4wJxzeRaGdKBjdOIY7hvgxsU+sHGSvoDwKVV0S+oKADvLNpz
+         ye2XwrmYyRnnorQKOf5J7AqfKdkzKjDtTMBw0=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Marian Marinov <mm@yuhu.biz>
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Marian Marinov wrote:
-> On Friday 19 March 2010 16:37:14 Patrick McHardy wrote:
->   
->> Marian Marinov wrote:
->>     
->>> Hello,
->>> I'm working for a fairly large shared hosting provider. Recently we
->>> decided to upgrade the kernel of our servers to 2.6.33. However, during
->>> the testing phase we started to see these messages in the logs:
->>>
->>> Mar 18 07:52:26 serv01 kernel: nf_ct_ftp: dropping packetIN= OUT=eth0
->>> SRC=212.212.212.12 DST=204.16.203.11 LEN=53 TOS=0x10 PREC=0x00 TTL=64
->>> ID=21858 DF PROTO=TCP SPT=21 DPT=47282 SEQ=1836474396 ACK=1448911219
->>> WINDOW=23 RES=0x00 ACK PSH FIN URGP=0
->>>
->>> We don't have iptables LOG rules, this is generated directly from the
->>> kernel.
->>>
->>> 212.212... is not a real IP I have substituted it.
->>>
->>> Our kernel is 2.6.33 with GRsecurity patch.
->>>
->>> We don't have any problems with the ftp service, however the messages in
->>> the log files are annoying.
->>>
->>> Can someone tell me what can cause those?
->>>       
->> The helper decided to drop a packet. This is usually cause by partial
->> FTP command matches, which can't be handled.
->>
->>     
->>> My current thoughts are to remove the printk from the kernel. But is
->>> there a better solution?
->>>       
->> If you don't use logging, unload the ipt_LOG module.
->>     
->
-> It is not loaded, and I still see those messages... 
+Hi ,
 
-In that case you must have linked it statically. Without it, there are
-no messages.
+ i have two default routes  , I used below two commands to add routes .
 
+ route add default gw 192.168.1.1  dev eth0 metric 0
+ route add default gw 10.232.18.5  dev eth1 metric 1
+
+So  10.232.18.5 will become the default route since it is added
+secondly . All packets are routed to this address . Suppose
+10.232.18.5 machine is down  , will the packets will use the next
+default route ? . Could you please mention any case in which packets
+will use the route 192.168.1.1 .?
+
+Thanks,
+Ratheesh
