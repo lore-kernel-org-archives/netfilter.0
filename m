@@ -1,27 +1,23 @@
-From: Jan Engelhardt <jengelh@medozas.de>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: two default routes
-Date: Mon, 22 Mar 2010 17:26:49 +0100 (CET)
-Message-ID: <alpine.LSU.2.01.1003221726230.22830@obet.zrqbmnf.qr>
-References: <cfeab66d1003220335y1020f343u14097acc1ee50c09@mail.gmail.com>  <4BA784B2.9030406@plouf.fr.eu.org>  <cfeab66d1003220805t41853241jddfa85b54e745315@mail.gmail.com>  <4BA79126.1040903@plouf.fr.eu.org>
- <56378e321003220921t18f7282cx658012b8bb8235bd@mail.gmail.com>
+Date: Mon, 22 Mar 2010 17:53:05 +0100
+Message-ID: <4BA7A071.6010908@plouf.fr.eu.org>
+References: <cfeab66d1003220335y1020f343u14097acc1ee50c09@mail.gmail.com>	 <4BA784B2.9030406@plouf.fr.eu.org>	 <cfeab66d1003220805t41853241jddfa85b54e745315@mail.gmail.com>	 <4BA79126.1040903@plouf.fr.eu.org> <cfeab66d1003220856m194476e3u1bf391b4e55b3c35@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <56378e321003220921t18f7282cx658012b8bb8235bd@mail.gmail.com>
+In-Reply-To: <cfeab66d1003220856m194476e3u1bf391b4e55b3c35@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Richard Horton <arimus.uk@googlemail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-On Monday 2010-03-22 17:21, Richard Horton wrote:
-
->On 22 March 2010 15:47, Pascal Hambourg <pascal.mail@plouf.fr.eu.org> wrote:
->> Note : This does not seem to be much related to netfilter.
+ratheesh k a =E9crit :
+> On Mon, Mar 22, 2010 at 9:17 PM, Pascal Hambourg
 >
->
->IP Routing is about the one area of linux which lacks a decent mailing
->list - the iproute/lartc mailing lists are dead/defunct/ex-mailing
->lists :(
+> I agree . I should not ask this kind of questions here ( any thing
+> other than netfilter )  ?
 
-NF will happily jump in :)
+It's fine with me if no one else complains. There is a more general
+Linux networking list, linux-net, which does not seem to receive much
+traffic though.
