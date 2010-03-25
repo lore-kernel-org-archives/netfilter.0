@@ -1,88 +1,57 @@
-From: ratheesh k <ratheesh.ksz@gmail.com>
-Subject: Re: order of HOOK functions
-Date: Tue, 23 Mar 2010 21:43:32 +0530
-Message-ID: <cfeab66d1003230913u499712dbp164e2fdb72a6491a@mail.gmail.com>
-References: <cfeab66d1003230911q931ed69od7d0d38b013a175b@mail.gmail.com>
+From: hyperbatus@gmx.de
+Subject: Netfilter internal packet flow
+Date: Thu, 25 Mar 2010 10:03:29 +0100
+Message-ID: <20100325090329.11170@gmx.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:message-id:subject:from:to:content-type
-         :content-transfer-encoding;
-        bh=dAGkfEU9ho7mMUOVlWinXiRN10Nnh3weRH7k+mS9lJw=;
-        b=bj6L1U2Z53zTcPW0xKAievBRYi+a6iJQJnnZjohATI/sGHcfsGvN1O6KOUmxpSFue5
-         djMbNOMlFrOagIDLFZpNNkhKYUVwj7LU6J0dKiIE5u+NTV/PURObnKIHIG16W9XRlWAG
-         nxT3FiQkSwWyfkCHV22MyXGnObjtUBeLpJJNU=
-In-Reply-To: <cfeab66d1003230911q931ed69od7d0d38b013a175b@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-On Tue, Mar 23, 2010 at 9:41 PM, ratheesh k <ratheesh.ksz@gmail.com> wr=
-ote:
-> I have a rule
->
-> R1------> =A0iptables -A FORWARD =A0-j ACCEPT =A0-
->
-> After applying =A0the above rule , i executed the below program
->
->
-> *********************************************************************=
-***********************************
-> /* copied from http://sts.synflood.de/dump/doc/p61-0x0d_Hacking_the_L=
-inux_Kernel_Network_Stack.txt
-> */
->
->
-> =A0 /* Initialisation routine */
-> =A0 =A0 =A0 =A0 =A0int init_module()
-> =A0 =A0 =A0 =A0 =A0{
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0/* Fill in our hook structure */
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0nfho.hook =A0 =A0 =3D hook_func;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0/* Handler function */
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0nfho.hooknum =A0=3D NF_IP_PRE_ROUTING; /* =
-=46irst for IPv4 */
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0nfho.pf =A0 =A0 =A0 =3D PF_INET;
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0nfho.priority =3D NF_IP_PRI_FIRST; =A0 /* =
-Make our func first */
->
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0nf_register_hook(&nfho);
->
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0return 0;
-> =A0 =A0 =A0 =A0 =A0}
->
-> /* This is the hook function itself */
-> unsigned int hook_func(unsigned int hooknum,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 struct sk_buff **skb,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 const struct net_device *=
-in,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 const struct net_device *=
-out,
-> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 int (*okfn)(struct sk_buf=
-f *))
-> {
-> =A0 =A0return NF_DROP; =A0 =A0 =A0 =A0 =A0 /* Drop ALL packets */
-> }
->
-> *********************************************************************=
-*********************************************************
-> I executed below rule - R2 =A0 .
->
-> R2 =A0 --- > iptables =A0-I =A0FORWARD -j REJECT .
->
->
-> Question : to which target is chosen ( DROP or REJECT or ACCEPT ) . {
-> order of hook function ?? }
->
-> Thanks,
-> RAtheesh
+Dear list,
+
+thanks to googling and RTFMing and some very instructive graphics, I th=
+ink I have understood the netfilter packet flow in principle.
+
+But all material I have found only seems to describe the journey of pac=
+kets which really come from the "outside" or go to the "outside". I wou=
+ld be strongly interested in some documentation describing what happens=
+ to packets that are internally generated and absorbed.
+
+=46or example, even with one NIC and one IP address, there are packets =
+going from the IP address to loopback and vice versa, so the packets ar=
+e generated locally and received locally.
+
+According to my testing so far (linux kernel 2.6.26 / debian lenny), th=
+e behaviour of these packets seems to contradict the documents and grap=
+hics I have seen. Such packets seem to go through the INPUT and OUTPUT =
+chains of the FILTER table and through one or two chains of the NAT tab=
+le (I just can't remember exactly at the moment), but not through the P=
+REROUTING chain of the NAT table. This is confusing ...
+
+I would be grateful if somebody could give a comprehensive explanation =
+of that or a hint regarding further documentation.
+
+By the way, the graphics I have mentioned are:
+
+http://jengelh.medozas.de/images/nf-packet-flow.png
+http://dmiessler.com/images/DM_NF.PNG
+http://linux-ip.net/nf/nfk-traversal.png
+http://ebtables.sourceforge.net/br_fw_ia/PacketFlow.png
+http://xkr47.outerspace.dyndns.org/netfilter/packet_flow/packet_flow10.=
+png
+
+Perhaps it would be sufficient for understanding if somebody, refering =
+to the first of these graphics, could just explain which part of the gr=
+aph "purely internal" packets have to travel through.
+
+Thank you very much,
+
+Peter
 
 
-
-There is a mistake in the question . Hook is NF_IP_FORWARD  .
-
-Thanks,
-Ratheesh
+--=20
+GMX.at - =D6sterreichs FreeMail-Dienst mit =FCber 2 Mio Mitgliedern
+E-Mail, SMS & mehr! Kostenlos: http://portal.gmx.net/de/go/atfreemail
