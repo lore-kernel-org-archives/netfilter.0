@@ -1,57 +1,44 @@
-From: hyperbatus@gmx.de
-Subject: Netfilter internal packet flow
-Date: Thu, 25 Mar 2010 10:03:29 +0100
-Message-ID: <20100325090329.11170@gmx.net>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Netfilter internal packet flow
+Date: Thu, 25 Mar 2010 11:14:18 +0100
+Message-ID: <4BAB377A.5090107@plouf.fr.eu.org>
+References: <20100325090329.11170@gmx.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20100325090329.11170@gmx.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-Dear list,
+Hello,
 
-thanks to googling and RTFMing and some very instructive graphics, I th=
-ink I have understood the netfilter packet flow in principle.
+hyperbatus@gmx.de a =E9crit :
+>=20
+> According to my testing so far (linux kernel 2.6.26 / debian lenny),
+> the behaviour of these packets seems to contradict the documents and
+> graphics I have seen. Such packets seem to go through the INPUT and
+> OUTPUT chains of the FILTER table and through one or two chains of th=
+e
+> NAT table (I just can't remember exactly at the moment), but not thro=
+ugh
+> the PREROUTING chain of the NAT table. This is confusing ...
 
-But all material I have found only seems to describe the journey of pac=
-kets which really come from the "outside" or go to the "outside". I wou=
-ld be strongly interested in some documentation describing what happens=
- to packets that are internally generated and absorbed.
+In most graphics a part is missing after the POSTROUTING and INPUT
+chains : the "conntrack confirm", which confirms the creation of a new
+conntrack entry for a NEW packet only when the packet reaches that step=
+=2E
+So if the packet is dropped before, the new conntrack entry is not
+confirmed. IIUC, a packet can go through the nat *chains* (not to be
+confused with the nat *table*) only when its conntrack entry is not
+confirmed yet. That's why only the first packet of a new connection
+enters the nat chains.
 
-=46or example, even with one NIC and one IP address, there are packets =
-going from the IP address to loopback and vice versa, so the packets ar=
-e generated locally and received locally.
-
-According to my testing so far (linux kernel 2.6.26 / debian lenny), th=
-e behaviour of these packets seems to contradict the documents and grap=
-hics I have seen. Such packets seem to go through the INPUT and OUTPUT =
-chains of the FILTER table and through one or two chains of the NAT tab=
-le (I just can't remember exactly at the moment), but not through the P=
-REROUTING chain of the NAT table. This is confusing ...
-
-I would be grateful if somebody could give a comprehensive explanation =
-of that or a hint regarding further documentation.
-
-By the way, the graphics I have mentioned are:
-
-http://jengelh.medozas.de/images/nf-packet-flow.png
-http://dmiessler.com/images/DM_NF.PNG
-http://linux-ip.net/nf/nfk-traversal.png
-http://ebtables.sourceforge.net/br_fw_ia/PacketFlow.png
-http://xkr47.outerspace.dyndns.org/netfilter/packet_flow/packet_flow10.=
-png
-
-Perhaps it would be sufficient for understanding if somebody, refering =
-to the first of these graphics, could just explain which part of the gr=
-aph "purely internal" packets have to travel through.
-
-Thank you very much,
-
-Peter
-
-
---=20
-GMX.at - =D6sterreichs FreeMail-Dienst mit =FCber 2 Mio Mitgliedern
-E-Mail, SMS & mehr! Kostenlos: http://portal.gmx.net/de/go/atfreemail
+When a packet is looped back, it reaches the conntrack confirm after
+POSTROUTING, so it skips the nat PREROUTING chain. Anyway that makes
+sense : if the destination could be changed in PREROUTING, the packet
+may need to be re-routed through another interface but I don't think
+there is a routing decision after PREROUTING for the loopback (routing
+decision already took place on output). If you need DNAT on loopback,
+you can do it in OUTPUT.
