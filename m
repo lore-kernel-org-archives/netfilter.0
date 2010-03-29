@@ -1,7 +1,7 @@
 From: "J. Bakshi" <joydeep@infoservices.in>
 Subject: Re: ssh overflow blacklisting not working properly
-Date: Mon, 29 Mar 2010 16:52:21 +0530
-Message-ID: <4BB08D6D.4050700@infoservices.in>
+Date: Mon, 29 Mar 2010 16:52:30 +0530
+Message-ID: <4BB08D76.9010006@infoservices.in>
 References: <4BB0574A.2060106@infoservices.in> <56378e321003290118i2fd96c99l29f2590743e5fb36@mail.gmail.com> <4BB08644.1060009@infoservices.in> <alpine.LSU.2.01.1003291303410.16683@obet.zrqbmnf.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
@@ -41,7 +41,7 @@ source
 >  =20
 
 
-Could you kindly enlighten me in that direcxtion with possibly little
+Could you kindly enlighten me in that direction with possibly little
 examples.
 
 thanks
