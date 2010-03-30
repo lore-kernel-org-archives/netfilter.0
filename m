@@ -1,53 +1,40 @@
-From: John Haxby <john.haxby@oracle.com>
-Subject: Re: Brouter basic question .
-Date: Tue, 30 Mar 2010 16:00:16 +0100
-Message-ID: <4BB21200.1080807@oracle.com>
-References: <cfeab66d1003300601l140102e0nd8111713140044b5@mail.gmail.com>
+From: Roman Tsisyk <roman@tsisyk.com>
+Subject: Re: NetFlow / sFlow / IPFIX network probe proposal
+Date: Tue, 30 Mar 2010 22:57:20 +0700
+Message-ID: <faefb3f11003300857h48b2c4eescb3de63f3b86adfe@mail.gmail.com>
+References: <faefb3f11003300706x16b73a2coefe5079284583db2@mail.gmail.com>
+	 <alpine.LSU.2.01.1003301647320.19967@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <cfeab66d1003300601l140102e0nd8111713140044b5@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <linux-net-owner@vger.kernel.org>
+In-Reply-To: <alpine.LSU.2.01.1003301647320.19967@obet.zrqbmnf.qr>
+Sender: linux-net-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: ratheesh k <ratheesh.ksz@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, linux-net@vger.kernel.org
 
-On 30/03/10 14:01, ratheesh k wrote:
-> Hi ,
+On Tue, Mar 30, 2010 at 9:29 PM, Changli Gao <xiaosuo@gmail.com> wrote:
+> I am interested in this feature. FreeBSD supports netflow v5, and
+> netflow v5 is more common, we can support it first, then add others.
+
+We used ng_netflow before PF_RING. There was a lot of problems with
+ksocket udp packets loss in the BSD kernel.  After that we have
+switched to the ntop solution.
+Ipt_NETFLOW provides basic v5 support, but as I already said doesn't
+have flexible configuration and other features. So I intend to make
+universal module and start with v5.
+
+On Tue, Mar 30, 2010 at 9:56 PM, Jan Engelhardt <jengelh@medozas.de> wrote:
+> On Tuesday 2010-03-30 16:06, Roman Tsisyk wrote:
 >
->   i have a rule
+> iptables does not drop these, your NIC does when it's not in promiscuous mode.
 >
->             ebtables -t broute -A BROUTING -j ACCEPT .
->
-> So packet wont traverse any other chain ?  ( Prerouting , Input ,
-> Forward , Postrouting ) ???
->    
 
-I thought this was obvious, but on second thoughts, it's probably not as 
-obvious as all that
+If I am no mistaken, for all packets whose mac doesn't match to the
+nic mac pkt_type is set to PACKET_OTHERHOST.
+Iptables drop packets with PACKET_OTHERHOST, I don't remember exactly
+where, may be in ip_rcv routine.
 
-$ man ebtables
-...
-                          The targets DROP and ACCEPT have a special 
-meaning in
-               the broute table (these names are used instead of more  
-descrip-
-               tive  names  to keep the implementation generic).  DROP 
-actually
-               means the frame has to be routed, while ACCEPT means  
-the  frame
-               has  to  be bridged.
-
-and in the diagram that Jan pointed to 
-(http://upload.wikimedia.org/wikipedia/commons/3/37/Netfilter-packet-flow.svg) 
-it becomes clear: -J ACCEPT means that the frame goes to the ebtables 
-nat table; DROP means it goes up into the network layer for iptables to 
-play with.
-
-You'll make life easier for yourself as well if you call layer two 
-things "frames" and layer three things "packets".
-
-jch
-
-
+-- 
+WBR, Tsisyk Roman
