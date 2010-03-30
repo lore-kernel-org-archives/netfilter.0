@@ -1,39 +1,41 @@
 From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Brouter basic question .
-Date: Tue, 30 Mar 2010 16:47:20 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1003301642380.19967@obet.zrqbmnf.qr>
-References: <cfeab66d1003300601l140102e0nd8111713140044b5@mail.gmail.com> <4BB20922.20704@unipex.it>
+Subject: Re: NetFlow / sFlow / IPFIX network probe proposal
+Date: Tue, 30 Mar 2010 16:56:45 +0200 (CEST)
+Message-ID: <alpine.LSU.2.01.1003301647320.19967@obet.zrqbmnf.qr>
+References: <faefb3f11003300706x16b73a2coefe5079284583db2@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4BB20922.20704@unipex.it>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <linux-net-owner@vger.kernel.org>
+In-Reply-To: <faefb3f11003300706x16b73a2coefe5079284583db2@mail.gmail.com>
+Sender: linux-net-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Michele Petrazzo - Unipex <michele.petrazzo@unipex.it>
-Cc: ratheesh k <ratheesh.ksz@gmail.com>, netfilter@vger.kernel.org
+To: Roman Tsisyk <roman@tsisyk.com>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, linux-net@vger.kernel.org
 
-On Tuesday 2010-03-30 16:22, Michele Petrazzo - Unipex wrote:
+On Tuesday 2010-03-30 16:06, Roman Tsisyk wrote:
 
-> ratheesh k ha scritto:
->> Hi ,
->>
->>  i have a rule
->>
->>            ebtables -t broute -A BROUTING -j ACCEPT .
->>
->> So packet wont traverse any other chain ?  ( Prerouting , Input ,
->> Forward , Postrouting ) ???
->>
+># Probe one network to first server
+>iptables -A FORWARD -s 192.168.0.0/24 -j PROBE --target 0
+>iptables -A FORWARD -d 192.168.0.0/24 -j PROBE --target 0
 >
-> http://ebtables.sourceforge.net/br_fw_ia/br_fw_ia.html
+># Probe another network to second server
+>iptables -A FORWARD -s 192.168.5.0/24 -j PROBE --target 1
+>iptables -A FORWARD -d 192.168.5.0/24 -j PROBE --target 1
 >
-> And
+># Probe outgoing email flow to third server
+>iptables -A FORWARD -s 192.168.5.0/24 --dport 25 -j PROBE --target 2
+>---
 >
-> http://ebtables.sourceforge.net/br_fw_ia/PacketFlow.png
->
-> broute and iptables chains are different things.
+>4. Support for exporting statistics via /proc
+>Traffic and packet rate, udp socket information and everything what
+>can be useful.
 
-These graphics are outdated. Please see the one from
-http://en.wikipedia.org/wiki/Iptables  instead (which represents modern 
-kernels).
+Should probably be using netlink or sysfs instead.
+
+>6. Support for capturing mirrored to NIC packets (which is addressed
+>to another host).
+>Of course, Iptables simple drop these crap packets. May be make sysctl
+>option for this feature?
+
+iptables does not drop these, your NIC does when it's not in promiscuous mode.
