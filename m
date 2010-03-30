@@ -1,41 +1,53 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: NetFlow / sFlow / IPFIX network probe proposal
-Date: Tue, 30 Mar 2010 16:56:45 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1003301647320.19967@obet.zrqbmnf.qr>
-References: <faefb3f11003300706x16b73a2coefe5079284583db2@mail.gmail.com>
+From: John Haxby <john.haxby@oracle.com>
+Subject: Re: Brouter basic question .
+Date: Tue, 30 Mar 2010 16:00:16 +0100
+Message-ID: <4BB21200.1080807@oracle.com>
+References: <cfeab66d1003300601l140102e0nd8111713140044b5@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <linux-net-owner@vger.kernel.org>
-In-Reply-To: <faefb3f11003300706x16b73a2coefe5079284583db2@mail.gmail.com>
-Sender: linux-net-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Roman Tsisyk <roman@tsisyk.com>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, linux-net@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <cfeab66d1003300601l140102e0nd8111713140044b5@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: ratheesh k <ratheesh.ksz@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-On Tuesday 2010-03-30 16:06, Roman Tsisyk wrote:
-
-># Probe one network to first server
->iptables -A FORWARD -s 192.168.0.0/24 -j PROBE --target 0
->iptables -A FORWARD -d 192.168.0.0/24 -j PROBE --target 0
+On 30/03/10 14:01, ratheesh k wrote:
+> Hi ,
 >
-># Probe another network to second server
->iptables -A FORWARD -s 192.168.5.0/24 -j PROBE --target 1
->iptables -A FORWARD -d 192.168.5.0/24 -j PROBE --target 1
+>   i have a rule
 >
-># Probe outgoing email flow to third server
->iptables -A FORWARD -s 192.168.5.0/24 --dport 25 -j PROBE --target 2
->---
+>             ebtables -t broute -A BROUTING -j ACCEPT .
 >
->4. Support for exporting statistics via /proc
->Traffic and packet rate, udp socket information and everything what
->can be useful.
+> So packet wont traverse any other chain ?  ( Prerouting , Input ,
+> Forward , Postrouting ) ???
+>    
 
-Should probably be using netlink or sysfs instead.
+I thought this was obvious, but on second thoughts, it's probably not as 
+obvious as all that
 
->6. Support for capturing mirrored to NIC packets (which is addressed
->to another host).
->Of course, Iptables simple drop these crap packets. May be make sysctl
->option for this feature?
+$ man ebtables
+...
+                          The targets DROP and ACCEPT have a special 
+meaning in
+               the broute table (these names are used instead of more  
+descrip-
+               tive  names  to keep the implementation generic).  DROP 
+actually
+               means the frame has to be routed, while ACCEPT means  
+the  frame
+               has  to  be bridged.
 
-iptables does not drop these, your NIC does when it's not in promiscuous mode.
+and in the diagram that Jan pointed to 
+(http://upload.wikimedia.org/wikipedia/commons/3/37/Netfilter-packet-flow.svg) 
+it becomes clear: -J ACCEPT means that the frame goes to the ebtables 
+nat table; DROP means it goes up into the network layer for iptables to 
+play with.
+
+You'll make life easier for yourself as well if you call layer two 
+things "frames" and layer three things "packets".
+
+jch
+
+
