@@ -1,36 +1,23 @@
-From: John Haxby <john.haxby@oracle.com>
-Subject: Re: memory leak after enabling bridge-netfilter
-Date: Wed, 31 Mar 2010 11:20:24 +0100
-Message-ID: <4BB321E8.2020300@oracle.com>
-References: <k2w33dc67851003310202w5edcccdegf9c633174e2cc098@mail.gmail.com>
+From: Tiago Alves <alvesfonseca@ibest.com.br>
+Subject: Assigning multiple marks to a packet
+Date: Wed, 31 Mar 2010 10:22:59 -0300
+Message-ID: <u2xd99c4e221003310622h70e761au368f0361dee9c382@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <k2w33dc67851003310202w5edcccdegf9c633174e2cc098@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Ram Krishna <rkr393@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 31/03/10 10:02, Ram Krishna wrote:
-> I am running my linux box as a bridge. The kernel version is 2.6.18-3
-> I have enabled bridge-netfilter and iptables. I am seeing a memory
-> leak in the slab "size-64", even when I have not set any iptables
-> rules.
-> If I dont enable the bridge-netfilter and iptables kernel options then
-> there is no memory leak in bridge mode.
->
-> Is there any patch known to fix this memory leak? Appreciate any inputs on this.
->    
+Hi folks,
 
-2.6.18-3 ?  Is that really a dash?  Is that a Red Hat kernel?  If so 
-it's very, very old, probably RHEL5 beta.
+I was wondering about assigning multiple marks to a packet. I have an
+iptables firewall that already mark some packets according to certain
+patterns. However, I would like to assign another mark to the packet
+without overwriting the previous marking.
 
-If it is the RHEL5 kernel then it was released on 2007-01-16 and you 
-really should be using something newer, if only to pick up the security 
-fixes.  The slab leak bug was fixed long ago.
+Does iptables allow this kind of setup?
 
-jch
-
-
+Thanks in advance,
+Tiago
