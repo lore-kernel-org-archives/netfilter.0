@@ -1,52 +1,35 @@
-From: Roman Tsisyk <roman@tsisyk.com>
-Subject: Re: NetFlow / sFlow / IPFIX network probe proposal
-Date: Wed, 31 Mar 2010 20:47:39 +0700
-Message-ID: <n2yfaefb3f11003310647uef53fd2k518c4c8f0367adc5@mail.gmail.com>
-References: <faefb3f11003300706x16b73a2coefe5079284583db2@mail.gmail.com>
-	 <alpine.LSU.2.01.1003301647320.19967@obet.zrqbmnf.qr>
-	 <4BB22952.2050305@trash.net>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Re: Assigning multiple marks to a packet
+Date: Wed, 31 Mar 2010 16:39:54 +0200 (CEST)
+Message-ID: <alpine.LSU.2.01.1003311636230.28798@obet.zrqbmnf.qr>
+References: <1270042299.S.2914.40735.f6mail-144-156.rediffmail.com.old.1270045298.57648@webmail.rediffmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4BB22952.2050305@trash.net>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <1270042299.S.2914.40735.f6mail-144-156.rediffmail.com.old.1270045298.57648@webmail.rediffmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>, Stig Thormodsrud <stig@vyatta.com>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, linux-net@vger.kernel.org
+To: agashi shipora <gashipo@rediffmail.com>
+Cc: alvesfonseca@ibest.com.br, netfilter@vger.kernel.org
 
-On Wed, Mar 31, 2010 at 2:06 AM, Stig Thormodsrud <stig@vyatta.com> wrote:
-> Hi Roman,
+
+On Wednesday 2010-03-31 16:21, agashi shipora wrote:
+
+>Hi,
+>Referring tohttp://www.frozentux.net/iptables-tutorial/iptables-tutorial.html#MARKTARGE
+>T
 >
-> You mentioned that netflow exporter is the most requested feature on
-> Vyatta.  That was true until today when VC6 was release with our 1st
-> netflow/sflow exporter.  I used pmacct (http://www.pmacct.net) and ULOG
-> to get the packets to uacctd.  There's certainly a lot more that can be
-> done to support higher bandwidth interfaces.  I'm considering PF_RING.
-
-I've read Vyatta site before VC6 was released :)
-This is a ULOG-based solution or not?
-
-On Tue, Mar 30, 2010 at 11:39 PM, Patrick McHardy <kaber@trash.net> wrote:
-> We already have conntrack and ctnetlink to gather per-connection
-> statistics, which should decrease the overhead for doing this in
-> userspace a lot. There also exists a netflow plugin for ulogd2,
-> but I'm not sure it was already submitted and merged.
+>the description of the MARK target doesn't mention that the new value
+>mentioned along with the --set-mark target in a rule will be logically OR'ed
+>with the existing value of the mark.Hence the new value will overwrite the
+>old one
 >
+>Is it something that has not been mentioned in the link I am referring to?
 
-Thank you for pointing it out, I didn't know about conntrack support in ulogd.
+It helps to read the manpage of a current iptables release, and not
+some documents originally written three years ago (that includes
+manpages from ancient iptables releases.)
 
-As far as I understood, IPFIX output in ulogd is in a early stage and
-don't work. So, I tested ulogd + ctnetlink with null output and it
-worked very well.
-CPU load was about 5-10%, and it's just nothing on this router.
-However, I'm not sure that output is correct and all flows was
-accounted. I also don't know what is about active and inactive
-timeouts in this approach.
-I'll look to ulogd_inpflow_NFCT more closely.
-
-Patrick, decision is to optimize ctnetlink and not to make accounting
-in the kernel space?
-
--- 
-WBR, Tsisyk Roman
+Also note that it is a tutorial only and not a complete description
+of all possible options (though it starts to look like one).
