@@ -1,35 +1,36 @@
-From: Peter Kaagman <prjv.kaagman@gmail.com>
-Subject: Re: Ipsec and masquerading
-Date: Wed, 31 Mar 2010 11:43:43 +0200
-Message-ID: <c59a952f1003310243i1e55eb42ka43447a75db3994c@mail.gmail.com>
-References: <c59a952f1003301201o1da401ffsc515d797fe56d3ff@mail.gmail.com>
-	 <d7a0cc977a439b55159cb29454ea1c4d@thom.fr.eu.org>
+From: John Haxby <john.haxby@oracle.com>
+Subject: Re: memory leak after enabling bridge-netfilter
+Date: Wed, 31 Mar 2010 11:20:24 +0100
+Message-ID: <4BB321E8.2020300@oracle.com>
+References: <k2w33dc67851003310202w5edcccdegf9c633174e2cc098@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:received:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=y8SBFMfSSK79+SVCEfwFurwzyNkkBGmuMdzHqyD/dkQ=;
-        b=otqXc2AUwTXHa5br1BwRSy7yZTvlW/5mj+JVd0QxG7a3IlNSUzIRpgKRy8x3qCGdE5
-         CSUmnbDmxOZ4fCg25TEIHTGeqGCAnU8n3tjhyWIyUHlBP2P3tUHoXpMoBXbHAkISMP1t
-         0QMuAVPDiLos0aAL0uUyvKZR3D/WqlfsA3MLs=
-In-Reply-To: <d7a0cc977a439b55159cb29454ea1c4d@thom.fr.eu.org>
+In-Reply-To: <k2w33dc67851003310202w5edcccdegf9c633174e2cc098@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?ISO-8859-1?Q?Fran=E7ois_Legal?= <devel@thom.fr.eu.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Ram Krishna <rkr393@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-On Wed, Mar 31, 2010 at 9:29 AM, Fran=E7ois Legal <devel@thom.fr.eu.org=
-> wrote:
-> That would be in your case something like
-> iptables -t nat -A POSTROUTING -d 10.3.0.0/16 -o $ext_if -j ACCEPT
+On 31/03/10 10:02, Ram Krishna wrote:
+> I am running my linux box as a bridge. The kernel version is 2.6.18-3
+> I have enabled bridge-netfilter and iptables. I am seeing a memory
+> leak in the slab "size-64", even when I have not set any iptables
+> rules.
+> If I dont enable the bridge-netfilter and iptables kernel options then
+> there is no memory leak in bridge mode.
+>
+> Is there any patch known to fix this memory leak? Appreciate any inputs on this.
+>    
 
-Wow.... virtual kiss for you ;)
-Was a bit sceptical to be honest, did test simular rules with no
-effect. But it did the trick :D I'm on the road again.
+2.6.18-3 ?  Is that really a dash?  Is that a Red Hat kernel?  If so 
+it's very, very old, probably RHEL5 beta.
 
-Peter
+If it is the RHEL5 kernel then it was released on 2007-01-16 and you 
+really should be using something newer, if only to pick up the security 
+fixes.  The slab leak bug was fixed long ago.
+
+jch
+
+
