@@ -1,35 +1,58 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Re: Assigning multiple marks to a packet
-Date: Wed, 31 Mar 2010 16:39:54 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1003311636230.28798@obet.zrqbmnf.qr>
-References: <1270042299.S.2914.40735.f6mail-144-156.rediffmail.com.old.1270045298.57648@webmail.rediffmail.com>
+From: Jiri Pirko <jpirko@redhat.com>
+Subject: [net-next-2.6 PATCH] netfilter: ctnetlink: compute message size
+ properly
+Date: Wed, 31 Mar 2010 17:11:03 +0200
+Message-ID: <20100331151102.GB8043@psychotron.lab.eng.brq.redhat.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1270042299.S.2914.40735.f6mail-144-156.rediffmail.com.old.1270045298.57648@webmail.rediffmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: agashi shipora <gashipo@rediffmail.com>
-Cc: alvesfonseca@ibest.com.br, netfilter@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: netfilter-devel@vger.kernel.org, kaber@trash.net, netfilter@vger.kernel.org, davem@davemloft.net
 
+Message size should be dependent on net->ct.sysctl_acct, not on
+CONFIG_NF_CT_ACCT definition.
 
-On Wednesday 2010-03-31 16:21, agashi shipora wrote:
+Signed-off-by: Jiri Pirko <jpirko@redhat.com>
 
->Hi,
->Referring tohttp://www.frozentux.net/iptables-tutorial/iptables-tutorial.html#MARKTARGE
->T
->
->the description of the MARK target doesn't mention that the new value
->mentioned along with the --set-mark target in a rule will be logically OR'ed
->with the existing value of the mark.Hence the new value will overwrite the
->old one
->
->Is it something that has not been mentioned in the link I am referring to?
+diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
+index 569410a..2b0cfa4 100644
+--- a/net/netfilter/nf_conntrack_netlink.c
++++ b/net/netfilter/nf_conntrack_netlink.c
+@@ -426,6 +426,19 @@ ctnetlink_proto_size(const struct nf_conn *ct)
+ }
+ 
+ static inline size_t
++ctnetlink_counters_size(const struct nf_conn *ct)
++{
++	struct net *net = nf_ct_net(ct);
++
++	if (!net->ct.sysctl_acct)
++		return 0;
++	return 2 * nla_total_size(0) /* CTA_COUNTERS_ORIG|REPL */
++	       + 2 * nla_total_size(sizeof(uint64_t)) /* CTA_COUNTERS_PACKETS */
++	       + 2 * nla_total_size(sizeof(uint64_t)) /* CTA_COUNTERS_BYTES */
++	       ;
++}
++
++static inline size_t
+ ctnetlink_nlmsg_size(const struct nf_conn *ct)
+ {
+ 	return NLMSG_ALIGN(sizeof(struct nfgenmsg))
+@@ -435,11 +448,7 @@ ctnetlink_nlmsg_size(const struct nf_conn *ct)
+ 	       + 3 * nla_total_size(sizeof(u_int8_t)) /* CTA_PROTO_NUM */
+ 	       + nla_total_size(sizeof(u_int32_t)) /* CTA_ID */
+ 	       + nla_total_size(sizeof(u_int32_t)) /* CTA_STATUS */
+-#ifdef CONFIG_NF_CT_ACCT
+-	       + 2 * nla_total_size(0) /* CTA_COUNTERS_ORIG|REPL */
+-	       + 2 * nla_total_size(sizeof(uint64_t)) /* CTA_COUNTERS_PACKETS */
+-	       + 2 * nla_total_size(sizeof(uint64_t)) /* CTA_COUNTERS_BYTES */
+-#endif
++	       + ctnetlink_counters_size(ct)
+ 	       + nla_total_size(sizeof(u_int32_t)) /* CTA_TIMEOUT */
+ 	       + nla_total_size(0) /* CTA_PROTOINFO */
+ 	       + nla_total_size(0) /* CTA_HELP */
 
-It helps to read the manpage of a current iptables release, and not
-some documents originally written three years ago (that includes
-manpages from ancient iptables releases.)
-
-Also note that it is a tutorial only and not a complete description
-of all possible options (though it starts to look like one).
