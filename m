@@ -1,98 +1,41 @@
-From: Jiri Pirko <jpirko@redhat.com>
-Subject: Re: [net-next-2.6 PATCH] netfilter: ctnetlink: compute message size
- properly
-Date: Wed, 31 Mar 2010 20:21:17 +0200
-Message-ID: <20100331182116.GB2822@psychotron.redhat.com>
-References: <20100331151102.GB8043@psychotron.lab.eng.brq.redhat.com>
- <4BB38A8A.9050501@trash.net>
+From: agashi shipora <gashipo@gmail.com>
+Subject: uisng L7 filter in ebtables commands
+Date: Wed, 31 Mar 2010 23:54:28 +0530
+Message-ID: <x2v861e3bca1003311124sa0aa2ab6y94fa42c650ef16f8@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4BB38A8A.9050501@trash.net>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:received:message-id
+         :subject:from:to:cc:content-type;
+        bh=/Sf7/HOah5EstQrEoJXuXGe0gj3DowP0cvc0WwVqJP4=;
+        b=MbIM9O/fu0efpL6wjniSw4xfFPi5igJGlo/Q9xX4OZkaRioOqqg8xBmuGC+MyHtNW+
+         mYHiN6jhxeGooKLaJrC+AlPvaG62aGQ6/j+FJEWsNNAAJFElbovSZbLmbZSMhTO5jgHJ
+         uwiMUEY0aN9MFb9w8RJRf5DFxHPoCZwETGjW4=
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>
-Cc: netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, davem@davemloft.net, Krzysztof Oledzki <ole@ans.pl>
+To: netfilter-devel@vger.kernel.org
+Cc: netfilter@vger.kernel.org
 
-Wed, Mar 31, 2010 at 07:46:50PM CEST, kaber@trash.net wrote:
->Jiri Pirko wrote:
->> Message size should be dependent on net->ct.sysctl_acct, not on
->> CONFIG_NF_CT_ACCT definition.
->
->Krzysztof actually wanted to get rid of the config option entirely
->some time ago, but at that time there were some (now solved) problems
->that prevented his. I've CCed him, hoping that this will finally
->get completed :)
->
->> Signed-off-by: Jiri Pirko <jpirko@redhat.com>
->> 
->> diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
->> index 569410a..2b0cfa4 100644
->> --- a/net/netfilter/nf_conntrack_netlink.c
->> +++ b/net/netfilter/nf_conntrack_netlink.c
->> @@ -426,6 +426,19 @@ ctnetlink_proto_size(const struct nf_conn *ct)
->>  }
->>  
->>  static inline size_t
->> +ctnetlink_counters_size(const struct nf_conn *ct)
->> +{
->> +	struct net *net = nf_ct_net(ct);
->> +
->> +	if (!net->ct.sysctl_acct)
->> +		return 0;
->> +	return 2 * nla_total_size(0) /* CTA_COUNTERS_ORIG|REPL */
->> +	       + 2 * nla_total_size(sizeof(uint64_t)) /* CTA_COUNTERS_PACKETS */
->> +	       + 2 * nla_total_size(sizeof(uint64_t)) /* CTA_COUNTERS_BYTES */
->> +	       ;
->
->This is also not fully correct since the sysctl only affects newly
->created conntracks, existing ones still have counters that are dumped.
->I'd suggest to simple check whether the conntrack has an accounting
->extension.
+I want to use L7 filter with ebtables for setting a MARK on the packet
+similar to how it is being done with iptables today.
 
-Okay, I see your point. How about this:
+Using brouting the bridge packet can be re-directed to the routing
+path traversing the iptables.But all packets arriving on the interface
+enslaved to the bridge would have to be brouted.This may not be
+acceptable as a solution in my case.
 
-Subject: [net-next-2.6 PATCH] netfilter: ctnetlink: compute message size properly V2
+example:
+Whats available:
+iptables -t filter -A FORWARD -m layer7 --l7proto edonkey -j MARK --set-mark 3
 
-Message size should be dependent on net->ct.sysctl_acct, not on
-CONFIG_NF_CT_ACCT definition.
+What needs to be supported:
+ebtables -t nat -A PRE-ROUTING -m layer7 --l7proto edonkey -j MARK --mark-set 3
 
-Signed-off-by: Jiri Pirko <jpirko@redhat.com>
+Is any work going on to port L7 filter to ebtables or does this port
+of L7 filter already exist?
 
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index 569410a..44487d8 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -426,6 +426,17 @@ ctnetlink_proto_size(const struct nf_conn *ct)
- }
- 
- static inline size_t
-+ctnetlink_counters_size(const struct nf_conn *ct)
-+{
-+	if (!nf_ct_ext_exist(ct, NF_CT_EXT_ACCT))
-+		return 0;
-+	return 2 * nla_total_size(0) /* CTA_COUNTERS_ORIG|REPL */
-+	       + 2 * nla_total_size(sizeof(uint64_t)) /* CTA_COUNTERS_PACKETS */
-+	       + 2 * nla_total_size(sizeof(uint64_t)) /* CTA_COUNTERS_BYTES */
-+	       ;
-+}
-+
-+static inline size_t
- ctnetlink_nlmsg_size(const struct nf_conn *ct)
- {
- 	return NLMSG_ALIGN(sizeof(struct nfgenmsg))
-@@ -435,11 +446,7 @@ ctnetlink_nlmsg_size(const struct nf_conn *ct)
- 	       + 3 * nla_total_size(sizeof(u_int8_t)) /* CTA_PROTO_NUM */
- 	       + nla_total_size(sizeof(u_int32_t)) /* CTA_ID */
- 	       + nla_total_size(sizeof(u_int32_t)) /* CTA_STATUS */
--#ifdef CONFIG_NF_CT_ACCT
--	       + 2 * nla_total_size(0) /* CTA_COUNTERS_ORIG|REPL */
--	       + 2 * nla_total_size(sizeof(uint64_t)) /* CTA_COUNTERS_PACKETS */
--	       + 2 * nla_total_size(sizeof(uint64_t)) /* CTA_COUNTERS_BYTES */
--#endif
-+	       + ctnetlink_counters_size(ct)
- 	       + nla_total_size(sizeof(u_int32_t)) /* CTA_TIMEOUT */
- 	       + nla_total_size(0) /* CTA_PROTOINFO */
- 	       + nla_total_size(0) /* CTA_HELP */
+Thanks
+GP
