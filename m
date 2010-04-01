@@ -1,70 +1,75 @@
-From: agashi shipora <gashipo@gmail.com>
-Subject: Re: uisng L7 filter in ebtables commands
-Date: Thu, 1 Apr 2010 19:44:35 +0530
-Message-ID: <s2m861e3bca1004010714g502e3c9esaf8832979c0a8bbf@mail.gmail.com>
-References: <x2v861e3bca1003311124sa0aa2ab6y94fa42c650ef16f8@mail.gmail.com>
-	 <4BB4427A.3020706@pandora.be>
-	 <n2z861e3bca1004010050j7063cee8ya8c27ac73458b8bf@mail.gmail.com>
-	 <alpine.LSU.2.01.1004010958390.18225@obet.zrqbmnf.qr>
-	 <z2t861e3bca1004010248z4bbaf9b7ld414baa09a4153ff@mail.gmail.com>
-	 <4BB4737E.7000602@pandora.be>
+From: Roman Fiedler <roman.fiedler@ait.ac.at>
+Subject: Re: Diskless and Firewall
+Date: Thu, 1 Apr 2010 16:20:14 +0200
+Message-ID: <4BB4AB9E.3080208@ait.ac.at>
+References: <1270117547.3335.15.camel@khaled-laptop>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:received:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=GnC57Fz1+ib7trlccbvoKhkkUI7jPFYnw2m9d2psHDU=;
-        b=eTHW1eHuAZOhbul05mXdSebPcnK+mArPNZMO/KNt2AfQKdYz8nzXq2ufE+cq2QevFi
-         5Kl44uya4c/64VLdCvk3icNjaf2XhZXORdRfUjkYoy8vhzw0nILahQzCxI0DQ89m7Lq4
-         QOJLt9WZwiVWr1bqgBVLdh9NfwmMUzJKOl7OI=
-In-Reply-To: <4BB4737E.7000602@pandora.be>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <1270117547.3335.15.camel@khaled-laptop>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Bart De Schuymer <bdschuym@pandora.be>
-Cc: Jan Engelhardt <jengelh@medozas.de>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="macroman"
+To: Khaled Hussein <khaled@bisan.com>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-Thanks Bart and Jan.
+Khaled Hussein wrote:
+> Dear All,
+>=20
+> I am running a machine with diskless boot, it is running CentOS, i ha=
+ve problem with iptables, when i restart iptables i lost connection wit=
+h NFS server so i lost my hard disks and machine become unreachable, th=
+is happened when i use DROP as default policy on INPUT and OUTPUT and F=
+ORWARD chains, i tried to use mangle table with default ACCEPT on these=
+ chains but the same, if i changed default policy to ACCEPT on above ch=
+ains, so is there any way to avoid this problem
 
-Bart , my boss says I will have to forgo my salary  if we have to get
-it done from someone else.
-Let me keep my salary .
+I had same problem with autosetup thingy recently. I think that the fol=
+lowing fixed the problem for me (and not something else, that I overloo=
+ked while tuning the configs):
 
+* Set conntrack liberal globally (via proc)
 
+* Load minimal iptables set with accept on all chains (which is as secu=
+re as having no rules, like before, so nothing lost)
 
-On Thu, Apr 1, 2010 at 3:50 PM, Bart De Schuymer <bdschuym@pandora.be> =
-wrote:
-> agashi shipora wrote:
->> Hi ,
->>
->> The customizations in the linux kernel are provided as binary
->> modules(libraries) hence making CONFIG_BRIDGE_NETFILTER work is been
->> ruled out. =A0Thats why I am looking for L7 filter support directly =
-by
->> ebtables.
->>
->>
-> What you're asking for isn't going to be included in the standard Lin=
-ux
-> distribution. So you'll either have to make the modifications yoursel=
-f
-> or pay someone else to do them for you. Feel free to contact me if th=
-e
-> latter case applies.
->
-> cheers,
-> Bart
->
-> --
-> Bart De Schuymer
-> www.artinalgorithms.be
->
->
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+* Make sure to have traffic on all connections your want to keep alive,=
+ netfilter seems to create conntracks for them (you might use the connt=
+rack tools for the same work also). In your case you might open a file,=
+ you haven't read yet to force NFS traffic.
+
+* Switch to your final ruleset, that has a --state ESTABLISHED -j ACCEP=
+T at the beginning of each chain (I loaded with iptables-restore to avo=
+id glitches that might kill a connection)
+
+* Disable conntrack liberal
+
+The final rules were strict, with output filtering and stateful connect=
+ion tracking.
+
+Hope this is helpful,
+
+--=20
+Roman Fiedler
+Safety & Security Department
+Information Management & eHealth
+
+AIT Austrian Institute of Technology GmbH
+Reininghausstra=C3=9Fe 13/1  |  8020 Graz  |  Austria
+T +43(0) 316 586570-63  |  M +43(0) 664 8251194  |  F +43(0) 316 586570=
+-12
+roman.fiedler@ait.ac.at <mailto:roman.fiedler@ait.ac.at> | http://www.a=
+it.ac.at <http://www.ait.ac.at/>
+http://www.ait.ac.at/eHealth/ <http://www.ait.ac.at/eHealth/>
+
+=46N: 115980 i HG Wien  |  UID: ATU14703506
+This email and any attachments thereto, is intended only for use by the=
+ addressee(s) named herein and may contain legally privileged and/or co=
+nfidential information. If you are not the intended recipient, please n=
+otify the sender by return e-mail or by telephone and delete this messa=
+ge from your system and any printout thereof. Any unauthorized use, rep=
+roduction, or dissemination of this message is strictly prohibited. Ple=
+ase note that e-mails are susceptible to change. AIT Austrian Institute=
+ of Technology GmbH shall not be liable for the improper or incomplete =
+transmission of the information contained in this communication, nor sh=
+all it be liable for any delay in its receipt.
