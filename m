@@ -1,53 +1,72 @@
-From: Holger Eitzenberger <holger@eitzenberger.org>
-Subject: Re: NetFlow / sFlow / IPFIX network probe proposal
-Date: Thu, 1 Apr 2010 14:05:37 +0200
-Message-ID: <20100401120536.GF19153@mail.eitzenberger.org>
-References: <faefb3f11003300706x16b73a2coefe5079284583db2@mail.gmail.com> <alpine.LSU.2.01.1003301647320.19967@obet.zrqbmnf.qr> <4BB22952.2050305@trash.net> <n2yfaefb3f11003310647uef53fd2k518c4c8f0367adc5@mail.gmail.com> <4BB473CB.5030300@trash.net>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Diskless and Firewall
+Date: Thu, 1 Apr 2010 07:18:29 -0500
+Message-ID: <20100401121829.GF7051@cardinal>
+References: <1270117547.3335.15.camel@khaled-laptop>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <4BB473CB.5030300@trash.net>
+In-Reply-To: <1270117547.3335.15.camel@khaled-laptop>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>
-Cc: Roman Tsisyk <roman@tsisyk.com>, Stig Thormodsrud <stig@vyatta.com>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, linux-net@vger.kernel.org, Holger Eitzenberger <heitzenberger@astaro.com>
+To: netfilter@vger.kernel.org
 
-(replying by private mail)
+On Thu, Apr 01, 2010 at 01:25:47PM +0300, Khaled Hussein wrote:
+> I am running a machine with diskless boot, it is running CentOS,
+> i have problem with iptables, when i restart iptables i lost 
+> connection with NFS server so i lost my hard disks and machine 
+> become unreachable, this happened when i use DROP as default
+> policy on INPUT and OUTPUT and FORWARD chains, i tried to use 
+> mangle table with default ACCEPT on these chains but the same,
+> if i changed default policy to ACCEPT on above chains, so is
+> there any way to avoid this problem
 
-Hi,
+1. Point gun away from foot (and other body parts)
+2. [Optional] Pull trigger
 
-> > Thank you for pointing it out, I didn't know about conntrack support in ulogd.
-> > 
-> > As far as I understood, IPFIX output in ulogd is in a early stage and
-> > don't work. So, I tested ulogd + ctnetlink with null output and it
-> > worked very well.
+rob0 rule of thumb: If you need to ask for help to make it work, you 
+do not need OUTPUT filtering. Just say ACCEPT.
 
-I've done an IPFIX implementation a few months ago for ulogd2, but it
-currently is of prototype character only, as it only implements IPFIX
-over UDP, but SCTP and possibly TCP (+ SSL) are required for a
-conforming implementation.  I use the "bi-flow" approach of RFC 51303,
-but it shouldn't be a problem at all to have it support the single
-direction flow approach instead from RFC 5101/5102.
+You cannot possibly secure a diskless boot system from possible 
+attack by its rootfs NFS server. The idea of firewall limits between 
+a system and its rootfs is ... silly. So also ACCEPT everything from 
+the NFS server, in INPUT.
 
-In general ctnetlink is not a problem here from a performance standpoint,
-and I think there is no need for doing that in kernel space.
+See "man iptables" and Netfilter packet flow diagrams (Wikipedia has 
+one) to see why policies in the mangle table do not override your 
+policies in the filter table.
 
-Some bits and pieces may be missing on the kernel side if you need to
-classify your flows though.  E. g. some IPFIX Aggregrators require the
-DSCP value for that.
+> ==========================
+> Khaled J. Hussein
+> Senior System Engineer
+> Bisan Systems Ltd.
 
-> Accounting is done in kernel space by conntrack, but aggregation should
-> be done in userspace in my opinion. I don't think you need a lot of
-> optimization, AFAIK Holger's patches already scale to large setups
-> very well.
+Happy April Fools Day to you, too.
 
-I have setups with hundreds of thounsands of flows, and it accounts
-quite well :).
+> Tel: +970-22985941
+> Fax: +970-22985942
+> Web: www.bisan.com
+> Email: khaled@bisan.com
+> ========================== 
+> 
+> 
+> 
+> 
+> *************
+> This message has been scanned for viruses and dangerous content by 
+> Bisan Systems Ltd MailScanner, and is believed to be clean. Bisan 
+> Systems Ltd does not represent that any attachment is free from 
+> computer viruses or defects and the user assumes all responsibility 
+> for any loss, damage or consequence resulting directly or 
+> indirectly from the use of any attachment. The information 
+> contained in any email does not necessarily reflect the views of 
+> Bisan systems or any other related entities or persons.
 
-Hope that helps a bit.
-
- /holger
-
-
+And many thanks for that, as well. At least it doesn't have the 
+offensively silly aspects of other email disclaimers.
+-- 
+    Offlist mail to this address is discarded unless
+    "/dev/rob0" or "not-spam" is in Subject: header
