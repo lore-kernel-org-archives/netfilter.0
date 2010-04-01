@@ -1,36 +1,70 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Diskless and Firewall
-Date: Thu, 1 Apr 2010 14:32:27 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1004011430420.10994@obet.zrqbmnf.qr>
-References: <1270117547.3335.15.camel@khaled-laptop> <20100401121829.GF7051@cardinal>
+From: agashi shipora <gashipo@gmail.com>
+Subject: Re: uisng L7 filter in ebtables commands
+Date: Thu, 1 Apr 2010 19:44:35 +0530
+Message-ID: <s2m861e3bca1004010714g502e3c9esaf8832979c0a8bbf@mail.gmail.com>
+References: <x2v861e3bca1003311124sa0aa2ab6y94fa42c650ef16f8@mail.gmail.com>
+	 <4BB4427A.3020706@pandora.be>
+	 <n2z861e3bca1004010050j7063cee8ya8c27ac73458b8bf@mail.gmail.com>
+	 <alpine.LSU.2.01.1004010958390.18225@obet.zrqbmnf.qr>
+	 <z2t861e3bca1004010248z4bbaf9b7ld414baa09a4153ff@mail.gmail.com>
+	 <4BB4737E.7000602@pandora.be>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20100401121829.GF7051@cardinal>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:received:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=GnC57Fz1+ib7trlccbvoKhkkUI7jPFYnw2m9d2psHDU=;
+        b=eTHW1eHuAZOhbul05mXdSebPcnK+mArPNZMO/KNt2AfQKdYz8nzXq2ufE+cq2QevFi
+         5Kl44uya4c/64VLdCvk3icNjaf2XhZXORdRfUjkYoy8vhzw0nILahQzCxI0DQ89m7Lq4
+         QOJLt9WZwiVWr1bqgBVLdh9NfwmMUzJKOl7OI=
+In-Reply-To: <4BB4737E.7000602@pandora.be>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Bart De Schuymer <bdschuym@pandora.be>
+Cc: Jan Engelhardt <jengelh@medozas.de>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+
+Thanks Bart and Jan.
+
+Bart , my boss says I will have to forgo my salary  if we have to get
+it done from someone else.
+Let me keep my salary .
 
 
-On Thursday 2010-04-01 14:18, /dev/rob0 wrote:
->On Thu, Apr 01, 2010 at 01:25:47PM +0300, Khaled Hussein wrote:
->> it is running CentOS,
 
-Problem #1 :)
-
->> when i restart iptables i lost connection with NFS server
-
-Not using iptables-restore, eh?
-
->1. Point gun away from foot (and other body parts)
-
-Recoil might still do harm.
-
->2. [Optional] Pull trigger
+On Thu, Apr 1, 2010 at 3:50 PM, Bart De Schuymer <bdschuym@pandora.be> =
+wrote:
+> agashi shipora wrote:
+>> Hi ,
+>>
+>> The customizations in the linux kernel are provided as binary
+>> modules(libraries) hence making CONFIG_BRIDGE_NETFILTER work is been
+>> ruled out. =A0Thats why I am looking for L7 filter support directly =
+by
+>> ebtables.
+>>
+>>
+> What you're asking for isn't going to be included in the standard Lin=
+ux
+> distribution. So you'll either have to make the modifications yoursel=
+f
+> or pay someone else to do them for you. Feel free to contact me if th=
+e
+> latter case applies.
 >
->rob0 rule of thumb: If you need to ask for help to make it work, you 
->do not need OUTPUT filtering. Just say ACCEPT.
-
-"Just say no to dru.. DROP.", hm? :)
-
+> cheers,
+> Bart
+>
+> --
+> Bart De Schuymer
+> www.artinalgorithms.be
+>
+>
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
+el" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
