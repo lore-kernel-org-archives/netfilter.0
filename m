@@ -1,42 +1,35 @@
-From: Khaled Hussein <khaled@bisan.com>
-Subject: Diskless and Firewall
-Date: Thu, 01 Apr 2010 13:25:47 +0300
-Message-ID: <1270117547.3335.15.camel@khaled-laptop>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [net-next-2.6 PATCH] netfilter: ctnetlink: compute message size
+ properly
+Date: Thu, 01 Apr 2010 12:40:23 +0200
+Message-ID: <4BB47817.4060902@trash.net>
+References: <20100331151102.GB8043@psychotron.lab.eng.brq.redhat.com>	 <4BB38A8A.9050501@trash.net>  <20100331182116.GB2822@psychotron.redhat.com> <1270060543.1931.20.camel@edumazet-laptop>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <1270060543.1931.20.camel@edumazet-laptop>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Eric Dumazet <eric.dumazet@gmail.com>
+Cc: Jiri Pirko <jpirko@redhat.com>, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, davem@davemloft.net, Krzysztof Oledzki <ole@ans.pl>
 
-Dear All, 
+Eric Dumazet wrote:
+> Le mercredi 31 mars 2010 =E0 20:21 +0200, Jiri Pirko a =E9crit :
+>> Okay, I see your point. How about this:
+>>
+>> Subject: [net-next-2.6 PATCH] netfilter: ctnetlink: compute message =
+size properly V2
+>>
+>> Message size should be dependent on net->ct.sysctl_acct, not on
+>> CONFIG_NF_CT_ACCT definition.
+>>
+>=20
+> Then Changelog is not updated with the actual test :)
 
-I am running a machine with diskless boot, it is running CentOS, i have
-problem with iptables, when i restart iptables i lost connection with
-NFS server so i lost my hard disks and machine become unreachable, this
-happened when i use DROP as default policy on INPUT and OUTPUT and
-FORWARD chains, i tried to use mangle table with default ACCEPT on these
-chains but the same, if i changed default policy to ACCEPT on above
-chains, so is there any way to avoid this problem
-
-Thanks to all 
-
-
-Best Regards,
-==========================
-Khaled J. Hussein
-Senior System Engineer
-Bisan Systems Ltd.
-Tel: +970-22985941
-Fax: +970-22985942
-Web: www.bisan.com
-Email: khaled@bisan.com
-========================== 
-
-
-
-
-*************
-This  message has been scanned for viruses and dangerous content by Bisan Systems Ltd  MailScanner, and is believed  to be clean. Bisan Systems Ltd  does  not  represent  that  any  attachment  is free from computer viruses or defects and the user assumes all responsibility  for any  loss, damage  or  consequence  resulting  directly  or  indirectly  from  the use of any attachment. The information  contained  in  any  email  does not necessarily  reflect the views of Bisan systems or any other related entities or persons.
-
+I've fixed up the changelog and applied the patch, thanks.
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
+el" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
