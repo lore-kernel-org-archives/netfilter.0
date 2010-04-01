@@ -1,46 +1,42 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: NetFlow / sFlow / IPFIX network probe proposal
-Date: Thu, 01 Apr 2010 12:22:03 +0200
-Message-ID: <4BB473CB.5030300@trash.net>
-References: <faefb3f11003300706x16b73a2coefe5079284583db2@mail.gmail.com>	 <alpine.LSU.2.01.1003301647320.19967@obet.zrqbmnf.qr>	 <4BB22952.2050305@trash.net> <n2yfaefb3f11003310647uef53fd2k518c4c8f0367adc5@mail.gmail.com>
+From: Khaled Hussein <khaled@bisan.com>
+Subject: Diskless and Firewall
+Date: Thu, 01 Apr 2010 13:25:47 +0300
+Message-ID: <1270117547.3335.15.camel@khaled-laptop>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <n2yfaefb3f11003310647uef53fd2k518c4c8f0367adc5@mail.gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Roman Tsisyk <roman@tsisyk.com>
-Cc: Stig Thormodsrud <stig@vyatta.com>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, linux-net@vger.kernel.org, Holger Eitzenberger <heitzenberger@astaro.com>
+To: netfilter <netfilter@vger.kernel.org>
 
-Roman Tsisyk wrote:
-> On Wed, Mar 31, 2010 at 2:06 AM, Stig Thormodsrud <stig@vyatta.com> wrote:
-> On Tue, Mar 30, 2010 at 11:39 PM, Patrick McHardy <kaber@trash.net> wrote:
->> We already have conntrack and ctnetlink to gather per-connection
->> statistics, which should decrease the overhead for doing this in
->> userspace a lot. There also exists a netflow plugin for ulogd2,
->> but I'm not sure it was already submitted and merged.
->>
-> 
-> Thank you for pointing it out, I didn't know about conntrack support in ulogd.
-> 
-> As far as I understood, IPFIX output in ulogd is in a early stage and
-> don't work. So, I tested ulogd + ctnetlink with null output and it
-> worked very well.
+Dear All, 
 
-IIRC Holger Eitzenberger (CCed) has done some work to make this work
-properly. Maybe he can tell use more.
+I am running a machine with diskless boot, it is running CentOS, i have
+problem with iptables, when i restart iptables i lost connection with
+NFS server so i lost my hard disks and machine become unreachable, this
+happened when i use DROP as default policy on INPUT and OUTPUT and
+FORWARD chains, i tried to use mangle table with default ACCEPT on these
+chains but the same, if i changed default policy to ACCEPT on above
+chains, so is there any way to avoid this problem
 
-> CPU load was about 5-10%, and it's just nothing on this router.
-> However, I'm not sure that output is correct and all flows was
-> accounted. I also don't know what is about active and inactive
-> timeouts in this approach.
-> I'll look to ulogd_inpflow_NFCT more closely.
-> 
-> Patrick, decision is to optimize ctnetlink and not to make accounting
-> in the kernel space?
+Thanks to all 
 
-Accounting is done in kernel space by conntrack, but aggregation should
-be done in userspace in my opinion. I don't think you need a lot of
-optimization, AFAIK Holger's patches already scale to large setups
-very well.
+
+Best Regards,
+==========================
+Khaled J. Hussein
+Senior System Engineer
+Bisan Systems Ltd.
+Tel: +970-22985941
+Fax: +970-22985942
+Web: www.bisan.com
+Email: khaled@bisan.com
+========================== 
+
+
+
+
+*************
+This  message has been scanned for viruses and dangerous content by Bisan Systems Ltd  MailScanner, and is believed  to be clean. Bisan Systems Ltd  does  not  represent  that  any  attachment  is free from computer viruses or defects and the user assumes all responsibility  for any  loss, damage  or  consequence  resulting  directly  or  indirectly  from  the use of any attachment. The information  contained  in  any  email  does not necessarily  reflect the views of Bisan systems or any other related entities or persons.
+
