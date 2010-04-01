@@ -1,75 +1,47 @@
-From: Roman Fiedler <roman.fiedler@ait.ac.at>
-Subject: Re: Diskless and Firewall
-Date: Thu, 1 Apr 2010 16:20:14 +0200
-Message-ID: <4BB4AB9E.3080208@ait.ac.at>
-References: <1270117547.3335.15.camel@khaled-laptop>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: NetFlow / sFlow / IPFIX network probe proposal
+Date: Thu, 01 Apr 2010 16:29:10 +0200
+Message-ID: <4BB4ADB6.4080206@netfilter.org>
+References: <faefb3f11003300706x16b73a2coefe5079284583db2@mail.gmail.com> <alpine.LSU.2.01.1003301647320.19967@obet.zrqbmnf.qr> <4BB22952.2050305@trash.net> <n2yfaefb3f11003310647uef53fd2k518c4c8f0367adc5@mail.gmail.com> <4BB473CB.5030300@trash.net> <20100401120536.GF19153@mail.eitzenberger.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1270117547.3335.15.camel@khaled-laptop>
+In-Reply-To: <20100401120536.GF19153@mail.eitzenberger.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
-To: Khaled Hussein <khaled@bisan.com>
-Cc: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Patrick McHardy <kaber@trash.net>, Roman Tsisyk <roman@tsisyk.com>, Stig Thormodsrud <stig@vyatta.com>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, linux-net@vger.kern
 
-Khaled Hussein wrote:
-> Dear All,
->=20
-> I am running a machine with diskless boot, it is running CentOS, i ha=
-ve problem with iptables, when i restart iptables i lost connection wit=
-h NFS server so i lost my hard disks and machine become unreachable, th=
-is happened when i use DROP as default policy on INPUT and OUTPUT and F=
-ORWARD chains, i tried to use mangle table with default ACCEPT on these=
- chains but the same, if i changed default policy to ACCEPT on above ch=
-ains, so is there any way to avoid this problem
+Hi,
 
-I had same problem with autosetup thingy recently. I think that the fol=
-lowing fixed the problem for me (and not something else, that I overloo=
-ked while tuning the configs):
+Holger Eitzenberger wrote:
+> (replying by private mail)
+>>> Thank you for pointing it out, I didn't know about conntrack support in ulogd.
+>>>
+>>> As far as I understood, IPFIX output in ulogd is in a early stage and
+>>> don't work. So, I tested ulogd + ctnetlink with null output and it
+>>> worked very well.
 
-* Set conntrack liberal globally (via proc)
+IPFIX support in ulog2 in the git tree has been indeed
+broken/unifinished since long time ago.
 
-* Load minimal iptables set with accept on all chains (which is as secu=
-re as having no rules, like before, so nothing lost)
+> I've done an IPFIX implementation a few months ago for ulogd2, but it
+> currently is of prototype character only, as it only implements IPFIX
+> over UDP, but SCTP and possibly TCP (+ SSL) are required for a
+> conforming implementation.  I use the "bi-flow" approach of RFC 51303,
+> but it shouldn't be a problem at all to have it support the single
+> direction flow approach instead from RFC 5101/5102.
 
-* Make sure to have traffic on all connections your want to keep alive,=
- netfilter seems to create conntracks for them (you might use the connt=
-rack tools for the same work also). In your case you might open a file,=
- you haven't read yet to force NFS traffic.
+I've also have one of my internal tree, I started last summer but thesis
+has prevent me from working on that.
 
-* Switch to your final ruleset, that has a --state ESTABLISHED -j ACCEP=
-T at the beginning of each chain (I loaded with iptables-restore to avo=
-id glitches that might kill a connection)
+> In general ctnetlink is not a problem here from a performance standpoint,
+> and I think there is no need for doing that in kernel space.
 
-* Disable conntrack liberal
+Indeed.
 
-The final rules were strict, with output filtering and stateful connect=
-ion tracking.
+> Some bits and pieces may be missing on the kernel side if you need to
+> classify your flows though.  E. g. some IPFIX Aggregrators require the
+> DSCP value for that.
 
-Hope this is helpful,
-
---=20
-Roman Fiedler
-Safety & Security Department
-Information Management & eHealth
-
-AIT Austrian Institute of Technology GmbH
-Reininghausstra=C3=9Fe 13/1  |  8020 Graz  |  Austria
-T +43(0) 316 586570-63  |  M +43(0) 664 8251194  |  F +43(0) 316 586570=
--12
-roman.fiedler@ait.ac.at <mailto:roman.fiedler@ait.ac.at> | http://www.a=
-it.ac.at <http://www.ait.ac.at/>
-http://www.ait.ac.at/eHealth/ <http://www.ait.ac.at/eHealth/>
-
-=46N: 115980 i HG Wien  |  UID: ATU14703506
-This email and any attachments thereto, is intended only for use by the=
- addressee(s) named herein and may contain legally privileged and/or co=
-nfidential information. If you are not the intended recipient, please n=
-otify the sender by return e-mail or by telephone and delete this messa=
-ge from your system and any printout thereof. Any unauthorized use, rep=
-roduction, or dissemination of this message is strictly prohibited. Ple=
-ase note that e-mails are susceptible to change. AIT Austrian Institute=
- of Technology GmbH shall not be liable for the improper or incomplete =
-transmission of the information contained in this communication, nor sh=
-all it be liable for any delay in its receipt.
+We can post a patch to add the missing stuff to ctnetlink.
