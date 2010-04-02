@@ -1,38 +1,38 @@
-From: John Lister <john.lister@kickstone.com>
-Subject: Re: MARK not working
-Date: Fri, 02 Apr 2010 08:24:26 +0100
-Message-ID: <4BB59BAA.9080607@kickstone.com>
+From: Marek Kierdelewicz <marek@piasta.pl>
+Subject: Re: Re: MARK not working
+Date: Fri, 2 Apr 2010 11:16:24 +0200
+Message-ID: <20100402111624.7af22eb8@catlap>
 References: <4BB53BEC.9010709@gmail.com>
+	<20100402065742.23be08f0@catlap>
+	<4BB59C59.50607@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4BB53BEC.9010709@gmail.com>
+In-Reply-To: <4BB59C59.50607@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: Dennison Williams <dennison.williams@gmail.com>
 Cc: netfilter@vger.kernel.org
 
+Hi,
 
+>Yes, this is a bit confusing to me as well.  In this scenario we have
+>the establishing of a vpn connection (udp port 4500), following this is
+>an attempt to establish a l2tp connection (udp port 1701 encapsulated
+>in the vpn tunnel).
 
-Dennison Williams wrote:
-> iptables -t mangle -A PREROUTING -i eth1 -p udp --dport 4500 -j MARK
-> --set-mark 1
-> iptables -t filter -A INPUT -m mark --mark 1 -j LOG --log-prefix ipsec_nat_t
-> iptables -t filter -A INPUT -m mark --mark 1 -j ACCEPT
-> iptables -t filter -A INPUT -j LOG
-> iptables -t filter -A INPUT -j REJECT
->   
-In general make sure that you are saving the marks to the conntrack 
-tables  and restoring them with
--j CONNTRACK --save-mark
-and
--j CONNTRACK --restore-mark
+I think you're missing rule accepting traffic entering VPN
+connection interface.
 
-although in your sample this doesn't matter as you tag every incoming 
-packet and as the other post notes, you seem to accept the connections 
-before your logging.
+Try adding ACCEPT in INPUT or MARK 0x1 in PREROUTING for udp dport
+1701. Alternatively you can MARK/ACCEPT incomming traffic on VPN
+interface (eg. tap0 - vpn interface, then -i tap0).
 
-I usually only set the mark when the state is NEW
+The same will apply to traffic comming on l2tp interface if you going to
+terminate the connection on very same box.
 
-John
+Hope that helps.
+
+Regards,
+Marek
