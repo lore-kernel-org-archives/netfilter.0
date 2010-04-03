@@ -1,108 +1,60 @@
-From: elko <elko@clevertrace.com>
-Subject: Re: VLAN et iptables
-Date: Sat, 03 Apr 2010 07:46:55 +0200
-Message-ID: <1270273615.4034.1.camel@makina.clevertrace.com>
-References: <201004030927.53528.jeetu.golani@gmail.com>
+From: Khaled Hussein <khaled@bisan.com>
+Subject: Re: Diskless and Firewall
+Date: Sat, 03 Apr 2010 10:28:30 +0300
+Message-ID: <1270279710.3340.2.camel@khaled-laptop>
+References: <1270117547.3335.15.camel@khaled-laptop>
+	 <4BB4AB9E.3080208@ait.ac.at>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <201004030927.53528.jeetu.golani@gmail.com>
+In-Reply-To: <4BB4AB9E.3080208@ait.ac.at>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Jeetu Golani <jeetu.golani@gmail.com>
-Cc: netfilter@vger.kernel.org, Arun Khan <arun.khan@silverarc.biz>, Erle Pereira <biz@erlepereira.com>
+To: Roman Fiedler <roman.fiedler@ait.ac.at>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-What you have as output of 
+Dear Roman, 
 
-ifconfig 
+how can i set conntrack liberal globally (via proc)? 
 
-I cannot see your vlan interfaces in iptabels ? 
 
-Best regards, 
-Elko
+Best Regards,
+==========================
+Khaled J. Hussein
+Senior System Engineer
+Bisan Systems Ltd.
+Tel: +970-22985941
+Fax: +970-22985942
+Web: www.bisan.com
+Email: khaled@bisan.com
+========================== 
 
-On Sat, 2010-04-03 at 09:27 +0530, Jeetu Golani wrote:
-> Hi,
-> 
-> I have a Debian system that I am trying to configure as a router for a MPLS 
-> VPN setup. I'm having trouble setting up the iptables rules to forward 
-> internet traffic from remote locations. Admittedly this isn't my forte 
-> therefore I would sincerely appreciate any help :)
-> 
-> Network Description:
-> At the head office, the ISP facing router has two physical NICs (eth0 and 
-> eth1).
-> 
-> eth0 is connected to the head office  "local"  LAN  192.168.0.0/24.
-> 
-> eth1 has two VLAN interfaces 105 and 689 (vlan105 and vlan689) 
-> connecting to the Service Provider's (SP)  Network
-> Termination Unit (NTU)
-> 
-> vlan105 carries VPN traffic coming in from remote locations e.g two
-> LANs subnets over MPLS VPN (a) 192.168.1.0/24 and (b) 172.16.0.0/16
-> 
-> vlan689 carries company <> INTERNET traffic
-> 
-> Internet access for "remote" locations, all Internet traffic comes to
-> above router over vlan105 sub interface and have it SNAT'd/Masquerade
-> to the Internet over vlan689 interface.
-> ---------------------
-> 
-> The following is the iptables script I have tried however it doesn't work:
-> 
-> INTIF1="eth0"     # physical interface for local LAN
-> INTIF2="vlan105"  # VLAN iface for VPN traffic to remote location
-> EXTIF="vlan689"   # VLAN iface for INTERNET traffic
-> EXTIP="x.x.x.x" #public IP for our CE router
-> 
-> /sbin/depmod -a
-> /sbin/modprobe ip_tables
-> /sbin/modprobe ip_conntrack
-> /sbin/modprobe ip_conntrack_ftp
-> /sbin/modprobe ip_conntrack_irc
-> /sbin/modprobe iptable_nat
-> /sbin/modprobe ip_nat_ftp
->  echo "1" > /proc/sys/net/ipv4/ip_forward
-> #echo "1" > /proc/sys/net/ipv4/ip_dynaddr
-> 
-> iptables -P INPUT ACCEPT
-> iptables -F INPUT 
-> iptables -P OUTPUT ACCEPT
-> iptables -F OUTPUT 
->  iptables -P FORWARD DROP
-> iptables -F FORWARD
-> 
-> iptables -t nat -F
-> 
-> # for Matunga subnet 192.168.0.0/24
->  iptables -A FORWARD -i $EXTIF -o $INTIF1 -d 192.168.0.0/24 -m state --
-> state ESTABLISHED,RELATED -j ACCEPT
->  iptables -A FORWARD -i $INTIF1 -o $EXTIF -s 192.168.0.0/24 -m -j 
-> ACCEPT
-> 
->  # for Silvassa subnet 172.16.0.0/16
-> iptables -A FORWARD -i $EXTIF -o $INTIF2 -d 172.16.0.0/16 -m state --state 
-> ESTABLISHED,RELATED -j ACCEPT
->  iptables -A FORWARD -i $INTIF2 -o $EXTIF -s 172.16.0.0/16 -m -j ACCEPT
-> 
->  # for Colaba subnet 192.168.1.0/24
-> iptables -A FORWARD -i $EXTIF -o $INTIF2 -d 192.168.1.0/24 -m state --
-> state ESTABLISHED,RELATED -j ACCEPT
->  iptables -A FORWARD -i $INTIF2 -o $EXTIF -s 192.168.1.0/24 -m -j 
-> ACCEPT
-> 
-> iptables -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
-> 
-> --------------------------------------------
-> 
-> Would sincerely appreciate any help. Thanks
-> 
-> Bye for now
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
+On Thu, 2010-04-01 at 16:20 +0200, Roman Fiedler wrote: 
+> Khaled Hussein wrote:
+> > Dear All,
+> > 
+> > I am running a machine with diskless boot, it is running CentOS, i have problem with iptables, when i restart iptables i lost connection with NFS server so i lost my hard disks and machine become unreachable, this happened when i use DROP as default policy on INPUT and OUTPUT and FORWARD chains, i tried to use mangle table with default ACCEPT on these chains but the same, if i changed default policy to ACCEPT on above chains, so is there any way to avoid this problem
+> 
+> I had same problem with autosetup thingy recently. I think that the following fixed the problem for me (and not something else, that I overlooked while tuning the configs):
+> 
+> * Set conntrack liberal globally (via proc)
+> 
+> * Load minimal iptables set with accept on all chains (which is as secure as having no rules, like before, so nothing lost)
+> 
+> * Make sure to have traffic on all connections your want to keep alive, netfilter seems to create conntracks for them (you might use the conntrack tools for the same work also). In your case you might open a file, you haven't read yet to force NFS traffic.
+> 
+> * Switch to your final ruleset, that has a --state ESTABLISHED -j ACCEPT at the beginning of each chain (I loaded with iptables-restore to avoid glitches that might kill a connection)
+> 
+> * Disable conntrack liberal
+> 
+> The final rules were strict, with output filtering and stateful connection tracking.
+> 
+> Hope this is helpful,
+> 
+
+
+*************
+This  message has been scanned for viruses and dangerous content by Bisan Systems Ltd  MailScanner, and is believed  to be clean. Bisan Systems Ltd  does  not  represent  that  any  attachment  is free from computer viruses or defects and the user assumes all responsibility  for any  loss, damage  or  consequence  resulting  directly  or  indirectly  from  the use of any attachment. The information  contained  in  any  email  does not necessarily  reflect the views of Bisan systems or any other related entities or persons.
 
