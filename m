@@ -1,36 +1,99 @@
-From: Dennison Williams <dennison.williams@gmail.com>
-Subject: Re: MARK not working
-Date: Fri, 02 Apr 2010 13:35:27 -0700
-Message-ID: <4BB6550F.6030204@gmail.com>
-References: <4BB53BEC.9010709@gmail.com> <20100402065742.23be08f0@catlap> <4BB59C59.50607@gmail.com> <alpine.LSU.2.01.1004021328480.18189@obet.zrqbmnf.qr>
+From: Jeetu Golani <jeetu.golani@gmail.com>
+Subject: VLAN et iptables
+Date: Sat, 3 Apr 2010 09:27:53 +0530
+Message-ID: <201004030927.53528.jeetu.golani@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from
-         :user-agent:mime-version:to:subject:references:in-reply-to
-         :x-enigmail-version:content-type:content-transfer-encoding;
-        bh=OifW/AJ7N37O0qlR3ERxD/glAJaoJkte8iGbzj+Z66M=;
-        b=TSdVkT1gtc97MoPlgJ2ehLJufliMiR0kPm9FUa9qGLAVw8HI27ye2vpIffUusFwrGc
-         kvnt6Z3Cl90+W64o63GCB7IgX2WhqIfcTSyldTkdvTRDaQ+XTMvqEj+83lbcGWrcSwDf
-         Q/QYZBWqrrjRCRDiPZ9JM0oSaui2A2C3oA388=
-In-Reply-To: <alpine.LSU.2.01.1004021328480.18189@obet.zrqbmnf.qr>
+        h=domainkey-signature:received:received:from:to:subject:date
+         :user-agent:cc:mime-version:content-type:content-transfer-encoding
+         :message-id;
+        bh=Q5Z8Sw07YUF+3YiM4pvVHWSrk60njEs6Q05ZWsehacY=;
+        b=EUEpqscmIhBgYjU7G8y5h4xlCJS79lWSK8ydgcECGzq/jY2tvIdGKIISnBtB33PZTn
+         Hmk/Bt4L9FK41AUs/y/fTdV1r/l1xi7GEYdR5oCMRppSiIBFilWFavgWme8JhFwd07hf
+         YBoROPTeD5BYSuDjqY5myZKRCw5bIW8kVhpaw=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
+Cc: Arun Khan <arun.khan@silverarc.biz>, Erle Pereira <biz@erlepereira.com>
 
-Jan Engelhardt wrote:
-> There is your mark-1 packet, and right above it is the ESTABLISHED
-> rule that catches all the other packets that have this condition,
-> including those marked 1 which are subsequent in the IKE talk
->   
+Hi,
 
-Right you are.  I messed around with the order of the rules and noticed
-that the packets were in fact getting marked.  It turns out I
-misdiagnosed the problem which seems to actually be with the vpn
-software not encapsulating the packets.  Thanks for your time.
+I have a Debian system that I am trying to configure as a router for a MPLS 
+VPN setup. I'm having trouble setting up the iptables rules to forward 
+internet traffic from remote locations. Admittedly this isn't my forte 
+therefore I would sincerely appreciate any help :)
 
-Sincerely,
-Dennison Williams
+Network Description:
+At the head office, the ISP facing router has two physical NICs (eth0 and 
+eth1).
+
+eth0 is connected to the head office  "local"  LAN  192.168.0.0/24.
+
+eth1 has two VLAN interfaces 105 and 689 (vlan105 and vlan689) 
+connecting to the Service Provider's (SP)  Network
+Termination Unit (NTU)
+
+vlan105 carries VPN traffic coming in from remote locations e.g two
+LANs subnets over MPLS VPN (a) 192.168.1.0/24 and (b) 172.16.0.0/16
+
+vlan689 carries company <> INTERNET traffic
+
+Internet access for "remote" locations, all Internet traffic comes to
+above router over vlan105 sub interface and have it SNAT'd/Masquerade
+to the Internet over vlan689 interface.
+---------------------
+
+The following is the iptables script I have tried however it doesn't work:
+
+INTIF1="eth0"     # physical interface for local LAN
+INTIF2="vlan105"  # VLAN iface for VPN traffic to remote location
+EXTIF="vlan689"   # VLAN iface for INTERNET traffic
+EXTIP="x.x.x.x" #public IP for our CE router
+
+/sbin/depmod -a
+/sbin/modprobe ip_tables
+/sbin/modprobe ip_conntrack
+/sbin/modprobe ip_conntrack_ftp
+/sbin/modprobe ip_conntrack_irc
+/sbin/modprobe iptable_nat
+/sbin/modprobe ip_nat_ftp
+ echo "1" > /proc/sys/net/ipv4/ip_forward
+#echo "1" > /proc/sys/net/ipv4/ip_dynaddr
+
+iptables -P INPUT ACCEPT
+iptables -F INPUT 
+iptables -P OUTPUT ACCEPT
+iptables -F OUTPUT 
+ iptables -P FORWARD DROP
+iptables -F FORWARD
+
+iptables -t nat -F
+
+# for Matunga subnet 192.168.0.0/24
+ iptables -A FORWARD -i $EXTIF -o $INTIF1 -d 192.168.0.0/24 -m state --
+state ESTABLISHED,RELATED -j ACCEPT
+ iptables -A FORWARD -i $INTIF1 -o $EXTIF -s 192.168.0.0/24 -m -j 
+ACCEPT
+
+ # for Silvassa subnet 172.16.0.0/16
+iptables -A FORWARD -i $EXTIF -o $INTIF2 -d 172.16.0.0/16 -m state --state 
+ESTABLISHED,RELATED -j ACCEPT
+ iptables -A FORWARD -i $INTIF2 -o $EXTIF -s 172.16.0.0/16 -m -j ACCEPT
+
+ # for Colaba subnet 192.168.1.0/24
+iptables -A FORWARD -i $EXTIF -o $INTIF2 -d 192.168.1.0/24 -m state --
+state ESTABLISHED,RELATED -j ACCEPT
+ iptables -A FORWARD -i $INTIF2 -o $EXTIF -s 192.168.1.0/24 -m -j 
+ACCEPT
+
+iptables -t nat -A POSTROUTING -o $EXTIF -j MASQUERADE
+
+--------------------------------------------
+
+Would sincerely appreciate any help. Thanks
+
+Bye for now
