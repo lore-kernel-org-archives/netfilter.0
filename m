@@ -1,28 +1,30 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: about "tc"
-Date: Tue, 6 Apr 2010 12:31:43 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1004061231370.20809@obet.zrqbmnf.qr>
-References: <20100406093020.3b44a45f@pbmiha.malagasy.com>
+From: ebiederm@xmission.com (Eric W. Biederman)
+Subject: Re: lxc, conntrack and routecache
+Date: Tue, 06 Apr 2010 08:05:42 -0700
+Message-ID: <m1iq84aaex.fsf@fess.ebiederm.org>
+References: <20100404090757.6f1ac500@catlap>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20100406093020.3b44a45f@pbmiha.malagasy.com>
+In-Reply-To: <20100404090757.6f1ac500@catlap> (Marek Kierdelewicz's message of "Sun\, 4 Apr 2010 09\:07\:57 +0200")
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mihamina Rakotomandimby <mihamina@gulfsat.mg>
-Cc: netfilter@vger.kernel.org
+To: Marek Kierdelewicz <marek@piasta.pl>
+Cc: containers@lists.linux-foundation.org, netfilter@vger.kernel.org
 
-On Tuesday 2010-04-06 08:30, Mihamina Rakotomandimby wrote:
+Marek Kierdelewicz <marek@piasta.pl> writes:
 
->Manao ahoana, Hello, Bonjour,
+> Hi,
 >
->After a few search, I thought netdev@vger.kernel.org was the right ML
->to discuss about "tc".
->
->But when just lurking the traffic, it's more about network devices
->development...
->
->Where would you recommend to subscribe in order to talk about "tc"?
+> I'm evaluating lxc for use in virtualized routing/bridgeing
+> infrastructure. I'm particulary interested in conntrack and routecache
+> behaviour. I had run some tests and established that routecache and
+> conntrack is not shared between containers and base system. Are data
+> structures for routeche and conntrack in kernel shared (with each entry
+> marked with namespace id) or new data structure is created for each new
+> container?
 
-If in doubt, use this one.
+What does it matter?
+
+Eric
