@@ -1,32 +1,44 @@
-From: Alessandro Fachin <alessandro.fachin@gmail.com>
-Subject: iptables vlan and 802.1p marking is possible?
-Date: Thu, 8 Apr 2010 12:30:46 +0200
-Message-ID: <v2y624cd18a1004080330z1d60613dv7050c31ab573b42e@mail.gmail.com>
+From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
+	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
+Subject: Re: iptables vlan and 802.1p marking is possible?
+Date: Thu, 08 Apr 2010 14:58:09 +0300
+Message-ID: <1270727889.29223.5.camel@casper.meteor.dp.ua>
 References: <j2j624cd18a1004080256ic9aca654k14babd170dcfce40@mail.gmail.com>
+	 <v2y624cd18a1004080330z1d60613dv7050c31ab573b42e@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:in-reply-to:references
-         :date:received:message-id:subject:from:to:content-type
-         :content-transfer-encoding;
-        bh=aEp2TujHSnKvGQRgAwHmg+0JFPCL0QE71SwFEbk1F7E=;
-        b=lFA7ZPojuSfbvc4+k1vDYOSWGpDW37a0B3uOTMgRWrCSbeoF5+q6An/AnT4Qjgk2qU
-         O7ufxDbWjNdUjqh/lczK2SQBUfo6XxA8BbYHbrBxdyG/CSRTeJYRkQSSmkymeEJydjfx
-         Y3WmdEx/ZDFJnDXec3lLjL2dlmyIlutUAN8Gc=
-In-Reply-To: <j2j624cd18a1004080256ic9aca654k14babd170dcfce40@mail.gmail.com>
+In-Reply-To: <v2y624cd18a1004080330z1d60613dv7050c31ab573b42e@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="koi8-r"
+To: Alessandro Fachin <alessandro.fachin@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hi,
-is it possibile marking=A0 with iptables the traffic coming from tagged
-port (802.1Q vlan)
-that is using PCP, the 3-bit field which refers to the IEEE 802.1p prio=
-rity?
-I'm trying to do this for keep the correct priority until traffic arriv=
-eto tc.
-Thanks for reply.
-Regards.
+=F7 =FE=D4=D7, 08/04/2010 =D7 12:30 +0200, Alessandro Fachin =D0=C9=DB=C5=
+=D4:=20
+> Hi,
+> is it possibile marking  with iptables the traffic coming from tagged
+> port (802.1Q vlan)
+> that is using PCP, the 3-bit field which refers to the IEEE 802.1p pr=
+iority?
+
+It seems you can mark vlan packet with ebtables using protocol 802_1Q
+and --vlan-id, --vlan-prio matches, see man ebtables.
+
+Then you might want to use those marks from iptables or directly from
+tc.
+
+> I'm trying to do this for keep the correct priority until traffic arr=
+iveto tc.
+> Thanks for reply.
+> Regards.
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--=20
+=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
+ua>
+
