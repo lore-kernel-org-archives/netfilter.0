@@ -1,43 +1,32 @@
-From: Julien Vehent <julien@linuxwall.info>
-Subject: Re: about "tc"
-Date: Wed, 07 Apr 2010 15:04:25 +0200
-Message-ID: <0b165b34c69893e6d154392a2d3df036@localhost>
-References: <20100406093020.3b44a45f@pbmiha.malagasy.com> <alpine.LSU.2.01.1004061231370.20809@obet.zrqbmnf.qr>
+From: Alessandro Fachin <alessandro.fachin@gmail.com>
+Subject: iptables vlan and 802.1p marking is possible?
+Date: Thu, 8 Apr 2010 12:30:46 +0200
+Message-ID: <v2y624cd18a1004080330z1d60613dv7050c31ab573b42e@mail.gmail.com>
+References: <j2j624cd18a1004080256ic9aca654k14babd170dcfce40@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=linuxwall.info; h=
-	mime-version:date:from:to:subject:in-reply-to:references
-	:message-id:content-type:content-transfer-encoding; s=lnw-dkim;
-	 bh=fpqZQ+WuxQdlvQFSeqYcCOHlsrgy4zK7b4834+7njIo=; b=nEAn0VrqYZBN
-	hehQCu//vq+O4epaHhx+5DFxHCHl1lNlGKxAZ4kWjoQGA8teH3O+N0yiUn4scc0M
-	oFv1YwA2xigwxUUSjMHcB7y70Tt4OyzqB2txQicnMOrOEwIspZnmqdeCMyCQod/z
-	pvsMwn4i4Zt/KcBBKRzTj7uQwo5efGE=
-In-Reply-To: <alpine.LSU.2.01.1004061231370.20809@obet.zrqbmnf.qr>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:received:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=aEp2TujHSnKvGQRgAwHmg+0JFPCL0QE71SwFEbk1F7E=;
+        b=lFA7ZPojuSfbvc4+k1vDYOSWGpDW37a0B3uOTMgRWrCSbeoF5+q6An/AnT4Qjgk2qU
+         O7ufxDbWjNdUjqh/lczK2SQBUfo6XxA8BbYHbrBxdyG/CSRTeJYRkQSSmkymeEJydjfx
+         Y3WmdEx/ZDFJnDXec3lLjL2dlmyIlutUAN8Gc=
+In-Reply-To: <j2j624cd18a1004080256ic9aca654k14babd170dcfce40@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-On Tue, 6 Apr 2010 12:31:43 +0200 (CEST), Jan Engelhardt
-<jengelh@medozas.de> wrote:
-> On Tuesday 2010-04-06 08:30, Mihamina Rakotomandimby wrote:
-> 
->>Manao ahoana, Hello, Bonjour,
->>
->>After a few search, I thought netdev@vger.kernel.org was the right ML
->>to discuss about "tc".
->>
->>But when just lurking the traffic, it's more about network devices
->>development...
->>
->>Where would you recommend to subscribe in order to talk about "tc"?
-> 
-> If in doubt, use this one.
-
-There are a few folks discussing QoS and Firewalling on the Debian
-Firewall list as well.
-
-debian-firewall@lists.debian.org
-
-
+Hi,
+is it possibile marking=A0 with iptables the traffic coming from tagged
+port (802.1Q vlan)
+that is using PCP, the 3-bit field which refers to the IEEE 802.1p prio=
+rity?
+I'm trying to do this for keep the correct priority until traffic arriv=
+eto tc.
+Thanks for reply.
+Regards.
