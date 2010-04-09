@@ -1,31 +1,65 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Packet manipulation in user space
-Date: Fri, 9 Apr 2010 11:02:57 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1004091101420.17365@obet.zrqbmnf.qr>
-References: <h2hb3f13ff81004081148n221e9728mb5a14944cf4ffd06@mail.gmail.com>  <h2ub3f13ff81004081154tbf514844hdfb703cf81f857d2@mail.gmail.com>  <cf60659524ea8ac90afc3024108635b6@localhost> <q2lb3f13ff81004082300gac000528h519880c0a1ab2a75@mail.gmail.com>
+From: Indrek Paas <indrekpaas@gmail.com>
+Subject: Iptables and voip (sip) traffic
+Date: Fri, 9 Apr 2010 16:53:05 +0300
+Message-ID: <o2m596a60ad1004090653r8d00d435wfa96256b847dece8@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <q2lb3f13ff81004082300gac000528h519880c0a1ab2a75@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:received:message-id
+         :subject:from:to:content-type;
+        bh=V5gGF98Fup5FZdc1ALadx0uz5kIiDjQ9nDrzsifviZ4=;
+        b=OYv4DVmA/ppLUPkx47W7wFkFOtZnfSCojw53OxC4P+9M5Yhsf0KjnCA7QWFSHHbjer
+         pAV7ym5kIGs7TjpuND4OCV1b2EwbwTUTI9DJSdAJXNxYH9RBtsKxRdFzgQ8vA+zvMmAr
+         fSXvwAx5KPBF2TKp1JLrLeOpZrpfXVlei4wCM=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Hamid Nassiby <h.nassiby@gmail.com>
-Cc: Julien Vehent <julien@linuxwall.info>, netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
+Hi,
 
-On Friday 2010-04-09 08:00, Hamid Nassiby wrote:
->On Fri, Apr 9, 2010 at 1:22 AM, Julien Vehent <julien@linuxwall.info> wrote:
->
->I could do the first three of above requirements, using
->libnetfilter_queue. But I could not find a way to do the last of them
->:
->
->>> After manipulation  in user space, inject encrypted/decrypted version
->>> of the privileged (copy of) packets to the network or upward to the
->>> application layer.
->
->Is there any solution for the above issue?
+I have searched information about iptables and Sip protocol used for
+Voip calls. I remember that this particular protocol had problems
+passing firewalls which were configured to use NAT. I have found small
+articles and posts with suggestions to rules but these have not been
+helpful and I am at a loss. The basic idea is this.
 
-Reinjected packets should travel the normal network path (code-wise),
-so you can use xfrm, if I am not mistaken.
+Internet -- Linux firewall -- lan -- "Voip adapter" also "eth0 - ext"
+and "eth1 - int"
+
+Voip adapter has static ip address and I used these rules to forward
+the traffic to port 5060. And for some reason calls are either silent
+or the phone cannot be reached.
+
+IPTABLES -t nat -A PREROUTING  -p tcp -m tcp   -d "ext.ip.addr"
+--dport 5060 -j DNAT --to-destination "Voip_adapter_int_ip":5060
+IPTABLES -t nat -A POSTROUTING -o eth1 -p tcp -m tcp   -d
+"Voip_adapter_int_ip" --dport 5060 -j SNAT --to-source "ext.ip.addr"
+
+IPTABLES -N RULE_SIP5060
+IPTABLES -A OUTPUT -p tcp -m tcp -d "Voip_adapter_int_ip" --dport 5060
+ -m state --state ESTABLISHED,RELATED  -j RULE_SIP5060
+IPTABLES -A OUTPUT -p udp -m udp -d "Voip_adapter_int_ip" --dport 5060
+ -m state --state ESTABLISHED,RELATED  -j RULE_SIP5060
+IPTABLES -A FORWARD -p tcp -m tcp -d "Voip_adapter_int_ip"  --dport
+5060  -m state --state ESTABLISHED,RELATED  -j RULE_SIP5060
+IPTABLES -A FORWARD -p udp -m udp -d "Voip_adapter_int_ip"  --dport
+5060  -m state --state ESTABLISHED,RELATED  -j RULE_SIP5060
+IPTABLES -A RULE_SIP5060 -j LOG  --log-level 4 --log-prefix "RULE
+SIP5060 -- ACCEPT "
+IPTABLES -A RULE_SIP5060  -j ACCEPT
+
+Also have tried these rules which can be found on various sites.
+
+IPTABLES -A FORWARD -o eth0 -p udp --dport 5060 -j ACCEPT
+IPTABLES -t nat -A POSTROUTING -o eth0 -j SNAT --to-source "ext.ip.addr"
+
+And voip service provider claims that the Linux router should be
+switched to their Thompson device. Because iptables "interferes with
+their service". So any help and information is greatly appreciated.
+
+Sincerely,
+
+Indrek Paas
