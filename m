@@ -1,65 +1,80 @@
-From: Indrek Paas <indrekpaas@gmail.com>
-Subject: Iptables and voip (sip) traffic
-Date: Fri, 9 Apr 2010 16:53:05 +0300
-Message-ID: <o2m596a60ad1004090653r8d00d435wfa96256b847dece8@mail.gmail.com>
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: removing black listed ip
+Date: Sat, 10 Apr 2010 22:33:36 +0530
+Message-ID: <z2xcfeab66d1004101003j5eb39eb1t38ec3b31ce3ce4b@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:mime-version:received:date:received:message-id
          :subject:from:to:content-type;
-        bh=V5gGF98Fup5FZdc1ALadx0uz5kIiDjQ9nDrzsifviZ4=;
-        b=OYv4DVmA/ppLUPkx47W7wFkFOtZnfSCojw53OxC4P+9M5Yhsf0KjnCA7QWFSHHbjer
-         pAV7ym5kIGs7TjpuND4OCV1b2EwbwTUTI9DJSdAJXNxYH9RBtsKxRdFzgQ8vA+zvMmAr
-         fSXvwAx5KPBF2TKp1JLrLeOpZrpfXVlei4wCM=
+        bh=UA6U/gto1onLTyeY1G3oHq4ypCIiFnGnbfNp2PjcXTA=;
+        b=snYkqcTKcEtj9ciG1UMQtB0GM7JLHG4U55a5G+EcwsqU0vX+j8LsrGlXQfhKwwcED4
+         CeVGpw1nMhNS1wxEkkIRSQJVIlxl+xy4L4NHU3wiQtiJwKf4zv76cCi+VoKCYTWqPQxc
+         dM9I74L/l1Zmx7YkC77Bhdu7mmB6yDLEP8eXQ=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi,
+Hi ,
 
-I have searched information about iptables and Sip protocol used for
-Voip calls. I remember that this particular protocol had problems
-passing firewalls which were configured to use NAT. I have found small
-articles and posts with suggestions to rules but these have not been
-helpful and I am at a loss. The basic idea is this.
+ I need to remove black listed ip if   last seen packet is  x time
+ago  . I have changed code , but here it is comparing with first seen
+packet time . i need to compare last seen packet .
 
-Internet -- Linux firewall -- lan -- "Voip adapter" also "eth0 - ext"
-and "eth1 - int"
+**************************************************************************************************
 
-Voip adapter has static ip address and I used these rules to forward
-the traffic to port 5060. And for some reason calls are either silent
-or the phone cannot be reached.
+--- xt_recent.c.old	2010-04-11 03:51:10.000000000 +0530
++++ xt_recent.c	2010-04-11 03:50:06.000000000 +0530
+@@ -113,12 +113,13 @@
+ 	       (ip_list_hash_size - 1);
+ }
 
-IPTABLES -t nat -A PREROUTING  -p tcp -m tcp   -d "ext.ip.addr"
---dport 5060 -j DNAT --to-destination "Voip_adapter_int_ip":5060
-IPTABLES -t nat -A POSTROUTING -o eth1 -p tcp -m tcp   -d
-"Voip_adapter_int_ip" --dport 5060 -j SNAT --to-source "ext.ip.addr"
++static void recent_entry_remove(struct recent_table *, struct recent_entry *);
+ static struct recent_entry *
+ recent_entry_lookup(const struct recent_table *table,
+ 		    const union nf_inet_addr *addrp, u_int16_t family,
+ 		    u_int8_t ttl)
+ {
+-	struct recent_entry *e;
++	struct recent_entry *e ,*next;
+ 	unsigned int h;
 
-IPTABLES -N RULE_SIP5060
-IPTABLES -A OUTPUT -p tcp -m tcp -d "Voip_adapter_int_ip" --dport 5060
- -m state --state ESTABLISHED,RELATED  -j RULE_SIP5060
-IPTABLES -A OUTPUT -p udp -m udp -d "Voip_adapter_int_ip" --dport 5060
- -m state --state ESTABLISHED,RELATED  -j RULE_SIP5060
-IPTABLES -A FORWARD -p tcp -m tcp -d "Voip_adapter_int_ip"  --dport
-5060  -m state --state ESTABLISHED,RELATED  -j RULE_SIP5060
-IPTABLES -A FORWARD -p udp -m udp -d "Voip_adapter_int_ip"  --dport
-5060  -m state --state ESTABLISHED,RELATED  -j RULE_SIP5060
-IPTABLES -A RULE_SIP5060 -j LOG  --log-level 4 --log-prefix "RULE
-SIP5060 -- ACCEPT "
-IPTABLES -A RULE_SIP5060  -j ACCEPT
+ 	if (family == NFPROTO_IPV4)
+@@ -126,7 +127,17 @@
+ 	else
+ 		h = recent_entry_hash6(addrp);
 
-Also have tried these rules which can be found on various sites.
+-	list_for_each_entry(e, &table->iphash[h], list)
++	
++          list_for_each_entry_safe(e,next , &table->iphash[h], list) {
++          if (e->family == family && (jiffies - e->stamps[0] > 10000 )  ) {
++                       printk("\n Removing one entry  %lu  %lu \n" ,
+e->stamps[0] ,jiffies);
++                       printk(KERN_INFO "\nRemoving  ip entry:
+%d.%d.%d.%d\n", NIPQUAD(e->addr));
++                      recent_entry_remove(table, e);
++                      }
++
++          }
++
++        list_for_each_entry(e, &table->iphash[h], list)
+ 		if (e->family == family &&
+ 		    memcmp(&e->addr, addrp, sizeof(e->addr)) == 0 &&
+ 		    (ttl == e->ttl || ttl == 0 || e->ttl == 0))
+@@ -178,6 +189,10 @@
+ 		e->nstamps = e->index;
+ 	e->index %= ip_pkt_list_tot;
+ 	list_move_tail(&e->lru_list, &t->lru_list);
++
++
++
++
+ }
 
-IPTABLES -A FORWARD -o eth0 -p udp --dport 5060 -j ACCEPT
-IPTABLES -t nat -A POSTROUTING -o eth0 -j SNAT --to-source "ext.ip.addr"
+ static struct recent_table *recent_table_lookup(const char *name)
 
-And voip service provider claims that the Linux router should be
-switched to their Thompson device. Because iptables "interferes with
-their service". So any help and information is greatly appreciated.
 
-Sincerely,
-
-Indrek Paas
+***************************************************************************************
