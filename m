@@ -1,24 +1,30 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: removing black listed ip
-Date: Sat, 10 Apr 2010 19:42:03 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1004101938350.4171@obet.zrqbmnf.qr>
-References: <z2xcfeab66d1004101003j5eb39eb1t38ec3b31ce3ce4b@mail.gmail.com>  <alpine.LSU.2.01.1004101910020.32651@obet.zrqbmnf.qr> <z2hcfeab66d1004101020w685d24b3hc2551381819ced27@mail.gmail.com>
+From: whiplash <whiplash@bofhland.org>
+Subject: Re: Iptables and voip (sip) traffic
+Date: Sat, 10 Apr 2010 20:01:23 +0200
+Message-ID: <4BC0BCF3.5080302@bofhland.org>
+References: <o2m596a60ad1004090653r8d00d435wfa96256b847dece8@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <z2hcfeab66d1004101020w685d24b3hc2551381819ced27@mail.gmail.com>
+In-Reply-To: <o2m596a60ad1004090653r8d00d435wfa96256b847dece8@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: ratheesh k <ratheesh.ksz@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Saturday 2010-04-10 19:20, ratheesh k wrote:
+Indrek Paas ha scritto:
+> Hi,
+> 
+> I have searched information about iptables and Sip protocol used for
+> Voip calls. I remember that this particular protocol had problems
+> passing firewalls which were configured to use NAT. 
+[...]
+> And voip service provider claims that the Linux router should be
+> switched to their Thompson device. Because iptables "interferes with
+> their service". So any help and information is greatly appreciated.
 
->> xt_recent works by comparing the difference between an entry's
->> timestamps and the current time with the chosen --seconds parameter.
->
->If an ip is black listed , when it will get removed 
+Linux kernel already has two modules for handling natting and conntracking
+of SIP protocol, nf_nat_sip and nf_conntrack_sip; your VoIP service
+provider is trying to sell you something you don't really need, possibly.
 
-It will not get removed. If you want any action, such as blacklisting, 
-to stop after a given time, you use --seconds as I just told.
+HTH.
