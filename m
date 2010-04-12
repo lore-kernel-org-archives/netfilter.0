@@ -1,34 +1,47 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: removing black listed ip
-Date: Mon, 12 Apr 2010 14:30:17 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1004121427530.30496@obet.zrqbmnf.qr>
-References: <z2xcfeab66d1004101003j5eb39eb1t38ec3b31ce3ce4b@mail.gmail.com>  <alpine.LSU.2.01.1004101910020.32651@obet.zrqbmnf.qr>  <z2hcfeab66d1004101020w685d24b3hc2551381819ced27@mail.gmail.com>  <alpine.LSU.2.01.1004101938350.4171@obet.zrqbmnf.qr>
- <n2jcfeab66d1004112324t35d8d49cx7eebfcfe88b4f461@mail.gmail.com>
+From: Igor Bogomazov <bi@hl.ru>
+Subject: INVALID connections and SNAT
+Date: Mon, 12 Apr 2010 20:30:37 +0400
+Message-ID: <20100412203037.25956ce2@admin.hl.ru>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=PGP-SHA1;
+ boundary="Sig_/qPHDy9VriRGso5J/3TBF=CL"; protocol="application/pgp-signature"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <n2jcfeab66d1004112324t35d8d49cx7eebfcfe88b4f461@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: ratheesh k <ratheesh.ksz@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
+--Sig_/qPHDy9VriRGso5J/3TBF=CL
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On Monday 2010-04-12 08:24, ratheesh k wrote:
->On Sat, Apr 10, 2010 at 11:12 PM, Jan Engelhardt <jengelh@medozas.de> wrote:
->> On Saturday 2010-04-10 19:20, ratheesh k wrote:
->>
->>>> xt_recent works by comparing the difference between an entry's
->>>> timestamps and the current time with the chosen --seconds parameter.
->>>
->>>If an ip is black listed , when it will get removed
->>
->> It will not get removed. If you want any action, such as blacklisting,
->> to stop after a given time, you use --seconds as I just told.
->
->if  number of ip balcklisted ip is more than  ip_list_tot , old
->entries will be replaced by new ip addresses ? . { once list if full ,
->what will happen for new black listing }
+Hello,
 
-As I see it yes.
+Just noticed few packets which pass SNAT in POSTROUTING without
+altering their SRC. The problem has been obscured by the fact, that all
+works in general, no one complain.
+
+After I add REJECT rule for "-m state --state INVALID" connections,
+unmodified (not NATed) packets have disappeared. All right now.
+
+Why INVALID connections pass thru NAT instead of dropping them? It
+seems like a security risk, when hacker can listen not-NATed packets
+behind the router and learn a network topology.
+
+--=20
+=D0=A1 =D1=83=D0=B2=D0=B0=D0=B6=D0=B5=D0=BD=D0=B8=D0=B5=D0=BC,
+
+Igor Bogomazov
+
+--Sig_/qPHDy9VriRGso5J/3TBF=CL
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Disposition: attachment; filename=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAkvDSq0ACgkQUAcYRD1tT0Si/QCgmaY9lPCdeOW01jvN+j84sJSp
+VrMAoJoItOOcNUAkjSh9xqCMf4/PjcNm
+=KuSl
+-----END PGP SIGNATURE-----
+
+--Sig_/qPHDy9VriRGso5J/3TBF=CL--
