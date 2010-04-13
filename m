@@ -1,49 +1,103 @@
-From: "J. Bakshi" <joydeep@infoservices.in>
-Subject: How to block particular port  based on src IP ?
-Date: Tue, 13 Apr 2010 12:21:41 +0530
-Message-ID: <4BC4147D.1060802@infoservices.in>
+From: Igor Bogomazov <bi@hl.ru>
+Subject: Fw: INVALID connections and SNAT
+Date: Tue, 13 Apr 2010 11:36:19 +0400
+Message-ID: <20100413113619.65adedf0@admin.hl.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=PGP-SHA1;
+ boundary="Sig_/FEDSiHdYj6BrjSTRohv79h8"; protocol="application/pgp-signature"
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
 To: netfilter@vger.kernel.org
 
-Hello list,
+--Sig_/FEDSiHdYj6BrjSTRohv79h8
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-I have these working rule-sets which blocked the IPs trying to ssh more
-then 2 per min. And then the matching IPs are blacklisted for a
-pre-defined time. Here 180 sec.
+> Which are your rules in the nat table (POSTROUTING)?
 
-```````````
-iptables -A INPUT -p tcp -m hashlimit --hashlimit-above 2/min
---hashlimit-burst 2 \
---hashlimit-name hashlimit -m state --state NEW -m tcp --dport $SSH_POR=
-T
--j \
-MARK --set-xmark 0x1/0xffffffff
+Briefly, what I have:
 
-iptables -A INPUT -m recent --rcheck --seconds 180 --name sshoverflow
---rsource -j DROP
+*nat
+-A POSTROUTING -s 192.168.1.0/24 ! -d 192.168.0.0/16 \
+	-j SNAT --to-source 22.33.44.55
+*filter
+-A FORWARD -s 192.168.0.0/24 \
+	-m comment --comment "admin-subnet" -j ACCEPT
+-A FORWARD -d 192.168.1.0/24 \
+	-m state --state RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -d 192.168.1.0/24 \
+	-j REJECT --reject-with icmp-host-unreachable
+-A FORWARD -s 192.168.1.0/24 \
+	-j ACCEPT
 
-iptables -A INPUT -m mark --mark 0x1 -m recent --set --name sshoverflow
---rsource -j DROP
+how to test:
 
-iptables -A INPUT -p tcp -m state --state NEW --dport $SSH_PORT -j ACCE=
-PT
+tcpdump -i eth0 -ne 'net 192.168.1.0/24'
 
-``````````````````
+here eth0 (22.33.44.55): internet interface
 
-I am trying to make an arrangement that rather blocking the IP,; only
-the access to the ssh port will be blocked from that IP. So the other
-services i.e. imap, apache will be still accessible from the IP
-excluding ssh. Is it possible ?
+as example, what test outputs _sometimes_ (rarely):
 
-Please suggest.
-Thanks
+IP 192.168.1.4.50226 > 74.125.77.19.443: F 253979169:253979169(0) ack
+	3081852170 win 16445
+IP 192.168.1.4.50226 > 74.125.77.19.443: F 0:0(0)
+	ack 1 win 16445
+IP 192.168.1.4.50226 > 74.125.77.19.443: F 0:0(0) ack 1
+	win 16445
+IP 192.168.1.4.50226 > 74.125.77.19.443: F 0:0(0) ack 1 win
+	16445
+IP 192.168.1.4.50226 > 74.125.77.19.443: F 0:0(0) ack 1 win 16445
+IP 192.168.1.4.50226 > 74.125.77.19.443: F 0:0(0) ack 1 win 16445
+IP 192.168.1.4.50226 > 74.125.77.19.443: R 1:1(0) ack 1 win 0=20
 
---=20
-=E0=A6=9C=E0=A7=9F=E0=A6=A6=E0=A7=80=E0=A6=AA =E0=A6=AC=E0=A6=95=E0=A7=8D=
-=E0=A6=B8=E0=A7=80
+Also:
 
+1. flushing connections with 'conntrack -F' considerably increases the
+	rate of these unNATed packets
+2. after
+	iptables -A FORWARD -s 192.168.0.0/16 \! -d 192.168.0.0/16 \
+	-m state --state INVALID -j DROP
+   all works properly (no strange packets)
+
+>=20
+> Jorge D=C3=A1vila.
+>=20
+> Jorge Isaac Davila Lopez
+> Nicaragua Open Source
+> +505-8430-5462
+> davila@nicaraguaopensource.com
+>=20
+> En Abr 12, 2010, Igor Bogomazov <bi@hl.ru> escribi=C3=B3:
+> Hello,
+>=20
+> Just noticed few packets which pass SNAT in POSTROUTING without
+> altering their SRC. The problem has been obscured by the fact, that
+> all works in general, no one complain.
+>=20
+> After I add REJECT rule for "-m state --state INVALID" connections,
+> unmodified (not NATed) packets have disappeared. All right now.
+>=20
+> Why INVALID connections pass thru NAT instead of dropping them? It
+> seems like a security risk, when hacker can listen not-NATed packets
+> behind the router and learn a network topology.
+>=20
+
+--
+=D0=A1 =D1=83=D0=B2=D0=B0=D0=B6=D0=B5=D0=BD=D0=B8=D0=B5=D0=BC,
+
+Igor Bogomazov
+
+--Sig_/FEDSiHdYj6BrjSTRohv79h8
+Content-Type: application/pgp-signature; name=signature.asc
+Content-Disposition: attachment; filename=signature.asc
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAkvEHvMACgkQUAcYRD1tT0TMvACghWKwekGFYjAefnsV1ZYosI/s
+ePsAn3lyLinIIU+NwU+IDNLeb0COzM2O
+=cKns
+-----END PGP SIGNATURE-----
+
+--Sig_/FEDSiHdYj6BrjSTRohv79h8--
