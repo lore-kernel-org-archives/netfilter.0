@@ -1,49 +1,43 @@
-From: "J. Bakshi" <joydeep@infoservices.in>
-Subject: How to block particular port  based on src IP ?
-Date: Wed, 14 Apr 2010 08:48:15 +0530
-Message-ID: <4BC533F7.90104@infoservices.in>
+From: Oguz Yilmaz <oguzyilmazlist@gmail.com>
+Subject: Packets stops traversing after nat PREROUTING
+Date: Wed, 14 Apr 2010 11:30:32 +0300
+Message-ID: <s2sc4ada2161004140130ve00e5873qc38aebaa842d3b6e@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:received:message-id
+         :subject:from:to:content-type;
+        bh=89+VPjXLpSEmogSj4Px7nwaqURTvZrQ5j+4qhRHLbC0=;
+        b=p/RcbHjnZz6hf7JOaoJ8PU1Sk2RM9r/bj7GV6Eej/Jn7q8YaBfmXrz/1IPJtHrmdVA
+         udSxYGrbwRe10K+nGHYBdns9IL1uvK3PJqFwN462Q4L6NZRqo8Jti/HFHQJa1NF5D7+a
+         HR/rV1J88HbxOPJ1yIwQWoGuTbHc2Hstizys4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello list,
+OS is CentOS 5.4
+Kernel is 2.6.18-164
 
-I have these working rule-sets which blocked the IPs trying to ssh more
-then 2 per min. And then the matching IPs are blacklisted for a
-pre-defined time. Here 180 sec.
+Sometimes my firewall blocks the internet. When I inspect I have seen:
+- nat PREROUTING counters increase
+- filter FORWARD counters do not increase
+- nat POSTROUTING counters do not increase
 
-```````````
-iptables -A INPUT -p tcp -m hashlimit --hashlimit-above 2/min
---hashlimit-burst 2 \
---hashlimit-name hashlimit -m state --state NEW -m tcp --dport $SSH_POR=
-T
--j \
-MARK --set-xmark 0x1/0xffffffff
+According to the diagram of Engelhardt,
+http://jengelh.medozas.de/images/nf-packet-flow.png, the problem
+should be in Bridging Decision point or acc.to former diagrams in
+Routing Decision point.
 
-iptables -A INPUT -m recent --rcheck --seconds 180 --name sshoverflow
---rsource -j DROP
+I have tried to flush routing cache by "ip ro fl ca".
 
-iptables -A INPUT -m mark --mark 0x1 -m recent --set --name sshoverflow
---rsource -j DROP
+Problem is recovered only after /etc/init.d/iptables stop / start
 
-iptables -A INPUT -p tcp -m state --state NEW --dport $SSH_PORT -j ACCE=
-PT
+I need further cues for deepen the problem, or exact reasons for
+updating/recompling to newer kernel/netfilter.
 
-``````````````````
+Best Regards,
 
-I am trying to make an arrangement that rather blocking the IP,; only
-the access to the ssh port will be blocked from that IP. So the other
-services i.e. imap, apache will be still accessible from the IP
-excluding ssh. Is it possible ?
-
-Please suggest.
-Thanks
-
---=20
-=E0=A6=9C=E0=A7=9F=E0=A6=A6=E0=A7=80=E0=A6=AA =E0=A6=AC=E0=A6=95=E0=A7=8D=
-=E0=A6=B8=E0=A7=80
-
+Oguz.
