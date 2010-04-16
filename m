@@ -1,12 +1,12 @@
 From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Possible IPTables bug in INPUT interface filtering?
-Date: Fri, 16 Apr 2010 17:23:12 +0200
-Message-ID: <4BC880E0.3070100@plouf.fr.eu.org>
-References: <p2l464fbb2d1004152012p719184c9g57ac7c7562994929@mail.gmail.com>
+Subject: Re: can we design a modified fail2ban ?
+Date: Fri, 16 Apr 2010 17:29:43 +0200
+Message-ID: <4BC88267.5010005@plouf.fr.eu.org>
+References: <4BC7E028.8050209@infoservices.in>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <p2l464fbb2d1004152012p719184c9g57ac7c7562994929@mail.gmail.com>
+In-Reply-To: <4BC7E028.8050209@infoservices.in>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
@@ -14,49 +14,21 @@ To: netfilter@vger.kernel.org
 
 Hello,
 
-John Engelke a =E9crit :
-> Hello IPFilter Guru World,
-
-This list is about Netfilter, not IPFilter.
-
-> I've encountered some strangeness in filtering on a multihomed Linux
-> box, CentOS 5, x86_64, 2.6.18-164.15.1.el5, where using the interface
-> flag (-i) does not work.
+J. Bakshi a =E9crit :
 >=20
-> So this box has two interfaces on the local subnet, eth0 and eth1.
+> fail2ban is a popular application to prevent the brute-force attack
+> against ssh and also against imap, pop3 etc.. But fail2ban actually
+> blacklist the IP and this is what fail2ban has been designed for. Now=
+ a
+> days we can design the same with iptables. I wonder if iptables can
+> provide more liberty to match IP as well as port combination so that =
+we
+> don't need to blacklist the IP but only block the attempts from the I=
+P
+> based on port. Say more than 3 ssh attempt from IP xxx.xxx.xxx.xxx is
+> detected and no more ssh attempt from the same ip is no more possible
+> but pop and imap still works. Is it really possible with iptables ?
 
-Are both interfaces connected to the same subnet ? If so, I don't call
-this "multihomed".
-
-> I
-> would like to restrict VNC to only one of the interfaces, eth1. At th=
-e
-> start, VNC does not work. So I add this:
->=20
-> -A INPUT -i eth1 -p tcp -m multiport --port 5900 -j ACCEPT
->=20
-> Then, VNC starts working on eth0 AND eth1.
-
-Are you sure ? How do you know ?
-
-> Since I know the address of eth1, I then put it in explicitly as:
->=20
-> -A INPUT -i eth1 -p tcp -d 192.168.1.34 -m multiport --port 5900 -j A=
-CCEPT
->=20
-> Amazingly, this works and now VNC traffic is only allowed on eth1
-> (address 192.168.1.34). So I believe I am concluding correctly that
-> interface filtering *does not work* for INPUT statements in multihome=
-d
-> machines. I also wonder if it does not work at all for any interface.
-
-It works for lots of people - including myself - who run multihomed
-boxes such as routers.
-
-If both interfaces are connected to the same subnet, by default your bo=
-x
-accepts packets destined to any local non-loopback address on any
-interface, including packets destined to the address assigned to eth1 o=
-n
-eth0 and vice versa. This is because Linux enforces the "weak" host mod=
-el.
+Detected how ? fail2ban detects authentication failures by parsing the
+server logs. iptables cannot do this, and IHMO should not do this. This
+is just not its purpose.
