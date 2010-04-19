@@ -1,81 +1,93 @@
-From: Alessandro Vesely <vesely@tana.it>
-Subject: Re: can we design a modified fail2ban ?
-Date: Mon, 19 Apr 2010 17:18:12 +0200
-Message-ID: <4BCC7434.6020200@tana.it>
-References: <4BC7E028.8050209@infoservices.in> <alpine.LSU.2.01.1004160923230.31861@obet.zrqbmnf.qr> <4BC9DB51.6000407@tana.it> <alpine.LSU.2.01.1004171956030.10627@obet.zrqbmnf.qr> <4BCB0D3C.3060006@tana.it> <alpine.LSU.2.01.1004181841450.9840@obet.zrqbmnf.qr>
+From: "Jeff Saremi" <jeffsaremi@yahoo.com>
+Subject: SO_ORIGINAL_DST returning bogus port number
+Date: Mon, 19 Apr 2010 15:36:07 -0400
+Message-ID: <003f01cadff7$8ebeb720$ac3c2560$@com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tana.it; s=test;
-	t=1271690292; bh=aQKOeVxyemdjp9cHoLxvc+3E3r1CjLsfdhnsSS/ef78=;
-	l=2845;
-	h=Message-ID:Date:From:MIME-Version:To:CC:References:In-Reply-To:
-	 Content-Transfer-Encoding;
-	b=PDxc8GIF/y9GFE2A8BKJeUad199FAtDU1bqBETnCiVFSAOw5gPbkR+1lApXDQad54
-	 +aOi9WzN9Bv4b6cKDpkDizrTA3o+mXEf2WDg4QG5yJmAt8uHdPLKphrwLMPXHsnxU2
-	 A85lz8m6fZWeMzquUsjVYMxITfhvjHODo7Fh7+sg=
-In-Reply-To: <alpine.LSU.2.01.1004181841450.9840@obet.zrqbmnf.qr>
+References: 
+In-Reply-To: 
+Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1252"
+To: netfilter@vger.kernel.org
 
-On 18/Apr/10 18:44, Jan Engelhardt wrote:
-> On Sunday 2010-04-18 15:46, Alessandro Vesely wrote:
->>  actionban = iptables -I fail2ban-<name>  1 -s<ip>  -j DROP
->>  actionunban = iptables -D fail2ban-<name>  -s<ip>  -j DROP
->>
->>  I don't know whether fail2ban uses some other storage to remember frequently banned IPs.
->
-> If you are using iptables for actionban, it would not need to.
 
-Right, but rather than deleting by number, it uses the same IP to 
-issue the unban command. If the IP is remembered even after unbanning 
-it, then it is possible to increase its next ban-period, in case it is 
-caught again.
+I=92m not sure what i=92m doing wrong or whether my expectations of net=
+filter
+are correct or not.
+But i basically had the NAT extension forward all incoming tcp traffic =
+to a
+local socket. I tested it and it worked fine.
+However I still need the original destination IP and port number for my=
+ code
+to function properly.
+I get the original destination IP correctly but the port number is neve=
+r
+what I expect.
+Below are the setup steps, my code and tracing that I did:
 
->>  How would you compare iptables and netfilter?
->
-> Like you compare a tree with soil?
+Setup:
 
-Yeah, my question was short, but not formally sound...
+iptables -A INPUT -p tcp -i eth0 -j ACCEPT
+iptables -t nat -A PREROUTING -i eth0 -p tcp -j REDIRECT --to-port 9000
 
-I heard about some not better characterized performance degradation 
-that would occur when successively issuing a huge number of "iptables 
--I" commands. How huge is "huge"? Where is this topic expounded?
+Code:
 
->>  I mean fail2ban actions versus looking up a b-tree file,
->
-> Where does that btree file come from, and what should it be useful for?
+=A0=A0=A0 cli_fd =3D accept(fd, (struct sockaddr *) &cli_addr, &cli_len=
+);
 
-A b-tree can be used to store IPs: One has to remember them, at least 
-for some time, one way or another, if different IPs are to be treated 
-differently. One can use an "at" command for unbanning, and avoid 
-structured storage. Alternatively, one could use ipset, e.g. iptrees 
-with timeouts. As yet another alternative, one can use netfilter and 
-user-space storage. I mentioned b-trees because I use Berkeley DB with 
-the my netfilter daemon. MySQL or anything similar offer similar 
-functionality and performance.
+=A0=A0=A0 dst_len =3D sizeof(dst_addr);
+=A0=A0=A0 if(getsockopt(cli_fd, IPPROTO_IP, SO_ORIGINAL_DST, &dst_addr,=
+ &dst_len)
+!=3D 0)
+=A0=A0=A0=A0=A0=A0=A0 printf("getsockopt() returned error");
+=A0=A0=A0 else
+=A0=A0=A0=A0=A0=A0=A0 printf("original destination address: %s:%d\n",
+inet_ntoa(dst_addr.sin_addr), dst_addr.sin_port);
 
-When I started to use my daemon, I was afraid that accessing the disk 
-on each packet would have been a bottleneck. So, I only filtered new 
-connections. Later on, I added a rule to filter all packets, in order 
-to also terminate existing connections. Two rules, actually: a 
-netfilter rule to set a mark and another one to reject those packets, i.e.
+The above server is listening on port 9000 on ANY address. When hit by =
+a
+call from a telnet client (telnet 10.10.10.1 33000) it prints the follo=
+wing:
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 original destination addr=
+ess: 10.10.10.1:59520
 
-   iptables -t raw -A OUTPUT -p tcp ! --syn -m multiport --sports $X \
-      -j NFQUEUE --queue-num 4
-   iptables -A OUTPUT -p tcp ! --syn -m mark --mark 4 \
-      -j REJECT --reject-with tcp-reset
+I have tried changing the port in the telnet command but everytime I do=
+ that
+a completely different value is reported out.
 
-(For udp and --syn connections, a single netfilter rule is enough.)
+While the listening socket was running and the telnet client was
+communicating, I ran =93tcpdump=94 and below are a few lines from that =
+which
+confirm the ports I expected.
+There are no traces of port number 59520! (note that 192.168.1.100 is t=
+he
+telnet machine and 192.168.1.101 is the =93intercepting=94 machine runn=
+ing
+netfilter:
 
-The time taken for issuing verdicts used to be much less than that for 
-parsing the log file. The former has jumped to about the double of the 
-latter, after those additional two rules. Perhaps, I should have stuck 
-to using netfilter for new connections only. Existing connections can 
-be terminated with short-lived iptables rules, or by calling 
-nids_killtcp() or "ngrep -K" directly. In hindsight, that looks fairly 
-obvious. However, the above quoted fail2ban's actions don't seem to be 
-concerned with such kind of optimizations. Thoughts?
+Trace:
+
+13:45:01.688156 IP 192.168.1.100.51961 > 10.10.10.1.33000: P 1:2(1) ack=
+ 1
+win 256
+13:45:01.688256 IP 10.10.10.1.33000 > 192.168.1.100.51961: . ack 2 win =
+183
+13:45:01.688418 IP 10.10.10.1.33000 > 192.168.1.100.51961: P 1:19(18) a=
+ck 2
+win 183
+13:45:01.688585 IP 10.10.10.1.33000 > 192.168.1.100.51961: F 19:19(0) a=
+ck 2
+win 183
+13:45:01.688750 IP 192.168.1.100.51961 > 10.10.10.1.33000: . ack 20 win=
+ 256
+13:45:01.693081 IP 192.168.1.100.51961 > 10.10.10.1.33000: F 2:2(0) ack=
+ 20
+win 256
+13:45:01.693130 IP 10.10.10.1.33000 > 192.168.1.100.51961: . ack 3 win =
+183
+
+
+
