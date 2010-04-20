@@ -1,81 +1,58 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Possible IPTables bug in INPUT interface filtering?
-Date: Tue, 20 Apr 2010 12:37:36 +0200
-Message-ID: <4BCD83F0.8000906@plouf.fr.eu.org>
-References: <p2l464fbb2d1004152012p719184c9g57ac7c7562994929@mail.gmail.com>	 <4BC880E0.3070100@plouf.fr.eu.org> <t2w464fbb2d1004191515hd4f9fe2cofe500bab85945682@mail.gmail.com>
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: Re: removing black listed ip
+Date: Tue, 20 Apr 2010 16:51:33 +0530
+Message-ID: <m2ncfeab66d1004200421ma6446c06te3c2fb46c5a5ce39@mail.gmail.com>
+References: <z2xcfeab66d1004101003j5eb39eb1t38ec3b31ce3ce4b@mail.gmail.com>
+	 <alpine.LSU.2.01.1004101910020.32651@obet.zrqbmnf.qr>
+	 <z2hcfeab66d1004101020w685d24b3hc2551381819ced27@mail.gmail.com>
+	 <alpine.LSU.2.01.1004101938350.4171@obet.zrqbmnf.qr>
+	 <n2jcfeab66d1004112324t35d8d49cx7eebfcfe88b4f461@mail.gmail.com>
+	 <alpine.LSU.2.01.1004121427530.30496@obet.zrqbmnf.qr>
+	 <m2qcfeab66d1004191946g1a566eb8k7886cd56b6aa968c@mail.gmail.com>
+	 <alpine.LSU.2.01.1004201004370.21452@obet.zrqbmnf.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <t2w464fbb2d1004191515hd4f9fe2cofe500bab85945682@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:in-reply-to:references
+         :date:received:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=FSIGZeLPEDiucdHAoPhL+hIxEd72VrxmhY9Z1uV/TVU=;
+        b=G5N7TWLHAXCOhfgYf/gYQb4hoEW45+anHVjCts6jJGgH20BCkNA/pT9JSlk+x0kshP
+         277r7m5CzVteQNnvx2wQ9Hye4dByexSux9i7rDiJ+Bq8qiy8PTeQ3c34YoUPbHX7/Ixs
+         1xuWhZewhL3XhpIk6K5FRhoBuTkGq3lXStx8A=
+In-Reply-To: <alpine.LSU.2.01.1004201004370.21452@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org
 
-John Engelke a =E9crit :
+On Tue, Apr 20, 2010 at 1:36 PM, Jan Engelhardt <jengelh@medozas.de> wr=
+ote:
+>
+> On Tuesday 2010-04-20 04:46, ratheesh k wrote:
+>>>>
+>>>>if =A0number of ip balcklisted ip is more than =A0ip_list_tot , old
+>>>>entries will be replaced by new ip addresses ? . { once list if ful=
+l ,
+>>>>what will happen for new black listing }
+>>>
+>>> As I see it yes.
 >>
->>> So this box has two interfaces on the local subnet, eth0 and eth1.
->> Are both interfaces connected to the same subnet ? If so, I don't ca=
-ll
->> this "multihomed".
->=20
-> According to the link at http://en.wikipedia.org/wiki/Multihoming ,
-> this setup can be described as "Multiple Interfaces, Single IP addres=
-s
-> per interface". So I'm actually trying to limit load on one interface
-> using IPTables, which is a little different but nonetheless a variant
-> on the concept.
+>>suppose one particular ip is blacklisted by accident ...I want to
+>>remove the ip from black list . How can i do that ?
+>
+> How do you define accident?
+>
+> Manually:
+> =A0"echo -2a01:198:476::1" >/proc/net/xt_recent/foo
+>
+> Automatically:
+> =A0If you can automatically detect an accident, you can also
+> =A0have it removed with -m recent --remove. Or in fact,
+> =A0avoid it in the first place.
+>
 
-You did not clearly answer my question : are both interfaces connected
-to the same subnet ? Please detail your network setup.
-
->>> I would like to restrict VNC to only one of the interfaces, eth1. A=
-t
->>> the start, VNC does not work. So I add this:
->>>
->>> -A INPUT -i eth1 -p tcp -m multiport --port 5900 -j ACCEPT
->>>
->>> Then, VNC starts working on eth0 AND eth1.
->> Are you sure ? How do you know ?
->=20
-> Well I know because I added the line to the iptables rules file in
-> /etc/sysconfig and restarted the service. It didn't work before I
-> added the line and restarted. I tested both IPs before and after.
-
-This is not proof. As I wrote, either IP address may be used on either
-interface. Proof would be some packet capture or iptables log on eth0.
-
-> So are you stating that without providing the IP address that you are
-> able to filter solely on the interface name (i.e. -i eth0 or -i eth1)=
-?
-
-Yes, if I want to filter only on the interface. Again, when doing so an=
-y
-(non loopback) address assigned to any interface is reachable through
-that interface, not only the specific address assigned to it.
-
->> If both interfaces are connected to the same subnet, by default your=
- box
->> accepts packets destined to any local non-loopback address on any
->> interface, including packets destined to the address assigned to eth=
-1 on
->> eth0 and vice versa. This is because Linux enforces the "weak" host =
-model.
->=20
-> Okay, fine. But I don't see anything in either the man pages for
-> IPTables nor in the examples linked from netfilter.org to indicate
-> this. If the '-i' interface flag only works under certain conditions
-> the documentation ought to state those conditions. I RTFM for this
-> one.
-
-I don't see why this needs to be indicated there. This is not related t=
-o
-netfilter or iptables.
-
-> Bottom line is interface filtering doesn't really work when it
-> requires IP/subnet parameters too. Bug or not it's unexpected
-> behavior.
-
-It is just unexpected to you because packets don't flow the way you
-think. Packets for a given address may arrive on any interface.
-Addresses and interfaces are mostly independent.
+Thanks a ton .
