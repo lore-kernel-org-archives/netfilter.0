@@ -1,32 +1,32 @@
-From: Stephen Hemminger <shemminger@vyatta.com>
-Subject: Re: rx interrupt in userspace
-Date: Tue, 20 Apr 2010 11:00:03 -0700
-Message-ID: <20100420110003.29685143@nehalam>
-References: <p2mcfeab66d1004201031u233ce827w8874c7ecf45575f6@mail.gmail.com>
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: mac filtering
+Date: Wed, 21 Apr 2010 09:25:05 +0530
+Message-ID: <l2wcfeab66d1004202055jab9b6853ue6b9e80d5da93dc0@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <p2mcfeab66d1004201031u233ce827w8874c7ecf45575f6@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:date:received:message-id
+         :subject:from:to:content-type;
+        bh=JdW4fJplxXEjoNcIFiGXXNKAP/QVoPs6A5hp0XmT/vE=;
+        b=B2bsZvhaeilVTir3km7cf3RScZ++mfBd4CiPokESjQONJZDggbB16Eh4zh75sPCp8P
+         H0Fzc8rm2mGS27Xdy0hP9uYcmYMnP08NWSrf0AJR4RspSV/lsYND1X5Yo4Mfyf8ViGtt
+         8vFPQMNJYHYJJkumN5WSrmMmNz5I9VOH3Sdsk=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: ratheesh k <ratheesh.ksz@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Tue, 20 Apr 2010 23:01:38 +0530
-ratheesh k <ratheesh.ksz@gmail.com> wrote:
+I have a client machine (say A ) connectected to a linux router . I
+can browse internet without any problem .
 
-> Hi ,
-> 
->  When flooding of network  packets happens on network card  ,  my
-> linux embedded box becomes unrepsonsive because softirq_rx eats up
-> hell a lot of CPU . I want  top half of tx interrupt to be in User
-> space . I want to implement some alogoritm in userspace  to drop
-> packets on high flooding and to keep other processes's some cycles .
-> 
-> Could you guide me a little on this , any online turorials or articles
-> or books , i can refer ?
-> Any similar implementation like this ?
-> 
+In router , i can configure  MAC address filters . If i configure A's
+mac address should be disabled , A cannot access Router itself ? .
 
-If your driver used NAPI, then it would not do this.
+Question : What exactly mac address filter mean ?  disabling router
+access or disabling internet access ?
+
+
+Thanks,
+Ratheesh
