@@ -1,32 +1,42 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Possible IPTables bug in INPUT interface filtering?
-Date: Thu, 22 Apr 2010 00:10:37 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1004220004040.2067@obet.zrqbmnf.qr>
-References: <p2l464fbb2d1004152012p719184c9g57ac7c7562994929@mail.gmail.com>  <t2p186ebf761004211127k7512fb29r5b4873627925fece@mail.gmail.com> <j2h56378e321004211430xc2912428wab13e04f016b4f2d@mail.gmail.com>
+From: "Morgon J. Kanter" <morgon.j.kanter@dartmouth.edu>
+Subject: libnetfilter_conntrack: notification on established/finished connection?
+Date: Wed, 21 Apr 2010 19:15:28 -0400
+Message-ID: <201004211915.28436.morgon.j.kanter@dartmouth.edu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <j2h56378e321004211430xc2912428wab13e04f016b4f2d@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Richard Horton <arimus.uk@googlemail.com>
-Cc: Narendra Choyal <narendrachoyal@gmail.com>, John Engelke <john.engelke@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Wednesday 2010-04-21 23:30, Richard Horton wrote:
+Hi,
 
->On 21 April 2010 19:27, Narendra Choyal <narendrachoyal@gmail.com> wrote:
->
->> NOTE :
->> -i also not work when we have two virtual IPs like eth0 and eth0:1 .
->> In this case first rule will be applied whatever the interface is
->> written i.e eth0 or eth0:1 .
->
->Might be totally off base but have vague memories that the virtual
->interface can't be filtered using -i / -o.
+Apologies if I'm on the incorrect list, but this isn't a patch for netfilter 
+so I believe this to be the appropriate one.
 
-Because they are _NOT_ interfaces. Please, stop using tools like 
-ifconfig. Their ioctls don't deal with multiple addresses and thus use 
-fugly hacks like making up interfaces that are not really there and 
-confusing the hell outta users.
-(Use iproute2 instead.)
+I'm in the process of writing an application that requires notification when a 
+new TCP connection to a specific destination is established, and finished / 
+timed out. I've never used libnetfilter_conntrack (or anything netfilter at 
+all, for that matter), so I've been investigating using libnetfilter_conntrack 
+for this purpose. My question is: is this possible to do with this library?
+
+My question is so basic because I'm not really sure what nfct_catch() actually 
+fires on. I noticed the filter infrastructure -- to get such an application to 
+work, would I create a filter for TCP, and that destination, and then do 
+something like:
+
+nfct_filter_attach(nfct_fd(conntrack_handle), filter);
+nfct_callback_register(conntrack_handle, NFCT_T_NEW, new_connection_callback, 
+NULL);
+nfct_callback_register(conntrack_handle, NFCT_T_DESTROY, 
+dead_connection_callback, NULL);
+nfct_catch(conntrack_handle);
+
+Is this the right track for what I want to do? My issue is I just don't really 
+understand exactly what nfct_catch does -- what is a conntrack event, exactly? 
+And what does it mean to steal one, as per the callback returning 
+NFCT_CB_STOLEN.
+
+Thanks,
+-- Morgon
