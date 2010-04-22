@@ -1,55 +1,87 @@
-From: Elison Niven <elison.niven@gmail.com>
-Subject: Cannot use iptables with kernel 2.6.30
-Date: Thu, 22 Apr 2010 16:28:12 +0530
-Message-ID: <g2g21df6cb71004220358y9a5f23f1w1b7795a90fae82e2@mail.gmail.com>
+From: Salatiel Filho <salatiel.filho@gmail.com>
+Subject: PRIO qdisc + iptables TOS target
+Date: Thu, 22 Apr 2010 18:46:25 -0300
+Message-ID: <t2lbeb91d721004221446w48913889t67532a9f2b9e8933@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:date:received:message-id
-         :subject:from:to:content-type;
-        bh=vmhUwC1NDBWH+LCREUQQ2WKmf/ni983Bx5YzGYAf/Kc=;
-        b=qOFAWZRVv4/8wZogHld7LRTHAumnFc5YzPHN8hmhSMdOqqLU2fTtlninRaQcMLFccr
-         ut8lEbdunQDKlgl5g1MVf8mAoza2edRFdxms/Gm7pr28x+yNetqpxxeFOK1EGvpEcGLl
-         pwJnI335V3FrQ9OrjjzVNQu/qNq1b6sWYTqXU=
+        h=domainkey-signature:mime-version:received:from:date:received
+         :message-id:subject:to:content-type:content-transfer-encoding;
+        bh=Gp2OnIE8naHqz+Rg2fiDw4E3fp4TMxTg9BGs7xvQxHo=;
+        b=fKCkM/Nk/rk0RsYtfLaYsVU8Db2FnNCvaxXvwnRqqEK10FrxT4rtmiTeUU3Vn1nIIV
+         qujgL97y47CTicVyp8/lW/ry4tfkZZ+RuPOYDfcsx33i0kbt1YmsQwS0qUQO/NL06jTf
+         AkOcHYtfSlGlSnu3xNySSkdsilZQrcKEXcXFM=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org, lartc@mailman.ds9a.nl
 
-Hi List,
+i am trying to do some traffic classification using the PRIO qdisc and
+i am having a few problems.
 
-I am trying to install iptables on ARM platform running linux kernel
-2.6.30. I have enabled all the netfilter modules as enabled in the
-kernel.
+I have a root htb class:
 
-When statically building iptables-1.4.7, I get the following error:
-# iptables
-getsockopt failed strangely
+tc qdisc add dev imq0 root handle 1: htb  default 255 r2q 1
+tc class add dev imq0 parent 1:  classid 1:1 htb rate 768kbit
 
-When I build it dynamically, I am able to run iptables:
-# iptables -h
-(displays help)
+and a child PRIO
+tc class add dev imq0 parent 1:1 classid  1:99 htb rate 96kbit ceil
+600kbit prio 0
+tc qdisc add dev imq0 parent 1:99 prio
+tc filter add dev imq0 parent 1: protocol ip  prio 7 u32 match ip dst
+192.168.1.99 flowid 1:99
 
-However, When I try to apply any rules, It says:
-# iptables -F
-Can't initialize table filter.
-Perhaps iptables or your kernel needs to be updated.
 
-This is strange because I have enabled all the netfilter options in my kernel.
 
-I also tried using iptables-1.4.4 and iptables-1.3.8 but am not able
-to run iptables.
 
-Searching a little more, It seems to be the bug reported here :
+the result is:
 
-https://lists.linux-foundation.org/pipermail/bugme-new/2009-April/021618.html
+# tc - s class ls dev imq0
 
-However this patch that claims to solve this is already applied in my
-kernel and I still get the same error:
+class htb 1:1 root rate 768000bit ceil 768000bit burst 1599b cburst 159=
+9b
+ Sent 2451 bytes 22 pkt (dropped 0, overlimits 0 requeues 0)
+ rate 1016bit 1pps backlog 0b 0p requeues 0
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 250000 ctokens: 250000
 
-http://marc.info/?l=linux-crypto-vger&m=123924457316022&w=2
+class htb 1:129 parent 1:1 leaf 816c: prio 0 rate 96000bit ceil
+600000bit burst 1599b cburst 1599b
+ Sent 7269 bytes 50 pkt (dropped 0, overlimits 0 requeues 0)
+ rate 1416bit 1pps backlog 0b 0p requeues 0
 
-Best Regards,
-Elison
+class prio 816c:1 parent 816c:
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+class prio 816c:2 parent 816c:
+ Sent 7269 bytes 50 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+class prio 816c:3 parent 816c:
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
+ backlog 0b 0p requeues 0
+
+
+
+The problem is that when i want to give a higher priority for some
+ports the packets keep going to 816:2 instead of 816:1
+
+my iptables rules:
+
+
+iptables -t mangle -I PREROUTING  -p tcp -m multiport --ports 22,80 -j
+TOS  --set-tos 0x10
+
+Shouldn't this rule make all packets from/to port 22 and 80 go through
+816c:1 PRIO class ?
+
+
+Any help is very welcome.
+
+
+[]'s
+Salatiel
+
+"O maior prazer do inteligente =E9 bancar o  idiota
+   diante de um  idiota que banca o inteligente".
