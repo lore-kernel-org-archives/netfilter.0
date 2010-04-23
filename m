@@ -1,61 +1,64 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Cannot use iptables with kernel 2.6.30
-Date: Fri, 23 Apr 2010 09:30:41 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1004230927130.24961@obet.zrqbmnf.qr>
-References: <g2g21df6cb71004220358y9a5f23f1w1b7795a90fae82e2@mail.gmail.com>
+From: "Parthiv Shah" <parthiv.shah@sibridgetech.com>
+Subject: RE: Adding ebtables entry from kernel module
+Date: Fri, 23 Apr 2010 13:09:22 +0530
+Message-ID: <F24502A8FCAC496180CC7A5AF283CF21@PARTHIVLAPTOP>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <g2g21df6cb71004220358y9a5f23f1w1b7795a90fae82e2@mail.gmail.com>
+References: 
+In-Reply-To: 
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Elison Niven <elison.niven@gmail.com>
-Cc: netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
+
+Hi Everyone,
+
+Any insight/pointers for this one? Thanks in advance.
+
+Thanks,
+Parthiv
 
 
-On Thursday 2010-04-22 12:58, Elison Niven wrote:
->
->I am trying to install iptables on ARM platform running linux kernel
->2.6.30. I have enabled all the netfilter modules as enabled in the
->kernel.
->
->When statically building iptables-1.4.7, I get the following error:
-># iptables
->getsockopt failed strangely
+-----Original Message-----
+From: Parthiv Shah [mailto:parthiv.shah@sibridgetech.com] 
+Sent: Monday, April 19, 2010 11:21 AM
+To: 'netfilter@vger.kernel.org'
+Subject: Adding ebtables entry from kernel module
 
-iptables without a command should display "no command specified",
-not getsockopt failed.
+Hi,
+ 
+I am new to using ebtables and my requirements is to do L2 NATing of clients
+connected on the bridge, through WiFi interface.
+ 
+As a proof of concept, I am able to add following rules in ebtables and have
+the functionality that I want. (this is for one client connected on bridge)
+ 
+ 1. ebtables -t nat -A POSTROUTING -o ath0 -j snat --to-src
+00:03:7F:12:06:90 --snat-arp --snat-target ACCEPT
+ 
+ 2. ebtables -t nat -A PREROUTING -p 0x0800 -i ath0 --ip-dst 192.168.40.239
+-j dnat --to-dst 08:00:46:6A:A4:AC --dnat-target ACCEPT  3. ebtables -t nat
+-A PREROUTING -p 0x0806 -i ath0 --arp-ip-dst 192.168.40.239 -j dnat --to-dst
+08:00:46:6A:A4:AC --dnat-target ACCEPT 
+ 
+With above rules, client PC (192.168.40.239) is able to ping gateway
+(through WiFi - WAN interface) and it's packets are properly NATed. Now
+practically, there will be many clients connected on the bridge and run time
+they will join and leave the bridge port. So now I need to add/delete these
+rules (specifically 2 and 3) for each client as and when they join / leave.
+I was thinking of modifying the ebtables rules from the kernel itself (at
+the time of dhcp / arp / ip packet flow for any new client).
+ 
+How can I add / delete the above rules (2 and 3), from the kernel module?
+Basically I don't want to use ebtables user space tool to add/delete rules
+in ebtables, neither I want to extend ebtables. I just want to be able to
+create / delete ebtables rule entries from kernel space.
+ 
+Any help on this will be appreciated.
+ 
+Thanks,
+Parthiv
+ 
+ 
 
-What commands did you use for static compilation?
-
->When I build it dynamically, I am able to run iptables:
-># iptables -h
->(displays help)
-
->However, When I try to apply any rules, It says:
-># iptables -F
->Can't initialize table filter.
->Perhaps iptables or your kernel needs to be updated.
->
->This is strange because I have enabled all the netfilter options in my kernel.
-
-I have a vague idea it could be ARM's alignments..
-
->I also tried using iptables-1.4.4 and iptables-1.3.8 but am not able
->to run iptables.
->
->Searching a little more, It seems to be the bug reported here :
->
->https://lists.linux-foundation.org/pipermail/bugme-new/2009-April/021618.html
-
-This report mentions that versions before 2.6.30-rc1 (e.g. 2.6.29) were fine.
-Is that also the case for you?
-
->However this patch that claims to solve this is already applied in my
->kernel and I still get the same error:
->
->http://marc.info/?l=linux-crypto-vger&m=123924457316022&w=2
-
-Does it happen when iptable_filter.ko is loaded already before
-iptables is executed?
