@@ -1,27 +1,43 @@
-From: supercodeing35271 supercodeing35271 <supercodeing35271@gmail.com>
-Subject: Dose netfilter can intercept the http method like the GET and POST?
-Date: Sat, 24 Apr 2010 10:20:39 +0800
-Message-ID: <m2w28efc0211004231920o2345ee66w3d39329cc73bad95@mail.gmail.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Dose netfilter can intercept the http method like the GET and
+ POST?
+Date: Sat, 24 Apr 2010 00:35:04 -0500
+Message-ID: <4BD28308.3010302@riverviewtech.net>
+References: <m2w28efc0211004231920o2345ee66w3d39329cc73bad95@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:date:message-id
-         :subject:from:to:content-type;
-        bh=ekkRls0NpL/CMSWHOdWips3SqJD3qI/hASYlG4E2Oi0=;
-        b=JAVFemt/jpDg+Sw9d6OnLZ58uzW5Z0OlIPZa/kSoMwwbBdRoRfd9M8uItSuVB2YV0e
-         Nekt30Z7MlFPQJVpwKBPgbr7RLCS78iRCyCkoSZtDnPI7yk58/gGukLUz4IPM5ffMZ8c
-         Ck2Wo4qx6K3OEBStm/ZkfyaYNx0+H3aexjnuA=
+In-Reply-To: <m2w28efc0211004231920o2345ee66w3d39329cc73bad95@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hi,i just think about that does netfilter could doing a Application
-Layer protection.
-Assume there is a website which the server is Apache/Tomcat,and the
-browser just submit the http/jsp form which contains a malicious
-string for SQL or XSS attack.Now the netfilter program in the website
-server get the string before send to Tomcat and check the string.
-So does this could be done?And how to do it by netfilter?
+supercodeing35271 supercodeing35271 wrote:
+> Hi,i just think about that does netfilter could doing a Application 
+> Layer protection. Assume there is a website which the server is 
+> Apache/Tomcat,and the browser just submit the http/jsp form which 
+> contains a malicious string for SQL or XSS attack.Now the netfilter 
+> program in the website server get the string before send to Tomcat 
+> and check the string. So does this could be done?And how to do it by 
+> netfilter?
+
+NetFilter does have some layer 7 capabilities that can be used to do 
+this.  However, it will be difficult (at best?) to do it very well.
+
+I think you would be far better off using some sort of reverse proxy 
+that is meant to work at the application layer.  I.e. Squid, or Apache, 
+or Nginx, or the likes.
+
+For NetFilter to be able to do what you are wanting, you will have to 
+possibly deal with fragmented packets designed to thwart filtering like 
+you want to do.
+
+Where as with an application layer gateway / reverse proxy, it will 
+receive the request, re-assemble it, run a sanity check on it (against 
+rules that you can easily define) and then pass only the valid requests 
+on in to your back end web server.
+
+
+
+Grant. . . .
