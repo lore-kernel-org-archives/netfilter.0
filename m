@@ -1,36 +1,25 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Problem with rdate and iptables
-Date: Sun, 25 Apr 2010 13:54:41 +0200
-Message-ID: <4BD42D81.1000501@plouf.fr.eu.org>
-References: <hqstu1$7hm$1@dough.gmane.org>
+From: Jeff Jensen <jjensen@unyalli.com>
+Subject: Re: Help with ftp helper please
+Date: Sun, 25 Apr 2010 06:00:26 -0600
+Message-ID: <p2gb376a78e1004250500z443e032fj47df79cb918f2bd7@mail.gmail.com>
+References: <r2ob376a78e1004240948ucaa6e2d5o5f65d4216f7ac936@mail.gmail.com>
+	 <4BD3E5F3.4070907@chello.at>
+	 <alpine.LSU.2.01.1004251108170.5896@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <hqstu1$7hm$1@dough.gmane.org>
+In-Reply-To: <alpine.LSU.2.01.1004251108170.5896@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Eric Bauman <baumane@livejournal.dk>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
+Cc: Jan Engelhardt <jengelh@medozas.de>
 
-Hello,
+Interesting, unless I'm blind the original conversation does not
+mention this. I've seen -m state and now -m helper. Where did this -m
+conntrack come from?
 
-Eric Bauman a =E9crit :
->=20
-> I'm having an issue with getting rdate working over UDP.
-> I'm using the rule "--append INPUT --match state --state=20
-> ESTABLISHED,RELATED --jump ACCEPT". It works fine over TCP, but times=
-=20
-> out when using UDP.
-
-Is this on the server or client ? That rule does not care about the
-protocol, but a rule alone without the rest of the ruleset does not tel=
-l
-much.
-
-> Any ideas?
-
-Rather a suggestion. You could trace relevant traffic with a packet
-sniffer and/or iptables LOG rules and try to see what's going on.
-Disable all filtering and check if it works. Does the rdate server
-accept UDP queries ?
+>
+> That's why one should always have -m conntrack --ctstate ESTABLISHED(,RELATED)
+> in INPUT, FORWARD, and OUTPUT. It really trims down all these rules.
+>
