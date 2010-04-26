@@ -1,52 +1,46 @@
-From: Roman Fiedler <roman.fiedler@ait.ac.at>
+From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
+	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
 Subject: Re: Blocking all APNIC addresses vs. per-country list
-Date: Mon, 26 Apr 2010 16:51:08 +0200
-Message-ID: <4BD5A85C.1020703@ait.ac.at>
-References: <0414A4FA-32F4-4D94-92E0-FC5CC9B4D646@zconsulting.net> <q2m56378e321004260719i6685af2arc8faa644f555485b@mail.gmail.com> <4BD5A487.3020407@plouf.fr.eu.org>
+Date: Mon, 26 Apr 2010 18:10:17 +0300
+Message-ID: <1272294617.3750.35.camel@casper.meteor.dp.ua>
+References: <0414A4FA-32F4-4D94-92E0-FC5CC9B4D646@zconsulting.net>
+	 <q2m56378e321004260719i6685af2arc8faa644f555485b@mail.gmail.com>
+	 <4BD5A487.3020407@plouf.fr.eu.org>  <4BD5A85C.1020703@ait.ac.at>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4BD5A487.3020407@plouf.fr.eu.org>
+In-Reply-To: <4BD5A85C.1020703@ait.ac.at>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="koi8-r"
+To: netfilter <netfilter@vger.kernel.org>
 
-Hello list,
+=F7 =F0=CE=C4, 26/04/2010 =D7 16:51 +0200, Roman Fiedler =D0=C9=DB=C5=D4=
+:
+> Hello list,
+>=20
+> Besides connection limits, shouldn't it be possible to place the vari=
+ous
+> subnet rules in a sort of balanced/optimized tree to decrease the acc=
+ess
+> time? Are there tools available for that, that use e.g. the DROP log
+> entries from an unbalanced list to optimize the tree (like
+> huffman-encoding for data streams)? Can ipset do that?
 
-Besides connection limits, shouldn't it be possible to place the variou=
+http://ipset.netfilter.org/features.html
+
+I'm not familiar with huffman-encoding, but it seems ipset can store IP=
 s
-subnet rules in a sort of balanced/optimized tree to decrease the acces=
-s
-time? Are there tools available for that, that use e.g. the DROP log
-entries from an unbalanced list to optimize the tree (like
-huffman-encoding for data streams)? Can ipset do that?
+in hashes and trees (with timeout), but NETs are only possible in hash.
 
-Roman
+Not to say that there is an automatic tool for that, but you can make
+any kind of tree with just iptables' user defined CHAINs. It could
+probably be slow on insert/delete but definitelly fast on lookup.
+
+If the performance is the point and hight number of rules is the need
+one can also look at hipac, didn't tried it myself.
 
 --=20
-Roman Fiedler
-Safety & Security Department
-Information Management & eHealth
+=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
+ua>
 
-AIT Austrian Institute of Technology GmbH
-Reininghausstra=DFe 13/1  |  8020 Graz  |  Austria
-T +43(0) 316 586570-63  |  M +43(0) 664 8251194  |  F +43(0) 316 586570=
--12
-roman.fiedler@ait.ac.at <mailto:roman.fiedler@ait.ac.at> |
-http://www.ait.ac.at <http://www.ait.ac.at/>
-http://www.ait.ac.at/eHealth/ <http://www.ait.ac.at/eHealth/>
-
-=46N: 115980 i HG Wien  |  UID: ATU14703506
-This email and any attachments thereto, is intended only for use by the
-addressee(s) named herein and may contain legally privileged and/or
-confidential information. If you are not the intended recipient, please
-notify the sender by return e-mail or by telephone and delete this
-message from your system and any printout thereof. Any unauthorized use=
-,
-reproduction, or dissemination of this message is strictly prohibited.
-Please note that e-mails are susceptible to change. AIT Austrian
-Institute of Technology GmbH shall not be liable for the improper or
-incomplete transmission of the information contained in this
-communication, nor shall it be liable for any delay in its receipt.
