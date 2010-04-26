@@ -1,49 +1,55 @@
-From: Richard Horton <arimus.uk@googlemail.com>
-Subject: Re: stop e-mail from this list but leave me subscribed to this list
-Date: Mon, 26 Apr 2010 12:44:13 +0100
-Message-ID: <u2s56378e321004260444l1d5466bbt2b8cdeaa3458b561@mail.gmail.com>
-References: <4BD57BA7.5080702@gmx.de>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: libnetfilter_conntrack: notification on established/finished
+ connection?
+Date: Mon, 26 Apr 2010 14:27:05 +0200
+Message-ID: <4BD58699.9000405@netfilter.org>
+References: <201004211915.28436.morgon.j.kanter@dartmouth.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=KJ7D6GwjCxiRfLqEB9M7rnOROyMXWPcWTmxOwegG7AU=;
-        b=bv07r1qtlx2LCgQrTCvQBBvyzUHL1Z2DzJhgZQ3Iqvvf0bSl+cFVpcoZYSPfd9KVuR
-         IfQpovjXC1zIMzCqO+MNs3Lv0fiWEJ7ZSfP+LvjukD0PLHb13TIDurcZXFHeFrXRWB9P
-         PD3lXbtnDRvBkN6M9uXqfD63RlnAGp3zbnadc=
-In-Reply-To: <4BD57BA7.5080702@gmx.de>
+In-Reply-To: <201004211915.28436.morgon.j.kanter@dartmouth.edu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Markus Feldmann <feldmann_markus@gmx.de>
+Content-Type: text/plain; charset="us-ascii"
+To: "Morgon J. Kanter" <morgon.j.kanter@dartmouth.edu>
 Cc: netfilter@vger.kernel.org
 
-On 26 April 2010 12:40, Markus Feldmann <feldmann_markus@gmx.de> wrote:
-> Hi All,
->
-> as on other mailing lists it would be nice to subscribe to this list =
-without
-> getting daily e-mails. How to get this to work?
+Morgon J. Kanter wrote:
+> Hi,
+> 
+> Apologies if I'm on the incorrect list, but this isn't a patch for netfilter 
+> so I believe this to be the appropriate one.
+> 
+> I'm in the process of writing an application that requires notification when a 
+> new TCP connection to a specific destination is established, and finished / 
+> timed out. I've never used libnetfilter_conntrack (or anything netfilter at 
+> all, for that matter), so I've been investigating using libnetfilter_conntrack 
+> for this purpose. My question is: is this possible to do with this library?
 
-=46ollow the link in the mail list signature to get help on using major=
-domo...
+Look at utils/conntrack_events.c, I think that example is more or less
+what you need.
 
+> My question is so basic because I'm not really sure what nfct_catch() actually 
+> fires on. I noticed the filter infrastructure -- to get such an application to 
+> work, would I create a filter for TCP, and that destination, and then do 
+> something like:
+> 
+> nfct_filter_attach(nfct_fd(conntrack_handle), filter);
+> nfct_callback_register(conntrack_handle, NFCT_T_NEW, new_connection_callback, 
+> NULL);
+> nfct_callback_register(conntrack_handle, NFCT_T_DESTROY, 
+> dead_connection_callback, NULL);
+> nfct_catch(conntrack_handle);
 
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
+The filter infrastructure is there to attach filters in kernel-space.
 
+> Is this the right track for what I want to do? My issue is I just don't really 
+> understand exactly what nfct_catch does -- what is a conntrack event, exactly? 
+> And what does it mean to steal one, as per the callback returning 
+> NFCT_CB_STOLEN.
 
+nfct_catch() receives conntrack events from kernel-space, by default it
+blocks waiting for events. NFCT_CB_STOLEN means that the conntrack
+object is not released after the callback.
 
---=20
-Richard Horton
-Users are like a virus: Each causing a thousand tiny crises until the
-host finally dies.
-http://www.pbase.com/arimus - My online photogallery
-http://www.topcashback.co.uk/ref/rhorton
+Good luck with it.
