@@ -1,37 +1,47 @@
-From: "Tim Evans" <tkevans@tkevans.com>
+From: Richard Horton <arimus.uk@googlemail.com>
 Subject: Re: Blocking all APNIC addresses vs. per-country list
-Date: Mon, 26 Apr 2010 10:19:17 -0400
-Message-ID: <677ceca0469ab502a71c228b68e103f3.squirrel@login.hostmonster.com>
+Date: Mon, 26 Apr 2010 15:19:44 +0100
+Message-ID: <q2m56378e321004260719i6685af2arc8faa644f555485b@mail.gmail.com>
 References: <0414A4FA-32F4-4D94-92E0-FC5CC9B4D646@zconsulting.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:in-reply-to
+         :references:date:message-id:subject:from:to:cc:content-type;
+        bh=sz2392Sbq/rqo/fbWjA42K3wBRdEG9uxm9Tr8naMrvk=;
+        b=C0jmW9lcZxPE8wT9TSAidskmGZiI7jbZuABrVmO62BpPsBtQuZHIwaEITag8AxVqRq
+         trB+e5hyqbeaUY6YDT5s+JdIsqDQsOAI4635e69vOhViMEQn9Bj898kzfZUpHvQJV6F0
+         OVKvdDwfp5B8oRgyaG+6eqoxV2Duqqt06M6Q8=
 In-Reply-To: <0414A4FA-32F4-4D94-92E0-FC5CC9B4D646@zconsulting.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: Peter Zieseniss <peter@zconsulting.net>
 Cc: netfilter@vger.kernel.org
 
+On 26 April 2010 15:09, Peter Zieseniss <peter@zconsulting.net> wrote:
+> Hello All,
+>
+> This is my first time posting; i am rather new to iptables, so please excuse the ignorance in my question.
+>
+> My personal CentOS-based webhost is under constant ssh attack from an interminable list of different IP addresses (just to give you an idea, my latsb data file grows by ~100MB every week!!).
+> i've noticed that they all seem to come from East-Asia (mainly China, Taiwan, Malaysia, Korea--both).
+>
 
-Peter Zieseniss wrote:
+A better option would be to drop ssh connections if the number of
+attempts from a single ip address exceedes an acceptable limit (say
+1/min - can't see many legit uses for ssh where you you connect and
+disconnect multiple times within a 1 minute window)
 
-> My question, therefore, is this:
-> Is it wise to use a 4000-line long block-list for iptables? Or will doing
-> so bring my server to a crawl (which it already is because of these darn
-> brute-force ssh attacks) because for each TCP packet it has to spend 5
-> minutes going through the entire list?
-> Should i just forget about Australia and Japan, and block all APNIC
-> countries with just a 40-line list instead?
+This can be done using either hashlimit or the recent matches...
 
-Why not use denyhosts? http://denyhosts.sourceforge.net/
-
-Works with tcp wrapper; auto-updates /etc/hosts.deny; sends and accepts
-new bad hosts back to the mothership.
+Would put an example in but need to go give my presentation at work
+soon so will send one if you need it.
 -- 
-Tim Evans, TKEvans.com, Inc.    |   5 Chestnut Court
-UNIX System Admin Consulting    |   Owings Mills, MD 21117
-http://www.tkevans.com/         |   443-394-3864
-http://www.come-here.com/News/  |   tkevans@tkevans.com
-
-
+Richard Horton
+Users are like a virus: Each causing a thousand tiny crises until the
+host finally dies.
+http://www.pbase.com/arimus - My online photogallery
+http://www.topcashback.co.uk/ref/rhorton
