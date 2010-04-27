@@ -1,45 +1,40 @@
-From: ratheesh k <ratheesh.ksz@gmail.com>
-Subject: threaded interrupt handler
-Date: Tue, 27 Apr 2010 21:57:36 +0530
-Message-ID: <q2pcfeab66d1004270927we59dd900hc6fb90cb7c1ecf6b@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Polling for conntrack events
+Date: Tue, 27 Apr 2010 20:11:38 +0200
+Message-ID: <4BD728DA.1010004@netfilter.org>
+References: <201004261120.55513.morgon.j.kanter@dartmouth.edu>
 Mime-Version: 1.0
-Return-path: <linux-kernel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:date:message-id
-         :subject:from:to:content-type;
-        bh=hulZTvyctf15pRLzej8vEWngQKQs+19680YszcGLiKA=;
-        b=Zu2OLxWicjRCYEBmJxWqnJAoYVbqMYlwqbef9vtkMUI4gta/AbL3KS6mYZ1SBJWfLH
-         yqqGJA2oL+DKr2fkCo6QFntpCh0u7+5tuuc/P1rJS1Wkoy1SF6p+XWrnaIS5Hmwk/FhE
-         Okey/ijUiyVJb0b+I+mwQNQsieePP9kCiTSRY=
-Sender: linux-kernel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: linux-kernel@vger.kernel.org, netfilter@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <201004261120.55513.morgon.j.kanter@dartmouth.edu>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "Morgon J. Kanter" <morgon.j.kanter@dartmouth.edu>
+Cc: netfilter@vger.kernel.org
 
-Top half of  interrupt is implemented as kernel thread  in my embedded
-linux  , this act as a Home  Router . It has a wan -interface (eth1 )
-and lan-interface t( eth0 )
+Morgon J. Kanter wrote:
+> Hi,
+> 
+> I'm developing an application that uses libnetfilter_conntrack to note when 
+> connections start and end as part of what it does. So far I've been able to do 
+> just fine is use nfct_filter with nfct_catch and have a function called 
+> whenever the appropriately filtered conntrack events happen. This works well, 
+> but my program doesn't *just* look for conntrack events and act on them. To 
+> keep it single-threaded what I'd like to do is just be able to poll for 
+> conntrack events, with poll() or select() or whatever.
 
-https://rt.wiki.kernel.org/index.php/RT_PREEMPT_HOWTO
-http://lwn.net/Articles/302043/
+IRC, you can use nfct_fd() to get the netlink file descriptor.
 
+> What I attempted was extracting the netlink fd with the filter applied, and 
+> running select() on a set containing just that, and then using nfct_query().
 
-1. if i flood packets on my wan network interface , i can see cpu
-utilization of  ksoftirq-rx ( kernel thread ) goes high . But  irq-rx
-( kernel thread ) cpu utilization remains same . Why is it so ?
+nfct_query() is not of any use to listen to events.
 
+> This didn't work at all though -- when filtered conntrack events do happen, 
+> apparently nothing is pushed down that file descriptor. Is there any way to do 
+> what I want? I didn't see anything that was using this sort of functionality 
+> in the utils directory.
 
-2 . I  modified static priority of  ksoftirq-rx  ( using renice )  to
-+19 and  my user space application ( say app-x ) is made -19 . But
-still my app-x wont get any cycles ??
-
-
-3 . How do i set scheduling algorithm of all processes and threads to
-Round Robin . So that my app-x would get some processor cycles ?
-    Should i individually set  scheduling algorithm for each process ?
-
-
-thanks,
-ratheesh
+You can look at the conntrack-tools, specifically conntrackd, it does 
+more or less what you seem to need.
