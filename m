@@ -1,39 +1,45 @@
 From: ratheesh k <ratheesh.ksz@gmail.com>
-Subject: l2tp , pptp pass thru mode .
-Date: Tue, 27 Apr 2010 21:37:42 +0530
-Message-ID: <t2xcfeab66d1004270907x520eb9a0r325a2b8829d9a366@mail.gmail.com>
+Subject: threaded interrupt handler
+Date: Tue, 27 Apr 2010 21:57:36 +0530
+Message-ID: <q2pcfeab66d1004270927we59dd900hc6fb90cb7c1ecf6b@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:mime-version:received:received:date:message-id
          :subject:from:to:content-type;
-        bh=PahF5NcoRHhWWZzf7oKtCwhEPtrcxfT2A+ydhO1ZnXY=;
-        b=jYEjlIJQaiz43cVjqXjvQC8wBHwuIPuzjsCTESYZiwa4ZlQk1YFtpMjHLT3pW0gt5S
-         2+BT94p6vuPiSfetU1KBIat3Ucav3e2+O7RXcy/KLkZ85ZOtmOnMW3tCsCGYFeJPB8jI
-         jkMF+cUG6De58fNqrKfAbwrPLjZlBuMyJtAVM=
-Sender: netfilter-owner@vger.kernel.org
+        bh=hulZTvyctf15pRLzej8vEWngQKQs+19680YszcGLiKA=;
+        b=Zu2OLxWicjRCYEBmJxWqnJAoYVbqMYlwqbef9vtkMUI4gta/AbL3KS6mYZ1SBJWfLH
+         yqqGJA2oL+DKr2fkCo6QFntpCh0u7+5tuuc/P1rJS1Wkoy1SF6p+XWrnaIS5Hmwk/FhE
+         Okey/ijUiyVJb0b+I+mwQNQsieePP9kCiTSRY=
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: linux-kernel@vger.kernel.org, netfilter@vger.kernel.org
 
-My home Router has following iptables rules
+Top half of  interrupt is implemented as kernel thread  in my embedded
+linux  , this act as a Home  Router . It has a wan -interface (eth1 )
+and lan-interface t( eth0 )
 
-iptables -A INPUT -m state --state ESTABLISHED,RELATED  -j ACCEPT
-iptables -A INPUT -i  lan-interface   -j  ACCEPT
-iptables -A INPUT -i wan-input  -j DROP
-
-
-iptables -A FORWARD -m --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -i lan-interface -o wan-interface -j ACCEPT
-iptables -A FORWARD -i wan-interface -o lan-interface -j DROP
+https://rt.wiki.kernel.org/index.php/RT_PREEMPT_HOWTO
+http://lwn.net/Articles/302043/
 
 
-pptp pass thru  and l2tp pass thru  works fine  without adding any
-extra rule . why ?'
+1. if i flood packets on my wan network interface , i can see cpu
+utilization of  ksoftirq-rx ( kernel thread ) goes high . But  irq-rx
+( kernel thread ) cpu utilization remains same . Why is it so ?
 
-Is it because of ALGs ?
 
-Thanks,
-Ratheesh
+2 . I  modified static priority of  ksoftirq-rx  ( using renice )  to
++19 and  my user space application ( say app-x ) is made -19 . But
+still my app-x wont get any cycles ??
+
+
+3 . How do i set scheduling algorithm of all processes and threads to
+Round Robin . So that my app-x would get some processor cycles ?
+    Should i individually set  scheduling algorithm for each process ?
+
+
+thanks,
+ratheesh
