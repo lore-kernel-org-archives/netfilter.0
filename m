@@ -1,30 +1,61 @@
-From: Marek Kierdelewicz <marek@piasta.pl>
-Subject: Re: tc and making QoS
-Date: Fri, 30 Apr 2010 12:51:46 +0200
-Message-ID: <20100430125146.416f05f9@catlap>
-References: <u2of1cc03e01004300304gcde0364cxbdf93e74f3fd2661@mail.gmail.com>
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: Re: NAT table bypass for local traffic
+Date: Thu, 29 Apr 2010 11:55:18 +0530
+Message-ID: <q2xcfeab66d1004282325wbf9a93aduf3a8fc2d82ee90b0@mail.gmail.com>
+References: <n2h812495871004281019nb633c037i7dc04336bc47bd59@mail.gmail.com>
+	 <h2v7d7f2e8c1004281059l2ad0d411x1e5f17fd6d7e489f@mail.gmail.com>
+	 <alpine.LSU.2.01.1004282136590.18231@obet.zrqbmnf.qr>
+	 <h2i812495871004281350j23f2bdefhe18b60101fcf5acc@mail.gmail.com>
+	 <alpine.DEB.2.00.1004282253090.2332@aurora.sdinet.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <u2of1cc03e01004300304gcde0364cxbdf93e74f3fd2661@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:in-reply-to
+         :references:date:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=1ed/XRUWN+M1IDFwveqmaNCHgAzq7StUYgOpOkIrOcM=;
+        b=FS03nln9bmi6cdsA/+rUjsZXdLIVbcM1MbpNNOGgoigeHIGwavOI/wjeMmotmmaSQ+
+         m5hSKG2OXpT09Y+Wq/V+4Jrb+GEEr/qtUPWlu+AlU+NVyVYUx7T3kHvnXB5tq2kbHfFd
+         LguI7qo9HvS7VR7NDeOq3AMh3P1kcDvaprUCg=
+In-Reply-To: <alpine.DEB.2.00.1004282253090.2332@aurora.sdinet.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Mamadou =?UTF-8?B?VG91csOp?= <e2ia.ci@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Sven-Haegar Koch <haegar@sdinet.de>
+Cc: Bill Prochazka <billprozac@gmail.com>, Jan Engelhardt <jengelh@medozas.de>, Steve Fink <sphink@gmail.com>, netfilter@vger.kernel.org
 
-Hi Mamadou,
+ >>the outgoing echo-reply matches to it and thus does
+> not show up in nat OUTPUT/POSTROUTING.
 
->Is never match for the http downstream. And that make a sense because
->the dport of the downstream is not 80.
+Does echo reply will show up in nat PREROUTING chain ?
 
-Try changing "dport 80" into "sport 80" in following command:
+Thanks,
+Ratheesh
 
->tc filter add dev  eth2  protocol ip parent 1:  prio 1 u32   match ip
->dst 192.168.2.88/32  match ip protocol  6  0xff match ip dport  80
->0xffff flowid  1:8170
-
-That should do it.
-
-Best regards,
-Marek
+On Thu, Apr 29, 2010 at 2:25 AM, Sven-Haegar Koch <haegar@sdinet.de> wr=
+ote:
+> On Wed, 28 Apr 2010, Bill Prochazka wrote:
+>
+>> A more simple example is that ICMP echo requests
+>> go out the nat table's output chain, but ICMP echo replies do not.
+>
+> The incoming ICMP echo-request (should be visible in PREROUTING) sets=
+ up
+> a conntrack entry, the outgoing echo-reply matches to it and thus doe=
+s
+> not show up in nat OUTPUT/POSTROUTING.
+>
+> c'ya
+> sven-haegar
+>
+> --
+> Three may keep a secret, if two of them are dead.
+> - Ben F.
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
