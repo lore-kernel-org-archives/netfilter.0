@@ -1,31 +1,29 @@
-From: Sven-Haegar Koch <haegar@sdinet.de>
-Subject: Re: NAT table bypass for local traffic
-Date: Wed, 28 Apr 2010 22:55:06 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1004282253090.2332@aurora.sdinet.de>
-References: <n2h812495871004281019nb633c037i7dc04336bc47bd59@mail.gmail.com>  <h2v7d7f2e8c1004281059l2ad0d411x1e5f17fd6d7e489f@mail.gmail.com>  <alpine.LSU.2.01.1004282136590.18231@obet.zrqbmnf.qr>
- <h2i812495871004281350j23f2bdefhe18b60101fcf5acc@mail.gmail.com>
+From: "Morgon J. Kanter" <morgon.j.kanter@dartmouth.edu>
+Subject: (Re)injecting extra packets?
+Date: Wed, 28 Apr 2010 21:47:53 -0400
+Message-ID: <201004282147.53374.morgon.j.kanter@dartmouth.edu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <h2i812495871004281350j23f2bdefhe18b60101fcf5acc@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Bill Prochazka <billprozac@gmail.com>
-Cc: Jan Engelhardt <jengelh@medozas.de>, Steve Fink <sphink@gmail.com>, netfilter@vger.kernel.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Wed, 28 Apr 2010, Bill Prochazka wrote:
+Another question...
 
-> A more simple example is that ICMP echo requests
-> go out the nat table's output chain, but ICMP echo replies do not.
+Let's say I grab a bunch of packets from kernel space. I make some 
+modifications to them...but I also want to perhaps insert a packet into the 
+end, or even the middle, of the stream (updating the sequence numbers 
+appropriately, and the acknowledgment numbers appropriately on the way back). 
+Is there a mechanism for then injecting this extra packet into the kernel as 
+part of the stream? It seems like nfq_set_verdict() only works on packets 
+you've actually stolen, not created.
 
-The incoming ICMP echo-request (should be visible in PREROUTING) sets up 
-a conntrack entry, the outgoing echo-reply matches to it and thus does 
-not show up in nat OUTPUT/POSTROUTING.
+The only way I see to do this is raw sockets -- and then, it looks like I'm 
+probably better off giving a verdict of DROP each time, and sending the entire 
+stream of packets out the raw socket anew. Is there a better or cleaner way to 
+do this that I'm missing, or is raw sockets the best (or only) way?
 
-c'ya
-sven-haegar
-
--- 
-Three may keep a secret, if two of them are dead.
-- Ben F.
+Thanks,
+-- Morgon
