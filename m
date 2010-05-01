@@ -1,56 +1,84 @@
 From: ratheesh k <ratheesh.ksz@gmail.com>
-Subject: Re: NAT table bypass for local traffic
-Date: Sat, 1 May 2010 09:53:40 +0530
-Message-ID: <AANLkTil6_D7v6GBvdzz0js12Mb48MtgrUoyuzX-vP241@mail.gmail.com>
-References: <q2xcfeab66d1004282325wbf9a93aduf3a8fc2d82ee90b0@mail.gmail.com>
-	 <001636c5c15232dea504855f65c2@google.com>
+Subject: Re: GRE protocol .
+Date: Sat, 1 May 2010 10:24:47 +0530
+Message-ID: <AANLkTimBkNBrvVM7H5_W3fFy4X48sUK6aDQzY_0JyX0X@mail.gmail.com>
+References: <1291704212-1272660052-cardhu_decombobulator_blackberry.rim.net-422468553-@bda240.bisx.produk.on.blackberry>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type;
-        bh=VQDXuQedc6j4+dEIaBrkR7uDv2N5Q6kSX8sdf8ujnb0=;
-        b=IoAzq7ZUKRXwSMmqbZxRSUWJBed1Bpjp2lYT4no7XSSVr9F4vgsqABUex6PLU12a+I
-         h7vw4RAsk3sUhRMu7/Hg8UeHtV6McnkyvlQO6K3ml9sGDrMSof1mmr95IHodrOOLbf4O
-         b5e3yuJOL0qJBWVnQf3+gFoRb3NIfSKlAyiCQ=
-In-Reply-To: <001636c5c15232dea504855f65c2@google.com>
+         :references:date:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=vmjmUeOtZuhS2v1m1L8OQwQDjFQHhFmjvBNhwNUOb5I=;
+        b=Sz5W201Lpi+MaxwzGuXvlC7ozg1bBwzQGtbZc9Rj+xKjLxxKrQ9t4yU22R47hlKOww
+         Kyp/j9iXI/VF61b/ApI8XYCUkqtdDJ0TmWx5ORGj9zStE2fPiPq1MQ7GForilAlZxxOM
+         xvK25uOvo+2lMhoFc3wPaESLjau/4D3fNeeCE=
+In-Reply-To: <1291704212-1272660052-cardhu_decombobulator_blackberry.rim.net-422468553-@bda240.bisx.produk.on.blackberry>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: billprozac@gmail.com
-Cc: Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: valerio.balbi@gmail.com
+Cc: netfilter@vger.kernel.org
 
->On Thu, Apr 29, 2010 at 6:07 PM,  <billprozac@gmail.com> wrote:
-> The echo-reply does not.
->
-> On Apr 29, 2010 2:25am, ratheesh k <ratheesh.ksz@gmail.com> wrote:
->>  >>the outgoing echo-reply matches to it and thus does
->>
->> > not show up in nat OUTPUT/POSTROUTING.
->>
->>
->>
->> Does echo reply will show up in nat PREROUTING chain ?
->>
->>
->>
->> Thanks,
->>
->> Ratheesh
+On Sat, May 1, 2010 at 2:11 AM,  <valerio.balbi@gmail.com> wrote:
+> It's not clea r (sorry).
 
-Is icmp different from other protocol packets ?
-
-My understanding is  : - { In a router }  whenever a packet hits
-PREROUTING  chain , a tuple is created  and state is made NEW by
-conntrack module . When the packet goes out of POSTROUTING chain,
-install  original and reply direction tuples in hash table . When
-reply packet comes back and hits PREROTUING chain , state is made
-ESTABLISHED .
-
-So , in icmp , whenever request goes out itself  , state will be made
-ESTABLISHED ???
+iptable rules configured in my gateway machine ( which act as a router
+)  has no rule to allow GRE packet coming from wan side to pass thru .
+There is no ALGs loaded . Still i am able to establish a pptp
+connection . I can see GRE packet reached client machine using a
+wireshark .
 
 Thanks,
 Ratheesh
+
+On Sat, May 1, 2010 at 2:11 AM,  <valerio.balbi@gmail.com> wrote:
+> It's not clear (sorry). Anyway you can log or reject the gre protocol=
+ without any protocol inner inspection module.
+> Gre protocol is paritetical to tcp. I'm not in my deskbox, but I reme=
+mber that gre protocol has protocol number 49 perhaps. So you can trace=
+ gre connection tracing searching packet with protocol number equal to =
+49.
+>
+> My 2 cents.
+> ------Messaggio originale------
+> Da: ratheesh k
+> Mittente:netfilter-owner@vger.kernel.org
+> A:netfilter@vger.kernel.org
+> Oggetto: GRE protocol .
+> Inviato: 30 Apr 2010 09:19
+>
+> Router wan interface is eth1 and lan interface is eth0 .
+>
+> iptables =A0-A INPUT =A0-m state --state ESTABLISHED , RELATED =A0-j =
+ACCEPT .
+> iptables =A0-A INPUT =A0-i eth1 -j DROP .
+> iptables =A0-A INPUT =A0-i eth0 -j ACCEPT
+>
+> iptables =A0-A FORWAR -m state =A0--state ESTABLISHED , RELATED =A0-j=
+ ACCEPT
+> iptables =A0-A FORWARD -i eth0 -o eth1 -j ACCEPT
+> iptables =A0-A FORWARD -i eth1 -o eth0 -j DROP .
+>
+> I dont have pptp connection =A0tracking module installed . =A0But i c=
+an
+> see GRE protocol packet comed from wan gets routed and reaches my
+> client machine =A0 connected =A0to eth0 ?.
+>
+> I can see message id is 0 in GRE packet .
+> I have only pptp connection .
+>
+> Any hint is really appreciated ?
+>
+> Thanks,
+> Ratheesh
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
+>
+> Le mail ti raggiungono ovunque con BlackBerry=AE from Vodafone!
