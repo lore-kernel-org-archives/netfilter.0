@@ -1,28 +1,57 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: NAT table bypass for local traffic
-Date: Sat, 01 May 2010 16:29:25 +0200
-Message-ID: <4BDC3AC5.1030500@plouf.fr.eu.org>
-References: <n2h812495871004281019nb633c037i7dc04336bc47bd59@mail.gmail.com>	 <h2v7d7f2e8c1004281059l2ad0d411x1e5f17fd6d7e489f@mail.gmail.com>	 <alpine.LSU.2.01.1004282136590.18231@obet.zrqbmnf.qr>	 <h2i812495871004281350j23f2bdefhe18b60101fcf5acc@mail.gmail.com>	 <alpine.DEB.2.00.1004282253090.2332@aurora.sdinet.de> <q2xcfeab66d1004282325wbf9a93aduf3a8fc2d82ee90b0@mail.gmail.com>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [patch v2.2 1/4] [PATCH v2.1 1/4] netfilter: xt_ipvs (netfilter
+ matcher for IPVS)
+Date: Sat, 01 May 2010 18:18:07 +0200
+Message-ID: <4BDC543F.7060500@trash.net>
+References: <20100501032014.406353538@vergenet.net> <20100501032120.298829234@vergenet.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <q2xcfeab66d1004282325wbf9a93aduf3a8fc2d82ee90b0@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <lvs-devel-owner@vger.kernel.org>
+In-Reply-To: <20100501032120.298829234@vergenet.net>
+Sender: lvs-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: ratheesh k <ratheesh.ksz@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Simon Horman <horms@verge.net.au>
+Cc: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, netfilter@vger.kernel.org, Wensong Zhang <wensong@linux-vs.org>, Julius Volz <julius.volz@gmail.com>, "David S. Miller" <davem@davemloft.net>, Hannes Eder <heder@google.com>, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
 
-Hello,
+Simon Horman wrote:
 
-ratheesh k a =E9crit :
->=20
-> Does echo reply will show up in nat PREROUTING chain ?
+> @@ -0,0 +1,25 @@
+> +#ifndef _XT_IPVS_H
+> +#define _XT_IPVS_H 1
 
-No.
-If conntrack saw the echo request and the related "connection" exists,
-then the echo reply is in the ESTABLISHED state and by-passes the nat
-chains.
-If conntrack did not see the echo request or the related "connection"
-was further deleted or expired, then the echo reply is in the INVALID
-state and by-passes the nat chains too.
+You don't need to define a value.
+
+> +config NETFILTER_XT_MATCH_IPVS
+> +	tristate '"ipvs" match support'
+> +	depends on IP_VS
+> +	depends on NETFILTER_ADVANCED
+> +	help
+> +	  This option allows you to match against IPVS properties of a packet.
+> +
+> +	  If unsure, say N.
+
+You're using conntrack symbols, so this seems to need a dependency
+on NF_CONNTRACK.
+
+> +static bool ipvs_mt_check(const struct xt_mtchk_param *par)
+
+We've changed the signature to "int" in nf-next to be able to
+return errno codes. Please rebase your patches onto nf-next-2.6.git.
+
+Please also CC netfilter-devel at least for those parts that affect
+non-IPVS netfilter.
+
+> +{
+> +	if (par->family != NFPROTO_IPV4
+> +#ifdef CONFIG_IP_VS_IPV6
+> +	    && par->family != NFPROTO_IPV6
+> +#endif
+> +		) {
+> +		pr_info("protocol family %u not supported\n", par->family);
+> +		return false;
+> +	}
+> +
+> +	return true;
+> +}
+
