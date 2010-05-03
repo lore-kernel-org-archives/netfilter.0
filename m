@@ -1,41 +1,55 @@
-From: Jan Engelhardt <jengelh@medozas.de>
+From: Simon Tennant <simon@imaginator.com>
 Subject: Re: DNAT issue (with added network diagram)
-Date: Mon, 3 May 2010 16:01:56 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1005031601340.29150@obet.zrqbmnf.qr>
-References: <4BDECE5A.4010808@imaginator.com>
+Date: Mon, 03 May 2010 16:21:24 +0200
+Message-ID: <4BDEDBE4.3020803@imaginator.com>
+References: <4BDECE5A.4010808@imaginator.com> <alpine.LSU.2.01.1005031601340.29150@obet.zrqbmnf.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4BDECE5A.4010808@imaginator.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=imaginator.com;
+	s=mail; t=1272896490;
+	bh=C3OIYlE1rWEdZMFwv4ImM9byM+4emOaQB8RKVe7qrz8=;
+	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:References:
+	 In-Reply-To:Content-Type:Content-Transfer-Encoding;
+	b=BDlXKIekeenxsAAl0EKUzkTZ5F1uEFOQpnDz0/KKyRmw7h26l1UWso8TOgiH9pAnh
+	 mpGlEIcwOew6fqAIfoCXX+fTuVJNlMRsMjk+C88QX7WYPspigAvon0NlCPL0vL/CIi
+	 /5ts7SW3bdNrzPzFFwGuy+CJzHJ0kozPFqSoQWJc=
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=imaginator.com;
+	s=mail; t=1272896485;
+	bh=C3OIYlE1rWEdZMFwv4ImM9byM+4emOaQB8RKVe7qrz8=;
+	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:References:
+	 In-Reply-To:Content-Type:Content-Transfer-Encoding;
+	b=HBGCVVvX72y2HvbbOQ92FXz9vhlowHRbJM9dugWUt0N8dpjiXOSjRNvxLN0ak/WcY
+	 9kYRoDddbJI+MNCFsM4m3ynsofIrN98WBPa3Cl0PzQvrplTwzHTPdl7266h104fjS3
+	 bVoigjR7Mh2Vl2FAxXnv5bAiEhya4p+HYxe6vti8=
+In-Reply-To: <alpine.LSU.2.01.1005031601340.29150@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Simon Tennant <simon@imaginator.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jan Engelhardt <jengelh@medozas.de>
 Cc: netfilter@vger.kernel.org
 
-On Monday 2010-05-03 15:23, Simon Tennant wrote:
->
-> Two different applications that need to be accessible on port 443 on one host
-> with 1 ip address.  Apache already runs on the destination machine and uses
-> port 443.
->
-> Partial solution:
->
-> 1. Change DNS to tell the client to connect to another host, and.
-> 2. use another host that is not running anything on port 443 to receive and
-> forward the connctions using a "-j DNAT --to-destination" rule.
->
-> But:
->
-> What happens when a client on the destination also needs to connect and looks
-> up the service in DNS?  It connects out and is DNAT'ed back to itself.
->
-> A quick diagram:
->
-> http://docs.google.com/drawings/pub?id=1dxCOw8wbAhyuz7z1-ukJfmKOHcymsqN6YTRCjrTh_MY&w=1440&h=1080
->
-> My question is what DNAT or SNAT rules do we need to add to cave or to maar so
-> that remote *and local (originating from cave)* clients can make xmpp
-> connecitons on 443 and end up on cave:5222?\
+On 03/05/2010 16:01, Jan Engelhardt wrote:
+>> My question is what DNAT or SNAT rules do we need to add to cave or to maar so
+>> that remote *and local (originating from cave)* clients can make xmpp
+>> connecitons on 443 and end up on cave:5222?\
+>>      
+> Since they have all public addresses, no NAT is needed.
+>    
+Just to clarify: both services run on one host.  The second host (maar) 
+doesn't host any services and shouldn't. It's role in this is just 
+forwarding maar:443 -> cave:5222.  Ordinarily I'd just have a listener 
+for xmpp on cave:443 but that's taken by apache.  Hence this packet 
+wangling.
 
-Since they have all public addresses, no NAT is needed.
+S.
+
+-- 
+Simon Tennant
+
++44 20 7043 6756 (UK - office)
++49 17 8545 0880 (Germany - mobile)
++49 89 4209 55854 (Germany - office)
+skype: simontennant
+xmpp: simon@buddycloud.com
+
