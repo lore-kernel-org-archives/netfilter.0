@@ -1,82 +1,53 @@
-From: Steve Fink <sphink@gmail.com>
+From: Simon Tennant <simon@imaginator.com>
 Subject: Re: DNAT issue (with added network diagram)
-Date: Mon, 3 May 2010 09:24:42 -0700
-Message-ID: <h2y7d7f2e8c1005030924kdb8bb20u9c71b7fa0d3a8ae6@mail.gmail.com>
-References: <4BDECE5A.4010808@imaginator.com>
-	 <alpine.LSU.2.01.1005031601340.29150@obet.zrqbmnf.qr>
-	 <4BDEDBE4.3020803@imaginator.com>
+Date: Mon, 03 May 2010 18:52:08 +0200
+Message-ID: <4BDEFF38.1000901@imaginator.com>
+References: <4BDECE5A.4010808@imaginator.com>	 <alpine.LSU.2.01.1005031601340.29150@obet.zrqbmnf.qr>	 <4BDEDBE4.3020803@imaginator.com> <h2y7d7f2e8c1005030924kdb8bb20u9c71b7fa0d3a8ae6@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=+mnJpwjK0Ew/sj9+7daVZcCr1vr9I8BQKb2zyBMhBI8=;
-        b=udkPW+bBtocdHAcl1ncvkWHJ6Mi+/6dmjfa5Xy1qD+yuE0TIMzNHcsnikEltNu+EwX
-         XNXPSdhtcDjvv3zzwcrVhqSeJGdWBGdZgdLSXqFKifYD+GwxbK/IqvOyK5WTt/83YoKh
-         jupdNgeTqdN5G2ayotr2y1x8wdygEIzEqd/cM=
-In-Reply-To: <4BDEDBE4.3020803@imaginator.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=imaginator.com;
+	s=mail; t=1272905543;
+	bh=dynsThYml9Y+WU2gxTp6fXiRrBIxaB1h6m1rpWe73GY=;
+	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:References:
+	 In-Reply-To:Content-Type:Content-Transfer-Encoding;
+	b=BR5cxg7Ur/eT+Jl756P73fFelzbtQUjh61J3gm6CwhcG/fbCZg+pgldq122GJbPDE
+	 7XgSPRzWaIjq/i6C6bcUvOfs3POfu8PX5fn9XapVmyc0G8lVMmqjlaa6+osr4Rgl/c
+	 ffOjAO5Xe5GZRKIy6L9PZOboVuEHVrTFiqV7/cRg=
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=imaginator.com;
+	s=mail; t=1272905534;
+	bh=dynsThYml9Y+WU2gxTp6fXiRrBIxaB1h6m1rpWe73GY=;
+	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:References:
+	 In-Reply-To:Content-Type:Content-Transfer-Encoding;
+	b=FGPeyt9aCdSgDSZoi2UCk1xAeQcfifOe9lYc7o67OmDAyPNjxsM/RG/TlOT5wWeX8
+	 R74I3GOd5US9tryTbByheg6RPwU8fNQZeyYcWkj4ap1ur0MHFpJlLLnFAE5z9ci0x9
+	 le4EMaYRkaOEVJu9VpUzKTChRiVgCtmmiitBYxG8=
+In-Reply-To: <h2y7d7f2e8c1005030924kdb8bb20u9c71b7fa0d3a8ae6@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Simon Tennant <simon@imaginator.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Steve Fink <sphink@gmail.com>
 Cc: Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org
 
-(apologies if you see this twice; I accidentally sent as HTML first.)
+On 03/05/2010 18:24, Steve Fink wrote:
+> iptables -t nat -A OUTPUT -p tcp -d maar --dport 443 -j DNAT
+> --to-destination localhost:5222
+>    
+Perfect!  Works.  I was using PREROUTING instead of output:
 
-Add an /etc/hosts entry on cave that maps maar to 127.0.0.1? Not great
-if you want cave to get to maar and you don't have an alternate set of
-LAN addresses, I suppose.
-
-If cave is trying to access XMPP on itself, then would it also want to
-access HTTPS? If so, then bouncing traffic through maar seems like a
-good thing.
-
-=46or the direct answer you're looking for, though, are you saying the
-direct approach doesn't work?:
-
-  iptables -t nat -A OUTPUT -p tcp -d maar --dport 443 -j DNAT
+iptables -t nat -A PREROUTING -p tcp -d maar --dport 443 -j DNAT 
 --to-destination localhost:5222
 
-If you have all these public IPs, can't you get more than one for cave
-and dispense with all of the NATting?
+Thanks.
 
-On Mon, May 3, 2010 at 7:21 AM, Simon Tennant <simon@imaginator.com> wr=
-ote:
->
-> On 03/05/2010 16:01, Jan Engelhardt wrote:
->>>
->>> My question is what DNAT or SNAT rules do we need to add to cave or=
- to maar so
->>> that remote *and local (originating from cave)* clients can make xm=
-pp
->>> connecitons on 443 and end up on cave:5222?\
->>>
->>
->> Since they have all public addresses, no NAT is needed.
->>
->
-> Just to clarify: both services run on one host. =A0The second host (m=
-aar) doesn't host any services and shouldn't. It's role in this is just=
- forwarding maar:443 -> cave:5222. =A0Ordinarily I'd just have a listen=
-er for xmpp on cave:443 but that's taken by apache. =A0Hence this packe=
-t wangling.
->
-> S.
->
-> --
-> Simon Tennant
->
-> +44 20 7043 6756 (UK - office)
-> +49 17 8545 0880 (Germany - mobile)
-> +49 89 4209 55854 (Germany - office)
-> skype: simontennant
-> xmpp: simon@buddycloud.com
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+S.
+
+-- 
+Simon Tennant
+
++44 20 7043 6756 (UK - office)
++49 17 8545 0880 (Germany - mobile)
++49 89 4209 55854 (Germany - office)
+skype: simontennant
+xmpp: simon@buddycloud.com
+
