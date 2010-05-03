@@ -1,75 +1,64 @@
-From: Hannes Eder <heder@google.com>
-Subject: Re: [patch v2.2 1/4] [PATCH v2.1 1/4] netfilter: xt_ipvs (netfilter 
-	matcher for IPVS)
-Date: Mon, 3 May 2010 13:29:46 +0200
-Message-ID: <AANLkTikIzHuzxo4z1_8_fEGLBC2-0Uz0X8SOc8n2msuX@mail.gmail.com>
-References: <20100501032014.406353538@vergenet.net>
-	 <20100501032120.298829234@vergenet.net> <4BDC543F.7060500@trash.net>
+From: Simon Tennant <simon@imaginator.com>
+Subject: DNAT issue (with added network diagram)
+Date: Mon, 03 May 2010 15:23:38 +0200
+Message-ID: <4BDECE5A.4010808@imaginator.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <lvs-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=google.com; s=beta;
-	t=1272886199; bh=+dU6WPEwkR13G5U6xxzmeOetATI=;
-	h=MIME-Version:In-Reply-To:References:Date:Message-ID:Subject:From:
-	 To:Cc:Content-Type:Content-Transfer-Encoding;
-	b=ETKzKo+3KMWrPUchUsr7cjJbaJs/sC+Ut0jTTjiKZhtxo41WStVj/IJQzVMKY0RqP
-	 u6JqmJ2qpmcDSaaypBkqA==
-In-Reply-To: <4BDC543F.7060500@trash.net>
-Sender: lvs-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=imaginator.com;
+	s=mail; t=1272893024;
+	bh=//ilmBuIYH7IVKn39B3Z/Th19Mgokjz8czI6lddQ9r0=;
+	h=Message-ID:Date:From:MIME-Version:To:Subject:Content-Type:
+	 Content-Transfer-Encoding;
+	b=D81Bzq3eATnrLShmr1WsYiNSTaHhDMRZe2MaPYw03EienuILAgKc93eOIDHQI2hnE
+	 cSxH1dq+FXCRsQae1g76sE00zWO5O2RmdYYOvPenBaKT/5e8cx8SQDXMKc4UKftgP+
+	 DxoIGN4gQQraJNrR795jCEuk5t0ODQzi2SobU+tQ=
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=imaginator.com;
+	s=mail; t=1272893019;
+	bh=//ilmBuIYH7IVKn39B3Z/Th19Mgokjz8czI6lddQ9r0=;
+	h=Message-ID:Date:From:MIME-Version:To:Subject:Content-Type:
+	 Content-Transfer-Encoding;
+	b=S0OLm7sjSpq+p9fj+fnTAPi4AlOnk+1KI0n3JESEFaXivAii3M7sSZhLB9Ff0sAGW
+	 F5MNlw9dyTfqtYVnW5Kj4Nx5Kf8hRV8X0cLcN2Z/fJXSdlYuU8fGP/1JqCF05f9+qv
+	 4E+HCkQoJ0tWh6s8L1i1QTcl6cMPee3ygfIbfotE=
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Patrick McHardy <kaber@trash.net>
-Cc: Simon Horman <horms@verge.net.au>, lvs-devel@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, netfilter@vger.kernel.org, Wensong Zhang <wensong@linux-vs.org>, Julius Volz <julius.volz@gmail.com>, "David S. Miller" <davem@davemloft.net>, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Thank you for picking this series of patches up again and thanks for
-the feedback.
+Problem:
 
-I'll send an updated version in the next days.
+Two different applications that need to be accessible on port 443 on one 
+host with 1 ip address.  Apache already runs on the destination machine 
+and uses port 443.
 
-Cheers, -Hannes
+Partial solution:
 
-On Sat, May 1, 2010 at 18:18, Patrick McHardy <kaber@trash.net> wrote:
-> Simon Horman wrote:
->
->> @@ -0,0 +1,25 @@
->> +#ifndef _XT_IPVS_H
->> +#define _XT_IPVS_H 1
->
-> You don't need to define a value.
->
->> +config NETFILTER_XT_MATCH_IPVS
->> + =A0 =A0 tristate '"ipvs" match support'
->> + =A0 =A0 depends on IP_VS
->> + =A0 =A0 depends on NETFILTER_ADVANCED
->> + =A0 =A0 help
->> + =A0 =A0 =A0 This option allows you to match against IPVS propertie=
-s of a packet.
->> +
->> + =A0 =A0 =A0 If unsure, say N.
->
-> You're using conntrack symbols, so this seems to need a dependency
-> on NF_CONNTRACK.
->
->> +static bool ipvs_mt_check(const struct xt_mtchk_param *par)
->
-> We've changed the signature to "int" in nf-next to be able to
-> return errno codes. Please rebase your patches onto nf-next-2.6.git.
->
-> Please also CC netfilter-devel at least for those parts that affect
-> non-IPVS netfilter.
->
->> +{
->> + =A0 =A0 if (par->family !=3D NFPROTO_IPV4
->> +#ifdef CONFIG_IP_VS_IPV6
->> + =A0 =A0 =A0 =A0 && par->family !=3D NFPROTO_IPV6
->> +#endif
->> + =A0 =A0 =A0 =A0 =A0 =A0 ) {
->> + =A0 =A0 =A0 =A0 =A0 =A0 pr_info("protocol family %u not supported\=
-n", par->family);
->> + =A0 =A0 =A0 =A0 =A0 =A0 return false;
->> + =A0 =A0 }
->> +
->> + =A0 =A0 return true;
->> +}
->
->
+1. Change DNS to tell the client to connect to another host, and.
+2. use another host that is not running anything on port 443 to receive 
+and forward the connctions using a "-j DNAT --to-destination" rule.
+
+But:
+
+What happens when a client on the destination also needs to connect and 
+looks up the service in DNS?  It connects out and is DNAT'ed back to itself.
+
+A quick diagram:
+
+http://docs.google.com/drawings/pub?id=1dxCOw8wbAhyuz7z1-ukJfmKOHcymsqN6YTRCjrTh_MY&w=1440&h=1080
+
+My question is what DNAT or SNAT rules do we need to add to cave or to 
+maar so that remote *and local (originating from cave)* clients can make 
+xmpp connecitons on 443 and end up on cave:5222?
+
+S.
+
+-- 
+Simon Tennant
+
++44 20 7043 6756 (UK - office)
++49 17 8545 0880 (Germany - mobile)
++49 89 4209 55854 (Germany - office)
+skype: simontennant
+xmpp: simon@buddycloud.com
+
