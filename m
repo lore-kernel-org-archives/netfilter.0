@@ -1,79 +1,86 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: what is atomicity of iptables packet processing?
-Date: Wed, 5 May 2010 18:58:25 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1005051843340.2592@obet.zrqbmnf.qr>
-References: <h2u2d6a9f6f1005050856pc4d54582z7ccb7f79cb71991c@mail.gmail.com>
+From: Alessandro Vesely <vesely@tana.it>
+Subject: H: netfilter frozen in recvmsg
+Date: Wed, 05 May 2010 19:23:41 +0200
+Message-ID: <cone.1273080221.526801.26283.1000@north>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <h2u2d6a9f6f1005050856pc4d54582z7ccb7f79cb71991c@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tana.it; s=test;
+	t=1273080221; bh=eq0XY9cmZytlu4X3b27ZDQL6NTz9C4sbqvZmfxfVgPY=;
+	l=2705;
+	h=Message-ID:From:To:Date:Mime-Version:Content-Transfer-Encoding;
+	b=aycWhtfgS/YMnkqczZWdkIJEdL+QymQffOU7XK2tL3fUG+ntWI5L8S/E17V9pXygA
+	 WeWbm89Bb1n7iqUPdBPZ1rqb7o8Qj+XSDJVu9e+zfuUPH3JasKf0x0F6x0LL5hASAq
+	 Kawe2FOl0N/I608hPoMYWPWNiHro6BctIgueTj3g=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Bill Bogstad <bogstad@pobox.com>
-Cc: Netfilter mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; format="flowed"; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
+Hi all,
+yesterday my netfilter client suddenly froze. I wasn't even able to kill it. 
+The following is a strace:
 
-On Wednesday 2010-05-05 17:56, Bill Bogstad wrote:
->
->However, I'm concerned about the atomicity of packet processing by
->xtables.  Since incoming packets may not be synchronized with outgoing
->packets, there is the possibility that the INPUT chain rules might be
->modifying the connection marking at the same time that the OUTPUT
->chain rules are using the mark to modify the packet.
+recvmsg(4, 0x7fffffffa770, 0)           = ? ERESTARTSYS (To be restarted)
+--- SIGABRT (Aborted) @ 0 (0) ---
+stat("/etc/localtime", {st_mode=S_IFREG|0644, st_size=2652, ...}) = 0
+sendto(6, "<26>May  4 21:24:37 ibd-judge[403"..., 55, MSG_NOSIGNAL, NULL, 0) 
+= 55
+rt_sigreturn(0x7fbc6c21c9e0)            = -1 EINTR (Interrupted system call)
+recvmsg(4, 0x7fffffffa770, 0)           = ? ERESTARTSYS (To be restarted)
+--- SIGTERM (Terminated) @ 0 (0) ---
+rt_sigreturn(0xf)                       = -1 EINTR (Interrupted system call)
+recvmsg(4, 0x7fffffffa770, 0)           = ? ERESTARTSYS (To be restarted)
+--- SIGTERM (Terminated) @ 0 (0) ---
+rt_sigreturn(0xf)                       = -1 EINTR (Interrupted system call)
+recvmsg(4, 0x7fffffffa770, 0)           = ? ERESTARTSYS (To be restarted)
++++ killed by SIGKILL +++
 
-Indeed.
+(The log line on ABRT is written by the signal handler. I didn't put any 
+SA_RESTART for the sigaction of those signals, but it didn't get out of the 
+call.)
 
->Even worse, I'm
->considering building up the connection mark in the INPUT chain one bit
->at a time and the correct mark won't be in place until after all rules
->in the INPUT chain (or subchains) are completed.
->
->So my questions are:
->
->Does iptables/xtables fully process one packet at a time or can
->multiple packets be in various tables/chains at the same time?
+The relevan line of code is
 
-In reality: It processes one packet at a time per CPU. (does
-multiqueue change that?)
+        while (caught_signal == 0 &&
+                (rv = recv(fd, buf, sizeof(buf), 0)) >= 0)
 
-It's perhaps safer to assume that any number of packets might be in
-flight on any CPU, even if that does not match what Linux might
-currently be doing. (A bit like 'const' in C. It does not protect,
-but it gives a good guarantee :-)
+Under normal circumstances, it does
 
->If the answer is multiple packets, can someone suggest a way for these
->packets/connections to make processing single threaded AND
->run to completion?
+recvfrom(4, 
+"d\0\0\0\0\3\0\0\0\0\0\0\0\0\0\0\2\0\0\0\v\0\1\0\0\0\f\241\10\0\1\0\10"..., 
+8192, 0, NULL, NULL) = 100
+pread(3, 
+"\0\0\0\0\1\0\0\0\23\3\0\0\213\t\0\0\230\4\0\0`\0\300\1\1\5\370\17\264\17P\2 
+\f"..., 4096, 3223552) = 4096
+sendmsg(4, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, 
+msg_iov(1)=[{" 
+\0\0\0\1\3\1\0ZW\341K\0\0\0\0\0\0\0\0\f\0\2\0\0\0\0\1\0\0\f\241"..., 32}], 
+msg_controllen=0, msg_flags=0}, 0) = 32
+recvfrom(4, 
+"@\0\0\0\0\3\0\0\0\0\0\0\0\0\0\0\2\0\0\2\v\0\1\0\0\0\325\274\0\0\3\0\10"..., 
+8192, 0, NULL, NULL) = 64
+sendmsg(4, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, 
+msg_iov(1)=[{" 
+\0\0\0\1\3\1\0[W\341K\0\0\0\0\0\0\0\2\f\0\2\0\0\0\0\1\0\0\325\274"..., 32}], 
+msg_controllen=0, msg_flags=0}, 0) = 32
+recvfrom(4, 
+"@\0\0\0\0\3\0\0\0\0\0\0\0\0\0\0\2\0\0\2\v\0\1\0\0\0\325\275\0\0\3\0\10"..., 
+8192, 0, NULL, NULL) = 64
+sendmsg(4, {msg_name(12)={sa_family=AF_NETLINK, pid=0, groups=00000000}, 
+msg_iov(1)=[{" 
+\0\0\0\1\3\1\0\\W\341K\0\0\0\0\0\0\0\2\f\0\2\0\0\0\0\1\0\0\325\275"..., 
+32}], msg_controllen=0, msg_flags=0}, 0) = 32
 
-When the connection exchange itself is synchronized, read: TCP
-connection establishment, you can set the ctmark on the SYN packet
-and be sure that it's all done before there will be the SYN-ACK -
-because the initial SYN is only passed to tcp.c after leaving
-Xtables.
+Note that recvfrom rather than recvmsg. This is a debian lenny, with NETLINK 
+v0.30. Both queues are configured with
 
-For connection-less protocols and changing the mark within
-established connections, it's pretty dim.
+        nfq_set_mode(qh, NFQNL_COPY_PACKET, 20)
 
->On a related note, how atomic is single rule processing?
+It is the first time I see that freezing. Is it a known issue? What should I 
+have looked for to diagnose it? Any hint?
 
-Pretty non-atomic. Updating (read-write-cycle) the ctmark is not
-atomic either.
+TIA
+Ale
 
->If in a single rule, I use CONNMARK to mark a connection can I
->assume that no other CONNMARK can modify the mark at the same time.
->(--set-xmark involves two operations: zeroing based on mask and XOR
->based on value which may be a race condition.)
-
-The lowest atomicity level is what the CPU offers, i.e. on
-contemporary CPUs that would mean that the READ of the ctmark from
-memory is atomic, and that the WRITE is. You get some 32-bit value in
-the end, but at least you can be sure it is not 16 bits from before
-and 16 bits from the other thread.
-
->If there are any other issues involving connection marks/parallel
->processing/race conditions etc., I would like to here about them as
->well.
-
-I guess that, if really need be, one could add an on-demand locking
-mechanism (including the penalties) by means of a parameter.
