@@ -1,74 +1,74 @@
-From: Alessandro Vesely <vesely@tana.it>
-Subject: Help: netfilter frozen in recvmsg (slightly improved)
-Date: Thu, 06 May 2010 19:51:30 +0200
-Message-ID: <cone.1273168290.116207.28621.1000@north>
-References: <cone.1273080221.526801.26283.1000@north>
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: Re: AH and ESP nat-ing
+Date: Thu, 6 May 2010 23:23:38 +0530
+Message-ID: <AANLkTikOADMAV5UaejxhljIXZHH2ku4rsA0LUseDlDxB@mail.gmail.com>
+References: <AANLkTikuASq3YbwsJNj8KWrwd7avNYwL9aYYhtjoF-ip@mail.gmail.com>
+	 <alpine.LSU.2.01.1005061706150.32238@obet.zrqbmnf.qr>
+	 <AANLkTilqPXXeMhbUgoicPIUlrNH6BnbYBfNL7WhyHuGH@mail.gmail.com>
+	 <alpine.LSU.2.01.1005061902191.6755@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tana.it; s=test;
-	t=1273168290; bh=c5z/GIngeD+mkNy9W+8RmZJ/O+YzJwPtkil3bX8Hg4U=;
-	l=1895;
-	h=References:Message-ID:From:To:Date:Mime-Version:
-	 Content-Transfer-Encoding;
-	b=QRZsBeJhukmIyF93sLPQwpUCHDWd34A2Pm7bwT6+Df6wpnGM5HF33fWgfnwpNFNIO
-	 8MC+jskH3gGhr92t5n7f9vLYDRLJ9Cnt2jDdCCNaWUGnE3Zqs9cBGD06xNpPlTSnx+
-	 2cJd2R2b/PUr5yJ2eIaqSbutJxCl6YpS3Q4rOJY4=
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:in-reply-to
+         :references:date:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=Ows+ml1CaU8yKNXbGsjNgigV2hWqMuzsvoqhHkn20gE=;
+        b=hIwTf9/Raz9R12pXG+yLBnAEmUf65YpkwyXlUvmuGUoFqphWZFI7mkHhJZjHxMZSSO
+         fY7wxZXvBDKaTDOzey7zOOphe2ZoomafFdRHiREjnVl0z/Euh1OIJfpX5qqE5uUnbRzw
+         OCDhTQSeqyFdsZyQq9slca3VqhI4pkM4vvwEs=
+In-Reply-To: <alpine.LSU.2.01.1005061902191.6755@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: Netfilter mailing list <netfilter@vger.kernel.org>
 
-I wrote:
-> Hi all,
-> yesterday my netfilter client suddenly froze. I wasn't even able to kill it. 
-> The following is a strace:
-> 
-> recvmsg(4, 0x7fffffffa770, 0)           = ? ERESTARTSYS (To be restarted)
+>>On Thu, May 6, 2010 at 8:36 PM, Jan Engelhardt <jengelh@medozas.de> w=
+rote:
+> PPTP and ESP can be udptunneled, see google et al.
+>
 
-strace was displaying just "recvmsg(4,", until the signal was caught. The 
-buffer address and flags have been added at thet time. I think strace didn't 
-write more info because no msg had been received.
+coool  .Thanks a ton
 
-> The relevan line of code is
-> 
->         while (caught_signal == 0 &&
->                 (rv = recv(fd, buf, sizeof(buf), 0)) >= 0)
+ Below webpage explained it in detail . Thanks again.
+http://publib.boulder.ibm.com/infocenter/iseries/v5r4/index.jsp?topic=3D=
+/rzaja/rzajaudpencap.htm
 
-This was wrong. recv is translated to recvfrom in the C library. recvmsg is 
-apparently called from the nfnetlink library. I downloaded some sources 
-(independently of the installed libraries --still lenny.) They show such 
-calls in nfnl_talk
+-Ratheesh
 
-	while (1) {
-		status = recvmsg(nfnlh->fd, &msg, 0);
-		if (status < 0) {
-			if (errno == EINTR)
-				continue;
 
-and in nfnl_listen
 
-	while (! quit) {
-		remain = recvmsg(nfnlh->fd, &msg, 0);
-		if (remain < 0) {
-			if (errno == EINTR)
-				continue;
 
-(This may explain why I had to use SIGKILL.)
 
-(It seems both these functions are now deprecated. I must have an older 
-library.)
 
-I'd guess the program froze in the nfnl_listen function, since nfnl_talk is 
-only used for queue configuration. However, I haven't been able to find 
-where nfnl_listen is being referenced from. Can anybody shed some light on 
-how that works?
+On Thu, May 6, 2010 at 10:32 PM, Jan Engelhardt <jengelh@medozas.de> wr=
+ote:
+> On Thursday 2010-05-06 18:55, ratheesh k wrote:
 
-At any rate, the most plausible diagnosis I can think of is that messages 
-were not being sent to user space any more. After I killed the daemon, I 
-just launched it again. It worked. I haven't rebooted the box since, so the 
-problem seems likely to be in user space. A reasonable question is whether 
-it is common practice to destroy the queues and the handle and rebuild 
-everything from scratch every now an then. Would that help?
-
+>>> On Thursday 2010-05-06 16:08, ratheesh k wrote:
+>>>
+>>>>I googled and found that =A0AH protocol pkt cannot be NATed =A0, An=
+d ESP
+>>>>protocol pkt =A0NATing wont work in =A0some use cases .
+>>>>
+>>>>Is this problem is solved in newer kernels ?
+>>>
+>>> This is not a kernel problem.
+>>>
+>>>>Is there any ALG for nating this packets =A0?
+>>>
+>>> No, it's cryptographically signed, so any modification would be vis=
+ible.
+>>>
+>>
+>>
+>>I am able to establish pptp/ipsec connection =A0from my client machin=
+e
+>>,connected to a =A0Router (broadcom ) . it doesnt have any =A0debug
+>>terminal .
+>>Could you tell me , how this is possible =A0?
+>
+> PPTP and ESP can be udptunneled, see google et al.
+>
