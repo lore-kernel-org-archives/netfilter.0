@@ -1,35 +1,34 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: RE: conntrack-tools 0.9.14 can not block the connection
-Date: Fri, 7 May 2010 11:50:04 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1005071132030.5643@obet.zrqbmnf.qr>
-References: <201005061651.40203.rfeng@wurldtech.com> <alpine.LSU.2.01.1005070954230.32277@obet.zrqbmnf.qr> <011f01caedc2$3a71b810$af552830$@sterenborg.info>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: conntrack-tools 0.9.14 can not block the connection
+Date: Fri, 07 May 2010 11:57:51 +0200
+Message-ID: <4BE3E41F.7030601@plouf.fr.eu.org>
+References: <201005061651.40203.rfeng@wurldtech.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <011f01caedc2$3a71b810$af552830$@sterenborg.info>
+In-Reply-To: <201005061651.40203.rfeng@wurldtech.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Rob Sterenborg <rob@sterenborg.info>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Richard Feng <rfeng@wurldtech.com>
 Cc: netfilter@vger.kernel.org
 
-On Friday 2010-05-07 10:49, Rob Sterenborg wrote:
+Hello,
 
->Jan Engelhardt wrote:
->> On Friday 2010-05-07 01:51, Richard Feng wrote:
->> 
->> >Hi,
->> >
->> >I am using Linux 2.6.29. I have the problem for using 'conntrack'
->[...]
->> Upgrading to a newer kernel (you're probably running some stoneage
->> thing).
->
->For my information: I know that 2.6.29 isn't recent, but is it already
->considered a 'stone age thing'?
+Richard Feng a =E9crit :
+>=20
+> I am using Linux 2.6.29. I have the problem for using 'conntrack'=20
+> (version:0.9.14) to block the traffic.
+> Using the following command as example:
+>   conntrack -D -s 1.1.1.1 -d 2.2.2.2
+> After execution, it appears the connection info was deleted -
+>   conntrack -L | grep 1.1.1.1 -- shows the entry was deleted.
+>=20
+> However, the connection is still active
 
-Let's requote:
->that "have to set /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal to 
-
-That file "ip_conntrack_tcp_be_liberal" was last seen in ...
-anyway, it's nf_conntrack_tcp_be_liberal now.
+What do you mean exactly ?
+The conntrack tool only deals with netfilter connection tracking, not
+with the actual connection (e.g. it won't send RST's in order to tear i=
+t
+down). How it may affect the actual connection depends on the iptables
+ruleset.
