@@ -1,29 +1,40 @@
-From: "Julien Reveret" <shaddai@c0a8.org>
-Subject: Re: libnetfilte_queue guide
-Date: Fri, 7 May 2010 12:44:36 +0200 (CEST)
-Message-ID: <e0136c20b0224eb758d69ed439645903.squirrel@www.c0a8.org>
-References: <h2ie61979141005070222of28ec785xbd68a16c8e3e737a@mail.gmail.com>
+From: David ROBERT <castlebbs@gmail.com>
+Subject: Log and Drop with OSSEC
+Date: Fri, 7 May 2010 16:41:37 +0100
+Message-ID: <m2x57bfe46c1005070841of1b6cdc7paaef031f3995679b@mail.gmail.com>
+Reply-To: david@ombrepixel.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <h2ie61979141005070222of28ec785xbd68a16c8e3e737a@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:reply-to:date
+         :message-id:subject:from:to:content-type;
+        bh=93T67ebQnQ8HGxY1zKfYpHtXB3/w+BesnSV9c+p3r5o=;
+        b=EXdpzGAUINNZcgu2FMdNUTHwDnLP3PeZo8QS5zeFKYJ8eYE4yRuuXNcVTw6lJzlQ3o
+         nS4qPAvQscsykPPJbMRwiPhvWobzv6EUn97SWDzSOTQLgaxm5Aj3Sm/4U5bAVx7gZxUx
+         cxL+RWoVgGaF286TT+H90gKLpz1ozqxLgMsD4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-> Dear all
->   I am new to libnetfilter_queue , i want to develop some project on
-> it. I am not unable about how to use it. Can anyone guide me that
-> where i can some docs related to libnetfilter_queue.
->
+Hi All,
 
-You might want to read source code to be able to understand how it works.
-For example, you can have a look at packetbl:
-http://rjmsoftware.org/downloads/packetbl-0.6-beta4.tgz
+I have a very basic question. I am updating an active response script
+for OSSEC that add DROP rules. I added rules to log packets being
+dropped:
+Ex for IP 1.1.1.1
 
-If you're looking forward to coding in perl, then have a look at synspam:
-http://www.synspam.org
+iptables -I INPUT -s 1.1.1.1 -m limit --limit 1/sec -j LOG
+--log-prefix OSSEC-HIDS --log-level 7 (rule added)
+iptables -I INPUT -s 1.1.1.1 -j DROP (original rule)
 
+It doesn't log, it actually logs if I only run the first rule, as soon
+as I run the DROP rule, it DROP packets indeed, but it won't log
+anymore.
 
+Thanks
 
+David ROBERT
+http://blog.ombrepixel.com/
