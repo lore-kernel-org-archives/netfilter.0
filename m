@@ -1,99 +1,30 @@
-From: Joerg Marx <joerg.marx@secunet.com>
-Subject: [PATCH] nf_conntrack_core.c: fix for dead connection after flushing
- conntrack cache
-Date: Fri, 07 May 2010 10:45:19 +0200
-Message-ID: <4BE3D31F.6000607@secunet.com>
+From: vishesh kumar <linuxtovishesh@gmail.com>
+Subject: libnetfilte_queue guide
+Date: Fri, 7 May 2010 14:52:23 +0530
+Message-ID: <h2ie61979141005070222of28ec785xbd68a16c8e3e737a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=cOrZZZcoCehXHIqWDcKYlhcqLi0KxhDqk6hQGq0Fb/U=;
+        b=Y0yU1JU5iLrD5ZgPmdr0Jzygh3V+ncWkfQAmrwlXfPJGtBRjxDV+vaBM6hR5Vlsjf9
+         pHejOlEzxZe8ZauP1PWcYTzv3wPVcL8lO8c+wpmAPKGxPgDq+ZzAcaIj/Z5Gl0oUS05F
+         J0uuxyYKL9FvGjxutXt8s52fHK5MovzDHTfKE=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@vger.kernel.org>
 
-Because nobody commented this so far on the 'linux-netdev' list, now a
-re-post on the 'netfilter' list with a kind request for confirmation
-and/or discussion...
+Dear all
+  I am new to libnetfilter_queue , i want to develop some project on
+it. I am not unable about how to use it. Can anyone guide me that
+where i can some docs related to libnetfilter_queue.
 
-###################################################################
-
-
-Hi,
-
-we encountered a weird problem of a 'stalled' connection when using
-'conntrack -F' on a box with heavy network load. 'conntrack -L' gave us
-sometimes a [UNREPLIED] entry for the traffic in question, but no traffic
-flow, no matching of packets in or out, only the timer went down from 600
-to 0 (it was ESP traffic - the default generic timeout = 600 seconds).
-After the entry vanished by timeout (or doing a 'conntrack -F' once more),
-all worked normal again.
-
-The reason we finally found, is a race window in 'nf_conntrack_confirm'
-when calling '__nf_conntrack_confirm':
-
-In 'nf_conntrack_confirm' is checked (without holding a lock), if the entry
-to be confirmed is possibly dying: !nf_ct_is_dying(ct).
-If not, then __nf_conntrack_confirm will do some sanity checking, grab a
-spin_lock_bh and insert the 'ct' into the lookup cache.
-
-Now consider the following scenario:
-
-1. a connection has seen the first packet already -> state is UNREPLIED
-2. now the answer is to be sent, conntrack wants to confirm the connection
-3. the !nf_ct_is_dying(ct) check is passed, __nf_conntrack_confirm is just
-started
-4. in a user context a 'conntrack -F' command is running right now e.g. on
-another CPU
-5. this will flag all unconfirmed connections as 'dying' in
-get_next_corpse(...), including the entry going to be confirmed!
-6. now the already 'dying' entry is included into the hash cache in
-__nf_conntrack_confirm - BOOM!
-
-After this step the connection in question is dead, because no packets are
-forwarded until the entry is purged from hash cache. This was a big blocker
-for us, because each dead IPsec tunnel is a dead branch network for 10
-minutes...
-
-For every packet from now on 'nf_conntrack_find_get' will ignore the entry,
-because it is dying and because __nf_conntrack_confirm finds the hash in
-the cache already, it will NF_DROP the packet.
-
-The key for finding this was 'NF_CT_STAT_INC(net, insert_failed)' in
-__nf_conntrack_confirm.
-
-The suggested solution is to check for '!nf_ct_is_dying(ct)' again, _after_
-the spin_lock_bh is grabbed in __nf_conntrack_confirm. So it is clear, that
-no other softirq or user context can set that 'evil' dying flag ;-)
-The return value in this case should be NF_ACCEPT, so we loose no packets
-then, this is also important for us.
-
-
----
- net/netfilter/nf_conntrack_core.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
-
-diff --git a/net/netfilter/nf_conntrack_core.c
-b/net/netfilter/nf_conntrack_core.c
-index 1374179..e2c8bfe 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -413,6 +413,11 @@ __nf_conntrack_confirm(struct sk_buff *skb)
-
- 	spin_lock_bh(&nf_conntrack_lock);
-
-+	if (unlikely(nf_ct_is_dying(ct))) {
-+		spin_unlock_bh(&nf_conntrack_lock);
-+		return NF_ACCEPT;
-+	}
-+
- 	/* See if there's one in the list already, including reverse:
- 	   NAT could have grabbed it without realizing, since we're
- 	   not in the hash.  If there is, we lost race. */
--- 1.5.6.5
-
-Best regards
-Joerg.
+Thanks
 
 
 -- 
-
+http://linuxinterviews.blogspot.com
