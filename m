@@ -1,34 +1,37 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: conntrack-tools 0.9.14 can not block the connection
-Date: Fri, 07 May 2010 11:57:51 +0200
-Message-ID: <4BE3E41F.7030601@plouf.fr.eu.org>
-References: <201005061651.40203.rfeng@wurldtech.com>
+From: Alessandro Vesely <vesely@tana.it>
+Subject: Re: libnetfilte_queue guide
+Date: Fri, 07 May 2010 12:40:11 +0200
+Message-ID: <4BE3EE0B.10601@tana.it>
+References: <h2ie61979141005070222of28ec785xbd68a16c8e3e737a@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <201005061651.40203.rfeng@wurldtech.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tana.it; s=test;
+	t=1273228810; bh=hWzYJo609I1h0QYOEwoB4hNj0POQ126ndsXoUoAPjpw=;
+	l=651;
+	h=Message-ID:Date:From:MIME-Version:To:CC:References:In-Reply-To:
+	 Content-Transfer-Encoding;
+	b=DW1GfY9g16LIOXzxrUWZPsTTv1W9xPZ5YVxn3hq7fAnerCn8Kdg8TD55xUTCDMZUM
+	 TmSnSzs5mXRrrFf0wTdWwJtJeM/O5sSB4xYP0yG9kkSiiY/GdzbHFDFBK+wN+1sNzZ
+	 qGDr4blajUDyHFoUq86mQJUlplC/RDor5FKTs8AI=
+In-Reply-To: <h2ie61979141005070222of28ec785xbd68a16c8e3e737a@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Richard Feng <rfeng@wurldtech.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: vishesh kumar <linuxtovishesh@gmail.com>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-Hello,
+On 07/May/10 11:22, vishesh kumar wrote:
+> Dear all
+>    I am new to libnetfilter_queue , i want to develop some project on
+> it. I am not unable about how to use it. Can anyone guide me that
+> where i can some docs related to libnetfilter_queue.
 
-Richard Feng a =E9crit :
->=20
-> I am using Linux 2.6.29. I have the problem for using 'conntrack'=20
-> (version:0.9.14) to block the traffic.
-> Using the following command as example:
->   conntrack -D -s 1.1.1.1 -d 2.2.2.2
-> After execution, it appears the connection info was deleted -
->   conntrack -L | grep 1.1.1.1 -- shows the entry was deleted.
->=20
-> However, the connection is still active
+Some oldish posts are linked from the bottom of tjkopena's wiki 
+Netfilter Queue Notes [1]. Not much. Interactions with iptables is not 
+illustrated. <rant>And if you'll get into troubles it seems unlikely 
+this list will offer any support (e.g. recent posts by Deborah and 
+me).</rant> Good luck!
 
-What do you mean exactly ?
-The conntrack tool only deals with netfilter connection tracking, not
-with the actual connection (e.g. it won't send RST's in order to tear i=
-t
-down). How it may affect the actual connection depends on the iptables
-ruleset.
+[1] 
+http://gicl.cs.drexel.edu/people/tjkopena/wiki/pmwiki.php?n=SWAT.NetfilterQueueNotes
