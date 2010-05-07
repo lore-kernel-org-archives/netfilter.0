@@ -1,40 +1,48 @@
-From: David ROBERT <castlebbs@gmail.com>
-Subject: Log and Drop with OSSEC
-Date: Fri, 7 May 2010 16:41:37 +0100
-Message-ID: <m2x57bfe46c1005070841of1b6cdc7paaef031f3995679b@mail.gmail.com>
-Reply-To: david@ombrepixel.com
+From: Richard Feng <rfeng@wurldtech.com>
+Subject: Re: conntrack-tools 0.9.14 can not block the connection
+Date: Fri, 7 May 2010 09:17:27 -0700
+Message-ID: <201005070917.27301.rfeng@wurldtech.com>
+References: <201005061651.40203.rfeng@wurldtech.com> <alpine.LSU.2.01.1005070954230.32277@obet.zrqbmnf.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:reply-to:date
-         :message-id:subject:from:to:content-type;
-        bh=93T67ebQnQ8HGxY1zKfYpHtXB3/w+BesnSV9c+p3r5o=;
-        b=EXdpzGAUINNZcgu2FMdNUTHwDnLP3PeZo8QS5zeFKYJ8eYE4yRuuXNcVTw6lJzlQ3o
-         nS4qPAvQscsykPPJbMRwiPhvWobzv6EUn97SWDzSOTQLgaxm5Aj3Sm/4U5bAVx7gZxUx
-         cxL+RWoVgGaF286TT+H90gKLpz1ozqxLgMsD4=
+In-Reply-To: <alpine.LSU.2.01.1005070954230.32277@obet.zrqbmnf.qr>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi All,
 
-I have a very basic question. I am updating an active response script
-for OSSEC that add DROP rules. I added rules to log packets being
-dropped:
-Ex for IP 1.1.1.1
+Thanks Jan for your answer - I still got some questions in the following.
 
-iptables -I INPUT -s 1.1.1.1 -m limit --limit 1/sec -j LOG
---log-prefix OSSEC-HIDS --log-level 7 (rule added)
-iptables -I INPUT -s 1.1.1.1 -j DROP (original rule)
+On May 7, 2010 12:55:44 am Jan Engelhardt wrote:
+> On Friday 2010-05-07 01:51, Richard Feng wrote:
+> 
+> >Hi,
+> >
+> 
+> >However, the connection is still active - is this the correct behaviour? 
+> 
+> Yes.
+So 'conntrack -D' can not really cut current connections?  It can only delete 
+entry from the state table? I just want to make sure - from the 
+document "http://conntrack-tools.netfilter.org/manual.html#conntrack". It 
+clearly said "Delete on entry, this can be used to block traffic (you have to 
+set /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal to zero)".
+> >>From the documentation (from conntrack-tools.netfilter.org), somewhere it 
+says 
+> >that "have to set /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal 
+to 
+> >zero".There is simply no 'netfilter' folder under my 
+> >folder '/proc/sys/net/ipv4'. Is this the problem? How could I fix it?
+>
+> Upgrading to a newer kernel (you're probably running some stoneage 
+> thing).
+Thank you for your pointer at a later reply - I found it now 
+at /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal. And it was set "0".
 
-It doesn't log, it actually logs if I only run the first rule, as soon
-as I run the DROP rule, it DROP packets indeed, but it won't log
-anymore.
+Regards,
+Richard
+ 
 
-Thanks
-
-David ROBERT
-http://blog.ombrepixel.com/
