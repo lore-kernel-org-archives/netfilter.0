@@ -1,128 +1,105 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: libnetfilter_queue: mark-value byte ordering?
-Date: Sun, 09 May 2010 23:49:12 +0200
-Message-ID: <4BE72DD8.1000509@netfilter.org>
-References: <4BE5B9CA.5090606@meta-dynamic.com> <4BE6AC04.5000504@tana.it>
+Subject: Re: [PATCH] nf_conntrack_core.c: fix for dead connection after flushing
+ conntrack cache
+Date: Mon, 10 May 2010 00:57:39 +0200
+Message-ID: <4BE73DE3.6080304@netfilter.org>
+References: <4BE3D31F.6000607@secunet.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------020604000700080800040200"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4BE6AC04.5000504@tana.it>
+In-Reply-To: <4BE3D31F.6000607@secunet.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Alessandro Vesely <vesely@tana.it>
-Cc: David F <netfilter@meta-dynamic.com>, netfilter <netfilter@vger.kernel.org>, Eric Leblond <eleblond@edenwall.com>
+Content-Type: text/plain; charset="us-ascii"
+To: Joerg Marx <joerg.marx@secunet.com>
+Cc: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, Patrick McHardy <kaber@trash.net>, Mail List - Netfilter <netfilter@vger.kernel.org>
 
-This is a multi-part message in MIME format.
---------------020604000700080800040200
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Hi Joerg,
 
-Alessandro Vesely wrote:
-> David F wrote:
->>  I changed my code to use htonl() on the mark-value prior to calling
->> nfq_set_verdict_mark(), and it all suddenly started working.
+I'm cc'ing netfilter-devel instead, that is used for development stuff.
+
+Joerg Marx wrote:
+> Because nobody commented this so far on the 'linux-netdev' list, now a
+> re-post on the 'netfilter' list with a kind request for confirmation
+> and/or discussion...
 > 
-> Since it is not documented, everyone rediscovers it anew. See e.g.
-> http://www.gossamer-threads.com/lists/iptables/devel/62591
+> ###################################################################
+> 
+> 
+> Hi,
+> 
+> we encountered a weird problem of a 'stalled' connection when using
+> 'conntrack -F' on a box with heavy network load. 'conntrack -L' gave us
+> sometimes a [UNREPLIED] entry for the traffic in question, but no traffic
+> flow, no matching of packets in or out, only the timer went down from 600
+> to 0 (it was ESP traffic - the default generic timeout = 600 seconds).
+> After the entry vanished by timeout (or doing a 'conntrack -F' once more),
+> all worked normal again.
+> 
+> The reason we finally found, is a race window in 'nf_conntrack_confirm'
+> when calling '__nf_conntrack_confirm':
+> 
+> In 'nf_conntrack_confirm' is checked (without holding a lock), if the entry
+> to be confirmed is possibly dying: !nf_ct_is_dying(ct).
+> If not, then __nf_conntrack_confirm will do some sanity checking, grab a
+> spin_lock_bh and insert the 'ct' into the lookup cache.
+> 
+> Now consider the following scenario:
+> 
+> 1. a connection has seen the first packet already -> state is UNREPLIED
+> 2. now the answer is to be sent, conntrack wants to confirm the connection
+> 3. the !nf_ct_is_dying(ct) check is passed, __nf_conntrack_confirm is just
+> started
+> 4. in a user context a 'conntrack -F' command is running right now e.g. on
+> another CPU
+> 5. this will flag all unconfirmed connections as 'dying' in
+> get_next_corpse(...), including the entry going to be confirmed!
+> 6. now the already 'dying' entry is included into the hash cache in
+> __nf_conntrack_confirm - BOOM!
+> 
+> After this step the connection in question is dead, because no packets are
+> forwarded until the entry is purged from hash cache. This was a big blocker
+> for us, because each dead IPsec tunnel is a dead branch network for 10
+> minutes...
+> 
+> For every packet from now on 'nf_conntrack_find_get' will ignore the entry,
+> because it is dying and because __nf_conntrack_confirm finds the hash in
+> the cache already, it will NF_DROP the packet.
+> 
+> The key for finding this was 'NF_CT_STAT_INC(net, insert_failed)' in
+> __nf_conntrack_confirm.
+> 
+> The suggested solution is to check for '!nf_ct_is_dying(ct)' again, _after_
+> the spin_lock_bh is grabbed in __nf_conntrack_confirm. So it is clear, that
+> no other softirq or user context can set that 'evil' dying flag ;-)
+> The return value in this case should be NF_ACCEPT, so we loose no packets
+> then, this is also important for us.
+> 
+> 
+> ---
+>  net/netfilter/nf_conntrack_core.c |    5 +++++
+>  1 files changed, 5 insertions(+), 0 deletions(-)
+> 
+> diff --git a/net/netfilter/nf_conntrack_core.c
+> b/net/netfilter/nf_conntrack_core.c
+> index 1374179..e2c8bfe 100644
+> --- a/net/netfilter/nf_conntrack_core.c
+> +++ b/net/netfilter/nf_conntrack_core.c
+> @@ -413,6 +413,11 @@ __nf_conntrack_confirm(struct sk_buff *skb)
+> 
+>  	spin_lock_bh(&nf_conntrack_lock);
+> 
+> +	if (unlikely(nf_ct_is_dying(ct))) {
+> +		spin_unlock_bh(&nf_conntrack_lock);
+> +		return NF_ACCEPT;
+> +	}
+> +
+>  	/* See if there's one in the list already, including reverse:
+>  	   NAT could have grabbed it without realizing, since we're
+>  	   not in the hash.  If there is, we lost race. */
+> -- 1.5.6.5
 
-I have applied the following patch. I think that, at least, new users
-will not hit this problem again. I'm very sorry that this was not fixed
-before. Let me know if you are OK with it, we're still in time to revert
-the patch attached.
+I think this patch is fine. Patrick, would you apply it and pass it to
+-stable, please? Thanks!
 
---------------020604000700080800040200
-Content-Type: text/x-patch;
- name="fix.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline;
- filename="fix.patch"
-
-nfq: deprecate nfq_set_verdict_mark() in favour of nfq_set_verdict2()
-
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-
-This patch deprecates nfq_set_verdict_mark() in favour of
-nfq_set_verdict2() which does exactly the same but it also
-convert the mark value from host-byte order to network-byte
-order as expected by nfnetlink_queue.
-
-I know, this is hackish, but I prefer adding new functions
-instead of API versioning which is also ugly.
-
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
----
- include/libnetfilter_queue/libnetfilter_queue.h |   20 ++++++++++++++------
- src/libnetfilter_queue.c                        |   19 +++++++++++++++++++
- 2 files changed, 33 insertions(+), 6 deletions(-)
-
-diff --git a/include/libnetfilter_queue/libnetfilter_queue.h b/include/libnetfilter_queue/libnetfilter_queue.h
-index 1a72c51..88a9b8c 100644
---- a/include/libnetfilter_queue/libnetfilter_queue.h
-+++ b/include/libnetfilter_queue/libnetfilter_queue.h
-@@ -62,12 +62,20 @@ extern int nfq_set_verdict(struct nfq_q_handle *qh,
- 			     u_int32_t data_len,
- 			     unsigned char *buf);
- 
--extern int nfq_set_verdict_mark(struct nfq_q_handle *qh, 
--				  u_int32_t id,
--			   	  u_int32_t verdict, 
--				  u_int32_t mark,
--			   	  u_int32_t datalen,
--				  unsigned char *buf);
-+extern int nfq_set_verdict2(struct nfq_q_handle *qh,
-+			    u_int32_t id,
-+			    u_int32_t verdict, 
-+			    u_int32_t mark,
-+			    u_int32_t datalen,
-+			    unsigned char *buf);
-+
-+extern __attribute__((deprecated))
-+int nfq_set_verdict_mark(struct nfq_q_handle *qh, 
-+			 u_int32_t id,
-+			 u_int32_t verdict, 
-+			 u_int32_t mark,
-+			 u_int32_t datalen,
-+			 unsigned char *buf);
- 
- /* message parsing function */
- 
-diff --git a/src/libnetfilter_queue.c b/src/libnetfilter_queue.c
-index df19519..7e62317 100644
---- a/src/libnetfilter_queue.c
-+++ b/src/libnetfilter_queue.c
-@@ -679,6 +679,22 @@ int nfq_set_verdict(struct nfq_q_handle *qh, u_int32_t id,
- }	
- 
- /**
-+ * nfq_set_verdict2 - like nfq_set_verdict, but you can set the mark.
-+ * \param qh Netfilter queue handle obtained by call to nfq_create_queue().
-+ * \param id	ID assigned to packet by netfilter.
-+ * \param verdict verdict to return to netfilter (NF_ACCEPT, NF_DROP)
-+ * \param mark mark to put on packet
-+ * \param data_len number of bytes of data pointed to by #buf
-+ * \param buf the buffer that contains the packet data
-+ */
-+int nfq_set_verdict2(struct nfq_q_handle *qh, u_int32_t id,
-+		     u_int32_t verdict, u_int32_t mark,
-+		     u_int32_t data_len, unsigned char *buf)
-+{
-+	return __set_verdict(qh, id, verdict, htonl(mark), 1, data_len, buf);
-+}
-+
-+/**
-  * nfq_set_verdict_mark - like nfq_set_verdict, but you can set the mark.
-  * \param qh Netfilter queue handle obtained by call to nfq_create_queue().
-  * \param id	ID assigned to packet by netfilter.
-@@ -686,6 +702,9 @@ int nfq_set_verdict(struct nfq_q_handle *qh, u_int32_t id,
-  * \param mark mark to put on packet
-  * \param data_len number of bytes of data pointed to by #buf
-  * \param buf the buffer that contains the packet data
-+ *
-+ * This function is deprecated since it is broken, its use is highly
-+ * discouraged. Please, use nfq_set_verdict2 instead.
-  */
- int nfq_set_verdict_mark(struct nfq_q_handle *qh, u_int32_t id,
- 		u_int32_t verdict, u_int32_t mark,
-
---------------020604000700080800040200--
+Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
