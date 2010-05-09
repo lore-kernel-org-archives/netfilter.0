@@ -1,105 +1,89 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH] nf_conntrack_core.c: fix for dead connection after flushing
- conntrack cache
-Date: Mon, 10 May 2010 00:57:39 +0200
-Message-ID: <4BE73DE3.6080304@netfilter.org>
-References: <4BE3D31F.6000607@secunet.com>
+Subject: Re: conntrack-tools 0.9.14 can not block the connection
+Date: Mon, 10 May 2010 01:16:28 +0200
+Message-ID: <4BE7424C.9020108@netfilter.org>
+References: <201005061651.40203.rfeng@wurldtech.com> <alpine.LSU.2.01.1005070954230.32277@obet.zrqbmnf.qr> <201005070917.27301.rfeng@wurldtech.com> <alpine.LSU.2.01.1005071823100.23210@obet.zrqbmnf.qr> <4BE46649.1040703@netfilter.org> <4BE4669B.4030904@netfilter.org> <alpine.LSU.2.01.1005072144530.31492@obet.zrqbmnf.qr> <4BE4747D.9010705@plouf.fr.eu.org> <alpine.DEB.2.00.1005082227270.30449@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------010408050601000404050402"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4BE3D31F.6000607@secunet.com>
+In-Reply-To: <alpine.DEB.2.00.1005082227270.30449@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Joerg Marx <joerg.marx@secunet.com>
-Cc: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, Patrick McHardy <kaber@trash.net>, Mail List - Netfilter <netfilter@vger.kernel.org>
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>, Jan Engelhardt <jengelh@medozas.de>, Richard Feng <rfeng@wurldtech.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi Joerg,
+This is a multi-part message in MIME format.
+--------------010408050601000404050402
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-I'm cc'ing netfilter-devel instead, that is used for development stuff.
+Jozsef Kadlecsik wrote:
+> On Fri, 7 May 2010, Pascal Hambourg wrote:
+> 
+>>> I think what was really meant was tcp_loose, not tcp_be_liberal.
+>> In my understanding, tcp_loose only allows conntrack to pick up
+>> connections from the middle, but packets are still INVALID until the
+>> required number of packets is seen and accepted. Am I wrong ?
+> 
+> No, the packets are set to the usual states, there's no packet counting.
+> 
+> With tcp_loose enabled (default) conntrack accepts non-SYN packets as 
+> "NEW" ones, i.e. attempts to pick up connections from the middle.
+> 
+> With tcp_be_liberal enabled (default is disabled) out of window packets 
+> are not marked as INVALID.
 
-Joerg Marx wrote:
-> Because nobody commented this so far on the 'linux-netdev' list, now a
-> re-post on the 'netfilter' list with a kind request for confirmation
-> and/or discussion...
-> 
-> ###################################################################
-> 
-> 
-> Hi,
-> 
-> we encountered a weird problem of a 'stalled' connection when using
-> 'conntrack -F' on a box with heavy network load. 'conntrack -L' gave us
-> sometimes a [UNREPLIED] entry for the traffic in question, but no traffic
-> flow, no matching of packets in or out, only the timer went down from 600
-> to 0 (it was ESP traffic - the default generic timeout = 600 seconds).
-> After the entry vanished by timeout (or doing a 'conntrack -F' once more),
-> all worked normal again.
-> 
-> The reason we finally found, is a race window in 'nf_conntrack_confirm'
-> when calling '__nf_conntrack_confirm':
-> 
-> In 'nf_conntrack_confirm' is checked (without holding a lock), if the entry
-> to be confirmed is possibly dying: !nf_ct_is_dying(ct).
-> If not, then __nf_conntrack_confirm will do some sanity checking, grab a
-> spin_lock_bh and insert the 'ct' into the lookup cache.
-> 
-> Now consider the following scenario:
-> 
-> 1. a connection has seen the first packet already -> state is UNREPLIED
-> 2. now the answer is to be sent, conntrack wants to confirm the connection
-> 3. the !nf_ct_is_dying(ct) check is passed, __nf_conntrack_confirm is just
-> started
-> 4. in a user context a 'conntrack -F' command is running right now e.g. on
-> another CPU
-> 5. this will flag all unconfirmed connections as 'dying' in
-> get_next_corpse(...), including the entry going to be confirmed!
-> 6. now the already 'dying' entry is included into the hash cache in
-> __nf_conntrack_confirm - BOOM!
-> 
-> After this step the connection in question is dead, because no packets are
-> forwarded until the entry is purged from hash cache. This was a big blocker
-> for us, because each dead IPsec tunnel is a dead branch network for 10
-> minutes...
-> 
-> For every packet from now on 'nf_conntrack_find_get' will ignore the entry,
-> because it is dying and because __nf_conntrack_confirm finds the hash in
-> the cache already, it will NF_DROP the packet.
-> 
-> The key for finding this was 'NF_CT_STAT_INC(net, insert_failed)' in
-> __nf_conntrack_confirm.
-> 
-> The suggested solution is to check for '!nf_ct_is_dying(ct)' again, _after_
-> the spin_lock_bh is grabbed in __nf_conntrack_confirm. So it is clear, that
-> no other softirq or user context can set that 'evil' dying flag ;-)
-> The return value in this case should be NF_ACCEPT, so we loose no packets
-> then, this is also important for us.
-> 
-> 
-> ---
->  net/netfilter/nf_conntrack_core.c |    5 +++++
->  1 files changed, 5 insertions(+), 0 deletions(-)
-> 
-> diff --git a/net/netfilter/nf_conntrack_core.c
-> b/net/netfilter/nf_conntrack_core.c
-> index 1374179..e2c8bfe 100644
-> --- a/net/netfilter/nf_conntrack_core.c
-> +++ b/net/netfilter/nf_conntrack_core.c
-> @@ -413,6 +413,11 @@ __nf_conntrack_confirm(struct sk_buff *skb)
-> 
->  	spin_lock_bh(&nf_conntrack_lock);
-> 
-> +	if (unlikely(nf_ct_is_dying(ct))) {
-> +		spin_unlock_bh(&nf_conntrack_lock);
-> +		return NF_ACCEPT;
-> +	}
-> +
->  	/* See if there's one in the list already, including reverse:
->  	   NAT could have grabbed it without realizing, since we're
->  	   not in the hash.  If there is, we lost race. */
-> -- 1.5.6.5
+I have applied the following patch to the documentation based on this
+discussion. I have also uploaded a new version of the webpage.
 
-I think this patch is fine. Patrick, would you apply it and pass it to
--stable, please? Thanks!
+--------------010408050601000404050402
+Content-Type: text/x-patch;
+ name="f.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline;
+ filename="f.patch"
 
-Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
+doc: description on how to block traffic with conntrack was incomplete
+
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+
+This patch completes the documentation with the following discussion
+that took place in the mailing list.
+
+http://marc.info/?l=netfilter&m=127335152521674&w=2
+
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ doc/manual/conntrack-tools.tmpl |    9 +++++++--
+ 1 files changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/doc/manual/conntrack-tools.tmpl b/doc/manual/conntrack-tools.tmpl
+index b897318..ab4e5fb 100644
+--- a/doc/manual/conntrack-tools.tmpl
++++ b/doc/manual/conntrack-tools.tmpl
+@@ -19,7 +19,7 @@
+   </authorgroup>
+ 
+   <copyright>
+-   <year>2008</year>
++   <year>2008-2010</year>
+    <holder>Pablo Neira Ayuso</holder>
+   </copyright>
+ 
+@@ -198,7 +198,12 @@ conntrack v0.9.7 (conntrack-tools): 1 flow entries have been shown.
+ conntrack v0.9.7 (conntrack-tools): 1 flow entries has been updated.
+  </programlisting>
+ 
+-<para>Delete one entry, this can be used to block traffic (you have to set <emphasis>/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal</emphasis> to zero).</para>
++<para>Delete one entry, this can be used to block traffic if:</para>
++<itemizedlist>
++ <listitem><para>You have a stateful rule-set that blocks traffic in INVALID state.</para></listitem>
++ <listitem><para>You have to set <emphasis>/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_loose</emphasis> or <emphasis>/proc/sys/net/netfilter/nf_conntrack_tcp_loose</emphasis>, depending on your kernel version, to zero.</para></listitem>
++</itemizedlist>
++
+ <programlisting>
+  # conntrack -D -p tcp --dport 3486
+  tcp      6 431982 ESTABLISHED src=192.168.2.100 dst=123.59.27.117 sport=34846 dport=993 packets=169 bytes=14322 src=123.59.27.117 dst=192.168.2.100 sport=993 dport=34846 packets=113 bytes=34787 [ASSURED] mark=1 secmark=0 use=1
+
+--------------010408050601000404050402--
