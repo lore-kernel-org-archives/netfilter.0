@@ -1,39 +1,48 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: conntrack-tools 0.9.14 can not block the connection
-Date: Sat, 8 May 2010 22:33:45 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1005082227270.30449@blackhole.kfki.hu>
-References: <201005061651.40203.rfeng@wurldtech.com> <alpine.LSU.2.01.1005070954230.32277@obet.zrqbmnf.qr> <201005070917.27301.rfeng@wurldtech.com> <alpine.LSU.2.01.1005071823100.23210@obet.zrqbmnf.qr> <4BE46649.1040703@netfilter.org> <4BE4669B.4030904@netfilter.org>
- <alpine.LSU.2.01.1005072144530.31492@obet.zrqbmnf.qr> <4BE4747D.9010705@plouf.fr.eu.org>
+From: Alessandro Vesely <vesely@tana.it>
+Subject: Re: libnetfilter_queue: mark-value byte ordering?
+Date: Sun, 09 May 2010 14:35:16 +0200
+Message-ID: <4BE6AC04.5000504@tana.it>
+References: <4BE5B9CA.5090606@meta-dynamic.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4BE4747D.9010705@plouf.fr.eu.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tana.it; s=test;
+	t=1273408455; bh=fnrX3ndCSGhcKb2Ga80PdY3p0tWxbJAOCx+1mg6wDOY=;
+	l=1005;
+	h=Message-ID:Date:From:MIME-Version:To:CC:References:In-Reply-To:
+	 Content-Transfer-Encoding;
+	b=dydkJF9Xh1LwJfJfBUnvy8rcdmxmEzbPwxOSrLV8QhDmb5TdfpG/Z+evFe01NDoLh
+	 ssi9UdoQ3Yu2ZNAshPyFwg1i7RXRgL6uPwl6w/Yo1sdSpoBibfN7uF8c7AR0W0Vp21
+	 UeYI2beybNcTTIPuXZfZ7YJMRaseex6TLEhR6QKQ=
+In-Reply-To: <4BE5B9CA.5090606@meta-dynamic.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: Jan Engelhardt <jengelh@medozas.de>, Pablo Neira Ayuso <pablo@netfilter.org>, Richard Feng <rfeng@wurldtech.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: David F <netfilter@meta-dynamic.com>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-On Fri, 7 May 2010, Pascal Hambourg wrote:
+David F wrote:
+>  I changed my 
+> code to use htonl() on the mark-value prior to calling 
+> nfq_set_verdict_mark(), and it all suddenly started working.
 
-> > I think what was really meant was tcp_loose, not tcp_be_liberal.
-> 
-> In my understanding, tcp_loose only allows conntrack to pick up
-> connections from the middle, but packets are still INVALID until the
-> required number of packets is seen and accepted. Am I wrong ?
+Since it is not documented, everyone rediscovers it anew. See e.g. 
+http://www.gossamer-threads.com/lists/iptables/devel/62591
 
-No, the packets are set to the usual states, there's no packet counting.
 
-With tcp_loose enabled (default) conntrack accepts non-SYN packets as 
-"NEW" ones, i.e. attempts to pick up connections from the middle.
+> I had a quick look through the source code of libnetfilter_queue and 
+> libnfnetlink_queue and didn't see any obvious byte-order conversion 
+> prior to sending to the kernel, so I wonder if anyone could help me 
+> understand,
+> * Is the mark value _supposed_ to be supplied in network byte order or 
+> is something else going on here;
+> and if so,
+> * Since the mark never hits the wire, why would it ever be kept in 
+> network byte order?
 
-With tcp_be_liberal enabled (default is disabled) out of window packets 
-are not marked as INVALID.
+The latter is an issue in kernel programming, where all code in a 
+given set assumes an established byte order. In facts, it is not 
+uncommon to have the same word byteswapped multiple times on the 
+same machine for the sake of obeying conventions.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+HTH
