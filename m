@@ -1,89 +1,166 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: conntrack-tools 0.9.14 can not block the connection
-Date: Mon, 10 May 2010 01:16:28 +0200
-Message-ID: <4BE7424C.9020108@netfilter.org>
-References: <201005061651.40203.rfeng@wurldtech.com> <alpine.LSU.2.01.1005070954230.32277@obet.zrqbmnf.qr> <201005070917.27301.rfeng@wurldtech.com> <alpine.LSU.2.01.1005071823100.23210@obet.zrqbmnf.qr> <4BE46649.1040703@netfilter.org> <4BE4669B.4030904@netfilter.org> <alpine.LSU.2.01.1005072144530.31492@obet.zrqbmnf.qr> <4BE4747D.9010705@plouf.fr.eu.org> <alpine.DEB.2.00.1005082227270.30449@blackhole.kfki.hu>
+From: David F <netfilter@meta-dynamic.com>
+Subject: Re: libnetfilter_queue: mark-value byte ordering?
+Date: Sun, 09 May 2010 22:16:06 -0400
+Message-ID: <4BE76C66.6070701@meta-dynamic.com>
+References: <4BE5B9CA.5090606@meta-dynamic.com> <4BE6AC04.5000504@tana.it> <4BE72DD8.1000509@netfilter.org>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="------------010408050601000404050402"
+ boundary="------------040706070400010807090801"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1005082227270.30449@blackhole.kfki.hu>
+In-Reply-To: <4BE72DD8.1000509@netfilter.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>, Jan Engelhardt <jengelh@medozas.de>, Richard Feng <rfeng@wurldtech.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Alessandro Vesely <vesely@tana.it>, netfilter <netfilter@vger.kernel.org>, Eric Leblond <eleblond@edenwall.com>
 
 This is a multi-part message in MIME format.
---------------010408050601000404050402
-Content-Type: text/plain; charset=ISO-8859-1
+--------------040706070400010807090801
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Jozsef Kadlecsik wrote:
-> On Fri, 7 May 2010, Pascal Hambourg wrote:
-> 
->>> I think what was really meant was tcp_loose, not tcp_be_liberal.
->> In my understanding, tcp_loose only allows conntrack to pick up
->> connections from the middle, but packets are still INVALID until the
->> required number of packets is seen and accepted. Am I wrong ?
-> 
-> No, the packets are set to the usual states, there's no packet counting.
-> 
-> With tcp_loose enabled (default) conntrack accepts non-SYN packets as 
-> "NEW" ones, i.e. attempts to pick up connections from the middle.
-> 
-> With tcp_be_liberal enabled (default is disabled) out of window packets 
-> are not marked as INVALID.
+Pablo Neira Ayuso wrote:
+> Alessandro Vesely wrote:
+>   
+>> David F wrote:
+>>     
+>>>  I changed my code to use htonl() on the mark-value prior to calling
+>>> nfq_set_verdict_mark(), and it all suddenly started working.
+>>>       
+>> Since it is not documented, everyone rediscovers it anew. See e.g.
+>> http://www.gossamer-threads.com/lists/iptables/devel/62591
+>>     
+>
+> I have applied the following patch. I think that, at least, new users
+> will not hit this problem again. I'm very sorry that this was not fixed
+> before. Let me know if you are OK with it, we're still in time to revert
+> the patch attached.
+>   
+For what it's worth, I had previously prepared this patch which just 
+clarifies the documentation on this parameter.  I think it still has 
+value since I also added some missing return-value docs and changed the 
+descriptions of a few parameters that I had found to be confusing.
 
-I have applied the following patch to the documentation based on this
-discussion. I have also uploaded a new version of the webpage.
+-- David Favro
 
---------------010408050601000404050402
+
+--------------040706070400010807090801
 Content-Type: text/x-patch;
- name="f.patch"
+ name="0001-Documentation-enhancements.patch"
 Content-Transfer-Encoding: 7bit
 Content-Disposition: inline;
- filename="f.patch"
+ filename="0001-Documentation-enhancements.patch"
 
-doc: description on how to block traffic with conntrack was incomplete
+From 29f601afdd546b75f6b5d64a654b1c60780899f9 Mon Sep 17 00:00:00 2001
+From: David Favro <netfilter@meta-dynamic.com>
+Date: Mon, 3 May 2010 21:28:55 -0400
+Subject: [PATCH] Documentation enhancements.
 
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-
-This patch completes the documentation with the following discussion
-that took place in the mailing list.
-
-http://marc.info/?l=netfilter&m=127335152521674&w=2
-
-Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+ * Several parameters are clarified.
+ * Several previously undocumented return-values are documented.
+ * nfq_set_verdict_mark() [now deprecated]: notes that mark is in network
+   byte order.
 ---
- doc/manual/conntrack-tools.tmpl |    9 +++++++--
- 1 files changed, 7 insertions(+), 2 deletions(-)
+ src/libnetfilter_queue.c |   31 +++++++++++++++++--------------
+ 1 files changed, 17 insertions(+), 14 deletions(-)
 
-diff --git a/doc/manual/conntrack-tools.tmpl b/doc/manual/conntrack-tools.tmpl
-index b897318..ab4e5fb 100644
---- a/doc/manual/conntrack-tools.tmpl
-+++ b/doc/manual/conntrack-tools.tmpl
-@@ -19,7 +19,7 @@
-   </authorgroup>
- 
-   <copyright>
--   <year>2008</year>
-+   <year>2008-2010</year>
-    <holder>Pablo Neira Ayuso</holder>
-   </copyright>
- 
-@@ -198,7 +198,12 @@ conntrack v0.9.7 (conntrack-tools): 1 flow entries have been shown.
- conntrack v0.9.7 (conntrack-tools): 1 flow entries has been updated.
-  </programlisting>
- 
--<para>Delete one entry, this can be used to block traffic (you have to set <emphasis>/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_be_liberal</emphasis> to zero).</para>
-+<para>Delete one entry, this can be used to block traffic if:</para>
-+<itemizedlist>
-+ <listitem><para>You have a stateful rule-set that blocks traffic in INVALID state.</para></listitem>
-+ <listitem><para>You have to set <emphasis>/proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_loose</emphasis> or <emphasis>/proc/sys/net/netfilter/nf_conntrack_tcp_loose</emphasis>, depending on your kernel version, to zero.</para></listitem>
-+</itemizedlist>
-+
- <programlisting>
-  # conntrack -D -p tcp --dport 3486
-  tcp      6 431982 ESTABLISHED src=192.168.2.100 dst=123.59.27.117 sport=34846 dport=993 packets=169 bytes=14322 src=123.59.27.117 dst=192.168.2.100 sport=993 dport=34846 packets=113 bytes=34787 [ASSURED] mark=1 secmark=0 use=1
+diff --git a/src/libnetfilter_queue.c b/src/libnetfilter_queue.c
+index 7e62317..7d0fb45 100644
+--- a/src/libnetfilter_queue.c
++++ b/src/libnetfilter_queue.c
+@@ -541,6 +541,8 @@ int nfq_handle_packet(struct nfq_handle *h, char *buf, int len)
+  * - NFQNL_COPY_NONE - do not copy any data
+  * - NFQNL_COPY_META - copy only packet metadata
+  * - NFQNL_COPY_PACKET - copy entire packet
++ *
++ * \return -1 on error; >=0 otherwise.
+  */
+ int nfq_set_mode(struct nfq_q_handle *qh,
+ 		u_int8_t mode, u_int32_t range)
+@@ -571,6 +573,8 @@ int nfq_set_mode(struct nfq_q_handle *qh,
+  * Sets the size of the queue in kernel. This fixes the maximum number
+  * of packets the kernel will store before internally before dropping
+  * upcoming packets.
++ *
++ * \return -1 on error; >=0 otherwise.
+  */
+ int nfq_set_queue_maxlen(struct nfq_q_handle *qh,
+ 				u_int32_t queuelen)
+@@ -670,6 +674,8 @@ static int __set_verdict(struct nfq_q_handle *qh, u_int32_t id,
+  * Notifies netfilter of the userspace verdict for the given packet.  Every
+  * queued packet _must_ have a verdict specified by userspace, either by
+  * calling this function, or by calling the nfq_set_verdict_mark() function.
++ *
++ * \return -1 on error; >= 0 otherwise.
+  */
+ int nfq_set_verdict(struct nfq_q_handle *qh, u_int32_t id,
+ 		u_int32_t verdict, u_int32_t data_len, 
+@@ -699,10 +705,12 @@ int nfq_set_verdict2(struct nfq_q_handle *qh, u_int32_t id,
+  * \param qh Netfilter queue handle obtained by call to nfq_create_queue().
+  * \param id	ID assigned to packet by netfilter.
+  * \param verdict verdict to return to netfilter (NF_ACCEPT, NF_DROP)
+- * \param mark mark to put on packet
++ * \param mark the mark to put on the packet, in network byte order.
+  * \param data_len number of bytes of data pointed to by #buf
+  * \param buf the buffer that contains the packet data
+  *
++ * \return -1 on error; >= 0 otherwise.
++ *
+  * This function is deprecated since it is broken, its use is highly
+  * discouraged. Please, use nfq_set_verdict2 instead.
+  */
+@@ -848,11 +856,10 @@ u_int32_t nfq_get_physoutdev(struct nfq_data *nfad)
+  * was received through
+  * \param nlif_handle pointer to a nlif interface resolving handle
+  * \param nfad Netlink packet data handle passed to callback function
+- * \param name pointer that will be set to the interface name string 
++ * \param name pointer to the buffer to receive the interface name;
++ *  not more than \c IFNAMSIZ bytes will be copied to it.
+  * \return -1 in case of error, >0 if it succeed. 
+  *
+- * The #name variable will point to the name of the input interface.
+- *
+  * To use a nlif_handle, You need first to call nlif_open() and to open
+  * an handler. Don't forget to store the result as it will be used 
+  * during all your program life:
+@@ -894,10 +901,8 @@ int nfq_get_indev_name(struct nlif_handle *nlif_handle,
+  * packet was received through
+  * \param nlif_handle pointer to a nlif interface resolving handle
+  * \param nfad Netlink packet data handle passed to callback function
+- * \param name pointer that will be set to the interface name string 
+- *
+- * The #name variable will point to the name of the input physical
+- * interface.
++ * \param name pointer to the buffer to receive the interface name;
++ *  not more than \c IFNAMSIZ bytes will be copied to it.
+  *
+  * See nfq_get_indev_name() documentation for nlif_handle usage.
+  *
+@@ -915,9 +920,8 @@ int nfq_get_physindev_name(struct nlif_handle *nlif_handle,
+  * packet will be sent to
+  * \param nlif_handle pointer to a nlif interface resolving handle
+  * \param nfad Netlink packet data handle passed to callback function
+- * \param name pointer that will be set to the interface name string 
+- *
+- * The #name variable will point to the name of the output interface.
++ * \param name pointer to the buffer to receive the interface name;
++ *  not more than \c IFNAMSIZ bytes will be copied to it.
+  *
+  * See nfq_get_indev_name() documentation for nlif_handle usage.
+  *
+@@ -935,9 +939,8 @@ int nfq_get_outdev_name(struct nlif_handle *nlif_handle,
+  * packet will be sent to
+  * \param nlif_handle pointer to a nlif interface resolving handle
+  * \param nfad Netlink packet data handle passed to callback function
+- * \param name pointer that will be set to the interface name string 
+- * The #name variable will point to the name of the physical
+- * output interface.
++ * \param name pointer to the buffer to receive the interface name;
++ *  not more than \c IFNAMSIZ bytes will be copied to it.
+  *
+  * See nfq_get_indev_name() documentation for nlif_handle usage.
+  *
+-- 
+1.6.3.3
 
---------------010408050601000404050402--
+
+--------------040706070400010807090801--
