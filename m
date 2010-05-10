@@ -1,35 +1,80 @@
-From: Michael Hakimi <yalakvar@gmail.com>
-Subject: libNetfilterQueue - Capturing all traffic
-Date: Mon, 10 May 2010 18:32:42 +0300
-Message-ID: <AANLkTilJNKEEx7mnh4pR17imRiyep5VGrspIHbpIiQrj@mail.gmail.com>
+From: Joerg Marx <joerg.marx@secunet.com>
+Subject: Re: [PATCH] nf_conntrack_core.c: fix for dead connection after flushing
+ conntrack cache
+Date: Mon, 10 May 2010 19:08:35 +0200
+Message-ID: <4BE83D93.8080909@secunet.com>
+References: <4BE3D31F.6000607@secunet.com> <4BE73DE3.6080304@netfilter.org> <4BE824EA.6000303@trash.net>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:date:message-id
-         :subject:from:to:content-type;
-        bh=7TGq7AnhHTx3FysTiqLX6TBFRNpeNpPbFZSu/jvOnVc=;
-        b=bzjA6DSJUEE2D+5I1PhOOX7MhXSbKv+UmtYngewRUbc0TM6O1zl55hQyZF1axhcvi9
-         qruyQvGTQYFYCML6n2HUhMiCHWqY/SyA6MriZg1ykQjfzWkk2uiRGCMwYhW+8vgutK2j
-         MVfMyHZJJuKAM53V4At7mVa3j9ErnutyDY9NQ=
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <4BE824EA.6000303@trash.net>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Patrick McHardy <kaber@trash.net>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hi,
+On 05/10/2010 05:23 PM, Patrick McHardy wrote:
 
-I have a "simple" question regarding libNetfilterQueue and can't find
-the answer for it.
-I am trying to create an application that captures ALL the incoming
-traffic using libNetfilterQueue. In the function nfq_bind_pf I need to
-supply the protocol family. If I set it to AF_INET I get only IP
-packets, if I set it to AF_PACKET the function fails.
-I have also tried AF_UNSPEC but that didn't help.
+...
+> 
+> I think this should be fine since the race you describe only affects
+> unconfirmed conntracks, but it took me a while to realize that all
+> the other spots where the DYING bit is set are fine without holding
+> the conntrack lock.
+> 
+> Could you please add a comment to the check in __nf_conntrack_confirm()
+> stating that the dying check is supposed to prevent races against
+> nf_ct_get_next_corpse()? The semantic of the DYING bit is unfortunately
+> a bit overloaded.
+> 
+> Also, since the condition unconfirmed + dying in nf_conntrack_confirm()
+> is highly unlikely, I'd suggest to remove the dying check there and only
+> perform it in __nf_conntrack_confirm().
+> 
 
-Is there any way to to this?
-Thank in advance for any help.
+I hope the comment is clearly pointing to the (solved) problem now. I
+also removed the obsolete check in nf_conntrack_confirm.
 
-Regards,
-Mickey
+diff --git a/include/net/netfilter/nf_conntrack_core.h
+b/include/net/netfilter/nf_conntrack_core.h
+index dffde8e..3d7524f 100644
+--- a/include/net/netfilter/nf_conntrack_core.h
++++ b/include/net/netfilter/nf_conntrack_core.h
+@@ -61,7 +61,7 @@ static inline int nf_conntrack_confirm(struct sk_buff
+*skb)
+ 	int ret = NF_ACCEPT;
+
+ 	if (ct && ct != &nf_conntrack_untracked) {
+-		if (!nf_ct_is_confirmed(ct) && !nf_ct_is_dying(ct))
++		if (!nf_ct_is_confirmed(ct))
+ 			ret = __nf_conntrack_confirm(skb);
+ 		if (likely(ret == NF_ACCEPT))
+ 			nf_ct_deliver_cached_events(ct);
+diff --git a/net/netfilter/nf_conntrack_core.c
+b/net/netfilter/nf_conntrack_core.c
+index 0c9bbe9..7ff9a40 100644
+--- a/net/netfilter/nf_conntrack_core.c
++++ b/net/netfilter/nf_conntrack_core.c
+@@ -422,6 +422,16 @@ __nf_conntrack_confirm(struct sk_buff *skb)
+
+ 	spin_lock_bh(&nf_conntrack_lock);
+
++	/* We have to check the DYING flag inside the lock to prevent
++	   a race against nf_ct_get_next_corpse() possibly called from
++	   user context, else we insert an already 'dead' hash, blocking
++	   further use of that particular connection -JM */
++
++	if (unlikely(nf_ct_is_dying(ct))) {
++		spin_unlock_bh(&nf_conntrack_lock);
++		return NF_ACCEPT;
++	}
++
+ 	/* See if there's one in the list already, including reverse:
+ 	   NAT could have grabbed it without realizing, since we're
+ 	   not in the hash.  If there is, we lost race. */
+
+
+
+-- 
+
