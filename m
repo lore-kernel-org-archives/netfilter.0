@@ -1,36 +1,25 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: iptables NEW or SYN
-Date: Thu, 13 May 2010 19:18:01 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1005131916320.9398@obet.zrqbmnf.qr>
-References: <hshbmv$547$1@dough.gmane.org>
+From: Federico Alberto Sayd <fsayd@uncu.edu.ar>
+Subject: Re: Broadcast redirecting
+Date: Thu, 13 May 2010 14:25:28 -0300
+Message-ID: <4BEC3608.5050603@uncu.edu.ar>
+References: <AANLkTikn9mpzLV3YRvtvwQSIlX31ZZBmWItU8tgf9QkV@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <hshbmv$547$1@dough.gmane.org>
+In-Reply-To: <AANLkTikn9mpzLV3YRvtvwQSIlX31ZZBmWItU8tgf9QkV@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Markus Feldmann <feldmann_markus@gmx.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Thursday 2010-05-13 19:08, Markus Feldmann wrote:
-
-> Hi All,
+Anatoly Muliarski escribi=F3:
+> Hi list,
 >
-> i am still experiment with iptables and the state extension. Some of my rules
-> shall catch packets with the state NEW, but it doesn't catch all packets.
-> Sometimes there are packets that have the SYN Flag set which go through my
-> rules with the state NEW.
+> Is it possible to redirect broadcast packets( with dst 255.255.255.25=
+5
+> ) received on one interface to another?
+> Or should I use some standalone program?
 >
-> Any idea why?
-
-Where's the ruleset?
-
-> I thought SYN is included in the state NEW, is that wrong?
-
-There are cases where SYN can be INVALID, naturally. Furthermore, CTs 
-may be NEW even if the packet is not TCP SYN.
-
-> What is the difference between SYN and NEW?
-
-Kinda like the difference between "new" and "refurbished".
+>  =20
+brouting with ebtables??
+arp proxy??
