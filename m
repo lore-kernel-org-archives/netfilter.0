@@ -1,27 +1,36 @@
-From: =?UTF-8?Q?Mamadou_Tour=C3=A9?= <e2ia.ci@gmail.com>
-Subject: Implementing IPSec in a linux bridge.
-Date: Thu, 13 May 2010 22:41:48 +0000
-Message-ID: <AANLkTilTKjQ3T_R2mUC64CbkLbCvTqU4EFic0EHpVjEj@mail.gmail.com>
+From: Curby <curby@cur.by>
+Subject: Re: iptables NEW or SYN
+Date: Thu, 13 May 2010 16:46:04 -0600
+Message-ID: <AANLkTikYXNQRQq4e-qX7IgMXT8UAOqR5ZTCgV7_Osof-@mail.gmail.com>
+References: <hshbmv$547$1@dough.gmane.org> <alpine.LSU.2.01.1005131916320.9398@obet.zrqbmnf.qr> 
+	<hshf0k$ine$1@dough.gmane.org> <AANLkTimpGd4uEnY5UiFQDs1oE6uEji6lbLnUej7eCXoX@mail.gmail.com> 
+	<hshhcg$rl3$1@dough.gmane.org> <AANLkTilx7Gimy8RwVszEx1ijkR4mx2Q70HKJO72fAhTK@mail.gmail.com> 
+	<hshruc$34i$1@dough.gmane.org>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:date:message-id
-         :subject:from:to:content-type;
-        bh=kpBpYdshhOF34vjDuOfFqNR1jUAO04hgD4lvMmYc6pQ=;
-        b=VEmLsAPPDLOPuZHKDjV3+EQwkMfOr+mZST+8n5YcuGV2PPyRlfWY7FimdhqNvvt2qs
-         pmOPy1xae/RLvVrdMcwy/H3ZmYG2rYiwIXD1DfqOzqA+qmb8zbxil2D2T0cw0/sePXW0
-         g8jf9RF7vXBqXqIjC6+cW5aSzV9z0Pij/TXEs=
+In-Reply-To: <hshruc$34i$1@dough.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Markus Feldmann <feldmann_markus@gmx.de>
+Cc: netfilter@vger.kernel.org
 
-Hello,
-I have a linux box configured in bridge mode placed in each of my two agencies.
-The two boxes are placed behind routers and play the role of passive firewalls.
-Today my boss ask to configure the bridges to enable the two agencies
-LANs to communicate via IPSEC. I wonder if there are specials
-conditions to configure IPSec in a bridge.
-could anyone  give me a HOWTO to configure IPSEC on my two linux box .
+On Thu, May 13, 2010 at 3:45 PM, Markus Feldmann <feldmann_markus@gmx.de> wrote:
+> Thanks for your answer,
+>
+> i have an ESTABLISHED rule, look at line 127
+
+Having a rule doesn't mean that it's doing what you want it to.  =)
+Since you have DROP policies, having EST/REL packets return to the
+originating INPUT/FORWARD chain just drops them if nothing else
+matches.  Instead, try ACCEPT, as in:
+
+iptables -A attacksinput -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+Can I get confirmation from Jan or someone else that a preferred and
+more future-proof syntax is the following?
+
+iptables -A attacksinput -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+--Mike
