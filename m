@@ -1,47 +1,65 @@
-From: Markus Feldmann <feldmann_markus@gmx.de>
-Subject: Re: iptables NEW or SYN
-Date: Thu, 13 May 2010 20:45:36 +0200
-Message-ID: <hshhcg$rl3$1@dough.gmane.org>
-References: <hshbmv$547$1@dough.gmane.org> <alpine.LSU.2.01.1005131916320.9398@obet.zrqbmnf.qr> 	<hshf0k$ine$1@dough.gmane.org> <AANLkTimpGd4uEnY5UiFQDs1oE6uEji6lbLnUej7eCXoX@mail.gmail.com>
+From: Anatoly Muliarski <x86ever@gmail.com>
+Subject: Re: Broadcast redirecting
+Date: Thu, 13 May 2010 22:17:14 +0300
+Message-ID: <AANLkTim2NxNBwc1icLR_o3ibcz3r5udD9deRdAplSqw6@mail.gmail.com>
+References: <AANLkTikn9mpzLV3YRvtvwQSIlX31ZZBmWItU8tgf9QkV@mail.gmail.com>
+	 <4BEC3608.5050603@uncu.edu.ar>
+	 <AANLkTillMVOffaQflD1r5oHwypoAOvxM51EwBSJRd9UV@mail.gmail.com>
+	 <AANLkTimnJP4xewG1ANHRCTakHDEvo3NRtoYyJMFTCD-G@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTimpGd4uEnY5UiFQDs1oE6uEji6lbLnUej7eCXoX@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:in-reply-to
+         :references:date:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=Zz9mGY1+z/UpU38fChycXFRVoPlPAyqYovPkenxjfCo=;
+        b=YpeuuVXoVpdfErcH9dh9UNiXg8soqs7LK8wUK3BTW04ya7KXhjOMsvd4XZJ8pR3vux
+         cY5MfZezUGcjB+JxVrrDmALtFOGZDChWEajb4aNjJCkwVnvXiLEvz16vxme9nSvZcCim
+         KqHBHBhgQX0XjVudBl5sAL+RmyPtAP9dXw5Jk=
+In-Reply-To: <AANLkTimnJP4xewG1ANHRCTakHDEvo3NRtoYyJMFTCD-G@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Curby <curby@cur.by>
+Cc: netfilter@vger.kernel.org
 
-Curby schrieb:
-> On Thu, May 13, 2010 at 12:05 PM, Markus Feldmann
-> <feldmann_markus@gmx.de> wrote:
->> What are CTs?
-> 
-> Mebbe Conntrack?  The basic point that Jan's trying to make is that
-> NEW/ESTABLISHED/INVALID/RELATED describes packets as they're seen by
-> the connection tracking.  It is not necessarily related to whether a
-> TCP packet has the SYN flag set.
-> 
-> If a new and valid ICMP ping packet comes in, it's considered NEW by
-> conntrack because it's not associated with any other traffic, not is
-> it INVALID.  That's an example of NEW packets that don't have to be
-> TCP SYN.
-I try an example and you say whether i am right.
+2010/5/13 Curby <curby@cur.by>:
+> On Thu, May 13, 2010 at 12:22 PM, Anatoly Muliarski <x86ever@gmail.co=
+m> wrote:
+>> Also I can write some daemon in Perl which will receive broadcast
+>> packets and inject them on another interface. But the source address
+>> of the injected packets will belong to the router and I need them to
+>> be as in original packets.
+>
+> I'm no good at Perl but I think it has an interface to hping, which
+> can be used to craft (or mangle?) packets as you please. =A0May be
+> something to look into.
+>
+> --Mike
+>
 
-If i meet a girl, which i doesnt meet before, than she is NEW.
-When i meet a girl every day which, than she is only new at the first 
-meet but the meeting is every day a new experience (syn).
+Thanks for the idea, I'll try to have a look into it.
 
-Is that correct?
+Currently, I have investigated using brouting - it looks more attractiv=
+e.
+The idea consists in mostly using L3, but treating broadcast on L2.
 
-So the state NEW is the sight view of my computer and the syn only 
-means, there is a foreign computer which wants to establish a new 
-connection.
+Here is a sketch:
+brctl addbr br0
+brctl stp br0 off
+brctl addif br0 eth0
+brctl addif br0 eth1
+ifconfig br0 0.0.0.0
+ebtables -t broute -A BROUTING -p IPv4 --ip-dst 255.255.255.255 -j ACCE=
+PT
+ebtables -t broute -A BROUTING -j DROP
 
-Ist that right?
+I should try it later.
 
-If that is right than i need the --syn argument not the state NEW for my 
-apache-server.
 
-regards Markus
 
+--=20
+Best regards
+Anatoly Muliarski
