@@ -1,27 +1,35 @@
-From: Mistick Levi <gmistick@gmail.com>
-Subject: Ipset VS NF-hipac
-Date: Thu, 13 May 2010 22:29:22 +0300
-Message-ID: <AANLkTil6yEEvJyMQE-1FvKYm5U1NSuyWzx5fZwVWCnoQ@mail.gmail.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: chain/table traversal for loopback packets
+Date: Thu, 13 May 2010 21:52:35 +0200
+Message-ID: <4BEC5883.6000309@plouf.fr.eu.org>
+References: <AANLkTikgvzyLOesxU5RNb3MmEPPMsnotOj-oZcWGlkuT@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:date:message-id
-         :subject:from:to:content-type;
-        bh=/DCGpSzlMKTbBpSfEHs4bjLegKaN21kn/O0AMefFX0c=;
-        b=XtIQY7kqfLrHt6DmvTz1b0OxQzVM+t1qYfLq1Z5l5b7nuEELMUSOZWaLsVM+G4DAbh
-         KAtYwUMaDqAbQtExZhu6XLuRkSE7t20RqZo3j1EIe2AIlU2rLr5R8Kfeov+p3KBAUs8q
-         GXTrBQ+FLy2UY8MKsyxE5rKmdmZ6xBjxa9kYI=
+In-Reply-To: <AANLkTikgvzyLOesxU5RNb3MmEPPMsnotOj-oZcWGlkuT@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Curby <curby@cur.by>
+Cc: netfilter@vger.kernel.org
 
-Hi,
-I saw the 2 modules in the netfilter website,
-Has anyone tested nf-hipac vs Iptables+ipsets ?
-i would like to know performance issues
+Hello,
 
-Kind regards
-Levi Yechiel
+Curby a =E9crit :
+> Hello, I'm trying to understand
+> http://www.frozentux.net/iptables-tutorial/images/tables_traverse.jpg
+>=20
+> Would a packet created locally and sent over the loopback interface
+> traverse the POSTROUTING and PREROUTING hooks as implied by the
+> diagram,
+
+Yes. However be aware that the nat/PREROUTING chain is skipped even for
+the first packet of a new connection because at that stage the
+connection is already confirmed. Thus destination NAT must be performed
+in OUTPUT.
+
+> or does the last Routing Decision notice that it's bound for
+> the local host and send it straight to the beginning of the INPUT
+> hook?
+
+No.
