@@ -1,56 +1,75 @@
-From: ratheesh k <ratheesh.ksz@gmail.com>
-Subject: Re: printk mac address --hangs
-Date: Thu, 13 May 2010 22:54:41 +0530
-Message-ID: <AANLkTin6o-SVB10bETHs40Pvb_Cv0HWyIVzh2FA7I2iK@mail.gmail.com>
-References: <AANLkTinl1GZIOHaxfD7WgXPc2miKkRi3MDkkcaW4P6Zj@mail.gmail.com>
-	 <alpine.LSU.2.01.1005131818450.9398@obet.zrqbmnf.qr>
-	 <AANLkTinnqyBwCYQB1rLWI04VBr28DRludbfO9cFcTgAo@mail.gmail.com>
-	 <alpine.LSU.2.01.1005131916081.9398@obet.zrqbmnf.qr>
+From: Markus Feldmann <feldmann_markus@gmx.de>
+Subject: Re: iptables NEW or SYN
+Date: Thu, 13 May 2010 19:42:28 +0200
+Message-ID: <hshdm4$dfr$1@dough.gmane.org>
+References: <hshbmv$547$1@dough.gmane.org> <alpine.LSU.2.01.1005131916320.9398@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=eXFFUctmZ+gcMDKDWP6HFBkCbKTF+uQqSUEC3GBj3w0=;
-        b=Xv646AJ4CNLwNMowB3S4St+CfU/ITwSzqDfcGzgZVhNJNbgdECCz3+iwto16pp2sxU
-         mAz7kRiA6UTXb/CR5cbfMazbBL+d+4AMfq05cj1+SFCVDRKo5E9tst9K1J0r036RRmKp
-         NuJ5xCsPB2uJFYWCaqMCLcWR3vV5RGWyxupSg=
-In-Reply-To: <alpine.LSU.2.01.1005131916081.9398@obet.zrqbmnf.qr>
+In-Reply-To: <alpine.LSU.2.01.1005131916320.9398@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Netfilter mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Thu, May 13, 2010 at 10:46 PM, Jan Engelhardt <jengelh@medozas.de> w=
-rote:
-> Your hook received packets from all interfaces, including lo and
-> ethhdr-less tunnels.
-
-Packets from lo will hit NF_IP_LOCAL_OUT hook  ?
-Could you please  tell  example for ether less packet  ?
-
-Thanks,
-Ratheesh .
+Ok i post some important rules, but i think nobody will watch this:
 
 
 
-On Thu, May 13, 2010 at 10:46 PM, Jan Engelhardt <jengelh@medozas.de> w=
-rote:
-> On Thursday 2010-05-13 19:07, ratheesh k wrote:
->
->>On Thu, May 13, 2010 at 9:49 PM, an Engelhardt <jengelh@medozas.de> w=
-rote:
->>> If you do not have an Ethernet packet, this is going to explode.
->>
->>I have only one =A0ethernet network interface (eth0 ) with 192.168.1.=
-5 .
->>I could see in wireshark all =A0packets with ethernet mac addresses .
->>When i try to prink the mac address or copy , =A0it hangs ..
->
-> Your hook received packets from all interfaces, including lo and
-> ethhdr-less tunnels.
->
+
+1.        iptables -N attacksinput
+2.        iptables -A INPUT -i "$DSLIF" -j attacksinput
+3.        iptables -A attacksinput -m state --state ESTABLISHED,RELATED 
+-j RETURN
+4.        iptables -A attacksinput -m recent --rcheck -m hashlimit 
+--hashlimit-name attacksinput_bl --hashlimit-upto 6/hour 
+--hashlimit-burst 20 --hashlimit-mode srcip -j LOG --log-level info 
+--log-prefix "attacksinput(bl): "
+5.        iptables -A attacksinput -m recent --update --seconds 600 -j DROP
+6.        iptables -A attacksinput -p tcp -m state --state NEW -m 
+multiport --dports 1:79,81:442,444:65535 -m hashlimit --hashlimit-name 
+attacksinputnot_80 --hashlimit-upto 6/hour --hashlimit-burst 20 
+--hashlimit-mode srcip -j LOG --log-level info --log-prefix 
+"attacksinput(!80): "
+7.        iptables -A attacksinput -p tcp -m state --state NEW -m 
+multiport --dports 1:79,81:442,444:65535 -m recent --set -j DROP
+8.        iptables -A attacksinput -p tcp -m state --state NEW -m 
+hashlimit --hashlimit-name http --hashlimit-upto 6/hour 
+--hashlimit-burst 20 --hashlimit-mode srcip --dport 80 -j RETURN
+9.        iptables -A attacksinput -p tcp -m state --state NEW -m 
+hashlimit --hashlimit-name https --hashlimit-upto 6/hour 
+--hashlimit-burst 20 --hashlimit-mode srcip --dport 443 -j RETURN
+10.       iptables -A attacksinput -p icmp --icmp-type 8 -j RETURN
+11.       iptables -A attacksinput -m state --state NEW,INVALID -m 
+hashlimit --hashlimit-name attacksinput_new_inv --hashlimit-upto 6/hour 
+--hashlimit-burst 20 --hashlimit-mode srcip -j LOG --log-level info 
+--log-prefix "attacksinput(NEW,INVALID): "
+12.       iptables -A attacksinput -m state --state NEW,INVALID -m 
+recent --set -j DROP
+13.       iptables -A attacksinput -m hashlimit --hashlimit-name 
+attacksinput_rest --hashlimit-upto 6/hour --hashlimit-burst 20 
+--hashlimit-mode srcip -j LOG --log-level info --log-prefix "attacksinput: "
+14.       iptables -A attacksinput -m recent --set -j DROP
+
+
+
+
+
+Description:
+All Packets from the Internet, which comes over ppp0 and want to go into 
+my Apache-Server, goes into the chain "attacksinput". Only connections 
+to port 80 and 443 are valid and RETURN to the mein chain, all other 
+will be logged and dropped.
+
+I friend tried to connect to my server, but couldnt establish a 
+connection, here is the log:
+https://debianforum.de/forum/pastebin.php?mode=view&s=34615
+
+His computer tries several times to connect, but it fails. The first 
+tries send the SYN Flag. Normaly it should be catched by my rule 9 but 
+it would catched by the rule 11.
+
+Any idea ?
+
+Regards Markus
+
