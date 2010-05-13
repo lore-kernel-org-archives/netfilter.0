@@ -1,44 +1,49 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: iptable how many rule can manage iptable
-Date: Wed, 12 May 2010 22:47:03 +0200
-Message-ID: <4BEB13C7.2040600@chello.at>
-References: <l2vf1cc03e01005121009j3ce0e30cj56ac615688a58916@mail.gmail.com> <20100512200954.3f53f3f6@catlap>
-Reply-To: netfilter@vger.kernel.org
+From: David ROBERT <castlebbs@gmail.com>
+Subject: Re: Log and Drop with OSSEC
+Date: Thu, 13 May 2010 10:47:46 +0100
+Message-ID: <AANLkTimTmGE4buHzSZCgNy5XEEhR5_h0jeJf-i9CTr85@mail.gmail.com>
+References: <m2x57bfe46c1005070841of1b6cdc7paaef031f3995679b@mail.gmail.com>
+Reply-To: david@ombrepixel.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20100512200954.3f53f3f6@catlap>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:reply-to
+         :in-reply-to:references:date:message-id:subject:from:to:content-type;
+        bh=5ri24TbdFjrMqUPyox0bo64h+R28vUR61UGVkBdtMmk=;
+        b=g9osK8L8HLwllG8WH7nJnujJ2r0Zt9GXVD2zKN2AK//xuza2z+HCmTh8l66crKuiCS
+         RPojLdymBiqiMQLWKTjbFmiSrC9W70neGrw51ffD1/kaXkhfVtYQivN54HhlqyfUO5eF
+         2mlu5e1c7lC5MI15iNl5olwUHTuYxJLQbHSNo=
+In-Reply-To: <m2x57bfe46c1005070841of1b6cdc7paaef031f3995679b@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
-Cc: e2ia.ci@gmail.com
+
+Hi All,
+
+This was too obvious so I couldn't find it... I did a "-I" for the
+DROP rule, so obviously it was matched before the LOG rule... tsss..
+
+David
+
+2010/5/7 David ROBERT <castlebbs@gmail.com>:
+> Hi All,
+>
+> I have a very basic question. I am updating an active response script
+> for OSSEC that add DROP rules. I added rules to log packets being
+> dropped:
+> Ex for IP 1.1.1.1
+>
+> iptables -I INPUT -s 1.1.1.1 -m limit --limit 1/sec -j LOG
+> --log-prefix OSSEC-HIDS --log-level 7 (rule added)
+> iptables -I INPUT -s 1.1.1.1 -j DROP (original rule)
+>
+> It doesn't log, it actually logs if I only run the first rule, as soon
+> as I run the DROP rule, it DROP packets indeed, but it won't log
+> anymore.
 
 
->> i'd like to know how many rule can manage iptable.
->> I'm asking that because i'd to drop all traffric from my localnet to
->> porn site. I've a database of porn site witch contain about 900 000
->> domains. I know there are solutions like squidguard. But for my linux
->> box i'd to use iptable to prevent users access to porn site and other
->> blacklist site.
-> 
-> It's not feasible to implement 900 000 long ruleset in iptables
-> even with ipset extension or with fancy hierarchical chains. The
-> other problem is that iptables works on ip addresses and your database
-> is comprised of domains. There can be more then one site on single ip
-> address. Blocking IPs and not domains could cut access to some legit
-> sites.
-> 
-> Squid+squidguard is good option. I've heard of some dns based
-> solutions (domain blacklisting on dnscache level), but I don't know any
-> actual software.
-i.e.
-
-http://www.peereboom.us/adsuck/
-
-adsuck is a small dns server that spoofs blacklisted addresses and
-forwards all other queries. The idea is to be able to prevent
-connections to undesirable sites such as ad servers, crawlers, etc. It
-can be used locally, for the road warrior, or on the network perimeter
-in order to protect local machines from malicious sites.
-
+-- 
+David ROBERT
