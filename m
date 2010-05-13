@@ -1,48 +1,47 @@
-From: Anatoly Muliarski <x86ever@gmail.com>
-Subject: Re: Broadcast redirecting
-Date: Thu, 13 May 2010 21:22:29 +0300
-Message-ID: <AANLkTillMVOffaQflD1r5oHwypoAOvxM51EwBSJRd9UV@mail.gmail.com>
-References: <AANLkTikn9mpzLV3YRvtvwQSIlX31ZZBmWItU8tgf9QkV@mail.gmail.com>
-	 <4BEC3608.5050603@uncu.edu.ar>
+From: Markus Feldmann <feldmann_markus@gmx.de>
+Subject: Re: iptables NEW or SYN
+Date: Thu, 13 May 2010 20:45:36 +0200
+Message-ID: <hshhcg$rl3$1@dough.gmane.org>
+References: <hshbmv$547$1@dough.gmane.org> <alpine.LSU.2.01.1005131916320.9398@obet.zrqbmnf.qr> 	<hshf0k$ine$1@dough.gmane.org> <AANLkTimpGd4uEnY5UiFQDs1oE6uEji6lbLnUej7eCXoX@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:content-type;
-        bh=GJm7iPcsm3EQmSqq7spsU4aledmgE61+uf9n8Ie/ik4=;
-        b=Sb6T3VtaTZ4iq+n0GvEoECWACzuAZ4wZYcl5DNZVPx1/pUONRxdkWctE3zwduXU88l
-         LSpLc7UmiKqqnMYbE96Ehzqr3NEAQRHryLDwOhdzfbBGT0y3rmBBRD2h151P/HRjEtjh
-         0H9XfYLpfYEeNHGkBXa6NbUlF7JVjfvNW7QTY=
-In-Reply-To: <4BEC3608.5050603@uncu.edu.ar>
+In-Reply-To: <AANLkTimpGd4uEnY5UiFQDs1oE6uEji6lbLnUej7eCXoX@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-2010/5/13 Federico Alberto Sayd <fsayd@uncu.edu.ar>:
->>
->> Is it possible to redirect broadcast packets( with dst 255.255.255.255
->> ) received on one interface to another?
->> Or should I use some standalone program?
->>
->>
->
-> brouting with ebtables??
-> arp proxy??
+Curby schrieb:
+> On Thu, May 13, 2010 at 12:05 PM, Markus Feldmann
+> <feldmann_markus@gmx.de> wrote:
+>> What are CTs?
+> 
+> Mebbe Conntrack?  The basic point that Jan's trying to make is that
+> NEW/ESTABLISHED/INVALID/RELATED describes packets as they're seen by
+> the connection tracking.  It is not necessarily related to whether a
+> TCP packet has the SYN flag set.
+> 
+> If a new and valid ICMP ping packet comes in, it's considered NEW by
+> conntrack because it's not associated with any other traffic, not is
+> it INVALID.  That's an example of NEW packets that don't have to be
+> TCP SYN.
+I try an example and you say whether i am right.
 
-Thanks, but for some reasons I cannot use bridging.
-And ARP proxy works for ARP packets only.
+If i meet a girl, which i doesnt meet before, than she is NEW.
+When i meet a girl every day which, than she is only new at the first 
+meet but the meeting is every day a new experience (syn).
 
-May be, the problem consists in routing code which does not allow to
-redirect broadcast packets.
+Is that correct?
 
-Also I can write some daemon in Perl which will receive broadcast
-packets and inject them on another interface. But the source address
-of the injected packets will belong to the router and I need them to
-be as in original packets.
+So the state NEW is the sight view of my computer and the syn only 
+means, there is a foreign computer which wants to establish a new 
+connection.
 
--- 
-Best regards
-Anatoly Muliarski
+Ist that right?
+
+If that is right than i need the --syn argument not the state NEW for my 
+apache-server.
+
+regards Markus
+
