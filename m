@@ -1,40 +1,32 @@
-From: Anatoly Muliarski <x86ever@gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
 Subject: Re: Broadcast redirecting
-Date: Thu, 13 May 2010 22:18:36 +0300
-Message-ID: <AANLkTikUH1oeLaGrkt27FETXOzAO9n_wu9fWa7iMVzoH@mail.gmail.com>
-References: <AANLkTikn9mpzLV3YRvtvwQSIlX31ZZBmWItU8tgf9QkV@mail.gmail.com>
-	 <4BEC3608.5050603@uncu.edu.ar>
-	 <AANLkTillMVOffaQflD1r5oHwypoAOvxM51EwBSJRd9UV@mail.gmail.com>
-	 <AANLkTinL7pHTUjeEBgrdHT7idfihws7jQYOGwMuzKyfl@mail.gmail.com>
+Date: Thu, 13 May 2010 21:21:10 +0200 (CEST)
+Message-ID: <alpine.LSU.2.01.1005132120310.31136@obet.zrqbmnf.qr>
+References: <AANLkTikn9mpzLV3YRvtvwQSIlX31ZZBmWItU8tgf9QkV@mail.gmail.com> <4BEC3608.5050603@uncu.edu.ar>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type;
-        bh=94mI4ph5Q9rnmIej+pVgyg7qskEICJwLnZGlFskvgDI=;
-        b=Pne4VVQPGvgZDiUw2YUkGqxR6oHYPsdkB7V2cjYHvXZRJjrVuySsIqTl+glNpsATN6
-         vT4VoFchq3ewYVHq3p5Odcqm0EixopczPWvOOf9g8P1zE+fenrVAhOyxoa+qv7mJAO3m
-         /wpjlFISClECM2uCzispbBRe+udGU9sqhoVdg=
-In-Reply-To: <AANLkTinL7pHTUjeEBgrdHT7idfihws7jQYOGwMuzKyfl@mail.gmail.com>
+In-Reply-To: <4BEC3608.5050603@uncu.edu.ar>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mistick Levi <gmistick@gmail.com>
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: Federico Alberto Sayd <fsayd@uncu.edu.ar>
 Cc: netfilter@vger.kernel.org
 
-2010/5/13 Mistick Levi <gmistick@gmail.com>:
-> You could spoof the packet:
-> http://www.pythonprasanna.com/Papers%20and%20Articles/Sockets/udpspoof_pl.txt
+On Thursday 2010-05-13 19:25, Federico Alberto Sayd wrote:
+
+> Anatoly Muliarski escribi=C3=B3:
+>> Hi list,
+>>
+>> Is it possible to redirect broadcast packets( with dst 255.255.255.2=
+55
+>> ) received on one interface to another?
+>> Or should I use some standalone program?
 >
-> Best regards
-> Levi Yechiel
 >
+> brouting with ebtables??
+> arp proxy??
 
-Thanks, that is a valuable advice!
+2x No.
 
-
--- 
-Best regards
-Anatoly Muliarski
+Broadcasts are not routed.
