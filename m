@@ -1,29 +1,27 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: printk mac address --hangs
-Date: Thu, 13 May 2010 21:26:39 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1005132121480.31136@obet.zrqbmnf.qr>
-References: <AANLkTinl1GZIOHaxfD7WgXPc2miKkRi3MDkkcaW4P6Zj@mail.gmail.com>  <alpine.LSU.2.01.1005131818450.9398@obet.zrqbmnf.qr>  <AANLkTinnqyBwCYQB1rLWI04VBr28DRludbfO9cFcTgAo@mail.gmail.com>  <alpine.LSU.2.01.1005131916081.9398@obet.zrqbmnf.qr>
- <AANLkTin6o-SVB10bETHs40Pvb_Cv0HWyIVzh2FA7I2iK@mail.gmail.com>
+From: Mistick Levi <gmistick@gmail.com>
+Subject: Ipset VS NF-hipac
+Date: Thu, 13 May 2010 22:29:22 +0300
+Message-ID: <AANLkTil6yEEvJyMQE-1FvKYm5U1NSuyWzx5fZwVWCnoQ@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTin6o-SVB10bETHs40Pvb_Cv0HWyIVzh2FA7I2iK@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=/DCGpSzlMKTbBpSfEHs4bjLegKaN21kn/O0AMefFX0c=;
+        b=XtIQY7kqfLrHt6DmvTz1b0OxQzVM+t1qYfLq1Z5l5b7nuEELMUSOZWaLsVM+G4DAbh
+         KAtYwUMaDqAbQtExZhu6XLuRkSE7t20RqZo3j1EIe2AIlU2rLr5R8Kfeov+p3KBAUs8q
+         GXTrBQ+FLy2UY8MKsyxE5rKmdmZ6xBjxa9kYI=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: ratheesh k <ratheesh.ksz@gmail.com>
-Cc: Netfilter mailing list <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On Thursday 2010-05-13 19:24, ratheesh k wrote:
+Hi,
+I saw the 2 modules in the netfilter website,
+Has anyone tested nf-hipac vs Iptables+ipsets ?
+i would like to know performance issues
 
->On Thu, May 13, 2010 at 10:46 PM, Jan Engelhardt <jengelh@medozas.de> wrote:
->> Your hook received packets from all interfaces, including lo and
->> ethhdr-less tunnels.
->
->Packets from lo will hit NF_IP_LOCAL_OUT hook  ?
-
-Clearly.
-
->Could you please  tell  example for ether less packet  ?
-
-As I said, all links that do not are of "ether" type (see `ip list`)
+Kind regards
+Levi Yechiel
