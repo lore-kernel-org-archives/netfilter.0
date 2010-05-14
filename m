@@ -1,40 +1,27 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [PATCH] nf_conntrack_core.c: fix for dead connection after flushing
- conntrack cache
-Date: Fri, 14 May 2010 13:05:55 +0200
-Message-ID: <4BED2E93.1030004@trash.net>
-References: <4BE3D31F.6000607@secunet.com> <4BE73DE3.6080304@netfilter.org> <4BE824EA.6000303@trash.net> <4BE83D93.8080909@secunet.com>
+From: Markus Feldmann <feldmann_markus@gmx.de>
+Subject: Re: iptables NEW or SYN
+Date: Fri, 14 May 2010 14:16:35 +0200
+Message-ID: <hsjev3$k7h$1@dough.gmane.org>
+References: <hshbmv$547$1@dough.gmane.org>  <alpine.LSU.2.01.1005131916320.9398@obet.zrqbmnf.qr>  <hshf0k$ine$1@dough.gmane.org>  <AANLkTimpGd4uEnY5UiFQDs1oE6uEji6lbLnUej7eCXoX@mail.gmail.com>  <hshhcg$rl3$1@dough.gmane.org> <AANLkTilx7Gimy8RwVszEx1ijkR4mx2Q70HKJO72fAhTK@mail.gmail.com> <hsi46a$sro$1@dough.gmane.org> <alpine.LSU.2.01.1005140840150.28602@obet.zrqbmnf.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4BE83D93.8080909@secunet.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <alpine.LSU.2.01.1005140840150.28602@obet.zrqbmnf.qr>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Joerg Marx <joerg.marx@secunet.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Joerg Marx wrote:
-> On 05/10/2010 05:23 PM, Patrick McHardy wrote:
+Jan Engelhardt schrieb:
+> On Friday 2010-05-14 02:06, Markus Feldmann wrote:
 > 
-> ...
->> I think this should be fine since the race you describe only affects
->> unconfirmed conntracks, but it took me a while to realize that all
->> the other spots where the DYING bit is set are fine without holding
->> the conntrack lock.
->>
->> Could you please add a comment to the check in __nf_conntrack_confirm()
->> stating that the dying check is supposed to prevent races against
->> nf_ct_get_next_corpse()? The semantic of the DYING bit is unfortunately
->> a bit overloaded.
->>
->> Also, since the condition unconfirmed + dying in nf_conntrack_confirm()
->> is highly unlikely, I'd suggest to remove the dying check there and only
->> perform it in __nf_conntrack_confirm().
->>
-> 
-> I hope the comment is clearly pointing to the (solved) problem now. I
-> also removed the obsolete check in nf_conntrack_confirm.
+> It is marked as NEW,DNAT (-m conntrack; -m state won't help you)
+[SOLVED] Hi All,
 
-Thanks, this looks fine. But I need a formal submission, including
-a changelog and Signed-off-by: line. Thanks!
+thank you all that was the Problem. i changed my attacksinput chain to:
+http://pastebin.com/5YwC4r2i
+
+And it works now. :-)
+
+regards Markus
+
