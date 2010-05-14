@@ -1,36 +1,47 @@
-From: Curby <curby@cur.by>
+From: Markus Feldmann <feldmann_markus@gmx.de>
 Subject: Re: iptables NEW or SYN
-Date: Thu, 13 May 2010 16:46:04 -0600
-Message-ID: <AANLkTikYXNQRQq4e-qX7IgMXT8UAOqR5ZTCgV7_Osof-@mail.gmail.com>
-References: <hshbmv$547$1@dough.gmane.org> <alpine.LSU.2.01.1005131916320.9398@obet.zrqbmnf.qr> 
-	<hshf0k$ine$1@dough.gmane.org> <AANLkTimpGd4uEnY5UiFQDs1oE6uEji6lbLnUej7eCXoX@mail.gmail.com> 
-	<hshhcg$rl3$1@dough.gmane.org> <AANLkTilx7Gimy8RwVszEx1ijkR4mx2Q70HKJO72fAhTK@mail.gmail.com> 
-	<hshruc$34i$1@dough.gmane.org>
+Date: Fri, 14 May 2010 02:06:34 +0200
+Message-ID: <hsi46a$sro$1@dough.gmane.org>
+References: <hshbmv$547$1@dough.gmane.org>	 <alpine.LSU.2.01.1005131916320.9398@obet.zrqbmnf.qr>	 <hshf0k$ine$1@dough.gmane.org>	 <AANLkTimpGd4uEnY5UiFQDs1oE6uEji6lbLnUej7eCXoX@mail.gmail.com>	 <hshhcg$rl3$1@dough.gmane.org> <AANLkTilx7Gimy8RwVszEx1ijkR4mx2Q70HKJO72fAhTK@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <hshruc$34i$1@dough.gmane.org>
+In-Reply-To: <AANLkTilx7Gimy8RwVszEx1ijkR4mx2Q70HKJO72fAhTK@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Markus Feldmann <feldmann_markus@gmx.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Thu, May 13, 2010 at 3:45 PM, Markus Feldmann <feldmann_markus@gmx.de> wrote:
-> Thanks for your answer,
->
-> i have an ESTABLISHED rule, look at line 127
+Thanks for your help,
 
-Having a rule doesn't mean that it's doing what you want it to.  =)
-Since you have DROP policies, having EST/REL packets return to the
-originating INPUT/FORWARD chain just drops them if nothing else
-matches.  Instead, try ACCEPT, as in:
+I changed this at this afternoon today, because otherwise my server is
+not reachable. I changed line 132 and 133 from "state NEW" to the
+iptables argument "--syn".
 
-iptables -A attacksinput -m state --state ESTABLISHED,RELATED -j ACCEPT
+I have no idea why NEW does not work but --syn.
 
-Can I get confirmation from Jan or someone else that a preferred and
-more future-proof syntax is the following?
+@Curby
+The packets will not dropped in the INPUT chain, see the LOG of my friend.
+https://debianforum.de/forum/pastebin.php?mode=view&s=34615
+All packets will only dropped in the attacksinput chain. I made this log
+with <grep SRC=84.141.159.142 /var/log/syslog>, so it contains all
+dropped packets from my friend.
 
-iptables -A attacksinput -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+When the packets with DPORT=80,443 goes back to the INPUT chain it will
+be ACCEPTED, see line 241 to 247. But as i said the packets will only be
+dropped in my atttacksinput chain and i don't know why.
 
---Mike
+The first dropped packet of my friend has the DPT=443 (Redirection from
+80 to 443) and SYN flag set with TCP protocol. So i asume that the first
+packets with DPORT=80 were accepted. The next packet (singular) with
+DPT=443 was dropped at <attacksinput(NEW,INVALID)>, so it went over the
+rule in line 133. Line 133 says clearly to catch all NEW packets with
+DPT=443. Because it didn't so, the packet was not NEW, and because it
+was catched by <attacksinput(NEW,INVALID)>, it has to be INVALID !
+
+Question, is a packet still marked as NEW, after it is redirected from
+80 to 443 ???
+
+regards Markus
+
+
