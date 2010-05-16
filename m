@@ -1,66 +1,40 @@
-From: Pieter Smit <mlist2010@vigor.co.za>
+From: Bill Bogstad <bogstad@pobox.com>
 Subject: Re: Playing nice with incoming traceroutes
-Date: Sat, 15 May 2010 18:51:55 +0200
-Message-ID: <AANLkTilTF_pcF5W67BEAhKmNIzpffHhFByKLS2LX7bqy@mail.gmail.com>
+Date: Sat, 15 May 2010 23:17:07 -0400
+Message-ID: <AANLkTimrjdx9ADP8OpAMmaxC_kfr9Ua1T0auAW3M8M9q@mail.gmail.com>
 References: <AANLkTimnTBPl5oayp3tprDmROD4bNpIXyAodkZuF_JlS@mail.gmail.com>
+ <AANLkTilTF_pcF5W67BEAhKmNIzpffHhFByKLS2LX7bqy@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:mime-version:sender:received
-         :in-reply-to:references:from:date:x-google-sender-auth:message-id
-         :subject:to:cc:content-type:content-transfer-encoding;
-        bh=wcFomaIDYWH7gukSwQGBudIN6R5Uu3itRmDOj+eGrWE=;
-        b=olc7ZAnqlQRejMqAkpNXjQOqcxf1vSAFJusXYebgnMe3YJl4USjka910JNXuOg0qds
-         eqzbaxx+FGaKsS/Hl0l5EhXYq92NktSaEaIbgE8wpjBsoWjb55gCONYMJmAut8bfNW3t
-         eN/IUVUz48mkNRm7oR18Tr0AankfD3u2OullQ=
-In-Reply-To: <AANLkTimnTBPl5oayp3tprDmROD4bNpIXyAodkZuF_JlS@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=mime-version
+	:in-reply-to:references:date:message-id:subject:from:to:cc
+	:content-type; s=sasl; bh=/Dv5vekrMvgSIZdSsLjMDhNF1U4=; b=hkxibA
+	aopZPc0G/Z6GUB5dDmhfgKfpllobXHwV+lPkaBWfboDPd2WR03qzZbuTwjOepZDi
+	OT5udkQ6/8UzgGVUflpK12xL7NBrHoCCPYTSyPgkINt/0h08sKBcc3TVxznPRr9V
+	4jC7h6s39ODRI6EBgbQTHb4Pue+ulFF9FB3JU=
+In-Reply-To: <AANLkTilTF_pcF5W67BEAhKmNIzpffHhFByKLS2LX7bqy@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Curby <curby@cur.by>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Pieter Smit <mlist2010@vigor.co.za>
+Cc: Curby <curby@cur.by>, netfilter@vger.kernel.org
 
-You would send an ICMP time exceeded (type 11) packet if you receive a
-packet with a ttl=3D1 you will decrement it one realize it is 0 and sen=
-d
-the ICMP time exceeded.
+On Sat, May 15, 2010 at 12:51 PM, Pieter Smit <mlist2010@vigor.co.za> wrote:
+> You would send an ICMP time exceeded (type 11) packet if you receive a
+> packet with a ttl=1 you will decrement it one realize it is 0 and send
+> the ICMP time exceeded.
+>
+> Traceroute could also use ping ICMP echo request (type 8).
 
-Traceroute could also use ping ICMP echo request (type 8).
+Or TCP SYN packets.  From "man traceroute" on my Ubuntu system:
 
-Pieter
+       -I     Use ICMP ECHO for probes
 
+       -T     Use TCP SYN for probes
 
-On Fri, May 14, 2010 at 11:17 PM, Curby <curby@cur.by> wrote:
-> Hello, I'm considering allowing inbound traceroutes to find me, in th=
-e
-> interest of being a good Internet citizen. =A0I could simply open the
-> right udp ports, but i'd rather more tightly control what's allowed
-> than simply opening them up entirely. =A0Thus I'm considering somethi=
-ng
-> like the following. =A0Should it meet my expectations of responding
-> appropriately to traceroutes but otherwise not letting traffic
-> through?
->
-> -A INPUT -p udp --dport 33434:33534 -m ttl --ttl-eq 1 -j REJECT
-> --reject-with icmp-port-unreachable
->
-> I'm using ttl-eq 1 because that's the lowest TTL that showed up in my
-> netfilter logs when I tried to traceroute my machine earlier. =A0In
-> other words, I don't think I should use 0, but am willing to be
-> convinced otherwise.
->
-> Also, I'm a little unsure if I should be using another ICMP code when
-> I send the REJECT packet. =A0But port unreachable seemed reasonable. =
-=3D)
->
-> Thanks!
->
-> --Mike
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
+Actually the "LIST OF AVAILABLE METHODS" section is quite extensive.
+Apparently people have been hacking
+on traceroute while I wasn't watching.
+
+Bill Bogstad
