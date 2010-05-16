@@ -1,40 +1,47 @@
-From: Bill Bogstad <bogstad@pobox.com>
+From: Curby <curby@cur.by>
 Subject: Re: Playing nice with incoming traceroutes
-Date: Sat, 15 May 2010 23:17:07 -0400
-Message-ID: <AANLkTimrjdx9ADP8OpAMmaxC_kfr9Ua1T0auAW3M8M9q@mail.gmail.com>
+Date: Sun, 16 May 2010 15:00:16 -0600
+Message-ID: <AANLkTinmOW-hhTtsjEO-85RGNnLiJJgox3t2VaYgYclC@mail.gmail.com>
 References: <AANLkTimnTBPl5oayp3tprDmROD4bNpIXyAodkZuF_JlS@mail.gmail.com>
- <AANLkTilTF_pcF5W67BEAhKmNIzpffHhFByKLS2LX7bqy@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=mime-version
-	:in-reply-to:references:date:message-id:subject:from:to:cc
-	:content-type; s=sasl; bh=/Dv5vekrMvgSIZdSsLjMDhNF1U4=; b=hkxibA
-	aopZPc0G/Z6GUB5dDmhfgKfpllobXHwV+lPkaBWfboDPd2WR03qzZbuTwjOepZDi
-	OT5udkQ6/8UzgGVUflpK12xL7NBrHoCCPYTSyPgkINt/0h08sKBcc3TVxznPRr9V
-	4jC7h6s39ODRI6EBgbQTHb4Pue+ulFF9FB3JU=
-In-Reply-To: <AANLkTilTF_pcF5W67BEAhKmNIzpffHhFByKLS2LX7bqy@mail.gmail.com>
+In-Reply-To: <AANLkTimnTBPl5oayp3tprDmROD4bNpIXyAodkZuF_JlS@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pieter Smit <mlist2010@vigor.co.za>
-Cc: Curby <curby@cur.by>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-On Sat, May 15, 2010 at 12:51 PM, Pieter Smit <mlist2010@vigor.co.za> wrote:
-> You would send an ICMP time exceeded (type 11) packet if you receive a
-> packet with a ttl=1 you will decrement it one realize it is 0 and send
+On Fri, May 14, 2010 at 3:17 PM, Curby <curby@cur.by> wrote:
+> Hello, I'm considering allowing inbound traceroutes to find me, in th=
+e
+> interest of being a good Internet citizen. =A0I could simply open the
+
+So I did some testing, and it seems that my Debian system really does
+act as the traceroute program expects.  From the manpage talking about
+the default UDP method: "Since the ports are expected to be unused,
+the destination host normally returns "icmp unreach port" as a final
+response."
+
+Sniffing the ICMP traffic confirms the use of 3/3 "port unreachable" re=
+plies.
+
+On Sat, May 15, 2010 at 10:51 AM, Pieter Smit <mlist2010@vigor.co.za> w=
+rote:
+> You would send an ICMP time exceeded (type 11) packet if you receive =
+a
+> packet with a ttl=3D1 you will decrement it one realize it is 0 and s=
+end
 > the ICMP time exceeded.
->
-> Traceroute could also use ping ICMP echo request (type 8).
 
-Or TCP SYN packets.  From "man traceroute" on my Ubuntu system:
+Documentation suggests that well-behaved routers on the path to the
+destination host are meant to respond with ICMP type 11, but it's
+perfectly acceptable (and perhaps even expected) that the actual
+destination host respond with a ICMP type 3 code 3 (port unreachable)
+instead.
 
-       -I     Use ICMP ECHO for probes
+Re: multiple scan types, I'm just going to explicitly build in support
+for UDP and ICMP scans.  I'm not going to explicitly deny SYNs sent to
+all TCP ports. =3D)
 
-       -T     Use TCP SYN for probes
-
-Actually the "LIST OF AVAILABLE METHODS" section is quite extensive.
-Apparently people have been hacking
-on traceroute while I wasn't watching.
-
-Bill Bogstad
+--Mike
