@@ -1,84 +1,66 @@
-From: Joerg Marx <joerg.marx@secunet.com>
-Subject: Re: [PATCH] nf_conntrack_core.c: fix for dead connection after flushing
- conntrack cache
-Date: Mon, 17 May 2010 10:48:20 +0200
-Message-ID: <4BF102D4.9050304@secunet.com>
-References: <4BE3D31F.6000607@secunet.com> <4BE73DE3.6080304@netfilter.org> <4BE824EA.6000303@trash.net> <4BE83D93.8080909@secunet.com> <4BED2E93.1030004@trash.net>
+From: senthilkumaar2021 <senthilkumaar2021@gmail.com>
+Subject: kernel panic
+Date: Mon, 17 May 2010 14:25:00 +0530
+Message-ID: <4BF10464.2020207@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4BED2E93.1030004@trash.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from
+         :user-agent:mime-version:to:subject:content-type
+         :content-transfer-encoding;
+        bh=/EsTzPEQjWDDpb7QbKqXieZAfQGkUHZBPY/G/bF1ObY=;
+        b=cpHn1qs83Mp1KBHYX0GLY62+LkEpbVA02DN5rjcC1d9D3X/7y8RKcmKw2Oa0zXBlzk
+         4UkDRCrI6Hj3hLWWf2Q0ACeymCaRA0cYM657MctaWqzgHnAXi+/+rKoKos+vP5ggpoQt
+         jeXj2X58XVnWnY9/++AJLHGdIwrJWFBT6Ww90=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Patrick McHardy <kaber@trash.net>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On 05/14/2010 01:05 PM, Patrick McHardy wrote:
-
-...
->>
->> I hope the comment is clearly pointing to the (solved) problem now. I
->> also removed the obsolete check in nf_conntrack_confirm.
-> 
-> Thanks, this looks fine. But I need a formal submission, including
-> a changelog and Signed-off-by: line. Thanks!
-
-From 97913752bc65b2aa4a091a73c3569dc8221a1f25 Mon Sep 17 00:00:00 2001
-From: Joerg Marx <joerg.marx@secunet.com>
-Date: Mon, 10 May 2010 18:39:47 +0200
-Subject: [PATCH] Fix a race in __nf_conntrack_confirm against nf_ct_get_next_corpse()
-
-This race was triggered by a 'conntrack -F' command running in parallel
-to the insertion of a hash for a new connection.
-Losing this race led to a dead conntrack entry effectively blocking
-traffic for a particular connection until timeout or flushing the conntrack
-hashes again.
-Now the check for an already dying connection is done inside the lock.
-
-Signed-off-by: Joerg Marx <joerg.marx@secunet.com>
----
- include/net/netfilter/nf_conntrack_core.h |    2 +-
- net/netfilter/nf_conntrack_core.c         |   10 ++++++++++
- 2 files changed, 11 insertions(+), 1 deletions(-)
-
-diff --git a/include/net/netfilter/nf_conntrack_core.h b/include/net/netfilter/nf_conntrack_core.h
-index dffde8e..3d7524f 100644
---- a/include/net/netfilter/nf_conntrack_core.h
-+++ b/include/net/netfilter/nf_conntrack_core.h
-@@ -61,7 +61,7 @@ static inline int nf_conntrack_confirm(struct sk_buff *skb)
- 	int ret = NF_ACCEPT;
- 
- 	if (ct && ct != &nf_conntrack_untracked) {
--		if (!nf_ct_is_confirmed(ct) && !nf_ct_is_dying(ct))
-+		if (!nf_ct_is_confirmed(ct))
- 			ret = __nf_conntrack_confirm(skb);
- 		if (likely(ret == NF_ACCEPT))
- 			nf_ct_deliver_cached_events(ct);
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index 0c9bbe9..7ff9a40 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -422,6 +422,16 @@ __nf_conntrack_confirm(struct sk_buff *skb)
- 
- 	spin_lock_bh(&nf_conntrack_lock);
- 
-+	/* We have to check the DYING flag inside the lock to prevent
-+	   a race against nf_ct_get_next_corpse() possibly called from
-+	   user context, else we insert an already 'dead' hash, blocking
-+	   further use of that particular connection -JM */
-+
-+	if (unlikely(nf_ct_is_dying(ct))) {
-+		spin_unlock_bh(&nf_conntrack_lock);
-+		return NF_ACCEPT;
-+	}
-+
- 	/* See if there's one in the list already, including reverse:
- 	   NAT could have grabbed it without realizing, since we're
- 	   not in the hash.  If there is, we lost race. */
--- 
-1.5.6.5
+HI
 
 
+I am using iptables version 1.43 and getting the following error in 
+machine while using squid in tproxy.we are using Linux machine as bridge too
 
--- 
+i was able to capture part of the error only please help me in solving 
+the issue
+
+
+  [<ffffffffa03933c2>] ? nf_nat_fn+0x138/0x14e [iptable_nat]
+  [<ffffffffa0393585>] ? nf_nat_in+0x2f/0x6e [iptable_nat]
+  [<ffffffffa027edaa>] ? br_nf_pre_routing_finish+0x0/
+0x2c4 [bridge]
+  [<ffffffffa027edfa>] br_nf_pre_routing_finish+0x50/
+0x2c4 [bridge]
+  [<ffffffffa027edaa>] ? br_nf_pre_routing_finish+0x0/0x2c4 [bridge]
+  [<ffffffff81339a50>] ? nf_hook_slow+0x68/0xc8
+  [<ffffffffa027edaa>] ? br_nf_pre_routing_finish+0x0/0x2c4 [bridge]
+  [<ffffffffa027f616>] br_nf_pre_routing+0x5a8/0x5c7 [bridge]
+  [<ffffffff813399ab>] nf_iterate+0x48/0x85
+  [<ffffffffa027a931>] ? br_handle_frame_finish+0x0/0x154 [bridge]
+  [<ffffffff81339a50>] nf_hook_slow+0x68/0xc8
+  [<ffffffffa027a931>] ? br_handle_frame_finish+0x0/0x154 [bridge]
+  [<ffffffffa027ac36>] br_handle_frame+0x1b1/0x1db [bridge]
+  [<ffffffff8131d54b>] netif_receive_skb+0x316/0x434
+  [<ffffffff8131dbfb>] napi_gro_receive+0x6e/0x83
+  [<ffffffffa0125bfe>] e1000_receive_skb+0x5c/0x65 [e1000e]
+  [<ffffffffa0125de8>] e1000_clean_rx_irq+0x1e1/0x28f [e1000e]
+  [<ffffffffa012730e>] e1000_clean+0x99/0x24a [e1000e]
+  [<ffffffff813bcfc5>] ? _spin_unlock_irqrestore+0x2c/0x43
+  [<ffffffff8131ba62>] net_rx_action+0xb8/0x1b4
+  [<ffffffff8104ed43>] __do_softirq+0x99/0x152
+  [<ffffffff8101284c>] call_softirq+0x1c/0x30
+  [<ffffffff81013a02>] do_softirq+0x52/0xb9
+  [<ffffffff8104e969>] irq_exit+0x53/0x8d
+  [<ffffffff81013d1a>] do_IRQ+0x135/0x157
+  [<ffffffff81011f93>] ret_from_intr+0x0/0x2e
+  <EOI> [<ffffffff81017e20>] ? mwait_idle+0x9e/0xc7
+  [<ffffffff81017e17>] ? mwait_idle+0x95/0xc7
+  [<ffffffff813bfd20>] ? atomic_notifier_call_chain+0x13/0x15
+  [<ffffffff810102f4>] ? enter_idle+0x27/0x2>
+
+  Regards
+senthil
