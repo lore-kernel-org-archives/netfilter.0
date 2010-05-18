@@ -1,23 +1,30 @@
-From: Curby <curby@cur.by>
-Subject: Re: Port Knocking with default hooks/modules
-Date: Mon, 17 May 2010 13:58:04 -0600
-Message-ID: <AANLkTimUcJJ6zrEJ6PSXMO9kqTT8k8IffYVqdfdlS-8C@mail.gmail.com>
-References: <AANLkTikI4u4ZXG6jxCGYj-Ig5HLc47mF7Mey9sHh9tNu@mail.gmail.com>
+From: Markus Feldmann <feldmann_markus@gmx.de>
+Subject: Re: stop e-mail from this list but leave me subscribed to this list
+Date: Tue, 18 May 2010 08:48:03 +0200
+Message-ID: <hstd73$8eo$1@dough.gmane.org>
+References: <4BD57BA7.5080702@gmx.de> <u2s56378e321004260444l1d5466bbt2b8cdeaa3458b561@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTikI4u4ZXG6jxCGYj-Ig5HLc47mF7Mey9sHh9tNu@mail.gmail.com>
+In-Reply-To: <u2s56378e321004260444l1d5466bbt2b8cdeaa3458b561@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-On Sun, May 16, 2010 at 6:09 PM, Curby <curby@cur.by> wrote:
-> which doesn't match. =A0Can you see what's wrong?
+Richard Horton schrieb:
+> On 26 April 2010 12:40, Markus Feldmann <feldmann_markus@gmx.de> wrote:
+>> Hi All,
+>>
+>> as on other mailing lists it would be nice to subscribe to this list without
+>> getting daily e-mails. How to get this to work?
+> 
+> Follow the link in the mail list signature to get help on using majordomo...
+> 
 
-How odd.  It works now, and I don't think I changed anything.  Anyway,
-I guess folks can use the rules in my original message if they want a
-similar solution, as it appears to work.  Or as suggested, a more
-elegant solution could be implemented with other packages.
+Hi Richard,
 
---Mike
+i did but there are only the options subscribe and unsubcripe.
+
+regards Markus
+
