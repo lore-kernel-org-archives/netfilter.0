@@ -1,44 +1,61 @@
-From: Markus Feldmann <feldmann_markus@gmx.de>
-Subject: Re: Help with ftp helper please
-Date: Tue, 18 May 2010 15:27:00 +0200
-Message-ID: <hsu4j4$svv$1@dough.gmane.org>
-References: <r2ob376a78e1004240948ucaa6e2d5o5f65d4216f7ac936@mail.gmail.com> <4BD3E5F3.4070907@chello.at> <alpine.LSU.2.01.1004251108170.5896@obet.zrqbmnf.qr> <4BD413B9.90900@chello.at>
+From: "Philip A. Prindeville" <philipp_subx@redfish-solutions.com>
+Subject: Re: QoS weirdness : HTB accuracy
+Date: Tue, 18 May 2010 18:07:12 -0600
+Message-ID: <4BF32BB0.7010700@redfish-solutions.com>
+References: <067c83163988908ef546d7ff7f560a17@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4BD413B9.90900@chello.at>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <067c83163988908ef546d7ff7f560a17@localhost>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Julien Vehent <julien@linuxwall.info>
+Cc: Netdev <netdev@vger.kernel.org>, netfilter <netfilter@vger.kernel.org>
 
-Mart Frauenlob schrieb:
-> 
-> Yes, if the OP would have looked up the original post correctly it would
-> show exactly that.
-> http://eeek.borgchat.net/lists/netfilter/msg47205.html
-> Putting the global RELATED rule, of course makes most of the rules
-> obsolete (which fits in most cases), but that example was to show how to
-> use the (ftp) helper match, if one chooses to split things up for
-> whatever reason.
+On 03/25/2010 12:06 PM, Julien Vehent wrote:
+> Hello folks,
+>
+> I observe unused bandwidth on my QoS policy that I cannot explain.
+> Conditions are: I have a HTB tree with 8 classes and a total rate of
+> 768kbits. I use the ATM option so I assume the real rate to be something
+> close to 675kbits (about 88% of the ethernet rate).
+>
+> The sum of my 8 rates is exactly 768kbits. Some have ceil values up to
+> 768kbits.
+>
+> When class 20 "tcp_acks" starts borrowing, TC reduces the total bandwidth
+> down to 595kbits/S (minus 79kbits/s). And I can't explain why....
+>
+> The attached graph "tc_htb_weirdness.png" shows the result: there are
+> 'holes' in the sending rate. 
+>
+> I tried to play with burst sizes, r2q value and hysteresis mode, but the
+> results are the same.
+>
+> System is debian squeeze, kernel version is 2.6.26, iproute2 version is
+> 2.6.26 - 07/25/2008.
+>
+> I have attached two files:
+> - "tcrules.txt" : the traffic control rules
+> - "tc_htb_weirdness.png" : the rrdtool graph, resolution is 1 second.
+>
+> And here: http://jve.linuxwall.info/ressources/code/tc_hole_analysis.html
+> a sheet with some of the measures values. I used it to calculate the size
+> of one of the hole. The last table (with green and red cells) shows that,
+> when class 20 "tcp_acks" starts sending at unixtime 1265496813, there is a
+> lot of bandwidth left over (last column is all green). During the 95
+> seconds while class 20 is sending, 3880776 bits could be sent but are not.
+> That's about 40kbits/s on average. 
+>
+> Does anybody observess the same behavior? Any logical explanation to this
+> or is it a bug ?
+>
+>
+> Julien
 
-Hi Mart,
+Sorry for the late response:  could this be an "aliasing" issue caused
+by sampling intervals (granularity)?
 
-I use the helper too. And the reason is that i do not want that pakets 
-are accepted, which are not related to ftp.
-
---sport 1024: --dport 1024: ACCEPT
-
-means to accept mostly all pakets. But thats not what i and jeff want. I 
-think it is a security risk. I am not sure whether this works, but for 
-example if you connect to someone over any service and the remote host 
-try to connect to you back (RELATED,ESTABLISHED) but not only to the 
-original service, but also to your ftp service.
-
-The next advantage is that my monitoring is not affected. I am using 
-<iptables -L -n -v> to watch which chain has traffic and sometimes i 
-found security holes over this monitor. If all traffic goes over my ftp 
-rule, than this does not work.
-
-regards Markus
+-Philip
 
