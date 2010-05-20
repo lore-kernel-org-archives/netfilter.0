@@ -1,61 +1,29 @@
-From: "Philip A. Prindeville" <philipp_subx@redfish-solutions.com>
-Subject: Re: QoS weirdness : HTB accuracy
-Date: Tue, 18 May 2010 18:07:12 -0600
-Message-ID: <4BF32BB0.7010700@redfish-solutions.com>
-References: <067c83163988908ef546d7ff7f560a17@localhost>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [PATCH] nf_conntrack_core.c: fix for dead connection after flushing
+ conntrack cache
+Date: Thu, 20 May 2010 15:56:51 +0200
+Message-ID: <4BF53FA3.2020600@trash.net>
+References: <4BE3D31F.6000607@secunet.com> <4BE73DE3.6080304@netfilter.org> <4BE824EA.6000303@trash.net> <4BE83D93.8080909@secunet.com> <4BED2E93.1030004@trash.net> <4BF102D4.9050304@secunet.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <067c83163988908ef546d7ff7f560a17@localhost>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4BF102D4.9050304@secunet.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Julien Vehent <julien@linuxwall.info>
-Cc: Netdev <netdev@vger.kernel.org>, netfilter <netfilter@vger.kernel.org>
+To: Joerg Marx <joerg.marx@secunet.com>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On 03/25/2010 12:06 PM, Julien Vehent wrote:
-> Hello folks,
->
-> I observe unused bandwidth on my QoS policy that I cannot explain.
-> Conditions are: I have a HTB tree with 8 classes and a total rate of
-> 768kbits. I use the ATM option so I assume the real rate to be something
-> close to 675kbits (about 88% of the ethernet rate).
->
-> The sum of my 8 rates is exactly 768kbits. Some have ceil values up to
-> 768kbits.
->
-> When class 20 "tcp_acks" starts borrowing, TC reduces the total bandwidth
-> down to 595kbits/S (minus 79kbits/s). And I can't explain why....
->
-> The attached graph "tc_htb_weirdness.png" shows the result: there are
-> 'holes' in the sending rate. 
->
-> I tried to play with burst sizes, r2q value and hysteresis mode, but the
-> results are the same.
->
-> System is debian squeeze, kernel version is 2.6.26, iproute2 version is
-> 2.6.26 - 07/25/2008.
->
-> I have attached two files:
-> - "tcrules.txt" : the traffic control rules
-> - "tc_htb_weirdness.png" : the rrdtool graph, resolution is 1 second.
->
-> And here: http://jve.linuxwall.info/ressources/code/tc_hole_analysis.html
-> a sheet with some of the measures values. I used it to calculate the size
-> of one of the hole. The last table (with green and red cells) shows that,
-> when class 20 "tcp_acks" starts sending at unixtime 1265496813, there is a
-> lot of bandwidth left over (last column is all green). During the 95
-> seconds while class 20 is sending, 3880776 bits could be sent but are not.
-> That's about 40kbits/s on average. 
->
-> Does anybody observess the same behavior? Any logical explanation to this
-> or is it a bug ?
->
->
-> Julien
+Appologies for the delay, I once again had a mail outage :|
 
-Sorry for the late response:  could this be an "aliasing" issue caused
-by sampling intervals (granularity)?
+Joerg Marx wrote:
+> Subject: [PATCH] Fix a race in __nf_conntrack_confirm against nf_ct_get_next_corpse()
+> 
+> This race was triggered by a 'conntrack -F' command running in parallel
+> to the insertion of a hash for a new connection.
+> Losing this race led to a dead conntrack entry effectively blocking
+> traffic for a particular connection until timeout or flushing the conntrack
+> hashes again.
+> Now the check for an already dying connection is done inside the lock.
 
--Philip
-
+Applied, thanks.
