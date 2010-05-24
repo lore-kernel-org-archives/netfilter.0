@@ -1,39 +1,34 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: [patch] Fwd: Troubles compiling iptables v1.4.8
-Date: Mon, 24 May 2010 07:53:31 +0200
-Message-ID: <1274680413-25691-1-git-send-email-jengelh@medozas.de>
-References: <4BF74E78.1030805@lists.schang.net>
+From: Michael Hakimi <yalakvar@gmail.com>
+Subject: Using libnetfilter_queue and ebtables
+Date: Mon, 24 May 2010 15:01:50 +0300
+Message-ID: <AANLkTinp6nMC9CoOKh9wjQSlp17rQYZIxH37THJxqSx-@mail.gmail.com>
+Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4BF74E78.1030805@lists.schang.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=kfhHOUqnfV46TSIUE3juJnU8F0yjVsLXH84UHRzUzxI=;
+        b=dT+iHvadD5nDae2TaQqb6UdIW7D8SsWX/3TQDVLcIGkWj1CYmywEnEHmeqQj6pdPJA
+         b3NPWpb3PXs5Sx5XGKWiQhlv4fW0DOxd3AN1IpMZrNDGIbk3AuhHjBzet+BobX3ZEapM
+         zHF6ItXL0u5QsQjy8cT/gA8OcNw/d+d9rCwJk=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: kaber@trash.net
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, netfilter@lists.schang.net
+To: netfilter@vger.kernel.org
 
+Hi,
 
-Posted in the depths of netfilter@vger, Brian Schang wrote on
-2010-05-22 3:24:40:
+I want to capture Ethernet frames at kernel space and manipulate them.
+As I see it libnetfilter_queue is the easiest way to do it. Combined
+with iptables I get all IP packets, but I have a problem with non-IP
+packet (like ARP).
+I found ebtables with does handle non-IP packets, but I can't find a
+way to tell him to forward all the traffic to my netfilter queue (like
+I do with iptables). Is there a way to do it?
 
->make[2]: Entering directory `/raida/packages/iptables/utils'
->gcc -DHAVE_CONFIG_H -I. -I..     -g -O2 -MT nfnl_osf.o -MD -MP -MF 
->.deps/nfnl_osf.Tpo -c -o nfnl_osf.o nfnl_osf.c
->nfnl_osf.c:48:36: error: linux/netfilter/xt_osf.h: No such file or directory
->
->I'm not sure where to turn next. Any insight would be appreciated.
+Thanks in advance for any help.
 
-
-The following changes since commit 8532c70fd182057b440b41f013d8021a95bd72b2:
-
-  Revert "Revert "Merge branch 'iptables-next'"" (2010-05-21 12:57:23 +0200)
-
-are available in the git repository at:
-  git://dev.medozas.de/iptables master
-
-Jan Engelhardt (1):
-      utils: add missing include flags to Makefile
-
- utils/Makefile.am |    2 ++
- 1 files changed, 2 insertions(+), 0 deletions(-)
+Regards,
+Mickey
