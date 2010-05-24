@@ -1,58 +1,42 @@
-From: Ajay Lele <ajay.lele@gmail.com>
-Subject: Re: Mark packets/Transfer data from iptables to QUEUE
-Date: Sun, 23 May 2010 16:15:04 -0700
-Message-ID: <AANLkTim3A02wX8Ssy4jurH5M6DNVVH1AhZRQrJfaZNNX@mail.gmail.com>
-References: <AANLkTimSsbzA3pBz3QyjHN4-LnEwou7oaNRkEsaZ9QGs@mail.gmail.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: [PATCH] utils: add missing include flags to Makefile
+Date: Mon, 24 May 2010 07:53:32 +0200
+Message-ID: <1274680413-25691-2-git-send-email-jengelh@medozas.de>
+References: <4BF74E78.1030805@lists.schang.net>
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=ld4C9h0AmUorA3tnM5r1PVg4K5Spjt6RUiu3P3BVbK0=;
-        b=j1M7UEhUdzGtKtbn8waZCoTFR+M+CMN/nMp7hiFk2nQR9X1GsQjtUxRi3kUSKnvVqT
-         +KbxNK2/ZIqc45bleEvUkYVlvu70ha2F5mj8GhbhkQPX9skaHeoBdmRPnBLBNq0DC3t7
-         wPrsUX5HzcWr8P53nCiCOhNjdbvl+QyUFiWCs=
-In-Reply-To: <AANLkTimSsbzA3pBz3QyjHN4-LnEwou7oaNRkEsaZ9QGs@mail.gmail.com>
+In-Reply-To: <4BF74E78.1030805@lists.schang.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Mistick Levi <gmistick@gmail.com>
-Cc: netfilter@vger.kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: kaber@trash.net
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, netfilter@lists.schang.net
 
-Hi Levi
+Fixes this compile error:
 
-On Sun, May 23, 2010 at 12:22 PM, Mistick Levi <gmistick@gmail.com> wro=
-te:
-> Hi,
-> I'm using libnetfilter_queue, and i would like to treat packets from
-> different rules differently, in the same queue.
-> Example:
-> rulematch: ipsrc: 123.132.123.232 ipdst =3D 1.2.3.4 udp port-12321 -J
-> NFQUEUE --queue-num 2 =A0- "DANPACKET"
-> rulematch ipsrc: 123.132.123.232 ipdst =3D 1.2.3.4 udp port-12221 -J
-> NFQUEUE --queue-num 2 =A0 - "LaneyPacket"
->
-> And when this messages get to userspace application, i want to be abl=
-e
-> to extract the comment and treat each packet by a different method...
-> Any idea's?
+  CC     nfnl_osf.o
+nfnl_osf.c:48:36: fatal error: linux/netfilter/xt_osf.h: No such file or directory
+compilation terminated.
 
-You can set a different mark on the packets belonging to each stream
-using iptables -j MARK --set-mark, and then call different method in
-userspace based on the value of mark on the received packet
+References: http://marc.info/?l=netfilter&m=127449929621579&w=2
+Signed-off-by: Jan Engelhardt <jengelh@medozas.de>
+---
+ utils/Makefile.am |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
 
-Regards
-Ajay
+diff --git a/utils/Makefile.am b/utils/Makefile.am
+index d023b0c..79ce34b 100644
+--- a/utils/Makefile.am
++++ b/utils/Makefile.am
+@@ -1,5 +1,7 @@
+ # -*- Makefile -*-
+ 
++AM_CFLAGS = ${regular_CFLAGS} -I${top_builddir}/include -I${top_srcdir}/include
++
+ sbin_PROGRAMS = nfnl_osf
+ pkgdata_DATA = pf.os
+ 
+-- 
+1.7.1
 
->
-> Kind regards
-> Levi Yechiel
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
