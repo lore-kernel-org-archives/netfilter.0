@@ -1,34 +1,48 @@
-From: Michael Hakimi <yalakvar@gmail.com>
-Subject: Using libnetfilter_queue and ebtables
-Date: Mon, 24 May 2010 15:01:50 +0300
-Message-ID: <AANLkTinp6nMC9CoOKh9wjQSlp17rQYZIxH37THJxqSx-@mail.gmail.com>
+From: Brian Schang <netfilter@lists.schang.net>
+Subject: Re: [PATCH] utils: add missing include flags to Makefile
+Date: Mon, 24 May 2010 21:02:03 -0400
+Message-ID: <4BFB218B.3070609@lists.schang.net>
+References: <4BF74E78.1030805@lists.schang.net> <1274680413-25691-2-git-send-email-jengelh@medozas.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:date:message-id
-         :subject:from:to:content-type;
-        bh=kfhHOUqnfV46TSIUE3juJnU8F0yjVsLXH84UHRzUzxI=;
-        b=dT+iHvadD5nDae2TaQqb6UdIW7D8SsWX/3TQDVLcIGkWj1CYmywEnEHmeqQj6pdPJA
-         b3NPWpb3PXs5Sx5XGKWiQhlv4fW0DOxd3AN1IpMZrNDGIbk3AuhHjBzet+BobX3ZEapM
-         zHF6ItXL0u5QsQjy8cT/gA8OcNw/d+d9rCwJk=
+In-Reply-To: <1274680413-25691-2-git-send-email-jengelh@medozas.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: kaber@trash.net, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-Hi,
+Jan:
 
-I want to capture Ethernet frames at kernel space and manipulate them.
-As I see it libnetfilter_queue is the easiest way to do it. Combined
-with iptables I get all IP packets, but I have a problem with non-IP
-packet (like ARP).
-I found ebtables with does handle non-IP packets, but I can't find a
-way to tell him to forward all the traffic to my netfilter queue (like
-I do with iptables). Is there a way to do it?
+On 5/24/2010 1:53 AM, Jan Engelhardt wrote:
+> Fixes this compile error:
+>
+>    CC     nfnl_osf.o
+> nfnl_osf.c:48:36: fatal error: linux/netfilter/xt_osf.h: No such file or directory
+> compilation terminated.
+>
+> References: http://marc.info/?l=netfilter&m=127449929621579&w=2
+> Signed-off-by: Jan Engelhardt<jengelh@medozas.de>
+> ---
+>   utils/Makefile.am |    2 ++
+>   1 files changed, 2 insertions(+), 0 deletions(-)
+>
+> diff --git a/utils/Makefile.am b/utils/Makefile.am
+> index d023b0c..79ce34b 100644
+> --- a/utils/Makefile.am
+> +++ b/utils/Makefile.am
+> @@ -1,5 +1,7 @@
+>   # -*- Makefile -*-
+>
+> +AM_CFLAGS = ${regular_CFLAGS} -I${top_builddir}/include -I${top_srcdir}/include
+> +
+>   sbin_PROGRAMS = nfnl_osf
+>   pkgdata_DATA = pf.os
 
-Thanks in advance for any help.
+Complied and works great now. Thank you for the help! I appreciate it.
 
-Regards,
-Mickey
+Have a great day.
+
+-- 
+Brian
