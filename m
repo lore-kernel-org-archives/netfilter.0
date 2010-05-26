@@ -1,44 +1,62 @@
-From: Ashok Rao <greatarbor@gmail.com>
-Subject: openwrt Atheros ar71xxx based router reboots with RAWDNAT, RAWSNAT
-Date: Mon, 24 May 2010 21:09:00 -0400
-Message-ID: <AANLkTimCBl0ADwbcVsW1wVSeDuXMF0Rd2lNLeTks-DxC@mail.gmail.com>
+From: senthilkumaar2021 <senthilkumaar2021@gmail.com>
+Subject: Squid + Tproxy + Bridge on Kernel 2.6.34 - Workaround
+Date: Wed, 26 May 2010 09:51:39 +0530
+Message-ID: <4BFCA1D3.3060505@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:received:mime-version:received:from:date
-         :message-id:subject:to:content-type;
-        bh=p7aI+pqv3qG3Q0Y6pOceFN023VPA/1YGK3OsnwMWEqA=;
-        b=qgGy93o24BzFDdcvAovcwtq6NQMyuRWDTtkoC9kr8HzKHloE99IETLHIW5risgKl5f
-         76NKfZVSbTueeV/rIwmCwBqA3iYtP3qnQDGR5CvII6uavmpX4DzMCYwn96cyOdUJL3c3
-         EL8QwGBwhS8mIiEwbkahq40ZR9c87AK2wotVc=
+        h=domainkey-signature:received:received:message-id:date:from
+         :user-agent:mime-version:to:cc:subject:content-type
+         :content-transfer-encoding;
+        bh=+lI1eyFvnyQMyfnpH3vMY683IW0EehislShCAXaXpg4=;
+        b=N/wU13fF/6n+JRrPL2CgGKIlKXrON1qBkEGcqsyLIZ89lyJBaM/7kQc69KoZPDjS/0
+         dU6YgpME8OUSPLusTWRiw1Smpeifqcj4UObw+o8llYPGETj21RbUfary/uh4Q+PTrYSu
+         QzBJe4uTrXn01bqd7BURtcVWFhcrl5EnGRp64=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: squid-users@squid-cache.org
+Cc: netfilter@vger.kernel.org
 
-Am running the latest openwrt snapshot: kernel 2.6.32.12, iptables
-v1.4.7,  xtables-addons v 1.22  on an Atheror ar71xxx based router
-which has mips core
+Hi,
 
-The router reboots when it receives any packets which need to be
-RAWDNATed or RAWSNATed.  I have also tried xtables-addons v1.26 with
-the
-same result.
+Squid + Tproxy + Bridge Setup on latest kernel - version 2.6.34
 
-The RAWNAT modules were working fine on a brcm47xx platform (Broadcom
-5352 chips which has the mipsel CPU-core)
+I had followed all the steps that had given in the
+http://wiki.squid-cache.org/Features/Tproxy4
 
-Here is the iptables rule:
-iptables -t rawpost -A POSTROUTING -p icmp -j RAWSNAT --to-source
-192.168.100.100
+Kernel - 2.6.34
+iptable - 1.4.8
+ebtable - 2.0.9-1
 
-Any ping packets sent to the router cause an instant reboot and
-connectivity is lost
+But clients were unable to browse and no errors in cache.log. Error -
+Network Unreachable. The error had returned by browser not squid proxy.
 
-I have to open up the router and break the warranty  to install a
-serial console cable and haven't done that yet. In the meantime, if
-anyone has a clue please  post
+Workaround :-
 
-Ashok
+After adding the following rules, clients are able to browse.
+
+# ip rule add dev <device name> fwmark 1 lookup 100
+
+example
+
+# ip rule add dev eth0 fwmark 1 lookup 100
+
+NOTE : Repeat the above for each interface except " lo "
+
+Source - https://lists.balabit.hu/pipermail/tproxy/2010-January/001212.html
+
+Based on the above source this issue had identified on kernel version -
+2.6.32. But still not yet fixed.
+
+I have CC ed this mail to netfilter mailing lists also.
+
+Hope this helps
+
+Thanks,
+Senthil
+
+
+
