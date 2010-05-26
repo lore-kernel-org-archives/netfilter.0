@@ -1,62 +1,38 @@
-From: senthilkumaar2021 <senthilkumaar2021@gmail.com>
-Subject: Squid + Tproxy + Bridge on Kernel 2.6.34 - Workaround
-Date: Wed, 26 May 2010 09:51:39 +0530
-Message-ID: <4BFCA1D3.3060505@gmail.com>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [patch] Fwd: Troubles compiling iptables v1.4.8
+Date: Wed, 26 May 2010 12:28:45 +0200
+Message-ID: <4BFCF7DD.1060703@trash.net>
+References: <4BF74E78.1030805@lists.schang.net> <1274680413-25691-1-git-send-email-jengelh@medozas.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from
-         :user-agent:mime-version:to:cc:subject:content-type
-         :content-transfer-encoding;
-        bh=+lI1eyFvnyQMyfnpH3vMY683IW0EehislShCAXaXpg4=;
-        b=N/wU13fF/6n+JRrPL2CgGKIlKXrON1qBkEGcqsyLIZ89lyJBaM/7kQc69KoZPDjS/0
-         dU6YgpME8OUSPLusTWRiw1Smpeifqcj4UObw+o8llYPGETj21RbUfary/uh4Q+PTrYSu
-         QzBJe4uTrXn01bqd7BURtcVWFhcrl5EnGRp64=
+In-Reply-To: <1274680413-25691-1-git-send-email-jengelh@medozas.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: squid-users@squid-cache.org
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, netfilter@lists.schang.net
 
-Hi,
+Jan Engelhardt wrote:
+> Posted in the depths of netfilter@vger, Brian Schang wrote on
+> 2010-05-22 3:24:40:
+> 
+>> make[2]: Entering directory `/raida/packages/iptables/utils'
+>> gcc -DHAVE_CONFIG_H -I. -I..     -g -O2 -MT nfnl_osf.o -MD -MP -MF 
+>> .deps/nfnl_osf.Tpo -c -o nfnl_osf.o nfnl_osf.c
+>> nfnl_osf.c:48:36: error: linux/netfilter/xt_osf.h: No such file or directory
+>>
+>> I'm not sure where to turn next. Any insight would be appreciated.
+> 
+> 
+> The following changes since commit 8532c70fd182057b440b41f013d8021a95bd72b2:
+> 
+>   Revert "Revert "Merge branch 'iptables-next'"" (2010-05-21 12:57:23 +0200)
+> 
+> are available in the git repository at:
+>   git://dev.medozas.de/iptables master
+> 
+> Jan Engelhardt (1):
+>       utils: add missing include flags to Makefile
 
-Squid + Tproxy + Bridge Setup on latest kernel - version 2.6.34
-
-I had followed all the steps that had given in the
-http://wiki.squid-cache.org/Features/Tproxy4
-
-Kernel - 2.6.34
-iptable - 1.4.8
-ebtable - 2.0.9-1
-
-But clients were unable to browse and no errors in cache.log. Error -
-Network Unreachable. The error had returned by browser not squid proxy.
-
-Workaround :-
-
-After adding the following rules, clients are able to browse.
-
-# ip rule add dev <device name> fwmark 1 lookup 100
-
-example
-
-# ip rule add dev eth0 fwmark 1 lookup 100
-
-NOTE : Repeat the above for each interface except " lo "
-
-Source - https://lists.balabit.hu/pipermail/tproxy/2010-January/001212.html
-
-Based on the above source this issue had identified on kernel version -
-2.6.32. But still not yet fixed.
-
-I have CC ed this mail to netfilter mailing lists also.
-
-Hope this helps
-
-Thanks,
-Senthil
-
-
-
+Pulled, thanks Jan.
