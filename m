@@ -1,7 +1,8 @@
 From: "Umar Qureshey" <umar.qureshey@lantronix.com>
-Subject: Statically linked ebtables not working
-Date: Wed, 26 May 2010 18:36:31 -0700
-Message-ID: <F24C979D1AFD4E4292B911441CBA242407FCE6@2putt.int.lantronix.com>
+Subject: RE: Statically linked ebtables not working
+Date: Thu, 27 May 2010 11:01:19 -0700
+Message-ID: <F24C979D1AFD4E4292B911441CBA242407FCE8@2putt.int.lantronix.com>
+References: <F24C979D1AFD4E4292B911441CBA242407FCE6@2putt.int.lantronix.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -10,6 +11,23 @@ Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
+
+For future searchers of this message:
+
+You will get this message:
+
+modprobe: module ebtables not found in modules.dep
+The kernel doesn't support the ebtables 'filter' table.
+
+
+if CONFIG_NETFILTER is not enabled in your kernel build.  For ebtables,
+CONFIG_BRIDGE_NF_EBTABLES is also required to be enabled.
+
+-----Original Message-----
+From: Umar Qureshey 
+Sent: Wednesday, May 26, 2010 6:37 PM
+To: 'netfilter@vger.kernel.org'
+Subject: Statically linked ebtables not working
 
 Hi,
 
