@@ -1,60 +1,43 @@
-From: "Umar Qureshey" <umar.qureshey@lantronix.com>
-Subject: RE: Statically linked ebtables not working
-Date: Thu, 27 May 2010 11:01:19 -0700
-Message-ID: <F24C979D1AFD4E4292B911441CBA242407FCE8@2putt.int.lantronix.com>
-References: <F24C979D1AFD4E4292B911441CBA242407FCE6@2putt.int.lantronix.com>
+From: Dan Higgins <dhiggins@ngenera.com>
+Subject: Troubles doing transparent proxy for virtual machines
+Date: Thu, 27 May 2010 14:39:52 -0500
+Message-ID: <4BFECA88.5040708@ngenera.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-For future searchers of this message:
+Hi iptables gurus. First here is the basic topology:
 
-You will get this message:
+   Internet
+      |
+   Gateway
+      |
+Workstation---eth0---virbr0
+                        |
+                        +-----+-----+
+                        |     |     |
+                       vm1   vm2   vm3
 
-modprobe: module ebtables not found in modules.dep
-The kernel doesn't support the ebtables 'filter' table.
+I need to test a traffic analyzer running on my workstation, listening
+on some port (say 8990) on eth0.
 
+The rule [I think] I want is "any packets leaving virbr0 going anywhere
+to port 80 must instead go to port 8990 on eth0". My software running on
+port 8990 does its own check of the NAT packet mangling to push the
+packets through after it inspects them.
 
-if CONFIG_NETFILTER is not enabled in your kernel build.  For ebtables,
-CONFIG_BRIDGE_NF_EBTABLES is also required to be enabled.
+I've been banging my head on this, with different variants of:
+iptables -t nat -A PREROUTING -i virbr0 -p tcp --dport 80 -j DNAT \
+     --to 10.0.0.10:8990
+And I've tried the more generic method of using the mangle table with
+--set-mark and ip rule add fwmark, but I'm not getting it.
 
------Original Message-----
-From: Umar Qureshey 
-Sent: Wednesday, May 26, 2010 6:37 PM
-To: 'netfilter@vger.kernel.org'
-Subject: Statically linked ebtables not working
+I guess what's confusing me is that everything runs on the same box.
 
-Hi,
+Thanks for any guidance,
+Dan
 
-I am working on a 32-bit ARM system.
-
-I compiled and statically linked ebtables v2.0.9-2 using the "make
-static" build command.
-
-However when I run it on the system, I get the following message from my
-Linux 2.6.28 kernel:
-
-# ./ebtables -L
-modprobe: module ebtables not found in modules.dep
-The kernel doesn't support the ebtables 'filter' table.
-
-Now I assumed I compiled this statically so I would not need any
-external module support so I am dumbfounded by this message.  I looked
-through the kernel compilation settings and didn't see anything relevant
-to ebtables or netfilter.  From my understanding, ebtables code is now
-part of the mainstream kernel (has been for a while).
-
-So I am not sure why this is happening.
-
-Anyone have advice on what could be happening here?
-
-Regards,
-Umar
- 
-**********************************************************************
-This e-mail is the property of Lantronix. It is intended only for the person or entity to which it is addressed and may contain information that is privileged, confidential, or otherwise protected from disclosure. Distribution or copying of this e-mail, or the information contained herein, to anyone other than the intended recipient is prohibited.
