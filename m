@@ -1,13 +1,13 @@
 From: Patrick McHardy <kaber@trash.net>
 Subject: Re: [PATCH] netfilter: don't xt_jumpstack_alloc twice in xt_register_table
-Date: Mon, 31 May 2010 16:34:32 +0200
-Message-ID: <4C03C8F8.8050602@trash.net>
+Date: Mon, 31 May 2010 16:37:17 +0200
+Message-ID: <4C03C99D.5010904@trash.net>
 References: <1275303998-2435-1-git-send-email-dfeng@redhat.com> <alpine.LSU.2.01.1005311350580.31799@obet.zrqbmnf.qr> <alpine.LSU.2.01.1005311519160.25402@obet.zrqbmnf.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <alpine.LSU.2.01.1005311519160.25402@obet.zrqbmnf.qr>
-Sender: netfilter-owner@vger.kernel.org
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: Jan Engelhardt <jengelh@medozas.de>
@@ -27,4 +27,4 @@ Jan Engelhardt wrote:
 > 
 > Acked-By: Jan Engelhardt <jengelh@medozas.de>
 
-Applied, thanks everyone.
+Applied, thanks.
