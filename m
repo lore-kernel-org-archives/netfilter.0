@@ -1,63 +1,40 @@
 From: Radek Kanovsky <rk@dat.cz>
 Subject: Re: iptables rules in comparable form
-Date: Tue, 1 Jun 2010 18:03:37 +0200
-Message-ID: <20100601160337.GB15745@q.uh.cz>
-References: <20100601081053.GA13943@q.uh.cz> <alpine.LSU.2.01.1006011043190.3431@obet.zrqbmnf.qr> <4C04D07F.6040702@chello.at> <20100601112552.GA15745@q.uh.cz> <alpine.LSU.2.01.1006011353310.22291@obet.zrqbmnf.qr>
+Date: Tue, 1 Jun 2010 18:47:57 +0200
+Message-ID: <20100601164757.GC15745@q.uh.cz>
+References: <20100601081053.GA13943@q.uh.cz> <alpine.LSU.2.01.1006011043190.3431@obet.zrqbmnf.qr> <4C04D07F.6040702@chello.at> <20100601112552.GA15745@q.uh.cz> <4C050ADE.60403@chello.at>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.01.1006011353310.22291@obet.zrqbmnf.qr>
+In-Reply-To: <4C050ADE.60403@chello.at>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Tue, Jun 01, 2010 at 01:56:37PM +0200, Jan Engelhardt wrote:
+On Tue, Jun 01, 2010 at 03:27:58PM +0200, Mart Frauenlob wrote:
 
-> >Whole iptables ruleset is represented by few files in /etc. Some of =
-them
-> >are generated, some of them are hand written. I am able to feed /etc
-> >rules to iptables-restore or execute them as shell script. This is
-> >trivial. Although iptables-restore is faster than executing iptables=
- in
-> >shell script, it is still very slow sometimes.
-> >
-> >Changes in /etc ruleset are small but frequent. But primarily both
-> >solutions reset couters if used and it is not good for me now. So I
-> >ended with script that does incremental updates.
->=20
-> How slow are we talking about? restore is never slower than
-> iptables=A0- ever, because, like iptables, it does one table replace
-> operation per invocation of either binary. Your "incremental update"
-> is in fact none, because tables are always replaced wholesome.
+> > are small but frequent. But primarily both solutions reset couters if
+> > used and it is not good for me now. So I ended with script that does
+> > incremental updates.
+> 
+> iptables[-save/restore] have a -c switch to save/restore counters.
 
-I know that iptables-restore with 10000 rules on input is faster than
-10000 sequential "iptables -A ..." rules. It is obvious. But anyway it
-is sometimes slower than my one "iptables -D" command followed by one
-"iptables -A" command that both together reflect one particular change
-in ruleset that I am able to recognize with rule comparison. Especially
-under higher load. Reason is not obvious. I was forced also implement m=
-y
-own locking and memoization around iptables-save that prevents its
-concurrent invocation from accounting process. The accounting is simple=
- -
-it transfers output to accounting machinge. That caused troubles in the
-past when I used to see hanging iptables-save/-restore processes. Maybe
-some locking issues? It is hard to reproduce or debug for me. We use
-Debian Etch and Lenny mainly without any kernel or netfilter customizat=
-ion.
-
-I wanted to discuss this theme before I will start to prepare increment=
-al
-updates for tc configuration. It is even worse as restart takes routine=
-ly
-1 or 2 minutes and there is no tc-restore mechanism and tc output
-is totally different from its input.
-
-Also note that my problem is not performance of packet filtering.
-It is OK.
+There is some ISP DB that produces XML config for router. XML config
+is transformed to iptables-restore rules and stored in some /etc file.
+There are also some hand writen rules in /etc files controlled by admins.
+I take all these files and prepare one big file which can be feed to
+iptables-restore. Obviously without counters. So I take snapshot
+of current ruleset via "iptables-save -c" command. Now I have
+two ruleset but I am not able to compare them because some writes
+destination ports with service names some with port numbers.
+Some versions of iptables-save produces "-j MARK 0x2f" some
+"-j MARK --set-mark 0x2f". So "iptables-save -c" is useles for me
+unless I have some normalization utility that transforms all rules
+to some common comparable form. I have it and I am doing it right this
+way. I am asking if someone doesn't do this already or if there is some
+more clever solution.
 
 Regards
 
