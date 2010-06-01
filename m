@@ -1,71 +1,114 @@
-From: Pieter Smit <mlist2010@vigor.co.za>
-Subject: Re: iptables rules in comparable form
-Date: Tue, 1 Jun 2010 22:29:10 +0200
-Message-ID: <AANLkTinkkj9uoIobFJzyJvCk7BN91MVM8T0mohR1vh8b@mail.gmail.com>
-References: <20100601081053.GA13943@q.uh.cz> <alpine.LSU.2.01.1006011043190.3431@obet.zrqbmnf.qr> 
-	<4C04D07F.6040702@chello.at> <20100601112552.GA15745@q.uh.cz> 
-	<alpine.LSU.2.01.1006011353310.22291@obet.zrqbmnf.qr> <20100601180106.GA19088@q.uh.cz> 
-	<alpine.LSU.2.01.1006012020370.15461@obet.zrqbmnf.qr> <20100601193629.GC19088@q.uh.cz>
+From: "Umar Qureshey" <umar.qureshey@lantronix.com>
+Subject: Wireless interface dead after enabling CONFIG_NETFILTER
+Date: Tue, 1 Jun 2010 14:41:01 -0700
+Message-ID: <F24C979D1AFD4E4292B911441CBA242407FCF2@2putt.int.lantronix.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:mime-version:sender:received
-         :in-reply-to:references:from:date:x-google-sender-auth:message-id
-         :subject:to:cc:content-type:content-transfer-encoding;
-        bh=jDR4QIYxw2trQ6z9XNt4eJZxj7IvyL9guV0dwJv/+0E=;
-        b=TmoHVRAd9+1zjAVobYIuXsauIutpDSrePjsga0HlrXGjbNTIxzzzC53s+oVhIbnwzV
-         jFBNIs4UXTX9kvT+HXFZf8TgTcI4V1HjIFx0s15udrwWEjqaaomdujTq7OcFPqrIwb1q
-         P1pyeIvvhyrA4J02I/RaCEQ4JmEjIxmHo0a4o=
-In-Reply-To: <20100601193629.GC19088@q.uh.cz>
+Content-Class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Radek Kanovsky <rk@dat.cz>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Radek, your problem is getting the rules into a standard format, where
-you can match them to existing rules.
+Hi,
 
-Would a solution/workaround not be to
-1. create a dummy test chain/table not being used.
-2. add new rules to the chain/table  (have to modify them slightly) 1 b=
-y 1
-3. retrieve them in a standard form as provided by iptables-save -t tes=
-t
-4. spend time in python routine to match and decide what to remove/upda=
-te.
-5. make single insertion/replacement if needed.
-6. clear test table and start with next rule.
+I compiled a stock 2.6.28 kernel, enabling CONFIG_NETFILTER in order to
+get support for ebtables.  After getting it the images on my system, I
+notice that the wireless interface is associating correctly with the AP
+but no TCP/IP traffic is going on the interface.  Soon as I revert back
+to an kernel version where netfilter is disabled, I get my wireless
+working fine without a hitch.
+
+Anyone notice this before?
+
+The following is a diff between the compile options of a working kernel
+(> # Fri May 28 11:01:46 2010) and a broken one (< # Tue Jun  1 11:44:04
+2010):
+
+4c4
+< # Tue Jun  1 11:44:04 2010
+---
+> # Fri May 28 11:01:46 2010
+357,428c357
+< CONFIG_NETFILTER=y
+< # CONFIG_NETFILTER_DEBUG is not set
+< CONFIG_NETFILTER_ADVANCED=y
+< CONFIG_BRIDGE_NETFILTER=y
+< 
+< #
+< # Core Netfilter Configuration
+< #
+< # CONFIG_NETFILTER_NETLINK_QUEUE is not set
+< # CONFIG_NETFILTER_NETLINK_LOG is not set
+< # CONFIG_NF_CONNTRACK is not set
+< CONFIG_NETFILTER_XTABLES=y
+< # CONFIG_NETFILTER_XT_TARGET_CLASSIFY is not set
+< # CONFIG_NETFILTER_XT_TARGET_MARK is not set
+< # CONFIG_NETFILTER_XT_TARGET_NFLOG is not set
+< # CONFIG_NETFILTER_XT_TARGET_NFQUEUE is not set
+< # CONFIG_NETFILTER_XT_TARGET_RATEEST is not set
+< # CONFIG_NETFILTER_XT_TARGET_TCPMSS is not set
+< # CONFIG_NETFILTER_XT_MATCH_COMMENT is not set
+< # CONFIG_NETFILTER_XT_MATCH_DCCP is not set
+< # CONFIG_NETFILTER_XT_MATCH_DSCP is not set
+< # CONFIG_NETFILTER_XT_MATCH_ESP is not set
+< # CONFIG_NETFILTER_XT_MATCH_HASHLIMIT is not set
+< # CONFIG_NETFILTER_XT_MATCH_IPRANGE is not set
+< # CONFIG_NETFILTER_XT_MATCH_LENGTH is not set
+< # CONFIG_NETFILTER_XT_MATCH_LIMIT is not set
+< # CONFIG_NETFILTER_XT_MATCH_MAC is not set
+< # CONFIG_NETFILTER_XT_MATCH_MARK is not set
+< # CONFIG_NETFILTER_XT_MATCH_MULTIPORT is not set
+< # CONFIG_NETFILTER_XT_MATCH_OWNER is not set
+< # CONFIG_NETFILTER_XT_MATCH_PHYSDEV is not set
+< # CONFIG_NETFILTER_XT_MATCH_PKTTYPE is not set
+< # CONFIG_NETFILTER_XT_MATCH_QUOTA is not set
+< # CONFIG_NETFILTER_XT_MATCH_RATEEST is not set
+< # CONFIG_NETFILTER_XT_MATCH_REALM is not set
+< # CONFIG_NETFILTER_XT_MATCH_RECENT is not set
+< # CONFIG_NETFILTER_XT_MATCH_SCTP is not set
+< # CONFIG_NETFILTER_XT_MATCH_STATISTIC is not set
+< # CONFIG_NETFILTER_XT_MATCH_STRING is not set
+< # CONFIG_NETFILTER_XT_MATCH_TCPMSS is not set
+< # CONFIG_NETFILTER_XT_MATCH_TIME is not set
+< # CONFIG_NETFILTER_XT_MATCH_U32 is not set
+< # CONFIG_IP_VS is not set
+< 
+< #
+< # IP: Netfilter Configuration
+< #
+< # CONFIG_NF_DEFRAG_IPV4 is not set
+< # CONFIG_IP_NF_QUEUE is not set
+< # CONFIG_IP_NF_IPTABLES is not set
+< # CONFIG_IP_NF_ARPTABLES is not set
+< CONFIG_BRIDGE_NF_EBTABLES=y
+< CONFIG_BRIDGE_EBT_BROUTE=m
+< CONFIG_BRIDGE_EBT_T_FILTER=m
+< CONFIG_BRIDGE_EBT_T_NAT=m
+< CONFIG_BRIDGE_EBT_802_3=m
+< CONFIG_BRIDGE_EBT_AMONG=m
+< CONFIG_BRIDGE_EBT_ARP=m
+< CONFIG_BRIDGE_EBT_IP=m
+< CONFIG_BRIDGE_EBT_LIMIT=m
+< CONFIG_BRIDGE_EBT_MARK=m
+< CONFIG_BRIDGE_EBT_PKTTYPE=m
+< CONFIG_BRIDGE_EBT_STP=m
+< CONFIG_BRIDGE_EBT_VLAN=m
+< CONFIG_BRIDGE_EBT_ARPREPLY=m
+< CONFIG_BRIDGE_EBT_DNAT=m
+< CONFIG_BRIDGE_EBT_MARK_T=m
+< CONFIG_BRIDGE_EBT_REDIRECT=m
+< CONFIG_BRIDGE_EBT_SNAT=m
+< CONFIG_BRIDGE_EBT_LOG=m
+< CONFIG_BRIDGE_EBT_ULOG=m
+< CONFIG_BRIDGE_EBT_NFLOG=m
+---
+> # CONFIG_NETFILTER is not set
 
 
-On Tue, Jun 1, 2010 at 9:36 PM, Radek Kanovsky <rk@dat.cz> wrote:
-> On Tue, Jun 01, 2010 at 08:26:30PM +0200, Jan Engelhardt wrote:
->
->> Sounds like you need xt_quota2. As its counters are independent of
->> rules when given names, they can never get set back to a value
->> less than what they were.
->
-> I wanted to avoid any nonstandard packages but this looks promissing.
-> I will take a look. Thanks.
->
->> As I said before, there is no concept of unchanged rules.
->>
->> When you iptables -A, the entire ruleset is fetched from the kernel,
->> then modified, and finally reinserted - even when having only
->> added a single rule.
->
-> But I have scalability problems even if there is declared O(N)
-> complexity of iptables-restore. There is a really big difference
-> if counters are reset at 9:14:01 or at 9:14:53. I am not sure
-> what COMMIT during restoration exactly do but can't it be
-> used for tuning in such cases?
->
-> Radek Kanovsky
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
+
+Thanks.
+ 
+**********************************************************************
+This e-mail is the property of Lantronix. It is intended only for the person or entity to which it is addressed and may contain information that is privileged, confidential, or otherwise protected from disclosure. Distribution or copying of this e-mail, or the information contained herein, to anyone other than the intended recipient is prohibited.
