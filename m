@@ -1,40 +1,35 @@
-From: Radek Kanovsky <rk@dat.cz>
+From: Jan Engelhardt <jengelh@medozas.de>
 Subject: Re: iptables rules in comparable form
-Date: Tue, 1 Jun 2010 20:01:06 +0200
-Message-ID: <20100601180106.GA19088@q.uh.cz>
-References: <20100601081053.GA13943@q.uh.cz> <alpine.LSU.2.01.1006011043190.3431@obet.zrqbmnf.qr> <4C04D07F.6040702@chello.at> <20100601112552.GA15745@q.uh.cz> <alpine.LSU.2.01.1006011353310.22291@obet.zrqbmnf.qr>
+Date: Tue, 1 Jun 2010 20:19:35 +0200 (CEST)
+Message-ID: <alpine.LSU.2.01.1006012010510.15461@obet.zrqbmnf.qr>
+References: <20100601081053.GA13943@q.uh.cz> <alpine.LSU.2.01.1006011043190.3431@obet.zrqbmnf.qr> <4C04D07F.6040702@chello.at> <20100601112552.GA15745@q.uh.cz> <alpine.LSU.2.01.1006011353310.22291@obet.zrqbmnf.qr> <20100601160337.GB15745@q.uh.cz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.LSU.2.01.1006011353310.22291@obet.zrqbmnf.qr>
+In-Reply-To: <20100601160337.GB15745@q.uh.cz>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jan Engelhardt <jengelh@medozas.de>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Radek Kanovsky <rk@dat.cz>
 Cc: netfilter@vger.kernel.org
 
-On Tue, Jun 01, 2010 at 01:56:37PM +0200, Jan Engelhardt wrote:
 
-> >Changes in /etc ruleset are small but frequent. But primarily both
-> >solutions reset couters if used and it is not good for me now. So I
-> >ended with script that does incremental updates.
->=20
-> How slow are we talking about? restore is never slower than
-> iptables=A0- ever, because, like iptables, it does one table replace
-> operation per invocation of either binary. Your "incremental update"
-> is in fact none, because tables are always replaced wholesome.
+On Tuesday 2010-06-01 18:03, Radek Kanovsky wrote:
+>
+>I know that iptables-restore with 10000 rules on input is faster than
+>10000 sequential "iptables -A ..." rules. It is obvious. But anyway it
+>is sometimes slower than my one "iptables -D" command followed by one
+>"iptables -A" command that both together reflect one particular change
+>in ruleset that I am able to recognize with rule comparison. Especially
+>under higher load. Reason is not obvious.
 
-I take counters snapshot every minute for accounting. I can modify my
-system a such way that changes are made immediately after this snapshot
-phase via iptables-restore with reseting all counters in time very clos=
-e
-to the last read minimizing outage in accounting. But I can't rely on i=
-t
-if restore phase takes from 1 seconds to 2 minutes. It would lead to
-totally unreliable accounting data and more complicated system. Thats
-why I came with incremental updates that doesn't touch unchanged rules.
+Look obvious to me. Under load, the execution time of a process can
+arbitrarily be delayed by other processes. That isn't really a
+surprise. The delay itself is even a function of that factor.
 
-Regards
+>I was forced also implement my
+>own locking and memoization around iptables-save that prevents its
+>concurrent invocation from accounting process.
 
-Radek Kanovsky
+Indeed, if iptables has to race with another instance of itself,
+when replacing a table, it has to retry whole the operation.
