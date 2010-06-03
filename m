@@ -1,8 +1,8 @@
 From: "Umar Qureshey" <umar.qureshey@lantronix.com>
 Subject: RE: CONFIG_BRIDGE_NETFILTER stops any traffic on wireless interface
-Date: Thu, 3 Jun 2010 15:31:19 -0700
-Message-ID: <F24C979D1AFD4E4292B911441CBA242407FCFE@2putt.int.lantronix.com>
-References: <F24C979D1AFD4E4292B911441CBA242407FCFB@2putt.int.lantronix.com> <AANLkTikBjPz7zSp7KpAsnhbyfP94TwsGrbIcXdjP2r6z@mail.gmail.com>
+Date: Thu, 3 Jun 2010 15:48:01 -0700
+Message-ID: <F24C979D1AFD4E4292B911441CBA242407FCFF@2putt.int.lantronix.com>
+References: <F24C979D1AFD4E4292B911441CBA242407FCFB@2putt.int.lantronix.com> <AANLkTikBjPz7zSp7KpAsnhbyfP94TwsGrbIcXdjP2r6z@mail.gmail.com> <F24C979D1AFD4E4292B911441CBA242407FCFE@2putt.int.lantronix.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -12,6 +12,16 @@ List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
 To: agashi shipora <gashipo@gmail.com>
 Cc: netfilter@vger.kernel.org
+
+Correction: The file is br_netfilter.c, not br_filter.c.
+
+-----Original Message-----
+=46rom: Umar Qureshey=20
+Sent: Thursday, June 03, 2010 3:31 PM
+To: 'agashi shipora'
+Cc: netfilter@vger.kernel.org
+Subject: RE: CONFIG_BRIDGE_NETFILTER stops any traffic on wireless inte=
+rface
 
 Yes, however, to select CONFIG_BRIDGE_NF_EBTABLES there is a dependency=
  on CONFIG_BRIDGE_NETFILTER, even though the help screen of CONFIG_BRID=
