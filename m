@@ -1,186 +1,55 @@
-From: agashi shipora <gashipo@gmail.com>
-Subject: Re: CONFIG_BRIDGE_NETFILTER stops any traffic on wireless interface
-Date: Thu, 3 Jun 2010 08:34:20 +0530
-Message-ID: <AANLkTikBjPz7zSp7KpAsnhbyfP94TwsGrbIcXdjP2r6z@mail.gmail.com>
-References: <F24C979D1AFD4E4292B911441CBA242407FCFB@2putt.int.lantronix.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: inadequate NEW, INVALID state definitions
+Date: Thu, 3 Jun 2010 09:55:10 +0200 (CEST)
+Message-ID: <alpine.LSU.2.01.1006030949250.9308@obet.zrqbmnf.qr>
+References: <loom.20100602T012732-376@post.gmane.org> <AANLkTikavmrze4l8YGeA3o9zbX9mV-lrSPXdBPNpIAoH@mail.gmail.com>  <alpine.LSU.2.01.1006022103590.32028@obet.zrqbmnf.qr> <AANLkTikHsAynHO6bSGritJw3a64DVrUG96th58PSfOl1@mail.gmail.com> 
+ <AANLkTimjFGnLq1OAdOhLoN8tOnQvCoRXTZORlbNPf0gX@mail.gmail.com>  <alpine.DEB.2.00.1006022254390.14733@blackhole.kfki.hu> <AANLkTim1KksJ1xBRHc3Budeph7vOgjRn-V3cY3HHryhb@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=Qm8G8scAmESokT5U6lLnOhJ9wUqDzTJ5M3wTZrc9FMw=;
-        b=Y1zbLsrp/hsGov8XEpAeUJBEt6DMTLprHjRqrAEPq3YvU7gTwOp/VJ20z7YIVhQxBw
-         zTLFc7g1fQ4piWYoXpVe/SOeK88StVA+juAjOQ2HBsOK4I1PB/TTv0q/NH0nyrv3pijC
-         TqIxD1UrrkuTb3XEV4sPO1WGMRUFHWZMgWP+I=
-In-Reply-To: <F24C979D1AFD4E4292B911441CBA242407FCFB@2putt.int.lantronix.com>
+In-Reply-To: <AANLkTim1KksJ1xBRHc3Budeph7vOgjRn-V3cY3HHryhb@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Umar Qureshey <umar.qureshey@lantronix.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Curby <curby@cur.by>
+Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Jeremiah Crockett <jrmhcrcktt@gmail.com>, netfilter@vger.kernel.org
 
-Hi,
-> My purpose for enabling CONFIG_BRIDGE_NETFILTER is to enable ebtables=
- so
-> I can do L2-NATing.
-To use ebtables  , enable CONFIG_BRIDGE_NF_EBTABLES.
 
-Thanks
-GP
+On Thursday 2010-06-03 01:03, Curby wrote:
+>On Wed, Jun 2, 2010 at 4:13 PM, Jozsef Kadlecsik
+><kadlec@blackhole.kfki.hu> wrote:
+>> need a deep TCP/IP knowledge from the readers. A rough description on how
+>> a packet traverses conntrack and what state are associated to it could be
+>> the following:
+>
+>Jozsef's reply goes far in giving us what we're looking for.  To
+>answer my question as to when INVALID can get applied or re-applied,
+>the answer is at almost any time.
 
-On Thu, Jun 3, 2010 at 7:42 AM, Umar Qureshey
-<umar.qureshey@lantronix.com> wrote:
-> Hi,
+Not at any time. In nf_conntrack_core.c, you have
+
+	* l4proto->error(...)
+	* resolve_normal_ct
+	* l4proto->packet(...)
+
+resolve_normal_ct would make nfct!=NULL, and a failure in l4packet
+would make it NULL again. All of this happens within this one hook
+(nf_conntrack_in), so Xtables does not see this intermediate result.
+And after nf_conntrack_in is finished, skb->nfct should stay as-is
+over the rest of the course through the tables traversal.
+
+>For a ruleset writer, this applies to the question of how to order the
+>following two rules:
 >
-> I posted a message earlier but upon further experimentation, it seems
-> that enabling CONFIG_BRIDGE_NETFILTER is causing my wireless to stop
-> transmitting/receiving any TCP/IP traffic. =A0I am able to associate =
-with
-> an AP but not even ARP packets are going through so DHCP and anything
-> else are out of the question. =A0Basically, I am dead in the water.
-> My purpose for enabling CONFIG_BRIDGE_NETFILTER is to enable ebtables=
- so
-> I can do L2-NATing.
+>-A INPUT -m conntrack --ctstate INVALID -j DROP
+>-A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
 >
-> Is there some dependencies that have to be enabled simultaneously in =
-the
-> kernel build to get ebtables working? =A0I'd hope and think Kconfig w=
-ould
-> apprise one of such dependencies.
->
-> The kernel version is 2.6.28.
->
-> iwconfig shows proper association:
-> # iwconfig
-> lo =A0 =A0 =A0 =A0no wireless extensions.
->
-> eth0 =A0 =A0 =A0no wireless extensions.
->
-> wlan0 =A0 =A0 IEEE 802.11 =A0ESSID:"insurrection54g"
-> =A0 =A0 =A0 =A0 =A0Mode:Managed =A0Channel:6 =A0Access Point: 00:1A:7=
-0:EE:2C:6F
-> =A0 =A0 =A0 =A0 =A0Bit Rate=3D48 Mb/s =A0 Tx-Power=3D0 dBm
-> =A0 =A0 =A0 =A0 =A0RTS thr=3D2318 B =A0 Fragment thr=3D2318 B
-> =A0 =A0 =A0 =A0 =A0Encryption key:off
->
->
->
-> The AP has been set to DHCP but I never get an IP:
-> # ifconfig
-> lo =A0 =A0 =A0 =A0Link encap:Local Loopback
-> =A0 =A0 =A0 =A0 =A0inet addr:127.0.0.1 =A0Mask:255.0.0.0
-> =A0 =A0 =A0 =A0 =A0UP LOOPBACK RUNNING =A0MTU:16436 =A0Metric:1
-> =A0 =A0 =A0 =A0 =A0RX packets:0 errors:0 dropped:0 overruns:0 frame:0
-> =A0 =A0 =A0 =A0 =A0TX packets:0 errors:0 dropped:0 overruns:0 carrier=
-:0
-> =A0 =A0 =A0 =A0 =A0collisions:0 txqueuelen:0
-> =A0 =A0 =A0 =A0 =A0RX bytes:0 (0.0 B) =A0TX bytes:0 (0.0 B)
->
-> wlan0 =A0 =A0 Link encap:Ethernet =A0HWaddr 00:20:4A:9D:00:94
-> =A0 =A0 =A0 =A0 =A0UP BROADCAST RUNNING MULTICAST =A0MTU:1500 =A0Metr=
-ic:1
-> =A0 =A0 =A0 =A0 =A0RX packets:0 errors:0 dropped:0 overruns:0 frame:0
-> =A0 =A0 =A0 =A0 =A0TX packets:3 errors:0 dropped:0 overruns:0 carrier=
-:0
-> =A0 =A0 =A0 =A0 =A0collisions:0 txqueuelen:1000
-> =A0 =A0 =A0 =A0 =A0RX bytes:0 (0.0 B) =A0TX bytes:1818 (1.7 KiB)
->
-> Relevant kernel .config:
-> #
-> # Networking options
-> #
-> CONFIG_PACKET=3Dy
-> # CONFIG_PACKET_MMAP is not set
-> CONFIG_UNIX=3Dy
-> # CONFIG_NET_KEY is not set
-> CONFIG_INET=3Dy
-> # CONFIG_IP_MULTICAST is not set
-> # CONFIG_IP_ADVANCED_ROUTER is not set
-> CONFIG_IP_FIB_HASH=3Dy
-> CONFIG_IP_PNP=3Dy
-> # CONFIG_IP_PNP_DHCP is not set
-> CONFIG_IP_PNP_BOOTP=3Dy
-> # CONFIG_IP_PNP_RARP is not set
-> # CONFIG_NET_IPIP is not set
-> # CONFIG_NET_IPGRE is not set
-> # CONFIG_ARPD is not set
-> # CONFIG_SYN_COOKIES is not set
-> # CONFIG_INET_AH is not set
-> # CONFIG_INET_ESP is not set
-> # CONFIG_INET_IPCOMP is not set
-> # CONFIG_INET_XFRM_TUNNEL is not set
-> # CONFIG_INET_TUNNEL is not set
-> # CONFIG_INET_XFRM_MODE_TRANSPORT is not set
-> # CONFIG_INET_XFRM_MODE_TUNNEL is not set
-> # CONFIG_INET_XFRM_MODE_BEET is not set
-> # CONFIG_INET_LRO is not set
-> CONFIG_INET_DIAG=3Dy
-> CONFIG_INET_TCP_DIAG=3Dy
-> # CONFIG_TCP_CONG_ADVANCED is not set
-> CONFIG_TCP_CONG_CUBIC=3Dy
-> CONFIG_DEFAULT_TCP_CONG=3D"cubic"
-> # CONFIG_TCP_MD5SIG is not set
-> # CONFIG_IPV6 is not set
-> # CONFIG_NETWORK_SECMARK is not set
-> CONFIG_NETFILTER=3Dy
-> CONFIG_NETFILTER_DEBUG=3Dy
-> CONFIG_NETFILTER_ADVANCED=3Dy
-> CONFIG_BRIDGE_NETFILTER=3Dy
->
-> #
-> # Core Netfilter Configuration
-> #
-> # CONFIG_NETFILTER_NETLINK_QUEUE is not set
-> # CONFIG_NETFILTER_NETLINK_LOG is not set
-> # CONFIG_NF_CONNTRACK is not set
-> # CONFIG_NETFILTER_XTABLES is not set
-> # CONFIG_IP_VS is not set
->
-> #
-> # IP: Netfilter Configuration
-> #
-> # CONFIG_NF_DEFRAG_IPV4 is not set
-> # CONFIG_IP_NF_QUEUE is not set
-> # CONFIG_IP_NF_IPTABLES is not set
-> # CONFIG_IP_NF_ARPTABLES is not set
-> # CONFIG_BRIDGE_NF_EBTABLES is not set
-> # CONFIG_IP_DCCP is not set
-> # CONFIG_IP_SCTP is not set
-> # CONFIG_TIPC is not set
-> # CONFIG_ATM is not set
-> CONFIG_STP=3Dy
-> CONFIG_BRIDGE=3Dy
-> # CONFIG_NET_DSA is not set
-> # CONFIG_VLAN_8021Q is not set
-> # CONFIG_DECNET is not set
-> CONFIG_LLC=3Dy
-> # CONFIG_LLC2 is not set
-> # CONFIG_IPX is not set
-> # CONFIG_ATALK is not set
-> # CONFIG_X25 is not set
-> # CONFIG_LAPB is not set
-> # CONFIG_ECONET is not set
-> # CONFIG_WAN_ROUTER is not set
-> # CONFIG_NET_SCHED is not set
->
->
-> Regards,
-> Umar
->
->
-> *********************************************************************=
-*
-> This e-mail is the property of Lantronix. It is intended only for the=
- person or entity to which it is addressed and may contain information =
-that is privileged, confidential, or otherwise protected from disclosur=
-e. Distribution or copying of this e-mail, or the information contained=
- herein, to anyone other than the intended recipient is prohibited.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
+>With my new understanding, it seems that putting INVALID first is not
+>useful: there is no need to "protect" EST/REL connections from INVALID
+>packets by placing the INVALID rule first because anything INVALID
+>would not match EST/REL anyway; they are mutually exclusive as Jan
+>mentioned.  With the goal of creating a short path for a large
+>majority of packets, EST/REL should be listed as close to the top as
+>possible and therefore before the INVALID rule.
+
+..As explained in The Perfect Ruleset ;-)
