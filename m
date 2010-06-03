@@ -1,51 +1,145 @@
-From: Curby <curby@cur.by>
-Subject: Re: inadequate NEW, INVALID state definitions
-Date: Wed, 2 Jun 2010 17:03:20 -0600
-Message-ID: <AANLkTim1KksJ1xBRHc3Budeph7vOgjRn-V3cY3HHryhb@mail.gmail.com>
-References: <loom.20100602T012732-376@post.gmane.org> <AANLkTikavmrze4l8YGeA3o9zbX9mV-lrSPXdBPNpIAoH@mail.gmail.com> 
-	<alpine.LSU.2.01.1006022103590.32028@obet.zrqbmnf.qr> <AANLkTikHsAynHO6bSGritJw3a64DVrUG96th58PSfOl1@mail.gmail.com> 
-	<AANLkTimjFGnLq1OAdOhLoN8tOnQvCoRXTZORlbNPf0gX@mail.gmail.com> 
-	<alpine.DEB.2.00.1006022254390.14733@blackhole.kfki.hu>
+From: "Umar Qureshey" <umar.qureshey@lantronix.com>
+Subject: CONFIG_BRIDGE_NETFILTER stops any traffic on wireless interface
+Date: Wed, 2 Jun 2010 19:12:02 -0700
+Message-ID: <F24C979D1AFD4E4292B911441CBA242407FCFB@2putt.int.lantronix.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1006022254390.14733@blackhole.kfki.hu>
+Content-Class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: Jeremiah Crockett <jrmhcrcktt@gmail.com>, Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Wed, Jun 2, 2010 at 4:13 PM, Jozsef Kadlecsik
-<kadlec@blackhole.kfki.hu> wrote:
-> need a deep TCP/IP knowledge from the readers. A rough description on how
-> a packet traverses conntrack and what state are associated to it could be
-> the following:
+Hi,
 
-Jozsef's reply goes far in giving us what we're looking for.  To
-answer my question as to when INVALID can get applied or re-applied,
-the answer is at almost any time.  In other words, while there is a
-default of INVALID, conntrack will check for invalid conditions as it
-applies its normal logic in seeing if other states should be used
-instead.
+I posted a message earlier but upon further experimentation, it seems
+that enabling CONFIG_BRIDGE_NETFILTER is causing my wireless to stop
+transmitting/receiving any TCP/IP traffic.  I am able to associate with
+an AP but not even ARP packets are going through so DHCP and anything
+else are out of the question.  Basically, I am dead in the water.
+My purpose for enabling CONFIG_BRIDGE_NETFILTER is to enable ebtables so
+I can do L2-NATing.
 
-For a ruleset writer, this applies to the question of how to order the
-following two rules:
+Is there some dependencies that have to be enabled simultaneously in the
+kernel build to get ebtables working?  I'd hope and think Kconfig would
+apprise one of such dependencies.
 
--A INPUT -m conntrack --ctstate INVALID -j DROP
--A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+The kernel version is 2.6.28.  
 
-With my new understanding, it seems that putting INVALID first is not
-useful: there is no need to "protect" EST/REL connections from INVALID
-packets by placing the INVALID rule first because anything INVALID
-would not match EST/REL anyway; they are mutually exclusive as Jan
-mentioned.  With the goal of creating a short path for a large
-majority of packets, EST/REL should be listed as close to the top as
-possible and therefore before the INVALID rule.  In most cases, there
-is negligible gain in removing a single rule from the path, but
-there's nothing gained in terms of security from putting INVALID
-first.
+iwconfig shows proper association:
+# iwconfig
+lo        no wireless extensions.
 
-Thanks again for the insights!
+eth0      no wireless extensions.
 
---Mike
+wlan0     IEEE 802.11  ESSID:"insurrection54g"
+          Mode:Managed  Channel:6  Access Point: 00:1A:70:EE:2C:6F
+          Bit Rate=48 Mb/s   Tx-Power=0 dBm
+          RTS thr=2318 B   Fragment thr=2318 B
+          Encryption key:off
+
+
+
+The AP has been set to DHCP but I never get an IP:
+# ifconfig
+lo        Link encap:Local Loopback
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          UP LOOPBACK RUNNING  MTU:16436  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+wlan0     Link encap:Ethernet  HWaddr 00:20:4A:9D:00:94
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:3 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:0 (0.0 B)  TX bytes:1818 (1.7 KiB)
+
+Relevant kernel .config:
+#
+# Networking options
+#
+CONFIG_PACKET=y
+# CONFIG_PACKET_MMAP is not set
+CONFIG_UNIX=y
+# CONFIG_NET_KEY is not set
+CONFIG_INET=y
+# CONFIG_IP_MULTICAST is not set
+# CONFIG_IP_ADVANCED_ROUTER is not set
+CONFIG_IP_FIB_HASH=y
+CONFIG_IP_PNP=y
+# CONFIG_IP_PNP_DHCP is not set
+CONFIG_IP_PNP_BOOTP=y
+# CONFIG_IP_PNP_RARP is not set
+# CONFIG_NET_IPIP is not set
+# CONFIG_NET_IPGRE is not set
+# CONFIG_ARPD is not set
+# CONFIG_SYN_COOKIES is not set
+# CONFIG_INET_AH is not set
+# CONFIG_INET_ESP is not set
+# CONFIG_INET_IPCOMP is not set
+# CONFIG_INET_XFRM_TUNNEL is not set
+# CONFIG_INET_TUNNEL is not set
+# CONFIG_INET_XFRM_MODE_TRANSPORT is not set
+# CONFIG_INET_XFRM_MODE_TUNNEL is not set
+# CONFIG_INET_XFRM_MODE_BEET is not set
+# CONFIG_INET_LRO is not set
+CONFIG_INET_DIAG=y
+CONFIG_INET_TCP_DIAG=y
+# CONFIG_TCP_CONG_ADVANCED is not set
+CONFIG_TCP_CONG_CUBIC=y
+CONFIG_DEFAULT_TCP_CONG="cubic"
+# CONFIG_TCP_MD5SIG is not set
+# CONFIG_IPV6 is not set
+# CONFIG_NETWORK_SECMARK is not set
+CONFIG_NETFILTER=y
+CONFIG_NETFILTER_DEBUG=y
+CONFIG_NETFILTER_ADVANCED=y
+CONFIG_BRIDGE_NETFILTER=y
+
+#
+# Core Netfilter Configuration
+#
+# CONFIG_NETFILTER_NETLINK_QUEUE is not set
+# CONFIG_NETFILTER_NETLINK_LOG is not set
+# CONFIG_NF_CONNTRACK is not set
+# CONFIG_NETFILTER_XTABLES is not set
+# CONFIG_IP_VS is not set
+
+#
+# IP: Netfilter Configuration
+#
+# CONFIG_NF_DEFRAG_IPV4 is not set
+# CONFIG_IP_NF_QUEUE is not set
+# CONFIG_IP_NF_IPTABLES is not set
+# CONFIG_IP_NF_ARPTABLES is not set
+# CONFIG_BRIDGE_NF_EBTABLES is not set
+# CONFIG_IP_DCCP is not set
+# CONFIG_IP_SCTP is not set
+# CONFIG_TIPC is not set
+# CONFIG_ATM is not set
+CONFIG_STP=y
+CONFIG_BRIDGE=y
+# CONFIG_NET_DSA is not set
+# CONFIG_VLAN_8021Q is not set
+# CONFIG_DECNET is not set
+CONFIG_LLC=y
+# CONFIG_LLC2 is not set
+# CONFIG_IPX is not set
+# CONFIG_ATALK is not set
+# CONFIG_X25 is not set
+# CONFIG_LAPB is not set
+# CONFIG_ECONET is not set
+# CONFIG_WAN_ROUTER is not set
+# CONFIG_NET_SCHED is not set
+
+
+Regards,
+Umar
+
+ 
+**********************************************************************
+This e-mail is the property of Lantronix. It is intended only for the person or entity to which it is addressed and may contain information that is privileged, confidential, or otherwise protected from disclosure. Distribution or copying of this e-mail, or the information contained herein, to anyone other than the intended recipient is prohibited.
