@@ -1,63 +1,50 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: Advanced Logging
-Date: Thu, 03 Jun 2010 22:17:15 +0200
-Message-ID: <4C080DCB.9020507@chello.at>
-References: <AANLkTimgYvZZ80VgAU4kpLyqKwOMo6u81QCDhX_lD72p@mail.gmail.com>	<AANLkTilirP3XipLJewk9fbW_ePm2kZb9QzxdvReyUrDv@mail.gmail.com> <AANLkTikt1N0vb0Y0S_akVrvvcboyXfEjU_97tqgEK0jz@mail.gmail.com>
-Reply-To: netfilter@vger.kernel.org
+From: Dan Higgins <dhiggins@ngenera.com>
+Subject: Troubles doing transparent proxy for virtual machines
+Date: Thu, 03 Jun 2010 16:01:14 -0500
+Message-ID: <4C08181A.1010304@ngenera.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTikt1N0vb0Y0S_akVrvvcboyXfEjU_97tqgEK0jz@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-On 03.06.2010 20:15, ratheesh k wrote:
-> 2010/5/30 Tom=C3=A1=C5=A1 Vl=C4=8Dek <tomasvlcek@gmail.com>:
+Hi iptables gurus. First here is the basic topology:
 
+   Internet
+      |
+   Gateway
+      |
+Workstation---eth0---virbr0
+                        |
+                        +-----+-----+
+                        |     |     |
+                       vm1   vm2   vm3
 
->>>           I have implemented  firewall  in my linux machine using
->>> iptables . It is able to prevent attacks and LOG just before droppi=
-ng
->>> packets . Since i know a little about iptables , i could go thru
->>> /var/log/messages and find out information about attacks . Is there
->>> any application which will analyze logs and  give a brief informati=
-on
->>> to user about the attacks  ?
->>>
->>> For example , suppose there was a syn flood attack ,the application
->>> should analyse the /var/log/messages or by some means should know
->>> about the attack and let the user know about that .If there is no
->>> application ,  could you give some hints on how to develop an
->>> application .Any comment is  appreciated .
+I need to test a traffic analyzer running on my workstation, listening
+on some port (say 8990) on eth0.
 
+This is not my code, I'm just the poor guy who has to test it. 
+Philosophically,
+I don't even like what it does, but pragmatically, I got bills to pay.
 
->> Maybe psad (Port Scan Attack Detector) is that what are you looking
->> for. Check http://cipherdyne.org/psad/index.html.
->
-> I gone through the link . It seems to be heavy for my embedded
-application .
->
-> My embedded box is a router with two inerfaces - wan0 and lan0 . I
-> should get information regarding various attacks tried on lan clients
-> .I have some implementation in mind .(see below )
->
-> 1  Is there any tool fit my requirement or  there any tool , i can do
-> a little  modification in code   and use .
-> 2 . Is my idea feasible to implement ? . Is it worth implementing ,
-> because it is run as part of softirq_rx kernel thread . Will it dampe=
-n
-> performance ?
-> 3 . Could i do this as part of connection tracking module . If , coul=
-d
-> you guide  a little ?
->
-snort (snort.org) comes into my mind here.
-afaik it has the ability to create inline iptables rules.
-maybe worth a look?
+The rule [I think] I want is:
+"Any packets leaving virbr0 going anywhere to port 80 must instead go to 
+port
+8990 on eth0 (10.0.0.10)."
+The software running on port 8990 does its own check of the NAT packet 
+mangling
+to push the packets through after it inspects them.
 
+I've been banging my head on this, with different variants of:
+iptables -t nat -A PREROUTING -i virbr0 -p tcp --dport 80 -j DNAT \
+     --to 10.0.0.10:8990
+And I've tried the more generic method of using the mangle table with
+--set-mark and ip rule add fwmark, but I'm not getting it.
 
-best regards
+I guess what's confusing me is that everything runs on the same box.
 
-mart
+Thanks for any guidance,
+Dan
+
