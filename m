@@ -1,44 +1,50 @@
-From: Dan Higgins <dhiggins@ngenera.com>
-Subject: Re: Troubles doing transparent proxy for virtual machines
-Date: Thu, 03 Jun 2010 17:59:02 -0500
-Message-ID: <4C0833B6.3040009@ngenera.com>
-References: <4C08181A.1010304@ngenera.com> <20100603232041.7b18a208@catlap>
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: Re: Advanced Logging
+Date: Fri, 4 Jun 2010 07:47:14 +0530
+Message-ID: <AANLkTinkq6e66NTi4PSkAF5fa1do9pj8BlzB18xrJGHz@mail.gmail.com>
+References: <AANLkTimgYvZZ80VgAU4kpLyqKwOMo6u81QCDhX_lD72p@mail.gmail.com>
+	<AANLkTilirP3XipLJewk9fbW_ePm2kZb9QzxdvReyUrDv@mail.gmail.com>
+	<AANLkTikt1N0vb0Y0S_akVrvvcboyXfEjU_97tqgEK0jz@mail.gmail.com>
+	<alpine.LSU.2.01.1006032043580.16179@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20100603232041.7b18a208@catlap>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:in-reply-to
+         :references:date:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=8IcaPFr7sbpd/7+8+GvlniImLCScxLJSqajIPwBq0ss=;
+        b=pw0p/nEuZEmR3Icl7B/bhItGDFRICI9FyuHKt1bC0aYPW91a747D0K6EfZOGMpU2xG
+         ViYwjUJTTiroG1/6fphPj3yk7+6dzUBCGQEI/+UG9kKH2CCwWIcukcjdeio+MI6JGgpo
+         AkRUp6sgCHQjkKoaovkAZUxgaHkO88iNvYxak=
+In-Reply-To: <alpine.LSU.2.01.1006032043580.16179@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: Netfilter mailing list <netfilter@vger.kernel.org>, ulogd@lists.gnumonks.org
 
-
-On 06/03/2010 04:20 PM, Marek Kierdelewicz wrote:
-> Hi,
+On Fri, Jun 4, 2010 at 12:32 AM, Jan Engelhardt <jengelh@medozas.de> wr=
+ote:
 >
->    
->> I guess what's confusing me is that everything runs on the same box.
->>      
-> Yup. Packet traverses nat table when it passes bridge and it cannot
-> traverse this table second time entering virbr0 interface.
+> On Thursday 2010-06-03 20:15, ratheesh k wrote:
+>>2010/5/30 Tom=C3=A1=C5=A1 Vl=C4=8Dek <tomasvlcek@gmail.com>:
+>>> Maybe psad (Port Scan Attack Detector) is that what are you looking
+>>> for. Check http://cipherdyne.org/psad/index.html.
+>>
+>>I gone through the link . It seems to be heavy for my embedded applic=
+ation .
 >
-> Try this:
-> echo 0>  /proc/sys/net/bridge/bridge-nf-call-iptables
->    
+> Yes it looks complicated from a developer POV. I myself think
+> why would it have to put up with analyzing log messages
+> (which are known to be not overly precise) when direct delivery
+> with libnetfilter_queue/_log seems like a more ideal goal -
+> eliminating the extra trip through syslog and the fs.
+\
+Thanks Jan .
+ulogd demon could be modified to do analysis of packet  to find out
+what of kind of attack has taken place ?
 
-Thanks for the response. I'm beginning to think that my strategy here is 
-all wrong to begin with. Here's why:
 
-1. The subnet for my VMs is 192.168.122.0/24. This is created by 
-libvirtd when it starts up.
-
-2. I start up Firefox in a VM, then go to google.com.
-
-3. As I watch with tcpdump, I never even see 192.168.122.x in the output.
-
-Maybe libvirtd is doing its own network voodoo before handing off to the 
-kernel network stack.  [Shrug]  Should I expect tcpdump to show packets 
-coming through a bridge (virbr0 or just br0)?
-
-This is still pretty deep water to me.
-
+-Ratheesh
