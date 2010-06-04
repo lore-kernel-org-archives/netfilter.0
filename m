@@ -1,44 +1,33 @@
-From: Marek Kierdelewicz <marek@piasta.pl>
-Subject: Re: Troubles doing transparent proxy for virtual machines
-Date: Fri, 4 Jun 2010 08:27:41 +0200
-Message-ID: <20100604082741.0536eb68@catlap>
-References: <4C08181A.1010304@ngenera.com>
-	<20100603232041.7b18a208@catlap>
-	<4C0833B6.3040009@ngenera.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: RE: CONFIG_BRIDGE_NETFILTER stops any traffic on wireless
+ interface
+Date: Fri, 4 Jun 2010 08:53:41 +0200 (CEST)
+Message-ID: <alpine.LSU.2.01.1006040850570.19959@obet.zrqbmnf.qr>
+References: <F24C979D1AFD4E4292B911441CBA242407FCFB@2putt.int.lantronix.com> <AANLkTikBjPz7zSp7KpAsnhbyfP94TwsGrbIcXdjP2r6z@mail.gmail.com> <F24C979D1AFD4E4292B911441CBA242407FCFE@2putt.int.lantronix.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C0833B6.3040009@ngenera.com>
+In-Reply-To: <F24C979D1AFD4E4292B911441CBA242407FCFE@2putt.int.lantronix.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Dan Higgins <dhiggins@ngenera.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Umar Qureshey <umar.qureshey@lantronix.com>
+Cc: agashi shipora <gashipo@gmail.com>, netfilter@vger.kernel.org
 
-Hi,
 
->Thanks for the response. I'm beginning to think that my strategy here
->is all wrong to begin with. Here's why:
->1. The subnet for my VMs is 192.168.122.0/24. This is created by 
->libvirtd when it starts up.
->2. I start up Firefox in a VM, then go to google.com.
->3. As I watch with tcpdump, I never even see 192.168.122.x in the
->output.
->Maybe libvirtd is doing its own network voodoo before handing off to
->the kernel network stack. 
+On Friday 2010-06-04 00:31, Umar Qureshey wrote:
 
-Sorry, I've never used libvirtd, but if your virtualization backend is
-kvm and it's configured for "userspace networking", iptables won't do
-what you want.
+>My research has narrowed down the issue to the
+>br_filter.c code (this is included in the build by the CONFIG_BRIDGE_NETFILTER
+>define). When I remove this object code from my build, radio is fine (but to
+>remove this br_filter.c's code, I had to modify Kconfig as stated above so
+>I'll still have ebtables support). My guess is maybe some default setting of
+>this bridge code is rejecting all packets on the radio interface.
 
-> [Shrug]  Should I expect tcpdump to show
->packets coming through a bridge (virbr0 or just br0)?
+You have not yet posted
 
-In "bridged networking" you should see packets on VMs interface
-(tapX) and bridge interface (brX).
-
-Try setting it up. This page may be of some help:
-http://wiki.libvirt.org/page/Networking
-
-Best regards,
-Marek
+ * brctl showstp br0
+ * ebtables-save
+ * ip addr
+ * ip route show table all
+..
