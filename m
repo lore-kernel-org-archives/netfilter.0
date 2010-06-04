@@ -1,43 +1,39 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: It's possible mark or classify packets per gateway in a multihop
-  route ?
-Date: Fri, 4 Jun 2010 11:38:37 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1006041137160.29899@obet.zrqbmnf.qr>
+From: Victor Carceler <vcarceler@gmail.com>
+Subject: Re: It's possible mark or classify packets per gateway in a multihop 
+	route ?
+Date: Fri, 4 Jun 2010 15:37:07 +0200
+Message-ID: <AANLkTilzjjDjRiPij35lS48nuDO_Nd8mqwLyqFwvdhuF@mail.gmail.com>
 References: <AANLkTinfTnSYngEUs3B7TTSTXt3cq9OHmIXEZEZNEDJB@mail.gmail.com>
+	<alpine.LSU.2.01.1006041137160.29899@obet.zrqbmnf.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTinfTnSYngEUs3B7TTSTXt3cq9OHmIXEZEZNEDJB@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:in-reply-to
+         :references:date:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=ejsGVp74g8hiZyv+CnFe+Dqae7J+gw8EbD1Hb/OcVC4=;
+        b=KFBND7LkXBdG8qrZicRC6AT4vyyjuC6g4Gb4NALUx/qDuy7sUJbyVpVxWCBP4Fm4Dc
+         yVHBU5s9gaZwioGZgTUX4FcLgDnlxTMLuldULrdNW7Q191m5megRx1moaMceDW5y2wTL
+         0DQ62CdAxpxkz8bTsA2DOWEduQOdor7GlH7BM=
+In-Reply-To: <alpine.LSU.2.01.1006041137160.29899@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Victor Carceler <vcarceler@gmail.com>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Jan Engelhardt <jengelh@medozas.de>
 Cc: netfilter@vger.kernel.org
 
+Hello Jan,
 
-On Friday 2010-06-04 10:49, Victor Carceler wrote:
+> make that
+> =A0 =A0 =A0 =A0nexthop via 192.168.100.2 =A0dev eth0 weight 1 realm 1
+> =A0 =A0 =A0 =A0nexthop via 192.168.100.3 =A0dev eth0 weight 1 realm 2
 >
->I have multiple DSL routers, all of them in the same subnet
->(192.168.100.0/24) and reacheable by eth0. I use a multihop default
->route and I want to shape traffic with limits per gateway. So, it's
->possible to mark or classify packets once it's known with router will
->be routed through ? wich extension/selector should I use ?
-
- -m realm
-
->-------
->ip route show
+> so that you have realm values to match against.
 >
->192.168.100.0/24 dev eth0  proto kernel  scope link  src 192.168.100.5
->192.168.10.0/24 dev eth1  proto kernel  scope link  src 192.168.10.30
->169.254.0.0/16 dev eth0  scope link
->127.0.0.0/8 dev lo  scope link
->default
->	nexthop via 192.168.100.2  dev eth0 weight 1
->	nexthop via 192.168.100.3  dev eth0 weight 1
 
-make that
-	nexthop via 192.168.100.2  dev eth0 weight 1 realm 1
-	nexthop via 192.168.100.3  dev eth0 weight 1 realm 2
+it works !!!
 
-so that you have realm values to match against.
+Vielen Dank,
+Victor
