@@ -1,47 +1,42 @@
-From: Robby Workman <rw@rlworkman.net>
+From: Thanasis <thanasis@asyr.hopto.org>
 Subject: Re: prevent iptables LOG target from flooding dmesg
-Date: Sat, 5 Jun 2010 22:03:34 -0500
-Message-ID: <20100605220334.24df75e5@liberty.rlwhome.lan>
-References: <4C0AB6AD.104@asyr.hopto.org>
+Date: Sun, 06 Jun 2010 08:26:51 +0300
+Message-ID: <4C0B319B.1090300@asyr.hopto.org>
+References: <4C0AB6AD.104@asyr.hopto.org> <20100605220334.24df75e5@liberty.rlwhome.lan>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=PGP-SHA1;
- boundary="Sig_/fItKXwI/HMkQCnPwgMkoT9c"; protocol="application/pgp-signature"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C0AB6AD.104@asyr.hopto.org>
+In-Reply-To: <20100605220334.24df75e5@liberty.rlwhome.lan>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Thanasis <thanasis@asyr.hopto.org>
+Content-Type: text/plain; charset="utf-8"
+To: Robby Workman <rw@rlworkman.net>
 Cc: netfilter@vger.kernel.org
 
---Sig_/fItKXwI/HMkQCnPwgMkoT9c
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+on 06/06/2010 06:03 AM Robby Workman wrote the following:
+> On Sat, 05 Jun 2010 23:42:21 +0300
+> Thanasis <thanasis@asyr.hopto.org> wrote:
+>
+>> ...
+>> and dmesg is flooded by DROP log messages etc.
+>> ...
+>
+>
+>   1) Do you really *care* about most of what you're logging?
+>  1a) If so, why?
+Yes and no, because it's a recent install, and I would like to watch
+closer, at least for a while ...
+>
+>   2) Install ulogd and use -j ULOG instead of -j LOG.
+I have read about ulog but the kernel config help says for ULOG that it
+is deprecated:
 
-On Sat, 05 Jun 2010 23:42:21 +0300
-Thanasis <thanasis@asyr.hopto.org> wrote:
+"CONFIG_IP_NF_TARGET_ULOG:
+This option enables the old IPv4-only "ipt_ULOG" implementation =E2=94=82
+=E2=94=82 which has been obsoleted by the new "nfnetlink_log" code (see=
+ =E2=94=82
+=E2=94=82 CONFIG_NETFILTER_NETLINK_LOG). "
 
-> ...
-> and dmesg is flooded by DROP log messages etc.
-> ...
+That is why I was asking about CONFIG_NETFILTER_NETLINK_LOG in the fist
+place...
 
-
-  1) Do you really *care* about most of what you're logging?
- 1a) If so, why?
-
-  2) Install ulogd and use -j ULOG instead of -j LOG.
-
--RW
-
---Sig_/fItKXwI/HMkQCnPwgMkoT9c
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Disposition: attachment; filename=signature.asc
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAkwLEAYACgkQvGy9tf6lsvvPLwCfdeSQfCWfBP+sWYvtaOZ4q03p
-uUMAn2ur65m2GBrDxiEE19pE/Ho8AnZ/
-=maEg
------END PGP SIGNATURE-----
-
---Sig_/fItKXwI/HMkQCnPwgMkoT9c--
