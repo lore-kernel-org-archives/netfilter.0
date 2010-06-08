@@ -1,7 +1,7 @@
 From: "Jorge Bastos" <mysql.jorge@decimal.pt>
 Subject: RE: TC QoS for different sources/destinations
-Date: Tue, 8 Jun 2010 09:47:42 +0100 (WEST)
-Message-ID: <1899.192.168.1.3.1275986862.squirrel@webmail.decimal.pt>
+Date: Tue, 8 Jun 2010 09:50:18 +0100 (WEST)
+Message-ID: <1947.192.168.1.3.1275987018.squirrel@webmail.decimal.pt>
 References: <3833.213.228.140.150.1275843887.squirrel@webmail.decimal.pt>
     <001e01cb066b$0eed2140$2cc763c0$@toure@vipnet.ci>
 Mime-Version: 1.0
@@ -15,10 +15,8 @@ To: Toure Mamadou <mamadou.toure@vipnet.ci>
 Cc: netfilter@vger.kernel.org
 
 Hi Toure,
-Thanks for the feedback,
 
-Well I have everything configured using CBQ... no way to do it using CB=
-Q?
+My setup is based on CBQ, no way to do it using CBQ?
 
 Jorge,
 
