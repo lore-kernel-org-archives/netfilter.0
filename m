@@ -1,30 +1,16 @@
-From: Curby <curby@cur.by>
-Subject: Re: Redirecting Outbound Port to Internal Server
-Date: Wed, 9 Jun 2010 16:43:55 -0600
-Message-ID: <AANLkTin5R43Rq2dKG8UxTOQ0gelfJg7FjVZLeW_i49Im@mail.gmail.com>
-References: <AANLkTilaGR9jPpybgfPataLK5v6OZTCDhJM7mbqPEuNw@mail.gmail.com> 
-	<AANLkTimU5146nsWSNdDOVRT3bdxZJC1BwHPdTeb1h3K6@mail.gmail.com> 
-	<4C10067C.8000302@riverviewtech.net>
+From: Mi <Mi@xcelco.on.ca>
+Subject: Provide Name:Address:Age:Sex:Occupation:Tel and country thank you.
+Date: Wed, 09 Jun 2010 19:59:24 -0400
+Message-ID: <1276127964.4c102adc4a340@webmail.xcelco.on.ca>
+Reply-To: dr.wax@insing.com
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C10067C.8000302@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Grant Taylor <gtaylor@riverviewtech.net>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: 
 
-On Wed, Jun 9, 2010 at 3:24 PM, Grant Taylor <gtaylor@riverviewtech.net> wrote:
-> Now, I do ask the question, is it not possible to have your clients
-> communicate directly with the proxy?
+Congratulation 8,000.000.00 GBP has been awarded to you.
 
-His later message suggests that the target machine is a web server and
-not a proxy.  In that case, I wonder if tweaking DNS to have the
-relevant requests point directly to the local machine would be easier.
 
-OTOH, he said that all outbound traffic on port 8080 should be sent to
-the internal machine, which is odd if it's a simple web server hosting
-a site or two.
-
---Mike
