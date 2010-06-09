@@ -1,47 +1,77 @@
-From: "Umar Qureshey" <umar.qureshey@lantronix.com>
-Subject: RE: CONFIG_BRIDGE_NETFILTER stops any traffic on wireless interface
-Date: Wed, 9 Jun 2010 10:16:11 -0700
-Message-ID: <F24C979D1AFD4E4292B911441CBA242407FD14@2putt.int.lantronix.com>
-References: <F24C979D1AFD4E4292B911441CBA242407FCFB@2putt.int.lantronix.com> <AANLkTikBjPz7zSp7KpAsnhbyfP94TwsGrbIcXdjP2r6z@mail.gmail.com> <F24C979D1AFD4E4292B911441CBA242407FCFE@2putt.int.lantronix.com> <alpine.LSU.2.01.1006040850570.19959@obet.zrqbmnf.qr> <F24C979D1AFD4E4292B911441CBA242407FD13@2putt.int.lantronix.com> <alpine.LSU.2.01.1006091903040.3409@obet.zrqbmnf.qr>
+From: Tvrtko Ursulin <tvrtko@ursulin.net>
+Subject: Re: Strange problem with HTTPS POST (maybe) through router from Linux
+Date: Wed, 9 Jun 2010 18:51:27 +0100
+Message-ID: <201006091851.27924.tvrtko@ursulin.net>
+References: <201006082203.22238.tvrtko@ursulin.net> <AANLkTiksaw95iTQ0XVtb4vHhWzWWYA30Fuf_E1l7nqkm@mail.gmail.com> <alpine.LSU.2.01.1006091658050.30265@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Class: urn:content-classes:message
+In-Reply-To: <alpine.LSU.2.01.1006091658050.30265@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain; charset="us-ascii"
 To: Jan Engelhardt <jengelh@medozas.de>
-Cc: agashi shipora <gashipo@gmail.com>, netfilter@vger.kernel.org
+Cc: netfilter@vger.kernel.org
 
-Very true.  
-I figured that since CONFIG_BRIDGE_NETFILTER is rendering the wireless
-dead, this would 
-be the most pertinent place to query about this peculiar behavior.
-I realize this is a tough cookie to crack as it's a strange one.
+On Wednesday 09 Jun 2010 16:02:19 Jan Engelhardt wrote:
+> On Wednesday 2010-06-09 15:41, Tvrtko Ursulin wrote:
+> >> ICMP is not just ping, there is more like PMTUD and others.
+> >> If PMTUD works on your side, you don't need TCPMSS.
+> >
+> >Is there a way to check that across the link? If my router has no ICMP
+> >rules in iptables than should I suspect the ISP?
+> 
+> 	ping -M do -s 9000 target
+> 
+> From <router> icmp_seq=1 Frag needed and DF set (mtu = 1412)
+> 
+> Then you retry with
+> 
+> 	ping -M do -s $[1412-28] target
+> 
+> and do that as long as Frag needed is outputted.
+> That's basically manual PMTUD and allows you to see where
+> MTU reduction along the route occurs.
 
+Starting from mtu=1500 and testing with "ping -M do -s $[$mtu-28] 
+secure.tesco.com
+", first value which does not need fragmentation is 1492 which is what the MTU 
+is set to the PPPoA interface on the router. Would that look like there is no 
+problem?
 
------Original Message-----
-From: netfilter-owner@vger.kernel.org
-[mailto:netfilter-owner@vger.kernel.org] On Behalf Of Jan Engelhardt
-Sent: Wednesday, June 09, 2010 10:04 AM
-To: Umar Qureshey
-Cc: agashi shipora; netfilter@vger.kernel.org
-Subject: RE: CONFIG_BRIDGE_NETFILTER stops any traffic on wireless
-interface
+Sidenote - if I change the  PPPoA MTU on the router to 1462, which is 
+allegedly optimal for ATM, then the above ping test starts to pass only with 
+mtu=1462.
 
+Does this make any sense? secure.tesco.com is the host browsers are waiting a 
+response from forever.. Am I misunderstanding the results of the ping test?
 
-On Wednesday 2010-06-09 18:56, Umar Qureshey wrote:
+> >>>> If not: SACK/DSACK/FACK is broken in 2.6.18 (dunno when it was fixed,
+> >>>> but 2.6.25 looks good), and if either client or server make use
+> >>>> of it, things can hang once SACKs are exchanged.
+> >>>
+> >>>My clients are 2.6.31 - 2.6.34, but the router/firewall is running
+> >>> 2.6.21.5.
+> >>
+> >> Well try deactivating sack/dsack/fack then (that's in sysctl).
+> >
+> >On the router? Will try in the evening.
+> 
+> No, on at least one of the end host(s).
+> (Since you have control over your client, that shouldn't be a problem.)
+> 
+> >What is puzzling me is that Windows clients work fine, even though
+> >they also have MTU set to 1500. All I am reading about his issues
+> >cannot explain this to me.
+> 
+> That's why I suspected SACK issues. (Because SACK is too smart a
+> technology to be usable in Windows ;-)
 
->*brctl showstp br0: I am using busybox version of brctl and it doesn't
->support the showstp parameter.  
->Besides, the wireless connection is dead before I create any bridge.
+Unfortunately disabling all three on the client did not help. Plot thickens. 
+:)
 
-So it does not look like an ebtables problem. If wireless ain't
-working without a bridge,  how is it supposed to with brdiging?
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks for your help so far - I already learned a lot, including that I know 
+little. :)
+
+Tvrtko
  
-**********************************************************************
-This e-mail is the property of Lantronix. It is intended only for the person or entity to which it is addressed and may contain information that is privileged, confidential, or otherwise protected from disclosure. Distribution or copying of this e-mail, or the information contained herein, to anyone other than the intended recipient is prohibited.
