@@ -1,34 +1,40 @@
-From: Tvrtko Ursulin <tvrtko@ursulin.net>
-Subject: Re: Strange problem with HTTPS POST (maybe) through router from Linux
-Date: Wed, 9 Jun 2010 23:05:26 +0100
-Message-ID: <201006092305.26328.tvrtko@ursulin.net>
-References: <201006082203.22238.tvrtko@ursulin.net> <201006091851.27924.tvrtko@ursulin.net> <201006092303.32923.tvrtko@ursulin.net>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Redirecting Outbound Port to Internal Server
+Date: Wed, 09 Jun 2010 16:24:12 -0500
+Message-ID: <4C10067C.8000302@riverviewtech.net>
+References: <AANLkTilaGR9jPpybgfPataLK5v6OZTCDhJM7mbqPEuNw@mail.gmail.com> <AANLkTimU5146nsWSNdDOVRT3bdxZJC1BwHPdTeb1h3K6@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <201006092303.32923.tvrtko@ursulin.net>
+In-Reply-To: <AANLkTimU5146nsWSNdDOVRT3bdxZJC1BwHPdTeb1h3K6@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Wednesday 09 Jun 2010 23:03:32 Tvrtko Ursulin wrote:
-> Yes I was misunderstanding the results, or to better say I was not
->  thinking!
-> 
-> :) Point is for "Frag needed" message to go away _AND_ replies starting to
-> 
-> come back.
-> 
-> So I tracerouted it and found which hop stops replying to this specific
->  pings. Guess I can either find out whose router is it and see if they want
->  to fix it, or I can setup an explicit route with smaller MTU for
->  problematic web sites I care about.
-> 
-> Well this was one pretty educational exercise, thanks again for your help!
+On 06/09/10 16:16, Curby wrote:
+> I think the problem is that a single DNAT rule would cause the 
+> request to go through to the internal proxy, but the proxy would send 
+> a reply back to the client, which rejects it because it's expecting a 
+> reply from the router box.
 
-And I forgot this last point, this does not explain why Windows clients are 
-not affected.
+I agree.
 
-Tvrtko
+If you want to do the redirection this way, you have to SNAT the traffic 
+from the router to the proxy so that the proxy will reply to the router. 
+  Then when the router receives the reply from the proxy, it will pass 
+the reply on to the original client.
+
+I have done this before and it works quite well.
+
+Now, I do ask the question, is it not possible to have your clients 
+communicate directly with the proxy?
+
+I ask because what you want to do can be done and does work, but it 
+causes all the traffic between clients and the proxy to pass through the 
+router, thus making your router's NIC & CPU be a potential bottle neck 
+that can (fairly easily) be avoided.
+
+
+
+Grant. . . .
