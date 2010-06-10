@@ -1,59 +1,136 @@
-From: Ralf Schlatterbeck <ralf@zoo.priv.at>
-Subject: tc filter basic match cmp layer matching
-Date: Thu, 10 Jun 2010 16:30:17 +0200
-Message-ID: <20100610143017.GA21228@priv.zoo>
+From: Diego Lima <lists@diegolima.org>
+Subject: Selectively routing packets through different links
+Date: Thu, 10 Jun 2010 13:13:24 -0300
+Message-ID: <AANLkTikbalU3OXYS8Bqc1ZfP79HjluILJY-5kXMI0UBs@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-I'm trying to set up a filter that matches fields in higher level
-protocols (tcp and icmp) using the "basic" tc ematch filter. I need to 
-match on firewall marks in addition to protocol header fields, that's
-why I'm not using u32 alone.
+Hello all,
 
-I'm using Kernel 2.6.26 from debian lenny and a debian iproute package
-20091226-1 (not the original debian lenny version which is broken for
-ipt actions).
+I'm trying to send http packets through a link that is not my default
+gateway, using iptables and iproute2 on a Ubuntu 9.10 server (ip
+address: 192.168.0.193 on the lan and 192.168.21.1 on the wan). Its
+default gateway is the address 192.168.0.7 on my wlan0 interface and
+its alternative gateway is 192.168.21.1 on bnep0. Packets from my LAN
+arrive on the same wlan0 interface. Here's what I've done:
 
-This should match on icmp ping:
+1 - Edit /etc/iproute2/rt_tables and add this:
+10 bluez
 
-tc filter add dev lo protocol ip parent ffff: prio 1 basic match ' u32 (u8 0x1 0xff at 0x9) and cmp(u8 at 0 layer transport mask 0xff eq 8 ) ' action ipt -j MARK --set-xmark 0x100/0x1f0 action mirred egress redirect dev ifb0 
+2 - Add the route and rule:
+# ip route add via 192.168.21.1 dev bnep0 table bluez
+# ip rule add fwmark 10 lookup bluez
 
-but it seems the internal representation of the offset to the transport
-header is 0, so when I replace this with
+3 - Add the iptables rules:
+iptables -t mangle -I PREROUTING -i wlan0 -s 192.168.0.0/24 -p tcp -m
+multiport --dports 80,443,8080 -j MARK --set-mark 10
+iptables -t nat -I POSTROUTING ! -o lo -j MASQUERADE
 
-... cmp(u8 at 20 layer transport mask 0xff eq 8 ) ...
-(using an offset of 20 which is the length of the IP header without
-options) this (in)correctly matches ping packets which indicates that
-"layer transport" is not doing what I suppose it should.
+The FORWARD policy is currently set to ACCEPT and
+/proc/sys/net/ipv4/ip_forward is set to 1. When I do this I can see
+the packets coming from my local network to to the internet get out
+and I see them on the router 192.168.21.1. I can also see the replies
+on the router and bnep0, but they don't go back to the host on wlan0.
 
-I've also tried to use the native u32 nexthdr parameter inside a basic
-match u32:
+Here is the tcpdump results of a simple wget:
 
-tc filter add dev lo protocol ip parent ffff: prio 1 basic match ' u32 (u8 0x1 0xff at 0x9) and u32(u8 8 0xff at nexthdr+0) ' action ipt -j MARK --set-xmark 0x100/0x1f0 action mirred egress redirect dev ifb0
+---
+On the host 192.168.0.201 (the one trying to fetch a page):
 
-with the same effect: seems that nexthdr offset is 0.
+13:04:49.639213 IP 192.168.0.201.37844 > 64.233.163.104.80: Flags [S],
+seq 1417172792, win 5840, options [mss 1460,sackOK,TS val 194061171
+ecr 0,nop,wscale 6], length 0
+13:04:52.635912 IP 192.168.0.201.37844 > 64.233.163.104.80: Flags [S],
+seq 1417172792, win 5840, options [mss 1460,sackOK,TS val 194061921
+ecr 0,nop,wscale 6], length 0
+13:04:58.635909 IP 192.168.0.201.37844 > 64.233.163.104.80: Flags [S],
+seq 1417172792, win 5840, options [mss 1460,sackOK,TS val 194063421
+ecr 0,nop,wscale 6], length 0
 
-Is there any magic I should use for telling tc how to find the IP header
-length?
 
-I'm aware of how to do this with u32 hashtables and the "offset"
-parameter, e.g.  explained in this thread:
-http://mailman.ds9a.nl/pipermail/lartc/2001q4/002032.html
-but I need matching on fwmark which doesn't seem to be possible in
-combination with u32.
+--
+On the firewall 192.168.0.193 (the host's default gw and the firewall
+where I set the iptables/routing rules):
+tcpdump on bnep0:
 
-This thread from an openwall list suggests that matching on other than
-the ip layer should be possible:
-http://lists.openwall.net/netdev/2007/08/10/6
+diego@gilead:/tmp$ sudo tcpdump -ni bnep0 ip proto \\tcp and ! port 22
+and host 64.233.163.104
+listening on bnep0, link-type EN10MB (Ethernet), capture size 96 bytes
+13:07:56.556892 IP 192.168.21.2.43346 > 64.233.163.104.80: Flags [S],
+seq 182141507, win 5840, options [mss 1460,sackOK,TS val 194109829 ecr
+0,nop,wscale 6], length 0
+13:07:58.450327 IP 64.233.163.104.80 > 192.168.21.2.43346: Flags [S.],
+seq 118939367, ack 182141508, win 5672, options [mss 1410,sackOK,TS
+val 3547510252 ecr 194109829,nop,wscale 6], length 0
+13:07:58.719166 IP 64.233.163.104.80 > 192.168.21.2.43346: Flags [S.],
+seq 118939367, ack 182141508, win 5672, options [mss 1410,sackOK,TS
+val 3547510586 ecr 194109829,nop,wscale 6], length 0
+13:07:59.328302 IP 64.233.163.104.80 > 192.168.21.2.43346: Flags [S.],
+seq 118939367, ack 182141508, win 5672, options [mss 1410,sackOK,TS
+val 3547511190 ecr 194109829,nop,wscale 6], length 0
+13:07:59.553165 IP 192.168.21.2.43346 > 64.233.163.104.80: Flags [S],
+seq 182141507, win 5840, options [mss 1460,sackOK,TS val 194110579 ecr
+0,nop,wscale 6], length 0
+13:07:59.658279 IP 64.233.163.104.80 > 192.168.21.2.43346: Flags [S.],
+seq 118939367, ack 182141508, win 5672, options [mss 1410,sackOK,TS
+val 3547511511 ecr 194109829,nop,wscale 6], length 0
 
-Ralf
+
+tcpdump on wlan0:
+diego@gilead:/tmp$ sudo tcpdump -ni wlan0 ip proto \\tcp and ! port 22
+and host 64.233.163.104
+listening on wlan0, link-type EN10MB (Ethernet), capture size 96 bytes
+
+13:09:12.992642 IP 192.168.0.201.43347 > 64.233.163.104.80: Flags [S],
+seq 1388896619, win 5840, options [mss 1460,sackOK,TS val 194128940
+ecr 0,nop,wscale 6], length 0
+13:09:15.988847 IP 192.168.0.201.43347 > 64.233.163.104.80: Flags [S],
+seq 1388896619, win 5840, options [mss 1460,sackOK,TS val 194129690
+ecr 0,nop,wscale 6], length 0
+13:09:21.990494 IP 192.168.0.201.43347 > 64.233.163.104.80: Flags [S],
+seq 1388896619, win 5840, options [mss 1460,sackOK,TS val 194131190
+ecr 0,nop,wscale 6], length 0
+
+--
+On the wan router 192.168.21.1:
+
+13:11:47.844163 IP 192.168.21.2.43348 > 64.233.163.104.80: S
+3792068799:3792068799(0) win 5840 <mss 1460,sackOK,timestamp
+194167380[|tcp]>
+13:11:49.613021 IP 64.233.163.104.80 > 192.168.21.2.43348: S
+2877038224:2877038224(0) ack 3792068800 win 5672 <mss
+1410,sackOK,timestamp 3532709843[|tcp]>
+13:11:49.868738 IP 64.233.163.104.80 > 192.168.21.2.43348: S
+2877038224:2877038224(0) ack 3792068800 win 5672 <mss
+1410,sackOK,timestamp 3532710158[|tcp]>
+13:11:50.473167 IP 64.233.163.104.80 > 192.168.21.2.43348: S
+2877038224:2877038224(0) ack 3792068800 win 5672 <mss
+1410,sackOK,timestamp 3532710762[|tcp]>
+13:11:50.833945 IP 192.168.21.2.43348 > 64.233.163.104.80: S
+3792068799:3792068799(0) win 5840 <mss 1460,sackOK,timestamp
+194168130[|tcp]>
+13:11:50.913043 IP 64.233.163.104.80 > 192.168.21.2.43348: S
+2877038224:2877038224(0) ack 3792068800 win 5672 <mss
+1410,sackOK,timestamp 3532711202[|tcp]>
+13:11:51.733704 IP 64.233.163.104.80 > 192.168.21.2.43348: S
+2877038224:2877038224(0) ack 3792068800 win 5672 <mss
+1410,sackOK,timestamp 3532712022[|tcp]>
+13:11:54.149590 IP 64.233.163.104.80 > 192.168.21.2.43348: S
+2877038224:2877038224(0) ack 3792068800 win 5672 <mss
+1410,sackOK,timestamp 3532714438[|tcp]>
+
+--
+
+As far as I can see the packets arrive at my firewall just fine but it
+never routes them back to the host originating the request. Am I
+missing something there?
+
+Thanks and sorry for the long email :)
+
 -- 
-Ralf Schlatterbeck
-email: ralf@zoo.priv.at FAX: +43/2243/26465/23
-
+Diego Lima
