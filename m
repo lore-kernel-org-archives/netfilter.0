@@ -1,7 +1,7 @@
-From: Thanasis <thanasis@asyr.hopto.org>
-Subject: traffic shaping between two LANs and one ppp0 default gw
-Date: Thu, 10 Jun 2010 05:20:11 +0300
-Message-ID: <4C104BDB.7060706@asyr.hopto.org>
+From: Mihamina Rakotomandimby <mihamina@gulfsat.mg>
+Subject: connlimit and NEW state
+Date: Thu, 10 Jun 2010 08:50:55 +0300
+Message-ID: <20100610085055.246b64f3@pbmiha.malagasy.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -10,20 +10,46 @@ List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Maybe this is not directly related to netfilter, but I believe that
-someone may be able to help in this simple scenario:
-A router (linux) has 3 NICs: eth1 (ppp0) connects to WAN via ADSL modem
-~2Mbps/700Kbps up/down.
-The other 2 NICs connect to local LANs with private IPs: eth0 to
-192.168.0.0/24, and eth2 to 192.168.10.0/24.
-The router provides internet connectivity to both LANs' PCs by NATing
-(the one public IP).
-We would like to divide the incoming and outgoing bandwidth equally
-between those two LANs, ie:
-PCs from the two LANs should not be able to upload more than 300Kbps
-(total per LAN) via either eth2 or eth0, so as not to flood the outgoing
-ppp0 interface.
-On the other hand, routing packets between the 2 LANs (from eth2 to eth0
-and vice versa) should not be restricted, ie should be at 100Mbps.
-How would this be best and simplest implemented by using iproute2 (tc) ?
+Manao ahoana, Hello, Bonjour,
 
+I have a sofwtare, *like*  http://coova.org/ (access controller) but old
+and proprietary, that allows people to connect to internet after
+identifying through a web form.
+
+If the user is not identified, when he tries to browse Internet, he is
+redirected to the identification web form. Identification is posible
+only via the web form.
+
+The problem is there are some users trying to DOS by overloading the
+redirection.
+
+I setup a filtering bridge before the access controller in order to
+limit trigerring the web redirection. I put a very basic rule:
+
+
+  $ sudo brctl show
+  bridge name       interfaces 
+  br0               eth1 eth2
+
+  #!/bin/bash
+  CLIENTS1=eth1
+  ACCESS_CONTROLLER=eth2
+  iptables -A FORWARD -i br0 \
+        -m physdev --physdev-in $CLIENTS1 \
+        -p tcp -m state --state NEW -j connlimit
+  [...]
+  iptables -A connlimit  -m connlimit \
+        --connlimit-above 15 -j DROP
+
+This seems to limit the DOS, and the results are quite satisfying me.
+I limit NEW connections to 15 parallell ones. Is it really "real time"?
+
+I guess there is a time interval, but did not find how tiny it is (1
+second? 1 millisecond?...)
+
+Misaotra, Thanks, Merci.
+
+-- 
+       Architecte Informatique chez Blueline/Gulfsat:
+    Administration Systeme, Recherche & Developpement
+                                     +261 3456 000 19
