@@ -1,27 +1,34 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: HELP: how to block faked RST packet
-Date: Sat, 12 Jun 2010 16:32:11 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1006121631210.19078@obet.zrqbmnf.qr>
-References: <AANLkTin10l7SVMgOS6SUU8IZruGsbjrJoopVqn6uZtCP@mail.gmail.com> <AANLkTikRgRaIUe4WLIJanGp0Q8et1LXYJHu0PyyjFwc2@mail.gmail.com>
+From: Michele Petrazzo - Unipex <michele.petrazzo@unipex.it>
+Subject: Re: traffic shaping between two LANs and one ppp0 default gw
+Date: Sat, 12 Jun 2010 16:36:58 +0200
+Message-ID: <4C139B8A.9030608@unipex.it>
+References: <4C104BDB.7060706@asyr.hopto.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTikRgRaIUe4WLIJanGp0Q8et1LXYJHu0PyyjFwc2@mail.gmail.com>
+In-Reply-To: <4C104BDB.7060706@asyr.hopto.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Narendra Choyal <narendrachoyal@gmail.com>
-Cc: =?UTF-8?B?6LW15pum?= <pagonz@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Thanasis <thanasis@asyr.hopto.org>
+Cc: netfilter@vger.kernel.org
 
-On Saturday 2010-06-12 16:12, Narendra Choyal wrote:
+Thanasis wrote:
+> We would like to divide the incoming and outgoing bandwidth equally 
+> between those two LANs, ie: On the other hand, routing packets
+> between the 2 LANs (from eth2 to eth0 and vice versa) should not be
+> restricted, ie should be at 100Mbps. How would this be best and
+> simplest implemented by using iproute2 (tc) ?
+> 
 
-> iptables -A INPUT -p tcp -i eth0 --tcp-flags ACK,SYN,FIN,RST,URG,PSH
->RST -j DROP
->
->if you are using above iptable rule then this will stop breaking of
->the the connection, like if you make a ssh connection then this will
->not break connection.
 
-This is flawed, it basically ignores any RST, which means connections 
-will hang around for until they timeout. And that in turn, can be 
-up to 5 days.
+tc + htb | cbq | another handful of queues are what you are looking for
+and google for that (also for larc)
+
+P.s. As said in all the howtos that you can find, you can limit *only*
+upload speed (unless you use some trick and imq), so in you environment
+will be near impossible to split the download speed between the
+different lans since every queue are strictly linked with a interface,
+which cannot know each other
+
+Michele
