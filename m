@@ -1,27 +1,29 @@
-From: Thanasis <thanasis@asyr.hopto.org>
+From: Michele Petrazzo - Unipex <michele.petrazzo@unipex.it>
 Subject: Re: traffic shaping between two LANs and one ppp0 default gw
-Date: Sat, 12 Jun 2010 18:15:09 +0300
-Message-ID: <4C13A47D.30905@asyr.hopto.org>
-References: <4C104BDB.7060706@asyr.hopto.org> <4C139B8A.9030608@unipex.it>
+Date: Sat, 12 Jun 2010 17:23:11 +0200
+Message-ID: <4C13A65F.6030100@unipex.it>
+References: <4C104BDB.7060706@asyr.hopto.org> <4C139B8A.9030608@unipex.it> <4C13A47D.30905@asyr.hopto.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C139B8A.9030608@unipex.it>
+In-Reply-To: <4C13A47D.30905@asyr.hopto.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Thanasis <thanasis@asyr.hopto.org>
+Cc: netfilter@vger.kernel.org
 
-on 06/12/2010 05:36 PM Michele Petrazzo - Unipex wrote the following:
-> tc + htb | cbq | another handful of queues are what you are looking
-> for and google for that (also for larc)
-> P.s. As said in all the howtos that you can find, you can limit *only*
-> upload speed (unless you use some trick and imq), so in you environment
-> will be near impossible to split the download speed between the
-> different lans since every queue are strictly linked with a interface,
-> which cannot know each other
-Thanks !
-I read that imq is being replaced by ifb :
-(already in kernel: Device drivers -> Network device support ->
-Intermediate Functional Block support ).
-http://www.linuxfoundation.org/collaborate/workgroups/networking/ifb
+Thanasis wrote:
+> I read that imq is being replaced by ifb :
+> (already in kernel: Device drivers -> Network device support ->
+> Intermediate Functional Block support ).
+> http://www.linuxfoundation.org/collaborate/workgroups/networking/ifb
+
+Opss... Sorry for the wrong information!
+
+P.s. If you are looking for a very simple and quickly setup, you can
+also look for shorewall that can also "talk" with ifb
+(www.shorewall.net/traffic_shaping.htm)
+
+
+Michele
