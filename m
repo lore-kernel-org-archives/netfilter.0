@@ -1,34 +1,27 @@
-From: Michele Petrazzo - Unipex <michele.petrazzo@unipex.it>
+From: Thanasis <thanasis@asyr.hopto.org>
 Subject: Re: traffic shaping between two LANs and one ppp0 default gw
-Date: Sat, 12 Jun 2010 16:36:58 +0200
-Message-ID: <4C139B8A.9030608@unipex.it>
-References: <4C104BDB.7060706@asyr.hopto.org>
+Date: Sat, 12 Jun 2010 18:15:09 +0300
+Message-ID: <4C13A47D.30905@asyr.hopto.org>
+References: <4C104BDB.7060706@asyr.hopto.org> <4C139B8A.9030608@unipex.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C104BDB.7060706@asyr.hopto.org>
+In-Reply-To: <4C139B8A.9030608@unipex.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Thanasis <thanasis@asyr.hopto.org>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Thanasis wrote:
-> We would like to divide the incoming and outgoing bandwidth equally 
-> between those two LANs, ie: On the other hand, routing packets
-> between the 2 LANs (from eth2 to eth0 and vice versa) should not be
-> restricted, ie should be at 100Mbps. How would this be best and
-> simplest implemented by using iproute2 (tc) ?
-> 
-
-
-tc + htb | cbq | another handful of queues are what you are looking for
-and google for that (also for larc)
-
-P.s. As said in all the howtos that you can find, you can limit *only*
-upload speed (unless you use some trick and imq), so in you environment
-will be near impossible to split the download speed between the
-different lans since every queue are strictly linked with a interface,
-which cannot know each other
-
-Michele
+on 06/12/2010 05:36 PM Michele Petrazzo - Unipex wrote the following:
+> tc + htb | cbq | another handful of queues are what you are looking
+> for and google for that (also for larc)
+> P.s. As said in all the howtos that you can find, you can limit *only*
+> upload speed (unless you use some trick and imq), so in you environment
+> will be near impossible to split the download speed between the
+> different lans since every queue are strictly linked with a interface,
+> which cannot know each other
+Thanks !
+I read that imq is being replaced by ifb :
+(already in kernel: Device drivers -> Network device support ->
+Intermediate Functional Block support ).
+http://www.linuxfoundation.org/collaborate/workgroups/networking/ifb
