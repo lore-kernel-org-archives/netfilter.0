@@ -1,43 +1,44 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Cannot destroy queue, nfnl_talk never returns
-Date: Mon, 14 Jun 2010 01:21:18 +0200
-Message-ID: <4C1567EE.2040802@netfilter.org>
-References: <4C136D70.3050902@tana.it>
+Subject: Re: Using conntrack to create new expectation entry
+Date: Mon, 14 Jun 2010 01:24:06 +0200
+Message-ID: <4C156896.1000600@netfilter.org>
+References: <4C120872.4040308@cea.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C136D70.3050902@tana.it>
+In-Reply-To: <4C120872.4040308@cea.fr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Alessandro Vesely <vesely@tana.it>
+To: GLAUME Vincent <vincent.glaume@cea.fr>
 Cc: netfilter@vger.kernel.org
 
-Alessandro Vesely wrote:
-> Hi,
-> it has happened again (previous time was 5 May 2010).
-> This time I used gdb rather than strace, but still don't know what's wrong:
+GLAUME Vincent wrote:
+> Hi there,
 > 
-> Calling recv on the nfq_fd had returned -512. (why?)
-> At that point my daemon calls nfq_destroy_queue(), which does not return:
+> I'm currently trying to figure out how the whole libnetfilter_conntrack
+> works, and more precisely the expect part of the lib.
+> My aim is to be able to create new expectation entries with this lib in
+> an application that would inspect packets (either coming from a
+> pcap-based sniffer or from netfilter via the nfqueue mechanism) : thus
+> I'd like to allow connections related to the inspected (and already
+> allowed) connections.
 > 
-> (gdb) bt
-> #0  0x00007ff3b6e50450 in recvfrom () from /lib/libc.so.6
-> #1  0x00007ff3b696105c in nfnl_talk () from /usr/lib/libnfnetlink.so.0
-> #2  0x00007ff3b79a429f in __build_send_cfg_msg (h=0x6073a0, command=2 '\002', queuenum=<value optimized out>, pf=0)
->     at libnetfilter_queue.c:112
-> #3  0x00007ff3b79a430d in nfq_destroy_queue (qh=0x607410) at libnetfilter_queue.c:258
-> #4  0x00000000004021f7 in daemon_loop (h=0x6073a0, db=0x606570) at ibd-judge.c:477
-> #5  0x0000000000402a75 in main (argc=<value optimized out>, argv=<value optimized out>) at ibd-judge.c:739
+> My various tests make me think that to create such an expectation entry,
+> a kernel module related to the master connection is required: am I right?
+> For instance, the "expect_create" app in the libnetfilter_conntrack
+> "utils" subdirectory works fine, unless I modify the destination port of
+> the master conntrack structure... then it's no longer related to the FTP
+> conntrack mechanism...
+> Same thing happens when using the conntrack app. from the conntrack-tools.
 > 
-> Any idea?
+> So, I'd like to know how to do this the right way, without coding the
+> whole inspection thing in a kernel module (if this is possible). Is
+> there any generic tcp conntrack system that could help here?
+> As I'm not too sure to fully understand the whole mechanism of expected
+> connection creation, any hint is welcome!
+> I hope this is not too confused... Thanks,
 
-I think that this is fixed in:
-
-http://git.netfilter.org/cgi-bin/gitweb.cgi?p=libnetfilter_queue.git;a=commit;h=bc56a6becbd4c4edf743ca3bee32eb0329fc5e5a
-
-That fix is included in libnetfilter_queue-0.0.17. You seem to be using
-an older version since you point to nfnl_talk() which is not used
-anymore in the library.
-
-Upgrade and let us know if that fixes your problem.
+IIRC, this requires a couple of patches for the kernel to fully support
+conntrack helpers in user-space, which seems to be what you need. So
+this is not support until the appropriate patches go into the kernel.
