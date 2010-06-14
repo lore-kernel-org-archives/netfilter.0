@@ -1,63 +1,61 @@
-From: GLAUME Vincent <vincent.glaume@cea.fr>
-Subject: Re: Using conntrack to create new expectation entry
-Date: Mon, 14 Jun 2010 10:15:05 +0200
-Message-ID: <4C15E509.90808@cea.fr>
-References: <4C120872.4040308@cea.fr> <4C156896.1000600@netfilter.org>
+From: Federico Alberto Sayd <fsayd@uncu.edu.ar>
+Subject: Re: Force traffic
+Date: Mon, 14 Jun 2010 10:17:34 -0300
+Message-ID: <4C162BEE.5010807@uncu.edu.ar>
+References: <4C1513F3.5010508@abpni.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C156896.1000600@netfilter.org>
+In-Reply-To: <4C1513F3.5010508@abpni.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Pablo Neira Ayuso a =E9crit :
-> GLAUME Vincent wrote:
->  =20
->> Hi there,
->>
->> I'm currently trying to figure out how the whole libnetfilter_conntr=
-ack
->> works, and more precisely the expect part of the lib.
->> My aim is to be able to create new expectation entries with this lib=
- in
->> an application that would inspect packets (either coming from a
->> pcap-based sniffer or from netfilter via the nfqueue mechanism) : th=
-us
->> I'd like to allow connections related to the inspected (and already
->> allowed) connections.
->>
->> My various tests make me think that to create such an expectation en=
-try,
->> a kernel module related to the master connection is required: am I r=
-ight?
->> For instance, the "expect_create" app in the libnetfilter_conntrack
->> "utils" subdirectory works fine, unless I modify the destination por=
-t of
->> the master conntrack structure... then it's no longer related to the=
- FTP
->> conntrack mechanism...
->> Same thing happens when using the conntrack app. from the conntrack-=
-tools.
->>
->> So, I'd like to know how to do this the right way, without coding th=
-e
->> whole inspection thing in a kernel module (if this is possible). Is
->> there any generic tcp conntrack system that could help here?
->> As I'm not too sure to fully understand the whole mechanism of expec=
-ted
->> connection creation, any hint is welcome!
->> I hope this is not too confused... Thanks,
->>    =20
+El 13/06/10 14:22, Jonathan Tripathy escribi=F3:
+> Hi Everyone,
 >
-> IIRC, this requires a couple of patches for the kernel to fully suppo=
-rt
-> conntrack helpers in user-space, which seems to be what you need. So
-> this is not support until the appropriate patches go into the kernel.
->  =20
+> Does anyone know any rules that I could use (using iptable, ebtables,=
+=20
+> or otherwise) that could force all traffic coming from an interface t=
+o=20
+> go out via a particular interface? I'm using Xen and all the DomUs=20
+> ("VMs" or "Guests") are connected to a linux bridge. I wish to force=20
+> all traffic from these VMs to go out via the interface which is=20
+> connected to my firewall (which itself is a filtering bridge). I wish=
+=20
+> to do this all at the "link-layer" if possible.
+>
+> I am lead to believe that in a linux bridge, all frames are sent to=20
+> all ports (a bit like the old-school hubs), so it could just be a=20
+> matter of blocking all traffic, except those which are for the=20
+> firewall interface, using ebtables.
+>
+> Any help is very much appreciated.
+>
+> Thanks
+>
+> Jonathan
+> --=20
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
+ From iptables man:
 
-Thank you for this hint, I'm going to dig it...
-I wish I could understand why/how it works pretty well with the FTP=20
-conntrack though!
+    physdev
+        This  module  matches on the bridge port input and output=20
+devices enslaved to a bridge device. This module is a part of the=20
+infrastructure that enables a transparent bridging IP firewall and
+        is only useful for kernel versions above version 2.5.44.
+
+!] --physdev-is-out
+               Matches if the packet will leave through a bridge interf=
+ace.
+
+
+
+May be this module can be useful for you
+
+
