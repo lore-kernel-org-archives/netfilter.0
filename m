@@ -1,27 +1,43 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Check for rule existence
-Date: Mon, 14 Jun 2010 13:25:23 -0500
-Message-ID: <4C167413.2060003@riverviewtech.net>
-References: <AANLkTim0fkO6mhQqBlhAsW-I2blxkP36ld0Hk-W3kF42@mail.gmail.com> <AANLkTimA4wYL8mouRjiygbldj9rLui_vhh1zemVRcmQK@mail.gmail.com>
+From: Narendra Choyal <narendrachoyal@gmail.com>
+Subject: Re: Force traffic
+Date: Tue, 15 Jun 2010 01:21:09 +0530
+Message-ID: <AANLkTikmYEJeQVI5icjMK0FuFT8rWNvazsELSxqzi93i@mail.gmail.com>
+References: <4C1513F3.5010508@abpni.co.uk>
+	<4C162BEE.5010807@uncu.edu.ar>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTimA4wYL8mouRjiygbldj9rLui_vhh1zemVRcmQK@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:in-reply-to
+         :references:date:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=VxBv0L78L0OOCCZL77A7iFucZ9glmafWlXNtzOcIYfg=;
+        b=Ia9xYlLd9j4z1ce5pat4wQWaFQv5a9ROun8Pu8jHvZM+xcHFwYbHdyYCA2Y1vqB7Uj
+         Oq+ZW/R7yxKSwNuGgH1e6kZNTDXEirG0jEXzboNnnsN2ZvNsSNluEPfD9/XH6tKIzmm0
+         aYqGWxk3jXBKHeRHB0s7JcMVIEgOTdKnA0mnI=
+In-Reply-To: <4C162BEE.5010807@uncu.edu.ar>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+To: Federico Alberto Sayd <fsayd@uncu.edu.ar>
+Cc: netfilter@vger.kernel.org
 
-On 06/14/10 12:23, Curby wrote:
-> Hopefully others will have more to add. =)
+What type of virtualization you are using --
+ =95 Para virtualization
+ =95 Fully virtualization
 
-You might want to look in to the "comment" match extension.
+Different virtualization differs for your answer.
 
-You could add a comment to rules that you are entering, and then look 
-for said comment as a flag when looking for the rule.  That way you 
-wouldn't have to process nearly as much, because you can look for your 
-own flag.
+Sol 1.
+=3D=3D=3D=3D
+You have to apply NATting that will route all routes to a specific
+interface(or ip of interface)
 
+Sol 2.
+=3D=3D=3D=3D
+Use "route" command
 
-
-Grant. . . .
+and for more detail contact me
+Narendra Choyal
+narendrachoyal@gmail.com
