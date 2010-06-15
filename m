@@ -1,71 +1,70 @@
-From: Billy Crook <billycrook@gmail.com>
-Subject: Re: In practice how are firewalls used to protect IM traffic?
-Date: Tue, 15 Jun 2010 06:22:05 -0500
-Message-ID: <AANLkTinSfIfpy-irvVxsCChipmnroPogtCuYXXQ4dGEe@mail.gmail.com>
-References: <AANLkTiknNHF-vDIDN0L3eho8KXP2w3sjzE-n3O6swrw0@mail.gmail.com>
+From: Luis Daniel Lucio Quiroz <luis.daniel.lucio@gmail.com>
+Subject: Re: [squid-users] Squid + Tproxy + Bridge on Kernel 2.6.34 - Workaround
+Date: Tue, 15 Jun 2010 13:37:48 -0500
+Message-ID: <201006151337.48731.luis.daniel.lucio@gmail.com>
+References: <4BFCA1D3.3060505@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:received:mime-version:received:in-reply-to
-         :references:from:date:message-id:subject:to:cc:content-type;
-        bh=AWhYALyCg7bmLTDJJwkfH4MyfUnSrwVPlgE1Uz/J08w=;
-        b=DGtnCCjQL/pRWjFNnkRmPIk8Xqc3Yt7tjme/A31o4XqK+jEB6+/YekFUcx7qH/0oLv
-         gzDC+qEqFNd7MtnJilwvIJXxBymaXxswo9Zc9wIu/oxVVmtuZI5sekfHC8bjyFY9JotE
-         L0nknIVhBiNXOT4bWzcjGAtI4MaU8hvz5TBn8=
-In-Reply-To: <AANLkTiknNHF-vDIDN0L3eho8KXP2w3sjzE-n3O6swrw0@mail.gmail.com>
+        h=domainkey-signature:received:received:from:organization:to:subject
+         :date:user-agent:cc:references:in-reply-to:mime-version:content-type
+         :content-transfer-encoding:message-id;
+        bh=w259Q+ooKbNdoHjR2Q3XCycnWy2gWNE/1sHzDMC2Srs=;
+        b=HIexokMkrCw2ve6jg5CeyiAJLMVH3uLMwqspAeXQSFonm5PgYUHOoOZXeHSdFL7kYP
+         OVGh6qTCuU9k8Bq0Ig5sn8PiSA+kb5Ysfgq7Y567Yo+qY84blJfqXPtdwDc7yKKY4cNX
+         eDL7uEt3z6Q4JbNhBSY+RKaiQwf7XzSpWMwRs=
+In-Reply-To: <4BFCA1D3.3060505@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: paddy joesoap <paddyjoesoap@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: Text/Plain; charset="iso-8859-1"
+To: squid-users@squid-cache.org
+Cc: senthilkumaar2021 <senthilkumaar2021@gmail.com>, netfilter@vger.kernel.org
 
-On Tue, Jun 15, 2010 at 06:00, paddy joesoap <paddyjoesoap@gmail.com> wrote:
-> In securing XMPP (Jabber, IM) servers, what role does an iptables
-> firewall play in practice.
+Le mardi 25 mai 2010 23:21:39, senthilkumaar2021 a =E9crit :
+> Hi,
+>=20
+> Squid + Tproxy + Bridge Setup on latest kernel - version 2.6.34
+>=20
+> I had followed all the steps that had given in the
+> http://wiki.squid-cache.org/Features/Tproxy4
+>=20
+> Kernel - 2.6.34
+> iptable - 1.4.8
+> ebtable - 2.0.9-1
+>=20
+> But clients were unable to browse and no errors in cache.log. Error -
+> Network Unreachable. The error had returned by browser not squid prox=
+y.
+>=20
+> Workaround :-
+>=20
+> After adding the following rules, clients are able to browse.
+>=20
+> # ip rule add dev <device name> fwmark 1 lookup 100
+>=20
+> example
+>=20
+> # ip rule add dev eth0 fwmark 1 lookup 100
+>=20
+> NOTE : Repeat the above for each interface except " lo "
+>=20
+> Source - https://lists.balabit.hu/pipermail/tproxy/2010-January/00121=
+2.html
+>=20
+> Based on the above source this issue had identified on kernel version=
+ -
+> 2.6.32. But still not yet fixed.
+>=20
+> I have CC ed this mail to netfilter mailing lists also.
+>=20
+> Hope this helps
+>=20
+> Thanks,
+> Senthil
 
-Not a big role in and of itself if by server you mean the process that
-accepts connections from clients.
+I was about to  ask
+if this is fixed in 2.6.33+
 
-> The XMPP community tend to think of TLS communication channels only
-
-That's an overstatement
-
-> I'd imagine that some enterprises want to inspect at the firewall (or
-> ...
-> with IM conversations is blocked. In such scenarios, is it best
-> practice to remove the TLS option and thereby loosing some proof of
-> identify (certificates) in favour of deep packet inspection?
-
-Another option is for that enterprise to maintain a malicious root
-certificate internally with which to generate spoofed domain certs on
-the fly.  This has been done for https already in several products.
-Whether this practice, or outright banning of encrypted outbound
-connections is 'best practice' is a matter of opinion.  I would say
-no.
-
-> Are there scenarios where an enterprise that is geographically spread
-> who use VPN's such that they do not require TLS encryption on the XMPP
-
-How large does an enterprise need to be before the risk of malicious
-interception within its own network is as reasonable as on the public
-internet?  I don't take for granted that my physical lan is inherently
-secure.  End to end encryption will only become more popular.  I was
-hoping for it to be managed by the kernels of the endpoints and happen
-in the form of automatic IPSec, but running TLS in the client/server
-software has proven more attractive to most people.
-
-> While XMPP servers such as Openfire have TLS functionality end-to-end,
-> are these used in practice by security administrators or is some of
-> the communication desired in the clear for DPI.
-
-My vote goes to end to end, untainted TLS.  Run selinux/apparmor/grsec
-on the server if you understand essential server daemons can have
-bugs.
-
-> While I understand that layer 7 filtering should really be left to
-> application specific filters, iptables has some functionality with its
-
-I'd still leave the filtering to an IDS, and let the IDS att rules to
-the firewall in real time.
+or shall i stay in 2.6.31.x
