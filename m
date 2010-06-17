@@ -1,106 +1,32 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: Fwd: Can Netfilter "mark" be used with setkey spdadd?
-Date: Thu, 17 Jun 2010 09:47:58 +0200
-Message-ID: <4C19D32E.7010206@trash.net>
-References: <AANLkTikXfO5TnvTN946kVtdkO5rs6vwVx0DkOP5uIcRY@mail.gmail.com> <alpine.LSU.2.01.1006162019220.30698@obet.zrqbmnf.qr> <AANLkTin_ISVEr4Z5zoVmGEm9RMbvjRlws7I1AnQkfCfU@mail.gmail.com> <alpine.LSU.2.01.1006170930180.12057@obet.zrqbmnf.qr>
+From: =?UTF-8?Q?Mamadou_Tour=C3=A9?= <e2ia.ci@gmail.com>
+Subject: move rule to a position
+Date: Thu, 17 Jun 2010 08:26:18 +0000
+Message-ID: <AANLkTik1sNBmNmsm0vZ7--tZ4EbBXwwTMpBhHnDW6JnJ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LSU.2.01.1006170930180.12057@obet.zrqbmnf.qr>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=Z/M14pOLHw1pqPFP4aTh5GEKSMFclXyAvCKNfAzJWXE=;
+        b=Y7JgIF2ie8sSwm+uPHYs2k2ioNyK2OzYTKamOma+1rbYVVFsgIlc7AbCRHsxiFBOEI
+         ZSZD6n44AG8Q1Y1U9FzsTpkOBiAIcJbqfFEW6QBRms46TJasaVynoOxw/2I8Cvc2YThj
+         Eo67GSwQbC/lwIvbAGabir0t6Ac6w5cC9vEXM=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Ajay Lele <ajay.lele@gmail.com>, netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Jan Engelhardt wrote:
-> On Thursday 2010-06-17 03:24, Ajay Lele wrote:
->   
->>>> I am working on a VPN solution where packets entering Linux box are
->>>> manipulated using IPTables rules (SNAT, DNAT etc.). The nature of this
->>>> manipulation is such that packets destined for different sites end up
->>>> getting the same src/dst IP address when they reach the Netfilter
->>>> POSTROUTING chain. However a different "mark" is set using the
->>>> IPTables mark target by which packets destined for different sites can
->>>> be distinguished from one another. Is there a way I can use this mark
->>>> value while creating security policy using setkey spdadd so that
->>>> packets are sent over respective tunnels (tunnels are created
->>>> manually)
->>>>         
->>> A packet can be marked when it enters the machine and retains the
->>> mark as long as it exists, even across transformation.
->>>       
->> Thanks for the info, Jan. What I am specifically looking for is
->> whether Netfilter "mark" value on the outgoing packet can be used to
->> influence which tunnel the packet is forwarded on. I know it is more a
->> question for ipsec-tools folks but trying my luck here as nobody
->> replied on their mailing list
->>     
->
-> Sounds like you found a missing feature. I certainly did not find
-> any mention of mark or realm in `ip xfrm policy help`.
+Hi, all i'd like to move rule to a position.
+ex: i've these rules :
+1- iptable -A -p TCP --dport 80 -j ACCEPT
+2- iptable -A -p TCP --dport 21 -j ACCEPT
+3- iptable -A -p UDP --dport 53 -j ACCEPT
 
-Its supported since .34:
+after executing these command is there a mean to move rule at
+position 3 to position 1 ?
+So that the rule at 1 could go to 2 and 2 to 3.
 
-commit fb977e2ca607a7e74946a1de798f474d1b80b9d6
-Author: Jamal Hadi Salim <hadi@cyberus.ca>
-Date:   Tue Feb 23 15:09:53 2010 -0800
-
-    xfrm: clone mark when cloning policy
-   
-    When we clone the SP, we should also clone the mark.
-    Useful for socket based SPs.
-   
-    Signed-off-by: Jamal Hadi Salim <hadi@cyberus.ca>
-    Signed-off-by: David S. Miller <davem@davemloft.net>
-
-commit 295fae568885a93c39a0e29a9455054608b6cc0e
-Author: Jamal Hadi Salim <hadi@cyberus.ca>
-Date:   Mon Feb 22 11:33:00 2010 +0000
-
-    xfrm: Allow user space manipulation of SPD mark
-   
-    Add ability for netlink userspace to manipulate the SPD
-    and manipulate the mark, retrieve it and get events with a defined
-    mark, etc.
-   
-    Signed-off-by: Jamal Hadi Salim <hadi@cyberus.ca>
-    Signed-off-by: David S. Miller <davem@davemloft.net>
-
-commit 6f26b61e177e57a41795355f6222cf817f1212dc
-Author: Jamal Hadi Salim <hadi@cyberus.ca>
-Date:   Mon Feb 22 11:32:59 2010 +0000
-
-    xfrm: Allow user space config of SAD mark
-   
-    Add ability for netlink userspace to manipulate the SAD
-    and manipulate the mark, retrieve it and get events with a defined
-    mark.
-    MIGRATE may be added later.
-   
-    Signed-off-by: Jamal Hadi Salim <hadi@cyberus.ca>
-    Signed-off-by: David S. Miller <davem@davemloft.net>
-
-commit 34f8d8846f69f3b5bc3916ba9145e4eebae9394e
-Author: Jamal Hadi Salim <hadi@cyberus.ca>
-Date:   Mon Feb 22 11:32:58 2010 +0000
-
-    xfrm: SP lookups with mark
-   
-    Allow mark to be used when doing SP lookup
-   
-    Signed-off-by: Jamal Hadi Salim <hadi@cyberus.ca>
-    Signed-off-by: David S. Miller <davem@davemloft.net>
-
-commit 8ca2e93b557f2a0b35f7769038abf600177e1122
-Author: Jamal Hadi Salim <hadi@cyberus.ca>
-Date:   Mon Feb 22 11:32:57 2010 +0000
-
-    xfrm: SP lookups signature with mark
-   
-    pass mark to all SP lookups to prepare them for when we add code
-    to have them search.
-   
-    Signed-off-by: Jamal Hadi Salim <hadi@cyberus.ca>
-    Signed-off-by: David S. Miller <davem@davemloft.net>
-
+Someone has allready done that ? plz Help.
+regards.
