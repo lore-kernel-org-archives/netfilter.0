@@ -1,35 +1,33 @@
-From: Curby <curby@cur.by>
+From: Steve Fink <sphink@gmail.com>
 Subject: Re: match many protocol in a rule
-Date: Thu, 17 Jun 2010 20:06:01 -0600
-Message-ID: <AANLkTinQfTvUhhbwcutlXNql0gzpi1jDJjjkRVLCU0f_@mail.gmail.com>
-References: <AANLkTinVb4YBnyfJJN6JFA4U9TDDonG2Drmtz-yjMIOV@mail.gmail.com> 
-	<AANLkTilErsiq8IUBxUUUq-EhS6KUQUEs6KNHKVD4UPCH@mail.gmail.com> 
+Date: Thu, 17 Jun 2010 23:27:43 -0700
+Message-ID: <AANLkTikvTa8WAC9FMbLsaXVKlXZNT0OUWhDeC6-fs-zO@mail.gmail.com>
+References: <AANLkTinVb4YBnyfJJN6JFA4U9TDDonG2Drmtz-yjMIOV@mail.gmail.com>
+	<AANLkTilErsiq8IUBxUUUq-EhS6KUQUEs6KNHKVD4UPCH@mail.gmail.com>
 	<4C1AD332.90603@riverviewtech.net>
+	<AANLkTinQfTvUhhbwcutlXNql0gzpi1jDJjjkRVLCU0f_@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C1AD332.90603@riverviewtech.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:in-reply-to
+         :references:date:message-id:subject:from:to:cc:content-type;
+        bh=dLbsTSnFpgAg+8d/UmhVH3sOu2yDbiROEt0lSXg8hO4=;
+        b=oDyA4AaFoKhNp6uXXTx4SauDm2PhD4Ct4usbyylgzPunZe8oqCoefoavz2ifsIzyPa
+         X3Ajy3QsHBnrY6RmC3EU1isosGGmUShu3yJqOg0P0cGviSL4ai2RuCE9mTe0YpXA22hs
+         Sbv5SK0y3LRoPT0wfrEzj8AXn2SebiCTudHqc=
+In-Reply-To: <AANLkTinQfTvUhhbwcutlXNql0gzpi1jDJjjkRVLCU0f_@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Grant Taylor <gtaylor@riverviewtech.net>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Curby <curby@cur.by>
+Cc: Grant Taylor <gtaylor@riverviewtech.net>, Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Thu, Jun 17, 2010 at 8:00 PM, Grant Taylor <gtaylor@riverviewtech.ne=
-t> wrote:
-> I also thought about matching the protocols and jumping to a sub-chai=
-n.
-> =A0However that won't work the way you want it to b/c (last I checked=
-) you
-> have to specify a protocol to be able to specify a port. =A0So, you m=
-ight as
-> well match both the protocol and the port on the same rule.
+For tcp/53 + udp/53: TCP and UDP have the port at the same offset. You
+could use a 'u32' (or 'string') match using the offset of the port
+field. (The source port is the 16 bits just after the IP header; the
+destination port is the next 32 bits.) You'd also have to match the
+two protocols numerically.
 
-Yeah I wasn't clear on that.  You would definitely need to match ports
-before jumping, but the idea is that the custom chain could apply a
-complex series of actions, e.g. updating a recent match, logging, etc.
- It really depends on what the overarching goal is.  The basic goal of
-specifying "allow tcp+udp port 53" in a single rule doesn't seem
-possible though.
-
---Mike
+Just sayin'.
