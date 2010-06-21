@@ -1,36 +1,50 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: noob question howto using iptables limit ip access times
-Date: Mon, 21 Jun 2010 06:53:03 -0500
-Message-ID: <20100621115303.GO19868@cardinal>
+Date: Mon, 21 Jun 2010 14:02:39 +0200
+Message-ID: <4C1F54DF.5090802@plouf.fr.eu.org>
 References: <AANLkTimidapf_oJzL3tN2U275oX-nubojD5YRC6mwS-H@mail.gmail.com>
-Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
 In-Reply-To: <AANLkTimidapf_oJzL3tN2U275oX-nubojD5YRC6mwS-H@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Zhu Jing <shadowarrx@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-On Mon, Jun 21, 2010 at 07:30:32PM +0800, Zhu Jing wrote:
-> My aim is limit ip access to my squid server with 1000 times per day.
+Hello,
+
+Zhu Jing a =E9crit :
+>=20
+>  My aim is limit ip access to my squid server with 1000 times per day=
+=2E
 > If this ip connections counts more then 1000,iptables will drop it.
-snip
->    iptables -A squid -m limit --limit 1/hour --limit-burst 1000 -j RETURN
-> 
+>=20
+>  I have google a lot,and write a wired scripts :P
+>=20
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>     #!/bin/sh
+>    iptables -F
+>    iptables -X
+>    iptables -Z
+>    iptables -N squid
+>    iptables -A INPUT -p tcp --dport 80 -j squid
+>    iptables -A squid -m limit --limit 1/hour --limit-burst 1000 -j RE=
+TURN
+>    iptables -A squid -j DROP
+>    service iptables save
+>   service iptables restart
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>=20
+>    iptables -A squid -m limit --limit 1/hour --limit-burst 1000 -j RE=
+TURN
+>=20
 >    IMO: this rule means ,the limit-burst token bucket is set to 1000
 > initially, for each hour token count goes up by 1, when token bucket
 > is empty---> not match --> go next rule
+>    But,  I tested it by using IE refresh my server , when i refresh
+> more then 7 or 8 times ,iptables going to drop my connections, why?
 
-No, the burst is the number of packets arriving at once. I think you 
-want:
-    iptables -A squid -m limit --limit 1000/day -j RETURN
-optionally with a reasonable burst limit: --limit-burst 100
-
-See also the more featureful connlimit and hashlimit matches. Perhaps 
--m recent might meet your need, too.
--- 
-    Offlist mail to this address is discarded unless
-    "/dev/rob0" or "not-spam" is in Subject: header
+Because your rule limits packets, not connections. A single TCP
+connection involves multiple packets.
