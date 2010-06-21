@@ -1,31 +1,38 @@
-From: Curby <curby@cur.by>
-Subject: Re: noob question howto using iptables limit ip access times
-Date: Mon, 21 Jun 2010 08:58:16 -0600
-Message-ID: <AANLkTilhJbehk5bjVQRspb0ludFdW0F0bzEvTtU4E9cR@mail.gmail.com>
-References: <AANLkTimidapf_oJzL3tN2U275oX-nubojD5YRC6mwS-H@mail.gmail.com> 
-	<4C1F54DF.5090802@plouf.fr.eu.org>
+From: "Edwin van den Oosterkamp" <edwin@vandenoosterkamp.com>
+Subject: Re: Outbound traffic over two interfaces by port number
+Date: Mon, 21 Jun 2010 16:03:35 +0100
+Message-ID: <3b2642806070953b616d88c15bda7f97.squirrel@edders.homeip.net>
+References: <7628f5b45c96214fccdfcf03e8440ed2.squirrel@edders.homeip.net>
+    <4C1F6CF4.8080706@kickstone.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C1F54DF.5090802@plouf.fr.eu.org>
+In-Reply-To: <4C1F6CF4.8080706@kickstone.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: Zhu Jing <shadowarrx@gmail.com>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Mon, Jun 21, 2010 at 6:02 AM, Pascal Hambourg
-<pascal.mail@plouf.fr.eu.org> wrote:
-> Because your rule limits packets, not connections. A single TCP
-> connection involves multiple packets.
+Hello John,
 
-Yes, the stateful features of netfilter would be useful here.  Drop
-the INVALIDs, accept the ESTABLISHED,RELATED, drop NEW not SYN
-packets, and your match will mostly match valid new connection
-attempts.  This could be further improved by detecting and dropping
-port scans, as Jan wrote about.
+Thank you for your answer - that was an option I had not thought of, so
+I'm going to investigate..
 
-This prevents the 1000/day rule from matching packets for ESTABLISHED
-connections and for spurious packets that should be ignored.
+One other issue I just realised with this setup has to do with ARP. Is it
+possible to ensure that control-connection related ARP requests only get
+onto the control network interface and data-connection related requests
+only get sent on the data network interface? Especially with the two
+networks having an overlapping IP range I need to ensure that the request
+goes out on the correct network interface.
 
---Mike
+Best regards,
+
+Edwin
+
+On Mon, June 21, 2010 14:45, John Lister wrote:
+> You might try looking at connection/packet marking.
+>
+> John
+>
+
+
