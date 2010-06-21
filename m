@@ -1,38 +1,36 @@
-From: "Edwin van den Oosterkamp" <edwin@vandenoosterkamp.com>
-Subject: Re: Outbound traffic over two interfaces by port number
-Date: Mon, 21 Jun 2010 16:03:35 +0100
-Message-ID: <3b2642806070953b616d88c15bda7f97.squirrel@edders.homeip.net>
-References: <7628f5b45c96214fccdfcf03e8440ed2.squirrel@edders.homeip.net>
-    <4C1F6CF4.8080706@kickstone.com>
+From: Beluc <beluc.mailing@free.fr>
+Subject: Re: problem getting uid in nfqueue
+Date: Mon, 21 Jun 2010 22:51:56 +0200
+Message-ID: <4C1FD0EC.6000302@free.fr>
+References: <1624629744.165291276781877065.JavaMail.root@zimbra6-e1.priv.proxad.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C1F6CF4.8080706@kickstone.com>
+In-Reply-To: <1624629744.165291276781877065.JavaMail.root@zimbra6-e1.priv.proxad.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello John,
+no idea ? maybe i didn't explain very well :/
 
-Thank you for your answer - that was an option I had not thought of, so
-I'm going to investigate..
+i saw that when using LOG target in OUTPUT policy, there is the user's=20
+uid who send packet.
+what i want to do is to get that uid when using QUEUE/NFQUEUE target ..=
+=2E
 
-One other issue I just realised with this setup has to do with ARP. Is it
-possible to ensure that control-connection related ARP requests only get
-onto the control network interface and data-connection related requests
-only get sent on the data network interface? Especially with the two
-networks having an overlapping IP range I need to ensure that the request
-goes out on the correct network interface.
-
-Best regards,
-
-Edwin
-
-On Mon, June 21, 2010 14:45, John Lister wrote:
-> You might try looking at connection/packet marking.
+Le 17/06/2010 15:37, beluc.mailing@free.fr a =C3=A9crit :
+> Hi all,
+> i finaly managed to get packet from NFQUEUE to some userspace program=
+ using
+> perl IPTables::IPv4::IPQueue.
+> my problem is that uid/gid is not present in what i receive in perl.
+> is it normal or i did something wrong?
 >
-> John
->
-
-
+> (what i want to do is some advanced firewalling based on user id)
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>   =20
