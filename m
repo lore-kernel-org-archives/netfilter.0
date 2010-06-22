@@ -1,49 +1,44 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: randomly changing IPs from different subnets (Google Mail)
-Date: Tue, 22 Jun 2010 21:18:49 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1006222115050.3363@obet.zrqbmnf.qr>
-References: <B993B335-596D-48D3-9767-F3565C3B1112@gmail.com> <alpine.LSU.2.01.1006222018140.31071@obet.zrqbmnf.qr> <6BE62F49-0B12-4DCB-A421-7D90BDFF0615@gmail.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Blocking Ads.
+Date: Tue, 22 Jun 2010 15:28:17 -0500
+Message-ID: <4C211CE1.7000400@riverviewtech.net>
+References: <868109.94510.qm@web112409.mail.gq1.yahoo.com> <AANLkTimRWJsPH73ASlu7nUY4iuG-ZnB_r7KpMZv64-fd@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <6BE62F49-0B12-4DCB-A421-7D90BDFF0615@gmail.com>
+In-Reply-To: <AANLkTimRWJsPH73ASlu7nUY4iuG-ZnB_r7KpMZv64-fd@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Florian Effenberger <floeff@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Tuesday 2010-06-22 20:30, Florian Effenberger wrote:
+On 06/22/10 13:41, Curby wrote:
+> As far as I know, ad blocking is more commonly performed using DNS, 
+> by resolving domain names to 127.0.0.1, or to a server to serve up 
+> notices of removed content (e.g. in a business environment, users 
+> could request that sites be unblocked).  Is there a reason why you 
+> want to block specific IP addresses instead of domains?
 
->Hi Jan,
->
->thanks for the fast reply!
->
->Am 22.06.2010 um 20:19 schrieb Jan Engelhardt:
->
->> So create another chain. The in-memory table does not know DNS, and 
->> rightfully so.
->
->what does another chain help?
+Agreed.  Normally this is done via DNS, or (IMHO) better via an 
+application layer proxy.
 
-That you can independently refill the extra chain without having
-to touch other rules. That is to say,
+If I was going to DNS poison names where content was served from, I'd 
+either provide a place holder, or an HTTP 404 error so that the client 
+could gracefully handle the missing (blocked) content.
 
-forall (addrs) {
-	add_new_addrs to chain;
-	++i;
-}
-while (delete rules from chain with an index #i does not throw an error)
-	;
+> Anyway, I suspect that sending back appropriate ICMP error messages 
+> instead of DROPing such requests would provide hints to clients that 
+> they should give up instead of wait for a reply.
 
-That gets harder when you have extra rules in the chain you are 
-manipulating.
+Agreed.  This is why you want to REJECT with an ICMP error message, so 
+that clients (that will honer them) get an immediate notification that 
+the connection has been blocked.
 
-Alternatively, you could issue the delete operation with i+10
-to keep the previous addresses around - and let them die off
-by this pseudo-LRU mechanism.
+Not all clients will honor the ICMP rejection message.  But that is a 
+client problem, not a flaw introduced by your firewall.  Returning an 
+HTTP 404 error would probably be better handled than returning an ICMP 
+unreachable message.
 
->I need to keep some records in the tables, because of clients that 
->might have still the "old" address in their cache. The tables get 
->cluttered anyways, no matter if I use one or several user-defined 
->chains.
+
+
+Grant. . . .
