@@ -1,34 +1,23 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [patch v2.2 1/4] [PATCH v2.1 1/4] netfilter: xt_ipvs
- (netfilter matcher for IPVS)
-Date: Tue, 22 Jun 2010 16:13:27 +0900
-Message-ID: <20100622071326.GB9928@verge.net.au>
-References: <20100501032014.406353538@vergenet.net>
- <20100501032120.298829234@vergenet.net>
- <4BDC543F.7060500@trash.net>
- <AANLkTikIzHuzxo4z1_8_fEGLBC2-0Uz0X8SOc8n2msuX@mail.gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: problem getting uid in nfqueue
+Date: Tue, 22 Jun 2010 10:03:42 +0200 (CEST)
+Message-ID: <alpine.LSU.2.01.1006221003230.13935@obet.zrqbmnf.qr>
+References: <1624629744.165291276781877065.JavaMail.root@zimbra6-e1.priv.proxad.net> <4C1FD0EC.6000302@free.fr>
 Mime-Version: 1.0
-Return-path: <lvs-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <AANLkTikIzHuzxo4z1_8_fEGLBC2-0Uz0X8SOc8n2msuX@mail.gmail.com>
-Sender: lvs-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4C1FD0EC.6000302@free.fr>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Hannes Eder <heder@google.com>
-Cc: Patrick McHardy <kaber@trash.net>, lvs-devel@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, netfilter@vger.kernel.org, Wensong Zhang <wensong@linux-vs.org>, Julius Volz <julius.volz@gmail.com>, "David S. Miller" <davem@davemloft.net>, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
+To: Beluc <beluc.mailing@free.fr>
+Cc: netfilter@vger.kernel.org
 
-On Mon, May 03, 2010 at 01:29:46PM +0200, Hannes Eder wrote:
-> Thank you for picking this series of patches up again and thanks for
-> the feedback.
-> 
-> I'll send an updated version in the next days.
+On Monday 2010-06-21 22:51, Beluc wrote:
 
-Hi Hanes,
+> no idea ? maybe i didn't explain very well :/
+>
+> i saw that when using LOG target in OUTPUT policy, there is the user's uid who
+> send packet.
 
-more than a few days seems to have passed.
-Do you have time to fix the patches up?
-If not, I'll take a stab at it.
-
-Thanks
-
+That is not the user's uid, but the uid of the socket's creator.
