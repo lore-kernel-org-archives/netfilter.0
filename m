@@ -1,31 +1,24 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: randomly changing IPs from different subnets (Google Mail)
-Date: Tue, 22 Jun 2010 20:19:25 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1006222018140.31071@obet.zrqbmnf.qr>
-References: <B993B335-596D-48D3-9767-F3565C3B1112@gmail.com>
+From: Ninad A <ninad_adi@yahoo.com>
+Subject: Blocking Ads.
+Date: Tue, 22 Jun 2010 11:18:28 -0700 (PDT)
+Message-ID: <868109.94510.qm@web112409.mail.gq1.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <B993B335-596D-48D3-9767-F3565C3B1112@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1277230708; bh=nf7in+JzOKHviM31FCkp6xP0afLMlgDP66gAzB6YhvU=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Subject:To:MIME-Version:Content-Type; b=NXy8cdNYp5M5Iy44qvQQGzK7jw0lpiufn5StYvuezsklh6rvoDxznym9XR7XeEzBg2mezpfuVDP5IE8Ts+/2zuk3koMfwdfbPmIlzdwaV7SQQZ51Zs2fPs/1UNPaGXoiKGwDLZSeO/neY3n9tgkMiKWtTw1gDwUuls4sGlrCd64=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Florian Effenberger <floeff@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Tuesday 2010-06-22 20:16, Florian Effenberger wrote:
->
->[block by DNS]
->
->If I want to have destination host based rules, how can I do this with 
->iptables? My current idea is to run a cron job every few minutes to add 
->the rules again with the changed IPs, but this sounds like an ugly 
->workaround, and will clutter my user-defined chain heavily.
+Hope What I am asking is not idiotic.
 
-So create another chain. The in-memory table does not know DNS, and 
-rightfully so.
+When we block ads or any such things with iptables then there is lot of delay caused for the application to complete as it is expecting the data which has already been dropped.
+Packets are dropped at IP Layer but who takes care of the delay caused to the application and how to minimize that delay ?
 
->Is there any other approach, other than opening up all traffic to 993 
->and 587?
+N.
 
-SOCKS proxies.
+
+
+
+      
