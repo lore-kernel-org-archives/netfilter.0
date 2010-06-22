@@ -1,36 +1,36 @@
-From: Beluc <beluc.mailing@free.fr>
-Subject: Re: problem getting uid in nfqueue
-Date: Mon, 21 Jun 2010 22:51:56 +0200
-Message-ID: <4C1FD0EC.6000302@free.fr>
-References: <1624629744.165291276781877065.JavaMail.root@zimbra6-e1.priv.proxad.net>
+From: tingwei liu <tingw.liu@gmail.com>
+Subject: multi-path route can't keep long time connections
+Date: Tue, 22 Jun 2010 09:48:09 +0800
+Message-ID: <AANLkTimeYhY-lgY2c5dfYQRDZ2oDLpB1U7TzkvyFQh_A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1624629744.165291276781877065.JavaMail.root@zimbra6-e1.priv.proxad.net>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=J2BbeDXMl/zpmbm/l6lDZ992HZg/7ZgtbMaZm1wWx10=;
+        b=C0Ck/UBeS7TyLC4YC1zP7LWwK0yJtcReCLbD98eNd2m9bbfCurn+IE2gA2Bh3OQXBE
+         NMazl4i2aJzaX4wP5yrJsnk9sWEO1KJOS3VhjvnesX+lx9bmdHay1eyk4qXMEbF/DCx9
+         Do3cwjEKBlQUoRCLW0qs/nqQCI1eE+nnuISoA=
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-no idea ? maybe i didn't explain very well :/
+Because route circularly flush route cache
+(/proc/net/sys/ipv4/route/secret_timeval),the multi-path route can't
+keep long time connections. The long time connections maybe interrupt
+every "secret_timeval" seconds.
+Such as:
+default nexthop via 192.168.0.1 weight 1
+                       via 192.168.1.1 weight 1
+                       via 192.168.2.1 weight 1
 
-i saw that when using LOG target in OUTPUT policy, there is the user's=20
-uid who send packet.
-what i want to do is to get that uid when using QUEUE/NFQUEUE target ..=
-=2E
+With a connection cross 192.168.0.1 in the first time."secret_timeval"
+seconds later,this connection maybe cross 192.168.1.1,then this
+connection will be reconnect.
 
-Le 17/06/2010 15:37, beluc.mailing@free.fr a =C3=A9crit :
-> Hi all,
-> i finaly managed to get packet from NFQUEUE to some userspace program=
- using
-> perl IPTables::IPv4::IPQueue.
-> my problem is that uid/gid is not present in what i receive in perl.
-> is it normal or i did something wrong?
->
-> (what i want to do is some advanced firewalling based on user id)
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->   =20
+Anyone can help me?
+
+Your response is pleasure.
