@@ -1,41 +1,31 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: question about NAT rule
-Date: Tue, 22 Jun 2010 17:10:27 +0200
-Message-ID: <4C20D263.2050502@plouf.fr.eu.org>
-References: <AANLkTimaYvRg2379FY2erzJTKyhXFjEtyvOtgqfYnV2d@mail.gmail.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Florian Effenberger <floeff@gmail.com>
+Subject: randomly changing IPs from different subnets (Google Mail)
+Date: Tue, 22 Jun 2010 20:16:34 +0200
+Message-ID: <B993B335-596D-48D3-9767-F3565C3B1112@gmail.com>
+Mime-Version: 1.0 (Apple Message framework v1081)
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTimaYvRg2379FY2erzJTKyhXFjEtyvOtgqfYnV2d@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:from:content-type
+         :content-transfer-encoding:subject:date:message-id:to:mime-version
+         :x-mailer;
+        bh=hu9uRuDZEBCHhKc6h4k8ZeoawHrwtSu59gPneKVav1I=;
+        b=vT6SAqmBcOKFEqfNrd+nX1/D/GxhfQbll4mrGAcgrcmjHItBK1V+zF0Js+F0LgeD4e
+         xzkD+x7pkyyYd5ZXWljv9kGufxldSWE6d4GelkJGRoBHHrgjJjG7UrfJlcaCAzlNVJKD
+         PUPCRHu8iTTi6PCk8cTtRzu+7f0kz3PPmPpTA=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hello,
+Hi,
 
-Pete Kay a =E9crit :
->=20
-> I have the following NAT rule set up :
->=20
-> udp      17 12 src=3D192.168.1.102 dst=3D192.168.1.140 sport=3D7390
-> dport=3D8000 packets=3D6 bytes=3D3258 [UNREPLIED] src=3D192.168.1.140
-> dst=3D192.168.1.102 sport=3D10000 dport=3D9000 packets=3D0 bytes=3D0 =
-mark=3D0
-> secmark=3D0 use=3D2
+my default network policy is to block all outgoing traffic and only allow certain packets to pass. For some users, I'd like to open up Google Mail (imap.gmail.com:993 and smtp.gmail.com:587). However, Google's DNS give randomly out different IPs per query. Sadly, they are not all located within a subnet, but vary in all parts of the address.
 
-This is not a NAT rule but a conntrack entry.
+If I want to have destination host based rules, how can I do this with iptables? My current idea is to run a cron job every few minutes to add the rules again with the changed IPs, but this sounds like an ugly workaround, and will clutter my user-defined chain heavily.
 
-> What I am expecting to achieve is that when udp packets go from
-> 192.168.1.102:7390 to 192.168.1.140:8000, the conntrack module would
-> redirect the packet to 192.168.1.102:9000, but it is not happening.
->=20
-> Does anyone know what is wrong?
+Is there any other approach, other than opening up all traffic to 993 and 587?
 
-It is not happenning because of the above conntrack entry that says
-otherwise and already exists for these packets, so iptables NAT rules
-are ignored. You must first delete the conntrack entry with
-conntrack-tools or by not transmitting related packets until it expires=
-=2E
-Then the next packet will hit the iptables NAT rules and create a new
-conntrack entry accordingly.
+Thanks,
+Florian
