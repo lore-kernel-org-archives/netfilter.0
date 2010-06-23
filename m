@@ -1,97 +1,64 @@
-From: Ninad A <ninad_adi@yahoo.com>
-Subject: Re: Blocking Ads.
-Date: Wed, 23 Jun 2010 02:37:31 -0700 (PDT)
-Message-ID: <215194.52736.qm@web112405.mail.gq1.yahoo.com>
-References: <4C211CE1.7000400@riverviewtech.net>
+From: Lars Nooden <lars.curator@gmail.com>
+Subject: Re: randomly changing IPs from different subnets (Google Mail)
+Date: Wed, 23 Jun 2010 14:52:12 +0300
+Message-ID: <4C21F56C.3070603@gmail.com>
+References: <B993B335-596D-48D3-9767-F3565C3B1112@gmail.com> <alpine.LSU.2.01.1006222018140.31071@obet.zrqbmnf.qr> <6BE62F49-0B12-4DCB-A421-7D90BDFF0615@gmail.com> <4C210C24.9050605@gmail.com> <DC83A9D5-A181-42B0-9FED-13EB46F2D24A@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1277285851; bh=sMeprpCA6qoNNcmUmmm6pH9UxsLIJgFLM9A6983o2Pc=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Subject:To:Cc:In-Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=DJyLELi4b1QIkn/26nqNODO+tX0ilffO5VSPBYnnh03QVn+J65G6DMYdd4t+P/ivKaVjII3X8fPbTLexXU9ZVZaINkm0nz6JCBOMsNvELPF+xvwLM3YskiRjF41O+f//YaAo80DMNRdBBk+zqt1m650drPdJf/zJnILqQ+15NSI=
-In-Reply-To: <4C211CE1.7000400@riverviewtech.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from
+         :user-agent:mime-version:to:cc:subject:references:in-reply-to
+         :content-type:content-transfer-encoding;
+        bh=2H+DWMgC7E+NyVCIJePNd6UiqZ/cfDJYXIqUrsoJnKo=;
+        b=KTX1HYtneAPi27SRoT3b5yUODRCsMhdiSoiWmcOq7Zc3tNasMKBVcjKQIzS1ixrX3v
+         ZzntS8LDDUiUuLPhKqrC4ohegJiZmV9NpzF1m1YdbFBnFxOC1VBqt7y45Ahw4gPvrDNx
+         dYVcbE5e2UBKUCmHaN4ZYCwF4Ji469s/NcMLE=
+In-Reply-To: <DC83A9D5-A181-42B0-9FED-13EB46F2D24A@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
-Cc: jengelh@medozas.de, gtaylor@riverviewtech.net, craig@haquarter.de, curby@cur.by
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Florian Effenberger <floeff@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Thanks, for so prompt answers to all.
+On 22.06.2010 um 11:53 schreib Florian Effenberger:
+> Hi Lars,
+>
+> Am 22.06.2010 um 21:16 schrieb Lars Nooden:
+>
+> the same Lars Nooden as from the OOo mailing lists? If so: It's a
+> small world. ;-)
 
-I am sorry for this state, but I am bit confused.
+Yes.  Hello again.
 
-INFO : Mine is a simple UBUNTU system with kernel 2.6.34 behind ppp0 no=
-t a=20
-       security device which has LAN and WAN ports so that FORWARD chai=
-n=20
-       can be used.
+>> The chain is a drop-through list of ip addresses that you have
+>> decided are good.  Then make a rule or pair of rules to send tcp
+>> traffic for port 993 and port 537 to that user-defined chain.
+>
+> If I run a script every 60 seconds per cron and add the hostname, it
+> will automatically add all IPs returned by the DNS at that time.
+> However, this changes randomly, and change time is not predictable.
 
-1) Using REJECT target will definitely send an ICMP error message to th=
-e  =20
-   opposite party but still that doesnt help connection at my machine =20
-   which times out and thats why application delay is caused.
-   What might be the problem ?
+As others mentioned, it is probably a round-robin algorithm for a small 
+pool of ip addresses.  Google might even tell you which ones or you can 
+keep polling.
 
-2) That makes me to think on different line, whether to use iptables fo=
-r
-   content filtering or let Application proxy handle the case.
-=20
-   This might be a newbie question.
-3) How do I write a iptable rule for the DNS, i.e At the LOCAL INPUT HO=
-OK
-   in the filter table when the packet is received there is no trace
-   of DNS. i.e Whatever we have is un-interpreted data, not in user for=
-mat.
+Once you acquire a list of the allowed destination ip numbers, the 
+hostnames probably don't need to get polled more frequently than the ttl 
+for the main dns record.  If you work with the ip addresses, rather than 
+the hostnames that need for look-up is minimized.
 
-4) Finally, how to handle the missing content gracefully.
-          i) Using Application Proxies
-         ii) Apply iptables typical source ip address rules with REJECT=
-=2E
-        iii) Writing a custom iptable module according to individual=20
-             requirements.
-         iv) Putting a place holder.
+> If I add ten times the host and it resolves to the same IP, iptables
+> doesn't recognize that, and I have 10 similar rules. Is there any
+> check for duplicates possible?
 
-Thanks,
-N
------------------------------------------------------------------------=
--
+AFAIK, not inherently in iptables itself, but if you make a separate 
+chain, it is easier to work on it via grep and sort.   Use 'iptables 
+-nL' or 'iptables-save' and send the output to grep, looking for the ip 
+number in question, if it is not present, add it.   That's simple shell 
+scripting.
 
-=46or Reference.
-
-> > As far as I know, ad blocking is more commonly
-> performed using DNS, by resolving domain names to 127.0.0.1,
-> or to a server to serve up notices of removed content (e.g.
-> in a business environment, users could request that sites be
-> unblocked).=A0 Is there a reason why you want to block
-> specific IP addresses instead of domains?
->=20
-> Agreed.=A0 Normally this is done via DNS, or (IMHO)
-> better via an application layer proxy.
->=20
-> If I was going to DNS poison names where content was served
-> from, I'd either provide a place holder, or an HTTP 404
-> error so that the client could gracefully handle the missing
-> (blocked) content.
->=20
-> > Anyway, I suspect that sending back appropriate ICMP
-> error messages instead of DROPing such requests would
-> provide hints to clients that they should give up instead of
-> wait for a reply.
->=20
-> Agreed.=A0 This is why you want to REJECT with an ICMP
-> error message, so that clients (that will honer them) get an
-> immediate notification that the connection has been
-> blocked.
->=20
-> Not all clients will honor the ICMP rejection
-> message.=A0 But that is a client problem, not a flaw
-> introduced by your firewall.=A0 Returning an HTTP 404
-> error would probably be better handled than returning an
-> ICMP unreachable message.
->=20
->=20
->=20
-> Grant. . . .
+/Lars
 
 
-
-
-     =20
