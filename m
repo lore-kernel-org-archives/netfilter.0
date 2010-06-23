@@ -1,29 +1,53 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: randomly changing IPs from different subnets (Google Mail)
-Date: Wed, 23 Jun 2010 13:54:46 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1006231354010.14260@obet.zrqbmnf.qr>
-References: <B993B335-596D-48D3-9767-F3565C3B1112@gmail.com> <alpine.LSU.2.01.1006222018140.31071@obet.zrqbmnf.qr> <6BE62F49-0B12-4DCB-A421-7D90BDFF0615@gmail.com> <4C210C24.9050605@gmail.com> <DC83A9D5-A181-42B0-9FED-13EB46F2D24A@gmail.com>
- <4C21F56C.3070603@gmail.com>
+From: Thomas Jacob <jacob@internet24.de>
+Subject: Re: Blocking Ads.
+Date: Wed, 23 Jun 2010 13:09:49 +0200
+Message-ID: <1277291389.18773.10.camel@enterprise.ims-firmen.de>
+References: <215194.52736.qm@web112405.mail.gq1.yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C21F56C.3070603@gmail.com>
+In-Reply-To: <215194.52736.qm@web112405.mail.gq1.yahoo.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Lars Nooden <lars.curator@gmail.com>
-Cc: Florian Effenberger <floeff@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Ninad A <ninad_adi@yahoo.com>
+Cc: netfilter@vger.kernel.org
+
+On Wed, 2010-06-23 at 02:37 -0700, Ninad A wrote:
+> Thanks, for so prompt answers to all.
+> 
+> I am sorry for this state, but I am bit confused.
+> 
+> INFO : Mine is a simple UBUNTU system with kernel 2.6.34 behind ppp0 not a 
+>        security device which has LAN and WAN ports so that FORWARD chain 
+>        can be used.
+> 
+> 1) Using REJECT target will definitely send an ICMP error message to the   
+>    opposite party but still that doesnt help connection at my machine  
+>    which times out and thats why application delay is caused.
+>    What might be the problem ?
+
+Try it with a TCP reset instead
+
+As an example:
+
+dig +short www.leo.org
+
+iptables -A OUTPUT -p tcp -d 80.190.158.9 -j REJECT \
+  --reject-with tcp-reset
 
 
-On Wednesday 2010-06-23 13:52, Lars Nooden wrote:
->
->> If I add ten times the host and it resolves to the same IP, iptables
->> doesn't recognize that, and I have 10 similar rules. Is there any
->> check for duplicates possible?
->
-> AFAIK, not inherently in iptables itself, but if you make a separate chain, it
-> is easier to work on it via grep and sort.   Use 'iptables -nL' or
-> 'iptables-save' 
+time telnet www.leo.org
+Trying 80.190.158.9...
+telnet: Unable to connect to remote host: Connection refused
 
-Do not start grepping in iptables -L. That is what iptables -S and
-iptables-save are much better suited for.
+real    0m0.008s
+user    0m0.000s
+sys     0m0.010s
+
+Apparently ICMP messages generated for local processes when going thru
+OUTPUT somehow don't find their way back to the upper layers of the TCP
+stack, or are possibly not generated at all.
+
+
+
