@@ -1,44 +1,63 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Blocking Ads.
-Date: Tue, 22 Jun 2010 15:28:17 -0500
-Message-ID: <4C211CE1.7000400@riverviewtech.net>
-References: <868109.94510.qm@web112409.mail.gq1.yahoo.com> <AANLkTimRWJsPH73ASlu7nUY4iuG-ZnB_r7KpMZv64-fd@mail.gmail.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: randomly changing IPs from different subnets (Google Mail)
+Date: Tue, 22 Jun 2010 20:09:46 -0500
+Message-ID: <20100623010946.GQ19868@cardinal>
+References: <B993B335-596D-48D3-9767-F3565C3B1112@gmail.com> <20100622135522.a0eec81e.jwlargent@vlsmaps.com>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTimRWJsPH73ASlu7nUY4iuG-ZnB_r7KpMZv64-fd@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <20100622135522.a0eec81e.jwlargent@vlsmaps.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 06/22/10 13:41, Curby wrote:
-> As far as I know, ad blocking is more commonly performed using DNS, 
-> by resolving domain names to 127.0.0.1, or to a server to serve up 
-> notices of removed content (e.g. in a business environment, users 
-> could request that sites be unblocked).  Is there a reason why you 
-> want to block specific IP addresses instead of domains?
+> Florian Effenberger <floeff@gmail.com> wrote:
+> > my default network policy is to block all outgoing traffic and 
+> > only allow certain packets to pass. For some users, I'd like to 
+> > open up Google Mail (imap.gmail.com:993 and smtp.gmail.com:587). 
+> > However, Google's DNS give randomly out different IPs per query. 
+> > Sadly, they are not all located within a subnet, but vary in all 
+> > parts of the address.
+> > 
+> > If I want to have destination host based rules, how can I do this 
+> > with iptables? My current idea is to run a cron job every few 
+> > minutes to add the rules again with the changed IPs, but this 
+> > sounds like an ugly workaround, and will clutter my user-defined 
+> > chain heavily.
+> > 
+> > Is there any other approach, other than opening up all traffic to 
+> > 993 and 587?
 
-Agreed.  Normally this is done via DNS, or (IMHO) better via an 
-application layer proxy.
-
-If I was going to DNS poison names where content was served from, I'd 
-either provide a place holder, or an HTTP 404 error so that the client 
-could gracefully handle the missing (blocked) content.
-
-> Anyway, I suspect that sending back appropriate ICMP error messages 
-> instead of DROPing such requests would provide hints to clients that 
-> they should give up instead of wait for a reply.
-
-Agreed.  This is why you want to REJECT with an ICMP error message, so 
-that clients (that will honer them) get an immediate notification that 
-the connection has been blocked.
-
-Not all clients will honor the ICMP rejection message.  But that is a 
-client problem, not a flaw introduced by your firewall.  Returning an 
-HTTP 404 error would probably be better handled than returning an ICMP 
-unreachable message.
+I would suggest that you ask them, not us. They can tell you what 
+netblocks to allow, if they are so inclined.
 
 
+On Tue, Jun 22, 2010 at 01:55:22PM -0500, Jeff Largent wrote:
+> Are they actually random or are they just round robined from DNS?
 
-Grant. . . .
+I get a CNAME for smtp.gmail.com, and only one IP with a short TTL 
+for that:
+smtp.gmail.com.		300	IN	CNAME	gmail-smtp-msa.l.google.com.
+gmail-smtp-msa.l.google.com. 300 IN	A	74.125.157.109
+Likewise for imap.gmail.com. 5 minutes later I tried again and got 
+the same one. But, that could change at any time, without warning.
+
+> If they are coming from a round robin queue then when you add 
+> smtp.gmail.com iptables will add a rule for each address it 
+> resolves to.
+
+Right, but not for this one.
+
+> Another option may be to do a lookup on MX record for gmail.com and 
+> add those hosts.
+
+This is not right. The submission hosts are NOT the MX hosts, nor are 
+the MX hosts the same as the IMAP ones. Submission requires SMTP 
+AUTH, mail exchange does not. And surely the MX hosts use extensive 
+spam controls, as well.
+-- 
+    Offlist mail to this address is discarded unless
+    "/dev/rob0" or "not-spam" is in Subject: header
