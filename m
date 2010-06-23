@@ -1,38 +1,51 @@
-From: Florian Effenberger <floeff@gmail.com>
+From: Mart Frauenlob <mart.frauenlob@chello.at>
 Subject: Re: randomly changing IPs from different subnets (Google Mail)
-Date: Wed, 23 Jun 2010 10:53:19 +0200
-Message-ID: <DC83A9D5-A181-42B0-9FED-13EB46F2D24A@gmail.com>
-References: <B993B335-596D-48D3-9767-F3565C3B1112@gmail.com> <alpine.LSU.2.01.1006222018140.31071@obet.zrqbmnf.qr> <6BE62F49-0B12-4DCB-A421-7D90BDFF0615@gmail.com> <4C210C24.9050605@gmail.com>
-Mime-Version: 1.0 (Apple Message framework v1081)
-Content-Transfer-Encoding: 8BIT
+Date: Wed, 23 Jun 2010 11:33:55 +0200
+Message-ID: <4C21D503.9040505@chello.at>
+References: <B993B335-596D-48D3-9767-F3565C3B1112@gmail.com> <alpine.LSU.2.01.1006222018140.31071@obet.zrqbmnf.qr> <6BE62F49-0B12-4DCB-A421-7D90BDFF0615@gmail.com> <4C210C24.9050605@gmail.com> <DC83A9D5-A181-42B0-9FED-13EB46F2D24A@gmail.com>
+Reply-To: netfilter@vger.kernel.org
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:content-type:mime-version
-         :subject:from:in-reply-to:date:content-transfer-encoding:message-id
-         :references:to:x-mailer;
-        bh=Td6fCaHzONw3KfNhGXYEIsiaWFf5ybhPIhEKkqPm4mw=;
-        b=eVp63slodTYkSALOMH7++zhA6HliW4pRpllTVyuPKUuVYR++U9lMmQ00qZwfS+Pcl7
-         THOMr563hBb8LPkFpv2A9FJIUjMGonpkaxfYMEWXgQux8l11KwNAElCFEVu8/1wpWWAn
-         X1QQMwO3ufXcK/ftUv9pORmYl7LE7cGHdQptQ=
-In-Reply-To: <4C210C24.9050605@gmail.com>
+In-Reply-To: <DC83A9D5-A181-42B0-9FED-13EB46F2D24A@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi Lars,
+On 23.06.2010 10:53, Florian Effenberger wrote:
 
-Am 22.06.2010 um 21:16 schrieb Lars Nooden:
+>
+> Am 22.06.2010 um 21:16 schrieb Lars Nooden:
+> >
+>> The chain is a drop-through list of ip addresses that you have decided are good.  Then make a rule or pair of rules to send tcp traffic for port 993 and port 537 to that user-defined chain.
+>
+> If I run a script every 60 seconds per cron and add the hostname, it will automatically add all IPs returned by the DNS at that time. However, this changes randomly, and change time is not predictable.
+>
+> If I add ten times the host and it resolves to the same IP, iptables doesn't recognize that, and I have 10 similar rules. Is there any check for duplicates possible?
+>
+> If not, how many entries can the table have before it gets sluggish and slow? If I add two rules every 60 seconds, that would make 120 per hour, 2880 per day. Is that too much, do I need to purge them before? I have no experience with large filtering tables...
+>
+> Florian--
 
-the same Lars Nooden as from the OOo mailing lists? If so: It's a small world. ;-)
 
-> The chain is a drop-through list of ip addresses that you have decided are good.  Then make a rule or pair of rules to send tcp traffic for port 993 and port 537 to that user-defined chain.
+ipset
+http://ipset.netfilter.org/
 
-If I run a script every 60 seconds per cron and add the hostname, it will automatically add all IPs returned by the DNS at that time. However, this changes randomly, and change time is not predictable.
+is the answer to that problem, if you insist on doing it with iptables.
+all your cron job would have to do is to (pseudo code):
 
-If I add ten times the host and it resolves to the same IP, iptables doesn't recognize that, and I have 10 similar rules. Is there any check for duplicates possible?
+ipset --list gmailset
 
-If not, how many entries can the table have before it gets sluggish and slow? If I add two rules every 60 seconds, that would make 120 per hour, 2880 per day. Is that too much, do I need to purge them before? I have no experience with large filtering tables...
+diff newlist oldlist
 
-Florian
+ipset --add new_entries
+ipset --del dead_IPs
+
+
+you might have to tinker with your kernel before.
+
+best regards
+
+
+Mart
