@@ -1,32 +1,33 @@
-From: Anatoly Muliarski <x86ever@gmail.com>
-Subject: ebtables & VLAN redirect
-Date: Sat, 26 Jun 2010 15:43:47 +0300
-Message-ID: <AANLkTilVkFmW0SL3t6ESUN72On5y52OvxYBUz2ZZdAWc@mail.gmail.com>
+From: Jonathan Tripathy <jonnyt@abpni.co.uk>
+Subject: ARP Requests/Replies
+Date: Sat, 26 Jun 2010 15:57:15 +0100
+Message-ID: <4C26154B.8050008@abpni.co.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:date:message-id
-         :subject:from:to:content-type;
-        bh=8yhINgGSWpGbON9PD+zG4WU0IKt1NzoyPUpg8jQCXbs=;
-        b=IUCUJzFMXlKxXhcuyv7ULWlkoz9HfKFWj41ed9C+lKhxNDyR3BI5ghVAZc0li1NVg1
-         uDst0SxGXlXzd2vRm+bKYvVlKysJvZHJZP9uI2Lg5d7KsXPWCFtLxglO8kcLFjsPyetm
-         Ia50xuImLDIo6EQn0lV/vOSW0ExgOsRMMbbU4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi list,
+Hi Everyone,
 
-I have a lot of VLANs( eth1.100-eth1.200) and I need to redirect
-specific IP frames arrived on them to VLAN eth1.9 on L2 level( as I
-cannot use routing for them ). The simple way is to create a bridge
-from all VLANs and filter out redirections to
-unwanted(eth1.100-eth1.200) VLANs.
-But this may cause preformance issues. Is there a finer solution?
+I'm trying to set up ebtables on my Xen host. What I'm trying to do, is 
+make sure that each guest can only access the bridge on the xen host 
+using the "legal" mac address assigned to it.
 
--- 
-Best regards
-Anatoly Muliarski
+The 2 rules I'm using are this:
+
+ebtables -I FORWARD -d $legal_mac_of_guest -o $vif_of_guest -j ACCPET
+ebtables -I FORWARD -s $legal_mac_of_guest -i $vif_of_guest -j ACCPET
+
+While the above 2 rules do allow normal IP traffic, they seem to block 
+ARP requests/replies working properly. So any machine on the network 
+that doesn't know where to find the IP address of the guest (and has to 
+send a who-has ARP request), they can't communicate with the respective 
+guest.
+
+Can someone please suggest some rules that I need to add to make ARP 
+Requests/Replies work?
+
+Many Thanks
