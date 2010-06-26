@@ -1,33 +1,52 @@
-From: Jonathan Tripathy <jonnyt@abpni.co.uk>
-Subject: ARP Requests/Replies
-Date: Sat, 26 Jun 2010 15:57:15 +0100
-Message-ID: <4C26154B.8050008@abpni.co.uk>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: ebtables & VLAN redirect
+Date: Sat, 26 Jun 2010 11:41:06 -0500
+Message-ID: <4C262DA2.1040103@riverviewtech.net>
+References: <AANLkTilVkFmW0SL3t6ESUN72On5y52OvxYBUz2ZZdAWc@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <AANLkTilVkFmW0SL3t6ESUN72On5y52OvxYBUz2ZZdAWc@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hi Everyone,
+Anatoly Muliarski wrote:
+> I have a lot of VLANs( eth1.100-eth1.200) and I need to redirect
+> specific IP frames arrived on them to VLAN eth1.9 on L2 level( as I
+> cannot use routing for them ). The simple way is to create a bridge
+> from all VLANs and filter out redirections to
+> unwanted(eth1.100-eth1.200) VLANs.
 
-I'm trying to set up ebtables on my Xen host. What I'm trying to do, is 
-make sure that each guest can only access the bridge on the xen host 
-using the "legal" mac address assigned to it.
+That will work.
 
-The 2 rules I'm using are this:
+Do you need to do so for all your VLANs, or just some of them?
 
-ebtables -I FORWARD -d $legal_mac_of_guest -o $vif_of_guest -j ACCPET
-ebtables -I FORWARD -s $legal_mac_of_guest -i $vif_of_guest -j ACCPET
+> But this may cause preformance issues. Is there a finer solution?
 
-While the above 2 rules do allow normal IP traffic, they seem to block 
-ARP requests/replies working properly. So any machine on the network 
-that doesn't know where to find the IP address of the guest (and has to 
-send a who-has ARP request), they can't communicate with the respective 
-guest.
+Could you get proxy ARP to work?
 
-Can someone please suggest some rules that I need to add to make ARP 
-Requests/Replies work?
+In other words, why selectively extend your broadcast domains in to the 
+other when you might be able to extend individual systems in to multiple 
+broadcast domains (in a manner of speaking).
 
-Many Thanks
+If you aren't modifying frames as they pass through your bridge, and the 
+only real thing that takes time to look through is your EBTables rules, 
+I don't think you will have a problem.  -  I've run multiple older 
+slower systems (P-II 233) doing similar things (and bi-directional 
+NATing of source and destination MAC addresses) for a multi-megabit DSL 
+connection with out any problems.  -  If you are worried about speed, 
+pick up a current low end workstation computer with with a decent 
+network card.
+
+I'd say try it and see if the problem you are thinking about will even 
+have any impact on the equipment you are using.
+
+Depending on the amount of traffic you are working with, I'd suggest 
+gigabit connections to the switch.  If it's really a lot of traffic, 
+multiple connections to segregate the traffic.
+
+
+
+Grant. . . .
