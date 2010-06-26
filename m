@@ -1,36 +1,32 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Documentation (was Re: randomly changing IPs from different subnets
- (Google Mail))
-Date: Thu, 24 Jun 2010 11:45:40 -0500
-Message-ID: <4C238BB4.70501@riverviewtech.net>
-References: <B993B335-596D-48D3-9767-F3565C3B1112@gmail.com>	 <alpine.LSU.2.01.1006222018140.31071@obet.zrqbmnf.qr>	 <6BE62F49-0B12-4DCB-A421-7D90BDFF0615@gmail.com>	 <4C210C24.9050605@gmail.com>	 <DC83A9D5-A181-42B0-9FED-13EB46F2D24A@gmail.com>	 <4C21F56C.3070603@gmail.com>	 <alpine.LSU.2.01.1006231354010.14260@obet.zrqbmnf.qr>	 <4C22105A.70006@gmail.com> <20100623141213.GR19868@cardinal>	 <4C221BF0.40609@gmail.com>  <20100623151345.GT19868@cardinal> <1277360228.1694.9.camel@andybev>
+From: Anatoly Muliarski <x86ever@gmail.com>
+Subject: ebtables & VLAN redirect
+Date: Sat, 26 Jun 2010 15:43:47 +0300
+Message-ID: <AANLkTilVkFmW0SL3t6ESUN72On5y52OvxYBUz2ZZdAWc@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1277360228.1694.9.camel@andybev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=8yhINgGSWpGbON9PD+zG4WU0IKt1NzoyPUpg8jQCXbs=;
+        b=IUCUJzFMXlKxXhcuyv7ULWlkoz9HfKFWj41ed9C+lKhxNDyR3BI5ghVAZc0li1NVg1
+         uDst0SxGXlXzd2vRm+bKYvVlKysJvZHJZP9uI2Lg5d7KsXPWCFtLxglO8kcLFjsPyetm
+         Ia50xuImLDIo6EQn0lV/vOSW0ExgOsRMMbbU4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 06/24/10 01:17, Andrew Beverley wrote:
-> In my opinion, the whole of the netfilter project is underused 
-> because of the patchy documentation (it took me a long time to learn 
-> even some of the basics). It's an amazing set of software, and I'd 
-> like to see it used to its full potential.
+Hi list,
 
-Agreed.
+I have a lot of VLANs( eth1.100-eth1.200) and I need to redirect
+specific IP frames arrived on them to VLAN eth1.9 on L2 level( as I
+cannot use routing for them ). The simple way is to create a bridge
+from all VLANs and filter out redirections to
+unwanted(eth1.100-eth1.200) VLANs.
+But this may cause preformance issues. Is there a finer solution?
 
-Something else to keep in mind is that a lot of people that are starting 
-with NetFilter are also starting with firewalling in general.  So in 
-actuality they have a couple of things that they are learning at the 
-same time, 1) firewalling concepts, and 2) NetFilter's implementation.
-
-With this in mind, it might be good to have detailed NetFilter specific 
-documentation (2 above) and reference generic firewalling documentation 
-(1 above).  So that people have as much of what is needed all in one 
-location (site / documentation set).
-
-
-
-Grant. . . .
+-- 
+Best regards
+Anatoly Muliarski
