@@ -1,98 +1,69 @@
-From: Anatoly Muliarski <x86ever@gmail.com>
-Subject: Re: ebtables & VLAN redirect
-Date: Sun, 27 Jun 2010 09:04:15 +0300
-Message-ID: <AANLkTikWc-CNXMieyxv2lB69UphqQRsjjJATJYrpjkMK@mail.gmail.com>
-References: <AANLkTilVkFmW0SL3t6ESUN72On5y52OvxYBUz2ZZdAWc@mail.gmail.com>
-	<4C262DA2.1040103@riverviewtech.net>
+From: Jonathan Tripathy <jonnyt@abpni.co.uk>
+Subject: Re: ARP Requests/Replies
+Date: Sun, 27 Jun 2010 11:28:23 +0100
+Message-ID: <4C2727C7.20605@abpni.co.uk>
+References: <4C26154B.8050008@abpni.co.uk> <4C268A7A.6090207@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:content-type
-         :content-transfer-encoding;
-        bh=yFfRu8G82B597R9bbdf9ZHodVF03rXbaMOZ1aE3WNuo=;
-        b=mn5PXJfoUVAeOGx3Xg8AedhnrH1aDjj9sPdRTFC7sFw5I/VTX5YDtBcm5FZDPpn5fM
-         +eJjsTD081RF9uO7eIIlytq7dx8IfxUU+JnixvIlw00lsGJyBK1XIdNk7RpcKG+S3be7
-         Sa9exrt3WjE7FlGtn26Qu4yZcwcg8A6eNP4ys=
-In-Reply-To: <4C262DA2.1040103@riverviewtech.net>
+In-Reply-To: <4C268A7A.6090207@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>, netfilter@vger.kernel.org
 
-2010/6/26 Grant Taylor <gtaylor@riverviewtech.net>:
-> Anatoly Muliarski wrote:
+
+On 27/06/10 00:17, Pascal Hambourg wrote:
+> Hello,
+>
+> Jonathan Tripathy a =E9crit :
+>   =20
+>> I'm trying to set up ebtables on my Xen host. What I'm trying to do,=
+ is
+>> make sure that each guest can only access the bridge on the xen host
+>> using the "legal" mac address assigned to it.
 >>
->> I have a lot of VLANs( eth1.100-eth1.200) and I need to redirect
->> specific IP frames arrived on them to VLAN eth1.9 on L2 level( as I
->> cannot use routing for them ). The simple way is to create a bridge
->> from all VLANs and filter out redirections to
->> unwanted(eth1.100-eth1.200) VLANs.
+>> The 2 rules I'm using are this:
+>>
+>> ebtables -I FORWARD -d $legal_mac_of_guest -o $vif_of_guest -j ACCPE=
+T
+>> ebtables -I FORWARD -s $legal_mac_of_guest -i $vif_of_guest -j ACCPE=
+T
+>>     =20
+> Note : s/ACCPET/ACCEPT/
 >
-> That will work.
+>   =20
+>> While the above 2 rules do allow normal IP traffic, they seem to blo=
+ck
+>> ARP requests/replies working properly.
+>>     =20
+> By allowing only the unicast host address as a destination, you block
+> any broadcast and multicast traffic. ARP requests use broadcast, IPv6
+> neighbour discovery uses multicast. Note that IP broadcast and multic=
+ast
+> traffic is also blocked.
 >
-> Do you need to do so for all your VLANs, or just some of them?
-
-Thank you for your response.
-
-Unfortunately, I need to redirect the traffic from all VLANs. In other
-words, the task comes to selective redirecting of the traffic from all
-VLANs to a specified one. The redirecting must be unidirected, only
-for the traffic that comes from all VLANs.
-
+> You must also allow broadcast/multicast addresses as a destination :
 >
->> But this may cause preformance issues. Is there a finer solution?
->
-> Could you get proxy ARP to work?
+> ebtables -I FORWARD -d multicast -o $vif_of_guest -j ACCEPT
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>   =20
 
-Yes, it works now, but for the other purpose.
+Thanks for the reply. What I ended up doing was this:
 
->
-> In other words, why selectively extend your broadcast domains in to t=
-he
-> other when you might be able to extend individual systems in to multi=
-ple
-> broadcast domains (in a manner of speaking).
+ebtables -I FORWARD -p ARP -o $vif_of_guest -j ACCPET
 
-That would work but I need to redirect traffic that is not destined to
-VLAN 9 and ARP-proxy trick does not work for this case.
 
->
-> If you aren't modifying frames as they pass through your bridge, and =
-the
-> only real thing that takes time to look through is your EBTables rule=
-s, I
-> don't think you will have a problem. =A0- =A0I've run multiple older =
-slower
-> systems (P-II 233) doing similar things (and bi-directional NATing of=
- source
-> and destination MAC addresses) for a multi-megabit DSL connection wit=
-h out
-> any problems. =A0- =A0If you are worried about speed, pick up a curre=
-nt low end
-> workstation computer with with a decent network card.
->
-> I'd say try it and see if the problem you are thinking about will eve=
-n have
-> any impact on the equipment you are using.
->
-> Depending on the amount of traffic you are working with, I'd suggest =
-gigabit
-> connections to the switch. =A0If it's really a lot of traffic, multip=
-le
-> connections to segregate the traffic.
+The ARP-Reply (is-at) frame seems to have the source field set properly=
+,=20
+so no new rule was required to allow arp replies from the respective gu=
+est.
 
-Thanks for the ideas. I'll try it. The main problem is to avoid
-unnecessary bridging attempts for all VLANs( as it would waste CPU
-time for try to transmit a packet to a hundred VLAN ).
-Another way is to write a target extension to ebtables to replace a
-vlan tag to a desired one, but as I need to do it selectively I need
-ebtables' capabilities to analyze vlan-tagged packets and there are no
-ones ...
-Or to write something like a udp-broadcast-relay daemon...
+Think that's safe enough?
 
---=20
-Best regards
-Anatoly Muliarski
+Thanks
+
