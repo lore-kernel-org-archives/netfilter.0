@@ -1,72 +1,39 @@
-From: Marcel Laverdet <marcel@laverdet.com>
-Subject: No ACK received with multiple clients over MASQ
-Date: Sun, 27 Jun 2010 21:47:41 -0500
-Message-ID: <2142377f00d7b74030fb76dba67562e4@localhost>
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: nat bypass
+Date: Mon, 28 Jun 2010 15:43:46 +0530
+Message-ID: <AANLkTil_H1QeaCHQYhMjVRFiLwtqF9yLAJZ9BWecOIDW@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=ZfDBcpRz+r+XBCYi2SjYdg42U43rsmCQG0BjSStRHO4=;
+        b=m6vey+Zw+KGqtDBv6uBTp0RiEjxVpims1ySq0+e3VJ0if8GNEImKoUeDi52Jf1c+EX
+         Lzo/9DS2zEpfFTqYm5j/fvlA4xVkFinz7glg3BQc7ViwQfO+IPTd3A7u8bWgaHdnXttB
+         A1WXwE/YtQrm4XDHfPuXH+iskc5tog8r8+EjQ=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: Netfilter mailing list <netfilter@vger.kernel.org>, netdev@vger.kernel.org
+
+Hi,
+
+  A -------> R ------->S
+
+I have a linux machine A is connected to Linux machine R . Machine R
+is having two network interfaces and acting as a router .
+It has a dhcp server running  . It will assign ip in 192.168.1.0/24
+subnet to all machine connected on lan side ( A is connected also in
+lan side ) . Wan side of R is connected to HTTP server S . There is
+also a DHCP server running on S to assign ip in 10.232.18.0/24 subnet
+.  Is there any way , in which NAT should be bypassed to get ip from
+DHCP server running  on S . My question is : How can A will get  an ip
+from 10.232.18.0/24 pool ip .?
+ebtables is an option ? How can we make it ?
+Is there any other optimal way ?
 
 
-Apologies in advance as this is probably the wrong list to ask about this,
-
-but I'm not sure who else to go to at this point.
-
-
-
-I don't think my configuration is too important here as I've distilled the
-
-problem down to something beyond iptables entirely, but I'll explain what
-
-I'm doing anyway. I have a private network which I'm extending with a
-
-tun/tap ptp connection over ssh. I have one machine on the private network,
-
-and another on a different network which acts as a router for more machines
-
-(via dnsmasq). The two machines maintain an ssh connection and a ptp
-
-connection on tun0. The machine on the private network is setup to MASQ all
-
-packets from tun0 to eth0, and the other machine MASQs all packets from
-
-eth0 to tun0.
-
-
-
-The problem I'm seeing is that if multiple clients on the extended network
-
-attempt to access the same service, only one client can get to it-- every
-
-other client won't receive an ACK.
-
-
-
-Here's a tcpdump of what this looks like from the POV of the machine on
-
-the private network. It seems that as long as the outgoing tcp port is
-
-increasing the host will accept the connection. If it receives a connection
-
-request from a port lower than one it has already seen before it will
-
-ignore it entirely. If you allow some amount of time to go by (somewhere
-
-around 60 seconds) you can connect with a lower port which starts the
-
-process over again (attempting to connect with a lower port will fail).
-
-
-
-http://pastie.org/1021290
-
-
-
-I managed to workaround this problem by rewriting outgoing ports with `-t
-
-tcp --to-ports 30000-40000`, but I'd still like to figure out why this is
-
-happening. Does anyone have any insight?
+Thanks,
+Ratheesh
