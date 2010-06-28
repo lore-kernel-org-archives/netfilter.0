@@ -1,70 +1,72 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: ebtables & VLAN redirect
-Date: Sun, 27 Jun 2010 21:14:59 -0500
-Message-ID: <4C2805A3.4070801@riverviewtech.net>
-References: <AANLkTilVkFmW0SL3t6ESUN72On5y52OvxYBUz2ZZdAWc@mail.gmail.com>	<4C262DA2.1040103@riverviewtech.net> <AANLkTikWc-CNXMieyxv2lB69UphqQRsjjJATJYrpjkMK@mail.gmail.com>
+From: Marcel Laverdet <marcel@laverdet.com>
+Subject: No ACK received with multiple clients over MASQ
+Date: Sun, 27 Jun 2010 21:47:41 -0500
+Message-ID: <2142377f00d7b74030fb76dba67562e4@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTikWc-CNXMieyxv2lB69UphqQRsjjJATJYrpjkMK@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Anatoly Muliarski wrote:
-> Thank you for your response.
 
-You are welcome.
+Apologies in advance as this is probably the wrong list to ask about this,
 
-> Unfortunately, I need to redirect the traffic from all VLANs. In 
-> other words, the task comes to selective redirecting of the traffic 
-> from all VLANs to a specified one. The redirecting must be 
-> unidirected, only for the traffic that comes from all VLANs.
-
-Will you please provide an example of what redirection you are talking 
-about?
-
-Remember that you can set a default policy of DROP in your BROUTING 
-chain to cause the packets to be routed like normal.  So any frames that 
-you don't want bridged will simply be routed like normal.  There by only 
-bridging the frames that you want to.
-
-> Yes, it works now, but for the other purpose.
-
-Ok.
-
-> That would work but I need to redirect traffic that is not destined 
-> to VLAN 9 and ARP-proxy trick does not work for this case.
-
-So you are going to have to intercept the traffic and alter the 
-destination MAC (and possibly IP) address(es)?
-
-I believe that EBTables can do that.  If not, you can probably have 
-IPTables work on bridged frames, and I know that it will do that.
-
-> Thanks for the ideas. I'll try it. The main problem is to avoid 
-> unnecessary bridging attempts for all VLANs( as it would waste CPU 
-> time for try to transmit a packet to a hundred VLAN ). Another way is 
-> to write a target extension to ebtables to replace a vlan tag to a 
-> desired one, but as I need to do it selectively I need ebtables' 
-> capabilities to analyze vlan-tagged packets and there are no ones ...
-
-I'm still not sure that you can't do what you want to do with EBTables 
-and / or IPTables.
-
-Remember that EBTables will learn where MAC addresses are and won't 
-flood frames out (go in to dumb hub mode).
-
-> Or to write something like a udp-broadcast-relay daemon...
-
-I don't think you will be bridging too many packets.  (That is unless I 
-really misunderstand what you are wanting to do.)
-
-Can you provide an example (sanitized if need be) of what you are trying 
-to do?  Including (hypothetical) source and destination MAC and IP 
-addresses on either side of the bridge?
+but I'm not sure who else to go to at this point.
 
 
 
-Grant. . . .
+I don't think my configuration is too important here as I've distilled the
+
+problem down to something beyond iptables entirely, but I'll explain what
+
+I'm doing anyway. I have a private network which I'm extending with a
+
+tun/tap ptp connection over ssh. I have one machine on the private network,
+
+and another on a different network which acts as a router for more machines
+
+(via dnsmasq). The two machines maintain an ssh connection and a ptp
+
+connection on tun0. The machine on the private network is setup to MASQ all
+
+packets from tun0 to eth0, and the other machine MASQs all packets from
+
+eth0 to tun0.
+
+
+
+The problem I'm seeing is that if multiple clients on the extended network
+
+attempt to access the same service, only one client can get to it-- every
+
+other client won't receive an ACK.
+
+
+
+Here's a tcpdump of what this looks like from the POV of the machine on
+
+the private network. It seems that as long as the outgoing tcp port is
+
+increasing the host will accept the connection. If it receives a connection
+
+request from a port lower than one it has already seen before it will
+
+ignore it entirely. If you allow some amount of time to go by (somewhere
+
+around 60 seconds) you can connect with a lower port which starts the
+
+process over again (attempting to connect with a lower port will fail).
+
+
+
+http://pastie.org/1021290
+
+
+
+I managed to workaround this problem by rewriting outgoing ports with `-t
+
+tcp --to-ports 30000-40000`, but I'd still like to figure out why this is
+
+happening. Does anyone have any insight?
