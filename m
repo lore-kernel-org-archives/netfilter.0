@@ -1,10 +1,8 @@
 From: Anatoly Muliarski <x86ever@gmail.com>
-Subject: Re: question about NAT rule
-Date: Mon, 28 Jun 2010 20:42:09 +0300
-Message-ID: <AANLkTin0repbbkj42wJF5fivDlApG8VaAn0JvK8JiKbh@mail.gmail.com>
-References: <AANLkTimaYvRg2379FY2erzJTKyhXFjEtyvOtgqfYnV2d@mail.gmail.com>
-	<4C20D263.2050502@plouf.fr.eu.org>
-	<AANLkTinOd_6m6UvbqKcB3v2-FinNQzHUmhymFE9Z5RHm@mail.gmail.com>
+Subject: Re: nat bypass
+Date: Mon, 28 Jun 2010 20:49:50 +0300
+Message-ID: <AANLkTinxapgkJ0pc8RdrPJ2Mikmn0H4JpdMYgeP4Dwvb@mail.gmail.com>
+References: <AANLkTil_H1QeaCHQYhMjVRFiLwtqF9yLAJZ9BWecOIDW@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -13,39 +11,40 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         h=domainkey-signature:mime-version:received:received:in-reply-to
          :references:date:message-id:subject:from:to:content-type
          :content-transfer-encoding;
-        bh=+hGZzKAOUUKqQhi2Qxx1gz7jMv+UfMfKtDiDRgxM2Ow=;
-        b=tedo1E0Ju9r0NUD1inIIUQhNCV6nrBQQmInbCsgzKhAXhNe5zj6psT3XWK5NLgxtfe
-         tXEZasF/hq1TCD/rdkQGRL10PIH4tGsKfav0gE3pT3Lr6hIpVcJ3Nt79s7ByV+UEn5uB
-         MfrTvBiQu0iCTlLuV7w6yaxpZyhkIZ9Us9y4Q=
-In-Reply-To: <AANLkTinOd_6m6UvbqKcB3v2-FinNQzHUmhymFE9Z5RHm@mail.gmail.com>
+        bh=oe8k8THfYVpiHg/2HawIrfzY90+gXezYOc4eU3gon2w=;
+        b=wa5V0TVCQNidZ+V7h1dODM5dImGJ9wnXwGlyK6ilGTo0vrx2BGpo+ZqbkEB2dFPveS
+         y78npy600B9/36uj2LJ67VLL85BQ4PEeTWJpZx+cMBiVR0URTUGWYkrIw47yDYjz2+fg
+         Jvc/DJplwY9JI6opiLl6sCJqX1IEAmA3dB4Ds=
+In-Reply-To: <AANLkTil_H1QeaCHQYhMjVRFiLwtqF9yLAJZ9BWecOIDW@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-2010/6/23 Pete Kay <petedao@gmail.com>:
+2010/6/28 ratheesh k <ratheesh.ksz@gmail.com>:
 > Hi,
 >
-> I guess I may have misunderstood the purpose of the
-> netfilter-conntrack module. =A0What I would like to do is to set up a
-> alot of iptables NAT rules ( > 10K at 500 rules (add/drop)/s). =A0Usi=
-ng
-> the system iptables command is not going to be fast enough for me.
-> All I want is to deliver the packets received from specific IP:port t=
-o
-> another IP:port. =A0Therefore, I am looking into using
-> netfilter-conntrack api to actually "set" those rules dynamically. =A0=
-Is
-> this the right approach in doing that?
+> =A0A -------> R ------->S
 >
-> Could someone please give me some suggestions?
+> I have a linux machine A is connected to Linux machine R . Machine R
+> is having two network interfaces and acting as a router .
+> It has a dhcp server running =A0. It will assign ip in 192.168.1.0/24
+> subnet to all machine connected on lan side ( A is connected also in
+> lan side ) . Wan side of R is connected to HTTP server S . There is
+> also a DHCP server running on S to assign ip in 10.232.18.0/24 subnet
+> . =A0Is there any way , in which NAT should be bypassed to get ip fro=
+m
+> DHCP server running =A0on S . My question is : How can A will get =A0=
+an ip
+> from 10.232.18.0/24 pool ip .?
+> ebtables is an option ? How can we make it ?
+> Is there any other optimal way ?
+>
 
-Adding/dropping iptables rule for a whole set of 10K rules is a very
-time-consuming procedure.
-Probably you ought to try to change the algoritm logic. As a way I
-suggest using ipset for storing info about IPs and ports and to build
-an unchangable set of iptables rules for walking through them in a
-binary tree manner.
+Suppose you achieve your goal and A got an IP from S pool.
+But there appear another problem - what about routing?
+Presumably you should track leased IP and dynamically bridge packets
+to/from it - and it looks rather complicated.
 
 --=20
 Best regards
