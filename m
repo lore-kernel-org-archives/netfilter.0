@@ -1,51 +1,118 @@
-From: Anatoly Muliarski <x86ever@gmail.com>
-Subject: Re: nat bypass
-Date: Mon, 28 Jun 2010 20:49:50 +0300
-Message-ID: <AANLkTinxapgkJ0pc8RdrPJ2Mikmn0H4JpdMYgeP4Dwvb@mail.gmail.com>
-References: <AANLkTil_H1QeaCHQYhMjVRFiLwtqF9yLAJZ9BWecOIDW@mail.gmail.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: ebtables & VLAN redirect
+Date: Mon, 28 Jun 2010 15:45:13 -0500
+Message-ID: <4C2909D9.8010506@riverviewtech.net>
+References: <AANLkTilVkFmW0SL3t6ESUN72On5y52OvxYBUz2ZZdAWc@mail.gmail.com>	<4C262DA2.1040103@riverviewtech.net>	<AANLkTikWc-CNXMieyxv2lB69UphqQRsjjJATJYrpjkMK@mail.gmail.com>	<4C2805A3.4070801@riverviewtech.net> <AANLkTikeVKxFv4jTp2vLTh80BOQW1nAQxmCc8M7EsPJ1@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:content-type
-         :content-transfer-encoding;
-        bh=oe8k8THfYVpiHg/2HawIrfzY90+gXezYOc4eU3gon2w=;
-        b=wa5V0TVCQNidZ+V7h1dODM5dImGJ9wnXwGlyK6ilGTo0vrx2BGpo+ZqbkEB2dFPveS
-         y78npy600B9/36uj2LJ67VLL85BQ4PEeTWJpZx+cMBiVR0URTUGWYkrIw47yDYjz2+fg
-         Jvc/DJplwY9JI6opiLl6sCJqX1IEAmA3dB4Ds=
-In-Reply-To: <AANLkTil_H1QeaCHQYhMjVRFiLwtqF9yLAJZ9BWecOIDW@mail.gmail.com>
+In-Reply-To: <AANLkTikeVKxFv4jTp2vLTh80BOQW1nAQxmCc8M7EsPJ1@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-2010/6/28 ratheesh k <ratheesh.ksz@gmail.com>:
-> Hi,
->
-> =A0A -------> R ------->S
->
-> I have a linux machine A is connected to Linux machine R . Machine R
-> is having two network interfaces and acting as a router .
-> It has a dhcp server running =A0. It will assign ip in 192.168.1.0/24
-> subnet to all machine connected on lan side ( A is connected also in
-> lan side ) . Wan side of R is connected to HTTP server S . There is
-> also a DHCP server running on S to assign ip in 10.232.18.0/24 subnet
-> . =A0Is there any way , in which NAT should be bypassed to get ip fro=
-m
-> DHCP server running =A0on S . My question is : How can A will get =A0=
-an ip
-> from 10.232.18.0/24 pool ip .?
-> ebtables is an option ? How can we make it ?
-> Is there any other optimal way ?
->
+On 06/28/10 12:33, Anatoly Muliarski wrote:
+> Unfortunately, I have a set of tasks to cope with.
 
-Suppose you achieve your goal and A got an IP from S pool.
-But there appear another problem - what about routing?
-Presumably you should track leased IP and dynamically bridge packets
-to/from it - and it looks rather complicated.
+Not a problem.
 
---=20
-Best regards
-Anatoly Muliarski
+> 1. UDP broadcast relaying for specific ports from specific VLANs - on 
+> second thought I've decided to use udp-broadcast-relay as it's the 
+> simplest way.
+
+Ok...  Remember that the simplest way may not always be the best way.
+
+> 2. Multicast feeding and IGMP exchange snooping - I tried to avoid 
+> using igmpproxy but probably I should use it.
+
+> 3. Mirroring specific sessions to VLAN 9 - and I can postpone this 
+> task for the future.
+
+Please clarify what you are meaning by "mirroring specific sessions".
+
+> For mirroring purpose I have to alter destination MAC and I can do 
+> that in POSTROUTING chain.
+
+It sounds like you are NATing at the data layer.
+
+> Other tasks use broadcast/multicast destination addresses so I do not 
+> need to alter them.
+
+Ok.
+
+> Bridging is a good idea, but its current implementation lacks some 
+> features important to me - as impossibility to limit traffic 
+> directions between bridge devices and the fact that a network device 
+> can belong to one bridge only.
+
+Please clarify "impossibility to limit traffic direction between bridge 
+devices".
+
+It is trivial to allow bridging one way while blocking it the other way.
+
+I.e. set an EBTables policy to DROP and only allow bridging the 
+direction you want.
+
+VID:100 --> VID:9
+VID:101 --> VID:9
+VID:102 --> VID:9
+...
+VID:199 --> VID:9
+
+Bridging does not have to be by-directional.  You can easily make 
+EBTables not bridge the traffic.
+
+> In two words :). All user VLANs(eth1.100-eth1.200) have IP belonging 
+> to one subnet( but sometimes to other ) and they can communicate each 
+> other by using proxy-arp trick under control of the router. And now I 
+> need to extend capabilities of this communication as I stated above. 
+> Owing to talking with you and thinking on the problems I understand 
+> my tasks clearer.
+
+It may be my mis-understanding, but I'm still not seeing why you can't 
+do this in EBTables using bridging.
+
+If you bridge all your VLANs together and configure EBTables to filter 
+the traffic, I don't see what the problem will be.
+
+All your layer 3 traffic will behave as if it is on one large network, 
+passing through the bridge with out the need for modification.  Granted, 
+you can modify the traffic if you /want/ to, but I don't see the /need/ 
+for it.  At least based on my (mis)understanding.
+
+> Grant, thank you for your support.
+
+You are welcome.
+
+Let me ask you this:
+
+Do you want your different user VLANs to be able to communicate with 
+each other?  (Inter user VLAN communications)
+
+How would this scenario work for you:
+
+  - Bridge all the user VLANs and the VLAN 9 together.
+  - Configure the bridge to drop the frames by default.
+  - Configure the bridge to selectively bridge the frames that you want to.
+  - Optionally alter the bridged frames if you want to.
+
+I think I did something similar to what you are wanting to do a number 
+of years ago.  I bridged about 40 different VLANs (sharing one IP 
+subnet) together and configured them so that they could not talk with 
+each other (preventing the spread of virus / worms) but so that they 
+could talk to the router that was on a different VLAN that was part of 
+the bridge.  In the process I had to modify the MAC address of traffic 
+b/c the switch that was being used had a flaw where it could not see the 
+same MAC address on more than one VLAN.  This has been in place and 
+working just fine for a number of years.  Originally it started out on a 
+P-II 233 MHz system with 128 MB of memory and it was able to do it with 
+out any problems.  The only reason we replaced the box was because it 
+was physically old and we did not want the hardware to dye on us.  I 
+ended up copying the EBTables scripts from the old system to the new 
+system and made very minor modifications to get everything to work 
+(essentially as it was) with out any problems.
+
+
+
+Grant. . . .
