@@ -1,21 +1,46 @@
-From: tingwei liu <tingw.liu@gmail.com>
-Subject: test maillist
-Date: Tue, 29 Jun 2010 11:38:07 +0800
-Message-ID: <AANLkTilChqUEGqZa1BJRRTtVSlNqRu8TMSd4XrbPekrr@mail.gmail.com>
+From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
+	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
+Subject: ebtables mac update
+Date: Tue, 29 Jun 2010 13:43:25 +0300
+Message-ID: <1277808205.3791.17.camel@casper.meteor.dp.ua>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:date:message-id
-         :subject:from:to:content-type;
-        bh=9/VBDGWKjznDjHP8+MZ6kV2raMT2h7KSOm5p57EPe5I=;
-        b=p7UvDbTTJCEt9qs8CwM3ZXtAo0YN0BGKT/pCWkPXxnLChR8woYL9eUicGfPfY1Eo8w
-         wOYLcRV7n5MJ6PFKjc4D+kPuY14+OQ8wv7P19mkdTH8anByQ0nawALutSZBlWKdmiTrN
-         6I0HaJV0zIJ1DBXZVMSoeydlE3iHnQXq3grV8=
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="koi8-r"
+To: netfilter@vger.kernel.org
 
-test maillist
+Hi,
+
+We have two building with local networks connected by Zyxel Prestige 84=
+1
+and 841C VDSL-modems. They work in transparent bridge mode.
+
+On one end 841 is connected directly to a switch. On other 841C
+connected to a linux router wich is also connected to a switch, and
+those interfaces bridged.
+
+There is a problem, when a computer is being moved from one building to
+another it stops seeing other end of the bridge until modems are
+rebooted.
+
+I was thinking the problem is in modems' part, but in Zyxel support I'v=
+e
+been told they are just dumn transparent bridges and doesn't behave lik=
+e
+that.
+
+So, the only device left that may cause such problem is linux
+router/bridge.
+
+Is there any kind of behaviour of linux bridge (ebtables) that may caus=
+e
+such problem?
+
+P.S. there is no ebtables rules at all, no iptables related rules.
+
+--=20
+=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
+ua>
+
