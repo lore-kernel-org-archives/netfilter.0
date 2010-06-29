@@ -1,83 +1,61 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: ebtables & VLAN redirect
-Date: Tue, 29 Jun 2010 14:29:39 -0500
-Message-ID: <4C2A49A3.1030600@riverviewtech.net>
-References: <AANLkTilVkFmW0SL3t6ESUN72On5y52OvxYBUz2ZZdAWc@mail.gmail.com>	<4C262DA2.1040103@riverviewtech.net>	<AANLkTikWc-CNXMieyxv2lB69UphqQRsjjJATJYrpjkMK@mail.gmail.com>	<4C2805A3.4070801@riverviewtech.net>	<AANLkTikeVKxFv4jTp2vLTh80BOQW1nAQxmCc8M7EsPJ1@mail.gmail.com>	<4C2909D9.8010506@riverviewtech.net> <AANLkTindtJ35xk2AgQxS_Fkac86s-n1riksh7D2oD34o@mail.gmail.com>
+Date: Tue, 29 Jun 2010 14:31:02 -0500
+Message-ID: <4C2A49F6.2060704@riverviewtech.net>
+References: <AANLkTilVkFmW0SL3t6ESUN72On5y52OvxYBUz2ZZdAWc@mail.gmail.com>	<4C262DA2.1040103@riverviewtech.net>	<AANLkTikWc-CNXMieyxv2lB69UphqQRsjjJATJYrpjkMK@mail.gmail.com>	<4C2805A3.4070801@riverviewtech.net>	<AANLkTikeVKxFv4jTp2vLTh80BOQW1nAQxmCc8M7EsPJ1@mail.gmail.com>	<4C2909D9.8010506@riverviewtech.net> <AANLkTindtJ35xk2AgQxS_Fkac86s-n1riksh7D2oD34o@mail.gmail.com> <4C2A49A3.1030600@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTindtJ35xk2AgQxS_Fkac86s-n1riksh7D2oD34o@mail.gmail.com>
+In-Reply-To: <4C2A49A3.1030600@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On 06/29/10 13:15, Anatoly Muliarski wrote:
-> Session may be not fully correct word - more precisely it should 
-> understand as IP traffic flows specified by address:port pairs to 
-> dump the traffic.
+On 06/29/10 14:29, Grant Taylor wrote:
+> The simple fact that you have the amount of incoming traffic that you 
+> want to filter and forward a subset of implies that there will be CPU 
+> time spent analyzing which traffic to forward.
 
-So you are wanting to mirror specific flows that are passing through 
-your system to VLAN 9.
+Along these lines, I have what some might consider a devious idea.
 
-What interfaces are these flows being passed through?  The bridge and 
-another (virtual) interface?  In other words, what would be an example 
-of an incoming interface and an out going interface?  Or is this traffic 
-making it to your system because it is multicast / flooded on each VLAN?
+Create a bridge for each VLAN.  That will give you the VLAN interface 
+and it's associated bridge interface.  Then bridge the bridge interfaces 
+in to a larger bridge.
 
-> Your explanation is correct BUT in current bridging model there would 
-> be a hundred attempts to flood ALL broadcast/multicast traffic 
-> received from every bridge port. Yes, I can filter them out by using 
-> ebtables rules, but this unnecessary attempts will waste CPU time.
+Using all the smaller bridges will keep the possible rules that you need 
+to match smaller, thus less load on the CPU.  You could also turn down 
+the VLANs individual bridge when you didn't want to monitor any traffic 
+on it, thus reducing the load further.
 
-Ok.  Just my opinion, but if this system is being designed to do this 
-(presuming there are not other options) I'd make sure that the CPU was 
-scaled to function with the amount of traffic.
+So, you would end up with a topology somewhat like this:
 
-> Writing "to limit traffic direction between bridge devices" I meant 
-> there is no support to exclude attempts of flood to ALL ports by 
-> limiting a direction of flooding in the description of a bridge 
-> device.
+eth0.101 <-> br101 <-> br9
+eth0.102 <-> br102 <-> br9
+eth0.103 <-> br103 <-> br9 <-> eth1.9
+...
+eth0.199 <-> br199 <-> br9
 
-Ok...  Now it sounds like you are wanting some more advanced features 
-(read things that purposefully break standards in some situations) like 
-broadcast storm protection.
+In this case, br9 is nothing more than a collector from all the other 
+bridges.
 
-> OK bridging will work, but I am afraid to meet performance issues 
-> afterwards as I stated above.
+It's the interaction between eth0.<VID> and br<VID> that has to do the 
+filtering.
 
-Maybe, maybe not.
+When you don't want to monitor traffic on say, eth0.123, simply remove 
+it from br123.  Doing so will cause br123 to disable (but not remove) 
+its self which will cause br9 to disable the port that is br123.  - 
+Then when you want to monitor eth0.123, re-add it to br123, causing 
+br123 to re-enable, causing br9 to re-enable br123's port.
 
-> Very interesting.
+Using br9 to aggregate all the VLANs together will also make it easier / 
+less load to make sure that you don't have inter-VLAN communications 
+because only the traffic you are interested in will make it that far, 
+not all the traffic that you are talking about.  Seeing as how there 
+will be much less traffic, matching the EBTables rules to see what can 
+talk to what (for br9) will be much less load on the system.
 
-*nod*
-
-> Thank you for your advise, It worth to employ ebtables in solving my 
-> tasks. And I have met the same problem with MACs in other project and 
-> I had to generate different source MACs for different VLANs and 
-> eventually I had to replace the switch to cope with the problem of 
-> matching destination MACs for different VLANs.
-
-I'm starting to wonder if your system isn't being used as a traditional 
-piece of network infrastructure equipment (router / switch / bridge). 
-Rather if you are trying to make a utility that will ""extend a 
-monitoring package that is designed to monitor one VLAN in such a way 
-that it can monitor multiple VLANs.  Or at least bridge the traffic you 
-want to monitor from multiple VLANs down to one VLAN that your 
-application can monitor.
-
-If this is the case, and you are using separate VLANs to avoid network 
-congestion problems, I agree that bridging might not be the best option 
-here.
-
-In this case, I'd look at doing something that will cause your system to 
-receive the traffic you are interested in and pass on to the monitoring 
-application.  -  I'm guessing that an application layer gateway would 
-probably be best at doing this.
-
-The simple fact that you have the amount of incoming traffic that you 
-want to filter and forward a subset of implies that there will be CPU 
-time spent analyzing which traffic to forward.
+Something to think about.
 
 
 
