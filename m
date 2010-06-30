@@ -1,190 +1,88 @@
-From: ratheesh k <ratheesh.ksz@gmail.com>
-Subject: Re: [Bridge] Bridge blocking network traffic
-Date: Wed, 30 Jun 2010 13:20:50 +0530
-Message-ID: <AANLkTimPiriAOGpHHrAoEyFGuuyn1g8vFqW6Pimdz9CQ@mail.gmail.com>
-References: <m2nbc9320b91004211748o5548f351z646076fab6744cca@mail.gmail.com>
-	<20100422130919.70206765@nehalam>
+From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
+	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
+Subject: Re: ebtables mac update
+Date: Wed, 30 Jun 2010 12:09:02 +0300
+Message-ID: <1277888942.4255.0.camel@casper.meteor.dp.ua>
+References: <1277808205.3791.17.camel@casper.meteor.dp.ua>
+	 <4C29E8B4.5060205@plouf.fr.eu.org>  <4C2A0703.5040007@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netdev-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=1kXLvFYPlpGAPVPACwW/wfhpOr5CG9QoBiNO5C82vDI=;
-        b=x3gpPOAxImw+bqp0HnInjWWVfAx9byOg2O70SeJzYRhFwd+uocGRTCfMpMrqZA7TZ5
-         w3F6wGUv3E4Mvunw9HuITIfNPxyhEdb5ylQx3JElzrk7U5lDwcPDA4SxZRyVVROl3weD
-         Qs2nIGDLyf5pIMF3xVlmI2nCr3bHCIBC3GqsM=
-In-Reply-To: <20100422130919.70206765@nehalam>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4C2A0703.5040007@riverviewtech.net>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Stephen Hemminger <shemminger@linux-foundation.org>
-Cc: Netfilter mailing list <netfilter@vger.kernel.org>, netdev@vger.kernel.org, bridge@lists.linux-foundation.org
+Content-Type: text/plain; charset="koi8-r"
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
->>On Fri, Apr 23, 2010 at 1:39 AM, Stephen Hemminger <shemminger@linux-=
-foundation.org> wrote:
->>You are supposed to assign IP address to bridge not the member of the=
- bridge
+=F7 =F7=D4=CF, 29/06/2010 =D7 09:45 -0500, Grant Taylor =D0=C9=DB=C5=D4=
+:
+> On 06/29/10 07:36, Pascal Hambourg wrote:
+> > The Linux bridge maintains a MAC-port table based on the source MAC=
+=20
+> > address in received frames. As expected, if a MAC address was=20
+> > associated to a given port and a frame from that MAC address is=20
+> > received on a different port, then the table is updated accordingly=
+=2E=20
+> > Besides, rebooting the modems and not the Linux box fixes the=20
+> > problem. So I doubt that the Linux bridge causes the problem.
+>=20
+> I mostly agree.
+>=20
+> The only thing that I would wonder about is is it possible that Linux=
+ is=20
+> seeing the link go down on the physical NIC that is connected to the=20
+> bridge, thus taking the logical port in the bridge down there by caus=
+ing=20
+> it's learned MAC addresses associated with that port to be lost.
+>=20
+> This could easily be tested by putting a hub (or similar) between the=
+=20
+> Linux box and the Zyxel bridge.  That way when the bridge is rebooted=
+,=20
+> the Linux box does not see the link go down.  If the problem still=20
+> corrects its self, you have completely removed the Linux box from the=
+=20
+> tests, there by strongly pointing at the Zyxel bridge.
 
-Why is it so ?
+Worth trying.
 
-I have a linux   machine with interfaces eth0 (192.168.1.100 ) and
-eth1 ( 192.168.2.100 )  .   . I can connect  both eth0 an eth1  to a
-hardware  HUB . How could i do this in linux machine itself using
-brctl ?
+> > Of course the update process requires that the moved box sends=20
+> > traffic first. If it just sits there waiting then MAC-port tables=20
+> > won't be updated, until the entry eventually expires.
+>=20
+> Agreed.
+>=20
+> Pining or broadcasting looking to see what devices are on the far end=
+=20
+> should accomplish the same thing.
+>=20
+> > Then may I ask what is the purpose of this box ?
+>=20
+> Remember that EBTables modifies how in kernel bridging behaves.  Thus=
+=20
+> the in kernel bridging will still behave like a normal bridge, even i=
+f=20
+> EBTables rules are not used.  (In fact it is possible to have bridgin=
+g=20
+> support in the kernel with out EBTables.)
+>=20
+> Bridges will still learn (and forget / expire) where MAC addresses ar=
+e.=20
+>   So even if there were not EBTables rules, the bridge its self will=20
+> learn what hosts are on what side of the bridge there by intelligentl=
+y=20
+> forwarding (or not) frames across the link that don't need to be.
+>=20
+> I would have been tempted to put a bridge on both sides, not just the=
+=20
+> one.  Because as it is, broadcasts for the end with out the network a=
+re=20
+> still propagated across the link.
 
-Thanks,
-Ratheesh
+This is to be done. But there is no issue with this until now.
 
+--=20
+=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
+ua>
 
-
-> On Thu, 22 Apr 2010 10:48:09 +1000
-> benno joy <bennojoy@gmail.com> wrote:
->
->> Dear Team,
->>
->> I have a strange problem...... This is my problem i have a linux box=
- running
->> Xen kernel (2.2). and i have the a bonding interface called bond0.49=
-7(eth0
->> and eth1 and also des Vlan tagging).
->> the bond0.497 is part of the bridge "xenbrv497", the issue is as soo=
-n as i
->> make the bond a part of the bridge my network traffic stops to work.
->> I did some prelimanary tests and found the following:
->> 1) if i assighn an ip to the bond and do a ping to the gateway it wo=
-rks
->> (provided it is not part of bridge xenbrv497)
->> 2) if i add the bondig interface to the brodge xenbrv497 (brclt addi=
-f
->> xenbrv497 bond0.497) the ping tests fails.
->> 3) i did a tcpdump and found that arp requests are going out of the
->> interface and we are getting response also. but soemhow
->> the arp entries are not gettign registered. i did some googling and =
-found it
->> may be because of filtering so i disabled it by
->> echo 0 > in /proc/sys/net/bridge/bridge-nf-*.
->> But even this did not help still the arp entries are not getting reg=
-istered
->> due to which my network traffic is gettign dropped.
->> This problem can be resolved by a reboot. but i would like to troubl=
-eshoot
->> it.
->> Could you please let me know how i can get more debugging message fr=
-om the
->> bridge calls so i can figure out what exactly is happening.
->>
->> # uname -a
->> Linux vmclkxstgh04.espdev.aurdev.national.com.au 2.6.18-128.2.1.4.13=
-=2Eel5xen
->> #1 SMP Mon Dec 7 14:34:40 EST 2009 i686 i686 i386 GNU/Linux
->>
->> [root@vmclkxstgh04 ~]# brctl show
->> bridge name =A0 =A0 bridge id =A0 =A0 =A0 =A0 =A0 =A0 =A0 STP enable=
-d =A0 =A0 interfaces
->> vlan441 =A0 =A0 =A0 =A0 8000.0017a4770470 =A0 =A0 =A0 no =A0 =A0 =A0=
- =A0 =A0 =A0 =A0bond0.441
->> xenbrv205 =A0 =A0 =A0 =A0 =A0 =A0 =A0 8000.0017a477046c =A0 =A0 =A0 =
-no =A0 =A0 =A0 =A0 =A0 =A0 =A0bond1.205
->> xenbrv208 =A0 =A0 =A0 =A0 =A0 =A0 =A0 8000.0017a477046c =A0 =A0 =A0 =
-no =A0 =A0 =A0 =A0 =A0 =A0 =A0bond1.208
->> xenbrv220 =A0 =A0 =A0 =A0 =A0 =A0 =A0 8000.000000000000 =A0 =A0 =A0 =
-no
->> xenbrv221 =A0 =A0 =A0 =A0 =A0 =A0 =A0 8000.000000000000 =A0 =A0 =A0 =
-no
->> xenbrv226 =A0 =A0 =A0 =A0 =A0 =A0 =A0 8000.0017a477046c =A0 =A0 =A0 =
-no =A0 =A0 =A0 =A0 =A0 =A0 =A0vif40.1
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 vif39.1
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 vif37.1
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 vif26.1
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 vif25.1
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 vif24.1
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 vif13.1
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 bond1.226
->> xenbrv227 =A0 =A0 =A0 =A0 =A0 =A0 =A0 8000.0017a4770470 =A0 =A0 =A0 =
-no =A0 =A0 =A0 =A0 =A0 =A0 =A0vif40.0
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 vif39.0
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 vif37.0
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 vif26.0
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 vif25.0
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 vif24.0
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 vif13.0
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 bond0.227
->> xenbrv420 =A0 =A0 =A0 =A0 =A0 =A0 =A0 8000.0017a4770470 =A0 =A0 =A0 =
-no =A0 =A0 =A0 =A0 =A0 =A0 =A0bond0.420
->> xenbrv422 =A0 =A0 =A0 =A0 =A0 =A0 =A0 8000.0017a4770470 =A0 =A0 =A0 =
-no =A0 =A0 =A0 =A0 =A0 =A0 =A0vif35.0
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 vif7.0
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 vif6.0
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 vif4.0
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 vif3.0
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 vif2.0
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 tap2.0
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 bond0.422
->> xenbrv425 =A0 =A0 =A0 =A0 =A0 =A0 =A0 8000.0017a4770470 =A0 =A0 =A0 =
-no =A0 =A0 =A0 =A0 =A0 =A0 =A0bond0.425
->> xenbrv450 =A0 =A0 =A0 =A0 =A0 =A0 =A0 8000.0017a4770470 =A0 =A0 =A0 =
-no =A0 =A0 =A0 =A0 =A0 =A0 =A0bond0.450
->> xenbrv492 =A0 =A0 =A0 =A0 =A0 =A0 =A0 8000.0017a4770470 =A0 =A0 =A0 =
-no =A0 =A0 =A0 =A0 =A0 =A0 =A0bond0.492
->> xenbrv493 =A0 =A0 =A0 =A0 =A0 =A0 =A0 8000.0017a4770470 =A0 =A0 =A0 =
-no =A0 =A0 =A0 =A0 =A0 =A0 =A0bond0.493
->> xenbrv494 =A0 =A0 =A0 =A0 =A0 =A0 =A0 8000.0017a4770470 =A0 =A0 =A0 =
-no =A0 =A0 =A0 =A0 =A0 =A0 =A0bond0.494
->> xenbrv495 =A0 =A0 =A0 =A0 =A0 =A0 =A0 8000.0017a4770470 =A0 =A0 =A0 =
-no =A0 =A0 =A0 =A0 =A0 =A0 =A0bond0.495
->> xenbrv496 =A0 =A0 =A0 =A0 =A0 =A0 =A0 8000.0017a4770470 =A0 =A0 =A0 =
-no =A0 =A0 =A0 =A0 =A0 =A0 =A0bond0.496
->> xenbrv497 =A0 =A0 =A0 =A0 =A0 =A0 =A0 8000.0017a4770470 =A0 =A0 =A0 =
-no =A0 =A0 =A0 =A0 =A0 =A0 =A0bond0.497
->> xenbrv701 =A0 =A0 =A0 =A0 =A0 =A0 =A0 8000.0017a477046c =A0 =A0 =A0 =
-no =A0 =A0 =A0 =A0 =A0 =A0 =A0vif44.1
->> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =
-=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 bond1.701
->>
->> bond0.497 Link encap:Ethernet =A0HWaddr 00:17:A4:77:04:70
->> =A0 =A0 =A0 =A0 =A0 inet addr:10.12.166.231 =A0Bcast:10.12.166.255 =A0=
-Mask:255.255.255.224
->> =A0 =A0 =A0 =A0 =A0 UP BROADCAST RUNNING MASTER MULTICAST =A0MTU:150=
-0 =A0Metric:1
->> =A0 =A0 =A0 =A0 =A0 RX packets:3807595 errors:0 dropped:0 overruns:0=
- frame:0
->> =A0 =A0 =A0 =A0 =A0 TX packets:3304 errors:0 dropped:0 overruns:0 ca=
-rrier:0
->> =A0 =A0 =A0 =A0 =A0 collisions:0 txqueuelen:0
->> =A0 =A0 =A0 =A0 =A0 RX bytes:188847200 (180.0 MiB) =A0TX bytes:13876=
-8 (135.5 KiB)
->
-> You are supposed to assign IP address to bridge not the member of the=
- bridge.
->
->
-> --
-> _______________________________________________
-> Bridge mailing list
-> Bridge@lists.linux-foundation.org
-> https://lists.linux-foundation.org/mailman/listinfo/bridge
->
