@@ -1,55 +1,112 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: [Bridge] Bridge blocking network traffic
-Date: Wed, 30 Jun 2010 14:15:24 -0500
-Message-ID: <4C2B97CC.8090007@riverviewtech.net>
-References: <m2nbc9320b91004211748o5548f351z646076fab6744cca@mail.gmail.com>	<20100422130919.70206765@nehalam> <AANLkTimPiriAOGpHHrAoEyFGuuyn1g8vFqW6Pimdz9CQ@mail.gmail.com>
+From: Anatoly Muliarski <x86ever@gmail.com>
+Subject: Re: ebtables & VLAN redirect
+Date: Wed, 30 Jun 2010 23:54:21 +0300
+Message-ID: <AANLkTinR6BX8jk6QRl3j-srd1_yprRQz30cKJjGNLtGd@mail.gmail.com>
+References: <AANLkTilVkFmW0SL3t6ESUN72On5y52OvxYBUz2ZZdAWc@mail.gmail.com>
+	<4C262DA2.1040103@riverviewtech.net>
+	<AANLkTikWc-CNXMieyxv2lB69UphqQRsjjJATJYrpjkMK@mail.gmail.com>
+	<4C2805A3.4070801@riverviewtech.net>
+	<AANLkTikeVKxFv4jTp2vLTh80BOQW1nAQxmCc8M7EsPJ1@mail.gmail.com>
+	<4C2909D9.8010506@riverviewtech.net>
+	<AANLkTindtJ35xk2AgQxS_Fkac86s-n1riksh7D2oD34o@mail.gmail.com>
+	<4C2A49A3.1030600@riverviewtech.net>
+	<4C2A49F6.2060704@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTimPiriAOGpHHrAoEyFGuuyn1g8vFqW6Pimdz9CQ@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:in-reply-to
+         :references:date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=fKecaLrUGUOFyiWRju4XpRwnRglpWAytvnL0gdGsr9U=;
+        b=PwyhYr5tlLXwaUOE/L5c0oGGgRzq8GDGE/VdWr6ONyILvKIOUqzL/8veA3kzyLTnbL
+         KWPitbEbg9Xfj3odbrFE/mjB+6dcj8sDfFuNv7eIBe+UOHhnLJBZwaizFJapKMTEoFCP
+         yQiJbZ/P2HhObxv05CbrJ9TwgzzgGNYLUUN6c=
+In-Reply-To: <4C2A49F6.2060704@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-On 06/30/10 02:50, ratheesh k wrote:
-> Why is it so ?
+2010/6/29 Grant Taylor <gtaylor@riverviewtech.net>:
+> On 06/29/10 14:29, Grant Taylor wrote:
+>>
+>> The simple fact that you have the amount of incoming traffic that yo=
+u want
+>> to filter and forward a subset of implies that there will be CPU tim=
+e spent
+>> analyzing which traffic to forward.
+>
+> Along these lines, I have what some might consider a devious idea.
+>
+> Create a bridge for each VLAN. =A0That will give you the VLAN interfa=
+ce and
+> it's associated bridge interface. =A0Then bridge the bridge interface=
+s in to a
+> larger bridge.
+>
+> Using all the smaller bridges will keep the possible rules that you n=
+eed to
+> match smaller, thus less load on the CPU. =A0You could also turn down=
+ the
+> VLANs individual bridge when you didn't want to monitor any traffic o=
+n it,
+> thus reducing the load further.
+>
+> So, you would end up with a topology somewhat like this:
+>
+> eth0.101 <-> br101 <-> br9
+> eth0.102 <-> br102 <-> br9
+> eth0.103 <-> br103 <-> br9 <-> eth1.9
+> ...
+> eth0.199 <-> br199 <-> br9
+>
+> In this case, br9 is nothing more than a collector from all the other
+> bridges.
+>
+> It's the interaction between eth0.<VID> and br<VID> that has to do th=
+e
+> filtering.
+>
+> When you don't want to monitor traffic on say, eth0.123, simply remov=
+e it
+> from br123. =A0Doing so will cause br123 to disable (but not remove) =
+its self
+> which will cause br9 to disable the port that is br123. =A0- Then whe=
+n you
+> want to monitor eth0.123, re-add it to br123, causing br123 to re-ena=
+ble,
+> causing br9 to re-enable br123's port.
+>
+> Using br9 to aggregate all the VLANs together will also make it easie=
+r /
+> less load to make sure that you don't have inter-VLAN communications =
+because
+> only the traffic you are interested in will make it that far, not all=
+ the
+> traffic that you are talking about. =A0Seeing as how there will be mu=
+ch less
+> traffic, matching the EBTables rules to see what can talk to what (fo=
+r br9)
+> will be much less load on the system.
+>
+> Something to think about.
+>
 
-Independent of your scenario, I'd say that binding the IP to the 
-interface will make it more resilient to the individual interfaces going 
-down.  At least in such as all the interfaces would have to go down 
-before the IP would go down.
+A nice idea.
+I have thought about it a bit earlier.
+BUT linux implementation of bridging has two limitations that makes it
+impossible:
+1. There cannot be nested bridge devices.
+2. Each device can belong to only one bridge device.
 
-> I have a linux   machine with interfaces eth0 (192.168.1.100 ) and 
-> eth1 ( 192.168.2.100 )  .   . I can connect  both eth0 an eth1  to a 
-> hardware  HUB . How could i do this in linux machine itself using 
-> brctl ?
+Eventually I have come to understanding that my problem has no fine
+solution with no risks for performance. Partially I can solve it on
+application layer, partially by using bridging.
+And talking with you enlightened me on the ways of doing it.
+Thanks for your efforts and ideas.
 
-What netmask are your two IPs using, a /24?  If they are, then you are 
-actually using two different subnets, and possibly doing something like 
-a bridging router.
-
-Either way, you could bind both IPs to the bridge interface (classic IP 
-alias or "ip add").
-
-With in the Xen context it may be because different things manage 
-various parts of the Xen network differently and having the IP bound in 
-the wrong place might cause a problem if the Xen hypervisor takes 
-something down.
-
-There is also the fact that if a cable gets unplugged from an interface 
-(that is a member of a bridge with at least one other member interface) 
-said interface will go down but the bridge will stay up.  In doing so, 
-the IP will go down b/c the interface that it was bound to would go 
-down.  Conversely if the IP was bound to the bridge interface, the IP 
-would stay up and usable.
-
-There is also the possibility that if the IP is bound directly to the 
-interface that filtering (EBTables / IPTables w/ Bridged Netfilter 
-option) will not see the traffic.
-
-In some ways, it really depends on the specific use scenario.
-
-
-
-Grant. . . .
+--=20
+Best regards
+Anatoly Muliarski
