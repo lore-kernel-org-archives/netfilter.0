@@ -1,88 +1,124 @@
 From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
 	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
 Subject: Re: ebtables mac update
-Date: Wed, 30 Jun 2010 12:09:02 +0300
-Message-ID: <1277888942.4255.0.camel@casper.meteor.dp.ua>
+Date: Wed, 30 Jun 2010 12:24:09 +0300
+Message-ID: <1277889849.4255.15.camel@casper.meteor.dp.ua>
 References: <1277808205.3791.17.camel@casper.meteor.dp.ua>
-	 <4C29E8B4.5060205@plouf.fr.eu.org>  <4C2A0703.5040007@riverviewtech.net>
+	 <4C29E8B4.5060205@plouf.fr.eu.org>
+	 <1277821770.4006.33.camel@casper.meteor.dp.ua>
+	 <4C2A09DB.6030205@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C2A0703.5040007@riverviewtech.net>
+In-Reply-To: <4C2A09DB.6030205@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="koi8-r"
+Content-Type: text/plain; charset="utf-8"
 To: Grant Taylor <gtaylor@riverviewtech.net>
 Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-=F7 =F7=D4=CF, 29/06/2010 =D7 09:45 -0500, Grant Taylor =D0=C9=DB=C5=D4=
-:
-> On 06/29/10 07:36, Pascal Hambourg wrote:
-> > The Linux bridge maintains a MAC-port table based on the source MAC=
+=D0=92 =D0=92=D1=82=D0=BE, 29/06/2010 =D0=B2 09:57 -0500, Grant Taylor =
+=D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> On 06/29/10 09:29, =C3=B0=C3=8F=C3=8B=C3=8F=C3=94=C3=89=C3=8C=C3=85=C3=
+=8E=C3=8B=C3=8F =C3=AB=C3=8F=C3=93=C3=94=C3=89=C3=8B wrote:
+> > Linux box runs some services and have 3 interfaces, 2 of them are=20
+> > bridged to br0 and one is left for separate local segment. So it is=
+ a=20
+> > router between br0 and eth2 and a bridge between eth0, eth1.
+>=20
+> Will you please clarify what interface the Zyxel bridge is connected =
+to?=20
+>    (I'm guessing that it's connected to either eth0 or eth1, but I'd=20
+> like some clarification.)
+>=20
+> What is connected to the other two interfaces?
+
+      +-- eth0: modem
+br0 --+
+      +-- eth1: local network
+
+eth2: network of public access points
+
+> > This is brctl showmacs, right?
+>=20
+> I don't know the command off the top of my head, but I know there is =
+a=20
+> command to have the bridge show what MAC addresses are associated wit=
+h=20
+> what bridge ports.
+>=20
+> > So, this is exactly the same logic that switches use, right?
+>=20
+> Should be, yes.
+>=20
+> > Can you confirm that if MAC (frame with source MAC) pops up on port=
 =20
-> > address in received frames. As expected, if a MAC address was=20
-> > associated to a given port and a frame from that MAC address is=20
-> > received on a different port, then the table is updated accordingly=
+> > different from the one it was seen previous time then the port for=20
+> > that MAC get updated?
+>=20
+> Should be, yes.
+
+If so, the linux bridge should not be the point of problem.
+
+> > What then "brctl setageing" for?
+>=20
+> That should set the aging / expire timer for MAC addresses that have =
+not=20
+> been seen in a while.  (How long the MAC has to be quite before it is=
+=20
+> flooded again.)
+
+So this is to remove MACs that were not poped up for long to just not
+waste momory.
+
+> > It may happen that rebooting the modems brings port link down and t=
+he=20
+> > bridge may clear the MAC-port table on that port. This is similar t=
+o=20
+> > what Zyxel support told me.
+>=20
+> Agreed.  See my previous reply about a way to test this.
+
+I'll consider.
+
+> > In my case on moved box I'm unable to make connections or even ping=
+=2E
+>=20
+> This is contrary to how every Linux bridge that I have used ever=20
+> behaved.  I'm thinking that the Zyxel is at least part of the problem=
 =2E=20
-> > Besides, rebooting the modems and not the Linux box fixes the=20
-> > problem. So I doubt that the Linux bridge causes the problem.
->=20
-> I mostly agree.
->=20
-> The only thing that I would wonder about is is it possible that Linux=
- is=20
-> seeing the link go down on the physical NIC that is connected to the=20
-> bridge, thus taking the logical port in the bridge down there by caus=
-ing=20
-> it's learned MAC addresses associated with that port to be lost.
->=20
-> This could easily be tested by putting a hub (or similar) between the=
-=20
-> Linux box and the Zyxel bridge.  That way when the bridge is rebooted=
-,=20
-> the Linux box does not see the link go down.  If the problem still=20
-> corrects its self, you have completely removed the Linux box from the=
-=20
-> tests, there by strongly pointing at the Zyxel bridge.
+> That being said, it is very unlikely but there could be some sort of=20
+> weird interaction between the Zyxel and Linux bridging that combined =
+is=20
+> causing a problem.
 
-Worth trying.
+This is quite low probability.
 
-> > Of course the update process requires that the moved box sends=20
-> > traffic first. If it just sits there waiting then MAC-port tables=20
-> > won't be updated, until the entry eventually expires.
->=20
-> Agreed.
->=20
-> Pining or broadcasting looking to see what devices are on the far end=
+> > Besides that it is a server, iptables is used to restrict access fo=
+r=20
+> > separate local segment at eth2 (allow access to Internet and not to=
 =20
-> should accomplish the same thing.
+> > local net). Ebtables is empty now, but I wanted to be able to filte=
+r=20
+> > bridge traffic if that matters someday.
 >=20
-> > Then may I ask what is the purpose of this box ?
->=20
-> Remember that EBTables modifies how in kernel bridging behaves.  Thus=
-=20
-> the in kernel bridging will still behave like a normal bridge, even i=
-f=20
-> EBTables rules are not used.  (In fact it is possible to have bridgin=
-g=20
-> support in the kernel with out EBTables.)
->=20
-> Bridges will still learn (and forget / expire) where MAC addresses ar=
-e.=20
->   So even if there were not EBTables rules, the bridge its self will=20
-> learn what hosts are on what side of the bridge there by intelligentl=
-y=20
-> forwarding (or not) frames across the link that don't need to be.
->=20
-> I would have been tempted to put a bridge on both sides, not just the=
-=20
-> one.  Because as it is, broadcasts for the end with out the network a=
-re=20
-> still propagated across the link.
+> Remember that it is possible for IPTables to filter bridged traffic.=20
+> (It depends if an option is enabled in the kernel.)  So IPTables coul=
+d=20
+> be interfering with out you knowing it.
 
-This is to be done. But there is no issue with this until now.
+I know that. But some kind of matches in newer kernels are available
+only in ebtables, like --phys-dev-[in|out]
+
+> Will you please provide the output of "iptables-save" (sanitized if n=
+eeded).
+
+All rules have either "-i eth2" or "-o eth2". eth2 is public access
+points network that should be restricted. br0(eth0: modem, eth1: local
+network for this building): local network. Default policy is accept, so
+there is no rules to restrict bridged traffic.
 
 --=20
-=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
-ua>
+=D0=9F=D0=BE=D0=BA=D0=BE=D1=82=D0=B8=D0=BB=D0=B5=D0=BD=D0=BA=D0=BE =D0=9A=
+=D0=BE=D1=81=D1=82=D0=B8=D0=BA <casper@meteor.dp.ua>
 
