@@ -1,41 +1,27 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: nat bypass
-Date: Wed, 30 Jun 2010 11:37:18 +0900
-Message-ID: <20100630023718.GU2138@verge.net.au>
-References: <AANLkTil_H1QeaCHQYhMjVRFiLwtqF9yLAJZ9BWecOIDW@mail.gmail.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: ebtables & VLAN redirect
+Date: Tue, 29 Jun 2010 22:20:48 -0500
+Message-ID: <20100630032048.GR19868@cardinal>
+References: <AANLkTilVkFmW0SL3t6ESUN72On5y52OvxYBUz2ZZdAWc@mail.gmail.com> <4C262DA2.1040103@riverviewtech.net> <AANLkTikWc-CNXMieyxv2lB69UphqQRsjjJATJYrpjkMK@mail.gmail.com> <4C2805A3.4070801@riverviewtech.net> <AANLkTikeVKxFv4jTp2vLTh80BOQW1nAQxmCc8M7EsPJ1@mail.gmail.com> <4C2909D9.8010506@riverviewtech.net> <AANLkTindtJ35xk2AgQxS_Fkac86s-n1riksh7D2oD34o@mail.gmail.com> <4C2A49A3.1030600@riverviewtech.net> <4C2A49F6.2060704@riverviewtech.net>
 Mime-Version: 1.0
-Return-path: <netdev-owner@vger.kernel.org>
+Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <AANLkTil_H1QeaCHQYhMjVRFiLwtqF9yLAJZ9BWecOIDW@mail.gmail.com>
-Sender: netdev-owner@vger.kernel.org
+In-Reply-To: <4C2A49F6.2060704@riverviewtech.net>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: ratheesh k <ratheesh.ksz@gmail.com>
-Cc: Netfilter mailing list <netfilter@vger.kernel.org>, netdev@vger.kernel.org
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Mon, Jun 28, 2010 at 03:43:46PM +0530, ratheesh k wrote:
-> Hi,
-> 
->   A -------> R ------->S
-> 
-> I have a linux machine A is connected to Linux machine R . Machine R
-> is having two network interfaces and acting as a router .
-> It has a dhcp server running  . It will assign ip in 192.168.1.0/24
-> subnet to all machine connected on lan side ( A is connected also in
-> lan side ) . Wan side of R is connected to HTTP server S . There is
-> also a DHCP server running on S to assign ip in 10.232.18.0/24 subnet
-> .  Is there any way , in which NAT should be bypassed to get ip from
-> DHCP server running  on S . My question is : How can A will get  an ip
-> from 10.232.18.0/24 pool ip .?
-> ebtables is an option ? How can we make it ?
-> Is there any other optimal way ?
+On Tue, Jun 29, 2010 at 02:31:02PM -0500, Grant Taylor wrote:
+> In this case, br9 is nothing more than a collector from all the 
+> other bridges.
 
-Let me try and understand this.
+I would only suggest that you call it "br549".
 
-R is routing between 192.168.1.0/24 and 10.232.18.0/24.
-As A is on the 192.168.1.0/24 side of R.
-But to give A an 10.232.18.0/24 address (dynamically)?
+To those who don't get the joke, I apologize.
 
-Why?
-
+To those who DO get the joke, I apologize.
+-- 
+    Offlist mail to this address is discarded unless
+    "/dev/rob0" or "not-spam" is in Subject: header
