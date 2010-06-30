@@ -1,72 +1,67 @@
-From: Stephen Clark <sclark46@earthlink.net>
-Subject: Re: nat bypass
-Date: Wed, 30 Jun 2010 08:05:45 -0400
-Message-ID: <4C2B3319.5040306@earthlink.net>
-References: <AANLkTil_H1QeaCHQYhMjVRFiLwtqF9yLAJZ9BWecOIDW@mail.gmail.com>	<20100630023718.GU2138@verge.net.au> <AANLkTilxqHHiDfzQbewBe8cnTtvdB9CCTPn9EVCcAf5Q@mail.gmail.com>
-Reply-To: sclark46@earthlink.net
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: ebtables mac update
+Date: Wed, 30 Jun 2010 17:39:34 +0200
+Message-ID: <4C2B6536.2060401@plouf.fr.eu.org>
+References: <1277808205.3791.17.camel@casper.meteor.dp.ua>	 <4C29E8B4.5060205@plouf.fr.eu.org> <1277821770.4006.33.camel@casper.meteor.dp.ua>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTilxqHHiDfzQbewBe8cnTtvdB9CCTPn9EVCcAf5Q@mail.gmail.com>
+In-Reply-To: <1277821770.4006.33.camel@casper.meteor.dp.ua>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: ratheesh k <ratheesh.ksz@gmail.com>
-Cc: Simon Horman <horms@verge.net.au>, Netfilter mailing list <netfilter@vger.kernel.org>, netdev@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On 06/30/2010 05:24 AM, ratheesh k wrote:
->> Let me try and understand this.
->>
->> R is routing between 192.168.1.0/24 and 10.232.18.0/24.
->> As A is on the 192.168.1.0/24 side of R.
->> But to give A an 10.232.18.0/24 address (dynamically)?
->>
->> Why?
->>
->
-> For some clients , R should act as a mere bridge , Not a router .
->
->
-> On Wed, Jun 30, 2010 at 8:07 AM, Simon Horman<horms@verge.net.au>  wrote:
->> On Mon, Jun 28, 2010 at 03:43:46PM +0530, ratheesh k wrote:
->>> Hi,
+Pokotilenko Kostik (approximate romanization) wrote :
+>>> We have two building with local networks connected by Zyxel Prestige 841
+>>> and 841C VDSL-modems. They work in transparent bridge mode.
 >>>
->>>    A ------->  R ------->S
->>>
->>> I have a linux machine A is connected to Linux machine R . Machine R
->>> is having two network interfaces and acting as a router .
->>> It has a dhcp server running  . It will assign ip in 192.168.1.0/24
->>> subnet to all machine connected on lan side ( A is connected also in
->>> lan side ) . Wan side of R is connected to HTTP server S . There is
->>> also a DHCP server running on S to assign ip in 10.232.18.0/24 subnet
->>> .  Is there any way , in which NAT should be bypassed to get ip from
->>> DHCP server running  on S . My question is : How can A will get  an ip
->>> from 10.232.18.0/24 pool ip .?
->>> ebtables is an option ? How can we make it ?
->>> Is there any other optimal way ?
->>
->> Let me try and understand this.
->>
->> R is routing between 192.168.1.0/24 and 10.232.18.0/24.
->> As A is on the 192.168.1.0/24 side of R.
->> But to give A an 10.232.18.0/24 address (dynamically)?
->>
->> Why?
->>
->>
-> --
-> To unsubscribe from this list: send the line "unsubscribe netdev" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
-Will dhcprelay work for you?
+>>> On one end 841 is connected directly to a switch. On other 841C
+>>> connected to a linux router wich is also connected to a switch, and
+>>> those interfaces bridged.
+>> So is it a bridge or a router ?
+> 
+> Modems 841C and 841 are configured in bridge mode.
 
--- 
+You already made that clear. I was asking about the Linux box.
 
-"They that give up essential liberty to obtain temporary safety,
-deserve neither liberty nor safety."  (Ben Franklin)
+> Linux box runs some services and have 3 interfaces, 2 of them are
+> bridged to br0 and one is left for separate local segment. So it is a
+> router between br0 and eth2 and a bridge between eth0, eth1.
 
-"The course of history shows that as a government grows, liberty
-decreases."  (Thomas Jefferson)
+Ok.
 
+>>> There is a problem, when a computer is being moved from one building to
+>>> another it stops seeing other end of the bridge until modems are
+>>> rebooted.
+>> Can you elaborate "stops seeing" ?
+>> Packet captures of ARP and IP traffic on both ends might provide more
+>> information.
+> 
+> Can't repeat tests right now, but I'm remembering that if I move the box
+> across the bridge and trying to ping box at other side: either
+> ARP-who-has can't cross the bridge or ARP-is-at (response) can't cross
+> the bridge.
+> 
+> I'll play more with this soon.
 
+Please do so. And make sure you capture and compare traffic at each port
+of the Linux bridge (eth0 and eth1).
+
+> Can you confirm that if MAC (frame with source MAC) pops up on port
+> different from the one it was seen previous time then the port for that
+> MAC get updated?
+
+I can only confirm that a Linux bridge does this, because I tested it. I
+cannot confirm about other bridging devices, although this is what they
+should do.
+
+>> rebooting the modems and not the Linux box fixes the problem. So I doubt
+>> that the Linux bridge causes the problem.
+> 
+> It may happen that rebooting the modems brings port link down and the
+> bridge may clear the MAC-port table on that port. This is similar to
+> what Zyxel support told me.
+
+Note that you can achieve the same result by deactivating and
+reactivating br0 or its ports, without touching the modems.
