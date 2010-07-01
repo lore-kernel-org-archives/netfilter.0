@@ -1,41 +1,48 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: [Bridge] Bridge blocking network traffic
-Date: Thu, 01 Jul 2010 19:57:54 +0200
-Message-ID: <4C2CD722.4070905@plouf.fr.eu.org>
-References: <m2nbc9320b91004211748o5548f351z646076fab6744cca@mail.gmail.com>	<20100422130919.70206765@nehalam>	<AANLkTimPiriAOGpHHrAoEyFGuuyn1g8vFqW6Pimdz9CQ@mail.gmail.com>	<4C2B97CC.8090007@riverviewtech.net> <AANLkTilE0uZQu6SjlkX1WaY32Ir9STQXT4kVNiSc4sCa@mail.gmail.com>
+From: miranoko <miranoko@gmail.com>
+Subject: cross-compile mips iptables segmentation fault on some commands
+Date: Thu, 1 Jul 2010 11:00:22 -0700
+Message-ID: <AANLkTilp04X5REt5yyWrlzoUiWQx_OQU2v79VOXa0rzf@mail.gmail.com>
+References: <AANLkTikF1V4vXmLn6FlbdSnr9MMa0qgfa9BWkLajfJoO@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTilE0uZQu6SjlkX1WaY32Ir9STQXT4kVNiSc4sCa@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:in-reply-to
+         :references:date:message-id:subject:from:to:content-type;
+        bh=KAai23RxdYt4a5ScA3F8SzKncc+cWp8vmAKvN9J3QjQ=;
+        b=GjpvT2WR691zC2+GSFYowDnsbpo0Nw9i8gApJGqHGdgONrXui6AY3GJTqc9nmsB6m6
+         rM2hC1LVjqAYUjAudUQdTgpxsBRrFq3XCXE83nyl/D0hI/iZpelqteVFHzcEE2QiPduX
+         b5eMcHhWI7Czjm71pI/FpRauiOEop2yH48eSo=
+In-Reply-To: <AANLkTikF1V4vXmLn6FlbdSnr9MMa0qgfa9BWkLajfJoO@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
-Cc: bridge@lists.linux-foundation.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-ratheesh k a =E9crit :
->=20
-> brctl addbr br0
-> brctl  addif eth0
-> brctl  addif eth1
-> ifconfig br0  0.0.0.0 up
->=20
-> The problem was "default brouter policy is accept " . So packets are
-> coming to layer2  only .
+I cross compiled iptables for mips architecture and tried running iptables.
+when i do input accept or drop it works.
+but when i do iptables -A xyz it produces segmentation fault.
+other commands iptables -v and save,restore work fine.
+Please let me know what i am doing wrong. what logs should i be
+looking at for this.
 
-Indeed, by default (i.e. no brouting) packets received on a bridge port
-are intercepted by the bridge. This is the intended behaviour of a
-bridge, isn't it ? Thus a bridge port is not supposed to be assigned an
-IP address (or be used by any protocol), because the IP stack (or any
-other upper protocol layer) won't receive any packet directly from it
-but from the bridge interface (which should have the IP address).
+/ # iptables -P INPUT ACCEPT
+/ # iptables -P INPUT DROP
+/ # iptables -A I
+Segmentation fault
+/ #
 
->I applied the below command and every thing
-> seemed to work exactly like connecting eth0 and eth1 to hardware hub =
-=2E
->=20
-> ebtables -t broute  -P BROUTING -j DROP
+/ # iptables -t nat -L
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
 
-I strongly doubt it. This rule forces routing of all packets instead of
-bridging, so IIUC it effectively totally disables bridging and you are
-back to two independent interfaces.
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
+
+
+Thanks.
