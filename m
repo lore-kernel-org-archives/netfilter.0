@@ -1,41 +1,41 @@
-From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
-	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
-Subject: Re: ebtables mac update
-Date: Thu, 01 Jul 2010 20:13:56 +0300
-Message-ID: <1278004436.4200.59.camel@casper.meteor.dp.ua>
-References: <1277808205.3791.17.camel@casper.meteor.dp.ua>
-	 <4C29E8B4.5060205@plouf.fr.eu.org>
-	 <1277821770.4006.33.camel@casper.meteor.dp.ua>
-	 <4C2B6536.2060401@plouf.fr.eu.org>
-	 <1277941138.11021.20.camel@casper.meteor.dp.ua>
-	 <4C2BD923.9020503@riverviewtech.net>
-	 <1277975315.4200.8.camel@casper.meteor.dp.ua>
-	 <4C2CBE02.7020308@riverviewtech.net>
-	 <1278003611.4200.56.camel@casper.meteor.dp.ua>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: [Bridge] Bridge blocking network traffic
+Date: Thu, 01 Jul 2010 19:57:54 +0200
+Message-ID: <4C2CD722.4070905@plouf.fr.eu.org>
+References: <m2nbc9320b91004211748o5548f351z646076fab6744cca@mail.gmail.com>	<20100422130919.70206765@nehalam>	<AANLkTimPiriAOGpHHrAoEyFGuuyn1g8vFqW6Pimdz9CQ@mail.gmail.com>	<4C2B97CC.8090007@riverviewtech.net> <AANLkTilE0uZQu6SjlkX1WaY32Ir9STQXT4kVNiSc4sCa@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1278003611.4200.56.camel@casper.meteor.dp.ua>
+In-Reply-To: <AANLkTilE0uZQu6SjlkX1WaY32Ir9STQXT4kVNiSc4sCa@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="koi8-r"
-To: Grant Taylor <gtaylor@riverviewtech.net>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Cc: bridge@lists.linux-foundation.org
 
-=F7 =FE=D4=D7, 01/07/2010 =D7 20:00 +0300, =F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=
-=CF =EB=CF=D3=D4=C9=CB =D0=C9=DB=C5=D4:
+ratheesh k a =E9crit :
+>=20
+> brctl addbr br0
+> brctl  addif eth0
+> brctl  addif eth1
+> ifconfig br0  0.0.0.0 up
+>=20
+> The problem was "default brouter policy is accept " . So packets are
+> coming to layer2  only .
 
-> At another post about this problem regarding SHDSL modems they just
-> suggested unofficial firmware,
+Indeed, by default (i.e. no brouting) packets received on a bridge port
+are intercepted by the bridge. This is the intended behaviour of a
+bridge, isn't it ? Thus a bridge port is not supposed to be assigned an
+IP address (or be used by any protocol), because the IP stack (or any
+other upper protocol layer) won't receive any packet directly from it
+but from the bridge interface (which should have the IP address).
 
-Just taked a look at release notes of suggested firmware:
+>I applied the below command and every thing
+> seemed to work exactly like connecting eth0 and eth1 to hardware hub =
+=2E
+>=20
+> ebtables -t broute  -P BROUTING -j DROP
 
-Bugs fixes in 2.50(BM.1)b1
-
-1. Bridge routing table will not update automatically.
-=2E..
-
---=20
-=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
-ua>
-
+I strongly doubt it. This rule forces routing of all packets instead of
+bridging, so IIUC it effectively totally disables bridging and you are
+back to two independent interfaces.
