@@ -1,41 +1,36 @@
-From: =?koi8-r?Q?=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF_?=
-	 =?koi8-r?Q?=EB=CF=D3=D4=C9=CB?= <casper@meteor.dp.ua>
-Subject: Re: ebtables mac update
-Date: Thu, 01 Jul 2010 14:05:51 +0300
-Message-ID: <1277982351.4200.26.camel@casper.meteor.dp.ua>
-References: <1277808205.3791.17.camel@casper.meteor.dp.ua>
-	 <4C29E8B4.5060205@plouf.fr.eu.org>
-	 <1277821770.4006.33.camel@casper.meteor.dp.ua>
-	 <4C2B6536.2060401@plouf.fr.eu.org>
-	 <1277941138.11021.20.camel@casper.meteor.dp.ua>
-	 <4C2C66F1.1080602@plouf.fr.eu.org>
-	 <1277979109.4200.20.camel@casper.meteor.dp.ua>
-	 <4C2C72B9.7040602@plouf.fr.eu.org>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [conntrackd] Question about expect table sync
+Date: Thu, 01 Jul 2010 17:52:15 +0200
+Message-ID: <4C2CB9AF.2000906@netfilter.org>
+References: <4C2C9E4C.40901@orange-ftgroup.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C2C72B9.7040602@plouf.fr.eu.org>
+In-Reply-To: <4C2C9E4C.40901@orange-ftgroup.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="koi8-r"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: todor.gamishev@orange-ftgroup.com
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-=F7 =FE=D4=D7, 01/07/2010 =D7 12:49 +0200, Pascal Hambourg =D0=C9=DB=C5=
-=D4:
-> Pokotilenko Kostik wrote :
-> >=20
-> > Main thing is that tonight I got chance to pull modems off
-> > production and make those tests in simplified enviroment.
-> >
-> > Thanks to all. Now it doesn't seem related to linux bridge
->=20
-> You can repeat the same experiment with a Linux bridge instead of the
-> VDSL modem pair. If all works fine, it'll rule out the Linux bridge.
+Hi Todor,
 
-Good idea, thanks.
+I'm cc'ing netfilter users to keep this in the record.
 
---=20
-=F0=CF=CB=CF=D4=C9=CC=C5=CE=CB=CF =EB=CF=D3=D4=C9=CB <casper@meteor.dp.=
-ua>
+todor.gamishev@orange-ftgroup.com wrote:
+> Hello Pablo,
+> 
+> I'm actually working on High Availability of stateful firewalls and I'm
+> testing the conntrackd tool coupled with keepalived. I was wondering if
+> conntrackd could synchronize the conntrack EXPECT table too. I've played
+> with it all the day but I cannot get my EXPECT table synchronized. So,
+> could you please tell me if it's possible at all with conntrackd v0.9.14?
 
+We are not synchronizing the expectation table but we do synchronize
+confirmed expectations that are attached to their master conntrack (I'm
+refering to the RELATED state in iptables).
+
+Expectations usually have a short lifetime and they occur in early
+stages of the flow establishment. I consider that synchronizing
+expectations do not help too much to improve availability under recovery
+situations but it requires extra computational resources for this.
