@@ -1,61 +1,22 @@
-From: arimus.uk@gmail.com
-Subject: Re:is tbf really classless ?
-Date: Sat, 03 Jul 2010 02:22:06 -0700 (PDT)
-Message-ID: <4c2f013e.5b26e30a.0b49.59d8@mx.google.com>
+From: Paul Jack <aunty@edenrdfarm.com>
+Subject: Re: is tbf really classless ?
+Date: Sat, 03 Jul 2010 17:38:25 +0800
+Message-ID: <4C2F0511.6090904@edenrdfarm.com>
+References: <4c2f013e.5b26e30a.0b49.59d8@mx.google.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:from:to:subject
-         :date:mime-version:content-type:content-transfer-encoding;
-        bh=AhP1d7J+Z6b6DEg0TixzNHyqHrxBpy31BDw9AI4m530=;
-        b=oS62fuW2F7+Wz9d2miK5tzphSx0Q+QgSIxV7YCv/aT31YHllClqhxRqrQAs7dMh1EJ
-         2jkf6ffV65ezS21YKkeABTYw124NfSif0uvsVqM+SwWpS0Dk/BdwLJO6C7VMP8nkLMsJ
-         lq9SslGxZxpB0l4piWODul4TEuaekydUGxoZ0=
+In-Reply-To: <4c2f013e.5b26e30a.0b49.59d8@mx.google.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: aunty@edenrdfarm.com, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: 
+Cc: netfilter@vger.kernel.org
 
-WWVzLiBUYmYgaXMgY2xhc3NsZXNzLi4uIExlYXN0IG9uIG15IGFzc29ydGVkIGJveGVzLiAo
-d2lkZSByYW5nZSBvZiBrZXJuZWxzIGFuZCBjYW50IHRoaW5rIG9mIG9uZSB3aXRoIGNsYXNz
-ZnVsIHRiZikuCgpTb3JyeSBmb3IgdG9wIHBvc3QgdXNpbmcgbW9iaWxlIHBob25lIGFuZCB0
-b28gYXdrd2FyZCB0byBlZGl0Li4uDQotLS0gT3JpZ2luYWwgTWVzc2FnZSAtLS0NCkZyb206
-IFBhdWwgSmFjayA8YXVudHlAZWRlbnJkZmFybS5jb20+DQpTZW50OiBTYXQsIDAzIEp1bCAy
-MDEwIDA5OjE3OjU0IExvY2FsdGltZQ0KVG86IG5ldGZpbHRlckB2Z2VyLmtlcm5lbC5vcmcN
-ClN1YmplY3Q6IGlzIHRiZiByZWFsbHkgY2xhc3NsZXNzID8NCg0KaGkgYWxsDQoNCmkgYW0g
-Y29tcGxldGVseSBuZXcgdG8gdGhpcyBzbyBhbSBwcm9iYWJseSBtaXNzaW5nIHNvbWV0aGlu
-ZyB0ZXJyaWJseSANCm9idmlvdXMuIEkgaGF2ZSBmb3VuZCBpbiAiQSBQcmFjdGljYWwgR3Vp
-ZGUgdG8gTGludXggVHJhZmZpYyBDb250cm9sIiBieSANCkphc29uIEJveG1hbiAuIC4NCg0K
-IkFzIG9mIExpbnV4IDIuNi4xLCB0YmYgaXMgbm93IGEgY2xhc3NmdWwgcWRpc2MuIEJ5IGRl
-ZmF1bHQgaXQgd2lsbCANCmJlaGF2ZSBhcyBpdCBkaWQgaW4gcHJpb3IgdmVyc2lvbnMgb2Yg
-TGludXguIFRoZSBjbGFzc2Z1bCB2YXJpYW50IA0KYXV0b21hdGljYWxseSBjcmVhdGVzIGEg
-Y2xhc3Mgd2l0aCBhIG1pbm9yIG5vZGUgb2YgMS4gVGhlIG1ham9yIG5vZGUgDQpudW1iZXIg
-d2lsbCBiZSB3aGF0IHlvdSBhc3NpZ25lZCB0byB0aGUgdGJmIHFkaXNjLiBZb3UgY2FuIGF0
-dGFjaCBib3RoIA0KY2xhc3NsZXNzIGFuZCBjbGFzc2Z1bCBxZGlzY3MgdG8gdGhlIG5ldyB0
-YmYgaW4gMi42LjEgYW5kIGxhdGVyLiINCg0KYW5kIGFsc28gaW4gdGhlIGNvbW1lbnRzIHdp
-dGhpbiBuZXQvc2NoZWQvc2NoX3RiZi5jIC4gLg0KDQogKiBBdXRob3JzOiAgICBBbGV4ZXkg
-S3V6bmV0c292LCA8a3V6bmV0QG1zMi5pbnIuYWMucnU+DQogKiAgICAgICAgRG1pdHJ5IFRv
-cm9raG92IDxkdG9yQG1haWwucnU+IC0gYWxsb3cgYXR0YWNoaW5nIGlubmVyIHFkaXNjcyAt
-DQogKiAgICAgICAgICAgICAgICAgICAgICAgICBvcmlnaW5hbCBpZGVhIGJ5IE1hcnRpbiBE
-ZXZlcmENCg0KYW5kIC4gLg0KDQogICAgV2l0aCBjbGFzc2Z1bCBUQkYsIGxpbWl0IGlzIGp1
-c3Qga2VwdCBmb3IgYmFja3dhcmRzIGNvbXBhdGliaWxpdHkuDQogICAgSXQgaXMgcGFzc2Vk
-IHRvIHRoZSBkZWZhdWx0IGJmaWZvIHFkaXNjIC0gaWYgdGhlIGlubmVyIHFkaXNjIGlzDQog
-ICAgY2hhbmdlZCB0aGUgbGltaXQgaXMgbm90IGVmZmVjdGl2ZSBhbnltb3JlLg0KDQpldmVy
-eXdoZXJlIGVsc2UgaSBoYXZlIGxvb2tlZCBvbmx5IHRhbGtzIG9mIHRiZiBhcyBhIGNsYXNz
-bGVzcyBxZGlzYyAtIA0KZXZlbiB0aGUgbWFuIHBhZ2UuDQoNCkkgaGF2ZSBydW46DQoNCnJv
-b3RAdmFuZXNzYTp+IyB0YyBxZGlzYyBhZGQgZGV2IHdsYW4wIHJvb3QgaGFuZGxlIDE6MCB0
-YmYgcmF0ZSAxMDBtYml0IA0KYnVyc3QgMTBrYiBsaW1pdCAxa2INCg0KYW5kIHdoZW4gaSB0
-cnkgdG8gYWRkIGEgY2xhc3MgdG8gdGhpcyByb290IHFkaXNjIGkgZ2V0Og0KDQpyb290QHZh
-bmVzc2E6fiMgdGMgY2xhc3MgYWRkIGRldiB3bGFuMCBwYXJlbnQgMTowIGNsYXNzaWQgMTox
-IHRiZiByYXRlIA0KMjRrYml0IGJ1cnN0IDFrYml0IGxpbWl0IDENCkVycm9yOiBRZGlzYyAi
-dGJmIiBpcyBjbGFzc2xlc3MuDQoNCndhcyB0YmYncyBjbGFzc2Z1bGxuZXMgb25seSB0ZW1w
-b3JhcnkgPyBpcyB0aGVyZSBzb21ldGhpbmcgd3Jvbmcgd2l0aCBteSANCmtlcm5lbCA/DQpp
-IGFtIHJ1bm5pbmcga2VybmVsIDIuNi4yOS42LXNtcCBvbiBzbGFja3dhcmUgMTMuMA0KDQph
-bGwgaGVscCBncmVhdGx5IGFwcHJlY2lhdGVkLA0KYXVudHkNCg0KDQotLQ0KVG8gdW5zdWJz
-Y3JpYmUgZnJvbSB0aGlzIGxpc3Q6IHNlbmQgdGhlIGxpbmUgInVuc3Vic2NyaWJlIG5ldGZp
-bHRlciIgaW4NCnRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJu
-ZWwub3JnDQpNb3JlIG1ham9yZG9tbyBpbmZvIGF0ICBodHRwOi8vdmdlci5rZXJuZWwub3Jn
-L21ham9yZG9tby1pbmZvLmh0bWwNCg==
+what then do the excerpts of documentation that i included mean ?
 
+arimus.uk@gmail.com wrote:
+> Yes. Tbf is classless... Least on my assorted boxes. (wide range of kernels and cant think of one with classful tbf).
+>
+> Sorry for top post using mobile phone and too awkward to edit...
+>   
