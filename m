@@ -1,58 +1,61 @@
-From: Paul Jack <aunty@edenrdfarm.com>
-Subject: is tbf really classless ?
-Date: Sat, 03 Jul 2010 17:19:15 +0800
-Message-ID: <4C2F0093.6060604@edenrdfarm.com>
+From: arimus.uk@gmail.com
+Subject: Re:is tbf really classless ?
+Date: Sat, 03 Jul 2010 02:22:06 -0700 (PDT)
+Message-ID: <4c2f013e.5b26e30a.0b49.59d8@mx.google.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:from:to:subject
+         :date:mime-version:content-type:content-transfer-encoding;
+        bh=AhP1d7J+Z6b6DEg0TixzNHyqHrxBpy31BDw9AI4m530=;
+        b=oS62fuW2F7+Wz9d2miK5tzphSx0Q+QgSIxV7YCv/aT31YHllClqhxRqrQAs7dMh1EJ
+         2jkf6ffV65ezS21YKkeABTYw124NfSif0uvsVqM+SwWpS0Dk/BdwLJO6C7VMP8nkLMsJ
+         lq9SslGxZxpB0l4piWODul4TEuaekydUGxoZ0=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: aunty@edenrdfarm.com, netfilter@vger.kernel.org
 
-hi all
-
-i am completely new to this so am probably missing something terribly 
-obvious. I have found in "A Practical Guide to Linux Traffic Control" by 
-Jason Boxman . .
-
-"As of Linux 2.6.1, tbf is now a classful qdisc. By default it will 
-behave as it did in prior versions of Linux. The classful variant 
-automatically creates a class with a minor node of 1. The major node 
-number will be what you assigned to the tbf qdisc. You can attach both 
-classless and classful qdiscs to the new tbf in 2.6.1 and later."
-
-and also in the comments within net/sched/sch_tbf.c . .
-
- * Authors:    Alexey Kuznetsov, <kuznet@ms2.inr.ac.ru>
- *        Dmitry Torokhov <dtor@mail.ru> - allow attaching inner qdiscs -
- *                         original idea by Martin Devera
-
-and . .
-
-    With classful TBF, limit is just kept for backwards compatibility.
-    It is passed to the default bfifo qdisc - if the inner qdisc is
-    changed the limit is not effective anymore.
-
-everywhere else i have looked only talks of tbf as a classless qdisc - 
-even the man page.
-
-I have run:
-
-root@vanessa:~# tc qdisc add dev wlan0 root handle 1:0 tbf rate 100mbit 
-burst 10kb limit 1kb
-
-and when i try to add a class to this root qdisc i get:
-
-root@vanessa:~# tc class add dev wlan0 parent 1:0 classid 1:1 tbf rate 
-24kbit burst 1kbit limit 1
-Error: Qdisc "tbf" is classless.
-
-was tbf's classfullnes only temporary ? is there something wrong with my 
-kernel ?
-i am running kernel 2.6.29.6-smp on slackware 13.0
-
-all help greatly appreciated,
-aunty
-
+WWVzLiBUYmYgaXMgY2xhc3NsZXNzLi4uIExlYXN0IG9uIG15IGFzc29ydGVkIGJveGVzLiAo
+d2lkZSByYW5nZSBvZiBrZXJuZWxzIGFuZCBjYW50IHRoaW5rIG9mIG9uZSB3aXRoIGNsYXNz
+ZnVsIHRiZikuCgpTb3JyeSBmb3IgdG9wIHBvc3QgdXNpbmcgbW9iaWxlIHBob25lIGFuZCB0
+b28gYXdrd2FyZCB0byBlZGl0Li4uDQotLS0gT3JpZ2luYWwgTWVzc2FnZSAtLS0NCkZyb206
+IFBhdWwgSmFjayA8YXVudHlAZWRlbnJkZmFybS5jb20+DQpTZW50OiBTYXQsIDAzIEp1bCAy
+MDEwIDA5OjE3OjU0IExvY2FsdGltZQ0KVG86IG5ldGZpbHRlckB2Z2VyLmtlcm5lbC5vcmcN
+ClN1YmplY3Q6IGlzIHRiZiByZWFsbHkgY2xhc3NsZXNzID8NCg0KaGkgYWxsDQoNCmkgYW0g
+Y29tcGxldGVseSBuZXcgdG8gdGhpcyBzbyBhbSBwcm9iYWJseSBtaXNzaW5nIHNvbWV0aGlu
+ZyB0ZXJyaWJseSANCm9idmlvdXMuIEkgaGF2ZSBmb3VuZCBpbiAiQSBQcmFjdGljYWwgR3Vp
+ZGUgdG8gTGludXggVHJhZmZpYyBDb250cm9sIiBieSANCkphc29uIEJveG1hbiAuIC4NCg0K
+IkFzIG9mIExpbnV4IDIuNi4xLCB0YmYgaXMgbm93IGEgY2xhc3NmdWwgcWRpc2MuIEJ5IGRl
+ZmF1bHQgaXQgd2lsbCANCmJlaGF2ZSBhcyBpdCBkaWQgaW4gcHJpb3IgdmVyc2lvbnMgb2Yg
+TGludXguIFRoZSBjbGFzc2Z1bCB2YXJpYW50IA0KYXV0b21hdGljYWxseSBjcmVhdGVzIGEg
+Y2xhc3Mgd2l0aCBhIG1pbm9yIG5vZGUgb2YgMS4gVGhlIG1ham9yIG5vZGUgDQpudW1iZXIg
+d2lsbCBiZSB3aGF0IHlvdSBhc3NpZ25lZCB0byB0aGUgdGJmIHFkaXNjLiBZb3UgY2FuIGF0
+dGFjaCBib3RoIA0KY2xhc3NsZXNzIGFuZCBjbGFzc2Z1bCBxZGlzY3MgdG8gdGhlIG5ldyB0
+YmYgaW4gMi42LjEgYW5kIGxhdGVyLiINCg0KYW5kIGFsc28gaW4gdGhlIGNvbW1lbnRzIHdp
+dGhpbiBuZXQvc2NoZWQvc2NoX3RiZi5jIC4gLg0KDQogKiBBdXRob3JzOiAgICBBbGV4ZXkg
+S3V6bmV0c292LCA8a3V6bmV0QG1zMi5pbnIuYWMucnU+DQogKiAgICAgICAgRG1pdHJ5IFRv
+cm9raG92IDxkdG9yQG1haWwucnU+IC0gYWxsb3cgYXR0YWNoaW5nIGlubmVyIHFkaXNjcyAt
+DQogKiAgICAgICAgICAgICAgICAgICAgICAgICBvcmlnaW5hbCBpZGVhIGJ5IE1hcnRpbiBE
+ZXZlcmENCg0KYW5kIC4gLg0KDQogICAgV2l0aCBjbGFzc2Z1bCBUQkYsIGxpbWl0IGlzIGp1
+c3Qga2VwdCBmb3IgYmFja3dhcmRzIGNvbXBhdGliaWxpdHkuDQogICAgSXQgaXMgcGFzc2Vk
+IHRvIHRoZSBkZWZhdWx0IGJmaWZvIHFkaXNjIC0gaWYgdGhlIGlubmVyIHFkaXNjIGlzDQog
+ICAgY2hhbmdlZCB0aGUgbGltaXQgaXMgbm90IGVmZmVjdGl2ZSBhbnltb3JlLg0KDQpldmVy
+eXdoZXJlIGVsc2UgaSBoYXZlIGxvb2tlZCBvbmx5IHRhbGtzIG9mIHRiZiBhcyBhIGNsYXNz
+bGVzcyBxZGlzYyAtIA0KZXZlbiB0aGUgbWFuIHBhZ2UuDQoNCkkgaGF2ZSBydW46DQoNCnJv
+b3RAdmFuZXNzYTp+IyB0YyBxZGlzYyBhZGQgZGV2IHdsYW4wIHJvb3QgaGFuZGxlIDE6MCB0
+YmYgcmF0ZSAxMDBtYml0IA0KYnVyc3QgMTBrYiBsaW1pdCAxa2INCg0KYW5kIHdoZW4gaSB0
+cnkgdG8gYWRkIGEgY2xhc3MgdG8gdGhpcyByb290IHFkaXNjIGkgZ2V0Og0KDQpyb290QHZh
+bmVzc2E6fiMgdGMgY2xhc3MgYWRkIGRldiB3bGFuMCBwYXJlbnQgMTowIGNsYXNzaWQgMTox
+IHRiZiByYXRlIA0KMjRrYml0IGJ1cnN0IDFrYml0IGxpbWl0IDENCkVycm9yOiBRZGlzYyAi
+dGJmIiBpcyBjbGFzc2xlc3MuDQoNCndhcyB0YmYncyBjbGFzc2Z1bGxuZXMgb25seSB0ZW1w
+b3JhcnkgPyBpcyB0aGVyZSBzb21ldGhpbmcgd3Jvbmcgd2l0aCBteSANCmtlcm5lbCA/DQpp
+IGFtIHJ1bm5pbmcga2VybmVsIDIuNi4yOS42LXNtcCBvbiBzbGFja3dhcmUgMTMuMA0KDQph
+bGwgaGVscCBncmVhdGx5IGFwcHJlY2lhdGVkLA0KYXVudHkNCg0KDQotLQ0KVG8gdW5zdWJz
+Y3JpYmUgZnJvbSB0aGlzIGxpc3Q6IHNlbmQgdGhlIGxpbmUgInVuc3Vic2NyaWJlIG5ldGZp
+bHRlciIgaW4NCnRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJu
+ZWwub3JnDQpNb3JlIG1ham9yZG9tbyBpbmZvIGF0ICBodHRwOi8vdmdlci5rZXJuZWwub3Jn
+L21ham9yZG9tby1pbmZvLmh0bWwNCg==
 
