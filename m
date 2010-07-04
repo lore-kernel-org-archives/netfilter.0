@@ -1,70 +1,69 @@
-From: Alessandro Vesely <vesely@tana.it>
-Subject: recv fails with ENOBUFS (was: Cannot destroy queue, ...
-Date: Sat, 03 Jul 2010 13:15:22 +0200
-Message-ID: <4C2F1BCA.2000003@tana.it>
-References: <4C136D70.3050902@tana.it> <4C1567EE.2040802@netfilter.org>
+From: Paul Jack <aunty@edenrdfarm.com>
+Subject: using CLASSIFY target with tbf
+Date: Sun, 04 Jul 2010 18:08:08 +0800
+Message-ID: <4C305D88.1030100@edenrdfarm.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tana.it; s=test;
-	t=1278155722; bh=9ihJ8Pw3ZA9EJIghkm6V/sYAfE/p6RRNw/tD/tNFlXs=;
-	l=2344;
-	h=Message-ID:Date:From:MIME-Version:To:References:In-Reply-To:
-	 Content-Transfer-Encoding;
-	b=Ue3UlmeG+K1s8ADfTLZ/KcJqFRzA10KY00HgMm7JP3f6BVYozGq5LrRExs16J7JCU
-	 o85CdN0ztUQ141QS52vqXRj4FZbFN9rXzwDe6evnlmtySaNs7G0NDvgSLAU3DId386
-	 YWKAy9Ev3SYi9Aqua+hHxVMqw3HpLVeq92RGiE3g=
-In-Reply-To: <4C1567EE.2040802@netfilter.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-On 14/Jun/10 01:21, Pablo Neira Ayuso wrote:
-> Alessandro Vesely wrote:
->>  it has happened again (previous time was 5 May 2010).
->>  This time I used gdb rather than strace, but still don't know what's wrong:
->>
->>  Calling recv on the nfq_fd had returned -512. (why?)
->>  At that point my daemon calls nfq_destroy_queue(), which does not return:
->>
->>  (gdb) bt
->>  #0  0x00007ff3b6e50450 in recvfrom () from /lib/libc.so.6
->>  #1  0x00007ff3b696105c in nfnl_talk () from /usr/lib/libnfnetlink.so.0
->>  #2  0x00007ff3b79a429f in __build_send_cfg_msg (h=0x6073a0, command=2 '\002', queuenum=<value optimized out>, pf=0)
->>      at libnetfilter_queue.c:112
->>  #3  0x00007ff3b79a430d in nfq_destroy_queue (qh=0x607410) at libnetfilter_queue.c:258
->>  #4  0x00000000004021f7 in daemon_loop (h=0x6073a0, db=0x606570) at ibd-judge.c:477
->>  #5  0x0000000000402a75 in main (argc=<value optimized out>, argv=<value optimized out>) at ibd-judge.c:739
->
-> I think that this is fixed in:
->
-> http://git.netfilter.org/cgi-bin/gitweb.cgi?p=libnetfilter_queue.git;a=commit;h=bc56a6becbd4c4edf743ca3bee32eb0329fc5e5a
->
-> That fix is included in libnetfilter_queue-0.0.17. You seem to be using
-> an older version since you point to nfnl_talk() which is not used
-> anymore in the library.
->
-> Upgrade and let us know if that fixes your problem.
+hi folks
 
-Now I have found a log entry about recv returning -1.  I believe this 
-was causing the previous issue, as on recv failures my program cleans 
-up as if exiting, including destroying the queues, but then 
-re-initializes everything and continues.  This time it has succeeded 
-doing so, hence upgrading has fixed that.
+i am routing traffic between an internet connection and an internal 
+network. i wish to throttle individual users who have exceeded their quota.
 
-Apparently, recv fails once every few weeks.  On March 15 I changed 
-something and restarted the daemon.  Changes consisted mainly in 
-having multiple queues (2) an filtering each packet rather than just 
-sync ones.  On May 5 it crashed, and on June 12 again.  This last log 
-entry is of June 28, so it would seem that the time roughly halves...
+initially i have a htb 1:0 attached to the root of my internal 
+interface. when a quota is exceeded my script attaches a htb class 1:n 
+with rate = the whole internal bandwidth, 100mbit. then it attaches to 
+this a tbf qdisc n+9:0 with rate = shaped rate, 48kbit. the tbf 
+automatically creates one class n+9:1. the script also then creates a 
+rule in mangle POSTROUTING for that user with -j CLASSIFY --set-class n+9:1
 
-The log line only says "No buffer space available".  What does that 
-mean?  I presume the packet(s) had been dropped.  I have a buffer of 
-8192 and pass 20 as NFQNL_COPY_PACKET, for both queues, so I think 
-it's probably some other buffer.  The host is usually plenty of 
-memory, though.
+so, for the first shaped user (n=1) i execute:
 
-Ideas?
+tc class add dev $internal parent 1:0 classid 1:1 htb rate 100mbit
+tc qdisc add dev $internal parent 1:1 handle 10:0 tbf rate 48kbit burst 
+10kb limit 10kb
+iptables -t mangle -A POSTROUTING -d $machIP -j CLASSIFY --set-class 10:1
 
-TIA
+which makes:
+
+root
+qdisc       class         qdisc         class
+htb  ------  htb  ------  tbf  ------  tbf
+1:0              1:1          10:0          10:1
+
+tc -s -d qdisc show dev eth1 gives:
+qdisc htb 1: root r2q 10 default 0 direct_packets_stat 82635 ver 3.17
+ Sent 41949635 bytes 82635 pkt (dropped 0, overlimits 0 requeues 12)
+ rate 0bit 0pps backlog 0b 0p requeues 12
+qdisc tbf 10: parent 1:1 rate 48000bit burst 10Kb/8 mpu 0b lat 1us
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
+ rate 0bit 0pps backlog 0b 0p requeues 0
+
+tc -s -d class show dev eth1 gives:
+class htb 1:1 root leaf 10: prio 0 quantum 200000 rate 100000Kbit ceil
+100000Kbit burst 14087b/8 mpu 0b overhead 0b cburst 14087b/8 mpu 0b overhead
+0b level 0
+ Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
+ rate 0bit 0pps backlog 0b 0p requeues 0
+ lended: 0 borrowed: 0 giants: 0
+ tokens: 1101 ctokens: 1101
+
+class tbf 10:1 parent 10:
+
+iptables -t mangle -L POSTROUTING  -n gives:
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+CLASSIFY   all  --  0.0.0.0/0            192.168.20.10       CLASSIFY 
+set 10:1
+
+i can see traffic going through the root qdisc alright but nothing's 
+getting shaped.
+can some wonderful person out there show me where i'm going wrong ?
+
+thank you muchly,
+aunty
