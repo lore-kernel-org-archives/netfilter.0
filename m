@@ -1,69 +1,123 @@
-From: Paul Jack <aunty@edenrdfarm.com>
-Subject: using CLASSIFY target with tbf
-Date: Sun, 04 Jul 2010 18:08:08 +0800
-Message-ID: <4C305D88.1030100@edenrdfarm.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+From: Simon Horman <horms@verge.net.au>
+Subject: [patch v2.3 0/4]
+Date: Sun, 04 Jul 2010 20:32:46 +0900
+Message-ID: <20100704113246.562399500@vergenet.net>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Subject: [patch v2.3 0/4] IPVS full NAT support + netfilter 'ipvs' match support
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Cc: Malcolm Turnbull <malcolm@loadbalancer.org>, Wensong Zhang <wensong@linux-vs.org>, Julius Volz <julius.volz@gmail.com>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, Hannes Eder <heder@google.com>
 
-hi folks
+This is a repost of a patch-series posted by Hannes Eder last September.
+This is v2 of the patch series and I don't see any outstanding objections to
+it in the mailing list archives.
 
-i am routing traffic between an internet connection and an internal 
-network. i wish to throttle individual users who have exceeded their quota.
+After I posted v2.2 of this series in May several concerns were raised
+by Patrick McHardy. This series should address all of those concerns.
 
-initially i have a htb 1:0 attached to the root of my internal 
-interface. when a quota is exceeded my script attaches a htb class 1:n 
-with rate = the whole internal bandwidth, 100mbit. then it attaches to 
-this a tbf qdisc n+9:0 with rate = shaped rate, 48kbit. the tbf 
-automatically creates one class n+9:1. the script also then creates a 
-rule in mangle POSTROUTING for that user with -j CLASSIFY --set-class n+9:1
+Malcolm Turnbull has offered to test this code so I'd like to get
+a Reviewed-by from him before the code gets merged. In other words,
+at this stage these patches are for review not merging.
 
-so, for the first shaped user (n=1) i execute:
+The original cover-email from Hannes follows.
+The diffstat output has been updated to reflect minor up-porting by me.
 
-tc class add dev $internal parent 1:0 classid 1:1 htb rate 100mbit
-tc qdisc add dev $internal parent 1:1 handle 10:0 tbf rate 48kbit burst 
-10kb limit 10kb
-iptables -t mangle -A POSTROUTING -d $machIP -j CLASSIFY --set-class 10:1
+From:	Hannes Eder <heder@google.com>
 
-which makes:
+The following series implements full NAT support for IPVS.  The
+approach is via a minimal change to IPVS (make friends with
+nf_conntrack) and adding a netfilter matcher, kernel- and user-space
+part, i.e. xt_ipvs and libxt_ipvs.
 
-root
-qdisc       class         qdisc         class
-htb  ------  htb  ------  tbf  ------  tbf
-1:0              1:1          10:0          10:1
+Example usage:
 
-tc -s -d qdisc show dev eth1 gives:
-qdisc htb 1: root r2q 10 default 0 direct_packets_stat 82635 ver 3.17
- Sent 41949635 bytes 82635 pkt (dropped 0, overlimits 0 requeues 12)
- rate 0bit 0pps backlog 0b 0p requeues 12
-qdisc tbf 10: parent 1:1 rate 48000bit burst 10Kb/8 mpu 0b lat 1us
- Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
- rate 0bit 0pps backlog 0b 0p requeues 0
+% ipvsadm -A -t 192.168.100.30:80 -s rr
+% ipvsadm -a -t 192.168.100.30:80 -r 192.168.10.20:80 -m
+# ...
 
-tc -s -d class show dev eth1 gives:
-class htb 1:1 root leaf 10: prio 0 quantum 200000 rate 100000Kbit ceil
-100000Kbit burst 14087b/8 mpu 0b overhead 0b cburst 14087b/8 mpu 0b overhead
-0b level 0
- Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
- rate 0bit 0pps backlog 0b 0p requeues 0
- lended: 0 borrowed: 0 giants: 0
- tokens: 1101 ctokens: 1101
+# Source NAT for VIP 192.168.100.30:80
+% iptables -t nat -A POSTROUTING -m ipvs --vaddr 192.168.100.30/32 \
+> --vport 80 -j SNAT --to-source 192.168.10.10
 
-class tbf 10:1 parent 10:
+or SNAT-ing only a specific real server:
 
-iptables -t mangle -L POSTROUTING  -n gives:
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-CLASSIFY   all  --  0.0.0.0/0            192.168.20.10       CLASSIFY 
-set 10:1
+% iptables -t nat -A POSTROUTING --dst 192.168.11.20 \
+> -m ipvs --vaddr 192.168.100.30/32 -j SNAT --to-source 192.168.10.10
 
-i can see traffic going through the root qdisc alright but nothing's 
-getting shaped.
-can some wonderful person out there show me where i'm going wrong ?
 
-thank you muchly,
-aunty
+First of all, thanks for all the feedback.  This is the changelog for v2:
+
+- Make ip_vs_ftp work again.  Setup nf_conntrack expectations for
+  related data connections (based on Julian's patch see
+  http://www.ssi.bg/~ja/nfct/) and let nf_conntrack/nf_nat do the
+  packet mangling and the TCP sequence adjusting.
+
+  This change rises the question how to deal with ip_vs_sync?  Does it
+  work together with conntrackd?  Wild idea: what about getting rid of
+  ip_vs_sync and piggy packing all on nf_conntrack and use conntrackd?
+
+  Any comments on this?
+
+- xt_ipvs: add new rule '--vportctl port' to match the VIP port of the
+  controlling connection, e.g. port 21 for FTP.  Can be used to match
+  a related data connection for FTP:
+
+  # SNAT FTP control connection
+  % iptables -t nat -A POSTROUTING -m ipvs --vaddr 192.168.100.30/32 \
+  > --vport 21 -j SNAT --to-source 192.168.10.10
+  
+  # SNAT FTP passive data connection
+  % iptables -t nat -A POSTROUTING -m ipvs --vaddr 192.168.100.30/32 \
+  > --vportctl 21 -j SNAT --to-source 192.168.10.10
+
+- xt_ipvs: use 'par->family' instead of 'skb->protocol'
+
+- xt_ipvs: add ipvs_mt_check and restrict to NFPROTO_IPV4 and NFPROTO_IPV6
+
+- Call nf_conntrack_alter_reply(), so helper lookup is performed based
+  on the changed tuple.
+
+Changes to the linux kernel
+(nf-next-2.6, "bridge: add per bridge device controls for invoking iptables")
+
+Hannes Eder (3):
+      netfilter: xt_ipvs (netfilter matcher for IPVS)
+      IPVS: make friends with nf_conntrack
+      IPVS: make FTP work with full NAT support
+
+
+ include/linux/netfilter/xt_ipvs.h |   25 +++++
+ include/net/ip_vs.h              |    2 
+ net/netfilter/Kconfig            |   10 ++
+ net/netfilter/Makefile           |    1 
+ net/netfilter/ipvs/Kconfig       |    4 
+ net/netfilter/ipvs/ip_vs_app.c   |   43 ---------
+ net/netfilter/ipvs/ip_vs_core.c  |   37 --------
+ net/netfilter/ipvs/ip_vs_ftp.c   |  173 +++++++++++++++++++++++++++++++++++---
+ net/netfilter/ipvs/ip_vs_proto.c |    1 
+ net/netfilter/ipvs/ip_vs_xmit.c  |   30 ++++++
+ net/netfilter/xt_ipvs.c           |  189 +++++++++++++++++++++++++++++++++++++
+ 11 files changed, 419 insertions(+), 96 deletions(-)
+ create mode 100644 include/linux/netfilter/xt_ipvs.h
+ create mode 100644 net/netfilter/xt_ipvs.c
+
+
+Changes to iptables
+(iptables.git, "xt_quota: also document negation")
+
+Hannes Eder (1):
+      libxt_ipvs: user-space lib for netfilter matcher xt_ipvs
+
+ configure.ac                      |   10 1
+ extensions/libxt_ipvs.c           |  365 +++++++++++++++++++++++++++++++++++++
+ extensions/libxt_ipvs.man         |   24 ++
+ include/linux/netfilter/xt_ipvs.h |   25 +++
+ 4 files changed, 422 insertions(+), 2 deletions(-)
+ create mode 100644 extensions/libxt_ipvs.c
+ create mode 100644 extensions/libxt_ipvs.man
+ create mode 100644 include/linux/netfilter/xt_ipvs.h
+
