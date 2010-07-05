@@ -1,57 +1,95 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: QoS weirdness : HTB accuracy
-Date: Sun, 04 Jul 2010 18:50:07 +0100
-Message-ID: <1278265807.1506.86.camel@andybev>
-References: <067c83163988908ef546d7ff7f560a17@localhost>
-	 <4BF32BB0.7010700@redfish-solutions.com>
-	 <e6bd0cff8dafc8b3af0760facb5fdc8c@localhost>
-	 <1276204948.1403.13.camel@andybev>
+From: "John Meissen" <john@meissen.org>
+Subject: Changing default route causes packet drop
+Date: Mon, 05 Jul 2010 02:03:26 -0700
+Message-ID: <20100705090326.BF7B134502@john>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1278265832; bh=svrmyMV80NHcvM9CxHxMIU/LzHZ+JI0JbP2i4
-	EmlAIM=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
-	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=Z5J4OqAl
-	PN7yIJlRUIWdP10x/exzQqckfbC82DDo3EAdpCCnGPl2oGiH4vP0OYpfiE/HRo1Mt1d
-	tWZyyDMgEaKQvKUm6UFODykZOSbtN71PtV3ciqjJL1J4dwh7UPN08JQ50hb4KuyPc/k
-	QXfDEnNN513hOD5tecsLTC9Hycqz4=
-In-Reply-To: <1276204948.1403.13.camel@andybev>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Julien Vehent <julien@linuxwall.info>
-Cc: "Philip A. Prindeville" <philipp_subx@redfish-solutions.com>, Netdev <netdev@vger.kernel.org>, netfilter <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-> > I was, in fact, an error in my ruleset. I had put the 'linklayer atm' at
-> > both the branch and leaf levels, so the overhead was computed twice,
-> > creating those holes in the bandwidth.
-> 
-> I am seeing similar behaviour with my setup. Am I making the same
-> mistake? A subset of my rules is as follows:
-> 
-> 
-> tc qdisc add dev ppp0 root handle 1: htb r2q 1
-> 
-> tc class add dev ppp0 parent 1: classid 1:1 htb \
->     rate ${DOWNLINK}kbit ceil ${DOWNLINK}kbit \
->     overhead $overhead linklayer atm                   <------- Here
-> 
-> tc class add dev ppp0 parent 1:1 classid 1:10 htb \
->     rate 612kbit ceil 612kbit prio 0 \
->     overhead $overhead linklayer atm                   <------- And here
-> 
-> tc qdisc add dev ppp0 parent 1:10 handle 4210: \
->     sfq perturb 10 limit 50
-> 
-> tc filter add dev ppp0 parent 1:0 protocol ip \
->     prio 10 handle 10 fw flowid 1:10
 
-I removed the overhead option on the first leaf, and the speeds change
-to what I expect. However, the rules above are taken straight from the
-ADSL Optimizer project, which was the source of the original overhead
-patch for tc. So is the ADSL Optimizer project wrong?
+I'm not sure if this is the right place to ask, or if it's even the right
+question. Hopefully someone can point me in the right direction.
 
-Andy
+I had a traditional setup with two ethernet interfaces on my Linux box 
+(WAN=eth0/LAN=eth1), and NATing the traffic that was forwarded between them.
+
+I added another interface (eth2), and simply want to change the default
+routing to go through it. I'm leaving various services listening on all
+interfaces.
+
+If I change the default route to use eth2, I can route from the internal
+network to the outside just fine, and I can connect from the internal net
+to services on the system fine. But incoming connections on the original
+WAN (eth0) don't complete. They hang at SYN_RECV, as if I had a DROP rule.
+
+I.e., what used to be
+
+  internal <-> (eth1) gateway forward (eth0) <-> WAN
+  internal <-> (eth1) gateway local service
+                gateway local service (eth0) <-> WAN
+is now
+
+  internal <-> (eth1) gateway forward (eth2) <-> WAN
+  internal <-> (eth1) gateway local service
+
+but
+                gateway local service (eth0) <-> WAN
+
+now drops connection attempts.
+
+I don't see what difference there should be between eth0 and eth1, except
+that eth0 isn't forwarded. That shouldn't affect connections to processes
+listening on that interface.
+
+I've tried to keep the iptables config simple for this. The only change I'm
+making is changing the default route with the 'route' command.
+
+# iptables -L -v -n
+Chain INPUT (policy ACCEPT 63555 packets, 73M bytes)
+ pkts bytes target     prot opt in     out     source               destination 
+
+   11  3626 ACCEPT     udp  --  eth1   *       0.0.0.0/0            0.0.0.0/0   
+        udp spt:68 dpt:67
+    0     0 ACCEPT     tcp  --  eth1   *       0.0.0.0/0            0.0.0.0/0   
+        tcp spt:68 dpt:67
+    0     0 ACCEPT     udp  --  eth1   *       0.0.0.0/0            0.0.0.0/0   
+        udp spt:67 dpt:68
+    0     0 ACCEPT     tcp  --  eth1   *       0.0.0.0/0            0.0.0.0/0   
+        tcp spt:67 dpt:68
+ 1937  127K ACCEPT     udp  --  eth1   *       0.0.0.0/0            0.0.0.0/0   
+        udp dpt:53
+    0     0 ACCEPT     tcp  --  eth1   *       0.0.0.0/0            0.0.0.0/0   
+        tcp dpt:53
+
+Chain FORWARD (policy ACCEPT 39362 packets, 42M bytes)
+ pkts bytes target     prot opt in     out     source               destination 
+
+31533 2844K ACCEPT     all  --  *      *       192.168.10.0/24      0.0.0.0/0   
+
+
+Chain OUTPUT (policy ACCEPT 42150 packets, 5745K bytes)
+ pkts bytes target     prot opt in     out     source               destination 
+
+
+and
+
+# iptables -t nat -L -v -n
+Chain PREROUTING (policy ACCEPT 859K packets, 57M bytes)
+ pkts bytes target     prot opt in     out     source               destination 
+
+
+Chain POSTROUTING (policy ACCEPT 584K packets, 46M bytes)
+ pkts bytes target     prot opt in     out     source               destination 
+
+ 755K   72M MASQUERADE  all  --  *      *       192.168.10.0/24      0.0.0.0/0  
+
+
+Chain OUTPUT (policy ACCEPT 1015K packets, 100M bytes)
+ pkts bytes target     prot opt in     out     source               destination 
+
 
 
