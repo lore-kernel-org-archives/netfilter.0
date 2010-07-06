@@ -1,40 +1,42 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [patch v2.3 3/4] IPVS: make FTP work with full NAT support
-Date: Tue, 06 Jul 2010 13:43:44 +0200
-Message-ID: <4C3316F0.2030807@trash.net>
-References: <20100704113246.562399500@vergenet.net> <20100704114808.932594876@vergenet.net>
+From: Wade Gasior <wadegasior@gmail.com>
+Subject: Re: Redirecting a Pre-existing SSH Session
+Date: Tue, 6 Jul 2010 10:34:20 -0400
+Message-ID: <AANLkTikPeHVRj9sHH8pHD6PUdnluv1VkrsRhTtOkqIw1@mail.gmail.com>
+References: <AANLkTil-BzqRmzGX951pWLLkVqeO8Y_vwywQOD8z2Drj@mail.gmail.com>
+	<alpine.LSU.2.01.1007061331300.11025@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <20100704114808.932594876@vergenet.net>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:in-reply-to
+         :references:date:message-id:subject:from:to:cc:content-type;
+        bh=7mGBS2K1i2ejNJicHJYn/QJeLu2M/cNbRzkD6VAcIFM=;
+        b=pOBW86JMlennfkBjXIdvGTy6li2/bvCNZLinJf3VpWC+ZUgpOb+f8OP18HvzuDRM0s
+         z0GsJ2Odndzrs8g2JpenN9kEmI8a3oU3SeqUr6jTEK2CyjcInZrRUXh/pb0WCnJDPXHS
+         p7mxyOTWX0uZ5lCFt4ydokE3/K42pUQPa0x1U=
+In-Reply-To: <alpine.LSU.2.01.1007061331300.11025@obet.zrqbmnf.qr>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Simon Horman <horms@verge.net.au>
-Cc: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Malcolm Turnbull <malcolm@loadbalancer.org>, Wensong Zhang <wensong@linux-vs.org>, Julius Volz <julius.volz@gmail.com>, "David S. Miller" <davem@davemloft.net>, Hannes Eder <heder@google.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org
 
-Simon Horman wrote:
-> @@ -219,19 +358,23 @@ static int ip_vs_ftp_out(struct ip_vs_ap
->  
->  		buf_len = strlen(buf);
->  
-> +		ct = nf_ct_get(skb, &ctinfo);
-> +		ret = nf_nat_mangle_tcp_packet(skb,
-> +					       ct,
-> +					       ctinfo,
-> +					       start-data,
-> +					       end-start,
-> +					       buf,
-> +					       buf_len);
-> +
-> +		if (ct && ct != &nf_conntrack_untracked)
->   
-This does not make sense, you're already using the conntrack above
-in the call to nf_nat_mangle_tcp_packet(), so the check should
-probably happen before that. You also should be checking the
-return value of nf_nat_mangle_tcp_packet() before setting up the
-expectation.
+Thank you for the clarification. Are there any resources that you
+could point me towards that might help me to accomplish what I
+outlined?
 
-> +			ip_vs_expect_related(skb, ct, n_cp,
-> +					     IPPROTO_TCP, NULL, 0);
-
+On Tue, Jul 6, 2010 at 7:31 AM, Jan Engelhardt <jengelh@medozas.de> wrote:
+>
+> On Tuesday 2010-07-06 13:28, Wade Gasior wrote:
+>
+>>At a point in time, I want to forward all incoming traffic to be
+>>served by .160 instead.
+>>I have accomplished this using these commands (on .150):
+>>
+>>iptables -t nat -A PREROUTING -j DNAT --to 192.168.1.160
+>>iptables -t nat -I POSTROUTING -j MASQUERADE
+>
+> That isn't forwarding, it's address rewriting.
+>
+>
