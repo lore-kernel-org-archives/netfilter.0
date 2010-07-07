@@ -1,67 +1,48 @@
-From: Jesper Dangaard Brouer <hawk@diku.dk>
-Subject: Re: QoS weirdness : HTB accuracy
-Date: Wed, 7 Jul 2010 15:07:08 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.1007071457020.6631@ask.diku.dk>
-References: <067c83163988908ef546d7ff7f560a17@localhost> 
- <4BF32BB0.7010700@redfish-solutions.com>  <e6bd0cff8dafc8b3af0760facb5fdc8c@localhost>
-  <1276204948.1403.13.camel@andybev> <1278265807.1506.86.camel@andybev>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Changing default route causes packet drop
+Date: Wed, 07 Jul 2010 16:23:33 +0200
+Message-ID: <4C348DE5.9000101@plouf.fr.eu.org>
+References: <20100705090326.BF7B134502@john>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1278265807.1506.86.camel@andybev>
+In-Reply-To: <20100705090326.BF7B134502@john>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Andrew Beverley <andy@andybev.com>
-Cc: Julien Vehent <julien@linuxwall.info>, "Philip A. Prindeville" <philipp_subx@redfish-solutions.com>, Netdev <netdev@vger.kernel.org>, netfilter <netfilter@vger.kernel.org>, hawk@comx.dk
+Content-Type: text/plain; charset="iso-8859-1"
+To: John Meissen <john@meissen.org>
+Cc: netfilter@vger.kernel.org
 
+Hello,
 
-On Sun, 4 Jul 2010, Andrew Beverley wrote:
+John Meissen a =E9crit :
+>=20
+> I had a traditional setup with two ethernet interfaces on my Linux bo=
+x=20
+> (WAN=3Deth0/LAN=3Deth1), and NATing the traffic that was forwarded be=
+tween them.
+>=20
+> I added another interface (eth2), and simply want to change the defau=
+lt
+> routing to go through it. I'm leaving various services listening on a=
+ll
+> interfaces.
+>=20
+> If I change the default route to use eth2, I can route from the inter=
+nal
+> network to the outside just fine, and I can connect from the internal=
+ net
+> to services on the system fine. But incoming connections on the origi=
+nal
+> WAN (eth0) don't complete. They hang at SYN_RECV, as if I had a DROP =
+rule.
 
->>> I was, in fact, an error in my ruleset. I had put the 'linklayer atm' at
->>> both the branch and leaf levels, so the overhead was computed twice,
->>> creating those holes in the bandwidth.
->>
->> I am seeing similar behaviour with my setup. Am I making the same
->> mistake? A subset of my rules is as follows:
->>
->> tc qdisc add dev ppp0 root handle 1: htb r2q 1
->>
->> tc class add dev ppp0 parent 1: classid 1:1 htb \
->>     rate ${DOWNLINK}kbit ceil ${DOWNLINK}kbit \
->>     overhead $overhead linklayer atm                   <------- Here
->>
->> tc class add dev ppp0 parent 1:1 classid 1:10 htb \
->>     rate 612kbit ceil 612kbit prio 0 \
->>     overhead $overhead linklayer atm                   <------- And here
->>
->> tc qdisc add dev ppp0 parent 1:10 handle 4210: \
->>     sfq perturb 10 limit 50
->>
->> tc filter add dev ppp0 parent 1:0 protocol ip \
->>     prio 10 handle 10 fw flowid 1:10
->
-> I removed the overhead option on the first leaf, and the speeds change
-> to what I expect. However, the rules above are taken straight from the
-> ADSL Optimizer project, which was the source of the original overhead
-> patch for tc. So is the ADSL Optimizer project wrong?
+1) Check that source validation by reverse path is disabled for eth0
+(sysctl net.ipv4.conf.{all,eth0}.rp_filter=3D0).
 
-After looking at the HTB kernel code I believe that the ADSL Optimizer 
-project is NOT wrong.  You should/must set the linklayer option on both 
-the root class and leaf (else you would be charging the root/parent node 
-too little).
-
-It is the expected behavior that small packets cause a significant
-reduction in the available bandwidth on the ATM link.  Small packets will 
-(almost) always cause 2 ATM packets (being send) using 106 bytes, thus
-eg. sending a 40 bytes TCP ACK packet result in approx 62% overhead.
-
-Cheers,
-   Jesper Brouer
-
---
--------------------------------------------------------------------
-MSc. Master of Computer Science
-Dept. of Computer Science, University of Copenhagen
-Author of http://www.adsl-optimizer.dk
--------------------------------------------------------------------
+2) If you don't setup some routing policy (such as source address based
+routing), packets sent in reply to packets received on eth0 will now be
+sent through eth2 by default because of the new default route, but stil=
+l
+with the source address of eth0. Such traffic may be considered as
+spoofing and discarded by the ISP eth2 is connected to.
