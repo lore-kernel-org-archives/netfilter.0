@@ -1,52 +1,44 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [patch v2.3 3/4] IPVS: make FTP work with full NAT support
-Date: Wed, 7 Jul 2010 15:53:24 +0900
-Message-ID: <20100707065324.GC20424@verge.net.au>
-References: <20100704113246.562399500@vergenet.net>
- <20100704114808.932594876@vergenet.net>
- <4C3316F0.2030807@trash.net>
+From: Jesper Dangaard Brouer <hawk@comx.dk>
+Subject: Re: QoS weirdness : HTB accuracy
+Date: Wed, 7 Jul 2010 12:50:59 +0000 (UTC)
+Message-ID: <loom.20100707T144848-17@post.gmane.org>
+References: <067c83163988908ef546d7ff7f560a17@localhost> <4BF32BB0.7010700@redfish-solutions.com> <e6bd0cff8dafc8b3af0760facb5fdc8c@localhost>
 Mime-Version: 1.0
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4C3316F0.2030807@trash.net>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>
-Cc: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Malcolm Turnbull <malcolm@loadbalancer.org>, Wensong Zhang <wensong@linux-vs.org>, Julius Volz <julius.volz@gmail.com>, "David S. Miller" <davem@davemloft.net>, Hannes Eder <heder@google.com>
+To: netfilter@vger.kernel.org
 
-On Tue, Jul 06, 2010 at 01:43:44PM +0200, Patrick McHardy wrote:
-> Simon Horman wrote:
-> >@@ -219,19 +358,23 @@ static int ip_vs_ftp_out(struct ip_vs_ap
-> > 		buf_len = strlen(buf);
-> >+		ct = nf_ct_get(skb, &ctinfo);
-> >+		ret = nf_nat_mangle_tcp_packet(skb,
-> >+					       ct,
-> >+					       ctinfo,
-> >+					       start-data,
-> >+					       end-start,
-> >+					       buf,
-> >+					       buf_len);
-> >+
-> >+		if (ct && ct != &nf_conntrack_untracked)
-> This does not make sense, you're already using the conntrack above
-> in the call to nf_nat_mangle_tcp_packet(), so the check should
-> probably happen before that. You also should be checking the
-> return value of nf_nat_mangle_tcp_packet() before setting up the
-> expectation.
+Julien Vehent <julien <at> linuxwall.info> writes:
+ 
+> On Tue, 18 May 2010 18:07:12 -0600, "Philip A. Prindeville"
+> <philipp_subx <at> redfish-solutions.com> wrote:
+> > 
+> > Sorry for the late response:  could this be an "aliasing" issue caused
+> > by sampling intervals (granularity)?
+> > 
+> > -Philip
 > 
-> >+			ip_vs_expect_related(skb, ct, n_cp,
-> >+					     IPPROTO_TCP, NULL, 0);
+> I was, in fact, an error in my ruleset. I had put the 'linklayer atm' at
+> both the branch and leaf levels, so the overhead was computed twice,
+> creating those holes in the bandwidth.
 
-Good point. Is this better?
+I have checked the HTB kernel code, and my understanding is that, you must
+set it on both the leaf and the root, for the shaping to be correct.
 
-		ct = nf_ct_get(skb, &ctinfo);
-		if (ct && !nf_ct_is_untracked()) {
-			ret = nf_nat_mangle_tcp_packet(skb, ct, ctinfo,
-						       start-data, end-start,
-						       buf, buf_len);
-			if (ret)
-				ip_vs_expect_related(skb, ct, n_cp,
-						     IPPROTO_TCP, NULL, 0);
-		}
+It is the expected behavior that small packets cause a significant
+reduction in the available bandwidth on the ATM link. See my answer to your 
+original post.
+
+-- 
+Med venlig hilsen / Best regards
+  Jesper Brouer
+  ComX Networks A/S
+  Linux Network Kernel Developer
+  Cand. Scient Datalog / MSc.CS
+  Author of http://adsl-optimizer.dk
+  LinkedIn: http://www.linkedin.com/in/brouer
+
+
