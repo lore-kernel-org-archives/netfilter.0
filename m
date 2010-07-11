@@ -1,169 +1,74 @@
-From: "Michael S. Tsirkin" <mst@redhat.com>
-Subject: [PATCHv3] extensions: libxt_CHECKSUM extension
-Date: Sun, 11 Jul 2010 18:14:53 +0300
-Message-ID: <20100711151453.GA7563__46250.1856651672$1278861663$gmane$org@redhat.com>
-References: <20100711150623.GA7420@redhat.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnetfilter_queue 1.0.0 release
+Date: Sun, 11 Jul 2010 18:00:21 +0200
+Message-ID: <4C39EA95.2080806@netfilter.org>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20100711150623.GA7420@redhat.com>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/mixed;
+ boundary="------------090803040406030006070300"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
+Cc: netfilter-announce@lists.netfilter.org, netfilter-devel@vger.kernel.org, lwn@lwn.net
+
+This is a multi-part message in MIME format.
+--------------090803040406030006070300
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, Jan Engelhardt <jengelh@medozas.de>, Randy Dunlap <randy.dunlap@oracle.com>, netfilter-devel@vger.kernel.o
 
-This adds a `CHECKSUM' target, which can be used in the iptables mangle
-table.
+Hi!
 
-You can use this target to compute and fill in the checksum in
-a packet that lacks a checksum.  This is particularly useful,
-if you need to work around old applications such as dhcp clients,
-that do not work well with checksum offloads, but don't want to disable
-checksum offload in your device.
+The Netfilter proudly project presents:
 
-The problem happens in the field with virtualized applications.
-For reference, see Red Hat bz 605555, as well as
-http://www.spinics.net/lists/kvm/msg37660.html
+  * libnetfilter_queue-1.0.0
 
-Typical expected use (helps old dhclient binary running in a VM):
-iptables -A POSTROUTING -t mangle -p udp --dport bootpc \
-        -j CHECKSUM --checksum-fill
+libnetfilter_queue is a userspace library providing an API to packets
+that have been queued by the kernel packet filter. It is is part of a
+system that deprecates the old ip_queue / libipq mechanism.
 
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
----
+See ChangeLog (file attached) for more details on this release. You can
+download it from:
 
-Correction in the documentation. Sorry about the noise.
+http://www.netfilter.org/projects/libnetfilter_queue/downloads.html
+ftp://ftp.netfilter.org/pub/libnetfilter_queue/
 
-Changes from v2:
-	updated man file
-Changes from v1:
-	switched from ipt to xt
+Cheers,
+Pablo (on behalf of the Netfilter Core Team)
 
- extensions/libxt_CHECKSUM.c   |   99 +++++++++++++++++++++++++++++++++++++++++
- extensions/libxt_CHECKSUM.man |    8 +++
- 2 files changed, 107 insertions(+), 0 deletions(-)
- create mode 100644 extensions/libxt_CHECKSUM.c
- create mode 100644 extensions/libxt_CHECKSUM.man
+--------------090803040406030006070300
+Content-Type: text/plain;
+ name="changes-libnetfilter_queue-1.0.0.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="changes-libnetfilter_queue-1.0.0.txt"
 
-diff --git a/extensions/libxt_CHECKSUM.c b/extensions/libxt_CHECKSUM.c
-new file mode 100644
-index 0000000..00fbd8f
---- /dev/null
-+++ b/extensions/libxt_CHECKSUM.c
-@@ -0,0 +1,99 @@
-+/* Shared library add-on to xtables for CHECKSUM
-+ *
-+ * (C) 2002 by Harald Welte <laforge@gnumonks.org>
-+ * (C) 2010 by Red Hat, Inc
-+ * Author: Michael S. Tsirkin <mst@redhat.com>
-+ *
-+ * This program is distributed under the terms of GNU GPL v2, 1991
-+ *
-+ * libxt_CHECKSUM.c borrowed some bits from libipt_ECN.c
-+ *
-+ * $Id$
-+ */
-+#include <stdio.h>
-+#include <string.h>
-+#include <stdlib.h>
-+#include <getopt.h>
-+
-+#include <xtables.h>
-+#include <linux/netfilter/xt_CHECKSUM.h>
-+
-+static void CHECKSUM_help(void)
-+{
-+	printf(
-+"CHECKSUM target options\n"
-+"  --checksum-fill			Fill in packet checksum.\n");
-+}
-+
-+static const struct option CHECKSUM_opts[] = {
-+	{ "checksum-fill", 0, NULL, 'F' },
-+	{ .name = NULL }
-+};
-+
-+static int CHECKSUM_parse(int c, char **argv, int invert, unsigned int *flags,
-+                     const void *entry, struct xt_entry_target **target)
-+{
-+	struct xt_CHECKSUM_info *einfo
-+		= (struct xt_CHECKSUM_info *)(*target)->data;
-+
-+	switch (c) {
-+	case 'F':
-+		if (*flags)
-+			xtables_error(PARAMETER_PROBLEM,
-+			        "CHECKSUM target: Only use --checksum-fill ONCE!");
-+		einfo->operation = XT_CHECKSUM_OP_FILL;
-+		*flags |= XT_CHECKSUM_OP_FILL;
-+		break;
-+	default:
-+		return 0;
-+	}
-+
-+	return 1;
-+}
-+
-+static void CHECKSUM_check(unsigned int flags)
-+{
-+	if (!flags)
-+		xtables_error(PARAMETER_PROBLEM,
-+		           "CHECKSUM target: Parameter --checksum-fill is required");
-+}
-+
-+static void CHECKSUM_print(const void *ip, const struct xt_entry_target *target,
-+                      int numeric)
-+{
-+	const struct xt_CHECKSUM_info *einfo =
-+		(const struct xt_CHECKSUM_info *)target->data;
-+
-+	printf("CHECKSUM ");
-+
-+	if (einfo->operation & XT_CHECKSUM_OP_FILL)
-+		printf("fill ");
-+}
-+
-+static void CHECKSUM_save(const void *ip, const struct xt_entry_target *target)
-+{
-+	const struct xt_CHECKSUM_info *einfo =
-+		(const struct xt_CHECKSUM_info *)target->data;
-+
-+	if (einfo->operation & XT_CHECKSUM_OP_FILL)
-+		printf("--checksum-fill ");
-+}
-+
-+static struct xtables_target checksum_tg_reg = {
-+	.name		= "CHECKSUM",
-+	.version	= XTABLES_VERSION,
-+	.family		= NFPROTO_UNSPEC,
-+	.size		= XT_ALIGN(sizeof(struct xt_CHECKSUM_info)),
-+	.userspacesize	= XT_ALIGN(sizeof(struct xt_CHECKSUM_info)),
-+	.help		= CHECKSUM_help,
-+	.parse		= CHECKSUM_parse,
-+	.final_check	= CHECKSUM_check,
-+	.print		= CHECKSUM_print,
-+	.save		= CHECKSUM_save,
-+	.extra_opts	= CHECKSUM_opts,
-+};
-+
-+void _init(void)
-+{
-+	xtables_register_target(&checksum_tg_reg);
-+}
-diff --git a/extensions/libxt_CHECKSUM.man b/extensions/libxt_CHECKSUM.man
-new file mode 100644
-index 0000000..92ae700
---- /dev/null
-+++ b/extensions/libxt_CHECKSUM.man
-@@ -0,0 +1,8 @@
-+This target allows to selectively work around broken/old applications.
-+It can only be used in the mangle table.
-+.TP
-+\fB\-\-checksum\-fill\fP
-+Compute and fill in the checksum in a packet that lacks a checksum.
-+This is particularly useful, if you need to work around old applications
-+such as dhcp clients, that do not work well with checksum offloads,
-+but don't want to disable checksum offload in your device.
--- 
-1.7.2.rc0.14.g41c1c
+Alessandro Vesely (1):
+      doc: document possible verdicts on packets and minor change in example
+
+David Fabro (4):
+      non-modified payload arguments are pointer-to-const
+      payload buffer datatypes are consistent
+      added .gitignore for base directory
+      doc: enhancements
+
+Holger Hans Peter Freyther (1):
+      doc: make doxygen.cfg.in work with doxygen 1.6.1
+
+Pablo Neira Ayuso (11):
+      nfq: add minor comment in the documentation to warn about privileges
+      nfq: deprecate nfq_set_verdict_mark() in favour of nfq_set_verdict2()
+      doc: remove references to deprecated nfq_set_verdict_mark()
+      add nfq_snprintf_xml() to output a packet in XML format
+      nfq: fix compilation warning in nfq_snprintf_xml()
+      nfq: consistent nfq_snprintf_xml() return value with snprintf()
+      nfq: fix HW address output in nfq_snprintf_xml()
+      nfq: remove `0x' from HW protocol in output of nfq_snprintf_xml()
+      nfq: remove libipq.h
+      build: add libtool m4 support
+      nfq: bump version to 1.0.0
+
+Patrick McHardy (1):
+      remove libipq_compat
+
+
+--------------090803040406030006070300--
