@@ -1,86 +1,31 @@
-From: Jeff Largent <jwlargent@vlsmaps.com>
-Subject: Re: Need help with iptables Invalid Argument error
-Date: Mon, 12 Jul 2010 08:03:38 -0500
-Message-ID: <20100712080338.1381f55d.jwlargent@vlsmaps.com>
-References: <AANLkTik5UiaVfTPvlFr1RWrXKMkxG-mG39qUJvBbBg7D@mail.gmail.com>
+From: Adam Gundy <arg@cyberscience.com>
+Subject: conntrackd not replicating NATted FTP connection properly?
+Date: Mon, 12 Jul 2010 08:40:24 -0600
+Message-ID: <4C3B2958.20708@cyberscience.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTik5UiaVfTPvlFr1RWrXKMkxG-mG39qUJvBbBg7D@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Pete Kay <petedao@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Sat, 10 Jul 2010 16:55:21 +0800
-Pete Kay <petedao@gmail.com> wrote:
+I've set up a pair of redundant routers using keepalived and conntrackd.
+Part of their job is to handle routing to an FTP server in a NATted DMZ.
 
-> Hi,
-> 
-> I am trying to write some code to simulate this iptables rule:
-> iptables -append -t nat -A PREROUTING -s 192.168.3.2 -p udp --dport 80
-> -j ACCEPT
-> 
+both servers are running Ubuntu Lucid, but for other reasons I've switched
+to a stock 2.6.33.5 kernel. I've also tried building the 0.9.14 version of
+conntrack to see if it fixed the problem (lucid ships with 0.9.13).
 
-iptables -t nat -A PREROUTING -s 192.168.3.2 -p udp --dport 80 -j ACCEPT
+this works great, except that an existing FTP connection gets 'broken' when
+the master flips to the other machine. the data connection is fine, but the
+control connection seems to have broken sequence numbers - the leading four
+(or eight) bytes in the next packet sent is ignored. (example packet trace
+available off list).
 
-There is no -append option or at least there isn't on my version.
+looking at the conntrack source code, it seems to suggest that the NAT
+'sequence offset' should be replicated... but it clearly isn't being?
 
-> But I am getting "Invalid Argument" error when running the commit.
-> Does anyone know what could be wrong with my sample code here?
-> 
-> Any help will be greatly appreciated.
-> 
->        struct ipt_entry *e=NULL;
->         struct ipt_entry_target *pt;
->         struct ipt_entry_match *pm;
->         struct ipt_udp *pudp;
->        const char *tablename = "nat";
->         iptc_handle_t   h = iptc_init(tablename);
->         int ret = 0;
->         size_t target_size, match_size, size;
->         match_size = sizeof(struct ipt_entry_match) + sizeof(struct ipt_tcp);
->         target_size = IPT_ALIGN(sizeof(struct ipt_entry_target)) +
-> IPT_ALIGN(sizeof(int));
->         size = sizeof(*e) + match_size + target_size;
->         e = calloc(1, size);
->         e->ip.src.s_addr = inet_addr("192.168.3.2");
->         e->ip.smsk.s_addr = -1;
->         e->ip.proto = IPPROTO_UDP;
->         e->target_offset = sizeof(*e) + match_size;
->         e->next_offset = size;
->         pm = (struct ipt_entry_match *)e->elems;
->         pm->u.user.match_size = match_size;
->         strcpy(pm->u.user.name, "udp");
->         pudp = (struct ipt_udp*)pm->data;
->         pudp->spts[0] = 0;
->         pudp->spts[1] = 0;
->         pudp->dpts[0] = 80;
->         pudp->dpts[1] = 0xffff;
-> 
->         pt = (struct ipt_entry_target *) (e->elems + match_size);
->         pt->u.user.target_size = target_size;
->         strcpy(pt->u.user.name, "ACCEPT");
->         if ( !h )   {                printf("Error initializing:
-> %s\n", iptc_strerror(errno));
->         }
->         ret = iptc_append_entry("PREROUTING", e, h);
->   printf("append = [%i]\n", ret);
->         ret = iptc_commit(h);
->         printf("commit = [%i]\n",ret);
->         if (!ret) {
->                 printf("false : %s\n", iptc_strerror(errno));   }
-> 
-> 
-> 
-> Thanks,
-> P
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+am I supposed to match a particular version of conntrackd to the kernel?
 
-
--- 
-Jeff Largent <jwlargent@vlsmaps.com>
+is NATted FTP not supported by conntrackd?
