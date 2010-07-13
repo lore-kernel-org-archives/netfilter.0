@@ -1,63 +1,31 @@
-From: Adam Gundy <arg@cyberscience.com>
-Subject: Re: conntrackd not replicating NATted FTP connection properly?
-Date: Tue, 13 Jul 2010 11:10:53 -0600
-Message-ID: <4C3C9E1D.50905@cyberscience.com>
-References: <4C3B2958.20708@cyberscience.com> <4C3C4275.2060108@netfilter.org>
+From: Edison Figueira <efjgrub@gmail.com>
+Subject: CLUSTERIP: no conntrack error
+Date: Tue, 13 Jul 2010 19:18:40 -0300
+Message-ID: <AANLkTinWzfnYgN0vTECKfgYxUPYynPr0OHVfgEbZyRfj@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C3C4275.2060108@netfilter.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=aEiQZ1jvL7917eOGUctUyG6YqbqsdSIv5JuIQFbqRDE=;
+        b=Fu4MvbjpfeE5OiAmnKxLD+nMReSRlcP7tg/jmtsB4acs8XDhUZ3GxDLEF/MafRluo6
+         hcBhlabp6gH6zaGNR+O2NkOQgq2uqIJwXiURCI87yBvXjVE/Ft+rQelESsIVdqqwNCaa
+         k0ECky3q14fmJ9rUiZPZHboW7wMJYiDmICzf4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Pablo Neira Ayuso wrote:
-> On 12/07/10 16:40, Adam Gundy wrote:
->> I've set up a pair of redundant routers using keepalived and conntrackd.
->> Part of their job is to handle routing to an FTP server in a NATted DMZ.
->>
->> both servers are running Ubuntu Lucid, but for other reasons I've switched
->> to a stock 2.6.33.5 kernel. I've also tried building the 0.9.14 version of
->> conntrack to see if it fixed the problem (lucid ships with 0.9.13).
->>
->> this works great, except that an existing FTP connection gets 'broken' when
->> the master flips to the other machine. the data connection is fine, but the
->> control connection seems to have broken sequence numbers - the leading four
->> (or eight) bytes in the next packet sent is ignored. (example packet trace
->> available off list).
->>
->> looking at the conntrack source code, it seems to suggest that the NAT
->> 'sequence offset' should be replicated... but it clearly isn't being?
->>
->> am I supposed to match a particular version of conntrackd to the kernel?
->>
->> is NATted FTP not supported by conntrackd?
-> 
-> Yes, it should work but some bugs were in the middle of the road. You'll
-> need these two patches for the conntrack-tools and the library
-> libnetfilter_conntrack:
-> 
-> http://git.netfilter.org/cgi-bin/gitweb.cgi?p=conntrack-tools.git;a=commit;h=1f3c6df4f8984fce347718cca09dd0e2fa138ce1
-> 
-> http://git.netfilter.org/cgi-bin/gitweb.cgi?p=libnetfilter_conntrack.git;a=commit;h=e387e4f81f067cdaca4bb632d4028f794fc4c14b
-> 
-> I have tested this scenario with the following rule-set:
-> 
-> -A PREROUTING -d 192.168.1.100 -p tcp -m tcp --dport 9999 -j DNAT
-> --to-destination 192.168.1.2:21
-> 
-> The module nf_nat_ftp is also required, of course. I was using a linux
-> kernel 2.6.32.2 in my firewalls and snapshots of the current
-> libnetfilter_conntrack and the conntrack-tools from git.netfilter.org
-> 
-> These patches will be included in the upcoming release of
-> libnetfilter_conntrack and conntrack-tools 0.9.15 (to appear soon).
-> 
-> I'd appreciate if you can also test it in your firewall cluster and ACK
-> this. Thanks for the bug reporting.
+I configured CLUSTERIP in two boxes to make balancing proxy, and
+apparently it all worked but I get several messages from "CLUSTERIP:
+no conntrack.
 
-awesome! the current GIT version is working great now...
+Does anyone know what this message means?
 
-thanks for your rapid response. I'm looking forward to the 0.9.15 version!
+How can I fix this?
+
+Thank you.
+
+Edison Figueira Junior
