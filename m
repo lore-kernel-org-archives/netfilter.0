@@ -1,41 +1,46 @@
-From: Shirley Ong <soap6gal@gmail.com>
-Subject: Traffic accounting in iptables
-Date: Wed, 14 Jul 2010 18:00:02 +0100
-Message-ID: <AANLkTilT4RX2sRQc7vjtWdbP3UxSqqVFAwGc2mGZk0iC@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [conntrackd] Question about expect table sync
+Date: Wed, 14 Jul 2010 19:23:41 +0200
+Message-ID: <4C3DF29D.5000400@netfilter.org>
+References: <4C2C9E4C.40901@orange-ftgroup.com> <4C2CB9AF.2000906@netfilter.org> <4C2D95EE.5020709@orange-ftgroup.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:mime-version:received:from:date
-         :message-id:subject:to:content-type;
-        bh=4Z8NTPak7vgIRn9P9DxQ3/5ir8q7dyLry/FHVwNQbyc=;
-        b=GUNezoofrb31QqnB2r6AM9geucGO0CKpwuzqJAjdRsjY1UiK8RT7pS2WMNbSBCr8/G
-         M+zZtYU3FjBFcI7qXblMNu2VIt2J2uS1QX8v6BM+DHBZXAOBJ2TGbp5Jst30UAES0Dy5
-         9pGlNE76E8c+PRFrCxDR+kHx0CvcP/sMSjOYo=
+In-Reply-To: <4C2D95EE.5020709@orange-ftgroup.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: todor.gamishev@orange-ftgroup.com
+Cc: netfilter@vger.kernel.org
 
-Hi,
+Hi Todor,
 
-I'm trying to understand traffic bytes reported in iptables. What I
-did was, I downloaded a 5MB file from a server, then checked the bytes
-via command "iptables -nvx -L ...". At the same time, I have captured
-the traffic using tcpdump, which I then viewed in Wireshark. With
-wireshark, I added up all the bytes (with and without header) at all
-the different layers. The closest I can get wireshark to show the same
-data bytes as iptables is at the IP Layer (data + header). What
-puzzles me is that, wireshark shows 12 bytes (incoming traffic) more
-than iptables, but the number of incoming packets are the same as
-reported by iptables. Outgoing bytes and packets are exactly the same
-as iptables. I have repeated this test many times, by downloading 5MB
-and 100MB files and the results are the same - always 12 bytes of
-incoming traffic in extra. Does anyone have an explanation for this?
-This is done in a controlled environment, i.e., only the http packet
-goes through iptables.
+On 02/07/10 09:31, todor.gamishev@orange-ftgroup.com wrote:
+> Hi Pablo,
+>=20
+> Pablo Neira Ayuso a =E9crit :
+>> We are not synchronizing the expectation table but we do synchronize
+>> confirmed expectations that are attached to their master conntrack (=
+I'm
+>> refering to the RELATED state in iptables).
+>>
+>> Expectations usually have a short lifetime and they occur in early
+>> stages of the flow establishment. I consider that synchronizing
+>> expectations do not help too much to improve availability under reco=
+very
+>> situations but it requires extra computational resources for this.
+>=20
+> Thank you very much for replying to my mail so quickly.
+>=20
+> Yes I agree with you in some ways. However, I am working on SIP-capab=
+le
+> firewalls and the SIP Applicative Layer Gateway in netfilter
+> (nf_conntrack_sip) retrieves ports needed for the RTP traffic in the =
+SIP
+> message body and adds them in the expectation table. So, when the Mas=
+ter
+> goes down the Backup doesn't know them and all RTP packets are droppe=
+d.
 
-Thanks.
-
-Shirley
+Indeed, as for now (conntrack-tools 0.9.14) we don't support SIP yet,
+but it would require extra implementation work.
