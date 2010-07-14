@@ -1,39 +1,35 @@
-From: Curby <curby@cur.by>
-Subject: Re: Help!!! iptables hashlimit
-Date: Wed, 14 Jul 2010 02:39:51 -0600
-Message-ID: <AANLkTilFi9WmIWoRQ16N-iG34klTw_IF76hGafpaHTe3@mail.gmail.com>
-References: <4694.23493.qm@web32402.mail.mud.yahoo.com>
+From: Alessandro Vesely <vesely@tana.it>
+Subject: Re: libnetfilter_queue quick question
+Date: Wed, 14 Jul 2010 11:27:25 +0200
+Message-ID: <4C3D82FD.3030202@tana.it>
+References: <AANLkTinrAZdXVZhULjFkkDnEyiwo--NpwYWWc5eNLGfB@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4694.23493.qm@web32402.mail.mud.yahoo.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tana.it; s=test;
+	t=1279099646; bh=TPlx1wighFTsH14/j++F/inV0Q1hO3UNtPTM3FvkFxg=;
+	l=492;
+	h=Message-ID:Date:From:MIME-Version:To:References:In-Reply-To:
+	 Content-Transfer-Encoding;
+	b=aEcczyJp2lmYmYgcUH/sX+y8P1uLtcZCa0avFsP7DZevsB25jyKm3jU/iJc6NXhkC
+	 oEeHnGWqjVDUIsaUTJJy6pW1xqtXeqL68lS0951SRwqU2K/tZyhRoAlvt7u8HHweol
+	 u2S3xGQxSeBwNSefNwKyZv8zP3On/BnsDNEgh0LE=
+In-Reply-To: <AANLkTinrAZdXVZhULjFkkDnEyiwo--NpwYWWc5eNLGfB@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: ha do <haloha201@yahoo.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Wed, Jul 14, 2010 at 2:03 AM, ha do <haloha201@yahoo.com> wrote:
-> i just setup the hashlimit for SIP REGISTER on iptables and the rule =
-is:
-> -A =A0INPUT -p udp -i eth0 --dport 5060 -m hashlimit --hashlimit 1/mi=
-nute
-> --hashlimit-burst 2 --hashlimit-mode srcip,srcport =A0--hashlimit-nam=
-e =A0"cucku" -m
-> string --string "REGISTER sip:" --algo bm --to 80 -j ACCEPT
+On 12/Jul/10 18:00, Edison Figueira wrote:
+> The absence of the verdict like<RETURN>  on libnetfilter_queue is because it
+> was not implemented or is not possible to implement?
 
-> i want the iptables just to =A0accept 2 REGISTER packets per minute o=
-n per IP
-> address:port
+Return what/where? Don't confuse tables with chains or queues...
 
-There might be other issues, but you need hashlimit 2/minute to accept
-2 packets per minute.  Having a burst of 2 by itself is not
-sufficient.
+> Has something like of<RETURN>  what can be make in the queue to have this
+> effect?
 
-Sometimes, due to network latency or other timing issues, you need to
-be even more accepting.  For example, I've found that accepting
-"well-behaved" pings requires a minimum hashlimit of 61/min with burst
-of 2.  When I lower either setting, iptables starts dropping the
-occasional ping packet.
+Setting a mark and ACCEPT a packet from a table may be a handy way to 
+return a value that can be tested by iptables rules of a further table.
 
---Mike
+HTH
