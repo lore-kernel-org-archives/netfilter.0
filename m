@@ -1,70 +1,41 @@
-From: ha do <haloha201@yahoo.com>
-Subject: Re: Help!!! iptables hashlimit
-Date: Wed, 14 Jul 2010 02:39:37 -0700 (PDT)
-Message-ID: <117508.97487.qm@web32407.mail.mud.yahoo.com>
-References: <4694.23493.qm@web32402.mail.mud.yahoo.com> <AANLkTilFi9WmIWoRQ16N-iG34klTw_IF76hGafpaHTe3@mail.gmail.com>
+From: Mart Frauenlob <mart.frauenlob@chello.at>
+Subject: Re: libnetfilter_queue quick question
+Date: Wed, 14 Jul 2010 15:13:29 +0200
+Message-ID: <4C3DB7F9.9090709@chello.at>
+References: <AANLkTinrAZdXVZhULjFkkDnEyiwo--NpwYWWc5eNLGfB@mail.gmail.com> <4C3D82FD.3030202@tana.it>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1279100378; bh=anGXWhiG8fqFYpU4y+WAQsLb0c+x89Kcy21uVoaiJz4=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:References:Date:From:Subject:To:Cc:In-Reply-To:MIME-Version:Content-Type; b=1pGDxjWo29Zp/jQiYz2BcZzmDBrbxwHcngjrBX86sAl9sTAs6NJWAyc3SgshktuoacSy6gnxFI4u3fXG9bD4lotAh5+/cJm/X4NqhMkJX+E+nTdqxK/SgPRRobFmOD6tG+pnaShYLGSHVCfaCIZBtVj78/9PLiF/9Ur5U4v+Qso=
-In-Reply-To: <AANLkTilFi9WmIWoRQ16N-iG34klTw_IF76hGafpaHTe3@mail.gmail.com>
+In-Reply-To: <4C3D82FD.3030202@tana.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Curby <curby@cur.by>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hi Curby
+On 14.07.2010 11:27, vesely@tana.it wrote:
+> On 12/Jul/10 18:00, Edison Figueira wrote:
+>> The absence of the verdict like<RETURN> on libnetfilter_queue is
+>> because it
+>> was not implemented or is not possible to implement?
 
-thank you for your reply
-SIP server and sip endpoint is in the same LAN so what do you think about 
-network lantency
+the latter i think.
 
-do i test with this:
--A INPUT -p udp -i eth0 --dport 5060 -m hashlimit --hashlimit 70/minute 
---hashlimit-burst 10  --hashlimit-mode srcip,srcport --hashlimit-name "cucku" -m 
-string --string "REGISTER sip:" --algo bm --to 80 -j ACCEPT
+>
+> Return what/where? Don't confuse tables with chains or queues...
+>
+>> Has something like of<RETURN> what can be make in the queue to have this
+>> effect?
+>
+> Setting a mark and ACCEPT a packet from a table may be a handy way to
+> return a value that can be tested by iptables rules of a further table.
+>
 
+A 'pass through' option for queued packets does not sound wrong to me.
 
-the iptables still drop packet
+... -j NFQUEUE
+... next rule that may hit packets, which 'RETURN' from the queue
 
-i checked again the man page and see : 
-[--hashlimit-htable-gcinterval] interval between garbage collection runs
+regards
 
-could you guide me how to use it
-
-Thank you
-Ha`
-
------ Original Message ----
-From: Curby <curby@cur.by>
-To: ha do <haloha201@yahoo.com>
-Cc: netfilter@vger.kernel.org
-Sent: Wed, July 14, 2010 3:39:51 PM
-Subject: Re: Help!!! iptables hashlimit
-
-On Wed, Jul 14, 2010 at 2:03 AM, ha do <haloha201@yahoo.com> wrote:
-> i just setup the hashlimit for SIP REGISTER on iptables and the rule is:
-> -A  INPUT -p udp -i eth0 --dport 5060 -m hashlimit --hashlimit 1/minute
-> --hashlimit-burst 2 --hashlimit-mode srcip,srcport  --hashlimit-name  "cucku" 
->-m
-> string --string "REGISTER sip:" --algo bm --to 80 -j ACCEPT
-
-> i want the iptables just to  accept 2 REGISTER packets per minute on per IP
-> address:port
-
-There might be other issues, but you need hashlimit 2/minute to accept
-2 packets per minute.  Having a burst of 2 by itself is not
-sufficient.
-
-Sometimes, due to network latency or other timing issues, you need to
-be even more accepting.  For example, I've found that accepting
-"well-behaved" pings requires a minimum hashlimit of 61/min with burst
-of 2.  When I lower either setting, iptables starts dropping the
-occasional ping packet.
-
---Mike
-
-
-
-      
+Mart
