@@ -1,59 +1,58 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: packet flow - ebtables broute DROP target
-Date: Thu, 15 Jul 2010 16:34:15 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1007151616400.7169@obet.zrqbmnf.qr>
-References: <1DB91DF937A4544C81E636468B91C21C06F1EC28@CNSHGSMBS03.ad4.ad.alcatel.com>  <1DB91DF937A4544C81E636468B91C21C06F1ECAF@CNSHGSMBS03.ad4.ad.alcatel.com>  <AANLkTil_RodsXwi2y8-tOeLsZ8Cl3TN0WYfsAMrrx-VP@mail.gmail.com>
- <1279202558.5524.10.camel@aijazbaig1-desktop>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [PATCH] netfilter: add CHECKSUM target
+Date: Thu, 15 Jul 2010 17:17:34 +0200
+Message-ID: <4C3F268E.8050405@trash.net>
+References: <20100708222913.GA4475@redhat.com> <4C373D90.8070000@trash.net> <20100711104705.GA18017@redhat.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <1279202558.5524.10.camel@aijazbaig1-desktop>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Aijaz Baig <aijazbaig1@gmail.com>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Return-path: <kvm-owner@vger.kernel.org>
+In-Reply-To: <20100711104705.GA18017@redhat.com>
+Sender: kvm-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, "Pekka Savola (ipv6)" <pekkas@netcore.fi>, James Morris <jmorris@namei.org>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, herbert.xu@redhat.com, kvm@vger.kernel.org
 
-On Thursday 2010-07-15 16:02, Aijaz Baig wrote:
->unfamiliar with it, here are the links to the same:
->http://ebtables.sourceforge.net/br_fw_ia/br_fw_ia.html for the document
->and http://ebtables.sourceforge.net/br_fw_ia/PacketFlow.png for the
->picture.
+Am 11.07.2010 12:47, schrieb Michael S. Tsirkin:
+> On Fri, Jul 09, 2010 at 05:17:36PM +0200, Patrick McHardy wrote:
+>> Am 09.07.2010 00:29, schrieb Michael S. Tsirkin:
+>>> This adds a `CHECKSUM' target, which can be used in the iptables mangle
+>>> table.
+>>>
+>>> You can use this target to compute and fill in the checksum in
+>>> an IP packet that lacks a checksum.  This is particularly useful,
+>>> if you need to work around old applications such as dhcp clients,
+>>> that do not work well with checksum offloads, but don't want to
+>>> disable checksum offload in your device.
+>>>
+>>> The problem happens in the field with virtualized applications.
+>>> For reference, see Red Hat bz 605555, as well as
+>>> http://www.spinics.net/lists/kvm/msg37660.html
+>>>
+>>> Typical expected use (helps old dhclient binary running in a VM):
+>>> iptables -A POSTROUTING -t mangle -p udp --dport 68 -j CHECKSUM
+>>> --checksum-fill
+>>
+>> I'm not sure this is something we want to merge upstream and
+>> support indefinitely. Dave suggested this as a temporary
+>> out-of-tree workaround until the majority of guest dhcp clients
+>> are fixed. Has anything changed that makes this course of
+>> action impractical?
+> 
+> If I understand what Dave said correctly, it's up to you ...
+> 
+> The arguments for putting this upstream are:
+> 
+> Given the track record, I wouldn't hope for quick fix in the majority of
+> guest dhcp clients, unfortunately :(.  We are talking years here.
+> Even after that, one of the uses of virtualization is
+> to keep old guests running. So yes, I think we'll
+> keep using work-arounds for this for a very long time.
+> 
+> Further, since we have to add the module and we have to teach management
+> to program it, it will be much less painful for everyone
+> involved if we can put the code upstream, rather than forking
+> management code.
 
-Use http://jengelh.medozas.de/images/nf-packet-flow.png
-
->Im trying to understand what happens to a packet which is DROPped in the
->BROUTING chain of the broute table. If I have understood correctly from
->the document above, it goes to L3 where the routing subsystem can decide
->where to send the packet to depending on L3 information in it isn't it?
-
-In net/core/dev.c, the packet is passed to all "taps". Taps include 
-raw sockets (think tcpdump), but also bridge and the IPvX layers 
-themselves. Each of them basically gets a copy, thus it is important to 
-not have an address on the ethernet interface (so that the IPvX tap 
-ignores it). Only the bridge interface should have an address, because 
-the bridge code will pass it to IPvX on its own.
-
-(You probably knew this, but this is a nice question plus answer for our 
-planned book(s).)
-
-So considering only bridge.c, the brouting chain can then be used to 
-either move the packet along the blue L2 path or the green L3 path.
-
-If a packet remains travelling in the blue domain (i.e. it is bridged), 
-the packet _must_ have the bridge's own dst mac address to go "upwards" 
-at the "bridging decision" (sort of Ethernet routing, if you want to 
-call it so) circle to reach IPvX routing.
-
->And then after that I checked the packet counters for both the rules
->viz. the one in the BROUTING chain and the one in the PREROUTING chain
->of the mangle table. The packet did hit the first rule and it is
->dropped. I cannot see it on br0, the bridge interface too. But the
->packet count in the latter rule is 0 which means that the packet didnt
->arrive in the mangle table's
-
-To be eligible for green traversal as a result of (bridge check), the 
-packet of course needs to be one of the supported protocols.
-Sending STP into the green domain has no bearing. IPX packets will be 
-conntracked, but of course you won't see them in iptables or ip6tables 
-(since they are not IPv4/IPv6, naturally).
+Fair enough, its simple enough that I don't expect much maintenance
+overhead.
