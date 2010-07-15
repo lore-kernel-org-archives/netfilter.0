@@ -1,82 +1,59 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [PATCHv3] extensions: libxt_CHECKSUM extension
-Date: Thu, 15 Jul 2010 11:39:48 +0200
-Message-ID: <4C3ED764.3060301@trash.net>
-References: <20100711150623.GA7420@redhat.com> <20100711151453.GA7563@redhat.com>
+From: Shirley Ong <soap6gal@gmail.com>
+Subject: Re: Traffic accounting in iptables
+Date: Thu, 15 Jul 2010 11:00:08 +0100
+Message-ID: <AANLkTinpjz6eMA5fHZIpZWyvBAg1qtLQ-TeSPrp9RRze@mail.gmail.com>
+References: <AANLkTilT4RX2sRQc7vjtWdbP3UxSqqVFAwGc2mGZk0iC@mail.gmail.com> 
+	<alpine.LSU.2.01.1007142038130.28055@obet.zrqbmnf.qr> <AANLkTilcWL7AiJr6Ps2ckt7dCk1rHqxotkiRt7LdJumq@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <20100711151453.GA7563@redhat.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:mime-version:received:in-reply-to
+         :references:from:date:message-id:subject:to:cc:content-type;
+        bh=vqAmBx+JpBH2GXHkdRkXZU894NhqgpaA8QDaU+9l0lE=;
+        b=M2VOoImdccKTq4q50tlS9kF5oledxPvnfH7jGoa0iZH47IScnSrSBHHQJWe8VSr80U
+         LUkZi8Rh9Ylo2R+KTUF52CaodEyGMQns7Kv1ITKd4l0gkruteQHZSNNtw7igPdXdaxSq
+         hpQ92JW1B0KvR+ZoSw9pp2bsAw4HArHt+K7rs=
+In-Reply-To: <AANLkTilcWL7AiJr6Ps2ckt7dCk1rHqxotkiRt7LdJumq@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Jan Engelhardt <jengelh@medozas.de>, Randy Dunlap <randy.dunlap@oracle.com>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, kvm@vger.kernel.org, herbert@gondor.hengli.com.au
+Content-Transfer-Encoding: 7bit
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org
 
-Am 11.07.2010 17:14, schrieb Michael S. Tsirkin:
-> diff --git a/extensions/libxt_CHECKSUM.c b/extensions/libxt_CHECKSUM.c
-> new file mode 100644
-> index 0000000..00fbd8f
-> --- /dev/null
-> +++ b/extensions/libxt_CHECKSUM.c
-> @@ -0,0 +1,99 @@
-> +/* Shared library add-on to xtables for CHECKSUM
-> + *
-> + * (C) 2002 by Harald Welte <laforge@gnumonks.org>
-> + * (C) 2010 by Red Hat, Inc
-> + * Author: Michael S. Tsirkin <mst@redhat.com>
-> + *
-> + * This program is distributed under the terms of GNU GPL v2, 1991
-> + *
-> + * libxt_CHECKSUM.c borrowed some bits from libipt_ECN.c
-> + *
-> + * $Id$
+I'm sooo sorry. Turned out I missed out a few things on tcpdump. I now
+confirm that tcpdump does show the same traffic as iptables. Sorry for
+the trouble. :)
 
-Please no CVS IDs.
+Cheers,
+Shirley
 
-> + */
-> +#include <stdio.h>
-> +#include <string.h>
-> +#include <stdlib.h>
-> +#include <getopt.h>
-> +
-> +#include <xtables.h>
-> +#include <linux/netfilter/xt_CHECKSUM.h>
-> +
-> +static void CHECKSUM_help(void)
-> +{
-> +	printf(
-> +"CHECKSUM target options\n"
-> +"  --checksum-fill			Fill in packet checksum.\n");
-> +}
-> +
-> +static const struct option CHECKSUM_opts[] = {
-> +	{ "checksum-fill", 0, NULL, 'F' },
-> +	{ .name = NULL }
-> +};
-> +
-> +static int CHECKSUM_parse(int c, char **argv, int invert, unsigned int *flags,
-> +                     const void *entry, struct xt_entry_target **target)
-> +{
-> +	struct xt_CHECKSUM_info *einfo
-> +		= (struct xt_CHECKSUM_info *)(*target)->data;
-> +
-> +	switch (c) {
-> +	case 'F':
-> +		if (*flags)
-> +			xtables_error(PARAMETER_PROBLEM,
-> +			        "CHECKSUM target: Only use --checksum-fill ONCE!");
-
-There is a helper function called xtables_param_act for checking double
-arguments and printing a standarized error message.
-
-> +		einfo->operation = XT_CHECKSUM_OP_FILL;
-> +		*flags |= XT_CHECKSUM_OP_FILL;
-> +		break;
-> +	default:
-> +		return 0;
-> +	}
-> +
-> +	return 1;
-> +}
-> +
+On 15 July 2010 10:07, Shirley Ong <soap6gal@gmail.com> wrote:
+> Hi Jan,
+>
+> Sending ping:
+>
+> # ping -s 1024 -c 100 google.com
+>
+> iptables and tcpdump both shows (at IP layer + header):
+>
+> incoming - 100 packets, 9200 bytes
+> outgoing - 100 packets, 105200 bytes
+>
+> This seems fine. But I don't understand why I'm not getting similar
+> outputs of iptables and tcpdump when downloading a file via wget.
+>
+>
+> On 14 July 2010 19:39, Jan Engelhardt <jengelh@medozas.de> wrote:
+>> On Wednesday 2010-07-14 19:00, Shirley Ong wrote:
+>>>With wireshark, I added up all the bytes (with and without header) at all
+>>>the different layers. The closest I can get wireshark to show the same
+>>>data bytes as iptables is at the IP Layer (data + header). What
+>>>puzzles me is that, wireshark shows 12 bytes (incoming traffic) more
+>>>than iptables
+>>
+>> Can you reproduce this using pings? (The ping program allows to specify
+>> payload sizes, and thus, exact packet sizes)
+>>
+>
