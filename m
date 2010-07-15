@@ -1,196 +1,192 @@
-From: Leo <neleo@gmx.net>
-Subject: retransmissions after RST packet
-Date: Thu, 15 Jul 2010 12:58:26 +0200
-Message-ID: <4C3EE9D2.7060403@gmx.net>
+From: "Michael S. Tsirkin" <mst@redhat.com>
+Subject: [PATCHv4] netfilter: add CHECKSUM target
+Date: Thu, 15 Jul 2010 14:52:18 +0300
+Message-ID: <20100715115217.GA6737@redhat.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: "Daniel P. Berrange" <berrange@redhat.com>, Jes Sorensen <Jes.Sorensen@redhat.com>
+Cc: Patrick McHardy <kaber@trash.net>, "Michael S. Tsirkin" <mst@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jan Engelhardt <jengelh@medozas.de>, Randy Dunlap <randy.dunlap@oracle.com>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 
-Hello,
+This adds a `CHECKSUM' target, which can be used in the iptables mangle
+table.
 
-I have a simple iptables setup on a webserver: I allow all new incoming
-connections on port 80 and then I use connection tracking to allow all
-packets on connections with state ESTABLISHED or RELATED (both incoming
-and outgoing). The rules are as follows:
+You can use this target to compute and fill in the checksum in
+a packet that lacks a checksum.  This is particularly useful,
+if you need to work around old applications such as dhcp clients,
+that do not work well with checksum offloads, but don't want to
+disable checksum offload in your device.
 
-iptables -A INPUT -p tcp -m tcp --dport 80 --syn -j ACCEPT
-iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+The problem happens in the field with virtualized applications.
+For reference, see Red Hat bz 605555, as well as
+http://www.spinics.net/lists/kvm/msg37660.html
 
-iptables -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+Typical expected use (helps old dhclient binary running in a VM):
+iptables -A POSTROUTING -t mangle -p udp --dport bootpc \
+	-j CHECKSUM --checksum-fill
 
-Default policy on both chains is DROP.
-It is working fine but sometimes outgoing packets are being dropped. I
-tracked it down and noticed that this occures if the client has not
-acknowledged all packets from the server and is terminating the
-connection (i.e. with a RST packet). Then the server still tries to
-retransmit the packets which are not acknowledged yet.
+Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+Includes fixes by Jan Engelhardt <jengelh@medozas.de>
+---
 
-Here is the tcpdump on the server (CCC.CCC.206.81 is the client ip and
-SSS.SSS.112.212 the server ip):
+Changes from v3: fix issues pointed out by Patrick McHardy:
+fixed by Jan Engelhardt
+	use __u8 in public header files
+	remove in.h
+fixed by me
+	kill change that does not belong into this patch
+	add a dependency on the mangle table
 
-1279179230.968323 IP (tos 0x0, ttl 60, id 31945, offset 0, flags [DF],
-proto TCP (6), length 60) CCC.CCC.206.81.38123 > SSS.SSS.112.212.80: S,
-cksum 0x3ed9 (correct), 4125467027:4125467027(0) win 5840 <mss
-1402,sackOK,timestamp 1957210 0,nop,wscale 6>
-1279179230.968365 IP (tos 0x0, ttl 64, id 0, offset 0, flags [DF], proto
-TCP (6), length 60) SSS.SSS.112.212.80 > CCC.CCC.206.81.38123: S, cksum
-0x1c04 (correct), 2681675727:2681675727(0) ack 4125467028 win 5792 <mss
-1460,sackOK,timestamp 1211046628 1957210,nop,wscale 6>
-1279179231.009125 IP (tos 0x0, ttl 60, id 31946, offset 0, flags [DF],
-proto TCP (6), length 52) CCC.CCC.206.81.38123 > SSS.SSS.112.212.80: .,
-cksum 0x60f2 (correct), 1:1(0) ack 1 win 92 <nop,nop,timestamp 1957243
-1211046628>
-1279179231.015125 IP (tos 0x0, ttl 60, id 31947, offset 0, flags [DF],
-proto TCP (6), length 761) CCC.CCC.206.81.38123 > SSS.SSS.112.212.80: P
-1:710(709) ack 1 win 92 <nop,nop,timestamp 1957243 1211046628>
-1279179231.015147 IP (tos 0x0, ttl 64, id 1335, offset 0, flags [DF],
-proto TCP (6), length 52) SSS.SSS.112.212.80 > CCC.CCC.206.81.38123: .,
-cksum 0x5e14 (correct), 1:1(0) ack 710 win 113 <nop,nop,timestamp
-1211046632 1957243>
-1279179231.017616 IP (tos 0x0, ttl 64, id 1336, offset 0, flags [DF],
-proto TCP (6), length 365) SSS.SSS.112.212.80 > CCC.CCC.206.81.38123: P
-1:314(313) ack 710 win 113 <nop,nop,timestamp 1211046632 1957243>
-1279179231.017639 IP (tos 0x0, ttl 64, id 1337, offset 0, flags [DF],
-proto TCP (6), length 1442) SSS.SSS.112.212.80 > CCC.CCC.206.81.38123: .
-314:1704(1390) ack 710 win 113 <nop,nop,timestamp 1211046632 1957243>
-1279179231.017647 IP (tos 0x0, ttl 64, id 1338, offset 0, flags [DF],
-proto TCP (6), length 506) SSS.SSS.112.212.80 > CCC.CCC.206.81.38123: P
-1704:2158(454) ack 710 win 113 <nop,nop,timestamp 1211046632 1957243>
-1279179231.018214 IP (tos 0x0, ttl 64, id 1339, offset 0, flags [DF],
-proto TCP (6), length 52) SSS.SSS.112.212.80 > CCC.CCC.206.81.38123: F,
-cksum 0x55a6 (correct), 2158:2158(0) ack 710 win 113 <nop,nop,timestamp
-1211046632 1957243>
-1279179231.043413 IP (tos 0x0, ttl 60, id 31948, offset 0, flags [DF],
-proto TCP (6), length 52) CCC.CCC.206.81.38123 > SSS.SSS.112.212.80: F,
-cksum 0x5e01 (correct), 710:710(0) ack 1 win 92 <nop,nop,timestamp
-1957286 1211046628>
-1279179231.043450 IP (tos 0x0, ttl 64, id 1340, offset 0, flags [DF],
-proto TCP (6), length 52) SSS.SSS.112.212.80 > CCC.CCC.206.81.38123: .,
-cksum 0x5577 (correct), 2159:2159(0) ack 711 win 113 <nop,nop,timestamp
-1211046635 1957286>
-1279179231.054195 IP (tos 0x0, ttl 60, id 0, offset 0, flags [DF], proto
-TCP (6), length 40) CCC.CCC.206.81.38123 > SSS.SSS.112.212.80: R, cksum
-0x9800 (correct), 4125467737:4125467737(0) win 0
-1279179231.247408 IP (tos 0x0, ttl 64, id 1341, offset 0, flags [DF],
-proto TCP (6), length 365) SSS.SSS.112.212.80 > CCC.CCC.206.81.38123: P
-1:314(313) ack 711 win 113 <nop,nop,timestamp 1211046656 1957286>
-1279179231.727422 IP (tos 0x0, ttl 64, id 1342, offset 0, flags [DF],
-proto TCP (6), length 365) SSS.SSS.112.212.80 > CCC.CCC.206.81.38123: P
-1:314(313) ack 711 win 113 <nop,nop,timestamp 1211046704 1957286>
-1279179232.687412 IP (tos 0x0, ttl 64, id 1343, offset 0, flags [DF],
-proto TCP (6), length 365) SSS.SSS.112.212.80 > CCC.CCC.206.81.38123: P
-1:314(313) ack 711 win 113 <nop,nop,timestamp 1211046800 1957286>
-1279179234.607407 IP (tos 0x0, ttl 64, id 1344, offset 0, flags [DF],
-proto TCP (6), length 365) SSS.SSS.112.212.80 > CCC.CCC.206.81.38123: P
-1:314(313) ack 711 win 113 <nop,nop,timestamp 1211046992 1957286>
-1279179238.451319 IP (tos 0x0, ttl 64, id 1345, offset 0, flags [DF],
-proto TCP (6), length 365) SSS.SSS.112.212.80 > CCC.CCC.206.81.38123: P
-1:314(313) ack 711 win 113 <nop,nop,timestamp 1211047376 1957286>
-1279179246.127414 IP (tos 0x0, ttl 64, id 1346, offset 0, flags [DF],
-proto TCP (6), length 365) SSS.SSS.112.212.80 > CCC.CCC.206.81.38123: P
-1:314(313) ack 711 win 113 <nop,nop,timestamp 1211048144 1957286>
-1279179261.487508 IP (tos 0x0, ttl 64, id 1347, offset 0, flags [DF],
-proto TCP (6), length 365) SSS.SSS.112.212.80 > CCC.CCC.206.81.38123: P
-1:314(313) ack 711 win 113 <nop,nop,timestamp 1211049680 1957286>
-1279179292.207481 IP (tos 0x0, ttl 64, id 1348, offset 0, flags [DF],
-proto TCP (6), length 365) SSS.SSS.112.212.80 > CCC.CCC.206.81.38123: P
-1:314(313) ack 711 win 113 <nop,nop,timestamp 1211052752 1957286>
+ include/linux/netfilter/xt_CHECKSUM.h |   18 ++++++++
+ net/netfilter/Kconfig                 |   16 +++++++
+ net/netfilter/Makefile                |    1 +
+ net/netfilter/xt_CHECKSUM.c           |   70 +++++++++++++++++++++++++++++++++
+ 4 files changed, 105 insertions(+), 0 deletions(-)
+ create mode 100644 include/linux/netfilter/xt_CHECKSUM.h
+ create mode 100644 net/netfilter/xt_CHECKSUM.c
 
-And this is the tcpdump on the client (CCC.CCC.206.81 is the client ip
-and SSS.SSS.112.212 the server ip):
-
-1279179230.979721 IP (tos 0x0, ttl 64, id 31945, offset 0, flags [DF],
-proto TCP (6), length 60) CCC.CCC.206.81.38123 > SSS.SSS.112.212.80: S,
-cksum 0xf4f0 (correct), 4125467027:4125467027(0) win 5840 <mss
-1460,sackOK,timestamp 1957210 0,nop,wscale 6>
-1279179231.012455 IP (tos 0x0, ttl 61, id 0, offset 0, flags [DF], proto
-TCP (6), length 60) SSS.SSS.112.212.80 > CCC.CCC.206.81.38123: S, cksum
-0xd28f (correct), 2681675727:2681675727(0) ack 4125467028 win 5792 <mss
-1402,sackOK,timestamp 1211046628 1957210,nop,wscale 6>
-1279179231.012474 IP (tos 0x0, ttl 64, id 31946, offset 0, flags [DF],
-proto TCP (6), length 52) CCC.CCC.206.81.38123 > SSS.SSS.112.212.80: .,
-cksum 0x1744 (correct), 1:1(0) ack 1 win 92 <nop,nop,timestamp 1957243
-1211046628>
-1279179231.012510 IP (tos 0x0, ttl 64, id 31947, offset 0, flags [DF],
-proto TCP (6), length 761) CCC.CCC.206.81.38123 > SSS.SSS.112.212.80: P
-1:710(709) ack 1 win 92 <nop,nop,timestamp 1957243 1211046628>
-1279179231.055691 IP (tos 0x0, ttl 64, id 31948, offset 0, flags [DF],
-proto TCP (6), length 52) CCC.CCC.206.81.38123 > SSS.SSS.112.212.80: F,
-cksum 0x1453 (correct), 710:710(0) ack 1 win 92 <nop,nop,timestamp
-1957286 1211046628>
-1279179231.058694 IP (tos 0x0, ttl 61, id 1335, offset 0, flags [DF],
-proto TCP (6), length 52) SSS.SSS.112.212.80 > CCC.CCC.206.81.38123: .,
-cksum 0x1466 (correct), 1:1(0) ack 710 win 113 <nop,nop,timestamp
-1211046632 1957243>
-1279179231.062371 IP (tos 0x0, ttl 61, id 1336, offset 0, flags [DF],
-proto TCP (6), length 365) SSS.SSS.112.212.80 > CCC.CCC.206.81.38123: P
-1:314(313) ack 710 win 113 <nop,nop,timestamp 1211046632 1957243>
-1279179231.062379 IP (tos 0x0, ttl 64, id 0, offset 0, flags [DF], proto
-TCP (6), length 40) CCC.CCC.206.81.38123 > SSS.SSS.112.212.80: R, cksum
-0x4e52 (correct), 4125467737:4125467737(0) win 0
-1279179231.063487 IP (tos 0x0, ttl 61, id 1337, offset 0, flags [DF],
-proto TCP (6), length 1442) SSS.SSS.112.212.80 > CCC.CCC.206.81.38123: .
-314:1704(1390) ack 710 win 113 <nop,nop,timestamp 1211046632 1957243>
-1279179231.063497 IP (tos 0x0, ttl 64, id 0, offset 0, flags [DF], proto
-TCP (6), length 40) CCC.CCC.206.81.38123 > SSS.SSS.112.212.80: R, cksum
-0x4e52 (correct), 4125467737:4125467737(0) win 0
-1279179231.063499 IP (tos 0x0, ttl 61, id 1338, offset 0, flags [DF],
-proto TCP (6), length 506) SSS.SSS.112.212.80 > CCC.CCC.206.81.38123: P
-1704:2158(454) ack 710 win 113 <nop,nop,timestamp 1211046632 1957243>
-1279179231.063504 IP (tos 0x0, ttl 64, id 0, offset 0, flags [DF], proto
-TCP (6), length 40) CCC.CCC.206.81.38123 > SSS.SSS.112.212.80: R, cksum
-0x4e52 (correct), 4125467737:4125467737(0) win 0
-
-The conntrack tool shows the following events (CCC.CCC.206.81 is the
-client ip and SSS.SSS.112.212 the server ip):
-
-[1279179230.968388]         [NEW] ipv4     2 tcp      6 120 SYN_SENT
-src=CCC.CCC.206.81 dst=SSS.SSS.112.212 sport=38123 dport=80 [UNREPLIED]
-src=SSS.SSS.112.212 dst=CCC.CCC.206.81 sport=80 dport=38123
-[1279179230.968429]      [UPDATE] ipv4     2 tcp      6 60 SYN_RECV
-src=CCC.CCC.206.81 dst=SSS.SSS.112.212 sport=38123 dport=80
-src=SSS.SSS.112.212 dst=CCC.CCC.206.81 sport=80 dport=38123
-[1279179231.9346  ]      [UPDATE] ipv4     2 tcp      6 432000
-ESTABLISHED src=CCC.CCC.206.81 dst=SSS.SSS.112.212 sport=38123 dport=80
-src=SSS.SSS.112.212 dst=CCC.CCC.206.81 sport=80 dport=38123 [ASSURED]
-[1279179231.18375 ]      [UPDATE] ipv4     2 tcp      6 120 FIN_WAIT
-src=CCC.CCC.206.81 dst=SSS.SSS.112.212 sport=38123 dport=80
-src=SSS.SSS.112.212 dst=CCC.CCC.206.81 sport=80 dport=38123 [ASSURED]
-[1279179231.43478 ]      [UPDATE] ipv4     2 tcp      6 30 LAST_ACK
-src=CCC.CCC.206.81 dst=SSS.SSS.112.212 sport=38123 dport=80
-src=SSS.SSS.112.212 dst=CCC.CCC.206.81 sport=80 dport=38123 [ASSURED]
-[1279179231.43514 ]      [UPDATE] ipv4     2 tcp      6 120 TIME_WAIT
-src=CCC.CCC.206.81 dst=SSS.SSS.112.212 sport=38123 dport=80
-src=SSS.SSS.112.212 dst=CCC.CCC.206.81 sport=80 dport=38123 [ASSURED]
-[1279179231.54254 ]      [UPDATE] ipv4     2 tcp      6 10 CLOSE
-src=CCC.CCC.206.81 dst=SSS.SSS.112.212 sport=38123 dport=80
-src=SSS.SSS.112.212 dst=CCC.CCC.206.81 sport=80 dport=38123 [ASSURED]
-[1279179256.127453]     [DESTROY] ipv4     2 tcp      6
-src=CCC.CCC.206.81 dst=SSS.SSS.112.212 sport=38123 dport=80 packets=5
-bytes=965 src=SSS.SSS.112.212 dst=CCC.CCC.206.81 sport=80 dport=38123
-packets=13 bytes=4719
-[1279179261.487641]         [NEW] ipv4     2 tcp      6 432000
-ESTABLISHED src=SSS.SSS.112.212 dst=CCC.CCC.206.81 sport=80 dport=38123
-[UNREPLIED] src=CCC.CCC.206.81 dst=SSS.SSS.112.212 sport=38123 dport=80
-
-Software versions on the server:
-Linux web 2.6.26.2 #1 SMP Tue Aug 19 11:07:06 CEST 2008 i686 i686 i386
-GNU/Linux
-iptables v1.4.1.1
-tcpdump version 3.9.8
-libpcap version 0.9.8
-conntrack v0.9.8 (conntrack-tools)
-
-Why is the server still retransmitting the packets after a reset from
-the client (RST packet)? Is it a problem of iptables/conntrack or the
-tcp/ip stack of the kernel?
-
-Any ideas?
-
-Kind regards,
-Leo
-
+diff --git a/include/linux/netfilter/xt_CHECKSUM.h b/include/linux/netfilter/xt_CHECKSUM.h
+new file mode 100644
+index 0000000..3b4fb77
+--- /dev/null
++++ b/include/linux/netfilter/xt_CHECKSUM.h
+@@ -0,0 +1,18 @@
++/* Header file for iptables ipt_CHECKSUM target
++ *
++ * (C) 2002 by Harald Welte <laforge@gnumonks.org>
++ * (C) 2010 Red Hat Inc
++ * Author: Michael S. Tsirkin <mst@redhat.com>
++ *
++ * This software is distributed under GNU GPL v2, 1991
++*/
++#ifndef _IPT_CHECKSUM_TARGET_H
++#define _IPT_CHECKSUM_TARGET_H
++
++#define XT_CHECKSUM_OP_FILL	0x01	/* fill in checksum in IP header */
++
++struct xt_CHECKSUM_info {
++	__u8 operation;	/* bitset of operations */
++};
++
++#endif /* _IPT_CHECKSUM_TARGET_H */
+diff --git a/net/netfilter/Kconfig b/net/netfilter/Kconfig
+index 8593a77..16b2078 100644
+--- a/net/netfilter/Kconfig
++++ b/net/netfilter/Kconfig
+@@ -347,6 +347,22 @@ config NETFILTER_XT_CONNMARK
+ 
+ comment "Xtables targets"
+ 
++config NETFILTER_XT_TARGET_CHECKSUM
++	tristate "CHECKSUM target support"
++	depends on IP_NF_MANGLE || IP6_NF_MANGLE
++	depends on NETFILTER_ADVANCED
++	---help---
++	  This option adds a `CHECKSUM' target, which can be used in the iptables mangle
++	  table.  
++
++	  You can use this target to compute and fill in the checksum in
++	  a packet that lacks a checksum.  This is particularly useful,
++	  if you need to work around old applications such as dhcp clients,
++	  that do not work well with checksum offloads, but don't want to disable
++	  checksum offload in your device.
++
++	  To compile it as a module, choose M here.  If unsure, say N.
++
+ config NETFILTER_XT_TARGET_CLASSIFY
+ 	tristate '"CLASSIFY" target support'
+ 	depends on NETFILTER_ADVANCED
+diff --git a/net/netfilter/Makefile b/net/netfilter/Makefile
+index 14e3a8f..8eb541d 100644
+--- a/net/netfilter/Makefile
++++ b/net/netfilter/Makefile
+@@ -45,6 +45,7 @@ obj-$(CONFIG_NETFILTER_XT_MARK) += xt_mark.o
+ obj-$(CONFIG_NETFILTER_XT_CONNMARK) += xt_connmark.o
+ 
+ # targets
++obj-$(CONFIG_NETFILTER_XT_TARGET_CHECKSUM) += xt_CHECKSUM.o
+ obj-$(CONFIG_NETFILTER_XT_TARGET_CLASSIFY) += xt_CLASSIFY.o
+ obj-$(CONFIG_NETFILTER_XT_TARGET_CONNSECMARK) += xt_CONNSECMARK.o
+ obj-$(CONFIG_NETFILTER_XT_TARGET_CT) += xt_CT.o
+diff --git a/net/netfilter/xt_CHECKSUM.c b/net/netfilter/xt_CHECKSUM.c
+new file mode 100644
+index 0000000..0f642ef
+--- /dev/null
++++ b/net/netfilter/xt_CHECKSUM.c
+@@ -0,0 +1,70 @@
++/* iptables module for the packet checksum mangling
++ *
++ * (C) 2002 by Harald Welte <laforge@netfilter.org>
++ * (C) 2010 Red Hat, Inc.
++ *
++ * Author: Michael S. Tsirkin <mst@redhat.com>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License version 2 as
++ * published by the Free Software Foundation.
++*/
++#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++#include <linux/module.h>
++#include <linux/skbuff.h>
++
++#include <linux/netfilter/x_tables.h>
++#include <linux/netfilter/xt_CHECKSUM.h>
++
++MODULE_LICENSE("GPL");
++MODULE_AUTHOR("Michael S. Tsirkin <mst@redhat.com>");
++MODULE_DESCRIPTION("Xtables: checksum modification");
++MODULE_ALIAS("ipt_CHECKSUM");
++MODULE_ALIAS("ip6t_CHECKSUM");
++
++static unsigned int
++checksum_tg(struct sk_buff *skb, const struct xt_action_param *par)
++{
++	if (skb->ip_summed == CHECKSUM_PARTIAL)
++		skb_checksum_help(skb);
++
++	return XT_CONTINUE;
++}
++
++static int checksum_tg_check(const struct xt_tgchk_param *par)
++{
++	const struct xt_CHECKSUM_info *einfo = par->targinfo;
++
++	if (einfo->operation & ~XT_CHECKSUM_OP_FILL) {
++		pr_info("unsupported CHECKSUM operation %x\n", einfo->operation);
++		return -EINVAL;
++	}
++	if (!einfo->operation) {
++		pr_info("no CHECKSUM operation enabled\n");
++		return -EINVAL;
++	}
++	return 0;
++}
++
++static struct xt_target checksum_tg_reg __read_mostly = {
++	.name		= "CHECKSUM",
++	.family		= NFPROTO_UNSPEC,
++	.target		= checksum_tg,
++	.targetsize	= sizeof(struct xt_CHECKSUM_info),
++	.table		= "mangle",
++	.checkentry	= checksum_tg_check,
++	.me		= THIS_MODULE,
++};
++
++static int __init checksum_tg_init(void)
++{
++	return xt_register_target(&checksum_tg_reg);
++}
++
++static void __exit checksum_tg_exit(void)
++{
++	xt_unregister_target(&checksum_tg_reg);
++}
++
++module_init(checksum_tg_init);
++module_exit(checksum_tg_exit);
+-- 
+1.7.2.rc0.14.g41c1c
