@@ -1,50 +1,71 @@
-From: Shirley Ong <soap6gal@gmail.com>
-Subject: Re: Traffic accounting in iptables
-Date: Thu, 15 Jul 2010 10:07:24 +0100
-Message-ID: <AANLkTilcWL7AiJr6Ps2ckt7dCk1rHqxotkiRt7LdJumq@mail.gmail.com>
-References: <AANLkTilT4RX2sRQc7vjtWdbP3UxSqqVFAwGc2mGZk0iC@mail.gmail.com> 
-	<alpine.LSU.2.01.1007142038130.28055@obet.zrqbmnf.qr>
+From: John Haxby <john.haxby@oracle.com>
+Subject: REDIRECT problem
+Date: Thu, 15 Jul 2010 10:34:18 +0100
+Message-ID: <4C3ED61A.4050303@oracle.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:mime-version:received:in-reply-to
-         :references:from:date:message-id:subject:to:cc:content-type;
-        bh=z8k3eHAiBVSFBDNsE7yOW88NFOe3b22OUMwOQgnxidM=;
-        b=FEg683BJz3BOuJCk2uddULVxSy40IVRTwwO/3pJldCFU6BopoJHL9mUk0wVGGNn/7N
-         wjgjyukdWrNDnCRc2bGnnxiEKx0Kz+ypnSaCLK0PCMZwctvNyUXoi1vfGqSy5szcoJmR
-         8t2ibEmPmEKA368eKO7LPlNKPljGHMyBRm8hk=
-In-Reply-To: <alpine.LSU.2.01.1007142038130.28055@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hi Jan,
+Hello All,
 
-Sending ping:
+For some time now, I've been using REDIRECT (roughly) like this:
 
-# ping -s 1024 -c 100 google.com
+$IPT -t nat -A PREROUTING -j proxyt
+$IPT -t nat -A proxyt -d <network> -p tcp -m tcp -k RETURN
+    (repeated lots of times for different networks)
+$IPT -t nat -A proxyt -p tcp -m tcp ! --dport 3128 -j REDIRECT 
+--to-ports 3128
 
-iptables and tcpdump both shows (at IP layer + header):
+That works just fine: TCP connections to any network other than the 
+specific get directed to the process listening on port 3128 (which  then 
+uses HTTP CONNECT on a proxy to connect to the Big Bad Internet).
 
-incoming - 100 packets, 9200 bytes
-outgoing - 100 packets, 105200 bytes
+I use ebtables on a pair of machines running Xen to redirect traffic to 
+this machine:
 
-This seems fine. But I don't understand why I'm not getting similar
-outputs of iptables and tcpdump when downloading a file via wget.
+     +-------------+     +-------------+
+     | xen         |     |        xen  |
+     |       +---+ |     | +---+       |
+     | +---+ | P |=========| P'| +---+ |
+     | | A | +-+-+ |     | +---+ | B | |
+     | +---+   |   |     |       +---+ |
+     |         |   |     |             |
+     +---------|---+     +-------------+
+               |
+        Big Bad Internet
 
 
-On 14 July 2010 19:39, Jan Engelhardt <jengelh@medozas.de> wrote:
-> On Wednesday 2010-07-14 19:00, Shirley Ong wrote:
->>With wireshark, I added up all the bytes (with and without header) at all
->>the different layers. The closest I can get wireshark to show the same
->>data bytes as iptables is at the IP Layer (data + header). What
->>puzzles me is that, wireshark shows 12 bytes (incoming traffic) more
->>than iptables
->
-> Can you reproduce this using pings? (The ping program allows to specify
-> payload sizes, and thus, exact packet sizes)
->
+Traffic from A is redirected (by ebtables) to P which has these rules on 
+it and that connection is just fine.  Traffic from B is directed to P' 
+which then forwards traffic to P over a private network and until 
+recently that worked just fine.
+
+Previously, P was running Fedora 11 with the 2.6.30.10-105.2.16.fc11 
+kernel; but now its running Fedora13 with the 2.6.33.6-147.fc13.
+
+So, previously on B I could connect to (say) google.com:80 and traffic 
+was redirect to the process listing on port 3128 via P' and the private 
+link and everything was fine.
+
+Now, unfortunately, the same connection from B is hits the REDIRECT rule 
+but the process listening on port 3128 doesn't come out of the accept(2) 
+syscall.  The same connection from A does work.  The only visible 
+difference is that traffic from A appears to come into P from eth0 and 
+traffic from B appears to come from eth1.   Inserting a LOG target 
+immediately before the REDIRECT rule shows the packet hitting that 
+REDIRECT (and one immediately after doesn't show anything so the 
+REDIRECT is definitely matching).
+
+Something seems to have changed between 2.6.30 and 2.6.33 and I'm at a 
+loss to know what.  I've looked around a bit, but so far haven't found 
+anything.
+
+Hopefully someone listening will be able to say "oh, you need to do 
+<some magic>" :-)  Or that this should never have worked in the first 
+place because of something horrible I was relying on.
+
+jch
