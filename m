@@ -1,21 +1,42 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [PATCHv4] netfilter: add CHECKSUM target
-Date: Fri, 16 Jul 2010 14:09:55 +0200
-Message-ID: <4C404C13.5060601@trash.net>
-References: <20100715115217.GA6737@redhat.com> <4C3F27A2.3030207@trash.net> <20100715174216.GA16216@redhat.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [ANNOUNCE] libnetfilter_log 1.0.0 release
+Date: Fri, 16 Jul 2010 17:28:37 +0200
+Message-ID: <4C407AA5.4080509@netfilter.org>
+References: <4C3EFC66.7050400@netfilter.org> <alpine.LSU.2.01.1007161249280.10833@obet.zrqbmnf.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20100715174216.GA16216@redhat.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <alpine.LSU.2.01.1007161249280.10833@obet.zrqbmnf.qr>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "Michael S. Tsirkin" <mst@redhat.com>
-Cc: "Daniel P. Berrange" <berrange@redhat.com>, Jes Sorensen <Jes.Sorensen@redhat.com>, "David S. Miller" <davem@davemloft.net>, Jan Engelhardt <jengelh@medozas.de>, Randy Dunlap <randy.dunlap@oracle.com>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, netfilter-devel@vger.kernel.org, lwn@lwn.net
 
-Am 15.07.2010 19:42, schrieb Michael S. Tsirkin:
-> netfilter: correct CHECKSUM header and export it
+On 16/07/10 12:50, Jan Engelhardt wrote:
+> On Thursday 2010-07-15 14:17, Pablo Neira Ayuso wrote:
 > 
-> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
+>> Hi!
+>>
+>> The Netfilter proudly project presents:
+>>
+>>  * libnetfilter_log-1.0.0
+>>
+>> libnetfilter_log is a userspace library providing interface to packets
+>> that have been logged by the kernel packet filter. It is is part of a
+>> system that deprecates the old syslog/dmesg based packet logging.
+>>
+>> This releases contains a new function to print logs in XML format and
+>> the doxygen-based documentation. See Changelog for details.
+>>
+>> You can find the documentation in doxygen format at:
+>> http://www.netfilter.org/projects/libnetfilter_log/doxygen/
+>>
+>> You can download it from:
+>> http://www.netfilter.org/projects/libnetfilter_queue/downloads.html
+>> ftp://ftp.netfilter.org/pub/libnetfilter_queue/
+> 
+> More like 
+> http://www.netfilter.org/projects/libnetfilter_log/downloads.html ;-)
 
-Applied, thanks.
+Sorry, I didn't mangle the template appropriately.
