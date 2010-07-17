@@ -1,7 +1,7 @@
 From: Antoine Souques <corum@via.ecp.fr>
 Subject: Re: How to do PAT based on source IP adress and port ?
-Date: Sun, 18 Jul 2010 01:13:17 +0200
-Message-ID: <4C42390D.8020900@via.ecp.fr>
+Date: Sun, 18 Jul 2010 01:21:27 +0200
+Message-ID: <4C423AF7.60901@via.ecp.fr>
 References: <AANLkTikEVBlk2beBQ0ZUg308udyaZ-_yWOQpvhRlZ6J7@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
@@ -32,7 +32,4 @@ in
 > the body of a message to majordomo@vger.kernel.org
 > More majordomo info at  http://vger.kernel.org/majordomo-info.html
 >   =20
-Hi,
-
-With iptables (almost) everything is possible. You should look around=20
-the target SNAT
+I am sorry, I gave you the wrong target. DNAT matches better your goal.
