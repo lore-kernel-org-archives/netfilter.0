@@ -1,123 +1,19 @@
-From: Payam Chychi <pchychi@gmail.com>
-Subject: Re: packet flow - ebtables broute DROP target
-Date: Fri, 16 Jul 2010 19:06:28 +0200
-Message-ID: <F120B598-C3AD-4C3E-A99F-AB8D2212217B@gmail.com>
-References: <1DB91DF937A4544C81E636468B91C21C06F1EC28@CNSHGSMBS03.ad4.ad.alcatel.com> <1DB91DF937A4544C81E636468B91C21C06F1ECAF@CNSHGSMBS03.ad4.ad.alcatel.com> <AANLkTil_RodsXwi2y8-tOeLsZ8Cl3TN0WYfsAMrrx-VP@mail.gmail.com> <1279202558.5524.10.camel@aijazbaig1-desktop> <alpine.LSU.2.01.1007151616400.7169@obet.zrqbmnf.qr> <4C3F60E9.3090106@pandora.be> <1279267539.4086.28.camel@aijazbaig1-desktop>
-Mime-Version: 1.0 (iPhone Mail 8A293)
-Content-Transfer-Encoding: 8BIT
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:references:in-reply-to
-         :mime-version:content-transfer-encoding:content-type:message-id:cc
-         :x-mailer:from:subject:date:to;
-        bh=COsMR4WVTCjAsG/PHnbBwvw7w968VzLSpJRrjcKtW6s=;
-        b=jaq5u98C0qY4IpYSyZu6/sLBuxzGNwd/NSe1e1KfcrAzXy3xG8YWvjFUXq1wU7oZhi
-         mM3JloonYkSJ7pN+QXLQ9vHY1r0Tk13ZkoLV15DRV0mwfxKJB07vYFAM3JQTQUwIVgrt
-         r1rc/aVhA1KiQ2s4iR3DtNDBGEWCNcxZW6k84=
-In-Reply-To: <1279267539.4086.28.camel@aijazbaig1-desktop>
-Sender: netfilter-devel-owner@vger.kernel.org
+From: Mark Davidson <snowdrop@eircom.net>
+Subject: Reply Urgent Message
+Date: Sat, 17 Jul 2010 17:46:08 +0100 (IST)
+Message-ID: <21648061.191281279385168310.JavaMail.root__38628.6665955142$1279385181$gmane$org@webmailbox402.eircom.net>
+Reply-To: Mark Davidson <mar20022002@w.cn>
+Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "aijazbaig1@gmail.com" <aijazbaig1@gmail.com>
-Cc: Bart De Schuymer <bdschuym@pandora.be>, Jan Engelhardt <jengelh@medozas.de>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: 
 
-hey,
 
-how are u checking the table? make sure u are looking at the NAT table and not input or forwarding.
-
-Regards,
---
-Payam Tarverdyan Chychi
-Network Engineer
-
-Sent from my iPhone
-
-On 2010-07-16, at 10:05 AM, Aijaz Baig <aijazbaig1@gmail.com> wrote:
-
-> Hello Bart and Jan,
-> 
-> Sorry for the belated reply. Im in India so the time gaps makes it bad.
-> Thank you for your great inputs. I would surely consider them now. Thank
-> you Jan for letting us know you guys are writing a book on netfilter.
-> Lord knows we need it. More and more companies across the globe are
-> using linux more and more now. This would be of immense help to
-> academicians and professionals alike.
-> 
-> Ive got 2 linux boxes, one virtual and one real. The real one has a eth0
-> interface which connects to my LAN. It's vmnet8 interface is behind the
-> virtual linux box's eth0 interface i.e. the latter is the former's
-> gateway. The virtual box has 3 interfaces eth0, eth1 and eth2. Out of
-> which eth0 and eth1 are bridged and enslaved to br0. eth2 connects to
-> the same LAN as does my real box's eth0. I have added a static route for
-> a PC in my outer LAN to force the traffic to go through vmnet8.
-> 
-> Now when I DROP packets for the target PC in the broute table, the
-> problem that I described above happens. I did what was told to be done
-> as shown the basic brouter example. But still..zilch..nothing seemed to
-> be working. 
-> 
-> To be specific, I added a rule:
-> ebtables -t broute -A BROUTING -p 0x806 --d$MAC_OF_eth0 -j DROP 
-> to allow the arp replies to arrive on eth0 and not on br0. But even
-> after that it didn't work. Even the packet count for this new rule was
-> zero all the time so I guess something was suspicious here.
-> 
-> Could someone, bart maybe, let me know what it means by his quote: "Your
-> traffic is probably dropped by the networking code because the 
-> destination MAC address differs from that of the bridge port."
-> 
-> May be I don't really know ARP works to infer how such a rule would be
-> helpful in the first place.
-> 
-> I am keen to hear frm you guys and once again, thank you for your input
-> and such wonderful open source software that would put the big guys out
-> there to shame.
-> 
-> Regards,
-> Aijaz
-> 
-> On Thu, 2010-07-15 at 21:26 +0200, Bart De Schuymer wrote: 
->> Jan Engelhardt schreef:
->>> On Thursday 2010-07-15 16:02, Aijaz Baig wrote:
->>> 
->>>> unfamiliar with it, here are the links to the same:
->>>> http://ebtables.sourceforge.net/br_fw_ia/br_fw_ia.html for the document
->>>> and http://ebtables.sourceforge.net/br_fw_ia/PacketFlow.png for the
->>>> picture.
->>>> 
->>> 
->>> Use http://jengelh.medozas.de/images/nf-packet-flow.png
->>> 
->>> 
->>>> Im trying to understand what happens to a packet which is DROPped in the
->>>> BROUTING chain of the broute table. If I have understood correctly from
->>>> the document above, it goes to L3 where the routing subsystem can decide
->>>> where to send the packet to depending on L3 information in it isn't it?
->>>> 
->>> 
->>> In net/core/dev.c, the packet is passed to all "taps". Taps include 
->>> raw sockets (think tcpdump), but also bridge and the IPvX layers 
->>> themselves. Each of them basically gets a copy, thus it is important to 
->>> not have an address on the ethernet interface (so that the IPvX tap 
->>> ignores it). Only the bridge interface should have an address, because 
->>> the bridge code will pass it to IPvX on its own.
->>> 
->>> 
->> When using a brouter, you actually assign IP addresses to the bridge 
->> ports (different subnets) instead of the virtual bridge interface 
->> itself. IP traffic is then DROPped in the BROUTE chain, so it's not 
->> bridged. See http://ebtables.sourceforge.net/examples/real.html#example1 
->> for an example usage.
->> 
->> cheers,
->> Bart
->> 
-> 
-> 
-> 
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I have a confidential business for you;I need you to execute this busin=
+ess proposal that involved GBP=C2=A360,000,000.00 (Sixty Million Pounds=
+ Sterling's)please respond.=20
+Best regards,=20
+Mr. Mark Davidson
