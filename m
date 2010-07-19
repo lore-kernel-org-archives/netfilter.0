@@ -1,51 +1,39 @@
-From: Thomas Elsgaard <thomas.elsgaard@gmail.com>
-Subject: -SOLVED- Re: How to do PAT based on source IP adress and port ?
-Date: Sun, 18 Jul 2010 02:04:35 -0200
-Message-ID: <AANLkTinbM_LPKRts9leJCgEiLAJz154NdjqQrNxPcRiG@mail.gmail.com>
-References: <AANLkTik_lOU6fbe13Rh4AQi44CFFaCCGgjT_vR4PEdMg@mail.gmail.com>
+From: Richard Knight <rjknight@us.ibm.com>
+Subject: question about esp and policy matching rule
+Date: Sun, 18 Jul 2010 22:29:42 -0500
+Message-ID: <OFC79F2599.5D7A2E5E-ON85257765.0011E584-86257765.0013332D@us.ibm.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:content-type
-         :content-transfer-encoding;
-        bh=5vL/RDB2A8YoDtZqcDOtsh14AdUHlY5OBN0wTeKt19A=;
-        b=w+M0FgO8GvdEHsU1W38Ly4/QwgyE3a8MayX8lz/p94D4a41bbYygDLia88gFg5eEo2
-         acLZ4imO3ZrNFIBU6UdP27gSAkC1tIbx2YY5c8qB0gVGLr5QWfhwDg9hgZ3raOkESvV6
-         yUXhQ7MCQuv/mK333DWz88LvT+HAljBN92vRY=
-In-Reply-To: <AANLkTik_lOU6fbe13Rh4AQi44CFFaCCGgjT_vR4PEdMg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-On Sun, Jul 18, 2010 at 1:57 AM, Thomas Elsgaard
-<thomas.elsgaard@gmail.com> wrote:
-> I am wondering how i can get iptables to do a PAT based on source IP
-> address?
-> Traffic from 10.5.1.0/24 towards UDP port 69 should be mapped to port
-> 20000 instead of port 69
-> Traffic from 10.5.2.0/24 towards UDP port 69 should be mapped to port
-> 20001 instead of port 69
-> Is this possible with iptables?
->
-> -----------------------------------------
->
- Hi everybody
 
- After some work, i managed to get it working...
+Hello,
 
- The solution was very simple:
+ I don't fully understand the two rules below.
 
- =A0iptables -t nat -A PREROUTING -i eth0 --source 10.5.1.0/24 -p udp -=
--dport
- 69 -j REDIRECT --to-port 20001
- iptables -t nat -A PREROUTING -i eth0 --source 10.5.2.0/24 -p udp --dp=
-ort 69
- -j REDIRECT --to-port 20002
+Since each of the rules are get inserted at position 1 in the table the ESP
+rule ends up below the policy matching rule, will the ESP rule ever be
+checked?
 
- Thanks for the advices
+# allow all ipsec traffic into and out
+$IP6_TABLES -I INPUT  1 -i $EXIF -p esp -j ACCEPT
+$IP6_TABLES -I OUTPUT 1 -o $EXIF -p esp -j ACCEPT
+$IP6_TABLES -I INPUT  1 -i $EXIF -m policy --dir in  --pol ipsec  -j ACCEPT
+$IP6_TABLES -I OUTPUT 1 -o $EXIF -m policy --dir out --pol ipsec  -j ACCEPT
 
- Thomas
+I have an application which does not seem to operate through my ipsec
+tunnel without both rules in place, I'm having trouble figuring out why.
+
+
+Thank you in advance.
+
+Jamie Knight (rjknight@us.ibm.com)
+IBM Power Firmware Development
+(512) 286-7017 (t/l 386-7017)
+office 045/2A-01
+IBM Austin, TX
+
