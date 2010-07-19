@@ -1,27 +1,20 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: question about esp and policy matching rule
-Date: Mon, 19 Jul 2010 18:06:48 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1007191806160.19191@obet.zrqbmnf.qr>
-References: <OFC79F2599.5D7A2E5E-ON85257765.0011E584-86257765.0013332D@us.ibm.com> <alpine.LSU.2.01.1007191343430.13813@obet.zrqbmnf.qr> <OFA20E39F9.A75137E1-ON85257765.004A2DB2-86257765.004A90D4@us.ibm.com>
+From: Sambath Kumar Balasubramanian <sambath_kumar_b@yahoo.com>
+Subject: ebtables marking vlan priority
+Date: Mon, 19 Jul 2010 11:58:51 -0700 (PDT)
+Message-ID: <228674.87937.qm@web180304.mail.gq1.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <OFA20E39F9.A75137E1-ON85257765.004A2DB2-86257765.004A90D4@us.ibm.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1279565932; bh=tMUjNKeAd6lQ7JG2Q/eLXcA5DWn6q5mIqZ3UMMpBxRg=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Subject:To:MIME-Version:Content-Type; b=OXPkRQM0dUrTfMjjZTAzvpH1d25GDkIAggIFlD1L+/i0v2nrcTV1F4zfxgl6jwHAk3CH77DXrVB1v8qhIg163vJ5F3uTqOsuOnJCQT/PGcbQVHVAZmMk38MqzJmWchDqlz06N0nwMyaAEJx/G51ZUumjH4gdZ0O14wnnHb0ZQL0=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Richard Knight <rjknight@us.ibm.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Monday 2010-07-19 15:34, Richard Knight wrote:
->>
->> Yes; -m policy applies to the in-tunnel packets only.
->
->Ah, thanks. so for instance to block telnet through my tunnel I could add a
->rule like this
->
->$IP6_TABLES -I INPUT  1 -i $EXIF -p tcp --destination-port 23 -m policy
->--dir in --pol ipsec -j REJECT
+Hi,
 
-For something as evil^W insecure as telnet, I'd drop the -m policy 
-portion and just always block it, tunneled or not :-)
+  I have a question on ebtables. I have a requirement to mark the vlan priority of the frame based on some classification criteria. Can it be done through ebtables? Thanks in advance for your help.
+ 
+Thanks,
+Sambath
+
