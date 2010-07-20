@@ -1,32 +1,27 @@
-From: ratheesh k <ratheesh.ksz@gmail.com>
-Subject: nfqueue
-Date: Tue, 20 Jul 2010 22:31:58 +0530
-Message-ID: <AANLkTinE-tw35KEN1UeiL-NeLJ9MZzO8YugNphFNrGs2@mail.gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: NAT appears to be unaware of ports in use on router
+Date: Tue, 20 Jul 2010 20:13:51 +0200 (CEST)
+Message-ID: <alpine.LSU.2.01.1007202007120.20502@obet.zrqbmnf.qr>
+References: <AANLkTin_lR3j4I9IYcrAlcAXAV_PDt6aDsrTXX9IHtAS@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:date:message-id
-         :subject:from:to:cc:content-type;
-        bh=F40yNUFWTybxxXUCDdTcFFSbdQJf6qCS5o6ni0HI9Iw=;
-        b=AKwv7RIEtc7pZp3UX9CR4AJLsN406LvSqnFtgc/Sg2iTOuVbwTrMv739skoqHcKP7Y
-         79u8ZgRvMN8Xg/eHABRUwciM6LH3FOXPu7pnEUGus/VfZ8IVljIyUIRFmO6GCRsBwLTB
-         fphM+p5XY8BiFtJExLPuPVy4OpKInUdRPOEMM=
+In-Reply-To: <AANLkTin_lR3j4I9IYcrAlcAXAV_PDt6aDsrTXX9IHtAS@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Netfilter mailing list <netfilter@vger.kernel.org>
-Cc: Jan Engelhardt <jengelh@medozas.de>
+To: Simon Ditner <sditner@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-iptables -A FORWARD -j NFQUEUE
+On Tuesday 2010-07-20 19:00, Simon Ditner wrote:
 
-I would change destination address and port in userspace and w will do
-accept verdict
+>I have asterisk running SIP on a router using UDP port 5060 that's
+>also handling NAT for a network. I'm often doing testing behind NAT
+>with other SIP devices using UDP port 5060 talking to the internet,
+>and have run into a problem where NAT is able to claim 5060.
 
-1. which hooks p acket  will traverse ?
-2. Since routing decision is already made , is there any scope for
-route find again ?
-
-
--Ratheesh
+nf_nat does not check for local socket existence AFAICS and uses the 
+full 1024:65535 range (when no other options are specified for S/D-NAT) 
+for connections that originated with a srcport of 1024:65535.
+It cannot easily check for it anyway, due to things like conntrack zones 
+or the user willingly wanting to "go around" local sockets.
