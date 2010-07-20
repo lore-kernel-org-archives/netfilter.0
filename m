@@ -1,93 +1,64 @@
-From: ratheesh k <ratheesh.ksz@gmail.com>
-Subject: Re: question about esp and policy matching rule
-Date: Tue, 20 Jul 2010 22:26:38 +0530
-Message-ID: <AANLkTimkhSedZPQcdaGeNfNTBkm9lJkGkau_4j72VCMo@mail.gmail.com>
-References: <OFC79F2599.5D7A2E5E-ON85257765.0011E584-86257765.0013332D@us.ibm.com>
-	<i21c1p$cl6$1@dough.gmane.org>
+From: Simon Ditner <sditner@gmail.com>
+Subject: NAT appears to be unaware of ports in use on router
+Date: Tue, 20 Jul 2010 13:00:16 -0400
+Message-ID: <AANLkTin_lR3j4I9IYcrAlcAXAV_PDt6aDsrTXX9IHtAS@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=DjRNzD+rUjedpbCeTbtKVtLNeG0EPg1hPt41wDdG5jE=;
-        b=dASmO2f9MIJzRgJ4Vb5962bojmWdSdHJHQYytfv954nsaIznefV38vBYlPWeWmYudQ
-         e//ra+3RxtXxcHuZIXer9utu9onvTVhH5+2WlYiFIYYZtdqFL3gd4StnDwTU5keA5eCJ
-         MdWHzkYjpj9YrwIcALplYxqK6mSKeqiwgNkzI=
-In-Reply-To: <i21c1p$cl6$1@dough.gmane.org>
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=1/LjgKYvxkbo6eY4Ub4tGXtBCDOjZa72dCq35/x1pjM=;
+        b=ejM6BKPDshdhJJHRlIsBCFvW4yahyigAKxzKcIUbZLxi4zQvyMe0qYW6h2YmZN0jwD
+         BDr/j4QfUz6L6x8oazZk7sGO0t0UYeLLepLa8AZ/ehe84N23Qz477EibhuVAs1P7ZEL/
+         Oa3kx5d0ukrI0i9D3LE/WCqholZ72souT1WS4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Sergei Zhirikov <sfzhi@yahoo.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Mon, Jul 19, 2010 at 4:44 PM, Sergei Zhirikov <sfzhi@yahoo.com> wrot=
-e:
-> On 2010-07-19 05:29, Richard Knight wrote:
->>
->> Hello,
->>
->> =A0I don't fully understand the two rules below.
->>
->> Since each of the rules are get inserted at position 1 in the table =
-the
->> ESP
->> rule ends up below the policy matching rule, will the ESP rule ever =
-be
->> checked?
->>
->> # allow all ipsec traffic into and out
->> $IP6_TABLES -I INPUT =A01 -i $EXIF -p esp -j ACCEPT
->> $IP6_TABLES -I OUTPUT 1 -o $EXIF -p esp -j ACCEPT
->> $IP6_TABLES -I INPUT =A01 -i $EXIF -m policy --dir in =A0--pol ipsec=
- =A0-j
->> ACCEPT
->> $IP6_TABLES -I OUTPUT 1 -o $EXIF -m policy --dir out --pol ipsec =A0=
--j
->> ACCEPT
->>
->> I have an application which does not seem to operate through my ipse=
-c
->> tunnel without both rules in place, I'm having trouble figuring out =
-why.
->>
->
-> The order of those rules does not matter. They have different purpose=
- and
-> match different packets.
->
-> With IPSec involved packets pass netfilter twice. For example, if you=
- have
-> an incoming ESP packet
-> that contains an UDP packet as payload the following happens.
->
-> 1. The ESP packet passes netfilter and matches the line with "-I INPU=
-T -p
-> esp"
-> 2. The packet is decrypted and its payload (the UDP packet in this ex=
-ample)
-> is processed further
-> 3. The UDP packet passes netfilter and matches the line with "-I INPU=
-T -m
-> policy ...".
->
-> In other words, "-m policy" applies to packets after IPSec decapsulat=
-ion (or
-> before encapsulation, for outgoing packets).
->
-> --
-> Sergei.
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
+I have asterisk running SIP on a router using UDP port 5060 that's
+also handling NAT for a network. I'm often doing testing behind NAT
+with other SIP devices using UDP port 5060 talking to the internet,
+and have run into a problem where NAT is able to claim 5060. I have
+witnessed this occurring both when the asterisk service is stopped
+(the obvious case), but I have also run into it when asterisk was up
+and running fine.
 
-After decapsulation , will the ip packet will traverse prerouting chain=
- again ?
+When this occurs, either the device under test works, or the asterisk
+service continues to operate but the NAT mapping for the device under
+test ends up sending return traffic to the asterisk service.
 
--Ratheesh
+Are there some extra options I should be enabling so that iptables is
+aware of services running on the system which use ports > 1024? Or
+some way to inform iptables of port ranges to not allocate from so
+that it does not interfere?
+
+Here is my existing configuration:
+
+iptables v1.4.7
+eth0 - internet
+br0 - internal network
+
+*nat
+-A POSTROUTING -o eth0 -j MASQUERADE
+COMMIT
+*filter
+:FORWARD DROP
+:INPUT DROP
+:OUTPUT ACCEPT
+-A INPUT ! -i eth0 -j ACCEPT
+-A INPUT -i eth0 -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -p gre -j ACCEPT
+-A INPUT -i eth0 -p udp --dport sip -j ACCEPT
+-A INPUT -i eth0 -p udp --dport 10000:20000 -j ACCEPT
+-A INPUT -i eth0 -p tcp -j REJECT --reject-with tcp-reset
+-A INPUT -i eth0 -j REJECT --reject-with icmp-port-unreachable
+-A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -i br0 -j ACCEPT
+COMMIT
+
+Cheers,
+spd
