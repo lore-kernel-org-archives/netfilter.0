@@ -1,48 +1,45 @@
-From: Richard Horton <arimus.uk@gmail.com>
-Subject: Re: NAT appears to be unaware of ports in use on router
-Date: Tue, 20 Jul 2010 20:07:21 +0100
-Message-ID: <AANLkTikj97bR882CJLJ469kESpCBzsRy034v2deuOdrX@mail.gmail.com>
-References: <AANLkTin_lR3j4I9IYcrAlcAXAV_PDt6aDsrTXX9IHtAS@mail.gmail.com>
-	<AANLkTinlUW3jecWLPBdgK4GPu2PUlLvZ9FxzdNyjkJlB@mail.gmail.com>
-	<alpine.LSU.2.01.1007202103420.8195@obet.zrqbmnf.qr>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [patch v2.2 1/4] [PATCH v2.1 1/4] netfilter: xt_ipvs
+ (netfilter matcher for IPVS)
+Date: Wed, 21 Jul 2010 08:34:37 +0900
+Message-ID: <20100720233437.GH9569@verge.net.au>
+References: <20100501032014.406353538@vergenet.net>
+ <20100501032120.298829234@vergenet.net>
+ <4BDC543F.7060500@trash.net>
+ <AANLkTikIzHuzxo4z1_8_fEGLBC2-0Uz0X8SOc8n2msuX@mail.gmail.com>
+ <20100622071326.GB9928@verge.net.au>
+ <AANLkTimUEJGAJ6tsPKGltUGBwrdotK5YyKBIkQWbA8qZ@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type;
-        bh=rdYgRsq7ojm8dQOl+tAa2679bAdhDp12AWO91WEK4OA=;
-        b=uHylHh68L7OVrxox4FV4IxX4ebQbK4poQJaVES1kFAHBF7CPXWiDwNWGm8P4JkN/xd
-         vI3YUW/Y/YhMmR4IHTkat36Jsh95kuvazQ0cimaKKGl+V6Zkn2MbN4C8y2F6WeXOwybw
-         U5IJBju/EFXrpIMg0t7Mx/AlwRTegrNlzlxq8=
-In-Reply-To: <alpine.LSU.2.01.1007202103420.8195@obet.zrqbmnf.qr>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <AANLkTimUEJGAJ6tsPKGltUGBwrdotK5YyKBIkQWbA8qZ@mail.gmail.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Simon Ditner <sditner@gmail.com>, netfilter@vger.kernel.org
+To: Hannes Eder <heder@google.com>
+Cc: Patrick McHardy <kaber@trash.net>, lvs-devel@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, netfilter@vger.kernel.org, Wensong Zhang <wensong@linux-vs.org>, Julius Volz <julius.volz@gmail.com>, "David S. Miller" <davem@davemloft.net>, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
 
-On 20 July 2010 20:05, Jan Engelhardt <jengelh@medozas.de> wrote:
+On Tue, Jul 20, 2010 at 02:44:11PM +0200, Hannes Eder wrote:
+> Hi Simon,
+> 
+> On Tue, Jun 22, 2010 at 09:13, Simon Horman <horms@verge.net.au> wrote:
+> > On Mon, May 03, 2010 at 01:29:46PM +0200, Hannes Eder wrote:
+> >> Thank you for picking this series of patches up again and thanks for
+> >> the feedback.
+> >>
+> >> I'll send an updated version in the next days.
+> >
+> > Hi Hanes,
+> >
+> > more than a few days seems to have passed.
+> > Do you have time to fix the patches up?
+> > If not, I'll take a stab at it.
+> 
+> /me working through the backlog of emails after vacation, however this
+> email was buried in my inbox before my vacation, my bad.  I've been
+> extremely busy lately and I did not have the time to work on the
+> patches.  I saw your updated versions, I appreciate very much that you
+> are taking it from there.
 
-> It happens not to.
-
-Ah good :)
-
->>-A POSTROUTING -p udp -o eth0 -j MASQUERADE --to-ports 6000-50000
->>-A POSTROUTING -p tcp -o eth0 -j MASQUERADE --to-ports 6000-50000
->>-A POSTROUTING ! -p tcp ! -p udp -o eth0 -j MASQUERADE
->
-> At most one -p option is allowed.
->
-
-Thanks, wasn't sure and without the linux box to hand wasn't certain.
-
-
--- 
-Richard Horton
-Users are like a virus: Each causing a thousand tiny crises until the
-host finally dies.
-http://www.pbase.com/arimus - My online photogallery
-http://uk.linkedin.com/in/richardhorton1972 - My linkedin profile
-http://www.solstans.co.uk/richard - Online CV
+No problem, I assumed that you were busy with something.
