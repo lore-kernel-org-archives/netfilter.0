@@ -1,27 +1,23 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: question about esp and policy matching rule
-Date: Wed, 21 Jul 2010 15:55:43 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1007211553420.4692@obet.zrqbmnf.qr>
-References: <OFC79F2599.5D7A2E5E-ON85257765.0011E584-86257765.0013332D@us.ibm.com> <i21c1p$cl6$1@dough.gmane.org> <AANLkTimkhSedZPQcdaGeNfNTBkm9lJkGkau_4j72VCMo@mail.gmail.com> <i26tp0$4q3$1@dough.gmane.org>
+From: Benjamin Kingston <list@nexusnebula.net>
+Subject: IPTables physdev and bond0
+Date: Wed, 21 Jul 2010 07:32:38 -0700
+Message-ID: <AANLkTikwcBaQpSsedZBLFWfsGK6Gsj-KJ7u46dAZ2G8_@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <i26tp0$4q3$1@dough.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Sergei Zhirikov <sfzhi@yahoo.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Wednesday 2010-07-21 15:46, Sergei Zhirikov wrote:
-> On 2010-07-20 18:56, ratheesh k wrote:
->>
->> After decapsulation , will the ip packet will traverse prerouting chain again
->> ?
->
-> I don't know for sure, but I would think that yes. You could perform a simple
-> experiment to know for sure.
+I have a bond0 interface with eth0 and eth1, which is then bridged under br0.
 
-As per http://jengelh.medozas.de/images/nf-packet-flow.png , yes it 
-will. This also makes sense for transport mode, to strip the AH header 
-or to decrypt ESP.
+Packets will not forward to a br0 connected VM with
+
+-A FORWARD  -m physdev --physdev-is-bridged -j ACCEPT
+
+Right now I have it working properly with
+
+-A FORWARD ! -d 10.0.0.2 -j ACCEPT
+
+I hope there is a more ideal solution, and would appreciate any suggestions.
