@@ -1,68 +1,121 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Limiting bandwidth on router
-Date: Fri, 23 Jul 2010 15:23:24 +0200
-Message-ID: <4C4997CC.4010502@plouf.fr.eu.org>
-References: <AANLkTik2ej_dxAnk8s5iq32BDC7YVPEZ+X7Sqr1xU+KH@mail.gmail.com>
+From: Pete Kay <petedao@gmail.com>
+Subject: Problem with NAT rule
+Date: Sat, 24 Jul 2010 21:41:45 +0800
+Message-ID: <AANLkTi=SSSJJJVO7J6PSW52F=yRxr+9mqvhSObX8qLdr@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTik2ej_dxAnk8s5iq32BDC7YVPEZ+X7Sqr1xU+KH@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=NGjYorottfFPssIqMnhu2FVZBnQ7dm+ZpcIHoixMwMo=;
+        b=omkS065J53t8pHd7j4+05U3Qi/WwzDpTVVyHSbOQ8TazDtaHoKpRFQx7IHMAkX+eKq
+         LWTDp+TGAUNh0cpaijDMVLV3X1/oEWaVqfpuDJwyeAdj/iAza8wwDVypouPJDkK9jQxN
+         AtN+S58aMzWfv1cnJz14DiskZ4aLl19WEqVLQ=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Elison Niven <elison.niven@gmail.com>
-Cc: netfilter@vger.kernel.org, elison.niven@matrixcomsec.com
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hello,
+Hi,
 
-Elison Niven a =E9crit :
-> I have an ARM based board with 2 ethernet interfaces eth0 and eth1.
-> eth0 - LAN interface. 192.168.2.149
-> eth1 - WAN interface. 192.168.1.149
-> I have setup a simple router using iptables that allows PCs on the LA=
-N
-> to browse the internet via the WAN.
-> I want to limit incoming bandwidth on the LAN interface to about
-> 8mbit/s as when there are massive data transfers initiating from the
-> PCs on the LAN, the system is under heavy load and is not able to
-> execute any applications.
->=20
-> I tried to limit the bandwidth using tc's tbf and ingress but it isn'=
-t
-> really working well.
-> For example from a PC on the LAN (ip 192.168.2.13, default gw 192.168=
-=2E2.149)
-> # ping -f -s 1000 192.168.1.3
-> This is correctly limited and ping results show the loss.
->
-> # ping -f -s 1 192.168.1.3
-> Here the system is under heavy load and is not able to execute any
-> applications. No loss in ping.
+I would like to setup my iptable rules to forward udp packet from one
+device to another:
 
-This result may indicate that the router's load depends more on the=20
-packet rate than the bandwidth, which makes sense. So it may be more=20
-efficient to limit the packet rate instead of the bandwidth.
+192.168.1.100:16385  <---------> 192.168.1.114:29848 :: 192.168.1.200
+:29850  <----------> 192.168.1.300:10112
 
-> Also when I create a udp socket from this PC to an address on the WAN=
-,
-> the rate is not limited.
-> #./udpclient 20000 192.168.1.3 20000 1000
-> This utility sends 20000 packets of 1000 bytes each to 192.168.1.3.
-> Here also the rate is not limited.
+What I want to do is forward all packets from 192.168.1.100:16385 to
+192.168.1.300:10112 and all packets from 192.168.1.300:10112 to
+192.168.1.100:16385
 
-I did not understand well whether you want to limit incoming (WAN to=20
-LAN) or outgoing (LAN to WAN) traffic. The ping test above does not tel=
-l=20
-whether incoming (echo reply) or outgoing (echo request) traffic is lim=
-ited.
-
-Also, remember that by definition received traffic rate cannot be=20
-directly controlled. All you can do is drop incoming packets. Due to TC=
-P=20
-acknowledgement and congestion control mechanism, the sender will=20
-interpret the packet loss as congestion and reduce the sending rate. Bu=
-t=20
-UDP has no such mechanism. Anyway, does this really matter ? If the=20
-heavy data transfers use TCP, it should work. Did you test it ?
+Here is my iptables rule:
 
 
+Building chain index
+Number of user defined chains:0 bucket_sz:40 array_sz:0
+iptc_first_chain: : returning `PREROUTING'
+iptc_get_policy: called for chain PREROUTING
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination
+iptc_first_rule: first rule(PREROUTING): 0xc02ac0
+WARNING: handle->chain_index_sz == 0
+DNAT       udp  --  192.168.1.100         anywhere            udp
+spt:16385 to:192.168.1.300:10112
+iptc_next_rule: rule_iterator_cur=0xc02d00...next=0xc02e20,
+head=0xc02a90...returning rule 0xc02e20
+WARNING: handle->chain_index_sz == 0
+DNAT       udp  --  192.168.1.300         anywhere            udp
+spt:10112 to:192.168.1.100:16385
+iptc_next_rule: rule_iterator_cur=0xc02e20...next=0xc02a90,
+head=0xc02a90...finished, returning NULL
+iptc_next_chain: : returning `POSTROUTING'
+
+iptc_get_policy: called for chain POSTROUTING
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination
+iptc_first_rule: first rule(POSTROUTING): 0xc030b0
+
+WARNING: handle->chain_index_sz == 0
+SNAT       udp  --  192.168.1.100         anywhere            udp
+spt:16385 to:192.168.1.200:29848
+iptc_next_rule: rule_iterator_cur=0xc032f0...next=0xc03410,
+head=0xc03080...returning rule 0xc03410
+WARNING: handle->chain_index_sz == 0
+SNAT       udp  --  192.168.1.300         anywhere            udp
+spt:10112 to:192.168.1.200:29850
+iptc_next_rule: rule_iterator_cur=0xc03410...next=0xc03080,
+head=0xc03080...finished, returning NULL
+iptc_next_chain: : returning `OUTPUT'
+
+iptc_get_policy: called for chain OUTPUT
+
+===========
+When I send packet from the two devices, I am just getting packets
+going into 192.168.1.200 instead of any packet going out:
+
+20:57:57.765252 IP 192.168.1.300:10112 > 192.168.1.200 :29850: udp/rtp
+160 c0  11386 1869684
+20:57:57.784333 IP 192.168.1.100:16385 > 192.168.1.200 :29848: udp/rtp
+240 c0  17019 125650088
+20:57:57.785250 IP 192.168.1.300:10112 > 192.168.1.200 :29850: udp/rtp
+160 c0  11387 1869844
+20:57:57.805246 IP 192.168.1.300:10112 > 192.168.1.200 :29850: udp/rtp
+160 c0  11388 1870004
+20:57:57.815415 IP 192.168.1.100:16385 > 192.168.1.200 :29848: udp/rtp
+240 c0  17020 125650328
+20:57:57.825249 IP 192.168.1.300:10112 > 192.168.1.200 :29850: udp/rtp
+160 c0  11389 1870164
+20:57:57.843951 IP 192.168.1.100:16385 > 192.168.1.200 :29848: udp/rtp
+240 c0  17021 125650568
+20:57:57.845247 IP 192.168.1.300:10112 > 192.168.1.200 :29850: udp/rtp
+160 c0  11390 1870324
+20:57:57.865242 IP 192.168.1.300:10112 > 192.168.1.200 :29850: udp/rtp
+160 c0  11391 1870484
+20:57:57.874332 IP 192.168.1.100:16385 > 192.168.1.200 :29848: udp/rtp
+240 c0  17022 125650808
+20:57:57.885242 IP 192.168.1.300:10112 > 192.168.1.200 :29850: udp/rtp
+160 c0  11392 1870644
+20:57:57.903563 IP 192.168.1.100:16385 > 192.168.1.200 :29848: udp/rtp
+240 c0  17023 125651048
+20:57:57.905242 IP 192.168.1.300:10112 > 192.168.1.200 :29850: udp/rtp
+160 c0  11393 1870804
+20:57:57.925240 IP 192.168.1.300:10112 > 192.168.1.200 :29850: udp/rtp
+160 c0  11394 1870964
+20:57:57.935888 IP 192.168.1.100:16385 > 192.168.1.200 :29848: udp/rtp
+240 c0  17024 125651288
+20:57:57.945240 IP 192.168.1.300:10112 > 192.168.1.200 :29850: udp/rtp
+160 c0  11395 1871124
+20:57:57.964250 IP 192.168.1.100:16385 > 192.168.1.200 :29848: udp/rtp
+240 c0  17025 125651528
+20:57:57.965238 IP 192.168.1.300:10112 > 192.168.1.200 :29850: udp/rtp
+160 c0  11396 1871284
+20:57:57.985233 IP 192.168.1.300:10112 > 192.168.1.200 :29850: udp/rtp
+160 c0  11397 1871444
+
+
+Can someone please help me to put out the problem in my iptable rules?
+
+thanks,
+P
