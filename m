@@ -1,72 +1,61 @@
-From: Pete Kay <petedao@gmail.com>
-Subject: Re: Problem with NAT rule
-Date: Sun, 25 Jul 2010 16:38:10 +0800
-Message-ID: <AANLkTik5=bN2b-nuBWFY+38G6VZAjpjpcVU1noE-0h1t@mail.gmail.com>
-References: <AANLkTi=SSSJJJVO7J6PSW52F=yRxr+9mqvhSObX8qLdr@mail.gmail.com>
-	<AANLkTikGQe8B84fnL65qb32tkRrV6bTfye-fjGtsxQ9=@mail.gmail.com>
+From: ZHOU Xiaobo <xb.zhou@qq.com>
+Subject: Re: Problem with arptables et mangle
+Date: Sun, 25 Jul 2010 19:55:52 +0800 (CST)
+Message-ID: <16565681.321280058952111.JavaMail.ZHOU-PC$@zhou-PC>
+References: <4C4B1867.6050006@via.ecp.fr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=Px6KxoZP6x9ENLmYHcs3lX/N7YcwmXM3FybeYfJYAyA=;
-        b=EIPWvSH/F1VCbI08zawCFG2c5+cItVffxuKY3EU9cfiYBTeSoVBGfQRV3DCbJ1PtD0
-         bff57v8WNDquHhbM/e90HmJC7FD0djurL1bz8n0cNWMHGY72oQCabhD9JQgZKFOx9+WZ
-         mZI+ZLyX9mNRoYsT5eGqi8nswsu+e/RqVPhuo=
-In-Reply-To: <AANLkTikGQe8B84fnL65qb32tkRrV6bTfye-fjGtsxQ9=@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s0907;
+	t=1280058958; bh=fbOi65l3CLWERsjf0KpevHs6RspdVHQBiN+3u0vUjaI=;
+	h=X-QQ-mid:Received:Date:From:To:Message-ID:In-Reply-To:Subject:
+	 MIME-Version:Content-Type:Content-Transfer-Encoding;
+	b=R2MY+YKg0ZHVOHD9IEd00O5F+0u3VnPWA5DLTqNUozeT6GJYsyi0rgCeTTLrcv+yf
+	 xg3P85TdqTtkZ1Qpz4jJzRfSOl2s5nb0r6VGmrWV9HoBDEDTGQLKj+y3qYiB+m0
+In-Reply-To: <4C4B1867.6050006@via.ecp.fr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Pieter Smit <mlist2010@vigor.co.za>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-On Sun, Jul 25, 2010 at 12:13 AM, Pieter Smit <mlist2010@vigor.co.za> w=
-rote:
-> A couple of questions.
->
-> 1. You have 3 devices, with the =A0FW with two interfaces 192.168.1.1=
-14
-> and 192.168.1.200 in each subnet ?
->
-
-Hi, The FW device only has one interface and it should all be
-192.168.1.200.  It was a typo.  The redirector should only have one
-interface with ip 192.168.1.200.
-
-> 2. The two outside hosts will connect to udp ports on the FW device
-> that will be translated to the other device ?
-
-yes
-
->
-> 3. Is the udp streams in one direction ? =A0Does it matter to the udp
-> receiver where the packet comes from or will it always send return
-> traffic to the FW ip ?
->
-
-Yes, the udp is for both direction.  The FW ip ( 192.168.1.200) should
-just redirect packets from one to another and vice versa.
+Is it --mangle-mac-s?
 
 
-> Cheers,
-> Pieter
->
-> On Sat, Jul 24, 2010 at 3:41 PM, Pete Kay <petedao@gmail.com> wrote:
->> Hi,
->>
->> I would like to setup my iptable rules to forward udp packet from on=
-e
->> device to another:
->>
->> 192.168.1.100:16385 =A0<---------> 192.168.1.114:29848 :: 192.168.1.=
-200
->> :29850 =A0<----------> 192.168.1.300:10112
->>
->> What I want to do is forward all packets from 192.168.1.100:16385 to
->> 192.168.1.300:10112 and all packets from 192.168.1.300:10112 to
->> 192.168.1.100:16385
->>
->
+----- Original Message -----
+=46rom: "Antoine Souques" <corum@via.ecp.fr>
+To: netfilter@vger.kernel.org
+Sent: 2010=E5=B9=B4 7 =E6=9C=88 25=E6=97=A5, =E6=98=9F=E6=9C=9F=E6=97=A5=
+ =E4=B8=8A=E5=8D=88 12:44:23 GMT +08:00 Beijing / Chongqing / Hong Kong=
+ / Urumqi
+Subject: Problem with arptables et mangle
+
+Hi,
+
+I have some trouble to mangle the hardware arddresses with arptables. I=
+t=20
+works fine with IP adresses, but I cannot enter a rule with=20
+--mangle-hw--(d|s)
+
+# arptables -A FORWARD --h-length 6 -s 138.195.130.6 --opcode 2 -j=20
+mangle --mangle-hw-s 00:01:30:12:3c:70
+
+And my box tells me : Bad argument `00:01:30:12:3c:70'
+
+kernel :  Debian GNU/Linux, kernel 2.6.26-2-amd64
+
+# lsmod |grep arp
+arpt_mangle             6400  0
+arptable_filter         6656  0
+arp_tables             18832  1 arptable_filter
+x_tables               25224  2 arpt_mangle,arp_tables
+
+I have the version 0.0.3.3 of arptables
+
+Thanks,
+
+Antoine
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
