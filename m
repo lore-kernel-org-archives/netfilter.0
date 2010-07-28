@@ -1,46 +1,49 @@
-From: Payam Chychi <pchychi@gmail.com>
-Subject: Re: How Expensive?
-Date: Tue, 27 Jul 2010 18:17:36 -0700
-Message-ID: <B163F0EB-13C5-4804-95D2-31224AFC296C@gmail.com>
-References: <4C4F7893.9020900@abpni.co.uk>
-Mime-Version: 1.0 (iPhone Mail 8A293)
-Content-Transfer-Encoding: 8BIT
+From: Mart Frauenlob <mart.frauenlob@chello.at>
+Subject: Re: Synflood filtering and Conntrack
+Date: Wed, 28 Jul 2010 07:24:38 +0200
+Message-ID: <4C4FBF16.50203@chello.at>
+References: <4C4F5DCE.2060304@conversis.de>
+Reply-To: netfilter@vger.kernel.org
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:references:in-reply-to
-         :mime-version:content-transfer-encoding:content-type:message-id:cc
-         :x-mailer:from:subject:date:to;
-        bh=T1ztubDjDNXkgjHPN7T1eZF6S+erlOTFrFSPe8zbCFI=;
-        b=jFQab8Va+m0wisVr93UVMpCXi0KxNmCzjQSXuYBrGeZdJqPO5QKBUjucYdM3uyE+ZJ
-         vzlMeuBjKzkDsQvbkM8HHyCw91iqLIe+C9HsXsadDwdPyO93uuMDn9ey0TgJANCK+/L8
-         4tZVWTq1eO7U2ckUm4dp4gr7IuwE4A+hT41D0=
-In-Reply-To: <4C4F7893.9020900@abpni.co.uk>
+In-Reply-To: <4C4F5DCE.2060304@conversis.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jonathan Tripathy <jonnyt@abpni.co.uk>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-it's much less and actually recommended than running all rules in default/less chains as each pkt must traverse the entire chain to be processed
+On 28.07.2010 00:50, dennisml@conversis.de wrote:
+> Hi,
+> today I ran into a problem where several IPs where syn-flooding one of
+> our webservers. The first issue was that the conntrack table was filled
+> up on the firewall and I had to put a NOTRACK rule into the raw table to
+> get that "fixed". Once we got a better picture of the situation we
+> blocked the offending IPs and things wend back to normal on the web server.
+>
+> My question is how do I handle this case in a more scalable fashion in
+> the future. I found the following rules on the net and they seem to do
+> what is needed (namely blocking IPs that create an excessive number of
+> syn connections):
+>
+> iptables -A INPUT -m state --state NEW -p tcp -m tcp --syn \
+> -m recent --name synflood --set
+> iptables -A INPUT -m state --state NEW -p tcp -m tcp --syn \
+> -m recent --name synflood --update --seconds 1 --hitcount 30 -j DROP
+>
+> What I'm wondering about is the "--state NEW" part. If I re-enable
+> connection tracking again for the above rules to work wouldn't these
+> fill up again and basically make these rules useless? Or can I
+> essentially remove the state module bits and just use the plain packets
+> for this since the syn flag is only used in establishing a new
+> connection anyway which makes the "--state NEW" bit not necessary?
 
-Regards,
---
-Payam Tarverdyan Chychi
-Network Engineer
+afaik, the (according) ct entries are destroyed on DROP.
 
-Sent from my iPhone
+asking the other way round:
+what should it remember? - bad packet dropped, awaiting next invalid?
 
-On 2010-07-27, at 5:23 PM, Jonathan Tripathy <jonnyt@abpni.co.uk> wrote:
+best regards
 
-> Hi Everyone,
-> 
-> I wish to use iptables on a host that will be hosting a large number of VMs for customers. IPtables will do some basic "managed firewalling" for them.
-> 
-> My question is, how expensive are having lots of custom chains? My idea is to create one child chain per VM, with the idea to cut down the amount of rules evaluated (i.e. a parent chain would only jump to a child chain if the dest IP matches) - does this sound like a good idea?
-> 
-> Thanks
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Mart
+
