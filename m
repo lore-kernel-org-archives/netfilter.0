@@ -1,17 +1,29 @@
 From: <jwexler@mail.usa.com>
 Subject: RE: Bidirectionally Route all traffic to an ip to another ip
-Date: Wed, 28 Jul 2010 19:46:36 +0900
-Message-ID: <021901cb2e42$2a503590$7ef0a0b0$@usa.com>
-References: <00bf01cb2ca4$3d6af6f0$b840e4d0$@usa.com> <alpine.LSU.2.01.1007261133020.22382@obet.zrqbmnf.qr> <00d501cb2cb2$c97f6000$5c7e2000$@usa.com>
+Date: Wed, 28 Jul 2010 20:28:02 +0900
+Message-ID: <022001cb2e47$f4d470b0$de7d5210$@usa.com>
+References: <00bf01cb2ca4$3d6af6f0$b840e4d0$@usa.com> <alpine.LSU.2.01.1007261133020.22382@obet.zrqbmnf.qr> <00d501cb2cb2$c97f6000$5c7e2000$@usa.com> <021901cb2e42$2a503590$7ef0a0b0$@usa.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <00d501cb2cb2$c97f6000$5c7e2000$@usa.com>
+In-Reply-To: <021901cb2e42$2a503590$7ef0a0b0$@usa.com>
 Content-Language: ja
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: 'Jan Engelhardt' <jengelh@medozas.de>, netfilter@vger.kernel.org
+
+When I typed the email below, I mistyped the rt200ne settings. The following
+are the settings for rt200ne:
+rt200ne=192.168.40.1
+rt200ne=192.168.40.3
+
+-----Original Message-----
+From: netfilter-owner@vger.kernel.org
+[mailto:netfilter-owner@vger.kernel.org] On Behalf Of jwexler@mail.usa.com
+Sent: Wednesday, July 28, 2010 7:47 PM
+To: 'Jan Engelhardt'; netfilter@vger.kernel.org
+Subject: RE: Bidirectionally Route all traffic to an ip to another ip
 
 I nearly got it working but still no dice.
 
@@ -73,8 +85,8 @@ etc....
 In Asterisk 1.4.33.1, sip.conf
 bindport=5060
 bindaddr=0.0.0.0
-rt200ne=192.168.3.1
-rt200ne=192.168.3.70
+rt200ne=192.168.40.1
+rt200ne=192.168.40.3
 
 register => 3:username:password@192.168.40.1/123456789
 will register but
@@ -154,6 +166,11 @@ On Monday 2010-07-26 11:23, jwexler@mail.usa.com wrote:
 ip route add 192.168.50.1/32 via 192.168.40.1
 
 etc.
+
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
 --
 To unsubscribe from this list: send the line "unsubscribe netfilter" in
