@@ -1,83 +1,65 @@
-From: "Timothy Hayes" <morphieus@earthlink.net>
-Subject: SNAT - on bridge only addressing some packets?
-Date: Thu, 29 Jul 2010 12:37:25 -0700
-Message-ID: <006601cb2f55$790557b0$6b100710$@net>
-References: <1ef54a181001150733r5b688d27x3feaf7d4cc25128d@mail.gmail.com> <4B50959F.4040207@solutti.com.br>
+From: Mart Frauenlob <mart.frauenlob@chello.at>
+Subject: Re: Synflood filtering and Conntrack
+Date: Fri, 30 Jul 2010 00:18:30 +0200
+Message-ID: <4C51FE36.4000500@chello.at>
+References: <4C4F5DCE.2060304@conversis.de> <4C4FBF16.50203@chello.at> <alpine.LSU.2.01.1007280756510.26636@obet.zrqbmnf.qr> <4C5161E2.8020407@chello.at> <alpine.LSU.2.01.1007291315440.2646@obet.zrqbmnf.qr> <4C516687.6060602@chello.at> <4C517559.2030702@plouf.fr.eu.org> <alpine.LSU.2.01.1007291448450.15281@obet.zrqbmnf.qr> <alpine.DEB.2.00.1007291723040.32027@blackhole.kfki.hu>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4B50959F.4040207@solutti.com.br>
-Content-Language: en-us
+In-Reply-To: <alpine.DEB.2.00.1007291723040.32027@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: 
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-First I only casually use net filter normally, and never before in with a bridged configuration so I apologize for any missing details.
+> On Thu, 29 Jul 2010, Jan Engelhardt wrote:
 
-What I need to do is have each connection from one box on the local side of the bridge to appear to come from different IP's the system currently. As I've stated the system that I've been told to enact these changes on appears to be a transparent bridge configuration.
+> They are not destroyed on DROP, and you can easily check that.
 
-The bridge is currently running ubuntu 9.04
-2.6.28-19-server #61-Ubuntu SMP Thu May 27 00:22:27 UTC 2010 x86_64 GNU/Linux
-An outsourced vendor is using shorewall version 4.0.15 for fw managment.
-the virtual bridge interface is br0
-the external interface is eth0
-the internal interface is eth2
-The sourcehost appears to have a router external to the bridge as it's default gw.
+YOU could have easily check that - arrogant brick!!!
 
-I've been trying a rule similar to:
-iptables -t nat -A POSTROUTING -o br0 -p tcp -s <unnated source host> -d <external webhost> -j SNAT --to-source <natted sourcehost>
+>>>>> 2 minutes it is.
 
+[...]
 
-What I see off of bridge using "tcpdump -ni eth0 host <external webhost>"
+> Think. -m conntrack --ctstate NEW would not work if the ct only
+> sprung into existence once it is confirmed.
 
+Think yourself.
 
-listening on eth0, link-type EN10MB (Ethernet), capture size 96 bytes
-12:21:26.149511 IP <natted sourcehost>.3387 > <external webhost>.www: S 1222579102:1222579102(0) win 65535 <mss 1460,nop,nop,sackOK>
-12:21:26.233964 IP <external webhost>.www > <natted sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
-12:21:26.234005 IP <external webhost>.www > <unnated sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
-12:21:26.234082 IP <external webhost>.www > <unnated sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
-12:21:29.104834 IP <natted sourcehost>.3387 > <external webhost>.www: S 1222579102:1222579102(0) win 65535 <mss 1460,nop,nop,sackOK>
-12:21:29.189434 IP <external webhost>.www > <natted sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
-12:21:29.189459 IP <external webhost>.www > <unnated sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
-12:21:29.189499 IP <external webhost>.www > <unnated sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
-12:21:29.231507 IP <external webhost>.www > <natted sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
-12:21:29.231529 IP <external webhost>.www > <unnated sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
-12:21:29.231568 IP <external webhost>.www > <unnated sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
-12:21:35.121142 IP <natted sourcehost>.3387 > <external webhost>.www: S 1222579102:1222579102(0) win 65535 <mss 1460,nop,nop,sackOK>
-12:21:35.205294 IP <external webhost>.www > <natted sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
-12:21:35.205324 IP <external webhost>.www > <unnated sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
-12:21:35.205363 IP <external webhost>.www > <unnated sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
-12:21:35.234786 IP <external webhost>.www > <natted sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
-12:21:35.234807 IP <external webhost>.www > <unnated sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
-12:21:35.234847 IP <external webhost>.www > <unnated sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
+[...]
 
-I did turn on ip forwarding by doing:
-echo 1 > /proc/sys/net/ipv4/ip_forward
+> Oh we'll all die of earlier arthritis now...
 
-The firewall does appear to have all the rules needed to track the connections?
-user@system:/home/user# cat base.fwr1 | grep ESTABLISHED
--A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
--A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
--A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
--A all2fw -m state --state RELATED,ESTABLISHED -j ACCEPT
--A all2loc -m state --state RELATED,ESTABLISHED -j ACCEPT
--A all2net -m state --state RELATED,ESTABLISHED -j ACCEPT
--A all2world -m state --state RELATED,ESTABLISHED -j ACCEPT
--A fw2world -m state --state RELATED,ESTABLISHED -j ACCEPT
--A loc2fw -m state --state RELATED,ESTABLISHED -j ACCEPT
--A loc2net -m state --state RELATED,ESTABLISHED -j ACCEPT
--A loc2world -m state --state RELATED,ESTABLISHED -j ACCEPT
--A net2fw -m state --state RELATED,ESTABLISHED -j ACCEPT
--A net2loc -m state --state RELATED,ESTABLISHED -j ACCEPT
--A net2world -m state --state RELATED,ESTABLISHED -j ACCEPT
--A world2all -m state --state RELATED,ESTABLISHED -j ACCEPT
--A world2fw -m state --state RELATED,ESTABLISHED -j ACCEPT
--A world2loc -m state --state RELATED,ESTABLISHED -j ACCEPT
+arrogant bs
 
-Any help would be greatly appreciated.
+[...]
+
+>> But the ct entry must undoubtly exist to be able to match -m conntrack
+>> --ctstate NEW.
+ >> Perhaps it's just that conntrack(8) won't show it?
+
+Now it's the others... of course.
 
 
+ > On Thu, 29 Jul 2010, Jozsef Kadlecsik wrote:
+
+> I don't see why it looks soo complicated: of course, a ct entry is created
+> by conntrack whenever a new connection is detected. And of course the
+> entry is destroyed if the packet, which triggered to create the new entry,
+> is dropped by a rule. Why should the conntrack entry be kept, if the
+> connection is not allowed by the rules?
+>
+> The new ct entries are kept in the unconfirmed list and only added to the
+> conntrack hash iff the entry will be confirmed, that is the entry-creating
+> packet won't be dropped by a rule.
+
+roflmao
+
+Jan: shame, shame, shame - shame on you!
+
+
+Thanks Pascal, Josef
 
 
