@@ -1,47 +1,40 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: strange log on gateway inside []
-Date: Thu, 29 Jul 2010 11:49:42 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1007291148080.22862@obet.zrqbmnf.qr>
-References: <4C513E0B.6040005@unipex.it> <alpine.LSU.2.01.1007291051570.10386@obet.zrqbmnf.qr> <4C514783.2000603@unipex.it>
+From: Richard Horton <arimus.uk@gmail.com>
+Subject: Re: iptables rule for ovh
+Date: Thu, 29 Jul 2010 11:07:05 +0100
+Message-ID: <AANLkTikH=virUjmgWAMVJuMLrkJEBDCZ+3St9h=RA534@mail.gmail.com>
+References: <4C51450F.7070906@gmail.com>
+	<alpine.LSU.2.01.1007291147010.22862@obet.zrqbmnf.qr>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C514783.2000603@unipex.it>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:in-reply-to
+         :references:date:message-id:subject:from:to:content-type;
+        bh=wvfosAcKlbNZYh6OBfmiVf3g8MU8NkmCdV5xivDOM0A=;
+        b=hanpdqQrxLcawwuyt1j3YbIuvlnRtYKAyVkJ7FrE6uv/FQ+IKRzplRg+VBcK98bNXX
+         vSWDeiu3EOjo9W/fqMgWvyIkMz17ODbnimlB7cFkhsQsZJrrnks7jMf1b0Y+vAMjGUjR
+         jbQs4XSYQPX5Myl1uwpZbF0hmnRRXGCRmxQ1s=
+In-Reply-To: <alpine.LSU.2.01.1007291147010.22862@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Michele Petrazzo - Unipex <michele.petrazzo@unipex.it>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Thursday 2010-07-29 11:18, Michele Petrazzo - Unipex wrote:
-
->Jan Engelhardt ha scritto:
->>>My output chain:
->>>*filter
->>>:OUTPUT DROP [4831251:620928037]
->>>-A OUTPUT -o lo -j ACCEPT
->>>-A OUTPUT -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
->>>-A OUTPUT -j LOG --log-prefix "Firewall DROPOUT- "
->>
->>So what's left is INVALID packets.
+On 29 July 2010 10:47, Jan Engelhardt <jengelh@medozas.de> wrote:
 >
->Seem that a rule that drop the INVALID packets to the trick. But... 
->drop or reject the invalid packets?
+> Neither of those kernels is supported anymore.
+> (My credo is: shouldn't have waited until it's completely turned to rust.)
 
-Whatever fits your need.
+Equally if it isn't broken don't fix it... though in this instance I'd
+agree as suspect 2.6.9 lacks a fair few of the security/critical bug
+fixes....
 
->>>The question. Why I see this log and why my fw want to talk with 
->>>external and, the last, why the kernel double log talk and one is 
->>>inside the brackets [ ]?
->>
->>Because those are the contents of the ICMP packet. See the RFC.
->
->Append also with tcp, no only icmp.
->P.s. Have you a rfc number?
 
-792
-
->And the last, have you also an rfc that explain why and where invalid 
->come from?
-
-INVALID is a CT classification. RFC don't have much to do with that.
+-- 
+Richard Horton
+Users are like a virus: Each causing a thousand tiny crises until the
+host finally dies.
+http://www.pbase.com/arimus - My online photogallery
+http://uk.linkedin.com/in/richardhorton1972 - My linkedin profile
+http://www.solstans.co.uk/richard - Online CV
