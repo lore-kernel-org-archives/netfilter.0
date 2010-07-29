@@ -1,35 +1,47 @@
 From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: iptables rule for ovh
-Date: Thu, 29 Jul 2010 11:47:57 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1007291147010.22862@obet.zrqbmnf.qr>
-References: <4C51450F.7070906@gmail.com>
+Subject: Re: strange log on gateway inside []
+Date: Thu, 29 Jul 2010 11:49:42 +0200 (CEST)
+Message-ID: <alpine.LSU.2.01.1007291148080.22862@obet.zrqbmnf.qr>
+References: <4C513E0B.6040005@unipex.it> <alpine.LSU.2.01.1007291051570.10386@obet.zrqbmnf.qr> <4C514783.2000603@unipex.it>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C51450F.7070906@gmail.com>
+In-Reply-To: <4C514783.2000603@unipex.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Portedaix <portedaix@gmail.com>
+To: Michele Petrazzo - Unipex <michele.petrazzo@unipex.it>
 Cc: netfilter@vger.kernel.org
 
+On Thursday 2010-07-29 11:18, Michele Petrazzo - Unipex wrote:
 
-On Thursday 2010-07-29 11:08, Portedaix wrote:
+>Jan Engelhardt ha scritto:
+>>>My output chain:
+>>>*filter
+>>>:OUTPUT DROP [4831251:620928037]
+>>>-A OUTPUT -o lo -j ACCEPT
+>>>-A OUTPUT -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
+>>>-A OUTPUT -j LOG --log-prefix "Firewall DROPOUT- "
+>>
+>>So what's left is INVALID packets.
 >
-> QUESTION - SHORT VERSION :
-> Is there a way to have a rule equivalent to the one below which is for kernel
-> 2.6.14 and above,  with a linux kernel 2.6.9 ?
-> '#iptables -A INPUT -p udp -m udp --dport 5060 -m string --string "Cirpack
-> KeepAlive Packet" --algo bm --to 65535 --source sip.ovh.net -j DROP'
->
-> I could avoid that by activating the rule
->
-> #iptables -A INPUT -p udp -m udp --dport 5060 -m string --string "Cirpack
-> KeepAlive Packet" --algo bm --to 65535 --source sip.ovh.net -j DROP
->
-> But my main problem is this string module. My kernel is 2.6.9, and string
-> module is used starting from 2.6.14 kernel. Upgrading the kernel on my
-> production server is not easy, and may lead to a heavy reconfiguration.
+>Seem that a rule that drop the INVALID packets to the trick. But... 
+>drop or reject the invalid packets?
 
-Neither of those kernels is supported anymore.
-(My credo is: shouldn't have waited until it's completely turned to rust.)
+Whatever fits your need.
+
+>>>The question. Why I see this log and why my fw want to talk with 
+>>>external and, the last, why the kernel double log talk and one is 
+>>>inside the brackets [ ]?
+>>
+>>Because those are the contents of the ICMP packet. See the RFC.
+>
+>Append also with tcp, no only icmp.
+>P.s. Have you a rfc number?
+
+792
+
+>And the last, have you also an rfc that explain why and where invalid 
+>come from?
+
+INVALID is a CT classification. RFC don't have much to do with that.
