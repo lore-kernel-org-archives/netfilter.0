@@ -1,49 +1,38 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Synflood filtering and Conntrack
-Date: Wed, 28 Jul 2010 16:27:27 +0200
-Message-ID: <4C503E4F.7070302@plouf.fr.eu.org>
-References: <4C4F5DCE.2060304@conversis.de> <4C4FBF16.50203@chello.at> <alpine.LSU.2.01.1007280756510.26636@obet.zrqbmnf.qr> <4C5030EA.90600@plouf.fr.eu.org> <alpine.LSU.2.01.1007281608440.28383@obet.zrqbmnf.qr>
+From: Michele Petrazzo - Unipex <michele.petrazzo@unipex.it>
+Subject: strange log on gateway inside []
+Date: Thu, 29 Jul 2010 10:38:35 +0200
+Message-ID: <4C513E0B.6040005@unipex.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LSU.2.01.1007281608440.28383@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: "Dennis J." <dennisml@conversis.de>, netfilter@vger.kernel.org, Mart Frauenlob <mart.frauenlob@chello.at>, pablo@netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
+Hi list,
+I have a firewall that log some strange, for me, packets on the OUTPUT 
+chain that I haven't see before. This is a typical log:
 
+Firewall DROPOUT- IN= OUT=eth0 SRC=MYPUBBIP DST=188.153.11.87
+     LEN=92 TOS=0x00 PREC=0xC0 TTL=64 ID=49303 PROTO=ICMP TYPE=3 CODE=3
+[SRC=188.153.11.87 DST=MYADDITIONALIP LEN=64 TOS=0x00 PREC=0x00 TTL=118 
+ID=28851 DF PROTO=TCP SPT=12387 DPT=51684 WINDOW=17424 RES=0x00 ACK SYN 
+URGP=0 ]
 
-Jan Engelhardt a =C3=A9crit :
-> On Wednesday 2010-07-28 15:30, Pascal Hambourg wrote:
->>
->> Right, the DROP target has no direct effect on conntrack. When a
->> packet belonging to an already existing (confirmed) connection is
->> dropped, the conntrack entry is not destroyed. But IIUC when the
->> first packet that would create a new connection (and a new conntrack
->> entry) is dropped for any reason before it reaches the conntrack
->> confirm in the LOCAL_IN or POST_ROUTING
->> hooks (after INPUT or POSTROUTING chains), the conntrack
->> entry is destroyed, isn't it ?
+My output chain:
+*filter
+:OUTPUT DROP [4831251:620928037]
+-A OUTPUT -o lo -j ACCEPT
+-A OUTPUT -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
+-A OUTPUT -j LOG --log-prefix "Firewall DROPOUT- "
 
-> Think. -m conntrack --ctstate NEW would not work if the ct only
-> sprung into existence once it is confirmed.
-> The ct is created about before you enter the mangle-PREROUTING chain.
+On it I have more that one pubb ip addrs and, the MYPUBBIP is the first 
+and primary, the MYADDITIONALIP if one of the secondaries.
 
-Did I wrote otherwise ?
-I wrote that the new conntrack entry created by a packet is destroyed i=
-f
-if that packet does not reach contrack confirm, so I believe it implies
-that it was created first. You can't destroy something that does not
-exist, right ?
+The question. Why I see this log and why my fw want to talk with 
+external and, the last, why the kernel double log talk and one is inside 
+the brackets  [ ] ?
 
-1. Packet is seen by conntrack in PRE_ROUTING/LOCAL_OUT -> create
-conntrack entry.
-2. Packet is seen again by conntrack in LOCAL_IN/POST_ROUTING -> confir=
-m
-conntrack entry, otherwise delete it.
-
-Am I correct ?
-
-
+Thanks,
+Michele
