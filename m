@@ -1,46 +1,83 @@
-From: Richard Horton <arimus.uk@gmail.com>
-Subject: Re: block network access for certain users/groups
-Date: Thu, 29 Jul 2010 20:33:35 +0100
-Message-ID: <AANLkTi=T0qzC5ptm+dyUh+Wk3Jk-X6mu65HMQ7bNoD_W@mail.gmail.com>
-References: <op.vgmctfy22qajpl@imac.local>
+From: "Timothy Hayes" <morphieus@earthlink.net>
+Subject: SNAT - on bridge only addressing some packets?
+Date: Thu, 29 Jul 2010 12:37:25 -0700
+Message-ID: <006601cb2f55$790557b0$6b100710$@net>
+References: <1ef54a181001150733r5b688d27x3feaf7d4cc25128d@mail.gmail.com> <4B50959F.4040207@solutti.com.br>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:content-type;
-        bh=Qenkt16Yv9QI0wiGP5pm4gespgM1umoAfIL+VA8nWTw=;
-        b=Kr3ZEIt3yPpsjzGg9FWk1Wai+g/CApQ7xsuhr2k9m5+2BeUDtdTurnFlVicJvdSMbX
-         eiUc8Ozn/L2LCFiVziqwVRNBGvwxf2a2hHMkxzqsiRoAl2mqFRYIJU0YAm3arakw7jHZ
-         RPCuHEzSY9VFVFs0iDuNsOygvsh19qKEp5ClU=
-In-Reply-To: <op.vgmctfy22qajpl@imac.local>
+In-Reply-To: <4B50959F.4040207@solutti.com.br>
+Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Elmar Stellnberger <estellnb@gmail.com>, netfilter@vger.kernel.org
+To: 
+Cc: netfilter@vger.kernel.org
 
-On 29 July 2010 20:09, Elmar Stellnberger <estellnb@gmail.com> wrote:
->
->
-> I need to block network access for certain users/groups, fully:
->
-> iptables -A mychain -m owner --gid-owner blockedusergroup -j DROP
->
+First I only casually use net filter normally, and never before in with a bridged configuration so I apologize for any missing details.
 
-Err... I know this is stating the obvious but your output chain does
-jump to the mychain at some point doesn't it ;)
+What I need to do is have each connection from one box on the local side of the bridge to appear to come from different IP's the system currently. As I've stated the system that I've been told to enact these changes on appears to be a transparent bridge configuration.
 
-Also some apps remember do not run with the groupid of the person who
-launched the application - gid-owner matches the *effective* group id
-of the process.
+The bridge is currently running ubuntu 9.04
+2.6.28-19-server #61-Ubuntu SMP Thu May 27 00:22:27 UTC 2010 x86_64 GNU/Linux
+An outsourced vendor is using shorewall version 4.0.15 for fw managment.
+the virtual bridge interface is br0
+the external interface is eth0
+the internal interface is eth2
+The sourcehost appears to have a router external to the bridge as it's default gw.
 
-
+I've been trying a rule similar to:
+iptables -t nat -A POSTROUTING -o br0 -p tcp -s <unnated source host> -d <external webhost> -j SNAT --to-source <natted sourcehost>
 
 
---
-Richard Horton
-Users are like a virus: Each causing a thousand tiny crises until the
-host finally dies.
-http://www.pbase.com/arimus - My online photogallery
-http://www.richardhorton.info
+What I see off of bridge using "tcpdump -ni eth0 host <external webhost>"
+
+
+listening on eth0, link-type EN10MB (Ethernet), capture size 96 bytes
+12:21:26.149511 IP <natted sourcehost>.3387 > <external webhost>.www: S 1222579102:1222579102(0) win 65535 <mss 1460,nop,nop,sackOK>
+12:21:26.233964 IP <external webhost>.www > <natted sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
+12:21:26.234005 IP <external webhost>.www > <unnated sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
+12:21:26.234082 IP <external webhost>.www > <unnated sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
+12:21:29.104834 IP <natted sourcehost>.3387 > <external webhost>.www: S 1222579102:1222579102(0) win 65535 <mss 1460,nop,nop,sackOK>
+12:21:29.189434 IP <external webhost>.www > <natted sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
+12:21:29.189459 IP <external webhost>.www > <unnated sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
+12:21:29.189499 IP <external webhost>.www > <unnated sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
+12:21:29.231507 IP <external webhost>.www > <natted sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
+12:21:29.231529 IP <external webhost>.www > <unnated sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
+12:21:29.231568 IP <external webhost>.www > <unnated sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
+12:21:35.121142 IP <natted sourcehost>.3387 > <external webhost>.www: S 1222579102:1222579102(0) win 65535 <mss 1460,nop,nop,sackOK>
+12:21:35.205294 IP <external webhost>.www > <natted sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
+12:21:35.205324 IP <external webhost>.www > <unnated sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
+12:21:35.205363 IP <external webhost>.www > <unnated sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
+12:21:35.234786 IP <external webhost>.www > <natted sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
+12:21:35.234807 IP <external webhost>.www > <unnated sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
+12:21:35.234847 IP <external webhost>.www > <unnated sourcehost>.3387: S 350740345:350740345(0) ack 1222579103 win 5840 <mss 1460,nop,nop,sackOK>
+
+I did turn on ip forwarding by doing:
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+The firewall does appear to have all the rules needed to track the connections?
+user@system:/home/user# cat base.fwr1 | grep ESTABLISHED
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A all2fw -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A all2loc -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A all2net -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A all2world -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A fw2world -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A loc2fw -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A loc2net -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A loc2world -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A net2fw -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A net2loc -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A net2world -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A world2all -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A world2fw -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A world2loc -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+Any help would be greatly appreciated.
+
+
+
+
