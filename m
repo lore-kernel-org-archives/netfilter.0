@@ -1,19 +1,19 @@
 From: "Elmar Stellnberger" <estellnb@gmail.com>
 Subject: block network access for certain users/groups
-Date: Thu, 29 Jul 2010 21:09:05 +0200
-Message-ID: <op.vgmctfy22qajpl@imac.local>
+Date: Thu, 29 Jul 2010 21:09:51 +0200
+Message-ID: <op.vgmcupy42qajpl@imac.local>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:content-type:date:to:subject
+        h=domainkey-signature:received:received:content-type:date:subject:to
          :mime-version:content-transfer-encoding:from:organization:message-id
          :user-agent;
         bh=DrGW/rcXe4mK5EmmQtoMW7zDzvVIlBCCqLpvsFc5je8=;
-        b=Z94t2MRdBW6KxnC6ppgPBPLM8YVYosLMT6kpjT2mhZXUM98AZj7M++mrBMfBIdXa59
-         YWU6aUSzBs7pq3RE5tKapj0aAPOBhSclpKrTYE2JZ5hHoSq2cLvQqyrif/yNyPYdo2iz
-         cCEbYZWwKpHXg9AG6wVkhNtvmEgfMYBylOSGA=
+        b=s4tRmz/7MalM1yte6grzYReSXLO/ARtnhVUx92vysDM8WjZUoAy9t1voKXZvz0sxIg
+         03ED+WoiuPnVDpFcosKrihAAaBbgnEE8Ar04rUcwq+M73Vc4/b0AsuU3HWEXOQpElLtX
+         JrV7iSgOsvQIQmLK75rvlWg1+8rsZSDlPXeso=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
