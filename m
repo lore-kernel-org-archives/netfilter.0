@@ -1,59 +1,42 @@
-From: Portedaix <portedaix@gmail.com>
-Subject: iptables rule for ovh
-Date: Thu, 29 Jul 2010 11:08:31 +0200
-Message-ID: <4C51450F.7070906@gmail.com>
+From: Michele Petrazzo - Unipex <michele.petrazzo@unipex.it>
+Subject: Re: strange log on gateway inside []
+Date: Thu, 29 Jul 2010 11:18:59 +0200
+Message-ID: <4C514783.2000603@unipex.it>
+References: <4C513E0B.6040005@unipex.it> <alpine.LSU.2.01.1007291051570.10386@obet.zrqbmnf.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id:date:from
-         :user-agent:mime-version:to:subject:content-type
-         :content-transfer-encoding;
-        bh=32ivHFk5y1wXFpnBfO+yEYGgDXiuuDfHibKz2yHLhBw=;
-        b=tOeuxp8ubr4qu9RuO5hQqbJW3qgojS5OtFn8xaxrklekNCdNc483FQrJFRC9HXWI10
-         7UuYpLBMJDWMXhj2QVvwEJgbjOZgNj+8saOLaCJ5yGF8SYLduG/VxXlycoTIpSJAJiV2
-         vft/c+Zh4wjy+EgqLJmcoxgy7l3Go4qacW7AM=
+In-Reply-To: <alpine.LSU.2.01.1007291051570.10386@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+Jan Engelhardt ha scritto:
+>> My output chain:
+>> *filter
+>> :OUTPUT DROP [4831251:620928037]
+>> -A OUTPUT -o lo -j ACCEPT
+>> -A OUTPUT -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
+>> -A OUTPUT -j LOG --log-prefix "Firewall DROPOUT- "
+>
+> So what's left is INVALID packets.
+>
 
-QUESTION - SHORT VERSION :
-Is there a way to have a rule equivalent to the one below which is for 
-kernel 2.6.14 and above,  with a linux kernel 2.6.9 ?
-'#iptables -A INPUT -p udp -m udp --dport 5060 -m string --string 
-"Cirpack KeepAlive Packet" --algo bm --to 65535 --source sip.ovh.net -j 
-DROP'
+First, thanks.
+Seem that a rule that drop the INVALID packets to the trick. But... drop 
+or reject the invalid packets?
 
-QUESTION - DETAILED VERSION :
+>> The question. Why I see this log and why my fw want to talk with external and,
+>> the last, why the kernel double log talk and one is inside the brackets  [ ] ?
+>
+> Because those are the contents of the ICMP packet. See the RFC.
 
-I use a sip telephone line from OVH and run asterisk PBX on a sme linux 
-server to connect to it.
-The asterisk command line is polluted by an error message.
+Append also with tcp, no only icmp.
+P.s. Have you a rfc number?
 
-#chan_sip.c:7289 determine_firstline_parts: Bad request protocol Packet
+And the last, have you also an rfc that explain why and where invalid 
+come from?
 
-asterisk debug shows
-
-#<--- SIP read from 91.121.129.17:5060 --->
-#Cirpack KeepAlive Packet
-
-
-I could avoid that by activating the rule
-
-#iptables -A INPUT -p udp -m udp --dport 5060 -m string --string 
-"Cirpack KeepAlive Packet" --algo bm --to 65535 --source sip.ovh.net -j DROP
-
-But my main problem is this string module. My kernel is 2.6.9, and 
-string module is used starting from 2.6.14 kernel. Upgrading the kernel 
-on my production server is not easy, and may lead to a heavy 
-reconfiguration. So if I can find a way just to have this rule 
-activated, that would be fine.
-
-Thanks in advance for any help.
-Olivier
-
-
+Thanks
