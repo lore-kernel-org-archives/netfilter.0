@@ -1,48 +1,50 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: block network access for certain users/groups
-Date: Fri, 30 Jul 2010 11:00:43 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1007301036310.27811@obet.zrqbmnf.qr>
-References: <op.vgmcupy42qajpl@imac.local> <4C51D771.1080904@gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Synflood filtering and Conntrack
+Date: Fri, 30 Jul 2010 12:32:28 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1007301106410.957@blackhole.kfki.hu>
+References: <4C4F5DCE.2060304@conversis.de> <4C4FBF16.50203@chello.at> <alpine.LSU.2.01.1007280756510.26636@obet.zrqbmnf.qr> <4C5161E2.8020407@chello.at> <alpine.LSU.2.01.1007291315440.2646@obet.zrqbmnf.qr> <4C516687.6060602@chello.at> <4C517559.2030702@plouf.fr.eu.org>
+ <alpine.LSU.2.01.1007291448450.15281@obet.zrqbmnf.qr> <alpine.DEB.2.00.1007291723040.32027@blackhole.kfki.hu> <4C520C9C.7090909@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C51D771.1080904@gmail.com>
+In-Reply-To: <4C520C9C.7090909@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="utf-8"
-To: Lars Nooden <lars.curator@gmail.com>
-Cc: Elmar Stellnberger <estellnb@gmail.com>, netfilter@vger.kernel.org, peterb@chiark.greenend.org.uk, chris@chrisbrenton.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Cc: Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org, "Dennis J." <dennisml@conversis.de>, Pablo Neira Ayuso <pablo@netfilter.org>
 
+On Fri, 30 Jul 2010, Pascal Hambourg wrote:
 
-Ref: http://marc.info/?l=3Dnetfilter&m=3D128043201731932&w=3D2
+> Jozsef Kadlecsik a ?crit :
+> > 
+> > I don't see why it looks soo complicated: of course, a ct entry is created 
+> > by conntrack whenever a new connection is detected. And of course the 
+> > entry is destroyed if the packet, which triggered to create the new entry,
+> > is dropped by a rule. Why should the conntrack entry be kept, if the 
+> > connection is not allowed by the rules?
+> > 
+> > The new ct entries are kept in the unconfirmed list and only added to the 
+> > conntrack hash iff the entry will be confirmed, that is the entry-creating 
+> > packet won't be dropped by a rule.
+> 
+> Thanks for this explanation. Just one more clarification, please : is
+> the conntrack entry destroyed also if the packet which triggered its
+> creation is dropped by something else than an iptables rule, such as
+> routing decision, TTL exceeded, conflict with an existing NAT mapping ?
 
-On Thursday 2010-07-29 21:33, Lars Nooden wrote:
-> On 7/29/10 10:09 PM, Elmar Stellnberger wrote:
->> iptables -A mychain -m owner --gid-owner blockedusergroup -j DROP
->
-> For starters, consider using the REJECT target instead of DROP if for=
- no other
-> reason than that it will make your engineering easier:
->
-> 	http://www.chiark.greenend.org.uk/~peterb/network/drop-vs-reject
+Yes, if any other subsystem drop the packet, the conntrack entry is 
+destroyed as well.
 
-That page - especially the summary - is leaving out one essential featu=
-re
-G=C3=A1spar already mentioned it in another thread; the CHAOS target fr=
-om
-Xtables-addons.
+The first packet must pass through (forwarded or delivered to a local 
+process), otherwise the ct entry is just created and then destroyed. 
+Unfortunately, without a massive redesign of the whole system, we cannot 
+get rid of this unfortunate create/destroy ct entry cycle.
 
-It is hard to press its behavior into the three rows
-"application connects to non-existent service" / "na=C3=AFve network sc=
-anning" /
-"specialist program", but the behavior can be summed up into:
-
-1. Connect: With an x% (tunable) chance, failure is reported promptly t=
-o the
-   user/scanner. (This is to elicit point 2.)
-2. Scanning many ports will be slow/expensive. (nmap)
-3. Syn scans produce nonsensical results. (nmap)
-
-> 	http://www.chrisbrenton.org/2009/07/why-firewall-reject-rules-are-be=
-tter-than-firewall-drop-rules/
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
