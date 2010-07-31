@@ -1,41 +1,51 @@
-From: Richard Horton <arimus.uk@gmail.com>
-Subject: Re: block network access for certain users/groups
-Date: Sat, 31 Jul 2010 06:04:45 +0100
-Message-ID: <AANLkTinz=AfA0N2DRabe2XfTpvNqdaQv_WKNnF3Xwudd@mail.gmail.com>
-References: <op.vgmcupy42qajpl@imac.local>
-	<4C51D771.1080904@gmail.com>
-	<alpine.LSU.2.01.1007301036310.27811@obet.zrqbmnf.qr>
-	<4C52B8D4.30207@gmail.com>
-	<AANLkTini081q41=oHEoSgQQ+YGN5NEkvuDhU7MBWguhV@mail.gmail.com>
+From: Portedaix <portedaix@gmail.com>
+Subject: Re: iptables rule for ovh
+Date: Sat, 31 Jul 2010 11:23:59 +0200
+Message-ID: <4C53EBAF.8030207@gmail.com>
+References: <4C51450F.7070906@gmail.com> <4C514A38.1010702@plouf.fr.eu.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type;
-        bh=1yDjDtUeU8Z0SJOfVo/kUVUzhgdm/jWYA1rMKh2/nUg=;
-        b=YwEB1bQEMcAry/yg2+7+faMmwK+o4PCbLaRM5zpO7qYGwVfUQoT340hR81xRhjbhcS
-         pE5G/55hoPmthKcicZqp2HJxy5E8JMQQmD6MJ7U9aWQEOHPr5uGgCo7rx37E9MSVX0+1
-         WQpqjRk6ASy//ZY9bg5DbJhi3eysQh3WnLyZs=
-In-Reply-To: <AANLkTini081q41=oHEoSgQQ+YGN5NEkvuDhU7MBWguhV@mail.gmail.com>
+        h=domainkey-signature:received:received:message-id:date:from
+         :user-agent:mime-version:to:cc:subject:references:in-reply-to
+         :content-type:content-transfer-encoding;
+        bh=smbTcFHiYxcaEq8BY4pGheuapkrJO2CfVyDbqeFfw8o=;
+        b=xicJNzhAaQadlCdnChID0nD1fz5yzlClOhijLq94qR2N0D+GeR2iiTueRGDOsosAZb
+         5o4ja17NRd7UiiBdWT1OHVpbqpI0U3KXCjwXXzM6LgA8/O5DQdFDvl2SkvsnCAWL2nI3
+         v+W9Y2devhrLbjJ3v7u48PkYCKdyJhntLlZ40=
+In-Reply-To: <4C514A38.1010702@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Elmar Stellnberger <estellnb@gmail.com>
-Cc: Lars Nooden <lars.curator@gmail.com>, jengelh@medozas.de, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Cc: netfilter@vger.kernel.org
 
-[snipped original]
-Might be worth turn trace on :
-iptables -t raw -A OUTPUT -j TRACE
+Thanks for the answer. I know now what choice I have : compile=20
+patch-o-matic-ng or go for a new kernel. Probably the second option is=20
+the wisest.
+Regards
+Olivier
 
-See which rules the packets hit; if you want to cut down the amount of
-traces just add the relevant matches - I tend to trace everything
-until I know what I'm the packet(s) look like what I expect and  then
-start focusing in.
--- 
-Richard Horton
-Users are like a virus: Each causing a thousand tiny crises until the
-host finally dies.
-http://www.pbase.com/arimus - My online photogallery
-http://www.richardhorton.info
+Le 29/07/2010 11:30, Pascal Hambourg a =E9crit :
+> Hello,
+>
+> Portedaix a =E9crit :
+>   =20
+>> Hello,
+>>
+>> QUESTION - SHORT VERSION :
+>> Is there a way to have a rule equivalent to the one below which is f=
+or
+>> kernel 2.6.14 and above,  with a linux kernel 2.6.9 ?
+>> '#iptables -A INPUT -p udp -m udp --dport 5060 -m string --string
+>> "Cirpack KeepAlive Packet" --algo bm --to 65535 --source sip.ovh.net=
+ -j
+>> DROP'
+>>     =20
+> FWIW, the 'string' match was available for older kernels in the
+> patch-o-matic-ng up to patch-o-matic-ng-20050918.
+>
+>
+>   =20
