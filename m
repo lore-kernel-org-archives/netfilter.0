@@ -1,50 +1,27 @@
-From: Andrew Beverley <andy@andybev.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 Subject: Re: libnfcontrack weirdness
-Date: Mon, 02 Aug 2010 19:10:23 +0100
-Message-ID: <1280772623.1349.3.camel@andybev>
-References: <59381F8FA203F4555FD43BB0@Ximines.local>
+Date: Mon, 02 Aug 2010 20:45:02 +0200
+Message-ID: <4C57122E.8010108@netfilter.org>
+References: <59381F8FA203F4555FD43BB0@Ximines.local> <1280772623.1349.3.camel@andybev>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1280772645; bh=hVW3QHTcRvSGYyNuctf7Yhr6BcKYLXGdfCMUM
-	5H0/9M=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
-	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=wBEKen+F
-	oZWIVce0hKrv1A0xeMjyMpMORUGK69/48H8yMUS5lQMjVMEw2lVguMtrwXxRDmxTKTv
-	gpqEyF8kuwp0hzm0DEWfAMdDs79RU2zze8fvVreZauTEXk03+UQkklDMA1G57eLWmqd
-	CCWjOOsYonaX0dLJkk0VxVGxCVSj8=
-In-Reply-To: <59381F8FA203F4555FD43BB0@Ximines.local>
+In-Reply-To: <1280772623.1349.3.camel@andybev>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Alex Bligh <alex@alex.org.uk>
-Cc: netfilter@vger.kernel.org
+To: Andrew Beverley <andy@andybev.com>
+Cc: Alex Bligh <alex@alex.org.uk>, netfilter@vger.kernel.org
 
-On Mon, 2010-08-02 at 17:20 +0100, Alex Bligh wrote:
-> I may be doing something stupid here, but I can't seem to get information
-> on an existing connection through libnfconntrack.
-> 
-> Code extract below. When passed a 4-tuple describing an existing connection,
-> it prints "Found connection", when passed other stuff, it does not. So
-> that much is working.
-> 
-> However, no ATTR_ stuff relating to the connection is printed out
-> except for ATTR_ORIG_PORT_* which are synonyms of what has been
-> set with nfct_set_attr.
+On 02/08/10 20:10, Andrew Beverley wrote:
+> The documentation is sparse, but there are some good examples in the
+> utils folder of the source code. Also, api.c is well commented for each
+> of the functions.
 
-You have to use a callback function to read any information back. Before
-your nfct_query you should use nfct_callback_register to register a
-callback function, which should contain your get_attr calls.
+We should convert that documentation in the source code of api.c to
+doxygen format. It shouldn't take more than one hour to get it done.
+Then, we can put it on the website as we did for libnetfilter_log and
+libnetfilter_queue.
 
-> I am having difficulty finding documentation for this,
->
-
-The documentation is sparse, but there are some good examples in the
-utils folder of the source code. Also, api.c is well commented for each
-of the functions.
-
-Regards,
-
-Andy
-
-
+If someone feels in the mood to do it, you can have a look at the other
+libraries to see how we've done it.
