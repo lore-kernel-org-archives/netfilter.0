@@ -1,44 +1,47 @@
-From: Andrew Beverley <andy@andybev.com>
+From: Alex Bligh <alex@alex.org.uk>
 Subject: Re: libnfcontrack weirdness
-Date: Mon, 02 Aug 2010 20:14:45 +0100
-Message-ID: <1280776485.1349.5.camel@andybev>
+Date: Mon, 02 Aug 2010 23:29:42 +0100
+Message-ID: <BE4D961E8D8AD306DA51826B@nimrod.local>
 References: <59381F8FA203F4555FD43BB0@Ximines.local>
-	 <1280772623.1349.3.camel@andybev>  <4C57122E.8010108@netfilter.org>
+ <1280772623.1349.3.camel@andybev>
+Reply-To: Alex Bligh <alex@alex.org.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1280776506; bh=su1wS5J3gLD8Bv1oKQtmrqU5r+f3MIOc/mSw3
-	dmGjxY=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
-	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=IcUwC2DX
-	nECP/bgphXFyM3SiUkdAn99ziz7tI2uxa8NoR3vlFy0O4qGGp0xJRnCnJtGUjsnnA7v
-	7XkLS92Bl4/Kv7+0/TmA+TUdPJRW93TiVTmHSQXvrIoiqd9rJTixSa68K9Ye4L0bQxe
-	6zhsOhA6ZenACN/VwEmngMAmcUuXs=
-In-Reply-To: <4C57122E.8010108@netfilter.org>
+In-Reply-To: <1280772623.1349.3.camel@andybev>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Alex Bligh <alex@alex.org.uk>, netfilter@vger.kernel.org
-
-On Mon, 2010-08-02 at 20:45 +0200, Pablo Neira Ayuso wrote:
-> On 02/08/10 20:10, Andrew Beverley wrote:
-> > The documentation is sparse, but there are some good examples in the
-> > utils folder of the source code. Also, api.c is well commented for each
-> > of the functions.
-> 
-> We should convert that documentation in the source code of api.c to
-> doxygen format. It shouldn't take more than one hour to get it done.
-> Then, we can put it on the website as we did for libnetfilter_log and
-> libnetfilter_queue.
-> 
-> If someone feels in the mood to do it, you can have a look at the other
-> libraries to see how we've done it.
-
-I'd like to give it a go, but it probably wouldn't be for the next
-couple of weeks. I'm keen to get into the documentation side of life,
-once I've got a couple of other projects out of the way.
-
-Andy
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Andrew Beverley <andy@andybev.com>
+Cc: netfilter@vger.kernel.org, Alex Bligh <alex@alex.org.uk>
 
 
+
+--On 2 August 2010 19:10:23 +0100 Andrew Beverley <andy@andybev.com> wrote:
+
+> You have to use a callback function to read any information back. Before
+> your nfct_query you should use nfct_callback_register to register a
+> callback function, which should contain your get_attr calls.
+
+Thanks. I got this working in the end. However, somewhat bizarrely
+the relevant information (the internal port number) in the callback is
+returned in ATTR_ORIG_SRC_PORT (etc.), despite this being what is
+searched on (the external port number). I am a bit confused by this,
+but it seems to work.
+
+>> I am having difficulty finding documentation for this,
+>
+> The documentation is sparse, but there are some good examples in the
+> utils folder of the source code. Also, api.c is well commented for each
+> of the functions.
+
+Thanks. Just to give you a clueless newbie's point of view, I was trying
+to find either a web page, or a manpage. Doxygen would clearly help
+with the latter. Even a README file that explicitly pointed at api.c
+if that's where to look (the current reference is somewhat cryptic -
+I thought it was to the .h files) would be a lot better than a poke in
+the eye.
+
+-- 
+Alex Bligh
