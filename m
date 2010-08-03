@@ -1,47 +1,34 @@
-From: Alex Bligh <alex@alex.org.uk>
-Subject: Re: libnfcontrack weirdness
-Date: Mon, 02 Aug 2010 23:29:42 +0100
-Message-ID: <BE4D961E8D8AD306DA51826B@nimrod.local>
-References: <59381F8FA203F4555FD43BB0@Ximines.local>
- <1280772623.1349.3.camel@andybev>
-Reply-To: Alex Bligh <alex@alex.org.uk>
+From: Andrew Beverley <andy@andybev.com>
+Subject: libnetfilter_conntrack callbacks and nfct_destroy
+Date: Tue, 03 Aug 2010 07:24:14 +0100
+Message-ID: <1280816654.1349.643.camel@andybev>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1280772623.1349.3.camel@andybev>
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1280816667; bh=yPaUooGybsbKfDIEKmHg3yNo2Ukbr8HsZtVQs
+	fgfy3k=; h=Subject:From:To:Content-Type:Date:Message-ID:
+	 Mime-Version:Content-Transfer-Encoding; b=lTHN/oxewDS60RdQDWO5ytOU
+	cgNdBdZLIlYBj8hjE/Bzy5km4VD4tD/6sWuxs81Du2WjYu+2o98j+/YfcN4pu4Zi9Dp
+	iuv6KxAHF25uL31alFZ7EHGqsXoVhbL760qpc7DMsF0a9ycvPHnLbCrwR9KnIS91JaY
+	DNSkcU3j9RPeo=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Andrew Beverley <andy@andybev.com>
-Cc: netfilter@vger.kernel.org, Alex Bligh <alex@alex.org.uk>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
+
+I have 2 questions regarding libnetfilter_conntrack please:
+
+- When using nfct_callback_register() and then nfct_query(), is the
+callback that is subsequently generated a synchronous callback? (It
+appears to be, I'd just like positive confirmation).
+
+- Should nfct_destroy() be called after each use of nfct_new() to
+prevent memory leaks? I assume that the answer is yes, but only one of
+the examples in the source code use it.
+
+Thanks,
+
+Andy
 
 
-
---On 2 August 2010 19:10:23 +0100 Andrew Beverley <andy@andybev.com> wrote:
-
-> You have to use a callback function to read any information back. Before
-> your nfct_query you should use nfct_callback_register to register a
-> callback function, which should contain your get_attr calls.
-
-Thanks. I got this working in the end. However, somewhat bizarrely
-the relevant information (the internal port number) in the callback is
-returned in ATTR_ORIG_SRC_PORT (etc.), despite this being what is
-searched on (the external port number). I am a bit confused by this,
-but it seems to work.
-
->> I am having difficulty finding documentation for this,
->
-> The documentation is sparse, but there are some good examples in the
-> utils folder of the source code. Also, api.c is well commented for each
-> of the functions.
-
-Thanks. Just to give you a clueless newbie's point of view, I was trying
-to find either a web page, or a manpage. Doxygen would clearly help
-with the latter. Even a README file that explicitly pointed at api.c
-if that's where to look (the current reference is somewhat cryptic -
-I thought it was to the .h files) would be a lot better than a poke in
-the eye.
-
--- 
-Alex Bligh
