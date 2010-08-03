@@ -1,98 +1,115 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: [ANNOUNCE]: Release of iptables-1.4.9
-Date: Tue, 03 Aug 2010 17:17:13 +0200
-Message-ID: <4C5832F9.50004@trash.net>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: iptables / ebtables IP address intercept
+Date: Tue, 03 Aug 2010 11:54:14 -0500
+Message-ID: <4C5849B6.2030002@riverviewtech.net>
+References: <B02D1E8884632086B0CC9CAF@Ximines.local>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------080507090703060702010009"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <B02D1E8884632086B0CC9CAF@Ximines.local>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
-Cc: Linux Netdev List <netdev@vger.kernel.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, netfilter-announce@lists.netfilter.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-This is a multi-part message in MIME format.
---------------080507090703060702010009
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 7bit
+On 07/31/10 09:24, Alex Bligh wrote:
+> On a machine acting as a bridge, I want to intercept calls to a 
+> specific IP address, and serve them locally. So, the bridge config 
+> looks like (e.g.)
 
-The netfilter coreteam presents:
+Ok...
 
-    iptables version 1.4.9
+> What I really want is for the masquerade line to remember not only 
+> the input IP address but also the input interface associated with the 
+> connection, and ignore the routing table. I am, however, open to any 
+> other ideas. I should say that the bridge box concerned carries 
+> hundreds of VLANs - I am happy using connmark to track traffic, but I 
+> can't see how to match connmark in iptables and use that to set 
+> output interface and output mac address.
 
-the iptables release for the 2.6.35 kernel. Changes include:
+It sounds like you want a layer 2 bridge (that is agnostic to the layer 
+3 addressing that is passing through it) to be able to intercept traffic 
+that is destined to one (or more) specific destination IP address(es). 
+Correct?  (I'm presuming yes for the sake of conversation.)
 
-- support for the LED target, which hadn't been merged so far because
-  the kernel module had some bugs
+I think I have a foundation for a rough idea but I'd like to run it past 
+you to see if I'm going the correct direction or not.
 
-- a new version of the set extension for the upcoming release supporting
-  IPv6
+Consider the following topology.
 
-- negation support for the quota match
+(R1)----[B1]----{C1}
+          |
+          |
+         (R2)
+          |
+          |
+         {S1}
 
-- support for the SACK-IMMEDIATELY SCTP extension and FORWARD_TSN
-  chunk type in the sctp match
+R1 = existing default gateway
+R2 = new default gateway
+B1 = bridge
+C1 = client
+S1 = server
 
-- documentation updates and various smaller bugfixes
+B1 bridges all three interfaces (called r1 / c1 / r2 respectively) together.
 
-See the Changelog for more details.
+Normally all non-intercepted traffic flows through the r1 and c1 
+interfaces of the bridge.  The intercepted traffic flows through the r2 
+and c1 interfaces of the bridge.
 
-Version 1.4.9 can be obtained from:
+To intercept traffic from C1 to S1, the bridge will match traffic that 
+is destined to S1's IP address via R1's MAC address and DNAT it so that 
+it goes to S1's IP address via R2's MAC address.  Thus the traffic will 
+now flow to R2.  R2 will receive the traffic and route it normally.
 
-http://www.netfilter.org/projects/iptables/downloads.html
-ftp://ftp.netfilter.org/pub/iptables/
-git://git.netfilter.org/iptables.git
+This is where things get a bit interesting.  -  Either you will need to 
+have R2 be in the same layer 3 network as C1 (easier) or you will need 
+to do some interesting things at layer 2 to get the traffic across layer 
+3 networks (harder but doable).
 
-On behalf of the Netfilter Core Team.
-Happy firewalling!
+(For now I'm going to continue as if R2 is part of the same layer 3 
+network as C1.  I think you can have R2 use the same IP address as R1 
+with out conflict because B1 is separating the routers / preventing a 
+conflict.)
 
+S1 will receive the traffic and reply like normal.  S1's reply will need 
+to go back to R2, which will route the traffic normally.  (If you don't 
+want S1 to use R2 there are options, but we can get to those.)
 
+B1 will match the reply traffic that is from S1's IP address via R2's 
+MAC address and SNAT it so that it is from S1's IP address via R1's MAC 
+address.  Thus the traffic will now flow to C1, there by establishing 
+two way communications between its C1 and S1.
 
---------------080507090703060702010009
-Content-Type: text/plain;
- name="changes-iptables-1.4.9.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="changes-iptables-1.4.9.txt"
+The two sticking points (which I believe can be worked around) that I 
+see are that S1 needs to use R2 as it's default gateway and R2 needs to 
+get traffic between multiple layer 3 networks.
 
-Adam Nielsen (1):
-      extensions: add the LED target
+You could probably have R2 SNAT / MASQUERADE traffic to S1 thus negating 
+the need for S1 to use R2 as its default gateway.  But that pushes more 
+complexity to R2 which I'd like to avoid for the moment.  (I say "for 
+the moment" because I want to have a better understanding of how R2 can 
+be configured.)
 
-Eric Dumazet (1):
-      extensions: REDIRECT: add random help
+If R2 can be part of the same layer 3 network as C1, then R2 is simply a 
+router that has multiple networks and can easily do the SNATing / 
+MASQUERADEing.
 
-Jan Engelhardt (10):
-      utils: add missing include flags to Makefile
-      doc: xt_string: correct copy-and-pasting in manpage
-      doc: xt_hashlimit: fix a typo
-      doc: xt_LED: nroff formatting requirements
-      includes: sync header files from Linux 2.6.35-rc1
-      xtables: another try at chain name length checking
-      xtables: remove xtables_set_revision function
-      libxt_hashlimit: always print burst value
-      libxt_conntrack: do print netmask
-      xt_quota: also document negation
+If R2 can't be part of the same layer 3 network as C1, then you are 
+going to have to do some interesting things to get the traffic to cross 
+layer 3 networks.  Namely you are going to have to alter layer 3 IP 
+addresses from layer 2.  ...  After reviewing the EBTables man page, you 
+may have to invoke IPTables on layer 2 bridged traffic to alter the 
+layer 3 IP addresses.  But, I believe that this can be done.
 
-Jozsef Kadlecsik (1):
-      libxt_set: new revision added
+Seeing as how B1 is operating on layer 2 and R2 is operating on layer 3 
+(clear separation of layers) it may be possible to combine them in to 
+one bridging router (a.k.a. brouter).  Before I can say for sure, I need 
+to know if what I have suggested will work for you or not.
 
-Luciano Coelho (2):
-      extensions: libxt_rateest: fix typo in the man page
-      extensions: libxt_rateest: fix bps options for iptables-save
-
-Patrick McHardy (5):
-      Revert "Revert "Merge branch 'iptables-next'""
-      Merge branch 'master' of git://dev.medozas.de/iptables
-      Merge branch 'master' of git://dev.medozas.de/iptables
-      Merge branch 'master' of vishnu.netfilter.org:/data/git/iptables
-      Bump version to 1.4.9
-
-Samuel Ortiz (1):
-      extensions: libxt_quota.c: Support option negation
-
-Shan Wei (2):
-      xt_sctp: Trace DATA chunk that supports SACK-IMMEDIATELY extension
-      xt_sctp: support FORWARD_TSN chunk type
+Hopefully this gives you a direction to go.  At the very least let me 
+know if I'm on the right track or not.
 
 
---------------080507090703060702010009--
+
+Grant. . . .
