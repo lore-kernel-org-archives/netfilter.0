@@ -1,30 +1,50 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: snat range not cycling
-Date: Wed, 4 Aug 2010 00:09:56 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1008040008360.3134@obet.zrqbmnf.qr>
-References: <4C5832F9.50004@trash.net> <x6bp9jy7sj@gzp> <4C584C63.8010607@trash.net> <x6vd7rwrah@gzp> <x6lj8nwqu4@gzp> <alpine.LSU.2.01.1008032001430.1519@obet.zrqbmnf.qr> <x6sk2vo9eq@gzp> <003901cb3358$1346b250$39d416f0$@net>
+From: =?UTF-8?Q?Mamadou_Tour=C3=A9?= <e2ia.ci@gmail.com>
+Subject: Re: firewall and squid running on the same box
+Date: Tue, 3 Aug 2010 23:51:26 +0000
+Message-ID: <AANLkTikb3e0F_y+um=4iozf71F=4GKjwgQ55erJrCT6M@mail.gmail.com>
+References: <AANLkTimOQQqE1jrNLGKZW3T-dCmAAJzYu8cUyRTR4bMY@mail.gmail.com>
+	<20100802141014.240229f0@catus>
+	<AANLkTimn488wJ4ih5HnMOwgsKwrjWYvPd_r3skpNi4R+@mail.gmail.com>
+	<20100802201932.051e9963@catus>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <003901cb3358$1346b250$39d416f0$@net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:in-reply-to
+         :references:date:message-id:subject:from:to:cc:content-type;
+        bh=gNOy5ynqhDPjtVPcVuAudPJiiX6vJRSRCx5rLYG+NXM=;
+        b=d9CYGxSWFZfVRkpfayLlYn6LfPp4FEoDj03Bbsb8VBR7jjBgMr/S89x6i829IA4UJi
+         0vQibc7dfX0jNpQUbS2G/LmYXc6P5i1p1HvR7oY/WM3XGqgn99N4EGDQ3/RQVpaF99Ti
+         MxW/xfBqwmNlW6j0rgCAzRzJFfNBh7x5EQ6E4=
+In-Reply-To: <20100802201932.051e9963@catus>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Timothy Hayes <morphieus@earthlink.net>
-Cc: 'Mail List - Netfilter' <netfilter@vger.kernel.org>
+To: Marek Kierdelewicz <marek@piasta.pl>
+Cc: netfilter@vger.kernel.org
 
+Hi to install tproxy i need libcap2 so i'm trying to install from
+source libcap-2.19.
+but i got this error when make:
+/usr/bin/ld: cannot find -lattr
+have you already got this kind of problem.
+Not my kernel version is : 2.6.32.11
+regards.
 
-On Wednesday 2010-08-04 00:06, Timothy Hayes wrote:
->I added the range of addresses with ip addr add x.x.x.# dev eth0
+2010/8/2 Marek Kierdelewicz <marek@piasta.pl>:
+>>Hi
 >
->and setup a snat rule:
->iptables -A POSTROUTING -o eth0 -p tcp --dport 80 -j SNAT --to-source
->xx.xx.xx.131-xx.xx.xx.250
+> Hi,
 >
->translation works fine, but I never seem to get an alternate ip from the
->range.
-
-IIRC the algorithm tries to give you the same source address for a given 
-source address. (I hear that banking sites and other sensitive stuff can 
-get unhappy if your externally visible address suddenly changes.)
-
+>> thank you very much.
+>
+> Glad to be of help :-).
+>
+>>my box is in bridge mode so the is no NAT.
+>
+> Great :-).
+>
+> Regards,
+> Maarek
+>
