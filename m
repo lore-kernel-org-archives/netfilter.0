@@ -1,38 +1,30 @@
-From: "Timothy Hayes" <morphieus@earthlink.net>
-Subject: snat range not cycling
-Date: Tue, 3 Aug 2010 15:06:02 -0700
-Message-ID: <003901cb3358$1346b250$39d416f0$@net>
-References: <4C5832F9.50004@trash.net> <x6bp9jy7sj@gzp>	<4C584C63.8010607@trash.net> <x6vd7rwrah@gzp> <x6lj8nwqu4@gzp>	<alpine.LSU.2.01.1008032001430.1519@obet.zrqbmnf.qr> <x6sk2vo9eq@gzp>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: snat range not cycling
+Date: Wed, 4 Aug 2010 00:09:56 +0200 (CEST)
+Message-ID: <alpine.LSU.2.01.1008040008360.3134@obet.zrqbmnf.qr>
+References: <4C5832F9.50004@trash.net> <x6bp9jy7sj@gzp> <4C584C63.8010607@trash.net> <x6vd7rwrah@gzp> <x6lj8nwqu4@gzp> <alpine.LSU.2.01.1008032001430.1519@obet.zrqbmnf.qr> <x6sk2vo9eq@gzp> <003901cb3358$1346b250$39d416f0$@net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <x6sk2vo9eq@gzp>
-Content-Language: en-us
+In-Reply-To: <003901cb3358$1346b250$39d416f0$@net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Mail List - Netfilter' <netfilter@vger.kernel.org>
-
-Hi guys I've got a iptables firewall setup and a request came in to not just
-snat an address but to make each subsequent connection go to a range of
-address.
-
-The firewall doesn't normally handle traffic from this particular
-application so I've setup a squid proxy and the app is connecting to the
-proxy.
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Timothy Hayes <morphieus@earthlink.net>
+Cc: 'Mail List - Netfilter' <netfilter@vger.kernel.org>
 
 
-I added the range of addresses with ip addr add x.x.x.# dev eth0
+On Wednesday 2010-08-04 00:06, Timothy Hayes wrote:
+>I added the range of addresses with ip addr add x.x.x.# dev eth0
+>
+>and setup a snat rule:
+>iptables -A POSTROUTING -o eth0 -p tcp --dport 80 -j SNAT --to-source
+>xx.xx.xx.131-xx.xx.xx.250
+>
+>translation works fine, but I never seem to get an alternate ip from the
+>range.
 
-and setup a snat rule:
-iptables -A POSTROUTING -o eth0 -p tcp --dport 80 -j SNAT --to-source
-xx.xx.xx.131-xx.xx.xx.250
-
-translation works fine, but I never seem to get an alternate ip from the
-range.
-
-
-
-If anyone knows what I need to do to make it so that the source addresses
-cycle it would be much appreciated.
+IIRC the algorithm tries to give you the same source address for a given 
+source address. (I hear that banking sites and other sensitive stuff can 
+get unhappy if your externally visible address suddenly changes.)
 
