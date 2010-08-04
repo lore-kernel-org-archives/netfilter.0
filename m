@@ -1,50 +1,35 @@
-From: =?UTF-8?Q?Mamadou_Tour=C3=A9?= <e2ia.ci@gmail.com>
-Subject: Re: firewall and squid running on the same box
-Date: Tue, 3 Aug 2010 23:51:26 +0000
-Message-ID: <AANLkTikb3e0F_y+um=4iozf71F=4GKjwgQ55erJrCT6M@mail.gmail.com>
-References: <AANLkTimOQQqE1jrNLGKZW3T-dCmAAJzYu8cUyRTR4bMY@mail.gmail.com>
-	<20100802141014.240229f0@catus>
-	<AANLkTimn488wJ4ih5HnMOwgsKwrjWYvPd_r3skpNi4R+@mail.gmail.com>
-	<20100802201932.051e9963@catus>
+From: "\"Oleg A. Arkhangelsky\"" <sysoleg@yandex.ru>
+Subject: Re: snat range not cycling
+Date: Wed, 04 Aug 2010 09:43:40 +0400
+Message-ID: <167431280900621@web47.yandex.ru>
+References: <4C5832F9.50004@trash.net> <x6bp9jy7sj@gzp> <4C584C63.8010607@trash.net> <x6vd7rwrah@gzp> <x6lj8nwqu4@gzp> <alpine.LSU.2.01.1008032001430.1519@obet.zrqbmnf.qr> <x6sk2vo9eq@gzp> <003901cb3358$1346b250$39d416f0$@net> <alpine.LSU.2.01.1008040008360.3134@obet.zrqbmnf.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type;
-        bh=gNOy5ynqhDPjtVPcVuAudPJiiX6vJRSRCx5rLYG+NXM=;
-        b=d9CYGxSWFZfVRkpfayLlYn6LfPp4FEoDj03Bbsb8VBR7jjBgMr/S89x6i829IA4UJi
-         0vQibc7dfX0jNpQUbS2G/LmYXc6P5i1p1HvR7oY/WM3XGqgn99N4EGDQ3/RQVpaF99Ti
-         MxW/xfBqwmNlW6j0rgCAzRzJFfNBh7x5EQ6E4=
-In-Reply-To: <20100802201932.051e9963@catus>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1280900621; bh=sdmWjPAFS7jKyxF4lJcxGo9t5KHNrBp3RCFS5VuKtak=;
+	h=From:To:In-Reply-To:References:Subject:MIME-Version:Message-Id:
+	 Date:Content-Transfer-Encoding:Content-Type;
+	b=DuHr8oxC8hx3D3OQHmD+Zj2N8Ogy4yT8vQKb2cA0ETMHa1dCOwM/jCZ3cDDySs2Z6
+	 xKCR75B0o8O+n5M/rypJI92e/ctaZj6ZiiRNEIDl5k0kcIBsssS61NvubaaSf96fVg
+	 fE6oaV0tpc/qYtN2ZRRTUyf5+MuQvcL/1CjHNjFM=
+In-Reply-To: <alpine.LSU.2.01.1008040008360.3134@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Marek Kierdelewicz <marek@piasta.pl>
-Cc: netfilter@vger.kernel.org
+To: Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org
 
-Hi to install tproxy i need libcap2 so i'm trying to install from
-source libcap-2.19.
-but i got this error when make:
-/usr/bin/ld: cannot find -lattr
-have you already got this kind of problem.
-Not my kernel version is : 2.6.32.11
-regards.
+04.08.2010, 02:09, "Jan Engelhardt" <jengelh@medozas.de>:
+> IIRC the algorithm tries to give you the same source address for a given
+> source address. (I hear that banking sites and other sensitive stuff can
+> get unhappy if your externally visible address suddenly changes.)
+>
 
-2010/8/2 Marek Kierdelewicz <marek@piasta.pl>:
->>Hi
->
-> Hi,
->
->> thank you very much.
->
-> Glad to be of help :-).
->
->>my box is in bridge mode so the is no NAT.
->
-> Great :-).
->
-> Regards,
-> Maarek
->
+Only when --persist option is given. Otherwise original source and destination
+addresses will be used for selection IP-address from the pool.
+
+Timothy should try connection from different source IP-address or use different 
+destination and see how this change situation.
+
+--
+wbr, Oleg.
