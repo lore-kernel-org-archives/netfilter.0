@@ -1,42 +1,59 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: [ANNOUNCE]: Release of iptables-1.4.9
-Date: Wed, 4 Aug 2010 18:32:50 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1008041830290.5516@obet.zrqbmnf.qr>
-References: <4C5832F9.50004@trash.net> <x6bp9jy7sj@gzp> <4C584C63.8010607@trash.net> <x6vd7rwrah@gzp> <x6lj8nwqu4@gzp> <alpine.LSU.2.01.1008032001430.1519@obet.zrqbmnf.qr> <x6sk2vo9eq@gzp> <4C599275.2080007@trash.net>
+From: =?ISO-8859-1?Q?Nicolas_de_Peslo=FCan?= <nicolas.2p.debian@free.fr>
+Subject: Re: [Bridge] ebtables PREROUTING -drop
+Date: Wed, 04 Aug 2010 18:39:57 +0200
+Message-ID: <4C5997DD.8080200@free.fr>
+References: <AANLkTikUczLiyxy3A5eVv7bg1XWhH-ggN1yUv2-EwLYM@mail.gmail.com> <4C5953C8.2040708@free.fr> <51AC42EFFBC60FE7E630D78B@Ximines.local> <alpine.LSU.2.01.1008041432380.6031@obet.zrqbmnf.qr> <A1D32A25DAAD1A46D6CC68BE@Ximines.local> <alpine.LSU.2.01.1008041630390.19791@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4C599275.2080007@trash.net>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <alpine.LSU.2.01.1008041630390.19791@obet.zrqbmnf.qr>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>
-Cc: "Gabor Z. Papp" <gzp@papp.hu>, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, Linux Netdev List <netdev@vger.kernel.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, netfilter-announce@lists.netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: Alex Bligh <alex@alex.org.uk>, ratheesh k <ratheesh.ksz@gmail.com>, bridge@lists.linux-foundation.org, Netfilter mailing list <netfilter@vger.kernel.org>
 
-On Wednesday 2010-08-04 18:16, Patrick McHardy wrote:
->Am 03.08.2010 20:09, schrieb Gabor Z. Papp:
->> * Jan Engelhardt <jengelh@medozas.de>:
->> 
->> | (BTW, with --disable-shared you remove the possibility to use any .so
->> | files whatsoever. You can use --enable-static --enable-shared to get
->> | both "all in one binary" and ".so support".)
->> 
->> And how to force linking the binaries against the static libs?
->> 
->> | The following changes since commit 371cea299f0b2eb100b9fc9fb99089640d2d606f:
->> 
->> |   xtables: remove unnecessary cast (2010-08-03 19:56:11 +0200)
->> 
->> | are available in the git repository at:
->> |   git://dev.medozas.de/iptables master
->> 
->> Fixed, compiled fine.
+Le 04/08/2010 16:32, Jan Engelhardt a =E9crit :
 >
->Thanks, I'll release a .1 with this patch tommorrow.
+> On Wednesday 2010-08-04 16:25, Alex Bligh wrote:
+>>
+>>>>> Did you read http://ebtables.sourceforge.net/br_fw_ia/br_fw_ia.ht=
+ml and
+>>>>> http://ebtables.sourceforge.net/br_fw_ia/PacketFlow.png ?
+>>>>
+>>>> A useful improvement to those would be documenting where libpcap
+>>>> (which does both input and, less well known, output) samples/injec=
+ts
+>>>> packets. I /think/ sampling is right on the left and injection rig=
+ht
+>>>> on the right.
+>>>
+>>> pcap grabbing and injection is completely outside any of the graphs
+>>> currently floating around.
+>>
+>> If by 'outside' you mean 'to the extreme left or extreme right'
+>> that was my conclusion. But the absence of any documentation means
+>> this makes debugging with tcpdump (for instance) harder
+>> because you don't know where you are sampling.
+>
+> Well perhaps not extreme. If you inject into a tunnel, it may well
+> walk through Xtables after all - but then of course, only in its
+> encapsulated form.
+>
+>> I'm not 100% sure it is completely outside though. For instance,
+>> if you do tcdump on a bridge device (as opposed to the corresponding
+>> physical participant interface), isn't that after ingress ebtales
+>> processing, but before egress? IE is in the graph somewhere.
+>
+> Huh, all once investigated already. See
+> http://jengelh.medozas.de/images/nf-packet-flow.png for where
+> in/egress happen to be. :)
 
-You probably want to add to your personal release script section one 
-that testcompiles all configurations before possibly creating a tarball. 
-I do so too with Xtables-addons (all kernels from 2.6.17 onwards, 
-quite a disk eater).
 
-./configure --enable-static --enable-shared && make
+Nice work!
+
+May be just missing other netif_receive_skb() magic, like bonding for e=
+xample.
+
+	Nicolas.
+
