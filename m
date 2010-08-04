@@ -1,46 +1,27 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: [Bridge] ebtables PREROUTING -drop
-Date: Wed, 4 Aug 2010 16:32:20 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1008041630390.19791@obet.zrqbmnf.qr>
-References: <AANLkTikUczLiyxy3A5eVv7bg1XWhH-ggN1yUv2-EwLYM@mail.gmail.com> <4C5953C8.2040708@free.fr> <51AC42EFFBC60FE7E630D78B@Ximines.local> <alpine.LSU.2.01.1008041432380.6031@obet.zrqbmnf.qr> <A1D32A25DAAD1A46D6CC68BE@Ximines.local>
+From: Edison Figueira <efjgrub@gmail.com>
+Subject: Clone Filter Table
+Date: Wed, 4 Aug 2010 11:56:34 -0300
+Message-ID: <AANLkTinyBggtQX0geqVhzJc4u4qtkVVsUCTpytr1AGLS@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <A1D32A25DAAD1A46D6CC68BE@Ximines.local>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=R5lyGYxzVvYZ7pVOqKJo8p8pBk2CFgv6aa5a/VRabqY=;
+        b=Z82nDk7qGgiqmxGOn/hC6DJfHnyQ+zUZRM903SO0ehCR5eJHarTCMl2vEkk00s6D5O
+         sf72T8AOXaiXW3O3Ss7W1MNWj7HgJ2kn0NX58UTOokvpfrqRg9AtJ7TJrDnXrYiAyzQh
+         sV3ntOUdqeUseR+yLAGUGSZ/t+H0T5dmaNbpE=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Alex Bligh <alex@alex.org.uk>
-Cc: =?UTF-8?Q?Nicolas_de_Peslo=C3=BCan?= <nicolas.2p.debian@free.fr>, ratheesh k <ratheesh.ksz@gmail.com>, bridge@lists.linux-foundation.org, Netfilter mailing list <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
+Can i clone the filter table? I need two filters tables.
 
-On Wednesday 2010-08-04 16:25, Alex Bligh wrote:
->
->>>> Did you read http://ebtables.sourceforge.net/br_fw_ia/br_fw_ia.html and
->>>> http://ebtables.sourceforge.net/br_fw_ia/PacketFlow.png ?
->>>
->>> A useful improvement to those would be documenting where libpcap
->>> (which does both input and, less well known, output) samples/injects
->>> packets. I /think/ sampling is right on the left and injection right
->>> on the right.
->>
->> pcap grabbing and injection is completely outside any of the graphs
->> currently floating around.
->
-> If by 'outside' you mean 'to the extreme left or extreme right'
-> that was my conclusion. But the absence of any documentation means
-> this makes debugging with tcpdump (for instance) harder
-> because you don't know where you are sampling.
+Someone  have sugestions ?
 
-Well perhaps not extreme. If you inject into a tunnel, it may well
-walk through Xtables after all - but then of course, only in its
-encapsulated form.
+Tks,
 
-> I'm not 100% sure it is completely outside though. For instance,
-> if you do tcdump on a bridge device (as opposed to the corresponding
-> physical participant interface), isn't that after ingress ebtales
-> processing, but before egress? IE is in the graph somewhere.
-
-Huh, all once investigated already. See
-http://jengelh.medozas.de/images/nf-packet-flow.png for where
-in/egress happen to be. :)
+Edison
