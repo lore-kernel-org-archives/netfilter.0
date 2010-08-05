@@ -1,60 +1,90 @@
-From: Julia Lawall <julia@diku.dk>
-Subject: [PATCH 16/42] net/ipv6/netfilter: Adjust confusing if indentation
-Date: Thu, 5 Aug 2010 22:21:41 +0200 (CEST)
-Message-ID: <Pine.LNX.4.64.1008052221240.31692__2918.03684453971$1281039769$gmane$org@ask.diku.dk>
+From: Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [Bugme-new] [Bug 16517] New: rp_filter fails to filter with
+ CONFIG_IP_ROUTE_MULTIPATH and more than one 0/0 nexthop dev
+Date: Thu, 5 Aug 2010 13:46:53 -0700
+Message-ID: <20100805134653.9e8985cc.akpm@linux-foundation.org>
+References: <bug-16517-10286@https.bugzilla.kernel.org/>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, "Pekka Savola (ipv6)" <pekkas@netcore.fi>, James Morris <>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <bug-16517-10286@https.bugzilla.kernel.org/>
+Sender: netdev-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org, netdev@vger.kernel.org
+Cc: bugzilla-daemon@bugzilla.kernel.org, bugme-daemon@bugzilla.kernel.org, for.poige+bugzilla.kernel.org@gmail.com
 
-From: Julia Lawall <julia@diku.dk>
 
-Indent the branch of an if.
+(switched to email.  Please respond via emailed reply-to-all, not via the
+bugzilla web interface).
 
-The semantic match that finds this problem is as follows:
-(http://coccinelle.lip6.fr/)
+On Thu, 5 Aug 2010 01:48:01 GMT
+bugzilla-daemon@bugzilla.kernel.org wrote:
 
-// <smpl>
-@r disable braces4@
-position p1,p2;
-statement S1,S2;
-@@
+> https://bugzilla.kernel.org/show_bug.cgi?id=16517
+> 
+>            Summary: rp_filter fails to filter with
+>                     CONFIG_IP_ROUTE_MULTIPATH and more than one 0/0
+>                     nexthop dev
+>            Product: Networking
+>            Version: 2.5
+>     Kernel Version: at least 2.6.18 and newer
+>           Platform: All
+>         OS/Version: Linux
+>               Tree: Mainline
+>             Status: NEW
+>           Severity: high
+>           Priority: P1
+>          Component: IPV4
+>         AssignedTo: shemminger@linux-foundation.org
+>         ReportedBy: for.poige+bugzilla.kernel.org@gmail.com
+>         Regression: No
+> 
+> 
+> I think the problem is net/ipv4/fib_frontend.c fib_validate_source()
+> 
+> ...
+> #ifdef CONFIG_IP_ROUTE_MULTIPATH
+>     if (FIB_RES_DEV(res) == dev || res.fi->fib_nhs > 1)
+> #else
+>     if (FIB_RES_DEV(res) == dev)
+> #endif
+> ...
+> 
+> I'm not sure, but this code is quite trivial and self-speaking. In case we have
+> several default routes, we'd better iterate over each of them and compare
+> resulting devices with the input one. So, fix is also trivial, specially for
+> network kernel developers. ;-)
+> 
+> I've set priority "High" cause it doesn't affects usual Linux users directly,
+> but indirectly it can affect any host on Internet, so the problem is
+> significant, of course.
+> 
+> P. S. Kernel docs say: {
+> rp_filter - INTEGER
+>         0 - No source validation.
+>         1 - Strict mode as defined in RFC3704 Strict Reverse Path
+>             Each incoming packet is tested against the FIB and if the interface
+>             is not the best reverse path the packet check will fail.
+>             By default failed packets are discarded.
+>         2 - Loose mode as defined in RFC3704 Loose Reverse Path
+>             Each incoming packet's source address is also tested against the
+> FIB
+>             and if the source address is not reachable via any interface
+>             the packet check will fail.
+> 
+>         Current recommended practice in RFC3704 is to enable strict mode
+>         to prevent IP spoofing from DDos attacks. If using asymmetric routing
+>         or other complicated routing, then loose mode is recommended.
+> 
+>         conf/all/rp_filter must also be set to non-zero to do source validation
+>         on the interface
+> 
+>         Default value is 0. Note that some distributions enable it
+>         in startup scripts.
+> }, but is in reality level "2" of rp_filtering implemented?
+> 
+> P. P. S. netfilter would be the best place to have Reverse Path checks. But
+> that's another story.
+> 
 
-(
-if (...) { ... }
-|
-if (...) S1@p1 S2@p2
-)
-
-@script:python@
-p1 << r.p1;
-p2 << r.p2;
-@@
-
-if (p1[0].column == p2[0].column):
-  cocci.print_main("branch",p1)
-  cocci.print_secs("after",p2)
-// </smpl>
-
-Signed-off-by: Julia Lawall <julia@diku.dk>
-
----
- net/ipv6/netfilter/nf_conntrack_proto_icmpv6.c |    2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/net/ipv6/netfilter/nf_conntrack_proto_icmpv6.c b/net/ipv6/netfilter/nf_conntrack_proto_icmpv6.c
-index 1df3c8b..befccff 100644
---- a/net/ipv6/netfilter/nf_conntrack_proto_icmpv6.c
-+++ b/net/ipv6/netfilter/nf_conntrack_proto_icmpv6.c
-@@ -192,7 +192,7 @@ icmpv6_error(struct net *net, struct nf_conn *tmpl,
- 	icmp6h = skb_header_pointer(skb, dataoff, sizeof(_ih), &_ih);
- 	if (icmp6h == NULL) {
- 		if (LOG_INVALID(net, IPPROTO_ICMPV6))
--		nf_log_packet(PF_INET6, 0, skb, NULL, NULL, NULL,
-+			nf_log_packet(PF_INET6, 0, skb, NULL, NULL, NULL,
- 			      "nf_ct_icmpv6: short packet ");
- 		return -NF_ACCEPT;
- 	}
