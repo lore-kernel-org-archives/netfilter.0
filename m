@@ -1,63 +1,85 @@
-From: ratheesh k <ratheesh.ksz@gmail.com>
-Subject: Re: ebtables PREROUTING -drop
-Date: Thu, 5 Aug 2010 17:09:48 +0530
-Message-ID: <AANLkTi=zqyJu_TAAvK9WzGB=rLHr3B+BPWXBccwDri9e@mail.gmail.com>
-References: <AANLkTikUczLiyxy3A5eVv7bg1XWhH-ggN1yUv2-EwLYM@mail.gmail.com>
-	<alpine.LSU.2.01.1008041343200.32671@obet.zrqbmnf.qr>
-	<AANLkTim_=pmLER7v=rePa=ikP2Fv0bKJkN4aafNXUTNo@mail.gmail.com>
-	<alpine.LSU.2.01.1008051303550.30611@obet.zrqbmnf.qr>
-Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=GQMyfSppNQMxXN70dYTomCZvoBfZ5WmcE3+m5s6Yhas=;
-        b=qOv74/fVzaDHq4rVuj2Qu/yYaFVsQ7QsBwf2Ug7CG49VjcySW/5bhUM7L/4lhsU6Ob
-         xV3HCq/WjxjAqPlP4qapkV1eplyt+09LpJNQq7yrjlIBSsWqCEQAJTA/KV3hOrBmCTAQ
-         rPg3vMAH9SAIEk6f0O+7LZyYVA3rIp1cwvReM=
-In-Reply-To: <alpine.LSU.2.01.1008051303550.30611@obet.zrqbmnf.qr>
-Sender: netfilter-owner@vger.kernel.org
+From: Simon Horman <horms@verge.net.au>
+Subject: [rfc 00/13] IPVS: SIP Persistence Engine
+Date: Thu, 05 Aug 2010 20:47:55 +0900
+Message-ID: <20100805114755.118303531@vergenet.net>
+Return-path: <lvs-devel-owner@vger.kernel.org>
+Sender: lvs-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: bridge@lists.linux-foundation.org, Netfilter mailing list <netfilter@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Cc: Wensong Zhang <wensong@linux-vs.org>, Julian Anastasov <ja@ssi.bg>, Patrick McHardy <kaber@trash.net>
 
-On Thu, Aug 5, 2010 at 4:41 PM, Jan Engelhardt <jengelh@medozas.de> wro=
-te:
-> deep down below in source code, DROP just does that - drop.
+This patch series adds load-balancing of UDP SIP based on Call-ID to
+IPVS as well as a frame-work for extending IPVS to handle alternate
+persistence requirements.
 
-1.  In ebtables Broute, if packet  gets  dropped , how it goes to ip
-layer for further processing ?
-2.  ip_route_input will be called on all frames hitting prerouting nat
-table of ebtables . How it can decide where to route once it is past
-prerouing hook (packet which are dropped on nat prerotuing of ebtables
-) ?  /* i could be totally wrong here */
+OVERVIEW
+
+The approach that I have taken is what I call persistence engines.
+The basic idea being that you can provide a module to LVS that alters
+the way that it handles connection templates, which are at the core
+of persistence. In particular, an additional key can be added, and
+any of the normal IP address, port and protocol information can either
+be used or ignored.
+
+In the case of the SIP persistence engine, the only persistence engine, all
+the keys used by the default persistence behaviour are used and the callid
+is added as an extra key. I originally intended to ignore the cip, but this
+can optionally be done by setting the persistence mask (-M) to 0.0.0.0
+while allowing the flexibility of other mask values.
+
+It is envisaged that the SIP persistence engine will be used in conjunction
+with one-packet scheduling. I'm interested to hear if that doesn't fit your
+needs.
 
 
--Ratheesh
+CONFIGURATION
+
+A persistence engine is associated with a virtual service
+(as are schedulers). I have added the --pe option to the
+ivpsadm -A and -E commands to allow the persistence engine
+of a virtual service to be added, changed, or deleted.
+
+e.g. ipvsadm -A -u 10.4.3.192:5060 -p 60 -M 0.0.0.0 -o --pe sip
+
+There are no other configuration parameters at this time.
 
 
-> On Thursday 2010-08-05 12:42, ratheesh k wrote:
->>>>
->>>>What will happen, =A0if we drop a packet at PREROUTING chain =A0of =
-ebtables ?
->>>
->>> Depends on the table you are referring to.
->>
->>What is the difference between =A0droppin a Pkt in Brouting chain of
->>Broute table and =A0Drop a Pkt in =A0nat prerouing chain of ebtables =
-=2E Or
->>are they having same effect ? .
->
-> Generally, nat and broute are intended to be a configuration database=
-s
-> only, where special semantics to standard verdicts can apply, as it d=
-oes
-> for broute. To avoid confusion, the use of DROP in nat is not
-> advised, and iptables checks for such attempts. Ebtables doesn't, but
-> then again, it's the 4th-order-stepson of iptables only...
-> deep down below in source code, DROP just does that - drop.
->
+RUNNING
+
+When a connection template is created, if its virtual service
+has a persistence engine, then the persistence engine can add
+an extra key to the connection template. For the SIP module this
+is the callid. More generically, it is known as "pe data". And
+both the name of the persistence engine, "pe name", and "pe data"
+can be viewed in /proc/net/ip_vs_conn and by passing the
+--persistent-conn option to ipvsadm -Lc.
+
+e.g.
+# ipvsadm -Lcn --persistent-conn
+UDP 00:38  UDP         10.4.3.0:0         10.4.3.192:5060    127.0.0.1:5060 sip 193373839
+
+Here we see a single persistence template (cport is 0), which has been
+handled by the sip persistence engine. The pe data (callid) is 193373839.
+
+In the case where the persistence engine can't match a packet for some
+reason, the connection will fall back to the normal persistence handling.
+This seems reasonable, as that if the packet ought to be dropped, iptables
+could be used.
+
+A limited amount of debugging information has been added which
+can be enabled using a value of 9 or greater in
+/proc/sys/net/ipv4/vs/debug_level
+
+CODE AVAILABILITY
+
+The kernel patches (13) are available in git as the pe-0.4 branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/horms/lvs-test-2.6.git
+
+The ipvsadm patches (2) are available in git as the pe-0.4 branch of
+git://github.com/horms/ipvsadm-test.git
+
+I will post the ipvsadm patches separately
+
