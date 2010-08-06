@@ -1,49 +1,48 @@
 From: Patrick McHardy <kaber@trash.net>
-Subject: [ANNOUNCE]: Release of iptables-1.4.9.1
-Date: Fri, 06 Aug 2010 15:51:41 +0200
-Message-ID: <4C5C136D.3040108__21490.1802632541$1281102720$gmane$org@trash.net>
+Subject: Re: [rfc 02/13] [RFC 02/13] netfilter: nf_conntrack_sip: Add callid
+ parser
+Date: Fri, 06 Aug 2010 16:00:49 +0200
+Message-ID: <4C5C1591.90108@trash.net>
+References: <20100805114755.118303531@vergenet.net> <20100805115239.880722744@vergenet.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------080002020807020000060808"
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <20100805115239.880722744@vergenet.net>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, NetDev <netdev@vger.kernel.org>, netfilter-announce@lists.netfilter.org, "'netfilter@vger.kernel.org'" <netfilter>
+Content-Type: text/plain; charset="us-ascii"
+To: Simon Horman <horms@verge.net.au>
+Cc: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Wensong Zhang <wensong@linux-vs.org>, Julian Anastasov <ja@ssi.bg>
 
-This is a multi-part message in MIME format.
---------------080002020807020000060808
-Content-Type: text/plain; charset=ISO-8859-15
-Content-Transfer-Encoding: 7bit
+Am 05.08.2010 13:47, schrieb Simon Horman:
+> diff --git a/net/netfilter/nf_conntrack_sip.c b/net/netfilter/nf_conntrack_sip.c
+> index 2fd1ea2..715ce54 100644
+> --- a/net/netfilter/nf_conntrack_sip.c
+> +++ b/net/netfilter/nf_conntrack_sip.c
+> @@ -130,6 +130,44 @@ static int digits_len(const struct nf_conn *ct, const char *dptr,
+>  	return len;
+>  }
+>  
+> +static int iswordc(const char c)
+> +{
+> +	if (isalnum(c) || c == '!' || c == '"' || c == '%' ||
+> +	    (c >= '(' && c <= '/') || c == ':' || c == '<' || c == '>' ||
+> +	    c == '?' || (c >= '[' && c <= ']') || c == '_' || c == '`' ||
+> +	    c == '{' || c == '}' || c == '~')
+> +		return 1;
+> +	return 0;
+> +}
+> +
+> +static int word_len(const char *dptr, const char *limit)
+> +{
+> +	int len = 0;
+> +	while (dptr < limit && iswordc(*dptr)) {
+> +		dptr++;
+> +		len++;
+> +	}
+> +	return len;
+> +}
 
-The netfilter coreteam presents:
-
-    iptables version 1.4.9.1
-
-the iptables release for the 2.6.35 kernel. This release fixes
-a compilation problem with static linking in the 1.4.9 release.
-
-Version 1.4.9.1 can be obtained from:
-
-http://www.netfilter.org/projects/iptables/downloads.html
-ftp://ftp.netfilter.org/pub/iptables/
-git://git.netfilter.org/iptables.git
-
-On behalf of the Netfilter Core Team.
-Happy firewalling!
-
-
---------------080002020807020000060808
-Content-Type: text/plain;
- name="changes-iptables-1.4.9.1.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="changes-iptables-1.4.9.1.txt"
-
-Jan Engelhardt (1):
-      build: fix static linking
-
-Patrick McHardy (1):
-      Bump version to 1.4.9.1
-
-
---------------080002020807020000060808--
+Since the Call-ID can't contain whitespace, couldn't we simply
+determine the length by looking for the next newline or whitespace
+character?
