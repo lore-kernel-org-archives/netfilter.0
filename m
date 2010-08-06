@@ -1,34 +1,52 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Different limits in 32bit vs 64bit?
-Date: Fri, 6 Aug 2010 22:05:21 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1008062203190.15439@obet.zrqbmnf.qr>
-References: <4C5C2DE4.8080007@gac.edu>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: iptables / ebtables IP address intercept
+Date: Fri, 06 Aug 2010 16:07:44 -0500
+Message-ID: <4C5C79A0.8060607@riverviewtech.net>
+References: <B02D1E8884632086B0CC9CAF@Ximines.local> <4C5849B6.2030002@riverviewtech.net> <9EA7C5060C8C8A2B321AD23C@Ximines.local> <4C587AD5.5060500@riverviewtech.net> <FC97946E765591E436489FAE@nimrod.local>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C5C2DE4.8080007@gac.edu>
+In-Reply-To: <FC97946E765591E436489FAE@nimrod.local>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ethan Sommer <sommere@gac.edu>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
+
+On 08/04/10 03:08, Alex Bligh wrote:
+> R1 might or might not be connected to BBI, or R1/C1 might be in 1918 
+> space
+
+Ok.
+
+> OK - that looks promising. I'd only investigated iptables & ebtables.
+
+*nod*
+
+> Note BBI hangs of BR1 not R1 - I think that makes things easier.
+
+Seeing as how BR1 is a bridge and router, it doesn't make that much 
+difference.
+
+> I presume there is a route step here, but C1' is designed to be on 
+> the correct interface.
+
+Yes.
+
+The reply traffic will be routed at layer 3, and then at layer 2 will be 
+altered from the one layer 3 (that was routed) to the proper layer 3 
+(that isn't routed).
+
+> Sure - thanks.
+
+I've done some more thinking and I strongly believe that what needs to 
+be done can be, I just don't have a way to test this at the moment.  (I 
+will see if I have some time this weekend to throw together a VM.)
+
+> That's actually quite simple, as because BBI is not behind R1, all 
+> the non-intercepted traffic is simply bridged.
+
+*nod*
 
 
-On Friday 2010-08-06 17:44, Ethan Sommer wrote:
->
-> Problem: This week we attempted to move our traffic shaping box to a new
-> machine. The old one is 32 bit Centos. The new box was running Centos 5.5
-> x86_64. When we went to "restore" our /etc/sysconfig/iptables file, it failed
-> on the COMMIT line. We could get it to work if we only did the first 101 class
-> C subnets.
->
-> I just reinstalled Centos on the new machine running 32 bit, and now it can
-> load the exact same file it failed on with 64 bit.
->
->
-> Is this a known limitation of Netfilter/iptables? Is it a bug?
 
-Probably a very _classic_ bug. Because CentOS uses such outdated software
-(kernel 2.6.18 iptables 1.3.5), anything can happen. I'm not completely
-sure, but I think 64-bit issues were not completely addressed until
-at least 2.6.20. So yeah with RHEL/CentOS you easily have problems..
+Grant. . . .
