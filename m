@@ -1,51 +1,33 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [rfc 10/13] [RFC 10/13] IPVS: management of persistence engine
- modules
-Date: Fri, 6 Aug 2010 10:48:44 +0900
-Message-ID: <20100806014843.GE12311@verge.net.au>
-References: <20100805114755.118303531@vergenet.net>
- <20100805115241.482096330@vergenet.net>
- <20100805092920.7573c96b@nehalam>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [ANNOUNCE]: Release of iptables-1.4.9
+Date: Fri, 06 Aug 2010 15:15:15 +0200
+Message-ID: <4C5C0AE3.4090806@trash.net>
+References: <4C5832F9.50004@trash.net> <x6bp9jy7sj@gzp> <4C584C63.8010607@trash.net> <x6vd7rwrah@gzp> <x6lj8nwqu4@gzp> <alpine.LSU.2.01.1008032001430.1519@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20100805092920.7573c96b@nehalam>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <alpine.LSU.2.01.1008032001430.1519@obet.zrqbmnf.qr>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Stephen Hemminger <shemminger@vyatta.com>
-Cc: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Wensong Zhang <wensong@linux-vs.org>, Julian Anastasov <ja@ssi.bg>, Patrick McHardy <kaber@trash.net>
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: "Gabor Z. Papp" <gzp@papp.hu>, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, Linux Netdev List <netdev@vger.kernel.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, netfilter-announce@lists.netfilter.org
 
-On Thu, Aug 05, 2010 at 09:29:20AM -0700, Stephen Hemminger wrote:
-> On Thu, 05 Aug 2010 20:48:05 +0900
-> Simon Horman <horms@verge.net.au> wrote:
+Am 03.08.2010 20:04, schrieb Jan Engelhardt:
+> The following changes since commit 371cea299f0b2eb100b9fc9fb99089640d2d606f:
 > 
-> > +/* lock for service table */
-> > +static DEFINE_RWLOCK(__ip_vs_pe_lock);
+>   xtables: remove unnecessary cast (2010-08-03 19:56:11 +0200)
 > 
-> It is already static so why the __?
-> Reader/writer locks are slower than spinlocks.  Either use
-> a spinlock, or RCU (if possible)
-
-No good reason, other than I copied the code from elsewhere.
-I'll fix both this and the code that I copied.
-
-> > +/* Bind a service with a pe */
-> > +void ip_vs_bind_pe(struct ip_vs_service *svc, struct ip_vs_pe *pe)
-> > +{
-> > +	svc->pe = pe;
-> > +}
-> > +
-> > +/* Unbind a service from its pe */
-> > +void ip_vs_unbind_pe(struct ip_vs_service *svc)
-> > +{
-> > +	svc->pe = NULL;
-> > +}
+> are available in the git repository at:
+>   git://dev.medozas.de/iptables master
 > 
-> What does having these wrappers buy?
+> Jan Engelhardt (1):
+>       build: fix static linking
+> 
+>  extensions/libxt_IDLETIMER.c |    2 +-
+>  extensions/libxt_TEE.c       |    2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
+> [Actually there's also the "remove unnecessary cast" patch that is not 
+> included in this listing, but merging that should be ok.]
 
-Again, I copied the code from elsewhere, where the wrappers did more.  As
-it happens, I think that these do make some sense as they are called along
-side other bind and unbind calls. But if you have a strong aversion to them
-then I am happy to remove these wrappers.
+Pulled, thanks Jan.
