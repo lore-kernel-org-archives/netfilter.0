@@ -1,52 +1,50 @@
-From: "J Webster" <webster_jack@hotmail.com>
+From: Billy Crook <billycrook@gmail.com>
 Subject: Re: openvpn over udp failing
-Date: Sat, 7 Aug 2010 15:17:49 -0400
-Message-ID: <BAY145-ds485C6ADAF166EC33C64A7F3920@phx.gbl>
-References: <BAY145-ds1603A7ECCE6D4944CFAF48F3920@phx.gbl> <AANLkTikm-McA4wOUBf+xTX8_EBYykis4N_9F6u6XDPEn@mail.gmail.com> <BAY145-ds21CD2C7CC8AF3A317E2027F3920@phx.gbl> <AANLkTimZDpwz5bQhK1JGc-yYVwv2uY-65MUiJHfWQxj+@mail.gmail.com>
+Date: Sat, 7 Aug 2010 14:26:25 -0500
+Message-ID: <AANLkTi=EdB3eWDJNnyoxngYCg6U0Z5JDp6A1SEw21c=R@mail.gmail.com>
+References: <BAY145-ds1603A7ECCE6D4944CFAF48F3920@phx.gbl> 
+	<AANLkTikm-McA4wOUBf+xTX8_EBYykis4N_9F6u6XDPEn@mail.gmail.com> 
+	<BAY145-ds21CD2C7CC8AF3A317E2027F3920@phx.gbl> <AANLkTimZDpwz5bQhK1JGc-yYVwv2uY-65MUiJHfWQxj+@mail.gmail.com> 
+	<BAY145-ds485C6ADAF166EC33C64A7F3920@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTimZDpwz5bQhK1JGc-yYVwv2uY-65MUiJHfWQxj+@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:mime-version:received:in-reply-to
+         :references:from:date:message-id:subject:to:cc:content-type;
+        bh=YsrLg+q9jskK2Sno0PvbDns9ezKnkRCZr8VSy6G/+u8=;
+        b=fr9YxGVYuGn/5O4WZ+yrplFkw6nCftjN9WeMOqz6UtNZHKyh+o+QOoHF3fJJOMp1Mc
+         LD7HBG3YOfx58AGeBVTPB71IexSYhAj4ybXgaK/r2fy1ly/ZJ9KznL4z1y2sNyZ39/DI
+         ViXtPgsnuCxg/qYFPCUyyN/C4DFsKs0/ykeY4=
+In-Reply-To: <BAY145-ds485C6ADAF166EC33C64A7F3920@phx.gbl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: Billy Crook <billycrook@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: J Webster <webster_jack@hotmail.com>
 Cc: netfilter@vger.kernel.org
 
-Would it cause a problem for video sites using RTMP?
-They will be expecting a connection form the same IP address won't they?
-I guess this could all be solved by binding the vpn to the 198 main address.
+On Sat, Aug 7, 2010 at 14:17, J Webster <webster_jack@hotmail.com> wrote:
+> Would it cause a problem for video sites using RTMP?
 
---------------------------------------------------
-From: "Billy Crook" <billycrook@gmail.com>
-Sent: Saturday, August 07, 2010 2:57 PM
-To: "J Webster" <webster_jack@hotmail.com>
-Cc: <netfilter@vger.kernel.org>
-Subject: Re: openvpn over udp failing
+no.  I can't see how any site could be aware of it let alone respond
+negatively to it.
 
-> On Sat, Aug 7, 2010 at 13:44, J Webster <webster_jack@hotmail.com> wrote:
->> Well, it's more that the openvpn service is running on an IP of the 
->> server
->> of xxx.xxx.xxx.199 (the server has 2 public IPs).
->> I don;t really understand why when the client connects, that a site like
->> your ipecho below would report my IP as xxx.xxx.xxx.198
->
-> That's the source ip that netfilter gave to the MASQUERADEd connection
-> as it passed through eth0.  198 is probably the primary ip for eth0
-> (eth0:0) and eth0:1 is 199, right?  That is why by connections leaving
-> eth0 will default to a source address of 198.  There may be exactly
-> one defailt IP.
->
->> omitting the port numbers?
->
-> You tell us.  man iptables[enter]/--to-source
->
-> I don't know why you'd care about the source port, but it's your box.
-> I use --random on mine, because I'm just that way....  Nice job
-> netfilter devs, on --persistant.  I was too busy to notice that slip
-> in.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+> They will be expecting a connection form the same IP address won't they?
+
+Unclear.  If you are asking "Will remote servers expect tunneled nat
+clients of the vpn server to be using the same public IP as the nat
+server for their default route?", the answer is "of course not".  How
+would the remote sites know that the people connecting to them are
+tunneled nat clients anyway?  Unless you are administering these
+remote sites with specific knowledge of your tunneled nat vpn clients,
+and with the intent to prohibit these tunneled nat vpn clients it will
+work.
+
+> I guess this could all be solved by binding the vpn to the 198 main address.
+
+!!!what???? Do remember that openvpn's  --local address specifies the
+address where the openvpn server should listen for incoming tunnels.
+It in no way has anything to do with the routing of traffic received
+from within those tunnels or how that traffic will be handled within
+netfilter.  This is clearly documented.
