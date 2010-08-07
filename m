@@ -1,243 +1,41 @@
-From: "J Webster" <webster_jack@hotmail.com>
+From: Billy Crook <billycrook@gmail.com>
 Subject: Re: openvpn over udp failing
-Date: Sat, 7 Aug 2010 14:09:16 -0400
-Message-ID: <BAY145-ds1603A7ECCE6D4944CFAF48F3920@phx.gbl>
+Date: Sat, 7 Aug 2010 13:35:45 -0500
+Message-ID: <AANLkTikm-McA4wOUBf+xTX8_EBYykis4N_9F6u6XDPEn@mail.gmail.com>
+References: <BAY145-ds1603A7ECCE6D4944CFAF48F3920@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:mime-version:received:in-reply-to
+         :references:from:date:message-id:subject:to:cc:content-type;
+        bh=fcpuHGUAROOyVIruhdi+Fuvuz0S2AY++ypCao+DCxmw=;
+        b=bfCvFbSZyWD9PX1kbeXUMMEqvC9qWqsneNyzKOM7m2ROWmkcY//4LsDCrFIf/hcyOF
+         m287wYL1oAimQoM6OXZZh1kWjApjoiMlV70mJ+ojXDWgo/MRmbrkHa4PwkqoAKYebUSN
+         bssfbQ7J1eCbSe3PAPkAkwl3DsD+Gz0b4G6WU=
+In-Reply-To: <BAY145-ds1603A7ECCE6D4944CFAF48F3920@phx.gbl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
-To: Billy Crook <billycrook@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: J Webster <webster_jack@hotmail.com>
+Cc: netfilter@vger.kernel.org
 
-Thanks
-The client now connects and the server has the local option specified in the 
-config to bind it to the 199 address.
-However, although it connects, when I view the IP from the client, it still 
-says xx.xx.xx.198
-Any ideas or if this is a postrouting issue?
+On Sat, Aug 7, 2010 at 13:09, J Webster <webster_jack@hotmail.com> wrote:
+> However, although it connects, when I view the IP from the client, it still
+> says xx.xx.xx.198
 
---------------------------------------------------
-From: "J Webster" <webster_jack@hotmail.com>
-Sent: Saturday, August 07, 2010 10:57 AM
-To: "Billy Crook" <billycrook@gmail.com>; <netfilter@vger.kernel.org>
-Subject: Re: openvpn over udp failing
+That sounds correct to me.  -j MASQUERADE is old and ugly and should
+be avoided.  it really does a -j SNAT --to-source 1.2.3.4 where
+1.2.3.4 is the primary address of the egressing interface.  It can be
+useful when that interface' address is not static, but you're probably
+better scripting around that.
 
-> This is the tcpdump from the server (I can't get tcpdump on the client as 
-> the client is CP and windump won't install):
-> Furthermore, when the client connects by tcp it can connect to the server 
-> so if it was a routing issue, wouldn't the tcp connection fail as well?
-> I have included my iptables rules below.
-> Perhaps I should change the routing for port 1194 to snat (it only has 
-> that on port 443 at the moment)?
->
-> 15:48:10.092116 IP modemcable170.xxx-xx-xx.mc.videotron.ca.12582 > 
-> serverxx-xxx-xxx-199.live-servers.net.openvpn: UDP, length 14
-> 15:48:10.094011 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 26
-> 15:48:12.156124 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:48:12.510113 IP modemcable170.xxx-xx-xx.mc.videotron.ca.12582 > 
-> serverxx-xxx-xxx-199.live-servers.net.openvpn: UDP, length 14
-> 15:48:12.510747 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 22
-> 15:48:14.573039 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:48:14.932232 IP modemcable170.xxx-xx-xx.mc.videotron.ca.12582 > 
-> serverxx-xxx-xxx-199.live-servers.net.openvpn: UDP, length 14
-> 15:48:14.932819 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 22
-> 15:48:16.994904 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:48:17.346319 IP modemcable170.xxx-xx-xx.mc.videotron.ca.12582 > 
-> serverxx-xxx-xxx-199.live-servers.net.openvpn: UDP, length 14
-> 15:48:17.346948 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 22
-> 15:48:18.377854 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:48:18.556436 IP modemcable170.xxx-xx-xx.mc.videotron.ca.12582 > 
-> serverxx-xxx-xxx-199.live-servers.net.openvpn: UDP, length 14
-> 15:48:18.557001 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 22
-> 15:48:20.618795 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:48:21.018278 IP modemcable170.xxx-xx-xx.mc.videotron.ca.12582 > 
-> serverxx-xxx-xxx-199.live-servers.net.openvpn: UDP, length 14
-> 15:48:21.018915 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 22
-> 15:48:22.035699 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:48:23.525934 IP modemcable170.xxx-xx-xx.mc.videotron.ca.12582 > 
-> serverxx-xxx-xxx-199.live-servers.net.openvpn: UDP, length 14
-> 15:48:23.526566 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 22
-> 15:48:24.543604 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:48:26.034502 IP modemcable170.xxx-xx-xx.mc.videotron.ca.12582 > 
-> serverxx-xxx-xxx-199.live-servers.net.openvpn: UDP, length 14
-> 15:48:26.035159 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 26
-> 15:48:28.069517 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:48:28.572454 IP modemcable170.xxx-xx-xx.mc.videotron.ca.12582 > 
-> serverxx-xxx-xxx-199.live-servers.net.openvpn: UDP, length 14
-> 15:48:28.573076 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 22
-> 15:48:30.607377 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:48:31.000270 IP modemcable170.xxx-xx-xx.mc.videotron.ca.12582 > 
-> serverxx-xxx-xxx-199.live-servers.net.openvpn: UDP, length 14
-> 15:48:31.000958 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 22
-> 15:48:32.053286 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:48:33.395031 IP modemcable170.xxx-xx-xx.mc.videotron.ca.12582 > 
-> serverxx-xxx-xxx-199.live-servers.net.openvpn: UDP, length 14
-> 15:48:33.395681 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 22
-> 15:48:34.448213 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:48:34.582211 IP modemcable170.xxx-xx-xx.mc.videotron.ca.12582 > 
-> serverxx-xxx-xxx-199.live-servers.net.openvpn: UDP, length 14
-> 15:48:34.582836 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 22
-> 15:48:36.687104 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:48:36.958456 IP modemcable170.xxx-xx-xx.mc.videotron.ca.12582 > 
-> serverxx-xxx-xxx-199.live-servers.net.openvpn: UDP, length 14
-> 15:48:36.959079 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 22
-> 15:48:38.010994 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:48:39.338279 IP modemcable170.xxx-xx-xx.mc.videotron.ca.12582 > 
-> serverxx-xxx-xxx-199.live-servers.net.openvpn: UDP, length 14
-> 15:48:39.338996 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 22
-> 15:48:40.390890 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:48:40.520261 IP modemcable170.xxx-xx-xx.mc.videotron.ca.12582 > 
-> serverxx-xxx-xxx-199.live-servers.net.openvpn: UDP, length 14
-> 15:48:40.520866 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 22
-> 15:48:42.694793 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:48:44.868681 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:48:47.042593 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:48:49.216543 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:48:51.382460 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:48:53.540333 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:48:55.698253 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:48:57.856182 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:49:00.014120 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
-> 15:49:02.105976 IP serverxx-xxx-xxx-198.live-servers.net.openvpn > 
-> modemcable170.xxx-xx-xx.mc.videotron.ca.12582: UDP, length 14
->
-> # Generated by iptables-save v1.3.5 on Thu Jul 29 17:41:50 2010
-> *nat
-> :PREROUTING ACCEPT [36:4648]
-> :POSTROUTING ACCEPT [16:5049]
-> :OUTPUT ACCEPT [16:5049]
-> -A PREROUTING -d xx.xxx.xxx.199 -p tcp -m tcp --dport 443 -j 
-> DNAT --to-destination xx.xxx.xxx.199:1194
-> -A POSTROUTING -s 172.16.0.0/255.255.255.0 -o eth0 -j MASQUERADE
-> -A POSTROUTING -s 10.8.0.0/255.255.255.0 -o eth0 -j MASQUERADE
-> COMMIT
-> # Completed on Thu Jul 29 17:41:50 2010
-> # Generated by iptables-save v1.3.5 on Thu Jul 29 17:41:50 2010
-> *filter
-> :INPUT DROP [20:1583]
-> :FORWARD DROP [0:0]
-> :OUTPUT ACCEPT [5:200]
-> :RH-Firewall-1-INPUT - [0:0]
-> -A INPUT -i lo -j ACCEPT
-> -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-> -A INPUT -i eth0 -p tcp -m tcp --dport 1057 -m state --state NEW -m 
-> recent --set --name SSH --rsource
-> -A INPUT -i eth0 -p tcp -m tcp --dport 1057 -m state --state NEW -m 
-> recent --update --seconds 60 --hitcount 2 --rttl --name SSH --rsource -j 
-> DROP
-> -A INPUT -d xx.xxx.xxx.199 -p tcp -m tcp --dport 1057 -m state --state 
-> NEW -j ACCEPT
-> -A INPUT -d xx.xxx.xxx.199 -p tcp -m tcp --dport 5555 -m state --state 
-> NEW -j ACCEPT
-> -A INPUT -d xx.xxx.xxx.199 -p tcp -m tcp --dport 1194 -m state --state 
-> NEW -j ACCEPT
-> -A INPUT -d xx.xxx.xxx.199 -p udp -m udp --dport 1194 -m state --state 
-> NEW -j ACCEPT
-> -A INPUT -i tun+ -j ACCEPT
-> -A INPUT -i tap+ -j ACCEPT
-> -A INPUT -p udp -m udp --dport 53 -m state --state NEW -j ACCEPT
-> -A INPUT -p tcp -m tcp --dport 53 -m state --state NEW -j ACCEPT
-> -A INPUT -p udp -m udp --dport 123 -m state --state NEW -j ACCEPT
-> -A INPUT -p tcp -m tcp --dport 8002 -m state --state NEW -j ACCEPT
-> -A INPUT -p tcp -m tcp --dport 9001 -m state --state NEW -j ACCEPT
-> -A INPUT -p tcp -m tcp --dport 80 -m state --state NEW -j ACCEPT
-> -A INPUT -d xx.xxx.xxx.198 -p tcp -m state --state NEW -m tcp --dport 
-> 8080 -j ACCEPT
-> -A INPUT -d xx.xxx.xxx.198 -p tcp -m state --state NEW -m tcp --dport 
-> 1935 -j ACCEPT
-> -A INPUT -d xx.xxx.xxx.198 -p tcp -m state --state NEW -m tcp --dport 
-> 80 -j ACCEPT
-> -A INPUT -d xx.xxx.xxx.198 -p tcp -m state --state NEW -m tcp --dport 
-> 443 -j ACCEPT
-> -A INPUT -d xx.xxx.xxx.199 -p tcp -m state --state NEW -m tcp --dport 
-> 443 -j ACCEPT
-> -A INPUT -p icmp -m limit --limit 1/sec --limit-burst 1 -j ACCEPT
-> -A INPUT -d xx.xxx.xxx.198 -p icmp -m icmp --icmp-type 8 -m state --state 
-> NEW,RELATED,ESTABLISHED -j ACCEPT
-> -A FORWARD -i eth0 -o tun+ -m state --state RELATED,ESTABLISHED -j ACCEPT
-> -A FORWARD -i tun+ -j ACCEPT
-> -A FORWARD -i tap+ -j ACCEPT
-> -A OUTPUT -s xx.xxx.xxx.199 -p tcp -m tcp --dport 1194 -m state --state 
-> NEW -j ACCEPT
-> -A OUTPUT -s xx.xxx.xxx.199 -p udp -m udp --dport 1194 -m state --state 
-> NEW -j ACCEPT
-> -A OUTPUT -s xx.xxx.xxx.199 -p tcp -m tcp --dport 443 -m state --state 
-> NEW -j ACCEPT
-> -A OUTPUT -s xx.xxx.xxx.198 -p icmp -m icmp --icmp-type 0 -m state --state 
-> RELATED,ESTABLISHED -j ACCEPT
-> -A OUTPUT -o lo -j ACCEPT
-> -A OUTPUT -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
-> COMMIT
-> # Completed on Thu Jul 29 17:41:50 2010
->
->
->
-> --------------------------------------------------
-> From: "Billy Crook" <billycrook@gmail.com>
-> Sent: Friday, August 06, 2010 11:10 PM
-> To: "J Webster" <webster_jack@hotmail.com>
-> Cc: <netfilter@vger.kernel.org>
-> Subject: Re: openvpn over udp failing
->
->> On Fri, Aug 6, 2010 at 12:15, J Webster <webster_jack@hotmail.com> wrote:
->>> CLIENT:
->>> Fri Aug 06 08:11:59 2010 us=546000 TLS Error: TLS key negotiation failed 
->>> to
->>> occur within 60 seconds (check your network connectivity)
->>> Fri Aug 06 08:11:59 2010 us=546000 TLS Error: TLS handshake failed
->>> Fri Aug 06 08:11:59 2010 us=546000 TCP/UDP: Closing socket
->>> Fri Aug 06 08:11:59 2010 us=546000 SIGUSR1[soft,tls-error] received, 
->>> process
->>> restarting
->>
->> Do a tcpdump on your client.  I bet you will see it send udp out to
->> .198, but get udp back from .199.
->>
->> Solution: Configure openvpn to explicitly bind only to 199.
->> --local xx.xx.xx.199 --bind
->>
->> (I also use openvpn.)
->> --
->> To unsubscribe from this list: send the line "unsubscribe netfilter" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->> 
+So you want your openvpn client to use the openvpn server as its
+default route.  And by "view the IP from the client", you mean you
+visit some site like say https://secure.informaction.com/ipecho/ and
+it reports one IP when queried by a process on the openvpn server, and
+reports another IP when queried by a process on an openvpn client, and
+you do not like that?
+
+Try replacing the '-j MASQUERADE's with explicit '-j SNAT --to-source's.
