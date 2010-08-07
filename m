@@ -1,72 +1,45 @@
-From: "J Webster" <webster_jack@hotmail.com>
+From: Billy Crook <billycrook@gmail.com>
 Subject: Re: openvpn over udp failing
-Date: Sat, 7 Aug 2010 14:44:15 -0400
-Message-ID: <BAY145-ds21CD2C7CC8AF3A317E2027F3920@phx.gbl>
-References: <BAY145-ds1603A7ECCE6D4944CFAF48F3920@phx.gbl> <AANLkTikm-McA4wOUBf+xTX8_EBYykis4N_9F6u6XDPEn@mail.gmail.com>
+Date: Sat, 7 Aug 2010 13:57:32 -0500
+Message-ID: <AANLkTimZDpwz5bQhK1JGc-yYVwv2uY-65MUiJHfWQxj+@mail.gmail.com>
+References: <BAY145-ds1603A7ECCE6D4944CFAF48F3920@phx.gbl> 
+	<AANLkTikm-McA4wOUBf+xTX8_EBYykis4N_9F6u6XDPEn@mail.gmail.com> 
+	<BAY145-ds21CD2C7CC8AF3A317E2027F3920@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTikm-McA4wOUBf+xTX8_EBYykis4N_9F6u6XDPEn@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:mime-version:received:in-reply-to
+         :references:from:date:message-id:subject:to:cc:content-type;
+        bh=AH9sMxn/I5E5bE+ldZaJqSzpO1we64n8Us1KKxy0LRw=;
+        b=CYx4yl8DTS5wwbR3Pp+ijTGA1aVWLpnBBejRRM1dZ+qaH89oLv7ym9z7hXz8xgCsMM
+         QdClxYMrn6cunLN8vmpj577K/dI8xmrezrTMJMGE6yYoc8EzH2Ce5GIW+lJeO5IYIm+u
+         oUeqoZFCxUrdgPLIh5ibTfi/40EH4xWNPkP7w=
+In-Reply-To: <BAY145-ds21CD2C7CC8AF3A317E2027F3920@phx.gbl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: Billy Crook <billycrook@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: J Webster <webster_jack@hotmail.com>
+Cc: netfilter@vger.kernel.org
 
-Well, it's more that the openvpn service is running on an IP of the server 
-of xxx.xxx.xxx.199 (the server has 2 public IPs).
-I don;t really understand why when the client connects, that a site like 
-your ipecho below would report my IP as xxx.xxx.xxx.198
-If there's no problem with that process then it doesn't bother me too much 
-but it doesn;t look very clean. Could it have any routing issues for the 
-traffic?
+On Sat, Aug 7, 2010 at 13:44, J Webster <webster_jack@hotmail.com> wrote:
+> Well, it's more that the openvpn service is running on an IP of the server
+> of xxx.xxx.xxx.199 (the server has 2 public IPs).
+> I don;t really understand why when the client connects, that a site like
+> your ipecho below would report my IP as xxx.xxx.xxx.198
 
-So, I replace:
-:OUTPUT ACCEPT [8:3135]
--A PREROUTING -d xx.xxx.xxx.199 -p tcp -m tcp --dport 443 -j 
-DNAT --to-destination xx.xxx.xxx.199:1194
--A POSTROUTING -s 172.16.0.0/255.255.255.0 -o eth0 -j MASQUERADE
--A POSTROUTING -s 10.8.0.0/255.255.255.0 -o eth0 -j MASQUERADE
+That's the source ip that netfilter gave to the MASQUERADEd connection
+as it passed through eth0.  198 is probably the primary ip for eth0
+(eth0:0) and eth0:1 is 199, right?  That is why by connections leaving
+eth0 will default to a source address of 198.  There may be exactly
+one defailt IP.
 
-with
-:OUTPUT ACCEPT [8:3135]
--A PREROUTING -d xx.xxx.xxx.199 -p tcp -m tcp --dport 443 -j 
-DNAT --to-destination xx.xxx.xxx.199:1194
--A POSTROUTING -s 172.16.0.0/255.255.255.0 -o eth0 -j SNAT --to-sourece 
-xx.xxx.xxx.199
--A POSTROUTING -s 10.8.0.0/255.255.255.0 -o eth0 -j SNAT --to-source 
-xx.xxx.xxx.199
+> omitting the port numbers?
 
-omitting the port numbers?
+You tell us.  man iptables[enter]/--to-source
 
-
---------------------------------------------------
-From: "Billy Crook" <billycrook@gmail.com>
-Sent: Saturday, August 07, 2010 2:35 PM
-To: "J Webster" <webster_jack@hotmail.com>
-Cc: <netfilter@vger.kernel.org>
-Subject: Re: openvpn over udp failing
-
-> On Sat, Aug 7, 2010 at 13:09, J Webster <webster_jack@hotmail.com> wrote:
->> However, although it connects, when I view the IP from the client, it 
->> still
->> says xx.xx.xx.198
->
-> That sounds correct to me.  -j MASQUERADE is old and ugly and should
-> be avoided.  it really does a -j SNAT --to-source 1.2.3.4 where
-> 1.2.3.4 is the primary address of the egressing interface.  It can be
-> useful when that interface' address is not static, but you're probably
-> better scripting around that.
->
-> So you want your openvpn client to use the openvpn server as its
-> default route.  And by "view the IP from the client", you mean you
-> visit some site like say https://secure.informaction.com/ipecho/ and
-> it reports one IP when queried by a process on the openvpn server, and
-> reports another IP when queried by a process on an openvpn client, and
-> you do not like that?
->
-> Try replacing the '-j MASQUERADE's with explicit '-j SNAT --to-source's.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+I don't know why you'd care about the source port, but it's your box.
+I use --random on mine, because I'm just that way....  Nice job
+netfilter devs, on --persistant.  I was too busy to notice that slip
+in.
