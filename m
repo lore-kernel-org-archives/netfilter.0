@@ -1,58 +1,34 @@
-From: =?UTF-8?Q?Mamadou_Tour=C3=A9?= <e2ia.ci@gmail.com>
-Subject: Re: firewall and squid running on the same box
-Date: Sat, 7 Aug 2010 22:36:53 +0000
-Message-ID: <AANLkTimwzV8V=ts7Ph+EL6sDs-MXFHOzEPedeLrAmjww@mail.gmail.com>
-References: <AANLkTimOQQqE1jrNLGKZW3T-dCmAAJzYu8cUyRTR4bMY@mail.gmail.com>
-	<20100802141014.240229f0@catus>
-	<AANLkTimn488wJ4ih5HnMOwgsKwrjWYvPd_r3skpNi4R+@mail.gmail.com>
-	<20100802201932.051e9963@catus>
-	<AANLkTikb3e0F_y+um=4iozf71F=4GKjwgQ55erJrCT6M@mail.gmail.com>
-	<20100805122252.62b09f34@catus>
+From: Billy Crook <billycrook@gmail.com>
+Subject: Re: openvpn over udp failing
+Date: Sun, 8 Aug 2010 16:57:23 -0500
+Message-ID: <AANLkTinaci7R4K0EhxLs0xGCTbO=Kh5Qtw1_pJ7YL+Ws@mail.gmail.com>
+References: <BAY145-ds3FB0B1B5B904843D4A32BF3910@phx.gbl> <AANLkTinxMMe_dAENYJr+hQS0R7TWUbcc1OyuOOzNrcHC@mail.gmail.com> 
+	<BAY145-ds18BAB524B0EF1EE2DAF424F3920@phx.gbl> <AANLkTi=W8+Rm_9HjYi3H0kEOS8snau9025vhi9szuEb_@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type;
-        bh=tqDBY1MeJM6OIaXtXKGIjS5wI8WKRF/k+gcg3tA4wZw=;
-        b=YuuTMC14EFKsj2ZGMwxSvRR77G8Ay0m1rZcveTGKj0Pr5xaW8UJetU1TxmahdSiNIy
-         DocFnSqRu4HVlqfvOh/yA07/DhGhY2BYXtKWQhmleeIEa51/x0jfa+s3nzVa+CbD34jK
-         aqTaT4/T4QzxmOHyeuP56d/lWqVKnNPmqveZY=
-In-Reply-To: <20100805122252.62b09f34@catus>
+        h=domainkey-signature:received:mime-version:received:in-reply-to
+         :references:from:date:message-id:subject:to:cc:content-type;
+        bh=jobTkHS06xn+BnWfiuX1QW1a5y7uHvUGQSqUw3kQoDI=;
+        b=GfNBowLf6wlzmzaFaivXYx7xoRAky/02ayqlw9gRJlSE4J3f8yWMxNIuXFafLEkLUl
+         AEq/wgCIIt59N/0S3aiKmFciNMwnJVU+xHsdnLgKrEIchdaa1BfLH/8XqS7lWvCo9cHh
+         yISkx+uZzTagFfWP29FA44BjguFnvLcE6Wnts=
+In-Reply-To: <AANLkTi=W8+Rm_9HjYi3H0kEOS8snau9025vhi9szuEb_@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Marek Kierdelewicz <marek@piasta.pl>
+To: J Webster <webster_jack@hotmail.com>
 Cc: netfilter@vger.kernel.org
 
-Hi,
-i've found out the the dependency.
-and i' think it run fine. but my content filtering doesn't work.
-i'm using squidguard as content filtering program.
-Does any one has already implement squid TPROXY and squidguard (or
-else content filtering program)
-And i've also read that there is bug with tproxy when using kernel 2.6.32.
-I'm using kernel 2.6.32.11 does anyone know if this issue has been solved.
-I need your help and advices.
+On Sat, Aug 7, 2010 at 12:18, Billy Crook <billycrook@gmail.com> wrote:
+> man openvpn.
+> /--local
+> /--bind
 
-regards.
-
-2010/8/5 Marek Kierdelewicz <marek@piasta.pl>:
-> Hi,
->
->>Hi to install tproxy i need libcap2 so i'm trying to install from
->>source libcap-2.19.
->>but i got this error when make:
->>/usr/bin/ld: cannot find -lattr
->>have you already got this kind of problem.
->>Not my kernel version is : 2.6.32.11
->
-> I didn't experience such problems.
->
-> It looks like you're missing some libcap dependency. Look for further
-> information in README or INSTALL file in libcap source.
->
-> Regards,
-> Marek
->
+The above will make openvpn server listen on exactly one IP which i
+think you do prefer.  I spoke with openvpn main develoer James Yonan,
+who offered up  --multihome if your server is runnign the 2.1
+codebase, which will continue to let the server listen on all IPs, but
+reply from the "right" one every time, even on udp connections.
