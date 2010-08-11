@@ -1,92 +1,64 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: QoS weirdness : HTB accuracy
-Date: Wed, 11 Aug 2010 15:27:17 +0100
-Message-ID: <1281536837.1432.70.camel@andybev>
-References: <067c83163988908ef546d7ff7f560a17@localhost>
-	 <4BF32BB0.7010700@redfish-solutions.com>
-	 <e6bd0cff8dafc8b3af0760facb5fdc8c@localhost>
-	 <1276204948.1403.13.camel@andybev> <1278265807.1506.86.camel@andybev>
-	 <Pine.LNX.4.64.1007071457020.6631@ask.diku.dk>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Howto DNAT/SNAT existing TCP session (no SYN, only PUSH/ACK)
+Date: Wed, 11 Aug 2010 16:51:56 +0200 (CEST)
+Message-ID: <alpine.LSU.2.01.1008111646090.2836@obet.zrqbmnf.qr>
+References: <4C62AD26.1050200@aimvalley.nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1281536840; bh=LfZMlevU/f8tsnyagPV4Y+QB7Qvj4D1ZvZ1fX
-	GEicqo=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
-	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=viBiXZ3B
-	tRHqdX3RfFRgkfk9SrBx6E6eWasOTJh96Hf8tAfYq2N1FySS2+ziCgTTMloDd7TOd4X
-	2sCMPZJ48RlBVuDii2J+hoakDTYonSVWAgD8IkzW1aEjA3/Ng8ckZb0pHNSvixyb4Wg
-	KC66Bc6SD9XMYKURyOAX2LMQdY1v8=
-In-Reply-To: <Pine.LNX.4.64.1007071457020.6631@ask.diku.dk>
+In-Reply-To: <4C62AD26.1050200@aimvalley.nl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: hawk@comx.dk
-Cc: Julien Vehent <julien@linuxwall.info>, "Philip A. Prindeville" <philipp_subx@redfish-solutions.com>, Netdev <netdev@vger.kernel.org>, netfilter <netfilter@vger.kernel.org>
-
-On Wed, 2010-07-07 at 15:07 +0200, Jesper Dangaard Brouer wrote:
-> On Sun, 4 Jul 2010, Andrew Beverley wrote:
-> 
-> >>> I was, in fact, an error in my ruleset. I had put the 'linklayer atm' at
-> >>> both the branch and leaf levels, so the overhead was computed twice,
-> >>> creating those holes in the bandwidth.
-> >>
-> >> I am seeing similar behaviour with my setup. Am I making the same
-> >> mistake? A subset of my rules is as follows:
-> >>
-> >> tc qdisc add dev ppp0 root handle 1: htb r2q 1
-> >>
-> >> tc class add dev ppp0 parent 1: classid 1:1 htb \
-> >>     rate ${DOWNLINK}kbit ceil ${DOWNLINK}kbit \
-> >>     overhead $overhead linklayer atm                   <------- Here
-> >>
-> >> tc class add dev ppp0 parent 1:1 classid 1:10 htb \
-> >>     rate 612kbit ceil 612kbit prio 0 \
-> >>     overhead $overhead linklayer atm                   <------- And here
-> >>
-> >> tc qdisc add dev ppp0 parent 1:10 handle 4210: \
-> >>     sfq perturb 10 limit 50
-> >>
-> >> tc filter add dev ppp0 parent 1:0 protocol ip \
-> >>     prio 10 handle 10 fw flowid 1:10
-> >
-> > I removed the overhead option on the first leaf, and the speeds change
-> > to what I expect. However, the rules above are taken straight from the
-> > ADSL Optimizer project, which was the source of the original overhead
-> > patch for tc. So is the ADSL Optimizer project wrong?
-> 
-> After looking at the HTB kernel code I believe that the ADSL Optimizer 
-> project is NOT wrong.  You should/must set the linklayer option on both 
-> the root class and leaf (else you would be charging the root/parent node 
-> too little).
-> 
-> It is the expected behavior that small packets cause a significant
-> reduction in the available bandwidth on the ATM link.  Small packets will 
-> (almost) always cause 2 ATM packets (being send) using 106 bytes, thus
-> eg. sending a 40 bytes TCP ACK packet result in approx 62% overhead.
-
-[sorry for the late reply]
-
-Maybe I am using the linklayer atm option wrong:
-
-1. I am using it with a PCI ADSL modem. As the kernel "knows" that it's
-dealing with an ATM device, is there any need to even specify the option
-in the first place?
-
-2. My methodology for calculating the overall speed limit for the device
-is to download several large files and see what throughput I get. I then
-use this figure in the rules above. However, as soon as I add a
-linklayer option, the maximum throughout of the device obviously drops,
-but means that I never get the throughput that I know the line is
-capable of. Assuming that I should even be using the linklayer atm
-option, should I be specifying the line speed higher than that which I
-physically observe during line speed tests?
-
-For example, if I observe an ADSL line speed of 4000kbit/s, I then
-specify 3600kbit/s for the root of the HTB class, but with the linklayer
-atm option I only get about 3200kbit/s. Should I be specifying a higher
-value in order to get the most out of the connection?
-
-Andy
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Norbert van Bolhuis <nvbolhuis@aimvalley.nl>
+Cc: netfilter@vger.kernel.org
 
 
+On Wednesday 2010-08-11 16:01, Norbert van Bolhuis wrote:
+>
+> We have a system that looks internally like this:
+>
+>    eLAN
+>      |
+>      |
+>    --------------
+>    | ETH-switch |
+>    --------------
+>     |p1        |p2
+>     |          |
+> --------      --------
+> |HOST_1|------|HOST_2|
+> -------- iLAN --------
+>   ]
+> ........
+> . APPs .
+> ........
+>
+>On HOST_2 the below rule takes care of this:
+>iptables -t nat -A PREROUTING -d <eLAN-IP-addr> ! -i iLAN -j DNAT
+>--to-destination <iLAN-HOST_1-IP-addr>
+>
+>Let's say HOST_2 is active and an ESTABLISHED TCP communication is present
+>between a system on the eLAN and an APP.
+
+k,
+
+>(of course for HOST_1 the TCP connection will be administrated as
+>iLAN-HOST_1-IP-addr/port<-->eLAN-system-IP-addr/port)
+
+What? "pcap language please."
+
+
+>If the ETH-switch
+>rapidly makes p1/HOST_1 active, is it possible to make sure outgoing TCP data
+>(that is sent by the APP/HOST_1) is somehow source NAT'ed ?
+
+You have ipt_SNAT at your disposal.
+
+>I ask this because currently the outgoing data (to the system on the eLAN
+>carries src-ip=iLAN-HOST_1-IP-addr while I want it to be eLAN-IP-addr.
+>
+>Anybody know why (TCP of) HOST_1 sends a ReSeT in this case ?
+
+You probably evoked a problem simliar to
+http://jengelh.medozas.de/images/dnat-mistake.png
