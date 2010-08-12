@@ -1,295 +1,134 @@
-From: Hauke Hoffmann <kontakt@hauke-hoffmann.net>
-Subject: Some problems with NAT, can't connect fo a few hosts, but the rest works
-Date: Thu, 12 Aug 2010 01:50:17 +0200
-Message-ID: <201008120150.17545.kontakt@hauke-hoffmann.net>
+From: Valdis.Kletnieks@vt.edu
+Subject: mmotm 2010-08-11 - lockdep whinges at e1000e driver ifconfig up
+Date: Thu, 12 Aug 2010 12:37:58 -0400
+Message-ID: <11448.1281631078@localhost>
+References: <201008112340.o7BNenDe021017@imap1.linux-foundation.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/signed; boundary="==_Exmh_1281631078_11114P";
+	 micalg=pgp-sha1; protocol="application/pgp-signature"
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: Your message of "Wed, 11 Aug 2010 16:10:49 PDT."
+             <201008112340.o7BNenDe021017@imap1.linux-foundation.org>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Andrew Morton <akpm@linux-foundation.org>, davem@davemloft.net, jeffrey.t.kirsher@intel.com, jesse.brandeburg@intel.com, kaber@trash.net, jengelh@medozas.de, eric.dumazet@gmail.com
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, e1000-devel@lists.sourceforge.net, netfilter@vger.kernel.org
+
+--==_Exmh_1281631078_11114P
+Content-Type: text/plain; charset=us-ascii
+
+On Wed, 11 Aug 2010 16:10:49 PDT, akpm@linux-foundation.org said:
+> The mm-of-the-moment snapshot 2010-08-11-16-10 has been uploaded to
+> 
+>    http://userweb.kernel.org/~akpm/mmotm/
+
+Not sure if it's an e1000e bug, or an iptables bug that happened to trip on
+like the first few packets accepted after the interface came up, so I'll cc:
+everybody and let ya'll fight over it. :)
+
+[  431.011194] e1000e 0000:00:19.0: irq 46 for MSI/MSI-X
+[  431.062183] e1000e 0000:00:19.0: irq 46 for MSI/MSI-X
+[  431.064607] ADDRCONF(NETDEV_UP): eth0: link is not ready
+[  432.691161] e1000e: eth0 NIC Link is Up 100 Mbps Full Duplex, Flow Control: None
+[  432.691177] e1000e 0000:00:19.0: eth0: 10/100 speed: disabling TSO
+[  432.695461] ADDRCONF(NETDEV_CHANGE): eth0: link becomes ready
+[  432.697278] 
+[  432.697279] =================================
+[  432.697477] [ INFO: inconsistent lock state ]
+[  432.697581] 2.6.35-mmotm0811 #1
+[  432.697682] ---------------------------------
+[  432.697785] inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+[  432.697890] kworker/0:0/0 [HC0[0]:SC1[2]:HE1:SE0] takes:
+[  432.697994]  (&(&lock->lock)->rlock){+.?...}, at: [<ffffffff814d39c8>] ip6t_do_table+0xc1/0x646
+[  432.698028] {SOFTIRQ-ON-W} state was registered at:
+[  432.698028]   [<ffffffff8106762f>] __lock_acquire+0x3a3/0xd6a
+[  432.698028]   [<ffffffff81068514>] lock_acquire+0x10a/0x130
+[  432.698028]   [<ffffffff81557cd9>] _raw_spin_lock+0x36/0x45
+[  432.698028]   [<ffffffff814d3375>] xt_info_wrlock+0x1c/0x1e
+[  432.698028]   [<ffffffff814d48df>] get_counters+0x93/0x14a
+[  432.698028]   [<ffffffff814d49c3>] alloc_counters.clone.3+0x2d/0x41
+[  432.698028]   [<ffffffff814d4f98>] do_ip6t_get_ctl+0x110/0x367
+[  432.698028]   [<ffffffff814402a7>] nf_sockopt+0x5c/0x88
+[  432.698028]   [<ffffffff814402e6>] nf_getsockopt+0x13/0x15
+[  432.698028]   [<ffffffff814ba05e>] ipv6_getsockopt+0x94/0xc3
+[  432.698028]   [<ffffffff814c1175>] rawv6_getsockopt+0x48/0x54
+[  432.698028]   [<ffffffff8141533a>] sock_common_getsockopt+0xf/0x11
+[  432.698028]   [<ffffffff814147dd>] sys_getsockopt+0x75/0x93
+[  432.698028]   [<ffffffff8100272b>] system_call_fastpath+0x16/0x1b
+[  432.698028] irq event stamp: 3554312
+[  432.698028] hardirqs last  enabled at (3554312): [<ffffffff8103fcb9>] _local_bh_enable_ip+0x139/0x178
+[  432.698028] hardirqs last disabled at (3554311): [<ffffffff8103fc3a>] _local_bh_enable_ip+0xba/0x178
+[  432.698028] softirqs last  enabled at (3554260): [<ffffffff81040282>] __do_softirq+0x273/0x289
+[  432.698028] softirqs last disabled at (3554277): [<ffffffff8100364c>] call_softirq+0x1c/0x28
+[  432.698028] 
+[  432.698028] other info that might help us debug this:
+[  432.698028] 3 locks held by kworker/0:0/0:
+[  432.698028]  #0:  (&idev->mc_ifc_timer){+.-...}, at: [<ffffffff810468f9>] run_timer_softirq+0x1d2/0x442
+[  432.698028]  #1:  (rcu_read_lock){.+.+..}, at: [<ffffffff814c3c2a>] rcu_read_lock+0x0/0x35
+[  432.698028]  #2:  (rcu_read_lock){.+.+..}, at: [<ffffffff8143e840>] rcu_read_lock+0x0/0x35
+[  432.698028] 
+[  432.698028] stack backtrace:
+[  432.698028] Pid: 0, comm: kworker/0:0 Not tainted 2.6.35-mmotm0811 #1
+[  432.698028] Call Trace:
+[  432.698028]  <IRQ>  [<ffffffff810670a2>] valid_state+0x17c/0x18e
+[  432.698028]  [<ffffffff81066967>] ? check_usage_forwards+0x0/0x87
+[  432.698028]  [<ffffffff81067193>] mark_lock+0xdf/0x1d8
+[  432.698028]  [<ffffffff810675b1>] __lock_acquire+0x325/0xd6a
+[  432.698028]  [<ffffffff8106768f>] ? __lock_acquire+0x403/0xd6a
+[  432.698028]  [<ffffffff810687fc>] ? mark_held_locks+0x50/0x72
+[  432.698028]  [<ffffffff814d39c8>] ? ip6t_do_table+0xc1/0x646
+[  432.698028]  [<ffffffff81068514>] lock_acquire+0x10a/0x130
+[  432.698028]  [<ffffffff814d39c8>] ? ip6t_do_table+0xc1/0x646
+[  432.698028]  [<ffffffff8103fce6>] ? _local_bh_enable_ip+0x166/0x178
+[  432.698028]  [<ffffffff81557cd9>] _raw_spin_lock+0x36/0x45
+[  432.698028]  [<ffffffff814d39c8>] ? ip6t_do_table+0xc1/0x646
+[  432.698028]  [<ffffffff814d39c8>] ip6t_do_table+0xc1/0x646
+[  432.698028]  [<ffffffff8103fce6>] ? _local_bh_enable_ip+0x166/0x178
+[  432.698028]  [<ffffffff8103fd10>] ? local_bh_enable+0xd/0xf
+[  432.698028]  [<ffffffff8144234b>] ? nf_conntrack_in+0x4a9/0x5b9
+[  432.698028]  [<ffffffff814d5ee7>] ip6table_filter_hook+0x17/0x1c
+[  432.698028]  [<ffffffff8143ec43>] nf_iterate+0x41/0x84
+[  432.698028]  [<ffffffff814c3ec5>] ? dst_output+0x0/0x70
+[  432.698028]  [<ffffffff8143ecf9>] nf_hook_slow+0x73/0xde
+[  432.698028]  [<ffffffff814c3ec5>] ? dst_output+0x0/0x70
+[  432.698028]  [<ffffffff8104710a>] ? msleep_interruptible+0x5b/0x72
+[  432.698028]  [<ffffffff814c508e>] NF_HOOK.clone.21+0x3e/0x52
+[  432.698028]  [<ffffffff81499c6c>] ? xfrm_lookup+0x11/0x2e
+[  432.698028]  [<ffffffff814c531f>] mld_sendpack+0x27d/0x3dd
+[  432.698028]  [<ffffffff814c5ad6>] mld_ifc_timer_expire+0x1ca/0x207
+[  432.698028]  [<ffffffff810469eb>] run_timer_softirq+0x2c4/0x442
+[  432.698028]  [<ffffffff810468f9>] ? run_timer_softirq+0x1d2/0x442
+[  432.698028]  [<ffffffff81059222>] ? __run_hrtimer+0x1ec/0x234
+[  432.698028]  [<ffffffff814c590c>] ? mld_ifc_timer_expire+0x0/0x207
+[  432.698028]  [<ffffffff81040080>] ? __do_softirq+0x71/0x289
+[  432.698028]  [<ffffffff81040155>] __do_softirq+0x146/0x289
+[  432.698028]  [<ffffffff810a29bc>] ? time_hardirqs_off+0x1b/0x2f
+[  432.698028]  [<ffffffff8100364c>] call_softirq+0x1c/0x28
+[  432.698028]  [<ffffffff81004bc3>] do_softirq+0x44/0xf1
+[  432.698028]  [<ffffffff8104035a>] irq_exit+0x4a/0xb4
+[  432.698028]  [<ffffffff8101a3dd>] smp_apic_timer_interrupt+0x79/0x87
+[  432.698028]  [<ffffffff81003113>] apic_timer_interrupt+0x13/0x20
+[  432.698028]  <EOI>  [<ffffffff81277630>] ? acpi_idle_enter_simple+0x122/0x15a
+[  432.698028]  [<ffffffff8127762b>] ? acpi_idle_enter_simple+0x11d/0x15a
+[  432.698028]  [<ffffffff813b9c3c>] cpuidle_idle_call+0x9b/0x15d
+[  432.698028]  [<ffffffff81000c73>] cpu_idle+0x85/0x169
+[  432.698028]  [<ffffffff81b5e906>] start_secondary+0x1b1/0x1b5
+[  497.031095] ADDRCONF(NETDEV_UP): wlan0: link is not ready
 
-Hello,
 
-I have a Linux server (2.6.29.6-grsec) which is connected to the Internet and 
-is configured to work as a NAT.
 
-From the local clients, I can surf through the web, as example google.de. 
-Thats works.
+--==_Exmh_1281631078_11114P
+Content-Type: application/pgp-signature
 
-But there exists a few hosts (eg www.deutsche-finanzagentur.de or 
-www.hoelleinshop.com), which the clients can't connect with.
-With any Browser Firefox/Chrome on Linux/Windows, I see only the message 
-waiting for ...
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Exmh version 2.5 07/13/2001
 
-wget  http://www.deutsche-finanzagentur.de #running on server works fine
-wget  http://www.deutsche-finanzagentur.de #on a client didnt' work
-wget  http://google.de                                   #on a client works .
+iD8DBQFMZCNmcC3lWbTT17ARArmmAJwIKhdlE6FNWckj9I16657G1iKQ2QCgzzlA
+LUUBRJ6Qv6WYNOHEgKJIRfM=
+=pciC
+-----END PGP SIGNATURE-----
 
-And there are problems with ssh, too.
-If i login from the server to my university ssh server (ssh.rz.tu-harburg.de), 
-it works,
-but if i start ssh on a client the connections frezes after reciving a lot of 
-output (eg `cat /etc/fstab`).
-
-If you have an idea, please feel free to tell me what Im' doing wrong.
-
-Regards
-     Hauke
-
-Attached Data:
- - my routing script ("set.sh")
-Outputs:
- - Running wget on a client 
-
-
-
-Routing script
-===========================================================
-
-#!/bin/bash
-
-# Routing-SCRIPT for roadrunner.local
-
-
-iptables () { echo $@; /sbin/iptables $@; }
-
-enable () { for file in $@; do echo 1 > $file; done }
-disable () { for file in $@; do echo 0 > $file; done }
-
-acceptInput()
-{
-	iptables -A INPUT -i $1 -s $2  -j ACCEPT
-}
-
-
-# enables an dhcp server
-# usage: acceptDHCP <interface> <server-ip>
-acceptDHCP()
-{
-	DHCP_DEVICE=$1
-	DHCP_SERVER=$2
-	# dhcp-server <-> dhcp-relay
-	iptables -A OUTPUT -p udp -s $DHCP_SERVER --sport 67                 --dport 
-67 -j ACCEPT
-	iptables -A INPUT -i $DHCP_DEVICE -p udp                  --sport 67 -d 
-$DHCP_SERVER --dport 67 -j ACCEPT
-	
-	# dhcp-server <-> dhcp-client
-	iptables -A OUTPUT -p udp -s $DHCP_SERVER --sport 67                 --dport 
-68 -j ACCEPT
-	iptables -A INPUT -i $DHCP_DEVICE -p udp                  --sport 68 -d 
-$DHCP_SERVER --dport 67 -j ACCEPT
-	
-	# bcast dhcp-client -> dhcp-server
-	iptables -A INPUT -i $DHCP_DEVICE -p udp -s 0.0.0.0 --sport 68 -d 
-255.255.255.255 --dport 67 -j ACCEPT
-}
-
-#usage <tcp/udp> <port>
-acceptLocal()
-{
-	iptables -A INPUT -i $iface_local 	-s $net_local -p $1 --dport $2 -j ACCEPT
-	iptables -A INPUT -i $iface_vpn		-s $net_vpn -p $1 --dport $2 -j ACCEPT
-}
-
-#usage <tcp/udp> <port>
-accept()
-{
-	iptables -A INPUT -p $1 --dport $2 -j ACCEPT
-}
-
-
-enable /proc/sys/net/ipv4/icmp_echo_ignore_all
-enable /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
-disable /proc/sys/net/ipv4/conf/*/accept_source_route
-enable /proc/sys/net/ipv4/conf/*/rp_filter
-enable  /proc/sys/net/ipv4/conf/*/accept_redirects
-disable /proc/sys/net/ipv4/conf/*/secure_redirects
-disable /proc/sys/net/ipv4/conf/*/send_redirects
-enable /proc/sys/net/ipv4/conf/*/log_martians
-enable /proc/sys/net/ipv4/tcp_syncookies
-
-function createChain {
-	name=$1
-	echo "Create chain '$name'"
-	iptables -F $name 2> /dev/null
-	iptables -X $name 2> /dev/null
-	iptables --new-chain $name
-}
-
-iface_local="br0"
-iface_wlan="ath0"
-iface_inet="ppp0"
-iface_vpn="tun0"
-
-ip_local="192.168.2.30"
-ip_wlan="192.168.100.30"
-ip_vpn="192.168.3.1"
-
-net_my="192.168.0.0/16"
-
-net_local="192.168.2.0/24"
-net_wlan="192.168.100.0/24"
-net_vpn="192.168.3.0/24"
-net_localhost="127.0.0.1/255.255.255.255"
-
-iptables -P INPUT DROP
-iptables -P OUTPUT ACCEPT
-iptables -P FORWARD DROP
-iptables -F
-iptables -X
-iptables -t nat -P PREROUTING ACCEPT
-iptables -t nat -P POSTROUTING ACCEPT
-iptables -t nat -P OUTPUT ACCEPT
-iptables -t nat -F
-iptables -t nat -X
-
-
-
-echo 1 > /proc/sys/net/ipv4/ip_forward
-
-echo 1 > /proc/sys/net/ipv4/ip_dynaddr
-
-
-###########################################
-#                                         #
-# i n p u t                               #
-#                                         #
-###########################################
-iptables -A INPUT -i lo -j ACCEPT
-
-acceptDHCP $iface_local $ip_local
-acceptDHCP $iface_wlan	$ip_wlan
-
-createChain input_trusted   	
-createChain input_internet  	
-createChain input_wlan      	
-
-iptables -A INPUT -i $iface_local	-s $net_local	-j input_trusted
-iptables -A INPUT -i $iface_vpn		-s $net_vpn	-j input_trusted
-
-iptables -A INPUT -i $iface_inet	-s ! $net_my	-j input_internet
-iptables -A INPUT -i $iface_wlan	-s $net_wlan	-j input_wlan
-
-
-iptables -A input_trusted	-j ACCEPT
-
-# Accept dns
-iptables -A input_wlan		-p tcp --dport 53	-j ACCEPT
-iptables -A input_wlan		-p udp --dport 53	-j ACCEPT
-
-iptables -A input_wlan		-j input_internet
-
-# accppet http
-#iptables -A input_internet	-p tcp --dport 80	-j ACCEPT
-
-# accppet https
-#iptables -A input_internet	-p tcp --dport 443	-j ACCEPT
-
-# accept ssh
-iptables -A input_internet	-p tcp --dport 22	-j ACCEPT 
-
-# openvpn
-iptables -A input_internet	-p udp --dport 1194	-j ACCEPT
-
-#iptables -A FORWARD -i br0 -j ACCEPT
-
-
-###########################################
-#                                         #
-# f o r w a r d                           #
-#                                         #
-###########################################
-createChain forward_trusted
-createChain forward_internet
-createChain forward_wlan
-
-iptables -A FORWARD -i $iface_local	-s $net_local	-j forward_trusted
-iptables -A FORWARD -i $iface_vpn	-s $net_vpn	-j forward_trusted
-
-iptables -A FORWARD -i $iface_inet	-s ! $net_my	-j forward_internet
-iptables -A FORWARD -i $iface_wlan	-s $net_wlan	-j forward_wlan
-
-
-iptables -A INPUT  -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-iptables -A forward_trusted -j ACCEPT
-
-
-
-# NAT for Internet
-iptables -A FORWARD	-i $iface_local	-s $net_local	-o $iface_inet 	-d ! 
-$net_my						-j ACCEPT
-iptables -A FORWARD	-i $iface_inet	-s ! $net_my 	-o $iface_local	-d 
-$net_local	-m state --state RELATED,ESTABLISHED	-j ACCEPT
-
-# NAT for VPN
-iptables -A FORWARD	-i $iface_vpn			-o $iface_inet 								-j ACCEPT
-iptables -A FORWARD	-i $iface_inet	 		-o $iface_vpn		-m state --state 
-RELATED,ESTABLISHED		-j ACCEPT
-
-# NAT for VPN
-iptables -A FORWARD	-i $iface_vpn			-o $iface_local 	-j ACCEPT
-iptables -A FORWARD	-i $iface_local	 		-o $iface_vpn		-j ACCEPT
-	
-
-iptables -t nat -A POSTROUTING -o $iface_inet -j MASQUERADE
-
-
-===========================================================
-
-Running wget on a client (same results on any client)
-===========================================================
-hauke@storm:~$ wget --debug http://www.deutsche-finanzagentur.de
-DEBUG output created by Wget 1.11.4 on linux-gnu.
-
---2010-08-12 00:52:33--  http://www.deutsche-finanzagentur.de/
-Resolving www.deutsche-finanzagentur.de... 217.111.111.198, 213.70.97.8
-Caching www.deutsche-finanzagentur.de => 217.111.111.198 213.70.97.8
-Connecting to www.deutsche-finanzagentur.de|217.111.111.198|:80... connected.
-Created socket 3.
-Releasing 0x0000000000646e40 (new refcount 1).
-
----request begin---
-GET / HTTP/1.0
-User-Agent: Wget/1.11.4
-Accept: */*
-Host: www.deutsche-finanzagentur.de
-Connection: Keep-Alive
-
----request end---
-HTTP request sent, awaiting response...
----response begin---
-HTTP/1.1 302 Found
-Date: Wed, 11 Aug 2010 22:52:32 GMT
-Server: Apache
-Location: http://www.deutsche-finanzagentur.de/de/startseite/
-Content-Length: 235
-Keep-Alive: timeout=15, max=100
-Connection: Keep-Alive
-
-
----response end---
-302 Found
-Registered socket 3 for persistent reuse.
-Location: http://www.deutsche-finanzagentur.de/de/startseite/ [following]
-Skipping 235 bytes of body: [...] done.
---2010-08-12 00:52:33--  http://www.deutsche-finanzagentur.de/de/startseite/
-Reusing existing connection to www.deutsche-finanzagentur.de:80.
-Reusing fd 3.
-
----request begin---
-GET /de/startseite/ HTTP/1.0
-User-Agent: Wget/1.11.4
-Accept: */*
-Host: www.deutsche-finanzagentur.de
-Connection: Keep-Alive
-
----request end---
-HTTP request sent, awaiting response...  ######### <<< It hangs here!
-===========================================================
-
+--==_Exmh_1281631078_11114P--
 
