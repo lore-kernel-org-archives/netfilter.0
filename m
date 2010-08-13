@@ -1,32 +1,39 @@
-From: =?UTF-8?Q?Mamadou_Tour=C3=A9?= <e2ia.ci@gmail.com>
-Subject: iptable and tproxy target
-Date: Fri, 13 Aug 2010 13:41:02 +0000
-Message-ID: <AANLkTikh647zs7Te95G7Yrf_Ys6rJTERTyg357574Yn+@mail.gmail.com>
+From: Roger Sala <rsala@ssci.com>
+Subject: nfnetlink_queue interfering with ioctl calls
+Date: Fri, 13 Aug 2010 10:10:50 -0400
+Message-ID: <4C65526A.1030805@ssci.com>
+Reply-To: Roger Sala <rsala@ssci.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:date:message-id
-         :subject:from:to:content-type;
-        bh=TKtynLAi7bXqV8Q1o3Q9bD4uyKPKwdbolbntNaArRNM=;
-        b=M0feV0k/eIiA4b2KEfO/Ur35rleUon4KJDPtYs1nqoaiDOHJ/4zyF8in01Egqlu6h9
-         E9qMfQkIB2v/jHeEx71KH0bp6xajeNl82Q0EkccJtELCNgHVrLWDu6PDcHDFNyeMjOyV
-         PNzzoTo4ZU2ssScHpzO5yLL9wlmtUl7gDtIyE=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi,
-all i'm using tproxy target in my iptable rule:
-ex:
-iptables -t mangle -A PREROUTING -p tcp --dport 80 -j TPROXY
---tproxy-mark 0x1/0x1 --on-port 3129
+Hi
 
-now in my mangle POSTROUTING i'd like make some action on packet mark
-with --tproxy-mark 0x1/0x1.
-for exemple ACCEPT all packet mark with --tproxy-mark 0x1/0x1.
+I have code that makes the SIOCGARP ioctl call that works correctly 
+(i.e. it either returns successfully when it finds a match in the arp 
+cache or it returns -1).  However when I integrate that same code with 
+nfnetlink_queue code it no longer works as expected (i.e. it returns 
+successfully (0) whether or not the address was found in the arp cache 
+and it doesn't copy the mac address into the struct arpreq).  I searched 
+the archives and didn't see anything about this.  Does anyone have any 
+idea what could be causing this?
 
-How could i do that.
-regards.
+I'm running ...
+
+# uname -a
+Linux bugsbunny 2.6.30.9-102.fc11.i686.PAE #1 SMP Fri Dec 4 00:19:26 EST 
+2009 i686 i686 i386 GNU/Linux
+
+... and these two modules get loaded when the nfnetlink_queue code gets 
+initialized ...
+
+# /sbin/lsmod
+Module                     Size  Used by
+nfnetlink_queue       7548  1
+nfnetlink                   3760  2 nfnetlink_queue
+
+Thanks
