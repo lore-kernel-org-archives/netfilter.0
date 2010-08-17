@@ -1,29 +1,27 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset-4.3
-Date: Mon, 16 Aug 2010 20:59:36 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1008162056240.23016@blackhole.kfki.hu>
+From: Jonathan Tripathy <jonnyt@abpni.co.uk>
+Subject: Bridges
+Date: Tue, 17 Aug 2010 23:44:26 +0100
+Message-ID: <4C6B10CA.4090604@abpni.co.uk>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hi,
+Hi Everyone,
 
-I'm happy to announce ipset 4.3. The only change in this release:
+When using a single Linux host with lots of bridges, would there ever be 
+a time, even for a few seconds, where traffic would "jump" bridges?
 
-- the support of kernels 2.6.35 and above is added
+I know a previous poster mentioned that when adding a host to a bridge, 
+for a few seconds all packets get sent everywhere, however does this 
+only apply to the bridge that the new host was added to, or all bridges 
+in the system?
 
-You can download the source from the usual places
-	http://ipset.netfilter.org
-	git://git.netfilter.org/ipset.git
+Reason I ask is that I am considering have one bridge for public traffic 
+and one bridge for private, and don't want private traffic to be seen by 
+hosts connected to the public bridge.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Thanks
