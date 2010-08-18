@@ -1,30 +1,27 @@
-From: Jonathan Tripathy <jonnyt@abpni.co.uk>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: Bridges
-Date: Wed, 18 Aug 2010 23:51:27 +0100
-Message-ID: <4C6C63EF.7060305@abpni.co.uk>
-References: <4C6B10CA.4090604@abpni.co.uk> <4C6C55C8.5000905@riverviewtech.net> <4C6C5739.5040106@abpni.co.uk> <4C6C59E2.4080307@riverviewtech.net> <4C6C5B87.9070906@abpni.co.uk> <alpine.LSU.2.01.1008190025100.29243@obet.zrqbmnf.qr>
+Date: Thu, 19 Aug 2010 00:59:25 +0200
+Message-ID: <4C6C65CD.6090707@plouf.fr.eu.org>
+References: <4C6B10CA.4090604@abpni.co.uk> <4C6C55C8.5000905@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LSU.2.01.1008190025100.29243@obet.zrqbmnf.qr>
+In-Reply-To: <4C6C55C8.5000905@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
+Hello,
 
-> >>Sorry, I used a bad choice of words - Would ebtables stop the frame reaching
-> >>  the remote host (VM in my case) is what I meant to say:)
->
-> >No. The two bridges are not connected to another in the first place,
-> >so the only way for a packet to come in on br0 and go out on br1 is
-> >routing, for which iptables is needed to filter.
->    
+Grant Taylor a =E9crit :
+> On 08/17/10 17:44, Jonathan Tripathy wrote:
+>> When using a single Linux host with lots of bridges, would there eve=
+r be=20
+>> a time, even for a few seconds, where traffic would "jump" bridges?
+>=20
+> No.  Such should not be possible.
 
-But even without iptables, traffic coudn't cross without a router in the 
-middle, right?
-
-BTW, my post above wasn't really related to having 2 bridges, but more 
-of the "dumb hub" situation.
-
-Cheers
+It depends what "traffic" means. Ethernet frames, no. IP packets, yes i=
+f
+the box also acts as an IP router between the bridges.
