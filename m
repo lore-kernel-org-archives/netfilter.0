@@ -1,44 +1,47 @@
-From: Stephen Hemminger <shemminger@vyatta.com>
+From: Thomas Jacob <jacob@internet24.de>
 Subject: Re: Bridges
-Date: Tue, 17 Aug 2010 16:34:05 -0700
-Message-ID: <20100817163405.0713cee9@nehalam>
+Date: Wed, 18 Aug 2010 13:27:14 +0200
+Message-ID: <1282130834.27243.44.camel@enterprise.ims-firmen.de>
 References: <4C6B10CA.4090604@abpni.co.uk>
-	<alpine.LSU.2.01.1008180049370.17078@obet.zrqbmnf.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LSU.2.01.1008180049370.17078@obet.zrqbmnf.qr>
+In-Reply-To: <4C6B10CA.4090604@abpni.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Jonathan Tripathy <jonnyt@abpni.co.uk>, netfilter@vger.kernel.org
+To: Jonathan Tripathy <jonnyt@abpni.co.uk>
+Cc: netfilter@vger.kernel.org
 
-On Wed, 18 Aug 2010 00:56:49 +0200 (CEST)
-Jan Engelhardt <jengelh@medozas.de> wrote:
+On Tue, 2010-08-17 at 23:44 +0100, Jonathan Tripathy wrote:
+> Hi Everyone,
 
-> On Wednesday 2010-08-18 00:44, Jonathan Tripathy wrote:
-> >
-> > When using a single Linux host with lots of bridges, would there ever be a
-> > time, even for a few seconds, where traffic would "jump" bridges?
-> >
-> > I know a previous poster mentioned that when adding a host to a bridge, for a
-> > few seconds all packets get sent everywhere
-> 
-> That seems unlikely. The bridge keeps a table of (mac, bridgeport) 
-> tuples (cf. `brctl showmacs br0`), and a "broadcast" should only occur 
-> when there is no matching entry or when the destination L2 address is 
-> broadcast. (Ignoring multicast for now.)
-> 
-> > Reason I ask is that I am considering have one bridge for public traffic and
-> > one bridge for private, and don't want private traffic to be seen by hosts
-> > connected to the public bridge.
-> 
-> Bridges link Ethernet (sub)segments together to form a (large) Ethernet 
-> segment. In other words, if you keep the trees separate, they will be 
-> separate.
+> I know a previous poster mentioned that when adding a host to a bridge, 
+> for a few seconds all packets get sent everywhere, however does this 
+> only apply to the bridge that the new host was added to, or all bridges 
+> in the system?
 
-The forwarding database has aging so if a host does not send or receive
-traffic for that interval (default is 5 minutes), then the entry is forgotten.
-This is part of the 802.1d standard and is used to allow host to be moved
-from one segment to another.
+As Stephen already said, this is the standard behaviour of Ethernet
+bridges (=switches), that bridges are somehow a security device
+for separating Ethernet nodes is an urban myth (unless you employ
+other techniques like 801.2q VLANs)
+
+> Reason I ask is that I am considering have one bridge for public traffic 
+> and one bridge for private, and don't want private traffic to be seen by 
+> hosts connected to the public bridge.
+
+But if you configure two bridge devices (br0 & br1) on your Linux box,
+what you get is two separate Ethernets (broadcast domains really),
+that cannot directly talk to each other over the Ethernet layer, unless
+resorting to a router somewhere (assuming your Ethernets are not
+connected to each other elsewhere).
+
+In essence, such a setup should behave as if you had two different
+Ethernet switches somewhere and the private machines are only connected
+to the private switch and the public machines are only connected
+to the public switch.
+
+Whether this setup makes any sense in your case is another matter
+though...
+
+
