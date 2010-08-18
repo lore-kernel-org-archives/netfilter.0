@@ -1,57 +1,52 @@
-From: Jonathan Tripathy <jonnyt@abpni.co.uk>
+From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: Bridges
-Date: Wed, 18 Aug 2010 20:51:48 +0100
-Message-ID: <4C6C39D4.9070600@abpni.co.uk>
-References: <4C6B10CA.4090604@abpni.co.uk> <1282130834.27243.44.camel@enterprise.ims-firmen.de>
+Date: Wed, 18 Aug 2010 16:51:04 -0500
+Message-ID: <4C6C55C8.5000905@riverviewtech.net>
+References: <4C6B10CA.4090604@abpni.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1282130834.27243.44.camel@enterprise.ims-firmen.de>
+In-Reply-To: <4C6B10CA.4090604@abpni.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Thomas Jacob <jacob@internet24.de>, netfilter@vger.kernel.org
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
+
+On 08/17/10 17:44, Jonathan Tripathy wrote:
+> When using a single Linux host with lots of bridges, would there ever be 
+> a time, even for a few seconds, where traffic would "jump" bridges?
+
+No.  Such should not be possible.
+
+> I know a previous poster mentioned that when adding a host to a bridge, 
+> for a few seconds all packets get sent everywhere, however does this 
+> only apply to the bridge that the new host was added to, or all bridges 
+> in the system?
+
+I believe what the previous poster was alluding to was how a switch / 
+bridge goes in to dumb hub mode and forwards frames to unknown 
+destinations out all ports until it learns where the destination is. 
+This is standard operating procedure for switches / bridges, and is to 
+be expected.
+
+I am not aware of any thing specific to bridges that would allow this to 
+happen (short of an as of yet unknown bug in the kernel).  The closest 
+thing that I can think of that might make it seem like this is happening 
+is if someone is sending you some sort of VLAN hopping attack.  And as I 
+(mis)understand that, that traffic would have to be with in a layer 2 
+network, so they attacker is likely to be close, not across the internet.
+
+> Reason I ask is that I am considering have one bridge for public traffic 
+> and one bridge for private, and don't want private traffic to be seen by 
+> hosts connected to the public bridge.
+
+I think you should be safe (enough) with this.  In fact, you are 
+starting to get in to some more theoretical discussions about what is 
+and is not safe to do as far as having both public and private VLAN (or 
+bridge) traffic on the same wire (system).  There are a number of people 
+(my self included) that think you are safe enough for most 
+non-uber-secure situations to go ahead and do what you are wanting to do.
 
 
 
-> On Tue, 2010-08-17 at 23:44 +0100, Jonathan Tripathy wrote:
->    
->> Hi Everyone,
->>      
->    
->> I know a previous poster mentioned that when adding a host to a bridge,
->> for a few seconds all packets get sent everywhere, however does this
->> only apply to the bridge that the new host was added to, or all bridges
->> in the system?
->>      
-> As Stephen already said, this is the standard behaviour of Ethernet
-> bridges (=switches), that bridges are somehow a security device
-> for separating Ethernet nodes is an urban myth (unless you employ
-> other techniques like 801.2q VLANs)
->    
-Yes, I understand this and this is acceptable, as all switches do this. 
-My main concern is that do the frames stay within the respective bridge 
-or not.
->    
->> Reason I ask is that I am considering have one bridge for public traffic
->> and one bridge for private, and don't want private traffic to be seen by
->> hosts connected to the public bridge.
->>      
-> But if you configure two bridge devices (br0&  br1) on your Linux box,
-> what you get is two separate Ethernets (broadcast domains really),
-> that cannot directly talk to each other over the Ethernet layer, unless
-> resorting to a router somewhere (assuming your Ethernets are not
-> connected to each other elsewhere).
->
-> In essence, such a setup should behave as if you had two different
-> Ethernet switches somewhere and the private machines are only connected
-> to the private switch and the public machines are only connected
-> to the public switch.
->    
-This is exactly what I want :)
-> Whether this setup makes any sense in your case is another matter
-> though...
->
->
->    
-Makes perfect sense
+Grant. . . .
