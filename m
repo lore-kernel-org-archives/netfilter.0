@@ -1,40 +1,35 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: Bridges
-Date: Thu, 19 Aug 2010 11:16:27 +0200
-Message-ID: <4C6CF66B.70902@plouf.fr.eu.org>
-References: <4C6B10CA.4090604@abpni.co.uk> <4C6C55C8.5000905@riverviewtech.net> <4C6C65CD.6090707@plouf.fr.eu.org> <4C6C660F.9030400@abpni.co.uk> <alpine.LSU.2.01.1008191027530.29534@obet.zrqbmnf.qr>
+Date: Thu, 19 Aug 2010 09:51:15 -0500
+Message-ID: <4C6D44E3.7050608@riverviewtech.net>
+References: <4C6B10CA.4090604@abpni.co.uk> <4C6C55C8.5000905@riverviewtech.net> <4C6C65CD.6090707@plouf.fr.eu.org> <4C6CAA60.60808@riverviewtech.net> <4C6CDE4E.7000609@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LSU.2.01.1008191027530.29534@obet.zrqbmnf.qr>
+In-Reply-To: <4C6CDE4E.7000609@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Jonathan Tripathy <jonnyt@abpni.co.uk>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Jan Engelhardt a =E9crit :
-> On Thursday 2010-08-19 01:00, Jonathan Tripathy wrote:
->>> It depends what "traffic" means. Ethernet frames, no. IP packets, y=
-es if
->>> the box also acts as an IP router between the bridges.
->>>  =20
->> Hmm for such to happen, the bridge where the traffic came in on
->> would have to have an IP address, wouldn't it?
->=20
-> Routes are independent of assigned addresses.
+On 08/19/10 02:33, Pascal Hambourg wrote:
+> Me too, but I wanted to be more general.
 
-Routes and addresses are not the only problem. IIRC, older kernels did
-not automatically link an interface to the IP stack (it was not present
-in /proc/sys/net/ipv4/conf/) until you do something such as assign an I=
-P
-address to it.
+Fair enough.  ;-)
 
-> Though I guess it may=20
-> obstruct ICMP "TTL outlived" replies if the router itself has no addr=
-ess=20
-> to send with.
+> Or one L3 switch with two port-based VLANs. Packets should not leak 
+> between VLANs unless they're routed.
 
-Obviously, a router needs at least one non-loopback address in order to
-operate properly. If such an address is assigned to another interface,
-Linux can use it as a source address on the unnumbered interface.
+Heh.  I'll argue that even if the device that ""leaks the packet from 
+one interface to another is called a switch, that it is still doing a 
+layer 3 function, namely routing.  Layer 3 switches are just really 
+efficient routers when it comes to routing from one vlan to another.
+
+(That or I vastly mis-understand how layer 3 switching is different from 
+routing.  At least when it comes to what is done with the IP packet, 
+regardless of how it's technically done.  If I am mistaken I'd love to 
+have someone correct me.)
+
+
+
+Grant. . . .
