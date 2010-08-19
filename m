@@ -1,34 +1,24 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Subject: Re: Bridges
-Date: Wed, 18 Aug 2010 22:52:00 -0500
-Message-ID: <4C6CAA60.60808@riverviewtech.net>
-References: <4C6B10CA.4090604@abpni.co.uk> <4C6C55C8.5000905@riverviewtech.net> <4C6C65CD.6090707@plouf.fr.eu.org>
+Date: Thu, 19 Aug 2010 09:26:09 +0200
+Message-ID: <4C6CDC91.6060804@plouf.fr.eu.org>
+References: <4C6B10CA.4090604@abpni.co.uk> <4C6C55C8.5000905@riverviewtech.net> <4C6C5739.5040106@abpni.co.uk> <4C6C59E2.4080307@riverviewtech.net> <4C6C5B87.9070906@abpni.co.uk> <alpine.LSU.2.01.1008190025100.29243@obet.zrqbmnf.qr> <4C6C63EF.7060305@abpni.co.uk> <4C6C6731.50401@plouf.fr.eu.org> <4C6C67A6.9010405@abpni.co.uk> <4C6C6AED.3090008@plouf.fr.eu.org> <4C6C70B6.7050200@abpni.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C6C65CD.6090707@plouf.fr.eu.org>
+In-Reply-To: <4C6C70B6.7050200@abpni.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Jonathan Tripathy <jonnyt@abpni.co.uk>
+Cc: netfilter@vger.kernel.org
 
-Pascal Hambourg wrote:
-> It depends what "traffic" means. Ethernet frames, no. IP packets, yes 
-> if the box also acts as an IP router between the bridges.
+Jonathan Tripathy a =E9crit :
+>> Disable global IP forwarding.=20
+> I just ran "cat /proc/sys/net/ipv4/ip_forward" and it returned 0. Doe=
+s=20
+> this mean that I have "global IP forwarding" off?
 
-I took Jonathan's comment to be referring to ethernet frames.
-
-Even if the box is acting as an IP router between the bridges, I view 
-that as an operation that is happening out side of the bridge(s).  Thus 
-there is an external process that is taking IP packets and passing them 
-between the bridges.  As such, the ""traffic is still not ""leaking / 
-""flooding between the bridges as a failure or shortcoming of the 
-bridge, but rather an external influence.
-
-The same thing can be said about two switches that have a router between 
-them.  When the ""traffic goes between the switches it is not because of 
-something the switches did, rather the external router's doing.  ;-)
-
-
-
-Grant. . . .
+Yes. So unless you enable /proc/sys/net/ipv4/conf/<interface>/forwardin=
+g
+for a bridge, packets won't jump from that bridge to another interface.
