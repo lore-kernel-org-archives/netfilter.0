@@ -1,29 +1,27 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: Bridges
-Date: Fri, 20 Aug 2010 12:26:05 +0200
-Message-ID: <4C6E583D.7070706@plouf.fr.eu.org>
-References: <4C6B10CA.4090604@abpni.co.uk> <4C6C55C8.5000905@riverviewtech.net> <4C6C5739.5040106@abpni.co.uk> <4C6C59E2.4080307@riverviewtech.net> <4C6C5B87.9070906@abpni.co.uk> <alpine.LSU.2.01.1008190025100.29243@obet.zrqbmnf.qr> <4C6C63EF.7060305@abpni.co.uk> <4C6C6731.50401@plouf.fr.eu.org> <4C6C67A6.9010405@abpni.co.uk> <4C6C6AED.3090008@plouf.fr.eu.org> <4C6C70B6.7050200@abpni.co.uk> <4C6CDC91.6060804@plouf.fr.eu.org> <4C6D7C42.9060409@abpni.co.uk> <4C6D857B.1070906@plouf.fr.eu.org> <4C6D87E3.9080207@abpni.co.uk> <4C6D9E9F.3080507@plouf.fr.eu.org> <4C6DA0F1.80909@abpni.co.uk> <4C6DAA53.70702@plouf.fr.eu.org> <alpine.LSU.2.01.1008201038140.16356@obet.zrqbmnf.qr> <4C6E4550.1020808@plouf.fr.eu.org> <alpine.LSU.2.01.1008201107550.18181@obet.zrqbmnf.qr>
+Date: Fri, 20 Aug 2010 11:02:54 -0500
+Message-ID: <4C6EA72E.9050501@riverviewtech.net>
+References: <4C6B10CA.4090604@abpni.co.uk> <4C6C55C8.5000905@riverviewtech.net> <4C6C5739.5040106@abpni.co.uk> <4C6C59E2.4080307@riverviewtech.net> <4C6C5B87.9070906@abpni.co.uk> <alpine.LSU.2.01.1008190025100.29243@obet.zrqbmnf.qr> <4C6C63EF.7060305@abpni.co.uk> <4C6C6731.50401@plouf.fr.eu.org> <4C6C67A6.9010405@abpni.co.uk> <4C6C6AED.3090008@plouf.fr.eu.org> <4C6C70B6.7050200@abpni.co.uk> <4C6CDC91.6060804@plouf.fr.eu.org> <4C6D7C42.9060409@abpni.co.uk> <4C6D857B.1070906@plouf.fr.eu.org> <4C6D87E3.9080207@abpni.co.uk> <4C6D9E9F.3080507@plouf.fr.eu.org> <4C6DA0F1.80909@abpni.co.uk> <4C6DAA53.70702@plouf.fr.eu.org> <alpine.LSU.2.01.1008201038140.16356@obet.zrqbmnf.qr> <4C6E4550.1020808@plouf.fr.eu.org> <alpine.LSU.2.01.1008201107550.18181@obet.zrqbmnf.qr> <4C6E583D.7070706@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LSU.2.01.1008201107550.18181@obet.zrqbmnf.qr>
+In-Reply-To: <4C6E583D.7070706@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Jonathan Tripathy <jonnyt@abpni.co.uk>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Jan Engelhardt a =E9crit :
-> On Friday 2010-08-20 11:05, Pascal Hambourg wrote:
->   =20
->> Ebtables is available only on bridge interfaces.
->=20
-> Which makes sense.
+On 08/20/10 05:26, Pascal Hambourg wrote:
+> Hasn't anybody ever created a bridge with only one interface just in 
+> order to be able to use ebtables on this interface ?
 
-Well, in a way, but sometimes it could be useful to do layer-2 filterin=
-g
-on normal ethernet interfaces too. Ebtables has INPUT and OUTPUT chains=
-,
-so it is not only for bridged traffic. Hasn't anybody ever created a
-bridge with only one interface just in order to be able to use ebtables
-on this interface ?
+I'd be very surprised if someone somewhere has not done that.
+
+I would think that it would be a very special use case scenario where 
+you needed to do something in EBTables that couldn't be done in IPTables 
+/ ARPTables.  But that's not to say that the need doesn't exist.  ;)
+
+
+
+Grant. . . .
