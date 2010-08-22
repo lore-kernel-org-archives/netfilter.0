@@ -1,49 +1,66 @@
-From: Jonathan Tripathy <jonnyt@abpni.co.uk>
-Subject: Re: Bridges
-Date: Sun, 22 Aug 2010 10:10:58 +0100
-Message-ID: <4C70E9A2.3040907@abpni.co.uk>
-References: <4C6B10CA.4090604@abpni.co.uk> <4C6C55C8.5000905@riverviewtech.net> <4C6C5739.5040106@abpni.co.uk> <4C6C59E2.4080307@riverviewtech.net> <4C6C5B87.9070906@abpni.co.uk> <alpine.LSU.2.01.1008190025100.29243@obet.zrqbmnf.qr> <4C6C63EF.7060305@abpni.co.uk> <4C6C6731.50401@plouf.fr.eu.org> <4C6C67A6.9010405@abpni.co.uk> <4C6C6AED.3090008@plouf.fr.eu.org> <4C6C70B6.7050200@abpni.co.uk> <4C6CDC91.6060804@plouf.fr.eu.org> <4C6D7C42.9060409@abpni.co.uk> <4C6D857B.1070906@plouf.fr.eu.org> <4C6D87E3.9080207@abpni.co.uk> <4C6D9E9F.3080507@plouf.fr.eu.org> <4C6DA0F1.80909@abpni.co.uk> <4C6DAA53.70702@plouf.fr.eu.org> <4C6DB5FD.8030607@abpni.co.uk> <4C6E42A6.9080308@plouf.fr.eu.org> <4C704924.3080909@abpni.co.uk> <alpine.LSU.2.01.1008220122410.30882@obet.zrqbmnf.qr> <4C70E853.6050107@abpni.co
- .uk> <alpine.LSU.2.01.1008221108160.26133@obet.zrqbmnf.qr>
+From: Jack Andrews <jack@andrewsmail.co.uk>
+Subject: routing VPN users through transparent Squid using iptables
+Date: Sun, 22 Aug 2010 11:39:50 +0100
+Message-ID: <4C70FE76.1060204@andrewsmail.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LSU.2.01.1008221108160.26133@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
+  Hello all!
 
-On 22/08/10 10:09, Jan Engelhardt wrote:
-> On Sunday 2010-08-22 11:05, Jonathan Tripathy wrote:
->    
->>>>>>
->>>>>>              
->>>>> Setting net.ipv4.conf.<interface>.forwarding=0 will disable forwarding
->>>>> of IP packets received on<interface>. But I'm afraid it won't disable
->>>>> all IP operation on it (ARP resolution, accept IP packets for local
->>>>> delivery...)
->>>>>
->>>>>            
->>>> Just out of interest, if routing was enabled on the Dom0, how would
->>>> the guests be able to use it,
->>>>
->>>>          
->>> Well, by means of `ebtables -t broute -j DROP` which causes packets
->>> to be routed instead of bridged.
->>>
->>>        
->>>> Assuming that all IPs for the other
->>>> interfaces on the Dom0 were on a different subnet..
->>>>          
->> Ah right, but something would have to "make it" do that? (i.e. your ebtables
->> broute example above)
->>      
-> As I said.
->
-> And as previously mentioned, routing does not usually care about addresses,
-> but routes (`ip r`).
->    
+I'm hoping someone can help me out - I've been tearing my hair out over 
+this!
 
-I'm sorry I don't really follow. Are you saying that there is no way to 
-disable IP forwarding in a Linux box?
+I have pptpd and squid set up.  I want give these users access to the 
+internet, but would like to send http traffic through a squid proxy.
+
+Hopefully this rough diagram will give you an idea of what I'm trying to 
+achieve:
+
+[CODE]
+
+VPN users connect to pptpd (via eth0)
+     \ | /
+       |
+       |
+      / \
+  http   everything else
+    |     |
+    |     |
+    |     |
+squid    |
+    |     |
+     \   /
+      \ /
+       |
+      NAT
+       |
+   internet (via eth0)
+[/CODE]
+
+If I set up the following iptables rule, users can connect to the internet:
+[CODE]iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE[/CODE]
+
+I can also connect to squid it works as expected.
+
+Now, I was hoping another simple rule would redirect all http traffic 
+through squid:
+[CODE]iptables -t nat -A PREROUTING -i ppp+ -p tcp --dport 80 -j 
+REDIRECT --to-port 3128[/CODE]
+
+But this doesn't seem to work (I'm also hoping ppp+ is the correct 
+formatting for a wildcard?).  Http traffic is never redirected and 
+bypasses the proxy.
+
+Can anyone suggest how to get this working?
+
+I don't really know much about this stuff I'm afraid.  I would also love 
+some recommendations for ways in which I can debug the system, e.g. 
+which log files to look at, tcpdump commands etc.  I find the iptables 
+documentation extremely bewildering!
+
+Thanks!
