@@ -1,27 +1,51 @@
-From: Jonathan Tripathy <jonnyt@abpni.co.uk>
-Subject: Re: Bridges
-Date: Sun, 22 Aug 2010 22:21:23 +0100
-Message-ID: <4C7194D3.7070803@abpni.co.uk>
-References: <4C6B10CA.4090604@abpni.co.uk> <4C6C55C8.5000905@riverviewtech.net> <4C6C5739.5040106@abpni.co.uk> <4C6C59E2.4080307@riverviewtech.net> <4C6C5B87.9070906@abpni.co.uk> <alpine.LSU.2.01.1008190025100.29243@obet.zrqbmnf.qr> <4C6C63EF.7060305@abpni.co.uk> <4C6C6731.50401@plouf.fr.eu.org> <4C6C67A6.9010405@abpni.co.uk> <4C6C6AED.3090008@plouf.fr.eu.org> <4C6C70B6.7050200@abpni.co.uk> <4C6CDC91.6060804@plouf.fr.eu.org> <4C6D7C42.9060409@abpni.co.uk> <4C6D857B.1070906@plouf.fr.eu.org> <4C6D87E3.9080207@abpni.co.uk> <4C6D9E9F.3080507@plouf.fr.eu.org> <4C6DA0F1.80909@abpni.co.uk> <4C6DAA53.70702@plouf.fr.eu.org> <4C6DB5FD.8030607@abpni.co.uk> <4C6E42A6.9080308@plouf.fr.eu.org> <4C704924.3080909@abpni.co.uk> <alpine.LSU.2.01.1008220122410.30882@obet.zrqbmnf.qr> <4C70E853.6050107@abpni.co
-  .uk> <alpine.LSU.2.01.1008221108160.26133@obet.zrqbmnf.qr> <4C70E9A2.3040907@abpni.co.uk> <4C719073.7090506@plouf.fr.eu.org>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Forced lladdr change with bridge - or not?
+Date: Sun, 22 Aug 2010 23:24:15 +0200 (CEST)
+Message-ID: <alpine.LSU.2.01.1008222321290.21206@obet.zrqbmnf.qr>
+References: <alpine.LSU.2.01.1008221812200.22261@obet.zrqbmnf.qr> <4C715667.9070008@pandora.be> <alpine.LSU.2.01.1008221927430.3855@obet.zrqbmnf.qr> <4C718E30.1090908@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C719073.7090506@plouf.fr.eu.org>
+In-Reply-To: <4C718E30.1090908@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>, netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Cc: Bart De Schuymer <bdschuym@pandora.be>, netfilter@vger.kernel.org
 
 
-> "IP routing" may have different meanings. It can be a synonym for "IP
-> forwarding", like in "IP routers do IP routing". But in the context of
-> the Linux IP stack, it rather means the handling of an IP packet
-> according to the routing table. In short :
-> - for an incoming packet, determine whether it is for local delivery or
-> to be forwarded ;
-> - for an outgoing or forwarded packet, determine the output interface
-> and gateway.
->    
+On Sunday 2010-08-22 22:53, Pascal Hambourg wrote:
+>>>> # ip a
+>>>> 196: tap1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 500
+>>>>    link/ether 9a:17:c4:65:e9:76 brd ff:ff:ff:ff:ff:ff
+>>>> 197: tap2: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 500
+>>>>    link/ether ce:61:28:5a:b7:93 brd ff:ff:ff:ff:ff:ff
+>>>> 198: br0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN     link/ether
+>>>> 9a:17:c4:65:e9:76 brd ff:ff:ff:ff:ff:ff
+>>>>
+>>>> Is this behavior normal that the lladdrs of all but the first brport
+>>>> remain unchanged? If so, what is the purpose of changing the lladdr on the
+>>>> first brport?
+>>>>  
+>>> I don't understand your question,
+>
+>Me neither : according to your output, the MAC address of neither port
+>has changed.
 
-I definitely still want link to do that though, with my bridge traffic...
+Well.. rerun `ip a` before enslaving tap to br and you see.
+
+>> but the Linux bridge code assigns the MAC
+>>> address of its first-added port to the virtual bridge device.
+>> 
+>> 1. Why does it do that,
+>
+>The bridge interface must have a MAC address, so why not pick up one in
+>thoses of its ports ?
+
+Why not remain with the one it had right after "addbr" creation?
+
+>> 2. Why only the first port?
+>
+>IME, the bridge picks up the lowest MAC address of its ports.
+
+Seems logical to me at last.
