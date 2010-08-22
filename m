@@ -1,30 +1,40 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: routing VPN users through transparent Squid using iptables
-Date: Sun, 22 Aug 2010 18:11:47 +0200
-Message-ID: <4C714C43.2050203@plouf.fr.eu.org>
-References: <4C70FE76.1060204@andrewsmail.co.uk>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Forced lladdr change with bridge - or not?
+Date: Sun, 22 Aug 2010 18:12:36 +0200 (CEST)
+Message-ID: <alpine.LSU.2.01.1008221812200.22261@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C70FE76.1060204@andrewsmail.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Bart De Schuymer <bdschuym@pandora.be>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+Hi,
 
-Jack Andrews a =E9crit :
->=20
-> Now, I was hoping another simple rule would redirect all http traffic=
-=20
-> through squid:
-> [CODE]iptables -t nat -A PREROUTING -i ppp+ -p tcp --dport 80 -j=20
-> REDIRECT --to-port 3128[/CODE]
->=20
-> But this doesn't seem to work (I'm also hoping ppp+ is the correct=20
-> formatting for a wildcard?).  Http traffic is never redirected and=20
-> bypasses the proxy.
 
-The rule looks good to me. It should do the job.
-No other rules in the PREROUTING chain before ?
+
+# tunctl -p -t tap1
+Set 'tap1' persistent and owned by uid 0
+# tunctl -p -t tap2
+Set 'tap2' persistent and owned by uid 0
+# ip a
+196: tap1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 500
+    link/ether 9a:17:c4:65:e9:76 brd ff:ff:ff:ff:ff:ff
+197: tap2: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 500
+    link/ether ce:61:28:5a:b7:93 brd ff:ff:ff:ff:ff:ff
+# brctl addbr br0
+# brctl addif br0 tap1
+# brctl addif br0 tap2
+# ip a
+196: tap1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 500
+    link/ether 9a:17:c4:65:e9:76 brd ff:ff:ff:ff:ff:ff
+197: tap2: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 500
+    link/ether ce:61:28:5a:b7:93 brd ff:ff:ff:ff:ff:ff
+198: br0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN 
+    link/ether 9a:17:c4:65:e9:76 brd ff:ff:ff:ff:ff:ff
+
+Is this behavior normal that the lladdrs of all but the first brport
+remain unchanged? If so, what is the purpose of changing the lladdr on 
+the first brport?
