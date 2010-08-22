@@ -1,7 +1,7 @@
-From: Yevgeny Kosarzhevsky <deza50293@tut.by>
-Subject: SNAT problem
-Date: Sun, 22 Aug 2010 21:35:34 +0300
-Message-ID: <4C716DF6.3040602@pisem.net>
+From: Jonathan Tripathy <jonnyt@abpni.co.uk>
+Subject: Traffic Shaping
+Date: Sun, 22 Aug 2010 20:41:01 +0100
+Message-ID: <4C717D4D.3010501@abpni.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -10,25 +10,16 @@ List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi,
+Hi list,
 
-I have the issue with incorrect SNAT.
+Is anyone aware of any software that can automatically throttle people's 
+bandwidth, based on how much traffic they have transferred in a month?
 
-I have two interfaces, let's say ppp0 - x.x.x.x, ppp1 - y.y.y.y ppp0 is 
-a default gateway.
-I use some command to change routing to IP z.z.z.z via ppp1:
-ip ro ad to z.z.z.z dev ppp1
+So for example, let's say that a user has a total allowance of 100GB per 
+month. In total, that would be equivalent to a steady 319Kbps. However, 
+let's say that I wanted to allow the first 50GB at 638Kbps, then the 
+next 25GB at 300Kbps, then..... (You get the idea)
 
-I have SNAT rules for both interfaces, however, I notice with tcpdump 
-that outgoing packets are still using x.x.x.x instead of y.y.y.y IP, 
-though packets are being sent with the correct interface (ppp1)
+Thanks
 
-I have shut down ppp0 and removed SNAT rule for it, but outgoing packets 
-are still showing x.x.x.x IP. Even, ip ro fl cache didn't help.
-
-Is there anything I am doing wrongly? I suppose this is some unwanted 
-behaviour.
-
-warp:~# uname -a
-Linux warp 2.6.32-5-686 #1 SMP Thu Aug 12 13:38:27 UTC 2010 i686 GNU/Linux
 
