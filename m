@@ -1,61 +1,39 @@
 From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Forced lladdr change with bridge - or not?
-Date: Sun, 22 Aug 2010 22:53:04 +0200
-Message-ID: <4C718E30.1090908@plouf.fr.eu.org>
-References: <alpine.LSU.2.01.1008221812200.22261@obet.zrqbmnf.qr> <4C715667.9070008@pandora.be> <alpine.LSU.2.01.1008221927430.3855@obet.zrqbmnf.qr>
+Subject: Re: Bridges
+Date: Sun, 22 Aug 2010 23:02:43 +0200
+Message-ID: <4C719073.7090506@plouf.fr.eu.org>
+References: <4C6B10CA.4090604@abpni.co.uk> <4C6C55C8.5000905@riverviewtech.net> <4C6C5739.5040106@abpni.co.uk> <4C6C59E2.4080307@riverviewtech.net> <4C6C5B87.9070906@abpni.co.uk> <alpine.LSU.2.01.1008190025100.29243@obet.zrqbmnf.qr> <4C6C63EF.7060305@abpni.co.uk> <4C6C6731.50401@plouf.fr.eu.org> <4C6C67A6.9010405@abpni.co.uk> <4C6C6AED.3090008@plouf.fr.eu.org> <4C6C70B6.7050200@abpni.co.uk> <4C6CDC91.6060804@plouf.fr.eu.org> <4C6D7C42.9060409@abpni.co.uk> <4C6D857B.1070906@plouf.fr.eu.org> <4C6D87E3.9080207@abpni.co.uk> <4C6D9E9F.3080507@plouf.fr.eu.org> <4C6DA0F1.80909@abpni.co.uk> <4C6DAA53.70702@plouf.fr.eu.org> <4C6DB5FD.8030607@abpni.co.uk> <4C6E42A6.9080308@plouf.fr.eu.org> <4C704924.3080909@abpni.co.uk> <alpine.LSU.2.01.1008220122410.30882@obet.zrqbmnf.qr> <4C70E853.6050107@abpni.co
+  .uk> <alpine.LSU.2.01.1008221108160.26133@obet.zrqbmnf.qr> <4C70E9A2.3040907@abpni.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LSU.2.01.1008221927430.3855@obet.zrqbmnf.qr>
+In-Reply-To: <4C70E9A2.3040907@abpni.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Bart De Schuymer <bdschuym@pandora.be>, netfilter@vger.kernel.org
+To: Jonathan Tripathy <jonnyt@abpni.co.uk>
+Cc: Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org
 
-Hello,
-
-Jan Engelhardt a =E9crit :
-> On Sunday 2010-08-22 18:55, Bart De Schuymer wrote:
->>> # brctl addbr br0
->>> # brctl addif br0 tap1
->>> # brctl addif br0 tap2
->>> # ip a
->>> 196: tap1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qle=
-n 500
->>>    link/ether 9a:17:c4:65:e9:76 brd ff:ff:ff:ff:ff:ff
->>> 197: tap2: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qle=
-n 500
->>>    link/ether ce:61:28:5a:b7:93 brd ff:ff:ff:ff:ff:ff
->>> 198: br0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN     =
-link/ether
->>> 9a:17:c4:65:e9:76 brd ff:ff:ff:ff:ff:ff
->>>
->>> Is this behavior normal that the lladdrs of all but the first brpor=
-t
->>> remain unchanged? If so, what is the purpose of changing the lladdr=
- on the
->>> first brport?
->>> =20
->> I don't understand your question,
-
-Me neither : according to your output, the MAC address of neither port
-has changed.
-
-> but the Linux bridge code assigns the MAC
->> address of its first-added port to the virtual bridge device.
+Jonathan Tripathy a =E9crit :
+> On 22/08/10 10:09, Jan Engelhardt wrote:
+>>
+>> And as previously mentioned, routing does not usually care about add=
+resses,
+>> but routes (`ip r`).
 >=20
-> 1. Why does it do that,
+> I'm sorry I don't really follow. Are you saying that there is no way =
+to=20
+> disable IP forwarding in a Linux box?
 
-The bridge interface must have a MAC address, so why not pick up one in
-thoses of its ports ?
+No one said that. As we already explained, IP forwarding can be disable=
+d
+globally or per interface.
 
-> 2. Why only the first port?
-
-IME, the bridge picks up the lowest MAC address of its ports.
-This has an advantage : the bridge MAC address ends up the same for a
-same set of ports regardless of the order in which the ports are added.
-But this also has a big disadvantage : the bridge MAC address can chang=
-e
-whenever you add or remove a port, breaking ARP for a while, changing
-link-local and stateless autoconfigured IPv6 addresses...
+"IP routing" may have different meanings. It can be a synonym for "IP
+forwarding", like in "IP routers do IP routing". But in the context of
+the Linux IP stack, it rather means the handling of an IP packet
+according to the routing table. In short :
+- for an incoming packet, determine whether it is for local delivery or
+to be forwarded ;
+- for an outgoing or forwarded packet, determine the output interface
+and gateway.
