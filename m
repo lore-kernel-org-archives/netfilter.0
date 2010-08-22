@@ -1,37 +1,34 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Forced lladdr change with bridge - or not?
-Date: Sun, 22 Aug 2010 19:28:11 +0200 (CEST)
-Message-ID: <alpine.LSU.2.01.1008221927430.3855@obet.zrqbmnf.qr>
-References: <alpine.LSU.2.01.1008221812200.22261@obet.zrqbmnf.qr> <4C715667.9070008@pandora.be>
+From: Yevgeny Kosarzhevsky <deza50293@tut.by>
+Subject: SNAT problem
+Date: Sun, 22 Aug 2010 21:35:34 +0300
+Message-ID: <4C716DF6.3040602@pisem.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C715667.9070008@pandora.be>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Bart De Schuymer <bdschuym@pandora.be>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
+Hi,
 
-On Sunday 2010-08-22 18:55, Bart De Schuymer wrote:
->> # brctl addbr br0
->> # brctl addif br0 tap1
->> # brctl addif br0 tap2
->> # ip a
->> 196: tap1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 500
->>    link/ether 9a:17:c4:65:e9:76 brd ff:ff:ff:ff:ff:ff
->> 197: tap2: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen 500
->>    link/ether ce:61:28:5a:b7:93 brd ff:ff:ff:ff:ff:ff
->> 198: br0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN     link/ether
->> 9a:17:c4:65:e9:76 brd ff:ff:ff:ff:ff:ff
->>
->> Is this behavior normal that the lladdrs of all but the first brport
->> remain unchanged? If so, what is the purpose of changing the lladdr on the
->> first brport?
->>  
-> I don't understand your question, but the Linux bridge code assigns the MAC
-> address of its first-added port to the virtual bridge device.
+I have the issue with incorrect SNAT.
 
-1. Why does it do that,
-2. Why only the first port?
+I have two interfaces, let's say ppp0 - x.x.x.x, ppp1 - y.y.y.y ppp0 is 
+a default gateway.
+I use some command to change routing to IP z.z.z.z via ppp1:
+ip ro ad to z.z.z.z dev ppp1
+
+I have SNAT rules for both interfaces, however, I notice with tcpdump 
+that outgoing packets are still using x.x.x.x instead of y.y.y.y IP, 
+though packets are being sent with the correct interface (ppp1)
+
+I have shut down ppp0 and removed SNAT rule for it, but outgoing packets 
+are still showing x.x.x.x IP. Even, ip ro fl cache didn't help.
+
+Is there anything I am doing wrongly? I suppose this is some unwanted 
+behaviour.
+
+warp:~# uname -a
+Linux warp 2.6.32-5-686 #1 SMP Thu Aug 12 13:38:27 UTC 2010 i686 GNU/Linux
+
