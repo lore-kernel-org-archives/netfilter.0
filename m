@@ -1,50 +1,34 @@
 From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Forced lladdr change with bridge - or not?
-Date: Mon, 23 Aug 2010 10:21:24 +0200
-Message-ID: <4C722F84.1080606@plouf.fr.eu.org>
-References: <alpine.LSU.2.01.1008221812200.22261@obet.zrqbmnf.qr> <4C715667.9070008@pandora.be> <alpine.LSU.2.01.1008221927430.3855@obet.zrqbmnf.qr> <4C718E30.1090908@plouf.fr.eu.org> <alpine.LSU.2.01.1008222321290.21206@obet.zrqbmnf.qr>
+Subject: Re: Bridges
+Date: Mon, 23 Aug 2010 10:22:07 +0200
+Message-ID: <4C722FAF.5030203@plouf.fr.eu.org>
+References: <4C6B10CA.4090604@abpni.co.uk> <4C6C55C8.5000905@riverviewtech.net> <4C6C5739.5040106@abpni.co.uk> <4C6C59E2.4080307@riverviewtech.net> <4C6C5B87.9070906@abpni.co.uk> <alpine.LSU.2.01.1008190025100.29243@obet.zrqbmnf.qr> <4C6C63EF.7060305@abpni.co.uk> <4C6C6731.50401@plouf.fr.eu.org> <4C6C67A6.9010405@abpni.co.uk> <4C6C6AED.3090008@plouf.fr.eu.org> <4C6C70B6.7050200@abpni.co.uk> <4C6CDC91.6060804@plouf.fr.eu.org> <4C6D7C42.9060409@abpni.co.uk> <4C6D857B.1070906@plouf.fr.eu.org> <4C6D87E3.9080207@abpni.co.uk> <4C6D9E9F.3080507@plouf.fr.eu.org> <4C6DA0F1.80909@abpni.co.uk> <4C6DAA53.70702@plouf.fr.eu.org> <4C6DB5FD.8030607@abpni.co.uk> <4C6E42A6.9080308@plouf.fr.eu.org> <4C704924.3080909@abpni.co.uk> <alpine.LSU.2.01.1008220122410.30882@obet.zrqbmnf.qr> <4C70E853.6050107@abpni.co
+   .uk> <alpine.LSU.2.01.1008221108160.26133@obet.zrqbmnf.qr> <4C70E9A2.3040907@abpni.co.uk> <4C719073.7090506@plouf.fr.eu.org> <4C7194D3.7070803@abpni.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LSU.2.01.1008222321290.21206@obet.zrqbmnf.qr>
+In-Reply-To: <4C7194D3.7070803@abpni.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Bart De Schuymer <bdschuym@pandora.be>, netfilter@vger.kernel.org
+To: Jonathan Tripathy <jonnyt@abpni.co.uk>
+Cc: netfilter@vger.kernel.org
 
-Jan Engelhardt a =E9crit :
-> On Sunday 2010-08-22 22:53, Pascal Hambourg wrote:
->>> =20
->>>> I don't understand your question,
->> Me neither : according to your output, the MAC address of neither po=
-rt
->> has changed.
+Jonathan Tripathy a =E9crit :
+>> "IP routing" may have different meanings. It can be a synonym for "I=
+P
+>> forwarding", like in "IP routers do IP routing". But in the context =
+of
+>> the Linux IP stack, it rather means the handling of an IP packet
+>> according to the routing table. In short :
+>> - for an incoming packet, determine whether it is for local delivery=
+ or
+>> to be forwarded ;
+>> - for an outgoing or forwarded packet, determine the output interfac=
+e
+>> and gateway.
 >=20
-> Well.. rerun `ip a` before enslaving tap to br and you see.
+> I definitely still want link to do that though, with my bridge traffi=
+c...
 
-Sorry to insist heavily, but I still don't get your point.
-You wrote :
-
-> Is this behavior normal that the lladdrs of all but the first brport
-> remain unchanged? If so, what is the purpose of changing the lladdr o=
-n the
-> first brport?
-
-from which I understand that tap1's MAC address changed when it was
-added to the bridge. But comparing tap1's MAC address from your own "ip
-a" output before it is added to the bridge :
-
-> 196: tap1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen =
-500
->     link/ether 9a:17:c4:65:e9:76 brd ff:ff:ff:ff:ff:ff
-
-and after :
-
-> 196: tap1: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN qlen =
-500
->     link/ether 9a:17:c4:65:e9:76 brd ff:ff:ff:ff:ff:ff
-
-it appears to me that it didn't change.
-
-Did I misunderstand something ?
+Do what ? I don't understand, sorry.
