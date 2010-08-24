@@ -1,7 +1,7 @@
 From: Navid Mohaghegh <navid@navid.ca>
 Subject: Full Cone NAT - Time elapsed inside local network
-Date: Tue, 24 Aug 2010 00:06:09 -0400
-Message-ID: <4C734531.8000202@navid.ca>
+Date: Tue, 24 Aug 2010 00:10:28 -0400
+Message-ID: <4C734634.2090803@navid.ca>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
