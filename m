@@ -1,31 +1,50 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: OFF??? POINT-TO-POINT
-Date: Tue, 24 Aug 2010 20:17:58 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1008242017450.17980@obet.zrqbmnf.qr>
-References: <4C740306.1010209@freemail.hu> <alpine.LNX.2.01.1008241954480.15005@obet.zrqbmnf.qr> <4C740940.9080707@freemail.hu>
+From: Jonathan Tripathy <jonnyt@abpni.co.uk>
+Subject: Re: Bridges
+Date: Tue, 24 Aug 2010 19:34:03 +0100
+Message-ID: <4C74109B.9070704@abpni.co.uk>
+References: <4C6B10CA.4090604@abpni.co.uk> <alpine.LSU.2.01.1008190025100.29243@obet.zrqbmnf.qr> <4C6C63EF.7060305@abpni.co.uk> <4C6C6731.50401@plouf.fr.eu.org> <4C6C67A6.9010405@abpni.co.uk> <4C6C6AED.3090008@plouf.fr.eu.org> <4C6C70B6.7050200@abpni.co.uk> <4C6CDC91.6060804@plouf.fr.eu.org> <4C6D7C42.9060409@abpni.co.uk> <4C6D857B.1070906@plouf.fr.eu.org> <4C6D87E3.9080207@abpni.co.uk> <4C6D9E9F.3080507@plouf.fr.eu.org> <4C6DA0F1.80909@abpni.co.uk> <4C6DAA53.70702@plouf.fr.eu.org> <4C6DB5FD.8030607@abpni.co.uk> <4C6E42A6.9080308@plouf.fr.eu.org> <4C704924.3080909@abpni.co.uk> <alpine.LSU.2.01.1008220122410.30882@obet.zrqbmnf.qr> <4C70E853.6050107@abpni.co   .uk> <alpine.LSU.2.01.1008221108160.26133@obet.zrqbmnf.qr> <4C70E 9A2.3040907@abpni.co.uk> <4C719073.7090506@plouf.fr.eu.org> <4C7194
+ D3.7070803@abpni.co.uk> <4C722FAF.5030203@plouf.fr.eu.org> <4C72D7AA.1090206@abpni.co.uk> <4C73DABD.7080007@plouf.fr.eu.org> <4C740347.3010508@abpni.co.uk> <4C740A66.9000400@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C740940.9080707@freemail.hu>
+In-Reply-To: <4C740A66.9000400@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="utf-8"
-To: =?UTF-8?Q?G=C3=A1sp=C3=A1r_Lajos?= <swifty@freemail.hu>
-Cc: netfilter list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>, netfilter@vger.kernel.org
 
-On Tuesday 2010-08-24 20:02, G=C3=A1sp=C3=A1r Lajos wrote:
 
->
->> So what's the output of `ip addr`?
->>
-> 21: vlan4094@wan3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc n=
-oqueue
-> state UP
->    link/ether 00:19:e0:0b:ac:fc brd ff:ff:ff:ff:ff:ff
->    inet 192.168.0.2/32 scope global vlan4094
->    inet6 fe80::219:e0ff:fe0b:acfc/64 scope link
->       valid_lft forever preferred_lft forever
+On 24/08/10 19:07, Pascal Hambourg wrote:
+> Jonathan Tripathy a =E9crit :
+>   =20
+>> On 24/08/10 15:44, Pascal Hambourg wrote:
+>>     =20
+>>> Jan's diagram pointed to by Karel Rericha explains paths in the IP =
+layer
+>>> and the link layer. However bridge-netfilter (the capability to sen=
+d
+>>> bridged packets through {ip,arp,ipv6}tables chains whereas they are=
+ not
+>>> processed by the IP stack) makes things a bit more complicated.
+>>>       =20
+>> I think what I am getting confused with is how am I able to use the
+>> FORWARD chain in iptables with my bridge setup, even though forwardi=
+ng
+>> is disabled?
+>>     =20
+> Because of netfilter-bridge which allows to pass bridged packets thro=
+ugh
+> iptables chains. See the "link layer" part of the diagram, where
+> bridging takes place. This behaviour can be controlled by sysctls in
+> /proc/sys/net/bridge/ (see Documentation/networking/ip-sysctl.txt).
+>   =20
+Ah I see. Just some special magic in netfilter-bridge.
 
-Tricky :)
+So bottom line: no non-bridged IP traffic can get into the FORWARD chai=
+n=20
+without IP forwarding being enabled? And also, bridged traffic can not=20
+cross bridges unless forwarding is enabled (hence Linux is being used a=
+s=20
+a router itself), or there is a router of some sort in the middle?
 
-And `ip route`?
+Cheers
