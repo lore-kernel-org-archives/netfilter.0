@@ -1,33 +1,30 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: OFF??? POINT-TO-POINT
-Date: Tue, 24 Aug 2010 21:05:53 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1008242105460.17980@obet.zrqbmnf.qr>
-References: <4C740306.1010209@freemail.hu> <alpine.LNX.2.01.1008241954480.15005@obet.zrqbmnf.qr> <4C740940.9080707@freemail.hu> <alpine.LNX.2.01.1008242017450.17980@obet.zrqbmnf.qr> <4C74133D.3020100@freemail.hu>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Bridges
+Date: Wed, 25 Aug 2010 00:20:47 +0200
+Message-ID: <4C7445BF.5020505@plouf.fr.eu.org>
+References: <4C6B10CA.4090604@abpni.co.uk> <4C6C63EF.7060305@abpni.co.uk> <4C6C6731.50401@plouf.fr.eu.org> <4C6C67A6.9010405@abpni.co.uk> <4C6C6AED.3090008@plouf.fr.eu.org> <4C6C70B6.7050200@abpni.co.uk> <4C6CDC91.6060804@plouf.fr.eu.org> <4C6D7C42.9060409@abpni.co.uk> <4C6D857B.1070906@plouf.fr.eu.org> <4C6D87E3.9080207@abpni.co.uk> <4C6D9E9F.3080507@plouf.fr.eu.org> <4C6DA0F1.80909@abpni.co.uk> <4C6DAA53.70702@plouf.fr.eu.org> <4C6DB5FD.8030607@abpni.co.uk> <4C6E42A6.9080308@plouf.fr.eu.org> <4C704924.3080909@abpni.co.uk> <alpine.LSU.2.01.1008220122410.30882@obet.zrqbmnf.qr> <4C70E853.6050107@abpni.co   .uk> <alpine.LSU.2.01.1008221108160.26133@obet.zrqbmnf.qr> <4C70E 9A2.3040907@abpni.co.uk> <4C719073.7090506@plouf.fr.eu.org> <4C7194 D3.7070803@abpni.co.uk> <4C722FAF.5030203@plouf.fr.eu
+ .org> <4C72D7AA.1090206@abpni.co.uk> <4C73DABD.7080007@plouf.fr.eu.org> <4C740347.3010508@abpni.co.uk> <4C740A66.9000400@plouf.fr.eu.org> <4C74109B.9070704@abpni.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C74133D.3020100@freemail.hu>
+In-Reply-To: <4C74109B.9070704@abpni.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="utf-8"
-To: =?UTF-8?Q?G=C3=A1sp=C3=A1r_Lajos?= <swifty@freemail.hu>
-Cc: netfilter list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Jonathan Tripathy <jonnyt@abpni.co.uk>
+Cc: netfilter@vger.kernel.org
 
-On Tuesday 2010-08-24 20:45, G=C3=A1sp=C3=A1r Lajos wrote:
+Jonathan Tripathy a =E9crit :
+>=20
+> So bottom line: no non-bridged IP traffic can get into the FORWARD ch=
+ain=20
+> without IP forwarding being enabled?
 
->
->>> 21: vlan4094@wan3:<BROADCAST,MULTICAST,UP,LOWER_UP>  mtu 1500 qdisc=
- noqueue
->>> state UP
->>>    link/ether 00:19:e0:0b:ac:fc brd ff:ff:ff:ff:ff:ff
->>>    inet 192.168.0.2/32 scope global vlan4094
->>>    inet6 fe80::219:e0ff:fe0b:acfc/64 scope link
->>>       valid_lft forever preferred_lft forever
->> Tricky :)
->>
->> And `ip route`?
->>
-> 192.168.1.2 dev vlan4094  scope link
+Correct.
 
-So everything is correct.
+> And also, bridged traffic can not=20
+> cross bridges unless forwarding is enabled (hence Linux is being used=
+ as=20
+> a router itself), or there is a router of some sort in the middle?
 
+What do you mean by "cross bridges" ?
