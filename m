@@ -1,30 +1,88 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Bridges
-Date: Wed, 25 Aug 2010 00:20:47 +0200
-Message-ID: <4C7445BF.5020505@plouf.fr.eu.org>
-References: <4C6B10CA.4090604@abpni.co.uk> <4C6C63EF.7060305@abpni.co.uk> <4C6C6731.50401@plouf.fr.eu.org> <4C6C67A6.9010405@abpni.co.uk> <4C6C6AED.3090008@plouf.fr.eu.org> <4C6C70B6.7050200@abpni.co.uk> <4C6CDC91.6060804@plouf.fr.eu.org> <4C6D7C42.9060409@abpni.co.uk> <4C6D857B.1070906@plouf.fr.eu.org> <4C6D87E3.9080207@abpni.co.uk> <4C6D9E9F.3080507@plouf.fr.eu.org> <4C6DA0F1.80909@abpni.co.uk> <4C6DAA53.70702@plouf.fr.eu.org> <4C6DB5FD.8030607@abpni.co.uk> <4C6E42A6.9080308@plouf.fr.eu.org> <4C704924.3080909@abpni.co.uk> <alpine.LSU.2.01.1008220122410.30882@obet.zrqbmnf.qr> <4C70E853.6050107@abpni.co   .uk> <alpine.LSU.2.01.1008221108160.26133@obet.zrqbmnf.qr> <4C70E 9A2.3040907@abpni.co.uk> <4C719073.7090506@plouf.fr.eu.org> <4C7194 D3.7070803@abpni.co.uk> <4C722FAF.5030203@plouf.fr.eu
- .org> <4C72D7AA.1090206@abpni.co.uk> <4C73DABD.7080007@plouf.fr.eu.org> <4C740347.3010508@abpni.co.uk> <4C740A66.9000400@plouf.fr.eu.org> <4C74109B.9070704@abpni.co.uk>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH 5/5] net/netfilter/ipvs: Eliminate memory leak
+Date: Wed, 25 Aug 2010 10:34:43 +0900
+Message-ID: <20100825013443.GC7237@verge.net.au>
+References: <Pine.LNX.4.64.1008241639300.15172@ask.diku.dk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C74109B.9070704@abpni.co.uk>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <lvs-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <Pine.LNX.4.64.1008241639300.15172@ask.diku.dk>
+Sender: lvs-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jonathan Tripathy <jonnyt@abpni.co.uk>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Julia Lawall <julia@diku.dk>
+Cc: Wensong Zhang <wensong@linux-vs.org>, Julian Anastasov <ja@ssi.bg>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
 
-Jonathan Tripathy a =E9crit :
->=20
-> So bottom line: no non-bridged IP traffic can get into the FORWARD ch=
-ain=20
-> without IP forwarding being enabled?
+On Tue, Aug 24, 2010 at 04:39:49PM +0200, Julia Lawall wrote:
+> From: Julia Lawall <julia@diku.dk>
+> 
+> __ip_vs_service_get and __ip_vs_svc_fwm_get increment a reference count, so
+> that reference count should be decremented before leaving the function in an
+> error case.
+> 
+> A simplified version of the semantic match that finds this problem is:
+> (http://coccinelle.lip6.fr/)
+> 
+> // <smpl>
+> @r exists@
+> local idexpression x;
+> expression E;
+> identifier f1;
+> iterator I;
+> @@
+> 
+> x = __ip_vs_service_get(...);
+> <... when != x
+>      when != true (x == NULL || ...)
+>      when != if (...) { <+...x...+> }
+>      when != I (...) { <+...x...+> }
+> (
+>  x == NULL
+> |
+>  x == E
+> |
+>  x->f1
+> )
+> ...>
+> * return ...;
+> // </smpl>
+> 
+> Signed-off-by: Julia Lawall <julia@diku.dk>
 
-Correct.
+Thanks Julia, that looks good to me.
 
-> And also, bridged traffic can not=20
-> cross bridges unless forwarding is enabled (hence Linux is being used=
- as=20
-> a router itself), or there is a router of some sort in the middle?
+Signed-off-by: Simon Horman <horms@verge.net.au>
 
-What do you mean by "cross bridges" ?
+Patrick, I guess that this should go through nf-next-2.6.
+
+> 
+> ---
+>  net/netfilter/ipvs/ip_vs_ctl.c |    3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+> index 0f0c079..f98169b 100644
+> --- a/net/netfilter/ipvs/ip_vs_ctl.c
+> +++ b/net/netfilter/ipvs/ip_vs_ctl.c
+> @@ -2155,7 +2155,7 @@ do_ip_vs_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
+>  	if (cmd != IP_VS_SO_SET_ADD
+>  	    && (svc == NULL || svc->protocol != usvc.protocol)) {
+>  		ret = -ESRCH;
+> -		goto out_unlock;
+> +		goto out_drop_service;
+>  	}
+>  
+>  	switch (cmd) {
+> @@ -2189,6 +2189,7 @@ do_ip_vs_set_ctl(struct sock *sk, int cmd, void __user *user, unsigned int len)
+>  		ret = -EINVAL;
+>  	}
+>  
+> +out_drop_service:
+>  	if (svc)
+>  		ip_vs_service_put(svc);
+>  
+> --
+> To unsubscribe from this list: send the line "unsubscribe lvs-devel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
