@@ -1,24 +1,36 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH 5/5] net/netfilter/ipvs: Eliminate memory leak
-Date: Wed, 25 Aug 2010 20:56:13 -0700 (PDT)
-Message-ID: <20100825.205613.98875749.davem@davemloft.net>
-References: <20100825013443.GC7237@verge.net.au>
-	<20100825.163812.242150096.davem@davemloft.net>
-	<20100826003204.GA9771@verge.net.au>
+From: Brian Schang <netfilter@lists.schang.net>
+Subject: Problems compiling xtables-addons v1.28
+Date: Fri, 27 Aug 2010 23:34:09 -0400
+Message-ID: <4C7883B1.10006@lists.schang.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <lvs-devel-owner@vger.kernel.org>
-In-Reply-To: <20100826003204.GA9771@verge.net.au>
-Sender: lvs-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
-To: horms@verge.net.au
-Cc: julia@diku.dk, wensong@linux-vs.org, ja@ssi.bg, kaber@trash.net, netdev@vger.kernel.org, lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-From: Simon Horman <horms@verge.net.au>
-Date: Thu, 26 Aug 2010 09:32:05 +0900
+Hello:
 
-> I have a handful of other changes queued up,
-> do you want to take them too?
+I have successfully compiled and am running xtables-addons v1.27. 
+However I cannot get v1.28 to compile:
 
-Sure, let's do that.
+[root@server2 xtables-addons (build)]# ./autogen.sh
+libtoolize: putting auxiliary files in `.'.
+libtoolize: copying file `./ltmain.sh'
+libtoolize: putting macros in AC_CONFIG_MACRO_DIR, `m4'.
+libtoolize: copying file `m4/libtool.m4'
+libtoolize: copying file `m4/ltoptions.m4'
+libtoolize: copying file `m4/ltsugar.m4'
+libtoolize: copying file `m4/ltversion.m4'
+libtoolize: copying file `m4/lt~obsolete.m4'
+geoip/Makefile.am:3: `pkglibexec_SCRIPTS' is used but `pkglibexecdir' is 
+undefined
+autoreconf: automake failed with exit status: 1
+
+Any suggestions would be appreciated.
+
+Thank you.
+
+-- 
+Brian Schang
