@@ -1,67 +1,75 @@
-From: Tomasz Chmielewski <mangoo@wpkg.org>
-Subject: Re: ebtables and anti-spoofing rules not working 100%?
-Date: Sun, 29 Aug 2010 18:46:37 +0200
-Message-ID: <4C7A8EED.9060203@wpkg.org>
-References: <4C7A67B3.4070505@wpkg.org> <4C7A7CB7.9020701@plouf.fr.eu.org>
+From: Jonathan Tripathy <jonnyt@abpni.co.uk>
+Subject: Re: NDP and ebtables
+Date: Sun, 29 Aug 2010 18:22:05 +0100
+Message-ID: <4C7A973D.7060204@abpni.co.uk>
+References: <4C7A3C72.6070105@abpni.co.uk> <4C7A740D.8010908@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=wpkg.org; h=message-id
-	:date:from:mime-version:to:cc:subject:references:in-reply-to
-	:content-type:content-transfer-encoding; s=default; bh=mKEiXozj9
-	1h8ibuWGSJF3YzKnWc=; b=CCB+0yqL+Y/gZ24BoyaQi8LJiF8sMwkNowVOM5CEX
-	nUqYchJsJaMCNsK6gZ6Yzu8dttdiRwBtkztc5VbvRsA9tnqV9Qg1jetzltJpna5X
-	CP+LdFB6scQBd5DwQdAhwSTYaLn6NaKCMJKi0YdvgVBzZqy5tu2d1A/fJyhpeT6l
-	OM=
-In-Reply-To: <4C7A7CB7.9020701@plouf.fr.eu.org>
+In-Reply-To: <4C7A740D.8010908@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>, netfilter@vger.kernel.org
 
-On 29.08.2010 17:28, Pascal Hambourg wrote:
 
->> # guest communication with the gateway
->> ebtables -A INPUT -i vmtab107i0 -j vm107
->> ebtables -A OUTPUT -o vmtab107i0 -j vm107
+On 29/08/10 15:51, Pascal Hambourg wrote:
+> Hello,
 >
-> Do you need to prevent spoofing by the host itself ?
-
-Host is "trusted", so it doesn't need any additional measures.
-Guests, on the other hand, are to be "untrusted".
-
-
->> What anti-spoofing rules I need to have to prevent some kvm guests
->> pretending to be other kvm guests (or, even pretending to be "gateways")?
+> Jonathan Tripathy a =E9crit :
+>   =20
+>> I'm just trailing out ipv6 on my network. Currently, all my bridge p=
+orts
+>> are protected from MAC address spoofing by using ebtables:
+>>
+>> /usr/local/sbin/ebtables -I FORWARD -p ARP -o "$vif" -j ACCEPT
+>> /usr/local/sbin/ebtables -I FORWARD -i "$vif" -s "$mac" -j ACCEPT
+>> /usr/local/sbin/ebtables -I FORWARD -o "$vif" -d "$mac" -j ACCEPT
+>>
+>> As you can see above, I allow all ARP packets to flow to the host
+>> (who-has). This allows ARP resolution to work. Is-at works at the so=
+urce
+>> MAC address is set in the frame.
+>>
+>> However, adding IPv6 to the mix is a little trickier. As it turns ou=
+t,
+>> IPv6 doesn't use ARP, but uses NDP.
+>>
+>> Is there any way to make NDP work with ebtables, but still preventin=
+g
+>> MAC address spoofing?
+>>     =20
+> Sure : don't filter on the destination address, or at least accept
+> related multicast addresses (see "ip -f link maddr" on the host).
 >
-> Just create rules called from INPUT and FORWARD which match the input
-> interface (bridge port) and the MAC and IP source address.
+> Spoofing is about the source, not the destination. If the bridge code
+> decides to forward a packet to some port even when the destination
+> address is not the address of a host connected to that port, it has s=
+ome
+> reason to do so :
+> - the destination is multicast of broadcast,
+> - the destination is unicast but unknown, thus treated as broadcast.
 >
-> ebtables -A INPUT -i vmtab107i0 -j vm107
-> ebtables -A FORWARD -i vmtab107i0 -j vm107
+> You can safely drop in the latter case, not in the former.
 >
-> ebtables -A vm107 -p IPv4 -s 11:22:33:44:55:66 --ip-src 1.2.3.4 \
->    -j ACCEPT
-> ebtables -A vm107 -p ARP -s 11:22:33:44:55:66 \
->    --arp-mac-src 11:22:33:44:55:66 --arp-ip-src 1.2.3.4 -j ACCEPT
+> Note that your 3rd rule accepts packets from any source address, thus
+> not preventing spoofing.
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>   =20
 
-With these rules, I'm not able to communicate (i.e. ping) with other 
-hosts in the same subnet, except the gateway (although this was the same 
-with my previous rules, I think).
+Hi Pascal,
 
+Well spotted about my 3rd rule above!
 
-Also, if I do this on the "rogue" guest (with MAC, IP belonging to the 
-"other" guest):
+So, do you think I should just have my second rule then? The thing is=20
+though, is that bridges are know to "broadcast" all traffic everywhere=20
+for a few seconds when their configuration changes. I don't really want=
+=20
+this to happen. Can you please help me with some rules to prevent yet,=20
+and also stop spoofing?
 
-ifconfig eth0 hw ether AA:BB:CC:DD:EE:FF
-ifconfig eth0 1.2.3.22
-
-
-any communication to the "other" still breaks (from external hosts). So, 
-no improvement.
-
-
--- 
-Tomasz Chmielewski
-http://wpkg.org
+Thanks
