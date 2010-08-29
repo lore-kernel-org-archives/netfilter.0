@@ -1,96 +1,28 @@
-From: Tomasz Chmielewski <mangoo@wpkg.org>
-Subject: using iptables with tun/tap interfaces? no rule sees tun/tap interface
- traffic
-Date: Sun, 29 Aug 2010 13:03:17 +0200
-Message-ID: <4C7A3E75.5020202@wpkg.org>
+From: Marek Kierdelewicz <marek@piasta.pl>
+Subject: Re: using iptables with tun/tap interfaces? no rule sees tun/tap
+ interface traffic
+Date: Sun, 29 Aug 2010 13:15:59 +0200
+Message-ID: <20100829131559.23abd652@catus>
+References: <4C7A3E75.5020202@wpkg.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=wpkg.org; h=message-id
-	:date:from:mime-version:to:subject:content-type
-	:content-transfer-encoding; s=default; bh=qJk5POuUgwQVVzzON7/En0
-	xv3FA=; b=OgrMprZIvGYZqNnkry1fyrtVciD+WqFzw1e5UX4Z7XgRQLAokkLcRG
-	mTJk1GxbMq1W2wSIqoxP/GcArRefK1fLPFAXK04nglgJc+9TCy0HXKYSbYS0WpNX
-	C1022Zl+8Pf0gxomMriBczNue1K/4lQHwV+Zk8m9s/YO45LB6N+1c=
+In-Reply-To: <4C7A3E75.5020202@wpkg.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Tomasz Chmielewski <mangoo@wpkg.org>
+Cc: netfilter@vger.kernel.org
 
-I'm trying to filter traffic on a tap interface.
+Hi Tomasz,
 
-The traffic is coming from a qemu/kvm guest and can be captured i.e. with tcpdump:
+>tcpdump: WARNING: tap0: no IPv4 address assigned
 
-# tcpdump -i tap0 -v -n
-tcpdump: WARNING: tap0: no IPv4 address assigned
-tcpdump: listening on tap0, link-type EN10MB (Ethernet), capture size 65535 bytes
-12:51:15.695350 IP (tos 0x0, ttl 64, id 0, offset 0, flags [DF], proto ICMP (1), length 84)
-    192.168.10.145 > 192.168.10.81: ICMP echo request, id 3864, seq 1, length 64
-12:51:15.895316 IP (tos 0x0, ttl 64, id 46926, offset 0, flags [none], proto ICMP (1), length 84)
-    192.168.10.81 > 192.168.10.145: ICMP echo reply, id 3864, seq 1, length 64
+So you're bridging.
 
+Make sure /proc/sys/net/bridge/bridge-nf-call-iptables is set to 1.
 
-Now, let's see if iptables can capture this kind of traffic - let's add some ACCEPT rules for the tap0 interface:
+Good luck.
 
-iptables -I OUTPUT -o tap0 -j ACCEPT
-iptables -I INPUT -o tap0 -j ACCEPT
-iptables -I FORWARD -o tap0 -j ACCEPT
-iptables -I FORWARD -i tap0 -j ACCEPT
-iptables -t nat -I PREROUTING -i tap0 -j ACCEPT
-iptables -t nat -I POSTROUTING -o tap0 -j ACCEPT
-iptables -t nat -I OUTPUT -o tap0 -j ACCEPT
-
-
-Let's push some traffic and see if iptables statistics caught any packets:
-
-
-# iptables -L -t nat -v -n
-Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               destination
-    0     0 ACCEPT     all  --  tap0   *       0.0.0.0/0            0.0.0.0/0
-
-Chain OUTPUT (policy ACCEPT 57 packets, 4260 bytes)
- pkts bytes target     prot opt in     out     source               destination
-    0     0 ACCEPT     all  --  *      tap0    0.0.0.0/0            0.0.0.0/0
-
-Chain POSTROUTING (policy ACCEPT 52 packets, 3255 bytes)
- pkts bytes target     prot opt in     out     source               destination
-    0     0 ACCEPT     all  --  *      tap0    0.0.0.0/0            0.0.0.0/0
-
-
-
-# iptables -L  -v -n
-Chain INPUT (policy ACCEPT 11125 packets, 5245K bytes)
- pkts bytes target     prot opt in     out     source               destination
-    0     0 ACCEPT     all  --  tap0   *       0.0.0.0/0            0.0.0.0/0
-
-Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               destination
-    0     0 ACCEPT     all  --  tap0   *       0.0.0.0/0            0.0.0.0/0
-    0     0 ACCEPT     all  --  *      tap0    0.0.0.0/0            0.0.0.0/0
-
-Chain OUTPUT (policy ACCEPT 10105 packets, 12M bytes)
- pkts bytes target     prot opt in     out     source               destination
-    0     0 ACCEPT     all  --  *      tap0    0.0.0.0/0            0.0.0.0/0
-
-
-
-As we can see, no traffic (pkts/bytes) in the rules having this tap0 interface:
-
-tap0      Link encap:Ethernet  HWaddr EE:36:E1:A2:DA:36  
-          inet6 addr: fe80::ec36:e1ff:fea2:da36/64 Scope:Link
-          UP BROADCAST RUNNING PROMISC MULTICAST  MTU:1500  Metric:1
-          RX packets:4019 errors:0 dropped:0 overruns:0 frame:0
-          TX packets:4084 errors:0 dropped:0 overruns:0 carrier:0
-          collisions:0 txqueuelen:500 
-          RX bytes:363208 (354.6 KiB)  TX bytes:412993 (403.3 KiB)
-
-
-Did I make some obvious mistake?
-
-How can I use iptables to filter traffic on tap interfaces?
-
-
--- 
-Tomasz Chmielewski
-http://wpkg.org
+Best regards,
+Marek
