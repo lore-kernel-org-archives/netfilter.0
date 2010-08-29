@@ -1,44 +1,53 @@
-From: Tomasz Chmielewski <mangoo@wpkg.org>
-Subject: Re: using iptables with tun/tap interfaces? no rule sees tun/tap
- interface traffic
-Date: Sun, 29 Aug 2010 13:50:10 +0200
-Message-ID: <4C7A4972.4020304@wpkg.org>
-References: <4C7A3E75.5020202@wpkg.org> <20100829131559.23abd652@catus>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Need for a specific source address selection rule ? (not
+ neccessarily netfilter)
+Date: Sun, 29 Aug 2010 14:04:50 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1008291355300.4946@obet.zrqbmnf.qr>
+References: <4C7A3B14.9010805@httrack.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=wpkg.org; h=message-id
-	:date:from:mime-version:to:cc:subject:references:in-reply-to
-	:content-type:content-transfer-encoding; s=default; bh=+bEtgHBUS
-	258Z824fJR0sOoSHf8=; b=TI+QYZXVQTgAaRs3isp0gl9AoblK9jkwlv+tAT21B
-	PRDU8HCdjkpDCeoOCtUZE7pi6U4utK+vjAcyE04w4cONuydXL+fHXEzo2Uij9XU6
-	wrUO1dLp6vcwzmiYjyh64fDaDL4Qw9lgiKMdF5U0tWxPDEepu+kP3Op+IC7bTBqn
-	r8=
-In-Reply-To: <20100829131559.23abd652@catus>
+In-Reply-To: <4C7A3B14.9010805@httrack.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Marek Kierdelewicz <marek@piasta.pl>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Xavier Roche <roche*lkml@httrack.com>
 Cc: netfilter@vger.kernel.org
 
-On 29.08.2010 13:15, Marek Kierdelewicz wrote:
-> Hi Tomasz,
+
+On Sunday 2010-08-29 12:48, Xavier Roche wrote:
+
+>1. one outgoing IP per service (for example, a SMTP server would
+>have its own address for the outgoing interface - and one unique
+>reverse IP to the declared SMTP server address)
 >
->> tcpdump: WARNING: tap0: no IPv4 address assigned
+>The first case can sometimes be partially solved using
+>application-specific configuration (bind to a specific address) -
+>however this is not desirable when you need to listen to all
+>interfaces (ie. including IPv4-only or IPv6-only ones)
+
+You are confusing incoming with outgoing connections. bind is
+correct. For the incoming one you bind to [::]:25, for the outgoing
+one you bind to [2a01::desired]:0. Problem solved.
+
+
+> 3. one outgoing IP for specific network blocks
+> etc ..
+
+Hosts uses their assigned address as outgoing source address.
+
+
+>RFC 3484 (4) specifies the way source address is selected ; with the
+>following order (5):
 >
-> So you're bridging.
->
-> Make sure /proc/sys/net/bridge/bridge-nf-call-iptables is set to 1.
+> 1. Prefer same address. (i.e. destination is local machine)
+> 2. Prefer appropriate scope. (i.e. smallest scope shared with the destination)
+> 3. Avoid deprecated addresses.
+> 4. Prefer home addresses.
+> 5. Prefer outgoing interface. (i.e. prefer an address on the interface we're
+> sending out of)
+> 6. Prefer matching label.
+> 7. Prefer public addresses.
+> 8. Use longest matching prefix.
 
-# cat /proc/sys/net/bridge/bridge-nf-call-iptables
-1
-
-Using 2.6.35 kernel.
-
-Should I use ebtables for this? iptables seem more flexible here.
-
-
-
--- 
-Tomasz Chmielewski
-http://wpkg.org
+And somewhere in between is /etc/gai.conf.
