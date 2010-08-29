@@ -1,75 +1,64 @@
 From: Jonathan Tripathy <jonnyt@abpni.co.uk>
-Subject: Re: NDP and ebtables
-Date: Sun, 29 Aug 2010 18:22:05 +0100
-Message-ID: <4C7A973D.7060204@abpni.co.uk>
-References: <4C7A3C72.6070105@abpni.co.uk> <4C7A740D.8010908@plouf.fr.eu.org>
+Subject: Re: ebtables and anti-spoofing rules not working 100%?
+Date: Sun, 29 Aug 2010 18:25:57 +0100
+Message-ID: <4C7A9825.9080602@abpni.co.uk>
+References: <4C7A67B3.4070505@wpkg.org> <4C7A7CB7.9020701@plouf.fr.eu.org> <4C7A8EED.9060203@wpkg.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C7A740D.8010908@plouf.fr.eu.org>
+In-Reply-To: <4C7A8EED.9060203@wpkg.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Tomasz Chmielewski <mangoo@wpkg.org>, netfilter@vger.kernel.org
 
 
-On 29/08/10 15:51, Pascal Hambourg wrote:
-> Hello,
+On 29/08/10 17:46, Tomasz Chmielewski wrote:
+> On 29.08.2010 17:28, Pascal Hambourg wrote:
 >
-> Jonathan Tripathy a =E9crit :
->   =20
->> I'm just trailing out ipv6 on my network. Currently, all my bridge p=
-orts
->> are protected from MAC address spoofing by using ebtables:
+>>> # guest communication with the gateway
+>>> ebtables -A INPUT -i vmtab107i0 -j vm107
+>>> ebtables -A OUTPUT -o vmtab107i0 -j vm107
 >>
->> /usr/local/sbin/ebtables -I FORWARD -p ARP -o "$vif" -j ACCEPT
->> /usr/local/sbin/ebtables -I FORWARD -i "$vif" -s "$mac" -j ACCEPT
->> /usr/local/sbin/ebtables -I FORWARD -o "$vif" -d "$mac" -j ACCEPT
->>
->> As you can see above, I allow all ARP packets to flow to the host
->> (who-has). This allows ARP resolution to work. Is-at works at the so=
-urce
->> MAC address is set in the frame.
->>
->> However, adding IPv6 to the mix is a little trickier. As it turns ou=
-t,
->> IPv6 doesn't use ARP, but uses NDP.
->>
->> Is there any way to make NDP work with ebtables, but still preventin=
-g
->> MAC address spoofing?
->>     =20
-> Sure : don't filter on the destination address, or at least accept
-> related multicast addresses (see "ip -f link maddr" on the host).
+>> Do you need to prevent spoofing by the host itself ?
 >
-> Spoofing is about the source, not the destination. If the bridge code
-> decides to forward a packet to some port even when the destination
-> address is not the address of a host connected to that port, it has s=
-ome
-> reason to do so :
-> - the destination is multicast of broadcast,
-> - the destination is unicast but unknown, thus treated as broadcast.
+> Host is "trusted", so it doesn't need any additional measures.
+> Guests, on the other hand, are to be "untrusted".
 >
-> You can safely drop in the latter case, not in the former.
 >
-> Note that your 3rd rule accepts packets from any source address, thus
-> not preventing spoofing.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->   =20
+>>> What anti-spoofing rules I need to have to prevent some kvm guests
+>>> pretending to be other kvm guests (or, even pretending to be 
+>>> "gateways")?
+>>
+>> Just create rules called from INPUT and FORWARD which match the input
+>> interface (bridge port) and the MAC and IP source address.
+>>
+>> ebtables -A INPUT -i vmtab107i0 -j vm107
+>> ebtables -A FORWARD -i vmtab107i0 -j vm107
+>>
+>> ebtables -A vm107 -p IPv4 -s 11:22:33:44:55:66 --ip-src 1.2.3.4 \
+>>    -j ACCEPT
+>> ebtables -A vm107 -p ARP -s 11:22:33:44:55:66 \
+>>    --arp-mac-src 11:22:33:44:55:66 --arp-ip-src 1.2.3.4 -j ACCEPT
+>
+> With these rules, I'm not able to communicate (i.e. ping) with other 
+> hosts in the same subnet, except the gateway (although this was the 
+> same with my previous rules, I think).
+>
+>
+> Also, if I do this on the "rogue" guest (with MAC, IP belonging to the 
+> "other" guest):
+>
+> ifconfig eth0 hw ether AA:BB:CC:DD:EE:FF
+> ifconfig eth0 1.2.3.22
+>
+>
+> any communication to the "other" still breaks (from external hosts). 
+> So, no improvement.
+>
+>
+Why do you need to use the INPUT chain with ebtables in a VM 
+environment? In my ebtables setup, I have INPUT to drop everything, 
+except stuff from/to the loopback interface (lo)
 
-Hi Pascal,
-
-Well spotted about my 3rd rule above!
-
-So, do you think I should just have my second rule then? The thing is=20
-though, is that bridges are know to "broadcast" all traffic everywhere=20
-for a few seconds when their configuration changes. I don't really want=
-=20
-this to happen. Can you please help me with some rules to prevent yet,=20
-and also stop spoofing?
-
-Thanks
+Cheers
