@@ -1,26 +1,35 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Need for a specific source address selection rule ? (not
- neccessarily netfilter)
-Date: Sun, 29 Aug 2010 17:00:18 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1008291659180.10349@obet.zrqbmnf.qr>
-References: <4C7A3B14.9010805@httrack.com> <alpine.LNX.2.01.1008291355300.4946@obet.zrqbmnf.qr> <4C7A57D1.8070702@httrack.com> <alpine.LNX.2.01.1008291537460.8007@obet.zrqbmnf.qr> <4C7A65D5.7090803@httrack.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: using iptables with tun/tap interfaces? no rule sees tun/tap
+ interface traffic
+Date: Sun, 29 Aug 2010 17:01:59 +0200
+Message-ID: <4C7A7667.3060205@plouf.fr.eu.org>
+References: <4C7A3E75.5020202@wpkg.org> <20100829131559.23abd652@catus>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C7A65D5.7090803@httrack.com>
+In-Reply-To: <20100829131559.23abd652@catus>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: Xavier Roche <roche*lkml@httrack.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Marek Kierdelewicz <marek@piasta.pl>
+Cc: Tomasz Chmielewski <mangoo@wpkg.org>, netfilter@vger.kernel.org
 
-On Sunday 2010-08-29 15:51, Xavier Roche wrote:
+Hello,
 
-> Jan Engelhardt a =C3=A9crit :
->> ip route add $(address of google.com) src $(my alternate address)
+Marek Kierdelewicz a =E9crit :
+>=20
+>> tcpdump: WARNING: tap0: no IPv4 address assigned
+>=20
+> So you're bridging.
+>=20
+> Make sure /proc/sys/net/bridge/bridge-nf-call-iptables is set to 1.
+
+It is by default.
+But -i/-o must match the bridge interface, not the port. Ports can be
+matched with the physdev match as you pointed out in another post.
+
+Tomasz asked :
 >
-> Yes, but not for protocol, owner, and any other rule. This is direct =
-routine
-> from a network to another one.
+> Should I use ebtables for this?
 
-Well no, routing only concerns itself with layer-3 factors.
+Yes, if ebtables can do what you need.
