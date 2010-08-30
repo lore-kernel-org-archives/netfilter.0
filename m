@@ -1,51 +1,41 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+From: Tomasz Chmielewski <mangoo@wpkg.org>
 Subject: Re: ebtables and anti-spoofing rules not working 100%?
-Date: Mon, 30 Aug 2010 20:14:21 +0200
-Message-ID: <4C7BF4FD.6040601@plouf.fr.eu.org>
-References: <4C7A67B3.4070505@wpkg.org> <4C7A7CB7.9020701@plouf.fr.eu.org> <4C7A8EED.9060203@wpkg.org>
+Date: Mon, 30 Aug 2010 20:38:33 +0200
+Message-ID: <4C7BFAA9.7080701@wpkg.org>
+References: <4C7A67B3.4070505@wpkg.org> <4C7A7CB7.9020701@plouf.fr.eu.org> <4C7A8EED.9060203@wpkg.org> <4C7BF4FD.6040601@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C7A8EED.9060203@wpkg.org>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=wpkg.org; h=message-id
+	:date:from:mime-version:to:cc:subject:references:in-reply-to
+	:content-type:content-transfer-encoding; s=default; bh=lmYe/K1BT
+	sqLD+6Vp4fehwDK5/Y=; b=luQz39z349puWltnagoPVEAYwqpJqg7FOWl1cWhgK
+	aqlZL5FYEiQdC/atCm2T/VjoVlUgwlXK3dMDwwRL/MJbISBPujMD7wSXtOoUxNMy
+	1A2Qu4eOAXNHr7QbLpAfmgABZWtR19XU9vpg6EAkaP1BNql0tS/OR+ExIffaXs+R
+	jw=
+In-Reply-To: <4C7BF4FD.6040601@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Tomasz Chmielewski <mangoo@wpkg.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Cc: netfilter@vger.kernel.org
 
-Tomasz Chmielewski a =E9crit :
-> On 29.08.2010 17:28, Pascal Hambourg wrote:
->=20
->>> # guest communication with the gateway
->>> ebtables -A INPUT -i vmtab107i0 -j vm107
->>> ebtables -A OUTPUT -o vmtab107i0 -j vm107
->> Do you need to prevent spoofing by the host itself ?
->=20
-> Host is "trusted", so it doesn't need any additional measures.
-> Guests, on the other hand, are to be "untrusted".
+On 30.08.2010 20:14, Pascal Hambourg wrote:
 
-Then filtering in OUTPUT is unnecessary.
+>> With these rules, I'm not able to communicate (i.e. ping) with other
+>> hosts in the same subnet, except the gateway (although this was the same
+>> with my previous rules, I think).
+>
+> Of course these rules are just a part of the ruleset. Did you do the
+> same for all other bridge ports and hosts in the subnet ?
 
->>> What anti-spoofing rules I need to have to prevent some kvm guests
->>> pretending to be other kvm guests (or, even pretending to be "gatew=
-ays")?
->>
->> Just create rules called from INPUT and FORWARD which match the inpu=
-t
->> interface (bridge port) and the MAC and IP source address.
->>
->> ebtables -A INPUT -i vmtab107i0 -j vm107
->> ebtables -A FORWARD -i vmtab107i0 -j vm107
->>
->> ebtables -A vm107 -p IPv4 -s 11:22:33:44:55:66 --ip-src 1.2.3.4 \
->>    -j ACCEPT
->> ebtables -A vm107 -p ARP -s 11:22:33:44:55:66 \
->>    --arp-mac-src 11:22:33:44:55:66 --arp-ip-src 1.2.3.4 -j ACCEPT
->=20
-> With these rules, I'm not able to communicate (i.e. ping) with other=20
-> hosts in the same subnet, except the gateway (although this was the s=
-ame=20
-> with my previous rules, I think).
+No, I did not.
 
-Of course these rules are just a part of the ruleset. Did you do the
-same for all other bridge ports and hosts in the subnet ?
+So even if it's blocked on one bridge, rogue MAC/IP can still "get 
+outside" and interfere with other bridges/guests?
+
+
+
+-- 
+Tomasz Chmielewski
+http://wpkg.org
