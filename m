@@ -1,37 +1,53 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: IPv6 routing
-Date: Mon, 30 Aug 2010 19:17:31 +0200
-Message-ID: <4C7BE7AB.1040500@plouf.fr.eu.org>
-References: <4C7B8741.3030908@abpni.co.uk> <4C7B89EB.7090807@abpni.co.uk>	 <alpine.LNX.2.01.1008301242380.15716@obet.zrqbmnf.qr>	 <4C7B8BD2.1060009@abpni.co.uk>  <4C7B91A2.50707@abpni.co.uk> <1283171041.16291.63.camel@enterprise.ims-firmen.de>
+From: Narendra Choyal <narendrachoyal@gmail.com>
+Subject: Re: Traffic Shaping
+Date: Mon, 30 Aug 2010 23:28:28 +0530
+Message-ID: <AANLkTikTShskJK7mWJ1eFTTPRWWSLLTUH=7TvXEP=UUp@mail.gmail.com>
+References: <4C717D4D.3010501@abpni.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1283171041.16291.63.camel@enterprise.ims-firmen.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:in-reply-to
+         :references:date:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=LRNfZn0En+M+G34CObzMlGiA+A2Ia2Re8OqEXYswNH4=;
+        b=OXQlyvOHxjsnNcS+EsLCN1trMCvCZyG0oh2wGGEHLmpONOZ+lvJmVRmPILPT+vINST
+         250biZlk3ihs0Xo/cPOPbOFcB1yw52aT67lnN+6BI/kmMfh2oPOef/Q1xNE6LGLmQ5Rk
+         7S9h3LQDXIeAhtT06mBJZba0byKBPyk03Tdf0=
+In-Reply-To: <4C717D4D.3010501@abpni.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Thomas Jacob <jacob@internet24.de>
-Cc: Jonathan Tripathy <jonnyt@abpni.co.uk>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1252"
+To: Jonathan Tripathy <jonnyt@abpni.co.uk>
+Cc: netfilter@vger.kernel.org
 
 Hello,
 
-Thomas Jacob a =E9crit :
->=20
-> (linked to INPUT chain)
->=20
-> target     prot opt source               destination        =20
-> ACCEPT     ipv6-icmp    anywhere             anywhere
-> ipv6-icmp neighbour-solicitation=20
-> ACCEPT     ipv6-icmp    anywhere             anywhere
-> ipv6-icmp neighbour-advertisement=20
-> ACCEPT     ipv6-icmp    anywhere             anywhere
-> ipv6-icmp router-solicitation=20
-> ACCEPT     ipv6-icmp    anywhere             anywhere
-> ipv6-icmp router-advertisement=20
->=20
-> (and maybe not even the last two, if you are using
-> static routing).
+I can make this type of software for you freely.
 
-A router accepts router solicitation and ignores router advertisement. =
-A
-host accepts router advertisement and ignores router solicitation.
+I have roughly idea few months ago . . .  and also implemented it appro=
+ximately.
+ but for in market I will design it as according to you or say as a
+general utility tool.
+
+I think, an easy job.
+I will try . . .
+
+=46irst for Linux OS in either java or bash
+then on window.
+
+=46rom : Narendra Choyal
+           India
+
+Having knowledge as of :
+=95 Red Hat Enterprise Security Network Services
+=95 Directory Services
+=95 JBoss
+=95 Java's Technologies
+=95 C (GCC)
+=95 Hacking
+
+
+          Searching for job in the field of "Linux Security" &
+Development(Java).
