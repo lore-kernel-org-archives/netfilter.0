@@ -1,42 +1,52 @@
 From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: ebtables and anti-spoofing rules not working 100%?
-Date: Mon, 30 Aug 2010 23:34:41 +0200
-Message-ID: <4C7C23F1.2080206@plouf.fr.eu.org>
-References: <4C7A67B3.4070505@wpkg.org> <4C7A7CB7.9020701@plouf.fr.eu.org> <4C7A8EED.9060203@wpkg.org> <4C7BF4FD.6040601@plouf.fr.eu.org> <4C7BFAA9.7080701@wpkg.org>
+Subject: Re: NDP and ebtables
+Date: Tue, 31 Aug 2010 01:31:04 +0200
+Message-ID: <4C7C3F38.8010301@plouf.fr.eu.org>
+References: <4C7A3C72.6070105@abpni.co.uk> <4C7A740D.8010908@plouf.fr.eu.org> <4C7A973D.7060204@abpni.co.uk> <4C7AB0E9.6080708@abpni.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C7BFAA9.7080701@wpkg.org>
+In-Reply-To: <4C7AB0E9.6080708@abpni.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Tomasz Chmielewski <mangoo@wpkg.org>
+To: Jonathan Tripathy <jonnyt@abpni.co.uk>
 Cc: netfilter@vger.kernel.org
 
-Tomasz Chmielewski a =E9crit :
-> On 30.08.2010 20:14, Pascal Hambourg wrote:
+Jonathan Tripathy a =E9crit :
+>>
+>> So, do you think I should just have my second rule then? The thing i=
+s=20
+>> though, is that bridges are know to "broadcast" all traffic everywhe=
+re=20
+>> for a few seconds when their configuration changes. I don't really=20
+>> want this to happen. Can you please help me with some rules to preve=
+nt=20
+>> yet, and also stop spoofing?
+>>
+> How about something like this:
 >=20
->>> With these rules, I'm not able to communicate (i.e. ping) with othe=
-r
->>> hosts in the same subnet, except the gateway (although this was the=
- same
->>> with my previous rules, I think).
-
-I am not very experienced with ebtables, so maybe I missed something. I
-quickly tested these rules with two hosts and they seemed to work as
-expected.
-
->> Of course these rules are just a part of the ruleset. Did you do the
->> same for all other bridge ports and hosts in the subnet ?
+> /usr/local/sbin/ebtables -N OUT
+> /usr/local/sbin/ebtables -P OUT DROP
+> /usr/local/sbin/ebtables -I OUT -o "$vif" -d "$mac" -j ACCEPT
+> /usr/local/sbin/ebtables -I OUT -p ARP -o "$vif" -j ACCEPT
 >=20
-> No, I did not.
+> /usr/local/sbin/ebtables -I FORWARD -i "$vif" -s "$mac" -j OUT
+>=20
+> Woudn't that work nicely?
 
-Communication is two-way. The rules I suggested accept only one way. Th=
-e
-other way depends on the rest of the rules.
+I guess so, except for IPv6 NDP (see below).
+Note that you don't need a separate ARP rule for each port.
 
-> So even if it's blocked on one bridge, rogue MAC/IP can still "get=20
-> outside" and interfere with other bridges/guests?
+> That is, stop source address spoofing, as well=20
+> as make sure that outgoing traffic is set for the correct MAC address=
+=2E.
 
-That would imply that the host is connected to multiple bridges. Of
-course each bridge is independent.
+> I appreciate that my above rules would block all multicast/broadcast=20
+> traffic (except ARP), however since this is in a hosting environment,=
+=20
+> that's probably ok isn't it?
+
+NDP uses multicast and will break if you drop all multicast. You can
+however accept only the multicast addresses the host listens to (see my
+first reply for how to get the list).
