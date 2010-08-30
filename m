@@ -1,34 +1,78 @@
-From: Thomas Jacob <jacob@internet24.de>
-Subject: Re: IPv6 routing
-Date: Mon, 30 Aug 2010 14:54:00 +0200
-Message-ID: <1283172840.16291.91.camel@enterprise.ims-firmen.de>
-References: <4C7B8741.3030908@abpni.co.uk> <4C7B89EB.7090807@abpni.co.uk>
-	 <alpine.LNX.2.01.1008301242380.15716@obet.zrqbmnf.qr>
-	 <4C7B8BD2.1060009@abpni.co.uk>  <4C7B91A2.50707@abpni.co.uk>
-	 <1283171041.16291.63.camel@enterprise.ims-firmen.de>
-	 <4C7BA51D.8030004@abpni.co.uk>
-	 <alpine.DEB.2.00.1008301438390.20055@blackhole.kfki.hu>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: aligned_{u64,be64,le64} defined in #ifdef __KERNEL__
+Date: Mon, 30 Aug 2010 15:02:55 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1008301502280.19931@obet.zrqbmnf.qr>
+References: <1282682582-15980-1-git-send-email-eparis@redhat.com> <201008300326.30233.agruen@suse.de> <20100829.212156.229740543.davem@davemloft.net> <201008301258.33113.agruen@suse.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1008301438390.20055@blackhole.kfki.hu>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <201008301258.33113.agruen@suse.de>
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: Jonathan Tripathy <jonnyt@abpni.co.uk>, netfilter@vger.kernel.org
-
-On Mon, 2010-08-30 at 14:42 +0200, Jozsef Kadlecsik wrote:
-
-> Please check out RFC 4890: Recommendations for Filtering ICMPv6 Messages 
-> in Firewalls, which discusses ICMPv6 filtering in details. It even comes 
-> with an example shell script for netfilter/ip6tables in the appendix.
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Andreas Gruenbacher <agruen@suse.de>
+Cc: David Miller <davem@davemloft.net>, netfilter@vger.kernel.org, eparis@redhat.com, linux-kernel@vger.kernel.org, schwab@redhat.com, Harald Welte <laforge@netfilter.org>, Andi Kleen <andi@firstfloor.org>
 
 
-Are you sure that this is still accurate for current kernels? 
+On Monday 2010-08-30 12:58, Andreas Gruenbacher wrote:
+>
+>> If we want a version of this type visible to userspace, it needs to,
+>> for example, have double underscores prepended to the type name just
+>> as we do for things like __u16 and __u32.
+>
+>How about something like this?
 
-For instance, I would have assumed that things like
-destination-unreachable or packet-too-big  are handled
-by the stateful inspection code (i.e. are matched by
---state RELATED, ESTABLISHED) same as for IPv4?
 
+I like that approach:
+
+From 3bec018a4835d4fdbe35595366a51bd09e3cc1d0 Mon Sep 17 00:00:00 2001
+>From: Andreas Gruenbacher <agruen@suse.de>
+>Date: Mon, 30 Aug 2010 12:51:01 +0200
+>Subject: [PATCH] Define __aligned_{u64,le64,be64} types with 8-byte alignment
+>
+>Convert the existing #defines into typedefs, prepend two underscores to
+>avoid POSIX namespace pollution, and expose the types to user space.
+>
+>These types are useful for enforcing the same alignment on 32-bit and
+>64-bit architectures.  (Some 32-bit architectures only align 64-bit
+>values on 4-byte boundaries by default.)
+>
+>(The aligned types are used by some netfilter user-space headers
+>already.)
+>
+>Signed-off-by: Andreas Gruenbacher <agruen@suse.de>
+>---
+> include/linux/if_ppp.h                    |   16 +++++++-------
+> include/linux/netfilter/nfnetlink_log.h   |    4 +-
+> include/linux/netfilter/nfnetlink_queue.h |    4 +-
+> include/linux/netfilter/xt_connbytes.h    |    4 +-
+> include/linux/netfilter/xt_quota.h        |    2 +-
+> include/linux/types.h                     |   10 ++++----
+> include/scsi/scsi_tgt_if.h                |   30 ++++++++++++++--------------
+> include/xen/interface/hvm/hvm_op.h        |    2 +-
+> 8 files changed, 36 insertions(+), 36 deletions(-)
+>
+>diff --git a/include/linux/if_ppp.h b/include/linux/if_ppp.h
+>index fcef103..c9ad383 100644
+>--- a/include/linux/if_ppp.h
+>+++ b/include/linux/if_ppp.h
+>@@ -114,14 +114,14 @@ struct pppol2tp_ioc_stats {
+> 	__u16		tunnel_id;	/* redundant */
+> 	__u16		session_id;	/* if zero, get tunnel stats */
+> 	__u32		using_ipsec:1;	/* valid only for session_id == 0 */
+>-	aligned_u64	tx_packets;
+>-	aligned_u64	tx_bytes;
+>-	aligned_u64	tx_errors;
+>-	aligned_u64	rx_packets;
+>-	aligned_u64	rx_bytes;
+>-	aligned_u64	rx_seq_discards;
+>-	aligned_u64	rx_oos_packets;
+>-	aligned_u64	rx_errors;
+>+	__aligned_u64	tx_packets;
+>+	__aligned_u64	tx_bytes;
+>+	__aligned_u64	tx_errors;
+>+	__aligned_u64	rx_packets;
+>+	__aligned_u64	rx_bytes;
+>+	__aligned_u64	rx_seq_discards;
+>+	__aligned_u64	rx_oos_packets;
+>+	__aligned_u64	rx_errors;
