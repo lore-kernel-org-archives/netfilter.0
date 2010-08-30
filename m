@@ -1,53 +1,51 @@
-From: Narendra Choyal <narendrachoyal@gmail.com>
-Subject: Re: Traffic Shaping
-Date: Mon, 30 Aug 2010 23:28:28 +0530
-Message-ID: <AANLkTikTShskJK7mWJ1eFTTPRWWSLLTUH=7TvXEP=UUp@mail.gmail.com>
-References: <4C717D4D.3010501@abpni.co.uk>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: ebtables and anti-spoofing rules not working 100%?
+Date: Mon, 30 Aug 2010 20:14:21 +0200
+Message-ID: <4C7BF4FD.6040601@plouf.fr.eu.org>
+References: <4C7A67B3.4070505@wpkg.org> <4C7A7CB7.9020701@plouf.fr.eu.org> <4C7A8EED.9060203@wpkg.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=LRNfZn0En+M+G34CObzMlGiA+A2Ia2Re8OqEXYswNH4=;
-        b=OXQlyvOHxjsnNcS+EsLCN1trMCvCZyG0oh2wGGEHLmpONOZ+lvJmVRmPILPT+vINST
-         250biZlk3ihs0Xo/cPOPbOFcB1yw52aT67lnN+6BI/kmMfh2oPOef/Q1xNE6LGLmQ5Rk
-         7S9h3LQDXIeAhtT06mBJZba0byKBPyk03Tdf0=
-In-Reply-To: <4C717D4D.3010501@abpni.co.uk>
+In-Reply-To: <4C7A8EED.9060203@wpkg.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-To: Jonathan Tripathy <jonnyt@abpni.co.uk>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Tomasz Chmielewski <mangoo@wpkg.org>
 Cc: netfilter@vger.kernel.org
 
-Hello,
+Tomasz Chmielewski a =E9crit :
+> On 29.08.2010 17:28, Pascal Hambourg wrote:
+>=20
+>>> # guest communication with the gateway
+>>> ebtables -A INPUT -i vmtab107i0 -j vm107
+>>> ebtables -A OUTPUT -o vmtab107i0 -j vm107
+>> Do you need to prevent spoofing by the host itself ?
+>=20
+> Host is "trusted", so it doesn't need any additional measures.
+> Guests, on the other hand, are to be "untrusted".
 
-I can make this type of software for you freely.
+Then filtering in OUTPUT is unnecessary.
 
-I have roughly idea few months ago . . .  and also implemented it appro=
-ximately.
- but for in market I will design it as according to you or say as a
-general utility tool.
+>>> What anti-spoofing rules I need to have to prevent some kvm guests
+>>> pretending to be other kvm guests (or, even pretending to be "gatew=
+ays")?
+>>
+>> Just create rules called from INPUT and FORWARD which match the inpu=
+t
+>> interface (bridge port) and the MAC and IP source address.
+>>
+>> ebtables -A INPUT -i vmtab107i0 -j vm107
+>> ebtables -A FORWARD -i vmtab107i0 -j vm107
+>>
+>> ebtables -A vm107 -p IPv4 -s 11:22:33:44:55:66 --ip-src 1.2.3.4 \
+>>    -j ACCEPT
+>> ebtables -A vm107 -p ARP -s 11:22:33:44:55:66 \
+>>    --arp-mac-src 11:22:33:44:55:66 --arp-ip-src 1.2.3.4 -j ACCEPT
+>=20
+> With these rules, I'm not able to communicate (i.e. ping) with other=20
+> hosts in the same subnet, except the gateway (although this was the s=
+ame=20
+> with my previous rules, I think).
 
-I think, an easy job.
-I will try . . .
-
-=46irst for Linux OS in either java or bash
-then on window.
-
-=46rom : Narendra Choyal
-           India
-
-Having knowledge as of :
-=95 Red Hat Enterprise Security Network Services
-=95 Directory Services
-=95 JBoss
-=95 Java's Technologies
-=95 C (GCC)
-=95 Hacking
-
-
-          Searching for job in the field of "Linux Security" &
-Development(Java).
+Of course these rules are just a part of the ruleset. Did you do the
+same for all other bridge ports and hosts in the subnet ?
