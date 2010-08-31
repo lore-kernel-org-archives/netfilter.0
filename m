@@ -1,35 +1,39 @@
-From: Vlad Dogaru <ddvlad@rosedu.org>
-Subject: [PATCH] netfilter: remove duplicate include line
-Date: Tue, 31 Aug 2010 15:50:30 +0300
-Message-ID: <1283259030-7765-1-git-send-email-ddvlad@rosedu.org>
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Awkward scenario: 3 interfaces and 3 devices with same
+ ip/subnet.
+Date: Tue, 31 Aug 2010 15:41:49 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1008311539260.1510@obet.zrqbmnf.qr>
+References: <AANLkTik15tix2nxCQfeD=W+t10NuiYLBeSCuYZ8R_2s+@mail.gmail.com>
+Mime-Version: 1.0
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <AANLkTik15tix2nxCQfeD=W+t10NuiYLBeSCuYZ8R_2s+@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, Vlad Dogaru <ddvlad@rosedu.org>
+To: Giacomo Bernardi <mino@minux.it>
+Cc: netfilter@vger.kernel.org
 
-net/netfilter/xt_ipvs.c contained a duplicate header inclusion.
+On Tuesday 2010-08-31 13:34, Giacomo Bernardi wrote:
 
-Signed-off-by: Vlad Dogaru <ddvlad@rosedu.org>
----
- net/netfilter/xt_ipvs.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+>mark outgoing packets for 10.3.0.1
+>ip rule add fwmark 103 table 103                                    #
+>create an iproute table
+>ip route add table 103 default dev eth3                             #
+>send out marked packets on eth3
+>iptables -t nat -A POSTROUTING -m mark --mark 103 -j SNAT --to
+>10.0.0.100 # rewrite source ip
+>iptables -t nat -A OUTPUT -m mark --mark 103 -j DNAT --to 10.0.0.1  #
+>rewrite dest ip
+>
+>And then send snmp queries to 'fake' addresses 10.1.0.1, 10.2.0.1 and 10.3.0.1.
+>
+>Result:
+>- the device gets the packets and sends back the results (with
+>srcip=10.0.0.1 and dstip=10.0.0.100)
+>- but when the linux box gets them back, they are obviously discarded.
+>
+>How can I do this?
 
-diff --git a/net/netfilter/xt_ipvs.c b/net/netfilter/xt_ipvs.c
-index 7a4d66d..9127a3d 100644
---- a/net/netfilter/xt_ipvs.c
-+++ b/net/netfilter/xt_ipvs.c
-@@ -16,7 +16,6 @@
- #include <linux/ip_vs.h>
- #include <linux/types.h>
- #include <linux/netfilter/x_tables.h>
--#include <linux/netfilter/x_tables.h>
- #include <linux/netfilter/xt_ipvs.h>
- #include <net/netfilter/nf_conntrack.h>
- 
--- 
-1.7.0.4
+Check why replies do not get translated back. Use -j TRACE for them.
 
