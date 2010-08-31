@@ -1,22 +1,46 @@
-From: Vlad Dogaru <ddvlad@rosedu.org>
-Subject: Re: [PATCH] netfilter: remove duplicate include line
-Date: Tue, 31 Aug 2010 17:10:52 +0300
-Message-ID: <20100831141052.GF2387@cormyr>
-References: <1283259030-7765-1-git-send-email-ddvlad@rosedu.org>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Awkward scenario: 3 interfaces and 3 devices with same ip/subnet.
+Date: Tue, 31 Aug 2010 09:30:13 -0500
+Message-ID: <4C7D11F5.1010105@riverviewtech.net>
+References: <AANLkTik15tix2nxCQfeD=W+t10NuiYLBeSCuYZ8R_2s+@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1283259030-7765-1-git-send-email-ddvlad@rosedu.org>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <AANLkTik15tix2nxCQfeD=W+t10NuiYLBeSCuYZ8R_2s+@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Tue, Aug 31, 2010 at 03:50:30PM +0300, Vlad Dogaru wrote:
-> net/netfilter/xt_ipvs.c contained a duplicate header inclusion.
+On 08/31/10 06:34, Giacomo Bernardi wrote:
+> want to solve a very awkward scenario?
+> 
+> There's a linux box with three interfaces (eth0, eth1, eth2) each 
+> directly connected to an embedded device that has configuration:
+> - IP: 10.0.0.1
+> - Mask: 255.255.255.0
+> (in other words: all three devices answer to 10.0.0.1/24 and their 
+> configuration can't be changed)
+> 
+> I need to send and receive snmp packets to an arbitrary given device 
+> among these three ...how?
 
-Apologies, I was browsing the wrong git tree. Please ignore this patch.
+I don't know if it would work for you or not, but you could try an old / 
+odd / if not dirty trick.
 
-Vlad
+Try adding static ARP entries to each device's MAC address using 
+different (bogus) IPs.  Then try communicating with the bogus IPs.  You 
+might get lucky and be able to communicate.  It really depends on what 
+is included in the higher layer protocol.  (I've not dealt with enough 
+SNMP to know if this is possible.)
+
+The main thing that the differing IPs are use for is to translate the 
+layer 3 IP address to the layer 2 MAC address.  So, if you can side step 
+that problem, you may be golden.
+
+Yes, this is a dirty trick / hack, but sometimes that's what you have 
+got to do.
+
+
+
+Grant. . . .
