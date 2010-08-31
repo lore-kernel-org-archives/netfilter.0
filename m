@@ -1,46 +1,43 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
+From: Giacomo Bernardi <mino@minux.it>
 Subject: Re: Awkward scenario: 3 interfaces and 3 devices with same ip/subnet.
-Date: Tue, 31 Aug 2010 09:30:13 -0500
-Message-ID: <4C7D11F5.1010105@riverviewtech.net>
-References: <AANLkTik15tix2nxCQfeD=W+t10NuiYLBeSCuYZ8R_2s+@mail.gmail.com>
+Date: Tue, 31 Aug 2010 15:49:38 +0100
+Message-ID: <AANLkTinJT4DFyDe6doNKs5PfQs7C23frUGRjC8n_X6UG@mail.gmail.com>
+References: <AANLkTik15tix2nxCQfeD=W+t10NuiYLBeSCuYZ8R_2s+@mail.gmail.com> <4C7D11F5.1010105@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTik15tix2nxCQfeD=W+t10NuiYLBeSCuYZ8R_2s+@mail.gmail.com>
+In-Reply-To: <4C7D11F5.1010105@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On 08/31/10 06:34, Giacomo Bernardi wrote:
-> want to solve a very awkward scenario?
-> 
-> There's a linux box with three interfaces (eth0, eth1, eth2) each 
-> directly connected to an embedded device that has configuration:
-> - IP: 10.0.0.1
-> - Mask: 255.255.255.0
-> (in other words: all three devices answer to 10.0.0.1/24 and their 
-> configuration can't be changed)
-> 
-> I need to send and receive snmp packets to an arbitrary given device 
-> among these three ...how?
+> Try adding static ARP entries to each device's MAC address using diff=
+erent
+> (bogus) IPs. =A0Then try communicating with the bogus IPs. =A0You mig=
+ht get
+> lucky and be able to communicate. =A0It really depends on what is inc=
+luded in
+> the higher layer protocol. =A0(I've not dealt with enough SNMP to kno=
+w if this
+> is possible.)
 
-I don't know if it would work for you or not, but you could try an old / 
-odd / if not dirty trick.
+Doesn't seem to work, despite I created the arp entry with:
+ arp -s 10.2.0.1 00:11:22:33:44:55
 
-Try adding static ARP entries to each device's MAC address using 
-different (bogus) IPs.  Then try communicating with the bogus IPs.  You 
-might get lucky and be able to communicate.  It really depends on what 
-is included in the higher layer protocol.  (I've not dealt with enough 
-SNMP to know if this is possible.)
+To be honest I'm not surprised: how is the receiver of those datagram
+supposed to know they are for itself, since the dstip doesn't match
+the IP of the local incoming interface?
 
-The main thing that the differing IPs are use for is to translate the 
-layer 3 IP address to the layer 2 MAC address.  So, if you can side step 
-that problem, you may be golden.
+> Check why replies do not get translated back. Use -j TRACE for them.
 
-Yes, this is a dirty trick / hack, but sometimes that's what you have 
-got to do.
+Good idea.
+I've added a:
+iptables -t raw -A PREROUTING -s 10.0.0.1 -j TRACE
+which I can see getting matches. However nothing is logging in
+kern.log nor anywhere else (even configuring syslog with a "*.*"). Am
+I forgetting something about the TRACE target?
 
 
-
-Grant. . . .
+--=20
+Giacomo "mino" Bernardi
