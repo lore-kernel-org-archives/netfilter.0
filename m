@@ -1,29 +1,88 @@
-From: ks ks <harlem.kks@gmail.com>
-Subject: Need advise on none authenticate hotspot
-Date: Wed, 1 Sep 2010 03:15:54 +0800
-Message-ID: <AANLkTimvKOSqmGR2n5YDTbWszPj1+U-E1twkoCF6GpEm@mail.gmail.com>
+From: Athanasius <link@miggy.org>
+Subject: NF_QUEUE: nfq_bind_pf() fails - solution
+Date: Tue, 31 Aug 2010 21:15:30 +0100
+Message-ID: <20100831201530.GE11893@miggy.org>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:date:message-id
-         :subject:from:to:content-type;
-        bh=0h52DnyIC12M1EUl0WQIG5UH3Q4GoiiNwqfhBpQn3Vs=;
-        b=ATAwxmlbxlS84AI3d+JnBYiTQJ+xkbP17HBKGj94Httdwb799WZqlH+QQABYv5rvCi
-         edx8COq1j8oLOSbC+UKOPcAI0JUbBxdZTVtcB/bZWCmG56RMc5mQwtg3/xVqdCHvisOo
-         wErm1POrAOEL0/eSFGCzIbovmx0oZFgCsTfF0=
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="wRRV7LY7NUeQGEoC"
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: linux-kernel <linux-kernel@vger.kernel.org>
+Cc: netfilter@vger.kernel.org
 
-I am working around on hotspot system which do not require
-authentication and it
-is an embedded box with open wrt and lighttpd.
-But just to force the wireless clients to browse 3 or 4 pages of html
-in localhost then
-they are free for surfing without paying or authenticate.
-Advise needed.
 
-Thanks and best regards.
+--wRRV7LY7NUeQGEoC
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+  In the hope that this will make it into Google and help others, and
+maybe someone will clarify the Kconfig....
+
+  I've just spent a gew hours trying to figure out why simple code
+attempting to use Netfilter Queues has been failing to even do the nice
+simple nfq_bind_pf(h, AF_INET).  I eventually spotted some /proc code
+that lead me to find /proc/net/netfilter/nf_queue which contained:
+
+ 0 NONE
+ 1 NONE
+ 2 ip_queue
+ 3 NONE
+ 4 NONE
+ 5 NONE
+ 6 NONE
+ 7 NONE
+ 8 NONE
+ 9 NONE
+10 NONE
+11 NONE
+12 NONE
+
+And indeed '2' is AF_INET.  So, what's this ip_queue ?  It's an
+implementation of the *OLD* ip_queue interface using the new
+nfnetlink_queue interface.  But this being in place totally blocks
+anything else from binding to AF_INET.
+
+So, it's this kernel option:
+
+config IP_NF_QUEUE
+        tristate "IP Userspace queueing via NETLINK (OBSOLETE)"
+        depends on NETFILTER_ADVANCED
+        help
+          Netfilter has the ability to queue packets to user space: the
+          netlink device can be used to access them using this driver.
+
+          This option enables the old IPv4-only "ip_queue" implementation
+          which has been obsoleted by the new "nfnetlink_queue" code (see
+          CONFIG_NETFILTER_NETLINK_QUEUE).
+
+          To compile it as a module, choose M here.  If unsure, say N.
+
+I feel this could be a little more explicit that "if you have this
+active then nothing else will be able to use nfnetlink_queue instead".
+
+Yes, now I'm wishing I compiled this stuff as modules so I could just
+remove the bugger.
+
+--=20
+- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
+                  Finger athan(at)fysh.org for PGP key
+	   "And it's me who is my enemy. Me who beats me up.
+Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
+
+--wRRV7LY7NUeQGEoC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (GNU/Linux)
+
+iEYEARECAAYFAkx9YuIACgkQSEDmQuIYzh2xFACfbxdaVsL3L2aWixXL0w2kNN0n
+zfYAn0DIZDEopsPkkVJWxUVRTXiGp6Jp
+=s3bY
+-----END PGP SIGNATURE-----
+
+--wRRV7LY7NUeQGEoC--
