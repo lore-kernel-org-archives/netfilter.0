@@ -1,34 +1,55 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: aligned_{u64,be64,le64} defined in #ifdef __KERNEL__
-Date: Mon, 30 Aug 2010 18:42:40 -0700 (PDT)
-Message-ID: <20100830.184240.58442478.davem@davemloft.net>
-References: <20100829.212156.229740543.davem@davemloft.net>
-	<201008301258.33113.agruen@suse.de>
-	<alpine.LNX.2.01.1008301502280.19931@obet.zrqbmnf.qr>
+From: Giacomo Bernardi <mino@minux.it>
+Subject: Awkward scenario: 3 interfaces and 3 devices with same ip/subnet.
+Date: Tue, 31 Aug 2010 12:34:00 +0100
+Message-ID: <AANLkTik15tix2nxCQfeD=W+t10NuiYLBeSCuYZ8R_2s+@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1008301502280.19931@obet.zrqbmnf.qr>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
-To: jengelh@medozas.de
-Cc: agruen@suse.de, netfilter@vger.kernel.org, eparis@redhat.com, linux-kernel@vger.kernel.org, schwab@redhat.com, laforge@netfilter.org, andi@firstfloor.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-From: Jan Engelhardt <jengelh@medozas.de>
-Date: Mon, 30 Aug 2010 15:02:55 +0200 (CEST)
+Hi all,
+want to solve a very awkward scenario?
 
-> 
-> On Monday 2010-08-30 12:58, Andreas Gruenbacher wrote:
->>
->>> If we want a version of this type visible to userspace, it needs to,
->>> for example, have double underscores prepended to the type name just
->>> as we do for things like __u16 and __u32.
->>
->>How about something like this?
-> 
-> 
-> I like that approach:
-> 
+There's a linux box with three interfaces (eth0, eth1, eth2) each
+directly connected to an embedded device that has configuration:
+- IP: 10.0.0.1
+- Mask: 255.255.255.0
+(in other words: all three devices answer to 10.0.0.1/24 and their
+configuration can't be changed)
 
-Me too.
+I need to send and receive snmp packets to an arbitrary given device
+among these three ...how?
+
+--- My proposed idea:
+
+I think a solution would be to configure the three interfaces like following:
+- eth0: 10.1.0.100/24
+- eth1: 10.2.0.100/24
+- eth2: 10.3.0.100/24
+
+Then a set of rules like:
+iptables -t mangle -A OUTPUT -d 10.3.0.1 -j MARK --set-mark 103     #
+mark outgoing packets for 10.3.0.1
+ip rule add fwmark 103 table 103                                    #
+create an iproute table
+ip route add table 103 default dev eth3                             #
+send out marked packets on eth3
+iptables -t nat -A POSTROUTING -m mark --mark 103 -j SNAT --to
+10.0.0.100 # rewrite source ip
+iptables -t nat -A OUTPUT -m mark --mark 103 -j DNAT --to 10.0.0.1  #
+rewrite dest ip
+
+And then send snmp queries to 'fake' addresses 10.1.0.1, 10.2.0.1 and 10.3.0.1.
+
+Result:
+- the device gets the packets and sends back the results (with
+srcip=10.0.0.1 and dstip=10.0.0.100)
+- but when the linux box gets them back, they are obviously discarded.
+
+How can I do this?
+
+Thanks very much for your help.
+mino
