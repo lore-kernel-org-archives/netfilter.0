@@ -1,88 +1,96 @@
-From: Athanasius <link@miggy.org>
-Subject: NF_QUEUE: nfq_bind_pf() fails - solution
-Date: Tue, 31 Aug 2010 21:15:30 +0100
-Message-ID: <20100831201530.GE11893@miggy.org>
+From: Stig Thormodsrud <stig@vyatta.com>
+Subject: change to max length of jump target
+Date: Tue, 31 Aug 2010 18:11:58 -0700
+Message-ID: <4C7DA85E.8000809@vyatta.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="wRRV7LY7NUeQGEoC"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: linux-kernel <linux-kernel@vger.kernel.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
+
+I'm in the process of upgrading to iptables 1.4.9 and noticed that the
+max jump target has changed from 30 characters to 28 characters.  For
+example I can still create a 29 character chain but can't create a jump
+target to it:
+
+root@r1:~# iptables -t filter --new-chain A2345678901234567890123456789
+
+root@r1:~# iptables -L A2345678901234567890123456789
+Chain A2345678901234567890123456789 (0 references)
+target     prot opt source               destination
+
+root@r1:~# iptables -t filter --insert VYATTA_IN_HOOK 1 --in-interface
+eth3 --jump A2345678901234567890123456789
+iptables v1.4.9: Invalid target name `A2345678901234567890123456789' (28
+chars max)
+Try `iptables -h' or 'iptables --help' for more information.
 
 
---wRRV7LY7NUeQGEoC
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+This worked in 1.4.4.   In the code I see these changes:
 
-  In the hope that this will make it into Google and help others, and
-maybe someone will clarify the Kconfig....
+git show 491c1660 include/linux/netfilter/x_tables.h
+commit 491c1660fced08e2d1a08c101c63af04250275d0
+Author: Jan Engelhardt <jengelh@medozas.de>
+Date:   Mon Jun 7 10:59:03 2010 +0200
 
-  I've just spent a gew hours trying to figure out why simple code
-attempting to use Netfilter Queues has been failing to even do the nice
-simple nfq_bind_pf(h, AF_INET).  I eventually spotted some /proc code
-that lead me to find /proc/net/netfilter/nf_queue which contained:
+    includes: sync header files from Linux 2.6.35-rc1
 
- 0 NONE
- 1 NONE
- 2 ip_queue
- 3 NONE
- 4 NONE
- 5 NONE
- 6 NONE
- 7 NONE
- 8 NONE
- 9 NONE
-10 NONE
-11 NONE
-12 NONE
+    Signed-off-by: Jan Engelhardt <jengelh@medozas.de>
 
-And indeed '2' is AF_INET.  So, what's this ip_queue ?  It's an
-implementation of the *OLD* ip_queue interface using the new
-nfnetlink_queue interface.  But this being in place totally blocks
-anything else from binding to AF_INET.
+diff --git a/include/linux/netfilter/x_tables.h
+b/include/linux/netfilter/x_tabl
+index ccb5641..fa2d957 100644
+--- a/include/linux/netfilter/x_tables.h
++++ b/include/linux/netfilter/x_tables.h
+@@ -1,9 +1,10 @@
+ #ifndef _X_TABLES_H
+ #define _X_TABLES_H
+-
++#include <linux/kernel.h>
+ #include <linux/types.h>
 
-So, it's this kernel option:
+ #define XT_FUNCTION_MAXNAMELEN 30
++#define XT_EXTENSION_MAXNAMELEN 29
+ #define XT_TABLE_MAXNAMELEN 32
 
-config IP_NF_QUEUE
-        tristate "IP Userspace queueing via NETLINK (OBSOLETE)"
-        depends on NETFILTER_ADVANCED
-        help
-          Netfilter has the ability to queue packets to user space: the
-          netlink device can be used to access them using this driver.
 
-          This option enables the old IPv4-only "ip_queue" implementation
-          which has been obsoleted by the new "nfnetlink_queue" code (see
-          CONFIG_NETFILTER_NETLINK_QUEUE).
 
-          To compile it as a module, choose M here.  If unsure, say N.
 
-I feel this could be a little more explicit that "if you have this
-active then nothing else will be able to use nfnetlink_queue instead".
+and:
 
-Yes, now I'm wishing I compiled this stuff as modules so I could just
-remove the bugger.
 
---=20
-- Athanasius =3D Athanasius(at)miggy.org / http://www.miggy.org/
-                  Finger athan(at)fysh.org for PGP key
-	   "And it's me who is my enemy. Me who beats me up.
-Me who makes the monsters. Me who strips my confidence." Paula Cole - ME
+git show 0cb675b8 iptables.c
+commit 0cb675b8f18c4b074d4c69461638820708e98100
+Author: Jan Engelhardt <jengelh@medozas.de>
+Date:   Mon Jun 7 11:50:25 2010 +0200
 
---wRRV7LY7NUeQGEoC
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
+    xtables: another try at chain name length checking
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (GNU/Linux)
+    Since XT_EXTENSION_MAXNAMELEN is now available, make use of it
+    and clear the confusion.
 
-iEYEARECAAYFAkx9YuIACgkQSEDmQuIYzh2xFACfbxdaVsL3L2aWixXL0w2kNN0n
-zfYAn0DIZDEopsPkkVJWxUVRTXiGp6Jp
-=s3bY
------END PGP SIGNATURE-----
+    Signed-off-by: Jan Engelhardt <jengelh@medozas.de>
 
---wRRV7LY7NUeQGEoC--
+diff --git a/iptables.c b/iptables.c
+index 19c2af5..efe993e 100644
+--- a/iptables.c
++++ b/iptables.c
+@@ -460,10 +460,10 @@ parse_target(const char *targetname)
+                xtables_error(PARAMETER_PROBLEM,
+                           "Invalid target name (too short)");
+
+-       if (strlen(targetname) > XT_FUNCTION_MAXNAMELEN - 1)
++       if (strlen(targetname) >= XT_EXTENSION_MAXNAMELEN)
+                xtables_error(PARAMETER_PROBLEM,
+                           "Invalid target name `%s' (%u chars max)",
+                           targetname, XT_EXTENSION_MAXNAMELEN - 1);
+
+
+
+Is the change from > to >= a mistake or is max length change intentional?
+
+thanks,
+
+stig
