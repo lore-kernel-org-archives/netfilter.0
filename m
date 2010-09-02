@@ -1,49 +1,32 @@
-From: Richard Horton <arimus.uk@gmail.com>
-Subject: Re: rate of traffic that mach a rule
-Date: Thu, 2 Sep 2010 08:00:40 +0100
-Message-ID: <AANLkTinRD2La00g6ywB8QggLsHPphagCDV1Vk0W4mOK5@mail.gmail.com>
-References: <AANLkTikGf4SoTnkSW_0QtusAzr-D5xZXQ61UVxojiSPc@mail.gmail.com>
+From: Giacomo Bernardi <mino@minux.it>
+Subject: Re: Awkward scenario: 3 interfaces and 3 devices with same ip/subnet.
+Date: Thu, 2 Sep 2010 12:28:23 +0100
+Message-ID: <AANLkTin_-r=hw-Lz7xa-=vW4BxLPgTLsq1=Bw-AZmSEm@mail.gmail.com>
+References: <AANLkTik15tix2nxCQfeD=W+t10NuiYLBeSCuYZ8R_2s+@mail.gmail.com>
+ <4C7D11F5.1010105@riverviewtech.net> <AANLkTinJT4DFyDe6doNKs5PfQs7C23frUGRjC8n_X6UG@mail.gmail.com>
+ <4C7D1F05.4050704@riverviewtech.net> <AANLkTikfsOHuTwGcs=-wn5+FGXkb8zWynThxxoFRMmia@mail.gmail.com>
+ <20100901091426.216b1778@catus>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=TV2yq7zsjjD9/h+S/3p4+J5CGXGoRmv7mqUa4zdTlhg=;
-        b=Sqg93rv2AKOk2QtIZSxI/8HauEcVZ/VlozPZj/6P/0SZmu9YT6Pna5BpdGO37fV+Pt
-         y2Tf6U2g/hc533LcSyKMtP5h4D4L1Xn/7uPR15Gprl6/k4QkvnnwdzV0Xj28g3rFhZNE
-         U/29LstRhugXxqc8AD0VWZPWxcT4yYrDdryNI=
-In-Reply-To: <AANLkTikGf4SoTnkSW_0QtusAzr-D5xZXQ61UVxojiSPc@mail.gmail.com>
+In-Reply-To: <20100901091426.216b1778@catus>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?ISO-8859-1?Q?Mamadou_Tour=E9?= <e2ia.ci@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Marek Kierdelewicz <marek@piasta.pl>
 Cc: netfilter@vger.kernel.org
 
-2010/9/1 Mamadou Tour=E9 <e2ia.ci@gmail.com>:
-> Hi all,
-> is there a mean to know the rate of traffic that mutch a rule?
->
-> for exemple i'd like to kow the rate of traffic that match the rule
-> iptables -t mangle -A POSTROUTING -p TCP -dport 80 -j ACCEPT
->
+> Here's the solution for your awkward scenario. It involves using
+> kvm/qemu guests like in the diagram
+> http://cat.piasta.pl/awkward_solution.jpeg
 
-As a thought create a htb queue:
-One queue set to 100% of your line speed
-One queue set to an arbitry value (say 50%) and allowed to borrow upto
-100% (ceil parameter)
+Thanks very much Marek (though I'm still struggling to understand how
+it can work).
 
-Mark traffic you want to rate monitor in iptables using -j MARK --set-m=
-ark
+Using VMs would be a problem as the software application that needs to
+address the device is just one, do you see any way of replicating your
+solution without VMs (e.g. using bridges and "virtual" interfaces)?
 
-Use a tc filter to direct that traffic into the second queue and
-monitor the queue statistics...
 
---=20
-Richard Horton
-Users are like a virus: Each causing a thousand tiny crises until the
-host finally dies.
-http://www.pbase.com/arimus - My online photogallery
-http://www.richardhorton.info
+-- 
+Giacomo "mino" Bernardi
