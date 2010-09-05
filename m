@@ -1,32 +1,24 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Need for a specific source address selection rule ? (not
- neccessarily netfilter)
-Date: Fri, 3 Sep 2010 22:52:09 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1009032251360.5738@obet.zrqbmnf.qr>
-References: <4C7A3B14.9010805@httrack.com> <alpine.LNX.2.01.1008291355300.4946@obet.zrqbmnf.qr> <4C7A57D1.8070702@httrack.com> <alpine.LNX.2.01.1008291537460.8007@obet.zrqbmnf.qr> <4C7A6D11.8090306@httrack.com> <4C7A8040.7040002@plouf.fr.eu.org>
- <4C81321F.4010106@httrack.com> <alpine.LNX.2.01.1009031942001.31358@obet.zrqbmnf.qr> <4C813FC3.3050008@httrack.com> <alpine.LNX.2.01.1009032230210.3766@obet.zrqbmnf.qr> <4C815DF0.10402@httrack.com>
+From: =?UTF-8?Q?Mamadou_Tour=C3=A9?= <e2ia.ci@gmail.com>
+Subject: a single rule that mach source ip or destination ip
+Date: Sun, 5 Sep 2010 06:13:17 +0000
+Message-ID: <AANLkTimXBDQhkkC4UxS5N3semU6V9v46vNfqpPC2cTTZ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C815DF0.10402@httrack.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=DjIRFo1mmExxDl3GzHCIqLxfhScT4b5W0oLU/ULR/Y8=;
+        b=GZa9Ocl8z+1D/AOWGxgC9llqNm/YorlSwDzkKaGWUiY2XHI8JGMbX4TIZsUkBUNMq3
+         Gh+bms2rx2C6P6+Q/LDe4mWyscQtFmI055gyOW44Z09SgLOW7oU6KOa49F2Qv0eoxr0I
+         sTnuMJM7s+3UD8QW3MEUivsClT72ZqlA2ij5Q=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: Xavier Roche <roche*lkml@httrack.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Friday 2010-09-03 22:43, Xavier Roche wrote:
-
-> Jan Engelhardt a =C3=A9crit :
->> Of course it is for routing. That is why it is in the *drumroll*
->> routing table!
->
-> Sure. But my point was related to the main topic of this thread: the =
-damn
-> source address is NOT at all concerned. Obvious or not, routing won't=
- help.
-
-So, either you agree that ignoring the src attribute in ipV6 is the bug=
-,=20
-or you have an alternate theory that I have not yet groked.
-
+Hi,
+all is it possible to write a single rule that match source IP or
+destination IP.
+regards.
