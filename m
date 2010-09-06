@@ -1,50 +1,42 @@
 From: =?UTF-8?Q?Mamadou_Tour=C3=A9?= <e2ia.ci@gmail.com>
-Subject: Re: a single rule that mach source ip or destination ip
-Date: Sun, 5 Sep 2010 16:49:31 +0000
-Message-ID: <AANLkTimWe2kxVmJkMYsTv8YaYjDBWqxrCf4BTjcKyqQM@mail.gmail.com>
-References: <AANLkTimXBDQhkkC4UxS5N3semU6V9v46vNfqpPC2cTTZ@mail.gmail.com>
-	<alpine.LNX.2.01.1009051110090.29132@obet.zrqbmnf.qr>
-	<4C83A7CA.4060508@plouf.fr.eu.org>
-	<alpine.LNX.2.01.1009051747240.9116@obet.zrqbmnf.qr>
+Subject: tc add filter match src ip and mark
+Date: Mon, 6 Sep 2010 14:33:35 +0000
+Message-ID: <AANLkTikY4XubbQ+TvasEDkTuheG6-GiETg5q6HKV6k9e@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type;
-        bh=AY6q+dT3UG8IZ4rv3ElQL3UrznLEQGmLpPFWC/HkvC4=;
-        b=nFfwL970kA8MzMb86xGnC0g2xj387Z37E51UHnSo1FOfqmXWKk3QwxFjRQrnyldkmB
-         /mqt8uE7AId9zw+SwNgO2sjKA291fFSkKEROhmRyziidZ06fVTOK2EeAjjL5ubJN+//T
-         vuOzdjggNXsWizkxHPd+I5ZyJyzQLm9kRzYJ4=
-In-Reply-To: <alpine.LNX.2.01.1009051747240.9116@obet.zrqbmnf.qr>
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=ZZylSn3UQDzF7MwG7mbKMr1d/8BUuF7vp7zN6M+WZI4=;
+        b=XWnARDdyR1bv1oFWIJOgcBxOPtN271Z6thxVLEO5AvFW6Zoe1RhazYjFUq6facDUSE
+         60CAocngxSTV+pthYLBZUjyx4/W8c941VLMl8gCZ145QC9VK19kQda51MasGQZO8X4qE
+         M1LaZkJlPKE0w36+3JTY6AttuVHriqAAibInY=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-hi,
-all thank you for your help. can someone give me sample rule plz.
+hi all,
+to shappe my P2P traffic per user i've mark P2P in my iptable mangle
+posrouting as :
+
+iptables  -t mangle  -A POSTROUTING     -m layer7 --l7proto  edonkey
+-j MARK --set-mark 47
+iptables  -t mangle  -A POSTROUTING     -m layer7 --l7proto  fasttrack
+ -j MARK --set-mark 48
+iptables  -t mangle  -A POSTROUTING     -m layer7 --l7proto  freenet
+-j MARK --set-mark 49
+
+I have 2 users 10.10.2.3/32 and 10.10.2.5/32
+
+how should define filter to classify traffic according to src ip and mark.
+
+i've tried
+ tc filter  add  dev  eth0  parent  1:  protocol ip  u32 match ip src
+10.10.2.3/32   flowid  1:12
+
+But in this definition there is no match for the mark.
+
 regards.
-
-2010/9/5 Jan Engelhardt <jengelh@medozas.de>:
->>>
->>>> all is it possible to write a single rule that match source IP or
->>>> destination IP.
->>>
->>> It is possible.
->>
->>With the "u32" match, I suppose ?
->
-> Ah the language. A linguistic or/and is not the same as a logical
-> OR/AND. Parenthesis are required in doubt.
->
-> It is possible to write a single rule that matches either src _or_ dst,
-> _or_ both src addr and dst. Confusion complete!
->
-> u32 does not change that fact. Since rules themselves are ORed so to
-> speak, there is few reason to do the same between matches (short of
-> deeper match logic).
-> It is called disjunctive normal form.
->
