@@ -1,52 +1,226 @@
-From: Thomas Jacob <jacob@internet24.de>
+From: Payam Chychi <pchychi@gmail.com>
 Subject: Re: OpenVPN throttling problem
-Date: Tue, 07 Sep 2010 17:37:49 +0200
-Message-ID: <1283873869.32608.259.camel@enterprise.ims-firmen.de>
+Date: Tue, 07 Sep 2010 09:48:28 -0700
+Message-ID: <4C866CDC.8000108@gmail.com>
 References: <BAY145-ds40063ED1096C32DC63795F3710@phx.gbl>
-	 <1283857776.32608.39.camel@enterprise.ims-firmen.de>
-	 <BAY145-ds21DEA1A44DBD89BF0401BCF3710@phx.gbl>
-	 <1283871946.32608.212.camel@enterprise.ims-firmen.de>
-	 <BAY145-ds1243A907F1D466511E7978F3710@phx.gbl>
-	 <1283872818.32608.230.camel@enterprise.ims-firmen.de>
-	 <BAY145-ds1067276A7A7850F8D2EC0AF3710@phx.gbl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BAY145-ds1067276A7A7850F8D2EC0AF3710@phx.gbl>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from
+         :user-agent:mime-version:to:cc:subject:references:in-reply-to
+         :content-type:content-transfer-encoding;
+        bh=TrRvJYvjDo4cOIuJY/eHbL26ICNFTRBCvPC73y+71h0=;
+        b=cbOvwIsGK7djPLhUig4Rn/monHb1iaphCzvdUhZmXXwo2lpZPdjEv7Sz3gdPbXyZZ0
+         WyGEANtO6aq2MDqQHG1IdRppUqa869nwpOGYKMoVKMo2lAuwZyG8bnaoMSlbO1o5GinB
+         /F+ELTxt2jC6MzEEe4QpK5vm1w/6mEy2UryeQ=
+In-Reply-To: <BAY145-ds40063ED1096C32DC63795F3710@phx.gbl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: J Webster <webster_jack@hotmail.com>
 Cc: netfilter@vger.kernel.org
 
-On Tue, 2010-09-07 at 11:25 -0400, J Webster wrote:
-> Well, I have openVPN running as a tcp and also as a udp service on the 
-> server but I am having problems with video stuttering on both connections.
-> The streaming is however probably done via tcp. 
+Hey,
 
-To clarify, the issue is TCP or UDP connections that
-are sent thru the tunnel, not how the OpenVPN
-tunnel connection itself. So unless you run UDP services
-that transfer data (like NFS over UDP) via the tunnel,
-you should have no significant problems with UDP.
+encryption is not easy, specially on a server. Dedicated 
+routers/firewalls on a average show about 70-80% performance/throughput 
+lost when IPsec/Encryption is used... so what makes you think that you 
+should be getting the same speed result with/without encryption?
 
-BTW, using TCP for tunnelling is considered a
-bad idea by some:
+Also, when tunneling traffic, there is a lot of fragmentation happening 
+(specially when you do not have the proper MTU value setup). You should 
+note that on pkts that have the fragmented packet value set, the end 
+router is the device responsible for placing all pkts back together 
+which requires extreme cpu cycles (depending on the rate of traffic/pkts)
 
-http://sites.inka.de/bigred/devel/tcp-tcp.html
+Put all of this together on a single server and performance issue is 
+usually the least of your problems.
 
-> For example, the client 
-> would access msn video or youtube from their browser, connection then goes 
-> through the VPN, then to the internet, then back to the VPN, then back to 
-> the client.
+If you figure out your issue let us know, we can only speculate as to 
+what the issue is at this point while you do the testing.
 
-Well fooling geolocation this way only works until the companies in
-question start blocking data centers as well as public proxy
-services (=>
-http://techcrunch.com/2009/05/06/control-freaks-hulu-now-blocks-anonymous-proxies-too/
-) but that's not my problem :=)
+-Payam
 
-> I can try the mss clamp for the tcp connection but it doesn;t solve the same 
-> bandwidth issue on the udp VPN connection I suppose.
 
+
+
+J Webster wrote:
+> I am having trouble with an OpenVPN service on my server throttling 
+> the connection for video streaming when connecting via udp and/or 
+> tcp.I do not have the same problem when clients connect to the same 
+> server box and use the proxy server to stream video so there is 
+> definitely an issue either with the OpenVPN settings or possibly he 
+> routing on the server.
+> I was advised by the OpenVPN group to change to udp and play about 
+> with the tun mtu settings as it might be an encryption problem but 
+> this is not helping and we are running out of ideas of things to try.
+> I'm really not sure what else to troubleshoot to find out why the 
+> connection is being throttled so much when connecting via VPN.
+>
+> The actual server is in a data centre with 100Mbps so there's no 
+> restriction
+> on that end apart from network traffic.
+>
+> So, for example the client accesses the proxy server and types in
+> www.googlevideos.com and plays the video with the proxy as an in between
+> server.
+> For the VPN, the client accesses the VPN server and types in
+> www.googlevideos.com and plays the video with the VPN as an in between
+> relay - it's not VPN in the strict sense of just gaining access to a 
+> private
+> network, it's more of a public server with security access 
+> restrictions for
+> geo IP location.
+>
+> On going to speedtest.net I get this when connected to the VPN:
+> ping 289ms
+> Down 0.58Mbps
+> Up: 0.84 Mbps
+>
+> On connecting directly to the proxy server on the same server box I get:
+> ping 414ms
+> Down 2.54Mbps
+> Up: 0.22 Mbps
+>
+> That is a lot of throttling for an encryption though to lose a whole 
+> 2Mbps
+> andvideo can't be played very well at that speed.
+>
+> This is my iptables script (the udp VPN server runs on xx.xx9):
+> # Generated by iptables-save v1.3.5 on Sat Aug  7 15:55:43 2010
+> *filter
+> :INPUT DROP [13:2248]
+> :FORWARD DROP [0:0]
+> :OUTPUT ACCEPT [5:260]
+> :RH-Firewall-1-INPUT - [0:0]
+> -A INPUT -i lo -j ACCEPT
+> -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+> -A INPUT -i eth0 -p tcp -m tcp --dport 1057 -m state --state NEW -m
+> recent --set --name SSH --rsource
+> -A INPUT -i eth0 -p tcp -m tcp --dport 1057 -m state --state NEW -m
+> recent --update --seconds 60 --hitcount 2 --rttl --name SSH --rsource -j
+> DROP
+> -A INPUT -d 88.xxx.xxx.xx9 -p tcp -m tcp --dport 1057 -m state --state
+> NEW -j ACCEPT
+> -A INPUT -d 88.xxx.xxx.xx9 -p tcp -m tcp --dport 5555 -m state --state
+> NEW -j ACCEPT
+> -A INPUT -d 88.xxx.xxx.xx9 -p tcp -m tcp --dport 1194 -m state --state
+> NEW -j ACCEPT
+> -A INPUT -d 88.xxx.xxx.xx9 -p udp -m udp --dport 1194 -m state --state
+> NEW -j ACCEPT
+> -A INPUT -i tun+ -j ACCEPT
+> -A INPUT -i tap+ -j ACCEPT
+> -A INPUT -p udp -m udp --dport 53 -m state --state NEW -j ACCEPT
+> -A INPUT -p tcp -m tcp --dport 53 -m state --state NEW -j ACCEPT
+> -A INPUT -p udp -m udp --dport 123 -m state --state NEW -j ACCEPT
+> -A INPUT -p tcp -m tcp --dport 8002 -m state --state NEW -j ACCEPT
+> -A INPUT -p tcp -m tcp --dport 9001 -m state --state NEW -j ACCEPT
+> -A INPUT -p tcp -m tcp --dport 80 -m state --state NEW -j ACCEPT
+> -A INPUT -d 88.xxx.xxx.xx8 -p tcp -m state --state NEW -m tcp --dport
+> 8080 -j ACCEPT
+> -A INPUT -d 88.xxx.xxx.xx8 -p tcp -m state --state NEW -m tcp --dport
+> 1935 -j ACCEPT
+> -A INPUT -d 88.xxx.xxx.xx8 -p tcp -m state --state NEW -m tcp --dport 
+> 80 -j
+> ACCEPT
+> -A INPUT -d 88.xxx.xxx.xx8 -p tcp -m state --state NEW -m tcp --dport 
+> 443 -j
+> ACCEPT
+> -A INPUT -d 88.xxx.xxx.xx9 -p tcp -m state --state NEW -m tcp --dport 
+> 443 -j
+> ACCEPT
+> -A INPUT -p icmp -m limit --limit 1/sec --limit-burst 1 -j ACCEPT
+> -A INPUT -d 88.xxx.xxx.xx8 -p icmp -m icmp --icmp-type 8 -m state --state
+> NEW,RELATED,ESTABLISHED -j ACCEPT
+> -A FORWARD -i eth0 -o tun+ -m state --state RELATED,ESTABLISHED -j ACCEPT
+> -A FORWARD -i tun+ -j ACCEPT
+> -A FORWARD -i tap+ -j ACCEPT
+> -A OUTPUT -s 88.xxx.xxx.xx9 -p tcp -m tcp --dport 1194 -m state --state
+> NEW -j ACCEPT
+> -A OUTPUT -s 88.xxx.xxx.xx9 -p udp -m udp --dport 1194 -m state --state
+> NEW -j ACCEPT
+> -A OUTPUT -s 88.xxx.xxx.xx9 -p tcp -m tcp --dport 443 -m state --state
+> NEW -j ACCEPT
+> -A OUTPUT -s 88.xxx.xxx.xx8 -p icmp -m icmp --icmp-type 0 -m state 
+> --state
+> RELATED,ESTABLISHED -j ACCEPT
+> -A OUTPUT -o lo -j ACCEPT
+> -A OUTPUT -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
+> COMMIT
+> # Completed on Sat Aug  7 15:55:43 2010
+> # Generated by iptables-save v1.3.5 on Sat Aug  7 15:55:43 2010
+> *nat
+> :PREROUTING ACCEPT [13:7569]
+> :POSTROUTING ACCEPT [8:3135]
+> :OUTPUT ACCEPT [8:3135]
+> -A PREROUTING -d 88.xxx.xxx.xx9 -p tcp -m tcp --dport 443 -j
+> DNAT --to-destination 88.xxx.xxx.xx9:1194
+> -A POSTROUTING -s 172.16.0.0/255.255.255.0 -o eth0 -j MASQUERADE
+> -A POSTROUTING -s 10.8.0.0/255.255.255.0 -o eth0 -j SNAT --to-source
+> 88.xxx.xxx.xx9
+> COMMIT
+> # Completed on Sat Aug  7 15:55:43 2010
+>
+> These are my VPN server and client settings:
+> server.conf:
+> local 88.xxx.xxx.xxx
+> port 1194
+> proto udp
+> dev tun1
+> crl-verify /etc/openvpn/crl.pem
+> client-config-dir /etc/openvpn/ccd
+> ca ca.crt
+> cert server.crt
+> key server.key
+> dh dh1024.pem
+> server 10.8.0.0 255.255.255.0
+> push "redirect-gateway"
+> push "dhcp-option DNS 213.171.192.249"
+> push "dhcp-option DNS 213.171.192.245"
+> ifconfig-pool-persist ipp.txt
+> keepalive 10 120
+> comp-lzo
+> user nobody
+> group users
+> persist-key
+> persist-tun
+> status openvpn-status2.log
+> verb 0
+> log /var/log/openvpn2.log
+> tun-mtu 1500
+> ;fragment 1300
+> ;mssfix
+> ;sndbuf 204800
+> ;rcvbuf 204800
+>
+> client:
+> client
+> dev tun1
+> proto udp
+> remote 88.xxx.xxx.xxx 1194
+> resolv-retry infinite
+> nobind
+> persist-key
+> persist-tun
+> ca ca.crt
+> cert adminuser.crt
+> key adminuser.key
+> ns-cert-type server
+> comp-lzo
+> verb 1
+> tun-mtu 1500
+> ;fragment 1300
+> ;mssfix
+> ;sndbuf 204800
+> ;rcvbuf 204800
+>
+>
+>
+> -- 
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
 
