@@ -1,83 +1,50 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [Bugme-new] [Bug 16517] New: rp_filter fails to filter with
- CONFIG_IP_ROUTE_MULTIPATH and more than one 0/0 nexthop dev
-Date: Mon, 06 Sep 2010 22:35:07 -0700 (PDT)
-Message-ID: <20100906.223507.149819455.davem@davemloft.net>
-References: <bug-16517-10286@https.bugzilla.kernel.org/>
-	<20100805134653.9e8985cc.akpm@linux-foundation.org>
+From: Thomas Jacob <jacob@internet24.de>
+Subject: Re: OpenVPN throttling problem
+Date: Tue, 07 Sep 2010 13:09:36 +0200
+Message-ID: <1283857776.32608.39.camel@enterprise.ims-firmen.de>
+References: <BAY145-ds40063ED1096C32DC63795F3710@phx.gbl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20100805134653.9e8985cc.akpm@linux-foundation.org>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <BAY145-ds40063ED1096C32DC63795F3710@phx.gbl>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
-To: akpm@linux-foundation.org
-Cc: netfilter@vger.kernel.org, netdev@vger.kernel.org, bugzilla-daemon@bugzilla.kernel.org, bugme-daemon@bugzilla.kernel.org, for.poige+bugzilla.kernel.org@gmail.com
+Content-Type: text/plain; charset="us-ascii"
+To: J Webster <webster_jack@hotmail.com>
+Cc: netfilter@vger.kernel.org
 
-From: Andrew Morton <akpm@linux-foundation.org>
-Date: Thu, 5 Aug 2010 13:46:53 -0700
+On Mon, 2010-09-06 at 21:23 -0400, J Webster wrote:
 
->> I think the problem is net/ipv4/fib_frontend.c fib_validate_source()
->> 
->> ...
->> #ifdef CONFIG_IP_ROUTE_MULTIPATH
->>     if (FIB_RES_DEV(res) == dev || res.fi->fib_nhs > 1)
->> #else
->>     if (FIB_RES_DEV(res) == dev)
->> #endif
->> ...
->> 
->> I'm not sure, but this code is quite trivial and self-speaking. In case we have
->> several default routes, we'd better iterate over each of them and compare
->> resulting devices with the input one. So, fix is also trivial, specially for
->> network kernel developers. ;-)
+> So, for example the client accesses the proxy server and types in
+> www.googlevideos.com and plays the video with the proxy as an in between
+> server.
+> For the VPN, the client accesses the VPN server and types in
+> www.googlevideos.com and plays the video with the VPN as an in between
+> relay - it's not VPN in the strict sense of just gaining access to a private
+> network, it's more of a public server with security access restrictions for
+> geo IP location.
+> 
+> On going to speedtest.net I get this when connected to the VPN:
+> ping 289ms
+> Down 0.58Mbps
+> Up: 0.84 Mbps
+> 
+> On connecting directly to the proxy server on the same server box I get:
+> ping 414ms
+> Down 2.54Mbps
+> Up: 0.22 Mbps
 
-Please test this patch:
+Judging from the latter speed result you are probably connecting
+through some sort of consumer connection, where there is a
+pretty high likelihood that your path MTU will not be 1500, so
+I'd say the OpenVPN guys are probably right when they think
+it's an MTU problem. Your iptables rules certainly don't
+look if they could be causing the throttling.
 
-ipv4: Fix reverse path filtering with multipath routing.
+Your best option would probably be to fiddle around with
+the MTU related settings of OpenVPN. Try searching
+the OpenVPN-users mailing list, having MTU related problems
+is apparently quite common, that's why there are
+so many different options for that area. 
+Also maybe look into the  --clamp-mss-to-pmtu thing.
 
-Actually iterate over the next-hops to make sure we have
-a device match.  Otherwise RP filtering is always elided
-when the route matched has multiple next-hops.
-
-Reported-by: Igor M Podlesny <for.poige@gmail.com>
-Signed-off-by: David S. Miller <davem@davemloft.net>
-
-diff --git a/net/ipv4/fib_frontend.c b/net/ipv4/fib_frontend.c
-index a439689..7d02a9f 100644
---- a/net/ipv4/fib_frontend.c
-+++ b/net/ipv4/fib_frontend.c
-@@ -246,6 +246,7 @@ int fib_validate_source(__be32 src, __be32 dst, u8 tos, int oif,
- 
- 	struct fib_result res;
- 	int no_addr, rpf, accept_local;
-+	bool dev_match;
- 	int ret;
- 	struct net *net;
- 
-@@ -273,12 +274,22 @@ int fib_validate_source(__be32 src, __be32 dst, u8 tos, int oif,
- 	}
- 	*spec_dst = FIB_RES_PREFSRC(res);
- 	fib_combine_itag(itag, &res);
-+	dev_match = false;
-+
- #ifdef CONFIG_IP_ROUTE_MULTIPATH
--	if (FIB_RES_DEV(res) == dev || res.fi->fib_nhs > 1)
-+	for (ret = 0; ret < res.fi->fib_nhs; ret++) {
-+		struct fib_nh *nh = &res.fi->fib_nh[ret];
-+
-+		if (nh->nh_dev == dev) {
-+			dev_match = true;
-+			break;
-+		}
-+	}
- #else
- 	if (FIB_RES_DEV(res) == dev)
-+		dev_match = true;
- #endif
--	{
-+	if (dev_match) {
- 		ret = FIB_RES_NH(res).nh_scope >= RT_SCOPE_HOST;
- 		fib_res_put(&res);
- 		return ret;
