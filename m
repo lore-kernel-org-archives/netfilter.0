@@ -1,36 +1,51 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: [ANNOUNCE] libnetfilter_conntrack 0.9.0 release
-Date: Wed, 8 Sep 2010 20:17:17 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1009082016280.22870@obet.zrqbmnf.qr>
-References: <4C875A2A.6030206@netfilter.org>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: SNAT problem
+Date: Mon, 13 Sep 2010 11:10:02 +0200
+Message-ID: <4C8DEA6A.80904@plouf.fr.eu.org>
+References: <4C716DF6.3040602@pisem.net> <4C7192A6.90109@plouf.fr.eu.org> <4C8C9C9C.2010005@pisem.net>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4C875A2A.6030206@netfilter.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4C8C9C9C.2010005@pisem.net>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, lwn@lwn.net
+Content-Type: text/plain; charset="iso-8859-1"
+To: Yevgeny Kosarzhevsky <yevg@pisem.net>
+Cc: netfilter@vger.kernel.org
 
-On Wednesday 2010-09-08 11:40, Pablo Neira Ayuso wrote:
+Yevgeny Kosarzhevsky a =E9crit :
+> Pascal Hambourg wrote:
+>> Yevgeny Kosarzhevsky a =E9crit :
+>>   =20
+>>> I have two interfaces, let's say ppp0 - x.x.x.x, ppp1 - y.y.y.y ppp=
+0 is
+>>> a default gateway.
+>>> I use some command to change routing to IP z.z.z.z via ppp1:
+>>> ip ro ad to z.z.z.z dev ppp1
+>>>
+>>> I have SNAT rules for both interfaces, however, I notice with tcpdu=
+mp
+>>> that outgoing packets are still using x.x.x.x instead of y.y.y.y IP=
+,
+>>> though packets are being sent with the correct interface (ppp1)
+>>>
+>>> I have shut down ppp0 and removed SNAT rule for it, but outgoing pa=
+ckets
+>>> are still showing x.x.x.x IP. Even, ip ro fl cache didn't help.
+>>>     =20
+>> If the packets belong to an existing connection (conntrack-wise) whi=
+ch
+>> was established before the route change, this behaviour is expected.
+>> Changing the source address may break the connection.
+>=20
+> I have this trouble for new ipsec connections. I change route on my=20
+> gateway and then trying to establish ipsec connection. I see on the=20
+> gateway with tcpdump that the address of outgoing packets are still=20
+> belong to old interface.
 
->Hi!
->
->The Netfilter project presents libnetfilter_conntrack-0.9.0
->
->libnetfilter_conntrack is a userspace library providing a programming
->interface (API) to the in-kernel connection tracking state table. This
->library requires a linux kernel >= 2.6.18.
->
->This release includes two fixes and the infrastructure to generate API
->documentation in doxygen format. ChangeLog is also attached for more
->details.
->
->Pablo Neira Ayuso (5):                                                          
->      ct: fix regression with helpers for Linux kernel >= 2.6.34
->      build: add libtool m4 support
->      src: convert documentation from kerneldoc to doxygen format
+Is the new IPSec connection to the same destination address ? If so,
+then the connection tracking and NAT system may consider it is the same
+connection and uses the same NAT mapping as before.
 
-Did you not like the doxygen filter that allows to use kdoc in the .c 
-files?
+Did you wait until the old IPSec conntrack entry expires (check in
+/proc/net/nf_conntrack) or try to delete it with the conntrack tool ?
