@@ -1,51 +1,39 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: SNAT problem
-Date: Mon, 13 Sep 2010 11:10:02 +0200
-Message-ID: <4C8DEA6A.80904@plouf.fr.eu.org>
-References: <4C716DF6.3040602@pisem.net> <4C7192A6.90109@plouf.fr.eu.org> <4C8C9C9C.2010005@pisem.net>
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: ULOGD and other logs
+Date: Mon, 13 Sep 2010 18:42:37 +0530
+Message-ID: <AANLkTi=tPs=39vmRzc=41z=Vt8kHmK7vygKrfn5=0rh=@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C8C9C9C.2010005@pisem.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=vm4gb1G9NZ+iiR6CisohzQu8QmXusJwA9yAgmSCSAr0=;
+        b=YEDVxIYsMHO3yfozyy1ILivUW36c/b3JCUk93QcsQr4cmVH5dnBX8VLjxlRZL7fzrC
+         F/D97kZN7XAlYXsf+OhHrQmD8VNu145ftz3jh7mHcfIUDoMeVsGkz4yD9DZQtKTvZkhw
+         /413hXHwlQRihh2b56ssAkcZlI/KtDaRdjeQ0=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Yevgeny Kosarzhevsky <yevg@pisem.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Netfilter mailing list <netfilter@vger.kernel.org>, laforge@gnumonks.org
 
-Yevgeny Kosarzhevsky a =E9crit :
-> Pascal Hambourg wrote:
->> Yevgeny Kosarzhevsky a =E9crit :
->>   =20
->>> I have two interfaces, let's say ppp0 - x.x.x.x, ppp1 - y.y.y.y ppp=
-0 is
->>> a default gateway.
->>> I use some command to change routing to IP z.z.z.z via ppp1:
->>> ip ro ad to z.z.z.z dev ppp1
->>>
->>> I have SNAT rules for both interfaces, however, I notice with tcpdu=
-mp
->>> that outgoing packets are still using x.x.x.x instead of y.y.y.y IP=
-,
->>> though packets are being sent with the correct interface (ppp1)
->>>
->>> I have shut down ppp0 and removed SNAT rule for it, but outgoing pa=
-ckets
->>> are still showing x.x.x.x IP. Even, ip ro fl cache didn't help.
->>>     =20
->> If the packets belong to an existing connection (conntrack-wise) whi=
-ch
->> was established before the route change, this behaviour is expected.
->> Changing the source address may break the connection.
->=20
-> I have this trouble for new ipsec connections. I change route on my=20
-> gateway and then trying to establish ipsec connection. I see on the=20
-> gateway with tcpdump that the address of outgoing packets are still=20
-> belong to old interface.
+Hi ,
 
-Is the new IPSec connection to the same destination address ? If so,
-then the connection tracking and NAT system may consider it is the same
-connection and uses the same NAT mapping as before.
+ I am using ulogd to   store iptables logs to /tmp/logfile.txt.  There
+is an application ( say X ) running on userspace ( using nfqueue  in
+FORWARD chain in filter table ) to do some kind of blocking  packets
+based on time ( some  thing like a minimal parental control feature ).
+I would also want to generate some logs and put into the same
+/tmp/logfile.txt file.  Since  ulogd and  X are using same file , we
+need some file locking mechanism. Is there any other way to forward
+these message to netlink socket and ulogd can itself handle, so that i
+dont have to do any kind of synchronization.
 
-Did you wait until the old IPSec conntrack entry expires (check in
-/proc/net/nf_conntrack) or try to delete it with the conntrack tool ?
+May be i can put the question in this way: Kernel is sending some
+message and ulogd listens and receives the message on netlink socket.
+Could any other application in userspace  , send some  message  to
+this socket and ulogd can read and write to the log file f ?
+
+Thanks,
+Ratheesh
