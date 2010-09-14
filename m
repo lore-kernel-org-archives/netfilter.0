@@ -1,47 +1,46 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Is a match-all rule with jump to empty chain processed?
-Date: Tue, 14 Sep 2010 19:57:37 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1009141954390.23103@obet.zrqbmnf.qr>
-References: <BLU124-W223DA5F1742B40AD5E2ABBA3780@phx.gbl>
+From: Data Shock <datashock@hotmail.com>
+Subject: RE: Is a match-all rule with jump to empty chain processed?
+Date: Tue, 14 Sep 2010 16:34:45 -0400
+Message-ID: <BLU124-W24B1E66C903ACCF11AF903A3780@phx.gbl>
+References: <BLU124-W223DA5F1742B40AD5E2ABBA3780@phx.gbl>,<alpine.LNX.2.01.1009141954390.23103@obet.zrqbmnf.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BLU124-W223DA5F1742B40AD5E2ABBA3780@phx.gbl>
+In-Reply-To: <alpine.LNX.2.01.1009141954390.23103@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="utf-8"
-To: Data Shock <datashock@hotmail.com>
-Cc: netfilter@vger.kernel.org
-
-On Tuesday 2010-09-14 17:14, Data Shock wrote:
-
->I have an optimization question regarding iptables:=C2=A0 Will a rule =
-that=20
->matches all packets and jumps to a defined but empty table be=20
->processed? And if so, how much overhead is involved with jumping to an=
-=20
->empty table?
-
-Jumping to arbitrary tables is not within the design.
-
->-t filter -N empty_chain
->-t filter -A INPUT -j empty_chain
-
-That is a chain, not a table. And yes, it is processed including=20
-overhead, as is done in many other kernel subsystems. The kernel really=
-=20
-is not responsible for the user's misdeeds. not use empty chains :)
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
 
->When an override is required, like "allow all UDP destined for port=20
->1234", the cron job could run a simple "iptables -t filter -A override=
-s=20
->-p udp -m udp --dport 1234 -j ACCEPT".=C2=A0 When the override was no =
-longer=20
->needed, it could simply flush the overrides chain.
->
->Under normal operation the overrides chain would be empty.=C2=A0 I hat=
-e to=20
->spend overhead processing the "match all jump to overrides" rule.
+Thank you for your reply.
 
-I'd say benchmark it before calling it a problem.
+
+> Jumping to arbitrary tables is not within the design.
+
+I'm not sure I understand this statement. Can you please elaborate?
+
+
+> That is a chain, not a table.
+
+Ooops!=A0 My mistake.=A0 I've been using iptables so much that I find m=
+yself mistakenly calling chains "tables".=A0 I thought I had checked fo=
+r that before sending my e-mail. :)
+
+
+> And yes, it is processed including
+> overhead, as is done in many other kernel subsystems. The kernel real=
+ly
+> is not responsible for the user's misdeeds. not use empty chains :)
+
+OK.=A0 I thought that the code might optimize and ignore the jump if th=
+e chain was empty, as if the rule was simply: "-t filter -A INPUT".=A0 =
+This way it would just count the packet and data without needing to pro=
+cess an empty chain, possibly avoiding call stack and other overhead fo=
+r what is basically a no-op.=A0 I have not had a chance to trace the co=
+de to find out exactly how it operates.
+
+
+
+I appreciate the information.
+ 		 	   		  
