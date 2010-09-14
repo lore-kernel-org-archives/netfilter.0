@@ -1,35 +1,52 @@
-From: Roger Sala <rsala@ssci.com>
-Subject: Packets occasionally not queued
-Date: Tue, 14 Sep 2010 12:53:31 -0400
-Message-ID: <4C8FA88B.5090405@ssci.com>
-Reply-To: Roger Sala <rsala@ssci.com>
+From: Italo Valcy <italo@dcc.ufba.br>
+Subject: How to log NAT translations
+Date: Tue, 14 Sep 2010 14:24:47 -0300
+Message-ID: <4C8FAFDF.9080201@dcc.ufba.br>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-I have some basic netfilter queue code that diverts packets with the 
-following two rules:
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-iptables -A OUTPUT -m tos --tos 0xe0/0xe0 -j QUEUE
-iptables -A FORWARD -m tos --tos 0xe0/0xe0 -j QUEUE
+Hi guys!
 
-It works as expected almost all the time, but occasionally I see cases 
-where Wireshark indicates that the packet was received at the nic, but 
-my code doesn't log the recv() of it.
+I'm a newbie in this mainling list, so I'm sorry if this question was
+already asked.
 
-I had assumed that my receive buffer was sometimes being overrun, but 
-now that I'm throttling back the traffic, I see cases where isolated 
-packets just don't get queued, so I assume its a case off competing for 
-resources with other processes on the machine.
+I'd like to have more specific logging output of NAT translation in
+iptables. Is there an way to logging of ORIGINAL_IP/ORIGINAL_PORT +
+TRANSLATED_IP/TRANSLATED_PORT?
 
-Is there anything I can do, such as increasing the priority of my 
-program, to enhance the likelyhood of receiving all the packets I am 
-filtering on?
+I know that I can put a logging rule before my NAT rule, but this way
+I haven't the TRANS_IP/TRANS_PORT... for instance:
 
-Thanks
+iptables -t nat -I POSTROUTING -s 10.0.0.0/24 -j SNAT --to 172.16.0.1
+iptables -t nat -I POSTROUTING -s 10.0.0.0/24 -j LOG
 
+In the above example I don't know how to get the TRANS_PORT...
+
+I also know that we can access this information through
+/proc/net/ip_conntrack (or using netstat-nat), but to get all
+translation of a whole day its a big overhead to parse that file all
+the time...
+
+Thanks for any help!
+
+- --=20
+Sauda=E7=F5es,
+
+Italo Valcy :: http://wiki.dcc.ufba.br/~ItaloValcy
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAkyPr98ACgkQfidLqjN6RNGWAgCgjLgYUkPiAEp+C2znpRqUskoU
+=46AQAoIeWZQEXFS9LY2RSnxlSKjrmtkNL
+=3DWLWD
+-----END PGP SIGNATURE-----
 
