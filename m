@@ -1,24 +1,42 @@
-From: Alex Bligh <alex@alex.org.uk>
-Subject: Ignore tcp checksum on ip_conntrack
-Date: Thu, 16 Sep 2010 16:55:37 +0100
-Message-ID: <1E6DC90B5FEECCA9D7482842@Ximines.local>
-Reply-To: Alex Bligh <alex@alex.org.uk>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [patch v1 00/12] IPVS: SIP Persistence Engine
+Date: Fri, 17 Sep 2010 11:52:32 +0900
+Message-ID: <20100917025232.GH30855@verge.net.au>
+References: <20100822124457.339517323@vergenet.net>
+ <4C91D157.1090804@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 Content-Disposition: inline
-Sender: netfilter-owner@vger.kernel.org
+In-Reply-To: <4C91D157.1090804@trash.net>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
-Cc: Alex Bligh <alex@alex.org.uk>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Patrick McHardy <kaber@trash.net>
+Cc: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Jan Engelhardt <jengelh@medozas.de>, Stephen Hemminger <shemminger@vyatta.com>, Wensong Zhang <wensong@linux-vs.org>, Julian Anastasov <ja@ssi.bg>
 
-ip_conntrack ditches packets for masquerading etc if their ip checksum
-is wrong.
+On Thu, Sep 16, 2010 at 10:12:07AM +0200, Patrick McHardy wrote:
+> Am 22.08.2010 14:44, schrieb Simon Horman:
+> > This patch series adds load-balancing of UDP SIP based on Call-ID to
+> > IPVS as well as a frame-work for extending IPVS to handle alternate
+> > persistence requirements.
+> > 
+> > REVISIONS
+> > 
+> > This is "patch v1" of this series, which addresses a few minor problems, as
+> > annotated on a per-patch basis, since the initial "rfc" posting. Internally
+> > there were 4 rfc versions, 0.1, 0.2, 0.3 and 0.4, some of the notes for
+> > some of the patches reflect those versions.
+> 
+> This looks fine to me as far as I can judge.
+> 
+> > CODE AVAILABILITY
+> > 
+> > The kernel patches (13) are available in git as the pe-0.4 branch of
+> > git://git.kernel.org/pub/scm/linux/kernel/git/horms/lvs-test-2.6.git
+> 
+> Just to clarify, do you want me to merge this version?
 
-Is it possible to disable this behaviour on kernel 2.6.18 (I know, it's
-old)? I have something that like producing tcp packets with invalid
-checksums.
+Assuming that it applies cleanly, yes.
+Otherwise I can re-base an re-post.
 
--- 
-Alex Bligh
