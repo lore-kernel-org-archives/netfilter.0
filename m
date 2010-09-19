@@ -1,55 +1,28 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [rfc 13/13] [RFC 13/13] IPVS: sip persistence engine
-Date: Sun, 19 Sep 2010 10:03:49 +0900
-Message-ID: <20100919010349.GB794@verge.net.au>
-References: <20100805114755.118303531@vergenet.net>
- <20100805115242.056724322@vergenet.net>
- <Pine.LNX.4.58.1009181731240.8887@u.domain.uli>
+From: Mr Dash Four <mr.dash.four@googlemail.com>
+Subject: decipher the secmark number from nf_conntrack/ip_conntrack
+Date: Mon, 20 Sep 2010 00:04:05 +0100
+Message-ID: <4C9696E5.4030803@googlemail.com>
 Mime-Version: 1.0
-Return-path: <lvs-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <Pine.LNX.4.58.1009181731240.8887@u.domain.uli>
-Sender: lvs-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Julian Anastasov <ja@ssi.bg>
-Cc: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Wensong Zhang <wensong@linux-vs.org>, Patrick McHardy <kaber@trash.net>
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id
+         :disposition-notification-to:date:from:user-agent:mime-version:to
+         :subject:content-type:content-transfer-encoding;
+        bh=iGrEoSWVi6zsEIUvBgC1dfED2oRLT341fpyYRBevj8U=;
+        b=B6lg0sDGSesXfXqEUafeXvLPgD1EiM8Zg7ubM/GeJD5JukCJn5xYTuxnkaz2f9JGwS
+         lf2WBTkyyj49bu8hqsn3kYoWa3PYZuDrEJE9lm3brEekuwug4ruWbMCird6oK0+7j5gy
+         l41kYaU1vCESgP61cPrjYDO8HsCdqIjn3znRQ=
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Sat, Sep 18, 2010 at 06:09:28PM +0300, Julian Anastasov wrote:
-> 
-> 	Hello,
-> 
-> On Thu, 5 Aug 2010, Simon Horman wrote:
-> 
-> > Add the SIP callid as a key for persistence.
-> 
-> ...
-> 
-> > +static bool ip_vs_sip_ct_match(const struct ip_vs_conn_param *p,
-> > +				  struct ip_vs_conn *ct)
-> > +
-> > +{
-> > +	bool ret = 0;
-> > +
-> > +	if (ct->af == p->af &&
-> > +	    ip_vs_addr_equal(p->af, p->caddr, &ct->caddr) &&
-> > +	    /* protocol should only be IPPROTO_IP if
-> > +	     * d_addr is a fwmark */
-> > +	    ip_vs_addr_equal(p->protocol == IPPROTO_IP ? AF_UNSPEC : p->af,
-> > +			     p->vaddr, &ct->vaddr) &&
-> > +	    ct->vport == p->vport &&
-> > +	    ct->flags & IP_VS_CONN_F_TEMPLATE &&
-> > +	    ct->protocol == p->protocol &&
-> > +	    ct->pe_data && ct->pe_data_len == p->pe_data_len &&
-> > +	    !strnicmp(ct->pe_data, p->pe_data, p->pe_data_len))
-> 
-> 	According to RFC 3261 8.1.1.4 Call-ID,
-> "Call-IDs are case-sensitive and are simply compared byte-by-byte",
-> so may be memcmp should be used.
-> 
-> 	Also, may be ip_vs_sip_fill_param uses GFP_KERNEL in wrong 
-> context.
+When I list my connections with 'cat /proc/net/nf_conntrack' I get the 
+SELinux context secmark as a number, like secmark=XXX.
 
-Thanks, I'll fix up both of those problems.
-
+Is there a way I could map that number to the name of the actual context 
+when I set it up originally with the --selctx option in iptables? If 
+that is not possible do you plan to include such feature in the upcoming 
+versions of netfilter?
