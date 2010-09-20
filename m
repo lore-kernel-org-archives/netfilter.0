@@ -1,27 +1,22 @@
 From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Help with compiling netfilter/iptables modules
-Date: Tue, 21 Sep 2010 01:25:19 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1009210124300.14400@obet.zrqbmnf.qr>
-References: <AANLkTi=GnnAXvmO3JEwLtL6tw08OYRmr7JbsDwtYV1bU@mail.gmail.com> <alpine.LNX.2.01.1009202348280.11399@obet.zrqbmnf.qr> <AANLkTindq_A590+r3DXU5P9BTkst082iG0MyboKqSyXn@mail.gmail.com>
+Subject: Re: decipher the secmark number from nf_conntrack/ip_conntrack
+Date: Tue, 21 Sep 2010 01:26:12 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1009210125590.14400@obet.zrqbmnf.qr>
+References: <4C9696E5.4030803@googlemail.com> <alpine.LNX.2.01.1009200244280.5711@obet.zrqbmnf.qr> <4C973A6A.9010809@googlemail.com> <alpine.LNX.2.01.1009201421180.13430@obet.zrqbmnf.qr> <4C9756AB.5040304@googlemail.com> <4C97D6D6.9040805@shorewall.net>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTindq_A590+r3DXU5P9BTkst082iG0MyboKqSyXn@mail.gmail.com>
+In-Reply-To: <4C97D6D6.9040805@shorewall.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Josu Gomez <jgomezp81@googlemail.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: Tom Eastep <teastep@shorewall.net>
+Cc: Mr Dash Four <mr.dash.four@googlemail.com>, netfilter@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>
 
-On Tuesday 2010-09-21 00:19, Josu Gomez wrote:
 
+On Monday 2010-09-20 23:49, Tom Eastep wrote:
+>> printf("selctx %s ", info->u.sel.selctx);\
 >
->In the source and build tree there are the same files, all the modules name
->but only with .c extension (not .o sorry , not .ko) Is this normal ?
+>That breaks iptables-save/-restore. The attached patch does not.
 
-I can't understand a thing you say.
-
->I would like to compile all the modules posible.
-
-Except possibly for dccp and another I don't know offhand, all source 
-files are always compiled inside the iptables tarball.
+But still has the rogue \ at EOL.
