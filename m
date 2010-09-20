@@ -1,31 +1,47 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
-Subject: Re: decipher the secmark number from nf_conntrack/ip_conntrack
-Date: Mon, 20 Sep 2010 19:15:52 +0100
-Message-ID: <4C97A4D8.4020505@googlemail.com>
-References: <4C9696E5.4030803@googlemail.com> <alpine.LNX.2.01.1009200244280.5711@obet.zrqbmnf.qr> <4C973A6A.9010809@googlemail.com> <alpine.LNX.2.01.1009201421180.13430@obet.zrqbmnf.qr> <4C9756AB.5040304@googlemail.com>
+From: Josu Gomez <jgomezp81@googlemail.com>
+Subject: Help with compiling netfilter/iptables modules
+Date: Mon, 20 Sep 2010 21:59:56 +0200
+Message-ID: <AANLkTi=GnnAXvmO3JEwLtL6tw08OYRmr7JbsDwtYV1bU@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=googlemail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id
-         :disposition-notification-to:date:from:user-agent:mime-version:to:cc
-         :subject:references:in-reply-to:content-type
-         :content-transfer-encoding;
-        bh=Fgu0cnq4br89W9bQmOSol2hVRojUuKKSV7rRcxF6Rqg=;
-        b=iYVppxqVtQah2UNWmxgVJQHEXM+3J2PA4aRJRLXZseGlueynaGuIrOLPwvPxC7QC5Z
-         vbbVTbLVz+AcCpocwL7a9MMpfjj7I1LM6P3emewRC9uQtJoO0Y2VmiF21proTQirND9o
-         SDPFm5c3PlGNeRh2cPL8nakiAAkWRtSH8ihTg=
-In-Reply-To: <4C9756AB.5040304@googlemail.com>
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=8+bZHKzUq4FcTcyTILwlRosYbvI7JD/BtZsLXEWAU/g=;
+        b=QcvfoIxRK8suyVoHUpLD8HKNua5UxSuQ0mwN+oAPBfp5q0CIve8Zb/3FGq20KoYmwy
+         FOrB0L84G3dXIsEVRvtyoX/Q7zKvtG6otve4q1P7/oKBZGeLvVBj/bS8T74rNPsJ+jzI
+         AySUA/aq85Ho839SDajqiMmkkSlIKyTXqYwAg=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>, netfilter-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Further to my earlier post today, I can now confirm that the number 
-shown in the secmark=XXX output IS the same as the "selctx" field in 
-xt_SECMARK.h/libxt_SECMARK.c so it won't be that difficult to extract 
-and incorporate the whole struct in some way suitable for visualisation 
-(here's hoping!).
+Hello,
 
+I compiled iptables 1.4.9.1 for powerpc architecture using this commands :
+
+ ./configure --prefix=/dream/root/cdkroot
+--host=powerpc-tuxbox-linux-gnu (with edited configure file to run
+cross-compiling)
+ make
+ make install
+
+The binaries and libraries are created successfully and there are
+tested (with other modules).
+The problem is that the modules there are not compiled. I have seen
+the paths /dream/root/cdkroot/lib/modules/2.6.9/kernel/..  (net/ipv4
+doesn't exist)
+
+But exists the paths :
+
+/dream/root/cdkroot/lib/modules/2.6.9/build/net/ipv4/*    (there are
+only .c and .o files , not .ko)
+/dream/root/cdkroot/lib/modules/2.6.9/source/net/ipv4/*    (there are
+only .c and .o files , not .ko)
+
+I would like to compile all the modules for netfilter/iptables with
+.ko extension,
+
+Thanks a lot and sorry for my english :)
