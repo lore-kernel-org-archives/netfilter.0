@@ -1,61 +1,115 @@
-From: "Daniel L. Miller" <dmiller@amfes.com>
-Subject: Re: Basic Routing
-Date: Mon, 20 Sep 2010 14:40:06 -0700
-Message-ID: <4C97D4B6.2000609@amfes.com>
-References: <490DD23F.7060406@amfes.com> <49119087.5060307@thehaxbys.co.uk> <4911D85E.2080109@riverviewtech.net>
+From: Tom Eastep <teastep@shorewall.net>
+Subject: Re: decipher the secmark number from nf_conntrack/ip_conntrack
+Date: Mon, 20 Sep 2010 14:49:10 -0700
+Message-ID: <4C97D6D6.9040805@shorewall.net>
+References: <4C9696E5.4030803@googlemail.com> <alpine.LNX.2.01.1009200244280.5711@obet.zrqbmnf.qr> <4C973A6A.9010809@googlemail.com> <alpine.LNX.2.01.1009201421180.13430@obet.zrqbmnf.qr> <4C9756AB.5040304@googlemail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigC1EFD53FCC5DBFB524403755"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4911D85E.2080109@riverviewtech.net>
+In-Reply-To: <4C9756AB.5040304@googlemail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: 
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: Mr Dash Four <mr.dash.four@googlemail.com>
+Cc: Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>
 
-  On 11/5/2008 9:31 AM, Grant Taylor wrote:
-> On 11/05/08 06:24, John Haxby wrote:
->> Perhaps the problem is that the good people on this list know just 
->> too much about the finer points of routing and the caveats and 
->> wrinkles that you occasionally need to avoid special purpose problems.
->
-> *nod* (guilty) *nod*
->
->> Does that help or has it left you even more confused?
->
-> I'm guessing that it left Daniel with more to think about and to 
-> formulate more questions.  Which is in and of it self a good thing as 
-> that is the normal process of learning.  :)
->
->
-Once upon a time I asked this list some routing questions.  I've almost 
-got it - I swear I've ALMOST got it.  One more little push and I think 
-I'm there.
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigC1EFD53FCC5DBFB524403755
+Content-Type: multipart/mixed;
+ boundary="------------030800040601070709030608"
 
-Given the specific architecture:
-Windows Workstation 192.168.5.100, default gateway 192.168.5.1
-Linux Gateway/Router/VPN node 192.168.7.2, 192.168.5.1, 192.168.0.90, 
-default gateway 192.168.7.1
-DSL Modem 192.168.7.1
+This is a multi-part message in MIME format.
+--------------030800040601070709030608
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Linux Server/Router/VPN server/Virtual Server 192.168.0.71, 
-192.168.56.1, default gateway 192.168.0.1
-Virtual Machine 192.168.56.20, default gateway 192.168.56.1
+On 9/20/10 5:42 AM, Mr Dash Four wrote:
 
-What is the "easiest" way of "achieving routing" between the Windows 
-Workstation and the Virtual Machine?  Is this an instance where NAT 
-would make administration simpler instead of "pure" routing?  The 
-cumbersome-but-working method I have employed at the moment includes;
+> The output of SECMARK_print is seen when I list the mangle table with
+> iptables ('iptables -t mangle -L -n' for example) and there is the
+> SELinux context in full view as I originally registered the rule match
+> with. So, if I am to kindly ask the devs maintaining the iptables code
+> to change the above function to include the following line:
+>=20
+> printf("selctx %s [%u]", info->u.sel.selctx,info->u.sel.selsid);\
+>=20
+> instead of:
+>=20
+> printf("selctx %s ", info->u.sel.selctx);\
+>=20
 
-add 192.168.56.0/24 via 192.168.0.71 route to Workstation
-add 192.168.56.0/24 via 192.168.0.71 route to Linux Gateway
-add 192.168.5.0/24 via 192.168.0.90 route to Linux Server
+That breaks iptables-save/-restore. The attached patch does not.
 
-I almost understand the need for the 192.168.5.0/24 entry on the Linux 
-Server side - because otherwise the router doesn't know how to reply, 
-and the same goes for the 192.168.56.0/24 entry on the Gateway side - 
-otherwise the Gateway doesn't know how to reach that subnet in the first 
-place.  But, if the Gateway is defined as the default for the 
-Workstation, why is a routing entry required for the Workstation?
--- 
-Daniel
+-Tom
+--=20
+Tom Eastep        \ When I die, I want to go like my Grandfather who
+Shoreline,         \ died peacefully in his sleep. Not screaming like
+Washington, USA     \ all of the passengers in his car
+http://shorewall.net \________________________________________________
+
+--------------030800040601070709030608
+Content-Type: text/plain;
+ name="SECMARK.diff"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+ filename="SECMARK.diff"
+
+--- libxt_SECMARK.c~	2009-06-16 07:37:44.000000000 -0700
++++ libxt_SECMARK.c	2010-09-20 11:57:58.000000000 -0700
+@@ -65,7 +65,7 @@
+ {
+ 	switch (info->mode) {
+ 	case SECMARK_MODE_SEL:
+-		printf("selctx %s ", info->u.sel.selctx);\
++	        printf("selctx %s [%u] ", info->u.sel.selctx, info->u.sel.selsi=
+d);
+ 		break;
+ =09
+ 	default:
+@@ -83,13 +83,25 @@
+ 	print_secmark(info);
+ }
+=20
++static void save_secmark(const struct xt_secmark_target_info *info)
++{
++	switch (info->mode) {
++	case SECMARK_MODE_SEL:
++		printf("selctx %s ", info->u.sel.selctx);\
++		break;
++=09
++	default:
++		xtables_error(OTHER_PROBLEM, PFX "invalid mode %hhu\n", info->mode);
++	}
++}
++
+ static void SECMARK_save(const void *ip, const struct xt_entry_target *t=
+arget)
+ {
+ 	const struct xt_secmark_target_info *info =3D
+ 		(struct xt_secmark_target_info*)target->data;
+=20
+ 	printf("--");
+-	print_secmark(info);
++	save_secmark(info);
+ }
+=20
+ static struct xtables_target secmark_target =3D {
+
+--------------030800040601070709030608--
+
+--------------enigC1EFD53FCC5DBFB524403755
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.9 (Darwin)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAkyX1tYACgkQO/MAbZfjDLKLMwCfUmk0c68yImUhkrxiikr2Rrke
+nDsAnAxpSqo0rDmOvZ34LO6griR/USIT
+=9Be3
+-----END PGP SIGNATURE-----
+
+--------------enigC1EFD53FCC5DBFB524403755--
