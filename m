@@ -1,56 +1,72 @@
-From: Tom Eastep <teastep@shorewall.net>
-Subject: Re: decipher the secmark number from nf_conntrack/ip_conntrack
-Date: Mon, 20 Sep 2010 16:55:12 -0700
-Message-ID: <4C97F460.8000908@shorewall.net>
-References: <4C9696E5.4030803@googlemail.com> <alpine.LNX.2.01.1009200244280.5711@obet.zrqbmnf.qr> <4C973A6A.9010809@googlemail.com> <alpine.LNX.2.01.1009201421180.13430@obet.zrqbmnf.qr> <4C9756AB.5040304@googlemail.com> <4C97D6D6.9040805@shorewall.net> <alpine.LNX.2.01.1009210125590.14400@obet.zrqbmnf.qr>
+From: Italo Valcy <italo@dcc.ufba.br>
+Subject: Re: How to log NAT translations
+Date: Mon, 20 Sep 2010 23:25:13 -0300
+Message-ID: <4C981789.3070004@dcc.ufba.br>
+References: <4C8FAFDF.9080201@dcc.ufba.br> <alpine.LNX.2.01.1009141953580.23103@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig82B33E273CFEF8DD0A3C666B"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1009210125590.14400@obet.zrqbmnf.qr>
+In-Reply-To: <alpine.LNX.2.01.1009141953580.23103@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Mr Dash Four <mr.dash.four@googlemail.com>, netfilter@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: jengelh@medozas.de
+Cc: netfilter@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig82B33E273CFEF8DD0A3C666B
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-On 9/20/10 4:26 PM, Jan Engelhardt wrote:
+Hi Jan,
+
+Em 14-09-2010 14:54, Jan Engelhardt escreveu:
+> On Tuesday 2010-09-14 19:24, Italo Valcy wrote:
 >=20
-> On Monday 2010-09-20 23:49, Tom Eastep wrote:
->>> printf("selctx %s ", info->u.sel.selctx);\
+>> -----BEGIN PGP SIGNED MESSAGE-----
+>> Hash: SHA1
 >>
->> That breaks iptables-save/-restore. The attached patch does not.
+>> Hi guys!
+>>
+>> I'm a newbie in this mainling list, so I'm sorry if this question wa=
+s
+>> already asked.
+>>
+>> I'd like to have more specific logging output of NAT translation in
+>> iptables. Is there an way to logging of ORIGINAL_IP/ORIGINAL_PORT +
+>> TRANSLATED_IP/TRANSLATED_PORT?
 >=20
-> But still has the rogue \ at EOL.
+> conntrack -E
 
-Yes, I see that harmless character is in the current source and that I
-failed to delete it when I cloned the function.
+Thank you for the reply.
 
--Tom
---=20
-Tom Eastep        \ When I die, I want to go like my Grandfather who
-Shoreline,         \ died peacefully in his sleep. Not screaming like
-Washington, USA     \ all of the passengers in his car
-http://shorewall.net \________________________________________________
+Actually, I wanna something more simple and specific than the command
+above. Using 'conntrack -E', I still have to parse the package events
+NEW, UPDATE and DESTROY if I wanna know the  of a NAT, for example.
+=46urthermore, with 'conntrack -E', in my opinion, we have an important
+overhead of the output (it's so many messages to write to stdout - or
+even redirect to a file)...
+
+My ideia is to write a NAT (or conntrack) helper (as a kernel module)
+that monitors the DESTROY event of a DNAT and try to find out when was
+the NEW event of the same connection (maybe we have this information in
+some struct..); then we write a log message (like LOG target does) whic=
+h
+contains ip_src-orig/port_src-orig,
+ip_src-translated/port_src-translated, ip_dst/port_dst, duration of the
+NAT (a little bit similar to Cisco/Asa NAT logging..). What do you
+think? Where can I find some documentation to read?
+
+Thank you so much for any help!
 
 
---------------enig82B33E273CFEF8DD0A3C666B
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+- --=20
+Sauda=E7=F5es,
 
+Italo Valcy :: http://wiki.dcc.ufba.br/~ItaloValcy
 -----BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (Darwin)
+Version: GnuPG v1.4.10 (GNU/Linux)
 Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
-iEYEARECAAYFAkyX9GoACgkQO/MAbZfjDLK6MACgy4vYOIVei506DEpUBVS+xTAP
-Fq0Anj313u0OGoOlTjnUxXudtPxXpbbI
-=HFYY
+iEYEARECAAYFAkyYF4kACgkQfidLqjN6RNGBrgCdGeGdZe4jzY7cR9xM5zNqV/RJ
+k20AnRl6VKzz31k2vSqgQmL5Tafm931s
+=3DbUcw
 -----END PGP SIGNATURE-----
-
---------------enig82B33E273CFEF8DD0A3C666B--
