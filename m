@@ -1,42 +1,36 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: How to log NAT translations
-Date: Tue, 21 Sep 2010 12:22:05 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1009211220220.27447@blackhole.kfki.hu>
-References: <4C8FAFDF.9080201@dcc.ufba.br> <alpine.LNX.2.01.1009141953580.23103@obet.zrqbmnf.qr> <4C981789.3070004@dcc.ufba.br> <alpine.LNX.2.01.1009211125320.30840@obet.zrqbmnf.qr> <4C987EB2.4000001@netfilter.org>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Help with compiling netfilter/iptables modules
+Date: Tue, 21 Sep 2010 12:28:36 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1009211227380.632@obet.zrqbmnf.qr>
+References: <AANLkTi=GnnAXvmO3JEwLtL6tw08OYRmr7JbsDwtYV1bU@mail.gmail.com> <alpine.LNX.2.01.1009202348280.11399@obet.zrqbmnf.qr> <AANLkTindq_A590+r3DXU5P9BTkst082iG0MyboKqSyXn@mail.gmail.com> <alpine.LNX.2.01.1009210124300.14400@obet.zrqbmnf.qr>
+ <AANLkTimP7Zn3TXJWzX-M4PRnBNsZWg5=Xj44v65aRi5-@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C987EB2.4000001@netfilter.org>
+In-Reply-To: <AANLkTimP7Zn3TXJWzX-M4PRnBNsZWg5=Xj44v65aRi5-@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Jan Engelhardt <jengelh@medozas.de>, Italo Valcy <italo@dcc.ufba.br>, netfilter@vger.kernel.org
+To: Josu Gomez <jgomezp81@googlemail.com>
+Cc: netfilter@vger.kernel.org
 
-On Tue, 21 Sep 2010, Pablo Neira Ayuso wrote:
+On Tuesday 2010-09-21 10:43, Josu Gomez wrote:
 
-> On 21/09/10 11:26, Jan Engelhardt wrote:
-> > On Tuesday 2010-09-21 04:25, Italo Valcy wrote:
-> > 
-> >> Actually, I wanna something more simple and specific than the command
-> >> above. Using 'conntrack -E', I still have to parse the package events
-> >> NEW, UPDATE and DESTROY if I wanna know the  of a NAT
-> > 
-> > So use `conntrack -Ee NEW` to limit the output :)
-> > If that is still too much overhead, I'm sure you can directly use
-> > libnetfilter_conntrack's library interface to get at these events.
-> 
-> You can refine this a bit more with:
-> 
-> `conntrack -Ee NEW --any-nat'
+>> I can't understand a thing you say.
+>
+> I want say that in this paths after compile iptables...
+>
+>/dream/root/cdkroot/lib/modules/2.6.9/build/net/ipv4/*
+>/dream/root/cdkroot/lib/modules/2.6.9/source/net/ipv4/*
+>
+>...there are all the files but only with .c extension and not .ko
 
-Yes, but it's strange to use 'conntrack' for logging. Isn't it simpler to 
-use ulogd2 and the ulogd_inpflow plugin?
+iptables does not touch these paths at all.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+>> Except possibly for dccp and another I don't know offhand, all source
+>> files are always compiled inside the iptables tarball.
+>
+>In the tarball there are all with .h extension not .ko
+
+Of course not. Why should there be? We are not providing any kernel 
+modules in the iptables tarball.
