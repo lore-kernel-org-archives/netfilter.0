@@ -1,83 +1,64 @@
-From: Tom Eastep <teastep@shorewall.net>
-Subject: Re: decipher the secmark number from nf_conntrack/ip_conntrack
-Date: Tue, 21 Sep 2010 19:25:56 -0700
-Message-ID: <4C996934.3090205@shorewall.net>
-References: <4C9696E5.4030803@googlemail.com>	<alpine.LNX.2.01.1009200244280.5711@obet.zrqbmnf.qr>	<4C973A6A.9010809@googlemail.com>	<alpine.LNX.2.01.1009201421180.13430@obet.zrqbmnf.qr>	<4C9756AB.5040304@googlemail.com>	<4C97D6D6.9040805@shorewall.net>	<alpine.LNX.2.01.1009210125590.14400@obet.zrqbmnf.qr>	<4C988214.6050600@googlemail.com>	<4C9911CE.6090209@googlemail.com> <AANLkTiny3JCZnWOwHs9OY1vWqTsWAfxFqkiRW5RrRxX+@mail.gmail.com>
+From: Steven Ayre <steveayre@gmail.com>
+Subject: Userspace control of load balancing via DNAT/IPVS
+Date: Thu, 23 Sep 2010 14:28:31 +0100
+Message-ID: <AANLkTin6t_UFeftjTCg8g5f3-RMDJw8Udd+KVgB8=Rnw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig694380B53B81A38E7CEBE593"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTiny3JCZnWOwHs9OY1vWqTsWAfxFqkiRW5RrRxX+@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=rhIPRLHqsPhRjxh1lBMnUlbHkt5g0vG3yuQV6YRA5nk=;
+        b=ZoXJ3A98NMK6P/MgkklGvv+fGf42455rmuR7M0zhrbJcqJiIIzEOi+z1UOKDtEh/Fm
+         9DrzoI1e4LaOaboz9Jw+bSvqnbq8e5li1QmhicJSv6PsWYYzzZkw5ov/88mqHqkcxwfB
+         cnsTmIh0t3gCdmnk8MRsTThJtYQR60EkNYIYg=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Eric Paris <eparis@parisplace.org>
-Cc: Mr Dash Four <mr.dash.four@googlemail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig694380B53B81A38E7CEBE593
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Hi everyone,
 
-On 9/21/10 1:26 PM, Eric Paris wrote:
-> On Tue, Sep 21, 2010 at 4:13 PM, Mr Dash Four
-> <mr.dash.four@googlemail.com> wrote:
->>
->>>> http://www.spinics.net/lists/netfilter/msg49106.html
->>>>
->>>> I don't think that approach is right.  Exporting a number at ALL is
->>>> broken.  It should only ever say the name.
->>>>
->>>
->>> I am aware of that and the proposed patch works as I did test it afte=
-r Tom
->>> released it yesterday.
->>>
->>> As for your comment above - it is better than NOTHING.
->>>
->>> If you think that the current scenario, when I see meaningless number=
- in
->>> the secmark field, helps me track the actual security context of the =
-listed
->>> connection, then think again, because there is NO way I could know wh=
-at
->>> number maps to which context.
->>>
->>> Tom's patch at least gives me that mapping when I list the mangle tab=
-le,
->>> so it is a start and it works. Again, - the patch, if applied, is bet=
-ter
->>> than what currently exists in iptables. Also, 'exporting a number at =
-all' is
->>> NOT broken - look at Tom's patch again - it does not break anything.
->=20
-> No disagreement that Tom's patch is better than what we have today, I
-> just claim that what we have today is completely wrong, so this is
-> only slightly better   :)
+Does anyone know a way to set the destination IP+port for either DNAT
+or IPVS from a userspace daemon?
 
-My patch took two minutes to concoct and I make no claim of excellence :)=
+I want the decision to be implemented in userspace because the IPVS
+algorithms don't quite do what I want...
 
+I want to load balance both H323 and SIP between a cluster of
+FreeSWITCH hosts. The daemon uses FS's ESL protocol to monitor the
+load on each server so it always knows how many channels are in use on
+each server. This updates the decision making process of which server
+to send to (something like weighted least-connections).
 
--Tom
---=20
-Tom Eastep        \ When I die, I want to go like my Grandfather who
-Shoreline,         \ died peacefully in his sleep. Not screaming like
-Washington, USA     \ all of the passengers in his car
-http://shorewall.net \________________________________________________
+I should be able to use IPVS for this, but SIP/UDP doesn't work for us
+in this case - we have multiple incoming calls coming from the same
+IP+port, and IPVS would always send those to the same host which isn't
+what we want. It would be fine if it was grouped by Call-ID but the
+current version of IPVS doesn't do this (looking at some recent
+patches it's being worked on though?)
 
+The solution I'm looking at is to use OpenSIPS for forwarding SIP and
+DNAT/IPVS for H323. But then they are unaware of each other's load so
+can't reliably work out which server is least loaded. So instead I
+would like both OpenSIPS and Iptables(DNAT)/IPVS to ask the userspace
+daemon which IP to send to. OpenSIPS is easy - I already have a
+working module. But I'm not sure how to do it with iptables/ipvs.
 
---------------enig694380B53B81A38E7CEBE593
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Does anyone know a way to do this?
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.9 (Darwin)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+Currently my initial approach has been to use NFQUEUE from PREROUTING
+to try mangling the incoming packets to create a form of DNAT. So far
+I'm only testing with changing the port, but I'd eventually want to be
+able to change the IP and forward it on too. I'm able to modify the
+packets and recalculate the IP+TCP checksums fine. But although this
+works for the SYN, iptables doesn't rewrite the source ip+port on the
+SYN-ACK so connections never get opened. Obviously iptables doesn't
+expect it to be DNAT so doesn't do any of the connection tracking
+required. Perhaps it's possible to do that using
+libnetfilter_conntrack?
 
-iEYEARECAAYFAkyZaTQACgkQO/MAbZfjDLKoKACgvIlbCC0MGT+QRIsAkAGPQFsL
-IR0An3dE88rClviMpOvQO38Za7iYrxrd
-=FdWT
------END PGP SIGNATURE-----
+Hopefully someone can point me in the right direction.
 
---------------enig694380B53B81A38E7CEBE593--
+-Steve Ayre
