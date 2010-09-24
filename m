@@ -1,40 +1,68 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: decipher the secmark number from nf_conntrack/ip_conntrack
-Date: Fri, 24 Sep 2010 03:18:31 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1009240315500.29164@obet.zrqbmnf.qr>
-References: <4C9696E5.4030803@googlemail.com> <AANLkTim4b06FySMibSw-4sZdUqtPMmfQFtt94kAgAtr=@mail.gmail.com> <alpine.LNX.2.01.1009220130370.25442@obet.zrqbmnf.qr> <AANLkTimgV+ZURC+G_R2NOqUmMYQzuDOub7hB35yJS27u@mail.gmail.com> <alpine.LNX.2.01.1009232045150.16976@obet.zrqbmnf.qr>
- <AANLkTin+7TrO3BgsCaWn7MfkMjqPYK+1ipu6WozViyxw@mail.gmail.com> <alpine.LNX.2.01.1009232054180.16976@obet.zrqbmnf.qr> <4C9BA88E.7080507@googlemail.com> <alpine.LNX.2.01.1009232148010.18921@obet.zrqbmnf.qr> <4C9BB600.6020300@googlemail.com>
- <AANLkTinaGWtK2j9Ob2NKtv58E-OnNAGF7uYG8fCotQX6@mail.gmail.com> <alpine.LNX.2.01.1009232249450.21529@obet.zrqbmnf.qr> <4C9BBF0D.1010002@googlemail.com> <alpine.LNX.2.01.1009232309590.23838@obet.zrqbmnf.qr> <4C9BC8C9.2090504@googlemail.com>
- <alpine.LNX.2.01.1009240002180.25685@obet.zrqbmnf.qr> <4C9BD4F9.3020107@googlemail.com> <alpine.LNX.2.01.1009240126360.28190@obet.zrqbmnf.qr> <4C9BEFC3.6030701@shorewall.net>
+From: Steven Ayre <steveayre@gmail.com>
+Subject: netfilter_conntrack question - getting invalid argument
+Date: Fri, 24 Sep 2010 11:26:53 +0100
+Message-ID: <AANLkTin3tMzWB9G_Rt5WHEC5vdVFBDJfcj9eC4wqPzxZ@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4C9BEFC3.6030701@shorewall.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=HLIPDnGPgiZlTi0XqbeT5+R1FyzCcTs2JMJhnD3tMoM=;
+        b=o0nz/c8Hleo8DLDN0nhjSi1OgfBaOkl1ncavXLWKulffHxAZbhV9c2hA4fLSWAgUtO
+         S8JFZMdQ/ycEKEhfpcPJiZf3Y0JsRQcX9wIwnUF/KVVTi820BqUAu0Icv2bl3r88scsm
+         3pBx2IOWkgv9Bwu4jTGaswJkRgiqGMXgLzo9Q=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Tom Eastep <teastep@shorewall.net>
-Cc: Mr Dash Four <mr.dash.four@googlemail.com>, Eric Paris <eparis@parisplace.org>, netfilter@vger.kernel.org, sds@tycho.nsa.gov
+To: netfilter@vger.kernel.org
 
-On Friday 2010-09-24 02:24, Tom Eastep wrote:
+I'm trying to perform DNAT from within my userspace program to a dynamic host.
 
->On 9/23/10 4:59 PM, Jan Engelhardt wrote:
->
->> 
->> It is not "my" conntrack-utils by any means. If users would not
->> constantly insist on using outdated interfaces (and I _do_ grant
->> things their transition time), and if maintainers would not always
->> give in to these users, we would have less code to worry about, or
->> even have these discussions.
->
->So if the 'conntrack' utility invokes the sid->secctx translation in
+I have in nat PREROUTING a NFQUEUE rule that gives the packet to my
+program. I am trying to setup a conntrack rule at this time before
+accepting the packet. The NFQUEUE part works just fine. However I am
+having trouble adding the conntrack entry.
 
-As Eric mentioned, sid->secctx translation should already be done in 
-the kernel since sid are not meant to be seen/used on the outside, and 
-I agree to that if that is how selinux works. (And thus the discussion 
-is mostly about whether the secctx is to be reported in procfs, or
-via netlink.)
+This is the code I currently have:
 
->formatting it's -L output then everyone should be happy. Non-programmers
->get the text output that they want and there is no need to extend the
->deprecated /proc interface.
+                /* Add a new conntrack entry */
+                if (!(ct = nfct_new())) {
+                        perror("nfct_new");
+                        return -1;
+                }
+                nfct_set_attr_u8(ct, ATTR_ORIG_L3PROTO, AF_INET);
+                nfct_set_attr_u8(ct, ATTR_ORIG_L4PROTO, IPPROTO_TCP);
+                nfct_set_attr_u32(ct, ATTR_ORIG_IPV4_SRC, ip->saddr);
+                nfct_set_attr_u32(ct, ATTR_ORIG_IPV4_DST, ip->daddr);
+                nfct_set_attr_u16(ct, ATTR_ORIG_PORT_SRC, tcp->source);
+                nfct_set_attr_u16(ct, ATTR_ORIG_PORT_SRC, tcp->dest);
+                nfct_setobjopt(ct, NFCT_SOPT_SETUP_REPLY);
+                nfct_set_attr_u32(ct, ATTR_DNAT_IPV4, new_daddr);
+                nfct_set_attr_u16(ct, ATTR_DNAT_PORT, new_dport);
+                //nfct_set_attr_u32(ct, ATTR_TIMEOUT, timeout);
+                if (nfct_query(globals.cth, NFCT_Q_CREATE, ct) < 0) {
+                        perror("nfct_query");
+                        return -1;
+                }
+                nfct_destroy(ct);
+
+ip is a struct iphdr* pointing to the correct location in the payload
+from nfqueue
+tcp is a struct tcphdr* pointing to the correct location in the
+payload from nfqueue
+new_daddr is uint32_t from inet_pton()
+new_dport is uint16_t from htons()
+Therefore all IPs and ports are already in network byte order.
+
+When the above code runs I get the following:
+nfct_query: Invalid argument
+
+Does anyone know what I'm doing wrong?
+
+Also, do I need to manually mangle the first packet to perform the
+DNAT or will netfilter do this for me after I accept the packet due to
+the conntrack entry?
+
+-Steve
