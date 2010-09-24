@@ -1,77 +1,40 @@
-From: Greg Oliver <oliver.greg@gmail.com>
-Subject: string and u32 modules
-Date: Thu, 23 Sep 2010 19:52:58 -0500
-Message-ID: <AANLkTin8Uvd7z0ty6urts2oy53mL=TCE0=r7O7g902HH@mail.gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: decipher the secmark number from nf_conntrack/ip_conntrack
+Date: Fri, 24 Sep 2010 03:18:31 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1009240315500.29164@obet.zrqbmnf.qr>
+References: <4C9696E5.4030803@googlemail.com> <AANLkTim4b06FySMibSw-4sZdUqtPMmfQFtt94kAgAtr=@mail.gmail.com> <alpine.LNX.2.01.1009220130370.25442@obet.zrqbmnf.qr> <AANLkTimgV+ZURC+G_R2NOqUmMYQzuDOub7hB35yJS27u@mail.gmail.com> <alpine.LNX.2.01.1009232045150.16976@obet.zrqbmnf.qr>
+ <AANLkTin+7TrO3BgsCaWn7MfkMjqPYK+1ipu6WozViyxw@mail.gmail.com> <alpine.LNX.2.01.1009232054180.16976@obet.zrqbmnf.qr> <4C9BA88E.7080507@googlemail.com> <alpine.LNX.2.01.1009232148010.18921@obet.zrqbmnf.qr> <4C9BB600.6020300@googlemail.com>
+ <AANLkTinaGWtK2j9Ob2NKtv58E-OnNAGF7uYG8fCotQX6@mail.gmail.com> <alpine.LNX.2.01.1009232249450.21529@obet.zrqbmnf.qr> <4C9BBF0D.1010002@googlemail.com> <alpine.LNX.2.01.1009232309590.23838@obet.zrqbmnf.qr> <4C9BC8C9.2090504@googlemail.com>
+ <alpine.LNX.2.01.1009240002180.25685@obet.zrqbmnf.qr> <4C9BD4F9.3020107@googlemail.com> <alpine.LNX.2.01.1009240126360.28190@obet.zrqbmnf.qr> <4C9BEFC3.6030701@shorewall.net>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:date:message-id
-         :subject:from:to:content-type;
-        bh=9LrWcHDiqTm/LN53SPyrWUBFfV9EyCzkmZY9rZCP69E=;
-        b=U2DRE7veVFJcJxVgD+15YEghy3HSpxjOR1l0aO9tA0mHZwL4uczIdHbiicGSLePb1U
-         LHcsI7Ed2queGaYvNhOmQ4lVTe9/QZY98vrjrtVGM4BicmcLb6bXxIwNuw/MsnzIJMmP
-         Yw8UUKNulR1B67tuPIBzAU99OGQTRtZllJUgg=
+In-Reply-To: <4C9BEFC3.6030701@shorewall.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Tom Eastep <teastep@shorewall.net>
+Cc: Mr Dash Four <mr.dash.four@googlemail.com>, Eric Paris <eparis@parisplace.org>, netfilter@vger.kernel.org, sds@tycho.nsa.gov
 
-Hi,
+On Friday 2010-09-24 02:24, Tom Eastep wrote:
 
-I am pretty new to iptables, but understand all of the concepts very
-well.  I am trying to drop a specific RTP packet with a certain
-payload type (1st 2 bytes of payload will tell me in the rtp header).
+>On 9/23/10 4:59 PM, Jan Engelhardt wrote:
+>
+>> 
+>> It is not "my" conntrack-utils by any means. If users would not
+>> constantly insist on using outdated interfaces (and I _do_ grant
+>> things their transition time), and if maintainers would not always
+>> give in to these users, we would have less code to worry about, or
+>> even have these discussions.
+>
+>So if the 'conntrack' utility invokes the sid->secctx translation in
 
-I compiled everything in centos and all appears to work (no  errors,
-etc when loading the module) from a system standpoint.
+As Eric mentioned, sid->secctx translation should already be done in 
+the kernel since sid are not meant to be seen/used on the outside, and 
+I agree to that if that is how selinux works. (And thus the discussion 
+is mostly about whether the secctx is to be reported in procfs, or
+via netlink.)
 
-The u32 module has made no matches for me though, and I cannot get the
-string module to match hex strings.  I plan to use u32, but tried
-string just to see if I was an idiot :)
-
-I guess I am!
-
-I am using tcpreplay to send the packet I want to drop:
-
-
-19:40:13.666679 IP ghost.29364 > ccs1.25862: UDP, length 13
-	0x0000:  45b8 0029 95cd 0000 3d11 9c86 c0a8 6476  E..)....=.....dv
-	0x0010:  c0a8 64f1 72b4 6506 0015 bbc9 800d 9f6b  ..d.r.e........k
-	0x0020:  7c06 b562 a690 c613 6400 0000 0000       |..b....d.....
-
-800d is what I want to catch in bytes 27,28...
-
-LOG        all  --  anywhere             anywhere            STRING
-match "|800d|" ALGO name bm TO 65535LOG level debug prefix `PT-13 :::
-'
-
-This string filter (which I now have wide open on --from and --to
-never catches it though.  I cannot get u32 to catch anything though.
-
-My laptop runs *buntu, and I can successfully get u32 to match on
-specific IP, etc, but I cannot get it to match on this packet.  I am
-using:
-
--A INPUT -m u32 --u32 "0>>22&0x3C@6=0x800D" -j LOG --log-prefix "CNOISE: "
--A INPUT -m u32 --u32 "26&0xFFFF=0x800D" -j LOG --log-prefix "CNOISE: "
-
-It never matches though..  And since I am unsure as to when 0 counts
-and does not, I have tried starting form every byte in the area!  :)
-
-I get no errors from the modules, but my hex-foo must suck, because I
-clearly cannot get this to work..
-
-Any pointers would be greatly appreciated..
-
-Oh - kernel 2.6.18, with iptables 1.3.5 (POM'ed from 20100811 snapshot
-and recompiled)..
-
-Thanks for any pointers
-
--Greg
-
-Thanks
-
--Greg
+>formatting it's -L output then everyone should be happy. Non-programmers
+>get the text output that they want and there is no need to extend the
+>deprecated /proc interface.
