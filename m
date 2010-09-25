@@ -1,27 +1,27 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH 3/6] secmark: export binary yes/no rather than kernel
- internal	secid
-Date: Sat, 25 Sep 2010 10:41:50 +0200
-Message-ID: <4C9DB5CE.7090305@netfilter.org>
-References: <20100924204517.28355.42822.stgit@paris.rdu.redhat.com> <20100924204531.28355.20320.stgit@paris.rdu.redhat.com>
+From: rhn <vamali.rhn@porcupinefactory.org>
+Subject: redirecting connections to userspace
+Date: Sat, 25 Sep 2010 16:24:22 +0200
+Message-ID: <20100925162422.7a57f1c6.vamali.rhn@porcupinefactory.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20100924204531.28355.20320.stgit@paris.rdu.redhat.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Eric Paris <eparis@redhat.com>
-Cc: linux-kernel@vger.kernel.org, selinux@tycho.nsa.gov, netfilter-devel@vger.kernel.org, jmorris@namei.org, sds@tycho.nsa.gov, jengelh@medozas.de, paul.moore@hp.com, casey@schaufler-ca.com, linux-security-module@vger.kernel.org, netfilter@vger.kernel.org, mr.dash.four@googlemail.com
+To: netfilter@vger.kernel.org
 
-On 24/09/10 22:45, Eric Paris wrote:
-> Currently the nfconntrack export code sends the kernel internal secid to
-> userspace in a couple of proc files and over netlink as an integer.  This
-> is wrong.  This number is a kernel internal.  This patch changes the export
-> code to output either 0 or 1 for this value.  A future patch will implement
-> sending the name rather than the number in a new field.
+Hello,
 
-I'm not sure why you need this transitional patch if you later on
-replace it.
+I'd like to forward TCP connections coming from intranet to my gateway to userspace programs on the gateway.
 
-Better to change the /proc output to make it consistent with patch 5/6?
+For example,
+host A on the intranet tries to connect to host B on the Internet using gateway G. Upon receiving the connection, gateway G sends the original connection destination (B and port) to a userspace program, and sends the network data to/from the program.
+
+Is it possible to achieve that using netfilter?
+
+So far, I've only found ipqueue, which operates on the packet level - a little too low for me. The other solution would be to use VPN, but I don't get the flexibility of writing my own program then.
+
+Thanks in advance!
+
+Cheers,
+rhn
