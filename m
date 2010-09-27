@@ -1,36 +1,54 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: redirecting connections to userspace
-Date: Sun, 26 Sep 2010 21:45:33 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1009262144160.21905@obet.zrqbmnf.qr>
-References: <20100925162422.7a57f1c6.vamali.rhn@porcupinefactory.org>
+From: James Morris <jmorris@namei.org>
+Subject: Re: [PATCH 3/6] secmark: export binary yes/no rather than kernel
+ internal secid
+Date: Mon, 27 Sep 2010 10:50:34 +1000 (EST)
+Message-ID: <alpine.LRH.2.00.1009271038280.25748@tundra.namei.org>
+References: <20100924204517.28355.42822.stgit@paris.rdu.redhat.com> <20100924204531.28355.20320.stgit@paris.rdu.redhat.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20100925162422.7a57f1c6.vamali.rhn@porcupinefactory.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <20100924204531.28355.20320.stgit@paris.rdu.redhat.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: rhn <vamali.rhn@porcupinefactory.org>
-Cc: netfilter@vger.kernel.org
+To: Eric Paris <eparis@redhat.com>
+Cc: linux-kernel@vger.kernel.org, selinux@tycho.nsa.gov, netfilter-devel@vger.kernel.org, sds@tycho.nsa.gov, jengelh@medozas.de, paul.moore@hp.com, casey@schaufler-ca.com, linux-security-module@vger.kernel.org, netfilter@vger.kernel.org, mr.dash.four@googlemail.com
 
-On Saturday 2010-09-25 16:24, rhn wrote:
+On Fri, 24 Sep 2010, Eric Paris wrote:
 
->Hello,
->
->I'd like to forward TCP connections coming from intranet to my gateway 
->to userspace programs on the gateway.
->
->For example, host A on the intranet tries to connect to host B on the 
->Internet using gateway G. Upon receiving the connection, gateway G 
->sends the original connection destination (B and port) to a userspace 
->program, and sends the network data to/from the program.
->
->Is it possible to achieve that using netfilter?
->
->So far, I've only found ipqueue, which operates on the packet level - a 
->little too low for me. The other solution would be to use VPN, but I 
->don't get the flexibility of writing my own program then.
+> Currently the nfconntrack export code sends the kernel internal secid to
+> userspace in a couple of proc files and over netlink as an integer.  This
+> is wrong.  This number is a kernel internal.
 
-xt_TPROXY comes to mind. Then you just do the usual socket(2) things in 
-userspace.
+I wouldn't say wrong, exactly.
 
+The secid is a 32-bit integer which each LSM maps to its own domain.  
+It's unlikely to change from this format (we were v. lucky to get this 
+field, btw).
+
+There's really no difference between this and the various kernel addresses 
+exported via procfs by the networking code -- it's an opaque token which 
+you can use to identify the security marking of a packet without 
+necessarily having any knowledge of the security model itself.
+
+It's potentially useful for debugging and writing simple userland tools, 
+and may be in use already by apps.
+
+>  This patch changes the export
+> code to output either 0 or 1 for this value.
+
+This potentially breaks existing apps and does not seem to add any value 
+itself.  If you want to determine if a packet is marked, then simply check 
+for zero or not.
+
+>  A future patch will implement sending the name rather than the number 
+> in a new field.
+
+For the reasons above, I think the secctx string needs to be exported in 
+addition to this rather than instead of.
+
+
+- James
+-- 
+James Morris
+<jmorris@namei.org>
