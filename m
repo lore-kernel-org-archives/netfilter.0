@@ -1,58 +1,33 @@
-From: rhn <vamali.rhn@porcupinefactory.org>
-Subject: Re: redirecting connections to userspace
-Date: Mon, 27 Sep 2010 11:35:21 +0200
-Message-ID: <20100927113521.9cd58500.vamali.rhn@porcupinefactory.org>
-References: <20100925162422.7a57f1c6.vamali.rhn@porcupinefactory.org>
-	<alpine.LNX.2.01.1009262144160.21905@obet.zrqbmnf.qr>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH 5/6] conntrack: export lsm context rather than internal
+ secid	via netlink
+Date: Mon, 27 Sep 2010 13:01:50 +0200
+Message-ID: <4CA0799E.4010200@netfilter.org>
+References: <20100924204517.28355.42822.stgit@paris.rdu.redhat.com> <20100924204545.28355.92767.stgit@paris.rdu.redhat.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1009262144160.21905@obet.zrqbmnf.qr>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <20100924204545.28355.92767.stgit@paris.rdu.redhat.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Eric Paris <eparis@redhat.com>
+Cc: linux-kernel@vger.kernel.org, selinux@tycho.nsa.gov, netfilter-devel@vger.kernel.org, jmorris@namei.org, sds@tycho.nsa.gov, jengelh@medozas.de, paul.moore@hp.com, casey@schaufler-ca.com, linux-security-module@vger.kernel.org, netfilter@vger.kernel.org, mr.dash.four@googlemail.com
 
-On Sun, 26 Sep 2010 21:45:33 +0200 (CEST)
-Jan Engelhardt <jengelh@medozas.de> wrote:
+On 24/09/10 22:45, Eric Paris wrote:
+> @@ -172,4 +173,11 @@ enum ctattr_help {
+>   };
+>   #define CTA_HELP_MAX (__CTA_HELP_MAX - 1)
+>
+> +enum ctattr_secctx {
+> +	CTA_SECCTX_UNSPEC,
+> +	CTA_SECCTX_NAME,
+> +	__CTA_SECCTX_MAX
+> +};
+> +#define CTA_SECCTX_MAX (__CTA_SECCTX_MAX - 1)
 
-> On Saturday 2010-09-25 16:24, rhn wrote:
-> 
-> >Hello,
-> >
-> >I'd like to forward TCP connections coming from intranet to my gateway 
-> >to userspace programs on the gateway.
-> >
-> >For example, host A on the intranet tries to connect to host B on the 
-> >Internet using gateway G. Upon receiving the connection, gateway G 
-> >sends the original connection destination (B and port) to a userspace 
-> >program, and sends the network data to/from the program.
-> >
-> >Is it possible to achieve that using netfilter?
-> >
-> >So far, I've only found ipqueue, which operates on the packet level - a 
-> >little too low for me. The other solution would be to use VPN, but I 
-> >don't get the flexibility of writing my own program then.
-> 
-> xt_TPROXY comes to mind. Then you just do the usual socket(2) things in 
-> userspace.
-> 
-
-Thanks!
-
-I did some more research and what I actually needed was a tun/tap VPN. I need the whole thing to tunnel my traffic, and it seems to be easier that way.
-
-I'm having trouble getting the VPN to operate correctly, though. I don't know where to ask my question, so I hope someone can help me over here or point me elsewhere.
-
-Background:
-I set up the VPN as an Ethernet network with a router connected to internet. I set up NAT on the router to treat the VPN in the same manner as the other network connected to it.
-
-Problem:
-When I leave the MTU on VPN as-is, then for some reason the applications can finish the SYN, SYN ACK, ACK sequence, but I can't see them sending ACK packets later, rendering TCP connections unusable.
-When I set MTU on VPN to 1000, then the connections work, albeit very slowly, and I can see a lot of strange things in the network, like TCP payload fragments sent as Ethernet frames or packets exceeding the MTU. I have no idea how the connections can still work with these problems.
-
-Questions:
-What these problems can relate to? Is it wrong setup of the iptables rules or something entirely else? What's the best place to ask for help?
-
-Cheers,
-rhn
+I guess that you have included this nest for consistency with CTA_HELP. 
+My question: do you think that we'll include more attributes in that 
+nest in the future? Otherwise, I would remove that nest and put 
+CTA_SECCTX_NAME in the first level, since the nest would increase the 
+message size.
