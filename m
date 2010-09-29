@@ -1,25 +1,37 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
-Subject: macipmap (ipset) matching
-Date: Tue, 28 Sep 2010 22:33:47 +0100
-Message-ID: <4CA25F3B.2070801@googlemail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: macipmap (ipset) matching
+Date: Wed, 29 Sep 2010 09:18:58 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1009290912280.4241@blackhole.kfki.hu>
+References: <4CA25F3B.2070801@googlemail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id
-         :disposition-notification-to:date:from:user-agent:mime-version:to
-         :subject:content-type:content-transfer-encoding;
-        bh=PlTtVSGKNppbFZ6MRNMtWkztn+CqOWPwVKEjdFEgi4k=;
-        b=Nh0UzF4eIg3ZujfmeF/nQJSDis4GNX9pOyWwj3p6AESYpFlvl3eXv3AI4yqohZ2wF6
-         ATgAoOEZIMm6jHIJ8M2EbrZhMamndm4eFuQ96J76uhML5Fu+a6/g13TMa+8+GvhLFWax
-         yx3GHcIQGe0TywLzHS+/bcA9ysz71i5VVBg5w=
+In-Reply-To: <4CA25F3B.2070801@googlemail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mr Dash Four <mr.dash.four@googlemail.com>
+Cc: netfilter@vger.kernel.org
 
-I am trying to employ and use this, but am unable to get any match 
-whatsoever. I have registered my own (internal) network and the relevant 
-mac addresses for each interface, but no joy. What could be the problem? 
-Has anybody actually tried this?
+On Tue, 28 Sep 2010, Mr Dash Four wrote:
+
+> I am trying to employ and use this, but am unable to get any match whatsoever.
+> I have registered my own (internal) network and the relevant mac addresses for
+> each interface, but no joy. What could be the problem? Has anybody actually
+> tried this?
+
+Could you describe exactly what do you try to do? That is the set elements 
+to be matched and the iptables rules you entered. Also, please note the 
+"set" match and "SET" target netfilter kernel modules always use the
+source MAC address from the packet.
+
+The ipset source tree contains a testsuite with tests against all set 
+types.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
