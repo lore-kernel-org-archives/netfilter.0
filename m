@@ -1,42 +1,75 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipporthash, ipportiphash, ipportnethash problems
-Date: Fri, 1 Oct 2010 23:05:47 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1010012302530.19869@blackhole.kfki.hu>
-References: <4CA5091B.1090200@googlemail.com> <alpine.DEB.2.00.1010010913200.11563@blackhole.kfki.hu> <4CA5C48E.9010603@googlemail.com>
+From: Julian Anastasov <ja@ssi.bg>
+Subject: Re: [patch v2 07/12] [PATCH 07/12] IPVS: Add struct ip_vs_pe
+Date: Sat, 2 Oct 2010 00:45:52 +0300 (EEST)
+Message-ID: <alpine.LFD.2.00.1010020030590.2320@ja.ssi.bg>
+References: <20101001143517.645421976@akiko.akashicho.tokyo.vergenet.net> <20101001143942.297844368@akiko.akashicho.tokyo.vergenet.net>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4CA5C48E.9010603@googlemail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <lvs-devel-owner@vger.kernel.org>
+In-Reply-To: <20101001143942.297844368@akiko.akashicho.tokyo.vergenet.net>
+Sender: lvs-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
-Cc: netfilter@vger.kernel.org
+To: Simon Horman <horms@verge.net.au>
+Cc: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Jan Engelhardt <jengelh@medozas.de>, Stephen Hemminger <shemminger@vyatta.com>, Wensong Zhang <wensong@linux-vs.org>, Patrick McHardy <kaber@trash.net>
 
-On Fri, 1 Oct 2010, Mr Dash Four wrote:
 
-> > You should provide at least the following: kernel, iptables, ipset version
-> > numbers, the iptables rules and the (non)matching sets with the elements.
-> > Without exact details I cannot help.
-> >   
-> kernel-2.6.34.7-56.fc13.x86_64
-> iptables-1.4.7-2.fc13.x86_64
-> ipset 4.3
-> xtables-addons 1.29
-> 
-> For the purpose of this small test, I am initiating a connection from the
-> local machine (10.1.2.7, network 10.1.2.0/24) to my other machine (10.1.1.3,
-> network 10.1.1.0/24) over ssh (port 22) and ask iptables to match that and log
-> it to the syslog.
-[...]
+ 	Hello,
 
-Thanks for the complete description - I have just released ipset 4.4 which 
-fixes this nasty bug.
+On Fri, 1 Oct 2010, Simon Horman wrote:
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+> ===================================================================
+> --- lvs-test-2.6.orig/net/netfilter/ipvs/ip_vs_conn.c	2010-10-01 22:48:42.000000000 +0900
+> +++ lvs-test-2.6/net/netfilter/ipvs/ip_vs_conn.c	2010-10-01 22:49:15.000000000 +0900
+> @@ -148,6 +148,29 @@ static unsigned int ip_vs_conn_hashkey(i
+> 		& ip_vs_conn_tab_mask;
+> }
+>
+> +static unsigned int ip_vs_conn_hashkey_param(const struct ip_vs_conn_param *p)
+> +{
+> +	if (p->pe && p->pe->hashkey_raw)
+> +		return p->pe->hashkey_raw(p, ip_vs_conn_rnd) &
+> +			ip_vs_conn_tab_mask;
+> +	return ip_vs_conn_hashkey(p->af, p->protocol, p->caddr, p->cport);
+> +}
+> +
+> +static unsigned int ip_vs_conn_hashkey_conn(const struct ip_vs_conn *cp)
+> +{
+> +	struct ip_vs_conn_param p;
+> +
+> +	ip_vs_conn_fill_param(cp->af, cp->protocol, &cp->caddr, cp->cport,
+> +			      NULL, 0, &p);
+> +
+
+ 	cp->dest is optional, line should be
+'if (cp->dest && cp->dest->svc->pe) {':
+
+> +	if (cp->dest->svc->pe) {
+> +		p.pe = cp->dest->svc->pe;
+> +		p.pe_data = cp->pe_data;
+> +		p.pe_data_len = cp->pe_data_len;
+> +	}
+> +
+> +	return ip_vs_conn_hashkey_param(&p);
+> +}
+>
+
+
+> @@ -359,7 +387,7 @@ struct ip_vs_conn *ip_vs_conn_out_get(co
+> 	/*
+> 	 *	Check for "full" addressed entries
+> 	 */
+
+ 	Here ip_vs_conn_out_get expects client data in
+p->vaddr and p->vport (was daddr before) but ip_vs_conn_hashkey_param 
+hashes client data from p->caddr and p->cport:
+
+> -	hash = ip_vs_conn_hashkey(p->af, p->protocol, p->vaddr, p->vport);
+> +	hash = ip_vs_conn_hashkey_param(p);
+>
+> 	ct_read_lock(hash);
+
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
