@@ -1,196 +1,92 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
-Subject: Re: ipporthash, ipportiphash, ipportnethash problems
-Date: Fri, 01 Oct 2010 12:22:54 +0100
-Message-ID: <4CA5C48E.9010603@googlemail.com>
-References: <4CA5091B.1090200@googlemail.com> <alpine.DEB.2.00.1010010913200.11563@blackhole.kfki.hu>
+From: Shihwei Li <lishihwei@gmail.com>
+Subject: Re: nfqnl_test exits abnormally while monitoring some TCP packets.
+Date: Fri, 1 Oct 2010 08:42:47 -0400
+Message-ID: <AANLkTinzHRReriT5p0GE7fdH1Ko__f3MtLn_Vxxa1eJR@mail.gmail.com>
+References: <AANLkTikz1tOWnvTYXZ1Z3cBh+mZLZ_qz2sgmFS94fT3g@mail.gmail.com>
+ <AANLkTikR7ok7i+bv7yHS+3HpnsUCNdHyU9zvO=_JrNjQ@mail.gmail.com> <AANLkTikGkKeRXZOjVA=Rczts7f7VuEF9knRrpqmHxHGX@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id
-         :disposition-notification-to:date:from:user-agent:mime-version:to:cc
-         :subject:references:in-reply-to:content-type
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:mime-version:received:in-reply-to
+         :references:from:date:message-id:subject:to:cc:content-type
          :content-transfer-encoding;
-        bh=pBLWiJY1nu++gWqAjP+JsEeBsmSPDeBk7It/W2zr7lA=;
-        b=PXcnxzfnf4xs1JPC0xhNEHw9B4k7Hl0U249WCnDr5XouYIsSAG17mxIoqWgpYCV2zy
-         pL6sNBhrKH2I1+iomcrj2MDzdOtWJRxE3MH8ajEokDkDXcxNrSiLWt92MHVkpLUasBl4
-         Ul88oiRcjHiyJShvNPzFq1RuOglsscuTix79M=
-In-Reply-To: <alpine.DEB.2.00.1010010913200.11563@blackhole.kfki.hu>
+        bh=N+UX8f5SChrVia9eEVv2kl1sJMY/Eo375Si38ncZRTw=;
+        b=Yq1tQ/s7/pTjZQImrcQ5rN908tsTYEXPkA7sUJImR1lCe6yvm8HCtidNFHJ9EnRqJc
+         de0NXi3xmE5Te6RM76eRY2yP3kQnl+pLfmcBKmn64LhePgqsJXm/MGSFuauSdSzTZ0z/
+         YkASCWVYIgxNJU2SVH0Dyez2/i61ljh03nUWg=
+In-Reply-To: <AANLkTikGkKeRXZOjVA=Rczts7f7VuEF9knRrpqmHxHGX@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Mistick Levi <gmistick@gmail.com>
 Cc: netfilter@vger.kernel.org
 
+Hi Yechiel,
 
-> You should provide at least the following: kernel, iptables, ipset version 
-> numbers, the iptables rules and the (non)matching sets with the elements.
-> Without exact details I cannot help.
->   
-kernel-2.6.34.7-56.fc13.x86_64
-iptables-1.4.7-2.fc13.x86_64
-ipset 4.3
-xtables-addons 1.29
+Thank you so much. Now I have a better understanding about the problem.
 
-For the purpose of this small test, I am initiating a connection from 
-the local machine (10.1.2.7, network 10.1.2.0/24) to my other machine 
-(10.1.1.3, network 10.1.1.0/24) over ssh (port 22) and ask iptables to 
-match that and log it to the syslog.
+Sorry for asking more questions, because it was not easy to find
+documents describing how the netfilter_queue works..There are still
+few things I am not clear about:
 
-1. IP,port hash (non)match (trying to match source IP 10.1.2.7 with 
-destination port 22)
+* Verdicts: I am confused by the verdict and the return of the callback=
+=2E
 
-ipset -N double-set ipporthash --network 10.1.2.0/24
-ipset -A double-set 10.1.2.7,22
-ipset -L double-set
-==================
-Name: double-set
-Type: ipporthash
-References: 0
-Header: from: 10.1.2.0 to: 10.1.2.255 hashsize: 1024 probes: 8 resize: 50
-Members:
-10.1.2.7,22
-==================
+   From your description, I got the impression that I can issue
+verdict earlier in the callback, so even though the packet is still
+processed by the callback (i.e the callback() is not returned yet.),
+the kernel already can do something, say remove the packet out from
+the kernel buffer?
 
-iptables -A fw2net -p 6 -m set --match-set double-set src,dst -d 
-10.1.1.3 -g log0
+  What is the relationship between the buffer space and verdict and
+their relationship to the callback? Can the kernel or the
+netfileter_queue do anything before the callback() returns?
 
-==================
-Chain fw2net (1 references)
- pkts bytes target     prot opt in     out     source               
-destination        
-    0     0 blackout   all  --  *      *       0.0.0.0/0            
-0.0.0.0/0           ctstate INVALID,NEW
-    0     0 ACCEPT     all  --  *      *       0.0.0.0/0            
-0.0.0.0/0           ctstate RELATED,ESTABLISHED
-    0     0 log0       tcp  --  *      *       0.0.0.0/0            
-10.1.1.3            [goto] match-set double-set src,dst
-    0     0 ACCEPT     all  --  *      *       0.0.0.0/0            
-0.0.0.0/0          
-==================
+   How do I do "save that message in you're own userspace queue and
+issue verdict later..."? Do you mean that I can take the packet and
+put it into my own queue in the userspace and return the callback w/o
+issuing any verdict? What does the kernel or the netfilter_queue do to
+a packet that is w/o a verdict?
 
-After initiating a connection to 10.1.1.3:22 (check for matches):
-
-==================
-Chain fw2net (1 references)
- pkts bytes target     prot opt in     out     source               
-destination        
-    7   520 blackout   all  --  *      *       0.0.0.0/0            
-0.0.0.0/0           ctstate INVALID,NEW
-   11  1473 ACCEPT     all  --  *      *       0.0.0.0/0            
-0.0.0.0/0           ctstate RELATED,ESTABLISHED
-    0     0 log0       tcp  --  *      *       0.0.0.0/0            
-10.1.1.3            [goto] match-set double-set src,dst
-    7   520 ACCEPT     all  --  *      *       0.0.0.0/0            
-0.0.0.0/0          
-==================
-
-As you can see - there are NO matches!
+* What is the difference between queue_length and buffer space? Will
+the buffer space increase while the queue_lengh increases?
 
 
-2. IP,port,IP hash (non)match (trying to match source IP 10.1.2.7 with 
-destination port 22 and destination IP 10.1.1.3)
+--peter
 
-ipset -N tripple-set ipportiphash --network 10.1.2.0/24
-ipset -A tripple-set 10.1.2.7,22,10.1.1.3
-ipset -L tripple-set
-==================
-Name: tripple-set
-Type: ipportiphash
-References: 0
-Header: from: 10.1.2.0 to: 10.1.2.255 hashsize: 1024 probes: 8 resize: 50
-Members:
-10.1.2.7,22,10.1.1.3
-==================
 
-iptables -A fw2net -p 6 -m set --match-set tripple-set src,dst,dst -g log0
 
-==================
-Chain fw2net (1 references)
- pkts bytes target     prot opt in     out     source               
-destination         
-    0     0 blackout   all  --  *      *       0.0.0.0/0            
-0.0.0.0/0           ctstate INVALID,NEW
-    0     0 ACCEPT     all  --  *      *       0.0.0.0/0            
-0.0.0.0/0           ctstate RELATED,ESTABLISHED
-    0     0 log0       tcp  --  *      *       0.0.0.0/0            
-0.0.0.0/0           [goto] match-set tripple-set src,dst,dst
-    0     0 ACCEPT     all  --  *      *       0.0.0.0/0            
-0.0.0.0/0           
-==================
-
-After initiating a connection to 10.1.1.3:22 (check for matches):
-
-==================
-Chain fw2net (1 references)
- pkts bytes target     prot opt in     out     source               
-destination         
-    6   412 blackout   all  --  *      *       0.0.0.0/0            
-0.0.0.0/0           ctstate INVALID,NEW
-   10  1397 ACCEPT     all  --  *      *       0.0.0.0/0            
-0.0.0.0/0           ctstate RELATED,ESTABLISHED
-    0     0 log0       tcp  --  *      *       0.0.0.0/0            
-0.0.0.0/0           [goto] match-set tripple-set src,dst,dst
-    6   412 ACCEPT     all  --  *      *       0.0.0.0/0            
-0.0.0.0/0           
-==================
-
-As you can see - there are NO matches!
-
-3. IP,port,IP/cidr (non)match (trying to match source IP 10.1.2.7 with 
-destination port 22 and destination subnet 10.1.1.0/24)
-
-ipset -N tripple-set ipportnethash --network 10.1.2.0/24
-ipset -A tripple-set 10.1.2.7,22,10.1.1.0/24
-ipset -L tripple-set
-==================
-Name: tripple-set
-Type: ipportnethash
-References: 0
-Header: from: 10.1.2.0 to: 10.1.2.255 hashsize: 1024 probes: 8 resize: 50
-Members:
-10.1.2.7,22,10.1.1.0/24
-==================
-
-iptables -A fw2net -p 6 -m set --match-set tripple-set src,dst,dst -g log0
-
-==================
-Chain fw2net (1 references)
- pkts bytes target     prot opt in     out     source               
-destination        
-    0     0 blackout   all  --  *      *       0.0.0.0/0            
-0.0.0.0/0           ctstate INVALID,NEW
-    0     0 ACCEPT     all  --  *      *       0.0.0.0/0            
-0.0.0.0/0           ctstate RELATED,ESTABLISHED
-    0     0 log0       tcp  --  *      *       0.0.0.0/0            
-0.0.0.0/0           [goto] match-set tripple-set src,dst,dst
-    0     0 ACCEPT     all  --  *      *       0.0.0.0/0            
-0.0.0.0/0          
-==================
-
-After initiating a connection to 10.1.1.3:22 (check for matches):
-
-==================
-Chain fw2net (1 references)
- pkts bytes target     prot opt in     out     source               
-destination        
-    6   412 blackout   all  --  *      *       0.0.0.0/0            
-0.0.0.0/0           ctstate INVALID,NEW
-   11  1473 ACCEPT     all  --  *      *       0.0.0.0/0            
-0.0.0.0/0           ctstate RELATED,ESTABLISHED
-    0     0 log0       tcp  --  *      *       0.0.0.0/0            
-0.0.0.0/0           [goto] match-set tripple-set src,dst,dst
-    6   412 ACCEPT     all  --  *      *       0.0.0.0/0            
-0.0.0.0/0          
-==================
-
-As you can see - there are NO matches!
-
-So, in all three scenarios above there are NO matches! As I already 
-indicated - 1) I assume when I reverse the src and dst combinations in 
-all three scenarios above the result would be the same; and 2) When I 
-split up the above sets in the way I already indicated in my initial 
-post on this thread I am getting the correct matches, which leads me to 
-believe that either xtables has a bug and can't handle mixed src,dst 
-designations in the same set, or, I am doing something wrong. Which is it?
+2010/10/1 Mistick Levi <gmistick@gmail.com>:
+> Hi,
+>
+> the quick answer:
+> 1. don't die when you get "recv - failed" since it mean's you're
+> buffer is done, keep on the loop.
+> 2. don't do any heavy work on the callback.
+> 3. try to minimize I/O operations in you're callback, since they are
+> considered heavy, for example, writing to log will take "TONS" of
+> time...
+>
+> the "no buffer space available" issue is due to the program not
+> receiving packets fast enough and the allocated kernel buffer is
+> filling up with message's until you'll receive messages will keep on
+> dropping.
+>
+> what you should do is finish the callback function asap.
+> you could either:
+> =C2=A01. issue verdict faster..
+> 2. if you need to do some work on the packet before issue a verdict,
+> you could save that message in you're own userspace queue and issue
+> verdict later...
+>
+> the problem with the 2nd option is that now the "Queue length" of the
+> libnetfilter_queue will be filled... you could increase it too when
+> you initialize the queue, or when you with recv...
+>
+> Hope i've helped.
+>
+> Kind regards,
+> Yechiel Levi
+>
