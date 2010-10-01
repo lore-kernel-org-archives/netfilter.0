@@ -1,230 +1,39 @@
-From: Julian Anastasov <ja@ssi.bg>
-Subject: Re: [patch v2 03/12] [PATCH 03/12] IPVS: compact
- ip_vs_sched_persist()
-Date: Sat, 2 Oct 2010 01:35:28 +0300 (EEST)
-Message-ID: <alpine.LFD.2.00.1010020129400.2462@ja.ssi.bg>
-References: <20101001143517.645421976@akiko.akashicho.tokyo.vergenet.net> <20101001143941.949669349@akiko.akashicho.tokyo.vergenet.net>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: string and u32 modules
+Date: Sat, 2 Oct 2010 00:55:06 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1010020051300.26371@obet.zrqbmnf.qr>
+References: <AANLkTin8Uvd7z0ty6urts2oy53mL=TCE0=r7O7g902HH@mail.gmail.com> <AANLkTim4g7nUd1PV=1Dnwybr=t_DVh4cT9iuZP6xESrO@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <lvs-devel-owner@vger.kernel.org>
-In-Reply-To: <20101001143941.949669349@akiko.akashicho.tokyo.vergenet.net>
-Sender: lvs-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <AANLkTim4g7nUd1PV=1Dnwybr=t_DVh4cT9iuZP6xESrO@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: Simon Horman <horms@verge.net.au>
-Cc: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Jan Engelhardt <jengelh@medozas.de>, Stephen Hemminger <shemminger@vyatta.com>, Wensong Zhang <wensong@linux-vs.org>, Patrick McHardy <kaber@trash.net>
+Content-Type: TEXT/PLAIN; charset="utf-8"
+To: Greg Oliver <oliver.greg@gmail.com>
+Cc: netfilter@vger.kernel.org
 
 
- 	Hello,
+On Saturday 2010-09-25 20:12, Greg Oliver wrote:
+>> 19:40:13.666679 IP ghost.29364 > ccs1.25862: UDP, length 13
+>> =C2=A0 =C2=A0 =C2=A0 =C2=A00x0000: =C2=A045b8 0029 95cd 0000 3d11 9c=
+86 c0a8 6476 =C2=A0E..)....=3D.....dv
+>> =C2=A0 =C2=A0 =C2=A0 =C2=A00x0010: =C2=A0c0a8 64f1 72b4 6506 0015 bb=
+c9 800d 9f6b =C2=A0..d.r.e........k
+>> =C2=A0 =C2=A0 =C2=A0 =C2=A00x0020: =C2=A07c06 b562 a690 c613 6400 00=
+00 0000 =C2=A0 =C2=A0 =C2=A0 |..b....d.....
+>>
+>> 800d is what I want to catch in bytes 27,28...
 
-On Fri, 1 Oct 2010, Simon Horman wrote:
+But 800D is at position 0x1C =3D 28 (counting from 0), so
 
-> Compact ip_vs_sched_persist() by setting up parameters
-> and calling functions once.
->
-> Signed-off-by: Simon Horman <horms@verge.net.au>
-> ---
->
-> v2
-> * Make "union nf_inet_addr fwmark" const
-> * Don't remove the comment next to the declaration of dport
-> * Add a comment to the declaration of vport
->
-> Index: lvs-test-2.6/net/netfilter/ipvs/ip_vs_core.c
-> ===================================================================
-> --- lvs-test-2.6.orig/net/netfilter/ipvs/ip_vs_core.c	2010-10-01 21:56:39.000000000 +0900
-> +++ lvs-test-2.6/net/netfilter/ipvs/ip_vs_core.c	2010-10-01 22:02:41.000000000 +0900
-> @@ -193,10 +193,14 @@ ip_vs_sched_persist(struct ip_vs_service
-> 	struct ip_vs_iphdr iph;
-> 	struct ip_vs_dest *dest;
-> 	struct ip_vs_conn *ct;
-> -	__be16  dport;			/* destination port to forward */
-> +	int protocol = iph.protocol;
-> +	__be16 dport = 0;		/* destination port to forward */
-> +	__be16 vport = 0;		/* virtual service port */
-> 	unsigned int flags;
-> 	union nf_inet_addr snet;	/* source network of the client,
-> 					   after masking */
-> +	const union nf_inet_addr fwmark = { .ip = htonl(svc->fwmark) };
-> +	const union nf_inet_addr *vaddr = &iph.daddr;
->
-> 	ip_vs_fill_iphdr(svc->af, skb_network_header(skb), &iph);
->
-> @@ -227,119 +231,58 @@ ip_vs_sched_persist(struct ip_vs_service
-> 	 * service, and a template like <caddr, 0, vaddr, vport, daddr, dport>
-> 	 * is created for other persistent services.
-> 	 */
-> -	if (ports[1] == svc->port) {
-> -		/* Check if a template already exists */
-> -		if (svc->port != FTPPORT)
-> -			ct = ip_vs_ct_in_get(svc->af, iph.protocol, &snet, 0,
-> -					     &iph.daddr, ports[1]);
-> -		else
-> -			ct = ip_vs_ct_in_get(svc->af, iph.protocol, &snet, 0,
-> -					     &iph.daddr, 0);
-> -
-> -		if (!ct || !ip_vs_check_template(ct)) {
-> -			/*
-> -			 * No template found or the dest of the connection
-> -			 * template is not available.
-> -			 */
-> -			dest = svc->scheduler->schedule(svc, skb);
-> -			if (dest == NULL) {
-> -				IP_VS_DBG(1, "p-schedule: no dest found.\n");
-> -				return NULL;
-> -			}
-> -
-> -			/*
-> -			 * Create a template like <protocol,caddr,0,
-> -			 * vaddr,vport,daddr,dport> for non-ftp service,
-> -			 * and <protocol,caddr,0,vaddr,0,daddr,0>
-> -			 * for ftp service.
-> +	{
-> +		if (ports[1] == svc->port) {
-> +			/* non-FTP template:
-> +			 * <protocol, caddr, 0, vaddr, vport, daddr, dport>
-> +			 * FTP template:
-> +			 * <protocol, caddr, 0, vaddr, 0, daddr, 0>
-> 			 */
-> 			if (svc->port != FTPPORT)
-> -				ct = ip_vs_conn_new(svc->af, iph.protocol,
-> -						    &snet, 0,
-> -						    &iph.daddr,
-> -						    ports[1],
-> -						    &dest->addr, dest->port,
-> -						    IP_VS_CONN_F_TEMPLATE,
-> -						    dest);
-> -			else
-> -				ct = ip_vs_conn_new(svc->af, iph.protocol,
-> -						    &snet, 0,
-> -						    &iph.daddr, 0,
-> -						    &dest->addr, 0,
-> -						    IP_VS_CONN_F_TEMPLATE,
-> -						    dest);
-> -			if (ct == NULL)
-> -				return NULL;
-> -
-> -			ct->timeout = svc->timeout;
-> +				vport = ports[1];
-> 		} else {
-> -			/* set destination with the found template */
-> -			dest = ct->dest;
-> -		}
-> -		dport = dest->port;
-> -	} else {
-> -		/*
-> -		 * Note: persistent fwmark-based services and persistent
-> -		 * port zero service are handled here.
-> -		 * fwmark template: <IPPROTO_IP,caddr,0,fwmark,0,daddr,0>
-> -		 * port zero template: <protocol,caddr,0,vaddr,0,daddr,0>
-> -		 */
-> -		if (svc->fwmark) {
-> -			union nf_inet_addr fwmark = {
-> -				.ip = htonl(svc->fwmark)
-> -			};
-> -
-> -			ct = ip_vs_ct_in_get(svc->af, IPPROTO_IP, &snet, 0,
-> -					     &fwmark, 0);
-> -		} else
-> -			ct = ip_vs_ct_in_get(svc->af, iph.protocol, &snet, 0,
-> -					     &iph.daddr, 0);
-> -
-> -		if (!ct || !ip_vs_check_template(ct)) {
-> -			/*
-> -			 * If it is not persistent port zero, return NULL,
-> -			 * otherwise create a connection template.
-> +			/* Note: persistent fwmark-based services and
-> +			 * persistent port zero service are handled here.
-> +			 * fwmark template:
-> +			 * <IPPROTO_IP,caddr,0,fwmark,0,daddr,0>
-> +			 * port zero template:
-> +			 * <protocol,caddr,0,vaddr,0,daddr,0>
-> 			 */
-> -			if (svc->port)
-> -				return NULL;
-> -
-> -			dest = svc->scheduler->schedule(svc, skb);
-> -			if (dest == NULL) {
-> -				IP_VS_DBG(1, "p-schedule: no dest found.\n");
-> -				return NULL;
-> +			if (svc->fwmark) {
-> +				protocol = IPPROTO_IP;
-> +				vaddr = &fwmark;
-> 			}
-> +		}
-> +	}
->
-> -			/*
-> -			 * Create a template according to the service
-> -			 */
-> -			if (svc->fwmark) {
-> -				union nf_inet_addr fwmark = {
-> -					.ip = htonl(svc->fwmark)
-> -				};
-> -
-> -				ct = ip_vs_conn_new(svc->af, IPPROTO_IP,
-> -						    &snet, 0,
-> -						    &fwmark, 0,
-> -						    &dest->addr, 0,
-> -						    IP_VS_CONN_F_TEMPLATE,
-> -						    dest);
-> -			} else
-> -				ct = ip_vs_conn_new(svc->af, iph.protocol,
-> -						    &snet, 0,
-> -						    &iph.daddr, 0,
-> -						    &dest->addr, 0,
-> -						    IP_VS_CONN_F_TEMPLATE,
-> -						    dest);
-> -			if (ct == NULL)
-> -				return NULL;
-> +	/* Check if a template already exists */
-> +	ct = ip_vs_ct_in_get(svc->af, protocol, &snet, 0, vaddr, vport);
->
-> -			ct->timeout = svc->timeout;
-> -		} else {
-> -			/* set destination with the found template */
-> -			dest = ct->dest;
-> +	if (!ct || !ip_vs_check_template(ct)) {
-> +		/* No template found or the dest of the connection
-> +		 * template is not available.
-> +		 */
-> +		dest = svc->scheduler->schedule(svc, skb);
-> +		if (!dest) {
-> +			IP_VS_DBG(1, "p-schedule: no dest found.\n");
-> +			return NULL;
-> 		}
-> -		dport = ports[1];
-> -	}
-> +
-> +		if (ports[1] == svc->port && svc->port != FTPPORT)
-> +			dport = dest->port;
-> +
-> +		/* Create a template */
-> +		ct = ip_vs_conn_new(svc->af, protocol, &snet, 0,vaddr, vport,
-> +				    &dest->addr, dport,
-> +				    IP_VS_CONN_F_TEMPLATE, dest);
-> +		if (ct == NULL)
-> +			return NULL;
-> +
-> +		ct->timeout = svc->timeout;
-> +	} else
-> +		/* set destination with the found template */
-> +		dest = ct->dest;
+>> -A INPUT -m u32 --u32 "0>>22&0x3C@6=3D0x800D" -j LOG --log-prefix "C=
+NOISE: "
+>> -A INPUT -m u32 --u32 "26&0xFFFF=3D0x800D" -j LOG --log-prefix "CNOI=
+SE: "
 
- 	Here dport:
+ --u32 "28 >> 16 & 0xFFFF =3D 0x800D"
 
-> +	dport = dest->port;
+or with the IPv4 header,
 
- 	should be:
-
- 	dport = ports[1];
- 	if (dport == svc->port && dest->port)
- 		dport = dest->port;
-
-> 	flags = (svc->flags & IP_VS_SVC_F_ONEPACKET
-> 		 && iph.protocol == IPPROTO_UDP)?
-
-Regards
-
---
-Julian Anastasov <ja@ssi.bg>
+ --u32 "0 >> 22 & 0x3C @ 8 >> 16 & 0xFFFF =3D 0x800D"
