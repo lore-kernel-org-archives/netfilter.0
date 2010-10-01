@@ -1,38 +1,37 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset-4.4 released
-Date: Fri, 1 Oct 2010 23:02:38 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1010012214250.19669@blackhole.kfki.hu>
+Subject: Re: ipporthash, ipportiphash, ipportnethash problems
+Date: Fri, 1 Oct 2010 23:05:47 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1010012302530.19869@blackhole.kfki.hu>
+References: <4CA5091B.1090200@googlemail.com> <alpine.DEB.2.00.1010010913200.11563@blackhole.kfki.hu> <4CA5C48E.9010603@googlemail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4CA5C48E.9010603@googlemail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: Mr Dash Four <mr.dash.four@googlemail.com>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+On Fri, 1 Oct 2010, Mr Dash Four wrote:
 
-ipset-4.4 has just been released with one important fix and some small 
-corrections:
+> > You should provide at least the following: kernel, iptables, ipset version
+> > numbers, the iptables rules and the (non)matching sets with the elements.
+> > Without exact details I cannot help.
+> >   
+> kernel-2.6.34.7-56.fc13.x86_64
+> iptables-1.4.7-2.fc13.x86_64
+> ipset 4.3
+> xtables-addons 1.29
+> 
+> For the purpose of this small test, I am initiating a connection from the
+> local machine (10.1.2.7, network 10.1.2.0/24) to my other machine (10.1.1.3,
+> network 10.1.1.0/24) over ssh (port 22) and ask iptables to match that and log
+> it to the syslog.
+[...]
 
-Kernel part changes:
-  - The ipporthash, ipportiphash and ipportnethash set types did 
-    not work with mixed "src" and "dst" direction parameters of the "set" 
-    and  "SET" iptables match and target (reported by Dash Four)
-  - Errorneous semaphore handling in error path fixed (reported by 
-    Jan Engelhardt, bugzilla id 668) 
-
-Userspace changes:
-   - Manpage fix to make it clear how ipset works on setlist type 
-     of sets (John Brendler, bugzilla id 640) 
-
-Please note, if you use ipporthash, ipportiphash or ipportnethash type of 
-sets with mixed direction parameters of the "set" and "SET" iptables match 
-and target, then you must upgrade.
-
-You can download the new version from the usual places:
-	http://ipset.netfilter.org
-	git://git.netfilter.org/ipset.git
+Thanks for the complete description - I have just released ipset 4.4 which 
+fixes this nasty bug.
 
 Best regards,
 Jozsef
