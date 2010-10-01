@@ -1,231 +1,196 @@
-From: Mistick Levi <gmistick@gmail.com>
-Subject: Re: nfqnl_test exits abnormally while monitoring some TCP packets.
-Date: Fri, 1 Oct 2010 12:25:28 +0200
-Message-ID: <AANLkTikGkKeRXZOjVA=Rczts7f7VuEF9knRrpqmHxHGX@mail.gmail.com>
-References: <AANLkTikz1tOWnvTYXZ1Z3cBh+mZLZ_qz2sgmFS94fT3g@mail.gmail.com> <AANLkTikR7ok7i+bv7yHS+3HpnsUCNdHyU9zvO=_JrNjQ@mail.gmail.com>
+From: Mr Dash Four <mr.dash.four@googlemail.com>
+Subject: Re: ipporthash, ipportiphash, ipportnethash problems
+Date: Fri, 01 Oct 2010 12:22:54 +0100
+Message-ID: <4CA5C48E.9010603@googlemail.com>
+References: <4CA5091B.1090200@googlemail.com> <alpine.DEB.2.00.1010010913200.11563@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:mime-version:received:in-reply-to
-         :references:from:date:message-id:subject:to:cc:content-type
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id
+         :disposition-notification-to:date:from:user-agent:mime-version:to:cc
+         :subject:references:in-reply-to:content-type
          :content-transfer-encoding;
-        bh=q31/fFQ0f5p99+px4Hc+YKZkiCZ3+rHx0gGjsQFLy1w=;
-        b=rQqRWEyAsjTYjHv/+Y2W3ViyubGXXkitQFVN6fSb0kDDH9O3M0gmeYsOdiklgfgVm1
-         9SDZT1RVXKsGBSJtvwJS/eakW+S7MSJ8fJodehRdidJJ6K91nIIK1Y1xK/ZjBZBaPEdJ
-         CtFoCpZe6wM9irr4iImpj5O9O5VB98vswjH/E=
-In-Reply-To: <AANLkTikR7ok7i+bv7yHS+3HpnsUCNdHyU9zvO=_JrNjQ@mail.gmail.com>
+        bh=pBLWiJY1nu++gWqAjP+JsEeBsmSPDeBk7It/W2zr7lA=;
+        b=PXcnxzfnf4xs1JPC0xhNEHw9B4k7Hl0U249WCnDr5XouYIsSAG17mxIoqWgpYCV2zy
+         pL6sNBhrKH2I1+iomcrj2MDzdOtWJRxE3MH8ajEokDkDXcxNrSiLWt92MHVkpLUasBl4
+         Ul88oiRcjHiyJShvNPzFq1RuOglsscuTix79M=
+In-Reply-To: <alpine.DEB.2.00.1010010913200.11563@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Shihwei Li <lishihwei@gmail.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: netfilter@vger.kernel.org
 
-Hi,
 
-the quick answer:
-1. don't die when you get "recv - failed" since it mean's you're
-buffer is done, keep on the loop.
-2. don't do any heavy work on the callback.
-3. try to minimize I/O operations in you're callback, since they are
-considered heavy, for example, writing to log will take "TONS" of
-time...
+> You should provide at least the following: kernel, iptables, ipset version 
+> numbers, the iptables rules and the (non)matching sets with the elements.
+> Without exact details I cannot help.
+>   
+kernel-2.6.34.7-56.fc13.x86_64
+iptables-1.4.7-2.fc13.x86_64
+ipset 4.3
+xtables-addons 1.29
 
-the "no buffer space available" issue is due to the program not
-receiving packets fast enough and the allocated kernel buffer is
-filling up with message's until you'll receive messages will keep on
-dropping.
+For the purpose of this small test, I am initiating a connection from 
+the local machine (10.1.2.7, network 10.1.2.0/24) to my other machine 
+(10.1.1.3, network 10.1.1.0/24) over ssh (port 22) and ask iptables to 
+match that and log it to the syslog.
 
-what you should do is finish the callback function asap.
-you could either:
- 1. issue verdict faster..
-2. if you need to do some work on the packet before issue a verdict,
-you could save that message in you're own userspace queue and issue
-verdict later...
+1. IP,port hash (non)match (trying to match source IP 10.1.2.7 with 
+destination port 22)
 
-the problem with the 2nd option is that now the "Queue length" of the
-libnetfilter_queue will be filled... you could increase it too when
-you initialize the queue, or when you with recv...
+ipset -N double-set ipporthash --network 10.1.2.0/24
+ipset -A double-set 10.1.2.7,22
+ipset -L double-set
+==================
+Name: double-set
+Type: ipporthash
+References: 0
+Header: from: 10.1.2.0 to: 10.1.2.255 hashsize: 1024 probes: 8 resize: 50
+Members:
+10.1.2.7,22
+==================
 
-Hope i've helped.
+iptables -A fw2net -p 6 -m set --match-set double-set src,dst -d 
+10.1.1.3 -g log0
 
-Kind regards,
-Yechiel Levi
+==================
+Chain fw2net (1 references)
+ pkts bytes target     prot opt in     out     source               
+destination        
+    0     0 blackout   all  --  *      *       0.0.0.0/0            
+0.0.0.0/0           ctstate INVALID,NEW
+    0     0 ACCEPT     all  --  *      *       0.0.0.0/0            
+0.0.0.0/0           ctstate RELATED,ESTABLISHED
+    0     0 log0       tcp  --  *      *       0.0.0.0/0            
+10.1.1.3            [goto] match-set double-set src,dst
+    0     0 ACCEPT     all  --  *      *       0.0.0.0/0            
+0.0.0.0/0          
+==================
+
+After initiating a connection to 10.1.1.3:22 (check for matches):
+
+==================
+Chain fw2net (1 references)
+ pkts bytes target     prot opt in     out     source               
+destination        
+    7   520 blackout   all  --  *      *       0.0.0.0/0            
+0.0.0.0/0           ctstate INVALID,NEW
+   11  1473 ACCEPT     all  --  *      *       0.0.0.0/0            
+0.0.0.0/0           ctstate RELATED,ESTABLISHED
+    0     0 log0       tcp  --  *      *       0.0.0.0/0            
+10.1.1.3            [goto] match-set double-set src,dst
+    7   520 ACCEPT     all  --  *      *       0.0.0.0/0            
+0.0.0.0/0          
+==================
+
+As you can see - there are NO matches!
 
 
-On Thu, Sep 30, 2010 at 10:34 PM, Shihwei Li <lishihwei@gmail.com> wrot=
-e:
-> Hi,
->
-> More information about the problem. I added perror() to the
-> nfqnl_test.c, it seems that there no buffer space available. Anyway t=
-o
-> increase the buffer space? Thanks.
->
-> --peter
->
-> entering callback
-> pkt received
-> hw_protocol=3D0x0800 hook=3D3 id=3D148 outdev=3D2 payload_len=3D1500
-> entering callback
-> recv:: No buffer space available
-> unbinding from queue 0
-> =A0rv=3D-1
-> , errorno=3D29
->
->
-> 2010/9/30 Shihwei Li <lishihwei@gmail.com>:
->> Hi,
->>
->> I am new to libnetfilter_queue and I need some helps. In short, I us=
-ed
->> the distributed nfqnl_test.c to monitor some HTTP/TCP packets and th=
-e
->> nfqnl_test exits abnormally.
->>
->> I will try to describe my situation as accurately as possible.
->>
->> I plan to develop a program upon libnetfilter_queue to filter/inspec=
-t
->> some HTTP/TCP packets.
->> As a starter, I tried to run the test program, nfqnl_test.c from the
->> libnetfilter_queue distribution.
->>
->> Here is what I did:
->> * Set up a simple python http server on port 50007.
->> (http://docs.python.org/library/basehttpserver.html)
->>
->> * Running iptables rules to pipe outgoing tcp packets from port 5000=
-7
->> to the queue 0:
->> ** The rule is " /sbin/iptables -A OUTPUT -p tcp --sport 50007 -j
->> NFQUEUE --queue-num 0"
->> ** The iptables output is
->>
->> =A0 =A0 Chain OUTPUT (policy ACCEPT)
->> =A0 =A0 target =A0 =A0 prot opt source =A0 =A0 =A0 =A0 =A0 =A0 =A0 d=
-estination
->> =A0 =A0 NFQUEUE =A0 =A0tcp =A0-- =A0anywhere =A0 =A0 =A0 =A0 =A0 =A0=
- anywhere =A0 =A0 =A0 =A0 =A0 =A0tcp
->> spt:50007 NFQUEUE num 0
->>
->> * Running the nfqnl_test program on the web server side.
->>
->> * On another machine, open a web browser, and connect to the python =
-web server.
->>
->> Everything went well, the browser could browse normally, and
->> nfqnl_test on the server side could print the outgoing TCP packets
->> info and reinject the packet into the queue ( verdict=3D NF_ACCEPT).
->>
->> UNTIL (see below) when the browser started to try to download (or
->> open) a (big) zip file on the server side. The nfqnl_test program
->> always exited from the callback loop during the middle of file
->> downloading. I repeated five or so times (even trying open different
->> file), the behavior is quite persistent.
->>
->> Is it possible a bug in the system? Or did I use the nfqnl_test
->> wrongly? Or something else? Any suggestion?
->> Thanks a lot.
->>
->> --peter
->>
->> Here are the details of my system:
->>
->> * OS: =A0Linux .. 2.6.21-2950.fc8xen #1 SMP Tue Oct 23 12:24:34 EDT =
-2007
->> i686 i686 i386 GNU/Linux
->> * libnfnetlink-1.0.0
->> * libnetfilter_queue-1.0.0
->> * iptables v1.3.8
->>
->>
->> Here is the output of the nfqnl_test:
->>
->> [root@ar21-222 utils]# ./nfqnl_test
->> opening library handle
->> unbinding existing nf_queue handler for AF_INET (if any)
->> binding nfnetlink_queue as nf_queue handler for AF_INET
->> binding this socket to queue '0'
->> setting copy_packet mode
->> pkt received
->> hw_protocol=3D0x0000 hook=3D3 id=3D1 outdev=3D2 payload_len=3D60
->> entering callback
->> pkt received
->> hw_protocol=3D0x0000 hook=3D3 id=3D2 outdev=3D2 payload_len=3D52
->> entering callback
->> pkt received
->> hw_protocol=3D0x0000 hook=3D3 id=3D3 outdev=3D2 payload_len=3D52
->> entering callback
->> pkt received
->> hw_protocol=3D0x0000 hook=3D3 id=3D4 outdev=3D2 payload_len=3D1500
->> entering callback
->> pkt received
->> hw_protocol=3D0x0000 hook=3D3 id=3D5 outdev=3D2 payload_len=3D69
->> entering callback
->> pkt received
->> hw_protocol=3D0x0000 hook=3D3 id=3D6 outdev=3D2 payload_len=3D1500
->> entering callback
->> pkt received
->> hw_protocol=3D0x0000 hook=3D3 id=3D7 outdev=3D2 payload_len=3D60
->> entering callback
->> pkt received
->> hw_protocol=3D0x0000 hook=3D3 id=3D8 outdev=3D2 payload_len=3D52
->> ....
->> hw_protocol=3D0x0800 hook=3D3 id=3D366 outdev=3D2 payload_len=3D1500
->> entering callback
->> pkt received
->> hw_protocol=3D0x0800 hook=3D3 id=3D367 outdev=3D2 payload_len=3D1500
->> entering callback
->> pkt received
->> hw_protocol=3D0x0800 hook=3D3 id=3D368 outdev=3D2 payload_len=3D1500
->> entering callback
->> pkt received
->> hw_protocol=3D0x0800 hook=3D3 id=3D369 outdev=3D2 payload_len=3D1500
->> entering callback
->> pkt received
->> hw_protocol=3D0x0800 hook=3D3 id=3D370 outdev=3D2 payload_len=3D1500
->> entering callback
->> pkt received
->> hw_protocol=3D0x0800 hook=3D3 id=3D371 outdev=3D2 payload_len=3D1500
->> entering callback
->> unbinding from queue 0 =A0 <---------------------------------out fro=
-m the loop
->> hw_protocol=3D0x0800 hook=3D3 id=3D372 outdev=3D2 payload_len=3D1500
->> entering callback
->> hw_protocol=3D0x0800 hook=3D3 id=3D373 outdev=3D2 payload_len=3D1500
->> entering callback
->> hw_protocol=3D0x0800 hook=3D3 id=3D374 outdev=3D2 payload_len=3D1500
->> entering callback
->> hw_protocol=3D0x0800 hook=3D3 id=3D375 outdev=3D2 payload_len=3D1500
->> entering callback
->> hw_protocol=3D0x0800 hook=3D3 id=3D376 outdev=3D2 payload_len=3D1500
->> entering callback
->> hw_protocol=3D0x0800 hook=3D3 id=3D377 outdev=3D2 payload_len=3D1500
->> entering callback
->> hw_protocol=3D0x0800 hook=3D3 id=3D378 outdev=3D2 payload_len=3D1500
->> entering callback
->> ...
->> hw_protocol=3D0x0800 hook=3D3 id=3D426 outdev=3D2 payload_len=3D1500
->> entering callback
->> hw_protocol=3D0x0800 hook=3D3 id=3D427 outdev=3D2 payload_len=3D1500
->> entering callback
->> hw_protocol=3D0x0800 hook=3D3 id=3D428 outdev=3D2 payload_len=3D1500
->> entering callback
->> hw_protocol=3D0x0800 hook=3D3 id=3D429 outdev=3D2 payload_len=3D1500
->> entering callback
->> hw_protocol=3D0x0800 hook=3D3 id=3D430 outdev=3D2 payload_len=3D1500
->> entering callback
->> hw_protocol=3D0x0800 hook=3D3 id=3D431 outdev=3D2 payload_len=3D1500
->> entering callback
->> hw_protocol=3D0x0800 hook=3D3 id=3D432 outdev=3D2 payload_len=3D1500
->> entering callback
->> closing library handle =A0<---- finish close the library
->>
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
+2. IP,port,IP hash (non)match (trying to match source IP 10.1.2.7 with 
+destination port 22 and destination IP 10.1.1.3)
+
+ipset -N tripple-set ipportiphash --network 10.1.2.0/24
+ipset -A tripple-set 10.1.2.7,22,10.1.1.3
+ipset -L tripple-set
+==================
+Name: tripple-set
+Type: ipportiphash
+References: 0
+Header: from: 10.1.2.0 to: 10.1.2.255 hashsize: 1024 probes: 8 resize: 50
+Members:
+10.1.2.7,22,10.1.1.3
+==================
+
+iptables -A fw2net -p 6 -m set --match-set tripple-set src,dst,dst -g log0
+
+==================
+Chain fw2net (1 references)
+ pkts bytes target     prot opt in     out     source               
+destination         
+    0     0 blackout   all  --  *      *       0.0.0.0/0            
+0.0.0.0/0           ctstate INVALID,NEW
+    0     0 ACCEPT     all  --  *      *       0.0.0.0/0            
+0.0.0.0/0           ctstate RELATED,ESTABLISHED
+    0     0 log0       tcp  --  *      *       0.0.0.0/0            
+0.0.0.0/0           [goto] match-set tripple-set src,dst,dst
+    0     0 ACCEPT     all  --  *      *       0.0.0.0/0            
+0.0.0.0/0           
+==================
+
+After initiating a connection to 10.1.1.3:22 (check for matches):
+
+==================
+Chain fw2net (1 references)
+ pkts bytes target     prot opt in     out     source               
+destination         
+    6   412 blackout   all  --  *      *       0.0.0.0/0            
+0.0.0.0/0           ctstate INVALID,NEW
+   10  1397 ACCEPT     all  --  *      *       0.0.0.0/0            
+0.0.0.0/0           ctstate RELATED,ESTABLISHED
+    0     0 log0       tcp  --  *      *       0.0.0.0/0            
+0.0.0.0/0           [goto] match-set tripple-set src,dst,dst
+    6   412 ACCEPT     all  --  *      *       0.0.0.0/0            
+0.0.0.0/0           
+==================
+
+As you can see - there are NO matches!
+
+3. IP,port,IP/cidr (non)match (trying to match source IP 10.1.2.7 with 
+destination port 22 and destination subnet 10.1.1.0/24)
+
+ipset -N tripple-set ipportnethash --network 10.1.2.0/24
+ipset -A tripple-set 10.1.2.7,22,10.1.1.0/24
+ipset -L tripple-set
+==================
+Name: tripple-set
+Type: ipportnethash
+References: 0
+Header: from: 10.1.2.0 to: 10.1.2.255 hashsize: 1024 probes: 8 resize: 50
+Members:
+10.1.2.7,22,10.1.1.0/24
+==================
+
+iptables -A fw2net -p 6 -m set --match-set tripple-set src,dst,dst -g log0
+
+==================
+Chain fw2net (1 references)
+ pkts bytes target     prot opt in     out     source               
+destination        
+    0     0 blackout   all  --  *      *       0.0.0.0/0            
+0.0.0.0/0           ctstate INVALID,NEW
+    0     0 ACCEPT     all  --  *      *       0.0.0.0/0            
+0.0.0.0/0           ctstate RELATED,ESTABLISHED
+    0     0 log0       tcp  --  *      *       0.0.0.0/0            
+0.0.0.0/0           [goto] match-set tripple-set src,dst,dst
+    0     0 ACCEPT     all  --  *      *       0.0.0.0/0            
+0.0.0.0/0          
+==================
+
+After initiating a connection to 10.1.1.3:22 (check for matches):
+
+==================
+Chain fw2net (1 references)
+ pkts bytes target     prot opt in     out     source               
+destination        
+    6   412 blackout   all  --  *      *       0.0.0.0/0            
+0.0.0.0/0           ctstate INVALID,NEW
+   11  1473 ACCEPT     all  --  *      *       0.0.0.0/0            
+0.0.0.0/0           ctstate RELATED,ESTABLISHED
+    0     0 log0       tcp  --  *      *       0.0.0.0/0            
+0.0.0.0/0           [goto] match-set tripple-set src,dst,dst
+    6   412 ACCEPT     all  --  *      *       0.0.0.0/0            
+0.0.0.0/0          
+==================
+
+As you can see - there are NO matches!
+
+So, in all three scenarios above there are NO matches! As I already 
+indicated - 1) I assume when I reverse the src and dst combinations in 
+all three scenarios above the result would be the same; and 2) When I 
+split up the above sets in the way I already indicated in my initial 
+post on this thread I am getting the correct matches, which leads me to 
+believe that either xtables has a bug and can't handle mixed src,dst 
+designations in the same set, or, I am doing something wrong. Which is it?
