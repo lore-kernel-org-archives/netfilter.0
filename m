@@ -1,71 +1,73 @@
 From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: ipporthash, ipportiphash, ipportnethash problems
-Date: Sat, 2 Oct 2010 22:40:10 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1010022229480.13529@obet.zrqbmnf.qr>
-References: <4CA5091B.1090200@googlemail.com> <alpine.DEB.2.00.1010010913200.11563@blackhole.kfki.hu> <4CA5C48E.9010603@googlemail.com> <alpine.DEB.2.00.1010012302530.19869@blackhole.kfki.hu> <4CA70B3B.90001@googlemail.com> <alpine.DEB.2.00.1010022104571.23216@blackhole.kfki.hu>
- <4CA79133.3070608@googlemail.com>
+Subject: Re: netfilter and IPsec?
+Date: Sat, 2 Oct 2010 22:51:03 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1010022245280.13529@obet.zrqbmnf.qr>
+References: <20101002201135.20008i4gzdc62t3s@webmail.physik.uni-muenchen.de>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4CA79133.3070608@googlemail.com>
+In-Reply-To: <20101002201135.20008i4gzdc62t3s@webmail.physik.uni-muenchen.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
-Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, netfilter@vger.kernel.org
+To: Christoph Anton Mitterer <christoph.anton.mitterer@physik.uni-muenchen.de>
+Cc: netfilter@vger.kernel.org
 
 
-On Saturday 2010-10-02 22:08, Mr Dash Four wrote:
->>
->>It's absolutely up to you: currently ipset can be installed alone,
->>or as a part of xtables-addons. Jan updates xtables-addons quite
->>reqularly.
+On Saturday 2010-10-02 20:11, Christoph Anton Mitterer wrote:
 >
->I just taken the latest git from xtables-addons and it is not there.
-
-Well give me a little leeway. It hasn't even been 24 hours since 4.4.
-
->>>2. I used to get the xtables .src.rpm from which to compile the
->>>code and make an installation rpm. I don't seem to be able to do
->>>that any longer as all fedora repos are too slow to update the
->>>latest changes. Do you have a link from which I could get the
->>>latest changes in ipset/xtables in src.rpm.
-
-What is sad too is that Fedora has had so far no interest (or perhaps
-just no maintainer) to take it up into the distro.
-
->>No, I'm not aware of the source rpm for ipset. That's bad if there's one
->>out there without refreshed.   
+> What I want to do is:
+> 1) allow key negotiation
+> 2) reject any traffic from hostA to hostB that is NOT secured with esp,
+> otherwise (e.g. in case strongswan crashes or so). Packets which are secured
+> using esp, should not automatically be accepted however.
+> 3) optionally, allow exceptions from 2, when e.g. the protocol is already
+> secured (e.g. TSIG with DNS).
 >
->This is a major headache for me for 2 reasons:
+> So I started with about this (rules from hostA):
+> *filter
 >
->1. I use 'rpmbuild' to compile from source as it allows me to build
->rpms for different architectures (I compile on x86_64 for i686 with
->'rpmbuild --target=xxx'). If I use 'ordinary' make there is no way
->(at least I don't know of any) I could compile for different
->architecture.
+> #allow IKE to/from these hosts without IPsec
+> -A ipsec-only   --protocol udp  -m udp  --source-port isakmp
+> --destination-port isakmp -j ACCEPT
+> -A ipsec-only   --protocol udp  -m udp  --source-port isakmp-nat
+> --destination-port isakmp-nat -j ACCEPT
 
->Even if I solve problem No 2 (i.e. by tar-ing the necessary modules and
->executables) I can't see a way to get past compiling for a different
->architecture (and resolve all the dependencies)! Any ideas?
+But in the NAT scenario, the source port may no longer be 4500.
+I think you want --dport here in both cases.
 
-You could use the openSUSE Build Service to produce packages for
-various distributions (including Fedora) and the two archs. It should
-be possible to include Fedora-specific blocks in the preexisting
-xtables-addons.spec too.
+> #otherwise, deny all non IPsec ESP to/from these hosts
+> -A ipsec-only   --protocol !esp -j REJECT  --reject-with icmp-admin-prohibited
+>
+> #other rules e.g.
+> # Allow incomming packets for the nameserver
+> -A INPUT        --destination eth0.localhost  --protocol udp  -m udp
+> --destination-port domain         -j ACCEPT
+> -A INPUT        --destination eth0.localhost  --protocol tcp  -m tcp
+> --destination-port domain  --syn  -j ACCEPT
+>
+>
+> 1) As you see, I tried to first allow from/to hostB: udp/500 and udp/4500 for
+> the key negotiations.
 
->2. rpmbuild also allow me to pack the necessary binaries
->(executables & modules/.ko files) for the target architecture to be
->transferred to the target machine - conveniently in rpm which could
->be installed (together with the necessary dependencies) as part of
->the target image building process.
+4500 is also used for espinudp transport, not just IKE.
 
-Yeah but rpmbuild is often run in a jailed environment (for various
-definitions of "jail"; ranging from simple chroot to Xen or KVM
-instances), and network operations don't exactly contribute to the
-idempotency of the build process that is sought.
+>2) Reject then everything !esp from/to hostB.
+>3) Next I wanted to accept incomming packets "just normal" (as without IPsec)
+>based on e.g. destination address and dport (given the fact that those packages
+>should be already authenticated/decrypted).
+>And outgoing packets should simply pass out (as they're esp, and my OUTGOING
+>policy is ACCEPT).
+>
+>But that doesn't work like this, does it?
 
-But that should not really matter, because after a repo is done
-building, you can use the regular system tools (zypper, yum) to
-update, so that rpmbuild itself needs no network activity.
+Well where's your rule to it?
 
+>So when during netfilter are packets still esp, and when are they
+>authenticated/decrypted, and I see (and can match) the "normal" IP packet?
+
+The normal ones with -m policy.
+
+>Does the INPUT/OUTPUT queues even ever see esp packets?
+
+Of course.
