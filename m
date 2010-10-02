@@ -1,73 +1,68 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: netfilter and IPsec?
-Date: Sat, 2 Oct 2010 22:51:03 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1010022245280.13529@obet.zrqbmnf.qr>
-References: <20101002201135.20008i4gzdc62t3s@webmail.physik.uni-muenchen.de>
+From: Mr Dash Four <mr.dash.four@googlemail.com>
+Subject: Re: ipporthash, ipportiphash, ipportnethash problems
+Date: Sat, 02 Oct 2010 21:54:36 +0100
+Message-ID: <4CA79C0C.7080104@googlemail.com>
+References: <4CA5091B.1090200@googlemail.com> <alpine.DEB.2.00.1010010913200.11563@blackhole.kfki.hu> <4CA5C48E.9010603@googlemail.com> <alpine.DEB.2.00.1010012302530.19869@blackhole.kfki.hu> <4CA70B3B.90001@googlemail.com> <alpine.DEB.2.00.1010022104571.23216@blackhole.kfki.hu> <4CA79133.3070608@googlemail.com> <alpine.LNX.2.01.1010022229480.13529@obet.zrqbmnf.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20101002201135.20008i4gzdc62t3s@webmail.physik.uni-muenchen.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id
+         :disposition-notification-to:date:from:user-agent:mime-version:to:cc
+         :subject:references:in-reply-to:content-type
+         :content-transfer-encoding;
+        bh=mgC05rkVva25mc5MLaPcB1u51YJ7khg3szv63OMuVeU=;
+        b=buibECrNZ1sD6AHsLyytM9LMxvk8Z2v50qWQ4oqBLkYiK29LjIy3y/ho02WcM359Uh
+         05LK76ob2KlJiHWytWxw7Rj4ui3o1cyDeANS+TP3ejOyxFm62HuXG+IjDFzVxkscL8hl
+         +mhBG4SB4Ezn3U9RBPLPc/HMiVKio4MQMtBYs=
+In-Reply-To: <alpine.LNX.2.01.1010022229480.13529@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Christoph Anton Mitterer <christoph.anton.mitterer@physik.uni-muenchen.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, netfilter@vger.kernel.org
 
 
-On Saturday 2010-10-02 20:11, Christoph Anton Mitterer wrote:
+> Well give me a little leeway. It hasn't even been 24 hours since 4.4.
+>   
+Well, I know you are busy working on the latest nf_conntrack patches 
+so... (-;
+
+
+> What is sad too is that Fedora has had so far no interest (or perhaps
+> just no maintainer) to take it up into the distro.
+>   
+I won't miss it that as much if I could prepare the rpms myself from 
+source (via make with dist-rpm target for example) - I can live with that.
+
+
+>> Even if I solve problem No 2 (i.e. by tar-ing the necessary modules and
+>> executables) I can't see a way to get past compiling for a different
+>> architecture (and resolve all the dependencies)! Any ideas?
+>>     
 >
-> What I want to do is:
-> 1) allow key negotiation
-> 2) reject any traffic from hostA to hostB that is NOT secured with esp,
-> otherwise (e.g. in case strongswan crashes or so). Packets which are secured
-> using esp, should not automatically be accepted however.
-> 3) optionally, allow exceptions from 2, when e.g. the protocol is already
-> secured (e.g. TSIG with DNS).
->
-> So I started with about this (rules from hostA):
-> *filter
->
-> #allow IKE to/from these hosts without IPsec
-> -A ipsec-only   --protocol udp  -m udp  --source-port isakmp
-> --destination-port isakmp -j ACCEPT
-> -A ipsec-only   --protocol udp  -m udp  --source-port isakmp-nat
-> --destination-port isakmp-nat -j ACCEPT
+> You could use the openSUSE Build Service to produce packages for
+> various distributions (including Fedora) and the two archs. It should
+> be possible to include Fedora-specific blocks in the preexisting
+> xtables-addons.spec too.
+>   
+I have a policy that I built all system-sensitive packages from source 
+on one or two of my machines locally, so doing that externally isn't 
+really an option for me.
 
-But in the NAT scenario, the source port may no longer be 4500.
-I think you want --dport here in both cases.
 
-> #otherwise, deny all non IPsec ESP to/from these hosts
-> -A ipsec-only   --protocol !esp -j REJECT  --reject-with icmp-admin-prohibited
->
-> #other rules e.g.
-> # Allow incomming packets for the nameserver
-> -A INPUT        --destination eth0.localhost  --protocol udp  -m udp
-> --destination-port domain         -j ACCEPT
-> -A INPUT        --destination eth0.localhost  --protocol tcp  -m tcp
-> --destination-port domain  --syn  -j ACCEPT
->
->
-> 1) As you see, I tried to first allow from/to hostB: udp/500 and udp/4500 for
-> the key negotiations.
+> But that should not really matter, because after a repo is done
+> building, you can use the regular system tools (zypper, yum) to
+> update, so that rpmbuild itself needs no network activity.
+>   
+If I could compile and, at least, build the binaries in one single 
+package (be it rpm, tar.gz or similar) so that they can be installed 
+during my kickstart I would be happy with that.
 
-4500 is also used for espinudp transport, not just IKE.
+As a last option I could compile the source on i686 environment (for 
+i686 machine to be installed on), but I definitely need a complete 
+package (in rpm, tar.gz etc - as I already pointed out) so that I could 
+transfer it for my kickstart to unpack and install when building the 
+update image. That's my dilemma at present.
 
->2) Reject then everything !esp from/to hostB.
->3) Next I wanted to accept incomming packets "just normal" (as without IPsec)
->based on e.g. destination address and dport (given the fact that those packages
->should be already authenticated/decrypted).
->And outgoing packets should simply pass out (as they're esp, and my OUTGOING
->policy is ACCEPT).
->
->But that doesn't work like this, does it?
-
-Well where's your rule to it?
-
->So when during netfilter are packets still esp, and when are they
->authenticated/decrypted, and I see (and can match) the "normal" IP packet?
-
-The normal ones with -m policy.
-
->Does the INPUT/OUTPUT queues even ever see esp packets?
-
-Of course.
