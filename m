@@ -1,46 +1,82 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: ipporthash, ipportiphash, ipportnethash problems
-Date: Sat, 2 Oct 2010 23:06:09 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1010022304210.17305@obet.zrqbmnf.qr>
-References: <4CA5091B.1090200@googlemail.com> <alpine.DEB.2.00.1010010913200.11563@blackhole.kfki.hu> <4CA5C48E.9010603@googlemail.com> <alpine.DEB.2.00.1010012302530.19869@blackhole.kfki.hu> <4CA70B3B.90001@googlemail.com> <alpine.DEB.2.00.1010022104571.23216@blackhole.kfki.hu>
- <4CA79133.3070608@googlemail.com> <alpine.LNX.2.01.1010022229480.13529@obet.zrqbmnf.qr> <4CA79C0C.7080104@googlemail.com>
+From: Christoph Anton Mitterer 
+	<christoph.anton.mitterer@physik.uni-muenchen.de>
+Subject: Re: netfilter and IPsec?
+Date: Sat, 02 Oct 2010 23:36:57 +0200
+Message-ID: <20101002233657.50131qtofq9apla8@webmail.physik.uni-muenchen.de>
+References: <20101002201135.20008i4gzdc62t3s@webmail.physik.uni-muenchen.de>
+ <alpine.LNX.2.01.1010022245280.13529@obet.zrqbmnf.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4CA79C0C.7080104@googlemail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+	physik.uni-muenchen.de; h=user-agent:content-transfer-encoding
+	:content-disposition:content-type:content-type:mime-version
+	:in-reply-to:references:subject:subject:from:from:date:date
+	:message-id:received:received:received:received; s=sel-2010; t=
+	1286055417; bh=lZDNyPCDFMUqCNYsfzKYbuYm6DUw1lkkUs97oZplIoU=; b=i
+	Henq3VZPcO41F88X7Jrx21BERKkrFy2vyCNWaw+zycC/8AE+zAse4simETwKwDoz
+	iQzqgi/4iq7zrPalU86vs181NuoxLeMvWEtMzirEqo+dxooRuO1YTVOop1Lx5v5R
+	Fx8TS7IcJzeNBKdATuWLp9PrFNvzNfhK7REY7IRTW4=
+In-Reply-To: <alpine.LNX.2.01.1010022245280.13529@obet.zrqbmnf.qr>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
-Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; delsp="Yes"; format="flowed"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org
+
+Quoting Jan Engelhardt <jengelh@medozas.de>:
+>> #allow IKE to/from these hosts without IPsec
+>> -A ipsec-only   --protocol udp  -m udp  --source-port isakmp
+>> --destination-port isakmp -j ACCEPT
+>> -A ipsec-only   --protocol udp  -m udp  --source-port isakmp-nat
+>> --destination-port isakmp-nat -j ACCEPT
+> But in the NAT scenario, the source port may no longer be 4500.
+> I think you want --dport here in both cases.
+Ah,.. good point, but why in both cases? With the non-NAT scenario,  
+aren't both ports 500?
 
 
-On Saturday 2010-10-02 22:54, Mr Dash Four wrote:
->>Well give me a little leeway. It hasn't even been 24 hours since 4.4.
+>> 1) As you see, I tried to first allow from/to hostB: udp/500 and  
+>> udp/4500 for
+>> the key negotiations.
 >
->Well, I know you are busy working on the latest nf_conntrack patches
->so... (-;
+> 4500 is also used for espinudp transport, not just IKE.
+Mhh,... what's that? Is this the encapsulation in UDP packet  
+(forceencaps in strongswan)?
 
-Am I?
+Are there any other ports or so I have to open?
 
->>What is sad too is that Fedora has had so far no interest (or
->>perhaps just no maintainer) to take it up into the distro.
+> Well where's your rule to it?
+I've not yet done one, because I didn't knew how policy work, and with  
+just adding a normal rule like (e.g. I want to allow tcp/4369 from  
+hostB (but ONLY when encrypted) to do erlang/ejabberd clustering) like:
+-A INPUT --destination eth0_ip --protocol tcp -m tcp  
+--destination-port  4369 -j ACCEPT
+it would be filterd out by above rules, as the source address is that  
+of hostB, and proto != esp, right?
+
+
+>> So when during netfilter are packets still esp, and when are they
+>> authenticated/decrypted, and I see (and can match) the "normal" IP packet?
 >
->I won't miss it that as much if I could prepare the rpms myself from
->source (via make with dist-rpm target for example) - I can live with
->that.
+> The normal ones with -m policy.
+Is there some more elaborate description on this, than that of the manpage?
+I must admit that I don't understand how to use it, an what it  
+actually matches :/
 
-Talk Fedora into it and become a maintainer :p
+>> Does the INPUT/OUTPUT queues even ever see esp packets?
+> Of course.
+How does this conceptually work, when I have encapsulated protocols  
+like with ESP/AH where I have IP within IP.
+Is first the ESP packet going through netfilter/IP stack, then it's  
+decrypted authenticated and the resulting IP packet goes through it  
+again?
 
->>You could use the openSUSE Build Service to produce packages for
->>various distributions (including Fedora) and the two archs. It
->>should be possible to include Fedora-specific blocks in the
->>preexisting xtables-addons.spec too.
->
->I have a policy that I built all system-sensitive packages from
->source on one or two of my machines locally, so doing that
->externally isn't really an option for me.
 
-You can put up a local BS instance. Of course, the same prerequisite
-as for raw building applies - you need some x86_64 box to begin
-building x86_64.
+Thanks,
+Chris.
+
+----------------------------------------------------------------
+This message was sent using IMP, the Internet Messaging Program.
+
