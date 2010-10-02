@@ -1,89 +1,133 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: netfilter and IPsec?
-Date: Sun, 3 Oct 2010 00:50:09 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1010030033340.20011@obet.zrqbmnf.qr>
-References: <20101002201135.20008i4gzdc62t3s@webmail.physik.uni-muenchen.de> <alpine.LNX.2.01.1010022245280.13529@obet.zrqbmnf.qr> <20101002233657.50131qtofq9apla8@webmail.physik.uni-muenchen.de>
+From: Mistick Levi <gmistick@gmail.com>
+Subject: Re: nfqnl_test exits abnormally while monitoring some TCP packets.
+Date: Sun, 3 Oct 2010 01:45:23 +0200
+Message-ID: <AANLkTinC-YtR3h2WmxiZwLaKzEr8aL4=rOb-3mKQiwdx@mail.gmail.com>
+References: <AANLkTikz1tOWnvTYXZ1Z3cBh+mZLZ_qz2sgmFS94fT3g@mail.gmail.com>
+ <AANLkTikR7ok7i+bv7yHS+3HpnsUCNdHyU9zvO=_JrNjQ@mail.gmail.com>
+ <AANLkTikGkKeRXZOjVA=Rczts7f7VuEF9knRrpqmHxHGX@mail.gmail.com> <AANLkTinzHRReriT5p0GE7fdH1Ko__f3MtLn_Vxxa1eJR@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20101002233657.50131qtofq9apla8@webmail.physik.uni-muenchen.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:mime-version:received:in-reply-to
+         :references:from:date:message-id:subject:to:cc:content-type
+         :content-transfer-encoding;
+        bh=BgmI+7I9UAFaYvlhMZwqQP0KDc3AmAjxzxft/oJm7Wk=;
+        b=jqrEiI2CGExLKW08eJIvxY8Lmm2TKharFlnQQjR4rXrkya5U5g7pGrKU87aA8/zf/Q
+         jhnKk5GZehsYxE20MJwSbVsQpAi+yWFxoyYWI4kgGSEtmxqVxn5pIvqxMzMveSyBCk1o
+         jrZe1BXxYJ3kY0yzTix5g3h9UAV0J3xrFLg88=
+In-Reply-To: <AANLkTinzHRReriT5p0GE7fdH1Ko__f3MtLn_Vxxa1eJR@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Christoph Anton Mitterer <christoph.anton.mitterer@physik.uni-muenchen.de>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Shihwei Li <lishihwei@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-On Saturday 2010-10-02 23:36, Christoph Anton Mitterer wrote:
+Hi,
 
->Quoting Jan Engelhardt:
->>>#allow IKE to/from these hosts without IPsec
->>>-A ipsec-only   --protocol udp  -m udp  --source-port isakmp
->>>--destination-port isakmp -j ACCEPT
->>>-A ipsec-only   --protocol udp  -m udp  --source-port isakmp-nat
->>>--destination-port isakmp-nat -j ACCEPT
+You could search some information about "NF_STOLEN" , but you'll have
+to reinject the packet's later... and i don't have enough info about
+that.
+
+and you could also change you're "recv loop" so that it wont execute
+"handle_packet", but instead all it will do is queue the packet in
+you're own queue... and continue extracting packets from the socket,
+and you'll have a  different thread (hopefully on other cpu) that will
+take that packet and execute "handle_packet"...
+
+a good documentation is:
+http://www.netfilter.org/projects/libnetfilter_queue/doxygen/
+
+
+also, you asked before if you could increase the buffer space... you
+can, with the network options of: wmem and rmem... google about it.
+
+Kind regards,
+Yechiel Levi.
+
+On Fri, Oct 1, 2010 at 2:42 PM, Shihwei Li <lishihwei@gmail.com> wrote:
+> Hi Yechiel,
+>
+> Thank you so much. Now I have a better understanding about the proble=
+m.
+>
+> Sorry for asking more questions, because it was not easy to find
+> documents describing how the netfilter_queue works..There are still
+> few things I am not clear about:
+>
+> * Verdicts: I am confused by the verdict and the return of the callba=
+ck.
+>
+> =A0 From your description, I got the impression that I can issue
+> verdict earlier in the callback, so even though the packet is still
+> processed by the callback (i.e the callback() is not returned yet.),
+> the kernel already can do something, say remove the packet out from
+> the kernel buffer?
+>
+
+NF_STOLEN, but it's not "returning the verdict earlier in the
+callback", its finishing the callback...
+
+> =A0What is the relationship between the buffer space and verdict and
+> their relationship to the callback? Can the kernel or the
+> netfileter_queue do anything before the callback() returns?
+>
+
+the buffer that is failing , is the buffer that is used to store the
+packet's in "COPY_PACKET" mode. you extract messages from that buffer
+by using the "recv" on the socket.
+
+the packet's still reside in the kernel queue.. ( which its size is
+defined by the recv option or by set_queue_maxlen function)
+
+
+> =A0 How do I do "save that message in you're own userspace queue and
+> issue verdict later..."? Do you mean that I can take the packet and
+> put it into my own queue in the userspace and return the callback w/o
+> issuing any verdict? What does the kernel or the netfilter_queue do t=
+o
+> a packet that is w/o a verdict?
+>
+> * What is the difference between queue_length and buffer space? Will
+> the buffer space increase while the queue_lengh increases?
+>
+>
+> --peter
+>
+>
+>
+> 2010/10/1 Mistick Levi <gmistick@gmail.com>:
+>> Hi,
 >>
->>But in the NAT scenario, the source port may no longer be 4500.
->>I think you want --dport here in both cases.
->
->Ah,.. good point, but why in both cases? With the non-NAT scenario, 
->aren't both ports 500?
-
-I cannot be certain of it, but it could certainly happen when two IKE 
-clients behind a NAT establish an exchange at the same time.
-
-Just like many other protocols such as HTTP, what really is consistent 
-most of the time is the dport.
-
->>>1) As you see, I tried to first allow from/to hostB: udp/500 and 
->>>udp/4500 for the key negotiations.
+>> the quick answer:
+>> 1. don't die when you get "recv - failed" since it mean's you're
+>> buffer is done, keep on the loop.
+>> 2. don't do any heavy work on the callback.
+>> 3. try to minimize I/O operations in you're callback, since they are
+>> considered heavy, for example, writing to log will take "TONS" of
+>> time...
 >>
->>4500 is also used for espinudp transport, not just IKE.
->
->Mhh,... what's that? Is this the encapsulation in UDP packet 
->(forceencaps in strongswan)?
-
-Yeah whichever (it's called espinudp in the kernel); not only is it used 
-when forceencaps is on, but whenever there is a NAT sitation that 
-demands it.
-
->Are there any other ports or so I have to open?
-
-No.
-
->> Well where's your rule to it?
->
->I've not yet done one, because I didn't knew how policy work, and with 
->just adding a normal rule like (e.g. I want to allow tcp/4369 from 
->hostB (but ONLY when encrypted) to do erlang/ejabberd clustering) like: 
->-A INPUT --destination eth0_ip --protocol tcp -m tcp --destination-port 
->4369 -j ACCEPT it would be filterd out by above rules, as the source 
->address is that of hostB, and proto != esp, right?
->
->
->>> So when during netfilter are packets still esp, and when are they
->>> authenticated/decrypted, and I see (and can match) the "normal" IP packet?
+>> the "no buffer space available" issue is due to the program not
+>> receiving packets fast enough and the allocated kernel buffer is
+>> filling up with message's until you'll receive messages will keep on
+>> dropping.
 >>
->>The normal ones with -m policy.
->
->Is there some more elaborate description on this, than that of the manpage?
->I must admit that I don't understand how to use it, an what it actually 
->matches :/
-
-It allow to check for the tunnel parameters when a packet has 
-already been decrypted and decapsulated.
-(-m policy --dir in --tunnel-src 134.76.83.5 --tunnel-dst 188.40.89.202 
--s 192.168.100.0/24 -d 192.168.200.0/24 for example)
-
-For outgoing, something different is needed- but I don't have it at 
-hand.
-
->>>Does the INPUT/OUTPUT queues even ever see esp packets?
+>> what you should do is finish the callback function asap.
+>> you could either:
+>> =A01. issue verdict faster..
+>> 2. if you need to do some work on the packet before issue a verdict,
+>> you could save that message in you're own userspace queue and issue
+>> verdict later...
 >>
->>Of course.
+>> the problem with the 2nd option is that now the "Queue length" of th=
+e
+>> libnetfilter_queue will be filled... you could increase it too when
+>> you initialize the queue, or when you with recv...
+>>
+>> Hope i've helped.
+>>
+>> Kind regards,
+>> Yechiel Levi
+>>
 >
->How does this conceptually work, when I have encapsulated protocols 
->like with ESP/AH where I have IP within IP. Is first the ESP packet 
->going through netfilter/IP stack, then it's decrypted authenticated and 
->the resulting IP packet goes through it again?
-
-Exactly; as per the graph in http://en.wikipedia.org/wiki/Iptables
