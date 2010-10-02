@@ -1,57 +1,38 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [patch v2 03/12] [PATCH 03/12] IPVS: compact
- ip_vs_sched_persist()
-Date: Sat, 2 Oct 2010 17:08:50 +0900
-Message-ID: <20101002080850.GC2248@verge.net.au>
-References: <20101001143517.645421976@akiko.akashicho.tokyo.vergenet.net>
- <20101001143941.949669349@akiko.akashicho.tokyo.vergenet.net>
- <alpine.LFD.2.00.1010020129400.2462@ja.ssi.bg>
- <20101002022050.GA16593@verge.net.au>
- <alpine.LFD.2.00.1010021048260.1814@ja.ssi.bg>
+From: Julian Anastasov <ja@ssi.bg>
+Subject: Re: [patch v3 00/12] IPVS: SIP Persistence Engine
+Date: Sat, 2 Oct 2010 12:00:14 +0300 (EEST)
+Message-ID: <alpine.LFD.2.00.1010021155520.2055@ja.ssi.bg>
+References: <20101002023056.536217499@akiko.akashicho.tokyo.vergenet.net>
 Mime-Version: 1.0
-Return-path: <lvs-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.LFD.2.00.1010021048260.1814@ja.ssi.bg>
-Sender: lvs-devel-owner@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <20101002023056.536217499@akiko.akashicho.tokyo.vergenet.net>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Julian Anastasov <ja@ssi.bg>
+To: Simon Horman <horms@verge.net.au>
 Cc: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Jan Engelhardt <jengelh@medozas.de>, Stephen Hemminger <shemminger@vyatta.com>, Wensong Zhang <wensong@linux-vs.org>, Patrick McHardy <kaber@trash.net>
 
-On Sat, Oct 02, 2010 at 10:56:19AM +0300, Julian Anastasov wrote:
-> 
-> 	Hello,
-> 
-> On Sat, 2 Oct 2010, Simon Horman wrote:
-> 
-> >>	Here dport:
-> >>
-> >>>+	dport = dest->port;
-> >>
-> >>	should be:
-> >>
-> >>	dport = ports[1];
-> >>	if (dport == svc->port && dest->port)
-> >>		dport = dest->port;
-> >
-> >Thanks, fixed.
-> 
-> 	I'm still wondering, may be it needs separate patch
-> but we do not support NAT to different dest->port in the
-> case for fwmark. May be the above logic can be changed to
-> support it. By this way web to different VIPs and VPORTs
-> in a single virtual service (fwmark) can use single NAT
-> real server for name-based virtual hosting. But such change
-> can create compatibility problems for setups that used
-> different vports for the fwmark service and still expect
-> it in that way (vport to same dport).
 
-Hi Julian,
+ 	Hello,
 
-I think that this sounds line a new flavour of fwmark virtual services to me.
-Perhaps yet another flag is in order?
+On Sat, 2 Oct 2010, Simon Horman wrote:
 
-To be clear, what you have in mind is essentially to nat *:* (as matched by
-a fwmark) to x:y, where as at this time *:y may be natted to x:y.
+> This patch series adds load-balancing of UDP SIP based on Call-ID to
+> IPVS as well as a frame-work for extending IPVS to handle alternate
+> persistence requirements.
+>
+> REVISIONS
+>
+> This is v3 of the patch series with addresses serveral problems
+> raised by Julian Anastasov on the lvs-devel mailing list.
 
+ 	No other obvious problems in v3 1-12. So,
+Acked-by: Julian Anastasov <ja@ssi.bg>
+
+ 	May be next days I'll test my changes on top of PE v3
+
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
