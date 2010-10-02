@@ -1,68 +1,113 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
-Subject: Re: ipporthash, ipportiphash, ipportnethash problems
-Date: Sat, 02 Oct 2010 11:36:43 +0100
-Message-ID: <4CA70B3B.90001@googlemail.com>
-References: <4CA5091B.1090200@googlemail.com> <alpine.DEB.2.00.1010010913200.11563@blackhole.kfki.hu> <4CA5C48E.9010603@googlemail.com> <alpine.DEB.2.00.1010012302530.19869@blackhole.kfki.hu>
+From: Christoph Anton Mitterer 
+	<christoph.anton.mitterer@physik.uni-muenchen.de>
+Subject: netfilter and IPsec?
+Date: Sat, 02 Oct 2010 20:11:35 +0200
+Message-ID: <20101002201135.20008i4gzdc62t3s@webmail.physik.uni-muenchen.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id
-         :disposition-notification-to:date:from:user-agent:mime-version:to:cc
-         :subject:references:in-reply-to:content-type
-         :content-transfer-encoding;
-        bh=Rq5Xg0FtCcgmx4nSxhE3xZdFawe6fIirB7xgecxagdA=;
-        b=cezm8Et7Gws2B3N94MvR7p0+UdUlUiROCuuICxkshDAQiy8jqH+/H6+j6lR/4SYp3O
-         ilV0b1m9Dpl2gOKj1tBUwEvCsYtVFu+mXgriqntpb1byFyLF8fACBd+seM6CgQNDW03A
-         xt0L1FZrgGSI/x9eNdP782hFMAl2e+SHffINw=
-In-Reply-To: <alpine.DEB.2.00.1010012302530.19869@blackhole.kfki.hu>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+	physik.uni-muenchen.de; h=user-agent:content-transfer-encoding
+	:content-disposition:content-type:content-type:mime-version
+	:subject:subject:from:from:date:date:message-id:received
+	:received:received:received; s=sel-2010; t=1286043095; bh=QF9zhK
+	C8/e1KrWAzgTGDupVtA5PuHCh0tmmUMQsdMCQ=; b=LrH60AYd9rsEFv+MpMxoqC
+	BFL4RS3t2zY0KHPQCZlzuLZkCTJV2+EMxd3f9ra59VXBnieICJL0rcWV/Zlzr921
+	6dThEGGGK0NM4fWWvePaOBV0UlpDZuuSbp3f7FSEBD9AWaqg3i8I0XRTkxRjKMw6
+	KZJQ3sZIeJRHFoVSz+lQk=
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; delsp="Yes"; format="flowed"
+To: netfilter@vger.kernel.org
+
+Hi.
+
+I recently started trying to set up stronswan, to create a  
+encrypted/authenticated tunnel between two of my servers (so it's  
+always a host-host scenario), using IKEv2 and esp.
+
+Now I was trying to set up some clever iptables rules and while doing  
+so, I found out that my understanding is probably totally wrong ^^
+
+What I want to do is:
+1) allow key negotiation
+2) reject any traffic from hostA to hostB that is NOT secured with  
+esp, otherwise (e.g. in case strongswan crashes or so). Packets which  
+are secured using esp, should not automatically be accepted however.
+3) optionally, allow exceptions from 2, when e.g. the protocol is  
+already secured (e.g. TSIG with DNS).
+
+So I started with about this (rules from hostA):
+*filter
+
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+
+#Basic Rules
+#allow incomming and outgoing packets on the loopback network interface
+-A INPUT        --in-interface lo       -j ACCEPT
+-A OUTPUT       --out-interface lo      -j ACCEPT
+
+#deny packets which are not subject to connection tracking
+-A INPUT        -m state  --state UNTRACKED     -j DROP
+-A FORWARD      -m state  --state UNTRACKED     -j DROP
+-A OUTPUT       -m state  --state UNTRACKED     -j DROP
+
+#deny packets which are considered to be invalid by connection tracking
+-A INPUT        -m state  --state INVALID       -j DROP
+-A FORWARD      -m state  --state INVALID       -j DROP
+-A OUTPUT       -m state  --state INVALID       -j DROP
+
+#handle IPsec only destinations (guess that should be before the  
+establised/related rule from below)
+-N ipsec-only
+-A INPUT       --source hostB            -j ipsec-only
+-A OUTPUT      --destination hostB       -j ipsec-only
+
+#allow incomming packets for all established and all related connections
+-A INPUT        -m state  --state ESTABLISHED,RELATED   -j ACCEPT
+
+#allow incomming ICMP packets
+-A INPUT        --protocol icmp  -m icmp        -j ACCEPT
 
 
-> Thanks for the complete description - I have just released ipset 4.4 which 
-> fixes this nasty bug.
->   
-No worries - I was surprised to find it as ipporthash in particular 
-should have been widely used in practice. As for ipportiphash and 
-ipportnethash - there were recently included in the distribution due to 
-another bug I found when compiling xtables (even though ipportiphash and 
-ipportnethash were compiled the .ko files were never included in the 
-final release making it impossible to use these two construct types).
+#allow IKE to/from these hosts without IPsec
+-A ipsec-only   --protocol udp  -m udp  --source-port isakmp   
+--destination-port isakmp -j ACCEPT
+-A ipsec-only   --protocol udp  -m udp  --source-port isakmp-nat   
+--destination-port isakmp-nat -j ACCEPT
 
-A couple of questions and ideas for future releases:
+#otherwise, deny all non IPsec ESP to/from these hosts
+-A ipsec-only   --protocol !esp -j REJECT  --reject-with icmp-admin-prohibited
 
-1. Normally I used to get ipset as part of the xtables source. Is that 
-still the case or do I have to download the ipset source and compile it 
-separately to get the latest changes you made?
-2. Related to that question - I used to get the xtables .src.rpm from 
-which to compile the code and make an installation rpm. I don't seem to 
-be able to do that any longer as all fedora repos are too slow to update 
-the latest changes. Do you have a link from which I could get the latest 
-changes in ipset/xtables in src.rpm which allows me to build an 
-installation rpm. The reason I am asking this is because I am building 
-an update images on all my machines (using kickstart) and need the 
-installation rpms with the latest changes you made. Compiling this from 
-source won't be possible as there is now way I could install this as 
-part of the image-building process.
+#other rules e.g.
+# Allow incomming packets for the nameserver
+-A INPUT        --destination eth0.localhost  --protocol udp  -m udp   
+--destination-port domain         -j ACCEPT
+-A INPUT        --destination eth0.localhost  --protocol tcp  -m tcp   
+--destination-port domain  --syn  -j ACCEPT
 
-I think you mentioned that in future releases the restrictions on all 
-*hash constructs (with regards to using /16 - B class - IP addresses) 
-will be removed. Could you confirm that is still the case?
 
-Would it be possible to include a new construct - IP,port,IP,port 
-(without IP address restriction) - and how difficult is this to implement?
+1) As you see, I tried to first allow from/to hostB: udp/500 and  
+udp/4500 for the key negotiations.
+2) Reject then everything !esp from/to hostB.
+3) Next I wanted to accept incomming packets "just normal" (as without  
+IPsec) based on e.g. destination address and dport (given the fact  
+that those packages should be already authenticated/decrypted).
+And outgoing packets should simply pass out (as they're esp, and my  
+OUTGOING policy is ACCEPT).
 
-Similar question - would it be possible to include protocol (either by 
-name or its number) as part of all available constructs for matching? 
-The reason for this is that, as it stands, in order for me to match, 
-say, "IP,port" hosts form my personal VPN I need to use two separate 
-sets - one for UDP and one for TCP and I also to create two separate 
-statements for iptables (one for tcp and one for udp), which is a bit of 
-a waste and not very easy to administer. It would be nice if I could use 
-"IP,protocol", "port,protocol", "IP,port,protocol", 
-"IP,port,IP,protocol", "IP,port,IP/cidr,protocol" and so forth.
+But that doesn't work like this, does it?
+So when during netfilter are packets still esp, and when are they  
+authenticated/decrypted, and I see (and can match) the "normal" IP  
+packet?
+Does the INPUT/OUTPUT queues even ever see esp packets?
+
+Thanks,
+Chris.
+
+----------------------------------------------------------------
+This message was sent using IMP, the Internet Messaging Program.
+
