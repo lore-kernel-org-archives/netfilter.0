@@ -1,42 +1,74 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [patch v3 00/12] IPVS: SIP Persistence Engine
-Date: Sun, 3 Oct 2010 14:07:27 +0900
-Message-ID: <20101003050725.GA5817@verge.net.au>
-References: <20101002023056.536217499@akiko.akashicho.tokyo.vergenet.net>
- <alpine.LFD.2.00.1010021155520.2055@ja.ssi.bg>
+From: Daniel Dehennin <daniel.dehennin@baby-gnu.org>
+Subject: IP set and match skiping
+Date: Sun, 03 Oct 2010 11:20:37 +0200
+Message-ID: <87bp7beioq.fsf@hati.baby-gnu.org>
 Mime-Version: 1.0
-Return-path: <lvs-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.LFD.2.00.1010021155520.2055@ja.ssi.bg>
-Sender: lvs-devel-owner@vger.kernel.org
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha512; protocol="application/pgp-signature"
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Julian Anastasov <ja@ssi.bg>
-Cc: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Jan Engelhardt <jengelh@medozas.de>, Stephen Hemminger <shemminger@vyatta.com>, Wensong Zhang <wensong@linux-vs.org>, Patrick McHardy <kaber@trash.net>
+To: netfilter@vger.kernel.org
 
-On Sat, Oct 02, 2010 at 12:00:14PM +0300, Julian Anastasov wrote:
-> 
-> 	Hello,
-> 
-> On Sat, 2 Oct 2010, Simon Horman wrote:
-> 
-> >This patch series adds load-balancing of UDP SIP based on Call-ID to
-> >IPVS as well as a frame-work for extending IPVS to handle alternate
-> >persistence requirements.
-> >
-> >REVISIONS
-> >
-> >This is v3 of the patch series with addresses serveral problems
-> >raised by Julian Anastasov on the lvs-devel mailing list.
-> 
-> 	No other obvious problems in v3 1-12. So,
-> Acked-by: Julian Anastasov <ja@ssi.bg>
+--=-=-=
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Thanks.
+Hello,
+
+Testing xtables-addons[1] 1.30 on a virtual system, I have some
+questions for my setup and regarding the xtables-addons next branch[2].
+
+I want to avoid duplication, I have one ipporthash for my DMZ services
+(behind a NAT) and would like to be able to skip some tests or fix one
+argument:
+
+ipset -N dmz-services ipporthash --network 10.1.1.0/24
+ipset -A dmz-services 10.1.1.2,www
+ipset -A dmz-services 10.1.1.2,smtp
+ipset -A dmz-services 10.1.1.2,ssh
+
+# DNAT by server
+# Match only ports=20
+iptables -t nat -A PREROUTING -i internet -m set --match-set dmz-services s=
+kip,dst -j DNAT 10.1.1.2
 
 
-> 	May be next days I'll test my changes on top of PE v3
+Another this if several dmz servers hosts different services:
 
-I think that could save a bit of porting work later
-and perhaps you might notice some more bugs too :-)
+# Add a new service for a new host
+ipset -A dmz-services 10.1.1.3,kerberos
+
+# Match services hosted on 10.1.1.2
+iptables -t nat -A PREROUTING -i internet -m set --match-set dmz-services 1=
+0.1.1.2,dst -j DNAT 10.1.1.2
+# Match services hosted on 10.1.1.3
+iptables -t nat -A PREROUTING -i internet -m set --match-set dmz-services 1=
+0.1.1.3,dst -j DNAT 10.1.1.3
+
+Is it a possible-to-add feature?
+
+Regards.
+
+Footnotes:=20
+[1]  http://www.baby-gnu.org/debian-asgardr/changelogs/pool/main/x/xtables-=
+addons/xtables-addons_1.30-1/changelog
+
+[2]  http://www.spinics.net/lists/netfilter/msg49256.html
+
+=2D-=20
+Daniel Dehennin
+R=C3=A9cup=C3=A9rer ma clef GPG:
+gpg --keyserver pgp.mit.edu --recv-keys 0x6A2540D1
+
+--=-=-=
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.14 (GNU/Linux)
+
+iEYEAREKAAYFAkyoSuUACgkQb97L6l6P4FsF+QCfYznKPIt/mUeaVmNjmik4N6ws
+DLsAn2YW1woCekYdmh71LSUTa7l4ip0/
+=sbXB
+-----END PGP SIGNATURE-----
+--=-=-=--
