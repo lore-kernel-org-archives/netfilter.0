@@ -1,40 +1,47 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipporthash, ipportiphash, ipportnethash problems
-Date: Sun, 3 Oct 2010 21:13:54 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1010032106460.26617@blackhole.kfki.hu>
-References: <4CA5091B.1090200@googlemail.com> <alpine.DEB.2.00.1010010913200.11563@blackhole.kfki.hu> <4CA5C48E.9010603@googlemail.com> <alpine.DEB.2.00.1010012302530.19869@blackhole.kfki.hu> <4CA70B3B.90001@googlemail.com> <alpine.DEB.2.00.1010022104571.23216@blackhole.kfki.hu>
- <4CA7978B.9020900@googlemail.com>
+Subject: Re: IP set and match skiping
+Date: Sun, 3 Oct 2010 21:19:08 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1010032115110.26617@blackhole.kfki.hu>
+References: <87bp7beioq.fsf@hati.baby-gnu.org>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4CA7978B.9020900@googlemail.com>
+In-Reply-To: <87bp7beioq.fsf@hati.baby-gnu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
+To: Daniel Dehennin <daniel.dehennin@baby-gnu.org>
 Cc: netfilter@vger.kernel.org
 
-On Sat, 2 Oct 2010, Mr Dash Four wrote:
+On Sun, 3 Oct 2010, Daniel Dehennin wrote:
 
-> OK, I quickly tested the new version with my previous test on the ssh port and
-> it all works now, though I found some other (minor) issues:
+> I want to avoid duplication, I have one ipporthash for my DMZ services
+> (behind a NAT) and would like to be able to skip some tests or fix one
+> argument:
 > 
-> When I do 'make IP_NF_SET_MAX=xx IP_NF_SET_HASHSIZE=xx' and then do 'make
-> install' (as root) both values I have given during my first 'make' were
-> completely disregarded.
+> ipset -N dmz-services ipporthash --network 10.1.1.0/24
+> ipset -A dmz-services 10.1.1.2,www
+> ipset -A dmz-services 10.1.1.2,smtp
+> ipset -A dmz-services 10.1.1.2,ssh
 > 
-> If I do 'make IP_NF_SET_MAX=xx IP_NF_SET_HASHSIZE=xx' and 'make
-> IP_NF_SET_MAX=xx IP_NF_SET_HASHSIZE=xx install' I can see that at least the
-> default hash size has also been disregarded (built a set without specifying
-> --hashsize and when I executed 'ipset -L' the hashsize was 1024 and not the
-> number I have given during make). I cannot check whether IP_NF_SET_MAX has
-> also been disregarded (don't know how to do it!).
+> # DNAT by server
+> # Match only ports 
+> iptables -t nat -A PREROUTING -i internet -m set --match-set dmz-services skip,dst -j DNAT 10.1.1.2
+> 
+> Another this if several dmz servers hosts different services:
+> 
+> # Add a new service for a new host
+> ipset -A dmz-services 10.1.1.3,kerberos
+> 
+> # Match services hosted on 10.1.1.2
+> iptables -t nat -A PREROUTING -i internet -m set --match-set dmz-services 10.1.1.2,dst -j DNAT 10.1.1.2
+> # Match services hosted on 10.1.1.3
+> iptables -t nat -A PREROUTING -i internet -m set --match-set dmz-services 10.1.1.3,dst -j DNAT 10.1.1.3
+> 
+> Is it a possible-to-add feature?
 
-IP_NF_SET_MAX is honored. Run "make ... V=1" and you see that the value is 
-passed to CONFIG_IP_NF_SET_MAX which is used up directly in 
-kernel/ip_set.c. However, IP_NF_SET_HASHSIZE is forgotten and not 
-referenced in the userspace code, so setting the default hashsize at 
-compiling time does not work yet.
+No, that's not possible. The internal lookup methods do not support such 
+wildcards.
 
 Best regards,
 Jozsef
