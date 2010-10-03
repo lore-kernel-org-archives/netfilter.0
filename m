@@ -1,12 +1,12 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: ipporthash, ipportiphash, ipportnethash problems
-Date: Sun, 3 Oct 2010 20:57:30 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1010032048470.26617@blackhole.kfki.hu>
+Date: Sun, 3 Oct 2010 21:13:54 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1010032106460.26617@blackhole.kfki.hu>
 References: <4CA5091B.1090200@googlemail.com> <alpine.DEB.2.00.1010010913200.11563@blackhole.kfki.hu> <4CA5C48E.9010603@googlemail.com> <alpine.DEB.2.00.1010012302530.19869@blackhole.kfki.hu> <4CA70B3B.90001@googlemail.com> <alpine.DEB.2.00.1010022104571.23216@blackhole.kfki.hu>
- <4CA79133.3070608@googlemail.com>
+ <4CA7978B.9020900@googlemail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4CA79133.3070608@googlemail.com>
+In-Reply-To: <4CA7978B.9020900@googlemail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
@@ -16,55 +16,25 @@ Cc: netfilter@vger.kernel.org
 
 On Sat, 2 Oct 2010, Mr Dash Four wrote:
 
-> > No, I'm not aware of the source rpm for ipset. That's bad if there's one
-> > out there without refreshed.   
-> This is a major headache for me for 2 reasons:
-[...]
-
-Sorry, what I provide is a generic, distribution-independent package. I'm 
-aware that this can create a maintenance problem in a 
-distribution-dependent environment, but I cannot help at that.
-
-> > > Would it be possible to include a new construct - IP,port,IP,port (without
-> > > IP
-> > > address restriction) - and how difficult is this to implement?
-> > 
-> > It's not difficult, but I see little value in such a type. The client source
-> > port (except for a few protocols in some cases) is random, so how could it
-> > be useful to mach for that? Or do you know a case where it can still be
-> > useful?
-> >   
-> I can give you of at least 2 uses based on my experience:
+> OK, I quickly tested the new version with my previous test on the ssh port and
+> it all works now, though I found some other (minor) issues:
 > 
-> 1. voip - normally I can restrict the range of source ports and ip address
-> when a voip connection is initialed (usually ports 8000-8050 and I have to
-> also define the right ip address to point to the outside network), but the
-> only way I can do this at present is if I base this on UID in iptables (i.e.
-> the id of the process this is run under) - I cannot use sets at all because I
-> do not have the appropriate construct. If I had "IP,port,IP,port (and
-> protocol!)" as a construct to work with I can just built the sets (as I use
-> 4-5 different servers outside the network and they work on different ports
-> too) and that would be it!
+> When I do 'make IP_NF_SET_MAX=xx IP_NF_SET_HASHSIZE=xx' and then do 'make
+> install' (as root) both values I have given during my first 'make' were
+> completely disregarded.
 > 
-> 2. VPN - for the same reason: to increase security I normally bind the source
-> port to a particular range and then if I had a "IP,port,IP,port (and
-> protocol!)" construct to work with I will not be using UID in iptables to
-> match, but will use this construct directly without any further need to do
-> anything!
+> If I do 'make IP_NF_SET_MAX=xx IP_NF_SET_HASHSIZE=xx' and 'make
+> IP_NF_SET_MAX=xx IP_NF_SET_HASHSIZE=xx install' I can see that at least the
+> default hash size has also been disregarded (built a set without specifying
+> --hashsize and when I executed 'ipset -L' the hashsize was 1024 and not the
+> number I have given during make). I cannot check whether IP_NF_SET_MAX has
+> also been disregarded (don't know how to do it!).
 
-The present 4.x branch is in "maintenance" mode for me. I'll think on 
-adding such a type to 5.x.
-
-> > The next branch includes exactly that, i.e. the possibility to specify
-> > proto:port for the ipport, ipportip and ipportnet types. And IPv6 support
-> > too.
-> >   
-> That's brilliant news! I take it you will be introducing protocol support for
-> all the constructs, is that right? How long would it take before you release
-> this?
-
-I'm going to release ipset 5.0 around the netfilter developer workshop 
-this month.
+IP_NF_SET_MAX is honored. Run "make ... V=1" and you see that the value is 
+passed to CONFIG_IP_NF_SET_MAX which is used up directly in 
+kernel/ip_set.c. However, IP_NF_SET_HASHSIZE is forgotten and not 
+referenced in the userspace code, so setting the default hashsize at 
+compiling time does not work yet.
 
 Best regards,
 Jozsef
