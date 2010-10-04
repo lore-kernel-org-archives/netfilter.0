@@ -1,115 +1,28 @@
-From: Jonathan Tripathy <jonnyt@abpni.co.uk>
-Subject: Limiting Network traffic
-Date: Mon, 04 Oct 2010 18:07:51 +0100
-Message-ID: <4CAA09E7.5070207@abpni.co.uk>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [patch v5 00/12] IPVS: SIP Persistence Engine
+Date: Mon, 04 Oct 2010 20:47:56 +0200
+Message-ID: <4CAA215C.8040605@trash.net>
+References: <20101004134624.963907470@akiko.akashicho.tokyo.vergenet.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <20101004134624.963907470@akiko.akashicho.tokyo.vergenet.net>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Simon Horman <horms@verge.net.au>
+Cc: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Jan Engelhardt <jengelh@medozas.de>, Stephen Hemminger <shemminger@vyatta.com>, Wensong Zhang <wensong@linux-vs.org>, Julian Anastasov <ja@ssi.bg>
 
-Hi Everyone,
+Am 04.10.2010 15:46, schrieb Simon Horman:
+> CODE AVAILABILITY
+> 
+> The kernel patches (12) are available in git as the pe-5 branch of
+> git://git.kernel.org/pub/scm/linux/kernel/git/horms/lvs-test-2.6.git
 
-I'm try to use the script below to throttle a Xen VM. However, it's not 
-working. The script does seem to execute ok though. All my Xen DomU 
-interfaces are connected to a bridge on the Xen host. I have a firewall 
-VM running on this machine which the VMs use. No matter if I put the VM 
-interface, the firewall interface, or the bridge name itself in the IF 
-field, it never works. Any help is appreciated. Thanks
+Pulled, thanks Simon. I get a warning in ip_vs_pe_sip.c however,
+please send a fix for this on top.
 
-#!/bin/bash
-#
-#  tc uses the following units when passed as a parameter.
-#  kbps: Kilobytes per second
-#  mbps: Megabytes per second
-#  kbit: Kilobits per second
-#  mbit: Megabits per second
-#  bps: Bytes per second
-#       Amounts of data can be specified in:
-#       kb or k: Kilobytes
-#       mb or m: Megabytes
-#       mbit: Megabits
-#       kbit: Kilobits
-#  To get the byte figure from bits, divide the number by 8 bit
-#
-TC=/sbin/tc
-IF=tap1.0		    # Interface
-DNLD=1mbit          # DOWNLOAD Limit
-UPLD=1mbit          # UPLOAD Limit
-IP=216.3.128.12     # Host IP
-U32="$TC filter add dev $IF protocol ip parent 1:0 prio 1 u32"
+net/netfilter/ipvs/ip_vs_pe_sip.c:11: warning: 'ip_vs_dbg_callid'
+defined but not used
 
-start() {
-
-     $TC qdisc add dev $IF root handle 1: htb default 30
-     $TC class add dev $IF parent 1: classid 1:1 htb rate $DNLD
-     $TC class add dev $IF parent 1: classid 1:2 htb rate $UPLD
-     $U32 match ip dst $IP/32 flowid 1:1
-     $U32 match ip src $IP/32 flowid 1:2
-
-}
-
-stop() {
-
-     $TC qdisc del dev $IF root
-
-}
-
-restart() {
-
-     stop
-     sleep 1
-     start
-
-}
-
-show() {
-
-     $TC -s qdisc ls dev $IF
-
-}
-
-case "$1" in
-
-   start)
-
-     echo -n "Starting bandwidth shaping: "
-     start
-     echo "done"
-     ;;
-
-   stop)
-
-     echo -n "Stopping bandwidth shaping: "
-     stop
-     echo "done"
-     ;;
-
-   restart)
-
-     echo -n "Restarting bandwidth shaping: "
-     restart
-     echo "done"
-     ;;
-
-   show)
-     	    	
-     echo "Bandwidth shaping status for $IF:\n"
-     show
-     echo ""
-     ;;
-
-   *)
-
-     pwd=$(pwd)
-     echo "Usage: $(/usr/bin/dirname $pwd)/tc.bash {start|stop|restart|show}"
-     ;;
-
-esac
-
-exit 0
-
-
-
+Thanks!
