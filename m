@@ -1,78 +1,137 @@
-From: Julian Anastasov <ja@ssi.bg>
-Subject: Re: [patch v2 03/12] [PATCH 03/12] IPVS: compact
- ip_vs_sched_persist()
-Date: Tue, 5 Oct 2010 01:36:53 +0300 (EEST)
-Message-ID: <alpine.LFD.2.00.1010050010080.1856@ja.ssi.bg>
-References: <20101001143517.645421976@akiko.akashicho.tokyo.vergenet.net> <20101001143941.949669349@akiko.akashicho.tokyo.vergenet.net> <alpine.LFD.2.00.1010020129400.2462@ja.ssi.bg> <20101002022050.GA16593@verge.net.au> <alpine.LFD.2.00.1010021048260.1814@ja.ssi.bg>
- <20101002080850.GC2248@verge.net.au>
+From: Stephen Hemminger <shemminger@vyatta.com>
+Subject: Re: Limiting Network traffic
+Date: Tue, 5 Oct 2010 14:44:35 +0900
+Message-ID: <20101005144435.375ad28c@s6510>
+References: <4CAA09E7.5070207@abpni.co.uk>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <20101002080850.GC2248@verge.net.au>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
 Content-Transfer-Encoding: 7bit
-To: Simon Horman <horms@verge.net.au>
-Cc: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Jan Engelhardt <jengelh@medozas.de>, Stephen Hemminger <shemminger@vyatta.com>, Wensong Zhang <wensong@linux-vs.org>, Patrick McHardy <kaber@trash.net>
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4CAA09E7.5070207@abpni.co.uk>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Jonathan Tripathy <jonnyt@abpni.co.uk>
+Cc: netfilter@vger.kernel.org
+
+On Mon, 04 Oct 2010 18:07:51 +0100
+Jonathan Tripathy <jonnyt@abpni.co.uk> wrote:
+
+> Hi Everyone,
+> 
+> I'm try to use the script below to throttle a Xen VM. However, it's not 
+> working. The script does seem to execute ok though. All my Xen DomU 
+> interfaces are connected to a bridge on the Xen host. I have a firewall 
+> VM running on this machine which the VMs use. No matter if I put the VM 
+> interface, the firewall interface, or the bridge name itself in the IF 
+> field, it never works. Any help is appreciated. Thanks
+> 
+> #!/bin/bash
+> #
+> #  tc uses the following units when passed as a parameter.
+> #  kbps: Kilobytes per second
+> #  mbps: Megabytes per second
+> #  kbit: Kilobits per second
+> #  mbit: Megabits per second
+> #  bps: Bytes per second
+> #       Amounts of data can be specified in:
+> #       kb or k: Kilobytes
+> #       mb or m: Megabytes
+> #       mbit: Megabits
+> #       kbit: Kilobits
+> #  To get the byte figure from bits, divide the number by 8 bit
+> #
+> TC=/sbin/tc
+> IF=tap1.0		    # Interface
+> DNLD=1mbit          # DOWNLOAD Limit
+> UPLD=1mbit          # UPLOAD Limit
+> IP=216.3.128.12     # Host IP
+> U32="$TC filter add dev $IF protocol ip parent 1:0 prio 1 u32"
+> 
+> start() {
+> 
+>      $TC qdisc add dev $IF root handle 1: htb default 30
+>      $TC class add dev $IF parent 1: classid 1:1 htb rate $DNLD
+>      $TC class add dev $IF parent 1: classid 1:2 htb rate $UPLD
+>      $U32 match ip dst $IP/32 flowid 1:1
+>      $U32 match ip src $IP/32 flowid 1:2
+> 
+> }
+> 
+> stop() {
+> 
+>      $TC qdisc del dev $IF root
+> 
+> }
+> 
+> restart() {
+> 
+>      stop
+>      sleep 1
+>      start
+> 
+> }
+> 
+> show() {
+> 
+>      $TC -s qdisc ls dev $IF
+> 
+> }
+> 
+> case "$1" in
+> 
+>    start)
+> 
+>      echo -n "Starting bandwidth shaping: "
+>      start
+>      echo "done"
+>      ;;
+> 
+>    stop)
+> 
+>      echo -n "Stopping bandwidth shaping: "
+>      stop
+>      echo "done"
+>      ;;
+> 
+>    restart)
+> 
+>      echo -n "Restarting bandwidth shaping: "
+>      restart
+>      echo "done"
+>      ;;
+> 
+>    show)
+>      	    	
+>      echo "Bandwidth shaping status for $IF:\n"
+>      show
+>      echo ""
+>      ;;
+> 
+>    *)
+> 
+>      pwd=$(pwd)
+>      echo "Usage: $(/usr/bin/dirname $pwd)/tc.bash {start|stop|restart|show}"
+>      ;;
+> 
+> esac
+> 
+> exit 0
+
+Normal traffic shaping happens on an outgoing interface.
+Doing shaping on the virtual domU interfaces will control rate to a domU
+Doing shaping on bridge interface will control rate into dom0
+
+You probably want to control rate from domU outbound. To do that you
+have several choices:
+   0. Do it on virtual interface in guest; requires cooperative guest but it
+      provides best performance and flow control
+   1. Use ingress and limiting on domU interface; this drops packets over a set
+      threshold.  Performance will be worse but easier to setup
+   2. Use ifb device.  In dom0, for each domU interface setup a coresponding ifb device
+      and use tc redirect to that ifb device, then apply shaping to the ifb device
+      Alternatively have a single ifb device and redirect each domU incoming traffic to
+      the ifb device. Then use rules to break traffic into classes, and have rates per class.
+   3. There is the also IMQ patch, but it is not recommended. The IMQ design is unsafe
+      and ifb is better.
 
 
- 	Hello,
-
-On Sat, 2 Oct 2010, Simon Horman wrote:
-
->> 	I'm still wondering, may be it needs separate patch
->> but we do not support NAT to different dest->port in the
->> case for fwmark. May be the above logic can be changed to
->> support it. By this way web to different VIPs and VPORTs
->> in a single virtual service (fwmark) can use single NAT
->> real server for name-based virtual hosting. But such change
->> can create compatibility problems for setups that used
->> different vports for the fwmark service and still expect
->> it in that way (vport to same dport).
->
-> Hi Julian,
->
-> I think that this sounds line a new flavour of fwmark virtual services to me.
-> Perhaps yet another flag is in order?
->
-> To be clear, what you have in mind is essentially to nat *:* (as matched by
-> a fwmark) to x:y, where as at this time *:y may be natted to x:y.
-
- 	Yes, the difference is here, persistent services with fwmark 
-ignore dest->port while non-persistent services with fwmark prefer
-dest->port:
-
-ip_vs_sched_persist:
-         dport = ports[1];
-         if (dport == svc->port && dest->port)
-                 dport = dest->port;
- 	- before the PE changes even dest->port=0 was selected
- 	for non-fwmark
-
-ip_vs_schedule:
- 	dport set as: dest->port ? dest->port : pptr[1]
-
- 	It is inconsistent. If we add new option for dest
-it should have 3 states:
-
-0: default (current, compatible)
-1: prefer real server port
-2: keep dport in packet
-
- 	But the same can be done with rport or that was the
-goal before:
-
-- rport=0 (zero port) - keep dport from packet
-- rport>0 - use this real server port
-
- 	It works perfectly for ip_vs_schedule but not for
-ip_vs_sched_persist, rport>0 is ignored for persistent
-fwmark and this is wrong for NAT. Persistence should just
-select dest but now it changes the rport semantic. The
-right thing is ip_vs_sched_persist to work as ip_vs_schedule
-but it can break some setups with persistence and fwmark.
-
-Regards
-
---
-Julian Anastasov <ja@ssi.bg>
