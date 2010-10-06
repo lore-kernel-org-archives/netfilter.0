@@ -1,49 +1,60 @@
 From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: string and u32 modules
-Date: Wed, 6 Oct 2010 06:51:00 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1010060649590.6348@obet.zrqbmnf.qr>
-References: <AANLkTin8Uvd7z0ty6urts2oy53mL=TCE0=r7O7g902HH@mail.gmail.com> <AANLkTim4g7nUd1PV=1Dnwybr=t_DVh4cT9iuZP6xESrO@mail.gmail.com> <alpine.LNX.2.01.1010020051300.26371@obet.zrqbmnf.qr> <AANLkTikpoxfVpXFaHrYcGLdcNips78wpxVuor_uymCyg@mail.gmail.com>
+Subject: Re: aligned_{u64,be64,le64} defined in #ifdef __KERNEL__
+Date: Wed, 6 Oct 2010 08:05:52 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1010060804580.8631@obet.zrqbmnf.qr>
+References: <1282682582-15980-1-git-send-email-eparis@redhat.com> <201008300326.30233.agruen@suse.de> <20100829.212156.229740543.davem@davemloft.net> <201008301258.33113.agruen@suse.de> <alpine.LNX.2.01.1008301502280.19931@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTikpoxfVpXFaHrYcGLdcNips78wpxVuor_uymCyg@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.01.1008301502280.19931@obet.zrqbmnf.qr>
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="utf-8"
-To: Greg Oliver <oliver.greg@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: David Miller <davem@davemloft.net>
+Cc: Andreas Gruenbacher <agruen@suse.de>, netfilter@vger.kernel.org, eparis@redhat.com, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, schwab@redhat.com, Harald Welte <laforge@netfilter.org>, Andi Kleen <andi@firstfloor.org>
 
-
-On Wednesday 2010-10-06 05:10, Greg Oliver wrote:
->>>> 19:40:13.666679 IP ghost.29364 > ccs1.25862: UDP, length 13
->>>> =C2=A0 =C2=A0 =C2=A0 =C2=A00x0000: =C2=A045b8 0029 95cd 0000 3d11 =
-9c86 c0a8 6476 =C2=A0E..)....=3D.....dv
->>>> =C2=A0 =C2=A0 =C2=A0 =C2=A00x0010: =C2=A0c0a8 64f1 72b4 6506 0015 =
-bbc9 800d 9f6b =C2=A0..d.r.e........k
->>>> =C2=A0 =C2=A0 =C2=A0 =C2=A00x0020: =C2=A07c06 b562 a690 c613 6400 =
-0000 0000 =C2=A0 =C2=A0 =C2=A0 |..b....d.....
->>>>
->>>> 800d is what I want to catch in bytes 27,28...
+On Monday 2010-08-30 15:02, Jan Engelhardt wrote:
+>On Monday 2010-08-30 12:58, Andreas Gruenbacher wrote:
 >>
->> But 800D is at position 0x1C =3D 28 (counting from 0), so
+>>> If we want a version of this type visible to userspace, it needs to,
+>>> for example, have double underscores prepended to the type name just
+>>> as we do for things like __u16 and __u32.
 >>
->>>> -A INPUT -m u32 --u32 "0>>22&0x3C@6=3D0x800D" -j LOG --log-prefix =
-"CNOISE: "
->>>> -A INPUT -m u32 --u32 "26&0xFFFF=3D0x800D" -j LOG --log-prefix "CN=
-OISE: "
->>
->> =C2=A0--u32 "28 >> 16 & 0xFFFF =3D 0x800D"
->>
->> or with the IPv4 header,
->>
->> =C2=A0--u32 "0 >> 22 & 0x3C @ 8 >> 16 & 0xFFFF =3D 0x800D"
+>>How about something like this?
 >
->Thanks for the response - I will get to try this out tomorrow again.
->I really do not understand the difference between your rule and the
->original though.  You are going to 28 and reading the next 2 bytes,
->whereas I am starting at 26 and discarding the first 2 bytes right?
+>
+>I like that approach:
+>
+>>From 3bec018a4835d4fdbe35595366a51bd09e3cc1d0 Mon Sep 17 00:00:00 2001
+>>From: Andreas Gruenbacher <agruen@suse.de>
+>>Date: Mon, 30 Aug 2010 12:51:01 +0200
+>>Subject: [PATCH] Define __aligned_{u64,le64,be64} types with 8-byte alignment
+>>
+>>--- a/include/linux/if_ppp.h
+>>+++ b/include/linux/if_ppp.h
+>>@@ -114,14 +114,14 @@ struct pppol2tp_ioc_stats {
+>> 	__u16		tunnel_id;	/* redundant */
+>> 	__u16		session_id;	/* if zero, get tunnel stats */
+>> 	__u32		using_ipsec:1;	/* valid only for session_id == 0 */
+>>-	aligned_u64	tx_packets;
+>>-	aligned_u64	tx_bytes;
+>>-	aligned_u64	tx_errors;
+>>-	aligned_u64	rx_packets;
+>>-	aligned_u64	rx_bytes;
+>>-	aligned_u64	rx_seq_discards;
+>>-	aligned_u64	rx_oos_packets;
+>>-	aligned_u64	rx_errors;
+>>+	__aligned_u64	tx_packets;
+>>+	__aligned_u64	tx_bytes;
+>>+	__aligned_u64	tx_errors;
+>>+	__aligned_u64	rx_packets;
+>>+	__aligned_u64	rx_bytes;
+>>+	__aligned_u64	rx_seq_discards;
+>>+	__aligned_u64	rx_oos_packets;
+>>+	__aligned_u64	rx_errors;
 
-Ah heh, indeed. However, in 0>>22&0x3C@6, you are missing the &0xFFFF
-portion.
 
-As for 28/26.. strange. Maybe some printks can shed light.
+Dave, you liked this too, but I don't see it in net-next yet. Was there 
+some sort of holdup?
+
+Jan
