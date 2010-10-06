@@ -1,31 +1,67 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [patch v5 00/12] IPVS: SIP Persistence Engine
-Date: Tue, 5 Oct 2010 19:00:23 +0900
-Message-ID: <20101005100023.GC18737@verge.net.au>
-References: <20101004134624.963907470@akiko.akashicho.tokyo.vergenet.net>
- <4CAA215C.8040605@trash.net>
+From: Greg Oliver <oliver.greg@gmail.com>
+Subject: Re: string and u32 modules
+Date: Tue, 5 Oct 2010 22:10:04 -0500
+Message-ID: <AANLkTikpoxfVpXFaHrYcGLdcNips78wpxVuor_uymCyg@mail.gmail.com>
+References: <AANLkTin8Uvd7z0ty6urts2oy53mL=TCE0=r7O7g902HH@mail.gmail.com>
+	<AANLkTim4g7nUd1PV=1Dnwybr=t_DVh4cT9iuZP6xESrO@mail.gmail.com>
+	<alpine.LNX.2.01.1010020051300.26371@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Return-path: <lvs-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4CAA215C.8040605@trash.net>
-Sender: lvs-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:in-reply-to
+         :references:date:message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=OdLUSYq+BX1R/7KZTUSCLDdHyfPAEONygt81CtOUQG8=;
+        b=bYfYcfdvxk8sI92o/1TmNFIYjDC2jTaEUEry+vdUnn10XHv7n5cX88cX5fniwDCv6W
+         HVcQT2RN/TbL2XpdNfiHC4NsgIzeK0zAvWa0PuMWrbgTiEI6RcHf4lYL4f5g2jz6TIXh
+         QG/lepLpy0gd4UnkM1saG/2Xs/ZBVSBXVMsds=
+In-Reply-To: <alpine.LNX.2.01.1010020051300.26371@obet.zrqbmnf.qr>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>
-Cc: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Jan Engelhardt <jengelh@medozas.de>, Stephen Hemminger <shemminger@vyatta.com>, Wensong Zhang <wensong@linux-vs.org>, Julian Anastasov <ja@ssi.bg>
+Content-Type: text/plain; charset="utf-8"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org
 
-On Mon, Oct 04, 2010 at 08:47:56PM +0200, Patrick McHardy wrote:
-> Am 04.10.2010 15:46, schrieb Simon Horman:
-> > CODE AVAILABILITY
-> > 
-> > The kernel patches (12) are available in git as the pe-5 branch of
-> > git://git.kernel.org/pub/scm/linux/kernel/git/horms/lvs-test-2.6.git
-> 
-> Pulled, thanks Simon. I get a warning in ip_vs_pe_sip.c however,
-> please send a fix for this on top.
-> 
-> net/netfilter/ipvs/ip_vs_pe_sip.c:11: warning: 'ip_vs_dbg_callid'
-> defined but not used
+Hi Jan,
 
-Sorry about that, I will investigate and send a fix.
+On Fri, Oct 1, 2010 at 5:55 PM, Jan Engelhardt <jengelh@medozas.de> wro=
+te:
+>
+> On Saturday 2010-09-25 20:12, Greg Oliver wrote:
+>>> 19:40:13.666679 IP ghost.29364 > ccs1.25862: UDP, length 13
+>>> =C2=A0 =C2=A0 =C2=A0 =C2=A00x0000: =C2=A045b8 0029 95cd 0000 3d11 9=
+c86 c0a8 6476 =C2=A0E..)....=3D.....dv
+>>> =C2=A0 =C2=A0 =C2=A0 =C2=A00x0010: =C2=A0c0a8 64f1 72b4 6506 0015 b=
+bc9 800d 9f6b =C2=A0..d.r.e........k
+>>> =C2=A0 =C2=A0 =C2=A0 =C2=A00x0020: =C2=A07c06 b562 a690 c613 6400 0=
+000 0000 =C2=A0 =C2=A0 =C2=A0 |..b....d.....
+>>>
+>>> 800d is what I want to catch in bytes 27,28...
+>
+> But 800D is at position 0x1C =3D 28 (counting from 0), so
+>
+>>> -A INPUT -m u32 --u32 "0>>22&0x3C@6=3D0x800D" -j LOG --log-prefix "=
+CNOISE: "
+>>> -A INPUT -m u32 --u32 "26&0xFFFF=3D0x800D" -j LOG --log-prefix "CNO=
+ISE: "
+>
+> =C2=A0--u32 "28 >> 16 & 0xFFFF =3D 0x800D"
+>
+> or with the IPv4 header,
+>
+> =C2=A0--u32 "0 >> 22 & 0x3C @ 8 >> 16 & 0xFFFF =3D 0x800D"
+
+Thanks for the response - I will get to try this out tomorrow again.
+I really do not understand the difference between your rule and the
+original though.  You are going to 28 and reading the next 2 bytes,
+whereas I am starting at 26 and discarding the first 2 bytes right?
+
+I thought I got it all from the __only__ tutorial out there  :)   And
+I though I understood it as well, but hey - you never know.  Obviously
+I do not.
+
+I'll try it again tomorrow though.
+
+Thanks!
