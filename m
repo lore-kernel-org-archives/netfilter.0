@@ -1,44 +1,36 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipporthash, ipportiphash, ipportnethash problems
-Date: Wed, 6 Oct 2010 21:57:17 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1010062154280.10960@blackhole.kfki.hu>
-References: <4CA5091B.1090200@googlemail.com> <alpine.DEB.2.00.1010010913200.11563@blackhole.kfki.hu> <4CA5C48E.9010603@googlemail.com> <alpine.DEB.2.00.1010012302530.19869@blackhole.kfki.hu> <4CA70B3B.90001@googlemail.com> <alpine.DEB.2.00.1010022104571.23216@blackhole.kfki.hu>
- <4CA7978B.9020900@googlemail.com> <alpine.DEB.2.00.1010032106460.26617@blackhole.kfki.hu> <4CA8FDE1.8090809@googlemail.com> <alpine.DEB.2.00.1010041134130.28881@blackhole.kfki.hu> <4CAC866D.7060101@googlemail.com>
+From: =?ISO-8859-2?Q?=A3ukasz_Czy=BF?= <perlowy.dzem@gmail.com>
+Subject: IPv6 project for Linux kernel
+Date: Thu, 7 Oct 2010 15:47:24 +0200
+Message-ID: <AANLkTi=rs7ARr2kmSR4V=1H=T=t8Mgx7=xDPnfw_TdR6@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4CAC866D.7060101@googlemail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=vGgQnFsqaaKoTrw9bXoTuhQeG8DMZWUhM79T3HTUarI=;
+        b=voiyQmKrpJiNkSZmD0jn7x/XAzahK1kmOaNN0iAE5sawR89Le+g9ZWLGivsQk5rpz7
+         Fm7u6C4KgjxZyxGFmvaHxkDUuhXUaQzS+uXvnMGtT+H4LOme37rtHISZM4/lSGnHjMHZ
+         3BjONqRjGvm+B3zLbbXfGGsmuQEPFroFBBMd4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Wed, 6 Oct 2010, Mr Dash Four wrote:
+Hello!
 
-> There is another issue I found when using ipmap sets: when I execute, for
-> example, "ipset -N port-map ipmap --from 10 --to 30000" and then add an
-> element "ipset -A port-map 20" the two statements are accepted without any
-> error given (they shouldn't be as the map defined is an IP map, not a port map
-> and the values submitted are numbers, not IP addresses)!
-> 
-> When I issue "ipset -L port-map" I get:
-> 
-> Header: from: 0.0.0.10 to: 0.0.117.48
-> members:
-> 0.0.0.20
-> 
-> Is this deliberate or a bug?
+I am looking for advice. I have to write programming project that is
+related to IPv6 and I decided to do something for Linux (as I learn
+Linux kernel actually it would be nice if it was something related to
+kernel code as well). At first I`ve been thinking about some NAT-PT
+(IPv4-IPv6) implementation for Linux,
+but exploring Internet I realized that such a projects have already
+been done so now I am not sure what would be better: thinking about
+some other idea or trying to do the same but in better way (maybe such
+NAT-PT can be implemented only as a kernel module?). I just would like
+to ask You for opinions. Maybe some of You know some other aspect of
+IPv6 protocol that would be worth coding for Linux? I appreciate every
+suggestion from You.
 
-Whatever name has got the set, the type what counts. So if it is defined 
-as an ipmap type, then the system tries to interpret the input parameters 
-as IP addresses. "10" and "20", etc are strange-looking, but valid IP 
-addresses :-)
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Lukasz
