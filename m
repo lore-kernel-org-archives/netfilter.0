@@ -1,36 +1,43 @@
-From: =?ISO-8859-2?Q?=A3ukasz_Czy=BF?= <perlowy.dzem@gmail.com>
-Subject: IPv6 project for Linux kernel
-Date: Thu, 7 Oct 2010 15:47:24 +0200
-Message-ID: <AANLkTi=rs7ARr2kmSR4V=1H=T=t8Mgx7=xDPnfw_TdR6@mail.gmail.com>
+From: Christoph Anton Mitterer 
+	<christoph.anton.mitterer@physik.uni-muenchen.de>
+Subject: Re: how to best limit "rate of rejects"
+Date: Thu, 07 Oct 2010 20:30:01 +0200
+Message-ID: <1286476201.3383.48.camel@fermat.scientia.net>
+References: <20101006142149.95231l9rz87p044g@webmail.physik.uni-muenchen.de>
+	 <alpine.LNX.2.01.1010061444180.21694@obet.zrqbmnf.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:date:message-id
-         :subject:from:to:content-type;
-        bh=vGgQnFsqaaKoTrw9bXoTuhQeG8DMZWUhM79T3HTUarI=;
-        b=voiyQmKrpJiNkSZmD0jn7x/XAzahK1kmOaNN0iAE5sawR89Le+g9ZWLGivsQk5rpz7
-         Fm7u6C4KgjxZyxGFmvaHxkDUuhXUaQzS+uXvnMGtT+H4LOme37rtHISZM4/lSGnHjMHZ
-         3BjONqRjGvm+B3zLbbXfGGsmuQEPFroFBBMd4=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+	physik.uni-muenchen.de; h=content-transfer-encoding:x-mailer
+	:mime-version:message-id:date:date:organization:content-type
+	:content-type:references:in-reply-to:from:from:subject:subject
+	:received:received; s=sel-2010; t=1286476202; bh=HLYesFBZ+i2krf8
+	qb+Ht7hOp0ul+0UM8OJCLTggn+RM=; b=UXHaxn48pruIuuigsdv0gCciaCcWQFr
+	au9MUfAJODUr9RGpO6fbwvwWY7TCQr58nQFAX65z7bhbgNjEylzly9Xym+fppLi0
+	N3qBlMKdvoSrF3Cihef7MhKXeXcUUE0lyNyavSFpjlBC8lIHxYjmEfzLqGOYRi24
+	wPh3jFcz7oi8=
+In-Reply-To: <alpine.LNX.2.01.1010061444180.21694@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello!
+Hi Jan.
 
-I am looking for advice. I have to write programming project that is
-related to IPv6 and I decided to do something for Linux (as I learn
-Linux kernel actually it would be nice if it was something related to
-kernel code as well). At first I`ve been thinking about some NAT-PT
-(IPv4-IPv6) implementation for Linux,
-but exploring Internet I realized that such a projects have already
-been done so now I am not sure what would be better: thinking about
-some other idea or trying to do the same but in better way (maybe such
-NAT-PT can be implemented only as a kernel module?). I just would like
-to ask You for opinions. Maybe some of You know some other aspect of
-IPv6 protocol that would be worth coding for Linux? I appreciate every
-suggestion from You.
+On Wed, 2010-10-06 at 14:45 +0200, Jan Engelhardt wrote:
+> > Is there some smart way to just limit the rate on those rejects? e.g. something
+> > like a "wait with sending the reject for a second" target?
+> 
+> -m hashlimit --hashlimit 1/second
 
-Lukasz
+Which one do you mean (just --hashlimit seem to not exist).
+
+And as far as I understand the documentation, this is the same as limit,
+and it's just for matching,... so if the rate is exceeded the rule would
+simply no longer match and I'd have again such a packet burst?
+
+
+Cheers,
+Chris.
+
