@@ -1,127 +1,39 @@
-From: richard lucassen <mailinglists@lucassen.org>
-Subject: Packets disappear in DNAT rule
-Date: Sun, 10 Oct 2010 21:38:40 +0200
-Message-ID: <20101010213840.863a1036.mailinglists@lucassen.org>
-Reply-To: netfilter@vger.kernel.org
+From: JD <jd1008@gmail.com>
+Subject: Question about a blocked packet sent by a windows machine on my lan
+Date: Sun, 10 Oct 2010 13:26:36 -0700
+Message-ID: <4CB2217C.6020904@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from
+         :user-agent:mime-version:to:subject:content-type
+         :content-transfer-encoding;
+        bh=rgl2YzSTjCoQOWormGrPiBy7XJt/7IfU0MOhTxOtWCo=;
+        b=wWGLjny6zHBdTDLkGBisSyOod5mKgK8RUYJp2ulcJeJY8fCek6jvVuUPf9/bUp98Eg
+         kBvLz7k0ldkz7PyPXVEfpOrCWaPLBSvN3iAc6og15TXqoaUOqzVrSZKSN+1zN6yGA0+l
+         r5pHljpPZPg+L/Hw0ainTX+C+Q02njJ3qZCPY=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello list,
+  Our home lan runs through a router/firewall.
 
-I have this simple straight-on configuration:
+I was browsing the router's logs and found this:
 
-          +------+ +-------+
-internet--+router+-+ Linux +--internal network
-          +------+ +-------+
+INF 2010-10-10T09:46:36-07:00 fw,fwmon src=192.168.1.3 dst=10.64.36.31 
+ipprot=6 sport=2588 dport=80 Drop traffic to 10.0.0.0/8
 
-The external network is a /29 subnet. The internal network a
-RFC1918 /24 network. The external network is 1.2.3.0/29:
-gateway: 1.2.3.1
-Linux: 1.2.3.2 on eth0
+The thing is, I have no 10. on my LAN.
+My LAN is all 192.168.1.X, (class C).
 
-The internal network is 192.168.64.0/24, the Linuxbox has
-192.168.64.1 on eth1 and is the gateway for the internal network. On the
-internal network there is a server 192.168.64.3 which I'd like to
-expose to the internet using the ip 1.2.3.3 from the /29 range I have:
+Why would a windows machine broadcast this packet to
+http server port ports at all 10.0.0.0/8 machines?
 
-          +------+ +-------+                    +------------+
-internet--+router+-+ Linux +--internal network--+192.168.64.3|
-          +------+ +-------+                    +------------+
-                                                      |
------>----->1.2.3.3--DNAT-->---192.168.64.3---->------/
+Is it an indication that the windows pc is/might be infected?
 
-I run on the Linux gateway:
+Thanks for your help.
 
-I_MANG_PRE="iptables -t mangle -A PREROUTING"
-I_PRE="iptables -t nat -A PREROUTING"
-
-arp -s 1.2.3.3 00:1e:58:df:ae:04 pub
-ip r a 1.2.3.3 via 192.168.64.3 dev eth1
-${I_PRE} -i eth0 -d 1.2.3.3 -j DNAT --to 192.168.64.3
-
-So far, so good. No problem, it works like a charm and it has always
-worked like that.
-
-Now I'm connecting a backup internet line on 11.22.33.0/29. I connect
-the router to eth2 of the Linux box. Eth2 on the Linuxbox has address
-11.22.33.2, the router has 11.22.33.1:
-
-           +-------+ +-------+
-internet1--+router1+-+ Linux +--internal network
-           +-------+ +-------+
-                        eth2 (11.22.33.2)
-                         |
-           +-------+     |
-internet2--+router2+-----/
-           +-------+ (11.22.33.1)
-
-I'd like to expose the same host 192.168.64.3 to the internet, using
-the ip address 11.22.33.3. First of all, I need policy routing. I add a
-new table (12) and some rules:
-
-ip rule add from 11.22.33.0/29 lookup 12
-ip route add default via 11.22.33.1 dev eth2 table 12
-ip rule add fwmark 1002 table 12
-
-I add CONNMARK tracking:
-
-${I_MANG_PRE} -i eth0 -d 1.2.3.0/29 -j CONNMARK --set-mark 1000
-${I_MANG_PRE} -i eth2 -d 11.22.33.0/29 -j CONNMARK --set-mark 1002
-${I_MANG_PRE} -i eth1 -j CONNMARK --restore-mark
-
-arp -s 11.22.33.3 00:11:22:33:44:55 pub
-ip r a 11.22.33.3 via 192.168.64.3 dev eth1
-${I_PRE} -i eth2 -d 11.22.33.3 -j DNAT --to 192.168.64.3
-
-Well, this has always worked very well under kernels older than 2.6.26
-(and maybe some higher as well), but under 2.6.32 and higher it has
-stopped working. The packets entering eth2 are dropped on the floor
-after the DNAT rule but are not logged:
-
-${I_PRE} -i eth2 -d 11.22.33.3 -j DNAT --to 192.168.64.3
-
-ULOG before the DNAT logs the packet, a ULOG after the DNAT shows
-nothing. The packets simply get lost.
-
-Another interesting thing is that pinging the exposed server from a
-station on eth2 with an ip address in the 11.22.33.0/29 of the second
-internet (e.g. 11.22.33.4) line shows that everything is working as
-expected.
-
-I know it's quite complex to explain the above configuration, but it's
-a config I have used very very often in the past and it simply has
-stopped working somewhere between 2.6.26 and 2.6.32.
-
-If I add an address to the eth2 NIC:
-
-ip address add 11.22.33.5/29 dev eth2
-
-I can ping the 11.22.33.5 from the internet. But as soon as I apply a
-DNAT rule (even a simple PAT) the DNAT-ed packets just disappear without
-any logging (there is nothing coming out of eth1, even not an arp
-request)
-
-I also wrote a bugreport (which is quite unclear IMHO, sorry for that),
-as I think it's a bug somewhere in the iptables or kernel code:
-
-http://bugzilla.netfilter.org/show_bug.cgi?id=680
-
-Anyone an idea? 
-
-Richard.
-
--- 
-___________________________________________________________________
-It is better to remain silent and be thought a fool, than to speak
-aloud and remove all doubt.
-
-+------------------------------------------------------------------+
-| Richard Lucassen, Utrecht                                        |
-| Public key and email address:                                    |
-| http://www.lucassen.org/mail-pubkey.html                         |
-+------------------------------------------------------------------+
+JD
