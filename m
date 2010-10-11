@@ -1,44 +1,42 @@
-From: mad_stuff@gmx.de
-Subject: force specific interface / late DNAT
-Date: Mon, 11 Oct 2010 12:10:13 +0200
-Message-ID: <20101011101013.66800@gmx.net>
+From: =?Big5?B?qVCrwqfK?= <richard925215@gmail.com>
+Subject: About lxc and libnetfilter_queue
+Date: Mon, 11 Oct 2010 18:11:45 +0800
+Message-ID: <AANLkTikytEZUNH9DRT-tAmuNy2-XwNZVgz6u4LggdR5Z@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=lBybfmhiMW7LCvXvC25FxuIteQSQ4JmoEyldyy9fn60=;
+        b=emzogirJKk00+ZSYSu4L+0QG3eQWkH2IdtujuO1ubTIMNrKKXPvnqVWsOub9yd3q2T
+         28wxph03xuCTB47klCd06xOV4Xf4xbdbn4hjUYjGmbT5i3glb1mdWnz8KKYGSn/RBQXW
+         vB2tgTuD9fuRJQ//SMqKLa1mMkqKaK+pdzAxs=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello,
+Hi every body,
 
-I've some strange requirements for my setup: my box (2.6.24) holds a bunch of outgoing ppp-connections (ppp0-ppp15) but all of these use the same IP subnet (192.168.1.0/24; 192.168.1.100 is my side, and 192.168.1.1 is the IP of the server on the other side; so in the end, I've got 16 ppp-devices with IP 192.168.1.100 belonging to completely different networks).
+I'm a newbie to netfilter_queue use.
 
-Now I want to connect (SFTP using OpenSSH) to some servers (IP: 192.168.1.1 each) on the oposite sides, so I thought about NAT to make this mess a bit handier:
+I set up a VM by lxc and installed the libnetfilter_queue on it trying
+to forward the packets to the guest userspace, but it didn't work.
+Do anyone else has been try this way before or had a similar experience?
 
--> I had the following idea to distinguish the different connections for userspace programs: for each device pppX create an alias pppX:1 with IP 10.0.X.2/24 so that I can connect to 10.0.10.1 if I want to talk to 192.168.0.1 connected via ppp10 and 10.0.9.1 if I want to use 192.168.0.1 connected via ppp9 etc.
+I followed the website below to set up my container.
 
-So I added two rules: 
+http://en.opensuse.org/LXC
 
-iptables -t nat -A OUTPUT -o ppp9 -d 10.0.9.1 -j DNAT --to-destination 192.168.0.1
-iptables -t nat -A POSTROUTING -o ppp9 -j MASQUERADE
+All libnetfilter_queue related libraries installed by zypper, as
+the following commands.
 
-But this doesn't work (tested it with two ethernet cards in the same segment) since after applying the DNAT rule the routing decision is changed, so Linux searches for a route to 192.168.0.1 and just uses one of the pppX interfaces and not ppp9.
+$ zypper in libnfnetlink-devel libnfnetlink0
+$ zypper in libnetfilter_queue-devel libnetfilter_queue1
 
-I can't do any DNAT in POSTROUTING chain, but exactly there I would like 
-
-I thought about doing some research in the tun/tap direction, but didn't find anything usable yet.
-
-Can you give me some points in the right direction?
-
-Can this scenario be solved?
-
-I appreciate any comments,
+I really appreciate for someone who can help me to deal with this problem.
 
 thanks,
--Chris
-
-
--- 
-Neu: GMX De-Mail - Einfach wie E-Mail, sicher wie ein Brief!  
-Jetzt De-Mail-Adresse reservieren: http://portal.gmx.net/de/go/demail
+Richard
