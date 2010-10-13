@@ -1,39 +1,34 @@
-From: James Morris <jmorris@namei.org>
-Subject: Re: [PATCH 1/5] secmark: do not return early if there was no error
-Date: Wed, 13 Oct 2010 15:07:40 +1100 (EST)
-Message-ID: <alpine.LRH.2.00.1010131507110.3834@tundra.namei.org>
-References: <20101012154008.26943.44399.stgit@paris.rdu.redhat.com>  <alpine.LRH.2.00.1010131038160.2949@tundra.namei.org> <1286927424.2614.15.camel@localhost.localdomain>
+From: Peter Trenkamp <s_6cg5kj@uni-bremen.de>
+Subject: D-NAT and S-NAT in IPv6
+Date: Wed, 13 Oct 2010 11:12:52 +0200
+Message-ID: <20101013111252.603920lk59ex94ic@webmail.uni-bremen.de>
 Mime-Version: 1.0
-Return-path: <linux-security-module-owner@vger.kernel.org>
-In-Reply-To: <1286927424.2614.15.camel@localhost.localdomain>
-Sender: linux-security-module-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Eric Paris <eparis@redhat.com>
-Cc: linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, paul.moore@hp.com, selinux@tycho.nsa.gov, sds@tycho.nsa.gov, jengelh@medozas.de, linux-security-module@vger.kernel.org, mr.dash.four@googlemail.com, pablo@netfilter.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=uni-bremen.de; s=dkim;
+	t=1286961171; bh=GCLEcZrLR4tvqSpI2i4/EdkKKkWRyWio0qqK2KBcGfo=;
+	h=Message-ID:Date:From:To:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding; b=3XAHeK+myt120QrS7wxoTNjHr7uV/iSlHEvIH
+	vWeAfRcW6KgJzaqwEaREHSC/HmnQYAE+dlY8UyUTQyPQJhSf5Y7V34L/hcJpC8VL6Ft
+	3LfUml3MBM/eCJSALLPn4RxvwWDBvkbko8660oFgAAz8n2dZF+jTOzjfZHY8jnC1BS4
+	=
+Content-Disposition: inline
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; delsp="Yes"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Tue, 12 Oct 2010, Eric Paris wrote:
+Hello everybody,
 
-> On Wed, 2010-10-13 at 10:38 +1100, James Morris wrote:
-> > On Tue, 12 Oct 2010, Eric Paris wrote:
-> > 
-> > > Commit 4a5a5c73 attempted to pass decent error messages back to userspace for
-> > > netfilter errors.  In xt_SECMARK.c however the patch screwed up and returned
-> > > on 0 (aka no error) early and didn't finish setting up secmark.  This results
-> > > in a kernel BUG if you use SECMARK.
-> > > 
-> > 
-> > Does this need to go into current Linus?
-> 
-> It's been broken since v2.6.35-rc1 so it's not exactly new, but yes,
-> it's broken and will bug like this in current Linus.
+I was searching in the Internet about how to change the destination
+IPv6 address into another IPv6 address. Unfortunately I did not find
+anything about this, except the information that ip6tables does not
+support this kind of NAT.
+So my question is: Is there a workaround for selecting a packet by
+Source and/or Destination address and then change the IPv6
+destination address into a new one?
 
-Acked-by: James Morris <jmorris@namei.org>
+Kind regards
 
-(Guessing this should go in via the networking tree).
+Peter Trenkamp
 
-
--- 
-James Morris
-<jmorris@namei.org>
