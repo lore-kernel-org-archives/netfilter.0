@@ -1,35 +1,39 @@
-From: Navid Mohaghegh <navid@navid.ca>
-Subject: I can't see any log activity for my LVS cluster
-Date: Tue, 12 Oct 2010 22:18:48 -0400
-Message-ID: <4CB51708.1000305@navid.ca>
+From: James Morris <jmorris@namei.org>
+Subject: Re: [PATCH 1/5] secmark: do not return early if there was no error
+Date: Wed, 13 Oct 2010 15:07:40 +1100 (EST)
+Message-ID: <alpine.LRH.2.00.1010131507110.3834@tundra.namei.org>
+References: <20101012154008.26943.44399.stgit@paris.rdu.redhat.com>  <alpine.LRH.2.00.1010131038160.2949@tundra.namei.org> <1286927424.2614.15.camel@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <linux-security-module-owner@vger.kernel.org>
+In-Reply-To: <1286927424.2614.15.camel@localhost.localdomain>
+Sender: linux-security-module-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Eric Paris <eparis@redhat.com>
+Cc: linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, paul.moore@hp.com, selinux@tycho.nsa.gov, sds@tycho.nsa.gov, jengelh@medozas.de, linux-security-module@vger.kernel.org, mr.dash.four@googlemail.com, pablo@netfilter.org
 
-Hi everyone,
+On Tue, 12 Oct 2010, Eric Paris wrote:
 
-I have a very simple LVS cluster with one director and two webservers
-and it is working just fine.
+> On Wed, 2010-10-13 at 10:38 +1100, James Morris wrote:
+> > On Tue, 12 Oct 2010, Eric Paris wrote:
+> > 
+> > > Commit 4a5a5c73 attempted to pass decent error messages back to userspace for
+> > > netfilter errors.  In xt_SECMARK.c however the patch screwed up and returned
+> > > on 0 (aka no error) early and didn't finish setting up secmark.  This results
+> > > in a kernel BUG if you use SECMARK.
+> > > 
+> > 
+> > Does this need to go into current Linus?
+> 
+> It's been broken since v2.6.35-rc1 so it's not exactly new, but yes,
+> it's broken and will bug like this in current Linus.
 
-However, for statistical analysis, I need to capture the respond time of
-the webservres.
+Acked-by: James Morris <jmorris@namei.org>
 
-I was hopeing to use ulogd with debug enabled (loglevel = 1) to see what
-is happening inside ipvsdm. Ulogd doesn't return anything and the logs
-are empty.
+(Guessing this should go in via the networking tree).
 
-Further I decide to directly look at the /var/log/messages and I don't
-see any activity over there too!!!
 
-Should I recompile kernel with debug enabled (i.e. to have
-/proc/sys/net/ipv4/vs/debug_level )? I am using Debian sid ...
-2.6.32-5-vserver-amd64 ... could you please help me? All I am trying to
-do is to see how long it takes for each webserver to respond the http
-request.
-
-Thank you,
-Navid
+-- 
+James Morris
+<jmorris@namei.org>
