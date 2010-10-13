@@ -1,26 +1,22 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
-Subject: NAT-PMP connections not tracked with nf_conntrack
-Date: Wed, 13 Oct 2010 15:27:13 +0100
-Message-ID: <4CB5C1C1.8060809@googlemail.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: D-NAT and S-NAT in IPv6
+Date: Wed, 13 Oct 2010 10:27:50 -0500
+Message-ID: <4CB5CFF6.5000007@riverviewtech.net>
+References: <20101013111252.603920lk59ex94ic@webmail.uni-bremen.de> <alpine.LNX.2.01.1010131201380.31123@obet.zrqbmnf.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id
-         :disposition-notification-to:date:from:user-agent:mime-version:to
-         :subject:content-type:content-transfer-encoding;
-        bh=6AIqGBHD0VW52sBUO4vLDQQAA3nQhWAhaTzfOL0hS4Q=;
-        b=AjoJpq13TodLPiwU1ZW0Jo8ZTYrLuspoNyOrVe3pcMYvKgeevQqZv6H6c/veQhLxNB
-         D/xyqwNOYe15WKcAeaZm6MlXBZR+2v6mlKh3i14h3BUSpqi9orGWWW8cMtQ7g/BVYyjR
-         abw2DsGZxcYbOzvZN0YXxoh2l5jb05IdloAZY=
+In-Reply-To: <alpine.LNX.2.01.1010131201380.31123@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-I have configured a personal vpn with NAT-PMP (which extends from my 
-local to the remote vpn endpoints), but that connection does not appear 
-to be tracked by the nf_conntrack. I see the connection made in netstat, 
-but not in nf_conntrack. Is that a bug or is there any other way I can 
-track this connection?
+On 10/13/10 05:01, Jan Engelhardt wrote:
+> IPv6 was designed to do without NAT.
+
+That doesn't negate the desire for it.
+
+
+
+Grant. . . .
