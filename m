@@ -1,28 +1,79 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: D-NAT and S-NAT in IPv6
-Date: Wed, 13 Oct 2010 12:01:54 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1010131201380.31123@obet.zrqbmnf.qr>
-References: <20101013111252.603920lk59ex94ic@webmail.uni-bremen.de>
+From: Paul Moore <paul.moore@hp.com>
+Subject: Re: [PATCH 4/5] conntrack: export lsm context rather than internal
+ secid via netlink
+Date: Wed, 13 Oct 2010 09:41:44 -0400
+Message-ID: <1286977304.5007.5.camel@sifl>
+References: <20101012154008.26943.44399.stgit@paris.rdu.redhat.com>
+	 <20101012154028.26943.6918.stgit@paris.rdu.redhat.com>
+	 <1286925284.5133.98.camel@sifl>
+	 <1286925891.2614.13.camel@localhost.localdomain>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20101013111252.603920lk59ex94ic@webmail.uni-bremen.de>
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Peter Trenkamp <s_6cg5kj@uni-bremen.de>
-Cc: netfilter@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <1286925891.2614.13.camel@localhost.localdomain>
+Sender: netfilter-devel-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+To: Eric Paris <eparis@redhat.com>
+Cc: linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, jmorris@namei.org, selinux@tycho.nsa.gov, sds@tycho.nsa.gov, jengelh@medozas.de, linux-security-module@vger.kernel.org, mr.dash.four@googlemail.com, pablo@netfilter.org
 
-On Wednesday 2010-10-13 11:12, Peter Trenkamp wrote:
+On Tue, 2010-10-12 at 19:24 -0400, Eric Paris wrote:
+> On Tue, 2010-10-12 at 19:14 -0400, Paul Moore wrote:
+> > > -ctnetlink_dump_secmark(struct sk_buff *skb, const struct nf_conn *ct)
+> > > +ctnetlink_dump_secctx(struct sk_buff *skb, const struct nf_conn *ct)
+> > >  {
+> > > -	NLA_PUT_BE32(skb, CTA_SECMARK, htonl(ct->secmark));
+> > > -	return 0;
+> > > +	struct nlattr *nest_secctx;
+> > > +	int len, ret;
+> > > +	char *secctx;
+> > > +
+> > > +	ret = security_secid_to_secctx(ct->secmark, &secctx, &len);
+> > > +	if (ret)
+> > > +		return ret;
+> > > +
+> > > +	ret = -1;
+> > > +	nest_secctx = nla_nest_start(skb, CTA_SECCTX | NLA_F_NESTED);
+> > > +	if (!nest_secctx)
+> > > +		goto nla_put_failure;
+> > >  
+> > > +	NLA_PUT_STRING(skb, CTA_SECCTX_NAME, secctx);
+> > > +	nla_nest_end(skb, nest_secctx);
+> > > +
+> > > +	ret = 0;
+> > >  nla_put_failure:
+> > > -	return -1;
+> > > +	security_release_secctx(secctx, len);
+> > > +	return ret;
+> > >  }
+> > 
+> > All the ret assignments bother me, I also don't think "nla_put_failure"
+> > is a good choice since we run this code both on success and failure -
+> > how about this:
+> 
+> #define NLA_PUT(skb, attrtype, attrlen, data) \
+>         do { \
+>                 if (unlikely(nla_put(skb, attrtype, attrlen, data) < 0)) \
+>                         goto nla_put_failure; \
+>         } while(0)
+> 
+> #define NLA_PUT_STRING(skb, attrtype, value) \
+>         NLA_PUT(skb, attrtype, strlen(value) + 1, value)
+> 
+> so we can't get rid of the nla_put_failure tag and it also means your
+> ret values aren't quite right, we have to set ret = -1 before the
+> NLA_PUT_STRING()....
 
-> Hello everybody,
->
-> I was searching in the Internet about how to change the destination
-> IPv6 address into another IPv6 address. Unfortunately I did not find
-> anything about this, except the information that ip6tables does not
-> support this kind of NAT.
-> So my question is: Is there a workaround for selecting a packet by
-> Source and/or Destination address and then change the IPv6
-> destination address into a new one?
+Ah, yes, forgot about those stupid macros and their pre-defined goto
+labels ... I'm sure someone had a good reason for doing it that way, but
+I've never been a fan of that approach (case in point).  I'd ask you to
+use the "normal" nla_put_*() functions but I see that the rest of the
+file uses the macros so it probably isn't worth it ... oh well.
 
-IPv6 was designed to do without NAT.
+Reviewed-by: Paul Moore <paul.moore@hp.com>
+
+-- 
+paul moore
+linux @ hp
+
+
