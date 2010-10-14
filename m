@@ -1,42 +1,73 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: how to install xtables extension to arbitrary path?
-Date: Thu, 14 Oct 2010 17:40:56 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1010141737010.30787@obet.zrqbmnf.qr>
-References: <4CB712C3.3030804@21com.com>
+From: Paul Amaranth <Paul@Auroragrp.Com>
+Subject: Incorrect UDP checksums when using nfq to modify packets
+Date: Thu, 14 Oct 2010 17:11:28 -0400
+Message-ID: <20101014211128.GH21125@tiger.AuroraGrp.Com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4CB712C3.3030804@21com.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Xing Qianqian <xingqq@21com.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Thursday 2010-10-14 16:25, Xing Qianqian wrote:
->
->When building iptables, we can use "configure" to specify the xtables
->extension install path by "prefix" or "withxtlibdir". And when we
->running the iptables, iptables seems to search for the xtables extension
->libraries only in the path that was specified by "configure". If we move
->the xtables extension libraries to some other place, iptables will
->report failing to load the "so" files.
+I need to fix a broken protocol by modifying certain UDP packets as
+they pass through a firewall.  I have network taps so I can see
+what's on the wire both before and after the firewall.  I am
+using the NFQUEUE facility with queue 0 so iptables rules can
+use the QUEUE target.  The intercept rule is in the FORWARD
+chain, before the 172 source address is translated to an
+external address.  I'm using a security modified 2.6.18 kernel
+with the latest libnfnetlink and libnetfilter_queue from the netfilter
+page.
 
-So don't move them ;-)
+I use nfq_get_payload to get the packet, modify the packet contents   
+without changing the size (actually, just change an embedded IP
+address), then send it off with
 
->Because I'm doing cross compiling, and I will place the xtables
->extension libraries in the target board, and the final path might be
->different than the "configure" path.
+ nfq_set_verdict(qh, id, NF_ACCEPT, size, packet)
 
-You always have to specify final target-local paths to configure (in 
-other words, as usual). This has never been different.
+All this works very nicely.
 
->Do you know how to make iptables to
->load the correct xtables extensions?
+Now, since the nat rules will change the source IP address, the UDP
+checksum will have to be recalculated at that point.  When it goes out
+on the wire, the UDP checksum has been incorrectly calculated.  By
+definition, UDP packets with bad checksums are dropped, so that is not good.
 
-make install DESTDIR=/cross-chroot
+It doesn't matter if I put in a corrected udp checksum, or set it to 0,
+the checksum on the wire is bad (note this is not a case of an offload
+error, I'm looking at the actual wire traffic).  I have even tried
+calculating the checksum using the address translation that has yet to
+happen.  Doesn't matter, the checksum is incorrect.  If I do not modify
+the packet contents and use nfq_set_verdict with a 0 size and NULL
+pointer, the checksum is correctly calculated, as are packets that do
+not go through the QUEUE.
 
-Is what you need. This is used in about all the installation scripts in 
-.spec files and similar in linux distributions' packages. Every 
-automake-powered project has DESTDIR offered, it is not exactly a new 
-thing.
+As an aside, the protocol is a broken one and leaves the IP header length
+set to 0.
+
+Anyone have a clue to what's going on?  I have a couple of ideas:  
+
+1) I'm using the wrong chain for the intercept.  However, my firewall
+   generator puts them in the FORWARD chain which is sort of reasaonble.
+   Maybe I should put them in the POSTROUTING chain and recalc the UDP
+   checksum myself?  It is not clear to me where the checksum is calculated
+   and whether this would solve the problem.
+
+2) I'm not using the nfq routine correctly.  Possible, the documentation is
+   a bit sparse, but everything on the wire is correct except for the udp checksum.
+
+3) The IP header length set to 0 is affecting the checksum.  This doesn't
+   affect packets that have not been modified, though, so I don't think that's
+   an issue.
+
+4) Maybe there have been kernel updates since 2.6.18 that correct this.  If so, I
+   can incorporate the changes; I can't replace the kernel with a different
+   version for reasons that are not worth mentioning.
+
+Thanks for any ideas.
+-- 
+Paul Amaranth, GCIH  | Rochester MI, USA              
+Aurora Group, Inc.   |   Security, Systems & Software 
+paul@AuroraGrp.Com   |   Unix & Windows               
+
