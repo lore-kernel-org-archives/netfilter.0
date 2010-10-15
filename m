@@ -1,28 +1,43 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: event-driven connection tracking
-Date: Fri, 15 Oct 2010 09:17:08 +0200
-Message-ID: <4CB7FFF4.8030807@netfilter.org>
-References: <4CB5CF17.3090302@googlemail.com> <alpine.LNX.2.01.1010131747460.27120@obet.zrqbmnf.qr> <4CB6302A.8080507@googlemail.com> <alpine.LNX.2.01.1010140053190.5698@obet.zrqbmnf.qr> <4CB6F1E2.3030702@netfilter.org> <4CB704F7.60608@googlemail.com>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [PATCH] secmark: do not return early if there was no error
+Date: Fri, 15 Oct 2010 17:08:26 +0200
+Message-ID: <4CB86E6A.1040807@trash.net>
+References: <20101013202105.15011.60553.stgit@paris.rdu.redhat.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4CB704F7.60608@googlemail.com>
+In-Reply-To: <20101013202105.15011.60553.stgit@paris.rdu.redhat.com>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Mr Dash Four <mr.dash.four@googlemail.com>
-Cc: Jan Engelhardt <jengelh@medozas.de>, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, netfilter@vger.kernel.org
+To: Eric Paris <eparis@redhat.com>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, davem@davemloft.net, jengelh@medozas.de, paul.moore@hp.com, jmorris@namei.org
 
-On 14/10/10 15:26, Mr Dash Four wrote:
-> Another constraint I have (which I did not mention in my initial post)
-> is that, for various reasons, I am using the 2.6.16.60 kernel - the
-> libnetfilter_conntrack requirements suggest I can get away with it, is
-> there anything in particular I should be aware of when installing/using
-> this package with this kernel version (no, I am not in a position to
-> upgrade - not yet!)?
+Am 13.10.2010 22:21, schrieb Eric Paris:
+> Commit 4a5a5c73 attempted to pass decent error messages back to userspace for
+> netfilter errors.  In xt_SECMARK.c however the patch screwed up and returned
+> on 0 (aka no error) early and didn't finish setting up secmark.  This results
+> in a kernel BUG if you use SECMARK.
+> 
+> ------------[ cut here ]------------
+> kernel BUG at net/netfilter/xt_SECMARK.c:38!
+> invalid opcode: 0000 [#1] SMP
+> last sysfs file: /sys/devices/system/cpu/cpu2/cache/index2/shared_cpu_map
+> CPU 0
+> Modules linked in: xt_SECMARK iptable_mangle nfs lockd fscache nfs_acl
+> auth_rpcgss sunrpc ip6t_REJECT nf_conntrack_ipv6 ip6table_filter ip6_tables
+> uinput virtio_net virtio_balloon i2c_piix4 i2c_core joydev microcode ipv6
+> virtio_blk virtio_pci virtio_ring virtio [last unloaded: speedstep_lib]
+> 
+> ...
+> RIP  [<ffffffffa022117d>] secmark_tg+0x17/0x2e [xt_SECMARK]
+> RSP <ffff880003e03a40>
+> ---[ end trace 9aa5d06a71143e74 ]---
+> 
+> Signed-off-by: Eric Paris <eparis@redhat.com>
+> Acked-by: Paul Moore <paul.moore@hp.com>
+> Acked-by: James Morris <jmorris@namei.org>
 
-Recommended kernel version is >= 2.6.18 (that's on the website and
-docs). With such an old kernel version, I think that you may have
-problems with NAT conntrack entries.
+Acked-by: Patrick McHardy <kaber@trash.net>
 
-Let me know anyway how it goes, it would be interesting to know.
+I'll leave it up to Dave whether this can still go into 2.6.36.
