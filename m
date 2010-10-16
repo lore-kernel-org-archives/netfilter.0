@@ -1,35 +1,39 @@
-From: Jan Engelhardt <jengelh@medozas.de>
+From: Italo Valcy <italo@dcc.ufba.br>
 Subject: Re: Time counter of connections (libnetfilter-conntrack?)
-Date: Sat, 16 Oct 2010 11:28:45 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1010161126330.2806@obet.zrqbmnf.qr>
-References: <4CB924EC.3090906@dcc.ufba.br> <4CB960A8.3070001@netfilter.org>
+Date: Sat, 16 Oct 2010 09:57:03 -0300
+Message-ID: <4CB9A11F.5010906@dcc.ufba.br>
+References: <4CB924EC.3090906@dcc.ufba.br> <4CB960A8.3070001@netfilter.org> <alpine.LNX.2.01.1010161126330.2806@obet.zrqbmnf.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4CB960A8.3070001@netfilter.org>
+In-Reply-To: <alpine.LNX.2.01.1010161126330.2806@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Italo Valcy <italo@dcc.ufba.br>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Hi guys,
+
+Thank you Jan, Pablo, for the reply. It's like I imagined. One doubt:
+the 'id' field of nf_conntrack struct is unique? (I'd like to use it as
+index to the struct that I'll use to track the timestamps...)
 
 
-On Saturday 2010-10-16 10:22, Pablo Neira Ayuso wrote:
->On 16/10/10 06:07, Italo Valcy wrote:
->> Hi guys!
->> 
->> Is there an way to get time counter of the connections using
->> libnetfilter-conntrack? I mean, I'd like to know how long a connection
->> had taken (since the state NEW to DESTROY).
->> 
->> Any ideias?
->
->The Linux kernel does not track this connection lifetime, so you would
->have to listen to NEW events, put the ct objects into some structure
->(hashtable, tree, list, etc) and calculate the difference by yourself
->once you receive DESTROY events.
->
->It wouldn't be hard to extend the existing code to do this in kernel space.
+Kind regards, Italo.
 
-One could just enhance the ct struct by a genesis timestamp,
-and calculate the delta once the destroy event is sent out.
+
+- --=20
+Sauda=E7=F5es,
+
+Italo Valcy :: http://wiki.dcc.ufba.br/~ItaloValcy
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAky5oRsACgkQfidLqjN6RNGuYQCeMXOT2pyUGJfExEGudf2Z+OK/
+jIcAn0b1BIYnQ9K4MkjiB6YHEhcZGsRb
+=3DYYhQ
+-----END PGP SIGNATURE-----
