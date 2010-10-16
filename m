@@ -1,40 +1,30 @@
-From: Italo Valcy <italo@dcc.ufba.br>
-Subject: Time counter of connections (libnetfilter-conntrack?)
-Date: Sat, 16 Oct 2010 01:07:08 -0300
-Message-ID: <4CB924EC.3090906@dcc.ufba.br>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Time counter of connections (libnetfilter-conntrack?)
+Date: Sat, 16 Oct 2010 10:22:00 +0200
+Message-ID: <4CB960A8.3070001@netfilter.org>
+References: <4CB924EC.3090906@dcc.ufba.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4CB924EC.3090906@dcc.ufba.br>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Italo Valcy <italo@dcc.ufba.br>
+Cc: netfilter@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On 16/10/10 06:07, Italo Valcy wrote:
+> Hi guys!
+> 
+> Is there an way to get time counter of the connections using
+> libnetfilter-conntrack? I mean, I'd like to know how long a connection
+> had taken (since the state NEW to DESTROY).
+> 
+> Any ideias?
 
-Hi guys!
+The Linux kernel does not track this connection lifetime, so you would
+have to listen to NEW events, put the ct objects into some structure
+(hashtable, tree, list, etc) and calculate the difference by yourself
+once you receive DESTROY events.
 
-Is there an way to get time counter of the connections using
-libnetfilter-conntrack? I mean, I'd like to know how long a connection
-had taken (since the state NEW to DESTROY).
-
-Any ideias?
-
-Thanks for any help!
-
-
-Kind Regards, italo.
-
-- --=20
-Sauda=E7=F5es,
-
-Italo Valcy :: http://wiki.dcc.ufba.br/~ItaloValcy
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAky5JOgACgkQfidLqjN6RNFlNACfULAt/4lV33jZsS3a16T9wf+7
-nKoAnRXBjOSLpgBep0GHu2KlGyjDn4eu
-=3D71oq
------END PGP SIGNATURE-----
+It wouldn't be hard to extend the existing code to do this in kernel space.
