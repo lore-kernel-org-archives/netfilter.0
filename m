@@ -1,43 +1,27 @@
-From: Italo Valcy <italo@dcc.ufba.br>
+From: Jan Engelhardt <jengelh@medozas.de>
 Subject: Re: Gcc error trying to use nf_conntrack->id (dereferencing pointer
  to incomplete type)
-Date: Sat, 16 Oct 2010 17:30:56 -0300
-Message-ID: <4CBA0B80.8040301@dcc.ufba.br>
+Date: Sat, 16 Oct 2010 23:17:59 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1010162317020.7076@obet.zrqbmnf.qr>
 References: <4CB9FACF.7060407@dcc.ufba.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 In-Reply-To: <4CB9FACF.7060407@dcc.ufba.br>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
-
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
-
-Hi guys,
-
-Em 16-10-2010 16:19, Italo Valcy escreveu:
->=20
-> I'm trying to use 'id' field of nf_conntrack struct but I'm getting t=
-he
-> following error: "dereferencing pointer to incomplete type".
-
-=46orget about: I'll use nfct_get_attr_u32()
-
-Thanks.
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Italo Valcy <italo@dcc.ufba.br>
+Cc: netfilter@vger.kernel.org
 
 
-- --=20
-Sauda=E7=F5es,
+On Saturday 2010-10-16 21:19, Italo Valcy wrote:
 
-Italo Valcy :: http://wiki.dcc.ufba.br/~ItaloValcy
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+>I'm trying to use 'id' field of nf_conntrack struct but I'm getting the
+>following error: "dereferencing pointer to incomplete type".
+>
+>For example, I've tried to modify conntrack-0.9.6 to print this 'id'
+>field when "Display a real-time event log":
 
-iEYEARECAAYFAky6C4AACgkQfidLqjN6RNHL2gCeJWejnQS4i+2kUD8FTyUgFx0U
-xO4AoJErwOZWOeefQvwFZMc09C3fh/3O
-=3DT65x
------END PGP SIGNATURE-----
+Unrelated to your issue though, it is usually wise to work with the most
+recently released tarball.
