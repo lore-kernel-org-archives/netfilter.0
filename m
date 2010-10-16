@@ -1,38 +1,23 @@
-From: Italo Valcy <italo@dcc.ufba.br>
-Subject: Re: Time counter of connections (libnetfilter-conntrack?)
-Date: Sat, 16 Oct 2010 15:12:07 -0300
-Message-ID: <4CB9EAF7.5080105@dcc.ufba.br>
-References: <4CB924EC.3090906@dcc.ufba.br> <4CB960A8.3070001@netfilter.org> <alpine.LNX.2.01.1010161126330.2806@obet.zrqbmnf.qr> <4CB9A11F.5010906@dcc.ufba.br> <4CB9E7EC.6050101@netfilter.org> <4CB9EA4A.3080501@netfilter.org>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Port forwarding problem
+Date: Sat, 16 Oct 2010 20:19:26 +0200
+Message-ID: <4CB9ECAE.8000605@plouf.fr.eu.org>
+References: <4CB9A03C.7020700@uninorte.edu.co> <4CB9A4FE.1050905@plouf.fr.eu.org> <4CB9A669.7020008@uninorte.edu.co> <4CB9AAB2.8070803@plouf.fr.eu.org> <4CB9B03C.2090107@uninorte.edu.co>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4CB9EA4A.3080501@netfilter.org>
+In-Reply-To: <4CB9B03C.2090107@uninorte.edu.co>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Carlos Mtz-Troncoso <cmartinez@uninorte.edu.co>
 Cc: netfilter@vger.kernel.org
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+Carlos Mtz-Troncoso a =E9crit :
+>=20
+> I just changed some -I for -A and moved
+> iptables -A FORWARD -j DROP
+> to the end and it works!
 
-Hi Pablo,
-
-Ok! Thank you so much for the help!!! I'll code a little now.. ;)
-
-
-Kind regards, Italo.
-
-
-- --=20
-Sauda=E7=F5es,
-
-Italo Valcy :: http://wiki.dcc.ufba.br/~ItaloValcy
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAky56vMACgkQfidLqjN6RNFCNwCfWd3lckao2urYG41a6TH3Gm/t
-+1AAniTjaGJbuVDj2ZMPGHLHjmgYLd8s
-=3DtuCM
------END PGP SIGNATURE-----
+Why not set the default policy to DROP instead of that terminal rule ?
+This way you could append new rules more easily.
