@@ -1,43 +1,40 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [PATCH] secmark: do not return early if there was no error
-Date: Fri, 15 Oct 2010 17:08:26 +0200
-Message-ID: <4CB86E6A.1040807@trash.net>
-References: <20101013202105.15011.60553.stgit@paris.rdu.redhat.com>
+From: Italo Valcy <italo@dcc.ufba.br>
+Subject: Time counter of connections (libnetfilter-conntrack?)
+Date: Sat, 16 Oct 2010 01:07:08 -0300
+Message-ID: <4CB924EC.3090906@dcc.ufba.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <20101013202105.15011.60553.stgit@paris.rdu.redhat.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Eric Paris <eparis@redhat.com>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, davem@davemloft.net, jengelh@medozas.de, paul.moore@hp.com, jmorris@namei.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-Am 13.10.2010 22:21, schrieb Eric Paris:
-> Commit 4a5a5c73 attempted to pass decent error messages back to userspace for
-> netfilter errors.  In xt_SECMARK.c however the patch screwed up and returned
-> on 0 (aka no error) early and didn't finish setting up secmark.  This results
-> in a kernel BUG if you use SECMARK.
-> 
-> ------------[ cut here ]------------
-> kernel BUG at net/netfilter/xt_SECMARK.c:38!
-> invalid opcode: 0000 [#1] SMP
-> last sysfs file: /sys/devices/system/cpu/cpu2/cache/index2/shared_cpu_map
-> CPU 0
-> Modules linked in: xt_SECMARK iptable_mangle nfs lockd fscache nfs_acl
-> auth_rpcgss sunrpc ip6t_REJECT nf_conntrack_ipv6 ip6table_filter ip6_tables
-> uinput virtio_net virtio_balloon i2c_piix4 i2c_core joydev microcode ipv6
-> virtio_blk virtio_pci virtio_ring virtio [last unloaded: speedstep_lib]
-> 
-> ...
-> RIP  [<ffffffffa022117d>] secmark_tg+0x17/0x2e [xt_SECMARK]
-> RSP <ffff880003e03a40>
-> ---[ end trace 9aa5d06a71143e74 ]---
-> 
-> Signed-off-by: Eric Paris <eparis@redhat.com>
-> Acked-by: Paul Moore <paul.moore@hp.com>
-> Acked-by: James Morris <jmorris@namei.org>
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-Acked-by: Patrick McHardy <kaber@trash.net>
+Hi guys!
 
-I'll leave it up to Dave whether this can still go into 2.6.36.
+Is there an way to get time counter of the connections using
+libnetfilter-conntrack? I mean, I'd like to know how long a connection
+had taken (since the state NEW to DESTROY).
+
+Any ideias?
+
+Thanks for any help!
+
+
+Kind Regards, italo.
+
+- --=20
+Sauda=E7=F5es,
+
+Italo Valcy :: http://wiki.dcc.ufba.br/~ItaloValcy
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAky5JOgACgkQfidLqjN6RNFlNACfULAt/4lV33jZsS3a16T9wf+7
+nKoAnRXBjOSLpgBep0GHu2KlGyjDn4eu
+=3D71oq
+-----END PGP SIGNATURE-----
