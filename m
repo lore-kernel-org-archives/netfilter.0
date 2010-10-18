@@ -1,27 +1,38 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Gcc error trying to use nf_conntrack->id (dereferencing pointer
- to incomplete type)
-Date: Sat, 16 Oct 2010 23:17:59 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1010162317020.7076@obet.zrqbmnf.qr>
-References: <4CB9FACF.7060407@dcc.ufba.br>
+From: Maarten Vanraes <maarten@ba.be>
+Subject: xtables-addons ACCOUNT
+Date: Mon, 18 Oct 2010 17:12:03 +0200
+Message-ID: <201010181712.03160.maarten@ba.be>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4CB9FACF.7060407@dcc.ufba.br>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Italo Valcy <italo@dcc.ufba.br>
-Cc: netfilter@vger.kernel.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
+
+Hello,
+
+I can't get it working myself:
+ * kernel: 2.6.26-2-amd64 (debian lenny)
+ * iptables: 1.4.8
+ * xtables-addons: 1.26
 
 
-On Saturday 2010-10-16 21:19, Italo Valcy wrote:
+- man pages tell us to use CIDR notation; however syslog shows in the error 
+messages "network/netmask" notation (255.255.255.0)
+- removing the rule with iptables -D removes the rule, but it seems not the 
+account table.
+- iptaccount -h doesn't remove it either
+- modprobe -r xt_ACCOUNT doesn't either
+- i always get 0 rules or something
+- adding the rule after it's been deleted doesn't work, i get error messages 
+about wrong parameters
+- adding a diff addr with same name succeeds, but gives error messages in 
+syslog
 
->I'm trying to use 'id' field of nf_conntrack struct but I'm getting the
->following error: "dereferencing pointer to incomplete type".
->
->For example, I've tried to modify conntrack-0.9.6 to print this 'id'
->field when "Display a real-time event log":
 
-Unrelated to your issue though, it is usually wise to work with the most
-recently released tarball.
+Do i do something wrong; or is there a bug in here?
+
+Kind Regards,
+
+Maarten Vanraes
