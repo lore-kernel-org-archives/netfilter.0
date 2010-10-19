@@ -1,37 +1,33 @@
-From: James Morris <jmorris@namei.org>
-Subject: Re: [PATCH] secmark: do not return early if there was no error
-Date: Tue, 19 Oct 2010 09:48:35 +1100 (EST)
-Message-ID: <alpine.LRH.2.00.1010190947480.19779@tundra.namei.org>
-References: <20101013202105.15011.60553.stgit@paris.rdu.redhat.com> <4CB86E6A.1040807@trash.net>
+From: JD <jd1008@gmail.com>
+Subject: Question about dropped packets
+Date: Mon, 18 Oct 2010 21:42:47 -0700
+Message-ID: <4CBD21C7.2080604@gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4CB86E6A.1040807@trash.net>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>
-Cc: Eric Paris <eparis@redhat.com>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, davem@davemloft.net, jengelh@medozas.de, paul.moore@hp.com
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from
+         :user-agent:mime-version:to:subject:content-type
+         :content-transfer-encoding;
+        bh=Ru/ZQanhW7Mmqt+T6zjZ3Ft3yuML9YUQgcWRvqFKzd8=;
+        b=QwSw3KnqrQNFXyYymP0+kFg0dtJznVWBaAJXZmDLNyjTET1mxgqt8yM1jmNNbnX1LN
+         AHpZlJvYrzoB/BCaR8p3WrzfZSi7Z1Omky6E+GuwsSlRONPmXW63cDreGKRnFIqjTlen
+         s+MIRDPN6Ov8DFtb1zdkOmzbVrXuQkJu4l87s=
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Fri, 15 Oct 2010, Patrick McHardy wrote:
+  I am seeing a lot of
 
-> > ...
-> > RIP  [<ffffffffa022117d>] secmark_tg+0x17/0x2e [xt_SECMARK]
-> > RSP <ffff880003e03a40>
-> > ---[ end trace 9aa5d06a71143e74 ]---
-> > 
-> > Signed-off-by: Eric Paris <eparis@redhat.com>
-> > Acked-by: Paul Moore <paul.moore@hp.com>
-> > Acked-by: James Morris <jmorris@namei.org>
-> 
-> Acked-by: Patrick McHardy <kaber@trash.net>
-> 
-> I'll leave it up to Dave whether this can still go into 2.6.36.
-
-FYI, I have a copy now in my #next branch, as it's a pre-requisite for 
-further patches.
+Dropped by firewall: IN=wlan0 OUT= 
+MAC=ff:ff:ff:ff:ff:ff:60:fb:42:d1:69:71:08:00 SRC=0.0.0.0 
+DST=255.255.255.255 LEN=328 TOS=0x00 PREC=0x00 TTL=255 ID=25801 
+PROTO=UDP SPT=68 DPT=67 LEN=308
 
 
--- 
-James Morris
-<jmorris@namei.org>
+How can I know who is sending it to my machine if the source IP is all 
+zeros?
+I have no idea if it is coming from the lan or from the wan?
+
