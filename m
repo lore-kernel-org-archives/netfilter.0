@@ -1,47 +1,57 @@
-From: Joe Perches <joe@perches.com>
-Subject: Re: [PATCH] net: make ctl_path local and const
-Date: Tue, 19 Oct 2010 20:01:41 -0700
-Message-ID: <1287543701.10409.599.camel@Joe-Laptop>
-References: <1287543276-4511-1-git-send-email-xiaosuo@gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: xtables-addons ACCOUNT
+Date: Wed, 20 Oct 2010 19:36:14 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1010201927490.17703@obet.zrqbmnf.qr>
+References: <201010181712.03160.maarten@ba.be> <201010201025.55825.maarten@ba.be> <alpine.LNX.2.01.1010201116060.3551@obet.zrqbmnf.qr> <201010201503.14624.maarten@ba.be>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <bridge-bounces@lists.linux-foundation.org>
-In-Reply-To: <1287543276-4511-1-git-send-email-xiaosuo@gmail.com>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.linux-foundation.org/mailman/listinfo/bridge>, 
-	<mailto:bridge-request@lists.linux-foundation.org?subject=unsubscribe>
-List-Archive: <http://lists.linux-foundation.org/pipermail/bridge>
-List-Post: <mailto:bridge@lists.linux-foundation.org>
-List-Help: <mailto:bridge-request@lists.linux-foundation.org?subject=help>
-List-Subscribe: <https://lists.linux-foundation.org/mailman/listinfo/bridge>, 
-	<mailto:bridge-request@lists.linux-foundation.org?subject=subscribe>
-Sender: bridge-bounces@lists.linux-foundation.org
-Errors-To: bridge-bounces@lists.linux-foundation.org
-To: Changli Gao <xiaosuo@gmail.com>
-Cc: Andy Grover <andy.grover@oracle.com>, James Morris <jmorris@namei.org>, linux-sctp@vger.kernel.org, rds-devel@oss.oracle.com, "Pekka Savola (ipv6)" <pekkas@netcore.fi>, linux-x25@vger.kernel.org, dccp@vger.kernel.org, bridge@lists.linux-foundation.org, Andrew@smtp1.linux-foundation.org, coreteam@netfilter.org, Arnaldo Carvalho de Melo <acme@ghostprotocols.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Joerg Reuter <jreuter@yaina.de>, Sridhar Samudrala <sri@us.ibm.com>, Samuel Ortiz <samuel@sortiz.org>, Vlad Yasevich <vladislav.yasevich@hp.com>, netfilter@vger.kernel.org, Remi Denis-Courmont <remi.denis-courmont@nokia.com>, linux-hams@vger.kernel.org, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, netdev@vger.kernel.org, linux-decnet-user@lists.sourceforge.net, linux-kernel@vger.ker
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <201010201503.14624.maarten@ba.be>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: Maarten Vanraes <maarten@ba.be>
+Cc: netfilter@vger.kernel.org, Bob Miller <bob@computerisms.ca>
 
-On Wed, 2010-10-20 at 10:54 +0800, Changli Gao wrote:
-> Signed-off-by: Changli Gao <xiaosuo@gmail.com>
-[]
-> diff --git a/net/appletalk/sysctl_net_atalk.c b/net/appletalk/sysctl_net_atalk.c
-> index 04e9c0d..b92f269 100644
-> --- a/net/appletalk/sysctl_net_atalk.c
-> +++ b/net/appletalk/sysctl_net_atalk.c
-> @@ -42,16 +42,16 @@ static struct ctl_table atalk_table[] = {
->  	{ },
->  };
->  
-> -static struct ctl_path atalk_path[] = {
-> -	{ .procname = "net", },
-> -	{ .procname = "appletalk", },
-> -	{ }
-> -};
-> -
->  static struct ctl_table_header *atalk_table_header;
->  
->  void atalk_register_sysctl(void)
->  {
-> +	const struct ctl_path atalk_path[] = {
 
-Shouldn't all of these be static const struct ?
+On Wednesday 2010-10-20 15:03, Maarten Vanraes wrote:
+>Op woensdag 20 oktober 2010 11:16:29 schreef Jan Engelhardt:
+>> On Wednesday 2010-10-20 10:25, Maarten Vanraes wrote:
+>> >> > ACCOUNT: Table publicnet found, but IP/netmask mismatch. IP/net=
+mask
+>> >> > found: 194.0.234.0/255.255.255.0
+>> >> > ACCOUNT: Table insert problem. Aborting
+>> >
+>> >this error message is due to a previous publicnet rule, and it can'=
+t seem
+>> >to find the matching network. even though it is the same one. (i su=
+spect
+>> >it is due to network being 194.0.234.0/24 and the matcher is checki=
+ng
+>> >194.0.234.0/255.255.255.0 ). also i suspect there is a another bug =
+when
+>> >removing the rule that the matcher can't find the correct one (also=
+ due to
+>> >different netmask notations?) and thus not everything is removed wh=
+ich
+>> >means that i can't reinsert that one.
+>>=20
+>> Do you have a minimal testcase available?
+>
+>
+>machine is rebooted, no iptables yet, no modules loaded.
+>
+>[]# iptables -t mangle -I POSTROUTING -j ACCOUNT --addr 0.0.0.0/0 --tn=
+ame self
+>iptables: Invalid argument. Run `dmesg' for more information.
+
+I fail to reproduce this in 64-bit and 32-compat environments.
+Since ACCOUNT.ko and x_tables.ko do output appropriate messages
+to dmesg along with returning EINVAL... I don't see much
+possibilities.
+
+One could be that you are using an overly old xtables-addons (<=C2=A01.=
+27)
+compat_xtables.ko with an overly new kernel (>=3D v2.6.35) -
+combined with having ignored the compile warnings/errors (when
+building from source, as DKMS unfortunately does).
