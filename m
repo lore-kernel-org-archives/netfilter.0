@@ -1,42 +1,90 @@
-From: Changli Gao <xiaosuo@gmail.com>
-Subject: Re: [PATCH] net: make ctl_path local and const
-Date: Wed, 20 Oct 2010 13:10:27 +0800
-Message-ID: <AANLkTi=wtc3uAqP6zq4XN-_kLaDhaPNB+BxkwkFbpxj4@mail.gmail.com>
-References: <1287543276-4511-1-git-send-email-xiaosuo@gmail.com>
-	<1287543701.10409.599.camel@Joe-Laptop>
-	<AANLkTi=pz4zYnnUSvb9FjVvCAURruHhJTz7pBKDi8Pdw@mail.gmail.com>
-	<1287545337.10409.602.camel@Joe-Laptop>
-	<AANLkTimGUB-+TTsje1kc3q9PyoB2jJdgCK2Z7n9u7N1J@mail.gmail.com>
-	<1287550779.10409.620.camel@Joe-Laptop>
+From: Maarten Vanraes <maarten@ba.be>
+Subject: Re: xtables-addons ACCOUNT
+Date: Wed, 20 Oct 2010 10:25:55 +0200
+Message-ID: <201010201025.55825.maarten@ba.be>
+References: <201010181712.03160.maarten@ba.be> <201010191009.32841.maarten@ba.be> <1287506749.13167.1042.camel@laplaplian>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <bridge-bounces@lists.linux-foundation.org>
-In-Reply-To: <1287550779.10409.620.camel@Joe-Laptop>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.linux-foundation.org/mailman/listinfo/bridge>, 
-	<mailto:bridge-request@lists.linux-foundation.org?subject=unsubscribe>
-List-Archive: <http://lists.linux-foundation.org/pipermail/bridge>
-List-Post: <mailto:bridge@lists.linux-foundation.org>
-List-Help: <mailto:bridge-request@lists.linux-foundation.org?subject=help>
-List-Subscribe: <https://lists.linux-foundation.org/mailman/listinfo/bridge>, 
-	<mailto:bridge-request@lists.linux-foundation.org?subject=subscribe>
-Sender: bridge-bounces@lists.linux-foundation.org
-Errors-To: bridge-bounces@lists.linux-foundation.org
-To: Joe Perches <joe@perches.com>
-Cc: Andy Grover <andy.grover@oracle.com>, linux-sctp@vger.kernel.org, rds-devel@oss.oracle.com, "Pekka Savola (ipv6)" <pekkas@netcore.fi>, linux-x25@vger.kernel.org, dccp@vger.kernel.org, bridge@lists.linux-foundation.org, James Morris <jmorris@namei.org>, coreteam@netfilter.org, Arnaldo Carvalho de Melo <acme@ghostprotocols.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, Joerg Reuter <jreuter@yaina.de>, Sridhar Samudrala <sri@us.ibm.com>, Samuel Ortiz <samuel@sortiz.org>, Vlad Yasevich <vladislav.yasevich@hp.com>, netfilter@vger.kernel.org, Remi Denis-Courmont <remi.denis-courmont@nokia.com>, linux-hams@vger.kernel.org, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, netdev@vger.kernel.org, linux-decnet-user@lists.sourceforge.net, linux-kernel@vger.kernel.org, Ralf Baechle <ralf>
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <1287506749.13167.1042.camel@laplaplian>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: Text/Plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
+Cc: Bob Miller <bob@computerisms.ca>
 
-On Wed, Oct 20, 2010 at 12:59 PM, Joe Perches <joe@perches.com> wrote:
->
-> Not using static requires the compiler to emit
-> initialization code for any use of the routine
-> that otherwise would only be done once.
->
+Op dinsdag 19 oktober 2010 18:45:49 schreef Bob Miller:
+> Hi
+> 
+> > where exactly should i use the ACCOUNT module? does that matter?
+> 
+> Assuming you mean in your iptables rule set, yes, it matters, and you
+> should put it where you want it to count.  Based on my my understanding,
+> limited though it is; in theory, for the 0/0 subnet, the mangle
+> table/prerouting chain will catch all traffic between you and the ISP
+> that has tcp/ip qualities (ie address and netmask).  If you are trying
+> to count data used to the ISP by computers on a LAN, then placing the
+> rule in the filter table/forward chain should count that traffic.
+> 
+> > error message when trying to use it now:
+> > 
+> > 
+> > ACCOUNT: Table publicnet found, but IP/netmask mismatch. IP/netmask
+> > found: 194.0.234.0/255.255.255.0
+> > ACCOUNT: Table insert problem. Aborting
+> 
+> Seems your configuration doesn't match your situation?  without knowing
+> more about your environment and how you configured this box, it is hard
+> to say, maybe your interface address is not in 194.0.234.0/24 or
+> something?
+> Jan's response might seem to indicate this is an issue of the way you
+> built this up or a software mismatch of some sort.  Given the fun I had
+> making this work before it all came out in debian packages with debian
+> methods of building it, I would not be one bit surprised if that is the
+> case.
 
-If the code isn't performance critical, I think we can afford.
-Otherwise, we have to reserve the memory used to save the static data,
-if we don't specify it as initial data.
+this error message is due to a previous publicnet rule, and it can't seem to 
+find the matching network. even though it is the same one. (i suspect it is due 
+to network being 194.0.234.0/24 and the matcher is checking 
+194.0.234.0/255.255.255.0 ). also i suspect there is a another bug when 
+removing the rule that the matcher can't find the correct one (also due to 
+different netmask notations?) and thus not everything is removed which means 
+that i can't reinsert that one.
 
--- 
-Regards,
-Changli Gao(xiaosuo@gmail.com)
+
+Well, i looked at the distromap, seen which versions of what packages work 
+well and put those working ones on this lenny: for instance; this lenny has 
+pretty much all relevant packages from the squeeze (which is green in that 
+map)
+
+furthermore, i don't have any problem with the module; it loads fine
+
+> > when trying to remove the rule with iptables:
+> > 
+> > 
+> > ACCOUNT: Table publicnet not found for destroy
+> > 
+> > 
+> > "iptaccount -a" does show the nets fine; but the -l publicnet always
+> > gives:
+> > 
+> > 
+> > Showing table: publicnet
+> > Run #0 - 0 items found
+> > Finished.
+> 
+> If the other two nets are working as expected, I would think that means
+> your software is working, but I dont' know why you would have this
+> problem on the one net.
+
+
+no, i am testing manually with iptables and this is after the first entry 
+(there is only one tname here.
+
+but no amount of traffic is having any effect here.
+
+i mean; where do i get all the results? it always says 0.
+
+Kind regards,
+
+Maarten
