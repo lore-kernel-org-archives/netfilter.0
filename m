@@ -1,53 +1,60 @@
-From: Valdis.Kletnieks@vt.edu
-Subject: mmotm 2010-10-20 - netfilter Kconfig whinge
-Date: Thu, 21 Oct 2010 07:14:45 -0400
-Message-ID: <83468.1287659685@localhost>
-References: <201010202233.o9KMXNoL008303@imap1.linux-foundation.org>
+From: Maarten Vanraes <maarten@ba.be>
+Subject: Re: xtables-addons ACCOUNT
+Date: Thu, 21 Oct 2010 13:31:44 +0200
+Message-ID: <201010211331.44611.maarten@ba.be>
+References: <201010181712.03160.maarten@ba.be> <201010201503.14624.maarten@ba.be> <alpine.LNX.2.01.1010201927490.17703@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="==_Exmh_1287659685_4988P";
-	 micalg=pgp-sha1; protocol="application/pgp-signature"
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: Your message of "Wed, 20 Oct 2010 15:01:43 PDT."
-             <201010202233.o9KMXNoL008303@imap1.linux-foundation.org>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.01.1010201927490.17703@obet.zrqbmnf.qr>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Andrew Morton <akpm@linux-foundation.org>, Patrick McHardy <kaber@trash.net>
-Cc: linux-kernel@vger.kernel.org, netfilter@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org, Bob Miller <bob@computerisms.ca>
 
---==_Exmh_1287659685_4988P
-Content-Type: text/plain; charset="us-ascii"
-Content-Id: <83421.1287659675.1@localhost>
-
-On Wed, 20 Oct 2010 15:01:43 PDT, akpm@linux-foundation.org said:
-> The mm-of-the-moment snapshot 2010-10-20-15-01 has been uploaded to
+Op woensdag 20 oktober 2010 19:36:14 schreef Jan Engelhardt:
+> On Wednesday 2010-10-20 15:03, Maarten Vanraes wrote:
+> >Op woensdag 20 oktober 2010 11:16:29 schreef Jan Engelhardt:
+> >> On Wednesday 2010-10-20 10:25, Maarten Vanraes wrote:
+> >> >> > ACCOUNT: Table publicnet found, but IP/netmask mismatch. IP/netmask
+> >> >> > found: 194.0.234.0/255.255.255.0
+> >> >> > ACCOUNT: Table insert problem. Aborting
+> >> >
+> >> >this error message is due to a previous publicnet rule, and it can't
+> >> >seem to find the matching network. even though it is the same one. (i
+> >> >suspect it is due to network being 194.0.234.0/24 and the matcher is
+> >> >checking 194.0.234.0/255.255.255.0 ). also i suspect there is a
+> >> >another bug when removing the rule that the matcher can't find the
+> >> >correct one (also due to different netmask notations?) and thus not
+> >> >everything is removed which means that i can't reinsert that one.
+> >> 
+> >> Do you have a minimal testcase available?
+> >
+> >machine is rebooted, no iptables yet, no modules loaded.
+> >
+> >[]# iptables -t mangle -I POSTROUTING -j ACCOUNT --addr 0.0.0.0/0 --tname
+> >self iptables: Invalid argument. Run `dmesg' for more information.
 > 
->    http://userweb.kernel.org/~akpm/mmotm/
+> I fail to reproduce this in 64-bit and 32-compat environments.
+> Since ACCOUNT.ko and x_tables.ko do output appropriate messages
+> to dmesg along with returning EINVAL... I don't see much
+> possibilities.
+> 
+> One could be that you are using an overly old xtables-addons (< 1.27)
+> compat_xtables.ko with an overly new kernel (>= v2.6.35) -
+> combined with having ignored the compile warnings/errors (when
+> building from source, as DKMS unfortunately does).
 
-Seen during 'make oldconfig':
+hmm, i'm using xtables-addons 1.26 (i thought this was the latest?) i built 
+this one from source.
 
-      Input subsystem LEDs Trigger (LEDS_TRIGGER_INPUT) [N/m/y/?] (NEW) m
-      *
-      * iptables trigger is under Netfilter config (LED target)
-      *
-warning: (NETFILTER_XT_MATCH_REALM && NET && INET && NETFILTER && NETFILTER_XTABLES && NETFILTER_ADVANCED || NET_CLS_ROUTE4 && NET && NET_SCHED) selects NET_CLS_ROUTE which has unmet direct dependencies (NET && NET_SCHED)
-#
-# configuration written to .config
-#
+my kernel is 2.6.26 (so it's not overly new)
 
+since i compiled xtables-addons myself, i didn't see any compiler warnings
 
+and i'm on x86_64.
 
+mvg,
 
---==_Exmh_1287659685_4988P
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Exmh version 2.5 07/13/2001
-
-iD8DBQFMwCClcC3lWbTT17ARAg7cAJ9oCFBplj1ZieJYUE/KekUlN2EDBQCg/sFO
-kGtt3GnuTFCWAtxwO5TZCSE=
-=XEit
------END PGP SIGNATURE-----
-
---==_Exmh_1287659685_4988P--
+Maarten
