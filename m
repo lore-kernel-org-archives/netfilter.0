@@ -1,33 +1,53 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Redirect mirrored traffic to userspace app.
-Date: Thu, 21 Oct 2010 07:45:34 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1010210744260.6279@obet.zrqbmnf.qr>
-References: <AANLkTikKCEBEv61415CCoM8uBzd1jL6+TDF7Gswh5+Ys@mail.gmail.com> <alpine.LNX.2.01.1010210017290.19350@obet.zrqbmnf.qr> <AANLkTin=WwAwPWjLq_nY7AZqr3hgkDSciEQEWZBwfJym@mail.gmail.com>
+From: Valdis.Kletnieks@vt.edu
+Subject: mmotm 2010-10-20 - netfilter Kconfig whinge
+Date: Thu, 21 Oct 2010 07:14:45 -0400
+Message-ID: <83468.1287659685@localhost>
+References: <201010202233.o9KMXNoL008303@imap1.linux-foundation.org>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTin=WwAwPWjLq_nY7AZqr3hgkDSciEQEWZBwfJym@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: multipart/signed; boundary="==_Exmh_1287659685_4988P";
+	 micalg=pgp-sha1; protocol="application/pgp-signature"
 Content-Transfer-Encoding: 7bit
-To: Mateus Caruccio <mateus@caruccio.com>
-Cc: netfilter@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: Your message of "Wed, 20 Oct 2010 15:01:43 PDT."
+             <201010202233.o9KMXNoL008303@imap1.linux-foundation.org>
+Sender: netdev-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+To: Andrew Morton <akpm@linux-foundation.org>, Patrick McHardy <kaber@trash.net>
+Cc: linux-kernel@vger.kernel.org, netfilter@vger.kernel.org, netdev@vger.kernel.org
 
-On Thursday 2010-10-21 03:57, Mateus Caruccio wrote:
+--==_Exmh_1287659685_4988P
+Content-Type: text/plain; charset="us-ascii"
+Content-Id: <83421.1287659675.1@localhost>
 
->Unfortunately I'm not able to run any command on production servers :(
->All I could get was a physical port mirror, using an ethernet cable in
->the switch.
->
->Since I do have a copy of the packet on my own box, why can't I change
->it, inside my own box, to match my own IP addr and route it to my own
->userspace app (no matter interface)?
+On Wed, 20 Oct 2010 15:01:43 PDT, akpm@linux-foundation.org said:
+> The mm-of-the-moment snapshot 2010-10-20-15-01 has been uploaded to
+> 
+>    http://userweb.kernel.org/~akpm/mmotm/
 
-Because you can route it to the userspace program without having to 
-change the address.
+Seen during 'make oldconfig':
 
->For me this should be simple:
->
->1 - a pkt reached my interface with prod-server-dst-addr;
->2 - before it get routed, rewrite its dst-addr to my interface's addr;
->3 - let the kernel delivery it to my interface's local addr:port.
+      Input subsystem LEDs Trigger (LEDS_TRIGGER_INPUT) [N/m/y/?] (NEW) m
+      *
+      * iptables trigger is under Netfilter config (LED target)
+      *
+warning: (NETFILTER_XT_MATCH_REALM && NET && INET && NETFILTER && NETFILTER_XTABLES && NETFILTER_ADVANCED || NET_CLS_ROUTE4 && NET && NET_SCHED) selects NET_CLS_ROUTE which has unmet direct dependencies (NET && NET_SCHED)
+#
+# configuration written to .config
+#
+
+
+
+
+--==_Exmh_1287659685_4988P
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+Comment: Exmh version 2.5 07/13/2001
+
+iD8DBQFMwCClcC3lWbTT17ARAg7cAJ9oCFBplj1ZieJYUE/KekUlN2EDBQCg/sFO
+kGtt3GnuTFCWAtxwO5TZCSE=
+=XEit
+-----END PGP SIGNATURE-----
+
+--==_Exmh_1287659685_4988P--
