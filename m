@@ -1,60 +1,86 @@
-From: Maarten Vanraes <maarten@ba.be>
-Subject: Re: xtables-addons ACCOUNT
-Date: Thu, 21 Oct 2010 13:31:44 +0200
-Message-ID: <201010211331.44611.maarten@ba.be>
-References: <201010181712.03160.maarten@ba.be> <201010201503.14624.maarten@ba.be> <alpine.LNX.2.01.1010201927490.17703@obet.zrqbmnf.qr>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Redirect mirrored traffic to userspace app.
+Date: Thu, 21 Oct 2010 10:02:10 -0500
+Message-ID: <4CC055F2.7040909@riverviewtech.net>
+References: <AANLkTikKCEBEv61415CCoM8uBzd1jL6+TDF7Gswh5+Ys@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1010201927490.17703@obet.zrqbmnf.qr>
+In-Reply-To: <AANLkTikKCEBEv61415CCoM8uBzd1jL6+TDF7Gswh5+Ys@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org, Bob Miller <bob@computerisms.ca>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Op woensdag 20 oktober 2010 19:36:14 schreef Jan Engelhardt:
-> On Wednesday 2010-10-20 15:03, Maarten Vanraes wrote:
-> >Op woensdag 20 oktober 2010 11:16:29 schreef Jan Engelhardt:
-> >> On Wednesday 2010-10-20 10:25, Maarten Vanraes wrote:
-> >> >> > ACCOUNT: Table publicnet found, but IP/netmask mismatch. IP/netmask
-> >> >> > found: 194.0.234.0/255.255.255.0
-> >> >> > ACCOUNT: Table insert problem. Aborting
-> >> >
-> >> >this error message is due to a previous publicnet rule, and it can't
-> >> >seem to find the matching network. even though it is the same one. (i
-> >> >suspect it is due to network being 194.0.234.0/24 and the matcher is
-> >> >checking 194.0.234.0/255.255.255.0 ). also i suspect there is a
-> >> >another bug when removing the rule that the matcher can't find the
-> >> >correct one (also due to different netmask notations?) and thus not
-> >> >everything is removed which means that i can't reinsert that one.
-> >> 
-> >> Do you have a minimal testcase available?
-> >
-> >machine is rebooted, no iptables yet, no modules loaded.
-> >
-> >[]# iptables -t mangle -I POSTROUTING -j ACCOUNT --addr 0.0.0.0/0 --tname
-> >self iptables: Invalid argument. Run `dmesg' for more information.
-> 
-> I fail to reproduce this in 64-bit and 32-compat environments.
-> Since ACCOUNT.ko and x_tables.ko do output appropriate messages
-> to dmesg along with returning EINVAL... I don't see much
-> possibilities.
-> 
-> One could be that you are using an overly old xtables-addons (< 1.27)
-> compat_xtables.ko with an overly new kernel (>= v2.6.35) -
-> combined with having ignored the compile warnings/errors (when
-> building from source, as DKMS unfortunately does).
+On 10/20/10 16:58, Mateus Caruccio wrote:
+> Thanks to this damn GUI world, probably this ascii-art is ruined.
 
-hmm, i'm using xtables-addons 1.26 (i thought this was the latest?) i built 
-this one from source.
+Nope.  Using text mode email and a fixed width font (my default) it came 
+through just fine.  ;-)
 
-my kernel is 2.6.26 (so it's not overly new)
+> All traffic is UDP port 2077 only. I can not change any config on 
+> PROD_SRV.
 
-since i compiled xtables-addons myself, i didn't see any compiler warnings
+Ok...  UDP will take care of the protocol handshake issue that you have 
+with TCP.  That means that your dev server can truly receive the request 
+and not have borked connections.
 
-and i'm on x86_64.
+> Our DEVEL_SRV should receive exactly the same packet PROD_SRV 
+> receives, but with destination address modified so it can reach our 
+> userspace application.
 
-mvg,
+On the surface I agree.  Just under the surface I wonder if you really 
+need to alter the destination IP or not.  (More in a bit.)
 
-Maarten
+> I've tried to "DNAT" it, but without success:
+
+Rather than DNAT, why not try simple routing.  (More in a bit.)
+
+> From DEVEL_SRV point of view, it receives a legitime request.
+
+I assume that you are looking at the traffic (via TCPDump or something 
+like it) and deciding that it's legitimate b/c you haven't gotten 
+traffic to make it in to the service yet.
+
+> I've setup a DROP rule so responses do not interfer on client's 
+> requests.
+
+I'd wonder if you really want to DROP the traffic or redirect the 
+replies so that you could test (analyze) that as well.  (More in a bit.)
+
+> If I'm not clear, please fell free to ask anything.
+
+Na, I think I understand what you are trying to do.  -  Set up something 
+so that you can test dev code under (possibly a portion of) live traffic 
+load.
+
+For giggles I'd try having the dev server and prod server be in 
+different subnets.  That will allow you to bind the prod server's IP to 
+a different nic (dummy or something like it) and enable routing.  That 
+way when the traffic comes in to the eth0 interface on the dev box, it 
+would be routed to the proper nic where your software is bound to the 
+real IP.  There by doing away with any hacks needed to get the traffic 
+in to your service.
+
+As a bonus, you should have a better emulation of the service between 
+the prod and dev servers, there by making it a better test and allowing 
+service config migration between the two boxen.
+
+Just something that I'd try.
+
+As far as the DROP rule, I'd rather set the default gateway on the dev 
+box so that it would go out a different nic (physical or virtual) such 
+that your service could send reply packets that could then be analyzed 
+elsewhere.
+
+> Thanks for helping,
+
+n/p
+
+Good luck.
+
+Please provide follow up and let us know what worked for you.
+
+
+
+Grant. . . .
