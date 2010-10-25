@@ -1,40 +1,58 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: Blocking machines by both Mac Address and IP address
-Date: Sun, 24 Oct 2010 15:46:23 +0100
-Message-ID: <1287931583.1758.2.camel@andybev>
-References: <AANLkTimE3DpKibaqKH53D9PEtt_AxSAimdaTiyTy1VZK@mail.gmail.com>
-	 <1287873234.1700.330.camel@andybev>  <4CC4411D.4070701@plouf.fr.eu.org>
+From: Maarten Vanraes <maarten@ba.be>
+Subject: Re: xtables-addons ACCOUNT
+Date: Mon, 25 Oct 2010 09:35:43 +0200
+Message-ID: <201010250935.43404.maarten@ba.be>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1287931606; bh=GZOEPze88Wrb/mCPB9RgxFgVrvWCHa8icpeAm
-	E4t0Ik=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
-	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=QE1zNVwu
-	6jBAb2KVwSl51/3BwrLvZL9X0aXWfkqH/da9Eb+JeR0ipe6CD/kCOk2zkw3+UqDbYPc
-	lRtRkWAH+O+MPtgswK/vqplWAjXxyaS6oKVcHjZ/oBNIwy6eChcEkbfuH+fjrsnCGCw
-	ZYU6jVLrsNzABlxdTPs8/KPn7cpT8=
-In-Reply-To: <4CC4411D.4070701@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
+Cc: Jan Engelhardt <jengelh@medozas.de>, Bob Miller <bob@computerisms.ca>
 
-> > 
-> > Set your default policy to drop:
-> > 
-> > iptables -t mangle -P FORWARD DROP
-> > 
-> > Then set up a rule for each client that matches both IP address and MAC:
-> > 
-> > iptables -t mangle -A FORWARD -s 1.2.3.4 \
-> > 	-m mac --mac-source aa:aa:aa:aa:aa:aa -j ACCEPT
+Op woensdag 20 oktober 2010 19:36:14 schreef Jan Engelhardt:
+> On Wednesday 2010-10-20 15:03, Maarten Vanraes wrote:
+> >Op woensdag 20 oktober 2010 11:16:29 schreef Jan Engelhardt:
+> >> On Wednesday 2010-10-20 10:25, Maarten Vanraes wrote:
+> >> >> > ACCOUNT: Table publicnet found, but IP/netmask mismatch. IP/netmask
+> >> >> > found: 194.0.234.0/255.255.255.0
+> >> >> > ACCOUNT: Table insert problem. Aborting
+> >> >
+> >> >this error message is due to a previous publicnet rule, and it can't
+> >> >seem to find the matching network. even though it is the same one. (i
+> >> >suspect it is due to network being 194.0.234.0/24 and the matcher is
+> >> >checking 194.0.234.0/255.255.255.0 ). also i suspect there is a
+> >> >another bug when removing the rule that the matcher can't find the
+> >> >correct one (also due to different netmask notations?) and thus not
+> >> >everything is removed which means that i can't reinsert that one.
+> >> 
+> >> Do you have a minimal testcase available?
+> >
+> >machine is rebooted, no iptables yet, no modules loaded.
+> >
+> >[]# iptables -t mangle -I POSTROUTING -j ACCOUNT --addr 0.0.0.0/0 --tname
+> >self iptables: Invalid argument. Run `dmesg' for more information.
 > 
-> The 'mangle' table is not intended for filtering. The 'filter' table is.
+> I fail to reproduce this in 64-bit and 32-compat environments.
+> Since ACCOUNT.ko and x_tables.ko do output appropriate messages
+> to dmesg along with returning EINVAL... I don't see much
+> possibilities.
+> 
+> One could be that you are using an overly old xtables-addons (< 1.27)
+> compat_xtables.ko with an overly new kernel (>= v2.6.35) -
+> combined with having ignored the compile warnings/errors (when
+> building from source, as DKMS unfortunately does).
 
-Ooops, I meant filter. Been using the mangle table too much recently :)
+hmm, i'm using xtables-addons 1.26 (i thought this was the latest?) i built 
+this one from source.
 
-Andy
+my kernel is 2.6.26 (so it's not overly new)
 
+since i compiled xtables-addons myself, i didn't see any compiler warnings
 
+and i'm on x86_64.
+
+mvg,
+
+Maarten
