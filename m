@@ -1,58 +1,33 @@
-From: Maarten Vanraes <maarten@ba.be>
-Subject: Re: xtables-addons ACCOUNT
-Date: Mon, 25 Oct 2010 09:35:43 +0200
-Message-ID: <201010250935.43404.maarten@ba.be>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Blocking machines by both Mac Address and IP address
+Date: Mon, 25 Oct 2010 11:02:59 -0500
+Message-ID: <4CC5AA33.7010400@riverviewtech.net>
+References: <AANLkTimE3DpKibaqKH53D9PEtt_AxSAimdaTiyTy1VZK@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <AANLkTimE3DpKibaqKH53D9PEtt_AxSAimdaTiyTy1VZK@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
-Cc: Jan Engelhardt <jengelh@medozas.de>, Bob Miller <bob@computerisms.ca>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Op woensdag 20 oktober 2010 19:36:14 schreef Jan Engelhardt:
-> On Wednesday 2010-10-20 15:03, Maarten Vanraes wrote:
-> >Op woensdag 20 oktober 2010 11:16:29 schreef Jan Engelhardt:
-> >> On Wednesday 2010-10-20 10:25, Maarten Vanraes wrote:
-> >> >> > ACCOUNT: Table publicnet found, but IP/netmask mismatch. IP/netmask
-> >> >> > found: 194.0.234.0/255.255.255.0
-> >> >> > ACCOUNT: Table insert problem. Aborting
-> >> >
-> >> >this error message is due to a previous publicnet rule, and it can't
-> >> >seem to find the matching network. even though it is the same one. (i
-> >> >suspect it is due to network being 194.0.234.0/24 and the matcher is
-> >> >checking 194.0.234.0/255.255.255.0 ). also i suspect there is a
-> >> >another bug when removing the rule that the matcher can't find the
-> >> >correct one (also due to different netmask notations?) and thus not
-> >> >everything is removed which means that i can't reinsert that one.
-> >> 
-> >> Do you have a minimal testcase available?
-> >
-> >machine is rebooted, no iptables yet, no modules loaded.
-> >
-> >[]# iptables -t mangle -I POSTROUTING -j ACCOUNT --addr 0.0.0.0/0 --tname
-> >self iptables: Invalid argument. Run `dmesg' for more information.
-> 
-> I fail to reproduce this in 64-bit and 32-compat environments.
-> Since ACCOUNT.ko and x_tables.ko do output appropriate messages
-> to dmesg along with returning EINVAL... I don't see much
-> possibilities.
-> 
-> One could be that you are using an overly old xtables-addons (< 1.27)
-> compat_xtables.ko with an overly new kernel (>= v2.6.35) -
-> combined with having ignored the compile warnings/errors (when
-> building from source, as DKMS unfortunately does).
+On 10/23/10 17:19, Scott Mayo wrote:
+> i.e.  If MAC address 00:11:22:33:44:55 is given IP address 
+> 192.168.0.1 by DHCP then that should be the only combo that can get 
+> to the outside world.  If the IP address is changed to something else 
+> or if another machine that has a different MAC address is given the 
+> IP address 192.168.0.1 statically, then in neither situation should 
+> the machine be able to get out to the world.
 
-hmm, i'm using xtables-addons 1.26 (i thought this was the latest?) i built 
-this one from source.
+I would suggest that you reverse your logic a bit.  Only allow the 
+machines to access the internet if the MAC and IP address are correct. 
+Any other combination should fail.
 
-my kernel is 2.6.26 (so it's not overly new)
+This is the old adage of "allow what you want and block the rest" not 
+"block what you want and allow the rest".  It is too easy to change an 
+IP and / or MAC address to get around the filters that selectively block.
 
-since i compiled xtables-addons myself, i didn't see any compiler warnings
 
-and i'm on x86_64.
 
-mvg,
-
-Maarten
+Grant. . . .
