@@ -1,33 +1,46 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Blocking machines by both Mac Address and IP address
-Date: Mon, 25 Oct 2010 11:02:59 -0500
-Message-ID: <4CC5AA33.7010400@riverviewtech.net>
-References: <AANLkTimE3DpKibaqKH53D9PEtt_AxSAimdaTiyTy1VZK@mail.gmail.com>
+From: Wei Huang <daviseago@gmail.com>
+Subject: Process iptables hook functions at IP layer with 'bridge-nf-call-iptables"
+ enabled
+Date: Tue, 26 Oct 2010 13:38:33 +0800
+Message-ID: <AANLkTimFED68sGH=3Uh801y_kdGuEX+2Sa-=XMSfnP=V@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTimE3DpKibaqKH53D9PEtt_AxSAimdaTiyTy1VZK@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=YsA6NBCltgF3r/ISY41DL+3g914y8Qj1cWG3NH12ryU=;
+        b=UyW2qTbl0jKoM5uZOhE27nA65oUhECTir0kPrRZUiWuDrv7PKTzvKqU2fZsMpJR25V
+         F9WNSyulG+PLXWBhC3jrHutoTQfAp8VQDq8zaKTY9+JweS6SGFNW7vz4f9545Tc4wXis
+         bmFmUBjtbHL0o8Qx7CQZdFTS3TZmpuUt2Ip/Q=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 10/23/10 17:19, Scott Mayo wrote:
-> i.e.  If MAC address 00:11:22:33:44:55 is given IP address 
-> 192.168.0.1 by DHCP then that should be the only combo that can get 
-> to the outside world.  If the IP address is changed to something else 
-> or if another machine that has a different MAC address is given the 
-> IP address 192.168.0.1 statically, then in neither situation should 
-> the machine be able to get out to the world.
+Hello,
 
-I would suggest that you reverse your logic a bit.  Only allow the 
-machines to access the internet if the MAC and IP address are correct. 
-Any other combination should fail.
+I'm writing a kernel module with a netfilter hook functions at
+NF_IP_PRE_ROUTING of PF_INET. This is supposed to be processed at IP
+layer. However, when using ebtables' bridge-nf and enable
+"/proc/sys/net/bridge/bridge-nf-call-iptables", my hook function will
+be processed at link layer.
 
-This is the old adage of "allow what you want and block the rest" not 
-"block what you want and allow the rest".  It is too easy to change an 
-IP and / or MAC address to get around the filters that selectively block.
+The page http://ebtables.sourceforge.net/br_fw_ia/br_fw_ia.html#section3 says:
+"For IP packets that get into contact with the bridging code, the
+br-nf code will decide in which place in the network code the iptables
+chains will be traversed. Obviously, it is guaranteed that no chain is
+traversed twice by the same packet."
+Does this mean the iptables are handled at bridge-nf (NF_HOOK in
+br_nf_pre_routing()), and ignored at NF_HOOK in ip_rcv()?
 
+If the IP pakcets will be passed up to IP layer anyway, will it be
+better for bridge-nf not to call iptable hook functions, but to let
+the packets be processed at IP layer? How could I do that? I could not
+disable "/proc/sys/net/bridge/bridge-nf-call-iptables" to achieve
+this, because if I disable it, all packets directly bridged (those not
+up to layer3) will not be processed by iptables rules.
 
-
-Grant. . . .
+Thanks for your help,
+HUANG Wei
