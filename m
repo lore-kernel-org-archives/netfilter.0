@@ -1,57 +1,41 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: ClusterIP and MAC NAT
-Date: Tue, 26 Oct 2010 12:17:22 -0500
-Message-ID: <4CC70D22.20109@riverviewtech.net>
-References: <1288103438.2727.69.camel@nerino>
+From: Tomasz Chmielewski <mangoo@wpkg.org>
+Subject: ipv6 tproxy / transparent proxy support?
+Date: Tue, 26 Oct 2010 19:48:09 +0200
+Message-ID: <4CC71459.5020809@wpkg.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1288103438.2727.69.camel@nerino>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=wpkg.org; h=message-id
+	:date:from:mime-version:to:subject:content-type
+	:content-transfer-encoding; s=default; bh=YixsIiFg2iGbAXBwqqsy6v
+	mmF1o=; b=Gaj/x9CpAaPSSNocG3yizbQVcqkC6dL0k/w10/syGlox5ok+P0IxJ9
+	yue66GdgRIdoBsNJ8f555iyXa93v/w/nL/+Ib9EXjw1TyDwh5To/9KYZQdhMXVRi
+	bJxK6uYHgWt+hY9NADTBgltEB3d3pCAWmVodKLIJO+YN1BsNvLNh4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On 10/26/10 09:30, Michele Codutti wrote:
-> In my opinion a possible solution is to use the existing bridge in 
-> front of the pool of clustered IP hosts with some ebtable rules that 
-> substitute the multicast MAC address with a forged unicast MAC 
-> address for the outgoing packets and substitute the forged unicast 
-> MAC address with the multicast one for the incoming packets.
+What is the state of tproxy / transparent proxying (i.e. with Squid) 
+with ipv6?
 
-This will work.
+As far as I can find in the documentation, I will need:
 
-The only down side that I'm aware of is the possible single point of 
-failure that the bridge creates.
+- a kernel which supports it,
 
-Other than that (and possible performance issues if the bridge isn't 
-scaled properly) things should work as you want.
-
-> Suppose that the multicast MAC address is: 01:02:03:04:05:06 and the 
-> ClusterIP address is: 10.0.0.100 Now I forge a unicast MAC address 
-> for the ClusterIP: 00:02:03:04:05:06 So the rule for the incoming 
-> packets is (taken from 
-> http://ebtables.sourceforge.net/examples/basic.html#ex_nat):
-
-Agreed.
-
-I have an install that is dealing with a cranky switch that can't see 
-the same MAC addresses on multiple VLANs where I am doing almost exactly 
-this for 30(ish) VLAN interfaces.  It has been in production for five 
-years and working great.  (Recently I upgraded the system, carrying the 
-old ARPTables / EBTables / IPTables scripts / configs forward.)
-
-> Now the problem is with the arp queries. In need to "NAT" also the 
-> queries substituting the mac address also in the payload of the 
-> packet not only in the header. Can i do that?
-
-You will need to use ARPTables to help EBTables with the ARP problem.  I 
-will go through my backups and see if I can't find an example set of 
-rules for you to gander at.
-
-Here's a +1 on what you are wanting to do can be done and does work. 
-You just need to look at ARPTables to assist with the ARP specific problem.
+- ip6tables which support it.
 
 
+Is ipv6 transparent proxying available in stable iptables? If not, 
+perhaps I should get a daily snapshot?
 
-Grant. . . .
+What about the kernel? I guess I'll need these patches for the kernel 
+("[PATCH 0/9] tproxy: add IPv6 support" by Kovacs Krisztian)? Perhaps 
+something else?
+
+http://thread.gmane.org/gmane.comp.security.firewalls.netfilter.devel/35841
+
+
+-- 
+Tomasz Chmielewski
+http://wpkg.org
