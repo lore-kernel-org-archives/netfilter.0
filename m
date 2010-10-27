@@ -1,38 +1,43 @@
-From: Amos Jeffries <squid3@treenet.co.nz>
-Subject: Re: ipv6 tproxy / transparent proxy support?
-Date: Wed, 27 Oct 2010 22:48:05 +1300
-Message-ID: <4CC7F555.2080807@treenet.co.nz>
-References: <4CC71459.5020809@wpkg.org> <4CC7BEF9.6010906@treenet.co.nz> <4CC7DED3.2090701@wpkg.org>
+From: Sandro Tosi <sandro.tosi@register.it>
+Subject: netfilter stats, info and resources usage
+Date: Wed, 27 Oct 2010 16:42:47 +0200
+Message-ID: <4CC83A67.1010202@register.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4CC7DED3.2090701@wpkg.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Tomasz Chmielewski <mangoo@wpkg.org>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
+Cc: Jesper Dangaard Brouer <hawk@comx.dk>
 
-On 27/10/10 21:12, Tomasz Chmielewski wrote:
-> On 27.10.2010 07:56, Amos Jeffries wrote:
->> On 27/10/10 06:48, Tomasz Chmielewski wrote:
->>> What is the state of tproxy / transparent proxying (i.e. with Squid)
->>> with ipv6?
->>
->> The state?
->>
->> * kernel - pending release
->> * iptables - patches queued for audit.
->> * squid - supported in 3.1 production releases.
->>
->> I've just updated the squid wiki tproxy4 page with details and links to
->> the bits you need as of today.
->
-> I see the page[1] contains command line iptables examples, but no
-> ip6tables ones. Do you know the syntax for ip6tables, and if so, could
-> you add an example to the squid wiki tproxy4 page as well?
+Hello,
+we are using quite a lot iptables and we'd like to gather some 
+stats/information to "what's doing" and hopefully also an idea of the 
+resources used by it (in particular cpu and ram).
 
- From what I've seen of the patches the demo config should be identical 
-save for the "6" in ip6tables command.
+Probably my google search karma is very low today, given the only 
+reference to CPU usage I could find was vague refs to softirq data, and 
+for stats some links like:
 
-AYJ
+1. http://forums.cacti.net/about36629.html
+2. http://forums.cacti.net/about26714.html
+3. http://people.netfilter.org/hawk/DDoS/2010-04-12__001/list.html
+
+3 is very interesting, Jesper: how did you generate it? :)
+
+In general: is there a place I can look for netfilter stats and also for 
+the impact it generates on the loadavg of the machine?
+
+Regards,
+Sandro
+
+PS: please CC me, I'm not subscribed
+
+-- 
+Sandro Tosi
+Product Engineer
+Linux based Solutions
+Hosting Products
+R&D | Dada.pro
+sandro.tosi@register.it
