@@ -1,37 +1,57 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: xtables-addons ACCOUNT
-Date: Wed, 27 Oct 2010 22:28:46 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1010272227040.27723@obet.zrqbmnf.qr>
-References: <201010181712.03160.maarten@ba.be> <201010201503.14624.maarten@ba.be> <alpine.LNX.2.01.1010201927490.17703@obet.zrqbmnf.qr> <201010211331.44611.maarten@ba.be>
+From: Mauricio Tavares <raubvogel@gmail.com>
+Subject: Re: newbie: forward rule to itself
+Date: Wed, 27 Oct 2010 17:03:33 -0400
+Message-ID: <4CC893A5.1010808@gmail.com>
+References: <4CC8774C.1070908@gmail.com> <alpine.LNX.2.01.1010272116580.19157@obet.zrqbmnf.qr> <4CC881D8.3060408@gmail.com> <alpine.LNX.2.01.1010272157440.23548@obet.zrqbmnf.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <201010211331.44611.maarten@ba.be>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from
+         :user-agent:mime-version:to:cc:subject:references:in-reply-to
+         :content-type:content-transfer-encoding;
+        bh=vSQr4vSRB2VhyprLBQxs4XFUW1clz4M4wj2wGt0EPRg=;
+        b=Qa+i7h+ssocP3MidX5/jtgWwvQc2qZxY7ZqsM8raslf6R6j5yzJTO0n5LbOPqNhECQ
+         oerF1h0VKwlhMyz7G5KPmd75LPLvz1IlalhexVnlCFQFaothps9puqiuKa3ddEnnqTS0
+         +0HdqQQso3bxNdLCZkjF/OcVUY6dqlPTCLCfc=
+In-Reply-To: <alpine.LNX.2.01.1010272157440.23548@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Maarten Vanraes <maarten@ba.be>
-Cc: netfilter@vger.kernel.org, Bob Miller <bob@computerisms.ca>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org
 
+On 10/27/2010 04:00 PM, Jan Engelhardt wrote:
+>
+> On Wednesday 2010-10-27 21:47, Mauricio Tavares wrote:
+>>>>
+>>>> I have the following rules to forward port 6969 coming on eth0 on server1 to
+>>>> port 6969 on server2's eth0:
+>>>>
+>>>> iptables -A PREROUTING -t nat -p tcp --dport 6969 -j DNAT --to
+>>>> 192.168.1.server2:6969
+>>>> iptables -A INPUT -d 192.168.4.server1 -p tcp -m tcp -m state --state NEW
+>>>> --dport 6969 -j ACCEPT
+>>>> iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+>>>
+>>> That prerouting only applies to packets coming from devices connected to
+>>> the machine.
+>>
+>> 	How would the prerouting that applies to packets coming from the
+>> machine itself look like?
+>
+> Mean to say it without "that". The entire PREROUTING chain won't be considered
+> for nat.
+> Usually, you just directly connect to the proper address preferably
+> ith a DNS name if available. Alternate and rather redundant
+> communication ways are rinetd.
+>
+	I am rather confused. Do you mean the prerouting chain is not 
+considered for nat at all or just not for this specific case I had in mind?
 
-On Thursday 2010-10-21 13:31, Maarten Vanraes wrote:
->> I fail to reproduce this in 64-bit and 32-compat environments.
->> Since ACCOUNT.ko and x_tables.ko do output appropriate messages
->> to dmesg along with returning EINVAL... I don't see much
->> possibilities.
->> 
->> One could be that you are using an overly old xtables-addons (< 1.27)
->> compat_xtables.ko with an overly new kernel (>= v2.6.35) -
->> combined with having ignored the compile warnings/errors (when
->> building from source, as DKMS unfortunately does).
->
->hmm, i'm using xtables-addons 1.26 (i thought this was the latest?) i built 
->this one from source.
->
->my kernel is 2.6.26 (so it's not overly new)
->
->since i compiled xtables-addons myself, i didn't see any compiler warnings
-
-I can't boot pre-2.6.27 anymore with my userspace, and I don't feel like
-spending time on installing a system. So unless someone has one for me
-ready to toy on, I'll rip out the old support.
+Incidentally, I am not in love with those rules I created at all. All I 
+want to do is to have any traffic to 192.168.4.server1:6969 will be sent 
+to 192.168.1.server2:6969 no matter where it was originated from (be it 
+somewhere in 192.168.1.0, 192.168.4.0, or even from withing server1). So 
+far I cannot figure out a good way to accomplish that.
