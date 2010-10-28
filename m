@@ -1,56 +1,49 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: newbie: forward rule to itself
-Date: Thu, 28 Oct 2010 10:01:37 +0200
-Message-ID: <4CC92DE1.4030204@plouf.fr.eu.org>
-References: <4CC8774C.1070908@gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Delay in getting destroy events
+Date: Thu, 28 Oct 2010 11:55:16 +0200
+Message-ID: <4CC94884.1010003@netfilter.org>
+References: <2DE723F44CAFD24A9B6BF606813F010C4072C5C698@aae-exch> <4CAD7EB1.8010407@netfilter.org> <2DE723F44CAFD24A9B6BF606813F010C4078F34B60@aae-exch>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4CC8774C.1070908@gmail.com>
+In-Reply-To: <2DE723F44CAFD24A9B6BF606813F010C4078F34B60@aae-exch>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Mauricio Tavares <raubvogel@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Bill Rogers <BillR@aaesys.com>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hello,
+On 27/10/10 20:47, Bill Rogers wrote:
+> Hi Pablo Neira Ayuso,
+> 
+> I am monitoring when connections are created and destroyed based on the example presented in conntrack_events.c.  I get notified promptly with an NFCT_T_NEW message when a connection is created.  (Occasionally I see more than one NFCT_T_NEW message for the same connection, but I can simply ignore those.)  
+> 
+> When a connection is closed, it is taking several minutes before I get an NFCT_T_DESTROY message for the connection.  If I poll /proc/net/nf_conntrack file, I see the connection being closed within a few seconds of stopping iperf, which I am using to create the connections.
+> 
+> I want to be able to get notified when a connection is destroyed rather than poll /proc/net/nf_conntrack.  Is this a configuration issue?  Is there a long timeout defined somewhere that needs to be changed?  It is taking at least 5 to 10 minutes before being notified of the destroyed event.
+> 
+> Any guidance you could provide would be deeply appreciated.
 
-Mauricio Tavares a =E9crit :
-> 	Let's say I have server1 with two ports, eth0 and eth0, and server2=20
+# ls /proc/sys/net/netfilter/nf_conntrack_tcp_*
+/proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal
+/proc/sys/net/netfilter/nf_conntrack_tcp_loose
+/proc/sys/net/netfilter/nf_conntrack_tcp_max_retrans
+/proc/sys/net/netfilter/nf_conntrack_tcp_timeout_close
+/proc/sys/net/netfilter/nf_conntrack_tcp_timeout_close_wait
+/proc/sys/net/netfilter/nf_conntrack_tcp_timeout_established
+/proc/sys/net/netfilter/nf_conntrack_tcp_timeout_fin_wait
+/proc/sys/net/netfilter/nf_conntrack_tcp_timeout_last_ack
+/proc/sys/net/netfilter/nf_conntrack_tcp_timeout_max_retrans
+/proc/sys/net/netfilter/nf_conntrack_tcp_timeout_syn_recv
+/proc/sys/net/netfilter/nf_conntrack_tcp_timeout_syn_sent
+/proc/sys/net/netfilter/nf_conntrack_tcp_timeout_time_wait
+/proc/sys/net/netfilter/nf_conntrack_tcp_timeout_unacknowledge
 
-Did you mean "eth0 and eth1" ?
+These allow to set up the timeouts for different TCP states. The default
+values are based on the RFCs.
 
-> whose eth0 port is connected to server1's eth1. And let's say the sub=
-net=20
-> between them is 192.168.1.0/24 while the one server1's eth0 is connec=
-ted=20
-> to is 192.168.4.0/24.
->=20
-> I have the following rules to forward port 6969 coming on eth0 on=20
-> server1 to port 6969 on server2's eth0:
->=20
-> iptables -A PREROUTING -t nat -p tcp --dport 6969 -j DNAT --to=20
-> 192.168.1.server2:6969
-> iptables -A INPUT -d 192.168.4.server1 -p tcp -m tcp -m state --state=
-=20
-> NEW --dport 6969 -j ACCEPT
+The connection generally remains in TIME_WAIT for 120 seconds once it is
+closed (as specified by the RFC).
 
-This rule in INPUT is pointless because
-1) packets have already been DNATed by the previous rule in PREROUTING,
-2) the new destination is a remote address, so packets go through
-=46ORWARD, not INPUT.
-
-> iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
->=20
-> Any machine in 192.168.4.0/24 seems to be able to get to server2 by=20
-> using 192.168.1.server1:6969. But, if I try to connect to=20
-> 192.168.1.server1:6969 on server1 itself, I will not be forwarded to=20
-> server2. What am I missing here?
-
-As Jan explained, the PREROUTING chain of the 'nat' table sees only
-incoming packets received from outside. DNAT for locally generated
-packets must be done in the OUTPUT chain.
-
-PS : If you want the connection to work from server2 too, you must add =
-a
- specific MASQUERADE/SNAT for it too in POSTROUTING.
+The destroy event is delivered once the flow-state information is
+released from the kernel, ie. once the timer expires.
