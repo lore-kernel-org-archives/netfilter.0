@@ -1,60 +1,54 @@
-From: Sandro Tosi <sandro.tosi@register.it>
+From: Jesper Dangaard Brouer <hawk@comx.dk>
 Subject: Re: netfilter stats, info and resources usage
-Date: Thu, 28 Oct 2010 12:01:52 +0200
-Message-ID: <4CC94A10.7010306@register.it>
-References: <4CC83A67.1010202@register.it> <alpine.LNX.2.01.1010271827050.14500@obet.zrqbmnf.qr>
+Date: Thu, 28 Oct 2010 12:28:56 +0200
+Message-ID: <1288261736.29275.20.camel@firesoul.comx.local>
+References: <4CC83A67.1010202@register.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1010271827050.14500@obet.zrqbmnf.qr>
+In-Reply-To: <4CC83A67.1010202@register.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, Jesper Dangaard Brouer <hawk@comx.dk>
+Content-Type: text/plain; charset="us-ascii"
+To: Sandro Tosi <sandro.tosi@register.it>
+Cc: netfilter@vger.kernel.org
 
-Hello, thanks for the reply.
+On Wed, 2010-10-27 at 16:42 +0200, Sandro Tosi wrote:
+> we are using quite a lot iptables and we'd like to gather some 
+> stats/information to "what's doing" and hopefully also an idea of the 
+> resources used by it (in particular cpu and ram).
+> 
+> Probably my google search karma is very low today, given the only 
+> reference to CPU usage I could find was vague refs to softirq data, and 
+> for stats some links like:
+> 
+> 3. http://people.netfilter.org/hawk/DDoS/2010-04-12__001/list.html
+> 
+> 3 is very interesting, Jesper: how did you generate it? :)
 
-On 10/27/2010 06:32 PM, Jan Engelhardt wrote:
-> On Wednesday 2010-10-27 16:42, Sandro Tosi wrote:
->
->> we are using quite a lot iptables and we'd like to gather some
->> stats/information to "what's doing" and hopefully also an idea of the resources
->> used by it (in particular cpu and ram).
->>
->> 1. http://forums.cacti.net/about36629.html
->> 2. http://forums.cacti.net/about26714.html
->> 3. http://people.netfilter.org/hawk/DDoS/2010-04-12__001/list.html
->>
->> 3 is very interesting, Jesper: how did you generate it? :)
->
-> JFYI, There is a lot of conntrack in there besides routing and general
-> machine and interface characteristics - not much Xtables to see.
+I use the tool "rrdcollect" to sample a lot of different proc values.
 
-I'm not sure to get your reply right, but I'm actually open to any 
-statistics for KPI of iptables/netfilter/conntrack/whatever - I just 
-would like to retrieve meaningfull information about netfilter "stack" 
-on these machines (and graph them, but that's unimportant here).
+See the rrdcollect.conf config here:
+http://people.netfilter.org/hawk/DDoS/rrdcollect_scripts/rrdcollect.conf
 
-What I'm looking is cpu usage, and actually what netfilter does after I 
-add a rule to it via iptables. I think of cpu usage since I have 
-recently added rules that inspects the content of pkgs (using 'string' 
-module) and we'd like to understand what's the impact of that. Also, 
-having meaningful information of the netfilter operations can give us a 
-better understanding of the machine status/usage.
+The RRD data files are created by a perl script.
 
-I reported those 3 links because they are actually extracting 
-information from what the kernel exports about NF on /proc fs, but I 
-can't seem to find any info about what those values are (f.e. 
-/proc/sys/net/netfilter/nf_conntrack_count reports ~7500 conns while 
-'netstat -putan | wc -l' only ~3000, why that, what's the meaning of the 
-values graphed and so on).
+I have put the perl script here:
+http://people.netfilter.org/hawk/DDoS/rrdcollect_scripts/rrdcollect-create-datafiles.pl
 
-Thanks in advance,
+I use the tool 'drraw' to show the graph data, but I have not uploaded
+those files... Don't know if its the right tool for the job, but it was
+very easy to change things to start with, then when the number of graphs
+grew, it sort of got annoying to maintain via drraw.
+
+Have fun!
 -- 
-Sandro Tosi
-Product Engineer
-Linux based Solutions
-Hosting Products
-R&D | Dada.pro
-sandro.tosi@register.it
+Med venlig hilsen / Best regards
+  Jesper Brouer
+  ComX Networks A/S
+  Linux Network Kernel Developer
+  Cand. Scient Datalog / MSc.CS
+  Author of http://adsl-optimizer.dk
+  LinkedIn: http://www.linkedin.com/in/brouer
+
+
