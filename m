@@ -1,43 +1,95 @@
-From: Maarten Vanraes <maarten@ba.be>
-Subject: Re: xtables-addons ACCOUNT
-Date: Fri, 29 Oct 2010 09:31:23 +0200
-Message-ID: <201010290931.23743.maarten@ba.be>
-References: <201010181712.03160.maarten@ba.be> <201010280932.49853.maarten@ba.be> <alpine.LNX.2.01.1010290013001.29854@obet.zrqbmnf.qr>
+From: Patrick McHardy <kaber@trash.net>
+Subject: [ANNOUNCE]: Release of iptables-1.4.10
+Date: Fri, 29 Oct 2010 17:43:06 +0200
+Message-ID: <4CCAEB8A.5090504__25104.3026023128$1288367006$gmane$org@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------020503020803020608050505"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1010290013001.29854@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
-Cc: Jan Engelhardt <jengelh@medozas.de>, Bob Miller <bob@computerisms.ca>
+To: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, NetDev <netdev@vger.kernel.org>, netfilter-announce@lists.netfilter.org, "'netfilter@vger.kernel.org'" <netfilter>
 
-Op vrijdag 29 oktober 2010 00:20:38 schreef Jan Engelhardt:
-> On Thursday 2010-10-28 09:32, Maarten Vanraes wrote:
-> >I forgot to mention, i've installed 1.30 (still using 2.6.26) and it works
-> >now. But the sourceforge shows the 1.26 as the latest version; because
-> >it's bzip2 .
-> 
-> Yeah, SF has dumb defaults (used to better some years ago) - worked around
-> now. Anyway since SF also killed its notification system, there is
-> http://freshmeat.net/projects/xtables-addons to which users
-> can subscribe to.
-> 
-> >I had to go through all sorts of stuff to fine myself an xz-utils that
-> >was able to unpack the .tar.xz archive.
-> >Especially servers don't have that kind of support atm.
-> 
-> xz 4.999 (released 2009Q1) should do.
-> It is included in openSUSE 11.3, 11.2, Fedora 14, 13, 12, and
-> most likely others.
+This is a multi-part message in MIME format.
+--------------020503020803020608050505
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 7bit
 
-well, my point is that most others don't yet (eg: debian lenny).
+The netfilter coreteam presents:
 
-would it not be possible to ship a tar.gz or tar.bz2 for a while yet? .tar.xz 
-isn't a common source extention for now and tar doesn't have a easy switch yet 
-either. possibly until SF recognizes tar.xz as a source file?
+    iptables version 1.4.10
 
-tia,
+the iptables release for the 2.6.36 kernel. Changes include:
 
-Maarten
+- support for the cpu match, which can be used to improve cache
+  locality when running multiple server instances
+
+- support for the IDLETIMER target, which can be used to notify
+  userspace of interfaces being idle
+
+- support for the CHECKSUM target
+
+- support for the ipvs match
+
+- documentation updates
+
+- a fix for deletion of rules using the quota match
+
+See the Changelog for more details.
+
+Version 1.4.10 can be obtained from:
+
+http://www.netfilter.org/projects/iptables/downloads.html
+ftp://ftp.netfilter.org/pub/iptables/
+git://git.netfilter.org/iptables.git
+
+On behalf of the Netfilter Core Team.
+Happy firewalling!
+
+--------------020503020803020608050505
+Content-Type: text/plain;
+ name="changes-iptables-1.4.10.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="changes-iptables-1.4.10.txt"
+
+Changli Gao (1):
+      libxt_quota: don't ignore the quota value on deletion
+
+Eric Dumazet (2):
+      extensions: REDIRECT: add random help
+      extension: add xt_cpu match
+
+Hannes Eder (1):
+      libxt_ipvs: user-space lib for netfilter matcher xt_ipvs
+
+Jan Engelhardt (11):
+      doc: let man(1) autoalign the text in xt_cpu
+      doc: remove extra empty line from xt_cpu
+      doc: minimal spelling updates to xt_cpu
+      all: consistent syntax use in struct option
+      doc: consistent use of markup
+      xtables: remove unnecessary cast
+      build: fix static linking
+      iptables-xml: resolve compiler warnings
+      iptables: limit chain name length to be consistent with targets
+      libiptc: build with -Wl,--no-as-needed
+      libiptc: add Libs.private to pkgconfig files
+
+Luciano Coelho (2):
+      extensions: add idletimer xt target extension
+      extensions: libxt_IDLETIMER: use xtables_param_act when checking options
+
+Michael S. Tsirkin (1):
+      extensions: libxt_CHECKSUM extension
+
+Patrick McHardy (6):
+      extensions: libipt_LOG/libip6t_LOG: support macdecode option
+      extensions: fix compilation of the new CHECKSUM target
+      Merge branch 'master' into iptables-next
+      Merge branch 'master' into iptables-next
+      Merge branch 'iptables-next'
+      Bump version to 1.4.10
+
+
+--------------020503020803020608050505--
