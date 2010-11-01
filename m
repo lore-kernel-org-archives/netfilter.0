@@ -1,26 +1,28 @@
-From: BARR CHEN SHULIN <gennaro.iorio@fastwebnet.it>
-Subject: GET BACK TO ME
-Date: Mon, 1 Nov 2010 09:41:21 +0100 (CET)
-Message-ID: <13439825.1400011288600881598.JavaMail.root@pr002msr>
-Reply-To: barrchen.shulin@mail.mn
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Re-route non-http traffic
+Date: Mon, 01 Nov 2010 10:03:46 -0500
+Message-ID: <4CCED6D2.5090808@riverviewtech.net>
+References: <AANLkTi=GvwtxOLtFH9444aqdudrkUbaPdYQ63ZrUTH2A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <AANLkTi=GvwtxOLtFH9444aqdudrkUbaPdYQ63ZrUTH2A@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: 
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Cc: robertpipca@gmail.com
 
-I am Chen  Shulin, an attorney at law. A deceased client of mine,
-that shares the same last name as yours, died as the result of
-a heart-related condition on March 12th 2005. His heart condition 
-was due to the death of all the members of his family
-in the tsunami disaster on the 26th December 2004 in Sumatra Indonesia.http://en
-.wikipedia.org/wiki/2004_Indian_Ocean_earthquake
+On 10/31/10 21:51, Robert Pipca wrote:
+> If squid sees this is not http-traffic, sends the connection to 
+> _that_ saved destination IP...and everybody is happy.
+> 
+> Is it possible currently? Or is some coding necessary? We can help 
+> with that..
 
-I contacted you to assist in distributing the money left behind by my client(S$1
-7,500,000.00 Million)left behind.Get back to me for more information
+Can you not exclude specific destination IPs from the redirection to 
+Squid (before the redirect even happens)?
 
-Best regards,
-Barr.Chen Shulin
 
+
+Grant. . . .
