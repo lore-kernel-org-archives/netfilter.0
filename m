@@ -1,56 +1,37 @@
-From: Brandon Black <blblack@gmail.com>
-Subject: Stateless UDP PAT?
-Date: Mon, 1 Nov 2010 22:43:24 -0500
-Message-ID: <AANLkTikPkQx=sL=c2CZH4Adaht=uzCK0+jJvqVr_M4e6@mail.gmail.com>
+From: Brent Clark <brentgclarklist@gmail.com>
+Subject: iproute mailinglist?
+Date: Tue, 02 Nov 2010 11:12:39 +0200
+Message-ID: <4CCFD607.1050702@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:date:message-id
-         :subject:from:to:content-type;
-        bh=KLO0kqxg03iVGUT6rt9g4NPn3H40/FR2eiAfyKV+/lU=;
-        b=W61AgwmsqodzX2k9MZmqMIuoV42rq/8E/1s+AiGT8csoooyIGF4sYbAVFIw7rFSNc/
-         QtD79fIbwHL9FTBJcwIYCnySMGyranLZKUTLEqx7D5rytio+S9L68LV84wDpkGB5N/7w
-         AHQLsOLcG0+fg6D5Yokp6yPohUDL3yQWz4x7M=
+        h=domainkey-signature:received:received:message-id:date:from
+         :user-agent:mime-version:to:subject:content-type
+         :content-transfer-encoding;
+        bh=PJDrJ8X8wB/59Ev5AF5y9Yo9bfG1t72nvbNaHScjYE4=;
+        b=Fpq0Zfb9EJ6jjipv15DnA6ew+dXuzdUSGyA6N9mAXcKdMfAWNNYh4E50dhKqHhVwnw
+         aheQCQF8dB045eumI/3fOrsN8kfuRFU+/q4HP+knVe0OSRjlUmL4PbwnKFjTWctBVniK
+         06zfUInFkpF1GTe2GFgOz/5qy+GNAtoXlIRw8=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi all,
+Hiya
 
-I've been digging around in the iptables (and xtables-addons) stuff
-looking for a way to do stateless UDP PAT, but I don't think any of
-the existing modules cover what I want to do.  I wanted to check here
-first though, in case perhaps I missed something.
+I know this is not related to netfilter. But I as netfilter is in 
+someway joined with iproute, I hope no one minds, but I thought Id take 
+the liberty of asking here.
 
-To give a concrete example of the behavior I'm looking for:
+There appears to be problem with iproute2's mailinglist and it appears 
+that is has been like that for sometime. My question is how would one go 
+about getting help on iproute?
 
-192.0.2.1 is a real IP address on this machine (there's no real
-routing or NAT going on here)
-Application instances are listening on UDP ports 12340-12347.
-The "official" port number that external clients will reach this
-application on is 1234
-I want incoming traffic for port 1234 to be round-robined to 12340-12347
+Regards
+Brent Clark
 
-These two rules would nearly do what I want, if I'm reading the docs correctly:
 
-iptables -t nat -A PREROUTING -d 192.0.2.1 -p udp --dport 1234 -j DNAT
---to-destination :12340-12347
-iptables -t nat -A POSTROUTING -s 192.0.2.1 -p udp -m multiport
---dports 12340-12347 -j SNAT --to-source :1234
 
-However, the application's protocol is built on stateless transactions
-(single request packet, single response packet), and for performance
-reasons (and sheer count of packets flying) I don't want conntrack
-trying to watch and timeout all of these single-packet UDP
-transactions.  I just want it to round-robin alter the destination
-port on the incoming packets, and statically alter the source ports
-back to the canonical one on the response traffic, stateless-ly.
 
-Did I miss some way to do this with the existing tools/modules?  Do I
-just have to write a custom module for this sort of thing?
-
-Thanks,
--- Brandon
