@@ -1,68 +1,65 @@
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: [PATCH 46/49] net/netfilter: Use vzalloc
-Date: Fri, 05 Nov 2010 08:16:11 +0100
-Message-ID: <1288941371.3234.31.camel@edumazet-laptop>
-References: <alpine.DEB.2.00.1011031108260.11625@router.home>
-	 <7d6da34b7e84955795717b0241000a0701cd5b34.1288925425.git.joe@perches.com>
-	 <1288938640.3234.12.camel@edumazet-laptop>
-	 <1288940146.18440.55.camel@Joe-Laptop>
+From: Husnu Demir <hdemir@metu.edu.tr>
+Subject: conntrack module question?
+Date: Fri, 05 Nov 2010 11:21:50 +0200
+Message-ID: <4CD3CCAE.3060707@metu.edu.tr>
+Reply-To: hdemir@metu.edu.tr
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:subject:from:to:cc
-         :in-reply-to:references:content-type:date:message-id:mime-version
-         :x-mailer:content-transfer-encoding;
-        bh=I+qcaLQTE0y5bbDA64Hk5FelTQbA1wWGATo5oFYejvk=;
-        b=jZdLlBGjnF5vWhvJgHIep2hggs4d4oM/t48IBNl0khc0FPk/JT0vC+Sq0yU25riX8V
-         Nf3W7x+ozlxU+s8h2rreRWjLxpryVb1JubLpKxTEwybzZLFQySU/Ioy+5Ys237A/5PBE
-         srqRt89jnV6LsEoVrz7nkZUM+65D4ufERMPIc=
-In-Reply-To: <1288940146.18440.55.camel@Joe-Laptop>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Type: multipart/mixed;
+ boundary="------------000501090907010105070309"
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Joe Perches <joe@perches.com>
-Cc: Jesper Juhl <jj@chaosbits.net>, Jiri Kosina <trivial@kernel.org>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Netfilter Developer Mailing List <netfilter@vger.kernel.org>
 
-Le jeudi 04 novembre 2010 =C3=A0 23:55 -0700, Joe Perches a =C3=A9crit =
-:
-> On Fri, 2010-11-05 at 07:30 +0100, Eric Dumazet wrote:
-> > I had _one_ patch, waiting that David actually had vzalloc() in its=
- tree
-> > before sending it.
->=20
-> Fine by me, use yours.
-
-I dont care at all, only to say that David tree was not ready yet.
+This is a multi-part message in MIME format.
+--------------000501090907010105070309
+Content-Type: text/plain; charset=ISO-8859-9
+Content-Transfer-Encoding: 7bit
 
 
->=20
-> > Given Jesper Juhl was doing this work, could you please take anothe=
-r
-> > one, please ?
-> > For example, explaining him how to use other tools than "bash+egrep
-> > +manual inspection" as he mentioned in a previous mail.
->=20
-> Jesper Juhl was both pointed at the cocci docs and
-> given a cocci script.  He said he'd investigate it
-> when he could.  I trust he will get to it.
->=20
+Hi,
 
-Yes, yet you posted patches, knowing he was working on the _same_
-subject.
+I am using conntrack module for a while. As suggested configuration I do add ;
 
-I remember other occurrences of such behavior.
 
-I find this behavior very unfriendly, time consuming, and not useful.
+-A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -m conntrack --ctstate INVALID -j DROP
 
-We try to work together, to increase our common knowledge, not to throw
-a bunch of patches "just because I know better than you"
+At the top of the configuration. After that I added the drop rule as;
+
+
+-A FORWARD -i eth0 -o eth1 -m set --match-set STOPALL src -j DROP
+
+This rule is not statefull and should drop everything. I added an IP address,
+174.142.179.235 a SPAMMER, to stop its communication. But it did no stop. As far
+as I know in TCP connection the packets is not in ESTABLISHED state but could be
+RELATED :(.
+
+I wrote "drop everything from STOPALL list", but the connection is not dropped. If
+I wrote the the DROP statement above the 1st rule, it will drop all the
+connection. What is wrong? I do not want to write DROP statement to the top?
+
+
+Thanks.
 
 
 
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--------------000501090907010105070309
+Content-Type: text/x-vcard; charset=utf-8;
+ name="hdemir.vcf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="hdemir.vcf"
+
+begin:vcard
+fn:Husnu Demir
+n:Demir;Husnu
+email;internet:hdemir@metu.edu.tr
+tel;work:+903122103330
+tel;fax:+903122103303
+x-mozilla-html:FALSE
+version:2.1
+end:vcard
+
+
+--------------000501090907010105070309--
