@@ -1,70 +1,96 @@
-From: Alessandro Vesely <vesely@tana.it>
-Subject: Re: libnetfilter_queue exiting on big tcp sessions
-Date: Fri, 05 Nov 2010 12:09:15 +0100
-Message-ID: <4CD3E5DB.2000704@tana.it>
-References: <AANLkTimmr4MVCOwgxea9KoGB1BjomBchJ7oAgpnt2WyZ@mail.gmail.com> <4CD1AB54.5080603@netfilter.org>
+From: Husnu Demir <hdemir@metu.edu.tr>
+Subject: Re: conntrack module question?
+Date: Fri, 05 Nov 2010 14:56:41 +0200
+Message-ID: <4CD3FF09.9040103@metu.edu.tr>
+References: <4CD3CCAE.3060707@metu.edu.tr> <alpine.LNX.2.01.1011051207400.31877@obet.zrqbmnf.qr>
+Reply-To: hdemir@metu.edu.tr
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="=_north-29057-1288955356-0001-2"
+Content-Type: multipart/mixed;
+ boundary="------------020802050902000004070700"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tana.it; s=test;
-	t=1288955356; bh=RZgm5cDF7z2jRBLYdxYLVjS1ymH/bymmsDCr8Ig5Mbk=;
-	l=2510;
-	h=Message-ID:Date:From:Mime-Version:To:References:In-Reply-To;
-	b=TTjcydkhg+eDOaySyRM9VuJR5enV39/ciFJ67MdHoE9Yu3vmGJfT0HloRlpSqQVYr
-	 Xwxqe6RoHriM+ejRbK78zUHxphobBt55Dt7DDVJWB4U6XAdSA66Olt+2Pt1Ikm31w1
-	 6GlcGnemvrEHfMEDkmKm1kOhJSis50hQaShhU/uM=
-In-Reply-To: <4CD1AB54.5080603@netfilter.org>
+In-Reply-To: <alpine.LNX.2.01.1011051207400.31877@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
+To: 
+Cc: Netfilter Developer Mailing List <netfilter@vger.kernel.org>
 
-This is a MIME-formatted message.  If you see this text it means that your
-E-mail software does not support MIME-formatted messages.
-
---=_north-29057-1288955356-0001-2
-Content-Type: text/plain; charset=us-ascii; format=flowed
+This is a multi-part message in MIME format.
+--------------020802050902000004070700
+Content-Type: text/plain; charset=ISO-8859-1
 Content-Transfer-Encoding: 7bit
 
-On 03/Nov/10 19:35, Pablo Neira Ayuso wrote:
-> On 02/11/10 16:46, Rajkumar S wrote:
->>  I am using utils/nfqnl_test.c as my test program
->
-> Please, see:
->
-> http://git.netfilter.org/cgi-bin/gitweb.cgi?p=libnetfilter_queue.git;a=commitdiff;h=37791b0eb98c00098a6410f6dedfdce92fc88f3e;hp=c4692e02d4fc804f7aa31f407d7d2f31861753bc
+On 11/05/2010 01:12 PM, Jan Engelhardt wrote:
+> 
+> On Friday 2010-11-05 10:21, Husnu Demir wrote:
+>> Hi,
+>>
+>> I am using conntrack module for a while. As suggested configuration I do add ;
+>>
+>>
+>> -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
+>> -A FORWARD -m conntrack --ctstate INVALID -j DROP
+>>
+>> At the top of the configuration. After that I added the drop rule as;
+>>
+>> -A FORWARD -i eth0 -o eth1 -m set --match-set STOPALL src -j DROP
+>>
+>> I added an IP address,
+>> 174.142.179.235 a SPAMMER, to stop its communication. But it did no stop.
+> 
+> How are you determining this?
 
-Thanks for the improved docs!
+In fact this address collecting passwords from a hacked site and I want tot stop
+it. It is an HTTP connection. And If I put this IP to the list I coud connect the
+web site. But if I put the rule above the first rule I could not connect.
 
-For older kernels, would it also help setting something like
--A INPUT -m limit --limit 10/second -j NFQUEUE --queue-num 0?
+http://www.formchamp.com/form.php?id=1120
 
-Would you please also amend nfqnl_test.c?  From this thread I grasp 
-that packets that overflowed the queue are still received/ 
-transmitted, but am unable to do better than the attached (untested) 
-patch.
+is the actual SCAM site.
 
---=_north-29057-1288955356-0001-2
-Content-Type: text/plain; name="nfqnl_test.patch.txt"; charset=iso-8859-1
-Content-Transfer-Encoding: base64
+> 
+>> I wrote "drop everything from STOPALL list", but the connection is not dropped.
+> 
+> It drops packets, not connections.
+But if it cannot send any packets how a connection can be established?
+
+
+> 
+>> If
+>> I wrote the the DROP statement above the 1st rule, it will drop all the
+>> connection. What is wrong?
+> 
+> Perhaps nothing. You clearly accept established connections first,
+> so only new ones will be ignored. It does not change existing ones.
+> 
+>> I do not want to write DROP statement to the top?
+> 
+> Do you?
+
+In fact my all drop statements are at the top accept first one. I had some
+different issues when I wrote it below. It seems better for me to keep it at the
+top. Perpahps I should re-consider it.
+
+
+thanks.
+
+hdemir.
+
+--------------020802050902000004070700
+Content-Type: text/x-vcard; charset=utf-8;
+ name="hdemir.vcf"
+Content-Transfer-Encoding: 7bit
 Content-Disposition: attachment;
- filename="nfqnl_test.patch.txt"
+ filename="hdemir.vcf"
 
-LS0tIG5mcW5sX3Rlc3Qub3JpZ2luYWwuYwkyMDA5LTAyLTE3IDIwOjI3OjI4LjAwMDAwMDAw
-MCArMDEwMAorKysgbmZxbmxfdGVzdC5jCTIwMTAtMTEtMDUgMTE6MjQ6MjYuMDAwMDAwMDAw
-ICswMTAwCkBAIC04LDYgKzgsOCBAQAogCiAjaW5jbHVkZSA8bGlibmV0ZmlsdGVyX3F1ZXVl
-L2xpYm5ldGZpbHRlcl9xdWV1ZS5oPgogCisjaW5jbHVkZSA8ZXJybm8uaD4KKwogLyogcmV0
-dXJucyBwYWNrZXQgaWQgKi8KIHN0YXRpYyB1X2ludDMyX3QgcHJpbnRfcGt0IChzdHJ1Y3Qg
-bmZxX2RhdGEgKnRiKQogewpAQCAtMTE1LDkgKzExNywyMSBAQAogCiAJZmQgPSBuZnFfZmQo
-aCk7CiAKLQl3aGlsZSAoKHJ2ID0gcmVjdihmZCwgYnVmLCBzaXplb2YoYnVmKSwgMCkpICYm
-IHJ2ID49IDApIHsKLQkJcHJpbnRmKCJwa3QgcmVjZWl2ZWRcbiIpOwotCQluZnFfaGFuZGxl
-X3BhY2tldChoLCBidWYsIHJ2KTsKKwlmb3IgKDs7KSB7CisJCWlmICgocnYgPSByZWN2KGZk
-LCBidWYsIHNpemVvZihidWYpLCAwKSkgPj0gMCkgeworCQkJcHJpbnRmKCJwa3QgcmVjZWl2
-ZWRcbiIpOworCQkJbmZxX2hhbmRsZV9wYWNrZXQoaCwgYnVmLCBydik7CisJCQljb250aW51
-ZTsKKwkJfQorCQkvKiBpZiB0aGUgY29tcHV0ZXIgaXMgc2xvd2VyIHRoYW4gdGhlIG5ldHdv
-cmsgdGhlIGJ1ZmZlcgorCQkqIG1heSBmaWxsIHVwLiBEZXBlbmRpbmcgb24gdGhlIGFwcGxp
-Y2F0aW9uLCB0aGlzIGVycm9yCisJCSogbWF5IGJlIGlnbm9yZWQgKi8JCQorCQlpZiAoZXJy
-bm8gPT0gRU5PQlVGUykgeworCQkJcHJpbnRmKCJwa3QgbG9zdCEhXG4iKTsKKwkJCWNvbnRp
-bnVlOworCQl9CisJCXByaW50ZigicmVjdiBmYWlsZWQ6IGVycm5vPSVkICglcylcbiIsCisJ
-CQllcnJubywgc3RyZXJyb3IoZXJybm8pKTsKIAl9CiAKIAlwcmludGYoInVuYmluZGluZyBm
-cm9tIHF1ZXVlIDBcbiIpOwo=
---=_north-29057-1288955356-0001-2--
+begin:vcard
+fn:Husnu Demir
+n:Demir;Husnu
+email;internet:hdemir@metu.edu.tr
+tel;work:+903122103330
+tel;fax:+903122103303
+x-mozilla-html:FALSE
+version:2.1
+end:vcard
+
+
+--------------020802050902000004070700--
