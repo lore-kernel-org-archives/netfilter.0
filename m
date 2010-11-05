@@ -1,41 +1,79 @@
-From: Joe Perches <joe@perches.com>
+From: Jesper Juhl <jj@chaosbits.net>
 Subject: Re: [PATCH 46/49] net/netfilter: Use vzalloc
-Date: Fri, 05 Nov 2010 08:25:34 -0700
-Message-ID: <1288970734.18440.103.camel@Joe-Laptop>
-References: <alpine.DEB.2.00.1011031108260.11625@router.home>
-	 <7d6da34b7e84955795717b0241000a0701cd5b34.1288925425.git.joe@perches.com>
-	 <1288938640.3234.12.camel@edumazet-laptop>
-	 <1288940146.18440.55.camel@Joe-Laptop>
-	 <alpine.LNX.2.00.1011051108270.15851@pobox.suse.cz>
+Date: Fri, 5 Nov 2010 18:01:30 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1011051749230.17746@swampdragon.chaosbits.net>
+References: <alpine.DEB.2.00.1011031108260.11625@router.home>  <7d6da34b7e84955795717b0241000a0701cd5b34.1288925425.git.joe@perches.com>  <1288938640.3234.12.camel@edumazet-laptop>  <1288940146.18440.55.camel@Joe-Laptop>
+ <1288941371.3234.31.camel@edumazet-laptop>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.00.1011051108270.15851@pobox.suse.cz>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: MULTIPART/MIXED; BOUNDARY="8323328-1527753567-1288976490=:17746"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <1288941371.3234.31.camel@edumazet-laptop>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jiri Kosina <jkosina@suse.cz>
-Cc: Eric Dumazet <eric.dumazet@gmail.com>, Jesper Juhl <jj@chaosbits.net>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: Eric Dumazet <eric.dumazet@gmail.com>, Joe Perches <joe@perches.com>
+Cc: Jiri Kosina <trivial@kernel.org>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Fri, 2010-11-05 at 11:10 -0400, Jiri Kosina wrote:
-> On Thu, 4 Nov 2010, Joe Perches wrote:
-> > I also think a single rolled-up single patch is good.
-> > I believe Jiri Kosina can easily apply all these individual patches as a 
-> > single patch if he chooses.
-> I will, after this settles a little bit (the same for the WARN series). 
-> I prefer waiting a bit before applying your patches usually. 
-> First to see what lands in linux-next through maintainer's trees, second 
-> to gather Acks.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-I think that's the right way to do these
-sorts of trivial changes too.
+--8323328-1527753567-1288976490=:17746
+Content-Type: TEXT/PLAIN; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-Individual patches cc'd to maintainers for
-feedback, improvement, acks or to be directly
-applied to their trees, followed by a longish
-delay before any unapplied patches are taken
-up as a single patch by your trivial queue.
+On Fri, 5 Nov 2010, Eric Dumazet wrote:
 
-Thanks for doing that work Jiri.
+> Le jeudi 04 novembre 2010 à 23:55 -0700, Joe Perches a écrit :
+> > On Fri, 2010-11-05 at 07:30 +0100, Eric Dumazet wrote:
+> > > I had _one_ patch, waiting that David actually had vzalloc() in its tree
+> > > before sending it.
+> > 
+> > Fine by me, use yours.
+> 
+> I dont care at all, only to say that David tree was not ready yet.
+> 
+> 
+> > 
+> > > Given Jesper Juhl was doing this work, could you please take another
+> > > one, please ?
+> > > For example, explaining him how to use other tools than "bash+egrep
+> > > +manual inspection" as he mentioned in a previous mail.
+> > 
+> > Jesper Juhl was both pointed at the cocci docs and
+> > given a cocci script.  He said he'd investigate it
+> > when he could.  I trust he will get to it.
+> > 
+> 
+> Yes, yet you posted patches, knowing he was working on the _same_
+> subject.
+> 
+And I will get to look at cocci and spatch, they are definately tools that 
+I want in my arsenal.
+
+> I remember other occurrences of such behavior.
+> 
+> I find this behavior very unfriendly, time consuming, and not useful.
+> 
+> We try to work together, to increase our common knowledge, not to throw
+> a bunch of patches "just because I know better than you"
+> 
+
+To be completely honest, I did get the feeling that the task I'd set for 
+myself and was having fun doing in the little spare time I have got 
+hijacked and I did waste about an hour and a half doing a few more 
+cleanups before I saw the patchset on lkml.
+
+But on the other hand, the most important thing is that it gets done, not 
+who ends up doing it - especially since it's such a trivial cleanup, so I 
+choose to see it as my initial patches just getting the ball rolling.
+
+It would have been nice with at least an email along the lines of "I 
+know how we can do all those patches in a jiffy, mind if I just go along 
+and do that?", but I'll live. There's plenty of other stuff to do :-)
 
 
+-- 
+Jesper Juhl <jj@chaosbits.net>             http://www.chaosbits.net/
+Plain text mails only, please      http://www.expita.com/nomime.html
+Don't top-post  http://www.catb.org/~esr/jargon/html/T/top-post.html
+
+--8323328-1527753567-1288976490=:17746--
