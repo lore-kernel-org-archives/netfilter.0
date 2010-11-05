@@ -1,96 +1,31 @@
-From: Husnu Demir <hdemir@metu.edu.tr>
-Subject: Re: conntrack module question?
-Date: Fri, 05 Nov 2010 14:56:41 +0200
-Message-ID: <4CD3FF09.9040103@metu.edu.tr>
-References: <4CD3CCAE.3060707@metu.edu.tr> <alpine.LNX.2.01.1011051207400.31877@obet.zrqbmnf.qr>
-Reply-To: hdemir@metu.edu.tr
+From: Jiri Kosina <jkosina@suse.cz>
+Subject: Re: [PATCH 46/49] net/netfilter: Use vzalloc
+Date: Fri, 5 Nov 2010 11:10:23 -0400 (EDT)
+Message-ID: <alpine.LNX.2.00.1011051108270.15851@pobox.suse.cz>
+References: <alpine.DEB.2.00.1011031108260.11625@router.home>  <7d6da34b7e84955795717b0241000a0701cd5b34.1288925425.git.joe@perches.com>  <1288938640.3234.12.camel@edumazet-laptop> <1288940146.18440.55.camel@Joe-Laptop>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------020802050902000004070700"
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1011051207400.31877@obet.zrqbmnf.qr>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <1288940146.18440.55.camel@Joe-Laptop>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: 
-Cc: Netfilter Developer Mailing List <netfilter@vger.kernel.org>
-
-This is a multi-part message in MIME format.
---------------020802050902000004070700
-Content-Type: text/plain; charset=ISO-8859-1
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: Joe Perches <joe@perches.com>
+Cc: Eric Dumazet <eric.dumazet@gmail.com>, Jesper Juhl <jj@chaosbits.net>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On 11/05/2010 01:12 PM, Jan Engelhardt wrote:
+On Thu, 4 Nov 2010, Joe Perches wrote:
+
+> I also think a single rolled-up single patch is good.
 > 
-> On Friday 2010-11-05 10:21, Husnu Demir wrote:
->> Hi,
->>
->> I am using conntrack module for a while. As suggested configuration I do add ;
->>
->>
->> -A FORWARD -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
->> -A FORWARD -m conntrack --ctstate INVALID -j DROP
->>
->> At the top of the configuration. After that I added the drop rule as;
->>
->> -A FORWARD -i eth0 -o eth1 -m set --match-set STOPALL src -j DROP
->>
->> I added an IP address,
->> 174.142.179.235 a SPAMMER, to stop its communication. But it did no stop.
-> 
-> How are you determining this?
+> I believe Jiri Kosina can easily apply all these individual patches as a 
+> single patch if he chooses.
 
-In fact this address collecting passwords from a hacked site and I want tot stop
-it. It is an HTTP connection. And If I put this IP to the list I coud connect the
-web site. But if I put the rule above the first rule I could not connect.
+I will, after this settles a little bit (the same for the WARN series). 
+I prefer waiting a bit before applying your patches usually. 
 
-http://www.formchamp.com/form.php?id=1120
+First to see what lands in linux-next through maintainer's trees, second 
+to gather Acks.
 
-is the actual SCAM site.
-
-> 
->> I wrote "drop everything from STOPALL list", but the connection is not dropped.
-> 
-> It drops packets, not connections.
-But if it cannot send any packets how a connection can be established?
-
-
-> 
->> If
->> I wrote the the DROP statement above the 1st rule, it will drop all the
->> connection. What is wrong?
-> 
-> Perhaps nothing. You clearly accept established connections first,
-> so only new ones will be ignored. It does not change existing ones.
-> 
->> I do not want to write DROP statement to the top?
-> 
-> Do you?
-
-In fact my all drop statements are at the top accept first one. I had some
-different issues when I wrote it below. It seems better for me to keep it at the
-top. Perpahps I should re-consider it.
-
-
-thanks.
-
-hdemir.
-
---------------020802050902000004070700
-Content-Type: text/x-vcard; charset=utf-8;
- name="hdemir.vcf"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="hdemir.vcf"
-
-begin:vcard
-fn:Husnu Demir
-n:Demir;Husnu
-email;internet:hdemir@metu.edu.tr
-tel;work:+903122103330
-tel;fax:+903122103303
-x-mozilla-html:FALSE
-version:2.1
-end:vcard
-
-
---------------020802050902000004070700--
+-- 
+Jiri Kosina
+SUSE Labs, Novell Inc.
