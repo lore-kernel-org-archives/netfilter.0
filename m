@@ -1,79 +1,210 @@
-From: Jesper Juhl <jj@chaosbits.net>
-Subject: Re: [PATCH 46/49] net/netfilter: Use vzalloc
-Date: Fri, 5 Nov 2010 18:01:30 +0100 (CET)
-Message-ID: <alpine.LNX.2.00.1011051749230.17746@swampdragon.chaosbits.net>
-References: <alpine.DEB.2.00.1011031108260.11625@router.home>  <7d6da34b7e84955795717b0241000a0701cd5b34.1288925425.git.joe@perches.com>  <1288938640.3234.12.camel@edumazet-laptop>  <1288940146.18440.55.camel@Joe-Laptop>
- <1288941371.3234.31.camel@edumazet-laptop>
+From: Mr Dash Four <mr.dash.four@googlemail.com>
+Subject: ipset-4.4 on 2.6.16.60 kernel
+Date: Sat, 06 Nov 2010 20:19:38 +0000
+Message-ID: <4CD5B85A.4050007@googlemail.com>
+References: <alpine.DEB.2.00.1010012214250.19669@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323328-1527753567-1288976490=:17746"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <1288941371.3234.31.camel@edumazet-laptop>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id
+         :disposition-notification-to:date:from:user-agent:mime-version:to:cc
+         :subject:references:in-reply-to:content-type
+         :content-transfer-encoding;
+        bh=R431CaEaNrHmHDMiB4zv7fLoROTJqIc/wioxwqhclX4=;
+        b=W1o/8TtmU7wDFKSaesjHt+dYTtLNZSe1H6W0syfm8xegnlTLDKlI+AfmSQtjb24n/R
+         j1puDPlbfzzLd3KTVtMaUNVUDFw65o4NJlUJunEjEu4mVwFcXoRh+51xbxRzhhrkIocs
+         cO6YedN4cczEYQs+9bRCnDyg1Uav1IEJULvJQ=
+In-Reply-To: <alpine.DEB.2.00.1010012214250.19669@blackhole.kfki.hu>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Eric Dumazet <eric.dumazet@gmail.com>, Joe Perches <joe@perches.com>
-Cc: Jiri Kosina <trivial@kernel.org>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+I am trying to install ipset on the above kernel version after 
+successfully recompiling and installing my iptables v1.3.7.
 
---8323328-1527753567-1288976490=:17746
-Content-Type: TEXT/PLAIN; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+When I unzip ipset-4.4.tar.bz2, then copy both 
+kernel/include/linux/netfilter_ipv4/ip_set.h AND 
+kernel/include/linux/netfilter_ipv4/ipt_set.h to 
+include/linux/netfilter_ipv4 (the latter was also needed for building 
+iptables as well, though the installation page did not mention that as a 
+requirement) and then ran make I've got the following error:
 
-On Fri, 5 Nov 2010, Eric Dumazet wrote:
+=================
+  CC [M]  /root/ipset-4.4/kernel/ipt_set.o
+/root/ipset-4.4/kernel/ipt_set.c: In function `checkentry':
+/root/ipset-4.4/kernel/ipt_set.c:167: warning: implicit declaration of 
+function `IPT_ALIGN'
+/root/ipset-4.4/kernel/ipt_set.c: In function `ipt_ipset_init':
+/root/ipset-4.4/kernel/ipt_set.c:244: warning: passing arg 1 of 
+`xt_register_match' makes integer from pointer without a cast
+/root/ipset-4.4/kernel/ipt_set.c:244: error: too few arguments to 
+function `xt_register_match'
+/root/ipset-4.4/kernel/ipt_set.c: In function `ipt_ipset_fini':
+/root/ipset-4.4/kernel/ipt_set.c:249: warning: passing arg 1 of 
+`xt_unregister_match' makes integer from pointer without a cast
+/root/ipset-4.4/kernel/ipt_set.c:249: error: too few arguments to 
+function `xt_unregister_match'
+make[2]: *** [/root/ipset-4.4/kernel/ipt_set.o] Error 1
+make[1]: *** [_module_/root/ipset-4.4/kernel] Error 2
+=================
 
-> Le jeudi 04 novembre 2010 à 23:55 -0700, Joe Perches a écrit :
-> > On Fri, 2010-11-05 at 07:30 +0100, Eric Dumazet wrote:
-> > > I had _one_ patch, waiting that David actually had vzalloc() in its tree
-> > > before sending it.
-> > 
-> > Fine by me, use yours.
-> 
-> I dont care at all, only to say that David tree was not ready yet.
-> 
-> 
-> > 
-> > > Given Jesper Juhl was doing this work, could you please take another
-> > > one, please ?
-> > > For example, explaining him how to use other tools than "bash+egrep
-> > > +manual inspection" as he mentioned in a previous mail.
-> > 
-> > Jesper Juhl was both pointed at the cocci docs and
-> > given a cocci script.  He said he'd investigate it
-> > when he could.  I trust he will get to it.
-> > 
-> 
-> Yes, yet you posted patches, knowing he was working on the _same_
-> subject.
-> 
-And I will get to look at cocci and spatch, they are definately tools that 
-I want in my arsenal.
+Looking at the source of ipt_set.c I think this is what causes the error:
 
-> I remember other occurrences of such behavior.
-> 
-> I find this behavior very unfriendly, time consuming, and not useful.
-> 
-> We try to work together, to increase our common knowledge, not to throw
-> a bunch of patches "just because I know better than you"
-> 
+=================
+#if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,16)
+#include <linux/netfilter_ipv4/ip_tables.h>
+#define xt_register_match       ipt_register_match
+#define xt_unregister_match     ipt_unregister_match
+#define xt_match                ipt_match
+#else
+#include <linux/netfilter/x_tables.h>
+#endif
+#include <linux/netfilter_ipv4/ip_set.h>
+#include <linux/netfilter_ipv4/ipt_set.h>
+.....
+static int __init ipt_ipset_init(void)
+{
+        return xt_register_match(&set_match);
+}
 
-To be completely honest, I did get the feeling that the task I'd set for 
-myself and was having fun doing in the little spare time I have got 
-hijacked and I did waste about an hour and a half doing a few more 
-cleanups before I saw the patchset on lkml.
+static void __exit ipt_ipset_fini(void)
+{
+        xt_unregister_match(&set_match);
+}
+=================
 
-But on the other hand, the most important thing is that it gets done, not 
-who ends up doing it - especially since it's such a trivial cleanup, so I 
-choose to see it as my initial patches just getting the ball rolling.
+I looked at both x_tables.h and ip_tables.h files and they do contain 
+the following:
 
-It would have been nice with at least an email along the lines of "I 
-know how we can do all those patches in a jiffy, mind if I just go along 
-and do that?", but I'll live. There's plenty of other stuff to do :-)
+x_tables.h
+~~~~~~~~~~
+extern int xt_register_match(int af, struct xt_match *target);
+extern void xt_unregister_match(int af, struct xt_match *target);
+
+ip_tables.h
+~~~~~~~~~~~
+#define ipt_register_match(mtch) xt_register_match(AF_INET, mtch)
+#define ipt_unregister_match(mtch) xt_unregister_match(AF_INET, mtch)
+
+According to the above as my kernel version appears to be > 2,6,16 
+x_tables.h include triggers and it defines the 2 functions, but 
+requiring two parameters instead of the one defined in ipt_set.c! I 
+tried to change the version to KERNEL_VERSION(2,6,17) to force include 
+of netfilter_ipv4/ip_tables.h - that passes, though for this file I get 
+the following warning:
+
+=================
+  CC [M]  /root/ipset-4.4/kernel/ipt_set.o
+/root/ipset-4.4/kernel/ipt_set.c: In function `ipt_ipset_init':
+/root/ipset-4.4/kernel/ipt_set.c:244: warning: implicit declaration of 
+function `ipt_register_match'
+/root/ipset-4.4/kernel/ipt_set.c: In function `ipt_ipset_fini':
+/root/ipset-4.4/kernel/ipt_set.c:249: warning: implicit declaration of 
+function `ipt_unregister_match'
+=================
+
+and then get a similar error for ipt_SET.c:
+
+=================
+  CC [M]  /root/ipset-4.4/kernel/ipt_SET.o
+/root/ipset-4.4/kernel/ipt_SET.c: In function `checkentry':
+/root/ipset-4.4/kernel/ipt_SET.c:157: warning: implicit declaration of 
+function `IPT_ALIGN'
+/root/ipset-4.4/kernel/ipt_SET.c: In function `ipt_SET_init':
+/root/ipset-4.4/kernel/ipt_SET.c:247: warning: passing arg 1 of 
+`xt_register_target' makes integer from pointer without a cast
+/root/ipset-4.4/kernel/ipt_SET.c:247: error: too few arguments to 
+function `xt_register_target'
+/root/ipset-4.4/kernel/ipt_SET.c: In function `ipt_SET_fini':
+/root/ipset-4.4/kernel/ipt_SET.c:252: warning: passing arg 1 of 
+`xt_unregister_target' makes integer from pointer without a cast
+/root/ipset-4.4/kernel/ipt_SET.c:252: error: too few arguments to 
+function `xt_unregister_target'
+make[2]: *** [/root/ipset-4.4/kernel/ipt_SET.o] Error 1
+make[1]: *** [_module_/root/ipset-4.4/kernel] Error 2
+=================
+
+Trying the same 'trick' for ipt_SET.c won't work though, I am getting this:
+
+=================
+  CC [M]  /root/ipset-4.4/kernel/ipt_SET.o
+/root/ipset-4.4/kernel/ipt_SET.c:24:1: warning: "XT_CONTINUE" redefined
+In file included from include/linux/netfilter_ipv4/ip_tables.h:28,
+                 from /root/ipset-4.4/kernel/ipt_SET.c:20:
+include/linux/netfilter/x_tables.h:17:1: warning: this is the location 
+of the previous definition
+/root/ipset-4.4/kernel/ipt_SET.c: In function `target':
+/root/ipset-4.4/kernel/ipt_SET.c:94: error: `XT_CONTINUE' undeclared 
+(first use in this function)
+/root/ipset-4.4/kernel/ipt_SET.c:94: error: (Each undeclared identifier 
+is reported only once
+/root/ipset-4.4/kernel/ipt_SET.c:94: error: for each function it appears 
+in.)
+/root/ipset-4.4/kernel/ipt_SET.c: In function `ipt_SET_init':
+/root/ipset-4.4/kernel/ipt_SET.c:247: warning: implicit declaration of 
+function `ipt_register_target'
+/root/ipset-4.4/kernel/ipt_SET.c: In function `ipt_SET_fini':
+/root/ipset-4.4/kernel/ipt_SET.c:252: warning: implicit declaration of 
+function `ipt_unregister_target'
+make[2]: *** [/root/ipset-4.4/kernel/ipt_SET.o] Error 1
+make[1]: *** [_module_/root/ipset-4.4/kernel] Error 2
+make[1]: Leaving directory 
+`/usr/src/expresscore/distrib/build/sources/kernel-runtime/linux-2.6.16.60'
+make: *** [modules] Error 2
+=================
+
+XT_CONTINUE is defined as IPT_CONTINUE, which, in ip_tables.h is defined 
+as ... XT_CONTINUE in ip_tables.h! After a bit more digging I found that 
+netfilter/x_tables.h defines XT_CONTINUE as 0xFFFFFFFF, so I tried to 
+replace this in ipt_SET.c, but when tried make again I've got this:
+
+=================
+  CC [M]  /root/ipset-4.4/kernel/ipt_set.o
+/root/ipset-4.4/kernel/ipt_set.c: In function `ipt_ipset_init':
+/root/ipset-4.4/kernel/ipt_set.c:244: warning: implicit declaration of 
+function `ipt_register_match'
+/root/ipset-4.4/kernel/ipt_set.c: In function `ipt_ipset_fini':
+/root/ipset-4.4/kernel/ipt_set.c:249: warning: implicit declaration of 
+function `ipt_unregister_match'
+  CC [M]  /root/ipset-4.4/kernel/ipt_SET.o
+/root/ipset-4.4/kernel/ipt_SET.c: In function `ipt_SET_init':
+/root/ipset-4.4/kernel/ipt_SET.c:247: warning: implicit declaration of 
+function `ipt_register_target'
+/root/ipset-4.4/kernel/ipt_SET.c: In function `ipt_SET_fini':
+/root/ipset-4.4/kernel/ipt_SET.c:252: warning: implicit declaration of 
+function `ipt_unregister_target'
+
+  Building modules, stage 2.
+  MODPOST
+*** Warning: "ipt_unregister_match" [/root/ipset-4.4/kernel/ipt_set.ko] 
+undefined!
+*** Warning: "ipt_register_match" [/root/ipset-4.4/kernel/ipt_set.ko] 
+undefined!
+*** Warning: "ipt_unregister_target" [/root/ipset-4.4/kernel/ipt_SET.ko] 
+undefined!
+*** Warning: "ipt_register_target" [/root/ipset-4.4/kernel/ipt_SET.ko] 
+undefined!
+=================
+
+Where I am now stuck and would appreciate a bit of help.
+
+My iptables 1.3.7 compiled and installed successfully (from what I can 
+gather it added two additional files in /usr/lib/iptables - 
+libipt_set.so and libipt_SET.so), so I don't think this is iptables problem.
 
 
--- 
-Jesper Juhl <jj@chaosbits.net>             http://www.chaosbits.net/
-Plain text mails only, please      http://www.expita.com/nomime.html
-Don't top-post  http://www.catb.org/~esr/jargon/html/T/top-post.html
+> ipset-4.4 has just been released with one important fix and some small 
+> corrections:
+>
+> Kernel part changes:
+>   - The ipporthash, ipportiphash and ipportnethash set types did 
+>     not work with mixed "src" and "dst" direction parameters of the "set" 
+>     and  "SET" iptables match and target (reported by Dash Four)
+>   - Errorneous semaphore handling in error path fixed (reported by 
+>     Jan Engelhardt, bugzilla id 668) 
+>   
 
---8323328-1527753567-1288976490=:17746--
