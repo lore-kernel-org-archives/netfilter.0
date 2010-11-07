@@ -1,32 +1,42 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: unable to source and destination nat at the same time on multi-homed
- server
-Date: Sun, 07 Nov 2010 17:10:03 +0100
-Message-ID: <4CD6CF5B.2030606@plouf.fr.eu.org>
-References: <4CD6C4C6.3050508@joelly.net>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: libnetfilter_queue exiting on big tcp sessions
+Date: Sun, 07 Nov 2010 21:44:59 +0100
+Message-ID: <4CD70FCB.3050800@netfilter.org>
+References: <AANLkTimmr4MVCOwgxea9KoGB1BjomBchJ7oAgpnt2WyZ@mail.gmail.com> <4CD1AB54.5080603@netfilter.org> <4CD3E5DB.2000704@tana.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4CD6C4C6.3050508@joelly.net>
+In-Reply-To: <4CD3E5DB.2000704@tana.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Joelly Alexander <alex@joelly.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Alessandro Vesely <vesely@tana.it>
+Cc: netfilter@vger.kernel.org, Mistick Levi <gmistick@gmail.com>
 
-Joelly Alexander a =E9crit :
->=20
-> in other words - source-nat must be done before destination-nat, but=20
-> iptables does not allow this because the output chain with=20
-> destination-nat is handled before the source-nat from the postrouting=
-=20
-> chain;
->=20
-> does anyone know a way to solve this?
+On 05/11/10 12:09, Alessandro Vesely wrote:
+> On 03/Nov/10 19:35, Pablo Neira Ayuso wrote:
+>> On 02/11/10 16:46, Rajkumar S wrote:
+>>>  I am using utils/nfqnl_test.c as my test program
+>>
+>> Please, see:
+>>
+>> http://git.netfilter.org/cgi-bin/gitweb.cgi?p=libnetfilter_queue.git;a=commitdiff;h=37791b0eb98c00098a6410f6dedfdce92fc88f3e;hp=c4692e02d4fc804f7aa31f407d7d2f31861753bc
+> 
+> Thanks for the improved docs!
+> 
+> For older kernels, would it also help setting something like
+> -A INPUT -m limit --limit 10/second -j NFQUEUE --queue-num 0?
 
-You can mark the packets (-j MARK) or the connection (-j CONNMARK) in
-mangle/OUTPUT before DNAT, and match the packet mark (-m mark) or
-connection mark (-m connmark) in nat/POSTROUTING.
+I don't want to add that in the docs, sorry. It looks more like a crafty
+workaround.
 
-Or you can use -m conntrack --ctorigdst to match the original
-destination address.
+> Would you please also amend nfqnl_test.c?  From this thread I grasp that
+> packets that overflowed the queue are still received/ transmitted, but
+> am unable to do better than the attached (untested) patch.
+
+I have pushed the following patch, it's based on yours (i have however
+respected your credits).
+
+http://git.netfilter.org/cgi-bin/gitweb.cgi?p=libnetfilter_queue.git;a=commit;h=a10a4d9291181a142ff85b0db8f2907cd05b978f
+
+Mistick Levi sent a similar patch in the same timeline, btw.
