@@ -1,28 +1,34 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: port based routing - help with tcpdump
-Date: Mon, 08 Nov 2010 11:14:32 +0100
-Message-ID: <4CD7CD88.6010100@plouf.fr.eu.org>
-References: <AANLkTik6E8KDgN8S+J952ULLpzUjy2yAY9oNA1jv+ZEJ@mail.gmail.com>
+From: J Webster <jw.jwebster@googlemail.com>
+Subject: Re: Delivery Status Notification (Failure)
+Date: Mon, 08 Nov 2010 11:52:43 +0100
+Message-ID: <4CD7D67B.9080206@googlemail.com>
+References: <001636833518b9ca2e049488651a@google.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTik6E8KDgN8S+J952ULLpzUjy2yAY9oNA1jv+ZEJ@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id:date:from
+         :user-agent:mime-version:to:subject:references:in-reply-to
+         :content-type:content-transfer-encoding;
+        bh=YE1VNGtFk23WaBYfP2owAHx/exxNPJioKqBuwqsg/fw=;
+        b=L3kvchI8CpVWlwxrPpQVqTZVvZvdBh/O0/FKBjoBsdUw6uGBiA+d5qUiicOrxCtpBa
+         7HC8MAoqUKlsPKvwUn6dliODNeWsc6y09/0EQZLTR/HVKNkfnwMxTbGZusfAPzajJpJn
+         yYddHBrGR2r/FEptE8HSYmrtmkJJ5g9YGKNLI=
+In-Reply-To: <001636833518b9ca2e049488651a@google.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Ilo Lorusso <sneak147@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hello,
+I have a 100Mbps data centre connection.
+I would like to limit users bandwidth to my server but only when it
+becomes clogged.
+It seems users report problems when the bandwidth gets above 7000kbits
+per sec
+I think this is caused by useres downloading many files rather than
+streaming video.
+I think 2000kbits per sec should be enough for streaming video so is
+there a way to throttle this and share it equally between users anytime
+the overall connection gets above 70000?
 
-Ilo Lorusso a =E9crit :
->=20
-> I implement port based routing using a howto I found from a website
-> (http://www.sparksupport.com/blog/tag/port-based-routing),
-> which I can see is working based on various tcpdumps from
-> various boxes. The problem is the port I route out to the alternate
-> interface does not connect even though I do see the traffic comeback
-> so I know the routing is working fine.
-
-Any filtering rules in INPUT which may drop the replies ?
-Is rp_filter disabled the alternate interface ?
