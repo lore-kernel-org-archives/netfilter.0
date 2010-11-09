@@ -1,46 +1,64 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: port based routing - help with tcpdump
-Date: Tue, 09 Nov 2010 20:43:09 +0100
-Message-ID: <4CD9A44D.80504@plouf.fr.eu.org>
-References: <AANLkTik6E8KDgN8S+J952ULLpzUjy2yAY9oNA1jv+ZEJ@mail.gmail.com>	<4CD7CD88.6010100@plouf.fr.eu.org>	<AANLkTimeCfv9i13L9PFpOxTRbzG4c4Qpa7XO5quK2CEY@mail.gmail.com>	<AANLkTikRY6mYY5fAAN4Ey-BaOQSOiXtx-StUejyQGG+x@mail.gmail.com>	<4CD97137.5000706@plouf.fr.eu.org> <AANLkTikTJqQj7ARSbr4XrK6oUwQiZDQmQjBUuSR6u3yG@mail.gmail.com>
+From: Angel Inkov <bl8cki@gmail.com>
+Subject: Re: How to transfer a IP packet based on ebtables and iptables?
+Date: Wed, 10 Nov 2010 00:30:30 +0200
+Message-ID: <AANLkTinCVMXOeWft0qT17khOaPaa3Q06AUSCXzKnO2T6@mail.gmail.com>
+References: <B6443739-BE5C-44B0-916D-69C4764DBDF6@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTikTJqQj7ARSbr4XrK6oUwQiZDQmQjBUuSR6u3yG@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:in-reply-to
+         :references:date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=AlHqJqLMqJz0j5jSrTOxvo1xc4GoVU16AeQHK4XJq9A=;
+        b=tlDteK4eT+hMQzSxnUmC1IqQJmKX5epMSf+Y2w65Jvz6NwepEKuyDIALkpx+hId5QT
+         k5hd0gLPGXEfxmsdFVmkEuNRnH4h4Bxk5BQyYQqawXNq5UKjnZ62TgXQTCV4dH+MCY3p
+         KqTN+tkeHlXWFXsuHuscGQEy0kldVLVXeY85A=
+In-Reply-To: <B6443739-BE5C-44B0-916D-69C4764DBDF6@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Ilo Lorusso <sneak147@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: Sumin Xia <xiasumin1984@gmail.com>, netfilter@vger.kernel.org
 
-Ilo Lorusso a =E9crit :
-> Yes I can see the traffic coming back when I do a tcpdump...
->=20
-> you can see  172.69.128.107 access 74.125.79.104.http and then
-> 74.125.79.104.http  talks back to 172.69.128.107 ,
-> now this is encapsulated in a GRE tunnel as my alt interface is a GRE
-> tunnel but it works for the local box.. as per my previous post a
-> couple days ago...
->=20
-> below is the sample of the tcpdump,
->=20
-> 18:26:21.722567 IP 172.69.128.98 > 57.24.98.42: GREv0, length 52: IP
-> 172.69.128.107.elatelink > 74.125.79.104.http: Flags [S], seq
-> 224859509, win 65535, options [mss 1460,nop,nop,sackOK], length 0
+it depends, for example if you have ip_forward enabled it will forward
+the packet for you, using your default route for example in case dest
+ip is not in the same subnet.
 
-> 18:26:21.982269 IP 57.24.98.42 > 172.69.128.98: GREv0, length 52: IP
-> 74.125.79.104.http > 172.69.128.107.elatelink: Flags [S.], seq
-> 192453115, ack 224859510, win 5720, options [mss 1380,nop,nop,sackOK]=
-,
-> length 0
-
-> 18:26:21.982316 IP 172.69.128.98 > 57.24.98.42: GREv0, length 52: IP
-> 74.125.79.104.http > 172.69.128.107.elatelink: Flags [S.], seq
-> 192453115, ack 224859510, win 5720, options [mss 1380,nop,nop,sackOK]=
-,
-> length 0
-
-This is the same SYN/ACK segment that was just received, encapsulated
-and sent again and received again and sent again...
-Looks like you have a loop. Check your routing rules.
-
+On 9 November 2010 20:56, Sumin Xia <xiasumin1984@gmail.com> wrote:
+> Hi every one,
+>
+> According to my understanding, if I implement entables on my Linux sy=
+stem, a
+> frame should be passed through ebtables modules. Then, if ebtables mo=
+dules
+> find the destination mac address of the frame is the local mac addres=
+s, it
+> will transfer the frame to layer-3, that is iptables, right?
+>
+> Now I want to do a test, which modifies the destination mac address o=
+f a
+> frame before sending it. Therefore, the frame will be forwarded to an=
+other
+> destination instead of the real destination, while its destination ip
+> address is still the real destination ip address. In this case, when =
+the
+> frame arrive at pseudo destination machine, will it be transfered to =
+lay-3
+> of the system? If it is transfered to lqy-3 of the system, the system=
+ will
+> find the destination ip address is not local ip address. What will ha=
+ppen
+> next? Drop the packet? or send an arp request to find the real destin=
+ation
+> mac address and forward it?
+>
+> Thanks,
+>
+> Sumin
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
