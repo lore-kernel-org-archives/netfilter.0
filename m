@@ -1,30 +1,18 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: IP options on netfilter
-Date: Tue, 9 Nov 2010 12:24:08 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1011091219210.12991@obet.zrqbmnf.qr>
-References: <13273927.56365.1289301117522.JavaMail.www@wwinf1d08>
+From: Ernesto Ongaro <ernesto@etszone.com>
+Subject: IP options on netfilter
+Date: Tue, 9 Nov 2010 05:40:56 -0600
+Message-ID: <713653047.590556.1289302862462.JavaMail.rim@bda767.bisx.prod.on.blackberry>
+Reply-To: Ernesto Ongaro <ernesto@etszone.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <13273927.56365.1289301117522.JavaMail.www@wwinf1d08>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Fabien Danos <fabien.danos@wanadoo.fr>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Tuesday 2010-11-09 12:11, Fabien Danos wrote:
-
->Hello,
->I have a question about netfilter.
->What is the policy of netfilter on Ip options?
->It's blocked by default or it's accepted?
->
->For example, on packet filter on BSD, it's blocked by default.
->If we want allowed it, we must use the option allow-opts.
->
->What is the policy of Netfilter?
-
-Netfilter modules don't care about options; and as far as Xtables is 
-concerned, it will just execute your ruleset, so you have to put any 
-accept and/or drop in there.
+unsubscribe netfilter
+Ernesto Ongaro
+ETSZONE/Operations
+713.559.1406
