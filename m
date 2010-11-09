@@ -1,77 +1,42 @@
-From: Marcelo Sobral <msobral@gmail.com>
-Subject: Status of ebtables plus MPLS ?
-Date: Tue, 9 Nov 2010 16:38:30 -0200
-Message-ID: <AANLkTik7jDk3QhHz-6Z7fs_bRHPFdfhup8=3A9_Nqrk1@mail.gmail.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: Sumin Xia <xiasumin1984@gmail.com>
+Subject: How to transfer a IP packet based on ebtables and iptables?
+Date: Tue, 9 Nov 2010 13:56:36 -0500
+Message-ID: <B6443739-BE5C-44B0-916D-69C4764DBDF6@gmail.com>
+Mime-Version: 1.0 (Apple Message framework v936)
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:date:message-id
-         :subject:from:to:content-type:content-transfer-encoding;
-        bh=BpbPD7VrOx4vKiSWSzO7bzCOtlOogZOlUxlzBmMr4y0=;
-        b=xPIouU824vGlluRRLQSU39JDVVr3d8RQ9AE19YxkhXdoJSn9gfGykuXJAstl3x71BL
-         JUZ3pwGixPcIfIWK3Qtfe6JBLaztjxhkgyxaAF1Up4tlUFHmdIQiiHuJy7S02dmGDtPN
-         FYY9Crvr6AEKugNYuvDDZtPdeKgm9TDWXMD18=
+        h=domainkey-signature:received:received:message-id:from:to
+         :content-type:content-transfer-encoding:mime-version:subject:date
+         :x-mailer;
+        bh=c2jif0ROzoHvFm7U1T/9aRjNuta4IK9+Ld/iJ0hw+BI=;
+        b=yG+1LaRR6JWvGha1P6oaqtspShAz7cb6Tmwb7bLdriAUGU/HtSXZZaz9R482jwunou
+         7n94RU+G/x2/TDv8bcHIjiWoODTOzbaDfk4TsMvvSWdCyZ2S1WHNQqxIqqzSd8ekrsE1
+         ZCVWi1Z+RC9lpcoEoDgDQUFC6NlmBxOR55O2U=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
 To: netfilter@vger.kernel.org
 
-   Hi, I've been trying to run a small example using ebtables and MPLS
-(that available in MPLS-Sourceforge -
-http://sourceforge.net/apps/mediawiki/mpls-linux/index.php?title=3DExam=
-ples).
-But everytime I setup my routers, they freeze. The initialization
-script is:
+Hi every one,
 
-brctl addbr br0
-brctl addif br0 eth0
-ip link set eth1 up
-ip link set eth0 up
-ip link set br0 up
+According to my understanding, if I implement entables on my Linux  
+system, a frame should be passed through ebtables modules. Then, if  
+ebtables modules find the destination mac address of the frame is the  
+local mac address, it will transfer the frame to layer-3, that is  
+iptables, right?
 
-mpls nhlfe add key 0 instructions push gen 1000 nexthop eth1 ipv4 172.1=
-6.0.3
-# (returns key 0x2)
+Now I want to do a test, which modifies the destination mac address of  
+a frame before sending it. Therefore, the frame will be forwarded to  
+another destination instead of the real destination, while its  
+destination ip address is still the real destination ip address. In  
+this case, when the frame arrive at pseudo destination machine, will  
+it be transfered to lay-3 of the system? If it is transfered to lqy-3  
+of the system, the system will find the destination ip address is not  
+local ip address. What will happen next? Drop the packet? or send an  
+arp request to find the real destination mac address and forward it?
 
-# FEC
-ebtables -t nat -A PREROUTING -i eth0 -j mpls --nhlfe 0x2
+Thanks,
 
-   Soon after the kernel freezes, these messages are shown:
-
-KERNEL: assertion (sk_unhashed(sk)) failed at net/unix/af_unix.c (356)
-KERNEL: assertion (!sk->sk_socket) failed at net/unix/af_unix.c (357)
-KERNEL: assertion (!atomic_read(&sk->sk_wmem_alloc)) failed at net/unix=
-/af_unix$
-KERNEL: assertion (!atomic_read(&sk->sk_wmem_alloc)) failed at net/unix=
-/af_unix$
-KERNEL: assertion (sk_unhashed(sk)) failed at net/unix/af_unix.c (356)
-KERNEL: assertion (!sk->sk_socket) failed at net/unix/af_unix.c (357)
-KERNEL: assertion (!atomic_read(&sk->sk_wmem_alloc)) failed at net/unix=
-/af_unix$
-KERNEL: assertion (sk_unhashed(sk)) failed at net/unix/af_unix.c (356)
-KERNEL: assertion (!sk->sk_socket) failed at net/unix/af_unix.c (357)
-KERNEL: assertion (!atomic_read(&sk->sk_wmem_alloc)) failed at net/unix=
-/af_unix$
-KERNEL: assertion (!atomic_read(&sk->sk_wmem_alloc)) failed at net/unix=
-/af_unix$
-KERNEL: assertion (!atomic_read(&sk->sk_wmem_alloc)) failed at net/unix=
-/af_unix$
-KERNEL: assertion (!atomic_read(&sk->sk_wmem_alloc)) failed at net/unix=
-/af_unix$
-KERNEL: assertion (sk_unhashed(sk)) failed at net/unix/af_unix.c (356)
-KERNEL: assertion (!sk->sk_socket) failed at net/unix/af_unix.c (357)
-
-   I use kernel 2.6.25 with MPLS patches.
-
-   Is there any issue with ebtables and MPLS ?
-
-   Thanks in advance !
-
---=20
-=C2=A0 -----------------------------
-=C2=A0 Marcelo Maia Sobral
-=C2=A0 Florian=C3=B3polis - SC - Brasil
-=C2=A0 MSN ID: msobral@gmail.com
-=C2=A0 -----------------------------
+Sumin
