@@ -1,42 +1,48 @@
-From: Michele Petrazzo - Unipex <michele.petrazzo@unipex.it>
-Subject: Re: limit bandwidth equally
-Date: Thu, 11 Nov 2010 19:42:23 +0100
-Message-ID: <4CDC390F.6060508@unipex.it>
-References: <4CD7D742.2040702@googlemail.com> <4CD926C6.8070604@unipex.it> <4CDBDC82.6020006@googlemail.com>
+From: Eric Paris <eparis@redhat.com>
+Subject: [PATCH] netfilter: NF_HOOK_COND has wrong conditional
+Date: Thu, 11 Nov 2010 14:09:54 -0500
+Message-ID: <20101111190954.29005.61686.stgit@paris.rdu.redhat.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4CDBDC82.6020006@googlemail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: J Webster <jw.jwebster@googlemail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+Cc: kaber@trash.net, linux-kernel@vger.kernel.org
 
-J Webster ha scritto:
-> I am using the following script for tc/htb.
-> My server has 2 VPN services and a proxy server.
-> The proxy server already limits using delay pools but I need to add a
-> 1Mbps limit for every IP connecting to the VPN.
-> The VPN is on tun1 and tun 0.
-> Does the tc script go in the same folder as iptables.../etc/sysconfig?
->
+The NF_HOOK_COND returns 0 when it shouldn't due to what I believe to be an
+error in the code as the order of operations is not what was intended.  C will
+evalutate == before =.  Which means ret is getting set to the bool result,
+rather than the return value of the function call.  The code says
 
-No, it's not need.
-This script are a separate "program".
+if (ret = function() == 1)
+when it meant to say:
+if ((ret = function()) == 1)
 
-> # The network interface we're planning on limiting bandwidth.
-> IF=eth0 # Interface
-> # Download limit (in mega bits)
-> DNLD=1mbit # DOWNLOAD Limit
-> # Upload limit (in mega bits)
-> UPLD=1mbit # UPLOAD Limit
+Normally the compiler would warn, but it doesn't notice it because its
+a actually complex conditional and so the wrong code is wrapped in an explict
+set of () [exactly what the compiler wants you to do if this was intentional].
+Fixing this means that errors when netfilter denies a packet get propagated
+back up the stack rather than lost.
 
-> $TC qdisc add dev $IF root handle 1: htb default 30
-> $TC class add dev $IF parent 1: classid 1:1 htb rate $DNLD
-> $TC class add dev $IF parent 1: classid 1:2 htb rate $UPLD
+Signed-off-by: Eric Paris <eparis@redhat.com>
+---
 
-This is the first error that I found. With htb you cannot limit upload 
-and download speed on the same interface. Are you looking for ifb?
+ include/linux/netfilter.h |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-Michele
+diff --git a/include/linux/netfilter.h b/include/linux/netfilter.h
+index 89341c3..03317c8 100644
+--- a/include/linux/netfilter.h
++++ b/include/linux/netfilter.h
+@@ -215,7 +215,7 @@ NF_HOOK_COND(uint8_t pf, unsigned int hook, struct sk_buff *skb,
+ 	int ret;
+ 
+ 	if (!cond ||
+-	    (ret = nf_hook_thresh(pf, hook, skb, in, out, okfn, INT_MIN) == 1))
++	    ((ret = nf_hook_thresh(pf, hook, skb, in, out, okfn, INT_MIN)) == 1))
+ 		ret = okfn(skb);
+ 	return ret;
+ }
+
