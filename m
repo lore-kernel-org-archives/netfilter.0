@@ -1,61 +1,70 @@
-From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: pppd or netfilter error?
-Date: Fri, 12 Nov 2010 12:46:53 +0100
-Message-ID: <4CDD292D.1000305@freemail.hu>
+From: Ben Pfountz <netprince@vt.edu>
+Subject: SFQ flow classifier, works for imq0, not for eth1
+Date: Fri, 12 Nov 2010 09:57:34 -0500
+Message-ID: <4CDD55DE.50003@vt.edu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter list <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-  Hi all!
+Hey Everyone,
 
-The following error is related to the iptables subsystem?
+Any direction with this problem would be greatly appreciated.  For some 
+reason when I add a SFQ flow classifier using tc filter, the sfq qdisc 
+stops forwarding packets.  (strangely though, a few packets are 
+forwarded before things stop working)
 
-Thanx
+I am working with an openwrt based router, trying to add SFQ flow 
+classifier support to openwrt's qos-scripts.  I have simplified the TC 
+commands down to these to try to find the problem.
 
-Swifty
+tc qdisc add dev eth1 root handle 1: htb default 7
+tc class add dev eth1 parent 1: classid 1:7 htb rate 500mbit ceil 
+1000mbit prio 3
+tc qdisc add dev eth1 parent 1:7 handle 10: sfq perturb 10
+tc filter add dev eth1 protocol ip parent 10: handle 2 flow hash keys 
+src,dst divisor 1024
 
-fw01 kernel: Call Trace:
-fw01 kernel: Code: b4 26 00 00 00 00 53 89 c2 9c 59 fa 8b 00 39 c2 74 24 
-85 c0 74 1a ff 4a 08 8b 18 8b 50 04 c7 00 00 00 00 00 c7 40 04 00 00 00 
-00 <89> 53 04 89 1a 51 9d 5b c3 66 90 31 c0 eb f6 8d b6 00 00 00 00
-fw01 kernel: Process pppd (pid: 21943, ti=f6595000 task=f715ebe0 
-task.ti=f6595000)
-fw01 kernel: EIP: [<c032dc65>]  SS:ESP 0068:f6595e88
-fw01 kernel: last sysfs file: /sys/module/ip_tables/initstate
-fw01 kernel: CR2: 0000000000000004
-fw01 kernel: Oops: 0002 [#2]
-fw01 kernel: Stack:
 
-fw01:/fw# cat /proc/cpuinfo
-processor    : 0
-vendor_id    : AuthenticAMD
-cpu family    : 6
-model        : 10
-model name    : AMD Athlon(tm) XP 3200+
-stepping    : 0
-cpu MHz        : 2204.965
-cache size    : 512 KB
-fdiv_bug    : no
-hlt_bug        : no
-f00f_bug    : no
-coma_bug    : no
-fpu        : yes
-fpu_exception    : yes
-cpuid level    : 1
-wp        : yes
-flags        : fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca 
-cmov pat pse36 mmx fxsr sse syscall mmxext 3dnowext 3dnow
-bogomips    : 4409.93
-clflush size    : 32
-cache_alignment    : 32
-address sizes    : 34 bits physical, 32 bits virtual
-power management: ts
 
-fw01:/fw# uname -a
-Linux fw01 2.6.36 #1 Wed Oct 27 20:18:18 CEST 2010 i686 GNU/Linux
+Without the last line, packets flow normally as shown by
 
+# tc -s -d qdisc show dev eth1
+qdisc htb 1: root refcnt 2 r2q 10 default 7 direct_packets_stat 0 ver 3.17
+  Sent 856 bytes 11 pkt (dropped 0, overlimits 0 requeues 0)
+  rate 0bit 0pps backlog 0b 0p requeues 0
+qdisc sfq 10: parent 1:7 limit 127p quantum 1514b flows 127/1024 perturb 
+10sec
+  Sent 856 bytes 11 pkt (dropped 0, overlimits 0 requeues 0)
+  rate 0bit 0pps backlog 0b 0p requeues 0
+
+
+With the last line, I see this
+
+tc -s -d qdisc show dev eth1
+qdisc htb 1: root refcnt 2 r2q 10 default 7 direct_packets_stat 0 ver 3.17
+  Sent 5019 bytes 53 pkt (dropped 40, overlimits 0 requeues 0)
+  rate 0bit 0pps backlog 0b 0p requeues 0
+qdisc sfq 10: parent 1:7 limit 127p quantum 1514b flows 127/1024 perturb 
+10sec
+  Sent 5019 bytes 53 pkt (dropped 40, overlimits 0 requeues 0)
+  rate 0bit 0pps backlog 0b 0p requeues 0
+
+
+I have tried every combination of hash keys and divisor I can think of, 
+but the problem remains.
+
+The system is linux 2.6.32.25, iproute 2.6.35, and cls_flow is loaded.
+
+Does anyone have any suggestions?
+
+What is the TC command to view the SFQ internal queues as described here?
+http://www.mail-archive.com/netdev@vger.kernel.org/msg60637.html
+
+Thanks!
+
+Ben
 
