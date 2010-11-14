@@ -1,33 +1,38 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
-Subject: Re: NAT-PMP connections not tracked with nf_conntrack
-Date: Sun, 14 Nov 2010 10:41:30 +0000
-Message-ID: <4CDFBCDA.8050006@googlemail.com>
-References: <4CB5C1C1.8060809@googlemail.com> <alpine.LNX.2.01.1010161750050.13972@obet.zrqbmnf.qr> <4CB9D437.2030902@googlemail.com> <alpine.LNX.2.01.1010161948580.29809@obet.zrqbmnf.qr> <4CB9E918.2040707@googlemail.com>
+From: Kfir Lavi <lavi.kfir@gmail.com>
+Subject: Testing bridge setup with packet generator and qemu
+Date: Sun, 14 Nov 2010 19:30:25 +0200
+Message-ID: <AANLkTi=uyEveZf7+XLo0+mV48CFjsuzrTmkTi5Xbn_Dr@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id
-         :disposition-notification-to:date:from:user-agent:mime-version:to:cc
-         :subject:references:in-reply-to:content-type
-         :content-transfer-encoding;
-        bh=ZG/oEdakaoTzV7kxbgsCLevp07wSym4eCN5Oz1E9bCI=;
-        b=SbzXBrcPIqA/9XSrjfBJh3Rr/uA0B45P9Nhg6sZkM562COqlezznlzBYCbBSPJnJat
-         w9ZOyCr5eNw+Fw2V3bUgcVB0R+rE6THi1Pfjda/vWiGzKj+3cxixuVmlIs/ej7QPn4gp
-         xIoOhfK/kuZZFMuJUzDaZSanCYln+F+QWtTG8=
-In-Reply-To: <4CB9E918.2040707@googlemail.com>
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=C+DA+657T5guUnPZ0NXSbvAgMrHxQHNAPKh2VY6rmW8=;
+        b=X2xsd/NeYmWPmITxoaKnxMHbaUjAIo/QtmXp/ycWF1y7gAtkPS185wwV1B3GceXAu6
+         jw3p2sJY5JmnYGTDO5e5S36O2NgASu2VOqpj+l9t2xIiB0APYbH2Ap9AVpX3CeEz9QES
+         wCZUvcBMVbcsu4zT9T6i9MktPrJNiDyWDxjN4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, bridge@vger.kernel.org
 
+Hi,
+I would like to test a simple bridge setup.
+br0 have eth0 and eth1
+I want to create a fake traffic and see it crossing the bridge.
+Lets say i'm generating arp packet with nemesis:
+nemesis arp -v -d eth0 -S $SRC -D $DST -h $SRC_MAC -m $DST_MAC
+nemesis arp -v -r -d eth0 -S $DST -D $SRC -h $DST_MAC -m $SRC_MAC
 
->
->> ip6tables-save, or its respective v4 part.
->>   
-> iptables-save | grep NOTRACK returns nothing, so I assume that I am 
-> not using this.
-Any ideas? The connection is definitely not tracked and could be seen 
-with netstat from local to the remote point on the VPN.
+This shows on eth0 tcpdump but not on eth1 tcpdump
+Why is that?
+
+I have a gentoo rootfs.
+qemu nics are define like this:
+  -net nic,model=rtl8139,vlan=0 -net user,vlan=0 \
+  -net nic,model=rtl8139,vlan=1
+
+Regards,
+Kfir
