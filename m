@@ -1,70 +1,34 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: SFQ flow classifier, works for imq0, not for eth1
-Date: Mon, 15 Nov 2010 17:21:56 +0100
-Message-ID: <4CE15E24.9020409@trash.net>
-References: <4CDD55DE.50003@vt.edu>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: BROUTING VLANS
+Date: Mon, 15 Nov 2010 10:43:27 -0600
+Message-ID: <4CE1632F.1080104@riverviewtech.net>
+References: <0619127E-C439-4A2D-A720-30C5B1FD25FA@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4CDD55DE.50003@vt.edu>
+In-Reply-To: <0619127E-C439-4A2D-A720-30C5B1FD25FA@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Ben Pfountz <netprince@vt.edu>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On 12.11.2010 15:57, Ben Pfountz wrote:
-> Hey Everyone,
-> 
-> Any direction with this problem would be greatly appreciated.  For some
-> reason when I add a SFQ flow classifier using tc filter, the sfq qdisc
-> stops forwarding packets.  (strangely though, a few packets are
-> forwarded before things stop working)
-> 
-> I am working with an openwrt based router, trying to add SFQ flow
-> classifier support to openwrt's qos-scripts.  I have simplified the TC
-> commands down to these to try to find the problem.
-> 
-> tc qdisc add dev eth1 root handle 1: htb default 7
-> tc class add dev eth1 parent 1: classid 1:7 htb rate 500mbit ceil
-> 1000mbit prio 3
-> tc qdisc add dev eth1 parent 1:7 handle 10: sfq perturb 10
-> tc filter add dev eth1 protocol ip parent 10: handle 2 flow hash keys
-> src,dst divisor 1024
-> 
-> 
-> 
-> Without the last line, packets flow normally as shown by
-> 
-> # tc -s -d qdisc show dev eth1
-> qdisc htb 1: root refcnt 2 r2q 10 default 7 direct_packets_stat 0 ver 3.17
->  Sent 856 bytes 11 pkt (dropped 0, overlimits 0 requeues 0)
->  rate 0bit 0pps backlog 0b 0p requeues 0
-> qdisc sfq 10: parent 1:7 limit 127p quantum 1514b flows 127/1024 perturb
-> 10sec
->  Sent 856 bytes 11 pkt (dropped 0, overlimits 0 requeues 0)
->  rate 0bit 0pps backlog 0b 0p requeues 0
-> 
-> 
-> With the last line, I see this
-> 
-> tc -s -d qdisc show dev eth1
-> qdisc htb 1: root refcnt 2 r2q 10 default 7 direct_packets_stat 0 ver 3.17
->  Sent 5019 bytes 53 pkt (dropped 40, overlimits 0 requeues 0)
->  rate 0bit 0pps backlog 0b 0p requeues 0
-> qdisc sfq 10: parent 1:7 limit 127p quantum 1514b flows 127/1024 perturb
-> 10sec
->  Sent 5019 bytes 53 pkt (dropped 40, overlimits 0 requeues 0)
->  rate 0bit 0pps backlog 0b 0p requeues 0
-> 
-> 
-> I have tried every combination of hash keys and divisor I can think of,
-> but the problem remains.
-> 
-> The system is linux 2.6.32.25, iproute 2.6.35, and cls_flow is loaded.
-> 
-> Does anyone have any suggestions?
+On 11/15/10 05:02, Asher Awelan wrote:
+> QUESTION:
+> Is there a way to broute the vlans to the eth1 interface and not have 
+> to create every interface and register every vlan... or perhaps strip 
+> the vlan id (after logging of course)...
 
-IMQ hooks into the netfilter hooks and thus receives IP packets only.
-On eth0 you have to take care of classifying ARP packets as well,
-otherwise packet flow will stop eventually.
+It /might/ be possible to strip the VLAN tags and send the traffic on 
+it's way with out the need for all the vlan interfaces.  But, I don't 
+know that it will be possible (at least as easily) to re-tag the 
+returning traffic.
+
+Something you might consider doing is moving the (un)tagging / trunking 
+in to a user space application that can dynamically add and remove the 
+VLAN tags with out needing kernel support or vlan interfaces.  -  I'm 
+just typing raw theories out my (you know what) and would have to give 
+this quite a bit more thought.
+
+
+
+Grant. . . .
