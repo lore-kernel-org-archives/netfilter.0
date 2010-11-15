@@ -1,57 +1,67 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [PATCH/RFC] netfilter: nf_conntrack_sip: Handle quirky Cisco
- phones
-Date: Mon, 15 Nov 2010 17:58:01 +0100
-Message-ID: <4CE16699.1050604@trash.net>
-References: <28d666269c390965f1a4edca42f93c12@localhost>	<1289725175.2743.65.camel@edumazet-laptop>	<AANLkTik4PLga8mX73c8iONPeOtpDiuDhfu3xiPmF07jC@mail.gmail.com>	<1289764664.2743.110.camel@edumazet-laptop>	<AANLkTi==8nwn3g5t1uw=CP1K0vegUE2hAdDxOq-fkVRW@mail.gmail.com>	<4CE1084A.3070100@trash.net> <AANLkTinELGUzDJ8TTTfA8sfiYiLJV-2ZPujwbuQWTPWd@mail.gmail.com>
+From: Oskar Berggren <oskar.berggren@gmail.com>
+Subject: Re: BROUTING VLANS
+Date: Mon, 15 Nov 2010 18:12:56 +0100
+Message-ID: <AANLkTi=Dy1Yg1YMpd3YBGN_vipmBCtH7OK-8-_j+SstK@mail.gmail.com>
+References: <0619127E-C439-4A2D-A720-30C5B1FD25FA@gmail.com> <4CE1632F.1080104@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <AANLkTinELGUzDJ8TTTfA8sfiYiLJV-2ZPujwbuQWTPWd@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:received:mime-version:received:in-reply-to
+         :references:from:date:message-id:subject:to:content-type
+         :content-transfer-encoding;
+        bh=EcPcmtJRQxGwv+FUcjObUM8jDuls6M+mJ2e0W3dhCoI=;
+        b=cRNAOedIq3Ae5ukJohTwuHW/8mT81l0Nq/Wv25S30WpWqfazzR7xnK40GAyYcxZXS2
+         SorBASleZWjHnNWKH/QRZqhoxS+ThEdZs5Zb3AxGV3+eDMqEbpC3zmZaakBQ1xL2apio
+         uMls89WcXpAnEWsGmlFLtEZDEbak452NQXsBQ=
+In-Reply-To: <4CE1632F.1080104@riverviewtech.net>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Kevin Cernekee <cernekee@gmail.com>
-Cc: Eric Dumazet <eric.dumazet@gmail.com>, "David S. Miller" <davem@davemloft.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, "Pekka Savola (ipv6)" <pekkas@netcore.fi>, James Morris <jmorris@namei.org>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On 15.11.2010 17:46, Kevin Cernekee wrote:
-> On Mon, Nov 15, 2010 at 2:15 AM, Patrick McHardy <kaber@trash.net> wrote:
->> The problem in doing this is that further packets from port 49xxx
->> wouldn't be recognized as belonging to the same connection.
-> 
-> OK, makes sense.
-> 
->> The same problem exists with your current patch, packets from port
->> 5060 to the same destination won't be recognized as belonging to the
->> connection that sent the REGISTER and thus won't be able to modify the
->> timeout or unregister.
+I'm not sure I realise what you consider to be a problem. Anyway, FWIW
+we have several linux routers each with several hundred
+vlan-interfaces, I think about 600 at most currently. We are doing ip
+routing, but not bridging, for these. Not seeing any problems.
+
+/Oskar
+
+
+2010/11/15 Grant Taylor <gtaylor@riverviewtech.net>:
+> On 11/15/10 05:02, Asher Awelan wrote:
 >>
->> Basically we would need three-legged connections to handle this
->> situation correctly.
-> 
-> Just to clarify: the actual source port on a given device will be
-> EITHER a high-numbered port (Cisco) or 5060 (others).  I have not come
-> across any devices that send from a "mix" of source ports, e.g. 49xxx
-> for REGISTER and then 5060 for INVITE.
-> 
->>From what I have seen, subsequent SIP requests from the Cisco phone
-> are indeed getting associated with the original connection.  My phone
-> is logging into two different SIP accounts, and each account seems to
-> use its own unique UDP source port for all control traffic (both
-> expecting replies on 5060).
-
-Could you provide a binary tcpdump (-w file -s0) of registration
-and a subsequent call please?
-
-> If Netfilter adds support for three-legged connections, will the third
-> leg show up in the tuplehash so I don't have to track it in the "help"
-> structure?
-
-Yes, basically by default all connections would only have a single
-tuplehash. The lookup would look up the tuple based on the packet
-and, if not found, reverse it and retry the lookup. When the tuples are
-asymetric (NAT and ICMP/ICMPv6) a second one would be added in the
-ct_extend area and would be added to the hash table as usual. For the
-SIP case, we could simply add a third one in a ct_extend area.
-
-Unfortunately I wasn't able to find my old patch so far.
+>> QUESTION:
+>> Is there a way to broute the vlans to the eth1 interface and not hav=
+e to
+>> create every interface and register every vlan... or perhaps strip t=
+he vlan
+>> id (after logging of course)...
+>
+> It /might/ be possible to strip the VLAN tags and send the traffic on=
+ it's
+> way with out the need for all the vlan interfaces. =A0But, I don't kn=
+ow that
+> it will be possible (at least as easily) to re-tag the returning traf=
+fic.
+>
+> Something you might consider doing is moving the (un)tagging / trunki=
+ng in
+> to a user space application that can dynamically add and remove the V=
+LAN
+> tags with out needing kernel support or vlan interfaces. =A0- =A0I'm =
+just typing
+> raw theories out my (you know what) and would have to give this quite=
+ a bit
+> more thought.
+>
+>
+>
+> Grant. . . .
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
