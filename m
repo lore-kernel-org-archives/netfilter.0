@@ -1,67 +1,41 @@
-From: Oskar Berggren <oskar.berggren@gmail.com>
-Subject: Re: BROUTING VLANS
-Date: Mon, 15 Nov 2010 18:12:56 +0100
-Message-ID: <AANLkTi=Dy1Yg1YMpd3YBGN_vipmBCtH7OK-8-_j+SstK@mail.gmail.com>
-References: <0619127E-C439-4A2D-A720-30C5B1FD25FA@gmail.com> <4CE1632F.1080104@riverviewtech.net>
+From: Mr Dash Four <mr.dash.four@googlemail.com>
+Subject: Re: NAT-PMP connections not tracked with nf_conntrack
+Date: Mon, 15 Nov 2010 21:50:55 +0000
+Message-ID: <4CE1AB3F.2000606@googlemail.com>
+References: <4CB5C1C1.8060809@googlemail.com> <alpine.LNX.2.01.1010161750050.13972@obet.zrqbmnf.qr> <4CB9D437.2030902@googlemail.com> <alpine.LNX.2.01.1010161948580.29809@obet.zrqbmnf.qr> <4CB9E918.2040707@googlemail.com> <4CDFBCDA.8050006@googlemail.com> <alpine.LNX.2.01.1011151458001.6022@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:mime-version:received:in-reply-to
-         :references:from:date:message-id:subject:to:content-type
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id
+         :disposition-notification-to:date:from:user-agent:mime-version:to:cc
+         :subject:references:in-reply-to:content-type
          :content-transfer-encoding;
-        bh=EcPcmtJRQxGwv+FUcjObUM8jDuls6M+mJ2e0W3dhCoI=;
-        b=cRNAOedIq3Ae5ukJohTwuHW/8mT81l0Nq/Wv25S30WpWqfazzR7xnK40GAyYcxZXS2
-         SorBASleZWjHnNWKH/QRZqhoxS+ThEdZs5Zb3AxGV3+eDMqEbpC3zmZaakBQ1xL2apio
-         uMls89WcXpAnEWsGmlFLtEZDEbak452NQXsBQ=
-In-Reply-To: <4CE1632F.1080104@riverviewtech.net>
+        bh=ywyvIJE6e6Vg01MMegQ9bIu+fDMPt9w9s9CoIFk0BwM=;
+        b=BIdb66DMQsAonoBDtNHo6WJ8tGTvFxAvQYu6jeqJL16cICY9GQVb/zkx5+4oJndgd9
+         F9Vrr0WL5bwfShuNww07QQJA4HWH6TitNsghMjaE4Q6J3QAlX8Tkf2Ex3rJo6+y/eXXP
+         gEkoB9g/lCV4W03K5J78f7GyOvK5A8TmbfcAc=
+In-Reply-To: <alpine.LNX.2.01.1011151458001.6022@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
-
-I'm not sure I realise what you consider to be a problem. Anyway, FWIW
-we have several linux routers each with several hundred
-vlan-interfaces, I think about 600 at most currently. We are doing ip
-routing, but not bridging, for these. Not seeing any problems.
-
-/Oskar
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org
 
 
-2010/11/15 Grant Taylor <gtaylor@riverviewtech.net>:
-> On 11/15/10 05:02, Asher Awelan wrote:
->>
->> QUESTION:
->> Is there a way to broute the vlans to the eth1 interface and not hav=
-e to
->> create every interface and register every vlan... or perhaps strip t=
-he vlan
->> id (after logging of course)...
+>> Any ideas? The connection is definitely not tracked and could be seen with
+>> netstat from local to the remote point on the VPN.
+>>     
 >
-> It /might/ be possible to strip the VLAN tags and send the traffic on=
- it's
-> way with out the need for all the vlan interfaces. =A0But, I don't kn=
-ow that
-> it will be possible (at least as easily) to re-tag the returning traf=
-fic.
->
-> Something you might consider doing is moving the (un)tagging / trunki=
-ng in
-> to a user space application that can dynamically add and remove the V=
-LAN
-> tags with out needing kernel support or vlan interfaces. =A0- =A0I'm =
-just typing
-> raw theories out my (you know what) and would have to give this quite=
- a bit
-> more thought.
->
->
->
-> Grant. . . .
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
+> No idea. If I were to look at the system directly maybe.
+>   
+If I can help you with providing some more info I would - just let me 
+know, but the connection is definitely there and is definitely not 
+tracked. When I execute 'netstat --inet -an' I get it listed, like:
+
+udp        0      0 10.1.1.2:51602              
+10.1.1.1:5351               ESTABLISHED
+
+This is not showing with "cat /proc/net/nf_conntrack | grep 5351" or 
+"cat /proc/net/nf_conntrack | grep 51602"
