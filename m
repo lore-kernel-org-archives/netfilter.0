@@ -1,98 +1,180 @@
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: [PATCH] Reduce number of pointer dereferences in IPv6
- netfilter LOG module function dump_packet()
-Date: Mon, 15 Nov 2010 01:50:15 +0100
-Message-ID: <1289782215.2743.167.camel@edumazet-laptop>
-References: <alpine.LNX.2.00.1011142241260.1253@swampdragon.chaosbits.net>
+From: Kevin Cernekee <cernekee@gmail.com>
+Subject: [PATCH/RFC v2] netfilter: nf_conntrack_sip: Handle Cisco 7941/7945 IP phones
+Date: Sun, 14 Nov 2010 18:35:42 -0800
+Message-ID: <a8993b6634ef23f00629a669f850f212@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:received:received:subject:from:to:cc
-         :in-reply-to:references:content-type:date:message-id:mime-version
-         :x-mailer:content-transfer-encoding;
-        bh=wUsjz3gUFRXi98tOnkJbgGmf8h7sPmOI4GyKzYhvyik=;
-        b=YqE9PTepwfRDpXStyPC663xzLgXlwGnHc8rQ3FaTavYmlmUKVOKMa67/cti+UUFf3X
-         QboDL9SjrFbkFt0czPLL+w5ivZZAK/6y+Z3auoWvNlr5oXdMkKh6y12+l42WcRdyz5ZD
-         7kgGaNw7uRuCZ2TQa+5iBUfXtb3uc90kgfR9s=
-In-Reply-To: <alpine.LNX.2.00.1011142241260.1253@swampdragon.chaosbits.net>
+Content-Disposition: inline
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Jesper Juhl <jj@chaosbits.net>
-Cc: Netfilter Core Team <coreteam@netfilter.org>, Jan Rekorajski <baggins@pld.org.pl>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Eric Dumazet <eric.dumazet@gmail.com>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, "Pekka Savola (ipv6)" <pek>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 
-Le dimanche 14 novembre 2010 =C3=A0 22:47 +0100, Jesper Juhl a =C3=A9cr=
-it :
-> By adding two pointer variables to=20
-> net/ipv6/netfilter/ip6t_LOG.c::dump_packet() we can save 19 bytes of =
-=2Etext=20
-> and many pointer dereferences.
->=20
-> before:
->    text    data     bss     dec     hex filename
->    6258     600    3088    9946    26da net/ipv6/netfilter/ip6t_LOG.o
->=20
-> after:
->    text    data     bss     dec     hex filename
->    6239     600    3088    9927    26c7 net/ipv6/netfilter/ip6t_LOG.o
->=20
->=20
-> Please Cc me on replies.
->=20
->=20
-> Signed-off-by: Jesper Juhl <jj@chaosbits.net>
-> ---
->  ip6t_LOG.c |   16 ++++++++++------
->  1 file changed, 10 insertions(+), 6 deletions(-)
->=20
-> diff --git a/net/ipv6/netfilter/ip6t_LOG.c b/net/ipv6/netfilter/ip6t_=
-LOG.c
-> index 09c8889..51d10a5 100644
-> --- a/net/ipv6/netfilter/ip6t_LOG.c
-> +++ b/net/ipv6/netfilter/ip6t_LOG.c
-> @@ -46,6 +46,8 @@ static void dump_packet(struct sbuff *m,
->  	unsigned int ptr;
->  	unsigned int hdrlen =3D 0;
->  	unsigned int logflags;
-> +	struct sock *sk;
-> +	struct socket *sk_socket;
-> =20
->  	if (info->type =3D=3D NF_LOG_TYPE_LOG)
->  		logflags =3D info->u.log.logflags;
-> @@ -358,13 +360,15 @@ static void dump_packet(struct sbuff *m,
->  	}
-> =20
->  	/* Max length: 15 "UID=3D4294967295 " */
-> -	if ((logflags & IP6T_LOG_UID) && recurse && skb->sk) {
-> -		read_lock_bh(&skb->sk->sk_callback_lock);
-> -		if (skb->sk->sk_socket && skb->sk->sk_socket->file)
-> +	sk =3D skb->sk;
-> +	sk_socket =3D sk->sk_socket;
-> +	if ((logflags & IP6T_LOG_UID) && recurse && sk) {
-> +		read_lock_bh(&sk->sk_callback_lock);
-> +		if (sk_socket && sk_socket->file)
->  			sb_add(m, "UID=3D%u GID=3D%u ",
-> -				skb->sk->sk_socket->file->f_cred->fsuid,
-> -				skb->sk->sk_socket->file->f_cred->fsgid);
-> -		read_unlock_bh(&skb->sk->sk_callback_lock);
-> +				sk_socket->file->f_cred->fsuid,
-> +				sk_socket->file->f_cred->fsgid);
-> +		read_unlock_bh(&sk->sk_callback_lock);
->  	}
-> =20
->  	/* Max length: 16 "MARK=3D0xFFFFFFFF " */
->=20
->=20
->=20
+[v2 changes:
+  Extract the forced port from the Via: header (don't assume 5060)
+  Test IPs against the Via: info instead of checking User-Agent
+  Call skb_make_writable() before modifying the packet
+  Ensure that only replies are mangled
+  Change map_addr() so that To: uses the right port
+  Change ip_nat_sip_expect() so that Contact: uses the right port
+  Make the formatting more consistent with existing code]
 
-Same comment than previous patch, you add a NULL dereference.
+Most SIP devices use a source port of 5060/udp on SIP requests, so the
+response automatically comes back to port 5060:
 
+phone_ip:5060 -> proxy_ip:5060   REGISTER
+proxy_ip:5060 -> phone_ip:5060   100 Trying
 
+The newer Cisco IP phones, however, use a randomly chosen high source
+port for the SIP request but expect the response on port 5060:
 
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+phone_ip:49173 -> proxy_ip:5060  REGISTER
+proxy_ip:5060 -> phone_ip:5060   100 Trying
+
+Standard Linux NAT, with or without nf_nat_sip, will send the reply back
+to port 49173, not 5060:
+
+phone_ip:49173 -> proxy_ip:5060  REGISTER
+proxy_ip:5060 -> phone_ip:49173  100 Trying
+
+But the phone is not listening on 49173, so it will never see the reply.
+
+This patch modifies nf_*_sip to work around this quirk by extracting
+the SIP response port from the Via: header, iff the source IP in the
+packet header matches the source IP in the SIP request.
+
+Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+---
+ include/linux/netfilter/nf_conntrack_sip.h |    3 +++
+ net/ipv4/netfilter/nf_nat_sip.c            |   26 +++++++++++++++++++++++---
+ net/netfilter/nf_conntrack_sip.c           |   16 ++++++++++++++++
+ 3 files changed, 42 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/netfilter/nf_conntrack_sip.h b/include/linux/netfilter/nf_conntrack_sip.h
+index 0ce91d5..feda699 100644
+--- a/include/linux/netfilter/nf_conntrack_sip.h
++++ b/include/linux/netfilter/nf_conntrack_sip.h
+@@ -2,12 +2,15 @@
+ #define __NF_CONNTRACK_SIP_H__
+ #ifdef __KERNEL__
+ 
++#include <linux/types.h>
++
+ #define SIP_PORT	5060
+ #define SIP_TIMEOUT	3600
+ 
+ struct nf_ct_sip_master {
+ 	unsigned int	register_cseq;
+ 	unsigned int	invite_cseq;
++	__be16		forced_dport;
+ };
+ 
+ enum sip_expectation_classes {
+diff --git a/net/ipv4/netfilter/nf_nat_sip.c b/net/ipv4/netfilter/nf_nat_sip.c
+index e40cf78..e5856b0 100644
+--- a/net/ipv4/netfilter/nf_nat_sip.c
++++ b/net/ipv4/netfilter/nf_nat_sip.c
+@@ -73,6 +73,7 @@ static int map_addr(struct sk_buff *skb, unsigned int dataoff,
+ 	enum ip_conntrack_info ctinfo;
+ 	struct nf_conn *ct = nf_ct_get(skb, &ctinfo);
+ 	enum ip_conntrack_dir dir = CTINFO2DIR(ctinfo);
++	struct nf_conn_help *help = nfct_help(ct);
+ 	char buffer[sizeof("nnn.nnn.nnn.nnn:nnnnn")];
+ 	unsigned int buflen;
+ 	__be32 newaddr;
+@@ -85,7 +86,8 @@ static int map_addr(struct sk_buff *skb, unsigned int dataoff,
+ 	} else if (ct->tuplehash[dir].tuple.dst.u3.ip == addr->ip &&
+ 		   ct->tuplehash[dir].tuple.dst.u.udp.port == port) {
+ 		newaddr = ct->tuplehash[!dir].tuple.src.u3.ip;
+-		newport = ct->tuplehash[!dir].tuple.src.u.udp.port;
++		newport = help->help.ct_sip_info.forced_dport ? :
++			  ct->tuplehash[!dir].tuple.src.u.udp.port;
+ 	} else
+ 		return 1;
+ 
+@@ -121,6 +123,7 @@ static unsigned int ip_nat_sip(struct sk_buff *skb, unsigned int dataoff,
+ 	enum ip_conntrack_info ctinfo;
+ 	struct nf_conn *ct = nf_ct_get(skb, &ctinfo);
+ 	enum ip_conntrack_dir dir = CTINFO2DIR(ctinfo);
++	struct nf_conn_help *help = nfct_help(ct);
+ 	unsigned int coff, matchoff, matchlen;
+ 	enum sip_header_types hdr;
+ 	union nf_inet_addr addr;
+@@ -229,6 +232,20 @@ next:
+ 	    !map_sip_addr(skb, dataoff, dptr, datalen, SIP_HDR_TO))
+ 		return NF_DROP;
+ 
++	/* Mangle destination port for Cisco phones, then fix up checksums */
++	if (dir == IP_CT_DIR_REPLY && help->help.ct_sip_info.forced_dport) {
++		struct udphdr *uh;
++
++		if (!skb_make_writable(skb, skb->len))
++			return NF_DROP;
++
++		uh = (struct udphdr *)(skb->data + ip_hdrlen(skb));
++		uh->dest = help->help.ct_sip_info.forced_dport;
++
++		if (!nf_nat_mangle_udp_packet(skb, ct, ctinfo, 0, 0, NULL, 0))
++			return NF_DROP;
++	}
++
+ 	return NF_ACCEPT;
+ }
+ 
+@@ -280,8 +297,10 @@ static unsigned int ip_nat_sip_expect(struct sk_buff *skb, unsigned int dataoff,
+ 	enum ip_conntrack_info ctinfo;
+ 	struct nf_conn *ct = nf_ct_get(skb, &ctinfo);
+ 	enum ip_conntrack_dir dir = CTINFO2DIR(ctinfo);
++	struct nf_conn_help *help = nfct_help(ct);
+ 	__be32 newip;
+ 	u_int16_t port;
++	__be16 srcport;
+ 	char buffer[sizeof("nnn.nnn.nnn.nnn:nnnnn")];
+ 	unsigned buflen;
+ 
+@@ -294,8 +313,9 @@ static unsigned int ip_nat_sip_expect(struct sk_buff *skb, unsigned int dataoff,
+ 	/* If the signalling port matches the connection's source port in the
+ 	 * original direction, try to use the destination port in the opposite
+ 	 * direction. */
+-	if (exp->tuple.dst.u.udp.port ==
+-	    ct->tuplehash[dir].tuple.src.u.udp.port)
++	srcport = help->help.ct_sip_info.forced_dport ? :
++		  ct->tuplehash[dir].tuple.src.u.udp.port;
++	if (exp->tuple.dst.u.udp.port == srcport)
+ 		port = ntohs(ct->tuplehash[!dir].tuple.dst.u.udp.port);
+ 	else
+ 		port = ntohs(exp->tuple.dst.u.udp.port);
+diff --git a/net/netfilter/nf_conntrack_sip.c b/net/netfilter/nf_conntrack_sip.c
+index bcf47eb..ee4ad59 100644
+--- a/net/netfilter/nf_conntrack_sip.c
++++ b/net/netfilter/nf_conntrack_sip.c
+@@ -1363,8 +1363,24 @@ static int process_sip_request(struct sk_buff *skb, unsigned int dataoff,
+ {
+ 	enum ip_conntrack_info ctinfo;
+ 	struct nf_conn *ct = nf_ct_get(skb, &ctinfo);
++	struct nf_conn_help *help = nfct_help(ct);
++	enum ip_conntrack_dir dir = CTINFO2DIR(ctinfo);
+ 	unsigned int matchoff, matchlen;
+ 	unsigned int cseq, i;
++	union nf_inet_addr addr;
++	__be16 port;
++
++	/* Many Cisco IP phones use a high source port for SIP requests, but
++	 * listen for the response on port 5060.  If we are the local
++	 * router for one of these phones, save the port number from the
++	 * Via: header so that nf_nat_sip can redirect the responses to
++	 * the correct port.
++	 */
++	if (ct_sip_parse_header_uri(ct, *dptr, NULL, *datalen,
++				    SIP_HDR_VIA_UDP, NULL, &matchoff,
++				    &matchlen, &addr, &port) > 0 &&
++	    nf_inet_addr_cmp(&addr, &ct->tuplehash[dir].tuple.src.u3))
++		help->help.ct_sip_info.forced_dport = port;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(sip_handlers); i++) {
+ 		const struct sip_handler *handler;
+-- 
+1.7.0.4
+
