@@ -1,45 +1,51 @@
-From: Kevin Cernekee <cernekee@gmail.com>
-Subject: Re: [PATCH/RFC] netfilter: nf_conntrack_sip: Handle quirky Cisco phones
-Date: Sun, 14 Nov 2010 19:01:17 -0800
-Message-ID: <AANLkTi==8nwn3g5t1uw=CP1K0vegUE2hAdDxOq-fkVRW@mail.gmail.com>
-References: <28d666269c390965f1a4edca42f93c12@localhost>
-	<1289725175.2743.65.camel@edumazet-laptop>
-	<AANLkTik4PLga8mX73c8iONPeOtpDiuDhfu3xiPmF07jC@mail.gmail.com>
-	<1289764664.2743.110.camel@edumazet-laptop>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [PATCH/RFC] netfilter: nf_conntrack_sip: Handle quirky Cisco
+ phones
+Date: Mon, 15 Nov 2010 10:51:50 +0100
+Message-ID: <4CE102B6.9020707@trash.net>
+References: <28d666269c390965f1a4edca42f93c12@localhost>	 <1289725175.2743.65.camel@edumazet-laptop>	 <AANLkTik4PLga8mX73c8iONPeOtpDiuDhfu3xiPmF07jC@mail.gmail.com> <1289764664.2743.110.camel@edumazet-laptop>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type;
-        bh=DcWYGNSdJByauUislAQ7TmOQVoSFrbjAGXbksGnq7D0=;
-        b=E7jJ5XMHumzvHqfq1tTGg5Yg4Wk/0lyy32HnQJ16yr7+yuBQ6KfUchUTidk54hiWDv
-         Xwwb6ilnQqvRnrpT/efXN7/CeDQpYGdufCK3+nBnRAUMRf673MB4PeoZm7U4+NtRF5UA
-         H7FMplLrNkRjpJ0TPmcVVBHBqnB0hbn00sNiw=
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netdev-owner@vger.kernel.org>
 In-Reply-To: <1289764664.2743.110.camel@edumazet-laptop>
-Sender: netfilter-devel-owner@vger.kernel.org
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: Eric Dumazet <eric.dumazet@gmail.com>
-Cc: Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, "Pekka Savola (ipv6)" <pekkas@netcore.fi>, James Morris <jmorris@namei.org>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Cc: Kevin Cernekee <cernekee@gmail.com>, "David S. Miller" <davem@davemloft.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, "Pekka Savola (ipv6)" <pekkas@netcore.fi>, James Morris <jmorris@namei.org>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 
-On Sun, Nov 14, 2010 at 11:57 AM, Eric Dumazet <eric.dumazet@gmail.com> wrote:
-> Via: SIP/2.0/UDP 192.168.2.28:5060;branch=xxxxxxxx
->
->
-> Maybe a fix would be to use this "5060" port, instead of hardcoding it
+On 14.11.2010 20:57, Eric Dumazet wrote:
+> Le dimanche 14 novembre 2010 =E0 10:33 -0800, Kevin Cernekee a =E9cri=
+t :
+>> On Sun, Nov 14, 2010 at 12:59 AM, Eric Dumazet <eric.dumazet@gmail.c=
+om> wrote:
+>>> I would like to get an exact SIP exchange to make sure their is not
+>>> another way to handle this without adding a "Cisco" string somewher=
+e...
+>>>
+>>> Please provide a pcap or tcpdump -A
+>>
+>> Existing nf_nat_sip: phone sends unauthenticated REGISTER requests
+>> over and over again, because it is not seeing the replies sent back =
+to
+>> port 50070:
+>>
+>> 10:05:53.496479 IP 192.168.2.28.50070 > 67.215.241.250.5060: SIP, le=
+ngth: 723
+>> E`...[..@.r.....C...........REGISTER sip:losangeles.voip.ms SIP/2.0
+>> Via: SIP/2.0/
+>>
+>=20
+> Hmm, partial tcpdump... you should use" tcpdump -s 1000 -A"=20
+>=20
+> We miss the
+>=20
+> Via: SIP/2.0/UDP 192.168.2.28:5060;branch=3Dxxxxxxxx
+>=20
+>=20
+> Maybe a fix would be to use this "5060" port, instead of hardcoding i=
+t
 > like you did ?
 
-Just posted v2... appreciate the advice so far.
+I agree, using the Via header to route the response makes more sense.
 
-My new code in process_sip_request() looks for an address match + port
-mismatch between the IP source and the Via: header.  This is how it
-tries to detect whether we are talking directly to an afflicted Cisco
-phone.  If the address doesn't match, I assume the request is passing
-through a non-SIP-aware NAT router so there is no special handling.
-
-Assuming we can reliably detect the "quirky phone" condition, is there
-any way to just trick Netfilter into thinking the source port was 5060
-instead of 49xxx?  3/4ths of the patch could probably be eliminated if
-we could overwrite the port number inside tuplehash.
