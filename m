@@ -1,77 +1,66 @@
-From: Ben Pfountz <netprince@vt.edu>
-Subject: Re: SFQ flow classifier, works for imq0, not for eth1
-Date: Tue, 16 Nov 2010 10:31:08 -0500
-Message-ID: <4CE2A3BC.5070008@vt.edu>
-References: <4CDD55DE.50003@vt.edu> <4CE15E24.9020409@trash.net>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: -p udp and --ctstate NEW
+Date: Tue, 16 Nov 2010 18:15:17 -0600
+Message-ID: <20101117001517.GV23013@cardinal>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4CE15E24.9020409@trash.net>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Patrick McHardy <kaber@trash.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
+I'm experimenting with -m recent to stem SIP attacks. As part of the 
+experiment I have a --ctstate NEW -p udp --dport 5060 -j LOG rule to 
+log new SIP "connections".
 
+I'm currently under attack from 61.135.88.173 in China, and the 
+strange thing was that all those LOG lines were identical except for 
+slight fluxuations in length. All same source port, 5164. (The length 
+fluxuations make sense, I saw part of the attack as it began, and it 
+was running through a dictionary of names.)
 
-On 11/15/2010 11:21 AM, Patrick McHardy wrote:
-> On 12.11.2010 15:57, Ben Pfountz wrote:
->> Hey Everyone,
->>
->> Any direction with this problem would be greatly appreciated.  For some
->> reason when I add a SFQ flow classifier using tc filter, the sfq qdisc
->> stops forwarding packets.  (strangely though, a few packets are
->> forwarded before things stop working)
->>
->> I am working with an openwrt based router, trying to add SFQ flow
->> classifier support to openwrt's qos-scripts.  I have simplified the TC
->> commands down to these to try to find the problem.
->>
->> tc qdisc add dev eth1 root handle 1: htb default 7
->> tc class add dev eth1 parent 1: classid 1:7 htb rate 500mbit ceil
->> 1000mbit prio 3
->> tc qdisc add dev eth1 parent 1:7 handle 10: sfq perturb 10
->> tc filter add dev eth1 protocol ip parent 10: handle 2 flow hash keys
->> src,dst divisor 1024
->>
->>
->>
->> Without the last line, packets flow normally as shown by
->>
->> # tc -s -d qdisc show dev eth1
->> qdisc htb 1: root refcnt 2 r2q 10 default 7 direct_packets_stat 0 ver 3.17
->>   Sent 856 bytes 11 pkt (dropped 0, overlimits 0 requeues 0)
->>   rate 0bit 0pps backlog 0b 0p requeues 0
->> qdisc sfq 10: parent 1:7 limit 127p quantum 1514b flows 127/1024 perturb
->> 10sec
->>   Sent 856 bytes 11 pkt (dropped 0, overlimits 0 requeues 0)
->>   rate 0bit 0pps backlog 0b 0p requeues 0
->>
->>
->> With the last line, I see this
->>
->> tc -s -d qdisc show dev eth1
->> qdisc htb 1: root refcnt 2 r2q 10 default 7 direct_packets_stat 0 ver 3.17
->>   Sent 5019 bytes 53 pkt (dropped 40, overlimits 0 requeues 0)
->>   rate 0bit 0pps backlog 0b 0p requeues 0
->> qdisc sfq 10: parent 1:7 limit 127p quantum 1514b flows 127/1024 perturb
->> 10sec
->>   Sent 5019 bytes 53 pkt (dropped 40, overlimits 0 requeues 0)
->>   rate 0bit 0pps backlog 0b 0p requeues 0
->>
->>
->> I have tried every combination of hash keys and divisor I can think of,
->> but the problem remains.
->>
->> The system is linux 2.6.32.25, iproute 2.6.35, and cls_flow is loaded.
->>
->> Does anyone have any suggestions?
->
-> IMQ hooks into the netfilter hooks and thus receives IP packets only.
-> On eth0 you have to take care of classifying ARP packets as well,
-> otherwise packet flow will stop eventually.
+What I'm curious about is how those were all --ctstate NEW, why not 
+ESTABLISHED? I thought the same source.IP:sport -> dest.IP:dport 
+would be seen as ESTABLISHED.
 
-I switched protocol to all, and its working well now.
+Asterisk console snippet of the attack before blocking:
 
-Thanks!
+[Nov 16 16:39:23] NOTICE[2072]: chan_sip.c:21639 handle_request_register: Registration from '"hannibal"<sip:hannibal@192.0.2.160>' failed for '61.135.88.173' - No matching peer found
+[Nov 16 16:39:23] NOTICE[2072]: chan_sip.c:21639 handle_request_register: Registration from '"hannible"<sip:hannible@192.0.2.160>' failed for '61.135.88.173' - No matching peer found
+[Nov 16 16:39:23] NOTICE[2072]: chan_sip.c:21639 handle_request_register: Registration from '"harding"<sip:harding@192.0.2.160>' failed for '61.135.88.173' - No matching peer found
+[Nov 16 16:39:23] NOTICE[2072]: chan_sip.c:21639 handle_request_register: Registration from '"harrison"<sip:harrison@192.0.2.160>' failed for '61.135.88.173' - No matching peer found
+[Nov 16 16:39:23] NOTICE[2072]: chan_sip.c:21639 handle_request_register: Registration from '"harvard"<sip:harvard@192.0.2.160>' failed for '61.135.88.173' - No matching peer found
+[Nov 16 16:39:23] NOTICE[2072]: chan_sip.c:21639 handle_request_register: Registration from '"hathaway"<sip:hathaway@192.0.2.160>' failed for '61.135.88.173' - No matching peer found
+
+LOG rules:
+[1:362] -A BadGuy -p udp -j LOG --log-prefix "SIP attacker: "
+...
+[19:6866] -A WAN -p udp -m conntrack --ctstate NEW -m udp --dport 5060 -j LOG --log-prefix "NEW SIP: "
+
+$ dmesg | tail -20
+NEW SIP: IN=eth1 OUT= MAC=00:12:9b:aa:ae:2b:00:17:e1:2d:fa:3f:09:00 SRC=61.135.88.173 DST=192.0.2.160 LEN=362 TOS=0x00 PREC=0x00 TTL=44 ID=0 DF PROTO=UDP SPT=5164 DPT=5060 LEN=342
+NEW SIP: IN=eth1 OUT= MAC=00:12:9b:aa:ae:2b:00:17:e1:2d:fa:3f:09:00 SRC=61.135.88.173 DST=192.0.2.160 LEN=361 TOS=0x00 PREC=0x00 TTL=44 ID=0 DF PROTO=UDP SPT=5164 DPT=5060 LEN=341
+NEW SIP: IN=eth1 OUT= MAC=00:12:9b:aa:ae:2b:00:17:e1:2d:fa:3f:09:00 SRC=61.135.88.173 DST=192.0.2.160 LEN=361 TOS=0x00 PREC=0x00 TTL=44 ID=0 DF PROTO=UDP SPT=5164 DPT=5060 LEN=341
+NEW SIP: IN=eth1 OUT= MAC=00:12:9b:aa:ae:2b:00:17:e1:2d:fa:3f:09:00 SRC=61.135.88.173 DST=192.0.2.160 LEN=360 TOS=0x00 PREC=0x00 TTL=44 ID=0 DF PROTO=UDP SPT=5164 DPT=5060 LEN=340
+NEW SIP: IN=eth1 OUT= MAC=00:12:9b:aa:ae:2b:00:17:e1:2d:fa:3f:09:00 SRC=61.135.88.173 DST=192.0.2.160 LEN=362 TOS=0x00 PREC=0x00 TTL=44 ID=0 DF PROTO=UDP SPT=5164 DPT=5060 LEN=342
+NEW SIP: IN=eth1 OUT= MAC=00:12:9b:aa:ae:2b:00:17:e1:2d:fa:3f:09:00 SRC=61.135.88.173 DST=192.0.2.160 LEN=361 TOS=0x00 PREC=0x00 TTL=44 ID=0 DF PROTO=UDP SPT=5164 DPT=5060 LEN=341
+NEW SIP: IN=eth1 OUT= MAC=00:12:9b:aa:ae:2b:00:17:e1:2d:fa:3f:09:00 SRC=61.135.88.173 DST=192.0.2.160 LEN=359 TOS=0x00 PREC=0x00 TTL=44 ID=0 DF PROTO=UDP SPT=5164 DPT=5060 LEN=339
+NEW SIP: IN=eth1 OUT= MAC=00:12:9b:aa:ae:2b:00:17:e1:2d:fa:3f:09:00 SRC=61.135.88.173 DST=192.0.2.160 LEN=362 TOS=0x00 PREC=0x00 TTL=44 ID=0 DF PROTO=UDP SPT=5164 DPT=5060 LEN=342
+NEW SIP: IN=eth1 OUT= MAC=00:12:9b:aa:ae:2b:00:17:e1:2d:fa:3f:09:00 SRC=61.135.88.173 DST=192.0.2.160 LEN=361 TOS=0x00 PREC=0x00 TTL=44 ID=0 DF PROTO=UDP SPT=5164 DPT=5060 LEN=341
+NEW SIP: IN=eth1 OUT= MAC=00:12:9b:aa:ae:2b:00:17:e1:2d:fa:3f:09:00 SRC=61.135.88.173 DST=192.0.2.160 LEN=362 TOS=0x00 PREC=0x00 TTL=44 ID=0 DF PROTO=UDP SPT=5164 DPT=5060 LEN=342
+NEW SIP: IN=eth1 OUT= MAC=00:12:9b:aa:ae:2b:00:17:e1:2d:fa:3f:09:00 SRC=61.135.88.173 DST=192.0.2.160 LEN=362 TOS=0x00 PREC=0x00 TTL=44 ID=0 DF PROTO=UDP SPT=5164 DPT=5060 LEN=342
+NEW SIP: IN=eth1 OUT= MAC=00:12:9b:aa:ae:2b:00:17:e1:2d:fa:3f:09:00 SRC=61.135.88.173 DST=192.0.2.160 LEN=362 TOS=0x00 PREC=0x00 TTL=44 ID=0 DF PROTO=UDP SPT=5164 DPT=5060 LEN=342
+NEW SIP: IN=eth1 OUT= MAC=00:12:9b:aa:ae:2b:00:17:e1:2d:fa:3f:09:00 SRC=61.135.88.173 DST=192.0.2.160 LEN=361 TOS=0x00 PREC=0x00 TTL=44 ID=0 DF PROTO=UDP SPT=5164 DPT=5060 LEN=341
+NEW SIP: IN=eth1 OUT= MAC=00:12:9b:aa:ae:2b:00:17:e1:2d:fa:3f:09:00 SRC=61.135.88.173 DST=192.0.2.160 LEN=362 TOS=0x00 PREC=0x00 TTL=44 ID=0 DF PROTO=UDP SPT=5164 DPT=5060 LEN=342
+NEW SIP: IN=eth1 OUT= MAC=00:12:9b:aa:ae:2b:00:17:e1:2d:fa:3f:09:00 SRC=61.135.88.173 DST=192.0.2.160 LEN=361 TOS=0x00 PREC=0x00 TTL=44 ID=0 DF PROTO=UDP SPT=5164 DPT=5060 LEN=341
+NEW SIP: IN=eth1 OUT= MAC=00:12:9b:aa:ae:2b:00:17:e1:2d:fa:3f:09:00 SRC=61.135.88.173 DST=192.0.2.160 LEN=362 TOS=0x00 PREC=0x00 TTL=44 ID=0 DF PROTO=UDP SPT=5164 DPT=5060 LEN=342
+NEW SIP: IN=eth1 OUT= MAC=00:12:9b:aa:ae:2b:00:17:e1:2d:fa:3f:09:00 SRC=61.135.88.173 DST=192.0.2.160 LEN=362 TOS=0x00 PREC=0x00 TTL=44 ID=0 DF PROTO=UDP SPT=5164 DPT=5060 LEN=342
+NEW SIP: IN=eth1 OUT= MAC=00:12:9b:aa:ae:2b:00:17:e1:2d:fa:3f:09:00 SRC=61.135.88.173 DST=192.0.2.160 LEN=361 TOS=0x00 PREC=0x00 TTL=44 ID=0 DF PROTO=UDP SPT=5164 DPT=5060 LEN=341
+NEW SIP: IN=eth1 OUT= MAC=00:12:9b:aa:ae:2b:00:17:e1:2d:fa:3f:09:00 SRC=61.135.88.173 DST=192.0.2.160 LEN=362 TOS=0x00 PREC=0x00 TTL=44 ID=0 DF PROTO=UDP SPT=5164 DPT=5060 LEN=342
+SIP attacker: IN=eth1 OUT= MAC=00:12:9b:aa:ae:2b:00:17:e1:2d:fa:3f:09:00 SRC=61.135.88.173 DST=192.0.2.160 LEN=362 TOS=0x00 PREC=0x00 TTL=44 ID=0 DF PROTO=UDP SPT=5164 DPT=5060 LEN=342
+-- 
+    Offlist mail to this address is discarded unless
+    "/dev/rob0" or "not-spam" is in Subject: header
