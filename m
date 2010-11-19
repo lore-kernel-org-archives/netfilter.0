@@ -1,28 +1,48 @@
-From: "liu" <liu@5bamboos.com>
-Subject: which traffic scheduler can achieve SP QoS effect, using TC
-Date: Fri, 19 Nov 2010 22:42:18 +0800
-Message-ID: <201011192242182505082@5bamboos.com>
+From: =?ISO-8859-1?Q?Salih_G=F6n=FCll=FC?= <sag@open.ch>
+Subject: Global logging limit
+Date: Fri, 19 Nov 2010 16:38:19 +0100
+Message-ID: <4CE699EB.1040100@open.ch>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s0907;
-	t=1290178254; bh=jVoF3W63KguHlvxDQKb0N/JPfKTh9n6MVJ4TR0O7x5o=;
-	h=X-QQ-mid:Received:X-QQ-SSF:Date:From:To:Subject:Message-ID:
-	 X-mailer:Mime-Version:Content-Type:Content-Transfer-Encoding;
-	b=PgWonj96PX8ELe6GV2Po4/3MpoKkBpTabUyjooPoTWBZ1POACBQZtTe6AQR/GdE4r
-	 JPM3o+DFxWmfIrCpubYLEjUqB6JrYaM06Zc1WYcl//nPNx86PlS9kWkgzFQOM/4
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-For example, 8 queues is configed in a router, q1 have the highest priority to xmit packet, and q2 can get chance to xmit packet just when q1 has no packet to send, and q3 can get chance to xmit packet when q1 and q2 have no packet to send, the rest of other queues is simily.
 
-Can TC achieve this effect, and how could I configure my router, which is using kernel 2.6.30.
+Hi,
 
-Thanks for any help!
- 				
---------------
-ronliu
-2010-11-19
-h
+I am trying to enforce a global logging limit on my rule set. I would to 
+like to be able to refer log entries to the causing rule too.
+
+Here is what I am thinking of:
+
+
+-N LogLimit
+-A LogLimit -m limit --limit 3333/sec --limitburst 3000 -m MARK 
+--set-mark  $LOGGING_MARK
+-A LogLimit -j RETURN
+
+....
+
+-A ruleid:7906::: -p tcp -m tcp --dport 21 -j LogLimit
+-A ruleid:7906::: -m MARK --mark $LOGGIN_MARK -j NFLOG --nflog-group 2 
+--nflog-prefix "DROP by 7906"
+-A ruleid:7906::: DROP
+
+....
+
+-A ruleid:7910::: -p tcp -m tcp --dport 389 -j LogLimit
+-A ruleid:7910::: -m MARK --mark $LOGGIN_MARK -j NFLOG --nflog-group 2 
+--nflog-prefix "DROP by 7910"
+-A ruleid:7910::: DROP
+
+
+Would I be paying a lot in term of performance by sending all dropped 
+packets to the LogLimit chain ? I am using ulogd2, would it be better to 
+put the limit in ulogd2 ?
+
+Regards,
+
+   -salih
