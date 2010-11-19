@@ -1,34 +1,28 @@
-From: Daniel Scott <djscott@MIT.EDU>
-Subject: Re: iptables forwarding packets on the same interface
-Date: Thu, 18 Nov 2010 18:39:30 -0500
-Message-ID: <AANLkTimK+e-gx1kZW2At0Of_P8x6v=TBnM-7jfT_M2uA@mail.gmail.com>
-References: <AANLkTimDgcNAfVZa6tUpQZFMb-jRXbzsiaDSnCZmqTTe@mail.gmail.com>
- <20101118215623.6cd0bf50@catus> <AANLkTinGnb0B74tuXacopfgvdDgGajywGP7zmVRH394_@mail.gmail.com>
- <20101119002412.45660216@catus>
+From: "liu" <liu@5bamboos.com>
+Subject: which traffic scheduler can achieve SP QoS effect, using TC
+Date: Fri, 19 Nov 2010 22:42:18 +0800
+Message-ID: <201011192242182505082@5bamboos.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20101119002412.45660216@catus>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s0907;
+	t=1290178254; bh=jVoF3W63KguHlvxDQKb0N/JPfKTh9n6MVJ4TR0O7x5o=;
+	h=X-QQ-mid:Received:X-QQ-SSF:Date:From:To:Subject:Message-ID:
+	 X-mailer:Mime-Version:Content-Type:Content-Transfer-Encoding;
+	b=PgWonj96PX8ELe6GV2Po4/3MpoKkBpTabUyjooPoTWBZ1POACBQZtTe6AQR/GdE4r
+	 JPM3o+DFxWmfIrCpubYLEjUqB6JrYaM06Zc1WYcl//nPNx86PlS9kWkgzFQOM/4
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Marek Kierdelewicz <marek@piasta.pl>
-Cc: netfilter@vger.kernel.org
+To: netfilter <netfilter@vger.kernel.org>
 
-Hi,
+For example, 8 queues is configed in a router, q1 have the highest priority to xmit packet, and q2 can get chance to xmit packet just when q1 has no packet to send, and q3 can get chance to xmit packet when q1 and q2 have no packet to send, the rest of other queues is simily.
 
-On Thu, Nov 18, 2010 at 18:24, Marek Kierdelewicz <marek@piasta.pl> wrote:
->> -A FORWARD -s 192.168.1.0/24 -d 192.168.10.0/24 -i eth1 -o eth1 -m
->> state --state NEW -j ACCEPT
->>-A FORWARD -s 192.168.10.0/24 -d 192.168.1.0/24 -i eth1 -o eth1 -m
->>state --state NEW -j ACCEPT
->
-> I think you're missing forwarding of ESTABLISHED,RELATED between
-> 192.168.1.0/24 and 192.168.10.0/24. Try to change above rules to:
->
-> -A FORWARD -s 192.168.1.0/24 -d 192.168.10.0/24 -i eth1 -o eth1 -j ACCEPT
-> -A FORWARD -s 192.168.10.0/24 -d 192.168.1.0/24 -i eth1 -o eth1 -j ACCEPT
+Can TC achieve this effect, and how could I configure my router, which is using kernel 2.6.30.
 
-Excellent. That seems to have fixed it, thanks.
-
-Dan
+Thanks for any help!
+ 				
+--------------
+ronliu
+2010-11-19
+h
