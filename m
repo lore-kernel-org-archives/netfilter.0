@@ -1,19 +1,19 @@
 From: Tracey Dent <tdent48227@gmail.com>
-Subject: [PATCH 05/17] Net: dns_resolver: Makefile: Remove deprecated kbuild goal definitions
-Date: Sun, 21 Nov 2010 20:03:16 -0500
-Message-ID: <1290387808-2239-6-git-send-email-tdent48227@gmail.com>
+Subject: [PATCH 17/17] Net: wanrouter: Makefile: Remove deprecated kbuild goal definitions
+Date: Sun, 21 Nov 2010 20:03:28 -0500
+Message-ID: <1290387808-2239-18-git-send-email-tdent48227@gmail.com>
 References: <1290387808-2239-1-git-send-email-tdent48227@gmail.com>
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Return-path: <ceph-devel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:received:received:from:to:cc:subject:date
          :message-id:x-mailer:in-reply-to:references;
-        bh=19qQIBvFharmMlBEVYJU0u3PdiRpGVKJExaxEPkadj4=;
-        b=n80ErXwymTjklRR9BwcCzPHV/gIU3HBQ3HLSVIfl+4ryjJP8PQglCT6PisZGSxfXjb
-         jrvTAND3O5KnptvM6bw1TgEtPS8cI9EeybAgMSr+dNuSU6AtLK+UWRuqByzP8DduKKdV
-         jzCZv56hx9puDD0/alAcsqb8rVaXEjuCsYoYo=
+        bh=RgweNMiqU80LoBTD88eF63gI/VMcKhpkqyQnbhA5nAw=;
+        b=AD5SE8sJk3tgkiiQf2UBInsaZpF7unX8zrc1aYex3qU/0mG+IlbAJaH6hMbcTEiVAu
+         QDgDlF3PSQsavmD2HxGsJlqDKZakSyX4wOhw561QaDH7E4qrvmjczBQpl1InDYAQFom/
+         PX1ucxFjX56Om0LSeh5YiwBHYR+bQSi75oQAw=
 In-Reply-To: <1290387808-2239-1-git-send-email-tdent48227@gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Sender: ceph-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -27,19 +27,19 @@ Documentation/kbuild/makefiles.txt.
 
 Signed-off-by: Tracey Dent <tdent48227@gmail.com>
 ---
- net/dns_resolver/Makefile |    2 +-
+ net/wanrouter/Makefile |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/net/dns_resolver/Makefile b/net/dns_resolver/Makefile
-index c0ef4e7..d5c13c2 100644
---- a/net/dns_resolver/Makefile
-+++ b/net/dns_resolver/Makefile
+diff --git a/net/wanrouter/Makefile b/net/wanrouter/Makefile
+index 9f188ab..4da14bc 100644
+--- a/net/wanrouter/Makefile
++++ b/net/wanrouter/Makefile
 @@ -4,4 +4,4 @@
  
- obj-$(CONFIG_DNS_RESOLVER) += dns_resolver.o
+ obj-$(CONFIG_WAN_ROUTER) += wanrouter.o
  
--dns_resolver-objs :=  dns_key.o dns_query.o
-+dns_resolver-y :=  dns_key.o dns_query.o
+-wanrouter-objs :=  wanproc.o wanmain.o
++wanrouter-y :=  wanproc.o wanmain.o
 -- 
 1.7.3.2.245.g03276
 
