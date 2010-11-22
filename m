@@ -1,17 +1,17 @@
 From: Tracey Dent <tdent48227@gmail.com>
-Subject: [PATCH 11/17] Net: irda: irnet: Makefile: Remove deprecated kbuild goal definitions
-Date: Sun, 21 Nov 2010 20:03:22 -0500
-Message-ID: <1290387808-2239-12-git-send-email-tdent48227@gmail.com>
+Subject: [PATCH 10/17] Net: irda: irlan: Makefile: Remove deprecated kbuild goal definitions
+Date: Sun, 21 Nov 2010 20:03:21 -0500
+Message-ID: <1290387808-2239-11-git-send-email-tdent48227@gmail.com>
 References: <1290387808-2239-1-git-send-email-tdent48227@gmail.com>
 Return-path: <netdev-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:received:received:from:to:cc:subject:date
          :message-id:x-mailer:in-reply-to:references;
-        bh=6qObRec6xI2o0B4KSFWKQ7JkIc2MEASrU+qBpNG8HGY=;
-        b=u55GF0q0Whnme2ZA0oYQzlBy142R58RtCgWxp4gwwba5MReOk4KavLPk6/jLXw4DBE
-         a7wrtfs1oqsSYIvJRaDql3uCw6urMXNhxJyPEqaKsG5/ojt1eKwso5YFdaSmkozrmIjv
-         z8jxcDpmsau2nFWBWLe9Mzv6irzGGi7pNYAro=
+        bh=IdO/5M8qmMGMmrVe5x9/4Vw4uQ8na1ytZY8TPyB0f/o=;
+        b=phiMgCyJ7NIVQtEiiInLV9GBrQjHuiRrl3ivWMjEL3dklgA67K6jTEUrW55Xg3K5x+
+         IAjYn88Iz8A/9HAc8EnCyp0qwv5/DJxAfFTVImh0d26aWv71XAph5xWgh5osJFCkI83k
+         CHYk603pYGdvu7SHGaKwjUK3jcj6VSRWcY+hw=
 In-Reply-To: <1290387808-2239-1-git-send-email-tdent48227@gmail.com>
 Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
@@ -27,19 +27,19 @@ Documentation/kbuild/makefiles.txt.
 
 Signed-off-by: Tracey Dent <tdent48227@gmail.com>
 ---
- net/irda/irnet/Makefile |    2 +-
+ net/irda/irlan/Makefile |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/net/irda/irnet/Makefile b/net/irda/irnet/Makefile
-index b3ee01e..61c365c 100644
---- a/net/irda/irnet/Makefile
-+++ b/net/irda/irnet/Makefile
+diff --git a/net/irda/irlan/Makefile b/net/irda/irlan/Makefile
+index 77549bc..94eefbc 100644
+--- a/net/irda/irlan/Makefile
++++ b/net/irda/irlan/Makefile
 @@ -4,4 +4,4 @@
  
- obj-$(CONFIG_IRNET) += irnet.o
+ obj-$(CONFIG_IRLAN) += irlan.o
  
--irnet-objs := irnet_ppp.o irnet_irda.o
-+irnet-y := irnet_ppp.o irnet_irda.o
+-irlan-objs := irlan_common.o irlan_eth.o irlan_event.o irlan_client.o irlan_provider.o irlan_filter.o irlan_provider_event.o irlan_client_event.o
++irlan-y := irlan_common.o irlan_eth.o irlan_event.o irlan_client.o irlan_provider.o irlan_filter.o irlan_provider_event.o irlan_client_event.o
 -- 
 1.7.3.2.245.g03276
 
