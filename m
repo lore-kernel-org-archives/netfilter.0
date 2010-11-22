@@ -1,28 +1,25 @@
-From: lst_hoe02@kwsoft.de
-Subject: [OT] Network Firewall settings with sysctl
-Date: Mon, 22 Nov 2010 15:30:06 +0100
-Message-ID: <20101122153006.160569ahmw2upi80@webmail.kwsoft.de>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH 00/00] Remove deprecated items from Makefiles
+Date: Mon, 22 Nov 2010 08:17:31 -0800 (PST)
+Message-ID: <20101122.081731.226770168.davem@davemloft.net>
+References: <1290387808-2239-1-git-send-email-tdent48227@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <1290387808-2239-1-git-send-email-tdent48227@gmail.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; delsp="Yes"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: tdent48227@gmail.com
+Cc: marcel@holtmann.org, padovan@profusion.mobi, linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org, sjur.brandeland@stericsson.com, socketcan@hartkopp.net, urs.thuermann@volkswagen.de, socketcan-core@lists.berlios.de, sage@newdream.net, ceph-devel@vger.kernel.org, wang840925@gmail.com, jlayton@redhat.com, kaber@trash.net, pekkas@netcore.fi, linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, samuel@sortiz.org
 
-Hello
+From: Tracey Dent <tdent48227@gmail.com>
+Date: Sun, 21 Nov 2010 20:03:11 -0500
 
-i'm looking for clarification on some /proc/sys/net/ipv6/conf/ entries  
-for firewalling. From what i have read a setting of for example  
-/proc/sys/net/ipv6/conf/all/autoconf -> 0 should set this value for  
-all interfaces? But when i do "sysctl -a" to check the value all  
-interface related entries are still autoconf->1. Is this expected  
-behavior or a bug? Does it only apply after reboot or what have i  
-missed? This is Ubuntu 10.04 (kernel 2.6.32) with iptables 1.4.4.
+> I changed Makefiles to use <modules>-y instead of <modules>-objs because -objs
+> is deprecated and not even mentioned in Documentation/kbuild/makefiles.txt.
+> 
+> Also, remove some if-conditional statments because I used the ccflags-$ flag 
+> instead of EXTRA_CFLAGS because EXTRA_CFLAGS.
 
-Many Thanks
-
-Andreas
-
-
+All applied, thanks Tracey.
