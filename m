@@ -1,19 +1,19 @@
 From: Tracey Dent <tdent48227@gmail.com>
-Subject: [PATCH 12/17] Net: lapb: Makefile: Remove deprecated kbuild goal definitions
-Date: Sun, 21 Nov 2010 20:03:23 -0500
-Message-ID: <1290387808-2239-13-git-send-email-tdent48227@gmail.com>
+Subject: [PATCH 11/17] Net: irda: irnet: Makefile: Remove deprecated kbuild goal definitions
+Date: Sun, 21 Nov 2010 20:03:22 -0500
+Message-ID: <1290387808-2239-12-git-send-email-tdent48227@gmail.com>
 References: <1290387808-2239-1-git-send-email-tdent48227@gmail.com>
-Return-path: <ceph-devel-owner@vger.kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:received:received:from:to:cc:subject:date
          :message-id:x-mailer:in-reply-to:references;
-        bh=ZvlVYCG1oEH3M399gphlKc8wWv/wlzqLKCqj8LCfRo8=;
-        b=k793ezj1R60P2Ae8Kb1qQPDyngvWm/Sg2FBFfCtr5umJWHQXk73B+rMnVAL8YpeJfJ
-         krCJBXv9hxEYxj3jUM7QbSUb3J17qUs+8wSQlQtEthz0pRTAGqSRXUQcLjsnQSrYlfIE
-         QI3xi425dOeQghxon+VU48eSpuqc3/rpKGli8=
+        bh=6qObRec6xI2o0B4KSFWKQ7JkIc2MEASrU+qBpNG8HGY=;
+        b=u55GF0q0Whnme2ZA0oYQzlBy142R58RtCgWxp4gwwba5MReOk4KavLPk6/jLXw4DBE
+         a7wrtfs1oqsSYIvJRaDql3uCw6urMXNhxJyPEqaKsG5/ojt1eKwso5YFdaSmkozrmIjv
+         z8jxcDpmsau2nFWBWLe9Mzv6irzGGi7pNYAro=
 In-Reply-To: <1290387808-2239-1-git-send-email-tdent48227@gmail.com>
-Sender: ceph-devel-owner@vger.kernel.org
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -27,19 +27,19 @@ Documentation/kbuild/makefiles.txt.
 
 Signed-off-by: Tracey Dent <tdent48227@gmail.com>
 ---
- net/lapb/Makefile |    2 +-
+ net/irda/irnet/Makefile |    2 +-
  1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/net/lapb/Makefile b/net/lapb/Makefile
-index 53f7c90..fff797d 100644
---- a/net/lapb/Makefile
-+++ b/net/lapb/Makefile
+diff --git a/net/irda/irnet/Makefile b/net/irda/irnet/Makefile
+index b3ee01e..61c365c 100644
+--- a/net/irda/irnet/Makefile
++++ b/net/irda/irnet/Makefile
 @@ -4,4 +4,4 @@
  
- obj-$(CONFIG_LAPB) += lapb.o
+ obj-$(CONFIG_IRNET) += irnet.o
  
--lapb-objs := lapb_in.o lapb_out.o lapb_subr.o lapb_timer.o lapb_iface.o
-+lapb-y := lapb_in.o lapb_out.o lapb_subr.o lapb_timer.o lapb_iface.o
+-irnet-objs := irnet_ppp.o irnet_irda.o
++irnet-y := irnet_ppp.o irnet_irda.o
 -- 
 1.7.3.2.245.g03276
 
