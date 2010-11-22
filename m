@@ -1,19 +1,19 @@
 From: Tracey Dent <tdent48227@gmail.com>
-Subject: [PATCH 14/17] Net: rds: Makefile: Remove deprecated items
-Date: Sun, 21 Nov 2010 20:03:25 -0500
-Message-ID: <1290387808-2239-15-git-send-email-tdent48227@gmail.com>
+Subject: [PATCH 08/17] Net: ipv6: netfiliter: Makefile: Remove deprecated kbuild goal definitions
+Date: Sun, 21 Nov 2010 20:03:19 -0500
+Message-ID: <1290387808-2239-9-git-send-email-tdent48227@gmail.com>
 References: <1290387808-2239-1-git-send-email-tdent48227@gmail.com>
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:received:received:from:to:cc:subject:date
          :message-id:x-mailer:in-reply-to:references;
-        bh=p4SPshnfmnASOO+n1vJxCGWvDOAypdBNRNZIsVw1zqA=;
-        b=Tzq0hjb/weGTuKdqiZ6FAbT0Hus4plY+au2c/qcSr4LZjaMqQx0ea++zRYr0bpoOmi
-         Q/JRH9vSpuzIz/W9UWxxpLQHTnCc/Qg/DWz/S4bZg5r9LyzyjM1mdSFFJhPZPi9KukCZ
-         ddoAz+kFCfUOPJHZUBFmjyhTgLpi3Cj3yA3c0=
+        bh=7UGQZsB4XWNbrFa0Ip+s6hRdj4BmaDElOu5d0DT9KI4=;
+        b=JJ6lLGkkwpYdtXR5X6G5NLOkmW0sdVo/ieGLrhXac8lZTrgnL22hE0thd2n4+ZXv5v
+         3STSwtgy3W4VNTH4nSv07V4srOxErzIZ/VX9S4e72U/1YXbdbiOUlxJOmxXyiF25YTpg
+         QBYHqm62KE+Mp4eL2A3azs3FMbLG/RAm6iRxM=
 In-Reply-To: <1290387808-2239-1-git-send-email-tdent48227@gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -25,42 +25,30 @@ Changed Makefile to use <modules>-y instead of <modules>-objs
 because -objs is deprecated and not mentioned in
 Documentation/kbuild/makefiles.txt.
 
-Also, use the ccflags-$ flag instead of EXTRA_CFLAGS because EXTRA_CFLAGS is
-deprecated and should now be switched.
-
-Last but not least, took out if-conditionals.
-
 Signed-off-by: Tracey Dent <tdent48227@gmail.com>
 ---
- net/rds/Makefile |    8 +++-----
- 1 files changed, 3 insertions(+), 5 deletions(-)
+ net/ipv6/netfilter/Makefile |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/rds/Makefile b/net/rds/Makefile
-index b46eca1..56d3f60 100644
---- a/net/rds/Makefile
-+++ b/net/rds/Makefile
-@@ -4,7 +4,7 @@ rds-y :=	af_rds.o bind.o cong.o connection.o info.o message.o   \
- 			loop.o page.o rdma.o
+diff --git a/net/ipv6/netfilter/Makefile b/net/ipv6/netfilter/Makefile
+index 0a432c9..abfee91 100644
+--- a/net/ipv6/netfilter/Makefile
++++ b/net/ipv6/netfilter/Makefile
+@@ -11,13 +11,13 @@ obj-$(CONFIG_IP6_NF_RAW) += ip6table_raw.o
+ obj-$(CONFIG_IP6_NF_SECURITY) += ip6table_security.o
  
- obj-$(CONFIG_RDS_RDMA) += rds_rdma.o
--rds_rdma-objs :=	rdma_transport.o \
-+rds_rdma-y :=	rdma_transport.o \
- 			ib.o ib_cm.o ib_recv.o ib_ring.o ib_send.o ib_stats.o \
- 			ib_sysctl.o ib_rdma.o \
- 			iw.o iw_cm.o iw_recv.o iw_ring.o iw_send.o iw_stats.o \
-@@ -12,10 +12,8 @@ rds_rdma-objs :=	rdma_transport.o \
+ # objects for l3 independent conntrack
+-nf_conntrack_ipv6-objs  :=  nf_conntrack_l3proto_ipv6.o nf_conntrack_proto_icmpv6.o
++nf_conntrack_ipv6-y  :=  nf_conntrack_l3proto_ipv6.o nf_conntrack_proto_icmpv6.o
  
+ # l3 independent conntrack
+ obj-$(CONFIG_NF_CONNTRACK_IPV6) += nf_conntrack_ipv6.o nf_defrag_ipv6.o
  
- obj-$(CONFIG_RDS_TCP) += rds_tcp.o
--rds_tcp-objs :=		tcp.o tcp_connect.o tcp_listen.o tcp_recv.o \
-+rds_tcp-y :=		tcp.o tcp_connect.o tcp_listen.o tcp_recv.o \
- 			tcp_send.o tcp_stats.o
+ # defrag
+-nf_defrag_ipv6-objs := nf_defrag_ipv6_hooks.o nf_conntrack_reasm.o
++nf_defrag_ipv6-y := nf_defrag_ipv6_hooks.o nf_conntrack_reasm.o
+ obj-$(CONFIG_NF_DEFRAG_IPV6) += nf_defrag_ipv6.o
  
--ifeq ($(CONFIG_RDS_DEBUG), y)
--EXTRA_CFLAGS += -DDEBUG
--endif
-+ccflags-$(CONFIG_RDS_DEBUG)	:=	-DDEBUG
- 
+ # matches
 -- 
 1.7.3.2.245.g03276
-
