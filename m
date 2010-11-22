@@ -1,19 +1,19 @@
 From: Tracey Dent <tdent48227@gmail.com>
-Subject: [PATCH 08/17] Net: ipv6: netfiliter: Makefile: Remove deprecated kbuild goal definitions
-Date: Sun, 21 Nov 2010 20:03:19 -0500
-Message-ID: <1290387808-2239-9-git-send-email-tdent48227@gmail.com>
+Subject: [PATCH 05/17] Net: dns_resolver: Makefile: Remove deprecated kbuild goal definitions
+Date: Sun, 21 Nov 2010 20:03:16 -0500
+Message-ID: <1290387808-2239-6-git-send-email-tdent48227@gmail.com>
 References: <1290387808-2239-1-git-send-email-tdent48227@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:received:received:from:to:cc:subject:date
          :message-id:x-mailer:in-reply-to:references;
-        bh=7UGQZsB4XWNbrFa0Ip+s6hRdj4BmaDElOu5d0DT9KI4=;
-        b=JJ6lLGkkwpYdtXR5X6G5NLOkmW0sdVo/ieGLrhXac8lZTrgnL22hE0thd2n4+ZXv5v
-         3STSwtgy3W4VNTH4nSv07V4srOxErzIZ/VX9S4e72U/1YXbdbiOUlxJOmxXyiF25YTpg
-         QBYHqm62KE+Mp4eL2A3azs3FMbLG/RAm6iRxM=
+        bh=19qQIBvFharmMlBEVYJU0u3PdiRpGVKJExaxEPkadj4=;
+        b=n80ErXwymTjklRR9BwcCzPHV/gIU3HBQ3HLSVIfl+4ryjJP8PQglCT6PisZGSxfXjb
+         jrvTAND3O5KnptvM6bw1TgEtPS8cI9EeybAgMSr+dNuSU6AtLK+UWRuqByzP8DduKKdV
+         jzCZv56hx9puDD0/alAcsqb8rVaXEjuCsYoYo=
 In-Reply-To: <1290387808-2239-1-git-send-email-tdent48227@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -27,28 +27,19 @@ Documentation/kbuild/makefiles.txt.
 
 Signed-off-by: Tracey Dent <tdent48227@gmail.com>
 ---
- net/ipv6/netfilter/Makefile |    4 ++--
- 1 files changed, 2 insertions(+), 2 deletions(-)
+ net/dns_resolver/Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/net/ipv6/netfilter/Makefile b/net/ipv6/netfilter/Makefile
-index 0a432c9..abfee91 100644
---- a/net/ipv6/netfilter/Makefile
-+++ b/net/ipv6/netfilter/Makefile
-@@ -11,13 +11,13 @@ obj-$(CONFIG_IP6_NF_RAW) += ip6table_raw.o
- obj-$(CONFIG_IP6_NF_SECURITY) += ip6table_security.o
+diff --git a/net/dns_resolver/Makefile b/net/dns_resolver/Makefile
+index c0ef4e7..d5c13c2 100644
+--- a/net/dns_resolver/Makefile
++++ b/net/dns_resolver/Makefile
+@@ -4,4 +4,4 @@
  
- # objects for l3 independent conntrack
--nf_conntrack_ipv6-objs  :=  nf_conntrack_l3proto_ipv6.o nf_conntrack_proto_icmpv6.o
-+nf_conntrack_ipv6-y  :=  nf_conntrack_l3proto_ipv6.o nf_conntrack_proto_icmpv6.o
+ obj-$(CONFIG_DNS_RESOLVER) += dns_resolver.o
  
- # l3 independent conntrack
- obj-$(CONFIG_NF_CONNTRACK_IPV6) += nf_conntrack_ipv6.o nf_defrag_ipv6.o
- 
- # defrag
--nf_defrag_ipv6-objs := nf_defrag_ipv6_hooks.o nf_conntrack_reasm.o
-+nf_defrag_ipv6-y := nf_defrag_ipv6_hooks.o nf_conntrack_reasm.o
- obj-$(CONFIG_NF_DEFRAG_IPV6) += nf_defrag_ipv6.o
- 
- # matches
+-dns_resolver-objs :=  dns_key.o dns_query.o
++dns_resolver-y :=  dns_key.o dns_query.o
 -- 
 1.7.3.2.245.g03276
+
