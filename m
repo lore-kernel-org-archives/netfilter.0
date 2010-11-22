@@ -1,19 +1,19 @@
 From: Tracey Dent <tdent48227@gmail.com>
-Subject: [PATCH 03/17] Net: can: Makefile: Remove deprecated kbuild goal definitions
-Date: Sun, 21 Nov 2010 20:03:14 -0500
-Message-ID: <1290387808-2239-4-git-send-email-tdent48227@gmail.com>
+Subject: [PATCH 04/17] Net: ceph: Makefile: remove deprecated kbuild goal definitions
+Date: Sun, 21 Nov 2010 20:03:15 -0500
+Message-ID: <1290387808-2239-5-git-send-email-tdent48227@gmail.com>
 References: <1290387808-2239-1-git-send-email-tdent48227@gmail.com>
-Return-path: <ceph-devel-owner@vger.kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:received:received:from:to:cc:subject:date
          :message-id:x-mailer:in-reply-to:references;
-        bh=/snPF7OVns3oZem5PVX0ibdWodZDxasveIPe9y0EQlY=;
-        b=tO/pyX5y/Gp3oxkR/P/gto251Z3/jwMK/22G0sjfVaH58LN4vaBLo/tTJFdvhL29oB
-         ad8xxVSXWRcZDsdCxRMSxMLCXYnc+UxQ/htnhGdvkkY0i5/axdM6w/7ZOauH9Psc0jNv
-         A+zR4fHC12BI1DzSOgAELQNW4YHkkfUXiGkak=
+        bh=kUyFDKeU4B4Kez+OMi0Iv50wBCpJIWVcxCbX8oYmBrs=;
+        b=V5t92qiv87oWoxOMybPeqy7cPgpxbXLipluD1+oIRnsux/Cgu9mq3gn5LRVBpuese1
+         MbIjjasLY4/66J8edBhBT6Q3lG8pASBBx/ubyyphblN19SKDV3JEwYIhuIUuiIblnNO7
+         duTZaFFypTFJEV2zE4TuMhHfTzLpVYGRZHQso=
 In-Reply-To: <1290387808-2239-1-git-send-email-tdent48227@gmail.com>
-Sender: ceph-devel-owner@vger.kernel.org
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -27,27 +27,22 @@ Documentation/kbuild/makefiles.txt.
 
 Signed-off-by: Tracey Dent <tdent48227@gmail.com>
 ---
- net/can/Makefile |    6 +++---
- 1 files changed, 3 insertions(+), 3 deletions(-)
+ net/ceph/Makefile |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
 
-diff --git a/net/can/Makefile b/net/can/Makefile
-index 9cd3c4b..2d3894b 100644
---- a/net/can/Makefile
-+++ b/net/can/Makefile
-@@ -3,10 +3,10 @@
- #
+diff --git a/net/ceph/Makefile b/net/ceph/Makefile
+index aab1cab..153bdec 100644
+--- a/net/ceph/Makefile
++++ b/net/ceph/Makefile
+@@ -6,7 +6,7 @@ ifneq ($(KERNELRELEASE),)
  
- obj-$(CONFIG_CAN)	+= can.o
--can-objs		:= af_can.o proc.o
-+can-y			:= af_can.o proc.o
+ obj-$(CONFIG_CEPH_LIB) += libceph.o
  
- obj-$(CONFIG_CAN_RAW)	+= can-raw.o
--can-raw-objs		:= raw.o
-+can-raw-y		:= raw.o
- 
- obj-$(CONFIG_CAN_BCM)	+= can-bcm.o
--can-bcm-objs		:= bcm.o
-+can-bcm-y		:= bcm.o
+-libceph-objs := ceph_common.o messenger.o msgpool.o buffer.o pagelist.o \
++libceph-y := ceph_common.o messenger.o msgpool.o buffer.o pagelist.o \
+ 	mon_client.o \
+ 	osd_client.o osdmap.o crush/crush.o crush/mapper.o crush/hash.o \
+ 	debugfs.o \
 -- 
 1.7.3.2.245.g03276
 
