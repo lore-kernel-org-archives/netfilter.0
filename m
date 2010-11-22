@@ -1,51 +1,57 @@
-From: Tracey Dent <tdent48227-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH 16/17] Net: sunrpc: auth_gss: Makefile: Remove deprecated kbuild goal definitions
-Date: Sun, 21 Nov 2010 20:03:27 -0500
-Message-ID: <1290387808-2239-17-git-send-email-tdent48227@gmail.com>
+From: Tracey Dent <tdent48227@gmail.com>
+Subject: [PATCH 15/17] Net: rxrpc: Makefile: Remove deprecated kbuild goal definitions
+Date: Sun, 21 Nov 2010 20:03:26 -0500
+Message-ID: <1290387808-2239-16-git-send-email-tdent48227@gmail.com>
 References: <1290387808-2239-1-git-send-email-tdent48227@gmail.com>
-Return-path: <linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Return-path: <netdev-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:received:received:from:to:cc:subject:date
          :message-id:x-mailer:in-reply-to:references;
-        bh=XLpRk1+pRssiDomMswi4k9LxuIt+j6H/lwEHjN0QuPQ=;
-        b=Z7YVPAE9aY9tXhvxQZr16Sb0iWLvZroxGh6+aDFIw+aRqrTdrstzTL3jvi+e36XSzH
-         iI5622SKWLSwM56/6YvcuBdl3uCWhKYoGj2eeAIz2NLXEaf9oonSjmgjxc3lllzlrYXC
-         btmKx1/UzhnpWjODiEKdgkQaKTE0+GOZQvfPQ=
-In-Reply-To: <1290387808-2239-1-git-send-email-tdent48227-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Sender: linux-bluetooth-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+        bh=WDI4q17lDBe2nCA7NjOQiQvxLz4ubhcCkaep7LrMdi0=;
+        b=oGKRAR/QXJOged8U7VNq0xs22n/esGtyw1l+5KW/v5xhx0RmYXVEuz4jQ3h4H2vunC
+         QcAbsydFlKjKrKA6gsjrNQofD3wLD3w/xlvBV7S/AMJkAthHPaKgwinjgDLXiGkSqh/J
+         gu/DAQ7fJQAlCbiFqw8ELuloJ8eGAhDAunWFg=
+In-Reply-To: <1290387808-2239-1-git-send-email-tdent48227@gmail.com>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org
-Cc: marcel-kz+m5ild9QBg9hUCZPvPmw@public.gmane.org, padovan-Y3ZbgMPKUGA34EUeqzHoZw@public.gmane.org, linux-bluetooth-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, sjur.brandeland-0IS4wlFg1OjSUeElwK9/Pw@public.gmane.org, socketcan-fJ+pQTUTwRTk1uMJSBkQmQ@public.gmane.org, urs.thuermann-l29pVbxQd1IUtdQbppsyvg@public.gmane.org, socketcan-core-0fE9KPoRgkgATYTw5x5z8w@public.gmane.org, sage-BnTBU8nroG7k1uMJSBkQmQ@public.gmane.org, ceph-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, wang840925-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org, jlayton-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, kaber-dcUjhNyLwpNeoWH0uzbU5w@public.gmane.org, pekkas-UjJjq++bwZ7HOG6cAo2yLw@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, samuel-jcdQHdrhKHMdnm+yROfE0A@public.gmane.org, Tracey Dent <tdent48227-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+To: davem@davemloft.net
+Cc: marcel@holtmann.org, padovan@profusion.mobi, linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org, sjur.brandeland@stericsson.com, socketcan@hartkopp.net, urs.thuermann@volkswagen.de, socketcan-core@lists.berlios.de, sage@newdream.net, ceph-devel@vger.kernel.org, wang840925@gmail.com, jlayton@redhat.com, kaber@trash.net, pekkas@netcore.fi, linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, samuel@sortiz.org, Tracey Dent <tdent48227@gmail.com>
 
 Changed Makefile to use <modules>-y instead of <modules>-objs
 because -objs is deprecated and not mentioned in
 Documentation/kbuild/makefiles.txt.
 
-Signed-off-by: Tracey Dent <tdent48227-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Signed-off-by: Tracey Dent <tdent48227@gmail.com>
 ---
- net/sunrpc/auth_gss/Makefile |    4 ++--
+ net/rxrpc/Makefile |    4 ++--
  1 files changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/net/sunrpc/auth_gss/Makefile b/net/sunrpc/auth_gss/Makefile
-index 7350d86..9e4cb59 100644
---- a/net/sunrpc/auth_gss/Makefile
-+++ b/net/sunrpc/auth_gss/Makefile
-@@ -4,10 +4,10 @@
+diff --git a/net/rxrpc/Makefile b/net/rxrpc/Makefile
+index c46867c..d1c3429 100644
+--- a/net/rxrpc/Makefile
++++ b/net/rxrpc/Makefile
+@@ -2,7 +2,7 @@
+ # Makefile for Linux kernel RxRPC
+ #
  
- obj-$(CONFIG_SUNRPC_GSS) += auth_rpcgss.o
+-af-rxrpc-objs := \
++af-rxrpc-y := \
+ 	af_rxrpc.o \
+ 	ar-accept.o \
+ 	ar-ack.o \
+@@ -21,7 +21,7 @@ af-rxrpc-objs := \
+ 	ar-transport.o
  
--auth_rpcgss-objs := auth_gss.o gss_generic_token.o \
-+auth_rpcgss-y := auth_gss.o gss_generic_token.o \
- 	gss_mech_switch.o svcauth_gss.o
+ ifeq ($(CONFIG_PROC_FS),y)
+-af-rxrpc-objs += ar-proc.o
++af-rxrpc-y += ar-proc.o
+ endif
  
- obj-$(CONFIG_RPCSEC_GSS_KRB5) += rpcsec_gss_krb5.o
- 
--rpcsec_gss_krb5-objs := gss_krb5_mech.o gss_krb5_seal.o gss_krb5_unseal.o \
-+rpcsec_gss_krb5-y := gss_krb5_mech.o gss_krb5_seal.o gss_krb5_unseal.o \
- 	gss_krb5_seqnum.o gss_krb5_wrap.o gss_krb5_crypto.o gss_krb5_keys.o
+ obj-$(CONFIG_AF_RXRPC) += af-rxrpc.o
 -- 
 1.7.3.2.245.g03276
+
