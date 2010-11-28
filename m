@@ -1,56 +1,74 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Xtables2 Netlink spec
-Date: Fri, 26 Nov 2010 20:01:37 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1011261950100.18019@blackhole.kfki.hu>
-References: <alpine.LNX.2.01.1011242314580.32646@obet.zrqbmnf.qr>
+From: "Secure-SIP-Server" <info@secure-sip-server.net>
+Subject: Denial-of-Service attack on UDP-port 5060 (SIP/VoIP)
+Date: Sun, 28 Nov 2010 17:02:56 +0100
+Message-ID: <C426DC428D95484BB7DF53F6DA1B34DB@gericomfx5600>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1011242314580.32646@obet.zrqbmnf.qr>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, netfilter@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>
+Content-Type: text/plain; charset="macroman"; format="flowed	reply-type=original"
+To: netfilter@vger.kernel.org
 
-Hi Jan,
+Hi,
 
-On Wed, 24 Nov 2010, Jan Engelhardt wrote:
+I'm suffering on a Denial-of-Service attack on my SIP(VoIP) UDP port 50=
+60,=20
+getting more then 70 REGISTER requests per second since yesterday. All=20
+comming from the Japanese IP 59.146.75.111:5088.
 
-> By request of Pablo, I am posting the Xtables2 Netlink interface 
-> specification for review. Additionally, further documentation and 
-> toolchain around it is available through the temporary project page at
-> 
-> 	http://jengelh.medozas.de/projects/xtables/
-> 
-> which currently includes
-> 
->  * User Documentation Chapter 1: Architectural Differences
-> 
->  * Developer Documentation Part 1: Netlink interface (WIP)
->    This is copied below to facilitate inline replies
-> 
->  * Runnable Linux source tree
-> 
->  * Runnable userspace library (libnetfilter_xtables)
->    with small test-and-debug program
-[...]
+=46irst I wrote into my iptable:
+=2E...
+/sbin/iptables -P INPUT DROP
+/sbin/iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+=2E...
+/sbin/iptables -A INPUT -p udp --dport 5060 -s 59.146.75.111 -j REJECT
+=2E...
 
-Please add fine-grained error reporting to the protocol: in my opinion the 
-main shortcoming of the current kernel-userspace xtables protocol is the 
-lack of the proper error reporting. I mean, the new protocol should be 
-able to carry back which rule caused the error, in the rule whether it was 
-a general kind of error (ENOMEM), or a table, chain, match or target error 
-and exactly what was the error at table/chain/match/target level.
+but it didn't work.
+1st Question:
+Why??
 
-Say, the TCPMSS target should be able to report back that it cannot be 
-used outside of FORWARD, OUTPUT and POSTROUTING. Or that the rule must 
-match TCP SYN packets.
+Then I wrote:
+=2E...
+/sbin/iptables -P INPUT DROP
+/sbin/iptables -A INPUT -m state --state ESTABLISHED -j ACCEPT
+/sbin/iptables -A INPUT -p udp --dport 5060 -s 59.146.75.111 -j REJECT
+/sbin/iptables -A INPUT -m state --state RELATED -j ACCEPT
+=2E...
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Nothing changed, still receiving this REGISTER requests on my server.
+Then I did:
+=2E...
+/sbin/iptables -P INPUT DROP
+/sbin/iptables -A INPUT -p udp --dport 5060 -s 59.146.75.111 -j REJECT
+/sbin/iptables -A INPUT -m state --state ESTABLISHED -j ACCEPT
+/sbin/iptables -A INPUT -m state --state RELATED -j ACCEPT
+=2E...
+
+This worked! All requests from that IP are rejected, all others reach m=
+y=20
+server as ever.
+
+/sbin/iptables -L --line-numbers -v -n
+shows me an rapidly increasing number of packages and bytes rejected by=
+ the=20
+first statement.
+
+Now my 2nd question:
+How can this requests (UDP) be from a ESTABLISHED connection??? They pa=
+ssed=20
+the firewall in the first two examples and therefore they must be=20
+ESTABLISHED!?!
+
+3rd question:
+Is there a way to tell iptables to lock only a specific IP:PORT for a w=
+hile=20
+if this IP transmits more then 50 requests per second? If so, how?
+
+Thanks and regards
+
+Detlef Pilzecker
+Weitlahnerstra=DFe 8
+D - 83209 Prien am Chiemsee=20
+
