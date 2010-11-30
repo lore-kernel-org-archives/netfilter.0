@@ -1,93 +1,38 @@
-From: "Secure-SIP-Server" <info@secure-sip-server.net>
-Subject: Re: Denial-of-Service attack on UDP-port 5060 (SIP/VoIP)
-Date: Mon, 29 Nov 2010 22:38:32 +0100
-Message-ID: <90A4182DE3E342C191D86AE9095836B6@gericomfx5600>
-References: <C426DC428D95484BB7DF53F6DA1B34DB@gericomfx5600> <4CF2A686.4000309@plouf.fr.eu.org> <72283C9ECA07450499E7F3DDA655791F@gericomfx5600>
+From: Michele Codutti <michele.codutti@uniud.it>
+Subject: ClusterIP network slowdown
+Date: Tue, 30 Nov 2010 10:00:10 +0100
+Message-ID: <1291107610.2488.46.camel@nerino>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"; format="flowed	reply-type=response"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Thanks to all your thoughts!
+Hello, in these days i had fun with the ClusterIP target associated to a
+web server. All is good and bright with the exception of two issues:
+- the message "CLUSTERIP: no conntrack!"
+- a general slowdown of the other network services (like ssh) of the two
+nodes of the cluster.
+To solve all my problems i've inserted this iptables rule:
+iptables -I INPUT 1 -m state --state INVALID -j DROP
+This is a solution that isn't good enough because i manage the apache2
+and the clustered ip with heartbeat2.
+Example: if i standby a node (for maintenance) and resume it after a
+while this can be a problem because heartbeat put the clusterip rule on
+top of the others so the dropping rule above became the second one and
+then the workaround had no effect.
+Why the clusterip had such an heavy impact on the networking? Before the
+clusterip my cluster was active-standby and i've got no problems at all.
+Now that the load per node is halved i noticed more load than before.
+The strangest thing is that (with the top tool) this load seem not exist
+and the nodes are not loaded at all:
+load average: 0.50, 0.36, 0.37
+How can i fix this without the dropping rule above?
+There is a way to see how the networking is loaded?
 
-I found a solution on how to tell iptables not to see the continuous fl=
-ow of=20
-SIP-packets as an ESTABLISHED connection. I split
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-into
-# iptables -A INPUT -p ! udp -m state --state ESTABLISHED -j ACCEPT
-# iptables -A INPUT -m state --state RELATED -j ACCEPT
-The ESTABLISHED rule has not to work for UDP, so I excluded it.
-I don't know why iptables does not exclude it by default! Someone knows=
-???
+Thanks in advance.
 
-Now I can put below:
-# iptables -A INPUT -p udp --dport 5060 -m recent --name=20
-DENIAL_OF_SERVICE --update --seconds 1 --hitcount 20 -j REJECT --reject=
--with=20
-icmp-admin-prohibited
-# iptables -A INPUT -p udp --dport 5060 -m recent --name=20
-DENIAL_OF_SERVICE --set -j ACCEPT
-
-This works for me!!! < I'm happy!!! :-)) >
-Now the malicious UDP-packet stream
-- always pass the ESTABLISHED rule
-- first pass the upper DENIAL_OF_SERVICE rule
-- and some packets are accepted by the second DENIAL_OF_SERVICE rule (a=
-bout=20
-4 or 5 REGISTER requests)
-- but then the first DENIAL_OF_SERVICE rule rejects all following spam =
-from=20
-this IP (requests from other IPs are still accepted!), and it is doing =
-this=20
-now since hours rejecting several hundred MB traffic received. All othe=
-rs=20
-with normal traffic can pass to my SIP-Server without problems!
-@  marcos: Of course I could also drop the packets instead of rejecting=
-=20
-them, but I prefer this for the moment with: icmp-admin-prohibited.
-
-----
-
-I also noticed weeks before this attack happened that someone sends me=20
-SIP-REGISTER requests, always with the same
-User-Agent: friendly-scanner
-and I didn't know why. I suppose it was the one that started the attack=
- now,=20
-but I don't know because I don't remember the IPs of those first reques=
-ts.
-
-In the following links I found some interesting thoughts about this att=
-acks=20
-and a program to do those too!
-
-blog of SIP-vicious
-http://blog.sipvicious.org/
-
-=46AQ to SIP-vicious:
-http://code.google.com/p/sipvicious/wiki/FrequentlyAskedQuestions
-
-Storming SIP Security (pdf-discussion on the problem):
-http://resources.enablesecurity.com/resources/22_29_storming_sip.pdf
-
-
-Programs like FAIL2BAN are a good idea to use in addition to the above=20
-iptables rules, but fortunately I'm one of two coders writing scripts f=
-or a=20
-SIP-server in Perl (Net::SIP available at CPAN). I think I will write a=
-=20
-module to check the incoming SIP messages for recurring possibly malici=
-ous=20
-intentions, that module should drop identified attacks not rejected bef=
-ore=20
-by the firewall. I will think about the best way to do this.
-
-Regards
-
-Detlef Pilzecker
-Weitlahnerstra=DFe 8
-D - 83209 Prien am Chiemsee=20
+Michele
 
