@@ -1,53 +1,87 @@
-From: Kfir Lavi <lavi.kfir@gmail.com>
-Subject: send packet received by nflog
-Date: Tue, 30 Nov 2010 17:21:53 +0200
-Message-ID: <AANLkTi=Ef8ac6OzjYf0pmxr5R03=9TzZ-U5U6eE-vi1P@mail.gmail.com>
+From: Michele Codutti <michele.codutti@uniud.it>
+Subject: Re: ClusterIP network slowdown
+Date: Tue, 30 Nov 2010 17:00:19 +0100
+Message-ID: <1291132819.2488.127.camel@nerino>
+References: <1291107610.2488.46.camel@nerino>
+	 <AANLkTi=NnAvZ0A+St0zH9W8GUR0dpzAxJAa4XCx4YxXW@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:date:message-id
-         :subject:from:to:content-type:content-transfer-encoding;
-        bh=4g+Fj/7fu62XHYxwRaRTH1o2bvFasc3DWwMtwgDZB/E=;
-        b=c5luONBZoCE47ODP/E/CQD4AWnpTWCzKOnTDDbBYL/BmdzJX/t+dFzTjOKh8+fB40B
-         N73cWR1lfUpvK2Fj4ZE0RY/edvj6I5svro2eW7QqDikvvfunywpymABHpe5CMJ3v7Sm6
-         JOZgnFVjBuZlZZzdJ6f+GSc1TvqykSLvxxh3A=
+In-Reply-To: <AANLkTi=NnAvZ0A+St0zH9W8GUR0dpzAxJAa4XCx4YxXW@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Edison Figueira <efjgrub@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hi,
-I try to hack a simple demo program to forward each packet received by =
-nflog.
-I'm creating two rules:
-=C2=A0/sbin/ebtables --table broute --append BROUTING -i eth0 --nflog-g=
-roup
-5 --jump DROP
-/sbin/ebtables --table broute --append BROUTING --jump DROP
+Hi Edison, you're right, all the host on the same switch can see the
+packages directed to the clusterip. But this is not a problem because
+these other hosts are not affected by the slowdown. The only affected
+nodes are the ones that are using the clusterip.
+I cannot modify any configuration of any switch on my network without a
+long process for approval i can not try to enable the igmp snooping
+without a strong argument. How can igmp snooping relief some load on the
+clustered hosts? 
+There are any kernel parameters that i can tune to make clusterip behave
+better?
+I'm sorry for being so pedant but i need some precise technical
+information to modify something in my network.
 
-Then I run a listener on group 5.
-In order to send the packet I need the hw header and the payload.
-I can get them like this:
-nflog_get_msg_packet_hwhdr(nfa)
-payload_len =3D nflog_get_payload(nfa, &payload);
+Thanks.
 
-To send I use write:
-write(rawsock, pkt, pkt_len)
+Il giorno mar, 30/11/2010 alle 10.59 -0200, Edison Figueira ha scritto:
+> Hi Michele,
+> 
+> Both cases is because the CLUSTERIP uses broadcast addresses to
+> work, in the first case the message is because the packet is sent to
+> two machines and one of them always drops in order, to solve this
+> just disable debug netfilter.
+> 
+> The second case is probably because all the packages that are
+> being sent to the CLUSTERIP are being copied to all
+> ports on your switch, to confirm this do a tcpdump on any workstation.
+> 
+> The solution to this case is, enable "IGMP snooping" on your switch.
+> 
+> Att
+> 
+> Edison Figueira Junior
+> 
+> 2010/11/30 Michele Codutti <michele.codutti@uniud.it>
+> >
+> > Hello, in these days i had fun with the ClusterIP target associated to a
+> > web server. All is good and bright with the exception of two issues:
+> > - the message "CLUSTERIP: no conntrack!"
+> > - a general slowdown of the other network services (like ssh) of the two
+> > nodes of the cluster.
+> > To solve all my problems i've inserted this iptables rule:
+> > iptables -I INPUT 1 -m state --state INVALID -j DROP
+> > This is a solution that isn't good enough because i manage the apache2
+> > and the clustered ip with heartbeat2.
+> > Example: if i standby a node (for maintenance) and resume it after a
+> > while this can be a problem because heartbeat put the clusterip rule on
+> > top of the others so the dropping rule above became the second one and
+> > then the workaround had no effect.
+> > Why the clusterip had such an heavy impact on the networking? Before the
+> > clusterip my cluster was active-standby and i've got no problems at all.
+> > Now that the load per node is halved i noticed more load than before.
+> > The strangest thing is that (with the top tool) this load seem not exist
+> > and the nodes are not loaded at all:
+> > load average: 0.50, 0.36, 0.37
+> > How can i fix this without the dropping rule above?
+> > There is a way to see how the networking is loaded?
+> >
+> > Thanks in advance.
+> >
+> > Michele
+> >
+> > --
+> > To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> > the body of a message to majordomo@vger.kernel.org
+> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-The problem is that the hardware header and the payload are not one
-after the other in the memory, so I need to concatenate them to new
-buffer.
-This seems non intuitive for me, so I'm asking here.
 
-There are 6 bytes between the hw header and the payload in the memory.
-Those 6 bytes in between look like this in hex:
-0000 2000 0900
-
-Is it possible to concatenate two buffers to send as one packet?
-Sending those two buffers one after the other looks like two packets
-and not one.
-
-Thanks,
-Kfir
