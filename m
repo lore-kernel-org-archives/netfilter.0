@@ -1,39 +1,40 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: ClusterIP network slowdown
-Date: Thu, 02 Dec 2010 13:10:02 +0100
-Message-ID: <4CF78C9A.80302@netfilter.org>
-References: <1291107610.2488.46.camel@nerino>
+From: Alberto Quattrini Li <alberto.quattrinili@gmail.com>
+Subject: NAT with forwarding to multiple destinations
+Date: Thu, 2 Dec 2010 13:38:29 +0100
+Message-ID: <AANLkTinoWt8qNJKYhyjHbM5oOb-V6_aNAqTm=EJmU1Gn@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1291107610.2488.46.camel@nerino>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=g+xk88bss9zqCJEVtrFwrgclyLCnqyWl2VgZU83182g=;
+        b=lDoX+Hflw7S4azNNfOTeTZYekAzj7JSHGXW0KKq4L/VZ3JIpaX9BY2vP1xfc46k9QQ
+         mU/FKvQ5c9w+kEI3ifMcWOjON+8+iF3DFzpHOfpa5fd2/mTZhaz6hqadLmmRTzrqAbo+
+         20iwYkf+g+P5Hig36sHIglGeO88TVNbDoR3EQ=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Michele Codutti <michele.codutti@uniud.it>
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 30/11/10 10:00, Michele Codutti wrote:
-> Hello, in these days i had fun with the ClusterIP target associated to a
-> web server. All is good and bright with the exception of two issues:
-> - the message "CLUSTERIP: no conntrack!"
-> - a general slowdown of the other network services (like ssh) of the two
-> nodes of the cluster.
-> To solve all my problems i've inserted this iptables rule:
-> iptables -I INPUT 1 -m state --state INVALID -j DROP
-> This is a solution that isn't good enough because i manage the apache2
-> and the clustered ip with heartbeat2.
-> Example: if i standby a node (for maintenance) and resume it after a
-> while this can be a problem because heartbeat put the clusterip rule on
-> top of the others so the dropping rule above became the second one and
-> then the workaround had no effect.
-> Why the clusterip had such an heavy impact on the networking? Before the
-> clusterip my cluster was active-standby and i've got no problems at all.
-> Now that the load per node is halved i noticed more load than before.
-> The strangest thing is that (with the top tool) this load seem not exist
-> and the nodes are not loaded at all:
-> load average: 0.50, 0.36, 0.37
-> How can i fix this without the dropping rule above?
-> There is a way to see how the networking is loaded?
+Hi,
 
-A suggestion, better use the 'cluster' match.
+I would like to know if there is any way by using NAT feature to
+forward a message to multiple destinations. I know that there is the
+package TEE, but that works at IP level, and so you can duplicate the
+packet to another host (i.e. specifying another address, but not the
+port). Moreover I know that specifying a range of port in
+to-destination just load-balances the traffic flow within that range,
+so that solution doesn't work.
+
+For example, let's say that I have a server that wants to broadcast a
+message to different clients on the same machine (so identified by
+localhost:port; each client has different port obviously).
+So it would be very easy if the server can send the message to the
+"broadcast port" and when netfilter intercepts it, by matching that
+broadcast port as destination port, netfilter would forward it to
+destinations specified by the rule.
+
+Thanks
+Alberto
