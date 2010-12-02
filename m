@@ -1,65 +1,75 @@
-From: Alberto Quattrini Li <alberto.quattrinili@gmail.com>
-Subject: Re: NAT with forwarding to multiple destinations
-Date: Thu, 2 Dec 2010 13:49:03 +0100
-Message-ID: <AANLkTimdrDkbv_OUnFdPWCQ3So4NBB3yrfxv-gPGZG8E@mail.gmail.com>
-References: <AANLkTinoWt8qNJKYhyjHbM5oOb-V6_aNAqTm=EJmU1Gn@mail.gmail.com>
-	<4CF79516.9000003@coochey.net>
+From: "Fred Zwarts" <F.Zwarts@KVI.nl>
+Subject: ip6tables redirect
+Date: Thu, 2 Dec 2010 13:15:34 +0100
+Message-ID: <26D8DC6230C54AACAA60179B4D5E132C@WINDOWS.KVI.NL>
 Mime-Version: 1.0
+Content-Type: multipart/mixed;
+	boundary="----=_NextPart_000_04AD_01CB9223.01088F80"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type;
-        bh=vaXJ1bDSWy+hhZPTDBlC/iipWvSytDr1AzoO+lcMk6k=;
-        b=YMycY8ZsP9imXyKuJwUT0adavSzUDVbQULmdsyNdYjwRHzvwU+Qz6r5HIr8xWoMChI
-         Kr8F+JY14N7PVlO/0XRbUR2KKFGYPcT3r6xkX4f3wIkAdbuIW+pbwYHEr8oaiVX9A6vb
-         w7tvi8A+oBI39W18K+s0J8qIA4l255lNImmp0=
-In-Reply-To: <4CF79516.9000003@coochey.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Giles Coochey <giles@coochey.net>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Sorry I didn't specify it. Of course I use UDP protocol, so it is
-connectionless.
+This is a multi-part message in MIME format.
 
-Alberto
+------=_NextPart_000_04AD_01CB9223.01088F80
+Content-Type: text/plain;
+	charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
+We are moving from an IPv4 only environment to a mixed IPv4/IPv6 =
+environment.
+As a part of this exercise, we also need to transform our iptables =
+settings to settings for ip6tables.
+This seems to work, apart for one item, which is a redirection of a tcp =
+port of one of our servers to another port on the same server.
+On this server, we use for iptables a REDIRECT for the nat table.
+This does not work for ip6tables. It complains that it does not know the =
+option --to-port.
+My question is how to do such a port redirect with ip6tables.
 
-On Thu, Dec 2, 2010 at 1:46 PM, Giles Coochey <giles@coochey.net> wrote:
-> On 02/12/2010 13:38, Alberto Quattrini Li wrote:
->
-> Hi,
->
-> I would like to know if there is any way by using NAT feature to
-> forward a message to multiple destinations. I know that there is the
-> package TEE, but that works at IP level, and so you can duplicate the
-> packet to another host (i.e. specifying another address, but not the
-> port). Moreover I know that specifying a range of port in
-> to-destination just load-balances the traffic flow within that range,
-> so that solution doesn't work.
->
-> For example, let's say that I have a server that wants to broadcast a
-> message to different clients on the same machine (so identified by
-> localhost:port; each client has different port obviously).
-> So it would be very easy if the server can send the message to the
-> "broadcast port" and when netfilter intercepts it, by matching that
-> broadcast port as destination port, netfilter would forward it to
-> destinations specified by the rule.
->
-> Maybe you just want multi-cast.
->
-> You couldn't do this with connection based protocols such as TCP as you need
-> to handle each connection differently at higher layers.
->
-> --
-> Best Regards,
->
-> Giles Coochey
-> NetSecSpec Ltd
-> Email/MSN/Live Messenger: giles@coochey.net
-> Skype: gilescoochey
->
->
+When I searched the archives of this mailing list, I found that this =
+question pops up about once every two years,=20
+but a real answer I could not find. The contribution that comes the =
+closest to an answer is from 5 years ago:
+http://marc.info/?l=3Dnetfilter&m=3D111219622601073&w=3D2
+I fully agree with what is said there about NAT.
+But I wonder whether the discussions, mentioned there, are still =
+continuing, or that it resulted in some decision
+and whether something has been implemented in these five years.
+(Is there someone with inside information from the core team?)
+If nothing has been implemented yet, are there plans to do so in the =
+near future,=20
+or are there any recommendations for alternative solutions?
+
+Regards,
+Fred.Zwarts.
+------=_NextPart_000_04AD_01CB9223.01088F80
+Content-Type: text/x-vcard;
+	name="Fred Zwarts.vcf"
+Content-Transfer-Encoding: quoted-printable
+Content-Disposition: attachment;
+	filename="Fred Zwarts.vcf"
+
+BEGIN:VCARD
+VERSION:2.1
+N:Zwarts;Fred;;Dr
+FN:Fred Zwarts
+ORG:KVI;IT
+TITLE:Software system developer
+TEL;WORK;VOICE:+31 (0)50 363 3619
+TEL;HOME;VOICE:+31 (0)50 302 3635
+TEL;WORK;FAX:+31 (0)50 363 4003
+ADR;WORK:;;Zernikelaan 25;Groningen;Groningen;9747 AA;The Netherlands
+LABEL;WORK;ENCODING=3DQUOTED-PRINTABLE:Zernikelaan =
+25=3D0D=3D0AGroningen, Groningen 9747 AA=3D0D=3D0AThe Netherlands
+ADR;HOME:;;Meeuwstraat 6;Ten Boer;Groningen;9791 GE;The Netherlands
+LABEL;HOME;ENCODING=3DQUOTED-PRINTABLE:Meeuwstraat 6=3D0D=3D0ATen Boer, =
+Groningen 9791 GE=3D0D=3D0AThe Netherlands
+EMAIL;PREF;INTERNET:F.Zwarts@KVI.nl
+EMAIL;INTERNET:F.Zwarts@HetNet.nl
+REV:20101202T121534Z
+END:VCARD
+
+------=_NextPart_000_04AD_01CB9223.01088F80--
+
