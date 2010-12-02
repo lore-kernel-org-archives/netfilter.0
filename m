@@ -1,46 +1,41 @@
-From: "Fred Zwarts" <F.Zwarts@KVI.nl>
-Subject: Re: ip6tables redirect
-Date: Thu, 2 Dec 2010 15:55:51 +0100
-Message-ID: <1F82E3373D994D9B8DECFD9435B37B49@WINDOWS.KVI.NL>
-References: <26D8DC6230C54AACAA60179B4D5E132C@WINDOWS.KVI.NL> <alpine.LNX.2.01.1012021433430.5361@obet.zrqbmnf.qr>
+From: Alberto Quattrini Li <alberto.quattrinili@gmail.com>
+Subject: Re: NAT with forwarding to multiple destinations
+Date: Thu, 2 Dec 2010 16:17:32 +0100
+Message-ID: <AANLkTikqRS-eDLB2Ep=kDVok9FLOpqnDfg45MuFL7sBh@mail.gmail.com>
+References: <AANLkTinoWt8qNJKYhyjHbM5oOb-V6_aNAqTm=EJmU1Gn@mail.gmail.com>
+	<alpine.LNX.2.01.1012021430220.5361@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:in-reply-to
+         :references:date:message-id:subject:from:to:cc:content-type;
+        bh=02zAAWSAkgzbgq1Tic0GXWm9CTmcCgzbMIFSFBhC2aY=;
+        b=iL/9YhY/AeRlSND3a4L9KZ99LOknv/D3znaYmAZGwOT6rpF1sw+ec8QQDxcW5Pv6aT
+         2w0tX/r3Yho3jSRETB8IPnTlMPQq0bxAXuOPkV2Ks5VO+9HPklBD+1Won9qWv9btqFUu
+         vt1X/d13HoAciFBCEOcEMuHA282d9DSVPSDWQ=
+In-Reply-To: <alpine.LNX.2.01.1012021430220.5361@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: Jan Engelhardt <jengelh@medozas.de>
 Cc: netfilter@vger.kernel.org
 
-"Jan Engelhardt" jengelh@medozas.de wrote:
->> On Thursday 2010-12-02 13:15, Fred Zwarts wrote:
->> 
->>> We are moving from an IPv4 only environment to a mixed IPv4/IPv6
->>> environment. 
->>> On this server, we use for iptables a REDIRECT for the nat table.
->>> This does not work for ip6tables. It complains that it does not know
->>> the option --to-port. My question is how to do such a port redirect
->>> with ip6tables. 
->> 
->> Using -j TPROXY and appropriate local routing, I would say.
+> NAT does not do forwarding, and neither does Netfilter - routing will.
+I know that, but it works with just IP addresses, and not port.
 
-Thanks for the suggestion, but I cannot find documentation fro TPROXY,
-nor for the local routing.
+> The multiplexing you want is probably best done with a program that does
+> just that - think of sprucing up rinetd.
+As far as I know, all of the programs like that are programs that run
+as a process in the middle, so it introduces an overhead (because they
+are in userspace and have to receive the packet and then process it
+and finally forward it), whereas if it was processed by netfilter it
+would be quicker and more efficient (actually some testing and
+comparisons should be done, but in principle it ought to be so).
 
-The IPV4 definition is as follows:
+However it seems that there doesn't exist any solution in netfilter.
+Can you give me a reference (e.g. documentation and guides) to patch
+netfilter with such functionality?
 
-iptables -A PREROUTING -t nat -p tcp --dport 8080 -j REDIRECT --to-port 587
-
-For ip6tables I tried:
-
-ip6tables -A PREROUTING -t mangle -p tcp --dport 8080 -j TPROXY --on-port 587
-
-and
-
-ip6tables -A PREROUTING -t mangle -p tcp --dport 8080 -j TPROXY --to-port 587
-
-But then it complains again that it does not know option --to-port or --on-port.
-So, how should I specify the port to which the packet should be redirected?
-
-
-
+Alberto
