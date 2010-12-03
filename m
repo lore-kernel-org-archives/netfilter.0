@@ -1,30 +1,40 @@
-From: Jan Engelhardt <jengelh@medozas.de>
+From: Mr Dash Four <mr.dash.four@googlemail.com>
 Subject: Re: cross compilation of xtables fails
-Date: Fri, 3 Dec 2010 14:58:12 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1012031456370.22038@obet.zrqbmnf.qr>
-References: <4CF8F67B.8010504@googlemail.com>
+Date: Fri, 03 Dec 2010 14:03:31 +0000
+Message-ID: <4CF8F8B3.5080100@googlemail.com>
+References: <4CF8F67B.8010504@googlemail.com> <alpine.LNX.2.01.1012031456370.22038@obet.zrqbmnf.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4CF8F67B.8010504@googlemail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id
+         :disposition-notification-to:date:from:user-agent:mime-version:to:cc
+         :subject:references:in-reply-to:content-type
+         :content-transfer-encoding;
+        bh=+cKYaOqJ1yBN0S/LSDr34BoMTniRyeFHNvVSN+CiwYQ=;
+        b=kJJs6kBVasmb+RaxaVpyAhxFFmK3THtjW2x2FES2zZdpzg2ydv3NjuhMZAmJB7LZY8
+         zlMlReNPQYbIjhq15WBkrCeTU/58KiHmZI1jT1c6sWTRRnaB2l3FFsy/dc+pffFCSlXl
+         vcAraHaaomFSRqFNUc07AHgQimtVWuqeJrCq8=
+In-Reply-To: <alpine.LNX.2.01.1012031456370.22038@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jan Engelhardt <jengelh@medozas.de>
 Cc: netfilter@vger.kernel.org
 
-On Friday 2010-12-03 14:54, Mr Dash Four wrote:
 
-> I have tried to compile xtables (1.30) on a x86_64 machine for i686
-> architecture and that was not successful due to, in my opinion, errors in the
-> m4-generated gcc statements for compiling/linking when make is executed. This
-> is the log I get from make which I think causes the error (./configure passes
-> with flying colours - all dependencies - i686 and x86_64 alike - are satisfied,
-> I've made sure of that before I began this process):
+> So what is the actual configure command you used?
+>   
+I don't have it at hand as I am posting from a different office/machine, 
+but this is the gcc statement compiling libxt_quota2:
 
-> After examining the above error and investigating further I've noticed the
-> following: the C/CPPFLAGS I specified during the ./configure process which are
-> very specific (and vital!) to enable cross compilation (-m32, -mtune, -march
-> etc) have, seemingly, been ignored for 3 groups of files/objects:
-
-So what is the actual configure command you used?
+gcc -Wp,-MMD,./.libxt_quota2.oo.d,-MT,libxt_quota2.oo 
+-D_LARGEFILE_SOURCE=1 -D_LARGE_FILES -D_FILE_OFFSET_BITS=64     
+-D_REENTRANT -Wall -Waggregate-return -Wmissing-declarations     
+-Wmissing-prototypes -Wredundant-decls -Wshadow -Wstrict-prototypes     
+-Winline -pipe -DXTABLES_LIBDIR=\"/lib/xtables\"     -I../include  
+-I/home/zeek/rpm-builds/xtables-addons-1.30/extensions -DPIC -fPIC -O2 
+-g -pipe -Wall -Wp,-D_FORTIFY_SOURCE=2 -fexceptions -fstack-protector 
+--param=ssp-buffer-size=4 -m32 -march=i686 -mtune=pentium2 
+-fasynchronous-unwind-tables -o libxt_quota2.oo -c libxt_quota2.c;
