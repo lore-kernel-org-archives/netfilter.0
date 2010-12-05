@@ -1,29 +1,42 @@
-From: Alon Bar-Lev <alon.barlev@gmail.com>
-Subject: cmd-owner alternative
-Date: Sun, 5 Dec 2010 21:37:02 +0200
-Message-ID: <AANLkTikozmxU44ZNfkB91gsrbyM+ysEvPZPvASfJckEV@mail.gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: cmd-owner alternative
+Date: Sun, 5 Dec 2010 21:56:43 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1012052153120.17515@obet.zrqbmnf.qr>
+References: <AANLkTikozmxU44ZNfkB91gsrbyM+ysEvPZPvASfJckEV@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:date:message-id
-         :subject:from:to:content-type;
-        bh=4JBkpRnhKbpMIjFW7Gbg03M+vj6NgXMgJ/dl6zCtt7Q=;
-        b=wqXZlMkIrwMICGKwavloWYUJXUpel74sOIWFalDh+ib/CK1UjaWTRcW2jzGX/oxb3A
-         QdEIYlv5Qoy669fjBguq3np6pCOEBtqflN53EXJADrYYhMvjKKoQXYG1alaRjiSQbP78
-         G1Rq9CXulOeit+A0mzVaK3XqVZt6alb4Rv/04=
+In-Reply-To: <AANLkTikozmxU44ZNfkB91gsrbyM+ysEvPZPvASfJckEV@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Alon Bar-Lev <alon.barlev@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+On Sunday 2010-12-05 20:37, Alon Bar-Lev wrote:
 
-I see that the cmd-owner was dropped some [long] time ago, I do not
-know the reason, however I need this functionality.
-Is there any alternative for this? I mean to set up a static rule that
-assigns specific command-line netfilter acls?
+>Hello,
+>
+>I see that the cmd-owner was dropped some [long] time ago, I do not
+>know the reason, however I need this functionality.
 
-Thanks,
-Alon Bar-Lev.
+commit 34b4a4a624bafe089107966a6c56d2a1aca026d4
+Author: Christoph Hellwig <hch@lst.de>
+Date:   Sun Aug 14 17:33:59 2005 -0700
+
+    [NETFILTER]: Remove tasklist_lock abuse in ipt{,6}owner
+    
+    Rip out cmd/sid/pid matching since its unfixable broken and stands in the
+    way of locking changes to tasklist_lock.
+    
+    Signed-off-by: Christoph Hellwig <hch@lst.de>
+    Signed-off-by: Patrick McHardy <kaber@trash.net>
+    Signed-off-by: David S. Miller <davem@davemloft.net>
+
+
+It's a little late to come with "I need this" 5 years after the fact.
+
+>Is there any alternative for this? I mean to set up a static rule that
+>assigns specific command-line netfilter acls?
+
+SELinux, SNET, or other LSMs.
