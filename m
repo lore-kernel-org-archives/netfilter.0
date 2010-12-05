@@ -1,34 +1,29 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset-4.5 released
-Date: Sat, 4 Dec 2010 14:38:31 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1012041435270.3210@blackhole.kfki.hu>
+From: Alon Bar-Lev <alon.barlev@gmail.com>
+Subject: cmd-owner alternative
+Date: Sun, 5 Dec 2010 21:37:02 +0200
+Message-ID: <AANLkTikozmxU44ZNfkB91gsrbyM+ysEvPZPvASfJckEV@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=4JBkpRnhKbpMIjFW7Gbg03M+vj6NgXMgJ/dl6zCtt7Q=;
+        b=wqXZlMkIrwMICGKwavloWYUJXUpel74sOIWFalDh+ib/CK1UjaWTRcW2jzGX/oxb3A
+         QdEIYlv5Qoy669fjBguq3np6pCOEBtqflN53EXJADrYYhMvjKKoQXYG1alaRjiSQbP78
+         G1Rq9CXulOeit+A0mzVaK3XqVZt6alb4Rv/04=
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Hi,
+Hello,
 
-ipset-4.5 has been released, with the following fixes:
+I see that the cmd-owner was dropped some [long] time ago, I do not
+know the reason, however I need this functionality.
+Is there any alternative for this? I mean to set up a static rule that
+assigns specific command-line netfilter acls?
 
-userspace:
-    - Take into account the compile time setting of the default hash size
-      (reported by Dash Four)
-kernel:
-    - The iptreemap type used wrong gfp flags when deleting entries
-      (bug reported by Dash Four)
-
-You can download the new version from the usual places:
-        http://ipset.netfilter.org
-        git://git.netfilter.org/ipset.git
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Thanks,
+Alon Bar-Lev.
