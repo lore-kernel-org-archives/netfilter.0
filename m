@@ -1,60 +1,104 @@
-From: Alon Bar-Lev <alon.barlev@gmail.com>
-Subject: Re: cmd-owner alternative
-Date: Mon, 6 Dec 2010 07:42:23 +0200
-Message-ID: <AANLkTi=65PpUMjF6UVB6xQO5m=Mssc6Ekzws=acOD6qB@mail.gmail.com>
-References: <AANLkTikozmxU44ZNfkB91gsrbyM+ysEvPZPvASfJckEV@mail.gmail.com>
-	<alpine.LNX.2.01.1012052153120.17515@obet.zrqbmnf.qr>
+From: John Haxby <john.haxby@oracle.com>
+Subject: Re: REDIRECT problem
+Date: Mon, 06 Dec 2010 11:32:08 +0000
+Message-ID: <4CFCC9B8.1000902@oracle.com>
+References: <4C3ED61A.4050303@oracle.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=3f3cvak8blBI+KL2v5uQq/FgT2eMbAlY53+VyrHYa/4=;
-        b=l8DVvajJij0kjTUCblhf8JXfROjEozXv4OEl1chaWF17wu9YsmaoE2GiLqiS4W1wp8
-         nQmEF68d3JjyVeHS4aJmAYKGF1rCOkQlQSD0zGS6Z17r7Lm82+2gqGonmrZIlCZzpoLw
-         h6vG/6cyPuVQJK/WzoDtqcdRNN9gpgRYIx3Ec=
-In-Reply-To: <alpine.LNX.2.01.1012052153120.17515@obet.zrqbmnf.qr>
+In-Reply-To: <4C3ED61A.4050303@oracle.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Thanks.
-Better late than ever... :)
+On 15/07/10 10:34, John Haxby wrote:
+> Hello All,
+>
+> For some time now, I've been using REDIRECT (roughly) like this:
+>
+> $IPT -t nat -A PREROUTING -j proxyt
+> $IPT -t nat -A proxyt -d <network> -p tcp -m tcp -k RETURN
+>    (repeated lots of times for different networks)
+> $IPT -t nat -A proxyt -p tcp -m tcp ! --dport 3128 -j REDIRECT 
+> --to-ports 3128
+>
+> That works just fine: TCP connections to any network other than the 
+> specific get directed to the process listening on port 3128 (which  
+> then uses HTTP CONNECT on a proxy to connect to the Big Bad Internet).
+>
+> I use ebtables on a pair of machines running Xen to redirect traffic 
+> to this machine:
+>
+>     +-------------+     +-------------+
+>     | xen         |     |        xen  |
+>     |       +---+ |     | +---+       |
+>     | +---+ | P |=========| P'| +---+ |
+>     | | A | +-+-+ |     | +---+ | B | |
+>     | +---+   |   |     |       +---+ |
+>     |         |   |     |             |
+>     +---------|---+     +-------------+
+>               |
+>        Big Bad Internet
+>
+>
+> Traffic from A is redirected (by ebtables) to P which has these rules 
+> on it and that connection is just fine.  Traffic from B is directed to 
+> P' which then forwards traffic to P over a private network and until 
+> recently that worked just fine.
+>
+> Previously, P was running Fedora 11 with the 2.6.30.10-105.2.16.fc11 
+> kernel; but now its running Fedora13 with the 2.6.33.6-147.fc13.
+>
+> So, previously on B I could connect to (say) google.com:80 and traffic 
+> was redirect to the process listing on port 3128 via P' and the 
+> private link and everything was fine.
+>
+> Now, unfortunately, the same connection from B is hits the REDIRECT 
+> rule but the process listening on port 3128 doesn't come out of the 
+> accept(2) syscall.  The same connection from A does work.  The only 
+> visible difference is that traffic from A appears to come into P from 
+> eth0 and traffic from B appears to come from eth1.   Inserting a LOG 
+> target immediately before the REDIRECT rule shows the packet hitting 
+> that REDIRECT (and one immediately after doesn't show anything so the 
+> REDIRECT is definitely matching).
+>
+> Something seems to have changed between 2.6.30 and 2.6.33 and I'm at a 
+> loss to know what.  I've looked around a bit, but so far haven't found 
+> anything.
+>
+> Hopefully someone listening will be able to say "oh, you need to do 
+> <some magic>" :-)  Or that this should never have worked in the first 
+> place because of something horrible I was relying on.
 
-On Sun, Dec 5, 2010 at 10:56 PM, Jan Engelhardt <jengelh@medozas.de> wr=
-ote:
-> On Sunday 2010-12-05 20:37, Alon Bar-Lev wrote:
->
->>Hello,
->>
->>I see that the cmd-owner was dropped some [long] time ago, I do not
->>know the reason, however I need this functionality.
->
-> commit 34b4a4a624bafe089107966a6c56d2a1aca026d4
-> Author: Christoph Hellwig <hch@lst.de>
-> Date: =C2=A0 Sun Aug 14 17:33:59 2005 -0700
->
-> =C2=A0 =C2=A0[NETFILTER]: Remove tasklist_lock abuse in ipt{,6}owner
->
-> =C2=A0 =C2=A0Rip out cmd/sid/pid matching since its unfixable broken =
-and stands in the
-> =C2=A0 =C2=A0way of locking changes to tasklist_lock.
->
-> =C2=A0 =C2=A0Signed-off-by: Christoph Hellwig <hch@lst.de>
-> =C2=A0 =C2=A0Signed-off-by: Patrick McHardy <kaber@trash.net>
-> =C2=A0 =C2=A0Signed-off-by: David S. Miller <davem@davemloft.net>
->
->
-> It's a little late to come with "I need this" 5 years after the fact.
->
->>Is there any alternative for this? I mean to set up a static rule tha=
-t
->>assigns specific command-line netfilter acls?
->
-> SELinux, SNET, or other LSMs.
->
+In case anyone else comes looking this way, the problem commit was this one:
+
+  commit c1cf8422f0512c2b14f0d66bce34abb0645c888a
+Author: Stephen Hemminger <shemminger@vyatta.com>
+Date:   Fri Feb 20 08:25:36 2009 +0000
+
+     ip: add loose reverse path filtering
+
+     Extend existing reverse path filter option to allow strict or loose
+     filtering. (See http://en.wikipedia.org/wiki/Reverse_path_filtering).
+
+     For compatibility with existing usage, the value 1 is chosen for 
+strict mode
+     and 2 for loose mode.
+
+     Signed-off-by: Stephen Hemminger <shemminger@vyatta.com>
+     Signed-off-by: David S. Miller <davem@davemloft.net>
+
+
+The routing issue that I was having was that packets coming in on the 
+private link, having been redirected by ebtables on the second machine, 
+would be routed out on the normal connection (not shown in the diagram) 
+and so they we're being dropped before the REDIRECT rule even saw them.
+
+The required magic was to set net.ipv4.conf.default.rp_filter=2
+
+I suspect that this is going to bite quite a few people upgrading from 
+RHEL5 to RHEL6 who have previously been relying on loose reverse path 
+filtering with their asymmetric routing.
+
+jch
