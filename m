@@ -1,58 +1,46 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: iptable for ssh w/ changed port
-Date: Thu, 09 Dec 2010 14:04:01 +0100
-Message-ID: <4D00D3C1.6020404@plouf.fr.eu.org>
-References: <AANLkTinKoUAP4RPDxc7=f9fL7mQnc=Segu8XZPOsJLv2@mail.gmail.com>
+From: Matty Sarro <msarro@gmail.com>
+Subject: Need to translate source IP prior to routing for SNMP issue
+Date: Thu, 9 Dec 2010 10:55:47 -0500
+Message-ID: <AANLkTino0xLVHOjpYsgnsdzmztGiiWim6r-W6PkpVErE@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTinKoUAP4RPDxc7=f9fL7mQnc=Segu8XZPOsJLv2@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=tGdTwsTcsszM2HIVOEy0WjcQlMtJPGmswVoe50GYIhM=;
+        b=dpGqc1Dq1vDeikuF39ELaHG+Lhc/e276u/AdITvujLAxnRngxIfLSstbT19xdXKvAc
+         5aEqqYqzaMEzuHcYYyCVQw2Y6uL9OZLA7iH5XYd9zDOD/U3CBiqMBEQhwb5HlSrlflte
+         mcEkqGuuqvdRM3gJFuiu4JSmSpt14U/5kJdhQ=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello,
+Hey everyone! I am running into a rather interesting issue and was
+hoping someone may be able to help. We are running a custom SNMP
+daemon on a server (its part of a vendor application). The servers are
+all multihomed, with one NIC on a service/public facing subnet, and
+the other NIC on a management subnet. We need all SNMP traffic to use
+the management subnet.
 
-Henry E. a =E9crit :
-> I've been using the following iptable for ssh changed port on Fedora,
-> where the pc is not behind a wireless router.
-> 1.  How should this table change if the pc now is behind a router?
+We have set up 2 routing tables in IPROUTE2 to ensure all traffic goes
+out the interface that it comes in. It's tested, and everything is
+working except for SNMP. What happens with snmp is the snmp manager
+sends a request (for example, GET). The request is received by the
+SNMP daemon on the target server. The target server then generates a
+reply, but when it does, it uses the IP address of the service
+interface, not the management interface. We have reconfigured the
+application, but its still insisting on using that IP. The reply
+packet is then routed out the service interface because of the source
+IP. I have numerous packet traces verifying that this is the behavior.
 
-No change is needed.
+So what I need is the source IP address to be re-written from the
+service IP, to the management ip, so it can be routed out the correct
+interface. This ONLY needs to be done for snmp traffic, and it needs
+to be done prior to any routing. Is this possible? Any help would
+really be appreciated, this appears to be an application issue but we
+need to find a workaround until the vendor fixes it.
 
-> 2.  Are the lines for dport 500, 5353, 631, 137, 138 necessary?
-
-Not for SSH. These are for IPSec, multicast DNS, IPP (CUPS), Netbios
-(Samba).
-
->> *nat
->> :PREROUTING ACCEPT [0:0]
->> :OUTPUT ACCEPT [0:0]
->> :POSTROUTING ACCEPT [0:0]
->> -A PREROUTING -i eth0 -p tcp --dport ### -j DNAT --to-destination ##=
-=2E###.###.###:###
->> COMMIT
->> *filter
->> :INPUT ACCEPT [0:0]
->> :FORWARD ACCEPT [0:0]
->> :OUTPUT ACCEPT [0:0]
->> -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->> -A INPUT -p icmp -j ACCEPT
->> -A INPUT -i lo -j ACCEPT
->> -A INPUT -p ah -j ACCEPT
->> -A INPUT -p esp -j ACCEPT
->> -A INPUT -m state --state NEW -m udp -p udp --dport 500 -j ACCEPT
->> -A INPUT -m state --state NEW -m udp -p udp --dport 5353 -d 224.0.0.=
-251 -j ACCEPT
->> -A INPUT -m state --state NEW -m udp -p udp --dport 631 -j ACCEPT
->>
->> -A INPUT -m state --state NEW -m udp -p udp --dport 137 -j ACCEPT
->> -A INPUT -m state --state NEW -m udp -p udp --dport 138 -j ACCEPT
->> -A INPUT -m state --state NEW -m tcp -p tcp --dport ### -j ACCEPT
->> -A INPUT -j LOG --log-prefix firewall:
->> -A INPUT -j REJECT --reject-with icmp-host-prohibited
->> COMMIT
-
-Why do not simply setup sshd to listen on the alternate port instead of
-using NAT ?
+Thank you everyone!
