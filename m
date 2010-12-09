@@ -1,41 +1,53 @@
-From: Paul Freeman <netfilter@lists-in.noc4.net>
-Subject: Re: xtables-addons/geoip
-Date: Thu, 09 Dec 2010 07:42:05 +0000
-Message-ID: <80d000e763b7bb4ddbf9d6df3f7fc47a@noc4.net>
-References: <2e75b596bbcd5d290630dead789faffd@noc4.net>
- <alpine.LNX.2.01.1012020245310.17073@obet.zrqbmnf.qr>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Xtables2 Netlink spec
+Date: Thu, 09 Dec 2010 13:08:04 +0100
+Message-ID: <4D00C6A4.6090305@netfilter.org>
+References: <alpine.LNX.2.01.1011242314580.32646@obet.zrqbmnf.qr> <alpine.DEB.2.00.1011261950100.18019@blackhole.kfki.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1012020245310.17073@obet.zrqbmnf.qr>
+In-Reply-To: <alpine.DEB.2.00.1011261950100.18019@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: Jan Engelhardt <jengelh@medozas.de>, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, netfilter@vger.kernel.org
 
- On Thu, 2 Dec 2010 02:46:41 +0100 (CET), Jan Engelhardt 
- <jengelh@medozas.de> wrote:
-> On Monday 2010-11-29 18:08, Paul Freeman wrote:
->
->> Hi we seem to be having the following issue with the geoip match 
->> from
->> xtables_addons any input appreciated.
+On 26/11/10 20:01, Jozsef Kadlecsik wrote:
+> Hi Jan,
+> 
+> On Wed, 24 Nov 2010, Jan Engelhardt wrote:
+> 
+>> By request of Pablo, I am posting the Xtables2 Netlink interface 
+>> specification for review. Additionally, further documentation and 
+>> toolchain around it is available through the temporary project page at
 >>
->> ~ # iptables -A INPUT -p udp --dport 53 -m geoip --src-cc ES -j LOG
->> --log-prefix 'ES DNS: '
->> iptables: No chain/target/match by that name.
+>> 	http://jengelh.medozas.de/projects/xtables/
 >>
->> setsockopt(3, SOL_IP, 0x40 /* IP_??? */,
->> "filter\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 251488) 
->> = -1
->> ENOENT (No such file or directory)
->
-> This sounds like the kernel module isn't there. Which is contrary to
-> your lsmod posting. Hm, is geoip in /proc/net/ip_tables_matches?
->
+>> which currently includes
+>>
+>>  * User Documentation Chapter 1: Architectural Differences
+>>
+>>  * Developer Documentation Part 1: Netlink interface (WIP)
+>>    This is copied below to facilitate inline replies
+>>
+>>  * Runnable Linux source tree
+>>
+>>  * Runnable userspace library (libnetfilter_xtables)
+>>    with small test-and-debug program
+> [...]
+> 
+> Please add fine-grained error reporting to the protocol: in my opinion the 
+> main shortcoming of the current kernel-userspace xtables protocol is the 
+> lack of the proper error reporting. I mean, the new protocol should be 
+> able to carry back which rule caused the error, in the rule whether it was 
+> a general kind of error (ENOMEM), or a table, chain, match or target error 
+> and exactly what was the error at table/chain/match/target level.
+> 
+> Say, the TCPMSS target should be able to report back that it cannot be 
+> used outside of FORWARD, OUTPUT and POSTROUTING. Or that the rule must 
+> match TCP SYN packets.
 
- it looks possible that the issue may have been an older set of linux 
- headers (2.6.30)?
-
-
+If we follow the one message per rule basis, you can put several
+messages into one batch with different sequence numbers. Thus, you can
+know what message in the batch has triggered the error and the reason.
