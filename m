@@ -1,53 +1,63 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Xtables2 Netlink spec
-Date: Thu, 09 Dec 2010 13:08:04 +0100
-Message-ID: <4D00C6A4.6090305@netfilter.org>
-References: <alpine.LNX.2.01.1011242314580.32646@obet.zrqbmnf.qr> <alpine.DEB.2.00.1011261950100.18019@blackhole.kfki.hu>
+From: "Henry E." <henry7849@gmail.com>
+Subject: iptable for ssh w/ changed port
+Date: Thu, 9 Dec 2010 07:48:16 -0500
+Message-ID: <AANLkTinKoUAP4RPDxc7=f9fL7mQnc=Segu8XZPOsJLv2@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1011261950100.18019@blackhole.kfki.hu>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type:content-transfer-encoding;
+        bh=ICCuFSLW2gmqo+K1PB1TpJdFB343tIpSdOvJkMXGois=;
+        b=Xrjn6ZsH5+WRYtOtYVxbmKOka30lZpTdVz1xFmXJ2TgPc4fHec/qjZee4+DDdn2kJW
+         QEMrWi+VgrVwdaowEIBXDMoGsaQFq0tIb3u9tBLhK0YPptvF15vFluxd2IPN+snQfXxP
+         fPutUd7f6tiuaoqKw/+stk21cjXP6KYuWqU/c=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: Jan Engelhardt <jengelh@medozas.de>, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-On 26/11/10 20:01, Jozsef Kadlecsik wrote:
-> Hi Jan,
-> 
-> On Wed, 24 Nov 2010, Jan Engelhardt wrote:
-> 
->> By request of Pablo, I am posting the Xtables2 Netlink interface 
->> specification for review. Additionally, further documentation and 
->> toolchain around it is available through the temporary project page at
->>
->> 	http://jengelh.medozas.de/projects/xtables/
->>
->> which currently includes
->>
->>  * User Documentation Chapter 1: Architectural Differences
->>
->>  * Developer Documentation Part 1: Netlink interface (WIP)
->>    This is copied below to facilitate inline replies
->>
->>  * Runnable Linux source tree
->>
->>  * Runnable userspace library (libnetfilter_xtables)
->>    with small test-and-debug program
-> [...]
-> 
-> Please add fine-grained error reporting to the protocol: in my opinion the 
-> main shortcoming of the current kernel-userspace xtables protocol is the 
-> lack of the proper error reporting. I mean, the new protocol should be 
-> able to carry back which rule caused the error, in the rule whether it was 
-> a general kind of error (ENOMEM), or a table, chain, match or target error 
-> and exactly what was the error at table/chain/match/target level.
-> 
-> Say, the TCPMSS target should be able to report back that it cannot be 
-> used outside of FORWARD, OUTPUT and POSTROUTING. Or that the rule must 
-> match TCP SYN packets.
-
-If we follow the one message per rule basis, you can put several
-messages into one batch with different sequence numbers. Thus, you can
-know what message in the batch has triggered the error and the reason.
+Hello.
+I've been using the following iptable for ssh changed port on Fedora,
+where the pc is not behind a wireless router.
+1.=A0 How should this table change if the pc now is behind a router?
+2.=A0 Are the lines for dport 500, 5353, 631, 137, 138 necessary?
+thanks,
+Henry E.
+-----------------------------------------------------------------------=
+-----------------------------------------------------------------------=
+------------
+>
+> # Firewall configuration written by system-config-firewall
+> # Manual customization of this file is not recommended.
+> *nat
+> :PREROUTING ACCEPT [0:0]
+> :OUTPUT ACCEPT [0:0]
+> :POSTROUTING ACCEPT [0:0]
+> -A PREROUTING -i eth0 -p tcp --dport ### -j DNAT --to-destination ##.=
+###.###.###:###
+>
+> COMMIT
+> *filter
+> :INPUT ACCEPT [0:0]
+> :FORWARD ACCEPT [0:0]
+> :OUTPUT ACCEPT [0:0]
+> -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+> -A INPUT -p icmp -j ACCEPT
+> -A INPUT -i lo -j ACCEPT
+> -A INPUT -p ah -j ACCEPT
+>
+> -A INPUT -p esp -j ACCEPT
+> -A INPUT -m state --state NEW -m udp -p udp --dport 500 -j ACCEPT
+> -A INPUT -m state --state NEW -m udp -p udp --dport 5353 -d 224.0.0.2=
+51 -j ACCEPT
+> -A INPUT -m state --state NEW -m udp -p udp --dport 631 -j ACCEPT
+>
+> -A INPUT -m state --state NEW -m udp -p udp --dport 137 -j ACCEPT
+> -A INPUT -m state --state NEW -m udp -p udp --dport 138 -j ACCEPT
+> -A INPUT -m state --state NEW -m tcp -p tcp --dport ### -j ACCEPT
+> -A INPUT -j LOG --log-prefix firewall:
+>
+> -A INPUT -j REJECT --reject-with icmp-host-prohibited
+> COMMIT
