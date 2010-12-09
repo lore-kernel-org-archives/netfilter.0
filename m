@@ -1,46 +1,41 @@
-From: Shawn Delaney <sdelaney@juniper.net>
-Subject: conntrack problem with with ICMP defragmentenation
-Date: Wed, 8 Dec 2010 19:32:14 -0800
-Message-ID: <DBDEC20E6E29304D8AE5EAA493609B355764A0391D@EMBX02-HQ.jnpr.net>
+From: Paul Freeman <netfilter@lists-in.noc4.net>
+Subject: Re: xtables-addons/geoip
+Date: Thu, 09 Dec 2010 07:42:05 +0000
+Message-ID: <80d000e763b7bb4ddbf9d6df3f7fc47a@noc4.net>
+References: <2e75b596bbcd5d290630dead789faffd@noc4.net>
+ <alpine.LNX.2.01.1012020245310.17073@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+In-Reply-To: <alpine.LNX.2.01.1012020245310.17073@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Cc: Shawn Delaney <sdelaney@juniper.net>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+ On Thu, 2 Dec 2010 02:46:41 +0100 (CET), Jan Engelhardt 
+ <jengelh@medozas.de> wrote:
+> On Monday 2010-11-29 18:08, Paul Freeman wrote:
+>
+>> Hi we seem to be having the following issue with the geoip match 
+>> from
+>> xtables_addons any input appreciated.
+>>
+>> ~ # iptables -A INPUT -p udp --dport 53 -m geoip --src-cc ES -j LOG
+>> --log-prefix 'ES DNS: '
+>> iptables: No chain/target/match by that name.
+>>
+>> setsockopt(3, SOL_IP, 0x40 /* IP_??? */,
+>> "filter\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 251488) 
+>> = -1
+>> ENOENT (No such file or directory)
+>
+> This sounds like the kernel module isn't there. Which is contrary to
+> your lsmod posting. Hm, is geoip in /proc/net/ip_tables_matches?
+>
 
-I have what looks like a problem with the netfilter connection tracking defragmentation functionality. First, here's my setup:
+ it looks possible that the issue may have been an older set of linux 
+ headers (2.6.30)?
 
-I have a bridge (br0) with two enslaved interfaces (int0 and ext0). From the ext0 side, with a windows device, I ping with packet size 1932:
-
-ping -n 1 -l 1932 10.64.160.94
-
-ping request and reply is bridged.
-
-Now if I do the same with packet size 1933:
-
-ping -n 1 -l 1933 10.64.160.94
-
-the request never seems to make it to the bridge interface
-
-If I sniff the ping from the windows device on the ext0 side, I see two frames sent, request + fragment, as expected. 
-In the working case, if I sniff ext0 on the bridge device I see the same two frames received. 
-In the working case, if I sniff br0 on the bridge I see one frame (I assume the bridge reassembles the request + fragment).
-In the non working case,  if I sniff ext0 on the bridge device I see the same two frames received.
-In the non working case, if I sniff br0 I see nothing.
-
-It seems there is an issue with reassembly of  packets or fragments of a certain size, and am wondering If this is expected behavior or a bug.
-
-The MTU of all interfaces is 1500.
-I am using connection tracking. I don't think it's an issue with bridging because if I remove NAT and connection tracking modules, and repeat the above steps, I don't see the problem.
-The problem is seen on kernels 2.6.11 and 2.6.24
-
-Any help would be much appreciated.
-
-Regards.
 
