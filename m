@@ -1,8 +1,8 @@
 From: Mr Dash Four <mr.dash.four@googlemail.com>
 Subject: Re: xtables 1.31 compilation errors
-Date: Sat, 11 Dec 2010 01:34:08 +0000
-Message-ID: <4D02D510.9050700@googlemail.com>
-References: <4D02C8D5.6080805@googlemail.com> <alpine.LNX.2.01.1012110149030.30015@obet.zrqbmnf.qr> <4D02CDA1.6030408@googlemail.com>
+Date: Sat, 11 Dec 2010 01:47:19 +0000
+Message-ID: <4D02D827.5090208@googlemail.com>
+References: <4D02C8D5.6080805@googlemail.com> <alpine.LNX.2.01.1012110149030.30015@obet.zrqbmnf.qr> <4D02CDA1.6030408@googlemail.com> <4D02D510.9050700@googlemail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -12,11 +12,11 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
          :disposition-notification-to:date:from:user-agent:mime-version:to:cc
          :subject:references:in-reply-to:content-type
          :content-transfer-encoding;
-        bh=I02dHGmaWrml2jbVltD1R8kk+G3sIL5d7pUL63Cmmr8=;
-        b=D6+YPzDL1r/OgpAJBFw2oWIPLKDIuJZAJvnpg2/vAkIt9C5fTjXbs5+YREQZ0J9sFL
-         IFjmCQdYkYJfEPlokv03ifadSgn5mrWNIkpdnZpQPNY187Po4SkPCqEaw4o7gAI4r+4+
-         uBSm4OtTOvX1VDLSM7T5dStLaZjyTLP+MKSMs=
-In-Reply-To: <4D02CDA1.6030408@googlemail.com>
+        bh=z9e7Zwjmd945/X/EApxAH2wJb2gEU9/vD+Bdap6J8I8=;
+        b=vYGv8CpMBIZkfRfeiExDArV1ZdDGtwfR0hFfJOxQEdMCbU57+tlOBUQbHCpafYa0ui
+         i20aDdOAl0HB+i4oCMasXQXxloTPQwa/02mC8EB6M14zMFSE/5BQbuGQZeWj2lSvyUxI
+         dHtN0i4ALQCrPRS9UKcZYK9k8hppmGXgIOee4=
+In-Reply-To: <4D02D510.9050700@googlemail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="windows-1252"; format="flowed"
@@ -24,49 +24,45 @@ To: Jan Engelhardt <jengelh@medozas.de>
 Cc: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
 
 
->>
->> Hooray. Another victim to ALIGN. The problem is not xtables-addons,
->> though. (Please complain to your distro if they have not updated
->> linux-glibc-devel yet.)
->> Further info:
->> http://www.google.de/search?q=3DALIGN+xtables+kernel
->> http://bugs.gentoo.org/325257
-> Erm, I am not sure! I have no problems compiling 1.30 and XT_ALIGN is=
-=20
-> used there. For reference:
->
-> uname -r =3D 2.6.34.7-61.fc13.x86_64
-> rpm -q glibc-devel =3D 2.12.1-4 (for both x86_64 and i686 as I am doi=
-ng=20
-> cross compilation a lot)
->
-> So, is there something wrong with the above versions, which needs to=20
-> be fixed?
-=46urther to the above: The 'problematic' line, which SHOULD be include=
+> Further to the above: The 'problematic' line, which SHOULD be include=
 d=20
-in libxt_gradm.c is:
-#include "compat_user.h" (it actually states in the header file=20
-"linux-glibc-devel 2.6.34 header screwup", so at least someone admits t=
-o=20
-a screw up for once!)
+> in libxt_gradm.c is:
+> #include "compat_user.h" (it actually states in the header file=20
+> "linux-glibc-devel 2.6.34 header screwup", so at least someone admits=
+=20
+> to a screw up for once!)
+>
+> With this however, the problems are NOT fixed, I am getting this=20
+> further down the line:
+>
+> ipset_iphash.c: In function =91iphash_create_init=92:
+> ipset_iphash.c:42: error: =91IP_NF_SET_HASHSIZE=92 undeclared (first =
+use=20
+> in this function)
+> ipset_iphash.c:42: error: (Each undeclared identifier is reported onl=
+y=20
+> once
+> ipset_iphash.c:42: error: for each function it appears in.)
+> make[5]: *** [libipset_iphash.oo] Error 1
+> make[5]: *** Waiting for unfinished jobs....
+> make[5]: Leaving directory=20
+> `/home/zeek/rpmbuild/BUILD/xtables-addons-1.31/extensions/ipset'
+> make[4]: *** [user-all-local] Error 2
+> make[4]: *** Waiting for unfinished jobs....
+> make[4]: Leaving directory=20
+> `/home/zeek/rpmbuild/BUILD/xtables-addons-1.31/extensions/ipset'
+=2E..Also, IP_NF_SET_HASHSIZE is in ipset_ipportiphash.c,=20
+ipset_ipporthash.c and ipset_nethash.c, in neither of which=20
+IP_NF_SET_HASHSIZE is defined, apparently!
 
-With this however, the problems are NOT fixed, I am getting this furthe=
-r=20
-down the line:
+There is a definition of CONFIG_IP_NF_SET_HASHSIZE in ip_set.h which is=
+=20
+set to 1024.
 
-ipset_iphash.c: In function =91iphash_create_init=92:
-ipset_iphash.c:42: error: =91IP_NF_SET_HASHSIZE=92 undeclared (first us=
-e in=20
-this function)
-ipset_iphash.c:42: error: (Each undeclared identifier is reported only =
-once
-ipset_iphash.c:42: error: for each function it appears in.)
-make[5]: *** [libipset_iphash.oo] Error 1
-make[5]: *** Waiting for unfinished jobs....
-make[5]: Leaving directory=20
-`/home/zeek/rpmbuild/BUILD/xtables-addons-1.31/extensions/ipset'
-make[4]: *** [user-all-local] Error 2
-make[4]: *** Waiting for unfinished jobs....
-make[4]: Leaving directory=20
-`/home/zeek/rpmbuild/BUILD/xtables-addons-1.31/extensions/ipset'
+In 1.30 the value of 1024 is directly used, instead of=20
+IP_NF_SET_HASHSIZE (which SHOULD have been CONFIG_IP_NF_SET_HASHSIZE!),=
+=20
+so someone (Jozsef?) needs to fix this.
 
+I am amazed nobody checks these things - how do you compile this code=20
+people?
