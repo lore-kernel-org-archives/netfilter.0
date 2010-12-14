@@ -1,30 +1,31 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Xtables2 Netlink spec
-Date: Tue, 14 Dec 2010 04:46:47 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1012140446020.19653@obet.zrqbmnf.qr>
-References: <alpine.LNX.2.01.1011242314580.32646@obet.zrqbmnf.qr> <alpine.DEB.2.00.1011261950100.18019@blackhole.kfki.hu> <4D00C6A4.6090305@netfilter.org> <alpine.LNX.2.01.1012140257430.7384@obet.zrqbmnf.qr>
- <AANLkTikOeBAkGvPFUxw+FzHFZFNiaUzT7s7QxGcFgZtc@mail.gmail.com>
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: UDP MSS
+Date: Tue, 14 Dec 2010 09:17:50 +0530
+Message-ID: <AANLkTi=96gvK6gaAE7LcLafbFM-_xGuaMM7J0xwR7hXf@mail.gmail.com>
+References: <AANLkTi=qOQ0Rmyp78NEE9qSGOTFvgTDFSbDEDCtzoQ04@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <AANLkTikOeBAkGvPFUxw+FzHFZFNiaUzT7s7QxGcFgZtc@mail.gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:in-reply-to
+         :references:date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=NuS4O6GMudZeNEcwxXMYMocu9DymRw1nlnDNudaEaIw=;
+        b=Ljo14lMZnXBXASgiWWkf1UzipLM9oq3Tk50nV5SROrGDtsJL22bKkl7aylYhhODM6d
+         /ADHYGhF2v0+HdRVfbaNeGLye4WzELMs5djHsFFzyCU8tZUfYEIL/kQ151FN0vx43Itl
+         Nl0myEZ1eZP7AqOzXSGHXSv3Pu8VPMX7z5CQ8=
+In-Reply-To: <AANLkTi=qOQ0Rmyp78NEE9qSGOTFvgTDFSbDEDCtzoQ04@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: James Nurmi <jdnurmi@qwe.cc>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Netfilter mailing list <netfilter@vger.kernel.org>
 
+In udp , there is no mss discovey.So , if we=A0 set DF bit in IP packet
+=A0 and suppose an intermediate router does have disabled icmp-reply
+(thru iptables )=A0 and=A0 have less MTU than the sender.
 
-On Tuesday 2010-12-14 03:16, James Nurmi wrote:
->On Mon, Dec 13, 2010 at 6:01 PM, Jan Engelhardt <jengelh@medozas.de> wrote:
->>
->> Normally, the sequence number of a response message is simply
->> the one from the request message. But in a dump where there
->> can be multiple messages, do they all share the sequence number?
->
->In those cases, the sequence number does NOT change intra-messageset
->in my experience, instead it is assumed they may be received out of
->order.
+Then , router=A0 will drop the packet ,How client know to fragment the
+udp packet ?
 
-That would defeat the purpose (as seen from over here) of multipart
-messages in the first place.
+-Ratheesh
