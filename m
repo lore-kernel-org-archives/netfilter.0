@@ -1,46 +1,50 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Xtables2 Netlink spec
-Date: Wed, 15 Dec 2010 14:54:26 +0100
-Message-ID: <4D08C892.3080704@netfilter.org>
-References: <alpine.LNX.2.01.1011242314580.32646@obet.zrqbmnf.qr> <alpine.DEB.2.00.1011261950100.18019@blackhole.kfki.hu> <4D00C6A4.6090305@netfilter.org> <alpine.LNX.2.01.1012140257430.7384@obet.zrqbmnf.qr>
+From: Puneet Mohan <puneetmohan1@gmail.com>
+Subject: Re: ip6tables redirect
+Date: Thu, 16 Dec 2010 09:45:22 +0000 (UTC)
+Message-ID: <loom.20101216T104439-767@post.gmane.org>
+References: <26D8DC6230C54AACAA60179B4D5E132C@WINDOWS.KVI.NL> <alpine.LNX.2.01.1012021433430.5361@obet.zrqbmnf.qr> <1F82E3373D994D9B8DECFD9435B37B49@WINDOWS.KVI.NL> <alpine.LNX.2.01.1012022024560.23145@obet.zrqbmnf.qr> <alpine.LNX.2.01.1012151253070.23007@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1012140257430.7384@obet.zrqbmnf.qr>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1252"
+To: netfilter@vger.kernel.org
 
-On 14/12/10 03:01, Jan Engelhardt wrote:
-> 
-> On Thursday 2010-12-09 13:08, Pablo Neira Ayuso wrote:
->>
->> If we follow the one message per rule basis, you can put several
->> messages into one batch with different sequence numbers. Thus, you can
->> know what message in the batch has triggered the error and the reason.
-> 
-> /* The unwritten laws of netlink */
+Jan Engelhardt <jengelh <at> medozas.de> writes:
+
+> >>Thanks for the suggestion, but I cannot find documentation fro TPRO=
+XY,
+> >>nor for the local routing.
+> >
 >
-> Normally, the sequence number of a response message is simply
-> the one from the request message. But in a dump where there
-> can be multiple messages, do they all share the sequence number?
+Hello Mr. Jan Engelhardt,
+Thanks for pointing out the version. But even those rules are not getti=
+ng
+applied correctly. Pls point me if I am wrong. I took "Merge commit 'v1=
+=2E4.10'"
+from "http://dev.medozas.de/gitweb.cgi?p=3Diptables;a=3Dsummary"
 
-Yes, because they are the result of one request. Responses use the
-sequence number of the original request. Thus, you can identify what
-messages come as part of what requests.
+REAL PROBLEM
+>ip6tables -t mangle -A PREROUTING  -j ACCEPT
+       	This rule worked perfectly fine.
 
-> Must the response sequence numbers match at all, or is it like TCP
-> where each side has its own set?
+>ip6tables -t mangle -A PREROUTING  -j TPROXY
+       	ip6tables v1.4.10: TPROXY target: Parameter --on-port is requir=
+ed
 
-They have to match.
+>ip6tables -t mangle -A PREROUTING  -p tcp  -j TPROXY  --on-port 3128
+   	iptables: No chain/target/match by that name
 
-> BTW, can response messages - all those leading up to NLMSG_DONE -
-> have different nlmsg_type, or not?
+Can you see what exactly the problem is because in the last rule I supp=
+ose
+chain/target given is correct else the first rule wouldn=E2=80=99t have=
+ worked.
 
-They all have the same type.
+Regards,
+Puneet.Mohan
 
-> Does the nlmsg_type need to match the request type?
 
-No.
+
+
+
