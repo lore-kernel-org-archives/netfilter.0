@@ -1,62 +1,32 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Error reporting in Netlink (Re: Xtables2 Netlink spec)
-Date: Thu, 16 Dec 2010 14:51:07 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1012161444410.16086@obet.zrqbmnf.qr>
-References: <alpine.LNX.2.01.1011242314580.32646@obet.zrqbmnf.qr>  <alpine.DEB.2.00.1011261950100.18019@blackhole.kfki.hu>  <alpine.LNX.2.01.1012150547590.2888@obet.zrqbmnf.qr>  <alpine.DEB.2.00.1012150921330.3983@blackhole.kfki.hu> 
- <Pine.LNX.4.64.1012161041200.8276@ask.diku.dk>  <alpine.LNX.2.01.1012161322450.6728@obet.zrqbmnf.qr> <1292507013.3395.19.camel@lsx>
+From: Thomas Graf <tgraf@infradead.org>
+Subject: Re: Xtables2 Netlink spec
+Date: Thu, 16 Dec 2010 09:05:37 -0500
+Message-ID: <20101216140537.GA23297@canuck.infradead.org>
+References: <alpine.LNX.2.01.1011242314580.32646@obet.zrqbmnf.qr>
+ <alpine.DEB.2.00.1011261950100.18019@blackhole.kfki.hu>
+ <4D00C6A4.6090305@netfilter.org>
+ <alpine.LNX.2.01.1012140257430.7384@obet.zrqbmnf.qr>
+ <4D08C892.3080704@netfilter.org>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <1292507013.3395.19.camel@lsx>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <4D08C892.3080704@netfilter.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Thomas Graf <tgraf@redhat.com>
-Cc: Jesper Dangaard Brouer <hawk@diku.dk>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, netfilter@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Jan Engelhardt <jengelh@medozas.de>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, netfilter@vger.kernel.org
 
+On Wed, Dec 15, 2010 at 02:54:26PM +0100, Pablo Neira Ayuso wrote:
+> > BTW, can response messages - all those leading up to NLMSG_DONE -
+> > have different nlmsg_type, or not?
+> 
+> They all have the same type.
 
-On Thursday 2010-12-16 14:43, Thomas Graf wrote:
->
->>It also does not look very netlinky to not use nlattrs
->
->Why not use nlattr to encode the error string? It would make error
->messages easier to extend in the future. At some point we might want
->to add an offset field which points into the original netlink
->message describing the attribute which caused the failure.
+This is not a MUST. It is perfectly legal to f.e.:
 
-Is that a yes or a no?
-
-
->>>>But I do realize that it's much easier (and therefore quite
->>>>tempting) to construct the full error message in kernel space and
->>>>just send it back. However, that'd make quite hard to support
->>>>internationalization.
->
->Thinking of netlink protocols in general and netfilter in specific,
->maintaining a list of reserved error codes for each
->subsystem/target/ module will result in an unbearable pain if the
->error codes are not separated into individual namespaces for each
->module.
-
-I did not plan on giving extensions a numeric namespace; here it's
-largely strings only.
-
-
->> It's not like those strings change all that much.
->> 
->> >To support internationalization, we could just add an error-number-code 
->> >in front of the constructed error message?
->> 
->> Buying us what? If you change the string, but the gettext lookup is 
->> based upon a number, you will get an outdated translation, which is not 
->> nice either. IMHO: Better an English message than an inaccurate message.
->
->Do we *really* need internationalization for error messages on this
->level? Primarily userspace should be in charge of checking for all kinds
->of erroneous user input and produce meaningful context based,
->translatable error messages.
-
-Let's see, why does iproute2 not just do that, then? Because some
-things only the kernel knows about, so even if the parameters are
-correct from the userspace side of view, the kernel may reject the
-request nevertheless.
+ -> FOO_GET (seq=1, NLM_F_REQUEST)
+ <- FOO_DEL (seq=1, NLM_F_MULTI)
+ <- FOO_ADD (seq=1, NLM_F_MULTI)
+ <- NLMSG_DONE (seq=1)
