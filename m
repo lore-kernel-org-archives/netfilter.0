@@ -1,52 +1,42 @@
-From: Thomas Graf <tgraf@infradead.org>
-Subject: Re: Xtables2 Netlink spec
-Date: Fri, 17 Dec 2010 02:25:55 -0500
-Message-ID: <20101217072555.GC23297@canuck.infradead.org>
-References: <alpine.LNX.2.01.1011242314580.32646@obet.zrqbmnf.qr>
- <alpine.DEB.2.00.1011261950100.18019@blackhole.kfki.hu>
- <4D00C6A4.6090305@netfilter.org>
- <alpine.LNX.2.01.1012140257430.7384@obet.zrqbmnf.qr>
- <4D08C892.3080704@netfilter.org>
- <20101216140537.GA23297@canuck.infradead.org>
- <alpine.LNX.2.01.1012161514360.20048@obet.zrqbmnf.qr>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: ebtables ACCEPT policy vs ACCEPT target
+Date: Fri, 17 Dec 2010 10:27:44 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1012171024200.21893@obet.zrqbmnf.qr>
+References: <AANLkTi=w6jf1y8bH3=9AX7fLDORkbm2dAKS4uBv5KQPZ@mail.gmail.com> <alpine.LNX.2.01.1012170451520.21601@obet.zrqbmnf.qr> <AANLkTikWo-QEQ+xGBmZEnfjphM5SX5FfMRGAWG5FqTA_@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.01.1012161514360.20048@obet.zrqbmnf.qr>
+In-Reply-To: <AANLkTikWo-QEQ+xGBmZEnfjphM5SX5FfMRGAWG5FqTA_@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, netfilter@vger.kernel.org
+To: Robert Pipca <robertpipca@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-On Thu, Dec 16, 2010 at 03:22:07PM +0100, Jan Engelhardt wrote:
-> On Thursday 2010-12-16 15:05, Thomas Graf wrote:
-> >
-> > -> FOO_GET (seq=1, NLM_F_REQUEST)
-> > <- FOO_DEL (seq=1, NLM_F_MULTI)
-> > <- FOO_ADD (seq=1, NLM_F_MULTI)
-> > <- NLMSG_DONE (seq=1)
-> 
-> Oh great, now the confusion is complete. One person says this, another 
-> says something else. Best of all, the Netlink RFC leaves it unspecified, 
-> so it's all hearsay, beliefs and Perl5-style ("Source acts as normative 
-> reference") referencing. I guess we are doomed until the original 
-> Netlink3549 authors step up and tell us their intentions.
-> 
-> As I see it, we need a discussion to specify what is to be done with 
-> unspecified parts, with 3549 as an origin.
 
-The RFC was not written prior to the implementation but after it has
-been around for a while.
+On Friday 2010-12-17 05:00, Robert Pipca wrote:
+>> If the above is fine to you, why would you even execute these two:
+>
+>Apart from trying to understand the correct usage of ebtables rules, I
+>use it to _exclude_ IPs from a webproxy redirection.
+>
+>Something like:
+>
+>ebtables -t broute -A BROUTING -i eth1 -p ipv4 --ip-dst
+>200.152.32.0/24 -j redirect --redirect-target ACCEPT
+>ebtables -t broute -A BROUTING -i eth2 -p ipv4 --ip-src
+>200.152.32.0/24 -j redirect --redirect-target ACCEPT
 
-The current netlink code implementation defines the standard. It is the
-standard because we have not been breaking it and will never do.
+Odd combination of redirect with BROUTING. I am surprised ebtables
+even allows the use of "redirect" outside its nat table.
 
-Netlink is very open minded, it does not care if individual protocols
-define their own semantics. Most will never make use of the above but
-it is perfectly legal to do so.
+>ebtables -t broute -A BROUTING -i eth1 -p ipv4 --ip-proto tcp
+>--ip-dport 80  -j redirect --redirect-target DROP
+>ebtables -t broute -A BROUTING -i eth2 -p ipv4 --ip-proto tcp
+>--ip-sport 80  -j redirect --redirect-target DROP
 
-NLM_F_MULTI && NLMSG_DONE is simply a way to have the receiver
-continue recieving and parsing. The flag states "Wait, be patient,
-my reply consists of multiple messages" and nothing more.
+Complete rulesets, please. Per ebtables-save.
+Otherwise it is impossible on whether rules have any effect:
+
+>But, like I said, it doesn't work as expected. The packets don't get
+>"bridged" like when the policy applies.
