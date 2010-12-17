@@ -1,80 +1,55 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: PREROUTING DNAT *inconsistent* behavior
-Date: Fri, 17 Dec 2010 23:20:12 +0100
-Message-ID: <4D0BE21C.7030905@plouf.fr.eu.org>
-References: <032601cb9c12$7d1a4890$774ed9b0$@com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset-5.0 released
+Date: Fri, 17 Dec 2010 23:26:49 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1012172259100.10231@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <032601cb9c12$7d1a4890$774ed9b0$@com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Alec Matusis <matusis@matusis.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-Hello,
+Hi,
 
-Alec Matusis a =E9crit :
-> We are operating large TCP chat servers: 8 servers per machine, about=
- 70,000
-> outbound pps per machine. On each machine, all servers are listening =
-on port
-> 5228, and each server is listening on its own IP address. All IP addr=
-esses
-> are assigned to the same physical WAN interface, with virtual interfa=
-ces
-> eth0:*.=20
+I'm happy to announce the new branch of ipset and release it's first 
+element, ipset-5.0.
 
-Note : eth0:* are not virtual interfaces, they are just IP aliases.
+Just the most important improvements and changes compared to the 4.x tree:
 
-> The clients connect to an IP address of the server on port 443, and w=
-e have
-> the following port-forwarding rule in the NAT table:
-> *nat
-> :PREROUTING ACCEPT [0:0]
-> :POSTROUTING ACCEPT [0:0]
-> :OUTPUT ACCEPT [0:0]
-> -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-port 5228
+- The hash types support both IPv4 and IPv6.
+- The limitation that the elements of the ipporthash, ipportiphash and 
+  ipportnethash types had to come from a max /16 netblock is removed.
+- The limitation that the ipporthash and ipportnethash types could
+  not store host IP addresses is removed.
+- The hash set types with port sub-element are extended and the protocol
+  of the port is also stored. Now you can store in a single set
+  IP(v4/v6) IP address and TCP or UDP port number pairs, or even IP 
+  address and ICMP(v4/v6) type/code pairs, etc.
+- All set types in the 5.0 branch supports timeouts.
+- Addition or deletion of multiple elements (where applicable)
+  in one step is supported.
+- Netlink based kernel-userspace communication protocol.
+- Faster hashing method behind the hash types, which at the same time
+  uses less memory.
+- New, improved syntax.
+- Backward compatibility layer in syntax: old 4.x commands, saved
+  sets are accepted.
 
-Hmm, I wouldn't have used REDIRECT if you want to preserve the
-destination address. man iptables states : "It redirects the packet to
-the machine itself by changing the destination IP to the primary addres=
-s
-of the incoming interface." I would have used DNAT instead to make sure
-the destination address is not changed.
+Please note, due to the new protocol, the ipset 5.x utility cannot talk
+to the kernel modules from ipset 4.x and similarly, the ipset 4.x utility
+cannot communicate with the kernel part of ipset 5.x.
+Read the README file in the source tree and the new manpage of ipset.
 
-> The problem is that there is some very odd *rare* packets that tcpdum=
-p
-> shows, between the port 5228 on the server, and the clients. This is =
-NOT
-> expected, since 5228 is forwarded to 443. The rate of this unexpected
-> traffic is about 2pps, or about 0.003% of the total number of packets=
-=2E Most
-> of these packets (about 95% of them) are from the server to the clien=
-t, with
-> NOTHING from the client to the server.=20
+You can download the source code from:
+	http://ipset.netfilter.org
+	ftp://ftp.netfilter.org/pub/ipset/
+	git://git.netfilter.org/ipset.git, ipset-5 branch
 
-What are the other 5% then ?
-
-> #tcpdump  -n -ieth0 'port 5228'
-> 20:22:34.657672 IP server.ip.5228 > client1.ip.49892: P
-> 3242847898:3242847907(9) ack 3767768131 win 5840
-> 20:22:36.308379 IP server.ip.5228 > client2.ip.57065: P
-> 3305194993:3305195001(8) ack 579435130 win 46 <nop,nop,timestamp 2680=
-337205
-> 794384040>
-> 20:22:37.237683 IP server.ip.5228 > client3.34992: F
-> 2841447925:2841447925(0) ack 691623366 win 5840
-> 20:22:37.794555 IP server.ip.87.5228 > client5.52491: F
-> 3958524831:3958524831(0) ack 1914557806 win 46
-> These look like some martian packets, as if the firewall port-forward=
-ing
-> rule has been ignored for them.
-
-They are probably packets classified in the INVALID state by the
-connection tracking, which are ignored by the nat table. In a NAT setup=
-,
-INVALID packets should be dropped because of this. Now the real questio=
-n
-is : why are they classified in the INVALID state ?
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
