@@ -1,78 +1,37 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Xtables2 Netlink spec
-Date: Fri, 17 Dec 2010 15:56:19 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1012171511100.29660@obet.zrqbmnf.qr>
-References: <alpine.LNX.2.01.1011242314580.32646@obet.zrqbmnf.qr> <alpine.DEB.2.00.1011261950100.18019@blackhole.kfki.hu> <4D00C6A4.6090305@netfilter.org> <alpine.LNX.2.01.1012140257430.7384@obet.zrqbmnf.qr> <4D08C892.3080704@netfilter.org>
- <20101216140537.GA23297@canuck.infradead.org> <4D0B3387.5030807@netfilter.org>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Bastion Firewall Host Redirect Question
+Date: Fri, 17 Dec 2010 22:35:34 +0100
+Message-ID: <4D0BD7A6.7040908@plouf.fr.eu.org>
+References: <000601cb9b9e$c6e81e30$54b85a90$@com> <AANLkTi=xSuKsKw7UPiR1aTCCf0G9AGt7tiu6Unu3PCUA@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4D0B3387.5030807@netfilter.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <AANLkTi=xSuKsKw7UPiR1aTCCf0G9AGt7tiu6Unu3PCUA@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Billy Crook <billycrook@gmail.com>
+Cc: iic1tls@yahoo.com, netfilter <netfilter@vger.kernel.org>
 
-On Friday 2010-12-17 10:55, Pablo Neira Ayuso wrote:
+Hello,
 
->On 16/12/10 15:05, Thomas Graf wrote:
->> On Wed, Dec 15, 2010 at 02:54:26PM +0100, Pablo Neira Ayuso wrote:
->>>> BTW, can response messages - all those leading up to NLMSG_DONE -
->>>> have different nlmsg_type, or not?
->>>
->>> They all have the same type.
->> 
->> This is not a MUST. It is perfectly legal to f.e.:
->> 
->>  -> FOO_GET (seq=1, NLM_F_REQUEST)
->>  <- FOO_DEL (seq=1, NLM_F_MULTI)
->>  <- FOO_ADD (seq=1, NLM_F_MULTI)
->>  <- NLMSG_DONE (seq=1)
->
->What realistic situation will require this?
+Billy Crook a =E9crit :
+> On Tue, Dec 14, 2010 at 08:54, iic1tls <iic1tls@yahoo.com> wrote:
+>> I have attempted several iptables rules, including:
+>> iptables -v -t nat -A PREROUTING --in-interface eth1 --dport 80 -d
+>> www.website.com -j DNAT --to 149.10.10.25
+>=20
+> When you hit enter to commit this rule the iptables command resolves
+> www.website.com to an ip address, and then hands the request to add a
+> rule to netfilter.  The in-kernel rule will not change when
+> website.com's IP changes, which may happen at any time.  If clients
+> get a different IP for website.com (say they have multiple IPs), thei=
+r
+> access will not be intercepted by the iptables rule.
 
-This does:
+Conversely, access to any other site hosted at the same IP address will
+be intercepted.
 
--> NFXTM_CHAIN_DUMP<NFXTA_NAME>
-<- NFXTM_RULE_START<>
-<- NFXTM_EMATCH<NFXTA_NAME,NFXTA_REVISION,NFXTA_DATA>
-<- NFXTM_EMATCH<NFXTA_NAME,NFXTA_REVISION,NFXTA_DATA>
-<- NFXTM_ETARGET<NFXTA_NAME,NFXTA_REVISION,NFXTA_DATA>
-<- NFXTM_ETARGET<NFXTA_NAME,NFXTA_REVISION,NFXTA_DATA>
-<- NFXTM_RULE_END<>
-<- NFXTM_RULE_START<>
-<- NFXTM_ETARGET<NFXTA_VERDICT>
-<- NFXTM_RULE_END<>
-<- NLMSG_DONE
+> iptables does not filter on domain names.
 
-This is 9 messages with answers related to the ruleset.
-
-If only a single nlmsg_type was possible for NLM_F_MULTI replies,
-this is probably how things would have looked:
-
--> CHAIN_DUMP<NFXTA_NAME>
-<- CHAIN_DUMP<NFXTA_RULE_START>
-<- CHAIN_DUMP<NFXTA_MATCH_START>
-<- CHAIN_DUMP<NFXTA_NAME><NFXTA_REVISION><NFXTA_DATA>
-<- CHAIN_DUMP<NFXTA_MATCH_END>
-<- CHAIN_DUMP<NFXTA_MATCH_START>
-<- CHAIN_DUMP<NFXTA_NAME><NFXTA_REVISION><NFXTA_DATA>
-<- CHAIN_DUMP<NFXTA_MATCH_END>
-<- CHAIN_DUMP<NFXTA_TARGET_START>
-<- CHAIN_DUMP<NFXTA_NAME><NFXTA_REVISION><NFXTA_DATA>
-<- CHAIN_DUMP<NFXTA_TARGET_END>
-<- CHAIN_DUMP<NFXTA_TARGET_START>
-<- CHAIN_DUMP<NFXTA_NAME><NFXTA_REVISION><NFXTA_DATA>
-<- CHAIN_DUMP<NFXTA_TARGET_END>
-<- CHAIN_DUMP<NFXTA_RULE_END>
-<- CHAIN_DUMP<NFXTA_RULE_START>
-<- CHAIN_DUMP<NFXTA_TARGET_START>
-<- CHAIN_DUMP<NFXTA_VERDICT>
-<- CHAIN_DUMP<NFXTA_TARGET_END>
-<- CHAIN_DUMP<NFXTA_RULE_END>
-<- NLMSG_DONE
-
-This requires more forth-and-back between userspace and the kernel:
-19 messages instead. Using multiple nlmsg_type seems a good thing to
-exploit.
+Nor web site (HTTP Host:) names. Bottom line.
