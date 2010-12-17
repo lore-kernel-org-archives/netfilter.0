@@ -1,47 +1,49 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Error reporting in Netlink (Re: Xtables2 Netlink spec)
-Date: Fri, 17 Dec 2010 11:02:41 +0100
-Message-ID: <4D0B3541.2090501@netfilter.org>
-References: <alpine.LNX.2.01.1011242314580.32646@obet.zrqbmnf.qr> <alpine.DEB.2.00.1011261950100.18019@blackhole.kfki.hu> <alpine.LNX.2.01.1012150547590.2888@obet.zrqbmnf.qr> <alpine.DEB.2.00.1012150921330.3983@blackhole.kfki.hu> <Pine.LNX.4.64.1012161041200.8276@ask.diku.dk> <alpine.LNX.2.01.1012161322450.6728@obet.zrqbmnf.qr> <4D0A9F54.8080602@trash.net>
+From: Robert Pipca <robertpipca@gmail.com>
+Subject: Re: ebtables ACCEPT policy vs ACCEPT target
+Date: Fri, 17 Dec 2010 10:24:34 -0200
+Message-ID: <AANLkTin+p+BbpxnP=sD=fVv9usBu3KGTE4bMEpfPJrUO@mail.gmail.com>
+References: <AANLkTi=w6jf1y8bH3=9AX7fLDORkbm2dAKS4uBv5KQPZ@mail.gmail.com>
+	<alpine.LNX.2.01.1012170451520.21601@obet.zrqbmnf.qr>
+	<AANLkTikWo-QEQ+xGBmZEnfjphM5SX5FfMRGAWG5FqTA_@mail.gmail.com>
+	<alpine.LNX.2.01.1012171024200.21893@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D0A9F54.8080602@trash.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:in-reply-to
+         :references:date:message-id:subject:from:to:cc:content-type;
+        bh=5/9AREf7kFb5tfyi2+Qe92DkN5F5bLJIG2mUHtAgBsY=;
+        b=InOh8tN5VjrRV8RTp+GP6Z/2TKcGcfUgwu6mpLAF6iLVhHB8qDnkg+f+PbfeYSamaq
+         1Ss1nK5qOe797tNOYzifAq9Jt6Kit9OtG3io2gK82V3rXqgEZ2KQOEJUwJOD64k+8vPn
+         z/3pSaf71otxzNnySUrfo4UXynNT/F1TA+PKM=
+In-Reply-To: <alpine.LNX.2.01.1012171024200.21893@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Patrick McHardy <kaber@trash.net>
-Cc: Jan Engelhardt <jengelh@medozas.de>, Jesper Dangaard Brouer <hawk@diku.dk>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, netfilter@vger.kernel.org, tgraf@redhat.com
+Content-Transfer-Encoding: 7bit
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org
 
-On 17/12/10 00:23, Patrick McHardy wrote:
-> Am 16.12.2010 13:51, schrieb Jan Engelhardt:
->> On Thursday 2010-12-16 10:57, Jesper Dangaard Brouer wrote:
->>
->>> Cc.ed Thomas Graf (tgraf@redhat.com), Thomas presented some interesting 
->>> ideas on netlink error-codes and strings during NetConf 2010, see:
->>>
->>> http://vger.kernel.org/netconf2010.html 
->>> http://vger.kernel.org/netconf2010_slides/tgraf_netconf10.odp
->>
->> The idea is appending an error string is ok for Netlink as a protocol
->> (specification-wise), but the size constraints of the skbuffs in the
->> Linux may make its practical implementation a little harder. "Half of
->> the packet" is already used for the original request message, and
->> cramming an extra error string may bust the space.
->> It also does not look very netlinky to not use nlattrs ;-)
-> 
-> I agree, error strings don't look like a viable solution to me,
-> they are basically impossible to interpret by an application,
-> you run into localization issues and so on.
-> 
-> I'd suggest to return an errno value and the attribute causing
-> the error, possibly also the value (we append the original message
-> anyways, but in case of lists it might be hard to locate the specific
-> attribute). The harder cases are when a combination of multiple
-> attributes are responsible for the error, but still, the application
-> has to understand the kernel interpretation anyways, so I'd simply
-> return the errno and all attributes responsible. Leave interpretation
-> up to userspace.
+Hi Mr. Engelhardt,
 
-I'd also prefer an int. We can define the meaning of the error numbers
-in the protocol header file.
+2010/12/17 Jan Engelhardt <jengelh@medozas.de>:
+> Complete rulesets, please. Per ebtables-save.
+> Otherwise it is impossible on whether rules have any effect:
+
+These are my complete ebtables rules:
+
+ebtables -t broute -A BROUTING -i eth1 -p ipv4 --ip-dst
+200.152.32.0/24 -j redirect --redirect-target ACCEPT
+ebtables -t broute -A BROUTING -i eth2 -p ipv4 --ip-src
+200.152.32.0/24 -j redirect --redirect-target ACCEPT
+
+ebtables -t broute -A BROUTING -i eth1 -p ipv4 --ip-proto tcp
+--ip-dport 80  -j redirect --redirect-target DROP
+ebtables -t broute -A BROUTING -i eth2 -p ipv4 --ip-proto tcp
+--ip-sport 80  -j redirect --redirect-target DROP
+
+I have nothing else on any table/chain...
+
+Cheers,
+
+- Robert
