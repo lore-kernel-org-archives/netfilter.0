@@ -1,55 +1,70 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset-5.0 released
-Date: Fri, 17 Dec 2010 23:26:49 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1012172259100.10231@blackhole.kfki.hu>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: [ANNOUNCE] ipset-5.0 released
+Date: Sat, 18 Dec 2010 00:32:38 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1012180019381.29421@obet.zrqbmnf.qr>
+References: <alpine.DEB.2.00.1012172259100.10231@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <alpine.DEB.2.00.1012172259100.10231@blackhole.kfki.hu>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="utf-8"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-Hi,
 
-I'm happy to announce the new branch of ipset and release it's first 
-element, ipset-5.0.
+On Friday 2010-12-17 23:26, Jozsef Kadlecsik wrote:
 
-Just the most important improvements and changes compared to the 4.x tree:
+>Hi,
+>
+>I'm happy to announce the new branch of ipset and release it's first=20
+>element, ipset-5.0.
 
-- The hash types support both IPv4 and IPv6.
-- The limitation that the elements of the ipporthash, ipportiphash and 
-  ipportnethash types had to come from a max /16 netblock is removed.
-- The limitation that the ipporthash and ipportnethash types could
-  not store host IP addresses is removed.
-- The hash set types with port sub-element are extended and the protocol
-  of the port is also stored. Now you can store in a single set
-  IP(v4/v6) IP address and TCP or UDP port number pairs, or even IP 
-  address and ICMP(v4/v6) type/code pairs, etc.
-- All set types in the 5.0 branch supports timeouts.
-- Addition or deletion of multiple elements (where applicable)
-  in one step is supported.
-- Netlink based kernel-userspace communication protocol.
-- Faster hashing method behind the hash types, which at the same time
-  uses less memory.
-- New, improved syntax.
-- Backward compatibility layer in syntax: old 4.x commands, saved
-  sets are accepted.
+That is great to hear. There is a compile error with gcc 4.5
+and the latest ipset git snapshot:
 
-Please note, due to the new protocol, the ipset 5.x utility cannot talk
-to the kernel modules from ipset 4.x and similarly, the ipset 4.x utility
-cannot communicate with the kernel part of ipset 5.x.
-Read the README file in the source tree and the new manpage of ipset.
+  CC     ipset.o
+cc1: warnings being treated as errors
+ipset.c: In function =E2=80=98check_allowed=E2=80=99:
+ipset.c:344:26: error: comparison between =E2=80=98enum ipset_cmd=E2=80=
+=99 and =E2=80=98enum ipset_adt=E2=80=99
 
-You can download the source code from:
-	http://ipset.netfilter.org
-	ftp://ftp.netfilter.org/pub/ipset/
-	git://git.netfilter.org/ipset.git, ipset-5 branch
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+The kernel/ directory is not compilable at all:
+
+make -C /lib/modules/`uname -r`/build M=3D`pwd` all
+make[1]: Entering directory `/usr/src/linux-2.6.36-rc8-34-obj/x86_64/de=
+fault'
+make -C /usr/src/linux-2.6.36-rc8-34 O=3D/usr/src/linux-2.6.36-rc8-34-o=
+bj/x86_64/default/.=20
+  CC [M]  /home/jengelh/code/ipset/kernel/ip_set.o
+kernel/ip_set.c:31:50: error: expected expression before =E2=80=98;=E2=80=
+=99 token
+
+^ CONFIG_IP_SET_MAX not defined
+
+
+kernel/ip_set.c: In function =E2=80=98start_msg=E2=80=99:
+kernel/ip_set.c:735:40: error: =E2=80=98NFNL_SUBSYS_IPSET=E2=80=99 unde=
+clared (first use in this function)
+
+^ Neither is this, but this was to be expected. We should really
+make this constant available in the Linux kernel so that people
+are able to compile the out-of-tree ipset until it gets in.
+
+(I hear this issue would not have happened would we have used genetlink=
+!
+*nudges pablo* ;-)
+
+
+kernel/ip_set.c: At top level:
+kernel/ip_set.c:1633:3: warning: initialization from incompatible point=
+er type
+
+^ This is due to NFNL_CB_CONST not being set.
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
+el" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
