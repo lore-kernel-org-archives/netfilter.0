@@ -1,52 +1,48 @@
-From: Robert Pipca <robertpipca@gmail.com>
-Subject: Re: ebtables ACCEPT policy vs ACCEPT target
-Date: Fri, 17 Dec 2010 02:00:48 -0200
-Message-ID: <AANLkTikWo-QEQ+xGBmZEnfjphM5SX5FfMRGAWG5FqTA_@mail.gmail.com>
-References: <AANLkTi=w6jf1y8bH3=9AX7fLDORkbm2dAKS4uBv5KQPZ@mail.gmail.com>
-	<alpine.LNX.2.01.1012170451520.21601@obet.zrqbmnf.qr>
+From: Reuben Martin <reuben.m@gmail.com>
+Subject: Re: NAT with forwarding to multiple destinations
+Date: Thu, 16 Dec 2010 23:47:13 -0600
+Message-ID: <201012162347.13856.reuben.m@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type;
-        bh=PTJSCdp6jcn/IxAprNf8Zx/h+UEfzeh/nV8Md+hSm9U=;
-        b=d2EUwrLf1NGsGa9ZaKzQ2rIGfp13U/Bva1gOe0kH2cZi2LLU/WtCJetPjfQP/Tn88H
-         o3SOLlPOIlcsfTqXlGDX8P+XC/LrhiAhNcTVQ1un9bbjjEREJnk2smJ+0IuBbNb8HVuy
-         CPGKtq5aM/SnLWt72ClOq0y1mibhU6pPvTaH4=
-In-Reply-To: <alpine.LNX.2.01.1012170451520.21601@obet.zrqbmnf.qr>
+        h=domainkey-signature:received:received:from:to:subject:date
+         :user-agent:mime-version:content-type:content-transfer-encoding
+         :message-id;
+        bh=3Kfkp5BsFGtzs5t+KOeHsp8mz4sQ0DEUB4j9sguX7RY=;
+        b=xYJgMqn78gBbuO266JumOoUCV/kDQ+IEqtiUFTmv+vWu9pvGnE2ikVMbaTg9WuJVIP
+         VLUPXjCx0qK7n+M9d+EuYWN5Im+4LVBnL4pDTXQQLo7AQGvx9VC3DWBR1S3RdidGGz87
+         hq3ok7RToy/DkRMLoY0tMQ/WfP3nWlilqbSXw=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Hi Mr. Engelhardt,
 
-2010/12/17 Jan Engelhardt <jengelh@medozas.de>:
-> If the above is fine to you, why would you even execute these two:
+I appoligize that this reply will probably not thread correctly, I just joined this list because I'm also looking for something like this. So I'm just pasting this from the web archive...
 
-Apart from trying to understand the correct usage of ebtables rules, I
-use it to _exclude_ IPs from a webproxy redirection.
+On Friday 2010-12-03 15:28:52, Jan Engelhardt wrote:
+>On Thursday 2010-12-02 16:17, Alberto Quattrini Li wrote:
+>
+>>> The multiplexing you want is probably best done with a program that does
+>>> just that - think of sprucing up rinetd.
+>>
+>>As far as I know, all of the programs like that are programs that run
+>>as a process in the middle, so it introduces an overhead (because they
+>>are in userspace and have to receive the packet and then process it
+>>and finally forward it), whereas if it was processed by netfilter it
+>>would be quicker and more efficient (actually some testing and
+>>comparisons should be done, but in principle it ought to be so).
+>>
+>>However it seems that there doesn't exist any solution in netfilter.
+>>Can you give me a reference (e.g. documentation and guides) to patch
+>>netfilter with such functionality?
 
-Something like:
+I'm looking for something like this as well. Specifically I need to be able to create a rule that will take packets sent to a given specified address & port and forward them to either an ip range or and ipset. An ipset is preferred because that way the destinations can be dynamically changed. I've tried several reflectors/forwarders and they generally suck. Futhermore none of them are dynamic (that I have found at least) And of course this limiting something like this to datagram packets would probably be a smart precaution.
 
-ebtables -t broute -A BROUTING -i eth1 -p ipv4 --ip-dst
-200.152.32.0/24 -j redirect --redirect-target ACCEPT
-ebtables -t broute -A BROUTING -i eth2 -p ipv4 --ip-src
-200.152.32.0/24 -j redirect --redirect-target ACCEPT
+Has anybody come up with something for this? I'm nowhere near competent enough to tackle something like this on my own. I'm a lousy hack. Basically my need for this is to be able to send a live rtp video stream to a dynamically changing group of unicast destinations. But changing destinations means stopping and restarting the stream. Doing this outside the streaming app gets around this. Multicasting is of course a great solution, but I have to hook into other peoples networks where I have no control over rules and layout, and there is rarely multicast support. And even where there is multicast support, I sometimes have to send through VPNs or subnet gateways where the multicast wouldn't reach anyway.
 
-ebtables -t broute -A BROUTING -i eth1 -p ipv4 --ip-proto tcp
---ip-dport 80  -j redirect --redirect-target DROP
-ebtables -t broute -A BROUTING -i eth2 -p ipv4 --ip-proto tcp
---ip-sport 80  -j redirect --redirect-target DROP
 
-But, like I said, it doesn't work as expected. The packets don't get
-"bridged" like when the policy applies.
-
-I just used the easier example to show the issue :-)
-
-Cheers,
-
-- Robert
+>
+>You could write your own extension, based upon xt_TEE.
