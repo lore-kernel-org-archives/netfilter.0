@@ -1,51 +1,69 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [ANNOUNCE] libmnl 1.0.0 release
-Date: Sat, 18 Dec 2010 13:53:21 +0100
-Message-ID: <4D0CAEC1.6000409@netfilter.org>
-References: <4D0B71C3.7030806@netfilter.org> <1292649824.2371.14.camel@kushiel.sterenborg.info> <4D0CABC3.3090601@netfilter.org>
+From: Mr Dash Four <mr.dash.four@googlemail.com>
+Subject: Re: [ANNOUNCE] ipset-5.0 released
+Date: Sat, 18 Dec 2010 14:22:51 +0000
+Message-ID: <4D0CC3BB.8030801@googlemail.com>
+References: <alpine.DEB.2.00.1012172259100.10231@blackhole.kfki.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4D0CABC3.3090601@netfilter.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id
+         :disposition-notification-to:date:from:user-agent:mime-version:to:cc
+         :subject:references:in-reply-to:content-type
+         :content-transfer-encoding;
+        bh=/7yqT49IfP9iPKhDxClFtUhNf7ADkOEYP9HrlxZqEeo=;
+        b=dbr4Vrdht7AOPSMrJ1tvkqqCRDwKrC3SePQu90T6sc1q8QzPm7cdkDGineBUD8ZgZA
+         ZFLTzjyD98uT/xVsAv0C0N+Hs879aOyk8GCwe/M2xtu7ySlSSTkpsihr0K4suIEowXTV
+         ZU6pFvDuHKiVdZjaFvtgklpF2ZIj5HjijZFoc=
+In-Reply-To: <alpine.DEB.2.00.1012172259100.10231@blackhole.kfki.hu>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "Rob Sterenborg (lists)" <lists@sterenborg.info>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-On 18/12/10 13:40, Pablo Neira Ayuso wrote:
-> Hi Rob,
-> 
-> On 18/12/10 06:23, Rob Sterenborg (lists) wrote:
->> On Fri, 2010-12-17 at 15:20 +0100, Pablo Neira Ayuso wrote:
->>> Hi!
->>>
->>> The Netfilter project presents libmnl-1.0.0
->>
->> Hi,
->>
->> I have a CentOS 5.5 base with a 2.6.36.2 kernel installed. When
->> compiling libmnl I got these errors:
->>
->> nlmsg.c: In function 'mnl_nlmsg_fprintf_payload':
->> nlmsg.c:274: error: 'NLA_TYPE_MASK' undeclared (first use in this
->> function)
->> nlmsg.c:274: error: (Each undeclared identifier is reported only once
->> nlmsg.c:274: error: for each function it appears in.)
->> nlmsg.c:290: error: 'NLA_F_NESTED' undeclared (first use in this
->> function)
->> nlmsg.c:292: error: 'NLA_F_NET_BYTEORDER' undeclared (first use in this
->> function)
->> make: *** [nlmsg.lo] Error 1
->>
->> NLA_TYPE_MASK is used in nlmsg.c and attr.c. Searching I found that it
->> should be defined in linux/netlink.h but it's not there.
-> 
-> I'd appreciate if you can guess what version of the kernel header files
-> you're using (CentOS uses a mutant Linux kernel 2.6.18, right?).
-> 
-> I can make a patch based on your idea to make libmnl compile cleanly
-> with old Linux kernels.
 
-I bet that examples will not compile either in old Linux kernels. Try
-`make check'.
+> I'm happy to announce the new branch of ipset and release it's first 
+> element, ipset-5.0.
+>   
+I see that you have considered my suggestions and added port ranges to 
+the hash sets. That will make my job much easier! Thank you!
+
+Is there any difference between hash:net,ip and hash:ip,port? It seems 
+as though I can specify subnets (CIDR format) of different sizes in both 
+sets!
+
+I also spotted another feature I previously missed when looked at 
+5.0-pre10 - nesting of datatypes (I think the default is 4, which would 
+be enough for 99% of cases). That is absolutely brilliant as up until 
+now I have used multiple --match-set directives to do that job, which 
+can now be done 'internally' by ipset. It also addresses the issue of 
+'binding' (a feature dropped in earlier ipset releases and a feature I 
+badly missed if I am being honest), but the implementation this time is 
+much better. This set of features will be put to the test as I will be 
+using them quite extensively!
+
+I do have another question however: Currently the protocol part from the 
+port ranges (hash sets) is not mandatory. Does that mean that if I omit 
+it then the port range is matched *regardless* of the protocol (tcp or 
+udp)? For example, if I have 10.1.1.0/24,80 would that match 
+10.1.1.1:tcp:80 *and* 10.1.1.1:udp:80? If so, that is very good news!
+
+I downloaded the source to look at, but won't compile it just yet as I 
+am waiting for this version to be integrated in the xtables tree and 
+hoping that integration is flawless and without the silly compile-time 
+errors as was the case with previous xtables releases (*nudges Jan*).
+
+As part of that process I will try and create the .spec file needed to 
+build the Fedora rpm package (it would be for FC13 as I am yet to 
+migrate to FC14) and will submit it with them to integrate it with FC as 
+soon as possible.
+
+Final question from me: As part of the ipset-5.0 package you provide a 
+netlink patch file. I have read the README and it seems that the only 
+time that patch needs to be applied is if the kernel version is >= 
+2.6.31. Is that the case and are there any other 
+constraints/requirements? Do I apply this patch if the kernel version is 
+<= 2.6.31? It is important for me to know the answer to this question 
+when I prepare the .spec file for building the rpm for Fedora.
