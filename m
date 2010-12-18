@@ -1,100 +1,125 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: [ANNOUNCE] ipset-5.0 released
-Date: Sat, 18 Dec 2010 20:50:14 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1012182024240.11577@blackhole.kfki.hu>
-References: <alpine.DEB.2.00.1012172259100.10231@blackhole.kfki.hu> <1292657351.2371.73.camel@kushiel.sterenborg.info> <alpine.DEB.2.00.1012181149560.11002@blackhole.kfki.hu> <alpine.LNX.2.01.1012181635530.13544@obet.zrqbmnf.qr>
+Date: Sat, 18 Dec 2010 21:23:36 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1012182050280.11577@blackhole.kfki.hu>
+References: <alpine.DEB.2.00.1012172259100.10231@blackhole.kfki.hu> <4D0CC3BB.8030801@googlemail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1012181635530.13544@obet.zrqbmnf.qr>
+In-Reply-To: <4D0CC3BB.8030801@googlemail.com>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: "Rob Sterenborg (lists)" <lists@sterenborg.info>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: Mr Dash Four <mr.dash.four@googlemail.com>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-On Sat, 18 Dec 2010, Jan Engelhardt wrote:
+On Sat, 18 Dec 2010, Mr Dash Four wrote:
 
-> On Saturday 2010-12-18 12:13, Jozsef Kadlecsik wrote:
-> >On Sat, 18 Dec 2010, Rob Sterenborg (lists) wrote:
-> >
-> >> On Fri, 2010-12-17 at 23:26 +0100, Jozsef Kadlecsik wrote:
-> >> > 
-> >> > I'm happy to announce the new branch of ipset and release it's first 
-> >> > element, ipset-5.0.
-> >> 
-> >> I'm not a C programmer. I just tried to make ipset compile which seems
-> >> to have worked partially. I have no clue if I did the right thing so the
-> >> below should be reviewed.
-> >> 
-> >> I'm on CentOS 5.5 with a custom 2.6.36.2 kernel, gcc version 4.1.2
-> >> 20080704 (Red Hat 4.1.2-48).
-> >> 
-> >> When running 'configure' I got this error:
-> >> 
-> >> ./configure: line 11510: syntax error near unexpected token `[libmnl],'
-> >> ./configure: line 11510: `PKG_CHECK_MODULES([libmnl], [libmnl >= 1])'
-> >> 
-> >> CentOS' pkg-config is installed, so, for reference: I copied
-> >> '/usr/share/aclocal/pkg.m4' into the 'm4' directory, ran 'autogen.sh'
-> >> again and after that 'configure' had no problems.
-> >
-> >Autoconf has its own pitfalls... I can't reproduce it so I added
-> >'aclocal -I m4' to autogen.sh.
-> 
-> That is not necessary, because we already have ACLOCAL_AMFLAGS = -I m4
-> in Makefile.am.
+> > I'm happy to announce the new branch of ipset and release it's first
+> > element, ipset-5.0.
+> >   
+> I see that you have considered my suggestions and added port ranges to the
+> hash sets. That will make my job much easier! Thank you!
 
-Yes, I know. Still I had a little hope that that'd fix the issue.
-Do you have another idea? Should for example /usr/share/aclocal/pkg.m4 be 
-unconditionally copied into m4/ by autogen.sh?
+That was not so hard, I hesitated just a little bit to add new features 
+before the release.
  
-> >> Next, I got this:
-> >> 
-> >> session.c: In function 'attr2data':
-> >> session.c:566: error: 'NLA_F_NET_BYTEORDER' undeclared (first use in
-> >> this function)
-> >> session.c:566: error: (Each undeclared identifier is reported only once
-> >> session.c:566: error: for each function it appears in.)
-> >> session.c: In function 'decode_errmsg':
-> >> session.c:1216: error: 'NLA_F_NET_BYTEORDER' undeclared (first use in
-> >> this function)
-> >> session.c: In function 'attr_len':
-> >> session.c:1338: error: 'NLA_F_NET_BYTEORDER' undeclared (first use in
-> >> this function)
-> >
-> >Your kernel header files at the default location is not recent enough.
-> >
-> >I'm undecided yet how to solve it: maybe it should be checked by configure 
-> >and fail immediately.
-> 
-> Since this popped up in another thread: 2.6.24 is the minimal version
-> for this.
-> 
-> And somehow, it feels like it would suck to add extra 
-> #ifndef-#define-#endif to all projects (currently that would already be 
-> libmnl and ipset5) just for CentOS. If one does their own kernel, surely 
-> it's just a command away from `make headers_install`.
+> Is there any difference between hash:net,ip and hash:ip,port? It seems as
+> though I can specify subnets (CIDR format) of different sizes in both sets!
 
-Yes, exactly. I'm going to add checks to configure so it'll fail if the 
-definitions are missing from the header file. Also, I'll add just the 
-compiler warning flags which are supported by the actual compiler and thus
---disable-extra-flags can be eliminated.
+You meant hash:net,port and hash:ip,port. Of course they are different. In 
+hash:net,port you can store different sized netblock and port pairs, while 
+in hash:ip,port you can store just IP address and port pairs. Let me show 
+you an example:
+
+# ipset create foo hash:net,port
+# ipset add foo 192.168.0.0/30,80
+# ipset list foo
+Name: foo
+Type: hash:net,port
+Header: family inet hashsize 1024 maxelem 65536 
+Size in memory: 16792
+References: 0
+Members:
+192.168.0.0/30,tcp:80
+
+# ipset create bar hash:ip,port
+# ipset add bar 192.168.0.0/30,80
+# ipset list bar
+Name: bar
+Type: hash:ip,port
+Header: family inet hashsize 1024 maxelem 65536 
+Size in memory: 16632
+References: 0
+Members:
+192.168.0.0,tcp:80
+192.168.0.1,tcp:80
+192.168.0.2,tcp:80
+192.168.0.3,tcp:80
  
-> >Please read the README file: you must patch your kernel source with 
-> >netlink.patch, compile and install it. Otherwise the new nfnetlink id 
-> >won't handled by the kernel and thus ipset can't work.
-> 
-> ipset could try using both nfnetlink and genetlink, in case
-> NFNL_SUBSYS_IPSET is not defined, couldn't it?
+> I also spotted another feature I previously missed when looked at 5.0-pre10 -
+> nesting of datatypes (I think the default is 4, which would be enough for 99%
+> of cases). That is absolutely brilliant as up until now I have used multiple
+> --match-set directives to do that job, which can now be done 'internally' by
+> ipset. It also addresses the issue of 'binding' (a feature dropped in earlier
+> ipset releases and a feature I badly missed if I am being honest), but the
+> implementation this time is much better. This set of features will be put to
+> the test as I will be using them quite extensively!
 
-Yes, it could. It's unfortunate that old ipset modules could be compiled 
-without any kernel patching while new one needs it. But we are on the 
-right track: Dave accepted my jhash.h patch in net-next-2.6 and as it is 
-propagated into Patrick's tree, I'll be able to submit the ipset 5.x 
-kernel patches. But there's no need to rush: I hope I can get feedback 
-from other architectures, like Sparc or ARM too. (On Wednesday I'll be 
-able to dust off a Sparc machine and run the compilation and testsuite.)
+Binding was unfortunately a bad ideas therefore had to be dropped. The 
+multidimensional sets and the list of sets fairly well replace it.
+
+> I do have another question however: Currently the protocol part from the port
+> ranges (hash sets) is not mandatory. Does that mean that if I omit it then the
+> port range is matched *regardless* of the protocol (tcp or udp)? For example,
+> if I have 10.1.1.0/24,80 would that match 10.1.1.1:tcp:80 *and*
+> 10.1.1.1:udp:80? If so, that is very good news!
+
+No, that's just a shorthand notation. If the protocol is left out then TCP 
+is assumed. If you need the same port with TCP and UDP, then you have to 
+add both to the set. Just using the examle set bar above:
+
+# ipset add bar 192.168.0.1,tcp:53
+# ipset add bar 192.168.0.1,udp:53
+# ipset list bar
+Name: bar
+Type: hash:ip,port
+Header: family inet hashsize 1024 maxelem 65536 
+Size in memory: 16696
+References: 0
+Members:
+192.168.0.0,tcp:80
+192.168.0.1,tcp:53
+192.168.0.1,tcp:80
+192.168.0.2,tcp:80
+192.168.0.1,udp:53
+192.168.0.3,tcp:80
+ 
+> I downloaded the source to look at, but won't compile it just yet as I am
+> waiting for this version to be integrated in the xtables tree and hoping that
+> integration is flawless and without the silly compile-time errors as was the
+> case with previous xtables releases (*nudges Jan*).
+
+That won't be so easy for Jan, and it's up to him to decide, which ipset 
+tree he wants to support in xtables-addons: the old one which does not 
+need kernel patching or the new one with the burden of the netlink.patch.
+ 
+> As part of that process I will try and create the .spec file needed to build
+> the Fedora rpm package (it would be for FC13 as I am yet to migrate to FC14)
+> and will submit it with them to integrate it with FC as soon as possible.
+> 
+> Final question from me: As part of the ipset-5.0 package you provide a netlink
+> patch file. I have read the README and it seems that the only time that patch
+> needs to be applied is if the kernel version is >= 2.6.31. Is that the case
+> and are there any other constraints/requirements? Do I apply this patch if the
+> kernel version is <= 2.6.31? It is important for me to know the answer to this
+> question when I prepare the .spec file for building the rpm for Fedora.
+
+In order to support kernel versions below 2.6.31, I had to add a lot of 
+#ifdefs in xt_set.c to support the countless API changes in netfilter 
+targets and matches. Hm, maybe I could support kernel releases from 
+2.6.24. Below 2.6.24 there are missing netlink definitions as Jan 
+mentioned.
 
 Best regards,
 Jozsef
