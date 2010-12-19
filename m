@@ -1,50 +1,65 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: [ANNOUNCE] ipset-5.0 released
-Date: Sat, 18 Dec 2010 22:23:52 +0000
-Message-ID: <4D0D3478.30509@googlemail.com>
-References: <alpine.DEB.2.00.1012172259100.10231@blackhole.kfki.hu> <4D0CC3BB.8030801@googlemail.com> <alpine.DEB.2.00.1012182050280.11577@blackhole.kfki.hu> <4D0D2CF4.5070201@googlemail.com> <alpine.LNX.2.01.1012182304360.30262@obet.zrqbmnf.qr>
+Date: Sun, 19 Dec 2010 01:05:34 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1012190100180.11753@blackhole.kfki.hu>
+References: <alpine.DEB.2.00.1012172259100.10231@blackhole.kfki.hu> <1292657351.2371.73.camel@kushiel.sterenborg.info> <alpine.DEB.2.00.1012181149560.11002@blackhole.kfki.hu> <alpine.LNX.2.01.1012181635530.13544@obet.zrqbmnf.qr>
+ <alpine.DEB.2.00.1012182024240.11577@blackhole.kfki.hu> <alpine.LNX.2.01.1012182136190.19284@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id
-         :disposition-notification-to:date:from:user-agent:mime-version:to:cc
-         :subject:references:in-reply-to:content-type
-         :content-transfer-encoding;
-        bh=AgHAbz85cYe3F5ak1xSs395OmuFczIYZ2N2rejPTC1c=;
-        b=gzkGKeYm0NjomDhjDt0HPvN1xp+F4H8p9DMBL6dBX2ftObar5eIQ8JZXfCt6euSyGv
-         6qYydCzD9yLq0i0bcbAnNkqMBw5b9rtlQuGaPvRJ68GvI/himA56o8DiVi2Zennhv3Yp
-         6xOHLqsTSdm5KIxNvJQQrWiwhz7FWp8amufc0=
-In-Reply-To: <alpine.LNX.2.01.1012182304360.30262@obet.zrqbmnf.qr>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.01.1012182136190.19284@obet.zrqbmnf.qr>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Cc: "Rob Sterenborg (lists)" <lists@sterenborg.info>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
+On Sat, 18 Dec 2010, Jan Engelhardt wrote:
 
+> >from other architectures, like Sparc or ARM too. (On Wednesday I'll be 
+> >able to dust off a Sparc machine and run the compilation and testsuite.)
+> 
+> I already made this year's presents: a PPC64 is here,
+> but it yet needs to be installed...
+> 
+> You can use my sparc. Pierre Chifflier already had his ulogd
+> pieces tested here in pair programming with shared screen(1)
+> sessions (great stuff that!).
 
-Jan Engelhardt wrote:
-> On Saturday 2010-12-18 22:51, Mr Dash Four wrote:
->   
->>> Members:
->>> 192.168.0.0,tcp:80
->>> 192.168.0.1,tcp:53
->>> 192.168.0.1,tcp:80
->>> 192.168.0.2,tcp:80
->>> 192.168.0.1,udp:53
->>> 192.168.0.3,tcp:80
->>>       
->> By 'something' I mean either omission of the protocol, or 'all' to
->> be specified instead of the protocol to mean no matching on protocol
->> would be made (in other words the protocol to be disregarded).
->>     
->
-> If you don't check the protocol, you cannot know if there even is
-> a port number. Not all L4 protocols have ports.
->   
-OK, let me rephrase that: I do not wish to add 2x times as many members 
-in a particular set when I am not interested in the protocol match - 
-whether it is tcp or udp for me is irrelevant, all I am interested in is 
-the ip subnet and the port number.
+Let us see the fixes worked, see below
+ 
+> == sparcv9
+> 
+> 22:31 ares:~/code/ipset > make -k
+> make  all-recursive
+> make[1]: Entering directory `/home/jengelh/code/ipset'
+> Making all in lib
+> make[2]: Entering directory `/home/jengelh/code/ipset/lib'
+>   CC     data.lo
+>   CC     icmp.lo
+>   CC     icmpv6.lo
+>   CC     mnl.lo
+>   CC     parse.lo
+> cc1: warnings being treated as errors
+> parse.c: In function ?get_addrinfo?:
+> parse.c:637:11: error: cast increases required alignment of target type
+> parse.c:640:11: error: cast increases required alignment of target type
+
+Oh well, the good old Sparc issue. I put back the workaround and pushed.
+
+> 22:43 ares:../ipset/kernel > make
+
+Nobody is supposed to run `make' in the kernel/ subdir. You should have 
+typed one level above:
+
+ares:../ipset/ > make modules
+
+I have added a check to Makefile, to prevent it. 
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
