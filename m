@@ -1,52 +1,47 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+From: Jan Engelhardt <jengelh@medozas.de>
 Subject: Re: [ANNOUNCE] ipset-5.0 released
-Date: Sun, 19 Dec 2010 01:34:43 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1012190105460.11753@blackhole.kfki.hu>
-References: <alpine.DEB.2.00.1012172259100.10231@blackhole.kfki.hu> <4D0CC3BB.8030801@googlemail.com> <alpine.DEB.2.00.1012182050280.11577@blackhole.kfki.hu> <4D0D2CF4.5070201@googlemail.com>
+Date: Sun, 19 Dec 2010 06:56:25 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1012190643260.20608@obet.zrqbmnf.qr>
+References: <alpine.DEB.2.00.1012172259100.10231@blackhole.kfki.hu> <1292657351.2371.73.camel@kushiel.sterenborg.info> <alpine.DEB.2.00.1012181149560.11002@blackhole.kfki.hu> <alpine.LNX.2.01.1012181635530.13544@obet.zrqbmnf.qr>
+ <alpine.DEB.2.00.1012182024240.11577@blackhole.kfki.hu> <alpine.LNX.2.01.1012182136190.19284@obet.zrqbmnf.qr>
 Mime-Version: 1.0
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4D0D2CF4.5070201@googlemail.com>
+In-Reply-To: <alpine.LNX.2.01.1012182136190.19284@obet.zrqbmnf.qr>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: "Rob Sterenborg (lists)" <lists@sterenborg.info>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-On Sat, 18 Dec 2010, Mr Dash Four wrote:
 
-> Would it be possible to have 'something', which disregards the protocol on
-> port matching?
-> 
-> By 'something' I mean either omission of the protocol, or 'all' to be
-> specified instead of the protocol to mean no matching on protocol would be
-> made (in other words the protocol to be disregarded). This will be especially
-> useful for sets with quite a few number of members and will avoid unnecessary
-> duplication - as things stand I have to add the same number of members for
-> both tcp and udp protocols when I don't need any protocol matching - just the
-> subnets and port numbers I specified. Is this doable?
+On Saturday 2010-12-18 22:49, Jan Engelhardt wrote:
+>On Saturday 2010-12-18 20:50, Jozsef Kadlecsik wrote:
+>>>>>
+>>>>> ./configure: line 11510: syntax error near unexpected token `[libmnl],'
+>>>>> ./configure: line 11510: `PKG_CHECK_MODULES([libmnl], [libmnl >= 1])'
+>>>>> 
+>>>>> CentOS' pkg-config is installed, so, for reference: I copied
+>>>>> '/usr/share/aclocal/pkg.m4' into the 'm4' directory, ran 'autogen.sh'
+>>>>> again and after that 'configure' had no problems.
+>>>>
+>>>>Autoconf has its own pitfalls... I can't reproduce it so I added
+>>>>'aclocal -I m4' to autogen.sh.
+>>> 
+>>>That is not necessary, because we already have ACLOCAL_AMFLAGS = -I m4
+>>>in Makefile.am.
+>>
+>>Yes, I know. Still I had a little hope that that'd fix the issue.
+>>Do you have another idea? Should for example /usr/share/aclocal/pkg.m4 be 
+>>unconditionally copied into m4/ by autogen.sh?
+>
+>autoreconf normally has /usr/share/aclocal in its search path,
+>and I can say autoreconf does the job properly in CentOS 4.x.
+>Ima gonna setup a centos5 vm..
 
-Use set types without port sub-part, like hash:net or hash:ip, etc.
-I don't really see why you would want to use a type with port and then 
-ignore it.
+I tried that now, and I see no problems relating to
+PKG_CHECK_MODULES. Something looks flakey on the OP's machine.
 
-> > In order to support kernel versions below 2.6.31, I had to add a lot of
-> > #ifdefs in xt_set.c to support the countless API changes in netfilter
-> > targets and matches. Hm, maybe I could support kernel releases from 2.6.24.
-> > Below 2.6.24 there are missing netlink definitions as Jan mentioned.
-> >   
-> The way I see it, it is best to leave 4.x tree for versions up to 2.6.24 and
-> leave 5.x for newer versions and then decide whether the netlink patch should
-> be applied (my understanding is that if the kernel version is >= 2.6.31 the
-> patch definitely needs to be applied - is that right?).
-
-The patch need to be applied below as well. And another version is 
-required for kernels before the osf match was applied.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+What has been a problem in my test is that AC_PROG_GREP is not
+known... I think I found a new height to RHEL obsolescence. RH5
+(2007) ships autoconf 2.59 from Nov 2003.
