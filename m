@@ -1,52 +1,29 @@
-From: Peter Phaal <peter.phaal@gmail.com>
-Subject: sFlow probe using netfilter/ULOG
-Date: Sun, 19 Dec 2010 13:04:46 -0800
-Message-ID: <AANLkTinenfPTsqA-CKXBs0tuj9cCMyy+sCQV14-SEvND@mail.gmail.com>
+From: Reuben Martin <reuben.m@gmail.com>
+Subject: ipsets: examples?
+Date: Sun, 19 Dec 2010 22:37:43 -0600
+Message-ID: <201012192237.43878.reuben.m@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:date:message-id
-         :subject:from:to:content-type;
-        bh=Ed3XF8cfdnd2jAhlgFhWPhHwCbqPti2ir3tzLYQIfIQ=;
-        b=xjf7H/KxOxsQDxJQg/CongSMubq6+yxRHpvXZvpcCv4njRV2tBGczOZDrzQE1u4by0
-         N69WZQeW9ymHse/S5gEuhVX6s7pVll2nMPR3bNBdMPAgBFhKS6ZrXYQmjEp6OXNSeEFB
-         0ENBarrGVqqUyh3nac2c2dYwl1JhP++5AbP+Q=
+        h=domainkey-signature:received:received:from:to:subject:date
+         :user-agent:mime-version:content-type:content-transfer-encoding
+         :message-id;
+        bh=4NBQH6BK7RLURJaDJbh1evi/H1MOXU/fH7VJgU62jpw=;
+        b=cRHAN7G8lg+tFnsB31oIEKeoDVHJS42oO2WzOTga0RDNZxED4n1DrKVuuEfCsn9B/Q
+         wq4+chyrxOlwdQVeD0Npf1F6sdrDgDcbQ5mlNhTDUSw3Xnc61vv/zEi4sr4PK8pp34Tz
+         gMorSdQnnxbeBhRCgH//3H7IdPoLf4FWDHvFI=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi,
 
-I was reading the NetFlow/sFlow/IPFIX probe discussion from earlier
-this year and thought there might be some interest the recent
-ULOG/sFlow implementation in the Host sFlow project:
-http://host-sflow.sourceforge.net
+I'm trying to put together an extension to forward udp packets to an arbritary set of destinations using ipsets. Specifically I want the extension to be able to take either an ipmap or iphash as a set of destinations for the forwarded udp packets. (I'm starting with the rawdnat, stripping out the tcp code, and changing it so that it duplicates the packet as needed for destinations instead of changing the dest address in the origional packet.
 
-It turned out that the random sampling capability in the statistic
-module combined with ULOG provided the hooks needed to implement
-sFlow:
-http://blog.sflow.com/2010/12/ulog.html
+But I'm having a hard time finding code examples of how to use ipsets. How do I take an ipset as an argument for an extension? How do I test the set type to make sure it's an ipmap or iphash? How do I iterate over the set? Is it an array, linked list, etc?
 
-I do have a few questions:
+I've only been poking around for a couple hours with the xtables code, so I am by no means very familiar with the API.
 
-1. When sampling the INPUT chain it is possible to get the layer 2
-header. Sampling the OUTPUT chain only provides the IP header. I
-understand that the layer 2 header hasn't been constructed yet, but is
-there a hook further down the netfilter chain where the layer 2 header
-is available?
-
-2. We are also looking at an ebtables implementation. Is it possible
-to perform random sampling in ebtables?
-
-3. Finally, is there a way to programmatically retrieve the packet
-counter associated with a rule? Ideally we would like to be able to
-tag the sFlow monitoring rules and retrieve their packet counters. I
-know its possible use a script to parse the output of iptables -L
---verbose to get counter values, but it isn't the most efficient
-solution.
-
-Thanks,
-Peter
+-Reuben
