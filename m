@@ -1,62 +1,78 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipsets: examples?
-Date: Tue, 21 Dec 2010 10:36:59 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1012211032420.15250@blackhole.kfki.hu>
-References: <201012192237.43878.reuben.m@gmail.com> <alpine.DEB.2.00.1012201622001.14191@blackhole.kfki.hu> <201012201418.14281.reuben.m@gmail.com>
+From: "Rob Sterenborg (lists)" <lists@sterenborg.info>
+Subject: Re: [ANNOUNCE] ipset-5.0 released
+Date: Tue, 21 Dec 2010 12:14:14 +0100
+Message-ID: <1292930054.3313.15.camel@ns014530.dcyb.net>
+References: <alpine.DEB.2.00.1012172259100.10231@blackhole.kfki.hu>
+	 <1292657351.2371.73.camel@kushiel.sterenborg.info>
+	 <alpine.DEB.2.00.1012181149560.11002@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <201012201418.14281.reuben.m@gmail.com>
+In-Reply-To: <alpine.DEB.2.00.1012181149560.11002@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Reuben Martin <reuben.m@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-On Mon, 20 Dec 2010, Reuben Martin wrote:
+On Sat, 2010-12-18 at 12:13 +0100, Jozsef Kadlecsik wrote:
 
-> On Monday, December 20, 2010, Jozsef Kadlecsik wrote:
+Hi Jozsef,
+
+> > When running 'configure' I got this error:
 > > 
-> > On Sun, 19 Dec 2010, Reuben Martin wrote:
+> > ./configure: line 11510: syntax error near unexpected token `[libmnl],'
+> > ./configure: line 11510: `PKG_CHECK_MODULES([libmnl], [libmnl >= 1])'
 > > 
-> > > I'm trying to put together an extension to forward udp packets to an 
-> > > arbritary set of destinations using ipsets. Specifically I want the 
-> > > extension to be able to take either an ipmap or iphash as a set of 
-> > > destinations for the forwarded udp packets. (I'm starting with the 
-> > > rawdnat, stripping out the tcp code, and changing it so that it 
-> > > duplicates the packet as needed for destinations instead of changing the 
-> > > dest address in the origional packet.
-> > 
-> > I don't really see why you need to embed ipset. Why don't you call it as a 
-> > normal match and use your extension as a target?
+> > CentOS' pkg-config is installed, so, for reference: I copied
+> > '/usr/share/aclocal/pkg.m4' into the 'm4' directory, ran 'autogen.sh'
+> > again and after that 'configure' had no problems.
 > 
-> I think I have misunderstood what can be done with ipsets. I knew you 
-> could use it as a match, but for some reason I though it had an API to 
-> allow other extensions to use sets as targets. (i.e. my intention is, as 
-> you suggested, to use the extension as a target)
+> Autoconf has its own pitfalls... I can't reproduce it so I added
+> 'aclocal -I m4' to autogen.sh. After checking out the git tree, could you 
+> give it a try whether it solves the issue?
 
-But what is the difference between
+Call me stupid, but I couldn't figure out how to download the git branch
+using git (when I did, I downloaded the 4.5 tree), but I did see it on
+the web inferface. I downloaded today's snapshot from the git-5 branch;
+I hope that's the same. I still get the same error however.
 
-... -m set --match-set foo src -j YOUR_TARGET
+I've resolved the other issues I had: I should have thought of
+installing the accompanying kernel header files.
 
-and
+> > Finally, when trying the new ipset it seems that except for 'version',
+> > every command I tried returns 'Invalid argument':
+> > 
+> > (Yes I know this is incorrect syntax, but now I know it's trying to do
+> > something besides giving me 'Invalid argument'.)
+> > # ipset create TEST hash   
+> > ipset v5.0: Syntax error: typename 'hash' is unkown
+> > 
+> > (As per ipset.8 example.)
+> > # ipset create foo bitmap:ip range 192.168.0.0/16
+> > ipset v5.0: Kernel error received: Invalid argument
+> > 
+> > # ipset list               
+> > ipset v5.0: Kernel error received: Invalid argument
+> > 
+> > # lsmod|grep set
+> > ip_set                 16790  0 
+> > nfnetlink               3179  2 ip_set,nf_conntrack_netlink
+> > 
+> > So, I guess something must have gone wrong when compiling ipset anyhow.
+> 
+> Please read the README file: you must patch your kernel source with 
+> netlink.patch, compile and install it. Otherwise the new nfnetlink id 
+> won't handled by the kernel and thus ipset can't work.
 
-... -j YOUR_TARGET
+I did this. The patch succeeded and compilation went, except for pkg.m4
+which is easily resolved, without errors that I can see. I still get the
+above results however.
 
-where your target calls internally the same or hardcoded ipset match?
- 
-> Is there any way via the standard API to request the contents of a named 
-> set? That's really what I want to do. Basically for each packet I would 
-> request I want to be able to check what addresses are in the set named 
-> in the parameters of my extension, and then copy the packets to each of 
-> those addresses, and hence have a dynamic list of destination addresses.
+> Thanks for tests and the reporting!
 
-In my previous mail I wrote about the current API and possibilities.
+NP. Thank you..
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+
+Rob
+
+
