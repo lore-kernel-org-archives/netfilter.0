@@ -1,49 +1,61 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: ip6tables redirect
-Date: Tue, 21 Dec 2010 22:25:24 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1012212225080.6728@obet.zrqbmnf.qr>
-References: <26D8DC6230C54AACAA60179B4D5E132C@WINDOWS.KVI.NL> <alpine.LNX.2.01.1012021433430.5361@obet.zrqbmnf.qr> <1F82E3373D994D9B8DECFD9435B37B49@WINDOWS.KVI.NL> <alpine.LNX.2.01.1012022024560.23145@obet.zrqbmnf.qr> <alpine.LNX.2.01.1012151253070.23007@obet.zrqbmnf.qr>
- <loom.20101216T104439-767@post.gmane.org>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset-5.1 released
+Date: Wed, 22 Dec 2010 11:20:58 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1012221115130.3482@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <loom.20101216T104439-767@post.gmane.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="windows-1252"
-To: Puneet Mohan <puneetmohan1@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
+Hi,
 
-On Thursday 2010-12-16 10:45, Puneet Mohan wrote:
->Jan Engelhardt <jengelh <at> medozas.de> writes:
->
->> >>Thanks for the suggestion, but I cannot find documentation fro TPR=
-OXY,
->> >>nor for the local routing.
->> >
->>
->Hello Mr. Jan Engelhardt,
->Thanks for pointing out the version. But even those rules are not gett=
-ing
->applied correctly. Pls point me if I am wrong. I took "Merge commit 'v=
-1.4.10'"
->from "http://dev.medozas.de/gitweb.cgi?p=3Diptables;a=3Dsummary"
->
->REAL PROBLEM
->>ip6tables -t mangle -A PREROUTING  -j ACCEPT
->       	This rule worked perfectly fine.
->
->>ip6tables -t mangle -A PREROUTING  -j TPROXY
->       	ip6tables v1.4.10: TPROXY target: Parameter --on-port is requi=
-red
->
->>ip6tables -t mangle -A PREROUTING  -p tcp  -j TPROXY  --on-port 3128
->   	iptables: No chain/target/match by that name
->
->Can you see what exactly the problem is because in the last rule I sup=
-pose
->chain/target given is correct else the first rule wouldn=E2=80=99t hav=
-e worked.
+I'm happy to announce the 5.1 version of the new ipset branch. Here 
+follows the changelogs for the userspace and kernel parts:
 
-It seems your kernel does not have TPROXY v6 support.
+userspace:
+ - Test cases for IPv6 restore and more complex restore sessions added
+ - Restore mode did not work for IPv6, fixed (reported by Elie Rosenblum)
+ - libipset: static annotations (Jan Engelhardt)
+ - libipset: const annotations (Jan Engelhardt)
+ - libipset: remove redundant casts (Jan Engelhardt)
+ - libipset: remove redundant indirection via union name (Jan Engelhardt) 
+ - libipset: ipset_strncpy is really a strlcpy-type operation
+   (Jan Engelhardt)
+ - Prevent calling Makefile directly in the kernel/ subdirectory
+ - Put back the Sparc specific workaround at getaddrinfo
+   (reported by Jan Engelhardt)
+ - Check old system kernel header files
+ - Check from `configure` that the kernel source is patched with
+   netlink.patch
+ - Use configure to detect compiler warning flags
+ - Try to solve PKG_CHECK_MODULES issue (reported by Rob Sterenborg)
+ - Fix incorrect comparison in check_allowed (reported by Jan Engelhardt)
+
+kernel part:
+ - Kernel version compatibility: support bumped starting from 2.6.34
+   (Supporting older kernel releases would mean too much burden for me,
+   sorry.)
+ - kernel: use EXPORT_SYMBOL_GPL (Jan Engelhardt)
+ - kernel: const annotations (Jan Engelhardt)
+ - kernel: use __read_mostly for registration-type structures
+   (Jan Engelhardt)
+ - kernel: do not mix const and __read_mostly (Jan Engelhardt)
+ - xt_set: avoid user types in exported kernel headers (Jan Engelhardt)
+ - build: enable parallel building (Jan Engelhardt)
+ - Fix Kbuild for me to delete backup files
+
+You can download the source code from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git, ipset-5 branch
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
