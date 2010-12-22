@@ -1,51 +1,47 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [ANNOUNCE] ipset-5.0 released
-Date: Wed, 22 Dec 2010 11:59:15 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1012221146060.3482@blackhole.kfki.hu>
-References: <alpine.DEB.2.00.1012172259100.10231@blackhole.kfki.hu> <4D0CC3BB.8030801@googlemail.com> <alpine.DEB.2.00.1012182050280.11577@blackhole.kfki.hu> <4D0D2CF4.5070201@googlemail.com> <alpine.DEB.2.00.1012190105460.11753@blackhole.kfki.hu>
- <4D0E0E2A.3090604@googlemail.com> <4D0E22A5.8090808@conversis.de> <4D0E3B34.7090105@googlemail.com>
+Subject: Re: ipset 5: bug in parser for ipv6 when restoring
+Date: Wed, 22 Dec 2010 12:28:56 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1012221227200.3482@blackhole.kfki.hu>
+References: <vmime.4d10d227.18e9.441b13464d8e58aa@raven.cosanostra.net>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4D0E3B34.7090105@googlemail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <vmime.4d10d227.18e9.441b13464d8e58aa@raven.cosanostra.net>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
-Cc: Dennis Jacobfeuerborn <dennisml@conversis.de>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+To: Elie Rosenblum <fnord@cosanostra.net>
+Cc: netfilter@vger.kernel.org
 
-On Sun, 19 Dec 2010, Mr Dash Four wrote:
+On Tue, 21 Dec 2010, Elie Rosenblum wrote:
 
-> > > Wouldn't you agree that this is a better solution than registering 
-> > > twice as many members in a particular set in order to get the match 
-> > > I need?
-> > 
-> > Given that ports are only meaningful in the context of a protocol I don't
-> > think that makes sense.
-> You are mistaken! I've never actually stated, nor implied, that protocols are
-> 'meaningless' when ports are specified or used - I stated that I am not
-> interested in *matching* the protocol as for me this part of the match is
-> irrelevant - there are plenty of examples where a particular service can
-> employ either tcp or udp protocol on the same port - see below for examples.
+> Entries added via ipset command line for ipv6 seem to work fine:
+> ---example---
+> blinky:/etc/ipsets# ipset create localnets-v6 hash:net family inet6
+> blinky:/etc/ipsets# ipset add localnets-v6 fe80::/7
+> blinky:/etc/ipsets# ipset list localnets-v6
+> Name: localnets-v6
+> Type: hash:net
+> Header: family inet6 hashsize 1024 maxelem 65536
+> Size in memory: 9348
+> References: 0
+> Members:
+> fe00::/7
+> ---end---
+> 
+> The problem occurs with restores:
+> ---example---
+> blinky:/etc/ipsets# ipset save localnets-v6 > tmpset
+> blinky:/etc/ipsets# cat tmpset
+> create localnets-v6 hash:net family inet6 hashsize 1024 maxelem 65536
+> add localnets-v6 fe00::/7
+> blinky:/etc/ipsets# ipset destroy localnets-v6
+> blinky:/etc/ipsets# ipset restore < tmpset
+> ipset v5.0: Error in line 1: Syntax error: cannot parse fe00::: resolving to IPv4 address failed
+> ---end---
 
-I could not come up with a good solution. It is not possible to avoid
-double lookup in the set if the elements may have (say hash:ip,port type 
-of set) the forms:
-
-ipaddr,tcp:port
-ipaddr,udp:port
-ipadd,tcpudp:port
-
-But if the double-lookup is required, then better add all tcp and udp port 
-variants and go with a single-lookup.
-
-Or if you have uniform ports for all elements, you can use two set 
-matches:
-
-ipset create hash:ip ipaddrs
-ipset create bitmap:port ports
-
-... -m set --match-set ipaddrs dst -m set --match-set ports dst ...
+Thanks for the bugreport: it affected all IPv6 related restore operation 
+and it's fixed in ipset 5.1.
 
 Best regards,
 Jozsef
