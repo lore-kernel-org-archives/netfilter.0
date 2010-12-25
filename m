@@ -1,66 +1,99 @@
-From: =?iso-8859-1?q?Gr=E9goire_Leroy?= <gregoire.leroy@hyperthese.net>
+From: Andrew Beverley <andy@andybev.com>
 Subject: Re: Fair queuing with htb
-Date: Sat, 25 Dec 2010 21:40:00 +0100
-Message-ID: <201012252140.06600.gregoire.leroy@hyperthese.net>
-References: <201012230226.31297.gregoire.leroy@hyperthese.net> <201012250452.01340.gregoire.leroy@hyperthese.net> <4D15E3AC.5000909@treenet.co.nz>
+Date: Sat, 25 Dec 2010 22:46:42 +0000
+Message-ID: <1293317202.1617.5.camel@andybev>
+References: <201012230226.31297.gregoire.leroy@hyperthese.net>
+	 <201012250208.36503.gregoire.leroy@hyperthese.net>
+	 <4D155860.6090507@via.ecp.fr>
+	 <201012250452.01340.gregoire.leroy@hyperthese.net>
 Mime-Version: 1.0
-Content-Type: multipart/signed;
-  boundary="nextPart2406059.tk5P0myJoh";
-  protocol="application/pgp-signature";
-  micalg=pgp-sha256
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D15E3AC.5000909@treenet.co.nz>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1293317207; bh=jn5bqDbFMVszkHI4sRlFwrm/SAD/pq3fVR2J+
+	co4nDM=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
+	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=LLg6JR7U
+	Bmex5HhjW3O9y+NxPqNNnTHuaSFWofz6h090xO9dgMULac+/8eRnpzKQ/W87UsUuDhm
+	TF4YGgX+u7chdc+Yw473tXjA8tDlCuZknCh8vlxF9nhkzPAX/UM6i7E+HMrGeeGZlU7
+	sON1wdIQwuSTvWfSGuuDlKgGjvM+E=
+In-Reply-To: <201012250452.01340.gregoire.leroy@hyperthese.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Amos Jeffries <squid3@treenet.co.nz>
-Cc: Antoine Souques <corum@via.ecp.fr>, Andrew Beverley <andy@andybev.com>, Julien Vehent <julien@linuxwall.info>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: =?ISO-8859-1?Q?Gr=E9goire?= Leroy <gregoire.leroy@hyperthese.net>
+Cc: Antoine Souques <corum@via.ecp.fr>, Julien Vehent <julien@linuxwall.info>, netfilter@vger.kernel.org, Amos Jeffries <squid3@treenet.co.nz>
 
---nextPart2406059.tk5P0myJoh
-Content-Type: Text/Plain;
-  charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-
-> There are three ways to do that:
+On Sat, 2010-12-25 at 04:51 +0100, Gr=C3=A9goire Leroy wrote:
+> Le Saturday 25 December 2010 03:35:12, Antoine Souques a =C3=A9crit :
+> > > I've attached a graph which explains what are the marked packets.
+> >=20
+> > Your design is wrong. You mark the upload traffic, when the main ht=
+tp
+> > traffic is the download traffic. That is why your QoS seems ineffec=
+tive
 >=20
-> 1) Delay_pools in Squid capping the Server bandwidth speeds based on any
-> client info desired.
+> In this case I have probably misunderstood the goal of the tcp_outgoi=
+ng_mark=20
+> squid directive. Andrew, in what purpose is it developped ?
 >=20
 
-I noticed that Delay_pools permit us to balance rate according to user ip,=
-=20
-with a class 3 Delay_pool. However, it seems to be a simple limitation. I=20
-don't want that the traffic is limited for one user, I want that each users=
-=20
-have a guaranted rate, and if the rate is not used, then he is equally=20
-balanced between users who need the traffic. Exactly what cbq and htb do. I=
-t=20
-seems Delay_pools is not able to do this.
+tcp_outgoing_mark will mark packets going from squid to the webserver.
+If you want to mark packets going from squid to your client then you
+need to use clientside_mark instead.
 
-> 2) QoS between the clients and Squid using qos_flows. They mark traffic
-> destined to the clients separated into flows based on the data source
-> type; cache, sibling peer, parent peer, direct origin.
+> >=20
+> > > The general goal is to do a QoS based on user ip. If I had no pro=
+xy, it
+> > > would be easy. However, since I've a proxy, my firewall sees the =
+proxy
+> > > ip, not the users IP.
+> >=20
+> > Where is your firewall ? Between the proxy and the webserver, or th=
+e
+> > otherside ?
+> >=20
+>=20
+> Yes it is
+>=20
+> > In the first case, you can only mark the upload traffic (it's to la=
+te
+> > for the download traffic). You should use the conntrack module to m=
+ark a
+> > connection, and so, you will be able to mark the download traffic
+>=20
+> I thank it was the goal of the tcp_outgoing_mark squid directive (aut=
+hored by=20
+> Andrew).
+>=20
 
-It seems it's exactly what I need. I have just tested it and it works. I wi=
-ll=20
-test it furthermore next week.
+If you're going to mark packets on the other side of Squid, then you'll
+probably need to move the interface that your HTB qdisc is attached to.
 
-Thanks for your help.
+> > Moreover, I don't understand why you don't have access to your user
+> > addresses. You use mark, so your firewall and your proxy are runnin=
+g on
+> > the same box. So, when the download traffic leaves your proxy/firew=
+all,
+> > the destination adsress is the user address. tc is called when a pa=
+cket
+> > is send to the network, or when a packet arrive. So you can do IP b=
+ased
+> > QoS.
+>=20
+> The problem is if I limit the traffic between the proxy and users, th=
+en he=20
+> won't any difference between the data downloaded from internet and th=
+e data=20
+> which was in cache in squid.
+>=20
+> I want to limit the rate only for non-cached data, so it seems releva=
+nt to=20
+> apply QoS between proxy server and internet.
+>=20
 
-Gr=E9goire Leroy
+In which case you want qos_flows, as Amos has already pointed out.
+
+Andy
 
 
 
---nextPart2406059.tk5P0myJoh
-Content-Type: application/pgp-signature; name=signature.asc 
-Content-Description: This is a digitally signed message part.
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iF4EABEIAAYFAk0WVqAACgkQB3Y8MwGKx1dVgwD+KfaeLybcXw8GObgasWMLgd8+
-DxFZs6bP07eSupmqpiYA/3zRYNLOoCu6cgPcWorb3hnvJEe0MvV9v7KmPByhAacp
-=HX1O
------END PGP SIGNATURE-----
-
---nextPart2406059.tk5P0myJoh--
