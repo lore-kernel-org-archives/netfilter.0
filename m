@@ -1,74 +1,99 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] libmnl 1.0.1 release
-Date: Sun, 26 Dec 2010 22:20:10 +0100
-Message-ID: <4D17B18A.8020806@netfilter.org>
+From: Mr Dash Four <mr.dash.four@googlemail.com>
+Subject: Re: [ANNOUNCE] ipset-5.0 released
+Date: Sun, 26 Dec 2010 21:44:16 +0000
+Message-ID: <4D17B730.8040505@googlemail.com>
+References: <alpine.DEB.2.00.1012172259100.10231@blackhole.kfki.hu> <4D0CC3BB.8030801@googlemail.com> <alpine.DEB.2.00.1012182050280.11577@blackhole.kfki.hu> <4D0D2CF4.5070201@googlemail.com> <alpine.DEB.2.00.1012190105460.11753@blackhole.kfki.hu> <4D0E0E2A.3090604@googlemail.com> <4D0E22A5.8090808@conversis.de> <4D0E3B34.7090105@googlemail.com> <alpine.DEB.2.00.1012221146060.3482@blackhole.kfki.hu> <4D11F384.3070908@googlemail.com> <alpine.DEB.2.00.1012231558390.6044@blackhole.kfki.hu> <4D138C02.3050905@googlemail.com> <alpine.DEB.2.00.1012232008520.6582@blackhole.kfki.hu> <4D13CBD8.3090007@googlemail.com> <alpine.DEB.2.00.1012232337070.7027@blackhole.kfki.hu> <alpine.DEB.2.00.1012232354510.7109@blackhole.kfki.hu> <4D13D60C.3020304@googlemail.com> <alpine.DEB.2.00.1012261125100.9618@black
+ hole.kfki.hu> <4D17475B.9000909@googlemail.com> <alpine.DEB.2.00.1012262034390.10148@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------000403000406050301070907"
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id
+         :disposition-notification-to:date:from:user-agent:mime-version:to:cc
+         :subject:references:in-reply-to:content-type
+         :content-transfer-encoding;
+        bh=SW4xPBnbnNpps/pPZB9Cso7pthU7KOsDcVB/tPXysns=;
+        b=Hk8/b8oQ7zLqCl3meDFuzhqwd4Zm1vmdF9YhiwcwGa0GsusMbFGLZAZtVEGAfM8OnY
+         AkFG6hi4beevvNJxbs1PCHfjgJZ8dpeE9Q5SEsK075f+IyUsG/fN7L5i5ceLDaqnuhWh
+         Y/uQm8xyCvyHAs7cQLSJuLDN0TNFvVJYopiDY=
+In-Reply-To: <alpine.DEB.2.00.1012262034390.10148@blackhole.kfki.hu>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter-devel@vger.kernel.org
-Cc: netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net, Linux Netdev List <netdev@vger.kernel.org>
-
-This is a multi-part message in MIME format.
---------------000403000406050301070907
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: 7bit
-
-Hi!
-
-The Netfilter project presents libmnl-1.0.1
-
-libmnl is a minimalistic user-space library oriented to Netlink
-developers. There are a lot of common tasks in parsing, validating,
-constructing of both the Netlink header and TLVs that are repetitive and
-easy to get wrong. This library aims to provide simple helpers that
-allows you to re-use code and to avoid re-inventing the wheel.
-
-This library is released under LGPLv2.1+.
-
-Features:
-* Small: the shared library requires around 45KB for an x86-based computer.
-* Simple: this library avoids complexity and elaborated abstractions
-that tend to hide Netlink details.
-* Easy to use: the library simplifies the work for Netlink-wise
-developers. It provides functions to make socket handling, message
-building, validating, parsing and sequence tracking, easier.
-* Easy to re-use: you can use the library to build your own abstraction
-layer on top of this library.
-* Decoupling: the interdependency of the main bricks that compose the
-library is reduced, i.e. the library provides many helpers, but the
-programmer is not forced to use them.
-
-More info at:
-http://www.netfilter.org/projects/libmnl/
-
-Doxygen documentation at:
-http://www.netfilter.org/projects/libmnl/doxygen/
-
-You can download it via FTP at:
-ftp://ftp.netfilter.org/pub/libmnl
-
-Enjoy!
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: Dennis Jacobfeuerborn <dennisml@conversis.de>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
 
---------------000403000406050301070907
-Content-Type: text/plain;
- name="changes-libmnl-1.0.1.txt"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="changes-libmnl-1.0.1.txt"
+>> You are expanding the command line port ranges (80-82 in your example above)
+>> to add the underlying elements. Could you not do a similar arrangement for the
+>> protocol as well?
+>>     
+> That won't go: tcp and udp are not the possible protocols alone, so by any 
+> reasonable syntax, '*' or 'all' should have to mean all protocols from 
+> /etc/protocols.
+>   
+Whatever the appropriate place holder is - 'all', '*', '@', '$$$$$$' 
+etc. etc - as long as it does the job at the end it won't matter.
 
-Jan Engelhardt (1):
-      include: add missing unistd.h
+>> It is not a perfect solution by any stretch, but at least it will save me the
+>> hassle, as with the introduction of the port ranges, of executing the
+>> statement twice each time I want to include net and port ranges without being
+>> interested in the protocol match.
+>>     
+>
+> What I could come up as something similar in effect is to make possible to 
+> use a copy of /etc/services maintained by the administrator of the given 
+> ipset installation and whatever protocols and ports a service name is
+> resolved to from that file, use those.
+>   
+I wasn't aware that there are more than 2 (tcp and udp) protocols on 
+which I could define/use ports!
 
-Pablo Neira Ayuso (5):
-      examples: fix wrong group mask number in nfct-event
-      doc: add new website at netfilter.org to doxygen
-      headers: add local copy of linux/netlink.h to libmnl
-      header: fix signess issues in MNL_SOCKET_BUFFER_SIZE
-      build: libmnl 1.0.1 release
+> However such a feature won't be added tomorrow. Nor this year (:-) or the 
+> very near future.
+>   
+What are your plans?
+
+> For the "net" (sub)type of sets the different prefixes in the set is 
+> recorded. When testing (adding/deleting) entries, the IP part of the entry 
+> is masked with the prefixes one by one and looked up until a match is 
+> found or the list is exhausted - that's why the speed is linearly slows 
+> down with the different number of prefixes added to the set. An example:
+>
+> # ipset create test hash:net
+> # ipset add test 192.168.0.0/30
+> # ipset add test 192.168.1.0/24
+>
+> There are two different prefixes in the set, 30, 24. So when the command 
+> is issued
+>
+> # ipset test test 192.168.0.1
+>
+> the address 192.168.0.1 is masked with /30 and the result is looked up 
+> and the match is reported:
+>   
+So, in other words 'internally' you store something like (using your 
+example above) 192.168.0.0 (the IP part), 30 (the prefix), tcp, 80 in 
+the structure, is that right?
+Do you then use the mask of each member of that set (30 and 24 in your 
+example above) until you get a match? In other words, you 'walk through' 
+every internally stored element and try their mask and then lookup for a 
+match, is that how you do it?
 
 
---------------000403000406050301070907--
+>> Is this slowdown more than when I use iptreemap set for example? How does the
+>> new set (hash) performance compares against the 'old' iptreemap/treemap sets
+>> used in 4.x?
+>>     
+>
+> I never measured the speed difference between the two types. A good guess 
+> is that iptreemap is faster.
+Thought so!
+
+> However, the problem with iptree(map) is that 
+> it's susceptible when used as a container to block attackers dynamically 
+> by the SET target: it's trivial to mount an attack by which the worst tree 
+> structure is forced to be created.
+Could you expand on that bit please? What do you mean?
+
