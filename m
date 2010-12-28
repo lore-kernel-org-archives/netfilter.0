@@ -1,71 +1,151 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
-Subject: Re: [ANNOUNCE] ipset-5.0 released
-Date: Mon, 27 Dec 2010 18:52:32 +0000
-Message-ID: <4D18E070.6010107@googlemail.com>
-References: <alpine.DEB.2.00.1012172259100.10231@blackhole.kfki.hu> <4D0D2CF4.5070201@googlemail.com> <alpine.DEB.2.00.1012190105460.11753@blackhole.kfki.hu> <4D0E0E2A.3090604@googlemail.com> <4D0E22A5.8090808@conversis.de> <4D0E3B34.7090105@googlemail.com> <alpine.DEB.2.00.1012221146060.3482@blackhole.kfki.hu> <4D11F384.3070908@googlemail.com> <alpine.DEB.2.00.1012231558390.6044@blackhole.kfki.hu> <4D138C02.3050905@googlemail.com> <alpine.DEB.2.00.1012232008520.6582@blackhole.kfki.hu> <4D13CBD8.3090007@googlemail.com> <alpine.DEB.2.00.1012232337070.7027@blackhole.kfki.hu> <alpine.DEB.2.00.1012232354510.7109@blackhole.kfki.hu> <4D13D60C.3020304@googlemail.com> <alpine.DEB.2.00.1012261125100.9618@blackhole.kfki.hu> <4D17475B.9000909@googlemail.com> <alpine.DEB.2.00.1012262034390.10148@black
- hole.kfki.hu> <4D17B730.8040505@googlemail.com> <alpine.DEB.2.00.1012271517330.11100@blackhole.kfki. hu> <4D18BD80.2030807@googlemail.com> <alpine.DEB.2.00.1012271854400.11291@blackhole.kfki.hu>
+From: "J Webster" <webster_jack@hotmail.com>
+Subject: limit badwidth not working
+Date: Tue, 28 Dec 2010 12:12:47 +0100
+Message-ID: <BAY145-ds9975844F1691A3B9C49EAF3010@phx.gbl>
+References: <BAY145-ds40063ED1096C32DC63795F3710@phx.gbl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:received:received:message-id
-         :disposition-notification-to:date:from:user-agent:mime-version:to:cc
-         :subject:references:in-reply-to:content-type
-         :content-transfer-encoding;
-        bh=xLoamxHOLXFCWXKIBnupk25RJ94w4dLSz53cqHlGJYA=;
-        b=IpepJFJFkbUVIlUZtvKenM4lm5P6ubmPL7e2L5Zxz4VFGR+2+xs0vBT89lecb7FqtM
-         CW+S+/2XSR2oszo5/4WgqnDFtQeVXmoHjQGh0dGvrU8AuUz5njHyYLm4z3EIb8mjNKyt
-         AmEDUQ8E4qwuXTNEr4xxyQ85eeHoFicHSVC5w=
-In-Reply-To: <alpine.DEB.2.00.1012271854400.11291@blackhole.kfki.hu>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <BAY145-ds40063ED1096C32DC63795F3710@phx.gbl>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: Dennis Jacobfeuerborn <dennisml@conversis.de>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
+To: netfilter@vger.kernel.org
 
+I have a setup where uisers connect by VPN and are given IP addresses in the 
+range 10.8.0.xxx
+I would like to limit their bandwidth to 1.5Mbps per IP address. However, I 
+don't want to limit the incoming connection.
+For example, they access the VPN server by it's WAN IP 200.xx.xx.xx and are 
+given a local IP of 10.0.8.x
+User 1 goes to www.youtube.com and starts streaming videos, this should be 
+limited to 1.5Mbps.
+User 2 goes to www.youtube.com and starts downloading a video, this should 
+also be limited to 1.5Mbps but the
+server connection to youtube should have unlimited bandwidth to allow for 
+multiple users, in this sinstance at least 3Mbps.
 
->> Fair enough. Any idea when ipset 5.2 will be incorporated into xtables so that
->> I could download it and start testing it? *nudges Jan*
->>     
->
-> You constantly ignore the difference between xtables and xtables-addons...
->   
-You know exactly what I meant.
+I tried the tc example below but am not sure whether I should apply the 
+filter to the tun0 network 10.0.8x or to the entire iptables connections.
 
->> If I understand you correctly, you keep a separate structure which stores all
->> prefixes used in the target set, walk through that structure and for each
->> element you build start-end range based on the IP address captured and the
->> current prefix. You then create a hash on the calculated start-end range,
->> protocol and port triple and then test that hash against the hash value of the
->> target set triple (IP range, protocol, port). Is that how you do it?
->>     
->
-> No, there's no point to store start-end ranges: the network address and 
-> the prefix is stored, which thus require less memory compared to the 
-> range.
->   
-OK, so you store IP address and then the range. Do you then perform the 
-process as I described above in order to find a match?
+#!/bin/bash
+#
+#  tc uses the following units when passed as a parameter.
+#  kbps: Kilobytes per second
+#  mbps: Megabytes per second
+#  kbit: Kilobits per second
+#  mbit: Megabits per second
+#  bps: Bytes per second
+#       Amounts of data can be specified in:
+#       kb or k: Kilobytes
+#       mb or m: Megabytes
+#       mbit: Megabits
+#       kbit: Kilobits
+#  To get the byte figure from bits, divide the number by 8 bit
+#
 
->> I think the culprit is not the set itself, but the SET target as I find it
->> rather foolish that someone would let an outsider to manipulate a set using
->> this SET target. For example, if I am an attacker and I know that the target
->> machine relies on access to certain IP address, then I could craft a packet in
->> such a way that it triggers this SET target which then includes the IP
->> address/range in the 'attackers' set and therefore disable access to that
->> address on the target machine - job done!
->>     
->
-> Of course, it's absolutely possible. However in order to slow down for 
-> example ssh scanning, even short time blocking of the addresses from 
-> which scanning is detected can be quite useful.
->   
-Anything which manipulates the internal structure from outside is, in my 
-opinion, not a good idea for the reason I mentioned above.
+#
+# Name of the traffic control command.
+TC=/sbin/tc
 
-On a separate note, once I've installed ipset 5.2 I am very keen on 
-testing both type of sets (iptreemap and the new hash set) to see what 
-is the performance penalty with the new sets (there will probably be one 
-as your search algorithm is more complex in 5.x and would require more 
-iterations compared with the 4.x type sets).
+# The network interface we're planning on limiting bandwidth.
+IF=eth0             # Interface
+
+# Download limit (in mega bits)
+DNLD=1mbit          # DOWNLOAD Limit
+
+# Upload limit (in mega bits)
+UPLD=1mbit          # UPLOAD Limit
+
+# IP address of the machine we are controlling
+IP=216.3.128.12     # Host IP
+
+# Filter options for limiting the intended interface.
+U32="$TC filter add dev $IF protocol ip parent 1:0 prio 1 u32"
+
+start() {
+
+# We'll use Hierarchical Token Bucket (HTB) to shape bandwidth.
+# For detailed configuration options, please consult Linux man
+# page.
+
+    $TC qdisc add dev $IF root handle 1: htb default 30
+    $TC class add dev $IF parent 1: classid 1:1 htb rate $DNLD
+    $TC class add dev $IF parent 1: classid 1:2 htb rate $UPLD
+    $U32 match ip dst $IP/32 flowid 1:1
+    $U32 match ip src $IP/32 flowid 1:2
+
+# The first line creates the root qdisc, and the next two lines
+# create two child qdisc that are to be used to shape download
+# and upload bandwidth.
+#
+# The 4th and 5th line creates the filter to match the interface.
+# The 'dst' IP address is used to limit download speed, and the
+# 'src' IP address is used to limit upload speed.
+
+}
+
+stop() {
+
+# Stop the bandwidth shaping.
+    $TC qdisc del dev $IF root
+
+}
+
+restart() {
+
+# Self-explanatory.
+    stop
+    sleep 1
+    start
+
+}
+
+show() {
+
+# Display status of traffic control status.
+    $TC -s qdisc ls dev $IF
+
+}
+
+case "$1" in
+
+  start)
+
+    echo -n "Starting bandwidth shaping: "
+    start
+    echo "done"
+    ;;
+
+  stop)
+
+    echo -n "Stopping bandwidth shaping: "
+    stop
+    echo "done"
+    ;;
+
+  restart)
+
+    echo -n "Restarting bandwidth shaping: "
+    restart
+    echo "done"
+    ;;
+
+  show)
+
+    echo "Bandwidth shaping status for $IF:"
+    show
+    echo ""
+    ;;
+
+  *)
+
+    pwd=$(pwd)
+    echo "Usage: tc.bash {start|stop|restart|show}"
+    ;;
+
+esac
+
+exit 0
+ 
+
