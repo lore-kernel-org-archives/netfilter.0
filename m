@@ -1,151 +1,82 @@
-From: "J Webster" <webster_jack@hotmail.com>
-Subject: limit badwidth not working
-Date: Tue, 28 Dec 2010 12:12:47 +0100
-Message-ID: <BAY145-ds9975844F1691A3B9C49EAF3010@phx.gbl>
-References: <BAY145-ds40063ED1096C32DC63795F3710@phx.gbl>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: conntrackd: failover problems
+Date: Tue, 28 Dec 2010 17:59:24 +0100
+Message-ID: <4D1A176C.5000105@netfilter.org>
+References: <AANLkTi=7BfQS07kPJyN_NO45apW-UsMZj-PUgnfboCpb@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BAY145-ds40063ED1096C32DC63795F3710@phx.gbl>
+In-Reply-To: <AANLkTi=7BfQS07kPJyN_NO45apW-UsMZj-PUgnfboCpb@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Simone Zaffalon <zaffa@zaffa.it>
+Cc: netfilter@vger.kernel.org
 
-I have a setup where uisers connect by VPN and are given IP addresses in the 
-range 10.8.0.xxx
-I would like to limit their bandwidth to 1.5Mbps per IP address. However, I 
-don't want to limit the incoming connection.
-For example, they access the VPN server by it's WAN IP 200.xx.xx.xx and are 
-given a local IP of 10.0.8.x
-User 1 goes to www.youtube.com and starts streaming videos, this should be 
-limited to 1.5Mbps.
-User 2 goes to www.youtube.com and starts downloading a video, this should 
-also be limited to 1.5Mbps but the
-server connection to youtube should have unlimited bandwidth to allow for 
-multiple users, in this sinstance at least 3Mbps.
+Hi,
 
-I tried the tc example below but am not sure whether I should apply the 
-filter to the tun0 network 10.0.8x or to the entire iptables connections.
+On 27/12/10 15:50, Simone Zaffalon wrote:
+> Hi.
+> I'm trying to set-up an HA firewall with Debian, ucarp and conntrackd
+> in a testbed.
+> Debian is version 5.0.7 (stock kernel 2.6.26).
+> 
+> I have two hosts in active/passive configuration. At the moment i
+> don't have any particular firewall rule in place, only a couple of
+> iptables statements to nat clients ips and let them connect to
+> internet:
+> iptables -t nat -A POSTROUTING -s state --state
+> NEW,ESTABLISHED,RELATED -p TCP -s $internal_lan -d 0/0 -j SNAT --to
+> source $ext_fw_ip
+> iptables -t nat -A POSTROUTING -s state --state
+> NEW,ESTABLISHED,RELATED -p UDP -s $internal_lan -d 0/0 -j SNAT --to
+> source $ext_fw_ip
+> 
+> Conntrackd is installed and conntrackd -s report no error in multicast traffic.
+> Anyway i'm not able to keep the sessions active between failovers.
+> I can see connections in cache external, but it seems that such
+> connections are not committed.
+> [Mon Dec 27 02:01:19 2010] (pid=2032) [notice] initialization completed
+> [Mon Dec 27 02:01:19 2010] (pid=2041) [notice] -- starting in daemon mode --
+> [Mon Dec 27 02:08:39 2010] (pid=2481) [notice] committing external cache
+> [Mon Dec 27 02:08:39 2010] (pid=2481) [notice] Committed 1 new entries
+> [Mon Dec 27 02:08:39 2010] (pid=2483) [notice] committing external cache
+> [Mon Dec 27 02:08:39 2010] (pid=2483) [notice] Committed 0 new entries
+> [Mon Dec 27 02:08:39 2010] (pid=2483) [notice] 1 entries can't be committed
+> [Mon Dec 27 02:08:39 2010] (pid=2041) [notice] flushing caches
+> [Mon Dec 27 02:08:39 2010] (pid=2041) [notice] resync with master table
+> [Mon Dec 27 02:08:39 2010] (pid=2041) [notice] flushing caches
+> [Mon Dec 27 02:08:39 2010] (pid=2041) [notice] resync with master table
+> 
+> As far as i understood, with this sequence of commands:
+> in master
+> conntrackd -n
+> 
+> in backup
+> conntrackd -c
+> conntrackd -f
+> conntrackd -R
 
-#!/bin/bash
-#
-#  tc uses the following units when passed as a parameter.
-#  kbps: Kilobytes per second
-#  mbps: Megabytes per second
-#  kbit: Kilobits per second
-#  mbit: Megabits per second
-#  bps: Bytes per second
-#       Amounts of data can be specified in:
-#       kb or k: Kilobytes
-#       mb or m: Megabytes
-#       mbit: Megabits
-#       kbit: Kilobits
-#  To get the byte figure from bits, divide the number by 8 bit
-#
+Better use the primary-backup.sh script that is included in the
+conntrack-tools package. You can find it under doc/sync. That script
+should be called by your HA manager during the failover.
 
-#
-# Name of the traffic control command.
-TC=/sbin/tc
+> i should have the same sessions in master and backup (listed with
+> conntrack -L) or am i totally wrong?
 
-# The network interface we're planning on limiting bandwidth.
-IF=eth0             # Interface
+After the failover, you should see the flow-entries in the new primary
+with conntrack -L.
 
-# Download limit (in mega bits)
-DNLD=1mbit          # DOWNLOAD Limit
+> Is there any way to increment log verbosity to understand what's going on?
+> I really don't know well the internals of conntrackd: am i missing
+> something? Kernel parameters? sysctl settings?
 
-# Upload limit (in mega bits)
-UPLD=1mbit          # UPLOAD Limit
+Reading this helps:
+http://conntrack-tools.netfilter.org/manual.html
+http://conntrack-tools.netfilter.org/testcase.html
 
-# IP address of the machine we are controlling
-IP=216.3.128.12     # Host IP
+It can help you to get some more background on it and to spot what
+you're doing wrong.
 
-# Filter options for limiting the intended interface.
-U32="$TC filter add dev $IF protocol ip parent 1:0 prio 1 u32"
-
-start() {
-
-# We'll use Hierarchical Token Bucket (HTB) to shape bandwidth.
-# For detailed configuration options, please consult Linux man
-# page.
-
-    $TC qdisc add dev $IF root handle 1: htb default 30
-    $TC class add dev $IF parent 1: classid 1:1 htb rate $DNLD
-    $TC class add dev $IF parent 1: classid 1:2 htb rate $UPLD
-    $U32 match ip dst $IP/32 flowid 1:1
-    $U32 match ip src $IP/32 flowid 1:2
-
-# The first line creates the root qdisc, and the next two lines
-# create two child qdisc that are to be used to shape download
-# and upload bandwidth.
-#
-# The 4th and 5th line creates the filter to match the interface.
-# The 'dst' IP address is used to limit download speed, and the
-# 'src' IP address is used to limit upload speed.
-
-}
-
-stop() {
-
-# Stop the bandwidth shaping.
-    $TC qdisc del dev $IF root
-
-}
-
-restart() {
-
-# Self-explanatory.
-    stop
-    sleep 1
-    start
-
-}
-
-show() {
-
-# Display status of traffic control status.
-    $TC -s qdisc ls dev $IF
-
-}
-
-case "$1" in
-
-  start)
-
-    echo -n "Starting bandwidth shaping: "
-    start
-    echo "done"
-    ;;
-
-  stop)
-
-    echo -n "Stopping bandwidth shaping: "
-    stop
-    echo "done"
-    ;;
-
-  restart)
-
-    echo -n "Restarting bandwidth shaping: "
-    restart
-    echo "done"
-    ;;
-
-  show)
-
-    echo "Bandwidth shaping status for $IF:"
-    show
-    echo ""
-    ;;
-
-  *)
-
-    pwd=$(pwd)
-    echo "Usage: tc.bash {start|stop|restart|show}"
-    ;;
-
-esac
-
-exit 0
- 
-
+Please, have a look at them and let me know if your problems persist.
+Include also your software versions in your reports.
