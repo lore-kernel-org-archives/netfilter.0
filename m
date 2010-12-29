@@ -1,71 +1,137 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: conntrackd: failover problems
-Date: Wed, 29 Dec 2010 15:46:21 +0100
-Message-ID: <4D1B49BD.3030202@netfilter.org>
-References: <AANLkTi=7BfQS07kPJyN_NO45apW-UsMZj-PUgnfboCpb@mail.gmail.com>	<4D1A176C.5000105@netfilter.org> <AANLkTimcTzk29z_9CqY9a6jNfoQrSs+V4Qx7vKRisMJh@mail.gmail.com>
+From: "J Webster" <webster_jack@hotmail.com>
+Subject: limiting not working for individual IPs
+Date: Wed, 29 Dec 2010 16:10:21 +0100
+Message-ID: <BAY145-ds5C566F0C32FE3D87D6A99F3020@phx.gbl>
+References: <AANLkTi=7BfQS07kPJyN_NO45apW-UsMZj-PUgnfboCpb@mail.gmail.com>	<4D1A176C.5000105@netfilter.org> <AANLkTimcTzk29z_9CqY9a6jNfoQrSs+V4Qx7vKRisMJh@mail.gmail.com> <4D1B49BD.3030202@netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTimcTzk29z_9CqY9a6jNfoQrSs+V4Qx7vKRisMJh@mail.gmail.com>
+In-Reply-To: <4D1B49BD.3030202@netfilter.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Simone Zaffalon <zaffa@zaffa.it>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: netfilter@vger.kernel.org
 
-On 29/12/10 12:40, Simone Zaffalon wrote:
-> Hi Pablo.
-> Thank you for the answer.
->>
->> Better use the primary-backup.sh script that is included in the
->> conntrack-tools package. You can find it under doc/sync. That script
->> should be called by your HA manager during the failover.
-> 
-> Already done. I've included
-> /usr/share/doc/conntrackd/examples/sync/ftfw/script_master.sh in
-> vip-up.sh (the ucarp script called when failover occours):
-> -----------vip-up.sh--------------------------
-> #! /bin/sh
-> exec 2> /dev/null
-> 
-> /sbin/ip addr add "$2"/24 dev "$1"
-> 
-> # or alternatively:
-> # /sbin/ifconfig "$1":254 "$2" netmask 255.255.255.0
-> #!/bin/sh
-> 
-> /usr/sbin/conntrackd -c # commit the cache
-> /usr/sbin/conntrackd -f # flush the caches
-> /usr/sbin/conntrackd -R # resync with kernel conntrack table
-> -----------------------------------------------
-> 
-> and of course i did the same with script_backup.sh in vip-down.sh
+I have installed and started running the following script but it seems to be 
+limiting all the traffic on the network to 1Mb.
+Any ideas how I can do it for each individual IP address?
+I have not made any changes to iptables.
 
-This seems to be an old script version. What conntrack-tools version are
-you using?
+#!/bin/bash
+#
+#  tc uses the following units when passed as a parameter.
+#  kbps: Kilobytes per second
+#  mbps: Megabytes per second
+#  kbit: Kilobits per second
+#  mbit: Megabits per second
+#  bps: Bytes per second
+#       Amounts of data can be specified in:
+#       kb or k: Kilobytes
+#       mb or m: Megabytes
+#       mbit: Megabits
+#       kbit: Kilobits
+#  To get the byte figure from bits, divide the number by 8 bit
+#
 
-> Now I'm switching to keepalived (to stick more with provided examples)
-> and i am doing some other experiment and i let you know how far i'll
-> go with that.
-> In the meantime, as i asked before, is there any way to increment log
-> verbosity to understand what's going on (in /var/log/conntrackd.log)?
+#
+# Name of the traffic control command.
+TC=/sbin/tc
 
-You cannot increase verbosity but you have plenty of conntrackd -s
-information to know what is going on (see manpage for -s option parameters).
+# The network interface we're planning on limiting bandwidth.
+IF=eth0             # Interface
 
-I still don't know what is your problem, please provide a more detailed
-procedure of what you're testing and I'll be happy to help you.
+# Download limit (in mega bits)
+DNLD=1mbit          # DOWNLOAD Limit
 
-To test conntrackd, it's a good idea to start with something simple:
+# Upload limit (in mega bits)
+UPLD=1mbit          # UPLOAD Limit
 
-1) create a TCP connection between two peers that are firewalled.
-2) check in the primary firewall that `conntrackd -i' shows the flow
-(this is to display the internal cache).
-3) check in the backup firewall that `conntrackd -e' show the foreign
-flow, that means it has been correctly propagated (-e shows the external
-cache).
-4) for a simple failover scenario, set a link down in the primary to
-trigger the failover.
-5) the new primary must contain the entry with `conntrack -L' (to
-display the kernel conntrack table).
-6) check the logs, they must contain that one flow was injected (committed).
+# IP address of the machine we are controlling
+IP=216.3.128.12     # Host IP
+
+# Filter options for limiting the intended interface.
+U32="$TC filter add dev $IF protocol ip parent 1:0 prio 1 u32"
+
+start() {
+
+# We'll use Hierarchical Token Bucket (HTB) to shape bandwidth.
+# For detailed configuration options, please consult Linux man
+# page.
+
+$TC qdisc add dev $IF root handle 1: htb default 30
+$TC class add dev $IF parent 1: classid 1:1 htb rate $DNLD
+$TC class add dev $IF parent 1: classid 1:2 htb rate $UPLD
+$U32 match ip dst $IP/32 flowid 1:1
+$U32 match ip src $IP/32 flowid 1:2
+
+# The first line creates the root qdisc, and the next two lines
+# create two child qdisc that are to be used to shape download
+# and upload bandwidth.
+#
+# The 4th and 5th line creates the filter to match the interface.
+# The 'dst' IP address is used to limit download speed, and the
+# 'src' IP address is used to limit upload speed.
+
+}
+
+stop() {
+
+# Stop the bandwidth shaping.
+$TC qdisc del dev $IF root
+
+}
+
+restart() {
+
+# Self-explanatory.
+stop
+sleep 1
+start
+
+}
+
+show() {
+
+# Display status of traffic control status.
+$TC -s qdisc ls dev $IF
+
+}
+
+case "$1" in
+
+start)
+
+echo -n "Starting bandwidth shaping: "
+start
+echo "done"
+;;
+
+stop)
+
+echo -n "Stopping bandwidth shaping: "
+stop
+echo "done"
+;;
+
+restart)
+
+echo -n "Restarting bandwidth shaping: "
+restart
+echo "done"
+;;
+
+show)
+
+echo "Bandwidth shaping status for $IF:"
+show
+echo ""
+;;
+
+*)
+
+pwd=$(pwd)
+echo "Usage: tc.bash {start|stop|restart|show}"
+;;
+
+esac exit 0 
+
