@@ -1,57 +1,77 @@
-From: Robert Pipca <robertpipca@gmail.com>
-Subject: Re: ebtables ACCEPT policy vs ACCEPT target
-Date: Wed, 29 Dec 2010 17:59:24 -0200
-Message-ID: <AANLkTi=WQJ-vgWaryTYwJHm+L=+N4+3wo0tzuOC2YBG_@mail.gmail.com>
-References: <AANLkTi=w6jf1y8bH3=9AX7fLDORkbm2dAKS4uBv5KQPZ@mail.gmail.com>
-	<alpine.LNX.2.01.1012170451520.21601@obet.zrqbmnf.qr>
-	<AANLkTikWo-QEQ+xGBmZEnfjphM5SX5FfMRGAWG5FqTA_@mail.gmail.com>
-	<alpine.LNX.2.01.1012171024200.21893@obet.zrqbmnf.qr>
-	<AANLkTik9XEM-0EwAs0m5atpXigQp88zQM+uxFd=bg1Ng@mail.gmail.com>
-	<alpine.LNX.2.01.1012292026440.28059@obet.zrqbmnf.qr>
+From: =?ISO-8859-1?Q?Salih_G=F6n=FCll=FC?= <sag@open.ch>
+Subject: ulogd2 segfault
+Date: Fri, 31 Dec 2010 17:23:16 +0100
+Message-ID: <4D1E0374.3090008@open.ch>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:in-reply-to
-         :references:date:message-id:subject:from:to:cc:content-type;
-        bh=amJ7aj36DG3vIPTcg4J18zlB0ABY/N68px4NqQW+UEM=;
-        b=nr7LnDxaUqRHD9lMPAFsybZsYq286gLgqWTo3fTJUiB+k4h1qNODEPRcZUON7AMyVz
-         +1crpfz5u7WHSMaFv67fFxNb1r70Ig3fMohKLSyzUKdbnPOG39tiAJVrE5WogRVNVJn1
-         MOhdFgqyOkm1ejrbPYmvYkc0Z4HJYCo7LkkWQ=
-In-Reply-To: <alpine.LNX.2.01.1012292026440.28059@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org, Amos Jeffries <squid3@treenet.co.nz>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hi Mr. Engelhardt,
 
-2010/12/29 Jan Engelhardt <jengelh@medozas.de>:
-> ebtables -t broute (...condition for "this network"...) -j ACCEPT
-> ebtables -t broute -p tcp --dport 80 -j DROP
-> ebtables -t broute -j ACCEPT
+Hi,
 
-Right, but now is the possible bug I told on the original email: This
-doesn't work as expected.
+ulogd2 is segfaulting upon receipt of sigint or sigterm
 
-On a test-network 192.168.0.0/24, on the bridge machine I do:
 
-ip route add 192.168.0.100 via 192.168.0.20 dev br0
+Program received signal SIGTERM, Terminated.
+0xb78c4430 in __kernel_vsyscall ()
+(gdb) cont
+Continuing.
 
-Being 192.168.0.20 just some bogus route, if I do "ebtables -t broute
--F", which is  "apply ACCEPT on all packets", the client 192.168.0.100
-browses just fine.
+Program received signal SIGSEGV, Segmentation fault.
+0xb78b71ba in main_arena () from /lib/libc.so.6
+(gdb) bt
+#0  0xb78b71ba in main_arena () from /lib/libc.so.6
+#1  0x0804a35d in ulogd_propagate_results ()
+#2  0xb777256c in interp_packet (upi=0x80630f0, pf_family=2 '\002', 
+ldata=0xbff01390)
+     at ulogd_inppkt_NFLOG.c:400
+#3  0xb7772149 in msg_cb (gh=0x8062f58, nfmsg=0xbff01470, 
+nfa=0xbff01390, data=0x805f270)
+     at ulogd_inppkt_NFLOG.c:472
+#4  0xb78bf7d5 in __nflog_rcv_pkt () from /usr/lib/libnetfilter_log.so.1
+#5  0xb7767b00 in nfnl_step () from /usr/lib/libnfnetlink.so.0
+#6  0xbff013b0 in ?? ()
+#7  0x08062f28 in ?? ()
+#8  0x00000001 in ?? ()
+#9  0xbff01474 in ?? ()
+#10 0x00000000 in ?? ()
 
-If I do what you just did, the machine stops browsing (ie, that bogus
-route is used)...which is not suppose to happen, right?
+I have tried with beta4 and with git 
+4f652cc32aebeac20f46009f146ad973a1ed0e99
 
-I tested this on kernel 2.6.31.14, 2.6.32.27, 2.6.34.7 and
-2.6.36.2...with the latest ebtables version. Same result.
 
-Do you see this as expected behaviour? Or is it a bug?
+Is there a way to avoid this ?
 
-Cheers,
+#ulogd.conf
 
-- Robert
+stack=log2:NFLOG,base1:BASE,ifi1:IFINDEX,ip2str1:IP2STR,print1:PRINTPKT,emu0:LOGEMU
+
+
+[log2]
+group=42
+
+emu0]
+file="/var/log/ulogd_sysemu.log"
+
+
+Regards,
+
+     -salih
+
+
+-- 
+salih goenuellue
+security engineer
+
+open systems ag
+raeffelstrasse 29
+ch-8045 zurich
+t +41 44 455 74 00
+f +41 44 455 74 01
+sag@open.ch
+
+http://www.open.ch
