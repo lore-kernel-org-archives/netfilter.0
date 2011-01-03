@@ -1,33 +1,41 @@
-From: "J Webster" <webster_jack@hotmail.com>
-Subject: Re: limit badwidth not working
-Date: Sun, 2 Jan 2011 19:56:09 +0100
-Message-ID: <BAY145-ds5C3BBAA43F81403C352D7F3060@phx.gbl>
-References: <BAY145-ds40063ED1096C32DC63795F3710@phx.gbl> <BAY145-ds9975844F1691A3B9C49EAF3010@phx.gbl> <1293898085.1601.29.camel@andybev> <BAY145-ds16C678B220343FEE352F61F3060@phx.gbl> <1293986600.1936.46.camel@steve-pc>
+From: Peter Kraus <juleswinnfieldpf@googlemail.com>
+Subject: Newby problem with conntrack-tools installation
+Date: Mon, 3 Jan 2011 13:33:49 +0100
+Message-ID: <AANLkTi=u+wD3C3U3DDa2L5b23_jH_kpF_t1WDwdwyM+0@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1293986600.1936.46.camel@steve-pc>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=9tubKI8nbilT5PlMRpl5Uiv+s97J+XsAG7WPlSJGFf0=;
+        b=QykVx2JGRd0Uf1xyD4fAmqen3ygHiS5fMX+d3D4+yQfME1U/hqf3uaOp7A2yxcL4ha
+         Y7mgBB3a29DbDcG/A/YsGz5zghi8LTvUP691jLcRbS31L6Mkl4dUG/oN2wl0VYUe8UNF
+         6e4DJHZp0H6JGPCYCDWGVtOps+MCCwzAL0h7k=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: Andrew Beverley <andy@andybev.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-So 1:10, 1:20, 1:30 are the subclasses and I need 1 subcalss for every ip 
-address?
-I can set a max number connections on the openvpn server so say there are 20 
-connections then I need to repeat the following 20 times?
+Hi,
 
+I have ubuntu, kernel 2.6.35, "apt-get install conntrack" and lsmod shows:
 
-$U32 match ip dst 10.0.8.1 flowid 1:10
-all the way to
-$U32 match ip dist 10.0.8.20 flowid 1:200 (not the 200 here for 20th 
-subclass)?
+cedrix@tussi:~/test_1$ lsmod  |grep net
+nfnetlink               3691  0
+cedrix@tussi:~/test_1$ lsmod  |grep conn
+nf_conntrack_ipv4      10783  3 iptable_nat,nf_nat
+nf_conntrack           63258  4
+ipt_MASQUERADE,iptable_nat,nf_nat,nf_conntrack_ipv4
+nf_defrag_ipv4          1117  1 nf_conntrack_ipv4
 
-Would subclass 1:10, 1:11, 1:12, 1:13 do the same?
+When I run: "sudo conntrack -E" and I do a "telnet <myserver> 80" (to
+generate traffic) it should show the generated events, but it does
+not.
 
-It seems like the above will work when you know what the IP addresses are 
-going to be on a VPN network. So, I don't need to know or care what the 
-client's WAN IP address is to control the speed if they are connected via a 
-VPN? 
+Question: Is there any netfilter-lib missing or what do I wrong?
 
+Thanks for any help!
+
+Jules
