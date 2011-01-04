@@ -1,37 +1,33 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Xtables-addons 1.32/ipset-GENL 5.2
-Date: Tue, 4 Jan 2011 05:14:13 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1101040456270.11091@obet.zrqbmnf.qr>
+From: Mr Dash Four <mr.dash.four@googlemail.com>
+Subject: Re: ipset 5.0 in xtables-addons?
+Date: Tue, 04 Jan 2011 08:45:16 +0000
+Message-ID: <4D22DE1C.3050206@googlemail.com>
+References: <SNT134-w489200904A34B50B72CA11D6070@phx.gbl>,<alpine.LNX.2.01.1101040348050.1186@obet.zrqbmnf.qr> <SNT134-w5D160C144A4398B0A03ECD6080@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:received:received:message-id
+         :disposition-notification-to:date:from:user-agent:mime-version:to:cc
+         :subject:references:in-reply-to:content-type
+         :content-transfer-encoding;
+        bh=KQ6Y0ggNsC4Q3AZ/KYljkZ0FmtAxdGi6o47lvDFPlGE=;
+        b=LEsTMju3K/zKLEY6cIFxd/mR3mrZ6cXmNBnBKNXjFflZSXVMALHv8ffhmd5OT9dybv
+         uU1I4Vw/h6BKlU8Uqr40MfbNVP4t1Vxz717zb4kh1G7WPTXhGZUMeGCc8Vb9lG99lUJz
+         2Q7mBa3l+xhNFvEvlIdmNLsSK0Si6LILdUUYI=
+In-Reply-To: <SNT134-w5D160C144A4398B0A03ECD6080@phx.gbl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="utf-8"
-To: netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
-
-'=E3=81=A1=E3=82=8F
-
-So a few people had been asking on whether ipset 5.x will be bundled=20
-along with Xtables-addons. Naturally this is a difficult question=20
-because ipset-5 wants a kernel patch. But yes, it is included as of Xt-=
-a=20
-1.32 (just out).
-
-It has been augmented to not require the patch anymore, by moving it=20
-over from nfnetlink (booo) to genetlink which does not depend on static=
-=20
-numbers, though you will need at least Linux 2.6.35 for this GENL=20
-variant in both compilation and at runtime.
-(As such, ipset-5 is deactivated by default in Xt-a 1.32 and needs to b=
-e=20
-turned on in mconfig.)
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Andrew Kraslavsky <andykras@hotmail.com>
+Cc: jengelh@medozas.de, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
 
-Xt-a files at the usual place.
+>> 5.0? No, but 5.2. When? Now.
+>>     
+> Great!  Thank you very much!
+>   
+It is indeed great provided the source compiles without any silly errors 
+- if past experience is anything to go by... :-P
 
-The plain genl patch to ipset-5 can be found as a commit at=20
-git://dev.medozas.de/ipset in the "genl" branch. It has received a run=20
-through the testsuite (as far as it went until ospf), and I take that a=
-s=20
-an indication that proxying the protocol onto genl was successful.
