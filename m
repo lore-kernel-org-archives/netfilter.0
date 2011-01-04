@@ -1,36 +1,37 @@
-From: Andrew Kraslavsky <andykras@hotmail.com>
-Subject: RE: ipset 5.0 in xtables-addons?
-Date: Mon, 3 Jan 2011 20:12:14 -0800
-Message-ID: <SNT134-w5D160C144A4398B0A03ECD6080@phx.gbl>
-References: <SNT134-w489200904A34B50B72CA11D6070@phx.gbl>,<alpine.LNX.2.01.1101040348050.1186@obet.zrqbmnf.qr>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Xtables-addons 1.32/ipset-GENL 5.2
+Date: Tue, 4 Jan 2011 05:14:13 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1101040456270.11091@obet.zrqbmnf.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1101040348050.1186@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: jengelh@medozas.de
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="utf-8"
+To: netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
+
+'=E3=81=A1=E3=82=8F
+
+So a few people had been asking on whether ipset 5.x will be bundled=20
+along with Xtables-addons. Naturally this is a difficult question=20
+because ipset-5 wants a kernel patch. But yes, it is included as of Xt-=
+a=20
+1.32 (just out).
+
+It has been augmented to not require the patch anymore, by moving it=20
+over from nfnetlink (booo) to genetlink which does not depend on static=
+=20
+numbers, though you will need at least Linux 2.6.35 for this GENL=20
+variant in both compilation and at runtime.
+(As such, ipset-5 is deactivated by default in Xt-a 1.32 and needs to b=
+e=20
+turned on in mconfig.)
 
 
-> Date: Tue, 4 Jan 2011 03:48:27 +0100
-> From: jengelh@medozas.de
-> To: andykras@hotmail.com
-> CC: netfilter@vger.kernel.org
-> Subject: Re: ipset 5.0 in xtables-addons?
->
-> On Monday 2011-01-03 21:04, Andrew Kraslavsky wrote:
->
-> >
-> >All,
-> >
-> >Does anyone know when ipset 5.0 be included in xtables-addons?  Is t=
-hat scheduled to happen soon?
->
-> 5.0? No, but 5.2. When? Now.
-> --
+Xt-a files at the usual place.
 
-Great!=A0 Thank you very much!
-
- 		 	   		  
+The plain genl patch to ipset-5 can be found as a commit at=20
+git://dev.medozas.de/ipset in the "genl" branch. It has received a run=20
+through the testsuite (as far as it went until ospf), and I take that a=
+s=20
+an indication that proxying the protocol onto genl was successful.
