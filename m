@@ -1,71 +1,46 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: internet sharing issue
-Date: Tue, 04 Jan 2011 18:41:29 +0000
-Message-ID: <1294166489.1620.17.camel@andybev>
-References: <AANLkTik6WP-fKZK+a4x7E4r8vW10TLH+6=HSWp2MQvry@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Xtables-addons 1.32/ipset-GENL 5.2
+Date: Wed, 5 Jan 2011 10:22:47 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1101050921130.23762@blackhole.kfki.hu>
+References: <alpine.LNX.2.01.1101040456270.11091@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1294166500; bh=iFj+fuLrYRB+77NfTBHIfa7evQ37sjUtX3Lg1
-	GowlRo=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
-	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=PzWJsceG
-	y5BH958FmTLYvts55UjcIV3cOuS9E0P0Kh3jixq7srk9SeS9i9UlLfyKQo6lGywAW/t
-	DcbGhT5JsIqD5vP1xIFBwjm81ZOxQmAKp/7i++xmkS64ebkvOiYRvZasv0PGibS8/tt
-	a7TabXFmhj1PXuMmOKVPs7AabSZxE=
-In-Reply-To: <AANLkTik6WP-fKZK+a4x7E4r8vW10TLH+6=HSWp2MQvry@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.01.1101040456270.11091@obet.zrqbmnf.qr>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: benjamin fernandis <benjo11111@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
 
-On Tue, 2011-01-04 at 08:45 +0530, benjamin fernandis wrote:
-> Hi Friends,
-> 
-> I have rhel 5.5 on that i compiled kernel 2.6.36.2 and iptables 1.4.9 .
-> 
-> After that i configured basic internet sharing setings in iptables.
-> 
-> Iptables rule :
-> [root@localhost ~]# iptables -L -nvx -t nat
-> Chain PREROUTING (policy ACCEPT 9 packets, 1068 bytes)
->     pkts      bytes target     prot opt in     out     source
->      destination
-> 
-> Chain INPUT (policy ACCEPT 1 packets, 28 bytes)
->     pkts      bytes target     prot opt in     out     source
->      destination
-> 
-> Chain OUTPUT (policy ACCEPT 58 packets, 6477 bytes)
->     pkts      bytes target     prot opt in     out     source
->      destination
-> 
-> Chain POSTROUTING (policy ACCEPT 55 packets, 6225 bytes)
->     pkts      bytes target     prot opt in     out     source
->      destination
->        3      252 MASQUERADE  all  --  *      *       10.10.10.0/24
->     0.0.0.0/0
-> [root@localhost ~]#
-> 
-> and also i enabled ip_forward.
-> 
-> net.ipv4.ip_forward = 1
-> net.ipv4.conf.default.rp_filter = 0
-> net.ipv4.conf.default.accept_source_route = 0
-> kernel.sysrq = 0
-> kernel.core_uses_pid = 1
-> kernel.msgmnb = 65536
-> kernel.msgmax = 65536
-> kernel.shmmax = 4294967295
-> kernel.shmall = 268435456
-> 
-> at my gateway internet is working fine.But from my client net is not working.
-> 
+Hi,
 
-You've only listed the nat table. What rules are in your mangle and
-filter tables (in particular the FORWARD chain)?
+On Tue, 4 Jan 2011, Jan Engelhardt wrote:
 
-Andy
+> So a few people had been asking on whether ipset 5.x will be bundled 
+> along with Xtables-addons. Naturally this is a difficult question 
+> because ipset-5 wants a kernel patch. But yes, it is included as of Xt-a 
+> 1.32 (just out).
+> 
+> It has been augmented to not require the patch anymore, by moving it 
+> over from nfnetlink (booo) to genetlink which does not depend on static 
+> numbers, though you will need at least Linux 2.6.35 for this GENL 
+> variant in both compilation and at runtime.
 
+I fully appreciate your effort, however with it you forked ipset 5.x and 
+now the two branches cannot talk to each other.
 
+I'm not convinced that ipset should be moved from nfnetlink to genetlink. 
+It'd make life easier for the users at the beginning, however on the 
+longer run it'd buy nothing and I believe ipset belongs to nfnetlink.
+
+I considered the idea of adding support of both protocols, however it 
+might make the acceptance for kernel inclusion harder. I'm not happy.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
