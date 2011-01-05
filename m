@@ -1,46 +1,35 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Xtables-addons 1.32/ipset-GENL 5.2
-Date: Wed, 5 Jan 2011 10:22:47 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1101050921130.23762@blackhole.kfki.hu>
-References: <alpine.LNX.2.01.1101040456270.11091@obet.zrqbmnf.qr>
+From: "Gurpreet Kaur" <G.Kaur@globallogic.com>
+Subject: iptables hashlimit behaviour
+Date: Wed, 5 Jan 2011 17:06:10 +0530
+Message-ID: <C6BC71B0FE52F34DB131AA6993A023F6011997F5@ex2-del1.synapse.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1101040456270.11091@obet.zrqbmnf.qr>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-class: urn:content-classes:message
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
 Hi,
 
-On Tue, 4 Jan 2011, Jan Engelhardt wrote:
+I am new to iptables and currently working on hashlimit option.
+Recently, I found a behaviour of iptables which is quite strange. When I
+issue the following command :
 
-> So a few people had been asking on whether ipset 5.x will be bundled 
-> along with Xtables-addons. Naturally this is a difficult question 
-> because ipset-5 wants a kernel patch. But yes, it is included as of Xt-a 
-> 1.32 (just out).
-> 
-> It has been augmented to not require the patch anymore, by moving it 
-> over from nfnetlink (booo) to genetlink which does not depend on static 
-> numbers, though you will need at least Linux 2.6.35 for this GENL 
-> variant in both compilation and at runtime.
+iptables -A I_UDP_def_realm_4000 -m hashlimit --hashlimit-upto 6000
+--hashlimit-burst 40 --hashlimit-mode srcip --hashlimit-name test -j
+I_SYS_RATELIMIT_CHAIN
 
-I fully appreciate your effort, however with it you forked ipset 5.x and 
-now the two branches cannot talk to each other.
+it take limit as 10000/s instead of 6000/s and this behaviour is for any
+value greater than 5000. 
 
-I'm not convinced that ipset should be moved from nfnetlink to genetlink. 
-It'd make life easier for the users at the beginning, however on the 
-longer run it'd buy nothing and I believe ipset belongs to nfnetlink.
+Also I have some observations like if I give 2000/s or 2500/s, it takes
+the value as such but if I give 3000/s, it takes the value as 3333/s.
+And any value above it, it takes it as 5000/s.
 
-I considered the idea of adding support of both protocols, however it 
-might make the acceptance for kernel inclusion harder. I'm not happy.
+Please explain why iptables is behaving like this. Is it in algorithm
+and the purpose for the same.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Thanks,
+Gurpreet
