@@ -1,52 +1,22 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Xtables-addons 1.32/ipset-GENL 5.2
-Date: Wed, 5 Jan 2011 13:08:04 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1101051223190.12025@obet.zrqbmnf.qr>
-References: <alpine.LNX.2.01.1101040456270.11091@obet.zrqbmnf.qr> <alpine.DEB.2.00.1101050921130.23762@blackhole.kfki.hu>
+From: Jonathan Tripathy <jonnyt@abpni.co.uk>
+Subject: VLANs
+Date: Wed, 05 Jan 2011 12:12:40 +0000
+Message-ID: <4D246038.5040504@abpni.co.uk>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1101050921130.23762@blackhole.kfki.hu>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
+Hi Everyone,
 
-On Wednesday 2011-01-05 10:22, Jozsef Kadlecsik wrote:
->On Tue, 4 Jan 2011, Jan Engelhardt wrote:
->
->> So a few people had been asking on whether ipset 5.x will be bundled 
->> along with Xtables-addons. Naturally this is a difficult question 
->> because ipset-5 wants a kernel patch. But yes, it is included as of Xt-a 
->> 1.32 (just out).
->> 
->> It has been augmented to not require the patch anymore, by moving it 
->> over from nfnetlink (booo) to genetlink which does not depend on static 
->> numbers, though you will need at least Linux 2.6.35 for this GENL 
->> variant in both compilation and at runtime.
->
->I fully appreciate your effort, however with it you forked ipset 5.x and 
->now the two branches cannot talk to each other.
+If I plug my Xen host to a VLAN aware switch using a trunk port (I.e. 
+all frames are tagged), can my Xen host, using a linux bridge, strip out 
+all tagging and send frame to correct Xen VM? (And vice versa)
 
-Was not planned; I hardly see a case where there is a reason to mix
-two versions of out-of-tree modules. (There is always a lockstep
-update of both kernel and user side when using Xt-a.)
+I wish to have isolated and secure networks that cannot communicate 
+except via my VLAN aware firewall (pfsense)
 
->I'm not convinced that ipset should be moved from nfnetlink to
->genetlink. It'd make life easier for the users at the beginning,
->however on the longer run it'd buy nothing and I believe ipset
->belongs to nfnetlink. I considered the idea of adding support of
->both protocols, however it might make the acceptance for kernel
->inclusion harder. I'm not happy.
-
-The genl patch was solely made for the users wanting to try ipset5.
-
-I cannot say I am happy about it either, knowing about the nfnetlink
-doctrine. You say genl does not buy us anything, but I feel people
-have not thought about what nfnl could possibly buy over genl. Right
-now, nfnl has two drawbacks: preallocated IDs and extra memory use.
-
-There were no intentions of inclusion of this genl patch, though that
-does not mean I prohibit its integration.
+Thanks
