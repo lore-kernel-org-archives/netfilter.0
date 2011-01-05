@@ -1,22 +1,33 @@
-From: Jonathan Tripathy <jonnyt@abpni.co.uk>
-Subject: VLANs
-Date: Wed, 05 Jan 2011 12:12:40 +0000
-Message-ID: <4D246038.5040504@abpni.co.uk>
+From: Toralf =?utf-8?q?F=C3=B6rster?= <toralf.foerster@gmx.de>
+Subject: unmet direct dependencies (NET && NET_SCHED)
+Date: Wed, 5 Jan 2011 14:22:20 +0100
+Message-ID: <201101051422.20490.toralf.foerster@gmx.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: Text/Plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
+Cc: netdev@vger.kernel.org
 
-Hi Everyone,
+Hello,
 
-If I plug my Xen host to a VLAN aware switch using a trunk port (I.e. 
-all frames are tagged), can my Xen host, using a linux bridge, strip out 
-all tagging and send frame to correct Xen VM? (And vice versa)
+a "make randconfig 1>/dev/null" gave today :
 
-I wish to have isolated and secure networks that cannot communicate 
-except via my VLAN aware firewall (pfsense)
+tfoerste@n22 ~/devel/linux-2.6 $ make randconfig 1>/dev/null
+warning: (NETFILTER_XT_MATCH_REALM && NET && INET && NETFILTER &&=20
+NETFILTER_XTABLES && NETFILTER_ADVANCED || NET_CLS_ROUTE4 && NET && NET=
+_SCHED)=20
+selects NET_CLS_ROUTE which has unmet direct dependencies (NET && NET_S=
+CHED)
 
-Thanks
+for the current git kernel sources.
+Is this an already known issue ?
+
+--=20
+MfG/Kind regards
+Toralf F=C3=B6rster
+
+pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
+
