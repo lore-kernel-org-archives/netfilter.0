@@ -1,32 +1,66 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 Subject: Re: Xtables-addons 1.32/ipset-GENL 5.2
-Date: Wed, 5 Jan 2011 21:29:57 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1101052129080.25139@blackhole.kfki.hu>
-References: <alpine.LNX.2.01.1101040456270.11091@obet.zrqbmnf.qr> <alpine.DEB.2.00.1101050921130.23762@blackhole.kfki.hu> <4D2493A7.5070203@googlemail.com>
+Date: Thu, 06 Jan 2011 03:11:39 +0100
+Message-ID: <4D2524DB.8090408@netfilter.org>
+References: <alpine.LNX.2.01.1101040456270.11091@obet.zrqbmnf.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4D2493A7.5070203@googlemail.com>
+In-Reply-To: <alpine.LNX.2.01.1101040456270.11091@obet.zrqbmnf.qr>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
-Cc: Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 
-On Wed, 5 Jan 2011, Mr Dash Four wrote:
-[...]
-> As it stands, Fedora does not distribute ipset on its own, but as part of the
-> xtables package. I do not know whether this is going to change, but as far as
-> I am concerned the moment I am able to build a separate ipset rpm which
-> functions as it should, xtables is gone on all of my machines. I presume
-> ipset, too, generates/uses kernel modules - is that the case?
+On 04/01/11 05:14, Jan Engelhardt wrote:
+> '=E3=81=A1=E3=82=8F
+>=20
+> So a few people had been asking on whether ipset 5.x will be bundled=20
+> along with Xtables-addons. Naturally this is a difficult question=20
+> because ipset-5 wants a kernel patch. But yes, it is included as of X=
+t-a=20
+> 1.32 (just out).
+>=20
+> It has been augmented to not require the patch anymore, by moving it=20
+> over from nfnetlink (booo) to genetlink which does not depend on stat=
+ic=20
+> numbers, though you will need at least Linux 2.6.35 for this GENL=20
+> variant in both compilation and at runtime.
 
-Yes, of course.
+Not depending of static numbers is a good thing to me because it makes
+the whole user-space simpler since: a) you don't have to send a message
+to perform the initial family ID lookup and b) you don't have to
+subscribe to genl control events (which is required since the the
+floating family number may change if the module is unloaded).
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+> (As such, ipset-5 is deactivated by default in Xt-a 1.32 and needs to=
+ be=20
+> turned on in mconfig.)
+>=20
+> Xt-a files at the usual place.
+>=20
+> The plain genl patch to ipset-5 can be found as a commit at=20
+> git://dev.medozas.de/ipset in the "genl" branch. It has received a ru=
+n=20
+> through the testsuite (as far as it went until ospf), and I take that=
+ as=20
+> an indication that proxying the protocol onto genl was successful.
+
+This is going to confuse everyone. Since ipset-5 will be submitted into
+mainline soon, some distributors may start packaging the user-space gen=
+l
+binaries. Then, once we have it into the kernel, the distributed versio=
+n
+will not work with the one running upon nfnetlink.
+
+I think it's way easier to submit a patch to reserve the subsystem ID
+for ipset than adding this genl compatibility layer.
+
+BTW, Jozsef, do you plan to submit ipset for the next linux kernel
+release cycle?
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
+el" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
