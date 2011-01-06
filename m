@@ -1,34 +1,57 @@
-From: Marek Kierdelewicz <marek@piasta.pl>
-Subject: new netfilter target - DNETMAP
-Date: Fri, 7 Jan 2011 00:02:59 +0100
-Message-ID: <20110107000259.775ba310@kuguar>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: new netfilter target - DNETMAP
+Date: Fri, 7 Jan 2011 00:25:58 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1101070008590.19521@obet.zrqbmnf.qr>
+References: <20110107000259.775ba310@kuguar>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <20110107000259.775ba310@kuguar>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Marek Kierdelewicz <marek@piasta.pl>
+Cc: netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
 
-Hi,
+On Friday 2011-01-07 00:02, Marek Kierdelewicz wrote:
 
-The DNETMAP target allows dynamic two-way 1:1 mapping of IPv4 subnets.
-Single rule can map private subnet to shorter public subnet creating
-and maintaining unambigeous private-public ip bindings. Second rule can
-be used to map new flows to private subnet according to maintained
-bindings. Target allows efficient public IPv4 space usage and
-unambigeous NAT at the same time.
+>Hi,
+>
+>The DNETMAP target allows dynamic two-way 1:1 mapping of IPv4 subnets.
+>Single rule can map private subnet to shorter public subnet creating
+>and maintaining unambigeous private-public ip bindings. Second rule can
+>be used to map new flows to private subnet according to maintained
+>bindings. Target allows efficient public IPv4 space usage and
+>unambigeous NAT at the same time.
+>
+>DNETMAP is available as patched xtables-addons-1.31 package and as a
+>patch for xtables-addons-1.31 package.
+>
+>http://cat.piasta.pl/dnetmap/
 
-DNETMAP is available as patched xtables-addons-1.31 package and as a
-patch for xtables-addons-1.31 package.
+Have you considered updating the NETMAP target inside the linux
+kernel instead?
 
-Manpage & downloads:
-http://cat.piasta.pl/dnetmap/
+Your idea looks interesting in that I could envision it superseding
+DNAT, SNAT and NETMAP altogether.
 
-Feedback grately appreciated.
 
-Polite request to Jan Engelhardt for inclusion of the target into
-xtables-addons.
+>Polite request to Jan Engelhardt for inclusion of the target into
+>xtables-addons.
 
-Best regards,
-Marek Kierdelewicz
+It would be nice if you could
+
+ * resolve the inconsistencies in indentation. Specifically, use tabs to 
+indent statements. If in doubt, use scripts/Lindent 
+and scripts/checkpatch.pl from linux.
+
+ * wrap lines at 80 cols in xt_DNETMAP.man 
+
+
+Things I have noticed while spending a quick look:
+
+The manpage mentions "If host 192.168.0.10 generates some traffic, it 
+gets bound to first free IP in subnet - 20.0.0.0.". However,
+20.0.0.0 can be a network address and thus lead to problems.
+Is there a way for the user to specify that the range to use
+should be 20.0.0.1-20.255.255.254 rather than 20.0.0.0-20.255.255.255?
