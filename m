@@ -1,30 +1,71 @@
-From: John Haxby <john.haxby@oracle.com>
-Subject: Re: VLANs
-Date: Thu, 6 Jan 2011 07:32:08 +0000
-Message-ID: <ACCD470A-45A5-4F54-988F-9F73703C599E@oracle.com>
-References: <4D246038.5040504@abpni.co.uk>
-Mime-Version: 1.0 (Apple Message framework v1082)
-Content-Transfer-Encoding: 8BIT
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Xtables-addons 1.32/ipset-GENL 5.2
+Date: Thu, 6 Jan 2011 10:46:24 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1101061038080.26385@blackhole.kfki.hu>
+References: <alpine.LNX.2.01.1101040456270.11091@obet.zrqbmnf.qr> <4D2524DB.8090408@netfilter.org>
+Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D246038.5040504@abpni.co.uk>
+In-Reply-To: <4D2524DB.8090408@netfilter.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jonathan Tripathy <jonnyt@abpni.co.uk>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
 
+On Thu, 6 Jan 2011, Pablo Neira Ayuso wrote:
 
-On 5 Jan 2011, at 12:12, Jonathan Tripathy wrote:
-
+> On 04/01/11 05:14, Jan Engelhardt wrote:
+> > So a few people had been asking on whether ipset 5.x will be bundled 
+> > along with Xtables-addons. Naturally this is a difficult question 
+> > because ipset-5 wants a kernel patch. But yes, it is included as of Xt-a 
+> > 1.32 (just out).
+> > 
+> > It has been augmented to not require the patch anymore, by moving it 
+> > over from nfnetlink (booo) to genetlink which does not depend on static 
+> > numbers, though you will need at least Linux 2.6.35 for this GENL 
+> > variant in both compilation and at runtime.
 > 
-> If I plug my Xen host to a VLAN aware switch using a trunk port (I.e. all frames are tagged), can my Xen host, using a linux bridge, strip out all tagging and send frame to correct Xen VM? (And vice versa)
+> Not depending of static numbers is a good thing to me because it makes
+> the whole user-space simpler since: a) you don't have to send a message
+> to perform the initial family ID lookup and b) you don't have to
+> subscribe to genl control events (which is required since the the
+> floating family number may change if the module is unloaded).
 
-Yes.  The outgoing interface on the bridge deals with the VLAN tag.
-
+You mean "Depending on static numbers...", don't you?
+ 
+> > (As such, ipset-5 is deactivated by default in Xt-a 1.32 and needs to be 
+> > turned on in mconfig.)
+> > 
+> > Xt-a files at the usual place.
+> > 
+> > The plain genl patch to ipset-5 can be found as a commit at 
+> > git://dev.medozas.de/ipset in the "genl" branch. It has received a run 
+> > through the testsuite (as far as it went until ospf), and I take that as 
+> > an indication that proxying the protocol onto genl was successful.
 > 
-> I wish to have isolated and secure networks that cannot communicate except via my VLAN aware firewall (pfsense)
+> This is going to confuse everyone. Since ipset-5 will be submitted into
+> mainline soon, some distributors may start packaging the user-space genl
+> binaries. Then, once we have it into the kernel, the distributed version
+> will not work with the one running upon nfnetlink.
 
+Yes, that worries me too.
 
-Yup, that's what you get.
+> I think it's way easier to submit a patch to reserve the subsystem ID
+> for ipset than adding this genl compatibility layer.
 
-jch
+That was rejected some time ago. :-)
+ 
+> BTW, Jozsef, do you plan to submit ipset for the next linux kernel
+> release cycle?
+
+Yes: ipset-5 depends on the jhash.h patch so as soon as it's in Patrick's 
+tree, I can submit the patches.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
