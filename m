@@ -1,70 +1,35 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Xtables-addons 1.32/ipset-GENL 5.2
-Date: Thu, 06 Jan 2011 14:12:41 +0100
-Message-ID: <4D25BFC9.9030807@netfilter.org>
-References: <alpine.LNX.2.01.1101040456270.11091@obet.zrqbmnf.qr> <4D2524DB.8090408@netfilter.org> <alpine.DEB.2.00.1101061038080.26385@blackhole.kfki.hu>
+Subject: Re: ulogd2 segfault
+Date: Thu, 06 Jan 2011 14:53:09 +0100
+Message-ID: <4D25C945.7030502@netfilter.org>
+References: <4D1E0374.3090008@open.ch> <4D221173.3060009@open.ch>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1101061038080.26385@blackhole.kfki.hu>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4D221173.3060009@open.ch>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?ISO-8859-1?Q?Salih_G=F6n=FCll=FC?= <sag@open.ch>
+Cc: netfilter@vger.kernel.org
 
-On 06/01/11 10:46, Jozsef Kadlecsik wrote:
-> On Thu, 6 Jan 2011, Pablo Neira Ayuso wrote:
-> 
->> On 04/01/11 05:14, Jan Engelhardt wrote:
->>> So a few people had been asking on whether ipset 5.x will be bundled 
->>> along with Xtables-addons. Naturally this is a difficult question 
->>> because ipset-5 wants a kernel patch. But yes, it is included as of Xt-a 
->>> 1.32 (just out).
->>>
->>> It has been augmented to not require the patch anymore, by moving it 
->>> over from nfnetlink (booo) to genetlink which does not depend on static 
->>> numbers, though you will need at least Linux 2.6.35 for this GENL 
->>> variant in both compilation and at runtime.
->>
->> Not depending of static numbers is a good thing to me because it makes
->> the whole user-space simpler since: a) you don't have to send a message
->> to perform the initial family ID lookup and b) you don't have to
->> subscribe to genl control events (which is required since the the
->> floating family number may change if the module is unloaded).
-> 
-> You mean "Depending on static numbers...", don't you?
+On 03/01/11 19:12, Salih G=F6n=FCll=FC wrote:
+> Hi,
+>=20
+> my last ulogd.conf was not complete. And I think I found out the caus=
+e:
+>=20
+> stack=3Dlog2:NFLOG,base1:BASE,ifi1:IFINDEX,ip2str1:IP2STR,print1:PRIN=
+TPKT,emu0:LOGEMU
+>=20
+> stack=3Dlog2:NFLOG,base1:BASE,ifi1:IFINDEX,ip2str1:IP2STR,print1:PRIN=
+TPKT,syslog1:SYSLOG
+>=20
+> having other stacks is not a problem as long as the log2:NFLOG is not
+> present, could it be that stop_pluginstances() in this case is doing =
+a
+> double free() ?
 
-yes, sorry for the confusion.
-
->>> (As such, ipset-5 is deactivated by default in Xt-a 1.32 and needs to be 
->>> turned on in mconfig.)
->>>
->>> Xt-a files at the usual place.
->>>
->>> The plain genl patch to ipset-5 can be found as a commit at 
->>> git://dev.medozas.de/ipset in the "genl" branch. It has received a run 
->>> through the testsuite (as far as it went until ospf), and I take that as 
->>> an indication that proxying the protocol onto genl was successful.
->>
->> This is going to confuse everyone. Since ipset-5 will be submitted into
->> mainline soon, some distributors may start packaging the user-space genl
->> binaries. Then, once we have it into the kernel, the distributed version
->> will not work with the one running upon nfnetlink.
-> 
-> Yes, that worries me too.
-> 
->> I think it's way easier to submit a patch to reserve the subsystem ID
->> for ipset than adding this genl compatibility layer.
-> 
-> That was rejected some time ago. :-)
-
-Indeed, I forgot that.
-
->> BTW, Jozsef, do you plan to submit ipset for the next linux kernel
->> release cycle?
-> 
-> Yes: ipset-5 depends on the jhash.h patch so as soon as it's in Patrick's 
-> tree, I can submit the patches.
-
-great.
+Let me check this, if the problem is what you're pointing (which makes
+sense at first look at the code) I guess that we need some refcounting
+for plugins to avoid double freeing.
