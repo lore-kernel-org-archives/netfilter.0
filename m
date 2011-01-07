@@ -1,111 +1,120 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: iptables -I with interface behavior
-Date: Fri, 7 Jan 2011 12:41:20 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1101071236570.26681@obet.zrqbmnf.qr>
-References: <9F69795E29C890408AC2DAF646C89BB37998F4E870@MAILBOX.arc.local>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: ulogd2 segfault
+Date: Fri, 07 Jan 2011 14:37:11 +0100
+Message-ID: <4D271707.60407@netfilter.org>
+References: <4D1E0374.3090008@open.ch> <4D221173.3060009@open.ch> <4D25C945.7030502@netfilter.org> <4D26E9C0.9090304@open.ch>
 Mime-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="------------070705070309060004080300"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <9F69795E29C890408AC2DAF646C89BB37998F4E870@MAILBOX.arc.local>
+In-Reply-To: <4D26E9C0.9090304@open.ch>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+To: =?ISO-8859-1?Q?Salih_G=F6n=FCll=FC?= <sag@open.ch>
+Cc: netfilter@vger.kernel.org
+
+This is a multi-part message in MIME format.
+--------------070705070309060004080300
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
+
+On 07/01/11 11:24, Salih G=F6n=FCll=FC wrote:
+> On 01/06/2011 02:53 PM, Pablo Neira Ayuso wrote:
+>=20
+>> Let me check this, if the problem is what you're pointing (which makes
+>> sense at first look at the code) I guess that we need some refcounting
+>> for plugins to avoid double freeing.
+>=20
+>=20
+> When I comment out nflog_unbind_group(ui->nful_gh) in  stop() inside
+> input/packet/ulogd_inppkt_NFLOG.c,  ulogd does not segfault anymore.
+>=20
+> Here I have question:
+>=20
+> Does  *pi in
+> static int stop(struct ulogd_pluginstance *pi)
+>=20
+> represent the NFLOG plugin or the individual log2:NFLOG ? I am asking
+> because it get started only once with pluginstance_started(), and
+> therefore should be stopped once (?)
+
+Indeed, accurate analysis. Would you give a try to the following patch?
+
+--------------070705070309060004080300
+Content-Type: text/x-patch;
+ name="refcount.patch"
 Content-Transfer-Encoding: 7bit
-To: Fiedler Roman <Roman.Fiedler@ait.ac.at>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Disposition: attachment;
+ filename="refcount.patch"
 
-On Friday 2011-01-07 12:05, Fiedler Roman wrote:
+ulogd: fix double call of stop for reused input plugins
 
->Hello List,
->
->I have encountered an unexpected behavior using iptables on Ubuntu 
->lucid and would like to hear your opinition on it:
->
->In a custom firewall setup, I have defined variables for the various 
->interface names, I use them e.g.
->
->Iptables -A FORWARD -i  "${MyInterfaceName}"  -j FORWARD-SOMECHAIN
->
->Due to a configuration, the variable was empty, the execution of
->
->Iptables -A FORWARD -i  "" -j FORWARD-SOMECHAIN
->
->was equivalent to
->
->Iptables -A FORWARD  -j FORWARD-SOMECHAIN
->
->which would have caused a security problem. I would have expected the iptables call to
->a) fail with "empty interface name" error or
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
-Yeah that sounds best. I see no reason to use -i "" when you can use 
-(omit -i).
+This patch adds reference counting for plugins. This is used to fix
+a double stop for input plugins that are reused.
 
-I'll queue this:
+This problem was reported by Salih Gonullu <sag@open.ch>:
 
-parent 7f8f85117831a6cd9d093492300e58ced9883baf (v1.4.10-21-g7f8f851)
-commit 435c0cf63ac13d6b72e4b13c184ba831424ec9d0
+http://marc.info/?l=netfilter&m=129439584700693&w=2
 
-iptables: abort on empty interface specification
-
-Fiedler Roman brings to attention that if, in a faulty script,
-"$some_variable" expands to an empty string, iptables should probably
-catch this most likely undesired invocation. If no/all interfaces were
-really desired, one can either omit -i completely, or use -i +.
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 ---
- ip6tables.c |    8 ++++++++
- iptables.c  |    8 ++++++++
- 2 files changed, 16 insertions(+), 0 deletions(-)
+ include/ulogd/ulogd.h |    2 ++
+ src/ulogd.c           |   14 ++++++++++++--
+ 2 files changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/ip6tables.c b/ip6tables.c
-index 84908eb..b8449f6 100644
---- a/ip6tables.c
-+++ b/ip6tables.c
-@@ -1573,6 +1573,10 @@ int do_command6(int argc, char *argv[], char **table, struct ip6tc_handle **hand
+diff --git a/include/ulogd/ulogd.h b/include/ulogd/ulogd.h
+index 2d1b348..e48caf8 100644
+--- a/include/ulogd/ulogd.h
++++ b/include/ulogd/ulogd.h
+@@ -208,6 +208,8 @@ struct ulogd_plugin {
+ 	char name[ULOGD_MAX_KEYLEN+1];
+ 	/* ID for this plugin (dynamically assigned) */
+ 	unsigned int id;
++	/* how many stacks are using this plugin? initially set to zero. */
++	unsigned int usage;
  
+ 	struct ulogd_keyset input;
+ 	struct ulogd_keyset output;
+diff --git a/src/ulogd.c b/src/ulogd.c
+index f378c6f..a4b0ed1 100644
+--- a/src/ulogd.c
++++ b/src/ulogd.c
+@@ -762,6 +762,15 @@ static int pluginstance_started(struct ulogd_pluginstance *npi)
+ 	return 0;
+ }
  
- 		case 'i':
-+			if (*optarg == '\0')
-+				xtables_error(PARAMETER_PROBLEM,
-+					"Empty interface is likely to be "
-+					"undesired");
- 			xtables_check_inverse(optarg, &invert, &optind, argc, argv);
- 			set_option(&options, OPT_VIANAMEIN, &fw.ipv6.invflags,
- 				   invert);
-@@ -1582,6 +1586,10 @@ int do_command6(int argc, char *argv[], char **table, struct ip6tc_handle **hand
- 			break;
++static int pluginstance_stop(struct ulogd_pluginstance *npi)
++{
++	if (--npi->plugin->usage > 0 &&
++	    npi->plugin->input.type == ULOGD_DTYPE_SOURCE) {
++		return 0;
++	}
++	return 1;
++}
++
+ static int create_stack_start_instances(struct ulogd_pluginstance_stack *stack)
+ {
+ 	int ret;
+@@ -839,6 +848,7 @@ static int create_stack(const char *option)
+ 			ret = -ENODEV;
+ 			goto out;
+ 		}
++		pl->usage++;
  
- 		case 'o':
-+			if (*optarg == '\0')
-+				xtables_error(PARAMETER_PROBLEM,
-+					"Empty interface is likely to be "
-+					"undesired");
- 			xtables_check_inverse(optarg, &invert, &optind, argc, argv);
- 			set_option(&options, OPT_VIANAMEOUT, &fw.ipv6.invflags,
- 				   invert);
-diff --git a/iptables.c b/iptables.c
-index 2d0861c..c92f297 100644
---- a/iptables.c
-+++ b/iptables.c
-@@ -1590,6 +1590,10 @@ int do_command(int argc, char *argv[], char **table, struct iptc_handle **handle
+ 		/* allocate */
+ 		pi = pluginstance_alloc_init(pl, pi_id, stack);
+@@ -989,8 +999,8 @@ static void stop_pluginstances()
  
- 
- 		case 'i':
-+			if (*optarg == '\0')
-+				xtables_error(PARAMETER_PROBLEM,
-+					"Empty interface is likely to be "
-+					"undesired");
- 			xtables_check_inverse(optarg, &invert, &optind, argc, argv);
- 			set_option(&options, OPT_VIANAMEIN, &fw.ip.invflags,
- 				   invert);
-@@ -1599,6 +1603,10 @@ int do_command(int argc, char *argv[], char **table, struct iptc_handle **handle
- 			break;
- 
- 		case 'o':
-+			if (*optarg == '\0')
-+				xtables_error(PARAMETER_PROBLEM,
-+					"Empty interface is likely to be "
-+					"undesired");
- 			xtables_check_inverse(optarg, &invert, &optind, argc, argv);
- 			set_option(&options, OPT_VIANAMEOUT, &fw.ip.invflags,
- 				   invert);
--- 
-# Created with git-export-patch
+ 	llist_for_each_entry(stack, &ulogd_pi_stacks, stack_list) {
+ 		llist_for_each_entry_safe(pi, npi, &stack->list, list) {
+-			if (((pi->plugin->priv_size == 0) || pi->private[0])
+-					&& *pi->plugin->stop) {
++			if ((pi->plugin->priv_size > 0 || *pi->plugin->stop) &&
++			    pluginstance_stop(pi)) {
+ 				ulogd_log(ULOGD_DEBUG, "calling stop for %s\n",
+ 					  pi->plugin->name);
+ 				(*pi->plugin->stop)(pi);
+
+--------------070705070309060004080300--
