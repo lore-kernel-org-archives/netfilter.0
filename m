@@ -1,37 +1,53 @@
-From: =?ISO-8859-1?Q?Salih_G=F6n=FCll=FC?= <sag@open.ch>
-Subject: Re: ulogd2 segfault
-Date: Fri, 07 Jan 2011 11:24:00 +0100
-Message-ID: <4D26E9C0.9090304@open.ch>
-References: <4D1E0374.3090008@open.ch> <4D221173.3060009@open.ch> <4D25C945.7030502@netfilter.org>
+From: Fiedler Roman <Roman.Fiedler@ait.ac.at>
+Subject: iptables -I with interface behavior
+Date: Fri, 7 Jan 2011 12:05:05 +0100
+Message-ID: <9F69795E29C890408AC2DAF646C89BB37998F4E870@MAILBOX.arc.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D25C945.7030502@netfilter.org>
+Content-Language: de-DE
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 01/06/2011 02:53 PM, Pablo Neira Ayuso wrote:
+Hello List,
 
-> Let me check this, if the problem is what you're pointing (which makes
-> sense at first look at the code) I guess that we need some refcounting
-> for plugins to avoid double freeing.
+I have encountered an unexpected behavior using iptables on Ubuntu lucid and would like to hear your opinition on it:
+
+In a custom firewall setup, I have defined variables for the various interface names, I use them e.g.
+
+Iptables -A FORWARD -i  "${MyInterfaceName}"  -j FORWARD-SOMECHAIN
+
+Due to a configuration, the variable was empty, the execution of
+
+Iptables -A FORWARD -i  "" -j FORWARD-SOMECHAIN
+
+was equivalent to
+
+Iptables -A FORWARD  -j FORWARD-SOMECHAIN
+
+which would have caused a security problem. I would have expected the iptables call to
+a) fail with "empty interface name" error or
+b) work, but only jump on packets from interface "", so the rule would never jump to the table.
+
+The man page on Ubuntu lucid would also indicate that that is unexpected:
+
+       [!] -i, --in-interface name
+              Name  of  an interface via which a packet was received (only for
+              packets entering the  INPUT,  FORWARD  and  PREROUTING  chains).
+              When  the  "!"  argument  is used before the interface name, the
+              sense is inverted.  If the interface name ends in  a  "+",  then
+              any  interface  which begins with this name will match.  If this
+              option is omitted, any interface name will match.
 
 
-When I comment out nflog_unbind_group(ui->nful_gh) in  stop() inside 
-input/packet/ulogd_inppkt_NFLOG.c,  ulogd does not segfault anymore.
+Do you think, that
+a) documentation should be updated
+b) iptables or kernel should be updated
+c) my interpretation of documentation is wrong
 
-Here I have question:
+Kind Regards,
+Roman
 
-Does  *pi in
-static int stop(struct ulogd_pluginstance *pi)
-
-represent the NFLOG plugin or the individual log2:NFLOG ? I am asking 
-because it get started only once with pluginstance_started(), and 
-therefore should be stopped once (?)
-
-Cheers,
-
--salih
+PS: I have not checked what iptables sends to kernel link and how kernel uses the name. So cause could be in iptables application or kernel layer.
