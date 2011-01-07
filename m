@@ -1,57 +1,37 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: new netfilter target - DNETMAP
-Date: Fri, 7 Jan 2011 00:25:58 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1101070008590.19521@obet.zrqbmnf.qr>
-References: <20110107000259.775ba310@kuguar>
+From: =?ISO-8859-1?Q?Salih_G=F6n=FCll=FC?= <sag@open.ch>
+Subject: Re: ulogd2 segfault
+Date: Fri, 07 Jan 2011 11:24:00 +0100
+Message-ID: <4D26E9C0.9090304@open.ch>
+References: <4D1E0374.3090008@open.ch> <4D221173.3060009@open.ch> <4D25C945.7030502@netfilter.org>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <20110107000259.775ba310@kuguar>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Marek Kierdelewicz <marek@piasta.pl>
-Cc: netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4D25C945.7030502@netfilter.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org
 
-On Friday 2011-01-07 00:02, Marek Kierdelewicz wrote:
+On 01/06/2011 02:53 PM, Pablo Neira Ayuso wrote:
 
->Hi,
->
->The DNETMAP target allows dynamic two-way 1:1 mapping of IPv4 subnets.
->Single rule can map private subnet to shorter public subnet creating
->and maintaining unambigeous private-public ip bindings. Second rule can
->be used to map new flows to private subnet according to maintained
->bindings. Target allows efficient public IPv4 space usage and
->unambigeous NAT at the same time.
->
->DNETMAP is available as patched xtables-addons-1.31 package and as a
->patch for xtables-addons-1.31 package.
->
->http://cat.piasta.pl/dnetmap/
-
-Have you considered updating the NETMAP target inside the linux
-kernel instead?
-
-Your idea looks interesting in that I could envision it superseding
-DNAT, SNAT and NETMAP altogether.
+> Let me check this, if the problem is what you're pointing (which makes
+> sense at first look at the code) I guess that we need some refcounting
+> for plugins to avoid double freeing.
 
 
->Polite request to Jan Engelhardt for inclusion of the target into
->xtables-addons.
+When I comment out nflog_unbind_group(ui->nful_gh) in  stop() inside 
+input/packet/ulogd_inppkt_NFLOG.c,  ulogd does not segfault anymore.
 
-It would be nice if you could
+Here I have question:
 
- * resolve the inconsistencies in indentation. Specifically, use tabs to 
-indent statements. If in doubt, use scripts/Lindent 
-and scripts/checkpatch.pl from linux.
+Does  *pi in
+static int stop(struct ulogd_pluginstance *pi)
 
- * wrap lines at 80 cols in xt_DNETMAP.man 
+represent the NFLOG plugin or the individual log2:NFLOG ? I am asking 
+because it get started only once with pluginstance_started(), and 
+therefore should be stopped once (?)
 
+Cheers,
 
-Things I have noticed while spending a quick look:
-
-The manpage mentions "If host 192.168.0.10 generates some traffic, it 
-gets bound to first free IP in subnet - 20.0.0.0.". However,
-20.0.0.0 can be a network address and thus lead to problems.
-Is there a way for the user to specify that the range to use
-should be 20.0.0.1-20.255.255.254 rather than 20.0.0.0-20.255.255.255?
+-salih
