@@ -1,28 +1,56 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: ulogd2 segfault
-Date: Sat, 08 Jan 2011 15:36:24 +0100
-Message-ID: <4D287668.8000207@netfilter.org>
-References: <4D1E0374.3090008@open.ch> <4D221173.3060009@open.ch> <4D25C945.7030502@netfilter.org> <4D26E9C0.9090304@open.ch> <4D271707.60407@netfilter.org> <4D274213.6040803@open.ch>
+From: Marek Kierdelewicz <marek@piasta.pl>
+Subject: Re: new netfilter target - DNETMAP
+Date: Sun, 9 Jan 2011 10:26:34 +0100
+Message-ID: <20110109102634.16b0a3c1@kuguar>
+References: <20110107000259.775ba310@kuguar>
+	<alpine.LNX.2.01.1101070008590.19521@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D274213.6040803@open.ch>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.01.1101070008590.19521@obet.zrqbmnf.qr>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?ISO-8859-1?Q?Salih_G=F6n=FCll=FC?= <sag@open.ch>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
 
-On 07/01/11 17:40, Salih G=F6n=FCll=FC wrote:
-> Hi Pablo
->=20
-> On 01/07/2011 02:37 PM, Pablo Neira Ayuso wrote:
->=20
->> Indeed, accurate analysis. Would you give a try to the following pat=
-ch?
->=20
-> It works fine, thanks!
+Hi,
 
-I have applied the patch, thanks for the accurate report and for testin=
-g
-it Salih.
+>It would be nice if you could
+> * resolve the inconsistencies in indentation. Specifically, use tabs
+>   to indent statements. If in doubt, use scripts/Lindent 
+>and scripts/checkpatch.pl from linux.
+
+Done. Patch passes checkpatch.pl except for:
+- nf_conntrack_tuple.h and nf_nat.h in include/net/netfilter/;
+  these two files are copied frome kernel tree;
+- lack of signed-off which AFAIK is used for kernel patches only;
+
+I hope it's ok.
+
+> * wrap lines at 80 cols in xt_DNETMAP.man 
+
+Done.
+
+Updated versions are located here:
+http://cat.piasta.pl/dnetmap/xtables-addons-1.31-dnetmap-1.0.tar.bz2
+http://cat.piasta.pl/dnetmap/xtables-addons-1.31-dnetmap-1.0.patch.bz2
+
+>Things I have noticed while spending a quick look:
+>The manpage mentions "If host 192.168.0.10 generates some traffic, it 
+>gets bound to first free IP in subnet - 20.0.0.0.". However,
+>20.0.0.0 can be a network address and thus lead to problems.
+>Is there a way for the user to specify that the range to use
+>should be 20.0.0.1-20.255.255.254 rather than 20.0.0.0-20.255.255.255?
+
+To address your concerns I've added new module parameter:
+
+whole_prefix: use network and broadcast addresses of specified prefix
+for bindings (default: 1) (uint)
+
+Implementing this as target parameter would be messy because data
+structures for a given prefix are created on addition of the first
+rule for a given prefix.
+
+best regards,
+Marek Kierdelewicz
