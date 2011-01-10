@@ -1,56 +1,37 @@
-From: Marek Kierdelewicz <marek@piasta.pl>
-Subject: Re: new netfilter target - DNETMAP
-Date: Sun, 9 Jan 2011 10:26:34 +0100
-Message-ID: <20110109102634.16b0a3c1@kuguar>
-References: <20110107000259.775ba310@kuguar>
-	<alpine.LNX.2.01.1101070008590.19521@obet.zrqbmnf.qr>
+From: Roc Bai <buroc83@gmail.com>
+Subject: How to redirect the package from eth0 to eth2
+Date: Mon, 10 Jan 2011 18:08:10 +0800
+Message-ID: <AANLkTik5YfQ4eNzbSVt5QfmaEQnBA=VJ1NbueKgq9nZj__6362.58143135837$1294654110$gmane$org@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1101070008590.19521@obet.zrqbmnf.qr>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=fM2Tw8Me3p9iD5yP8RGudg0NkHCmnqBgmD9LqP6ItRg=;
+        b=iNR3VCZUogTnSSFpEa812j1G8Tpg2DflN8BDjb8jH8T+v5qZCB6bO3AYeHLi1rYwP3
+         k9gR55axCF91TheODPYthKqTn8kO4lbMjodlYt6X0b/ZGHBGRRGstkLtIWmGR+TgTuF+
+         d3Qo6fWgX/HP/yLQsuoK8nfiznxSP13ArZY4w=
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: buroc <buroc@126.com>
 
-Hi,
+Dear all:
+    in my service, there are four net card.  eth0, eth1, eth2, eth3. I
+want to forward the data in from eth0 to eth1, eth2, eth3 with
+different application protocol. Does some body send me some ideas on
+it?
 
->It would be nice if you could
-> * resolve the inconsistencies in indentation. Specifically, use tabs
->   to indent statements. If in doubt, use scripts/Lindent 
->and scripts/checkpatch.pl from linux.
+   1) where i should set the hook: pre-routing or forward?
+   2) how to make the route select the target port which i hope?
+   3) where i can get some simple source code to learn?
 
-Done. Patch passes checkpatch.pl except for:
-- nf_conntrack_tuple.h and nf_nat.h in include/net/netfilter/;
-  these two files are copied frome kernel tree;
-- lack of signed-off which AFAIK is used for kernel patches only;
+Best Regards
 
-I hope it's ok.
+Bai Shuwei
+-- 
+------------------------
 
-> * wrap lines at 80 cols in xt_DNETMAP.man 
-
-Done.
-
-Updated versions are located here:
-http://cat.piasta.pl/dnetmap/xtables-addons-1.31-dnetmap-1.0.tar.bz2
-http://cat.piasta.pl/dnetmap/xtables-addons-1.31-dnetmap-1.0.patch.bz2
-
->Things I have noticed while spending a quick look:
->The manpage mentions "If host 192.168.0.10 generates some traffic, it 
->gets bound to first free IP in subnet - 20.0.0.0.". However,
->20.0.0.0 can be a network address and thus lead to problems.
->Is there a way for the user to specify that the range to use
->should be 20.0.0.1-20.255.255.254 rather than 20.0.0.0-20.255.255.255?
-
-To address your concerns I've added new module parameter:
-
-whole_prefix: use network and broadcast addresses of specified prefix
-for bindings (default: 1) (uint)
-
-Implementing this as target parameter would be messy because data
-structures for a given prefix are created on addition of the first
-rule for a given prefix.
-
-best regards,
-Marek Kierdelewicz
+Thinking before action, but you are wasting time if you don't do action.
