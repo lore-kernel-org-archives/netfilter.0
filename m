@@ -1,52 +1,40 @@
-From: Maximilian Wilhelm <max@rfc2324.org>
-Subject: Re: How to redirect the package from eth0 to eth2
-Date: Mon, 10 Jan 2011 12:56:15 +0100
-Message-ID: <20110110115615.GH25060@outback.rfc2324.org>
-References: <AANLkTik5YfQ4eNzbSVt5QfmaEQnBA=VJ1NbueKgq9nZj@mail.gmail.com>
+From: "Martin Fandel" <pingu.freak@gmx.de>
+Subject: Netmap on a single host?
+Date: Mon, 10 Jan 2011 16:35:00 +0100
+Message-ID: <20110110153500.255590@gmx.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <AANLkTik5YfQ4eNzbSVt5QfmaEQnBA=VJ1NbueKgq9nZj@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Anno domini 2011 Roc Bai scripsit:
+Hi,
 
-Hi!
+does the module NETMAP work on a single host environment? I have the following environment. It works perfectly by using two NETMAP systems. Here is an little connection flow overview:
 
-> Dear all:
->     in my service, there are four net card.  eth0, eth1, eth2, eth3. I
-> want to forward the data in from eth0 to eth1, eth2, eth3 with
-> different application protocol. Does some body send me some ideas on
-> it?
+Endhost 1: 10.10.10.10/32 <-> Gateway 1: 10.10.10.1/32 <---> Line Gateway 1: 192.168.1.1/32 <---> Line Gateway 2: 192.168.1.2/32 <---> Gateway 2: 10.10.10.1/32 <-> Endhost 2: 10.10.10.10/32
 
-So you want to route (as in IP routing) packages to different hosts
-based on protocols (as in IP, GRE, etc?) or tcp/udp ports? Is this
-correct?
+If Enhost 1 want to connect to Endhost 2, the host connects to 10.30.10.0/24, which is the netmap'ped net for Gateway 2. If Endhost 2 wants to connect to Endhost 1, the host connects to 10.20.10.0/24, which is the netmap'ped net for Gateway 1. 
 
->    1) where i should set the hook: pre-routing or forward?
->    2) how to make the route select the target port which i hope?
+The NETMAP solution works, but I can't migrate the two gateway hosts to one single host. Does anybody know how to manage this? I'm a little bit confused. I've it tried this way, but I can't get it working:
 
-If you want to re-route packages, that has to happen in pre-routing.
-If you want to use DNAT for examples, just add a rule to the
-PREROUTING chain in the nat table.
-If you want to use real routing, there should be multiple ways to
-accomplish that. I'm not sure which one is the preferred now adays.
-(mark packages and us 'ip rule' and multiple routing tables, ROUTE
-target, ...)
+SingleHostGateway:
 
->    3) where i can get some simple source code to learn?
+eth0 > vlan trunk to cisco
+eth0.1 > vlan 1 for endhost 1 with the ip 10.10.10.1
+eth0.2 > vlan 2 for endhost 2 with the ip 10.10.10.1
 
-Source code of what?
+If I'm applying the iptables-Rules to this construct, it seems that it is not possible to set the Rules for single interfaces?!? Or that the Linux Routing can't do it.
 
-Maybe you can say a bit more about what you exactly want to do?
+Maybe someone of you guys can help me? That would be very nice.
 
-Ciao
-Max
+Thanks a lot!
+
+Regards,
+
+Martin
 -- 
-The real problem with C++ for kernel modules is:
-the language just sucks.
--- Linus Torvalds
+GMX DSL Doppel-Flat ab 19,99 Euro/mtl.! Jetzt mit 
+gratis Handy-Flat! http://portal.gmx.net/de/go/dsl
