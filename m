@@ -1,48 +1,31 @@
-From: Jonathan Tripathy <jonnyt@abpni.co.uk>
-Subject: Re: VLANs
-Date: Tue, 11 Jan 2011 12:52:21 +0000
-Message-ID: <4D2C5285.9070108@abpni.co.uk>
-References: <4D2B44E9.3000006@abpni.co.uk> <0903BC3C-68B9-4E15-BEE1-0A9F6CDCF226@oracle.com> <4D2B84F0.6030300@abpni.co.uk> <4D2C3426.3000202@oracle.com> <4D2C37A1.8090906@abpni.co.uk> <4D2C47DB.10702@oracle.com> <4D2C4C13.3020107@abpni.co.uk> <4D2C5193.6010703@oracle.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Best way to kill a live TCP connection?
+Date: Tue, 11 Jan 2011 15:41:45 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1101111537180.8612@obet.zrqbmnf.qr>
+References: <4D2C4E92.6040902@tana.it>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D2C5193.6010703@oracle.com>
+In-Reply-To: <4D2C4E92.6040902@tana.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: John Haxby <john.haxby@oracle.com>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Alessandro Vesely <vesely@tana.it>
 Cc: netfilter@vger.kernel.org
 
-> On 11/01/11 12:24, Jonathan Tripathy wrote:
->>
->> For seeing what I mean about VLAN hopping:
->>
->> http://en.wikipedia.org/wiki/VLAN_hopping
->
-> Ahh.   That's interesting, but not nearly so interesting (or useful) 
-> as the Cisco document that it cites: 
-> http://www.cisco.com/en/US/products/hw/switches/ps708/products_white_paper09186a008013159f.shtml#wp39054
->
-> Basically the hopping only works if the trunk has the same native vlan 
-> as the attacker.  This, the cisco article goes on to say, is 
-> considered to be a misconfiguration.   You can read it yourself, but 
-> there are two ways of avoiding this.
->
-> It's still not clear to me how you would get a reply from the attack 
-> -- you'd need something on the receiving end that can also do the 
-> double tagging (which is not 802.1ad, it's a second 802.1a tag, to be 
-> clear).
->
-> jch
-Yes I actually read that document. It's a very good document indeed, 
-however I took it "with a pince of salt" as it's also got marketing 
-behind it.
+On Tuesday 2011-01-11 13:35, Alessandro Vesely wrote:
 
-Indeed, I have no idea how a double tagging attack would work in regards 
-to getting a reply, as Ethernet traffic is of course stateless.
+>Hi all,
+>this is clearly an overworked topic.  However, I haven't been able to
+>find definitive info about it.  Please help providing more insight.
+>In particular, if it is possible/convenient to design an RST injector
+>that uses libnetfilter_queue and how to attach it to iptables?  (I
+>would only send a RST to the local host/network.)
 
-I'm still trying to see what I can do to make my Xen network structure 
-as secure as possible. I would indeed like to make some ebtables rules 
-that just make sure that there are no taggs at all.
+If you use a ruleset that emits RST for NEW connections that are picked 
+up rather than SYN-new,
 
-But maybe this is going to far?
+-m conntrack --ctstate NEW -p tcp ! --syn --dport 22 -j REJECT 
+--reject-with tcp-reset
+
+.. makes it possible to RST-kill connections using `conntrack -D`.
