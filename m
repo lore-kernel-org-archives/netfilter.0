@@ -1,35 +1,39 @@
-From: Sam Roberts <vieuxtech@gmail.com>
-Subject: missing or incorrect links on netfilter.org
-Date: Tue, 11 Jan 2011 09:33:21 -0800
-Message-ID: <AANLkTi=MFUjeFALsk0P4U3O=LsGTW+=Do4AzLzc1Rpft@mail.gmail.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: Best way to kill a live TCP connection?
+Date: Tue, 11 Jan 2011 18:39:57 +0100
+Message-ID: <4D2C95ED.70805@plouf.fr.eu.org>
+References: <4D2C4E92.6040902@tana.it> <alpine.LNX.2.01.1101111537180.8612@obet.zrqbmnf.qr> <4D2C8374.70408@tana.it>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:received:received:date:message-id
-         :subject:from:to:content-type;
-        bh=x2m/+sSmewk5E3+s76QwLoSlhjdnQpzZPDm9+k4GDYs=;
-        b=a/YdWZF1Fok0+jwRBp37Su+7N/TdCjhKBa5KNXLXIUEJ1eCWnl3D/5itAjkzuJjx54
-         tl5dt51qdySev1TmEaKDg2jcr375vZLasZ4JxIh7KvMqIs9t6xsz5kJrDQq/ZC35jl5W
-         l6UjJWZxEaTrqiIBQgGk+z7eXdfkRumiGZr9o=
+In-Reply-To: <4D2C8374.70408@tana.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-In http://www.netfilter.org/documentation/index.html#documentation-faq
-the links to the FAQ, like
-http://www.netfilter.org/documentation/FAQ/netfilter-faq.html are
-dead.
+Hello,
 
-In the banner (www | ftp | git | lists | bugzilla | people | planet),
-the link to "lists" is dead on some pages.
+Alessandro Vesely a =E9crit :
+> On 11/Jan/11 15:41, Jan Engelhardt wrote:
+>> On Tuesday 2011-01-11 13:35, Alessandro Vesely wrote:
+>>=20
+>>> In particular, if it is possible/convenient to design an RST inject=
+or
+>>> and how to attach it to iptables?
+>>=20
+>> If you use a ruleset that emits RST for NEW connections that are pic=
+ked=20
+>> up rather than SYN-new,
+>>
+>> -m conntrack --ctstate NEW -p tcp ! --syn --dport 22 -j REJECT=20
+>> --reject-with tcp-reset
+>>=20
+>> .. makes it possible to RST-kill connections using `conntrack -D`.
+>=20
+> That's the most elegant method I've seen thus far.  Thanks a lot!
 
-On http://www.netfilter.org/ it points correctly to
-http://www.netfilter.org/mailinglists.html  but on the documentation
-page (http://www.netfilter.org/documentation/) it points to a
-non-existent http://www.netfilter.org/documentation/mailinglists.html
-
-Cheers,
-Sam
+However this sends only one RST to one side of the connection, leaving
+the connection half-open - until the other side sends a packet and gets
+a RST too. IMO it would be more elegant to send RSTs to boths sides of
+the connection.
