@@ -1,29 +1,35 @@
-From: John Haxby <john.haxby@oracle.com>
-Subject: Re: VLANs
-Date: Tue, 11 Jan 2011 17:21:33 +0000
-Message-ID: <4D2C919D.5040402@oracle.com>
-References: <4D2B44E9.3000006@abpni.co.uk> <0903BC3C-68B9-4E15-BEE1-0A9F6CDCF226@oracle.com> <4D2B84F0.6030300@abpni.co.uk> <4D2C3426.3000202@oracle.com> <4D2C37A1.8090906@abpni.co.uk> <4D2C47DB.10702@oracle.com> <4D2C4C13.3020107@abpni.co.uk> <4D2C5193.6010703@oracle.com> <4D2C5285.9070108@abpni.co.uk> <4D2C8F7D.1080200@oracle.com> <4D2C9046.9070408@abpni.co.uk>
+From: Sam Roberts <vieuxtech@gmail.com>
+Subject: missing or incorrect links on netfilter.org
+Date: Tue, 11 Jan 2011 09:33:21 -0800
+Message-ID: <AANLkTi=MFUjeFALsk0P4U3O=LsGTW+=Do4AzLzc1Rpft@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D2C9046.9070408@abpni.co.uk>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:received:received:date:message-id
+         :subject:from:to:content-type;
+        bh=x2m/+sSmewk5E3+s76QwLoSlhjdnQpzZPDm9+k4GDYs=;
+        b=a/YdWZF1Fok0+jwRBp37Su+7N/TdCjhKBa5KNXLXIUEJ1eCWnl3D/5itAjkzuJjx54
+         tl5dt51qdySev1TmEaKDg2jcr375vZLasZ4JxIh7KvMqIs9t6xsz5kJrDQq/ZC35jl5W
+         l6UjJWZxEaTrqiIBQgGk+z7eXdfkRumiGZr9o=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jonathan Tripathy <jonnyt@abpni.co.uk>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 11/01/11 17:15, Jonathan Tripathy wrote:
-> Just one last question. Are there any measures I would need to take to 
-> make sure that traffic cannot escape from a Linux bridge? My bridges 
-> don't have IP assigned to them and the VM hosts don't do IP routing. 
+In http://www.netfilter.org/documentation/index.html#documentation-faq
+the links to the FAQ, like
+http://www.netfilter.org/documentation/FAQ/netfilter-faq.html are
+dead.
 
-The only way to get from one bridge to another is by routing so if there 
-is no route then there's no way to get packets (or frames) to leap from 
-one bridge to another.  (And if you're using separate vlans then you'd 
-need a machine on both that is prepared to route the packets.)
+In the banner (www | ftp | git | lists | bugzilla | people | planet),
+the link to "lists" is dead on some pages.
 
-Of course, testing is paramount.  No amount of hypothesising is going to 
-help if you haven't tested.
+On http://www.netfilter.org/ it points correctly to
+http://www.netfilter.org/mailinglists.html  but on the documentation
+page (http://www.netfilter.org/documentation/) it points to a
+non-existent http://www.netfilter.org/documentation/mailinglists.html
 
-jch
+Cheers,
+Sam
