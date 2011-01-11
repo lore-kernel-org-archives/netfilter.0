@@ -1,45 +1,25 @@
-From: Alessandro Vesely <vesely@tana.it>
-Subject: Re: Best way to kill a live TCP connection?
-Date: Tue, 11 Jan 2011 17:21:08 +0100
-Message-ID: <4D2C8374.70408@tana.it>
-References: <4D2C4E92.6040902@tana.it> <alpine.LNX.2.01.1101111537180.8612@obet.zrqbmnf.qr>
+From: John Haxby <john.haxby@oracle.com>
+Subject: Re: VLANs
+Date: Tue, 11 Jan 2011 17:12:29 +0000
+Message-ID: <4D2C8F7D.1080200@oracle.com>
+References: <4D2B44E9.3000006@abpni.co.uk> <0903BC3C-68B9-4E15-BEE1-0A9F6CDCF226@oracle.com> <4D2B84F0.6030300@abpni.co.uk> <4D2C3426.3000202@oracle.com> <4D2C37A1.8090906@abpni.co.uk> <4D2C47DB.10702@oracle.com> <4D2C4C13.3020107@abpni.co.uk> <4D2C5193.6010703@oracle.com> <4D2C5285.9070108@abpni.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tana.it; s=test;
-	t=1294762868; bh=WxvlXlRQujILZy9KhKm6xLQFB4KUd4I2vfIc/9izc5M=;
-	l=926;
-	h=Message-ID:Date:From:MIME-Version:To:CC:References:In-Reply-To:
-	 Content-Transfer-Encoding;
-	b=hDVtzqX9rUAhmZEXTB8Wswd4jC80lBlxZCgySkpj3s4JVxUROgyB16WRjKvrfKrzc
-	 ahBaZNUipiWz27YJHsKG/iLsCgyOYgan+JxjM+4bl5cxeVSCsZWXSL9MmPGYpjL659
-	 yRB3VcRiriajhr48MrEi6E3NLFw96tcw6IZnt7VY=
-In-Reply-To: <alpine.LNX.2.01.1101111537180.8612@obet.zrqbmnf.qr>
+In-Reply-To: <4D2C5285.9070108@abpni.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
-Cc: support@iptables.info
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jonathan Tripathy <jonnyt@abpni.co.uk>
+Cc: netfilter@vger.kernel.org
 
-On 11/Jan/11 15:41, Jan Engelhardt wrote:
-> On Tuesday 2011-01-11 13:35, Alessandro Vesely wrote:
-> 
->>Hi all,
->>this is clearly an overworked topic.  However, I haven't been able to
->>find definitive info about it.  Please help providing more insight.
->>In particular, if it is possible/convenient to design an RST injector
->>and how to attach it to iptables?
-> 
-> If you use a ruleset that emits RST for NEW connections that are picked 
-> up rather than SYN-new,
-> 
-> -m conntrack --ctstate NEW -p tcp ! --syn --dport 22 -j REJECT 
-> --reject-with tcp-reset
-> 
-> .. makes it possible to RST-kill connections using `conntrack -D`.
+On 11/01/11 12:52, Jonathan Tripathy wrote:
+> Yes I actually read that document. It's a very good document indeed, 
+> however I took it "with a pince of salt" as it's also got marketing 
+> behind it. 
 
-That's the most elegant method I've seen thus far.  Thanks a lot!
+The Cisco technical documentation is generally very good -- this one is 
+no exception.  You can spot Cisco marketing documentation a mile off: it 
+has no technical content :-)
 
-A generic rule like that (i.e. without --dport) is mentioned in the
-tutorial http://www.iptables.info/en/iptables-problems.html#NEWNOTSYN
-but I never realized it can be used this way.  (I CC this there.)
+jch
