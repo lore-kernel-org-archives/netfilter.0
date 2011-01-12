@@ -1,7 +1,7 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
 Subject: Re: Best way to kill a live TCP connection?
-Date: Wed, 12 Jan 2011 01:20:24 +0100
-Message-ID: <4D2CF3C8.40100@netfilter.org>
+Date: Wed, 12 Jan 2011 01:20:29 +0100
+Message-ID: <4D2CF3CD.1030704@netfilter.org>
 References: <4D2C4E92.6040902@tana.it> <alpine.LNX.2.01.1101111537180.8612@obet.zrqbmnf.qr> <4D2C8374.70408@tana.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
