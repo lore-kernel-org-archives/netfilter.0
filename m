@@ -1,22 +1,34 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Why and when to use skb_make_writable()?
-Date: Wed, 12 Jan 2011 13:26:12 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1101121325420.22535@obet.zrqbmnf.qr>
-References: <701121.82199.qm@web111113.mail.gq1.yahoo.com>
+From: "wchristian@gmx.net" <wchristian@gmx.net>
+Subject: redirect local port to another local port
+Date: Fri, 14 Jan 2011 00:17:29 +0100
+Message-ID: <AANLkTikH4=yxqQW60iD5+fqc6ZwG=YKmn5u9AQ0Y9Zyw@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <701121.82199.qm@web111113.mail.gq1.yahoo.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: doug arro <doug_arro@yahoo.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-On Wednesday 2011-01-05 19:19, doug arro wrote:
+Hi!
 
->Hello,
->
->What is the recommended practice for using skb_make_writable()?  I am experimenting with netfilter modules to manipulate IP headers in the mangle table.  Most of the target modules call skb_make_writable() right at the start of the target function but some don't.  What is the conventional wisdom?
+I want to redirect packets incoming on eth0 on port 12345 to port
+12346 on the same machine.
+Already got it working with this command:
+iptables -t nat -A PREROUTING -i eth0 -p tcp --src 1.2.3.4 --dport
+12345 -j REDIRECT --to-ports 12346
+Client 1.2.3.4 can connect to 12345, but is logical connected to
+service on 12346.
 
-No particular time, but it depends on context.
+But I want this for all sources, so I omitted the src-param.
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 12345 -j REDIRECT
+--to-ports 12346
+This way the client can't connect to the service.
+Could someone explain me this=A0behavior, please?
+
+I am forwarding both ports with my home-router (Fritz!Box) to the
+machine, I also tried to forward the external port 12345 to the local
+machine:12346, but this also does not work.
+Could the service causing the problem?
+
+Greets
