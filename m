@@ -1,34 +1,32 @@
-From: "wchristian@gmx.net" <wchristian@gmx.net>
-Subject: redirect local port to another local port
-Date: Fri, 14 Jan 2011 00:17:29 +0100
-Message-ID: <AANLkTikH4=yxqQW60iD5+fqc6ZwG=YKmn5u9AQ0Y9Zyw@mail.gmail.com>
+From: nn6eumtr <nn6eumtr@gmail.com>
+Subject: How to round-robin UDP packets w/ iptables?
+Date: Fri, 14 Jan 2011 03:41:18 -0500
+Message-ID: <4D300C2E.3040803@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:message-id:date:from:user-agent:mime-version:to
+         :subject:content-type:content-transfer-encoding;
+        bh=R/eMEU8xE4qKvOPwHoqoHumOlP+qpFtVxCpKyxxRtoY=;
+        b=GSUCiiATUeGYWErFcrAG9jXPBtDE3yrl36uviOsbCkaqj5abpaRxgoCIKTkKH41njZ
+         Gzbk/a6tImpe2UKPZN2p0M/oP99XQe5pFwQRZn67brXGQOe7Nfm5Xb4BpqXvJgeXGMDE
+         R6mW+glf2DVWccLSOsfjkQMM7x6zioYFaBEpw=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi!
+My goal is to receive a UDP packet from a single port on a public 
+interface and redirect it to multiple ports on 127.0.0.1 in a 
+round-robin fashion. The messages are simple one-shot receive/reply 
+messages, so I don't need a persistent mapping, but I will need to make 
+the replies appear to have come from the port on the public interface.
+I believe it will be much more efficient to do this translation in 
+iptables then to have a user space process act as a proxy.
 
-I want to redirect packets incoming on eth0 on port 12345 to port
-12346 on the same machine.
-Already got it working with this command:
-iptables -t nat -A PREROUTING -i eth0 -p tcp --src 1.2.3.4 --dport
-12345 -j REDIRECT --to-ports 12346
-Client 1.2.3.4 can connect to 12345, but is logical connected to
-service on 12346.
-
-But I want this for all sources, so I omitted the src-param.
-iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 12345 -j REDIRECT
---to-ports 12346
-This way the client can't connect to the service.
-Could someone explain me this=A0behavior, please?
-
-I am forwarding both ports with my home-router (Fritz!Box) to the
-machine, I also tried to forward the external port 12345 to the local
-machine:12346, but this also does not work.
-Could the service causing the problem?
-
-Greets
+I haven't been able to find an example of anyone doing anything similar, 
+and its not 100% clear if this is supported, or if I would want to use 
+the REDIRECT or BALANCE targets or some other method. Could someone get 
+me started in the right direction?
