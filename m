@@ -1,42 +1,38 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Conntrack : limit number of NEW outgoing connections per source
- IP
-Date: Sat, 15 Jan 2011 13:36:56 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1101151329370.25357@obet.zrqbmnf.qr>
-References: <6750301E8CE01943922138638F4F1D26016EE7770FD7@diademasrv.diademasw.inkubator.cz>
+From: Amos Jeffries <squid3@treenet.co.nz>
+Subject: Re: get byte count per rule and ip address
+Date: Sun, 16 Jan 2011 02:36:30 +1300
+Message-ID: <4D31A2DE.1050702@treenet.co.nz>
+References: <AANLkTimcqgfuk6mxKeANn4tS_saGwbUTGVSJHSTyozQs@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <6750301E8CE01943922138638F4F1D26016EE7770FD7@diademasrv.diademasw.inkubator.cz>
+In-Reply-To: <AANLkTimcqgfuk6mxKeANn4tS_saGwbUTGVSJHSTyozQs@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jan Rovner <jan.rovner@diadema.cz>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Saturday 2011-01-15 09:21, Jan Rovner wrote:
-
->Hello,
+On 16/01/11 01:09, Mamadou Tour=C3=A9 wrote:
+> Hi, all
+> i've these rule :
+> r1 : iptables  -t mangle  -A POSTROUTING     -m layer7 --l7proto  bgp
+> -j MARK --set-mark 1
+> r2 : iptables  -t mangle  -A POSTROUTING     -m layer7 --l7proto  bif=
+f
+>   -j MARK --set-mark 2
 >
->I have many computers behind a SNAT router (gateway to internet). All 
->internal Computers have assigned private IP adressess in 192.168.0.0/16 
->range.
->
->I have two questions:
->
->1) I would like to limit the RATE of newly established connections 
->initiated by Computers, i.e. connections with NEW state in kernel 
->conntrack. The important points:
->Is there any suitable iptables "smart" solution for achieving this?
+> for both r1 and r2 I'd like to get the byte count of packets that hav=
+e
+> match rules.
+> also i'd like to get byte count of packets according to the IP addres=
+s.
+> I need your help plz.
 
-Quite easy.
+-v shows the packet counters and extra details.
 
-	-i internalnetwork -m conntrack --ctstate NEW,RELATED
-	-m hashlimit --hashlimit-above X/Y
-	--hashlimit-mode srcip -j REJECT
+=46or example:
+   iptables -v -L POSTROUTING
 
->2) Is it possible in similar way to limit a TOTAL NUMBER of
->established (assured) connections per source IP?
+will display the whole table and counters for all rules in it
 
-	-i internalnetwork -m conntrack --ctstate NEW,RELATED
-	-m connlimit --connlimit-above Z -j REJECT
+AYJ
