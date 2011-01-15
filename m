@@ -1,47 +1,32 @@
-From: Jan Rovner <jan.rovner@diadema.cz>
-Subject: Conntrack : limit number of NEW outgoing connections per source IP
-Date: Sat, 15 Jan 2011 09:21:42 +0100
-Message-ID: <6750301E8CE01943922138638F4F1D26016EE7770FD7@diademasrv.diademasw.inkubator.cz>
+From: =?UTF-8?Q?Mamadou_Tour=C3=A9?= <e2ia.ci@gmail.com>
+Subject: get byte count per rule and ip address
+Date: Sat, 15 Jan 2011 12:09:41 +0000
+Message-ID: <AANLkTimcqgfuk6mxKeANn4tS_saGwbUTGVSJHSTyozQs@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:date:message-id:subject:from:to
+         :content-type;
+        bh=dDYwhxNyOMVybxuY8JQ5/3+WUVVGePT/P31ahixx58w=;
+        b=BSYQpifZeuonIEGw12vV7+uy9hyUw2RM73ZtXcHU0cIDQp5PzN6unxYJVNR2Gru2lV
+         2nAF2Ou29uF3a0Zw3s5dFLswFQwBMVY0r+t6nRmUfLjAvPh80nB/wObnp3FElha8b7jI
+         F3kGYgZjTIn/J8p4AqDgDifeqOa29tGnE8G/8=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hello,
+Hi, all
+i've these rule :
+r1 : iptables  -t mangle  -A POSTROUTING     -m layer7 --l7proto  bgp
+-j MARK --set-mark 1
+r2 : iptables  -t mangle  -A POSTROUTING     -m layer7 --l7proto  biff
+ -j MARK --set-mark 2
 
-I have many computers behind a SNAT router (gateway to internet). All internal Computers have assigned private IP adressess in 192.168.0.0/16 range.
-
-I have two questions:
-
-1) I would like to limit the RATE of newly established connections initiated by Computers, i.e. connections with NEW state in kernel conntrack. The important points: 
-
-  a) I NEED to count each computer's rate counters separately (i.e. per SOURCE IP of computer establishing the connection)
-  b) I need to count all connection/flow type tracked by conntrack (i.e. TCP, UDP, ICMP,...)!
-
-The solution is probably something like this - each computer is allowed to establish 5 conns per second:
-
-iptables -A FORWARD -s internal_computer_ip1 -m state --state NEW -m limit --limit 5/second -j ACCEPT
-iptables -A FORWARD -s internal_computer_ip1 -m state --state NEW -j DROP
-
-iptables -A FORWARD -s internal_computer_ip2 -m state --state NEW -m limit --limit 5/second -j ACCEPT
-iptables -A FORWARD -s internal_computer_ip2 -m state --state NEW -j DROP
-
-iptables -A FORWARD -s internal_computer_ip3 -m state --state NEW -m limit --limit 5/second -j ACCEPT
-iptables -A FORWARD -s internal_computer_ip3 -m state --state NEW -j DROP
-
-However, there will be many rules and thus a noticable CPU usage.
-
-Is there any suitable iptables "smart" solution for achieving this?
-
-2) Is it possible in similar way to limit a TOTAL NUMBER of established (assured) connections per source IP? 
-Important - I need to count all connection/flow type tracked by conntrac (i.e. TCP, UDP, ICMP,...)!
-
-Thank you.
-
-Sincerely,
-
-Jan Rovner
+for both r1 and r2 I'd like to get the byte count of packets that have
+match rules.
+also i'd like to get byte count of packets according to the IP address.
+I need your help plz.
+regards.
