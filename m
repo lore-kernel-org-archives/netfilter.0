@@ -1,32 +1,42 @@
-From: =?UTF-8?Q?Mamadou_Tour=C3=A9?= <e2ia.ci@gmail.com>
-Subject: get byte count per rule and ip address
-Date: Sat, 15 Jan 2011 12:09:41 +0000
-Message-ID: <AANLkTimcqgfuk6mxKeANn4tS_saGwbUTGVSJHSTyozQs@mail.gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Conntrack : limit number of NEW outgoing connections per source
+ IP
+Date: Sat, 15 Jan 2011 13:36:56 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1101151329370.25357@obet.zrqbmnf.qr>
+References: <6750301E8CE01943922138638F4F1D26016EE7770FD7@diademasrv.diademasw.inkubator.cz>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:date:message-id:subject:from:to
-         :content-type;
-        bh=dDYwhxNyOMVybxuY8JQ5/3+WUVVGePT/P31ahixx58w=;
-        b=BSYQpifZeuonIEGw12vV7+uy9hyUw2RM73ZtXcHU0cIDQp5PzN6unxYJVNR2Gru2lV
-         2nAF2Ou29uF3a0Zw3s5dFLswFQwBMVY0r+t6nRmUfLjAvPh80nB/wObnp3FElha8b7jI
-         F3kGYgZjTIn/J8p4AqDgDifeqOa29tGnE8G/8=
+In-Reply-To: <6750301E8CE01943922138638F4F1D26016EE7770FD7@diademasrv.diademasw.inkubator.cz>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Jan Rovner <jan.rovner@diadema.cz>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi, all
-i've these rule :
-r1 : iptables  -t mangle  -A POSTROUTING     -m layer7 --l7proto  bgp
--j MARK --set-mark 1
-r2 : iptables  -t mangle  -A POSTROUTING     -m layer7 --l7proto  biff
- -j MARK --set-mark 2
+On Saturday 2011-01-15 09:21, Jan Rovner wrote:
 
-for both r1 and r2 I'd like to get the byte count of packets that have
-match rules.
-also i'd like to get byte count of packets according to the IP address.
-I need your help plz.
-regards.
+>Hello,
+>
+>I have many computers behind a SNAT router (gateway to internet). All 
+>internal Computers have assigned private IP adressess in 192.168.0.0/16 
+>range.
+>
+>I have two questions:
+>
+>1) I would like to limit the RATE of newly established connections 
+>initiated by Computers, i.e. connections with NEW state in kernel 
+>conntrack. The important points:
+>Is there any suitable iptables "smart" solution for achieving this?
+
+Quite easy.
+
+	-i internalnetwork -m conntrack --ctstate NEW,RELATED
+	-m hashlimit --hashlimit-above X/Y
+	--hashlimit-mode srcip -j REJECT
+
+>2) Is it possible in similar way to limit a TOTAL NUMBER of
+>established (assured) connections per source IP?
+
+	-i internalnetwork -m conntrack --ctstate NEW,RELATED
+	-m connlimit --connlimit-above Z -j REJECT
