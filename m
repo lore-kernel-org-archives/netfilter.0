@@ -1,18 +1,10 @@
-From: GMail Isaac Gonzalez <isaak.gonzalez@gmail.com>
+From: =?ISO-8859-1?Q?Isaac_Gonz=E1lez?= <isaac.gonzalez@claranet.es>
 Subject: POSTROUTING SNAT only reply packets
-Date: Mon, 17 Jan 2011 11:16:48 +0100
-Message-ID: <4D341710.60509@gmail.com>
+Date: Mon, 17 Jan 2011 11:15:19 +0100
+Message-ID: <4D3416B7.4010608@claranet.es>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:message-id:date:from:user-agent:mime-version:to
-         :subject:content-type:content-transfer-encoding;
-        bh=QkmbOpMTpTfehQnBb9QLRT6sDn5O9x3gmmCgiXqAFug=;
-        b=OPTIyS9+Qdt3529ZAsROIRq6lDhUF7bJcEagWzBoyiFRWfMQ+knLCZKzh8QaXp3VNA
-         67F96LJFhFOurgdG+Hz61TXHag28lpkLXYPjQxk6587BglHP7VnyI0KCuEJYh0bl4fJz
-         GK+N70SoRtwzmvmrGwwOT+9N7U6CbhY6qgeIQ=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
