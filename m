@@ -1,33 +1,41 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: POSTROUTING SNAT only reply packets
-Date: Mon, 17 Jan 2011 13:10:02 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1101171308110.29904@obet.zrqbmnf.qr>
-References: <4D341710.60509@gmail.com> <4D341C26.2010207@freemail.hu> <4D34200F.5050307@coochey.net> <alpine.LNX.2.01.1101171231200.29904@obet.zrqbmnf.qr> <4D342AF4.6070504@coochey.net> <4D342E99.2030501@gmail.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: iptables --string-replace
+Date: Mon, 17 Jan 2011 07:03:01 -0600
+Message-ID: <20110117130301.GC6659@cardinal>
+References: <AANLkTinzEVbR7L8PU_qhJj4MVXKsAOTKxQfA15ZHUWGT@mail.gmail.com>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D342E99.2030501@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <AANLkTinzEVbR7L8PU_qhJj4MVXKsAOTKxQfA15ZHUWGT@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: GMail Isaac Gonzalez <isaak.gonzalez@gmail.com>
-Cc: Giles Coochey <giles@coochey.net>, =?UTF-8?Q?G=C3=A1sp=C3=A1r_Lajos?= <swifty@freemail.hu>, netfilter list <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
+On Mon, Jan 17, 2011 at 09:43:27AM +1100, Ben K wrote:
+> I'd like to be able to mangle strings passing through my home 
+> router running Openwrt in order to modify/anonymize user-agent 
+> strings. I believe a patch further extending the iptables string 
+> extension by providing string replace functionality was submitted 
+> by Michael Rash back in 2004 (archived at 
+> http://www.spinics.net/lists/netfilter/msg23791.html). This would 
+> be ideal as I could then mangle user-agent headers without eg 
+> needing to run an http proxy.
 
-On Monday 2011-01-17 12:57, GMail Isaac Gonzalez wrote:
->
->>>>NAT (be it for load balancing or other reasons) receives the
->>>>return packets.
->>>
->>>Not strictly. You could utilize a second device whose CTs are
->>>synchronized with the LB to apply the reverse transform, using
->>>conntrackd.
->>
->>It also requires the loadbalancer to be using netfilter as well.
->
->It works with propietary methods. The real solution if do
->symmetrical routing, all the replies must pass through the LB. I
->can't use conntrackd because I can't install anything in the LB.
+I don't see why that's ideal. The proxy solution seems like the 
+ideal, to me. While an openwrt router might not have the horsepower 
+needed, neither does it have the horsepower you'll need for string 
+matching. You're going to have to throw more hardware at this 
+problem, however you might proceed.
 
-Too bad. That heater statement from earlier does have value ;-)
-("Did you know?..." That Linux also has a load balancer included.)
+> (BTW what's with the mailing list rejecting HTML emails?! Are we
+> living in 2001?)
+
+HTML posting on mailing lists is very rude. I usually ignore them. 
+Gmail's implementation of it is particularly bad, converting many 
+arbitrary strings into HTTP URI's.
+-- 
+    Offlist mail to this address is discarded unless
+    "/dev/rob0" or "not-spam" is in Subject: header
