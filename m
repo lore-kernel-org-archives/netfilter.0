@@ -1,66 +1,36 @@
-From: Amos Jeffries <squid3@treenet.co.nz>
-Subject: Re: POSTROUTING SNAT only reply packets
-Date: Tue, 18 Jan 2011 00:14:23 +1300
-Message-ID: <4D34248F.6020408@treenet.co.nz>
-References: <4D341710.60509@gmail.com> <4D341C26.2010207@freemail.hu> <4D341F4C.3020002@gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: iptables --string-replace
+Date: Mon, 17 Jan 2011 12:27:29 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1101171223330.29904@obet.zrqbmnf.qr>
+References: <AANLkTinzEVbR7L8PU_qhJj4MVXKsAOTKxQfA15ZHUWGT@mail.gmail.com> <alpine.LNX.2.01.1101170048550.23304@obet.zrqbmnf.qr> <AANLkTimG67A38CXt9LYmC-NcnbLKQDF7F8WZEN8Whnk=@mail.gmail.com> <alpine.LNX.2.01.1101170218230.24247@obet.zrqbmnf.qr>
+ <AANLkTimq=j65HN=oZ0VDpWnFXXgaivedZBjL4Q-z9UoH@mail.gmail.com> <alpine.LNX.2.01.1101170351140.25976@obet.zrqbmnf.qr> <4D341F8A.5030005@treenet.co.nz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D341F4C.3020002@gmail.com>
+In-Reply-To: <4D341F8A.5030005@treenet.co.nz>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: GMail Isaac Gonzalez <isaak.gonzalez@gmail.com>
-Cc: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>, netfilter list <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Amos Jeffries <squid3@treenet.co.nz>
+Cc: Ben K <benkloester@gmail.com>, netfilter@vger.kernel.org, Pablo Neira Aysuo <pablo@netfilter.org>
 
-On 17/01/11 23:51, GMail Isaac Gonzalez wrote:
-> Hi,
+
+On Monday 2011-01-17 11:52, Amos Jeffries wrote:
+>>
+>> The string match does indeed not work across packets. I do not know why
+>> we have it, it won't have much use for stream protocols either and was
+>> probably devised for datagrams. I can't say for sure what the original
+>> authors' intentions were. xt_string also works on the entire IP packet,
+>> so there is a chance for false positives if one only wants to match
+>> actual L7 payload.
 >
-> I know that doing the NAT in the firewall will do the trick, but the
-> problem is that the "firewall and webserver" and the load balancer ar=
-e
-> in differents networks, then the webserver replies only goes through =
-the
-> firewall, and not though the load balancer. On the other hand the
-> loadbalancer isn't a Linux box, then I can't not modify anything abou=
-t
-> packets, moreover I can't do any kind of routing.
-
-
-Slow down, read again G=E1sp=E1r response. Think particularly carefully=
-=20
-about what the SNAT lines are doing there.
-
-I'm fairly sure the LB will be capable of it somehow. If not, you have =
-a=20
-nice heater to sit your feet on in winter.
-
-As a giant hack you could also do SNAT on the device(s) receiving=20
-packets from the LB such that the reply packets get routed back through=
-=20
-the LB.
-
+> It has some favor amongst the NAT interception / transparent proxy crowd.
 >
-> El 17/01/11 11:38, G=E1sp=E1r Lajos escribi=F3:
->> Hi,
->>
->> You should do all of the NAT-ing ON THE LOAD BALANCER:
->>
->> iptables -t nat -A PREROUTING -j DNAT -p tcp --dport 80
->> --to-destination WEBSERVER1 (some load balancing options here)
->> iptables -t nat -A PREROUTING -j DNAT -p tcp --dport 80
->> --to-destination WEBSERVER2 (some load balancing options here)
->>
->> iptables -t nat -A POSTROUTING -j SNAT -p tcp --dport 80 -d WEBSERVE=
-R1
->> --to-source BALANCER_IP_ON_WEBSERVER1_NET
->> iptables -t nat -A POSTROUTING -j SNAT -p tcp --dport 80 -d WEBSERVE=
-R1
->> --to-source BALANCER_IP_ON_WEBSERVER2_NET
->>
->> But some other rules may be in effect....
->>
->> Swifty
->>
+> The use-case is to distinguish real HTTP traffic to be intercepted vs weird
+> binary abusing port 80. Or the reverse, to only catch HTTP going over general
+> ports like 8080 which may get anything.
+> In this type of case only the first dozen or so bytes are relevant and almost
+> always guaranteed to be in one (first) packet.
 
-AYJ
+But is it not that the first packet is a SYN which, in most cases, does not
+carry any data, yet NAT decisions need to be made on this first packet.
