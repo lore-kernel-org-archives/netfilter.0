@@ -1,24 +1,24 @@
-From: =?UTF-8?Q?Mamadou_Tour=C3=A9?= <e2ia.ci@gmail.com>
-Subject: install ipt-account on linux 2.6.32
-Date: Tue, 18 Jan 2011 12:43:32 +0000
-Message-ID: <AANLkTikXqKeUnb_PEYrxLAa2qeQVzAkxbyUpjPGmuYwD@mail.gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: install ipt-account on linux 2.6.32
+Date: Tue, 18 Jan 2011 13:47:08 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1101181346200.12662@obet.zrqbmnf.qr>
+References: <AANLkTikXqKeUnb_PEYrxLAa2qeQVzAkxbyUpjPGmuYwD@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:date:message-id:subject:from:to
-         :content-type:content-transfer-encoding;
-        bh=olej5KXq1kMYpiI/VonUx7n2us3LGXY9yQSnF9PtFrk=;
-        b=rRdAPUBSKJHb7pQlkj9VKHDPSt709HQppq1k73htGICvU5D02pZ8wyk3r63vL8hvwj
-         8rARfiQF8ZeYcIHgrtIqfv0hRoEkqjTe8ODS1VDupQy5DGbmdcyxAUgbiemUVYJYxPcK
-         zaqj1kuJ9In2TbB6EcuxJKCoEH7ozItms+sPM=
+In-Reply-To: <AANLkTikXqKeUnb_PEYrxLAa2qeQVzAkxbyUpjPGmuYwD@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="utf-8"
+To: =?UTF-8?Q?Mamadou_Tour=C3=A9?= <e2ia.ci@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hi all,
-Does someone has install ipt-account on linux 2.6.32?
-I=E2=80=99m excepting build error could someone help me plz.
-Regards.
+On Tuesday 2011-01-18 13:43, Mamadou Tour=C3=A9 wrote:
+
+>Hi all,
+>Does someone has install ipt-account on linux 2.6.32?
+>I=E2=80=99m excepting build error could someone help me plz.
+
+Use xt_ACCOUNT as shipped with Xtables-addons, which has support for al=
+l=20
+the modern kernels.
