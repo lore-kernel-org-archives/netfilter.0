@@ -1,49 +1,54 @@
-From: Arthur Titeica <arthur@psw.ro>
-Subject: iptables/ipset syntax
-Date: Thu, 20 Jan 2011 17:38:46 +0200
-Message-ID: <a1bd277586d221277f8a4566fc37355c@psw.ro>
+From: Victor Safronov <vitek@vitek.tomsk.ru>
+Subject: Re: iptables/ipset syntax
+Date: Fri, 21 Jan 2011 00:52:30 +0600
+Message-ID: <4D38846E.9000108@vitek.tomsk.ru>
+References: <a1bd277586d221277f8a4566fc37355c@psw.ro>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=psw.ro; h=
-	user-agent:message-id:organization:subject:subject:from:from
-	:date:date:content-transfer-encoding:content-type:content-type
-	:mime-version:received:received; s=mail; t=1295537932; x=
-	1298129932; bh=z68J2TWilUvGGtMwLso7fAsRp5CwZjMS3SjEAushqFY=; b=0
-	IVPYmFn6GGSKKzUUmVZ/7ahD7HuQ6lNT2ZZOEzTrpefQbXvEHXmX+AX2wF0rOcgi
-	VXau6RSRN3I4x6WrJRF3ul1ygFrEwGu06OgJIJFUbF3szxJ3t+MXJjnp6qABoZtd
-	Lg0pS6d8O4Cc+XUqP+P42z5Caz9o7ewtTqX3NzNn2A=
+In-Reply-To: <a1bd277586d221277f8a4566fc37355c@psw.ro>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="utf-8"; format="flowed"
 To: netfilter@vger.kernel.org
 
- Hello
-
- I'm having some trouble understanding the correct syntax for an 
- iptables rule involving ipset.
-
- I need to forward between IPs within the same ipset. So I've tried 
- using something like this:
-
- iptables -A FORWARD -i eth0 -o eth0 -m set --match-set testset src,dst 
- -p tcp --dport 9000:9020 -j ACCEPT
-
- However this allows forwarding to all the eth0 network for the 
- 'testset' IPs.
-
- Instead
- iptables -A FORWARD -i eth0 -o eth0 -m set --match-set testset src -m 
- set --match-set testset dst -p tcp --dport 9000:9020 -j ACCEPT
- seems to do what I need but I'm not 100% certain.
-
- Anyone with a better understanding?
-
- iptables v1.4.10
- ipset v5.3.
-
- Thank you.
-
--- 
- Arthur Titeica
-
+  20.01.2011 21:38, Arthur Titeica =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> Hello
+>
+> I'm having some trouble understanding the correct syntax for an=20
+> iptables rule involving ipset.
+>
+> I need to forward between IPs within the same ipset. So I've tried=20
+> using something like this:
+>
+> iptables -A FORWARD -i eth0 -o eth0 -m set --match-set testset src,ds=
+t=20
+> -p tcp --dport 9000:9020 -j ACCEPT
+>
+> However this allows forwarding to all the eth0 network for the=20
+> 'testset' IPs.
+>
+> Instead
+> iptables -A FORWARD -i eth0 -o eth0 -m set --match-set testset src -m=
+=20
+> set --match-set testset dst -p tcp --dport 9000:9020 -j ACCEPT
+> seems to do what I need but I'm not 100% certain.
+>
+> Anyone with a better understanding?
+>
+> iptables v1.4.10
+> ipset v5.3.
+>
+> Thank you.
+>
+Unfortunately, the flags src|dst[, src|dst...] do another work than 90%=
+=20
+of people that new to ipset suppose to.
+Some of them think the rule 'iptables -A FORWARD -m set --set something=
+=20
+src, dst -j SOMEWHERE'  is a shortcut to 'iptables -A FORWARD -m set=20
+--set something src -j SOMEWHERE; iptables -A FORWARD -m set --set=20
+something dst -j SOMEWHERE' or something like that.
+Just read the man of ipset section of iptables and then you'll know wha=
+t=20
+these flags do.
