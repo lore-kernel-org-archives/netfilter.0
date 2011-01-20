@@ -1,71 +1,49 @@
-From: Alessandro Vesely <vesely@tana.it>
-Subject: Re: Best way to kill a live TCP connection?
-Date: Wed, 19 Jan 2011 14:32:51 +0100
-Message-ID: <4D36E803.4060703@tana.it>
-References: <4D2C4E92.6040902@tana.it> <alpine.LNX.2.01.1101111537180.8612@obet.zrqbmnf.qr> <4D2C8374.70408@tana.it> <4D2C95ED.70805@plouf.fr.eu.org> <4D2CC740.9090007@riverviewtech.net> <4D35D2D2.3020201@tana.it> <4D35DFC8.7000302@freemail.hu>
+From: Arthur Titeica <arthur@psw.ro>
+Subject: iptables/ipset syntax
+Date: Thu, 20 Jan 2011 17:38:46 +0200
+Message-ID: <a1bd277586d221277f8a4566fc37355c@psw.ro>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tana.it; s=test;
-	t=1295443971; bh=II3t82NButY3CvAIh5BNPcGtM93zuESxq8dzbRdWfBM=;
-	l=1811;
-	h=Message-ID:Date:From:MIME-Version:To:References:In-Reply-To:
-	 Content-Transfer-Encoding;
-	b=ac0HJNOl3c9jqjT5tfrpLoXkFIQgOa9mYnPWtTfW8ydLzRK3O2+U/6OsXOrY66G2k
-	 uUkgkZ3FygZbadWcbDGXVnldkQUxGzFuDZd78RKmXqkkUQWlggD7ZcnpUyAW0PhGbp
-	 eBOlPWCLJM4yfYCPsIg3OxXDE2TbDSucZ4HZ5Eno=
-In-Reply-To: <4D35DFC8.7000302@freemail.hu>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=psw.ro; h=
+	user-agent:message-id:organization:subject:subject:from:from
+	:date:date:content-transfer-encoding:content-type:content-type
+	:mime-version:received:received; s=mail; t=1295537932; x=
+	1298129932; bh=z68J2TWilUvGGtMwLso7fAsRp5CwZjMS3SjEAushqFY=; b=0
+	IVPYmFn6GGSKKzUUmVZ/7ahD7HuQ6lNT2ZZOEzTrpefQbXvEHXmX+AX2wF0rOcgi
+	VXau6RSRN3I4x6WrJRF3ul1ygFrEwGu06OgJIJFUbF3szxJ3t+MXJjnp6qABoZtd
+	Lg0pS6d8O4Cc+XUqP+P42z5Caz9o7ewtTqX3NzNn2A=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On 18/Jan/11 19:45, G=C3=A1sp=C3=A1r Lajos wrote:
-> Do you know the conntrack tool?
->=20
-> conntrack -D...
+ Hello
 
-Yes, I'm sorry I didn't leave more context in place.  The thread was
-about deleting connections as above and have iptables kill them as a
-side effect.
+ I'm having some trouble understanding the correct syntax for an 
+ iptables rule involving ipset.
 
->> I tried using connmark, as in
->>
->>     iptables -A INPUT -m conntrack --ctstate NEW -p tcp ! --syn\
->>        -j CONNMARK --or-mark 8
->> and
->>     iptables -A OUTPUT -m connmark --mark 8/8 -p tcp ! --syn\
->>        -j REJECT --reject-with tcp-reset
->>
->> However, the latter rule never matched.  Is it the wrong table?
->
-> Do you have more connmark rules? Maybe something interferencing whit
-> these rules...
+ I need to forward between IPs within the same ipset. So I've tried 
+ using something like this:
 
-Not connmark --which I'm unfamiliar with-- but there was a sanity
-check that I overlooked.  Your question has put me on the right track.
- Thanks!
+ iptables -A FORWARD -i eth0 -o eth0 -m set --match-set testset src,dst 
+ -p tcp --dport 9000:9020 -j ACCEPT
 
-Now, having fixed that, terminating connections this way apparently
-works perfectly: issuing "conntrack -D -s x.x.x.x", the local end of
-each connection to x.x.x.x is reset, thereby saving server's
-resources, while malicious clients are left idling alone.
+ However this allows forwarding to all the eth0 network for the 
+ 'testset' IPs.
 
-This seems about the best I can get.  However, this method still has
-two minor defects:
+ Instead
+ iptables -A FORWARD -i eth0 -o eth0 -m set --match-set testset src -m 
+ set --match-set testset dst -p tcp --dport 9000:9020 -j ACCEPT
+ seems to do what I need but I'm not 100% certain.
 
-=46irst, after I have determined that the client is malicious I have to
-let in one more packet.  This could be avoided using the
-tcp-reset-destination iptables enhancement that I proposed.
+ Anyone with a better understanding?
 
-Second, if such further packet never arrives, the server has to wait
-until timeout.  I think I'd need the seq/ack numbers of the last
-packet in order to avoid this.  They must be somewhere in the system,
-don't they?  (Or would it help to send spoofed packets to remote
-clients at the time their maliciousess is determined, as other
-methods* do?)
+ iptables v1.4.10
+ ipset v5.3.
 
-=46urther thoughts?
+ Thank you.
 
---=20
-[*] see killcx or cutter, mentioned upthread.
+-- 
+ Arthur Titeica
+
