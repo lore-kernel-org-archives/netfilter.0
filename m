@@ -1,41 +1,59 @@
-From: Don Tucker <dtucker@arlut.utexas.edu>
-Subject: iptables can't initialize iptables table `filter': Bad file descriptor
-Date: Fri, 21 Jan 2011 13:38:45 -0600
-Message-ID: <4D39E0C5.5090704@arlut.utexas.edu>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset 5.4 released
+Date: Fri, 21 Jan 2011 23:14:49 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1101212302300.10656@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-I am running a 2.6.21 kernel on an ARM architecture with iptables 
-version 1.3.6. Iptables support is compiled into the kernel as modules:
+Hi,
 
-ts7000:~# lsmod | grep iptable
-iptable_filter 2368 0
-ip_tables 10952 1 iptable_filter
+I'm happy to announce ipset 5.4! Because there are some important kernel 
+part fixes in this release, please upgrade. The list of the changes are:
 
-When I try to use iptables I get an error:
+- Kernel part:
+  - Fix ICMP and ICMPv6 handling
+  - Fix trailing whitespaces and pr_* messages
+  - Un-inline functions which are not small enough
+  - Fix module loading at create/header commands
+  - Fix wrong kzalloc flag in type_pf_expire
+  - The get_ip*_port functions are too large to be inlined, moved into the 
+    core
+  - Add missing __GFP_HIGHMEM flag to __vmalloc
+  - Enforce network-ordered data in the netlink protocol
+  - Use annotated types and fix sparse warnings
+  - Move ip_set_alloc, ip_set_free and ip_set_get_ipaddr* into the core
+  - NETMASK*, HOSTMASK* macros are too generic, replace with inline 
+    functions
+  - Use static LIST_HEAD() for ip_set_type_list
+  - Move NLA_PUT_NET* macros to include/net/netlink.h
+  - The module parameter max_sets should be unsigned int
+  - Get rid of ip_set_kernel.h
+  - Fix the placement style of boolean operators at continued lines
 
-ts7000:~# iptables -L
-iptables v1.3.6: can't initialize iptables table `filter': Bad file
-descriptor
-Perhaps iptables or your kernel needs to be upgraded.
+Most of the changes are suggested by Patrick in his review, many thanks.
 
-This is the first time I have used iptables. Is there something else 
-that needs to be done before I can run the above command?
+You can download the source code from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
 
-I am constrained to use the kernel (although I can reconfigure it and 
-rebuild it), as it was custom-configured for my platform, but I tried to 
-manually build and install version 1.4.9.1 of iptables and received the 
-same error. I also read that the "Bad file descriptor" error can 
-sometimes mean file system corruption, so I ran fsck on the file system 
-and it is clean.
+I fixed a bug in the SET target of iptables/ip6tables, which produced 
+incorrect output at listing/saving rules with the SET target. The fix is 
+available from the git tree or from the daily snapshot 
+iptables-20110121.tar.bz2 (or later), or from the next iptables release:
 
-If anyone can suggest things to try to resolve this problem, I'd be very 
-grateful.
+	git://git.netfilter.org/iptables.git
+	ftp://ftp.netfilter.org/pub/iptables/snapshot/
 
-Thanks,
-Don
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
