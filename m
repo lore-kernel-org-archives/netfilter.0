@@ -1,51 +1,31 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [ANNOUNCE] ipset 5.4 released
-Date: Sat, 22 Jan 2011 10:45:50 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1101221041400.11692@blackhole.kfki.hu>
-References: <alpine.DEB.2.00.1101212302300.10656@blackhole.kfki.hu>
+From: Mr Dash Four <mr.dash.four@googlemail.com>
+Subject: time-based IP accounting
+Date: Sat, 22 Jan 2011 17:42:18 +0000
+Message-ID: <4D3B16FA.2040209@googlemail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1101212302300.10656@blackhole.kfki.hu>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:message-id:disposition-notification-to:date
+         :from:user-agent:mime-version:to:subject:content-type
+         :content-transfer-encoding;
+        bh=avV0CkpX+8T8QgueZHtr4FxZOHoijvJSe2w2svLroko=;
+        b=lPMW753TcNTFLYf7Y0aCVWa+tj4Euv2wuzpCc/gTwiB7L/IhXtqnB4gY/2UvNjrpug
+         xHYGIIRNEi11p5XmoZIUWlbcrEtBx/GbwKVahYVBTKQwZV30ngu/tWT9b3TgRuWaHOy6
+         SFVKZwuschYxwh+3xttpObjtgLYc1O5C1Rbjw=
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
 
-On Fri, 21 Jan 2011, Jozsef Kadlecsik wrote:
+Is that possible?
 
-> I'm happy to announce ipset 5.4! Because there are some important kernel 
-> part fixes in this release, please upgrade.
+I would like to be able to define various accounts for different parts 
+of the day/week and track the amount of traffic passing through 
+particular interface/IP address(es) and ports. I would also like to be 
+able to reset these after certain period (say 6 hours after the account 
+time has ended), but I guess I could do that via a cron job and by using 
+iptables.
 
-In order to make upgrading as smooth as possible, I have released ipset 
-5.4.1, which includes an UPGRADE instructions file with the content:
-
-ipset 5.x upgrade notices
-
-- From ipset 5.0-5.3 to 5.4:
-
-  Due to the source code reorganization, some macros were moved to
-  the netlink.patch. Therefore when upgrading, you have two choices:
-
-  a. force the application of the new netlink.patch
-
-     kernel-source-dir # patch -p1 -f < ipset-5.4-dir/netlink.patch
-
-  b. remove the earlier netlink.patch and apply the new one:
-
-     kernel-source-dir # patch -p1 -R < ipset-before-5.4-dir/netlink.patch
-     kernel-source-dir # patch -p1 < ipset-5.4-dir/netlink.patch
-
-  You do not need to recompile your kernel.
-
-  Of course the kernel modules in ipset-5.4 must be compiled and installed.
-
-Nothing else is changed between 5.4 and 5.4.1.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Any suggestions?
