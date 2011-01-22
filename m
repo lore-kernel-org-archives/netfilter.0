@@ -1,54 +1,46 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset 5.4 released
-Date: Fri, 21 Jan 2011 23:14:49 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1101212302300.10656@blackhole.kfki.hu>
+Subject: Re: [ANNOUNCE] ipset 5.4 released
+Date: Sat, 22 Jan 2011 10:45:50 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1101221041400.11692@blackhole.kfki.hu>
+References: <alpine.DEB.2.00.1101212302300.10656@blackhole.kfki.hu>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <alpine.DEB.2.00.1101212302300.10656@blackhole.kfki.hu>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Hi,
+On Fri, 21 Jan 2011, Jozsef Kadlecsik wrote:
 
-I'm happy to announce ipset 5.4! Because there are some important kernel 
-part fixes in this release, please upgrade. The list of the changes are:
+> I'm happy to announce ipset 5.4! Because there are some important kernel 
+> part fixes in this release, please upgrade.
 
-- Kernel part:
-  - Fix ICMP and ICMPv6 handling
-  - Fix trailing whitespaces and pr_* messages
-  - Un-inline functions which are not small enough
-  - Fix module loading at create/header commands
-  - Fix wrong kzalloc flag in type_pf_expire
-  - The get_ip*_port functions are too large to be inlined, moved into the 
-    core
-  - Add missing __GFP_HIGHMEM flag to __vmalloc
-  - Enforce network-ordered data in the netlink protocol
-  - Use annotated types and fix sparse warnings
-  - Move ip_set_alloc, ip_set_free and ip_set_get_ipaddr* into the core
-  - NETMASK*, HOSTMASK* macros are too generic, replace with inline 
-    functions
-  - Use static LIST_HEAD() for ip_set_type_list
-  - Move NLA_PUT_NET* macros to include/net/netlink.h
-  - The module parameter max_sets should be unsigned int
-  - Get rid of ip_set_kernel.h
-  - Fix the placement style of boolean operators at continued lines
+In order to make upgrading as smooth as possible, I have released ipset 
+5.4.1, which includes an UPGRADE instructions file with the content:
 
-Most of the changes are suggested by Patrick in his review, many thanks.
+ipset 5.x upgrade notices
 
-You can download the source code from:
-        http://ipset.netfilter.org
-        ftp://ftp.netfilter.org/pub/ipset/
-        git://git.netfilter.org/ipset.git
+- From ipset 5.0-5.3 to 5.4:
 
-I fixed a bug in the SET target of iptables/ip6tables, which produced 
-incorrect output at listing/saving rules with the SET target. The fix is 
-available from the git tree or from the daily snapshot 
-iptables-20110121.tar.bz2 (or later), or from the next iptables release:
+  Due to the source code reorganization, some macros were moved to
+  the netlink.patch. Therefore when upgrading, you have two choices:
 
-	git://git.netfilter.org/iptables.git
-	ftp://ftp.netfilter.org/pub/iptables/snapshot/
+  a. force the application of the new netlink.patch
+
+     kernel-source-dir # patch -p1 -f < ipset-5.4-dir/netlink.patch
+
+  b. remove the earlier netlink.patch and apply the new one:
+
+     kernel-source-dir # patch -p1 -R < ipset-before-5.4-dir/netlink.patch
+     kernel-source-dir # patch -p1 < ipset-5.4-dir/netlink.patch
+
+  You do not need to recompile your kernel.
+
+  Of course the kernel modules in ipset-5.4 must be compiled and installed.
+
+Nothing else is changed between 5.4 and 5.4.1.
 
 Best regards,
 Jozsef
