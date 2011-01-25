@@ -1,64 +1,61 @@
-From: Helmut Grohne <h.grohne@cygnusnetworks.de>
-Subject: What does nflog_unbind_pf actually do?
-Date: Tue, 25 Jan 2011 13:54:27 +0100
-Message-ID: <20110125125426.GA7749@buero.cygnusnet.de>
+From: =?UTF-8?B?UmVtemkgQUtZw5xa?= <linuxliste@gmail.com>
+Subject: Re: conntrack table limits
+Date: Tue, 25 Jan 2011 15:49:10 +0200
+Message-ID: <4D3ED4D6.6000601@gmail.com>
+References: <4D3EB7F0.5020702@conversis.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:message-id:date:from:user-agent:mime-version:to
+         :cc:subject:references:in-reply-to:content-type
+         :content-transfer-encoding;
+        bh=bMQ6+2x5YelP8afLoKI+WV4sC8Z6liqy8NYHJE/ki00=;
+        b=J1uDogi/HWkdixsuxxs/4O/1kUcxu71vWaQ8vIa4OhBXs+rST+k6NDNF/V8BeW6Urq
+         WWK64W6w7y66CAgMLMwKiX8tIIzPQ/p2XtSLhUJet8sBs7AZqUp6ONCRipgiqxFn2awC
+         7vw2BieAriqcKsCY2GVfkd0AKuZ4ue3Uw1XnE=
+In-Reply-To: <4D3EB7F0.5020702@conversis.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Dennis Jacobfeuerborn <dennisml@conversis.de>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+/etc/modules
+nf_conntrack acct=1 hashsize=1048576
 
-I was wondering what nflog_unbind_pf actually does. The doxygen comment
-suggests it to be a harmless setup function acting on a given handle:
+Hashsize calc;
 
-libnetfilter-log src/libnetfilter_log.c:
-| /**
-|  * nflog_unbind_pf - unbind nflog handler from a protocol family
-|  * \param h Netfilter log handle obtained via call to nflog_open()
-|  * \param pf protocol family to unbind family from
-|  *
-|  * Unbinds the given nflog handle from processing packets belonging
-|  * to the given protocol family.
-|  */
+HASHSIZE = CONNTRACK_MAX / 8 = RAMSIZE (in bytes) / 131072 = RAMSIZE (in MegaBytes) * 8
+HASHSIZE = CONNTRACK_MAX / 8 = RAMSIZE (in bytes) / 131072 / (x / 32)
+x= 32 or 64
 
-However the example suggests that the command indeed is not as harmless:
+CONNTRACK_MAX = HASHSIZE * 8
 
-libnetfilter-log util/nfulnl_test.c:
-| #ifdef INSANE
-|         /* norally, applications SHOULD NOT issue this command,
-|          * since it detaches other programs/sockets from AF_INET, too ! */
-|         printf("unbinding from AF_INET\n");
-|         nflog_unbind_pf(h, AF_INET);
-| #endif
 
-So far so good, but why does util/nfulnl_test.c call nflog_unbind_pf in the
-setup code then?
+you can see this
+http://antmeetspenguin.blogspot.com/2011/01/high-performance-linux-router.html
+page.
 
-Trying to find out what it actually does I dug into the kernel and discovered
-that nf_log_unbind_pf in fact does not operate on a handle but on some global
-state! (See linux net/netfilter/nf_log.c) Still I have no idea what it is
-supposed to do.
+On 01/25/2011 01:45 PM, Dennis Jacobfeuerborn wrote:
+> Hi,
+> I'm trying to find out how high I can set conntrack_max on a 2GB 64 
+> bit system. On the net I found different ways of calculating this but 
+> they seem to end up with different results. One forumla tells me that 
+> I can fit a maximum of 65535 connections into 2GB of RAM but the other 
+> says that with 304 bytes per connection (plus a bit of slab allocation 
+> overhead) I can easily fit more than a million connections into the 
+> table.
+> Also even with the current limit 65535 and the table having ca. 30.000 
+> entries I've almost 1.8GB ram free/cached which leads me to believe 
+> the second way of calculating this is more accurate.
+> What is the proper way to calculate this?
+>
+> Regards,
+>   Dennis
+> -- 
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-As a result I experimented a bit to see what happens. Leaving out the
-nflog_unbind_pf in util/nfulnl_test.c results in the nflog_bind_pf to
-fail. I'd attribute this to some double binding. Removing both
-nflog_unbind_pf and nflog_bind_pf simply results in no packets being
-received at all.
-
-Why am I interested in this you may ask. I am trying to start multiple
-logging daemons, one for each nflog group. The rationale behind this
-design is that the kernel will not report packets for multiple groups in
-one recv from the netlink socket. Processing multiple groups in one
-daemon therefore has no benefit when it comes to reducing system calls.
-Using multiple daemons however can distribute the load to multiple CPUs
-which is a clear benefit. (Note that threads are not an option, because
-the library is not thread safe.) Now when I start multiple daemons
-simultaneously they randomly fail and the culprit seems to be the
-interference of the pf binding and unbinding calls.
-
-Helmut
