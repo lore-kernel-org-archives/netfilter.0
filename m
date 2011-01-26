@@ -1,38 +1,23 @@
-From: Ludovico Cavedon <cavedon@cs.ucsb.edu>
-Subject: invoking nat POSTROUTING *after* bridging decision
-Date: Wed, 26 Jan 2011 11:11:36 -0800
-Message-ID: <4D4071E8.2010908@cs.ucsb.edu>
+From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+Subject: Re: invoking nat POSTROUTING *after* bridging decision
+Date: Wed, 26 Jan 2011 21:00:37 +0100
+Message-ID: <4D407D65.9090902@freemail.hu>
+References: <4D4071E8.2010908@cs.ucsb.edu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4D4071E8.2010908@cs.ucsb.edu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Ludovico Cavedon <cavedon@cs.ucsb.edu>, netfilter list <netfilter@vger.kernel.org>
 
 Hi,
 
-I have a machine which has two interfaces bridged together (eth0 and
-eth1, on br0), plus a third interface eth2 on a separate network.
+> Is there any way to postpone the call to POSTROUTING after the bridging
+> decision has been been, or have the POSTROUTING chain called twice?
+I don't think it is possible...
+But could you please explain us why do you want such NATing?
+Maybe we can help you out with an other setup...
 
-I would like to masquerade traffic from the eth2 network only if it sent
-over eth0, and not if it is sent over eth1.
-
-My problem is that the -t nat POSTROUTING rule is invoked after the
-routing decision, before the packet enters the bridge. (i.e. with output
-interface br0).
-
-Is there any way to postpone the call to POSTROUTING after the bridging
-decision has been been, or have the POSTROUTING chain called twice?
-
-Thank you in advance,
-Cheers,
-Ludovico
-
-PS:
-For sake of completeness, I was able to get the NAT to work, by using a
-POSTRUTING rules based on IP address, rather than output interfaces, as
-I know which hosts are connected to each interface (eth0 or eth1).
-However, if I run tcpdump in br0, I see outgoing packets with source IP
-address masqueraded, but incoming packets have already been
-un-masqueraded, making it annoyingly asymmetric...
+Swifty
