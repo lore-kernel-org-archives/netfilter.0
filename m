@@ -1,26 +1,33 @@
-From: Martin Mares <mj@ucw.cz>
-Subject: Egress filters
-Date: Wed, 26 Jan 2011 11:39:04 +0100
-Message-ID: <mj+md-20110126.102650.14602.nikam@ucw.cz>
+From: Marek Kierdelewicz <marek@piasta.pl>
+Subject: Re: Egress filters
+Date: Wed, 26 Jan 2011 12:18:11 +0100
+Message-ID: <20110126121811.467e72aa@catus>
+References: <mj+md-20110126.102650.14602.nikam@ucw.cz>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <mj+md-20110126.102650.14602.nikam@ucw.cz>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Martin Mares <mj@ucw.cz>
+Cc: netfilter@vger.kernel.org
 
-Hello, world!\n
+>Hello, world!\n
 
-I would like to set up an egress filter, which would process all outgoing
-packets just before they hit the network interface (especially after all
-NATing takes place).
+Hi,
 
-Is there any table/chain for that?
+>I would like to set up an egress filter, which would process all
+>outgoing packets just before they hit the network interface (especially
+>after all NATing takes place).
+>Is there any table/chain for that?
 
-				Have a nice fortnight
--- 
-Martin `MJ' Mares                          <mj@ucw.cz>   http://mj.ucw.cz/
-Faculty of Math and Physics, Charles University, Prague, Czech Rep., Earth
-int random(void) { return 4; /* Random number chosen by a fair dice roll. */ }
+Look here:
+http://jengelh.medozas.de/images/nf-packet-flow.png
+
+Mangle table postrouting chain is an appropriate place. Filtering would
+take place before nat table postrouting chain (nat table is consulted
+only for the first packet of the flow).
+
+best regards,
+Marek Kierdelewicz
