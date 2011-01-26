@@ -1,34 +1,38 @@
-From: Martin Mares <mj@ucw.cz>
-Subject: Re: Egress filters
-Date: Wed, 26 Jan 2011 13:38:02 +0100
-Message-ID: <mj+md-20110126.123623.15306.nikam@ucw.cz>
-References: <mj+md-20110126.102650.14602.nikam@ucw.cz> <20110126121811.467e72aa@catus> <mj+md-20110126.113943.977.nikam@ucw.cz> <20110126133531.7e724bc9@catus>
+From: Ludovico Cavedon <cavedon@cs.ucsb.edu>
+Subject: invoking nat POSTROUTING *after* bridging decision
+Date: Wed, 26 Jan 2011 11:11:36 -0800
+Message-ID: <4D4071E8.2010908@cs.ucsb.edu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20110126133531.7e724bc9@catus>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Marek Kierdelewicz <marek@piasta.pl>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Hi!
+Hi,
 
-> You can add rule connmarking traffic to 0x10 at the end of nat
-> postrouting chain and drop everything with that connmark in filter
-> forward chain. First packet of the filtered flows would get trough but
-> everything would be axed.
+I have a machine which has two interfaces bridged together (eth0 and
+eth1, on br0), plus a third interface eth2 on a separate network.
 
-That's a neat trick, but still I believe there should be a simple way
-how to do egress filtering.
+I would like to masquerade traffic from the eth2 network only if it sent
+over eth0, and not if it is sent over eth1.
 
-Would a patch adding a POSTROUTING chain to the raw table, positioned
-after all other chains, be welcome?
+My problem is that the -t nat POSTROUTING rule is invoked after the
+routing decision, before the packet enters the bridge. (i.e. with output
+interface br0).
 
-				Have a nice fortnight
--- 
-Martin `MJ' Mares                          <mj@ucw.cz>   http://mj.ucw.cz/
-Faculty of Math and Physics, Charles University, Prague, Czech Rep., Earth
-"Please try to fit your code to 80 columns. That's decimal 80." -- A. Morton
+Is there any way to postpone the call to POSTROUTING after the bridging
+decision has been been, or have the POSTROUTING chain called twice?
+
+Thank you in advance,
+Cheers,
+Ludovico
+
+PS:
+For sake of completeness, I was able to get the NAT to work, by using a
+POSTRUTING rules based on IP address, rather than output interfaces, as
+I know which hosts are connected to each interface (eth0 or eth1).
+However, if I run tcpdump in br0, I see outgoing packets with source IP
+address masqueraded, but incoming packets have already been
+un-masqueraded, making it annoyingly asymmetric...
