@@ -1,66 +1,77 @@
-From: Bob Miller <bob@computerisms.ca>
-Subject: ACCOUNT and REDIRECT - chain and table placement
-Date: Wed, 26 Jan 2011 13:54:53 -0800
-Message-ID: <1296078893.2064.4658.camel@laplaplian>
+From: Ludovico Cavedon <cavedon@cs.ucsb.edu>
+Subject: Re: invoking nat POSTROUTING *after* bridging decision
+Date: Wed, 26 Jan 2011 14:07:25 -0800
+Message-ID: <4D409B1D.3070303@cs.ucsb.edu>
+References: <4D4071E8.2010908@cs.ucsb.edu> <4D407D65.9090902@freemail.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4D407D65.9090902@freemail.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
+Cc: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
 
-Greetings gurus;
-Recently, I have put together a linux firewall with a squid server on
-it.  I have used the REDIRECT target to transparently move port 80
-requests to port 3128.
-I also installed xtables-addons so as to use the ACCOUNT target.  The
-goal here is to verify the external count provided by the ISP, and to
-identify top users on the LAN.  Hence I have tname arguments wan for the
-0/0 subnet and lan for the local class c subnet.
-I have implemented both of these things separately before, but this is
-my first time trying to use them together.
-As per documentation, I have set the redirect to work on the PREROUTING
-chain of the nat table.  I have put my wan counter into the PREROUTING
-chain of the mangle table.
-So, I have two questions:
+On 01/26/2011 12:00 PM, G=E1sp=E1r Lajos wrote:
+>> Is there any way to postpone the call to POSTROUTING after the bridg=
+ing
+>> decision has been been, or have the POSTROUTING chain called twice?
+> I don't think it is possible...
+> But could you please explain us why do you want such NATing?
+> Maybe we can help you out with an other setup...
 
-Where should I put the ACCOUNT target for counting the lan?  I would
-like to count only traffic to/from the internet, but I would like it to
-include traffic that is being proxied (ie I want it to count as if the
-proxy wasn't there).  Consulting the netfilter packet flow diagram, it
-looks like the ideal place to put the counter is in PREROUTING/nat, but
-I am pretty sure that wont' give me an accurate count.  If I put the
-ACCOUNT rule in PREROUTING/mangle, I expect it will count wan-lan and
-lan-lan traffic, but I don't want lan-lan.  If I put the rule in
-FORWARD/filter, I expect it wont' count proxy traffic because the proxy
-is a local process.  
-One thing I discovered is that I can put the same tname argument into
-multiple rules, so I figured I could try counting an ACCOUNT target in
-PREROUTING/mangle (with src lan and dst port 80) and an ACCOUNT target
-in FORWARD/filter (for everything else) and then adding them together,
-but numbers appear to be coming up short.  Maybe because only the very
-beginning of a data stream gets matched?  Plus that doesn't count return
-traffic, but if the theory worked out I could add another rule to count
-that and add it in.
+Sure, thank you for asking, here it is:
 
-My second question is with regards to the ACCOUNT target in
-PREROUTING/mangle for the purposes of counting external traffic.
-Documentation says to use 0/0 subnet to count all traffic to the ISP.
-That particular chain does not seem to accept an -i filter, so I cannot
-confine that counting to just the external interface.  but would the 0/0
-subnet include lan as well as wan, since the filter would be based on IP
-rather than interface?  The reason I ask this is because my external
-count has been considerably higher than the ISP, but it is not as much
-as the wan and lan added together, so I am trying to figure out if I am
-doing something wrong or if the ISP is really counting low...
+Host: myfw
+br0: 10.10.10.2/24
+	eth0: connected to 10.10.10.1, acting as gateway to the Internet
+	eth1: connected to the rest of the 10.10.10.0/24 network
 
-Thank you for any thoughts on this...
+hosts in the 10.10.10.0/24 network are configured with 10.10.10.1 as
+default gateway. I am using the host myfw to act as transparent firewal=
+l
+for the 10.10.10.0/24 network (which in reality is a publicly routable
+network).
 
-Bob Miller
-334-7117/660-5315
-http://computerisms.ca
-bob@computerisms.ca
-Network, Internet, Server,
-and Open Source Solutions
+I cannot change the configuration of the hosts in the 10.10.10.0/24 net=
+work.
 
+So far so good.
+
+Then, always on the myfw machine, I have:
+-eth2: 192.168.1.1, connected to the 192.168.1.0/24 network
+
+myfw is acting as gateway for the 192.168.1.0/24 network.
+
+More in detail, myfw should:
+-route traffic between 192.168.1.0/24 and 10.10.10.0/24 (eth1)
+-masquerade traffic from 192.168.1.0./24 towards the outside via
+10.10.10.1 (eth0)
+
+I managed to get this configuration working with the following iptables
+and ebtables rules:
+
+# intercept packets for the private network
+ebtables -t nat -A PREROUTING -i 10.10.10.0/24 -p ipv4 --ip-destination
+192.168.1.0./24 -j redirect --redirect-target ACCEPT
+
+# SNAT packets directed to the outside world
+iptables -t nat -A POSTROUTING -s 192.168.1.0./24 -o br0 ! -d
+10.10.10.0/24 -j SNAT --to-source 10.10.10.2
+
+
+As I said, this is working, but when I run tcpdump on br0, for
+connections originating from the private network, I see outgoing packet=
+s
+with source IP address masqueraded (10.10.10.2), but incoming packets
+already un-masqueraded (i.e. the actual address in the private network)=
+=2E
+This complicates running monitoring tools like ntop, other than being
+oddly asymmetric.
+
+I hope I included all relevant information.
+Thanks for any suggestion about this!
+
+Cheers,
+Ludovico
