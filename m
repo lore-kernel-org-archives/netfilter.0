@@ -1,46 +1,40 @@
-From: Raviv <raviv.haim@gmail.com>
-Subject: Performance issues when enabling netfilter configuration
-Date: Thu, 27 Jan 2011 14:28:07 +0200
-Message-ID: <4D4164D7.8050208@trego.co.il>
+From: E2IA <e2ia.ci@gmail.com>
+Subject: xt_ACCOUNT define many network by table
+Date: Thu, 27 Jan 2011 16:55:14 +0000
+Message-ID: <AANLkTik+=rifOKRpurA3da=OMe-Jp96Y=YMRC1itgmQ4@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:message-id:date:from:user-agent:mime-version:to
-         :subject:content-type:content-transfer-encoding;
-        bh=agEYZ0zhco1zkIq/YaYQ1boaYlnKm/GOJyzxS/Znzvs=;
-        b=h2dNslj5ceIvsghlbspUEu2rMZxj4hWKzHtGu5b9pSV0AGTa+JwteuQWgMgWG8wDi3
-         omIg8VL3gibJ4vW+Klf2AvDpNJyOQAfTAo0E5nsoHShvL2/8HACHAOLfaDaYFcx+0MR6
-         BciBUkSDL9/odsTFBDeZXpuSCCZ+vknCKkqu0=
+        h=domainkey-signature:mime-version:date:message-id:subject:from:to
+         :content-type:content-transfer-encoding;
+        bh=uymOq4FADS5+A7DbUwyBI/t6dI27l8b5w7shY2Lh1EU=;
+        b=UUSef+ZLockNcRKuY0+J53juRIu7h6QlOKN4bQs3Z4fOFq1kYlAuUUAy7JarpCHx48
+         /vcEukCGMssx0qGzcliJ41JdXefky1l/zqx7OzVJv+vdArBS/cvAxEKL58VGN1SArIAK
+         bNVlbGH9AvNs59YijdLrEXt1KGU6NeRgCzxSA=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="utf-8"
 To: netfilter@vger.kernel.org
 
 Hi,
+all I'm using xt_ACCOUNT for accounting on my linux box.
+I have two network 192.168.2.0/24 and 172.16.2.0/24. and i want to
+account these 2 network via table http.
+So i've made these two rules :
+rule 1:=C2=A0 iptables=C2=A0 -t mangle=C2=A0=C2=A0 -A=C2=A0 POSTROUTING=
+=C2=A0=C2=A0 -m mark --mark=C2=A0 123
+-j ACCOUNT --addr=C2=A0 192.168.2.0/24=C2=A0 --tname http
+rule 2:=C2=A0 iptables=C2=A0 -t mangle=C2=A0=C2=A0 -A=C2=A0 POSTROUTING=
+=C2=A0=C2=A0 -m mark --mark=C2=A0 123
+-j ACCOUNT --addr=C2=A0 172.16.2.0/24 =C2=A0=C2=A0 --tname http
 
-I'm developing a bridge application (Ethernet <--> wireless) for both AP 
-and Station.
-I would like to keep a single kernel image for both AP and station. 
-However the netfilter capabilities (conntrack) are only required at the 
-Station.
-I have configured the required netfilter capabilities to be loaded as 
-modules. still there are some basic configurations i can't set as 
-modules but only as built-ins.
-So even-though i don't really need the netfilter in the AP these basic 
-configuration exists and causes performance issue for network traffic 
-(15% desegregation).
-After a brief debug session i found out that when running the system 
-without netfilter the packet (travailing : Eth-->Bridge-->Wireless) is 
-passed with the same skb (all the way), while when netfilter is on the 
-packet has a different skb while in Eth driver then the skb in the 
-wireless driver. I suspect the skb switch/copy has happened in the 
-bridge code.
+but when I enter the rule2 i got this error message :
+[282339.158532] ACCOUNT: Table http found, but IP/netmask mismatch.
+IP/netmask found: 192.168.2.0/255.255.255.0
+[282339.158670] ACCOUNT: Table insert problem. Aborting
 
-1. Is there a way to maintain a single kernel image without hurting the 
-performance so bad?
-2. Why is the packet copied from one skb to another?
-
-Regards,
-Raviv
+I'm wondering and I'd like to know if there is mean to define a table
+for 2 deferent network.
+regards.
