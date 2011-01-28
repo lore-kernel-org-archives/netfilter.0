@@ -1,28 +1,153 @@
-From: Grozdan <neutrino8@gmail.com>
-Subject: Blocking certain IP from accessing a specific port
-Date: Fri, 28 Jan 2011 14:32:56 +0100
-Message-ID: <AANLkTikaqTWofw7tS_=7iZoV52=3mm-eD7-VyDii5Ooq@mail.gmail.com>
+From: Giles Coochey <giles@coochey.net>
+Subject: Re: Blocking certain IP from accessing a specific port
+Date: Fri, 28 Jan 2011 14:36:00 +0100
+Message-ID: <4D42C640.4060702@coochey.net>
+References: <AANLkTikaqTWofw7tS_=7iZoV52=3mm-eD7-VyDii5Ooq@mail.gmail.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms080003000309030003050709"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:date:message-id:subject:from:to
-         :content-type;
-        bh=2+pT6xQpLCz/uOXNDYHzDU17hjDR1RaVDafVZKITPCo=;
-        b=lxbEw6VUqg7bdGdu0/T9DZcMbO3Jpdtqs2+PEZCe4DLyzfp37cuwMnB3BxsvwJtL3n
-         QhTu3+W0ewGwCS1Im/am9FnYHBkdl6gnPIWpdIUp0KlhGS0JMyB3uPE9Qmv6NbiUEUT3
-         sG468PKKkO9+2NO4ods9zsT/dIHiCpw34J3+I=
+In-Reply-To: <AANLkTikaqTWofw7tS_=7iZoV52=3mm-eD7-VyDii5Ooq@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Grozdan <neutrino8@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+This is a cryptographically signed message in MIME format.
 
-Very basic question due to a brain fart I'm having at the moment
-(really tired as well), but if I want to block a certain IP address
-from accessing a specific port on my server, would I be using --dport
-or --sport on the INPUT chain?
+--------------ms080003000309030003050709
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Thanks :)
+On 28/01/2011 14:32, Grozdan wrote:
+> Hi,
+>
+> Very basic question due to a brain fart I'm having at the moment
+> (really tired as well), but if I want to block a certain IP address
+> from accessing a specific port on my server, would I be using --dport
+> or --sport on the INPUT chain?
+>
+> Thanks :)
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in=
+
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--dport
+
+--=20
+Best Regards,
+
+Giles Coochey
+NetSecSpec Ltd
+NL T-Systems Mobile: +31 681 265 086
+NL Mobile: +31 626 508 131
+GIB Mobile: +350 5401 6693
+Email/MSN/Live Messenger: giles@coochey.net
+Skype: gilescoochey
+
+
+
+
+--------------ms080003000309030003050709
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIPdjCC
+BIowggNyoAMCAQICECf06hH0eobEbp27bqkXBwcwDQYJKoZIhvcNAQEFBQAwbzELMAkGA1UE
+BhMCU0UxFDASBgNVBAoTC0FkZFRydXN0IEFCMSYwJAYDVQQLEx1BZGRUcnVzdCBFeHRlcm5h
+bCBUVFAgTmV0d29yazEiMCAGA1UEAxMZQWRkVHJ1c3QgRXh0ZXJuYWwgQ0EgUm9vdDAeFw0w
+NTA2MDcwODA5MTBaFw0yMDA1MzAxMDQ4MzhaMIGuMQswCQYDVQQGEwJVUzELMAkGA1UECBMC
+VVQxFzAVBgNVBAcTDlNhbHQgTGFrZSBDaXR5MR4wHAYDVQQKExVUaGUgVVNFUlRSVVNUIE5l
+dHdvcmsxITAfBgNVBAsTGGh0dHA6Ly93d3cudXNlcnRydXN0LmNvbTE2MDQGA1UEAxMtVVRO
+LVVTRVJGaXJzdC1DbGllbnQgQXV0aGVudGljYXRpb24gYW5kIEVtYWlsMIIBIjANBgkqhkiG
+9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsjmFpPJ9q0E7YkY3rs3BYHW8OWX5ShpHornMSMxqmNVN
+NRm5pELlzkniii8efNIxB8dOtINknS4p1aJkxIW9hVE1eaROaJB7HHqkkqgX8pgV8pPMyaQy
+lbsMTzC9mKALi+VuG6JG+ni8om+rWV6lL8/K2m2qL+usobNqqrcuZzWLeeEeaYji5kbNoKXq
+vgvOdjp6Dpvq/NonWz1zHyLmSGHGTPNpsaguG7bUMSAsvIKKjqQOpdeJQ/wWWq8dcdcRWdq6
+hw2v+vPhwvCkxWeM1tZUOt4KpLoDd7NlyP0e03RiqhjKaJMeoYV+9Udly/hNVyh00jT/MLbu
+9mIwFIws6wIDAQABo4HhMIHeMB8GA1UdIwQYMBaAFK29mHo0tCb3+sQmVO8DveAky1QaMB0G
+A1UdDgQWBBSJgmd9xJ0mcABLtFBIfN49rgRufTAOBgNVHQ8BAf8EBAMCAQYwDwYDVR0TAQH/
+BAUwAwEB/zB7BgNVHR8EdDByMDigNqA0hjJodHRwOi8vY3JsLmNvbW9kb2NhLmNvbS9BZGRU
+cnVzdEV4dGVybmFsQ0FSb290LmNybDA2oDSgMoYwaHR0cDovL2NybC5jb21vZG8ubmV0L0Fk
+ZFRydXN0RXh0ZXJuYWxDQVJvb3QuY3JsMA0GCSqGSIb3DQEBBQUAA4IBAQAZ2IkRbyispgCi
+54fBm5AD236hEv0e8+LwAamUVEJrmgnEoG3XkJIEA2Z5Q3H8+G+v23ZF4jcaPd3kWQR4rBz0
+g0bzes9bhHIt5UbBuhgRKfPLSXmHPLptBZ2kbWhPrXIUNqi5sf2/z3/wpGqUNVCPz4FtVbHd
+WTBK322gnGQfSXzvNrv042n0+DmPWq1LhTq3Du3Tzw1EovsEv+QvcI4l+1pUBrPQxLxtjftz
+Mizpm4QkLdZ/kXpoAlAfDj9N6cz1u2fo3BwuO/xOzf4CjuOoEwqlJkRl6RDyTVKnrtw+ymsy
+XEFs/vVdoOr/0fqbhlhtPZZH5f4ulQTCAMyOofK7MIIFcDCCBFigAwIBAgIQO65j2DnDlPzM
+SJXaXTR0YjANBgkqhkiG9w0BAQUFADCBrjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAlVUMRcw
+FQYDVQQHEw5TYWx0IExha2UgQ2l0eTEeMBwGA1UEChMVVGhlIFVTRVJUUlVTVCBOZXR3b3Jr
+MSEwHwYDVQQLExhodHRwOi8vd3d3LnVzZXJ0cnVzdC5jb20xNjA0BgNVBAMTLVVUTi1VU0VS
+Rmlyc3QtQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBFbWFpbDAeFw0xMDEwMTQwMDAwMDBa
+Fw0xMTEwMTQyMzU5NTlaMCIxIDAeBgkqhkiG9w0BCQEWEWdpbGVzQGNvb2NoZXkubmV0MIIB
+IjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAnEfShIvQWyy4AujOORPKowIgIbqFDVT+
+tphbbz8UQ4Ndh8wq0u/Rqp0EHvJw4ZTFUjzbSPrtrvyrkkj2Vmwigfy/hdz3tX7YHjEJYvd2
+5lO/MBioYmG9Kwb6RS+XWjoT3hiO7iDMTLtvwSeYkDFv8tpTjNuKi3yIU7cLC0NQ+7DXl5Fo
+rP+BbcHPGRgEsQGvH89JOkshlyT0YvKJydwKBbGlag4h/VDRznauPDJJl6usnyyLUD2byvYY
+azUEAgUrrHRsaAUELH8yPGbQUC0MEgyhC+3aLl7qCXvB2JKBCZjBEz9dQ9DEQf7opV1tlKLD
+qcl9ve2+2GF7OyxzvgzrewIDAQABo4ICEzCCAg8wHwYDVR0jBBgwFoAUiYJnfcSdJnAAS7RQ
+SHzePa4Ebn0wHQYDVR0OBBYEFNzIQP5P3sjDYNUkLmRKk2xVYwJEMA4GA1UdDwEB/wQEAwIF
+oDAMBgNVHRMBAf8EAjAAMCAGA1UdJQQZMBcGCCsGAQUFBwMEBgsrBgEEAbIxAQMFAjARBglg
+hkgBhvhCAQEEBAMCBSAwRgYDVR0gBD8wPTA7BgwrBgEEAbIxAQIBAQEwKzApBggrBgEFBQcC
+ARYdaHR0cHM6Ly9zZWN1cmUuY29tb2RvLm5ldC9DUFMwgaUGA1UdHwSBnTCBmjBMoEqgSIZG
+aHR0cDovL2NybC5jb21vZG9jYS5jb20vVVROLVVTRVJGaXJzdC1DbGllbnRBdXRoZW50aWNh
+dGlvbmFuZEVtYWlsLmNybDBKoEigRoZEaHR0cDovL2NybC5jb21vZG8ubmV0L1VUTi1VU0VS
+Rmlyc3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRFbWFpbC5jcmwwbAYIKwYBBQUHAQEEYDBe
+MDYGCCsGAQUFBzAChipodHRwOi8vY3J0LmNvbW9kb2NhLmNvbS9VVE5BQUFDbGllbnRDQS5j
+cnQwJAYIKwYBBQUHMAGGGGh0dHA6Ly9vY3NwLmNvbW9kb2NhLmNvbTAcBgNVHREEFTATgRFn
+aWxlc0Bjb29jaGV5Lm5ldDANBgkqhkiG9w0BAQUFAAOCAQEAkgncYO0fVM5mTDtsFLNgeEQU
+tfupHDPpwjnvDtQAcCOTPOmvbNs3Cct9u85R5T1HUFlJ9bZMfAUwi1EVQf44SUMrFfR/uyH5
+Qhe+TEIkHGA6/82Cl1pOcw0ugVF0IDt4jIX+RMoh2izp+VtCXyvzC7Sk9oM4LmMaAToSTjnb
+J774U0tY3lgYt8vSCaqjbaPo2vAsekZ82h36T+FVI03PBacxItsm1WmRRCoAXHCFVKVF1ArT
+hOKXcxvsuEiOXsRmy09b4N1ztVaOpaCareyGbW/Cp3ObpKcrldtvzE4blwAQOY9zOYbgszS4
+Pmps83QjO9WETrH3t8WHYUGsPIAvwjCCBXAwggRYoAMCAQICEDuuY9g5w5T8zEiV2l00dGIw
+DQYJKoZIhvcNAQEFBQAwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMO
+U2FsdCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEhMB8GA1UE
+CxMYaHR0cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0LUNs
+aWVudCBBdXRoZW50aWNhdGlvbiBhbmQgRW1haWwwHhcNMTAxMDE0MDAwMDAwWhcNMTExMDE0
+MjM1OTU5WjAiMSAwHgYJKoZIhvcNAQkBFhFnaWxlc0Bjb29jaGV5Lm5ldDCCASIwDQYJKoZI
+hvcNAQEBBQADggEPADCCAQoCggEBAJxH0oSL0FssuALozjkTyqMCICG6hQ1U/raYW28/FEOD
+XYfMKtLv0aqdBB7ycOGUxVI820j67a78q5JI9lZsIoH8v4Xc97V+2B4xCWL3duZTvzAYqGJh
+vSsG+kUvl1o6E94Yju4gzEy7b8EnmJAxb/LaU4zbiot8iFO3CwtDUPuw15eRaKz/gW3BzxkY
+BLEBrx/PSTpLIZck9GLyicncCgWxpWoOIf1Q0c52rjwySZerrJ8si1A9m8r2GGs1BAIFK6x0
+bGgFBCx/Mjxm0FAtDBIMoQvt2i5e6gl7wdiSgQmYwRM/XUPQxEH+6KVdbZSiw6nJfb3tvthh
+ezssc74M63sCAwEAAaOCAhMwggIPMB8GA1UdIwQYMBaAFImCZ33EnSZwAEu0UEh83j2uBG59
+MB0GA1UdDgQWBBTcyED+T97Iw2DVJC5kSpNsVWMCRDAOBgNVHQ8BAf8EBAMCBaAwDAYDVR0T
+AQH/BAIwADAgBgNVHSUEGTAXBggrBgEFBQcDBAYLKwYBBAGyMQEDBQIwEQYJYIZIAYb4QgEB
+BAQDAgUgMEYGA1UdIAQ/MD0wOwYMKwYBBAGyMQECAQEBMCswKQYIKwYBBQUHAgEWHWh0dHBz
+Oi8vc2VjdXJlLmNvbW9kby5uZXQvQ1BTMIGlBgNVHR8EgZ0wgZowTKBKoEiGRmh0dHA6Ly9j
+cmwuY29tb2RvY2EuY29tL1VUTi1VU0VSRmlyc3QtQ2xpZW50QXV0aGVudGljYXRpb25hbmRF
+bWFpbC5jcmwwSqBIoEaGRGh0dHA6Ly9jcmwuY29tb2RvLm5ldC9VVE4tVVNFUkZpcnN0LUNs
+aWVudEF1dGhlbnRpY2F0aW9uYW5kRW1haWwuY3JsMGwGCCsGAQUFBwEBBGAwXjA2BggrBgEF
+BQcwAoYqaHR0cDovL2NydC5jb21vZG9jYS5jb20vVVROQUFBQ2xpZW50Q0EuY3J0MCQGCCsG
+AQUFBzABhhhodHRwOi8vb2NzcC5jb21vZG9jYS5jb20wHAYDVR0RBBUwE4ERZ2lsZXNAY29v
+Y2hleS5uZXQwDQYJKoZIhvcNAQEFBQADggEBAJIJ3GDtH1TOZkw7bBSzYHhEFLX7qRwz6cI5
+7w7UAHAjkzzpr2zbNwnLfbvOUeU9R1BZSfW2THwFMItRFUH+OElDKxX0f7sh+UIXvkxCJBxg
+Ov/NgpdaTnMNLoFRdCA7eIyF/kTKIdos6flbQl8r8wu0pPaDOC5jGgE6Ek452ye++FNLWN5Y
+GLfL0gmqo22j6NrwLHpGfNod+k/hVSNNzwWnMSLbJtVpkUQqAFxwhVSlRdQK04Til3Mb7LhI
+jl7EZstPW+Ddc7VWjqWgmq3shm1vwqdzm6SnK5Xbb8xOG5cAEDmPczmG4LM0uD5qbPN0IzvV
+hE6x97fFh2FBrDyAL8IxggRdMIIEWQIBATCBwzCBrjELMAkGA1UEBhMCVVMxCzAJBgNVBAgT
+AlVUMRcwFQYDVQQHEw5TYWx0IExha2UgQ2l0eTEeMBwGA1UEChMVVGhlIFVTRVJUUlVTVCBO
+ZXR3b3JrMSEwHwYDVQQLExhodHRwOi8vd3d3LnVzZXJ0cnVzdC5jb20xNjA0BgNVBAMTLVVU
+Ti1VU0VSRmlyc3QtQ2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBFbWFpbAIQO65j2DnDlPzM
+SJXaXTR0YjAJBgUrDgMCGgUAoIICbjAYBgkqhkiG9w0BCQMxCwYJKoZIhvcNAQcBMBwGCSqG
+SIb3DQEJBTEPFw0xMTAxMjgxMzM2MDBaMCMGCSqGSIb3DQEJBDEWBBSWWfvi8SuQ5h/7OB1U
+sjw3Fwa9ADBfBgkqhkiG9w0BCQ8xUjBQMAsGCWCGSAFlAwQBAjAKBggqhkiG9w0DBzAOBggq
+hkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcNAwICASgwgdQG
+CSsGAQQBgjcQBDGBxjCBwzCBrjELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAlVUMRcwFQYDVQQH
+Ew5TYWx0IExha2UgQ2l0eTEeMBwGA1UEChMVVGhlIFVTRVJUUlVTVCBOZXR3b3JrMSEwHwYD
+VQQLExhodHRwOi8vd3d3LnVzZXJ0cnVzdC5jb20xNjA0BgNVBAMTLVVUTi1VU0VSRmlyc3Qt
+Q2xpZW50IEF1dGhlbnRpY2F0aW9uIGFuZCBFbWFpbAIQO65j2DnDlPzMSJXaXTR0YjCB1gYL
+KoZIhvcNAQkQAgsxgcaggcMwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEXMBUGA1UE
+BxMOU2FsdCBMYWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEhMB8G
+A1UECxMYaHR0cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0
+LUNsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgRW1haWwCEDuuY9g5w5T8zEiV2l00dGIwDQYJ
+KoZIhvcNAQEBBQAEggEAD73oJX0WMh7NcW6au3mlwNwabUnpqucTd1C2J7ftOCbA8b8roPt2
+mgeLxHRaiF6aCtP+/q80b7T4kGZqkLW8rWqa/smlBaG3D8VvfQc0QkvqU6ZWBXMS4SUOckeq
+JVUdNPoJE9vk5LwRyzrK5plzL/0MEFgCuOGMRfU8pKMq3cf5Sd9aiqayEktxrZFSls+5IKgl
+Tf/0M0pxBpkaM0TRaD9xT28fc9jBndRRx1B2KOGehCoBZ4ibqD9NhZ7tqMDgyRa8Zhxbi8Gs
+gm/MEDX8Sk4BTFuiyG2vl0rtn6OYutwGo2AYjEX/8VOWGoP34n5wE9yeo4icXyZS3F/9eqRy
+ngAAAAAAAA==
+--------------ms080003000309030003050709--
