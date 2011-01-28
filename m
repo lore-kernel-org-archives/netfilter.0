@@ -1,35 +1,30 @@
-From: Bob Miller <bob@computerisms.ca>
-Subject: Re: xt_ACCOUNT define many network by table
-Date: Thu, 27 Jan 2011 19:38:46 -0800
-Message-ID: <1296185926.2064.4821.camel@laplaplian>
-References: <AANLkTik+=rifOKRpurA3da=OMe-Jp96Y=YMRC1itgmQ4@mail.gmail.com>
-	 <1296153825.2064.4727.camel@laplaplian>
-	 <AANLkTinYhMmnOJ1Kq9BBFcQfOB5p1kkmGXD=BvNf+2i1@mail.gmail.com>
-	 <alpine.LNX.2.01.1101272321210.26553@obet.zrqbmnf.qr>
-	 <alpine.LNX.2.01.1101272324020.6686@obet.zrqbmnf.qr>
+From: ratheesh k <ratheesh.ksz@gmail.com>
+Subject: setsockopt on connect()
+Date: Fri, 28 Jan 2011 13:01:17 +0530
+Message-ID: <AANLkTikXMg-_wdHeucsRgxDnsnKz0z9SASSaFC4PDBwZ@mail.gmail.com>
+References: <AANLkTinspcu_VoTV=wrcBf=Ana61pj1c7DwT-z40idsA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1101272324020.6686@obet.zrqbmnf.qr>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:in-reply-to:references:date
+         :message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=aovAYHWK1eAjctm68P53Y8M73RHd90X0nKiy2WHBMlk=;
+        b=u7Z9TbiTnmbYU6UaHSCG9ex5EEOO21VQW4l2+GQbIR8EM3NAxqzTx3aw/PnzSVfGAJ
+         5SwOrsvQnIQ/FXe9s9wtj5+eJadPIBN0tgmat7hauv2kR4cUNla83s4DMQzLIyzIflwJ
+         D8C96Z6fpBSibPgdd4SvDV8emI6RbKv9gOJSI=
+In-Reply-To: <AANLkTinspcu_VoTV=wrcBf=Ana61pj1c7DwT-z40idsA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: E2IA <e2ia.ci@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: linux-c-programming@vger.kernel.org, Netfilter mailing list <netfilter@vger.kernel.org>
+Cc: Jan Engelhardt <jengelh@medozas.de>
 
+why SO_SNDTIMEO have no effect  for   connect() system call ?
 
-> 
-> 
-> Er, not for 128.0.0.0/8.  That should have been 128.0.0.0/1.
-> 
-> 
+i found FAQ here at (question no 3.5. )=A0 of
+http://www.faqs.org/faqs/unix-faq/socket/
 
-Good catch, my bad.
-
-Bob Miller
-334-7117/660-5315
-http://computerisms.ca
-bob@computerisms.ca
-Network, Internet, Server,
-and Open Source Solutions
-
+-Ratheesh
