@@ -1,45 +1,97 @@
-From: Bhanu CV <vbhanu.mailinglists@gmail.com>
-Subject: How does iptables classify change skb priority
-Date: Fri, 28 Jan 2011 10:34:25 -0800
-Message-ID: <AANLkTinF_tgHjbmdiTJrwAb-pJ09u1JKyHstCBUygcHZ@mail.gmail.com>
+From: Roc Bai <buroc83@gmail.com>
+Subject: how to use sk_run_filter() in the kernel?
+Date: Sun, 30 Jan 2011 15:26:20 +0800
+Message-ID: <AANLkTi=cwGj624jicA4C9KrbofvXNwt0a_T33zpSYZAa@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=domainkey-signature:mime-version:date:message-id:subject:from:to
          :content-type;
-        bh=evkVfhVYuIypzDnSIg41FoI7yx7Fyfy1eOxJtbHjxhU=;
-        b=uWxG2tu/aYv0fooq6tvXbief+kySp/BFa1dCv3fG05pe6AIr/4IAWTrJDcEfsLNg8b
-         ySKvV2hjt+IkPyA7i6LoEFzAnPMoLhYjnZgcQCf9ZOVScU8TZvHVp59cVl9EQSvXdVLH
-         WGhX97XEjAs3zLqEMUXSdrSbJZQqtyl2ZzrYA=
-Sender: netfilter-owner@vger.kernel.org
+        bh=6cdcVsWo/27tjkILecq/M1K1exT4kVtuNP1cPYbjbk4=;
+        b=H5Co5z3wXbW25ivzZv6tuptPjwTq5OEhgojQ4iHLTbXxelAWl7exratzL2bTpRP/ym
+         1/eUEgVCczAFafpvH7gIxKOCHTJ/otbGcyTIGq0H+MDmaFO5zWf9BH6o84uJMPVSJCk7
+         Poh8G6afrCq9NupZy3NJzGBvgkDYnxEo4KU9Y=
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Hi,
+Hi, all:
+   I want to use the sk_run_filter() in the bridge module, and if the
+skb meet the filter the skb will be forward to a specify port. I do it
+like this:
 
-I am trying to change the skb priority of the packets going out to a
-particular destination. Then I use vlan set_egress_map to change the
-vlan priority of the packet. This works as I want it to, the confusing
-part is I do not know why it works!
+1) use the libpcap create pcap, compile rule, and attach the filter
 
-I use the following two commands:
+int compile_rule(const char *expr)
+{
+        struct bpf_program fp;
+        pcap_t *pcap;
+        static char errbuf[1024];
 
-change the skb->priority (?) for the packets that I am interested in to 3:
-iptables -t mangle -A POSTROUTING -d 192.168.10.75 -j CLASSIFY --set-class 0:3
+        pcap = pcap_open_live("eth0", 65535, 1, 1000, errbuf);
+        //pcap = pcap_open_dead(DLT_EN10MB, 2600);
+        if(NULL == pcap) {
+                fprintf(stdout, "create pcap failure! %s\n", errbuf);
+                return -1;
+        }
 
-change the vlan priority of the packet leaving over the vlan
-vconfig set_egress_map eth4.2 3 3
+        if (0 != pcap_compile(pcap, &fp, expr, 0, 0xFFFFFF00)) {
+                fprintf(stdout, "compile pcap failure!\n");
+                return -1;
+        }
 
-This does send a packet on the wire with MAC layer priority of 3,
-which is what I want. What I am trying to understand is the action
-that iptables is taking. I do not have any class under the root qdisc
-on eth4. The root qdisc has handle 0:
+        if (0 != pcap_setfilter(pcap, &fp)) {
+                fprintf(stdout, "setfilter failure!\n");
+                return -1;
+        }
 
-It would be great if someone could explain how iptables is classifying
-the packet in a way which changes the skb->priority of the packet.
+        return 0;
+}
 
-Thanks in advance,
-Bhanu
+
+2) change the sk_attach_filter() routine which will call my_sk_attach_filter()
+
+struct bnf_ether
+{
+        struct sk_filter *filter;
+        struct net_bridge_port *dst;
+};
+
+struct bnf_ether *ether;
+
+unsigned int fsize = sizeof(struct sock_filter) * fprog->len;
+fp = kmalloc(fsize + sizeof(*fp), GFP_KERNEL);
+copy_from_user(fp->insns, fprog->filter, fsize);
+atomic_set(&fp->refcnt, 1);
+fp->len = fprog->len;
+....
+rcu_assign_pointer(ether->filter, fp);
+ether->port = dst_port;
+....
+
+3) When the packet arrivied, calling my_get_port_dst(struct sk_buff
+skb) to search  target port.
+
+filter = rcu_dereference_bh(ether->filter);
+res = sk_run_filter(skb, filter->insns, filter->len);
+
+if (res) {
+    return ether-> port;
+}
+
+
+But i find sk_run_filter returns 0 all the time. I think something
+wrong in my code. How i fix it? And i find the  pcap_setfilter() will
+call sk_attach_filter() twice, why?
+
+Best Regards
+
+Bai Shuwei
+
+-- 
+------------------------
+
+Thinking before action, but you are wasting time if you don't do action.
