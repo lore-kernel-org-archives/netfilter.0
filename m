@@ -1,27 +1,37 @@
-From: "Sridhar Kumar" <sridhar@moore-performance.com>
-Subject: netfilter - u32 module
-Date: Sun, 30 Jan 2011 19:34:12 -0800
-Message-ID: <000001cbc0f7$bb09fc40$311df4c0$@com>
-References: <AANLkTinoBfMTDNVLHuBhMFJHHSrMmP0gwYTz2AX3f_ew@mail.gmail.com>	<alpine.LNX.2.01.1101310306560.15201@obet.zrqbmnf.qr>	<AANLkTik02D=agfFrc8VX+Wh4WAg_odm6cEcpbXvbgtqM@mail.gmail.com>	<alpine.LNX.2.01.1101310337270.19252@obet.zrqbmnf.qr> <AANLkTikxZf8zMJxRTGg6BS4uc0PDus+E6cEtfLDQRTQu@mail.gmail.com>
+From: Srinivasa T N <seenutn@linux.vnet.ibm.com>
+Subject: Re: Block an IP
+Date: Mon, 31 Jan 2011 10:47:35 +0530
+Message-ID: <4D4645EF.7010004@linux.vnet.ibm.com>
+References: <BAY148-w49B627F2E93301ED140FEFA3E30@phx.gbl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <AANLkTikxZf8zMJxRTGg6BS4uc0PDus+E6cEtfLDQRTQu@mail.gmail.com>
-Content-Language: en-us
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <BAY148-w49B627F2E93301ED140FEFA3E30@phx.gbl>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
+On Sunday 30 January 2011 01:32 PM, Cory McPherson wrote:
+>
+>
+> Hello,
+>
+> I'm new to iptables and would like to block an IP. How do I achieve that? More specifically, I'd like to block it from accessing a specific port
+> but other ports should be accessible to that IP... Can someone give me an example?
+>
+> Thanks
+>
+> PS: please CC me as I'm not subscribed to the list.
+>   		 	   		  --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
 
-Hi,
+Assuming your protocal is tcp:
 
-I am building a kernel, version 2.6.27 for a MIPS processor.
-I need module U32 included in netfilter.
+iptables -A INPUT p- tcp --source <IP Address> --dport <Port No.> -j REJECT
 
-In the downloaded kernel source I did not see the files "xt_u32.c" etc.
-Pls let me know where can I find the source code for netfilter modules.
-
-
- 
-
+Regards,
+Seenu.
