@@ -1,41 +1,38 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: DCERPC - does an add-on exist for netfilter
-Date: Sun, 30 Jan 2011 18:00:22 +0100
-Message-ID: <4D459926.5080801@trash.net>
-References: <AANLkTimMiM=NWeDvhPn_wKfab_sta89wxffMPcX2hMSO@mail.gmail.com>
+From: JeHo Park <linuxpark@gmail.com>
+Subject: [HELP] why the string match does not work in nat tables?
+Date: Mon, 31 Jan 2011 10:53:33 +0900
+Message-ID: <AANLkTinoBfMTDNVLHuBhMFJHHSrMmP0gwYTz2AX3f_ew@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTimMiM=NWeDvhPn_wKfab_sta89wxffMPcX2hMSO@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:date:message-id:subject:from:to
+         :content-type;
+        bh=c+c09AVA2jqZMVggfVC3ARBWX0FFolN62Q9fuK9AZV0=;
+        b=mg7vVzVCm8LRUE7jr56bv2tBqGs/SsD7fc0ZwBy4JqGBPHpvceTzpIXeksiAGqvD+I
+         tnRc8oIAQsgEQtjM5Qj3Yx18WBpL2UptXpD2XA1WyoroxxUmjUG+1cixpTBdMbU72GVL
+         izlAfkfPIS86TI2cHlTlMaJB4ddFLVY/Zf69k=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Jim Webster <jwebster@ilstechnology.com>
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-On 30.01.2011 12:07, Jim Webster wrote:
-> Hi.  I am new to the list and also fairly new to iptables and
-> netfilter.  Linux and programming - am familiar with.
-> Have been tasked to provide a way to move MSMQ (DCERPC?) traffic thru
-> our firewall.
-> The firewall is a CentOS iptables based box.
-> 
-> Unfortunately, I do not zet have the customer Wireshark trace showing
-> the traffic, specificallz where the  address (and port) is supposedlz
-> sent in the pazload.
-> 
-> A knowledgeable iptables/firewall person on our team has suggested we
-> require a netfilter helper routine (ala the ftp connection tracking).
-> 
-> It seems to me however that instead, some tzpe of adaptive firewall
-> technique is required to do this - opening a new NAT for the IP/port
-> sent in the pazload and closing it when done.
-> 
-> If so, can this be done by a simple user app - perhaps a proxy, or
-> should it be in the loadable kernel modules as the ftp connection
-> tracker is?
+hi there
 
-Yes, you'll need a connection tracking helper that is able to
-parse the DCERPC traffic in order to integrate this with netfilter
-and NAT. I've looked into this a while ago, but due to the
-complexity of the protocol it is non trivial.
+i have been trying to apply the string match or external wurlmatch to
+my NAT environment.
+but the matches was not valid in NAT or tproxy
+so i tried to verify TCP payload with debugging code in the string
+match during runtime, and then i found there is no TCP data in skbuff
+
+the string match works well in filter table, but it does not work in NAT.
+i want to know why the string match does not work in NAT.
+if you know that reason, please let me know
+
+
+i used following iptables rules
+#  iptables -A PREROUTING -t nat -p tcp --dport 80 -m string --string
+"goole.com" --algo bm -j DNAT --to-destination 10.10.10.125:80
+
+10.10.10.125 is IP address of my linux router and there is HTTP proxy server
