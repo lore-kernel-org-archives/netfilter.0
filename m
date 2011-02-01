@@ -1,101 +1,60 @@
-From: Jim Webster <jwebster@ilstechnology.com>
-Subject: Re: DCERPC - does an add-on exist for netfilter
-Date: Mon, 31 Jan 2011 18:10:03 +0100
-Message-ID: <AANLkTimWDqrgVquyxsS5t-2B1xxqYYoEioi35d3hFr_W@mail.gmail.com>
-References: <AANLkTimMiM=NWeDvhPn_wKfab_sta89wxffMPcX2hMSO@mail.gmail.com>
-	<4D459926.5080801@trash.net>
-	<AANLkTinAawfFBZ+=7giqUsOdzGd5d5avjUW9aaG_dA9h@mail.gmail.com>
-	<4D46A36D.4070605@inliniac.net>
+From: JeHo Park <linuxpark@gmail.com>
+Subject: Re: [HELP] why the string match does not work in nat tables?
+Date: Tue, 1 Feb 2011 10:50:34 +0900
+Message-ID: <AANLkTimLxY-sM28GHq_RYKyMzN-7n6VXaDJD7FLz4vv4@mail.gmail.com>
+References: <AANLkTinoBfMTDNVLHuBhMFJHHSrMmP0gwYTz2AX3f_ew@mail.gmail.com>
+	<alpine.LNX.2.01.1101310306560.15201@obet.zrqbmnf.qr>
+	<AANLkTik02D=agfFrc8VX+Wh4WAg_odm6cEcpbXvbgtqM@mail.gmail.com>
+	<alpine.LNX.2.01.1101310337270.19252@obet.zrqbmnf.qr>
+	<AANLkTikxZf8zMJxRTGg6BS4uc0PDus+E6cEtfLDQRTQu@mail.gmail.com>
+	<4D46824B.2010706@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D46A36D.4070605@inliniac.net>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:in-reply-to:references:date
+         :message-id:subject:from:to:cc:content-type;
+        bh=vGWsjTdZ8xpX+w23Ftp+IP5D58+6ZkF5AvQryME2wu4=;
+        b=B8pvBs+xEUMk5pr00llRnZDaJmwWEHONZ7IyODWDnZNM/m+xKmpbCfiCGWGHoipYrJ
+         NobpckdHn65Q9ZKSsTnSkIjtVUhQj/hvO9nfR8cUqEFa2dP9o2jSwAXc9aSanKZ2YFtz
+         lZ4kjtHVs5iegP0M6TiHoSuSjwVaeKvBqDKkw=
+In-Reply-To: <4D46824B.2010706@netfilter.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, wp@elim.net
 
-Thanks, will look at those.
+hello Pablo
 
-Jim
+i have two more questions
 
-On Mon, Jan 31, 2011 at 12:56 PM, Victor Julien <lists@inliniac.net> wr=
-ote:
-> On 01/31/2011 12:52 PM, Jim Webster wrote:
->> netfilter@vger.kernel.org
->>
->> On Sun, Jan 30, 2011 at 6:00 PM, Patrick McHardy <kaber@trash.net> w=
-rote:
->>> On 30.01.2011 12:07, Jim Webster wrote:
->>>> Hi. =A0I am new to the list and also fairly new to iptables and
->>>> netfilter. =A0Linux and programming - am familiar with.
->>>> Have been tasked to provide a way to move MSMQ (DCERPC?) traffic t=
-hru
->>>> our firewall.
->>>> The firewall is a CentOS iptables based box.
->>>>
->>>> Unfortunately, I do not zet have the customer Wireshark trace show=
-ing
->>>> the traffic, specificallz where the =A0address (and port) is suppo=
-sedlz
->>>> sent in the pazload.
->>>>
->>>> A knowledgeable iptables/firewall person on our team has suggested=
- we
->>>> require a netfilter helper routine (ala the ftp connection trackin=
-g).
->>>>
->>>> It seems to me however that instead, some tzpe of adaptive firewal=
-l
->>>> technique is required to do this - opening a new NAT for the IP/po=
-rt
->>>> sent in the pazload and closing it when done.
->>>>
->>>> If so, can this be done by a simple user app - perhaps a proxy, or
->>>> should it be in the loadable kernel modules as the ftp connection
->>>> tracker is?
->>>
->>> Yes, you'll need a connection tracking helper that is able to
->>> parse the DCERPC traffic in order to integrate this with netfilter
->>> and NAT. I've looked into this a while ago, but due to the
->>> complexity of the protocol it is non trivial.
->>>
->>
->> Thanks for replz. =A0Scares me a bit when a member of Netfilter team
->> sazs non trivial :-).
->> My next step will be to dissect the ftp_conntrack (or other conntrac=
-k
->> routine) to see how it works. =A0Also, think I must dive into the
->> iptables source code to see how to dznamicallz add/remove the NAT
->> rules for the protocol.
->>
->> At first, after reading this
->> http://www.faqs.org/docs/gazette/firewalls.html thought I might be
->> able to do it with a simple proxy in userspace.
->>
->> I have much to discover and appreciate anz guidance. =A0Hopefullz, w=
-hen
->> (no option for if) this is successful, it will be made available to
->> others. =A0I am half-time so will take me a while.
->>
->> Thank zou,
+On Mon, Jan 31, 2011 at 6:35 PM, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> On 31/01/11 03:47, JeHo Park wrote:
+>> hello jan
+>> i see, i took mistake. Ccs.. :-)
+>> anyway, i wonder why there is no TCP payload in the skb of the string
+>> or wurl match.
 >
-> You could have a look at the Suricata IDS or Snort. Both have DCERPC
-> parsers written in GPL C-code.
+> Because you only see the first packet of the flow in the NAT table.
 >
-> Cheers,
-> Victor
->
-> --
-> ---------------------------------------------
-> Victor Julien
-> http://www.inliniac.net/
-> PGP: http://www.inliniac.net/victorjulien.asc
-> ---------------------------------------------
->
+first, i thought or assumed what you said like above is from the
+reason that NAT mapping is first started from L3 IP connection mapping
+[origin and expect tuples..] and from TCP helper [for TCP port
+infomation ..etc] but it is not based on TCP contents.
+so you said it is not possible to rediect such connection.
+is it right?
+
+> You should use the string match in the filter or raw tables.
 >
 
+and second,
+i think some people might also want such a functionality like what i
+want to do,
+redirection some connection to other server judging from its TCP
+contents infomation.
+[in this case, the URI  infomation of the HTTP transaction]
+i want to know how you think about ..
 
-
---=20
-Jim
+previously thanks ~
