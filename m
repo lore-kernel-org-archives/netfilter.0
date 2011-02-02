@@ -1,37 +1,58 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: IPv6 filtering
-Date: Wed, 2 Feb 2011 14:46:50 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1102021442490.7977@obet.zrqbmnf.qr>
-References: <4D487D69.7000808@abpni.co.uk> <201102020000.58388.guido-nf@thisisnotatest.de> <alpine.LNX.2.01.1102020207390.25701@obet.zrqbmnf.qr> <201102021430.44239.guido-nf@thisisnotatest.de>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Double rules for using NETFLOW?
+Date: Wed, 02 Feb 2011 11:56:26 -0600
+Message-ID: <4D499ACA.2040603@riverviewtech.net>
+References: <4D492B87.5050008@linux.vnet.ibm.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <201102021430.44239.guido-nf@thisisnotatest.de>
+In-Reply-To: <4D492B87.5050008@linux.vnet.ibm.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Guido Winkelmann <guido-nf@thisisnotatest.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
+On 2/2/2011 4:01 AM, Srinivasa T N wrote:
+> I am using ipt_NETFLOW 1.7 on my RHEL 6 (2.6.32) box. Now if I want to
+> accept packet destined for some port and at the same time I want it to
+> be accounted also, then I have to use the following rules:
 
-On Wednesday 2011-02-02 14:30, Guido Winkelmann wrote:
->>>
->>>There shouldn't be, just as long as you only filter on the source
->>>address of outgoing packets, and not on the destination of incoming
->>>ones. The NDP request packets go to weird multicast addresses
->> 
->>That "weird multicast address" is just broadcast so to speak, there is
->>nothing weird about it.
+I take it that the accounting you want is more than the simple packet / 
+byte counters that already exist.
+
+> iptables -A INPUT --dport <portnum> -j NETFLOW
+> iptables -A INPUT --dport <portnum> -j ACCEPT
 >
->Well, from what I could gather in wireshark, it's a bunch of different dst 
->addresses that are used for that, and which one is used appears to depend on the 
->address being queried...
+> This makes that every packet that I accept should have two rules (one
+> for accepting and one for accounting). Don't you people think that it
+> will increase the number of rules a packet has to traverse? Or is my
+> understanding wrong?
 
-Solicited-node MC. Nothing special really, works like a limited broadcast.
+You could do something like this:
 
->Of course, if you don't have any IPv6 routers on the local net, or if they don't 
->send router advertisements, then the second autoconfigured address will not 
->exist, but then, if there is no IPv6 router, then saying the host is "using 
->IPv6" is a bit far fetched
+iptables -N myChain
+iptables -A myChain -j NETFLOW
+iptables -A myChain -j ACCEPT
 
-Autoconfiguration is not a mandatory requirement for using IPv6.
+iptables -A INPUT --dport <portnum> -j myChain
+
+Doing this will reduce the number of matches that have to be performed 
+and allow the (sub)chain to simply apply actions to the packets.
+
+This might seem like over kill with your simple example, but when you 
+start putting multiple matches on each rule, or have more actions in 
+sequence (i.e. LOG) you start gaining more quickly.  Further if you have 
+other rules that are matching other packets, they will not have to 
+traverse the condition that they will not match more than one time.
+
+IPTables gives you a skeleton that you can do a lot of different things 
+in.  It's really up to you how you put it together and how you optimize 
+rule traversal.
+
+In some ways I could liken IPTables (and brethren) to a simple 
+programming language.  As such, it's not the language its self that is 
+the limitation, just your imagination on how you use said language.  :-)
+
+
+
+Grant. . . .
