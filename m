@@ -1,58 +1,40 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Double rules for using NETFLOW?
-Date: Wed, 02 Feb 2011 11:56:26 -0600
-Message-ID: <4D499ACA.2040603@riverviewtech.net>
-References: <4D492B87.5050008@linux.vnet.ibm.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: netfilter: ipset: fix linking with CONFIG_IPV6=n
+Date: Wed, 2 Feb 2011 20:52:28 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1102022049230.29563@blackhole.kfki.hu>
+References: <4D49188B.2030002@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D492B87.5050008@linux.vnet.ibm.com>
+In-Reply-To: <4D49188B.2030002@trash.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Patrick McHardy <kaber@trash.net>
+Cc: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
 
-On 2/2/2011 4:01 AM, Srinivasa T N wrote:
-> I am using ipt_NETFLOW 1.7 on my RHEL 6 (2.6.32) box. Now if I want to
-> accept packet destined for some port and at the same time I want it to
-> be accounted also, then I have to use the following rules:
+Hi Patrick,
 
-I take it that the accounting you want is more than the simple packet / 
-byte counters that already exist.
+On Wed, 2 Feb 2011, Patrick McHardy wrote:
 
-> iptables -A INPUT --dport <portnum> -j NETFLOW
-> iptables -A INPUT --dport <portnum> -j ACCEPT
->
-> This makes that every packet that I accept should have two rules (one
-> for accepting and one for accounting). Don't you people think that it
-> will increase the number of rules a packet has to traverse? Or is my
-> understanding wrong?
+> Add some #ifdefs to unconditionally return false in
+> ip_set_get_ip6_port() when CONFIG_IPV6=n and convert
+> to ipv6_skip_exthdr() to avoid pulling in the ip6_tables
+> module when loading ipset.
 
-You could do something like this:
+You left out checking fragmented packets. Is it intentional?
+ 
+> A slightly more code-saving alternative would be to add
+> a dummy inline function or ifdef the callsites. Please
+> let me know which way you prefer.
 
-iptables -N myChain
-iptables -A myChain -j NETFLOW
-iptables -A myChain -j ACCEPT
+A dummy inline looks nicer to me, because that way the IPv6 and non-IPv6 
+cases were clearly separated.
 
-iptables -A INPUT --dport <portnum> -j myChain
-
-Doing this will reduce the number of matches that have to be performed 
-and allow the (sub)chain to simply apply actions to the packets.
-
-This might seem like over kill with your simple example, but when you 
-start putting multiple matches on each rule, or have more actions in 
-sequence (i.e. LOG) you start gaining more quickly.  Further if you have 
-other rules that are matching other packets, they will not have to 
-traverse the condition that they will not match more than one time.
-
-IPTables gives you a skeleton that you can do a lot of different things 
-in.  It's really up to you how you put it together and how you optimize 
-rule traversal.
-
-In some ways I could liken IPTables (and brethren) to a simple 
-programming language.  As such, it's not the language its self that is 
-the limitation, just your imagination on how you use said language.  :-)
-
-
-
-Grant. . . .
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
