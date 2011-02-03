@@ -1,42 +1,61 @@
-From: Bob Miller <bob@computerisms.ca>
-Subject: Re: Place for ipt_ACCOUNT/ipt_NETFLOW
-Date: Thu, 03 Feb 2011 08:55:58 -0800
-Message-ID: <1296752158.4980.106.camel@laplaplian>
-References: <4D4A6C6A.6000406@linux.vnet.ibm.com>
+From: Helmut Grohne <h.grohne@cygnusnetworks.de>
+Subject: Why does nf_log_register bind loggers?
+Date: Thu, 3 Feb 2011 18:54:34 +0100
+Message-ID: <20110203175430.GA8864@buero.cygnusnet.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D4A6C6A.6000406@linux.vnet.ibm.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Srinivasa T N <seenutn@linux.vnet.ibm.com>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Thu, 2011-02-03 at 14:20 +0530, Srinivasa T N wrote:
-> Hi All,
->      Is it possible for me to place rules related to accounting after 
-> filter table in the INPUT chain so that the accounting takes place only 
-> on the packets I am accepting in my box?
+Suppose you boot into a modularized Linux system and add an iptables -j
+NFLOG rule. The automatic module loading causes xt_NFLOG to be loaded
+and all goes well. Then you add an iptables -j LOG rule. Again the
+module ipt_LOG would be loaded which causes a call to nf_log_register to
+register the ipt_LOG logger for AF_INET. This function is also kind
+enough to nf_log_bind_pf (manually inlined) this logger. Incidentally
+the NFLOG rule targets the same protocol family. At this point you
+better find a way to turn console logging off, because otherwise you get
+swamped with log messages (with priority 0 (EMERG) if your kernel is
+old). What caused those messages again? A simple iptables -A ... -j LOG.
 
-According to the nf-packet-flow diagram I have been referring too, the
-INPUT chain on the filter table is the place to count packets destined
-only for the box.
-If that is not correct, I hope someone says so, because it would explain
-some confusion I have been having lately...
+Looks like I solved task 3 in "Ghosts of Unix past, part 2: Conflated
+designs" (http://lwn.net/Articles/412131/) by pointing out how the
+automatic binding of loggers at registration time can seriously harm the
+user.
 
-> 
-> Regards,
-> Seenu.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Still a few things are not yet clear to me. If I unbind ipt_LOG the
+logging continues. It seems like the ipt_LOG logger has no use. Why is
+it bound in the first place?
 
-Bob Miller
-334-7117/660-5315
-http://computerisms.ca
-bob@computerisms.ca
-Network, Internet, Server,
-and Open Source Solutions
+Is this automatic binding of loggers during registration considered part
+of the kernel API? It caused quite a bit of confusion and is likely to
+cause confusion in future (for instance when module load orders change).
+I therefore suggest to simply remove the automatic binding. Note that
+for NFPROTO_UNSPEC no binding will occur, so the API is also
+inconsistent with itself.
 
+Helmut
+
+PS: Here is a patch for Pablo:
+diff --git a/net/netfilter/nf_log.c b/net/netfilter/nf_log.c
+--- a/net/netfilter/nf_log.c
++++ b/net/netfilter/nf_log.c
+@@ -49,14 +49,8 @@ int nf_log_register(u_int8_t pf, struct nf_logger *logger)
+ 	if (pf == NFPROTO_UNSPEC) {
+ 		for (i = NFPROTO_UNSPEC; i < NFPROTO_NUMPROTO; i++)
+ 			list_add_tail(&(logger->list[i]), &(nf_loggers_l[i]));
+-	} else {
+-		/* register at end of list to honor first register win */
++	} else
+ 		list_add_tail(&logger->list[pf], &nf_loggers_l[pf]);
+-		llog = rcu_dereference_protected(nf_loggers[pf],
+-						 lockdep_is_held(&nf_log_mutex));
+-		if (llog == NULL)
+-			rcu_assign_pointer(nf_loggers[pf], logger);
+-	}
+ 
+ 	mutex_unlock(&nf_log_mutex);
