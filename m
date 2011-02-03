@@ -1,46 +1,50 @@
-From: Marek Kierdelewicz <marek@piasta.pl>
-Subject: Re: How can I test my tc script?
-Date: Thu, 3 Feb 2011 12:01:31 +0100
-Message-ID: <20110203120131.38cd818d@catus>
-References: <1296699466.4606.14.camel@debian-laptop.OptimumWireless>
+From: Helmut Grohne <h.grohne@cygnusnetworks.de>
+Subject: Re: What does nflog_unbind_pf actually do?
+Date: Thu, 3 Feb 2011 13:00:52 +0100
+Message-ID: <20110203120052.GA4217@buero.cygnusnet.de>
+References: <20110125125426.GA7749@buero.cygnusnet.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1296699466.4606.14.camel@debian-laptop.OptimumWireless>
+Content-Disposition: inline
+In-Reply-To: <20110125125426.GA7749@buero.cygnusnet.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: wilson@optimumwireless.com
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
->Hello.
+Thanks to Florian Westphal (fw on Freenode) for helping me sort this
+out.
 
-Hi,
+On Tue, Jan 25, 2011 at 01:54:27PM +0100, Helmut Grohne wrote:
+> I was wondering what nflog_unbind_pf actually does. The doxygen comment
+> suggests it to be a harmless setup function acting on a given handle:
+> 
+> libnetfilter-log src/libnetfilter_log.c:
+> | /**
+> |  * nflog_unbind_pf - unbind nflog handler from a protocol family
+> |  * \param h Netfilter log handle obtained via call to nflog_open()
+> |  * \param pf protocol family to unbind family from
+> |  *
+> |  * Unbinds the given nflog handle from processing packets belonging
+> |  * to the given protocol family.
+> |  */
 
->I recently wrote a script that adds a new rule for an ip address each
->time a new user is added to our network. I've noticed my tc rules work
->...
->Our network has about 120 users in total not all of these get connected
->Are these rules ok?
+This comment is indeed very misleading. Actually the passed handle plays
+no role in the modification apart from providing access. The NFLOG
+iptables target has different ways to log packets. Currently the only
+logger is netlink. The state can be observed by examining
+/proc/net/netfilter/nf_log. This file maps protocol numbers to loggers.
+So nflog_{,un}bind_pf really modifies a global and persistent kernel
+data structure. The default logger is "NONE" or "NULL" which means no
+logging, so it has to be set up once. Trying to do so in parallel will
+result in race conditions.
 
-If you have such linear ruleset (iptables marking+tc filter) for 120
-users then it's will not work well. If my theory is right, check top
-when there are more users logged in. You'll probably see hi cpu usage
-in "si"/"hi" (software/hardware interrupt) fraction.
+Furthermore I'd like to remark that if you handle lots of packets the in
+kernel buffer might be too small. This can result in packets being
+dropped which is signaled by ENOBUFS being returned from recv. The
+socket can be used normally after this error. To avoid this situation
+the receive buffer size can be increased using setsockopt
+SO_RCVBUFFORCE.
 
-You can easily optimize you ruleset by using:
-- tc u32 hashing filters [1] instead of iptables marking and fw tc
-  filters;
-- shape upload on ifb device [2] in ingress before nat, so you can use
-  tc u32 hashing filters too;
-
-With such setup Core2 duo 3GHz + dual port intel nic can easily
-(68% peak cpu usage) route symmetric 400mbit of traffic, doing per user
-shaping, nat and access control for >2k users.
-
-
-[1] http://lartc.org/howto/lartc.adv-filter.hashing.html
-[2] http://www.linuxfoundation.org/collaborate/workgroups/networking/ifb
-
-Best regards,
-Marek Kierdelewicz
+Helmut
