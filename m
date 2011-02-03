@@ -1,61 +1,52 @@
-From: Helmut Grohne <h.grohne@cygnusnetworks.de>
-Subject: Why does nf_log_register bind loggers?
-Date: Thu, 3 Feb 2011 18:54:34 +0100
-Message-ID: <20110203175430.GA8864@buero.cygnusnet.de>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: [ANNOUNCE] ipset-6.0 released
+Date: Thu, 3 Feb 2011 19:19:46 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1102031914120.32002@blackhole.kfki.hu>
+References: <alpine.DEB.2.00.1102031353130.31387@blackhole.kfki.hu> <4D4AE0B6.6040108@googlemail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <4D4AE0B6.6040108@googlemail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Mr Dash Four <mr.dash.four@googlemail.com>
+Cc: netfilter@vger.kernel.org
 
-Suppose you boot into a modularized Linux system and add an iptables -j
-NFLOG rule. The automatic module loading causes xt_NFLOG to be loaded
-and all goes well. Then you add an iptables -j LOG rule. Again the
-module ipt_LOG would be loaded which causes a call to nf_log_register to
-register the ipt_LOG logger for AF_INET. This function is also kind
-enough to nf_log_bind_pf (manually inlined) this logger. Incidentally
-the NFLOG rule targets the same protocol family. At this point you
-better find a way to turn console logging off, because otherwise you get
-swamped with log messages (with priority 0 (EMERG) if your kernel is
-old). What caused those messages again? A simple iptables -A ... -j LOG.
+On Thu, 3 Feb 2011, Mr Dash Four wrote:
 
-Looks like I solved task 3 in "Ghosts of Unix past, part 2: Conflated
-designs" (http://lwn.net/Articles/412131/) by pointing out how the
-automatic binding of loggers at registration time can seriously harm the
-user.
+> 
+> > I'm happy to announce ipset 6.0, a new milestone of the tool. Here follows
+> > the list of the changes since the previous release:
+> >   
+> I do have a couple of queries - I take it this version includes all the
+> patches you posted in this mailing list (which were duly ACKed) in the
+> previous couple of weeks, right?
 
-Still a few things are not yet clear to me. If I unbind ipt_LOG the
-logging continues. It seems like the ipt_LOG logger has no use. Why is
-it bound in the first place?
+Yes.
 
-Is this automatic binding of loggers during registration considered part
-of the kernel API? It caused quite a bit of confusion and is likely to
-cause confusion in future (for instance when module load orders change).
-I therefore suggest to simply remove the automatic binding. Note that
-for NFPROTO_UNSPEC no binding will occur, so the API is also
-inconsistent with itself.
+> If so does that mean all kernel-related modules are now excluded from 
+> this release or do I have to compile/build them as was the case with all 
+> previous ipset versions?
 
-Helmut
+You still have to compile the kernel modules from the source tree of ipset 
+(unless you use the nf-next-2.6 or net-next-2.6 git trees of Patrick 
+McHardy or David Miller).
 
-PS: Here is a patch for Pablo:
-diff --git a/net/netfilter/nf_log.c b/net/netfilter/nf_log.c
---- a/net/netfilter/nf_log.c
-+++ b/net/netfilter/nf_log.c
-@@ -49,14 +49,8 @@ int nf_log_register(u_int8_t pf, struct nf_logger *logger)
- 	if (pf == NFPROTO_UNSPEC) {
- 		for (i = NFPROTO_UNSPEC; i < NFPROTO_NUMPROTO; i++)
- 			list_add_tail(&(logger->list[i]), &(nf_loggers_l[i]));
--	} else {
--		/* register at end of list to honor first register win */
-+	} else
- 		list_add_tail(&logger->list[pf], &nf_loggers_l[pf]);
--		llog = rcu_dereference_protected(nf_loggers[pf],
--						 lockdep_is_held(&nf_log_mutex));
--		if (llog == NULL)
--			rcu_assign_pointer(nf_loggers[pf], logger);
--	}
- 
- 	mutex_unlock(&nf_log_mutex);
+When the kernel part will be available from the vanilla kernel tree, I'll 
+announce it and update the documentation in ipset as well.
+
+> The reason for asking this is simple - as it stands, I am building the kernel
+> modules separately from the userspace tool (using two separate .spec files -
+> in a similar fashion as it is done with the xtables-addons), but would like to
+> incorporate your kernel modules as part of building the kernel and use just
+> one spec file for building the userspace tool without the need to do anything
+> else.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
