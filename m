@@ -1,52 +1,53 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [ANNOUNCE] ipset-6.0 released
-Date: Thu, 3 Feb 2011 19:19:46 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1102031914120.32002@blackhole.kfki.hu>
-References: <alpine.DEB.2.00.1102031353130.31387@blackhole.kfki.hu> <4D4AE0B6.6040108@googlemail.com>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: Fw: shaping vlans - revisited
+Date: Thu, 03 Feb 2011 18:50:48 +0000
+Message-ID: <1296759048.7587.3.camel@andybev>
+References: <20110203152944.635b42e8@pulsar.inexo.com.br>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D4AE0B6.6040108@googlemail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1296759055; bh=VXaO+gu7KzT0+6EraiJc5xT3Tr3GMT/aSiAZI
+	idBeXI=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
+	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=cc6AVSK+
+	92LDlFZSQBQu08RwwcO/zw80rj7jBAuqj833IpqRFuFOzWi5FakePmGTqiFEHQLh6Pi
+	7k6AjkRo9MCLYqD7gM6j3GMc5+Nteg8v41w6iQohtGFzQwPCAmK8OZma4CD0Tfu8oOi
+	P7FpT1AnpwIfem2zVRQ23kmBvCVu4=
+In-Reply-To: <20110203152944.635b42e8@pulsar.inexo.com.br>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
+Content-Type: text/plain; charset="us-ascii"
+To: "Ethy H. Brito" <ethy.brito@inexo.com.br>
 Cc: netfilter@vger.kernel.org
 
-On Thu, 3 Feb 2011, Mr Dash Four wrote:
-
+On Thu, 2011-02-03 at 15:29 -0200, Ethy H. Brito wrote:
+> On Thu, 3 Feb 2011 16:46:53 +0100
+> Marek Kierdelewicz <marek@piasta.pl> wrote:
 > 
-> > I'm happy to announce ipset 6.0, a new milestone of the tool. Here follows
-> > the list of the changes since the previous release:
-> >   
-> I do have a couple of queries - I take it this version includes all the
-> patches you posted in this mailing list (which were duly ACKed) in the
-> previous couple of weeks, right?
+> > >Hi All
+> > 
+> > Hi,
+> > 
+> > >I can see the counters increase (tc -s ...) for classid 1:2345 (eth0)
+> > >but they are zero for classid 2:2345 (eth1 - which the vlans are
+> > >attached in)
+> > 
+> > Are you seeing any traffic on root class on eth1? 
+> 
+> Yes I am.
+> 
 
-Yes.
+Are you sure you are marking packets correctly *both* ways? Just because
+they are being marked in one direction, doesn't mean that they are being
+marked in the other direction.
 
-> If so does that mean all kernel-related modules are now excluded from 
-> this release or do I have to compile/build them as was the case with all 
-> previous ipset versions?
+If you add an iptables rule to LOG your traffic on that interface, then
+you will be able to see the mark value.
 
-You still have to compile the kernel modules from the source tree of ipset 
-(unless you use the nf-next-2.6 or net-next-2.6 git trees of Patrick 
-McHardy or David Miller).
+Otherwise, if you're seeing traffic in the root class but not in the
+leaf class, then that would imply that there is something wrong with the
+filter.
 
-When the kernel part will be available from the vanilla kernel tree, I'll 
-announce it and update the documentation in ipset as well.
+Andy
 
-> The reason for asking this is simple - as it stands, I am building the kernel
-> modules separately from the userspace tool (using two separate .spec files -
-> in a similar fashion as it is done with the xtables-addons), but would like to
-> incorporate your kernel modules as part of building the kernel and use just
-> one spec file for building the userspace tool without the need to do anything
-> else.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
