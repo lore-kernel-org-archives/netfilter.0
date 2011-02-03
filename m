@@ -1,34 +1,41 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Place for ipt_ACCOUNT/ipt_NETFLOW
-Date: Thu, 03 Feb 2011 14:18:03 -0600
-Message-ID: <4D4B0D7B.5020703@riverviewtech.net>
-References: <4D4A6C6A.6000406@linux.vnet.ibm.com>
+From: Mr Dash Four <mr.dash.four@googlemail.com>
+Subject: Re: [ANNOUNCE] ipset-6.0 released
+Date: Thu, 03 Feb 2011 20:23:06 +0000
+Message-ID: <4D4B0EAA.1040106@googlemail.com>
+References: <alpine.DEB.2.00.1102031353130.31387@blackhole.kfki.hu> <4D4AE0B6.6040108@googlemail.com> <alpine.DEB.2.00.1102031914120.32002@blackhole.kfki.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D4A6C6A.6000406@linux.vnet.ibm.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:message-id:disposition-notification-to:date
+         :from:user-agent:mime-version:to:cc:subject:references:in-reply-to
+         :content-type:content-transfer-encoding;
+        bh=HkRCv07lrP7BrEsUoys11zHmn3GHLfYWlPJcDz610C8=;
+        b=u9z0qrXy3ndiC3c7Z1Rpo5pJ0BgOG0yD+46AsBRskHl45yuZqqhedsN2ziFZ2/EAbZ
+         h7fqtrO7PqZZ5xxcJVhAPZY1RJ+HZQf8fYxKHqPfRxcPw0U0RIGGPXQaJml6d3HP7+NU
+         xx5Z8gyOc6tgJtSHw/4CM+0juPjeEfCgjcD9w=
+In-Reply-To: <alpine.DEB.2.00.1102031914120.32002@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
-
-On 02/03/11 02:50, Srinivasa T N wrote:
-> Is it possible for me to place rules related to accounting after filter
-> table in the INPUT chain so that the accounting takes place only on the
-> packets I am accepting in my box?
-
-I hope I'm understanding you correctly.
-
-It sounds like you are wanting to do your accounting after you filter 
-out most of the chaff / noise / IBR that you don't want.  Correct?
-
-If this is the case, why don't you have your filtering rules DROP / 
-REJECT / otherwise discard the packets you don't want and then have a 
-follow up rule that ACCEPTS the packet and do your accounting there?
-
-At least if I understand you correctly, filtering packets before they 
-hit your accounting rule should do what you are wanting.
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter@vger.kernel.org
 
 
+> You still have to compile the kernel modules from the source tree of ipset 
+> (unless you use the nf-next-2.6 or net-next-2.6 git trees of Patrick 
+> McHardy or David Miller).
+>   
+That, I assume, is the .38-rc version of the kernel, right?
 
-Grant. . . .
+> When the kernel part will be available from the vanilla kernel tree, I'll 
+> announce it and update the documentation in ipset as well.
+>   
+Thanks, that's good to know!
+
+I assume that if I create a separate .spec file (in Fedora terms) and 
+just try to build the userspace part of ipset v6.0 and then use the 
+.38-rc version of the kernel I would achieve the same result - is that 
+the case?
+
