@@ -1,48 +1,33 @@
 From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Double rules for using NETFLOW?
-Date: Thu, 03 Feb 2011 14:14:38 -0600
-Message-ID: <4D4B0CAE.5000105@riverviewtech.net>
-References: <4D492B87.5050008@linux.vnet.ibm.com> <4D499ACA.2040603@riverviewtech.net> <4D4A3A04.20505@linux.vnet.ibm.com>
+Subject: Re: Place for ipt_ACCOUNT/ipt_NETFLOW
+Date: Thu, 03 Feb 2011 14:18:03 -0600
+Message-ID: <4D4B0D7B.5020703@riverviewtech.net>
+References: <4D4A6C6A.6000406@linux.vnet.ibm.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D4A3A04.20505@linux.vnet.ibm.com>
+In-Reply-To: <4D4A6C6A.6000406@linux.vnet.ibm.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On 02/02/11 23:15, Srinivasa T N wrote:
-> But how will I have access to the counters from my user land app?
+On 02/03/11 02:50, Srinivasa T N wrote:
+> Is it possible for me to place rules related to accounting after filter
+> table in the INPUT chain so that the accounting takes place only on the
+> packets I am accepting in my box?
 
-I'd be extremely surprised if there were APIs that you can use to query 
-the kernel.  -  Though, I don't work on programming (like that) so I 
-don't know first hand.
+I hope I'm understanding you correctly.
 
-At the very least, you can find the counters via the output of the 
-iptables command.  I.e. I can issue the following command:
+It sounds like you are wanting to do your accounting after you filter 
+out most of the chaff / noise / IBR that you don't want.  Correct?
 
-    iptables -t filter -L FORWARD -n -v -x
+If this is the case, why don't you have your filtering rules DROP / 
+REJECT / otherwise discard the packets you don't want and then have a 
+follow up rule that ACCEPTS the packet and do your accounting there?
 
-This will give me a packet / byte count (-v) that is exact (-x) that 
-have match various rules.  I.e. the above command produced the following 
-output:
-
-Chain FORWARD (policy DROP 0 packets, 0 bytes)
-     pkts      bytes target     prot opt in     out     source 
-      destination
-  3783934 4488563274 ACCEPT     all  --  eth0   eth1    0.0.0.0/0 
-      0.0.0.0/0           state RELATED,ESTABLISHED
-  2632183 290464220 ACCEPT     all  --  eth1   eth0    0.0.0.0/0 
-     0.0.0.0/0
-
-If you are worried about knowing which rule you want to read the 
-counters on, use the comment match extension that will allow you to put 
-a comment / string to flag on in the output.  This will allow you to 
-grep for that line of output.
-
-There might even be some way via /proc or /sys to find what you are 
-asking, but I don't know.
+At least if I understand you correctly, filtering packets before they 
+hit your accounting rule should do what you are wanting.
 
 
 
