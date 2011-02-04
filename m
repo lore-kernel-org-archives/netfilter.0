@@ -1,128 +1,46 @@
-From: Optimum Wireless Services <wilson@optimumwireless.com>
-Subject: Re: How can I test my tc script?
-Date: Fri, 04 Feb 2011 12:49:52 -0400
-Message-ID: <1296838192.3644.20.camel@debian-laptop.OptimumWireless>
-References: <1296699466.4606.14.camel@debian-laptop.OptimumWireless>
-	 <20110203120131.38cd818d@catus>
-	 <1296827153.3644.7.camel@debian-laptop.OptimumWireless>
-Reply-To: wilson@optimumwireless.com
+From: Ottavio Campana <ottavio@campana.vi.it>
+Subject: relaying RTSP
+Date: Fri, 04 Feb 2011 18:39:49 +0100
+Message-ID: <4D4C39E5.7090503@campana.vi.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1296827153.3644.7.camel@debian-laptop.OptimumWireless>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Ok. I'm trying to learn how to work with the u32 selector, I would like
-to know if I'm doing this correctly:
+Hi,
 
-Lets say this is my download ruleset:
+I am trying to implement a relay for RTSP or something similar for the
+following situation:
 
-$tc qdisc del dev eth0 root
-$tc qdisc add dev eth0 root handle 1: htb r2q 1
++--------------+     +---------------------------+     +-----------+
+|      pc      |     |         box with 2 NICs   |     |   camera  |
+|192.168.0.1/24|<--->|192.168.0.2/24  10.0.0.1/24|<--->|10.0.0.2/24|
++--------------+     +---------------------------+     +-----------+
 
-# this is the parent class
-$tc class add dev eth0 parent 1:0  classid 1:1 htb rate 3000kbit ceil
-3000kbit
+On the pc I have a *crappy* software that has to read some data from the
+box with 2 NICs and receive the RTSP video from the camera. The easiest
+solution would be opening two connections to two different IPs on the
+192.168.0.0/24 lan, but the software can deal with just one IP. Thus,
+since I only need to receive the video from the camera, I considered the
+solution I just showed you, by hiding the camera in the lan 10.0.0.0/24
+and relaying it.
 
+Now the question is: can I do RTSP relaying with netfilter? I have
+several doubts, for example what happens when the pc issues a DESCRIBE
+command? I mean, the pc will send a describe command with the ip
+192.168.0.2, but it if is forwarded to the camera it should be changed
+to 10.0.0.2 .
 
+So, do you think it is possible to achieve a working configuration with
+netfilter or do I have to look for a relay in user space? In the latter
+case, do you know any program that can solve my problem?
 
-## I would like to assign users 256kbit for download speed, so the
-following rule is a leaf of the parent 1:0 (correct me if wrong, please)
+Thank you for your ideas,
 
-$tc class   add dev eth0 parent 1:100    classid 1:1 htb rate 256kbit
-ceil 256kbit prio 3
+Ottavio
 
-## Now I should create a filter for the ip address:
-
-$tc filter add dev eth0 parent 1:100 protocol ip u32 match ip dst
-172.16.100.1/32 classid 1:1
-
-## Now for the qdisc
-$tc qdisc add dev eth0 parent 1:100 handle 500: sfq perturb 2
-
-Are the parent values correct on the filter,class, and qdisc?
-
-Is this correct? Am I in the right path?
-
-Thanks in advanced for taking your time to help me.
-
-
-
-
-
-On Fri, 2011-02-04 at 09:45 -0400, Optimum Wireless Services wrote:
-> On Thu, 2011-02-03 at 12:01 +0100, Marek Kierdelewicz wrote:
-> > >Hello.
-> > 
-> > Hi,
-> > 
-> > >I recently wrote a script that adds a new rule for an ip address each
-> > >time a new user is added to our network. I've noticed my tc rules work
-> > >...
-> > >Our network has about 120 users in total not all of these get connected
-> > >Are these rules ok?
-> > 
-> > If you have such linear ruleset (iptables marking+tc filter) for 120
-> > users then it's will not work well. If my theory is right, check top
-> > when there are more users logged in. You'll probably see hi cpu usage
-> > in "si"/"hi" (software/hardware interrupt) fraction.
-> > 
-> > You can easily optimize you ruleset by using:
-> > - tc u32 hashing filters [1] instead of iptables marking and fw tc
-> >   filters;
-> > - shape upload on ifb device [2] in ingress before nat, so you can use
-> >   tc u32 hashing filters too;
-> > 
-> > With such setup Core2 duo 3GHz + dual port intel nic can easily
-> > (
-> 
-> > 68% peak cpu usage) route symmetric 400mbit of traffic, doing per user
-> > shaping, nat and access control for >2k users.
-> > 
-> > 
-> > [1] http://lartc.org/howto/lartc.adv-filter.hashing.html
-> > [2] http://www.linuxfoundation.org/collaborate/workgroups/networking/ifb
-> > 
-> 
-> After reading the lartc and the linuxfoundation.org documentation about
-> the u32 hashing filters it leaves me very confused. I don't get how I
-> would write my ruleset for all the users I have.
-> 
-> Would I have to create a table for each ip and then create a filter to
-> match? for ie:
-> 
-> tc filter add dev eth1 parent 1:0 protocol ip prio 100 match ip src \
->   172.16.100.1 classid 1:1
-> 
-> tc filter add dev eth1 protocol ip parent 1:0 prio 5 u32 ht 2:7b: \
->         match ip src 172.16.100.1 flowid 1:1
-> 
-> 
-> tc filter add dev eth1 protocol ip parent 1:0 prio 5 u32 ht 800:: \
->         match ip src 172.16.100.1/16 \
->         hashkey mask 0x000000ff at 12 \
->         link 2:
-> 
-> 
-> This method is somewhat complicated but, according to the documentation
-> "very worth it". 
-> 
-> Can someone please explain it a little better, thanks.
-> 
-> 
-> 
-> > Best regards,
-> > Marek Kierdelewicz
-> > --
-> > To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> > the body of a message to majordomo@vger.kernel.org
-> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
+-- 
+Non c'e' piu' forza nella normalita', c'e' solo monotonia.
