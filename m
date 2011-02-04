@@ -1,84 +1,71 @@
-From: Optimum Wireless Services <wilson@optimumwireless.com>
-Subject: Re: How can I test my tc script?
-Date: Fri, 04 Feb 2011 09:45:53 -0400
-Message-ID: <1296827153.3644.7.camel@debian-laptop.OptimumWireless>
-References: <1296699466.4606.14.camel@debian-laptop.OptimumWireless>
-	 <20110203120131.38cd818d@catus>
-Reply-To: wilson@optimumwireless.com
+From: "Ethy H. Brito" <ethy.brito@inexo.com.br>
+Subject: Re: shaping vlans - revisited
+Date: Fri, 4 Feb 2011 12:05:33 -0200
+Message-ID: <20110204120533.7f470bab@pulsar.inexo.com.br>
+References: <20110203152944.635b42e8@pulsar.inexo.com.br>
+	<1296759048.7587.3.camel@andybev>
+	<20110203180118.62970fb1@pulsar.inexo.com.br>
+	<1296788356.7587.70.camel@andybev>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20110203120131.38cd818d@catus>
+In-Reply-To: <1296788356.7587.70.camel@andybev>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Marek Kierdelewicz <marek@piasta.pl>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Thu, 2011-02-03 at 12:01 +0100, Marek Kierdelewicz wrote:
-> >Hello.
+On Fri, 04 Feb 2011 02:59:16 +0000
+Andrew Beverley <andy@andybev.com> wrote:
+
+
+> Stupid question - can you not just attach your qdisc to the vlan
+> interface and mark the traffic on the vlan interface as well, as if it
+> was eth1?  
+
+You mean "tc qdisc add dev vlanX ..." + "iptables ... -j IPMARK ..." ??
+
+No. This must not be done. I have now 6 vlans (3 for IPv4 and 3 for IPv6)
+each pair to one ISP. The only way I know (if you guys know another way,
+please advise) to shape *_global_* aggregated traffic for each client is to attach to eth1 an not to individual vlans. 
+
 > 
-> Hi,
-> 
-> >I recently wrote a script that adds a new rule for an ip address each
-> >time a new user is added to our network. I've noticed my tc rules work
-> >...
-> >Our network has about 120 users in total not all of these get connected
-> >Are these rules ok?
-> 
-> If you have such linear ruleset (iptables marking+tc filter) for 120
-> users then it's will not work well. If my theory is right, check top
-> when there are more users logged in. You'll probably see hi cpu usage
-> in "si"/"hi" (software/hardware interrupt) fraction.
-> 
-> You can easily optimize you ruleset by using:
-> - tc u32 hashing filters [1] instead of iptables marking and fw tc
->   filters;
-> - shape upload on ifb device [2] in ingress before nat, so you can use
->   tc u32 hashing filters too;
-> 
-> With such setup Core2 duo 3GHz + dual port intel nic can easily
-> (
+> Alternatively, if the root qdisc is seeing all the packets but it's the
+> marking that's not working, then can you not just mark on the vlan
+> interface rather than eth1?  
 
-> 68% peak cpu usage) route symmetric 400mbit of traffic, doing per user
-> shaping, nat and access control for >2k users.
-> 
-> 
-> [1] http://lartc.org/howto/lartc.adv-filter.hashing.html
-> [2] http://www.linuxfoundation.org/collaborate/workgroups/networking/ifb
-> 
+# iptables -L POSTROUTING -t mangle -v
+Chain POSTROUTING (policy ACCEPT 3868M packets, 1901G bytes)
+ pkts bytes target     prot opt in     out     source               destination         
+ 2257  404K IPMARK     all  --  any    eth0    anywhere             anywhere            mark match !0x0 IPMARK dst ip and 0xffff or 0x20000
+58092   46M IPMARK     all  --  any    eth0    anywhere             anywhere            mark match 0x0 IPMARK dst ip and 0xffff or 0x0
+  997  117K IPMARK     all  --  any    vlan+   anywhere             anywhere            mark match !0x2 IPMARK src ip and 0xffff or 0x0
+43665 6668K IPMARK     all  --  any    vlan+   anywhere
+anywhere            mark match 0x2 IPMARK src ip and 0xffff or 0x40000
 
-After reading the lartc and the linuxfoundation.org documentation about
-the u32 hashing filters it leaves me very confused. I don't get how I
-would write my ruleset for all the users I have.
+But...
 
-Would I have to create a table for each ip and then create a filter to
-match? for ie:
+# tc -s filter sh dev eth1|grep success
+  mark 0x2101 0xffff (success 0)
+  mark 0x2e03 0xffff (success 0)
+  mark 0x2288 0xffff (success 0)
+  mark 0x2012 0xffff (success 0)
+  mark 0x2645 0xffff (success 0)
+  mark 0x2108 0xfff8 (success 0)
+(Very long list follows)
 
-tc filter add dev eth1 parent 1:0 protocol ip prio 100 match ip src \
-  172.16.100.1 classid 1:1
+I am pretty sure that or the marking or filtering  (or both!) is not
+working.
+I can see traffic through root class and through default htb class
+(2:ffff).
+All traffic is through default class telling me marking/filtering is not
+ok.
 
-tc filter add dev eth1 protocol ip parent 1:0 prio 5 u32 ht 2:7b: \
-        match ip src 172.16.100.1 flowid 1:1
+class htb 2:1 root rate 102400Kbit ceil 102400Kbit burst 52992b cburst 52992b 
+ Sent 92926111 bytes 500251 pkt (dropped 0, overlimits 0 requeues 0) 
+
+class htb 2:ffff parent 2:1 leaf ffff: prio 7 rate 5145Kbit ceil 5145Kbit burst 4181b cburst 4181b 
+ Sent 93253253 bytes 500253 pkt (dropped 1037, overlimits 0 requeues 0) 
 
 
-tc filter add dev eth1 protocol ip parent 1:0 prio 5 u32 ht 800:: \
-        match ip src 172.16.100.1/16 \
-        hashkey mask 0x000000ff at 12 \
-        link 2:
-
-
-This method is somewhat complicated but, according to the documentation
-"very worth it". 
-
-Can someone please explain it a little better, thanks.
-
-
-
-> Best regards,
-> Marek Kierdelewicz
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
+Ethy
