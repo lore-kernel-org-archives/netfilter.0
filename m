@@ -1,49 +1,128 @@
-From: "Ethy H. Brito" <ethy.brito@inexo.com.br>
-Subject: Re: shaping vlans - revisited
-Date: Fri, 4 Feb 2011 14:24:17 -0200
-Message-ID: <20110204142417.30dbe5fa@pulsar.inexo.com.br>
-References: <20110203152944.635b42e8@pulsar.inexo.com.br>
-	<1296759048.7587.3.camel@andybev>
-	<20110203180118.62970fb1@pulsar.inexo.com.br>
-	<1296788356.7587.70.camel@andybev>
-	<20110204120533.7f470bab@pulsar.inexo.com.br>
-	<1296829445.1634.1.camel@andybev>
+From: Optimum Wireless Services <wilson@optimumwireless.com>
+Subject: Re: How can I test my tc script?
+Date: Fri, 04 Feb 2011 12:49:52 -0400
+Message-ID: <1296838192.3644.20.camel@debian-laptop.OptimumWireless>
+References: <1296699466.4606.14.camel@debian-laptop.OptimumWireless>
+	 <20110203120131.38cd818d@catus>
+	 <1296827153.3644.7.camel@debian-laptop.OptimumWireless>
+Reply-To: wilson@optimumwireless.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1296829445.1634.1.camel@andybev>
+In-Reply-To: <1296827153.3644.7.camel@debian-laptop.OptimumWireless>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Andrew Beverley <andy@andybev.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Fri, 04 Feb 2011 14:24:05 +0000
-Andrew Beverley <andy@andybev.com> wrote:
+Ok. I'm trying to learn how to work with the u32 selector, I would like
+to know if I'm doing this correctly:
 
-> On Fri, 2011-02-04 at 12:05 -0200, Ethy H. Brito wrote:
-> > On Fri, 04 Feb 2011 02:59:16 +0000
-> > Andrew Beverley <andy@andybev.com> wrote:
+Lets say this is my download ruleset:
+
+$tc qdisc del dev eth0 root
+$tc qdisc add dev eth0 root handle 1: htb r2q 1
+
+# this is the parent class
+$tc class add dev eth0 parent 1:0  classid 1:1 htb rate 3000kbit ceil
+3000kbit
+
+
+
+## I would like to assign users 256kbit for download speed, so the
+following rule is a leaf of the parent 1:0 (correct me if wrong, please)
+
+$tc class   add dev eth0 parent 1:100    classid 1:1 htb rate 256kbit
+ceil 256kbit prio 3
+
+## Now I should create a filter for the ip address:
+
+$tc filter add dev eth0 parent 1:100 protocol ip u32 match ip dst
+172.16.100.1/32 classid 1:1
+
+## Now for the qdisc
+$tc qdisc add dev eth0 parent 1:100 handle 500: sfq perturb 2
+
+Are the parent values correct on the filter,class, and qdisc?
+
+Is this correct? Am I in the right path?
+
+Thanks in advanced for taking your time to help me.
+
+
+
+
+
+On Fri, 2011-02-04 at 09:45 -0400, Optimum Wireless Services wrote:
+> On Thu, 2011-02-03 at 12:01 +0100, Marek Kierdelewicz wrote:
+> > >Hello.
+> > 
+> > Hi,
+> > 
+> > >I recently wrote a script that adds a new rule for an ip address each
+> > >time a new user is added to our network. I've noticed my tc rules work
+> > >...
+> > >Our network has about 120 users in total not all of these get connected
+> > >Are these rules ok?
+> > 
+> > If you have such linear ruleset (iptables marking+tc filter) for 120
+> > users then it's will not work well. If my theory is right, check top
+> > when there are more users logged in. You'll probably see hi cpu usage
+> > in "si"/"hi" (software/hardware interrupt) fraction.
+> > 
+> > You can easily optimize you ruleset by using:
+> > - tc u32 hashing filters [1] instead of iptables marking and fw tc
+> >   filters;
+> > - shape upload on ifb device [2] in ingress before nat, so you can use
+> >   tc u32 hashing filters too;
+> > 
+> > With such setup Core2 duo 3GHz + dual port intel nic can easily
+> > (
+> 
+> > 68% peak cpu usage) route symmetric 400mbit of traffic, doing per user
+> > shaping, nat and access control for >2k users.
 > > 
 > > 
-> > > Stupid question - can you not just attach your qdisc to the vlan
-> > > interface and mark the traffic on the vlan interface as well, as if
-> > > it was eth1?  
-> > 
-> > You mean "tc qdisc add dev vlanX ..." + "iptables ... -j IPMARK ..." ??
-> > 
-> > No. This must not be done. I have now 6 vlans (3 for IPv4 and 3 for
-> >  IPv6) each pair to one ISP. The only way I know (if you guys know
-> >  another way, please advise) to shape *_global_* aggregated traffic for
-> >  each client is to attach to eth1 an not to individual vlans. 
+> > [1] http://lartc.org/howto/lartc.adv-filter.hashing.html
+> > [2] http://www.linuxfoundation.org/collaborate/workgroups/networking/ifb
 > > 
 > 
-> Could you use an IFB device? Or possibly even IMQ?
+> After reading the lartc and the linuxfoundation.org documentation about
+> the u32 hashing filters it leaves me very confused. I don't get how I
+> would write my ruleset for all the users I have.
+> 
+> Would I have to create a table for each ip and then create a filter to
+> match? for ie:
+> 
+> tc filter add dev eth1 parent 1:0 protocol ip prio 100 match ip src \
+>   172.16.100.1 classid 1:1
+> 
+> tc filter add dev eth1 protocol ip parent 1:0 prio 5 u32 ht 2:7b: \
+>         match ip src 172.16.100.1 flowid 1:1
+> 
+> 
+> tc filter add dev eth1 protocol ip parent 1:0 prio 5 u32 ht 800:: \
+>         match ip src 172.16.100.1/16 \
+>         hashkey mask 0x000000ff at 12 \
+>         link 2:
+> 
+> 
+> This method is somewhat complicated but, according to the documentation
+> "very worth it". 
+> 
+> Can someone please explain it a little better, thanks.
+> 
+> 
+> 
+> > Best regards,
+> > Marek Kierdelewicz
+> > --
+> > To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> > the body of a message to majordomo@vger.kernel.org
+> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-IFB?? 
-
-it may be a good way out.
-Do you know any discussion list or forum for it? 
-I just read a few sites and have some questions.
-
-Ethy
