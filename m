@@ -1,71 +1,60 @@
 From: "Ethy H. Brito" <ethy.brito@inexo.com.br>
 Subject: Re: shaping vlans - revisited
-Date: Fri, 4 Feb 2011 12:05:33 -0200
-Message-ID: <20110204120533.7f470bab@pulsar.inexo.com.br>
+Date: Fri, 4 Feb 2011 12:06:17 -0200
+Message-ID: <20110204120617.58a2ef27@pulsar.inexo.com.br>
 References: <20110203152944.635b42e8@pulsar.inexo.com.br>
 	<1296759048.7587.3.camel@andybev>
 	<20110203180118.62970fb1@pulsar.inexo.com.br>
-	<1296788356.7587.70.camel@andybev>
+	<4D4B75C3.2060007@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1296788356.7587.70.camel@andybev>
+In-Reply-To: <4D4B75C3.2060007@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Fri, 04 Feb 2011 02:59:16 +0000
-Andrew Beverley <andy@andybev.com> wrote:
+On Thu, 03 Feb 2011 21:42:59 -0600
+Grant Taylor <gtaylor@riverviewtech.net> wrote:
 
+> On 2/3/2011 2:01 PM, Ethy H. Brito wrote: =20
+> > One extra detail is: this setup was working (just as it is for eth0=
+)
+> > until two weeks ago when then we created the vlans and splited the
+> > traffic among them. =20
+>=20
+> Once the traffic is in side of a VLAN tag (on the raw device), filter=
+s=20
+> will not match the traffic the say way that it did.  -  Try applying=20
+> your filters to the VLAN sub-interface. =20
 
-> Stupid question - can you not just attach your qdisc to the vlan
-> interface and mark the traffic on the vlan interface as well, as if it
-> was eth1?  
+you mean:=20
 
-You mean "tc qdisc add dev vlanX ..." + "iptables ... -j IPMARK ..." ??
+tc filter add dev vlanA ... match mark client1
+tc filter add dev vlanB ... match mark client1
+tc filter add dev vlanC ... match mark client1
+=2E..
+=20
+for each client?!?!?! the will be hundreds!!
 
-No. This must not be done. I have now 6 vlans (3 for IPv4 and 3 for IPv6)
-each pair to one ISP. The only way I know (if you guys know another way,
-please advise) to shape *_global_* aggregated traffic for each client is to attach to eth1 an not to individual vlans. 
+Doesn=C2=B4t it imply having "tc {class,qdisc} add dev vlan[A-Z]" or "=20
+tc {class,qdisc} add dev eth1" will do?
 
-> 
-> Alternatively, if the root qdisc is seeing all the packets but it's the
-> marking that's not working, then can you not just mark on the vlan
-> interface rather than eth1?  
+>=20
+> This is because the traffic is no longer IP traffic in side of Ethern=
+et=20
+> SNAP frames, but rather VLAN tagged frames that contain Ethernet SNAP=
+=20
+> frames.
+>=20
+> Are you wanting to give one VLAN on a given raw interface more priori=
+ty=20
+> than another? =20
 
-# iptables -L POSTROUTING -t mangle -v
-Chain POSTROUTING (policy ACCEPT 3868M packets, 1901G bytes)
- pkts bytes target     prot opt in     out     source               destination         
- 2257  404K IPMARK     all  --  any    eth0    anywhere             anywhere            mark match !0x0 IPMARK dst ip and 0xffff or 0x20000
-58092   46M IPMARK     all  --  any    eth0    anywhere             anywhere            mark match 0x0 IPMARK dst ip and 0xffff or 0x0
-  997  117K IPMARK     all  --  any    vlan+   anywhere             anywhere            mark match !0x2 IPMARK src ip and 0xffff or 0x0
-43665 6668K IPMARK     all  --  any    vlan+   anywhere
-anywhere            mark match 0x2 IPMARK src ip and 0xffff or 0x40000
-
-But...
-
-# tc -s filter sh dev eth1|grep success
-  mark 0x2101 0xffff (success 0)
-  mark 0x2e03 0xffff (success 0)
-  mark 0x2288 0xffff (success 0)
-  mark 0x2012 0xffff (success 0)
-  mark 0x2645 0xffff (success 0)
-  mark 0x2108 0xfff8 (success 0)
-(Very long list follows)
-
-I am pretty sure that or the marking or filtering  (or both!) is not
-working.
-I can see traffic through root class and through default htb class
-(2:ffff).
-All traffic is through default class telling me marking/filtering is not
-ok.
-
-class htb 2:1 root rate 102400Kbit ceil 102400Kbit burst 52992b cburst 52992b 
- Sent 92926111 bytes 500251 pkt (dropped 0, overlimits 0 requeues 0) 
-
-class htb 2:ffff parent 2:1 leaf ffff: prio 7 rate 5145Kbit ceil 5145Kbit burst 4181b cburst 4181b 
- Sent 93253253 bytes 500253 pkt (dropped 1037, overlimits 0 requeues 0) 
-
+Nope. The vlans are to other ISPs. Each ISP demands 2 Vlans (IPv4+IPv6)=
+=2E
+I need to shape global traffic from/to each client no matter which ISP
+he/she is using.
 
 Ethy
