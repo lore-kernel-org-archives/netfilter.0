@@ -1,53 +1,47 @@
 From: Srinivasa T N <seenutn@linux.vnet.ibm.com>
-Subject: Re: Double rules for using NETFLOW?
-Date: Fri, 04 Feb 2011 10:32:39 +0530
-Message-ID: <4D4B886F.70705@linux.vnet.ibm.com>
-References: <4D492B87.5050008@linux.vnet.ibm.com> <4D499ACA.2040603@riverviewtech.net> <4D4A3A04.20505@linux.vnet.ibm.com> <4D4B0CAE.5000105@riverviewtech.net>
+Subject: Re: Place for ipt_ACCOUNT/ipt_NETFLOW
+Date: Fri, 04 Feb 2011 10:52:47 +0530
+Message-ID: <4D4B8D27.3070306@linux.vnet.ibm.com>
+References: <4D4A6C6A.6000406@linux.vnet.ibm.com> <4D4B0D7B.5020703@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D4B0CAE.5000105@riverviewtech.net>
+In-Reply-To: <4D4B0D7B.5020703@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Friday 04 February 2011 01:44 AM, Grant Taylor wrote:
-> On 02/02/11 23:15, Srinivasa T N wrote:
->> But how will I have access to the counters from my user land app?
+On Friday 04 February 2011 01:48 AM, Grant Taylor wrote:
+> On 02/03/11 02:50, Srinivasa T N wrote:
+>> Is it possible for me to place rules related to accounting after filter
+>> table in the INPUT chain so that the accounting takes place only on the
+>> packets I am accepting in my box?
 >
-> I'd be extremely surprised if there were APIs that you can use to query
-> the kernel. - Though, I don't work on programming (like that) so I don't
-> know first hand.
+> I hope I'm understanding you correctly.
 >
-> At the very least, you can find the counters via the output of the
-> iptables command. I.e. I can issue the following command:
+> It sounds like you are wanting to do your accounting after you filter
+> out most of the chaff / noise / IBR that you don't want. Correct?
+
+Yes, you are correct.
 >
-> iptables -t filter -L FORWARD -n -v -x
+> If this is the case, why don't you have your filtering rules DROP /
+> REJECT / otherwise discard the packets you don't want and then have a
+> follow up rule that ACCEPTS the packet and do your accounting there?
 >
-> This will give me a packet / byte count (-v) that is exact (-x) that
-> have match various rules. I.e. the above command produced the following
-> output:
+> At least if I understand you correctly, filtering packets before they
+> hit your accounting rule should do what you are wanting.
 >
-> Chain FORWARD (policy DROP 0 packets, 0 bytes)
-> pkts bytes target prot opt in out source destination
-> 3783934 4488563274 ACCEPT all -- eth0 eth1 0.0.0.0/0 0.0.0.0/0 state
-> RELATED,ESTABLISHED
-> 2632183 290464220 ACCEPT all -- eth1 eth0 0.0.0.0/0 0.0.0.0/0
->
-> If you are worried about knowing which rule you want to read the
-> counters on, use the comment match extension that will allow you to put
-> a comment / string to flag on in the output. This will allow you to grep
-> for that line of output.
->
-> There might even be some way via /proc or /sys to find what you are
-> asking, but I don't know.
->
+But adding rules to discard the unwanted traffic and then do an 
+accounting for the rest of the packets in not a good idea.  I may not 
+even know what type of packets may arrive and writing rules to discard 
+each of unwanted packets is difficult.  So, I prefer to write rules to 
+accept only the packets that are required and then drop the other 
+packets.  I wanted to do the accounting only for packets that I accept.
 >
 >
 > Grant. . . .
 > --
-I was interested in knowing programmatic way as the performance is of 
-utmost importance to me.
 
+Regards,
 Seenu.
