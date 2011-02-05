@@ -1,77 +1,57 @@
-From: Optimum Wireless Services <wilson@optimumwireless.com>
+From: Andrew Beverley <andy@andybev.com>
 Subject: Re: How can I test my tc script?
-Date: Fri, 04 Feb 2011 15:57:35 -0400
-Message-ID: <1296849455.3644.25.camel@debian-laptop.OptimumWireless>
+Date: Sat, 05 Feb 2011 02:08:48 +0000
+Message-ID: <1296871728.1616.12.camel@andybev>
 References: <1296699466.4606.14.camel@debian-laptop.OptimumWireless>
-	 <20110203120131.38cd818d@catus>
-	 <1296827153.3644.7.camel@debian-laptop.OptimumWireless>
-	 <1296838192.3644.20.camel@debian-laptop.OptimumWireless>
-Reply-To: wilson@optimumwireless.com
+	 <20110203120131.38cd818d@catus>  <4D4C0B8F.10005@unipex.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1296838192.3644.20.camel@debian-laptop.OptimumWireless>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1296871731; bh=iAZDncmfxRBA5rn8ZTbG5KEwD9q+Hfoqw/4iq
+	MPV158=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
+	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=Di5SNH2q
+	A3iEEq0fJTgYLaEeQ484yN/3Rexe9THRLlZvRM6BdBR6C2WJcftWiaN/n65Z2b+Bdmo
+	jY8iAd/OHvLoJi/GUgO6Ao0AAAvmiFaN5c/43SQW8EawlKOpiaVcAEtlQwJCp/Q2GtH
+	uBQC8now5GlfFqMYYfkzgRzMzcNHk=
+In-Reply-To: <4D4C0B8F.10005@unipex.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: wilson <wilson@optimumwireless.com>
+Cc: Marek Kierdelewicz <marek@piasta.pl>, netfilter@vger.kernel.org, Michele Petrazzo - Unipex <michele.petrazzo@unipex.it>
 
-Hi, is me once again.
-
-I tried this for a test box and the download speed worked correctly:
-
-$tc qdisc del dev eth0 root
-$tc class del dev eth0
-
-$tc qdisc add dev eth0 root handle 1: htb r2q 1
-
-$tc class add dev eth0 parent 1:0  classid 1:1 htb rate 3000kbit ceil
-3000kbit
-
-$tc class add dev eth0 parent 1:1 classid 1:100 htb rate 256kbit ceil
-256kbit prio 3
-
-$tc filter add dev eth0 parent 1: protocol ip u32 match ip dst
-172.16.254.1/32 classid 1:100
-
-$tc qdisc add dev eth0 parent 1:100 handle 100: sfq perturb 2
-
-
-So, are these ruleset more convenient than the one I currently have?
-
-
-
-
-
-
-On Fri, 2011-02-04 at 12:49 -0400, Optimum Wireless Services wrote:
-> $tc qdisc del dev eth0 root
-> $tc qdisc add dev eth0 root handle 1: htb r2q 1
+On Fri, 2011-02-04 at 15:22 +0100, Michele Petrazzo - Unipex wrote:
+> Marek Kierdelewicz ha scritto:
+> >> Hello.
+> >
+> > Hi,
+> >
+> >> I recently wrote a script that adds a new rule for an ip address
+> >> each time a new user is added to our network. I've noticed my tc
+> >> rules work ... Our network has about 120 users in total not all of
+> >>  these get connected Are these rules ok?
+> >
+> > If you have such linear ruleset (iptables marking+tc filter) for 120
+> > users then it's will not work well. If my theory is right, check top
+> > when there are more users logged in. You'll probably see hi cpu usage
+> > in "si"/"hi" (software/hardware interrupt) fraction.
+> >
 > 
-> # this is the parent class
-> $tc class add dev eth0 parent 1:0  classid 1:1 htb rate 3000kbit ceil
-> 3000kbit
+> I, are you sure about the big difference?
+> I agree with you about tc u32 filters are better than iptables +
+> marking, but like now I have about 100mbit 1k+ users with
+> mangle+classify and tc+htb+egress and I have a load at about 0.2.
+> My cpu are xeon 2.6 quad.
 > 
-> 
-> 
-> ## I would like to assign users 256kbit for download speed, so the
-> following rule is a leaf of the parent 1:0 (correct me if wrong,
-> please)
-> 
-> $tc class   add dev eth0 parent 1:100    classid 1:1 htb rate 256kbit
-> ceil 256kbit prio 3
-> 
-> ## Now I should create a filter for the ip address:
-> 
-> $tc filter add dev eth0 parent 1:100 protocol ip u32 match ip dst
-> 172.16.100.1/32 classid 1:1
-> 
-> ## Now for the qdisc
-> $tc qdisc add dev eth0 parent 1:100 handle 500: sfq perturb 2
-> 
-> Are the parent values correct on the filter,class, and qdisc?
-> 
-> Is this correct? Am I in the right path?
-> 
-> Thanks in advanced for taking your time to help me.
+
+I agree. My CPU load is very low for similar setups.
+
+I think the problems that are being experienced are errors in the way
+that HTB is being used (as per my last post). Although you might be able
+to fix your problems by changing your scripts entirely as above, you
+might want to try fixing your original scripts instead.
+
+Andy
+
 
