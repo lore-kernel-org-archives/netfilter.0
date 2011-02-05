@@ -1,56 +1,62 @@
 From: Andrew Beverley <andy@andybev.com>
-Subject: Re: How can I test my tc script?
-Date: Sat, 05 Feb 2011 02:08:48 +0000
-Message-ID: <1296871728.1616.12.camel@andybev>
-References: <1296699466.4606.14.camel@debian-laptop.OptimumWireless>
-	 <20110203120131.38cd818d@catus>  <4D4C0B8F.10005@unipex.it>
+Subject: Re: shaping vlans - revisited
+Date: Sat, 05 Feb 2011 02:10:24 +0000
+Message-ID: <1296871824.1616.14.camel@andybev>
+References: <20110203152944.635b42e8@pulsar.inexo.com.br>
+	 <1296759048.7587.3.camel@andybev>
+	 <20110203180118.62970fb1@pulsar.inexo.com.br>
+	 <1296788356.7587.70.camel@andybev>
+	 <20110204120533.7f470bab@pulsar.inexo.com.br>
+	 <1296829445.1634.1.camel@andybev>
+	 <20110204142417.30dbe5fa@pulsar.inexo.com.br>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1296871731; bh=iAZDncmfxRBA5rn8ZTbG5KEwD9q+Hfoqw/4iq
-	MPV158=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
-	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=Di5SNH2q
-	A3iEEq0fJTgYLaEeQ484yN/3Rexe9THRLlZvRM6BdBR6C2WJcftWiaN/n65Z2b+Bdmo
-	jY8iAd/OHvLoJi/GUgO6Ao0AAAvmiFaN5c/43SQW8EawlKOpiaVcAEtlQwJCp/Q2GtH
-	uBQC8now5GlfFqMYYfkzgRzMzcNHk=
-In-Reply-To: <4D4C0B8F.10005@unipex.it>
+	s=selector1; t=1296871826; bh=vD72QHOoybOpkV8yUjqpE1MXcBn33abKGJ4pK
+	mJpnvw=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
+	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=KsIP8CMu
+	p6OW53cNYPtPSDqRilc4ZWyjhtkU1nnih8OseBI5WVJj7AkrbTN4VqqM/4DkEdV2Ps/
+	LofkuQtcFqQu0+r6qw+77ibAvkYw8h9WvpYd3AW+XsuZ7cwMmxPxVQGA6anW+MfZGS4
+	ARljFj0NMbkKB7AopR0U7MjwPb3No=
+In-Reply-To: <20110204142417.30dbe5fa@pulsar.inexo.com.br>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: wilson <wilson@optimumwireless.com>
-Cc: Marek Kierdelewicz <marek@piasta.pl>, netfilter@vger.kernel.org, Michele Petrazzo - Unipex <michele.petrazzo@unipex.it>
+To: "Ethy H. Brito" <ethy.brito@inexo.com.br>
+Cc: netfilter@vger.kernel.org
 
-On Fri, 2011-02-04 at 15:22 +0100, Michele Petrazzo - Unipex wrote:
-> Marek Kierdelewicz ha scritto:
-> >> Hello.
-> >
-> > Hi,
-> >
-> >> I recently wrote a script that adds a new rule for an ip address
-> >> each time a new user is added to our network. I've noticed my tc
-> >> rules work ... Our network has about 120 users in total not all of
-> >>  these get connected Are these rules ok?
-> >
-> > If you have such linear ruleset (iptables marking+tc filter) for 120
-> > users then it's will not work well. If my theory is right, check top
-> > when there are more users logged in. You'll probably see hi cpu usage
-> > in "si"/"hi" (software/hardware interrupt) fraction.
-> >
+On Fri, 2011-02-04 at 14:24 -0200, Ethy H. Brito wrote:
+> On Fri, 04 Feb 2011 14:24:05 +0000
+> Andrew Beverley <andy@andybev.com> wrote:
 > 
-> I, are you sure about the big difference?
-> I agree with you about tc u32 filters are better than iptables +
-> marking, but like now I have about 100mbit 1k+ users with
-> mangle+classify and tc+htb+egress and I have a load at about 0.2.
-> My cpu are xeon 2.6 quad.
+> > On Fri, 2011-02-04 at 12:05 -0200, Ethy H. Brito wrote:
+> > > On Fri, 04 Feb 2011 02:59:16 +0000
+> > > Andrew Beverley <andy@andybev.com> wrote:
+> > > 
+> > > 
+> > > > Stupid question - can you not just attach your qdisc to the vlan
+> > > > interface and mark the traffic on the vlan interface as well, as if
+> > > > it was eth1?  
+> > > 
+> > > You mean "tc qdisc add dev vlanX ..." + "iptables ... -j IPMARK ..." ??
+> > > 
+> > > No. This must not be done. I have now 6 vlans (3 for IPv4 and 3 for
+> > >  IPv6) each pair to one ISP. The only way I know (if you guys know
+> > >  another way, please advise) to shape *_global_* aggregated traffic for
+> > >  each client is to attach to eth1 an not to individual vlans. 
+> > > 
+> > 
+> > Could you use an IFB device? Or possibly even IMQ?
 > 
+> IFB?? 
+> 
+> it may be a good way out.
+> Do you know any discussion list or forum for it? 
 
-I agree. My CPU load is very low for similar setups.
-
-I think the problems that are being experienced are errors in the way
-that HTB is being used (as per my last post). Although you might be able
-to fix your problems by changing your scripts entirely as above, you
-might want to try fixing your original scripts instead.
+This list is probably a good place to start. There doesn't seem to be a
+huge amount of information around for it, but I got a good response from
+the author when I contacted him with a question a while back.
 
 Andy
 
