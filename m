@@ -1,47 +1,37 @@
-From: Marek Kierdelewicz <marek@piasta.pl>
+From: "Ethy H. Brito" <ethy.brito@inexo.com.br>
 Subject: Re: shaping vlans - revisited
-Date: Sat, 5 Feb 2011 13:46:21 +0100
-Message-ID: <20110205134621.44b63335@catus>
+Date: Sat, 5 Feb 2011 11:56:30 -0200
+Message-ID: <20110205115630.52c44e51@babalu.inexo.com.br>
 References: <20110203152944.635b42e8@pulsar.inexo.com.br>
 	<1296759048.7587.3.camel@andybev>
 	<20110203180118.62970fb1@pulsar.inexo.com.br>
-	<1296788356.7587.70.camel@andybev>
-	<20110204120533.7f470bab@pulsar.inexo.com.br>
-	<1296829445.1634.1.camel@andybev>
-	<20110204142417.30dbe5fa@pulsar.inexo.com.br>
+	<4D4B75C3.2060007@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20110204142417.30dbe5fa@pulsar.inexo.com.br>
+In-Reply-To: <4D4B75C3.2060007@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "Ethy H. Brito" <ethy.brito@inexo.com.br>
-Cc: netfilter@vger.kernel.org
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hi,
+On Thu, 03 Feb 2011 21:42:59 -0600
+Grant Taylor <gtaylor@riverviewtech.net> wrote:
 
->IFB?? 
->
->it may be a good way out.
->Do you know any discussion list or forum for it? 
->I just read a few sites and have some questions.
+> Once the traffic is in side of a VLAN tag (on the raw device), filters 
+> will not match the traffic the say way that it did.  -  Try applying 
+> your filters to the VLAN sub-interface.
+> 
+> This is because the traffic is no longer IP traffic in side of Ethernet 
+> SNAP frames, but rather VLAN tagged frames that contain Ethernet SNAP 
+> frames.
 
-You could do it this way:
+Is that a way to use instead of "protocol ip" use something like
+"protocol 0x8100"??
 
-1) make sure ifb is modprobed and interface ifb0 is up
+What is the general form of "protocol ip" (if there is one)?
+Some "u32 match" perhaps??
 
-2) redirect outgoing traffic on each vlan interface to ifb0
+Ethy
 
-tc qdisc add dev $DEV root handle 1: htb default 1
-tc class add dev $DEV parent 1: classid 1:1 htb rate 100mbit
-rc filter add dev $DEV protocol ip parent 1: prio 4 u32 \
-  match ip dst 0.0.0.0/0 flowid :1 \
-  action mirred egress redirect dev ifb0
-
-... where $DEV is vlanX, vlanY ...
-
-3) Add shaping on ifb0 just like you did earlier on eth1.
-
-Best regards,
-Marek Kierdelewicz
