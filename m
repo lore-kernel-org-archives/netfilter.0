@@ -1,126 +1,75 @@
-From: Marek Kierdelewicz <marek@piasta.pl>
-Subject: Re: How can I test my tc script?
-Date: Sat, 5 Feb 2011 21:21:51 +0100
-Message-ID: <20110205212151.27f217e0@catus>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: good tutorial
+Date: Sat, 05 Feb 2011 22:44:41 +0000
+Message-ID: <1296945881.1663.15.camel@andybev>
 References: <1296699466.4606.14.camel@debian-laptop.OptimumWireless>
-	<20110203120131.38cd818d@catus>
-	<1296827153.3644.7.camel@debian-laptop.OptimumWireless>
+	 <20110203120131.38cd818d@catus> <4D4C0B8F.10005@unipex.it>
+	 <20110205155829.3a5ebc7b@catus> <1296923860.1695.20.camel@andybev>
+	 <BLU0-SMTP7495DFC8C5F2213D76D1D2F3E90@phx.gbl>
+	 <1296933724.1617.10.camel@andybev>
+	 <BLU0-SMTP140C2CE9F593F7CCFDC80F0F3E90@phx.gbl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1296827153.3644.7.camel@debian-laptop.OptimumWireless>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1296945885; bh=4VptJIh4ZfoBY9e5s3CdWkZUJEMNsZltIRHbS
+	jzsutU=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
+	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=K32skJjE
+	09CLR+Jc42nE730LHVaAN0rikMfeXZrMn8lmKCT9mhvqvMATvzKOfqhRiF4Y89y6ltz
+	CdlKCekJNkfcX8EEbxYDhgQM7VIbdcWbn7kskOhTe5q87NQgw8+j3Cf/mnO53IRlaSx
+	sxwWv0axQzBuATdoa7czl0lpTIXgg=
+In-Reply-To: <BLU0-SMTP140C2CE9F593F7CCFDC80F0F3E90@phx.gbl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: wilson@optimumwireless.com
+To: J Webster <webster_jack@hotmail.com>
 Cc: netfilter@vger.kernel.org
 
-Hi,
+On Sat, 2011-02-05 at 20:33 +0100, J Webster wrote:
+> Thanks.
+> Out of interest will this only limit connects incoming to the server and 
+> not outgoing?
 
->This method is somewhat complicated but, according to the documentation
->"very worth it". 
->Can someone please explain it a little better, thanks.
+It will limit the *outgoing* traffic on whichever interface you attach
+it to, but from your perspective this may actually result in traffic
+incoming to the server (which I guess is what you want).
 
-Sure... here goes the example:
+So if you attach to your LAN interface, and you actually mean "will this
+only limit traffic being downloaded from the internet", then the answer
+is yes.
 
-We want to share 100mbit connection. Internet access is connected to
-the router on eth0 and lan in on eth1. We do egress shaping of download
-traffic on eth1.
+> For example, a user connects via VPN to the server, their connection 
+> should be limited to 2Mbps (3in the example below) but they are 
+> connecting to say www.youtube.com. I do not want the connection to 
+> youtube.com to be restricted as maybe 10 users might be accessing 
+> youtube at the same time.
 
----------------------complete script------------------------------
-tc qdisc add dev eth1 root handle 1: htb default 1
-tc class add dev eth1 parent 1: classid 1:1 htb rate 100Mbit
-tc filter add dev eth1 parent 1:1 prio 11 handle 2: protocol ip \
-u32 divisor 256 
-tc filter add dev eth1 protocol ip parent 1:1 prio 11 u32 match \
-ip dst 0.0.0.0/0 hashkey mask 0x000000ff at 16 link 2:
+It won't in the example. However, even if you were doing egress shaping
+on the internet interface, you'd have to specifically specify youtube's
+IP address for the above to happen anyway.
 
-tc class add dev eth1 parent 1:1 classid 1:400 htb rate 5mbit
-tc qdisc add dev eth1 parent 1:400 handle 400: sfq perturb 1
-tc filter add dev eth1 protocol ip prio 11 u32 ht 2:46: match ip \
-dst 10.5.0.70 flowid 1:400
+> So the server can have an unlimited outgoing connection to youtube but 
+> when it passes on the connection to the client (much like a proxy server 
+> might do), they should only have 2Mbps.
 
-tc class add dev eth1 parent 1:1 classid 1:401 htb rate 5mbit
-tc qdisc add de eth1 parent 1:401 handle 401: sfq perturb 1
-tc filter add de0 eth1 protocol ip prio 11 u32 ht 2:a: match ip \
-dst 10.5.0.10 flowid 1:401
----------------------------------------------------------------------
+Sort of - when you say "outgoing" connection to youtube, I assume you
+mean traffic "incoming" from youtube to the server. So if you egress
+shape on the LAN interface, then there will be no restrictions for the
+overall traffic coming the internet, but the client will be limited
+depending on your filters. 
 
-Now lets go line by line.
+Remember that traffic goes both ways - you'll need to egress shape on
+the internet interface if you want to also limit the traffic to the
+internet (ie uploads).
 
->tc qdisc add dev eth1 root handle 1: htb default 1
+> Now the reason I asked for a tutorial somewhere is I went through the 
+> LARTC tutorial (which just looks like a blank white document) and my 
+> understanding of leaf, HTB, U32, qdisc, etc is kind of lacking :)
 
-add htb qdisc to eth1, direct all unclassified traffic to 1:1 by default
+Well I found this to be pretty good:
 
->tc class add dev eth1 parent 1: classid 1:1 htb rate 100Mbit
+http://www.opalsoft.net/qos/DS.htm
 
-add main class 1:1 with rate 100mbit; we don't specify ceil, it's
-automaticaly set to rate if ommited
-
->tc filter add dev eth1 parent 1:1 prio 11 handle 2: protocol ip \
->u32 divisor 256 
-
-add hash table with 256 entries (maximal size), table is located at "2:"
-
->tc filter add dev eth1 protocol ip parent 1:1 prio 11 u32 match \
->ip dst 0.0.0.0/0 hashkey mask 0x000000ff at 16 link 2:
-
-this filter defines how information in ip packet translates to entry in
-hash table; 
-
-"u32 match ip dst 0.0.0.0/0" - matches any ip traffic;
-
-"hashkey mask 0x000000ff at 16" - number 16 defines location in ip
-header [1] and it's destination IP addres; mask 0x000000ff defines that
-we're interested in last octet of the destination ip address; example,
-if the packet is directed to 10.0.0.192, then te mask will yild value
-192; note: mask returns values in range of 0-255 - it coresponds with
-divisor setting in previous rule;
-
-"link 2:" - direct packets to table 2: (added in previous rule);
-
-[1]
-http://www.siongboon.com/projects/2006-03-06_serial_communication/IP-Header-v4.png
-
->tc class add dev eth1 parent 1:1 classid 1:400 htb rate 5mbit
-
-add class fo this client, let if be 1:400;
-
->tc qdisc add dev eth1 parent 1:400 handle 400: sfq perturb 1
-
-attach sfq qdisc to client's class
-
->tc filter add dev eth1 protocol ip prio 11 u32 ht 2:46: match ip \
->dst 10.5.0.70 flowid 1:400
-
-add filter that directs traffic to 10.5.0.70 to class 1:400;
-interesting parts:
-
-"ht 2:46:" - use hash table 2:, 46 is the last octet of clients ip
-address converted from decimal to hexadecimal notation; decimal 70 is
-equal 0x46 hexadecimal;
-
->tc class add dev eth1 parent 1:1 classid 1:401 htb rate 5mbit
-
-add class of second client, let if be 1:401;
-
->tc qdisc add dev eth1 parent 1:401 handle 401: sfq perturb 1
-
-... sfq
-
->tc filter add dev eth1 protocol ip prio 11 u32 ht 2:a: match ip \
->dst 10.5.0.10 flowid 1:401
-
-add filter that directs traffic to 10.5.0.10 to class 1:401;
-interesting parts:
-
-"ht 2:a:" - use hash table 2:, a is the last octet of clients ip
-address converted from decimal to hexadecimal notation; decimal 10 is
-equal 0xa hexadecimal;
+Andy
 
 
-
-I hope it'll clear things a bit.
-
-Best regards,
-Marek Kierdelewicz
