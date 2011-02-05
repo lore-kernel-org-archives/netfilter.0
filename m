@@ -1,38 +1,18 @@
-From: Marek Kierdelewicz <marek@piasta.pl>
-Subject: Re: shaping vlans - revisited
-Date: Sat, 5 Feb 2011 17:41:50 +0100
-Message-ID: <20110205174150.1fbd7658@catus>
-References: <20110203152944.635b42e8@pulsar.inexo.com.br>
-	<1296759048.7587.3.camel@andybev>
-	<20110203180118.62970fb1@pulsar.inexo.com.br>
-	<1296788356.7587.70.camel@andybev>
-	<20110204120533.7f470bab@pulsar.inexo.com.br>
-	<1296829445.1634.1.camel@andybev>
-	<20110204142417.30dbe5fa@pulsar.inexo.com.br>
-	<20110205134621.44b63335@catus>
-	<20110205124235.31bcd26e@babalu.inexo.com.br>
-	<20110205155202.02eb6e7f@catus>
-	<20110205143201.4a563987@babalu.inexo.com.br>
+From: J Webster <webster_jack@hotmail.com>
+Subject: good tutorial
+Date: Sat, 5 Feb 2011 17:48:17 +0100
+Message-ID: <BLU0-SMTP7495DFC8C5F2213D76D1D2F3E90@phx.gbl>
+References: <1296699466.4606.14.camel@debian-laptop.OptimumWireless>	 <20110203120131.38cd818d@catus> <4D4C0B8F.10005@unipex.it>	 <20110205155829.3a5ebc7b@catus> <1296923860.1695.20.camel@andybev>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20110205143201.4a563987@babalu.inexo.com.br>
+In-Reply-To: <1296923860.1695.20.camel@andybev>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "Ethy H. Brito" <ethy.brito@inexo.com.br>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 Cc: netfilter@vger.kernel.org
 
-Hi,
-
->... and since the packets are not encapsulated yet, how they will
->return from ifb to vlanX to be encapsulated??
->I see no tc command doing this in you example in your previous post.
->Is there a missing command?
-
-That's the way ifb works. Example of ingress shaping that uses "action
-mirred egress redirect":
-http://www.linuxfoundation.org/collaborate/workgroups/networking/ifb#Typical_Usage
-
-Best regards,
-Marek Kierdelewicz
+Does anyone have a tutorial recommendation for tc?
+I tried the existing tutorials on LARTC and they were all lacking 
+examples - also the pages look like they were written 10 years ago.
+I want to limit bandwidth per ip address on my server.
