@@ -1,63 +1,55 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: shaping vlans - revisited
-Date: Sat, 05 Feb 2011 02:10:24 +0000
-Message-ID: <1296871824.1616.14.camel@andybev>
-References: <20110203152944.635b42e8@pulsar.inexo.com.br>
-	 <1296759048.7587.3.camel@andybev>
-	 <20110203180118.62970fb1@pulsar.inexo.com.br>
-	 <1296788356.7587.70.camel@andybev>
-	 <20110204120533.7f470bab@pulsar.inexo.com.br>
-	 <1296829445.1634.1.camel@andybev>
-	 <20110204142417.30dbe5fa@pulsar.inexo.com.br>
+From: Optimum Wireless Services <wilson@optimumwireless.com>
+Subject: Re: How can I test my tc script?
+Date: Fri, 04 Feb 2011 22:44:58 -0400
+Message-ID: <1296873898.3644.4.camel@debian-laptop.OptimumWireless>
+References: <1296699466.4606.14.camel@debian-laptop.OptimumWireless>
+	 <1296761916.7587.29.camel@andybev>
+Reply-To: wilson@optimumwireless.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1296871826; bh=vD72QHOoybOpkV8yUjqpE1MXcBn33abKGJ4pK
-	mJpnvw=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
-	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=KsIP8CMu
-	p6OW53cNYPtPSDqRilc4ZWyjhtkU1nnih8OseBI5WVJj7AkrbTN4VqqM/4DkEdV2Ps/
-	LofkuQtcFqQu0+r6qw+77ibAvkYw8h9WvpYd3AW+XsuZ7cwMmxPxVQGA6anW+MfZGS4
-	ARljFj0NMbkKB7AopR0U7MjwPb3No=
-In-Reply-To: <20110204142417.30dbe5fa@pulsar.inexo.com.br>
+In-Reply-To: <1296761916.7587.29.camel@andybev>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "Ethy H. Brito" <ethy.brito@inexo.com.br>
+To: Andrew Beverley <andy@andybev.com>
 Cc: netfilter@vger.kernel.org
 
-On Fri, 2011-02-04 at 14:24 -0200, Ethy H. Brito wrote:
-> On Fri, 04 Feb 2011 14:24:05 +0000
-> Andrew Beverley <andy@andybev.com> wrote:
-> 
-> > On Fri, 2011-02-04 at 12:05 -0200, Ethy H. Brito wrote:
-> > > On Fri, 04 Feb 2011 02:59:16 +0000
-> > > Andrew Beverley <andy@andybev.com> wrote:
-> > > 
-> > > 
-> > > > Stupid question - can you not just attach your qdisc to the vlan
-> > > > interface and mark the traffic on the vlan interface as well, as if
-> > > > it was eth1?  
-> > > 
-> > > You mean "tc qdisc add dev vlanX ..." + "iptables ... -j IPMARK ..." ??
-> > > 
-> > > No. This must not be done. I have now 6 vlans (3 for IPv4 and 3 for
-> > >  IPv6) each pair to one ISP. The only way I know (if you guys know
-> > >  another way, please advise) to shape *_global_* aggregated traffic for
-> > >  each client is to attach to eth1 an not to individual vlans. 
-> > > 
+On Thu, 2011-02-03 at 19:38 +0000, Andrew Beverley wrote:
+> On Wed, 2011-02-02 at 22:17 -0400, Optimum Wireless Services wrote:
+> > I would like to know how can I run some sort of benchmark test on a
+> > network that would simulate 10,20,50,100 users connected to see if my gw
+> > is handling the traffic well.
 > > 
-> > Could you use an IFB device? Or possibly even IMQ?
 > 
-> IFB?? 
+> I suggest using tc-viewer to see what your qdisc is actually doing
+> during peak use:
 > 
-> it may be a good way out.
-> Do you know any discussion list or forum for it? 
+> tc-viewer --iface=eth1 --zero --counter=1 --unit=kbit
+> 
+> > Here's a snip of what the script looks like:
+> > 
+> > ################ 
+> > Now Download interface
+> > 
+> > $tc qdisc del dev eth1 root
+> > $tc qdisc add dev eth1 root handle 2: htb r2q 1
+> > 
+> > $tc class add dev eth1 parent 2:0  classid 2:1 htb rate 15500kbit ceil
+> > 15525kbit
+> > 
+> 
+> Does the sum of all the leaf classes below add up to the root rate
+> above? From the HTB manual: "The rate supplied for a parent should be
+> the sum of the rates of its children."
+> 
 
-This list is probably a good place to start. There doesn't seem to be a
-huge amount of information around for it, but I got a good response from
-the author when I contacted him with a question a while back.
+Hi Andy.
 
-Andy
+The sum of my users' classes or leafs rate would not be equal to the
+parent's. They will never add up to the total root class since I will be
+adding rules every once in a while so, if my root total BW is 15Mbps and
+I have 100 users at 512kbps each then, that could be a problem. 
 
+Is there something else to do instead?
 
