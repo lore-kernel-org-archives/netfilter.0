@@ -1,80 +1,112 @@
 From: Optimum Wireless Services <wilson@optimumwireless.com>
 Subject: Re: How can I test my tc script?
-Date: Sat, 05 Feb 2011 22:17:37 -0400
-Message-ID: <1296958657.3695.22.camel@debian-laptop.OptimumWireless>
+Date: Sat, 05 Feb 2011 22:24:26 -0400
+Message-ID: <1296959066.3695.24.camel@debian-laptop.OptimumWireless>
 References: <1296699466.4606.14.camel@debian-laptop.OptimumWireless>
-	 <1296761916.7587.29.camel@andybev>
-	 <1296873898.3644.4.camel@debian-laptop.OptimumWireless>
-	 <1296909335.1695.14.camel@andybev>
+	 <20110203120131.38cd818d@catus>
+	 <1296827153.3644.7.camel@debian-laptop.OptimumWireless>
+	 <20110205212151.27f217e0@catus>  <20110206010527.4457d220@catus>
 Reply-To: wilson@optimumwireless.com
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1296909335.1695.14.camel@andybev>
+In-Reply-To: <20110206010527.4457d220@catus>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Andrew Beverley <andy@andybev.com>
+To: Marek Kierdelewicz <marek@piasta.pl>
 Cc: netfilter@vger.kernel.org
 
-On Sat, 2011-02-05 at 12:35 +0000, Andrew Beverley wrote:
-> On Fri, 2011-02-04 at 22:44 -0400, Optimum Wireless Services wrote:
-> > On Thu, 2011-02-03 at 19:38 +0000, Andrew Beverley wrote:
-> > > On Wed, 2011-02-02 at 22:17 -0400, Optimum Wireless Services wrote:
-> > > > I would like to know how can I run some sort of benchmark test on a
-> > > > network that would simulate 10,20,50,100 users connected to see if my gw
-> > > > is handling the traffic well.
-> > > > 
-> > > 
-> > > I suggest using tc-viewer to see what your qdisc is actually doing
-> > > during peak use:
-> > > 
-> > > tc-viewer --iface=eth1 --zero --counter=1 --unit=kbit
-> > > 
-> > > > Here's a snip of what the script looks like:
-> > > > 
-> > > > ################ 
-> > > > Now Download interface
-> > > > 
-> > > > $tc qdisc del dev eth1 root
-> > > > $tc qdisc add dev eth1 root handle 2: htb r2q 1
-> > > > 
-> > > > $tc class add dev eth1 parent 2:0  classid 2:1 htb rate 15500kbit ceil
-> > > > 15525kbit
-> > > > 
-> > > 
-> > > Does the sum of all the leaf classes below add up to the root rate
-> > > above? From the HTB manual: "The rate supplied for a parent should be
-> > > the sum of the rates of its children."
-> > > 
-> > 
-> > Hi Andy.
-> > 
-> > The sum of my users' classes or leafs rate would not be equal to the
-> > parent's. They will never add up to the total root class since I will be
-> > adding rules every once in a while so, if my root total BW is 15Mbps and
-> > I have 100 users at 512kbps each then, that could be a problem. 
-> > 
-> 
-> Hmmm, well HTB is known to misbehave if they don't all add up correctly,
-> which could explain your problems. Why don't you *try* it with them all
-> adding up correctly, just temporarily for your current number of users,
-> to see if this is the problem.
-> 
+This IS very complex.
 
-Just wondering, I have a total of 15Mbps for our total bandwidth. If I
-devide that into 512kbps then I can only have about 29 users at that
-rate. Don't know if I'm doing the math correctly but, how many users
-should a 15Mbps line should serve without problems?
+I'm going to have to print this and sit to take a closer look at it.
 
-> > Is there something else to do instead?
-> > 
+I would like to thank you all for replying to my post you have being
+very helpful.
+
+
+
+On Sun, 2011-02-06 at 01:05 +0100, Marek Kierdelewicz wrote:
+> And here's a bit more complex example for shaping upload with tc u32
+> hashing filters and IFB.
 > 
-> You could have a look at another classful qdisc such as HFSC or CBQ.
-> However, I've never played with them, so they may not be of any more
-> help.
+> As in download example, we want to share 100mbit connection. Internet
+> access is connected to the router on eth0 and lan in on eth1. We do
+> ingress shaping of upload traffic on ifb0 after ingress eth1 traffic
+> is redirected to the device.
 > 
-> Andy
+> ---------------------complete script------------------------------
+> tc qdisc add dev ifb0 root handle 1: htb default 1
+> tc class add dev ifb0 parent 1: classid 1:1 htb rate 100Mbit
+> tc filter add dev ifb0 parent 1:1 prio 11 handle 2: protocol ip \
+> u32 divisor 256
+> tc filter add dev ifb0 protocol ip parent 1:1 prio 11 u32 match \
+> ip dst 0.0.0.0/0 hashkey mask 0x000000ff at 12 link 2:
 > 
+> tc class add dev ifb0 parent 1:1 classid 1:400 htb rate 5mbit
+> tc qdisc add dev ifb0 parent 1:400 handle 400: sfq perturb 1
+> tc filter add dev ifb0 protocol ip prio 11 u32 ht 2:46: match ip \
+> src 10.5.0.70 flowid 1:400
 > 
+> tc class add dev ifb0 parent 1:1 classid 1:401 htb rate 5mbit
+> tc qdisc add dev ifb0 parent 1:401 handle 401: sfq perturb 1
+> tc filter add dev ifb0 protocol ip prio 11 u32 ht 2:a: match ip \
+> src 10.5.0.10 flowid 1:401
+> 
+> tc qdisc add dev eth1 ingress
+> tc filter add dev eth1 protocol ip parent ffff: prio 4 u32 match \
+> ip dst 0.0.0.0/0 flowid :1 action mirred egress redirect dev ifb0
+> ---------------------------------------------------------------------
+> 
+> Now lets go line by line.
+> 
+> >tc qdisc add dev eth1 root handle 1: htb default 1
+> >tc class add dev eth1 parent 1: classid 1:1 htb rate 100Mbit
+> >tc filter add dev eth1 parent 1:1 prio 11 handle 2: protocol ip \
+> >u32 divisor 256 
+> 
+> analogous to download example
+> 
+> >tc filter add dev eth1 protocol ip parent 1:1 prio 11 u32 match \
+> >ip dst 0.0.0.0/0 hashkey mask 0x000000ff at 12 link 2:
+> 
+> "at 12" instead of 16, because we want to hash on source ip address
+> 
+> >tc class add dev eth1 parent 1:1 classid 1:400 htb rate 5mbit
+> >tc qdisc add dev eth1 parent 1:400 handle 400: sfq perturb 1
+> 
+> analogous to download example
+> 
+> >tc filter add dev eth1 protocol ip prio 11 u32 ht 2:46: match ip \
+> >src 10.5.0.70 flowid 1:400
+> 
+> compared to download shaping, dst is changed to src
+> 
+> >tc class add dev ifb0 parent 1:1 classid 1:401 htb rate 5mbit
+> >tc qdisc add dev ifb0 parent 1:401 handle 401: sfq perturb 1
+> >tc filter add dev ifb0 protocol ip prio 11 u32 ht 2:a: match ip \
+> >src 10.5.0.10 flowid 1:401
+> 
+> analogous to previous client
+> 
+> >tc qdisc add dev eth1 ingress
+> 
+> add ingress qdisc to eth1 interface
+> 
+> >tc filter add dev eth1 protocol ip parent ffff: prio 4 u32 match \
+> >ip dst 0.0.0.0/0 flowid :1 action mirred egress redirect dev ifb0
+> 
+> redirect any ip traffic from ingress qdisc on device eth1 to ifb0;
+> note! redirection to ifb doesn't interfere with routing/firewalling/nat;
+> 
+> Best regards,
+> Marek Kierdelewicz
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
