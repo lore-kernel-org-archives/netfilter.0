@@ -1,76 +1,86 @@
 From: Andrew Beverley <andy@andybev.com>
 Subject: Re: How can I test my tc script?
-Date: Sun, 06 Feb 2011 17:02:09 +0000
-Message-ID: <1297011729.1613.50.camel@andybev>
+Date: Sun, 06 Feb 2011 17:11:06 +0000
+Message-ID: <1297012266.1613.59.camel@andybev>
 References: <1296699466.4606.14.camel@debian-laptop.OptimumWireless>
 	 <1296761916.7587.29.camel@andybev>
 	 <1296873898.3644.4.camel@debian-laptop.OptimumWireless>
-	 <1296886030.4568.6.camel@debian-laptop.OptimumWireless>
-	 <1296908825.1695.8.camel@andybev>
-	 <1296958497.3695.18.camel@debian-laptop.OptimumWireless>
-	 <1297008953.1613.24.camel@andybev>
-	 <1297010113.3928.12.camel@debian-laptop.OptimumWireless>
+	 <1296909335.1695.14.camel@andybev>
+	 <1296958657.3695.22.camel@debian-laptop.OptimumWireless>
+	 <1297007648.1613.4.camel@andybev>
+	 <1297009712.3928.5.camel@debian-laptop.OptimumWireless>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1297011756; bh=ck9EXRXwEDT3Eu085+KLjoV2AX3E1mmxYut9E
-	Dy4rlw=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
-	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=IAT8u8kE
-	iwgwWVH39axGlzH3k1tmZA71/IpFNt2niog38Wn8Z5m85Sp7WAr0sjvgFi08asMzNeY
-	bZu7MgLFZazFStjBT544OQZ9u20a3sQHUXzL3Rp7dtzgL4DLMyPD6oOYdfpeKS5QJo3
-	mlBtQVs64whiZ2hAqpef1wzoC+6Jo=
-In-Reply-To: <1297010113.3928.12.camel@debian-laptop.OptimumWireless>
+	s=selector1; t=1297012321; bh=00kzHaVAm2ryjgIDqvmo8tGZeEAXWFv6ijT+A
+	h9ox+Q=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
+	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=IOVRqCEo
+	897+czeqAkSpBh7425K42V5j50b6mpUQiOUyct7a5vk7XfLR8MT2M1EADKnRaIRqZTM
+	oO7cIGVfXVRH3Ro8HpNkzdm6nftGodzC4WJY1XKmPx9UjYHl0x2GPdoQcs/xEy7gmDi
+	zvfxFVOGUNoNifU7p43WWlb1l7/M0=
+In-Reply-To: <1297009712.3928.5.camel@debian-laptop.OptimumWireless>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: wilson@optimumwireless.com
 Cc: netfilter@vger.kernel.org
 
-On Sun, 2011-02-06 at 12:35 -0400, Optimum Wireless Services wrote:
+On Sun, 2011-02-06 at 12:28 -0400, Optimum Wireless Services wrote:
+> On Sun, 2011-02-06 at 15:54 +0000, Andrew Beverley wrote:
+> > > Just wondering, I have a total of 15Mbps for our total bandwidth. If I
+> > > devide that into 512kbps then I can only have about 29 users at that
+> > > rate.
 > > 
-> > I think that you should forget the per-user stuff as per my other email
-> > and classify traffic. Just my personal opinion - I'd be interested to
-> > hear what others think.
+> > You could use HTB's "ceil" parameter for each leaf class to specify the
+> > max rate per user - that value can be anything up to and including the
+> > maximum rate of the root qdisc. It's the total of all the "rate"
+> > parameters of the leaf classes that should add up to the root's total.
+> > 
 > 
-> I just need a way that would allow users to experience a reliable
-> connection that would always be 15% +- the contracted bandwidth.
+> If I have users on different packages then how would I accomplish that?
 > 
 
-You could buy some more upstream bandwidth ;-)
+Something like:
 
-Have you tried the scripts that Marek posted? That's your answer to
-limit per user.
+tc qdisc add dev ... root handle 1: htb
+tc class add dev ... parent 1: classid 1:1 htb rate 2000kbit
+...
+tc class add dev .... htb rate 200kbit ceil 2000kbit prio 1
+tc class add dev .... htb rate 200kbit ceil 2000kbit prio 1
+tc class add dev .... htb rate 200kbit ceil 1000kbit prio 2
+tc class add dev .... htb rate 200kbit ceil 1000kbit prio 2
+tc class add dev .... htb rate 200kbit ceil 500kbit prio 3
+tc class add dev .... htb rate 200kbit ceil 500kbit prio 3
+tc class add dev .... htb rate 200kbit ceil 500kbit prio 3
+tc class add dev .... htb rate 200kbit ceil 500kbit prio 3
+tc class add dev .... htb rate 200kbit ceil 500kbit prio 3
+tc class add dev .... htb rate 200kbit ceil 500kbit prio 3
 
-> This turned to be more complicated than what I first thought. 
+Note that all the rates add up to the root, but that each leaf class has
+the ceil set at the top limit.
+
+> > >  Don't know if I'm doing the math correctly but, how many users
+> > > should a 15Mbps line should serve without problems?
+> > 
+> > Well obviously it depends on what your users are doing, but I think
+> > 15Mbps should be fine for 2-300 users. I have a 4Mbps ADSL line shared
+> > between 150 users. It's not the fastest, but it works for general use,
+> > because bulk traffic gets classified at a lower priority than web
+> > browsing.
+> > 
 > 
-> After adding the new ruleset, I added this little script to try to
-> prioritize some traffic, just installed it so, don't know yet how would
-> traffic behave:
+> I don't think we have a problem if all users use their connection for
+> general use. But, I can't tell users what to do and not do, if you know
+> what I mean. As mentioned earlier, I have user downloading p2p all day
+> long, there are others using voip, there are others that use it for
+> gaming, others chatting, etc... So, I thought if I limit users'
+> bandwidth to a certain amount that I could just have them use whatever
+> they're assigned and they can do whatever they want with that amount of
+> bandwidth.
 
-<snip>
-
-Herein lies your problem. If you want to prioritise traffic *and* limit
-per user, then it starts to get complicated. The rules that you posted
-will indeed rate limit different types of traffic, but you would need to
-do these in conjunction with your other HTB rules for the different
-users.
-
-So you would need separate classes for users and traffic type. They'd
-have to be parents/children of each other, but which way round and how
-you would do it I do not know.
-
-All I'm saying is that you need to take this one step at a time. Getting
-a magic solution that does everything is not going to happen straight
-away (unless somebody tells me otherwise).
-
-So, try the per user stuff on its own first. Maybe try the traffic
-prioritisation on its own as well. Check the results and take it from
-there.
-
-BTW - I don't think the traffic prioritisation scripts you posted will
-have much affect anyway: they are only really looking at DNS lookups and
-SSH, which isn't going to solve your problems.
+Try it, but you may find that your total aggregate bandwidth is not
+enough to do it this way.
 
 Andy
 
