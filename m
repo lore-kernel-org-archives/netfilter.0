@@ -1,42 +1,52 @@
-From: li.tao@nexgo.de
-Subject: sporadic problem with masquerading ppp0 interface
-Date: Mon, 7 Feb 2011 19:12:03 +0100 (CET)
-Message-ID: <1409763209.53871.1297102323202.JavaMail.ngmail@webmail09.arcor-online.net>
+From: Steven Kath <steven.kath@vyatta.com>
+Subject: Re: Filter IP to use two ISP and make it failsafe
+Date: Mon, 7 Feb 2011 12:20:17 -0800 (PST)
+Message-ID: <2044634873.42761.1297110017641.JavaMail.root@tahiti.vyatta.com>
+References: <1824409827.42740.1297109522307.JavaMail.root@tahiti.vyatta.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=nexgo.de; s=mail-in;
-	t=1297102323; bh=mO7uh5qnbpWtjhkKCRXkq29f7NT7/FlDdJL6oW5qgsA=;
-	h=Date:From:To:Message-ID:Subject:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding;
-	b=ZPsVkMmpKnjVtRQcBwAFSjhH9/C+M4KVQzxNuI3r2YE2XxKHjdkgl/dqG7Y9922UB
-	 1hnglyTG1dPJMhF7FIeDe68+ADUPq/MeNjK6wjgxUom85Eix9+sP3CnhToNWF0SVk0
-	 uoC1hn6hPwzVlE/eu/7ZUmSPgL7M938NU50DWGFs=
+In-Reply-To: <1824409827.42740.1297109522307.JavaMail.root@tahiti.vyatta.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Juan Araya Bravo <juan.araya@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hi All,
+----- "Juan Araya Bravo" <juan.araya@gmail.com> wrote:
+> Hi, this is my first message to the list and first of all i apologise
+> for my very bad English.
+> 
+> The thing is i have one machine with three NIC cards acting as a
+> gateway. One of the NIC (eth0) is connected to LAN and the others are
+> connected to two different ISP (eth1 = ISP A and eth2= ISP B).
+> 
+> I was looking for a rule that let me determine specifically which IP
+> can use the ISP A and let all the others to use the ISP B connection.
+> 
+> Also i need that when one of the connections fails all the traffic
+> will be directed by the one which works.
+> 
+> Please help me with a link or something i can read to learn how to do
+> it.
 
-In one customer project I got sporadic problem with masquerading at ppp0 interface. The simplified setup is as shown below:
-Client PC <---------->Linux router<----------->modem<----------->ISP
-The Linux router uses the kernel Version 2.6.22.19 and iptables v1.2.11.  
+What you're essentially describing is called Source Policy-Based 
+Routing (PBR).
 
-The routing steps are dynamic as described below:
-1) Client PC tries to send tcp sync to an internet server
-2) The router recognizes these packets and creates a ppp0 interface for this session
-3)after the ppp0 gets up, the router masks the tcp packets in the mangle table by iptables, defines a new route in e.g. table 44 (default dev ppp0  scope link) and add a new routing rule (32765:	from all fwmark 0x3 lookup 44). The default GW remains eth1, not changed to ppp0.
-4)at the same time the iptables filter table is extended to accept the marked packets and the masquerading rule for ppp0 interface is also added to the nat table (see below)
-    pkts bytes target             prot opt   in     out       source               destination         
-    0     0       MASQUERADE  all    --    *      ppp0    0.0.0.0/0            0.0.0.0/0    
+Here is a good place to start reading, 
 
-This schema works well typically with one exception: if the modem connection gets broken and is established again after several minutes, it happens sometimes that all new coming tcp packets from the Client PC afterwards will not be masqueraded although a new masquerading rule for the new creared ppp0 interface (with the old inet address) is added to the nat table again for the new session. In this case the client PC cannot get any tcp response from the internet server. This problem can only be solved by rebooting the router.
+http://lartc.org/howto/lartc.rpdb.html
+http://lartc.org/howto/lartc.rpdb.multiple-links.html
 
-Does someone have an idea, what could be the reason for this problem? Can someone explain me the mechanism behind the masquerading for ppp+ interface? I mean where is the dynamic inet address of a ppp interface stored for masquerading purpose and how can the netfilter know that one packet is assigned to the ppp0 interface.   
+Those pages will help you get the big picture, and the "ip rule" section 
+of "man ip" can help fill in a lot of the details. 
 
-I would appreciate any help and information very much!
+The 'gwping' script mentioned elsewhere in this thread is a good example 
+of how to continuously monitor the responsiveness of the two uplinks and 
+stop routing traffic out a failed link.  That's where the fail-safe part 
+comes in. However, that script seems to use stateless, per-packet 
+load-balancing which is going to come with its own set of problems.  
 
-Best regards
-
-Li
+When you understand both PBR and the gwping script, you can probably put
+together a script using ping tests and failover like gwping with a true 
+source PBR implementation. 
