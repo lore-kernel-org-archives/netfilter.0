@@ -1,40 +1,41 @@
-From: Marek Kierdelewicz <marek@piasta.pl>
-Subject: Re: Linux bridge/switch port mirroring/SPAN/port monitoring/Roving
- Analysis?
-Date: Mon, 7 Feb 2011 08:50:55 +0100
-Message-ID: <20110207085055.0acf6040@catus>
-References: <AANLkTikP+f97ohiY6DCi-zogvde=d-rji8txa9RPGJd8@mail.gmail.com>
+From: Michele Petrazzo - Unipex <michele.petrazzo@unipex.it>
+Subject: Re: How can I test my tc script?
+Date: Mon, 07 Feb 2011 09:20:11 +0100
+Message-ID: <4D4FAB3B.2020801@unipex.it>
+References: <1296699466.4606.14.camel@debian-laptop.OptimumWireless>	<20110203120131.38cd818d@catus>	<4D4C0B8F.10005@unipex.it> <20110205155829.3a5ebc7b@catus>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTikP+f97ohiY6DCi-zogvde=d-rji8txa9RPGJd8@mail.gmail.com>
+In-Reply-To: <20110205155829.3a5ebc7b@catus>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Erik Andersen <erik.b.andersen@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Marek Kierdelewicz <marek@piasta.pl>
+Cc: wilson@optimumwireless.com, netfilter@vger.kernel.org
 
-Hi,
+Marek Kierdelewicz wrote:
+>> Hi,
+>
+> Hi
+>
+>> I, are you sure about the big difference? I agree with you about tc
+>> u32 filters are better than iptables + marking, but like now I have
+>> about 100mbit 1k+ users with mangle+classify and tc+htb+egress and
+>> I have a load at about 0.2. My cpu are xeon 2.6 quad.
+>
+> Do you have individual iptables rule doing marking for each user
+> (1k+ rules in mangle)?
+>
 
->Is there a way to port mirroring/SPAN on a linux bridge? If so, what
->would I need to do to set it up? I'm hoping to port morror to
->vboxnet0.
+Yes. One rule for mark and one for return. One for classify and one for
+return. The first ones inside prerouting and the latter in forward.
 
-Mirroring functionality is build into ifb[1]. There's tc action "mirred
-egress mirror" which, used in a proper context, can mirror ingress
-and/or egress traffic to other interface. In your case, mirrored
-interface would be br0.
+srv:~# iptables -nvL -t mangle|wc -l
+7193
 
-Here [2] our colegue is describing ingress mirroring from eth1 to
-eth2-5.
+Like now, I have load: 0.04  ;)
 
-And important note here [3] about using "protocol all" in tc filter, if
-you also want to get non-ip traffic mirrored.
+> Best regards, Marek Kierdelewicz
 
-[1]
-http://www.linuxfoundation.org/collaborate/workgroups/networking/ifb#IFB_Example
-[2] http://marc.info/?l=linux-netdev&m=128853067804910&w=2
-[3] http://marc.info/?l=linux-netdev&m=128861016403775&w=2
-
-Best regards,
-Marek Kierdelewicz
+Ciao,
+Michele
