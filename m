@@ -1,41 +1,21 @@
-From: Michele Petrazzo - Unipex <michele.petrazzo@unipex.it>
-Subject: Re: How can I test my tc script?
-Date: Mon, 07 Feb 2011 09:20:11 +0100
-Message-ID: <4D4FAB3B.2020801@unipex.it>
-References: <1296699466.4606.14.camel@debian-laptop.OptimumWireless>	<20110203120131.38cd818d@catus>	<4D4C0B8F.10005@unipex.it> <20110205155829.3a5ebc7b@catus>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20110205155829.3a5ebc7b@catus>
-Sender: netfilter-owner@vger.kernel.org
+From: Simon Horman <horms@verge.net.au>
+Subject: [GIT PULL nf-next-2.6] IPVS
+Date: Mon,  7 Feb 2011 18:19:40 +0900
+Message-ID: <1297070381-24377-1-git-send-email-horms@verge.net.au>
+Return-path: <lvs-devel-owner@vger.kernel.org>
+Sender: lvs-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Marek Kierdelewicz <marek@piasta.pl>
-Cc: wilson@optimumwireless.com, netfilter@vger.kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, lvs-devel@vger.kernel.org
+Cc: Julian Anastasov <ja@ssi.bg>, Hans Schillstrom <hans@schillstrom.com>, Dan Carpenter <error27@gmail.com>, Patrick McHardy <kaber@trash.net>
 
-Marek Kierdelewicz wrote:
->> Hi,
->
-> Hi
->
->> I, are you sure about the big difference? I agree with you about tc
->> u32 filters are better than iptables + marking, but like now I have
->> about 100mbit 1k+ users with mangle+classify and tc+htb+egress and
->> I have a load at about 0.2. My cpu are xeon 2.6 quad.
->
-> Do you have individual iptables rule doing marking for each user
-> (1k+ rules in mangle)?
->
+Hi Patrick,
 
-Yes. One rule for mark and one for return. One for classify and one for
-return. The first ones inside prerouting and the latter in forward.
+please consider pulling 
+git://git.kernel.org/pub/scm/linux/kernel/git/horms/lvs-test-2.6.git master
+to get a precedence bug fix from Dan Carpenter.
 
-srv:~# iptables -nvL -t mangle|wc -l
-7193
-
-Like now, I have load: 0.04  ;)
-
-> Best regards, Marek Kierdelewicz
-
-Ciao,
-Michele
+ net/netfilter/ipvs/ip_vs_sync.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
