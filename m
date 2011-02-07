@@ -1,29 +1,42 @@
-From: Grant Taylor <gtaylor@riverviewtech.net>
-Subject: Re: Place for ipt_ACCOUNT/ipt_NETFLOW
-Date: Mon, 07 Feb 2011 10:20:45 -0600
-Message-ID: <4D501BDD.5000108@riverviewtech.net>
-References: <4D4A6C6A.6000406@linux.vnet.ibm.com> <4D4B0D7B.5020703@riverviewtech.net> <4D4B8D27.3070306@linux.vnet.ibm.com> <4D4CC630.3050209@riverviewtech.net> <4D4F9735.6080006@linux.vnet.ibm.com>
+From: li.tao@nexgo.de
+Subject: sporadic problem with masquerading ppp0 interface
+Date: Mon, 7 Feb 2011 19:12:03 +0100 (CET)
+Message-ID: <1409763209.53871.1297102323202.JavaMail.ngmail@webmail09.arcor-online.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D4F9735.6080006@linux.vnet.ibm.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=nexgo.de; s=mail-in;
+	t=1297102323; bh=mO7uh5qnbpWtjhkKCRXkq29f7NT7/FlDdJL6oW5qgsA=;
+	h=Date:From:To:Message-ID:Subject:MIME-Version:Content-Type:
+	 Content-Transfer-Encoding;
+	b=ZPsVkMmpKnjVtRQcBwAFSjhH9/C+M4KVQzxNuI3r2YE2XxKHjdkgl/dqG7Y9922UB
+	 1hnglyTG1dPJMhF7FIeDe68+ADUPq/MeNjK6wjgxUom85Eix9+sP3CnhToNWF0SVk0
+	 uoC1hn6hPwzVlE/eu/7ZUmSPgL7M938NU50DWGFs=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On 02/07/11 00:54, Srinivasa T N wrote:
-> This will double the number of rules a packet has to traverse (One rule
-> for accounting and one rule for accept). Is there are other alternative?
+Hi All,
 
-I'd have to see an example of your rules to say for sure...
+In one customer project I got sporadic problem with masquerading at ppp0 interface. The simplified setup is as shown below:
+Client PC <---------->Linux router<----------->modem<----------->ISP
+The Linux router uses the kernel Version 2.6.22.19 and iptables v1.2.11.  
 
-I'm using the counters of the number of packets / bytes that are matched 
-by the rule for accounting.  I'm not adding any additional rules.
+The routing steps are dynamic as described below:
+1) Client PC tries to send tcp sync to an internet server
+2) The router recognizes these packets and creates a ppp0 interface for this session
+3)after the ppp0 gets up, the router masks the tcp packets in the mangle table by iptables, defines a new route in e.g. table 44 (default dev ppp0  scope link) and add a new routing rule (32765:	from all fwmark 0x3 lookup 44). The default GW remains eth1, not changed to ppp0.
+4)at the same time the iptables filter table is extended to accept the marked packets and the masquerading rule for ppp0 interface is also added to the nat table (see below)
+    pkts bytes target             prot opt   in     out       source               destination         
+    0     0       MASQUERADE  all    --    *      ppp0    0.0.0.0/0            0.0.0.0/0    
 
-Further, you can engineer your rule structure so that the fewest rules / 
-tests per rule are traverse by the largest number of packets.
+This schema works well typically with one exception: if the modem connection gets broken and is established again after several minutes, it happens sometimes that all new coming tcp packets from the Client PC afterwards will not be masqueraded although a new masquerading rule for the new creared ppp0 interface (with the old inet address) is added to the nat table again for the new session. In this case the client PC cannot get any tcp response from the internet server. This problem can only be solved by rebooting the router.
 
+Does someone have an idea, what could be the reason for this problem? Can someone explain me the mechanism behind the masquerading for ppp+ interface? I mean where is the dynamic inet address of a ppp interface stored for masquerading purpose and how can the netfilter know that one packet is assigned to the ppp0 interface.   
 
+I would appreciate any help and information very much!
 
-Grant. . . .
+Best regards
+
+Li
