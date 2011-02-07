@@ -1,28 +1,43 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: ebtables VLAN filtering
-Date: Mon, 07 Feb 2011 10:24:13 +0100
-Message-ID: <4D4FBA3D.6000500@plouf.fr.eu.org>
-References: <4D4F4E43.6090000@abpni.co.uk>
+From: Carlos Cruz Luengo <carlos@cruzccl.com>
+Subject: Allow all established and related connections
+Date: Mon, 7 Feb 2011 13:22:32 +0100
+Message-ID: <AANLkTinhVk9+s2qGjVbZdLOOj3A-9CSuBH48OnHr_USs@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D4F4E43.6090000@abpni.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+To: Mail List - Netfilter/iptables <netfilter@vger.kernel.org>
 
-Hello,
+Hi,
 
-Jonathan Tripathy a =E9crit :
->=20
-> With ebtables, is it possible to filter via the VLAN interface (e.g.=20
-> eth0.3 for VLAN3) using the normal -i and -o parameters? I'd like to=20
-> filter via the interface rather than using the tag with --vlan-id if=20
-> possible
+I am writing a firewall script and I have run into a doubt. Is it
+correct to allow already established and related connections by a set
+of rules like these at the beginning of the script...
 
-It depends whether you added the raw interface eth0 or the VLAN
-interface eth0.3 to the bridge. If you added the raw interface eth0,
-then the bridge and ebtables should see tagged frames in all VLANs
-from/to eth0. If you added the VLAN interface eth0.3, then the bridge
-and ebtables should see untagged frames in VLAN 3 from/to eth0.3.
+iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+=2E.. and then only take care of NEW connections? This way I could allo=
+w
+ssh connections to the firewall just with this rule...
+
+iptables -A INPUT -p tcp --dport ssh -m state --state NEW -j ACCEPT
+
+=2E.. instead of with these two rules:
+
+iptables -A INPUT -p tcp --dport ssh -m state --state NEW,ESTABLISHED -=
+j ACCEPT
+iptables -A OUTPUT -p tcp --sport ssh -m state --state ESTABLISHED -j A=
+CCEPT
+
+Sorry if this subject has already been asked in the mailing list (I
+have not found any specific information and I want to be sure that is
+not a mistake or a insecurity...) and thank you in advance!
+
+--
+Carlos Cruz Luengo
+PGP key at: http://wwwkeys.eu.pgp.net/
+=46ingerprint: BA1C 9932 D5B4 2B53 1DBC=A0 269B 2CC0 37C4 E996 EBF1
