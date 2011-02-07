@@ -1,34 +1,64 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Allow all established and related connections
-Date: Mon, 7 Feb 2011 13:35:27 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1102071333001.5510@obet.zrqbmnf.qr>
-References: <AANLkTinhVk9+s2qGjVbZdLOOj3A-9CSuBH48OnHr_USs@mail.gmail.com>
+From: Matty Sarro <msarro@gmail.com>
+Subject: Re: Linux bridge/switch port mirroring/SPAN/port monitoring/Roving Analysis?
+Date: Mon, 7 Feb 2011 10:05:14 -0500
+Message-ID: <AANLkTi=0379ZQS7NTO4OxNkkscRiwn2a8VFWNZaGmSOj@mail.gmail.com>
+References: <AANLkTikP+f97ohiY6DCi-zogvde=d-rji8txa9RPGJd8@mail.gmail.com>
+	<20110207085055.0acf6040@catus>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTinhVk9+s2qGjVbZdLOOj3A-9CSuBH48OnHr_USs@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:in-reply-to:references:date
+         :message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=QMkDvjGWPl/rsYSrcKbc+K9Go6IhIr2SFkanSmr5Zo0=;
+        b=Ntvw+FHtURr0KsmYaq+NJSiGaR3qxA9EN1HDOnv6rgKajW/BSXS1aBjgWKHGA3Bq80
+         SWH4eSfH9PqstUOBNrBlcru8zRhIqvmmPiFGLr/Xl8StLHljBlMim+TYIsTJyGe1MWSA
+         KzQC3bFlDvAJg1AjtxYFUsjBunH3wCgWC8b4k=
+In-Reply-To: <20110207085055.0acf6040@catus>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Carlos Cruz Luengo <carlos@cruzccl.com>
-Cc: Mail List - Netfilter/iptables <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Marek Kierdelewicz <marek@piasta.pl>
+Cc: Erik Andersen <erik.b.andersen@gmail.com>, netfilter@vger.kernel.org
 
-On Monday 2011-02-07 13:22, Carlos Cruz Luengo wrote:
+I know port mirroring is supported, however I've never implemented it.
+SPAN isn't supported; its cisco proprietary.
 
->Hi,
+On Mon, Feb 7, 2011 at 2:50 AM, Marek Kierdelewicz <marek@piasta.pl> wr=
+ote:
+> Hi,
 >
->I am writing a firewall script and I have run into a doubt. Is it
->correct to allow already established and related connections by a set
->of rules like these at the beginning of the script...
+>>Is there a way to port mirroring/SPAN on a linux bridge? If so, what
+>>would I need to do to set it up? I'm hoping to port morror to
+>>vboxnet0.
 >
->iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->iptables -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+> Mirroring functionality is build into ifb[1]. There's tc action "mirr=
+ed
+> egress mirror" which, used in a proper context, can mirror ingress
+> and/or egress traffic to other interface. In your case, mirrored
+> interface would be br0.
 >
->... and then only take care of NEW connections?
-
-You can do all the things you want. Early exclusion is however nothing 
-new.
-The concept is http://iq0.com/notes/deep.nesting.html ("Else considered 
-harmful") and is also advocated by 
-http://jengelh.medozas.de/documents/Perfect_Ruleset.pdf
+> Here [2] our colegue is describing ingress mirroring from eth1 to
+> eth2-5.
+>
+> And important note here [3] about using "protocol all" in tc filter, =
+if
+> you also want to get non-ip traffic mirrored.
+>
+> [1]
+> http://www.linuxfoundation.org/collaborate/workgroups/networking/ifb#=
+IFB_Example
+> [2] http://marc.info/?l=3Dlinux-netdev&m=3D128853067804910&w=3D2
+> [3] http://marc.info/?l=3Dlinux-netdev&m=3D128861016403775&w=3D2
+>
+> Best regards,
+> Marek Kierdelewicz
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =C2=A0http://vger.kernel.org/majordomo-info.ht=
+ml
+>
