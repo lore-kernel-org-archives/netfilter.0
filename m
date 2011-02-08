@@ -1,32 +1,40 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: Rationale behind MARK target only in mangle table
-Date: Tue, 8 Feb 2011 10:27:26 +0100
-Message-ID: <20110208092726.GM6524@ks28632.kimsufi.com>
-References: <4D510649.9020309@linux.vnet.ibm.com>
+From: Steffen Beyer <steffen@beyer.io>
+Subject: Masquerading fails after first packet
+Date: Tue, 8 Feb 2011 18:49:22 +0100
+Message-ID: <20110208184922508316.a730ff6b@beyer.io>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4D510649.9020309@linux.vnet.ibm.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Srinivasa T N <seenutn@linux.vnet.ibm.com>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Hi,
+Hello,
 
-On Tuesday, 2011 February  8 at 14:30:57 +0530, Srinivasa T N wrote:
-> Hi All,
-> 	I have not gone through the old discussions (if there was one on
-> this topic).
-> 	I wanted to know the rationale behind allowing MARK target only in
-> the mangle table?
+I'm trying to get masquerading/SNAT to work on a Ubiquity AirOS device 
+(kernel 2.6.15). All chains are empty, policy ACCEPT, just one rule:
 
-There is almost none and in recent kernel the limitation is not there
-anymore. You can do marking in the filter tables:
-	iptables -A OUTPUT -j MARK --set-mark 1
+Chain POSTROUTING (policy ACCEPT 3 packets, 200 bytes)
+ pkts bytes target     prot opt in     out     source               
+destination         
+    4   288 SNAT       all  --  any    eth1    192.168.23.0/24      
+anywhere            to:10.213.5.9 
 
-BR,
+When I ping an internet host from the internal network, one reply arrives, 
+then it gets stuck. No more packets appear on eth1.
+
+Same with TCP; after trying to open a connection (ACK reply arrives, 
+followed by silence) I find an entry in ip_conntrack:
+
+tcp      6 49 SYN_RECV src=192.168.23.2 dst=88.198.17.205 sport=3955 
+dport=22 src=88.198.17.205 dst=10.213.5.9 sport=22 dport=3955 use=2
+
+What's missing? Any insight appreciated!
+
+Kind regards,
 -- 
-Eric Leblond <eric@regit.org>
+Steffen Beyer <steffen@beyer.io>
+
+GnuPG key fingerprint: CA00 1611 242B 89D4 E643  E235 05F3 7689 DD3E EB26
+Public key available upon request or at http://wwwkeys.de.pgp.net
