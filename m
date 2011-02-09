@@ -1,40 +1,27 @@
-From: Steffen Beyer <steffen@beyer.io>
-Subject: Masquerading fails after first packet
-Date: Tue, 8 Feb 2011 18:49:22 +0100
-Message-ID: <20110208184922508316.a730ff6b@beyer.io>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [GIT PULL nf-next-2.6] IPVS
+Date: Wed, 09 Feb 2011 08:06:09 +0100
+Message-ID: <4D523CE1.2090009@trash.net>
+References: <1297070381-24377-1-git-send-email-horms@verge.net.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <lvs-devel-owner@vger.kernel.org>
+In-Reply-To: <1297070381-24377-1-git-send-email-horms@verge.net.au>
+Sender: lvs-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Simon Horman <horms@verge.net.au>
+Cc: netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, lvs-devel@vger.kernel.org, Julian Anastasov <ja@ssi.bg>, Hans Schillstrom <hans@schillstrom.com>, Dan Carpenter <error27@gmail.com>
 
-Hello,
+Am 07.02.2011 10:19, schrieb Simon Horman:
+> Hi Patrick,
+> 
+> please consider pulling 
+> git://git.kernel.org/pub/scm/linux/kernel/git/horms/lvs-test-2.6.git master
+> to get a precedence bug fix from Dan Carpenter.
+> 
+>  net/netfilter/ipvs/ip_vs_sync.c |    2 +-
+>  1 files changed, 1 insertions(+), 1 deletions(-)
 
-I'm trying to get masquerading/SNAT to work on a Ubiquity AirOS device 
-(kernel 2.6.15). All chains are empty, policy ACCEPT, just one rule:
+Pulled, thanks Simon.
 
-Chain POSTROUTING (policy ACCEPT 3 packets, 200 bytes)
- pkts bytes target     prot opt in     out     source               
-destination         
-    4   288 SNAT       all  --  any    eth1    192.168.23.0/24      
-anywhere            to:10.213.5.9 
-
-When I ping an internet host from the internal network, one reply arrives, 
-then it gets stuck. No more packets appear on eth1.
-
-Same with TCP; after trying to open a connection (ACK reply arrives, 
-followed by silence) I find an entry in ip_conntrack:
-
-tcp      6 49 SYN_RECV src=192.168.23.2 dst=88.198.17.205 sport=3955 
-dport=22 src=88.198.17.205 dst=10.213.5.9 sport=22 dport=3955 use=2
-
-What's missing? Any insight appreciated!
-
-Kind regards,
--- 
-Steffen Beyer <steffen@beyer.io>
-
-GnuPG key fingerprint: CA00 1611 242B 89D4 E643  E235 05F3 7689 DD3E EB26
-Public key available upon request or at http://wwwkeys.de.pgp.net
