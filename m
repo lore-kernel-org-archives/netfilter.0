@@ -1,25 +1,39 @@
-From: Steven Kath <steven.kath@vyatta.com>
-Subject: Re: Question on raw table and match state
-Date: Fri, 11 Feb 2011 10:01:41 -0800 (PST)
-Message-ID: <1426981515.473.1297447301826.JavaMail.root@tahiti.vyatta.com>
-References: <1233805814.468.1297447131465.JavaMail.root@tahiti.vyatta.com>
+From: Chris Friesen <chris.friesen@genband.com>
+Subject: any way to reset all marked connections when using CONNMARK?
+Date: Fri, 11 Feb 2011 15:24:55 -0600
+Message-ID: <4D55A927.7060703@genband.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1233805814.468.1297447131465.JavaMail.root@tahiti.vyatta.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Pandu Poluan <pandu@poluan.info>
-Cc: netfilter@vger.kernel.org
+To: netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
 
------ "Pandu Poluan" <pandu@poluan.info> wrote: -----
-> I am wondering if the following rule will work:
-> 
-> iptables -t raw -A PREROUTING -p icmp -m state --state
-> RELATED,ESTABLISHED -j ACCEPT
-> 
 
-If you look at Jan's Netfilter packet flow diagram, you'll see that the raw PREROUTING chain is traversed before the conntrack functions are called.  State can not be determined until after the packet is compared to the conntrack table. The rule you described can't work and I think the iptables binaries won't allow it to be created. 
+Hi,
 
-http://jengelh.medozas.de/images/nf-packet-flow.png
+We've got a scenario where we want to use CONNMARK to mark connections
+that have passed a large number of rules in order to allow packets from
+those connections to skip rules in the future (for performance reasons).
+
+However, when we add new rules we want to ensure that all the
+connections need to pass the new rules as well.
+
+It has been proposed to add a custom patch to clear the mark for all
+marked connections--is there a better way of doing this?
+
+I thought maybe we could use the CONNMARK as a generation count and
+bumping it up each time a rule is added.  This would require updating
+the bypass rule each time we modify the other rules though.  If there
+are better options I'd like to hear them.
+
+Thanks,
+Chris
+
+-- 
+Chris Friesen
+Software Developer
+GENBAND
+chris.friesen@genband.com
+www.genband.com
