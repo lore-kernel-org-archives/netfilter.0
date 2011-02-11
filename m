@@ -1,76 +1,50 @@
-From: Stefan Berger <stefanb@linux.vnet.ibm.com>
-Subject: [PATCH] [connlimit] connlimit-above early loop termination
-Date: Fri, 11 Feb 2011 11:22:15 -0500
-Message-ID: <1297441335.25407.9.camel@d941e-10>
+From: Pandu Poluan <pandu@poluan.info>
+Subject: Re: OUTPUT SNAT
+Date: Fri, 11 Feb 2011 23:27:25 +0700
+Message-ID: <AANLkTimG330ctZjRk8a=ps19bpKc35x86hBT8+DGKycD@mail.gmail.com>
+References: <AANLkTimBv5i=wHBW=_QCUkbkW32UA5bH1T2Le=2Hd_Ez@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <AANLkTimBv5i=wHBW=_QCUkbkW32UA5bH1T2Le=2Hd_Ez@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Patrick McHardy <kaber@trash.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Ryan Whelan <rcwhelan@gmail.com>, netfilter@vger.kernel.org
 
-The patch below introduces an early termination of the loop that is
-counting matches. It terminates once the counter has exceeded the
-threshold provided by the user. There's no point in continuing the loop
-afterwards and looking at other entries.
+Maybe you can employ -m physdev ?
 
-It plays together with the following code further below:
+http://ebtables.sourceforge.net/br_fw_ia/br_fw_ia.html
 
-return (connections > info->limit) ^ info->inverse;
+(sorry, never used br0 and tun0)
 
-where connections is the result of the counted connection, which in turn
-is the matches variable in the loop. So once 
-
-        -> matches = info->limit + 1    
-alias   -> matches > info->limit
-alias   -> matches > threshold 
-
-we can terminate the loop.
-
-Signed-off-by: Stefan Berger <stefanb@linux.vnet.ibm.com> 
+Rgds,
 
 
-diff --git a/net/netfilter/xt_connlimit.c b/net/netfilter/xt_connlimit.c
-index 5c5b6b9..f3ced9c 100644
---- a/net/netfilter/xt_connlimit.c
-+++ b/net/netfilter/xt_connlimit.c
-@@ -97,7 +97,8 @@ static int count_them(struct net *net,
- 		      const struct nf_conntrack_tuple *tuple,
- 		      const union nf_inet_addr *addr,
- 		      const union nf_inet_addr *mask,
--		      u_int8_t family)
-+		      u_int8_t family,
-+		      unsigned int threshold)
- {
- 	const struct nf_conntrack_tuple_hash *found;
- 	struct xt_connlimit_conn *conn;
-@@ -151,9 +152,14 @@ static int count_them(struct net *net,
- 			continue;
- 		}
-
--		if (same_source_net(addr, mask, &conn->tuple.src.u3, family))
-+		if (same_source_net(addr, mask, &conn->tuple.src.u3, family)) {
- 			/* same source network -> be counted! */
- 			++matches;
-+			if (matches > threshold) {
-+				nf_ct_put(found_ct);
-+				break;
-+			}
-+		}
- 		nf_ct_put(found_ct);
- 	}
-
-@@ -201,7 +207,8 @@ connlimit_mt(const struct sk_buff *skb, struct xt_action_param *par)
-
- 	spin_lock_bh(&info->data->lock);
- 	connections = count_them(net, info->data, tuple_ptr, &addr,
--	                         &info->mask, par->family);
-+	                         &info->mask, par->family,
-+	                         info->limit);
- 	spin_unlock_bh(&info->data->lock);
-
- 	if (connections < 0) {
+On 2011-02-11, Ryan Whelan <rcwhelan@gmail.com> wrote:
+> I have a linux router with a WAN/VPN interface (tun0) and a LAN/Bridge
+> (br0).  The SVI address on the bridge is 172.21.0.1 / 28.  The Linux
+> machine doesn't do any masquerading so all the traffic from machines
+> connected to the br0 interface contains its original address.  All
+> traffic from the Linux router itself, sent over the VPN has a source
+> address of the tun0, of course.  Is it possible to to SNAT all traffic
+> sent over the VPN to have a source ip of the bridge SVI?
+>
+> Something like: `iptables -t nat -A OUTPUT -o tun0 -j SNAT --to 172.21.0.1`
+>
+> `iptables -t nat -A POSTROUTING -o tun0 -j SNAT --to 172.21.0.1`
+> works, but it will also masquerade all traffic forwarded from the
+> bridge (br0) interface.
+>
+> Is this possible with netfilter? or even possible with linux?
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
 
 
-
+-- 
+--
+Pandu E Poluan - IT Optimizer
+My website: http://pandu.poluan.info/
