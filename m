@@ -1,36 +1,48 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [PATCH] [connlimit] connlimit-above early loop termination
-Date: Fri, 11 Feb 2011 18:00:53 +0100
-Message-ID: <4D556B45.8030304@trash.net>
-References: <1297441335.25407.9.camel@d941e-10>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: OUTPUT SNAT
+Date: Fri, 11 Feb 2011 18:20:00 +0100
+Message-ID: <4D556FC0.3050503@plouf.fr.eu.org>
+References: <AANLkTimBv5i=wHBW=_QCUkbkW32UA5bH1T2Le=2Hd_Ez@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <1297441335.25407.9.camel@d941e-10>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <AANLkTimBv5i=wHBW=_QCUkbkW32UA5bH1T2Le=2Hd_Ez@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Stefan Berger <stefanb@linux.vnet.ibm.com>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-On 11.02.2011 17:22, Stefan Berger wrote:
-> The patch below introduces an early termination of the loop that is
-> counting matches. It terminates once the counter has exceeded the
-> threshold provided by the user. There's no point in continuing the loop
-> afterwards and looking at other entries.
-> 
-> It plays together with the following code further below:
-> 
-> return (connections > info->limit) ^ info->inverse;
-> 
-> where connections is the result of the counted connection, which in turn
-> is the matches variable in the loop. So once 
-> 
->         -> matches = info->limit + 1    
-> alias   -> matches > info->limit
-> alias   -> matches > threshold 
-> 
-> we can terminate the loop.
-> 
+Hello,
 
-Applied, thanks Stefan.
+Ryan Whelan a =E9crit :
+> I have a linux router with a WAN/VPN interface (tun0) and a LAN/Bridg=
+e
+> (br0).  The SVI address on the bridge is 172.21.0.1 / 28.  The Linux
+> machine doesn't do any masquerading so all the traffic from machines
+> connected to the br0 interface contains its original address.  All
+> traffic from the Linux router itself, sent over the VPN has a source
+> address of the tun0, of course.  Is it possible to to SNAT all traffi=
+c
+> sent over the VPN to have a source ip of the bridge SVI?
+>=20
+> Something like: `iptables -t nat -A OUTPUT -o tun0 -j SNAT --to 172.2=
+1.0.1`
+
+You can use SNAT only in nat/POSTROUTING.
+
+> `iptables -t nat -A POSTROUTING -o tun0 -j SNAT --to 172.21.0.1`
+> works, but it will also masquerade all traffic forwarded from the
+> bridge (br0) interface.
+>=20
+> Is this possible with netfilter? or even possible with linux?
+
+Sure. You can either
+- exclude packets from the address of tun0 : ! -s <tun0_address>
+- match only packets from the bridge subnet : -s 172.21.0.0/28
+
+If you want to SNAT packets based on the input interface regardless of
+the source address, you can mark packets :
+
+iptables -t mangle -A FORWARD -i br0 -o tun0 -j MARK --set-mark 1
+iptables -t nat -A POSTROUTING -o tun0 -m mark --mark 1 \
+  -j SNAT --to 172.21.0.1
