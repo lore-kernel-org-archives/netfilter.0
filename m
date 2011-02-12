@@ -1,62 +1,36 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: [patch] warn on use of ctstate checking in raw
-Date: Sat, 12 Feb 2011 04:27:54 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1102120425020.2159@obet.zrqbmnf.qr>
-References: <1233805814.468.1297447131465.JavaMail.root@tahiti.vyatta.com> <1426981515.473.1297447301826.JavaMail.root@tahiti.vyatta.com> <AANLkTik2CyiQ3RQZxsxLSMmSFrzCKD+rLr7=tY4asvLG@mail.gmail.com>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: any way to reset all marked connections when using CONNMARK?
+Date: Sat, 12 Feb 2011 11:42:15 +0000
+Message-ID: <1297510935.1770.38.camel@andybev>
+References: <4D55A927.7060703@genband.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTik2CyiQ3RQZxsxLSMmSFrzCKD+rLr7=tY4asvLG@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1297510937; bh=Il3wftW8MoHLsBQp4GiLT/csBF7rPo/BXX9qr
+	m8aCKc=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
+	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=MJo9vH/i
+	QWpwtzP21yvc4PZgPq7+pCtM8YTEmCJhDWwQuxTSvTRvyXc9UzXbY6QTRTy3R0aCnGB
+	PbqojqAmTjWwGutGw3hg93qHrPVfge6nBkb82efhgENvDRFf5AcYUZxfxwSAenHhB4p
+	zxFFNig/78N3372a47Ov43Lkn8ArU=
+In-Reply-To: <4D55A927.7060703@genband.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>
-Cc: Steven Kath <steven.kath@vyatta.com>, netfilter@vger.kernel.org, Pandu Poluan <pandu@poluan.info>
+Content-Type: text/plain; charset="us-ascii"
+To: Chris Friesen <chris.friesen@genband.com>
+Cc: netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter <netfilter@vger.kernel.org>
 
-On Saturday 2011-02-12 03:14, Pandu Poluan wrote:
+On Fri, 2011-02-11 at 15:24 -0600, Chris Friesen wrote:
+> It has been proposed to add a custom patch to clear the mark for all
+> marked connections--is there a better way of doing this?
+> 
 
->(sorry for top posting)
->
->Strangely enough, the iptables binary does not complain when I tried:
->
->iptables -t raw -A PREROUTING -p icmp -m state --state
->ESTABLISHED,RELATED -j LOG --log-prefix "RP MATCH:"
+How about using the conntrack userspace command-line interface?
 
-Well, `rm -Rf *` also does not complain about files going away --
-"Computer is a serious tool" :-)
+conntrack -U -m 0
+
+looks like it should do what you want.
+
+Andy
 
 
-Oh well, nature. Here's a patch for nature...
-
-parent 44bd4de9c2270b22c3c898310102bc6be9ed2978 (v2.6.38-rc1-187-g44bd4de)
-commit ddc00998c0b1aa720720529ebaac73bb142e531f
-Author: Jan Engelhardt <jengelh@medozas.de>
-Date:   Sat Feb 12 04:24:07 2011 +0100
-
-netfilter: xt_conntrack: warn about use in raw table
-
-nfct happens to run after the raw table only.
-
-Signed-off-by: Jan Engelhardt <jengelh@medozas.de>
----
- net/netfilter/xt_conntrack.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
-
-diff --git a/net/netfilter/xt_conntrack.c b/net/netfilter/xt_conntrack.c
-index 4ef1b63..2c0086a 100644
---- a/net/netfilter/xt_conntrack.c
-+++ b/net/netfilter/xt_conntrack.c
-@@ -272,6 +272,11 @@ static int conntrack_mt_check(const struct xt_mtchk_param *par)
- {
- 	int ret;
- 
-+	if (strcmp(par->table, "raw") == 0) {
-+		pr_info("state is undetermined at the time of raw table\n");
-+		return -EINVAL;
-+	}
-+
- 	ret = nf_ct_l3proto_try_module_get(par->family);
- 	if (ret < 0)
- 		pr_info("cannot load conntrack support for proto=%u\n",
--- 
-# Created with git-export-patch
