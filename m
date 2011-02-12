@@ -1,38 +1,57 @@
-From: Steven Kath <steven.kath@vyatta.com>
-Subject: Re: any way to reset all marked connections when using CONNMARK?
-Date: Fri, 11 Feb 2011 14:11:56 -0800 (PST)
-Message-ID: <426866445.661.1297462316364.JavaMail.root@tahiti.vyatta.com>
-References: <256863566.648.1297461959805.JavaMail.root@tahiti.vyatta.com>
+From: Pandu Poluan <pandu@poluan.info>
+Subject: Re: Question on raw table and match state
+Date: Sat, 12 Feb 2011 09:14:49 +0700
+Message-ID: <AANLkTik2CyiQ3RQZxsxLSMmSFrzCKD+rLr7=tY4asvLG@mail.gmail.com>
+References: <1233805814.468.1297447131465.JavaMail.root@tahiti.vyatta.com>
+	<1426981515.473.1297447301826.JavaMail.root@tahiti.vyatta.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <256863566.648.1297461959805.JavaMail.root@tahiti.vyatta.com>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <1426981515.473.1297447301826.JavaMail.root@tahiti.vyatta.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Chris Friesen <chris.friesen@genband.com>
-Cc: netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+Content-Transfer-Encoding: 7bit
+To: Steven Kath <steven.kath@vyatta.com>, netfilter@vger.kernel.org
+
+(sorry for top posting)
+
+Strangely enough, the iptables binary does not complain when I tried:
+
+iptables -t raw -A PREROUTING -p icmp -m state --state
+ESTABLISHED,RELATED -j LOG --log-prefix "RP MATCH:"
+
+or replacing LOG with ACCEPT. But checking dmesg shows that the rule
+is not triggered. Just to be sure, I added the following:
+
+iptables -A INPUT -p icmp -m state --state ESTABLISHED,RELATED -j LOG
+--log-prefix "FI MATCH:"
+
+and dmesg indeed shows the rule triggering.
+
+That said, I've now understood raw & conntrack much better, thanks.
+
+Rgds,
 
 
+On 2011-02-12, Steven Kath <steven.kath@vyatta.com> wrote:
+> ----- "Pandu Poluan" <pandu@poluan.info> wrote: -----
+>> I am wondering if the following rule will work:
+>>
+>> iptables -t raw -A PREROUTING -p icmp -m state --state
+>> RELATED,ESTABLISHED -j ACCEPT
+>>
+>
+> If you look at Jan's Netfilter packet flow diagram, you'll see that the raw
+> PREROUTING chain is traversed before the conntrack functions are called.
+> State can not be determined until after the packet is compared to the
+> conntrack table. The rule you described can't work and I think the iptables
+> binaries won't allow it to be created.
+>
+> http://jengelh.medozas.de/images/nf-packet-flow.png
+>
 
------ "Chris Friesen" <chris.friesen@genband.com> wrote: -----
-> We've got a scenario where we want to use CONNMARK to mark connections
-> that have passed a large number of rules in order to allow packets
-> from those connections to skip rules in the future (for performance
-> reasons).
-> 
-> However, when we add new rules we want to ensure that all the
-> connections need to pass the new rules as well.
-> 
-> It has been proposed to add a custom patch to clear the mark for all
-> marked connections--is there a better way of doing this?
-> 
-> I thought maybe we could use the CONNMARK as a generation count and
-> bumping it up each time a rule is added. This would require updating
-> the bypass rule each time we modify the other rules though. If there
-> are better options I'd like to hear them.
 
-Using conntrack-tools might help:
-
-conntrack --update --mark 0
-
+-- 
+--
+Pandu E Poluan - IT Optimizer
+My website: http://pandu.poluan.info/
