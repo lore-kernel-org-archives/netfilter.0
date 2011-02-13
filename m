@@ -1,36 +1,36 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: any way to reset all marked connections when using CONNMARK?
-Date: Sat, 12 Feb 2011 11:42:15 +0000
-Message-ID: <1297510935.1770.38.camel@andybev>
-References: <4D55A927.7060703@genband.com>
+From: Pandu Poluan <pandu@poluan.info>
+Subject: DSCP bit-order confusion
+Date: Sun, 13 Feb 2011 12:26:21 +0700
+Message-ID: <AANLkTi=nrN55HWi5yS_JA5kjhYtLaJCayKFkMb6Zx24g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1297510937; bh=Il3wftW8MoHLsBQp4GiLT/csBF7rPo/BXX9qr
-	m8aCKc=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
-	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=MJo9vH/i
-	QWpwtzP21yvc4PZgPq7+pCtM8YTEmCJhDWwQuxTSvTRvyXc9UzXbY6QTRTy3R0aCnGB
-	PbqojqAmTjWwGutGw3hg93qHrPVfge6nBkb82efhgENvDRFf5AcYUZxfxwSAenHhB4p
-	zxFFNig/78N3372a47Ov43Lkn8ArU=
-In-Reply-To: <4D55A927.7060703@genband.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Chris Friesen <chris.friesen@genband.com>
-Cc: netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Fri, 2011-02-11 at 15:24 -0600, Chris Friesen wrote:
-> It has been proposed to add a custom patch to clear the mark for all
-> marked connections--is there a better way of doing this?
-> 
+Hello all.
 
-How about using the conntrack userspace command-line interface?
+Okay, this have been driving me nuts for the past 2 days.
 
-conntrack -U -m 0
+According to RFC2474, there are three pools of DSCP. I want to use
+Pool 2 for local use. According to the said RFC, the DSCP field should
+be set to xxxx11 (leftmost is bit 0, rightmost id bit 5)
 
-looks like it should do what you want.
+So, that means if I use -j DSCP --set-dscp, the 16 values of Pool 2
+would be between 0x30 and 0x3f, inclusive.
 
-Andy
+Am I right?
+
+(The reason why I want to use the DSCP Pool 2 is to provide a 'key' to
+iproute2 to perform policy-based routing based on tos/dsfield; I can't
+use fwmark because it's used for tc)
+
+Rgds,
 
 
+-- 
+--
+Pandu E Poluan - IT Optimizer
+My website: http://pandu.poluan.info/
