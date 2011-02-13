@@ -1,36 +1,45 @@
-From: Pandu Poluan <pandu@poluan.info>
-Subject: DSCP bit-order confusion
-Date: Sun, 13 Feb 2011 12:26:21 +0700
-Message-ID: <AANLkTi=nrN55HWi5yS_JA5kjhYtLaJCayKFkMb6Zx24g@mail.gmail.com>
+From: Stefan Berger <stefanb@linux.vnet.ibm.com>
+Subject: Re: [PATCH] [connlimit] connlimit-above early loop termination
+Date: Sun, 13 Feb 2011 13:53:17 -0500
+Message-ID: <4D58289D.5000801@linux.vnet.ibm.com>
+References: <1297441335.25407.9.camel@d941e-10> <4D556B45.8030304@trash.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4D556B45.8030304@trash.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Patrick McHardy <kaber@trash.net>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
 
-Hello all.
+On 02/11/2011 12:00 PM, Patrick McHardy wrote:
+> On 11.02.2011 17:22, Stefan Berger wrote:
+>> The patch below introduces an early termination of the loop that is
+>> counting matches. It terminates once the counter has exceeded the
+>> threshold provided by the user. There's no point in continuing the loop
+>> afterwards and looking at other entries.
+>>
+>> It plays together with the following code further below:
+>>
+>> return (connections>  info->limit) ^ info->inverse;
+>>
+>> where connections is the result of the counted connection, which in turn
+>> is the matches variable in the loop. So once
+>>
+>>          ->  matches = info->limit + 1
+>> alias   ->  matches>  info->limit
+>> alias   ->  matches>  threshold
+>>
+>> we can terminate the loop.
+>>
+> Applied, thanks Stefan.
+I am currently creating a derivative of this module for a slightly 
+different purpose. While testing that one and not using the -m state 
+--state -NEW in front of the -m connlimit, I saw that that shortcut 
+doesn't work properly but keeps on adding entries into the list. So, 
+unfortunately I have to withdraw that patch. I apologize and I'll send a 
+patch for this.
 
-Okay, this have been driving me nuts for the past 2 days.
-
-According to RFC2474, there are three pools of DSCP. I want to use
-Pool 2 for local use. According to the said RFC, the DSCP field should
-be set to xxxx11 (leftmost is bit 0, rightmost id bit 5)
-
-So, that means if I use -j DSCP --set-dscp, the 16 values of Pool 2
-would be between 0x30 and 0x3f, inclusive.
-
-Am I right?
-
-(The reason why I want to use the DSCP Pool 2 is to provide a 'key' to
-iproute2 to perform policy-based routing based on tos/dsfield; I can't
-use fwmark because it's used for tc)
-
-Rgds,
-
-
--- 
---
-Pandu E Poluan - IT Optimizer
-My website: http://pandu.poluan.info/
+   Regards,
+      Stefan
