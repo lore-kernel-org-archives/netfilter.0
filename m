@@ -1,22 +1,36 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [patch] warn on use of ctstate checking in raw
-Date: Mon, 14 Feb 2011 17:29:31 +0100
-Message-ID: <4D59586B.3000901@trash.net>
-References: <1233805814.468.1297447131465.JavaMail.root@tahiti.vyatta.com> <1426981515.473.1297447301826.JavaMail.root@tahiti.vyatta.com> <AANLkTik2CyiQ3RQZxsxLSMmSFrzCKD+rLr7=tY4asvLG@mail.gmail.com> <alpine.LNX.2.01.1102120425020.2159@obet.zrqbmnf.qr>
+From: Fabrice <fabricedeyber@agilemesh.com>
+Subject: Re: how to install xtables extension to arbitrary path?
+Date: Mon, 14 Feb 2011 17:43:54 +0000 (UTC)
+Message-ID: <loom.20110214T183938-809@post.gmane.org>
+References: <4CB712C3.3030804@21com.com> <loom.20110214T152123-163@post.gmane.org> <4D593F90.5020609@googlemail.com> <alpine.LNX.2.01.1102141548410.5842@obet.zrqbmnf.qr> <loom.20110214T155902-834@post.gmane.org> <alpine.LNX.2.01.1102141618310.12050@obet.zrqbmnf.qr> <loom.20110214T162258-861@post.gmane.org> <alpine.LNX.2.01.1102141642040.14613@obet.zrqbmnf.qr> <loom.20110214T171359-758@post.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1102120425020.2159@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Steven Kath <steven.kath@vyatta.com>, netfilter@vger.kernel.org, Pandu Poluan <pandu@poluan.info>
+To: netfilter@vger.kernel.org
 
-Am 12.02.2011 04:27, schrieb Jan Engelhardt:
-> netfilter: xt_conntrack: warn about use in raw table
-> 
-> nfct happens to run after the raw table only.
-> 
+I think I found the issue. It has to do with libtool when I make install.
+I saw this in the trace:
+libtool: install: warning: relinking `libiptc/libiptc.la'
+/opt/arm-2009q1/bin/../lib/gcc/arm-none-linux-gnueabi/4.3.3/../../../../
+arm-none-linux-gnueabi/bin/ld: warning: library search path "/usr/lib" 
+is unsafe for cross-compilation
+/opt/arm-2009q1/bin/../lib/gcc/arm-none-linux-gnueabi/4.3.3/../../../../
+arm-none-linux-gnueabi/bin/ld: skipping incompatible /usr/lib/libc.so when 
+searching for -lc/opt/arm-2009q1/bin/../lib/gcc/
+arm-none-linux-gnueabi/4.3.3/../../../../arm-none-linux-gnueabi/bin/ld: 
+skipping incompatible /usr/lib/libc.a when searching for -lc
+libtool: install: warning: remember to run `libtool --finish /usr/lib'
+libtool: install: warning: `libiptc/libip4tc.la' has not been installed in 
+`/usr/lib'
+libtool: install: warning: `libiptc/libip6tc.la' has not been installed in 
+`/usr/lib'
 
-APplied, thanks Jan.
+So I did a make clean, configure and make. The I copied manually those libraries 
+before the install to my NFS. It seems to work now :-)
+
+
+
+
