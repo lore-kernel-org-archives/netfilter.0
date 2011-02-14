@@ -1,45 +1,50 @@
-From: Stefan Berger <stefanb@linux.vnet.ibm.com>
-Subject: Re: [PATCH] [connlimit] connlimit-above early loop termination
-Date: Sun, 13 Feb 2011 13:53:17 -0500
-Message-ID: <4D58289D.5000801@linux.vnet.ibm.com>
-References: <1297441335.25407.9.camel@d941e-10> <4D556B45.8030304@trash.net>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: Vasiliy Kulikov <segoon@openwall.com>
+Subject: [PATCH] bridge: netfilter: fix information leak
+Date: Mon, 14 Feb 2011 13:54:35 +0300
+Message-ID: <1297680875-11663-1-git-send-email-segoon@openwall.com>
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D556B45.8030304@trash.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:sender:from:to:cc:subject:date:message-id
+         :x-mailer;
+        bh=yRsTX1GxW+a6W7zYgJnGcYqSh18CIrJn59eq4rUpQvE=;
+        b=gqZ6SHXu/LSgQ2ff8iIrxRKjnvm9+uMpUUM3/oTgOFUYhS4NPuZcUCxCwP8R1puUTx
+         AKaIVQrjJUEEA0oZXEY2MSS3JYjGvrz6joZDQ7wuXWkCyeUQVvo4u7rFAyvf9ZIx2qUx
+         /RC2edmh+sB58dKzjVO6wzrRqRpXMJk9smMn0=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Patrick McHardy <kaber@trash.net>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: linux-kernel@vger.kernel.org
+Cc: security@kernel.org, Bart De Schuymer <bart.de.schuymer@pandora.be>, Patrick McHardy <kaber@trash.net>, Stephen Hemminger <shemminger@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>, ebtables-user@lists.sourceforge.net, ebtables-devel@lists.sourceforge.net, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, bridge@lists.linux-foundation.org, netdev@vger.kernel.org
 
-On 02/11/2011 12:00 PM, Patrick McHardy wrote:
-> On 11.02.2011 17:22, Stefan Berger wrote:
->> The patch below introduces an early termination of the loop that is
->> counting matches. It terminates once the counter has exceeded the
->> threshold provided by the user. There's no point in continuing the loop
->> afterwards and looking at other entries.
->>
->> It plays together with the following code further below:
->>
->> return (connections>  info->limit) ^ info->inverse;
->>
->> where connections is the result of the counted connection, which in turn
->> is the matches variable in the loop. So once
->>
->>          ->  matches = info->limit + 1
->> alias   ->  matches>  info->limit
->> alias   ->  matches>  threshold
->>
->> we can terminate the loop.
->>
-> Applied, thanks Stefan.
-I am currently creating a derivative of this module for a slightly 
-different purpose. While testing that one and not using the -m state 
---state -NEW in front of the -m connlimit, I saw that that shortcut 
-doesn't work properly but keeps on adding entries into the list. So, 
-unfortunately I have to withdraw that patch. I apologize and I'll send a 
-patch for this.
+Struct tmp is copied from userspace.  It is not checked whether the "name"
+field is NULL terminated.  This may lead to buffer overflow and passing
+contents of kernel stack as a module name to try_then_request_module() and,
+consequently, to modprobe commandline.  It would be seen by all userspace
+processes.
 
-   Regards,
-      Stefan
+Signed-off-by: Vasiliy Kulikov <segoon@openwall.com>
+---
+ Compile tested.
+
+ net/bridge/netfilter/ebtables.c |    2 ++
+ 1 files changed, 2 insertions(+), 0 deletions(-)
+
+diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
+index 5f1825d..1ea820b 100644
+--- a/net/bridge/netfilter/ebtables.c
++++ b/net/bridge/netfilter/ebtables.c
+@@ -1107,6 +1107,8 @@ static int do_replace(struct net *net, const void __user *user,
+ 	if (tmp.num_counters >= INT_MAX / sizeof(struct ebt_counter))
+ 		return -ENOMEM;
+ 
++	tmp.name[sizeof(tmp.name)-1] = 0;
++
+ 	countersize = COUNTER_OFFSET(tmp.nentries) * nr_cpu_ids;
+ 	newinfo = vmalloc(sizeof(*newinfo) + countersize);
+ 	if (!newinfo)
+-- 
+1.7.0.4
+
