@@ -1,78 +1,43 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Ebtables usage
-Date: Tue, 15 Feb 2011 11:47:53 +0100
-Message-ID: <4D5A59D9.9040407@plouf.fr.eu.org>
-References: <AANLkTikpZ+q-L7AcYPmZzED3QAtNF-mDx47E5kfo41CW@mail.gmail.com>	<AANLkTikBvMercRhMs-rpRBYurGUV4J3FHXigtBXBhdsc@mail.gmail.com> <AANLkTimR2FQfmmnoy6YoYYGCAqs=j26KpvtLTYHHgMQN@mail.gmail.com>
+From: Chris Friesen <chris.friesen@genband.com>
+Subject: Re: any way to reset all marked connections when using CONNMARK?
+Date: Tue, 15 Feb 2011 16:06:02 -0600
+Message-ID: <4D5AF8CA.8080908@genband.com>
+References: <4D55A927.7060703@genband.com> <1297510935.1770.38.camel@andybev>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTimR2FQfmmnoy6YoYYGCAqs=j26KpvtLTYHHgMQN@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <1297510935.1770.38.camel@andybev>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jacky Lam <lamshuyin@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Andrew Beverley <andy@andybev.com>
+Cc: netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter <netfilter@vger.kernel.org>
 
-Hello,
+On 02/12/2011 05:42 AM, Andrew Beverley wrote:
+> On Fri, 2011-02-11 at 15:24 -0600, Chris Friesen wrote:
+>> It has been proposed to add a custom patch to clear the mark for all
+>> marked connections--is there a better way of doing this?
+>>
+> 
+> How about using the conntrack userspace command-line interface?
+> 
+> conntrack -U -m 0
+> 
+> looks like it should do what you want.
 
-Jacky Lam a =E9crit :
-> Yes, my config is like this:
->=20
->     Computer A (10.1.4.1) <-----> (eth0: 10.1.4.5) Linux Switch (eth1=
-:
-> 11.1.4.5) <-------> Computer B (11.1.4.3)
->=20
-> I each ip_forwarding and config the route table of Computer A,B. I ge=
-t
-> 500Mb/s from iperf while Linux Switch is 100% loaded.
-> As I know this switching is done in IP level,
+Oooh, that looks perfect.
 
-Your box is set up as a router, not a switch/bridge. Routing is done at
-the IP level, and switching/bridging is done at the ethernet level.
+For some reason the online man pages for conntrack don't seem to be up
+to date...they don't have the -U option.  It's listed in the package
+itself though.
 
-> I want to do the job in
-> data link layer to get higher throughput/lower CPU usage.
+Thanks,
+Chris
 
-Not sure you'll get higher throughput though. Bridging adds its own
-overhead.
 
-> Then I tried the following configuration:
->=20
->     Computer A (10.1.4.1) <-----> (eth0) Linux Switch (eth1) <-------=
->
-> Computer B (10.1.4.3)
->=20
-> I tried to setup a bridge like this as some document said:
->=20
-> iptables -t nat -A POSTROUTING -s 10.1.4.0/24 -d 10.1.4.0/24 -j ACCEP=
-T
-> iptables -t nat -A POSTROUTING -s 10.1.4.0/24 -j MASQUERADE
-
-What do you need these rules for ? They are not needed for pure bridgin=
-g.
-
-> brctl addbr br0
-> brctl stp br0 off
-> brctl addif br0 eth0
-> brctl addif br0 eth1
->=20
-> ifconfig eth0 0 0.0.0.0
-> ifconfig eth1 0 0.0.0.0
-
-Ok.
-
-> ifconfig br0 10.1.4.5 netmask 255.255.255.0 up
->=20
-> echo '1' > /proc/sys/net/ipv4/ip_forward
-
-This is IP-related and not required for pure bridging.
-
-> But the throughput is only 200Mb/s and my Linux Switch is 100% loaded=
-=2E
-> What's wrong with that?
-
-It may be the overhead caused by bridge-nf, netfilter, IPv4 conntrack
-and iptables.
-Try with /proc/sys/net/bridge/bridge-nf-call-iptables set to 0.
-
-You did not explain what you want to do exactly with this box.
+-- 
+Chris Friesen
+Software Developer
+GENBAND
+chris.friesen@genband.com
+www.genband.com
