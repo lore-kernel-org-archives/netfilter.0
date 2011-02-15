@@ -1,43 +1,35 @@
-From: Chris Friesen <chris.friesen@genband.com>
+From: Jan Engelhardt <jengelh@medozas.de>
 Subject: Re: any way to reset all marked connections when using CONNMARK?
-Date: Tue, 15 Feb 2011 16:06:02 -0600
-Message-ID: <4D5AF8CA.8080908@genband.com>
-References: <4D55A927.7060703@genband.com> <1297510935.1770.38.camel@andybev>
+Date: Tue, 15 Feb 2011 23:42:49 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1102152342380.18599@obet.zrqbmnf.qr>
+References: <4D55A927.7060703@genband.com> <1297510935.1770.38.camel@andybev> <4D5AF8CA.8080908@genband.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <1297510935.1770.38.camel@andybev>
+In-Reply-To: <4D5AF8CA.8080908@genband.com>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Andrew Beverley <andy@andybev.com>
-Cc: netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Chris Friesen <chris.friesen@genband.com>
+Cc: Andrew Beverley <andy@andybev.com>, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter <netfilter@vger.kernel.org>
 
-On 02/12/2011 05:42 AM, Andrew Beverley wrote:
-> On Fri, 2011-02-11 at 15:24 -0600, Chris Friesen wrote:
->> It has been proposed to add a custom patch to clear the mark for all
->> marked connections--is there a better way of doing this?
->>
-> 
-> How about using the conntrack userspace command-line interface?
-> 
-> conntrack -U -m 0
-> 
-> looks like it should do what you want.
+On Tuesday 2011-02-15 23:06, Chris Friesen wrote:
+>On 02/12/2011 05:42 AM, Andrew Beverley wrote:
+>> On Fri, 2011-02-11 at 15:24 -0600, Chris Friesen wrote:
+>>> It has been proposed to add a custom patch to clear the mark for all
+>>> marked connections--is there a better way of doing this?
+>>>
+>> 
+>> How about using the conntrack userspace command-line interface?
+>> 
+>> conntrack -U -m 0
+>> 
+>> looks like it should do what you want.
+>
+>Oooh, that looks perfect.
+>
+>For some reason the online man pages for conntrack don't seem to be up
+>to date...they don't have the -U option.  It's listed in the package
+>itself though.
 
-Oooh, that looks perfect.
-
-For some reason the online man pages for conntrack don't seem to be up
-to date...they don't have the -U option.  It's listed in the package
-itself though.
-
-Thanks,
-Chris
-
-
--- 
-Chris Friesen
-Software Developer
-GENBAND
-chris.friesen@genband.com
-www.genband.com
+What online manpages are you referring to?
