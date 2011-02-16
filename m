@@ -1,105 +1,46 @@
-From: Jacky Lam <lamshuyin@gmail.com>
-Subject: Re: Ebtables usage
-Date: Wed, 16 Feb 2011 06:53:39 +0800
-Message-ID: <AANLkTikarsE3D+pyj_xKtR1F-Dy32+BKCiKWRZo18HMC@mail.gmail.com>
-References: <AANLkTikpZ+q-L7AcYPmZzED3QAtNF-mDx47E5kfo41CW@mail.gmail.com>
-	<AANLkTikBvMercRhMs-rpRBYurGUV4J3FHXigtBXBhdsc@mail.gmail.com>
-	<AANLkTimR2FQfmmnoy6YoYYGCAqs=j26KpvtLTYHHgMQN@mail.gmail.com>
-	<4D5A59D9.9040407@plouf.fr.eu.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:in-reply-to:references:date
-         :message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=o9N46xrpuQKe1BMj9NPOPJKpoqKEgRrhgSEch8mszxI=;
-        b=nhUSczF+72FUYKmjXKehwStH2Jo+FlenwImzVuOYHKLccwm23aNsksIo4nkdRlQA/k
-         qyzk08qOW7uYBgC2HOKvrrWTCon8L2NuoKI2a6rDfB2GgklM4lnzoR2nwOsMlwYtiASp
-         CmahAzgNKSNEz8bjZPzLdTLyjw4fbJ+NJksAM=
-In-Reply-To: <4D5A59D9.9040407@plouf.fr.eu.org>
-Sender: netfilter-owner@vger.kernel.org
+From: Simon Horman <horms@verge.net.au>
+Subject: [PATCH 1/3] ipvs: fix timer in get_curr_sync_buff
+Date: Wed, 16 Feb 2011 15:04:51 +0900
+Message-ID: <1297836293-5942-2-git-send-email-horms@verge.net.au>
+References: <1297836293-5942-1-git-send-email-horms@verge.net.au>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <1297836293-5942-1-git-send-email-horms@verge.net.au>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Cc: Julian Anastasov <ja@ssi.bg>, Patrick Schaaf <netdev@bof.de>, Patrick McHardy <kaber@trash.net>, Tinggong Wang <wangtinggong@gmail.com>, Simon Horman <horms@verge.net.au>
 
-I want to share a network service by two computers but I don't have
-any extra router or switch, but one computer has 2 ethernet cards and
-running Linux. But that computer is old and slow. So I want to know if
-I can set up that computer as a ethernet level switch/bridge.
+From: Tinggong Wang <wangtinggong@gmail.com>
 
-That means I am done right (except the two rules at the beginning) to
-setup a ethernet switch? I don't need to setup any rules by iptables
-or ebtables?
+ 	Fix get_curr_sync_buff to keep buffer for 2 seconds
+as intended, not just for the current jiffie. By this way
+we will sync more connection structures with single packet.
 
-Thanks for helping.
+Signed-off-by: Tinggong Wang <wangtinggong@gmail.com>
+Signed-off-by: Julian Anastasov <ja@ssi.bg>
+Signed-off-by: Simon Horman <horms@verge.net.au>
+---
+ net/netfilter/ipvs/ip_vs_sync.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
 
-On Tue, Feb 15, 2011 at 6:47 PM, Pascal Hambourg
-<pascal.mail@plouf.fr.eu.org> wrote:
-> Hello,
->
-> Jacky Lam a =E9crit :
->> Yes, my config is like this:
->>
->> =A0 =A0 Computer A (10.1.4.1) <-----> (eth0: 10.1.4.5) Linux Switch =
-(eth1:
->> 11.1.4.5) <-------> Computer B (11.1.4.3)
->>
->> I each ip_forwarding and config the route table of Computer A,B. I g=
-et
->> 500Mb/s from iperf while Linux Switch is 100% loaded.
->> As I know this switching is done in IP level,
->
-> Your box is set up as a router, not a switch/bridge. Routing is done =
-at
-> the IP level, and switching/bridging is done at the ethernet level.
->
->> I want to do the job in
->> data link layer to get higher throughput/lower CPU usage.
->
-> Not sure you'll get higher throughput though. Bridging adds its own
-> overhead.
->
->> Then I tried the following configuration:
->>
->> =A0 =A0 Computer A (10.1.4.1) <-----> (eth0) Linux Switch (eth1) <--=
------>
->> Computer B (10.1.4.3)
->>
->> I tried to setup a bridge like this as some document said:
->>
->> iptables -t nat -A POSTROUTING -s 10.1.4.0/24 -d 10.1.4.0/24 -j ACCE=
-PT
->> iptables -t nat -A POSTROUTING -s 10.1.4.0/24 -j MASQUERADE
->
-> What do you need these rules for ? They are not needed for pure bridg=
-ing.
->
->> brctl addbr br0
->> brctl stp br0 off
->> brctl addif br0 eth0
->> brctl addif br0 eth1
->>
->> ifconfig eth0 0 0.0.0.0
->> ifconfig eth1 0 0.0.0.0
->
-> Ok.
->
->> ifconfig br0 10.1.4.5 netmask 255.255.255.0 up
->>
->> echo '1' > /proc/sys/net/ipv4/ip_forward
->
-> This is IP-related and not required for pure bridging.
->
->> But the throughput is only 200Mb/s and my Linux Switch is 100% loade=
-d.
->> What's wrong with that?
->
-> It may be the overhead caused by bridge-nf, netfilter, IPv4 conntrack
-> and iptables.
-> Try with /proc/sys/net/bridge/bridge-nf-call-iptables set to 0.
->
-> You did not explain what you want to do exactly with this box.
->
+diff --git a/net/netfilter/ipvs/ip_vs_sync.c b/net/netfilter/ipvs/ip_vs_sync.c
+index d1b7298..fecf24d 100644
+--- a/net/netfilter/ipvs/ip_vs_sync.c
++++ b/net/netfilter/ipvs/ip_vs_sync.c
+@@ -374,8 +374,8 @@ get_curr_sync_buff(struct netns_ipvs *ipvs, unsigned long time)
+ 	struct ip_vs_sync_buff *sb;
+ 
+ 	spin_lock_bh(&ipvs->sync_buff_lock);
+-	if (ipvs->sync_buff && (time == 0 ||
+-	    time_before(jiffies - ipvs->sync_buff->firstuse, time))) {
++	if (ipvs->sync_buff &&
++	    time_after_eq(jiffies - ipvs->sync_buff->firstuse, time)) {
+ 		sb = ipvs->sync_buff;
+ 		ipvs->sync_buff = NULL;
+ 	} else
+-- 
+1.7.2.3
+
