@@ -1,38 +1,27 @@
-From: Chris Friesen <chris.friesen@genband.com>
-Subject: Re: any way to reset all marked connections when using CONNMARK?
-Date: Thu, 17 Feb 2011 12:58:31 -0600
-Message-ID: <4D5D6FD7.8060104@genband.com>
-References: <4D55A927.7060703@genband.com> <1297510935.1770.38.camel@andybev> <4D5AF8CA.8080908@genband.com> <alpine.LNX.2.01.1102152342380.18599@obet.zrqbmnf.qr>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: How to use DNAT
+Date: Thu, 17 Feb 2011 20:03:27 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1102172000340.30243@obet.zrqbmnf.qr>
+References: <4D5D6D2C.7010109@dcc.ufba.br>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1102152342380.18599@obet.zrqbmnf.qr>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4D5D6D2C.7010109@dcc.ufba.br>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Andrew Beverley <andy@andybev.com>, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Italo Valcy <italo@dcc.ufba.br>
+Cc: netfilter@vger.kernel.org
 
-On 02/15/2011 04:42 PM, Jan Engelhardt wrote:
-> On Tuesday 2011-02-15 23:06, Chris Friesen wrote:
+On Thursday 2011-02-17 19:47, Italo Valcy wrote:
 
->> For some reason the online man pages for conntrack don't seem to be up
->> to date...they don't have the -U option.  It's listed in the package
->> itself though.
-> 
-> What online manpages are you referring to?
+>-----BEGIN PGP SIGNED MESSAGE-----
+>Hash: SHA1
+>
+>Hello Guys!
+>
+>I'm in doubt about the correct use of DNAT, if I should use an alias
+>interface (like eth0:0)
 
-The first google result for "man conntrack" is
-
-http://linux.die.net/man/8/conntrack
-
-which appears out of date.  The second google result appears okay.
-
-Chris
-
--- 
-Chris Friesen
-Software Developer
-GENBAND
-chris.friesen@genband.com
-www.genband.com
+eth0:0 is not an interface. That is ifconfig misleading you. Avoid this 
+old and unmaintained tool.
