@@ -1,42 +1,38 @@
-From: Italo Valcy <italo@dcc.ufba.br>
-Subject: How to use DNAT
-Date: Thu, 17 Feb 2011 15:47:08 -0300
-Message-ID: <4D5D6D2C.7010109@dcc.ufba.br>
+From: Chris Friesen <chris.friesen@genband.com>
+Subject: Re: any way to reset all marked connections when using CONNMARK?
+Date: Thu, 17 Feb 2011 12:58:31 -0600
+Message-ID: <4D5D6FD7.8060104@genband.com>
+References: <4D55A927.7060703@genband.com> <1297510935.1770.38.camel@andybev> <4D5AF8CA.8080908@genband.com> <alpine.LNX.2.01.1102152342380.18599@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.01.1102152342380.18599@obet.zrqbmnf.qr>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: Andrew Beverley <andy@andybev.com>, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter <netfilter@vger.kernel.org>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+On 02/15/2011 04:42 PM, Jan Engelhardt wrote:
+> On Tuesday 2011-02-15 23:06, Chris Friesen wrote:
 
-Hello Guys!
+>> For some reason the online man pages for conntrack don't seem to be up
+>> to date...they don't have the -U option.  It's listed in the package
+>> itself though.
+> 
+> What online manpages are you referring to?
 
-I'm in doubt about the correct use of DNAT, if I should use an alias
-interface (like eth0:0) with the original target IP address or I should
-use something to advertise the arp-reply for that IP (like farpd).
+The first google result for "man conntrack" is
 
-I'm asking this because when I tried to use the alias interface I've go=
-t
-*some* packages being processed by INPUT chain of the filter table...
+http://linux.die.net/man/8/conntrack
 
-Do you guys have any ideia?
+which appears out of date.  The second google result appears okay.
 
+Chris
 
-Thank you so much for any help!
-
-- --=20
-Sauda=E7=F5es,
-
-Italo Valcy :: http://wiki.dcc.ufba.br/~ItaloValcy
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk1dbSwACgkQfidLqjN6RNHb6wCeKUDzLjJiGKNVfM1H3W7EQxjA
-V9wAnjaRmU/OLFQnGJ86N5vepct2TINz
-=3Dfokt
------END PGP SIGNATURE-----
+-- 
+Chris Friesen
+Software Developer
+GENBAND
+chris.friesen@genband.com
+www.genband.com
