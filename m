@@ -1,49 +1,112 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: How to use DNAT
-Date: Fri, 18 Feb 2011 00:41:26 +0100
-Message-ID: <4D5DB226.7050002@plouf.fr.eu.org>
-References: <184364666.3998.1297982398411.JavaMail.root@tahiti.vyatta.com> <1507403965.4030.1297983445466.JavaMail.root@tahiti.vyatta.com>
+From: Kirk Hoganson <kirkhoganson@gmail.com>
+Subject: Round Robin or Random Source NATing
+Date: Thu, 17 Feb 2011 22:38:49 -0800
+Message-ID: <4D5E13F9.1050608@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1507403965.4030.1297983445466.JavaMail.root@tahiti.vyatta.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:message-id:date:from:user-agent:mime-version:to
+         :subject:content-type:content-transfer-encoding;
+        bh=srgxV7ohAQ/5x1VtJo2q6tbOr0YZQdsUZyszPwMS6bA=;
+        b=s/8mbLJuogLXLsQBshHDUNLp368UqFBtvJlOFRO9UhYj0uUBM/D0bjPsvMF057NONz
+         71B56zCRaOwFaSWl3/o8POpzORfgqiCmwAAUvWioZe+5mIGjoS2jQcucVHB/C8mYjzOb
+         kGtnpllxkr3NXidv8ZDleVk7xGjdGWgVuC+f0=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Steven Kath <steven.kath@vyatta.com>
-Cc: Italo Valcy <italo@dcc.ufba.br>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Steven Kath a =E9crit :
-> ----- "Italo Valcy" <italo@dcc.ufba.br> wrote: -----
->>
->> Well... so could be this: INVALID state... The packets are about a
->> netflow traffic (9996/UDP) comming to the firewall, which should be
->> redirected to a internal host (through the DNAT). How can I debug
->> these possible INVALID packets?
->=20
-> iptables -I FORWARD -p udp -m udp --dport 9996 -m state --state INVAL=
-ID -j LOG --log-prefix "INVALID-FWD: "=20
-> iptables -I INPUT -p udp -m udp --dport 9996 -m state --state INVALID=
- -j LOG --log-prefix "INVALID-IN: "=20
->=20
-> This will allow you to see matching traffic through the filter=20
-> table's FORWARD and INPUT chains with the invalid state in dmesg.=20
+I am attempting to create a series of rules that source nat web traffic 
+amongst a pool of IP addresses.  I have used the nth mode to cycle 
+through the IP address in a round robin fashion.  I am using the 
+following rules:
 
-AFAIK, UDP packets cannot be INVALID.
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 0 
+-j SNAT --to-source 1.104.126.216
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 1 
+-j SNAT --to-source 1.104.126.217
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 2 
+-j SNAT --to-source 1.104.126.218
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 3 
+-j SNAT --to-source 1.104.126.219
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 4 
+-j SNAT --to-source 1.104.126.220
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 5 
+-j SNAT --to-source 1.104.126.221
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 6 
+-j SNAT --to-source 1.104.126.222
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 7 
+-j SNAT --to-source 1.104.126.223
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 8 
+-j SNAT --to-source 1.104.126.224
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 9 
+-j SNAT --to-source 1.104.126.225
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 10 
+-j SNAT --to-source 1.104.126.226
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 11 
+-j SNAT --to-source 1.104.126.227
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 12 
+-j SNAT --to-source 1.104.126.228
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 13 
+-j SNAT --to-source 1.104.126.229
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 14 
+-j SNAT --to-source 1.104.126.230
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 15 
+-j SNAT --to-source 1.104.126.231
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 16 
+-j SNAT --to-source 1.104.126.232
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 17 
+-j SNAT --to-source 1.104.126.233
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 18 
+-j SNAT --to-source 1.104.126.234
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 19 
+-j SNAT --to-source 1.104.126.235
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 20 
+-j SNAT --to-source 1.104.126.236
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 21 
+-j SNAT --to-source 1.104.126.237
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 22 
+-j SNAT --to-source 1.104.126.238
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 23 
+-j SNAT --to-source 1.104.126.239
 
-> Also, bear in mind that the nat table is only consulted for=20
-> packets with state NEW. If your UDP flow state transitions to=20
-> ESTABLISHED before your NAT rule is created, the new rule will=20
-> not be applied to that flow. =20
+At first glance the rules appear to work.  However when I look at the 
+traffic on the receiving host, I see a number of connections from the 
+primary eth0 address of the source system.  I see approximately 10x as 
+many connections from the primary IP address (which isn't in the round 
+robin rotation) as I do from any of the addresses in the round robin 
+pool.  The addresses in the pool all have approximately the same number 
+of connections to the remote host.
 
-Actually it is even stricter : the nat rules are consulted only for the
-first packet of a new flow ("connection"). The next packets skip the na=
-t
-rules even when the flow does not transition to ESTABLISHED (when there
-is no packet in the reply direction).
+How can I create a round robin, or random source nat pool for web 
+connections, without using the primary IP address of the source system 
+to connect to the remote host?
 
-> You'd need to clear that connection from the table with=20
-> conntrack-tools, flush the entire table, or let the connection=20
-> expire from the table for it to be considered NEW again and=20
-> compared against the nat rules.=20
+Thanks.
 
