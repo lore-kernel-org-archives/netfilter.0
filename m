@@ -1,22 +1,111 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: short circuit evaluations?
-Date: Mon, 21 Feb 2011 00:28:51 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1102210028450.5199@obet.zrqbmnf.qr>
-References: <4D619DED.6090405@blub.net>
+From: Kirk Hoganson <kirkhoganson@gmail.com>
+Subject: Round Robin or Random Source NATing
+Date: Tue, 22 Feb 2011 14:28:11 -0700
+Message-ID: <4D642A6B.4050806@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D619DED.6090405@blub.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:message-id:date:from:user-agent:mime-version:to
+         :subject:content-type:content-transfer-encoding;
+        bh=srgxV7ohAQ/5x1VtJo2q6tbOr0YZQdsUZyszPwMS6bA=;
+        b=c7eDRocM9hJ3CvtMvTh5rcBsCnxjumaxzLbghC39/qvKvrWUmEwmjXNWQ17s2Rt0Hc
+         CsWlKmL2gbnbD8az7zmCrEJAeoOEdjdzH0FTopKu43ccCjgB/3ikkZcsxiDfNnQUD3F2
+         FLhP0A9iZ5F53O+/m6yKO7lxFc2RpKKYorTyI=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Valentijn Sessink <valentyn@blub.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Monday 2011-02-21 00:04, Valentijn Sessink wrote:
+I am attempting to create a series of rules that source nat web traffic 
+amongst a pool of IP addresses.  I have used the nth mode to cycle 
+through the IP address in a round robin fashion.  I am using the 
+following rules:
 
-> Hello list,
->
-> Does iptables do short circuit evaluation?
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 0 
+-j SNAT --to-source 1.104.126.216
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 1 
+-j SNAT --to-source 1.104.126.217
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 2 
+-j SNAT --to-source 1.104.126.218
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 3 
+-j SNAT --to-source 1.104.126.219
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 4 
+-j SNAT --to-source 1.104.126.220
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 5 
+-j SNAT --to-source 1.104.126.221
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 6 
+-j SNAT --to-source 1.104.126.222
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 7 
+-j SNAT --to-source 1.104.126.223
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 8 
+-j SNAT --to-source 1.104.126.224
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 9 
+-j SNAT --to-source 1.104.126.225
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 10 
+-j SNAT --to-source 1.104.126.226
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 11 
+-j SNAT --to-source 1.104.126.227
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 12 
+-j SNAT --to-source 1.104.126.228
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 13 
+-j SNAT --to-source 1.104.126.229
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 14 
+-j SNAT --to-source 1.104.126.230
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 15 
+-j SNAT --to-source 1.104.126.231
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 16 
+-j SNAT --to-source 1.104.126.232
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 17 
+-j SNAT --to-source 1.104.126.233
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 18 
+-j SNAT --to-source 1.104.126.234
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 19 
+-j SNAT --to-source 1.104.126.235
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 20 
+-j SNAT --to-source 1.104.126.236
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 21 
+-j SNAT --to-source 1.104.126.237
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 22 
+-j SNAT --to-source 1.104.126.238
+$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
+multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 23 
+-j SNAT --to-source 1.104.126.239
 
-Certainly.
+At first glance the rules appear to work.  However when I look at the 
+traffic on the receiving host, I see a number of connections from the 
+primary eth0 address of the source system.  I see approximately 10x as 
+many connections from the primary IP address (which isn't in the round 
+robin rotation) as I do from any of the addresses in the round robin 
+pool.  The addresses in the pool all have approximately the same number 
+of connections to the remote host.
+
+How can I create a round robin, or random source nat pool for web 
+connections, without using the primary IP address of the source system 
+to connect to the remote host?
+
+Thanks.
