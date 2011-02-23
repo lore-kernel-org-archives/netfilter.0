@@ -1,45 +1,36 @@
-From: John Lister <john.lister@kickstone.com>
-Subject: Re: Round Robin or Random Source NATing
-Date: Tue, 22 Feb 2011 23:50:52 +0000
-Message-ID: <4D644BDC.1020107@kickstone.com>
-References: <4D642A6B.4050806@gmail.com>
+From: Mr Dash Four <mr.dash.four@googlemail.com>
+Subject: ipset -R
+Date: Wed, 23 Feb 2011 00:58:47 +0000
+Message-ID: <4D645BC7.7030306@googlemail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D642A6B.4050806@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:message-id:disposition-notification-to:date
+         :from:user-agent:mime-version:to:subject:content-type
+         :content-transfer-encoding;
+        bh=kFreXe0KSkgroj5em026cCkAlWAGtrzYrtO5lYSmG+k=;
+        b=TyWGZ0D9U0uM2GZQAq5S4lPuTInVH6HBo8XSsXTWuZXe9Z+bAdB/u4j58D4yCVqqC9
+         SxtHwfLNfufYvIfgPBQHV8myEp02Lyuc6VbVCqsX3YLGsNgFu5xKxhxE4C8HzLrpJbjc
+         lQVxzqyQpuH7zJXOc+tCm0lyYdlkPt/apCIjA=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Kirk Hoganson <kirkhoganson@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
 
-On 22/02/2011 21:28, Kirk Hoganson wrote:
-> I am attempting to create a series of rules that source nat web 
-> traffic amongst a pool of IP addresses.  I have used the nth mode to 
-> cycle through the IP address in a round robin fashion.  I am using the 
-> following rules:
->
-> $IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
-> multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 0 
-> -j SNAT --to-source 1.104.126.216
-Beware that the statistic module counts apply PER rule and not to some 
-global counter as they used to in earlier versions - this caught me out 
-before. So with your case, the first rule is matched every 24 packets, 
-but the second one is matched every 24 packets NOT matched by the 
-earlier rule, and so on. So any default in your case is much more likely 
-to happen than you expect.
-try doing something like:
-$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
-multiport --dport 80,443 -m statistic --mode nth --every 24 --packet 0 
--j SNAT --to-source 1.104.126.x
-$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
-multiport --dport 80,443 -m statistic --mode nth --every 23 --packet 0 
--j SNAT --to-source 1.104.126.x
-$IPTABLES -t nat -A POSTROUTING -o $EXT -m state --state NEW -p tcp -m 
-multiport --dport 80,443 -m statistic --mode nth --every 22 --packet 0 
--j SNAT --to-source 1.104.126.x
+When I execute 'ipset -R < some_file' ipset ignores lines with the '-D' 
+option specified. Is that intentional?
 
+I am trying to execute a script file creating 'pinholes' in (previously 
+built) ipsets, but, as it stands, I have to execute a shell script 
+containing 'ipset -D' for every pinhole/range I am interested in, which 
+isn't very convenient. Ideally I'd like for ipset to honour the '-D' 
+option in a restore file.
 
-The same applies with random, you need to reduce the probability based 
-on the chance of it being hit, eg:
-.25, .33, .50, 1
+The reason I need this is because I am defining ipset ranges coming from 
+the geoip database and later, with the '-D' option in a script, I am 
+trying to create the pinholes - more convenient since ipset has a very 
+nice feature to re-adjust the ipset ranges automatically after delete, 
+instead of me using endless '-A' statements adding the resulting ipset 
+sub-ranges.
