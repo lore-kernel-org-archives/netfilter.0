@@ -1,63 +1,106 @@
-From: Anatoly Muliarski <x86ever@gmail.com>
-Subject: Re: Squid with three isp
-Date: Thu, 24 Feb 2011 02:50:13 +0200
-Message-ID: <AANLkTim8yobv-CRVxyDB-=C5mH4f1o8ADO-UgiO3S8c5@mail.gmail.com>
-References: <4D6496F8.9070303@gmail.com>
+From: Pandu Poluan <pandu@poluan.info>
+Subject: Re: ipset -R
+Date: Thu, 24 Feb 2011 12:16:33 +0700
+Message-ID: <AANLkTinRdR7D963JindQOdfYBF=uJr7F24WZmo=ATeL4@mail.gmail.com>
+References: <4D645BC7.7030306@googlemail.com>
+	<alpine.DEB.2.00.1102232009001.16917@blackhole.kfki.hu>
+	<4D659102.8090501@googlemail.com>
+	<AANLkTi=06RAwFaiQzjiTMmJaoy+EgXSbq3UdOfonH4UQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:in-reply-to:references:date
-         :message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=M7AL1RE5zrBlMJGgR/EqKK5oAhgeenoLh9GfPoWObL8=;
-        b=LTdygNMils67y2Lq0AQ7mk/YJE/cMKBv7rkz5Ai7iZ2Ob6lhmR6LMrdy5bQle8LzJV
-         SbnwS646vGeIS17ApWkSPOg0mduzXvyYjyBmyhRbXjoFHJkA7c+yiuMbkCSFCeU4MJRB
-         ChmVvDe2z/CdBg3Sa2VVLOuFvhx21pB4NlLFU=
-In-Reply-To: <4D6496F8.9070303@gmail.com>
+In-Reply-To: <AANLkTi=06RAwFaiQzjiTMmJaoy+EgXSbq3UdOfonH4UQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
-Cc: Senthilkumar <senthilkumaar2021@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mr Dash Four <mr.dash.four@googlemail.com>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-2011/2/23 Senthilkumar <senthilkumaar2021@gmail.com>:
-> Hello All,
+Okay, the 2nd rule should be:
+
+-m set --match-set $WHITELIST -j $WHITELIST_HANDLING_CHAIN
+
+but I think you'd get my drift.
+
+Rgds,
+
+
+On 2011-02-24, Pandu Poluan <pandu@poluan.info> wrote:
+> What if:
 >
-> We have a gateway machine which has three upstream isp and to make cl=
-ients
-> use the particular isp we use advance routing based on the source add=
-ress.
-> =A0When we run squid =A0on the same machine to log websites all traff=
-ic passes
-> through the single isp i.e. the isp which is set as default gateway. =
-We need
-> all the users to pass through squid and use different isp's as per so=
-urce
-> route.
-> Please share your views to achieve it.
+> -m set ! --match-set $WHITELIST src -m set --match-set $BLACKLIST src -j
+> DROP
 >
-> Thanks
-> Senthil.
+> The first -m set (with the "!") punches 'holes' into the 2nd. You can
+> follow up with
+>
+> -m set --match-set $WHITELIST src -j ACCEPT
+>
+> Rgds,
+>
+>
+> On 2011-02-24, Mr Dash Four <mr.dash.four@googlemail.com> wrote:
+>>
+>>> The iptreemap type of ipset 4.x had the feature you are referring here.
+>>>
+>>> The iptree and iptreemap types are not implemented in ipset 5.x. However
+>>> you can achieve the same effect by using two sets, the first one for the
+>>> pinholes and the second one for the networks.
+>>>
+>> It would be a bit cumbersome to achieve that.
+>>
+>> I use the geoip database to construct, among other things, a permanent
+>> block lists (mainly based on country of origin, but there are other
+>> factors which I won't go in here) and these sets are only present in my
+>> block chains (there is also a bit of logic involved, but that is another
+>> set of issues altogether). I also have a separate list with host ip
+>> addresses/ranges (my 'whitelist' so to speak) against which I
+>> subsequently execute the delete statements to create the pinholes
+>> (another useful ipset feature is that it silently ignores delete
+>> requests if the ip address/range is not present in the set).
+>>
+>> As you know the geoip database regularly changes (so does, albeit
+>> occasionally, the country of origin of various ip address ranges), so I
+>> normally execute an automated set of scripts to update the database,
+>> pick the right address ranges for blocking, construct-and-replace my
+>> ipsets in the 3 or so blocking chains I have on the main firewall and
+>> then apply the deletion statements to the same sets to create the
+>> pinholes.
+>>
+>> The problem I see with your approach above is that I would have to
+>> explicitly grant some sort of access to my 'whitelist' addresses (those
+>> with which I create the pinholes), which isn't possible as I do not know
+>> which ports (or port ranges) would need to be enabled - that depends on
+>> various factors which I cannot always control. Besides, I would like the
+>> 'whitelist' addresses to be traversed further down the ip chain as there
+>> may be other rules which catch them. In other words, I cannot explicitly
+>> allow access to the whitelist addresses as you are suggesting above (so
+>> is my understanding).
+>>
+>> The ideal scenario, as I pointed out above, would be to use the
+>> whitelist to create the pinholes (i.e. execute a deletion against
+>> already registered sets) without explicitly allowing access to those ip
+>> addresses/ranges.
+>>
+>> Another pretty good alternative would be (if I am, somehow, able) to
+>> 'subtract' my whitelist members from the blacklisted ones and then use
+>> the resulting set (or sets), but as far as I know I can't do that in
+>> ipset, can I?
+>>
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>>
+>
 >
 > --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+> --
+> Pandu E Poluan - IT Optimizer
+> My website: http://pandu.poluan.info/
 >
 
-Hi Senthilkumar,
 
-I suppose you should use multiple rt_tables facility based on
-netfilter's marks for routing to different ISPs. And you also need
-some scheme to disperse marks for squid's output connections like nth
-option from iptables. Here is an example:
-http://members.hellug.gr/vyruss/computing/load_balance.html
-
-
-
---=20
-Best regards
-Anatoly Muliarski
+-- 
+--
+Pandu E Poluan - IT Optimizer
+My website: http://pandu.poluan.info/
