@@ -1,60 +1,103 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
-Subject: Re: ipset -R
-Date: Thu, 24 Feb 2011 12:18:39 +0000
-Message-ID: <4D664C9F.3020701@googlemail.com>
-References: <4D645BC7.7030306@googlemail.com>	<alpine.DEB.2.00.1102232009001.16917@blackhole.kfki.hu>	<4D659102.8090501@googlemail.com> <AANLkTi=06RAwFaiQzjiTMmJaoy+EgXSbq3UdOfonH4UQ@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnetfilter_conntrack 0.9.1 release
+Date: Thu, 24 Feb 2011 19:38:33 +0100
+Message-ID: <4D66A5A9.20900@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------000200070809070905070605"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:message-id:disposition-notification-to:date
-         :from:user-agent:mime-version:to:cc:subject:references:in-reply-to
-         :content-type:content-transfer-encoding;
-        bh=EWZzUa7c37aDiqwzkBn5CT2BH60mg560xkygabXj1jg=;
-        b=XjDXxW/hCRHiYtTgUv1B9mzq/PsWCh7IH4prjzxC9B6Dbk8uW1ooUfdKr1CYNcHyp2
-         Yve0p3DhHzuvSDqGdaTiDS14+SCzt1S6jAx+0pdQAtTikHp074Cg0l0zAOEmjGTjK66L
-         Cn7w4qV3e2wNniVopBMbHA5McAJ/GP/qrfJbA=
-In-Reply-To: <AANLkTi=06RAwFaiQzjiTMmJaoy+EgXSbq3UdOfonH4UQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pandu Poluan <pandu@poluan.info>
-Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
+Cc: netfilter-announce@lists.netfilter.org, netfilter-devel@vger.kernel.org, lwn@lwn.net
+
+This is a multi-part message in MIME format.
+--------------000200070809070905070605
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+Hi!
+
+The Netfilter project presents libnetfilter_conntrack-0.9.1
+
+libnetfilter_conntrack is a userspace library providing a programming
+interface (API) to the in-kernel connection tracking state table. This
+library requires a linux kernel >= 2.6.18.
+
+This release includes lots of improvements for the building
+infrastructure from Jan Engelhardt, support for user-space conntrack
+expectations, the nf_conntrack_timestamp support and the new secctx
+field which replaces secmark. ChangeLog is also attached for more details.
+
+You can download it from:
+
+http://www.netfilter.org/projects/libnetfilter_conntrack/
+ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/
+
+Enjoy,
+Pablo.
 
 
-> What if:
->
-> -m set ! --match-set $WHITELIST src -m set --match-set $BLACKLIST src -j DROP
->   
-Yeah, never thought of that before, thanks, though this would increase 
-processing time as I have to include that extra 'whitelist' non-match in 
-every iptables '--match-set' statement I have where my blacklist sets 
-are involved (and I have quite a lot of them!). It would be better if I 
-just delete the whitelist members permanently once at the beginning and 
-just forget about it (though as Jozsef hinted yesterday that may not 
-work in 5.x and 6 any more - see below).
+--------------000200070809070905070605
+Content-Type: text/plain;
+ name="changes-libnetfilter_conntrack-0.9.1.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="changes-libnetfilter_conntrack-0.9.1.txt"
 
-The second statement (in both of your posts) won't be needed as I simply 
-propagate the resulting non-match throughout the ip chain (the packets 
-therefore could be dropped for a variety of other reasons regardless of 
-whether they belong to the 'whitelist' or not, which is what I wanted to 
-have in a first place).
+Jan Engelhardt (24):
+      build: use autoconf-suggested naming of files
+      build: use modern call syntax for AC_INIT, AM_INIT_AUTOMAKE
+      build: avoid use of deprecated INCLUDES
+      build: use simpler autoreconf in autogen
+      build: run AC_CANONICAL_HOST only
+      build: no need for error message in PKG_CHECK_MODULES
+      add .gitignore to rootdir
+      build: set Libs.private for pkgconfig file
+      build: use sh -e, remove autom4te.cache
+      build: remove statements without effect
+      build: remove unused $(all_includes)
+      build: remove -fPIC flag
+      build: no need for error message in PKG_CHECK_MODULES
+      Update .gitignore
+      build: default to not building static libraries
+      build: use AC_OUTPUT
+      build: run autoupdate to replace obsolete constructs
+      src: remove redundant casts
+      src: declare non-modified data as const
+      utils: use sizeof(buf) over hardcoded number
+      build: remove unused LIBTOOL_DEPS
+      build: use -Wall across the entire source
+      utils: resolve compiler warnings
+      qa: resolve compiler warnings
 
-Jozsef, you mentioned yesterday that ipset 5.x (and I presume 6.0+ also) 
-does not implement ip range 'readjustment' any more. If so, what happens 
-when I list the set below:
+Pablo Neira Ayuso (26):
+      doc: minor improvements for doxygen config file
+      src: fix warning in compilation
+      expect: add CTA_EXPECT_ZONE support
+      expect: add support for CTA_EXPECT_FLAGS
+      utils: more realistic expectation creation for FTP helper
+      utils: add user-space expectation example
+      expect: add missing tags for expectation events
+      conntrack: fix independent metadata checkings in XML output
+      doc: update README file (including re-license to GPLv2+)
+      Merge branch 'master' of git://dev.medozas.de/libnetfilter_conntrack
+      src: allow to use nfct handler for conntrack and expectations at the same time
+      utils: expect_events now listens to all sort of expectation events
+      expect: export already implement low-level functions
+      src: replace CTA_PROTOINFO_DCCP_SEQ by CTA_PROTOINFO_DCCP_HANDSHAKE_SEQ
+      callback: remove unused goto tag
+      Merge branch 'master' of git://dev.medozas.de/libnetfilter_conntrack
+      src: add support for CTA_SECCTX
+      api: fix use-after-free bug in nfct_destroy()
+      include: sync IPS_* bits with current in the Linux kernel
+      conntrack: add timestamp support
+      conntrack: fix segfault in nfct_copy() if secctx of origin is not set
+      conntrack: add NFCT_CP_OVERRIDE flag for nfct_copy()
+      conntrack: deprecate nfct_sizeof() and nfct_maxsize() functions
+      src: deprecate low level API
+      conntrack: fix subscript is above array bounds in secctx
+      build: bump version to 0.9.1
 
-ipset -F test
-ipset -A test 10.1.1.0/24
-ipset -D test 10.1.1.12
-ipset -L test
 
-> -m set --match-set $WHITELIST src -j ACCEPT
->   
-That won't be needed as I simply want the packet to be propagated down 
-the ip chain as normal (the packet could be dropped for other reasons 
-and the fact that it belongs to the whitelist won't matter - its sole 
-purpose is for punching holes in my blacklist, then it should be treated 
-as any other packet).
-
+--------------000200070809070905070605--
