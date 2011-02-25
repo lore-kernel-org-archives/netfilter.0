@@ -1,71 +1,99 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+From: Mr Dash Four <mr.dash.four@googlemail.com>
 Subject: Re: ipset -R
-Date: Fri, 25 Feb 2011 09:38:00 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1102250915200.20179@blackhole.kfki.hu>
-References: <4D645BC7.7030306@googlemail.com> <alpine.DEB.2.00.1102232009001.16917@blackhole.kfki.hu> <4D659102.8090501@googlemail.com> <AANLkTi=06RAwFaiQzjiTMmJaoy+EgXSbq3UdOfonH4UQ@mail.gmail.com> <4D664C9F.3020701@googlemail.com>
+Date: Fri, 25 Feb 2011 13:27:08 +0000
+Message-ID: <4D67AE2C.3010902@googlemail.com>
+References: <4D645BC7.7030306@googlemail.com> <alpine.DEB.2.00.1102232009001.16917@blackhole.kfki.hu> <4D659102.8090501@googlemail.com> <AANLkTi=06RAwFaiQzjiTMmJaoy+EgXSbq3UdOfonH4UQ@mail.gmail.com> <4D664C9F.3020701@googlemail.com> <alpine.DEB.2.00.1102250915200.20179@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D664C9F.3020701@googlemail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:message-id:disposition-notification-to:date
+         :from:user-agent:mime-version:to:cc:subject:references:in-reply-to
+         :content-type:content-transfer-encoding;
+        bh=K8XsK3oAqVqKq8iAJFMMqiWnESJiZOjXdT5uO4O5hTg=;
+        b=H+dnCRgXzX2lv4TSU6v3pawU52cbo+eCMKfisfqOWYzlU77xyps/3xoOBFdwg3Li7b
+         l8jsNRcmFsjtHh5IasKy47EqUegAek2A0K0+qqYDBWdrxzNrA2gOZhLhlrjZTsitzhgm
+         dspabBGCefvx+5ug3tLlGblxCHjG/3Lv4mj78=
+In-Reply-To: <alpine.DEB.2.00.1102250915200.20179@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: Pandu Poluan <pandu@poluan.info>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Thu, 24 Feb 2011, Mr Dash Four wrote:
 
-> Jozsef, you mentioned yesterday that ipset 5.x (and I presume 6.0+ also) does
-> not implement ip range 'readjustment' any more. If so, what happens when I
-> list the set below:
-> 
-> ipset -F test
-> ipset -A test 10.1.1.0/24
-> ipset -D test 10.1.1.12
-> ipset -L test
+> However with hash:net type
+>
+> # ipset -N test hash:net
+> # ipset -A test 10.1.1.0/24
+> # ipset -D test 10.1.1.12
+> ipset v6.0: Element cannot be deleted from the set: it's not added
+>   
+Well, that's plain wrong, isn't it? The 'element' 10.1.1.12 does exist 
+and it is added (albeit implicitly as part of 10.1.1.0/24). I also 
+presume 'ipset -T test 10.1.1.12' will return a positive result, so 
+there is something which isn't quite right.
 
-It depends on the type of the set. With hash:ip type it's simple
+> and that's also right, because the hash types do not magically figure out 
+> overlapping ranges and collapse those or break up ranges into parts when 
+> deleting intersecting elements.
+>   
+I do not know the reasons for removing this as it was a nice 'feature' 
+though I now understand the 'deletion' part even if I do not agree with it.
 
-# ipset -N test hash:ip
-# ipset -A test 10.1.1.0/24 
-# ipset -D test 10.1.1.12 
-# ipset -L test | grep 10.1.1.12
-10.1.1.125                                                                      
-10.1.1.126                                                                      
-10.1.1.124                                                                      
-10.1.1.122                                                                      
-10.1.1.129                                                                      
-10.1.1.123                                                                      
-10.1.1.121                                                                      
-10.1.1.120                                                                      
-10.1.1.127                                                                      
-10.1.1.128 
+> The hash:*net* types could be extended to store non-matching elements, 
+> something like this:
+>
+> # ipset -N test hash:net
+> # ipset -A test 10.1.1.0/24
+> # ipset -A test 10.1.1.12 --nomatch
+>
+> That way overlapping entries with different "access right" could be stored 
+> in a single set. But any coding needs time and testing.
+>   
+I am not sure I understand the above - is this already implemented (in 
+6.0?) or is this on the 'drawing board' so to speak? What do you mean by 
+'access right'?
 
-However with hash:net type
+On a separate query relating to my initial post of this thread - Pandu 
+Poluan proposed a nice 'get-out-of-jail' solution to my problem, which I 
+already found a way to optimise a little, but need to make sure I am 
+doing the right thing: if I have my whitelist, blacklist-1, blacklist-2 
+... blacklist-x sets registered and they have (quite a lot of) members 
+can I then do this:
 
-# ipset -N test hash:net
-# ipset -A test 10.1.1.0/24
-# ipset -D test 10.1.1.12
-ipset v6.0: Element cannot be deleted from the set: it's not added
+ipset -N list blacklist-all
+ipset -A blacklist-all blacklist-1
+...
+ipset -A blacklist-all blacklist-x
 
-and that's also right, because the hash types do not magically figure out 
-overlapping ranges and collapse those or break up ranges into parts when 
-deleting intersecting elements.
- 
-The hash:*net* types could be extended to store non-matching elements, 
-something like this:
+and then add my iptables statement:
 
-# ipset -N test hash:net
-# ipset -A test 10.1.1.0/24
-# ipset -A test 10.1.1.12 --nomatch
+(1) -m set ! --match-set whitelist src -m set --match-set blacklist-all 
+src -j DROP
 
-That way overlapping entries with different "access right" could be stored 
-in a single set. But any coding needs time and testing.
+Would that be the equivalent of (2):
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+-m set ! --match-set whitelist src -m set --match-set blacklist-1 src -j 
+DROP
+...
+-m set ! --match-set whitelist src -m set --match-set blacklist-x src -j 
+DROP
+
+In other words, I combine all of my blacklisted sets into one of type 
+'list' where I assume 1) that all sub-set elements of the 'list' set are 
+queried for a match; and 2) executing one iptables statement with a set 
+match/mismatch (i.e. 1 above) is better, performance-wise, than 
+(potentially) traversing through multiple iptables statements with a set 
+match/mismatch (as shown on 2 above)?
+
+If so, how is the blacklist-all set stored - do you copy all the 
+elements of all the sets into a separate memory space or do you just 
+reference the set (which means that if I alter, say, blacklist-2, the 
+changes are 'automatically' applied to blacklist-all as well)?
+
+I can't combine all elements of my blacklist-x sets into one big one 
+because 1) I use separate blacklist-x sets elsewhere in my ip chains; 
+and 2) my blacklist-x sets are not of the same type.
+
