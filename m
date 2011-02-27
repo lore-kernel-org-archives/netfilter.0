@@ -1,105 +1,113 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
-Subject: Re: ipset -R
-Date: Sat, 26 Feb 2011 13:35:26 +0000
-Message-ID: <4D69019E.7050703@googlemail.com>
-References: <4D645BC7.7030306@googlemail.com> <alpine.DEB.2.00.1102232009001.16917@blackhole.kfki.hu> <4D659102.8090501@googlemail.com> <AANLkTi=06RAwFaiQzjiTMmJaoy+EgXSbq3UdOfonH4UQ@mail.gmail.com> <4D664C9F.3020701@googlemail.com> <alpine.DEB.2.00.1102250915200.20179@blackhole.kfki.hu> <4D67AE2C.3010902@googlemail.com> <alpine.DEB.2.00.1102251431210.20179@blackhole.kfki.hu> <4D67D537.2080009@googlemail.com> <alpine.DEB.2.00.1102252252290.21696@blackhole.kfki.hu>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] conntrack-tools 1.0.0 released
+Date: Sun, 27 Feb 2011 03:28:11 +0100
+Message-ID: <4D69B6BB.7020309@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:message-id:disposition-notification-to:date
-         :from:user-agent:mime-version:to:cc:subject:references:in-reply-to
-         :content-type:content-transfer-encoding;
-        bh=EpCTGVciUzzkfz//TBNWdyO0M+Or58jHo+RB96Cwk/w=;
-        b=vK8UPye2nMki6OywyUhLMuaPCVUnjZAhjt7lF19vYWsITYyYQbNZ8mwARkx7XoTQ/L
-         PUiYVNufwCHXcT5AF9dlfXIQxKzdlXDZzE17doEV6xAlMVg6dHd0f+4Qz7V/DLy8ZuvF
-         EdUUjp+bi7NJ/GmNVxMS2DfG/qkvuHio4Yrjc=
-In-Reply-To: <alpine.DEB.2.00.1102252252290.21696@blackhole.kfki.hu>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/mixed;
+ boundary="------------080308000000070906010208"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: Pandu Poluan <pandu@poluan.info>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Cc: netfilter-announce@lists.netfilter.org, lwn@lwn.net
+
+This is a multi-part message in MIME format.
+--------------080308000000070906010208
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
+
+Hi!
+
+The Netfilter project presents the first stable release of the
+conntrack-tools, that is composed of:
+
+- The userspace daemon so-called conntrackd that covers the specific
+aspects of stateful Linux firewalls to enable high availability
+solutions. It can be used as statistics collector of the firewall use as
+well, although ulogd2 is the prefered option for logging. The daemon is
+highly configurable and extensible.
+
+- The command line interface (CLI) conntrack that provides an interface
+to add, delete and update flow entries, list current active flows in
+plain text/XML, current IPv4 NAT'ed flows, reset counters, and flush the
+complete connection tracking table among many other.
+
+This summary of changes with regards to previous is the following:
+
+- improvements for the autotools/build infrastructure from Jan Engelhardt.
+- lots of documentation updates.
+- SYN_SENT2 support for the command line tool conntrack (which was added
+in Linux kernel >= 2.6.31).
+- allow to listen to update and destroy expectation events (it requires
+a Linux kernel >= 2.6.37).
+- conntrack timestamping support with -o ktimestamp (this support
+requires the upcoming Linux 2.6.38).
+- one fix for conntrackd: two very consecutive commit invocations with
+option -c may result in the hang of the second commit invocation if the
+first commit did not finish yet. As a result the second commit
+invocation required a manual SIGTERM.
+
+See changelog attached for more details.
+
+You can download it from:
+http://www.netfilter.org/projects/conntrack-tools/downloads.html
+
+More information at:
+http://conntrack-tools.netfilter.org
+
+Official documentation at:
+http://conntrack-tools.netfilter.org/manual.html
+
+enjoy!
+Pablo
+
+--------------080308000000070906010208
+Content-Type: text/plain;
+ name="changes-conntrack-tools-1.0.0.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="changes-conntrack-tools-1.0.0.txt"
+
+Jan Engelhardt (12):
+      build: use autoconf-suggested naming of files
+      build: use modern call syntax for AM_INIT_AUTOMAKE
+      build: drop unused $(all_includes)
+      build: remove statements without effect
+      build: remove unused $(all_libraries)
+      build: no need for error message in PKG_CHECK_MODULES
+      Add .gitignore files
+      build: resolve automake warning
+      build: default to not building static libraries
+      build: run autoupdate to replace obsolete constructs
+      build: use AM_YFLAGS instead of overriding YACC
+      build: remove redundant bison/lex tests
+
+Pablo Neira Ayuso (25):
+      conntrackd: fix wrong kernel requirements for TCPWindowTracking in example files
+      conntrackd: minor documentation update (two new questions in the FAQ)
+      conntrack: fix missing line break in conntrack(8) manpage
+      conntrack: allow to listen to all kind of expectation events
+      doc: update conntrack-tools manual
+      doc: remove reference to the CT target
+      local: don't override initial return value
+      sync: don't override initial return value of local handler
+      cache: close commit request if we already have one in progress
+      cache: log if we received a commit request while already one in progress
+      conntrackd: event iteration limiter is already reset in main select loop
+      conntrackd: rise number of committed entries per step
+      conntrack: add -o ktimestamp option (it requires linux >= 2.6.38)
+      conntrackd: use nfct_copy() with override flag in cache_object_new()
+      conntrack: allocate template objects in the heap
+      conntrackd: remove use of deprecated nfct_maxsize()
+      doc: document -s option of conntrackd in the manual
+      doc: document redundant link support for conntrackd
+      conntrack: display informative message if expectation table is flushed
+      conntrack: support SYN_SENT2 TCP state as --state parameter
+      doc: add reference to the CT target again
+      doc: add missing conntrackd -s invocation with options
+      build: conntrack-tools now requires libnetfilter_conntrack >= 0.9.1
+      doc: prepare 1.0.0 release in conntrack-tools manual
+      build: bump version to 1.0.0
 
 
->> Call be dumb, but I still fail to see what is the sense in implementing the
->> above, or are you suggesting that the above would create a pinhole with the
->> "--nomatch" option instead of deleting the element itself and therefore remove
->> the need for a 'whitelist'?
->>     
->
-> Yes, that is what I'm thinking. One could just punch holes into networks, 
-> even stacked, i.e.
->
-> ipset -A test 10.1.1.0/24
-> ipset -A test 10.1.1.64/26 --nomatch
-> ipset -A test 10.1.1.80/28
->
-> would mean a match for the elements in the inclusive ranges
-> 10.1.1.0-10.1.1.63,10.1.1.80-10.1.1.95,10.1.1.128-10.1.1.255
->   
-I see! Yes, I think that is a very good idea (you could also introduce a 
-separate ipset option to only list '--nomatch' elements, something like 
-'ipset -L --nomatch test' for example), though I have to admit I am 
-coming round to the idea of using my whitelist as a separate set - I 
-think this is a much cleaner solution and it also gives me a greater 
-deal of flexibility as I can easily see the whitelist members and employ 
-them freely anywhere in the ip chains.
-
->> Please clarify - can I remove elements of a set, i.e. execute "ipset -D
->> blacklist-2 <blacklist-2 member(s)>", if blacklist-2 is part (i.e. a member)
->> of a list set called blacklist-all, or do you mean that I cannot remove
->> blacklist-2 from blacklist-all once added?
->>     
->
-> You can add, delete, even flush the entries from a member set, that's not 
-> problem. But it's not possible to delete the set while it's the member of 
-> another set.
->   
-Makes perfect sense. I also take it since the subsets are referenced as 
-soon as a particular subset is changed that change is 'automatically' 
-applied to every list set this subset belongs to, right?
-
-> Yes, you can have different types as subsets, even different dimensions of 
-> set types. But the dimension of the matching plays an important role: lets 
-> assume you have got the following sets
->
-> ipset create a hash:ip,port,ip
-> ipset create b hash:ip,port
-> ipset create c hash:ip
-> ipset create d list:set
-> ispet add d a
-> ipset add d b
-> ipset add d c
->
-> then when called from the rule
->
-> -m set --match-set d dst,dst
->
-> then the first subset "a" is always skipped, because the matching 
-> dimension is smaller than the dimension of the set.
->
-> However if you have got the rule
->
-> -m set --match-set d dst,dst,src
->
-> then all subsets are tried in order until a match is found.
->   
-That's brilliant - I avoided using list sets as, to be honest, I was 
-unclear as to how the matching is performed (particularly with different 
-subset types), but the above clarifies matters for me completely.
-
-Have you considered using the subsets in a given list set as a 
-mathematical entities and applying the usual (mathematical) set 
-operations (like intersection, union, complement etc)? Currently, you 
-are applying a union of all subsets when they are registered in a list 
-set, but this could be expanded as I see the list set as a potentially 
-very powerful tool.
-
-For example I could define the whitelist as a set and then register it 
-together with all of my blacklist-x in a new list set and then say 
-'apply (blacklist-1 + blacklist-2 + ... blacklist-x) - whitelist' (in 
-other words, build a union of all blacklist-x subsets and then subtract 
-the whitelist subset from that resulting union). I don't know how easy 
-this would be to implement though!
+--------------080308000000070906010208--
