@@ -1,52 +1,33 @@
-From: Jan Rovner <jan.rovner@diadema.cz>
-Subject: RATEEST explanation
-Date: Sun, 27 Feb 2011 19:01:07 +0100
-Message-ID: <6750301E8CE01943922138638F4F1D26016EF1FCB36C@diademasrv.diademasw.inkubator.cz>
+From: Anatoly Muliarski <x86ever@gmail.com>
+Subject: ipset preformance
+Date: Sun, 27 Feb 2011 21:40:25 +0200
+Message-ID: <AANLkTimNBPsd-a2YbM9Bf755WRrUnchXT7P31U83Txb3@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-2022-jp"
-Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:date:message-id:subject:from:to
+         :content-type;
+        bh=z+0GZAbhh0kUlP+x+yvepPDuT+qzC2Y1iY72R+c8eWc=;
+        b=t2WjQ6A/baXHhrpAkJa+koffkg0DpbX1pGzF5WkZ7wI7kPLnsGxT+Lx1y5YVIUz+TM
+         gtGPyT2LTAn4W+u5ht7BUGKGo6Lugkr8AqiFGlAQapPHb1l+dMJOq46khLyqveFvluk6
+         sO6QvcEW7otCrlnTXnhJxR37m7SFR0l3lKXx4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hello everybody,
+Hi all,
 
-I am trying to use RATEEST match to measure pps of certain packets via iptables.
-I had a partial success, but I am not sure about the meaning of parameters --rateest-interval
-and --rateest-ewmalog values. There is no information in the docs about the algorithm used.
+I did oprofile test on our router and I found strange things with
+ipset performance.
+Using a single check of a nethash set with 3 nets in it consumes 1.88%
+of CPU, using a single check of an ipportiphash with zero items
+consumes 3.39% and ip_set module itself  consumes 4.9%.
+Currently I am using 2.6.25.17 kernel with ipset v2.4.9.
+Is it worth to upgrade to ipset v4.5 to resolve this issue?
 
-Could you please explain the meaning of these parameters? 
-And if possible, would you recommend me a proper setup to measure "RATETEST hits per second (pps)" ?
-
-i.e. to use:
-iptables -j RATEEST --rateest-name mymeter --rateest-interval xx --rateest-ewma yy
-
-followed by:
-iptables -m rateest --rateest1 mymeter --rateest-pps2 1000 --rateest-gt ?j LOG --log-prefix "mymeter is over 1000pps"
-
-Thank you very much.
-
-Sincerely,
-Jan Rovner
-
------------------------------------------------------------------------------
-
-RATEEST
-       The RATEEST target collects statistics, performs rate estimation calcu‐
-       lation  and  saves  the  results for later evaluation using the rateest
-       match.
-
-       --rateest-name name
-              Count matched packets into the pool referred to by  name,  which
-              is freely choosable.
-
-       --rateest-interval amount{s|ms|us}
-              Rate measurement interval, in seconds, milliseconds or microsec‐
-              onds.
-
-       --rateest-ewmalog value
-              Rate measurement averaging time constant.
-
-
+-- 
+Best regards
+Anatoly Muliarski
