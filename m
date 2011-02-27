@@ -1,33 +1,41 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: turning off iptables processing for bridged packets
-Date: Sun, 27 Feb 2011 09:30:08 -0600
-Message-ID: <20110227153008.GN4855@cardinal>
-References: <DD1D3360D73274A4C51A9FAB@Ximines.local>
-Reply-To: netfilter@vger.kernel.org
+From: Pandu Poluan <pandu@poluan.info>
+Subject: --set-dscp value?
+Date: Sun, 27 Feb 2011 23:20:06 +0700
+Message-ID: <AANLkTikjDsZn+G+W3KZj7S3vFAmWtCFGjf1=TExhB8a3@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <DD1D3360D73274A4C51A9FAB@Ximines.local>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Sun, Feb 27, 2011 at 03:04:32PM +0000, Alex Bligh wrote:
-> By default netfilter appears to apply iptables rules (specifically 
-> the FORWARD chain) to bridged packets. Is there a way to turn this 
-> off (i.e. only apply the FORWARD chain to routed packets, not 
-> bridged ones)? I seem to remember there is, but I can't for the 
-> life of me find the configuration setting.
+Hello all.
 
-I'm not sure if there is a runtime sysctl, but at compile time your 
-option is CONFIG_BRIDGE_NETFILTER.
+I am planning to do routing based on DSCP Local Use values.
 
-If you don't want to compile a new kernel, you could put rules 
-passing bridge-only traffic at the top of FORWARD:
-    -A FORWARD -i br0 -o br0 -j ACCEPT
-for example.
+Now, I've put in the values in rt_dsfield e.g.:
+
+...
+0x3c  LU03
+0x4c  LU04
+...
+
+However, when I use --set-dscp 0x4c, iptables complained that 'the
+value is greater than 64' (or something to that effect).
+
+Based on analysis of values in rt_dsfield, it seems iproute2 includes
+the ECN bits as LSBs '00' in its DSCP value definition.
+
+Will I be okay if I just do a '>> 2' to refer to the similar LUxx in
+iptables --set-dscp?
+
+Thanks.
+
+Rgds,
+
+
 -- 
-    Offlist mail to this address is discarded unless
-    "/dev/rob0" or "not-spam" is in Subject: header
+--
+Pandu E Poluan - IT Optimizer
+My website: http://pandu.poluan.info/
