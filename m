@@ -1,59 +1,27 @@
-From: Jason <netfilter@lakedaemon.net>
-Subject: ebtables arp size error on tap iface
-Date: Sun, 27 Feb 2011 10:20:58 -0500
-Message-ID: <20110227152058.GA12185@titan.lakedaemon.net>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [GIT PULL nf-next-2.6] IPVS
+Date: Sun, 27 Feb 2011 16:25:21 +0100
+Message-ID: <4D6A6CE1.8080701@trash.net>
+References: <1298601812-8168-1-git-send-email-horms@verge.net.au>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <lvs-devel-owner@vger.kernel.org>
+In-Reply-To: <1298601812-8168-1-git-send-email-horms@verge.net.au>
+Sender: lvs-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Simon Horman <horms@verge.net.au>
+Cc: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, Changli Gao <xiaosuo@gmail.com>, Wensong Zhang <wensong@linux-vs.org>, Julian Anastasov <ja@ssi.bg>
 
-All,
+On 25.02.2011 03:43, Simon Horman wrote:
+> Hi Patrick,
+> 
+> please consider pulling
+> git://git.kernel.org/pub/scm/linux/kernel/git/horms/lvs-test-2.6.git master
+> go get the following changes by Changli.
+> 
+>       ipvs: use hlist instead of list
+>       ipvs: use enum to instead of magic numbers
+>       ipvs: unify the formula to estimate the overhead of processing connections
 
-I'm trying to filter out some multicast traffic on an openvpn interface
-(tap2).  The goal is power conservation, since the vpn client is my
-phone and the multicast/broadcast traffic keeps unecessarily waking it
-up.  So, at my server, I'm trying to prevent these packets from going
-down the pipe.
-
-my end goal is to have something like this:
-
-### start fw_up.sh ####################################################
-#!/bin/sh
-
-DEV=tap2
-IP=${1}
-
-# allow arp requests for destination ip
-ebtables -A FORWARD -p ARP -o $DEV --arp-opcode 1 --arp-ip-dst $IP \
-	-j ACCEPT
-
-# drop all multicast/broadcast
-#ebtables -A FORWARD -o $DEV -d 01:00:00:00:00:00/01:00:00:00:00:00 \
-	-j DROP
-
-# allow all else
-#ebtables -A FORWARD -o $DEV -j ACCEPT
-
-exit 0
-### end fw_up.sh ######################################################
-
-Unfortunately, the first rule fails to load and I get a message in my
-logs:
-
-kernel: eb_tables: arp match: invalid size 56 != 52
-
-So, my dilemma is this is an old kernel (2.6.30.2) on my primary server
-at home.  It handles everything.  I plan to upgrade the kernel, but not
-right now.
-
-Am I doing something wrong with my ebtables call?  Is there something I
-can set on my tap2 interface (checksum perhaps?) to fix this?  Or do I
-have to hold off until I upgrade my kernel?
-
-thx,
-
-Jason.
+Pulled, thanks Simon.
