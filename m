@@ -1,43 +1,81 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Problem crosscompiling libnetfilter_conntrack-0.9.1
-Date: Mon, 28 Feb 2011 18:32:10 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1102281821070.24019@obet.zrqbmnf.qr>
-References: <BCC8F5E1-33FB-4FEB-ABA5-CA0CB7EB3655@aol.com>
+From: Anatoly Muliarski <x86ever@gmail.com>
+Subject: Re: ipset preformance
+Date: Mon, 28 Feb 2011 20:23:32 +0200
+Message-ID: <AANLkTi=9nahJGA-1YBSer18S1RF6J6onPUFcn6BOzkTV@mail.gmail.com>
+References: <AANLkTimNBPsd-a2YbM9Bf755WRrUnchXT7P31U83Txb3@mail.gmail.com>
+	<alpine.DEB.2.00.1102272100340.24539@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BCC8F5E1-33FB-4FEB-ABA5-CA0CB7EB3655@aol.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:in-reply-to:references:date
+         :message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=a1KGa+/xHiBoYgRKilCpyLGohfyr+CDYbpZDKYgqvgY=;
+        b=wRLIh/WxDkqSkvkKccVyWZMGmcBKCKQiRVu1/2o3hdRJBQeUMKLLoCui212Bxr/Qgm
+         8lyM5kcMZCaBnf0KbnoxxhbkIqa18nYg61yXTKTItoswwpcmmw32G4k9TfM7kT+BYBet
+         Z6jQ+hjJ6syWOxu8STM5bGVbwZPoExCM1Ed1Q=
+In-Reply-To: <alpine.DEB.2.00.1102272100340.24539@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: jobhunts02@aol.com
+Content-Type: text/plain; charset="iso-8859-1"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: netfilter@vger.kernel.org
 
-On Monday 2011-02-28 18:02, jobhunts02@aol.com wrote:
+2011/2/27 Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>:
+> On Sun, 27 Feb 2011, Anatoly Muliarski wrote:
+>
+>> I did oprofile test on our router and I found strange things with
+>> ipset performance.
+>> Using a single check of a nethash set with 3 nets in it consumes 1.8=
+8%
+>> of CPU, using a single check of an ipportiphash with zero items
+>> consumes 3.39% and ip_set module itself =A0consumes 4.9%.
+>> Currently I am using 2.6.25.17 kernel with ipset v2.4.9.
+>
+> That is a really-really old version of ipset.
+>
+>> Is it worth to upgrade to ipset v4.5 to resolve this issue?
+>
+> I believe so. But please note, I stopped the development of the 4.x b=
+ranch
+> and the currently maintained release is 6.x.
 
->I am trying to crosscompile libnetfilter_conntrack-0.9.1 on an i686-pc for use on a powerpc.  When I run make, I get the following error:
->
->In file included from api.c:13:../../include/internal/internal.h:24:39: 
->error: libnfnetlink/libnfnetlink.h: No such file or directory
->
->libnfnetlink.h is located at 
->/home/steve/libnfnetlink-1.0.0/include/libnfnetlink/libnfnetlink.h
->
->My configure command is:
->
->./configure --host=i686-pc-linux-gnu --target=ppc 
->CROSS_COMPILE=powerpc-linux- 
->PKG_CONFIG_PATH=/home/steve/libnfnetlink-1.0.0
->
->How do I correct this error?
+I upgraded to ipset v4.5 and got no difference :(
+BTW I had to upgrade iptables too as my old v1.4.1 did not work with
+set rules. Unfortunately, this fact is not reflected in the manual.
+=46inally I optimized my iptables rules to exclude unncessary checks an=
+d
+remove unused sets, BUT the question is open - what is the cause of
+losing performance on a simple set check?
+Why a lot of other iptables rules do not consume so much CPU time?
 
-You need to fix your configure line. First, CROSS_COMPILE= has no 
-effect. Second, --target has no effect either, because 
-libnetfilter_conntrack is not a code generator.
+Nevertheless I would like to say personally much thanks for your great =
+tool.
+It makes a lot of traffic control tasks easier and ever possible.
 
-After running configure, see what the value of LIBNFNETLINK_CFLAGS is in 
-the generated Makefile. It should include the output of pkg-config, i.e. 
--I/home/steve/libnfnetlink-1.0.0/include or similar.
+A one small thing that I was missed( exclude /16 limitation for most
+of the set types and a semantic difference between masks 1-31 and mask
+32 ) is a possibility of using ipset facilities with not in the
+context of a current packet. In other words I was need to store and
+use later something like a state.
+But it is only a little strange wish that may not be in line of
+general development :)
 
-Finally, please copy the gcc line that make emits. If need be, use
-`make V=1` if your default verbosity isn't already high.
+
+>
+> Best regards,
+> Jozsef
+> -
+> E-mail =A0: kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+> Address : KFKI Research Institute for Particle and Nuclear Physics
+> =A0 =A0 =A0 =A0 =A0H-1525 Budapest 114, POB. 49, Hungary
+>
+
+
+
+--=20
+Best regards
+Anatoly Muliarski
