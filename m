@@ -1,40 +1,26 @@
-From: Robby Workman <rworkman@slackbuilds.org>
-Subject: Re: [ANNOUNCE]: Release of iptables-1.4.9.1
-Date: Mon, 28 Feb 2011 08:43:08 -0600
-Message-ID: <20110228084308.70853a84@liberty.rlwhome.lan>
-References: <4C5C136D.3040108@trash.net>
-	<20632b.9133.12e6b060046.Coremail.xuhainanjing@126.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=PGP-SHA1;
- boundary="Sig_/o9D1ylhMOEZOPFH.xf/E+OG"; protocol="application/pgp-signature"
+From: jobhunts02@aol.com
+Subject: Problem crosscompiling libnetfilter_conntrack-0.9.1
+Date: Mon, 28 Feb 2011 09:02:19 -0800
+Message-ID: <BCC8F5E1-33FB-4FEB-ABA5-CA0CB7EB3655@aol.com>
+Mime-Version: 1.0 (iPhone Mail 8C148)
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20632b.9133.12e6b060046.Coremail.xuhainanjing@126.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: xuhainanjing <xuhainanjing@126.com>
-Cc: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
---Sig_/o9D1ylhMOEZOPFH.xf/E+OG
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+I am trying to crosscompile libnetfilter_conntrack-0.9.1 on an i686-pc for use on a powerpc.  When I run make, I get the following error:
 
-Try following directions - it will work better.
+In file included from api.c:13:../../include/internal/internal.h:24:39: error: libnfnetlink/libnfnetlink.h: No such file or directory
 
-> To unsubscribe from this list: send the line "unsubscribe netfilter"
-> in the body of a message to majordomo@vger.kernel.org
 
--RW
+libnfnetlink.h is located at /home/steve/libnfnetlink-1.0.0/include/libnfnetlink/libnfnetlink.h
 
---Sig_/o9D1ylhMOEZOPFH.xf/E+OG
-Content-Type: application/pgp-signature; name=signature.asc
-Content-Disposition: attachment; filename=signature.asc
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.17 (GNU/Linux)
+My configure command is:
 
-iEYEARECAAYFAk1rtIMACgkQvGy9tf6lsvsEIQCeNO+AND4DsJHE/oY2o6mh/hF9
-coEAoJ1G0K9A7zvyNH900PJczVKgfEqw
-=ByBf
------END PGP SIGNATURE-----
+./configure --host=i686-pc-linux-gnu --target=ppc CROSS_COMPILE=powerpc-linux- PKG_CONFIG_PATH=/home/steve/libnfnetlink-1.0.0
 
---Sig_/o9D1ylhMOEZOPFH.xf/E+OG--
+
+How do I correct this error?
