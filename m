@@ -1,56 +1,64 @@
-From: Alex <mysqlstudent@gmail.com>
-Subject: Re: Analyzing DNAT traffic
-Date: Sat, 5 Mar 2011 18:33:08 -0500
-Message-ID: <AANLkTinpb3WCQ=aSO_OhtTCbmTb8yQp5357S6CZLhHZ-@mail.gmail.com>
-References: <AANLkTimVukQe-ZFsYX_OuFdNV8-buwPHhFh5J768ugqs@mail.gmail.com>
-	<314641299313152@web72.yandex.ru>
-	<AANLkTimhvRGUd-_tb6C10UH8c-cqzcaQFb-OeamMgeuA@mail.gmail.com>
-	<alpine.LNX.2.01.1103051538150.6933@obet.zrqbmnf.qr>
-	<AANLkTikUyPPHcUv9XRPBmyUDX1SQO-SSvyS-d09VutGt@mail.gmail.com>
-	<514701299338286@web59.yandex.ru>
-Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:in-reply-to:references:date
-         :message-id:subject:from:to:cc:content-type;
-        bh=3aWgJx1FSEb03aXC1g7N8DZBwI9vkfuQ2a8HufcWIpo=;
-        b=dwf4MnWwTdHLlYRCPsOtrtKDTkbSJk7l4ZqSnqBr6sylE/xCyVdjp2VHQO9n3+553H
-         OKfIAB4MN50mpT1D+AMBPF3KZ6rjVoTOoT/HHiDLNtGQXJ+BIz04L9Cq766sB/FQDOPM
-         ga4yp/QXJrgzyGiMil83ownEjQIvkqy2+tLp4=
-In-Reply-To: <514701299338286@web59.yandex.ru>
-Sender: netfilter-owner@vger.kernel.org
+From: Simon Horman <horms@verge.net.au>
+Subject: [PATCH 04/18] ipvs: remove unused seqcount stats
+Date: Sun,  6 Mar 2011 08:45:46 +0900
+Message-ID: <1299368760-14271-5-git-send-email-horms@verge.net.au>
+References: <1299368760-14271-1-git-send-email-horms@verge.net.au>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1299368760-14271-1-git-send-email-horms@verge.net.au>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Oleg A. Arkhangelsky" <sysoleg@yandex.ru>
-Cc: Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org
+To: netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, lvs-devel@vger.kernel.org
+Cc: Julian Anastasov <ja@ssi.bg>, Hans Schillstrom <hans@schillstrom.com>, Simon Horman <horms@verge.net.au>
 
-Hi,
+From: Julian Anastasov <ja@ssi.bg>
 
->> The last two are just regular requests for access to facebook from
->> another PC on the internal network.
->
-> This packets can be out-of-order or duplicate packets with FIN flag.
-> They are not connected to any conntrack entry, so there is no way
-> to do NAT transformation for them.
+ 	Remove ustats_seq, IPVS_STAT_INC and IPVS_STAT_ADD
+because they are not used. They were replaced with u64_stats.
 
-I'm not sure if I'm misunderstanding what you are saying, or you're not clear.
+Signed-off-by: Julian Anastasov <ja@ssi.bg>
+Signed-off-by: Simon Horman <horms@verge.net.au>
+---
+ include/net/ip_vs.h |   17 -----------------
+ 1 files changed, 0 insertions(+), 17 deletions(-)
 
-I'm trying to dnat bittorrent traffic, but there are many rejects in
-the kernel logs that I believe are a result of my dnat rules not being
-correct, and I thought the rule below would help me isolate those
-packets:
+diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
+index f17841d..efd68dc 100644
+--- a/include/net/ip_vs.h
++++ b/include/net/ip_vs.h
+@@ -376,22 +376,6 @@ struct ip_vs_stats {
+ 	spinlock_t		lock;		/* spin lock */
+ };
+ 
+-/*
+- * Helper Macros for per cpu
+- * ipvs->tot_stats->ustats.count
+- */
+-#define IPVS_STAT_INC(ipvs, count)	\
+-	__this_cpu_inc((ipvs)->ustats->count)
+-
+-#define IPVS_STAT_ADD(ipvs, count, value) \
+-	do {\
+-		write_seqcount_begin(per_cpu_ptr((ipvs)->ustats_seq, \
+-				     raw_smp_processor_id())); \
+-		__this_cpu_add((ipvs)->ustats->count, value); \
+-		write_seqcount_end(per_cpu_ptr((ipvs)->ustats_seq, \
+-				   raw_smp_processor_id())); \
+-	} while (0)
+-
+ struct dst_entry;
+ struct iphdr;
+ struct ip_vs_conn;
+@@ -852,7 +836,6 @@ struct netns_ipvs {
+ 
+ 	/* ip_vs_ctl */
+ 	struct ip_vs_stats		tot_stats;  /* Statistics & est. */
+-	seqcount_t			*ustats_seq; /* u64 read retry */
+ 
+ 	int			num_services;    /* no of virtual services */
+ 	/* 1/rate drop and drop-entry variables */
+-- 
+1.7.2.3
 
-# iptables -I FORWARD -m conntrack --ctstate INVALID -j LOG
---log-prefix "dnat invalid "
-
-there is a periodic match (maybe a few every other minute).
-
-However, they are apparently matching packets that are not related to
-my bittorrent traffic and shouldn't be dnat'd. How can I determine why
-these facebook packets are invalid and why my bittorrent traffic is
-not properly being dnat'd?
-
-Thanks,
-Alex
