@@ -1,37 +1,40 @@
-From: "\"Oleg A. Arkhangelsky\"" <sysoleg@yandex.ru>
+From: Alex <mysqlstudent@gmail.com>
 Subject: Re: Analyzing DNAT traffic
-Date: Sat, 05 Mar 2011 11:19:12 +0300
-Message-ID: <314641299313152@web72.yandex.ru>
+Date: Sat, 5 Mar 2011 09:23:26 -0500
+Message-ID: <AANLkTimhvRGUd-_tb6C10UH8c-cqzcaQFb-OeamMgeuA@mail.gmail.com>
 References: <AANLkTimVukQe-ZFsYX_OuFdNV8-buwPHhFh5J768ugqs@mail.gmail.com>
+	<314641299313152@web72.yandex.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1299313152; bh=yZx57Z5GCXmxgp2GbNt3rcaEaSGyNmEyYt3t4wmSXx0=;
-	h=From:To:Cc:In-Reply-To:References:Subject:MIME-Version:Message-Id:
-	 Date:Content-Transfer-Encoding:Content-Type;
-	b=SfuZPVJ7cXtiun4UYuq4oMB/byg+DFQQMlyB2xuAU+EtnfuEW5CWtsCngArBRP/Bi
-	 qiBrnk0Ln1hIrHkfDsSjvho7sZAulxKt0AST+TvVRBkfOW9Gf4K8lyBe1T72LYtoV+
-	 JxVwao9UzrJWukg+KM5toybT+wh2kdsIZGNwbE3I=
-In-Reply-To: <AANLkTimVukQe-ZFsYX_OuFdNV8-buwPHhFh5J768ugqs@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:in-reply-to:references:date
+         :message-id:subject:from:to:cc:content-type;
+        bh=Jvo6pEY47PRsNLsRf9duvEYOzvzUONL+YCRNKQNgGFY=;
+        b=h9x07BRmjGlJq+ogf40DWUxp2eoCOIAgBnC9o7NvbWP+iboeEOJXElcqGd6KOCXVCp
+         flicU24Fb6xJZIWGHAReRusU6/BWM14qb1akJBJDCU9pZ4uioc8qE+lx4rs1kzzIijWh
+         bP+RRo9Wp0IJKxOZExEIGXCYtenu+iZgKzeus=
+In-Reply-To: <314641299313152@web72.yandex.ru>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Alex <mysqlstudent@gmail.com>
+Content-Transfer-Encoding: 7bit
+To: "Oleg A. Arkhangelsky" <sysoleg@yandex.ru>
 Cc: netfilter@vger.kernel.org
 
+Hi,
 
+>> How can I analyize this traffic to determine if it should be forwarded
+>> on to its intended internal recipient, or if it is completely
+>> unrelated traffic that should continue to be blocked?
+>
+> Could you please check, does such packets match the following
+> rule?
+>
+> iptables -I FORWARD -m conntrack --ctstate INVALID -j LOG
 
-04.03.2011, 23:13, "Alex" <mysqlstudent@gmail.com>:
+How will I be able to recognize such an entry in the logs? Is there a
+way I can add a tag to the log entry so I can be sure?
 
-> How can I analyize this traffic to determine if it should be forwarded
-> on to its intended internal recipient, or if it is completely
-> unrelated traffic that should continue to be blocked?
-
-Could you please check, does such packets match the following
-rule?
-
-iptables -I FORWARD -m conntrack --ctstate INVALID -j LOG
-
--- 
-wbr, Oleg.
+Thanks,
+Alex
