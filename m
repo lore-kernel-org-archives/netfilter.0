@@ -1,28 +1,24 @@
-From: Pandu Poluan <pandu@poluan.info>
-Subject: --state for NOTRACK packets?
-Date: Sun, 6 Mar 2011 23:27:24 +0700
-Message-ID: <AANLkTimV6b_Ov6AX2nUKFzhthFDeB-auDCkevc4OQOEY@mail.gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: --state for NOTRACK packets?
+Date: Sun, 6 Mar 2011 18:09:25 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1103061808430.895@obet.zrqbmnf.qr>
+References: <AANLkTimV6b_Ov6AX2nUKFzhthFDeB-auDCkevc4OQOEY@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <AANLkTimV6b_Ov6AX2nUKFzhthFDeB-auDCkevc4OQOEY@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: Pandu Poluan <pandu@poluan.info>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hello,
+On Sunday 2011-03-06 17:27, Pandu Poluan wrote:
 
-If a packet got NOTRACK-ed in raw/PREROUTING, what would its
---state/--ctstate be in the other PREROUTING chains?
+>Hello,
+>
+>If a packet got NOTRACK-ed in raw/PREROUTING, what would its
+>--state/--ctstate be in the other PREROUTING chains?
 
-The reason I'm asking because I have a quite complex mangle/PREROUTING
-chain, and would like the NOTRACK-ed packets to just bypass that chain
-with a -j ACCEPT at the start of the chain.
+Following -j CT --notrack, a packet will be --ctstate UNTRACKED.
 
-Rgds,
-
-
--- 
---
-Pandu E Poluan - IT Optimizer
-My website: http://pandu.poluan.info/
