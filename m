@@ -1,70 +1,32 @@
-From: Vasiliy Kulikov <segoon@openwall.com>
-Subject: [PATCH] ipv6: netfilter: ip6_tables: fix infoleak to userspace
-Date: Thu, 10 Mar 2011 21:13:46 +0300
-Message-ID: <1299780827-344-1-git-send-email-segoon@openwall.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:sender:from:to:cc:subject:date:message-id
-         :x-mailer;
-        bh=7YEC2SY7VhSGrMA8vq+Ju5+o5kjOk9+itMlXNawqK4s=;
-        b=U4w25xUxEf4nlYPMTAa0M5DcHmaDBrAlijAs61f4qzLZP0Es4QvjzLM12cKua35kLo
-         rqs3eM3EoQ0jLPWAs8WDnmPEIFoFk9kDYu3QYIwLnpDkgnLQAl5j8kQX6yKarmKqIcan
-         NwxWv6SdErb0pHPxfLby/3lNK3elib0VK8Epk=
-Sender: linux-kernel-owner@vger.kernel.org
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: How to completely disable conntrack?
+Date: Thu, 10 Mar 2011 23:47:07 +0100
+Message-ID: <4D7954EB.1050704@plouf.fr.eu.org>
+References: <4D7785DC.8050904@centrum.cz> <AANLkTimkFarQO63ekSKJBL0PUqaMQV8QWWGLSQyQrDfq@mail.gmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <AANLkTimkFarQO63ekSKJBL0PUqaMQV8QWWGLSQyQrDfq@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: linux-kernel@vger.kernel.org
-Cc: security@kernel.org, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, James Morris <jmorris@namei.org>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Pandu Poluan <pandu@poluan.info>
+Cc: =?ISO-8859-15?Q?Petr_=A6t=28astn=FD?= <petr.stastny@centrum.cz>, netfilter@vger.kernel.org
 
-Structures ip6t_replace, compat_ip6t_replace, and xt_get_revision are
-copied from userspace.  Fields of these structs that are
-zero-terminated strings are not checked.  When they are used as argument
-to a format string containing "%s" in request_module(), some sensitive
-information is leaked to userspace via argument of spawned modprobe
-process.
+Hello,
 
-The first bug was introduced before the git epoch;  the second was
-introduced in 3bc3fe5e (v2.6.25-rc1);  the third is introduced by
-6b7d31fc (v2.6.15-rc1).  To trigger the bug one should have
-CAP_NET_ADMIN.
+Pandu Poluan a =E9crit :
+> I'm sure there's a sysctl knob, but off the top of my head:
+>=20
+> -t raw -A PREROUTING -j NOTRACK
 
-Signed-off-by: Vasiliy Kulikov <segoon@openwall.com>
----
- Compile tested.
+You'll need the same in the OUTPUT chain too.
 
- net/ipv6/netfilter/ip6_tables.c |    3 +++
- 1 files changed, 3 insertions(+), 0 deletions(-)
+> On 2011-03-09, Petr =A6t(astn=FD <petr.stastny@centrum.cz> wrote:
+>> I'm using Fedora 14, which has conntrack compiled into the kernel. I=
+t is
+>> not a module, so I'm not able to unload it to disable connection
+>> tracking. Is it possible to do it in another way without building my=
+ own
+>> kernel?
 
-diff --git a/net/ipv6/netfilter/ip6_tables.c b/net/ipv6/netfilter/ip6_tables.c
-index 47b7b8d..c9598a9 100644
---- a/net/ipv6/netfilter/ip6_tables.c
-+++ b/net/ipv6/netfilter/ip6_tables.c
-@@ -1275,6 +1275,7 @@ do_replace(struct net *net, const void __user *user, unsigned int len)
- 	/* overflow check */
- 	if (tmp.num_counters >= INT_MAX / sizeof(struct xt_counters))
- 		return -ENOMEM;
-+	tmp.name[sizeof(tmp.name)-1] = 0;
- 
- 	newinfo = xt_alloc_table_info(tmp.size);
- 	if (!newinfo)
-@@ -1822,6 +1823,7 @@ compat_do_replace(struct net *net, void __user *user, unsigned int len)
- 		return -ENOMEM;
- 	if (tmp.num_counters >= INT_MAX / sizeof(struct xt_counters))
- 		return -ENOMEM;
-+	tmp.name[sizeof(tmp.name)-1] = 0;
- 
- 	newinfo = xt_alloc_table_info(tmp.size);
- 	if (!newinfo)
-@@ -2051,6 +2053,7 @@ do_ip6t_get_ctl(struct sock *sk, int cmd, void __user *user, int *len)
- 			ret = -EFAULT;
- 			break;
- 		}
-+		rev.name[sizeof(rev.name)-1] = 0;
- 
- 		if (cmd == IP6T_SO_GET_REVISION_TARGET)
- 			target = 1;
--- 
-1.7.0.4
