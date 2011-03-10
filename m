@@ -1,92 +1,94 @@
-From: Pandu Poluan <pandu@poluan.info>
-Subject: Re: Query regarding NAPT using iptables
-Date: Thu, 10 Mar 2011 06:19:38 +0700
-Message-ID: <AANLkTinTwUOC8MdCrso_UpMWf+ZHCmrHTXWADi=8DhWU@mail.gmail.com>
-References: <AANLkTimsWbnXpVn0BCCJmTe7_dM4KPhTK6hxzbMA33P-@mail.gmail.com>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH 03/18] ipvs: zero percpu stats
+Date: Thu, 10 Mar 2011 10:34:42 +0900
+Message-ID: <20110310013442.GD3028@verge.net.au>
+References: <1299368760-14271-1-git-send-email-horms@verge.net.au>
+ <1299368760-14271-4-git-send-email-horms@verge.net.au>
+ <1299402367.2758.87.camel@edumazet-laptop>
+ <alpine.LFD.2.00.1103061218470.1879@ja.ssi.bg>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTimsWbnXpVn0BCCJmTe7_dM4KPhTK6hxzbMA33P-@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <alpine.LFD.2.00.1103061218470.1879@ja.ssi.bg>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: ajay seshadri <seshajay@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Julian Anastasov <ja@ssi.bg>
+Cc: Eric Dumazet <eric.dumazet@gmail.com>, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, lvs-devel@vger.kernel.org, Hans Schillstrom <hans@schillstrom.com>
 
-(sorry for top posting; Gmail mobile client)
+On Sun, Mar 06, 2011 at 02:18:35PM +0200, Julian Anastasov wrote:
 
-I'll try to answer your questions.
+[ snip ]
 
-1. For an example: ICMP does not have ports. You should split the rule:
+> 	Zero the new percpu stats because we copy from there.
+> Use the stats spin lock to synchronize the percpu zeroing with
+> the percpu reading, both in user context and not in a hot path.
+> 
+> Signed-off-by: Julian Anastasov <ja@ssi.bg>
 
--p tcp -g nr_napt
--p udp -g nr_napt
--p sctp -g nr_napt
--p tcp -g nr_napt
--j SNAT (without ports)
--A nr_napt -j SNAT (with ports)
+Eric, do you have any thoughts on this?
+It seems clean to me.
 
-2. Yes, with helper. Prior to the SNAT rules above, place a rule with
-helper match:
-
--m helper --helper ftp
-
-3. Netfilter will perform a defragmentation in this case.
-
-4. One-to-one will happen only if (in the case of SNAT) you use a -s
-match. If (like in your example) you use a -d match, it will still be
-NAPT, and port multiplexing will still happen.
-
-Others, feel free to CMIIW.
-
-Rgds,
-
-
-On 2011-03-09, ajay seshadri <seshajay@gmail.com> wrote:
-> Hi all,
->
-> I was trying to write some iptables rules to perform NAPT. I had the
-> following doubts:
->
-> 1. When I specified the following rule:
->
->>sudo iptables -t nat -A POSTROUTING -d 10.20.3.81 -j SNAT --to
->> 10.19.11.1:1-500 I got the following error:-=C2=A0 iptables v1.4.4: =
-Need TCP,
->> UDP, SCTP or DCCP with port specification.
->
-> Is there anyway to specify a single rule to cover all the protocols? =
-I
-> got the same error when i specified '-p 0'. Are there any protocols
-> that don't work with NAPT?
->
-> 2. Would NAPT work in case of application layer protocols like FTP,
-> where the application code requires port numbers? I came across ALG
-> and conntrack modules. I don't really have clarity in this regard to
-> know if there are any application layer protocols that would fail to
-> work with NAPT. If yes, is there anyway to get around this?
->
-> 3. If I am not mistaken the NAT RFC states that NAPT won't work if th=
-e
-> packets are already segmented as the segments don't contain port
-> information. Is there anyway to get around this? Also, are there any
-> such scenarios where NAPT would fail?
->
-> 4. If NAT is done instead of NAPT, by specifying a one - to - one
-> mapping for each flow using iptables, does that guarantee that port
-> multiplexing will not be used?=C2=A0 Is NATing more stable that NAPT?
->
->
-> Thanks,
-> Ajay
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
-
-
---=20
---
-Pandu E Poluan - IT Optimizer
-My website: http://pandu.poluan.info/
+> ---
+> 
+> diff -urp lvs-test-2.6-8a80c79/linux/net/netfilter/ipvs/ip_vs_ctl.c linux/net/netfilter/ipvs/ip_vs_ctl.c
+> --- lvs-test-2.6-8a80c79/linux/net/netfilter/ipvs/ip_vs_ctl.c	2011-03-06 13:39:59.000000000 +0200
+> +++ linux/net/netfilter/ipvs/ip_vs_ctl.c	2011-03-06 13:44:56.108275455 +0200
+> @@ -713,8 +713,25 @@ static void ip_vs_trash_cleanup(struct n
+>  static void
+>  ip_vs_zero_stats(struct ip_vs_stats *stats)
+>  {
+> +	struct ip_vs_cpu_stats *cpustats = stats->cpustats;
+> +	int i;
+> +
+>  	spin_lock_bh(&stats->lock);
+> 
+> +	for_each_possible_cpu(i) {
+> +		struct ip_vs_cpu_stats *u = per_cpu_ptr(cpustats, i);
+> +		unsigned int start;
+> +
+> +		/* Do not pretend to be writer, it is enough to
+> +		 * sync with writers that modify the u64 counters
+> +		 * because under stats->lock there are no other readers
+> +		 */
+> +		do {
+> +			start = u64_stats_fetch_begin(&u->syncp);
+> +			memset(&u->ustats, 0, sizeof(u->ustats));
+> +		} while (u64_stats_fetch_retry(&u->syncp, start));
+> +	}
+> +
+>  	memset(&stats->ustats, 0, sizeof(stats->ustats));
+>  	ip_vs_zero_estimator(stats);
+> 
+> @@ -2015,16 +2032,19 @@ static int ip_vs_stats_percpu_show(struc
+>  	seq_printf(seq,
+>  		   "CPU    Conns  Packets  Packets            Bytes            Bytes\n");
+> 
+> +	/* Use spin lock early to synchronize with percpu zeroing */
+> +	spin_lock_bh(&tot_stats->lock);
+> +
+>  	for_each_possible_cpu(i) {
+>  		struct ip_vs_cpu_stats *u = per_cpu_ptr(cpustats, i);
+>  		unsigned int start;
+>  		__u64 inbytes, outbytes;
+> 
+>  		do {
+> -			start = u64_stats_fetch_begin_bh(&u->syncp);
+> +			start = u64_stats_fetch_begin(&u->syncp);
+>  			inbytes = u->ustats.inbytes;
+>  			outbytes = u->ustats.outbytes;
+> -		} while (u64_stats_fetch_retry_bh(&u->syncp, start));
+> +		} while (u64_stats_fetch_retry(&u->syncp, start));
+> 
+>  		seq_printf(seq, "%3X %8X %8X %8X %16LX %16LX\n",
+>  			   i, u->ustats.conns, u->ustats.inpkts,
+> @@ -2032,7 +2052,6 @@ static int ip_vs_stats_percpu_show(struc
+>  			   (__u64)outbytes);
+>  	}
+> 
+> -	spin_lock_bh(&tot_stats->lock);
+>  	seq_printf(seq, "  ~ %8X %8X %8X %16LX %16LX\n\n",
+>  		   tot_stats->ustats.conns, tot_stats->ustats.inpkts,
+>  		   tot_stats->ustats.outpkts,
+> 
