@@ -1,86 +1,56 @@
-From: Pandu Poluan <pandu@poluan.info>
-Subject: Re: how to access port forwarded server through internet ?
-Date: Tue, 15 Mar 2011 21:16:12 +0700
-Message-ID: <AANLkTimgnD6vHCwN6CL4cpeKiKd91LEbC3nP_U8R2pPX@mail.gmail.com>
-References: <20110315175928.4dbbe83c@debian>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ipset ipporthash - need -p tcp|udp?
+Date: Tue, 15 Mar 2011 16:13:22 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1103151610080.21726@blackhole.kfki.hu>
+References: <AANLkTikqUPBmwvGG3Lt5jVR1rdnwA+iOTi4ijfWbC0qs@mail.gmail.com> <alpine.DEB.2.00.1103142110580.20094@blackhole.kfki.hu> <AANLkTi=HpKkCA3vXawfR+owqSb=VE-xOyZ+fC4W6hYyQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20110315175928.4dbbe83c@debian>
+In-Reply-To: <AANLkTi=HpKkCA3vXawfR+owqSb=VE-xOyZ+fC4W6hYyQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: "J. Bakshi" <joydeep@infoservices.in>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Pandu Poluan <pandu@poluan.info>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-My previous email was not sent to the list >_<
+On Tue, 15 Mar 2011, Pandu Poluan wrote:
 
-My answer is below.
-
-
-On Tue, Mar 15, 2011 at 19:29, J. Bakshi <joydeep@infoservices.in> wrot=
-e:
-> Dear list,
+> On Tue, Mar 15, 2011 at 03:13, Jozsef Kadlecsik
+> <kadlec@blackhole.kfki.hu> wrote:
+> > On Tue, 15 Mar 2011, Pandu Poluan wrote:
+> >
+> >> A question's been bugging me since this evening:
+> >>
+> >> Do I need to specify -p tcp|udp if I want to match against an IP set
+> >> of type ipporthash?
+> >>
+> >> Or, in other words, can I just write a rule like `iptables -A FORWARD
+> >> -m set --match-set SetName dst,dst -j ACCEPT` ?
+> >
+> > The port stored together with the protocol, so you should not specify the
+> > protocol in the iptables rules. Unless you want to match a subset of the
+> > set, selected by the protocol.
+> >
+> > Best regards,
+> > Jozsef
+> > -
+> 
+> Ahh, thanks for the explanation!
+> 
+> So, the ipporthash implicitly will only be applied to port-using
+> protocols, e.g., TCP and UDP.
 >
-> Here is a port forwarding issue. =C2=A0I have a linux router which ha=
-ve two NIC; one facing WAN and the other facing LAN. IP forwarding is a=
-ctive and this box is working as a gateway. This box has LAN IP 192.168=
-=2E1.1
->
-> There is another box (webserver) 192.168.1.2 within the internal netw=
-ork and the router box has port forwarding to access the webserver.
->
-> ```````````````````````````
-> iptables -A INPUT -p tcp -m tcp --dport 81 -j ACCEPT
-> iptables -A PREROUTING -t nat -i ${LAN_IFACE} -p tcp --dport 81 -j DN=
-AT --to 192.168.1.2:8080
-> iptables -A FORWARD -p tcp -m state --state NEW --dport 81 -i ${LAN_I=
-=46ACE} -j ACCEPT
-> ````````````````````````````
->
-> So within LAN I can access the 192.168.1.2 web server through =C2=A01=
-92.168.1.1:81 as port forwarding is there. But I can not access the sam=
-e through internet. If I point at <domain-name>:81 throught internet ; =
-the browser simply reports it can't connect to the service; though the =
-other services running at that very server are quite accessible through=
- internet. Have I missed something in my firewall rule ? Could anyone g=
-ive any clue please ?
->
-> Thanks
-> --
+> What about SCTP's port? Will ipporthash also match against SCTP's ports?
 
-You need another iptables rules for the WAN_IFACE
+Any protocol can be stored in an ipporthash, but at the moment the 
+"port" is interpreted for TCP, UDP, ICMP and ICMPv6 only.
 
-iptables -A PREROUTING -t nat -i ${WAN_IFACE} -p tcp --dport 81 -j
-DNAT --to 192.168.1.2:8080
+SCTP support can be added fairly easily.
 
-You can combine this new rule with the old rule by dropping the -i
-selector. I.e. :
-
-iptables -A PREROUTING -t nat -p tcp --dport 81 -j DNAT --to 192.168.1.=
-2:8080
-
-Next, also add a proper FORWARD rule, since the FORWARD rule will be
-processed after NAT takes place:
-
-iptables -A FORWARD -d 192.168.1.2 -p tcp --dport 8080 -j ACCEPT
-
-This rule allows forwarding to the webserver (192.168.1.2) port 8080,
-no matter the incoming interface, be it WAN_IFACE or LAN_IFACE. No
-need to match the state here.
-
-=46inally, remember that since the packets do not actually end up in th=
-e
-firewall box, you don't need the -A INPUT rule there. It never gets
-matched.
-
-Rgds,
---
-Pandu E Poluan
-~ IT Optimizer ~
-Visit my Blog: http://pepoluan.posterous.com
-Google Talk:    pepoluan
-Y! messenger: pepoluan
-MSN / Live:      pepoluan@hotmail.com (do not send email here)
-Skype:            pepoluan
-More on me:  My LinkedIn Account  My Facebook Account
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
