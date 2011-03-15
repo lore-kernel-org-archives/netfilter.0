@@ -1,29 +1,27 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [PATCH] ipv6: netfilter: ip6_tables: fix infoleak to userspace
-Date: Tue, 15 Mar 2011 13:37:44 +0100
-Message-ID: <4D7F5D98.1060105@trash.net>
-References: <1299780827-344-1-git-send-email-segoon@openwall.com>
+From: "J. Bakshi" <joydeep@infoservices.in>
+Subject: how to access port forwarded server through internet ?
+Date: Tue, 15 Mar 2011 17:59:28 +0530
+Message-ID: <20110315175928.4dbbe83c@debian>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1299780827-344-1-git-send-email-segoon@openwall.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Vasiliy Kulikov <segoon@openwall.com>
-Cc: linux-kernel@vger.kernel.org, security@kernel.org, "David S. Miller" <davem@davemloft.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, James Morris <jmorris@namei.org>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On 10.03.2011 19:13, Vasiliy Kulikov wrote:
-> Structures ip6t_replace, compat_ip6t_replace, and xt_get_revision are
-> copied from userspace.  Fields of these structs that are
-> zero-terminated strings are not checked.  When they are used as argument
-> to a format string containing "%s" in request_module(), some sensitive
-> information is leaked to userspace via argument of spawned modprobe
-> process.
-> 
-> The first bug was introduced before the git epoch;  the second was
-> introduced in 3bc3fe5e (v2.6.25-rc1);  the third is introduced by
-> 6b7d31fc (v2.6.15-rc1).  To trigger the bug one should have
-> CAP_NET_ADMIN.
+Dear list,
 
-Also applied, thanks Vasiliy.
+Here is a port forwarding issue.  I have a linux router which have two NIC; one facing WAN and the other facing LAN. IP forwarding is active and this box is working as a gateway. This box has LAN IP 192.168.1.1
+
+There is another box (webserver) 192.168.1.2 within the internal network and the router box has port forwarding to access the webserver.
+
+```````````````````````````
+iptables -A INPUT -p tcp -m tcp --dport 81 -j ACCEPT
+iptables -A PREROUTING -t nat -i ${LAN_IFACE} -p tcp --dport 81 -j DNAT --to 192.168.1.2:8080
+iptables -A FORWARD -p tcp -m state --state NEW --dport 81 -i ${LAN_IFACE} -j ACCEPT
+````````````````````````````
+
+So within LAN I can access the 192.168.1.2 web server through  192.168.1.1:81 as port forwarding is there. But I can not access the same through internet. If I point at <domain-name>:81 throught internet ; the browser simply reports it can't connect to the service; though the other services running at that very server are quite accessible through internet. Have I missed something in my firewall rule ? Could anyone give any clue please ?
+
+Thanks 
