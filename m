@@ -1,88 +1,59 @@
-From: Pandu Poluan <pandu@poluan.info>
-Subject: Re: When does NAT processing actually takes place?
-Date: Thu, 17 Mar 2011 15:43:15 +0700
-Message-ID: <AANLkTinUrUvAJ5B7d8896KcafbKrQnbghX5eaKrDzeeq@mail.gmail.com>
-References: <282984944.21619.1300343429509.JavaMail.root@tahiti.vyatta.com>
-	<1237758709.21621.1300343546963.JavaMail.root@tahiti.vyatta.com>
+From: Vasiliy Kulikov <segoon@openwall.com>
+Subject: [PATCH v2] ipv4: netfilter: ipt_CLUSTERIP: fix buffer overflow
+Date: Thu, 17 Mar 2011 14:32:29 +0300
+Message-ID: <20110317113229.GA7710@albatros>
+References: <1299780740-32652-1-git-send-email-segoon@openwall.com>
+ <AANLkTimPZJoCzz386e-4m0Y4khWGZirZguGFmuFYCrry@mail.gmail.com>
+ <4D7F5CAC.6070006@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1237758709.21621.1300343546963.JavaMail.root@tahiti.vyatta.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-type:content-disposition
+         :in-reply-to:user-agent;
+        bh=ACjDYfY8t8r1JhcUH5BGbg9Fwne9MxNn01OdlS3WUaA=;
+        b=N+eo//NWbUHCJPiv+k1KmTsuu+VvdLj7KOy025bo2L1zcSpJerIvytdsM8QpClJP30
+         q8qg+xBhEMfad9u3WBHjz0N9EODW12SfQjR9h5w1zQ//R6RucZdqIdC7+QILRfOCFMtK
+         H77I96kByvcM3Fhh0rehxR24+ogU4BsXWMvrw=
+Content-Disposition: inline
+In-Reply-To: <4D7F5CAC.6070006@trash.net>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Steven Kath <steven.kath@vyatta.com>
-Cc: netfilter@vger.kernel.org, Atle Solbakken <atle@goliathdns.no>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Patrick McHardy <kaber@trash.net>
+Cc: Changli Gao <xiaosuo@gmail.com>, linux-kernel@vger.kernel.org, security@kernel.org, "David S. Miller" <davem@davemloft.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, James Morris <jmorris@namei.org>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org
 
-On Thu, Mar 17, 2011 at 13:32, Steven Kath <steven.kath@vyatta.com> wro=
-te:
->
-> > I'll try to explain in more detail.
-> >
-> > ## Scenario 1: External address DNAT to internal server ##
-> >
-> > A packet comes in:
-> > [1] To: 11.22.33.44:80
-> > From: 55.66.77.88:34567
-> >
-> > It got DNATed:
-> > [2] To: 192.168.1.22:12080
-> > From: 55.66.77.88:34567
-> >
-> > The server replied:
-> > [3] To: 55.66.77.88:34567
-> > From: 192.168.1.22:12080
-> >
-> > It got "inverse NAT"ed:
-> > [4] To: 55.66.77.88:34567
-> > From: 11.22.33.44:80
-> >
-> > ## Scenario 2: Internal host accesses outside world ##
-> >
-> > A packet comes in from the LAN:
-> > [5] To: 75.64.53.42:80
-> > From: 192.168.5.66:45678
-> >
-> > It got SNATed:
-> > [6] To: 75.64.53.42:80
-> > From: 88.77.66.55:45678
-> >
-> > The remote side replied:
-> > [7] To: 88.77.66.55:45678
-> > From: 75.64.53.42:80
-> >
-> > It got "inverse NAT"ed:
-> > [8] To: 192.168.5.66:45678
-> > From: 75.64.53.42:80
-> >
-> >
-> > Now, based on the discussions:
-> >
-> > * [1]-->[2] happens as packet exits nat/PREROUTING
-> > * [5]-->[6] happens as packet exits nat/POSTROUTING
-> >
-> > When do [3]-->[4] and [7]-->[8] happen?
->
-> Unless I'm mistaken, the "inverse NAT" is part of the conntrack set o=
-f functions. =C2=A0See the diagram linked below.
->
-> The conntrack table contains both the pre-NAT and post-NAT address:po=
-rt pairings, and for existing connections the conntrack step on the dia=
-gram handles the necessary "inverse" translations. =C2=A0There is a lot=
- of heavy wizardry going on in that little "conntrack" bubble.
->
-> http://upload.wikimedia.org/wikipedia/commons/3/37/Netfilter-packet-f=
-low.svg
+'buffer' string is copied from userspace.  It is not checked whether it is
+zero terminated.  This may lead to overflow inside of simple_strtoul().
+Changli Gao suggested to copy not more than user supplied 'size' bytes.
 
-Ahh, thanks!
+It was introduced before the git epoch.  Files "ipt_CLUSTERIP/*" are
+root writable only by default, however, on some setups permissions might be
+relaxed to e.g. network admin user.
 
-Obligatory off-topic comment:
+Signed-off-by: Vasiliy Kulikov <segoon@openwall.com>
+---
+ net/ipv4/netfilter/ipt_CLUSTERIP.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
 
-Never would've thought that the little "conntrack" bubble is a bubble
-who could ;-)
-
-Rgds,
---
-Pandu E Poluan
-~ IT Optimizer ~
-Visit my Blog: http://pepoluan.posterous.com
+diff --git a/net/ipv4/netfilter/ipt_CLUSTERIP.c b/net/ipv4/netfilter/ipt_CLUSTERIP.c
+index 1e26a48..af7dec6 100644
+--- a/net/ipv4/netfilter/ipt_CLUSTERIP.c
++++ b/net/ipv4/netfilter/ipt_CLUSTERIP.c
+@@ -669,8 +669,11 @@ static ssize_t clusterip_proc_write(struct file *file, const char __user *input,
+ 	char buffer[PROC_WRITELEN+1];
+ 	unsigned long nodenum;
+ 
+-	if (copy_from_user(buffer, input, PROC_WRITELEN))
++	if (size > PROC_WRITELEN)
++		return -EIO;
++	if (copy_from_user(buffer, input, size))
+ 		return -EFAULT;
++	buffer[size] = 0;
+ 
+ 	if (*buffer == '+') {
+ 		nodenum = simple_strtoul(buffer+1, NULL, 10);
+-- 
+1.7.0.4
