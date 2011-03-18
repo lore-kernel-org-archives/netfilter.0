@@ -1,61 +1,135 @@
-From: Lai Jiangshan <laijs@cn.fujitsu.com>
-Subject: [PATCH 36/36] net,rcu: convert call_rcu(xt_osf_finger_free_rcu) to
- kfree_rcu()
-Date: Fri, 18 Mar 2011 12:15:02 +0800
-Message-ID: <4D82DC46.5010905__3688.56351492486$1300421610$gmane$org@cn.fujitsu.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: rules to allow LAN navigation
+Date: Fri, 18 Mar 2011 12:10:24 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1103181208510.24961@obet.zrqbmnf.qr>
+References: <AANLkTik6CLZ74j6XCZQF1E=fz1N6AGgCS5myCfi+BjbT@mail.gmail.com> <AANLkTinRFy06AxXo0vjQZxSHLj5S5oC4yOTX4GSZ0sXn@mail.gmail.com> <AANLkTikJiLUbiz0aegb9pTaAdsYZ8LQJe4KCh_Ew=1D-@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <AANLkTikJiLUbiz0aegb9pTaAdsYZ8LQJe4KCh_Ew=1D-@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>, Ingo Molnar <mingo@elte.hu>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.o
+Content-Type: TEXT/PLAIN; charset="utf-8"
+To: Pandu Poluan <pandu@poluan.info>
+Cc: Esteban Cacavelos <estebancacavelos@gmail.com>, netfilter@vger.kernel.org
 
+On Friday 2011-03-18 03:15, Pandu Poluan wrote:
 
+>(sorry for top posting; Gmail mobile can only top-post)
+>
+>Can you post the output of iptables-save? iptables -L always give me
+>the headache.
 
-The rcu callback xt_osf_finger_free_rcu() just calls a kfree(),
-so we use kfree_rcu() instead of the call_rcu(xt_osf_finger_free_rcu).
+So does the ASCII graphic which is completely misaligned. Rule: use=20
+a monospace font and make sure it does not exceed 72 cols.
+(Graphviz notation would be best.)
 
-Signed-off-by: Lai Jiangshan <laijs@cn.fujitsu.com>
----
- net/netfilter/xt_osf.c |   11 ++---------
- 1 files changed, 2 insertions(+), 9 deletions(-)
+>On 2011-03-18, Esteban Cacavelos <estebancacavelos@gmail.com> wrote:
+>> Hi all, i am new on the list and i have the following scenario.
+>>
+>> ------------------------------------
+>> ---------------------------------------
+>> --------------------------------------------
+>> |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 router =C2=A0 =C2=A0 =C2=
+=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 linux server
+>> (ubuntu)|=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
+>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |
+>> |=C2=A0=C2=A0 LAN: 192.168.3.x=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | -----=
+--------- |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 eth0:192.168.3.12
+>> |=C2=A0 -----------------------------=C2=A0 |=C2=A0=C2=A0=C2=A0 (WIN=
+DOWS PCs, etc)=C2=A0=C2=A0=C2=A0 |
+>> |=C2=A0=C2=A0 WAN: internet=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | =C2=A0 =C2=A0=C2=A0 eth1:192.=
+168.2.1
+>> =C2=A0=C2=A0 |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 LAN
+>> =C2=A0=C2=A0=C2=A0 |
+>> -------------------------------------
+>> ---------------------------------------
+>> |=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 192.168.2.x=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 |
+>>
+>>
+>> -----------------------------------------------
+>>
+>>
+>> I want to: the computers in the LAN to navigate through internet.
+>>
+>> When the policies for INPUT, OUTPUT and FORWARD are ACCEPT, everithi=
+ng
+>> works well (pcs in the LAN=C2=A0 can navigate), BUT, when i change t=
+he
+>> policy to DROP for the INPUT chain i dont know how to allow http
+>> traffic for the LAN.
+>>
+>> My actual iptables configuration is :
+>>
+>> iptables -L
+>> Chain INPUT (policy DROP)
+>> target=C2=A0=C2=A0=C2=A0=C2=A0 prot opt source=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 destinatio=
+n
+>> ACCEPT=C2=A0=C2=A0=C2=A0=C2=A0 all=C2=A0 --=C2=A0 anywhere=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 anywhere=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ctstate
+>> RELATED,ESTABLISHED
+>> ACCEPT=C2=A0=C2=A0=C2=A0=C2=A0 all=C2=A0 --=C2=A0 anywhere=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 anywhere=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 state
+>> RELATED,ESTABLISHED
+>> ACCEPT=C2=A0=C2=A0=C2=A0=C2=A0 tcp=C2=A0 --=C2=A0 anywhere=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 anywhere=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 tcp dpt=
+:www
+>> LOG=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 all=C2=A0 --=C2=A0 any=
+where=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0 anywhere=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 limit:
+>> avg 5/min burst 5 LOG level debug prefix `iptables denied: '
+>> ACCEPT=C2=A0=C2=A0=C2=A0=C2=A0 tcp=C2=A0 --=C2=A0 anywhere=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 anywhere=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 tcp dpt=
+:www
+>> ACCEPT=C2=A0=C2=A0=C2=A0=C2=A0 all=C2=A0 --=C2=A0 anywhere=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 anywhere
+>> ACCEPT=C2=A0=C2=A0=C2=A0=C2=A0 all=C2=A0 --=C2=A0 anywhere=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 anywhere
+>> ACCEPT=C2=A0=C2=A0=C2=A0=C2=A0 all=C2=A0 --=C2=A0 anywhere=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 anywhere
+>> ACCEPT=C2=A0=C2=A0=C2=A0=C2=A0 tcp=C2=A0 --=C2=A0 anywhere=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 anywhere=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 tcp dpt=
+:2223
+>> ACCEPT=C2=A0=C2=A0=C2=A0=C2=A0 all=C2=A0 --=C2=A0 192.168.2.1=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 anywhere
+>> ACCEPT=C2=A0=C2=A0=C2=A0=C2=A0 all=C2=A0 --=C2=A0 192.168.2.0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 anywhere
+>>
+>>
+>> Thanks for the help.
+>>
+>>
+>>
+>> --
+>> Esteban L. Cacavelos de Amoriza
+>> Cel: 0981 220 429
+>>
+>
+>
+>--=20
+>--
+>Pandu E Poluan - IT Optimizer
+>My website: http://pandu.poluan.info/
+>N?????r??y??????X??=C7=A7v???)=DE=BA{.n?????z???=D7=AB?{ay?=1D=CA=87=DA=
+=99??j=07??f???h?????=1E?w???=0C???j:+v???w????????=07????zZ+???????j"?=
+???i
 
-diff --git a/net/netfilter/xt_osf.c b/net/netfilter/xt_osf.c
-index 4327e10..846f895 100644
---- a/net/netfilter/xt_osf.c
-+++ b/net/netfilter/xt_osf.c
-@@ -62,13 +62,6 @@ static const struct nla_policy xt_osf_policy[OSF_ATTR_MAX + 1] = {
- 	[OSF_ATTR_FINGER]	= { .len = sizeof(struct xt_osf_user_finger) },
- };
- 
--static void xt_osf_finger_free_rcu(struct rcu_head *rcu_head)
--{
--	struct xt_osf_finger *f = container_of(rcu_head, struct xt_osf_finger, rcu_head);
--
--	kfree(f);
--}
--
- static int xt_osf_add_callback(struct sock *ctnl, struct sk_buff *skb,
- 			       const struct nlmsghdr *nlh,
- 			       const struct nlattr * const osf_attrs[])
-@@ -133,7 +126,7 @@ static int xt_osf_remove_callback(struct sock *ctnl, struct sk_buff *skb,
- 		 * We are protected by nfnl mutex.
- 		 */
- 		list_del_rcu(&sf->finger_entry);
--		call_rcu(&sf->rcu_head, xt_osf_finger_free_rcu);
-+		kfree_rcu(sf, rcu_head);
- 
- 		err = 0;
- 		break;
-@@ -414,7 +407,7 @@ static void __exit xt_osf_fini(void)
- 
- 		list_for_each_entry_rcu(f, &xt_osf_fingers[i], finger_entry) {
- 			list_del_rcu(&f->finger_entry);
--			call_rcu(&f->rcu_head, xt_osf_finger_free_rcu);
-+			kfree_rcu(f, rcu_head);
- 		}
- 	}
- 	rcu_read_unlock();
--- 
-1.7.4
