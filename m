@@ -1,48 +1,91 @@
-From: Pandu Poluan <pandu@poluan.info>
-Subject: Re: iptables-save bug?
-Date: Fri, 18 Mar 2011 20:43:24 +0700
-Message-ID: <AANLkTin5sqXCqo9RCS_5G9syUWjQy+ym4V0WB2R--BXx@mail.gmail.com>
-References: <AANLkTikFzbKdjjddsJMr_Rb6-6w1bu1hwOzBCVXZU=X7@mail.gmail.com>
-	<alpine.LNX.2.01.1103181427190.11439@obet.zrqbmnf.qr>
+From: Esteban Cacavelos <estebancacavelos@gmail.com>
+Subject: Re: rules to allow LAN navigation
+Date: Fri, 18 Mar 2011 15:24:41 +0100
+Message-ID: <AANLkTikcu9ehA=ZpW_zJM38DFPw3w2cyb+TFgiZAkNAU@mail.gmail.com>
+References: <AANLkTik6CLZ74j6XCZQF1E=fz1N6AGgCS5myCfi+BjbT@mail.gmail.com>
+	<AANLkTinRFy06AxXo0vjQZxSHLj5S5oC4yOTX4GSZ0sXn@mail.gmail.com>
+	<AANLkTikJiLUbiz0aegb9pTaAdsYZ8LQJe4KCh_Ew=1D-@mail.gmail.com>
+	<alpine.LNX.2.01.1103181208510.24961@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1103181427190.11439@obet.zrqbmnf.qr>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:in-reply-to:references:date
+         :message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=WdNGIsUfjB/K6QeNyfb3HN/+lFfzEysgJFPa76loTP0=;
+        b=IcHPonDFOQvpLMPMxDDytheAQCUkNttcY6oBAarcUYd1WijoNYW675A7ujx9mO3Y6l
+         JiZZxCB37MgGzvtC88LV1LcEdplF+3yW02J4sd9waK5g8AlFPEIttGjlU+oyFXlOxEAS
+         is8ilaDSBR5z+WkL9LxfGrIW8H5bUuW+uWD38=
+In-Reply-To: <alpine.LNX.2.01.1103181208510.24961@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="utf-8"
 To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org
+Cc: Pandu Poluan <pandu@poluan.info>, netfilter@vger.kernel.org
 
-On Fri, Mar 18, 2011 at 20:28, Jan Engelhardt <jengelh@medozas.de> wrot=
-e:
->
-> On Friday 2011-03-18 13:44, Pandu Poluan wrote:
->>Is instead saved as:
->>
->>-A PREROUTING -m conntrack --ctstate =C2=A0-m comment --comment "Don\=
-'t
->>process untracked" -j ACCEPT
->>
->>(i.e., the "UNTRACKED" option is missing)
->>
->>I don't know if the other --ctstate options are also missing.
->>
->>Details:
->>- iptables -v =3D=3D v1.4.4
->>- uname -a =3D=3D "Linux aeacus-4 2.6.32-29-generic-pae #58-Ubuntu SM=
-P Fri
->>Feb 11 19:15:25 UTC 2011 i686 GNU/Linux"
->
-> Well yeah if you want bugfixes, you will have to update.
->
-
-Ah, so it's a known bug then?
-
-No problem. Sorry for any inconvenience :-)
-
-Rgds,
---
-Pandu E Poluan
-~ IT Optimizer ~
-Visit my Blog: http://pepoluan.posterous.com
+MjAxMS8zLzE4IEphbiBFbmdlbGhhcmR0IDxqZW5nZWxoQG1lZG96YXMuZGU+Ogo+IE9uIEZyaWRh
+eSAyMDExLTAzLTE4IDAzOjE1LCBQYW5kdSBQb2x1YW4gd3JvdGU6Cj4KPj4oc29ycnkgZm9yIHRv
+cCBwb3N0aW5nOyBHbWFpbCBtb2JpbGUgY2FuIG9ubHkgdG9wLXBvc3QpCj4+Cj4+Q2FuIHlvdSBw
+b3N0IHRoZSBvdXRwdXQgb2YgaXB0YWJsZXMtc2F2ZT8gaXB0YWJsZXMgLUwgYWx3YXlzIGdpdmUg
+bWUKPj50aGUgaGVhZGFjaGUuCj4KPiBTbyBkb2VzIHRoZSBBU0NJSSBncmFwaGljIHdoaWNoIGlz
+IGNvbXBsZXRlbHkgbWlzYWxpZ25lZC4gUnVsZTogdXNlCj4gYSBtb25vc3BhY2UgZm9udCBhbmQg
+bWFrZSBzdXJlIGl0IGRvZXMgbm90IGV4Y2VlZCA3MiBjb2xzLgo+IChHcmFwaHZpeiBub3RhdGlv
+biB3b3VsZCBiZSBiZXN0LikKPgo+Pk9uIDIwMTEtMDMtMTgsIEVzdGViYW4gQ2FjYXZlbG9zIDxl
+c3RlYmFuY2FjYXZlbG9zQGdtYWlsLmNvbT4gd3JvdGU6Cj4+PiBIaSBhbGwsIGkgYW0gbmV3IG9u
+IHRoZSBsaXN0IGFuZCBpIGhhdmUgdGhlIGZvbGxvd2luZyBzY2VuYXJpby4KPj4+Cj4+PiAtLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPj4+IC0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLQo+Pj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0KPj4+IHzCoMKgwqDCoMKgwqDCoCByb3V0ZXIgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqDCoCB8wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKgwqDCoMKgwqAgbGlu
+dXggc2VydmVyCj4+PiAodWJ1bnR1KXzCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwKPj4+IMKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqAgfAo+Pj4gfMKgwqAgTEFOOiAxOTIuMTY4LjMueMKgwqDCoMKgwqAgfCAtLS0tLS0tLS0tLS0t
+LSB8wqDCoMKgwqDCoCBldGgwOjE5Mi4xNjguMy4xMgo+Pj4gfMKgIC0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0twqAgfMKgwqDCoCAoV0lORE9XUyBQQ3MsIGV0YynCoMKgwqAgfAo+Pj4gfMKg
+wqAgV0FOOiBpbnRlcm5ldMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgwqAgfCDCoCDCoMKgIGV0aDE6MTkyLjE2OC4yLjEKPj4+IMKgwqAgfMKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIExBTgo+Pj4gwqDCoMKgIHwKPj4+IC0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPj4+IC0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo+Pj4gfMKgwqDCoMKgwqDCoMKgIDE5Mi4xNjguMi54wqDC
+oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHwKPj4+Cj4+Pgo+Pj4gLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KPj4+Cj4+Pgo+Pj4gSSB3YW50IHRvOiB0
+aGUgY29tcHV0ZXJzIGluIHRoZSBMQU4gdG8gbmF2aWdhdGUgdGhyb3VnaCBpbnRlcm5ldC4KPj4+
+Cj4+PiBXaGVuIHRoZSBwb2xpY2llcyBmb3IgSU5QVVQsIE9VVFBVVCBhbmQgRk9SV0FSRCBhcmUg
+QUNDRVBULCBldmVyaXRoaW5nCj4+PiB3b3JrcyB3ZWxsIChwY3MgaW4gdGhlIExBTsKgIGNhbiBu
+YXZpZ2F0ZSksIEJVVCwgd2hlbiBpIGNoYW5nZSB0aGUKPj4+IHBvbGljeSB0byBEUk9QIGZvciB0
+aGUgSU5QVVQgY2hhaW4gaSBkb250IGtub3cgaG93IHRvIGFsbG93IGh0dHAKPj4+IHRyYWZmaWMg
+Zm9yIHRoZSBMQU4uCj4+Pgo+Pj4gTXkgYWN0dWFsIGlwdGFibGVzIGNvbmZpZ3VyYXRpb24gaXMg
+Ogo+Pj4KPj4+IGlwdGFibGVzIC1MCj4+PiBDaGFpbiBJTlBVVCAocG9saWN5IERST1ApCj4+PiB0
+YXJnZXTCoMKgwqDCoCBwcm90IG9wdCBzb3VyY2XCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IGRlc3RpbmF0aW9uCj4+PiBBQ0NFUFTCoMKgwqDCoCBhbGzCoCAtLcKgIGFueXdoZXJlwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgIGFueXdoZXJlwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBjdHN0YXRl
+Cj4+PiBSRUxBVEVELEVTVEFCTElTSEVECj4+PiBBQ0NFUFTCoMKgwqDCoCBhbGzCoCAtLcKgIGFu
+eXdoZXJlwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGFueXdoZXJlwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCBzdGF0ZQo+Pj4gUkVMQVRFRCxFU1RBQkxJU0hFRAo+Pj4gQUNDRVBUwqDCoMKgwqAgdGNw
+wqAgLS3CoCBhbnl3aGVyZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBhbnl3aGVyZcKgwqDCoMKg
+wqDCoMKgwqDCoMKgwqAgdGNwIGRwdDp3d3cKPj4+IExPR8KgwqDCoMKgwqDCoMKgIGFsbMKgIC0t
+wqAgYW55d2hlcmXCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYW55d2hlcmXCoMKgwqDCoMKgwqDC
+oMKgwqDCoMKgIGxpbWl0Ogo+Pj4gYXZnIDUvbWluIGJ1cnN0IDUgTE9HIGxldmVsIGRlYnVnIHBy
+ZWZpeCBgaXB0YWJsZXMgZGVuaWVkOiAnCj4+PiBBQ0NFUFTCoMKgwqDCoCB0Y3DCoCAtLcKgIGFu
+eXdoZXJlwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGFueXdoZXJlwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoCB0Y3AgZHB0Ond3dwo+Pj4gQUNDRVBUwqDCoMKgwqAgYWxswqAgLS3CoCBhbnl3aGVyZcKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBhbnl3aGVyZQo+Pj4gQUNDRVBUwqDCoMKgwqAgYWxswqAg
+LS3CoCBhbnl3aGVyZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBhbnl3aGVyZQo+Pj4gQUNDRVBU
+wqDCoMKgwqAgYWxswqAgLS3CoCBhbnl3aGVyZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBhbnl3
+aGVyZQo+Pj4gQUNDRVBUwqDCoMKgwqAgdGNwwqAgLS3CoCBhbnl3aGVyZcKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCBhbnl3aGVyZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgdGNwIGRwdDoyMjIzCj4+
+PiBBQ0NFUFTCoMKgwqDCoCBhbGzCoCAtLcKgIDE5Mi4xNjguMi4xwqDCoMKgwqDCoMKgwqDCoMKg
+IGFueXdoZXJlCj4+PiBBQ0NFUFTCoMKgwqDCoCBhbGzCoCAtLcKgIDE5Mi4xNjguMi4wwqDCoMKg
+wqDCoMKgwqDCoMKgIGFueXdoZXJlCj4+Pgo+Pj4KPj4+IFRoYW5rcyBmb3IgdGhlIGhlbHAuCj4+
+Pgo+Pj4KPj4+Cj4+PiAtLQo+Pj4gRXN0ZWJhbiBMLiBDYWNhdmVsb3MgZGUgQW1vcml6YQo+Pj4g
+Q2VsOiAwOTgxIDIyMCA0MjkKPj4+Cj4+Cj4+Cj4+LS0KPj4tLQo+PlBhbmR1IEUgUG9sdWFuIC0g
+SVQgT3B0aW1pemVyCj4+TXkgd2Vic2l0ZTogaHR0cDovL3BhbmR1LnBvbHVhbi5pbmZvLwo+Pk4/
+Pz8/P3I/P3k/Pz8/Pz9YPz/Hp3Y/Pz8p3rp7Lm4/Pz8/P3o/Pz/Xqz97YXk/IMqH2pk/P2ogPz9m
+Pz8/aD8/Pz8/ID93Pz8/ID8/P2o6K3Y/Pz93Pz8/Pz8/Pz8gPz8/P3paKz8/Pz8/Pz9qIj8/Pz9p
+Cj4KPgoKdGhhbmtzIGZvciB0aGUgcXVpY2sgcmVzcG9uc2UgLgoKCnRoZSBwcm9ibGVtIHdhcyB0
+aGUgbWFzcXVlcmFkZS4gSSBnb3QgY29uZnVzZWQgd2l0aCB0aGUgaW50ZXJmYWNlcwoobWFzcXVl
+cmFkZSBldGgwIGluc3RlYWQgb2YgZXRoMikuCgoKCgoKcmVnYXJkcywKCgotLSAKRXN0ZWJhbiBM
+LiBDYWNhdmVsb3MgZGUgQW1vcml6YQpDZWw6IDA5ODEgMjIwIDQyOQo=
