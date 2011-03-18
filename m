@@ -1,66 +1,51 @@
-From: Pandu Poluan <pandu@poluan.info>
-Subject: Re: rules to allow LAN navigation
-Date: Fri, 18 Mar 2011 09:15:13 +0700
-Message-ID: <AANLkTikJiLUbiz0aegb9pTaAdsYZ8LQJe4KCh_Ew=1D-@mail.gmail.com>
-References: <AANLkTik6CLZ74j6XCZQF1E=fz1N6AGgCS5myCfi+BjbT@mail.gmail.com>
-	<AANLkTinRFy06AxXo0vjQZxSHLj5S5oC4yOTX4GSZ0sXn@mail.gmail.com>
+From: Lai Jiangshan <laijs@cn.fujitsu.com>
+Subject: [PATCH 25/36] net,rcu: convert call_rcu(__nf_ct_ext_free_rcu) to
+ kfree_rcu()
+Date: Fri, 18 Mar 2011 12:07:09 +0800
+Message-ID: <4D82DA6D.7030100__22976.3654679575$1300421145$gmane$org@cn.fujitsu.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTinRFy06AxXo0vjQZxSHLj5S5oC4yOTX4GSZ0sXn@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Esteban Cacavelos <estebancacavelos@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>, Ingo Molnar <mingo@elte.hu>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.o
 
-KHNvcnJ5IGZvciB0b3AgcG9zdGluZzsgR21haWwgbW9iaWxlIGNhbiBvbmx5IHRvcC1wb3N0KQoK
-Q2FuIHlvdSBwb3N0IHRoZSBvdXRwdXQgb2YgaXB0YWJsZXMtc2F2ZT8gaXB0YWJsZXMgLUwgYWx3
-YXlzIGdpdmUgbWUKdGhlIGhlYWRhY2hlLgoKUmdkcywKCgpPbiAyMDExLTAzLTE4LCBFc3RlYmFu
-IENhY2F2ZWxvcyA8ZXN0ZWJhbmNhY2F2ZWxvc0BnbWFpbC5jb20+IHdyb3RlOgo+IEhpIGFsbCwg
-aSBhbSBuZXcgb24gdGhlIGxpc3QgYW5kIGkgaGF2ZSB0aGUgZm9sbG93aW5nIHNjZW5hcmlvLgo+
-Cj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCj4gLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0KPiB8wqDCoMKgwqDCoMKgwqAgcm91dGVyIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgwqAgfMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqDCoMKgwqDCoMKgIGxp
-bnV4IHNlcnZlcgo+ICh1YnVudHUpfMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgfAo+IMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAg
-fAo+IHzCoMKgIExBTjogMTkyLjE2OC4zLnjCoMKgwqDCoMKgIHwgLS0tLS0tLS0tLS0tLS0gfMKg
-wqDCoMKgwqAgZXRoMDoxOTIuMTY4LjMuMTIKPiB8wqAgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS3CoCB8wqDCoMKgIChXSU5ET1dTIFBDcywgZXRjKcKgwqDCoCB8Cj4gfMKgwqAgV0FOOiBp
-bnRlcm5ldMKgwqDCoMKgwqDCoMKgwqDCoMKgIHzCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgfCDCoCDCoMKgIGV0aDE6MTkyLjE2OC4yLjEKPiDCoMKgIHzCoMKgwqDCoMKgwqDCoMKgwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB8wqDCoMKgwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBMQU4KPiDCoMKgwqAgfAo+IC0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0KPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0KPiB8wqDCoMKgwqDCoMKgwqAgMTkyLjE2OC4yLnjCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgfAo+Cj4KPiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLQo+Cj4KPiBJIHdhbnQgdG86IHRoZSBjb21wdXRlcnMgaW4gdGhlIExBTiB0byBuYXZp
-Z2F0ZSB0aHJvdWdoIGludGVybmV0Lgo+Cj4gV2hlbiB0aGUgcG9saWNpZXMgZm9yIElOUFVULCBP
-VVRQVVQgYW5kIEZPUldBUkQgYXJlIEFDQ0VQVCwgZXZlcml0aGluZwo+IHdvcmtzIHdlbGwgKHBj
-cyBpbiB0aGUgTEFOwqAgY2FuIG5hdmlnYXRlKSwgQlVULCB3aGVuIGkgY2hhbmdlIHRoZQo+IHBv
-bGljeSB0byBEUk9QIGZvciB0aGUgSU5QVVQgY2hhaW4gaSBkb250IGtub3cgaG93IHRvIGFsbG93
-IGh0dHAKPiB0cmFmZmljIGZvciB0aGUgTEFOLgo+Cj4gTXkgYWN0dWFsIGlwdGFibGVzIGNvbmZp
-Z3VyYXRpb24gaXMgOgo+Cj4gaXB0YWJsZXMgLUwKPiBDaGFpbiBJTlBVVCAocG9saWN5IERST1Ap
-Cj4gdGFyZ2V0wqDCoMKgwqAgcHJvdCBvcHQgc291cmNlwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqDCoCBkZXN0aW5hdGlvbgo+IEFDQ0VQVMKgwqDCoMKgIGFsbMKgIC0twqAgYW55d2hlcmXCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgwqAgYW55d2hlcmXCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGN0c3Rh
-dGUKPiBSRUxBVEVELEVTVEFCTElTSEVECj4gQUNDRVBUwqDCoMKgwqAgYWxswqAgLS3CoCBhbnl3
-aGVyZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBhbnl3aGVyZcKgwqDCoMKgwqDCoMKgwqDCoMKg
-wqAgc3RhdGUKPiBSRUxBVEVELEVTVEFCTElTSEVECj4gQUNDRVBUwqDCoMKgwqAgdGNwwqAgLS3C
-oCBhbnl3aGVyZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBhbnl3aGVyZcKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgdGNwIGRwdDp3d3cKPiBMT0fCoMKgwqDCoMKgwqDCoCBhbGzCoCAtLcKgIGFueXdo
-ZXJlwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIGFueXdoZXJlwqDCoMKgwqDCoMKgwqDCoMKgwqDC
-oCBsaW1pdDoKPiBhdmcgNS9taW4gYnVyc3QgNSBMT0cgbGV2ZWwgZGVidWcgcHJlZml4IGBpcHRh
-YmxlcyBkZW5pZWQ6ICcKPiBBQ0NFUFTCoMKgwqDCoCB0Y3DCoCAtLcKgIGFueXdoZXJlwqDCoMKg
-wqDCoMKgwqDCoMKgwqDCoMKgIGFueXdoZXJlwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0Y3AgZHB0
-Ond3dwo+IEFDQ0VQVMKgwqDCoMKgIGFsbMKgIC0twqAgYW55d2hlcmXCoMKgwqDCoMKgwqDCoMKg
-wqDCoMKgwqAgYW55d2hlcmUKPiBBQ0NFUFTCoMKgwqDCoCBhbGzCoCAtLcKgIGFueXdoZXJlwqDC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIGFueXdoZXJlCj4gQUNDRVBUwqDCoMKgwqAgYWxswqAgLS3C
-oCBhbnl3aGVyZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBhbnl3aGVyZQo+IEFDQ0VQVMKgwqDC
-oMKgIHRjcMKgIC0twqAgYW55d2hlcmXCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgYW55d2hlcmXC
-oMKgwqDCoMKgwqDCoMKgwqDCoMKgIHRjcCBkcHQ6MjIyMwo+IEFDQ0VQVMKgwqDCoMKgIGFsbMKg
-IC0twqAgMTkyLjE2OC4yLjHCoMKgwqDCoMKgwqDCoMKgwqAgYW55d2hlcmUKPiBBQ0NFUFTCoMKg
-wqDCoCBhbGzCoCAtLcKgIDE5Mi4xNjguMi4wwqDCoMKgwqDCoMKgwqDCoMKgIGFueXdoZXJlCj4K
-Pgo+IFRoYW5rcyBmb3IgdGhlIGhlbHAuCj4KPgo+Cj4gLS0KPiBFc3RlYmFuIEwuIENhY2F2ZWxv
-cyBkZSBBbW9yaXphCj4gQ2VsOiAwOTgxIDIyMCA0MjkKPgoKCi0tIAotLQpQYW5kdSBFIFBvbHVh
-biAtIElUIE9wdGltaXplcgpNeSB3ZWJzaXRlOiBodHRwOi8vcGFuZHUucG9sdWFuLmluZm8vCg==
+
+
+The rcu callback __nf_ct_ext_free_rcu() just calls a kfree(),
+so we use kfree_rcu() instead of the call_rcu(__nf_ct_ext_free_rcu).
+
+Signed-off-by: Lai Jiangshan <laijs@cn.fujitsu.com>
+---
+ net/netfilter/nf_conntrack_extend.c |    8 +-------
+ 1 files changed, 1 insertions(+), 7 deletions(-)
+
+diff --git a/net/netfilter/nf_conntrack_extend.c b/net/netfilter/nf_conntrack_extend.c
+index bd82450..cc0bcda 100644
+--- a/net/netfilter/nf_conntrack_extend.c
++++ b/net/netfilter/nf_conntrack_extend.c
+@@ -68,12 +68,6 @@ nf_ct_ext_create(struct nf_ct_ext **ext, enum nf_ct_ext_id id, gfp_t gfp)
+ 	return (void *)(*ext) + off;
+ }
+ 
+-static void __nf_ct_ext_free_rcu(struct rcu_head *head)
+-{
+-	struct nf_ct_ext *ext = container_of(head, struct nf_ct_ext, rcu);
+-	kfree(ext);
+-}
+-
+ void *__nf_ct_ext_add(struct nf_conn *ct, enum nf_ct_ext_id id, gfp_t gfp)
+ {
+ 	struct nf_ct_ext *old, *new;
+@@ -114,7 +108,7 @@ void *__nf_ct_ext_add(struct nf_conn *ct, enum nf_ct_ext_id id, gfp_t gfp)
+ 					(void *)old + old->offset[i]);
+ 			rcu_read_unlock();
+ 		}
+-		call_rcu(&old->rcu, __nf_ct_ext_free_rcu);
++		kfree_rcu(old, rcu);
+ 		ct->ext = new;
+ 	}
+ 
+-- 
+1.7.4
