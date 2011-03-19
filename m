@@ -1,32 +1,42 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: When does NAT processing actually takes place?
-Date: Sat, 19 Mar 2011 11:02:35 +0100
-Message-ID: <4D847F3B.2070303@plouf.fr.eu.org>
-References: <282984944.21619.1300343429509.JavaMail.root@tahiti.vyatta.com> <1237758709.21621.1300343546963.JavaMail.root@tahiti.vyatta.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset-6.1 released
+Date: Sat, 19 Mar 2011 11:42:37 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1103191138070.18290@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1237758709.21621.1300343546963.JavaMail.root@tahiti.vyatta.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Steven Kath <steven.kath@vyatta.com>
-Cc: Pandu Poluan <pandu@poluan.info>, netfilter@vger.kernel.org, Atle Solbakken <atle@goliathdns.no>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Steven Kath a =E9crit :
->
-> Unless I'm mistaken, the "inverse NAT" is part of the conntrack set o=
-f
-> functions.
+Hi,
 
-Unless I'm mistaken, the direct and inverse NAT is performed in the nat
-hooks, called after the mangle chains. Destination NAT is performed in
-the PRE_ROUTING or LOCAL_OUT (OUTPUT) hook, and source NAT is performed
-in the POST_ROUTING or LOCAL_IN (INPUT) hook.
+I'm happy to announce ipset 6.1 with the following changes compared to the 
+previous version:
 
-> The conntrack table contains both the pre-NAT and post-NAT
-> address:port pairings,
+kernel part:
+ - The hash:*port* types ignored the address range with non TCP/UDP, fixed
+ - Fix checking the revision number of the set type at create command
+ - SCTP, UDPLITE support to hash:*port* types added
+ - Fix revision reporting got broken by the revision checking patch
 
-Yes, but AFAIK this is only used for connection tracking purpose, so
-that packets in the original and reply directions can be related to the
-conntrack entry.
+userspace part:
+ - Manpage was not installed (reported by Mark A. Ziesemer)
+ - SCTP, UDPLITE support to the hash:*port* types added
+
+I'll submit the SCTP, UDPLITE support for net-next-2.6 when the merge 
+window will be over.
+
+You can download the source code from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
