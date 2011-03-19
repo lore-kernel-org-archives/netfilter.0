@@ -1,36 +1,70 @@
-From: Kurt Wampler <Kurt.Wampler@brion.com>
-Subject: How to achieve reverse NETMAP functionality?
-Date: Fri, 18 Mar 2011 16:45:54 -0700
-Message-ID: <20110318164554.G20495@masktools.com>
+From: "Rob \(lists\)" <lists@sterenborg.info>
+Subject: RE: LOG_ACCEPT does not result in matching packet being accepted (ACCEPT works)
+Date: Sat, 19 Mar 2011 08:34:45 +0100
+Message-ID: <8A7E792DB93B42C5B2C33004FFDBF9C6@Dell>
+References: <AANLkTin0ZoJ7MfonStpL_Ez=m=tre_w5WvRRXWLrswke@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <AANLkTin0ZoJ7MfonStpL_Ez=m=tre_w5WvRRXWLrswke@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-We have a need to "alias" portions of a customer's internal private IP
-network, because they have an address range which overlaps a private IP
-address range used internally in one of our systems installed at their
-site.  We are trying to avoid having to re-IP either network.
+> Hi,
+> 
+> I am running into a strange issue where packets matching LOG_ACCEPT
+> rule (SSH packets) are not accepted. This results in failure to SSH to
+> the box from outside. Trigger is still unknown - same rules work fine
+> and LOG_ACCEPT works fine in the beginning.
 
-We would like to define a 1:1 NAT similar to what's implemented by the
-iptables NETMAP target.  Currently, netmap can rewrite only the destination
-address during prerouting, and it can rewrite only the source address
-during postrouting.
+Somehow I find that hard to believe, seeing below that the LOG_ACCEPT
+chain doesn't contain any rules.
 
-In order to effectively alias the customer's network from the perspective
-of our host, we want to rewrite the source address of packets coming from
-the customer's network during prerouting, and rewrite the destination address
-of the corresponding return packets during postrouting -- the opposite of
-what netmap currently does.
+> If I change the LOG_ACCEPT to ACCEPT, strangely SSH starts working.
 
-Is there any way to achieve this by exploiting the existing configuration
-capabilities in iptables?
+Not so strange to me. Using the ACCEPT target, you're actually ACCEPTing
+the packet(s) whereas LOG_ACCEPT doesn't (do anything).
 
-Our host is running CentOS 5.3 with iptables 1.3.5.
+> I have not tried a "service firewall restart" etc. and I don't want
+> the failed condition to go away before I collect required info.
+> Pasting the rules below. If anyone has any clues, appreciate if you
+> could let me know
 
-Thanks in advance,
+> Chain INPUT (policy DROP)
+> target     prot opt source               destination
+[...]
+> ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           state
+> RELATED,ESTABLISHED
+> LOG_ACCEPT  tcp  --  0.0.0.0/0            0.0.0.0/0           tcp
+> dpt:22
+> LOG_ACCEPT  udp  --  0.0.0.0/0            0.0.0.0/0           udp
+> dpt:22
+[...]
 
-Kurt Wampler
+SSH doesn't use port 22/udp. It only uses port 22/tcp. Don't accept
+packets you don't want/need.
+
+> Chain LOG_ACCEPT (2 references)
+> target     prot opt source               destination
+
+So, since there is no default chain named LOG_ACCEPT, someone (you?)
+created a userdefined chain named LOG_ACCEPT. But since this chain is
+empty, the chain does nothing. The same goes for chains LOG_DROP and
+icmp_packets; they won't do anything either.
+
+Maybe you should do something like below (sorry for wrapping, please
+adapt to your needs).
+
+Change:
+$ipt -A INPUT -m state --state NEW -p tcp --dport 22 -j LOG_ACCEPT
+
+Add:
+$ipt -A LOG_ACCEPT -j LOG --log-level info --log-prefix "LOG_ACCEPT: "
+$ipt -A LOG_ACCEPT -j ACCEPT
+
+
+-- Rob
+
+
