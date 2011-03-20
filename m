@@ -1,35 +1,31 @@
-From: Marek Kierdelewicz <marek@piasta.pl>
-Subject: Re: How to achieve reverse NETMAP functionality?
-Date: Sun, 20 Mar 2011 09:20:32 +0100
-Message-ID: <20110320092032.18159dbd@catus>
-References: <20110318164554.G20495@masktools.com>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [PATCH v2] ipv4: netfilter: ipt_CLUSTERIP: fix buffer overflow
+Date: Sun, 20 Mar 2011 15:43:36 +0100
+Message-ID: <4D861298.1040700@trash.net>
+References: <1299780740-32652-1-git-send-email-segoon@openwall.com> <AANLkTimPZJoCzz386e-4m0Y4khWGZirZguGFmuFYCrry@mail.gmail.com> <4D7F5CAC.6070006@trash.net> <20110317113229.GA7710@albatros> <AANLkTimtsB0B98E2xcoJgRsPwSpwuG+ahT+LX0s1YwpX@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20110318164554.G20495@masktools.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <AANLkTimtsB0B98E2xcoJgRsPwSpwuG+ahT+LX0s1YwpX@mail.gmail.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Kurt Wampler <Kurt.Wampler@brion.com>
-Cc: netfilter@vger.kernel.org
+To: Changli Gao <xiaosuo@gmail.com>
+Cc: Vasiliy Kulikov <segoon@openwall.com>, linux-kernel@vger.kernel.org, security@kernel.org, "David S. Miller" <davem@davemloft.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, James Morris <jmorris@namei.org>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org
 
-Hi,
+Am 17.03.2011 13:15, schrieb Changli Gao:
+> On Thu, Mar 17, 2011 at 7:32 PM, Vasiliy Kulikov <segoon@openwall.com> wrote:
+>> 'buffer' string is copied from userspace.  It is not checked whether it is
+>> zero terminated.  This may lead to overflow inside of simple_strtoul().
+>> Changli Gao suggested to copy not more than user supplied 'size' bytes.
+>>
+>> It was introduced before the git epoch.  Files "ipt_CLUSTERIP/*" are
+>> root writable only by default, however, on some setups permissions might be
+>> relaxed to e.g. network admin user.
+>>
+>> Signed-off-by: Vasiliy Kulikov <segoon@openwall.com>
+> Acked-by: Changli Gao <xiaosuo@gmail.com>
+> 
+> 
 
->We have a need to "alias" portions of a customer's internal private IP
->network, because they have an address range which overlaps a private IP
->address range used internally in one of our systems installed at their
->site.  We are trying to avoid having to re-IP either network.
-
-I haven't tried it, but it seems there's stateless nat available as tc
-action. You *probably* could try to do dnat on egress (eg. interface
-eth0) and snat on ingress (ingress qdisc attached to eth0).
-
-# tc action add action nat help
-Usage: ... nat NAT
-NAT := DIRECTION OLD NEW
-DIRECTION := { ingress | egress }
-OLD := PREFIX
-NEW := ADDRESS
-
-Best regards,
-Marek Kierdelewicz
+Applied, thanks everyone.
