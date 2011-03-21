@@ -1,31 +1,28 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [PATCH v2] ipv4: netfilter: ipt_CLUSTERIP: fix buffer overflow
-Date: Sun, 20 Mar 2011 15:43:36 +0100
-Message-ID: <4D861298.1040700@trash.net>
-References: <1299780740-32652-1-git-send-email-segoon@openwall.com> <AANLkTimPZJoCzz386e-4m0Y4khWGZirZguGFmuFYCrry@mail.gmail.com> <4D7F5CAC.6070006@trash.net> <20110317113229.GA7710@albatros> <AANLkTimtsB0B98E2xcoJgRsPwSpwuG+ahT+LX0s1YwpX@mail.gmail.com>
+From: Pandu Poluan <pandu@poluan.info>
+Subject: Where can I get xtables-addons-1.33?
+Date: Mon, 21 Mar 2011 17:24:55 +0700
+Message-ID: <AANLkTimxka=vgwrdwkoL=cBMZDdQQnWTmGMA24GP2s+q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <AANLkTimtsB0B98E2xcoJgRsPwSpwuG+ahT+LX0s1YwpX@mail.gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Changli Gao <xiaosuo@gmail.com>
-Cc: Vasiliy Kulikov <segoon@openwall.com>, linux-kernel@vger.kernel.org, security@kernel.org, "David S. Miller" <davem@davemloft.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, James Morris <jmorris@namei.org>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-Am 17.03.2011 13:15, schrieb Changli Gao:
-> On Thu, Mar 17, 2011 at 7:32 PM, Vasiliy Kulikov <segoon@openwall.com> wrote:
->> 'buffer' string is copied from userspace.  It is not checked whether it is
->> zero terminated.  This may lead to overflow inside of simple_strtoul().
->> Changli Gao suggested to copy not more than user supplied 'size' bytes.
->>
->> It was introduced before the git epoch.  Files "ipt_CLUSTERIP/*" are
->> root writable only by default, however, on some setups permissions might be
->> relaxed to e.g. network admin user.
->>
->> Signed-off-by: Vasiliy Kulikov <segoon@openwall.com>
-> Acked-by: Changli Gao <xiaosuo@gmail.com>
-> 
-> 
+Why is http://sourceforge.net/projects/xtables-addons/files/Xtables-add=
+ons/1.33/
+empty?
 
-Applied, thanks everyone.
+Rgds,
+--
+Pandu E Poluan
+~ IT Optimizer ~
+Visit my Blog: http://pepoluan.posterous.com
+Google Talk:=C2=A0=C2=A0=C2=A0 pepoluan
+Y! messenger: pepoluan
+MSN / Live:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 pepoluan@hotmail.com (do not =
+send email here)
+Skype:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+ pepoluan
+More on me:=C2=A0=C2=A0My LinkedIn Account=C2=A0 My Facebook Account
