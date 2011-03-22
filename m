@@ -1,56 +1,46 @@
-From: BERTRAND Joel <joel.bertrand@systella.fr>
-Subject: [sparc specific bug ?] Iptables, iproute2 and mark
-Date: Mon, 21 Mar 2011 23:30:03 +0100
-Message-ID: <4D87D16B.8050005@systella.fr>
+From: Pandu Poluan <pandu@poluan.info>
+Subject: Re: Where can I get xtables-addons-1.33?
+Date: Tue, 22 Mar 2011 12:43:10 +0700
+Message-ID: <AANLkTinOMPZgNaM5_+dWJGRZ3EYWUN_eBx3yERtDcYcZ@mail.gmail.com>
+References: <AANLkTimxka=vgwrdwkoL=cBMZDdQQnWTmGMA24GP2s+q@mail.gmail.com>
+	<20110321180200.50b60b12@catus>
+	<alpine.LNX.2.01.1103212006320.15338@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.01.1103212006320.15338@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: Marek Kierdelewicz <marek@piasta.pl>, netfilter@vger.kernel.org
 
-	Hello,
+On Tue, Mar 22, 2011 at 02:08, Jan Engelhardt <jengelh@medozas.de> wrote:
+> On Monday 2011-03-21 18:02, Marek Kierdelewicz wrote:
+>
+>>Hi,
+>>
+>>>Why is
+>>>http://sourceforge.net/projects/xtables-addons/files/Xtables-addons/1.33/
+>>>empty?
+>>
+>>You can download it here:
+>>http://xtables-addons.git.sf.net/git/gitweb.cgi?p=xtables-addons/xtables-addons;a=summary
+>>
+>>Click on the "snapshot" in shortlog list.
+>
+> Some problem with the SF web interface (reported).
+> Grabbing
+> http://downloads.sf.net/xtables-addons/xtables-addons-1.33.tar.xz
+> directly completes without problem.
+>
+> What, your distro is not supplying ready packages? You should do
+> something! :-)
+>
 
-	I have upgraded a sparc box from 2.6.30.9 to 2.6.38 linux kernel 
-(sun4v) and iptables 1.4.10. This box has four ethernet interfaces and I 
-have written a script to route packets with iptables and iproute2:
+In due time :-)
 
-eth0 : WAN (default)
-eth1 : DMZ
-eth2 : LAN
-eth3 : WAN2
+I'm still trying to understand the ebuild files (gentoo-user, here)
 
-	Default gateway for LAN is eth0. For DMZ, default gateway is eth3. My 
-script contains:
-
-IPTABLES=/sbin/iptables
-ROUTE=/sbin/route
-IPROUTE2=/bin/ip
-
-...
-
-$ROUTE add default gw 213.215.42.65 dev eth0
-$IPROUTE2 rule add from 213.215.42.69 lookup local_traffic priority 100
-$IPROUTE2 rule add fwmark 1 table local_traffic priority 101
-$IPROUTE2 route add default via 213.215.42.65 dev eth3 table\
-	local_traffic
-$IPROUTE2 route flush cache
-
-$IPTABLES -t mangle -A PREROUTING -s 192.168.0.0/24 -j MARK --set-mark 1
-$IPTABLES -t nat -A POSTROUTING -o eth3 -m mark --mark 1 -j SNAT \
-	--to-source 213.215.42.69
-
-echo 0 > /proc/sys/net/ipv4/conf/eth3/rp_filter
-echo 1 > /proc/sys/net/ipv4/conf/eth0/arp_ignore
-echo 1 > /proc/sys/net/ipv4/conf/eth3/arp_ignore
-echo 1 > /proc/sys/net/ipv4/conf/eth0/arp_filter
-echo 1 > /proc/sys/net/ipv4/conf/eth3/arp_filter
-
-	I can post all my script but it is long and without any interest. With 
-2.6.30.9 kernel, my script works fine. With 2.6.38, it doesn't. Packets 
-from DMZ are not routed by eth3. Any idea ?
-
-	Regards,
-
-	JB
+--
+Pandu E Poluan
