@@ -1,23 +1,47 @@
-From: bertrand <joel.bertrand@systella.fr>
-Subject: Re: [sparc specific bug =?UTF-8?Q?=3F=5D=20Iptables=2C=20iproute?=
- =?UTF-8?Q?=32=20and=20mark?=
-Date: Tue, 22 Mar 2011 11:19:27 +0100
-Message-ID: <0d3d1b1eff61626ea7590dbff592e7d7@systella.fr>
-References: <4D87D16B.8050005@systella.fr>
+From: =?ISO-8859-1?Q?Salih_G=F6n=FCll=FC?= <sag@open.ch>
+Subject: ulogd segfault on kill TERM
+Date: Thu, 24 Mar 2011 17:19:44 +0100
+Message-ID: <4D8B6F20.4010205@open.ch>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D87D16B.8050005@systella.fr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
- Very strange. I have removed SYSFS_DEPRECATED_V2 to avoid an udev bug 
- that didn't create /dev/sd[ab] (but /dev/sd[c-h]) and netfilter runs 
- fine...
+Hi,
 
- Regards,
+ulogd is segfaulting on kill TERM when logfile is set to 'syslog' in the 
+configuration. Please find a patch below. Another point: Should stdout 
+stay open on daemonize when logging to syslog ??
 
- JB
 
+
+--- ulogd.c.orig        2011-03-24 15:45:34.000000000 +0100
++++ ulogd.c     2011-03-24 15:48:37.000000000 +0100
+@@ -1047,7 +1047,7 @@
+         unload_plugins();
+  #endif
+
+-       if (logfile != NULL  && logfile != stdout) {
++       if (logfile != NULL  && logfile != stdout && logfile != 
+&syslog_dummy ) {
+                 fclose(logfile);
+                 logfile = NULL;
+         }
+@@ -1228,7 +1228,7 @@
+                 if (fork()) {
+                         exit(0);
+                 }
+-               if (logfile != stdout && logfile != &syslog_dummy)
++               if (logfile != stdout )
+                         fclose(stdout);
+                 fclose(stderr);
+                 fclose(stdin);
+
+
+
+Cheers,
+
+    -salih
