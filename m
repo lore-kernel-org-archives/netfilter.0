@@ -1,7 +1,7 @@
 From: "cc" <cc@kdtc.net>
 Subject: netfilter pecularities
-Date: Fri, 25 Mar 2011 17:05:01 +0800
-Message-ID: <20110325090527.M18530@kdtc.net>
+Date: Fri, 25 Mar 2011 17:03:22 +0800
+Message-ID: <20110325085259.M41794@kdtc.net>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
