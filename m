@@ -1,47 +1,60 @@
-From: =?ISO-8859-1?Q?Salih_G=F6n=FCll=FC?= <sag@open.ch>
-Subject: ulogd segfault on kill TERM
-Date: Thu, 24 Mar 2011 17:19:44 +0100
-Message-ID: <4D8B6F20.4010205@open.ch>
+From: "cc" <cc@kdtc.net>
+Subject: netfilter pecularities
+Date: Fri, 25 Mar 2011 17:05:01 +0800
+Message-ID: <20110325090527.M18530@kdtc.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
 Hi,
 
-ulogd is segfaulting on kill TERM when logfile is set to 'syslog' in the 
-configuration. Please find a patch below. Another point: Should stdout 
-stay open on daemonize when logging to syslog ??
+I have a netfilter-based firewall running and recently its behaviour
+has been very puzzling (to the point of suspicious).  However, this
+can also be attributed to user-error.
+
+Please correct me if I'm wrong here.
+
+I have a filter that forwards (via NAT prerouting) SMTP packets
+to my e-mail server behind the firewall.  Here are the
+following rules:
+
+$IPT -t nat -A PREROUTING -p tcp -i $INET_IF -d $INET_IP \
+           --dport $SMTP -j DNAT --to $DMZ_EM:$SMTP
+$IPT -t nat -A PREROUTING -p tcp -i $DMZ_IF -d $INET_IP \
+           --dport $SMTP -j DNAT --to $DMZ_EM:$SMTP
+
+$IPT -t nat -A PREROUTING -p tcp -i $DMZ_IF -d $INET_IP \
+            -s $LAN_NET --dport $SMTP -j DNAT --to $DMZ_EM:$SMTP
+
+These rules are the only one that has anything to do with
+SMTP port forwarding and it doesn't include SNAT as it's
+obvious from the rules.  If you can bear with me for a bit.
+
+Now theoretically speaking, if I comment out the above lines,
+NONE of the SMTP traffic will be going anywhere, am I correct?
+
+My setup is this.  It's a 2.4.x based netfilter firewall.
+(distribution is Slackware).
+
+Now here's where I need a bit of clarification and/or
+explanation.  What happens is the following.
+
+If I comment out the aforementioned rules,  the SMTP traffic
+still finds its way to the DMZ_EM machine.  (I'm a bit stumped here.)
+
+If I reset the firewall by flushing the rules, the SMTP traffic
+still finds its way to the DMZ_EM machine.  
+
+When I run iptables, is it supposed to 'insmod' ip_tables, etc
+to the modules list?  Even if it's compiled into the kernel?
+
+Any clarifications appreciated.  
+
+Ed
 
 
 
---- ulogd.c.orig        2011-03-24 15:45:34.000000000 +0100
-+++ ulogd.c     2011-03-24 15:48:37.000000000 +0100
-@@ -1047,7 +1047,7 @@
-         unload_plugins();
-  #endif
-
--       if (logfile != NULL  && logfile != stdout) {
-+       if (logfile != NULL  && logfile != stdout && logfile != 
-&syslog_dummy ) {
-                 fclose(logfile);
-                 logfile = NULL;
-         }
-@@ -1228,7 +1228,7 @@
-                 if (fork()) {
-                         exit(0);
-                 }
--               if (logfile != stdout && logfile != &syslog_dummy)
-+               if (logfile != stdout )
-                         fclose(stdout);
-                 fclose(stderr);
-                 fclose(stdin);
-
-
-
-Cheers,
-
-    -salih
