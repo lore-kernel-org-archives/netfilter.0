@@ -1,42 +1,36 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset 6.2 released
-Date: Sun, 27 Mar 2011 21:30:35 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1103272124170.3535@blackhole.kfki.hu>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: ulogd segfault on kill TERM
+Date: Sun, 27 Mar 2011 21:48:41 +0200
+Message-ID: <4D8F9499.9060606@netfilter.org>
+References: <4D8B6F20.4010205@open.ch>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4D8B6F20.4010205@open.ch>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?ISO-8859-1?Q?Salih_G=F6n=FCll=FC?= <sag@open.ch>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+On 24/03/11 17:19, Salih G=F6n=FCll=FC wrote:
+> Hi,
+>=20
+> ulogd is segfaulting on kill TERM when logfile is set to 'syslog' in =
+the
+> configuration. Please find a patch below.
 
-I'm happy to announce ipset 6.2.
+I have applied the following patch.
 
-Important note: if you want to use the list:set type with timeout, you 
-must upgrade, because in earlier releases the type in the timeout variant 
-was completely broken. The bugs did not affect other types or the list:set 
-type without timeout.
+http://git.netfilter.org/cgi-bin/gitweb.cgi?p=3Dulogd2.git;a=3Dcommit;h=
+=3Dc8fb552eeabd1a7cd9440d55c96918c0aa1ae3a9
 
-kernel part:
- - list:set timeout variant fixes
- - References are protected by rwlock instead of mutex
- - Add explicit text message to detect patched kernel (netlink.patch)
- - Timeout can be modified for already added elements
+> Another point: Should stdout
+> stay open on daemonize when logging to syslog ??
 
-userspace part:
- - Manpage update
+this does make too much sense indeed.
 
-You can download the source code from:
-        http://ipset.netfilter.org
-        ftp://ftp.netfilter.org/pub/ipset/
-        git://git.netfilter.org/ipset.git
+Please, include a short description in your patches and add the
+Signed-off-by tag. This makes easier to apply it with git-am.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Thanks Salih!
