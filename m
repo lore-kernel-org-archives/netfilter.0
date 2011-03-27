@@ -1,28 +1,42 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: How can I make iptables accept SMB UDP packets from/to UDP ports
- 137 and 138?
-Date: Sun, 27 Mar 2011 18:03:03 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1103271802330.29428@obet.zrqbmnf.qr>
-References: <63109.45424.qm@web120317.mail.ne1.yahoo.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset 6.2 released
+Date: Sun, 27 Mar 2011 21:30:35 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1103272124170.3535@blackhole.kfki.hu>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <63109.45424.qm@web120317.mail.ne1.yahoo.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: crocket <crockabiscuit@yahoo.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-On Sunday 2011-03-27 17:05, crocket wrote:
+Hi,
 
->I want iptables accept SMB UDP packets in a subnet.
->When samba uses SMB protocol,
->it sends out name queries as broadcast packets from high number random UDP 
->source ports to 137 or 138 UDP port on remote hosts on the same subnet.
->Since reply packets to the broadcast packets don't come from the broadcast 
->address for the subnet,
->iptables can't categorize reply packets as ESTABLISHED,RELATED with state match 
->module.
+I'm happy to announce ipset 6.2.
 
-So use -m conntrack --ctstate NEW.
+Important note: if you want to use the list:set type with timeout, you 
+must upgrade, because in earlier releases the type in the timeout variant 
+was completely broken. The bugs did not affect other types or the list:set 
+type without timeout.
+
+kernel part:
+ - list:set timeout variant fixes
+ - References are protected by rwlock instead of mutex
+ - Add explicit text message to detect patched kernel (netlink.patch)
+ - Timeout can be modified for already added elements
+
+userspace part:
+ - Manpage update
+
+You can download the source code from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
