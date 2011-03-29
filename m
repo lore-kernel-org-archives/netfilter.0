@@ -1,54 +1,43 @@
-From: Jean-Philippe Menil <jean-philippe.menil@univ-nantes.fr>
-Subject: Ipset counters question
-Date: Tue, 29 Mar 2011 12:31:45 +0200
-Message-ID: <4D91B511.3040005@univ-nantes.fr>
-Reply-To: jean-philippe.menil@univ-nantes.fr
+From: Sebastian Arcus <shop@open-t.co.uk>
+Subject: Iptables, timestart and timestop arguments and daylight saving time
+ in UK
+Date: Tue, 29 Mar 2011 14:47:07 +0100
+Message-ID: <4D91E2DB.4020801@open-t.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi,
+Hi all,
 
-basiclly, i'm working on a captive portal, who add some rules in=20
-PRE/POSTROUTING mangle table when a user is fully authenticated.
-$IPTABLES -t mangle -N OUT-AUTH
-$IPTABLES -t mangle -A PREROUTING -j OUT-AUTH
-$IPTABLES -t mangle -N IN-AUTH
-$IPTABLES -t mangle -A POSTROUTING -j IN-AUTH
+The clock changed over the weekend in the UK by one hour (daylight 
+saving time). I a setup where I block some MAC addresses access to the 
+Internet based on time, using iptables, "timestart" and "timestop" 
+arguments. The command is the following:
 
-and the following rules are append when an user is authenticate:
-$IPTABLES -t mangle -A OUT-AUTH -s $IP -m mac --mac-source $IP -j MARK=20
---set-mark 10
-$IPTABLES -t mangle -A IN-AUTH -d $IP -j ACCEPT
+iptables -A FORWARD -p ALL -o eth0 -m mac  --mac-source  $BLOCKED_MAC1 \
+    -m time --timestart 13:00 --timestop 12:00 -j DROP
 
-I dicovered ipset, and begin to play with it.
-If my understand of is correct, i can add:
 
-ipset -N TEST macipmap --network 192.168.100.0/24
-$IPTABLES -t mangle -A IN-AUTH -m set --set TEST src,dst -j ACCEPT
-$IPTABLES -t mangle -A OUT-AUTH -m set --set TEST src,dst -j MARK=20
---set-mark 10
+After the weekend, the server kept on blocking as per the old winter 
+time. I checked the server time with the "date" command and the time on 
+the client machine (Windows XP) - and in both places the clock is 
+updated as per new time / summer time. The iptables on server kept on 
+blocking according to winter time for two days. Even restarting the 
+iptables script (which flushes the tables) didn't make a different. 
+Finally, when I restarted the whole server, it started blocking 
+according to new summer time. Here is the setup:
 
-And when an user authenticate, add the following ipset:
-ipset -A TEST 192.168.100.2,xx:xx:xx:xx:xx:xx
+Client: Windows XP Home
+Server: Slackware 13.0
+Kernel: 2.6.29.6
+Iptables: 1.4.3.2
 
-However, for some accountig reason, i used to check the iptables=20
-counters (-nvxL) by ip.
-If i replace, my iptables rules by an ipset type, i cannot check=20
-counters anymore.
+Is this a known bug in the kernel, or am I doing something wrong?
 
-If i decide to use ipset, is there a way to check counters by ip, or=20
-something like that?
+Thanks for any contributions,
 
-Regards.
-
---=20
-Jean-Philippe Menil - P=F4le r=E9seau Service IRTS
-DSI Universit=E9 de Nantes
-jean-philippe.menil@univ-nantes.fr
-Tel : 02.53.48.49.27 - Fax : 02.53.48.49.09
-
+Sebastian
