@@ -1,32 +1,39 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+From: Michael Tokarev <mjt@tls.msk.ru>
 Subject: Re: [ANNOUNCE] ipset 6.2 released
-Date: Tue, 29 Mar 2011 21:23:57 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1103292123001.8329@blackhole.kfki.hu>
-References: <alpine.DEB.2.00.1103272124170.3535@blackhole.kfki.hu> <4D91E7D7.3070000@msgid.tls.msk.ru>
+Date: Tue, 29 Mar 2011 23:44:07 +0400
+Message-ID: <4D923687.6030003@msgid.tls.msk.ru>
+References: <alpine.DEB.2.00.1103272124170.3535@blackhole.kfki.hu> <4D91E7D7.3070000@msgid.tls.msk.ru> <alpine.DEB.2.00.1103292123001.8329@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4D91E7D7.3070000@msgid.tls.msk.ru>
+In-Reply-To: <alpine.DEB.2.00.1103292123001.8329@blackhole.kfki.hu>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Michael Tokarev <mjt@tls.msk.ru>
+Content-Type: text/plain; charset="us-ascii"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-On Tue, 29 Mar 2011, Michael Tokarev wrote:
+29.03.2011 23:23, Jozsef Kadlecsik wrote:
+> On Tue, 29 Mar 2011, Michael Tokarev wrote:
+> 
+>> ipset-6.2/kernel/net/netfilter/ipset/Kconfig file
+>> appears to be some net/netfilter/Kconfig file from
+>> linux source tree (from one directory level up),
+>> patched with NETFILTER_XT_SET.  It gets included
+>> into itself recursively.
+> 
+> Yes, you are right, I fixed it in the ipset git tree. Thanks!
 
-> ipset-6.2/kernel/net/netfilter/ipset/Kconfig file
-> appears to be some net/netfilter/Kconfig file from
-> linux source tree (from one directory level up),
-> patched with NETFILTER_XT_SET.  It gets included
-> into itself recursively.
+Actually I'm not sure at all this file is needed.
 
-Yes, you are right, I fixed it in the ipset git tree. Thanks!
+With current Kbuild file, it builds everything as
+modules, the only CONFIG_FOO in use is IP_SET_MAX
+which can be specfied in the upper-level Kconfig
+(in net/netfilter/Kconfig).
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Besides, what's the intention of CONFIG_IP_SET
+vs CONFIG_NETFILTER_XT_SET?
+
+Thanks!
+
+/mjt
