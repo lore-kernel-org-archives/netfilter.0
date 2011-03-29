@@ -1,29 +1,32 @@
-From: Michael Tokarev <mjt@tls.msk.ru>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: [ANNOUNCE] ipset 6.2 released
-Date: Tue, 29 Mar 2011 18:08:23 +0400
-Message-ID: <4D91E7D7.3070000@msgid.tls.msk.ru>
-References: <alpine.DEB.2.00.1103272124170.3535@blackhole.kfki.hu>
+Date: Tue, 29 Mar 2011 21:23:57 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1103292123001.8329@blackhole.kfki.hu>
+References: <alpine.DEB.2.00.1103272124170.3535@blackhole.kfki.hu> <4D91E7D7.3070000@msgid.tls.msk.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1103272124170.3535@blackhole.kfki.hu>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <4D91E7D7.3070000@msgid.tls.msk.ru>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Michael Tokarev <mjt@tls.msk.ru>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-27.03.2011 23:30, Jozsef Kadlecsik wrote:
-> Hi,
-> 
-> I'm happy to announce ipset 6.2.
+On Tue, 29 Mar 2011, Michael Tokarev wrote:
 
-ipset-6.2/kernel/net/netfilter/ipset/Kconfig file
-appears to be some net/netfilter/Kconfig file from
-linux source tree (from one directory level up),
-patched with NETFILTER_XT_SET.  It gets included
-into itself recursively.
+> ipset-6.2/kernel/net/netfilter/ipset/Kconfig file
+> appears to be some net/netfilter/Kconfig file from
+> linux source tree (from one directory level up),
+> patched with NETFILTER_XT_SET.  It gets included
+> into itself recursively.
 
-Thanks!
+Yes, you are right, I fixed it in the ipset git tree. Thanks!
 
-/mjt
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
