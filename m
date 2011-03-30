@@ -1,39 +1,47 @@
-From: Bruno Deschamps <deepjm@gmail.com>
-Subject: Iproute2 SNAT SIP VoIP
-Date: Wed, 30 Mar 2011 16:55:53 -0300
-Message-ID: <AANLkTinPEik0KQ5EU+noy6Y5RAq97qWwR-oJn51y-P_h@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Ipset counters question
+Date: Wed, 30 Mar 2011 22:17:30 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1103302215160.12949@blackhole.kfki.hu>
+References: <4D91B511.3040005@univ-nantes.fr>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:date:message-id:subject:from:to
-         :content-type;
-        bh=uGx/yc/J9bd+lfC8ZMMN3FKtM//r6poeOgdZXbQt4WY=;
-        b=Pa3AdWFusDtfXtjDI+fFgf3a704M2B+QJRGqo5SxW06W1jZyYodtn4XvxD0RUPiAMF
-         Ch3e9pv0Wdv5kvwbyFk29WiqN2p0JiO23fY+ZBobZ+y1FzdloKcVkazWofki3UKuQhBv
-         P/jlx/VLyerZEXXQGn6XH6sqOccOCugZu+b+Q=
+In-Reply-To: <4D91B511.3040005@univ-nantes.fr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Jean-Philippe Menil <jean-philippe.menil@univ-nantes.fr>
+Cc: netfilter@vger.kernel.org
 
-Hello
-I'm having some problems using iproute2 and iptables with SNAT to a
-SIP server(VoIP)
+On Tue, 29 Mar 2011, Jean-Philippe Menil wrote:
 
-My network structure is as follows:
-eth0 - LAN
-eth1 - Link1
-eth2 - LINK2
+> basiclly, i'm working on a captive portal, who add some rules in
+> PRE/POSTROUTING mangle table when a user is fully authenticated.
+> $IPTABLES -t mangle -N OUT-AUTH
+> $IPTABLES -t mangle -A PREROUTING -j OUT-AUTH
+> $IPTABLES -t mangle -N IN-AUTH
+> $IPTABLES -t mangle -A POSTROUTING -j IN-AUTH
+> 
+> and the following rules are append when an user is authenticate:
+> $IPTABLES -t mangle -A OUT-AUTH -s $IP -m mac --mac-source $IP -j MARK
+> --set-mark 10
+> $IPTABLES -t mangle -A IN-AUTH -d $IP -j ACCEPT
+> 
+> I dicovered ipset, and begin to play with it.
+> If my understand of is correct, i can add:
+> 
+> ipset -N TEST macipmap --network 192.168.100.0/24
+> $IPTABLES -t mangle -A IN-AUTH -m set --set TEST src,dst -j ACCEPT
+> $IPTABLES -t mangle -A OUT-AUTH -m set --set TEST src,dst -j MARK --set-mark
+> 10
 
-By default the output for the SIP is made by link1. When falls the
-first link I do aSNAT for leaving for my destination link2.
-What happens is that when it happens I monitor the network interface
-eth2 with tcpdump and it still leaving the source as the link1 link2
-and not as it should be. Evenas I mark the target 0x2 table mangle and
-a SNAT in nat table
-
-The modules are active ip_conntrack_sip and ip_nat_sip
-
-Someone has been there?
+The set match for the bitmap:ip,mac (macipmap) type can check the *source* 
+MAC address only. It is documented in the manpage.
+ 
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
