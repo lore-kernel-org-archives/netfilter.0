@@ -1,47 +1,37 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Ipset counters question
-Date: Wed, 30 Mar 2011 22:17:30 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1103302215160.12949@blackhole.kfki.hu>
-References: <4D91B511.3040005@univ-nantes.fr>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Iproute2 SNAT SIP VoIP
+Date: Wed, 30 Mar 2011 22:18:26 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1103302212430.14889@obet.zrqbmnf.qr>
+References: <AANLkTinPEik0KQ5EU+noy6Y5RAq97qWwR-oJn51y-P_h@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D91B511.3040005@univ-nantes.fr>
+In-Reply-To: <AANLkTinPEik0KQ5EU+noy6Y5RAq97qWwR-oJn51y-P_h@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jean-Philippe Menil <jean-philippe.menil@univ-nantes.fr>
+To: Bruno Deschamps <deepjm@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-On Tue, 29 Mar 2011, Jean-Philippe Menil wrote:
+On Wednesday 2011-03-30 21:55, Bruno Deschamps wrote:
 
-> basiclly, i'm working on a captive portal, who add some rules in
-> PRE/POSTROUTING mangle table when a user is fully authenticated.
-> $IPTABLES -t mangle -N OUT-AUTH
-> $IPTABLES -t mangle -A PREROUTING -j OUT-AUTH
-> $IPTABLES -t mangle -N IN-AUTH
-> $IPTABLES -t mangle -A POSTROUTING -j IN-AUTH
-> 
-> and the following rules are append when an user is authenticate:
-> $IPTABLES -t mangle -A OUT-AUTH -s $IP -m mac --mac-source $IP -j MARK
-> --set-mark 10
-> $IPTABLES -t mangle -A IN-AUTH -d $IP -j ACCEPT
-> 
-> I dicovered ipset, and begin to play with it.
-> If my understand of is correct, i can add:
-> 
-> ipset -N TEST macipmap --network 192.168.100.0/24
-> $IPTABLES -t mangle -A IN-AUTH -m set --set TEST src,dst -j ACCEPT
-> $IPTABLES -t mangle -A OUT-AUTH -m set --set TEST src,dst -j MARK --set-mark
-> 10
+>The modules are active ip_conntrack_sip and ip_nat_sip
 
-The set match for the bitmap:ip,mac (macipmap) type can check the *source* 
-MAC address only. It is documented in the manpage.
- 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+There have been numerous fixes to the SIP modules. It is advised to 
+update the kernel, especially since you seem to be running a terribly 
+outdated one.
+
+>By default the output for the SIP is made by link1. When falls the
+>first link I do aSNAT for leaving for my destination link2.
+
+That would break the datagram stream, because the globally visible
+tuple will no longer be the same.
+
+>What happens is that when it happens I monitor the network interface
+>eth2 with tcpdump and it still leaving the source as the link1 link2
+>and not as it should be. Evenas I mark the target 0x2 table mangle and
+>a SNAT in nat table
+
+NAT is applied to a NF connection, and all its packets. Since the
+pseudo connection does not end / a new NFCT does not start, there
+will be no automatic update of the tuples.
