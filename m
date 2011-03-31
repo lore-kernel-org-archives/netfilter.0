@@ -1,89 +1,103 @@
-From: Eric Wilde <ewilde@gntrains.com>
-Subject: Missing VPN Packets
-Date: Thu, 31 Mar 2011 15:23:59 -0400
-Message-ID: <4.3.1.2.20110331132002.022b28a0@jump-gate>
+From: Jean-Philippe Menil <jean-philippe.menil@univ-nantes.fr>
+Subject: Re: Ipset counters question
+Date: Thu, 31 Mar 2011 21:55:03 +0200
+Message-ID: <4D94DC17.4040906@univ-nantes.fr>
+References: <4D91B511.3040005@univ-nantes.fr> <alpine.DEB.2.00.1103302215160.12949@blackhole.kfki.hu> <4D94224B.4050408@univ-nantes.fr> <alpine.DEB.2.00.1103312005580.16579@blackhole.kfki.hu> <4D94D06C.6070201@univ-nantes.fr> <alpine.DEB.2.00.1103312121170.16841@blackhole.kfki.hu>
+Reply-To: jean-philippe.menil@univ-nantes.fr
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=gntrains.com;
-        h=date:from:to:subject:message-id:mime-version:content-type;
-        s=key1; bh=9Spq1Cmbxr+GLwUmhineOsvW8w8=;
-        b=HJZPt2n73UuWEcSx98JBXSRdrbSlT3XfS1kJlOWjtmMJ3Z7NBDJOXghraGerfBgJgqTrO6qNGdvK7UlXS2gQsw==
+In-Reply-To: <alpine.DEB.2.00.1103312121170.16841@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter@vger.kernel.org
 
-I have a gateway server which is SNATed through my ISP's edge router.
-The system is running CentOS 5.5 and the kernel version is
-2.6.18-194.11.1.el5-i686.
+Le 31/03/2011 21:24, Jozsef Kadlecsik a =E9crit :
+> On Thu, 31 Mar 2011, Jean-Philippe Menil wrote:
+>
+>> Let me explain, in iptables, i have this in a mangle chain:
+>>
+>> Chain WD_BG_Outgoing (1 references)
+>>   pkts bytes target     prot opt in     out     source destination
+>>   238K   18M MARK       all  --  *      *       192.168.10.255 0.0.0=
+=2E0/0
+>> MAC F0:7B:CB:8C:6C:6F MARK set 0x2
+>>   196K   12M MARK       all  --  *      *       192.168.11.214 0.0.0=
+=2E0/0
+>> MAC 00:25:00:4E:E3:B7 MARK set 0x2
+>>   9436 3210K MARK       all  --  *      *       192.168.10.195 0.0.0=
+=2E0/0
+>> MAC F0:7B:CB:52:3D:BE MARK set 0x2
+>>   289K   68M MARK       all  --  *      *       192.168.11.211 0.0.0=
+=2E0/0
+>> MAC 00:22:69:3D:4C:13 MARK set 0x2
+>>   710K   40M MARK       all  --  *      *       192.168.10.34 0.0.0.=
+0/0
+>> MAC C8:0A:A9:45:E5:3D MARK set 0x2
+>> 1605K   93M MARK       all  --  *      *       192.168.11.155 0.0.0.=
+0/0
+>> MAC 00:26:6C:5A:0C:0A MARK set 0x2
+>> 81534   14M MARK       all  --  *      *       192.168.11.136 0.0.0.=
+0/0
+>> MAC 00:0F:B0:D6:1D:19 MARK set 0x2
+>>   420K   26M MARK       all  --  *      *       192.168.11.149 0.0.0=
+=2E0/0
+>> MAC 00:24:21:44:FB:40 MARK set 0x2
+>> 13128 3437K MARK       all  --  *      *       192.168.10.186 0.0.0.=
+0/0
+>> MAC 00:26:5E:27:8C:33 MARK set 0x2
+>>
+>> --snip--
+>>
+>> If i use ipset, with rules like these:
+>> ipset -N WEBAUTHIP bitmap:ip,mac --network 192.168.10.0/24
+>> iptables -t mangle -I WD_BG_Outgoing -m set --set WEBAUTHIP src -j A=
+CCEPT
+>>
+>> And add clients with ipset -A WEBAUTHIP ip,mac
+>>
+>> If i list my mangle chain (WD_BG_Outgoing), i will see only the coun=
+ters for
+>> the WEBAUTHIP match-set,
+>> Chain WD_BG_Outgoing (0 references)
+>>   pkts bytes target     prot opt in     out     source destination
+>>      111M     475M ACCEPT     all  --  *      *       0.0.0.0/0    0=
+=2E0.0.0/0
+>> match-set WEBAUTHIP src
+>>
+>> and i can't anymore check the counters by ip of my clients
+>
+> The rules are collapsed into a single rule, so there are no more
+> individual counters. That's a tradeof and you have to decide which is=
+ more
+> important: less rules or counters.
+>
+> Best regards,
+> Jozsef
+> -
+> E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+> Address : KFKI Research Institute for Particle and Nuclear Physics
+>            H-1525 Budapest 114, POB. 49, Hungary
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-On this server, I have set up a PPTP VPN connection to a remote
-server using pptp.  If I default route traffic from the server out
-through the VPN pseudo-device that is created by pptp (e.g. ppp2),
-everything works fine.  For example, I can ping, view Web pages from
-the browser, etc.
+That's what i tought, and i needed to be sure.
 
-Next, I set up a special rule in rt_tables for iproute2 that looks
-like this:
+As i can miss the counters for the moment, i will kept my rules.
+But as i'm very intereted by ipset, i will think to do otherwise.
 
-        .
-        .
-        .
-   201     vpn.marked
+Thanks a lot.
 
-Then I route all of the packets that are marked with the firewall
-mark value of one, through the VPN server, something like this:
+Regards.
 
-   /sbin/ip route add default via 195.12.34.56 dev ppp2 table vpn.marked
-   /sbin/ip route flush cache
-   /sbin/ip rule add fwmark 1 table vpn.marked
-
-Next, I use iptables to mark packets from systems that are networked
-to the gateway server (these systems have the gateway server set as
-their gateway, in their routing tables, and their traffic is normally
-routed out to the world through the gateway server and the ISP's
-edge router).  The marking looks like this:
-
-   /sbin/iptables -N VPN_TUNNEL -t mangle
-   # Allow our DNS servers.
-   /sbin/iptables -A VPN_TUNNEL -t mangle -d 151.203.0.84 -j RETURN
-   /sbin/iptables -A VPN_TUNNEL -t mangle -d 204.122.16.8 -j RETURN
-   /sbin/iptables -A VPN_TUNNEL -t mangle -d 216.231.41.2 -j RETURN
-   # Mark the packet for tunneling.
-   /sbin/iptables -A VPN_TUNNEL -t mangle -j MARK --set-mark 1
-   # Add each of the systems that are to be routed through the VPN tunnel.
-   /sbin/iptables -A PREROUTING -t mangle -i eth0 -s 192.168.1.84 -j VPN_TUNNEL
-   /sbin/iptables -A PREROUTING -t mangle -i eth1 -s 192.168.11.4 -j VPN_TUNNEL
-
-The PPP up script adds the following rules for the VPN tunnel
-whenever PPP brings the tunnel up:
-
-   /sbin/iptables -I POSTROUTING -t nat -o ppp2 -j MASQUERADE
-   /sbin/iptables -I INPUT -i ppp2 -m state \
-        --state RELATED,ESTABLISHED -j ACCEPT
-
-At this point, I have observed with Wireshark all traffic from the
-systems that are to be routed through the tunnel, to be actually
-going out the tunnel.  I have also observed with Wireshark what I
-believe to be the answers from the outside world coming back in.
-
-I have added logging to every one of the tables and I can see the
-inbound packets arriving.  They make it to the NAT PREROUTING table
-and then seem to fall off the face of the earth.  The tunneled
-systems never see the result of pings or other network requests.
-
-An lsmod of the loaded kernel modules shows:
-
-   ip_conntrack
-   ip_conntrack_pptp
-   ip_nat
-   ip_nat_pptp
-
-Anybody got any ideas about where the packets went?  My guess is
-that their disappearance is related to masquerading on top of SNAT
-but, hey, what do I know?
-
-                                Eric Wilde
-
-
+--=20
+Jean-Philippe Menil - P=F4le r=E9seau Service IRTS
+DSI Universit=E9 de Nantes
+jean-philippe.menil@univ-nantes.fr
+Tel : 02.53.48.49.27 - Fax : 02.53.48.49.09
