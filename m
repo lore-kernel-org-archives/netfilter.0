@@ -1,54 +1,31 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: selective routing of port 80
-Date: Thu, 31 Mar 2011 19:50:15 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1103311949010.32006@obet.zrqbmnf.qr>
-References: <AANLkTi=fVGwx-XeQg0DJofvehGG3RkneRnwg2J1Tmy3_@mail.gmail.com>
+From: "Michael D. Berger" <m_d_berger_1900@yahoo.com>
+Subject: repeated local ephemeral to 80
+Date: Thu, 31 Mar 2011 18:04:20 +0000 (UTC)
+Message-ID: <in2fn4$ksm$1@dough.gmane.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTi=fVGwx-XeQg0DJofvehGG3RkneRnwg2J1Tmy3_@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: ahnkle <ahnkle+netfilter@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Thursday 2011-03-31 18:50, ahnkle wrote:
+On my CentOS box that I use mainly as a web server, I have iptables
+set to log and reject anything that I don't expect.  So lately,
+I have getting things like this:
 
->Hi,
->I have a temporary webserver I want to access from the internet.
->
->internet========router======gateway
->                                   |
->                                   =====webserver
->
->Above is my setup. I want to check that what I am doing is suitable,
->and to check for pitfalls.
->
->Gateway is default gateway for all devices on local network: it
->provides dns & dhcp.
->
->Port 80 is forwarded by the router to webserver. I marked returning
->packets, and route just packets returning from port 80 to the router.
->
->I have used
->
->      iptables -A OUTPUT -t mangle -i eth0 -p tcp -s <local network> -j ACCEPT
->      iptables -A OUTPUT -t mangle -i eth0 -p tcp --sport 80 -j MARK
->--set-mark 0x1
->
->to mark returning http packets.
->
->Then using iproute2:
->
->      echo "1 HTTP" >> /etc/iproute2/rt_tables
->      echo 1 > /proc/sys/net/ipv4/conf/all/rp_filter
->      echo 1 > /proc/sys/net/ipv4/conf/eth0/rp_filter
->
->      ip route add default via <router ip> dev eth0 table HTTP
->      ip rule add from all fwmark 0x1 table HTTP
->
->Is this a good solution, or is this flawed?
 
-As long as you avoid address clashes for any given directly-connected
-host pair that suits it fine.
+Mar 29 17:27:20 mbrc20 kernel: IPT-DROP IN= OUT=lo SRC=192.168.9.20 
+DST=192.168.9.20 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=46910 DF PROTO=TCP 
+SPT=56624 DPT=80 WINDOW=32792 RES=0x00 SYN URGP=0 OPT 
+(0204400C0402080A4A26F7A50000000001030307) UID=0
+
+that on at least one occasion repeated for every few seconds for
+more than three hours.  The ephemeral source port keeps changing in an 
+irregular manner.
+
+Any suggestions?
+
+Thanks,
+Mike
+
