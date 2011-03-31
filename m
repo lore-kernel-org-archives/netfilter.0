@@ -1,58 +1,71 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: [PATCH] IPVS Bug, Null ptr in ip_vs_ctl.c ip_vs_genl_dump_daemons().
-Date: Thu, 31 Mar 2011 10:32:15 +0900
-Message-ID: <1301535135-4288-2-git-send-email-horms@verge.net.au>
-References: <1301535135-4288-1-git-send-email-horms@verge.net.au>
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1301535135-4288-1-git-send-email-horms@verge.net.au>
-Sender: netdev-owner@vger.kernel.org
+From: Jean-Philippe Menil <jean-philippe.menil@univ-nantes.fr>
+Subject: Re: Ipset counters question
+Date: Thu, 31 Mar 2011 08:42:19 +0200
+Message-ID: <4D94224B.4050408@univ-nantes.fr>
+References: <4D91B511.3040005@univ-nantes.fr> <alpine.DEB.2.00.1103302215160.12949@blackhole.kfki.hu>
+Reply-To: jean-philippe.menil@univ-nantes.fr
+Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <alpine.DEB.2.00.1103302215160.12949@blackhole.kfki.hu>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
-Cc: Hans Schillstrom <hans@schillstrom.com>, Julian Anastasov <ja@ssi.bg>, Patrick McHardy <kaber@trash.net>, Simon Horman <horms@verge.net.au>, Hans Schillstrom <hans.schillstrom@ericsson.com>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter@vger.kernel.org
 
-From: Hans Schillstrom <hans.schillstrom@ericsson.com>
+Le 30/03/2011 22:17, Jozsef Kadlecsik a =E9crit :
+> On Tue, 29 Mar 2011, Jean-Philippe Menil wrote:
+>
+>> basiclly, i'm working on a captive portal, who add some rules in
+>> PRE/POSTROUTING mangle table when a user is fully authenticated.
+>> $IPTABLES -t mangle -N OUT-AUTH
+>> $IPTABLES -t mangle -A PREROUTING -j OUT-AUTH
+>> $IPTABLES -t mangle -N IN-AUTH
+>> $IPTABLES -t mangle -A POSTROUTING -j IN-AUTH
+>>
+>> and the following rules are append when an user is authenticate:
+>> $IPTABLES -t mangle -A OUT-AUTH -s $IP -m mac --mac-source $IP -j MA=
+RK
+>> --set-mark 10
+>> $IPTABLES -t mangle -A IN-AUTH -d $IP -j ACCEPT
+>>
+>> I dicovered ipset, and begin to play with it.
+>> If my understand of is correct, i can add:
+>>
+>> ipset -N TEST macipmap --network 192.168.100.0/24
+>> $IPTABLES -t mangle -A IN-AUTH -m set --set TEST src,dst -j ACCEPT
+>> $IPTABLES -t mangle -A OUT-AUTH -m set --set TEST src,dst -j MARK --=
+set-mark
+>> 10
+> The set match for the bitmap:ip,mac (macipmap) type can check the *so=
+urce*
+> MAC address only. It is documented in the manpage.
+>
+> Best regards,
+> Jozsef
+> -
+> E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+> Address : KFKI Research Institute for Particle and Nuclear Physics
+>            H-1525 Budapest 114, POB. 49, Hungary
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Hi,
 
-ipvsadm -ln --daemon will trigger a Null pointer exception because
-ip_vs_genl_dump_daemons() uses skb_net() instead of skb_sknet().
+thanks to clarify this point.
+I need to update my rules in consequence, and re-read the manpages.
 
-To prevent others from NULL ptr a check is made in ip_vs.h skb_net().
+What about counters?
 
-Signed-off-by: Hans Schillstrom <hans.schillstrom@ericsson.com>
-Signed-off-by: Simon Horman <horms@verge.net.au>
----
- include/net/ip_vs.h            |    2 +-
- net/netfilter/ipvs/ip_vs_ctl.c |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+Regards.
 
-diff --git a/include/net/ip_vs.h b/include/net/ip_vs.h
-index 30b49ed..4d1b71a 100644
---- a/include/net/ip_vs.h
-+++ b/include/net/ip_vs.h
-@@ -52,7 +52,7 @@ static inline struct net *skb_net(const struct sk_buff *skb)
- 	 */
- 	if (likely(skb->dev && skb->dev->nd_net))
- 		return dev_net(skb->dev);
--	if (skb_dst(skb)->dev)
-+	if (skb_dst(skb) && skb_dst(skb)->dev)
- 		return dev_net(skb_dst(skb)->dev);
- 	WARN(skb->sk, "Maybe skb_sknet should be used in %s() at line:%d\n",
- 		      __func__, __LINE__);
-diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index 33733c8..ae47090 100644
---- a/net/netfilter/ipvs/ip_vs_ctl.c
-+++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -3120,7 +3120,7 @@ nla_put_failure:
- static int ip_vs_genl_dump_daemons(struct sk_buff *skb,
- 				   struct netlink_callback *cb)
- {
--	struct net *net = skb_net(skb);
-+	struct net *net = skb_sknet(skb);
- 	struct netns_ipvs *ipvs = net_ipvs(net);
- 
- 	mutex_lock(&__ip_vs_mutex);
--- 
-1.7.4.1
+--=20
+Jean-Philippe Menil - P=F4le r=E9seau Service IRTS
+DSI Universit=E9 de Nantes
+jean-philippe.menil@univ-nantes.fr
+Tel : 02.53.48.49.27 - Fax : 02.53.48.49.09
 
