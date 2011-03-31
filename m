@@ -1,37 +1,30 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Iproute2 SNAT SIP VoIP
-Date: Wed, 30 Mar 2011 22:18:26 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1103302212430.14889@obet.zrqbmnf.qr>
-References: <AANLkTinPEik0KQ5EU+noy6Y5RAq97qWwR-oJn51y-P_h@mail.gmail.com>
-Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTinPEik0KQ5EU+noy6Y5RAq97qWwR-oJn51y-P_h@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+From: Simon Horman <horms@verge.net.au>
+Subject: [GIT PULL nf-2.6] IPVS
+Date: Thu, 31 Mar 2011 10:32:14 +0900
+Message-ID: <1301535135-4288-1-git-send-email-horms@verge.net.au>
+Return-path: <lvs-devel-owner@vger.kernel.org>
+Sender: lvs-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Bruno Deschamps <deepjm@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Cc: Hans Schillstrom <hans@schillstrom.com>, Julian Anastasov <ja@ssi.bg>, Patrick McHardy <kaber@trash.net>, Simon Horman <horms@verge.net.au>
 
-On Wednesday 2011-03-30 21:55, Bruno Deschamps wrote:
+Hi Patrick,
 
->The modules are active ip_conntrack_sip and ip_nat_sip
+please consider pulling
+git://git.kernel.org/pub/scm/linux/kernel/git/horms/lvs-test-2.6.git for-patrick
+to get the following fix from Hans.
 
-There have been numerous fixes to the SIP modules. It is advised to 
-update the kernel, especially since you seem to be running a terribly 
-outdated one.
+I have based this patch on net-2.6/master as nf-2.6/master seems a little
+out of date (i.e. pre 2.6.39-rc1). Please let me know if you would
+prefer me to use a different base. Alternatively, feel free to apply
+the single patch by hand.
 
->By default the output for the SIP is made by link1. When falls the
->first link I do aSNAT for leaving for my destination link2.
+Hans Schillstrom (1):
+      IPVS Bug, Null ptr in ip_vs_ctl.c ip_vs_genl_dump_daemons().
 
-That would break the datagram stream, because the globally visible
-tuple will no longer be the same.
-
->What happens is that when it happens I monitor the network interface
->eth2 with tcpdump and it still leaving the source as the link1 link2
->and not as it should be. Evenas I mark the target 0x2 table mangle and
->a SNAT in nat table
-
-NAT is applied to a NF connection, and all its packets. Since the
-pseudo connection does not end / a new NFCT does not start, there
-will be no automatic update of the tuples.
+ include/net/ip_vs.h            |    2 +-
+ net/netfilter/ipvs/ip_vs_ctl.c |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
