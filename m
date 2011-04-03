@@ -1,30 +1,38 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: [1.3.6] "Couldn't find match `string'"?
-Date: Sat, 2 Apr 2011 15:22:57 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1104021519230.30801@obet.zrqbmnf.qr>
-References: <qbr8p69r6r6favuori53ct8bepfg8mefeo@4ax.com> <alpine.LNX.2.01.1103311426250.3599@obet.zrqbmnf.qr> <mt1ep6hsroebifmo1h99k3pss1lndge97c@4ax.com> <AANLkTimzHfHm4iZwpMiHUn8rdUYndW5yXdDCGujuN6d_@mail.gmail.com>
+From: Richard Hartmann <richih.mailinglist@gmail.com>
+Subject: Catching ICMP/TCP unreachable and triggering a command as a consequence?
+Date: Sun, 3 Apr 2011 22:33:09 +0200
+Message-ID: <AANLkTi=UFNi5=UJ7U5otpNuJNvRbQr3SVJ5-vsOE8Ghj@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AANLkTimzHfHm4iZwpMiHUn8rdUYndW5yXdDCGujuN6d_@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:from:date:message-id:subject:to
+         :content-type;
+        bh=Vj7A6ho+hjMP2x+jJYtrxNOfCo0t/bkeRnov91JaefY=;
+        b=hi90d7iuJbGxL+M98S+IzYOkjom3T1s9AFaZUW/bnr+8XpGO0BzJTt34YCq7oJeTdt
+         jDno0r4OSachABAu2uT0YX/ZDxmbYhgZ/cccrJHahOc/Ezf494rJI3geeJMODV2yKAI3
+         FXgLA1t5sVseD2LaUZoWrdBJTTg/vN7p+Brqo=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Pandu Poluan <pandu@poluan.info>
-Cc: Gilles <gilles.ganault@free.fr>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Saturday 2011-04-02 14:16, Pandu Poluan wrote:
+Hi all,
 
->(sorry for top-posting; Gmail mobile)
+I thought it would be possible to execute a script using iptables, but
+according to the relevant man pages, this is not the case. I still
+hope someone on this list can help me.
 
-(I don't buy that. If Gmail *was* so limited that you can't navigate 
-down, it would make more sense to place the initial cursor at the end. 
-Since it does not do that, one is meant to edit.)
+Basically, I need to catch ICMP unreachable and/or TCP connection
+(attempts) that are timing out and execute a script when either
+condition is met. This does sound trivial if one knows where to look,
+but I simply can't find a way to do so.
 
->iptables -- or, to be precise, netfilter -- is an in-kernel facility; 
->it does not have a configuration file.
 
-Xtables, not Netfilter.
+The actual goal is to escalate this condition to a custom user-space
+process which can set up overlay routing.
 
-You are right that kernel facilities do not have configuration files -- 
-userspace programs do. As such, to be precise: iptables.
+
+Any and all help appreciated,
+Richard
