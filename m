@@ -1,38 +1,31 @@
-From: Richard Hartmann <richih.mailinglist@gmail.com>
-Subject: Catching ICMP/TCP unreachable and triggering a command as a consequence?
-Date: Sun, 3 Apr 2011 22:33:09 +0200
-Message-ID: <AANLkTi=UFNi5=UJ7U5otpNuJNvRbQr3SVJ5-vsOE8Ghj@mail.gmail.com>
+From: Brian G <unixman83@gmail.com>
+Subject: Transparent proxy with IPv6 on Linux [REDIRECT target is gone]
+Date: Mon, 04 Apr 2011 00:13:05 -0500
+Message-ID: <4D995361.9030301@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:from:date:message-id:subject:to
-         :content-type;
-        bh=Vj7A6ho+hjMP2x+jJYtrxNOfCo0t/bkeRnov91JaefY=;
-        b=hi90d7iuJbGxL+M98S+IzYOkjom3T1s9AFaZUW/bnr+8XpGO0BzJTt34YCq7oJeTdt
-         jDno0r4OSachABAu2uT0YX/ZDxmbYhgZ/cccrJHahOc/Ezf494rJI3geeJMODV2yKAI3
-         FXgLA1t5sVseD2LaUZoWrdBJTTg/vN7p+Brqo=
+        h=domainkey-signature:message-id:date:from:user-agent:mime-version:to
+         :subject:content-type:content-transfer-encoding;
+        bh=Q/tNcInbuOBUENljrK3rfT6gUum33yxI7dqLRY05xqw=;
+        b=iPNbI3PhltmTZgNcJOF9PNOAxsRQRWwvVg+aiQyJjhdCo4A4CxeC44334osmCf8Zev
+         hV6wTvdrpEpdTC18zSxZPg1F++0//OVCodKh8TaKuVRJoYrpMqU0k+pLx5Rs2Ryq+TJj
+         EnfjLru1G+L9TkDc3HMaCBhJ/n2rMoz5Hfffo=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi all,
+Hi, on Linux with netfilter: previously I could do "iptables -j 
+REDIRECT" to create a IPv4 transparent proxy. However, this is 
+unsupported on IPv6.
 
-I thought it would be possible to execute a script using iptables, but
-according to the relevant man pages, this is not the case. I still
-hope someone on this list can help me.
+How can I achieve this? iptables6 removed the REDIRECT target because it 
+does not support Network Address Translation in IPv6.
 
-Basically, I need to catch ICMP unreachable and/or TCP connection
-(attempts) that are timing out and execute a script when either
-condition is met. This does sound trivial if one knows where to look,
-but I simply can't find a way to do so.
+I need the transparent proxy to work with IPv6 under Linux. How are 
+people doing this?
 
-
-The actual goal is to escalate this condition to a custom user-space
-process which can set up overlay routing.
-
-
-Any and all help appreciated,
-Richard
+- Brian
