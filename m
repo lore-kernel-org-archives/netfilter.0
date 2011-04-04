@@ -1,25 +1,29 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Transparent proxy with IPv6 on Linux [REDIRECT target is gone]
-Date: Mon, 4 Apr 2011 13:29:29 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1104041329220.18491@obet.zrqbmnf.qr>
-References: <4D995361.9030301@gmail.com>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [GIT PULL nf-2.6] IPVS
+Date: Mon, 04 Apr 2011 15:27:22 +0200
+Message-ID: <4D99C73A.7010101@trash.net>
+References: <1301535135-4288-1-git-send-email-horms@verge.net.au>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4D995361.9030301@gmail.com>
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Brian G <unixman83@gmail.com>
-Cc: netfilter@vger.kernel.org
+Return-path: <lvs-devel-owner@vger.kernel.org>
+In-Reply-To: <1301535135-4288-1-git-send-email-horms@verge.net.au>
+Sender: lvs-devel-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Simon Horman <horms@verge.net.au>
+Cc: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, Hans Schillstrom <hans@schillstrom.com>, Julian Anastasov <ja@ssi.bg>
 
-On Monday 2011-04-04 07:13, Brian G wrote:
+On 31.03.2011 03:32, Simon Horman wrote:
+> Hi Patrick,
+> 
+> please consider pulling
+> git://git.kernel.org/pub/scm/linux/kernel/git/horms/lvs-test-2.6.git for-patrick
+> to get the following fix from Hans.
+> 
+> I have based this patch on net-2.6/master as nf-2.6/master seems a little
+> out of date (i.e. pre 2.6.39-rc1). Please let me know if you would
+> prefer me to use a different base. Alternatively, feel free to apply
+> the single patch by hand.
 
-> Hi, on Linux with netfilter: previously I could do "iptables -j REDIRECT" to
-> create a IPv4 transparent proxy. However, this is unsupported on IPv6.
->
-> How can I achieve this? iptables6 removed the REDIRECT target because it does
-> not support Network Address Translation in IPv6.
-
-(Nothing was removed, it was never there.)
-
+I'll apply this by hand to avoid possible unnecessary merge commits.
+I've also updated nf-2.6.git to net-2.6.git.
