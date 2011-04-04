@@ -1,79 +1,25 @@
-From: William Fitzgerald <wfitzgerald@4c.ucc.ie>
-Subject: Re: Allow/deny with iptables or application?
-Date: Mon, 04 Apr 2011 11:53:26 +0100
-Message-ID: <4D99A326.8090906@4c.ucc.ie>
-References: <7a7jp6dtkhk47rls5q1u0kgg6tp4mgh0v6@4ax.com>
-Reply-To: wfitzgerald@4c.ucc.ie
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Transparent proxy with IPv6 on Linux [REDIRECT target is gone]
+Date: Mon, 4 Apr 2011 13:29:29 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1104041329220.18491@obet.zrqbmnf.qr>
+References: <4D995361.9030301@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <7a7jp6dtkhk47rls5q1u0kgg6tp4mgh0v6@4ax.com>
+In-Reply-To: <4D995361.9030301@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Gilles <gilles.ganault@free.fr>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Brian G <unixman83@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-A defense in depth strategy is best.
+On Monday 2011-04-04 07:13, Brian G wrote:
 
-For example, if you are blocking access based on source IP address then apply the appropriate 
-gateway firewall rules to permit intended SSH traffic only.
-
-For example (there are many ways this can be achieved, others may provide different examples):
-iptables -P FORWARD DROP
-iptables -A FORWARD -i $externIface -s $permitedIPrange/address -d $SSHserverIPAddress -p tcp 
---dport 22 -j ACCEPT
-
-where the $ prefix you replace with your specific details.
-
-One could also use TCPWrappers locally installed on the (Linux-based) SSH server in conjunction with 
-the gateway firewall.
-
-For example,
-
-/etc/hosts.deny
-ALL : ALL
-
-/etc/hosts.allow
-sshd: $permitedIPrange/address
-
-There are other areas that iptables can be beneficial to prevent DoS, brute force attacks and login 
-attempts to an SSH server and other servers/systems. Look at the recent module and (conn)limit 
-module as starting points. There are numerous examples on the Web providing example rule syntax and 
-documentation for these scenarios.
-
-Best of luck,
-Will
-
-
-
-
-On 04/04/11 11:30, Gilles wrote:
-> Hello
+> Hi, on Linux with netfilter: previously I could do "iptables -j REDIRECT" to
+> create a IPv4 transparent proxy. However, this is unsupported on IPv6.
 >
-> I started reading about iptables, and was wondering which solution is
-> better for applications such as SSH or Asterisk that provide an
-> allow/deny feature: Should I use the application or iptables? Is
-> iptables more efficient?
->
-> Thank you.
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> How can I achieve this? iptables6 removed the REDIRECT target because it does
+> not support Network Address Translation in IPv6.
 
--- 
-_________________________________________
-William M. Fitzgerald (MSc, PhD)
-Postdoctoral Research Fellow,
-Cork Constraint Computation Centre,
-Computer Science Dept.,
-University College Cork,
-Cork,
-Ireland.
------------------------------------------
-www.williamfitzgerald.net
-www.linkedin.com/in/williamfitzgerald
-http://4c.ucc.ie/web/people.jsp?id=143
-________________________________________
+(Nothing was removed, it was never there.)
+
