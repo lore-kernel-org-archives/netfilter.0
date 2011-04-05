@@ -1,66 +1,46 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: iptables enough to handle brute force attacks?
-Date: Tue, 5 Apr 2011 08:52:29 -0500
-Message-ID: <20110405135229.GA32551@cardinal>
-References: <pvplp6t1hsoea6n5sriuna0375k5s79pmm@4ax.com>
-Reply-To: netfilter@vger.kernel.org
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: Unable to use connbytes
+Date: Tue, 05 Apr 2011 20:41:54 +0100
+Message-ID: <1302032514.1773.859.camel@andybev>
+References: <BANLkTikOa2JciJ6Lhuh721Oo0qdY50tFKg@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <pvplp6t1hsoea6n5sriuna0375k5s79pmm@4ax.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1302032517; bh=Jm03hhLHPFa1/nce1tD+nDgEz7zDCvUPzqpOB
+	Qi87dU=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
+	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=GtV2HyCS
+	7HSXUVexXFbC61ULMc9nu8k0CoVqnQSK2Vk2YhMSSzfmxF46sTwIUPMQOUzNpsgEgAr
+	dIFAqIJVv669/U45uFhQZSW0w3q0Zk+hd8G6jH2vlDX7zYvnDyO6bGKevOBZ5v1JmcV
+	hIUehY9kk8YQc5InUVJwOcfZxdPmU=
+In-Reply-To: <BANLkTikOa2JciJ6Lhuh721Oo0qdY50tFKg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Supratik Goswami <supratiksekhar@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-On Tue, Apr 05, 2011 at 12:02:38PM +0200, Gilles wrote:
-> I need to connect an Asterisk server to the Net so that 1) remote
-> users can register and 2) Internet users can ring any extension on
-> the server.
+On Tue, 2011-04-05 at 19:18 +0530, Supratik Goswami wrote:
+> I checked the connbyes support in my Kernel and it shows the following output.
 > 
-> I'll use iptables to prevent hackers from trying to register.
+> [root@gateway bin]# lsmod |grep connbytes
+> xt_connbytes            6465  0
+> x_tables               17349  11
+> xt_connbytes,xt_MARK,xt_multiport,xt_CLASSIFY,xt_length,xt_state,ipt_REDIRECT,ipt_TOS,xt_tcpudp,iptable_nat,ip_tables
+
+Good, looks like the *kernel* module is loaded.
+
+> When I am trying to use it with iptables I am getting the following error:
 > 
-> I was wondering what solution to use to block brute force attempts:
-> 
-> - just rely on iptables since it offers a way, eg. "iptables -I INPUT
-> -p udp --dport 5060 -m state --state NEW -m recent --update --seconds
-> 600 --hitcount 2 -j DROP"
+> iptables v1.3.5: Couldn't load match
+> `connbytes':/lib/iptables/libipt_connbytes.so: cannot open shared
+> object file: No such file or directory
 
-2 in 600 might be low for --hitcount, high for --seconds. NEW is just 
-wrong, because attacks will be ESTABLISHED. See also:
-    http://www.spinics.net/lists/netfilter/msg49598.html
-    http://www.spinics.net/lists/netfilter/msg49660.html
-    http://www.spinics.net/lists/netfilter/msg49676.html
+However, looks like your iptables is missing the userspace bit. Not sure
+why that would be, but that's a pretty old iptables version - was the
+connbytes match available back then? Would be worth trying to upgrade
+iptables.
 
-My ruleset is working, at least to block the SIP attackers, but I 
-still don't know if a non-whitelisted Internet SIP user could ring 
-extensions. From discussion with a SIP expert, I think even my 
---hitcount of 9 in 30 or 18 in 45 might still be too low.
+Andy
 
-But no more log floods, which is good, my main goal.
 
-> - add Brute Force Detection (BFD), which is a shell script that is
-> called by CRON (ie. every minute at most)
-> www.rfxn.com/projects/brute-force-detection/
-> 
-> - add SSHGuard, which is apparently a stand-alone binary program that
-> doesn't rely on CRON
-> www.sshguard.net
-> 
-> This is on an embedded Linux, so there isn't enough RAM to run
-> Python-based fail2ban.
-
-On an embedded system, I would use a remote syslog server anyway. Let 
-your log parsing be done on a less-restricted machine, and have it 
-ssh in and sudo to do what needs to be done.
-
-> If you have installed Asterisk and iptables, which solution did you
-> end up using?
-
-But as mentioned in one of the links above, I don't like log parsing 
-in general. Just experiment with the -m recent rules and try some 
-calls.
--- 
-    Offlist mail to this address is discarded unless
-    "/dev/rob0" or "not-spam" is in Subject: header
