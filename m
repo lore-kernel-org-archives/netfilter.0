@@ -1,46 +1,66 @@
-From: Supratik Goswami <supratiksekhar@gmail.com>
-Subject: Unable to use connbytes
-Date: Tue, 5 Apr 2011 19:18:36 +0530
-Message-ID: <BANLkTikOa2JciJ6Lhuh721Oo0qdY50tFKg@mail.gmail.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: iptables enough to handle brute force attacks?
+Date: Tue, 5 Apr 2011 08:52:29 -0500
+Message-ID: <20110405135229.GA32551@cardinal>
+References: <pvplp6t1hsoea6n5sriuna0375k5s79pmm@4ax.com>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:from:date:message-id:subject:to
-         :content-type;
-        bh=IDpBxj08JF7PYFF9iqif8o4x0AbSASHbxv6L8BGHFJo=;
-        b=oMSEyGiG+f3HqcuHfVyFy40CxD+XbL82xAmOxPOPPYtVQEpMRIsvMp9wR+iHZllsLH
-         40l1XcLy+Qlsj9LuvWP6WtG7mvUlZIHpU42n2YTy6bbGZlqOzT8eQsSNS3Ftx+gCv+to
-         YGBecboorDiXpIXW3YpYDmOO4FYgYuRlXV254=
+Content-Disposition: inline
+In-Reply-To: <pvplp6t1hsoea6n5sriuna0375k5s79pmm@4ax.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello
+On Tue, Apr 05, 2011 at 12:02:38PM +0200, Gilles wrote:
+> I need to connect an Asterisk server to the Net so that 1) remote
+> users can register and 2) Internet users can ring any extension on
+> the server.
+> 
+> I'll use iptables to prevent hackers from trying to register.
+> 
+> I was wondering what solution to use to block brute force attempts:
+> 
+> - just rely on iptables since it offers a way, eg. "iptables -I INPUT
+> -p udp --dport 5060 -m state --state NEW -m recent --update --seconds
+> 600 --hitcount 2 -j DROP"
 
-I am using CentOS 5.5, kernel version: kernel-2.6.18-194.3.1.el5,
-iptables-1.3.5-5.3.el5_4.1.
+2 in 600 might be low for --hitcount, high for --seconds. NEW is just 
+wrong, because attacks will be ESTABLISHED. See also:
+    http://www.spinics.net/lists/netfilter/msg49598.html
+    http://www.spinics.net/lists/netfilter/msg49660.html
+    http://www.spinics.net/lists/netfilter/msg49676.html
 
-I checked the connbyes support in my Kernel and it shows the following output.
+My ruleset is working, at least to block the SIP attackers, but I 
+still don't know if a non-whitelisted Internet SIP user could ring 
+extensions. From discussion with a SIP expert, I think even my 
+--hitcount of 9 in 30 or 18 in 45 might still be too low.
 
-[root@gateway bin]# lsmod |grep connbytes
-xt_connbytes            6465  0
-x_tables               17349  11
-xt_connbytes,xt_MARK,xt_multiport,xt_CLASSIFY,xt_length,xt_state,ipt_REDIRECT,ipt_TOS,xt_tcpudp,iptable_nat,ip_tables
+But no more log floods, which is good, my main goal.
 
+> - add Brute Force Detection (BFD), which is a shell script that is
+> called by CRON (ie. every minute at most)
+> www.rfxn.com/projects/brute-force-detection/
+> 
+> - add SSHGuard, which is apparently a stand-alone binary program that
+> doesn't rely on CRON
+> www.sshguard.net
+> 
+> This is on an embedded Linux, so there isn't enough RAM to run
+> Python-based fail2ban.
 
-When I am trying to use it with iptables I am getting the following error:
+On an embedded system, I would use a remote syslog server anyway. Let 
+your log parsing be done on a less-restricted machine, and have it 
+ssh in and sudo to do what needs to be done.
 
-iptables v1.3.5: Couldn't load match
-`connbytes':/lib/iptables/libipt_connbytes.so: cannot open shared
-object file: No such file or directory
+> If you have installed Asterisk and iptables, which solution did you
+> end up using?
 
-
-Can you please tell me what I am missing here ?
-
---
-Warm Regards
-
-Supratik
+But as mentioned in one of the links above, I don't like log parsing 
+in general. Just experiment with the -m recent rules and try some 
+calls.
+-- 
+    Offlist mail to this address is discarded unless
+    "/dev/rob0" or "not-spam" is in Subject: header
