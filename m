@@ -1,58 +1,31 @@
-From: Stephen Johnson <stephen.johnson@arkansas.gov>
+From: Marek Kierdelewicz <marek@piasta.pl>
 Subject: Re: Problems with trying to use the TEE target
-Date: Thu, 07 Apr 2011 14:41:09 -0500
-Message-ID: <1302205269.16650.27.camel@sjohnson.state.ar.us>
+Date: Thu, 7 Apr 2011 22:03:44 +0200
+Message-ID: <20110407220344.4e6b7be2@catus>
 References: <1302199190.16650.23.camel@sjohnson.state.ar.us>
-	 <20110407205721.39e28be8@catus>
+	<20110407205721.39e28be8@catus>
+	<1302205269.16650.27.camel@sjohnson.state.ar.us>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20110407205721.39e28be8@catus>
+In-Reply-To: <1302205269.16650.27.camel@sjohnson.state.ar.us>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Marek Kierdelewicz <marek@piasta.pl>
+To: Stephen Johnson <stephen.johnson@arkansas.gov>
 Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Thu, 2011-04-07 at 13:57 -0500, Marek Kierdelewicz wrote:
-> >Greeting,
-> 
-> Hi,
-> 
-> >I trying to use the TEE target but I keep getting the errors even using
-> >the example commandi on the ipxt_TEE man page.
-> >I'm current using iptables-1.4.10 that I've compiled and installed on
-> >the server. The linux kernel is 2.6.32.
-> 
-> Try installing xtables-addons:
-> http://xtables-addons.sourceforge.net/
-> 
-> It contains TEE module.
-> 
-> best regards,
-> Marek Kierdelewicz
+Hi,
 
-What does the xtables-addons have to do with it? Iptables 1.4.10 has the
-TEE target already.
+>What does the xtables-addons have to do with it? Iptables 1.4.10 has
+>the TEE target already.
 
-        iptables -t mangle -A PREROUTING -i eth0 -j TEE --help
-        iptables v1.4.10
-        
-        Usage: iptables -[AD] chain rule-specification [options]
-        ...
-        TEE target options:
-          --gateway IPADDR    Route packet via the gateway given by
-        address
-          --oif NAME          Include oif in route calculation
+It has userland iptables plugin. You're still missing kernel
+module. Try doing:
 
-When I try to use the TEE target I get the error.
+modprobe xt_DNETMAP
+and
+lsmod|grep _TEE
 
-        iptables: No chain/target/match by that name.
--- 
-Stephen L Johnson  <stephen.johnson@arkansas.gov>
-Unix Systems Administrator / DNS Hostmaster
-Department of Information Systems
-State of Arkansas
-501-682-4339
-
-
+Best regards,
+Marek Kierdelewicz
