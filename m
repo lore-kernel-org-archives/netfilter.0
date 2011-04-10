@@ -1,51 +1,48 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: Howto get ulog-prefix with ulogd-1.24 + sqlite3 backend?
-Date: Sun, 10 Apr 2011 12:29:11 +0200
-Message-ID: <09d05a28-a963-4bb5-9d6c-94347923e909@email.android.com>
-References: <BANLkTingf+1nKHejX9XHcyep0DOHA__ghw@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset 6.3 released
+Date: Sun, 10 Apr 2011 17:40:17 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1104101734180.3240@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BANLkTingf+1nKHejX9XHcyep0DOHA__ghw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Clemens Eisserer <linuxhippy@gmail.com>, netfilter@vger.kernel.org, Clemens Eisserer <linuxhippy@gmail.com>, netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
 Hi,
 
+I'm happy to announce ipset 6.3. The number of changes is relatively 
+small, with one important fix in the SET target with --del-set option. As 
+it was non-functional, if you need the SET target with --del-set then 
+please upgrade.
 
-Clemens Eisserer <linuxhippy@gmail.com> a =C3=A9crit=C2=A0:
+Kernel part changes:
+ - ipset/Kconfig was a mixed up kernel config file, fixed (Michael 
+   Tokarev)
+ - bitmap:ip,mac type requires "src" for MAC, enforce it
+ - whitespace fixes: some space before tab slipped in
+ - set match and SET target fixes (bugs reported by Lennert Buytenhek)
 
->Hi,
->
->We try to use ulog for traffic accounting in an university project.
->
->First we tried ulogd-2.0beta4 + pgsql backend, but even under moderate
->load the database couldn't keep pace with the amount of requests.
+Userspace changes:
+ - Testsuite changes: keep temporary files
+ - bitmap:ip,mac type requires "src" for MAC: manpage is updated to 
+   reflect the change
+ - Testsuite checks added (SET target and dir parameter checks)
 
-Interesting. Could you share some information?
+The syntax checking of the set match/target extensions of ip6?tables was 
+also fixed: if you want to run the testsuite in ipset, you need iptables
+from the git tree.
 
-Do you use flat or multitable SQL schemas?
-What is the insert rate?=20
+You can download the source code from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
 
->I thought about using ulog2 with sqlite, however in TODO theres an
->entry about making ulogd2 compatible with squlite, so I guessed sqlite
->is not yet supported with ulogd2?
->
->Then we switched back to ulog-1.24 + squlite3, which works perfectly.
->It can handle 100mbit/s torrent traffic at about ~50% CPU load.
->However in sqlite's ulog table, the ulog-prefix is not stored. Is
->there any way to get it stored - to be able to track which rule caused
->the log enrty?
->
->Also, conntrack is supported in ulogd2. Is this also true for
->ulogd1.2? I couldn't find specific docs about that.
-
-No. Support for conntrack has been added in Ulogd2.
-
-BR,=20
-
---=20
-Envoy=C3=A9 de mon t=C3=A9l=C3=A9phone Android avec K-9 Mail. Excusez l=
-a bri=C3=A8vet=C3=A9.
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
