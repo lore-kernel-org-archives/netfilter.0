@@ -1,32 +1,42 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: iptables - external IP address on internal interface?
-Date: Mon, 11 Apr 2011 16:53:46 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1104111653340.26159@obet.zrqbmnf.qr>
-References: <054F5B1BB94BD943B243C3B39B4F568D016E42CE@victory.Erudine.local>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Howto get ulog-prefix with ulogd-1.24 + sqlite3 backend?
+Date: Mon, 11 Apr 2011 16:57:39 +0200
+Message-ID: <4DA316E3.5050309@netfilter.org>
+References: <BANLkTingf+1nKHejX9XHcyep0DOHA__ghw@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <054F5B1BB94BD943B243C3B39B4F568D016E42CE@victory.Erudine.local>
+In-Reply-To: <BANLkTingf+1nKHejX9XHcyep0DOHA__ghw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Tony Rogers <Tony.Rogers@erudine.com>
+Content-Type: text/plain; charset="us-ascii"
+To: Clemens Eisserer <linuxhippy@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-On Monday 2011-04-11 16:04, Tony Rogers wrote:
+On 09/04/11 14:13, Clemens Eisserer wrote:
+> Hi,
+> 
+> We try to use ulog for traffic accounting in an university project.
+> 
+> First we tried ulogd-2.0beta4 + pgsql backend, but even under moderate
+> load the database couldn't keep pace with the amount of requests.
+> I thought about using ulog2 with sqlite, however in TODO theres an
+> entry about making ulogd2 compatible with squlite, so I guessed sqlite
+> is not yet supported with ulogd2?
 
->
->I have a question for the iptables experts out there.
->
->I previously asked this question on this forum here.
->
->But no satisfactory answer was given.
->
->I have an iptables firewall, where *eth0* is the *internal interface*,
->and _eth1 is the external interface_. eth1 is connected directly to the
->internet, and this box is also a NAT router.
->
->I am seeing traffic sourced from external IP addresses on eth0 (internal
->interface) - how can this be? (see logs below)
+The support for sqlite3 was recently added in the git tree. Get a git
+snapshot. I have tested it here. I'd appreciate if you let me know how
+it goes.
 
-A misconfigured host.
+> Then we switched back to ulog-1.24 + squlite3, which works perfectly.
+> It can handle 100mbit/s torrent traffic at about ~50% CPU load.
+> However in sqlite's ulog table, the ulog-prefix is not stored. Is
+> there any way to get it stored - to be able to track which rule caused
+> the log enrty?
+
+You mean the log prefix? The ulogd2 version includes it for sqlite3.
+
+> Also, conntrack is supported in ulogd2. Is this also true for
+> ulogd1.2? I couldn't find specific docs about that.
+
+No ulogd1.2 does not support conntrack, only packet-based logging.
