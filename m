@@ -1,151 +1,235 @@
-From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
-Subject: Re: load balanced between tunnel VPN and an Normal Link Internet
-Date: Mon, 11 Apr 2011 17:20:41 -0300
-Message-ID: <BANLkTinWE_Uc_DoSXhHRr1w-T1Zx7ib1kw@mail.gmail.com>
-References: <BANLkTimW+nay6YkXxWnHtP6GKv6Eopac7w@mail.gmail.com>
-	<1302549669.1551.20.camel@andybev>
+From: "Tony Rogers" <Tony.Rogers@erudine.com>
+Subject: RE: iptables - external IP address on internal interface?
+Date: Tue, 12 Apr 2011 10:20:57 +0100
+Message-ID: <054F5B1BB94BD943B243C3B39B4F568D016E42F1@victory.Erudine.local>
+References: <054F5B1BB94BD943B243C3B39B4F568D016E42CE@victory.Erudine.local> <1302544375.1551.11.camel@andybev>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1302549669.1551.20.camel@andybev>
+Content-class: urn:content-classes:message
+In-Reply-To: <1302544375.1551.11.camel@andybev>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: Andrew Beverley <andy@andybev.com>
 Cc: netfilter@vger.kernel.org
 
-Thank for all tips!
 
-now it's working!
+As requested - output of "iptables -nL"
 
-maybe I wasn't very clear in my question.
+I have sanitized this to a certain extent:
 
-I have two ISPs in my branch office. one only for VPN ( ISP1 ) and
-other ( ISP2 ) for Traffic Internet ( include port 80 )
+192.168.0.2 is a VoIP box (and proven not to be the source of any of
+this traffic).
 
-my firewall gateway is the ISP1  where is my VPN.so to reach my aim
-has been necessary created more one table route with iproute2. thus
-it's possible forward packages to destination is port 80 by ISP2. the
-rule below makes this.
+<EXT_IP> is the external IP of the box.
 
-/sbin/iptables -t mangle -A PREROUTING -s 0/0 -d ! 128.2.0.0/16 -p tcp
---dport 80 -j MARK --set-mark 1
+<ACCESS_IP_1> through <ACCESS_IP_7> are static addresses giving access
+to certain services.
 
-ip rule del fwmark 1
-ip route flush table internet
-ip rule add fwmark 1 table internet prio 20
-ip route add default via 200.108.139.1 table internet ( ISP2 )
-ip route flush cache
+<ACCESS_NET> is a static network address giving access to certain
+services.
 
-when destination it's different at the 128.2.0.0/16 ( my head office
-inside network where are my web servers ) would have be forward by
-ISP2.
+------------------------------------------------------------------------
+-----------------------------
 
-the problem it was flow data to 128.2.0.0 too had been be by ISP2
-insted tunnel VPN.
+Chain INPUT (policy DROP)
+target     prot opt source               destination         
+DROP       tcp  --  0.0.0.0/0            0.0.0.0/0           tcp
+dpts:1026:1028 
+DROP       udp  --  0.0.0.0/0            0.0.0.0/0           udp
+dpts:1026:1028 
+DROP       udp  --  0.0.0.0/0            0.0.0.0/0           udp dpt:67 
+DROP       udp  --  0.0.0.0/0            0.0.0.0/0           udp dpt:68 
+BADTCP     all  --  0.0.0.0/0            0.0.0.0/0           
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           state
+RELATED,ESTABLISHED 
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           state NEW 
+DROP       all  --  127.0.0.0/8          0.0.0.0/0           state NEW 
+DROP       all  --  0.0.0.0/0            127.0.0.0/8         state NEW 
+ACCEPT    !icmp --  0.0.0.0/0            0.0.0.0/0           state NEW 
+XTACCESS   all  --  0.0.0.0/0            0.0.0.0/0           state NEW 
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0           icmp type 0
 
-I've compiled my firewall again and all it's Working..... I don't know
-where it was the ERROR but now the Traffic to destination 128.2.0.0
-port 80
-it's be forwar to tunel VPN.
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0           icmp type 3
+
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0           icmp type 5
+
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0           icmp type
+11 
+ACCEPT     icmp --  0.0.0.0/0            0.0.0.0/0           icmp type 8
+limit: avg 1/sec burst 5 
+LOG        all  --  0.0.0.0/0            0.0.0.0/0           limit: avg
+10/min burst 5 LOG flags 0 level 4 prefix `INPUT ' 
+ACCEPT     udp  --  0.0.0.0/0            224.0.0.0/4         
+ACCEPT     2    --  0.0.0.0/0            224.0.0.0/4         
+DROP       all  --  0.0.0.0/0            224.0.0.0/4         
+DROP       all  --  224.0.0.0/4          0.0.0.0/0           
+DROP       all  --  240.0.0.0/4          0.0.0.0/0           
+
+Chain FORWARD (policy DROP)
+target     prot opt source               destination         
+BADTCP     all  --  0.0.0.0/0            0.0.0.0/0           
+TCPMSS     tcp  --  0.0.0.0/0            0.0.0.0/0           tcp
+flags:0x06/0x02 TCPMSS clamp to PMTU 
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           state
+RELATED,ESTABLISHED 
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           state NEW 
+DROP       all  --  127.0.0.0/8          0.0.0.0/0           state NEW 
+DROP       all  --  0.0.0.0/0            127.0.0.0/8         state NEW 
+ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0           state NEW 
+PORTFWACCESS  all  --  0.0.0.0/0            0.0.0.0/0           state
+NEW 
+LOG        all  --  0.0.0.0/0            0.0.0.0/0           limit: avg
+10/min burst 5 LOG flags 0 level 4 prefix `OUTPUT ' 
+ACCEPT     udp  --  <ACCESS_IP_7>         192.168.0.2         udp
+dpt:5060 
+ACCEPT     udp  --  <ACCESS_IP_7>         192.168.0.2         udp
+dpts:1024:65535 
+ACCEPT     tcp  --  <ACCESS_NET>/28       192.168.0.2         tcp dpt:80
+
+ACCEPT     tcp  --  <ACCESS_IP_3>         192.168.0.2         tcp dpt:80
+
+ACCEPT     tcp  --  <ACCESS_IP_4>         192.168.0.2         tcp dpt:80
+
+ACCEPT     tcp  --  <ACCESS_IP_3>         192.168.0.2         tcp dpt:22
+
+ACCEPT     tcp  --  <ACCESS_NET>/28       192.168.0.2         tcp dpt:22
+
+ACCEPT     tcp  --  <ACCESS_IP_4>         192.168.0.2         tcp dpt:22
+
+ACCEPT     tcp  --  <ACCESS_IP_4>         192.168.0.2         tcp dpt:20
+
+ACCEPT     tcp  --  <ACCESS_IP_4>         192.168.0.2         tcp dpt:21
 
 
-thank
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain BADTCP (2 references)
+target     prot opt source               destination         
+PSCAN      tcp  --  0.0.0.0/0            0.0.0.0/0           tcp
+flags:0x3F/0x29 
+PSCAN      tcp  --  0.0.0.0/0            0.0.0.0/0           tcp
+flags:0x3F/0x00 
+PSCAN      tcp  --  0.0.0.0/0            0.0.0.0/0           tcp
+flags:0x3F/0x01 
+PSCAN      tcp  --  0.0.0.0/0            0.0.0.0/0           tcp
+flags:0x06/0x06 
+PSCAN      tcp  --  0.0.0.0/0            0.0.0.0/0           tcp
+flags:0x03/0x03 
+NEWNOTSYN  tcp  --  0.0.0.0/0            0.0.0.0/0           tcp
+flags:!0x17/0x02 state NEW 
+
+Chain LOG_DROP (0 references)
+target     prot opt source               destination         
+LOG        all  --  0.0.0.0/0            0.0.0.0/0           limit: avg
+10/min burst 5 LOG flags 0 level 4 
+DROP       all  --  0.0.0.0/0            0.0.0.0/0           
+
+Chain LOG_REJECT (0 references)
+target     prot opt source               destination         
+LOG        all  --  0.0.0.0/0            0.0.0.0/0           limit: avg
+10/min burst 5 LOG flags 0 level 4 
+REJECT     all  --  0.0.0.0/0            0.0.0.0/0           reject-with
+icmp-port-unreachable 
+
+Chain NEWNOTSYN (1 references)
+target     prot opt source               destination         
+LOG        all  --  0.0.0.0/0            0.0.0.0/0           limit: avg
+10/min burst 5 LOG flags 0 level 4 prefix `NEW not SYN? ' 
+DROP       all  --  0.0.0.0/0            0.0.0.0/0           
+
+Chain PORTFWACCESS (1 references)
+target     prot opt source               destination         
+
+Chain PSCAN (5 references)
+target     prot opt source               destination         
+LOG        tcp  --  0.0.0.0/0            0.0.0.0/0           limit: avg
+10/min burst 5 LOG flags 0 level 4 prefix `TCP Scan? ' 
+LOG        udp  --  0.0.0.0/0            0.0.0.0/0           limit: avg
+10/min burst 5 LOG flags 0 level 4 prefix `UDP Scan? ' 
+LOG        icmp --  0.0.0.0/0            0.0.0.0/0           limit: avg
+10/min burst 5 LOG flags 0 level 4 prefix `ICMP Scan? ' 
+LOG        all  -f  0.0.0.0/0            0.0.0.0/0           limit: avg
+10/min burst 5 LOG flags 0 level 4 prefix `FRAG Scan? ' 
+DROP       all  --  0.0.0.0/0            0.0.0.0/0           
+
+Chain XTACCESS (1 references)
+target     prot opt source               destination         
+ACCEPT     tcp  --  0.0.0.0/0            <EXT_IP>        tcp dpt:20
+state NEW 
+ACCEPT     tcp  --  0.0.0.0/0            <EXT_IP>        tcp dpt:21
+state NEW 
+ACCEPT     tcp  --  0.0.0.0/0            <EXT_IP>        tcp dpt:80
+state NEW 
+ACCEPT     tcp  --  <ACCESS_IP_5>       <EXT_IP>        tcp dpt:5000
+state NEW 
+ACCEPT     udp  --  <ACCESS_IP_7>         192.168.0.2         udp
+dpts:1024:65535 
+ACCEPT     udp  --  <ACCESS_IP_7>         192.168.0.2         udp
+dpt:5060 
+ACCEPT     tcp  --  <ACCESS_IP_3>         192.168.0.2         state NEW
+tcp dpt:22 
+ACCEPT     tcp  --  <ACCESS_IP_4>         192.168.0.2         state NEW
+tcp dpt:22 
+ACCEPT     tcp  --  <ACCESS_IP_3>         <EXT_IP>        state NEW tcp
+dpt:223 
+ACCEPT     tcp  --  <ACCESS_IP_1>         192.168.0.2         state NEW
+tcp dpt:22 
+ACCEPT     tcp  --  <ACCESS_IP_1>         <EXT_IP>        state NEW tcp
+dpt:81 
+ACCEPT     tcp  --  <ACCESS_IP_1>         <EXT_IP>        state NEW tcp
+dpt:223 
+ACCEPT     tcp  --  <ACCESS_IP_2>          <EXT_IP>        state NEW tcp
+dpt:22 
+ACCEPT     tcp  --  <ACCESS_IP_3>         <EXT_IP>        state NEW tcp
+dpt:10000 
+ACCEPT     tcp  --  <ACCESS_IP_1>         <EXT_IP>        state NEW tcp
+dpt:10000 
+ACCEPT     tcp  --  <ACCESS_IP_1>         <EXT_IP>        state NEW tcp
+dpt:5901 
+ACCEPT     tcp  --  <ACCESS_IP_3>         <EXT_IP>        state NEW tcp
+dpt:5901 
+ACCEPT     tcp  --  <ACCESS_IP_1>         <EXT_IP>        state NEW tcp
+dpt:5900 
+ACCEPT     tcp  --  <ACCESS_IP_3>         <EXT_IP>        state NEW tcp
+dpt:5900 
+
+------------------------------------------------------------------------
+-------------------------------------------------------
+
+ 
+
+-----Original Message-----
+From: Andrew Beverley [mailto:andy@andybev.com] 
+Sent: 11 April 2011 18:53
+To: Tony Rogers
+Cc: netfilter@vger.kernel.org
+Subject: Re: iptables - external IP address on internal interface?
+
+On Mon, 2011-04-11 at 15:04 +0100, Tony Rogers wrote:
+> I have a question for the iptables experts out there.
+> 
+> I previously asked this question on this forum here.
+> 
+> But no satisfactory answer was given.
+> 
+> I have an iptables firewall, where *eth0* is the *internal interface*,
+> and _eth1 is the external interface_. eth1 is connected directly to
+the
+> internet, and this box is also a NAT router.
+> 
+> I am seeing traffic sourced from external IP addresses on eth0
+(internal
+> interface) - how can this be? (see logs below)
+
+Can you post the iptables rules that you are using, in particular the
+NAT part? What IP address range are you using on the internal network?
+
+Andy
 
 
 
-
-
-
-
-
-
-
-
-Em 11 de abril de 2011 16:21, Andrew Beverley <andy@andybev.com> escrev=
-eu:
-> On Sun, 2011-04-10 at 15:55 -0300, Usu=E1rio do Sistema wrote:
->> Hello everyone, I'm new in this maillist and I would like receive he=
-lp
->> about my problem......
->>
->
-> Welcome.
->
->>
->> I have a Firewall ( with fwbuider - Red-Hat 5.6 ) in my branch offic=
-e
->> connected to my head office by openvpn. I'm with a problem when flow
->> data is to destination port 80 from my branch office to my head
->> office.
->>
->> in my branch office firewall has 3 device Ethernet:
->>
->> eth0 - inside network 192.100.100.0/24
->> eth1 - wan 1 VPN
->> eth2 - wan 2 only for Internet Traffic
->>
->> I'm marking all traffic for port 80 go out upon wan 2 - eth2.
->
-> Why are you doing this? The default route should do this for you.
->
->> =A0but,
->> it's a problem because when an user tries access an service at the
->> port 80 in my head office it isen't work!
->>
->> the firewall toward to eth2 insted to VPN the traffic from inside
->> network to my head office when destinatio is port 80. =A0I've try so=
-lve
->> this with rule below but it isen't work.occur the same problem.
->>
->> my head office inside network is 128.2.0.0/16 where I have my web
->> servers at the port 80.
->>
->> rules created in firewall branch office
->>
->> /sbin/iptables -t mangle -A PREROUTING -s 0/0 -d ! 128.2.0.0/16 -p t=
-cp
->> --dport 80 -j MARK --set-mark 1
->> ip rule del fwmark 1
->> ip route flush table internet
->> ip rule add fwmark 1 table internet prio 20
->> ip route add default via 200.108.139.1 table internet ( it's eth2 )
->> ip route flush cache
->
-> You shouldn't need to do any of the above. If you had your routing
-> tables correct, then any traffic for your head office network should =
-go
-> out on the VPN (eth1) and all other traffic (default) should go out o=
-n
-> eth2.
->
->> part from my route main table
->>
->> 128.2.0.0 =A0 =A0 =A0 192.168.200.101 255.255.0.0 =A0 =A0 UG =A0 =A0=
-0 =A0 =A0 =A00 =A0 =A0 =A0 =A00 tun0
->> 169.254.0.0 =A0 =A0 0.0.0.0 =A0 =A0 =A0 =A0 255.255.0.0 =A0 =A0 U =A0=
- =A0 0 =A0 =A0 =A00 =A0 =A0 =A0 =A00 eth3
->> 0.0.0.0 =A0 =A0 =A0 =A0 190.128.173.97 =A00.0.0.0 =A0 =A0 =A0 =A0 UG=
- =A0 =A00 =A0 =A0 =A00
->> 0 eth1 > where is my VPN
->>
->
-> If think it would help if you could post a diagram of your setup (wit=
-h
-> IP addresses) and your full routing table. I don't fully understand t=
-hat
-> table above. For example, what is 192.168.200.101, what is eth3, and
-> what is 190.128.173.97? I assume that 200.108.139.1 is your public IP
-> address?
->
->>
->> any Tip ?? I wish that packages from inside networ 192.100.100.0/24 =
-to
->> 128.2.0.0/16 port 80 go out for tun0 insted by eth2
->
-> Surely you want *any* traffic to 128.2.0.0/16 to go to tun0?
->
-> Andy
->
->
->
+------------------------
+This email was scanned by BitDefender.
