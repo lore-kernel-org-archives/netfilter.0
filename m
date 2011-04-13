@@ -1,36 +1,56 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: RE: Very strange ftp mget problem
-Date: Wed, 13 Apr 2011 15:06:35 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1104131504570.25539@obet.zrqbmnf.qr>
-References: <925A849792280C4E80C5461017A4B8A27D88F4@mail733.InfraSupportEtc.com> <925A849792280C4E80C5461017A4B8A27D88F5@mail733.InfraSupportEtc.com> <alpine.LNX.2.01.1104131417360.25539@obet.zrqbmnf.qr>
- <925A849792280C4E80C5461017A4B8A27D88F6@mail733.InfraSupportEtc.com>
+From: Sebastian Arcus <shop@open-t.co.uk>
+Subject: Fwd: Iptables, timestart and timestop arguments and daylight saving
+ time in UK
+Date: Wed, 13 Apr 2011 14:36:06 +0100
+Message-ID: <4DA5A6C6.7040404@open-t.co.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <925A849792280C4E80C5461017A4B8A27D88F6@mail733.InfraSupportEtc.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Greg Scott <GregScott@Infrasupport.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Wednesday 2011-04-13 14:55, Greg Scott wrote:
+Bump
 
->Interesting - checking some of the other places I tested from that did 
->not fail - one used 2.6.27, the other used 2.6.35.  Well, hang on a 
->second - I just went back through my notes from last week and it looks 
->like I also saw one hang with the 2.6.35 site as a destination.  I'll 
->do some more testing with this site.
+Anybody?
 
-It can occur if either side runs the old kernel. An intermediate router 
-should only affect it when TCP data is actively modified, such as by 
-NAT.
 
->Curious - the problem only seems to happen when copying from one 
->particular source.  Copying the same material from different sources 
->seemed to work properly.
->
->Other than bulk testing, is there a footprint to this problem I can 
->look for to compare a before/after scenario?
 
-tcpdump, and watch for packets that are not acknowledged.
+-------- Original Message --------
+Subject: Iptables, timestart and timestop arguments and daylight saving 
+time in UK
+Date: Tue, 29 Mar 2011 14:47:07 +0100
+From: Sebastian Arcus <shop@open-t.co.uk>
+To: netfilter@vger.kernel.org
+
+Hi all,
+
+The clock changed over the weekend in the UK by one hour (daylight
+saving time). I have a setup where I block some MAC addresses access to 
+the Internet based on time, using iptables, "timestart" and "timestop"
+arguments. The command is the following:
+
+iptables -A FORWARD -p ALL -o eth0 -m mac  --mac-source  $BLOCKED_MAC1 \
+    -m time --timestart 13:00 --timestop 12:00 -j DROP
+
+
+After the weekend, the server kept on blocking as per the old winter
+time. I checked the server time with the "date" command and the time on
+the client machine (Windows XP) - and in both places the clock is
+updated as per new time / summer time. The iptables on server kept on
+blocking according to winter time for two days. Even restarting the
+iptables script (which flushes the tables) didn't make a different.
+Finally, when I restarted the whole server, it started blocking
+according to new summer time. Here is the setup:
+
+Client: Windows XP Home
+Server: Slackware 13.0
+Kernel: 2.6.29.6
+Iptables: 1.4.3.2
+
+Is this a known bug in the kernel, or am I doing something wrong?
+
+Thanks for any contributions,
+
+Sebastian
