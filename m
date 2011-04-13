@@ -1,40 +1,42 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Problem with iptables -j TEE
-Date: Wed, 13 Apr 2011 14:16:39 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1104131413460.25539@obet.zrqbmnf.qr>
-References: <BANLkTik2sHtuWOr64ty4yQhjP5EYwD20pg@mail.gmail.com> <BANLkTik_H3PYFvWde5c2MOGtEeAdYvOz9Q@mail.gmail.com> <20110413141020.4d30dca1@catus>
+From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
+Subject: Load Balance with equalize
+Date: Wed, 13 Apr 2011 09:26:43 -0300
+Message-ID: <BANLkTi=GEruHV55FPViJJ=2zoTyUERuzzg@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20110413141020.4d30dca1@catus>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Marek Kierdelewicz <marek@piasta.pl>
-Cc: JOSE FELIX HERNANDEZ BARRIO <jose.hernandez@isthari.com>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Wednesday 2011-04-13 14:10, Marek Kierdelewicz wrote:
+Hello everyone, I'm deploy an test environment with load Balance in my
+Firewall using equalize as follow below
 
->Hi,
->
->>I'm trying to copy the incoming traffic by tcp to another host using
->>TEE.
->>My command:
->>iptables -t mangle -A PREROUTING -p tcp -j TEE --gateway 192.168.0.100
->>And the error:
->>iptables: No chain/target/match by that name.
->>any tip?
->
->Answer is in the thread from 8 days ago:
->http://www.spinics.net/lists/netfilter/msg50656.html
 
-And to summarize:
+I have two ISPs and one Inside network.
 
-xt_TEE requires either:
-   1. iptables >= 1.4.8 && kernel >= 2.6.35
-OR 2. iptables < 1.4.8 && kernel < 2.6.35 && xtables-addons (its mconfig 
-file may need to be adjusted)
+creating the load balance:
 
-because case 1's components only knows about xt_TEE revision 1, while 
-xt-a's is revision 0 (deliberately - to avoid clashes, r1 is in fact, 
-different).
+ip route add default scope global equalize nexthop via 200.247.209.65
+weight 1  nexthop via 201.72.12.1 weight 1
+
+Zeroing the ip_filter
+
+for eee in /proc/sys/net/ipv4/conf/*/rp_filter; do
+echo 0 > $eee
+done
+
+creating more one table
+
+ip route add default via  201.72.12.1  table telemar
+
+
+it's working! but no in my production environment.
+
+my question is: there is more parameter ,which, I have to set ? for
+exemplo, timers.
+
+
+
+thank
