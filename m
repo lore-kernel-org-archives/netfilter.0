@@ -1,46 +1,36 @@
-From: "Greg Scott" <GregScott@Infrasupport.com>
+From: Jan Engelhardt <jengelh@medozas.de>
 Subject: RE: Very strange ftp mget problem
-Date: Wed, 13 Apr 2011 07:55:20 -0500
-Message-ID: <925A849792280C4E80C5461017A4B8A27D88F6@mail733.InfraSupportEtc.com>
+Date: Wed, 13 Apr 2011 15:06:35 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1104131504570.25539@obet.zrqbmnf.qr>
 References: <925A849792280C4E80C5461017A4B8A27D88F4@mail733.InfraSupportEtc.com> <925A849792280C4E80C5461017A4B8A27D88F5@mail733.InfraSupportEtc.com> <alpine.LNX.2.01.1104131417360.25539@obet.zrqbmnf.qr>
+ <925A849792280C4E80C5461017A4B8A27D88F6@mail733.InfraSupportEtc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-class: urn:content-classes:message
+In-Reply-To: <925A849792280C4E80C5461017A4B8A27D88F6@mail733.InfraSupportEtc.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Jan Engelhardt <jengelh@medozas.de>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Greg Scott <GregScott@Infrasupport.com>
 Cc: netfilter@vger.kernel.org
 
-SW50ZXJlc3RpbmcgLSBjaGVja2luZyBzb21lIG9mIHRoZSBvdGhlciBwbGFjZXMgSSB0ZXN0ZWQg
-ZnJvbSB0aGF0IGRpZCBub3QgZmFpbCAtIG9uZSB1c2VkIDIuNi4yNywgdGhlIG90aGVyIHVzZWQg
-Mi42LjM1LiAgV2VsbCwgaGFuZyBvbiBhIHNlY29uZCAtIEkganVzdCB3ZW50IGJhY2sgdGhyb3Vn
-aCBteSBub3RlcyBmcm9tIGxhc3Qgd2VlayBhbmQgaXQgbG9va3MgbGlrZSBJIGFsc28gc2F3IG9u
-ZSBoYW5nIHdpdGggdGhlIDIuNi4zNSBzaXRlIGFzIGEgZGVzdGluYXRpb24uICBJJ2xsIGRvIHNv
-bWUgbW9yZSB0ZXN0aW5nIHdpdGggdGhpcyBzaXRlLiAgDQoNCkN1cmlvdXMgLSB0aGUgcHJvYmxl
-bSBvbmx5IHNlZW1zIHRvIGhhcHBlbiB3aGVuIGNvcHlpbmcgZnJvbSBvbmUgcGFydGljdWxhciBz
-b3VyY2UuICBDb3B5aW5nIHRoZSBzYW1lIG1hdGVyaWFsIGZyb20gZGlmZmVyZW50IHNvdXJjZXMg
-c2VlbWVkIHRvIHdvcmsgcHJvcGVybHkuICANCg0KT3RoZXIgdGhhbiBidWxrIHRlc3RpbmcsIGlz
-IHRoZXJlIGEgZm9vdHByaW50IHRvIHRoaXMgcHJvYmxlbSBJIGNhbiBsb29rIGZvciB0byBjb21w
-YXJlIGEgYmVmb3JlL2FmdGVyIHNjZW5hcmlvPw0KDQpUaGFua3MNCg0KLSBHcmVnDQoNCg0KLS0t
-LS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEphbiBFbmdlbGhhcmR0IFttYWlsdG86amVu
-Z2VsaEBtZWRvemFzLmRlXSANClNlbnQ6IFdlZG5lc2RheSwgQXByaWwgMTMsIDIwMTEgNzoyNyBB
-TQ0KVG86IEdyZWcgU2NvdHQNCkNjOiBuZXRmaWx0ZXJAdmdlci5rZXJuZWwub3JnDQpTdWJqZWN0
-OiBSZTogVmVyeSBzdHJhbmdlIGZ0cCBtZ2V0IHByb2JsZW0NCg0KT24gV2VkbmVzZGF5IDIwMTEt
-MDQtMTMgMTQ6MDYsIEdyZWcgU2NvdHQgd3JvdGU6DQoNCj5JJ20gcG9zdGluZyBoZXJlIGJlY2F1
-c2UgbWF5YmUgaXBfY29ubnRyYWNrX2Z0cCBtaWdodCBoYXZlIGEgcHJvYmxlbS7CoCBPciBpdA0K
-PmNvdWxkIGJlIGhhcmR3YXJlLi4uDQo+DQo+QW4gQVMvNDAwIGJlaGluZCB0aGUgZmlyZXdhbGwg
-c3RhcnRzIHVwIGEgYmF0Y2ggam9iIHJ1bm5pbmcgYSBzY3JpcHQgdGhhdCBkb2VzDQo+YW4gZnRw
-IG1nZXQgb2Ygc2V2ZXJhbCBkb3plbiBvciBtb3JlIGZpbGVzIGZyb20gYW4gZnRwIHNpdGUuwqAg
-VGhlIG1nZXQgaGFuZ3MNCj5hdCByYW5kb20gdGltZXMsIHNvbWV0aW1lcyBhbG1vc3QgaW1tZWRp
-YXRlbHksIG90aGVyIHRpbWVzIGFmdGVyIGNvcHlpbmcgwqBhcw0KPm1hbnkgYXMgYSBmZXcgaHVu
-ZHJlZCBmaWxlcy4NCj5bLi4uXQ0KPkJvdGggZncxIGFuZCBmdzIgYXJlIEhQIG1pbml0b3dlcnMs
-IGFib3V0IDQgeWVhcnMgb2xkIGJ5IG5vdy7CoCBJIGZvcmdldCB0aGUNCj5leGFjdCBoYXJkd2Fy
-ZSBtb2RlbHMuIEZ3MSBpcyBydW5uaW5nIGtlcm5lbCAyLjYuMTggYW5kIGZ3MiB1c2VzIGtlcm5l
-bCAyLjYuMjUNCj5vciBzby4NCg0KWW91ciBwb3N0aW5nIG9mICIyLjYuMTgiIGFuZCAiMi42LjI1
-IiBhbmQgInJhbmRvbSB0aW1lcyIgYW5kICJhbG1vc3QNCmltbWVkaWF0ZWx5IiAoYnV0IG5vdCBf
-dG90YWxseSBpbW1lZGlhdGVseV8gd2hpY2ggaXMgaW1wb3J0YW50KSBoaW50cw0KdG93YXJkcyB0
-aGlzIGJlaW5nIG9sZCBrZXJuZWxzIGhhdmluZyBhIHByb2JsZW0gd2l0aCBhbGwgdGhlICpBQ0sN
-CmZlYXR1cmVzIG9mIFRDUC4gQmVlbiB0aGVyZSwgc2VlbiBpdCwgYW5kIGl0IHdhcyByZXNvbHZl
-ZCBieSAyLjYuMjUncw0KdGltZWZyYW1lIGV2ZW4gaGVyZS4NCg==
+On Wednesday 2011-04-13 14:55, Greg Scott wrote:
+
+>Interesting - checking some of the other places I tested from that did 
+>not fail - one used 2.6.27, the other used 2.6.35.  Well, hang on a 
+>second - I just went back through my notes from last week and it looks 
+>like I also saw one hang with the 2.6.35 site as a destination.  I'll 
+>do some more testing with this site.
+
+It can occur if either side runs the old kernel. An intermediate router 
+should only affect it when TCP data is actively modified, such as by 
+NAT.
+
+>Curious - the problem only seems to happen when copying from one 
+>particular source.  Copying the same material from different sources 
+>seemed to work properly.
+>
+>Other than bulk testing, is there a footprint to this problem I can 
+>look for to compare a before/after scenario?
+
+tcpdump, and watch for packets that are not acknowledged.
