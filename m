@@ -1,40 +1,46 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Very strange ftp mget problem
-Date: Wed, 13 Apr 2011 14:27:25 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1104131417360.25539@obet.zrqbmnf.qr>
-References: <925A849792280C4E80C5461017A4B8A27D88F4@mail733.InfraSupportEtc.com> <925A849792280C4E80C5461017A4B8A27D88F5@mail733.InfraSupportEtc.com>
+From: "Greg Scott" <GregScott@Infrasupport.com>
+Subject: RE: Very strange ftp mget problem
+Date: Wed, 13 Apr 2011 07:55:20 -0500
+Message-ID: <925A849792280C4E80C5461017A4B8A27D88F6@mail733.InfraSupportEtc.com>
+References: <925A849792280C4E80C5461017A4B8A27D88F4@mail733.InfraSupportEtc.com> <925A849792280C4E80C5461017A4B8A27D88F5@mail733.InfraSupportEtc.com> <alpine.LNX.2.01.1104131417360.25539@obet.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <925A849792280C4E80C5461017A4B8A27D88F5@mail733.InfraSupportEtc.com>
+Content-class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="utf-8"
-To: Greg Scott <GregScott@Infrasupport.com>
+Content-Type: text/plain; charset="utf-8"
+To: Jan Engelhardt <jengelh@medozas.de>
 Cc: netfilter@vger.kernel.org
 
-On Wednesday 2011-04-13 14:06, Greg Scott wrote:
-
->I'm posting here because maybe ip_conntrack_ftp might have a problem.=C2=
-=A0 Or it
->could be hardware...
->
->An AS/400 behind the firewall starts up a batch job running a script t=
-hat does
->an ftp mget of several dozen or more files from an ftp site.=C2=A0 The=
- mget hangs
->at random times, sometimes almost immediately, other times after copyi=
-ng =C2=A0as
->many as a few hundred files.
->[...]
->Both fw1 and fw2 are HP minitowers, about 4 years old by now.=C2=A0 I =
-forget the
->exact hardware models. Fw1 is running kernel 2.6.18 and fw2 uses kerne=
-l 2.6.25
->or so.
-
-Your posting of "2.6.18" and "2.6.25" and "random times" and "almost
-immediately" (but not _totally immediately_ which is important) hints
-towards this being old kernels having a problem with all the *ACK
-features of TCP. Been there, seen it, and it was resolved by 2.6.25's
-timeframe even here.
+SW50ZXJlc3RpbmcgLSBjaGVja2luZyBzb21lIG9mIHRoZSBvdGhlciBwbGFjZXMgSSB0ZXN0ZWQg
+ZnJvbSB0aGF0IGRpZCBub3QgZmFpbCAtIG9uZSB1c2VkIDIuNi4yNywgdGhlIG90aGVyIHVzZWQg
+Mi42LjM1LiAgV2VsbCwgaGFuZyBvbiBhIHNlY29uZCAtIEkganVzdCB3ZW50IGJhY2sgdGhyb3Vn
+aCBteSBub3RlcyBmcm9tIGxhc3Qgd2VlayBhbmQgaXQgbG9va3MgbGlrZSBJIGFsc28gc2F3IG9u
+ZSBoYW5nIHdpdGggdGhlIDIuNi4zNSBzaXRlIGFzIGEgZGVzdGluYXRpb24uICBJJ2xsIGRvIHNv
+bWUgbW9yZSB0ZXN0aW5nIHdpdGggdGhpcyBzaXRlLiAgDQoNCkN1cmlvdXMgLSB0aGUgcHJvYmxl
+bSBvbmx5IHNlZW1zIHRvIGhhcHBlbiB3aGVuIGNvcHlpbmcgZnJvbSBvbmUgcGFydGljdWxhciBz
+b3VyY2UuICBDb3B5aW5nIHRoZSBzYW1lIG1hdGVyaWFsIGZyb20gZGlmZmVyZW50IHNvdXJjZXMg
+c2VlbWVkIHRvIHdvcmsgcHJvcGVybHkuICANCg0KT3RoZXIgdGhhbiBidWxrIHRlc3RpbmcsIGlz
+IHRoZXJlIGEgZm9vdHByaW50IHRvIHRoaXMgcHJvYmxlbSBJIGNhbiBsb29rIGZvciB0byBjb21w
+YXJlIGEgYmVmb3JlL2FmdGVyIHNjZW5hcmlvPw0KDQpUaGFua3MNCg0KLSBHcmVnDQoNCg0KLS0t
+LS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEphbiBFbmdlbGhhcmR0IFttYWlsdG86amVu
+Z2VsaEBtZWRvemFzLmRlXSANClNlbnQ6IFdlZG5lc2RheSwgQXByaWwgMTMsIDIwMTEgNzoyNyBB
+TQ0KVG86IEdyZWcgU2NvdHQNCkNjOiBuZXRmaWx0ZXJAdmdlci5rZXJuZWwub3JnDQpTdWJqZWN0
+OiBSZTogVmVyeSBzdHJhbmdlIGZ0cCBtZ2V0IHByb2JsZW0NCg0KT24gV2VkbmVzZGF5IDIwMTEt
+MDQtMTMgMTQ6MDYsIEdyZWcgU2NvdHQgd3JvdGU6DQoNCj5JJ20gcG9zdGluZyBoZXJlIGJlY2F1
+c2UgbWF5YmUgaXBfY29ubnRyYWNrX2Z0cCBtaWdodCBoYXZlIGEgcHJvYmxlbS7CoCBPciBpdA0K
+PmNvdWxkIGJlIGhhcmR3YXJlLi4uDQo+DQo+QW4gQVMvNDAwIGJlaGluZCB0aGUgZmlyZXdhbGwg
+c3RhcnRzIHVwIGEgYmF0Y2ggam9iIHJ1bm5pbmcgYSBzY3JpcHQgdGhhdCBkb2VzDQo+YW4gZnRw
+IG1nZXQgb2Ygc2V2ZXJhbCBkb3plbiBvciBtb3JlIGZpbGVzIGZyb20gYW4gZnRwIHNpdGUuwqAg
+VGhlIG1nZXQgaGFuZ3MNCj5hdCByYW5kb20gdGltZXMsIHNvbWV0aW1lcyBhbG1vc3QgaW1tZWRp
+YXRlbHksIG90aGVyIHRpbWVzIGFmdGVyIGNvcHlpbmcgwqBhcw0KPm1hbnkgYXMgYSBmZXcgaHVu
+ZHJlZCBmaWxlcy4NCj5bLi4uXQ0KPkJvdGggZncxIGFuZCBmdzIgYXJlIEhQIG1pbml0b3dlcnMs
+IGFib3V0IDQgeWVhcnMgb2xkIGJ5IG5vdy7CoCBJIGZvcmdldCB0aGUNCj5leGFjdCBoYXJkd2Fy
+ZSBtb2RlbHMuIEZ3MSBpcyBydW5uaW5nIGtlcm5lbCAyLjYuMTggYW5kIGZ3MiB1c2VzIGtlcm5l
+bCAyLjYuMjUNCj5vciBzby4NCg0KWW91ciBwb3N0aW5nIG9mICIyLjYuMTgiIGFuZCAiMi42LjI1
+IiBhbmQgInJhbmRvbSB0aW1lcyIgYW5kICJhbG1vc3QNCmltbWVkaWF0ZWx5IiAoYnV0IG5vdCBf
+dG90YWxseSBpbW1lZGlhdGVseV8gd2hpY2ggaXMgaW1wb3J0YW50KSBoaW50cw0KdG93YXJkcyB0
+aGlzIGJlaW5nIG9sZCBrZXJuZWxzIGhhdmluZyBhIHByb2JsZW0gd2l0aCBhbGwgdGhlICpBQ0sN
+CmZlYXR1cmVzIG9mIFRDUC4gQmVlbiB0aGVyZSwgc2VlbiBpdCwgYW5kIGl0IHdhcyByZXNvbHZl
+ZCBieSAyLjYuMjUncw0KdGltZWZyYW1lIGV2ZW4gaGVyZS4NCg==
