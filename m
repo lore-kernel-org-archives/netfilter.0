@@ -1,48 +1,59 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: iptables - external IP address on internal interface?
-Date: Thu, 14 Apr 2011 21:24:49 +0100
-Message-ID: <1302812689.4938.46.camel@andybev-desktop>
-References: <054F5B1BB94BD943B243C3B39B4F568D016E42CE@victory.Erudine.local>
-	 <1302544375.1551.11.camel@andybev>
-	 <054F5B1BB94BD943B243C3B39B4F568D016E42F1@victory.Erudine.local>
-	 <1302626146.4938.1.camel@andybev-desktop>
-	 <054F5B1BB94BD943B243C3B39B4F568D0161B8F7@victory.Erudine.local>
-	 <1302636161.4938.5.camel@andybev-desktop>  <4DA4C61A.4070308@erudine.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Ipset counters question
+Date: Fri, 15 Apr 2011 14:53:05 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1104151442240.26797@blackhole.kfki.hu>
+References: <4D91B511.3040005@univ-nantes.fr> <alpine.DEB.2.00.1103302215160.12949@blackhole.kfki.hu> <4D94224B.4050408@univ-nantes.fr> <alpine.DEB.2.00.1103312005580.16579@blackhole.kfki.hu> <4D94D06C.6070201@univ-nantes.fr> <alpine.DEB.2.00.1103312121170.16841@blackhole.kfki.hu>
+ <4D94DC17.4040906@univ-nantes.fr> <4DA69F5F.3010004@univ-nantes.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: MULTIPART/MIXED; BOUNDARY="110391808-17399485-1302871985=:26797"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1302812689; bh=YPJfy5pdFJSTexxXizokoxyPh7CXCQi1cjnR2
-	dJnKj0=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
-	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=Vdu8TCOw
-	p628WBaTIa/wXj8ATfHiQO8Ke3X1gk+8jF5ZaH0iMtenXWcOXeZS4tBW9HHN49XTd7F
-	REz6Ft7N7pQDQzUqCLN22EH7dhZ3CZzpidUPyyPVvp9WQt/WRZFp3vVF4V+eO6Y244M
-	Z5gSAqrHEgvd7h5K5UevG6hMeP7T8=
-In-Reply-To: <4DA4C61A.4070308@erudine.com>
+In-Reply-To: <4DA69F5F.3010004@univ-nantes.fr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Tony Rogers <tony.rogers@erudine.com>
+To: Jean-Philippe Menil <jean-philippe.menil@univ-nantes.fr>
 Cc: netfilter@vger.kernel.org
 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> Ok, trying with Thunderbird this time... (and it too seems to be 
-> wrapping the text) <sigh>
-> 
+--110391808-17399485-1302871985=:26797
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-Not sure about Thunderbird, but Evolution has a "preformat" option that
-doesn't wrap the text.
+Hi,
 
-Anyway, back to the original subject, can you post the output from
-"iptables-save" instead, as this has additional detail such as the
-interfaces in the rules.
+On Thu, 14 Apr 2011, Jean-Philippe Menil wrote:
 
-As a thought before you do so, if you're doing NAT in the normal way to
-share an internet connection, then what you are seeing is to be
-expected. You would normally SNAT on the internet-facing interface, not
-on the LAN-facing interface, meaning that traffic on the LAN interface
-will be going from/to public IP addresses.
+> Le 31/03/2011 21:55, Jean-Philippe Menil a =E9crit :
+> >=20
+> > That's what i tought, and i needed to be sure.
+> >=20
+> > As i can miss the counters for the moment, i will kept my rules.
+> > But as i'm very intereted by ipset, i will think to do otherwise.
+>=20
+> I return to this story of counters.
+> Since, i don't really need some counters, but just to know when there is =
+no
+> more traffic for a user to decrement an idle timeout;
+> i decide to use ipset with the bitmap ip,mac and the timeout value.
+>=20
+> However, the timeout doesn't do really what i need, i use a dirty hack to=
+ set
+> the timeout counters every time a packet is matched;
+> so when there are no more packet, the timeout value begin to decrement.
+>=20
+> I do this in the bitmap_ipmac_ttest function, i'm just wondering if it is=
+ the
+> right place to do this?
 
-Andy
+The proper way would be to reset the timeout value by the SET target,
+which is not supported yet.
 
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
+--110391808-17399485-1302871985=:26797--
