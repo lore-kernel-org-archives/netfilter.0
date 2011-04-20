@@ -1,98 +1,99 @@
-From: Tony Rogers <tony.rogers@erudine.com>
-Subject: Re: iptables - external IP address on internal interface?
-Date: Wed, 20 Apr 2011 13:19:49 +0100
-Message-ID: <1303301989.14640.3.camel@HP-019.Erudine.local>
-References: <054F5B1BB94BD943B243C3B39B4F568D016E42CE@victory.Erudine.local>
-	 <1302544375.1551.11.camel@andybev>
-	 <054F5B1BB94BD943B243C3B39B4F568D016E42F1@victory.Erudine.local>
-	 <1302626146.4938.1.camel@andybev-desktop>
-	 <054F5B1BB94BD943B243C3B39B4F568D0161B8F7@victory.Erudine.local>
-	 <1302636161.4938.5.camel@andybev-desktop>  <4DA4C61A.4070308@erudine.com>
-	 <1302812689.4938.46.camel@andybev-desktop>
-	 <1302873712.2984.17.camel@HP-019.Erudine.local>
-	 <1302881372.4938.62.camel@andybev-desktop>
+From: Emilio Lazo Zaia <emiliolazozaia@gmail.com>
+Subject: Problem with SNAT trying to configure a load balancing router
+Date: Wed, 20 Apr 2011 13:48:43 -0430
+Message-ID: <1303323523.25148.10.camel@uqbar.local>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1302881372.4938.62.camel@andybev-desktop>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:subject:from:to:content-type:date:message-id
+         :mime-version:x-mailer:content-transfer-encoding;
+        bh=etev+1qZwNN3Nv+cseHy80oG0FPa2RvD0NoSVORwRuk=;
+        b=PoEO6yhngL6lmHsaWgIXpG4BPxZRKhM/KzjpyUGddPcGwJ35kHep2ySKQ+QZJyxO10
+         LXW5uYgYJ7CcMQh0OAd29K6h5tBCAFkgVL1NJCW7o4h2U3f8hNcNGO6O0Bp0uiXa/s11
+         a0U4IX7ZETw3bgq7wYoppe/LRxKrvfLNdK/6w=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Andrew Beverley <andy@andybev.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Fri, 2011-04-15 at 16:29 +0100, Andrew Beverley wrote:
-> > > Anyway, back to the original subject, can you post the output from
-> > > "iptables-save" instead, as this has additional detail such as the
-> > > interfaces in the rules.
-> > > 
-> > > As a thought before you do so, if you're doing NAT in the normal way to
-> > > share an internet connection, then what you are seeing is to be
-> > > expected. You would normally SNAT on the internet-facing interface, not
-> > > on the LAN-facing interface, meaning that traffic on the LAN interface
-> > > will be going from/to public IP addresses.
-> > 
-> > Output of "iptables-save" below.
-> > 
-> > *however*
-> > 
-> > I *think* I may have solved it - I will know when I see the logs tomorrow morning.
-> > 
-> > I changed my MASQ entry from MASQUERADE any to only MASQ my internal
-> >  IP. (see last but two lines)
-> > 
-> 
-> Ah, that would make sense.
-> 
-> > Also - unless I misunderstand the rules - my SNAT is applied to the external interface?
-> > 
-> 
-> <snip>
-> 
-> > *nat
-> > -A POSTROUTING -s 192.168.0.0/255.255.255.0 -m mark --mark 0x1 -j SNAT --to-source 192.168.0.1 
-> 
-> Probably, yes, if all the clients on the internal network match the
-> address range above, but if that's what you want then use -o $EXT_IF.
-> 
-> Out of interest, why would you want to SNAT a public facing interface to
-> a private IP address?
-> 
-> > -A POSTROUTING -s 192.168.0.0/255.255.255.0 -o eth1 -j MASQUERADE 
-> 
-> Are you sure you want MASQUERADE? If you're using a static IP address
-> then you should use SNAT instead (see the man page). You can probably
-> drop the "-s 192.168.0.0/255.255.255.0" as well.
-> 
-> Andy
-> 
-> 
-> 
-> ------------------------
-> This email was scanned by BitDefender.
+I had problems trying to configure two ISP links on a Linux router with
+Netfilter and iproute2. Both links are 1Mbps. 
 
-Ok so I've re-checked all my rules, and tweaked them to use SNAT.
+The ISP1's routing table is called 'CANTV' and its network interface is
+called 'wan'. ISP2 is 'Inter' and network interface 'wan2'. Both ISP
+gives me IP addresses via DHCP.
 
-Below is an example of the 'raw' log entry.
+After bringing up both links and some manual fix and addons to routing
+tables, rules and Netfilter's SNAT, we have the following:
 
-If I'm interpreting this correctly:
+# ip rule
+0: from all lookup local 
+32747: from all fwmark 0x2 lookup Inter 
+32748: from all fwmark 0x1 lookup CANTV 
+32750: from x.x.90.26 lookup Inter 
+32751: from x.x.222.247 lookup CANTV 
+32766: from all lookup main 
+32767: from all lookup default 
 
-212.118.226.91 is trying to connect to 192.168.0.168 ?
+# ip route show table main
+x.x.192.0/19 dev wan proto kernel scope link src x.x.222.247 
+x.x.64.0/18 dev wan2 proto kernel scope link src x.x.90.26 
+default via x.x.192.1 dev wan
+default via x.x.64.1 dev wan2
 
-Or is this some kind of reverse logic, and 192.168.0.168 is actually connecting to 212.118.226.91 on port 80? If so, why would the log entry be reversed?
+# ip route show table Inter
+x.x.64.0 dev wan2 scope link src x.x.90.26 
+default via x.x.64.1 dev wan2
 
-However, there is no rule that permits inbound connections of this nature.
+# ip route show table CANTV
+x.x.192.0 dev wan scope link src x.x.222.247 
+default via x.x.192.1 dev wan
 
-And (more worryingly) the connection appears to be sourced from eth0 (internal interface).
+At this point I have some questions:
 
+1) The routing path "127.0.0.0/8 dev lo  scope link" needs to be in both
+routing tables? if so, why? what is its purpose?
 
-Apr 20 11:21:52 statler kernel: OUTPUT IN=eth0 OUT=eth0 SRC=212.118.226.91 DST=192.168.0.168 LEN=40 TOS=0x00 PREC=0x00 TTL=127 ID=115 DF PROTO=TCP SPT=80 DPT=2011 WINDOW=0 RES=0x00 RST URGP=0
-Apr 20 11:21:59 statler kernel: OUTPUT IN=eth0 OUT=eth0 SRC=212.118.226.91 DST=192.168.0.168 LEN=40 TOS=0x00 PREC=0x00 TTL=127 ID=116 DF PROTO=TCP SPT=80 DPT=2011 WINDOW=0 RES=0x00 RST URGP=0
-Apr 20 11:22:04 statler kernel: OUTPUT IN=eth0 OUT=eth0 SRC=212.118.226.91 DST=192.168.0.168 LEN=40 TOS=0x00 PREC=0x00 TTL=127 ID=117 DF PROTO=TCP SPT=80 DPT=2011 WINDOW=0 RES=0x00 RST URGP=0
-Apr 20 11:22:23 statler kernel: OUTPUT IN=eth0 OUT=eth0 SRC=212.118.226.91 DST=192.168.0.168 LEN=40 TOS=0x00 PREC=0x00 TTL=127 ID=118 DF PROTO=TCP SPT=80 DPT=2011 WINDOW=0 RES=0x00 RST URGP=0
+2) The main routing table had to have both default routes like above or
+this is a mistake in the addition? only one (the "default", i.e.
+preferred) gateway or both using multipath nexthop mechanism?
 
-Does this make sense to any of you gurus out there?
+Regardless what configuration is used, some packets leaves one interface
+with the IP address of the other, so I hoped this can be fixed with two
+NAT rules:
 
-Thanks.
+# iptables -t nat -F
+# iptables -t nat -A POSTROUTING -o wan2 -j SNAT --to-source x.x.90.26
+# iptables -t nat -A POSTROUTING -o wan -j SNAT --to-source x.x.222.247
+# conntrack -F
+# ip route flush cache
 
+However this only reduces the routing of packets with the incorrect
+address but is not completely stopped. I.e. SNAT seems to be not
+applying to all the traffic, maybe only to certain combination of TCP
+flags. 
+
+What I did used to test the behavior of SNAT was marking all outbound
+traffic with 0x01 or 0x02 to let the routing rules decide routing all
+packets to ISP1 or ISP2 and look at two simultaneous tcpdump running
+instances.
+
+# iptables -t mangle -F
+# iptables -t mangle -A OUTPUT -j MARK --set-mark 1 # or --set-mark 2
+
+This marks all OUTPUT packets regardless anything (NEW,
+ESTABLISHED, ...)? If so, why not all these packets, after crossing
+routing tables and are ready to be sent to wan/wan2 are natted?
+
+I'm doing something wrong or the SNAT code in my kernel exhibits this
+wrong behaviour?
+
+Also, ip_forward is 1 and rp_filter is 0.
+
+(Debian Linux 2.6.38-2-amd64 / iptables 1.4.10)
+
+Thanks in advance,
+Emilio Lazo Zaia.
 
