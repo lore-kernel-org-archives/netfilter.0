@@ -1,26 +1,83 @@
-From: J Webster <jw.jwebster@gmail.com>
-Subject: only direct port 80 traffic from client
-Date: Thu, 21 Apr 2011 09:56:51 +0200
-Message-ID: <4DAFE343.3070603@googlemail.com>
+From: "Brian Lu" <lyt0112@gmail.com>
+Subject: How can I get rules with all resolved IPs for FQDN?
+Date: Thu, 21 Apr 2011 17:04:01 +0800
+Message-ID: <ED3A8D81130D4C0CB0D9B98DA81D188F@brianlu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:message-id:date:from:user-agent:mime-version:to
-         :subject:content-type:content-transfer-encoding;
-        bh=HFMYy7CYYU9opMZ9X7TfC7Uoyr48l3eKO/GZolpeBc4=;
-        b=Se+lileKcVar02NiBSFO/OFUu2MtHUD/oxPzhyQW8BZPALkhT4LG5Lufy1lgaKsQYh
-         bK8b0Gc8jZNVg4mXQYGQtNGDyz0qq6dtDq8J1LtyjM8tgzzHXaF9HlQXiAWudqBgYYxA
-         WoN/razzTB+IOU5tY7Udk8fuWPPuZrZE+FfOo=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
 To: netfilter@vger.kernel.org
 
-I have a public OpenVPN service on my server authenticated by certificates.
-I only want to route port 80 and 1935 traffic from the client. All other 
-client traffic should go to the normal ISP.
-How can I make sure that clients do not send normal traffic through to 
-the VPN server? As far as I understoof iptables rules would only act on 
-the server so if I blocked email traffic it would just be dropped.
+Hi All
+I am having a problem about not all FQDN can work for iptables commands .
+If I run an iptable command for www.google.com , it can work fine.
+I can find 6 rules from the rules table.
+[root@localhost iptables-1.3.5]# nslookup www.google.com
+Server:         168.95.1.1
+Address:        168.95.1.1#53
+
+Non-authoritative answer:
+www.google.com  canonical name = www.l.google.com.
+Name:   www.l.google.com
+Address: 64.233.183.104
+Name:   www.l.google.com
+Address: 64.233.183.105
+Name:   www.l.google.com
+Address: 64.233.183.106
+Name:   www.l.google.com
+Address: 64.233.183.147
+Name:   www.l.google.com
+Address: 64.233.183.99
+Name:   www.l.google.com
+Address: 64.233.183.103
+
+If I run an iptable command for www.facebook.com , it can't work fine.
+I can only find a rule from the rules table. 
+
+[root@localhost iptables-1.3.5]# nslookup www.facebook.com
+Server:         168.95.1.1
+Address:        168.95.1.1#53
+
+Non-authoritative answer:
+Name:   www.facebook.com
+Address: 69.171.224.12
+
+[root@localhost iptables-1.3.5]# nslookup www.facebook.com
+Server:         168.95.1.1
+Address:        168.95.1.1#53
+
+Non-authoritative answer:
+Name:   www.facebook.com
+Address: 69.171.224.11
+
+[root@localhost iptables-1.3.5]# nslookup www.facebook.com
+Server:         168.95.1.1
+Address:        168.95.1.1#53
+
+Non-authoritative answer:
+Name:   www.facebook.com
+Address: 66.220.149.11
+
+[root@localhost iptables-1.3.5]# nslookup www.facebook.com
+Server:         168.95.1.1
+Address:        168.95.1.1#53
+
+Non-authoritative answer:
+Name:   www.facebook.com
+Address: 66.220.158.25
+
+[root@localhost iptables-1.3.5]# nslookup www.facebook.com
+Server:         168.95.1.1
+Address:        168.95.1.1#53
+
+Non-authoritative answer:
+Name:   www.facebook.com
+Address: 66.220.146.25
+
+How can I get rules with all resolved IPs for this kind of FQDN?
+Any suggestions will be appreciated!!! 
+
+Best regards, 
+Brian Lu
