@@ -1,77 +1,75 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
-Subject: ipset kernel oops
-Date: Fri, 22 Apr 2011 22:39:23 +0100
-Message-ID: <4DB1F58B.9080500@googlemail.com>
+From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
+Subject: Re: only direct port 80 traffic from client
+Date: Sat, 23 Apr 2011 11:31:13 -0300
+Message-ID: <BANLkTi=ZpD83qOpn5FEK7dQgU27Xa2p3CQ@mail.gmail.com>
+References: <4DAFE343.3070603@googlemail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:message-id:disposition-notification-to:date
-         :from:user-agent:mime-version:to:subject:content-type
-         :content-transfer-encoding;
-        bh=xOJClC32qZ+y/aKhUJQ9xh6OCW2qW0mNps6AWXv1sEE=;
-        b=uv3LkT5BU6PuR/+nEe/nB941o7PIJggvbLeGZxhcHTqFtFiR97Bw0vh8+/Yxrgw9Ve
-         aEptaTb2tPNv4ihg5qwHDgo11j1DLcX4Hg+vjHqOjbFDIP8r+VQd3NNvk34pphszbVsG
-         e/lSXh/lf8bv22/gkQTw/NN+FNXIoa75w5NuU=
+In-Reply-To: <4DAFE343.3070603@googlemail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: J Webster <jw.jwebster@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-During loading of a (rather) large set (consisting of about 30k members) 
-I am getting the following kernel error:
+You can use iproute2 to split your traffic.
 
-Apr 22 22:14:41 test1 kernel: BUG: soft lockup - CPU#0 stuck for 61s! 
-[ipset:1568]
-Apr 22 22:14:41 test1 kernel: Pid: 1568, comm: ipset Not tainted 
-2.6.34.8-68.fc13.i686 #1        /      
-Apr 22 22:14:41 test1 kernel: EIP: 0060:[<d3b8c1ea>] EFLAGS: 00000283 CPU: 0
-Apr 22 22:14:41 test1 kernel: EIP is at 
-iptreemap_list_members_size+0x7a/0xcd [ip_set_iptreemap]
-Apr 22 22:14:41 test1 kernel: EAX: 00000252 EBX: 000000f2 ECX: cca59de0 
-EDX: 00000001
-Apr 22 22:14:41 test1 kernel: ESI: 00000046 EDI: ffffffff EBP: cc3a7e88 
-ESP: cc3a7e64
-Apr 22 22:14:41 test1 kernel: DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068
-Apr 22 22:14:41 test1 kernel: Process ipset (pid: 1568, ti=cc3a6000 
-task=d0868000 task.ti=cc3a6000)
-Apr 22 22:14:41 test1 kernel: Stack:
-Apr 22 22:14:41 test1 kernel: 000000ce d07ca000 c19dc000 c1890400 
-cca59de0 000000ba d3b8d350 d3bc1000
-Apr 22 22:14:41 test1 kernel: <0> 00000005 cc3a7ebc d36c2f10 00000014 
-08050590 d3b8d350 000230d8 000001a4
-Apr 22 22:14:41 test1 kernel: <0> 00000004 00000380 c09b1838 d36c3f64 
-d36c3f98 00000053 cc3a7ee4 c071e82d
-Apr 22 22:14:41 test1 kernel: Call Trace:
-Apr 22 22:14:41 test1 kernel: [<d36c2f10>] ? 
-ip_set_sockfn_get+0x402/0x7e7 [ip_set]
-Apr 22 22:14:41 test1 kernel: [<c071e82d>] ? nf_sockopt+0xf1/0x118
-Apr 22 22:14:41 test1 kernel: [<c071e86c>] ? nf_getsockopt+0x18/0x1a
-Apr 22 22:14:41 test1 kernel: [<c072f822>] ? ip_getsockopt+0x6c/0x99
-Apr 22 22:14:41 test1 kernel: [<c07466e0>] ? raw_getsockopt+0x20/0x95
-Apr 22 22:14:41 test1 kernel: [<c06f8f18>] ? 
-sock_common_getsockopt+0x18/0x1d
-Apr 22 22:14:41 test1 kernel: [<c06f70b4>] ? sys_getsockopt+0x64/0x7f
-Apr 22 22:14:41 test1 kernel: [<c06f886c>] ? sys_socketcall+0x157/0x1aa
-Apr 22 22:14:41 test1 kernel: [<c07908bc>] ? syscall_call+0x7/0xb
-Apr 22 22:14:41 test1 kernel: Code: d2 74 51 40 31 d2 eb 4c 8b 75 e8 8b 
-34 9e 89 75 ec 31 f6 83 7d ec 00 75 09 85 d2 74 2e 40 31 d2 eb 29 89 4d 
-dc 8b 4d ec 0f a3 31 <19> ff 85 ff 74 07 ba 01 00 00 00 eb 07 85 d2 74 
-03 40 31 d2 46
-Apr 22 22:14:41 test1 kernel: Call Trace:
-Apr 22 22:14:41 test1 kernel: [<d36c2f10>] ip_set_sockfn_get+0x402/0x7e7 
-[ip_set]
-Apr 22 22:14:41 test1 kernel: [<c071e82d>] nf_sockopt+0xf1/0x118
-Apr 22 22:14:41 test1 kernel: [<c071e86c>] nf_getsockopt+0x18/0x1a
-Apr 22 22:14:41 test1 kernel: [<c072f822>] ip_getsockopt+0x6c/0x99
-Apr 22 22:14:41 test1 kernel: [<c07466e0>] raw_getsockopt+0x20/0x95
-Apr 22 22:14:41 test1 kernel: [<c06f8f18>] sock_common_getsockopt+0x18/0x1d
-Apr 22 22:14:41 test1 kernel: [<c06f70b4>] sys_getsockopt+0x64/0x7f
-Apr 22 22:14:41 test1 kernel: [<c06f886c>] sys_socketcall+0x157/0x1aa
-Apr 22 22:14:41 test1 kernel: [<c07908bc>] syscall_call+0x7/0xb
+http://lartc.org/howto/
 
-The machine on which this executes is not particularly powerful pentium2 
-box, so I suspect ipset hogs it and doesn't give the watchdog any 
-room/response. Is there anything which could be done about this? The 
-ipset version in question is 4.5
+follow a tip:
+
+
+1- create a table with name bradesco
+
+echo 200 bradesco >> /etc/iproute2/rt_tables
+
+2- Marking the packages desirable ( 192.100.100.0/24 > branch office
+inside network, 128.2.0.0/16 head office inside network )
+
+/sbin/iptables -t mangle -A PREROUTING -i eth0 -s 192.100.100.0/24 -d
+128.2.0.0/16 -p tcp --dport 80 -j MARK --set-mark 1
+/sbin/iptables -t mangle -A PREROUTING -i eth0 -s 192.100.100.0/24 -d
+128.2.0.0/16 -p tcp --dport 443 -j MARK --set-mark 1
+
+3- Add packages have been marked with tag 1 to table bradesco
+
+ip rule add fwmark 1 table bradesco prio 20
+
+4- Add a gateway for table bradesco
+
+ip route add default via tun0 table bradesco
+
+where tun0 it's your address VPN tunnel
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+2011/4/21 J Webster <jw.jwebster@gmail.com>:
+> I have a public OpenVPN service on my server authenticated by certifi=
+cates.
+> I only want to route port 80 and 1935 traffic from the client. All ot=
+her
+> client traffic should go to the normal ISP.
+> How can I make sure that clients do not send normal traffic through t=
+o the
+> VPN server? As far as I understoof iptables rules would only act on t=
+he
+> server so if I blocked email traffic it would just be dropped.
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
