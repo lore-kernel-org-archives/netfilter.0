@@ -1,52 +1,77 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
-Subject: Re: ipset kernel oops
-Date: Sun, 24 Apr 2011 11:41:39 +0100
-Message-ID: <4DB3FE63.1030305@googlemail.com>
-References: <4DB1F58B.9080500@googlemail.com> <alpine.DEB.2.00.1104232026240.23429@blackhole.kfki.hu>
+From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
+Subject: Re: only direct port 80 traffic from client
+Date: Sun, 24 Apr 2011 11:08:42 -0300
+Message-ID: <BANLkTinxD9eE97CUTtkU32voAgu+emHjiA@mail.gmail.com>
+References: <4DAFE343.3070603@googlemail.com>
+	<BANLkTi=ZpD83qOpn5FEK7dQgU27Xa2p3CQ@mail.gmail.com>
+	<4DB2FCE4.4090606@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:message-id:disposition-notification-to:date
-         :from:user-agent:mime-version:to:cc:subject:references:in-reply-to
-         :content-type:content-transfer-encoding;
-        bh=t5aNkZN9Q3xG2GJzuK1YxhffveNjRyFw5KVqb5U78hg=;
-        b=Wp/z5S3IC7uprrl9VpomMfHBNsJCmN3GO6+xnvb+p8udTt5deUF1145wpMQozjXcvB
-         3GDJj4ED5LEYASuWf/5cqrA9dmVT8A8OhELF8i+h5KLjC2tNT8qoEW2THUSMaStmgKCI
-         urozIUCBjcpmZkyhQxrxxe8PKEJbYvNGOKHLY=
-In-Reply-To: <alpine.DEB.2.00.1104232026240.23429@blackhole.kfki.hu>
+In-Reply-To: <4DB2FCE4.4090606@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: J Webster <jw.jwebster@gmail.com>
+Cc: netfilter@vger.kernel.org
+
+I've thought that you had branch office with others Firewalls
+connected to head office so this way would be as I've suggested....
+
+I think that you can solve your problem searching in OpenVPN forum to
+iptables/netfilter.
+
+because you have handle traffic from client no in your firewall rules.
 
 
-> How much RAM have you got in that machine?
-283248k physical RAM, 128MB swap file.
 
->  Are the 30k addresses 
-> pseudo-random, i.e. don't come from several netblocks?
->   
-99.8% from all addresses/subnets come my geoip database (IP addresses 
-compiled from various countries I banned from my networks as they have 
-no business accessing it) - the rest consists of pseudo-random 
-(selected) subnets. It is also worth mentioning that:
 
-1. When ipset loads these addresses during boot no such error takes 
-place (though it takes about 10+ minutes for these to load as the 
-machine on which this run is not very powerful);
-2. The error happens when I try to load these ipsets from the command 
-line (i.e. do exactly the same thing from the shell as in 1 above);
-3. At no point during 1 or 2 the swap file is used, which leads me to 
-believe that this error does not happen because of insufficient memory;
-
-On a separate note, is it normal for my ipsets to take absolute *ages* 
-to load (about 5 minutes on a P4 machine as well)? I am loading these 
-exact sets on a Core2 machine and even though it takes much less time 
-(about 20 seconds or so) I am still a bit bemused why does it take that 
-long, comparing to other ipset operations? I can't complain about the 
-run-time performance of ipset though - it is simply unmatched by 
-anything else I used (or attempted to use)!
-
+Em 23 de abril de 2011 13:23, J Webster <jw.jwebster@gmail.com> escreve=
+u:
+>
+>> You can use iproute2 to split your traffic.
+>>
+>> http://lartc.org/howto/
+>>
+>> follow a tip:
+>>
+>>
+>> 1- create a table with name bradesco
+>>
+>> echo 200 bradesco>> =A0/etc/iproute2/rt_tables
+>>
+>> 2- Marking the packages desirable ( 192.100.100.0/24> =A0branch offi=
+ce
+>> inside network, 128.2.0.0/16 head office inside network )
+>>
+>> /sbin/iptables -t mangle -A PREROUTING -i eth0 -s 192.100.100.0/24 -=
+d
+>> 128.2.0.0/16 -p tcp --dport 80 -j MARK --set-mark 1
+>> /sbin/iptables -t mangle -A PREROUTING -i eth0 -s 192.100.100.0/24 -=
+d
+>> 128.2.0.0/16 -p tcp --dport 443 -j MARK --set-mark 1
+>>
+>> 3- Add packages have been marked with tag 1 to table bradesco
+>>
+>> ip rule add fwmark 1 table bradesco prio 20
+>>
+>> 4- Add a gateway for table bradesco
+>>
+>> ip route add default via tun0 table bradesco
+>>
+>> where tun0 it's your address VPN tunnel
+>>
+> But this is on the server isn't it?
+> It is the traffic from the client and all clients are outside of the
+> network.
+> So, a client from 88.11.11.11 connects to my VPN on fixed IP
+> 123.123.123.123. Another client from 78.22.11.22 connects to
+> 123.123.123.123.
+> I only want them to send port 80 traffic to the server but they shoul=
+d
+> direct all their email traffic and other apps through their normal IS=
+P.
+> iptables cannot bounce the traffic back to the client because the cli=
+ent
+> won;t know where to send it after that?
+>
