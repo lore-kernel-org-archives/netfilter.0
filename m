@@ -1,77 +1,76 @@
-From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
-Subject: Re: only direct port 80 traffic from client
-Date: Sun, 24 Apr 2011 11:08:42 -0300
-Message-ID: <BANLkTinxD9eE97CUTtkU32voAgu+emHjiA@mail.gmail.com>
-References: <4DAFE343.3070603@googlemail.com>
-	<BANLkTi=ZpD83qOpn5FEK7dQgU27Xa2p3CQ@mail.gmail.com>
-	<4DB2FCE4.4090606@gmail.com>
+From: Lu Brian <lyt0112@gmail.com>
+Subject: Re: How can I get rules with all resolved IPs for FQDN?
+Date: Mon, 25 Apr 2011 09:56:49 +0800
+Message-ID: <BANLkTim5SFW+vWs8yhDfwJ-GEGN6Xvj5Yw@mail.gmail.com>
+References: <ED3A8D81130D4C0CB0D9B98DA81D188F@brianlu>
+	<20110422110021.GB2976@cardinal>
+	<BANLkTi=V8=XFT6U7hUvhLOqRuvLAd_bg7A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4DB2FCE4.4090606@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:in-reply-to:references:date
+         :message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=VKPLy9R98dTXMoaY7Nqtj0opYzgZ2MyXluocfadUhpY=;
+        b=L+W+oW96X/QLIAr3fzfA9SXhjBQyAi8dLzy6B+lcaJxvfX0xbCquSZwvmou+N0lBwm
+         CXPahKWo4jYWRpNnlftcbebK3Ij6AjaCccArnsjKfb4+/kGvCNb0KH+eG2SDj0gM+9TS
+         pKyEoSQMwxqY797iGDibmkUxi1pIXYLGFUh8M=
+In-Reply-To: <BANLkTi=V8=XFT6U7hUvhLOqRuvLAd_bg7A@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: J Webster <jw.jwebster@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: Pandu Poluan <pandu@poluan.info>
+Cc: netfilter@vger.kernel.org, Jan Engelhardt <jengelh@medozas.de>
 
-I've thought that you had branch office with others Firewalls
-connected to head office so this way would be as I've suggested....
+I see...Thanks for everyone...
 
-I think that you can solve your problem searching in OpenVPN forum to
-iptables/netfilter.
-
-because you have handle traffic from client no in your firewall rules.
-
-
-
-
-Em 23 de abril de 2011 13:23, J Webster <jw.jwebster@gmail.com> escreve=
-u:
+2011/4/22 Pandu Poluan <pandu@poluan.info>:
+> On 2011-04-22, /dev/rob0 <rob0@gmx.co.uk>
+>> The fact is: outside of Facebook itself, no one has any way to know
+>> how many IP addresses they have set up to answer HTTP connections as
+>> www.facebook.com. They use a very short TTL, which implies that they
+>> might dynamically change the list of IP addresses as needed.
+>>
+>>> I am having a problem about not all FQDN can work for iptables
+>>> commands . If I run an iptable command for www.google.com , it can
+>>> work fine. I can find 6 rules from the rules table.
+>>
+>> BTW, Google and just about every other large site does variations of
+>> the same thing. You're wrong if you think that your 6 IP addresses
+>> found for www.google.com. are the ONLY 6 they use. They are the 6
+>> presented to you as a choice at that particular moment.
+>>
+>> As Jan tried to explain to you, this is how iptables works. Names
+>> given are resolved only once. Bottom line: you can't rely on using
+>> DNS names which you don't control.
+>>
+>> The answer to your real question, "X", might be to hijack the DNS fo=
+r
+>> facebook.com. and other Internet domains as desired. Or perhaps more
+>> likely, to force use of an HTTP proxy like Squid to control access.
+>>
 >
->> You can use iproute2 to split your traffic.
->>
->> http://lartc.org/howto/
->>
->> follow a tip:
->>
->>
->> 1- create a table with name bradesco
->>
->> echo 200 bradesco>> =A0/etc/iproute2/rt_tables
->>
->> 2- Marking the packages desirable ( 192.100.100.0/24> =A0branch offi=
-ce
->> inside network, 128.2.0.0/16 head office inside network )
->>
->> /sbin/iptables -t mangle -A PREROUTING -i eth0 -s 192.100.100.0/24 -=
-d
->> 128.2.0.0/16 -p tcp --dport 80 -j MARK --set-mark 1
->> /sbin/iptables -t mangle -A PREROUTING -i eth0 -s 192.100.100.0/24 -=
-d
->> 128.2.0.0/16 -p tcp --dport 443 -j MARK --set-mark 1
->>
->> 3- Add packages have been marked with tag 1 to table bradesco
->>
->> ip rule add fwmark 1 table bradesco prio 20
->>
->> 4- Add a gateway for table bradesco
->>
->> ip route add default via tun0 table bradesco
->>
->> where tun0 it's your address VPN tunnel
->>
-> But this is on the server isn't it?
-> It is the traffic from the client and all clients are outside of the
-> network.
-> So, a client from 88.11.11.11 connects to my VPN on fixed IP
-> 123.123.123.123. Another client from 78.22.11.22 connects to
-> 123.123.123.123.
-> I only want them to send port 80 traffic to the server but they shoul=
-d
-> direct all their email traffic and other apps through their normal IS=
-P.
-> iptables cannot bounce the traffic back to the client because the cli=
-ent
-> won;t know where to send it after that?
+> Another option would be to use ipset. Do a dig against
+> www.facebook.com every minute and feed any new address found into the
+> ipset.
+>
+> But, then again, this is the *wrong* way to clamp down on facebook ac=
+cess :)
+>
+>> I suspect that this all boils down to a clueless and ineffective
+>> manager's desire to solve a social problem using technical means. :)
+>
+> *Wrong* technical means, you mean :)
+>
+> Rgds,
+> --
+> Pandu E Poluan - IT Optimizer
+> My website: http://pandu.poluan.info/
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
 >
