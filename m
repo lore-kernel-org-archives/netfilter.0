@@ -1,63 +1,55 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+From: Mr Dash Four <mr.dash.four@googlemail.com>
 Subject: Re: ipset kernel oops
-Date: Mon, 25 Apr 2011 19:46:53 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1104251929001.30748@blackhole.kfki.hu>
-References: <4DB1F58B.9080500@googlemail.com> <alpine.DEB.2.00.1104232026240.23429@blackhole.kfki.hu> <4DB3FE63.1030305@googlemail.com>
+Date: Mon, 25 Apr 2011 20:19:25 +0100
+Message-ID: <4DB5C93D.9090502@googlemail.com>
+References: <4DB1F58B.9080500@googlemail.com> <alpine.DEB.2.00.1104232026240.23429@blackhole.kfki.hu> <4DB3FE63.1030305@googlemail.com> <alpine.DEB.2.00.1104251929001.30748@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4DB3FE63.1030305@googlemail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:message-id:disposition-notification-to:date
+         :from:user-agent:mime-version:to:cc:subject:references:in-reply-to
+         :content-type:content-transfer-encoding;
+        bh=viY39JKQMjm+Q7BTTb9lCDVKMD5RQh07fVsFxUG9Hu8=;
+        b=cdi99Iiwpn5dwMTBmXugbyzxi4Or+PI5na7wsoYxMt9HqBaZA6mceBOK55PJbnyVfP
+         4aXl+NXy1zbBOOIIzHyUW3KP43b6PavDwG+IhDdU4vKOirMfe4H8vpGvbU/zsDxxFFpW
+         Iuyd5qWAiyDV5VlMmIYYay/Od4ne7Wzn1RHI8=
+In-Reply-To: <alpine.DEB.2.00.1104251929001.30748@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Sun, 24 Apr 2011, Mr Dash Four wrote:
 
-> > How much RAM have you got in that machine?
-> 283248k physical RAM, 128MB swap file.
+> That 30k addresses alone need roughly 30MB non-swappable memory, ~10% of 
+> all of the physical RAM. Depending on what else's running on that machine, 
+> the required memory can be significant.
+>   
+The system, when it boots, has more than 150MiB of RAM available (that 
+excludes about 80MiB of "cached" memory), so RAM is clearly not an issue 
+I don't think. I forgot to mention that I executed the whole sequence 
+(which triggered the bug) as soon as I booted up, so no other 
+applications were loaded (yet).
 
-That 30k addresses alone need roughly 30MB non-swappable memory, ~10% of 
-all of the physical RAM. Depending on what else's running on that machine, 
-the required memory can be significant.
- 
-> >  Are the 30k addresses pseudo-random, i.e. don't come from several
-> > netblocks?
-> >   
-> 99.8% from all addresses/subnets come my geoip database (IP addresses compiled
-> from various countries I banned from my networks as they have no business
-> accessing it) - the rest consists of pseudo-random (selected) subnets. It is
-> also worth mentioning that:
-> 
-> 1. When ipset loads these addresses during boot no such error takes place
-> (though it takes about 10+ minutes for these to load as the machine on which
-> this run is not very powerful);
-> 2. The error happens when I try to load these ipsets from the command line
-> (i.e. do exactly the same thing from the shell as in 1 above);
+> I have never tested iptree(map) with so many elements, so it's surprising 
+> for me that it takes so many time.
+It is the single most frustrating issue I've always had with ipset - I 
+am more than pleased with everything else, apart from the initial 
+loading, which, as I already pointed out even on a fast machine with 
+lots of RAM (Core2 with 4GiB RAM) takes about 20 or so seconds for these 
+ipsets to load. That goes to about 5 minutes on less-powerful, but 
+equally well-equipped P4 (3.3MHz) with 1GiB RAM.
 
-At boot time the memory is not fragmented. Later on maybe it's harder to 
-find for the kernel the required continuous memory spaces.
+>  But if the 30k addresses are quite 
+> different then the iptreemap has to build up a four-level tree with 30k 
+> branches from the second level down.
+>   
+So, do you have an idea what is causing this bug and how could it be 
+avoided/fixed?
 
-> 3. At no point during 1 or 2 the swap file is used, which leads me to believe
-> that this error does not happen because of insufficient memory;
-> 
-> On a separate note, is it normal for my ipsets to take absolute *ages* to load
-> (about 5 minutes on a P4 machine as well)? I am loading these exact sets on a
-> Core2 machine and even though it takes much less time (about 20 seconds or so)
-> I am still a bit bemused why does it take that long, comparing to other ipset
-> operations? I can't complain about the run-time performance of ipset though -
-> it is simply unmatched by anything else I used (or attempted to use)!
+I have tried the new version of ipset, but didn't have luck with it 
+either - see my other post on this list with regards to that particular 
+set of problems.
 
-I have never tested iptree(map) with so many elements, so it's surprising 
-for me that it takes so many time. But if the 30k addresses are quite 
-different then the iptreemap has to build up a four-level tree with 30k 
-branches from the second level down.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
