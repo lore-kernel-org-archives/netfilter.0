@@ -1,59 +1,39 @@
-From: carlopmart <carlopmart@gmail.com>
-Subject: Re: Using source nat to discriminate traffic
-Date: Tue, 26 Apr 2011 11:45:44 +0200
-Message-ID: <4DB69448.6080009@gmail.com>
-References: <4DB68B40.2030806@gmail.com> <alpine.LNX.2.01.1104261115080.20267@obet.zrqbmnf.qr>
+From: Mr Dash Four <mr.dash.four@googlemail.com>
+Subject: ipset maximal/minimal revision conflict
+Date: Tue, 26 Apr 2011 12:16:53 +0100
+Message-ID: <4DB6A9A5.5070301@googlemail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:message-id:date:from:user-agent:mime-version:to
-         :subject:references:in-reply-to:content-type
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:message-id:disposition-notification-to:date
+         :from:user-agent:mime-version:to:subject:content-type
          :content-transfer-encoding;
-        bh=ATPdm3UMZNOykPIQveGNoxPUbM+CmvC200WD2oVblhc=;
-        b=Ftlp0CyaSFaIbcAEz9bmL3YbU+HPoyPs6a1mUziILZAmCzBlLjU7U8IbFQW58CQyak
-         kS/nC2BCJVMhqwUSm/CgZQ0OZK5bIuBfnPc9T3h9dZWIU3ulSj+Y7/G1dxmNMP5vD8yK
-         x7fAbNXNiD0kyb6je79Y4VDRcWOa0tEmoIcDU=
-In-Reply-To: <alpine.LNX.2.01.1104261115080.20267@obet.zrqbmnf.qr>
+        bh=4ici2hW3i/DOdPxOT3xIgugBSRYIlHq/5YrgwPe1v/A=;
+        b=fy2xvLxpXEg5mcM7EeJ4quaqi2MShkGkuULU8/OEGF5mZtM9nUIR/oHqrdFtjBcItg
+         3WlnhyEuVVWLTt60C35xtF0VTJTf/qH4o1rugd/ltjDuky3P5O/8Fsjp0LImHk0Yg6bl
+         JEdniEkpMZVqqITDOVuZNS7drIcOkZUDsVrXc=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 04/26/2011 11:15 AM, Jan Engelhardt wrote:
-> On Tuesday 2011-04-26 11:07, carlopmart wrote:
->
->> Hi all,
->>
->> I have a problem using source nat rules to discriminate traffic on one host.
->> This host has several ip aliases assigned to provide several services. Problem
->> starts with mysql client. This host needs to access to another host that acts
->> as MySQL server. This MySQL server has some acls configured to access
->> databases, in this manner:
->>
->> - BBDD_1 can only be accessed by ip address 172.21.2.2.
->> - BBDD_2 can only be accessed by ip address 172.21.2.3
->>
->> Both ip address, 172.21.2.2 and 172.21.2.3, are assigned to the first host
->> that acts as a mysql client. Latest release of mysql client contains an option
->> to pass --bind-ip-address, but my mysql client version not (and I can't do an
->> upgrade due to a tecnical specifications).
->>
->> Then, I need to discrimanate traffic on mysql host client when it tries to
->> access to mysql server. I have found a partial solution putting this iptables
->> rule:
->>
->> iptables -t nat -A POSTROUTING -o eth1 -d 172.17.3.3 -p tcp --dport 3306 -j
->> SNAT --to-source 172.21.2.2
->>
->> This rule works ok when mysql client tries to access to BBDD_1
->
-> Assuming BBDD_1 is 172.17.3.2, this rule won't be considered at all. Of
-> course stuff works because some address is the client's default.
+I get a weird error when executing the following ipset command:
 
-MySQL host ip address is 172.17.3.3, always, to all BBDD.
+[root@test1 ~]# ipset -N test hash:net,port
+ipset v6.4: Kernel supports hash:net,port type, family INET with maximal 
+revision 0 while ipset program with minimal revision 1.
+You need to upgrade your kernel.
 
--- 
-CL Martinez
-carlopmart {at} gmail {d0t} com
+The "revision", as far as I know, is exactly the same - ipset 6.4! The 
+userspace has been compiled from the released v6.4, while the kernel 
+part was built from a snapshot dated 24 April, which included the 3 
+patches not present in .39-rc4 (so, in essence, if anything, the kernel 
+part should be newer than the userspace part of the released v6.4, 
+right?). It is strange that I do not get this error when attempting any 
+other type of set (hash:ip or hash:net).
+
+It is also worth noting that I have IPv6 administratively disabled on 
+that machine, though do not know if that's the reason for the above 
+error. How can I correct this?
