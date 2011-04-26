@@ -1,47 +1,49 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+From: Mr Dash Four <mr.dash.four@googlemail.com>
 Subject: Re: ipset maximal/minimal revision conflict
-Date: Tue, 26 Apr 2011 20:11:06 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1104262007050.2868@blackhole.kfki.hu>
-References: <4DB6A9A5.5070301@googlemail.com> <alpine.DEB.2.00.1104261558430.1834@blackhole.kfki.hu> <4DB6DF66.6040009@googlemail.com>
+Date: Tue, 26 Apr 2011 20:25:37 +0100
+Message-ID: <4DB71C31.6030106@googlemail.com>
+References: <4DB6A9A5.5070301@googlemail.com> <alpine.DEB.2.00.1104261558430.1834@blackhole.kfki.hu> <4DB6DF66.6040009@googlemail.com> <alpine.DEB.2.00.1104262007050.2868@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4DB6DF66.6040009@googlemail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:message-id:disposition-notification-to:date
+         :from:user-agent:mime-version:to:cc:subject:references:in-reply-to
+         :content-type:content-transfer-encoding;
+        bh=9AtMnX5cns1FCjctL4aadeXdCbXHmff7gVkh4vMJhQ4=;
+        b=lV3klkYV1ctI36BFmTDtwEvb0ZfhDgkpfGF6kEm3Cdy5bcC8+TDH0YuWNuifNM+YIc
+         bkg3iS6H0SnLsJLG9X9qKIirFHCBNN2ZlLqR/R96WHDVjFqGKrSuc2+b2DTyLa7NClB7
+         rd6/qwNgPkJVnmBAXzsClLPNa1irglimlWirw=
+In-Reply-To: <alpine.DEB.2.00.1104262007050.2868@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Tue, 26 Apr 2011, Mr Dash Four wrote:
 
-> > The hash:*port* types have got a new revision due to the introduced SCTP and
-> > UDPLITE support. The ipset package contains the matching kernel modules, the
-> > kernel tree is a little bit behind.
-> >   
-> I see, the ipset files in the kernel version and the kernel files in the ipset
-> package are out of sync then, right?
-> 
-> Would I be able to successfully split this up by using the source files in the
-> kernel/ directory of the ipset 6.4 package and move them over to the ipset
-> kernel source directory, whilst keeping all the make/configuration files in
-> the ipset kernel directory (Kbuild and alike) intact?
-> 
-> Would that solve the above problem (keeping/building the ipset package as a
-> whole is *not* an option for me, before you ask)? I also assume that the
-> kernel files in the ipset package are newer as the above error suggests,
-> right?
+> You can copy over the files (header files too) from the ipset package to 
+> the kernel tree.
+>   
+Actually, what I did was to create 1 mega patch with 1) the difference 
+between .39-rc4 and .35-88 (the latest stable kernel released by Fedora) 
+as far as the ipset kernel modules are concerned; 2) all 
+menuconfig-related ipset settings (so that when I run make menuconfig I 
+could select the ipset settings properly); and 3) the difference between 
+.39-rc4 (git as of 24 April) and ipset 6.4 (the kernel part).
 
-You can copy over the files (header files too) from the ipset package to 
-the kernel tree.
+Applied it successfully to the kernel source tree and I am now building 
+it (.35.12-88). If/When it finishes I'll install it on my test harness 
+here and will see how it goes. I briefly looked at the differences 
+between the 6.4 release and the latest kernel modules I've had from that 
+git and they are quite extensive indeed.
 
-If I dropped supporting kernels between 2.6.34-2.6.37, the sources would 
-be identical in the ipset package and an updated kernel tree.
+One thing I also noticed - in the kernel part of v6.4 you have 
+"-DCONFIG_IP_SETMAX" extra CFLAGS defined, but that seems to be missing 
+from the git kernel tree - is that on purpose or is this new to be added 
+later on?
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+
+By the time I typed this the kernel build has completed successfully. 
+Installation and testing follows...
