@@ -1,49 +1,86 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
-Subject: Re: ipset maximal/minimal revision conflict
-Date: Tue, 26 Apr 2011 20:25:37 +0100
-Message-ID: <4DB71C31.6030106@googlemail.com>
-References: <4DB6A9A5.5070301@googlemail.com> <alpine.DEB.2.00.1104261558430.1834@blackhole.kfki.hu> <4DB6DF66.6040009@googlemail.com> <alpine.DEB.2.00.1104262007050.2868@blackhole.kfki.hu>
+From: "Becskei Robert" <robert@capriolo.com>
+Subject: RE: Forward Rule, Client access only specific ip's, rest of world access client unrestricted.
+Date: Tue, 26 Apr 2011 22:03:17 +0200
+Message-ID: <000501cc044c$fc592cf0$f50b86d0$@com>
+References: <000501cc040b$e0151090$a03f31b0$@com> <4DB6ED63.6040502@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:message-id:disposition-notification-to:date
-         :from:user-agent:mime-version:to:cc:subject:references:in-reply-to
-         :content-type:content-transfer-encoding;
-        bh=9AtMnX5cns1FCjctL4aadeXdCbXHmff7gVkh4vMJhQ4=;
-        b=lV3klkYV1ctI36BFmTDtwEvb0ZfhDgkpfGF6kEm3Cdy5bcC8+TDH0YuWNuifNM+YIc
-         bkg3iS6H0SnLsJLG9X9qKIirFHCBNN2ZlLqR/R96WHDVjFqGKrSuc2+b2DTyLa7NClB7
-         rd6/qwNgPkJVnmBAXzsClLPNa1irglimlWirw=
-In-Reply-To: <alpine.DEB.2.00.1104262007050.2868@blackhole.kfki.hu>
+In-Reply-To: <4DB6ED63.6040502@riverviewtech.net>
+Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: 'Grant Taylor' <gtaylor@riverviewtech.net>
+Cc: netfilter@vger.kernel.org
+
+Thank you very much Grant!,
+
+I've did it like this :
+
+iptables -A FORWARD -s 192.168.220.10 -d 192.168.200.200 -j ACCEPT
+iptables -A FORWARD -s 192.168.220.10 -m state --state ESTABLISHED,RELATED
+-j ACCEPT
+iptables -A FORWARD -s 192.168.220.10 -j DROP
+
+Trough OpenVPN the device connected (192.168.220.10) , I was able to access
+192.168.200.200 from the device a webpage, then when I've
+Tried to access 192.168.205.15 another webpage it timed out , probably drop.
+
+Then I've tried to ping device from 192.168.200.200 , it worked.
+Then I've tried to ping device from 192.168.201.195 , it worked.
+
+I'm only writing this back, because I'm double / triple checking that I've
+did it the right way. 
+
+Sincerely
+Robert 
 
 
-> You can copy over the files (header files too) from the ipset package to 
-> the kernel tree.
->   
-Actually, what I did was to create 1 mega patch with 1) the difference 
-between .39-rc4 and .35-88 (the latest stable kernel released by Fedora) 
-as far as the ipset kernel modules are concerned; 2) all 
-menuconfig-related ipset settings (so that when I run make menuconfig I 
-could select the ipset settings properly); and 3) the difference between 
-.39-rc4 (git as of 24 April) and ipset 6.4 (the kernel part).
 
-Applied it successfully to the kernel source tree and I am now building 
-it (.35.12-88). If/When it finishes I'll install it on my test harness 
-here and will see how it goes. I briefly looked at the differences 
-between the 6.4 release and the latest kernel modules I've had from that 
-git and they are quite extensive indeed.
+-----Original Message-----
+From: netfilter-owner@vger.kernel.org
+[mailto:netfilter-owner@vger.kernel.org] On Behalf Of Grant Taylor
+Sent: Tuesday, April 26, 2011 18:06
+To: Mail List - Netfilter
+Subject: Re: Forward Rule, Client access only specific ip's, rest of world
+access client unrestricted.
 
-One thing I also noticed - in the kernel part of v6.4 you have 
-"-DCONFIG_IP_SETMAX" extra CFLAGS defined, but that seems to be missing 
-from the git kernel tree - is that on purpose or is this new to be added 
-later on?
+On 04/26/11 07:17, Becskei Robert wrote:
+> I have a problem here, I have a client, which should only be able to
+access
+> a few ip's and not the rest. But the rest of my network should be allowed
+to
+> access this client unrestricted (that is if they initiate the connection).
+...
+> What I want is :
+> - Client should be able to only access a few selected ip's (see above)
+> - Client should not be able to access anything else
+> - BUT! If someone from the network initiates a connection to the client,
+be
+> it ping, vnc, or whatever it should be allowed ( I don't know how to do
+> this)
+
+This should be possible and relatively easy to do.
+
+> If someone can please help me :) . Thank you
+
+You are asking for stateful packet inspection, just like you are 
+probably using to filter traffic coming back in from the internet.
+
+Try adding a rule like the following somewhere before your DROP rule.
+
+iptables -A FORWARD -s 192.168.220.28 -m state --state 
+ESTABLISHED,RELATED -j ACCEPT
+
+This will allow reply traffic back out while still allowing you to 
+control everything else like you are wanting to do.
 
 
-By the time I typed this the kernel build has completed successfully. 
-Installation and testing follows...
+
+Grant. . . .
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
