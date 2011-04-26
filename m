@@ -1,44 +1,51 @@
-From: "Becskei Robert" <robert@capriolo.com>
-Subject: Forward Rule, Client access only specific ip's, rest of world access client unrestricted.
-Date: Tue, 26 Apr 2011 14:17:13 +0200
-Message-ID: <000501cc040b$e0151090$a03f31b0$@com>
+From: carlopmart <carlopmart@gmail.com>
+Subject: Re: Using source nat to discriminate traffic
+Date: Tue, 26 Apr 2011 14:42:43 +0200
+Message-ID: <4DB6BDC3.1070306@gmail.com>
+References: <4DB68B40.2030806@gmail.com> <4DB6B471.7000805@atc.tcs.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-us
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:message-id:date:from:user-agent:mime-version:to
+         :subject:references:in-reply-to:content-type
+         :content-transfer-encoding;
+        bh=tI6UZjffbTebv7ANC1d/ZUZBXW7UB9oFl+yG1OBsuw0=;
+        b=utihwZ1z6wIKymlkgXudOZ5+cduMvP9YpWmLoHo5huZN83hDclHzjTLkEteku69+X2
+         7n9iyLuKUFPpoK7mWcHe4SgamXIhrqC7HfF+NILvMzcIsHZtoJwx/A0S6ucUWgkxtcJ0
+         nLhGMAcU/3uME2wdKv0CUrj9UCfmhxkCPzkPw=
+In-Reply-To: <4DB6B471.7000805@atc.tcs.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello List,
+On 04/26/2011 02:02 PM, Vigneswaran R wrote:
+> On 04/26/2011 02:37 PM, carlopmart wrote:
+>> - BBDD_1 can only be accessed by ip address 172.21.2.2.
+>> - BBDD_2 can only be accessed by ip address 172.21.2.3
+>>
+>> Both ip address, 172.21.2.2 and 172.21.2.3, are assigned to the first
+>> host that acts as a mysql client. Latest release of mysql client
+>
+> IMHO, if both the IPs are bound to the same host in a permanent basis,
+> it would be better (request the admin) to change the ACLs so that both
+> the databases (BBDD_1 and BBDD_2) are allowed from the same IP (either
+> 172.21.2.2 or 172.21.2.3). Then as you know, your iptables rule will
+> work for both databases.
+>
+>
+> Regards,
+> Vignesh
+> --
 
-I have a problem here, I have a client, which should only be able to access
-a few ip's and not the rest. But the rest of my network should be allowed to
-access this client unrestricted (that is if they initiate the connection).
-
-Currently I'm using the following rules, which indeed allows client to only
-access a few ip's , the rest is dropped. Which is ok for client , but not ok
-for lan since if someone else wants to access the client they are also
-dropped.
-
-1. iptables -A FORWARD -s 192.168.220.28 -d 192.168.205.55 -j ACCEPT
-2. iptables -A FORWARD -s 192.168.220.28 -d 192.168.205.15 -j ACCEPT
-3. iptables -A FORWARD -s 192.168.220.28 -d 192.168.205.49 -j ACCEPT
-4. iptables -A FORWARD -s 192.168.220.28 -d 192.168.205.51 -j ACCEPT
-5. iptables -A FORWARD -s 192.168.220.28 -d 192.168.205.44 -j ACCEPT
-6. iptables -A FORWARD -s 192.168.220.28 -d 192.168.205.33 -j ACCEPT
-7. iptables -A FORWARD -s 192.168.220.28 -j DROP
-
-What I want is :
-- Client should be able to only access a few selected ip's (see above)
-- Client should not be able to access anything else
-- BUT! If someone from the network initiates a connection to the client, be
-it ping, vnc, or whatever it should be allowed ( I don't know how to do
-this)
+Thanks Vignesh. Yes, your solution is perfectly and correct. But exists 
+a problem: this hosts is included on a cluster (RHCS) with three nodes 
+(in three weeks, will be six nodes). Service can run on a hostA, hostB 
+or hostC ...
 
 
-If someone can please help me :) . Thank you
-
-Robert
-
+-- 
+CL Martinez
+carlopmart {at} gmail {d0t} com
