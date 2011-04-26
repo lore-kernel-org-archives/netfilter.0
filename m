@@ -1,43 +1,56 @@
-From: Ricky Huang <rhhuang@soe.ucsd.edu>
-Subject: Using NFQUEUE rule on INPUT but yet still receiving packets on OUTPUT
-Date: Mon, 25 Apr 2011 18:01:36 -0700
-Message-ID: <C6AF76D8-2438-4BB1-9677-A598E5D62200@soe.ucsd.edu>
-Mime-Version: 1.0 (Apple Message framework v1084)
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: carlopmart <carlopmart@gmail.com>
+Subject: Using source nat to discriminate traffic
+Date: Tue, 26 Apr 2011 11:07:12 +0200
+Message-ID: <4DB68B40.2030806@gmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:message-id:date:from:user-agent:mime-version:to
+         :subject:content-type:content-transfer-encoding;
+        bh=LwVx/XxyQUGtcO4yZXK+ddkuKME3Y9sOakbgylqpklk=;
+        b=ig6H9UlpczBJIw2JZUUGZ4cy7pewvUmHiuMsmnBq4sWuVky7dGmZJnV6u4qUIrimTa
+         nk9iZZBpztw9HNpj2D/Y/sl4x6/cL4Qd9bpPU79PRK5AxIgPUlGZtca46IX2EQv21jMA
+         btmFU1bBCLIUtmG59N68KVFT2m/3rp9GRXA+I=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
 Hi all,
 
-I am trying to write a userspace packet manipulator using libnetfilter_=
-queue and ran into this problem: after compiling nfqnl_test.c and added=
- the following ICMP rule to iptables 'iptables -A INPUT -s 0/0 -p ICMP =
--j NFQUEUE',  so no my table looks like:
-"
-Chain INPUT (policy ACCEPT)
-target     prot opt source               destination        =20
-NFQUEUE    icmp --  anywhere             anywhere            NFQUEUE nu=
-m 0
+  I have a problem using source nat rules to discriminate traffic on one 
+host. This host has several ip aliases assigned to provide several 
+services. Problem starts with mysql client. This host needs to access to 
+another host that acts as MySQL server. This MySQL server has some acls 
+configured to access databases, in this manner:
 
-Chain FORWARD (policy ACCEPT)
-target     prot opt source               destination
+  - BBDD_1 can only be accessed by ip address 172.21.2.2.
+  - BBDD_2 can only be accessed by ip address 172.21.2.3
 
-Chain OUTPUT (policy ACCEPT)
-target     prot opt source               destination
-"
+  Both ip address, 172.21.2.2 and 172.21.2.3, are assigned to the first 
+host that acts as a mysql client. Latest release of mysql client 
+contains an option to pass --bind-ip-address, but my mysql client 
+version not (and I can't do an upgrade due to a tecnical specifications).
 
-the callback in nfqnl_test.c fires regardless the machine is SENDING or=
- RECEIVING PINGs.
+  Then, I need to discrimanate traffic on mysql host client when it 
+tries to access to mysql server. I have found a partial solution putting 
+this iptables rule:
 
-I thought the rule 'iptables -A INPUT=85" hooks NFQUEUE to the INPUT ch=
-ain, meaning *only* the incoming ICMP packets get queued.  And when I P=
-ING /from/ the machine, it should go only go through OUTPUT chain (and =
-subsequently POSTROUTING chain).
+  iptables -t nat -A POSTROUTING -o eth1 -d 172.17.3.3 -p tcp --dport 
+3306 -j SNAT --to-source 172.21.2.2
 
+  This rule works ok when mysql client tries to access to BBDD_1, but 
+not when it tries to access to BBDD_2 because connects with 172.21.2.2 
+ip address and mysql host denies traffic.
 
-So why would the callback in nfqnl_test.c get called on both incoming a=
-nd outgoing PINGs?  Am I having some fundamental misunderstanding of th=
-e iptable rules?
+  Another point: mysql client host principal ip address is 172.21.2.1, 
+and I can't change it.
+
+  How can I resolve this?? Is it possible??
+
+-- 
+CL Martinez
+carlopmart {at} gmail {d0t} com
+
