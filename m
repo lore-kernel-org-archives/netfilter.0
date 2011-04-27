@@ -1,118 +1,80 @@
-From: Mike Hendrie <mike@hendrienet.com>
+From: Andrew Beverley <andy@andybev.com>
 Subject: Re: Proxy Filter iptable Settings
-Date: Wed, 27 Apr 2011 11:46:41 -0500
-Message-ID: <BANLkTin_yWWZ_Tmo=T_dsc9xujLtf6h1xA@mail.gmail.com>
+Date: Wed, 27 Apr 2011 18:24:02 +0100
+Message-ID: <1303925042.18916.20.camel@andybev-desktop>
 References: <BANLkTin=W-MWbPfrpqnmWDCMq9fGp5CvwQ@mail.gmail.com>
-	<1303885014.18916.10.camel@andybev-desktop>
-	<BANLkTikUnSoefT3Xy=O+43zWGEw3tgb7wQ@mail.gmail.com>
-	<4DB80945.8040304@atc.tcs.com>
-	<BANLkTiky5xV9yhr-1nq7cLOSmV1nGt=cKg@mail.gmail.com>
+	 <1303885014.18916.10.camel@andybev-desktop>
+	 <BANLkTikUnSoefT3Xy=O+43zWGEw3tgb7wQ@mail.gmail.com>
+	 <4DB80945.8040304@atc.tcs.com>
+	 <BANLkTiky5xV9yhr-1nq7cLOSmV1nGt=cKg@mail.gmail.com>
+	 <4DB817A5.3020604@atc.tcs.com>
+	 <BANLkTi=y37mzCOenHg8EbR_u9PpoTVceGA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BANLkTiky5xV9yhr-1nq7cLOSmV1nGt=cKg@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1303925046; bh=6pxOy9ICk7vG7MS35UXbLe0ty9FYVLriwqFK/
+	U4zrVM=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
+	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=QXZRhxQH
+	L8ze3bBwW9lFcz4issL4FoX1UNr9JhSXtj5PjQlAxiqOAa42zusT4O4zLkB+8Mk8BlW
+	bOk3Ncq16SZVjEupCNnUJnJ4bsj6FP7sLyXM8VFR79IU/BocPPxyZOfDdyXG3urEy1K
+	fMmSDg8J1zDZMt9nJcYl0Jjyti4tQ=
+In-Reply-To: <BANLkTi=y37mzCOenHg8EbR_u9PpoTVceGA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Vigneswaran R <vignesh@atc.tcs.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Mike Hendrie <mike@hendrienet.com>
+Cc: Vigneswaran R <vignesh@atc.tcs.com>, netfilter@vger.kernel.org
 
-Is there a trick to getting a secureNAT connection to work through the
-proxy server with the following iptables setting? Do I have to make
-another rule like the one below for each port that is required?
+On Wed, 2011-04-27 at 08:41 -0500, Mike Hendrie wrote:
+> Alright. Please let me explain.
+> 
+> I am implementing squid in the school.
+> 
+> Squid box 172.20.0.3
+> All workstations gateway are 172.20.0.3
+> All workstations proxy settings are 172.30.0.3:8080
+> 
 
-iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j REDIRECT
---to-port 8080
+Ah, that makes more sense.
 
-Thank you
+> The proxy settings are working fine for blocking content, however, I
+> am having the following issues:
+> 
+> The school's web server is hosted locally.
 
-On Wed, Apr 27, 2011 at 7:45 AM, Mike Hendrie <mike@hendrienet.com> wro=
-te:
-> I tried:
-> sudo =A0iptables -t nat -A PREROUTING -i eth1 -p tcp --dport 80 -j
-> REDIRECT --to- 8080
-> iptables -t nat -A POSTROUTING -s 172.20.0.0/16 -j MASQUERADE
->
-> And still ended up with the same message:
->
-> ERROR
-> The requested URL could not be retrieved
->
-> ---------------------------------------------------------------------=
------------
->
-> The following error was encountered while trying to retrieve the URL:
-> http://twinlakes.k12.wi.us/
->
-> Connection to 216.56.4.133 failed.
->
-> The system returned: (110) Connection timed out
->
-> The remote host or network may be down. Please try the request again.
->
-> Your cache administrator is webmaster.
->
->
->
->
-> ---------------------------------------------------------------------=
------------
->
-> Generated Wed, 27 Apr 2011 12:46:38 GMT by localhost (squid/2.7.STABL=
-E9)
->
->
->
->
-> On Wed, Apr 27, 2011 at 7:17 AM, Vigneswaran R <vignesh@atc.tcs.com> =
-wrote:
->> On 04/27/2011 04:56 PM, Mike Hendrie wrote:
->>>
->>> Thanks for the response. Once I implemented your suggestion, I get =
-the
->>> following error when trying to access the school's website from WIT=
-HIN
->>> the LAN. Why can it not find the URL?
->>>
->>> ERROR
->>>
->>> The requested URL could not be retrieved
->>>
->>> The following error was encountered while trying to retrieve the UR=
-L:
->>> http://www.twinlakes.k12.wi.us/
->>>
->>> Connection to 216.56.4.133 failed.
->>> The system returned: (110) Connection timed out
->>
->> I assume that you want to give access to the Internet for all the ma=
-chines
->> in the LAN, through your "PROXY" server. ie., making the server an I=
-nternet
->> Gateway.
->>
->> If so, the following should work,
->>
->> iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -j MASQUERADE
->>
->> Here, replace the 192.168.1.0/24 with the correct IP address range u=
-sed in
->> your LAN. Please ensure that all the machines have the default route
->> pointing to the server.
->>
->> This allows, all kinds of traffic like http, ftp, ssh etc., to the p=
-ublic
->> sites. If necessary, add further iptables rules to restrict this. Ho=
-pe this
->> helps.
->>
->>
->> Regards,
->> Vignesh
->> --
->> To unsubscribe from this list: send the line "unsubscribe netfilter"=
- in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->>
->
+Locally where? On the same server as Squid (172.20.0.3)?
+
+>  When the workstations try
+> to access the site via the public domain name, it fails.
+
+Okay... well there could be a lot of reasons:
+
+Your workstations will be requesting the URL from the Squid server which
+will be resolving the public IP address of the website. The Squid server
+will therefore need to access the public IP address, which comes back to
+the question above as to where on the network the website is hosted.
+
+You might need to set the DNS on the proxy server to resolve the website
+to the local IP address.
+
+Depending where you host your public DNS, you may also have to make
+adjustments to that.
+
+The web server itself will need to be listening on the right port to
+serve the request - it may only be serving requests on the public facing
+interface.
+
+In short, more information is needed about your exact set up to answer
+the question.
+
+> Also, there are several applications the school uses. These
+> applications range from port 5000-5005.
+> 
+
+Where are the applications hosted? On the internal network, on the
+public internet, on the proxy server?
+
+Andy
+
+
