@@ -1,68 +1,43 @@
-From: Vigneswaran R <vignesh@atc.tcs.com>
-Subject: Re: Using source nat to discriminate traffic
-Date: Wed, 27 Apr 2011 11:07:46 +0530
-Message-ID: <4DB7ABAA.4070604@atc.tcs.com>
-References: <4DB68B40.2030806@gmail.com> <4DB6B471.7000805@atc.tcs.com> <4DB6BDC3.1070306@gmail.com>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: Proxy Filter iptable Settings
+Date: Wed, 27 Apr 2011 07:16:54 +0100
+Message-ID: <1303885014.18916.10.camel@andybev-desktop>
+References: <BANLkTin=W-MWbPfrpqnmWDCMq9fGp5CvwQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4DB6BDC3.1070306@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1303885014; bh=EcD/KxdUhBenBu4L9N6H5kxd0nX3csF8bHg+/
+	43M1fA=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
+	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=fCfmCE05
+	bS0dPoBVbxwBx8wI8EaaCFQeHskBGRBRTXSdG3vWRAy7D43Jx9xlV9hDKXUaHtbri41
+	nWB2MWRnoA/NsFU8ZSZU8ZZGySsoAEsZD11JhdcTZTxCZiqIQBP96twrqgHsBMwMxVo
+	Jy3QjMDzfYIJ/BuFI2LWlFyG4CIss=
+In-Reply-To: <BANLkTin=W-MWbPfrpqnmWDCMq9fGp5CvwQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Mike Hendrie <mike@hendrienet.com>
+Cc: netfilter@vger.kernel.org
 
-On 04/26/2011 06:12 PM, carlopmart wrote:
-> Thanks Vignesh. Yes, your solution is perfectly and correct. But exists
-> a problem: this hosts is included on a cluster (RHCS) with three nodes
-> (in three weeks, will be six nodes). Service can run on a hostA, hostB
-> or hostC ...
+On Tue, 2011-04-26 at 22:07 -0500, Mike Hendrie wrote:
+> All,
+> I have a PROXY server with 2 Nics.  One is public facing NIC, the
+> other is private facing Nic.
 
-Ok. In that case I don't have any solutions using iptables. I can 
-suggest the following two alternatives for your consideration.
+I assume that you mean a web proxy and that all your clients already use
+the server as their default gateway?
 
-1. Is there any application level change that you can make? You told 
-already that you won't be able to upgrade mysql client for technical 
-reasons. However, if the actual problem exists between the [web] 
-services which require DB access and the MySQL server, you can look for 
-options which allow us to specify the source IP while making the socket 
-connection with MySQL server.
+> What would be the best settings to force all private IPs, on the LAN,
+> to pass through the Proxy server?
 
-eg., if your website is using PHP to make connections to MySQL server, 
-then the following code may help,
+Depending on the answer to the above, something like this:
 
-On website1,
+iptables -t nat -A PREROUTING -i eth0 -p tcp --dport 80 \
+	-j REDIRECT --to-port 3128
 
-$sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-socket_bind($sock, '172.21.2.2');
-socket_connect($sock, '172.17.3.3', 3306);
-//code to access the BBDD_1
+Your proxy server will need to support transparent proxying.
 
-On website2,
+Andy
 
-$sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-socket_bind($sock, '172.21.2.3');
-socket_connect($sock, '172.17.3.3', 3306);
-//code to access the BBDD_2
 
-The above code snippet is only to give some idea and is neither complete 
-nor tested. Similar code must be available for other web technologies too.
-
-ref:
-[1] 
-<http://stackoverflow.com/questions/4765269/specify-source-ip-using-fsockopen>
-[2] Example #1 in <http://in2.php.net/manual/en/function.socket-bind.php>
-
-2. Another option would be using Virtual Machines (VMs). Run the 
-services inside different VMs and migrate the VMs instead of services 
-across hosts.
-
-ref: 
-<http://phparmor.com/php-source-code/how-can-i-bind-to-specific-ip-address-for-outbound-phpmysql-connection-linux/>
-
-Note: Since my suggestions are not related to iptables, our discussion 
-seems to be off topic for this list. If you have any other queries, 
-please reply to me.
-
-Regards,
-Vignesh
