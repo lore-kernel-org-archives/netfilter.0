@@ -1,80 +1,81 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: Proxy Filter iptable Settings
-Date: Wed, 27 Apr 2011 18:24:02 +0100
-Message-ID: <1303925042.18916.20.camel@andybev-desktop>
-References: <BANLkTin=W-MWbPfrpqnmWDCMq9fGp5CvwQ@mail.gmail.com>
-	 <1303885014.18916.10.camel@andybev-desktop>
-	 <BANLkTikUnSoefT3Xy=O+43zWGEw3tgb7wQ@mail.gmail.com>
-	 <4DB80945.8040304@atc.tcs.com>
-	 <BANLkTiky5xV9yhr-1nq7cLOSmV1nGt=cKg@mail.gmail.com>
-	 <4DB817A5.3020604@atc.tcs.com>
-	 <BANLkTi=y37mzCOenHg8EbR_u9PpoTVceGA@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ipset v6.latest bugs?
+Date: Wed, 27 Apr 2011 23:27:54 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1104272323570.7833@blackhole.kfki.hu>
+References: <4DB5614C.3040808@googlemail.com> <alpine.DEB.2.00.1104252144230.31185@blackhole.kfki.hu> <4DB5DB3A.8000708@googlemail.com> <alpine.DEB.2.00.1104252248090.31417@blackhole.kfki.hu> <4DB61410.4070202@googlemail.com> <alpine.DEB.2.00.1104261542470.1834@blackhole.kfki.hu>
+ <4DB6DEFD.6020101@googlemail.com> <4DB752D9.9010807@googlemail.com> <alpine.DEB.2.00.1104270905450.5222@blackhole.kfki.hu> <4DB80579.7090208@googlemail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1303925046; bh=6pxOy9ICk7vG7MS35UXbLe0ty9FYVLriwqFK/
-	U4zrVM=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
-	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=QXZRhxQH
-	L8ze3bBwW9lFcz4issL4FoX1UNr9JhSXtj5PjQlAxiqOAa42zusT4O4zLkB+8Mk8BlW
-	bOk3Ncq16SZVjEupCNnUJnJ4bsj6FP7sLyXM8VFR79IU/BocPPxyZOfDdyXG3urEy1K
-	fMmSDg8J1zDZMt9nJcYl0Jjyti4tQ=
-In-Reply-To: <BANLkTi=y37mzCOenHg8EbR_u9PpoTVceGA@mail.gmail.com>
+In-Reply-To: <4DB80579.7090208@googlemail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Mike Hendrie <mike@hendrienet.com>
-Cc: Vigneswaran R <vignesh@atc.tcs.com>, netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mr Dash Four <mr.dash.four@googlemail.com>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Wed, 2011-04-27 at 08:41 -0500, Mike Hendrie wrote:
-> Alright. Please let me explain.
+On Wed, 27 Apr 2011, Mr Dash Four wrote:
+
+> > > 2. Take a note when I try to add 4608 elements to the test set - I did
+> > > that 3
+> > > times with completely different results - it seems that ipset triggers an
+> > > error when it feels like it.
+> > 
+> > The hashes are created with a random hash key calculation parameter: if the
+> > hash is lucky enough, you can stuff the data into it without reaching the
+> > clashing limit and without the need to resize the hash.
+> >   
+> I see, so the error is triggered at random because the randomly generated hash
+> sometimes is able to "stuff the data", as you put it, without reaching the
+> limit, but sometimes it doesn't and this, then, triggers the error, is that
+> correct?
+
+Yes, exactly.
+ 
+> > > 3. Following on from the previous point, when I try to add more elements
+> > > than
+> > > the established "error threshold" in point 2 above, I also get mixed
+> > > results
+> > > (attempting to add 4864 elements gives me 2 successes and 2 failures after
+> > > 4
+> > > attempts made when I re-created the test set from scratch).
+> > >     
+> > 
+> > The same as above: if the clash limit is not reached, the hash happily can
+> > accept more data. If it's reached, resizing is triggered which is
+> > successfully done, but adding elements starts again with the already added
+> > element. That needs to be fixed.
+> >   
+> I think I understand it now, thanks for the explanation. I hope that you would
+> be able to fix this bug.
+
+I'm attending an annual conference this week, so it seems I won't have 
+time to work on the bugfix before the weekend, sorry.
+ 
+> On a separate note, two days ago I was finally able to split ipset from
+> xtables-addons and build it as a separate package (i.e. construct a .spec
+> file, then build and install rpm based on that) while building only the
+> userspace part (assuming the kernel part will stay with the kernel). This is
+> by no means finished (there are some things still left to be ironed out -
+> kernel modules dependency check, changelog history to be added etc), but I
+> thought you may be interested in this.
 > 
-> I am implementing squid in the school.
-> 
-> Squid box 172.20.0.3
-> All workstations gateway are 172.20.0.3
-> All workstations proxy settings are 172.30.0.3:8080
-> 
+> If so, let me know and I'll send it to you (the important part is the .spec
+> file and a separate patch which removes the build routines for the kernel
+> modules).
 
-Ah, that makes more sense.
+I don't really see why you have to split ipset from xtables-addons. What's 
+wrong with the standalone ipset package, what forces you to do so?
+ 
+> I am in a process of doing the same with version 4.5 of ipset (I was able to
+> successfully build the .35-88 version of the kernel with ipset 4.5 kernel
+> modules happily integrated into it yesterday), even though ipset 4.5 does not
+> have pkgconfig files I intend to create these - hopefully today.
 
-> The proxy settings are working fine for blocking content, however, I
-> am having the following issues:
-> 
-> The school's web server is hosted locally.
-
-Locally where? On the same server as Squid (172.20.0.3)?
-
->  When the workstations try
-> to access the site via the public domain name, it fails.
-
-Okay... well there could be a lot of reasons:
-
-Your workstations will be requesting the URL from the Squid server which
-will be resolving the public IP address of the website. The Squid server
-will therefore need to access the public IP address, which comes back to
-the question above as to where on the network the website is hosted.
-
-You might need to set the DNS on the proxy server to resolve the website
-to the local IP address.
-
-Depending where you host your public DNS, you may also have to make
-adjustments to that.
-
-The web server itself will need to be listening on the right port to
-serve the request - it may only be serving requests on the public facing
-interface.
-
-In short, more information is needed about your exact set up to answer
-the question.
-
-> Also, there are several applications the school uses. These
-> applications range from port 5000-5005.
-> 
-
-Where are the applications hosted? On the internal network, on the
-public internet, on the proxy server?
-
-Andy
-
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
