@@ -1,71 +1,35 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: AW: Best practice: Check --syn in PREROUTING with DNAT
-Date: Thu, 28 Apr 2011 17:38:26 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1104281730290.22058@obet.zrqbmnf.qr>
-References: <9F69795E29C890408AC2DAF646C89BB3799D4F7DC3@MAILBOX.arc.local> <alpine.LNX.2.01.1104281631010.7072@obet.zrqbmnf.qr> <9F69795E29C890408AC2DAF646C89BB3799D4F7DE4@MAILBOX.arc.local>
+From: Alessandro Vesely <vesely@tana.it>
+Subject: Re: iptables enough to handle brute force attacks?
+Date: Thu, 28 Apr 2011 19:31:16 +0200
+Message-ID: <4DB9A464.3010709@tana.it>
+References: <pvplp6t1hsoea6n5sriuna0375k5s79pmm@4ax.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <9F69795E29C890408AC2DAF646C89BB3799D4F7DE4@MAILBOX.arc.local>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=tana.it; s=test;
+	t=1304011876; bh=SBrsgVhCy0S7cSB90APr2TjyAnKeUKxab0ZQjo6WVfA=;
+	l=369;
+	h=Message-ID:Date:From:MIME-Version:To:CC:References:In-Reply-To:
+	 Content-Transfer-Encoding;
+	b=LTRZVrvpKlI7Tfk6xa14g2uHzOJXVeimAylin9uPOlKWNr1+MANTkJlKXkhHA+lv7
+	 4hjUC039fbeNEbfOO2fRlAbfeoCi6LSyJMDhpv3TXIuZyNhqFLzrbMvBZUaTIUTpmI
+	 ex9Y7bUTdYKOnHBSHAAC+TxVnB4JzzLngkynHjZQ=
+In-Reply-To: <pvplp6t1hsoea6n5sriuna0375k5s79pmm@4ax.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Fiedler Roman <Roman.Fiedler@ait.ac.at>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Gilles <gilles.ganault@free.fr>
+Cc: netfilter@vger.kernel.org
 
+Sorry for chiming in late...
 
-On Thursday 2011-04-28 16:52, Fiedler Roman wrote:
->> >Is there a significant benefit when checking correct TCP flags in
->> PREROUTING, e.g. with
->> >
->> >Iptables -t nat -A PREROUTING --destination a.b.c.d -p tcp -m tcp --dport 80
->> --syn -j DNAT --to-destination w.x.y.z
->> 
->> It would restrict "NEW" tcp connections to begin with SYN and would not
->> consider translating connections that get picked up after a flush of
->> the CT table, for example.
->
->So it is decided in PREROUTING if a connection is new or not?
+On 05/Apr/11 12:02, Gilles wrote:
+> I'll use iptables to prevent hackers from trying to register.
+> 
+> [...]
+> 
+> This is on an embedded Linux, so there isn't enough RAM to run
+> Python-based fail2ban.
 
-nf_ct initial classification is hooked to NF_INET_PRE_ROUTING |
-NF_INET_LOCAL_OUT at priority before nf_nat.
-
->Using DNAT one
->can change an INVALID?? state connection to state NEW, perhaps even when
->natting to the same destination address?
-
-No. You need a non-NULL ct to be able to apply any tuple transformation,
-but INVALID is equal to ct==NULL.
-
->And is the CPU overhead for this PREROUTING action relevant? After a
->flush, in steady-state worst case, the firewall should have to track
->2x the connections before the flush (the packets for the broken
->conns and all clients could open up the same amount of conns as
->before flush),
-
-Flushing the list of NFCT connections does not change the state
-of the TCP/SCTP connections; nor will it mean more work for NFCT.
-
->so n packets per connection (x*ACK PSH, y*FIN, z*RST) will traverse
->DNAT, correct?
-
-The nat table (iptable_nat.ko) is a _configuration database_ (of
-sorts). The nf_nat.ko module still processes *all* packets - as such,
-the amount of work does not change (see above).
-
->> >... --destination w.x.y.z -p tcp -m tcp --dport 80 --syn -j ACCEPT
->> >... drop/reject with logging
->> 
->> -m state should ideally be -m conntrack.
->
->I checked the manpage, but I'm not sure what to use. From
->documentation, the -m conntrack --ctstate should also check virtual
->states, but is -m --state ESTABLISHED really different from -m
->conntrack --ctstate ESTABLISHED? If there is a significant
->difference (e.g one is deprecated or might allow access restriction
->bypass), this should be marked out in the iptables documentation
->more clearly.
-
--m state recieves no more feature updates. Yes, I agree about
-the documentation update and shall pursue that.
-
+This package is similar, but doesn't use Python (it uses Berkeley DB,
+though)  https://savannah.nongnu.org/projects/ipqbdb/
