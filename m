@@ -1,55 +1,50 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
-Subject: Re: ipset v6.latest bugs?
-Date: Wed, 27 Apr 2011 22:40:02 +0100
-Message-ID: <4DB88D32.60207@googlemail.com>
-References: <4DB5614C.3040808@googlemail.com> <alpine.DEB.2.00.1104252144230.31185@blackhole.kfki.hu> <4DB5DB3A.8000708@googlemail.com> <alpine.DEB.2.00.1104252248090.31417@blackhole.kfki.hu> <4DB61410.4070202@googlemail.com> <alpine.DEB.2.00.1104261542470.1834@blackhole.kfki.hu> <4DB6DEFD.6020101@googlemail.com> <4DB752D9.9010807@googlemail.com> <alpine.DEB.2.00.1104270905450.5222@blackhole.kfki.hu> <4DB80579.7090208@googlemail.com> <alpine.DEB.2.00.1104272323570.7833@blackhole.kfki.hu>
+From: Vigneswaran R <vignesh@atc.tcs.com>
+Subject: Re: Proxy Filter iptable Settings
+Date: Thu, 28 Apr 2011 12:06:22 +0530
+Message-ID: <4DB90AE6.9070909@atc.tcs.com>
+References: <BANLkTin=W-MWbPfrpqnmWDCMq9fGp5CvwQ@mail.gmail.com>	<1303885014.18916.10.camel@andybev-desktop>	<BANLkTikUnSoefT3Xy=O+43zWGEw3tgb7wQ@mail.gmail.com>	<4DB80945.8040304@atc.tcs.com>	<BANLkTiky5xV9yhr-1nq7cLOSmV1nGt=cKg@mail.gmail.com>	<4DB817A5.3020604@atc.tcs.com> <BANLkTi=y37mzCOenHg8EbR_u9PpoTVceGA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:message-id:disposition-notification-to:date
-         :from:user-agent:mime-version:to:cc:subject:references:in-reply-to
-         :content-type:content-transfer-encoding;
-        bh=MSBZ8KCv/ik1e60dwQFBFrVvlxwegMRk3ESCUE319Ig=;
-        b=k66e8QybPBmkU23CYY+9aZv+B+TvMxqT9RVvkzHnQdiyu50ZeqCSwYzPQ1Sx8+i3o7
-         58j7SCwCjc5z51Y8PflKWxKN4xNdIZiFhdSMHElVQDS4VyUlD9QEB61NnTFRGshcCZog
-         jCpEwqLu134ef4QrCIEC+oc9D8wAJp8MOkD2Y=
-In-Reply-To: <alpine.DEB.2.00.1104272323570.7833@blackhole.kfki.hu>
+In-Reply-To: <BANLkTi=y37mzCOenHg8EbR_u9PpoTVceGA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-
->> I think I understand it now, thanks for the explanation. I hope that you would
->> be able to fix this bug.
->>     
+On 04/27/2011 07:11 PM, Mike Hendrie wrote:
+> Squid box 172.20.0.3
+> All workstations gateway are 172.20.0.3
+> All workstations proxy settings are 172.30.0.3:8080
 >
-> I'm attending an annual conference this week, so it seems I won't have 
-> time to work on the bugfix before the weekend, sorry.
->   
-No worries, I will be using 4.5 for the time being particularly as I was 
-finally able to integrate it into the kernel (your "patch_kernel" script 
-did the donkey work though :-) ) and I was also able to "convert" ipset 
-4.5 to use pkgconfig (still testing it though), so when I am more or 
-less done I will be in a position to build (and use!) both generation 
-packages as a standalone software.
+> The proxy settings are working fine for blocking content, however, I
 
-> I don't really see why you have to split ipset from xtables-addons. What's 
-> wrong with the standalone ipset package, what forces you to do so?
->   
-I don't actually need xtables-addons for 80% of my boxes, so just 
-building the ipset package was perfect! On those machines I used to 
-compile xtables-addons just because I needed ipset, so it made more 
-sense to use ipset as standalone and save myself the hassle (and some 
-resources too).
+Does it mean that the proxy server gives restricted access to the 
+Internet for the machines behind it? Can they access the sites like 
+google.com (or whatever sites allowed)?
 
-I planned to do this for months, but wasn't able to due to time 
-constraints. I can now afford more time and I am glad I was able to 
-finally split it up. I am particularly pleased that I was able to 
-integrate it into the kernel, which saved me another headache of having 
-to deal with the bl**dy buildsys packages on Fedora which were needed to 
-build the kernel modules.
+> am having the following issues:
+>
+> The school's web server is hosted locally. When the workstations try
+> to access the site via the public domain name, it fails.
 
+If the answer is 'yes' to the above questions, your machines should be 
+able to access the school website as well, through the public IP.
+
+Please ensure that the machines in the LAN are not bypassing the proxy 
+for your school website. Because, we tend to bypass proxy for the school 
+website (in the browser settings), as it is hosted internally (on your 
+LAN, probably on the same machine where squid is running).
+
+Bypassing proxy works, if the Domain Name of your school website is 
+resolved into the local address. But, in your case, the Domain Name is 
+getting resolved into the public address. So, it should ideally go 
+through the proxy server.
+
+Also check, is there any existing iptables rule which is dropping packet 
+from your proxy server to your webserver (even if they are on the same 
+machine), unintentionally.
+
+
+Regards,
+Vignesh
