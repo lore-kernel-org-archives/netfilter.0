@@ -1,48 +1,37 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: nftables
-Date: Fri, 29 Apr 2011 12:06:46 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1104291137260.17790@obet.zrqbmnf.qr>
-References: <BANLkTikT_ETuEE2e7Khip9xJKFiDgBe7Qg@mail.gmail.com> <BANLkTik1LTarzTzAm_9OuD8XkhsXcpVCZg@mail.gmail.com>
+From: Mahmood Naderan <nt_mahmood@yahoo.com>
+Subject: can't initialize iptables table `filter'
+Date: Fri, 29 Apr 2011 03:45:20 -0700 (PDT)
+Message-ID: <642302.28729.qm@web111719.mail.gq1.yahoo.com>
+Reply-To: Mahmood Naderan <nt_mahmood@yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BANLkTik1LTarzTzAm_9OuD8XkhsXcpVCZg@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1304073920; bh=bsyW1Sb6jpy0jrPwerOAgBjxYgeFVOVtdbBP7/JqjRM=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Reply-To:Subject:To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=DUBvNks4el8VoidPdlbXbNuuGYQwVmSEjwtgHU4+LDp3GYX2uI0JoPnoGdmAYQ0wjjbovBnTZ/2TSF99P/XMinOL01LAAa9+IVM4Rk2ekxXNUJS2LleZFwhHuJlDtridZSRjfBQJ7/40f/8+gcnHApncN+L2CqNSscczfgAS1qA=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="utf-8"
-To: =?UTF-8?Q?Juraj_Gab=C4=8D=C3=ADk?= <juraj.gabcik@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
+Hi,
+I have setup a diskless cluster where there is a head node (server) and=
+ a computing node (client).=20
+While settingup, I installed an image of linux using debootstrap. There=
+ is no problem with that and=20
+the node can boot and I can login to that.
+=A0
+The problem is when I want to open a port in the client using iptables,=
+ I get some errors and have no
+idea about them.
+=A0
+root@client:/home/mahmood# iptables -A INPUT -p tcp -d 0/0 -s 0/0 --dpo=
+rt 4949=A0 -j ACCEPT
 
-On Friday 2011-04-29 11:33, Juraj Gab=C4=8D=C3=ADk wrote:
->
->I am interested in the background of the processing of packet after
->it's received by NIC: what queues it passes, where the rules can be
->applied etc. Neither I could find any information about whether
->nftables have the same structure of classes INPUT, OUTPUT and FORWARD
->as iptables.
->
->I need to compare the efficiency of the firewall created by iptables
->and nftables and I would be very grateful if you could explain to me
->the main differences between the processing of packet by means of
->iptables and nftables.
+=46ATAL: Could not load /lib/modules/2.6.32-24-server/modules.dep: No s=
+uch file or directory
+iptables v1.4.4: can't initialize iptables table `filter': iptables who=
+? (do you need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded.
 
-Differences:
+Any suggestion is welcomed.
 
-iptables (or more precisely the Xtables collective) uses a packed
-table and no "indirect interpreter"=C2=A0- a module like xt_u32 is
-optional=C2=A0-, which yields the speediest execution environment. This
-packing is important the larger the ruleset becomes, and the smaller
-the CPU caches are. It also has no limits on call depth.
-
-Xtables does not use the Netlink protocol yet for conveying changes
-to the kernel, but it is being pondered how to get it there. Netlink
-attributes have some worrying limitations and no consensus was yet
-reached on the packet format. The much-sought nlattr32 patches have
-not appeared yet either, so the protocol effort is staggering, but I
-hold high hopes someone is on nla32=C2=A0- meanwhile, I utilize the tim=
-e
-by doing precursor work on the userspace components instead (the
-option parsing patches posted=C2=A0- a large part of the code is reusab=
-le
-for a Netlink variant).
+// Naderan *Mahmood;
