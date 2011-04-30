@@ -1,65 +1,94 @@
-From: Mahmood Naderan <nt_mahmood@yahoo.com>
-Subject: Re: can't initialize iptables table `filter'
-Date: Fri, 29 Apr 2011 04:32:42 -0700 (PDT)
-Message-ID: <104125.36240.qm@web111712.mail.gq1.yahoo.com>
-References: <642302.28729.qm@web111719.mail.gq1.yahoo.com> <alpine.LNX.2.01.1104291246120.19355@obet.zrqbmnf.qr> <993639.25943.qm@web111704.mail.gq1.yahoo.com> <alpine.LNX.2.01.1104291305050.2679@obet.zrqbmnf.qr> <716679.51968.qm@web111703.mail.gq1.yahoo.com> <alpine.LNX.2.01.1104291310150.2679@obet.zrqbmnf.qr>
-Reply-To: Mahmood Naderan <nt_mahmood@yahoo.com>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: Proxy Filter iptable Settings
+Date: Sat, 30 Apr 2011 09:02:55 +0100
+Message-ID: <1304150575.1579.15.camel@andybev>
+References: <BANLkTin=W-MWbPfrpqnmWDCMq9fGp5CvwQ@mail.gmail.com>
+	 <1303885014.18916.10.camel@andybev-desktop>
+	 <BANLkTikUnSoefT3Xy=O+43zWGEw3tgb7wQ@mail.gmail.com>
+	 <4DB80945.8040304@atc.tcs.com>
+	 <BANLkTiky5xV9yhr-1nq7cLOSmV1nGt=cKg@mail.gmail.com>
+	 <4DB817A5.3020604@atc.tcs.com>
+	 <BANLkTi=y37mzCOenHg8EbR_u9PpoTVceGA@mail.gmail.com>
+	 <4DB90AE6.9070909@atc.tcs.com>
+	 <BANLkTikM3czG=D7yq3UHhQdt-pUcjpbKSA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1304076762; bh=Y/AMM2I2ImlirBs7CTyeL/XIqmktAjhIUt9BlbklgqM=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:References:Date:From:Reply-To:Subject:To:Cc:In-Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=6GTmY9rk2FFinancEW7ICBz+wDwOGBE1NIT5AeC7Q4b3YUBqNiImZiEYFoCamQYbuu5nhBCnGsJ/SCZJGt8Z8Cp2MiAlp38cbma8FpfS72YOVlSdfFR/RwQPP8P/iIX0v3IG7omEZKO3cIwuPLjMTJ0uW0fGpIG6JqkB3q+fQ5g=
-In-Reply-To: <alpine.LNX.2.01.1104291310150.2679@obet.zrqbmnf.qr>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1304150582; bh=115n0U0KvjAvQCb+V80sE1wp6kabd8iUzxUCK
+	EbDrYc=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
+	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=s/plpMGX
+	suIVJY6KD2JwmtnKB8RqfsPVxAgYlE9UbvD1MKwM+lhxDGmGIFIZjvOt75VCHHPTDZ3
+	LnVrtOVBGaGmomWyTGM/sY269b4u3N9SZlhWc/2qlZBg40U/vIeRtWvEYpfAstz3yV/
+	PdEuAHmOgmB7zy+qMGran0r+zvxZ0=
+In-Reply-To: <BANLkTikM3czG=D7yq3UHhQdt-pUcjpbKSA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Mike Hendrie <mike@hendrienet.com>
+Cc: Vigneswaran R <vignesh@atc.tcs.com>, netfilter@vger.kernel.org
 
->you still need a function /lib/modules/* directory - and that is
->what seems to be afoul in your system.
+On Thu, 2011-04-28 at 16:43 -0500, Mike Hendrie wrote:
+> All users can get to Google and do searches just fine. I am having
+> funny issues with the a couple of application.
+> 
+> I do not understand why I am having the below issues. Could this be
+> because of the iptables?
 
-I checked that folder and it is empty. Maybe these questions are not re=
-lated to this list
-but I will be glad if you help me what to do.
-=A0
-Thanks.
-=A0
-// Naderan *Mahmood;
+Probably, although I would say more accurately because of UFW. It's
+quite difficult to diagnose problems with automatically generated
+iptables rules.
 
+I would say you are better off disabling UFW, and starting with just the
+rules you need to get everything working:
 
------ Original Message -----
-=46rom: Jan Engelhardt <jengelh@medozas.de>
-To: Mahmood Naderan <nt_mahmood@yahoo.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Sent: Friday, April 29, 2011 3:42 PM
-Subject: Re: can't initialize iptables table `filter'
+# Flush all tables
+iptables -t nat -F
+iptables -t mangle -F
+iptables -t filter -F
 
-On Friday 2011-04-29 13:09, Mahmood Naderan wrote:
+# Set the default policy to ACCEPT:
+iptables -P PREROUTING ACCEPT
+iptables -P INPUT ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -P POSTROUTING ACCEPT
 
->>But I talked about the kernel.
->
->Sorry but I am confused. What is wrong with kernel?=20
+# Enable packet forwarding:
+echo 1 > /proc/sys/net/ipv4/ip_forward
 
-Quoting myself from earlier:
+# Setup NAT:
+iptables -t nat -A POSTROUTING -o $ext_IF -j MASQUERADE
 
->>Make sure you kernel is configured with these enabled, and don't forg=
-et=20
->>to actually provide the modules, if not already built-in, because it=20
->>does have the looks of a crippled installation, judging from the miss=
-ing=20
->>modules.dep.
+Once that works, you can then start blocking ports.
 
->Since the client can boot and I can login to that,=A0I don't think any=
-=20
->thing wrong=A0with kernel.
->
->Can you exaplain more?
+> - There is FileMaker application that uses ports 5000 - 5005 to
+> connect to an external server that cannot find the external server.
+> ??StatefulNAT translation.??
 
-Just booting the kernel is only half of the work. In most cases,
-you still need a function /lib/modules/* directory - and that is
-what seems to be afoul in your system.
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at=A0 http://vger.kernel.org/majordomo-info.html
+Looking at the following website, you'll need to allow more than just
+those ports:
+
+http://sixfriedrice.com/wp/filemaker-firewall/
+
+But, as above, get the firewall working with all ports open, and then
+start closing them.
+
+> - There is a yearbook website that uploads photos to an external
+> server that does not allow the upload via the webpage. However, I can
+> upload the photos if I install the application local to the
+> workstation, the vendor had a local installation of the photo upload
+> available.
+
+Ditto.
+
+> iptable command used: iptables -t nat -A PREROUTING -i eth1 -p tcp
+> --dport 80 -j REDIRECT --to-port 8080
+
+Is this for the proxy? You don't need that rule if you have manually set
+the proxy server for each client. That rule *forces* the proxy to be
+used.
+
+Andy
+
 
