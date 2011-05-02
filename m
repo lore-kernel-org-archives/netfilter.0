@@ -1,49 +1,78 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [GIT PULL nf-2.6] IPVS
-Date: Mon, 2 May 2011 22:03:14 +0900
-Message-ID: <20110502130310.GA23752@verge.net.au>
-References: <1304340447-21857-1-git-send-email-horms@verge.net.au>
+From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
+Subject: Cache Route Iproute2
+Date: Mon, 2 May 2011 18:44:56 -0300
+Message-ID: <BANLkTinzYqaO0=Q8PM5KBmwE4sFMEgCyPw@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1304340447-21857-1-git-send-email-horms@verge.net.au>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
-Cc: Wensong Zhang <wensong@linux-vs.org>, Julian Anastasov <ja@ssi.bg>, Patrick McHardy <kaber@trash.net>, Hans Schillstrom <hans@schillstrom.com>, Hans Schillstrom <hans.schillstrom@ericsson.com>, "Eric W. Biederman" <ebiederm@xmission.com>
+To: netfilter@vger.kernel.org
 
-On Mon, May 02, 2011 at 09:47:25PM +0900, Simon Horman wrote:
-> 
-> Hi Patrick,
-> 
-> please consider pulling
-> git://git.kernel.org/pub/scm/linux/kernel/git/horms/ipvs-2.6.git master
-> to get the following fix from Hans. They resolve some problems related
-> to his netns for IPVS work which was incorporated into 2.6.39-rc1.
+Hello everyone, I'm a problem with cache iproute2. I have two
+firewalls ( FwBuillder 4.1.0 ) connected each other by OpenVpn.
 
-Sorry, please ignore this.
-The second patch is one of the non-pressing ones.
-I'll fix things up and repost.
+I have some web servers in my head office local network which have ip
+128.2.0.0/16 ( strange but my head office local network has an range
+valid IP ).
 
-> The pull request is based on nf-2.6/master.
-> 
-> There are other less-pressing changes from Hans which
-> I plan to get you to pull into nf-next-2.6 once these
-> changes make it there (presumably via net-2.6 and then net-next-2.6).
-> 
-> Hans Schillstrom (2):
->       IPVS: Change of socket usage to enable name space exit.
->       IPVS: labels at pos 0
-> 
->  net/netfilter/ipvs/ip_vs_core.c |   12 ++++----
->  net/netfilter/ipvs/ip_vs_ctl.c  |    8 +++---
->  net/netfilter/ipvs/ip_vs_sync.c |   58 +++++++++++++++++++++++++--------------
->  3 files changed, 47 insertions(+), 31 deletions(-)
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe netdev" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+In my branch office I have two connections with Internet which one is
+dedicated to OpenVpn and other is to users access Inetrnet.
+
+my branch office users need access my web servers in my head office by
+OpenVpn...so I've created , in my branch office firewall, an route
+table call "internet" to forward data flow by my second Internet
+Link.in others words, when flow data is different of 128.2.0.0/16 port
+80 it must out by Inetrnet second link and when it is to network
+128.2.0.0/16 it must out by vpn link
+
+follow my scripts:
+
+#!/bin/sh
+
+echo -n "unable rp_filter..."
+for eee in /proc/sys/net/ipv4/conf/*/rp_filter; do
+echo 0 > $eee
+done
+cat /proc/sys/net/ipv4/conf/*/rp_filter
+echo " [OK]"
+
+## tag out by Internet second link
+/sbin/iptables -t mangle -A PREROUTING -i eth0 -s 192.100.100.0/24 -d
+! 128.2.0.0/16 -p tcp --dport 80 -j MARK --set-mark 1
+/sbin/iptables -t mangle -A PREROUTING -i eth0 -s 192.100.100.0/24 -d
+! 128.2.0.0/16 -p tcp --dport 443 -j MARK --set-mark 1
+
+
+ip rule del fwmark 1
+
+ip route flush table internet
+
+ip rule add fwmark 1 table internet prio 20
+
+ip route add default via 200.108.139.1 table internet  >> MY SECOND
+INTERNET LINK. ONLY INTERNET ACCESS USERS
+
+ip route flush cache
+
+the problem is sometime my data flow destination 128.2.0.0/16 port 80
+it's be forward by gateway 200.108.139.1 ( route table internet )
+instead go out by my main route table where is my openvpn routes!!
+
+
+seems that is occurring routing cache in iproute2 because when I run
+the command " ip route flush table internet " all it's work...
+the data flow to network 128.2.0.0 port 80 go out by my main route
+table where is my openvpn routes.
+
+
+why it's sometimes occur of the data flow to 128.2.0.0/16 port 80 be
+forward by table internet instead be handled by my main route table??
+
+any tip??
+
+
+
+
+thank!!
