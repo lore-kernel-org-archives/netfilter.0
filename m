@@ -1,47 +1,44 @@
-From: Christian Ernst <ernst997@gmail.com>
-Subject: iptables 1.4.10 - statically linked
-Date: Wed, 4 May 2011 09:10:29 +0200
-Message-ID: <BANLkTikG1rhGATqVpSKGn_7iP256pN+k0A@mail.gmail.com>
+From: Menyhart Zoltan <Zoltan.Menyhart@bull.net>
+Subject: Cannot unload nf_conntrack
+Date: Wed, 04 May 2011 11:08:38 +0200
+Message-ID: <4DC11796.4080702@bull.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:date:message-id:subject:from:to
-         :content-type;
-        bh=vLWWowDIGOt8to1qCxiBMEx1kGS0HjhjNA2NFsckPqc=;
-        b=BS9zY3n8ZfM3GKps8WnnEFhRENeG+vS8+Cp40059GqVgQEW9k99CVl3nqEQhI5rbK1
-         2ZfpPHRvDrrDOO1EP6pibl9oR5BijBAtIE7+XXWMRdJnpwl/iGVpl8LNn4Tx94w1cmwv
-         iOiOzGSfujH2YuDNb/9zH4LsZtQhoXN3TeLfc=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello all
+Hi,
 
-i'm trying to compile iptables 1.4.10  statically linked. The
-challenge i'm facing is that even if i compile the following way i get
-a dynamically linked binary.
+I cannot unload nf_conntrack because nf_conntrack_untracked.ct_general.use.counter  == 7.
 
-Here is my proceeding:
+The last_unloaded_module is "nf_conntrack_ipv6".
 
-./configure --enable-static --enable-shared=no
-make NO_SHARED_LIBS=1
-make install
+Probably the following has happend:
 
+nf_conntrack_in(struct net *net, u_int8_t pf, unsigned int hooknum, struct sk_buff *skb):
 
-if i ldd the binary i get the following:
-root@debian6:/usr/local/sbin# ldd ./iptables
-        linux-gate.so.1 =>  (0xb7707000)
-        libm.so.6 => /lib/i686/cmov/libm.so.6 (0xb76da000)
-        libc.so.6 => /lib/i686/cmov/libc.so.6 (0xb7594000)
-        /lib/ld-linux.so.2 (0xb7708000)
-root@debian6:/usr/local/sbin#
+	ret = l4proto->error(net, skb, dataoff, &ctinfo, pf, hooknum):
+/* e.g. */	icmpv6_error(struct net *net, struct sk_buff *skb, unsigned int dataoff,
+			     enum ip_conntrack_info *ctinfo, u_int8_t pf, unsigned int hooknum):
+			if (type >= 0 && type < sizeof(noct_valid_new) && noct_valid_new[type]) {
+				skb->nfct = &nf_conntrack_untracked.ct_general;
+				skb->nfctinfo = IP_CT_NEW;
+				nf_conntrack_get(skb->nfct);
+				return NF_ACCEPT;
+		}
 
-Currently i'm running in a:
-debian6 2.6.32-5-686 with gcc version 4.4.5
+	ct = resolve_normal_ct(net, skb, dataoff, pf, protonum, l3proto, l4proto, &set_reply, &ctinfo);
+		skb->nfct = &ct->ct_general;
+		skb->nfctinfo = *ctinfo;
 
-Could please someone give me an advice?
-best regards
-Chris
+Is it normal for resolve_normal_ct() to overwrite skb->nfct without putting the previous conntrack?
+
+It has actually happened on a 2.6.32, but the source is the same for 2.6.38, too.
+A dump is available at ftp://visibull.frec.bull.fr/pub/linux/tmp.
+
+Thanks in advance,
+
+Zoltan Menyhart
