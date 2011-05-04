@@ -1,42 +1,27 @@
-From: James Lay <jlay@slave-tothe-box.net>
-Subject: Match strings with periods
-Date: Tue, 03 May 2011 17:46:19 -0600
-Message-ID: <C9E5EFEB.72C2%jlay@slave-tothe-box.net>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Match strings with periods
+Date: Tue, 3 May 2011 21:15:44 -0500
+Message-ID: <20110504021544.GA15438@cardinal>
+References: <C9E5EFEB.72C2%jlay@slave-tothe-box.net>
+Reply-To: Netfilter <netfilter@vger.kernel.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <C9E5EFEB.72C2%jlay@slave-tothe-box.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: Netfilter <netfilter@vger.kernel.org>
 
-Hey all!
+On Tue, May 03, 2011 at 05:46:19PM -0600, James Lay wrote:
+> Been trying to nuke DNS resolution for a couple domains.
+snip
+> Does anyone have any
+> hints on how to get this to work?  Thanks all!
 
-So=8Ahere's what I have:
-
-LOG        udp  --  *      *       10.0.0.1            0.0.0.0/0
-STRING match "myspace" ALGO name bm TO 65535 LOG flags 0 level 4 prefix
-`Myspace '=20
-DROP       udp  --  *      *       10.0.0.1            0.0.0.0/0
-STRING match "myspace" ALGO name bm TO 65535
-LOG        udp  --  *      *       10.0.0.1           0.0.0.0/0
-STRING match ".cc" ALGO name bm TO 65535 LOG flags 0 level 4 prefix `cc=
- '
-DROP       udp  --  *      *       10.0.0.1            0.0.0.0/0
-STRING match ".cc" ALGO name bm TO 65535
-
-
-Been trying to nuke DNS resolution for a couple domains.  The myspace
-match works like a champ=8Acan't resolve when I dig myspace.com.  The c=
-c one
-doesn't seem to work, and I suspect it's because of the . in the string=
-=2E
-I can't just match "cc", or else any domain name with a cc in it would
-fail, so I'm attempting to match ".cc".  I tried different methods
-(--hex-string "|2e|cc") but nothing seems to match.  Does anyone have a=
-ny
-hints on how to get this to work?  Thanks all!
-
-James
-
-
+Use an appropriate tool for the job, e.g., dnsmasq(8), available in 
+most major GNU/Linux distributions. This would be trivial.
+-- 
+    Offlist mail to this address is discarded unless
+    "/dev/rob0" or "not-spam" is in Subject: header
