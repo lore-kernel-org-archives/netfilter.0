@@ -1,42 +1,39 @@
-From: Alex Bligh <alex@alex.org.uk>
-Subject: How to programatically atomically write one CHAIN (not table)
-Date: Thu, 05 May 2011 13:14:39 +0100
-Message-ID: <0960E691FF860DE35219EA38@nimrod.local>
-Reply-To: Alex Bligh <alex@alex.org.uk>
+From: Dimitri Yioulos <dyioulos@firstbhph.com>
+Subject: WAN balancing
+Date: Thu, 5 May 2011 09:01:25 -0400
+Message-ID: <201105050901.26651.dyioulos@firstbhph.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
-Cc: Alex Bligh <alex@alex.org.uk>
+Cc: "DiCecca, Caitlin" <cdicecca@firstbhph.com>
 
-What is the best way to programatically atomic add/replace an
-entire chain. Assume the table has lots and lots of chains.
+Good morning, all.
 
-Calling "iptables" itself is non-atomic.
+I've searched for a clear guide on setting up my 
+iptables/Netfilter firewall/router to do WAN 
+balancing.  I have two providers - one is T1 and 
+the other broadband).  Currently, I'm using the 
+T1 provider to send and receive traffic on.  I'd 
+like to use both.
 
-I could build an entire replacement chain with a different name
-(through repeated calling of iptables -A), then change the
-jump statement that calls it. But that seems horribly
-inefficient.
+I have one LAN interface, one WAN interface, and 
+one DMZ interface.  The DMZ utilizes several 
+virtual interfaces.  I can easily add a fourth 
+physical NIC.  Beyond this, I'm not sure what 
+other information I can provide, but I'm happy to 
+do so.
 
-Opening a pipe to iptables-restore with "-n" passed
-is an option provided I prefix the chains concerned
-with "-F <chainname>" (I can't pass the whole thing
-and avoid -n as the chain might have (say) 10 rules,
-but there might be 100 chains, so this will
-be grossly inefficient). However, looking at the
-source, it appears merely to call do_command to
-parse each line, and I can't see how this can be
-atomic. Also, I'd like to avoid the fork().
+Your help would be greatly appreciated.
 
-The FAQ seems to suggest calling any form of library API
-is bad.
-
-Any ideas?
+Dimitri
 
 -- 
-Alex Bligh
+This message has been scanned for viruses and
+dangerous content by MailScanner, and is
+believed to be clean.
+
