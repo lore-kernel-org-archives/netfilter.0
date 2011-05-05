@@ -1,43 +1,90 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: How to programatically atomically write one CHAIN (not table)
-Date: Thu, 5 May 2011 16:08:53 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1105051603080.15936@obet.zrqbmnf.qr>
-References: <0960E691FF860DE35219EA38@nimrod.local>
+From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
+Subject: Re: WAN balancing
+Date: Thu, 5 May 2011 11:30:09 -0300
+Message-ID: <BANLkTik+ptEOjBJOkfDL6XSM4A-kNmzCKQ@mail.gmail.com>
+References: <201105050901.26651.dyioulos@firstbhph.com>
+	<BANLkTimSEUh3S70QiqE1-g_r1dZJ75jfmA@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <0960E691FF860DE35219EA38@nimrod.local>
+In-Reply-To: <BANLkTimSEUh3S70QiqE1-g_r1dZJ75jfmA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Alex Bligh <alex@alex.org.uk>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Matty Sarro <msarro@gmail.com>
+Cc: Dimitri Yioulos <dyioulos@firstbhph.com>, netfilter@vger.kernel.org, "DiCecca, Caitlin" <cdicecca@firstbhph.com>
 
-On Thursday 2011-05-05 14:14, Alex Bligh wrote:
+I didn't understand exactly where you want apply your load Balance but
+follow the command that does the load balance.
+you must have two route in your route table:
 
-> What is the best way to programatically atomic add/replace an
-> entire chain. Assume the table has lots and lots of chains.
+ip route add default scope global equalize nexthop via 200.247.209.65
+weight 1  nexthop via 200.247.209.6 weight 1
 
-Because table-replace is an atomic operation, so are all smaller 
-operations based upon it.
+before you insert the load balance command check your table route with
+" ip route show "
 
-> Calling "iptables" itself is non-atomic.
+you will see there is only one default route.
 
-iptables does issue a table-replace, so it is atomic. -- Within the one 
-rule you wanted to add.
+insert load balance command and check again your table route with " ip
+route show "
 
-If you want to change multiple rules in one go, don't use iptables, use 
-iptables-restore.
+and must appear two default gateway.
 
-> Opening a pipe to iptables-restore with "-n" passed
-> is an option provided I prefix the chains concerned
-> with "-F <chainname>" (I can't pass the whole thing
-> and avoid -n as the chain might have (say) 10 rules,
-> but there might be 100 chains, so this will
-> be grossly inefficient). However, looking at the
-> source, it appears merely to call do_command to
-> parse each line, and I can't see how this can be
-> atomic.
+ip route add default scope global equalize nexthop via 200.247.209.65
+weight 2  nexthop via 200.247.209.6 weight 1
 
-do_command alone does not commit the result.
-restore is right in what it does.
+
+
+I hope help!
+
+
+
+
+
+
+
+2011/5/5 Matty Sarro <msarro@gmail.com>:
+> http://lartc.org/howto/lartc.rpdb.multiple-links.html
+>
+> That should help.
+>
+> On Thu, May 5, 2011 at 9:01 AM, Dimitri Yioulos <dyioulos@firstbhph.c=
+om> wrote:
+>> Good morning, all.
+>>
+>> I've searched for a clear guide on setting up my
+>> iptables/Netfilter firewall/router to do WAN
+>> balancing. =A0I have two providers - one is T1 and
+>> the other broadband). =A0Currently, I'm using the
+>> T1 provider to send and receive traffic on. =A0I'd
+>> like to use both.
+>>
+>> I have one LAN interface, one WAN interface, and
+>> one DMZ interface. =A0The DMZ utilizes several
+>> virtual interfaces. =A0I can easily add a fourth
+>> physical NIC. =A0Beyond this, I'm not sure what
+>> other information I can provide, but I'm happy to
+>> do so.
+>>
+>> Your help would be greatly appreciated.
+>>
+>> Dimitri
+>>
+>> --
+>> This message has been scanned for viruses and
+>> dangerous content by MailScanner, and is
+>> believed to be clean.
+>>
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe netfilter"=
+ in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>>
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
