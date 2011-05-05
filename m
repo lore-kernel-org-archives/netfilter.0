@@ -1,35 +1,34 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: Starter iptables scripts
-Date: Thu, 05 May 2011 07:03:46 +0100
-Message-ID: <1304575426.32212.39.camel@andybev-desktop>
-References: <8762pqax4j.fsf@newsguy.com>
-	 <1304551168.32212.36.camel@andybev-desktop>
-	 <alpine.LNX.2.01.1105050137510.16932@obet.zrqbmnf.qr>
+From: =?ISO-8859-2?B?SnVyYWogR2Fi6O1r?= <juraj.gabcik@gmail.com>
+Subject: nftables
+Date: Thu, 5 May 2011 09:24:06 +0200
+Message-ID: <BANLkTi=vKmGCm5t1tyUn_KuKMAJ8=UxqjQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1304575427; bh=e9yCcncvZFtn0GAWN1PoNetVeqPQOq4UVNrSk
-	LnR28k=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
-	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=CFyMkile
-	uI7WKuubOcr9HYMYKsdqfoZpnZYUoaCPfnfma/ONvZb0J4oKLYcWq3AF9jakrYXLVBk
-	LtDSEk4GJO+/FgjntAmRnmRoV/OiSnAHEWqqEq/fYnqRZ6HdAPl7XelmqOGTUOU6In0
-	hSyP/VhCOQ6kszMd92l/enO+/2QLA=
-In-Reply-To: <alpine.LNX.2.01.1105050137510.16932@obet.zrqbmnf.qr>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:date:message-id:subject:from:to
+         :content-type;
+        bh=mqiqCIbm7qggXd+GkoMD+xnL/mzKu8YoRvlSWToMU4k=;
+        b=GZ3Rr4x6xLGuq9IVbcBLrHD5Yuvwwj9aath8aJrAjsUqj6rXIiWBYjdOr56TdCG0FM
+         5nVkhwSlx7dufgOaLMc87mSojOeAZNkBhoMe2HuzHF5CPpFMT9CD9VLnPmD5iRmCbt8+
+         DP+mU/qw/wa2dzeQ5H+BhDGc4CjxebOqTHNRE=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Harry Putnam <reader@newsguy.com>, netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Thu, 2011-05-05 at 01:41 +0200, Jan Engelhardt wrote:
-> 
-> -m conntrack --ctstate ... it is these days.
-> 
-
-Thanks Jan. I should have known that, having had it pointed out to me
-once already on this list :)
-
-Andy
-
-
+Hi
+I have a problem:
+I try run nftables - i followed steps written here
+http://lists.netfilter.org/pipermail/netfilter-cvslog/2009-March/006316.html
+I downloaded kernel tree, and compile nftables into kernel
+run new kernel wiht nftables support BUT when i wrote some rule f.e.
+nft rule add inet filter output ip protocol tcp => drop , system
+accepted it bud it doesnt have some effect - I still had internet
+access
+maybe problem is, that i have compiled iptables into kernel too - and
+they are useful
+so i tried compile kernel without iptables, but it crash
+so can somebody advice me how to compile functional nftables?
+sorry, my english is not very good :)
