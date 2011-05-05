@@ -1,74 +1,31 @@
-From: Dimitri Yioulos <dyioulos@firstbhph.com>
-Subject: Re: WAN balancing
-Date: Thu, 5 May 2011 10:40:04 -0400
-Message-ID: <201105051040.05671.dyioulos@firstbhph.com>
-References: <201105050901.26651.dyioulos@firstbhph.com> <BANLkTimSEUh3S70QiqE1-g_r1dZJ75jfmA@mail.gmail.com>
+From: Alex Bligh <alex@alex.org.uk>
+Subject: Re: How to programatically atomically write one CHAIN (not table)
+Date: Thu, 05 May 2011 16:17:56 +0100
+Message-ID: <D2237FDC0E85A86EE664593F@nimrod.local>
+References: <0960E691FF860DE35219EA38@nimrod.local>
+ <alpine.LNX.2.01.1105051603080.15936@obet.zrqbmnf.qr>
+Reply-To: Alex Bligh <alex@alex.org.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BANLkTimSEUh3S70QiqE1-g_r1dZJ75jfmA@mail.gmail.com>
+In-Reply-To: <alpine.LNX.2.01.1105051603080.15936@obet.zrqbmnf.qr>
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@vger.kernel.org
-Cc: "DiCecca, Caitlin" <cdicecca@firstbhph.com>
-
-If I may, the how-to you've pointed out has to do=20
-with routing which, of course, is important.  Are=20
-there any changes/additions I need to make to my=20
-iptables ruleset, as well?
-
-Best,
-
-Dimitri
-
-
-On Thursday 05 May 2011 9:34:46 am Matty Sarro=20
-wrote:
-> http://lartc.org/howto/lartc.rpdb.multiple-link
->s.html
->
-> That should help.
->
-> On Thu, May 5, 2011 at 9:01 AM, Dimitri Yioulos=20
-<dyioulos@firstbhph.com> wrote:
-> > Good morning, all.
-> >
-> > I've searched for a clear guide on setting up
-> > my iptables/Netfilter firewall/router to do
-> > WAN balancing. =C2=A0I have two providers - one is
-> > T1 and the other broadband). =C2=A0Currently, I'm
-> > using the T1 provider to send and receive
-> > traffic on. =C2=A0I'd like to use both.
-> >
-> > I have one LAN interface, one WAN interface,
-> > and one DMZ interface. =C2=A0The DMZ utilizes
-> > several virtual interfaces. =C2=A0I can easily add
-> > a fourth physical NIC. =C2=A0Beyond this, I'm not
-> > sure what other information I can provide,
-> > but I'm happy to do so.
-> >
-> > Your help would be greatly appreciated.
-> >
-> > Dimitri
-> >
-> > --
-> > This message has been scanned for viruses and
-> > dangerous content by MailScanner, and is
-> > believed to be clean.
-> >
-> > --
-> > To unsubscribe from this list: send the line
-> > "unsubscribe netfilter" in the body of a
-> > message to majordomo@vger.kernel.org More
-> > majordomo info at
-> > =C2=A0http://vger.kernel.org/majordomo-info.html
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org, Alex Bligh <alex@alex.org.uk>
 
 
 
---=20
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
+--On 5 May 2011 16:08:53 +0200 Jan Engelhardt <jengelh@medozas.de> wrote:
 
+> do_command alone does not commit the result.
+> restore is right in what it does.
+
+Ah OK - have reread the source and now understand. So a pipe to
+iptables-restore with "-n" on the command line, and "-F" inside
+the chain to replace is the right way to go?
+
+-- 
+Alex Bligh
