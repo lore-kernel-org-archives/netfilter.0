@@ -1,93 +1,51 @@
-From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
-Subject: Re: WAN balancing
-Date: Thu, 5 May 2011 14:17:21 -0300
-Message-ID: <BANLkTim4u-QRx3ZFSTvv6yUm7QjxG2+qsQ@mail.gmail.com>
-References: <201105050901.26651.dyioulos@firstbhph.com>
-	<BANLkTimSEUh3S70QiqE1-g_r1dZJ75jfmA@mail.gmail.com>
-	<201105051040.05671.dyioulos@firstbhph.com>
+From: James Lay <jlay@slave-tothe-box.net>
+Subject: Blocking in NAT
+Date: Sat, 07 May 2011 07:20:37 -0600
+Message-ID: <C9EAA345.75ED%jlay@slave-tothe-box.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <201105051040.05671.dyioulos@firstbhph.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Dimitri Yioulos <dyioulos@firstbhph.com>
-Cc: netfilter@vger.kernel.org, "DiCecca, Caitlin" <cdicecca@firstbhph.com>
+Content-Type: text/plain; charset="macroman"
+To: Netfilter <netfilter@vger.kernel.org>
 
-you have add rules NAT POSTROUTING for each link.
+Hey All,
 
-for exemplo, for your out Internet Traffic you have add two NAT
-POSTROUTING each one on Interface WAN.
+So=8Aonce upon a time one could block using NAT, which was nice since I=
+ run
+a spamfilter that grabs everything coming in to port 25 with:
+
+iptables -t nat -A PREROUTING -m physdev --physdev-in eth0 ! -s 10.0.0.=
+0/8
+-p tcp --dport 25 -j DNAT --to-destination 10.0.0.1:25
+
+=46or some reason, filtering in the nat table was deemed bad, so now I =
+can
+no longer drop things there.  So my question is, how do I block say...a
+spammer from sending to port 25 now?  I can't use:
+
+iptables -t nat -i PREROUTING -m physdev --physdev-in eth0 -s naughty.i=
+p
+-j DROP
+or
+iptables -t nat -i PREROUTING -m physdev --physdev-in eth0 -s naughty.i=
+p
+-j REJECT
+
+Am I going to have to do something silly like send to an ip that's not =
+on
+my network:
+
+iptables -t nat -i PREROUTING -m physdev --physdev-in eth0 -s naughty.i=
+p
+-j DNAT --to-destiation 172.16.1.1
+
+I have to admit...loosing the DROP functionality in nat was a real
+bummer....I had a great script that would block ANYTHING from an IP
+address with the INPUT, FORWARD, and PREROUTING tables..not so much now
+though ;)  Thanks for any input you can provide.
+
+James=20
 
 
-
-
-
-
-
-2011/5/5 Dimitri Yioulos <dyioulos@firstbhph.com>:
-> If I may, the how-to you've pointed out has to do
-> with routing which, of course, is important. =A0Are
-> there any changes/additions I need to make to my
-> iptables ruleset, as well?
->
-> Best,
->
-> Dimitri
->
->
-> On Thursday 05 May 2011 9:34:46 am Matty Sarro
-> wrote:
->> http://lartc.org/howto/lartc.rpdb.multiple-link
->>s.html
->>
->> That should help.
->>
->> On Thu, May 5, 2011 at 9:01 AM, Dimitri Yioulos
-> <dyioulos@firstbhph.com> wrote:
->> > Good morning, all.
->> >
->> > I've searched for a clear guide on setting up
->> > my iptables/Netfilter firewall/router to do
->> > WAN balancing. =A0I have two providers - one is
->> > T1 and the other broadband). =A0Currently, I'm
->> > using the T1 provider to send and receive
->> > traffic on. =A0I'd like to use both.
->> >
->> > I have one LAN interface, one WAN interface,
->> > and one DMZ interface. =A0The DMZ utilizes
->> > several virtual interfaces. =A0I can easily add
->> > a fourth physical NIC. =A0Beyond this, I'm not
->> > sure what other information I can provide,
->> > but I'm happy to do so.
->> >
->> > Your help would be greatly appreciated.
->> >
->> > Dimitri
->> >
->> > --
->> > This message has been scanned for viruses and
->> > dangerous content by MailScanner, and is
->> > believed to be clean.
->> >
->> > --
->> > To unsubscribe from this list: send the line
->> > "unsubscribe netfilter" in the body of a
->> > message to majordomo@vger.kernel.org More
->> > majordomo info at
->> > =A0http://vger.kernel.org/majordomo-info.html
->
->
->
-> --
-> This message has been scanned for viruses and
-> dangerous content by MailScanner, and is
-> believed to be clean.
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
