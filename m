@@ -1,28 +1,41 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: conntrack: how to handle child process's NETLINK_NETFILTER
-Date: Sun, 08 May 2011 18:47:02 +0200
-Message-ID: <4DC6C906.2070605@netfilter.org>
-References: <87ei4azdfs.wl%chamas@h4.dion.ne.jp>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <87ei4azdfs.wl%chamas@h4.dion.ne.jp>
-Sender: netfilter-owner@vger.kernel.org
+From: Simon Horman <horms@verge.net.au>
+Subject: [GIT PULL nf-2.6] IPVS (take III)
+Date: Mon,  9 May 2011 08:17:49 +0900
+Message-ID: <1304896671-29384-1-git-send-email-horms@verge.net.au>
+Return-path: <lvs-devel-owner@vger.kernel.org>
+Sender: lvs-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-To: Ken-ichirou MATSUZAWA <chamas@h4.dion.ne.jp>
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Cc: Wensong Zhang <wensong@linux-vs.org>, Julian Anastasov <ja@ssi.bg>, Patrick McHardy <kaber@trash.net>, Hans Schillstrom <hans@schillstrom.com>, Hans Schillstrom <hans.schillstrom@ericsson.com>, "Eric W. Biederman" <ebiederm@xmission.com>
 
-On 07/05/11 18:24, Ken-ichirou MATSUZAWA wrote:
-> There is linux box which has two NICs. one for nomal usage, another is
-> connected to mirrored port of network equipment (like L2/L3 switch).
-> eth1 is connected to mirrored port.
-[...]
-> I think this let us implement netflow probe easy, without libpcap.
+please consider pulling
 
-It should be hard to make a patch for the kernel to drop all the packets
-after the last conntrack hook. Thus, the conntrack subsystem and ulogd2
-can be used for flow-accounting in mirrored port configurations.
+  git://git.kernel.org/pub/scm/linux/kernel/git/horms/ipvs-2.6.git for-nf-2.6
 
-Let me know if this is what you want, it really took me a while to
-understand what you want from your email.
+to get the following fix from Hans. They resolve some problems related
+to his netns for IPVS work which was incorporated into 2.6.39-rc1.
+
+The pull request is based on nf-2.6/master.
+
+There are other less-pressing changes from Hans which
+I plan to get you to pull into nf-next-2.6 once these
+changes make it there (presumably via net-2.6 and then net-next-2.6).
+
+There are minor changes since take II.
+
+Hans Schillstrom (2):
+      IPVS: Change of socket usage to enable name space exit.
+      IPVS: init and cleanup restructuring
+
+ include/net/ip_vs.h              |   17 +++++
+ net/netfilter/ipvs/ip_vs_app.c   |   15 +----
+ net/netfilter/ipvs/ip_vs_conn.c  |   12 +---
+ net/netfilter/ipvs/ip_vs_core.c  |  103 +++++++++++++++++++++++++++++---
+ net/netfilter/ipvs/ip_vs_ctl.c   |  120 ++++++++++++++++++++++++++++++++------
+ net/netfilter/ipvs/ip_vs_est.c   |   14 +----
+ net/netfilter/ipvs/ip_vs_proto.c |   11 +---
+ net/netfilter/ipvs/ip_vs_sync.c  |   65 ++++++++++++---------
+ 8 files changed, 258 insertions(+), 99 deletions(-)
