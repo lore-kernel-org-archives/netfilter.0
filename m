@@ -1,18 +1,28 @@
-From: James Lay <jlay@slave-tothe-box.net>
-Subject: Blocking in NAT
-Date: Sun, 08 May 2011 10:09:55 -0600
-Message-ID: <C9EC1C73.77AE%jlay@slave-tothe-box.net>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: conntrack: how to handle child process's NETLINK_NETFILTER
+Date: Sun, 08 May 2011 18:47:02 +0200
+Message-ID: <4DC6C906.2070605@netfilter.org>
+References: <87ei4azdfs.wl%chamas@h4.dion.ne.jp>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <87ei4azdfs.wl%chamas@h4.dion.ne.jp>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@vger.kernel.org>
+To: Ken-ichirou MATSUZAWA <chamas@h4.dion.ne.jp>
+Cc: netfilter@vger.kernel.org
 
-Bleh...nuked the email before I could respond....thanks Jan...the input
-chain did the trick.
+On 07/05/11 18:24, Ken-ichirou MATSUZAWA wrote:
+> There is linux box which has two NICs. one for nomal usage, another is
+> connected to mirrored port of network equipment (like L2/L3 switch).
+> eth1 is connected to mirrored port.
+[...]
+> I think this let us implement netflow probe easy, without libpcap.
 
-James
+It should be hard to make a patch for the kernel to drop all the packets
+after the last conntrack hook. Thus, the conntrack subsystem and ulogd2
+can be used for flow-accounting in mirrored port configurations.
 
-
+Let me know if this is what you want, it really took me a while to
+understand what you want from your email.
