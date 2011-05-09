@@ -1,189 +1,73 @@
-From: Face <falazemi@gmail.com>
-Subject: howto share vpn connection (OpenVPN)?
-Date: Mon, 9 May 2011 05:53:31 +0300
-Message-ID: <BANLkTinNdtpK0q3LPfCaTdc25gQLJJut5Q@mail.gmail.com>
+From: Nikolay Kichukov <hijacker@oldum.net>
+Subject: Re: Blocking in NAT
+Date: Mon, 09 May 2011 11:54:24 +0300
+Message-ID: <4DC7ABC0.6030304@oldum.net>
+References: <C9EAA345.75ED%jlay@slave-tothe-box.net> <alpine.LNX.2.01.1105071653100.31190@obet.zrqbmnf.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:date:message-id:subject:from:to
-         :content-type;
-        bh=X2DHDumm7E1lbHm/7xkQXtCnPBeXWFEh+LFhYd/7IAs=;
-        b=xmBNOZZxc9LUxrTe6zkQE7Svrch4McQ7ZjmyZ2zb7JwZuB+QRyOVxuFQlYjFsill+b
-         Ny+cX2o/T3shHGqGbpgL8pxqJ77DGfLAIQwP+/GaBvMjniKRSMxJY8FPonnlkOZRNCQC
-         HnrAfbM2ZzQMxgnPGKp7oM/JmmdSa/hvmxEnw=
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=oldum.net; s=mail;
+	t=1304931267; bh=rIXaWq50hd3O/O/yv7WB3cX22t3Ij6VEdTCYrvvb1Aw=;
+	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:References:
+	 In-Reply-To:Content-Type:Content-Transfer-Encoding;
+	b=R0O5Uy4IlFEcXOODUphWvocOhqWolIuaZY6qZW2JMte2dTre+psEQrvAGAHCh0LE2
+	 hz5vjKV81NDgyIKBOo4lro3RciSQqjDlqUe7WCi0+vHTn+GuhdSrouRut36WX5kyxF
+	 tZx5LMzzwPzuRr8aUN/4DkSbbG7uAjiDSzmGmmHU=
+In-Reply-To: <alpine.LNX.2.01.1105071653100.31190@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: James Lay <jlay@slave-tothe-box.net>, Netfilter <netfilter@vger.kernel.org>
 
-hello all,
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-I am trying to share vpn connection between my network without any luck.
+Hi,
 
-I do have an office with Several PC's and we share the internet connection
-using iptables and our DNS server we also have Mail and FTP Server. Our
-ISP keep changing there rules and they start blocking some port like 25,
-21 and 143. so the best solution i could think of is to use vpn service with
-a static ip address to use instead of my ISP ip address.
+or just block it in the -t mangle -A PREROUTING table.
+Have a look at the packet flow diagram and you will  be good to go!
 
-I do need all my computer in my local network to be using the VPN ip
-address and not my ISP ip address.
+Cheers,
+- -Nik
 
-my network infrastructure is like this
+On 05/07/2011 05:54 PM, Jan Engelhardt wrote:
+> On Saturday 2011-05-07 15:20, James Lay wrote:
+> 
+>> Hey All,
+>>
+>> So?once upon a time one could block using NAT, which was nice since I run
+>> a spamfilter that grabs everything coming in to port 25 with:
+>>
+>> iptables -t nat -A PREROUTING -m physdev --physdev-in eth0 ! -s 10.0.0.0/8
+>> -p tcp --dport 25 -j DNAT --to-destination 10.0.0.1:25
+>>
+>> For some reason, filtering in the nat table was deemed bad, so now I can
+>> no longer drop things there.  So my question is, how do I block say...a
+>> spammer from sending to port 25 now?  I can't use:
+>>
+>> iptables -t nat -i PREROUTING -m physdev --physdev-in eth0 -s naughty.ip
+>> -j DROP
+>> or
+>> iptables -t nat -i PREROUTING -m physdev --physdev-in eth0 -s naughty.ip
+>> -j REJECT
+> 
+> 
+> iptables -A INPUT (or FORWARD, depending on use case) -m physdev 
+> --physdev-in eth0 -s naughty.ip (-p tcp --dport 25) -j REJECT
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
-dsl modem
-
-10.0.0.1  255.255.255.192
-Main DNS server with 2 NIC's: /etc/network/interfaces
-
-auto lo eth0 eth1
-iface lo inet loopback
-
-#internet
-iface eth0 inet static
-    address 10.0.0.2
-    netmask 255.255.255.192
-    gateway 10.0.0.1
-#local
-iface eth1 inet static
-    address 10.0.1.1
-    netmask 255.255.255.240
-/etc/resolv.conf
-
-nameserver 127.0.0.1
-/etc/bind/options.conf
-
-options {
-    directory "/var/cache/bind";
-    forwarders {208.67.222.222; 208.67.220.220;};
-    auth-nxdomain no;
-    allow-query { any; };
-    recursion no;
-    version "0";
-    listen-on-v6 { any; };
-};
-My iptables
-
-EXTIF="eth0"
-EXTIP="`/sbin/ifconfig eth0 | grep 'inet addr' | awk '{print $2}' |
-sed -e 's/.*://'`" #whick is 10.0.0.2
-INTIF="eth1" # Enter the designation for the Internal Interface's
-INTNET="10.0.1.0/28" # Enter the NETWORK address the Internal Interface is on
-INTIP="10.0.1.1" # Enter the IP address of the Internal Interface
-UNIVERSE="0.0.0.0/0"
-
-    /sbin/depmod -a
-    /sbin/modprobe ip_tables
-    /sbin/modprobe ip_conntrack
-    /sbin/modprobe ip_conntrack_ftp
-    /sbin/modprobe ip_conntrack_irc
-    /sbin/modprobe iptable_nat
-    /sbin/modprobe ip_nat_ftp
-    /sbin/modprobe ip_nat_irc
-
-    echo "1" > /proc/sys/net/ipv4/ip_forward
-    echo "1" > /proc/sys/net/ipv4/ip_dynaddr
-
-    iptables -P INPUT DROP
-    iptables -F INPUT
-    iptables -P OUTPUT DROP
-    iptables -F OUTPUT
-    iptables -P FORWARD DROP
-    iptables -F FORWARD
-    iptables -F -t nat
-
-    if [ "`iptables -L | grep drop-and-log-it`" ]; then
-       iptables -F drop-and-log-it
-    fi
-    iptables -X
-    iptables -Z
-    iptables -N drop-and-log-it
-    iptables -A drop-and-log-it -j LOG --log-level info
-    iptables -A drop-and-log-it -j REJECT
-
-    iptables -A INPUT -i lo -s $UNIVERSE -d $UNIVERSE -j ACCEPT
-    iptables -A INPUT -i $INTIF -s $INTNET -d $UNIVERSE -j ACCEPT
-    iptables -A INPUT -i $EXTIF -s $INTNET -d $UNIVERSE -j drop-and-log-it
-    iptables -A INPUT -i $EXTIF -s $UNIVERSE -d $EXTIP -j ACCEPT
-    iptables -A INPUT -i $EXTIF -s $UNIVERSE -d $EXTIP -m state
---state ESTABLISHED,RELATED -j ACCEPT
-    iptables -A INPUT -s $UNIVERSE -d $UNIVERSE -j drop-and-log-it
-
-    iptables -A OUTPUT -o lo -s $UNIVERSE -d $UNIVERSE -j ACCEPT
-    iptables -A OUTPUT -o $INTIF -s $EXTIP -d $INTNET -j ACCEPT
-    iptables -A OUTPUT -o $INTIF -s $INTIP -d $INTNET -j ACCEPT
-    iptables -A OUTPUT -o $EXTIF -s $UNIVERSE -d $INTNET -j drop-and-log-it
-    iptables -A OUTPUT -o $EXTIF -s $EXTIP -d $UNIVERSE -j ACCEPT
-    iptables -A OUTPUT -s $UNIVERSE -d $UNIVERSE -j drop-and-log-it
-
-
-    Cloud=10.0.1.4
-    Port=8080
-    iptables -A FORWARD -i $EXTIF -o $INTIF -m state --state
-ESTABLISHED,RELATED -j ACCEPT
-    iptables -A FORWARD -i $INTIF -o $EXTIF -j ACCEPT
-
-    iptables -A FORWARD -i $EXTIF -o $INTIF -d $Cloud -p tcp --dport
-$Port -j ACCEPT
-    iptables -t nat -A PREROUTING -i $EXTIF -d $EXTIP -p tcp --dport
-$Port -j DNAT --to $Cloud
-
-    iptables -A FORWARD -j drop-and-log-it
-    iptables -t nat -A POSTROUTING -o $EXTIF -j SNAT --to $EXTIP
-With those setting i am able to share my internet connection, however,
-when i try to
-connect to vpn server using openvpn it seem i am connect to the vpn
-server but i
-dont have any internet connectivity even on the dns server.
-
-here route -n output before the VPN established and after.
-
-before
-
-route -n
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
-10.0.1.0        0.0.0.0         255.255.255.240 U     0      0        0 eth1
-10.0.0.0        0.0.0.0         255.255.255.192 U     0      0        0 eth0
-0.0.0.0         10.0.0.1        0.0.0.0         UG    100    0        0 eth0
-after
-
-route -n
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
-174.37.222.38   10.0.0.1        255.255.255.255 UGH   0      0        0 eth0
-10.0.1.0        0.0.0.0         255.255.255.240 U     0      0        0 eth1
-10.0.0.0        0.0.0.0         255.255.255.192 U     0      0        0 eth0
-10.0.0.0        0.0.0.0         255.0.0.0       U     0      0        0 tun0
-0.0.0.0         10.10.11.1      128.0.0.0       UG    0      0        0 tun0
-128.0.0.0       10.10.11.1      128.0.0.0       UG    0      0        0 tun0
-0.0.0.0         10.0.0.1        0.0.0.0         UG    1      0        0 eth0
-Mail server /etc/network/interfaces
-
-auto lo
-iface lo inet loopback
-
-# The primary network interface
-auto eth0
-    iface eth0 inet static
-        address 10.0.1.3
-        netmask 255.255.255.240
-        gateway 10.0.1.1
-/etc/resolv.conf
-
-nameserver 10.0.1.1
-Other clients on local network
-
-address 10.0.1.x
-netmask 255.255.255.240
-gateway 10.0.1.1
-nameserver     10.0.1.1
-I really have no idea what should i be doing or if there is something wrong i
-should change, therefore if anyone could help me or point me to the right
-direction that would be grate.
-
-
-
-Any help would be much appreciated.
+iQEcBAEBAgAGBQJNx6vAAAoJEDFLYVOGGjgXS30H/RmE9stI4q8nWbZ03ObdIJ5H
+gMQiZ2EST/Rz6q/OL37bGdk5bkZcRhj72AqRkrxB57lZDDpsk8uEwIlhoW61J3uI
+dFXrGRZAPtCOd4yrGoILKBuK0hLOr/qWHGhxyCXw+Oa4Boq1LUjQHmJSRynss7Ui
+caSjV9AWq4f6hmY3tLTQd8pXsi5zTOGKHSYwlRuoPeiUIiHZc9QkFAA6BOMw3Pl5
+2NjjpOYAiRwt7/qbCWHaQkqsxvv3JD3tO/RT+Mg41cuOnuLj5945h7IktkbxVKj7
+p7xvWJtUHDyD01A+rhb7B3lUn95eM3Hv3nBsAhnbcsXMQl/TO23/2jnsGuvxcbs=
+=Hqow
+-----END PGP SIGNATURE-----
