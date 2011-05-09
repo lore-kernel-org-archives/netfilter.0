@@ -1,44 +1,69 @@
-From: Andrew Beverley <andy@andybev.com>
+From: Ed W <lists@wildgooses.com>
 Subject: Re: High accuracy bandwidth accounting?
-Date: Mon, 09 May 2011 23:16:48 +0100
-Message-ID: <1304979408.1921.309.camel@andybev-desktop>
-References: <4DC7F632.9020105@wildgooses.com>
-	 <1304977533.1921.305.camel@andybev-desktop>
-	 <4DC8658B.4050204@wildgooses.com>
+Date: Mon, 09 May 2011 23:49:16 +0100
+Message-ID: <4DC86F6C.7020600@wildgooses.com>
+References: <4DC7F632.9020105@wildgooses.com> <1304977533.1921.305.camel@andybev-desktop>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1304979409; bh=2IUeGhOCYoG7lpGSBhss+M8q878xdGAsVISaQ
-	DM4q+I=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
-	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=jZFYZxBI
-	PiX4C7JSKpYnKFuX8qhtjX7wZzqCdzpnqOiOYCqlm9L4c+DmNQ8sqa0ua6fkdqRvi2A
-	nsgQZCsvvJNnpQpRsjtbuTODId3+scZL8XOZ20eGbE2ucW8fzcRzkar9IViL5uJzrOW
-	o7F60BY4MvvL4CTUTaLIM0Ks6Ek48=
-In-Reply-To: <4DC8658B.4050204@wildgooses.com>
+In-Reply-To: <1304977533.1921.305.camel@andybev-desktop>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Ed W <lists@wildgooses.com>
+To: Andrew Beverley <andy@andybev.com>
 Cc: Netfilter <netfilter@vger.kernel.org>
 
-On Mon, 2011-05-09 at 23:07 +0100, Ed W wrote:
-> On 09/05/2011 22:45, Andrew Beverley wrote:
+On 09/05/2011 22:45, Andrew Beverley wrote:
+> On Mon, 2011-05-09 at 15:12 +0100, Ed W wrote:
+>> Hi, I have a slightly peculiar requirement to track very accurate *per
+>> user* traffic for a small remote userbase.  The internet connections
+>> these users have available will be one or more of: a) circuit switched
+>> satellite phone (ie per second billing), data volume billed (ie GPRS
+>> style) satellite phone or a 3G cell phone - all of these will have non
+>> trivial bandwidth costs and we want to attribute very exact costs back
+>> on a per user basis.
+>>
+>> To do this I'm using a small custom built embedded router, and we will
+>> use some form of 802.11x or captive portal style user authentication but
+>> I have two areas I need advice on solving:
+>>
+>> 1) Best way to do per user traffic accounting *per* internet gateway. ie
+>> each gateway will have quite radically different costs to run and so we
+>> need to also count traffic per route.  My current thinking is to use
+>> packet marking to choose the route and my tests suggest that I can
+>> pickup this mark via conntrack and therefore account using ulogd/pmacct
+>> or similar?  Anyone got any thoughts on other ways to slice this or
+>> anything I am missing?
 > 
-> > I wrote a similar patch for Squid (released in V3.2), which allows
-> > packets to be marked before Squid, and Squid to reapply the mark on
-> > retransmission. Marks can also be applied for locally cached files. If
-> > it helps the patch is at:
-> > 
-> > http://bazaar.launchpad.net/~squid/squid/3-trunk/revision/10925
-> 
-> Well that just happens to be a perfect example of how to implement that
-> mark copying for my various proxies!  Thanks
-> 
+> That sounds good. Using marks is a pretty flexible way of achieving most
+> things. I don't think I fully understand your setup though without a
+> diagram. How are you identifying individual users within each route? By
+> IP address?
 
-No problem. If you write any patches for publicly available software
-then please get them included upstream - would be very useful!
+The "per user" part is still under experimentation.  The main option
+seem to be some kind of authentication which then marks a MAC/IP combo
+as "authenticated" and we track traffic to that device (being aware of
+the limitations of that). However, if I use 802.11x auth then I appear
+to get my traffic automatically put into it's own vlan - this might be
+interesting, but vlans don't appear to give me a whole lot of options to
+filter within iptables?
 
-Andy
+The basic scenario is a small number of guys in a remote location with
+only a satellite connection to the internet.  Lets imagine they are on a
+tanker steaming across the Pacific say.  The crew in this scenario might
+be "sold" or otherwise allocated a quantity of data that they can use,
+where the owner of the satellite connection will be paying between
+$10-100/MB of data (it actually tends to be one end or the other
+depending on the system used - fairly pricey anyway).  However,
+occasionally the unit will be within reach of an alternative connection
+such as cell phone range - at that point we want to switch over to a
+cheaper circuit and adjust our billing.
 
+Essentially it's a captive portal scenario, but most captive portals
+have the luxury of billing based on all traffic crossing the internal
+network, whereas we want to track usage only across the expensive link
+(and track each link separately).
 
+Suggestions and comments welcome!
+
+Ed W
