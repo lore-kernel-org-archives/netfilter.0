@@ -1,49 +1,30 @@
-From: Jesper Dangaard Brouer <hawk@comx.dk>
-Subject: [ANNOUNCE] IPTV-Analyzer project released v0.9.0
-Date: Tue, 10 May 2011 16:03:19 -0400
-Message-ID: <1305057799.2688.8.camel__27027.4699702442$1305058401$gmane$org@probook>
+From: Ed W <lists@wildgooses.com>
+Subject: Re: High accuracy bandwidth accounting?
+Date: Wed, 11 May 2011 15:30:46 +0100
+Message-ID: <4DCA9D96.90002@wildgooses.com>
+References: <4DC7F632.9020105@wildgooses.com> <1304977533.1921.305.camel@andybev-desktop>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <1304977533.1921.305.camel@andybev-desktop>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: hawk@comx.dk
+To: Andrew Beverley <andy@andybev.com>
+Cc: Netfilter <netfilter@vger.kernel.org>
+
+On 09/05/2011 22:45, Andrew Beverley wrote:
+> I wrote a similar patch for Squid (released in V3.2), which allows
+> packets to be marked before Squid, and Squid to reapply the mark on
+> retransmission. Marks can also be applied for locally cached files. If
+> it helps the patch is at:
+> 
+> http://bazaar.launchpad.net/~squid/squid/3-trunk/revision/10925
 
 
-I'm happy to announce the first official release of the IPTV-Analyzer
-project, as an Open Source project.
+Did you find any better way to read the packet mark than using
+conntrack?  I see that's how you are doing it in the patch you reference?
 
- Homepage:
-  http://www.iptv-analyzer.org
+Thanks
 
- Git tree:
-  https://github.com/netoptimizer/IPTV-Analyzer
-
-The IPTV-Analyzer is a continuous/real-time tool for analyzing the
-contents of MPEG2 Transport Stream (TS) packets, which is commonly
-used for IPTV multicast signals. The main purpose is continuous
-quality measurement, with a focus on detecting MPEG2 TS/CC packet
-drops.
-
-The core component is an iptables (Linux) kernel module, named
-"mpeg2ts".  This kernel module performs the real-time Deep Packet
-Inspection of the MPEG2-TS packets. Its highly performance optimized,
-written for parallel processing across CPU cores (via RCU locking) and
-hash tables are used for handling large number of streams. Statistics
-are exported via the proc filesystem (scalability is achieved via use
-of the seq_file proc API).  It scales to hundreds of IPTV channels,
-even on small ATOM based CPUs.
-
-Please send bugreports, patches, improvement, comments or insults to:
- hawk@comx.dk
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  ComX Networks A/S
-  Linux Network Kernel Developer
-  Cand. Scient Datalog / MSc.CS
-  Author of http://adsl-optimizer.dk
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+Ed W
