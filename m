@@ -1,35 +1,80 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: problem in openning a port
-Date: Thu, 12 May 2011 17:38:57 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1105121737030.19920@obet.zrqbmnf.qr>
-References: <713633.15807.qm@web111723.mail.gq1.yahoo.com> <1305214450.32402.77.camel@sjohnson.state.ar.us>
+From: CeR <cer.inet@linuxmail.org>
+Subject: assuming valid ESTABLISHED connections without conntrack on firewall
+ active/pasive HA cluster
+Date: Thu, 12 May 2011 19:15:47 +0200
+Message-ID: <BANLkTinsDigkLBwM+FFrWev-6WRvsVe4GQ@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1305214450.32402.77.camel@sjohnson.state.ar.us>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:sender:from:date
+         :x-google-sender-auth:message-id:subject:to:content-type
+         :content-transfer-encoding;
+        bh=CNZ06Tzr1VgwiWPbYj0K/llbtwSmZm3h9L3tvEewiyw=;
+        b=jgU2XQzUUNkEQ+aZeKlKVntjg0OEJ0vKR3Dws36aV7qF7JqezPQKOe2gdkwKLQ/z3k
+         ++zyg68Hf65ETQkCXyquF0JL1ZM3vXNvivq4fRWsgyEp4IIVsIx96vjQvUImpivrvJ9D
+         dlarAbwWmbqUx8iS5xetuD98TDqJxSia5XbQw=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Stephen Johnson <stephen.johnson@arkansas.gov>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, Mahmood Naderan <nt_mahmood@yahoo.com>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-On Thursday 2011-05-12 17:34, Stephen Johnson wrote:
+Hi there.
+I'm working on a active/pasive HA cluster with corosync/pacemaker.
+=46or testing purposes, i did these test:
 
->On Thu, 2011-05-12 at 10:05 -0500, Mahmood Naderan wrote:
->> Hi,
->> beofore openning  a port, I checked which port is open:
->> 
->> Then I opened a port with
->> mahmood@client:~$ sudo iptables -A INPUT -p tcp -d 0/0 -s 0/0 --dport 4949 -j ACCEPT
+CASE A: One of that test do the next:
 
-Why do you specify redundant arguments like -s 0/0?
-Secondly, the rule may be appended in a place where it is never reached, 
-rendering it useless.
+1) Initialisation of a connection with a big file transfer with SCP
+across the cluster.
+2) "halt" the primary node. All resources (pacemaker) moves to another
+node. That's ok.
+3) The file transfer still working. Transparent to the end user.
 
->> However netstat doen't show it is open:
+CASE B: I want to be sure that the failback/failover is thanks to
+conntrackd flow's-state-replication, so
 
-And for the record, use modern tools like ss (ss -an; ss -alntp 
-perhaps in this case).
+1) Stop the conntrackd resource. All go fine. Conntrack is not working =
+any more.
+2) Start the file transfer across the cluster.
+3) Failover the node that has the IPVs. All resources moves to another
+node (pacemaker).
+4) The file transfer still working. Transparent to the end user.
+=BF=BF=BF=BF=BF=BF?????? WTF
 
 
-PS: Wraths to those who strip the Cc list.
+In the CASE B, without the conntrackd running, I supposed that the new
+node being owner of IPVs will not have any knowlege about the state of
+the flow (you know, NEW, ESTABLISHED,etc..). And this mean the
+firewall has to block the transference.
+But still transfering and the iptables rule being aplied as it where
+an ESTABLISHED connection:
+
+Chain FORWARD (policy DROP 42 packets, 3336 bytes)
+ pkts bytes target     prot opt in     out     source
+destination
+ 741K 1075M ACCEPT     tcp  --  eth0   eth2    10.0.0.128
+192.168.100.100     tcp spts:1024:65535 dpt:22 state NEW,ESTABLISHED
+37498 2400K ACCEPT     tcp  --  eth2   eth0    192.168.100.100
+10.0.0.128          tcp spt:22 dpts:1024:65535 state ESTABLISHED
+
+
+Any idea? Is this the standard behaviour of netfilter tools?
+
+In the IRC channel, i got this:
+[18:32] <fw> sysctl net.netfilter.nf_conntrack_tcp_loose
+[18:33] <fw> its probably one.  it must be 0 to disable pickup of
+established connections.
+
+But in fact, i haven' t "net.netfilter.nf_conntrack_tcp_loose" nor
+"net.ipv4.netfilter.ip_conntrack_tcp_loose"
+
+Please, consider a clumsy configuration/guy here :)
+
+
+Regards
+
+--
+/* Arturo Borrero Gonzalez || cer.inet@linuxmail.org */
+/* Use debian gnu/linux! Best OS ever! */
