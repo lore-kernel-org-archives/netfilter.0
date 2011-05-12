@@ -1,80 +1,61 @@
-From: CeR <cer.inet@linuxmail.org>
-Subject: assuming valid ESTABLISHED connections without conntrack on firewall
- active/pasive HA cluster
-Date: Thu, 12 May 2011 19:15:47 +0200
-Message-ID: <BANLkTinsDigkLBwM+FFrWev-6WRvsVe4GQ@mail.gmail.com>
+From: Mahmood Naderan <nt_mahmood@yahoo.com>
+Subject: Re: problem in openning a port
+Date: Thu, 12 May 2011 10:12:29 -0700 (PDT)
+Message-ID: <206218.92200.qm@web111703.mail.gq1.yahoo.com>
+References: <713633.15807.qm@web111723.mail.gq1.yahoo.com> <1305214450.32402.77.camel@sjohnson.state.ar.us> <alpine.LNX.2.01.1105121737030.19920@obet.zrqbmnf.qr>
+Reply-To: Mahmood Naderan <nt_mahmood@yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:sender:from:date
-         :x-google-sender-auth:message-id:subject:to:content-type
-         :content-transfer-encoding;
-        bh=CNZ06Tzr1VgwiWPbYj0K/llbtwSmZm3h9L3tvEewiyw=;
-        b=jgU2XQzUUNkEQ+aZeKlKVntjg0OEJ0vKR3Dws36aV7qF7JqezPQKOe2gdkwKLQ/z3k
-         ++zyg68Hf65ETQkCXyquF0JL1ZM3vXNvivq4fRWsgyEp4IIVsIx96vjQvUImpivrvJ9D
-         dlarAbwWmbqUx8iS5xetuD98TDqJxSia5XbQw=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1305220349; bh=wnuxqdcpn7X1fPb6RTo59IS3f37qxu+xJnlVmTuVAAw=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:References:Date:From:Reply-To:Subject:To:Cc:In-Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=y4Fvh3qgQxXDjmBEkfd/0IofjOwO9JBZy9HwSUPf5vWGzA1KujrqmrPR9bSFR7hD6KGJF288L0+AuXd0wR+kIQxtmZbsysqueFSgpfyVIBJa/dMVky8sCkSIjdiEhI92sa36bd1GGXHwZuirR2HFVnHXwWNG8YwDh6k1vwtMFIY=
+In-Reply-To: <alpine.LNX.2.01.1105121737030.19920@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi there.
-I'm working on a active/pasive HA cluster with corosync/pacemaker.
-=46or testing purposes, i did these test:
+>Why do you specify redundant arguments like -s 0/0?
+=A0
+I found that command while searching for "How to open a port in ubuntu"=
+=2E=20
+=A0
+Anyway I understand what you said.
+=A0
+Thanks Jan, Stephen=A0 and Ryan
 
-CASE A: One of that test do the next:
+// Naderan *Mahmood;
 
-1) Initialisation of a connection with a big file transfer with SCP
-across the cluster.
-2) "halt" the primary node. All resources (pacemaker) moves to another
-node. That's ok.
-3) The file transfer still working. Transparent to the end user.
+=46rom: Jan Engelhardt <jengelh@medozas.de>
+To: Stephen Johnson <stephen.johnson@arkansas.gov>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>; Mahmood Na=
+deran <nt_mahmood@yahoo.com>
+Sent: Thursday, May 12, 2011 8:08 PM
+Subject: Re: problem in openning a port
 
-CASE B: I want to be sure that the failback/failover is thanks to
-conntrackd flow's-state-replication, so
+On Thursday 2011-05-12 17:34, Stephen Johnson wrote:
 
-1) Stop the conntrackd resource. All go fine. Conntrack is not working =
-any more.
-2) Start the file transfer across the cluster.
-3) Failover the node that has the IPVs. All resources moves to another
-node (pacemaker).
-4) The file transfer still working. Transparent to the end user.
-=BF=BF=BF=BF=BF=BF?????? WTF
+>On Thu, 2011-05-12 at 10:05 -0500, Mahmood Naderan wrote:
+>> Hi,
+>> beofore openning=A0 a port, I checked which port is open:
+>>=20
+>> Then I opened a port with
+>> mahmood@client:~$ sudo iptables -A INPUT -p tcp -d 0/0 -s 0/0 --dpor=
+t 4949 -j ACCEPT
 
+Why do you specify redundant arguments like -s 0/0?
+Secondly, the rule may be appended in a place where it is never reached=
+,=20
+rendering it useless.
 
-In the CASE B, without the conntrackd running, I supposed that the new
-node being owner of IPVs will not have any knowlege about the state of
-the flow (you know, NEW, ESTABLISHED,etc..). And this mean the
-firewall has to block the transference.
-But still transfering and the iptables rule being aplied as it where
-an ESTABLISHED connection:
+>> However netstat doen't show it is open:
 
-Chain FORWARD (policy DROP 42 packets, 3336 bytes)
- pkts bytes target     prot opt in     out     source
-destination
- 741K 1075M ACCEPT     tcp  --  eth0   eth2    10.0.0.128
-192.168.100.100     tcp spts:1024:65535 dpt:22 state NEW,ESTABLISHED
-37498 2400K ACCEPT     tcp  --  eth2   eth0    192.168.100.100
-10.0.0.128          tcp spt:22 dpts:1024:65535 state ESTABLISHED
-
-
-Any idea? Is this the standard behaviour of netfilter tools?
-
-In the IRC channel, i got this:
-[18:32] <fw> sysctl net.netfilter.nf_conntrack_tcp_loose
-[18:33] <fw> its probably one.  it must be 0 to disable pickup of
-established connections.
-
-But in fact, i haven' t "net.netfilter.nf_conntrack_tcp_loose" nor
-"net.ipv4.netfilter.ip_conntrack_tcp_loose"
-
-Please, consider a clumsy configuration/guy here :)
+And for the record, use modern tools like ss (ss -an; ss -alntp=20
+perhaps in this case).
 
 
-Regards
-
+PS: Wraths to those who strip the Cc list.
 --
-/* Arturo Borrero Gonzalez || cer.inet@linuxmail.org */
-/* Use debian gnu/linux! Best OS ever! */
+To unsubscribe from this list: send the line "unsubscribe netfilter" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at=A0 http://vger.kernel.org/majordomo-info.html
