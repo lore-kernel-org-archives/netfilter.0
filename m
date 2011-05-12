@@ -1,45 +1,40 @@
-From: carlopmart <carlopmart@gmail.com>
-Subject: A question about ebtables and virtual switching
-Date: Thu, 12 May 2011 10:17:06 +0200
-Message-ID: <4DCB9782.6030605@gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: conntrack not displaying bytes and packets
+Date: Thu, 12 May 2011 10:20:36 +0200
+Message-ID: <4DCB9854.5080805@netfilter.org>
+References: <401131.21271.qm@web113317.mail.gq1.yahoo.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:message-id:date:from:user-agent:mime-version:to
-         :subject:content-type:content-transfer-encoding;
-        bh=UPLbgDxyDUClfRFXZYc28i1yRAecoL1ngj02H4dtvw4=;
-        b=ahcmD8X9KWSFjXEkKOZDyO6hS7Acpa10kECF6+vIKJbDkRSqJjDTI6Vw+Osljg2FCN
-         mUd1XYfDTL5QTdkYn3h8NXLnIGei0u+l1oPHCd4tZXrLA+URABrodfRMdMy7q7OyzrG+
-         Z7cpKSQlB8kE3rar602MSxzhD/zGTwaunGHEk=
+In-Reply-To: <401131.21271.qm@web113317.mail.gq1.yahoo.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Vieri <rentorbuy@yahoo.com>, Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hi all,
+On 11/05/11 08:19, Vieri wrote:
+> Hi,
+>
+> Since I updated my kernel to 2.6.36 and 2.6.37, /proc/net/nf_conntrack and conntrack -L do NOT show "packets" and "bytes" even for ASSURED / REPLIED connections.
+>
+> It seems that both of these data (bytes and packets) have disappeared from conntrack/netfilter.
+>
+> Am I missing something? Is there an option somewhere to restore earlier behavior (previous kernels/netfilter would always display both bytes and packets)?
+>
+> Example when opening google:
+>
+> ipv4     2 tcp      6 431999 ESTABLISHED src=10.215.144.48 dst=209.85.147.104 sport=52531 dport=80 src=209.85.147.104 dst=10.215.144.48 sport=80 dport=52531 [ASSURED] mark=0 secmark=0 use=2
+>
+> ipv4     2 tcp      6 431999 ESTABLISHED src=10.215.144.48 dst=209.85.147.104 sport=52533 dport=80 src=209.85.147.104 dst=10.215.144.48 sport=80 dport=52533 [ASSURED] mark=0 secmark=0 use=2
+>
+> ipv4     2 tcp      6 431999 ESTABLISHED src=10.215.144.48 dst=209.85.147.104 sport=52530 dport=80 src=209.85.147.104 dst=10.215.144.48 sport=80 dport=52530 [ASSURED] mark=0 secmark=0 use=2
+>
+> ipv4     2 tcp      6 431998 ESTABLISHED src=10.215.144.48 dst=209.85.147.104 sport=52532 dport=80 src=209.85.147.104 dst=10.215.144.48 sport=80 dport=52532 [ASSURED] mark=0 secmark=0 use=2
+>
+> Previous kernel/netfilter would show something like this:
+>
+> tcp      6 73 TIME_WAIT src=10.215.144.7 dst=209.85.147.104 sport=35407 dport=80 packets=15 bytes=1386 src=209.85.147.104 dst=192.168.92.2 sport=80 dport=35407 packets=11 bytes=10180 [ASSURED] mark=1 use=1
+>
+> (note "bytes" and "packets")
 
-  I have installed a virtual machine with snort to sniff traffic on a 
-dedicated virtual lan.
-
-  But exists a problem: this snort vm only sees traffic destinated to 
-its own MAC address and traffic with the multicast bit set in the 
-destination address. This scenario is unusable for snot.
-
-  I have found a partial soultion: set ageing to 0 in host's bridge but 
-this produces another problem, all vms attached to this virtual switch 
-sees all traffic, and that is not what I want.
-
-  If I not wrong, ebtables is the solution to make snort work, but I 
-didn't find any doc about how can I implement this solution.
-
-  How can I configure ebtables rules to make a port mirroring in this 
-virtual switch where snort needs to sniff??
-
-  I am using KVM as virtualization platform.
-
-  Thanks.
--- 
-CL Martinez
-carlopmart {at} gmail {d0t} com
+echo 1 > /proc/sys/net/netfilter/nf_conntrack_acct
