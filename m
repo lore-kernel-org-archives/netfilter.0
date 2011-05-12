@@ -1,23 +1,77 @@
-From: Vieri <rentorbuy@yahoo.com>
-Subject: Re: conntrack not displaying bytes and packets
-Date: Thu, 12 May 2011 05:48:31 -0700 (PDT)
-Message-ID: <104658.65073.qm@web113315.mail.gq1.yahoo.com>
-References: <4DCB9854.5080805@netfilter.org>
+From: Mahmood Naderan <nt_mahmood@yahoo.com>
+Subject: problem in openning a port
+Date: Thu, 12 May 2011 08:05:32 -0700 (PDT)
+Message-ID: <713633.15807.qm@web111723.mail.gq1.yahoo.com>
+Reply-To: Mahmood Naderan <nt_mahmood@yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1305204511; bh=BfyluoDlKEAJv9cvAieUOPSOxS/k2B4hN2/ETm6B69c=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Subject:To:In-Reply-To:MIME-Version:Content-Type; b=R9S6TBAEAcJKmGlz+G9HIVGHKyyxQov9Uocg5rT11wCkys43lzgzZjUq+qWn69XSefJCCT/tQXqHF9Bp1O53l4UscR4lK4B6uCU2aRNpYJKQoMLIlQBS0D91OoflriTMAUBquN+Pp+pO6+bgjVkZhI0Mc/WHOQttNy5DFprCRrM=
-In-Reply-To: <4DCB9854.5080805@netfilter.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1305212732; bh=HIgjKe8yQhCRqfYj+CGcEob1WmgGhNy62+O6RXcsDqo=; h=Message-ID:X-YMail-OSG:Received:X-Mailer:Date:From:Reply-To:Subject:To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=eSB44ZZ21uNZ33hKJqucXYgrJOMokrnKsdRlMlKpA90yrnibtyc7CS7CN2iuGBzR5rCYentOkFjhExkIdQ89Cu0DPND0hv6cmqBCMLjkerOiDnq/qfmL4IkirJT/sbULrbUb0ND4flxoKGfxjZkIgeuouiLvUJvtJt3roUszDxQ=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, pablo@netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+
+Hi,
+beofore openning=A0 a port, I checked which port is open:
+=A0
+mahmood@client:~$ netstat -an | grep LISTEN
+tcp=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0 0 0.0.0.0:111=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0 0.0.0.0:*=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =
+LISTEN
+tcp=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0 0 0.0.0.0:22=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0 0.0.0.0:*=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+ LISTEN
+tcp=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0 0 0.0.0.0:15002=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0 0.0.0.0:*=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 LIS=
+TEN
+tcp=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0 0 0.0.0.0:15003=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0 0.0.0.0:*=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 LIS=
+TEN
+tcp=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0 0 0.0.0.0:38304=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0 0.0.0.0:*=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 LIS=
+TEN
+tcp6=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0 0 :::22=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 :::*=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0 LISTEN
+unix=A0 2=A0=A0=A0=A0=A0 [ ACC ]=A0=A0=A0=A0 STREAM=A0=A0=A0=A0 LISTENI=
+NG=A0=A0=A0=A0 3488=A0=A0=A0=A0 @/com/ubuntu/upstart
 
 
 
---- On Thu, 5/12/11, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+Then I opened a port with
 
-> echo 1 > /proc/sys/net/netfilter/nf_conntrack_acct
 
-Thank you!
+mahmood@client:~$ sudo iptables -A INPUT -p tcp -d 0/0 -s 0/0 --dport 4=
+949 -j ACCEPT
+[sudo] password for mahmood:
+mahmood@client:~$=20
 
+
+However netstat doen't show it is open:
+
+mahmood@client:~$ netstat -an | grep LISTEN
+tcp=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0 0 0.0.0.0:111=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0 0.0.0.0:*=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 =
+LISTEN
+tcp=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0 0 0.0.0.0:22=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0 0.0.0.0:*=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+ LISTEN
+tcp=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0 0 0.0.0.0:15002=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0 0.0.0.0:*=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 LIS=
+TEN
+tcp=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0 0 0.0.0.0:15003=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0 0.0.0.0:*=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 LIS=
+TEN
+tcp=A0=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0 0 0.0.0.0:38304=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0 0.0.0.0:*=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 LIS=
+TEN
+tcp6=A0=A0=A0=A0=A0=A0 0=A0=A0=A0=A0=A0 0 :::22=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0 :::*=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
+=A0=A0=A0=A0=A0=A0=A0 LISTEN
+unix=A0 2=A0=A0=A0=A0=A0 [ ACC ]=A0=A0=A0=A0 STREAM=A0=A0=A0=A0 LISTENI=
+NG=A0=A0=A0=A0 3488=A0=A0=A0=A0 @/com/ubuntu/upstart
+
+
+What is wrong?
+// Naderan *Mahmood;
