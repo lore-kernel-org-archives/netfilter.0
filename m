@@ -1,45 +1,35 @@
-From: Stephen Johnson <stephen.johnson@arkansas.gov>
+From: Jan Engelhardt <jengelh@medozas.de>
 Subject: Re: problem in openning a port
-Date: Thu, 12 May 2011 10:34:10 -0500
-Message-ID: <1305214450.32402.77.camel@sjohnson.state.ar.us>
-References: <713633.15807.qm@web111723.mail.gq1.yahoo.com>
+Date: Thu, 12 May 2011 17:38:57 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1105121737030.19920@obet.zrqbmnf.qr>
+References: <713633.15807.qm@web111723.mail.gq1.yahoo.com> <1305214450.32402.77.camel@sjohnson.state.ar.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <713633.15807.qm@web111723.mail.gq1.yahoo.com>
+In-Reply-To: <1305214450.32402.77.camel@sjohnson.state.ar.us>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Stephen Johnson <stephen.johnson@arkansas.gov>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, Mahmood Naderan <nt_mahmood@yahoo.com>
 
-On Thu, 2011-05-12 at 10:05 -0500, Mahmood Naderan wrote:
-> Hi,
-> beofore openning  a port, I checked which port is open:
+On Thursday 2011-05-12 17:34, Stephen Johnson wrote:
 
-> 
-> Then I opened a port with
-> 
-> 
-> mahmood@client:~$ sudo iptables -A INPUT -p tcp -d 0/0 -s 0/0 --dport 4949 -j ACCEPT
-> [sudo] password for mahmood:
-> mahmood@client:~$ 
-> 
-> 
-> However netstat doen't show it is open:
+>On Thu, 2011-05-12 at 10:05 -0500, Mahmood Naderan wrote:
+>> Hi,
+>> beofore openning  a port, I checked which port is open:
+>> 
+>> Then I opened a port with
+>> mahmood@client:~$ sudo iptables -A INPUT -p tcp -d 0/0 -s 0/0 --dport 4949 -j ACCEPT
 
-> What is wrong?
-> // Naderan *Mahmood;
+Why do you specify redundant arguments like -s 0/0?
+Secondly, the rule may be appended in a place where it is never reached, 
+rendering it useless.
 
-There are two issues here. The iptables rule you specified will only
-allow network traffic to flow to that port. It will not enable any
-service to hang off of that port.
+>> However netstat doen't show it is open:
 
-Secondly on the open port issue via netstat. Netstat only shows ports
-that are in use on the system via processes. In order to have port 4949
-to be in use (i.e. LISTEN state) a process has to create the socket and
-bind to it. Iptables has nothing to do with that. 
+And for the record, use modern tools like ss (ss -an; ss -alntp 
+perhaps in this case).
 
 
--- 
-Stephen Johnson <stephen.johnson@arkansas.gov>
-
+PS: Wraths to those who strip the Cc list.
