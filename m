@@ -1,55 +1,49 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: manually update iptables
-Date: Fri, 13 May 2011 10:57:42 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1105131042530.8753@obet.zrqbmnf.qr>
-References: <41501.87.139.33.146.1305264533.squirrel@mx2bln1.prossl.de>
+From: Fiedler Roman <Roman.Fiedler@ait.ac.at>
+Subject: Iptables segfault on ubuntu
+Date: Fri, 13 May 2011 14:34:26 +0200
+Message-ID: <9F69795E29C890408AC2DAF646C89BB3799EBB3860@MAILBOX.arc.local>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <41501.87.139.33.146.1305264533.squirrel@mx2bln1.prossl.de>
+Content-Language: de-DE
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: bm@it41.de
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Friday 2011-05-13 07:28, bm@it41.de wrote:
+Hello list,
 
->First of all the default installation of iptables was version 1.3.5. which
->seemed to have an issue regarding the connlimit module, cause i got that
->weird errors.
+Please could someone with a trunk iptables installation test the follow=
+ing command.
 
-The weird number error was only finally fixed in v1.4.3.
+iptables -A OUTPUT --source "" -j ACCEPT
 
->testserver1:/# iptables -A INPUT -p tcp --dport 80 -m connlimit
->--connlimit-above 3 -j REJECT
->iptables: Unknown error 18446744073709551615
->-----------------------------------------------
+This segfaults on natty iptables v1.4.10 and I do not want to compile i=
+ptables from trunk for crosscheck.
 
->So i tried to manually install 1.3.8 (just some minor releases up to
->prevent huge conflicts) against the kernel source. That actually worked.
+DI Roman Fiedler
+Safety & Security Department
+Information Management & eHealth
 
-You are misled - iptables version numbers do not indicate anything at 
-this time (other than providing an ordering relation).
+AIT Austrian Institute of Technology GmbH
+Reininghausstrae 13/1=A0 |=A0 8020 Graz=A0 |=A0 Austria
+T +43(0) 316 586570-63=A0 |=A0 M +43(0) 664 8561599=A0 |=A0 F +43(0) 31=
+6 586570-12
+roman.fiedler@ait.ac.at <mailto:roman.fiedler@ait.ac.at> | http://www.a=
+it.ac.at <http://www.ait.ac.at/>
+http://www.ait.ac.at/eHealth/ <http://www.ait.ac.at/eHealth/>
 
->But i missed something, it seems that i need to update the kernel
->netfilters aswell
->----------------------------------------------
->testserver1:/usr/src/iptables-1.3.8# iptables -m connlimit --help
->iptables: match `connlimit' v1.3.5 (I'm v1.3.8).
->----------------------------------------------
+Kennen Sie die www.eHealth2011.at?
 
-iptables looks in the plugin directory and finds 1.3.5's plugins there, 
-which means you have not installed the new ones.
-If you want to run iptables from the source directory, you will need to 
-use something like ./configure --with-xtlibdir=$PWD/extensions
-and of course a recent package.
+=46N: 115980 i HG Wien=A0 |=A0 UID: ATU14703506
+This email and any attachments thereto, is intended only for use by the=
+ addressee(s) named herein and may contain legally privileged and/or co=
+nfidential information. If you are not the intended recipient, please n=
+otify the sender by return e-mail or by telephone and delete this messa=
+ge from your system and any printout thereof. Any unauthorized use, rep=
+roduction, or dissemination of this message is strictly prohibited. Ple=
+ase note that e-mails are susceptible to change. AIT Austrian Institute=
+ of Technology GmbH shall not be liable for the improper or incomplete =
+transmission of the information contained in this communication, nor sh=
+all it be liable for any delay in its receipt.
 
->As you may have noticed i am not a kernel expert and never tried to
->install iptables from source before, i would be very happy about any
->advice, hint, link or whatever you could give to me.
-
-Use distro-provided packages preferably. If it does not get you a 
-reasonable version, maybe you have to consider that choosing a
-5-year-old-stack-shipping distro is not the ideal target when trying to 
-create/operate a firewall.
