@@ -1,28 +1,17 @@
-From: Chris Adams <cmadams@hiwaay.net>
-Subject: IPv6 neighbor discovery protection
-Date: Fri, 13 May 2011 09:17:29 -0500
-Message-ID: <20110513141729.GB9464@hiwaay.net>
+From: nowhere <nowhere@hakkenden.ath.cx>
+Subject: Timestamping in nfqueue
+Date: Fri, 13 May 2011 18:32:36 +0400
+Message-ID: <1305297156.9902.41.camel@compot-mob>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-I'm running virtual hosts managed with libvirt.  I'm using libvirt's
-ability to manage ebtables/iptables rules to share a single subnet on a
-bridge between multiple virtual hosts (the auto-created rules prevent
-ARP, MAC, and IP spoofing).
+Hello,
 
-Now I'm looking at IPv6 support, and I don't see a similar way to filter
-neighbor discovery.  I can block router advertisements (ICMPv6 type
-134), but I don't know how to filter neigbor advertisements to only
-allow the assigned MAC/IP.
+What is the purpose of nfq_get_timestamp() in libnfnetlink_queue if
+skbs, entering nfnetlink_queue, are not timestamped?
 
-Is there a way to do this with ebtables/ip6tables?
--- 
-Chris Adams <cmadams@hiwaay.net>
-Systems and Network Administrator - HiWAAY Internet Services
-I don't speak for anybody but myself - that's enough trouble.
