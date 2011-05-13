@@ -1,28 +1,28 @@
-From: Fiedler Roman <Roman.Fiedler@ait.ac.at>
-Subject: AW: Iptables segfault on ubuntu
-Date: Fri, 13 May 2011 16:22:30 +0200
-Message-ID: <9F69795E29C890408AC2DAF646C89BB3799EBB38A6@MAILBOX.arc.local>
-References: <9F69795E29C890408AC2DAF646C89BB3799EBB3860@MAILBOX.arc.local>
- <alpine.LNX.2.01.1105131610440.4775@obet.zrqbmnf.qr>
+From: Chris Adams <cmadams@hiwaay.net>
+Subject: IPv6 neighbor discovery protection
+Date: Fri, 13 May 2011 09:17:29 -0500
+Message-ID: <20110513141729.GB9464@hiwaay.net>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1105131610440.4775@obet.zrqbmnf.qr>
-Content-Language: de-DE
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-> >Please could someone with a trunk iptables installation test the
-> >following command.
-> >
-> >iptables -A OUTPUT --source "" -j ACCEPT
-> 
-> This is fixed in 4b110b426df7bf486a3e7884c56ebb3487023601.
-> Not that calling -s "" in the first place is useful..
+I'm running virtual hosts managed with libvirt.  I'm using libvirt's
+ability to manage ebtables/iptables rules to share a single subnet on a
+bridge between multiple virtual hosts (the auto-created rules prevent
+ARP, MAC, and IP spoofing).
 
-Of course, just happens during quick and dirty script tests. I also reported to Ubuntu, so that they can integrate these fixes into current Ubuntu.
+Now I'm looking at IPv6 support, and I don't see a similar way to filter
+neighbor discovery.  I can block router advertisements (ICMPv6 type
+134), but I don't know how to filter neigbor advertisements to only
+allow the assigned MAC/IP.
 
-Thanks, Roman
+Is there a way to do this with ebtables/ip6tables?
+-- 
+Chris Adams <cmadams@hiwaay.net>
+Systems and Network Administrator - HiWAAY Internet Services
+I don't speak for anybody but myself - that's enough trouble.
