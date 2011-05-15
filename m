@@ -1,40 +1,31 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset 6.5 released
-Date: Sun, 15 May 2011 15:50:26 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1105151540340.25248@blackhole.kfki.hu>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: UDP packet and INVALID state
+Date: Sun, 15 May 2011 17:15:38 +0200
+Message-ID: <4DCFEE1A.2080504@plouf.fr.eu.org>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Hi,
+Hello all,
 
-I'm happy to announce ipset 6.5. The list of changes are:
+What are the possible conditions for a UDP packet to have the INVALID
+state but still be accepted by the destination ?
 
-Kernel part changes:
- - Support range for IPv4 at adding/deleting elements for hash:*net* types
- - Set type support with multiple revisions added
- - Fix adding ranges to hash types
+I already found a previous reply from Jozsef Kadlecsik mentionning the
+following conditions :
 
-Userspace changes:
- - Support range for IPv4 at adding/deleting elements for hash:*net* types
- - Disable type revisions which are not supported both by the kernel and
-   ipset
- - Update ipset help text to reflect SCTP and UDPLITE support
- - Ignore -n flag (list just setnames) when sets are to be saved
+- the header is too small, truncated or malformed, etc.) ;
+- the IP addresses or the protocol parameters (ports) for a unique
+  tuple (src ip, dst ip, proto, src "port", dst "port") cannot be
+  extracted from the packet.
 
-You can download the source code of ipset from:
-        http://ipset.netfilter.org
-        ftp://ftp.netfilter.org/pub/ipset/
-        git://git.netfilter.org/ipset.git
+But wouldn't that also make the destination discard the packet ?
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Are there other conditions ?
+Maybe if the conntrack table is full ?
+
+Thanks for all insights.
