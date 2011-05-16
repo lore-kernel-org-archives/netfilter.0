@@ -1,57 +1,96 @@
-From: Ed W <lists@wildgooses.com>
-Subject: Re: High accuracy bandwidth accounting?
-Date: Mon, 16 May 2011 17:53:43 +0100
-Message-ID: <4DD15697.4080505@wildgooses.com>
-References: <4DC7F632.9020105@wildgooses.com>  <4DC8775D.1080007@wildgooses.com>  <1305365024.1921.475.camel@andybev-desktop>  <4DCE8540.4060909@wildgooses.com>  <1305390543.1921.705.camel@andybev-desktop>  <alpine.LNX.2.01.1105150032430.7873@obet.zrqbmnf.qr> <1305444212.1921.714.camel@andybev-desktop> <alpine.LNX.2.01.1105151103490.30189@obet.zrqbmnf.qr> <4DD1362D.6010107@wildgooses.com> <alpine.LNX.2.01.1105161655440.8681@frira.zrqbmnf.qr>
+From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
+Subject: Re: Load Balance
+Date: Mon, 16 May 2011 17:24:29 -0300
+Message-ID: <BANLkTim4bnzaeD9yny7uV6fBfB=k-XAc6A@mail.gmail.com>
+References: <BANLkTimUdLO55Bqrv3=VjDo14-BsLP7xWQ@mail.gmail.com>
+	<1305480225.1708.2.camel@andybev>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1105161655440.8681@frira.zrqbmnf.qr>
+In-Reply-To: <1305480225.1708.2.camel@andybev>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Andrew Beverley <andy@andybev.com>, Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Andrew Beverley <andy@andybev.com>
+Cc: netfilter@vger.kernel.org
+
+Thank you Andy for your Return.
+
+I haven't made available in my environment product yet.
+
+well.... the link made available for you shows how to do load balance
+with connmark and statistic match module and it doesn't regard global
+equalize.
+
+so...I wonder there is diferent between them ?
+
+with global equalize is very easy I only insert one line inside of the
+script and all it's work! at least in my test environment it's
+working.
+
+I want make an test as your how to but I'm using CentOS 5.6 and
+doesn't has libxt_statistic.so module because iptables version is
+1.3.x
 
 
->> So my test is "nslookup www.yahoo.co.uk" and both tcpdump and conntrack -E dumps are
->> below:
-> 
-> Modern times - modern tools: host(1).
-
-Busybox...  :-(
+thank
 
 
->> This feels to me like a packet which has fallen between two
->> situations. It's not a new connection so it didn't get logged as
->> such. It's also kind of not obviously part of the existing
->> connection so it doesn't get logged as such either?
-> 
-> Something like that. Check the state of this ICMP packet with -j
-> LOGMARK from Xtables-addons. I'd be interested in what it belongs to.
-
-Because this is an embedded device and my build scripts are currently broken at the moment (being rewritten...), adding xtables-addons to the device is slightly tricky right now...
-
-(I think I need some more linux development machines here...  All the other linux machines here are "production" servers... Hmm)
 
 
-After some thought, this command line *seems* to reproduce the problem - would someone with LOGMARK available be kind enough to reproduce this:
-
-	nslookup www.yahoo.co.uk & sleep 0.01 && killall nslookup
 
 
-16:45:02.034285 IP 10.94.230.137.38407 > 8.8.8.8.domain: 2+ PTR? 8.8.8.8.in-addr.arpa. (38)
-16:45:02.316397 IP 8.8.8.8.domain > 10.94.230.137.38407: 2 1/0/0 PTR google-public-dns-a.google.com. (82)
-16:45:02.316522 IP 10.94.230.137 > 8.8.8.8: ICMP 10.94.230.137 udp port 38407 unreachable, length 118
 
-[NEW] udp      17 30 src=10.94.230.137 dst=8.8.8.8 sport=38407 dport=53 [UNREPLIED] src=8.8.8.8 dst=10.94.230.137 sport=53 dport=38407
-[UPDATE] udp      17 29 src=10.94.230.137 dst=8.8.8.8 sport=38407 dport=53 src=8.8.8.8 dst=10.94.230.137 sport=53 dport=38407
-[DESTROY] udp      17 src=10.94.230.137 dst=8.8.8.8 sport=38407 dport=53 packets=1 bytes=66 src=8.8.8.8 dst=10.94.230.137 sport=53 dport=38407 packets=1 bytes=110
 
-(Obviously s/nslookup/host/ as appropriate...)
 
-This seems like a smaller reproducible test case?  The only caveat is that the "sleep x" be smaller than the RTT to the DNS server - using a real DNS server on the internet makes this straightforward.
 
-Thanks
 
-Ed W
+Em 15 de maio de 2011 14:23, Andrew Beverley <andy@andybev.com> escreve=
+u:
+> On Sun, 2011-04-17 at 20:22 -0300, Usu=E1rio do Sistema wrote:
+>> Hello everyone, I'm deploy an test environment with load Balance in =
+my
+>> Firewall using equalize as follow below
+>>
+>>
+>> I have two ISPs and one Inside network.
+>>
+>> creating the load balance:
+>>
+>> ip route add default scope global equalize nexthop via 200.247.209.6=
+5
+>> weight 1 =A0nexthop via 201.72.12.1 weight 1
+>>
+>> Zeroing the ip_filter
+>>
+>> for eee in /proc/sys/net/ipv4/conf/*/rp_filter; do
+>> echo 0 > $eee
+>> done
+>>
+>> creating more one table
+>>
+>> ip route add default via =A0201.72.12.1 =A0table telemar
+>>
+>>
+>> it's working in my environment. but I haven't done available in my
+>> production environment.
+>>
+>
+> Do you mean it doesn't work in your production environment?
+>
+>> my question is: there is more parameter ,which, I have to set ? for
+>> exemplo, timers.
+>>
+>
+> If you are using 2 completely separate ISPs, then you will need to do
+> more than just provide equal-weighted gateways. You will need to send
+> the packets for each connection over the same ISP. The website below
+> gives more information:
+>
+> http://www.sysresccd.org/Sysresccd-networking_en_Iptables-and-netfilt=
+er-load-balancing-using-connmark
+>
+> Andy
+>
+>
+>
