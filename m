@@ -1,77 +1,106 @@
-From: gapsf@yandex.ru
-Subject: To developers: What rules set would process packets faster?
-Date: Mon, 16 May 2011 10:29:42 +0700
-Message-ID: <1653180415.20110516102942@yandex.ru>
-Reply-To: gapsf@yandex.ru
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: High accuracy bandwidth accounting?
+Date: Mon, 16 May 2011 07:43:28 +0100
+Message-ID: <1305528208.2041.8.camel@andybev-desktop>
+References: <4DC7F632.9020105@wildgooses.com>
+	 <4DC8775D.1080007@wildgooses.com>
+	 <1305365024.1921.475.camel@andybev-desktop>
+	 <4DCE8540.4060909@wildgooses.com>
+	 <1305390543.1921.705.camel@andybev-desktop>
+	 <alpine.LNX.2.01.1105150032430.7873@obet.zrqbmnf.qr>
+	 <1305444212.1921.714.camel@andybev-desktop>
+	 <alpine.LNX.2.01.1105151103490.30189@obet.zrqbmnf.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1305516582; bh=wwHdYrqpFdPw5Gd8jQIgTIhtPb3KXtAE5eG112RfaA4=;
-	h=Date:From:Reply-To:Message-ID:To:Subject:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding;
-	b=OTkfuoM4sWWW/TnpQvxoiycAcbhYYQbf15YYvwx1qKWPP+JgfGkerxPnGYQZtrfdG
-	 YEpxPE1eIUOYQRDui7jZE2KMcnQ6fp9iC363tj1B1VV11K+NYpIgqhSUcxQmSsQd+J
-	 konxtdDU7RU42P2HElBmAttZmEK1cL/xFKRJ3uic=
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1305528211; bh=66gNCass9VYl1LLypkdDCfsFn1osg53zMVgNV
+	Gka/EU=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
+	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=FxSyllV3
+	busuX5AnyQVjxHEd4Am06VoAzM02OcXpAsynUnXmVVN2I4fNFzxGbcQVD7jJzngD8Su
+	Cs21LYhtvV1ZENdT9nEXCcfTgtaZ1DouQ+ZynM2vkVN0ULGFcLm+Gw/XaB3B1WE0p0R
+	dUju3Gf4Fioou/3wgh/5cHdNYWmV8=
+In-Reply-To: <alpine.LNX.2.01.1105151103490.30189@obet.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: Ed W <lists@wildgooses.com>, Netfilter <netfilter@vger.kernel.org>
 
-I'm writing yet another NETFILTER/iptables HOWTO and I have the following  question.
-Consider two equivalent sets of rules (for gateway with 4 interfaces, 6 networks, about 350 rules total).
+On Sun, 2011-05-15 at 11:08 +0200, Jan Engelhardt wrote: 
+> On Sunday 2011-05-15 09:23, Andrew Beverley wrote:
+> 
+> >On Sun, 2011-05-15 at 00:33 +0200, Jan Engelhardt wrote:
+> >> On Saturday 2011-05-14 18:29, Andrew Beverley wrote:
+> >> 
+> >> >On Sat, 2011-05-14 at 14:36 +0100, Ed W wrote:
+> >> >
+> >> >Okay, I've played around with this myself using a similar scenario. It
+> >> >looks to me like the packets *are* making it into the conntrack system.
+> >> >
+> >> >I tried setting a LOG target to match those packets with a ctstate of
+> >> >RELATED:
+> >> >
+> >> >iptables -A INPUT -p ICMP -m conntrack --ctstate RELATED -j LOG
+> >> >
+> >> >And they were indeed logged. But there was no visibility of them using
+> >> >the conntrack userspace program.
+> >> 
+> >> Does `conntrack -L` show anything for you at all? 
+> >
+> >Yes, it shows the outgoing packets:
+> >
+> >udp      17 23 src=10.0.10.206 dst=212.110.185.119 sport=35259 dport=53
+> >packets=3 bytes=168 [UNREPLIED] src=212.110.185.119 dst=10.0.10.206
+> >sport=53 dport=35259 packets=0 bytes=0 mark=0 secmark=0 use=2
+> >
+> >But it doesn't show the "ICMP port unreachable" packets that are sent in
+> >reply. The question is: should it show them?
+> 
+> conntrack -L shows pseudo/NFCT-style connections, not packets.
 
-=== variant#1: linear list ===
-iptables -t filter -P FORWARD DROP
-# INET->LAN
-iptables -t filter -A FORWARD -i eth1 -o eth0 -s ! 192.168.0.0/24 -d 192.168.0.1 -j ACCEPT
-iptables -t filter -A FORWARD -i eth1 -o eth0 -s ! 192.168.0.0/24 -d 192.168.0.2 -j ACCEPT
-...
-# LAN->INET
-iptables -t filter -A FORWARD -i eth0 -o eth1 -s 192.168.0.1 -d ! 192.168.0.0/24 -j ACCEPT
-iptables -t filter -A FORWARD -i eth0 -o eth1 -s 192.168.0.2 -d ! 192.168.0.0/24 -j ACCEPT
-....
-# INET->DMZ
-iptables -t filter -A FORWARD -i eth1 -o eth2 -p tcp -s ! 192.168.0.0/24 -d xxx.x.x.1 --dport yy -j ACCEPT
-iptables -t filter -A FORWARD -i eth1 -o eth2 -p tcp -s ! 192.168.0.0/24 -d xxx.x.x.2 --dport zz -j ACCEPT
-...
-# INET->DMZ
-iptables -t filter -A FORWARD -i eth2 -o eth1 -p tcp -s xxx.xxx.x.1 -d ! 192.168.0.0/24 --dport ww -j ACCEPT
-iptables -t filter -A FORWARD -i eth2 -o eth1 -p tcp -s xxx.xxx.x.2 -d ! 192.168.0.0/24 --dport vv -j ACCEPT
-...
-...
-=================
+Sorry, when I say it doesn't show them, I mean they are not counted. The
+conntrack entry for that connection only shows a packet count in one
+direction. It shows zero in the other direction.
 
-And equivalent rules, grouped into dedicated chains by interfaces and networks
-(about 11 chanis with 5-40 rules per chain):
+> As for 
+> ICMP port unreachable, either its classification is
+> - INVALID, in which case there is no CT to show
+> - a reply, in which case it is part of the shown CT - and the event 
+> monitor will show an UPDATE
+> - RELATED, in which case a new CT is shown - and which may disappear 
+> shortly after due to a short lifetime - the event monitor should show 
+> NEW I think.
 
-=== variant#2: chunked list ===
-iptables -t filter -P FORWARD DROP
+The ones in this case are coming in as RELATED.
 
-iptables -t filter -N INET_LAN
-iptables -t filter -N LAN_INET
-iptables -t filter -N INET_DMZ
-iptables -t filter -N DMZ_INET
-...
-iptables -t filter -A FORWARD -i eth1 -o eth0 -s ! 192.168.0.0/24 -d   192.168.0.0/24 -j INET_LAN
-iptables -t filter -A FORWARD -i eth0 -o eth1 -s   192.168.0.0/24 -d ! 192.168.0.0/24 -j LAN_INET
-iptables -t filter -A FORWARD -i eth1 -o eth2 -s ! 192.168.0.0/24 -d   xxx.xxx.x.x/29 -j INET_DMZ
-iptables -t filter -A FORWARD -i eth2 -o eth1 -s   xxx.xxx.x.x/29 -d ! 192.168.0.0/24 -j DMZ_INET
-...
-iptables -t filter -A INET_LAN -d 192.168.0.1 -j ACCEPT # interfaces and networks are no longer checked here
-iptables -t filter -A INET_LAN -d 192.168.0.2 -j ACCEPT
-...
-iptables -t filter -A LAN_INET -s 192.168.0.1 -j ACCEPT
-iptables -t filter -A LAN_INET -s 192.168.0.2 -j ACCEPT
-...
-iptables -t filter -A INET_DMZ -p tcp -d xxx.xxx.x.1 --dport yy -j ACCEPT
-iptables -t filter -A INET_DMZ -p tcp -d xxx.xxx.x.2 --dport zz -j ACCEPT
-...
-iptables -t filter -A DMZ_INET -p tcp -s xxx.xxx.x.1 --dport ww -j ACCEPT
-iptables -t filter -A DMZ_INET -p tcp -s xxx.xxx.x.2 --dport vv -j ACCEPT 
-...
-=================
+> 
+> Monitor with conntrack -E for details.
+> 
 
-What rules set of these two would process packets faster and/or eat less CPU
-if for variant #1 a given packet traverse about 50-80% of rules to match?
+conntrack -E -d 212.110.185.119 gives:
+
+    [NEW] udp      17 30 src=10.0.10.206 dst=212.110.185.119 sport=35676 dport=53 [UNREPLIED] src=212.110.185.119 dst=10.0.10.206 sport=53 dport=35676
+[DESTROY] udp      17 src=10.0.10.206 dst=212.110.185.119 sport=35676 dport=53 [UNREPLIED] src=212.110.185.119 dst=10.0.10.206 sport=53 dport=35676
+
+But conntrack -E -s 212.110.185.119 gives nothing
+
+So they do not seem to be counted anywhere.
+
+> >> There is/was a 
+> >> short intermediate time when it would not return anything.
+> >
+> >Do you mean there was a time when a particular version of conntrack
+> >would not return anything?
+> 
+> Yes, see kernel commit cba85b532e4aabdb97f44c18987d45141fd93faa that 
+> (the fix) for details.
+
+I upgraded the kernel to 2.6.38.6 just in case, but the same still
+happens.
+
+Thanks,
+
+Andy
+
 
