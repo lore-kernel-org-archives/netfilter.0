@@ -1,96 +1,31 @@
-From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
-Subject: Re: Load Balance
-Date: Mon, 16 May 2011 17:24:29 -0300
-Message-ID: <BANLkTim4bnzaeD9yny7uV6fBfB=k-XAc6A@mail.gmail.com>
-References: <BANLkTimUdLO55Bqrv3=VjDo14-BsLP7xWQ@mail.gmail.com>
-	<1305480225.1708.2.camel@andybev>
+From: Ryan Gelobter <r.gelobter@limestonenetworks.com>
+Subject: Blocking UDP Fragments
+Date: Mon, 16 May 2011 15:42:29 -0500
+Message-ID: <216636937ABE004E8CD94DDB2AD8BAA501AE75C2BE63@lsnexchange.limestonenetworks.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1305480225.1708.2.camel@andybev>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Andrew Beverley <andy@andybev.com>
-Cc: netfilter@vger.kernel.org
+To: "'netfilter@vger.kernel.org'" <'netfilter@vger.kernel.org'>
 
-Thank you Andy for your Return.
+Can anyone provide me with some help in creating an iptables rule to drop packets such as the ones below? I've modified the amount of XXX in the packet contents since they are normally much larger however they do vary in size. I've come to realize the -f flag does not work for this type of packet and am confused by examples that explain matching by using the u32 module/"more fragments" flag.
 
-I haven't made available in my environment product yet.
+U 0.0.0.0 -> 0.0.0.0 +39221@5920:1480
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+#
+U 0.0.0.0-> 0.0.0.0 +39221@7400:800
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-well.... the link made available for you shows how to do load balance
-with connmark and statistic match module and it doesn't regard global
-equalize.
+U 0.0.0.0-> 0.0.0.0 +39221@2960:1480
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 
-so...I wonder there is diferent between them ?
-
-with global equalize is very easy I only insert one line inside of the
-script and all it's work! at least in my test environment it's
-working.
-
-I want make an test as your how to but I'm using CentOS 5.6 and
-doesn't has libxt_statistic.so module because iptables version is
-1.3.x
-
-
-thank
-
-
-
-
-
-
-
-
-
-
-
-Em 15 de maio de 2011 14:23, Andrew Beverley <andy@andybev.com> escreve=
-u:
-> On Sun, 2011-04-17 at 20:22 -0300, Usu=E1rio do Sistema wrote:
->> Hello everyone, I'm deploy an test environment with load Balance in =
-my
->> Firewall using equalize as follow below
->>
->>
->> I have two ISPs and one Inside network.
->>
->> creating the load balance:
->>
->> ip route add default scope global equalize nexthop via 200.247.209.6=
-5
->> weight 1 =A0nexthop via 201.72.12.1 weight 1
->>
->> Zeroing the ip_filter
->>
->> for eee in /proc/sys/net/ipv4/conf/*/rp_filter; do
->> echo 0 > $eee
->> done
->>
->> creating more one table
->>
->> ip route add default via =A0201.72.12.1 =A0table telemar
->>
->>
->> it's working in my environment. but I haven't done available in my
->> production environment.
->>
->
-> Do you mean it doesn't work in your production environment?
->
->> my question is: there is more parameter ,which, I have to set ? for
->> exemplo, timers.
->>
->
-> If you are using 2 completely separate ISPs, then you will need to do
-> more than just provide equal-weighted gateways. You will need to send
-> the packets for each connection over the same ISP. The website below
-> gives more information:
->
-> http://www.sysresccd.org/Sysresccd-networking_en_Iptables-and-netfilt=
-er-load-balancing-using-connmark
->
-> Andy
->
->
->
+Thanks,
+Ryan G
