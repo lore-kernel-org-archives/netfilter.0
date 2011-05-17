@@ -1,52 +1,115 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
-Subject: Re: [ANNOUNCE] ipset 6.5 released
-Date: Tue, 17 May 2011 19:36:08 +0100
-Message-ID: <4DD2C018.9060800@googlemail.com>
-References: <alpine.DEB.2.00.1105151540340.25248@blackhole.kfki.hu> <4DD145C0.4060705@googlemail.com> <alpine.DEB.2.00.1105170941590.31848@blackhole.kfki.hu> <4DD255EF.1040209@googlemail.com> <alpine.DEB.2.00.1105171346350.31927@blackhole.kfki.hu> <4DD292FC.2020609@googlemail.com>
+From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
+Subject: Re: Load Balance
+Date: Tue, 17 May 2011 17:06:05 -0300
+Message-ID: <BANLkTini_riVbMGu-14CRxgDbJeA8KTc9A@mail.gmail.com>
+References: <BANLkTimUdLO55Bqrv3=VjDo14-BsLP7xWQ@mail.gmail.com>
+	<1305480225.1708.2.camel@andybev>
+	<BANLkTim4bnzaeD9yny7uV6fBfB=k-XAc6A@mail.gmail.com>
+	<1305581912.2041.15.camel@andybev-desktop>
+	<4DD1C539.20404@riverviewtech.net>
+	<BANLkTi=gB609MZNzuJ-277B23wCiB5EhOQ@mail.gmail.com>
+	<4DD2B974.7060105@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:message-id:disposition-notification-to:date
-         :from:user-agent:mime-version:to:cc:subject:references:in-reply-to
-         :content-type:content-transfer-encoding;
-        bh=p0sA3b5h3JFnmXkwIG93jOwItlEvf28/AOfG86RDelc=;
-        b=IlwRkLN4/kE6fPHadcSIY+UWfpFrmt78rnFkvy/0TnH/B0UU/XK4WwdvFoUtyFmKRK
-         XPkb9eP3HSEdpU1Sh4UTCokwLHDp8SxsbdYERlPZoKkfoAJA+i4V4hEeXd4TV2VPFDsL
-         MhdLSm/oG7EOFQbEqxtFYkE26/adUpF5CqFWQ=
-In-Reply-To: <4DD292FC.2020609@googlemail.com>
+In-Reply-To: <4DD2B974.7060105@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+
+Thank for everyone!!
+
+until next issue
 
 
-> Will attach these together with the above. I was quite pleased with it 
-> as it enabled me to streamline the whole process (ipset 4.5 wasn't the 
-> only thing I was building), so you may find this quite useful if you 
-> decide to update v4.5.
-Here is the test case, I'll attach the rest privately to avoid the wrath 
-of the mail list daemon.
 
-[root@test1 ~]# ipset -N slow_mirrors iptreemap --gc 300
-[root@test1 ~]# ipset -L slow_mirrors
-Name: slow_mirrors
-Type: hash:ip
-Header: family inet hashsize 1024 maxelem 65536
-Size in memory: 16512
-References: 0
-Members:
-[root@test1 ~]# ipset -A slow_mirrors 212.219.56.128/26
-[root@test1 ~]# ipset -A slow_mirrors 130.59.0.0/16
-ipset v6.5: Hash is full, cannot add more elements
-[root@xp1 ~]# ipset -L -terse slow_mirrors
-Name: slow_mirrors
-Type: hash:ip
-Header: family inet hashsize 32768 maxelem 65536
-Size in memory: 1006032
-References: 0
 
-The way I look at it, the "old" iptree(map) type sets should be 
-converted to hash:net, not hash:ip to avoid this error.
+
+
+
+
+
+2011/5/17 Grant Taylor <gtaylor@riverviewtech.net>:
+> On 05/17/11 12:00, Usu=E1rio do Sistema wrote:
+>>
+>> but I still wonder what is the metric used to do the load balance I
+>> guess that the point is in line below
+>
+> (I'd have to go back and re-read to know for sure what the "metric" i=
+s that
+> you are referring to and how it effects things.)
+>
+>> iptables -t mangle -A PREROUTING -p tcp -m state --state NEW -m
+>> statistic --mode nth --every 2 --packet 0 -j CONNMARK1
+>> iptables -t mangle -A PREROUTING -p tcp -m state --state NEW -m
+>> statistic --mode nth --every 2 --packet 1 -j CONNMARK2
+>>
+>> I understand that each =A0two new connections the third go out to ne=
+xt
+>> link making the load balance.
+>>
+>> right ??
+>
+> In (basic) theory, yes.
+>
+> If we limit the scope to be just new connections (that will match the=
+ above
+> rules), yes, they will alternate between the connections (via marks) =
+thus
+> hypothetically equalizing the load on the connections.
+>
+> The thing that this does not take in to account is what type of traff=
+ic a
+> given connection is nor how long lived and active it is.
+>
+> Let's say that I have the following (new) connections in the followin=
+g
+> sequence.
+>
+> =A01) =A0Simple SMTP test email.
+> =A02) =A0HTTP download of kernel source.
+> =A03) =A0Simple DNS query.
+> =A04) =A0VPN connection.
+>
+> You will find that connections #1 and #3 are marked with CONNMARK1 an=
+d that
+> connections #2 and #4 are marked with CONNMARK2. =A0So what you end u=
+p with is
+> two very ""light connections on CONNMARK1 and two much heavier connec=
+tions
+> on CONNMARK2.
+>
+> The connections did end up "load balanced" (in a manner of speaking),=
+ or
+> "distributed" (is probably a better way to describe it) across the mu=
+ltiple
+> CONNMARKs. =A0However, if you look at the utilization of the two CONN=
+MARKs or
+> the physical connections they represent, you will find that one is wa=
+y under
+> utilized and the other is probably saturated.
+>
+> However, with out doing some relatively nasty things (i.e. spoofing w=
+hich
+> requires support upstream) there is little that you can do about this=
+=2E
+>
+> So, you do end up distributing the connections, but not necessarily l=
+oad
+> balancing.
+>
+>> thank!
+>
+> You are welcome.
+>
+>
+>
+> Grant. . . .
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
