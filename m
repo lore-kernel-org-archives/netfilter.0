@@ -1,8 +1,8 @@
 From: Mr Dash Four <mr.dash.four@googlemail.com>
-Subject: Re: ipset, IP6_NF_IPTABLES
-Date: Tue, 17 May 2011 16:18:05 +0100
-Message-ID: <4DD291AD.7030300@googlemail.com>
-References: <ffc7edfebc6396f9754b6327b0523d27@visp.net.lb> <alpine.DEB.2.00.1105171000560.31927@blackhole.kfki.hu> <4DD256F7.7050007@googlemail.com> <alpine.DEB.2.00.1105171321190.31927@blackhole.kfki.hu>
+Subject: Re: [ANNOUNCE] ipset 6.5 released
+Date: Tue, 17 May 2011 16:23:40 +0100
+Message-ID: <4DD292FC.2020609@googlemail.com>
+References: <alpine.DEB.2.00.1105151540340.25248@blackhole.kfki.hu> <4DD145C0.4060705@googlemail.com> <alpine.DEB.2.00.1105170941590.31848@blackhole.kfki.hu> <4DD255EF.1040209@googlemail.com> <alpine.DEB.2.00.1105171346350.31927@blackhole.kfki.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -11,21 +11,29 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         h=domainkey-signature:message-id:disposition-notification-to:date
          :from:user-agent:mime-version:to:cc:subject:references:in-reply-to
          :content-type:content-transfer-encoding;
-        bh=W3KVfEP3PTZPxXC8d3RiceLXGq6KN7AwM057qv2Ju6s=;
-        b=e8XbQKzUsGP9mb3q991AUxqI5JVAQnI9lR3mESmiOfu+2vD9/SaTm/hELup3YLAxLF
-         NXqMimdHlY3aspuO1RwgXpfLA63zvHkEclFv2GSBVtQjIuhShy42OpHbpFDOrelsAWxi
-         YmTaoTbKjuLPieZ2l6x804/Hbad4L0Ii1yu/U=
-In-Reply-To: <alpine.DEB.2.00.1105171321190.31927@blackhole.kfki.hu>
+        bh=2oApLos2xOwshFbd+hnwt+J20F4jn/x5KlDhc59gmf0=;
+        b=RLTlz3a546WPJGZIYp2uyIuk7HI/4b7GgRgPlqwOAHqs+sS3HGXE8bZM/9ziMZHs/u
+         YKuRtn4Jjq9XQMczBPdX7WhhKfqcT72lT3ALnYRFJID/jEqb8XAXVj2TWZt2fNtC1GJJ
+         pClgjQns6KA8XZklhE3gXJc529T49OG9XQLRE=
+In-Reply-To: <alpine.DEB.2.00.1105171346350.31927@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: Denys Fedoryshchenko <denys@visp.net.lb>, netfilter@vger.kernel.org
+Cc: netfilter@vger.kernel.org
 
 
-> You can of course disable IPv6. But the functionality of IPv6 is required.
+> Just send me the errors. The "treemap" backward compatibility support did 
+> not change between 6.4 and 6.5.
 >   
-Yep, you're quite right - on the build machine on which I compile and 
-build everything (including ipset, of course) I have IPv6 installed (it 
-is the full monty as far as netfilter apps are concerned). That 
-functionality, however, is disabled on all machines on which ipset is used.
+I'll prepare a test case and include the errors I get when I am back 
+home later tonight. I'll do that then.
+
+> More control over the building process is good, so I'm interested in your 
+> patches.
+>   
+Will attach these together with the above. I was quite pleased with it 
+as it enabled me to streamline the whole process (ipset 4.5 wasn't the 
+only thing I was building), so you may find this quite useful if you 
+decide to update v4.5.
+
