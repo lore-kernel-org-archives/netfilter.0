@@ -1,43 +1,32 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: ipset, IP6_NF_IPTABLES
-Date: Tue, 17 May 2011 18:31:34 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1105171830100.1545@blackhole.kfki.hu>
-References: <ffc7edfebc6396f9754b6327b0523d27@visp.net.lb> <alpine.DEB.2.00.1105171000560.31927@blackhole.kfki.hu> <4DD256F7.7050007@googlemail.com> <fbc9abc624824c8e6f973c342e81fe51@visp.net.lb> <alpine.DEB.2.00.1105171325180.31927@blackhole.kfki.hu>
+Date: Tue, 17 May 2011 18:34:34 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1105171831430.1545@blackhole.kfki.hu>
+References: <ffc7edfebc6396f9754b6327b0523d27@visp.net.lb>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1105171325180.31927@blackhole.kfki.hu>
+In-Reply-To: <ffc7edfebc6396f9754b6327b0523d27@visp.net.lb>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: Denys Fedoryshchenko <denys@visp.net.lb>
-Cc: Mr Dash Four <mr.dash.four@googlemail.com>, netfilter@vger.kernel.org
+Cc: netfilter@vger.kernel.org
 
-On Tue, 17 May 2011, Jozsef Kadlecsik wrote:
+On Tue, 17 May 2011, Denys Fedoryshchenko wrote:
 
-> On Tue, 17 May 2011, Denys Fedoryshchenko wrote:
-> 
-> > On Tue, 17 May 2011 12:07:35 +0100, Mr Dash Four wrote:
-> > > > No, that's not possible. ipset needs the IPv6 support in the kernel.
-> > > >   That can't be accurate - I have administratively disabled IPv6 on my
-> > > > system (both via sysctl as well as via the kernel command line)  - and
-> > > > ipset 6.5 runs just fine. I am not using any IPv6 sets though so that
-> > > > might be the reason why it is not complaining.
-> > 
-> > Well, i compile ipset on host with ipv6 enabled kernel, and just copied to
-> > host without ipv6. It is seems problem only during compilation i guess
-> > (headers?), and it is not right IMO.
-> > Especially it is a problem for source based distributions, like gentoo,
-> > because i cannot compile ipset at all on most of my ipv4-only machines.
-> 
-> The ip_set_core module depends on the ipv6 module (or functionality, if 
-> compiled into the kernel). The host does not need to have IPv6 address 
-> assigned or IPv6 enabled at all. But the functionality must be there.
-> 
-> At compile time IPv6 support must be enabled.
+> I am using IPv4-only kernel, and getting
+> "The kernel build directory /lib/modules/2.6.39-rc7-git4-devel2/build is not
+> configured with IP6_NF_IPTABLES support"
+> while compiling latest ipset 6.5 (and previous version 6.4 too)
+> Is there any way to compile ipset without IPv6?
 
-Actually, I'm wrong: since 6.0 ipset can be configured and compiled with 
-CONFIG_IPV6=n. Sorry, somehow I was blind.
+Could you write down exactly what do you do, which results in the message 
+above?
+
+I disabled IPv6 in the kernel source tree (not exactly the same one as 
+yours) and running "make modules" in the ipset source tree ran without any 
+error message.
 
 Best regards,
 Jozsef
