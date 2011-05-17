@@ -1,62 +1,78 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipset, IP6_NF_IPTABLES
-Date: Tue, 17 May 2011 19:25:07 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1105171923540.1798@blackhole.kfki.hu>
-References: <ffc7edfebc6396f9754b6327b0523d27@visp.net.lb> <alpine.DEB.2.00.1105171831430.1545@blackhole.kfki.hu> <64614d657f8b9c38d783b2e2ecea1fc0@visp.net.lb>
+From: Grant Taylor <gtaylor@riverviewtech.net>
+Subject: Re: Load Balance
+Date: Tue, 17 May 2011 13:07:48 -0500
+Message-ID: <4DD2B974.7060105@riverviewtech.net>
+References: <BANLkTimUdLO55Bqrv3=VjDo14-BsLP7xWQ@mail.gmail.com>	<1305480225.1708.2.camel@andybev>	<BANLkTim4bnzaeD9yny7uV6fBfB=k-XAc6A@mail.gmail.com>	<1305581912.2041.15.camel@andybev-desktop>	<4DD1C539.20404@riverviewtech.net> <BANLkTi=gB609MZNzuJ-277B23wCiB5EhOQ@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <64614d657f8b9c38d783b2e2ecea1fc0@visp.net.lb>
+In-Reply-To: <BANLkTi=gB609MZNzuJ-277B23wCiB5EhOQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Denys Fedoryshchenko <denys@visp.net.lb>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Tue, 17 May 2011, Denys Fedoryshchenko wrote:
+On 05/17/11 12:00, Usu=E1rio do Sistema wrote:
+> but I still wonder what is the metric used to do the load balance I
+> guess that the point is in line below
 
-> On Tue, 17 May 2011 18:34:34 +0200 (CEST), Jozsef Kadlecsik wrote:
-> > On Tue, 17 May 2011, Denys Fedoryshchenko wrote:
-> > 
-> > > I am using IPv4-only kernel, and getting
-> > > "The kernel build directory /lib/modules/2.6.39-rc7-git4-devel2/build is
-> > > not
-> > > configured with IP6_NF_IPTABLES support"
-> > > while compiling latest ipset 6.5 (and previous version 6.4 too)
-> > > Is there any way to compile ipset without IPv6?
-> > 
-> > Could you write down exactly what do you do, which results in the message
-> > above?
-> > 
-> > I disabled IPv6 in the kernel source tree (not exactly the same one as
-> > yours) and running "make modules" in the ipset source tree ran without any
-> > error message.
-> > 
-> libmnl-1.0.1 installed
-> 
-> wget http://ipset.netfilter.org/ipset-6.5.tar.bz2
-> tar jxf ipset-6.5.tar.bz2
-> cd ipset-6.5
-> ./autogen.sh
-> ./configure
-> checking build system type... i686-pc-linux-gnu
-> checking host system type... i686-pc-linux-gnu
-> checking for a BSD-compatible install... /usr/bin/install -c
-> checking whether build environment is sane... yes
-> checking for a thread-safe mkdir -p... /bin/mkdir -p
-> checking for gawk... gawk
-> checking whether make sets $(MAKE)... yes
-> checking for grep that handles long lines and -e... /bin/grep
-> configure: error: The kernel build directory
-> /lib/modules/2.6.39-rc7-git4-devel2/build is not configured with
-> IP6_NF_IPTABLES support (ip6tables)
+(I'd have to go back and re-read to know for sure what the "metric" is=20
+that you are referring to and how it effects things.)
 
-Ahh, thanks. That's an outdated checking in configure, I remove it.
+> iptables -t mangle -A PREROUTING -p tcp -m state --state NEW -m
+> statistic --mode nth --every 2 --packet 0 -j CONNMARK1
+> iptables -t mangle -A PREROUTING -p tcp -m state --state NEW -m
+> statistic --mode nth --every 2 --packet 1 -j CONNMARK2
+>
+> I understand that each  two new connections the third go out to next
+> link making the load balance.
+>
+> right ??
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+In (basic) theory, yes.
+
+If we limit the scope to be just new connections (that will match the=20
+above rules), yes, they will alternate between the connections (via=20
+marks) thus hypothetically equalizing the load on the connections.
+
+The thing that this does not take in to account is what type of traffic=
+=20
+a given connection is nor how long lived and active it is.
+
+Let's say that I have the following (new) connections in the following=20
+sequence.
+
+   1)  Simple SMTP test email.
+   2)  HTTP download of kernel source.
+   3)  Simple DNS query.
+   4)  VPN connection.
+
+You will find that connections #1 and #3 are marked with CONNMARK1 and=20
+that connections #2 and #4 are marked with CONNMARK2.  So what you end=20
+up with is two very ""light connections on CONNMARK1 and two much=20
+heavier connections on CONNMARK2.
+
+The connections did end up "load balanced" (in a manner of speaking), o=
+r=20
+"distributed" (is probably a better way to describe it) across the=20
+multiple CONNMARKs.  However, if you look at the utilization of the two=
+=20
+CONNMARKs or the physical connections they represent, you will find tha=
+t=20
+one is way under utilized and the other is probably saturated.
+
+However, with out doing some relatively nasty things (i.e. spoofing=20
+which requires support upstream) there is little that you can do about =
+this.
+
+So, you do end up distributing the connections, but not necessarily loa=
+d=20
+balancing.
+
+> thank!
+
+You are welcome.
+
+
+
+Grant. . . .
