@@ -1,58 +1,86 @@
-From: Denys Fedoryshchenko <denys@visp.net.lb>
-Subject: Re: ipset, =?UTF-8?Q?IP=36=5FNF=5FIPTABLES?=
-Date: Tue, 17 May 2011 19:55:25 +0300
-Message-ID: <64614d657f8b9c38d783b2e2ecea1fc0@visp.net.lb>
-References: <ffc7edfebc6396f9754b6327b0523d27@visp.net.lb>
- <alpine.DEB.2.00.1105171831430.1545@blackhole.kfki.hu>
+From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
+Subject: Re: Load Balance
+Date: Tue, 17 May 2011 14:00:46 -0300
+Message-ID: <BANLkTi=gB609MZNzuJ-277B23wCiB5EhOQ@mail.gmail.com>
+References: <BANLkTimUdLO55Bqrv3=VjDo14-BsLP7xWQ@mail.gmail.com>
+	<1305480225.1708.2.camel@andybev>
+	<BANLkTim4bnzaeD9yny7uV6fBfB=k-XAc6A@mail.gmail.com>
+	<1305581912.2041.15.camel@andybev-desktop>
+	<4DD1C539.20404@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1105171831430.1545@blackhole.kfki.hu>
+In-Reply-To: <4DD1C539.20404@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
- On Tue, 17 May 2011 18:34:34 +0200 (CEST), Jozsef Kadlecsik wrote:
-> On Tue, 17 May 2011, Denys Fedoryshchenko wrote:
->
->> I am using IPv4-only kernel, and getting
->> "The kernel build directory 
->> /lib/modules/2.6.39-rc7-git4-devel2/build is not
->> configured with IP6_NF_IPTABLES support"
->> while compiling latest ipset 6.5 (and previous version 6.4 too)
->> Is there any way to compile ipset without IPv6?
->
-> Could you write down exactly what do you do, which results in the 
-> message
-> above?
->
-> I disabled IPv6 in the kernel source tree (not exactly the same one 
-> as
-> yours) and running "make modules" in the ipset source tree ran 
-> without any
-> error message.
->
- libmnl-1.0.1 installed
+well....I've just done a test with CONNTRACK and CONNMARK modules as
+link indicated for Andrew and it's work the load Balance.
 
- wget http://ipset.netfilter.org/ipset-6.5.tar.bz2
- tar jxf ipset-6.5.tar.bz2
- cd ipset-6.5
- ./autogen.sh
- ./configure
- checking build system type... i686-pc-linux-gnu
- checking host system type... i686-pc-linux-gnu
- checking for a BSD-compatible install... /usr/bin/install -c
- checking whether build environment is sane... yes
- checking for a thread-safe mkdir -p... /bin/mkdir -p
- checking for gawk... gawk
- checking whether make sets $(MAKE)... yes
- checking for grep that handles long lines and -e... /bin/grep
- configure: error: The kernel build directory 
- /lib/modules/2.6.39-rc7-git4-devel2/build is not configured with 
- IP6_NF_IPTABLES support (ip6tables)
+but I still wonder what is the metric used to do the load balance I
+guess that the point is in line below
 
- P.S. By the way, I don't need modules, i am using latest kernel where 
- ipset is embedded in kernel.
+iptables -t mangle -A PREROUTING -p tcp -m state --state NEW -m
+statistic --mode nth --every 2 --packet 0 -j CONNMARK1
+iptables -t mangle -A PREROUTING -p tcp -m state --state NEW -m
+statistic --mode nth --every 2 --packet 1 -j CONNMARK2
 
+I understand that each  two new connections the third go out to next
+link making the load balance.
+
+right ??
+
+thank!
+
+
+
+
+
+
+
+
+2011/5/16 Grant Taylor <gtaylor@riverviewtech.net>:
+> On 5/16/2011 16:38, Andrew Beverley wrote:
+>>
+>> If you don't do this, then each gateway will only see half the
+>> packets for a connection stream, which although I am not an expert, =
+I
+>> guess is not a good thing.
+>
+> The problem has to do with the fact that most connections are using N=
+AT at
+> the edge, not a globally routable IP behind the load balancer with mu=
+ltiple
+> routes back in.
+>
+> So what happens is that some of the traffic for a session is sent out=
+ one
+> gateway and being NATed to one external IP and the other traffic for =
+the
+> same session is being sent out the other gateway and being NATed to a
+> different external IP. =A0Thus, the server sees weird traffic, coming=
+ from two
+> different IPs. =A0One connection exhibits drops and the other exhibit=
+s
+> incorrect sequence (think TCP 3-way handshake). =A0The server will ab=
+ort the
+> out of order / incorrect state traffic, which really causes the clien=
+t to
+> abort the entire connection. =A0You end up with a mess. =A0Thus you n=
+eed to use
+> something like conntrack to make connections be persistent when NAT i=
+s
+> involved like that.
+>
+>
+>
+> Grant. . . .
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
