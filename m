@@ -1,39 +1,48 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
-Subject: Re: [ANNOUNCE] ipset 6.5 released
-Date: Tue, 17 May 2011 16:23:40 +0100
-Message-ID: <4DD292FC.2020609@googlemail.com>
-References: <alpine.DEB.2.00.1105151540340.25248@blackhole.kfki.hu> <4DD145C0.4060705@googlemail.com> <alpine.DEB.2.00.1105170941590.31848@blackhole.kfki.hu> <4DD255EF.1040209@googlemail.com> <alpine.DEB.2.00.1105171346350.31927@blackhole.kfki.hu>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ipset, IP6_NF_IPTABLES
+Date: Tue, 17 May 2011 18:31:34 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1105171830100.1545@blackhole.kfki.hu>
+References: <ffc7edfebc6396f9754b6327b0523d27@visp.net.lb> <alpine.DEB.2.00.1105171000560.31927@blackhole.kfki.hu> <4DD256F7.7050007@googlemail.com> <fbc9abc624824c8e6f973c342e81fe51@visp.net.lb> <alpine.DEB.2.00.1105171325180.31927@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:message-id:disposition-notification-to:date
-         :from:user-agent:mime-version:to:cc:subject:references:in-reply-to
-         :content-type:content-transfer-encoding;
-        bh=2oApLos2xOwshFbd+hnwt+J20F4jn/x5KlDhc59gmf0=;
-        b=RLTlz3a546WPJGZIYp2uyIuk7HI/4b7GgRgPlqwOAHqs+sS3HGXE8bZM/9ziMZHs/u
-         YKuRtn4Jjq9XQMczBPdX7WhhKfqcT72lT3ALnYRFJID/jEqb8XAXVj2TWZt2fNtC1GJJ
-         pClgjQns6KA8XZklhE3gXJc529T49OG9XQLRE=
-In-Reply-To: <alpine.DEB.2.00.1105171346350.31927@blackhole.kfki.hu>
+In-Reply-To: <alpine.DEB.2.00.1105171325180.31927@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Denys Fedoryshchenko <denys@visp.net.lb>
+Cc: Mr Dash Four <mr.dash.four@googlemail.com>, netfilter@vger.kernel.org
 
+On Tue, 17 May 2011, Jozsef Kadlecsik wrote:
 
-> Just send me the errors. The "treemap" backward compatibility support did 
-> not change between 6.4 and 6.5.
->   
-I'll prepare a test case and include the errors I get when I am back 
-home later tonight. I'll do that then.
+> On Tue, 17 May 2011, Denys Fedoryshchenko wrote:
+> 
+> > On Tue, 17 May 2011 12:07:35 +0100, Mr Dash Four wrote:
+> > > > No, that's not possible. ipset needs the IPv6 support in the kernel.
+> > > >   That can't be accurate - I have administratively disabled IPv6 on my
+> > > > system (both via sysctl as well as via the kernel command line)  - and
+> > > > ipset 6.5 runs just fine. I am not using any IPv6 sets though so that
+> > > > might be the reason why it is not complaining.
+> > 
+> > Well, i compile ipset on host with ipv6 enabled kernel, and just copied to
+> > host without ipv6. It is seems problem only during compilation i guess
+> > (headers?), and it is not right IMO.
+> > Especially it is a problem for source based distributions, like gentoo,
+> > because i cannot compile ipset at all on most of my ipv4-only machines.
+> 
+> The ip_set_core module depends on the ipv6 module (or functionality, if 
+> compiled into the kernel). The host does not need to have IPv6 address 
+> assigned or IPv6 enabled at all. But the functionality must be there.
+> 
+> At compile time IPv6 support must be enabled.
 
-> More control over the building process is good, so I'm interested in your 
-> patches.
->   
-Will attach these together with the above. I was quite pleased with it 
-as it enabled me to streamline the whole process (ipset 4.5 wasn't the 
-only thing I was building), so you may find this quite useful if you 
-decide to update v4.5.
+Actually, I'm wrong: since 6.0 ipset can be configured and compiled with 
+CONFIG_IPV6=n. Sorry, somehow I was blind.
 
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
