@@ -1,28 +1,38 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: ipset, IP6_NF_IPTABLES
-Date: Tue, 17 May 2011 13:25:14 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1105171321190.31927@blackhole.kfki.hu>
-References: <ffc7edfebc6396f9754b6327b0523d27@visp.net.lb> <alpine.DEB.2.00.1105171000560.31927@blackhole.kfki.hu> <4DD256F7.7050007@googlemail.com>
+Date: Tue, 17 May 2011 13:33:06 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1105171325180.31927@blackhole.kfki.hu>
+References: <ffc7edfebc6396f9754b6327b0523d27@visp.net.lb> <alpine.DEB.2.00.1105171000560.31927@blackhole.kfki.hu> <4DD256F7.7050007@googlemail.com> <fbc9abc624824c8e6f973c342e81fe51@visp.net.lb>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4DD256F7.7050007@googlemail.com>
+In-Reply-To: <fbc9abc624824c8e6f973c342e81fe51@visp.net.lb>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
-Cc: Denys Fedoryshchenko <denys@visp.net.lb>, netfilter@vger.kernel.org
+To: Denys Fedoryshchenko <denys@visp.net.lb>
+Cc: Mr Dash Four <mr.dash.four@googlemail.com>, netfilter@vger.kernel.org
 
-On Tue, 17 May 2011, Mr Dash Four wrote:
+On Tue, 17 May 2011, Denys Fedoryshchenko wrote:
 
-> > No, that's not possible. ipset needs the IPv6 support in the kernel.
-> >   
-> That can't be accurate - I have administratively disabled IPv6 on my system
-> (both via sysctl as well as via the kernel command line)  - and ipset 6.5 runs
-> just fine. I am not using any IPv6 sets though so that might be the reason why
-> it is not complaining.
+> On Tue, 17 May 2011 12:07:35 +0100, Mr Dash Four wrote:
+> > > No, that's not possible. ipset needs the IPv6 support in the kernel.
+> > >   That can't be accurate - I have administratively disabled IPv6 on my
+> > > system (both via sysctl as well as via the kernel command line)  - and
+> > > ipset 6.5 runs just fine. I am not using any IPv6 sets though so that
+> > > might be the reason why it is not complaining.
+> 
+> Well, i compile ipset on host with ipv6 enabled kernel, and just copied to
+> host without ipv6. It is seems problem only during compilation i guess
+> (headers?), and it is not right IMO.
+> Especially it is a problem for source based distributions, like gentoo,
+> because i cannot compile ipset at all on most of my ipv4-only machines.
 
-You can of course disable IPv6. But the functionality of IPv6 is required.
+The ip_set_core module depends on the ipv6 module (or functionality, if 
+compiled into the kernel). The host does not need to have IPv6 address 
+assigned or IPv6 enabled at all. But the functionality must be there.
+
+At compile time IPv6 support must be enabled.
 
 Best regards,
 Jozsef
