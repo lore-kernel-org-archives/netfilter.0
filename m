@@ -1,72 +1,62 @@
-From: Pandu Poluan <pandu@poluan.info>
-Subject: Re: Blocking UDP Fragments
-Date: Wed, 18 May 2011 11:27:39 +0700
-Message-ID: <BANLkTikdkdicDs-U23tJVUWp=JejDsLP4w@mail.gmail.com>
-References: <216636937ABE004E8CD94DDB2AD8BAA501AE75C2BE63@lsnexchange.limestonenetworks.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: [ANNOUNCE] ipset 6.5 released
+Date: Wed, 18 May 2011 09:54:26 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1105180948160.4117@blackhole.kfki.hu>
+References: <alpine.DEB.2.00.1105151540340.25248@blackhole.kfki.hu> <4DD145C0.4060705@googlemail.com> <alpine.DEB.2.00.1105170941590.31848@blackhole.kfki.hu> <4DD255EF.1040209@googlemail.com> <alpine.DEB.2.00.1105171346350.31927@blackhole.kfki.hu>
+ <4DD292FC.2020609@googlemail.com> <4DD2C018.9060800@googlemail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <216636937ABE004E8CD94DDB2AD8BAA501AE75C2BE63@lsnexchange.limestonenetworks.com>
+In-Reply-To: <4DD2C018.9060800@googlemail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Ryan Gelobter <r.gelobter@limestonenetworks.com>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mr Dash Four <mr.dash.four@googlemail.com>
 Cc: netfilter@vger.kernel.org
 
-On Tue, May 17, 2011 at 03:42, Ryan Gelobter
-<r.gelobter@limestonenetworks.com> wrote:
-> Can anyone provide me with some help in creating an iptables rule to =
-drop packets such as the ones below? I've modified the amount of XXX in=
- the packet contents since they are normally much larger however they d=
-o vary in size. I've come to realize the -f flag does not work for this=
- type of packet and am confused by examples that explain matching by us=
-ing the u32 module/"more fragments" flag.
->
-> U 0.0.0.0 -> 0.0.0.0 +39221@5920:1480
-> =C2=A0XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=
-XXXXXXXXXXXXXXXXX
-> =C2=A0XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=
-XXXXXXXXXXXXXXXXX
-> =C2=A0XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=
-XXXXXXXXXXXXXXXXX
-> #
-> U 0.0.0.0-> 0.0.0.0 +39221@7400:800
-> =C2=A0XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=
-XXXXXXXXXXXXXXXXX
-> =C2=A0XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=
-XXXXXXXXXXXXXXXXX
->
-> U 0.0.0.0-> 0.0.0.0 +39221@2960:1480
-> XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=
-XXXXXXXXXXX
-> XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=
-XXXXXXXXXXX
-> XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=
-XXXXXXXXXXX
->
+On Tue, 17 May 2011, Mr Dash Four wrote:
 
-If you want to drop all fragmented packets, including the first packet
-of the fragment,
+> > Will attach these together with the above. I was quite pleased with it as it
+> > enabled me to streamline the whole process (ipset 4.5 wasn't the only thing
+> > I was building), so you may find this quite useful if you decide to update
+> > v4.5.
+> Here is the test case, I'll attach the rest privately to avoid the wrath of
+> the mail list daemon.
+> 
+> [root@test1 ~]# ipset -N slow_mirrors iptreemap --gc 300
+> [root@test1 ~]# ipset -L slow_mirrors
+> Name: slow_mirrors
+> Type: hash:ip
+> Header: family inet hashsize 1024 maxelem 65536
+> Size in memory: 16512
+> References: 0
+> Members:
+> [root@test1 ~]# ipset -A slow_mirrors 212.219.56.128/26
+> [root@test1 ~]# ipset -A slow_mirrors 130.59.0.0/16
 
-iptables -t raw -A PREROUTING -m u32 ! --u32 0x4&0x3fff=3D0x0 -m commen=
-t
---comment \"Fragmented\" -j DROP
+The latter itself exhausts the maximal number of elements in the set, so 
+the error message is normal.
 
-Explanation:
+> ipset v6.5: Hash is full, cannot add more elements
+> [root@xp1 ~]# ipset -L -terse slow_mirrors
+> Name: slow_mirrors
+> Type: hash:ip
+> Header: family inet hashsize 32768 maxelem 65536
+> Size in memory: 1006032
+> References: 0
+> 
+> The way I look at it, the "old" iptree(map) type sets should be converted to
+> hash:net, not hash:ip to avoid this error.
 
--m u32 : use the u32 match
---u32 : the parameter for the u32 match
+That's too late, I can't change the mapping from hash:ip to hash:net.
+(And if the mapping pointed to hash:net, you were surprised then that 
+after adding say 192.68.0.0/24 to the set, you couldn't delete 192.68.0.1 
+from it. :-)
 
-0x4 : get 32 bits starting byte #4 (very first byte is #0)
-&0x3fff : do a bitwise AND against those 32 bits
-
-=3D0x0 : UN-fragmented packets will have those 14 bits =3D 0
-
-! : negation, i.e., we want to match packets whose fragmentation bits !=
-=3D 0
-
-Rgds
---=20
-Pandu E Poluan
-~ IT Optimizer ~
-Visit my Blog: http://pepoluan.posterous.com
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
