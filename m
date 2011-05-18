@@ -1,30 +1,35 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Blocking UDP Fragments
-Date: Wed, 18 May 2011 14:23:05 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1105181421340.2862@frira.zrqbmnf.qr>
-References: <216636937ABE004E8CD94DDB2AD8BAA501AE75C2BE63@lsnexchange.limestonenetworks.com> <BANLkTikdkdicDs-U23tJVUWp=JejDsLP4w@mail.gmail.com>
+From: Steve Murphy <murf@parsetree.com>
+Subject: iptables commands interfere with each other
+Date: Wed, 18 May 2011 10:48:21 -0600
+Message-ID: <BANLkTinknwdKqT=RP28ERv9Ybjr+mBfTKg@mail.gmail.com>
+References: <BANLkTikhC4FeiKz94trqSiFSNcPJG353Vw@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BANLkTikdkdicDs-U23tJVUWp=JejDsLP4w@mail.gmail.com>
+In-Reply-To: <BANLkTikhC4FeiKz94trqSiFSNcPJG353Vw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pandu Poluan <pandu@poluan.info>
-Cc: Ryan Gelobter <r.gelobter@limestonenetworks.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
+Hello--
 
-On Wednesday 2011-05-18 06:27, Pandu Poluan wrote:
->
->If you want to drop all fragmented packets, including the first packet
->of the fragment,
->
->iptables -t raw -A PREROUTING -m u32 ! --u32 0x4&0x3fff=0x0 -m comment
->--comment \"Fragmented\" -j DROP
+I haven't done it on enough kernels and different OS's to be certain it
+is a general problem, or a version problem, or what, but....
 
-Yeah but you forget
+When I fire up fail2ban with a set of jails all using iptables to block=
+,
+one of the jails will usually not get set up correctly, as if the comma=
+nds
+to create chains, rules, etc, were ignored or lost.=A0 If I introduce a
+sleep before
+each jail is created, such that no two jails will be created and set
+up at the same time,
+then all the problems go away.
 
-	iptables -f -j DROP
+This is on CentOS 5.5/5.6.
 
-and that, when nf_defrag is loaded, autodefragmentation is happening and
-Xtables won't see any more fragments.
+Am I alone and weird, or do others see this also? Is there known issues=
+ on this?
+
+murf
