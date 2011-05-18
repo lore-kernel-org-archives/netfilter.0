@@ -1,35 +1,30 @@
-From: Steve Murphy <murf@parsetree.com>
-Subject: iptables commands interfere with each other
-Date: Wed, 18 May 2011 10:48:21 -0600
-Message-ID: <BANLkTinknwdKqT=RP28ERv9Ybjr+mBfTKg@mail.gmail.com>
-References: <BANLkTikhC4FeiKz94trqSiFSNcPJG353Vw@mail.gmail.com>
+From: Tomasz Chmielewski <mangoo@wpkg.org>
+Subject: ip6tables equivalent of "-m statistic --mode nth --every 2 -j SNAT"?
+Date: Wed, 18 May 2011 20:13:02 +0200
+Message-ID: <4DD40C2E.8030205@wpkg.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BANLkTikhC4FeiKz94trqSiFSNcPJG353Vw@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=wpkg.org; h=message-id
+	:date:from:mime-version:to:subject:content-type
+	:content-transfer-encoding; s=default; bh=xrlAdoaOTpaUwgA8sOb60i
+	EpjWk=; b=8ocXFIXNaVqGJLlUBdsTyrAAOCcSOvZH4jHoT6VO2/tQJihnPMzg1A
+	AlK0iwHU9sY4yNGx7N0k06uqrnOpt3704j/EX+FkH9dPbE1Ph3MxsvVdQFIDS7Mk
+	1p2pMnW4EAo8LMGnKKTOean62upBZr+XceTiZuhSIExvrKcN2cNWc=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hello--
+I'm having hard time trying to figure out how to rewrite the following iptables rules into ip6tables:
 
-I haven't done it on enough kernels and different OS's to be certain it
-is a general problem, or a version problem, or what, but....
+iptables -t nat -I POSTROUTING -m state --state NEW -p tcp --dport 80 -o eth0 -m statistic --mode nth --every 2 -j SNAT --to-source 10.1.1.1
+iptables -t nat -I POSTROUTING -m state --state NEW -p tcp --dport 80 -o eth0 -m statistic --mode nth --every 2 -j SNAT --to-source 10.1.1.2
 
-When I fire up fail2ban with a set of jails all using iptables to block=
-,
-one of the jails will usually not get set up correctly, as if the comma=
-nds
-to create chains, rules, etc, were ignored or lost.=A0 If I introduce a
-sleep before
-each jail is created, such that no two jails will be created and set
-up at the same time,
-then all the problems go away.
 
-This is on CentOS 5.5/5.6.
+Since there is no nat in IPv6, is it at all possible with ip6tables? 
 
-Am I alone and weird, or do others see this also? Is there known issues=
- on this?
 
-murf
+-- 
+Tomasz Chmielewski
+http://wpkg.org
