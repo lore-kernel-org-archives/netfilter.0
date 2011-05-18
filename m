@@ -1,106 +1,72 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: assuming valid ESTABLISHED connections without conntrack on firewall
- active/pasive HA cluster
-Date: Wed, 18 May 2011 00:47:29 +0200
-Message-ID: <4DD2FB01.9080709@netfilter.org>
-References: <BANLkTinsDigkLBwM+FFrWev-6WRvsVe4GQ@mail.gmail.com>
+From: Pandu Poluan <pandu@poluan.info>
+Subject: Re: Blocking UDP Fragments
+Date: Wed, 18 May 2011 11:27:39 +0700
+Message-ID: <BANLkTikdkdicDs-U23tJVUWp=JejDsLP4w@mail.gmail.com>
+References: <216636937ABE004E8CD94DDB2AD8BAA501AE75C2BE63@lsnexchange.limestonenetworks.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BANLkTinsDigkLBwM+FFrWev-6WRvsVe4GQ@mail.gmail.com>
+In-Reply-To: <216636937ABE004E8CD94DDB2AD8BAA501AE75C2BE63@lsnexchange.limestonenetworks.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: CeR <cer.inet@linuxmail.org>
+Content-Type: text/plain; charset="utf-8"
+To: Ryan Gelobter <r.gelobter@limestonenetworks.com>
 Cc: netfilter@vger.kernel.org
 
-Hi,
+On Tue, May 17, 2011 at 03:42, Ryan Gelobter
+<r.gelobter@limestonenetworks.com> wrote:
+> Can anyone provide me with some help in creating an iptables rule to =
+drop packets such as the ones below? I've modified the amount of XXX in=
+ the packet contents since they are normally much larger however they d=
+o vary in size. I've come to realize the -f flag does not work for this=
+ type of packet and am confused by examples that explain matching by us=
+ing the u32 module/"more fragments" flag.
+>
+> U 0.0.0.0 -> 0.0.0.0 +39221@5920:1480
+> =C2=A0XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=
+XXXXXXXXXXXXXXXXX
+> =C2=A0XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=
+XXXXXXXXXXXXXXXXX
+> =C2=A0XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=
+XXXXXXXXXXXXXXXXX
+> #
+> U 0.0.0.0-> 0.0.0.0 +39221@7400:800
+> =C2=A0XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=
+XXXXXXXXXXXXXXXXX
+> =C2=A0XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=
+XXXXXXXXXXXXXXXXX
+>
+> U 0.0.0.0-> 0.0.0.0 +39221@2960:1480
+> XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=
+XXXXXXXXXXX
+> XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=
+XXXXXXXXXXX
+> XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX=
+XXXXXXXXXXX
+>
 
-On 12/05/11 19:15, CeR wrote:
-> Hi there.
-> I'm working on a active/pasive HA cluster with corosync/pacemaker.
-> For testing purposes, i did these test:
->=20
-> CASE A: One of that test do the next:
->=20
-> 1) Initialisation of a connection with a big file transfer with SCP
-> across the cluster.
-> 2) "halt" the primary node. All resources (pacemaker) moves to anothe=
-r
-> node. That's ok.
-> 3) The file transfer still working. Transparent to the end user.
->=20
-> CASE B: I want to be sure that the failback/failover is thanks to
-> conntrackd flow's-state-replication, so
->=20
-> 1) Stop the conntrackd resource. All go fine. Conntrack is not workin=
-g any more.
-> 2) Start the file transfer across the cluster.
-> 3) Failover the node that has the IPVs. All resources moves to anothe=
-r
-> node (pacemaker).
-> 4) The file transfer still working. Transparent to the end user.
-> =BF=BF=BF=BF=BF=BF?????? WTF
+If you want to drop all fragmented packets, including the first packet
+of the fragment,
 
-That's completely possible in several cases:
+iptables -t raw -A PREROUTING -m u32 ! --u32 0x4&0x3fff=3D0x0 -m commen=
+t
+--comment \"Fragmented\" -j DROP
 
-* your rule-set is not stateful.
-* your stateful rule-set is malformed.
-* you forget to enable strict tracking.
+Explanation:
 
-Your testcases A and B are a good idea indeed, because you can really
-test if you configured conntrackd correctly.
+-m u32 : use the u32 match
+--u32 : the parameter for the u32 match
 
-> In the CASE B, without the conntrackd running, I supposed that the ne=
-w
-> node being owner of IPVs will not have any knowlege about the state o=
-f
-> the flow (you know, NEW, ESTABLISHED,etc..). And this mean the
-> firewall has to block the transference.
-> But still transfering and the iptables rule being aplied as it where
-> an ESTABLISHED connection:
->=20
-> Chain FORWARD (policy DROP 42 packets, 3336 bytes)
->  pkts bytes target     prot opt in     out     source
-> destination
->  741K 1075M ACCEPT     tcp  --  eth0   eth2    10.0.0.128
-> 192.168.100.100     tcp spts:1024:65535 dpt:22 state NEW,ESTABLISHED
-> 37498 2400K ACCEPT     tcp  --  eth2   eth0    192.168.100.100
-> 10.0.0.128          tcp spt:22 dpts:1024:65535 state ESTABLISHED
->=20
-> Any idea? Is this the standard behaviour of netfilter tools?
->=20
-> In the IRC channel, i got this:
-> [18:32] <fw> sysctl net.netfilter.nf_conntrack_tcp_loose
-> [18:33] <fw> its probably one.  it must be 0 to disable pickup of
-> established connections.
+0x4 : get 32 bits starting byte #4 (very first byte is #0)
+&0x3fff : do a bitwise AND against those 32 bits
 
-Yes, this is indeed a good clue.
+=3D0x0 : UN-fragmented packets will have those 14 bits =3D 0
 
-> But in fact, i haven' t "net.netfilter.nf_conntrack_tcp_loose" nor
-> "net.ipv4.netfilter.ip_conntrack_tcp_loose"
+! : negation, i.e., we want to match packets whose fragmentation bits !=
+=3D 0
 
-What kernel version are you using? If it's too old you may find
-net.ipv4.netfilter.ip_conntrack_loose instead.
-
-Here it is:
-
-# ls /proc/sys/net/netfilter/nf_conntrack_tcp_loose
-/proc/sys/net/netfilter/nf_conntrack_tcp_loose
-# uname -a
-Linux 2.6.39-rc2-09922-g0f08190 #58 SMP PREEMPT Sun May 15 17:35:57 CES=
-T
-2011 i686 GNU/Linux
-# lsmod | grep nf_conntrack
-nf_conntrack_netlink    13579  0
-nfnetlink               2086  7 nfnetlink_log,nf_conntrack_netlink
-nf_conntrack_ipv4       8841  0
-nf_conntrack           45970  2 nf_conntrack_netlink,nf_conntrack_ipv4
-nf_defrag_ipv4           867  1 nf_conntrack_ipv4
-
-Please, take the time to read the documentation:
-
-http://conntrack-tools.netfilter.org/testcase.html
-http://conntrack-tools.netfilter.org/manual.html
-
-Thanks.
+Rgds
+--=20
+Pandu E Poluan
+~ IT Optimizer ~
+Visit my Blog: http://pepoluan.posterous.com
