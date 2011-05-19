@@ -1,32 +1,40 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: [GIT PULL nf-2.6] IPVS
-Date: Thu, 19 May 2011 21:32:56 +0900
-Message-ID: <1305808377-12255-1-git-send-email-horms@verge.net.au>
+From: Kelbel Junior <kelbel02@gmail.com>
+Subject: Source MAC address through bridged connection
+Date: Thu, 19 May 2011 12:52:30 -0300
+Message-ID: <BANLkTikbqMrGCThuiFZRCtB6Mrf_+mcXNg@mail.gmail.com>
+Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:date:message-id:subject:from:to
+         :content-type;
+        bh=r9pl0lDpD064x6cw19jeUiTGwm+jqzmis02/sZN6+ZU=;
+        b=sLLk8ZDcm9UBr3EzxL7iB12Wgah9Hip9pWdO/hqOauisFfdwvWySRAeef5DRyadN8S
+         E2n6C4oXuTtJEZVLd7wzF5JTeyL7glMzsJm8r/11YLI3+EWX8H0xuVeuPZyUC2w9Seag
+         cX0lyQlZ+n3jexKWb9BugpZ7FEeBO8FYcCjL4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
-Cc: Wensong Zhang <wensong@linux-vs.org>, Julian Anastasov <ja@ssi.bg>, Patrick McHardy <kaber@trash.net>, Hans Schillstrom <hans.schillstrom@ericsson.com>, Dave Jones <davej@redhat.com>, Pablo Neira Ayuso <pablo@netfilter.org>
+To: netfilter@vger.kernel.org
 
-Hi Pablo, Hi Patrick,
+Hi guys!
 
-please consider pulling
+I have the following scenario:
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/horms/ipvs-2.6.git master
+Clients Network <------> Linux router <------> Mikrotik gateway
+<------> INTERNET
 
-to get the following fix for IPVS.
+Happens what the Mikrotik gateway controls the clients from the mac
+address (joining an ip to an MAC address) and when i put the linux
+router between they the control don't works.
+I saw on the MK(mikrotik) the packets coming in with the MAC address
+from the bridge, and this is a problem.
 
-I have based my tree on net-2.6 as it contains all of the IPVS patches -
-currently some are in Patrick's tree and one of them is in Pablo's tree but
-all of them are in Dave's tree.
+Exist some way to preserve the source mac through a bridged
+connection, to continue seeing the mac address of the clients?
 
-Please feel free to apply the patch manually if that suits you better.
+--
 
-Simon Horman (1):
-      IPVS: Free resources on module removal
-
- net/netfilter/ipvs/ip_vs_ctl.c |    1 +
- 1 files changed, 1 insertions(+), 0 deletions(-)
+Att.
+Kelbel Junior
