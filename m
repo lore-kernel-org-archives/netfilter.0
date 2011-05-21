@@ -1,173 +1,47 @@
-From: Kevin Cernekee <cernekee@gmail.com>
-Subject: [PATCH v3 resend] netfilter: nf_conntrack_sip: Handle Cisco 7941/7945 IP phones
-Date: Thu, 19 May 2011 21:36:12 -0700
-Message-ID: <bc781b295b38241533a2d90c1aea15b3@localhost>
+From: netfilter@buglecreek.com
+Subject: FORWARD chain and Interfaces
+Date: Sat, 21 May 2011 00:10:05 -0600
+Message-ID: <1305958205.10779.1454356989@webmail.messagingengine.com>
 Mime-Version: 1.0
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: linux-kernel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>
-Cc: Eric Dumazet <eric.dumazet@gmail.com>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=messagingengine.com; h=message-id:from:to:mime-version:content-transfer-encoding:content-type:subject:date; s=smtpout; bh=r5cMQIRpWTaTB/Occ+NEALXE/F4=; b=c/9x69vUEk8Bj5giRD88s2WAICDIQP9Klb4dRDFR0Iw6fkC/Ps/78dUGXYQVDSJFson/tpUatCrtRiCkGauKNuOWjgtFX0Fm2QXEd4LjyriUCsnaeR3kW/3FQGAr5k+tmCdSLPRFoXX7E1EazEu9rHjDsmxdaMWKxGV6mJuZAE8=
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Most SIP devices use a source port of 5060/udp on SIP requests, so the
-response automatically comes back to port 5060:
+I have a firewall router box that I'm trying to write a ruleset for that
+accepts/blocks traffic from Network A to Network B.  I'm testing the
+rules on 3 virtual machines and will eventually deploy to production
+hardware:
 
-phone_ip:5060 -> proxy_ip:5060   REGISTER
-proxy_ip:5060 -> phone_ip:5060   100 Trying
+Network A Machine Eth0 <-------> Eth0 Firewall/Router Eth1 <------->
+Eth0Network B Machine
+              192.168.99.1                192.168.99.2           
+              10.10.10.1       10.10.10.2
 
-The newer Cisco IP phones, however, use a randomly chosen high source
-port for the SIP request but expect the response on port 5060:
 
-phone_ip:49173 -> proxy_ip:5060  REGISTER
-proxy_ip:5060 -> phone_ip:5060   100 Trying
+I have the the following rules on the Firewall/Router as a test before I
+write rules with http, ssh etc:
 
-Standard Linux NAT, with or without nf_nat_sip, will send the reply back
-to port 49173, not 5060:
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A FORWARD -i eth0 -o eth1 -p icmp --icmp-type echo-request -s
+192.168.99.0/24 -d 10.10.10.0/24 -m state --state NEW -j ACCEPT
+iptables -A FORWARD -p icmp --icmp-type echo-request -m state --state
+NEW -j LOG --log-prefix "ICMP: "
 
-phone_ip:49173 -> proxy_ip:5060  REGISTER
-proxy_ip:5060 -> phone_ip:49173  100 Trying
+When I ping from 192.168.99.1 to 10.10.10.2 it does not work.  The log
+rule logs the packet as IN=ETH1 OUT=ETH1.  I may not understand how the
+interfaces should be referenced in the FORWARD chain, but I would think
+that the second rule above should allow and forward that icmp traffic.  
 
-But the phone is not listening on 49173, so it will never see the reply.
+However, if I remove the -i eth0 and -o eth1 from the second rule above
+the ping works fine, the log of course still says  IN=ETH1 OUT=ETH1.  
 
-This patch modifies nf_*_sip to work around this quirk by extracting
-the SIP response port from the Via: header, iff the source IP in the
-packet header matches the source IP in the SIP request.
+I guess I don't have to reference the interfaces in all my FORWARD
+rules, but I'd like to.  I am confused why the -i and -o referenced in
+the second rule does not allow and forward traffic. And you the log rule
+log the packets as IN=ETH1 and OUT=ETH1, I would expect IN=ETH0
+OUT=ETH1.
 
-Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
-Acked-by: Eric Dumazet <eric.dumazet@gmail.com>
-Cc: Patrick McHardy <kaber@trash.net>
----
- include/linux/netfilter/nf_conntrack_sip.h |    3 +++
- net/ipv4/netfilter/nf_nat_sip.c            |   26 +++++++++++++++++++++++---
- net/netfilter/nf_conntrack_sip.c           |   17 +++++++++++++++++
- 3 files changed, 43 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/netfilter/nf_conntrack_sip.h b/include/linux/netfilter/nf_conntrack_sip.h
-index 0ce91d5..feda699 100644
---- a/include/linux/netfilter/nf_conntrack_sip.h
-+++ b/include/linux/netfilter/nf_conntrack_sip.h
-@@ -2,12 +2,15 @@
- #define __NF_CONNTRACK_SIP_H__
- #ifdef __KERNEL__
- 
-+#include <linux/types.h>
-+
- #define SIP_PORT	5060
- #define SIP_TIMEOUT	3600
- 
- struct nf_ct_sip_master {
- 	unsigned int	register_cseq;
- 	unsigned int	invite_cseq;
-+	__be16		forced_dport;
- };
- 
- enum sip_expectation_classes {
-diff --git a/net/ipv4/netfilter/nf_nat_sip.c b/net/ipv4/netfilter/nf_nat_sip.c
-index e40cf78..e5856b0 100644
---- a/net/ipv4/netfilter/nf_nat_sip.c
-+++ b/net/ipv4/netfilter/nf_nat_sip.c
-@@ -73,6 +73,7 @@ static int map_addr(struct sk_buff *skb, unsigned int dataoff,
- 	enum ip_conntrack_info ctinfo;
- 	struct nf_conn *ct = nf_ct_get(skb, &ctinfo);
- 	enum ip_conntrack_dir dir = CTINFO2DIR(ctinfo);
-+	struct nf_conn_help *help = nfct_help(ct);
- 	char buffer[sizeof("nnn.nnn.nnn.nnn:nnnnn")];
- 	unsigned int buflen;
- 	__be32 newaddr;
-@@ -85,7 +86,8 @@ static int map_addr(struct sk_buff *skb, unsigned int dataoff,
- 	} else if (ct->tuplehash[dir].tuple.dst.u3.ip == addr->ip &&
- 		   ct->tuplehash[dir].tuple.dst.u.udp.port == port) {
- 		newaddr = ct->tuplehash[!dir].tuple.src.u3.ip;
--		newport = ct->tuplehash[!dir].tuple.src.u.udp.port;
-+		newport = help->help.ct_sip_info.forced_dport ? :
-+			  ct->tuplehash[!dir].tuple.src.u.udp.port;
- 	} else
- 		return 1;
- 
-@@ -121,6 +123,7 @@ static unsigned int ip_nat_sip(struct sk_buff *skb, unsigned int dataoff,
- 	enum ip_conntrack_info ctinfo;
- 	struct nf_conn *ct = nf_ct_get(skb, &ctinfo);
- 	enum ip_conntrack_dir dir = CTINFO2DIR(ctinfo);
-+	struct nf_conn_help *help = nfct_help(ct);
- 	unsigned int coff, matchoff, matchlen;
- 	enum sip_header_types hdr;
- 	union nf_inet_addr addr;
-@@ -229,6 +232,20 @@ next:
- 	    !map_sip_addr(skb, dataoff, dptr, datalen, SIP_HDR_TO))
- 		return NF_DROP;
- 
-+	/* Mangle destination port for Cisco phones, then fix up checksums */
-+	if (dir == IP_CT_DIR_REPLY && help->help.ct_sip_info.forced_dport) {
-+		struct udphdr *uh;
-+
-+		if (!skb_make_writable(skb, skb->len))
-+			return NF_DROP;
-+
-+		uh = (struct udphdr *)(skb->data + ip_hdrlen(skb));
-+		uh->dest = help->help.ct_sip_info.forced_dport;
-+
-+		if (!nf_nat_mangle_udp_packet(skb, ct, ctinfo, 0, 0, NULL, 0))
-+			return NF_DROP;
-+	}
-+
- 	return NF_ACCEPT;
- }
- 
-@@ -280,8 +297,10 @@ static unsigned int ip_nat_sip_expect(struct sk_buff *skb, unsigned int dataoff,
- 	enum ip_conntrack_info ctinfo;
- 	struct nf_conn *ct = nf_ct_get(skb, &ctinfo);
- 	enum ip_conntrack_dir dir = CTINFO2DIR(ctinfo);
-+	struct nf_conn_help *help = nfct_help(ct);
- 	__be32 newip;
- 	u_int16_t port;
-+	__be16 srcport;
- 	char buffer[sizeof("nnn.nnn.nnn.nnn:nnnnn")];
- 	unsigned buflen;
- 
-@@ -294,8 +313,9 @@ static unsigned int ip_nat_sip_expect(struct sk_buff *skb, unsigned int dataoff,
- 	/* If the signalling port matches the connection's source port in the
- 	 * original direction, try to use the destination port in the opposite
- 	 * direction. */
--	if (exp->tuple.dst.u.udp.port ==
--	    ct->tuplehash[dir].tuple.src.u.udp.port)
-+	srcport = help->help.ct_sip_info.forced_dport ? :
-+		  ct->tuplehash[dir].tuple.src.u.udp.port;
-+	if (exp->tuple.dst.u.udp.port == srcport)
- 		port = ntohs(ct->tuplehash[!dir].tuple.dst.u.udp.port);
- 	else
- 		port = ntohs(exp->tuple.dst.u.udp.port);
-diff --git a/net/netfilter/nf_conntrack_sip.c b/net/netfilter/nf_conntrack_sip.c
-index 237cc19..b0c16b0 100644
---- a/net/netfilter/nf_conntrack_sip.c
-+++ b/net/netfilter/nf_conntrack_sip.c
-@@ -1363,8 +1363,25 @@ static int process_sip_request(struct sk_buff *skb, unsigned int dataoff,
- {
- 	enum ip_conntrack_info ctinfo;
- 	struct nf_conn *ct = nf_ct_get(skb, &ctinfo);
-+	struct nf_conn_help *help = nfct_help(ct);
-+	enum ip_conntrack_dir dir = CTINFO2DIR(ctinfo);
- 	unsigned int matchoff, matchlen;
- 	unsigned int cseq, i;
-+	union nf_inet_addr addr;
-+	__be16 port;
-+
-+	/* Many Cisco IP phones use a high source port for SIP requests, but
-+	 * listen for the response on port 5060.  If we are the local
-+	 * router for one of these phones, save the port number from the
-+	 * Via: header so that nf_nat_sip can redirect the responses to
-+	 * the correct port.
-+	 */
-+	if (ct_sip_parse_header_uri(ct, *dptr, NULL, *datalen,
-+				    SIP_HDR_VIA_UDP, NULL, &matchoff,
-+				    &matchlen, &addr, &port) > 0 &&
-+	    port != ct->tuplehash[dir].tuple.src.u.udp.port &&
-+	    nf_inet_addr_cmp(&addr, &ct->tuplehash[dir].tuple.src.u3))
-+		help->help.ct_sip_info.forced_dport = port;
- 
- 	for (i = 0; i < ARRAY_SIZE(sip_handlers); i++) {
- 		const struct sip_handler *handler;
--- 
-1.7.5
