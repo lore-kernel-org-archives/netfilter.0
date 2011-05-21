@@ -1,36 +1,38 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: [ANNOUNCE] ipset 6.5 released
-Date: Sat, 21 May 2011 23:44:20 +0100
-Message-ID: <4DD84044.2060103@googlemail.com>
-References: <alpine.DEB.2.00.1105151540340.25248@blackhole.kfki.hu> <4DD145C0.4060705@googlemail.com> <alpine.DEB.2.00.1105170941590.31848@blackhole.kfki.hu> <4DD8158D.4040306@googlemail.com> <alpine.DEB.2.00.1105212323230.23769@blackhole.kfki.hu> <4DD83174.6070105@googlemail.com> <alpine.DEB.2.00.1105220023050.23769@blackhole.kfki.hu> <alpine.DEB.2.00.1105220037250.24076@blackhole.kfki.hu>
+Date: Sun, 22 May 2011 00:49:53 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1105220044160.24174@blackhole.kfki.hu>
+References: <alpine.DEB.2.00.1105151540340.25248@blackhole.kfki.hu> <4DD83964.5050105@googlemail.com> <alpine.DEB.2.00.1105220018010.23769@blackhole.kfki.hu> <4DD83FDE.9000901@googlemail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:message-id:disposition-notification-to:date
-         :from:user-agent:mime-version:to:cc:subject:references:in-reply-to
-         :content-type:content-transfer-encoding;
-        bh=ZaGPRj+Vt0CEfqlc0L38U/iY5zl0CLDeWY7+lcLyUIs=;
-        b=kNr317ULUM0BCmCdGAxDllVIeWn03IYhz14lPz6cq/Tq3qhRMJkoubyXb11//oZJrX
-         d/10986ZrkF16kD6RuY2hqu8DCxPq4RQsWAhgdrRAhQ6N1AJL6OztU5IWAfOe7c87cqt
-         OxDhWOX2gj92U2SHTcbg9Fbh9UcFFbcPaFkfw=
-In-Reply-To: <alpine.DEB.2.00.1105220037250.24076@blackhole.kfki.hu>
+In-Reply-To: <4DD83FDE.9000901@googlemail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mr Dash Four <mr.dash.four@googlemail.com>
 Cc: netfilter@vger.kernel.org
 
-> Just look at the firs range in that file: with the first octet anonymized, 
-> it's
-> 
-> a test 10.0.1.0-10.0.3.255
-> 
-> However that's identical with two networks, 10.0.1.0/24 and 10.0.2.0/23, 
-> thus two set members. So the command above is equivalent with
-> 
-> a test 10.0.1.0/24
-> a test 10.0.2.0/23
-Yeah, I understand it now - I think I need to allow for some more leverage when defining maxelem. Thanks.
+On Sat, 21 May 2011, Mr Dash Four wrote:
 
+> > The ipset-4.x packages support patching the kernel source tree, and in the 
+> > kernel tree you can select module or static compiling. The ipset-6.x 
+> > packages support only compiling as external modules.
+> Fair enough, is there any reason why I can't include them as part of the 
+> kernel (i.e. static) as I used to with 4.5?
+
+I don't really understand what you mean here, sorry.
+
+If you want the kernel part of the ipset package compiled statically, then 
+that's not supported out of the box. Manually doable: get a kernel tree 
+where ipset already included, copy over all *.[ch] files from 
+ipset-6.x/kernel/ to the corresponding kernel subtrees and then continue 
+configuring/compiling in the kernel tree.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
