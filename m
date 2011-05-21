@@ -1,48 +1,83 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [ANNOUNCE] ipset 6.5 released
-Date: Sun, 22 May 2011 00:28:40 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1105220023050.23769@blackhole.kfki.hu>
-References: <alpine.DEB.2.00.1105151540340.25248@blackhole.kfki.hu> <4DD145C0.4060705@googlemail.com> <alpine.DEB.2.00.1105170941590.31848@blackhole.kfki.hu> <4DD8158D.4040306@googlemail.com> <alpine.DEB.2.00.1105212323230.23769@blackhole.kfki.hu>
- <4DD83174.6070105@googlemail.com>
+From: netfilter@buglecreek.com
+Subject: Re: FORWARD chain and Interfaces
+Date: Sat, 21 May 2011 16:31:17 -0600
+Message-ID: <1306017077.11298.1454526649@webmail.messagingengine.com>
+References: <1305958205.10779.1454356989@webmail.messagingengine.com>
+ <4DD7A0C5.1040200@plouf.fr.eu.org>
+ <1306007342.28169.1454496985@webmail.messagingengine.com>
+ <4DD825EB.2080300@plouf.fr.eu.org>
+ <1306014018.28595.1454519185@webmail.messagingengine.com>
+ <4DD83726.5090604@plouf.fr.eu.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4DD83174.6070105@googlemail.com>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=messagingengine.com; h=message-id:from:to:cc:mime-version:content-transfer-encoding:content-type:references:subject:in-reply-to:date; s=smtpout; bh=4JTTSsb2fTAvoQz54ooY+JKg1c4=; b=bkhWTiaVuxxRYHmdS8Obd4MjT56UXI+Zv1volmkD0WE2AdYqWUkfyaYEbjzkTMWQ/XFpJ77PALAPsMnczsVbyes5bVNe9qZswjN8OVOsRiorXPzplH1+dr5h6+fgoffpB7q77Ug7+FIuX8Rkh+zdtmMcVSQBdYSdGIkPr/F6MpA=
+In-Reply-To: <4DD83726.5090604@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Cc: netfilter@vger.kernel.org
 
-On Sat, 21 May 2011, Mr Dash Four wrote:
 
-> > > gave up when I reached 16777216! ipset though was still insisting that the
-> > > hash size is "full":
-> > > 
-> > > maxelem 15000 hashsize 4194304
-> > >     
-> > 
-> > As I wrote previously, that is because you reached the limit of the maximal
-> > elements in the hash. Increase maxelem, it's a fixed parameter of the hash.
-> > The hashsize parameter is an initial value and auto-tuned (incremented) as
-> > required.
-> >   
-> Jozsef, the set I was referring to has just over 11 thousand members, where
-> the maxelem value for that set was set at 15 thousand - I thought I have made
-> that pretty clear, but I obviously haven't!
-> 
-> Look at the files I sent you and let me know in which set I have specified
-> maxelem value which is less than the number of members I am trying to add? My
-> guess is, there are none!
+On Sun, 22 May 2011 00:05 +0200, "Pascal Hambourg"
+<pascal.mail@plouf.fr.eu.org> wrote:
+> netfilter@buglecreek.com a =E9crit :
+> > On Sat, 21 May 2011 22:51 +0200, "Pascal Hambourg"
+> >>
+> >> How are the virtual machine network interfaces connected together =
+?
+> >> Did you create two separate virtual links ?
+> >> One explanation could be that all interfaces are connected to the =
+same
+> >> virtual link, so traffic coming to the router could arrive at any =
+of its
+> >> two interfaces.
+> >=20
+> > That's an interesting idea.  I'm not sure how Parallels sets up the
+> > interfaces.
+>=20
+> How then do you know which interface of the router is connected to wh=
+ich
+> network ?
 
-Your first set named 'test_ips' consisting of 11670 ranges can only be 
-converted to 15613 networks, i.e. members. Not all ranges can be expressed 
-with a single network.
+I'm basing the router connections to the various networks by the IP
+addresses and network Addresses.  When I say I don't know how Parallels
+sets up the interfaces I mean I do not know the underling code that the=
+y
+use.  Using standard tools (ifconfig, route, traceroute etc) all seems
+normal.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Sending a broadcast packet (good idea) from network B I see the packet
+show up at network A machine and on both interfaces of the firewall.  I
+even see the packets show up on network A when the firewall/router is
+turned off.  Both Net A and Net B are assigned IPs on two entirely
+different networks.  Obviously, this is not the expected behavior.  I
+assumed that when I created two virtual machines and assigned them
+entirely different IPs on different networks they would be isolated fro=
+m
+each other and not be able to see traffic (broadcasts etc) from the
+other net.   I will have to look at how the virtual machines are setup,
+maybe there is something I missed.  It clearly does not function as I
+expected.  My hope was to simulate real life different nets connected b=
+y
+the firewall/router. =20
+
+>=20
+> A quick test could be to send broadcast packets from A then B while
+> listening on all interfaces of the other machines with tcpdump or the
+> like. If you can see the broadcast packets on all interfaces then the=
+y
+> all are on the same network.
+>=20
+> > Right now I'm writing the FORWARD rules assuming that when the real
+> > hardware is in place it will function as I expect.  I'm using -i et=
+h0
+> > and -o eth1 for new traffic originating from Network A going to B  =
+and
+> > -i eth1 and -o eth0 for new traffic originating from Network B to A=
+=2E =20
+> > Based on my original diagram below.  Does that sound reasonable?
+>=20
+> Sure.
+>=20
