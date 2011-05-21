@@ -1,113 +1,51 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: [ANNOUNCE] ipset 6.5 released
-Date: Sun, 22 May 2011 01:08:59 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1105220055320.24174@blackhole.kfki.hu>
-References: <alpine.DEB.2.00.1105151540340.25248@blackhole.kfki.hu> <4DD145C0.4060705@googlemail.com> <alpine.DEB.2.00.1105170941590.31848@blackhole.kfki.hu> <4DD8158D.4040306@googlemail.com> <alpine.DEB.2.00.1105212323230.23769@blackhole.kfki.hu>
- <alpine.LNX.2.01.1105212331570.16146@frira.zrqbmnf.qr> <4DD83187.2060301@googlemail.com> <alpine.LNX.2.01.1105212349310.18080@frira.zrqbmnf.qr>
+Date: Sun, 22 May 2011 01:25:03 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1105220115100.24174@blackhole.kfki.hu>
+References: <alpine.DEB.2.00.1105151540340.25248@blackhole.kfki.hu> <4DD83964.5050105@googlemail.com> <alpine.DEB.2.00.1105220018010.23769@blackhole.kfki.hu> <4DD83FDE.9000901@googlemail.com> <alpine.DEB.2.00.1105220044160.24174@blackhole.kfki.hu>
+ <4DD84349.5040407@googlemail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1105212349310.18080@frira.zrqbmnf.qr>
+In-Reply-To: <4DD84349.5040407@googlemail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Mr Dash Four <mr.dash.four@googlemail.com>, netfilter@vger.kernel.org
+To: Mr Dash Four <mr.dash.four@googlemail.com>
+Cc: netfilter@vger.kernel.org
 
-On Sat, 21 May 2011, Jan Engelhardt wrote:
+On Sat, 21 May 2011, Mr Dash Four wrote:
 
-> On Saturday 2011-05-21 23:41, Mr Dash Four wrote:
+> >> Fair enough, is there any reason why I can't include them as part of the 
+> >> kernel (i.e. static) as I used to with 4.5?
+> > 
+> > I don't really understand what you mean here, sorry.
+> > 
+> > If you want the kernel part of the ipset package compiled statically, then 
+> > that's not supported out of the box. Manually doable: get a kernel tree 
+> > where ipset already included, copy over all *.[ch] files from 
+> > ipset-6.x/kernel/ to the corresponding kernel subtrees and then continue 
+> > configuring/compiling in the kernel tree.
+> OK, as you know I compile ipset - userspace and kernel modules - in two 
+> separate building streams. The kernel part of ipset I compile as part of 
+> the kernel itself - via the make oldconfig, make menuconfig or by simply 
+> copying already pre-defined .config file (I obviously apply the ipset 
+> 6.5 patches as well - as you know).
+
+I haven't time yet to look at the packages you sent me, so I don't know 
+the exact details of your build process.
+
+> With ipset 4.5 I was able to include all ipset "modules" as part of the 
+> kernel (i.e. all ipset-related options in my .config were "y" as oppose 
+> to "m").
 > 
-> >>> I could not get such segfaults at all.
-> >>>    
-> >>
-> >> Nevertheless, I would recommend to mr-4 to have a ipset and libmnl compiled
-> >> with debug info, point to it via LD_LIBRARY_PATH, and then feed it through
-> >> valgrind with the same input. That may give some more insight.
-> >>  
-> > I am willing to help if you let me know what I need to do, though this will be
-> > done in the coming days as I have other things I need to take care of and ran
-> > out of time, unfortunately.
-> 
-> Get libmnl source (either git or tarball), and get ipset source 
-> likewise, and for each, ./configure CFLAGS="-O0 -ggdb3" and make - no 
-> install.
-> 
-> Subsequently (substitute by appropriate paths/actions):
-> 
-> LD_LIBRARY_PATH=$HOME/src/libmnl/src/.libs \
-> libtool --mode=execute valgrind $HOME/src/ipset/src/ipset $action
-> 
-> Reasonable recipe for any program :)
+> In ipset 6.5 I cannot do that - the only choice I seem to have is "m" or 
+> not include them at all. So, I was wondering why that is, that's all?
 
-With the original ipset-6.5 and restoring the privately sent test_ips it 
-produces:
-
-==2423== Memcheck, a memory error detector.
-==2423== Copyright (C) 2002-2008, and GNU GPL'd, by Julian Seward et al.
-==2423== Using LibVEX rev 1884, a library for dynamic binary translation.
-==2423== Copyright (C) 2004-2008, and GNU GPL'd, by OpenWorks LLP.
-==2423== Using valgrind-3.4.1-Debian, a dynamic binary instrumentation framework.
-==2423== Copyright (C) 2000-2008, and GNU GPL'd, by Julian Seward et al.
-==2423== For more details, rerun with: -v
-==2423== 
-==2423== Syscall param socketcall.sendto(msg) points to uninitialised byte(s)
-==2423==    at 0x5118183: sendto (in /lib/libc-2.9.so)
-==2423==    by 0x4E2DBDB: mnl_socket_sendto (socket.c:183)
-==2423==    by 0x40CD06: ipset_mnl_query (mnl.c:95)
-==2423==    by 0x40B032: build_send_private_msg (session.c:1567)
-==2423==    by 0x40BAA1: ipset_cmd (session.c:1843)
-==2423==    by 0x40C307: create_type_get (types.c:239)
-==2423==    by 0x40C7DD: ipset_type_get (types.c:382)
-==2423==    by 0x4067CA: ipset_parse_typename (parse.c:1389)
-==2423==    by 0x40327E: parse_commandline (ipset.c:618)
-==2423==    by 0x402414: restore (ipset.c:197)
-==2423==    by 0x4033EF: parse_commandline (ipset.c:667)
-==2423==    by 0x403695: main (ipset.c:742)
-==2423==  Address 0x7ff000269 is on thread 1's stack
-ipset v6.5: Error in line 2807: Element cannot be added to the set: it's already added
-==2423== 
-==2423== ERROR SUMMARY: 2 errors from 1 contexts (suppressed: 8 from 1)
-==2423== malloc/free: in use at exit: 0 bytes in 0 blocks.
-==2423== malloc/free: 17,327 allocs, 17,327 frees, 610,049 bytes allocated.
-==2423== For counts of detected errors, rerun with: -v
-==2423== Use --track-origins=yes to see where uninitialised values come from
-==2423== All heap blocks were freed -- no leaks are possible.
-
-The same one with the patched ipset-6.5:
-
-==2229== Memcheck, a memory error detector.
-==2229== Copyright (C) 2002-2008, and GNU GPL'd, by Julian Seward et al.
-==2229== Using LibVEX rev 1884, a library for dynamic binary translation.
-==2229== Copyright (C) 2004-2008, and GNU GPL'd, by OpenWorks LLP.
-==2229== Using valgrind-3.4.1-Debian, a dynamic binary instrumentation framework.
-==2229== Copyright (C) 2000-2008, and GNU GPL'd, by Julian Seward et al.
-==2229== For more details, rerun with: -v
-==2229== 
-==2229== Syscall param socketcall.sendto(msg) points to uninitialised byte(s)
-==2229==    at 0x5118183: sendto (in /lib/libc-2.9.so)
-==2229==    by 0x4E2DBDB: mnl_socket_sendto (socket.c:183)
-==2229==    by 0x40CD06: ipset_mnl_query (mnl.c:95)
-==2229==    by 0x40B032: build_send_private_msg (session.c:1567)
-==2229==    by 0x40BAA1: ipset_cmd (session.c:1843)
-==2229==    by 0x40C307: create_type_get (types.c:239)
-==2229==    by 0x40C7DD: ipset_type_get (types.c:382)
-==2229==    by 0x4067CA: ipset_parse_typename (parse.c:1389)
-==2229==    by 0x40327E: parse_commandline (ipset.c:618)
-==2229==    by 0x402414: restore (ipset.c:197)
-==2229==    by 0x4033EF: parse_commandline (ipset.c:667)
-==2229==    by 0x403695: main (ipset.c:742)
-==2229==  Address 0x7ff000269 is on thread 1's stack
-ipset v6.5: Error in line 11191: Hash is full, cannot add more elements
-==2229== 
-==2229== ERROR SUMMARY: 2 errors from 1 contexts (suppressed: 8 from 1)
-==2229== malloc/free: in use at exit: 0 bytes in 0 blocks.
-==2229== malloc/free: 67,277 allocs, 67,277 frees, 2,385,155 bytes allocated.
-==2229== For counts of detected errors, rerun with: -v
-==2229== Use --track-origins=yes to see where uninitialised values come from
-==2229== All heap blocks were freed -- no leaks are possible.
-
-The uninitialized bytes are OK and there is no memory leak or corruption.
+I think you have got NETFILTER_NETLINK_QUEUE, NETFILTER_NETLINK_LOG or 
+NF_CT_NETLINK selected as module, and in consequence NETFILTER_NETLINK as 
+module too. And because the ipset kernel modules depend on 
+NETFILTER_NETLINK, then those can be selected as modules only too.
 
 Best regards,
 Jozsef
