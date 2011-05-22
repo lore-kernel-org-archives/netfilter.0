@@ -1,37 +1,46 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
 Subject: Re: [ANNOUNCE] ipset 6.5 released
-Date: Sun, 22 May 2011 15:52:44 +0100
-Message-ID: <4DD9233C.70208@googlemail.com>
-References: <alpine.DEB.2.00.1105151540340.25248@blackhole.kfki.hu> <4DD145C0.4060705@googlemail.com> <alpine.DEB.2.00.1105170941590.31848@blackhole.kfki.hu> <4DD8158D.4040306@googlemail.com> <alpine.DEB.2.00.1105212323230.23769@blackhole.kfki.hu> <4DD83174.6070105@googlemail.com> <alpine.DEB.2.00.1105220023050.23769@blackhole.kfki.hu>
+Date: Sun, 22 May 2011 17:00:15 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1105221659170.11575@frira.zrqbmnf.qr>
+References: <alpine.DEB.2.00.1105151540340.25248@blackhole.kfki.hu> <4DD145C0.4060705@googlemail.com> <alpine.DEB.2.00.1105170941590.31848@blackhole.kfki.hu> <4DD8158D.4040306@googlemail.com> <alpine.DEB.2.00.1105212323230.23769@blackhole.kfki.hu>
+ <alpine.LNX.2.01.1105212331570.16146@frira.zrqbmnf.qr> <4DD83187.2060301@googlemail.com> <alpine.LNX.2.01.1105212349310.18080@frira.zrqbmnf.qr> <alpine.DEB.2.00.1105220055320.24174@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:message-id:disposition-notification-to:date
-         :from:user-agent:mime-version:to:cc:subject:references:in-reply-to
-         :content-type:content-transfer-encoding;
-        bh=Q9hULRoicr+xKT2DVeTPRNF4X7a8F2jtz4cky1WiIpQ=;
-        b=rl6W3CRWQ3my1atpG1zuXYJyzDbotQxRQBv50IiP5LpCMFESomSuhkUUoPtUO6Bkjk
-         wSveI/5mz+O9YsPknsa7YMq/TVDztqBQcrs7DGUE9YQWvFTpe2fme6yg6KkhrCBZm7dP
-         exq/pa1/q4tCP/pZ7AuyDSDH7EYs24xxbyPj8=
-In-Reply-To: <alpine.DEB.2.00.1105220023050.23769@blackhole.kfki.hu>
+In-Reply-To: <alpine.DEB.2.00.1105220055320.24174@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@vger.kernel.org
+Cc: Mr Dash Four <mr.dash.four@googlemail.com>, netfilter@vger.kernel.org
 
 
-> Your first set named 'test_ips' consisting of 11670 ranges can only be 
-> converted to 15613 networks, i.e. members. Not all ranges can be expressed 
-> with a single network.
->   
-I have a suggestion then: Is it possible to include the number of 
-members registered in the set in the set headers - something like 
-"Members: xxxxxx"? That way I won't be guessing how much members I have 
-in a set (particularly if members of said set run into many thousands) 
-and don't rely (as I did previously) on my text files to do "estimates", 
-which, as we've seen, could be wrong and misleading and I would be able 
-to view this with the "-terse" option.
+On Sunday 2011-05-22 01:08, Jozsef Kadlecsik wrote:
+>
+>==2229== Syscall param socketcall.sendto(msg) points to uninitialised byte(s)
+>==2229==    at 0x5118183: sendto (in /lib/libc-2.9.so)
+>==2229==    by 0x4E2DBDB: mnl_socket_sendto (socket.c:183)
+>==2229==    by 0x40CD06: ipset_mnl_query (mnl.c:95)
+>==2229==    by 0x40B032: build_send_private_msg (session.c:1567)
+>==2229==    by 0x40BAA1: ipset_cmd (session.c:1843)
+>==2229==    by 0x40C307: create_type_get (types.c:239)
+>==2229==    by 0x40C7DD: ipset_type_get (types.c:382)
+>==2229==    by 0x4067CA: ipset_parse_typename (parse.c:1389)
+>==2229==    by 0x40327E: parse_commandline (ipset.c:618)
+>==2229==    by 0x402414: restore (ipset.c:197)
+>==2229==    by 0x4033EF: parse_commandline (ipset.c:667)
+>==2229==    by 0x403695: main (ipset.c:742)
+>==2229==  Address 0x7ff000269 is on thread 1's stack
+>ipset v6.5: Error in line 11191: Hash is full, cannot add more elements
+>==2229== 
+>==2229== ERROR SUMMARY: 2 errors from 1 contexts (suppressed: 8 from 1)
+>==2229== malloc/free: in use at exit: 0 bytes in 0 blocks.
+>==2229== malloc/free: 67,277 allocs, 67,277 frees, 2,385,155 bytes allocated.
+>==2229== For counts of detected errors, rerun with: -v
+>==2229== Use --track-origins=yes to see where uninitialised values come from
+>==2229== All heap blocks were freed -- no leaks are possible.
+>
+>The uninitialized bytes are OK and there is no memory leak or corruption.
 
+Uninitialized bytes are usually never OK when they are read upon.
+There is a series on LWN to elaborate on that..
