@@ -1,70 +1,60 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
-Subject: Re: [ANNOUNCE] ipset 6.5 released
-Date: Sun, 22 May 2011 02:01:53 +0100
-Message-ID: <4DD86081.1020703@googlemail.com>
-References: <alpine.DEB.2.00.1105151540340.25248@blackhole.kfki.hu> <4DD145C0.4060705@googlemail.com> <alpine.DEB.2.00.1105170941590.31848@blackhole.kfki.hu> <4DD8158D.4040306@googlemail.com> <alpine.DEB.2.00.1105212323230.23769@blackhole.kfki.hu> <alpine.LNX.2.01.1105212331570.16146@frira.zrqbmnf.qr> <4DD83187.2060301@googlemail.com> <alpine.LNX.2.01.1105212349310.18080@frira.zrqbmnf.qr> <alpine.DEB.2.00.1105220055320.24174@blackhole.kfki.hu>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: FORWARD chain and Interfaces
+Date: Sun, 22 May 2011 10:48:40 +0200
+Message-ID: <4DD8CDE8.505@plouf.fr.eu.org>
+References: <1305958205.10779.1454356989@webmail.messagingengine.com> <4DD7A0C5.1040200@plouf.fr.eu.org> <1306007342.28169.1454496985@webmail.messagingengine.com> <4DD825EB.2080300@plouf.fr.eu.org> <1306014018.28595.1454519185@webmail.messagingengine.com> <4DD83726.5090604@plouf.fr.eu.org> <1306017077.11298.1454526649@webmail.messagingengine.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=domainkey-signature:message-id:disposition-notification-to:date
-         :from:user-agent:mime-version:to:cc:subject:references:in-reply-to
-         :content-type:content-transfer-encoding;
-        bh=Ws/RFt7lDSCrQJFVkLi8h0Sf1FC6SSpnz51C4M7RYV8=;
-        b=Uvfid78rLAcOAXjNO1IRFJ1h/bZ5Lzsou67TU/spfNgd90+1btrqkDdKX/0/UY6iH2
-         AVyjuZMB5zITijiR/lJZpVdRPr+ghQQo9u8j7tRiw9g8AYqrZUzWO+xYmaUrpSo5c7Uc
-         LsSnbOml3rXB+1Y/m1im+n2vQSJiEf96DXOBY=
-In-Reply-To: <alpine.DEB.2.00.1105220055320.24174@blackhole.kfki.hu>
+In-Reply-To: <1306017077.11298.1454526649@webmail.messagingengine.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@buglecreek.com
+Cc: netfilter <netfilter@vger.kernel.org>
 
+netfilter@buglecreek.com a =E9crit :
+> On Sun, 22 May 2011 00:05 +0200, "Pascal Hambourg"
+>>
+>> How then do you know which interface of the router is connected to w=
+hich
+>> network ?
+>=20
+> I'm basing the router connections to the various networks by the IP
+> addresses and network Addresses.
 
-> The uninitialized bytes are OK and there is no memory leak or corruption.
->   
-I am able to now reproduce the error, having applied your patch Jozsef, 
-rebuilt the kernel, updated the whole image on that machine and 
-rebooted. This is what happens:
+That is not enough. The virtualization system (Parallels for you) deals
+only with the link (ethernet) layer, not the IP layer. You can set up
+multiple IP subnets on the same link but they are not isolated.
 
-All sets are now loaded, *except* the last file where I get the 
-segmentation fault error I described earlier, i.e, something like this:
+> Sending a broadcast packet (good idea) from network B I see the packe=
+t
+> show up at network A machine and on both interfaces of the firewall. =
+ I
+> even see the packets show up on network A when the firewall/router is
+> turned off.
 
-May 22 01:25:20 dmz1 kernel: [ 1361.321376] ipset[2819]: segfault at 0 
-ip 00e26655 sp bfdad710 error 4 in libmnl.so.0.0.1[e24000+4000]
-May 22 01:26:39 dmz1 kernel: [ 1440.120529] ipset[2841]: segfault at 0 
-ip 002d7655 sp bfbe7b10 error 4 in libmnl.so.0.0.1[2d5000+4000]
+So all interfaces are connected to the same link, just as I thought.
 
-I started to narrow this down and the first culprit seems to be the 
-following 2 statements:
+> Both Net A and Net B are assigned IPs on two entirely
+> different networks.  Obviously, this is not the expected behavior.
 
-n priviledged-ports bitmap:port range 1-1023 timeout 0
-a priviledged-ports 1-1023
+It is expected behaviour when all interfaces are connected to the same
+link. Think as if all interfaces are connected to the same switch and
+you didn't define separate VLANs.
 
-When I removed the above 2 statements I am then getting this:
+Ideally you need to set up two separate virtual links and define which
+interface is connected to which link. Other options include :
 
-ipset v6.5: Error in line 4: Internal protocol error
+a) Use tagged VLAN interfaces (see vconfig). This requires only one
+ethernet interface on the router. E.g. :
+VLAN 1 for network A, machines use eth0.1
+VLAN 2 for network B, machines use eth0.2
 
-No segmentation fault! I narrowed the latest error down to the following 
-2 statements:
+b) Set /proc/sys/net/ipv4/all/arp_ignore to 1 on the router so each
+interface replies only to ARP requests for its own address. This way th=
+e
+other machines will send packets only to the correct interface.
 
-n test-net bitmap:ip range 10.1.1.172/29 timeout 0
-a test-net 10.1.1.172/29
-
-I then removed those as well. Tried again - segmentation fault error. I 
-then removed the following 3 statements, which were next in line:
-
-n test-ports bitmap:port range 12770-19999 timeout 0
-a test-ports 12770-12784
-a test-ports 19999
-
-Next, another segmentation fault error, it turns out the culprit this 
-time was 2 statements which were further down the line from this file:
-
-n test-port bitmap:port range 29950-29950 timeout 0
-a test-port 29950
-
-Removed these and guess what - segmentation fault error again, at which 
-point I bloody gave up! ipset 4.5 it is!
+Note that these options do not provide the same level of security as
+separate links.
