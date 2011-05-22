@@ -1,60 +1,35 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: FORWARD chain and Interfaces
-Date: Sun, 22 May 2011 10:48:40 +0200
-Message-ID: <4DD8CDE8.505@plouf.fr.eu.org>
-References: <1305958205.10779.1454356989@webmail.messagingengine.com> <4DD7A0C5.1040200@plouf.fr.eu.org> <1306007342.28169.1454496985@webmail.messagingengine.com> <4DD825EB.2080300@plouf.fr.eu.org> <1306014018.28595.1454519185@webmail.messagingengine.com> <4DD83726.5090604@plouf.fr.eu.org> <1306017077.11298.1454526649@webmail.messagingengine.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: [ANNOUNCE] ipset 6.5 released
+Date: Sun, 22 May 2011 11:56:54 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1105221156020.25858@blackhole.kfki.hu>
+References: <alpine.DEB.2.00.1105151540340.25248@blackhole.kfki.hu> <4DD83964.5050105@googlemail.com> <alpine.DEB.2.00.1105220018010.23769@blackhole.kfki.hu> <4DD83FDE.9000901@googlemail.com> <alpine.DEB.2.00.1105220044160.24174@blackhole.kfki.hu>
+ <4DD84349.5040407@googlemail.com> <alpine.DEB.2.00.1105220115100.24174@blackhole.kfki.hu> <4DD84BD0.5040904@googlemail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1306017077.11298.1454526649@webmail.messagingengine.com>
+In-Reply-To: <4DD84BD0.5040904@googlemail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@buglecreek.com
-Cc: netfilter <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mr Dash Four <mr.dash.four@googlemail.com>
+Cc: netfilter@vger.kernel.org
 
-netfilter@buglecreek.com a =E9crit :
-> On Sun, 22 May 2011 00:05 +0200, "Pascal Hambourg"
->>
->> How then do you know which interface of the router is connected to w=
-hich
->> network ?
->=20
-> I'm basing the router connections to the various networks by the IP
-> addresses and network Addresses.
+On Sun, 22 May 2011, Mr Dash Four wrote:
 
-That is not enough. The virtualization system (Parallels for you) deals
-only with the link (ethernet) layer, not the IP layer. You can set up
-multiple IP subnets on the same link but they are not isolated.
+> > I think you have got NETFILTER_NETLINK_QUEUE, NETFILTER_NETLINK_LOG or 
+> > NF_CT_NETLINK selected as module, and in consequence NETFILTER_NETLINK as 
+> > module too. And because the ipset kernel modules depend on 
+> > NETFILTER_NETLINK, then those can be selected as modules only too.
+> I have them all as modules (i.e. "m"), *but* that is the case with 4.5 
+> as well - I just checked my 4.5 .config, so there is not difference in 
+> that respect.
 
-> Sending a broadcast packet (good idea) from network B I see the packe=
-t
-> show up at network A machine and on both interfaces of the firewall. =
- I
-> even see the packets show up on network A when the firewall/router is
-> turned off.
+ipset-4.x did not depend on NETFILTER_NETLINK, while ipset-6.x does.
 
-So all interfaces are connected to the same link, just as I thought.
-
-> Both Net A and Net B are assigned IPs on two entirely
-> different networks.  Obviously, this is not the expected behavior.
-
-It is expected behaviour when all interfaces are connected to the same
-link. Think as if all interfaces are connected to the same switch and
-you didn't define separate VLANs.
-
-Ideally you need to set up two separate virtual links and define which
-interface is connected to which link. Other options include :
-
-a) Use tagged VLAN interfaces (see vconfig). This requires only one
-ethernet interface on the router. E.g. :
-VLAN 1 for network A, machines use eth0.1
-VLAN 2 for network B, machines use eth0.2
-
-b) Set /proc/sys/net/ipv4/all/arp_ignore to 1 on the router so each
-interface replies only to ARP requests for its own address. This way th=
-e
-other machines will send packets only to the correct interface.
-
-Note that these options do not provide the same level of security as
-separate links.
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
