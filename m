@@ -1,46 +1,87 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: [ANNOUNCE] ipset 6.5 released
-Date: Sun, 22 May 2011 17:00:15 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1105221659170.11575@frira.zrqbmnf.qr>
-References: <alpine.DEB.2.00.1105151540340.25248@blackhole.kfki.hu> <4DD145C0.4060705@googlemail.com> <alpine.DEB.2.00.1105170941590.31848@blackhole.kfki.hu> <4DD8158D.4040306@googlemail.com> <alpine.DEB.2.00.1105212323230.23769@blackhole.kfki.hu>
- <alpine.LNX.2.01.1105212331570.16146@frira.zrqbmnf.qr> <4DD83187.2060301@googlemail.com> <alpine.LNX.2.01.1105212349310.18080@frira.zrqbmnf.qr> <alpine.DEB.2.00.1105220055320.24174@blackhole.kfki.hu>
+From: netfilter@buglecreek.com
+Subject: Re: FORWARD chain and Interfaces
+Date: Sun, 22 May 2011 13:06:47 -0600
+Message-ID: <1306091207.21990.1454736533@webmail.messagingengine.com>
+References: <1305958205.10779.1454356989@webmail.messagingengine.com>
+ <4DD7A0C5.1040200@plouf.fr.eu.org>
+ <1306007342.28169.1454496985@webmail.messagingengine.com>
+ <4DD825EB.2080300@plouf.fr.eu.org>
+ <1306014018.28595.1454519185@webmail.messagingengine.com>
+ <4DD83726.5090604@plouf.fr.eu.org>
+ <1306017077.11298.1454526649@webmail.messagingengine.com>
+ <4DD8CDE8.505@plouf.fr.eu.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1105220055320.24174@blackhole.kfki.hu>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=messagingengine.com; h=message-id:from:to:cc:mime-version:content-transfer-encoding:content-type:in-reply-to:references:subject:date; s=smtpout; bh=LdiDr3wyRx+Uqk7yOna1q/EBf/A=; b=tfEP3xqvrbSNJsqyo/ipcx4xEvHgPqb1VD1q1Vlta58oEk5Ah4An1uD+X4pd43fx1jyObf1ZlVTk5DcnbizzVwNdn2XZXikL+PZ8P+vmdzsjBAMmWArfBHKFznlOF16hjkll+H48J39OCHpfhJc3PJlroHbq1KXTzRSlZzdEoBI=
+In-Reply-To: <4DD8CDE8.505@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: Mr Dash Four <mr.dash.four@googlemail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Cc: netfilter <netfilter@vger.kernel.org>
 
 
-On Sunday 2011-05-22 01:08, Jozsef Kadlecsik wrote:
->
->==2229== Syscall param socketcall.sendto(msg) points to uninitialised byte(s)
->==2229==    at 0x5118183: sendto (in /lib/libc-2.9.so)
->==2229==    by 0x4E2DBDB: mnl_socket_sendto (socket.c:183)
->==2229==    by 0x40CD06: ipset_mnl_query (mnl.c:95)
->==2229==    by 0x40B032: build_send_private_msg (session.c:1567)
->==2229==    by 0x40BAA1: ipset_cmd (session.c:1843)
->==2229==    by 0x40C307: create_type_get (types.c:239)
->==2229==    by 0x40C7DD: ipset_type_get (types.c:382)
->==2229==    by 0x4067CA: ipset_parse_typename (parse.c:1389)
->==2229==    by 0x40327E: parse_commandline (ipset.c:618)
->==2229==    by 0x402414: restore (ipset.c:197)
->==2229==    by 0x4033EF: parse_commandline (ipset.c:667)
->==2229==    by 0x403695: main (ipset.c:742)
->==2229==  Address 0x7ff000269 is on thread 1's stack
->ipset v6.5: Error in line 11191: Hash is full, cannot add more elements
->==2229== 
->==2229== ERROR SUMMARY: 2 errors from 1 contexts (suppressed: 8 from 1)
->==2229== malloc/free: in use at exit: 0 bytes in 0 blocks.
->==2229== malloc/free: 67,277 allocs, 67,277 frees, 2,385,155 bytes allocated.
->==2229== For counts of detected errors, rerun with: -v
->==2229== Use --track-origins=yes to see where uninitialised values come from
->==2229== All heap blocks were freed -- no leaks are possible.
->
->The uninitialized bytes are OK and there is no memory leak or corruption.
+On Sun, 22 May 2011 10:48 +0200, "Pascal Hambourg"
+<pascal.mail@plouf.fr.eu.org> wrote:
+> netfilter@buglecreek.com a =E9crit :
+> > On Sun, 22 May 2011 00:05 +0200, "Pascal Hambourg"
+> >>
+> >> How then do you know which interface of the router is connected to=
+ which
+> >> network ?
+> >=20
+> > I'm basing the router connections to the various networks by the IP
+> > addresses and network Addresses.
+>=20
+> That is not enough. The virtualization system (Parallels for you) dea=
+ls
+> only with the link (ethernet) layer, not the IP layer. You can set up
+> multiple IP subnets on the same link but they are not isolated.
+>=20
+> > Sending a broadcast packet (good idea) from network B I see the pac=
+ket
+> > show up at network A machine and on both interfaces of the firewall=
+=2E  I
+> > even see the packets show up on network A when the firewall/router =
+is
+> > turned off.
+>=20
+> So all interfaces are connected to the same link, just as I thought.
+>=20
+> > Both Net A and Net B are assigned IPs on two entirely
+> > different networks.  Obviously, this is not the expected behavior.
+>=20
+> It is expected behaviour when all interfaces are connected to the sam=
+e
+> link. Think as if all interfaces are connected to the same switch and
+> you didn't define separate VLANs.
+>=20
+> Ideally you need to set up two separate virtual links and define whic=
+h
+> interface is connected to which link. Other options include :
+>=20
+> a) Use tagged VLAN interfaces (see vconfig). This requires only one
+> ethernet interface on the router. E.g. :
+> VLAN 1 for network A, machines use eth0.1
+> VLAN 2 for network B, machines use eth0.2
+>=20
+> b) Set /proc/sys/net/ipv4/all/arp_ignore to 1 on the router so each
+> interface replies only to ARP requests for its own address. This way =
+the
+> other machines will send packets only to the correct interface.
+>=20
+> Note that these options do not provide the same level of security as
+> separate links.
+>=20
 
-Uninitialized bytes are usually never OK when they are read upon.
-There is a series on LWN to elaborate on that..
+Good information.  I only use virtualization on a intermittent basis an=
+d
+then only to test various things when I am not able to use other means.=
+=20
+Normally what you describe above is not a big issue since I'm usually
+not trying to route packets between virtual machines.  I'll look at som=
+e
+of the solutions you outline above for future test scenarios.=20
+Appreciate the help figuring out why I was seeing the "strange"
+behavior.
