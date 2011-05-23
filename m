@@ -1,31 +1,38 @@
-From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
-Subject: IP Accounting and blocking IP
-Date: Sun, 22 May 2011 23:35:44 -0300
-Message-ID: <BANLkTineFWQLZJ0fbJ7OkvkvkhbuBM+E2Q@mail.gmail.com>
+From: "cc" <cc@kdtc.net>
+Subject: icmp packets
+Date: Mon, 23 May 2011 16:23:29 +0800
+Message-ID: <20110523081547.M25256@kdtc.net>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Hello everyone, I'm need to account my users traffic to Internet.
+Hi,
 
-I wish block the user that is stealing more bandwidth making
-downloading any thing by Internet at the moment of the action.
+I have a 'weird' problem that's most likely attributed to a
+bad netfilter rules policy.  
 
-I've searched at the Internet and found something about sflow, pmacct
-and even iptables and ipfwadm.
+I am trying to ping from an internal machine to an external
+site.  
 
-I wish any tips about what tool above or others that can help me as
-blocking by users( of course that the blocking occur by ip ) at the
-moment that them are making bad use of the Internet.
+$IPTB -A INPUT -i $INET_IF -p icmp -s $EXT_SITE -j ACCEPT
+$IPTB -A OUTPUT -o $INET_IF -p icmp -d $EXT_SITE -j ACCEPT
 
-I liked of the ipfwadm but I haven't found many material about it seem
-be old. there is new version or substitute ?
+$IPTB -A FORWARD -i $DMZ_IF -o $INET_IF -p icmp -d $EXT_SITE -j ACCEPT
+$IPTB -t nat -A POSTROUTING -o $INET_IF -p icmp -d $EXT_SITE \
+              -j SNAT --to-source $INET_IP
 
-any tips are welcome!
+Now when I ping from an internal IP, I do not get a response
+until the nth icmp_seq, where n > 100 (so far my testing). 
+Is there something wrong with the above rules?
 
+Apparently I'm not getting a echo reply until n > 100?  
+I feel my understanding of ICMP packets requires some
+further expanding.
 
-thank!
+Thanks
+
+Ed
