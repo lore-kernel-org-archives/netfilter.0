@@ -1,38 +1,43 @@
-From: "cc" <cc@kdtc.net>
-Subject: icmp packets
-Date: Mon, 23 May 2011 16:23:29 +0800
-Message-ID: <20110523081547.M25256@kdtc.net>
+From: gapsf@yandex.ru
+Subject: nftables: introspection capabilities?
+Date: Tue, 24 May 2011 15:21:36 +0700
+Message-ID: <3210442595.20110524152136@yandex.ru>
+Reply-To: gapsf@yandex.ru
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1306225306; bh=amFvpU02cpQkQ09635ucYBu3BrZGi6+6uvsc9M3CkMc=;
+	h=Date:From:Reply-To:Message-ID:To:Subject:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding;
+	b=GAIGOlWEYUU/ndZ74P8uZix7V4I1xqgINESANtByV+fH+Ajdp2SzLXqQTcyLOYvXr
+	 OGcsPfudmHJT3kAcdxXMH/l/GbBhm/XHAZGHITd6SiXRmjyAL1Er7RdMnUQUPpRuDY
+	 Xq/H/BpBC6g4OCpIoQTLpkUBk1hnAj1scPZCONLc=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi,
+Hi!
+There is a lot of frontends for iptables like shorewall, ufw, ferm and special firewall distros.
+They all are trying to formalize, simplify, integrate the
+configuration of Linux firewall and traffic control subsystems.
+They also use a certain set of metadata for their own use.
 
-I have a 'weird' problem that's most likely attributed to a
-bad netfilter rules policy.  
+One of the iptables disadvantages - the inability to effectively
+find out the internal state of the iptables.
+There is only one way - parse the "iptables -L" output, isn't it?
 
-I am trying to ping from an internal machine to an external
-site.  
+So there's no easy way to find out how many rules in the some table now,
+or whether there is a rule with the given src and dst port in such a table,
+for example.
 
-$IPTB -A INPUT -i $INET_IF -p icmp -s $EXT_SITE -j ACCEPT
-$IPTB -A OUTPUT -o $INET_IF -p icmp -d $EXT_SITE -j ACCEPT
+So for these purposes the frontend should keep the internal state of iptables
+in some way, instead of simply request this information from iptables.
 
-$IPTB -A FORWARD -i $DMZ_IF -o $INET_IF -p icmp -d $EXT_SITE -j ACCEPT
-$IPTB -t nat -A POSTROUTING -o $INET_IF -p icmp -d $EXT_SITE \
-              -j SNAT --to-source $INET_IP
+There is no doubt that for nftables frontends will be written too, so the question is:
+"Will nfatbles be able to find out various information
+about their own current state: tables, chains, rules, etc?"
 
-Now when I ping from an internal IP, I do not get a response
-until the nth icmp_seq, where n > 100 (so far my testing). 
-Is there something wrong with the above rules?
+Thanks.
 
-Apparently I'm not getting a echo reply until n > 100?  
-I feel my understanding of ICMP packets requires some
-further expanding.
-
-Thanks
-
-Ed
