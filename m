@@ -1,60 +1,70 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [ANNOUNCE] ipset 6.6 released
-Date: Tue, 24 May 2011 13:44:07 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1105241329170.1846@blackhole.kfki.hu>
-References: <alpine.DEB.2.00.1105241039080.1846@blackhole.kfki.hu> <4DDB91CD.3080003@googlemail.com>
+From: Phil Stoneman <pws@corefiling.com>
+Subject: TTL Exceeded packets coming from the original packet destination
+Date: Tue, 24 May 2011 16:44:51 +0100
+Message-ID: <4DDBD273.3070405@corefiling.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4DDB91CD.3080003@googlemail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Tue, 24 May 2011, Mr Dash Four wrote:
+Hi all
 
-> > The next ipset package release will come with code simplifications, which
-> > mean dropping some support:
-> > 
-> > - iptree and iptreemap type support will be removed, because the automatic
-> >   conversion to hash:ip is not fully backward compatible. The hash:ip and
-> > hash:net types can be used instead.
-> > - kernel version support below 2.6.37 will be dropped, to make code
-> >   maintenance easier and more straightforward
-> >   
-> What are your plans with regards to the last point? The reason I am asking is
-> because I am still on .35 (the last "stable" kernel released by Fedora) and I
-> might not be able to use new releases if you introduce this restriction.
+I've been searching google and these archives, and not found a useful 
+answer to this, so I wonder here if someone can help me?
 
-Hm, 2.6.35 can lessen the maintenance burden compared to the currently 
-minimal supported version 2.6.34, because the main trouble comes from the 
-differences between .34 and .35. So I think I can remove the older kernel
-supports gradually and keep supporting 2.6.35 for a while.
- 
-> Also, would you consider my suggestion to include the number of members
-> registered in a set to be displayed in the set headers (something like
-> "Members: 15156") - this would help with managing the number of members in
-> that set, which would be particularly useful for sets with large number of
-> members.
+We have a range of public IPs allocated to us by our ISP. Our linux 
+router sits on one of those, and another of those is NATed through to a 
+host in our DMZ. Traceroutes from the outside world which get dropped by 
+the linux router have the TTL exceeded packet generated with the source 
+set to the original UDP packet destination - not set to an interface 
+address of the linux router.
 
-The problem with it that the reported number can be inaccurate, at least 
-in two cases:
+This gives us something like this:
 
-- Elements can time out, so even if whatever number reported, by the
-  time it's displayed, the set can even be completely empty. In the case
-  of a huge set, it can even occur that the number of elements reported
-  does not match the actual number of elements listed.
-- Sets can be updated by the SET target
+pws@externalhost:~$ traceroute -n 90.155.100.39
+traceroute to 90.155.100.39 (90.155.100.39), 30 hops max, 40 byte packets
+<snip>
+  4  195.66.224.223  1.236 ms  1.249 ms  1.275 ms
+  5  213.229.97.181  2.328 ms  2.327 ms  2.304 ms
+  6  90.155.100.39  5.476 ms  5.050 ms  5.087 ms
+  7  90.155.100.39  5.266 ms  5.381 ms  5.406 ms
 
-The first one is the main reason I dropped reporting the number of 
-elements (the initial design of the new ipset included it).
+Which isn't as I'd expect (I'd expect hop 6 to be the interface address 
+of the linux router).
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+
+Network details (monospace font):
+
+InsideHost<----->Linux Router<----->Outside world
+          |       |          |       |
+10.0.250.2       |          |       |
+         10.0.250.1          |       |
+                90.155.100.198       |
+                        90.155.100.193
+
+Relevant iptables rules:
+iptables.eth-ext:-A PREROUTING -i vlan90 -j preroutingaa
+iptables.eth-ext:-A preroutingaa -d 90.155.100.39    -j DNAT 
+--to-destination 10.0.250.2
+iptables.eth-ext:-A POSTROUTING -j sourcenat
+iptables.eth-ext:-A sourcenat -s 10.0.250.2 -o vlan90 -j SNAT 
+--to-source 90.155.100.39
+
+I'm on a Debian 6.0.1 system, with kernel 2.6.32-5-686 in case that's 
+relevant.
+
+
+I don't know if this is being caused by the conntrack stuff doing some 
+undesired NAT on the ICMP responses, or if it's related to this posting 
+I found on google: http://www.spinics.net/lists/lartc/msg18454.html
+
+Anyway, could someone help me work out what I need to do to make 
+traceroutes happen properly please?
+
+
+Thanks!
+
+Phil
