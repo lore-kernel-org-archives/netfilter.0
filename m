@@ -1,36 +1,60 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: nftables: introspection capabilities?
-Date: Tue, 24 May 2011 10:33:46 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1105241030410.13058@frira.zrqbmnf.qr>
-References: <3210442595.20110524152136@yandex.ru>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset 6.6 released
+Date: Tue, 24 May 2011 10:48:05 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1105241039080.1846@blackhole.kfki.hu>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <3210442595.20110524152136@yandex.ru>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: gapsf@yandex.ru
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-On Tuesday 2011-05-24 10:21, gapsf@yandex.ru wrote:
+Hi,
 
->Hi!
->There is a lot of frontends for iptables like shorewall, ufw, ferm and special firewall distros.
->They all are trying to formalize, simplify, integrate the
->configuration of Linux firewall and traffic control subsystems.
->They also use a certain set of metadata for their own use.
->
->One of the iptables disadvantages - the inability to effectively
->find out the internal state of the iptables.
->There is only one way - parse the "iptables -L" output, isn't it?
+Here comes ipset 6.6 with a couple of bugfixes and improvements. The terse 
+list of the changes are:
 
-iptables -S, iptables-save  is preferred at all times.
+Kernel part changes:
+ - Use unified from/to address masking and check the usage
+ - ip_set_flush returned -EPROTO instead of -IPSET_ERR_PROTOCOL, fixed
+ - Take into account cidr value for the from address when creating the set
+ - Adding ranges to hash types with timeout could still fail, fixed
+ - Removed old, not used hashing method ip_set_chash
+ - Remove variable 'ret' in type_pf_tdel(), which is set but not used
+ - Use proper timeout parameter to jiffies conversion
 
->There is no doubt that for nftables frontends will be written too, so the question is:
->"Will nfatbles be able to find out various information
->about their own current state: tables, chains, rules, etc?"
+Userspace changes:
+ - Restore with bitmap:port and list:set types did not work, fixed
+ - Accept "\r\n" terminated COMMIT command in restore files
+ - Fix the message sequence number book-keeping
+ - Protocol-level debugging support added
+ - hash:net stress test in range notation added
+ - ipset_mnl_query: in debug mode print the errno returned by the cb
+   function
+ - Accept "\r\n" terminated lines in restore files
+ - Remove outdated checking of IPv6 support from configure.ac
 
-You can already obtain this information by using libiptc, iterating over 
-all rules and testing for a particular src/dst address (very much like 
-poor man's `grep -s 1.2.3.4\b` on the text output).
+I thank to Mr Dash Four for his tireless testings and helpful reports.
+
+The next ipset package release will come with code simplifications, which 
+mean dropping some support:
+
+- iptree and iptreemap type support will be removed, because the automatic
+  conversion to hash:ip is not fully backward compatible. The hash:ip and 
+  hash:net types can be used instead.
+- kernel version support below 2.6.37 will be dropped, to make code
+  maintenance easier and more straightforward
+
+You can download the source code of ipset from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
