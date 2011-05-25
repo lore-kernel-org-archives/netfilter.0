@@ -1,26 +1,34 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: ULOG target in ip6tables?
-Date: Wed, 25 May 2011 22:50:25 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1105252249560.19500@frira.zrqbmnf.qr>
-References: <BANLkTinm9MVSCrFH+Yk2uonuUK7Tyni9QQ@mail.gmail.com>
+From: Aaron Clausen <mightymartianca@gmail.com>
+Subject: Multiple Internal Networks
+Date: Wed, 25 May 2011 15:01:46 -0700
+Message-ID: <BANLkTik71rCYn0hQ1CavBmDGo_1NtZX0aA@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BANLkTinm9MVSCrFH+Yk2uonuUK7Tyni9QQ@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:date:message-id:subject:from:to
+         :content-type;
+        bh=n7jmiMa+T1XMTHIv9mptZsBhn12C3IoB61FPHTmnZm0=;
+        b=kyAxQwnSB7G5+qF7K5EQxercmH1a8LY1/qDU1XOwOSnffCTg3fTbites8YkP2z1N4O
+         sXBIXrhNf3hUojDRPCyuQ8ZEUxI4ouAwR+utNQr0V7bwG0sbukuDBaAaD+c6YTVfZgYk
+         f7Y+2utmwZxIUFYLzILah16HpyWEUDNPwi/TI=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Kent Shultz <kentmshultz@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Wednesday 2011-05-25 22:42, Kent Shultz wrote:
+I just can't wrap my head around this one.
 
->Hello,
->
->I am trying to get ulogd to work with ip6tables, but it seems there is
->no support for a 'ULOG' target -- there is no such file as
->'libip6t_ULOG.so' in my iptables lib directory.
->
->Does anyone know how to use ULOG as a target in ip6tables rules?
+What I have is a router with three interfaces:
 
-Use NFLOG, and preferably ulogd2.
+eth0 - External interface (IP address retrieved DHCP)
+eth1 - Internal interface (trusted) - can access Internet and anything
+on eth2 network
+eth2 - Internal interface (untrusted) - can only access Internet
+
+What the heck is the iptables commands to get this to work?
+
+-- 
+Aaron Clausen
+mightymartianca@gmail.com
