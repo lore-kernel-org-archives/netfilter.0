@@ -1,31 +1,81 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nftables: introspection capabilities?
-Date: Thu, 26 May 2011 19:33:45 +0200
-Message-ID: <4DDE8EF9.8090208@netfilter.org>
-References: <3210442595.20110524152136@yandex.ru> <alpine.LNX.2.01.1105241030410.13058@frira.zrqbmnf.qr> <1510322597.20110524161458@yandex.ru>
+From: Eric Dumazet <eric.dumazet@gmail.com>
+Subject: Re: [PATCH v3 resend] netfilter: nf_conntrack_sip: Handle Cisco
+ 7941/7945 IP phones
+Date: Thu, 26 May 2011 19:57:44 +0200
+Message-ID: <1306432664.2543.2.camel@edumazet-laptop>
+References: <bc781b295b38241533a2d90c1aea15b3@localhost>
+	 <4DDE84F2.7080706@netfilter.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1510322597.20110524161458@yandex.ru>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:subject:from:to:cc:in-reply-to:references
+         :content-type:date:message-id:mime-version:x-mailer
+         :content-transfer-encoding;
+        bh=sa+gZxjA1tk/sUCP8T7BuVauwDx8eNESjaYQnJUbEM0=;
+        b=ZUAKfoyMQLSxSBfJLYDSH/dZERKjaNatGPVU7S2TUOoT/JTG4pZyUR/xiUnpGhLZNM
+         Lf5D4q3mOprmfDfVmNkWQIHr8ciDhjft/EmTe/1QNHRKp18hho6uyiK/uYZFk9E27nif
+         9dPT5BK3qoD/WCGK+B82Lgy4IgQU4sUasDU+M=
+In-Reply-To: <4DDE84F2.7080706@netfilter.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: gapsf@yandex.ru
-Cc: netfilter@vger.kernel.org, Jan Engelhardt <jengelh@medozas.de>
+Content-Type: text/plain; charset="utf-8"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Kevin Cernekee <cernekee@gmail.com>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 
-On 24/05/11 11:14, gapsf@yandex.ru wrote:
->>> There is no doubt that for nftables frontends will be written too, so the question is:
->>> "Will nfatbles be able to find out various information
->>> about their own current state: tables, chains, rules, etc?"
-> 
-> JE> You can already obtain this information by using libiptc, iterating over 
-> JE> all rules and testing for a particular src/dst address (very much like 
-> JE> poor man's `grep -s 1.2.3.4\b` on the text output).
-> According to Wikipedia "libiptc ... shouldn't be used as a public API,
-> and is known to change, which breaks programs that use it"
-> and libiptc is a 3d party project - not netfilter.org's and outdated, isn't it?
-> 
-> As for nftables: means native capabilities of it's kernelspace code (aka virtual machine).
+Le jeudi 26 mai 2011 =C3=A0 18:50 +0200, Pablo Neira Ayuso a =C3=A9crit=
+ :
+> Hi Eric,
+>=20
+> On 20/05/11 06:36, Kevin Cernekee wrote:
+> > Most SIP devices use a source port of 5060/udp on SIP requests, so =
+the
+> > response automatically comes back to port 5060:
+> >=20
+> > phone_ip:5060 -> proxy_ip:5060   REGISTER
+> > proxy_ip:5060 -> phone_ip:5060   100 Trying
+> >=20
+> > The newer Cisco IP phones, however, use a randomly chosen high sour=
+ce
+> > port for the SIP request but expect the response on port 5060:
+> >=20
+> > phone_ip:49173 -> proxy_ip:5060  REGISTER
+> > proxy_ip:5060 -> phone_ip:5060   100 Trying
+> >=20
+> > Standard Linux NAT, with or without nf_nat_sip, will send the reply=
+ back
+> > to port 49173, not 5060:
+> >=20
+> > phone_ip:49173 -> proxy_ip:5060  REGISTER
+> > proxy_ip:5060 -> phone_ip:49173  100 Trying
+> >=20
+> > But the phone is not listening on 49173, so it will never see the r=
+eply.
+> >=20
+> > This patch modifies nf_*_sip to work around this quirk by extractin=
+g
+> > the SIP response port from the Via: header, iff the source IP in th=
+e
+> > packet header matches the source IP in the SIP request.
+> >=20
+> > Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+> > Acked-by: Eric Dumazet <eric.dumazet@gmail.com>
+> > Cc: Patrick McHardy <kaber@trash.net>
+>=20
+> @Eric: could you please confirm that you ack'ed this patch? I don't f=
+ind
+> the email with your explicit ack.
 
-just to clarify, that's not a virtual machine but a pseudo-state machine
-in the BPF fashion, OK?
+Yes I did it ;)
+
+http://www.spinics.net/lists/netfilter/msg49632.html
+
+Thanks !
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
+el" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
