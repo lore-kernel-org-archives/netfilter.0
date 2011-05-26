@@ -1,79 +1,70 @@
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: [PATCH v3 resend] netfilter: nf_conntrack_sip: Handle Cisco
- 7941/7945 IP phones
-Date: Thu, 26 May 2011 19:57:44 +0200
-Message-ID: <1306432664.2543.2.camel@edumazet-laptop>
-References: <bc781b295b38241533a2d90c1aea15b3@localhost>
-	 <4DDE84F2.7080706@netfilter.org>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH v3 resend] netfilter: nf_conntrack_sip: Handle Cisco 7941/7945
+ IP phones
+Date: Thu, 26 May 2011 20:08:48 +0200
+Message-ID: <4DDE9730.3050405@netfilter.org>
+References: <bc781b295b38241533a2d90c1aea15b3@localhost>	 <4DDE84F2.7080706@netfilter.org> <1306432664.2543.2.camel@edumazet-laptop>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:subject:from:to:cc:in-reply-to:references
-         :content-type:date:message-id:mime-version:x-mailer
-         :content-transfer-encoding;
-        bh=sa+gZxjA1tk/sUCP8T7BuVauwDx8eNESjaYQnJUbEM0=;
-        b=ZUAKfoyMQLSxSBfJLYDSH/dZERKjaNatGPVU7S2TUOoT/JTG4pZyUR/xiUnpGhLZNM
-         Lf5D4q3mOprmfDfVmNkWQIHr8ciDhjft/EmTe/1QNHRKp18hho6uyiK/uYZFk9E27nif
-         9dPT5BK3qoD/WCGK+B82Lgy4IgQU4sUasDU+M=
-In-Reply-To: <4DDE84F2.7080706@netfilter.org>
+In-Reply-To: <1306432664.2543.2.camel@edumazet-laptop>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
+To: Eric Dumazet <eric.dumazet@gmail.com>
 Cc: Kevin Cernekee <cernekee@gmail.com>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 
-Le jeudi 26 mai 2011 =C3=A0 18:50 +0200, Pablo Neira Ayuso a =C3=A9crit=
- :
-> Hi Eric,
->=20
-> On 20/05/11 06:36, Kevin Cernekee wrote:
-> > Most SIP devices use a source port of 5060/udp on SIP requests, so =
+On 26/05/11 19:57, Eric Dumazet wrote:
+> Le jeudi 26 mai 2011 =C3=A0 18:50 +0200, Pablo Neira Ayuso a =C3=A9cr=
+it :
+>> Hi Eric,
+>>
+>> On 20/05/11 06:36, Kevin Cernekee wrote:
+>>> Most SIP devices use a source port of 5060/udp on SIP requests, so =
 the
-> > response automatically comes back to port 5060:
-> >=20
-> > phone_ip:5060 -> proxy_ip:5060   REGISTER
-> > proxy_ip:5060 -> phone_ip:5060   100 Trying
-> >=20
-> > The newer Cisco IP phones, however, use a randomly chosen high sour=
+>>> response automatically comes back to port 5060:
+>>>
+>>> phone_ip:5060 -> proxy_ip:5060   REGISTER
+>>> proxy_ip:5060 -> phone_ip:5060   100 Trying
+>>>
+>>> The newer Cisco IP phones, however, use a randomly chosen high sour=
 ce
-> > port for the SIP request but expect the response on port 5060:
-> >=20
-> > phone_ip:49173 -> proxy_ip:5060  REGISTER
-> > proxy_ip:5060 -> phone_ip:5060   100 Trying
-> >=20
-> > Standard Linux NAT, with or without nf_nat_sip, will send the reply=
+>>> port for the SIP request but expect the response on port 5060:
+>>>
+>>> phone_ip:49173 -> proxy_ip:5060  REGISTER
+>>> proxy_ip:5060 -> phone_ip:5060   100 Trying
+>>>
+>>> Standard Linux NAT, with or without nf_nat_sip, will send the reply=
  back
-> > to port 49173, not 5060:
-> >=20
-> > phone_ip:49173 -> proxy_ip:5060  REGISTER
-> > proxy_ip:5060 -> phone_ip:49173  100 Trying
-> >=20
-> > But the phone is not listening on 49173, so it will never see the r=
+>>> to port 49173, not 5060:
+>>>
+>>> phone_ip:49173 -> proxy_ip:5060  REGISTER
+>>> proxy_ip:5060 -> phone_ip:49173  100 Trying
+>>>
+>>> But the phone is not listening on 49173, so it will never see the r=
 eply.
-> >=20
-> > This patch modifies nf_*_sip to work around this quirk by extractin=
+>>>
+>>> This patch modifies nf_*_sip to work around this quirk by extractin=
 g
-> > the SIP response port from the Via: header, iff the source IP in th=
+>>> the SIP response port from the Via: header, iff the source IP in th=
 e
-> > packet header matches the source IP in the SIP request.
-> >=20
-> > Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
-> > Acked-by: Eric Dumazet <eric.dumazet@gmail.com>
-> > Cc: Patrick McHardy <kaber@trash.net>
+>>> packet header matches the source IP in the SIP request.
+>>>
+>>> Signed-off-by: Kevin Cernekee <cernekee@gmail.com>
+>>> Acked-by: Eric Dumazet <eric.dumazet@gmail.com>
+>>> Cc: Patrick McHardy <kaber@trash.net>
+>>
+>> @Eric: could you please confirm that you ack'ed this patch? I don't =
+find
+>> the email with your explicit ack.
 >=20
-> @Eric: could you please confirm that you ack'ed this patch? I don't f=
-ind
-> the email with your explicit ack.
+> Yes I did it ;)
+>=20
+> http://www.spinics.net/lists/netfilter/msg49632.html
+>=20
+> Thanks !
 
-Yes I did it ;)
-
-http://www.spinics.net/lists/netfilter/msg49632.html
-
-Thanks !
-
-
+OK, applied, thanks!
 --
 To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
 el" in
