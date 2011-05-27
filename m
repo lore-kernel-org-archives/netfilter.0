@@ -1,70 +1,37 @@
-From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Subject: Re: [ANNOUNCE]: Release of iptables-1.4.11
-Date: Fri, 27 May 2011 09:40:40 +0200
-Message-ID: <BANLkTimJMQ8Gc4Jj3eZC50hLp-=zXQgekg@mail.gmail.com>
-References: <4DDE857E.40807@trash.net>
-	<1306434537.2543.4.camel@edumazet-laptop>
+From: Erik Schorr <erik-lists@arpa.org>
+Subject: Re: iptables-restore - does  it breaks existing connections?
+Date: Fri, 27 May 2011 08:06:16 -0700
+Message-ID: <4DDFBDE8.8010808@arpa.org>
+References: <1748026766.20110525102949@yandex.ru>
+Reply-To: erik-lists@arpa.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netdev-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:in-reply-to:references:date
-         :message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=RjVUXvy1H26J8VJXG466g+0Xybd02esipEtG3a/IQ/w=;
-        b=BjA7gEuNLaeXVXMOFYCz2ijNUSuWQ7BlRAO2lqlm21WGkRwElb5gXR2U3gJrKAC1qG
-         BFj3wwccZxDHGqvsGsIF3ynU5oDHcqRTGspQl+w/Yn5wKToKMkAB7vcTafA7YOJnaSWs
-         89Y9OosDYnYHii5e9USCx7GSpcNzOFVJQaIgI=
-In-Reply-To: <1306434537.2543.4.camel@edumazet-laptop>
-Sender: netdev-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <1748026766.20110525102949@yandex.ru>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Eric Dumazet <eric.dumazet@gmail.com>
-Cc: Patrick McHardy <kaber@trash.net>, Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, NetDev <netdev@vger.kernel.org>, netfilter-announce@lists.netfilter.org, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
+Cc: gapsf@yandex.ru
 
-you could try with -M '' (or something like that) if you want to
-prevent even xtables from being loaded.
-Although that will probably still not prevent iptable_filter from
-being loaded if ip_tables is already loaded...
+On 05/24/2011 08:29 PM, gapsf@yandex.ru wrote:
+> For example, when (re)loading the same set of rules?
 
-On Thu, May 26, 2011 at 20:28, Eric Dumazet <eric.dumazet@gmail.com> wr=
-ote:
-> Le jeudi 26 mai 2011 =C3=A0 18:53 +0200, Patrick McHardy a =C3=A9crit=
- :
->> The netfilter coreteam presents:
->>
->> =C2=A0 =C2=A0 iptables version 1.4.10
->>
->> the iptables release for the 2.6.39 kernels. Due to some mistakes
->> on my side we didn't have a release for longer than expected, so
->> this contains a rather large number of changes.
->>
->> Changes include:
->>
->
-> ...
->> - a new iptables option "-C" to check for existance of a rules
->
-> Nice, but this still loads modules...
->
-> # lsmod | grep ipta
-> # ./iptables -C INPUT -p tcp
-> iptables: Bad rule (does a matching rule exist in that chain?).
-> # lsmod | grep ipta
-> iptable_filter =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A01730 =C2=A00
-> ip_tables =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A015958 =C2=A0=
-1 iptable_filter
-> x_tables =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 22998 =C2=A0=
-3 iptable_filter,ip_tables,xt_tcpudp
->
->
->
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter-d=
-evel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =C2=A0http://vger.kernel.org/majordomo-info.ht=
-ml
->
+When using iptables-restore or a similar method, the new table is loaded 
+atomically.  As long as the new ruleset permits the traffic, there 
+should be no dropped connections (or connection states).  The kernel 
+keeps connection state information independently of firewall rules.
+
+The best way to explicitly guarantee that all your connections stay up 
+if you plan on loading a different ruleset, is to make sure there's a 
+rule near the top of each of your INPUT/OUTPUT/FORWARD chains that 
+accepts established/related connections:
+
+iptables -I INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -I OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -I FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+-- 
+Erik Schorr KD6AUT
+Advocate and Consultant
+VMware/Iptables/Exim/Perl
