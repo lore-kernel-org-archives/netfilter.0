@@ -1,25 +1,55 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: iptables-restore - does  it breaks existing connections?
-Date: Sat, 28 May 2011 00:37:08 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1105280036250.7651@frira.zrqbmnf.qr>
-References: <1748026766.20110525102949@yandex.ru> <4DDFBDE8.8010808@arpa.org> <alpine.LNX.2.01.1105271758030.6326@frira.zrqbmnf.qr> <4DE02652.9020104@arpa.org>
+From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
+Subject: On ebtables and tap.
+Date: Sat, 28 May 2011 12:38:45 +0200
+Message-ID: <BANLkTi=sUAEdfGtte35ex=MucrCSfPXVqg@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4DE02652.9020104@arpa.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:date:message-id:subject:from:to
+         :content-type;
+        bh=ZfXMm2KfaBNQpdWd5mPY1jZju08zrX0iXILVt0raCqc=;
+        b=CU0O9S9VFlVlo9y/ad/MfK3udP6+6z+coPe5igB0Fm7/wXSpyDUoGVQJem4kxLupvV
+         FYBnc9xaT6EoRtuNZf0OGG/JbBNhsYd8HsCFonYBV+redzaieWjl1SIy5v2M/q9R/mxD
+         7bXlHVoVIQrOvdmz5Eas59X2TKu0zlqzpDeuk=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Erik Schorr <erik-lists@arpa.org>
-Cc: netfilter@vger.kernel.org, gapsf@yandex.ru
+To: netfilter@vger.kernel.org
 
-On Saturday 2011-05-28 00:31, Erik Schorr wrote:
+It seems that at least with 2.6.22.5 ebtables and tap don't work together...
 
-> On 5/27/2011 8:58 AM, Jan Engelhardt wrote:
->> Though these dates,-m conntrack --ctstate ESTABLISHED,RELATED is used.
->
-> Is there a practical, performance, or functional difference between using -m
-> state and -m conntrack?
+# uname -a
+Linux openSuSE10.3 2.6.22.5-31-default #1 SMP 2007/09/21 22:29:00 UTC
+i686 i686 i386 GNU/Linux
 
-It has many more checks available; perhaps the second most handy (to me, 
-at least) one after the usual EST/REL clause is --ctstate DNAT.
+(note: eth0 is the bridge - peth0 is the ethernet device, tap0 is a tap device)
+
+# brctl show
+bridge name     bridge id               STP enabled     interfaces
+eth0            8000.000xxxxxxxxx       no              peth0
+                                                        tap0
+
+# ebtables -t filter -L --Lc OUTPUT
+Bridge table: filter
+
+Bridge chain: OUTPUT, entries: 9, policy: ACCEPT
+--logical-out eth0 -o tap0 -j CONTINUE, pcnt = 0 -- bcnt = 0
+--logical-out eth0 -j CONTINUE , pcnt = 17082 -- bcnt = 3139318
+--logical-out peth0 -j CONTINUE , pcnt = 0 -- bcnt = 0
+--logical-out tap0 -j CONTINUE , pcnt = 0 -- bcnt = 0
+-o eth0 -j CONTINUE , pcnt = 0 -- bcnt = 0
+-o peth0 -j CONTINUE , pcnt = 17079 -- bcnt = 3134992
+-o tap0 -j CONTINUE , pcnt = 0 -- bcnt = 0
+--logical-out eth0 -o peth0 -j CONTINUE , pcnt = 17077 -- bcnt = 3133402
+-j CONTINUE , pcnt = 17076 -- bcnt = 3131960
+
+(slight mismatches in numbers because of non-atomic load)
+
+As you can see, it seems that traffic leaving the 'eth0' bridge out
+over 'peth0' goes through ebtables, but the traffic leaving the same
+bridge via 'tap0' doesn't.
+(and yes there is definitely traffic leaving via tap0, since I see
+packets on the other side of the ssh tap connection)
+Is this expected?  Long fixed?
