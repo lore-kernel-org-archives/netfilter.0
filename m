@@ -1,26 +1,73 @@
-From: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Subject: Re: On ebtables and tap.
-Date: Sat, 28 May 2011 15:13:02 +0200
-Message-ID: <BANLkTi=gChnxiFcsJ+qWEEBo2yt2sLVRww@mail.gmail.com>
-References: <BANLkTi=sUAEdfGtte35ex=MucrCSfPXVqg@mail.gmail.com>
-Mime-Version: 1.0
+From: Joe Perches <joe@perches.com>
+Subject: [TRIVIAL PATCH next 15/15] net: Convert vmalloc/memset to vzalloc
+Date: Sat, 28 May 2011 10:36:35 -0700
+Message-ID: <045996b9688bfaa2efbd8999405a67e23cd0a075.1306603968.git.joe@perches.com>
+References: <cover.1306603968.git.joe@perches.com>
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:in-reply-to:references:date
-         :message-id:subject:from:to:content-type;
-        bh=xR5Ai4smyoxA/U1Gc+otr8Zc7C4YEx9B49OzWZIKh3Q=;
-        b=pnsMS7S3B1ztCGHxZDX1pciHDAq8EOJw8Qln1Ji33Gj93qTB/bGXf/7uRdWaNr6cNv
-         4W0hVOvxYbuGsKobphLFBzaIpt32Hn0lOtDHI8ACQCpW7DiYN8oKC0vNDwMaSWgtzi/M
-         qBStc2TjugDlQiAWQF8Ptt/nlnr7peftKfJ7Y=
-In-Reply-To: <BANLkTi=sUAEdfGtte35ex=MucrCSfPXVqg@mail.gmail.com>
+In-Reply-To: <cover.1306603968.git.joe@perches.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Patrick McHardy <kaber@trash.net>, Andy Grover <andy.grover@oracle.com>, Jiri Kosina <trivial@kernel.org>
+Cc: "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, rds-devel@oss.oracle.com
 
-And quite obviously I'm an idiot...
-I was looking at the OUTPUT instead of the FORWARD chain.
+Signed-off-by: Joe Perches <joe@perches.com>
+---
+ net/netfilter/x_tables.c |    5 ++---
+ net/rds/ib_cm.c          |    6 ++----
+ 2 files changed, 4 insertions(+), 7 deletions(-)
 
-Argh.
+diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
+index b0869fe..71441b9 100644
+--- a/net/netfilter/x_tables.c
++++ b/net/netfilter/x_tables.c
+@@ -776,12 +776,11 @@ static int xt_jumpstack_alloc(struct xt_table_info *i)
+ 
+ 	size = sizeof(void **) * nr_cpu_ids;
+ 	if (size > PAGE_SIZE)
+-		i->jumpstack = vmalloc(size);
++		i->jumpstack = vzalloc(size);
+ 	else
+-		i->jumpstack = kmalloc(size, GFP_KERNEL);
++		i->jumpstack = kzalloc(size, GFP_KERNEL);
+ 	if (i->jumpstack == NULL)
+ 		return -ENOMEM;
+-	memset(i->jumpstack, 0, size);
+ 
+ 	i->stacksize *= xt_jumpstack_multiplier;
+ 	size = sizeof(void *) * i->stacksize;
+diff --git a/net/rds/ib_cm.c b/net/rds/ib_cm.c
+index fd453dd..6ecaf78 100644
+--- a/net/rds/ib_cm.c
++++ b/net/rds/ib_cm.c
+@@ -374,23 +374,21 @@ static int rds_ib_setup_qp(struct rds_connection *conn)
+ 		goto out;
+ 	}
+ 
+-	ic->i_sends = vmalloc_node(ic->i_send_ring.w_nr * sizeof(struct rds_ib_send_work),
++	ic->i_sends = vzalloc_node(ic->i_send_ring.w_nr * sizeof(struct rds_ib_send_work),
+ 				   ibdev_to_node(dev));
+ 	if (!ic->i_sends) {
+ 		ret = -ENOMEM;
+ 		rdsdebug("send allocation failed\n");
+ 		goto out;
+ 	}
+-	memset(ic->i_sends, 0, ic->i_send_ring.w_nr * sizeof(struct rds_ib_send_work));
+ 
+-	ic->i_recvs = vmalloc_node(ic->i_recv_ring.w_nr * sizeof(struct rds_ib_recv_work),
++	ic->i_recvs = vzalloc_node(ic->i_recv_ring.w_nr * sizeof(struct rds_ib_recv_work),
+ 				   ibdev_to_node(dev));
+ 	if (!ic->i_recvs) {
+ 		ret = -ENOMEM;
+ 		rdsdebug("recv allocation failed\n");
+ 		goto out;
+ 	}
+-	memset(ic->i_recvs, 0, ic->i_recv_ring.w_nr * sizeof(struct rds_ib_recv_work));
+ 
+ 	rds_ib_recv_init_ack(ic);
+ 
+-- 
+1.7.5.rc3.dirty
+
