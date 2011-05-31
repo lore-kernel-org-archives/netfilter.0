@@ -1,71 +1,74 @@
-From: Erik Schorr <erik-lists@arpa.org>
-Subject: Re: SIP 5060 traffic
-Date: Tue, 31 May 2011 08:39:18 -0700
-Message-ID: <4DE50BA6.3030609@arpa.org>
-References: <20110531090945.M97668@kdtc.net>
-Reply-To: erik-lists@arpa.org
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset 6.7 released
+Date: Tue, 31 May 2011 22:11:12 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1105312155260.29607@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20110531090945.M97668@kdtc.net>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: cc <cc@kdtc.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-For proper nat of SIP/RTP traffic, you'll probably need to load the 
-ip_conntrack_sip (now nf_conntrack_sip) and ip_nat_sip (nf_nat_sip) 
-modules, as well as have the following rules at the top of your INPUT 
-and FORWARD chains to permit all traffic related to tracked SIP sessions:
+Hi,
 
-$ipt -I INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-$ipt -I FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+Besides a few bugfixes, ipset 6.7 comes with a new set type called 
+hash:net,iface. The new type makes possible to store network address and 
+interface name pairs in a set. That way egress and ingress filtering is 
+possible with ipset, in just a few rules. Just an example:
 
-The SIP conntrack module will track sessions on 5060/udp and enable 
-related return and RTP traffic through the firewall.  the SIP nat module 
-should properly translate the addresses/ports in the SIP headers as they 
-traverse the firewall, based on how the packets get forwarded.
+# Define the set for all your networks and fill it out
+ipset create nets hash:net
+ipset add nets 10.0.0.0/8
+ipset add nets 192.168.0.0/16
+...
+# Define the set with the allowed network, interface pairs
+ipset create ifaces hash:net,iface
+ipset add ifaces 10.0.0.0/24,eth0
+ipset add ifaces 10.2.0.0/16,eth1
+...
+# Create a chain to handle your networks
+iptables -N nets
+iptables -A nets -m set --match-set ifaces src,src -j ACCEPT
+iptables -A nets -j log-and-drop-spoofed-packets
+# Egress and ingress filtering
+iptables -t raw -A PREROUTING -m set --match-set nets src -j ifaces
+iptables -t raw -A PREROUTING -i external-iface0 -j ACCEPT
+iptables -t raw -A PREROUTING -i external-iface1 -j ACCEPT
+...
+iptables -t raw -j log-and-drop-spoofed-packets
+# That's all :-)
 
-On 05/31/2011 02:17 AM, cc wrote:
-> Hi,
->
-> I have a LAN NET  and a DMZ NET.  I have a SIP phone within the LAN
-> trying to connect to a proxy at an external site, say A.
->
-> Can someone point out if I'm missing anything?
->
-> Rules:
->
-> $IPT -A FORWARD -o $INET_ETH -p udp --dport 5060 -j ACCEPT
-> $IPT -t nat -A POSTROUTING -o $INET_ETH -p udp --dport 5060 \
->               -j SNAT --to-source $INET_IP
->
-> When I do a tcpdump, I can see traffic from the LAN go through my
-> bastion Firewall that routes to my external-facing firewall.
-> But there is no traffic coming back from the outside.
->
-> 17:05:19.831000 IP (tos 0x0, ttl 127, id 1595, offset 0, flags [none], proto:
-> UDP (17), length: 367) LAN_IP.5060>  A_SITE.5060: SIP, length: 339
->
-> There's no corresponding entry that has traffic going the other way:
-> i.e.:
->
-> IP (tos 0x0, ttl 127, id 1595, offset 0, flags [none], proto: UDP (17),
-> length: 367) A_SITE.5060>  LAN_IP.5060: SIP, length: 339
->
-> I'm a bit confused.  Any clarifications appreciated.
->
-> Thanks
->
-> Ed
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Kernel part changes:
+ - Whitespace and coding fixes, detected by checkpatch.pl
+ - hash:net,iface type introduced
+ - Use the stored first cidr value instead of '1'
+ - Fix return code for destroy when sets are in use
+ - Add xt_action_param to the variant level kadt functions, ipset API 
+   change
+ - Drop supporting kernel versions below 2.6.35
 
+Userspace changes:
+ - Whitespace and coding fixes, detected by checkpatch.pl
+ - hash:net,iface type introduced
+ - hash:* tests may seem to fail due to the too wide grep pattern, fix 
+   them
+ - Remove iptree tests and compatibility element parsing
+ - hash:net test may seem to fail due to the too wide grep pattern, fix it
+ - Fix long time uncovered bug at adding string attributes to the netlink
+   messages
+ - Fix warnings reported by valgrind
+ - Remove supporting set types iptree and iptreemap
 
--- 
-Erik Schorr KD6AUT
-Advocate and Consultant
-VMware/Iptables/Exim/Perl
+You can download the source code of ipset from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
