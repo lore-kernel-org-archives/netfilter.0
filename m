@@ -1,48 +1,43 @@
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: linux-next: build warning in Linus' tree
-Date: Mon, 30 May 2011 04:01:03 +0200
-Message-ID: <1306720863.30021.25.camel@edumazet-laptop>
-References: <20110530114333.6aa13281.sfr@canb.auug.org.au>
+From: "cc" <cc@kdtc.net>
+Subject: SIP 5060 traffic
+Date: Tue, 31 May 2011 17:17:59 +0800
+Message-ID: <20110531090945.M97668@kdtc.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-next-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:subject:from:to:cc:in-reply-to:references
-         :content-type:date:message-id:mime-version:x-mailer
-         :content-transfer-encoding;
-        bh=o2QJxQBmTRH7EeBjvcGhZxBCrNNrALv90ApUcRV744U=;
-        b=m5WGJfH8ABcOYbfvv7tRQN6qjr6SF8zr8vwVIKklIWdCGxI5/EhQ6+Qev2+863cLwl
-         VScOZmsbfYwAKXRTrr6qteH9PQRIYrsN3b/yEeTrfSaLxIks0wVu7pmW3MTGd6DI+Qvh
-         /yFoW7lLoyeymQW/SfpWT/eNrfFwgyoiMVpbs=
-In-Reply-To: <20110530114333.6aa13281.sfr@canb.auug.org.au>
-Sender: linux-next-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Patrick McHardy <kaber@trash.net>, linux-next@vger.kernel.org, linux-kernel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Le lundi 30 mai 2011 =C3=A0 11:43 +1000, Stephen Rothwell a =C3=A9crit =
-:
-> Hi all,
->=20
-> In Linus' tree, today's linux-next build (powerpc ppc64_defconfig)
-> produced this warning:
->=20
-> net/ipv4/netfilter/nf_nat_standalone.c: In function 'nf_nat_fn':
-> net/ipv4/netfilter/nf_nat_standalone.c:119:2: warning: case value '4'=
- not in enumerated type 'enum ip_conntrack_info'
-> net/ipv4/netfilter/ipt_CLUSTERIP.c: In function 'clusterip_tg':
-> net/ipv4/netfilter/ipt_CLUSTERIP.c:324:3: warning: case value '4' not=
- in enumerated type 'enum ip_conntrack_info'
->=20
-> I am now using gcc v4.5.2.
+Hi,
 
-I sent a patch for this some days ago, not sure what happened to it.
+I have a LAN NET  and a DMZ NET.  I have a SIP phone within the LAN
+trying to connect to a proxy at an external site, say A.
 
-David Acked it, but Patrick is a bit busy these days.
+Can someone point out if I'm missing anything?  
 
-http://www.spinics.net/lists/netdev/msg164837.html
+Rules:
+
+$IPT -A FORWARD -o $INET_ETH -p udp --dport 5060 -j ACCEPT
+$IPT -t nat -A POSTROUTING -o $INET_ETH -p udp --dport 5060 \
+             -j SNAT --to-source $INET_IP
+
+When I do a tcpdump, I can see traffic from the LAN go through my
+bastion Firewall that routes to my external-facing firewall.
+But there is no traffic coming back from the outside.
+
+17:05:19.831000 IP (tos 0x0, ttl 127, id 1595, offset 0, flags [none], proto:
+UDP (17), length: 367) LAN_IP.5060 > A_SITE.5060: SIP, length: 339
+
+There's no corresponding entry that has traffic going the other way: 
+i.e.:
+
+IP (tos 0x0, ttl 127, id 1595, offset 0, flags [none], proto: UDP (17),
+length: 367) A_SITE.5060 > LAN_IP.5060: SIP, length: 339
+
+I'm a bit confused.  Any clarifications appreciated.
 
 Thanks
 
+Ed
