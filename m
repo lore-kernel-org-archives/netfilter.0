@@ -1,39 +1,35 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [ANNOUNCE] ipset 6.7 released
-Date: Wed, 1 Jun 2011 09:34:49 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1106010925300.31195@blackhole.kfki.hu>
-References: <alpine.DEB.2.00.1105312155260.29607@blackhole.kfki.hu> <1306878128.3171.4.camel@edumazet-laptop> <4DE5619F.5040408@googlemail.com> <alpine.LNX.2.01.1105312347170.14867@frira.zrqbmnf.qr>
+From: Nicolas Cavallari <Nicolas.Cavallari@lri.fr>
+Subject: Bogus MAC in netfilter-queue for IF_MULTICAST_LOOPed packets.
+Date: Wed, 01 Jun 2011 11:36:30 +0200
+Message-ID: <4DE6081E.7060404@lri.fr>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1105312347170.14867@frira.zrqbmnf.qr>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Mr Dash Four <mr.dash.four@googlemail.com>, Eric Dumazet <eric.dumazet@gmail.com>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Tue, 31 May 2011, Jan Engelhardt wrote:
+Multicast packets sent from local applications that use the
+IF_MULTICAST_LOOP are to be sent to the specified interface as well as
+being delivered to all local applications on the host listening for the
+right multicast address. But i found that the looped packets for local
+applications are being filtered in PREROUTING.
 
-> On Tuesday 2011-05-31 23:46, Mr Dash Four wrote:
-> 
-> >> tc filter add dev ifb0 protocol ip parent 10: handle 2 \
-> >> 	flow ipset ipset keys src \
-> >> 	flowid 1:40
-> >>
-> >> Any plan on this side ?
-> >>  
-> > ++1!
-> 
-> There is already m_xt in iproute2... now it would only need f_xt.
-> Maybe you can convince Jamal..
+I want to accept them to not break local applications that depends on
+it, but there isn't an easy way to accept them.
 
-Yes, f_xt would be required to integrate ipset into tc.
+but in PREROUTING i also have a NFQUEUE target for incoming multicast
+packets to do MAC-based accounting/filtering/marking, and these looped
+packets are delivered with bogus source MAC addresses.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+I found out that this bogus MAC address is taken from the IP header. For
+example, the given looped packet :
+45 00 00 3d 00 00 40 00 ff 11 ce 05 0a 00 01 02 e0 00 00 fb ....
+yield this sMAC : 40:00:ff:11:ce:05, as if the IP header was treated as
+a MAC header.
+
+The LOG target display these packets as having no MAC address (Indeed,
+the multicast loop code strips the MAC header). By looking at the code,
+nf_queue.c and ipk_LOG.c access the mac address in different ways, and i
+don't know which one should be used and what should be fixed.
