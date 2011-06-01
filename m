@@ -1,34 +1,29 @@
-From: Jan Engelhardt <jengelh@medozas.de>
+From: Nicolas Cavallari <Nicolas.Cavallari@lri.fr>
 Subject: Re: Bogus MAC in netfilter-queue for IF_MULTICAST_LOOPed packets.
-Date: Wed, 1 Jun 2011 12:31:01 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1106011223410.19261@frira.zrqbmnf.qr>
-References: <4DE6081E.7060404@lri.fr>
+Date: Wed, 01 Jun 2011 14:05:21 +0200
+Message-ID: <4DE62B01.7070707@lri.fr>
+References: <4DE6081E.7060404@lri.fr> <alpine.LNX.2.01.1106011223410.19261@frira.zrqbmnf.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4DE6081E.7060404@lri.fr>
+In-Reply-To: <alpine.LNX.2.01.1106011223410.19261@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Nicolas Cavallari <Nicolas.Cavallari@lri.fr>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jan Engelhardt <jengelh@medozas.de>
 Cc: netfilter@vger.kernel.org
 
-
-> but in PREROUTING i also have a NFQUEUE target for incoming multicast
-> packets to do MAC-based accounting/filtering/marking, and these looped
-> packets are delivered with bogus source MAC addresses.
+>> The LOG target display these packets as having no MAC address (Indeed,
+>> the multicast loop code strips the MAC header).
 >
-> I found out that this bogus MAC address is taken from the IP header. For
-> example, the given looped packet :
-> 45 00 00 3d 00 00 40 00 ff 11 ce 05 0a 00 01 02 e0 00 00 fb ....
-> yield this sMAC : 40:00:ff:11:ce:05, as if the IP header was treated as
-> a MAC header.
+> Headers are not stripped.
 >
-> The LOG target display these packets as having no MAC address (Indeed,
-> the multicast loop code strips the MAC header).
+> The "lo" device is of type loopback, so there will be no MAC header
+> generated at all, because none is necessary. Subsequently, there is
+> nothing to strip.
 
-Headers are not stripped.
+The multicast loopback code does not use the lo device, it uses netif_rx 
+on the output interface.
 
-The "lo" device is of type loopback, so there will be no MAC header
-generated at all, because none is necessary. Subsequently, there is
-nothing to strip.
+see ip_dev_loopback_xmit() at net/ipv4/ip_output.c:118. it does a
+skb_reset_mac_header() and a __skb_pull(skb_network_offset()).
