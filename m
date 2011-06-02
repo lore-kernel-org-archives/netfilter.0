@@ -1,45 +1,28 @@
-From: Jesper Dangaard Brouer <hawk@comx.dk>
-Subject: [ANNOUNCE] IPTV-Analyzer project released v0.9.2
-Date: Thu, 02 Jun 2011 14:37:14 -0400
-Message-ID: <1307039834.2703.178.camel__14600.5394672558$1307039895$gmane$org@probook>
+From: David Miller <davem@davemloft.net>
+Subject: Re: [TRIVIAL PATCH next 15/15] net: Convert vmalloc/memset to
+ vzalloc
+Date: Thu, 02 Jun 2011 14:39:27 -0700 (PDT)
+Message-ID: <20110602.143927.1073346459383432955.davem@davemloft.net>
+References: <cover.1306603968.git.joe@perches.com>
+	<045996b9688bfaa2efbd8999405a67e23cd0a075.1306603968.git.joe@perches.com>
+	<4DE7A311.5000406@netfilter.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <4DE7A311.5000406@netfilter.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: hawk <hawk@comx.dk>
+Content-Type: Text/Plain; charset="us-ascii"
+To: pablo@netfilter.org
+Cc: joe@perches.com, kaber@trash.net, andy.grover@oracle.com, trivial@kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, rds-devel@oss.oracle.com
 
-The new release 0.9.2 of the IPTV-Analyzer project is coming to you
-from Montreal, Canada.
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Date: Thu, 02 Jun 2011 16:49:53 +0200
 
- The new feature is SNMP traps, for no_signal detection.
+> Are you going to take this patch? it includes one chunck which is out of
+> netfilter scope.
 
-The collector sends SNMP "no_signal" traps, when the state
-transition from, signal to no-signal, and back from no-signal to
-signal.  The SNMP traps are described via an compliant MIB.
+I think the trivial folks submit these things via their own tree
+and are only looking for ACKs from us.
 
- Homepage:
-  http://www.iptv-analyzer.org
-
- Git tree:
-  https://github.com/netoptimizer/IPTV-Analyzer
-
-The IPTV-Analyzer is a continuous/real-time tool for analyzing the
-contents of MPEG2 Transport Stream (TS) packets, which is commonly
-used for IPTV multicast signals. The main purpose is continuous
-quality measurement, with a focus on detecting MPEG2 TS/CC packet
-drops.
-
- Bugreports and feature requests please use:
-  https://github.com/netoptimizer/IPTV-Analyzer/issues
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  ComX Networks A/S
-  Linux Network Kernel Developer
-  Cand. Scient Datalog / MSc.CS
-  Author of http://adsl-optimizer.dk
-  LinkedIn: http://www.linkedin.com/in/brouer
-
+Acked-by: David S. Miller <davem@davemloft.net>
