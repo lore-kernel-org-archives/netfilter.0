@@ -1,56 +1,79 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH] ipvs: restore support for iptables SNAT
-Date: Thu, 2 Jun 2011 22:01:34 +0900
-Message-ID: <20110602130132.GG13097@verge.net.au>
-References: <1306973394-29504-1-git-send-email-horms@verge.net.au>
- <1306973394-29504-2-git-send-email-horms@verge.net.au>
- <4DE7793F.1060108@netfilter.org>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [TRIVIAL PATCH next 15/15] net: Convert vmalloc/memset to vzalloc
+Date: Thu, 02 Jun 2011 16:49:53 +0200
+Message-ID: <4DE7A311.5000406@netfilter.org>
+References: <cover.1306603968.git.joe@perches.com> <045996b9688bfaa2efbd8999405a67e23cd0a075.1306603968.git.joe@perches.com>
 Mime-Version: 1.0
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4DE7793F.1060108@netfilter.org>
-Sender: netdev-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <045996b9688bfaa2efbd8999405a67e23cd0a075.1306603968.git.joe@perches.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, Wensong Zhang <wensong@linux-vs.org>, Julian Anastasov <ja@ssi.bg>, Patrick McHardy <kaber@trash.net>
+To: Joe Perches <joe@perches.com>
+Cc: Patrick McHardy <kaber@trash.net>, Andy Grover <andy.grover@oracle.com>, Jiri Kosina <trivial@kernel.org>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, rds-devel@oss.oracle.com
 
-On Thu, Jun 02, 2011 at 01:51:27PM +0200, Pablo Neira Ayuso wrote:
-> On 02/06/11 02:09, Simon Horman wrote:
-> > From: Julian Anastasov <ja@ssi.bg>
-> > 
-> > 	Fix the IPVS priority in LOCAL_IN hook,
-> > so that SNAT target in POSTROUTING is supported for IPVS
-> > traffic as in 2.6.36 where it worked depending on
-> > module load order.
-> > 
-> > 	Before 2.6.37 we used priority 100 in LOCAL_IN to
-> > process remote requests. We used the same priority as
-> > iptables SNAT and if IPVS handlers are installed before
-> > SNAT handlers we supported SNAT in POSTROUTING for the IPVS
-> > traffic. If SNAT is installed before IPVS, the netfilter
-> > handlers are before IPVS and netfilter checks the NAT
-> > table twice for the IPVS requests: once in LOCAL_IN where
-> > IPS_SRC_NAT_DONE is set and second time in POSTROUTING
-> > where the SNAT rules are ignored because IPS_SRC_NAT_DONE
-> > was already set in LOCAL_IN.
-> > 
-> > 	But in 2.6.37 we changed the IPVS priority for
-> > LOCAL_IN with the goal to be unique (101) forgetting the
-> > fact that for IPVS traffic we should not walk both
-> > LOCAL_IN and POSTROUTING nat tables.
-> > 
-> > 	So, change the priority for processing remote
-> > IPVS requests from 101 to 99, i.e. before NAT_SRC (100)
-> > because we prefer to support SNAT in POSTROUTING
-> > instead of LOCAL_IN. It also moves the priority for
-> > IPVS replies from 99 to 98. Use constants instead of
-> > magic numbers at these places.
-> 
-> I have applied this to my net-next-2.6 tree. Once it hits linus tree,
-> I'll pass it to -stable.
-> 
-> http://1984.lsi.us.es/git/?p=net-next-2.6/.git;a=shortlog;h=refs/heads/pablo/nf-next-2.6-updates
+David,
 
-Thanks Pablo.
+Are you going to take this patch? it includes one chunck which is out of
+netfilter scope.
+
+Thanks.
+
+On 28/05/11 19:36, Joe Perches wrote:
+> Signed-off-by: Joe Perches <joe@perches.com>
+> ---
+>  net/netfilter/x_tables.c |    5 ++---
+>  net/rds/ib_cm.c          |    6 ++----
+>  2 files changed, 4 insertions(+), 7 deletions(-)
+> 
+> diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
+> index b0869fe..71441b9 100644
+> --- a/net/netfilter/x_tables.c
+> +++ b/net/netfilter/x_tables.c
+> @@ -776,12 +776,11 @@ static int xt_jumpstack_alloc(struct xt_table_info *i)
+>  
+>  	size = sizeof(void **) * nr_cpu_ids;
+>  	if (size > PAGE_SIZE)
+> -		i->jumpstack = vmalloc(size);
+> +		i->jumpstack = vzalloc(size);
+>  	else
+> -		i->jumpstack = kmalloc(size, GFP_KERNEL);
+> +		i->jumpstack = kzalloc(size, GFP_KERNEL);
+>  	if (i->jumpstack == NULL)
+>  		return -ENOMEM;
+> -	memset(i->jumpstack, 0, size);
+>  
+>  	i->stacksize *= xt_jumpstack_multiplier;
+>  	size = sizeof(void *) * i->stacksize;
+> diff --git a/net/rds/ib_cm.c b/net/rds/ib_cm.c
+> index fd453dd..6ecaf78 100644
+> --- a/net/rds/ib_cm.c
+> +++ b/net/rds/ib_cm.c
+> @@ -374,23 +374,21 @@ static int rds_ib_setup_qp(struct rds_connection *conn)
+>  		goto out;
+>  	}
+>  
+> -	ic->i_sends = vmalloc_node(ic->i_send_ring.w_nr * sizeof(struct rds_ib_send_work),
+> +	ic->i_sends = vzalloc_node(ic->i_send_ring.w_nr * sizeof(struct rds_ib_send_work),
+>  				   ibdev_to_node(dev));
+>  	if (!ic->i_sends) {
+>  		ret = -ENOMEM;
+>  		rdsdebug("send allocation failed\n");
+>  		goto out;
+>  	}
+> -	memset(ic->i_sends, 0, ic->i_send_ring.w_nr * sizeof(struct rds_ib_send_work));
+>  
+> -	ic->i_recvs = vmalloc_node(ic->i_recv_ring.w_nr * sizeof(struct rds_ib_recv_work),
+> +	ic->i_recvs = vzalloc_node(ic->i_recv_ring.w_nr * sizeof(struct rds_ib_recv_work),
+>  				   ibdev_to_node(dev));
+>  	if (!ic->i_recvs) {
+>  		ret = -ENOMEM;
+>  		rdsdebug("recv allocation failed\n");
+>  		goto out;
+>  	}
+> -	memset(ic->i_recvs, 0, ic->i_recv_ring.w_nr * sizeof(struct rds_ib_recv_work));
+>  
+>  	rds_ib_recv_init_ack(ic);
+>  
+
