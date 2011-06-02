@@ -1,29 +1,31 @@
-From: Nicolas Cavallari <Nicolas.Cavallari@lri.fr>
-Subject: Re: Bogus MAC in netfilter-queue for IF_MULTICAST_LOOPed packets.
-Date: Wed, 01 Jun 2011 14:05:21 +0200
-Message-ID: <4DE62B01.7070707@lri.fr>
-References: <4DE6081E.7060404@lri.fr> <alpine.LNX.2.01.1106011223410.19261@frira.zrqbmnf.qr>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1106011223410.19261@frira.zrqbmnf.qr>
-Sender: netfilter-owner@vger.kernel.org
+From: Simon Horman <horms@verge.net.au>
+Subject: [GIT PULL pablo/nf-2.6-updates] IPVS
+Date: Thu,  2 Jun 2011 09:09:53 +0900
+Message-ID: <1306973394-29504-1-git-send-email-horms@verge.net.au>
+Return-path: <lvs-devel-owner@vger.kernel.org>
+Sender: lvs-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Cc: Wensong Zhang <wensong@linux-vs.org>, Julian Anastasov <ja@ssi.bg>, Patrick McHardy <kaber@trash.net>, Pablo Neira Ayuso <pablo@netfilter.org>
 
->> The LOG target display these packets as having no MAC address (Indeed,
->> the multicast loop code strips the MAC header).
->
-> Headers are not stripped.
->
-> The "lo" device is of type loopback, so there will be no MAC header
-> generated at all, because none is necessary. Subsequently, there is
-> nothing to strip.
+Hi Pablo, Hi Patrick,
 
-The multicast loopback code does not use the lo device, it uses netif_rx 
-on the output interface.
+Please consider pulling
 
-see ip_dev_loopback_xmit() at net/ipv4/ip_output.c:118. it does a
-skb_reset_mac_header() and a __skb_pull(skb_network_offset()).
+  git://git.kernel.org/pub/scm/linux/kernel/git/horms/ipvs-2.6.git master
+
+to get the following fix for IPVS from Julian. This is -sable material.
+
+Julian Anastasov (1):
+      ipvs: restore support for iptables SNAT
+
+ net/netfilter/ipvs/ip_vs_core.c |   16 ++++++++--------
+ 1 files changed, 8 insertions(+), 8 deletions(-)
+
+My pull request is based on pablo/nf-2.6-updates revision
+c74c0bfe0b61cf41a897c2444c038e0d3f600556:
+
+  IPVS: bug in ip_vs_ftp, same list heaad used in all netns. (2011-05-27 13:37:46 +0200)
