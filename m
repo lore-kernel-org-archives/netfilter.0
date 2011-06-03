@@ -1,28 +1,23 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [TRIVIAL PATCH next 15/15] net: Convert vmalloc/memset to vzalloc
-Date: Fri, 03 Jun 2011 11:39:16 +0200
-Message-ID: <4DE8ABC4.5060404@netfilter.org>
-References: <cover.1306603968.git.joe@perches.com>	<045996b9688bfaa2efbd8999405a67e23cd0a075.1306603968.git.joe@perches.com>	<4DE7A311.5000406@netfilter.org> <20110602.143927.1073346459383432955.davem@davemloft.net>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <20110602.143927.1073346459383432955.davem@davemloft.net>
-Sender: netfilter-devel-owner@vger.kernel.org
+From: Eric Swenson <eric@swenson.org>
+Subject: outbound http traffic requires inbound source port 80 rule?
+Date: Fri, 3 Jun 2011 14:13:11 -0700
+Message-ID: <3BF291B8-F9E6-48EB-9314-44E75751EC50@swenson.org>
+Mime-Version: 1.0 (Apple Message framework v1084)
+Content-Transfer-Encoding: 8BIT
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: David Miller <davem@davemloft.net>
-Cc: joe@perches.com, kaber@trash.net, andy.grover@oracle.com, trivial@kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, rds-devel@oss.oracle.com
+To: netfilter@vger.kernel.org
 
-On 02/06/11 23:39, David Miller wrote:
-> From: Pablo Neira Ayuso <pablo@netfilter.org>
-> Date: Thu, 02 Jun 2011 16:49:53 +0200
-> 
->> Are you going to take this patch? it includes one chunck which is out of
->> netfilter scope.
-> 
-> I think the trivial folks submit these things via their own tree
-> and are only looking for ACKs from us.
-> 
-> Acked-by: David S. Miller <davem@davemloft.net>
+My iptables-based firewall machine (linux) has an external ip address of 192.168.0.3.  I can access most web sites from my firewall machine, but there is one that will not allow me to connect to it -- www.apple.com.  The only way I can access that web site from my firewall machine is if I add the rule:
 
-Acked-by: Pablo Neira Ayuso <pablo@netfilter.org>
+    -A INBOUND -d 192.168.0.3/32 -p tcp -m tcp --sport 80 -j ACCEPT
+
+Why is it that i have to allow inbound connections from source port 80 to my firewall machine to allow that machine to make success HTTP requests on www.apple.com?  And why is it that I don't seem to require this firewall rule in order to access any other web site (I'm sure there are others that I can't access for the same reason, but I haven't run across any).
+
+(You might ask why I'm trying to access the web from my firewall machine.  I don't normally.  It is my squid proxy that is unable to access www.apple.com, while it is able to access other web sites).  Users on my LAN have complained that they cannot access this web site (and my firewall rules force them to go through the squid proxy rather than connect directly).
+
+Thanks. -- Eric
+
+
