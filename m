@@ -1,55 +1,34 @@
-From: CeR <cer.inet@linuxmail.org>
-Subject: Conntrackd+Keepalived, active/active firewall cluster
-Date: Tue, 7 Jun 2011 00:08:23 +0200
-Message-ID: <BANLkTikiiTuiuNO-DOGjTchanAnTSDME0Q@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [NFLOG] How to determine the connection a packet belongs to?
+Date: Tue, 07 Jun 2011 01:39:36 +0200
+Message-ID: <4DED6538.3090404@netfilter.org>
+References: <BANLkTimnO5UzNvq6SfuWc7osck=QL=HrMw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:sender:from:date
-         :x-google-sender-auth:message-id:subject:to:content-type
-         :content-transfer-encoding;
-        bh=UPAZDQ5q+uSExlZcbc0RsPT3wegTVeOBu1pl+HKEyH8=;
-        b=b9woHey4KtAAw/yUa7/bLwRQrY3vHIMgkjeI0GQ22Knp9L/ZRzOLWonAeHONosetvs
-         RNfW8hXhByRs6THNp+kkUNqhZAIuggVdSFYdp/LUWA58DLunn27KYdN9SYFVnYypVhTt
-         NLwMQyqJXEAok6wNKl4I8T6GjZWRdjcb/0frg=
+In-Reply-To: <BANLkTimnO5UzNvq6SfuWc7osck=QL=HrMw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Clemens Eisserer <linuxhippy@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hi there!
-With the last package I got of conntrack-tools I see some config files
-and shell scripts supposed to work in an active/active firewall
-cluster.
-Configuration files for keepalived are included.
-I have configured my system in the way I guess it may work, but have
-some doubts about the configuration and the system isn't working at
-all.
+On 06/06/11 16:26, Clemens Eisserer wrote:
+> Hi,
+> 
+> We are using ulog2/nflog for logging packets and connections, which
+> works quite well.
+> 
+> However we haven't found a reliable way to determine which packets
+> belong to which connection.
+> There seem to be two distinct IDs for both packets (nflog) as well as
+> connection IDs issued by conntrack,
+> is there some correlation between the two IDs?
 
-Some issues:
-=B7 I think keepalived should give both nodes both IPV resources, so th=
-e
-load balancing can be succefully done with iptables (as seen in
-multiprimary.sh)
-=B7 With the give configuration, Keepalived sometimes gives IPV
-resources to just one node, the other remains inactive and seems like
-a passive-backup node.
-=B7 In some cases, I have both nodes with both IPV resources, but it
-seems that some misconfiguration in iptables DROP packages needed by
-clients connections through the firewall. Maybe conntrackd not working
-properly in state replication?
+No.
 
-If anyone gives me some clues I could just write some documentation
-regarding this configuration, maybe with a little explanation of
-protocols and tools being implied. Or is there already some
-documentation?
-As you can see, right now i'm working in a non-production environment,
-but with more investigation and develop all can be done. I'm really
-interested in this.
-Best regards!
+> Or is there any other (maybe even better) way to determine which
+> logged packet belongs to which connection?
 
---=20
-/* Arturo Borrero Gonzalez || cer.inet@linuxmail.org */
-/* Use debian gnu/linux! Best OS ever! */
+You can build the tuple from the packet in user-space to look up the
+conntrack via libnetfilter_conntrack.
