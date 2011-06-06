@@ -1,23 +1,35 @@
-From: Eric Swenson <eric@swenson.org>
-Subject: outbound http traffic requires inbound source port 80 rule?
-Date: Fri, 3 Jun 2011 14:13:11 -0700
-Message-ID: <3BF291B8-F9E6-48EB-9314-44E75751EC50@swenson.org>
-Mime-Version: 1.0 (Apple Message framework v1084)
-Content-Transfer-Encoding: 8BIT
+From: Clemens Eisserer <linuxhippy@gmail.com>
+Subject: [NFLOG] How to determine the connection a packet belongs to?
+Date: Mon, 6 Jun 2011 16:26:07 +0200
+Message-ID: <BANLkTimnO5UzNvq6SfuWc7osck=QL=HrMw@mail.gmail.com>
+Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:date:message-id:subject:from:to
+         :content-type;
+        bh=/iyTJWybZcDs/eu61eS5kil+RQ2nhBrMe+Re3i1172o=;
+        b=wsC00bsAuhY7ALC43kzNzwp+DWg2kadLWkrSNeEPWlj40ehwtcnVrhz7lZutK3vIMU
+         SnduYIejCwAe2Yv/w5Z2ylyZ4pwOspUV6j09ftzpZo2cFTiwU/nMKl4lKNImzVyS2MoD
+         q7eo3+OiscCr3Ui6wXYJ6fG9+ppnmVOCXPUQM=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-My iptables-based firewall machine (linux) has an external ip address of 192.168.0.3.  I can access most web sites from my firewall machine, but there is one that will not allow me to connect to it -- www.apple.com.  The only way I can access that web site from my firewall machine is if I add the rule:
+Hi,
 
-    -A INBOUND -d 192.168.0.3/32 -p tcp -m tcp --sport 80 -j ACCEPT
+We are using ulog2/nflog for logging packets and connections, which
+works quite well.
 
-Why is it that i have to allow inbound connections from source port 80 to my firewall machine to allow that machine to make success HTTP requests on www.apple.com?  And why is it that I don't seem to require this firewall rule in order to access any other web site (I'm sure there are others that I can't access for the same reason, but I haven't run across any).
+However we haven't found a reliable way to determine which packets
+belong to which connection.
+There seem to be two distinct IDs for both packets (nflog) as well as
+connection IDs issued by conntrack,
+is there some correlation between the two IDs?
 
-(You might ask why I'm trying to access the web from my firewall machine.  I don't normally.  It is my squid proxy that is unable to access www.apple.com, while it is able to access other web sites).  Users on my LAN have complained that they cannot access this web site (and my firewall rules force them to go through the squid proxy rather than connect directly).
+Or is there any other (maybe even better) way to determine which
+logged packet belongs to which connection?
 
-Thanks. -- Eric
-
-
+Thank you in advance, Clemens
