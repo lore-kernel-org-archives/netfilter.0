@@ -1,35 +1,46 @@
-From: Clemens Eisserer <linuxhippy@gmail.com>
-Subject: [NFLOG] How to determine the connection a packet belongs to?
-Date: Mon, 6 Jun 2011 16:26:07 +0200
-Message-ID: <BANLkTimnO5UzNvq6SfuWc7osck=QL=HrMw@mail.gmail.com>
+From: <bmcdowell@coxhealthplans.com>
+Subject: [2:656]?
+Date: Mon, 6 Jun 2011 19:35:32 +0000
+Message-ID: <92A9C99A1E5FF14F8538DDEE14996A5203341F@chp-exg.coxhp.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:date:message-id:subject:from:to
-         :content-type;
-        bh=/iyTJWybZcDs/eu61eS5kil+RQ2nhBrMe+Re3i1172o=;
-        b=wsC00bsAuhY7ALC43kzNzwp+DWg2kadLWkrSNeEPWlj40ehwtcnVrhz7lZutK3vIMU
-         SnduYIejCwAe2Yv/w5Z2ylyZ4pwOspUV6j09ftzpZo2cFTiwU/nMKl4lKNImzVyS2MoD
-         q7eo3+OiscCr3Ui6wXYJ6fG9+ppnmVOCXPUQM=
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-Hi,
+Hello list.=A0 I'm in the process of 'modernizing' my iptables scripts =
+to utilize iptables-save/iptables-restore.=A0 I've imported my script o=
+nto a test box, have exported via -save, and now I have a question or t=
+wo about what I'm seeing.=A0=20
 
-We are using ulog2/nflog for logging packets and connections, which
-works quite well.
+=46or starters, is there a reference for the changes in format?=A0 Goog=
+le is most unhelpful when trying to search for "[2:656]", for example.
 
-However we haven't found a reliable way to determine which packets
-belong to which connection.
-There seem to be two distinct IDs for both packets (nflog) as well as
-connection IDs issued by conntrack,
-is there some correlation between the two IDs?
+Specifically, I'd like to know what the "2:656" means in the following =
+line:
 
-Or is there any other (maybe even better) way to determine which
-logged packet belongs to which connection?
+-----
+*filter
+:INPUT DROP [2:656]
+-----
 
-Thank you in advance, Clemens
+Why isn't it simply:
+
+-----
+*filter
+:INPUT DROP
+-----
+
+And what would happen if I changed it?
+
+
+Thanks in advance.
+
+
+
+Bob McDowell
+Network/Security Engineer=20
+Cox HealthPlans
