@@ -1,31 +1,55 @@
-From: John Lister <john.lister@kickstone.com>
-Subject: Re: [2:656]?
-Date: Mon, 06 Jun 2011 20:57:53 +0100
-Message-ID: <4DED3141.9030805@kickstone.com>
-References: <92A9C99A1E5FF14F8538DDEE14996A5203341F@chp-exg.coxhp.com>
+From: CeR <cer.inet@linuxmail.org>
+Subject: Conntrackd+Keepalived, active/active firewall cluster
+Date: Tue, 7 Jun 2011 00:08:23 +0200
+Message-ID: <BANLkTikiiTuiuNO-DOGjTchanAnTSDME0Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <92A9C99A1E5FF14F8538DDEE14996A5203341F@chp-exg.coxhp.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:sender:from:date
+         :x-google-sender-auth:message-id:subject:to:content-type
+         :content-transfer-encoding;
+        bh=UPAZDQ5q+uSExlZcbc0RsPT3wegTVeOBu1pl+HKEyH8=;
+        b=b9woHey4KtAAw/yUa7/bLwRQrY3vHIMgkjeI0GQ22Knp9L/ZRzOLWonAeHONosetvs
+         RNfW8hXhByRs6THNp+kkUNqhZAIuggVdSFYdp/LUWA58DLunn27KYdN9SYFVnYypVhTt
+         NLwMQyqJXEAok6wNKl4I8T6GjZWRdjcb/0frg=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: bmcdowell@coxhealthplans.com
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-On 06/06/2011 20:35, bmcdowell@coxhealthplans.com wrote:
-> Hello list.  I'm in the process of 'modernizing' my iptables scripts to utilize iptables-save/iptables-restore.  I've imported my script onto a test box, have exported via -save, and now I have a question or two about what I'm seeing. 
->
-> For starters, is there a reference for the changes in format?  Google is most unhelpful when trying to search for "[2:656]", for example.
->
-> Specifically, I'd like to know what the "2:656" means in the following line:
->
-> -----
-> *filter
-> :INPUT DROP [2:656]
-> -----
-These are the packet/byte counts for that chain from memory - You can 
-simply replace them 0:0 if you are generating scripts and don't care 
-about the counts.
+Hi there!
+With the last package I got of conntrack-tools I see some config files
+and shell scripts supposed to work in an active/active firewall
+cluster.
+Configuration files for keepalived are included.
+I have configured my system in the way I guess it may work, but have
+some doubts about the configuration and the system isn't working at
+all.
 
-John
+Some issues:
+=B7 I think keepalived should give both nodes both IPV resources, so th=
+e
+load balancing can be succefully done with iptables (as seen in
+multiprimary.sh)
+=B7 With the give configuration, Keepalived sometimes gives IPV
+resources to just one node, the other remains inactive and seems like
+a passive-backup node.
+=B7 In some cases, I have both nodes with both IPV resources, but it
+seems that some misconfiguration in iptables DROP packages needed by
+clients connections through the firewall. Maybe conntrackd not working
+properly in state replication?
+
+If anyone gives me some clues I could just write some documentation
+regarding this configuration, maybe with a little explanation of
+protocols and tools being implied. Or is there already some
+documentation?
+As you can see, right now i'm working in a non-production environment,
+but with more investigation and develop all can be done. I'm really
+interested in this.
+Best regards!
+
+--=20
+/* Arturo Borrero Gonzalez || cer.inet@linuxmail.org */
+/* Use debian gnu/linux! Best OS ever! */
