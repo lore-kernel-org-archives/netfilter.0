@@ -1,40 +1,49 @@
-From: Srinivasa T N <seenutn@linux.vnet.ibm.com>
-Subject: Re: [NFLOG] How to determine the connection a packet belongs to?
-Date: Tue, 07 Jun 2011 17:55:02 +0530
-Message-ID: <4DEE189E.8070403@linux.vnet.ibm.com>
-References: <BANLkTimnO5UzNvq6SfuWc7osck=QL=HrMw@mail.gmail.com> <4DED6538.3090404@netfilter.org> <BANLkTi=7eDTNM+OEuDnZucX2sc4Bck_Q6w@mail.gmail.com>
+From: <bmcdowell@coxhealthplans.com>
+Subject: RE: [2:656]?
+Date: Tue, 7 Jun 2011 12:41:11 +0000
+Message-ID: <92A9C99A1E5FF14F8538DDEE14996A5203363A@chp-exg.coxhp.com>
+References: <92A9C99A1E5FF14F8538DDEE14996A5203341F@chp-exg.coxhp.com>
+ <4DED3141.9030805@kickstone.com>
+ <92A9C99A1E5FF14F8538DDEE14996A52033470@chp-exg.coxhp.com>
+ <alpine.LNX.2.01.1106071101210.25037@frira.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BANLkTi=7eDTNM+OEuDnZucX2sc4Bck_Q6w@mail.gmail.com>
+In-Reply-To: <alpine.LNX.2.01.1106071101210.25037@frira.zrqbmnf.qr>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Clemens Eisserer <linuxhippy@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: jengelh@medozas.de
+Cc: john.lister@kickstone.com, netfilter@vger.kernel.org
 
-On 06/07/2011 04:10 PM, Clemens Eisserer wrote:
-> Hi,
->
->> You can build the tuple from the packet in user-space to look up the
->> conntrack via libnetfilter_conntrack.
->
-> How can I do that?
->
-> Assuming there are two open connections:
-> IP1:80<---->  IP2:39678
-> IP1:39678<----->  IP2:80
->
-> How can I know which packet belongs to which connection?
->
-> Thanks, Clemens
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
-Am not an expert, but can't you match the src and dst address/port in 
-each packet?
+Well, to be completely fair, I didn't use '-c' for my save command.  Simply 'iptables-save > file'.
 
-Regards,
-Seenu.
+
+
+Bob McDowell
+Network/Security Engineer 
+Cox HealthPlans 
+417.269.2848 
+bmcdowell@coxhealthplans.com
+
+Confidentiality Notice: This e-mail message (including any attachments) may contain confidential and privileged information, and is for the sole use of the intended recipient(s). Any unauthorized review, use, disclosure or distribution is strictly prohibited. If you are not the intended recipient, please notify the sender by replying to this e-mail message, permanently deleting the original message and destroying any hard copies of the original message that may have been created.
+
+
+-----Original Message-----
+From: Jan Engelhardt [mailto:jengelh@medozas.de] 
+Sent: Tuesday, June 07, 2011 4:02 AM
+To: Bob McDowell
+Cc: john.lister@kickstone.com; netfilter@vger.kernel.org
+Subject: RE: [2:656]?
+
+On Monday 2011-06-06 21:59, bmcdowell@coxhealthplans.com wrote:
+
+>> -----
+>> *filter
+>> :INPUT DROP [2:656]
+>> -----
+
+>Well, that explains why I couldn't search for it!  HA!
+
+Well, it is documented right in iptables-save(8) under -c.
