@@ -1,30 +1,55 @@
-From: <bmcdowell@coxhealthplans.com>
+From: "Nikolay S." <nowhere@hakkenden.ath.cx>
 Subject: RE: ipv6 link local address
-Date: Tue, 7 Jun 2011 12:44:04 +0000
-Message-ID: <92A9C99A1E5FF14F8538DDEE14996A5203365A@chp-exg.coxhp.com>
+Date: Tue, 07 Jun 2011 18:23:53 +0400
+Message-ID: <1307456633.23737.11.camel@hakkenden>
 References: <92A9C99A1E5FF14F8538DDEE14996A5203341F@chp-exg.coxhp.com>
- <1307429067.7853.1.camel@hakkenden>
+	 <1307429067.7853.1.camel@hakkenden>
+	 <92A9C99A1E5FF14F8538DDEE14996A5203365A@chp-exg.coxhp.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1307429067.7853.1.camel@hakkenden>
-Content-Language: en-US
+In-Reply-To: <92A9C99A1E5FF14F8538DDEE14996A5203365A@chp-exg.coxhp.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: nowhere@hakkenden.ath.cx
+Content-Type: text/plain; charset="utf-8"
+To: bmcdowell@coxhealthplans.com
 Cc: netfilter@vger.kernel.org
 
-UGxlYXNlIHVuZGVyc3RhbmQgdGhhdCBJIGRvIHdhbnQgdG8gYmUgYWJsZSB0byB1c2UgaXA2dGFi
-bGVzIHRvIGZpbHRlciBmb3J3YXJkZWQgdHJhZmZpYy4gIEkganVzdCBkbyBub3Qgd2FudCB0aGUg
-aW50ZXJmYWNlcyBzcGVha2luZyB0byBhbnlvbmUgd2hpbGUgdGhleSdyZSBkb2luZyB0aGVpciBq
-b2IuDQoNClBlcmhhcHMgdGhpcyBleGFtcGxlIGNhbiBleHBsYWluIGl0IGJldHRlciB0aGFuIEkg
-aGF2ZTogIGh0dHA6Ly93d3cuc2pkandlaXMuY29tL2xpbnV4L2JyaWRnaW5nLw0KDQoNClRoYW5r
-cyBhZ2Fpbi4NCg0KDQpCb2IgTWNEb3dlbGwNCk5ldHdvcmsvU2VjdXJpdHkgRW5naW5lZXIgDQpD
-b3ggSGVhbHRoUGxhbnMgDQoNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IE5p
-a29sYXkgUy4gW21haWx0bzpub3doZXJlQGhha2tlbmRlbi5hdGguY3hdIA0KU2VudDogVHVlc2Rh
-eSwgSnVuZSAwNywgMjAxMSAxOjQ0IEFNDQpUbzogQm9iIE1jRG93ZWxsDQpDYzogbmV0ZmlsdGVy
-QHZnZXIua2VybmVsLm9yZw0KU3ViamVjdDogUmU6IGlwdjYgbGluayBsb2NhbCBhZGRyZXNzDQoN
-Cg0KWW91IGNhbiB0dXJuIG9mZiBpcHY2IG9uIGludGVyZmFjZXMuIFRoaXMgc2hvdWxkIG5vdCBw
-cmV2ZW50IGJyaWRnaW5nDQppcHY2LCBidXQgd2lsbCByZW1vdmUgYW55IGlwdjYgbG9naWMgZnJv
-bSB0aGVtLg0KDQoNCg==
+=D0=92 =D0=92=D1=82=D1=80, 07/06/2011 =D0=B2 12:44 +0000, bmcdowell@cox=
+healthplans.com =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> Please understand that I do want to be able to use ip6tables to filte=
+r forwarded traffic.  I just do not want the interfaces speaking to any=
+one while they're doing their job.
+>=20
+> Perhaps this example can explain it better than I have:  http://www.s=
+jdjweis.com/linux/bridging/
+>=20
+>=20
+> Thanks again.
+>=20
+
+You won't. skb's are passed to ip6tables from bridge based on ipv6-
+header, not the state of the protocol on slave device. And bridge itsel=
+f
+does not filter incoming frames by L3-header.
+
+>=20
+> Bob McDowell
+> Network/Security Engineer=20
+> Cox HealthPlans=20
+>=20
+>=20
+> -----Original Message-----
+> From: Nikolay S. [mailto:nowhere@hakkenden.ath.cx]=20
+> Sent: Tuesday, June 07, 2011 1:44 AM
+> To: Bob McDowell
+> Cc: netfilter@vger.kernel.org
+> Subject: Re: ipv6 link local address
+>=20
+>=20
+> You can turn off ipv6 on interfaces. This should not prevent bridging
+> ipv6, but will remove any ipv6 logic from them.
+>=20
+>=20
+
+
