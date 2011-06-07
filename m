@@ -1,55 +1,43 @@
-From: "Nikolay S." <nowhere@hakkenden.ath.cx>
+From: <bmcdowell@coxhealthplans.com>
 Subject: RE: ipv6 link local address
-Date: Tue, 07 Jun 2011 18:23:53 +0400
-Message-ID: <1307456633.23737.11.camel@hakkenden>
+Date: Tue, 7 Jun 2011 14:26:50 +0000
+Message-ID: <92A9C99A1E5FF14F8538DDEE14996A52033898@chp-exg.coxhp.com>
 References: <92A9C99A1E5FF14F8538DDEE14996A5203341F@chp-exg.coxhp.com>
 	 <1307429067.7853.1.camel@hakkenden>
 	 <92A9C99A1E5FF14F8538DDEE14996A5203365A@chp-exg.coxhp.com>
+ <1307456633.23737.11.camel@hakkenden>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <92A9C99A1E5FF14F8538DDEE14996A5203365A@chp-exg.coxhp.com>
+In-Reply-To: <1307456633.23737.11.camel@hakkenden>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: bmcdowell@coxhealthplans.com
+content-type: text/plain
+To: nowhere@hakkenden.ath.cx
 Cc: netfilter@vger.kernel.org
 
-=D0=92 =D0=92=D1=82=D1=80, 07/06/2011 =D0=B2 12:44 +0000, bmcdowell@cox=
-healthplans.com =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> Please understand that I do want to be able to use ip6tables to filte=
-r forwarded traffic.  I just do not want the interfaces speaking to any=
-one while they're doing their job.
->=20
-> Perhaps this example can explain it better than I have:  http://www.s=
-jdjweis.com/linux/bridging/
->=20
->=20
-> Thanks again.
->=20
-
-You won't. skb's are passed to ip6tables from bridge based on ipv6-
-header, not the state of the protocol on slave device. And bridge itsel=
-f
-does not filter incoming frames by L3-header.
-
->=20
-> Bob McDowell
-> Network/Security Engineer=20
-> Cox HealthPlans=20
->=20
->=20
-> -----Original Message-----
-> From: Nikolay S. [mailto:nowhere@hakkenden.ath.cx]=20
-> Sent: Tuesday, June 07, 2011 1:44 AM
-> To: Bob McDowell
-> Cc: netfilter@vger.kernel.org
-> Subject: Re: ipv6 link local address
->=20
->=20
-> You can turn off ipv6 on interfaces. This should not prevent bridging
-> ipv6, but will remove any ipv6 logic from them.
->=20
->=20
-
-
+SSdtIHNvcnJ5LCBidXQgdGhhdCBkaWRuJ3QgcGFyc2UuDQoNCkkgd29uJ3QsIHdoYXQ/DQoNClNr
+YidzPw0KDQoNCkJvYiBNY0Rvd2VsbA0KTmV0d29yay9TZWN1cml0eSBFbmdpbmVlciANCkNveCBI
+ZWFsdGhQbGFucyANCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IE5pa29sYXkg
+Uy4gW21haWx0bzpub3doZXJlQGhha2tlbmRlbi5hdGguY3hdIA0KU2VudDogVHVlc2RheSwgSnVu
+ZSAwNywgMjAxMSA5OjI0IEFNDQpUbzogQm9iIE1jRG93ZWxsDQpDYzogbmV0ZmlsdGVyQHZnZXIu
+a2VybmVsLm9yZw0KU3ViamVjdDogUkU6IGlwdjYgbGluayBsb2NhbCBhZGRyZXNzDQoNCtCSINCS
+0YLRgCwgMDcvMDYvMjAxMSDQsiAxMjo0NCArMDAwMCwgYm1jZG93ZWxsQGNveGhlYWx0aHBsYW5z
+LmNvbSDQv9C40YjQtdGCOg0KPiBQbGVhc2UgdW5kZXJzdGFuZCB0aGF0IEkgZG8gd2FudCB0byBi
+ZSBhYmxlIHRvIHVzZSBpcDZ0YWJsZXMgdG8gZmlsdGVyIGZvcndhcmRlZCB0cmFmZmljLiAgSSBq
+dXN0IGRvIG5vdCB3YW50IHRoZSBpbnRlcmZhY2VzIHNwZWFraW5nIHRvIGFueW9uZSB3aGlsZSB0
+aGV5J3JlIGRvaW5nIHRoZWlyIGpvYi4NCj4gDQo+IFBlcmhhcHMgdGhpcyBleGFtcGxlIGNhbiBl
+eHBsYWluIGl0IGJldHRlciB0aGFuIEkgaGF2ZTogIGh0dHA6Ly93d3cuc2pkandlaXMuY29tL2xp
+bnV4L2JyaWRnaW5nLw0KPiANCj4gDQo+IFRoYW5rcyBhZ2Fpbi4NCj4gDQoNCllvdSB3b24ndC4g
+c2tiJ3MgYXJlIHBhc3NlZCB0byBpcDZ0YWJsZXMgZnJvbSBicmlkZ2UgYmFzZWQgb24gaXB2Ni0N
+CmhlYWRlciwgbm90IHRoZSBzdGF0ZSBvZiB0aGUgcHJvdG9jb2wgb24gc2xhdmUgZGV2aWNlLiBB
+bmQgYnJpZGdlIGl0c2VsZg0KZG9lcyBub3QgZmlsdGVyIGluY29taW5nIGZyYW1lcyBieSBMMy1o
+ZWFkZXIuDQoNCj4gDQo+IEJvYiBNY0Rvd2VsbA0KPiBOZXR3b3JrL1NlY3VyaXR5IEVuZ2luZWVy
+IA0KPiBDb3ggSGVhbHRoUGxhbnMgDQo+IA0KPiANCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0t
+LS0NCj4gRnJvbTogTmlrb2xheSBTLiBbbWFpbHRvOm5vd2hlcmVAaGFra2VuZGVuLmF0aC5jeF0g
+DQo+IFNlbnQ6IFR1ZXNkYXksIEp1bmUgMDcsIDIwMTEgMTo0NCBBTQ0KPiBUbzogQm9iIE1jRG93
+ZWxsDQo+IENjOiBuZXRmaWx0ZXJAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJlOiBpcHY2
+IGxpbmsgbG9jYWwgYWRkcmVzcw0KPiANCj4gDQo+IFlvdSBjYW4gdHVybiBvZmYgaXB2NiBvbiBp
+bnRlcmZhY2VzLiBUaGlzIHNob3VsZCBub3QgcHJldmVudCBicmlkZ2luZw0KPiBpcHY2LCBidXQg
+d2lsbCByZW1vdmUgYW55IGlwdjYgbG9naWMgZnJvbSB0aGVtLg0KPiANCj4gDQoNCg0K
