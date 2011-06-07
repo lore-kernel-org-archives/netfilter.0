@@ -1,48 +1,78 @@
-From: Maximilian Wilhelm <max@rfc2324.org>
-Subject: Re: Unexpected (ct)state matching behaviour
-Date: Tue, 7 Jun 2011 23:10:23 +0200
-Message-ID: <20110607211023.GG7067@principal.rfc2324.org>
-References: <20110607201448.GF7067@principal.rfc2324.org>
- <alpine.LNX.2.01.1106072243320.2450@frira.zrqbmnf.qr>
+From: <bmcdowell@coxhealthplans.com>
+Subject: RE: [Fwd: RE: ipv6 link local address]
+Date: Tue, 7 Jun 2011 21:11:49 +0000
+Message-ID: <92A9C99A1E5FF14F8538DDEE14996A52033A59@chp-exg.coxhp.com>
+References: <1307457301.23737.14.camel@hakkenden>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.01.1106072243320.2450@frira.zrqbmnf.qr>
+In-Reply-To: <1307457301.23737.14.camel@hakkenden>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: nowhere@hakkenden.ath.cx
+Cc: netfilter@vger.kernel.org
 
-Anno domini 2011 Jan Engelhardt scripsit:
-
-(I'm subscribed, no need for CC :))
-
-> On Tuesday 2011-06-07 22:14, Maximilian Wilhelm wrote:
-
-> >The bridge-nf-hooks are disabled via sysctl:
-
-> >net.bridge.bridge-nf-call-arptables = 0
-> >net.bridge.bridge-nf-call-iptables = 0
-> >net.bridge.bridge-nf-call-ip6tables = 0
-
-> I suspect that is your problem. Disabling nf-call would seem to
-> not run the NF_IP6_PRI_CONNTRACK hook, and as such not track
-> particular connections/packets delivered over a bridge.
-> (Thus, all those pkts are classified as INVALID.)
-
-Well, I should have said that. I had these not deactivted before,
-but had similar problems, but with the Nagios Remote Plugin Executer only.
-
-forward reject: IN=br0 OUT=br0 PHYSIN=dns01_eth0 PHYSOUT=mon_eth0 SRC=192.168.42.53 DST=192.168.42.70 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=5666 DPT=41662 WINDOW=0 RES=0x00 RST URGP=0 
-forward reject: IN=br0 OUT=br0 PHYSIN=mail_eth0 PHYSOUT=mon_eth0 SRC=192.168.42.25 DST=192.168.42.70 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=5666 DPT=33300 WINDOW=0 RES=0x00 RST URGP=0 
-forward reject: IN=br0 OUT=br0 PHYSIN=mail_eth0 PHYSOUT=mon_eth0 SRC=192.168.42.25 DST=192.168.42.70 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=5666 DPT=33300 WINDOW=0 RES=0x00 RST URGP=0 
-forward reject: IN=br0 OUT=br0 PHYSIN=mail_eth0 PHYSOUT=mon_eth0 SRC=192.168.42.25 DST=192.168.42.70 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=5666 DPT=57854 WINDOW=0 RES=0x00 RST URGP=0 
-forward reject: IN=br0 OUT=br0 PHYSIN=mail_eth0 PHYSOUT=mon_eth0 SRC=192.168.42.25 DST=192.168.42.70 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=5666 DPT=57854 WINDOW=0 RES=0x00 RST URGP=0 
-forward reject: IN=br0 OUT=br0 PHYSIN=dns01_eth0 PHYSOUT=mon_eth0 SRC=192.168.42.53 DST=192.168.42.70 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=5666 DPT=47357 WINDOW=0 RES=0x00 RST URGP=0 
-
-Deactivate the hooks clearly fixed that problem, but after a while the
-other one turned up. Any furher idea? :)
-
-Thanks
-Max
+T2theSwgSSBmaW5hbGx5IGZpZ3VyZWQgaXQgb3V0LiAgSSd2ZSBzdWNjZXNzZnVsbHkgdGVzdGVk
+IGlwdjYgYnJpZGdlZC1mcmFtZSBmaWx0ZXJpbmcsIGFuZCBhbGwgaXMgcmlnaHQgd2l0aCB0aGUg
+d29ybGQgb2YgQm9iLg0KDQpNeSBtZXRob2QgdG8gZ2V0IHRoZSBpcHY2IHN1cHBvcnQgdG8gZ28g
+YXdheSB3YXMgdG8gc2V0IC9ldGMvc3lzY3RsLmNvbmYgbGlrZSBzbzoNCg0KLS0tLS0NCm5ldC5p
+cHY2LmNvbmYuZXRoMC5kaXNhYmxlX2lwdjYgPSAxDQpuZXQuaXB2Ni5jb25mLmV0aDEuZGlzYWJs
+ZV9pcHY2ID0gMQ0KbmV0LmlwdjYuY29uZi5kZWZhdWx0LmRpc2FibGVfaXB2NiA9IDENCm5ldC5p
+cHY2LmNvbmYubG8uZGlzYWJsZV9pcHY2ID0gMA0KLS0tLS0NCg0KaXB2NiBzdXBwb3J0IGlzIHN0
+aWxsIHByZXNlbnQgaW4gdGhlIGtlcm5lbCwgYnV0IHRoZSBpbmRpdmlkdWFsIGludGVyZmFjZXMg
+ZG8gbm90IHN1cHBvcnQuICBUaGUgb25seSBmdW5jdGlvbmFsaXR5IEkgc2VlbSB0byBoYXZlIGxv
+c3QgaXMgcGh5c2ljYWwgaW50ZXJmYWNlIGluZm9ybWF0aW9uIGluIHRoZSBpcDZ0YWJsZXMgbG9n
+cywgYnV0IHRoYXQncyBub3QgcmVhbGx5IGV2ZW4gd29ydGggaW52ZXN0aWdhdGluZyBhdCB0aGlz
+IHBvaW50IGluIHRpbWUuDQoNCkJ5IHRoZSB3YXksIHB1dHRpbmcgZHJvcHMgaW4gbWFuZ2xlIGlz
+IGEgcHJldHR5IG5lZmFyaW91cyB3YXkgdG8gbWFrZSBzdXJlIG5vbmUgb2YgdGhlbSBicmlkZ2Ug
+YXMgd2VsbC4gIEl0IHRvb2sgbWUgYSBiaXQgb2YgaGVhZCBzY3JhdGNoaW5nIHRvIHR1cm4gdGhh
+dCBiYWNrIGFyb3VuZCB3aGVuIEkgZGVjaWRlZCBJIHdhcyByZWFkeSB0byB0ZXN0IGlwdjYgZmls
+dGVyaW5nLg0KDQpBbnl3YXkgdGhhbmtzLCBhbGwsIGZvciB5b3VyIHRpbWUuDQoNCg0KDQpCb2Ig
+TWNEb3dlbGwNCk5ldHdvcmsvU2VjdXJpdHkgRW5naW5lZXIgDQpDb3ggSGVhbHRoUGxhbnMgDQoN
+Ci0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBOaWtvbGF5IFMuIFttYWlsdG86bm93
+aGVyZUBoYWtrZW5kZW4uYXRoLmN4XSANClNlbnQ6IFR1ZXNkYXksIEp1bmUgMDcsIDIwMTEgOToz
+NSBBTQ0KVG86IEJvYiBNY0Rvd2VsbA0KQ2M6IG5ldGZpbHRlckB2Z2VyLmtlcm5lbC5vcmcNClN1
+YmplY3Q6IFtGd2Q6IFJFOiBpcHY2IGxpbmsgbG9jYWwgYWRkcmVzc10NCg0KLS0tLS0tLS0g0J/Q
+tdGA0LXRgdGL0LvQsNC10LzQvtC1INGB0L7QvtCx0YnQtdC90LjQtSAtLS0tLS0tLQ0KPiDQntGC
+OiBOaWtvbGF5IFMuIDxub3doZXJlQGhha2tlbmRlbi5hdGguY3g+DQo+INCa0L7QvNGDOiBibWNk
+b3dlbGxAY294aGVhbHRocGxhbnMuY29tDQo+INCa0L7Qv9C40Y86IG5ldGZpbHRlckB2Z2VyLmtl
+cm5lbC5vcmcNCj4g0KLQtdC80LA6IFJFOiBpcHY2IGxpbmsgbG9jYWwgYWRkcmVzcw0KPiDQlNCw
+0YLQsDogCVR1ZSwgMDcgSnVuIDIwMTEgMTg6MzI6NTYgKzA0MDANCj4gDQo+INCSINCS0YLRgCwg
+MDcvMDYvMjAxMSDQsiAxNDoyNiArMDAwMCwgYm1jZG93ZWxsQGNveGhlYWx0aHBsYW5zLmNvbSDQ
+v9C40YjQtdGCOg0KPiA+IEknbSBzb3JyeSwgYnV0IHRoYXQgZGlkbid0IHBhcnNlLg0KPiA+IA0K
+PiA+IEkgd29uJ3QsIHdoYXQ/DQo+ID4gDQo+ID4gU2tiJ3M/DQo+IA0KPiBBYmlsaXR5IHRvIGZp
+bHRlciBicmlkZ2VkIGZyYW1lcyB3aXRoIGlwNnRhYmxlcyA6KQ0KDQpTb3JyeSBhZ2FpbiA6KQ0K
+WW91IHdpbGwgbm90IGxvb3NlIGFiaWxpdHkgdG8gZmlsdGVyIGJyaWRnZWQgZnJhbWVzIHdpdGgg
+aXA2dGFibGVzLg0KDQo+IA0KPiA+IA0KPiA+IA0KPiA+IEJvYiBNY0Rvd2VsbA0KPiA+IE5ldHdv
+cmsvU2VjdXJpdHkgRW5naW5lZXIgDQo+ID4gQ294IEhlYWx0aFBsYW5zIA0KPiA+IA0KPiA+IC0t
+LS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+ID4gRnJvbTogTmlrb2xheSBTLiBbbWFpbHRvOm5v
+d2hlcmVAaGFra2VuZGVuLmF0aC5jeF0gDQo+ID4gU2VudDogVHVlc2RheSwgSnVuZSAwNywgMjAx
+MSA5OjI0IEFNDQo+ID4gVG86IEJvYiBNY0Rvd2VsbA0KPiA+IENjOiBuZXRmaWx0ZXJAdmdlci5r
+ZXJuZWwub3JnDQo+ID4gU3ViamVjdDogUkU6IGlwdjYgbGluayBsb2NhbCBhZGRyZXNzDQo+ID4g
+DQo+ID4g0JIg0JLRgtGALCAwNy8wNi8yMDExINCyIDEyOjQ0ICswMDAwLCBibWNkb3dlbGxAY294
+aGVhbHRocGxhbnMuY29tINC/0LjRiNC10YI6DQo+ID4gPiBQbGVhc2UgdW5kZXJzdGFuZCB0aGF0
+IEkgZG8gd2FudCB0byBiZSBhYmxlIHRvIHVzZSBpcDZ0YWJsZXMgdG8gZmlsdGVyIGZvcndhcmRl
+ZCB0cmFmZmljLiAgSSBqdXN0IGRvIG5vdCB3YW50IHRoZSBpbnRlcmZhY2VzIHNwZWFraW5nIHRv
+IGFueW9uZSB3aGlsZSB0aGV5J3JlIGRvaW5nIHRoZWlyIGpvYi4NCj4gPiA+IA0KPiA+ID4gUGVy
+aGFwcyB0aGlzIGV4YW1wbGUgY2FuIGV4cGxhaW4gaXQgYmV0dGVyIHRoYW4gSSBoYXZlOiAgaHR0
+cDovL3d3dy5zamRqd2Vpcy5jb20vbGludXgvYnJpZGdpbmcvDQo+ID4gPiANCj4gPiA+IA0KPiA+
+ID4gVGhhbmtzIGFnYWluLg0KPiA+ID4gDQo+ID4gDQo+ID4gWW91IHdvbid0LiBza2IncyBhcmUg
+cGFzc2VkIHRvIGlwNnRhYmxlcyBmcm9tIGJyaWRnZSBiYXNlZCBvbiBpcHY2LQ0KPiA+IGhlYWRl
+ciwgbm90IHRoZSBzdGF0ZSBvZiB0aGUgcHJvdG9jb2wgb24gc2xhdmUgZGV2aWNlLiBBbmQgYnJp
+ZGdlIGl0c2VsZg0KPiA+IGRvZXMgbm90IGZpbHRlciBpbmNvbWluZyBmcmFtZXMgYnkgTDMtaGVh
+ZGVyLg0KPiA+IA0KPiA+ID4gDQo+ID4gPiBCb2IgTWNEb3dlbGwNCj4gPiA+IE5ldHdvcmsvU2Vj
+dXJpdHkgRW5naW5lZXIgDQo+ID4gPiBDb3ggSGVhbHRoUGxhbnMgDQo+ID4gPiANCj4gPiA+IA0K
+PiA+ID4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gPiA+IEZyb206IE5pa29sYXkgUy4g
+W21haWx0bzpub3doZXJlQGhha2tlbmRlbi5hdGguY3hdIA0KPiA+ID4gU2VudDogVHVlc2RheSwg
+SnVuZSAwNywgMjAxMSAxOjQ0IEFNDQo+ID4gPiBUbzogQm9iIE1jRG93ZWxsDQo+ID4gPiBDYzog
+bmV0ZmlsdGVyQHZnZXIua2VybmVsLm9yZw0KPiA+ID4gU3ViamVjdDogUmU6IGlwdjYgbGluayBs
+b2NhbCBhZGRyZXNzDQo+ID4gPiANCj4gPiA+IA0KPiA+ID4gWW91IGNhbiB0dXJuIG9mZiBpcHY2
+IG9uIGludGVyZmFjZXMuIFRoaXMgc2hvdWxkIG5vdCBwcmV2ZW50IGJyaWRnaW5nDQo+ID4gPiBp
+cHY2LCBidXQgd2lsbCByZW1vdmUgYW55IGlwdjYgbG9naWMgZnJvbSB0aGVtLg0KPiA+ID4gDQo+
+ID4gPiANCj4gPiANCj4gPiANCj4gDQo+IA0KPiAtLQ0KPiBUbyB1bnN1YnNjcmliZSBmcm9tIHRo
+aXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbmV0ZmlsdGVyIiBpbg0KPiB0aGUg
+Ym9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVsLm9yZw0KPiBNb3JlIG1h
+am9yZG9tbyBpbmZvIGF0ICBodHRwOi8vdmdlci5rZXJuZWwub3JnL21ham9yZG9tby1pbmZvLmh0
+bWwNCg0KDQo=
