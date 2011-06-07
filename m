@@ -1,91 +1,48 @@
-From: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
-Subject: [RFC] SLOB breaks netfilter
-Date: Tue, 7 Jun 2011 23:06:51 +0200
-Message-ID: <20110607210651.GA11159@Chamillionaire.breakpoint.cc>
+From: Maximilian Wilhelm <max@rfc2324.org>
+Subject: Re: Unexpected (ct)state matching behaviour
+Date: Tue, 7 Jun 2011 23:10:23 +0200
+Message-ID: <20110607211023.GG7067@principal.rfc2324.org>
+References: <20110607201448.GF7067@principal.rfc2324.org>
+ <alpine.LNX.2.01.1106072243320.2450@frira.zrqbmnf.qr>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
+In-Reply-To: <alpine.LNX.2.01.1106072243320.2450@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, tglx@linutronix.de
+To: netfilter@vger.kernel.org
 
-I've been wondering why the internet was sometimes not working after a
-router reboot. Later I noticed that the -j MASQUERADE target in the nat
-table was missing. While debugging the serial less router I noticed that
-even simple commands like 
+Anno domini 2011 Jan Engelhardt scripsit:
 
-|~# iptables -nvL -t nat
-|iptables v1.4.2: can't initialize iptables table `nat': Table does not
-|exist (do you need to insmod?)
-|Perhaps iptables or your kernel needs to be upgraded.
+(I'm subscribed, no need for CC :))
 
-were failing sometimes. Not always, sometimes. Once the module was
-loaded, it seems to work.
-After more debugging I found the root cause: In
-check_entry_size_and_hooks() I see:
-              if ((unsigned long)e % __alignof__(struct arpt_entry) != 0 ||
+> On Tuesday 2011-06-07 22:14, Maximilian Wilhelm wrote:
 
-and SLOB defines:
+> >The bridge-nf-hooks are disabled via sysctl:
 
-|#ifdef ARCH_DMA_MINALIGN
-|#define ARCH_KMALLOC_MINALIGN ARCH_DMA_MINALIGN
-|#else
-|#define ARCH_KMALLOC_MINALIGN __alignof__(unsigned long)
-|#endif
-| 
-|#ifndef ARCH_SLAB_MINALIGN
-|#define ARCH_SLAB_MINALIGN __alignof__(unsigned long)
-|#endif
+> >net.bridge.bridge-nf-call-arptables = 0
+> >net.bridge.bridge-nf-call-iptables = 0
+> >net.bridge.bridge-nf-call-ip6tables = 0
 
-Using u64 instead solved the problem. So my question is this check
-really required?
-The following patch fixes the nat problem. One thing that still fails
-(with the patch but works with alignof (u64)) is
+> I suspect that is your problem. Disabling nf-call would seem to
+> not run the NF_IP6_PRI_CONNTRACK hook, and as such not track
+> particular connections/packets delivered over a bridge.
+> (Thus, all those pkts are classified as INVALID.)
 
-|~# ip6tables -P INPUT DROP
-|ip6tables v1.4.2: can't initialize ip6tables table `filter': Table does
-|not exist (do you need to insmod?)
-|Perhaps ip6tables or your kernel needs to be upgraded.
+Well, I should have said that. I had these not deactivted before,
+but had similar problems, but with the Nagios Remote Plugin Executer only.
 
-but I need to sleep now.
+forward reject: IN=br0 OUT=br0 PHYSIN=dns01_eth0 PHYSOUT=mon_eth0 SRC=192.168.42.53 DST=192.168.42.70 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=5666 DPT=41662 WINDOW=0 RES=0x00 RST URGP=0 
+forward reject: IN=br0 OUT=br0 PHYSIN=mail_eth0 PHYSOUT=mon_eth0 SRC=192.168.42.25 DST=192.168.42.70 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=5666 DPT=33300 WINDOW=0 RES=0x00 RST URGP=0 
+forward reject: IN=br0 OUT=br0 PHYSIN=mail_eth0 PHYSOUT=mon_eth0 SRC=192.168.42.25 DST=192.168.42.70 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=5666 DPT=33300 WINDOW=0 RES=0x00 RST URGP=0 
+forward reject: IN=br0 OUT=br0 PHYSIN=mail_eth0 PHYSOUT=mon_eth0 SRC=192.168.42.25 DST=192.168.42.70 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=5666 DPT=57854 WINDOW=0 RES=0x00 RST URGP=0 
+forward reject: IN=br0 OUT=br0 PHYSIN=mail_eth0 PHYSOUT=mon_eth0 SRC=192.168.42.25 DST=192.168.42.70 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=5666 DPT=57854 WINDOW=0 RES=0x00 RST URGP=0 
+forward reject: IN=br0 OUT=br0 PHYSIN=dns01_eth0 PHYSOUT=mon_eth0 SRC=192.168.42.53 DST=192.168.42.70 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=5666 DPT=47357 WINDOW=0 RES=0x00 RST URGP=0 
 
----
- net/ipv4/netfilter/arp_tables.c |    3 +--
- net/ipv4/netfilter/ip_tables.c  |    3 +--
- 2 files changed, 2 insertions(+), 4 deletions(-)
+Deactivate the hooks clearly fixed that problem, but after a while the
+other one turned up. Any furher idea? :)
 
-diff --git a/net/ipv4/netfilter/arp_tables.c b/net/ipv4/netfilter/arp_tables.c
-index 89bc7e6..577ca67 100644
---- a/net/ipv4/netfilter/arp_tables.c
-+++ b/net/ipv4/netfilter/arp_tables.c
-@@ -559,8 +559,7 @@ static inline int check_entry_size_and_hooks(struct arpt_entry *e,
- {
- 	unsigned int h;
- 
--	if ((unsigned long)e % __alignof__(struct arpt_entry) != 0 ||
--	    (unsigned char *)e + sizeof(struct arpt_entry) >= limit) {
-+	if ((unsigned char *)e + sizeof(struct arpt_entry) >= limit) {
- 		duprintf("Bad offset %p\n", e);
- 		return -EINVAL;
- 	}
-diff --git a/net/ipv4/netfilter/ip_tables.c b/net/ipv4/netfilter/ip_tables.c
-index 7049150..fb0f2ce 100644
---- a/net/ipv4/netfilter/ip_tables.c
-+++ b/net/ipv4/netfilter/ip_tables.c
-@@ -731,8 +731,7 @@ check_entry_size_and_hooks(struct ipt_entry *e,
- {
- 	unsigned int h;
- 
--	if ((unsigned long)e % __alignof__(struct ipt_entry) != 0 ||
--	    (unsigned char *)e + sizeof(struct ipt_entry) >= limit) {
-+	if ((unsigned char *)e + sizeof(struct ipt_entry) >= limit) {
- 		duprintf("Bad offset %p\n", e);
- 		return -EINVAL;
- 	}
--- 
-1.7.4.4
-
-Sebastian
+Thanks
+Max
