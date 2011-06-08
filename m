@@ -1,47 +1,39 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipset 6.6 bug: subnet (mis)matching
-Date: Wed, 8 Jun 2011 09:07:48 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1106080859230.31443@blackhole.kfki.hu>
-References: <alpine.DEB.2.00.1105241039080.1846@blackhole.kfki.hu> <4DEECD8C.6050302@googlemail.com>
+From: Sebastian Siewior <sebastian@breakpoint.cc>
+Subject: Re: [RFC] SLOB breaks netfilter
+Date: Wed, 8 Jun 2011 09:10:31 +0200
+Message-ID: <20110608071031.GA2892@breakpoint.cc>
+References: <20110607210651.GA11159@Chamillionaire.breakpoint.cc>
+ <20110607.141810.2159514423065256050.davem@davemloft.net>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4DEECD8C.6050302@googlemail.com>
+Content-Disposition: inline
+In-Reply-To: <20110607.141810.2159514423065256050.davem@davemloft.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
-Cc: netfilter@vger.kernel.org
+To: David Miller <davem@davemloft.net>
+Cc: kaber@trash.net, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, tglx@linutronix.de
 
-On Wed, 8 Jun 2011, Mr Dash Four wrote:
-
-> [root@test1 ~]# ipset n test hash:net family inet timeout 0
-> [root@test1 ~]# ipset a test 10.16.0.0-10.16.255.255
-> [root@test1 ~]# ipset l test
-> Name: test
-> Type: hash:net
-> Header: family inet hashsize 1024 maxelem 65536 timeout 0 
-> Size in memory: 16832
-> References: 0
-> Members:
-> 10.16.0.0/16 timeout 0
-> [root@test1 ~]# ipset t test 10.16.224.0/24
-> 10.16.224.0/24 is NOT in set test.
-> [root@test1 ~]# ipset t test 10.16.224.1   
-> 10.16.224.1 is in set test.
+* Thus spake David Miller (davem@davemloft.net):
+> From: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+> Date: Tue, 7 Jun 2011 23:06:51 +0200
 > 
-> That is plainly wrong!
+> > and SLOB defines:
+> > 
+> > |#ifdef ARCH_DMA_MINALIGN
+> > |#define ARCH_KMALLOC_MINALIGN ARCH_DMA_MINALIGN
+> > |#else
+> > |#define ARCH_KMALLOC_MINALIGN __alignof__(unsigned long)
+> > |#endif
+> 
+> SLOB should really use "unsigned long long" I think.
+> 
+> An allocator needs to provide memory with the maximum
+> alignment that might be required for types on a given
+> architecture.
 
-No, that's a feature: it makes possible to check from userspace how the 
-kernel would match an IP address in the set. Maybe it's badly worded in 
-the manpage: "When testing entries, if a host address is tested, then the 
-kernel tries to match the host address in the networks added to the set 
-and reports the result accordingly."
+The larger alignment is due to u64 in the counter struct. However, it still
+needs two loads/stores for it on my 32bit powerpc here.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+Sebastian
