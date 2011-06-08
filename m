@@ -1,87 +1,69 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: [ANNOUNCE]: Release of iptables-1.4.11.1
-Date: Wed, 08 Jun 2011 15:54:01 +0200
-Message-ID: <4DEF7EF9.7010609__22894.4372655407$1307541260$gmane$org@trash.net>
+From: Karl Heiss <kheiss@gmail.com>
+Subject: Adding features to xt_recent and xt_cluster
+Date: Wed, 8 Jun 2011 10:57:09 -0400
+Message-ID: <BANLkTi=os6R7oUa6B_snwKPtNAfQA=i4GQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------070206020401010904020204"
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:date:message-id:subject:from:to
+         :content-type;
+        bh=i98S0jXhKGmfZsF5dAgt1kcLU8I2BE5ZR62p2KxJ5QI=;
+        b=Q3zw3AW0tGSAcFFlX0GHLs45X5EyKM4L+Y5GOVxySoDBxbbtnEbYTgclTP08W6v/Qt
+         06SrFnZ+qv0zDwuTcRGUlIpCXy0OaSstoRQvpCFF+vvIQoX9cTb+vWhn0LwLxFVWvB2I
+         Ib3M4nFZqv9gXfZFHNvvZvTabyncKbRXUbrBI=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, Linux Netdev List <netdev@vger.kernel.org>, netfilter-announce@lists.netfilter.org, 'netfilter@vger.kernel.org'
-
-This is a multi-part message in MIME format.
---------------070206020401010904020204
-Content-Type: text/plain; charset=ISO-8859-15
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-The netfilter coreteam presents:
+I am looking into adding functionality to the xt_recent and xt_cluster
+modules.  I would like to know if these changes would be something
+that upstream would be interested in using.
 
-    iptables version 1.4.11.1
+For the xt_recent module, I will be updating the module to support
+matching by destination IP, source-port and destination port.  Port
+matching would be supported via the '--rsport' and '--rdport' flags,
+and would default to the current behavior of matching IP only if
+neither is specified.  Many might be wondering why I choose to include
+matching by destination IP since it appears that xt_recent matches
+destinations using --rdest.  However, xt_recent does not appear to
+differentiate between source and destination addresses within it's
+entry tables.  This means it never checks it's stored address against
+skb->network_header->daddr during match.  See excerpt below from
+net/netfilter/xt_recent.c:
 
-a minor release containing bugfixes for problems discovered in
-the 1.4.11 release as well as some minor documentation updates.
+static struct recent_entry *
+recent_entry_lookup(const struct recent_table *table,
+		    const union nf_inet_addr *addrp, u_int16_t family,
+		    u_int8_t ttl)
+{
+	struct recent_entry *e;
+	unsigned int h;
 
-Due to the large number of changes in 1.4.11, some regressions
-and a few minor bugs made it into the release. This version
-addresses all identified problems:
+	if (family == NFPROTO_IPV4)
+		h = recent_entry_hash4(addrp);
+	else
+		h = recent_entry_hash6(addrp);
 
-- broken inversion support in the owner match
-
-- broken inversion in implicitly loaded protocol extensions, most
-  importantly causing "-p tcp ! --syn" to not negate --syn
-
-- symlink installation fixes
-
-- xml translation missing in IPv6 only builds
-
-See the attached changelogs for the full list of changes.
-
-Version 1.4.11.1 can be obtained from:
-
-http://www.netfilter.org/projects/iptables/downloads.html
-ftp://ftp.netfilter.org/pub/iptables/
-git://git.netfilter.org/iptables.git
-
-On behalf of the Netfilter Core Team.
-Happy firewalling!
-
---------------070206020401010904020204
-Content-Type: text/plain;
- name="changes-iptables-1.4.11.1.txt"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
- filename="changes-iptables-1.4.11.1.txt"
-
-Elie De Brauwer (1):
-      doc: fix trivial typo in libipt_SNAT
-
-Jan Engelhardt (13):
-      libxt_owner: restore inversion support
-      build: remove dead code parts
-      build: fix installation of symlinks
-      build: fix absence of xml translator in IPv6-only builds
-      doc: update GPL license text
-      doc: iptables-xml should be in manpage section 1
-      build: move basic preprocessor flags to regular_CPPFLAGS
-      build: move kinclude's preprocessor flags to kinclude_CPPFLAGS
-      src: move all libiptc pieces into its directory
-      src: move all iptables pieces into a separate directory
-      tests: add some sample rulesets to test save-restore cycle
-      option: fix ignored negation before implicit extension loading
-      build: re-add missing CPPFLAGS for libiptc
-
-Maciej ������enczykowski (1):
-      xtables-multi: fix absence of xml translator in IPv6-only builds
-
-Mike Frysinger (1):
-      build: move remaining preprocessor flags to CPPFLAGS
-
-Patrick McHardy (1):
-      Bump version to 1.4.11.1
-
-Vlad Dogaru (1):
-      doc: fix MASQUERADE section of man page
+	list_for_each_entry(e, &table->iphash[h], list)
+		if (e->family == family &&
+		    memcmp(&e->addr, addrp, sizeof(e->addr)) == 0 &&
+		    (ttl == e->ttl || ttl == 0 || e->ttl == 0))
+			return e;
+	return NULL;
+}
 
 
---------------070206020401010904020204--
+As for xt_cluster, I will be adding options for hashmode like those
+offered by CLUSTERIP to allow matching based on sourceip,
+sourceip-sourceport, or sourceip-sourceport-destport.  There is the
+potential that I could add a fourth sourceip-destport option as well.
+
+For both modules I am prepared to provide patches for both the kernel
+and iptables userland after development is complete.   Any feedback is
+greatly appreciated and please excuse any faux pas on my part as I am
+new.
+
+Karl Heiss
