@@ -1,59 +1,40 @@
-From: Maximilian Wilhelm <max@rfc2324.org>
-Subject: Re: Unexpected (ct)state matching behaviour
-Date: Wed, 8 Jun 2011 00:04:03 +0200
-Message-ID: <20110607220403.GJ7067@principal.rfc2324.org>
-References: <20110607201448.GF7067@principal.rfc2324.org>
- <alpine.LNX.2.01.1106072243320.2450@frira.zrqbmnf.qr>
- <20110607211023.GG7067@principal.rfc2324.org>
+From: Mr Dash Four <mr.dash.four@googlemail.com>
+Subject: ipset 6.6 bug: subnet (mis)matching
+Date: Wed, 08 Jun 2011 02:17:00 +0100
+Message-ID: <4DEECD8C.6050302@googlemail.com>
+References: <alpine.DEB.2.00.1105241039080.1846@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20110607211023.GG7067@principal.rfc2324.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=domainkey-signature:message-id:disposition-notification-to:date
+         :from:user-agent:mime-version:to:cc:subject:references:in-reply-to
+         :content-type:content-transfer-encoding;
+        bh=nPivRlXLrnzJxHZ92iSGZAanugy8C9pnrFje9pH7ZQ8=;
+        b=GM7Ppgl9CbX29eDCVElgHLNg/S/fkL64S0Us3JVchitLwGTXT4UJpVjDwQdq1d3dmj
+         iTNWI7ykn1yZqh2AJAtn3JHdvwOx4aI1gmrxEBtYfXGpwtRut5I7vCBYXk+TwctSGbq/
+         sVfXr92B6Ej0Ky8nh4BrD2fWy75f7bWLv6ejo=
+In-Reply-To: <alpine.DEB.2.00.1105241039080.1846@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter@vger.kernel.org
 
-Anno domini 2011 Maximilian Wilhelm scripsit:
+[root@test1 ~]# ipset n test hash:net family inet timeout 0
+[root@test1 ~]# ipset a test 10.16.0.0-10.16.255.255
+[root@test1 ~]# ipset l test
+Name: test
+Type: hash:net
+Header: family inet hashsize 1024 maxelem 65536 timeout 0 
+Size in memory: 16832
+References: 0
+Members:
+10.16.0.0/16 timeout 0
+[root@test1 ~]# ipset t test 10.16.224.0/24
+10.16.224.0/24 is NOT in set test.
+[root@test1 ~]# ipset t test 10.16.224.1   
+10.16.224.1 is in set test.
 
-> > >The bridge-nf-hooks are disabled via sysctl:
-
-> > >net.bridge.bridge-nf-call-arptables = 0
-> > >net.bridge.bridge-nf-call-iptables = 0
-> > >net.bridge.bridge-nf-call-ip6tables = 0
-
-> > I suspect that is your problem. Disabling nf-call would seem to
-> > not run the NF_IP6_PRI_CONNTRACK hook, and as such not track
-> > particular connections/packets delivered over a bridge.
-> > (Thus, all those pkts are classified as INVALID.)
-
-> Well, I should have said that. I had these not deactivted before,
-> but had similar problems, but with the Nagios Remote Plugin Executer only.
-
-> forward reject: IN=br0 OUT=br0 PHYSIN=dns01_eth0 PHYSOUT=mon_eth0 SRC=192.168.42.53 DST=192.168.42.70 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=5666 DPT=41662 WINDOW=0 RES=0x00 RST URGP=0 
-> forward reject: IN=br0 OUT=br0 PHYSIN=mail_eth0 PHYSOUT=mon_eth0 SRC=192.168.42.25 DST=192.168.42.70 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=5666 DPT=33300 WINDOW=0 RES=0x00 RST URGP=0 
-> forward reject: IN=br0 OUT=br0 PHYSIN=mail_eth0 PHYSOUT=mon_eth0 SRC=192.168.42.25 DST=192.168.42.70 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=5666 DPT=33300 WINDOW=0 RES=0x00 RST URGP=0 
-> forward reject: IN=br0 OUT=br0 PHYSIN=mail_eth0 PHYSOUT=mon_eth0 SRC=192.168.42.25 DST=192.168.42.70 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=5666 DPT=57854 WINDOW=0 RES=0x00 RST URGP=0 
-> forward reject: IN=br0 OUT=br0 PHYSIN=mail_eth0 PHYSOUT=mon_eth0 SRC=192.168.42.25 DST=192.168.42.70 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=5666 DPT=57854 WINDOW=0 RES=0x00 RST URGP=0 
-> forward reject: IN=br0 OUT=br0 PHYSIN=dns01_eth0 PHYSOUT=mon_eth0 SRC=192.168.42.53 DST=192.168.42.70 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=5666 DPT=47357 WINDOW=0 RES=0x00 RST URGP=0 
-
-> Deactivate the hooks clearly fixed that problem, but after a while the
-> other one turned up. Any furher idea? :)
-
-It might be worth adding that each of the VMs has a setup like this:
-
-# route -n
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref Use Iface
-192.168.42.1    0.0.0.0         255.255.255.255 UH    0      0 0 eth0
-0.0.0.0         192.168.42.1    0.0.0.0         UG    0      0 0 eth0
-
-to enforce that the packets are being routed and firewalled on the host machine.
-
-Ciao
-Max
--- 
-"Du kannst die Grundlagen von C. Das einzige, was C++ Dir noch gibt, ist mehr Schmerz!
- Und ein paar mehr Schrotflinten in die Hand..."
-  -- Matthias Bolte
+That is plainly wrong!
