@@ -1,27 +1,147 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: RHEL6 conntrack-tools RPM's
-Date: Tue, 14 Jun 2011 23:14:57 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1106142314140.1326@frira.zrqbmnf.qr>
-References: <EBB5AF8B295FCF46BDFDD9734DD4395B01C0145052@NYDCMX20.cbs.ad.cbs.net> <slrnivf7p3.5gk.petr.pisar@album.ics.muni.cz>
+From: Christoph Lameter <cl@linux.com>
+Subject: Re: [PATCH] slob: push the min alignment to long long
+Date: Tue, 14 Jun 2011 16:16:36 -0500 (CDT)
+Message-ID: <alpine.DEB.2.00.1106141614480.10017@router.home>
+References: <20110614201031.GA19848@Chamillionaire.breakpoint.cc>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <slrnivf7p3.5gk.petr.pisar@album.ics.muni.cz>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <owner-linux-mm@kvack.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1308086199; bh=jbzxcyyc8IE7jeUixZnlIlrwvoriV7QlxGsfvqqcJCs=; h=X-Yahoo-Newman-Property:X-YMail-OSG:X-Yahoo-SMTP:Received:Received:Date:From:X-X-Sender:To:cc:Subject:In-Reply-To:Message-ID:References:User-Agent:MIME-Version:Content-Type; b=0Rmudd7+o/XdBb4jLlNRoXa4YUTi75a0fsR32P/4MpRbHhyxMsfMntzrXOEdusoyZv8kUtKOx8ntqoIufnEGETMZDyMXTdKpbCoyo4esG787Tl2iWaKI+OEyO/PzsJmSbVj35/VJjNtkLdxyXFwlkaBPiJ7TYSAsMlj4q/UAQpg=
+In-Reply-To: <20110614201031.GA19848@Chamillionaire.breakpoint.cc>
+Sender: owner-linux-mm@kvack.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Petr Pisar <petr.pisar@atlas.cz>
-Cc: netfilter@vger.kernel.org
+To: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+Cc: Pekka Enberg <penberg@kernel.org>, Matt Mackall <mpm@selenic.com>, linux-mm@kvack.org, "David S. Miller" <davem@davemloft.net>, netfilter@vger.kernel.org, Pekka Enberg <penberg@cs.helsinki.fi>
 
-On Tuesday 2011-06-14 19:49, Petr Pisar wrote:
+Maybe this would work too?
 
->On 2011-06-14, Perkowski, Karol <karol.perkowski@cbs.com> wrote:
->>
->> Anyone here seen or maintain any RPM for conntrack-tools?
->>
->http://rpmfind.net/linux/rpm2html/search.php?query=conntrack-tools&submit=Search+...
->
->Get a package and see its changelog.
 
-RHEL (and its offsprings) isn't exactly known to do a lot in the field 
-of Netfilter and its toolset.
+Subject: slauob: Unify alignment definition
+
+Every slab has its on alignment definition in include/linux/sl?b_def.h. Extract those
+and define a common set in include/linux/slab.h.
+
+SLOB: As notes sometimes we need double word alignment on 32 bit. This gives all
+structures allocated by SLOB a unsigned long long alignment like the others do.
+
+SLAB: If ARCH_SLAB_MINALIGN is not set SLAB would set ARCH_SLAB_MINALIGN to
+zero meaning no alignment at all. Give it the default unsigned long long alignment.
+
+Signed-off-by: Christoph Lameter <cl@linux.com>
+
+
+---
+ include/linux/slab.h     |   10 ++++++++++
+ include/linux/slab_def.h |   26 --------------------------
+ include/linux/slob_def.h |   10 ----------
+ include/linux/slub_def.h |   10 ----------
+ 4 files changed, 10 insertions(+), 46 deletions(-)
+
+Index: linux-2.6/include/linux/slab.h
+===================================================================
+--- linux-2.6.orig/include/linux/slab.h	2011-06-14 15:46:38.000000000 -0500
++++ linux-2.6/include/linux/slab.h	2011-06-14 15:46:59.000000000 -0500
+@@ -133,6 +133,16 @@ unsigned int kmem_cache_size(struct kmem
+ #define KMALLOC_MAX_SIZE	(1UL << KMALLOC_SHIFT_HIGH)
+ #define KMALLOC_MAX_ORDER	(KMALLOC_SHIFT_HIGH - PAGE_SHIFT)
+
++#ifdef ARCH_DMA_MINALIGN
++#define ARCH_KMALLOC_MINALIGN ARCH_DMA_MINALIGN
++#else
++#define ARCH_KMALLOC_MINALIGN __alignof__(unsigned long long)
++#endif
++
++#ifndef ARCH_SLAB_MINALIGN
++#define ARCH_SLAB_MINALIGN __alignof__(unsigned long long)
++#endif
++
+ /*
+  * Common kmalloc functions provided by all allocators
+  */
+Index: linux-2.6/include/linux/slab_def.h
+===================================================================
+--- linux-2.6.orig/include/linux/slab_def.h	2011-06-14 15:47:04.000000000 -0500
++++ linux-2.6/include/linux/slab_def.h	2011-06-14 15:50:04.000000000 -0500
+@@ -18,32 +18,6 @@
+ #include <trace/events/kmem.h>
+
+ /*
+- * Enforce a minimum alignment for the kmalloc caches.
+- * Usually, the kmalloc caches are cache_line_size() aligned, except when
+- * DEBUG and FORCED_DEBUG are enabled, then they are BYTES_PER_WORD aligned.
+- * Some archs want to perform DMA into kmalloc caches and need a guaranteed
+- * alignment larger than the alignment of a 64-bit integer.
+- * ARCH_KMALLOC_MINALIGN allows that.
+- * Note that increasing this value may disable some debug features.
+- */
+-#ifdef ARCH_DMA_MINALIGN
+-#define ARCH_KMALLOC_MINALIGN ARCH_DMA_MINALIGN
+-#else
+-#define ARCH_KMALLOC_MINALIGN __alignof__(unsigned long long)
+-#endif
+-
+-#ifndef ARCH_SLAB_MINALIGN
+-/*
+- * Enforce a minimum alignment for all caches.
+- * Intended for archs that get misalignment faults even for BYTES_PER_WORD
+- * aligned buffers. Includes ARCH_KMALLOC_MINALIGN.
+- * If possible: Do not enable this flag for CONFIG_DEBUG_SLAB, it disables
+- * some debug features.
+- */
+-#define ARCH_SLAB_MINALIGN 0
+-#endif
+-
+-/*
+  * struct kmem_cache
+  *
+  * manages a cache.
+Index: linux-2.6/include/linux/slob_def.h
+===================================================================
+--- linux-2.6.orig/include/linux/slob_def.h	2011-06-14 15:47:33.000000000 -0500
++++ linux-2.6/include/linux/slob_def.h	2011-06-14 15:47:40.000000000 -0500
+@@ -1,16 +1,6 @@
+ #ifndef __LINUX_SLOB_DEF_H
+ #define __LINUX_SLOB_DEF_H
+
+-#ifdef ARCH_DMA_MINALIGN
+-#define ARCH_KMALLOC_MINALIGN ARCH_DMA_MINALIGN
+-#else
+-#define ARCH_KMALLOC_MINALIGN __alignof__(unsigned long)
+-#endif
+-
+-#ifndef ARCH_SLAB_MINALIGN
+-#define ARCH_SLAB_MINALIGN __alignof__(unsigned long)
+-#endif
+-
+ void *kmem_cache_alloc_node(struct kmem_cache *, gfp_t flags, int node);
+
+ static __always_inline void *kmem_cache_alloc(struct kmem_cache *cachep,
+Index: linux-2.6/include/linux/slub_def.h
+===================================================================
+--- linux-2.6.orig/include/linux/slub_def.h	2011-06-14 15:46:24.000000000 -0500
++++ linux-2.6/include/linux/slub_def.h	2011-06-14 15:46:32.000000000 -0500
+@@ -113,16 +113,6 @@ struct kmem_cache {
+
+ #define KMALLOC_SHIFT_LOW ilog2(KMALLOC_MIN_SIZE)
+
+-#ifdef ARCH_DMA_MINALIGN
+-#define ARCH_KMALLOC_MINALIGN ARCH_DMA_MINALIGN
+-#else
+-#define ARCH_KMALLOC_MINALIGN __alignof__(unsigned long long)
+-#endif
+-
+-#ifndef ARCH_SLAB_MINALIGN
+-#define ARCH_SLAB_MINALIGN __alignof__(unsigned long long)
+-#endif
+-
+ /*
+  * Maximum kmalloc object size handled by SLUB. Larger object allocations
+  * are passed through to the page allocator. The page allocator "fastpath"
+
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Fight unfair telecom internet charges in Canada: sign http://stopthemeter.ca/
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
