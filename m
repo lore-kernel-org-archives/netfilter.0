@@ -1,39 +1,31 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: iptables blocking all ports except port 80
-Date: Tue, 14 Jun 2011 21:15:22 +0100
-Message-ID: <1308082522.1837.13.camel@andybev-desktop>
-References: <BANLkTimH9xLROcOosO+Qa5-hhOGYyG8pjA@mail.gmail.com>
+From: Christoph Lameter <cl@linux.com>
+Subject: Re: [PATCH] slob: push the min alignment to long long
+Date: Tue, 14 Jun 2011 15:40:16 -0500 (CDT)
+Message-ID: <alpine.DEB.2.00.1106141538560.1613@router.home>
+References: <20110614201031.GA19848@Chamillionaire.breakpoint.cc>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1308082527; bh=M8mF2tmAzgSLCSfYl7Aar4d+eflRxZJm+nQJ/
-	+4HuC8=; h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:
-	 Date:Message-ID:Mime-Version:Content-Transfer-Encoding; b=KqAyEDs5
-	1vagqEahPZxwxPu8TbhOdAeu8qYPwdN2ZtJkdjs9EuOG44CM9we2Wn8ExSwZZY+5j7I
-	gvgh4Xf5Ct0LigPHHW285c0iSroGKZekG4F9RfAjHGkANu96Lk9dY4car0jwS9ju7d2
-	PB5laytLrkItggFZVuwfiRp9VqhqU=
-In-Reply-To: <BANLkTimH9xLROcOosO+Qa5-hhOGYyG8pjA@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <owner-linux-mm@kvack.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1308084019; bh=rLM5FPKTjIWLXeDrSCkO8jaAWb9u0Qv4Y2/YkjYkJ4Q=; h=X-Yahoo-Newman-Property:X-YMail-OSG:X-Yahoo-SMTP:Received:Received:Date:From:X-X-Sender:To:cc:Subject:In-Reply-To:Message-ID:References:User-Agent:MIME-Version:Content-Type; b=A99f3u6Zd6pHUYwa8T5T4z6kKxIubz6HwRd4lWIlNgJgEFlzzxzKGI1WiD0QaFNjSJMi9U0jhz+So1uzDSHS1+sSuBie9RYUkcKr95kQY37doVKpgFNLG0uC4cr/qJuhUslgHstu+qRSZ6fXb/1Oy2z4pFj3W8rowDcjDrAkNeg=
+In-Reply-To: <20110614201031.GA19848@Chamillionaire.breakpoint.cc>
+Sender: owner-linux-mm@kvack.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Ivan Matala <ivanmatala@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>
+Cc: Pekka Enberg <penberg@kernel.org>, Matt Mackall <mpm@selenic.com>, linux-mm@kvack.org, "David S. Miller" <davem@davemloft.net>, netfilter@vger.kernel.org
 
-On Tue, 2011-06-14 at 07:41 -0700, Ivan Matala wrote:
-> In short, what rules to add to block other ports except, ssh and port 80, 3128.
+On Tue, 14 Jun 2011, Sebastian Andrzej Siewior wrote:
 
-Assuming you're using iptables to forward packets, something like:
+> Therefore I'm changing the default alignment of SLOB to 8. This fixes my
+> netfilter problems (and probably other) and we have consistent behavior
+> across all SL*B allocators.
 
-iptables -A FORWARD -p tcp -m multiport --dports 22,80,3128 -j ACCEPT
-iptables -A FORWARD -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-iptables -A FORWARD -j DROP
+If you do that then all slab allocators do the same and we may move
+that alignment stuff into include/linux/slab.h instead.
 
-Your email is not very clear, so it depends whether you are trying to
-allow inbound connections or connections to external servers. You'll
-therefore need to change dports to sports as required. In the same vein
-you may also need to change FORWARD to INPUT.
-
-Andy
-
-
+--
+To unsubscribe, send a message with 'unsubscribe linux-mm' in
+the body to majordomo@kvack.org.  For more info on Linux MM,
+see: http://www.linux-mm.org/ .
+Fight unfair telecom internet charges in Canada: sign http://stopthemeter.ca/
+Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
