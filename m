@@ -1,42 +1,48 @@
-From: =?ISO-8859-1?Q?S=E9bastien_LAVEZE?= <slaveze@gmail.com>
-Subject: [Ebtables configuration] CONFIG_BRIDGE_NETFILTER ebtables dependency
-Date: Mon, 13 Jun 2011 15:30:23 +0200
-Message-ID: <BANLkTik-boon=ACm9yEPaCV17jHQPLA01g@mail.gmail.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:date:message-id:subject:from:to
-         :content-type:content-transfer-encoding;
-        bh=u7Lwnfjzovh6szn5K9WDdkW863b9fL/L/+w/ypioIHM=;
-        b=DmFe53z+57HdoBd2tgUDbZAOTt3L5KIWH8plJ53zFYJFAST8NQzk+NT4DPEY7D5c4b
-         nE8cv4zZfa1whe4O/nD7DKrTVzbo/Y2Yfqyg0/gUw24rCJM0vXlqB1Rmh05l3ag2QeQ3
-         PgzYkOY6+T1q1w4tHDxg+XlyeyoGbj/f9epbU=
-Sender: netfilter-owner@vger.kernel.org
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH net-next 0/2] net: remove casts of void *
+Date: Mon, 13 Jun 2011 19:21:25 -0700
+Message-ID: <cover.1308017857.git.joe@perches.com>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netdev@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, ebtables-user@lists.sourceforge.net, ebtables-devel@lists.sourceforge.net, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, bridge@lists.linux-foundation.org, ceph-devel@vger.kernel.org, linux-decnet-user@lists.sourceforge.net, linux-sctp@vger.kernel.org
 
-Hi all,
-Since a while I noticed that ebtables configuration is dependent upon
-CONFIG_BRIDGE_NETFILTER.
-Is there any specific reason for this ? There was not this dependency
-in the past and on top of it the description of bridge-netfilter in
-net/KConfig says the opposite:
+Joe Perches (2):
+  net: Remove casts of void *
+  net: netfilter: Remove casts of void *
 
-"=A0Enabling=A0this=A0option=A0will=A0let=A0arptables=A0resp.=A0iptable=
-s=A0see=A0bridged
-=A0=A0=A0=A0=A0=A0ARP=A0resp.=A0IP=A0traffic.=A0If=A0you=A0want=A0a=A0b=
-ridging=A0firewall,=A0you=A0probably
- =A0=A0=A0=A0=A0want=A0this=A0option=A0enabled.
- =A0=A0=A0=A0=A0Enabling=A0or=A0disabling=A0this=A0option=A0doesn't=A0e=
-nable=A0or=A0disable
-=A0=A0=A0=A0=A0=A0ebtables.
+ net/8021q/vlanproc.c                |    2 +-
+ net/atm/mpc.c                       |    2 +-
+ net/bridge/netfilter/ebtables.c     |    2 +-
+ net/ceph/crypto.c                   |    2 +-
+ net/decnet/dn_dev.c                 |    2 +-
+ net/ipv4/netfilter/arp_tables.c     |   16 ++++++----------
+ net/ipv4/netfilter/ip_tables.c      |   13 +++++--------
+ net/ipv6/netfilter/ip6_tables.c     |   13 +++++--------
+ net/irda/af_irda.c                  |    4 ++--
+ net/irda/ircomm/ircomm_tty_attach.c |    2 +-
+ net/irda/irda_device.c              |    2 +-
+ net/irda/iriap.c                    |    8 ++++----
+ net/irda/irlan/irlan_client.c       |   10 +++++-----
+ net/irda/irlan/irlan_common.c       |   10 +++++-----
+ net/irda/irlan/irlan_eth.c          |    2 +-
+ net/irda/irlan/irlan_provider.c     |   10 +++++-----
+ net/irda/irqueue.c                  |    4 ++--
+ net/irda/irttp.c                    |   18 +++++++++---------
+ net/key/af_key.c                    |   20 ++++++++++----------
+ net/netfilter/ipset/ip_set_core.c   |    2 +-
+ net/netfilter/nf_conntrack_proto.c  |    2 +-
+ net/netlabel/netlabel_unlabeled.c   |   10 ++++------
+ net/sctp/bind_addr.c                |    2 +-
+ net/sctp/input.c                    |    3 +--
+ net/sctp/sm_make_chunk.c            |   26 ++++++++++----------------
+ net/sctp/sm_sideeffect.c            |    2 +-
+ net/sctp/socket.c                   |   16 ++++++++--------
+ 27 files changed, 93 insertions(+), 112 deletions(-)
 
-=A0=A0=A0=A0=A0=A0If=A0unsure,=A0say=A0N."
-
-I would like to use Ebtables but not Bridge-netfilter...
-
-Thanks,
-Sebastien
+-- 
+1.7.6.rc0
