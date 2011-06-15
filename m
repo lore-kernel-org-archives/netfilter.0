@@ -1,43 +1,25 @@
-From: "Greg Scott" <GregScott@Infrasupport.com>
-Subject: Bizarre NAT behavior
-Date: Tue, 14 Jun 2011 21:03:36 -0500
-Message-ID: <925A849792280C4E80C5461017A4B8A2A03FEB@mail733.InfraSupportEtc.com>
+From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
+Subject: come back the traffic on same interface which it input
+Date: Tue, 14 Jun 2011 23:31:43 -0300
+Message-ID: <BANLkTimf7nTztsuo2ov1QuUN=ACKHsBsvw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
-Cc: Lynn Hanson <LynnHanson@eaganhills.org>, Joe Whalen <JoeWhalen@eaganhills.org>
+Content-Transfer-Encoding: 7bit
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-I ran into a bizarre NAT problem recently.  I have a firewall with eth0
-and eth1 bridged using device br0.  This site hosts a few publicly
-visible web and ftp sites.  These are all accessible across the Internet
-as they should be. 
+hello everyone, I have two ISPs in my firewall that are ADSLs lines. I
+wish that all trafic input in wan1 ( ISP1 ) come back on it. but this
+isn't happening because the firewall gateway is ISP2 ( wan2 ) so all
+input traffic by ISP1 ( wan1 ) doesn't work because the firewall
+forwards all traffic as it as your gateway wich is ISP2
 
-For internal users accessing these sites using public IP Addresses, I
-MASQUERADE the request and also DNAT it. This has worked for several
-years - but broke recently when I put in a firewall upgrade using kernel
-2.6.35.6-48.fc14.i686.PAE.  Identical ruleset from the old and new, just
-a newer kernel with Fedora 14.  
+for exemplo, I have a http service on this firewall and when I attempt
+ access it from Internet doesn't work because it's on my ISP1.
 
-Here's the really weird part - it all works when I watch it with
-tcpdump.  The website has a public IP Address (obfuscated here) of
-1.2.115.121.  This NATs to private IP Address 192.168.10.8.  When a user
-in the 192.168.10.nnn subnet tries to access the website at its public
-IP Address, nothing happens.  But when I do this:
+how I can do for all input traffic on wan1 come back on it and not on
+wan2 wich is the firewall gateway ??
 
-[root@ehac-fw2011 ~]# /usr/sbin/tcpdump -i br0 host 1.2.115.151 -nn
-
-Now that user can see the website.  This works for a few minutes after I
-terminate tcpdump until the TCP connection goes away.  I can reproduce
-the problem at will - am I looking a kernel bug?  How weird is that when
-the problem stops when I watch the packets.  Some kind of timing glitch?
-
-Thanks
-
-- Greg Scott
-
-
+any tips are welcome
