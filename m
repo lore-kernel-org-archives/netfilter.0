@@ -1,69 +1,49 @@
-From: Matt Mackall <mpm@selenic.com>
-Subject: Re: [PATCH] slob: push the min alignment to long long
-Date: Wed, 15 Jun 2011 15:55:55 -0500
-Message-ID: <1308171355.15617.401.camel@calx>
-References: <20110614201031.GA19848@Chamillionaire.breakpoint.cc>
-	 <1308089140.15617.221.camel@calx>
-	 <20110615201202.GB19593@Chamillionaire.breakpoint.cc>
-	 <1308169466.15617.378.camel@calx>
-	 <BANLkTi=QG3ywRhSx=npioJx-d=yyf=o29A@mail.gmail.com>
+From: Victor Julien <lists@inliniac.net>
+Subject: Re: IPS recommendations?
+Date: Wed, 15 Jun 2011 22:56:59 +0200
+Message-ID: <4DF91C9B.1040401@inliniac.net>
+References: <92A9C99A1E5FF14F8538DDEE14996A520364AF@chp-exg.coxhp.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <BANLkTi=QG3ywRhSx=npioJx-d=yyf=o29A@mail.gmail.com>
-Sender: owner-linux-mm@kvack.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <92A9C99A1E5FF14F8538DDEE14996A520364AF@chp-exg.coxhp.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Pekka Enberg <penberg@kernel.org>
-Cc: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>, Christoph Lameter <cl@linux-foundation.org>, linux-mm@kvack.org, "David S. Miller" <davem@davemloft.net>, netfilter@vger.kernel.org
+To: bmcdowell@coxhealthplans.com
+Cc: netfilter@vger.kernel.org
 
-On Wed, 2011-06-15 at 23:40 +0300, Pekka Enberg wrote:
-> On Wed, Jun 15, 2011 at 11:24 PM, Matt Mackall <mpm@selenic.com> wrote:
-> > On Wed, 2011-06-15 at 22:12 +0200, Sebastian Andrzej Siewior wrote:
-> >> * Matt Mackall | 2011-06-14 17:05:40 [-0500]:
-> >>
-> >> >Ok, so you claim that ARCH_KMALLOC_MINALIGN is not set on some
-> >> >architectures, and thus SLOB does the wrong thing.
-> >> >
-> >> >Doesn't that rather obviously mean that the affected architectures
-> >> >should define ARCH_KMALLOC_MINALIGN? Because, well, they have an
-> >> >"architecture-specific minimum kmalloc alignment"?
-> >>
-> >> nope, if nothing is defined SLOB asumes that alignment of long is the way
-> >> go. Unfortunately alignment of u64 maybe larger than of u32.
-> >
-> > I understand that. I guess we have a different idea of what constitutes
-> > "architecture-specific" and what constitutes "normal".
-> >
-> > But I guess I can be persuaded that most architectures now expect 64-bit
-> > alignment of u64s.
+You can check Snort[1] (contains inline support), Suricata[2] or
+something like fwsnort[3].
+
+Personally I'm "using" Suricata, because I'm developing it ;-)
+
+Cheers,
+Victor
+
+[1] http://www.snort.org/
+[2] http://openinfosecfoundation.org/
+[3] http://www.cipherdyne.org/fwsnort/
+
+On 06/15/2011 09:39 PM, bmcdowell@coxhealthplans.com wrote:
+> Is anyone on the list using some form of IPS that integrates well with netfilter-driven firewalls?  I haven't looked into this particular angle since snort-inline in 2003.
 > 
-> Changing the alignment for everyone is likely to cause less problems
-> in the future. Matt, are there any practical reasons why we shouldn't
-> do that?
+> 
+> Bob McDowell
+> Network/Security Engineer 
+> Cox HealthPlans 
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
 
-Unless you audit all architectures to check that things are sensible,
-it's a trade: regressing performance on one arch to improve correctness
-on another. On the one hand, regressions trump improvement. On the
-other, correctness trumps performance.
-
-In general, I think the right thing is to require every arch to
-explicitly document its alignment requirements via defines in the kernel
-headers so that random hackers don't have to scour the internet for
-datasheets on obscure architectures they don't care about. We should
-have no defaults and refuse to compile on any arch that doesn't have the
-define which will ensure someone somewhere actually thinks about it for
-each arch.
-
-But as I don't have time to push that vision, I'll let it slide.
 
 -- 
-Mathematics is the supreme nostalgia of our time.
+---------------------------------------------
+Victor Julien
+http://www.inliniac.net/
+PGP: http://www.inliniac.net/victorjulien.asc
+---------------------------------------------
 
-
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Fight unfair telecom internet charges in Canada: sign http://stopthemeter.ca/
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
