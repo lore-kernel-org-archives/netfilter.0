@@ -1,47 +1,43 @@
-From: Sam Roberts <vieuxtech@gmail.com>
-Subject: how do I find the supported targets for the raw table's PREROUTING chain?
-Date: Tue, 14 Jun 2011 17:35:55 -0700
-Message-ID: <BANLkTim=jr02N6izXOwMw+djtsvYahrwRw@mail.gmail.com>
+From: "Greg Scott" <GregScott@Infrasupport.com>
+Subject: Bizarre NAT behavior
+Date: Tue, 14 Jun 2011 21:03:36 -0500
+Message-ID: <925A849792280C4E80C5461017A4B8A2A03FEB@mail733.InfraSupportEtc.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:date:message-id:subject:from:to
-         :content-type;
-        bh=yhW1EPCu6Zlfwu9c8vpHbiUQ0TQEdE/naU15okLDLLc=;
-        b=dpvcm3I6Iwap8u8gEWb01nOxBeE4gfc5mcrBmbFN6SyURouCnvUHQ4XF0OmzSDPeDL
-         kUWXj1BD38LV1UIYQxdzKp9fcZjifBP8b8kwyOOEUDxizzZ1EYqeQCzZsmDIGLjlvgAf
-         HAFH1KDZewpAC5hdRWgHvsNRU5xWV+EtsAEkM=
+Content-class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
+Cc: Lynn Hanson <LynnHanson@eaganhills.org>, Joe Whalen <JoeWhalen@eaganhills.org>
 
-Why would there be no chain/target for iptables -t raw -A PREROUTING -j CT?
+I ran into a bizarre NAT problem recently.  I have a firewall with eth0
+and eth1 bridged using device br0.  This site hosts a few publicly
+visible web and ftp sites.  These are all accessible across the Internet
+as they should be. 
 
-It's almost like the CT or NOTRACK targets aren't built into the
-kernel, how do I list what targets are supported?
+For internal users accessing these sites using public IP Addresses, I
+MASQUERADE the request and also DNAT it. This has worked for several
+years - but broke recently when I put in a firewall upgrade using kernel
+2.6.35.6-48.fc14.i686.PAE.  Identical ruleset from the old and new, just
+a newer kernel with Fedora 14.  
 
-Thanks,
-Sam
+Here's the really weird part - it all works when I watch it with
+tcpdump.  The website has a public IP Address (obfuscated here) of
+1.2.115.121.  This NATs to private IP Address 192.168.10.8.  When a user
+in the 192.168.10.nnn subnet tries to access the website at its public
+IP Address, nothing happens.  But when I do this:
 
-This doesn't work:
+[root@ehac-fw2011 ~]# /usr/sbin/tcpdump -i br0 host 1.2.115.151 -nn
 
-root@x86-gaia:~# iptables -t raw -A PREROUTING -j NOTRACK
-iptables: No chain/target/match by that name.
+Now that user can see the website.  This works for a few minutes after I
+terminate tcpdump until the TCP connection goes away.  I can reproduce
+the problem at will - am I looking a kernel bug?  How weird is that when
+the problem stops when I watch the packets.  Some kind of timing glitch?
 
-root@x86-gaia:~# iptables -t raw -A PREROUTING -j CT --notrack
-iptables: No chain/target/match by that name.
+Thanks
 
-
-But this does:
-
-root@x86-gaia:~# iptables -t raw -A PREROUTING -j ACCEPT
+- Greg Scott
 
 
-My versions are:
-
-Linux x86-gaia 2.6.39.1 #1 SMP Thu Jun 9 15:49:16 PDT 2011 i686 unknown
-
-iptables v1.4.10
