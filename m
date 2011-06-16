@@ -1,40 +1,45 @@
 From: Pekka Enberg <penberg@kernel.org>
 Subject: Re: [PATCH] slob: push the min alignment to long long
-Date: Thu, 16 Jun 2011 18:28:03 +0300
-Message-ID: <1308238083.29073.20.camel@jaguar>
-References: <1308169466.15617.378.camel@calx>
-	 <BANLkTi=QG3ywRhSx=npioJx-d=yyf=o29A@mail.gmail.com>
-	 <1308171355.15617.401.camel@calx>
-	 <20110615.181148.650483947691740732.davem@davemloft.net>
-	 <1308178420.15617.447.camel@calx>
-	 <BANLkTikOM6=fWnUA1bNZOM-jwg=o=CL8Ug@mail.gmail.com>
-	 <1308237823.15617.451.camel@calx>
+Date: Thu, 16 Jun 2011 19:48:48 +0300
+Message-ID: <BANLkTim-C7=KVde=A-S5WXoHksaSZ0-wTw@mail.gmail.com>
+References: <20110614201031.GA19848@Chamillionaire.breakpoint.cc>
+	<alpine.DEB.2.00.1106141614480.10017@router.home>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <1308237823.15617.451.camel@calx>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:sender:in-reply-to:references:date
+         :x-google-sender-auth:message-id:subject:from:to:cc:content-type;
+        bh=AA5c98WUxTHt45zQbAHA6OFCcSzE/ER06iKX6avxShA=;
+        b=c1zzdJAZFj8szxRjf58p9k9NpHOj83fegw9rUqR+JvIZDQNfs8rSlHucl4xshnWKm4
+         37kPjBFpwkTCEykcfsT6pYQcJwucZhlP2ecbgJBr9gCDru2YN9OTvF9KtkZP2QbEJnq3
+         PRdnrs5cdQ7Ea8wkyz6iLdEjuPUNDVKvH4CcY=
+In-Reply-To: <alpine.DEB.2.00.1106141614480.10017@router.home>
 Sender: owner-linux-mm@kvack.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Matt Mackall <mpm@selenic.com>
-Cc: David Miller <davem@davemloft.net>, sebastian@breakpoint.cc, cl@linux-foundation.org, linux-mm@kvack.org, netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: Christoph Lameter <cl@linux.com>
+Cc: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>, Matt Mackall <mpm@selenic.com>, linux-mm@kvack.org, "David S. Miller" <davem@davemloft.net>, netfilter@vger.kernel.org, Pekka Enberg <penberg@cs.helsinki.fi>
 
-On Thu, 2011-06-16 at 10:23 -0500, Matt Mackall wrote:
-> > I don't agree. I think we should either provide defaults that work for
-> > everyone and let architectures override them (which AFAICT Christoph's
-> > patch does) or we flat out #error if architectures don't specify
-> > alignment requirements.
-> 
-> Uh, isn't the latter precisely what I say above?
-> 
-> >  The current solution seems to be the worst one
-> > from practical point of view.
-> 
-> Good, because no one's advocating for it.
+On Wed, Jun 15, 2011 at 12:16 AM, Christoph Lameter <cl@linux.com> wrote:
+> Maybe this would work too?
+>
+>
+> Subject: slauob: Unify alignment definition
+>
+> Every slab has its on alignment definition in include/linux/sl?b_def.h. Extract those
+> and define a common set in include/linux/slab.h.
+>
+> SLOB: As notes sometimes we need double word alignment on 32 bit. This gives all
+> structures allocated by SLOB a unsigned long long alignment like the others do.
+>
+> SLAB: If ARCH_SLAB_MINALIGN is not set SLAB would set ARCH_SLAB_MINALIGN to
+> zero meaning no alignment at all. Give it the default unsigned long long alignment.
+>
+> Signed-off-by: Christoph Lameter <cl@linux.com>
 
-Sorry, I totally misunderstood what you wrote!
-
-			Pekka
+Applied, thanks!
 
 --
 To unsubscribe, send a message with 'unsubscribe linux-mm' in
