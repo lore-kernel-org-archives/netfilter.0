@@ -1,55 +1,51 @@
-From: Matt Mackall <mpm@selenic.com>
-Subject: Re: [PATCH] slob: push the min alignment to long long
-Date: Wed, 15 Jun 2011 17:53:40 -0500
-Message-ID: <1308178420.15617.447.camel@calx>
-References: <1308169466.15617.378.camel@calx>
-	 <BANLkTi=QG3ywRhSx=npioJx-d=yyf=o29A@mail.gmail.com>
-	 <1308171355.15617.401.camel@calx>
-	 <20110615.181148.650483947691740732.davem@davemloft.net>
+From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
+Subject: Re: come back the traffic on same interface which it input
+Date: Wed, 15 Jun 2011 21:37:48 -0300
+Message-ID: <BANLkTim0i-TpYxWQNRrEe4mdXyED4kZVdQ@mail.gmail.com>
+References: <BANLkTimf7nTztsuo2ov1QuUN=ACKHsBsvw@mail.gmail.com>
+	<1308164291.32634.26.camel@lt>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <owner-linux-mm@kvack.org>
-In-Reply-To: <20110615.181148.650483947691740732.davem@davemloft.net>
-Sender: owner-linux-mm@kvack.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <1308164291.32634.26.camel@lt>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: David Miller <davem@davemloft.net>
-Cc: penberg@kernel.org, sebastian@breakpoint.cc, cl@linux-foundation.org, linux-mm@kvack.org, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Steven Kath <steven.kath@vyatta.com>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Wed, 2011-06-15 at 18:11 -0400, David Miller wrote:
-> From: Matt Mackall <mpm@selenic.com>
-> Date: Wed, 15 Jun 2011 15:55:55 -0500
-> 
-> > In general, I think the right thing is to require every arch to
-> > explicitly document its alignment requirements via defines in the kernel
-> > headers so that random hackers don't have to scour the internet for
-> > datasheets on obscure architectures they don't care about.
-> 
-> Blink... because the compiler doesn't provide a portable way to
-> do this, right? :-)
+Thank you Steven, it's working as your as below
 
-Because I, on x86, cannot deduce the alignment requirements of, say,
-CRIS without doing significant research. So answering a question like
-"are there any architectures where assumption X fails" is obnoxiously
-hard, rather than being a grep.
-
-I also don't think it's a given there's a portable way to deduce the
-alignment requirements due to the existence of arch-specific quirks. If
-an arch wants to kmalloc its weird crypto or SIMD context and those want
-128-bit alignment, we're not going to want to embed that knowledge in
-the generic code, but instead tweak an arch define.
-
-Also note that not having generic defaults forces each new architectures
-to (nominally) examine each assumption rather than discover they
-inherited an incorrect default somewhere down the road.
-
--- 
-Mathematics is the supreme nostalgia of our time.
-
-
---
-To unsubscribe, send a message with 'unsubscribe linux-mm' in
-the body to majordomo@kvack.org.  For more info on Linux MM,
-see: http://www.linux-mm.org/ .
-Fight unfair telecom internet charges in Canada: sign http://stopthemeter.ca/
-Don't email: <a href=mailto:"dont@kvack.org"> email@kvack.org </a>
+Em 15 de junho de 2011 15:58, Steven Kath <steven.kath@vyatta.com> escr=
+eveu:
+> On Tue, 2011-06-14 at 23:31 -0300, Usu=E1rio do Sistema wrote:
+>> hello everyone, I have two ISPs in my firewall that are ADSLs lines.=
+ I
+>> wish that all trafic input in wan1 ( ISP1 ) come back on it. but thi=
+s
+>> isn't happening because the firewall gateway is ISP2 ( wan2 ) so all
+>> input traffic by ISP1 ( wan1 ) doesn't work because the firewall
+>> forwards all traffic as it as your gateway wich is ISP2
+>>
+>> for exemplo, I have a http service on this firewall and when I attem=
+pt
+>> =A0access it from Internet doesn't work because it's on my ISP1.
+>>
+>> how I can do for all input traffic on wan1 come back on it and not o=
+n
+>> wan2 wich is the firewall gateway ??
+>>
+>> any tips are welcome
+>
+> Here is a good start for a simple implementation:
+>
+> http://lartc.org/howto/lartc.rpdb.multiple-links.html
+>
+> If you need to be more selective, you can use iptables markings to ge=
+t
+> finer control:
+>
+> http://linux-ip.net/html/adv-multi-internet.html
+>
+>
+>
