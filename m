@@ -1,56 +1,104 @@
-From: "Christian S. Perone" <christian.perone@gmail.com>
-Subject: ip6tables HL bug ?
-Date: Mon, 20 Jun 2011 15:47:30 -0300
-Message-ID: <BANLkTi=W1uCCMceOT64RMXyK-Q7fFGgmSA@mail.gmail.com>
+From: Jesper Juhl <jj@chaosbits.net>
+Subject: [PATCH] Remove redundant linux/version.h includes from net/
+Date: Tue, 21 Jun 2011 00:13:10 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1106210009520.27735@swampdragon.chaosbits.net>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=domainkey-signature:mime-version:from:date:message-id:subject:to
-         :content-type;
-        bh=/6kWa44W48fx99fML2dLLtN6jQgoRYtZ2b2KILCAqFg=;
-        b=u4KUHxSlj2kxU4DD/MKk873f0ZOvY3sCDMFi9klnI3U7BA7tJ1ZQvNTG/DFpviwAkE
-         I79VPOk4nEkY+GHe+hRt2rLZR4nqgyM47iX3U24CjgwOtbU6tOgfpa5DFyhOYEPqhufe
-         de5G1z71P53ZM+UZPYKhO0bdfgiLlqA0vxEbA=
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: netdev@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>, coreteam@netfilter.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, linux-kernel@vger.kernel.org, Dmitry Kozlov <xeb@mail.ru>
 
-Does someone knows why is ip6tables showing this error:
+It was suggested by "make versioncheck" that the follwing includes of
+linux/version.h are redundant:
 
-# ip6tables -t mangle -A POSTROUTING -j HL --hl-inc 1
-ip6tables v1.3.5: HL: increasing by 0?
+  /home/jj/src/linux-2.6/net/caif/caif_dev.c: 14 linux/version.h not needed.
+  /home/jj/src/linux-2.6/net/caif/chnl_net.c: 10 linux/version.h not needed.
+  /home/jj/src/linux-2.6/net/ipv4/gre.c: 19 linux/version.h not needed.
+  /home/jj/src/linux-2.6/net/netfilter/ipset/ip_set_core.c: 20 linux/version.h not needed.
+  /home/jj/src/linux-2.6/net/netfilter/xt_set.c: 16 linux/version.h not needed.
 
-If I use the hl-set with 2 as argument for instance:
-# ip6tables -t mangle -A POSTROUTING -o eth0 -p icmpv6 --icmpv6-type
-router-advertisement -j HL --hl-set 2
-# ipt6tables -t mangle -L
-(...)
-Chain POSTROUTING (policy ACCEPT)
-target     prot opt source               destination
-HL         ipv6-icmp    anywhere             anywhere
-ipv6-icmp router-advertisement HL set to 0
+and it seems that it is right.
 
-See that the value read is always interpreted as "zero", in
-libip6t_HL.c we have:
-if (value == 0)
-{
-   exit_error(PARAMETER_PROBLEM,"HL: increasing by 0?");
-}
+Beyond manually inspecting the source files I also did a few build
+tests with various configs to confirm that including the header in
+those files is indeed not needed.
 
-So the problem is only thrown when the value is zero, the question is,
-why is ip6tables reading the argument as zero ?
-Does someone knows if this is a known bug ?
+Here's a patch to remove the pointless includes.
 
-Details:
-Kernel 2.6.17, powerpc
-ip6tables v1.3.5
+Signed-off-by: Jesper Juhl <jj@chaosbits.net>
+---
+ net/caif/caif_dev.c               |    1 -
+ net/caif/chnl_net.c               |    1 -
+ net/ipv4/gre.c                    |    1 -
+ net/netfilter/ipset/ip_set_core.c |    1 -
+ net/netfilter/xt_set.c            |    1 -
+ 5 files changed, 0 insertions(+), 5 deletions(-)
 
-Thank you !
+diff --git a/net/caif/caif_dev.c b/net/caif/caif_dev.c
+index 682c0fe..7c2fa0a 100644
+--- a/net/caif/caif_dev.c
++++ b/net/caif/caif_dev.c
+@@ -11,7 +11,6 @@
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ":%s(): " fmt, __func__
+ 
+-#include <linux/version.h>
+ #include <linux/kernel.h>
+ #include <linux/if_arp.h>
+ #include <linux/net.h>
+diff --git a/net/caif/chnl_net.c b/net/caif/chnl_net.c
+index adbb424..8237766 100644
+--- a/net/caif/chnl_net.c
++++ b/net/caif/chnl_net.c
+@@ -7,7 +7,6 @@
+ 
+ #define pr_fmt(fmt) KBUILD_MODNAME ":%s(): " fmt, __func__
+ 
+-#include <linux/version.h>
+ #include <linux/fs.h>
+ #include <linux/init.h>
+ #include <linux/module.h>
+diff --git a/net/ipv4/gre.c b/net/ipv4/gre.c
+index c6933f2..9dbe108 100644
+--- a/net/ipv4/gre.c
++++ b/net/ipv4/gre.c
+@@ -16,7 +16,6 @@
+ #include <linux/skbuff.h>
+ #include <linux/in.h>
+ #include <linux/netdevice.h>
+-#include <linux/version.h>
+ #include <linux/spinlock.h>
+ #include <net/protocol.h>
+ #include <net/gre.h>
+diff --git a/net/netfilter/ipset/ip_set_core.c b/net/netfilter/ipset/ip_set_core.c
+index 42aa64b..40c9645 100644
+--- a/net/netfilter/ipset/ip_set_core.c
++++ b/net/netfilter/ipset/ip_set_core.c
+@@ -17,7 +17,6 @@
+ #include <linux/spinlock.h>
+ #include <linux/netlink.h>
+ #include <linux/rculist.h>
+-#include <linux/version.h>
+ #include <net/netlink.h>
+ 
+ #include <linux/netfilter.h>
+diff --git a/net/netfilter/xt_set.c b/net/netfilter/xt_set.c
+index b3babae..5c23c44 100644
+--- a/net/netfilter/xt_set.c
++++ b/net/netfilter/xt_set.c
+@@ -13,7 +13,6 @@
+ 
+ #include <linux/module.h>
+ #include <linux/skbuff.h>
+-#include <linux/version.h>
+ 
+ #include <linux/netfilter/x_tables.h>
+ #include <linux/netfilter/xt_set.h>
 
 -- 
-"Forgive, O Lord, my little jokes on Thee, and I'll forgive Thy great
-big joke on me."
-http://pyevolve.sourceforge.net/wordpress/
+Jesper Juhl <jj@chaosbits.net>       http://www.chaosbits.net/
+Don't top-post http://www.catb.org/jargon/html/T/top-post.html
+Plain text mails only, please.
