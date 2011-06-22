@@ -1,30 +1,25 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: ip6tables HL bug ?
-Date: Wed, 22 Jun 2011 15:41:07 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1106221536570.14179@frira.zrqbmnf.qr>
-References: <BANLkTi=W1uCCMceOT64RMXyK-Q7fFGgmSA@mail.gmail.com>
+From: andrey <andrey@cs.dal.ca>
+Subject: PCAP file to iptables
+Date: Wed, 22 Jun 2011 13:38:37 -0300
+Message-ID: <5e4fdd882f6b5694c776880f92c76cf0@cs.dal.ca>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BANLkTi=W1uCCMceOT64RMXyK-Q7fFGgmSA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Christian S. Perone" <christian.perone@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Monday 2011-06-20 20:47, Christian S. Perone wrote:
+ Hello,
 
->Does someone knows why is ip6tables showing this error:
->
-># ip6tables -t mangle -A POSTROUTING -j HL --hl-inc 1
->ip6tables v1.3.5: HL: increasing by 0?
->Does someone knows if this is a known bug ?
->
->Details:
->Kernel 2.6.17, powerpc
->ip6tables v1.3.5
+ I would like to get traffic that was captured to iptables.
+ I have tried tcpreplay, but tcpreplay cannot create traffic that is 
+ seen by iptables.
+ Does anyone know how could I get data from a pcap file to iptables?
 
-Yes, because it's old. Terribly old.
-(A different HL bug in 1.4.11 has been spotted and is pending fixure.)
+ I'm using:
+ Ubuntu 10.10 32bit (Maverick)
+ iptables 1.4.4
 
+ Regards,
+ Andrey
