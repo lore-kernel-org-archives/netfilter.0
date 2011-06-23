@@ -1,25 +1,28 @@
-From: Jan Engelhardt <jengelh@medozas.de>
+From: "Greg Scott" <GregScott@Infrasupport.com>
 Subject: RE: Bizarre NAT behavior
-Date: Thu, 23 Jun 2011 17:28:21 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1106231727550.21780@frira.zrqbmnf.qr>
+Date: Thu, 23 Jun 2011 11:28:02 -0500
+Message-ID: <925A849792280C4E80C5461017A4B8A2A04055@mail733.InfraSupportEtc.com>
 References: <925A849792280C4E80C5461017A4B8A2A03FEB@mail733.InfraSupportEtc.com> <925A849792280C4E80C5461017A4B8A2A0404D@mail733.InfraSupportEtc.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <925A849792280C4E80C5461017A4B8A2A0404D@mail733.InfraSupportEtc.com>
+Content-class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Greg Scott <GregScott@Infrasupport.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Thursday 2011-06-23 17:17, Greg Scott wrote:
+> Why would NATing in both PREROUTING and POSTROUTING
+> work  **only**  when I watch it with tcpdump and not work otherwise?
 
->Wow, more than a week later and silence from everyone - am I on my own
->with this problem?  Why would NATing in both PREROUTING and POSTROUTING
->work  **only**  when I watch it with tcpdump and not work otherwise?
->Surely I can't be the only one seeing this problem?
+I should be more clear.  The problem is with internal users looking at
+internally hosted web and ftp sites using the public IP Addresses.  The
+way you do this is, DNAT the packet in PREROUTING and then MASQUERADE
+the packet in POSTROUTING.  The technique is documented in a howto
+someplace and I've been doing it for several years at several sites.  
 
-Potential explanation: Packets being dropped inside the routing core due 
-to violation of RP filter. [tcpdump hooks in very early and thus can 
-still see stuff.]
+At this particular site, all worked fine until I replaced the old
+firewall with a new one.  Now it only works properly when I watch the
+conversation the tcpdump.  I'm not making this up.
+
+- Greg Scott
