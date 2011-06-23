@@ -1,65 +1,64 @@
-From: Christoph Lameter <cl@linux.com>
-Subject: Re: [PATCH] slob: push the min alignment to long long
-Date: Thu, 23 Jun 2011 09:36:12 -0500 (CDT)
-Message-ID: <alpine.DEB.2.00.1106230934250.19668@router.home>
-References: <20110614201031.GA19848@Chamillionaire.breakpoint.cc> <alpine.DEB.2.00.1106141614480.10017@router.home> <alpine.DEB.2.00.1106221641120.14635@chino.kir.corp.google.com>
+From: "Greg Scott" <GregScott@Infrasupport.com>
+Subject: RE: Bizarre NAT behavior
+Date: Thu, 23 Jun 2011 10:17:07 -0500
+Message-ID: <925A849792280C4E80C5461017A4B8A2A0404D@mail733.InfraSupportEtc.com>
+References: <925A849792280C4E80C5461017A4B8A2A03FEB@mail733.InfraSupportEtc.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1308839775; bh=lIiYqMROJTP7s/9DCpn7DwwT2de+b2QQ84w8B3FP0fI=; h=X-Yahoo-Newman-Property:X-YMail-OSG:X-Yahoo-SMTP:Received:Received:Date:From:X-X-Sender:To:cc:Subject:In-Reply-To:Message-ID:References:User-Agent:MIME-Version:Content-Type; b=YSjIzsg3zESXVzTh7Y04qVnXt8E5cYEWK9NPThaL65ip+rgthdRkBwAB3Dng/QDy7335P5OS+xuFlMebrSrUrcchfMlU9gwBp4sL8CDia3rtrEdeTxDjB/fFC7FbQJGXPxiYbUbGPqWOAAYSA4kdCl+45Az3oCOqWnfuBqPqP/Y=
-In-Reply-To: <alpine.DEB.2.00.1106221641120.14635@chino.kir.corp.google.com>
+Content-class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: David Rientjes <rientjes@google.com>
-Cc: Sebastian Andrzej Siewior <sebastian@breakpoint.cc>, Pekka Enberg <penberg@kernel.org>, Matt Mackall <mpm@selenic.com>, linux-mm@kvack.org, "David S. Miller" <davem@davemloft.net>, netfilter@vger.kernel.org, Pekka Enberg <penberg@cs.helsinki.fi>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Wed, 22 Jun 2011, David Rientjes wrote:
+Wow, more than a week later and silence from everyone - am I on my own
+with this problem?  Why would NATing in both PREROUTING and POSTROUTING
+work  **only**  when I watch it with tcpdump and not work otherwise?
+Surely I can't be the only one seeing this problem?
 
-> >   * struct kmem_cache
-> >   *
-> >   * manages a cache.
->
-> Looks like we lost some valuable information in the comments when this got
-> moved to slab.h :(
-
-Ok. If we want a description for these defines then lets use this.
+- Greg Scott
 
 
-Subject: slab allocators: Provide generic description of alignment defines
 
-Provide description for alignment defines.
+-----Original Message-----
+From: netfilter-owner@vger.kernel.org
+[mailto:netfilter-owner@vger.kernel.org] On Behalf Of Greg Scott
+Sent: Tuesday, June 14, 2011 9:04 PM
+To: netfilter@vger.kernel.org
+Cc: Lynn Hanson; Joe Whalen
+Subject: Bizarre NAT behavior
 
-Signed-off-by: Christoph Lameter <cl@linux.com>
+I ran into a bizarre NAT problem recently.  I have a firewall with eth0
+and eth1 bridged using device br0.  This site hosts a few publicly
+visible web and ftp sites.  These are all accessible across the Internet
+as they should be. 
 
----
- include/linux/slab.h |   10 ++++++++++
- 1 file changed, 10 insertions(+)
+For internal users accessing these sites using public IP Addresses, I
+MASQUERADE the request and also DNAT it. This has worked for several
+years - but broke recently when I put in a firewall upgrade using kernel
+2.6.35.6-48.fc14.i686.PAE.  Identical ruleset from the old and new, just
+a newer kernel with Fedora 14.  
 
-Index: linux-2.6/include/linux/slab.h
-===================================================================
---- linux-2.6.orig/include/linux/slab.h	2011-06-23 09:26:55.000000000 -0500
-+++ linux-2.6/include/linux/slab.h	2011-06-23 09:33:46.000000000 -0500
-@@ -133,12 +133,22 @@ unsigned int kmem_cache_size(struct kmem
- #define KMALLOC_MAX_SIZE	(1UL << KMALLOC_SHIFT_HIGH)
- #define KMALLOC_MAX_ORDER	(KMALLOC_SHIFT_HIGH - PAGE_SHIFT)
+Here's the really weird part - it all works when I watch it with
+tcpdump.  The website has a public IP Address (obfuscated here) of
+1.2.115.121.  This NATs to private IP Address 192.168.10.8.  When a user
+in the 192.168.10.nnn subnet tries to access the website at its public
+IP Address, nothing happens.  But when I do this:
 
-+/*
-+ * Some archs want to perform DMA into kmalloc caches and need a guaranteed
-+ * alignment larger than the alignment of a 64-bit integer.
-+ * Setting ARCH_KMALLOC_MINALIGN in arch headers allows that.
-+ */
- #ifdef ARCH_DMA_MINALIGN
- #define ARCH_KMALLOC_MINALIGN ARCH_DMA_MINALIGN
- #else
- #define ARCH_KMALLOC_MINALIGN __alignof__(unsigned long long)
- #endif
+[root@ehac-fw2011 ~]# /usr/sbin/tcpdump -i br0 host 1.2.115.151 -nn
 
-+/*
-+ * Setting ARCH_SLAB_MINALIGN in arch headers allows a different alignment.
-+ * Intended for arches that get misalignment faults even for 64 bit integer
-+ * aligned buffers.
-+ */
- #ifndef ARCH_SLAB_MINALIGN
- #define ARCH_SLAB_MINALIGN __alignof__(unsigned long long)
- #endif
+Now that user can see the website.  This works for a few minutes after I
+terminate tcpdump until the TCP connection goes away.  I can reproduce
+the problem at will - am I looking a kernel bug?  How weird is that when
+the problem stops when I watch the packets.  Some kind of timing glitch?
+
+Thanks
+
+- Greg Scott
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
