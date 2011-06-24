@@ -1,32 +1,35 @@
 From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Iptables NAT POOL
-Date: Fri, 24 Jun 2011 22:17:00 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1106242211170.3553@frira.zrqbmnf.qr>
-References: <BANLkTi=Mrtp_T27jqMyu3CTp3ohzaiaiCA@mail.gmail.com>
+Subject: Re: iptables links
+Date: Sat, 25 Jun 2011 00:12:06 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1106250007250.16290@frira.zrqbmnf.qr>
+References: <4E03BB34.70704@abpni.co.uk> <alpine.LNX.2.01.1106240143500.20064@frira.zrqbmnf.qr> <4E03D4F7.9040609@abpni.co.uk>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BANLkTi=Mrtp_T27jqMyu3CTp3ohzaiaiCA@mail.gmail.com>
+In-Reply-To: <4E03D4F7.9040609@abpni.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: nima chavooshi <nima0102@gmail.com>
+To: Jonathan Tripathy <jonnyt@abpni.co.uk>
 Cc: netfilter@vger.kernel.org
 
-On Thursday 2011-06-23 21:01, nima chavooshi wrote:
+On Friday 2011-06-24 02:06, Jonathan Tripathy wrote:
 
->Hi
->In our company, we have got one range IP public from our Internet
->provider. so I want to assign this range to our users.this range is
->128 bit.
+>
+> On 24/06/2011 00:44, Jan Engelhardt wrote:
+>> On Friday 2011-06-24 00:16, Jonathan Tripathy wrote:
+>>
+>>> Hi Everyone,
+>>>
+>>> Is there any quick command that I can use with iptables to remove all links
+>>> to
+>>> a chain, as well as removing the chain itself?
+>> No, -F would clean the chain, and -X would remove them, which are
+>> currently two separate operations with the iptables(8) frontend.
+> Hi There,
+>
+> Thanks for this, however I already knew those commands. I'm looking for a
+> command to clear the links to the chain (the commands above clear the chain
+> itself), however I'm guessing is there none?
 
-Unfortunately, you are not in a position to do that, first because you 
-are not IANA, and second, because parts of the address space are already 
-delegated, such as ff00::/8 (a range with 120 bit).
-
->Bu my concern is:
->1- Do I have to set all IP public on output interfaces? Or iptables
->automatically adds all IP's on output interface?
-
-iptables is not a network device configuration utility (-> see iproute 
-instead).
+Indeed there are none.
