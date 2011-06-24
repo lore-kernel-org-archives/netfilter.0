@@ -1,43 +1,36 @@
-From: Mark Mitchell <mmitchell@riccagroup.com>
-Subject: Help on how to limit a NAT port forward to just a range of IP
- addresses
-Date: Fri, 24 Jun 2011 13:45:30 -0400
-Message-ID: <ec9c4a4d-00e6-4ff2-b81d-7b88c1d128c1@riccagroup.com>
-References: <3afccf8e-e575-4203-962a-0079da9fae75@riccagroup.com>
+From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
+Subject: Re: dropping packets of --ctstate INVALID stopped working with 2.6.39.1?
+Date: Fri, 24 Jun 2011 20:23:53 +0200
+Message-ID: <4E04D639.2040905@plouf.fr.eu.org>
+References: <BANLkTinjipDzpFaz9pZN_TijmR0qOx-=AQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <3afccf8e-e575-4203-962a-0079da9fae75@riccagroup.com>
+In-Reply-To: <BANLkTinjipDzpFaz9pZN_TijmR0qOx-=AQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+To: Sam Roberts <vieuxtech@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-I have the following ruleson my firewall (Edgewater Networks Hardware) =
-that do a global port forward of port 11211 to an internal host.
-What I am trying to figure out is how to limit this port forward to jus=
-t a couple ranges of IP addresses.
+Hello,
 
-Outside IP : 173.49.xx.xxx=A0 (xx for privacy reasons)
-Internal IP : 192.168.1.22
+Sam Roberts a =E9crit :
+> I thought only a SYN packet should create a new connection, but PSH
+> packets seem to do it, too, now.
+[...]
+> Our assumption was that if we deleted the connection, that any furthe=
+r
+> TCP packets for that flow would have a ctstate of INVALID
 
-iptables -I FORWARD 10 -i eth1 -d 192.168.1.22 -p tcp --dport 11211 -j =
-ACCEPT
-iptables -A PREROUTING -t nat -p tcp --dport 11211 -d 173.49.xx.xxx -j =
-DNAT --to 192.168.1.22:11211
-iptables -A POSTROUTING -t nat -p tcp -s 192.168.1.22 --dport 11211 -j =
-SNAT --to 173.49.xx.xxx
-iptables -t nat -A POSTROUTING -p tcp -d 192.168.1.22 --dport 11211 -s =
-192.168.1.0/24 -j SNAT --to 192.168.1.1
+This behaviour is controlled by the net.netfilter.nf_conntrack_tcp_loos=
+e
+sysctl. Quoting Jozsef Kadlecsik :
 
+>> With tcp_loose enabled (default) conntrack accepts non-SYN packets a=
+s=20
+>>"NEW" ones, i.e. attempts to pick up connections from the middle.
 
-I tried adding the rule after the FORWARD command but it did not change=
- anything. I could still hit the port from any IP address.
+> This worked with 2.6.38, but doesn't work with 2.6.39.1.
 
-iptables -A INPUT -p tcp --dport 11211 -d 173.49.xx.xxx -m iprange --sr=
-c-range 74.205.xx.x-74.205.xx.x -j ACCEPT=A0
-
-Any help is much appreciated.
-
-
-
+Does the above sysctl have the same value on both kernels ?
