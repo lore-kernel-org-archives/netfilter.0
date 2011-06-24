@@ -1,36 +1,48 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: dropping packets of --ctstate INVALID stopped working with 2.6.39.1?
-Date: Fri, 24 Jun 2011 20:23:53 +0200
-Message-ID: <4E04D639.2040905@plouf.fr.eu.org>
-References: <BANLkTinjipDzpFaz9pZN_TijmR0qOx-=AQ@mail.gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Help on how to limit a NAT port forward to just a range of IP
+ addresses
+Date: Fri, 24 Jun 2011 20:39:26 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1106242030440.2226@frira.zrqbmnf.qr>
+References: <3afccf8e-e575-4203-962a-0079da9fae75@riccagroup.com> <ec9c4a4d-00e6-4ff2-b81d-7b88c1d128c1@riccagroup.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BANLkTinjipDzpFaz9pZN_TijmR0qOx-=AQ@mail.gmail.com>
+In-Reply-To: <ec9c4a4d-00e6-4ff2-b81d-7b88c1d128c1@riccagroup.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Sam Roberts <vieuxtech@gmail.com>
+Content-Type: TEXT/PLAIN; charset="utf-8"
+To: Mark Mitchell <mmitchell@riccagroup.com>
 Cc: netfilter@vger.kernel.org
 
-Hello,
+On Friday 2011-06-24 19:45, Mark Mitchell wrote:
 
-Sam Roberts a =E9crit :
-> I thought only a SYN packet should create a new connection, but PSH
-> packets seem to do it, too, now.
-[...]
-> Our assumption was that if we deleted the connection, that any furthe=
-r
-> TCP packets for that flow would have a ctstate of INVALID
+>Outside IP : 173.49.xx.xxx=C2=A0 (xx for privacy reasons)
 
-This behaviour is controlled by the net.netfilter.nf_conntrack_tcp_loos=
-e
-sysctl. Quoting Jozsef Kadlecsik :
+Privacy, what privacy? Your network addresses are contained in=20
+both your mail headers and the WHOIS db. (173.49.38.128-143)
 
->> With tcp_loose enabled (default) conntrack accepts non-SYN packets a=
-s=20
->>"NEW" ones, i.e. attempts to pick up connections from the middle.
+>Internal IP : 192.168.1.22
+>
+>iptables -I FORWARD 10 -i eth1 -d 192.168.1.22 -p tcp --dport 11211 -j=
+ ACCEPT
+>iptables -A PREROUTING -t nat -p tcp --dport 11211 -d 173.49.xx.xxx -j=
+=20
+>DNAT --to 192.168.1.22:11211
+>iptables -A POSTROUTING -t nat -p tcp -s 192.168.1.22 --dport 11211 -j=
+=20
+>SNAT --to 173.49.xx.xxx
+>iptables -t nat -A POSTROUTING -p tcp -d 192.168.1.22 --dport 11211 -s=
+=20
+>192.168.1.0/24 -j SNAT --to 192.168.1.1
+>
+>What I am trying to figure out is how to limit this port forward to=20
+>just a couple ranges of IP addresses.
+>
+>I tried adding the rule after the FORWARD command but it did not chang=
+e=20
+>anything. I could still hit the port from any IP address.
 
-> This worked with 2.6.38, but doesn't work with 2.6.39.1.
+Because you still have the other three nat rules.
 
-Does the above sysctl have the same value on both kernels ?
+>iptables -A INPUT -p tcp --dport 11211 -d 173.49.xx.xxx -m iprange=20
+>--src-range 74.205.xx.x-74.205.xx.x -j ACCEPT=C2=A0
