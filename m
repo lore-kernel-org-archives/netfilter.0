@@ -1,44 +1,43 @@
-From: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
-Subject: Re: Conntracking on a multihomed server
-Date: Fri, 24 Jun 2011 19:37:55 +0200
-Message-ID: <4E04CB73.8020609@plouf.fr.eu.org>
-References: <4E04BEE9.5030603@freemail.hu>
+From: Mark Mitchell <mmitchell@riccagroup.com>
+Subject: Help on how to limit a NAT port forward to just a range of IP
+ addresses
+Date: Fri, 24 Jun 2011 13:45:30 -0400
+Message-ID: <ec9c4a4d-00e6-4ff2-b81d-7b88c1d128c1@riccagroup.com>
+References: <3afccf8e-e575-4203-962a-0079da9fae75@riccagroup.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4E04BEE9.5030603@freemail.hu>
+In-Reply-To: <3afccf8e-e575-4203-962a-0079da9fae75@riccagroup.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: =?ISO-8859-15?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Cc: netfilter list <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Hello,
+I have the following ruleson my firewall (Edgewater Networks Hardware) =
+that do a global port forward of port 11211 to an internal host.
+What I am trying to figure out is how to limit this port forward to jus=
+t a couple ranges of IP addresses.
 
-G=E1sp=E1r Lajos a =E9crit :
->=20
-> - The client initiates a connection to the firewall public IPs (in a=20
-> round-robin manner).
-> - The service sees a connection that came from a lan. (Remember that =
-is=20
-> not bound to any interface.)
-> - The service reply with the corresponding local IP of the firewall.
-> - The client drops the packets because they are not from the expected=
-=20
-> public IPs.
->=20
-> How can I make it work?
+Outside IP : 173.49.xx.xxx=A0 (xx for privacy reasons)
+Internal IP : 192.168.1.22
 
-By fixing the broken client, service or application protocol.
-Either the application protocol specification states that :
-- the service should reply with the same address (and the service is
-broken),
-- or the service may reply with any address (and the client is broken),
-- or it is left unspecified (and the protocol is broken).
+iptables -I FORWARD 10 -i eth1 -d 192.168.1.22 -p tcp --dport 11211 -j =
+ACCEPT
+iptables -A PREROUTING -t nat -p tcp --dport 11211 -d 173.49.xx.xxx -j =
+DNAT --to 192.168.1.22:11211
+iptables -A POSTROUTING -t nat -p tcp -s 192.168.1.22 --dport 11211 -j =
+SNAT --to 173.49.xx.xxx
+iptables -t nat -A POSTROUTING -p tcp -d 192.168.1.22 --dport 11211 -s =
+192.168.1.0/24 -j SNAT --to 192.168.1.1
 
-UDP deals with independent datagrams. It does not have such notions as
-"request", "reply", or "connection".
 
-> Is it a conntracking, routing or IP stack problem?
+I tried adding the rule after the FORWARD command but it did not change=
+ anything. I could still hit the port from any IP address.
 
-Neither. It is an application layer problem.
+iptables -A INPUT -p tcp --dport 11211 -d 173.49.xx.xxx -m iprange --sr=
+c-range 74.205.xx.x-74.205.xx.x -j ACCEPT=A0
+
+Any help is much appreciated.
+
+
+
