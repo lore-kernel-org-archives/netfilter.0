@@ -1,18 +1,35 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Help on how to limit a NAT port forward to just a range of IP
+From: Mark Mitchell <mmitchell@riccagroup.com>
+Subject: RE: Help on how to limit a NAT port forward to just a range of IP
  addresses
-Date: Fri, 24 Jun 2011 20:39:26 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1106242030440.2226@frira.zrqbmnf.qr>
-References: <3afccf8e-e575-4203-962a-0079da9fae75@riccagroup.com> <ec9c4a4d-00e6-4ff2-b81d-7b88c1d128c1@riccagroup.com>
+Date: Fri, 24 Jun 2011 15:46:06 -0400
+Message-ID: <d07c93be-d98f-4854-8785-9f7d8156d3f9@riccagroup.com>
+References: <3afccf8e-e575-4203-962a-0079da9fae75@riccagroup.com>
+	<ec9c4a4d-00e6-4ff2-b81d-7b88c1d128c1@riccagroup.com>
+	<alpine.LNX.2.01.1106242030440.2226@frira.zrqbmnf.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <ec9c4a4d-00e6-4ff2-b81d-7b88c1d128c1@riccagroup.com>
+In-Reply-To: <alpine.LNX.2.01.1106242030440.2226@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="utf-8"
-To: Mark Mitchell <mmitchell@riccagroup.com>
+Content-Type: text/plain; charset="utf-8"
+To: 'Jan Engelhardt' <jengelh@medozas.de>
 Cc: netfilter@vger.kernel.org
+
+Yes good point about privacy,
+
+Based on your answer should the rule work if I moved it to the end afte=
+r the other NAT rules? Is this the correct way to do it?
+
+
+
+-----Original Message-----
+=46rom: Jan Engelhardt [mailto:jengelh@medozas.de]=20
+Sent: Friday, June 24, 2011 2:39 PM
+To: Mark Mitchell
+Cc: netfilter@vger.kernel.org
+Subject: Re: Help on how to limit a NAT port forward to just a range of=
+ IP addresses
 
 On Friday 2011-06-24 19:45, Mark Mitchell wrote:
 
@@ -46,3 +63,4 @@ Because you still have the other three nat rules.
 
 >iptables -A INPUT -p tcp --dport 11211 -d 173.49.xx.xxx -m iprange=20
 >--src-range 74.205.xx.x-74.205.xx.x -j ACCEPT=C2=A0
+
