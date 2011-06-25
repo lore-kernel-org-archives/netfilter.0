@@ -1,35 +1,26 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: iptables links
-Date: Sat, 25 Jun 2011 00:12:06 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1106250007250.16290@frira.zrqbmnf.qr>
-References: <4E03BB34.70704@abpni.co.uk> <alpine.LNX.2.01.1106240143500.20064@frira.zrqbmnf.qr> <4E03D4F7.9040609@abpni.co.uk>
+From: John Brown <john.gmane@bcgassets.com>
+Subject: IPTABLES: How to NOT display MAC addr in log files
+Date: Sat, 25 Jun 2011 19:25:36 +0000 (UTC)
+Message-ID: <loom.20110625T212223-868@post.gmane.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4E03D4F7.9040609@abpni.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jonathan Tripathy <jonnyt@abpni.co.uk>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Friday 2011-06-24 02:06, Jonathan Tripathy wrote:
+Hi,
 
->
-> On 24/06/2011 00:44, Jan Engelhardt wrote:
->> On Friday 2011-06-24 00:16, Jonathan Tripathy wrote:
->>
->>> Hi Everyone,
->>>
->>> Is there any quick command that I can use with iptables to remove all links
->>> to
->>> a chain, as well as removing the chain itself?
->> No, -F would clean the chain, and -X would remove them, which are
->> currently two separate operations with the iptables(8) frontend.
-> Hi There,
->
-> Thanks for this, however I already knew those commands. I'm looking for a
-> command to clear the links to the chain (the commands above clear the chain
-> itself), however I'm guessing is there none?
+How do I prevent IPTABLES from sending the MAC address data to a log file.
 
-Indeed there are none.
+Otherwords I don't wan the MAC=00:25....... data. Its useless to me and wastes a
+ton of space in the log files.
+
+Jun 25 13:15:16 infodeli kernel: LOGDROP--IN=eth0 OUT=
+MAC=00:25:90:01:34:ec:00:09:44:02:2c:0a:08:00 SRC=xxx.XXX.xxx.xxx
+DST=yyy.yyy.yyy.yyy LEN=92 TOS=0x00 PREC=0x00 TTL=61 ID=23777 PROTO=UDP SPT=3001
+DPT=15029 LEN=72
+
+Many thanks in advance
+
