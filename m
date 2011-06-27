@@ -1,68 +1,58 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: IPTABLES: How to NOT display MAC addr in log files
-Date: Sat, 25 Jun 2011 22:29:17 +0200
-Message-ID: <1309033770.4898.36.camel@tiger.regit.org>
-References: <loom.20110625T212223-868@post.gmane.org>
+From: Sam Roberts <vieuxtech@gmail.com>
+Subject: Re: dropping packets of --ctstate INVALID stopped working with 2.6.39.1?
+Date: Mon, 27 Jun 2011 15:13:32 -0700
+Message-ID: <BANLkTi=Kb2mDmK-sACbwYS0sqqadQ13rqA@mail.gmail.com>
+References: <BANLkTinjipDzpFaz9pZN_TijmR0qOx-=AQ@mail.gmail.com>
+	<4E04D639.2040905@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
-	boundary="=-CI6NeHQ9NcnIIzIe8nrI"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <loom.20110625T212223-868@post.gmane.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=domainkey-signature:mime-version:in-reply-to:references:date
+         :message-id:subject:from:to:cc:content-type
+         :content-transfer-encoding;
+        bh=HZNN9tV39HreUSIpF22Jp7xuL44e5uClTn3JMIHtaOY=;
+        b=UQtXxNj78MOY5PYK98E/iHadWga54DB4oJNzuJ4x8Fgw+vbdX3Qezf7UAxA9AsOAU6
+         GxkQO6FD89CHSY0LTtokY20uZ+QT3FowPHW8RjzMou/dAMySEgT9amO9vPu2OsSpOL0F
+         IJPhA238hoQ+N+jtUssHSJfA6b5V+NEc5S0Zw=
+In-Reply-To: <4E04D639.2040905@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: John Brown <john.gmane@bcgassets.com>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Pascal Hambourg <pascal.mail@plouf.fr.eu.org>
 Cc: netfilter@vger.kernel.org
 
+On Fri, Jun 24, 2011 at 11:23 AM, Pascal Hambourg
+<pascal.mail@plouf.fr.eu.org> wrote:
+> Hello,
+>
+> Sam Roberts a =E9crit :
+>> I thought only a SYN packet should create a new connection, but PSH
+>> packets seem to do it, too, now.
+=2E..
+> This behaviour is controlled by the net.netfilter.nf_conntrack_tcp_lo=
+ose
+> sysctl. Quoting Jozsef Kadlecsik :
+>
+>>> With tcp_loose enabled (default) conntrack accepts non-SYN packets =
+as
+>>>"NEW" ones, i.e. attempts to pick up connections from the middle.
 
---=-CI6NeHQ9NcnIIzIe8nrI
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+That is exactly the issue. Thank you very much.
 
-Hello,
+>> This worked with 2.6.38, but doesn't work with 2.6.39.1.
+>
+> Does the above sysctl have the same value on both kernels ?
 
-On Sat, 2011-06-25 at 19:25 +0000, John Brown wrote:
-> Hi,
->=20
-> How do I prevent IPTABLES from sending the MAC address data to a log file=
-.
->=20
-> Otherwords I don't wan the MAC=3D00:25....... data. Its useless to me and=
- wastes a
-> ton of space in the log files.
->=20
-> Jun 25 13:15:16 infodeli kernel: LOGDROP--IN=3Deth0 OUT=3D
-> MAC=3D00:25:90:01:34:ec:00:09:44:02:2c:0a:08:00 SRC=3Dxxx.XXX.xxx.xxx
-> DST=3Dyyy.yyy.yyy.yyy LEN=3D92 TOS=3D0x00 PREC=3D0x00 TTL=3D61 ID=3D23777=
- PROTO=3DUDP SPT=3D3001
-> DPT=3D15029 LEN=3D72
->=20
-> Many thanks in advance
+It does not, I'm not sure why, since the default has been "loose" since=
+ forever:
 
-You can fix the thing in your syslog. For example, in rsyslog;
-	http://www.rsyslog.com/doc/property_replacer.html
+3aef0fd9 (Patrick McHardy     2007-02-12 11:16:58 -0800   39) static
+int nf_ct_tcp_loose __read_mostly =3D 1;
 
-If you are using the LOG target, there is nothing to do except patcking
-kernel.
-If you are using ULOG or NFLOG, you can patch ulogd ou ulogd2 to forget
-about the MAC part. It should be easy.
+But our build environment uses openembedded, plenty of room for crazine=
+ss.
 
-BR,
---=20
-Eric Leblond=20
-Blog: http://home.regit.org/
-
---=-CI6NeHQ9NcnIIzIe8nrI
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-
-iEYEABECAAYFAk4GRR0ACgkQnxA7CdMWjzIIrwCeNMAtg7zRhAej5K7wR7jUYmv2
-62kAn1gHPJSA9eRkKgEh+0ZU5xDXb7uM
-=g/Fo
------END PGP SIGNATURE-----
-
---=-CI6NeHQ9NcnIIzIe8nrI--
-
+Cheers,
+Sam
