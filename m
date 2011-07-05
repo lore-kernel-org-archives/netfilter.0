@@ -1,21 +1,22 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH 00/12] net switch/case reformatting
-Date: Fri, 01 Jul 2011 16:15:50 -0700 (PDT)
-Message-ID: <20110701.161550.1316844563798183164.davem@davemloft.net>
-References: <cover.1309549243.git.joe@perches.com>
+From: Andrey <andrey@cs.dal.ca>
+Subject: iptables in promiscuous mode
+Date: Tue, 5 Jul 2011 13:05:10 -0300
+Message-ID: <CAPR6_RB_BnxGoozDoQzyNS+Un3pERyYjpxgFHe1orMhMfj7DqQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-hams-owner@vger.kernel.org>
-In-Reply-To: <cover.1309549243.git.joe@perches.com>
-Sender: linux-hams-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
-To: joe@perches.com
-Cc: linux-decnet-user@lists.sourceforge.net, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-x25@vger.kernel.org, linux-hams@vger.kernel.org, linux-sctp@vger.kernel.org, linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-From: Joe Perches <joe@perches.com>
-Date: Fri,  1 Jul 2011 12:43:01 -0700
+Hello,
 
-> Just whitespace cleanups with a couple trivial corrections
+I have traffic that was captured in promiscuous mode, therefore it is
+not destined to my computer.
+From what I understand netfilter/iptables does not work in promiscuous
+mode therefore it will not see the traffic when I replay it.
+My question is can I make iptables work in promiscuous mode, if I can then how?
 
-All applied, thanks Joe.
+Regards,
+Andrey
