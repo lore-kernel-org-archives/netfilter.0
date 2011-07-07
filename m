@@ -1,62 +1,48 @@
-From: Emilio Lazo Zaia <emiliolazozaia@gmail.com>
+From: Marek Kierdelewicz <marek@piasta.pl>
 Subject: Re: iptables in promiscuous mode
-Date: Thu, 07 Jul 2011 12:33:39 -0430
-Message-ID: <4E15E6EB.8070500@gmail.com>
+Date: Thu, 7 Jul 2011 21:15:45 +0200
+Message-ID: <20110707211545.421c89e5@catus>
 References: <CAPR6_RB_BnxGoozDoQzyNS+Un3pERyYjpxgFHe1orMhMfj7DqQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=message-id:date:from:user-agent:mime-version:to:cc:subject
-         :references:in-reply-to:content-type:content-transfer-encoding;
-        bh=1W7EJvgCSQMXl5gw/+YkNmJwzhNjiwJOivjLZFdDYbs=;
-        b=vGYr8+mEa4rGwW06naOAKt5DLty3xD0CfZhVK3IbY5THaMQTL/WdWz+3tigdPEbWs7
-         d7e/7sVe+hkqd7vlqmlJgsVDQLMhahUCiCwzr0i8klc0CkmycNPIbzJobNfOjlCMMvkC
-         iR4N18KseESgYDo5tHsRm2c/dw/TShXHylXk8=
 In-Reply-To: <CAPR6_RB_BnxGoozDoQzyNS+Un3pERyYjpxgFHe1orMhMfj7DqQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: Andrey <andrey@cs.dal.ca>
 Cc: netfilter@vger.kernel.org
 
-*Maybe* making the device behaves in promiscuous mode to allow these=20
-packets enters into kernel's network stack.
+>Hello,
 
-i.e.
-# ifconfig [dev] +promisc
-# ifconfig [dev] -promisc
+Hi,
 
-or
+>I have traffic that was captured in promiscuous mode, therefore it is
+>not destined to my computer.
+From what I understand netfilter/iptables does not work in promiscuous
+>mode therefore it will not see the traffic when I replay it.
 
-# ip link set [dev] promisc on
-# ip link set [dev] promisc off
+It looks like ruleset test scenario.
 
-What are you doing?
+Option1) 
 
-Someone can explain me why when tcpdump or wireshark are capturing=20
-packets, neither ifconfig nor iproute shows the =E2=80=9CPROMISC=E2=80=9D=
- flag? but=20
-dmesg indeed show =E2=80=9Cdevice [dev] entered promiscuous mode=E2=80=9D=
-=2E
+You can change mac address and/or ip address of a host you replay
+traffic to to the values of original recipient of the traffic. That way
+traffic should hit all apropriate netfilter hooks.
 
-On 07/05/2011 11:35 AM, Andrey wrote:
-> Hello,
->
-> I have traffic that was captured in promiscuous mode, therefore it is
-> not destined to my computer.
->  From what I understand netfilter/iptables does not work in promiscuo=
-us
-> mode therefore it will not see the traffic when I replay it.
-> My question is can I make iptables work in promiscuous mode, if I can=
- then how?
->
-> Regards,
-> Andrey
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Option2)
 
+You can:
+- create bridge br0 with eth0 and tap0 up and attached to it,
+- set br0 to act as a hub:
+echo 0 > /sys/class/net/br0/bridge/ageing_time
+- enable netfilter for bridged traffic
+echo 1 > /proc/sys/net/bridge/bridge-nf-call-iptables
+- feed replayed traffic to eth0
+
+You should see traffic passing some netfilter chains, but you won't see
+much in INPUT/OUTPUT of filter table. Most (all) of the traffic will be
+treated as forwarded, not as received localy.
+
+Best regards,
+Marek Kierdelewicz
