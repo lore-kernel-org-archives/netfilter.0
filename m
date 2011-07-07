@@ -1,85 +1,62 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Iptables State Table
-Date: Thu, 7 Jul 2011 18:52:28 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1107071840240.3659@frira.zrqbmnf.qr>
-References: <41268.1309529522@princeton.edu> <1310050556.12710.2149230885@webmail.messagingengine.com> <4E15CCDF.7010704@abpni.co.uk> <1310055574.13240.2149268161@webmail.messagingengine.com> <4E15DFD4.8090805@abpni.co.uk>
+From: Emilio Lazo Zaia <emiliolazozaia@gmail.com>
+Subject: Re: iptables in promiscuous mode
+Date: Thu, 07 Jul 2011 12:33:39 -0430
+Message-ID: <4E15E6EB.8070500@gmail.com>
+References: <CAPR6_RB_BnxGoozDoQzyNS+Un3pERyYjpxgFHe1orMhMfj7DqQ@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4E15DFD4.8090805@abpni.co.uk>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=message-id:date:from:user-agent:mime-version:to:cc:subject
+         :references:in-reply-to:content-type:content-transfer-encoding;
+        bh=1W7EJvgCSQMXl5gw/+YkNmJwzhNjiwJOivjLZFdDYbs=;
+        b=vGYr8+mEa4rGwW06naOAKt5DLty3xD0CfZhVK3IbY5THaMQTL/WdWz+3tigdPEbWs7
+         d7e/7sVe+hkqd7vlqmlJgsVDQLMhahUCiCwzr0i8klc0CkmycNPIbzJobNfOjlCMMvkC
+         iR4N18KseESgYDo5tHsRm2c/dw/TShXHylXk8=
+In-Reply-To: <CAPR6_RB_BnxGoozDoQzyNS+Un3pERyYjpxgFHe1orMhMfj7DqQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jonathan Tripathy <jonnyt@abpni.co.uk>
-Cc: netfilter@vger.kernel.org, netfilter@buglecreek.com
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: Andrey <andrey@cs.dal.ca>
+Cc: netfilter@vger.kernel.org
 
+*Maybe* making the device behaves in promiscuous mode to allow these=20
+packets enters into kernel's network stack.
 
-On Thursday 2011-07-07 18:33, Jonathan Tripathy wrote:
->>> netfilter@buglecreek">netfilter@buglecreek.com wrote:
->>>> Given the following simplified rules:
->>>> iptables -A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
->>>> iptables -A OUTPUT -m state --state NEW,ESTABLISHED,RELATED -j ACCEPT
+i.e.
+# ifconfig [dev] +promisc
+# ifconfig [dev] -promisc
 
-Use -m conntrack.
+or
 
->>>> When the system boots, various daemons create persistent connections
->>>> that stay established indefinitely to authentication servers like the
->>>> following:
->>>> clientSytem:44444 ----->  authServer:389
->>>> This creates an entry in the iptables state table which works fine.
+# ip link set [dev] promisc on
+# ip link set [dev] promisc off
 
-Nope, it creates an entry in nf_conntrack's connection tracking table,
-besides also creating a TCB in each of the connections endpoints.
+What are you doing?
 
->>>> Once that happens the
->>>> established connection is still there, but when the authServer sends a
->>>> packet back to the clientSystem the packet is viewed as new and
->>>> eventually gets dropped since their is nothing in the state table.
+Someone can explain me why when tcpdump or wireshark are capturing=20
+packets, neither ifconfig nor iproute shows the =E2=80=9CPROMISC=E2=80=9D=
+ flag? but=20
+dmesg indeed show =E2=80=9Cdevice [dev] entered promiscuous mode=E2=80=9D=
+=2E
 
-(Slight nitpick.) If there is no entry in the CT table, there is no
-room to store a state like NEW.
+On 07/05/2011 11:35 AM, Andrey wrote:
+> Hello,
+>
+> I have traffic that was captured in promiscuous mode, therefore it is
+> not destined to my computer.
+>  From what I understand netfilter/iptables does not work in promiscuo=
+us
+> mode therefore it will not see the traffic when I replay it.
+> My question is can I make iptables work in promiscuous mode, if I can=
+ then how?
+>
+> Regards,
+> Andrey
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
->>>> The only way I can think of allowing for this is to create a rule that
->>>> allows new connections from the authServer:389 to the clientSystem:any. Is
->>>> there a better way?
-
-NFCT has a sysctl net.netfilter.nf_conntrack_tcp_be_liberal that, if set
-to 1, can pick up TCP connections from something else than a SYN.
-
->>> Shouldn't the software in question detect a connection drop and then
->>> re-attempt to connect to the server?
-
-Yes, though it may take a longer time for the TCB timeout to expire.
-If it is a local network service, sending RSTs, i.e. letting extraneous
-packets run into a reject-type rule, is thus preferred.
-
->> The connection never drops.  Netstat shows the connection as
->> ESTABLISHED
-
-Use ss(8). netstat is of the same type of unmaintained buggy tools like
-ifconfig-it's a pest.
-
->> but the iptables state table does not have the connection
->> since it was cleared.  So, if there were no iptables running the
-
-(iptables always runs unless you unload the kernel module.)
-
->> connection would carry on normal comms. Since there are rules that only
->> allow established connections the packet gets dropped due to the
->> clearing of the state table. Hope that makes sense.
-
-So make sure that the NFCT entry does not expire. Normally, it
-should follow the TCB lifetime, which is like, 5 days.
-
-> What I am confused about though is why netstat is showing the state as still
-> ESTABLISHED.
-
-ss/netstat shows the TCB state, *not* the NFCT state!
-
-> Most good firewalls (not just iptables) include a feature to reset the state
-> table.
-
-Which is `conntrack -F` on Linux.
-
-
-[And for God's sake, don't strip the Cc list.]
