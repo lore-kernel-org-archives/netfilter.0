@@ -1,35 +1,42 @@
-From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
-Subject: version iptables for ipt_netflow module
-Date: Sun, 10 Jul 2011 23:50:11 -0300
-Message-ID: <CAMTjHrzXUurGw_os492cUeFUwFK-hu6BqN0qcLyCdV6hPa72OQ@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset-6.8 released
+Date: Mon, 11 Jul 2011 11:28:36 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1107111120380.32664@blackhole.kfki.hu>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Hello everyone,
+Hi,
 
-I'm needing install ipt_netflow module on my Linux CentOS machine
-,which, is with iptables version 1.3.5
+I'm happy to announce ipset-6.8. The new release contains an important fix
+of the hash:net,iface type, so if you use that hash type *and* store
+overlapping networks with different interfaces in the same set, then 
+please upgrade.
 
-when I go to compile appear the error follow:
+Kernel part changes
+ - Fix compiler warnings "'hash_ip4_data_next' declared inline after
+   being called" (Chris Friesen)
+ - hash:net,iface fixed to handle overlapping nets behind different
+   interfaces
+ - Make possible to hash some part of the data element only.
 
-Kernel version: 2.6.18-238.12.1.el5
-Iptables binary version: 1.3.5 (detected from /sbin/iptables)
-Searching for iptables-1.3.5 sources..
-! Error: Can not find iptables source directory, try setting it with --ipt-src=
+Userspace changes
+ - Update the manpage and document the limits in hash:net,iface.
+ - README file corrections from Richard Lucassen
 
-I've done test with iptables 1.4.6 version on other machine and it's
-work. but I wish that work on iptables version 1.3.5 because my
-firewall be this iptables version.
+You can download the source code of ipset from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
 
-is possible it's work ipt_netflow module on 1.3.5 iptables version ?
-
-
-any tip is welcome.
-
-
-thank
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
