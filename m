@@ -1,60 +1,43 @@
-From: Oskar Berggren <oskar.berggren@gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
 Subject: Re: How to completely disable conntrack?
-Date: Wed, 13 Jul 2011 10:07:54 +0200
-Message-ID: <CAHOuc7Ooi5qiXcsnuR6FxNzwUvrZBcR27h_3q7pEmScQf+ZivA@mail.gmail.com>
-References: <4D7785DC.8050904@centrum.cz> <AANLkTimkFarQO63ekSKJBL0PUqaMQV8QWWGLSQyQrDfq@mail.gmail.com>
- <4D7954EB.1050704@plouf.fr.eu.org> <loom.20110713T092047-270@post.gmane.org>
+Date: Wed, 13 Jul 2011 11:45:47 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1107131143420.13151@frira.zrqbmnf.qr>
+References: <4D7785DC.8050904@centrum.cz> <AANLkTimkFarQO63ekSKJBL0PUqaMQV8QWWGLSQyQrDfq@mail.gmail.com> <4D7954EB.1050704@plouf.fr.eu.org> <loom.20110713T092047-270@post.gmane.org> <CAHOuc7Ooi5qiXcsnuR6FxNzwUvrZBcR27h_3q7pEmScQf+ZivA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-type:content-transfer-encoding;
-        bh=/0LPQORZgSwdJB0CWu7Y2tOdzn271DvuPSSamgVjFS4=;
-        b=a6gGL3viLa4chmaZJ5sG/P7pV0TVkYEn2C3AxYpiYxqXzAdT5iWBJZjYnXfk5P21sK
-         tYXQr84UrYqgXX/fWVX70NAUKBxY8FF1RkyxJzxPwtV4XTtQZbCzadnc2vbCsgBS4pyb
-         yokQSJ+idksx2g4ezQlqBA4Uzl8x7tD6ksHGk=
-In-Reply-To: <loom.20110713T092047-270@post.gmane.org>
+In-Reply-To: <CAHOuc7Ooi5qiXcsnuR6FxNzwUvrZBcR27h_3q7pEmScQf+ZivA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: nany <naveen.sadanand@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Oskar Berggren <oskar.berggren@gmail.com>
+Cc: nany <naveen.sadanand@gmail.com>, netfilter@vger.kernel.org
 
-Unload the module.
+On Wednesday 2011-07-13 10:07, Oskar Berggren wrote:
 
-/Oskar
+>>>> I'm sure there's a sysctl knob, but off the top of my head:
+>>>>
+>>>> -t raw -A PREROUTING -j NOTRACK
+>>
+>> -t raw -A OUTPUT -j NOTRACK
 
+-t raw -A PREROUTING (or OUTPUT depending on which you want) -j CT --notrack
 
-2011/7/13 nany <naveen.sadanand@gmail.com>:
-> Pascal Hambourg <pascal.mail <at> plouf.fr.eu.org> writes:
->
+>> hey man i applied above rules, its not working,
+
+It certainly does work.
+
+>> the connections shows in /proc/net/ip_conntrack
+
+Of course - because you only disabled it for new packets. Old CTs
+live on until they are cleared.
+
+>> is any one can tell how to disable connection tracking completely,
 >>
->> Hello,
->>
->> Pandu Poluan a =E9crit :
->> > I'm sure there's a sysctl knob, but off the top of my head:
->> >
->> > -t raw -A PREROUTING -j NOTRACK
->>
->>
-> -t raw -A OUTPUT -j NOTRACK
->
-> hey man i applied above rules, its not working,
->
-> the connections shows in /proc/net/ip_conntrack
->
-> is any one can tell how to disable connection tracking completely,
->
-> please help me man
->
->
->
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
+>> please help me man
+
+["yo man" this ain't the hood, ya dig.]
+
+>Unload the module.
+
+That won't work if it is locked by iptables rules, though.
