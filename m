@@ -1,54 +1,64 @@
-From: Jenny Lee <bodycare_5@live.com>
-Subject: Which one is better to use? "tcp_tw_recycle" or
- "tcp_max_tw_buckets"?
-Date: Thu, 14 Jul 2011 15:07:55 +0000
-Message-ID: <BAY163-w2797EF3FCFE37602CD0FE7CC460@phx.gbl>
+From: Peter Phaal <peter.phaal@gmail.com>
+Subject: Re: netflow
+Date: Thu, 14 Jul 2011 08:17:26 -0700
+Message-ID: <CAB8g2zxfsfL5_n0yi3OYSHG3tUHnmwPmX7X3ZfobQrZnc+HjQg@mail.gmail.com>
+References: <CAMTjHrwextXkBdz_g3zS6CB6j+Xmr4nfvLs3==q5eRzMLYvBOw@mail.gmail.com>
+	<alpine.LNX.2.01.1107141703350.6827@frira.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type:content-transfer-encoding;
+        bh=0AJGh6n+uvnc2lvhGQDoN9HOUokKMeH0d0XM1gR3+Ww=;
+        b=XxIdiJar4fGGGjiI+xGF4foUUiV+XW+2ZipEHnJs87nJTPTsrKCzmX2R+3SyLgGLOV
+         muvwBduC9ulFWktcJ3DfKwY5qlkmobbWt7/GVbFIIK2SCpa4QEak8SPrYXcrxK0TODaS
+         O0AQxTjIM0PNiLwz1hUw40EHQz9FQ93YrQS5Y=
+In-Reply-To: <alpine.LNX.2.01.1107141703350.6827@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>, Mail List - Netfilter <netfilter@vger.kernel.org>
 
+Another option is to use netfilter's packet sampling/ULOG facilities
+to monitor network traffic.
 
-Hello,
+You can export the traffic as sFlow:
+http://host-sflow.sourceforge.net/
 
-I have a situation where I am running out of ephemeral ports.
- 
-* iptables-1.4.7-3
-* RHEL6 x64 Machine (kernel-2.6.32-71). 
-* I have 64K available ephemeral ports. 
-* I am using squid.
-* Client is using CONNECT (HTTP inside) through squid, doing 500 reqs/second. Squid has many parents.
-* Squid outgoing IP is SNAT'ted to 1000 IPs. 
- 
-Persistent connections and all did not do any good for me. Squid developers were very helpful, implemented many improvements for me but still no use.
- 
-Apparently this 64K limit per tuple does not seem to work as intended. I have many IPs, yet all hell breaks loose when 64K ports are used up. The max amount of TIME_WAITs from a single IP I have seen is 15K, yet I run out of ports at 64K.
- 
- 
-Prior to ephemeral port exhaustion, I was running out of ConnTrack table entries. This is fixed with:
- 
-echo 196608 > /proc/sys/net/netfilter/nf_conntrack_max
-echo 196608 > /sys/module/nf_conntrack/parameters/hashsize
- 
- 
-I have tried fiddling with all kinds of values (including tcp_tw_reuse with tcp timestamps), timeouts, etc. but nothing helped.
- 
-I have 2 solutions (tcp timestamps on):
- 
-* tcp_tw_recycle: This solved all my issues. I have not experienced any visible problems. Client can do > 1000 reqs/sec.
-* tcp_max_tw_buckets: Redhat default is 180K. Keeping this at 64K helps. Kernel emits "TIME_WAIT bucket overflow" occassionally. But everythign seem to be working.
- 
-My question:
- 
-Which one would be wiser to do: 
- 
-To keep "tcp_tw_recycle" on, or to keep "tcp_max_tw_buckets" at 64K where I will get bucket overflow errors once an hour for couple of seconds?
- 
-Thank you in advance.
- 
-Jenny
+or NetFlow:
+http://www.pmacct.net/
 
-  		 	   		  
+2011/7/14 Jan Engelhardt <jengelh@medozas.de>:
+> On Thursday 2011-07-14 16:19, Usu=E1rio do Sistema wrote:
+>
+>>Hello,
+>>
+>>I'm researching about netflow on linux. I wish that an linux machine
+>>forwards it flows to a colletor netflow inside my network.
+>>
+>>my doubt is how to generate this netflow on linux. I've added the
+>>ipt_netflow-1.6.tgz module and I created some rules as bellow in
+>>iptables:
+>>
+>>iptables -A OUTPUT -j NETFLOW
+>>iptables -A OUTPUT -j NETFLOW
+>>
+>>I'm forwarding the flows to my netflow collector with modprobe
+>>ipt_NETFLOW destination=3D10.10.10.1:2055
+>>
+>>so...my question is there is other different way to generate netflows
+>>on linux machine than add rules in the iptables and add ipt_netflow
+>>module ??
+>
+> You could use -j TEE to send the original packets to a dedicated logg=
+ing
+> host, and then do netflow (or any other logtype) analysis there.
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>
