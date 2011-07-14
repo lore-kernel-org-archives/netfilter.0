@@ -1,39 +1,54 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: netflow
-Date: Thu, 14 Jul 2011 17:04:22 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1107141703350.6827@frira.zrqbmnf.qr>
-References: <CAMTjHrwextXkBdz_g3zS6CB6j+Xmr4nfvLs3==q5eRzMLYvBOw@mail.gmail.com>
+From: Jenny Lee <bodycare_5@live.com>
+Subject: Which one is better to use? "tcp_tw_recycle" or
+ "tcp_max_tw_buckets"?
+Date: Thu, 14 Jul 2011 15:07:55 +0000
+Message-ID: <BAY163-w2797EF3FCFE37602CD0FE7CC460@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAMTjHrwextXkBdz_g3zS6CB6j+Xmr4nfvLs3==q5eRzMLYvBOw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: =?UTF-8?Q?Usu=C3=A1rio_do_Sistema?= <maiconlp@ig.com.br>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Thursday 2011-07-14 16:19, Usu=C3=A1rio do Sistema wrote:
 
->Hello,
->
->I'm researching about netflow on linux. I wish that an linux machine
->forwards it flows to a colletor netflow inside my network.
->
->my doubt is how to generate this netflow on linux. I've added the
->ipt_netflow-1.6.tgz module and I created some rules as bellow in
->iptables:
->
->iptables -A OUTPUT -j NETFLOW
->iptables -A OUTPUT -j NETFLOW
->
->I'm forwarding the flows to my netflow collector with modprobe
->ipt_NETFLOW destination=3D10.10.10.1:2055
->
->so...my question is there is other different way to generate netflows
->on linux machine than add rules in the iptables and add ipt_netflow
->module ??
+Hello,
 
-You could use -j TEE to send the original packets to a dedicated loggin=
-g=20
-host, and then do netflow (or any other logtype) analysis there.
+I have a situation where I am running out of ephemeral ports.
+ 
+* iptables-1.4.7-3
+* RHEL6 x64 Machine (kernel-2.6.32-71). 
+* I have 64K available ephemeral ports. 
+* I am using squid.
+* Client is using CONNECT (HTTP inside) through squid, doing 500 reqs/second. Squid has many parents.
+* Squid outgoing IP is SNAT'ted to 1000 IPs. 
+ 
+Persistent connections and all did not do any good for me. Squid developers were very helpful, implemented many improvements for me but still no use.
+ 
+Apparently this 64K limit per tuple does not seem to work as intended. I have many IPs, yet all hell breaks loose when 64K ports are used up. The max amount of TIME_WAITs from a single IP I have seen is 15K, yet I run out of ports at 64K.
+ 
+ 
+Prior to ephemeral port exhaustion, I was running out of ConnTrack table entries. This is fixed with:
+ 
+echo 196608 > /proc/sys/net/netfilter/nf_conntrack_max
+echo 196608 > /sys/module/nf_conntrack/parameters/hashsize
+ 
+ 
+I have tried fiddling with all kinds of values (including tcp_tw_reuse with tcp timestamps), timeouts, etc. but nothing helped.
+ 
+I have 2 solutions (tcp timestamps on):
+ 
+* tcp_tw_recycle: This solved all my issues. I have not experienced any visible problems. Client can do > 1000 reqs/sec.
+* tcp_max_tw_buckets: Redhat default is 180K. Keeping this at 64K helps. Kernel emits "TIME_WAIT bucket overflow" occassionally. But everythign seem to be working.
+ 
+My question:
+ 
+Which one would be wiser to do: 
+ 
+To keep "tcp_tw_recycle" on, or to keep "tcp_max_tw_buckets" at 64K where I will get bucket overflow errors once an hour for couple of seconds?
+ 
+Thank you in advance.
+ 
+Jenny
+
+  		 	   		  
