@@ -1,26 +1,33 @@
-From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: OFF: Re: How to completely disable conntrack?
-Date: Wed, 13 Jul 2011 15:45:06 +0200
-Message-ID: <4E1DA162.60801@freemail.hu>
-References: <4D7785DC.8050904@centrum.cz> <AANLkTimkFarQO63ekSKJBL0PUqaMQV8QWWGLSQyQrDfq@mail.gmail.com> <4D7954EB.1050704@plouf.fr.eu.org> <loom.20110713T092047-270@post.gmane.org> <CAHOuc7Ooi5qiXcsnuR6FxNzwUvrZBcR27h_3q7pEmScQf+ZivA@mail.gmail.com> <alpine.LNX.2.01.1107131143420.13151@frira.zrqbmnf.qr>
+From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
+Subject: netflow
+Date: Thu, 14 Jul 2011 11:19:00 -0300
+Message-ID: <CAMTjHrwextXkBdz_g3zS6CB6j+Xmr4nfvLs3==q5eRzMLYvBOw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1107131143420.13151@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Oskar Berggren <oskar.berggren@gmail.com>, nany <naveen.sadanand@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-< OFF >
->>> is any one can tell how to disable connection tracking completely,
->>>
->>> please help me man
-> ["yo man" this ain't the hood, ya dig.]
+Hello,
 
-MEGALOL !!! :D
+I'm researching about netflow on linux. I wish that an linux machine
+forwards it flows to a colletor netflow inside my network.
 
-< /OFF >
+my doubt is how to generate this netflow on linux. I've added the
+ipt_netflow-1.6.tgz module and I created some rules as bellow in
+iptables:
 
-Swifty
+iptables -A OUTPUT -j NETFLOW
+iptables -A OUTPUT -j NETFLOW
+
+I'm forwarding the flows to my netflow collector with modprobe
+ipt_NETFLOW destination=10.10.10.1:2055
+
+so...my question is there is other different way to generate netflows
+on linux machine than add rules in the iptables and add ipt_netflow
+module ??
+
+
+thank!
