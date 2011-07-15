@@ -1,64 +1,83 @@
-From: Peter Phaal <peter.phaal@gmail.com>
-Subject: Re: netflow
-Date: Thu, 14 Jul 2011 08:17:26 -0700
-Message-ID: <CAB8g2zxfsfL5_n0yi3OYSHG3tUHnmwPmX7X3ZfobQrZnc+HjQg@mail.gmail.com>
-References: <CAMTjHrwextXkBdz_g3zS6CB6j+Xmr4nfvLs3==q5eRzMLYvBOw@mail.gmail.com>
-	<alpine.LNX.2.01.1107141703350.6827@frira.zrqbmnf.qr>
+From: Ed W <lists@wildgooses.com>
+Subject: Possible conntrack/kernel bug - not catching certain ICMP packets
+Date: Fri, 15 Jul 2011 12:45:08 +0100
+Message-ID: <4E202844.30602@wildgooses.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type:content-transfer-encoding;
-        bh=0AJGh6n+uvnc2lvhGQDoN9HOUokKMeH0d0XM1gR3+Ww=;
-        b=XxIdiJar4fGGGjiI+xGF4foUUiV+XW+2ZipEHnJs87nJTPTsrKCzmX2R+3SyLgGLOV
-         muvwBduC9ulFWktcJ3DfKwY5qlkmobbWt7/GVbFIIK2SCpa4QEak8SPrYXcrxK0TODaS
-         O0AQxTjIM0PNiLwz1hUw40EHQz9FQ93YrQS5Y=
-In-Reply-To: <alpine.LNX.2.01.1107141703350.6827@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>, Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Netfilter <netfilter@vger.kernel.org>
+Cc: Jan Engelhardt <jengelh@medozas.de>, Andrew Beverley <andy@andybev.com>
 
-Another option is to use netfilter's packet sampling/ULOG facilities
-to monitor network traffic.
+Hi, This is related to a previous thread, but more complete problem
+statement below:
 
-You can export the traffic as sFlow:
-http://host-sflow.sourceforge.net/
+I notice that I can get an ICMP packet to bypass parts of conntrack
+under the following conditions
 
-or NetFlow:
-http://www.pmacct.net/
+- Send a UDP packet that triggers some kind of UDP reply
+- Close the listening UDP socket before that reply arrives
+- Kernel generates an ICMP unreachable response which does not appear to
+be tracked (as expected) by conntrack
 
-2011/7/14 Jan Engelhardt <jengelh@medozas.de>:
-> On Thursday 2011-07-14 16:19, Usu=E1rio do Sistema wrote:
->
->>Hello,
->>
->>I'm researching about netflow on linux. I wish that an linux machine
->>forwards it flows to a colletor netflow inside my network.
->>
->>my doubt is how to generate this netflow on linux. I've added the
->>ipt_netflow-1.6.tgz module and I created some rules as bellow in
->>iptables:
->>
->>iptables -A OUTPUT -j NETFLOW
->>iptables -A OUTPUT -j NETFLOW
->>
->>I'm forwarding the flows to my netflow collector with modprobe
->>ipt_NETFLOW destination=3D10.10.10.1:2055
->>
->>so...my question is there is other different way to generate netflows
->>on linux machine than add rules in the iptables and add ipt_netflow
->>module ??
->
-> You could use -j TEE to send the original packets to a dedicated logg=
-ing
-> host, and then do netflow (or any other logtype) analysis there.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
+Tested with kernel 2.6.38.4 + iptables 1.4.11.1
+
+Reproduce this easily like so:
+
+    nslookup www.yahoo.co.uk 8.8.8.8 & sleep 0.001 && killall nslookup
+
+    (where the sleep obviously needs to be smaller than your DNS RTT
+lookup time. Obviously substitute nslookup/dig as appropriate...)
+
+My results
+
+# conntrack -E
+
+    [NEW] udp      17 30 src=10.141.86.7 dst=8.8.8.8 sport=60721
+dport=53 [UNREPLIED] src=8.8.8.8 dst=10.141.86.7 sport=53 dport=60721
+ [UPDATE] udp      17 29 src=10.141.86.7 dst=8.8.8.8 sport=60721
+dport=53 src=8.8.8.8 dst=10.141.86.7 sport=53 dport=60721
+[DESTROY] udp      17 src=10.141.86.7 dst=8.8.8.8 sport=60721 dport=53
+packets=1 bytes=66 src=8.8.8.8 dst=10.141.86.7 sport=53 dport=60721
+packets=1 bytes=110
+
+# tcpdump
+
+11:26:35.072564 IP 10.141.86.7.60721 > 8.8.8.8.domain: 2+ PTR?
+8.8.8.8.in-addr.arpa. (38)
+11:26:35.351804 IP 8.8.8.8.domain > 10.141.86.7.60721: 2 1/0/0 PTR
+google-public-dns-a.google.com. (82)
+11:26:35.352110 IP 10.141.86.7 > 8.8.8.8: ICMP 10.141.86.7 udp port
+60721 unreachable, length 118
+
+
+# iptables -A OUTPUT -j LOGMARK
+# iptables -A OUTPUT -j LOG
+
+Jul 15 11:26:35 localhost kern.warn kernel: [ 6676.964396] iif=0
+hook=OUTPUT nfmark=0x0 secmark=0x0 classify=0x0 ctdir=ORIGINAL
+ct=0xcf3d5060 ctmark=0x0 ctstate=NEW ctstatus= lifetime=6346s
+Jul 15 11:26:35 localhost kern.warn kernel: [ 6676.964396] IN= OUT=ppp1
+SRC=10.141.86.7 DST=8.8.8.8 LEN=66 TOS=0x00 PREC=0x00 TTL=64 ID=19971 DF
+PROTO=UDP SPT=60721 DPT=53 LEN=46
+Jul 15 11:26:35 localhost kern.warn kernel: [ 6677.249312] iif=0
+hook=OUTPUT nfmark=0x0 secmark=0x0 classify=0x0 ctdir=ORIGINAL
+ct=0xcf3d5060 ctmark=0x0 ctstate=RELATED ctstatus=SEEN_REPLY,CONFIRMED
+lifetime=4294937s
+Jul 15 11:26:35 localhost kern.warn kernel: [ 6677.249426] IN= OUT=ppp1
+SRC=10.141.86.7 DST=8.8.8.8 LEN=138 TOS=0x00 PREC=0xC0 TTL=64 ID=18412
+PROTO=ICMP TYPE=3 CODE=3 [SRC=8.8.8.8 DST=10.141.86.7 LEN=110 TOS=0x00
+PREC=0x00 TTL=46 ID=3897 PROTO=UDP SPT=53 DPT=60721 LEN=90
+
+
+Notice that logmark seems to show that the ctstatus on the ICMP packet 
+is SEEN_REPLY, but conntrack -E shows only packets=1?  tcpdump shows
+that the ICMP packet did indeed go out
+
+Could someone with more knowledge of conntrack please investigate further? 
+
+Thanks
+
+Ed W
