@@ -1,83 +1,30 @@
-From: Ed W <lists@wildgooses.com>
-Subject: Possible conntrack/kernel bug - not catching certain ICMP packets
-Date: Fri, 15 Jul 2011 12:45:08 +0100
-Message-ID: <4E202844.30602@wildgooses.com>
+From: Mr Dash Four <mr.dash.four@googlemail.com>
+Subject: Re: [ANNOUNCE] ipset-6.8 released
+Date: Sat, 16 Jul 2011 11:17:12 +0100
+Message-ID: <4E216528.6020506@googlemail.com>
+References: <alpine.DEB.2.00.1107111120380.32664@blackhole.kfki.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=message-id:disposition-notification-to:date:from:user-agent
+         :mime-version:to:cc:subject:references:in-reply-to:content-type
+         :content-transfer-encoding;
+        bh=3cGugoU7B2vMLAIfjsoQIMqDFQiGBOhRKH8GUaFV/t0=;
+        b=TxiqBRtQ17cSgBzyhYty/RieF2rLH9aB+ywqc/AFP3DktaJhD7mNA92H6Gt6CiBz46
+         KCrle6xKzHVwuX9F6i/vzLGFJEZkB6x53CyK5e1MNlRWkC7nLxCbC9Yo2cKUga6GYiLa
+         m9xU3Vxchhx1hIC9bEZrJz7/MDv8y/VctKUDM=
+In-Reply-To: <alpine.DEB.2.00.1107111120380.32664@blackhole.kfki.hu>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@vger.kernel.org>
-Cc: Jan Engelhardt <jengelh@medozas.de>, Andrew Beverley <andy@andybev.com>
-
-Hi, This is related to a previous thread, but more complete problem
-statement below:
-
-I notice that I can get an ICMP packet to bypass parts of conntrack
-under the following conditions
-
-- Send a UDP packet that triggers some kind of UDP reply
-- Close the listening UDP socket before that reply arrives
-- Kernel generates an ICMP unreachable response which does not appear to
-be tracked (as expected) by conntrack
-
-Tested with kernel 2.6.38.4 + iptables 1.4.11.1
-
-Reproduce this easily like so:
-
-    nslookup www.yahoo.co.uk 8.8.8.8 & sleep 0.001 && killall nslookup
-
-    (where the sleep obviously needs to be smaller than your DNS RTT
-lookup time. Obviously substitute nslookup/dig as appropriate...)
-
-My results
-
-# conntrack -E
-
-    [NEW] udp      17 30 src=10.141.86.7 dst=8.8.8.8 sport=60721
-dport=53 [UNREPLIED] src=8.8.8.8 dst=10.141.86.7 sport=53 dport=60721
- [UPDATE] udp      17 29 src=10.141.86.7 dst=8.8.8.8 sport=60721
-dport=53 src=8.8.8.8 dst=10.141.86.7 sport=53 dport=60721
-[DESTROY] udp      17 src=10.141.86.7 dst=8.8.8.8 sport=60721 dport=53
-packets=1 bytes=66 src=8.8.8.8 dst=10.141.86.7 sport=53 dport=60721
-packets=1 bytes=110
-
-# tcpdump
-
-11:26:35.072564 IP 10.141.86.7.60721 > 8.8.8.8.domain: 2+ PTR?
-8.8.8.8.in-addr.arpa. (38)
-11:26:35.351804 IP 8.8.8.8.domain > 10.141.86.7.60721: 2 1/0/0 PTR
-google-public-dns-a.google.com. (82)
-11:26:35.352110 IP 10.141.86.7 > 8.8.8.8: ICMP 10.141.86.7 udp port
-60721 unreachable, length 118
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
 
-# iptables -A OUTPUT -j LOGMARK
-# iptables -A OUTPUT -j LOG
+>  - Make possible to hash some part of the data element only.
+>   
+Is this in regards to the problem I highlighted a while ago with 
+range-matching or is this something different?
 
-Jul 15 11:26:35 localhost kern.warn kernel: [ 6676.964396] iif=0
-hook=OUTPUT nfmark=0x0 secmark=0x0 classify=0x0 ctdir=ORIGINAL
-ct=0xcf3d5060 ctmark=0x0 ctstate=NEW ctstatus= lifetime=6346s
-Jul 15 11:26:35 localhost kern.warn kernel: [ 6676.964396] IN= OUT=ppp1
-SRC=10.141.86.7 DST=8.8.8.8 LEN=66 TOS=0x00 PREC=0x00 TTL=64 ID=19971 DF
-PROTO=UDP SPT=60721 DPT=53 LEN=46
-Jul 15 11:26:35 localhost kern.warn kernel: [ 6677.249312] iif=0
-hook=OUTPUT nfmark=0x0 secmark=0x0 classify=0x0 ctdir=ORIGINAL
-ct=0xcf3d5060 ctmark=0x0 ctstate=RELATED ctstatus=SEEN_REPLY,CONFIRMED
-lifetime=4294937s
-Jul 15 11:26:35 localhost kern.warn kernel: [ 6677.249426] IN= OUT=ppp1
-SRC=10.141.86.7 DST=8.8.8.8 LEN=138 TOS=0x00 PREC=0xC0 TTL=64 ID=18412
-PROTO=ICMP TYPE=3 CODE=3 [SRC=8.8.8.8 DST=10.141.86.7 LEN=110 TOS=0x00
-PREC=0x00 TTL=46 ID=3897 PROTO=UDP SPT=53 DPT=60721 LEN=90
-
-
-Notice that logmark seems to show that the ctstatus on the ICMP packet 
-is SEEN_REPLY, but conntrack -E shows only packets=1?  tcpdump shows
-that the ICMP packet did indeed go out
-
-Could someone with more knowledge of conntrack please investigate further? 
-
-Thanks
-
-Ed W
