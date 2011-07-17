@@ -1,30 +1,90 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
-Subject: Re: [ANNOUNCE] ipset-6.8 released
-Date: Sat, 16 Jul 2011 11:17:12 +0100
-Message-ID: <4E216528.6020506@googlemail.com>
-References: <alpine.DEB.2.00.1107111120380.32664@blackhole.kfki.hu>
+From: Jesper Juhl <jj@chaosbits.net>
+Subject: [PATCH][RFC] netfilter: Fix small leak in
+ ipq_build_packet_message()
+Date: Sun, 17 Jul 2011 19:46:16 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1107171942400.32359@swampdragon.chaosbits.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=message-id:disposition-notification-to:date:from:user-agent
-         :mime-version:to:cc:subject:references:in-reply-to:content-type
-         :content-transfer-encoding;
-        bh=3cGugoU7B2vMLAIfjsoQIMqDFQiGBOhRKH8GUaFV/t0=;
-        b=TxiqBRtQ17cSgBzyhYty/RieF2rLH9aB+ywqc/AFP3DktaJhD7mNA92H6Gt6CiBz46
-         KCrle6xKzHVwuX9F6i/vzLGFJEZkB6x53CyK5e1MNlRWkC7nLxCbC9Yo2cKUga6GYiLa
-         m9xU3Vxchhx1hIC9bEZrJz7/MDv8y/VctKUDM=
-In-Reply-To: <alpine.DEB.2.00.1107111120380.32664@blackhole.kfki.hu>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: linux-kernel@vger.kernel.org
+Cc: netdev@vger.kernel.org, coreteam@netfilter.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, James Morris <jmorris@namei.org>, "Pekka Savola (ipv6)" <pekkas@netcore.fi>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, "David S. Miller" <davem@davemloft.net>, Patrick McHardy <kaber@trash.net>
+
+ipq_build_packet_message() in net/ipv4/netfilter/ip_queue.c and
+net/ipv6/netfilter/ip6_queue.c contain a small potential mem leak as
+far as I can tell.
+
+We allocate memory for 'skb' with alloc_skb() annd then call
+ nlh = NLMSG_PUT(skb, 0, 0, IPQM_PACKET, size - sizeof(*nlh));
+
+NLMSG_PUT is a macro
+ NLMSG_PUT(skb, pid, seq, type, len) \
+  		NLMSG_NEW(skb, pid, seq, type, len, 0)
+
+that expands to NLMSG_NEW, which is also a macro which expands to:
+ NLMSG_NEW(skb, pid, seq, type, len, flags) \
+  	({	if (unlikely(skb_tailroom(skb) < (int)NLMSG_SPACE(len))) \
+  			goto nlmsg_failure; \
+  		__nlmsg_put(skb, pid, seq, type, len, flags); })
+
+If we take the true branch of the 'if' statement and 'goto
+nlmsg_failure', then we'll, at that point, return from
+ipq_build_packet_message() without having assigned 'skb' to anything
+and we'll leak the memory we allocated for it when it goes out of
+scope.
+
+Fix this by placing a 'kfree(skb)' at 'nlmsg_failure'.
+
+I admit that I do not know how likely this to actually happen or even
+if there's something that guarantees that it will never happen - I'm
+not that familiar with this code, but if that is so, I've not been
+able to spot it.
+
+Please review and commit if you believe this is correct. Thanks.
+
+Signed-off-by: Jesper Juhl <jj@chaosbits.net>
+---
+ net/ipv4/netfilter/ip_queue.c  |    1 +
+ net/ipv6/netfilter/ip6_queue.c |    1 +
+ 2 files changed, 2 insertions(+), 0 deletions(-)
+
+  Disclaimer: Patch is compile tested only.
+
+diff --git a/net/ipv4/netfilter/ip_queue.c b/net/ipv4/netfilter/ip_queue.c
+index 5c9b9d9..48f7d5b 100644
+--- a/net/ipv4/netfilter/ip_queue.c
++++ b/net/ipv4/netfilter/ip_queue.c
+@@ -218,6 +218,7 @@ ipq_build_packet_message(struct nf_queue_entry *entry, int *errp)
+ 	return skb;
+ 
+ nlmsg_failure:
++	kfree_skb(skb);
+ 	*errp = -EINVAL;
+ 	printk(KERN_ERR "ip_queue: error creating packet message\n");
+ 	return NULL;
+diff --git a/net/ipv6/netfilter/ip6_queue.c b/net/ipv6/netfilter/ip6_queue.c
+index 2493948..87b243a 100644
+--- a/net/ipv6/netfilter/ip6_queue.c
++++ b/net/ipv6/netfilter/ip6_queue.c
+@@ -218,6 +218,7 @@ ipq_build_packet_message(struct nf_queue_entry *entry, int *errp)
+ 	return skb;
+ 
+ nlmsg_failure:
++	kfree_skb(skb);
+ 	*errp = -EINVAL;
+ 	printk(KERN_ERR "ip6_queue: error creating packet message\n");
+ 	return NULL;
+-- 
+1.7.6
 
 
->  - Make possible to hash some part of the data element only.
->   
-Is this in regards to the problem I highlighted a while ago with 
-range-matching or is this something different?
+PS. Please CC me on replies since I'm not subscribed to all the lists 
+copied on this mail.
+
+-- 
+Jesper Juhl <jj@chaosbits.net>       http://www.chaosbits.net/
+Don't top-post http://www.catb.org/jargon/html/T/top-post.html
+Plain text mails only, please.
 
