@@ -1,24 +1,32 @@
-From: netfilter@buglecreek.com
-Subject: State Explanation
-Date: Sun, 17 Jul 2011 18:01:39 -0600
-Message-ID: <1310947299.8819.2152814541@webmail.messagingengine.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: State Explanation
+Date: Mon, 18 Jul 2011 10:36:54 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1107181035440.19728@frira.zrqbmnf.qr>
+References: <1310947299.8819.2152814541@webmail.messagingengine.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=messagingengine.com; h=message-id:from:to:mime-version:content-transfer-encoding:content-type:subject:date; s=smtpout; bh=tUoObkqvZiCgDDLyyMx9fncr4HM=; b=L2LbQnfDwG89VnTfdGQDPnTybWsS5oYeHA2/Micnlm14ptYRYXeSwc1z23497UJ+wgKXkhGYClS2Oqh50H+ojBjRwcFrHx8ryoiSfBs/88eDbfiKQYyfGMYbW8Dc8lR0n+AFw0pvyg2oG1QGMpGrcH7PWgNr27taxPdUcSM1NPU=
+In-Reply-To: <1310947299.8819.2152814541@webmail.messagingengine.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@buglecreek.com
+Cc: netfilter@vger.kernel.org
 
-In the course of troubleshooting a very simple iptables ruleset that is
-inexplicably dropping packets (more on that later) I came across a
-explanation in a Iptables Firewall book regarding the NEW state when
-using "-m state --state NEW" in a rule.  It states "NEW is equivalent to
-the initial TCP syn request, or to the first UDP packet".  I have also
-seen in some resources that "-m state --state NEW" will allow any packet
-through whether a syn bit is set or not.  
+On Monday 2011-07-18 02:01, netfilter@buglecreek.com wrote:
 
-So if for some reason a packet that just has the ack bit set and the
-state is not known (ESTABLISHED, RELATED) it will be allowed through due
-to the -m state --state NEW? 
+>In the course of troubleshooting a very simple iptables ruleset that is
+>inexplicably dropping packets (more on that later) I came across a
+>explanation in a Iptables Firewall book regarding the NEW state when
+>using "-m state --state NEW" in a rule.
+
+Use -m conntrack --ctstate NEW/etc.
+
+>It states "NEW is equivalent to the initial TCP syn request, or to the 
+>first UDP packet".  I have also seen in some resources that "-m state 
+>--state NEW" will allow any packet through whether a syn bit is set or 
+>not.
+
+NFCT can also pick up connections, so NEW does not necessarily 
+correspond to TCP SYN. (Cf. sysctl 
+net.netfilter.nf_conntrack_tcp_be_liberal)
