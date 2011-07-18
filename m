@@ -1,46 +1,24 @@
-From: Jesper Juhl <jj@chaosbits.net>
-Subject: [PATCH][TRIVIAL] net, netfilter: Remove redundant goto in
- ebt_ulog_packet
-Date: Sun, 17 Jul 2011 19:56:38 +0200 (CEST)
-Message-ID: <alpine.LNX.2.00.1107171953500.32359@swampdragon.chaosbits.net>
+From: netfilter@buglecreek.com
+Subject: State Explanation
+Date: Sun, 17 Jul 2011 18:01:39 -0600
+Message-ID: <1310947299.8819.2152814541@webmail.messagingengine.com>
 Mime-Version: 1.0
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: linux-kernel@vger.kernel.org
-Cc: netdev@vger.kernel.org, bridge@lists.linux-foundation.org, coreteam@netfilter.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Stephen Hemminger <shemminger@linux-foundation.org>, Patrick McHardy <kaber@trash.net>, Bart De Schuymer <bart.de.schuymer@pandora.be>, trivial@kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=messagingengine.com; h=message-id:from:to:mime-version:content-transfer-encoding:content-type:subject:date; s=smtpout; bh=tUoObkqvZiCgDDLyyMx9fncr4HM=; b=L2LbQnfDwG89VnTfdGQDPnTybWsS5oYeHA2/Micnlm14ptYRYXeSwc1z23497UJ+wgKXkhGYClS2Oqh50H+ojBjRwcFrHx8ryoiSfBs/88eDbfiKQYyfGMYbW8Dc8lR0n+AFw0pvyg2oG1QGMpGrcH7PWgNr27taxPdUcSM1NPU=
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-In net/bridge/netfilter/ebt_ulog.c:ebt_ulog_packet() the 'goto unlock'
-before the 'alloc_failure' label is completely redundant. This patch
-removes it.
+In the course of troubleshooting a very simple iptables ruleset that is
+inexplicably dropping packets (more on that later) I came across a
+explanation in a Iptables Firewall book regarding the NEW state when
+using "-m state --state NEW" in a rule.  It states "NEW is equivalent to
+the initial TCP syn request, or to the first UDP packet".  I have also
+seen in some resources that "-m state --state NEW" will allow any packet
+through whether a syn bit is set or not.  
 
-Signed-off-by: Jesper Juhl <jj@chaosbits.net>
----
- net/bridge/netfilter/ebt_ulog.c |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
-
-diff --git a/net/bridge/netfilter/ebt_ulog.c b/net/bridge/netfilter/ebt_ulog.c
-index 26377e9..bf2a333 100644
---- a/net/bridge/netfilter/ebt_ulog.c
-+++ b/net/bridge/netfilter/ebt_ulog.c
-@@ -216,7 +216,6 @@ unlock:
- nlmsg_failure:
- 	pr_debug("error during NLMSG_PUT. This should "
- 		 "not happen, please report to author.\n");
--	goto unlock;
- alloc_failure:
- 	goto unlock;
- }
--- 
-1.7.6
-
-
-PS. Please CC me on replies since I'm not subscribed to all the lists 
-copied on this mail.
-
--- 
-Jesper Juhl <jj@chaosbits.net>       http://www.chaosbits.net/
-Don't top-post http://www.catb.org/jargon/html/T/top-post.html
-Plain text mails only, please.
+So if for some reason a packet that just has the ack bit set and the
+state is not known (ESTABLISHED, RELATED) it will be allowed through due
+to the -m state --state NEW? 
