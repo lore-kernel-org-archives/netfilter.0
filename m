@@ -1,32 +1,26 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: State Explanation
-Date: Mon, 18 Jul 2011 10:36:54 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1107181035440.19728@frira.zrqbmnf.qr>
-References: <1310947299.8819.2152814541@webmail.messagingengine.com>
+From: Autocad Learner <learn.autocad@yahoo.com>
+Subject: [MASQUERADE] Not changing to new source ip address when dynamically assigned in ppp link
+Date: Mon, 18 Jul 2011 02:39:36 -0700 (PDT)
+Message-ID: <1310981976.47646.YahooMailNeo@web121603.mail.ne1.yahoo.com>
+Reply-To: Autocad Learner <learn.autocad@yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1310947299.8819.2152814541@webmail.messagingengine.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1310981976; bh=+1C3l49f4+oND9szhi7qnLloKF2a2++9ZZe8YTx0X1A=; h=X-YMail-OSG:Received:X-Mailer:Message-ID:Date:From:Reply-To:Subject:To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=3TL9v63qHNhfaKs1DDF9VreOU/pK69RedXWiEsXw1GacEH9VSlg91vh0b7PrGmB96R+LENBmjnrbtjgKe5JzKeN7gbm0suyxF4bWeurhFz5ZZs54xAQ69RL7NIb6pEN9IBc8FqUPT8NgHBpsUXNSI12KLt7GaAsogMDV01ejFxI=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@buglecreek.com
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Monday 2011-07-18 02:01, netfilter@buglecreek.com wrote:
+We are using linux Red Hat version RHEL 2.6.9-5.EL =A0and iptables vers=
+ion 1.2.11-3.1.RHEL4 as Source System. The source ip address is assigne=
+d dynamically via ppp link over eth0 interface.=A0
 
->In the course of troubleshooting a very simple iptables ruleset that is
->inexplicably dropping packets (more on that later) I came across a
->explanation in a Iptables Firewall book regarding the NEW state when
->using "-m state --state NEW" in a rule.
+When the link goes down and comes back, we get a new ip address and it =
+is evident in the ppp0 interface. But the packets going out of our syst=
+em still uses the old ip address.
 
-Use -m conntrack --ctstate NEW/etc.
+Is there a way we can force change the ip address?
 
->It states "NEW is equivalent to the initial TCP syn request, or to the 
->first UDP packet".  I have also seen in some resources that "-m state 
->--state NEW" will allow any packet through whether a syn bit is set or 
->not.
-
-NFCT can also pick up connections, so NEW does not necessarily 
-correspond to TCP SYN. (Cf. sysctl 
-net.netfilter.nf_conntrack_tcp_be_liberal)
+Thanks...
+yas=A0
