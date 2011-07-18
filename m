@@ -1,102 +1,66 @@
-From: Ed W <lists@wildgooses.com>
-Subject: Re: Possible conntrack/kernel bug - not catching certain ICMP packets
-Date: Mon, 18 Jul 2011 12:36:16 +0100
-Message-ID: <4E241AB0.5060603@wildgooses.com>
-References: <4E202844.30602@wildgooses.com>
+From: Autocad Learner <learn.autocad@yahoo.com>
+Subject: Re: [MASQUERADE] Not changing to new source ip address when dynamically assigned in ppp link
+Date: Mon, 18 Jul 2011 04:54:14 -0700 (PDT)
+Message-ID: <1310990054.84728.YahooMailNeo@web121619.mail.ne1.yahoo.com>
+References: <1310981976.47646.YahooMailNeo@web121603.mail.ne1.yahoo.com> <alpine.LNX.2.01.1107181242310.7358@frira.zrqbmnf.qr>
+Reply-To: Autocad Learner <learn.autocad@yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4E202844.30602@wildgooses.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1310990054; bh=ql2o4PR/RP71b0b6E+A69tBK6QGi3d7F2qxv3M22Dj8=; h=X-YMail-OSG:Received:X-Mailer:References:Message-ID:Date:From:Reply-To:Subject:To:In-Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=aqGaUYHZBaDBwIyIZaVL0rTK68L3MVfSM3L2Hd9ue0TJGA9u3XDRPhMO10bwfKeGW4v2GlHnjtn/ASs5k5znU6Ymkf5y9eTF7ajy26yjF3dcJQWLYwyWlfjuwA2H1XfDfkCf2imsA11zpkT97oSA/Ca9HeEbNiX0woFri8BGXwk=
+In-Reply-To: <alpine.LNX.2.01.1107181242310.7358@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, Jan Engelhardt <jengelh@medozas.de>
 
-Hi, any chance I could get some of the netfilter gurus to have a look at
-this?
+Hi Jan,
 
-Essentially we have a reproducible situation where conntrack is
-(apparently) relating a packet to a connection, but not incrementing the
-connection counters?
+Thanks for your quick reply.
 
-Thanks for any help figuring out a fix?
+Unfortunately we cannot upgrade our kernels.=A0
 
-Ed W
+I would like to know if there is any clean work around to deal with thi=
+s issue.
+
+We do not want to do an iptables restart or server restart to take this=
+ effect.=A0
+Also i saw in one of the posts i can set the ip_conntrack_udp_timeout a=
+nd ip_conntrack_udp_timeout_stream to 0 and revert back after 10 second=
+s. Since i am a newbie, i am not sure whether this would affect any oth=
+er application. Is it the best way to deal with this issue?
+
+To understand this problem:-
+The ip_dynaddr says it would update the ip address when the packet is r=
+etransmitted before we get any incoming packets from the destination.
+
+Since we are using this only for udp, The packets would not be retransm=
+itted.. Is it because of this?
+
+It would be great if you can let us know any clean work around.
+
+Thanks in advance..
 
 
-On 15/07/2011 12:45, Ed W wrote:
-> Hi, This is related to a previous thread, but more complete problem
-> statement below:
-> 
-> I notice that I can get an ICMP packet to bypass parts of conntrack
-> under the following conditions
-> 
-> - Send a UDP packet that triggers some kind of UDP reply
-> - Close the listening UDP socket before that reply arrives
-> - Kernel generates an ICMP unreachable response which does not appear to
-> be tracked (as expected) by conntrack
-> 
-> Tested with kernel 2.6.38.4 + iptables 1.4.11.1
-> 
-> Reproduce this easily like so:
-> 
->     nslookup www.yahoo.co.uk 8.8.8.8 & sleep 0.001 && killall nslookup
-> 
->     (where the sleep obviously needs to be smaller than your DNS RTT
-> lookup time. Obviously substitute nslookup/dig as appropriate...)
-> 
-> My results
-> 
-> # conntrack -E
-> 
->     [NEW] udp      17 30 src=10.141.86.7 dst=8.8.8.8 sport=60721
-> dport=53 [UNREPLIED] src=8.8.8.8 dst=10.141.86.7 sport=53 dport=60721
->  [UPDATE] udp      17 29 src=10.141.86.7 dst=8.8.8.8 sport=60721
-> dport=53 src=8.8.8.8 dst=10.141.86.7 sport=53 dport=60721
-> [DESTROY] udp      17 src=10.141.86.7 dst=8.8.8.8 sport=60721 dport=53
-> packets=1 bytes=66 src=8.8.8.8 dst=10.141.86.7 sport=53 dport=60721
-> packets=1 bytes=110
-> 
-> # tcpdump
-> 
-> 11:26:35.072564 IP 10.141.86.7.60721 > 8.8.8.8.domain: 2+ PTR?
-> 8.8.8.8.in-addr.arpa. (38)
-> 11:26:35.351804 IP 8.8.8.8.domain > 10.141.86.7.60721: 2 1/0/0 PTR
-> google-public-dns-a.google.com. (82)
-> 11:26:35.352110 IP 10.141.86.7 > 8.8.8.8: ICMP 10.141.86.7 udp port
-> 60721 unreachable, length 118
-> 
-> 
-> # iptables -A OUTPUT -j LOGMARK
-> # iptables -A OUTPUT -j LOG
-> 
-> Jul 15 11:26:35 localhost kern.warn kernel: [ 6676.964396] iif=0
-> hook=OUTPUT nfmark=0x0 secmark=0x0 classify=0x0 ctdir=ORIGINAL
-> ct=0xcf3d5060 ctmark=0x0 ctstate=NEW ctstatus= lifetime=6346s
-> Jul 15 11:26:35 localhost kern.warn kernel: [ 6676.964396] IN= OUT=ppp1
-> SRC=10.141.86.7 DST=8.8.8.8 LEN=66 TOS=0x00 PREC=0x00 TTL=64 ID=19971 DF
-> PROTO=UDP SPT=60721 DPT=53 LEN=46
-> Jul 15 11:26:35 localhost kern.warn kernel: [ 6677.249312] iif=0
-> hook=OUTPUT nfmark=0x0 secmark=0x0 classify=0x0 ctdir=ORIGINAL
-> ct=0xcf3d5060 ctmark=0x0 ctstate=RELATED ctstatus=SEEN_REPLY,CONFIRMED
-> lifetime=4294937s
-> Jul 15 11:26:35 localhost kern.warn kernel: [ 6677.249426] IN= OUT=ppp1
-> SRC=10.141.86.7 DST=8.8.8.8 LEN=138 TOS=0x00 PREC=0xC0 TTL=64 ID=18412
-> PROTO=ICMP TYPE=3 CODE=3 [SRC=8.8.8.8 DST=10.141.86.7 LEN=110 TOS=0x00
-> PREC=0x00 TTL=46 ID=3897 PROTO=UDP SPT=53 DPT=60721 LEN=90
-> 
-> 
-> Notice that logmark seems to show that the ctstatus on the ICMP packet 
-> is SEEN_REPLY, but conntrack -E shows only packets=1?  tcpdump shows
-> that the ICMP packet did indeed go out
-> 
-> Could someone with more knowledge of conntrack please investigate further? 
-> 
-> Thanks
-> 
-> Ed W
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+----- Original Message -----
+=46rom: Jan Engelhardt <jengelh@medozas.de>
+To: Autocad Learner <learn.autocad@yahoo.com>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Sent: Monday, July 18, 2011 11:49 AM
+Subject: Re: [MASQUERADE] Not changing to new source ip address when dy=
+namically assigned in ppp link
+
+On Monday 2011-07-18 11:39, Autocad Learner wrote:
+
+>We are using linux Red Hat version RHEL 2.6.9-5.EL =A0and iptables=20
+>version 1.2.11-3.1.RHEL4 as Source System. The source ip address is=20
+>assigned dynamically via ppp link over eth0 interface.=A0
+>
+>When the link goes down and comes back, we get a new ip address and it=
+=20
+>is evident in the ppp0 interface. But the packets going out of our=20
+>system still uses the old ip address.
+
+This is already fixed in contemporary kernels AFAICS.
 
