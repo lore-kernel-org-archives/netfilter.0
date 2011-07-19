@@ -1,62 +1,55 @@
-From: Pedro Ribeiro <pribeiro@net.ipl.pt>
-Subject: Behaviour of "-j SNAT --persistent"
-Date: Tue, 19 Jul 2011 18:35:51 +0100
-Message-ID: <4E25C077.10208@net.ipl.pt>
-Reply-To: pribeiro@net.ipl.pt
+From: "Brian J. Murrell" <brian@interlinx.bc.ca>
+Subject: Re: netfilter periodically thinks local traffic is FORWARDed
+Date: Tue, 19 Jul 2011 16:10:15 -0400
+Message-ID: <4E25E4A7.5070203@interlinx.bc.ca>
+References: <j03nj6$sql$1@dough.gmane.org> <alpine.LNX.2.01.1107191305580.31431@frira.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigBA81C506B03C570250DB2090"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=dkim.net.ipl.pt; s=alfa;
-	h=Content-Transfer-Encoding:Content-Type:Subject:To:MIME-Version:Reply-To:From:Date:Message-ID; bh=7Bg/sfCFW7nfkjAVzbPxdgqkZKgFFgcIQH0buujKITw=;
-	b=dSSJ15FS95xayakcv7pCEvq3NZfnNUnne4gCkCiFAuRtMdnjWTWVvhD18ncXMB1HLIbyheGs/tlPl2hqcgz6AshOw2Ppr+Z37lCHAOqZQajqgz4qk8oKZ9Pi5gKIGEfo37jXOITSI8vDU9d1N39n1aIGy4BbyvLU6pyw7JbqbLg=;
+In-Reply-To: <alpine.LNX.2.01.1107191305580.31431@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
 
-I'm trying to implement a near dynamic NAT IP assignment where a pool o=
-f=20
-public addresses are used to map a bigger range of private addresses=20
-(NETMAP target can't be used as it need both pre and post NAT blocks to=
-=20
-have the same size).
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigBA81C506B03C570250DB2090
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-The internal networks are about 32 C-Class sized networks (/24) and the=
-=20
-public block is an /22 (1024 addresses).
+On 11-07-19 07:07 AM, Jan Engelhardt wrote:
+>=20
+> Uh better use `ip addr`.
 
-Because this networks are in general very "calm" I would expect that=20
-only about 500~700 hosts will be active at any time and the=20
-internal/external mapping will be near 1:1 most of the time.
-The "PAT" behaviour will only be needed when the public addresses pool=20
-were exhausted and some start to be shared by multiple internal users.
+Sure, next time since your hints helped me resolve this issue.
 
-The behaviour I'm observing in this moment is:
-312 Internal IPs are using NAT
-264 Public addresses from the pool are in use
+> Routing determines whether it is forwarded or not - cf.
+> `ip route show table all`, not Netfilter or Xtables.
 
-Why is the netfilter code reusing the IPs from the pool when there are =
-a=20
-lot of addresses available?
+Makes sense.  That drove me to looking closer at the routing tables and
+it seemed that the scripts that bring up the ipv6 interface didn't plumb
+a local route so I restarted the interface and it seems to be there now.
 
-The command line I'm using to configure this example is:
+Thanx for the friendly poke in the right direction.  It was all I needed
+to figure out the problem.
 
-# Linux 2.6.36
-iptables -t nat -A POSTROUTING -o eth1 \
-         -j SNAT --to-source 192.100.196.0-192.100.199.255 --persistent
-# This IPs aren't the real ones, only an example!!!
+b.
 
-TIA
 
---=20
-Best regards,
+--------------enigBA81C506B03C570250DB2090
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D=
--=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-
-Pedro Ribeiro
-IPLNet - Rede de dados e comunica=E7=F5es
-Instituto Polit=E9cnico de Lisboa (IPL)
-Mail: mailto:pribeiro AT net.ipl.pt
-VoIP: sip:pribeiro AT net.ipl.pt
-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D=
--=3D-=3D-=3D-=3D-=3D-=3D-=3D-=3D-
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAk4l5KcACgkQl3EQlGLyuXDCtQCgnT6qQ07FyoryS7MKzuc3/MXU
+fukAn1ZkYx8g/qoseWAooMeibxmgPboJ
+=5Asz
+-----END PGP SIGNATURE-----
+
+--------------enigBA81C506B03C570250DB2090--
+
