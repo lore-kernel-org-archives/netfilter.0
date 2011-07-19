@@ -1,33 +1,30 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [ANNOUNCE] ipset-6.8 released
-Date: Tue, 19 Jul 2011 12:11:23 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1107191206310.27723@blackhole.kfki.hu>
-References: <alpine.DEB.2.00.1107111120380.32664@blackhole.kfki.hu> <4E216528.6020506@googlemail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Invalidating certain connections in conntrack due route
+ switching
+Date: Tue, 19 Jul 2011 12:22:23 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1107191221300.22037@frira.zrqbmnf.qr>
+References: <1125455134.20110719115744@yandex.ru>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4E216528.6020506@googlemail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <1125455134.20110719115744@yandex.ru>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: gapsf@yandex.ru
+Cc: netfilter@vger.kernel.org
 
-On Sat, 16 Jul 2011, Mr Dash Four wrote:
 
-> >  - Make possible to hash some part of the data element only.
-> >   
-> Is this in regards to the problem I highlighted a while ago with
-> range-matching or is this something different?
+On Tuesday 2011-07-19 06:57, gapsf@yandex.ru wrote:
+>
+>I clear the routing cache with 'ip route flush cache'on router, but maybe is not enough.
 
-No, it's different: the patch simply makes possible to instruct the hash 
-function how large part of the data blob to use at hashing, measured in 
-sizeof(u32) units.
+I however needed to touch the routing cache.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+>My guess is that the slow reestablishment of connections may be associated with router's
+>connection tracking too.
+>Will the explicit invalidation of connections on router box helps hosts from private network to
+>reestablish connections faster during ISPs switching?
+>And if so, how invalidation of certain connections in conntrack subsystem can be done from shell?
+
+conntrack -D.
