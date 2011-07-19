@@ -1,71 +1,42 @@
-From: Erik Schorr <erik-lists@arpa.org>
-Subject: Re: iptables links
-Date: Mon, 18 Jul 2011 10:35:43 -0700
-Message-ID: <4E246EEF.2060809@arpa.org>
-References: <4E03BB34.70704@abpni.co.uk> <alpine.LNX.2.01.1106240143500.20064@frira.zrqbmnf.qr> <4E03D4F7.9040609@abpni.co.uk> <alpine.LNX.2.01.1106250007250.16290@frira.zrqbmnf.qr>
+From: gapsf@yandex.ru
+Subject: Invalidating certain connections in conntrack due route switching
+Date: Tue, 19 Jul 2011 11:57:44 +0700
+Message-ID: <1125455134.20110719115744@yandex.ru>
+Reply-To: gapsf@yandex.ru
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1106250007250.16290@frira.zrqbmnf.qr>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
+	t=1311051470; bh=beOcfRLlFP9fIM5Ot423GUKNMF4cPu3UFgI4CNX+u9A=;
+	h=Date:From:Reply-To:Message-ID:To:Subject:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding;
+	b=pp4llz3+uNjNN5NmRNbhpb67CoBsPQqj1R8TZar3+KzJAystaj82P8uUR/bpx2J1c
+	 8mXWjWdANFmWC0pPWuarqog+2U8FC/0gsL3pRTcaf8LYc9EeJRIXOSIHLG5bWDRKe5
+	 /ZzfXVQehbzZmibMP06Z9fFfZ86KFlGFvr3/VnJE=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
-Cc: Jan Engelhardt <jengelh@medozas.de>, Jonathan Tripathy <jonnyt@abpni.co.uk>
 
-I've had the need for the same functionality, so I wrote the script 
-below.  It takes one argument - the name of the chain for which you want 
-to delete any rules that reference it.  It prints the iptables commands 
-to run to delete the respective rules.
+Hi.
+I have a private network (eth0) behind NATed Linux router box
+connected to two different ISPs (eth1 and eth3).
+Eth1 and eth3 have a different public IPv4 addresses.
 
-#!/bin/bash
-# unlink-chain.sh
-# Erik Schorr 2010
-# Permission to use, modify, and redistribute granted to anyone for any 
-purpose.
-# Use this program at your own risk.
-# Author disclaims any responsibility for quality or usefulness of this 
-program.
-PATH=/sbin:/usr/sbin:$PATH
-SEARCHCHAIN=$1
-if [ "$SEARCHCHAIN" ]; then
-   for n in nat filter raw; do
-     iptables -t $n -S | grep -e "^-A.*-j $SEARCHCHAIN " | sed -e 
-"s/^-A/-D/g" -e "s/^/iptables -t $n /g"
-   done
-else
-   echo "usage: $0 <target chain>"
-fi
+In normal mode, most of the traffic from the private network is routed through the first ISP (eth1),
+and a specific traffic is routed through a second ISP (eth3) by using policy routing, fwmark and second
+routing table with another default route.
+When the connection to the first provider dies, all traffic is routed through the second provider
+simply by removing appropriate rule from routing policy database.
+Everything works fine, but the hosts in the private network
+experience slow reestablishment of connections via a new route with a new public address.
+I clear the routing cache with 'ip route flush cache'on router, but maybe is not enough.
 
-### snip
+My guess is that the slow reestablishment of connections may be associated with router's
+connection tracking too.
+Will the explicit invalidation of connections on router box helps hosts from private network to
+reestablish connections faster during ISPs switching?
+And if so, how invalidation of certain connections in conntrack subsystem can be done from shell?
+Thanks.
 
-# ./unlink-chain.sh DROP_SPYWARE
-iptables -t filter -D EGRESS_OUT -d x.x.x.x/32 -p tcp -m comment 
---comment "SPYWARE 20110215" -j DROP_SPYWARE
-
-Enjoy.
-
-On 6/24/2011 3:12 PM, Jan Engelhardt wrote:
-> On Friday 2011-06-24 02:06, Jonathan Tripathy wrote:
->
->> On 24/06/2011 00:44, Jan Engelhardt wrote:
->>> On Friday 2011-06-24 00:16, Jonathan Tripathy wrote:
->>>
->>>> Hi Everyone,
->>>>
->>>> Is there any quick command that I can use with iptables to remove all links
->>>> to
->>>> a chain, as well as removing the chain itself?
->>> No, -F would clean the chain, and -X would remove them, which are
->>> currently two separate operations with the iptables(8) frontend.
->> Hi There,
->>
->> Thanks for this, however I already knew those commands. I'm looking for a
->> command to clear the links to the chain (the commands above clear the chain
->> itself), however I'm guessing is there none?
-> Indeed there are none.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
