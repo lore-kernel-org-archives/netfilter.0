@@ -1,30 +1,51 @@
-From: Petr Pisar <petr.pisar@atlas.cz>
-Subject: Re: Reject non-ipsec traffic
-Date: Thu, 21 Jul 2011 16:55:44 +0000 (UTC)
-Message-ID: <slrnj2gmgg.2vb.petr.pisar@album.ics.muni.cz>
-References: <CAM3m09RBnyjPAH-tq8xCcpOS+3sKD=UGuC1ioX6RsGsK-gmXQg@mail.gmail.com>
- <alpine.LNX.2.01.1107202152010.26732@frira.zrqbmnf.qr>
- <CAM3m09RAWuYtoY57V0C54DNw1pxEFGZ1SWKz6VSQ1Wmq0m=bvQ@mail.gmail.com>
- <alpine.LNX.2.01.1107202226120.18358@frira.zrqbmnf.qr>
- <CAM3m09QRgx2isdNo99KDYS-VHWx6zEXcB1Ks7DkKZCHVy0rmhQ@mail.gmail.com>
- <alpine.LNX.2.01.1107202234070.18358@frira.zrqbmnf.qr>
- <CAM3m09Q+feu6RTg9CYo4yBFFUDsmonJtzEQm=rYTuVHHLOzC=Q@mail.gmail.com>
+From: Jiri Kosina <jkosina@suse.cz>
+Subject: Re: [PATCH][TRIVIAL] net, netfilter: Remove redundant goto in
+ ebt_ulog_packet
+Date: Thu, 21 Jul 2011 14:02:43 +0200 (CEST)
+Message-ID: <alpine.LNX.2.00.1107211402210.7300@pobox.suse.cz>
+References: <alpine.LNX.2.00.1107171953500.32359@swampdragon.chaosbits.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.00.1107171953500.32359@swampdragon.chaosbits.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jesper Juhl <jj@chaosbits.net>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, bridge@lists.linux-foundation.org, coreteam@netfilter.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Stephen Hemminger <shemminger@linux-foundation.org>, Patrick McHardy <kaber@trash.net>, Bart De Schuymer <bart.de.schuymer@pandora.be>
 
-On 2011-07-21, Ryan Whelan <rcwhelan@gmail.com> wrote:
->
-> Is there a way to accomplish this? Maybe a way to only accept a
-> non-esp packets if it destined for the ipsec stack; is that possible?
+On Sun, 17 Jul 2011, Jesper Juhl wrote:
 
-I know you ask about netfilter, but consider IPsec security policies
-(defined by setkey tool) can be used to force xfrm based on network or
-transport source or destinatino addresses.
+> In net/bridge/netfilter/ebt_ulog.c:ebt_ulog_packet() the 'goto unlock'
+> before the 'alloc_failure' label is completely redundant. This patch
+> removes it.
+> 
+> Signed-off-by: Jesper Juhl <jj@chaosbits.net>
+> ---
+>  net/bridge/netfilter/ebt_ulog.c |    1 -
+>  1 files changed, 0 insertions(+), 1 deletions(-)
+> 
+> diff --git a/net/bridge/netfilter/ebt_ulog.c b/net/bridge/netfilter/ebt_ulog.c
+> index 26377e9..bf2a333 100644
+> --- a/net/bridge/netfilter/ebt_ulog.c
+> +++ b/net/bridge/netfilter/ebt_ulog.c
+> @@ -216,7 +216,6 @@ unlock:
+>  nlmsg_failure:
+>  	pr_debug("error during NLMSG_PUT. This should "
+>  		 "not happen, please report to author.\n");
+> -	goto unlock;
+>  alloc_failure:
+>  	goto unlock;
+>  }
+> -- 
+> 1.7.6
+> 
+> 
+> PS. Please CC me on replies since I'm not subscribed to all the lists 
+> copied on this mail.
 
--- Petr
+Doesn't seem to be present in linux-next as of today. I have picked it up.
 
+-- 
+Jiri Kosina
+SUSE Labs
