@@ -1,36 +1,31 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Reject non-ipsec traffic
-Date: Thu, 21 Jul 2011 21:29:27 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1107212128360.6745@frira.zrqbmnf.qr>
-References: <CAM3m09RBnyjPAH-tq8xCcpOS+3sKD=UGuC1ioX6RsGsK-gmXQg@mail.gmail.com>  <alpine.LNX.2.01.1107202152010.26732@frira.zrqbmnf.qr>  <CAM3m09RAWuYtoY57V0C54DNw1pxEFGZ1SWKz6VSQ1Wmq0m=bvQ@mail.gmail.com>  <alpine.LNX.2.01.1107202226120.18358@frira.zrqbmnf.qr>
-  <CAM3m09QRgx2isdNo99KDYS-VHWx6zEXcB1Ks7DkKZCHVy0rmhQ@mail.gmail.com>  <alpine.LNX.2.01.1107202234070.18358@frira.zrqbmnf.qr>  <CAM3m09Q+feu6RTg9CYo4yBFFUDsmonJtzEQm=rYTuVHHLOzC=Q@mail.gmail.com>  <slrnj2gmgg.2vb.petr.pisar@album.ics.muni.cz> 
- <CAM3m09Rf7zEQ4TL5PbfT7NHF5gq24o7E-Pbq_wcwbJ25ym6Dww@mail.gmail.com> <1311274881.1484.49.camel@lt>
+From: Stephen Hemminger <shemminger@vyatta.com>
+Subject: Re: Bridging netfilter and forwarding
+Date: Thu, 21 Jul 2011 12:53:43 -0700
+Message-ID: <20110721125343.7f4b7eaf@nehalam.ftrdhcpuser.net>
+References: <20110721090525.09d8e10d@s6510.ftrdhcpuser.net>
+	<4E286CB4.9060202@riverviewtech.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1311274881.1484.49.camel@lt>
+In-Reply-To: <4E286CB4.9060202@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Steven Kath <steven.kath@vyatta.com>
-Cc: Ryan Whelan <rcwhelan@gmail.com>, Petr Pisar <petr.pisar@atlas.cz>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Thursday 2011-07-21 21:01, Steven Kath wrote:
+On Thu, 21 Jul 2011 13:15:16 -0500
+Grant Taylor <gtaylor@riverviewtech.net> wrote:
 
->On Thu, 2011-07-21 at 13:05 -0400, Ryan Whelan wrote:
->> The issue is that IPSec is protecting a GRE tunnel and if IPSec fails
->> for some reason, GRE will be happy to work without it; tunnelling
->> everything in the clear.  I was just hoping to put some kind of fail
->> safe in place so if IPSec stopped working or failed to start,
->> unencrypted traffic wouldn't be transmitted. 
->
->You could create a private loopback address on each endpoint, and use
->those loopback addresses in the encryption policy.  The only way the
->loopback addresses can reach each other is while the IPsec associations
->are up.  Then set up the GRE tunnel with the loopbacks as its endpoints.
->That way, when the IPsec tunnel is down, GRE will no longer be happy to
->work without it.  
+> On 07/21/11 11:05, Stephen Hemminger wrote:
+> > There is a recurring theme of people that want to forward link
+> > local multicast and other packets. There is a patch that adds a mask
+> > value, but I would prefer a more general solution using netfilter/ebtables.
+> >
+> > Is there some way to use actions to do this better?
+> > Or change the existing NF_HOOK somehow do this.
+> 
+> Can you not do this with a bridging router (a.k.a. brouter)?
 
-What I thought of was the use of veth, such that you have a way to 
-distinguish between a packet that remained unencrypted, or one that is 
-yet to possibly get encrypted.
+No. link local multicast packets are not processed the same as other
+packets.
