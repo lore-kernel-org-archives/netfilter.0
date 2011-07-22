@@ -1,53 +1,102 @@
-From: Petr Pisar <petr.pisar@atlas.cz>
-Subject: Re: Reject non-ipsec traffic
-Date: Fri, 22 Jul 2011 05:15:23 +0000 (UTC)
-Message-ID: <slrnj2i1rb.2tp.petr.pisar@album.ics.muni.cz>
-References: <CAM3m09RBnyjPAH-tq8xCcpOS+3sKD=UGuC1ioX6RsGsK-gmXQg@mail.gmail.com>
- <alpine.LNX.2.01.1107202152010.26732@frira.zrqbmnf.qr>
- <CAM3m09RAWuYtoY57V0C54DNw1pxEFGZ1SWKz6VSQ1Wmq0m=bvQ@mail.gmail.com>
- <alpine.LNX.2.01.1107202226120.18358@frira.zrqbmnf.qr>
- <CAM3m09QRgx2isdNo99KDYS-VHWx6zEXcB1Ks7DkKZCHVy0rmhQ@mail.gmail.com>
- <alpine.LNX.2.01.1107202234070.18358@frira.zrqbmnf.qr>
- <CAM3m09Q+feu6RTg9CYo4yBFFUDsmonJtzEQm=rYTuVHHLOzC=Q@mail.gmail.com>
- <slrnj2gmgg.2vb.petr.pisar@album.ics.muni.cz>
- <CAM3m09Rf7zEQ4TL5PbfT7NHF5gq24o7E-Pbq_wcwbJ25ym6Dww@mail.gmail.com>
+From: Patrick McHardy <kaber@trash.net>
+Subject: [ANNOUNCE]: Release of iptables-1.4.12
+Date: Fri, 22 Jul 2011 15:02:18 +0200
+Message-ID: <4E2974DA.3050306@trash.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------080100030801070401010300"
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>
+Cc: Linux Netdev List <netdev@vger.kernel.org>, netfilter-announce@lists.netfilter.org, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
 
-On 2011-07-21, Ryan Whelan <rcwhelan@gmail.com> wrote:
-> The policy is setup (openswan configures it)
->
-> # ip xfrm poli
-> src 111.222.333.444/32 dst 444.333.222.111/32 proto gre
-> 	dir out priority 2080
-> 	tmpl src 111.222.333.444 dst 444.333.222.111
-> 		proto esp reqid 16385 mode tunnel
-> src 444.333.222.111/32 dst 111.222.333.444/32 proto gre
-> 	dir fwd priority 2080
-> 	tmpl src 444.333.222.111 dst 111.222.333.444
-> 		proto esp reqid 16385 mode tunnel
->
-I don't know openswan syntax. setkey syntax provides level `require'
-which means if security association is missing, the packet will not be
-sent. I guess the openswan `reqid' is the same as setkey `unique' which
-is the same as `require' bound to specific security association.
+This is a multi-part message in MIME format.
+--------------080100030801070401010300
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: 7bit
 
-Please note the security policies can be loaded into kernel independently
-on IKE daemon, so you are guarded even if daemon does not start.
+The netfilter coreteam presents:
 
-> The issue is that IPSec is protecting a GRE tunnel and if IPSec fails
-> for some reason, GRE will be happy to work without it; tunnelling
-> everything in the clear.  I was just hoping to put some kind of fail
-> safe in place so if IPSec stopped working or failed to start,
-> unencrypted traffic wouldn't be transmitted.
->
-I see, another independent meassure. Unfortunatelly you are out of luck
-in case of netfilter on egress traffic.
+    iptables version 1.4.12
 
--- Petr
+the iptables release for the 3.0.0 kernel. Changes include:
 
+- regression fixes for problems reported for the 1.4.11.1 release
+
+- more conversions to the guided option parser
+
+- fixes for problems detected by the coverity scanner
+
+- documentation updates
+
+See the attached changelogs for the full list of changes.
+
+Version 1.4.12 can be obtained from:
+
+http://www.netfilter.org/projects/iptables/downloads.html
+ftp://ftp.netfilter.org/pub/iptables/
+git://git.netfilter.org/iptables.git
+
+On behalf of the Netfilter Core Team,
+Happy firewalling!
+
+--------------080100030801070401010300
+Content-Type: text/plain;
+ name="changes-iptables-1.4.12.txt"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="changes-iptables-1.4.12.txt"
+
+Fernando Luis Vazquez Cao (1):
+      doc: document IPv6 TOS mangling bug in old Linux kernels
+
+Jakub Zawadzki (1):
+      doc: fix group range in libxt_NFLOG's man
+
+Jan Engelhardt (23):
+      doc: include matches/targets in manpage again
+      libipt_LOG: fix ignoring all but last flags
+      libxt_RATEEST: use guided option parser
+      iptables: consolidate target/match init call
+      extensions: support for per-extension instance "global" variable space
+      libxt_rateest: abolish global variables
+      libxt_RATEEST: abolish global variables
+      libip6t_HL: fix option names from ttl -> hl
+      libxt_state: fix regression about inversion of main option
+      libxt_hashlimit: use a more obvious expiry value by default
+      build: bump soversion for recent data structure change
+      build: attempt to fix building under Linux 2.4
+      doc: mention multiple verbosity flags
+      build: install modules in arch-dependent location
+      doc: fix version string in ip6tables.8
+      doc: the -m option cannot be inverted
+      iptables: restore negation for -f
+      libxtables: properly reject empty hostnames
+      libxtables: ignore whitespace in the multiaddress argument parser
+      option: remove last traces of intrapositional negation
+      libxtables: set clone's initial data to NULL
+      libxt_conntrack: restore network-byte order for v1,v2
+      libxt_conntrack: move more data into the xt_option_entry
+
+Jiri Popelka (5):
+      iptables: Coverity: DEADCODE
+      iptables: Coverity: NEGATIVE_RETURNS
+      iptables: Coverity: REVERSE_INULL
+      iptables: Coverity: VARARGS
+      iptables: Coverity: RESOURCE_LEAK
+
+Martin F. Krafft (1):
+      iptables-apply: select default rule file depending on call name
+
+Massimo Maggi (1):
+      libxt_RATEEST: fix userspacesize field
+
+Patrick McHardy (4):
+      Merge branch 'master' of git://dev.medozas.de/iptables
+      Merge branch 'master' of git://dev.medozas.de/iptables
+      Merge branch 'master' of git://dev.medozas.de/iptables
+      Bump version to 1.4.12
+
+
+--------------080100030801070401010300--
