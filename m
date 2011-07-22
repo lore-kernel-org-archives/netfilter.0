@@ -1,31 +1,31 @@
-From: Stephen Hemminger <shemminger@vyatta.com>
-Subject: Re: Bridging netfilter and forwarding
-Date: Thu, 21 Jul 2011 12:53:43 -0700
-Message-ID: <20110721125343.7f4b7eaf@nehalam.ftrdhcpuser.net>
-References: <20110721090525.09d8e10d@s6510.ftrdhcpuser.net>
-	<4E286CB4.9060202@riverviewtech.net>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4E286CB4.9060202@riverviewtech.net>
-Sender: netfilter-owner@vger.kernel.org
+From: Simon Horman <horms@verge.net.au>
+Subject: [GIT PULL nf-2.6] IPVS
+Date: Fri, 22 Jul 2011 09:18:39 +0900
+Message-ID: <1311293920-1983-1-git-send-email-horms@verge.net.au>
+Return-path: <lvs-devel-owner@vger.kernel.org>
+Sender: lvs-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-To: Grant Taylor <gtaylor@riverviewtech.net>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Cc: Wensong Zhang <wensong@linux-vs.org>, Julian Anastasov <ja@ssi.bg>, Patrick McHardy <kaber@trash.net>, Pablo Neira Ayuso <pablo@netfilter.org>, Dave Jones <davej@redhat.com>, Randy Dunlap <rdunlap@xenotime.net>, Huajun Li <huajun.li.lee@gmail.com>
 
-On Thu, 21 Jul 2011 13:15:16 -0500
-Grant Taylor <gtaylor@riverviewtech.net> wrote:
+Hi Pablo, Hi Patrick,
 
-> On 07/21/11 11:05, Stephen Hemminger wrote:
-> > There is a recurring theme of people that want to forward link
-> > local multicast and other packets. There is a patch that adds a mask
-> > value, but I would prefer a more general solution using netfilter/ebtables.
-> >
-> > Is there some way to use actions to do this better?
-> > Or change the existing NF_HOOK somehow do this.
-> 
-> Can you not do this with a bridging router (a.k.a. brouter)?
+please consider pulling
 
-No. link local multicast packets are not processed the same as other
-packets.
+  git://git.kernel.org/pub/scm/linux/kernel/git/horms/ipvs-2.6.git master
+
+to get the following crash on module removal fix for IPVS.
+
+Sorry for sending this so very, very late in the release cycle.
+I had sent it earlier but it seems to have slipped through the cracks
+somehow.
+
+Simon Horman (1):
+      IPVS: Free resources on module removal
+
+ net/netfilter/ipvs/ip_vs_ctl.c |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
