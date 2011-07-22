@@ -1,188 +1,53 @@
-From: "Greg Scott" <GregScott@Infrasupport.com>
-Subject: RE: Bizarre NAT behavior
-Date: Thu, 21 Jul 2011 23:53:04 -0500
-Message-ID: <925A849792280C4E80C5461017A4B8A2A0414A@mail733.InfraSupportEtc.com>
-References: <925A849792280C4E80C5461017A4B8A2A03FEB@mail733.InfraSupportEtc.com><925A849792280C4E80C5461017A4B8A2A0404D@mail733.InfraSupportEtc.com><925A849792280C4E80C5461017A4B8A2A04055@mail733.InfraSupportEtc.com> <BANLkTinoDyYksg01LfN7W2NBXZnm3+B78g@mail.gmail.com> <925A849792280C4E80C5461017A4B8A2A0405D@mail733.InfraSupportEtc.com> <925A849792280C4E80C5461017A4B8A2A040E0@mail733.InfraSupportEtc.com> <925A849792280C4E80C5461017A4B8A2A040E2@mail733.InfraSupportEtc.com>
+From: Petr Pisar <petr.pisar@atlas.cz>
+Subject: Re: Reject non-ipsec traffic
+Date: Fri, 22 Jul 2011 05:15:23 +0000 (UTC)
+Message-ID: <slrnj2i1rb.2tp.petr.pisar@album.ics.muni.cz>
+References: <CAM3m09RBnyjPAH-tq8xCcpOS+3sKD=UGuC1ioX6RsGsK-gmXQg@mail.gmail.com>
+ <alpine.LNX.2.01.1107202152010.26732@frira.zrqbmnf.qr>
+ <CAM3m09RAWuYtoY57V0C54DNw1pxEFGZ1SWKz6VSQ1Wmq0m=bvQ@mail.gmail.com>
+ <alpine.LNX.2.01.1107202226120.18358@frira.zrqbmnf.qr>
+ <CAM3m09QRgx2isdNo99KDYS-VHWx6zEXcB1Ks7DkKZCHVy0rmhQ@mail.gmail.com>
+ <alpine.LNX.2.01.1107202234070.18358@frira.zrqbmnf.qr>
+ <CAM3m09Q+feu6RTg9CYo4yBFFUDsmonJtzEQm=rYTuVHHLOzC=Q@mail.gmail.com>
+ <slrnj2gmgg.2vb.petr.pisar@album.ics.muni.cz>
+ <CAM3m09Rf7zEQ4TL5PbfT7NHF5gq24o7E-Pbq_wcwbJ25ym6Dww@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
-Cc: Payam Chychi <pchychi@gmail.com>, Jan Engelhardt <jengelh@medozas.de>, Steven Kath <steven.kath@vyatta.com>, Lynn Hanson <LynnHanson@eaganhills.org>, Joe Whalen <JoeWhalen@eaganhills.org>
 
-I took this up with the netdev folks per a suggestion here, but haven't
-gotten very far.  The netdev guys told me to go bug Red Hat.  So I just
-did a Red Hat bugzilla report, bug number 724862.  
-
-The problem took another unexpected twist.  I learned last night - when
-I do:
-
-ip link set br0 promisc on
-
-This breaks both inbound and outbound PPTP VPNs.  I have a NATed PPTP
-server and firewall rules to DNAT TCP 1723 and IP Protocol 47 to my PPTP
-server and SNAT IP Protocol 47 from my PPTP server.  And I am using
-ip_nat_pptp and ip_conntrack_pptp.  Watching with tcpdump when I try an
-inbound PPTP connection, I see this undending storm of packets for
-several minutes, until the PPTP server and remote user times out. I
-think what happens is, that br0 bridge forwards the packets to the wrong
-physical interface when in promisc mode.  
-
-When I do:
-
-ip link set br0 promise off
-
-now both inbound and outbound PPTP VPNs work as expected.  But, of
-course, this breaks my "router on a stick" rules, which was the original
-bizarre NAT behavior I noticed and documented a while ago.  So I'm kind
-of back to square one.  
-
-- Greg Scott
-
-
------Original Message-----
-From: netfilter-owner@vger.kernel.org
-[mailto:netfilter-owner@vger.kernel.org] On Behalf Of Greg Scott
-Sent: Friday, July 08, 2011 5:30 PM
-To: netfilter@vger.kernel.org
-Cc: Payam Chychi; Jan Engelhardt; Steven Kath; Lynn Hanson; Joe Whalen
-Subject: RE: Bizarre NAT behavior
-
-One more piece of data:
-
-On the firewall, I did:
-
-ip link set br0 promisc on
-
-and now my telnet on port 80 test connects, as does a real browser.  For
-now, I'll just put this in my rc.firewall script as a workaround unless
-and until a better answer comes along.
-
-- Greg Scott
-
-
-
-
------Original Message-----
-From: netfilter-owner@vger.kernel.org
-[mailto:netfilter-owner@vger.kernel.org] On Behalf Of Greg Scott
-Sent: Friday, July 08, 2011 3:39 PM
-To: netfilter@vger.kernel.org
-Cc: Payam Chychi; Jan Engelhardt; Steven Kath; Lynn Hanson; Joe Whalen
-Subject: RE: Bizarre NAT behavior
-
-This took me a while to get back and troubleshoot and I still don't
-understand what's going on.  This is the problem with internal users
-addressing a website with its external IP Address, doing SNAT and DNAT
-over a Linux bridge.  The last discussion was on 6/23/2011.
-
-From Jan Engelhardt:
-> Potential explanation: Packets being dropped inside the routing core
-due 
-> to violation of RP filter. [tcpdump hooks in very early and thus can 
-> still see stuff.]
-
-I don't think it's an rp_filter problem - see below.  
-
-
-And from Steven Kath:
-> I'd gather this information to try to understand the problem better:
+On 2011-07-21, Ryan Whelan <rcwhelan@gmail.com> wrote:
+> The policy is setup (openswan configures it)
 >
-> tcpdump -e -i <dev> [filters...]
-> (-e: Print the link-level header on each dump line.)
+> # ip xfrm poli
+> src 111.222.333.444/32 dst 444.333.222.111/32 proto gre
+> 	dir out priority 2080
+> 	tmpl src 111.222.333.444 dst 444.333.222.111
+> 		proto esp reqid 16385 mode tunnel
+> src 444.333.222.111/32 dst 111.222.333.444/32 proto gre
+> 	dir fwd priority 2080
+> 	tmpl src 444.333.222.111 dst 111.222.333.444
+> 		proto esp reqid 16385 mode tunnel
 >
-> tcpdump -e -i <dev> -p [filters...]
-> (-p: Don't put the interface into promiscuous mode.)
+I don't know openswan syntax. setkey syntax provides level `require'
+which means if security association is missing, the packet will not be
+sent. I guess the openswan `reqid' is the same as setkey `unique' which
+is the same as `require' bound to specific security association.
 
-Steve's suggestion helped peel back another onion layer.  Bridge br0
-bridges physical interfaces eth1 and eth0.  Physical interface eth1 is
-on the private LAN side, eth0 on the public Internet side.  
+Please note the security policies can be loaded into kernel independently
+on IKE daemon, so you are guarded even if daemon does not start.
 
-For my testing, from a CMD window on the server hosting the website, I
-do:
+> The issue is that IPSec is protecting a GRE tunnel and if IPSec fails
+> for some reason, GRE will be happy to work without it; tunnelling
+> everything in the clear.  I was just hoping to put some kind of fail
+> safe in place so if IPSec stopped working or failed to start,
+> unencrypted traffic wouldn't be transmitted.
+>
+I see, another independent meassure. Unfortunatelly you are out of luck
+in case of netfilter on egress traffic.
 
-telnet aa.bb.115.151 80 (aa.bb obfuscated first 2 IP Address octets), 
-and then watch with tcpdump on the firewall.  
+-- Petr
 
-Also on the firewall, I did this:
-echo "0" > /proc/sys/net/ipv4/conf/eth0/rp_filter
-echo "0" > /proc/sys/net/ipv4/conf/eth1/rp_filter
-echo "0" > /proc/sys/net/ipv4/conf/br0/rp_filter
-
-So that turned of any possible rp_filtering.  
-
-And then on the firewall:
-/usr/sbin/tcpdump -p -e -i br0 host aa.bb.115.151 -nn -vv
-
-while the telnet was running in another window.
-
-Nothing - no output, no matter what value I use for any of the rp_filter
-files.  Nothing from my telnet session to port 80 hits bridge br0 on the
-firewall.  
-
-But here's the curious part - looking at physical interface eth1, I see
-these packets when I do the same telnet test:
-
-[root@ehac-fw2011 ~]# /usr/sbin/tcpdump -p -e -i eth1 host aa.bb.115.151
--nn -vv
-tcpdump: WARNING: eth1: no IPv4 address assigned
-tcpdump: listening on eth1, link-type EN10MB (Ethernet), capture size
-65535 bytes
-14:51:33.412280 00:0f:20:f7:06:18 > 00:03:47:3a:59:79, ethertype IPv4
-(0x0800), length 62: (tos 0x0, ttl 128, id 18631, offset 0, flags [DF],
-proto TCP (6), length 48)
-    192.168.10.2.54092 > aa.bb.115.151.80: Flags [S], cksum 0xddb2
-(correct), seq 4146878900, win 65535, options [mss 1460,nop,nop,sackOK],
-length 0
-14:51:39.427928 00:0f:20:f7:06:18 > 00:03:47:3a:59:79, ethertype IPv4
-(0x0800), length 62: (tos 0x0, ttl 128, id 18733, offset 0, flags [DF],
-proto TCP (6), length 48)
-    192.168.10.2.54092 > aa.bb.115.151.80: Flags [S], cksum 0xddb2
-(correct), seq 4146878900, win 65535, options [mss 1460,nop,nop,sackOK],
-length 0
-^C
-2 packets captured
-2 packets received by filter
-0 packets dropped by kernel
-[root@ehac-fw2011 ~]#
-
-Here's something else curious - looking at "ip link show", it looks like
-bridge br0 takes on the MAC address of physical NIC eth0.  But the
-internal LAN is connected to physical eth1.  I wonder if this behavior
-is different than the older version?  If the MAC Address for bridge br0
-is different than the physical device I'm actually connected to, I
-wonder if bridging "thinks" I'm trying to hit a foreign MAC Address?  
-
-[root@ehac-fw2011 ~]# ip link show eth1
-4: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast
-state UP qlen 1000
-    link/ether 00:0d:88:31:d8:24 brd ff:ff:ff:ff:ff:ff
-[root@ehac-fw2011 ~]# ip link show eth0
-3: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast
-state UP qlen 1000
-    link/ether 00:03:47:3a:59:79 brd ff:ff:ff:ff:ff:ff
-[root@ehac-fw2011 ~]#
-[root@ehac-fw2011 ~]# ip link show br0
-5: br0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc prio state
-UNKNOWN
-    link/ether 00:03:47:3a:59:79 brd ff:ff:ff:ff:ff:ff
-
-[root@ehac-fw2011 ~]# brctl show macs br0
-bridge name     bridge id               STP enabled     interfaces
-br0             8000.0003473a5979       no              eth0
-                                                        eth1
-
-
-Hmmmm - so a packet comes in on eth1, with a destination MAC Address
-belonging to port eth0.  So eth1 throws it away because it "thinks" this
-is a foreign MAC Address?  But this all worked before, so what's
-different?  Or were earlier bridges in promiscuous mode by default and
-now they're not?  Have I stumbled across a new bridging bug?  Is the
-best workaround to just put br0 into promiscuous mode?
-
-Thanks
-
-- Greg Scott
