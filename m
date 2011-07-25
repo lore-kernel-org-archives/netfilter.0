@@ -1,76 +1,58 @@
-From: "Greg Scott" <GregScott@Infrasupport.com>
-Subject: RE: Reject non-ipsec traffic
-Date: Sun, 24 Jul 2011 17:40:03 -0500
-Message-ID: <925A849792280C4E80C5461017A4B8A2A0415F@mail733.InfraSupportEtc.com>
-References: <CAM3m09RBnyjPAH-tq8xCcpOS+3sKD=UGuC1ioX6RsGsK-gmXQg@mail.gmail.com> <alpine.LNX.2.01.1107202152010.26732@frira.zrqbmnf.qr> <CAM3m09RAWuYtoY57V0C54DNw1pxEFGZ1SWKz6VSQ1Wmq0m=bvQ@mail.gmail.com> <alpine.LNX.2.01.1107202226120.18358@frira.zrqbmnf.qr> <CAM3m09QRgx2isdNo99KDYS-VHWx6zEXcB1Ks7DkKZCHVy0rmhQ@mail.gmail.com> <alpine.LNX.2.01.1107202234070.18358@frira.zrqbmnf.qr> <CAM3m09Q+feu6RTg9CYo4yBFFUDsmonJtzEQm=rYTuVHHLOzC=Q@mail.gmail.com> <slrnj2gmgg.2vb.petr.pisar@album.ics.muni.cz> <CAM3m09Rf7zEQ4TL5PbfT7NHF5gq24o7E-Pbq_wcwbJ25ym6Dww@mail.gmail.com> <slrnj2i1rb.2tp.petr.pisar@album.ics.muni.cz>
+From: Whit Blauvelt <whit@transpect.com>
+Subject: Re: How might incoming SMB probes from public IPs be ariving on the
+ internal interfaces?
+Date: Sun, 24 Jul 2011 20:01:39 -0400
+Message-ID: <20110725000139.GA10041@black.transpect.com>
+References: <20110723003617.GA17279@black.transpect.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-class: urn:content-classes:message
+Content-Disposition: inline
+In-Reply-To: <20110723003617.GA17279@black.transpect.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
-Cc: Ryan Whelan <rcwhelan@gmail.com>, Petr Pisar <petr.pisar@atlas.cz>, Jan Engelhardt <jengelh@medozas.de>
 
-But wait a minute - something else has gotta be going on here.  The
-original rules had an ACCEPT for UDP and TCP port 500 and then for ESP
-and AH. And then the DROP all rule.  When the drop all rule is removed,
-then everything comes through because the packet does its thing, gets
-re-injected, and now it's ESP. 
+Just to clarify and simplify the question my experience raises:
 
-So that original packet must be something other than UDP 500  - right?
-Something else must happen during the original handshake setting up the
-IPSEC SA - because if it was all UDP 500, you'd ACCEPT it - right?  I
-think I kind of remember some UDP port 4500 stuff gets in the act
-somehow.  Before getting too fancy, maybe insert a -J LOG rule right in
-front of that DROP rule so you can see what you're dropping.  That might
-give some clues.
+There's a system functioning as a firewall with two public lines coming in,
+each with multiple IPs, and two LANs inside it. In this case the public
+lines are on eth4 and eth5, the two LANs are on eth1 and eth2.
 
-- Greg Scott
+Rules for INPUT specify each of the ports which are to be open on eth4 and
+eth5, with a separate rule for each IP/port combination, and with a rule
+following them to reject all else on those interfaces. SMB ports are not
+among the the accepted traffic for those interfaces at all, not for a single
+public IP.
 
+But there's no blocking of SMB traffic on eth1 and eth2. There's an SMB
+service on the firewall by which workstations on the two LANs are able to
+place files for public-facing (non-SMB) servers there. 
 
------Original Message-----
-From: netfilter-owner@vger.kernel.org
-[mailto:netfilter-owner@vger.kernel.org] On Behalf Of Petr Pisar
-Sent: Friday, July 22, 2011 12:15 AM
-To: netfilter@vger.kernel.org
-Subject: Re: Reject non-ipsec traffic
+All SMB probes seen as coming in on eth4 and eth5 get blocked, just as
+should be expected. But some SMB probes, of our public IPs, by outside
+public IPs, are seen by iptables as coming in on eth1 and eth2, so not
+blocked at that level. They can't connect successfully to our SMB server
+anyway because of its own settings. But that's not the point.
 
-On 2011-07-21, Ryan Whelan <rcwhelan@gmail.com> wrote:
-> The policy is setup (openswan configures it)
->
-> # ip xfrm poli
-> src 111.222.333.444/32 dst 444.333.222.111/32 proto gre
-> 	dir out priority 2080
-> 	tmpl src 111.222.333.444 dst 444.333.222.111
-> 		proto esp reqid 16385 mode tunnel
-> src 444.333.222.111/32 dst 111.222.333.444/32 proto gre
-> 	dir fwd priority 2080
-> 	tmpl src 444.333.222.111 dst 111.222.333.444
-> 		proto esp reqid 16385 mode tunnel
->
-I don't know openswan syntax. setkey syntax provides level `require'
-which means if security association is missing, the packet will not be
-sent. I guess the openswan `reqid' is the same as setkey `unique' which
-is the same as `require' bound to specific security association.
+The point is that some of the scans of our public IPs manage to appear to
+the firewall as coming from the internal interfaces - and I provided an
+example in the prior post where it is clearly a single, repeated scan that
+hits the internal interfaces with several, but not all, of its instances.
 
-Please note the security policies can be loaded into kernel
-independently
-on IKE daemon, so you are guarded even if daemon does not start.
+Now, it's easy enough to block once it's recognized. It just takes adding
+rules to block the SMB ports on _all_ interfaces to anything with an
+external address, no matter which interface it appears to come in from. But
+this also suggests that the apparent interface of a packet, perhaps, just
+isn't to be trusted - that to be secure all rules must be 100% in terms of
+IP ranges, with interface specifications only to be considered a secondary,
+leaky line of defense.
 
-> The issue is that IPSec is protecting a GRE tunnel and if IPSec fails
-> for some reason, GRE will be happy to work without it; tunnelling
-> everything in the clear.  I was just hoping to put some kind of fail
-> safe in place so if IPSec stopped working or failed to start,
-> unencrypted traffic wouldn't be transmitted.
->
-I see, another independent meassure. Unfortunatelly you are out of luck
-in case of netfilter on egress traffic.
+Admittedly this is an older netfilter, on an older kernel, since firewalls
+are the sort of thing where upgrade policies favor a conservative approach.
+Is there some known bug where packets can "slip sideways" between
+interfaces? What the heck can be going on here?
 
--- Petr
-
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks,
+Whit
