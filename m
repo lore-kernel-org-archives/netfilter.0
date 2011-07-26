@@ -1,32 +1,34 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: about iptables option --goto
-Date: Mon, 25 Jul 2011 21:25:59 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1107252125410.12473@frira.zrqbmnf.qr>
-References: <E8EB29BAE3D8487DB30D601B81B21E5A@poweredge1800>
+From: "Julio A. Romero" <julioarr@fisica.uh.cu>
+Subject: CONFIG_NF_CT_ACCT is deprecated
+Date: Tue, 26 Jul 2011 13:55:02 -0400
+Message-ID: <A8D937F560604292AD4B589CCF3D72BF@poweredge1800>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <E8EB29BAE3D8487DB30D601B81B21E5A@poweredge1800>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Julio A. Romero" <julioarr@fisica.uh.cu>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: netfilter@vger.kernel.org
+Cc: netfilter-devel@vger.kernel.org
 
-On Monday 2011-07-25 20:21, Julio A. Romero wrote:
+Messages produced during the boot sequence of my debian system
+(squeeze, linux-image-2.6.32-5-amd64      2.6.32-35)
+syslog:
 
-> hi all,
->
-> in man page says:
->
-> -g, --goto chain
->             This  specifies  that  the  processing  should  continue in a user
-> specified chain.
->             Unlike the --jump option return will not continue  processing in
-> this  chain  but
->             instead in the chain that called us via --jump.
->
-> What happen when option return will not continue processing in a built-in chain
-> (INPUT, OUTPUT, FORWARD), the built-in chain policy?
 
-Naturally.
+Jul 26 11:47:16 firewall kernel: [   11.465366] ip6_tables: (C) 2000-2006 
+Netfilter Core Team
+Jul 26 11:47:16 firewall kernel: [   11.563280] ip_tables: (C) 2000-2006 
+Netfilter Core Team
+Jul 26 11:47:16 firewall kernel: [   11.621776] nf_conntrack version 0.5.0 
+(3846 buckets, 15384 max)
+Jul 26 11:47:16 firewall kernel: [   11.622349] CONFIG_NF_CT_ACCT is 
+deprecated and will be removed soon. Please use
+Jul 26 11:47:16 firewall kernel: [   11.622354] nf_conntrack.acct=1 kernel 
+parameter, acct=1 nf_conntrack module option or
+Jul 26 11:47:16 firewall kernel: [   11.622357] sysctl 
+net.netfilter.nf_conntrack_acct=1 to enable it.
+
+
+What's that? and What should I do at respect? 
+
