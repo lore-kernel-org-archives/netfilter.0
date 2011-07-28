@@ -1,46 +1,40 @@
-From: "Olshvang, LevX" <levx.olshvang@intel.com>
-Subject: What is the added value of tables comparing to chains ?
-Date: Thu, 28 Jul 2011 11:14:53 +0300
-Message-ID: <FE06BAB9E17C4742BB3BE97B2D419D8C2D0D069663@hasmsx502.ger.corp.intel.com>
-References: <FE06BAB9E17C4742BB3BE97B2D419D8C2D0D00D5C1@hasmsx502.ger.corp.intel.com>
- <alpine.LNX.2.01.1107271446470.3503@frira.zrqbmnf.qr>
+From: Kumar Swamy <kswamy@barracuda.com>
+Subject: RE: iptables and virtual NIC
+Date: Thu, 28 Jul 2011 03:05:11 -0700
+Message-ID: <65C6A498BB5BF245BD7195255041FA2E04C751C4A5@bn-scl-be03.Cudanet.local>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1107271446470.3503@frira.zrqbmnf.qr>
 Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
 To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
+Hello folks,=20
 
-Hi all, 
+I am a newbie to iptables and experimenting some stuff.=A0 So please ex=
+cuse me, if this has already been discussed.
 
-I am rather new to netfilter , but during couple of months I gained some experience writing both netfilter and iptables extensions.
-Threre is very conceivable reasonal link between hooks in TCP/IP stack and chains.
+I have a linux gateway which has a physical interface (eth0 ) and multi=
+ple virtual interfaces ( eth0:1, eth0:2), each has dynamic IP configure=
+d.
+I want to create an iptables rule for =A0IP masquerading on eth0 , but =
+packets going out on other interfaces should be left untouched. Is this=
+ possible?=20
 
-But I should confess I do not understand what for the tables were invented. Is there any code that in match or target function code paths that takes data from table structures ?
+I tried=20
+-A POSTROUTING -o eth0 -j MASQUERADE
+But it seems packet going out on virtual NICs ( aliases) are also hitti=
+ng this rule.=20
+Is there any way to solve this problem without using SNAT? Since I have=
+ IP address configured dynamically, there is no easy way to do SNAT.=20
+
+Thanks
 
 
-
-
-For example I asked in my previous post (see quoted below) why some target which just create some structure for internal use must be associated with nat table ? Why not mangle table ?
-
-I understand that the list may had already discussed the issue, I will be glad for references.  
-
- 
-
-
->POST :Why Port trigger of DD-WRT requires nat table to store trigger ?
->The last command inserts rule into nat table, and the trigger 
->implementation code gives an error if a mangle table is used instead. 
->The question is why ?
----------------------------------------------------------------------
-Intel Israel (74) Limited
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
+'Like' us on Facebook for exclusive content and other resources on all =
+Barracuda Networks solutions.=0D
+Visit http://barracudanetworks.com/facebook=0D
+=0D
 
