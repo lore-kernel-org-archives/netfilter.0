@@ -1,36 +1,69 @@
-From: Michal Soltys <soltys@ziu.info>
-Subject: Re: iptables and virtual NIC
-Date: Thu, 28 Jul 2011 17:04:42 +0200
-Message-ID: <4E317A8A.4000508@ziu.info>
-References: <65C6A498BB5BF245BD7195255041FA2E04C751C4A5@bn-scl-be03.Cudanet.local>
+From: "Olshvang, LevX" <levx.olshvang@intel.com>
+Subject: RE: Why Port trigger of DD-WRT requires nat table storing trigger ?
+Date: Thu, 28 Jul 2011 19:22:00 +0300
+Message-ID: <FE06BAB9E17C4742BB3BE97B2D419D8C2D0D0699EA@hasmsx502.ger.corp.intel.com>
+References: <FE06BAB9E17C4742BB3BE97B2D419D8C2D0D00D5C1@hasmsx502.ger.corp.intel.com>
+ <alpine.LNX.2.01.1107271446470.3503@frira.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <65C6A498BB5BF245BD7195255041FA2E04C751C4A5@bn-scl-be03.Cudanet.local>
+In-Reply-To: <alpine.LNX.2.01.1107271446470.3503@frira.zrqbmnf.qr>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Kumar Swamy <kswamy@barracuda.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 11-07-28 12:05, Kumar Swamy wrote:
-> Hello folks,
->
-> I am a newbie to iptables and experimenting some stuff.  So please excuse me, if this has already been discussed.
->
-> I have a linux gateway which has a physical interface (eth0 ) and multiple virtual interfaces ( eth0:1, eth0:2), each has dynamic IP configured.
-> I want to create an iptables rule for  IP masquerading on eth0 , but packets going out on other interfaces should be left untouched. Is this possible?
->
-> I tried
-> -A POSTROUTING -o eth0 -j MASQUERADE
-> But it seems packet going out on virtual NICs ( aliases) are also hitting this rule.
-> Is there any way to solve this problem without using SNAT? Since I have IP address configured dynamically, there is no easy way to do SNAT.
->
-> Thanks
+Thanks Jan,
 
-In addition to what Jan said about eth:N
+I am not looking for DDWRT experts, I am just applying to the community wisdom to advice me on a question:
 
-MASQUERADE target picks only a primary addresses with global scope. Make 
-sure during address assignment (you can adjust what dhclient or dhcpcd 
-does with shell scripting) that only one of the addresses have global 
-scope (and it's the primary address).
+What is implication of using a mangle table versus nat table if no nat action (snat, dnat, masquerade) is requested ?
+
+
+Why nat table is required to execute DNAT or SNAT ?
+
+
+And finally I had a vey generic question ( and please excuse me  ) -  why we group chains in tables, can we make netfilter without tables ?
+
+To discuss,  (or  clarify my misunderstanding )  the last  question I had posted a separate topic to the list.
+
+Thx,
+Lev
+
+
+
+-----Original Message-----
+From: Jan Engelhardt [mailto:jengelh@medozas.de] 
+Sent: Wednesday, July 27, 2011 16:10
+To: Olshvang, LevX
+Cc: netfilter@vger.kernel.org
+Subject: Re: Why Port trigger of DD-WRT requires nat table storing trigger ?
+
+On Wednesday 2011-07-27 09:44, Olshvang, LevX wrote:
+
+>Hi all, 
+>
+>I am porting DD-WRT port trigger implementation taken from DDWRT 
+>project. The logic of port trigger says : wait for somebody from LAN 
+>(br0 interface) to send tcp packed to port 6889 to Internet peer. Then 
+>Internet peer replies by sending packet to related port 9881 and 
+>firewall makes dnat translation.
+
+DDWRT's xtables stack has been left behind 3 years ago and then 
+agglomerated with weird extra components with questionable uses, 
+including, but not limited to, ipt_TRIGGER, which is not even 
+documented to begin with, so chances for any explanations are quite 
+dim.
+
+>The last command inserts rule into nat table, and the trigger 
+>implementation code gives an error if a mangle table is used instead. 
+>The question is why ?
+---------------------------------------------------------------------
+Intel Israel (74) Limited
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
+
