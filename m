@@ -1,39 +1,46 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: CONFIG_NF_CT_ACCT is deprecated
-Date: Wed, 27 Jul 2011 17:32:45 +0200
-Message-ID: <4E302F9D.10905@trash.net>
-References: <A8D937F560604292AD4B589CCF3D72BF@poweredge1800>
+From: "Olshvang, LevX" <levx.olshvang@intel.com>
+Subject: What is the added value of tables comparing to chains ?
+Date: Thu, 28 Jul 2011 11:14:53 +0300
+Message-ID: <FE06BAB9E17C4742BB3BE97B2D419D8C2D0D069663@hasmsx502.ger.corp.intel.com>
+References: <FE06BAB9E17C4742BB3BE97B2D419D8C2D0D00D5C1@hasmsx502.ger.corp.intel.com>
+ <alpine.LNX.2.01.1107271446470.3503@frira.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <A8D937F560604292AD4B589CCF3D72BF@poweredge1800>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "Julio A. Romero" <julioarr@fisica.uh.cu>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.01.1107271446470.3503@frira.zrqbmnf.qr>
+Content-Language: en-US
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 26.07.2011 19:55, Julio A. Romero wrote:
-> Messages produced during the boot sequence of my debian system
-> (squeeze, linux-image-2.6.32-5-amd64      2.6.32-35)
-> syslog:
-> 
-> 
-> Jul 26 11:47:16 firewall kernel: [   11.465366] ip6_tables: (C)
-> 2000-2006 Netfilter Core Team
-> Jul 26 11:47:16 firewall kernel: [   11.563280] ip_tables: (C) 2000-2006
-> Netfilter Core Team
-> Jul 26 11:47:16 firewall kernel: [   11.621776] nf_conntrack version
-> 0.5.0 (3846 buckets, 15384 max)
-> Jul 26 11:47:16 firewall kernel: [   11.622349] CONFIG_NF_CT_ACCT is
-> deprecated and will be removed soon. Please use
-> Jul 26 11:47:16 firewall kernel: [   11.622354] nf_conntrack.acct=1
-> kernel parameter, acct=1 nf_conntrack module option or
-> Jul 26 11:47:16 firewall kernel: [   11.622357] sysctl
-> net.netfilter.nf_conntrack_acct=1 to enable it.
-> 
-> 
-> What's that? and What should I do at respect?
 
-Exactly what it says in the message, use the module parameter or sysctl
-to enable conntrack accounting.
+Hi all, 
+
+I am rather new to netfilter , but during couple of months I gained some experience writing both netfilter and iptables extensions.
+Threre is very conceivable reasonal link between hooks in TCP/IP stack and chains.
+
+But I should confess I do not understand what for the tables were invented. Is there any code that in match or target function code paths that takes data from table structures ?
+
+
+
+
+For example I asked in my previous post (see quoted below) why some target which just create some structure for internal use must be associated with nat table ? Why not mangle table ?
+
+I understand that the list may had already discussed the issue, I will be glad for references.  
+
+ 
+
+
+>POST :Why Port trigger of DD-WRT requires nat table to store trigger ?
+>The last command inserts rule into nat table, and the trigger 
+>implementation code gives an error if a mangle table is used instead. 
+>The question is why ?
+---------------------------------------------------------------------
+Intel Israel (74) Limited
+
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
+
