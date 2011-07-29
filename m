@@ -1,15 +1,38 @@
-From: jobhunts02@aol.com
-Subject: IPv6 Connection Tracking Excess CPU usage
-Date: Thu, 28 Jul 2011 17:07:37 -0700
-Message-ID: <9A0A4A86-B4FE-4BF1-BCA0-204D7975320D@aol.com>
-Mime-Version: 1.0 (iPhone Mail 8L1)
-Content-Transfer-Encoding: 8BIT
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [GIT PULL nf-2.6] IPVS
+Date: Fri, 29 Jul 2011 09:12:06 +0900
+Message-ID: <20110729001203.GB31217@verge.net.au>
+References: <1311293920-1983-1-git-send-email-horms@verge.net.au>
+Mime-Version: 1.0
+Return-path: <lvs-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1311293920-1983-1-git-send-email-horms@verge.net.au>
+Sender: lvs-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Cc: Wensong Zhang <wensong@linux-vs.org>, Julian Anastasov <ja@ssi.bg>, Patrick McHardy <kaber@trash.net>, Pablo Neira Ayuso <pablo@netfilter.org>, Dave Jones <davej@redhat.com>, Randy Dunlap <rdunlap@xenotime.net>, Huajun Li <huajun.li.lee@gmail.com>, "David S. Miller" <davem@davmeloft.net>
 
-I am running Linux 2.6.26 on my board.  When I enable IPv6 connection tracking support, i.e., CONFIG_NF_CONNTRACK_IPV6=y, and send 3 megabits of data to the board, the CPU usage according to top for events/0 goes up to 99-100%.  Without CONFIG_NF_CONNTRACK_IPV6 enabled, the CPU usage for events/0 is 17-18%.
+On Fri, Jul 22, 2011 at 09:18:39AM +0900, Simon Horman wrote:
+> Hi Pablo, Hi Patrick,
+> 
+> please consider pulling
+> 
+>   git://git.kernel.org/pub/scm/linux/kernel/git/horms/ipvs-2.6.git master
+> 
+> to get the following crash on module removal fix for IPVS.
+> 
+> Sorry for sending this so very, very late in the release cycle.
+> I had sent it earlier but it seems to have slipped through the cracks
+> somehow.
+> 
+> Simon Horman (1):
+>       IPVS: Free resources on module removal
+> 
+>  net/netfilter/ipvs/ip_vs_ctl.c |    1 +
+>  1 files changed, 1 insertions(+), 0 deletions(-)
 
-Has anyone else seen this issue?  Is there a fix?
+Ping.
+
+What is the best way forward to get this both in 3.1 and 3.0 -stable?
