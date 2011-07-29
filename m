@@ -1,28 +1,50 @@
 From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [GIT PULL nf-2.6] IPVS
-Date: Fri, 29 Jul 2011 16:26:33 +0200
-Message-ID: <4E32C319.5010602@trash.net>
-References: <1311293920-1983-1-git-send-email-horms@verge.net.au>	<20110729001203.GB31217@verge.net.au> <20110728.183917.885521460762207540.davem@davemloft.net>
+Subject: Re: [PATCH][RFC] netfilter: Fix small leak in ipq_build_packet_message()
+Date: Fri, 29 Jul 2011 16:39:47 +0200
+Message-ID: <4E32C633.5000205@trash.net>
+References: <alpine.LNX.2.00.1107171942400.32359@swampdragon.chaosbits.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <20110728.183917.885521460762207540.davem@davemloft.net>
+In-Reply-To: <alpine.LNX.2.00.1107171942400.32359@swampdragon.chaosbits.net>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: David Miller <davem@davemloft.net>
-Cc: horms@verge.net.au, lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, wensong@linux-vs.org, ja@ssi.bg, pablo@netfilter.org, davej@redhat.com, rdunlap@xenotime.net, huajun.li.lee@gmail.com, davem@davmeloft.net
+To: Jesper Juhl <jj@chaosbits.net>
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, coreteam@netfilter.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, James Morris <jmorris@namei.org>, "Pekka Savola (ipv6)" <pekkas@netcore.fi>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, "David S. Miller" <davem@davemloft.net>
 
-On 29.07.2011 03:39, David Miller wrote:
-> From: Simon Horman <horms@verge.net.au>
-> Date: Fri, 29 Jul 2011 09:12:06 +0900
+On 17.07.2011 19:46, Jesper Juhl wrote:
+> ipq_build_packet_message() in net/ipv4/netfilter/ip_queue.c and
+> net/ipv6/netfilter/ip6_queue.c contain a small potential mem leak as
+> far as I can tell.
 > 
->> What is the best way forward to get this both in 3.1 and 3.0 -stable?
+> We allocate memory for 'skb' with alloc_skb() annd then call
+>  nlh = NLMSG_PUT(skb, 0, 0, IPQM_PACKET, size - sizeof(*nlh));
 > 
-> I'll take this directly and do the -stable submission too.
+> NLMSG_PUT is a macro
+>  NLMSG_PUT(skb, pid, seq, type, len) \
+>   		NLMSG_NEW(skb, pid, seq, type, len, 0)
+> 
+> that expands to NLMSG_NEW, which is also a macro which expands to:
+>  NLMSG_NEW(skb, pid, seq, type, len, flags) \
+>   	({	if (unlikely(skb_tailroom(skb) < (int)NLMSG_SPACE(len))) \
+>   			goto nlmsg_failure; \
+>   		__nlmsg_put(skb, pid, seq, type, len, flags); })
+> 
+> If we take the true branch of the 'if' statement and 'goto
+> nlmsg_failure', then we'll, at that point, return from
+> ipq_build_packet_message() without having assigned 'skb' to anything
+> and we'll leak the memory we allocated for it when it goes out of
+> scope.
+> 
+> Fix this by placing a 'kfree(skb)' at 'nlmsg_failure'.
+> 
+> I admit that I do not know how likely this to actually happen or even
+> if there's something that guarantees that it will never happen - I'm
+> not that familiar with this code, but if that is so, I've not been
+> able to spot it.
+> 
+> Please review and commit if you believe this is correct. Thanks.
 > 
 
-Sorry, I seem to have missed this, also can't find the email in my
-inbox for some reason. Anyways, generally please do the stable
-submissions for IPVS yourself (after the patch went upstream of
-course).
+Looks correct, applied, thanks.
