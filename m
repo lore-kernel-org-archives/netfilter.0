@@ -1,60 +1,28 @@
-From: Greg Oliver <oliver.greg2@gmail.com>
-Subject: ebtables to copy traffic
-Date: Fri, 29 Jul 2011 09:08:31 -0500
-Message-ID: <CACsKbv0r4PcDp0zKV53n=oAOYkvkPbOCtN8LE=L2zQPcUyasew@mail.gmail.com>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [GIT PULL nf-2.6] IPVS
+Date: Fri, 29 Jul 2011 16:26:33 +0200
+Message-ID: <4E32C319.5010602@trash.net>
+References: <1311293920-1983-1-git-send-email-horms@verge.net.au>	<20110729001203.GB31217@verge.net.au> <20110728.183917.885521460762207540.davem@davemloft.net>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=m/mwJX+h6lrSt3RgyE5yozKP9hKqbhmkvqw3Z1dfHLY=;
-        b=DwS0vfBnlAjyIrHIgg67FLMENKKgXznQqLcuJJERrJREoOMAL/mZ7ucp/GQWHLmFXF
-         MEJnUHbIR6x30kNdkiaBBrftGgNAWrT5bOFdQGtwT2tbp9FyyLjQxy9uiw8CS1wXeHda
-         4Ay8ydddRSEEctTaGaTV5fs6xOILxGqlTuWc8=
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <20110728.183917.885521460762207540.davem@davemloft.net>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: David Miller <davem@davemloft.net>
+Cc: horms@verge.net.au, lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, wensong@linux-vs.org, ja@ssi.bg, pablo@netfilter.org, davej@redhat.com, rdunlap@xenotime.net, huajun.li.lee@gmail.com, davem@davmeloft.net
 
-So, I am pretty new to all of this, but we use port mirroring from
-ethernet switches to record voip calls in our business.  We usually have
-no issues due to using a physical port on the servers, but we are
-migrating to a virtual model.
+On 29.07.2011 03:39, David Miller wrote:
+> From: Simon Horman <horms@verge.net.au>
+> Date: Fri, 29 Jul 2011 09:12:06 +0900
+> 
+>> What is the best way forward to get this both in 3.1 and 3.0 -stable?
+> 
+> I'll take this directly and do the -stable submission too.
+> 
 
-I am planning on using ebtables to copy all traffic on the mirror port
-from the switch to a list of receiving MACs on the network, but I cannto
-for the life of me get it right I guess.
-
-I am trying to use dnat.
-
-Server0 -
-        eth0 - connected to switch mirror port
-        eth1 - connected to LAN A
-        eth2 - connected to LAN B (recording LAN)
-
-Server1 -
-        eth0 - connected to LAN A
-        eth1 - connected to LAN B
-
-What I am attempting is to dnat all incoming traffic on Server0/eth0 to
-the MAC of Server1/eth1
-
-ebtables -t nat -A PREROUTING -i eth0 -j dnat --to-destination
-00:22:19:e2:9b:24
-ebtables -t broute -A BROUTING -i eth0 -p ipv4 -j redirect
---redirect-target DROP
-
-are the 2 methods I have tried (00:22:19:e2:9b:24) is server1/eth1
-
-Not knowing whether or not bridging is actually required for the
-interfaces in question, I have also reconfigured Server0 for bridging on
-all of it's interfaces, and attempted both the bridged and physical -i
-in the ebtables command line.
-
-Am I obviously overlooking something simple here?  Thsi should be the
-most basic of basic things for ebtables to do right?
-
-Thanks for any insight!
-
--Greg
+Sorry, I seem to have missed this, also can't find the email in my
+inbox for some reason. Anyways, generally please do the stable
+submissions for IPVS yourself (after the patch went upstream of
+course).
