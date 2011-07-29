@@ -1,50 +1,31 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [PATCH][RFC] netfilter: Fix small leak in ipq_build_packet_message()
-Date: Fri, 29 Jul 2011 16:39:47 +0200
-Message-ID: <4E32C633.5000205@trash.net>
-References: <alpine.LNX.2.00.1107171942400.32359@swampdragon.chaosbits.net>
+From: Stephen Hemminger <shemminger@vyatta.com>
+Subject: Re: ebtables to copy traffic
+Date: Fri, 29 Jul 2011 10:00:48 -0700
+Message-ID: <20110729100048.7b72be47@nehalam.ftrdhcpuser.net>
+References: <CACsKbv0r4PcDp0zKV53n=oAOYkvkPbOCtN8LE=L2zQPcUyasew@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.00.1107171942400.32359@swampdragon.chaosbits.net>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <CACsKbv0r4PcDp0zKV53n=oAOYkvkPbOCtN8LE=L2zQPcUyasew@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Jesper Juhl <jj@chaosbits.net>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, coreteam@netfilter.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, James Morris <jmorris@namei.org>, "Pekka Savola (ipv6)" <pekkas@netcore.fi>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, "David S. Miller" <davem@davemloft.net>
+To: Greg Oliver <oliver.greg2@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-On 17.07.2011 19:46, Jesper Juhl wrote:
-> ipq_build_packet_message() in net/ipv4/netfilter/ip_queue.c and
-> net/ipv6/netfilter/ip6_queue.c contain a small potential mem leak as
-> far as I can tell.
-> 
-> We allocate memory for 'skb' with alloc_skb() annd then call
->  nlh = NLMSG_PUT(skb, 0, 0, IPQM_PACKET, size - sizeof(*nlh));
-> 
-> NLMSG_PUT is a macro
->  NLMSG_PUT(skb, pid, seq, type, len) \
->   		NLMSG_NEW(skb, pid, seq, type, len, 0)
-> 
-> that expands to NLMSG_NEW, which is also a macro which expands to:
->  NLMSG_NEW(skb, pid, seq, type, len, flags) \
->   	({	if (unlikely(skb_tailroom(skb) < (int)NLMSG_SPACE(len))) \
->   			goto nlmsg_failure; \
->   		__nlmsg_put(skb, pid, seq, type, len, flags); })
-> 
-> If we take the true branch of the 'if' statement and 'goto
-> nlmsg_failure', then we'll, at that point, return from
-> ipq_build_packet_message() without having assigned 'skb' to anything
-> and we'll leak the memory we allocated for it when it goes out of
-> scope.
-> 
-> Fix this by placing a 'kfree(skb)' at 'nlmsg_failure'.
-> 
-> I admit that I do not know how likely this to actually happen or even
-> if there's something that guarantees that it will never happen - I'm
-> not that familiar with this code, but if that is so, I've not been
-> able to spot it.
-> 
-> Please review and commit if you believe this is correct. Thanks.
-> 
+On Fri, 29 Jul 2011 09:08:31 -0500
+Greg Oliver <oliver.greg2@gmail.com> wrote:
 
-Looks correct, applied, thanks.
+> So, I am pretty new to all of this, but we use port mirroring from
+> ethernet switches to record voip calls in our business.  We usually have
+> no issues due to using a physical port on the servers, but we are
+> migrating to a virtual model.
+> 
+> I am planning on using ebtables to copy all traffic on the mirror port
+> from the switch to a list of receiving MACs on the network, but I cannto
+> for the life of me get it right I guess.
+> 
+> I am trying to use dnat.
+
+It is easier to do this with TC filters and TC action mirred
+
