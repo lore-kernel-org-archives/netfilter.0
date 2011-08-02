@@ -1,69 +1,175 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: DisableExternalCache on conntrackd 0.9.14 not syncing to kernel
-Date: Tue, 02 Aug 2011 22:15:31 +0200
-Message-ID: <4E385AE3.6020801@netfilter.org>
-References: <4E317ECF.3020404@tolaris.com>
+Subject: Re: Conntrackd+Keepalived, active/active firewall cluster
+Date: Tue, 02 Aug 2011 22:26:39 +0200
+Message-ID: <4E385D7F.4020309@netfilter.org>
+References: <BANLkTikiiTuiuNO-DOGjTchanAnTSDME0Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------080206050303060107020201"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4E317ECF.3020404@tolaris.com>
+In-Reply-To: <BANLkTikiiTuiuNO-DOGjTchanAnTSDME0Q@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "Tyler J. Wagner" <tyler@tolaris.com>
+To: CeR <cer.inet@linuxmail.org>
 Cc: netfilter@vger.kernel.org
+
+This is a multi-part message in MIME format.
+--------------080206050303060107020201
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Transfer-Encoding: quoted-printable
 
 Hi,
 
-On 28/07/11 17:22, Tyler J. Wagner wrote:
-> Hi all,
-> 
-> I've configured two routers, in active-backup mode, but where both can
-> route to all endpoints at all times. Under some circumstances, traffic
-> can enter at the backup. So I'm trying to provide either a full
-> active-active asymmetric solution, or at least active-active symmetric,
-> where the backup has the active's sessions in the kernel table at all times.
-> 
-> Two questions:
-> 
-> 1. "Mode FTFW { DisableExternalCache Off }" does not appear to work as
-> advertised. The backup router continues to show connections in "cache
-> external", and these connections are not synced to the local kernel. Can
-> you tell me why?
+Sorry, it seems this email got lost in my box.
 
-You want to inject your flow-state information inmediately, right? In
-that case, you can to explicitly set DisableExternalCache On. Removing
-the DisableExternalCache clause from the config file defaults to off (as
-it shows your config file).
+On 07/06/11 00:08, CeR wrote:
+> Hi there!
+> With the last package I got of conntrack-tools I see some config files
+> and shell scripts supposed to work in an active/active firewall
+> cluster.
+> Configuration files for keepalived are included.
+> I have configured my system in the way I guess it may work, but have
+> some doubts about the configuration and the system isn't working at
+> all.
 
-> 2. Does anyone have advice on the best way practice to configure
-> conntrackd for complete active/active asymmetric routing? I want to
-> avoid flushing sessions at failover, and just have them sync state full
-> time.
+I expect that you're using the experimental scripts available here:
+http://1984.lsi.us.es/git/?p=3Dcluster-match-scripts/.git;a=3Dtree
 
-Active/active with asymmetric routing for stateful firewalls is poor
-design for stateful firewalls. I don't recommend it to you. Please read:
-http://1984.lsi.us.es/~pablo/docs/intcomp09.pdf.
+> Some issues:
+> =B7 I think keepalived should give both nodes both IPV resources, so the
+> load balancing can be succefully done with iptables (as seen in
+> multiprimary.sh)
 
-I started some work to allow active/active setup with load-sharing.
+You have to define two resources (one for each node) without virtual IPs
+(since both nodes will share the same IPs).
 
-http://1984.lsi.us.es/git/?p=cluster-match-scripts/.git;a=summary
+Please, find attached some toy-example file for keepalived. It needs to
+be improved for the case when one dead node comes back to life, among
+other things.
 
-It's still preliminary and undocumented, I'm looking for someone
-interested in sponsoring this effort with no success.
+This stuff is still work-in-progress, I've been looking for some sponsor
+to boost this development with no success so far. I'm busy with other
+things that prevent me from prioritizing this feature.
 
-> Details:
-> 
-> conntrackd is 0.9.14-2ubuntu1 on Ubuntu 10.04 lucid. This is the package
-> Ubuntu provides for 11.04 natty, backported to lucid. The package is
-> unchanged from the Ubuntu sources. All else is stock lucid.
+> =B7 With the give configuration, Keepalived sometimes gives IPV
+> resources to just one node, the other remains inactive and seems like
+> a passive-backup node.
+> =B7 In some cases, I have both nodes with both IPV resources, but it
+> seems that some misconfiguration in iptables DROP packages needed by
+> clients connections through the firewall. Maybe conntrackd not working
+> properly in state replication?
+>=20
+> If anyone gives me some clues I could just write some documentation
+> regarding this configuration, maybe with a little explanation of
+> protocols and tools being implied. Or is there already some
+> documentation?
 
-There are few differences between 0.9.14 and 1.0.0, but I suggest you to
-upgrade to 1.0.0 since you'll benefit from several fixes of minor bugs
-that happened during that period.
+All the documentation that you can find is available in the website.
+There's another article that I wrote which I expect to release once it
+is published in one journal. However, it does not describe how to deploy
+this setup, it's more about design, implementation and evaluation.
 
-You may use the conntrack-tools 1.0.0 debian packages in sid:
-http://packages.debian.org/unstable/net/conntrack
+> As you can see, right now i'm working in a non-production environment,
+> but with more investigation and develop all can be done. I'm really
+> interested in this.
 
-> Both routers are configured as in the attached file (with the exception
-> of IPv4_interface).
+Good luck with it.
+
+--------------080206050303060107020201
+Content-Type: text/plain;
+ name="keepalived-multi1.conf"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="keepalived-multi1.conf"
+
+#
+# Simple script for multi-primary setups
+#
+
+vrrp_sync_group G1 {   # must be before vrrp_instance declaration
+  group {
+    VI_1
+    VI_2
+  }
+  notify_master "/home/pablo/devel/cluster-match-scripts/cluster-node1.sh primary 1"
+  notify_master_sync
+  notify_backup "/home/pablo/devel/cluster-match-scripts/cluster-node1.sh backup 1"
+  notify_fault "/home/pablo/devel/cluster-match-scripts/cluster-node1.sh fault 1"
+}
+
+vrrp_sync_group G2 {   # must be before vrrp_instance declaration
+  group {
+    VI_3
+    VI_4
+  }
+  notify_master "/home/pablo/devel/cluster-match-scripts/cluster-node1.sh primary 2"
+  notify_master_sync
+  notify_backup "/home/pablo/devel/cluster-match-scripts/cluster-node1.sh backup 2"
+  notify_fault "/home/pablo/devel/cluster-match-scripts/cluster-node1.sh fault 2"
+}
+
+vrrp_instance VI_1 {
+    interface eth1
+    state SLAVE
+    virtual_router_id 61
+    priority 90
+    advert_int 1
+    authentication {
+      auth_type PASS
+      auth_pass papas_con_tomate
+    }
+    # not needed - only for testing purposes
+    virtual_ipaddress {
+      192.168.0.111/24   # default CIDR mask is /32
+    }
+}
+
+vrrp_instance VI_2 {
+    interface eth2
+    state SLAVE
+    virtual_router_id 61
+    priority 90
+    advert_int 1
+    authentication {
+      auth_type PASS
+      auth_pass papas_con_tomate
+    }
+    # not needed - only for testing purposes
+    virtual_ipaddress {
+      192.168.1.111/24   # default CIDR mask is /32
+    }
+}
+
+vrrp_instance VI_3 {
+    interface eth1
+    state SLAVE
+    virtual_router_id 62
+    priority 10
+    advert_int 1
+    authentication {
+      auth_type PASS
+      auth_pass papas_con_tomate
+    }
+    # not needed - only for testing purposes
+    virtual_ipaddress {
+      192.168.0.222/24   # default CIDR mask is /32
+    }
+}
+
+vrrp_instance VI_4 {
+    interface eth2
+    state SLAVE
+    virtual_router_id 62
+    priority 10
+    advert_int 1
+    authentication {
+      auth_type PASS
+      auth_pass papas_con_tomate
+    }
+    # not needed - only for testing purposes
+    virtual_ipaddress {
+      192.168.1.222/24   # default CIDR mask is /32
+    }
+}
+
+--------------080206050303060107020201--
