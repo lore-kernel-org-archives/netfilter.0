@@ -1,26 +1,56 @@
-From: Ahvenniemi Mikko <mikko.ahvenniemi@aalto.fi>
-Subject: Possible to ebtables MAC DNAT all packets after iptables mangle
- FORWARD?
-Date: Wed, 3 Aug 2011 11:26:20 +0000
-Message-ID: <85976E1BF236ED42B4A4BBFD3F44FCB04D62E816@EXMDB01.org.aalto.fi>
+From: "Tyler J. Wagner" <tyler@tolaris.com>
+Subject: Re: DisableExternalCache on conntrackd 0.9.14 not syncing to kernel
+Date: Wed, 03 Aug 2011 15:15:18 +0100
+Message-ID: <4E3957F6.2050105@tolaris.com>
+References: <4E317ECF.3020404@tolaris.com> <4E385AE3.6020801@netfilter.org>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: fi-FI
+In-Reply-To: <4E385AE3.6020801@netfilter.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org
 
-My setup is as follows:
-I have a mirror port on a switch to where all traffic is mirrored. Now i have to route this traffic to multiple analysis machines without altering the IP layer contents of those packets. This is to preserve the original IP addresses and other information that might be needed to properly analyse those packets.
+Thank you for your help, Pablo. My comments below.
 
-Originally I had hoped to achieve this with a router machine with one NIC. My plan was to broute the packets so they would be handled by iptables code, mark those packets in mangle FORWARD table, and then use these markings to decide in ebtables nat OUTPUT table where those packets would be routed. However this only work for link layer packets and protocols such as ARP. IP packets do not traverse the ebtables nat OUTPUT table.
+On 2011-08-02 21:15, Pablo Neira Ayuso wrote:
+> You want to inject your flow-state information inmediately, right? In
+> that case, you can to explicitly set DisableExternalCache On. Removing
+> the DisableExternalCache clause from the config file defaults to off (as
+> it shows your config file).
 
-My second approach was to use two NICs. I would make a bridge between those and then bridged packets would traverse the iptables mangle FORWARD table, where I would mark them, and then do the MAC dnat in ebtables nat POSTROUTING table. However only snat is possible in POSTROUTING.
+Correct, that's what I want. I'll try the "On" argument instead. The
+manual states to use the "Off" argument, albeit in an unclear example:
 
-My only option seems to be to use the bridging setup and then do the dnat in ebtables nat PREROUTING table. However, then i'm not able to use iptables more advanced connection tracking and other features to mark the packets I want routed to specific analysis machines.
+http://conntrack-tools.netfilter.org/manual.html
 
-Is there any way to either force the dnat rule in POSTROUTING or force all packest to go through the ebtables nat OUTPUT table after brouting them, or can you suggests some other solution?
+Can someone correct it?
 
-Any feedback or suggestions are much appreciated, thanks!
+> Active/active with asymmetric routing for stateful firewalls is poor
+> design for stateful firewalls. I don't recommend it to you. Please read:
+> http://1984.lsi.us.es/~pablo/docs/intcomp09.pdf.
+
+I read that white paper. It made fine reading on a recent flight. Thank you.
+
+What I want is not true active/active asymmetric routing. IE, I don't
+need state information to propagate ahead of user traffic (thus adding
+latency). I just want active/backup, but where both the active and the
+backup have each others' state tables in the kernel. This way, if an
+asymmetric loop does occur (due to stale ARP data), the traffic will
+pass the firewall. If the state data has propagated by that time, of course.
+
+> There are few differences between 0.9.14 and 1.0.0, but I suggest you to
+> upgrade to 1.0.0 since you'll benefit from several fixes of minor bugs
+> that happened during that period.
+
+I'll attempt to use or repackage 1.0.0 for Ubuntu lucid. If so, I'll
+publish it in my PPA. Thanks.
+
+Regards,
+Tyler
+
+-- 
+"No one can terrorize a whole nation, unless we are all his accomplices."
+   -- Edward R. Murrow
