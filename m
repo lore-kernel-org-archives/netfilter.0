@@ -1,175 +1,26 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Conntrackd+Keepalived, active/active firewall cluster
-Date: Tue, 02 Aug 2011 22:26:39 +0200
-Message-ID: <4E385D7F.4020309@netfilter.org>
-References: <BANLkTikiiTuiuNO-DOGjTchanAnTSDME0Q@mail.gmail.com>
+From: Ahvenniemi Mikko <mikko.ahvenniemi@aalto.fi>
+Subject: Possible to ebtables MAC DNAT all packets after iptables mangle
+ FORWARD?
+Date: Wed, 3 Aug 2011 11:20:41 +0000
+Message-ID: <85976E1BF236ED42B4A4BBFD3F44FCB04D62E7E7@EXMDB01.org.aalto.fi>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------080206050303060107020201"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BANLkTikiiTuiuNO-DOGjTchanAnTSDME0Q@mail.gmail.com>
+Content-Language: fi-FI
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: CeR <cer.inet@linuxmail.org>
-Cc: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-This is a multi-part message in MIME format.
---------------080206050303060107020201
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
+My setup is as follows:
+I have a mirror port on a switch to where all traffic is mirrored. Now i have to route this traffic to multiple analysis machines without altering the IP layer contents of those packets. This is to preserve the original IP addresses and other information that might be needed to properly analyse those packets.
 
-Hi,
+Originally I had hoped to achieve this with a router machine with one NIC. My plan was to broute the packets so they would be handled by iptables code, mark those packets in mangle FORWARD table, and then use these markings to decide in ebtables nat OUTPUT table where those packets would be routed. However this only work for link layer packets and protocols such as ARP. IP packets do not traverse the ebtables nat OUTPUT table.
 
-Sorry, it seems this email got lost in my box.
+My second approach was to use two NICs. I would make a bridge between those and then bridged packets would traverse the iptables mangle FORWARD table, where I would mark them, and then do the MAC dnat in ebtables nat POSTROUTING table. However only snat is possible in POSTROUTING.
 
-On 07/06/11 00:08, CeR wrote:
-> Hi there!
-> With the last package I got of conntrack-tools I see some config files
-> and shell scripts supposed to work in an active/active firewall
-> cluster.
-> Configuration files for keepalived are included.
-> I have configured my system in the way I guess it may work, but have
-> some doubts about the configuration and the system isn't working at
-> all.
+My only option seems to be to use the bridging setup and then do the dnat in ebtables nat PREROUTING table. However, then i'm not able to use iptables more advanced connection tracking and other features to mark the packets I want routed to specific analysis machines.
 
-I expect that you're using the experimental scripts available here:
-http://1984.lsi.us.es/git/?p=3Dcluster-match-scripts/.git;a=3Dtree
+Is there any way to either force the dnat rule in POSTROUTING or force all packest to go through the ebtables nat OUTPUT table after brouting them, or can you suggests some other solution?
 
-> Some issues:
-> =B7 I think keepalived should give both nodes both IPV resources, so the
-> load balancing can be succefully done with iptables (as seen in
-> multiprimary.sh)
-
-You have to define two resources (one for each node) without virtual IPs
-(since both nodes will share the same IPs).
-
-Please, find attached some toy-example file for keepalived. It needs to
-be improved for the case when one dead node comes back to life, among
-other things.
-
-This stuff is still work-in-progress, I've been looking for some sponsor
-to boost this development with no success so far. I'm busy with other
-things that prevent me from prioritizing this feature.
-
-> =B7 With the give configuration, Keepalived sometimes gives IPV
-> resources to just one node, the other remains inactive and seems like
-> a passive-backup node.
-> =B7 In some cases, I have both nodes with both IPV resources, but it
-> seems that some misconfiguration in iptables DROP packages needed by
-> clients connections through the firewall. Maybe conntrackd not working
-> properly in state replication?
->=20
-> If anyone gives me some clues I could just write some documentation
-> regarding this configuration, maybe with a little explanation of
-> protocols and tools being implied. Or is there already some
-> documentation?
-
-All the documentation that you can find is available in the website.
-There's another article that I wrote which I expect to release once it
-is published in one journal. However, it does not describe how to deploy
-this setup, it's more about design, implementation and evaluation.
-
-> As you can see, right now i'm working in a non-production environment,
-> but with more investigation and develop all can be done. I'm really
-> interested in this.
-
-Good luck with it.
-
---------------080206050303060107020201
-Content-Type: text/plain;
- name="keepalived-multi1.conf"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="keepalived-multi1.conf"
-
-#
-# Simple script for multi-primary setups
-#
-
-vrrp_sync_group G1 {   # must be before vrrp_instance declaration
-  group {
-    VI_1
-    VI_2
-  }
-  notify_master "/home/pablo/devel/cluster-match-scripts/cluster-node1.sh primary 1"
-  notify_master_sync
-  notify_backup "/home/pablo/devel/cluster-match-scripts/cluster-node1.sh backup 1"
-  notify_fault "/home/pablo/devel/cluster-match-scripts/cluster-node1.sh fault 1"
-}
-
-vrrp_sync_group G2 {   # must be before vrrp_instance declaration
-  group {
-    VI_3
-    VI_4
-  }
-  notify_master "/home/pablo/devel/cluster-match-scripts/cluster-node1.sh primary 2"
-  notify_master_sync
-  notify_backup "/home/pablo/devel/cluster-match-scripts/cluster-node1.sh backup 2"
-  notify_fault "/home/pablo/devel/cluster-match-scripts/cluster-node1.sh fault 2"
-}
-
-vrrp_instance VI_1 {
-    interface eth1
-    state SLAVE
-    virtual_router_id 61
-    priority 90
-    advert_int 1
-    authentication {
-      auth_type PASS
-      auth_pass papas_con_tomate
-    }
-    # not needed - only for testing purposes
-    virtual_ipaddress {
-      192.168.0.111/24   # default CIDR mask is /32
-    }
-}
-
-vrrp_instance VI_2 {
-    interface eth2
-    state SLAVE
-    virtual_router_id 61
-    priority 90
-    advert_int 1
-    authentication {
-      auth_type PASS
-      auth_pass papas_con_tomate
-    }
-    # not needed - only for testing purposes
-    virtual_ipaddress {
-      192.168.1.111/24   # default CIDR mask is /32
-    }
-}
-
-vrrp_instance VI_3 {
-    interface eth1
-    state SLAVE
-    virtual_router_id 62
-    priority 10
-    advert_int 1
-    authentication {
-      auth_type PASS
-      auth_pass papas_con_tomate
-    }
-    # not needed - only for testing purposes
-    virtual_ipaddress {
-      192.168.0.222/24   # default CIDR mask is /32
-    }
-}
-
-vrrp_instance VI_4 {
-    interface eth2
-    state SLAVE
-    virtual_router_id 62
-    priority 10
-    advert_int 1
-    authentication {
-      auth_type PASS
-      auth_pass papas_con_tomate
-    }
-    # not needed - only for testing purposes
-    virtual_ipaddress {
-      192.168.1.222/24   # default CIDR mask is /32
-    }
-}
-
---------------080206050303060107020201--
+Any feedback or suggestions are much appreciated, thanks!
