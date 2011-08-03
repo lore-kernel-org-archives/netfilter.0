@@ -1,8 +1,8 @@
 From: Ahvenniemi Mikko <mikko.ahvenniemi@aalto.fi>
 Subject: Possible to ebtables MAC DNAT all packets after iptables mangle
  FORWARD?
-Date: Wed, 3 Aug 2011 11:20:41 +0000
-Message-ID: <85976E1BF236ED42B4A4BBFD3F44FCB04D62E7E7@EXMDB01.org.aalto.fi>
+Date: Wed, 3 Aug 2011 11:26:20 +0000
+Message-ID: <85976E1BF236ED42B4A4BBFD3F44FCB04D62E816@EXMDB01.org.aalto.fi>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
