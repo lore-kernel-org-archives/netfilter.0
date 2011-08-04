@@ -1,68 +1,47 @@
-From: "Tyler J. Wagner" <tyler@tolaris.com>
-Subject: Re: Promiscuous mode and xtables
-Date: Thu, 04 Aug 2011 23:03:55 +0100
-Message-ID: <4E3B174B.9040407@tolaris.com>
-References: <4E3A1DB5.3090102@abpni.co.uk> <4E3A5A2D.4090104@tolaris.com> <4E3B15B9.1090803@abpni.co.uk>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: Daniele Rossetti <roxydany22@gmail.com>
+Subject: Replacing data in skbuff
+Date: Fri, 5 Aug 2011 01:15:54 +0200
+Message-ID: <17ECC3DD-F510-4EB6-A812-A499CBE60C62@me.com>
+Mime-Version: 1.0 (Apple Message framework v1244.3)
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4E3B15B9.1090803@abpni.co.uk>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=from:content-type:content-transfer-encoding:subject:date:message-id
+         :to:mime-version:x-mailer;
+        bh=UAO/swNf1RNVc7byu9WXQAd7mN4F1xxkjaodN9dFnB0=;
+        b=ebvqagu9kdO2QeqxuhDa0Hi2WqefHCJiiOCdzAA6ek4CPR4sHoXStnBobNvV2oUqkD
+         0XOxaMYyh1cb8cVDhe2wcxPtdZA5+b5Yi+9Al52jK0BdGKgs7ua9Fh5xn5ks8RgY7gwd
+         EkE3PBbkTEkIbQZB2AXeqnM8smyI4cjOXzv0k=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Jonathan Tripathy <jonnyt@abpni.co.uk>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Actually, yes. I had assumed you'd need INPUT to be ACCEPT to monitor,
-but of course you won't. For two reasons:
+Hello People,
+I'm trying to write a target for netfilter which replace packet payload, but I'm having some troubles, cause I don't really know what is the best way to do it.
+I tried this way: 
 
-1. You're (presumably) not interested in monitoring traffic intended for
-the server itself.
-2. Your monitoring software sniffs the traffic using libpcap, which gets
-its data before netfilter is applied.
+/* payload points to the old payload in skb */
+memcpy(payload,newpayload,newpayload_size*sizeof(char));
+skb->len = skb->len-payload_size+newpayload_size;
+/*new checksum and ip total length*/
+(skbuff is big enough to contain the new payload)
 
-That being the case, set all chains to DROP, and just sniff. But again,
-make sure the application doing the sniffing is secure, and preferably
-drops privileges as soon as the socket is open.
+and this way, using some skbuff api:
 
-Regards,
-Tyler
+/*Get ip+tcp/udp header*/
+int header_len = payload - (char *) skb->data;
+char *header = kmalloc(sizeof(char)*header_len,GFP_KERNEL);
+memcpy(header,skb->data,header_len);
+/*Remove all data from skb */
+skb_pull(skb,skb->len);
+/*Reserve new data space*/
+skb_put(skb,newpayload_size+header_len);
+/*Copy old header and new payload*/
+memcpy(skb->data,header,header_len);
+memcpy(skb->data+header_len,newpayload,newpayload_size);
 
-On 2011-08-04 22:57, Jonathan Tripathy wrote:
-> Shouldn't I also set the input chain to DROP as well?
-> 
-> Thanks
-> 
-> On 04/08/2011 09:37, Tyler J. Wagner wrote:
->> If you intend to monitor only, set OUTPUT and FORWARD chains to DROP.
->> Otherwise you can't firewall. Make sure your monitoring software is up
->> to date, as vulnerabilities on it will be the biggest issue.
->>
->> Regards,
->> Tyler
->>
->> Jonathan Tripathy<jonnyt@abpni.co.uk>  wrote:
->>
->>      Hi Everyone,
->>
->>      Currently, I use ebtables and iptables to secure my servers. It
->> would be
->>      appreciated if someone could please give me some advice on what
->> the best
->>      settings are for using a network port in promiscuous mode for
->> network
->>      monitoring *only*. I.e. I do not want any of this traffic to be
->> able to
->>      access anything on my server.
->>
->>      Thanks
->>      --
->>      To unsubscribe from this list: send the line "unsubscribe
->> netfilter" in
->>      the body of a message to majordomo@vger.kernel.org
->>      More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>
-> 
+Both seems to work somehow (most of the time) but system takes a while to handle the packet and looking in kernel log there is this message more than once: BUG: schedule while atomic
 
--- 
-A bad analogy is like a leaky screwdriver.
+any idea?!
