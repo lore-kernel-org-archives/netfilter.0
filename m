@@ -1,37 +1,44 @@
-From: "Tyler J. Wagner" <tyler@tolaris.com>
-Subject: Re: Promiscuous mode and xtables
-Date: Thu, 04 Aug 2011 09:37:01 +0100
-Message-ID: <4E3A5A2D.4090104@tolaris.com>
-References: <4E3A1DB5.3090102@abpni.co.uk>
+From: =?UTF-8?Q?=22Piotr_Paw=C5=82owski=22?= 
+	<piotr.pawlowski@superhost.pl>
+Subject: Enable connection from host in LAN to VPN server through iptables.
+Date: Thu, 4 Aug 2011 11:26:57 +0200 (CEST)
+Message-ID: <2080860960.316820.1312450017847.JavaMail.open-xchange@ox-app-1.superhost.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4E3A1DB5.3090102@abpni.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jonathan Tripathy <jonnyt@abpni.co.uk>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-If you intend to monitor only, set OUTPUT and FORWARD chains to DROP.
-Otherwise you can't firewall. Make sure your monitoring software is up
-to date, as vulnerabilities on it will be the biggest issue.
+Dear all,
 
-Regards,
-Tyler
+=46rom several days I am trying to enable connection from host in LAN t=
+o VPN
+server through router with iptables (Gentoo distro). Unfortunately I am=
+ unable
+to configure it correctly. Below is What I have in my iptables rules:
 
-Jonathan Tripathy <jonnyt@abpni.co.uk> wrote:
+iptables -A FORWARD -d 195.246.237.249 -j LOG --log-prefix=3D"VPN
+"=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
 
-    Hi Everyone,
+iptables -A FORWARD -s 195.246.237.249 -j LOG --log-prefix=3D"VPN "
 
-    Currently, I use ebtables and iptables to secure my servers. It would be 
-    appreciated if someone could please give me some advice on what the best 
-    settings are for using a network port in promiscuous mode for network 
-    monitoring *only*. I.e. I do not want any of this traffic to be able to 
-    access anything on my server.
+iptables -A FORWARD -p gre -s 10.0.0.0/16 [http://10.0.0.0/16] -j ACCEP=
+T
+iptables -A FORWARD -p tcp -s 10.0.0.0/16 [http://10.0.0.0/16] --dport =
+1723 -j
+ACCEPT
+iptables -A FORWARD -p tcp --dport 1793 -j ACCEPT=C2=A0=C2=A0
+iptables -A FORWARD -p udp --dport 500 -j ACCEPT
+iptables -A FORWARD -p udp --dport 1701 -j ACCEPT
 
-    Thanks
-    --
-    To unsubscribe from this list: send the line "unsubscribe netfilter" in
-    the body of a message to majordomo@vger.kernel.org
-    More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Of course standard NAT routing rules are present.
+What I did wrong?
+Thank you in advance for any help or tips.
 
+Best Regards
+--
+Piotr Pawlowski
