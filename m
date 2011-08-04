@@ -1,44 +1,30 @@
-From: =?UTF-8?Q?=22Piotr_Paw=C5=82owski=22?= 
-	<piotr.pawlowski@superhost.pl>
-Subject: Enable connection from host in LAN to VPN server through iptables.
-Date: Thu, 4 Aug 2011 11:26:57 +0200 (CEST)
-Message-ID: <2080860960.316820.1312450017847.JavaMail.open-xchange@ox-app-1.superhost.pl>
+From: "Olshvang, LevX" <levx.olshvang@intel.com>
+Subject: Q:when ip6tables should be used instead of iptables ?
+Date: Thu, 4 Aug 2011 17:54:49 +0300
+Message-ID: <FE06BAB9E17C4742BB3BE97B2D419D8C2D0D1399BD@hasmsx502.ger.corp.intel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
 To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Dear all,
+This question may  be sound trivial, of course when dealing with IPv6 addresses ip6tables is appropriate.
 
-=46rom several days I am trying to enable connection from host in LAN t=
-o VPN
-server through router with iptables (Gentoo distro). Unfortunately I am=
- unable
-to configure it correctly. Below is What I have in my iptables rules:
+But if I have machine with dual IPv4/IPv6 stack , does it mean that netfilter have separate set of tables/chains for IPv4 and IPv6 so I need to have  2 set of commands to protect for example from syn flooding ?
 
-iptables -A FORWARD -d 195.246.237.249 -j LOG --log-prefix=3D"VPN
-"=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
+Or in another terms which of iptable command are IPv4/v6 neutral?
 
-iptables -A FORWARD -s 195.246.237.249 -j LOG --log-prefix=3D"VPN "
 
-iptables -A FORWARD -p gre -s 10.0.0.0/16 [http://10.0.0.0/16] -j ACCEP=
-T
-iptables -A FORWARD -p tcp -s 10.0.0.0/16 [http://10.0.0.0/16] --dport =
-1723 -j
-ACCEPT
-iptables -A FORWARD -p tcp --dport 1793 -j ACCEPT=C2=A0=C2=A0
-iptables -A FORWARD -p udp --dport 500 -j ACCEPT
-iptables -A FORWARD -p udp --dport 1701 -j ACCEPT
+Regards,
+Lev 
+---------------------------------------------------------------------
+Intel Israel (74) Limited
 
-Of course standard NAT routing rules are present.
-What I did wrong?
-Thank you in advance for any help or tips.
+This e-mail and any attachments may contain confidential material for
+the sole use of the intended recipient(s). Any review or distribution
+by others is strictly prohibited. If you are not the intended
+recipient, please contact the sender and delete all copies.
 
-Best Regards
---
-Piotr Pawlowski
