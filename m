@@ -1,30 +1,29 @@
-From: "Olshvang, LevX" <levx.olshvang@intel.com>
-Subject: Q:when ip6tables should be used instead of iptables ?
-Date: Thu, 4 Aug 2011 17:54:49 +0300
-Message-ID: <FE06BAB9E17C4742BB3BE97B2D419D8C2D0D1399BD@hasmsx502.ger.corp.intel.com>
+From: "Tyler J. Wagner" <tyler@tolaris.com>
+Subject: Re: Q:when ip6tables should be used instead of iptables ?
+Date: Thu, 04 Aug 2011 17:12:36 +0100
+Message-ID: <4E3AC4F4.2080908@tolaris.com>
+References: <FE06BAB9E17C4742BB3BE97B2D419D8C2D0D1399BD@hasmsx502.ger.corp.intel.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+In-Reply-To: <FE06BAB9E17C4742BB3BE97B2D419D8C2D0D1399BD@hasmsx502.ger.corp.intel.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+To: "Olshvang, LevX" <levx.olshvang@intel.com>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-This question may  be sound trivial, of course when dealing with IPv6 addresses ip6tables is appropriate.
+On 2011-08-04 15:54, Olshvang, LevX wrote:
+> Or in another terms which of iptable command are IPv4/v6 neutral?
 
-But if I have machine with dual IPv4/IPv6 stack , does it mean that netfilter have separate set of tables/chains for IPv4 and IPv6 so I need to have  2 set of commands to protect for example from syn flooding ?
-
-Or in another terms which of iptable command are IPv4/v6 neutral?
-
+None of them. iptables is an IPv4 filter. ip6tables is an IPv6 filter.
+Yes, you must maintain two sets of firewall rules, or use a firewall
+rules generator tool that does this for you.
 
 Regards,
-Lev 
----------------------------------------------------------------------
-Intel Israel (74) Limited
+Tyler
 
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
-
+--=20
+"Offending fundamentalists isn't my goal =96 but if it is an inevitable
+side-effect of defending human rights, so be it."
+   -- Johann Hari
