@@ -1,63 +1,84 @@
-From: Jan Engelhardt <jengelh@medozas.de>
+From: Pandu Poluan <pandu@poluan.info>
 Subject: Re: Problems with xtables-addons 1.3.7 on Gentoo
-Date: Fri, 5 Aug 2011 17:09:11 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1108051708540.12042@frira.zrqbmnf.qr>
-References: <CAA2qdGWwQC7G-YR=onrUBVAOEG1yrM8Ambr3m5JxvEOPjj1c+A@mail.gmail.com> <1312551665.24824.9.camel@rybalov.eng.ttk.net> <CAA2qdGV8wOB0t8ArT6xQWGLKtpDFCu5aKomBH4vZ7=Zky4L_Rg@mail.gmail.com>
+Date: Fri, 5 Aug 2011 22:44:42 +0700
+Message-ID: <CAA2qdGW5Qojg=Uyw5PBm1bgX56HCoPrbY=3r13xXpLw-62BNPg@mail.gmail.com>
+References: <CAA2qdGWwQC7G-YR=onrUBVAOEG1yrM8Ambr3m5JxvEOPjj1c+A@mail.gmail.com>
+	<1312551665.24824.9.camel@rybalov.eng.ttk.net>
+	<CAA2qdGV8wOB0t8ArT6xQWGLKtpDFCu5aKomBH4vZ7=Zky4L_Rg@mail.gmail.com>
+	<alpine.LNX.2.01.1108051708540.12042@frira.zrqbmnf.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAA2qdGV8wOB0t8ArT6xQWGLKtpDFCu5aKomBH4vZ7=Zky4L_Rg@mail.gmail.com>
+In-Reply-To: <alpine.LNX.2.01.1108051708540.12042@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="utf-8"
-To: Pandu Poluan <pandu@poluan.info>
-Cc: nowhere <nowhere@hakkenden.ath.cx>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: Jan Engelhardt <jengelh@medozas.de>, nowhere <nowhere@hakkenden.ath.cx>, netfilter@vger.kernel.org
 
-On Friday 2011-08-05 15:49, Pandu Poluan wrote:
+(Please forgive my top-posting)
 
->On Fri, Aug 5, 2011 at 20:41, nowhere <nowhere@hakkenden.ath.cx> wrote=
-:
->> =D0=92 =D0=9F=D1=82=D0=BD, 05/08/2011 =D0=B2 20:19 +0700, Pandu Polu=
-an =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>> I'm having troubles with xtables-addons 1.3.7 on Gentoo.
+So, I should set IP_SET=3Dn ?
+
+Doesn't the ipset(8) command require support from the kernel?
+
+I'm rather confused...
+
+Rgds,
+
+
+On 2011-08-05, Jan Engelhardt <jengelh@medozas.de> wrote:
+> On Friday 2011-08-05 15:49, Pandu Poluan wrote:
+>
+>>On Fri, Aug 5, 2011 at 20:41, nowhere <nowhere@hakkenden.ath.cx> wrot=
+e:
+>>> =D0=92 =D0=9F=D1=82=D0=BD, 05/08/2011 =D0=B2 20:19 +0700, Pandu Pol=
+uan =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>>>> I'm having troubles with xtables-addons 1.3.7 on Gentoo.
+>>>>
+>>>> I successfully installed xtables-addons (no errors), but all attem=
+pts
+>>>> to create an IP set (e.g., `ipset --create test hash:ip`) resulted=
+ in
+>>>> the following error message:
+>>>>
+>>>> FATAL: Error inserting ip_set
+>>>> (/lib/modules/2.6.39-hardened-r8PANS_GW_BN_02/xtables_addons/ip_se=
+t.ko):
+>>>> Invalid module format
+>>>>
+>>>> `insmod` begat an additional information:
+>>>>
+>>>> insmod: error inserting
+>>>> '/lib/modules/2.6.39-hardened-r8PANS_GW_BN_02/xtables_addons/ip_se=
+t.ko':
+>>>> -1 Invalid module format
+>>>>
+>>>> `dmesg | tail -1` gave a worrying error:
+>>>>
+>>>> [ 4085.271442] ip_set: exports duplicate symbol ip_set_nfnl_put (o=
+wned
+>>>> by kernel)
+>>>>
+>>>> What should I do?
 >>>
->>> I successfully installed xtables-addons (no errors), but all attemp=
-ts
->>> to create an IP set (e.g., `ipset --create test hash:ip`) resulted =
-in
->>> the following error message:
+>>> Do you by any chance have ipset enabled in kernel config or ipset
+>>> separatedly installed with "modules" use-flag?
 >>>
->>> FATAL: Error inserting ip_set
->>> (/lib/modules/2.6.39-hardened-r8PANS_GW_BN_02/xtables_addons/ip_set=
-=2Eko):
->>> Invalid module format
->>>
->>> `insmod` begat an additional information:
->>>
->>> insmod: error inserting
->>> '/lib/modules/2.6.39-hardened-r8PANS_GW_BN_02/xtables_addons/ip_set=
-=2Eko':
->>> -1 Invalid module format
->>>
->>> `dmesg | tail -1` gave a worrying error:
->>>
->>> [ 4085.271442] ip_set: exports duplicate symbol ip_set_nfnl_put (ow=
-ned
->>> by kernel)
->>>
->>> What should I do?
 >>
->> Do you by any chance have ipset enabled in kernel config or ipset
->> separatedly installed with "modules" use-flag?
+>>Yes, I have ipset enabled in kernel, and no, I don't have ipset
+>>installed separately.
 >>
+>>A kind friend at gentoo-user led me to CONFIG_IP_SET
+>>
+>>Apparently xtables-addons hates IP_SET=3Dy
+>>
+>>So, I rebuild the kernel with IP_SET=3Dm , and all is well.
 >
->Yes, I have ipset enabled in kernel, and no, I don't have ipset
->installed separately.
+> There is no reason to enable ipset in both the kernel and in xt-a.
 >
->A kind friend at gentoo-user led me to CONFIG_IP_SET
->
->Apparently xtables-addons hates IP_SET=3Dy
->
->So, I rebuild the kernel with IP_SET=3Dm , and all is well.
 
-There is no reason to enable ipset in both the kernel and in xt-a.
+
+--=20
+--
+Pandu E Poluan - IT Optimizer
+My website: http://pandu.poluan.info/
