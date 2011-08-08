@@ -1,30 +1,24 @@
-From: Marek Kierdelewicz <marek@piasta.pl>
-Subject: Re: Enable connection from host in LAN to VPN server through
- iptables.
-Date: Sat, 6 Aug 2011 17:44:48 +0200
-Message-ID: <20110806174448.5e9c4248@catus>
-References: <2080860960.316820.1312450017847.JavaMail.open-xchange@ox-app-1.superhost.pl>
+From: Pandu Poluan <pandu@poluan.info>
+Subject: xtables latency?
+Date: Mon, 8 Aug 2011 11:20:29 +0700
+Message-ID: <CAA2qdGU5DYR-x5ib8Y+yjgxYzE+SaK_rq5x3RZR9S23hW90aUQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <2080860960.316820.1312450017847.JavaMail.open-xchange@ox-app-1.superhost.pl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Piotr =?UTF-8?B?UGF3xYJvd3NraQ==?= <piotr.pawlowski@superhost.pl>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
->Dear all,
+Just wondering:
 
-Hi,
+Has anyone ever researched the latency of xtables when a Linux box
+functions as a firewall?
 
-From several days I am trying to enable connection from host in LAN to
->VPN server through router with iptables (Gentoo distro). Unfortunately
->I am unable to configure it correctly. Below is What I have in my
->iptables rules:
+Rgds,
+--=20
+Pandu E Poluan
+~ IT Optimizer ~
 
-If you suspect iptables rulest, then try allowing all traffic in FORWARD
-for the moment. You'll know if the ruleset is causing problems.
-
-Best regards,
-Marek Kierdelewicz
+=C2=A0=E2=80=A2 Blog : http://pepoluan.tumblr.com
+=C2=A0=E2=80=A2 Linked-In : http://id.linkedin.com/in/pepoluan
