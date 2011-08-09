@@ -1,27 +1,25 @@
-From: benjamin fernandis <benjo11111@gmail.com>
-Subject: use of socket tag in iptables
-Date: Tue, 9 Aug 2011 20:59:21 +0530
-Message-ID: <CAARrgqwjUWYRyuKL66ErnmnmnJ=1f1y2ZcmTH25-5yc0Pp9iqw@mail.gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: use of socket tag in iptables
+Date: Tue, 9 Aug 2011 18:49:54 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1108091849230.19560@frira.zrqbmnf.qr>
+References: <CAARrgqwjUWYRyuKL66ErnmnmnJ=1f1y2ZcmTH25-5yc0Pp9iqw@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=LmTNYneG8qsJgmJUSVqU9hsYheuuOsS9rJ3AdbuJ/VE=;
-        b=mE8o86f9ilQ6JvoU3n1lkE2TZMf6k8aA/PkpKXaeLM5vv1uiCwQYzMsvuO/7JzKIAL
-         pJQYwZbAuRgNIvOrkiYyeddzGKZnjkbDfSiNai1oHiSXvk6FlzfbUw2FvdfvL66qKtVW
-         FKcYrOx/Mq+umfd8e4jGcvTkXfHGOHgjkL4Kk=
+In-Reply-To: <CAARrgqwjUWYRyuKL66ErnmnmnJ=1f1y2ZcmTH25-5yc0Pp9iqw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: benjamin fernandis <benjo11111@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+On Tuesday 2011-08-09 17:29, benjamin fernandis wrote:
 
-What is the purpose of socket tag in iptables?
+>Hi,
+>
+>What is the purpose of socket tag in iptables?
+>
+>Please share any document or examples of that
 
-Please share any document or examples of that
+Share any insighting detail on your question first.
 
-Regards,
-Benjamin
