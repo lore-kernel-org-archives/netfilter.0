@@ -1,47 +1,38 @@
-From: Benjamin <benjo11111@gmail.com>
-Subject: Re: use of socket tag in iptables
-Date: Wed, 10 Aug 2011 10:32:09 +0530
-Message-ID: <4E4210D1.5060007@gmail.com>
-References: <CAARrgqwjUWYRyuKL66ErnmnmnJ=1f1y2ZcmTH25-5yc0Pp9iqw@mail.gmail.com> <alpine.LNX.2.01.1108091849230.19560@frira.zrqbmnf.qr>
+From: "Tyler J. Wagner" <tyler@tolaris.com>
+Subject: Re: Trying to achieve fail over to multiple DNATed destinations
+Date: Wed, 10 Aug 2011 10:01:03 +0100
+Message-ID: <4E4248CF.6080701@tolaris.com>
+References: <CADCwhZk8VdOCKQ5QA_aEG_Z9naqfJvbjdd=MAR4Pk5R_L4-xHg@mail.gmail.com> <CADCwhZm3JXpb=YMpsjWdd+tpwDtdUzOyKSwatpEzEX681=2tWA@mail.gmail.com> <4E41913F.9080203@riverviewtech.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=message-id:date:from:user-agent:mime-version:to:cc:subject
-         :references:in-reply-to:content-type:content-transfer-encoding;
-        bh=pItcIGtP06/bQjHH/rIDmADLDoqynD8Rxkd2UfclwaI=;
-        b=j/KJvP+gyIxQvO8M7sT3SkTbyFBDm1EHreWn1U5Gmq5WXFdLblWUb27Y9HXP2maGmN
-         uas8y6yRY33C1jXaDCukrGC9bvizAccom+YGHTBrdU1DK7LAKWDaSVVK2JiDtbmW3eWk
-         mXZKsl5CiMQzAltRnlmSzAHLKPzJrfM6qgdNM=
-In-Reply-To: <alpine.LNX.2.01.1108091849230.19560@frira.zrqbmnf.qr>
+In-Reply-To: <4E41913F.9080203@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Grant Taylor <gtaylor@riverviewtech.net>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-  Hi,
+On 2011-08-09 20:57, Grant Taylor wrote:
+> On 08/08/11 17:36, Mark Ruth wrote:
+>> The problem is that the target webserver (i.e. www.example.com ) is
+>> loadbalanced between like 10 servers having 10 public IPs (which are
+>> NOT in series), but since IPtables can not accept domain names
+>> (correct me if i m wrong) I have to select 1 ip address (i.e.
+>> 201.23.11.22 ) from the pool of 10 available, for my iptables rule.
+> 
+> It is my (mis)understanding that the iptables command will accept host
+> names and resolve them to an IP which is inserted in to the kernel.  So,
+> you are close.
 
-Thanks for your kind response.Actually i m looking for proxy with tproxy 
-capability.So from squid wiki i got some iptabales rules that they used 
-for tproxy in that rules they use socket and tproxy tags.So I am wonder 
-that how it is happend means what's the exact role of socket options.
+Yes, it will. However, this will make loading your firewall rules block
+on DNS. If you are loading the firewall as the interface comes up, that
+may be a problem for you. For critical systems, especially routers, I
+use only IP addresses in the firewall script.
 
 Regards,
-Benjamin
+Tyler
 
-> On Tuesday 2011-08-09 17:29, benjamin fernandis wrote:
->
->> Hi,
->>
->> What is the purpose of socket tag in iptables?
->>
->> Please share any document or examples of that
-> Share any insighting detail on your question first.
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
+-- 
+"No one can terrorize a whole nation, unless we are all his accomplices."
+   -- Edward R. Murrow
