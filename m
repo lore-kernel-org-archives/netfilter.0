@@ -1,37 +1,47 @@
-From: Ryan Whelan <rcwhelan@gmail.com>
-Subject: Simplifying rules with ipset
-Date: Tue, 9 Aug 2011 17:03:32 -0400
-Message-ID: <CAM3m09RqnQ_K_3e3Vq6vJhVDPT6XMH_ar3sUDf79Da18nUdBZw@mail.gmail.com>
+From: Benjamin <benjo11111@gmail.com>
+Subject: Re: use of socket tag in iptables
+Date: Wed, 10 Aug 2011 10:32:09 +0530
+Message-ID: <4E4210D1.5060007@gmail.com>
+References: <CAARrgqwjUWYRyuKL66ErnmnmnJ=1f1y2ZcmTH25-5yc0Pp9iqw@mail.gmail.com> <alpine.LNX.2.01.1108091849230.19560@frira.zrqbmnf.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=n/jprpMLzkF3GlcJQ+gkHpIkJ8elHsx/kJtkFmaKLB0=;
-        b=JOMa/BZCTrbNL4e+Fx6Hwz87qEGB5JN2Jt7PZ1jqsCt27sDFI9LgK5tYt7ElVm66mY
-         xjTUq0l6Nm3lUBO10KO9lm7oV7zHvmc05Npep2b3AJeB56MfUFd6tdr3R6s2BuRe1s8G
-         cA3W2jOBRGj/FtX0m7lq34usl/fVV3yAB/Wk4=
+        h=message-id:date:from:user-agent:mime-version:to:cc:subject
+         :references:in-reply-to:content-type:content-transfer-encoding;
+        bh=pItcIGtP06/bQjHH/rIDmADLDoqynD8Rxkd2UfclwaI=;
+        b=j/KJvP+gyIxQvO8M7sT3SkTbyFBDm1EHreWn1U5Gmq5WXFdLblWUb27Y9HXP2maGmN
+         uas8y6yRY33C1jXaDCukrGC9bvizAccom+YGHTBrdU1DK7LAKWDaSVVK2JiDtbmW3eWk
+         mXZKsl5CiMQzAltRnlmSzAHLKPzJrfM6qgdNM=
+In-Reply-To: <alpine.LNX.2.01.1108091849230.19560@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org
 
-Is it possible to create a single, or very few, FORWARDing rules that
-will only ACCEPT a packet if its src and dst ipset is the same?  I
-have a handful of linux routers that will be carrying multiple
-different customers traffic and I have to ensure that each customer
-can only send traffic from their own networks to other
-networks/subnets they have been allocated.  My current plan is to
-create an ipset for each customer and put each of there
-networks/subnets into their ipset and to simplify the FORWARDing
-rules, I'm hoping there is a simple way to only ACCEPT a packet if its
-src and dst are in both in the same ipset.  Is this easily doable?
-I'm trying to avoid having to create exceptions to a default deny for
-every possible combination of each customers networks.  I must admit,
-I've not used ipset in the past, so I'm not sure this is how it works.
+  Hi,
 
-Also, is there an way to distribute changes to the ipsets (when a
-client gets added / deleted or when a new network gets allocated) to
-multiple machines?  I can script something, I just don't want to
-reinvent the wheel if there is something already out there.
+Thanks for your kind response.Actually i m looking for proxy with tproxy 
+capability.So from squid wiki i got some iptabales rules that they used 
+for tproxy in that rules they use socket and tproxy tags.So I am wonder 
+that how it is happend means what's the exact role of socket options.
+
+Regards,
+Benjamin
+
+> On Tuesday 2011-08-09 17:29, benjamin fernandis wrote:
+>
+>> Hi,
+>>
+>> What is the purpose of socket tag in iptables?
+>>
+>> Please share any document or examples of that
+> Share any insighting detail on your question first.
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
