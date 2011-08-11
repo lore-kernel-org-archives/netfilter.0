@@ -1,27 +1,31 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH] net/bridge/netfilter/ebtables.c: use available error
- handling code
-Date: Thu, 11 Aug 2011 05:53:33 -0700 (PDT)
-Message-ID: <20110811.055333.1199553373699762518.davem@davemloft.net>
-References: <1313063978-29400-1-git-send-email-julia@diku.dk>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: UDP Scan detection with xtables-addon psd
+Date: Thu, 11 Aug 2011 15:54:44 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1108111552250.23274@frira.zrqbmnf.qr>
+References: <4E43AC07.4040103@geekosphere.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <1313063978-29400-1-git-send-email-julia@diku.dk>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4E43AC07.4040103@geekosphere.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
-To: julia@diku.dk
-Cc: bart.de.schuymer@pandora.be, kernel-janitors@vger.kernel.org, kaber@trash.net, shemminger@linux-foundation.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, bridge@lists.linux-foundation.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: andreas <andi@geekosphere.org>
+Cc: netfilter@vger.kernel.org
 
-From: Julia Lawall <julia@diku.dk>
-Date: Thu, 11 Aug 2011 13:59:38 +0200
+On Thursday 2011-08-11 12:16, andreas wrote:
 
-> From: Julia Lawall <julia@diku.dk>
-> 
-> Free the locally allocated table and newinfo as done in adjacent error
-> handling code.
-> 
-> Signed-off-by: Julia Lawall <julia@diku.dk>
+>Hi,
+>
+>But i can't get psd to detect nmap UDP scans.
+>15:08 < norg> xv7: it's the commit adabd647b1d0421f961b5cc3808128001facb9bd
 
-Applied.
+Oh yeah, that is strikingly obvious. Fixed in commit v1.37-5-g6c17eb4 
+(psd branch).
+
+>And another question is, is the psd development stopped and do you
+>suggest to use lscan or do you have any other suggestion for me?
+
+psd and lscan do two different things. One statistically monitors ports 
+contacted over time, while lscan looks at one connection and inspects 
+the TCP handshake (or lack thereof) to reach its conclusion.
