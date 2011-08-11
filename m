@@ -1,32 +1,31 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Conntrack not matching properly - producing serious outages
-Date: Thu, 11 Aug 2011 16:00:30 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1108111554550.23274@frira.zrqbmnf.qr>
-References: <1313055975.3628.56.camel@denise.theartistscloset.com> <alpine.DEB.2.00.1108111207330.5476@blackhole.kfki.hu>
+From: andreas <andi@geekosphere.org>
+Subject: Re: UDP Scan detection with xtables-addon psd
+Date: Thu, 11 Aug 2011 16:32:56 +0200
+Message-ID: <4E43E818.6000200@geekosphere.org>
+References: <4E43AC07.4040103@geekosphere.org> <alpine.LNX.2.01.1108111552250.23274@frira.zrqbmnf.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1108111207330.5476@blackhole.kfki.hu>
+In-Reply-To: <alpine.LNX.2.01.1108111552250.23274@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: "John A. Sullivan III" <jsullivan@opensourcedevel.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
+On 08/11/2011 03:54 PM, Jan Engelhardt wrote:
+>> On Thursday 2011-08-11 12:16, andreas wrote:
+>> 
+>>>> Hi,
+>>>> 
+>>>> But i can't get psd to detect nmap UDP scans. 15:08 < norg>
+>>>> xv7: it's the commit adabd647b1d0421f961b5cc3808128001facb9bd
+>> 
+>> Oh yeah, that is strikingly obvious. Fixed in commit
+>> v1.37-5-g6c17eb4 (psd branch).
+>> 
 
-On Thursday 2011-08-11 12:12, Jozsef Kadlecsik wrote:
->> Packets are
->> being matched as INVALID when we would expect them to be ESTABLISHED.
->> We are running on kernel 2.6.30.5 on X86_64 with CentOS 5.4 and
->> iptables-1.3.5-5.3.el5_4.1.
->> [...]
->> Aug 11 03:29:19 fw01 kernel: FORWARD INVALID IN=bond1 OUT=bond4
->> SRC=172.x.y.73 DST=172.x.z.34 LEN=52 TOS=0x00 PREC=0x00 TTL=63 ID=32940
->> DF PROTO=TCP SPT=8080 DPT=52999 WINDOW=34 RES=0x00 ACK FIN URGP=0
->
->Those are, with high probabilty, late FIN packets: the belonging conntrack 
->entry has already been deleted and thus conntrack cannot find the matching 
->stream, therefore it sets as INVALID.
+Is working now with nmap -sU scans. Thanks.
+Also Thanks for the further informations.
 
-Should not FIN retransmissions ideally be classified as ESTABLISHED (or
-perhaps a new state) as long as the final ACK has not been seen?
+So still one question open. What is the reason, that ACK Scans aren't
+detected (with nmap -sA $IP)?
