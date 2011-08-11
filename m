@@ -1,35 +1,57 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: Conntrack not matching properly - producing serious outages
-Date: Thu, 11 Aug 2011 22:21:11 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1108112218430.8518@blackhole.kfki.hu>
-References: <1313055975.3628.56.camel@denise.theartistscloset.com>  <alpine.DEB.2.00.1108111207330.5476@blackhole.kfki.hu>  <1313064590.3628.69.camel@denise.theartistscloset.com>  <alpine.DEB.2.00.1108111421090.5476@blackhole.kfki.hu>
- <1313090042.3628.83.camel@denise.theartistscloset.com>
+Date: Thu, 11 Aug 2011 22:41:09 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1108112221410.8518@blackhole.kfki.hu>
+References: <1313055975.3628.56.camel@denise.theartistscloset.com>  <1313057465.3408.12.camel@tiger.regit.org> <1313080553.3628.80.camel@denise.theartistscloset.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1313090042.3628.83.camel@denise.theartistscloset.com>
+In-Reply-To: <1313080553.3628.80.camel@denise.theartistscloset.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Cc: netfilter@vger.kernel.org
+Cc: Eric Leblond <eric@regit.org>, netfilter@vger.kernel.org
 
 On Thu, 11 Aug 2011, John A. Sullivan III wrote:
 
-> > That might be related to SACK option handling: some "clever" devices loves 
-> > to mangle TCP SEQ/ACK values, but forget about the SACK options. Try to 
-> > disable SACK support on both communicating endpoints. If the problem 
-> > disappears, then it's a SACK issue.
-> > 
-> <snip>
-> Alas, it is not SACK.  We disabled sack and dsack on both sides of one
-> user and it still took all of a few seconds for him to lock up.
+> I've just begun to wade my way through SACK as Jozsef suggested after
+> getting some sleep but I was able to catch a live one with logging
+> enabled:
 > 
-> Where do we look next? Thanks - John
+> Aug 11 11:56:24 fw01 kernel: nf_ct_tcp: bad TCP checksum IN= OUT=
+> SRC=95.172.228.42 DST=208.a.b.8 LEN=260 TOS=0x00 PREC=0x00 TTL=52
+> ID=29203 DF PROTO=TCP SPT=46721 DPT=441 SEQ=2834861284 ACK=3682327577
+> WINDOW=1002 RES=0x00 ACK PSH URGP=0 OPT (0101080A01249B0846B0F23B)
 
-Please capture a full TCP session traffic (from the very first SYN to 
-the very last ACK) with "tcpdump -s 0 ..." and send me the pcap 
-file. Then I'll be able to replay it and check what's going on.
+That's Noop, Noop and Timestamp options and not SACK.
+
+But the TCP checksum checking in conntrack says that the TCP checksum of 
+the received packet is invalid, therefore it assings the INVALID 
+state to the packet.
+ 
+> Aug 11 11:56:24 fw01 kernel: INPUT INVALID IN=bond3 OUT=
+> MAC=00:15:17:90:3c:0b:00:1c:58:ea:79:ff:08:00 SRC=95.172.228.42
+> DST=208.a.b.8 LEN=260 TOS=0x00 PREC=0x00 TTL=52 ID=29203 DF PROTO=TCP
+> SPT=46721 DPT=441 WINDOW=1002 RES=0x00 ACK PSH URGP=0
+> 
+> Aug 11 11:56:24 fw01 kernel: No Match: IN=bond3 OUT=
+> MAC=00:15:17:90:3c:0b:00:1c:58:ea:79:ff:08:00 SRC=95.172.228.42
+> DST=208.a.b.8 LEN=260 TOS=0x00 PREC=0x00 TTL=52 ID=29203 DF PROTO=TCP
+> SPT=46721 DPT=441 WINDOW=1002 RES=0x00 ACK PSH URGP=0
+> 
+> Is this telling me that the reason the packet has been classified as
+> INVALID is because the TCP checksum is bad? We are doing checksum
+> offloading so I would think the checksum in the packet evaluated by the
+> kernel would be irrelevant.  We also have no problem if the users run
+> their sessions through an OpenVPN tunnel.
+
+TCP checksum offloading does not discard incoming packets with invalid 
+checksum.
+ 
+> I'll be digging into SACK next but wonder if I'm staring at the smoking
+> gun and just don't recognize it.  I can try disabling offloading but not
+> right now as the system is in heavy production.  Thanks - John
 
 Best regards,
 Jozsef
