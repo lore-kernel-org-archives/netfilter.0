@@ -1,58 +1,37 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Conntrack not matching properly - producing serious outages
-Date: Thu, 11 Aug 2011 12:12:04 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1108111207330.5476@blackhole.kfki.hu>
-References: <1313055975.3628.56.camel@denise.theartistscloset.com>
+From: andreas <andi@geekosphere.org>
+Subject: UDP Scan detection with xtables-addon psd
+Date: Thu, 11 Aug 2011 12:16:39 +0200
+Message-ID: <4E43AC07.4040103@geekosphere.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1313055975.3628.56.camel@denise.theartistscloset.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
 Hi,
 
-On Thu, 11 Aug 2011, John A. Sullivan III wrote:
+i'm working on a dynamic firewall and one sensor should be the portscan.
+I want to detect port scans and forward them to the target that handles
+the sensors and the blocking. So i saw that xtables-addons support
+portscan with psd and lscan. As i want to scan also UDP scans i choose
+psd instead of lscan.
+But i can't get psd to detect nmap UDP scans. I played around with the
+four values of psd but i never got the UDP scans logged. The TCP scans
+are logged, at least nmap -sT, -sS, -sF, -sX, -sN are logged, -sA is
+missing and so is the UDP scan with -sU.
+I did not use any special nmap parameters except -P0. The machine is a
+gentoo system with 2.6.38 Kernel, xtables addons 1.37 and iptables 1.4.11.1.
 
-> Hello, all.  We have been having a subtle problem with conntrack for
-> quite a long time but it has suddenly gotten much worse.  Packets are
-> being matched as INVALID when we would expect them to be ESTABLISHED.
-> We are running on kernel 2.6.30.5 on X86_64 with CentOS 5.4 and
-> iptables-1.3.5-5.3.el5_4.1.  This has escalated from a minor annoyance
-> that we were going to investigate to provoking serious outages and all
-> hands to the pump.
-> 
-> The conntrack table is not swamped although we did increase the max
-> count and the hashsize just in case to no avail:
-> [root@fw01 netfilter]# cat ip_conntrack_max
-> 65536
-> [root@fw01 netfilter]# cat ip_conntrack_count
-> 532
-> 
-> Here are three specific examples.  The first is from the FORWARD chain.
-> Here are the logging messages:
->  
-> Aug 11 03:29:19 fw01 kernel: FORWARD INVALID IN=bond1 OUT=bond4
-> SRC=172.x.y.73 DST=172.x.z.34 LEN=52 TOS=0x00 PREC=0x00 TTL=63 ID=32940
-> DF PROTO=TCP SPT=8080 DPT=52999 WINDOW=34 RES=0x00 ACK FIN URGP=0
+Does anyone know how psd can detect UDP scans? Did i miss anything?
 
-Those are, with high probabilty, late FIN packets: the belonging conntrack 
-entry has already been deleted and thus conntrack cannot find the matching 
-stream, therefore it sets as INVALID.
+And another question is, is the psd development stopped and do you
+suggest to use lscan or do you have any other suggestion for me?
 
-> So why is the reply packet INVALID instead of ESTABLISHED? How can we
-> troubleshoot?
+If not i guess i have to write my own modul or patch psd/lscan to get
+the missing scans detected.
 
-If NAT is enabled, never ever let packets with INVALID state pass through, 
-because NAT will skip them.
- 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+thanks so far and greetings from Germany,
+
+Andi
