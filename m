@@ -1,41 +1,102 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: UDP Scan detection with xtables-addon psd
-Date: Thu, 11 Aug 2011 18:10:48 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1108111808580.28452@frira.zrqbmnf.qr>
-References: <4E43AC07.4040103@geekosphere.org> <alpine.LNX.2.01.1108111552250.23274@frira.zrqbmnf.qr> <4E43E818.6000200@geekosphere.org>
+From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Subject: Re: Conntrack not matching properly - producing serious outages
+Date: Thu, 11 Aug 2011 12:35:53 -0400
+Message-ID: <1313080553.3628.80.camel@denise.theartistscloset.com>
+References: <1313055975.3628.56.camel@denise.theartistscloset.com>
+	 <1313057465.3408.12.camel@tiger.regit.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4E43E818.6000200@geekosphere.org>
+In-Reply-To: <1313057465.3408.12.camel@tiger.regit.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: andreas <andi@geekosphere.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Eric Leblond <eric@regit.org>
 Cc: netfilter@vger.kernel.org
 
-On Thursday 2011-08-11 16:32, andreas wrote:
+On Thu, 2011-08-11 at 12:10 +0200, Eric Leblond wrote:
+> Hello John,
+> 
+> Nice to hear from you again ;)
+> 
+> On Thu, 2011-08-11 at 05:46 -0400, John A. Sullivan III wrote:
+> > Hello, all.  We have been having a subtle problem with conntrack for
+> > quite a long time but it has suddenly gotten much worse.  Packets are
+> > being matched as INVALID when we would expect them to be ESTABLISHED.
+> > We are running on kernel 2.6.30.5 on X86_64 with CentOS 5.4 and
+> > iptables-1.3.5-5.3.el5_4.1.  This has escalated from a minor annoyance
+> > that we were going to investigate to provoking serious outages and all
+> > hands to the pump.
+> > 
+> > The conntrack table is not swamped although we did increase the max
+> > count and the hashsize just in case to no avail:
+> > [root@fw01 netfilter]# cat ip_conntrack_max
+> > 65536
+> > [root@fw01 netfilter]# cat ip_conntrack_count
+> > 532
+> > 
+> > 
+> > Here are three specific examples.  The first is from the FORWARD chain.
+> > Here are the logging messages:
+> > 
+> > 
+> > Aug 11 03:29:19 fw01 kernel: FORWARD INVALID IN=bond1 OUT=bond4
+> > SRC=172.x.y.73 DST=172.x.z.34 LEN=52 TOS=0x00 PREC=0x00 TTL=63 ID=32940
+> > DF PROTO=TCP SPT=8080 DPT=52999 WINDOW=34 RES=0x00 ACK FIN URGP=0
+> 
+> I've already observed this kind of problem. This was related with some
+> software/OSes having really strange timeout value.
+> 
+> To check weither this is the same problem, you can ask the kernel to log
+> the reason why the packets are invalid. This can be made by running:
+> 
+>         echo "255">/proc/sys/net/netfilter/nf_conntrack_log_invalid
+> 
+> After doing this, the kernel will log all invalid packets through the
+> default log system. You can check which one you are using by doing:
+>   
+>         cat /proc/net/netfilter/nf_log 
+>          0 NONE ()
+>          1 NONE ()
+>          2 ipt_LOG (ipt_LOG)
+>         ...
+>         
+> 2 is the coding for IPv4. With that ipt_LOG value, the message are sent
+> via the standard kernel log. If instead of this value, you've got
+> something like ULOG or NFLOG, you will need to get the message by
+> listening to the nflog-group or ulog-group 0 in ulogd[2].
+> 
+> If this is timeout issue, you can play with the timeout setting of the
+> conntrack in the /proc/sys/net/netfilter/nf_conntrack_*time* files.
+> 
+> BR,
+I've just begun to wade my way through SACK as Jozsef suggested after
+getting some sleep but I was able to catch a live one with logging
+enabled:
 
->On 08/11/2011 03:54 PM, Jan Engelhardt wrote:
->>> On Thursday 2011-08-11 12:16, andreas wrote:
->>> 
->>>>> Hi,
->>>>> 
->>>>> But i can't get psd to detect nmap UDP scans. 15:08 < norg>
->>>>> xv7: it's the commit adabd647b1d0421f961b5cc3808128001facb9bd
->>> 
->>> Oh yeah, that is strikingly obvious. Fixed in commit
->>> v1.37-5-g6c17eb4 (psd branch).
->>> 
->
->Is working now with nmap -sU scans. Thanks.
->Also Thanks for the further informations.
->
->So still one question open. What is the reason, that ACK Scans aren't
->detected (with nmap -sA $IP)?
+Aug 11 11:56:24 fw01 kernel: nf_ct_tcp: bad TCP checksum IN= OUT=
+SRC=95.172.228.42 DST=208.a.b.8 LEN=260 TOS=0x00 PREC=0x00 TTL=52
+ID=29203 DF PROTO=TCP SPT=46721 DPT=441 SEQ=2834861284 ACK=3682327577
+WINDOW=1002 RES=0x00 ACK PSH URGP=0 OPT (0101080A01249B0846B0F23B)
 
-They should be classified as -m conntrack --ctstate INVALID, since they 
-won't match anything preexisting.
+Aug 11 11:56:24 fw01 kernel: INPUT INVALID IN=bond3 OUT=
+MAC=00:15:17:90:3c:0b:00:1c:58:ea:79:ff:08:00 SRC=95.172.228.42
+DST=208.a.b.8 LEN=260 TOS=0x00 PREC=0x00 TTL=52 ID=29203 DF PROTO=TCP
+SPT=46721 DPT=441 WINDOW=1002 RES=0x00 ACK PSH URGP=0
 
-Assuming this is not the case (e.g. due to liberal pickup of 
-connections, see a similarly named sysctl), how else would you determine 
-that they are not real?
+Aug 11 11:56:24 fw01 kernel: No Match: IN=bond3 OUT=
+MAC=00:15:17:90:3c:0b:00:1c:58:ea:79:ff:08:00 SRC=95.172.228.42
+DST=208.a.b.8 LEN=260 TOS=0x00 PREC=0x00 TTL=52 ID=29203 DF PROTO=TCP
+SPT=46721 DPT=441 WINDOW=1002 RES=0x00 ACK PSH URGP=0
+
+Is this telling me that the reason the packet has been classified as
+INVALID is because the TCP checksum is bad? We are doing checksum
+offloading so I would think the checksum in the packet evaluated by the
+kernel would be irrelevant.  We also have no problem if the users run
+their sessions through an OpenVPN tunnel.
+
+I'll be digging into SACK next but wonder if I'm staring at the smoking
+gun and just don't recognize it.  I can try disabling offloading but not
+right now as the system is in heavy production.  Thanks - John
+
+
