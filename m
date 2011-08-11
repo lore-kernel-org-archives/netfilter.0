@@ -1,36 +1,24 @@
 From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
 Subject: Re: Conntrack not matching properly - producing serious outages
-Date: Thu, 11 Aug 2011 08:03:54 -0400
-Message-ID: <1313064234.3628.63.camel@denise.theartistscloset.com>
+Date: Thu, 11 Aug 2011 08:09:50 -0400
+Message-ID: <1313064590.3628.69.camel@denise.theartistscloset.com>
 References: <1313055975.3628.56.camel@denise.theartistscloset.com>
-	 <1313057465.3408.12.camel@tiger.regit.org>
+	 <alpine.DEB.2.00.1108111207330.5476@blackhole.kfki.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1313057465.3408.12.camel@tiger.regit.org>
+In-Reply-To: <alpine.DEB.2.00.1108111207330.5476@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Eric Leblond <eric@regit.org>
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: netfilter@vger.kernel.org
 
-On Thu, 2011-08-11 at 12:10 +0200, Eric Leblond wrote:
-> Hello John,
+On Thu, 2011-08-11 at 12:12 +0200, Jozsef Kadlecsik wrote:
+> Hi,
 > 
-> Nice to hear from you again ;)
-Thanks, it has been a while since I've been here. We're still plodding
-along with ISCS (http://iscs.sourceforge.net).  Although we've not
-updated the site in years and I'm way behind on a new release, we have
-actually made considerable progress.  There still seems to be nothing
-else that does what it does.  We have coined the term Firepipes to
-describe it as opposed to Firewall as that better describes our model of
-no inside and no outside, i.e., no one can go anywhere on the network
-unless they have a firepipe and explosions in the firepipe stay in the
-firepipe, i.e., no escalation of privileges.  So, hopefully at some
-point, we'll pick up some corporate sponsorship as it is far too big for
-our limited resources.
+> On Thu, 11 Aug 2011, John A. Sullivan III wrote:
 > 
-> On Thu, 2011-08-11 at 05:46 -0400, John A. Sullivan III wrote:
 > > Hello, all.  We have been having a subtle problem with conntrack for
 > > quite a long time but it has suddenly gotten much worse.  Packets are
 > > being matched as INVALID when we would expect them to be ESTABLISHED.
@@ -46,47 +34,52 @@ our limited resources.
 > > [root@fw01 netfilter]# cat ip_conntrack_count
 > > 532
 > > 
-> > 
 > > Here are three specific examples.  The first is from the FORWARD chain.
 > > Here are the logging messages:
-> > 
-> > 
+> >  
 > > Aug 11 03:29:19 fw01 kernel: FORWARD INVALID IN=bond1 OUT=bond4
 > > SRC=172.x.y.73 DST=172.x.z.34 LEN=52 TOS=0x00 PREC=0x00 TTL=63 ID=32940
 > > DF PROTO=TCP SPT=8080 DPT=52999 WINDOW=34 RES=0x00 ACK FIN URGP=0
 > 
-> I've already observed this kind of problem. This was related with some
-> software/OSes having really strange timeout value.
+> Those are, with high probabilty, late FIN packets: the belonging conntrack 
+> entry has already been deleted and thus conntrack cannot find the matching 
+> stream, therefore it sets as INVALID.
+Thank you very much, Jozsef.  That would explain why we did not
+categorize this as a high priority in the past as it seemed to have
+minimal impact.  I would guess we do not need to be concerned about
+these.
+
+However, the other two are much more problematic and what escalated this
+into a crisis.  As I just explained in another reply, these are
+happening in the middle of activity, i.e., they are NX remote desktop
+sessions being carried via SSH.  The users are in the middle of typing
+or scrolling through their desktops, in other words, the connection is
+definitely active and passing many packets.  Then, without warning,
+their desktops freeze, the connection eventually times out, and we see
+these INVALID and dropped packets.  That's the one we really need to
+solve.
 > 
-> To check weither this is the same problem, you can ask the kernel to log
-> the reason why the packets are invalid. This can be made by running:
+> > So why is the reply packet INVALID instead of ESTABLISHED? How can we
+> > troubleshoot?
 > 
->         echo "255">/proc/sys/net/netfilter/nf_conntrack_log_invalid
-> 
-> After doing this, the kernel will log all invalid packets through the
-> default log system. You can check which one you are using by doing:
->   
->         cat /proc/net/netfilter/nf_log 
->          0 NONE ()
->          1 NONE ()
->          2 ipt_LOG (ipt_LOG)
->         ...
->         
-Ah - that's why we didn't see anything when we enabled it.  I'll do that
-again with the proper log setting.  Thanks.
-> 2 is the coding for IPv4. With that ipt_LOG value, the message are sent
-> via the standard kernel log. If instead of this value, you've got
-> something like ULOG or NFLOG, you will need to get the message by
-> listening to the nflog-group or ulog-group 0 in ulogd[2].
-> 
-> If this is timeout issue, you can play with the timeout setting of the
-> conntrack in the /proc/sys/net/netfilter/nf_conntrack_*time* files.
-> 
-> BR,
-We'll see what the logging says. The strange thing about the last two
-examples is that they happen midstream.  They are X2Go sessions
-(www.x2go.org), an NX implementation for remote display presentation.
-The users are typing away when, suddenly, their session drops and we see
-these INVALID packets and associated drops so it doesn't smell like a
-timing issue.  But we'll log and see what we get.  Thanks again - John
+> If NAT is enabled, never ever let packets with INVALID state pass through, 
+> because NAT will skip them.
+I'm not entirely sure what you mean by this - sorry.  Are you saying we
+should always have a rule to drop INVALID packets at the beginning of
+NAT or are you saying that the reason we are seeing these in the INPUT
+chain is because they were "labeled" as INVALID before hitting the nat
+table and that's why NAT skipped them? If the latter, we are still back
+to the original problem of why are these ESTABLISHED packets being
+considered as INVALID?
+
+Thanks very much - John
+>  
+> Best regards,
+> Jozsef
+> -
+> E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+> Address : KFKI Research Institute for Particle and Nuclear Physics
+>           H-1525 Budapest 114, POB. 49, Hungary
+
 
