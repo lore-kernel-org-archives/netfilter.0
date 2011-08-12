@@ -1,40 +1,32 @@
-From: Benjamin <benjo11111@gmail.com>
-Subject: Re: use of socket tag in iptables
-Date: Fri, 12 Aug 2011 21:51:22 +0530
-Message-ID: <4E455302.9040707@gmail.com>
-References: <CAARrgqwjUWYRyuKL66ErnmnmnJ=1f1y2ZcmTH25-5yc0Pp9iqw@mail.gmail.com>
+From: "Tyler J. Wagner" <tyler@tolaris.com>
+Subject: Re: Extremely slow upload (and more) from behind NAT
+Date: Fri, 12 Aug 2011 17:32:34 +0100
+Message-ID: <4E4555A2.4090705@tolaris.com>
+References: <CAKbQEqG3vrDpLBzh7CVBxhezWOtuZRASFPFG4uHTOQDpkyUFtw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=message-id:date:from:user-agent:mime-version:to:subject:references
-         :in-reply-to:content-type:content-transfer-encoding;
-        bh=yjP8TI2mLuvy2Wn3G2uvlkBYpb/pAx1h2mrwsKeAass=;
-        b=CzWdz9XUEm/xTXMHHlTsg2vqrj2vnIjzLlzZT8frqqGpzNlakjiCdhRw2QmeL35W8m
-         +CfRXoN5O1bk4pbvuZaOiw9IPhBkuTWNnURElDHzX3JO1LrSHwmQXWMWqGBrBy1o0lO0
-         NthSKy+IlJOYMew4W/Xk49YL1s+J1B3kb7mb4=
-In-Reply-To: <CAARrgqwjUWYRyuKL66ErnmnmnJ=1f1y2ZcmTH25-5yc0Pp9iqw@mail.gmail.com>
+In-Reply-To: <CAKbQEqG3vrDpLBzh7CVBxhezWOtuZRASFPFG4uHTOQDpkyUFtw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Christian Pernegger <pernegger@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-  Hi,
+On 2011-08-12 17:06, Christian Pernegger wrote:
+> Since randomly disabling TCP "offensive" TCP options like syncookies,
+> ECN and even SACK didn't work either, I'm now officially at my wits
+> end.
 
-Any update for that.
+That's a good one. Do you have any unusual routing loops or other
+network oddities? Just eth0 (external) and eth1 (internal)?
+
+Please post your iptables / iptables-restore script.
 
 Regards,
-Benjamin
+Tyler
 
-
-On 08/09/2011 08:59 PM, benjamin fernandis wrote:
-> Hi,
->
-> What is the purpose of socket tag in iptables?
->
-> Please share any document or examples of that
->
-> Regards,
-> Benjamin
-
+-- 
+"Never underestimate the bandwidth of a station wagon full of tapes
+hurtling down the highway.
+   -- Andrew S. Tanenbaum
