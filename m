@@ -1,76 +1,67 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: Re: Conntrack not matching properly - producing serious outages
-Date: Fri, 12 Aug 2011 13:12:54 -0400
-Message-ID: <1313169174.2696.2.camel@jasiiieee.pacifera.com>
-References: <1313055975.3628.56.camel@denise.theartistscloset.com>
-	 <1313057465.3408.12.camel@tiger.regit.org>
-	 <1313080553.3628.80.camel@denise.theartistscloset.com>
-	 <alpine.DEB.2.00.1108112221410.8518@blackhole.kfki.hu>
-	 <1313098202.3628.86.camel@denise.theartistscloset.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Extremely slow upload (and more) from behind NAT
+Date: Fri, 12 Aug 2011 19:34:35 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1108121929440.32562@frira.zrqbmnf.qr>
+References: <CAKbQEqG3vrDpLBzh7CVBxhezWOtuZRASFPFG4uHTOQDpkyUFtw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1313098202.3628.86.camel@denise.theartistscloset.com>
+In-Reply-To: <CAKbQEqG3vrDpLBzh7CVBxhezWOtuZRASFPFG4uHTOQDpkyUFtw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: Eric Leblond <eric@regit.org>, netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Christian Pernegger <pernegger@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-On Thu, 2011-08-11 at 17:30 -0400, John A. Sullivan III wrote: 
-> On Thu, 2011-08-11 at 22:41 +0200, Jozsef Kadlecsik wrote:
-> > On Thu, 11 Aug 2011, John A. Sullivan III wrote:
-> > 
-> > > I've just begun to wade my way through SACK as Jozsef suggested after
-> > > getting some sleep but I was able to catch a live one with logging
-> > > enabled:
-> > > 
-> > > Aug 11 11:56:24 fw01 kernel: nf_ct_tcp: bad TCP checksum IN= OUT=
-> > > SRC=95.172.228.42 DST=208.a.b.8 LEN=260 TOS=0x00 PREC=0x00 TTL=52
-> > > ID=29203 DF PROTO=TCP SPT=46721 DPT=441 SEQ=2834861284 ACK=3682327577
-> > > WINDOW=1002 RES=0x00 ACK PSH URGP=0 OPT (0101080A01249B0846B0F23B)
-> > 
-> > That's Noop, Noop and Timestamp options and not SACK.
-> > 
-> > But the TCP checksum checking in conntrack says that the TCP checksum of 
-> > the received packet is invalid, therefore it assings the INVALID 
-> > state to the packet.
-> Ah, so we do suspect that this is the culprit?
-> >  
-> > > Aug 11 11:56:24 fw01 kernel: INPUT INVALID IN=bond3 OUT=
-> > > MAC=00:15:17:90:3c:0b:00:1c:58:ea:79:ff:08:00 SRC=95.172.228.42
-> > > DST=208.a.b.8 LEN=260 TOS=0x00 PREC=0x00 TTL=52 ID=29203 DF PROTO=TCP
-> > > SPT=46721 DPT=441 WINDOW=1002 RES=0x00 ACK PSH URGP=0
-> > > 
-> > > Aug 11 11:56:24 fw01 kernel: No Match: IN=bond3 OUT=
-> > > MAC=00:15:17:90:3c:0b:00:1c:58:ea:79:ff:08:00 SRC=95.172.228.42
-> > > DST=208.a.b.8 LEN=260 TOS=0x00 PREC=0x00 TTL=52 ID=29203 DF PROTO=TCP
-> > > SPT=46721 DPT=441 WINDOW=1002 RES=0x00 ACK PSH URGP=0
-> > > 
-> > > Is this telling me that the reason the packet has been classified as
-> > > INVALID is because the TCP checksum is bad? We are doing checksum
-> > > offloading so I would think the checksum in the packet evaluated by the
-> > > kernel would be irrelevant.  We also have no problem if the users run
-> > > their sessions through an OpenVPN tunnel.
-> > 
-> > TCP checksum offloading does not discard incoming packets with invalid 
-> > checksum.
-> Hmm . . . I wonder if we have a card which is going bad. This came on
-> all of a sudden.  I was planning to disable offloading anyway to see if
-> it solved the problem; I'm just awaiting a tester.  I'll report back
-> what I find.  I certainly appreciate all the help - John
-> >  
-> > > I'll be digging into SACK next but wonder if I'm staring at the smoking
-> > > gun and just don't recognize it.  I can try disabling offloading but not
-> > > right now as the system is in heavy production.  Thanks - John
-> > <snip>
-Thanks to everyone for their help and my apologies for not getting back
-sooner - we've been up almost continually battling this problem.
+On Friday 2011-08-12 18:06, Christian Pernegger wrote:
 
-It looks like the netfilter involvement was a red herring.  We disabled
-checksumming and the INVALID packet problem went away but the problem
-persists.  We have hit and miss access and piles of duplicate ACKs and
-retransmissions but it does not appear to be netfilter related.  Still
-trying to figure out what changed of if we have some failing hardware.
-Thanks again - John
+>Hi list,
+>
+>I've been building my own home firewalling/NAT routers from commodity
+>hardware and Debian stable since the times iptables was called
+>ipchains and never had a problem, but now I've switched ISPs again and
+>I just can't seem to get NAT to work properly this time.
+>
+>The ISP is Chello Austria (UPC), a cable one. For all intents and
+>purposes it's supposed to be a regular Ethernet connection at my end,
+>with a nominal bandwidth of 4 Mb/s up, 35 Mb/s down and a de facto
+>static public IP on my router's external interface. The cable modem
+>seems to act as a transparent bridge (it doesn't show up on
+>traceroute).
+
+transparent and bridge is a tautology - by definition, bridges, by 
+default, like regular switches and hubs, don't show up on traceroutes at 
+all, unless you explicitly add a TTL breakpoint.
+
+
+>Everything is fine on the router itself, or any other box I directly
+>connect to the cable modem, but all NATed clients behind it get
+>severely degraded service, though only some things seem to be broken:
+>+ The downstream bandwidth is fine, within a few percent of nominal.
+>+ The latency (as measured by ping and similar) is excellent.
+>+ Online games like Team Fortress 2 and World of Warcraft work flawlessly.
+>- Web browsing only barely works. When trying to access a site,
+>Firefox will hang for 10+ seconds at the "Waiting for $SERVER" stage,
+>then the whole site will render instantly.
+
+So what happens (log output!) if you issue
+
+ telnet netfilter.org 80
+
+>- The upstream bandwidth ... well, there isn't any, really. Test
+>uploads to an FTP server in the ISP's own network crawl along
+>erraticly at < 0.1 Mb/s and/or time out. The same test run from the
+>router gives me 1-2 Mb/s, three connections in parallel net the full 4
+>Ms/s.
+
+Owing to your mail's subject, does it go away without NAT?
+
+>- When testing via speedtest.net, the latency and downstream tests
+>work but the upload test fails. It just sits there "Connecting ..."
+>and eventually times out
+
+Those speedtest sites are, most of the times, for the trash anyway, 
+since they often only utilize a single connection only, which is not 
+going to be a good approximation of utilizable bandwidth. (I used to 
+require like 5 concurrent connections to dlc.sun.com to fill 90 Mbit.)
 
