@@ -1,46 +1,45 @@
-From: "Tyler J. Wagner" <tyler@tolaris.com>
+From: Grant Taylor <gtaylor@riverviewtech.net>
 Subject: Re: Extremely slow upload (and more) from behind NAT
-Date: Fri, 12 Aug 2011 20:18:04 +0100
-Message-ID: <4E457C6C.7080808@tolaris.com>
-References: <CAKbQEqG3vrDpLBzh7CVBxhezWOtuZRASFPFG4uHTOQDpkyUFtw@mail.gmail.com> <4E4555A2.4090705@tolaris.com> <CAKbQEqG5kBPrqBqdMpyufWpioeE6A0_zpXgEPnYeCuPk3JmpxA@mail.gmail.com>
+Date: Fri, 12 Aug 2011 15:28:18 -0500
+Message-ID: <4E458CE2.4090804@riverviewtech.net>
+References: <CAKbQEqG3vrDpLBzh7CVBxhezWOtuZRASFPFG4uHTOQDpkyUFtw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAKbQEqG5kBPrqBqdMpyufWpioeE6A0_zpXgEPnYeCuPk3JmpxA@mail.gmail.com>
+In-Reply-To: <CAKbQEqG3vrDpLBzh7CVBxhezWOtuZRASFPFG4uHTOQDpkyUFtw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-To: Christian Pernegger <pernegger@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On 2011-08-12 17:45, Christian Pernegger wrote:
->> Please post your iptables / iptables-restore script.
->=20
-> I did, in a way. It's really just that one line, "iptables -t nat -A
-> POSTROUTING -s 192.168.0.0/24 -o eth1 -j MASQUERADE", at the moment,
-> executed as a post-up command from /etc/network/interfaces.
+On 08/12/11 11:06, Christian Pernegger wrote:
+> The official method for getting one's IP is DHCP, though configuring
+> it statically reportedly also works. I tried both, no difference.
+> The DHCP server *does* suggest an MTU of 576 bytes instead of the
+> ususal 1500 bytes, but that seems to be bogus. Manual PMTU discovery
+> via don't-fragment pings to various servers is consistent with an MTU
+> of 1500 and anyway, changing it to 576 doesn't have any appreciable
+> effect at all, with or without a TCPMSS rule as suggested by the
+> iptables man page.
 
-I doubt that's the problem, then. I would write it without the "-s
-192.168.0.0/24" statement, as it is not needed if you have no other
-networks or interfaces. But I very much doubt it is the cause of the
-problem.
+I was going to say that this /really/ seems like an MTU / TCPMSS issue 
+to me.
 
-You said the problem only happens to NAT'ed traffic. What if it's not
-NAT, but eth0, that's the issue? Try swapping eth0 and eth1 and see if
-the problem affects traffic to/from the router as well.
+For giggles, ssh from one of the clients configuring the ssh client as a 
+socks proxy.  Then have your web browser use the ssh / socks proxy for 
+testing.  If that does work correctly, I'd still really question MTU / 
+TCPMSS.
 
-I recently had a problem with one server (with an old cheap Via chipset=
-)
-that ran fine on Ubuntu 8.04. But when I reformatted it for Ubuntu
-10.04, eth0 started having serious issues with throughput that I
-eventually concluded was an IRQ issue. Since it had two interfaces, I
-renamed them and used the other one.
+What happens if you clamp the MTU / TCPMSS really low just to make sure 
+you are (way) below any thing interfering.
 
-Regards,
-Tyler
+Have you tried running a network sniffer on any of the traffic to see 
+what it's doing?  Do you have any re-transmissions?  Do you see requests 
+that don't have associated replies?
 
---=20
-"Offending fundamentalists isn't my goal =E2=80=93 but if it is an inev=
-itable
-side-effect of defending human rights, so be it."
-   -- Johann Hari
+Do the sniffs on the inside interface match the outside interface (save 
+for the nated IP address)?
+
+
+
+Grant. . . .
