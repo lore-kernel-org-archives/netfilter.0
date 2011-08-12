@@ -1,39 +1,76 @@
-From: Christian Pernegger <pernegger@gmail.com>
-Subject: Re: Extremely slow upload (and more) from behind NAT
-Date: Fri, 12 Aug 2011 18:45:19 +0200
-Message-ID: <CAKbQEqG5kBPrqBqdMpyufWpioeE6A0_zpXgEPnYeCuPk3JmpxA@mail.gmail.com>
-References: <CAKbQEqG3vrDpLBzh7CVBxhezWOtuZRASFPFG4uHTOQDpkyUFtw@mail.gmail.com>
- <4E4555A2.4090705@tolaris.com>
+From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Subject: Re: Conntrack not matching properly - producing serious outages
+Date: Fri, 12 Aug 2011 13:12:54 -0400
+Message-ID: <1313169174.2696.2.camel@jasiiieee.pacifera.com>
+References: <1313055975.3628.56.camel@denise.theartistscloset.com>
+	 <1313057465.3408.12.camel@tiger.regit.org>
+	 <1313080553.3628.80.camel@denise.theartistscloset.com>
+	 <alpine.DEB.2.00.1108112221410.8518@blackhole.kfki.hu>
+	 <1313098202.3628.86.camel@denise.theartistscloset.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-type;
-        bh=I/VPZnwC7MnxWUvz8JzrLEYozlXyz2qAO7wmlLjT+54=;
-        b=MfykOExZDmVwMtmP5qeMz8k6RErwO3DaYG99DzC3hN6/OI9xR/44uYn5n62KXi7zti
-         5/GqXbXF6/UYaOF+MFbUA7p0r7dwP+O5QwwMCW4V6ve7BhG3ujKwjHFQMxcpp/lVvu4/
-         cTKjhzPbGjnhn4KuzlUNrZJVObwiMw5Oz0718=
-In-Reply-To: <4E4555A2.4090705@tolaris.com>
+In-Reply-To: <1313098202.3628.86.camel@denise.theartistscloset.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Tyler J. Wagner" <tyler@tolaris.com>
-Cc: netfilter@vger.kernel.org
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: Eric Leblond <eric@regit.org>, netfilter@vger.kernel.org
 
-> Do you have any unusual routing loops or other network oddities? Just eth0 (external)
-> and eth1 (internal)?
+On Thu, 2011-08-11 at 17:30 -0400, John A. Sullivan III wrote: 
+> On Thu, 2011-08-11 at 22:41 +0200, Jozsef Kadlecsik wrote:
+> > On Thu, 11 Aug 2011, John A. Sullivan III wrote:
+> > 
+> > > I've just begun to wade my way through SACK as Jozsef suggested after
+> > > getting some sleep but I was able to catch a live one with logging
+> > > enabled:
+> > > 
+> > > Aug 11 11:56:24 fw01 kernel: nf_ct_tcp: bad TCP checksum IN= OUT=
+> > > SRC=95.172.228.42 DST=208.a.b.8 LEN=260 TOS=0x00 PREC=0x00 TTL=52
+> > > ID=29203 DF PROTO=TCP SPT=46721 DPT=441 SEQ=2834861284 ACK=3682327577
+> > > WINDOW=1002 RES=0x00 ACK PSH URGP=0 OPT (0101080A01249B0846B0F23B)
+> > 
+> > That's Noop, Noop and Timestamp options and not SACK.
+> > 
+> > But the TCP checksum checking in conntrack says that the TCP checksum of 
+> > the received packet is invalid, therefore it assings the INVALID 
+> > state to the packet.
+> Ah, so we do suspect that this is the culprit?
+> >  
+> > > Aug 11 11:56:24 fw01 kernel: INPUT INVALID IN=bond3 OUT=
+> > > MAC=00:15:17:90:3c:0b:00:1c:58:ea:79:ff:08:00 SRC=95.172.228.42
+> > > DST=208.a.b.8 LEN=260 TOS=0x00 PREC=0x00 TTL=52 ID=29203 DF PROTO=TCP
+> > > SPT=46721 DPT=441 WINDOW=1002 RES=0x00 ACK PSH URGP=0
+> > > 
+> > > Aug 11 11:56:24 fw01 kernel: No Match: IN=bond3 OUT=
+> > > MAC=00:15:17:90:3c:0b:00:1c:58:ea:79:ff:08:00 SRC=95.172.228.42
+> > > DST=208.a.b.8 LEN=260 TOS=0x00 PREC=0x00 TTL=52 ID=29203 DF PROTO=TCP
+> > > SPT=46721 DPT=441 WINDOW=1002 RES=0x00 ACK PSH URGP=0
+> > > 
+> > > Is this telling me that the reason the packet has been classified as
+> > > INVALID is because the TCP checksum is bad? We are doing checksum
+> > > offloading so I would think the checksum in the packet evaluated by the
+> > > kernel would be irrelevant.  We also have no problem if the users run
+> > > their sessions through an OpenVPN tunnel.
+> > 
+> > TCP checksum offloading does not discard incoming packets with invalid 
+> > checksum.
+> Hmm . . . I wonder if we have a card which is going bad. This came on
+> all of a sudden.  I was planning to disable offloading anyway to see if
+> it solved the problem; I'm just awaiting a tester.  I'll report back
+> what I find.  I certainly appreciate all the help - John
+> >  
+> > > I'll be digging into SACK next but wonder if I'm staring at the smoking
+> > > gun and just don't recognize it.  I can try disabling offloading but not
+> > > right now as the system is in heavy production.  Thanks - John
+> > <snip>
+Thanks to everyone for their help and my apologies for not getting back
+sooner - we've been up almost continually battling this problem.
 
-No, it's a bog standard setup. eth0 is the internal, eth1 the external
-interface.
+It looks like the netfilter involvement was a red herring.  We disabled
+checksumming and the INVALID packet problem went away but the problem
+persists.  We have hit and miss access and piles of duplicate ACKs and
+retransmissions but it does not appear to be netfilter related.  Still
+trying to figure out what changed of if we have some failing hardware.
+Thanks again - John
 
-> Please post your iptables / iptables-restore script.
-
-I did, in a way. It's really just that one line, "iptables -t nat -A
-POSTROUTING -s 192.168.0.0/24 -o eth1 -j MASQUERADE", at the moment,
-executed as a post-up command from /etc/network/interfaces.
-
-Regards,
-
-Christian
