@@ -1,61 +1,85 @@
-From: Javier Almillategui <jalmillategui@mac.com>
-Subject: Re: Question about using SSH-tunnel / Frage zum Benutzen eines
- SSH-Tunnels
-Date: Fri, 12 Aug 2011 07:35:19 -0500
-Message-ID: <D36EB610-DA57-4882-8560-8EF7FD6B8F09@mac.com>
-References: <4E44F1DC.3090605@gmx.de> <4E450A97.8070303@wildgooses.com>
+From: Christian Pernegger <pernegger@gmail.com>
+Subject: Extremely slow upload (and more) from behind NAT
+Date: Fri, 12 Aug 2011 18:06:00 +0200
+Message-ID: <CAKbQEqG3vrDpLBzh7CVBxhezWOtuZRASFPFG4uHTOQDpkyUFtw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-reply-to: <4E450A97.8070303@wildgooses.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:from:date:message-id:subject:to:content-type;
+        bh=kD8nwD4U+V+FgLPs59r+ilCiCKwskzfujpXltIQaiok=;
+        b=iC8N2p7zXxJVsJ1dGDajG8+tccZ5S5Z3ZQlbxrdCpcz9i7/V1DZR1jsby+g9QMRST+
+         veGZxKi5ptEOV5eEFEjuE08dwZyQ5cduDf1te+Y/inW88B7KKhPeYSEBqKZbYmOKltiv
+         MamFPo89JoAzztQgKDMArLhOZXreIRD3EXz3U=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Ed W <lists@wildgooses.com>
-Cc: "J. Zeidler" <jonatan_zeidler@gmx.de>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-=46irst of all, can you post the ssh tunnel syntax you are using?  In s=
-sh you can specify which ip address will be used to bind the port tunne=
-l. E.g: -L <local ip>:<local port>:<remote ip>:<remote port>.
+Hi list,
 
-Secondly, can you tell us the type of traffic you want transport over t=
-he tunnel? You can pass as many -L syntax as needed to ssh.
+I've been building my own home firewalling/NAT routers from commodity
+hardware and Debian stable since the times iptables was called
+ipchains and never had a problem, but now I've switched ISPs again and
+I just can't seem to get NAT to work properly this time.
 
-Best,
+The ISP is Chello Austria (UPC), a cable one. For all intents and
+purposes it's supposed to be a regular Ethernet connection at my end,
+with a nominal bandwidth of 4 Mb/s up, 35 Mb/s down and a de facto
+static public IP on my router's external interface. The cable modem
+seems to act as a transparent bridge (it doesn't show up on
+traceroute).
 
-Javier Almill=C3=A1tegui
-Cibern=C3=A9tica S.A.
+Everything is fine on the router itself, or any other box I directly
+connect to the cable modem, but all NATed clients behind it get
+severely degraded service, though only some things seem to be broken:
++ The downstream bandwidth is fine, within a few percent of nominal.
++ The latency (as measured by ping and similar) is excellent.
++ Online games like Team Fortress 2 and World of Warcraft work flawlessly.
+- Web browsing only barely works. When trying to access a site,
+Firefox will hang for 10+ seconds at the "Waiting for $SERVER" stage,
+then the whole site will render instantly. More complex JavaScript or
+Flash based sites might hang indefinitely.
+I haven't yet stumbled across a site that won't work at all, hitting
+refresh will eventually succeed. Also, sites never load partially, no
+missing style sheets, "broken" images or the like. It seems to be an
+all or nothing deal.
+- The upstream bandwidth ... well, there isn't any, really. Test
+uploads to an FTP server in the ISP's own network crawl along
+erraticly at < 0.1 Mb/s and/or time out. The same test run from the
+router gives me 1-2 Mb/s, three connections in parallel net the full 4
+Ms/s.
+- When testing via speedtest.net, the latency and downstream tests
+work but the upload test fails. It just sits there "Connecting ..."
+and eventually times out
+- When testing via pingtest.net, the packet loss test fails in the
+same fashion.
+It doesn't matter if a client's running Linux or Windows.
 
-On Aug 12, 2011, at 6:12, Ed W <lists@wildgooses.com> wrote:
+The router is running Debian stable (Squeeze), using kernel
+linux-image-2.6.32-5-686 2.6.32-35 and iptables 1.4.8-3 as provided.
+DNS is provided by dnsmasq 2.55-2 running on the router with both the
+ISP's and Google's servers upstream. IPv6 is turned off via kernel
+command line. For testing purposes I've reduced my firewall script to
+this one-liner:
+iptables -t nat -A POSTROUTING -s 192.168.0.0/24 -o eth1 -j MASQUERADE
 
-> On 12/08/2011 10:26, J. Zeidler wrote:
->> English:
->>=20
->> Hello,
->>=20
->> I use a SSH-tunnel with Putty on Ubuntu 11.04. I want to achieve, th=
-at
->> the network traffic over a specific port is redirected over the tunn=
-el.
->> I need this because of a strict firewall, which i can not configure.=
- the
->> tunnel runs on localhost:9999. i can use this as proxy with firefox,=
- so
->> the tunnel works. i tried this without success:
->=20
-> Try OpenVPN (or your favourite VPN package, possibly SSH with the
-> tun/tap whatever basic vpn mode?).  This is likely easier to setup an=
-d
-> tunnels all traffic out.  OpenVPN can also run over http connect with=
- a
-> bit of configuration, so can slip out of fairly locked down firewalls=
-=2E..
->=20
-> Good luck
->=20
-> Ed W
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+The official method for getting one's IP is DHCP, though configuring
+it statically reportedly also works. I tried both, no difference.
+The DHCP server *does* suggest an MTU of 576 bytes instead of the
+ususal 1500 bytes, but that seems to be bogus. Manual PMTU discovery
+via don't-fragment pings to various servers is consistent with an MTU
+of 1500 and anyway, changing it to 576 doesn't have any appreciable
+effect at all, with or without a TCPMSS rule as suggested by the
+iptables man page.
+
+Since randomly disabling TCP "offensive" TCP options like syncookies,
+ECN and even SACK didn't work either, I'm now officially at my wits
+end.
+
+I'd be really grateful if anyone could help me out ...
+
+Thank you,
+
+Christian
