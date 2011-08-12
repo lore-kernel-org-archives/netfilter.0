@@ -1,23 +1,26 @@
-From: "J. Zeidler" <jonatan_zeidler@gmx.de>
-Subject: Re: Question about using SSH-tunnel / Frage zum Benutzen eines SSH-Tunnels
-Date: Sat, 13 Aug 2011 00:43:11 +0200
-Message-ID: <4E45AC7F.5040203@gmx.de>
-References: <4E44F1DC.3090605@gmx.de> <4E450A97.8070303@wildgooses.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: use of socket tag in iptables
+Date: Sat, 13 Aug 2011 00:48:16 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1108130047130.27527@frira.zrqbmnf.qr>
+References: <CAARrgqwjUWYRyuKL66ErnmnmnJ=1f1y2ZcmTH25-5yc0Pp9iqw@mail.gmail.com> <alpine.LNX.2.01.1108091849230.19560@frira.zrqbmnf.qr> <4E4210D1.5060007@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4E450A97.8070303@wildgooses.com>
+In-Reply-To: <4E4210D1.5060007@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: 
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Benjamin <benjo11111@gmail.com>
 Cc: netfilter@vger.kernel.org
 
+On Wednesday 2011-08-10 07:02, Benjamin wrote:
 
-> Try OpenVPN (or your favourite VPN package, possibly SSH with the
-> tun/tap whatever basic vpn mode?).  This is likely easier to setup and
-> tunnels all traffic out.  OpenVPN can also run over http connect with a
-> bit of configuration, so can slip out of fairly locked down firewalls...
-But i would need a server outside, which routed my traffic to the 
-destination
-port. Is there any server, which provides this for free?
+> Hi,
+>
+> Thanks for your kind response.Actually i m looking for proxy with tproxy
+> capability.So from squid wiki i got some iptabales rules that they used for
+> tproxy in that rules they use socket and tproxy tags.So I am wonder that how it
+> is happend means what's the exact role of socket options.
+
+Tag is not a recognized term in conjunction with socket and tproxy.
+And socket options are something different.
