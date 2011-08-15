@@ -1,182 +1,21 @@
-From: Igor Sharfmesser <isharfme@p5.kz>
-Subject: DNAT rule do not applied, if packet comes from a certain interface
-Date: Mon, 15 Aug 2011 11:54:57 +0600
-Message-ID: <CA6EB991.10F48%isharfme@p5.kz>
+From: Pandu Poluan <pandu@poluan.info>
+Subject: netfilter sysctl knobs?
+Date: Mon, 15 Aug 2011 15:03:53 +0700
+Message-ID: <CAA2qdGVfOViLBvoS_6Cmv9S2uPGfO_LA+xYwtzMFObBVBuhWeQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 To: netfilter@vger.kernel.org
 
-Hello!
+Any documentation on netfilter's sysctl knobs?
 
-DNAT rule do not applied, if packet comes from a certain interface.
+Rgds,
+--=20
+=46dS Pandu E Poluan
+~ IT Optimizer ~
 
-See traces below. Packet is not being NATed when arrives from bond0.353
-interface, but NAT works for any other interface. NAT rule don't have
-interface restriction, see below.
-I am running Gentoo with 2.6.32-openvz-feoktistov.
-
-*** unsuccessful attempt:
-kernel: TRACE: raw:PREROUTING:policy:2 IN=bond0.353 OUT=
-MAC=00:30:48:b9:2f:92:00:1f:ca:22:4b:c0:08:00 SRC=92.47.211.53
-DST=212.154.213.237 LEN=64 TOS=0x00 PREC=0x00 TTL=60 ID=7263
-DF PROTO=TCP SPT=57842 DPT=1975 SEQ=1668700926 ACK=0 WINDOW=65535 RES=0x00
-SYN URGP=0 OPT (020405AC010303030101080A388E7E930000000004020000)
-kernel: TRACE: mangle:PREROUTING:policy:1 IN=bond0.353 OUT=
-MAC=00:30:48:b9:2f:92:00:1f:ca:22:4b:c0:08:00 SRC=92.47.211.53
-DST=212.154.213.237 LEN=64 TOS=0x00 PREC=0x00 TTL=60 ID=72
-63 DF PROTO=TCP SPT=57842 DPT=1975 SEQ=1668700926 ACK=0 WINDOW=65535
-RES=0x00 SYN URGP=0 OPT (020405AC010303030101080A388E7E930000000004020000)
-kernel: TRACE: raw:PREROUTING:policy:2 IN=bond0.353 OUT=
-MAC=00:30:48:b9:2f:92:00:1f:ca:22:4b:c0:08:00 SRC=92.47.211.53
-DST=212.154.213.237 LEN=64 TOS=0x00 PREC=0x00 TTL=60 ID=7263
-DF PROTO=TCP SPT=57842 DPT=1975 SEQ=1668700926 ACK=0 WINDOW=65535 RES=0x00
-SYN URGP=0 OPT (020405AC010303030101080A388E7E930000000004020000)
-kernel: TRACE: nat:PREROUTING:rule:2 IN=bond0.353 OUT=
-MAC=00:30:48:b9:2f:92:00:1f:ca:22:4b:c0:08:00 SRC=92.47.211.53
-DST=212.154.213.237 LEN=64 TOS=0x00 PREC=0x00 TTL=60 ID=7263 DF
- PROTO=TCP SPT=57842 DPT=1975 SEQ=1668700926 ACK=0 WINDOW=65535 RES=0x00
-SYN URGP=0 OPT (020405AC010303030101080A388E7E930000000004020000)
-                   
-                                           ^^^^^^^^^^^^^^^^^^^^^ DST has
-not been NATed
-kernel: TRACE: mangle:PREROUTING:policy:1 IN=bond0.353 OUT=
-MAC=00:30:48:b9:2f:92:00:1f:ca:22:4b:c0:08:00 SRC=92.47.211.53
-DST=212.154.213.237 LEN=64 TOS=0x00 PREC=0x00 TTL=60 ID=72
-63 DF PROTO=TCP SPT=57842 DPT=1975 SEQ=1668700926 ACK=0 WINDOW=65535
-RES=0x00 SYN URGP=0 OPT (020405AC010303030101080A388E7E930000000004020000)
-kernel: TRACE: nat:PREROUTING:rule:2 IN=bond0.353 OUT=
-MAC=00:30:48:b9:2f:92:00:1f:ca:22:4b:c0:08:00 SRC=92.47.211.53
-DST=212.154.213.237 LEN=64 TOS=0x00 PREC=0x00 TTL=60 ID=7263 DF
- PROTO=TCP SPT=57842 DPT=1975 SEQ=1668700926 ACK=0 WINDOW=65535 RES=0x00
-SYN URGP=0 OPT (020405AC010303030101080A388E7E930000000004020000)
-
-*** successful attempt:
-kernel: TRACE: raw:PREROUTING:policy:2 IN=venet0 OUT= MAC= SRC=192.168.1.1
-DST=212.154.213.237 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=51595 DF PROTO=TCP
-SPT=50551 DPT=1975 SEQ=35014910
-18 ACK=0 WINDOW=5840 RES=0x00 SYN URGP=0 OPT
-(020405B40402080A0C734AC10000000001030307)
-kernel: TRACE: mangle:PREROUTING:policy:1 IN=venet0 OUT= MAC=
-SRC=192.168.1.1 DST=212.154.213.237 LEN=60 TOS=0x00 PREC=0x00 TTL=64
-ID=51595 DF PROTO=TCP SPT=50551 DPT=1975 SEQ=35014
-91018 ACK=0 WINDOW=5840 RES=0x00 SYN URGP=0 OPT
-(020405B40402080A0C734AC10000000001030307)
-fitech kernel: TRACE: nat:PREROUTING:rule:2 IN=venet0 OUT= MAC=
-SRC=192.168.1.1 DST=212.154.213.237 LEN=60 TOS=0x00 PREC=0x00 TTL=64
-ID=51595 DF PROTO=TCP SPT=50551 DPT=1975 SEQ=3501491018
- ACK=0 WINDOW=5840 RES=0x00 SYN URGP=0 OPT
-(020405B40402080A0C734AC10000000001030307)
-fitech kernel: TRACE: mangle:FORWARD:policy:1 IN=venet0 OUT=venet0
-SRC=192.168.1.1 DST=192.168.1.2 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=51595
-DF PROTO=TCP SPT=50551 DPT=1975 SEQ=3501491018
-ACK=0 WINDOW=5840 RES=0x00 SYN URGP=0 OPT
-(020405B40402080A0C734AC10000000001030307)
-                   
-        ^^^^^^^^^^^^^^^^ DST has been NATed
-Aug 14 21:22:08 fitech kernel: TRACE: filter:FORWARD:policy:1 IN=venet0
-OUT=venet0 SRC=192.168.1.1 DST=192.168.1.2 LEN=60 TOS=0x00 PREC=0x00
-TTL=64 ID=51595 DF PROTO=TCP SPT=50551 DPT=1975 SEQ=3501491018 ACK=0
-WINDOW=5840 RES=0x00 SYN URGP=0 OPT
-(020405B40402080A0C734AC10000000001030307)
-Aug 14 21:22:08 fitech kernel: TRACE: mangle:POSTROUTING:policy:1 IN=
-OUT=venet0 SRC=192.168.1.1 DST=192.168.1.2 LEN=60 TOS=0x00 PREC=0x00
-TTL=64 ID=51595 DF PROTO=TCP SPT=50551 DPT=1975 SEQ=3501491018 ACK=0
-WINDOW=5840 RES=0x00 SYN URGP=0 OPT
-(020405B40402080A0C734AC10000000001030307)
-Aug 14 21:22:08 fitech kernel: TRACE: nat:POSTROUTING:policy:1 IN=
-OUT=venet0 SRC=192.168.1.1 DST=192.168.1.2 LEN=60 TOS=0x00 PREC=0x00
-TTL=64 ID=51595 DF PROTO=TCP SPT=50551 DPT=1975 SEQ=3501491018 ACK=0
-WINDOW=5840 RES=0x00 SYN URGP=0 OPT
-(020405B40402080A0C734AC10000000001030307)
-Aug 14 21:22:08 fitech kernel: TRACE: raw:PREROUTING:policy:2 IN=venet0
-OUT= MAC= SRC=192.168.1.1 DST=212.154.213.237 LEN=52 TOS=0x00 PREC=0x00
-TTL=64 ID=51596 DF PROTO=TCP SPT=50551 DPT=1975 SEQ=3501491019
-ACK=3499394920 WINDOW=46 RES=0x00 ACK URGP=0 OPT
-(0101080A0C734AC20C734AC2)
-
-
-
-Here are NAT rules:
-*nat
-:PREROUTING ACCEPT [2025:126570]
-:POSTROUTING ACCEPT [1194:72505]
-:OUTPUT ACCEPT [1194:72505]
--A PREROUTING -d 88.204.159.36/32 -p tcp -m tcp --dport 1977 -j DNAT
---to-destination 192.168.1.2:1975
--A PREROUTING -d 212.154.213.237/32 -p tcp -m tcp --dport 1975 -j DNAT
---to-destination 192.168.1.2:1975
--A PREROUTING -d 88.204.159.36/32 -i bond0.324 -p tcp -m tcp --sport
-1024:65535 --dport 1977 -j DNAT --to-destination 192.168.1.2:1975
--A PREROUTING -d 88.204.159.36/32 -i bond0.324 -p tcp -m tcp --sport
-1024:65535 --dport 8080 -j DNAT --to-destination 192.168.1.2:80
--A PREROUTING -d 88.204.159.36/32 -i bond0.324 -p tcp -m tcp --sport
-1024:65535 --dport 8081 -j DNAT --to-destination 192.168.1.2:8080
--A PREROUTING -d 88.204.159.36/32 -i bond0.324 -p tcp -m tcp --sport
-1024:65535 --dport 3306 -j DNAT --to-destination 192.168.1.2:3306
--A PREROUTING -d 88.204.159.36/32 -i bond0.324 -p tcp -m tcp --sport
-1024:65535 --dport 8082 -j DNAT --to-destination 192.168.1.2:8009
-COMMIT
-
-Here are "ip ad" output:
-
-
-1: lo: <LOOPBACK,UP,LOWER_UP> mtu 16436 qdisc noqueue state UNKNOWN
-    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
-    inet 127.0.0.1/8 scope host lo
-2: eth0: <BROADCAST,MULTICAST,SLAVE,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast
-master bond0 state UP qlen 100
-    link/ether 00:30:48:b9:2f:92 brd ff:ff:ff:ff:ff:ff
-3: eth1: <BROADCAST,MULTICAST,SLAVE,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast
-master bond0 state UP qlen 100
-    link/ether 00:30:48:b9:2f:92 brd ff:ff:ff:ff:ff:ff
-4: bond0: <BROADCAST,MULTICAST,MASTER,UP,LOWER_UP> mtu 1500 qdisc noqueue
-state UP 
-    link/ether 00:30:48:b9:2f:92 brd ff:ff:ff:ff:ff:ff
-5: bond0.324@bond0: <BROADCAST,MULTICAST,MASTER,UP,LOWER_UP> mtu 1500
-qdisc noqueue state UP
-    link/ether 00:30:48:b9:2f:92 brd ff:ff:ff:ff:ff:ff
-    inet 88.204.159.36/24 brd 88.204.159.255 scope global bond0.324
-7: venet0: <BROADCAST,POINTOPOINT,NOARP,UP,LOWER_UP> mtu 1500 qdisc
-noqueue state UNKNOWN
-    link/void 
-11: bond0.353@bond0: <BROADCAST,MULTICAST,MASTER,UP,LOWER_UP> mtu 1500
-qdisc noqueue state UP
-    link/ether 00:30:48:b9:2f:92 brd ff:ff:ff:ff:ff:ff
-    inet 212.154.213.237/28 brd 212.154.213.239 scope global bond0.353
-
-"ip ro":
-192.168.1.1 dev venet0  scope link
-192.168.1.2 dev venet0  scope link
-212.154.213.224/28 dev bond0.353  proto kernel  scope link  src
-212.154.213.237 
-88.204.159.0/24 dev bond0.324  proto kernel  scope link  src 88.204.159.36
-127.0.0.0/8 via 127.0.0.1 dev lo
-default via 88.204.159.1 dev bond0.324
-
-
-ip ro li ta 213
-192.168.1.1 dev venet0  scope link
-192.168.1.2 dev venet0  scope link
-88.204.159.0/24 dev bond0.324  scope link
-127.0.0.0/8 via 127.0.0.1 dev lo
-
-
-
-
-
-ip rul
-0:	from all lookup local
-213: from 212.154.213.224/28 lookup 213
-32766:	from all lookup main
-32767:	from all lookup default
-
-
-Regards,
-
-igor
-
-
+=C2=A0=E2=80=A2 Blog : http://pepoluan.tumblr.com
+=C2=A0=E2=80=A2 Linked-In : http://id.linkedin.com/in/pepoluan
