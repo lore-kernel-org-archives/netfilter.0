@@ -1,37 +1,29 @@
-From: "Olshvang, LevX" <levx.olshvang@intel.com>
-Subject: My extension check routine is called on every iptables command
-Date: Mon, 15 Aug 2011 12:25:24 +0300
-Message-ID: <FE06BAB9E17C4742BB3BE97B2D419D8C2D0D24D70F@hasmsx502.ger.corp.intel.com>
+From: Pandu Poluan <pandu@poluan.info>
+Subject: ERROR: iptables v1.4.12: u32: option "--u32" cannot be inverted.
+Date: Mon, 15 Aug 2011 21:12:33 +0700
+Message-ID: <CAA2qdGUgvpfyX9Xw1tvs95HanqrjjeO-okDDeiucrRQCZZo=8A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-G'day !
+What's wrong with my command here:
 
-I have back ported Port Trigger for kernel 2.6.18 iptables 1.4.9
+    iptables -A rq_icmp -m u32 ! --u32 0x4&0x3fff=3D0x0  -m comment
+--comment "Fragmented" -g rq_drop_icmpattack
 
+it works without problem on Ubuntu 10.04, why won't it work with
+Gentoo? I keep getting the error:
 
-I had a debug print to trace function invocation and I had noticed a strange effect
- on every iptaple command the trigger_check() ( registered as .checkentry=trigger_check ) from the kernel extension is invoked and prints a tracing  message
+    iptables v1.4.12: u32: option "--u32" cannot be inverted.
 
-I wonder how it may happen, it seems that iptables scans the whole tree of netfilter structures ?  
+Rgds,
+--=20
+=46dS Pandu E Poluan
+~ IT Optimizer ~
 
-
-ThanX
-Lev
-
- 
-
----------------------------------------------------------------------
-Intel Israel (74) Limited
-
-This e-mail and any attachments may contain confidential material for
-the sole use of the intended recipient(s). Any review or distribution
-by others is strictly prohibited. If you are not the intended
-recipient, please contact the sender and delete all copies.
-
+=C2=A0=E2=80=A2 Blog : http://pepoluan.tumblr.com
+=C2=A0=E2=80=A2 Linked-In : http://id.linkedin.com/in/pepoluan
