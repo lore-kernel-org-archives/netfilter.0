@@ -1,44 +1,50 @@
-From: Christian Pernegger <pernegger@gmail.com>
-Subject: Re: Extremely slow upload (and more) from behind NAT
-Date: Tue, 16 Aug 2011 15:01:55 +0200
-Message-ID: <CAKbQEqGpmi0Fs0QfVk+DZmZzrAreXRVdfoBP9Jv4NhR4Lipuaw@mail.gmail.com>
-References: <CAKbQEqG3vrDpLBzh7CVBxhezWOtuZRASFPFG4uHTOQDpkyUFtw@mail.gmail.com>
- <4E4555A2.4090705@tolaris.com> <CAKbQEqG5kBPrqBqdMpyufWpioeE6A0_zpXgEPnYeCuPk3JmpxA@mail.gmail.com>
- <4E457C6C.7080808@tolaris.com>
+From: Johannes Gilger <gilger@umic.rwth-aachen.de>
+Subject: nfq_bind_pf(foo, PF_INET6) fails
+Date: Wed, 17 Aug 2011 09:32:15 +0200
+Message-ID: <20110817073215.GA8741@optiplex>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-type;
-        bh=ztptRQRYtuRZHZcCkAf2TFITHMEcaoy193saNrzEJAs=;
-        b=iMuOr4QdTZcpMlnXfvmDSyUUH+WG0zSu2SqUWhvU6pm3QJd0p79w18Q5NCtshu7Jrd
-         VWzK4NNzTKcmG3r7hEZ1cMnmrnJFKVPS+aniqHu4uZZlrydXznxQKMVud7KAA1NfQ3Ev
-         ZB8j+/ZUMJRTNNQHWc8y8VNteuzu0PjoU54lQ=
-In-Reply-To: <4E457C6C.7080808@tolaris.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Tyler J. Wagner" <tyler@tolaris.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="macroman"
+To: netfilter@vger.kernel.org
+Cc: gilger@umic.rwth-aachen.de
 
-> You said the problem only happens to NAT'ed traffic. What if it's not
-> NAT, but eth0, that's the issue? Try swapping eth0 and eth1 and see if
-> the problem affects traffic to/from the router as well.
+Hi netfilter-list,
 
-Yes! That was it (in a way). Over the long weekend I cobbled together
-a replacement router, booted it from an image of the first one and of
-course it worked perfectly ... ...
+I'm trying to adapt a legacy IPv4 NFQUEUE handler to support IPv6 as
+well. As far as I understood the documentation I have to do:
 
-So it's some kind of hardware issue in the router - or one of the
-cables / switches is bad intermittently and all the un-, replugging
-and wiggling about "fixed" it for now. Strange that the problem only
-affected the upstream, though.
+nfq_unbind_pf(handle, AF_INET6);
+nfq_bind_pf(handle, AF_INET6);
 
-Either way, netfilter's not to blame. I'm terribly sorry for having
-wasted your time.
+Which returns -1 in both cases. Simply ignoring the return value for
+bind_pf is no solution either. I don't know where else to look, as the
+program works fine when using AF_INET instead of AF_INET6.
+
+I'm using the 2.6.38-10-generic-tuxonice (Ubuntu 11.04), x86_64. Module=
+s
+nfnetlink, nfnetlink_queue, ip_queue, ip6_queue are loaded. Any pointer=
+s
+would be greatly appreciated.
 
 Regards,
+Jojo
 
-Christian
+(Please CC me, I'm not subscribed to the list)
+
+--=20
+Dipl.-Inform. Johannes Gilger
+Research Group IT-Security
+UMIC Research Centre
+RWTH Aachen University
+Mies-van-der-Rohe-Stra=C3=9Fe 15
+52074 Aachen
+
+Office: 211
+Phone: +49 241 80 20781
+=46ax:   +49 241 80 22731
+
+http://itsec.rwth-aachen.de
