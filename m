@@ -1,55 +1,24 @@
-From: Johannes Gilger <gilger@umic.rwth-aachen.de>
-Subject: Re: nfq_bind_pf(foo, PF_INET6) fails
-Date: Wed, 17 Aug 2011 15:45:50 +0200
-Message-ID: <20110817134550.GA1455@optiplex>
-References: <20110817073215.GA8741@optiplex>
+From: "Calin Onofrei" <Calin.Onofrei@cassidiancommunications.com>
+Subject: How to do NAT for an udp reply packet?
+Date: Wed, 17 Aug 2011 09:48:07 -0400
+Message-ID: <3173206D0F5F6B418F76F5997B2AE75201F164B3@gatex01.CMLnet.peinet.peinc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20110817073215.GA8741@optiplex>
+Content-class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-On 17/08/11 09:32, Johannes Gilger wrote:
-> nfq_unbind_pf(handle, AF_INET6);
-> nfq_bind_pf(handle, AF_INET6);
->=20
-> I'm using the 2.6.38-10-generic-tuxonice (Ubuntu 11.04), x86_64. Modu=
-les
-> nfnetlink, nfnetlink_queue, ip_queue, ip6_queue are loaded. Any point=
-ers
-> would be greatly appreciated.
+Hi netfilter list,
+I want to do NAT with specific rules for an udp reply packet. The
+current behaviour is that a reverse NAT is done automatically and it is
+not taking care of the NAT rules implemented. The only way I was able to
+do NAT with different rules for an udp reply packet was by setting the
+udp connection timeout to 0 (echo "0" >
+/proc/sys/net/ipv4/netfilter/ip_conntrack_udp_timeout). There is another
+way?
+Thank you!
+Calin Onofrei
 
-Nevermind, it works now, after I unloaded ip_queue resp. ip6_queue.
-Modules now look like this:
-
-nfnetlink_queue
-nfnetlink_log
-nf_conntrack_netlink
-nf_conntrack
-nfnetlink
-ip6table_filter
-ip6_tables
-iptable_filter
-ip_tables
-x_tables
-=20
-Regards,
-Jojo
-
---=20
-Dipl.-Inform. Johannes Gilger
-Research Group IT-Security
-UMIC Research Centre
-RWTH Aachen University
-Mies-van-der-Rohe-Stra=C3=9Fe 15
-52074 Aachen
-
-Office: 211
-Phone: +49 241 80 20781
-=46ax:   +49 241 80 22731
-
-http://itsec.rwth-aachen.de
