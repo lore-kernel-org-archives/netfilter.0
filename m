@@ -1,34 +1,33 @@
-From: "Carlos A. Carnero Delgado" <carloscarnero@gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
 Subject: Re: Please help me with a doubt about options '-i' and '-o'
-Date: Sat, 20 Aug 2011 13:05:45 -0400
-Message-ID: <CAPjvz2ninPHHezBTCKi+-d0WHQy8+LJ7KRAtVfy6FJ-f2P-=gA@mail.gmail.com>
+Date: Sat, 20 Aug 2011 19:47:32 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1108201946330.28507@frira.zrqbmnf.qr>
 References: <6DEA16417ACA45DF9BB7F9BD28454269@poweredge1800> <CAPjvz2mC8oHsC9tRKV_6yUxSuaMadtmJw7VTa9=TA96b-C1r2A@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-type;
-        bh=GM8mX+iRd/PbTYkIfVBWs0EeGhbQu7zkrKJ8U3BTrgs=;
-        b=m8VXbLlzI03DpoJWXpZ1LHGPrMEgltQCpGvN3YpW4s137XZmQ+ylZg6Yv+BuvhzCEt
-         9EnK8XZvcvhJ5h39HHwJT63d8xn7IL73JKsRrq6lHmlD5q98f2ciqdJl2gQmhk/o8MV+
-         vJEhG9lbvnih1B5BFUBDYCrSkINvUzVjhh8vs=
 In-Reply-To: <CAPjvz2mC8oHsC9tRKV_6yUxSuaMadtmJw7VTa9=TA96b-C1r2A@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Julio A. Romero" <julioarr@fisica.uh.cu>
-Cc: netfilter@vger.kernel.org
+To: "Carlos A. Carnero Delgado" <carloscarnero@gmail.com>
+Cc: "Julio A. Romero" <julioarr@fisica.uh.cu>, netfilter@vger.kernel.org
 
-On second thought
+On Saturday 2011-08-20 19:01, Carlos A. Carnero Delgado wrote:
 
-On Sat, Aug 20, 2011 at 1:01 PM, Carlos A. Carnero Delgado
-<carloscarnero@gmail.com> wrote:
-> Further, since by default Linux uses a weak host model...
+>> iptables -A OUTPUT -p icmp -m icmp --icmp-type echo-reply -o eth? -s
+>> 192.168.1.1 -d 192.168.2.200 -j ACCEPT
+>
+>IIRC when selecting (matching) ICMP the further match options are
+>implicit.
 
-I think it has nothing to do with the host model. It is just traffic
-destined for the local host, so it goes through INPUT.
+Only when there is an option that cannot be associated with any 
+currently loaded module. -m icmp won't be instantiated if you only use 
+-p icmp.
 
-HTH,
-Carlos.
+>When building iptables rulesets from scratch I always use the LOG
+>target, which sends to the syslog what's going on Netfilter at the
+>point of the rule. Excellent troubleshooting hook. Also, iptables -L
+>-v is your friend.
+
+Better is iptables-save.
