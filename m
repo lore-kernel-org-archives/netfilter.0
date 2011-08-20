@@ -1,54 +1,58 @@
-From: =?UTF-8?Q?Martin_Osmundsv=C3=A5g?= <martin.osmundsvaag@gmail.com>
-Subject: Tagged bridge stops traffic to untagged interfaces.
-Date: Sat, 20 Aug 2011 11:14:24 +0200
-Message-ID: <CALOqM9An+7HpqzTx-HQ5a+W41CYXPcKq5AT_afWJTSaM77BW6Q@mail.gmail.com>
-References: <CALOqM9DriK1_QdxAQgtNdae0CbJOz=nu4C-a4mki+RhTik=0XQ@mail.gmail.com>
+From: "Carlos A. Carnero Delgado" <carloscarnero@gmail.com>
+Subject: Re: Please help me with a doubt about options '-i' and '-o'
+Date: Sat, 20 Aug 2011 13:01:55 -0400
+Message-ID: <CAPjvz2mC8oHsC9tRKV_6yUxSuaMadtmJw7VTa9=TA96b-C1r2A@mail.gmail.com>
+References: <6DEA16417ACA45DF9BB7F9BD28454269@poweredge1800>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :content-type:content-transfer-encoding;
-        bh=+2xjm9RkzA/HVRCrmYPqFVzuPmcMHDJCdyICAXnui0k=;
-        b=il19yqWBinGbaESZtQduqIi1umVKLerbgLc/zr2j69MZRu3dWKg0QRo3Ycs20puyD5
-         2REWWiIfeK7Ni5eCWbU7WXe6JVjKoasAu6jxqNZrYEbPXAdYDm/VMNi77J4c88vcLqWM
-         d4hFkLT0xYIighga+hElaLHdLS/+hjQNigWIQ=
-In-Reply-To: <CALOqM9DriK1_QdxAQgtNdae0CbJOz=nu4C-a4mki+RhTik=0XQ@mail.gmail.com>
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc:content-type;
+        bh=2WHyMKzfW3aiFtav0Kp5JlBN7k8nTwOJRFI1Q2tFHTg=;
+        b=DTJ95Uo9Ao8/5eYYuf0azb4SeksMG/y6n/y2K+9vTtg/oxJG+/Gc3CYyuFMG54P9Di
+         M+i89RR3FhLKuHYF4RF2q/uISamfR661gSdoFPN+ucf7SW1lJ8ntpm7CQFu3+sGBeNUs
+         FOpto+HpqRk4DQKoZcaIx53vEOSzhxW8LIdCs=
+In-Reply-To: <6DEA16417ACA45DF9BB7F9BD28454269@poweredge1800>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Julio A. Romero" <julioarr@fisica.uh.cu>
+Cc: netfilter@vger.kernel.org
 
-Hi!
+Hi,
 
-I'm configuring a setup for a KVM-server on a ubuntu-server 11.04. I
-have an unnumbered bond0 interface with several bond0.X interfaces for
-each VLAN connected to it's own brX bridge. Now I can make hostOSs and
-connect them to their VLAN via the brX bridges. Everything works fine.
-The problem is that I need a HostOS with an tagged interface. I make a
-new bridge "taggedbr" and connect it to bond0 instead of bond0.X.
-=C2=A0 # brctl addbr taggedbr
-=C2=A0 # brctl addif taggedbr bond0
+On Fri, Aug 19, 2011 at 9:43 PM, Julio A. Romero <julioarr@fisica.uh.cu> wrote:
+> When I do a ping from 192.168.2.200 to 192.168.1.1, this classifies as INPUT
+> and the answer as OUTPUT, or not?
 
-Then all traffic to the bond0.X interfaces stops and all the other
-guestOS'es have no network. All the tagged traffic goes to the bridge
-"taggedbr". I do a
-=C2=A0 # brctl delif taggedbr bond0
-=2E.. and everythings comes back.
+Yes.
 
-i read that (in newer kernels > 2.6.34 or something) this is because
-the bridge has presedence over VLAN_tagging and I need to drop all
-VLAN-tagges
-packages to get them passed the bridge and on to the bond0.X devices.
-I tried:
-=C2=A0# ebtables -t broute -A BROUTING -i bond0 -p 802_1Q -j DROP
-=2E.. but this does not help.
+> In this case, what interface (eth1 or eth2) could be referring with the
+> options '-i' and '-o'?
+>
+> iptables -A INPUT -p icmp -m icmp --icmp-type echo-request -i eth? -s
+> 192.168.2.200 -d 192.168.1.1 -j ACCEPT
+>
+> iptables -A OUTPUT -p icmp -m icmp --icmp-type echo-reply -o eth? -s
+> 192.168.1.1 -d 192.168.2.200 -j ACCEPT
 
-I'm not sure how to debug this correctly, but I guess it's a minor
-detail I'm missing. I have also tried to echo 0/1 to
-/proc/sys/net/bridge/* but with no success.
-I hope someone can point me in the right direction.... Thanks!
+IIRC when selecting (matching) ICMP the further match options are
+implicit. That means -- I think -- that you don't need the -m icmp.
+Further, since by default Linux uses a weak host model, you are
+correctly using the INPUT chain and not the FORWARD chain, so there
+are some superfluous matches above. I'd rewrite those rules as
 
---
-- Martin O.
+iptables -A INPUT -p icmp --icmp-type echo-request -i eth2 -s
+192.168.2.200 -j ACCEPT
+iptables -A OUTPUT -p icmp --icmp-type echo-reply -o eth2 -d
+192.168.2.200 -j ACCEPT
+
+When building iptables rulesets from scratch I always use the LOG
+target, which sends to the syslog what's going on Netfilter at the
+point of the rule. Excellent troubleshooting hook. Also, iptables -L
+-v is your friend.
+
+HTH,
+Carlos.
