@@ -1,35 +1,46 @@
-From: TEJAS <tsevak@gmail.com>
+From: "Rob Sterenborg (Lists)" <lists@sterenborg.info>
 Subject: Re: debug iptables rules
-Date: Mon, 22 Aug 2011 20:40:09 +0530
-Message-ID: <CA+b04XnQ-cKfU9KUu9j_Tf0vp0jtadnNu69_Gob1mPAXVkytMw@mail.gmail.com>
+Date: Mon, 22 Aug 2011 17:30:25 +0200
+Message-ID: <1314027026.2486.7.camel@kushiel.sterenborg.info>
 References: <CA+b04XnYFUcukqbmQXiKbY4VjUaFs3red56Jfnzm4pj+z6ndRw@mail.gmail.com>
+	 <CA+b04XnQ-cKfU9KUu9j_Tf0vp0jtadnNu69_Gob1mPAXVkytMw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :content-type:content-transfer-encoding;
-        bh=lKRKvrcCx39chfE4Pe4v0H7IsVs62TewXwhQQn658z0=;
-        b=QDShePRnxEDiFxcJv+SQvE/6BM/EdmmqFETkdWl+T8PhL0dEkkHKBXsriLVbVJ2wWe
-         vP7clj5gvln0H+V5E11wQF7YbLeY9pKSj6If/aE7cp2Ynw708hv/pkhtBYgRtBVCoXB+
-         mGE3QySQwFbRjHB6k1dXUviqnLmN05wfdYWa4=
-In-Reply-To: <CA+b04XnYFUcukqbmQXiKbY4VjUaFs3red56Jfnzm4pj+z6ndRw@mail.gmail.com>
+In-Reply-To: <CA+b04XnQ-cKfU9KUu9j_Tf0vp0jtadnNu69_Gob1mPAXVkytMw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi All,
+On Mon, 2011-08-22 at 20:40 +0530, TEJAS wrote:
+> Hi All,
+> 
+> I am new with iptables.I write certain iptables rule for my internal
+> network , i write rules for SNAT for internet sharing and some others
+> for configuring some restrictions.It is working fine.But i want to
+> debug these rules in live motion.I want to see what happening with
+> packets while they traverse from iptables rules.
+> 
+>  Is there any method or any tool or anything to see what happening in
+> snat rule and what happening in others iptables rules.
 
-I am new with iptables.I write certain iptables rule for my internal
-network , i write rules for SNAT for internet sharing and some others
-for configuring some restrictions.It is working fine.But i want to
-debug these rules in live motion.I want to see what happening with
-packets while they traverse from iptables rules.
+You can use the LOG target to log messages to syslog
+(probably /var/log/messages).
 
-=A0Is there any method or any tool or anything to see what happening in
-snat rule and what happening in others iptables rules.
+Basic example, really, when accepting SSH packets (beware of wrapping):
 
-Thanks,
-Tej
+$ipt -A INPUT -p tcp --dport 22 -j LOG --log-level info --log-prefix
+"INPUT: SSH: "
+$ipt -A INPUT -p tcp --dport 22 -j ACCEPT
+
+[...more rules...and then at the end of your ruleset...]
+
+$ipt -A INPUT -j LOG --log-level info --log-prefix "INPUT: DROPPED: "
+$ipt -A INPUT -j DROP   (or use the chain policy to do this)
+
+
+--
+Rob
+
+
