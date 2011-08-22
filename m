@@ -1,46 +1,35 @@
-From: Vinicius Massuchetto <viniciusmassuchetto@gmail.com>
-Subject: Re: Can't share ppp internet connection
-Date: Mon, 22 Aug 2011 08:27:55 -0300
-Message-ID: <CAJ1a921swM2RDS0hn6qfAHoNeWw_LfejOiAzBEYRoFhjw9u-sA@mail.gmail.com>
-References: <CAJ1a921b0HqJmUxTfqmsO+RG56w+DS6tBoWWhPBFQb8t2cHQCQ@mail.gmail.com>
- <CAA2qdGWCeRLwrJBrXujXjf_mk=4DQ6GS+KascfZv9=sDSRw=Rg@mail.gmail.com>
- <CAJ1a920B=sXLdAXZ_Oc9MGT=MdPzV4RaWtQpsvfm1HkeX4oP9g@mail.gmail.com>
- <CAA2qdGUa=REEFe3861GoNUwY11yxCxYTJkhuuzSfALdu02vh6Q@mail.gmail.com> <CAJ1a923xODT+mS8EKkTrsWUh8xKNN4yQy3NGRDf7yr_+onV8+w@mail.gmail.com>
+From: TEJAS <tsevak@gmail.com>
+Subject: Re: debug iptables rules
+Date: Mon, 22 Aug 2011 20:40:09 +0530
+Message-ID: <CA+b04XnQ-cKfU9KUu9j_Tf0vp0jtadnNu69_Gob1mPAXVkytMw@mail.gmail.com>
+References: <CA+b04XnYFUcukqbmQXiKbY4VjUaFs3red56Jfnzm4pj+z6ndRw@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-type;
-        bh=nHDjTqInIz3pRfSGu5mCiasYCwXX1VlkAqeB2Yh0yBI=;
-        b=aloRbUb2dj2IXGiwUOq9A2abjyRv3gp75e4io+gHzW0aUGTEXBeFE6vSHwQ5D02I4b
-         VMg1EqxG8FHXZodoVHb2zjOPaNWi4+P/OBHNxa69JqldTSbmObPA13LLkhVPrigRSNgg
-         BNFxmDDI6aG3CBrgnz+gW0Fx0bFr7ySYj1Vyk=
-In-Reply-To: <CAJ1a923xODT+mS8EKkTrsWUh8xKNN4yQy3NGRDf7yr_+onV8+w@mail.gmail.com>
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :content-type:content-transfer-encoding;
+        bh=lKRKvrcCx39chfE4Pe4v0H7IsVs62TewXwhQQn658z0=;
+        b=QDShePRnxEDiFxcJv+SQvE/6BM/EdmmqFETkdWl+T8PhL0dEkkHKBXsriLVbVJ2wWe
+         vP7clj5gvln0H+V5E11wQF7YbLeY9pKSj6If/aE7cp2Ynw708hv/pkhtBYgRtBVCoXB+
+         mGE3QySQwFbRjHB6k1dXUviqnLmN05wfdYWa4=
+In-Reply-To: <CA+b04XnYFUcukqbmQXiKbY4VjUaFs3red56Jfnzm4pj+z6ndRw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pandu Poluan <pandu@poluan.info>
-Cc: Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-As I said, this configuration "was working before". The new server I'm
-working has the following ethernet card:
+Hi All,
 
-13:00.0 Ethernet controller: Atheros Communications AR8152 v2.0 Fast
-Ethernet (rev c1)
+I am new with iptables.I write certain iptables rule for my internal
+network , i write rules for SNAT for internet sharing and some others
+for configuring some restrictions.It is working fine.But i want to
+debug these rules in live motion.I want to see what happening with
+packets while they traverse from iptables rules.
 
-After testing things again and again experiencing this odd network
-behavior, I didn't realize that my kernel version was really old:
-2.6.32. This kernel version has a Debian bug [1] that describes
-exactly what was happening. All I had to do was upgrade to 3.0.0, that
-has a fixed driver for AR8152. Everything works fine now.
+=A0Is there any method or any tool or anything to see what happening in
+snat rule and what happening in others iptables rules.
 
-I'm really sorry for this inconvenience, as I should have my system
-up-to-date before saying "I'm using that distro version".
-
-[1] http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=610474
-
-Thanks everyone for helping.
--- 
-Vinicius Massuchetto
+Thanks,
+Tej
