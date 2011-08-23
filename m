@@ -1,40 +1,32 @@
-From: =?windows-1251?Q?=22=DF=F6=EA=EE_=DD=EB=EB=E0=E4_=C3=E5=ED=ED=E0?=
-	 =?windows-1251?Q?=E4=FC=E5=E2=E8=F7_=28ngs=29=22?= 
-	<eyatsko@ngs.ru>
-Subject: How to make bi-directional NAT'ting?
-Date: Tue, 23 Aug 2011 12:26:15 +0400
-Message-ID: <4E536427.2040503@ngs.ru>
+From: Erik Schorr <erik-lists@arpa.org>
+Subject: Re: debug iptables rules
+Date: Tue, 23 Aug 2011 01:18:06 -0700
+Message-ID: <1314087487.12014.54.camel@phelix>
+References: <CA+b04XnYFUcukqbmQXiKbY4VjUaFs3red56Jfnzm4pj+z6ndRw@mail.gmail.com>
+	 <CA+b04XnQ-cKfU9KUu9j_Tf0vp0jtadnNu69_Gob1mPAXVkytMw@mail.gmail.com>
+	 <1314027026.2486.7.camel@kushiel.sterenborg.info>
+	 <CA+b04Xkw3FkDt0rENt-x-HjOfwxx+R3mYRpjE6BTKpm47ZpC4A@mail.gmail.com>
+	 <1314029592.2486.18.camel@kushiel.sterenborg.info>
+Reply-To: erik-lists@arpa.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <1314029592.2486.18.camel@kushiel.sterenborg.info>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
+Cc: "Rob Sterenborg (Lists)" <lists@sterenborg.info>
 
-Hello!
+I'm surprised nobody has mentioned the TRACE option.
+It's used in the 'raw' table, applied to the PREROUTING chain, I
+believe.  Every packet that matches/is marked by the TRACE option gets
+logged as it traverses every subsequent rule that it matches.  I believe
+it also shows when enters and exits a chain, regardless of matching
+rules within it.
 
-I have some specific problem with Cisco CP7961G IP phone.
-It sends packets to external Softswitch using one UDP port
-which differs from 5060 (voipControlPort in its .XML), but
-it waits answers on 5060!
-And I can't do anything with it! I have tried Firmware from
-8.0.x up to 8.5.x - all the same!
+It's perfect for tracing initial connection packets (e.g. SYN-only)
+through all your filters and nat chains.  It can generate LOTS of
+logging traffic if you're not careful.
 
-One thing I think is make corresponding translation on IPTables.
-SNAT in direct path (from 79161 to Softswitch) and DNAT
-in backward direction (from outside Softswitch to 7961).
 
-BUT IT DOESN'T WORK! :-)
-
-$IPTABLES -t nat -A PREROUTING          -p udp -s 80.251.x.x 
-                         -d 80.251.y.y --dport 5060 -j DNAT 
---to-destination 172.16.128.200:5060
-$IPTABLES -t nat -A POSTROUTING -o eth0 -p udp -s 172.16.128.0/24 
---sport 1024:65535 -d 80.251.x.x --dport 5060 -j SNAT --to-source      
-80.251.y.y:5060
-
-What do I do wrong?
-
-Kind regards,
-Ellad Yatsko
