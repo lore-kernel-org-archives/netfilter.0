@@ -1,49 +1,37 @@
-From: "Rob Sterenborg (Lists)" <lists@sterenborg.info>
-Subject: Re: debug iptables rules
-Date: Tue, 23 Aug 2011 20:44:46 +0200
-Message-ID: <1314125087.2486.61.camel@kushiel.sterenborg.info>
-References: <CA+b04XnYFUcukqbmQXiKbY4VjUaFs3red56Jfnzm4pj+z6ndRw@mail.gmail.com>
-	 <CA+b04XnQ-cKfU9KUu9j_Tf0vp0jtadnNu69_Gob1mPAXVkytMw@mail.gmail.com>
-	 <1314027026.2486.7.camel@kushiel.sterenborg.info>
-	 <CA+b04Xkw3FkDt0rENt-x-HjOfwxx+R3mYRpjE6BTKpm47ZpC4A@mail.gmail.com>
-	 <1314029592.2486.18.camel@kushiel.sterenborg.info>
-	 <CA+b04Xkwj3GPnuU8Z6YG=HiQuK3hYkQdeMRRy-dDct+vRbyfQA@mail.gmail.com>
-	 <1314090491.2486.37.camel@kushiel.sterenborg.info>
-	 <CA+b04XnZKJ9_VuCNHQELB6SDn6wEw_+r9BoW8e-PeeZvKyS3xQ@mail.gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re:
+Date: Wed, 24 Aug 2011 09:35:21 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1108240935020.4749@frira.zrqbmnf.qr>
+References: <4E536427.2040503@ngs.ru> <4E5385EB.9040808@tolaris.com> <4E538A10.3030508@runoguy.ru> <4E539076.1070609@tolaris.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CA+b04XnZKJ9_VuCNHQELB6SDn6wEw_+r9BoW8e-PeeZvKyS3xQ@mail.gmail.com>
+In-Reply-To: <4E539076.1070609@tolaris.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: TEJAS <tsevak@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Tyler J. Wagner" <tyler@tolaris.com>
+Cc: Ellad Yatsko <eyatsko@runoguy.ru>, netfilter@vger.kernel.org
 
-On Tue, 2011-08-23 at 20:05 +0530, TEJAS wrote:
-> Hi,
-> 
-> I set log rule for port 80 traffic logging and it is working fine. And
-> i want to log tproxy rule which is redirect traffic from port 80 to
-> port 3129 (squid tproxy). So for that what will be LOG rule for this?
+On Tuesday 2011-08-23 13:35, Tyler J. Wagner wrote:
 
-[snip]
+>On 2011-08-23 12:08, Ellad Yatsko wrote:
+>> Main problem is DNAT does not work as I wait. It seems to me there is an
+>> implicit additional
+>> DNAT rule for SNAT, and because *my* DNAT rule does not work. May you show
+>> me how it
+>> could be "switched off"? :-)
+>
+>It's not an implicit rule. If either rule matches the FIRST time the
+>traffic is seen, it will become an established connection. NAT will be
+>applied to it in both directions. See the current list of tracked
+>connections with:
+>
+>cat /proc/net/ip_conntrack
+>
+>Don't run that on a system with a lot of traffic. You'll get one line for
+>each session. For 1000 sessions, that's manageable. For 500,000, it will
+>block the terminal for a long time.
 
-> Actually i want to see packet redirect from port 80 to port 3129.
-> 
-> What is the use of socket match?I try to find from google and also
-> read some document , but i am not having any good understanding for
-> it.So kindly guide me that what is the use of socket match and how's
-> TPROXY match works?
-
-Sorry, can't help you there so maybe someone else can jump in: I've
-never used the socket match or TPROXY target. (According to what I just
-read the socket match replaced the tproxy match. I suppose you took your
-experiment from https://lwn.net/Articles/252545/ because it looks the
-same.)
-
-
---
-Rob
-
-
+That's why one normally uses conntrack -L | less so that that does not 
+happen.
