@@ -1,35 +1,94 @@
-From: Ming-Ching Tiew <mctiew@yahoo.com>
-Subject: vlan client connecting to a bridge host
-Date: Wed, 24 Aug 2011 03:48:09 -0700 (PDT)
-Message-ID: <1314182889.50585.YahooMailClassic@web161421.mail.bf1.yahoo.com>
+From: Adishesh M <adisheshsm@gmail.com>
+Subject: ssh session are hanging when firewall is restarted
+Date: Wed, 24 Aug 2011 19:12:11 +0530
+Message-ID: <CA+f1OFoJ06_94U9EpGr=85TZFyuAAScG7a-E7qzs2GuXFaRy9Q@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1314182889; bh=3eLtGIeloXV6h2Nl3NZAxqDKzMsqza1WbMZxmp+SHkQ=; h=X-YMail-OSG:Received:X-Mailer:Message-ID:Date:From:Subject:To:MIME-Version:Content-Type; b=JwNRqMIw+QVqnCvqYvc57gP6RdWeeDVWeOmncuTKdQepjkN0wL6s7Sy16JZZrHS5UaAK8BDOEb4fxQCH+G876w3F85GDGE3I5cH+UaZNSErXVOB/WR2dp0JvGyZ23wmuCEEAa/feTRG8cEaKtLKkiI2m1Xm6V/kzF47/VirU8BY=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=9HFpZMXbC5iOp1SQxxL0SjVLtlCiVOwAqeVqpPpI1TQ=;
+        b=tEvFzZEBJ93EK5u5MNF5OXgYpywfN1fSR3BlVCyjPxvQyVGqa5/qUbZyso0scbWAkj
+         5CXu0cfjcTNaknNJGgxEdRjnaTWq6IVvFIaWLXdDnrdoTFPiTQQHLHK8lwwyVp80k0Sx
+         UxFnACo2ZJUVxGzAN1IlhuIerejU7sALRVRA4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"
 To: netfilter@vger.kernel.org
 
-I have set up a simple bridge, host A :-
+Hi,
+When we insert below rules into the ip tables, ssh sessions are
+hanging ( infact all tcp connection are terminated).
 
-   # brctl addbr br0
-   # brctl addif br0 eth0
-   # brctl addif br0 eth1
-   # ifconfig br0 192.168.1.1 up
+=93iptables -A INPUT -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m
+state --state NEW -j DROP=94.
 
-Then on both sides of the bridges, I have many computers on different VLANs. For example, on eth0 side, I have host B:-
-
-   # vconfig add eth0 100
-   # ifconfig eth0.100 192.168.1.2 up
-
-And on the eth1 side, I have host C:-
-   
-   # vconfig add eth0 100
-   # ifconfig eth0.100 192.168.1.3 up
-
-Then host B can connect to host C without any problem and vice versa. But I want to also host B to able able to connect to the bridge host A.
-
-Is there a way I can accomplish this by using ebtables/brctl/iptables ?
+what is the problem with this above rule. we used this rule to drop
+bad tcp packets. when firewall is restarted using "service iptables
+restart", ssh sessions are hanging.
 
 
+Rule used for testing.
+
+ssh session hangs
+<set 1>
+--------------------------
+iptables -A INPUT -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m
+state --state NEW -j DROP
+iptables -A INPUT -d 10.255.13.157 -m state --state
+RELATED,ESTABLISHED  -j ACCEPT
+iptables -A INPUT -d 10.255.13.157 -p tcp -m tcp --dport 22 -j ACCEPT
+iptables -A  INPUT -d 10.255.13.157   -j DROP
+
+
+ssh session hangs
+<set 2>
+----------------------------
+iptables -N TEST_LAN_1
+iptables -A INPUT -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m
+state --state NEW -j DROP
+iptables -A INPUT -d 10.255.13.157 -j TEST_LAN_1
+iptables -A TEST_LAN_1 -d 10.255.13.157 -m state --state
+RELATED,ESTABLISHED  -j ACCEPT
+iptables -A TEST_LAN_1 -d 10.255.13.157 -p tcp -m tcp --dport 22 -j ACC=
+EPT
+iptables -A  TEST_LAN_1 -d 10.255.13.157   -j DROP
+
+
+
+ssh session does not hang
+<set 3>
+---------------------------------------
+iptables -N TEST_LAN_1
+iptables -A INPUT -d 10.255.13.157 -j TEST_LAN_1
+iptables -A TEST_LAN_1 -d 10.255.13.157 -m state --state
+RELATED,ESTABLISHED  -j ACCEPT
+iptables -A TEST_LAN_1 -d 10.255.13.157 -p tcp -m tcp --dport 22 -j ACC=
+EPT
+iptables -A  TEST_LAN_1 -d 10.255.13.157   -j DROP
+
+
+ssh session does not hang
+<set 4>
+---------------------------------------
+iptables -A INPUT -d 10.255.13.157 -m state --state
+RELATED,ESTABLISHED  -j ACCEPT
+iptables -A INPUT -d 10.255.13.157 -p tcp -m tcp --dport 22 -j ACCEPT
+iptables -A  INPUT -d 10.255.13.157   -j DROP
+
+
+steps to reproduce the this issue
+-----------------------------------------------
+    iptables -F
+    iptables  -X
+    <Insert any one set of rules from set 1 or set 2 >
+    service ip6tables stop
+    service iptables save
+    iptables -L -n
+    service iptables restart
+    iptables -L -n
+
+Thanks and regards,
+Adishesh
