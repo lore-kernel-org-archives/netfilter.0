@@ -1,27 +1,31 @@
-From: =?ISO-8859-2?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
-Subject: Theoretical question: need for filter table in the POSTROUTING chain
-Date: Thu, 25 Aug 2011 13:40:51 +0200
-Message-ID: <4E5634C3.80908@freemail.hu>
+From: =?UTF-8?B?TWFyY2luIE1pcm9zxYJhdw==?= <marcin@mejor.pl>
+Subject: -j DNAT doesn't accept nonnumerical port
+Date: Thu, 25 Aug 2011 16:31:28 +0200
+Message-ID: <4E565CC0.6050207@mejor.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mejor.pl; s=cokolwiek;
+	h=Content-Transfer-Encoding:Content-Type:Subject:To:MIME-Version:From:Date:Message-ID; bh=m+OxpJoaXd7kPZQ98ceqdKODSSo42FoUVPpJx3OUeok=;
+	b=e/Luwfxbr2OcsunAKDHEqU9PXPxEeptAHLoXiwKa8VZbQ82cxuK7wY3gdEYVZo+58rI8etZKAFUlZ3RuCbJb3LOBS0drAUC18zqreDhWQKVMGWEQfqp+N6cHNhYj6w34;
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter list <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Hi all,
+Hello!
+Iptables accept such line without problem:
+iptables -t nat -A PREROUTING -p tcp  --dport pop3 -j DNAT 
+--to-destination 1.2.3.4:25
 
-I am facing an interesting problem.
-I would like to filter some destination IP-s both on the FORWARD and the 
-OUTPUT chains... (For example to stop requests to private IP 
-destinations leave our system.)
-I would like to use the REJECT target...
-It would be nince if there would be a filter table in the POSTROUTING 
-chain...
+Destination port is defined by word. So i wanted to use use the same 
+trick in DNAT but i've got:
+# iptables -t nat -A PREROUTING -p tcp  --dport pop3 -j DNAT 
+--to-destination 1.2.3.4:smtp
+iptables v1.4.12: Port `smtp' not valid
 
-What do you think?
+Is it intentional behavior of iptables? I can't see any info about it in 
+man.
 
-Thanx:
-
-Swifty
+Regards,
+Marcin
