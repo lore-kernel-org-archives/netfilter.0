@@ -1,38 +1,34 @@
-From: "Tyler J. Wagner" <tyler@tolaris.com>
+From: Jan Engelhardt <jengelh@medozas.de>
 Subject: Re: ssh session are hanging when firewall is restarted
-Date: Thu, 25 Aug 2011 08:28:46 +0100
-Message-ID: <4E55F9AE.3010506@tolaris.com>
+Date: Thu, 25 Aug 2011 10:06:31 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1108251005190.29624@frira.zrqbmnf.qr>
 References: <CA+f1OFoJ06_94U9EpGr=85TZFyuAAScG7a-E7qzs2GuXFaRy9Q@mail.gmail.com> <4E55E602.6040905@riverviewtech.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 In-Reply-To: <4E55E602.6040905@riverviewtech.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: Grant Taylor <gtaylor@riverviewtech.net>
 Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On 2011-08-25 07:04, Grant Taylor wrote:
-> I'd sit down and think about how frequently this ""problem (such as it is)
-> happens and if it has enough impact to cause me to want to re-design
-> firewall rules to take it in to account.
+On Thursday 2011-08-25 08:04, Grant Taylor wrote:
 
-Indeed. A better solution:
+> On 8/24/2011 08:42, Adishesh M wrote:
+>> what is the problem with this above rule. we used this rule to drop
+>> bad tcp packets. when firewall is restarted using "service iptables
+>> restart", ssh sessions are hanging.
+>
+> I don't think there is any thing wrong with the rule at all.  I think the
+> problem is how you are thinking about the connection.
+>
+> You are looking for connections that are new to the connection tracking
+> sub-system that do not have a SYN flag set.
+>
+> An already established SSH connection will not need to send a SYN packet, but
+> will still appear "new" to the connection tracking sub-system after you
+> re-start the firewall.
 
--A INPUT -p tcp ! --syn -m state --state NEW -j DROP
--A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
--A INPUT -p tcp -m tcp --dport 22 -j ACCEPT
-
-If your firewall script clears the connection states (conntrack -F) or
-unloads and reloads the kernel modules (thus doing the same thing), you
-will always have this problem, and no different iptables design will fix it.
-
-Regards,
-Tyler
-
--- 
-"The Congress shall have Power . . . To promote the Progress of Science
-and useful Arts, by securing for limited Times to Authors and Inventors
-the exclusive Right to their respective Writings and Discoveries."
-   -- Article I, Section 8, U.S. Constitution
+It depends on _what_ actually is restarted. Changing just the ruleset 
+does not affect CT entries.
