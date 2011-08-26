@@ -1,77 +1,33 @@
-From: "Christian Benvenuti (benve)" <benve@cisco.com>
-Subject: RE: Theoretical question: need for filter table in the POSTROUTING chain
-Date: Fri, 26 Aug 2011 16:16:41 -0500
-Message-ID: <184D23435BECB444AB6B9D4630C8EC83026484CC@XMB-RCD-303.cisco.com>
-References: <4E5634C3.80908@freemail.hu> <4E56617E.4040704@riverviewtech.net> <4E566A88.2040309@freemail.hu> <alpine.LNX.2.01.1108260954570.6835@frira.zrqbmnf.qr> <4E5763AB.10106@freemail.hu>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: RE: Theoretical question: need for filter table in the POSTROUTING
+ chain
+Date: Fri, 26 Aug 2011 23:45:32 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1108262343380.24171@frira.zrqbmnf.qr>
+References: <4E5634C3.80908@freemail.hu> <4E56617E.4040704@riverviewtech.net> <4E566A88.2040309@freemail.hu> <alpine.LNX.2.01.1108260954570.6835@frira.zrqbmnf.qr> <4E5763AB.10106@freemail.hu> <184D23435BECB444AB6B9D4630C8EC83026484CC@XMB-RCD-303.cisco.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=cisco.com; i=benve@cisco.com; l=3906; q=dns/txt;
-  s=iport; t=1314393965; x=1315603565;
-  h=mime-version:content-transfer-encoding:subject:date:
-   message-id:in-reply-to:references:from:to:cc;
-  bh=yK+M3F4fT/WQ2G96+3lEzH7PnIeas6koNOf/O2b6DAQ=;
-  b=Jki2jB6HEwjLRmLioRSmE+5JeBq82ldZQo3iwqDJ0ebsz6pdqxNxuxjX
-   ryx+fk8aZwRnRQUYL7e7Fdx9x35KXy++5YqOmzkV2rHxg1nQ7xRWhIEi9
-   4qRgBUaRUlco+1C81LhtO1uNe3eiHkbg4v+w3xTeN6IfbQtbAusPrtjml
-   0=;
-Content-class: urn:content-classes:message
-In-Reply-To: <4E5763AB.10106@freemail.hu>
+In-Reply-To: <184D23435BECB444AB6B9D4630C8EC83026484CC@XMB-RCD-303.cisco.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: =?UTF-8?B?R8Ohc3DDoXIgTGFqb3M=?= <swifty@freemail.hu>, Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter list <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Christian Benvenuti (benve)" <benve@cisco.com>
+Cc: =?UTF-8?Q?G=C3=A1sp=C3=A1r_Lajos?= <swifty@freemail.hu>, netfilter list <netfilter@vger.kernel.org>
 
-PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBuZXRmaWx0ZXItb3duZXJAdmdl
-ci5rZXJuZWwub3JnIFttYWlsdG86bmV0ZmlsdGVyLQ0KPiBvd25lckB2Z2VyLmtlcm5lbC5vcmdd
-IE9uIEJlaGFsZiBPZiBHw6FzcMOhciBMYWpvcw0KPiBTZW50OiBGcmlkYXksIEF1Z3VzdCAyNiwg
-MjAxMSAyOjEzIEFNDQo+IFRvOiBKYW4gRW5nZWxoYXJkdA0KPiBDYzogbmV0ZmlsdGVyIGxpc3QN
-Cj4gU3ViamVjdDogUmU6IFRoZW9yZXRpY2FsIHF1ZXN0aW9uOiBuZWVkIGZvciBmaWx0ZXIgdGFi
-bGUgaW4gdGhlDQo+IFBPU1RST1VUSU5HIGNoYWluDQo+IA0KPiBIaSwNCj4gDQo+IDIwMTEtMDgt
-MjYgMDk6NTYga2VsdGV6w6lzc2VsLCBKYW4gRW5nZWxoYXJkdCDDrXJ0YToNCj4gPj4NCj4gPj4+
-IEhvdyBhYm91dCBwdXR0aW5nIGEgcmVqZWN0IHJvdXRlIGluIHRoZSBrZXJuZWwgcm91dGluZyB0
-YWJsZT8NCj4gPj4gWWVhaC4uIHRoYXQgaXMgYW4gYWx0ZXJuYXRpdmUuLi4NCj4gPj4gQnV0Og0K
-PiA+PiAtIEkgd2FudCB0byBSRUpFQ1QgYW55IHRjcCBzZXNzaW9ucyB3aXRoIHRjcC1yZXNldCwN
-Cj4gPj4gLSBhbmQgYW55IG90aGVyIHByb3RvY29sbCB3aXRoIGljbXAtYWRtaW4tcHJvaGliaXRl
-ZC4NCj4gPj4gLSBJIHdvdWxkIGxpa2UgdG8gZG8gaXQgaW4gaXB0YWJsZXMvbmV0ZmlsdGVyLg0K
-PiA+Pg0KPiA+PiBUaGUgbWFpbiBxdWVzdGlvbiBpczogV2h5IGRvIG5vdCB3ZSBoYXZlIHN1Y2gg
-YSB0YWJsZSBpbiB0aGUNCj4gUE9TVFJPVVRJTkcgY2hhaW4/DQo+ID4gSWYgdGhleSBkaWQgbm90
-IGdvIHRocm91Z2ggbmF0LCB0aGUgcGFja2V0J3MgY29tcHV0ZWQgc3RhdGUgd2FzIG1vc3QNCj4g
-PiBsaWtlbHkgSU5WQUxJRCBvciBVTlRSQUNLRUQgdG8gYmVnaW4gd2l0aC4gQW5kIHRoYXQgeW91
-IGNhbiBhbHJlYWR5DQo+ID4gZmlsdGVyIGZvciBpbiBGT1JXQVJELg0KPiBJIGRvIG5vdCBnZXQg
-aXQuLi4NCj4gSWYgYSBwYWNrZXQgY29tZXMgZnJvbSB0aGUgbmV0d29yayB0aGVuIGl0IGlzIGVp
-dGhlciBnb2VzIHRvIEZPUldBUkQgb3INCj4gdG8gSU5QVVQuLi4gIChZb3UgY2FuIGZvcmdldCBJ
-TlBVVCBmb3Igbm93LikgQW5kIHRoZXJlIHdlIGhhdmUgbmF0Li4uDQo+IElmIGEgcGFja2V0IGNv
-bWVzIGZyb20gdGhlIGxvY2FsIGNvbXB1dGVyIHRoZW4gaXQgbGVhdmVzIG91dCBvbiB0aGUNCj4g
-T1VUUFVUIGNoYWluLi4uIEFuZCB0aGVyZSB3ZSBoYXZlIG5hdCBhZ2Fpbi4uLg0KPiBTbyBldmVy
-eSBwYWNrZXQgc2hvdWxkIGJlIHRyYWNrZWQgYXQgdGhlIFBPU1RST1VUSU5HIGNoYWluLi4uDQo+
-IA0KPiBZZXMsIEkgY2FuIGZpbHRlciBhdCB0aGUgRk9SV0FSRCBhbmQgdGhlIE9VVFBVVCBjaGFp
-bi4uLiBCdXQgd2h5IGNhbid0DQo+IEkNCj4gYXQgdGhlIFBPU1RST1VUSU5HPz8/DQoNCkJ5IGFk
-ZGluZyBmaWx0ZXJpbmcgc3VwcG9ydCB0byB0aGUgUE9TVFJPVVRJTkcgaG9vayB5b3Ugb25seSBn
-ZXQgb25lDQpiZW5lZml0Og0KDQogIFJ1bGVzIHRoYXQgYXBwbHkgdG8gYm90aCBsb2NhbGx5IGdl
-bmVyYXRlZCB0cmFmZmljIChPVVRQVVQpDQogIGFuZCBmb3J3YXJkZWQgdHJhZmZpYyAoRk9SV0FS
-RCkgZG8gbm90IG5lZWQgdG8gYmUgZHVwbGljYXRlZC4NCg0KUmlnaHQ/IFlvdSBkbyBub3QgZ2V0
-IGFueSBvdGhlciBiZW5lZml0LiBJbiBzb21lIGNhc2VzIHRoaXMgbWF5DQpoZWxwIHRvIHNpbXBs
-aWZ5IHRoZSBjb25maWd1cmF0aW9uLCBJIGFncmVlLg0KSG93ZXZlciwgX3VzdWFsbHlfLCB5b3Ug
-aGF2ZSBkaXN0aW5jdCBzZXRzIG9mIHJ1bGVzIGZvciBsb2NhbGx5DQpnZW5lcmF0ZWQgdHJhZmZp
-YyBhbmQgZm9yd2FyZGVkIHRyYWZmaWMsIHRoZSBvdmVybGFwcGluZyBpcyBub3QNCnRoYXQgbXVj
-aC4gT24gdG9wIG9mIHRoYXQ6DQoNCi0gQnkgYWRkaW5nIG9uZSBleHRyYSBjaGVjayAoaWUgZmls
-dGVyIHRhYmxlKSB3aGVyZSB5b3UgZG8NCiAgbm90IG5lZWQgaXQgKFBPU1RST1VUSU5HKSAtIGJl
-Y2F1c2UgeW91IGNhbiBhY2hpZXZlIHRoZQ0KICBzYW1lIHJlc3VsdCBieSB1c2luZyBhbm90aGVy
-IGhvb2sgLSB5b3Ugd291bGQgd2FzdGUgQ1BVIGN5Y2xlcy4NCg0KLSBTaW5jZSB3ZSBhcmUgdGFs
-a2luZyBhYm91dCBmaWx0ZXJpbmcgKG5vdCBOQVQpLCBpZiB5b3UgYXBwbHkNCiAgZmlsdGVyaW5n
-IGVhcmxpZXIgaW4gdGhlIGRhdGEgcGF0aCAoaWUgT1VUUFVUL0ZPUldBUkQgaW5zdGVhZA0KICBv
-ZiBQT1NUUk9VVElORykgeW91IHNhdmUgYWdhaW4gc29tZSBDUFUgY3ljbGVzLg0KDQpBbnl3YXks
-IGFkZGluZyBzdWNoIHN1cHBvcnQgaXMgc2ltcGxlIChpZiBwYXRjaGluZyBpcHRhYmxlcw0KYW5k
-IHRoZSBrZXJuZWwgaXMgYW4gb3B0aW9uIHlvdSBjYW4gY29uc2lkZXIpLiBJdCBpcyBqdXN0IG1h
-dHRlcg0Kb2YgdGVsbGluZyBuZXRmaWx0ZXIgKGFuZCBpcHRhYmxlcykgdG8gdXNlIHRoZSBmaWx0
-ZXIgdGFibGUNCl9hbHNvXyBmb3IgdGhlIFBPU1RST1VUSU5HIGhvb2sgKHJlY29tcGlsZSwgZXRj
-KS4NCg0KL0NocmlzDQoNCj4gSSBkbyBub3Qgc2VlayBhbHRlcm5hdGl2ZXMuLi4gKEkgZm91bmQg
-dGhlbS4uLiA6RCkgSSB3YW50IHRvIGtub3cgd2h5DQo+IGl0IGlzIG5vdCAiZW5hYmxlZCIgPz8/
-DQo+IFRoYW54DQo+IA0KPiBTd2lmdHkNCj4gLS0NCj4gVG8gdW5zdWJzY3JpYmUgZnJvbSB0aGlz
-IGxpc3Q6IHNlbmQgdGhlIGxpbmUgInVuc3Vic2NyaWJlIG5ldGZpbHRlciIgaW4NCj4gdGhlIGJv
-ZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2VyLmtlcm5lbC5vcmcNCj4gTW9yZSBtYWpv
-cmRvbW8gaW5mbyBhdCAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpvcmRvbW8taW5mby5odG1s
-DQo=
+
+On Friday 2011-08-26 23:16, Christian Benvenuti (benve) wrote:
+>> 
+>> Yes, I can filter at the FORWARD and the OUTPUT chain... But why can't
+>> I
+>> at the POSTROUTING???
+>
+>By adding filtering support to the POSTROUTING hook you only get one
+>benefit:
+>
+>  Rules that apply to both locally generated traffic (OUTPUT)
+>  and forwarded traffic (FORWARD) do not need to be duplicated.
+>
+>Right?
+
+Yeah, and the rule duplication can be solved by jumping to a 
+shared user-defined chain from both OUTPUT and FORWARD.
