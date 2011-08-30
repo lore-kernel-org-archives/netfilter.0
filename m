@@ -1,36 +1,24 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: bridges are not self contained
-Date: Tue, 30 Aug 2011 08:19:43 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1108300817530.16013@frira.zrqbmnf.qr>
-References: <CAKrOiPTKyAezXpr__BmRLZRiweh_L+xFjw5Nj7FA1qCoRd3Bdw@mail.gmail.com> <alpine.LNX.2.01.1108291656120.20075@frira.zrqbmnf.qr> <CAKrOiPS23ahg33HEpK2cU9472RM6dW2aD2vKWzmfKt-_yyyOcw@mail.gmail.com>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [PATCH 06/24] netfilter: Remove unnecessary OOM logging messages
+Date: Tue, 30 Aug 2011 14:46:34 +0200
+Message-ID: <4E5CDBAA.6040001@trash.net>
+References: <cover.1314650069.git.joe@perches.com> <13c1c12486cae409dfa5254b1435e660f2b17e05.1314650069.git.joe@perches.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAKrOiPS23ahg33HEpK2cU9472RM6dW2aD2vKWzmfKt-_yyyOcw@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: naruto canada <narutocanada@gmail.com>
-Cc: netfilter@vger.kernel.org
+Return-path: <lvs-devel-owner@vger.kernel.org>
+In-Reply-To: <13c1c12486cae409dfa5254b1435e660f2b17e05.1314650069.git.joe@perches.com>
+Sender: lvs-devel-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Joe Perches <joe@perches.com>
+Cc: Bart De Schuymer <bart.de.schuymer@pandora.be>, Wensong Zhang <wensong@linux-vs.org>, Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>, Stephen Hemminger <shemminger@linux-foundation.org>, "David S. Miller" <davem@davemloft.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, James Morris <jmorris@namei.org>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, bridge@lists.linux-foundation.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, lvs-devel@vger.kernel.org
 
-On Monday 2011-08-29 17:16, naruto canada wrote:
->>>
->>>I am a new user of ebtales. (bridges) Just started experimenting, I 
->>>run into one problem immediately: all the bridges can see traffic on 
->>>ethernet card that are NOT connected to the bridges.
->>
->>On what do you base this assertion?
->
->Hold on, I think have a physically loop, I will disconnect that line, 
->and make sure it is not from another physical switch, then I can be 
->sure it is the kernel (or bridge code) that is forwarding the packets.
->
->Answering your question: I know they are vitual bridges, but should not 
->be magical (kernel should not automatically send broadcast packets onto 
->all vitual bridges without passing through ports connected to them.)
+On 29.08.2011 23:17, Joe Perches wrote:
+> Removing unnecessary messages saves code and text.
+> 
+> Site specific OOM messages are duplications of a generic MM
+> out of memory message and aren't really useful, so just
+> delete them.
 
-(For starters, don't strip the cc.)
-
-Nobody but you said they are magical (or virtual for that matter), so 
-the question was merely implying that you may have a configuration 
-error, or using bugzilla terms: "WORKSFORME".
+Looks good to me. Do you want me to apply this patch or are you
+intending to have the entire series go through Dave?
