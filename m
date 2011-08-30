@@ -1,42 +1,25 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Netfilter developer workshop summary and presentations
-Date: Tue, 30 Aug 2011 16:59:07 +0200
-Message-ID: <4E5CFABB.6050704@trash.net>
+From: andreas <andi@geekosphere.org>
+Subject: Re: Netfilter developer workshop summary and presentations
+Date: Tue, 30 Aug 2011 17:18:25 +0200
+Message-ID: <4E5CFF41.90803@geekosphere.org>
+References: <4E5CFABB.6050704@trash.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4E5CFABB.6050704@trash.net>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
+To: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
 
-We've finished the annual netfilter developer workshop, which took
-place in Freiburg, Germany from 22nd - 26th of August:
+On 08/30/2011 04:59 PM, Patrick McHardy wrote:
+> For those interested, there's a wiki containing most of the
+> presentations at:
+> 
+> http://workshop.netfilter.org/2011/wiki/index.php/Main_Page
 
-http://workshop.netfilter.org/2011/
+I couldn't find the slides for the "ipset status" presentation. Is there
+any chance that they will be added or was the presentation without slides?
 
-For those interested, there's a wiki containing most of the
-presentations at:
-
-http://workshop.netfilter.org/2011/wiki/index.php/Main_Page
-
-Additionally there were a couple of ad-hoc presentations without
-slides, some additional information is available in Eric Leblond's
-workshop live-blog at: http://home.regit.org/tag/nfws/
-
-We'd also like to thank our sponsors again, which helped to pay
-for travel costs, accomodation and other expenses:
-
-- Cyberoam: http://cyberoam.com/
-- Astaro: http://astaro.com
-- Cloudpassage: http://cloudpassage.com/
-- Intra2Net: http://www.intra2net.com/
-- Vyatta: http://www.vyatta.com/
-- ComX: http://www.comx.dk/
-- Open Source Days: http://www.opensourcedays.org/
-
-and the University of Freiburg (http://www.uni-freiburg.de/) and
-FluxIT (http://www.flux-it.de/) for providing organisational
-support, rooms and network access.
-
-Thanks!
+Greetings,
+Andreas
