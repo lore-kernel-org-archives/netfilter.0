@@ -1,33 +1,35 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [PATCH 06/24] netfilter: Remove unnecessary OOM logging
- messages
-Date: Tue, 30 Aug 2011 13:55:02 -0400 (EDT)
-Message-ID: <20110830.135502.179848097213434762.davem@davemloft.net>
-References: <cover.1314650069.git.joe@perches.com>
-	<13c1c12486cae409dfa5254b1435e660f2b17e05.1314650069.git.joe@perches.com>
-	<4E5CDBAA.6040001@trash.net>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Netfilter developer workshop summary and presentations
+Date: Tue, 30 Aug 2011 20:41:14 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1108302040330.29243@blackhole.kfki.hu>
+References: <4E5CFABB.6050704@trash.net> <4E5CFF41.90803@geekosphere.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <lvs-devel-owner@vger.kernel.org>
-In-Reply-To: <4E5CDBAA.6040001@trash.net>
-Sender: lvs-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4E5CFF41.90803@geekosphere.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
-To: kaber@trash.net
-Cc: joe@perches.com, bart.de.schuymer@pandora.be, wensong@linux-vs.org, horms@verge.net.au, ja@ssi.bg, shemminger@linux-foundation.org, kuznet@ms2.inr.ac.ru, jmorris@namei.org, yoshfuji@linux-ipv6.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, bridge@lists.linux-foundation.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, lvs-devel@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: andreas <andi@geekosphere.org>
+Cc: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
 
-From: Patrick McHardy <kaber@trash.net>
-Date: Tue, 30 Aug 2011 14:46:34 +0200
+On Tue, 30 Aug 2011, andreas wrote:
 
-> On 29.08.2011 23:17, Joe Perches wrote:
->> Removing unnecessary messages saves code and text.
->> 
->> Site specific OOM messages are duplications of a generic MM
->> out of memory message and aren't really useful, so just
->> delete them.
+> On 08/30/2011 04:59 PM, Patrick McHardy wrote:
+> > For those interested, there's a wiki containing most of the
+> > presentations at:
+> > 
+> > http://workshop.netfilter.org/2011/wiki/index.php/Main_Page
 > 
-> Looks good to me. Do you want me to apply this patch or are you
-> intending to have the entire series go through Dave?
+> I couldn't find the slides for the "ipset status" presentation. Is there
+> any chance that they will be added or was the presentation without slides?
 
-I'm happy with subsystem folks taking things in if they want, the
-B.A.T.M.A.N. guys did this earlier today for example.
+I have updated the presentations page with the ipset status report.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
