@@ -1,36 +1,75 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: [PATCH 06/24] netfilter: Remove unnecessary OOM logging messages
-Date: Wed, 31 Aug 2011 12:13:02 +0200
-Message-ID: <4E5E092E.80507@trash.net>
-References: <cover.1314650069.git.joe@perches.com>	<13c1c12486cae409dfa5254b1435e660f2b17e05.1314650069.git.joe@perches.com>	<4E5CDBAA.6040001@trash.net> <20110830.135502.179848097213434762.davem@davemloft.net>
+From: Bob Miller <bob@computerisms.ca>
+Subject: iptaccount/shaping
+Date: Thu, 01 Sep 2011 09:33:26 -0700
+Message-ID: <1314894806.28901.574.camel@worklian.computerisms.bob>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <lvs-devel-owner@vger.kernel.org>
-In-Reply-To: <20110830.135502.179848097213434762.davem@davemloft.net>
-Sender: lvs-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: David Miller <davem@davemloft.net>
-Cc: joe@perches.com, bart.de.schuymer@pandora.be, wensong@linux-vs.org, horms@verge.net.au, ja@ssi.bg, shemminger@linux-foundation.org, kuznet@ms2.inr.ac.ru, jmorris@namei.org, yoshfuji@linux-ipv6.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, bridge@lists.linux-foundation.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, lvs-devel@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On 30.08.2011 19:55, David Miller wrote:
-> From: Patrick McHardy <kaber@trash.net>
-> Date: Tue, 30 Aug 2011 14:46:34 +0200
-> 
->> On 29.08.2011 23:17, Joe Perches wrote:
->>> Removing unnecessary messages saves code and text.
->>>
->>> Site specific OOM messages are duplications of a generic MM
->>> out of memory message and aren't really useful, so just
->>> delete them.
->>
->> Looks good to me. Do you want me to apply this patch or are you
->> intending to have the entire series go through Dave?
-> 
-> I'm happy with subsystem folks taking things in if they want, the
-> B.A.T.M.A.N. guys did this earlier today for example.
+Hello,
 
-OK, thanks.
+I have a firewall that provides internet to two networks, a private one
+with no special config, and a public one where I do bandwidth shaping to
+reduce clients to something like dial-up speeds.  Recently, we got a
+bill from the isp for quite a lot of bandwidth overages (we have really
+expensive bandwidth).
 
-Applied after fixing up some minor rejects in nf_nat_snmp_basic.c,
-thanks Joe.
+Expectation is that iptaccount should report slightly lower than the
+isp, since the isp counts *all* traffic, and iptaccount can only count
+traffic with an IP address.  
+
+I also monitor inside connections, and I have found quite consistently
+that the inside public network always has gobs more usage than the
+internet connection.  I also expect that; the inside port gets bombarded
+with fast traffic, but the shaping is preventing the outside port from
+using so much bandwidth.
+
+On many days, the ISP count is much much higher than iptaccount reports,
+but often the ISP counts are oddly close to the sum of usage of the two
+inside ports.  Maybe it is easier to see like this:
+
+In MB
+Telco report:	my outside:	My public	My private
+10121		1269		8864		559
+11227		2363		9647		867
+	
+While still short by quite a lot, the sum of private and public networks
+actually comes pretty close (less than 10% different) to what the telco
+reports, while my report of outside usage is much much lower.
+
+This happens frequently enough that there looks to be a pattern, but it
+is not consistent.  Over a month this pattern holds about 75% true.  The
+other 25% of days are just different with no pattern that I see.
+
+My question is: is it somehow possible I am leaking data on my outside
+port that would trigger the ISP counter but not iptaccount?  Is there
+some layer 2 traffic of which I am not aware that would tell the ISP
+what the intended traffic before shaping might be?  I have been dumping
+and analyzing traffic for hours and found nothing, but maybe there is
+something I don't know about that would explain this.
+
+It does occur that the ISP might be taking select bits of information
+from certain packets in a stream or connection and extrapolating the
+expected bandwidth that connection would use, but then doesn't verify it
+by counting every packet.  So far that is the only explanation I can
+come up with for these discrepancies.  
+
+Well, not the only explanation.  One of these two counters maybe just
+plain wrong, but if so, which one?
+
+If you are still reading I truly appreciate your time.  If you have any
+thoughts or experiences to share, I would consider it most gracious of
+you.  I want to be fully armed when I go talk to the ISP...
+
+                                                                     -- 
+Bob Miller
+334-7117/660-5315
+http://computerisms.ca
+bob@computerisms.ca
+Network, Internet, Server,
+and Open Source Solutions
+
