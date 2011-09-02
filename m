@@ -1,42 +1,192 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: iptaccount/shaping
-Date: Thu, 1 Sep 2011 22:44:30 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1109012241510.8863@frira.zrqbmnf.qr>
-References: <1314894806.28901.574.camel@worklian.computerisms.bob>  <20110901201918.390de5b4@catus> <1314906476.28901.608.camel@worklian.computerisms.bob>
+From: "Julio A. Romero" <julioarr@fisica.uh.cu>
+Subject: DHCP request behavior in my particular FORWARD configuration
+Date: Thu, 1 Sep 2011 21:55:32 -0400
+Message-ID: <001A9DB93A594CC4B78CC0951AEB1E8A@poweredge1800>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1314906476.28901.608.camel@worklian.computerisms.bob>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Bob Miller <bob@computerisms.ca>
-Cc: Marek Kierdelewicz <marek@piasta.pl>, netfilter@vger.kernel.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: netfilter@vger.kernel.org
+
+Hi all, what happen with DHCP requests trying to forward below?
 
 
-On Thursday 2011-09-01 21:47, Bob Miller wrote:
->> You should get something like this:
->> 
->>     RX: bytes  packets  errors  dropped overrun mcast   
->>     714301652  713443   0       0       0       3494   
->>     TX: bytes  packets  errors  dropped carrier collsns 
->>     79328329   501677   0       0       2       0
->> 
->> Stats show actual data sent/received (since reboot) including layer2
->> headers. Gathered data should exacly match your isp stats.
->> 
->When I ran the command I found my numbers didn't add up to even close to
->what bandwidth usage should have been since last reboot, and a bit of
->investigation says that is because the byte count will wrap.
 
-On 32 bit it may.
+Thanks,
 
->This will
->require some creativity to use this tool properly, but should provide at
->least some of the answers I seek.
+julio
 
-Don't try to parse that. While ip(8) in general is more
-parser-friendly than the old tools, and while ip also has an -o
-option that is even more parser-friendly, it fails to DTRT with
-statistics. You can use /sys/class/net for probably the most
-parser-friendly interface.
+
+
+
+
+##################################################################
+
+# ipv4 - policies configuration - zero all - flush all chains - delete 
+defined chains #
+#################################################################
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
+iptables -t raw -P OUTPUT ACCEPT
+iptables -t raw -P PREROUTING ACCEPT
+iptables -t mangle -P INPUT ACCEPT
+iptables -t mangle -P FORWARD ACCEPT
+iptables -t mangle -P OUTPUT ACCEPT
+iptables -t mangle -P PREROUTING ACCEPT
+iptables -t mangle -P POSTROUTING ACCEPT
+iptables -Z
+iptables -F
+iptables -X
+iptables -t nat -Z
+iptables -t nat -F
+iptables -t nat -X
+iptables -t raw -Z
+iptables -t raw -F
+iptables -t raw -X
+iptables -t mangle -Z
+iptables -t mangle -F
+iptables -t mangle -X
+#######
+# END #
+#######
+
+
+##########################
+# ipv4 - FILTER - srcnetfilter  #
+#########################
+# SRCNETFILTER RULES
+#
+# Create srcnetfilter
+iptables -N srcnetfilter
+# Return to back the connections from trust networks
+iptables -A srcnetfilter -s $NETWORKS -j RETURN
+# Deny all other traffic
+iptables -A srcnetfilter -j DROP
+#######
+# END #
+#######
+
+##########################
+# ipv4 - FILTER - dstnetfilter  #
+#########################
+# DSTNETFILTER RULES
+#
+# Create dstnetfilter
+iptables -N dstnetfilter
+# Return to back the connections toward trust networks
+iptables -A dstnetfilter -d $NETWORKS -j RETURN
+# Deny all other traffic
+iptables -A dstnetfilter -j DROP
+#######
+# END #
+#######
+
+########################
+# ipv4 - FILTER - average   #
+#######################
+# AVERAGE RULES
+#
+# Create average
+iptables -N average
+# Maximum limit of global connections
+iptables -A average -m connlimit --connlimit-mask 0 \
+--connlimit-above $GLOBAL_CONNECTIONS -j LOG --log-prefix 
+"FW:average:GCs>LIMIT "
+iptables -A average -m connlimit --connlimit-mask 0 \
+--connlimit-above $GLOBAL_CONNECTIONS -j REJECT
+# Restrict the number of parallel connections per client IP
+iptables -A average -m connlimit --connlimit-mask 32 \
+--connlimit-above $CONNECTIONS_PER_IP -j LOG --log-prefix 
+"FW:average:CCs>LIMIT "
+iptables -A average -m connlimit --connlimit-mask 32 \
+--connlimit-above $CONNECTIONS_PER_IP -j REJECT
+# Global traffic rate average
+iptables -A average -m fuzzy --lower-limit $LOWER_LIMIT \
+--upper-limit $UPPER_LIMIT -j LOG --log-prefix "FW:average:GTRA:REJECT "
+iptables -A average -m fuzzy --lower-limit $LOWER_LIMIT \
+--upper-limit $UPPER_LIMIT -j REJECT
+# Traffic rate control above the lower limit per client IP
+iptables -A average -m connlimit --connlimit-mask 32 \
+! --connlimit-above $CONNECTIONS_PER_IP -m fuzzy \
+--lower-limit $LOWER_LIMIT_PER_IP --upper-limit $UPPER_LIMIT_PER_IP \
+-j LOG --log-prefix "FW:average:TRC_PIP:REJECT "
+iptables -A average -m connlimit --connlimit-mask 32 \
+! --connlimit-above $CONNECTIONS_PER_IP -m fuzzy \
+--lower-limit $LOWER_LIMIT_PER_IP --upper-limit $UPPER_LIMIT_PER_IP -j 
+REJECT
+# Allow the traffic below the lower limit per client IP
+iptables -A average -m hashlimit --hashlimit-mode srcip --hashlimit-srcmask 
+32 \
+--hashlimit-upto $FREE_PACKETS --hashlimit-burst $BURST \
+--hashlimit-name average -j ACCEPT
+#######
+# END #
+#######
+
+############################
+# ipv4 - FILTER - netfilter_fwd  #
+###########################
+# NETFILTER_FWD RULES
+#
+# Create netfilter_fwd
+iptables -N netfilter_fwd
+# LOG and DROP untrue connections
+iptables -A netfilter_fwd -s $GW_NETWORKS -j LOG --log-prefix "FW:FWD:BOX->* 
+"
+iptables -A netfilter_fwd -s $GW_NETWORKS -j DROP
+iptables -A netfilter_fwd -d $GW_NETWORKS -j LOG --log-prefix "FW:FWD:*->BOX 
+"
+iptables -A netfilter_fwd -d $GW_NETWORKS -j DROP
+iptables -A netfilter_fwd -i $INT_IFACEs -o $EXT_IFACEs -d $INT_NETWORKS -j 
+LOG \
+--log-prefix "FW:FWD:I->E:dst:INT_NET "
+iptables -A netfilter_fwd -i $INT_IFACEs -o $EXT_IFACEs -d $INT_NETWORKS -j 
+DROP
+iptables -A netfilter_fwd -i $EXT_IFACEs -o $INT_IFACEs -s $INT_NETWORKS -j 
+LOG \
+--log-prefix "FW:FWD:E->I:src:INT_NET "
+iptables -A netfilter_fwd -i $EXT_IFACEs -o $INT_IFACEs -s $INT_NETWORKS -j 
+DROP
+# Send outgoing traffic to dstnetfilter for validation of the destination
+iptables -A netfilter_fwd -i $INT_IFACEs -o $EXT_IFACEs -s $INT_NETWORKS -g 
+dstnetfilter
+# Send incoming traffic to srcnetfilter for validation of the source
+iptables -A netfilter_fwd -i $EXT_IFACEs -o $INT_IFACEs -d $INT_NETWORKS -g 
+srcnetfilter
+# LOG and DROP all other traffic
+iptables -A netfilter_fwd -j LOG --log-prefix "FW:FWD:netfilter_fwd:? "
+iptables -A netfilter_fwd -j DROP
+#######
+# END #
+#######
+
+... more chains of filter table... (udpport, tcpport, icmpfilter, tcpfilter, 
+udpfilter, netfilter_out, netfilter_in, INPUT, OUTPUT)
+
+###########################
+# ipv4 - FILTER - FORWARD  #
+##########################
+# FORWARD RULES
+#
+# Forward all traffic to netfilter_fwd
+iptables -A FORWARD -j netfilter_fwd
+# Allow (established|related) connections in returned traffic of 
+netfilter_fwd
+iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+# Send all other ICMP returned packets to icmpfilter
+iptables -A FORWARD -p icmp -g icmpfilter
+# Send all other UDP returned packets to udpport
+iptables -A FORWARD -p udp -g udpport
+# Send all other TCP returned packets to tcpport
+iptables -A FORWARD -p tcp -g tcpport
+# Send all other returned fragmented packets to average
+iptables -A FORWARD -f -j average
+# Log for debugger
+iptables -A FORWARD -j LOG --log-prefix "FW:FWD:? "
+#######
+# END #
+####### 
+
