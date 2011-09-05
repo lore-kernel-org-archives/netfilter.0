@@ -1,41 +1,33 @@
-From: Jan Engelhardt <jengelh@medozas.de>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 Subject: Re: [PATCH] netfilter: install nf_nat.h and related headers to
  INSTALL_HDR_PATH
-Date: Sat, 3 Sep 2011 21:41:34 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1109032141040.30017@frira.zrqbmnf.qr>
+Date: Mon, 5 Sep 2011 19:48:47 +0200
+Message-ID: <20110905174847.GB32733@1984>
 References: <1315075784-10163-1-git-send-email-basile@opensource.dyc.edu>
 Mime-Version: 1.0
-Return-path: <netdev-owner@vger.kernel.org>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
 In-Reply-To: <1315075784-10163-1-git-send-email-basile@opensource.dyc.edu>
-Sender: netdev-owner@vger.kernel.org
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: "Anthony G. Basile" <basile@opensource.dyc.edu>
 Cc: davem@davemloft.net, kaber@trash.net, blueness@gentoo.org, gurligebis@gentoo.org, base-system@gentoo.org, kernel@gentoo.org, toolchain@gentoo.org, mchehab@redhat.com, hverkuil@xs4all.nl, laurent.pinchart@ideasonboard.com, arnd@arndb.de, eparis@redhat.com, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
 
-On Saturday 2011-09-03 20:49, Anthony G. Basile wrote:
+On Sat, Sep 03, 2011 at 02:49:44PM -0400, Anthony G. Basile wrote:
+> Currently nf_nat.h, nf_conntrack_tuple.h and related headers under
+> include/net/netfilter are not installed as part of the public kernel
+> headers.   However, there are userland applications, other than iptables
+> which ships with its own headers, which need these to make use of NAT in
+> the kernel's netfilter API.  For example, miniupnpd, requires them and is
+> forced to search /usr/src/linux when building.
 
->Currently nf_nat.h, nf_conntrack_tuple.h and related headers under
->include/net/netfilter are not installed as part of the public kernel
->headers.   However, there are userland applications, other than iptables
->which ships with its own headers, which need these to make use of NAT in
->the kernel's netfilter API.  For example, miniupnpd, requires them and is
->forced to search /usr/src/linux when building.
->
->This patch makes these headers public by installing them in
->INSTALL_HDR_PATH.
->
->See: https://bugs.gentoo.org/376873
->
->Signed-off-by: Anthony G. Basile <blueness@gentoo.org>
+Could anyone clarify why miniupnpd (or any other application) require
+this?
 
->@@ -0,0 +1,6 @@
->+header-y += nf_nat.h
->+header-y += nf_conntrack.h
->+header-y += nf_conntrack_tuple.h
->+header-y += nf_conntrack_extend.h
->+header-y += ipv4/
->+header-y += ipv6/
+Those headers contain structure layouts that may change along time
+without further notice, thus breaking backward compatibility.
 
-Should not the to-be-exported files better go into linux/ instead?
+and BTW, no need to cross-post this message to such a huge list of CC.
+I guess you could simply use netfilter-devel for this.
