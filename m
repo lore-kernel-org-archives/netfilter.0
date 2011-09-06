@@ -1,49 +1,33 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset 6.9.1 released
-Date: Tue, 6 Sep 2011 21:49:52 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1109062143300.9388@blackhole.kfki.hu>
+From: Chris Burroughs <chris.burroughs@gmail.com>
+Subject: Altering outgoing IP Address without Connection Tracking
+Date: Tue, 06 Sep 2011 18:59:04 -0400
+Message-ID: <4E66A5B8.4030700@gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=message-id:date:from:user-agent:mime-version:to:subject
+         :content-type:content-transfer-encoding;
+        bh=G1DYDZ35AIm1a9supk2MaslIoA8bjnSiSDlQaV39QUg=;
+        b=SgMRdHyelTJtA5WfcTm7coBIVQzlOMN9X7N/SZEC0uWqvyohZ5T3wJm+CHD+eDWD9D
+         bz4ZiwmAQfWDCUg416+qYhdyyKJoircPQ6EhrVLsUf4zb6GeC51qeRTVPTQwx3fGA3/r
+         ApFfMW23OWyErgB+DPrCKgrnxn9MbSOcDHcNA=
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Hi,
+I'd like to alter the outgoing IP address (from internal to external LB)
+on all packets sent on a specific port, without incurring the overhead
+of running conntrack.  DNAT of course requires conntrack. But I can't
+think of a reason why this simple substitution would require stateful
+representation of packet flows.  I was able to find one reference to
+someone trying to mange the RAW packets [1] in 2008, but apparently
+without success.
 
-I'm happy to announce ipset 6.9.1. It contains two important bugfixes: if 
-you use ipset on a hardware with tight memory usage, please upgrade.
+Is it currently possible to alter outgoing IP addresses without
+connection tracking?
 
-Kernel part changes:
- - Fix compiling ipset as external kernel modules (broken v6.9)
- - Complete Kconfig with hash:net,iface type (standalone package)
- - rtnetlink: Compute and store minimum ifinfo dump size (Greg Rose)
- - Remove redundant linux/version.h includes from net/ (Jesper Juhl)
- - ipset: use NFPROTO_ constants (Jan Engelhardt)
- - netfilter: ipset: expose userspace-relevant parts in ip_set.h
-   (Jan Engelhardt)
- - netfilter: ipset: avoid use of kernel-only types (Jan Engelhardt)
- - netfilter: Remove unnecessary OOM logging messages (Joe Perches)
- - Dumping error triggered removing references twice and lead to kernel 
-   BUG
- - Autoload set type modules safely
-
-Userspace changes:
- - build: move ipset_errcode into library (Jan Engelhardt)
- - build: abort autogen on subcommand failure (Jan Engelhardt)
- - ipset: use NFPROTO_ constants (Jan Engelhardt)
- - Propagate "expose userspace-relevant parts in ip_set.h" to ipset source
-
-You can download the source code of ipset from:
-        http://ipset.netfilter.org
-        ftp://ftp.netfilter.org/pub/ipset/
-        git://git.netfilter.org/ipset.git
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+[1]
+http://www.linuxquestions.org/questions/linux-networking-3/iptables-notrack-670012/
