@@ -1,209 +1,49 @@
-From: Vigneswaran R <vignesh@atc.tcs.com>
-Subject: Re: DHCP request behavior in my particular FORWARD configuration
-Date: Tue, 06 Sep 2011 10:25:52 +0530
-Message-ID: <4E65A7D8.9070109@atc.tcs.com>
-References: <001A9DB93A594CC4B78CC0951AEB1E8A@poweredge1800>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset 6.9.1 released
+Date: Tue, 6 Sep 2011 21:49:52 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1109062143300.9388@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <001A9DB93A594CC4B78CC0951AEB1E8A@poweredge1800>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-On 09/02/2011 07:25 AM, Julio A. Romero wrote:
-> Hi all, what happen with DHCP requests trying to forward below?
+Hi,
 
-As a relatively new user to iptables, I couldn't understand the 
-following rules completely. However, if I remember correctly, the 
-broadcasts (DHCP or any other) will not reach FORWARD chain; will go 
-into INPUT chain.
+I'm happy to announce ipset 6.9.1. It contains two important bugfixes: if 
+you use ipset on a hardware with tight memory usage, please upgrade.
 
-Sorry, if you know this already.
+Kernel part changes:
+ - Fix compiling ipset as external kernel modules (broken v6.9)
+ - Complete Kconfig with hash:net,iface type (standalone package)
+ - rtnetlink: Compute and store minimum ifinfo dump size (Greg Rose)
+ - Remove redundant linux/version.h includes from net/ (Jesper Juhl)
+ - ipset: use NFPROTO_ constants (Jan Engelhardt)
+ - netfilter: ipset: expose userspace-relevant parts in ip_set.h
+   (Jan Engelhardt)
+ - netfilter: ipset: avoid use of kernel-only types (Jan Engelhardt)
+ - netfilter: Remove unnecessary OOM logging messages (Joe Perches)
+ - Dumping error triggered removing references twice and lead to kernel 
+   BUG
+ - Autoload set type modules safely
 
-Regards,
-Vignesh
+Userspace changes:
+ - build: move ipset_errcode into library (Jan Engelhardt)
+ - build: abort autogen on subcommand failure (Jan Engelhardt)
+ - ipset: use NFPROTO_ constants (Jan Engelhardt)
+ - Propagate "expose userspace-relevant parts in ip_set.h" to ipset source
 
->
-> Thanks,
->
-> julio
->
->
->
->
->
-> ##################################################################
->
-> # ipv4 - policies configuration - zero all - flush all chains - delete
-> defined chains #
-> #################################################################
-> iptables -P INPUT DROP
-> iptables -P FORWARD DROP
-> iptables -P OUTPUT DROP
-> iptables -t raw -P OUTPUT ACCEPT
-> iptables -t raw -P PREROUTING ACCEPT
-> iptables -t mangle -P INPUT ACCEPT
-> iptables -t mangle -P FORWARD ACCEPT
-> iptables -t mangle -P OUTPUT ACCEPT
-> iptables -t mangle -P PREROUTING ACCEPT
-> iptables -t mangle -P POSTROUTING ACCEPT
-> iptables -Z
-> iptables -F
-> iptables -X
-> iptables -t nat -Z
-> iptables -t nat -F
-> iptables -t nat -X
-> iptables -t raw -Z
-> iptables -t raw -F
-> iptables -t raw -X
-> iptables -t mangle -Z
-> iptables -t mangle -F
-> iptables -t mangle -X
-> #######
-> # END #
-> #######
->
->
-> ##########################
-> # ipv4 - FILTER - srcnetfilter #
-> #########################
-> # SRCNETFILTER RULES
-> #
-> # Create srcnetfilter
-> iptables -N srcnetfilter
-> # Return to back the connections from trust networks
-> iptables -A srcnetfilter -s $NETWORKS -j RETURN
-> # Deny all other traffic
-> iptables -A srcnetfilter -j DROP
-> #######
-> # END #
-> #######
->
-> ##########################
-> # ipv4 - FILTER - dstnetfilter #
-> #########################
-> # DSTNETFILTER RULES
-> #
-> # Create dstnetfilter
-> iptables -N dstnetfilter
-> # Return to back the connections toward trust networks
-> iptables -A dstnetfilter -d $NETWORKS -j RETURN
-> # Deny all other traffic
-> iptables -A dstnetfilter -j DROP
-> #######
-> # END #
-> #######
->
-> ########################
-> # ipv4 - FILTER - average #
-> #######################
-> # AVERAGE RULES
-> #
-> # Create average
-> iptables -N average
-> # Maximum limit of global connections
-> iptables -A average -m connlimit --connlimit-mask 0 \
-> --connlimit-above $GLOBAL_CONNECTIONS -j LOG --log-prefix
-> "FW:average:GCs>LIMIT "
-> iptables -A average -m connlimit --connlimit-mask 0 \
-> --connlimit-above $GLOBAL_CONNECTIONS -j REJECT
-> # Restrict the number of parallel connections per client IP
-> iptables -A average -m connlimit --connlimit-mask 32 \
-> --connlimit-above $CONNECTIONS_PER_IP -j LOG --log-prefix
-> "FW:average:CCs>LIMIT "
-> iptables -A average -m connlimit --connlimit-mask 32 \
-> --connlimit-above $CONNECTIONS_PER_IP -j REJECT
-> # Global traffic rate average
-> iptables -A average -m fuzzy --lower-limit $LOWER_LIMIT \
-> --upper-limit $UPPER_LIMIT -j LOG --log-prefix "FW:average:GTRA:REJECT "
-> iptables -A average -m fuzzy --lower-limit $LOWER_LIMIT \
-> --upper-limit $UPPER_LIMIT -j REJECT
-> # Traffic rate control above the lower limit per client IP
-> iptables -A average -m connlimit --connlimit-mask 32 \
-> ! --connlimit-above $CONNECTIONS_PER_IP -m fuzzy \
-> --lower-limit $LOWER_LIMIT_PER_IP --upper-limit $UPPER_LIMIT_PER_IP \
-> -j LOG --log-prefix "FW:average:TRC_PIP:REJECT "
-> iptables -A average -m connlimit --connlimit-mask 32 \
-> ! --connlimit-above $CONNECTIONS_PER_IP -m fuzzy \
-> --lower-limit $LOWER_LIMIT_PER_IP --upper-limit $UPPER_LIMIT_PER_IP -j
-> REJECT
-> # Allow the traffic below the lower limit per client IP
-> iptables -A average -m hashlimit --hashlimit-mode srcip
-> --hashlimit-srcmask 32 \
-> --hashlimit-upto $FREE_PACKETS --hashlimit-burst $BURST \
-> --hashlimit-name average -j ACCEPT
-> #######
-> # END #
-> #######
->
-> ############################
-> # ipv4 - FILTER - netfilter_fwd #
-> ###########################
-> # NETFILTER_FWD RULES
-> #
-> # Create netfilter_fwd
-> iptables -N netfilter_fwd
-> # LOG and DROP untrue connections
-> iptables -A netfilter_fwd -s $GW_NETWORKS -j LOG --log-prefix
-> "FW:FWD:BOX->* "
-> iptables -A netfilter_fwd -s $GW_NETWORKS -j DROP
-> iptables -A netfilter_fwd -d $GW_NETWORKS -j LOG --log-prefix
-> "FW:FWD:*->BOX "
-> iptables -A netfilter_fwd -d $GW_NETWORKS -j DROP
-> iptables -A netfilter_fwd -i $INT_IFACEs -o $EXT_IFACEs -d $INT_NETWORKS
-> -j LOG \
-> --log-prefix "FW:FWD:I->E:dst:INT_NET "
-> iptables -A netfilter_fwd -i $INT_IFACEs -o $EXT_IFACEs -d $INT_NETWORKS
-> -j DROP
-> iptables -A netfilter_fwd -i $EXT_IFACEs -o $INT_IFACEs -s $INT_NETWORKS
-> -j LOG \
-> --log-prefix "FW:FWD:E->I:src:INT_NET "
-> iptables -A netfilter_fwd -i $EXT_IFACEs -o $INT_IFACEs -s $INT_NETWORKS
-> -j DROP
-> # Send outgoing traffic to dstnetfilter for validation of the destination
-> iptables -A netfilter_fwd -i $INT_IFACEs -o $EXT_IFACEs -s $INT_NETWORKS
-> -g dstnetfilter
-> # Send incoming traffic to srcnetfilter for validation of the source
-> iptables -A netfilter_fwd -i $EXT_IFACEs -o $INT_IFACEs -d $INT_NETWORKS
-> -g srcnetfilter
-> # LOG and DROP all other traffic
-> iptables -A netfilter_fwd -j LOG --log-prefix "FW:FWD:netfilter_fwd:? "
-> iptables -A netfilter_fwd -j DROP
-> #######
-> # END #
-> #######
->
-> ... more chains of filter table... (udpport, tcpport, icmpfilter,
-> tcpfilter, udpfilter, netfilter_out, netfilter_in, INPUT, OUTPUT)
->
-> ###########################
-> # ipv4 - FILTER - FORWARD #
-> ##########################
-> # FORWARD RULES
-> #
-> # Forward all traffic to netfilter_fwd
-> iptables -A FORWARD -j netfilter_fwd
-> # Allow (established|related) connections in returned traffic of
-> netfilter_fwd
-> iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-> # Send all other ICMP returned packets to icmpfilter
-> iptables -A FORWARD -p icmp -g icmpfilter
-> # Send all other UDP returned packets to udpport
-> iptables -A FORWARD -p udp -g udpport
-> # Send all other TCP returned packets to tcpport
-> iptables -A FORWARD -p tcp -g tcpport
-> # Send all other returned fragmented packets to average
-> iptables -A FORWARD -f -j average
-> # Log for debugger
-> iptables -A FORWARD -j LOG --log-prefix "FW:FWD:? "
-> #######
-> # END #
-> #######
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at http://vger.kernel.org/majordomo-info.html
->
+You can download the source code of ipset from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
 
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
