@@ -1,34 +1,36 @@
-From: Marco Coda <marco.coda7@gmail.com>
+From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
 Subject: Re: [half_OT]Traffic shaping with tc and iptables
-Date: Thu, 8 Sep 2011 14:10:02 +0200
-Message-ID: <CAGRr-qnYAGqqw8pt2CAzffs+9aL9LCQ9dcVN1NL61NzKHP9ZkA@mail.gmail.com>
-References: <CAGRr-qktvGncegdp+7X7Xb7Q9L0Q+FAn3+gPHGy+XJhDRtkQYg@mail.gmail.com>
-	<4E688763.2060209@freemail.hu>
-	<CAGRr-qm4gF8ZzvE9D5vXb-RLKXiELsj_P8KrOk9aOHTWRK01kQ@mail.gmail.com>
-	<4E68A50B.5000901@freemail.hu>
+Date: Thu, 08 Sep 2011 14:22:53 +0200
+Message-ID: <4E68B39D.60703@freemail.hu>
+References: <CAGRr-qktvGncegdp+7X7Xb7Q9L0Q+FAn3+gPHGy+XJhDRtkQYg@mail.gmail.com>	<4E688763.2060209@freemail.hu>	<CAGRr-qm4gF8ZzvE9D5vXb-RLKXiELsj_P8KrOk9aOHTWRK01kQ@mail.gmail.com>	<4E68A50B.5000901@freemail.hu> <CAGRr-qnYAGqqw8pt2CAzffs+9aL9LCQ9dcVN1NL61NzKHP9ZkA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :content-type:content-transfer-encoding;
-        bh=s3FmH+LsO2KZCdQrDitP1pM8YwSLadrMb1mtWYroDEI=;
-        b=KFspcbt5O3USem1UkjEOPzeZZeaJu6MwVuQ0K7XbN9Ka8P5CYEtMaFj4RH9BppXPDi
-         VBbhKjbX8ZKkoO4qqXtUb4Hnu1sQyjf5TLGbpznFPzqc65PySoHPaRJYJj52YBGpwB7j
-         7rFViehYqHP0QZ/aCSfEL6QTCZszao7a4Wh+s=
-In-Reply-To: <4E68A50B.5000901@freemail.hu>
+In-Reply-To: <CAGRr-qnYAGqqw8pt2CAzffs+9aL9LCQ9dcVN1NL61NzKHP9ZkA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Marco Coda <marco.coda7@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-2011/9/8 G=E1sp=E1r Lajos <swifty@freemail.hu>:
 
-> $IPTABLES -t mangle -A OUTPUT -p tcp -o $nic --dport $port -j MARK --=
-set-mark 1
+2011-09-08 14:10 keltez=E9ssel, Marco Coda =EDrta:
+> With this rule it does not work at all.. :(
+What do you mean it does not work at all???
+Does the packet counter shows that the rule got any hit??? (iptables=20
+-vnL OUTPUT -t mangle)
+Can you see the mark in the conntrack??? (conntrack -L | grep 'mark=3D1=
+')
+> At least before, even if I understand that concectually is not
+> correct, with --sport, traffic was shaped, in some manner, whth a
+> strange rate..
+- You can only shape those traffic that leaves your system...
+- If you send an e-mail then you connect from your system (from a rando=
+m=20
+port) to a mail server (to 25)...
+- If you set your upload limit to 10kbit then you can send 1,25KByte pe=
+r=20
+sec. (It is veeerrryy slooow.) Would you try with my proposed settings?=
+??
 
-With this rule it does not work at all.. :(
-At least before, even if I understand that concectually is not
-correct, with --sport, traffic was shaped, in some manner, whth a
-strange rate..
+Swifty
