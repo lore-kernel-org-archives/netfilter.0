@@ -1,36 +1,34 @@
-From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+From: Marco Coda <marco.coda7@gmail.com>
 Subject: Re: [half_OT]Traffic shaping with tc and iptables
-Date: Thu, 08 Sep 2011 13:20:43 +0200
-Message-ID: <4E68A50B.5000901@freemail.hu>
-References: <CAGRr-qktvGncegdp+7X7Xb7Q9L0Q+FAn3+gPHGy+XJhDRtkQYg@mail.gmail.com>	<4E688763.2060209@freemail.hu> <CAGRr-qm4gF8ZzvE9D5vXb-RLKXiELsj_P8KrOk9aOHTWRK01kQ@mail.gmail.com>
+Date: Thu, 8 Sep 2011 14:10:02 +0200
+Message-ID: <CAGRr-qnYAGqqw8pt2CAzffs+9aL9LCQ9dcVN1NL61NzKHP9ZkA@mail.gmail.com>
+References: <CAGRr-qktvGncegdp+7X7Xb7Q9L0Q+FAn3+gPHGy+XJhDRtkQYg@mail.gmail.com>
+	<4E688763.2060209@freemail.hu>
+	<CAGRr-qm4gF8ZzvE9D5vXb-RLKXiELsj_P8KrOk9aOHTWRK01kQ@mail.gmail.com>
+	<4E68A50B.5000901@freemail.hu>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAGRr-qm4gF8ZzvE9D5vXb-RLKXiELsj_P8KrOk9aOHTWRK01kQ@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :content-type:content-transfer-encoding;
+        bh=s3FmH+LsO2KZCdQrDitP1pM8YwSLadrMb1mtWYroDEI=;
+        b=KFspcbt5O3USem1UkjEOPzeZZeaJu6MwVuQ0K7XbN9Ka8P5CYEtMaFj4RH9BppXPDi
+         VBbhKjbX8ZKkoO4qqXtUb4Hnu1sQyjf5TLGbpznFPzqc65PySoHPaRJYJj52YBGpwB7j
+         7rFViehYqHP0QZ/aCSfEL6QTCZszao7a4Wh+s=
+In-Reply-To: <4E68A50B.5000901@freemail.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Marco Coda <marco.coda7@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
+2011/9/8 G=E1sp=E1r Lajos <swifty@freemail.hu>:
 
-2011-09-08 12:54 keltez=E9ssel, Marco Coda =EDrta:
->> IPTABLES=3D/sbin/iptables
->> nic=3Deth0
->> port=3D25
->> upload=3D10kbit
->> bandwith=3D2Mbit
->>
->> $IPTABLES -t mangle -A OUTPUT -p tcp -o $nic --sport $port -j MARK -=
--set-mark 1
-AAAAAAAAAAArrrrrghhhh!!!! :D
+> $IPTABLES -t mangle -A OUTPUT -p tcp -o $nic --dport $port -j MARK --=
+set-mark 1
 
-If you SEND a mail FROM your server to an ANOTHER server then the=20
-DESTINATION port will be 25 !!!! :D
-
-$IPTABLES -t mangle -A OUTPUT -p tcp -o $nic --dport $port -j MARK=20
---set-mark 1
-
-Try again!!! :D
-
-Swifty
+With this rule it does not work at all.. :(
+At least before, even if I understand that concectually is not
+correct, with --sport, traffic was shaped, in some manner, whth a
+strange rate..
