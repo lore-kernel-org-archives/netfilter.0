@@ -1,79 +1,48 @@
-From: Marco Coda <marco.coda7@gmail.com>
-Subject: Re: [half_OT]Traffic shaping with tc and iptables
-Date: Thu, 8 Sep 2011 17:38:00 +0200
-Message-ID: <CAGRr-qmSVgcvyCOPWki-i4ycfTg8xOdLHBYxJj7cFHtxP=kMUw@mail.gmail.com>
-References: <CAGRr-qktvGncegdp+7X7Xb7Q9L0Q+FAn3+gPHGy+XJhDRtkQYg@mail.gmail.com>
-	<4E688763.2060209@freemail.hu>
-	<CAGRr-qm4gF8ZzvE9D5vXb-RLKXiELsj_P8KrOk9aOHTWRK01kQ@mail.gmail.com>
-	<4E68A50B.5000901@freemail.hu>
-	<CAGRr-qnYAGqqw8pt2CAzffs+9aL9LCQ9dcVN1NL61NzKHP9ZkA@mail.gmail.com>
-	<4E68B39D.60703@freemail.hu>
-	<CAGRr-qn=ngiO6oNdecnpa5BRcTBEJuZzd3g+JOk015P84JV0JA@mail.gmail.com>
-	<4E68D7C3.9010005@oldum.net>
+From: Jean-Philippe Menil <jean-philippe.menil@univ-nantes.fr>
+Subject: connlimit problem
+Date: Fri, 09 Sep 2011 10:02:57 +0200
+Message-ID: <4E69C831.4050004@univ-nantes.fr>
+Reply-To: jean-philippe.menil@univ-nantes.fr
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :content-type:content-transfer-encoding;
-        bh=7e5K5c+I8BPaKEHP923SMLbVTmY9LZ3zjKZhsMDXmEY=;
-        b=AGLx/C++3SHyUMSrBEy/KtciXfjuXNmWjRS6WmPRa7I9k/+BNN2mNIpyDNnuanVt+j
-         WuU00H1ZhsGQE4KlgWpWVU3VdviuckyFveDqXpHdWEolW1gvi7cSKqwSoj8m8oBbM2EQ
-         nWLolL4p9ZK7W7AjDMOqPVIRVm6E3qOGKeECA=
-In-Reply-To: <4E68D7C3.9010005@oldum.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
 
-2011/9/8 G=E1sp=E1r Lajos <swifty@freemail.hu>:
+Hi,
 
-> Do you see the connection in conntrack??? With the mark=3D1 value???
-Unfortunately this server now is in a private and close lan, not
-accessible ftom or to the Internet, so I cannot install conntrack
-I set up a system with one dns, one client and another postfix for test
+I try to limit the connection per ip with connlimit in addition to the=20
+socket match, with the following rule:
+$IPTABLES -t mangle -A PREROUTING -s $LAN -p tcp --syn --dport http -m=20
+socket -m connlimit --connlimit-above 0 -j DIVERT
 
-> Maybe too low values would disable the tc?!? (I am really not sure ab=
-out
-> it... :D )
+But as you can see, theses rules  never match:
 
-Before I tried also wit different values: all the ten's multiples
-untill 100, to see if the 48x factor is costant also with other speed.
-And no, is not constant: it increase as an exponential curve!
+     0     0 DIVERT     tcp  --  *      *       192.168.100.0/24    =20
+0.0.0.0/0            tcp dpt:80flags: 0x17/0x02 socket #conn src/32 > 1
+     9  3030 DIVERT     tcp  --  *      *       192.168.100.0/24    =20
+0.0.0.0/0            tcp dpt:80 socket
+     5   216 TPROXY     tcp  --  *      *       192.168.100.0/24    =20
+0.0.0.0/0            tcp dpt:80 TPROXY redirect 0.0.0.0:50080 mark 0x1/=
+0x1
+     0     0 DIVERT     tcp  --  *      *       192.168.100.0/24    =20
+0.0.0.0/0            tcp dpt:3128flags: 0x17/0x02 socket #conn src/32 >=
+ 1
+     6  2491 DIVERT     tcp  --  *      *       192.168.100.0/24    =20
+0.0.0.0/0            tcp dpt:3128 socket
+    19   800 TPROXY     tcp  --  *      *       192.168.100.0/24    =20
+0.0.0.0/0            tcp dpt:3128 TPROXY redirect 0.0.0.0:50080 mark 0x=
+1/0x1
 
+Is this an expected behaviour, or a problem in my rules?
 
-2011/9/8 Nikolay Kichukov <hijacker@oldum.net>:
+Regards
 
-> #create engress htb shaper:
-> tc qdisc add dev $IF root handle 1: htb
-> #setup some iface limits
-> tc class add dev $IF parent 1: classid 1:1 htb rate ${MAXOUT}kbit cei=
-l ${MAXOUT}kbit burst 50kb
->
-> #add subclass for your application attached to the root class 1:1 - 1=
-:10, set proper ceil value!
-> tc class add dev $IF parent 1:1 classid 1:10 htb rate 128kbit ceil ${=
-MAXOUT}kbit prio 1 burst 5kb
->
-> #then just add filters, in that case port 53 - DNS
-> tc filter add dev $IF parent 1:0 protocol ip prio 10 u32 match ip dpo=
-rt 53 0xffff flowid 1:10
+--=20
+Jean-Philippe Menil - P=F4le r=E9seau Service IRTS
+DSI Universit=E9 de Nantes
+jean-philippe.menil@univ-nantes.fr
+Tel : 02.53.48.49.27 - Fax : 02.53.48.49.09
 
-Your script seems work better than mine: the speed now is 20Kbps, and
-not value as 480kbps as before with my commands!, even if I set
-10kbits, both as ceil and rate:
-
-IF=3Deth0
-MAXOUT=3D10kbit
-
-tc qdisc add dev $IF root handle 1: htb
-tc class add dev $IF parent 1: classid 1:1 htb rate $MAXOUT ceil $MAXOU=
-T
-tc class add dev $IF parent 1:1 classid 1:10 htb rate 10kbit ceil $MAXO=
-UT
-tc filter add dev $IF parent 1:0 protocol ip prio 10 u32 match ip
-dport 25 0xffff flowid 1:10
-
-I erase priority and brust part, At the moment don't mind brusting the
-connection or assign a priority.
