@@ -1,68 +1,49 @@
-From: Alex Bligh <alex@alex.org.uk>
-Subject: Re: [PATCH] Fix repeatable Oops on container destroy with conntrack
-Date: Mon, 12 Sep 2011 20:06:25 +0100
-Message-ID: <87A32B21CA99D62CE1AB7A4B@Ximines.local>
-References: <2184C0CE5A5EDC94CDDA5053@Ximines.local> <20110912072524.GA2996@p183.telecom.by> <20110912093749.GE2194@1984> <E0902A9541FD5D118EA02B31@Ximines.local> <20110912183357.GC3641@1984>
-Reply-To: Alex Bligh <alex@alex.org.uk>
+From: Julian Anastasov <ja@ssi.bg>
+Subject: Re: [PATCH] Check net->nfnl for NULL in ctnetlink_conntrack_event
+ to, avoid Oops on container destroy
+Date: Mon, 12 Sep 2011 23:40:42 +0300 (EEST)
+Message-ID: <alpine.LFD.2.00.1109122256450.1592@ja.ssi.bg>
+References: <4E6E4961.9070802@canonical.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <20110912183357.GC3641@1984>
-Content-Disposition: inline
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <4E6E4961.9070802@canonical.com>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Alexey Dobriyan <adobriyan@gmail.com>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, containers@lists.linux-foundation.org, Linux Containers <containers@lists.osdl.org>, Alex Bligh <alex@alex.org.uk>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Tim Gardner <tim.gardner@canonical.com>
+Cc: kaber@trash.net, linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org
 
-Pablo,
 
---On 12 September 2011 20:33:57 +0200 Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+	Hello,
 
-> Yes, this is what Alexey was pointing out in the previous email and
-> why he suggested to move it to nfnetlink_has_listeners (to cover the
-> expectation case).
->
-> But you're right, we cannot move it to nfnetlink_has_listeners because
-> of the item->report case. Please, include the expectation part and
-> resend the patch.
+On Mon, 12 Sep 2011, Tim Gardner wrote:
 
-Thanks - see below
+> Patrick,
+> 
+> I received this patch from a developer that uses lxc and network name spaces.
+> I don't know the locking semantics well enough for CT to judge whether this
+> fix is sufficient. Bug info can be found at
+> http://bugs.launchpad.net/bugs/843892 . See comment #7 for his analysis.
 
--- 
-Alex Bligh
+	We found same problems triggered by IPVS during
+subsys cleanup:
 
-Signed-off-by: Alex Bligh <alex@alex.org.uk>
----
- net/netfilter/nf_conntrack_netlink.c |    9 +++++++++
- 1 files changed, 9 insertions(+), 0 deletions(-)
+http://marc.info/?l=netfilter-devel&m=130765388528399&w=2
 
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index 482e90c..f44d571 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -570,6 +570,11 @@ ctnetlink_conntrack_event(unsigned int events, struct nf_ct_event *item)
-                return 0;
+	It is a general problem for modules that register
+callbacks to the netfilter core. nfnetlink is such example
+with a mix of global (ctnl_notifier) and per-net (nfnetlink_net_ops) 
+registrations. During net cleanup the module must be prepared
+to be called by core because the core cleanup happens later.
 
-        net = nf_ct_net(ct);
-+
-+       /* container deinit, netlink may have died before death_by_timeout */
-+       if (!net->nfnl)
-+               return 0;
-+
-        if (!item->report && !nfnetlink_has_listeners(net, group))
-                return 0;
+	So, may be rcu_dereference under rcu lock is needed for
+some functions (nfnetlink_has_listeners, nfnetlink_send) but
+such changes should be audited by nfnetlink developers.
+Using rcu_assign_pointer for net->nfnl without corresponding 
+rcu_dereference looks like a problem.
 
-@@ -1723,6 +1728,10 @@ ctnetlink_expect_event(unsigned int events, struct nf_exp_event *item)
-        } else
-                return 0;
+Regards
 
-+       /* container deinit, netlink may have died before death_by_timeout */
-+       if (!net->nfnl)
-+               return 0;
-+
-        if (!item->report && !nfnetlink_has_listeners(net, group))
-                return 0;
-
--- 
-1.7.5.4
+--
+Julian Anastasov <ja@ssi.bg>
