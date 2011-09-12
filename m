@@ -1,71 +1,67 @@
-From: Tim Gardner <tim.gardner@canonical.com>
-Subject: [PATCH] Check net->nfnl for NULL in ctnetlink_conntrack_event to,
- avoid Oops on container destroy
-Date: Mon, 12 Sep 2011 12:03:13 -0600
-Message-ID: <4E6E4961.9070802@canonical.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH] Fix repeatable Oops on container destroy with conntrack
+Date: Mon, 12 Sep 2011 20:33:57 +0200
+Message-ID: <20110912183357.GC3641@1984>
+References: <2184C0CE5A5EDC94CDDA5053@Ximines.local>
+ <20110912072524.GA2996@p183.telecom.by>
+ <20110912093749.GE2194@1984>
+ <E0902A9541FD5D118EA02B31@Ximines.local>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------060909040203070706070500"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <E0902A9541FD5D118EA02B31@Ximines.local>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: kaber@trash.net, linux-kernel@vger.kernel.org
-Cc: David Miller <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org
-
-This is a multi-part message in MIME format.
---------------060909040203070706070500
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: Alex Bligh <alex@alex.org.uk>
+Cc: Alexey Dobriyan <adobriyan@gmail.com>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, containers@lists.linux-foundation.org, Linux Containers <containers@lists.osdl.org>
 
-Patrick,
+Hi Alex,
 
-I received this patch from a developer that uses lxc and network name 
-spaces. I don't know the locking semantics well enough for CT to judge 
-whether this fix is sufficient. Bug info can be found at 
-http://bugs.launchpad.net/bugs/843892 . See comment #7 for his analysis.
+On Mon, Sep 12, 2011 at 11:32:18AM +0100, Alex Bligh wrote:
+> I /think/ it is the correct fix, in that it certainly fixes the oops,
+> and it's relatively low overhead. I ran the torture test for 24 hours
+> without a problem.
+> 
+> My only concern is that eventually my torture test died as the
+> machine (512MB VM) had run out of memory - this was after about 30
+> hours. Save for having no free memory, the box is happy.
+> It looks like there is something (possibly something
+> entirely different) leaking memory. It does not appear to be
+> conntrack. Whatever, a slow memory leak causing death on a tiny
+> VM over 5,000 iterations is better than an oops after 5. Memory
+> stats below. I will leave the vm up in case anyone wants other
+> stats.
 
-rtg
--- 
-Tim Gardner tim.gardner@canonical.com
+Seems like a different issue.
 
---------------060909040203070706070500
-Content-Type: text/x-patch;
- name="0001-Check-net-nfnl-for-NULL-in-ctnetlink_conntrack_event.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename*0="0001-Check-net-nfnl-for-NULL-in-ctnetlink_conntrack_event.pa";
- filename*1="tch"
+> On the suggestion to move the check for ->nfnl into
+> nfnetlink_has_listeners(), the problem with that is that
+> if item->report is non-NULL, nfnetlink_has_listeners()
+> will not be called, and the early return will not be made.
+> This will merely delay the oops until elsewhere (nfnetlink_send
+> for example). The check is currently as follows:
+> 
+>        if (!item->report && !nfnetlink_has_listeners(net, group))
+>                return 0;
+> 
+> I am a very long way from being a netlink expert, but I am not
+> entirely sure what the point of progressing further is if there
+> are no listeners if item->report is non-null. Certainly there is
+> no point in progressing if net->nfnl NULL (as this will oops
+> before item->report is meaningfully used - it's just passed
+> as a parametner to nfnetlink_send which will crash). It's
+> almost as if that test should be || not &&.
+> 
+> Perhaps we should check net->nfnl in both places.
+> 
+> I think there might be similar issues with ctnetlink_expect_event.
 
-From dcb64e27c7daaf4affe5b1a617b45a9a0364b4ad Mon Sep 17 00:00:00 2001
-From: Alex Bligh <alex@alex.org.uk>
-Date: Sat, 10 Sep 2011 13:29:12 +0100
-Subject: [PATCH] Check net->nfnl for NULL in ctnetlink_conntrack_event to
- avoid Oops on container destroy
+Yes, this is what Alexey was pointing out in the previous email and
+why he suggested to move it to nfnetlink_has_listeners (to cover the
+expectation case).
 
-
-Signed-off-by: Alex Bligh <alex@alex.org.uk>
----
- net/netfilter/nf_conntrack_netlink.c |    5 +++++
- 1 files changed, 5 insertions(+), 0 deletions(-)
-
-diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-index 482e90c..0790d0a 100644
---- a/net/netfilter/nf_conntrack_netlink.c
-+++ b/net/netfilter/nf_conntrack_netlink.c
-@@ -570,6 +570,11 @@ ctnetlink_conntrack_event(unsigned int events, struct nf_ct_event *item)
- 		return 0;
- 
- 	net = nf_ct_net(ct);
-+
-+	/* container deinit, netlink may have died before death_by_timeout */
-+	if (!net->nfnl)
-+		return 0;
-+
- 	if (!item->report && !nfnetlink_has_listeners(net, group))
- 		return 0;
- 
--- 
-1.7.5.4
-
-
---------------060909040203070706070500--
+But you're right, we cannot move it to nfnetlink_has_listeners because
+of the item->report case. Please, include the expectation part and
+resend the patch.
