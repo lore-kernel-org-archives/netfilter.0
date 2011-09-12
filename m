@@ -1,41 +1,57 @@
-From: Alexey Dobriyan <adobriyan@gmail.com>
-Subject: Re: [PATCH] Fix repeatable Oops on container destroy with conntrack
-Date: Mon, 12 Sep 2011 10:25:24 +0300
-Message-ID: <20110912072524.GA2996@p183.telecom.by>
-References: <2184C0CE5A5EDC94CDDA5053@Ximines.local>
+From: John Haxby <john.haxby@oracle.com>
+Subject: Re: v2.6.16 to v2.6.38 breaks routing?
+Date: Mon, 12 Sep 2011 10:24:11 +0100
+Message-ID: <4E6DCFBB.6060401@oracle.com>
+References: <4E6D3F01.4060807@snappymail.ca>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-type:content-disposition:in-reply-to:user-agent;
-        bh=4aK84ZEIWJ4OkvQb1xA/bSHNBaYQT+JeHqh2gm6ZbUs=;
-        b=ahePNAyXw9PnS8d6kHJq84/ymi2SdLSUXi5Nm5PK2mq2YhKW6y0kjIWJvpvEXsxYch
-         s48LEVAPPB46gJLtqgatFYBu0gMq+rY2qR3rBL5XIFB3M0mSOiSO8tm/832hPUATm0kN
-         t4WsOmiCTjStkhGgtyF0e35jSYO+HSH/VkT64=
-Content-Disposition: inline
-In-Reply-To: <2184C0CE5A5EDC94CDDA5053@Ximines.local>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4E6D3F01.4060807@snappymail.ca>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Alex Bligh <alex@alex.org.uk>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, containers@lists.linux-foundation.org, Linux Containers <containers@lists.osdl.org>
+To: ipso@snappymail.ca
+Cc: netfilter@vger.kernel.org
 
-On Sat, Sep 10, 2011 at 07:48:43PM +0100, Alex Bligh wrote:
-> --- a/net/netfilter/nf_conntrack_netlink.c
-> +++ b/net/netfilter/nf_conntrack_netlink.c
-> @@ -570,6 +570,11 @@ ctnetlink_conntrack_event(unsigned int events, struct nf_ct_event *item)
->  		return 0;
-> 
->  	net = nf_ct_net(ct);
-> +
-> +	/* container deinit, netlink may have died before death_by_timeout */
-> +	if (!net->nfnl)
-> +		return 0;
-> +
->  	if (!item->report && !nfnetlink_has_listeners(net, group))
->  		return 0;
+On 12/09/11 00:06, Mike wrote:
+> I'm in the process of upgrading an older Linux router from Mandriva
+> running kernel v2.6.16 to Ubuntu running v2.6.38 kernel, however my
+> moderately complex firewall/routing script doesn't quite work the same
+> way on the newer system. The basic idea is that I have three routes to
+> three different ISPs, and one to the internal network. I then mark
+> packets to go out a specific ISP depending on the type of traffic.
+> This all works fine if the packets are initiated from the router
+> itself or from a computer on the intenral network with packets
+> destined out the default ISP, but it fails completely if the packets
+> are initiated from a computer on the internal network destined out an
+> non-default route.
+>
+> What I don't understand is I diff'd the routing tables and all
+> iptables commands they are virtually identical between the two
+> servers, yet the newer server doesn't work as expected. 
 
-If this is correct fix, ->nfnl check should be folded into
-nfnetlink_has_listeners(), otherwise expectations aren't covered.
+You might be running afoul of the change in behaviour of rp_filter that
+happened around 2.6.32.
+
+Previously (as in your 2.6.16 kernel) setting
+net.ipv4.conf.default.rp_filter=1 in /etc/sysctl.conf (or wherever your
+distro puts that file would give you what is now termed "loose reverse
+path filtering".  Now, however, that value gives you strict reverse path
+filtering and 2 gives you loose reverse path filtering.
+
+Strict reverse path filtering discards incoming packets whose source
+address would not be routed to the interface that the packets originated
+from; loose reverse path filtering merely checks that the source address
+is routable.   In Documentation/networking/ip-sysctl.txt is says that
+you might want loose reverse path filtering for complicated routing set
+ups (like yours).
+
+In some cases you can mess with the routing tables dynamically so that a
+source address appearing on an interface will cause outgoing packets for
+that address to use that interface.   I haven't really looked into this
+yet: setting rp_filter=2 was enough to get over my immediate problem,
+although I would still like to get rid of the asymmetric routing at some
+stage.   If you do go down that path though, I would be very interested
+to see what you do.
+
+jch
