@@ -1,27 +1,26 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH] Check net->nfnl for NULL in ctnetlink_conntrack_event
- to, avoid Oops on container destroy
-Date: Wed, 14 Sep 2011 14:31:38 +0200
-Message-ID: <20110914123138.GA19715@1984>
-References: <4E6E4961.9070802@canonical.com>
+From: Anatoli Bobylev <anatoli.bobylev@perimetrix.com>
+Subject: correct way to terminate nfct_catch
+Date: Wed, 14 Sep 2011 17:37:21 +0400
+Message-ID: <20110914133721.GU26897@cronos.perimetrix.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <4E6E4961.9070802@canonical.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Tim Gardner <tim.gardner@canonical.com>
-Cc: kaber@trash.net, linux-kernel@vger.kernel.org, David Miller <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Mon, Sep 12, 2011 at 12:03:13PM -0600, Tim Gardner wrote:
-> Patrick,
-> 
-> I received this patch from a developer that uses lxc and network
-> name spaces. I don't know the locking semantics well enough for CT
-> to judge whether this fix is sufficient. Bug info can be found at
-> http://bugs.launchpad.net/bugs/843892 . See comment #7 for his
-> analysis.
+I have a multihreaded application using netfilter_conntrack and one
+thread is blocked in nfct_catch. Signal handling is done in another
+(main) thread. What is the correct way to terminate nfct_catch? I
+tried sending SIGINT to the blocked thread using pthread_kill
+expecting that it would be interrupted with EINTR but that did not
+happen. The same approach works with NFQUEUE in the recv cycle. Any
+suggestions? Thank you. 
 
-We're still discussing a better solution for it.
+Anatoli Bobylev 
+
+
+
+
