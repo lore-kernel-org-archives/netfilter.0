@@ -1,41 +1,67 @@
-From: Lorraine Hall <lorraineehall@gmail.com>
-Subject: OUTPUT NFQUEUE UDP destination port is 0
-Date: Wed, 14 Sep 2011 22:27:08 -0700
-Message-ID: <CALSwv_+xGoQN6b6HjHAYLR70ihXEYTHT-VarkUbt8cvHFsR3mg@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: [ANNOUNCE] ipset 6.9.1 released
+Date: Thu, 15 Sep 2011 08:53:24 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1109150846290.5001@blackhole.kfki.hu>
+References: <alpine.DEB.2.00.1109062143300.9388@blackhole.kfki.hu> <4E713E0F.1050403@googlemail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=M1gMAfZw1cvAkYleuePc7RrwJZFV/ygIYeo6Avf7gO4=;
-        b=Iap3c2i4rlJzumNrYFDRA14Lbk3GUPF0s/sS8sV3zrA4GS9oWtFH+XuT5TUTH9/oks
-         hoK9uWRel/bKGQvNqNQiwsFmL0+2QbiNgcCgiv1ReYPrZbov2U7T9H3ekZ+95UdIVkI6
-         3KUWPEBjQG/c5AKQ/Dn6RDyeEWA9lCHYEo4uE=
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <4E713E0F.1050403@googlemail.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Mr Dash Four <mr.dash.four@googlemail.com>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Hi,
+On Thu, 15 Sep 2011, Mr Dash Four wrote:
 
-I am trying to write a program, using C, that binds to an OUTPUT
-NFQUEUE and makes some changes to certain UDP packets.
+> Jozsef Kadlecsik wrote:
+> > I'm happy to announce ipset 6.9.1. It contains two important bugfixes: if
+> > you use ipset on a hardware with tight memory usage, please upgrade.
+> >   
+> I am trying to compile this source (kernel modules only) against the latest
+> fedora-released kernel - 2.6.40 (a.k.a. 3.0.1), but get the following errors:
+> 
+> net/netfilter/ipset/ip_set_core.c:244:5: warning: "LINUX_VERSION_CODE" is not
+> defined
+> net/netfilter/ipset/ip_set_core.c:244:26: warning: "KERNEL_VERSION" is not
+> defined
+> net/netfilter/ipset/ip_set_core.c:244:40: error: missing binary operator
+> before token "("
+> net/netfilter/ipset/ip_set_core.c:1175:5: warning: "LINUX_VERSION_CODE" is not
+> defined
+> net/netfilter/ipset/ip_set_core.c:1175:26: warning: "KERNEL_VERSION" is not
+> defined
+> net/netfilter/ipset/ip_set_core.c:1175:40: error: missing binary operator
+> before token "("
+> net/netfilter/ipset/ip_set_core.c: In function 'ip_set_dump':
+> net/netfilter/ipset/ip_set_core.c:1178: error: too many arguments to function
+> 'netlink_dump_start'
+> make[3]: *** [net/netfilter/ipset/ip_set_core.o] Error 1
+> make[3]: *** Waiting for unfinished jobs....
+> make[2]: *** [net/netfilter/ipset] Error 2
+> make[1]: *** [net/netfilter] Error 2
+> make: *** [net] Error 2
+> make: *** Waiting for unfinished jobs....
+> 
+> Am I missing something?
 
-I'm running into an issue, however, with getting the destination port.
-For some reason, no matter what I try, the destination port in the
-udphdr struct is 0. The source port is fine, and the packet is
-received properly on the other end with the destination port set (I
-checked this with wireshark on my own computer). Everything else seems
-fine - IP header has the proper info.. it's just the UDP header that
-seems messed up.
+I suppose you are trying to compile the kernel part of the package 
+directly. What should be done is as follows:
 
-The basic code I'm using:
+ipset-6.9.1$ ./autogen.sh
+ipset-6.9.1$ ./configure --with-kbuild=/fedora/released/kernel/tree
+ipset-6.9.1$ make modules
+ipset-6.9.1$ make modules_install
 
-struct udphdr *udp=(struct udphdr *)(pkt_data+21);
+Or your kernel tree is not prepared for building external modules:
+you should run at least "make modules_prepare" in 
+/fedora/released/kernel/tree.
 
-printf("Source port: %u\nDest port: %u\n", udp->source, udp->dest);
-
-Thank you,
-
-L
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
