@@ -1,84 +1,80 @@
-From: "Julio A. Romero" <julioarr@fisica.uh.cu>
-Subject: Re: ping broadcast into forward chain?? (IN=eth0 OUT=eth0)!!
-Date: Mon, 19 Sep 2011 20:22:14 -0400
-Message-ID: <6B22FB92A9864DA693C93B7256F459C6@poweredge1800>
-References: <F5285AA949CB440A96444F060C17749A@poweredge1800> <alpine.LNX.2.01.1109191737100.32518@frira.zrqbmnf.qr> <9C0FCAA46B9040869B79B468CCA7391C@poweredge1800> <alpine.LNX.2.01.1109191755180.6194@frira.zrqbmnf.qr> <0103CB00F80F4E64AF7B894570B0688A@poweredge1800> <alpine.LNX.2.01.1109191814230.11243@frira.zrqbmnf.qr>
+From: rigoberto perez <rigo666beast@yahoo.com>
+Subject: Hooks in layer 2
+Date: Tue, 20 Sep 2011 09:15:20 -0700 (PDT)
+Message-ID: <1316535320.870.YahooMailClassic@web160707.mail.bf1.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1316535320; bh=K5k2Fe3QfvfV4j1mNKj7/PP8M9BoAtSbyENnPnsHjeA=; h=X-YMail-OSG:Received:X-Mailer:Message-ID:Date:From:Subject:To:MIME-Version:Content-Type; b=IPapOM4P8hi12CULA65s/xYxv1PtBNJjnklBlRh0Dv77H9QSvLbkHoGnTymMmI4tAJJaONOUYgfgKDyLIgx7ETcsaovZrJmFX46uCNmqUGiMd0eg7uvpLCupmWEg8QG05EW9UXvumANfP9dXCdhGvSZjqSU1A8qnu3v3qKibXMw=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@vger.kernel.org>
+
+Hi:
+
+I compile and insert in kernel a simple netfilter module in order to intercept ethernet traffic and it seems to be ok (no error messages) but something is wrong 'cause not appears the printk messages.
+
+Here is the code:
+
+<p>
+#define _KERNEL_
+
+#include <linux/netfilter_ipv4.h>
+#include <linux/netfilter_bridge.h>
+
+static struct list_head list = {NULL, NULL};
+static struct nf_hook_ops operations[1];
+
+static unsigned int prerouting(unsigned int hook, struct sk_buff *skb, 					
+const struct net_device *indev, const struct net_device *outdev, 					
+int (*okfn) (struct sk_buff *))
+{
+unsigned char src[6], dst[6];
+const struct ethhdr *eth = eth_hdr(skb);
+	memcpy(src, eth->h_source, ETH_ALEN);
+	memcpy(dst, eth->h_dest, ETH_ALEN);
+	if ( eth->h_proto == htons(ETH_P_IP))
+	{
+		printk(KERN_ERR"(%d) src %s, dst %s, proto %d\n", ETH_ALEN, src, dst, eth->h_proto);
+	}
+	printk(KERN_ERR"prerouting\n");
+	return NF_ACCEPT; 
+}
+
+static int __init init(void)
+{
+int ret; 
+	operations[1].list = list;
+	operations[1].hook = (nf_hookfn *)prerouting;
+	operations[1].pf = PF_BRIDGE;
+	operations[1].hooknum = NF_BR_PRE_ROUTING;
+	operations[1].priority = NF_BR_PRI_BRNF;
+	operations[1].owner = THIS_MODULE;
+	ret = nf_register_hook(&operations[1]);
+	if (ret < 0)
+	{
+		return ret;
+	}
+	printk(KERN_WARNING"simple up\n");
+	return ret;
+}
 
 
------ Original Message ----- 
-From: "Jan Engelhardt" <jengelh@medozas.de>
-To: "Julio A. Romero" <julioarr@fisica.uh.cu>
-Cc: <netfilter@vger.kernel.org>
-Sent: Monday, September 19, 2011 12:15 PM
-Subject: Re: ping broadcast into forward chain?? (IN=eth0 OUT=eth0)!!
+//Funcion para que el modulo termine lo que el mismo inicio
+static void __exit exit(void)
+{
+	printk(KERN_WARNING"simple down\n");
+	nf_unregister_hook(&operations[0]);
+}
 
 
-> On Monday 2011-09-19 18:10, Julio A. Romero wrote:
->
->>
->> ----- Original Message ----- From: "Jan Engelhardt" <jengelh@medozas.de>
->> To: "Julio A. Romero" <julioarr@fisica.uh.cu>
->> Cc: <netfilter@vger.kernel.org>
->> Sent: Monday, September 19, 2011 11:55 AM
->> Subject: Re: ping broadcast into forward chain?? (IN=eth0 OUT=eth0)!!
->>
->>
->>> Bah, don't strip the CC, and don't top-post.
->>>
->>> On Monday 2011-09-19 17:43, Julio A. Romero wrote:
->>>
->>>> In the INPUT chain!!??
->>>
->>> No, why? It was not a broadcast packet. Your syslog itself says:
->>> DST=10.6.15.246.
->>
->> but 10.6.15.246 is outside of my internal networks ??
->
-> Yes, which is why it goes to OUT=eth0.
->
->> the packets don't go through the box or yes?!
->
-> Of course they do go through your box, otherwise it would not be able to
-> log them.
->
->> what happen if I remove the rule to log?
->
-> There would be no entry in syslog, obviously.
+module_init(init);
+module_exit(exit);
+</p>
 
-now I know what happen!
+Only appears the simple up and down printk messages when i insert and remove my module respectively. I put others hooks in localin, localout, forward and postrouting and nothing happens. I use OpenSUSE 11.2 (with kernel 2.6.31.5-0.1-default).
 
-anyone, I don't know who, he/she set a unassigned route pointing to my box. 
-The packets arrived to my box through the external interface and then the 
-destination is wrong, so, the packets go to the default gateway configured 
-in my box, again through the external interface because the default gateway 
-is outside of my network. When I set a rule in the FORWARD chain logging and 
-dropping the packet whose source or destination don't match with my 
-networks, I never thought in the above-mentioned situation.
+Thanks,
 
-thanks once again!
-julio
-
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-
---------------------------------------------------------------------------------
-
-
-
-No virus found in this incoming message.
-Checked by AVG - www.avg.com
-Version: 9.0.914 / Virus Database: 271.1.1/3906 - Release Date: 09/19/11 
-02:34:00
-
+Rigoberto
