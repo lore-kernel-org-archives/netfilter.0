@@ -1,29 +1,32 @@
-From: =?UTF-8?B?TWFyY2luIE1pcm9zxYJhdw==?= <marcin@mejor.pl>
-Subject: Re: WARNING: at include/net/dst.h:162
-Date: Wed, 21 Sep 2011 12:47:48 +0200
-Message-ID: <4E79C0D4.9080408@mejor.pl>
-References: <4E6DD6C2.60800@mejor.pl> <4E79A24B.5090004@mejor.pl> <alpine.LNX.2.01.1109211232560.7492@frira.zrqbmnf.qr>
+From: Jorge Bastos <mysql.jorge@decimal.pt>
+Subject: Help on outgoing packet (without NAT)
+Date: Wed, 21 Sep 2011 22:23:56 +0100
+Message-ID: <5b10ceef17baa191e62d2d9357257887@decimal.pt>
+References: <F5285AA949CB440A96444F060C17749A@poweredge1800>
+ <alpine.LNX.2.01.1109191737100.32518@frira.zrqbmnf.qr>
+ <9C0FCAA46B9040869B79B468CCA7391C@poweredge1800>
+ <alpine.LNX.2.01.1109191755180.6194@frira.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mejor.pl; s=cokolwiek;
-	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:References:Subject:CC:To:MIME-Version:From:Date:Message-ID; bh=V+GFHeOgcXrhbw5RaFmvZpZSJOn/xikDXmDDxffDapQ=;
-	b=Ab4LklE+DvzAFD1VdltAAVmKO5VeCX4P+FWsr2FvpPxT5RHzsevOiH5dJ+LmfKda4HO/Yorwg3SFEDr0tBIWFVXoUVgGOJCQ3Qt/QEEH7AMvU6Bje4RDn8EqyL/IcDeH;
-In-Reply-To: <alpine.LNX.2.01.1109211232560.7492@frira.zrqbmnf.qr>
+In-Reply-To: <alpine.LNX.2.01.1109191755180.6194@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"; format="flowed"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-W dniu 21.09.2011 12:33, Jan Engelhardt pisze:
-> On Wednesday 2011-09-21 10:37, Marcin Miros=C5=82aw wrote:
->
->> Hi,
->> with xtables-adddons-1.38 and kernel 3.0.4-hardened-r2 problem doesn=
-'t appear.
->> Regards
->
-> Yeah I know :-)
+Howdy,
 
-Now google knows that it's fixed :)
+I'd like some help on how can I redirect the outgoing packets without 
+using NAT.
+
+I have a machine, that when requests to IP 5.5.5.5 and port 80 are 
+made, the request be redirected to 192.168.1.221:80
+I'm trying this but no luck, maybe I'm close to it:
+
+iptables -I FORWARD -d 5.5.5.5 -p tcp --dport 80 --to 192.168.1.221:80
+
+What can I missing or what do I need to add?
+
+Thanks in advanced,
+Jorge Bastos,
