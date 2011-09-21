@@ -1,80 +1,30 @@
-From: rigoberto perez <rigo666beast@yahoo.com>
-Subject: Hooks in layer 2
-Date: Tue, 20 Sep 2011 09:15:20 -0700 (PDT)
-Message-ID: <1316535320.870.YahooMailClassic@web160707.mail.bf1.yahoo.com>
+From: medialy <medialy@gmail.com>
+Subject: netfilter_conntrack lose connection?
+Date: Wed, 21 Sep 2011 15:10:08 +0800
+Message-ID: <201109211510081989079@gmail.com>
+Reply-To: medialy <medialy@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1316535320; bh=K5k2Fe3QfvfV4j1mNKj7/PP8M9BoAtSbyENnPnsHjeA=; h=X-YMail-OSG:Received:X-Mailer:Message-ID:Date:From:Subject:To:MIME-Version:Content-Type; b=IPapOM4P8hi12CULA65s/xYxv1PtBNJjnklBlRh0Dv77H9QSvLbkHoGnTymMmI4tAJJaONOUYgfgKDyLIgx7ETcsaovZrJmFX46uCNmqUGiMd0eg7uvpLCupmWEg8QG05EW9UXvumANfP9dXCdhGvSZjqSU1A8qnu3v3qKibXMw=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=date:from:to:reply-to:subject:x-priority:x-mailer:mime-version
+         :message-id:content-type:content-transfer-encoding;
+        bh=oz27voqi8TyuzO+aM/M5RLEhXVIvYdbxkclwXaoXCtw=;
+        b=OedWZjwFZhb1HNLbvRhHOyZwnbMO52XpASUEZA92zNiMpnp0NI+kvPrARnzKYMzTXA
+         W1elsWVFePBFKpK8Mc1PhXCpx3vrl3L4iY7EKg7g3s2m+1a36hElYNDjQQ5AdP0hbLRP
+         3lf4CGJHW8AfJkTzJuKFE76WoAwA5UHPn81kM=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1254"
 To: netfilter <netfilter@vger.kernel.org>
 
-Hi:
+TGludXggc2VydmVyIHdvcmtzIGFzIGEgcm91dGVyLCBwcm9jZXNzaW5nIHRjcCBhbmQgdWRwIGRh
+dGEoYWJvdXQgNjAwTWJwcykuDQpBbiBhcHBsaWNhdGlvbiBiYXNlZCBvbiBuZXRmaWx0ZXJfY29u
+bnRyYWNrIGFwaSBjYXRjaCBsZXNzIHRoYW4gMSBjb25uZWN0aW9uDQpwZXIgc2Vjb25kLCB3aGls
+ZSB0Y3BkdW1wIHNob3cgbW9yZSB0aGFuIDEwIGNvbm5lY3Rpb25zIHBlciBzZWNvbmQuIFRoZSAN
+CmFwcGxpY2F0aW9uIHdvcmtzIHF1aXRlIHdlbGwgb24gbW9yZSB0aGFuIDIwIHNlcnZlcnMuDQog
+DQpJcyB0aGVyZSBhbnkgc29sdXRpb24/DQogDQpPUzoNCkxpbnV4IDIuNi4xOC0xOTQuZWw1ICMx
+IFNNUCBGcmkgQXByIDIgMTQ6NTg6MTQgRURUIDIwMTAgeDg2XzY0IHg4Nl82NCB4ODZfNjQgR05V
+L0xpbnV4DQpwY2FwOg0KL3Vzci9saWI2NC9saWJwY2FwLnNvLjAuOS40
 
-I compile and insert in kernel a simple netfilter module in order to intercept ethernet traffic and it seems to be ok (no error messages) but something is wrong 'cause not appears the printk messages.
-
-Here is the code:
-
-<p>
-#define _KERNEL_
-
-#include <linux/netfilter_ipv4.h>
-#include <linux/netfilter_bridge.h>
-
-static struct list_head list = {NULL, NULL};
-static struct nf_hook_ops operations[1];
-
-static unsigned int prerouting(unsigned int hook, struct sk_buff *skb, 					
-const struct net_device *indev, const struct net_device *outdev, 					
-int (*okfn) (struct sk_buff *))
-{
-unsigned char src[6], dst[6];
-const struct ethhdr *eth = eth_hdr(skb);
-	memcpy(src, eth->h_source, ETH_ALEN);
-	memcpy(dst, eth->h_dest, ETH_ALEN);
-	if ( eth->h_proto == htons(ETH_P_IP))
-	{
-		printk(KERN_ERR"(%d) src %s, dst %s, proto %d\n", ETH_ALEN, src, dst, eth->h_proto);
-	}
-	printk(KERN_ERR"prerouting\n");
-	return NF_ACCEPT; 
-}
-
-static int __init init(void)
-{
-int ret; 
-	operations[1].list = list;
-	operations[1].hook = (nf_hookfn *)prerouting;
-	operations[1].pf = PF_BRIDGE;
-	operations[1].hooknum = NF_BR_PRE_ROUTING;
-	operations[1].priority = NF_BR_PRI_BRNF;
-	operations[1].owner = THIS_MODULE;
-	ret = nf_register_hook(&operations[1]);
-	if (ret < 0)
-	{
-		return ret;
-	}
-	printk(KERN_WARNING"simple up\n");
-	return ret;
-}
-
-
-//Funcion para que el modulo termine lo que el mismo inicio
-static void __exit exit(void)
-{
-	printk(KERN_WARNING"simple down\n");
-	nf_unregister_hook(&operations[0]);
-}
-
-
-module_init(init);
-module_exit(exit);
-</p>
-
-Only appears the simple up and down printk messages when i insert and remove my module respectively. I put others hooks in localin, localout, forward and postrouting and nothing happens. I use OpenSUSE 11.2 (with kernel 2.6.31.5-0.1-default).
-
-Thanks,
-
-Rigoberto
