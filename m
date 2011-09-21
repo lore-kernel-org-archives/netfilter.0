@@ -1,21 +1,23 @@
-From: =?UTF-8?B?TWFyY2luIE1pcm9zxYJhdw==?= <marcin@mejor.pl>
+From: Jan Engelhardt <jengelh@medozas.de>
 Subject: Re: WARNING: at include/net/dst.h:162
-Date: Wed, 21 Sep 2011 10:37:31 +0200
-Message-ID: <4E79A24B.5090004@mejor.pl>
-References: <4E6DD6C2.60800@mejor.pl>
+Date: Wed, 21 Sep 2011 12:33:07 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1109211232560.7492@frira.zrqbmnf.qr>
+References: <4E6DD6C2.60800@mejor.pl> <4E79A24B.5090004@mejor.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mejor.pl; s=cokolwiek;
-	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:References:Subject:To:MIME-Version:From:Date:Message-ID; bh=gCAqC2/UM8ijebltXr4XA89ewEm7cseEoRhwRNSuj5Q=;
-	b=nAOTbSsT5yOsonpfIRnb6V7YAKPhiIVos1kSa7j2K3HIDyTfdvfFH3JTc87+Oz+NlHG3mtLqk/cp0o8affmP1lvDHGmdjDPS8y2PhpO6DmWrps2dZBOl/POx0Bur6fqe;
-In-Reply-To: <4E6DD6C2.60800@mejor.pl>
+In-Reply-To: <4E79A24B.5090004@mejor.pl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="windows-1252"
+To: =?UTF-8?Q?Marcin_Miros=C5=82aw?= <marcin@mejor.pl>
+Cc: netfilter@vger.kernel.org
 
-Hi,
-with xtables-adddons-1.38 and kernel 3.0.4-hardened-r2 problem doesn't 
-appear.
-Regards
+On Wednesday 2011-09-21 10:37, Marcin Miros=C5=82aw wrote:
+
+> Hi,
+> with xtables-adddons-1.38 and kernel 3.0.4-hardened-r2 problem doesn'=
+t appear.
+> Regards
+
+Yeah I know :-)
