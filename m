@@ -1,30 +1,21 @@
-From: medialy <medialy@gmail.com>
-Subject: netfilter_conntrack lose connection?
-Date: Wed, 21 Sep 2011 15:10:08 +0800
-Message-ID: <201109211510081989079@gmail.com>
-Reply-To: medialy <medialy@gmail.com>
+From: =?UTF-8?B?TWFyY2luIE1pcm9zxYJhdw==?= <marcin@mejor.pl>
+Subject: Re: WARNING: at include/net/dst.h:162
+Date: Wed, 21 Sep 2011 10:37:31 +0200
+Message-ID: <4E79A24B.5090004@mejor.pl>
+References: <4E6DD6C2.60800@mejor.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=date:from:to:reply-to:subject:x-priority:x-mailer:mime-version
-         :message-id:content-type:content-transfer-encoding;
-        bh=oz27voqi8TyuzO+aM/M5RLEhXVIvYdbxkclwXaoXCtw=;
-        b=OedWZjwFZhb1HNLbvRhHOyZwnbMO52XpASUEZA92zNiMpnp0NI+kvPrARnzKYMzTXA
-         W1elsWVFePBFKpK8Mc1PhXCpx3vrl3L4iY7EKg7g3s2m+1a36hElYNDjQQ5AdP0hbLRP
-         3lf4CGJHW8AfJkTzJuKFE76WoAwA5UHPn81kM=
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mejor.pl; s=cokolwiek;
+	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:References:Subject:To:MIME-Version:From:Date:Message-ID; bh=gCAqC2/UM8ijebltXr4XA89ewEm7cseEoRhwRNSuj5Q=;
+	b=nAOTbSsT5yOsonpfIRnb6V7YAKPhiIVos1kSa7j2K3HIDyTfdvfFH3JTc87+Oz+NlHG3mtLqk/cp0o8affmP1lvDHGmdjDPS8y2PhpO6DmWrps2dZBOl/POx0Bur6fqe;
+In-Reply-To: <4E6DD6C2.60800@mejor.pl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1254"
-To: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-TGludXggc2VydmVyIHdvcmtzIGFzIGEgcm91dGVyLCBwcm9jZXNzaW5nIHRjcCBhbmQgdWRwIGRh
-dGEoYWJvdXQgNjAwTWJwcykuDQpBbiBhcHBsaWNhdGlvbiBiYXNlZCBvbiBuZXRmaWx0ZXJfY29u
-bnRyYWNrIGFwaSBjYXRjaCBsZXNzIHRoYW4gMSBjb25uZWN0aW9uDQpwZXIgc2Vjb25kLCB3aGls
-ZSB0Y3BkdW1wIHNob3cgbW9yZSB0aGFuIDEwIGNvbm5lY3Rpb25zIHBlciBzZWNvbmQuIFRoZSAN
-CmFwcGxpY2F0aW9uIHdvcmtzIHF1aXRlIHdlbGwgb24gbW9yZSB0aGFuIDIwIHNlcnZlcnMuDQog
-DQpJcyB0aGVyZSBhbnkgc29sdXRpb24/DQogDQpPUzoNCkxpbnV4IDIuNi4xOC0xOTQuZWw1ICMx
-IFNNUCBGcmkgQXByIDIgMTQ6NTg6MTQgRURUIDIwMTAgeDg2XzY0IHg4Nl82NCB4ODZfNjQgR05V
-L0xpbnV4DQpwY2FwOg0KL3Vzci9saWI2NC9saWJwY2FwLnNvLjAuOS40
-
+Hi,
+with xtables-adddons-1.38 and kernel 3.0.4-hardened-r2 problem doesn't 
+appear.
+Regards
