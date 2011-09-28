@@ -1,31 +1,37 @@
 From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: [PATCH] ip_tables.h: Add the const qualifier.
-Date: Wed, 28 Sep 2011 14:16:45 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1109281413350.32661@frira.zrqbmnf.qr>
-References: <1317195151-5278-1-git-send-email-corone.il.han@gmail.com>
+Subject: Re: ip accounting with centos 6
+Date: Wed, 28 Sep 2011 14:28:26 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1109281426130.32661@frira.zrqbmnf.qr>
+References: <509ABFBD82E8B740BC211E8B93E28F71B2475F5A55@server2.dsi.intra>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <1317195151-5278-1-git-send-email-corone.il.han@gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <509ABFBD82E8B740BC211E8B93E28F71B2475F5A55@server2.dsi.intra>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Il Han <corone.il.han@gmail.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Rusty Russell <rusty@rustcorp.com.au>, James Morris <jmorris@namei.org>, Harald Welte <laforge@gnumonks.org>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Patrick McHardy <kaber@trash.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+To: =?UTF-8?Q?DSI=2ENET_-_Arvid_Z=C3=B6bisch?= <zoebisch@dsi.net>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Wednesday 2011-09-28 09:32, Il Han wrote:
+On Wednesday 2011-09-28 12:06, DSI.NET - Arvid Z=C3=B6bisch wrote:
 
->We need to add the const qualifier before the struct specifier,
->because its value will not be changed.
->Then, the following warning would be removed.
+>Hi there.=20
 >
->net/ipv4/netfilter/ip_tables.c:183: warning: passing argument 1 of 
->'ipt_get_target' discards qualifiers from pointer target type
+>I have a problem on a centos 6 server running KVM. I want to account t=
+raffic
+>per IP. I am using the same rules on an Ubuntu 10.04 LTS-Server where =
+my
+>accounting is working. These are my rules:
 
-gcc-4.6.1_20110801 does not output any such warning - which also 
-seems to be correct, since line 183 reads:
+I challenge above's statements #3 and #4.
 
-	return ipt_get_target((struct ipt_entry *)e);
-
-So in ipt_get_target_c, we already do away with the const qualifier 
-before calling ipt_get_target.
+>iptables -N INET_OUT
+>iptables -N INET_IN
+>iptables -A FORWARD -j INET_IN
+>iptables -A FORWARD -j INET_OUT
+>
+>/sbin/iptables -A INET_OUT -s x.x.x.x
+>/sbin/iptables -A INET_IN -s 0.0.0.0/0 -d x.x.x.x
+>
+>Kernel is 2.6.32.x86_64
+>iptables is v 1.4.7
