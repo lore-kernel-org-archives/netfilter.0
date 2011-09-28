@@ -1,32 +1,31 @@
-From: =?iso-8859-1?Q?DSI=2ENET_-_Arvid_Z=F6bisch?= <zoebisch@dsi.net>
-Subject: ip accounting with centos 6
-Date: Wed, 28 Sep 2011 12:06:44 +0200
-Message-ID: <509ABFBD82E8B740BC211E8B93E28F71B2475F5A55@server2.dsi.intra>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: [PATCH] ip_tables.h: Add the const qualifier.
+Date: Wed, 28 Sep 2011 14:16:45 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1109281413350.32661@frira.zrqbmnf.qr>
+References: <1317195151-5278-1-git-send-email-corone.il.han@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: de-DE
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <1317195151-5278-1-git-send-email-corone.il.han@gmail.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Il Han <corone.il.han@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Rusty Russell <rusty@rustcorp.com.au>, James Morris <jmorris@namei.org>, Harald Welte <laforge@gnumonks.org>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Patrick McHardy <kaber@trash.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
 
-Hi there. 
+On Wednesday 2011-09-28 09:32, Il Han wrote:
 
-I have a problem on a centos 6 server running KVM. I want to account traffic per IP. I am using the same rules on an Ubuntu 10.04 LTS-Server where my accounting is working.  
-These are my rules: 
+>We need to add the const qualifier before the struct specifier,
+>because its value will not be changed.
+>Then, the following warning would be removed.
+>
+>net/ipv4/netfilter/ip_tables.c:183: warning: passing argument 1 of 
+>'ipt_get_target' discards qualifiers from pointer target type
 
+gcc-4.6.1_20110801 does not output any such warning - which also 
+seems to be correct, since line 183 reads:
 
-iptables -N INET_OUT
-iptables -N INET_IN
-iptables -A FORWARD -j INET_IN
-iptables -A FORWARD -j INET_OUT
+	return ipt_get_target((struct ipt_entry *)e);
 
-/sbin/iptables -A INET_OUT -s x.x.x.x
-/sbin/iptables -A INET_IN -s 0.0.0.0/0 -d x.x.x.x
-
-Kernel is 2.6.32.x86_64
-iptables is v 1.4.7
-
-Thank you in advance
-Arvid
+So in ipt_get_target_c, we already do away with the const qualifier 
+before calling ipt_get_target.
