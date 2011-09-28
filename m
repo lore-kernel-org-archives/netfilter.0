@@ -1,37 +1,31 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: ip accounting with centos 6
-Date: Wed, 28 Sep 2011 14:28:26 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1109281426130.32661@frira.zrqbmnf.qr>
-References: <509ABFBD82E8B740BC211E8B93E28F71B2475F5A55@server2.dsi.intra>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [GIT PULL net-next] IPVS
+Date: Wed, 28 Sep 2011 22:28:03 +0900
+Message-ID: <20110928132802.GC7661@verge.net.au>
+References: <1317027938-22053-1-git-send-email-horms@verge.net.au>
+ <20110927081618.GA22655@1984>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <509ABFBD82E8B740BC211E8B93E28F71B2475F5A55@server2.dsi.intra>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20110927081618.GA22655@1984>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: =?UTF-8?Q?DSI=2ENET_-_Arvid_Z=C3=B6bisch?= <zoebisch@dsi.net>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: lvs-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, Wensong Zhang <wensong@linux-vs.org>, Julian Anastasov <ja@ssi.bg>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>
 
-On Wednesday 2011-09-28 12:06, DSI.NET - Arvid Z=C3=B6bisch wrote:
+On Tue, Sep 27, 2011 at 10:16:18AM +0200, Pablo Neira Ayuso wrote:
+> On Mon, Sep 26, 2011 at 06:05:33PM +0900, Simon Horman wrote:
+> > Hi,
+> > 
+> > with all the excitement of kernel.org being offline and a bunch of trees
+> > likewise being offline I am a little unsure who should take this pull
+> > request which is based on the current net-next tree. But I guess it should
+> > be Patrick, Pablo or Dave.
+> 
+> I'll try to set up one tree in one of my servers along today, I'll
+> send you the URI. We can use it until kernel.org comes back.
 
->Hi there.=20
->
->I have a problem on a centos 6 server running KVM. I want to account t=
-raffic
->per IP. I am using the same rules on an Ubuntu 10.04 LTS-Server where =
-my
->accounting is working. These are my rules:
+Thanks. Would you like me to rebase my tree on yours?
 
-I challenge above's statements #3 and #4.
-
->iptables -N INET_OUT
->iptables -N INET_IN
->iptables -A FORWARD -j INET_IN
->iptables -A FORWARD -j INET_OUT
->
->/sbin/iptables -A INET_OUT -s x.x.x.x
->/sbin/iptables -A INET_IN -s 0.0.0.0/0 -d x.x.x.x
->
->Kernel is 2.6.32.x86_64
->iptables is v 1.4.7
