@@ -1,56 +1,114 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: Routing locally generated traffic on fwmark
-Date: Thu, 29 Sep 2011 18:46:11 +0100
-Message-ID: <1317318371.26402.292.camel@andybev-desktop>
-References: <1317248412.26402.39.camel@andybev-desktop>
-	 <1317279076.26402.52.camel@andybev-desktop>
-	 <alpine.LNX.2.01.1109291224580.18982@frira.zrqbmnf.qr>
-	 <1317317318.26402.271.camel@andybev-desktop>
-	 <alpine.LNX.2.01.1109291934450.25670@frira.zrqbmnf.qr>
+From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
+Subject: Access Interfaces Wan
+Date: Fri, 30 Sep 2011 10:52:35 -0300
+Message-ID: <CAMTjHrznU95sGq-0e1CPYetKdXpzprHAo_E3q_R6NdfFFDrLpw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1317318372;
-	bh=/8fr2wDrc2Zaha2f3WGarRMcXmjPhmULg7D6otk5Y+8=;
-	h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-ID:Mime-Version:Content-Transfer-Encoding;
-	b=NGmQi+bI4EypLVm2o6W9FRMw0XFvhmKJ32RJwaUbRGAYxnWlvQSdW/UVdpM1O32zL
-	 1zx52+20TfcIU5Tvc9mFUJlfHMJI224BXftuGOGvyaB4S7YQkM8XhGDsDzVa7IquQ2
-	 hhETvI83Lcx1r4HDUOsRkqwx+Ju87CBnZwsjiteE=
-In-Reply-To: <alpine.LNX.2.01.1109291934450.25670@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org, Pandu Poluan <pandu@poluan.info>
+Content-Transfer-Encoding: 7bit
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Thu, 2011-09-29 at 19:35 +0200, Jan Engelhardt wrote:
-> On Thursday 2011-09-29 19:28, Andrew Beverley wrote:
-> 
-> >On Thu, 2011-09-29 at 12:28 +0200, Jan Engelhardt wrote:
-> >> On Thursday 2011-09-29 08:51, Andrew Beverley wrote:
-> >> >> iptables -A OUTPUT -t mangle -d 89.16.176.81 -j MARK --set-mark 0x800
-> >> >> ip rule add fwmark 0x800/0xffff table T2
-> >> >> ip route add table T2 default dev ppp1 via 94.30.127.76
-> >> >
-> >> >I've also added the following, which makes no difference:
-> >> >
-> >> >iptables -t nat -A POSTROUTING -o ppp1 \
-> >> >	-j SNAT --to-source 109.224.134.110
-> >> 
-> >> Of course it makes no difference, because SNAT is applied after routing.
-> >> ("POST" "ROUTING", see?)
-> >
-> >Yes, but in my case the SNAT still needed applying. The problem was that
-> >although the packets were being routed via the second interface, they
-> >were still being sent from the original IP address of the first
-> >interface. Therefore, packets were being returned to the first
-> >interface, making it look as if the second interface wasn't being used.
-> 
-> Well, that's why one should use tcpdump -i ethX, rather than tcpdump -i 
-> any :-)
-
-Yep, I learn something every time ;-)
+Hello everyone,
 
 
+I'm needing that my inside network accesses some IPs which are in the
+my firewall wan interfaces. for exemplo, in the firewall there is the
+IP 200.247.222.1 on the wan interface. those has a destination NAT to
+a inside network machine for FTP protocol. so from Internet to
+ftp://200.247.222.1 it's Working! but from my inside network to
+ftp://200.247.222.1 isn't Working.
+
+I've done some rules as follow:
+
+
+iptables -t nat -I PREROUTING -s 128.2.0.0/24 -d 200.247.222.1 -p tcp
+--dport 21 -j DNAT --to-destination  128.2.8.214
+
+iptables -t nat -I POSTROUTING -s 128.2.0.0/24 -d 200.247.222.1 -o
+bond0 -j SNAT --to-source 128.2.7.16
+
+iptables -I FORWARD -s 128.2.0.0/24 -d 200.247.222.1 -j ACCEPT
+
+
+128.2.0.0/24 is my inside network
+
+bond0 is the inside interface
+
+I've done tcpdump on the ftp machine and shows me :
+
+access from 128.2.20.71 to ftp://200.247.222.1
+
+09:44:03.719062 IP 128.2.20.71.35768 > 128.2.8.214.21: S
+395591608:395591608(0) win 14600 <mss 1460,sackOK,timestamp 728976
+0,nop,wscale 7>
+09:44:03.719273 IP 128.2.20.71.35768 > 128.2.8.214.21: R
+395591609:395591609(0) win 0
+09:44:06.730331 IP 128.2.20.71.35768 > 128.2.8.214.21: S
+395591608:395591608(0) win 14600 <mss 1460,sackOK,timestamp 729278
+0,nop,wscale 7>
+09:44:06.735412 IP 128.2.20.71.35768 > 128.2.8.214.21: R
+395591609:395591609(0) win 0
+
+seems that the source NAT isn't working becuase is appear 128.2.7.16
+instead 128.2.20.71
+
+when access direct ftp://128.2.8.214 ( bypass the firewall ) show :
+
+09:44:37.499007 IP 128.2.20.71.34638 > 128.2.8.214.21: S
+931391232:931391232(0) win 14600 <mss 1460,sackOK,timestamp 732355
+0,nop,wscale 7>
+
+09:44:37.499210 IP 128.2.20.71.34638 > 128.2.8.214.21: . ack
+2427650415 win 115 <nop,nop,timestamp 732355 1042489571>
+
+09:44:37.500931 IP 128.2.20.71.34638 > 128.2.8.214.21: . ack 35 win
+115 <nop,nop,timestamp 732355 1042489573>
+
+09:44:37.523867 IP 128.2.20.71.34638 > 128.2.8.214.21: P 0:16(16) ack
+35 win 115 <nop,nop,timestamp 732357 1042489573>
+09:44:37.525707 IP 128.2.20.71.34638 > 128.2.8.214.21: P 16:42(26) ack
+69 win 115 <nop,nop,timestamp 732357 1042489596>
+09:44:40.469622 IP 128.2.20.71.34638 > 128.2.8.214.21: F 42:42(0) ack
+91 win 115 <nop,nop,timestamp 732652 1042492541>
+
+there is ack TCP! and it's work!
+
+How can I access my ip outside 200.247.222.1 from my inside network ??
+what is missing in my rules. pay attention in bond0 ( bind eth0 and
+eth1 ) maybe it's the problem ?
+
+
+
+thanks
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+The Firewall is a Red-Hat
