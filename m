@@ -1,45 +1,45 @@
-From: Ed W <lists@wildgooses.com>
-Subject: Re: [SOLVED] Routing locally generated traffic on fwmark
-Date: Sun, 02 Oct 2011 14:11:50 +0100
-Message-ID: <4E886316.9030502@wildgooses.com>
-References: <1317248412.26402.39.camel@andybev-desktop> <1317279076.26402.52.camel@andybev-desktop> <CAA2qdGUrc31FekJM6r1_s2COoFi5g5iwfpJeozeLED2pYsy3Fw@mail.gmail.com> <1317282807.26402.58.camel@andybev-desktop> <CAA2qdGXAVVu5FwxGDmEztWTNq5=9q+oauo09nx2nH7nQyj3riw@mail.gmail.com>
+From: Javier Barroso <javibarroso@gmail.com>
+Subject: Do I need to recompile Centos 5.2 (2.6.18-92.1.22.el5) kernel to
+ install conntrack-tools correctly ?
+Date: Mon, 3 Oct 2011 17:07:25 +0200
+Message-ID: <CAL5yMZSiUsHUM64RbhBfUURuvQkGTqpLqk1hSqBf8LmFCTZChw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAA2qdGXAVVu5FwxGDmEztWTNq5=9q+oauo09nx2nH7nQyj3riw@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:from:date:message-id:subject:to:content-type;
+        bh=6MXY6mucIojYIe9NOtAnin2NFGSzSH4x4XbK30UeBsc=;
+        b=eQQDX/7U8Ghd0vbm2fO+fjoxrASW2+erL6qXjZvBKIoonLHe0grAy/5ybVyoEU6XDf
+         09328beUZSu8nQeVhllXixrfREVvomiTXtnNFzUICxdWtegMuU4DbGB7w2BIYY5RrVtK
+         7u1yAXz4m6ETr2pwOxixGke4EC1BL631qgKgg=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Pandu Poluan <pandu@poluan.info>
-Cc: Andrew Beverley <andy@andybev.com>, netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 29/09/2011 09:29, Pandu Poluan wrote:
-> That's why I now no longer write iptables commands directly on the
-> shell. I keep my firewall rules in a file /etc/opt/firewall, and if I
-> need to add new rules, I just do: `vi /etc/opt/firewall &&
-> iptables-restore < /etc/opt/firewall`
->
-> (Of course, to seed the file I'd do `iptables-save > /etc/opt/firewall` )
->
-> This has the added benefit of allowing me to document all firewall
-> changes by doing `hg commit` followed by `hg push` to a local
-> Mercurial repository.
->
-> (The reason why I put the rules in /etc/opt instead of /etc is so that
-> I don't have to create an .hgignore file)
->
+Hello,
 
-Can I also leave a plug for shorewall for similar reasons.  It is a
-fairly thin wrapper over iptables (etc), but it allows you to think at a
-slightly higher level and wraps things such as setting/restoring fwmarks
-and routing, breaks them out from the general access rules.
+I'm trying to install conntrack-tools in an Centos 5.2 System.
 
-I find it picks a very nice level between firewall guis and raw editing
-of iptables commands.  Give it a try.
+In requirements:
+     - ctnetlink (nf_conntrack_netlink)
+           CONFIG_NF_CT_NETLINK=m
 
-Also it's text file based so it's very easy to track via some source
-code control system
+I'm not able to find CONFIG_NF_CT_NETLINK option config and so
+nf_conntrack_netlink is not build in Centos default installation
+(Centos doesn't recommend recompile its kernel[1], if you are not
+sure).
 
-Cheers
+Should I recompile the kernel, or maybe better to config a new rpm
+repository ? Or it is ok without that module ?
 
-Ed W
+Searching in this archive I found this message:
+http://lists.centos.org/pipermail/centos/2008-August/062808.html
+
+where tell about CONFIG_NF_CT_NETLINK == NF_CONNTRACK_NETLINK, but I'm not sure
+
+Do you have any tip ?
+
+Thank you !
+[1]  http://wiki.centos.org/HowTos/Custom_Kernel
