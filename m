@@ -1,35 +1,52 @@
-From: julioarr@fisica.uh.cu
-Subject: about install leyer7
-Date: Tue, 4 Oct 2011 17:03:06 -0400
-Message-ID: <e573f7a0910ef894971791a90ca7feab.squirrel@mail.fisica.uh.cu>
+From: Sven-Haegar Koch <haegar@sdinet.de>
+Subject: Netfilter NAT port mapping question
+Date: Tue, 4 Oct 2011 23:23:34 +0200 (CEST)
+Message-ID: <alpine.DEB.2.02.1110042312450.20951@aurora>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi all
+hello,
 
-I need something like the match layer7, or just leyer7!
+Today at work a question came up about the Linux Netfilter NAT and how 
+it remaps tcp/udp ports, and if we should plan to use more than one 
+external IP address if we expect more than 64k connections with 
+load-spikes, or do we not need to.
 
-I have in my system:
+The question is, in the following case, does Netfilter "use" two 
+external ports or are/can both connections be mapped to the same 
+external source port?
 
-debian squeeze (linux-image-2.6.32-5-amd64      2.6.32-35squeeze2)
-iptables        1.4.8-3
-iptables-dev    1.4.8-3
-xtables-addons-common   1.26-2+b1
-xtables-addons-modules-2.6.32-5-amd64   1.26-2+2.6.32-35
-xtables-addons-source   1.26-2
+Connections before SNAT:
 
-Does it stable layer7 with my kernel version?
-Why don=92t appear leyer7 in xtables-addons?
-How I can install layer7?
-I need rebuild the kernel?
-Where are the sources of layer7?
+  10.1.2.3 port 1024  -> 8.8.8.8 port 80
+  10.1.2.10 port 1024 -> 9.9.9.9 port 80
 
-Regards,
+After SNAT is it:
 
-julio
+  a.b.c.d port 1024 -> 8.8.8.8 port 80
+  a.b.c.d port 1025 -> 9.9.9.9 port 80
 
+or
+
+  a.b.c.d port 1024 -> 8.8.8.8 port 80
+  a.b.c.d port 1024 -> 9.9.9.9 port 80
+
+I know that a tcp/udp connection can be completely described as 
+src-ip+src-port+dst-ip+dst-port, so if the destination address is 
+different the connection would still be unique - but does Netfilter make 
+use of it or not?
+
+Googling for an answer did not result in anything conclusive, can 
+someone on this list tell me?
+
+c'ya
+sven-haegar
+
+-- 
+Three may keep a secret, if two of them are dead.
+- Ben F.
