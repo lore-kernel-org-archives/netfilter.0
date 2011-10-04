@@ -1,52 +1,79 @@
-From: Sven-Haegar Koch <haegar@sdinet.de>
-Subject: Netfilter NAT port mapping question
-Date: Tue, 4 Oct 2011 23:23:34 +0200 (CEST)
-Message-ID: <alpine.DEB.2.02.1110042312450.20951@aurora>
+From: David Alanis <canito@dalan.us>
+Subject: Re: about install leyer7
+Date: Tue, 04 Oct 2011 17:21:59 -0500
+Message-ID: <20111004172159.b3wgyogdppoook0g@mail.dalan.us>
+References: <e573f7a0910ef894971791a90ca7feab.squirrel@mail.fisica.uh.cu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <e573f7a0910ef894971791a90ca7feab.squirrel@mail.fisica.uh.cu>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1252"; delsp="Yes	format=flowed"
 To: netfilter@vger.kernel.org
 
-hello,
+Quoting julioarr@fisica.uh.cu:
 
-Today at work a question came up about the Linux Netfilter NAT and how 
-it remaps tcp/udp ports, and if we should plan to use more than one 
-external IP address if we expect more than 64k connections with 
-load-spikes, or do we not need to.
+> Hi all
+>
+> I need something like the match layer7, or just leyer7!
+>
+> I have in my system:
+>
+> debian squeeze (linux-image-2.6.32-5-amd64      2.6.32-35squeeze2)
+> iptables        1.4.8-3
+> iptables-dev    1.4.8-3
+> xtables-addons-common   1.26-2+b1
+> xtables-addons-modules-2.6.32-5-amd64   1.26-2+2.6.32-35
+> xtables-addons-source   1.26-2
+>
+> Does it stable layer7 with my kernel version?
+> Why don=92t appear leyer7 in xtables-addons?
+> How I can install layer7?
+> I need rebuild the kernel?
+> Where are the sources of layer7?
+>
+> Regards,
+>
+> julio
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
 
-The question is, in the following case, does Netfilter "use" two 
-external ports or are/can both connections be mapped to the same 
-external source port?
+Hola Julio-
 
-Connections before SNAT:
+I don't use Debian but I was able to find some useful links using googl=
+e.
 
-  10.1.2.3 port 1024  -> 8.8.8.8 port 80
-  10.1.2.10 port 1024 -> 9.9.9.9 port 80
+ From what I can read Debian doesn't come with the layer7 or l7 module =
+=20
+for iptables and it looks like you'll need to recompile the kernel:
 
-After SNAT is it:
+Links:
 
-  a.b.c.d port 1024 -> 8.8.8.8 port 80
-  a.b.c.d port 1025 -> 9.9.9.9 port 80
+Spanish
+http://www.ecualug.org/2009/07/12/blog/razametal/debian_kernel_26301_l7=
+filter_ipp2p
 
-or
+http://www.howtoforge.com/lan-management-system-lms-on-debian-squeeze-r=
+outer-howto
 
-  a.b.c.d port 1024 -> 8.8.8.8 port 80
-  a.b.c.d port 1024 -> 9.9.9.9 port 80
+http://stackoverflow.com/questions/7552720/how-to-integrate-l7-filter-o=
+ption-with-linux-iptables-in-debian-squeeze
 
-I know that a tcp/udp connection can be completely described as 
-src-ip+src-port+dst-ip+dst-port, so if the destination address is 
-different the connection would still be unique - but does Netfilter make 
-use of it or not?
+http://adminhowtos.com/index.php?topic=3D15.0
 
-Googling for an answer did not result in anything conclusive, can 
-someone on this list tell me?
+http://www.mastershaper.org/forum/index.php?topic=3D689.0
 
-c'ya
-sven-haegar
+Lots of juicy information, so I hope that helps.
 
--- 
-Three may keep a secret, if two of them are dead.
-- Ben F.
+Saludos-
+
+----------------------------------------------------------------
+This message was sent using IMP, the Internet Messaging Program.
+
