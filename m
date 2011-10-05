@@ -1,18 +1,31 @@
-From: David Alanis <canito@dalan.us>
-Subject: Re: How to block ssh on specific ethernet interface
-Date: Wed, 05 Oct 2011 00:09:32 -0500
-Message-ID: <20111005000932.2txxwdy9vrk8wkc8@mail.dalan.us>
-References: <A5D3AC0FAABBF34A9FD613C14AAC59B71F8AFF@sonusinmail02.sonusnet.com>
-	<CAHEKYV4NAdedVx0JM6O5Q4SNaDxk+2mVw_YvNJiQrt7OwQbsKA@mail.gmail.com>
+From: "Netravali Ganesh" <gnetravali@sonusnet.com>
+Subject: RE: How to block ssh on specific ethernet interface
+Date: Wed, 5 Oct 2011 10:54:07 +0530
+Message-ID: <A5D3AC0FAABBF34A9FD613C14AAC59B71F8B0C@sonusinmail02.sonusnet.com>
+References: <A5D3AC0FAABBF34A9FD613C14AAC59B71F8AFF@sonusinmail02.sonusnet.com><CAHEKYV4NAdedVx0JM6O5Q4SNaDxk+2mVw_YvNJiQrt7OwQbsKA@mail.gmail.com> <20111005000932.2txxwdy9vrk8wkc8@mail.dalan.us>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAHEKYV4NAdedVx0JM6O5Q4SNaDxk+2mVw_YvNJiQrt7OwQbsKA@mail.gmail.com>
-Content-Disposition: inline
+Content-class: urn:content-classes:message
+In-Reply-To: <20111005000932.2txxwdy9vrk8wkc8@mail.dalan.us>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; delsp="Yes	format=flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
+
+I was going through the documentations and trying apply the rules. I am=
+ allowing all the packets on all the interface as part of default rule =
+then blocking the ssh on eth1. This doesn't seems to be working.
+
+Thanks
+Ganesh=20
+
+-----Original Message-----
+=46rom: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.ke=
+rnel.org] On Behalf Of David Alanis
+Sent: Wednesday, October 05, 2011 10:40 AM
+To: netfilter@vger.kernel.org
+Subject: Re: How to block ssh on specific ethernet interface
 
 Quoting Mauricio Tavares <raubvogel@gmail.com>:
 
@@ -75,3 +88,7 @@ David
 ----------------------------------------------------------------
 This message was sent using IMP, the Internet Messaging Program.
 
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
