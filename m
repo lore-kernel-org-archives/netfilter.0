@@ -1,7 +1,7 @@
 From: "Netravali Ganesh" <gnetravali@sonusnet.com>
 Subject: RE: How to block ssh on specific ethernet interface
-Date: Wed, 5 Oct 2011 10:54:07 +0530
-Message-ID: <A5D3AC0FAABBF34A9FD613C14AAC59B71F8B0C@sonusinmail02.sonusnet.com>
+Date: Wed, 5 Oct 2011 12:48:22 +0530
+Message-ID: <A5D3AC0FAABBF34A9FD613C14AAC59B71F8B28@sonusinmail02.sonusnet.com>
 References: <A5D3AC0FAABBF34A9FD613C14AAC59B71F8AFF@sonusinmail02.sonusnet.com><CAHEKYV4NAdedVx0JM6O5Q4SNaDxk+2mVw_YvNJiQrt7OwQbsKA@mail.gmail.com> <20111005000932.2txxwdy9vrk8wkc8@mail.dalan.us>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
@@ -13,13 +13,31 @@ List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-I was going through the documentations and trying apply the rules. I am=
- allowing all the packets on all the interface as part of default rule =
-then blocking the ssh on eth1. This doesn't seems to be working.
+Here is the iptables rules
+
+-A INPUT -m state --state NEW -m udp -p udp --dport 22 -i eth1 -s 0/0 -=
+j DROP
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 22 -i eth1 -s 0/0 -=
+j DROP
+-A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -i eth+ -j ACCEPT
+-A INPUT -m state --state NEW -m udp -p udp --dport 5353 -d 224.0.0.251=
+ -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 80 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 443 -j ACCEPT
+-A INPUT -m state --state NEW -m udp -p udp --dport 5404 -j ACCEPT
+-A INPUT -m state --state NEW -m udp -p udp --dport 5405 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 11111 -j ACCEPT
+-A INPUT -m state --state NEW -m tcp -p tcp --dport 21064 -j ACCEPT
+-A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A FORWARD -p icmp -j ACCEPT
+-A FORWARD -i lo -j ACCEPT
+-A FORWARD -i eth+ -j ACCEPT
 
 Thanks
-Ganesh=20
-
+Ganesh
 -----Original Message-----
 =46rom: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.ke=
 rnel.org] On Behalf Of David Alanis
