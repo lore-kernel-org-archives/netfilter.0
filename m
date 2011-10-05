@@ -1,41 +1,37 @@
-From: "Netravali Ganesh" <gnetravali@sonusnet.com>
-Subject: RE: How to block ssh on specific ethernet interface
-Date: Wed, 5 Oct 2011 15:46:41 +0530
-Message-ID: <A5D3AC0FAABBF34A9FD613C14AAC59B71F8B55@sonusinmail02.sonusnet.com>
-References: <A5D3AC0FAABBF34A9FD613C14AAC59B71F8AFF@sonusinmail02.sonusnet.com> <alpine.LNX.2.01.1110051214190.20695@frira.zrqbmnf.qr>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: How to block ssh on specific ethernet interface
+Date: Wed, 5 Oct 2011 12:17:16 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1110051214550.20695@frira.zrqbmnf.qr>
+References: <A5D3AC0FAABBF34A9FD613C14AAC59B71F8AFF@sonusinmail02.sonusnet.com> <CAHEKYV4NAdedVx0JM6O5Q4SNaDxk+2mVw_YvNJiQrt7OwQbsKA@mail.gmail.com> <20111005000932.2txxwdy9vrk8wkc8@mail.dalan.us>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-class: urn:content-classes:message
-In-Reply-To: <alpine.LNX.2.01.1110051214190.20695@frira.zrqbmnf.qr>
+In-Reply-To: <20111005000932.2txxwdy9vrk8wkc8@mail.dalan.us>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Jan Engelhardt <jengelh@medozas.de>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: David Alanis <canito@dalan.us>
 Cc: netfilter@vger.kernel.org
 
-SSBoYXZlIGFzc2lnbmVkIHRoZSBJUCB0byBib3RoIGV0aDAgYW5kIGV0aDEgaW50ZXJmYWNlLiBJ
-IGFtIGFibGUgdG8gbG9naW4gdXNpbmcgc3NoIGZyb20gYm90aCB0aGUgSVAuDQoNClRoYW5rcw0K
-R2FuZXNoDQoNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEphbiBFbmdlbGhh
-cmR0IFttYWlsdG86amVuZ2VsaEBtZWRvemFzLmRlXSANClNlbnQ6IFdlZG5lc2RheSwgT2N0b2Jl
-ciAwNSwgMjAxMSAzOjQ0IFBNDQpUbzogTmV0cmF2YWxpIEdhbmVzaA0KQ2M6IG5ldGZpbHRlckB2
-Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6IFJlOiBIb3cgdG8gYmxvY2sgc3NoIG9uIHNwZWNpZmlj
-IGV0aGVybmV0IGludGVyZmFjZQ0KDQpPbiBXZWRuZXNkYXkgMjAxMS0xMC0wNSAwNjoyNCwgTmV0
-cmF2YWxpIEdhbmVzaCB3cm90ZToNCg0KPkhpLi4NCj4NCj5JIGhhdmUgbXVsdGlwbGUgRXRoZXJu
-ZXQgwqBpbnRlcmZhY2Ugb24gdGhlIHN5c3RlbS4gSSBuZWVkIHRvIGVuYWJsZSB0aGUgc3NoIG9u
-IGV0aDAgYW5kIGJsb2NrIHRoZSBzc2ggb24gYWxsIHRoZSBvdGhlciBpbnRlcmZhY2VzLiBCZWxv
-dyBpcyB0aGUgaXB0YWJsZXMgcnVsZXMgSSBhbSB1c2luZy4gVGhpcyBpcyBub3Qgd29ya2luZyBm
-b3JtIHBscyBsbHMgbGV0IG1lIGtub3cgd2hhdCBpcyB3cm9uZy4gSSBhbSB1c2luZyBSSEVMNi4x
-IHN5c3RlbS4NCg0KWW91IGRvbid0IHNlZW0gdG8gcmVjZWl2ZSBhbnkgc3VjaCBwYWNrZXRzLg0K
-DQo+DQo+wqBbcm9vdEBsb2NhbGhvc3Qgfl0jIGlwdGFibGVzIC1BIElOUFVUIC1pIGV0aDEgLXAg
-dGNwIC1tIHRjcCAtLWRwb3J0IDIyIC1qIERST1ANCj7CoFtyb290QGxvY2FsaG9zdCB+XSMgaXB0
-YWJsZXMgLUwgLXYgLW4NCj5DaGFpbiBJTlBVVCAocG9saWN5IEFDQ0VQVCA0MCBwYWNrZXRzLCA1
-MjQwIGJ5dGVzKQ0KPsKgcGt0cyBieXRlcyB0YXJnZXTCoMKgwqDCoCBwcm90IG9wdCBpbsKgwqDC
-oMKgIG91dMKgwqDCoMKgIHNvdXJjZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZGVzdGlu
-YXRpb24NCj7CoMKgwqAgMMKgwqDCoMKgIDAgRFJPUMKgwqDCoMKgwqDCoCB0Y3DCoCAtLcKgIGV0
-aDHCoMKgICrCoMKgwqDCoMKgwqAgMC4wLjAuMC8wwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAwLjAu
-MC4wLzDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0Y3AgZHB0OjIyDQo+DQo+VGhhbmtzDQo+R2FuZXNo
-DQo+DQo+LS0NCj5UbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAi
-dW5zdWJzY3JpYmUgbmV0ZmlsdGVyIiBpbg0KPnRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpv
-cmRvbW9Admdlci5rZXJuZWwub3JnDQo+TW9yZSBtYWpvcmRvbW8gaW5mbyBhdCAgaHR0cDovL3Zn
-ZXIua2VybmVsLm9yZy9tYWpvcmRvbW8taW5mby5odG1sDQo+DQoNCg==
+
+On Wednesday 2011-10-05 07:09, David Alanis wrote:
+>> iptables -A SERVICES  -i eth0 -p tcp -m tcp --dport 22 -m comment
+>> --comment "allow ssh into machine, from eth0" -j ACCEPT
+>
+> Your way is another way of doing it, but isn't Ganesh's rule wrong?
+>
+> The man page says that you can specify the protocol with *-p* or with the match
+> option *-m* so essentially that would be incorrect?
+>
+> MATCH EXTENSIONS
+> iptables can use extended packet matching modules.  These are loaded in two
+> ways: implicitly, when -p or --protocol is specified, or  with  the  -m  or
+> --match options,  followed  by  the  matching  module name; after these,
+> various extra command line options become available, depending on the specific
+> module. You can specify multiple extended match modules in one line, and you
+> can use the -h or --help options after the module has been specified to receive
+> help  specific to that module.
+
+The manpage is a little unclear here. -p and -m are very much doing
+two different things, and omitting -p usually gets you to not
+matching.
