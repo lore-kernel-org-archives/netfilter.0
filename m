@@ -1,50 +1,53 @@
-From: Chris Percol <chris.percol@gmail.com>
-Subject: PREROUTING
-Date: Wed, 5 Oct 2011 12:49:46 +0100
-Message-ID: <CAGwLQT0UUvmuzuY1WkJ30KzMJhMGQggwJw6Rcqc=-O6Hcuam1g@mail.gmail.com>
-References: <CAGwLQT0SRyga4go7uk2ujyPiBaD_K4jvd_XHCXG7YGi1hUxVbw@mail.gmail.com>
+From: James Lay <jlay@slave-tothe-box.net>
+Subject: Re: How to block ssh on specific ethernet interface
+Date: Wed, 05 Oct 2011 06:08:45 -0600
+Message-ID: <CAB1A4CB.C258%jlay@slave-tothe-box.net>
+References: <A5D3AC0FAABBF34A9FD613C14AAC59B71F8AFF@sonusinmail02.sonusnet.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :content-type:content-transfer-encoding;
-        bh=/epC4+Fu7fNjrek+apyZE2JMozqoh3AZaxe0diMPWkk=;
-        b=ZwYnq1Hl1lWo4jdbB8F+3T0j40RD3753vyNhPHn5jygMbvyoVx1rTyq5MEFNkxJEbk
-         qzFWIrXMe3NkwvMXoeP2RwsEp71+t3wKEqhkrr5Fdr1uhjc3ct2y8ymtralu7v7/X5/J
-         6n67WCXMuSYbXMb5xZDPCxXycNFm1ZUp41Xco=
-In-Reply-To: <CAGwLQT0SRyga4go7uk2ujyPiBaD_K4jvd_XHCXG7YGi1hUxVbw@mail.gmail.com>
+In-Reply-To: <A5D3AC0FAABBF34A9FD613C14AAC59B71F8AFF@sonusinmail02.sonusnet.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Netravali Ganesh <gnetravali@sonusnet.com>, Netfilter <netfilter@vger.kernel.org>
 
-Hi,
-I am currently using the following rules on centos iptables to direct
-users from a --to-destination to different samba servers.
-What is the best approach to take to allow the users of 10.91.0.0 to
-also access Samba Server A?
 
-# Samba Server A
-/sbin/iptables -t nat -A PREROUTING -p udp --dport 137 -j DNAT
---to-destination 192.168.1.10 --source 10.90.0.0/16
-/sbin/iptables -t nat -A PREROUTING -p udp --dport 138 -j DNAT
---to-destination=A0192.168.1.10=A0--source 10.90.0.0/16
-/sbin/iptables -t nat -A PREROUTING -p tcp --dport 139 -j DNAT
---to-destination=A0192.168.1.10=A0--source 10.90.0.0/16
-/sbin/iptables -t nat -A PREROUTING -p tcp --dport 445 -j DNAT
---to-destination=A0192.168.1.10=A0--source 10.90.0.0/16
 
-# Samba Server B
-/sbin/iptables -t nat -A PREROUTING -p udp --dport 137 -j DNAT
---to-destination=A0192.168.2.10=A0--source 10.91.0.0/16
-/sbin/iptables -t nat -A PREROUTING -p udp --dport 138 -j DNAT
---to-destination=A0192.168.2.10=A0--source 10.91.0.0/16
-/sbin/iptables -t nat -A PREROUTING -p tcp --dport 139 -j DNAT
---to-destination=A0192.168.2.10=A0--source 10.91.0.0/16
-/sbin/iptables -t nat -A PREROUTING -p tcp --dport 445 -j DNAT
---to-destination=A0192.168.2.10=A0--source 10.91.0.0/16
+On 10/4/11 10:24 PM, "Netravali Ganesh" <gnetravali@sonusnet.com> wrote:
 
-Thanks,
-Chris
+>Hi..
+>
+>I have multiple Ethernet  interface on the system. I need to enable the
+>ssh on eth0 and block the ssh on all the other interfaces. Below is the
+>iptables rules I am using. This is not working form pls lls let me know
+>what is wrong. I am using RHEL6.1 system.
+>
+> [root@localhost ~]# iptables -A INPUT -i eth1 -p tcp -m tcp --dport 22
+>-j DROP
+> [root@localhost ~]# iptables -L -v -n
+>Chain INPUT (policy ACCEPT 40 packets, 5240 bytes)
+> pkts bytes target     prot opt in     out     source
+>destination
+>    0     0 DROP       tcp  --  eth1   *       0.0.0.0/0
+>0.0.0.0/0           tcp dpt:22
+>
+>Thanks
+>Ganesh
+>
+>--
+>To unsubscribe from this list: send the line "unsubscribe netfilter" in
+>the body of a message to majordomo@vger.kernel.org
+>More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+
+Why not just have sshd only listen to the interface you want?  From
+sshd_config:
+
+#Use these options to restrict which interfaces/protocols sshd will bind to
+ListenAddress ::
+ListenAddress 0.0.0.0
+
+James
+
+
