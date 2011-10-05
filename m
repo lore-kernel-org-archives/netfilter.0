@@ -1,51 +1,41 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: How to block ssh on specific ethernet interface
-Date: Wed, 5 Oct 2011 12:14:29 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1110051214190.20695@frira.zrqbmnf.qr>
-References: <A5D3AC0FAABBF34A9FD613C14AAC59B71F8AFF@sonusinmail02.sonusnet.com>
+From: "Netravali Ganesh" <gnetravali@sonusnet.com>
+Subject: RE: How to block ssh on specific ethernet interface
+Date: Wed, 5 Oct 2011 15:46:41 +0530
+Message-ID: <A5D3AC0FAABBF34A9FD613C14AAC59B71F8B55@sonusinmail02.sonusnet.com>
+References: <A5D3AC0FAABBF34A9FD613C14AAC59B71F8AFF@sonusinmail02.sonusnet.com> <alpine.LNX.2.01.1110051214190.20695@frira.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <A5D3AC0FAABBF34A9FD613C14AAC59B71F8AFF@sonusinmail02.sonusnet.com>
+Content-class: urn:content-classes:message
+In-Reply-To: <alpine.LNX.2.01.1110051214190.20695@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="utf-8"
-To: Netravali Ganesh <gnetravali@sonusnet.com>
+Content-Type: text/plain; charset="utf-8"
+To: Jan Engelhardt <jengelh@medozas.de>
 Cc: netfilter@vger.kernel.org
 
-On Wednesday 2011-10-05 06:24, Netravali Ganesh wrote:
-
->Hi..
->
->I have multiple Ethernet =C2=A0interface on the system. I need to enab=
-le the ssh on eth0 and block the ssh on all the other interfaces. Below=
- is the iptables rules I am using. This is not working form pls lls let=
- me know what is wrong. I am using RHEL6.1 system.
-
-You don't seem to receive any such packets.
-
->
->=C2=A0[root@localhost ~]# iptables -A INPUT -i eth1 -p tcp -m tcp --dp=
-ort 22 -j DROP
->=C2=A0[root@localhost ~]# iptables -L -v -n
->Chain INPUT (policy ACCEPT 40 packets, 5240 bytes)
->=C2=A0pkts bytes target=C2=A0=C2=A0=C2=A0=C2=A0 prot opt in=C2=A0=C2=A0=
-=C2=A0=C2=A0 out=C2=A0=C2=A0=C2=A0=C2=A0 source=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 destinatio=
-n
->=C2=A0=C2=A0=C2=A0 0=C2=A0=C2=A0=C2=A0=C2=A0 0 DROP=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0 tcp=C2=A0 --=C2=A0 eth1=C2=A0=C2=A0 *=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 0.0.0.0/0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0 0.0.0.0/0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0 tcp dpt:22
->
->Thanks
->Ganesh
->
->--
->To unsubscribe from this list: send the line "unsubscribe netfilter" i=
-n
->the body of a message to majordomo@vger.kernel.org
->More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
-
+SSBoYXZlIGFzc2lnbmVkIHRoZSBJUCB0byBib3RoIGV0aDAgYW5kIGV0aDEgaW50ZXJmYWNlLiBJ
+IGFtIGFibGUgdG8gbG9naW4gdXNpbmcgc3NoIGZyb20gYm90aCB0aGUgSVAuDQoNClRoYW5rcw0K
+R2FuZXNoDQoNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IEphbiBFbmdlbGhh
+cmR0IFttYWlsdG86amVuZ2VsaEBtZWRvemFzLmRlXSANClNlbnQ6IFdlZG5lc2RheSwgT2N0b2Jl
+ciAwNSwgMjAxMSAzOjQ0IFBNDQpUbzogTmV0cmF2YWxpIEdhbmVzaA0KQ2M6IG5ldGZpbHRlckB2
+Z2VyLmtlcm5lbC5vcmcNClN1YmplY3Q6IFJlOiBIb3cgdG8gYmxvY2sgc3NoIG9uIHNwZWNpZmlj
+IGV0aGVybmV0IGludGVyZmFjZQ0KDQpPbiBXZWRuZXNkYXkgMjAxMS0xMC0wNSAwNjoyNCwgTmV0
+cmF2YWxpIEdhbmVzaCB3cm90ZToNCg0KPkhpLi4NCj4NCj5JIGhhdmUgbXVsdGlwbGUgRXRoZXJu
+ZXQgwqBpbnRlcmZhY2Ugb24gdGhlIHN5c3RlbS4gSSBuZWVkIHRvIGVuYWJsZSB0aGUgc3NoIG9u
+IGV0aDAgYW5kIGJsb2NrIHRoZSBzc2ggb24gYWxsIHRoZSBvdGhlciBpbnRlcmZhY2VzLiBCZWxv
+dyBpcyB0aGUgaXB0YWJsZXMgcnVsZXMgSSBhbSB1c2luZy4gVGhpcyBpcyBub3Qgd29ya2luZyBm
+b3JtIHBscyBsbHMgbGV0IG1lIGtub3cgd2hhdCBpcyB3cm9uZy4gSSBhbSB1c2luZyBSSEVMNi4x
+IHN5c3RlbS4NCg0KWW91IGRvbid0IHNlZW0gdG8gcmVjZWl2ZSBhbnkgc3VjaCBwYWNrZXRzLg0K
+DQo+DQo+wqBbcm9vdEBsb2NhbGhvc3Qgfl0jIGlwdGFibGVzIC1BIElOUFVUIC1pIGV0aDEgLXAg
+dGNwIC1tIHRjcCAtLWRwb3J0IDIyIC1qIERST1ANCj7CoFtyb290QGxvY2FsaG9zdCB+XSMgaXB0
+YWJsZXMgLUwgLXYgLW4NCj5DaGFpbiBJTlBVVCAocG9saWN5IEFDQ0VQVCA0MCBwYWNrZXRzLCA1
+MjQwIGJ5dGVzKQ0KPsKgcGt0cyBieXRlcyB0YXJnZXTCoMKgwqDCoCBwcm90IG9wdCBpbsKgwqDC
+oMKgIG91dMKgwqDCoMKgIHNvdXJjZcKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgZGVzdGlu
+YXRpb24NCj7CoMKgwqAgMMKgwqDCoMKgIDAgRFJPUMKgwqDCoMKgwqDCoCB0Y3DCoCAtLcKgIGV0
+aDHCoMKgICrCoMKgwqDCoMKgwqAgMC4wLjAuMC8wwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCAwLjAu
+MC4wLzDCoMKgwqDCoMKgwqDCoMKgwqDCoCB0Y3AgZHB0OjIyDQo+DQo+VGhhbmtzDQo+R2FuZXNo
+DQo+DQo+LS0NCj5UbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAi
+dW5zdWJzY3JpYmUgbmV0ZmlsdGVyIiBpbg0KPnRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpv
+cmRvbW9Admdlci5rZXJuZWwub3JnDQo+TW9yZSBtYWpvcmRvbW8gaW5mbyBhdCAgaHR0cDovL3Zn
+ZXIua2VybmVsLm9yZy9tYWpvcmRvbW8taW5mby5odG1sDQo+DQoNCg==
