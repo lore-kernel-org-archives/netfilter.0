@@ -1,35 +1,45 @@
-From: Jan Sarenik <jasan@x31.com>
-Subject: Re: track the icmp packet.
-Date: Thu, 6 Oct 2011 19:07:28 +0200
-Message-ID: <20111006170727.GA10297@ams1.x31.com>
-References: <CAGZFCEH59K7gFs5uNVdY_XQrAea+DT5Mes4OzOaxCOdnCtTWKw@mail.gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: ip6tables support for filtering sctp packets with specific
+ ports
+Date: Thu, 6 Oct 2011 19:21:22 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1110061921030.12333@frira.zrqbmnf.qr>
+References: <CAG+XuE607ciut+hUOMUvE_5h98fE4xf7J48Oc9ecanGrFKhvoA@mail.gmail.com> <alpine.LNX.2.01.1110061741130.22969@frira.zrqbmnf.qr> <CAG+XuE5TXknTyie3qmAnV1msD-fe5-NqevYGOVKG6xqkFhBnGw@mail.gmail.com> <alpine.LNX.2.01.1110061906270.20232@frira.zrqbmnf.qr>
+ <CAG+XuE7U6jzLOkT=5U2Y5ghofPthSifK-Rd4kQse9hbhmqrNpQ@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAGZFCEH59K7gFs5uNVdY_XQrAea+DT5Mes4OzOaxCOdnCtTWKw@mail.gmail.com>
+In-Reply-To: <CAG+XuE7U6jzLOkT=5U2Y5ghofPthSifK-Rd4kQse9hbhmqrNpQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Prashant Batra <prashant0100@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hi!
+On Thursday 2011-10-06 19:09, Prashant Batra wrote:
 
-On Thu, Oct 06, 2011 at 09:41:48PM +0530, ratheesh kannoth wrote:
-> I found a program at
-> http://www.netfilter.org/documentation/HOWTO/netfilter-hacking-HOWTO.txt.
-> I modified a little for my purpose. But it is not working. Could you
-> please guide me.
+>Ok,
+>Thanks Jan for pointers, so is this supported in the latest versions?
 
-The program is an example of Netfilter kernel module - not the way to
-go here.
+Yes this is, and don't strip the Cc list, lest TOFU.
 
-You should better use the LOG target, e.g.
+>On Thu, Oct 6, 2011 at 10:37 PM, Jan Engelhardt <jengelh@medozas.de> wrote:
+>> On Thursday 2011-10-06 18:14, Prashant Batra wrote:
+>>
+>>>This is what I am getting-
+>>>
+>>>#ip6tables -I OUTPUT -p sctp --sport 3232:65535 -d 2001:db8:0:242::36
+>>>-s 2001:db8:0:242::37 -j QUEUE
+>>>ip6tables v1.3.6: Unknown arg `--sport'
+>>>Try `ip6tables -h' or 'ip6tables --help' for more information.
+>>
+>> Then your installation is broken, or, yes, now that I see it, your
+>> iptables is just way too old to support SCTP.
+>>
+>
+>
+>
+>-- 
+>Prashant Batra
+>Follow the dreams!!
+>
 
-iptables -I INPUT -p icmp -j LOG --log-level=0 --log-prefix="My ping log: "
-
-which will produce (after "ping localhost") something like:
-
-My ping log: IN=lo OUT= MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=127.0.0.1 DST=127.0.0.1 LEN=84 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=ICMP TYPE=8 CODE=0 ID=4508 SEQ=1
-
-  Best regards, Jasan
