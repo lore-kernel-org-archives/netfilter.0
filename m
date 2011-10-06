@@ -1,118 +1,91 @@
-From: ratheesh kannoth <ratheesh.ksz@gmail.com>
-Subject: track the icmp packet.
-Date: Thu, 6 Oct 2011 21:41:48 +0530
-Message-ID: <CAGZFCEH59K7gFs5uNVdY_XQrAea+DT5Mes4OzOaxCOdnCtTWKw@mail.gmail.com>
+From: Prashant Batra <prashant0100@gmail.com>
+Subject: Re: ip6tables support for filtering sctp packets with specific ports
+Date: Thu, 6 Oct 2011 21:44:37 +0530
+Message-ID: <CAG+XuE5TXknTyie3qmAnV1msD-fe5-NqevYGOVKG6xqkFhBnGw@mail.gmail.com>
+References: <CAG+XuE607ciut+hUOMUvE_5h98fE4xf7J48Oc9ecanGrFKhvoA@mail.gmail.com>
+	<alpine.LNX.2.01.1110061741130.22969@frira.zrqbmnf.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=mime-version:date:message-id:subject:from:to:cc:content-type;
-        bh=UPthOvGYeSAurGJc7TT58eO0kWT+NIImvu27SbYpEus=;
-        b=Ce/6U8mWz2Bm9ef1lNK/cg81Fl7/ayS6mw3xr6dLg77C6tSQFdVuVz+gI79luOFYIT
-         tr3DH4ZKa7LfaNrwpvQM5oMLHyMWngeRwrebyq2Fqt/FqK3ISZTlPee/dc0iTeCbdbYs
-         cnRPoCNaAz+YWBSTPOph6RQ8TX7JPNJ0cOtHg=
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type:content-transfer-encoding;
+        bh=OCX024k+wp3iAmbQr5UcOpxxFoh15XmmWSRvR5RVnVQ=;
+        b=R7oVNrWo+PSNXiSn8JeGItdmiTBqGV0iArObKHxNfQWjGdHHE7X6aLpU2Ml1U5804g
+         kjRQ3dn42tpBLiWBwkg7U2WeA2VSDQqiRj1svu48LL4C0rc1ItkpJt41PbwofIGWkD3j
+         nYvDyjQ761qtOa5CsBXv9VJpH63f8nFPw7De0=
+In-Reply-To: <alpine.LNX.2.01.1110061741130.22969@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter mailing list <netfilter@vger.kernel.org>
-Cc: pneira@lsi.us.es
+Content-Type: text/plain; charset="windows-1252"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org
 
-I have a  linux machine (2.6.32 kernel )
-ip address is 192.168.0.102 and default gw is 192.168.0.1
+This is what I am getting-
 
+#ip6tables -I OUTPUT -p sctp --sport 3232:65535 -d 2001:db8:0:242::36
+-s 2001:db8:0:242::37 -j QUEUE
+ip6tables v1.3.6: Unknown arg `--sport'
+Try `ip6tables -h' or 'ip6tables --help' for more information.
 
-I want to do some "printk " when an echo request is sent from the
-machine to the gateway
-ie ...
-# ping  192.168.0.1       // command should do some printk.
+#ip6tables -I OUTPUT -p udp --sport 3232:65535 -d 2001:db8:0:242::36
+-s 2001:db8:0:242::37 -j QUEUE
+executes just fine and ip6tables -L shows,
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
 
-I found a program at
-http://www.netfilter.org/documentation/HOWTO/netfilter-hacking-HOWTO.txt.
-I modified a little for my purpose. But it is not working. Could you
-please guide me.
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
 
-
-
-@@@@@@@  conn-track-01.c @@@@@@@@@@@@
-// copied from http://www.netfilter.org/documentation/HOWTO/netfilter-hacking-HOWTO.txt
-// and modified
-
-#define FOO_PORT        111
-#include <linux/module.h>
-#include <linux/kernel.h>
-#include <net/netfilter/nf_conntrack.h>
-#include <net/netfilter/nf_conntrack_helper.h>
-#include <linux/ip.h>
-#include <net/netfilter/nf_conntrack_expect.h>
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+QUEUE      udp      2001:db8:0:242::37/128  2001:db8:0:242::36/128udp
+spts:3232:65535
 
 
-static char * dst_ipaddress = "192.168.0.1" ; // my gateway ip address
-is 192.168.0.1
-module_param(dst_ipaddress, charp, 0000);
 
-static const struct nf_conntrack_expect_policy my_expect_policy = {
-        .max_expected           = 3,
-        .timeout                = 180,
-};
+On Thu, Oct 6, 2011 at 9:12 PM, Jan Engelhardt <jengelh@medozas.de> wro=
+te:
+> On Thursday 2011-10-06 16:44, Prashant Batra wrote:
+>
+>>Hello,
+>>
+>>
+>>I am trying to achieve sctp(ipv6) packet filtering using ip6tables.
+>>I have tried to use the following-
+>>
+>>ip6tables -I OUTPUT =96p sctp --sport 3232:65535 -d 2001:db8:0:242::3=
+6
+>>-s 2001:db8:0:242::37 -j QUEUE
+>>
+>>Can someone help me on this?
+>
+> It helps to look at the error message. And using - (U+002D)
+This is what I am getting-
+
+#ip6tables -I OUTPUT -p sctp --sport 3232:65535 -d 2001:db8:0:242::36
+-s 2001:db8:0:242::37 -j QUEUE
+ip6tables v1.3.6: Unknown arg `--sport'
+Try `ip6tables -h' or 'ip6tables --help' for more information.
+
+#ip6tables -I OUTPUT -p udp --sport 3232:65535 -d 2001:db8:0:242::36
+-s 2001:db8:0:242::37 -j QUEUE
+executes just fine and ip6tables -L shows,
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+QUEUE      udp      2001:db8:0:242::37/128  2001:db8:0:242::36/128udp
+spts:3232:65535
+> rather than =96 (U+2013) near "-p".
+>
+Not sure what you mean by (U+2013)
 
 
-static int foo_expectfn(struct nf_conntrack *new)
-{
-
-        return 0;
-}
-
-static int foo_help(struct sk_buff *skb,
-                    unsigned int protoff,
-                   struct nf_conn *ct,
-                    enum ip_conntrack_info conntrackinfo)
-{
-        printk (KERN_INFO "RAT: called the  helper \n");
-        return NF_ACCEPT;
-}
-
-static struct nf_conntrack_helper foo;
-
-int init_conntrack_module(void)
-{
-        memset(&foo, 0, sizeof(struct nf_conntrack_helper));
-
-        foo.name = "foo";
-        foo.me = THIS_MODULE;
-
-        foo.tuple.dst.protonum = IPPROTO_ICMP;
-        foo.tuple.dst.u.icmp.type = 8;
-        foo.tuple.dst.u.icmp.code  = 0;
-        foo.tuple.src.l3num = AF_INET;
-        foo.help = foo_help;
-        foo.expect_policy = &my_expect_policy;
-        {
-          int i = 0;
-          int addr = 0;
-          char *p = (char *)&addr;
-          int a[4];
-          sscanf(dst_ipaddress, "%d.%d.%d.%d", &a[3], &a[2], &a[1], &a[0]);
-          while(i != 4 ) {
-                 *(p + i ) = a[i];
-                  i++;
-          }
-          foo.tuple.dst.u3.ip = addr;
-          foo.tuple.src.u3.ip = 0xc0a80066; //my linux machine  ip
-address is 192.168.0.102
-        }
-
-        return nf_conntrack_helper_register(&foo);
-}
-
-void  fini_conntrack_module(void)
-{
-        nf_conntrack_helper_unregister(&foo);
-}
-
-module_init(init_conntrack_module);
-module_exit(fini_conntrack_module);
-
-//end of program
-
--Ratheesh
+-- Thanks
+Prashant
