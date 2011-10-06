@@ -1,31 +1,46 @@
-From: ratheesh kannoth <ratheesh.ksz@gmail.com>
-Subject: Re: track the icmp packet.
-Date: Thu, 6 Oct 2011 23:13:09 +0530
-Message-ID: <CAGZFCEHaDuG12ip++U5x77yVOps=nNyBNPOEo8rbsT1-sheM-A@mail.gmail.com>
-References: <CAGZFCEH59K7gFs5uNVdY_XQrAea+DT5Mes4OzOaxCOdnCtTWKw@mail.gmail.com>
-	<20111006170727.GA10297@ams1.x31.com>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Order of match extensions
+Date: Thu, 06 Oct 2011 21:55:44 +0100
+Message-ID: <1317934544.26402.2370.camel@andybev-desktop>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=mlwR2a8Xm5e6au+NljEs6bvQVr6ntm8Q8z4aoIAvHEI=;
-        b=KAWFpmnvV2VPI8nxF/L+RBJgjsCwDcCk+vktSl6lofCVkornc8qmaciNM5cQKzYnDU
-         xPS9XtldddKfPUDm6okLf6f0n0iROdoBZ/OsMST/GXCqTlsrddLY4saaatOsDiEWNKNx
-         tg5WO0clEQA9LFLxlb5ccasSoZAy95v9RfTRM=
-In-Reply-To: <20111006170727.GA10297@ams1.x31.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1317934545;
+	bh=vdJDhKdy2Lco+uyq/jskQtdC2FB8xqdLkz0sR/WeN60=;
+	h=Subject:From:To:Content-Type:Date:Message-ID:Mime-Version:
+	 Content-Transfer-Encoding;
+	b=WLzZLQe+uIisxbFYVa7j9nwYyAdtdNamnJS0MjssOdE5CbUxFrnnVcEaSBKcZmx/2
+	 OpZI4B05DMh/FCuHh5RRgZ3rfFUzpFP3J19HFg7Maa6I/Cm63StHr44fITBjoydppN
+	 /3sMqk2d+0GIwa+MDGIOgCr3lK27x6R7RH/TJxrE=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jan Sarenik <jasan@x31.com>
-Cc: Netfilter mailing list <netfilter@vger.kernel.org>, Jan Engelhardt <jengelh@medozas.de>
+To: netfilter@vger.kernel.org
 
-On Thu, Oct 6, 2011 at 10:37 PM, Jan Sarenik <jasan@x31.com> wrote
-> The program is an example of Netfilter kernel module - not the way to
-> go here.
+Hi,
 
-I agree. But i would like to use this  conntrack module and do the "printk".
+Does the order of match extensions matter for iptables rules? Can
+someone explain why the following 2 rules produce different results:
 
--Ratheesh
+
+1. Matches lots of packets as expected:
+
+iptables -t mangle -A FORWARD -i eth0 -m mark ! --mark 99 \
+	-m state --state NEW -m statistic --mode nth --every 1 -j LOG
+
+
+2. Does not match any packets:
+
+iptables -t mangle -A FORWARD -i eth0 -m state --state NEW \
+	-m statistic --mode nth --every 1 -m mark ! --mark 99 -j LOG
+
+
+The only difference is the place of the "mark" match (either at the end
+or the beginning).
+
+(Debian iptables v1.4.8)
+
+Andy
+
+
