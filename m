@@ -1,127 +1,199 @@
-From: Prashant Batra <prashant0100@gmail.com>
+From: "Nikolay S." <nowhere@hakkenden.ath.cx>
 Subject: Re: Working example for NETLINK_FIREWALL protocol
-Date: Fri, 7 Oct 2011 15:55:10 +0530
-Message-ID: <CAG+XuE7A7L-P13yt-+riP=9Gjgqi2Eom9iW_s=joQCOCkuHRpA@mail.gmail.com>
+Date: Fri, 07 Oct 2011 14:26:34 +0400
+Message-ID: <1317983194.8681.19.camel@hakkenden.homenet>
 References: <CAG+XuE4feu1qKw4HGu5vivJRrFaZyFHFGRw362QvPJR4TGkNig@mail.gmail.com>
-	<1317964165.8681.2.camel@hakkenden.homenet>
-	<CAG+XuE7hDq_j2mTEFd9v9fi7PZO1ECdpScwEV_1JtMg4GqKeNw@mail.gmail.com>
-	<1317969880.8681.5.camel@hakkenden.homenet>
-	<CAG+XuE4w7Z8MgvWViKom85bK68rZzXq403Nfj_RhcEpUVACwrA@mail.gmail.com>
-	<1317981623.8681.17.camel@hakkenden.homenet>
+	 <1317964165.8681.2.camel@hakkenden.homenet>
+	 <CAG+XuE7hDq_j2mTEFd9v9fi7PZO1ECdpScwEV_1JtMg4GqKeNw@mail.gmail.com>
+	 <1317969880.8681.5.camel@hakkenden.homenet>
+	 <CAG+XuE4w7Z8MgvWViKom85bK68rZzXq403Nfj_RhcEpUVACwrA@mail.gmail.com>
+	 <1317981623.8681.17.camel@hakkenden.homenet>
+	 <CAG+XuE7A7L-P13yt-+riP=9Gjgqi2Eom9iW_s=joQCOCkuHRpA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type:content-transfer-encoding;
-        bh=A5Qs6a4eU95YPtFQcp3r0JK5Wpd15VaItHf4K0pjSAA=;
-        b=ceF4GczLCA2zHHt1QOCL01TtPV43DkzPo8dq+rl61X//TDr+dtVByAC4gDxvpq3yy3
-         iZWkLx7j2ykMqN1sUleyBsMqTEp/l51L0olStCHkpZlSOvYUSurl8IwBJ79vo1Jo88T7
-         kMoWm5uWW4O3I7fUGkXoYHKvy5n6KZySg2Afw=
-In-Reply-To: <1317981623.8681.17.camel@hakkenden.homenet>
+In-Reply-To: <CAG+XuE7A7L-P13yt-+riP=9Gjgqi2Eom9iW_s=joQCOCkuHRpA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"
-To: "Nikolay S." <nowhere@hakkenden.ath.cx>
+To: Prashant Batra <prashant0100@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-IGNhdCAvcHJvYy9uZXQvbmV0ZmlsdGVyL25mX3F1ZXVlCiAwIE5PTkUKIDEgTk9ORQogMiBpcF9x
-dWV1ZQogMyBOT05FCiA0IE5PTkUKIDUgTk9ORQogNiBOT05FCiA3IE5PTkUKIDggTk9ORQogOSBO
-T05FCjEwIE5PTkUKMTEgTk9ORQoxMiBOT05FCgoKT24gRnJpLCBPY3QgNywgMjAxMSBhdCAzOjMw
-IFBNLCBOaWtvbGF5IFMuIDxub3doZXJlQGhha2tlbmRlbi5hdGguY3g+IHdyb3RlOgo+INCSINCf
-0YLQvSwgMDcvMTAvMjAxMSDQsiAxMjoyMCArMDUzMCwgUHJhc2hhbnQgQmF0cmEg0L/QuNGI0LXR
-gjoKPj4gcGVycm9yIGdpdmVzIDogSW52YWxpZCBhcmd1bWVudCAoZXJybm8gMjIpCj4KPiBDb3Vs
-ZCB5b3UgcGxlYXNlCj4gY2F0IC9wcm9jL25ldC9uZXRmaWx0ZXIvbmZfcXVldWUKPiA/Cj4KPj4K
-Pj4gT24gRnJpLCBPY3QgNywgMjAxMSBhdCAxMjoxNCBQTSwgTmlrb2xheSBTLiA8bm93aGVyZUBo
-YWtrZW5kZW4uYXRoLmN4PiB3cm90ZToKPj4gPiDQkiDQn9GC0L0sIDA3LzEwLzIwMTEg0LIgMTE6
-NTUgKzA1MzAsIFByYXNoYW50IEJhdHJhINC/0LjRiNC10YI6Cj4+ID4+IE9uIEZyaSwgT2N0IDcs
-IDIwMTEgYXQgMTA6MzkgQU0sIE5pa29sYXkgUy4gPG5vd2hlcmVAaGFra2VuZGVuLmF0aC5jeD4g
-d3JvdGU6Cj4+ID4+ID4g0JIg0J/RgtC9LCAwNy8xMC8yMDExINCyIDEwOjI5ICswNTMwLCBQcmFz
-aGFudCBCYXRyYSDQv9C40YjQtdGCOgo+PiA+PiA+PiBIZWxsbywKPj4gPj4gPj4KPj4gPj4gPj4g
-Q2FuIGFueW9uZSBoZWxwIG1lIG91dCB3aXRoIGEgd29ya2luZyBjb2RlIHNhbXBsZSBmb3IgcmVj
-ZWl2aW5nCj4+ID4+ID4+IGZpbHRlcmVkIHBhY2tldHMgdXNpbmcgTkVUTElOS19GSVJFV0FMTCBw
-cm90b2NvbCBpbiB0aGUgdXNlciBzcGFjZS4KPj4gPj4gPj4gSSBoYXZlIHRyaWVkIG91dCB0aGUg
-dGhpbmdzIGluICJodHRwOi8vc21hY2tlZC5vcmcvZG9jcy9uZXRsaW5rLnBkZiIKPj4gPj4gPj4g
-QnV0IHRoZXNlIGFyZSBub3Qgd29ya2luZy4KPj4gPj4gPj4KPj4gPj4gPj4gQW55IGhlbHAgd291
-bGQgYmUgaGlnaGx5IGFwcHJlY2lhdGVkLgo+PiA+PiA+Cj4+ID4+ID4gSGksIGlwX3F1ZXVlIGlz
-IGNvbnNpZGVyZWQgZGVwcmVjYXRlZC4KPj4gPj4gPiBUcnkgdGhpcyBpbnN0ZWFkCj4+ID4+ID4g
-aHR0cDovL3d3dy5uZXRmaWx0ZXIub3JnL3Byb2plY3RzL2xpYm5ldGZpbHRlcl9xdWV1ZS9pbmRl
-eC5odG1sCj4+ID4+ID4KPj4gPj4gVGhhbmtzIE5pa29sYXksIEkgaGF2ZSBpbnN0YWxsZWQgbGli
-bmV0ZmlsdGVyX3F1ZXVlLgo+PiA+PiBCdXQgbm93IHdoZW4gSSBhbSB0cnlpbmcgdG8gcnVuIHRo
-ZSBzYW1lcGxlIHByb3ZpZGVkICJuZnFubF90ZXN0LmMiIGl0Cj4+ID4+IGlzIGZhaWxpbmcgYXQg
-dHJ5aW5nIHRvIHVuYmluZCBBRl9JTkVUIG1vdWR1bGUgInVuYmluZGluZyBleGlzdGluZwo+PiA+
-PiBuZl9xdWV1ZSBoYW5kbGVyIGZvciBBRl9JTkVUIi4KPj4gPj4gTXkga2VybmVsIGlzIDIuNi4z
-OCBhbmQgdGhlIGxzbW9kIGxvb2tzIGxpa2UgdGhpcyAtCj4+ID4+Cj4+ID4+IE1vZHVsZSDCoCDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoFNpemUgwqBVc2VkIGJ5Cj4+ID4+IG5mbmV0bGlua19xdWV1
-ZSDCoCDCoCDCoCDCoDE3MjczIMKgMAo+PiA+PiBuZm5ldGxpbmsgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAxMjc4NiDCoDEgbmZuZXRsaW5rX3F1ZXVlCj4+ID4+IGlwX3F1ZXVlIMKgIMKgIMKgIMKgIMKg
-IMKgIMKgIDEyODY5IMKgMAo+PiA+PiBobWFjIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDEy
-NjQ5IMKgMAo+PiA+PiBuZnMgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgMjgxNDQ1IMKgMgo+
-PiA+PiBuZnNkIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgMjQ2OTc3IMKgOAo+PiA+PiBsb2Nr
-ZCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoDcwNjYyIMKgMiBuZnMsbmZzZAo+PiA+PiBuZnNf
-YWNsIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgMTI1MDEgwqAyIG5mcyxuZnNkCj4+ID4+IGF1dGhf
-cnBjZ3NzIMKgIMKgIMKgIMKgIMKgIMKgMzY2ODUgwqAyIG5mcyxuZnNkCj4+ID4+IHN1bnJwYyDC
-oCDCoCDCoCDCoCDCoCDCoCDCoCDCoDE3NDI5MiDCoDE5IG5mcyxuZnNkLGxvY2tkLG5mc19hY2ws
-YXV0aF9ycGNnc3MKPj4gPj4gZXhwb3J0ZnMgwqAgwqAgwqAgwqAgwqAgwqAgwqAgMTI2MDMgwqAx
-IG5mc2QKPj4gPj4gYXV0b2ZzNCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoDI3NTU0IMKgMgo+PiA+
-PiBhZl9wYWNrZXQgwqAgwqAgwqAgwqAgwqAgwqAgwqAyNjA4NCDCoDIKPj4gPj4gcGNzcGtyIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIMKgIDEyNTE1IMKgMAo+PiA+PiBpZ2IgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgMTAxNzY1IMKgMAo+PiA+PiBpeGdiZSDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCAxMjU2MjMgwqAwCj4+ID4+IG1kaW8gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgMTI1NTIg
-wqAxIGl4Z2JlCj4+ID4+IGJueDIgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgNzIyMjAgwqAw
-Cj4+ID4+IGkyY19pODAxIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDE3MDIxIMKgMAo+PiA+PiBpMmNf
-Y29yZSDCoCDCoCDCoCDCoCDCoCDCoCDCoCAyMzE1NCDCoDEgaTJjX2k4MDEKPj4gPj4gcGF0YV9h
-Y3BpIMKgIMKgIMKgIMKgIMKgIMKgIMKgMTI2NjQgwqAwCj4+ID4+IGF0YV9nZW5lcmljIMKgIMKg
-IMKgIMKgIMKgIMKgMTI0NjkgwqAwCj4+ID4+IHNyX21vZCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCAyMTY5NyDCoDAKPj4gPj4gY2Ryb20gwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqA0MDg0OSDC
-oDEgc3JfbW9kCj4+ID4+IGlUQ09fd2R0IMKgIMKgIMKgIMKgIMKgIMKgIMKgIDE3MDE4IMKgMAo+
-PiA+PiBqb3lkZXYgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgMTc0MDIgwqAwCj4+ID4+IHVzYl9z
-dG9yYWdlIMKgIMKgIMKgIMKgIMKgIMKgMzU1MTAgwqAwCj4+ID4+IHVzYl9saWJ1c3VhbCDCoCDC
-oCDCoCDCoCDCoCAxNjcyOCDCoDEgdXNiX3N0b3JhZ2UKPj4gPj4gb3B0aW9uIMKgIMKgIMKgIMKg
-IMKgIMKgIMKgIMKgIDIwNjg5IMKgMAo+PiA+PiB1c2Jfd3dhbiDCoCDCoCDCoCDCoCDCoCDCoCDC
-oCAxNzE4OCDCoDEgb3B0aW9uCj4+ID4+IHVzYnNlcmlhbCDCoCDCoCDCoCDCoCDCoCDCoCDCoDMx
-NTIzIMKgMiBvcHRpb24sdXNiX3d3YW4KPj4gPj4gdXNiaGlkIMKgIMKgIMKgIMKgIMKgIMKgIMKg
-IMKgIDI2ODk0IMKgMAo+PiA+PiBlaGNpX2hjZCDCoCDCoCDCoCDCoCDCoCDCoCDCoCA0NDI0NSDC
-oDAKPj4gPj4gdWhjaV9oY2QgwqAgwqAgwqAgwqAgwqAgwqAgwqAgMjcwNTQgwqAwCj4+ID4+IHVz
-YmNvcmUgwqAgwqAgwqAgwqAgwqAgwqAgwqAgMTE3OTc1IMKgOQo+PiA+PiB1c2Jfc3RvcmFnZSx1
-c2JfbGlidXN1YWwsb3B0aW9uLHVzYl93d2FuLHVzYnNlcmlhbCx1c2JoaWQsZWhjaV9oY2QsdWhj
-aV9oY2QKPj4gPj4gZG1fbW9kIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDY3NjE1IMKgMAo+PiA+
-PiBzY3RwIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgMTc4NzQ3IMKgNgo+PiA+PiBjcmMzMmMg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgMTI2MzAgwqAxCj4+ID4+IGxpYmNyYzMyYyDCoCDCoCDC
-oCDCoCDCoCDCoCDCoDEyMzk0IMKgMSBzY3RwCj4+ID4+IGV4dDMgwqAgwqAgwqAgwqAgwqAgwqAg
-wqAgwqAgwqAxMjQ4NDMgwqAxCj4+ID4+IGpiZCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
-oDQ1ODA2IMKgMSBleHQzCj4+ID4+IG1iY2FjaGUgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAxMjg5
-MCDCoDEgZXh0Mwo+PiA+PiB1bml4IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDI2NzM2IMKg
-MjcKPj4gPj4gYWFjcmFpZCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoDcwNTM2IMKgMAo+PiA+PiBh
-dGFfcGlpeCDCoCDCoCDCoCDCoCDCoCDCoCDCoCAyNTUyNiDCoDIKPj4gPj4gbGliYXRhIMKgIMKg
-IMKgIMKgIMKgIMKgIMKgIMKgMTYzODExIMKgMyBwYXRhX2FjcGksYXRhX2dlbmVyaWMsYXRhX3Bp
-aXgKPj4gPj4gc2RfbW9kIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDM0ODMwIMKgMwo+PiA+PiBj
-Y2lzcyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoDk5NzE2IMKgMAo+PiA+PiBhaWM3eHh4IMKg
-IMKgIMKgIMKgIMKgIMKgIMKgIDEyMDYxMSDCoDAKPj4gPj4gbWVnYXJhaWRfc2FzIMKgIMKgIMKg
-IMKgIMKgIDcxOTg3IMKgMAo+PiA+PiBtZWdhcmFpZF9tYm94IMKgIMKgIMKgIMKgIMKgMzUwMjAg
-wqAwCj4+ID4+IG1lZ2FyYWlkX21tIMKgIMKgIMKgIMKgIMKgIMKgMTcxNjMgwqAxIG1lZ2FyYWlk
-X21ib3gKPj4gPj4gbXB0c2FzIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIDQ4NjUxIMKgMAo+PiA+
-PiBzY3NpX3RyYW5zcG9ydF9zYXMgwqAgwqAgMjQ0NzggwqAxIG1wdHNhcwo+PiA+PiBtcHRzcGkg
-wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgMTc4NDggwqAwCj4+ID4+IHNjc2lfdHJhbnNwb3J0X3Nw
-aSDCoCDCoCAyMzIxNSDCoDIgYWljN3h4eCxtcHRzcGkKPj4gPj4gbXB0c2NzaWggwqAgwqAgwqAg
-wqAgwqAgwqAgwqAgMjY4MTIgwqAyIG1wdHNhcyxtcHRzcGkKPj4gPj4gbXB0YmFzZSDCoCDCoCDC
-oCDCoCDCoCDCoCDCoCDCoDY1MjY2IMKgMyBtcHRzYXMsbXB0c3BpLG1wdHNjc2loCj4+ID4+IHNj
-c2lfbW9kIMKgIMKgIMKgIMKgIMKgIMKgIMKgMTM1MjQwIMKgMTQKPj4gPj4gc3JfbW9kLHVzYl9z
-dG9yYWdlLGFhY3JhaWQsbGliYXRhLHNkX21vZCxjY2lzcyxhaWM3eHh4LG1lZ2FyYWlkX3Nhcyxt
-ZWdhcmFpZF9tYm94LG1wdHNhcyxzY3NpX3RyYW5zcG9ydF9zYXMKPj4gPj4gLG1wdHNwaSxzY3Np
-X3RyYW5zcG9ydF9zcGksbXB0c2NzaWgKPj4gPj4KPj4gPj4gQ291bGQgeW91IHBsZWFzZSBwb2lu
-dCBvdXQgdGhlIHByb2JsZW0uCj4+ID4KPj4gPiBXaGF0IGlzIHRoZSBlcnJubyB2YWx1ZT8KPj4g
-PiBZb3UgY2FuIHVzZSBwZXJyb3IoKSB0byBzZWUgaGVscGZ1bCBlcnJvciBtZXNzYWdlCj4+ID4K
-Pj4gPgo+PiA+Pgo+PiA+Pgo+PiA+PiA+IFRoZXJlIGFyZSBhbHNvIHNldmVyYWwgdXNlZnVsIGV4
-YW1wbGVzCj4+ID4+ID4gaHR0cDovL3d3dy5uZXRmaWx0ZXIub3JnL3Byb2plY3RzL2xpYm5ldGZp
-bHRlcl9xdWV1ZS9kb3h5Z2VuL21vZHVsZXMuaHRtbAo+PiA+PiA+Cj4+ID4+ID4KPj4gPj4gPj4g
-LS0gVGhhbmtzCj4+ID4+ID4+IFByYXNoYW50IEJhdHJhCj4+ID4+ID4+IC0tCj4+ID4+ID4+IFRv
-IHVuc3Vic2NyaWJlIGZyb20gdGhpcyBsaXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmliZSBu
-ZXRmaWx0ZXIiIGluCj4+ID4+ID4+IHRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRvbW9A
-dmdlci5rZXJuZWwub3JnCj4+ID4+ID4+IE1vcmUgbWFqb3Jkb21vIGluZm8gYXQgwqBodHRwOi8v
-dmdlci5rZXJuZWwub3JnL21ham9yZG9tby1pbmZvLmh0bWwKPj4gPj4gPgo+PiA+PiA+Cj4+ID4+
-ID4KPj4gPj4KPj4gPj4KPj4gPj4KPj4gPgo+PiA+Cj4+ID4KPj4KPj4KPj4KPj4gLS0KPj4gUHJh
-c2hhbnQgQmF0cmEKPj4gRm9sbG93IHRoZSBkcmVhbXMhIQo+PiBOcnliWMendl4p3rp7Lm4reter
-e2F5IMqH2pksaiBmaHogdyBqOit2d2ptIHpaK92iaiIhCj4KPgo+CgoKCi0tIApQcmFzaGFudCBC
-YXRyYQpGb2xsb3cgdGhlIGRyZWFtcyEhCg==
+=D0=92 =D0=9F=D1=82=D0=BD, 07/10/2011 =D0=B2 15:55 +0530, Prashant Batr=
+a =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> cat /proc/net/netfilter/nf_queue
+>  0 NONE
+>  1 NONE
+>  2 ip_queue
+>  3 NONE
+>  4 NONE
+>  5 NONE
+>  6 NONE
+>  7 NONE
+>  8 NONE
+>  9 NONE
+> 10 NONE
+> 11 NONE
+> 12 NONE
+>=20
+
+Can you please unload ip_queue module and run the sample one more time?
+
+>=20
+> On Fri, Oct 7, 2011 at 3:30 PM, Nikolay S. <nowhere@hakkenden.ath.cx>=
+ wrote:
+> > =D0=92 =D0=9F=D1=82=D0=BD, 07/10/2011 =D0=B2 12:20 +0530, Prashant =
+Batra =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >> perror gives : Invalid argument (errno 22)
+> >
+> > Could you please
+> > cat /proc/net/netfilter/nf_queue
+> > ?
+> >
+> >>
+> >> On Fri, Oct 7, 2011 at 12:14 PM, Nikolay S. <nowhere@hakkenden.ath=
+=2Ecx> wrote:
+> >> > =D0=92 =D0=9F=D1=82=D0=BD, 07/10/2011 =D0=B2 11:55 +0530, Prasha=
+nt Batra =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >> >> On Fri, Oct 7, 2011 at 10:39 AM, Nikolay S. <nowhere@hakkenden.=
+ath.cx> wrote:
+> >> >> > =D0=92 =D0=9F=D1=82=D0=BD, 07/10/2011 =D0=B2 10:29 +0530, Pra=
+shant Batra =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> >> >> >> Hello,
+> >> >> >>
+> >> >> >> Can anyone help me out with a working code sample for receiv=
+ing
+> >> >> >> filtered packets using NETLINK_FIREWALL protocol in the user=
+ space.
+> >> >> >> I have tried out the things in "http://smacked.org/docs/netl=
+ink.pdf"
+> >> >> >> But these are not working.
+> >> >> >>
+> >> >> >> Any help would be highly appreciated.
+> >> >> >
+> >> >> > Hi, ip_queue is considered deprecated.
+> >> >> > Try this instead
+> >> >> > http://www.netfilter.org/projects/libnetfilter_queue/index.ht=
+ml
+> >> >> >
+> >> >> Thanks Nikolay, I have installed libnetfilter_queue.
+> >> >> But now when I am trying to run the sameple provided "nfqnl_tes=
+t.c" it
+> >> >> is failing at trying to unbind AF_INET moudule "unbinding exist=
+ing
+> >> >> nf_queue handler for AF_INET".
+> >> >> My kernel is 2.6.38 and the lsmod looks like this -
+> >> >>
+> >> >> Module                  Size  Used by
+> >> >> nfnetlink_queue        17273  0
+> >> >> nfnetlink              12786  1 nfnetlink_queue
+> >> >> ip_queue               12869  0
+> >> >> hmac                   12649  0
+> >> >> nfs                   281445  2
+> >> >> nfsd                  246977  8
+> >> >> lockd                  70662  2 nfs,nfsd
+> >> >> nfs_acl                12501  2 nfs,nfsd
+> >> >> auth_rpcgss            36685  2 nfs,nfsd
+> >> >> sunrpc                174292  19 nfs,nfsd,lockd,nfs_acl,auth_rp=
+cgss
+> >> >> exportfs               12603  1 nfsd
+> >> >> autofs4                27554  2
+> >> >> af_packet              26084  2
+> >> >> pcspkr                 12515  0
+> >> >> igb                   101765  0
+> >> >> ixgbe                 125623  0
+> >> >> mdio                   12552  1 ixgbe
+> >> >> bnx2                   72220  0
+> >> >> i2c_i801               17021  0
+> >> >> i2c_core               23154  1 i2c_i801
+> >> >> pata_acpi              12664  0
+> >> >> ata_generic            12469  0
+> >> >> sr_mod                 21697  0
+> >> >> cdrom                  40849  1 sr_mod
+> >> >> iTCO_wdt               17018  0
+> >> >> joydev                 17402  0
+> >> >> usb_storage            35510  0
+> >> >> usb_libusual           16728  1 usb_storage
+> >> >> option                 20689  0
+> >> >> usb_wwan               17188  1 option
+> >> >> usbserial              31523  2 option,usb_wwan
+> >> >> usbhid                 26894  0
+> >> >> ehci_hcd               44245  0
+> >> >> uhci_hcd               27054  0
+> >> >> usbcore               117975  9
+> >> >> usb_storage,usb_libusual,option,usb_wwan,usbserial,usbhid,ehci_=
+hcd,uhci_hcd
+> >> >> dm_mod                 67615  0
+> >> >> sctp                  178747  6
+> >> >> crc32c                 12630  1
+> >> >> libcrc32c              12394  1 sctp
+> >> >> ext3                  124843  1
+> >> >> jbd                    45806  1 ext3
+> >> >> mbcache                12890  1 ext3
+> >> >> unix                   26736  27
+> >> >> aacraid                70536  0
+> >> >> ata_piix               25526  2
+> >> >> libata                163811  3 pata_acpi,ata_generic,ata_piix
+> >> >> sd_mod                 34830  3
+> >> >> cciss                  99716  0
+> >> >> aic7xxx               120611  0
+> >> >> megaraid_sas           71987  0
+> >> >> megaraid_mbox          35020  0
+> >> >> megaraid_mm            17163  1 megaraid_mbox
+> >> >> mptsas                 48651  0
+> >> >> scsi_transport_sas     24478  1 mptsas
+> >> >> mptspi                 17848  0
+> >> >> scsi_transport_spi     23215  2 aic7xxx,mptspi
+> >> >> mptscsih               26812  2 mptsas,mptspi
+> >> >> mptbase                65266  3 mptsas,mptspi,mptscsih
+> >> >> scsi_mod              135240  14
+> >> >> sr_mod,usb_storage,aacraid,libata,sd_mod,cciss,aic7xxx,megaraid=
+_sas,megaraid_mbox,mptsas,scsi_transport_sas
+> >> >> ,mptspi,scsi_transport_spi,mptscsih
+> >> >>
+> >> >> Could you please point out the problem.
+> >> >
+> >> > What is the errno value?
+> >> > You can use perror() to see helpful error message
+> >> >
+> >> >
+> >> >>
+> >> >>
+> >> >> > There are also several useful examples
+> >> >> > http://www.netfilter.org/projects/libnetfilter_queue/doxygen/=
+modules.html
+> >> >> >
+> >> >> >
+> >> >> >> -- Thanks
+> >> >> >> Prashant Batra
+> >> >> >> --
+> >> >> >> To unsubscribe from this list: send the line "unsubscribe ne=
+tfilter" in
+> >> >> >> the body of a message to majordomo@vger.kernel.org
+> >> >> >> More majordomo info at  http://vger.kernel.org/majordomo-inf=
+o.html
+> >> >> >
+> >> >> >
+> >> >> >
+> >> >>
+> >> >>
+> >> >>
+> >> >
+> >> >
+> >> >
+> >>
+> >>
+> >>
+> >> --
+> >> Prashant Batra
+> >> Follow the dreams!!
+> >> NrybX=C7=A7v^)=DE=BA{.n+z=D7=AB{ay =CA=87=DA=99,j fhz w j:+vwjm zZ=
++=DD=A2j"!
+> >
+> >
+> >
+>=20
+>=20
+>=20
+
+
