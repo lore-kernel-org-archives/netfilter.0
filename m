@@ -1,45 +1,67 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: Order of match extensions
-Date: Thu, 06 Oct 2011 23:34:44 +0100
-Message-ID: <1317940484.26402.2462.camel@andybev-desktop>
-References: <1317934544.26402.2370.camel@andybev-desktop>
-	 <alpine.LNX.2.01.1110062258400.26555@frira.zrqbmnf.qr>
+From: "Netravali Ganesh" <gnetravali@sonusnet.com>
+Subject: RE: How to block ssh on specific ethernet interface
+Date: Fri, 7 Oct 2011 08:31:01 +0530
+Message-ID: <A5D3AC0FAABBF34A9FD613C14AAC59B71F8BD0@sonusinmail02.sonusnet.com>
+References: <A5D3AC0FAABBF34A9FD613C14AAC59B71F8AFF@sonusinmail02.sonusnet.com> <CAB1A4CB.C258%jlay@slave-tothe-box.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1317940485;
-	bh=R77VAqIZ5kdYMjW4d+m+GRK1R06e9nNv38ju34w052I=;
-	h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-ID:Mime-Version:Content-Transfer-Encoding;
-	b=kkO8olLNj0mwRj5o+2rYG6Gkij64Pf2dzez73R1VdAI+DbDLs61hB5JJ59qHXoX4h
-	 9+sXlVwbjycgd2wN6wZSgQ0aKbLbHkmshaI5C3Cq4eeNY4mqyqQ9Q2U2sxHXAtC1t9
-	 DYiR8l94xI9SnWCHfWXsh+skaiZEWOvSxHGmiiWY=
-In-Reply-To: <alpine.LNX.2.01.1110062258400.26555@frira.zrqbmnf.qr>
+Content-class: urn:content-classes:message
+In-Reply-To: <CAB1A4CB.C258%jlay@slave-tothe-box.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org
+To: James Lay <jlay@slave-tothe-box.net>, Netfilter <netfilter@vger.kernel.org>
 
-On Thu, 2011-10-06 at 22:59 +0200, Jan Engelhardt wrote:
-> On Thursday 2011-10-06 22:55, Andrew Beverley wrote:
-> 
-> >Hi,
-> >
-> >Does the order of match extensions matter for iptables rules?
-> 
-> Clearly.
+I don't want to make any dependency on IP. If IP get changes for any
+reason ssh will be allowed.
 
-Okay... so why does this rule appear to not match anything?
+Thanks
+Ganesh
 
-iptables -t mangle -A FORWARD -i eth0 -m state --state NEW \
-        -m statistic --mode nth --every 1 -m mark ! --mark 99 -j LOG
+-----Original Message-----
+From: James Lay [mailto:jlay@slave-tothe-box.net] 
+Sent: Wednesday, October 05, 2011 5:39 PM
+To: Netravali Ganesh; Netfilter
+Subject: Re: How to block ssh on specific ethernet interface
 
-Is the importance of the order documented anywhere?
 
-Thanks,
 
-Andy
+On 10/4/11 10:24 PM, "Netravali Ganesh" <gnetravali@sonusnet.com> wrote:
+
+>Hi..
+>
+>I have multiple Ethernet  interface on the system. I need to enable the
+>ssh on eth0 and block the ssh on all the other interfaces. Below is the
+>iptables rules I am using. This is not working form pls lls let me know
+>what is wrong. I am using RHEL6.1 system.
+>
+> [root@localhost ~]# iptables -A INPUT -i eth1 -p tcp -m tcp --dport 22
+>-j DROP
+> [root@localhost ~]# iptables -L -v -n
+>Chain INPUT (policy ACCEPT 40 packets, 5240 bytes)
+> pkts bytes target     prot opt in     out     source
+>destination
+>    0     0 DROP       tcp  --  eth1   *       0.0.0.0/0
+>0.0.0.0/0           tcp dpt:22
+>
+>Thanks
+>Ganesh
+>
+>--
+>To unsubscribe from this list: send the line "unsubscribe netfilter" in
+>the body of a message to majordomo@vger.kernel.org
+>More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+
+Why not just have sshd only listen to the interface you want?  From
+sshd_config:
+
+#Use these options to restrict which interfaces/protocols sshd will bind
+to
+ListenAddress ::
+ListenAddress 0.0.0.0
+
+James
 
 
