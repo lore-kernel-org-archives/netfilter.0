@@ -1,35 +1,42 @@
-From: Marek Kierdelewicz <marek@piasta.pl>
-Subject: Re: Need to remove 802.1Q tagging
-Date: Fri, 7 Oct 2011 23:36:00 +0200
-Message-ID: <20111007233600.50820c0b@catus>
-References: <CAFcM1Eo0X77tfC4yYHjLPJs=xPGyrV-WUMnCnEWvbD2p5uW+9Q@mail.gmail.com>
-	<20111007215212.68a88b56@catus>
-	<CAFcM1Ep1KrqDbSZdJQhS4_69NYfAFd9C7MqNz+tzqg8j-pskxg@mail.gmail.com>
+From: Prashant Batra <prashant0100@gmail.com>
+Subject: user-space ipsec implementation using netfilter_firewall
+Date: Sat, 8 Oct 2011 12:20:34 +0530
+Message-ID: <CAG+XuE5sguwOVK1oasmD2ou8BMZEN=F333h9P0X12uHE1oLawg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAFcM1Ep1KrqDbSZdJQhS4_69NYfAFd9C7MqNz+tzqg8j-pskxg@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=dr4WHHDc8mavQikS19xu2d6eW/Bijw7f+pJBvpq5I1U=;
+        b=ml2fMHcuUY16UziPvk7OO7hKbee96l3TnqFWI3lKCtxiaW8ow4xMOC2yJ84lFTcGZ0
+         0ls/M5+FFN8jXcnIM46fxk/XkVbTCNoN3khN/J9k+Fs8qdQHZMlBEQFToxeRT0VtWOqu
+         gfmRcoZWD1bPjkIFD91m8r9/3J4i2Y8v0dF0A=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi,
+Hello,
 
->Would the following work
->ebtables -A INPUT -i eth0.10 -o eth1 -j DROP    <-------- Block
->eth0.10 vlan from sending traffic to eth1
->ebtables -A INPUT -i eth0.+ -o eth1 -j DROP      <------ BLock all
->vlans from sending traffic to eth1
+I am thinking to implement user-space IPSec using NETLINK_FIREWALL
+protocol. This is how, I am thinking to proceed-
 
-That was an error on my end. I should have written "You should probably
-filter traffic on that bridge and allow ONLY eth0.x <-> eth1".
+-Get the plain packet sent out using OUTPUT rule with QUEUE target in
+the user space. Encapsulate the packet and send out ESP packet.
+-Similarly get the ESP packet sent from the peer gateway, get it into
+user space with INPUT ESP based rule, decrypt the packet
+and send it to the application using raw sockets.
 
-You can achieve this with following rule:
+But I have some doubts whether this will work just fine or not.
+Lets say that I am trying to IPSec SCTP data. The client is using
+kernel-sctp, but as I block the sctp packet(say connect) using
+firewall,
+convert it to esp packet and send out, will the sctp layer of kernel
+maintain the sctp states properly.
+Similarly, for recv part.
 
-ebtables -A FORWARD -i eth0.+ -o eth0.+ -j DROP
+Please comment.
 
-Default policy is accept, so only specified traffic will be filtered.On
-
-Best regards,
-Marek Kierdelewicz
+-- Thanks
+Prashant Batra
