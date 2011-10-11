@@ -1,50 +1,37 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH 06/24] netfilter: Remove unnecessary OOM logging
- messages
-Date: Tue, 11 Oct 2011 02:15:05 +0200
-Message-ID: <20111011001505.GB30117@1984>
-References: <cover.1314650069.git.joe@perches.com>
- <13c1c12486cae409dfa5254b1435e660f2b17e05.1314650069.git.joe@perches.com>
- <4E5CDBAA.6040001@trash.net>
- <20110830.135502.179848097213434762.davem@davemloft.net>
- <4E5E092E.80507@trash.net>
+From: J Webster <jw.jwebster@gmail.com>
+Subject: masquerade error
+Date: Tue, 11 Oct 2011 08:01:12 +0100
+Message-ID: <4E93E9B8.3010005@gmail.com>
 Mime-Version: 1.0
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4E5E092E.80507@trash.net>
-Sender: linux-kernel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>
-Cc: David Miller <davem@davemloft.net>, joe@perches.com, bart.de.schuymer@pandora.be, wensong@linux-vs.org, horms@verge.net.au, ja@ssi.bg, shemminger@linux-foundation.org, kuznet@ms2.inr.ac.ru, jmorris@namei.org, yoshfuji@linux-ipv6.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, bridge@lists.linux-foundation.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, lvs-devel@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=message-id:date:from:user-agent:mime-version:to:subject
+         :content-type:content-transfer-encoding;
+        bh=8yY7gfeWxBsWptWGS4UZMN9uofI1DehpaZ4bmRRXpJk=;
+        b=H4AiZxGESDsOcsqVVjL0ijJNoPMU1QaRq+ERYvDECZtAGXzH/OYiYJHeMIXJTyry8d
+         tLfZZKXPEzaQEv5VrCF920bMgc/08M0HZveNxygymJsgFgozFvEj3h0P4qb+WXN8BEi/
+         peedZRanBVn/YbfBFcatQ47Fcu4DFwe6kUUPg=
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Wed, Aug 31, 2011 at 12:13:02PM +0200, Patrick McHardy wrote:
-> On 30.08.2011 19:55, David Miller wrote:
-> > From: Patrick McHardy <kaber@trash.net>
-> > Date: Tue, 30 Aug 2011 14:46:34 +0200
-> > 
-> >> On 29.08.2011 23:17, Joe Perches wrote:
-> >>> Removing unnecessary messages saves code and text.
-> >>>
-> >>> Site specific OOM messages are duplications of a generic MM
-> >>> out of memory message and aren't really useful, so just
-> >>> delete them.
-> >>
-> >> Looks good to me. Do you want me to apply this patch or are you
-> >> intending to have the entire series go through Dave?
-> > 
-> > I'm happy with subsystem folks taking things in if they want, the
-> > B.A.T.M.A.N. guys did this earlier today for example.
-> 
-> OK, thanks.
-> 
-> Applied after fixing up some minor rejects in nf_nat_snmp_basic.c,
-> thanks Joe.
+I am trying to add forwarding rules for openvpn but I get an unknown
+error on my virtual server.
 
-I have rescued this patch and put into this tree:
+Also, after running the command lines, none of the additions are
+entered into the iptables script.
 
-http://1984.lsi.us.es/git/?p=net-next/.git;a=shortlog;h=refs/heads/nf-next
+[root@vps8259 myscripts]# echo 1>  /proc/sys/net/ipv4/ip_forward
+[root@vps8259 myscripts]# iptables -A FORWARD -m state --state  RELATED,ESTABLISHED -j ACCEPT
+[root@vps8259 myscripts]# iptables -A FORWARD -s 10.8.0.0/24 -j ACCEPT
+[root@vps8259 openvpn]# iptables -A FORWARD -s 172.16.0.0/24 -j ACCEPT
+[root@vps8259 openvpn]# iptables -A FORWARD -j REJECT
+[root@vps8259 openvpn]# iptables -t nat -A POSTROUTING -s 10.8.0.0/24  -o venet0 -j MASQUERADE
+iptables: Unknown error 4294967295
+[root@vps8259 openvpn]# iptables -t nat -A POSTROUTING -s 10.8.0.0/24  -o venet0 -j MASQUERADE
+iptables: Unknown error 4294967295
+  		 	   		
 
-At that time (kernel.org problems), we had no public tree and Patrick
-temporarily stored in his internal tree.
