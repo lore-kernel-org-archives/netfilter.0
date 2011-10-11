@@ -1,49 +1,33 @@
-From: Jan Sarenik <jasan@x31.com>
+From: J Webster <jw.jwebster@gmail.com>
 Subject: Re: masquerade error
-Date: Tue, 11 Oct 2011 15:31:26 +0200
-Message-ID: <20111011133126.GA9363@ams1.x31.com>
+Date: Tue, 11 Oct 2011 14:43:40 +0100
+Message-ID: <4E94480C.4050604@googlemail.com>
 References: <4E93E9B8.3010005@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=message-id:date:from:user-agent:mime-version:to:subject:references
+         :in-reply-to:content-type:content-transfer-encoding;
+        bh=Eq97QP2O2fQYry88ObE1wbEihk1XeTFQ5GAcBc3Qn38=;
+        b=C+GpObbWppkaydw6CVmzhvhg0L3Yd4nqyWVqdG6P8zXqCau265T2fnjaCeeVxULFQK
+         SaOqHB+OtBXlMU4P5rK3ClYonrlW9x6N5MEK61zGThnrvTw/DG/6YGdik2IuWMNmGR+H
+         g7d4iYWRW0Dy3WVTHMgmSKOxZiy+zJB+7K5JM=
 In-Reply-To: <4E93E9B8.3010005@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi J!
+>  The problem here may be venet0 interface. As far as I know, there is no
+>  support for "nat" tables on OpenVZ virtual network interfaces.
 
-On Tue, Oct 11, 2011 at 08:01:12AM +0100, J Webster wrote:
-> Also, after running the command lines, none of the additions are
-> entered into the iptables script.
+Thanks. If that is the case, then how do I postroute on a virtual network?
 
-The commands are not changing any script, only the current in-kernel
-tables. To save the changes, use "iptables-save" command, but your
-distribution may have a designated mechanism like
-"/etc/init.d/iptables save" - you have to find out, or reply with
-the name of your distribution.
+>  [root@vps8259 openvpn]# iptables -t nat -A POSTROUTING -s 10.8.0.0/24  -o venet0 -j MASQUERADE
+>  iptables: Unknown error 4294967295
+>  [root@vps8259 openvpn]# iptables -t nat -A POSTROUTING -s 10.8.0.0/24  -o venet0 -j MASQUERADE
+>  iptables: Unknown error 4294967295
+  
 
-> [root@vps8259 myscripts]# echo 1>  /proc/sys/net/ipv4/ip_forward
-> [root@vps8259 myscripts]# iptables -A FORWARD -m state --state  RELAT=
-ED,ESTABLISHED -j ACCEPT
-> [root@vps8259 myscripts]# iptables -A FORWARD -s 10.8.0.0/24 -j ACCEP=
-T
-> [root@vps8259 openvpn]# iptables -A FORWARD -s 172.16.0.0/24 -j ACCEP=
-T
-> [root@vps8259 openvpn]# iptables -A FORWARD -j REJECT
-
-All the above commands look good.
-
-> [root@vps8259 openvpn]# iptables -t nat -A POSTROUTING -s 10.8.0.0/24=
-  -o venet0 -j MASQUERADE
-> iptables: Unknown error 4294967295
-> [root@vps8259 openvpn]# iptables -t nat -A POSTROUTING -s 10.8.0.0/24=
-  -o venet0 -j MASQUERADE
-> iptables: Unknown error 4294967295
-
-The problem here may be venet0 interface. As far as I know, there is no
-support for "nat" tables on OpenVZ virtual network interfaces.
-
-  Best regards, J=E1n
