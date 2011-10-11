@@ -1,57 +1,50 @@
-From: Prashant Batra <prashant0100@gmail.com>
-Subject: Re: user-space ipsec implementation using netfilter_firewall
-Date: Sat, 8 Oct 2011 17:30:29 +0530
-Message-ID: <CAG+XuE6_B4pNuNwvtuh6HxevWXOMGcAhss2BCoOjPgsPtP0tZA@mail.gmail.com>
-References: <CAG+XuE5sguwOVK1oasmD2ou8BMZEN=F333h9P0X12uHE1oLawg@mail.gmail.com>
-	<alpine.LNX.2.01.1110081127180.2367@frira.zrqbmnf.qr>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH 06/24] netfilter: Remove unnecessary OOM logging
+ messages
+Date: Tue, 11 Oct 2011 02:15:05 +0200
+Message-ID: <20111011001505.GB30117@1984>
+References: <cover.1314650069.git.joe@perches.com>
+ <13c1c12486cae409dfa5254b1435e660f2b17e05.1314650069.git.joe@perches.com>
+ <4E5CDBAA.6040001@trash.net>
+ <20110830.135502.179848097213434762.davem@davemloft.net>
+ <4E5E092E.80507@trash.net>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=BU73HqP6tloETWmxovyJKbH+YwHPHjshxD5OFxPTV/w=;
-        b=bDwGjNg2FI9gP1tq+3Ee7x3fyAN5jFlVx6Yl/biL9TGdUX21p/3hVZr5Tg4wOF42Z1
-         XPJvqgXSgfkChoDFW8X5tN9KvrTjPeSssR+eftPm64Nkk06iMJhQaENKpsULdWrw0lJt
-         Il3jTC9SkWFe0Pigl/vAL9UQMINrHmRQkWE+c=
-In-Reply-To: <alpine.LNX.2.01.1110081127180.2367@frira.zrqbmnf.qr>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <4E5E092E.80507@trash.net>
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org
+To: Patrick McHardy <kaber@trash.net>
+Cc: David Miller <davem@davemloft.net>, joe@perches.com, bart.de.schuymer@pandora.be, wensong@linux-vs.org, horms@verge.net.au, ja@ssi.bg, shemminger@linux-foundation.org, kuznet@ms2.inr.ac.ru, jmorris@namei.org, yoshfuji@linux-ipv6.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, bridge@lists.linux-foundation.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, lvs-devel@vger.kernel.org
 
-On Sat, Oct 8, 2011 at 3:09 PM, Jan Engelhardt <jengelh@medozas.de> wrote:
-> On Saturday 2011-10-08 08:50, Prashant Batra wrote:
->
->>Hello,
->>
->>I am thinking to implement user-space IPSec using NETLINK_FIREWALL
->>protocol. This is how, I am thinking to proceed-
->>
->>-Get the plain packet sent out using OUTPUT rule with QUEUE target in
->>the user space. Encapsulate the packet and send out ESP packet.
->>-Similarly get the ESP packet sent from the peer gateway, get it into
->>user space with INPUT ESP based rule, decrypt the packet
->>and send it to the application using raw sockets.
->>
->>But I have some doubts whether this will work just fine or not.
->
-> _Outputting_ data to a raw socket fd is not going to make it appear in
-> the _input path_.
->
-The packets sent by the raw socket, has be be captured by with OUTPUT rule.
-I think this will happen, but I am sure that some things will not work.
-> Don't make it more complicated than it needs to be.
->
-> The kernel ESP encoder/decoder works just fine.
->
-Actually, I have to do it, just because SCTP over IPv6 is not
-processed by the IPSec in the kernel.
-Have tried to put some patches, but the kernel is not very stable after that.
-I am using 2.6.38 kernel. If you have some info about a stable patch,
-please help me.
+On Wed, Aug 31, 2011 at 12:13:02PM +0200, Patrick McHardy wrote:
+> On 30.08.2011 19:55, David Miller wrote:
+> > From: Patrick McHardy <kaber@trash.net>
+> > Date: Tue, 30 Aug 2011 14:46:34 +0200
+> > 
+> >> On 29.08.2011 23:17, Joe Perches wrote:
+> >>> Removing unnecessary messages saves code and text.
+> >>>
+> >>> Site specific OOM messages are duplications of a generic MM
+> >>> out of memory message and aren't really useful, so just
+> >>> delete them.
+> >>
+> >> Looks good to me. Do you want me to apply this patch or are you
+> >> intending to have the entire series go through Dave?
+> > 
+> > I'm happy with subsystem folks taking things in if they want, the
+> > B.A.T.M.A.N. guys did this earlier today for example.
+> 
+> OK, thanks.
+> 
+> Applied after fixing up some minor rejects in nf_nat_snmp_basic.c,
+> thanks Joe.
 
-Regards,
-Prashant
+I have rescued this patch and put into this tree:
+
+http://1984.lsi.us.es/git/?p=net-next/.git;a=shortlog;h=refs/heads/nf-next
+
+At that time (kernel.org problems), we had no public tree and Patrick
+temporarily stored in his internal tree.
