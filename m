@@ -1,45 +1,28 @@
-From: Michal =?utf-8?q?Kube=C4=8Dek?= <mkubecek@suse.cz>
-Subject: Re: limit module timer precision issue
-Date: Thu, 13 Oct 2011 15:08:19 +0200
-Message-ID: <201110131508.20000.mkubecek@suse.cz>
-References: <20111013014310.4369d65e@wwwwww-701SD> <201110131323.04339.mkubecek@suse.cz> <alpine.LNX.2.01.1110131420310.16250@frira.zrqbmnf.qr>
-Reply-To: mkubecek@suse.cz
+From: Jan Sarenik <jasan@x31.com>
+Subject: Re: masquerade error
+Date: Thu, 13 Oct 2011 16:09:00 +0200
+Message-ID: <20111013140900.GB9363@ams1.x31.com>
+References: <4E93E9B8.3010005@gmail.com> <4E94480C.4050604@googlemail.com> <4E95D9E2.4010002@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1110131420310.16250@frira.zrqbmnf.qr>
+Content-Disposition: inline
+In-Reply-To: <4E95D9E2.4010002@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="macroman"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
-Cc: Jan Engelhardt <jengelh@medozas.de>
 
-On Thursday 13 of October 2011, Jan Engelhardt wrote:
-> Well, burst does not specify any rate, so claiming "per second" (or
-> "per jiffy") does not make sense anyway.
+Hi J!
 
-It does. The match works with jiffy granularity and if you look at the=20
-source, you'll see that no more than burst packets per jiffy can pass.
+On Wed, Oct 12, 2011 at 07:18:10PM +0100, J Webster wrote:
+> Thanks. If that is the case, then how do I postroute on a virtual network?
 
-> --limit 2000/s should always give you 2000 packets somehow
-> distributed over 1 second for any burst value <=3D 2000. The fact tha=
-t
-> it does not (you observe 1000/s) hints towards what I said earlier
-> that high-rate matching in xt_limit and xt_hashlimit has
-> inaccuracies.
+According to http://forum.openvz.org/index.php?t=msg&goto=42693&
+you have to enable iptable_nat on host.
 
-This is not an inaccuracy, this is simple result of how the token bucke=
-t=20
-algorithm works. You can never get more than burst packets per jiffy=20
-simply because you don't get more than burst tokens. The rate you get i=
-s=20
-approximately min(avg, burst*HZ).
+The error you are getting is anyway strange and I suppose it
+can be a version mismatch between host kernel and guest iptables
+(either too recent or too old iptables on your virtual node).
 
-The same problem exists in TBF: no matter what rate do you specify, rea=
-l=20
-rate is effectively limited by burst*HZ (and by mtu*HZ). Fort TBF, this=
-=20
-is even mentioned in the documentation.
-
-                                                          Michal Kube=C4=
-=8Dek
+  HTH, Jasan
