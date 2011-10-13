@@ -1,51 +1,37 @@
-From: <aletum@lavabit.com>
-Subject: Re: nfqueue stuck on queue length >299
-Date: Thu, 13 Oct 2011 14:05:52 +0000
-Message-ID: <20111013140552.7e49e1cc@wwwwww-701SD>
+From: Michal =?utf-8?q?Kube=C4=8Dek?= <mkubecek@suse.cz>
+Subject: Re: limit module timer precision issue
+Date: Thu, 13 Oct 2011 13:23:04 +0200
+Message-ID: <201110131323.04339.mkubecek@suse.cz>
+References: <20111013014310.4369d65e@wwwwww-701SD> <201110130910.33120.mkubecek@suse.cz> <alpine.LNX.2.01.1110131214530.28308@frira.zrqbmnf.qr>
+Reply-To: mkubecek@suse.cz
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.01.1110131214530.28308@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: Text/Plain; charset="macroman"
 To: netfilter@vger.kernel.org
+Cc: Jan Engelhardt <jengelh@medozas.de>
 
-On 10/13/2011 03:27 PM, abirvalg@lavabit.com wrote:
-> On 10/13/2011 02:29 PM, abirvalg@lavabit.com wrote:  
->> In my app one thread sends packets to NFQUEUE and another thread processes that \
->> NFQUEUE at the rate of 10 packets per second. I watch the state of NFQUEUEs using \
->> watch -n 1 'cat /proc/netnetfilter/nfnetlink_queue' I noticed that if I \
->> nfq_set_queue_maxlen to 299, then when the queue fills up to 299 (3rd column), the \
->> overflow gets dropped. As soon as new packets cease to arrive, dequeuing begins at \
->> the rate of 10 per second until the 3rd columnn reaches 0. All as expected. 
->> But as soon as I set NFQUEUE maxlen to 300, the following happens - the overflow \
->> gets dropped; but when I stop generating new packets, no dequeuing is taking place, \
->> the 3rd column seems to be stuck on 299 and from then on packets for that NFQUEUE \
->> don't get queued anymore but are dropped instead. The NFQUEUE still processes \
->> packets at the rate of 10 per second, but instead of queuing the overflow, it \
->> simply drops it. 
->> Is this a bug or a feature? Sure seems like a bug to me.  
->   
->> Are you using some form of lock (like a mutex) to protect your nfq
->> calls? In my experience you need those.  
-> 
-> Thank you for you suggestion. It didn't work, alhough I held my breath for a second.
-> I inserted
-> pthread_mutex_lock ( &nfqrepeat_mutex ) 
-> at the start of the queue handler and
-> pthread_mutex_unlock ( &nfqrepeat_mutex )
-> right before return 0;
-> This time around the 3rd column did overcome the vicious 299 figure but stuck on 359 and exhibited the same begaviour as I described above when it would get stuck on 299.
-> 
-> Some kind of voodoo going on?  
+On Thursday 13 of October 2011, Jan Engelhardt wrote:
+> >Not exactly. With "--limit-burst 1", no more than one packet per
+> >jiffy can pass the test. You may have only 30 NEW packets per
+> >second but it doesn't mean one packet every 1/30 s. And if there
+> >are two (or more) NEW packets within one jiffy, only the first
+> >passes the first rule.
+>=20
+> One packet per time quantum (which is 1 second here, not 1 jiffy).
 
->Did you protect the verdict call by the same mutex? Thats what we do in
->suricata.
+I don't think so. With "--limit 2000/s --limit-burst 1" I can pass much=
+=20
+more than one packet per second (but no more than 1000 per second with=20
+HZ=3D1000).
 
-I have :
-        nfq_set_verdict ( ( struct nfq_q_handle * ) qh, id, NF_REPEAT, 0, NULL );
-	pthread_mutex_unlock ( &nfqrepeat_mutex );
-	return 0;
+In fact, kernel doesn't even get this information, it works only with=20
+rate and it gets exactly the same value from iptables command with e.g.=
+=20
+'3600/h', '60/m' and '1/s'.
 
-So, yes verdict is covered by mutex.
-
+                                                         Michal Kube=C4=
+=8Dek
