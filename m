@@ -1,43 +1,20 @@
-From: Michal =?iso-8859-2?q?Kube=E8ek?= <mkubecek@suse.cz>
-Subject: Re: limit module timer precision issue
-Date: Thu, 13 Oct 2011 09:10:33 +0200
-Message-ID: <201110130910.33120.mkubecek@suse.cz>
-References: <20111013014310.4369d65e@wwwwww-701SD>
-Reply-To: mkubecek@suse.cz
+From: <abirvalg@lavabit.com>
+Subject: nfqueue stuck on queue length >299
+Date: Thu, 13 Oct 2011 12:29:38 +0000
+Message-ID: <20111013122938.1535fcc9@wwwwww-701SD>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20111013014310.4369d65e@wwwwww-701SD>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-On Thursday 13 of October 2011, abirvalg@lavabit.com wrote:
-> Hi, it seems to me that limit module has issues with timer precision.
-> The only iptables rules i have are:
->=20
-> iptables  -I OUTPUT 1 -m state --state NEW -m limit --limit 2000/sec
-> --limit-burst 1  -j NFQUEUE --queue-num 11220 iptables -I OUTPUT 2
-> -m state --state NEW -j NFQUEUE --queue-num 11222
->=20
-> iptables  -I INPUT 1 -m state --state NEW -m limit --limit 2000/sec
-> --limit-burst  1 -j NFQUEUE --queue-num 11221 iptables -I INPUT 2 -m
-> state --state NEW -j NFQUEUE --queue-num 11222
->=20
-> (Both NFQUEUE 11220 and 11221 pass only NF_ACCEPT or NF_DROP
-> verdicts.)
->=20
-> If I understand -m limit correctly, only if there is more than 2000
-> NEW connections going in or out, NFQUEUE 11222 will trigger.
+In my app one thread sends packets to NFQUEUE and another thread processes that NFQUEUE at the rate of 10 packets per second.
+I watch the state of NFQUEUEs using watch -n 1 'cat /proc/netnetfilter/nfnetlink_queue'
+I noticed that if I nfq_set_queue_maxlen to 299, then when the queue fills up to 299 (3rd column), the overflow gets dropped. As soon as new packets cease to arrive, dequeuing begins at the rate of 10 per second until the 3rd columnn reaches 0. All as expected.
 
-Not exactly. With "--limit-burst 1", no more than one packet per jiffy=20
-can pass the test. You may have only 30 NEW packets per second but it=20
-doesn't mean one packet every 1/30 s. And if there are two (or more) NE=
-W=20
-packets within one jiffy, only the first passes the first rule.
+But as soon as I set NFQUEUE maxlen to 300, the following happens - the overflow gets dropped; but when I stop generating new packets, no dequeuing is taking place, the 3rd column seems to be stuck on 299 and from then on packets for that NFQUEUE don't get queued anymore but are dropped instead. The NFQUEUE still processes packets at the rate of 10 per second, but instead of queuing the overflow, it simply drops it.
 
-Increasing the value of --limit-burst should help.
+Is this a bug or a feature? Sure seems like a bug to me.
 
-                                                         Michal Kube=E8=
-ek
