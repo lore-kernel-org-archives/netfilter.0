@@ -1,97 +1,178 @@
-From: "Rob Sterenborg (lists)" <lists@sterenborg.info>
+From: J Webster <jw.jwebster@gmail.com>
 Subject: Re: masquerade error
-Date: Fri, 14 Oct 2011 12:27:19 +0200
-Message-ID: <1318588039.3179.16.camel@ns014530.dcyb.net>
-References: <4E93E9B8.3010005@gmail.com> <4E94480C.4050604@googlemail.com>
-	 <4E95D9E2.4010002@gmail.com>  <4E97E602.3000809@gmail.com>
-	 <1318582536.3179.5.camel@ns014530.dcyb.net>
-	 <1318583118.3179.6.camel@ns014530.dcyb.net>
-	 <4E980738.5040202@googlemail.com>  <4E980794.7040906@googlemail.com>
+Date: Fri, 14 Oct 2011 12:45:01 +0100
+Message-ID: <4E9820BD.7030503@googlemail.com>
+References: <4E93E9B8.3010005@gmail.com> <4E94480C.4050604@googlemail.com>  <4E95D9E2.4010002@gmail.com>  <4E97E602.3000809@gmail.com>  <1318582536.3179.5.camel@ns014530.dcyb.net>  <1318583118.3179.6.camel@ns014530.dcyb.net>  <4E980738.5040202@googlemail.com>  <4E980794.7040906@googlemail.com> <1318588039.3179.16.camel@ns014530.dcyb.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4E980794.7040906@googlemail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=message-id:date:from:user-agent:mime-version:to:subject:references
+         :in-reply-to:content-type:content-transfer-encoding;
+        bh=A2XR7uRikMwC69d2l5P6Bw1LdZmBglJlynfy4L0wa0M=;
+        b=GISBbOja42//iRUst5l7Yh0R5bgDmTjYMfDMXvUUBq5ygTcB8Pv7HXvJqk24Nk+zJG
+         kZ4cjME3ay1bEcknE2ieSowr8nH0BCpo2FZsSVOno1eNBdwYVvyocY/lAc1q6e2/WZte
+         6tuS6V11XfIqZsfK6WemvE5V4H9nkTbCGmMjg=
+In-Reply-To: <1318588039.3179.16.camel@ns014530.dcyb.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: J Webster <jw.jwebster@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "Rob Sterenborg (lists)" <lists@sterenborg.info>, netfilter@vger.kernel.org
 
-On Fri, 2011-10-14 at 10:57 +0100, J Webster wrote:
-> The problem is that the connection comes from a VPN client so I do not 
-> usually know the external IP.
+Thanks - I will swap those around for the moment and try some things.
+For reference, in case there are any obvious problems, my ifconfig, 
+route, iptbales, and openvpn.coinf are here:
 
-Yes, well, if MASQUERADE is disabled and you can only use SNAT but you
-don't know the --to address, then it may not be possible to do what you
-want because you can't create a valid rule. Maybe someone else has a
-better idea or the VPS provider can shed some more light.
+[B]IFCONFIG:[/B]
+[root@vps8259 ~]# ifconfig
+lo        Link encap:Local Loopback
+           inet addr:127.0.0.1  Mask:255.0.0.0
+           UP LOOPBACK RUNNING  MTU:16436  Metric:1
+           RX packets:319 errors:0 dropped:0 overruns:0 frame:0
+           TX packets:319 errors:0 dropped:0 overruns:0 carrier:0
+           collisions:0 txqueuelen:0
+           RX bytes:39513 (38.5 KiB)  TX bytes:39513 (38.5 KiB)
 
-> All I know is that they connect on the tun/vpn networks of 10.8.0.0/24 
-> and 172.16.0.0/24.
-> In the mangle section do I put:
-> *mangle
-> :PREROUTING ACCEPT [19588:10233482]
-> :INPUT ACCEPT [19588:10233482]
-> :FORWARD ACCEPT [0:0]
-> :OUTPUT ACCEPT [18858:10334564]
-> -A POSTROUTING -s 10.8.0.0/255.255.255.0 -o venet0 -j SNAT --to-source 
-> xxx.xxx.xxx.xxx
-> -A POSTROUTING -s 172.16.0.0/255.255.255.0 -o venet0 -j SNAT --to-source 
-> xxx.xxx.xxx.xxx
-> :POSTROUTING ACCEPT [18858:10334564]
-> COMMIT
+tun0      Link encap:UNSPEC  HWaddr 
+00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
+           inet addr:172.16.0.1  P-t-P:172.16.0.2  Mask:255.255.255.255
+           UP POINTOPOINT RUNNING NOARP MULTICAST  MTU:1460  Metric:1
+           RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+           TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+           collisions:0 txqueuelen:100
+           RX bytes:0 (0.0 b)  TX bytes:0 (0.0 b)
 
-Did you actually check 'man iptables'? Because the man says:
+tun1      Link encap:UNSPEC  HWaddr 
+00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
+           inet addr:10.8.0.1  P-t-P:10.8.0.2  Mask:255.255.255.255
+           UP POINTOPOINT RUNNING NOARP MULTICAST  MTU:1500  Metric:1
+           RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+           TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+           collisions:0 txqueuelen:100
+           RX bytes:0 (0.0 b)  TX bytes:0 (0.0 b)
 
-'SNAT    This  target  is only valid in the nat table, in the
-POSTROUTING chain.'
+venet0    Link encap:UNSPEC  HWaddr 
+00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
+           inet addr:127.0.0.1  P-t-P:127.0.0.1  Bcast:0.0.0.0  
+Mask:255.255.255.255
+           UP BROADCAST POINTOPOINT RUNNING NOARP  MTU:1500  Metric:1
+           RX packets:147594 errors:0 dropped:0 overruns:0 frame:0
+           TX packets:148686 errors:0 dropped:0 overruns:0 carrier:0
+           collisions:0 txqueuelen:0
+           RX bytes:89417786 (85.2 MiB)  TX bytes:82468044 (78.6 MiB)
 
-Unless there's something missing (or I'm missing something) in the
-above, you're trying to use the mangle table to do NAT.
-
-> *filter
-> :INPUT ACCEPT [0:0]
-> :FORWARD ACCEPT [0:0]
-> :OUTPUT ACCEPT [18851:10333352]
-> :RH-Firewall-1-INPUT - [0:0]
-> -A INPUT -j RH-Firewall-1-INPUT
-> -A FORWARD -j RH-Firewall-1-INPUT
-> -A RH-Firewall-1-INPUT -i lo -j ACCEPT
-> -A RH-Firewall-1-INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
-> -A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j 
-> ACCEPT
-> -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 20 -m state --state NEW -j 
-> ACCEPT
-> -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 21 -m state --state NEW -j 
-> ACCEPT
-> -A RH-Firewall-1-INPUT -p udp -m udp --dport 53 -m state --state NEW -j 
-> ACCEPT
-> -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 53 -m state --state NEW -j 
-> ACCEPT
-> -A RH-Firewall-1-INPUT -p udp -m udp --dport 123 -m state --state NEW -j 
-> ACCEPT
-> -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 8002 -m state --state NEW 
-> -j ACCEPT
-> -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 9001 -m state --state NEW 
-> -j ACCEPT
-> -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 80 -m state --state NEW -j 
-> ACCEPT
-> -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 8080 -m state --state 
-> NEW,RELATED,ESTABLISHED -j ACCEPT
-> -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 1935 -j ACCEPT
-> -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 443 -j ACCEPT
-> -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 1194 -j ACCEPT
-> -A RH-Firewall-1-INPUT -p udp -m udp --dport 1194 -j ACCEPT
-> -A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
-> COMMIT
-> *nat
-> :PREROUTING ACCEPT [1234:59200]
-> :POSTROUTING ACCEPT [338:21268]
-> :OUTPUT ACCEPT [338:21268]
-> COMMIT
+venet0:0  Link encap:UNSPEC  HWaddr 
+00-00-00-00-00-00-00-00-00-00-00-00-00-00-00-00
+           inet addr:192.xxx.xx.xx  P-t-P:192.xxx.xx.xx  
+Bcast:192.xxx.xx.xx  Mask:255.255.255.255
+           UP BROADCAST POINTOPOINT RUNNING NOARP  MTU:1500  Metric:1
 
 
---
-Rob
+[B]OPENVPN.CONF[/B] (I have a udp service also but one thing at a time)
 
+port 1194
+proto tcp
+dev tun
+;crl-verify /etc/openvpn/easy-rsa/crl.pem
+client-config-dir /etc/openvpn/ccd
+ca /etc/openvpn/easy-rsa/ca.crt
+cert /etc/openvpn/easy-rsa/ovpnsrv1.crt
+key /etc/openvpn/easy-rsa/ovpnsrv1.key
+dh /etc/openvpn/easy-rsa/dh1024.pem
+server 172.16.0.0 255.255.255.0
+push "redirect-gateway"
+push "dhcp-option DNS 213.171.192.249"
+push "dhcp-option DNS 213.171.192.245"
+ifconfig-pool-persist ipp.txt
+keepalive 10 120
+comp-lzo
+user nobody
+group users
+tun-mtu 1460
+persist-key
+persist-tun
+status openvpn-status.log
+verb 3
+;duplicate-cn # (this means several users can use the same key)
+log /var/log/openvpn.log
+
+
+[B]IPTABLES[/B]
+
+# Generated by iptables-save v1.3.5 on Fri Sep 16 04:59:49 2011
+*mangle
+:PREROUTING ACCEPT [19588:10233482]
+:INPUT ACCEPT [19588:10233482]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [18858:10334564]
+#-A POSTROUTING -s 10.8.0.0/255.255.255.0 -o venet0 -j SNAT --to-source 
+192.xxx.xx.xx
+#-A POSTROUTING -s 172.16.0.0/255.255.255.0 -o venet0 -j SNAT 
+--to-source 192.xxx.xx.xx
+:POSTROUTING ACCEPT [18858:10334564]
+COMMIT
+# Completed on Fri Sep 16 04:59:49 2011
+# Generated by iptables-save v1.3.5 on Fri Sep 16 04:59:49 2011
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [18851:10333352]
+:RH-Firewall-1-INPUT - [0:0]
+-A INPUT -j RH-Firewall-1-INPUT
+-A FORWARD -j RH-Firewall-1-INPUT
+-A RH-Firewall-1-INPUT -i lo -j ACCEPT
+-A RH-Firewall-1-INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j 
+ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 20 -m state --state NEW -j 
+ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 21 -m state --state NEW -j 
+ACCEPT
+-A RH-Firewall-1-INPUT -p udp -m udp --dport 53 -m state --state NEW -j 
+ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 53 -m state --state NEW -j 
+ACCEPT
+-A RH-Firewall-1-INPUT -p udp -m udp --dport 123 -m state --state NEW -j 
+ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 8002 -m state --state NEW 
+-j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 9001 -m state --state NEW 
+-j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 80 -m state --state NEW -j 
+ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 8080 -m state --state 
+NEW,RELATED,ESTABLISHED -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 1935 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 443 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 1194 -j ACCEPT
+-A RH-Firewall-1-INPUT -p udp -m udp --dport 1194 -j ACCEPT
+-A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
+COMMIT
+# Completed on Fri Sep 16 04:59:49 2011
+# Generated by iptables-save v1.3.5 on Fri Sep 16 04:59:49 2011
+*nat
+:PREROUTING ACCEPT [1234:59200]
+:POSTROUTING ACCEPT [338:21268]
+:OUTPUT ACCEPT [338:21268]
+COMMIT
+# Completed on Fri Sep 16 04:59:49 2011
+
+
+[B]ROUTE[/B]
+
+[root@vps8259 openvpn]# route
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use 
+Iface
+172.16.0.2      *               255.255.255.255 UH    0      0        0 tun0
+10.8.0.2        *               255.255.255.255 UH    0      0        0 tun1
+172.16.0.0      172.16.0.2      255.255.255.0   UG    0      0        0 tun0
+10.8.0.0        10.8.0.2        255.255.255.0   UG    0      0        0 tun1
+192.0.2.0       *               255.255.255.0   U     0      0        0 
+venet0
+169.254.0.0     *               255.255.0.0     U     0      0        0 
+venet0
+default         192.0.2.1       0.0.0.0         UG    0      0        0 
+venet0
 
