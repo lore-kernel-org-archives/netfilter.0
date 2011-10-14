@@ -1,40 +1,31 @@
-From: fuzzy_4711 <fuzzy_4711@gmx.de>
-Subject: Re: Gateway With Multiple Internal Networks
-Date: Fri, 14 Oct 2011 18:21:33 +0200
-Message-ID: <4E98618D.2040509@gmx.de>
-References: <CAEH2fGyA9+sXV6toN9f7azg0emBnrTtsE-Q_CdJ_KfQ1bSe5dQ@mail.gmail.com>
-Reply-To: fuzzy_4711@gmx.de
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ipset and connection tracking
+Date: Fri, 14 Oct 2011 19:24:56 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1110141922460.729@blackhole.kfki.hu>
+References: <B3B3BE5A55ED7743A83865E234A22B1D1B91F6A922@SBSPORT.portnet.local>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAEH2fGyA9+sXV6toN9f7azg0emBnrTtsE-Q_CdJ_KfQ1bSe5dQ@mail.gmail.com>
+In-Reply-To: <B3B3BE5A55ED7743A83865E234A22B1D1B91F6A922@SBSPORT.portnet.local>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Aaron Clausen <mightymartianca@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Torsten Bitterlich <bit@port.de>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
+On Fri, 14 Oct 2011, Torsten Bitterlich wrote:
 
+> I would like to know if there are any restrictions to connection 
+> tracking when ipsets are used. Can netfilter still properly track 
+> connections for NAT-ed and MASQUERADE-d connections?
 
--------- Original - Text --------
+Connection tracking is independent from ipset. There's no relation or 
+dependency between them. Why do you ask it?
 
-> This is driving me crazy, and I cannot seem to get it working
-> properly.  I have a gateway with two internal networks served by
-> different interfaces:
-> 
-> eth0 - External interface
-> eth1 - Internal network #1
-> eth2 - Internal network #2
-> tun0 - OpenVPN server interface
-> 
-
-Being root@gateway, please provide the output of:
-ip route show table all
-ip maddress show
-ip address show
-
-Could you try to find where the packages are being dropped by using
-wireshark, if the error occurs?
-
-Thanks.
--fuz
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
