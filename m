@@ -1,52 +1,55 @@
-From: Michal =?iso-8859-2?q?Kube=E8ek?= <mkubecek@suse.cz>
-Subject: Re: How to block ssh on specific ethernet interface
-Date: Fri, 14 Oct 2011 09:33:46 +0200
-Message-ID: <201110140933.46546.mkubecek@suse.cz>
-References: <A5D3AC0FAABBF34A9FD613C14AAC59B71F8AFF@sonusinmail02.sonusnet.com> <CAHEKYV4jyZdRVyzsbpDbzVfLBSqruAPYguU4gqiBviKPqevxbA@mail.gmail.com> <A5D3AC0FAABBF34A9FD613C14AAC59B71F8F52@sonusinmail02.sonusnet.com>
-Reply-To: mkubecek@suse.cz
+From: J Webster <jw.jwebster@gmail.com>
+Subject: Re: masquerade error
+Date: Fri, 14 Oct 2011 08:34:26 +0100
+Message-ID: <4E97E602.3000809@gmail.com>
+References: <4E93E9B8.3010005@gmail.com> <4E94480C.4050604@googlemail.com> <4E95D9E2.4010002@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <A5D3AC0FAABBF34A9FD613C14AAC59B71F8F52@sonusinmail02.sonusnet.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=message-id:date:from:user-agent:mime-version:to:subject:references
+         :in-reply-to:content-type:content-transfer-encoding;
+        bh=aMQQQGZxOYf8wI85ffGlv6BxCNT0y4FOoN/3F+7LSl8=;
+        b=pz0qobiSV3OQvxzDwxAgKJnVZOd96NDEZosMesEyjj7EYIGcxa/KuA7I5K4u+IRBYw
+         Ok/a/d34V1roz1dQY2Uxe9jH6ZuuYQsZBtkOwfN2zur6Li4H36bJ6XtjZ9JmuI+fo5nC
+         6Iq7ZnIxVLQE2Mw4+Uw4fBaqk9gqPF3jf07Nw=
+In-Reply-To: <4E95D9E2.4010002@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-On Friday 14 of October 2011, Netravali Ganesh wrote:
-> Anyone have any idea if there is any internal routing of packets
-> happens from eth0 to eth1 when we configure both the interface for
-> same subnet IP ?
+The hosting company have told me that masquerade is not activated:
 
-If a packet with our address as destination (more precisely, a packet=20
-for which a route with type local is selected) arrives on any interface=
-,=20
-it is processed as incoming packet (and goes to INPUT chain in filter=20
-table). It doesn't matter whether the address is set on the interface=20
-which the packet arrived on or to any other interface.
+MASQUERADE target isn\'t activate on your VPS.
+You can use SNAT or DNAT target in nat tables.
 
-More interesting question is why did the packet arrive at eth0 but to=20
-answer this we would have to know more about the configuration and=20
-network topology.
+So, how can I use SNAT and DNAT to route the traffic to my OpenVPN?
 
-> > #Use these options to restrict which interfaces/protocols sshd will
-> > bind to ListenAddress ::
-> > ListenAddress 0.0.0.0
-=2E..
-> That said, here is a bit of a tangent question: which one is more
-> efficient/uses less resources: blocking at the iptables lever or past
-> it, at the sshd level?
+[root@vps8259 myscripts]# echo 1>   /proc/sys/net/ipv4/ip_forward
+[root@vps8259 myscripts]# iptables -A FORWARD -m state --state  RELATED,ESTABLISHED -j ACCEPT
+[root@vps8259 myscripts]# iptables -A FORWARD -s 10.8.0.0/24 -j ACCEPT
+[root@vps8259 openvpn]# iptables -A FORWARD -s 172.16.0.0/24 -j ACCEPT
+[root@vps8259 openvpn]# iptables -A FORWARD -j REJECT
+[root@vps8259 openvpn]# iptables -t nat -A POSTROUTING -s 10.8.0.0/24  -o venet0 -j MASQUERADE
+iptables: Unknown error 4294967295
+[root@vps8259 openvpn]# iptables -t nat -A POSTROUTING -s 10.8.0.0/24  -o venet0 -j MASQUERADE
+iptables: Unknown error 4294967295
 
-This is similar: ListenAddress directive only binds the socket to=20
-certain address so that the socket accepts only packets with this=20
-destination address. But if the address is correct, it doesn't matter o=
-n=20
-which interface the packet came.
 
-> And would both approaches show port 22 on eth1 as closed?
 
-This depends on what exactly is meant by "show as closed".
 
-                                                         Michal Kube=E8=
-ek
-
+On 12/10/11 19:18, J Webster wrote:
+>>  The problem here may be venet0 interface. As far as I know, there is no
+>>  support for "nat" tables on OpenVZ virtual network interfaces.
+>
+> Thanks. If that is the case, then how do I postroute on a virtual 
+> network?
+>
+>  [root@vps8259 openvpn]# iptables -t nat -A POSTROUTING -s 
+> 10.8.0.0/24  -o venet0 -j MASQUERADE
+>  iptables: Unknown error 4294967295
+>  [root@vps8259 openvpn]# iptables -t nat -A POSTROUTING -s 
+> 10.8.0.0/24  -o venet0 -j MASQUERADE
+>  iptables: Unknown error 4294967295
