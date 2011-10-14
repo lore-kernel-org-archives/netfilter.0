@@ -1,20 +1,40 @@
-From: Torsten Bitterlich <bit@port.de>
-Subject: ipset and connection tracking
-Date: Fri, 14 Oct 2011 15:40:51 +0200
-Message-ID: <B3B3BE5A55ED7743A83865E234A22B1D1B91F6A922@SBSPORT.portnet.local>
+From: fuzzy_4711 <fuzzy_4711@gmx.de>
+Subject: Re: Gateway With Multiple Internal Networks
+Date: Fri, 14 Oct 2011 18:21:33 +0200
+Message-ID: <4E98618D.2040509@gmx.de>
+References: <CAEH2fGyA9+sXV6toN9f7azg0emBnrTtsE-Q_CdJ_KfQ1bSe5dQ@mail.gmail.com>
+Reply-To: fuzzy_4711@gmx.de
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: de-DE
+In-Reply-To: <CAEH2fGyA9+sXV6toN9f7azg0emBnrTtsE-Q_CdJ_KfQ1bSe5dQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Aaron Clausen <mightymartianca@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hi there,
 
-I would like to know if there are any restrictions to connection tracking when ipsets are used. Can netfilter still properly track connections for NAT-ed and MASQUERADE-d connections?
 
-Thanks and regards,
+-------- Original - Text --------
 
-Torsten
+> This is driving me crazy, and I cannot seem to get it working
+> properly.  I have a gateway with two internal networks served by
+> different interfaces:
+> 
+> eth0 - External interface
+> eth1 - Internal network #1
+> eth2 - Internal network #2
+> tun0 - OpenVPN server interface
+> 
+
+Being root@gateway, please provide the output of:
+ip route show table all
+ip maddress show
+ip address show
+
+Could you try to find where the packages are being dropped by using
+wireshark, if the error occurs?
+
+Thanks.
+-fuz
