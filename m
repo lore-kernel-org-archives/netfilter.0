@@ -1,47 +1,29 @@
-From: Pawel Karpowicz <mafeuser@gmail.com>
-Subject: simple/ubiquitous iptables NAT config no longer works
-Date: Tue, 18 Oct 2011 08:10:40 +0200
-Message-ID: <CAA+mFXPp3vcLiABSpwNrP6jLmMB8V6QrbiQoUSOysAG1N4V4JQ@mail.gmail.com>
-References: <CAA+mFXNdGDpickA-JNukzmHhgtGM+AtZ=2dDpfvh6G-ZYdY3xA@mail.gmail.com>
+From: Marek Kierdelewicz <marek@piasta.pl>
+Subject: Re: Regarding iptable rules for SNAT
+Date: Tue, 18 Oct 2011 10:08:46 +0200
+Message-ID: <20111018100846.2fd2f0b7@catus>
+References: <CADAe=+Lo46K956EAdtBchVUPkLs-aLoDk7p8HGC5-Bd4PGKy3Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :content-type:content-transfer-encoding;
-        bh=i68Ijgh1RyV5AJRLrRx514inXcENc4or/XmImKIDv+0=;
-        b=SQJMq7K3p2usvKdqji/jX/Vz/mLY42oAN1cLJzkNy9a/Int/lQUFN15PRvMkmTh0QH
-         tzdeu74Rm2okTYXPsxNmBWVCZ/H0qSmCGRY2CRQmBhSy1oZCW4bXMba905r6mWXAOTQE
-         MyBvkBH0SvO2dOvaXUacnapfyKDgOklefa1AI=
-In-Reply-To: <CAA+mFXNdGDpickA-JNukzmHhgtGM+AtZ=2dDpfvh6G-ZYdY3xA@mail.gmail.com>
+In-Reply-To: <CADAe=+Lo46K956EAdtBchVUPkLs-aLoDk7p8HGC5-Bd4PGKy3Q@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Ajith Adapa <adapa.ajith@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hallo netfilter team.
+Hi,
 
-I am running ubuntu with simple and=A0ubiquitous=A0NAT configuration,
-taken for example from:
-http://www.revsys.com/writings/quicktips/nat.html
+>Ideal cases once the reply comes back GW has to send it to the host H1
+>right ?
+>Sorry if I am wrong or missed any steps down here ?
 
-It worked fine for ubuntu 10.04 as well as 11.04, but no longer works
-for 11.10 (iptables-1.4.10).
+Please send output of following command:
+sudo iptables-save -t filter
 
-In details, TCP connection issued from some machine behind the NAT
-gets connected correctly (SYN, ACK/SYN, ACK handshake)
+I bet you're filtering traffic destined to H1 from eth1 in FORWARD
+chain of filter table.
 
-then HTTP request gets destination correctly.
-
-server ACK (without data payload) to request also is correct.
-
-Then expected server response packet with TCP payload never comes.
-
-Description above is based on public interface sniffing (wireshark).
-
-Do YOu know what might be the reason?
-
-best regards,
-
-Paul
+Best regards,
+Marek Kierdelewicz
