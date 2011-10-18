@@ -1,25 +1,46 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: route sorting
-Date: Mon, 17 Oct 2011 17:41:46 -0400 (EDT)
-Message-ID: <20111017.174146.1822773352015956237.davem@davemloft.net>
-References: <4E9C2BA6.6030507@mejor.pl>
-	<4E9C449D.2060907@tolaris.com>
-	<4E9C4BD7.7000403@googlemail.com>
+From: Ajith Adapa <adapa.ajith@gmail.com>
+Subject: Regarding iptable rules for SNAT
+Date: Tue, 18 Oct 2011 09:12:53 +0530
+Message-ID: <CADAe=+Lo46K956EAdtBchVUPkLs-aLoDk7p8HGC5-Bd4PGKy3Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4E9C4BD7.7000403@googlemail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:from:date:message-id:subject:to:content-type
+         :content-transfer-encoding;
+        bh=0YlYNQp+3CQZ3BsU7UoUfMwVpficT0+KeqzWQY2O2jc=;
+        b=Be7yNrGiP75PZFAyQTmr5UmMa68KRd5h1eCBhNaSJnyN3ZlrfnUucRRTZ6dF3YYjHo
+         FdnDdAmiJ8RKxGRCO7fOwD5DyCU0NyRm+9s2fYGJCiXiVW5lxavEFgJ+6cLujz4plkoO
+         Gs+/FQlk2CQ3Vg1P0cZePXLnkNvdKrYmwqPow=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
-To: mr.dash.four@googlemail.com
-Cc: tyler@tolaris.com, marcin@mejor.pl, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-From: Mr Dash Four <mr.dash.four@googlemail.com>
-Date: Mon, 17 Oct 2011 16:37:59 +0100
+Hi,
 
-> I am still curious though why the sorting order in the old "route" has
-> changed from one kernel version to the next?
+I have a following setup. GW eth1 (private ip) is connected to the ISP
+router. For host H1 I have set the DNS server as 10.12.3.10.
 
-Because the underlying datastructure used to hold the table
-has changed.
+H1 (eth0) --- (eth0) GW (eth1) ---
+H1 eth0 =3D 192.168.1.2
+GW eth0 =3D 192.168.1.1
+GW eth1 =3D 10.12.3.12
+DNS =3D 10.12.3.10
+
+I have added a rule in GW saying iptables -A POSTROUTING=C2=A0-t nat -o
+eth1 -j MASQUERADE
+
+Now when I am trying to access internet from host H1, DNS queries are
+being sent to 10.12.3.10 which are masqueraded in GW. Once replies
+come back from DNS server then GW is replying back to DNS server with
+icmp destination unreachable.
+
+Ideal cases once the reply comes back GW has to send it to the host H1 =
+right ?
+
+Sorry if I am wrong or missed any steps down here ?
+
+Regards,
+Ajith
