@@ -1,46 +1,47 @@
-From: Ajith Adapa <adapa.ajith@gmail.com>
-Subject: Regarding iptable rules for SNAT
-Date: Tue, 18 Oct 2011 09:12:53 +0530
-Message-ID: <CADAe=+Lo46K956EAdtBchVUPkLs-aLoDk7p8HGC5-Bd4PGKy3Q@mail.gmail.com>
+From: Pawel Karpowicz <mafeuser@gmail.com>
+Subject: simple/ubiquitous iptables NAT config no longer works
+Date: Tue, 18 Oct 2011 08:10:40 +0200
+Message-ID: <CAA+mFXPp3vcLiABSpwNrP6jLmMB8V6QrbiQoUSOysAG1N4V4JQ@mail.gmail.com>
+References: <CAA+mFXNdGDpickA-JNukzmHhgtGM+AtZ=2dDpfvh6G-ZYdY3xA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=mime-version:from:date:message-id:subject:to:content-type
-         :content-transfer-encoding;
-        bh=0YlYNQp+3CQZ3BsU7UoUfMwVpficT0+KeqzWQY2O2jc=;
-        b=Be7yNrGiP75PZFAyQTmr5UmMa68KRd5h1eCBhNaSJnyN3ZlrfnUucRRTZ6dF3YYjHo
-         FdnDdAmiJ8RKxGRCO7fOwD5DyCU0NyRm+9s2fYGJCiXiVW5lxavEFgJ+6cLujz4plkoO
-         Gs+/FQlk2CQ3Vg1P0cZePXLnkNvdKrYmwqPow=
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :content-type:content-transfer-encoding;
+        bh=i68Ijgh1RyV5AJRLrRx514inXcENc4or/XmImKIDv+0=;
+        b=SQJMq7K3p2usvKdqji/jX/Vz/mLY42oAN1cLJzkNy9a/Int/lQUFN15PRvMkmTh0QH
+         tzdeu74Rm2okTYXPsxNmBWVCZ/H0qSmCGRY2CRQmBhSy1oZCW4bXMba905r6mWXAOTQE
+         MyBvkBH0SvO2dOvaXUacnapfyKDgOklefa1AI=
+In-Reply-To: <CAA+mFXNdGDpickA-JNukzmHhgtGM+AtZ=2dDpfvh6G-ZYdY3xA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-Hi,
+Hallo netfilter team.
 
-I have a following setup. GW eth1 (private ip) is connected to the ISP
-router. For host H1 I have set the DNS server as 10.12.3.10.
+I am running ubuntu with simple and=A0ubiquitous=A0NAT configuration,
+taken for example from:
+http://www.revsys.com/writings/quicktips/nat.html
 
-H1 (eth0) --- (eth0) GW (eth1) ---
-H1 eth0 =3D 192.168.1.2
-GW eth0 =3D 192.168.1.1
-GW eth1 =3D 10.12.3.12
-DNS =3D 10.12.3.10
+It worked fine for ubuntu 10.04 as well as 11.04, but no longer works
+for 11.10 (iptables-1.4.10).
 
-I have added a rule in GW saying iptables -A POSTROUTING=C2=A0-t nat -o
-eth1 -j MASQUERADE
+In details, TCP connection issued from some machine behind the NAT
+gets connected correctly (SYN, ACK/SYN, ACK handshake)
 
-Now when I am trying to access internet from host H1, DNS queries are
-being sent to 10.12.3.10 which are masqueraded in GW. Once replies
-come back from DNS server then GW is replying back to DNS server with
-icmp destination unreachable.
+then HTTP request gets destination correctly.
 
-Ideal cases once the reply comes back GW has to send it to the host H1 =
-right ?
+server ACK (without data payload) to request also is correct.
 
-Sorry if I am wrong or missed any steps down here ?
+Then expected server response packet with TCP payload never comes.
 
-Regards,
-Ajith
+Description above is based on public interface sniffing (wireshark).
+
+Do YOu know what might be the reason?
+
+best regards,
+
+Paul
