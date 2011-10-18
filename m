@@ -1,29 +1,27 @@
 From: Marek Kierdelewicz <marek@piasta.pl>
-Subject: Re: Regarding iptable rules for SNAT
-Date: Tue, 18 Oct 2011 10:08:46 +0200
-Message-ID: <20111018100846.2fd2f0b7@catus>
-References: <CADAe=+Lo46K956EAdtBchVUPkLs-aLoDk7p8HGC5-Bd4PGKy3Q@mail.gmail.com>
+Subject: Re: simple/ubiquitous iptables NAT config no longer works
+Date: Tue, 18 Oct 2011 10:12:45 +0200
+Message-ID: <20111018101245.0d910cb6@catus>
+References: <CAA+mFXNdGDpickA-JNukzmHhgtGM+AtZ=2dDpfvh6G-ZYdY3xA@mail.gmail.com>
+	<CAA+mFXPp3vcLiABSpwNrP6jLmMB8V6QrbiQoUSOysAG1N4V4JQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CADAe=+Lo46K956EAdtBchVUPkLs-aLoDk7p8HGC5-Bd4PGKy3Q@mail.gmail.com>
+In-Reply-To: <CAA+mFXPp3vcLiABSpwNrP6jLmMB8V6QrbiQoUSOysAG1N4V4JQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Ajith Adapa <adapa.ajith@gmail.com>
+Content-Type: text/plain; charset="windows-1252"
+To: Pawel Karpowicz <mafeuser@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-Hi,
+Hi Pawe=C5=82,
 
->Ideal cases once the reply comes back GW has to send it to the host H1
->right ?
->Sorry if I am wrong or missed any steps down here ?
+>Do YOu know what might be the reason?
 
-Please send output of following command:
-sudo iptables-save -t filter
+Please send output of command:
+sudo iptables-save
 
-I bet you're filtering traffic destined to H1 from eth1 in FORWARD
-chain of filter table.
+=2E.. and describe your test scenario (interfaces, hosts).
 
-Best regards,
+best regards,
 Marek Kierdelewicz
