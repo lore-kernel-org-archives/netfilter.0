@@ -1,51 +1,40 @@
-From: Richard Cochran <richardcochran@gmail.com>
+From: Benjamin Poirier <benjamin.poirier@gmail.com>
 Subject: Re: kenel level packet capturing
-Date: Wed, 19 Oct 2011 14:30:25 +0200
-Message-ID: <20111019123025.GA9320@netboy.at.omicron.at>
+Date: Wed, 19 Oct 2011 08:37:33 -0400
+Message-ID: <20111019123733.GA21324@synalogic.ca>
 References: <CAKj1SsP+GE=QqN8nx7aaAxXE8BODKb=vns_=SnbyySQjZp3-pg@mail.gmail.com>
  <CAKj1SsOnYsOXjRBKm+=hTnEiesXrC3h0Q-KN2b61nPSQud9wMA@mail.gmail.com>
- <20111019.031314.1383303852454510720.davem@davemloft.net>
- <CADAe=++9WYg6nGH1vZ0BZKP5CDHO30i-pNVhBzgO9C-6FQX6cQ@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-devel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-type:content-disposition:in-reply-to:user-agent;
-        bh=M9mg2LwE+qkcf6/zkod5uYWGKCLRUb6WqUVUVrRoTL8=;
-        b=dAETh4Yh4RGcyMEuvOIx2JZeHNnhuchfb6VFDUNZ3DKrUTe0lBQVvzi435MHGQ0s/n
-         +G47uHCyX8lTpHUDN0tdvAAVdBvRxLgeKsZYpZNn+tUISLTOQGxLToG2+5+RUtBah1cL
-         GEpgxwhuNey6UfjmoH7xdlc1WQE2CIOg4fehI=
+        bh=Q0w+J+Ipuaw4uuj3IWvpqMHlo8dfKsAsRs+Vi8n2vkA=;
+        b=o6Qmo1q5C8axkEi9k31so5Oqgy/kgPXWDYQ9uMn1p15/+ntcBeTcB76J5dnylr1eMV
+         oU0N221R/B/r3GJiTLCEyOLzh2RLTuvBB0U4dfFONXqmQQTa8nlGGeRTG4TaJ8pzEZkT
+         bmhSyO/IrCq9RukWchPvOLNdJuEddZSz+BU9k=
 Content-Disposition: inline
-In-Reply-To: <CADAe=++9WYg6nGH1vZ0BZKP5CDHO30i-pNVhBzgO9C-6FQX6cQ@mail.gmail.com>
+In-Reply-To: <CAKj1SsOnYsOXjRBKm+=hTnEiesXrC3h0Q-KN2b61nPSQud9wMA@mail.gmail.com>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Ajith Adapa <adapa.ajith@gmail.com>
-Cc: David Miller <davem@davemloft.net>, raviraj.j1991@gmail.com, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+To: raviraj joshi <raviraj.j1991@gmail.com>
+Cc: netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-On Wed, Oct 19, 2011 at 02:22:35PM +0530, Ajith Adapa wrote:
-> Yeah you are right David. But ..
+On 11/10/19 12:24, raviraj joshi wrote:
+> Hi,
 > 
-> For a newbie who just know more about linux userspace level need to
-> know starting steps like where to start from and flow of packet might
-> be confusing because of the level of abstraction being used. I guess
-> it might take some time until you are really serious about making
-> hands dirty :)
+> We are making a kernel level packet capture module as a part of our BE project .
+> We are finding it difficult to understand kenel networking code.
+> We studied structures and functions like sk_buff, netif_rx(),dev_alloc_skb.
+> 
+> However we were not able to trace the actual path a simple packet follows.
 
-For working with or just reading kernel sources I recommend getting to
-know the cscope tool. Do a "make cscope" and then use one of the front
-end browsers.
+You might find
+http://vger.kernel.org/netconf2011_slides/jesse_brandeburg_netconf2011.pdf
+interesting. It contains call chains of UDP processing at all levels in
+the stack (driver, below ip stack, above ip stack) for tx and rx.
 
-If you use emacs, then you really should have this set
-
-	; When working on the kernel
-	(setq cscope-do-not-update-database t)
-
-otherwise it tries to re-index after every search.
-
-HTH,
-Richard
-
-
+-Ben
