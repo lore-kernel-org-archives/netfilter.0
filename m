@@ -1,42 +1,60 @@
-From: =?ISO-8859-1?Q?G=E1sp=E1r_Lajos?= <swifty@freemail.hu>
+From: Michael Robinson <mike@robinsonhome.org>
 Subject: Re: Removing VLAN tag from outgoing broadcasts
-Date: Wed, 19 Oct 2011 15:20:52 +0200
-Message-ID: <4E9ECEB4.9020402@freemail.hu>
+Date: Wed, 19 Oct 2011 09:29:11 -0400
+Message-ID: <CA+JOZmOF5ydmaAYSBcuU7ZQ8ZijCEV6bSL8uvaJFbmn9DP3=tA@mail.gmail.com>
 References: <CA+JOZmMvZQ2eSPh=V+QeX9APg3qXsTmnzOrne5CbyT3dr1Xo5A@mail.gmail.com>
+	<4E9ECEB4.9020402@freemail.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CA+JOZmMvZQ2eSPh=V+QeX9APg3qXsTmnzOrne5CbyT3dr1Xo5A@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:sender:in-reply-to:references:date
+         :x-google-sender-auth:message-id:subject:from:to:cc:content-type;
+        bh=QA5qbnNmoq/mbdinOcIzSxR57ssdRU8S6XJCDSTVBMU=;
+        b=rfpMpSTHIRBJV7uzFaPKiLi9Dv1XjfGCGc69Iy1SwPBNvEfuCGBdH1TUqecZEFWwkX
+         ua6ApUBJ3/wyD+xjNdGtk6DGKcbn6QXvEv9a3oXFyF2YuQHZQ8mHq/P6qVLIGydauc5v
+         DI4VC1uHtWvzpvtCG/LhO4gEiSpVCXu/K9pF8=
+In-Reply-To: <4E9ECEB4.9020402@freemail.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Michael Robinson <mike@robinsonhome.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: =?ISO-8859-1?B?R+FzcOFyIExham9z?= <swifty@freemail.hu>
 Cc: netfilter@vger.kernel.org
 
-Hi Mike,
+(forgot to "reply all")
 
-2011-10-17 21:16 keltez=E9ssel, Michael Robinson =EDrta:
-> I've set up a Linux (Ubuntu 10.04) server with multiple VLANs.
-> Routing is enabled for all interfaces.  The 'eth2' interface is
-> basically used as a VLAN trunk:
+> I do not understand you...
+>
+> If you remove the VLAN tags then how would your switch (or any other network
+> device) know where/whom the packets belonging to?!?
+> There "must" be an untagged VLAN in your network... So every untagged packet
+> will go that way... Every tagged packet will go to its own network...
+>
+> You signal with the VLAN tag that you want to sent a packet to a network...
+>
+> But maybe I am wrong... :D
+>
+> Swifty
 
-> The setup appears to work fine.  Now, for reasons beyond my control, =
-I
-> must change the behavior so all outgoing broadcast/multicast packets
-> are sent untagged (regardless of their source).  I'm hoping that this
-> would be possible with ebtables, but not being very familiar with it
-> yet I was hoping for some guidance.  Is this possible?
-I do not understand you...
+> I do not understand you...
+>
+> If you remove the VLAN tags then how would your switch (or any other network
+> device) know where/whom the packets belonging to?!?
+> There "must" be an untagged VLAN in your network... So every untagged packet
+> will go that way... Every tagged packet will go to its own network...
+>
+> You signal with the VLAN tag that you want to sent a packet to a network...
+>
+> But maybe I am wrong... :D
+>
+> Swifty
 
-If you remove the VLAN tags then how would your switch (or any other=20
-network device) know where/whom the packets belonging to?!?
-There "must" be an untagged VLAN in your network... So every untagged=20
-packet will go that way... Every tagged packet will go to its own netwo=
-rk...
+Thanks for the reply.  There is a native (untagged) VLAN on the trunk.
+ It's the eth2 interface.  So if I understand you correctly, I need to
+redirect the classified packets to the eth2 interface...is that
+correct?  How is that specified in a rule?  Note, that I'm just
+getting familiar with ebtables/iptables.
 
-You signal with the VLAN tag that you want to sent a packet to a networ=
-k...
-
-But maybe I am wrong... :D
-
-Swifty
+Thanks,
+-Mike
