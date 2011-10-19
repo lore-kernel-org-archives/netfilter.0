@@ -1,51 +1,56 @@
-From: Erik Schorr <erik-lists@arpa.org>
+From: Ajith Adapa <adapa.ajith@gmail.com>
 Subject: Re: Regarding iptable rules for SNAT
-Date: Tue, 18 Oct 2011 11:33:24 -0700
-Message-ID: <4E9DC674.3050607@arpa.org>
+Date: Wed, 19 Oct 2011 08:46:28 +0530
+Message-ID: <CADAe=+JgWqRf9Yg_veNWD05=3DHhxez--yy=pgiZ7h6HTtz=vQ@mail.gmail.com>
 References: <CADAe=+Lo46K956EAdtBchVUPkLs-aLoDk7p8HGC5-Bd4PGKy3Q@mail.gmail.com>
+ <20111018100846.2fd2f0b7@catus>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CADAe=+Lo46K956EAdtBchVUPkLs-aLoDk7p8HGC5-Bd4PGKy3Q@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc:content-type:content-transfer-encoding;
+        bh=rpvEWSJCY8qh4/vsA4h0btpb6ElAAlt7uxJ36bEPEtk=;
+        b=Jelv0fj4mYnx631kHnvG5h3wZt9Qa74JajgRL5EIhwrnlVFTF/sO9VOQN5YwGz0acW
+         tYPpv9MSQo/7Wq2s18vTiSMRtI1AgVVLYieAzWRaXyhl3ae0qkoocaIhgY6F6cNkmly8
+         OX5Fe7mNw/W5RabZNCC39kqo8RwkoRb5yS0Pk=
+In-Reply-To: <20111018100846.2fd2f0b7@catus>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
-Cc: Ajith Adapa <adapa.ajith@gmail.com>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Marek Kierdelewicz <marek@piasta.pl>
+Cc: netfilter@vger.kernel.org
 
-On 10/17/2011 8:42 PM, Ajith Adapa wrote:
-> I have a following setup. GW eth1 (private ip) is connected to the ISP
-> router. For host H1 I have set the DNS server as 10.12.3.10.
->
-> H1 (eth0) --- (eth0) GW (eth1) ---
-> H1 eth0 = 192.168.1.2
-> GW eth0 = 192.168.1.1
-> GW eth1 = 10.12.3.12
-> DNS = 10.12.3.10
->
-> I have added a rule in GW saying iptables -A POSTROUTING -t nat -o
-> eth1 -j MASQUERADE
->
-> Now when I am trying to access internet from host H1, DNS queries are
-> being sent to 10.12.3.10 which are masqueraded in GW. Once replies
-> come back from DNS server then GW is replying back to DNS server with
-> icmp destination unreachable.
+Hi,
+As you asked in=C2=A0last mail the output of iptables-save -t filter is
 
-If there's no reason to SNAT/masquerade traffic from eth0 to a host on 
-eth1 (10.12.3.*), you can try inserting an ACCEPT rule in the 
-POSTROUTING table just before the MASQUERADE rule, to prevent the 
-traffic from 192.168.1.* to 10.12.3.* having its source address changed 
-in flight:
+*filter
+:INPUT ACCEPT [3902:2580916]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [940:2242708]
+COMMIT
 
-# iptables -A POSTROUTING -t nat -o eth1 -m comment --comment "dont masq 
-stuff from private net to DMZ net" -s 192.168.1.0/24 -d 10.12.3.0/24 -j 
-ACCEPT
-# iptables -A POSTROUTING -t nat -o eth1 -m comment --comment "masq 
-everything else" -j MASQUERADE
+Regards,
+Ajith
 
-> Ideal cases once the reply comes back GW has to send it to the host H1 right ?
+
+
+On Tue, Oct 18, 2011 at 1:38 PM, Marek Kierdelewicz <marek@piasta.pl> w=
+rote:
 >
-> Sorry if I am wrong or missed any steps down here ?
+> Hi,
 >
-> Regards,
-> Ajith
+> >Ideal cases once the reply comes back GW has to send it to the host =
+H1
+> >right ?
+> >Sorry if I am wrong or missed any steps down here ?
+>
+> Please send output of following command:
+> sudo iptables-save -t filter
+>
+> I bet you're filtering traffic destined to H1 from eth1 in FORWARD
+> chain of filter table.
+>
+> Best regards,
+> Marek Kierdelewicz
