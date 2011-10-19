@@ -1,96 +1,82 @@
-From: Erik Schweigert <ejschweigert@gmail.com>
-Subject: Netfilter TCP Established Timeout
-Date: Wed, 19 Oct 2011 12:03:19 -0700
-Message-ID: <CADVVA4-XORAyHOLxx-x9RGxEDWmpP=5hxqwxqCaHXv-13WXqaw@mail.gmail.com>
+From: Erik Schorr <erik-lists@arpa.org>
+Subject: Re: Regarding iptable rules for SNAT
+Date: Wed, 19 Oct 2011 16:43:38 -0700
+Message-ID: <4E9F60AA.8090500@arpa.org>
+References: <CADAe=+Lo46K956EAdtBchVUPkLs-aLoDk7p8HGC5-Bd4PGKy3Q@mail.gmail.com> <4E9DC674.3050607@arpa.org> <CADAe=++EOD5mLsVO2o3W85uLo2DWxBsdeyn8b=6UT9w0OAPYMA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:date:message-id:subject:from:to:content-type
-         :content-transfer-encoding;
-        bh=8q8VHjuw//IPAkqlMasFPp88UvEOzf/nDaVRQ89beJk=;
-        b=T8r3e8fYSd561/8tbdzgK+G5UotjuAXpWBj/43b7T1ceOi+g2jlHhuzahp4rlzMUdc
-         zHnxqtTbhZyBmjXDnZMyOwFNRO5Ey1HLdv7OqbqDMNughxo6PDldh9Ll3rYYZ3YlL5Ve
-         umRLDv63Wy74rPxgji8Nvo7qVnHz64yItDwwc=
+In-Reply-To: <CADAe=++EOD5mLsVO2o3W85uLo2DWxBsdeyn8b=6UT9w0OAPYMA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
+Cc: Ajith Adapa <adapa.ajith@gmail.com>
 
-Hi all,
+On 10/18/2011 8:15 PM, Ajith Adapa wrote:
+> I am sorry I am not able to get you ..
+>
+> Since we are using the MASQUERADE rule in POSTROUTING .. all the traffic
+> from 192.168.*.* subnet will be Source natted to 10.12.*.* subnet right
+> ? Why we have to again add rule in POSTROUTING chain to just say accept .. ?
 
-I have noticed an oddity in the timeout values of a TCP Established
-connection. =A0I currently have the
-"nf_conntrack_tcp_timeout_established =3D 1800".
+The addition of the ACCEPT rule (before the masq rule) for traffic from 
+192.168.1.x to 10.12.3.x will make it so those packets don't get 
+masqueraded.  Unless there's a specific reason you would really want 
+packets from 192.168.1.x to a host on the 10.12.3.x network to be 
+masqueraded, you should let that type of traffic go through without 
+translation.
 
-# cat /proc/net/nf_conntrack =A0| grep EST
-ipv4 =A0 =A0 2 tcp =A0 =A0 =A06 1385 ESTABLISHED src=3D192.168.10.25
-dst=3D192.168.10.134 sport=3D2513 dport=3D1217 packets=3D71 bytes=3D101=
-54
-src=3D192.168.10.134 dst=3D192.168.10.25 sport=3D1217 dport=3D2513 pac1
-----> ipv4 =A0 =A0 2 tcp =A0 =A0 =A06 1799 ESTABLISHED src=3D192.168.10=
-=2E25
-dst=3D192.168.10.134 sport=3D2550 dport=3D1217 packets=3D1142 bytes=3D1=
-21874
-src=3D192.168.10.134 dst=3D192.168.10.25 sport=3D1217 dport=3D2550 1
-ipv4 =A0 =A0 2 tcp =A0 =A0 =A06 1413 ESTABLISHED src=3D192.168.10.25
-dst=3D192.168.10.134 sport=3D2515 dport=3D1217 packets=3D824 bytes=3D10=
-1370
-src=3D192.168.10.134 dst=3D192.168.10.25 sport=3D1217 dport=3D2515 p1
-ipv4 =A0 =A0 2 tcp =A0 =A0 =A06 263 ESTABLISHED src=3D192.168.10.25
-dst=3D192.168.10.134 sport=3D2440 dport=3D1101 packets=3D41 bytes=3D645=
-8
-src=3D192.168.10.134 dst=3D192.168.10.25 sport=3D1101 dport=3D2440 pack=
-e1
-ipv4 =A0 =A0 2 tcp =A0 =A0 =A06 1221 ESTABLISHED src=3D192.168.10.25
-dst=3D192.168.10.134 sport=3D2512 dport=3D1101 packets=3D79 bytes=3D135=
-78
-src=3D192.168.10.134 dst=3D192.168.10.25 sport=3D1101 dport=3D2512 pac1
-# cat /proc/net/nf_conntrack =A0| grep EST
-ipv4 =A0 =A0 2 tcp =A0 =A0 =A06 1369 ESTABLISHED src=3D192.168.10.25
-dst=3D192.168.10.134 sport=3D2513 dport=3D1217 packets=3D71 bytes=3D101=
-54
-src=3D192.168.10.134 dst=3D192.168.10.25 sport=3D1217 dport=3D2513 pac1
-----> ipv4 =A0 =A0 2 tcp =A0 =A0 =A06 296 ESTABLISHED src=3D192.168.10.=
-25
-dst=3D192.168.10.134 sport=3D2550 dport=3D1217 packets=3D1166 bytes=3D1=
-24610
-src=3D192.168.10.134 dst=3D192.168.10.25 sport=3D1217 dport=3D2550 p1
-ipv4 =A0 =A0 2 tcp =A0 =A0 =A06 1396 ESTABLISHED src=3D192.168.10.25
-dst=3D192.168.10.134 sport=3D2515 dport=3D1217 packets=3D824 bytes=3D10=
-1370
-src=3D192.168.10.134 dst=3D192.168.10.25 sport=3D1217 dport=3D2515 p1
-ipv4 =A0 =A0 2 tcp =A0 =A0 =A06 247 ESTABLISHED src=3D192.168.10.25
-dst=3D192.168.10.134 sport=3D2440 dport=3D1101 packets=3D41 bytes=3D645=
-8
-src=3D192.168.10.134 dst=3D192.168.10.25 sport=3D1101 dport=3D2440 pack=
-e1
-ipv4 =A0 =A0 2 tcp =A0 =A0 =A06 1205 ESTABLISHED src=3D192.168.10.25
-dst=3D192.168.10.134 sport=3D2512 dport=3D1101 packets=3D79 bytes=3D135=
-78
-src=3D192.168.10.134 dst=3D192.168.10.25 sport=3D1101 dport=3D2512 pac1
+Conventionally, you'd only want to masquerade traffic that's coming from 
+an internal network and destined to a remote network (for example, 
+anything on the internet, beyond your local gateway)
 
-You will notice in the two iterations I have marked above, the timeout
-values goes from 1799 to 296 within a 16 second span. =A0Is this a bug
-or something inherent to the connection tracking system that I unaware
-of.
+> On Wed, Oct 19, 2011 at 12:03 AM, Erik Schorr <erik-lists@arpa.org
+> <mailto:erik-lists@arpa.org>> wrote:
+>
+>     On 10/17/2011 8:42 PM, Ajith Adapa wrote:
+>
+>         I have a following setup. GW eth1 (private ip) is connected to
+>         the ISP
+>         router. For host H1 I have set the DNS server as 10.12.3.10.
+>
+>         H1 (eth0) --- (eth0) GW (eth1) ---
+>         H1 eth0 = 192.168.1.2
+>         GW eth0 = 192.168.1.1
+>         GW eth1 = 10.12.3.12
+>         DNS = 10.12.3.10
+>
+>         I have added a rule in GW saying iptables -A POSTROUTING -t nat -o
+>         eth1 -j MASQUERADE
+>
+>         Now when I am trying to access internet from host H1, DNS
+>         queries are
+>         being sent to 10.12.3.10 which are masqueraded in GW. Once replies
+>         come back from DNS server then GW is replying back to DNS server
+>         with
+>         icmp destination unreachable.
+>
+>
+>     If there's no reason to SNAT/masquerade traffic from eth0 to a host
+>     on eth1 (10.12.3.*), you can try inserting an ACCEPT rule in the
+>     POSTROUTING table just before the MASQUERADE rule, to prevent the
+>     traffic from 192.168.1.* to 10.12.3.* having its source address
+>     changed in flight:
+>
+>     # iptables -A POSTROUTING -t nat -o eth1 -m comment --comment "dont
+>     masq stuff from private net to DMZ net" -s 192.168.1.0/24
+>     <http://192.168.1.0/24> -d 10.12.3.0/24 <http://10.12.3.0/24> -j ACCEPT
+>     # iptables -A POSTROUTING -t nat -o eth1 -m comment --comment "masq
+>     everything else" -j MASQUERADE
+>
+>
+>         Ideal cases once the reply comes back GW has to send it to the
+>         host H1 right ?
+>
+>         Sorry if I am wrong or missed any steps down here ?
+>
+>         Regards,
+>         Ajith
+>
+>
 
-I am running kernel 2.6.26.5. My current settings of the tunable
-conntrack features are:
-
-nf_conntrack_tcp_be_liberal =3D 0
-nf_conntrack_tcp_loose =3D=A01
-nf_conntrack_tcp_max_retrans =3D=A03
-nf_conntrack_tcp_timeout_close =3D=A010
-nf_conntrack_tcp_timeout_close_wait =A0=3D=A060
-nf_conntrack_tcp_timeout_established =3D=A01800
-nf_conntrack_tcp_timeout_fin_wait =3D=A0120
-nf_conntrack_tcp_timeout_last_ack =3D=A030
-nf_conntrack_tcp_timeout_max_retrans =3D=A0300
-nf_conntrack_tcp_timeout_syn_recv =3D=A060
-nf_conntrack_tcp_timeout_syn_sent =3D=A0120
-nf_conntrack_tcp_timeout_time_wait =3D=A0120
-
-Any help or suggestions is appreciated,
-Erik
