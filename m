@@ -1,130 +1,70 @@
-From: Ronald <ronald645@gmail.com>
-Subject: Redirecting ports with netfilter: unexpected varying results possibly
- correlated with NAT
-Date: Sun, 23 Oct 2011 14:29:54 +0200
-Message-ID: <CAF1_xX2Np35vKHvqmCu-7yVFOm=CQEJPxw8BdUObAP94omWrog@mail.gmail.com>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: Problem with log which are corrupted and need help with
+ hitcount and FORWARD rules
+Date: Sun, 23 Oct 2011 14:51:02 +0100
+Message-ID: <1319377862.26402.6410.camel@andybev-desktop>
+References: <CACMGiwZ_gWF0nKaY9yfybm5OQ3=WDD6rA2P-V8TgeOsLysCxLg@mail.gmail.com>
+	 <1319289600.26402.6260.camel@andybev-desktop>
+	 <CACMGiwZ-4Q-xvVQOx3MM79U7YrwafcW+cMxsU932dRKfkM46GQ@mail.gmail.com>
+	 <1319293517.26402.6312.camel@andybev-desktop>
+	 <CACMGiwaJ69TsOb6gVH_GXLk09yKhxqLExa_s-NXhG8d9M2z7hQ@mail.gmail.com>
+	 <1319297250.26402.6316.camel@andybev-desktop>
+	 <CACMGiwb3tXniJNt5vn6nBVqZjy8VUYWQkwg0GV=gVta5qzoaQw@mail.gmail.com>
+	 <1319299307.26402.6352.camel@andybev-desktop>
+	 <CACMGiwbCxg8a19r-wErFyh-KWDX9tx42GvFo20Pq2zF_Sr9cKg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:date:message-id:subject:from:to:content-type
-         :content-transfer-encoding;
-        bh=3fSYnUA5FXyKDEciYFojVpU64hI8U8KqZS9a4dUO+Eo=;
-        b=UJ18bXYavnKN/TdM46Aqz0BftllucOCaOWwB11+WcFrmIrW9VtGs1Kofh7eows5w/Y
-         MwEkprSiPGFistIE5/Oe1TpizPghvgfpFlsaw5oSCGi0QHAkaa4F2sOXyi5u4c0JzcK1
-         PASmMNoB7/De2117z+4bsODJnbPDOm8rLHbcc=
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1319377858;
+	bh=ZdgLeNHss5TV9o8EOYbUB2uezAxDqeX64BnDO4Y279g=;
+	h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-ID:Mime-Version:Content-Transfer-Encoding;
+	b=TzEMV5m0pp63859Q+5B5yHNtesHhQBc35ut28TweosMH9QbyrxKjp6qDy+yEa1Ffi
+	 kpE+wXueHevxNhkxJku0MOESOMdlXCNLthpPFL3FRtCCVUCvgfGpRomoGmJ9PmkATa
+	 8uUBrft97P+lPIeOuyZgFwiH02q2DPtSkN24TvuQ=
+In-Reply-To: <CACMGiwbCxg8a19r-wErFyh-KWDX9tx42GvFo20Pq2zF_Sr9cKg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Azerty Ytreza <007liamg007@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-(Please cc me as I'm not subscribed to this list.)
+On Sat, 2011-10-22 at 18:21 +0200, Azerty Ytreza wrote:
+> > Hitcount matches when the number of packets is greater than or *equal*,
+> > so defining a number of "1" will always match.
+> 
+> I have try to increase that but it's the same thing.
+> iptables -A FORWARD -i eth1 -p tcp -m tcp --dport 443 -m state --state
+> NEW -m recent --update --seconds 600 --hitcount 10 -j DROP
+> 
+> >
+> > Also, hitcount refers to number of packets, so you'll need a rule in
+> > there to only apply the DROP to NEW connections, otherwise you'll block
+> > a successful connection as soon as that number of packets has been sent.
+> 
+> Yes, I have modified this rules by removing "NEW" but the port is
+> always blocked :(
+> iptables -A FORWARD -i eth1 -p tcp -m tcp --dport 443 -m state --state
+> RELATED,ESTABLISHED -j ACCEPT
 
-Hello netfilter enthousiasts,
+Can you re-post all the rules please so that we can have a look at them?
 
-I'm seeing a problem which is highly probably related to netfilter. I
-asked around on several forums, but have never received an answer. So
-therefore, my last option is this mailing list. Hence this mail.
+> > This website is quite good:
+> >
+> > http://thiemonagel.de/2006/02/preventing-brute-force-attacks-using-iptables-recent-matching/
+> >
+> > Although you'll have to change INPUT to FORWARD.
+> >
+> 
+> This website use blacklist and name but it's the same no in my rules ?
 
-After a rather lengthy struggle with the IPSEC stack, I managed to get
-my IPSEC VPN working. The next step was to properly secure it with
-netfilter. However, when trying to use the setup from university,
-something went wrong. The cause is the fact that I try to use port
-redirection to prevent charon from listening on the default udp port
-500. Charon is the IPSEC IKEv2 daemon. As far as I'm aware, there is
-no way of configuring the listening port for charon, hence I tried to
-use netfilter for this. So we have this:
+"Probably", although I've not looked closely. If you really have written
+equivalent rules then it should work okay. If you can re-post all your
+rules then we can check.
 
-On the client:
-iptables -t nat -A OUTPUT -p udp --dport 500 -j DNAT --to-destination
-:56301 (--persistent)
+Andy
 
-On the server:
-iptables -t nat -A PREROUTING -p udp --dport 56301 -m addrtype
---dst-type LOCAL -j REDIRECT --to-port 500
-or, as a viable alternative (yet having the exact same failing outcome)=
-:
-iptables -t nat -A PREROUTING -p udp --dport 56301 -m addrtype
---dst-type LOCAL -j DNAT --to-destination :500 (--persistent)
+P.S. You forgot to copy the list again!
 
-When using tcpdump, it seems to fail when the server sends a respons
-back to the cli=EBnt (my external telfort ip is obfuscated):
 
-=46or clarity:
-
-Server --- Home Gateway --- --- --- The Internet --- --- ---
-University Gateway --- Client
-
-- Client: 130.37.154.14 is the local ip assigned to wlan0 when I'm at
-the university, which is also my external ip
-- Home Gateway: 144-144-144-144.ip.telfort.nl:56301 is the external ip
-of my home network with port 56301 redirecting to Server:
-10.1.9.253:56301
-
-Client:
-17:05:48.523138 IP (tos 0x0, ttl 64, id 0, offset 0, flags [DF], proto
-UDP (17), length 788) 130.37.154.14.isakmp >
-144-144-144-144.ip.telfort.nl.56301: [|isakmp]
-17:05:50.523711 IP (tos 0x0, ttl 64, id 0, offset 0, flags [DF], proto
-UDP (17), length 788) 130.37.154.14.isakmp >
-144-144-144-144.ip.telfort.nl.56301: [|isakmp]
-17:05:52.524039 IP (tos 0x0, ttl 64, id 0, offset 0, flags [DF], proto
-UDP (17), length 788) 130.37.154.14.isakmp >
-144-144-144-144.ip.telfort.nl.56301: [|isakmp]
-17:05:54.524365 IP (tos 0x0, ttl 64, id 0, offset 0, flags [DF], proto
-UDP (17), length 788) 130.37.154.14.isakmp >
-144-144-144-144.ip.telfort.nl.56301: [|isakmp]
-
-Server:
-17:05:44.794566 IP (tos 0x0, ttl 64, id 0, offset 0, flags [DF], proto
-UDP (17), length 29) 10.1.9.253.56301 > 130.37.154.14.isakmp: [udp sum
-ok] [|isakmp]
-17:05:44.817648 IP (tos 0x0, ttl 57, id 0, offset 0, flags [DF], proto
-UDP (17), length 788) 130.37.154.14.isakmp > 10.1.9.253.56301:
-[|isakmp]
-17:05:44.819641 IP (tos 0x0, ttl 64, id 0, offset 0, flags [DF], proto
-UDP (17), length 493) 10.1.9.253.56301 > 130.37.154.14.isakmp:
-[|isakmp]
-17:05:46.925299 IP (tos 0x0, ttl 57, id 0, offset 0, flags [DF], proto
-UDP (17), length 788) 130.37.154.14.isakmp > 10.1.9.253.56301:
-[|isakmp]
-17:05:46.926450 IP (tos 0x0, ttl 64, id 0, offset 0, flags [DF], proto
-UDP (17), length 493) 10.1.9.253.56301 > 130.37.154.14.isakmp:
-[|isakmp]
-
-It seems that the responses from the server are dropped somewhere. The
-client never receives them. And so, these lines go on forever. I have
-raw packet dumps ready if anyone would like to see those.
-
-However, things get even more confusing. It turns out, that if:
-- I connect from university using wireless, the IP assigned to my
-wireless interface (wlan0) equals the ip reported on
-http://whatismyipaddress.com/
-- I connect from university using a lan, the IP assigned to my
-ethernet interface (eth1) does not equal the ip reported on
-http://whatismyipaddress.com/
-
-That means that wireless is just forwarded, while ethernet is NAT-ed,
-by the University Gateway. Is this conclusion correct?
-
-This seems relevant because if:
-- I connect from university using wireless (apparently without NAT)
-and applying port redirection: connection fails
-- I connect from university using wireless (apparently without NAT)
-and not applying port redirection: connection succeeds
-- I connect from university using cable (apparently with NAT) and
-applying port redirection: connection succeeds
-- I connect from university using cable (apparently with NAT) and not
-applying port redirection: connection succeeds
-
-Conclusion: Using wireless, which is not NAT-ed, port redirection
-seems to fail. Responses to the client are dropped somewhere along the
-way.
-
-Why? I have absolutely no clue of what causes these symptoms or why
-this does not work. Does anyone here have an idea?
-
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=A0=
-=A0 Thanks, Ronald
