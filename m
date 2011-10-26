@@ -1,341 +1,37 @@
-From: =?ISO-8859-15?Q?Niccol=F2_Belli?= <darkbasic@linuxsystems.it>
-Subject: Problem with ip spoofing load balancing
-Date: Wed, 26 Oct 2011 00:10:13 +0200
-Message-ID: <4EA733C5.2050101@linuxsystems.it>
+From: =?iso-8859-1?Q?Andreas_Birkj=E6r_=28ABI=29?= <abi@thrane.com>
+Subject: NFQNL_COPY_META not working?
+Date: Wed, 26 Oct 2011 11:24:28 +0000
+Message-ID: <76B3922156AB24469E781F6224C2239F0151D1@ly-ex-02.thrane.tt.ad>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=linuxsystems.it;
-	s=linuxsystems.it; t=1319580575;
-	bh=zk402key2wjPVWS9/UCVDTde7cX5fO/YjVLlgmAgPgs=;
-	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:Content-Type:
-	 Content-Transfer-Encoding;
-	b=jNB9I8xetxTllgbL/fegEUjKMAyiypB421enkXrmgpcAkIAGlXrIsTg33xFKxBf4b
-	 325UHaFIARWV4kWtoOSJQIlCV6LXLES9vM58D49/ldw9iv33ZXu8eHCSErCIlF8XKb
-	 1Fat56RhyyKpaXAKY7UFQcOJXiG124LKIjeonBUc=
+Content-Language: da-DK
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org
-Cc: lartc@lists.linuxsystems.it
+Content-Type: text/plain; charset="us-ascii"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi,
-My router is a linux box with two adsl lines attached, one with a 16 IP=
-=20
-subnet and another with a single static address.
+Hello.
 
-Since I need more upload bandwidth and my isp allows me to do ip=20
-spoofing, I decided to do an ip spoofing load bal.
+I have been trying to get the the netfilter queue working, everything is seemingly allright as long as I pass the entire packet to userspace. (nfq_set_mode(qh, NFQNL_COPY_PACKET, 0xfffff)).
+It should be noted that I am testing this on the nfqnl_test.c which is found here: http://svn.netfilter.org/netfilter/trunk/libnetfilter_queue/utils/nfqnl_test.c
 
-Unfortunately it doesn't work with every client and I don't know why :(
+As long as I copy the entire packet to userspace, everything seems to be running smoothly, I can retrieve whatever I want from the packet.
 
-nas0 is the adsl with the public subnet, ppp0 is the adsl with the=20
-single static ip. server_ip is one of the IPs of the subnet.
+However, I do not want to pass the entire packet to userspace - I just need to check/modify the IP and/or TCP header and then pass the packet along. When I try to use the NFQNL_COPY_META mode, then the program fails. (I am testing this on the beforementioned nfqnl_test.c file with no modifications beside the META mode.
 
+Apparently the nfq_get_payload() function always returns -1.
 
-This is the log with a working client:
+I have tried searching for an answer, but almost everywhere I look, people are happy passing the entire packet, does the nfqnl_test.c need additional modifications in order to run in NFQNL_COPY_META mode or what?
+When using NFQNL_COPY_META mode, I still get some output from the queue (hw_protocol, hook, packet id etc) but as stated, the nfq_get_payload returns -1.
 
-SERVER:
-Oct 25 22:45:47 firewall kernel: [22098.077637] **NEW** IN NAS0=20
-CONNIN=3Dnas0 OUT=3DethWEB SRC=3D<client_ip> DST=3D<server_ip> LEN=3D60=
- TOS=3D0x00=20
-PREC=3D0x00 TTL=3D58 ID=3D16271 DF PROTO=3DTCP SPT=3D25258 DPT=3D80 WIN=
-DOW=3D14600=20
-RES=3D0x00 SYN URGP=3D0
-Oct 25 22:45:47 firewall kernel: [22098.096517] OUT PPP0 CONNIN=3DethWE=
-B=20
-OUT=3Dppp0 SRC=3D<server_ip> DST=3D<client_ip> LEN=3D60 TOS=3D0x00 PREC=
-=3D0x00=20
-TTL=3D63 ID=3D0 DF PROTO=3DTCP SPT=3D80 DPT=3D25258 WINDOW=3D5792 RES=3D=
-0x00 ACK SYN=20
-URGP=3D0 MARK=3D0x4
-Oct 25 22:45:48 firewall kernel: [22098.195139] IN NAS0 CONNIN=3Dnas0=20
-OUT=3DethWEB SRC=3D<client_ip> DST=3D<server_ip> LEN=3D52 TOS=3D0x00 PR=
-EC=3D0x00=20
-TTL=3D58 ID=3D16272 DF PROTO=3DTCP SPT=3D25258 DPT=3D80 WINDOW=3D229 RE=
-S=3D0x00 ACK=20
-URGP=3D0 MARK=3D0x4
-Oct 25 22:45:48 firewall kernel: [22098.214590] IN NAS0 CONNIN=3Dnas0=20
-OUT=3DethWEB SRC=3D<client_ip> DST=3D<server_ip> LEN=3D655 TOS=3D0x00 P=
-REC=3D0x00=20
-TTL=3D58 ID=3D16273 DF PROTO=3DTCP SPT=3D25258 DPT=3D80 WINDOW=3D229 RE=
-S=3D0x00 ACK=20
-PSH URGP=3D0 MARK=3D0x4
-Oct 25 22:45:48 firewall kernel: [22098.233922] OUT PPP0 CONNIN=3DethWE=
-B=20
-OUT=3Dppp0 SRC=3D<server_ip> DST=3D<client_ip> LEN=3D52 TOS=3D0x00 PREC=
-=3D0x00=20
-TTL=3D63 ID=3D51475 DF PROTO=3DTCP SPT=3D80 DPT=3D25258 WINDOW=3D438 RE=
-S=3D0x00 ACK=20
-URGP=3D0 MARK=3D0x4
-Oct 25 22:45:48 firewall kernel: [22098.315441] OUT PPP0 CONNIN=3DethWE=
-B=20
-OUT=3Dppp0 SRC=3D<server_ip> DST=3D<client_ip> LEN=3D1482 TOS=3D0x00 PR=
-EC=3D0x00=20
-TTL=3D63 ID=3D51476 DF PROTO=3DTCP SPT=3D80 DPT=3D25258 WINDOW=3D438 RE=
-S=3D0x00 ACK=20
-URGP=3D0 MARK=3D0x4
-Oct 25 22:45:48 firewall kernel: [22098.335592] OUT PPP0 CONNIN=3DethWE=
-B=20
-OUT=3Dppp0 SRC=3D<server_ip> DST=3D<client_ip> LEN=3D155 TOS=3D0x00 PRE=
-C=3D0x00=20
-TTL=3D63 ID=3D51477 DF PROTO=3DTCP SPT=3D80 DPT=3D25258 WINDOW=3D438 RE=
-S=3D0x00 ACK=20
-PSH URGP=3D0 MARK=3D0x4
-Oct 25 22:45:48 firewall kernel: [22098.355670] OUT PPP0 CONNIN=3DethWE=
-B=20
-OUT=3Dppp0 SRC=3D<server_ip> DST=3D<client_ip> LEN=3D52 TOS=3D0x00 PREC=
-=3D0x00=20
-TTL=3D63 ID=3D51478 DF PROTO=3DTCP SPT=3D80 DPT=3D25258 WINDOW=3D438 RE=
-S=3D0x00 ACK=20
-=46IN URGP=3D0 MARK=3D0x4
-Oct 25 22:45:48 firewall kernel: [22098.434146] IN NAS0 CONNIN=3Dnas0=20
-OUT=3DethWEB SRC=3D<client_ip> DST=3D<server_ip> LEN=3D52 TOS=3D0x00 PR=
-EC=3D0x00=20
-TTL=3D58 ID=3D16274 DF PROTO=3DTCP SPT=3D25258 DPT=3D80 WINDOW=3D273 RE=
-S=3D0x00 ACK=20
-URGP=3D0 MARK=3D0x4
-Oct 25 22:45:48 firewall kernel: [22098.454836] IN NAS0 CONNIN=3Dnas0=20
-OUT=3DethWEB SRC=3D<client_ip> DST=3D<server_ip> LEN=3D52 TOS=3D0x00 PR=
-EC=3D0x00=20
-TTL=3D58 ID=3D16275 DF PROTO=3DTCP SPT=3D25258 DPT=3D80 WINDOW=3D273 RE=
-S=3D0x00 ACK=20
-URGP=3D0 MARK=3D0x4
-Oct 25 22:45:48 firewall kernel: [22098.473351] IN NAS0 CONNIN=3Dnas0=20
-OUT=3DethWEB SRC=3D<client_ip> DST=3D<server_ip> LEN=3D52 TOS=3D0x00 PR=
-EC=3D0x00=20
-TTL=3D58 ID=3D16276 DF PROTO=3DTCP SPT=3D25258 DPT=3D80 WINDOW=3D273 RE=
-S=3D0x00 ACK=20
-=46IN URGP=3D0 MARK=3D0x4
-Oct 25 22:45:48 firewall kernel: [22098.492317] IN NAS0 CONNIN=3Dnas0=20
-OUT=3DethWEB SRC=3D<client_ip> DST=3D<server_ip> LEN=3D52 TOS=3D0x00 PR=
-EC=3D0x00=20
-TTL=3D58 ID=3D16277 DF PROTO=3DTCP SPT=3D25258 DPT=3D80 WINDOW=3D273 RE=
-S=3D0x00 ACK=20
-URGP=3D0 MARK=3D0x4
-Oct 25 22:45:48 firewall kernel: [22098.510745] OUT PPP0 CONNIN=3DethWE=
-B=20
-OUT=3Dppp0 SRC=3D<server_ip> DST=3D<client_ip> LEN=3D52 TOS=3D0x00 PREC=
-=3D0x00=20
-TTL=3D63 ID=3D51479 DF PROTO=3DTCP SPT=3D80 DPT=3D25258 WINDOW=3D438 RE=
-S=3D0x00 ACK=20
-URGP=3D0 MARK=3D0x4
+I have not found anything on the official site stating that additional modifications are needed when running in META mode, but I might be overlooking something?
 
-CLIENT:
-Oct 25 22:46:27 laptop kernel: [92080.819184] *NEW* OUT CONN IN=3D=20
-OUT=3Dwlan1 SRC=3D192.168.1.2 DST=3D<server_ip> LEN=3D60 TOS=3D0x00 PRE=
-C=3D0x00=20
-TTL=3D64 ID=3D16271 DF PROTO=3DTCP SPT=3D34877 DPT=3D80 WINDOW=3D14600 =
-RES=3D0x00 SYN=20
-URGP=3D0
-Oct 25 22:46:27 laptop kernel: [92080.938028] IN CONN IN=3Dwlan1 OUT=3D=
-=20
-MAC=3D00:c0:ca:21:8a:e6:f0:7d:68:fb:4f:e3:08:00 SRC=3D<server_ip>=20
-DST=3D192.168.1.2 LEN=3D60 TOS=3D0x00 PREC=3D0x00 TTL=3D50 ID=3D0 DF PR=
-OTO=3DTCP=20
-SPT=3D80 DPT=3D34877 WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
-Oct 25 22:46:27 laptop kernel: [92080.938067] OUT CONN IN=3D OUT=3Dwlan=
-1=20
-SRC=3D192.168.1.2 DST=3D<server_ip> LEN=3D52 TOS=3D0x00 PREC=3D0x00 TTL=
-=3D64=20
-ID=3D16272 DF PROTO=3DTCP SPT=3D34877 DPT=3D80 WINDOW=3D229 RES=3D0x00 =
-ACK URGP=3D0
-Oct 25 22:46:27 laptop kernel: [92080.938565] OUT CONN IN=3D OUT=3Dwlan=
-1=20
-SRC=3D192.168.1.2 DST=3D<server_ip> LEN=3D655 TOS=3D0x00 PREC=3D0x00 TT=
-L=3D64=20
-ID=3D16273 DF PROTO=3DTCP SPT=3D34877 DPT=3D80 WINDOW=3D229 RES=3D0x00 =
-ACK PSH URGP=3D0
-Oct 25 22:46:27 laptop kernel: [92081.075375] IN CONN IN=3Dwlan1 OUT=3D=
-=20
-MAC=3D00:c0:ca:21:8a:e6:f0:7d:68:fb:4f:e3:08:00 SRC=3D<server_ip>=20
-DST=3D192.168.1.2 LEN=3D52 TOS=3D0x00 PREC=3D0x00 TTL=3D50 ID=3D51475 D=
-=46 PROTO=3DTCP=20
-SPT=3D80 DPT=3D34877 WINDOW=3D438 RES=3D0x00 ACK URGP=3D0
-Oct 25 22:46:27 laptop kernel: [92081.174877] IN CONN IN=3Dwlan1 OUT=3D=
-=20
-MAC=3D00:c0:ca:21:8a:e6:f0:7d:68:fb:4f:e3:08:00 SRC=3D<server_ip>=20
-DST=3D192.168.1.2 LEN=3D1482 TOS=3D0x00 PREC=3D0x00 TTL=3D51 ID=3D51476=
- DF PROTO=3DTCP=20
-SPT=3D80 DPT=3D34877 WINDOW=3D438 RES=3D0x00 ACK URGP=3D0
-Oct 25 22:46:27 laptop kernel: [92081.174903] OUT CONN IN=3D OUT=3Dwlan=
-1=20
-SRC=3D192.168.1.2 DST=3D<server_ip> LEN=3D52 TOS=3D0x00 PREC=3D0x00 TTL=
-=3D64=20
-ID=3D16274 DF PROTO=3DTCP SPT=3D34877 DPT=3D80 WINDOW=3D273 RES=3D0x00 =
-ACK URGP=3D0
-Oct 25 22:46:27 laptop kernel: [92081.178769] IN CONN IN=3Dwlan1 OUT=3D=
-=20
-MAC=3D00:c0:ca:21:8a:e6:f0:7d:68:fb:4f:e3:08:00 SRC=3D<server_ip>=20
-DST=3D192.168.1.2 LEN=3D155 TOS=3D0x00 PREC=3D0x00 TTL=3D50 ID=3D51477 =
-DF PROTO=3DTCP=20
-SPT=3D80 DPT=3D34877 WINDOW=3D438 RES=3D0x00 ACK PSH URGP=3D0
-Oct 25 22:46:27 laptop kernel: [92081.178793] OUT CONN IN=3D OUT=3Dwlan=
-1=20
-SRC=3D192.168.1.2 DST=3D<server_ip> LEN=3D52 TOS=3D0x00 PREC=3D0x00 TTL=
-=3D64=20
-ID=3D16275 DF PROTO=3DTCP SPT=3D34877 DPT=3D80 WINDOW=3D273 RES=3D0x00 =
-ACK URGP=3D0
-Oct 25 22:46:27 laptop kernel: [92081.178861] OUT CONN IN=3D OUT=3Dwlan=
-1=20
-SRC=3D192.168.1.2 DST=3D<server_ip> LEN=3D52 TOS=3D0x00 PREC=3D0x00 TTL=
-=3D64=20
-ID=3D16276 DF PROTO=3DTCP SPT=3D34877 DPT=3D80 WINDOW=3D273 RES=3D0x00 =
-ACK FIN URGP=3D0
-Oct 25 22:46:27 laptop kernel: [92081.198553] IN CONN IN=3Dwlan1 OUT=3D=
-=20
-MAC=3D00:c0:ca:21:8a:e6:f0:7d:68:fb:4f:e3:08:00 SRC=3D<server_ip>=20
-DST=3D192.168.1.2 LEN=3D52 TOS=3D0x00 PREC=3D0x00 TTL=3D50 ID=3D51478 D=
-=46 PROTO=3DTCP=20
-SPT=3D80 DPT=3D34877 WINDOW=3D438 RES=3D0x00 ACK FIN URGP=3D0
-Oct 25 22:46:27 laptop kernel: [92081.198590] OUT CONN IN=3D OUT=3Dwlan=
-1=20
-SRC=3D192.168.1.2 DST=3D<server_ip> LEN=3D52 TOS=3D0x00 PREC=3D0x00 TTL=
-=3D64=20
-ID=3D16277 DF PROTO=3DTCP SPT=3D34877 DPT=3D80 WINDOW=3D273 RES=3D0x00 =
-ACK URGP=3D0
-Oct 25 22:46:28 laptop kernel: [92081.351125] IN CONN IN=3Dwlan1 OUT=3D=
-=20
-MAC=3D00:c0:ca:21:8a:e6:f0:7d:68:fb:4f:e3:08:00 SRC=3D<server_ip>=20
-DST=3D192.168.1.2 LEN=3D52 TOS=3D0x00 PREC=3D0x00 TTL=3D50 ID=3D51479 D=
-=46 PROTO=3DTCP=20
-SPT=3D80 DPT=3D34877 WINDOW=3D438 RES=3D0x00 ACK URGP=3D0
+Another small question, I am a little unclear as to exactly what information is passed in META mode. As far as I can understand, the content of the headers are passed to userspace right? Meaning IP/TCP/HTTP... headers are passed but payload is not?
+
+I hope someone is able to help me get to the bottom of this.
+
+Kind regards
+Andreas
 
 
-
-This is the log with a *NOT* working client:
-
-SERVER:
-Oct 25 22:32:55 firewall kernel: [21325.121680] **NEW** IN NAS0=20
-CONNIN=3Dnas0 OUT=3DethWEB SRC=3D<client_ip> DST=3D<server_ip> LEN=3D60=
- TOS=3D0x00=20
-PREC=3D0x00 TTL=3D54 ID=3D14919 DF PROTO=3DTCP SPT=3D31549 DPT=3D80 WIN=
-DOW=3D5840=20
-RES=3D0x00 SYN URGP=3D0
-Oct 25 22:32:55 firewall kernel: [21325.140239] OUT PPP0 CONNIN=3DethWE=
-B=20
-OUT=3Dppp0 SRC=3D<server_ip> DST=3D<client_ip> LEN=3D60 TOS=3D0x00 PREC=
-=3D0x00=20
-TTL=3D63 ID=3D0 DF PROTO=3DTCP SPT=3D80 DPT=3D31549 WINDOW=3D5792 RES=3D=
-0x00 ACK SYN=20
-URGP=3D0 MARK=3D0x4
-Oct 25 22:32:55 firewall kernel: [21325.236986] IN NAS0 CONNIN=3Dnas0=20
-OUT=3DethWEB SRC=3D<client_ip> DST=3D<server_ip> LEN=3D52 TOS=3D0x00 PR=
-EC=3D0x00=20
-TTL=3D54 ID=3D14920 DF PROTO=3DTCP SPT=3D31549 DPT=3D80 WINDOW=3D46 RES=
-=3D0x00 ACK=20
-URGP=3D0 MARK=3D0x4
-Oct 25 22:32:55 firewall kernel: [21325.267581] IN NAS0 CONNIN=3Dnas0=20
-OUT=3DethWEB SRC=3D<client_ip> DST=3D<server_ip> LEN=3D653 TOS=3D0x00 P=
-REC=3D0x00=20
-TTL=3D54 ID=3D14921 DF PROTO=3DTCP SPT=3D31549 DPT=3D80 WINDOW=3D46 RES=
-=3D0x00 ACK PSH=20
-URGP=3D0 MARK=3D0x4
-Oct 25 22:32:55 firewall kernel: [21325.286615] OUT PPP0 CONNIN=3DethWE=
-B=20
-OUT=3Dppp0 SRC=3D<server_ip> DST=3D<client_ip> LEN=3D52 TOS=3D0x00 PREC=
-=3D0x00=20
-TTL=3D63 ID=3D55122 DF PROTO=3DTCP SPT=3D80 DPT=3D31549 WINDOW=3D438 RE=
-S=3D0x00 ACK=20
-URGP=3D0 MARK=3D0x4
-Oct 25 22:32:55 firewall kernel: [21325.385647] OUT PPP0 CONNIN=3DethWE=
-B=20
-OUT=3Dppp0 SRC=3D<server_ip> DST=3D<client_ip> LEN=3D137 TOS=3D0x00 PRE=
-C=3D0x00=20
-TTL=3D63 ID=3D55124 DF PROTO=3DTCP SPT=3D80 DPT=3D31549 WINDOW=3D438 RE=
-S=3D0x00 ACK=20
-PSH URGP=3D0 MARK=3D0x4
-Oct 25 22:32:55 firewall kernel: [21325.405173] OUT PPP0 CONNIN=3DethWE=
-B=20
-OUT=3Dppp0 SRC=3D<server_ip> DST=3D<client_ip> LEN=3D52 TOS=3D0x00 PREC=
-=3D0x00=20
-TTL=3D63 ID=3D55125 DF PROTO=3DTCP SPT=3D80 DPT=3D31549 WINDOW=3D438 RE=
-S=3D0x00 ACK=20
-=46IN URGP=3D0 MARK=3D0x4
-Oct 25 22:32:55 firewall kernel: [21325.484020] IN NAS0 CONNIN=3Dnas0=20
-OUT=3DethWEB SRC=3D<client_ip> DST=3D<server_ip> LEN=3D64 TOS=3D0x00 PR=
-EC=3D0x00=20
-TTL=3D54 ID=3D14922 DF PROTO=3DTCP SPT=3D31549 DPT=3D80 WINDOW=3D46 RES=
-=3D0x00 ACK=20
-URGP=3D0 MARK=3D0x4
-Oct 25 22:32:55 firewall kernel: [21325.504418] IN NAS0 CONNIN=3Dnas0=20
-OUT=3DethWEB SRC=3D<client_ip> DST=3D<server_ip> LEN=3D64 TOS=3D0x00 PR=
-EC=3D0x00=20
-TTL=3D54 ID=3D14923 DF PROTO=3DTCP SPT=3D31549 DPT=3D80 WINDOW=3D46 RES=
-=3D0x00 ACK=20
-URGP=3D0 MARK=3D0x4
-
-CLIENT:
-Oct 25 22:32:54 shoutcast-server kernel: [180468.541703] *NEW* OUT CONN=
-=20
-IN=3D OUT=3Deth0 SRC=3D192.168.203.10 DST=3D<server_ip> LEN=3D60 TOS=3D=
-0x00=20
-PREC=3D0x00 TTL=3D64 ID=3D14919 DF PROTO=3DTCP SPT=3D49680 DPT=3D80 WIN=
-DOW=3D5840=20
-RES=3D0x00 SYN URGP=3D0
-Oct 25 22:32:55 shoutcast-server kernel: [180468.659871] IN CONN IN=3De=
-th0=20
-OUT=3D MAC=3D00:01:2e:2d:72:e3:00:11:92:95:25:72:08:00 SRC=3D<server_ip=
->=20
-DST=3D192.168.203.10 LEN=3D60 TOS=3D0x00 PREC=3D0x00 TTL=3D48 ID=3D0 DF=
- PROTO=3DTCP=20
-SPT=3D80 DPT=3D49680 WINDOW=3D5792 RES=3D0x00 ACK SYN URGP=3D0
-Oct 25 22:32:55 shoutcast-server kernel: [180468.659935] OUT CONN IN=3D=
-=20
-OUT=3Deth0 SRC=3D192.168.203.10 DST=3D<server_ip> LEN=3D52 TOS=3D0x00 P=
-REC=3D0x00=20
-TTL=3D64 ID=3D14920 DF PROTO=3DTCP SPT=3D49680 DPT=3D80 WINDOW=3D46 RES=
-=3D0x00 ACK URGP=3D0
-Oct 25 22:32:55 shoutcast-server kernel: [180468.660406] OUT CONN IN=3D=
-=20
-OUT=3Deth0 SRC=3D192.168.203.10 DST=3D<server_ip> LEN=3D653 TOS=3D0x00 =
-PREC=3D0x00=20
-TTL=3D64 ID=3D14921 DF PROTO=3DTCP SPT=3D49680 DPT=3D80 WINDOW=3D46 RES=
-=3D0x00 ACK PSH=20
-URGP=3D0
-Oct 25 22:32:55 shoutcast-server kernel: [180468.805969] IN CONN IN=3De=
-th0=20
-OUT=3D MAC=3D00:01:2e:2d:72:e3:00:11:92:95:25:72:08:00 SRC=3D<server_ip=
->=20
-DST=3D192.168.203.10 LEN=3D52 TOS=3D0x00 PREC=3D0x00 TTL=3D48 ID=3D5512=
-2 DF=20
-PROTO=3DTCP SPT=3D80 DPT=3D49680 WINDOW=3D438 RES=3D0x00 ACK URGP=3D0
-Oct 25 22:32:55 shoutcast-server kernel: [180468.908678] IN CONN IN=3De=
-th0=20
-OUT=3D MAC=3D00:01:2e:2d:72:e3:00:11:92:95:25:72:08:00 SRC=3D<server_ip=
->=20
-DST=3D192.168.203.10 LEN=3D137 TOS=3D0x00 PREC=3D0x00 TTL=3D48 ID=3D551=
-24 DF=20
-PROTO=3DTCP SPT=3D80 DPT=3D49680 WINDOW=3D438 RES=3D0x00 ACK PSH URGP=3D=
-0
-Oct 25 22:32:55 shoutcast-server kernel: [180468.908733] OUT CONN IN=3D=
-=20
-OUT=3Deth0 SRC=3D192.168.203.10 DST=3D<server_ip> LEN=3D64 TOS=3D0x00 P=
-REC=3D0x00=20
-TTL=3D64 ID=3D14922 DF PROTO=3DTCP SPT=3D49680 DPT=3D80 WINDOW=3D46 RES=
-=3D0x00 ACK URGP=3D0
-Oct 25 22:32:55 shoutcast-server kernel: [180468.924857] IN CONN IN=3De=
-th0=20
-OUT=3D MAC=3D00:01:2e:2d:72:e3:00:11:92:95:25:72:08:00 SRC=3D<server_ip=
->=20
-DST=3D192.168.203.10 LEN=3D52 TOS=3D0x00 PREC=3D0x00 TTL=3D48 ID=3D5512=
-5 DF=20
-PROTO=3DTCP SPT=3D80 DPT=3D49680 WINDOW=3D438 RES=3D0x00 ACK FIN URGP=3D=
-0
-Oct 25 22:32:55 shoutcast-server kernel: [180468.924914] OUT CONN IN=3D=
-=20
-OUT=3Deth0 SRC=3D192.168.203.10 DST=3D<server_ip> LEN=3D64 TOS=3D0x00 P=
-REC=3D0x00=20
-TTL=3D64 ID=3D14923 DF PROTO=3DTCP SPT=3D49680 DPT=3D80 WINDOW=3D46 RES=
-=3D0x00 ACK URGP=3D0
-
-
-
-As you can see both clients do receive the spoofed packets, but the=20
-second one can't load the page.
-
-
-Suggestions?
-
-Thanks,
-Niccol=F2
