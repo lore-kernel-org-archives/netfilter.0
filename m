@@ -1,63 +1,51 @@
-From: Mike Wright <mike.wright@mailinator.com>
-Subject: Re: simple/ubiquitous iptables NAT config no longer works
-Date: Wed, 26 Oct 2011 10:51:03 -0700
-Message-ID: <4EA84887.7090005@mailinator.com>
-References: <CAA+mFXNdGDpickA-JNukzmHhgtGM+AtZ=2dDpfvh6G-ZYdY3xA@mail.gmail.com> <CAA+mFXPp3vcLiABSpwNrP6jLmMB8V6QrbiQoUSOysAG1N4V4JQ@mail.gmail.com> <20111018101245.0d910cb6@catus> <CAA+mFXNnJyQLQjL9Tq3=GODy_3G0uM4bns0+zy-10Q7jH2Wxsw@mail.gmail.com> <CAA+mFXP0v2TxRxz0RDWfvwxX5zGG_QPMLygSbQM_tyZ6vLBALg@mail.gmail.com>
+From: =?UTF-8?B?TmljY29sw7IgQmVsbGk=?= <darkbasic@linuxsystems.it>
+Subject: Re: Problem with ip spoofing load balancing
+Date: Wed, 26 Oct 2011 22:38:55 +0200
+Message-ID: <4EA86FDF.8090906@linuxsystems.it>
+References: <4EA821DD.1050306@linuxsystems.it> <alpine.LFD.2.00.1110262235340.1558@ja.ssi.bg>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAA+mFXP0v2TxRxz0RDWfvwxX5zGG_QPMLygSbQM_tyZ6vLBALg@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=linuxsystems.it;
+	s=linuxsystems.it; t=1319661493;
+	bh=E+elC9jwKjAvxgDU7riogZG1Ts2XMVYmy0oPzrvZIyI=;
+	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:References:
+	 In-Reply-To:Content-Type:Content-Transfer-Encoding;
+	b=mqlTjutoSqH59dDwIQZiTwDjEhdSkR8DaYlr7k/Pv+2Bm2yvBYdDVLXhib+MyPgdH
+	 MEGsfK1k+DVv2+DhjKfWpAdZP2jxyFDE7Y2ethVQ3Gw9jvlov9J0XZEPrPeSTySjRG
+	 L2rLXsg7tDBEO/IQmOx9YEKJ7TRs8WS5+CJ2Ys3I=
+In-Reply-To: <alpine.LFD.2.00.1110262235340.1558@ja.ssi.bg>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pawel Karpowicz <mafeuser@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="macroman"; format="flowed"
+To: netfilter@vger.kernel.org
+Cc: wireshark-users@wireshark.org, lartc@lists.linuxsystems.it
 
-On 10/26/2011 10:22 AM, Pawel Karpowicz wrote:
-> I didn't get the help so maybe I should ask someone for simple NAT
-> configuration for iptables v.1.4.10?
+Il 26/10/2011 21:43, Julian Anastasov ha scritto:
+> 	I looked at broken-spoofing-server.pcap and
+> broken-spoofing-client.pcap
 >
->> my ubuntu plays role of simple router. It has 2 interfaces
->> eth0(public), eth1(private):
->>
->> eth0      Link encap:Ethernet  HWaddr 00:18:8b:04:8a:13
->>           inet addr:89.73.128.70  Bcast:255.255.255.255  Mask:255.255.252.0
->>           UP BROADCAST RUNNING MULTICAST  MTU:576  Metric:1
->>           RX packets:8535 errors:0 dropped:0 overruns:0 frame:0
->>           TX packets:4873 errors:0 dropped:0 overruns:0 carrier:0
->>           collisions:0 txqueuelen:1000
->>           RX bytes:3044029 (3.0 MB)  TX bytes:448928 (448.9 KB)
->>           Interrupt:16
->>
->>
->> eth1      Link encap:Ethernet  HWaddr 00:02:b3:8c:dc:e7
->>           inet addr:192.168.10.1  Bcast:192.168.10.255  Mask:255.255.255.0
->>           UP BROADCAST MULTICAST  MTU:1500  Metric:1
->>           RX packets:0 errors:0 dropped:0 overruns:0 frame:0
->>           TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
->>           collisions:0 txqueuelen:1000
->>           RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
->>
->> behind the NAT, there is one machine.
+> 	It looks like that this packet comes after some
+> packet that is dropped before server:
+>
+> IP 2.119.245.36.80>  88.38.77.130.39243: Flags [P.], seq 1449:1534, a=
+ck 602, win 438, options [nop,nop,TS val 17124611 ecr 56937089], length=
+ 85
+>
+> 	May be the seq 1:1449 packet can not reach 2.119.245.36.80,
+> that is why it does not go to client 88.38.77.130.39243.
+> May be server is a virtual server or something like that.
+>
+> 	I guess someone before 2.119.245.36.80 is sending
+> large packets and some MTU is low and may be due to missing
+> ICMP the sender there can not learn the lower path MTU.
+> May be client can use ip route add ... advmss 1400 to check
+> if problem is fixed that way. May be there is some tunnel
+> behind the server that uses lower MTU.
+>
+> 	Note that some 3.0.X kernels have problem that
+> ICMP is not sent and this can cause PMTU problems.
 
-Maybe this will work?
+SOLVED! Thanks Julian Anastasov.
 
-In the nat table:
-
--A PREROUTING -i eth0 -j DNAT --to-destination 192.168.10.1
--A POSTROUTING -o eth0 -j SNAT --to-source 89.73.128.70
-
-You must also enable forwarding.
-
-I don't know Ubuntu but in Redhat that's
-
-echo 1 > /proc/sys/net/ipv4/ip_forward (temporary)
-
--- or --
-
-in /etc/sysctl.conf
-
-net.ipv4.ip_forward = 1  (permanent)
-
-hth,
-Mike Wright
+Niccol=C3=B2
