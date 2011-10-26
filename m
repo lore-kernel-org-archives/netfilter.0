@@ -1,82 +1,47 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: NFQNL_COPY_META not working?
-Date: Wed, 26 Oct 2011 15:00:21 +0200
-Message-ID: <dec0d22e-3d9b-4ab4-8d80-56bb09382971@email.android.com>
-References: <76B3922156AB24469E781F6224C2239F0151D1@ly-ex-02.thrane.tt.ad>
+From: J Webster <jw.jwebster@gmail.com>
+Subject: Re: using iptables to speed limit connections
+Date: Wed, 26 Oct 2011 14:44:47 +0100
+Message-ID: <4EA80ECF.8030206@googlemail.com>
+References: <4EA7EEF6.4000808@googlemail.com> <Pine.LNX.4.61.1110260919400.24418@soloth.lewis.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <76B3922156AB24469E781F6224C2239F0151D1@ly-ex-02.thrane.tt.ad>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=message-id:date:from:user-agent:mime-version:to:subject:references
+         :in-reply-to:content-type:content-transfer-encoding;
+        bh=rAQtCtW6JNmfwf3u1IcRAh+PnwBSxSkEHlru7vSJ1a4=;
+        b=hG+hjGEoxbMcPbsKRBD8x4NvBUIIIGajHFKIMfuo6NPtD0PGqvzCtbpzNHhrBVeT/s
+         eR5xkzdSNH+wNELljgeF8/CX/g1hovesJRwCj0lsmiMktsC94PZFQ8uI6c4HMv3etILu
+         sSdhwQgQYtqdum10Vu5CR/cvJ2L5wl6QwZFBI=
+In-Reply-To: <Pine.LNX.4.61.1110260919400.24418@soloth.lewis.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: =?ISO-8859-1?Q?Andreas_Birkj=E6r_=28ABI=29?= <abi@thrane.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jon Lewis <jlewis@lewis.org>, netfilter@vger.kernel.org
 
-Hello
+The problem is not so much limiting the overall connection but limiting 
+the connection of each individual vpn user to 2Mbps.
+So, there is 100Mbps to share between 10 users, they should each get 2, 
+giving a use of 20Mbps.
+Also, I wasn't sure from those pages whether this should be applied to 
+each IP on the VPN network 10.8.0.0/24 or every IP with outgoing packets 
+but that would then limit the server to 2 Mbps.
 
-
-"Andreas Birkj=C3=A6r (ABI)" <abi@thrane.com> a =C3=A9crit=C2=A0:
-
->Hello.
+On 26/10/2011 14:20, Jon Lewis wrote:
+> On Wed, 26 Oct 2011, J Webster wrote:
 >
->I have been trying to get the the netfilter queue working, everything
->is seemingly allright as long as I pass the entire packet to userspace=
-=2E
->(nfq_set_mode(qh, NFQNL_COPY_PACKET, 0xfffff)).
->It should be noted that I am testing this on the nfqnl_test.c which is
->found here:
->http://svn.netfilter.org/netfilter/trunk/libnetfilter_queue/utils/nfqn=
-l_test.c
-
-Copy Meta will not send the payload to userspace. If you want a partial=
- transfer of payload use copy packet and put the size as second paramet=
-er of nfq-set-mode.
-
-BR
-
+>> Is there any easy way to speed limit connections on a VPN to 2 Mbps?
+>> My server is 100Mbps but I have connections on a VPN of 10.8.0.0. so 
+>> need to limit the outbound connection from 10.8.0.0 to 2 Mbps.
+>> I tried reading the stuff on leaf but the tutorial doesn't seem very 
+>> straightforward and there is not much information on this on the net.
 >
->As long as I copy the entire packet to userspace, everything seems to
->be running smoothly, I can retrieve whatever I want from the packet.
+> You probably should have a look at 
+> http://lartc.org/howto/lartc.qdisc.html
 >
->However, I do not want to pass the entire packet to userspace - I just
->need to check/modify the IP and/or TCP header and then pass the packet
->along. When I try to use the NFQNL_COPY_META mode, then the program
->fails. (I am testing this on the beforementioned nfqnl_test.c file wit=
-h
->no modifications beside the META mode.
->
->Apparently the nfq_get_payload() function always returns -1.
->
->I have tried searching for an answer, but almost everywhere I look,
->people are happy passing the entire packet, does the nfqnl_test.c need
->additional modifications in order to run in NFQNL_COPY_META mode or
->what?
->When using NFQNL_COPY_META mode, I still get some output from the queu=
-e
->(hw_protocol, hook, packet id etc) but as stated, the nfq_get_payload
->returns -1.
->
->I have not found anything on the official site stating that additional
->modifications are needed when running in META mode, but I might be
->overlooking something?
->
->Another small question, I am a little unclear as to exactly what
->information is passed in META mode. As far as I can understand, the
->content of the headers are passed to userspace right? Meaning
->IP/TCP/HTTP... headers are passed but payload is not?
->
->I hope someone is able to help me get to the bottom of this.
->
->Kind regards
->Andreas
->
->
->--
->To unsubscribe from this list: send the line "unsubscribe netfilter" i=
-n
->the body of a message to majordomo@vger.kernel.org
->More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
---=20
-Envoy=C3=A9 de mon t=C3=A9l=C3=A9phone Android avec K-9 Mail. Excusez l=
-a bri=C3=A8vet=C3=A9.
+> ----------------------------------------------------------------------
+>  Jon Lewis, MCP :)           |  I route
+>  Senior Network Engineer     |  therefore you are
+>  Atlantic Net                |
+> _________ http://www.lewis.org/~jlewis/pgp for PGP public key_________
