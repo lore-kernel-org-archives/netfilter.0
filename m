@@ -1,40 +1,47 @@
-From: Jan Engelhardt <jengelh@medozas.de>
+From: Benjamin Poirier <benjamin.poirier@gmail.com>
 Subject: Re: [LARTC] LARTC mailing list
-Date: Wed, 2 Nov 2011 16:43:14 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1111021641440.17999@frira.zrqbmnf.qr>
-References: <4EA2BF3D.1010107@linuxsystems.it> <1319292634.26402.6302.camel@andybev-desktop>
+Date: Wed, 2 Nov 2011 13:54:14 -0400
+Message-ID: <20111102175414.GA10307@synalogic.ca>
+References: <4EA2BF3D.1010107@linuxsystems.it>
+ <1319292634.26402.6302.camel@andybev-desktop>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-type:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=mkwHjoncxcpcNQr+9AoV0MtClz8mflreXLgjabdBsgA=;
+        b=NMOSDl1faJApSSmKlgMl32JF/sfQVGbog4CMH8rYx9mdxrubI7NCuj+hK5JAEO2yZ9
+         w8NPP51FrfJxdPlEtYZhgof/nymFy3UPYmbkprp7fKRMJ18C9XwE66xdBZZxKuxCBVQG
+         vMIVPrrYseA2XFkhpzaba6ulALsl3WQHi7sYE=
+Content-Disposition: inline
 In-Reply-To: <1319292634.26402.6302.camel@andybev-desktop>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
+Content-Type: text/plain; charset="iso-8859-1"
 To: Andrew Beverley <andy@andybev.com>
 Cc: Linux Advanced Routing & Traffic Control project <lartc@lists.linuxsystems.it>, linux-new-lists@vger.kernel.org, netfilter@vger.kernel.org, netdev@vger.kernel.org
 
-On Saturday 2011-10-22 16:10, Andrew Beverley wrote:
+On 11/10/22 15:10, Andrew Beverley wrote:
+> On Sat, 2011-10-22 at 15:03 +0200, Niccol=F2 Belli wrote:
+> > Is someone still interested to bring LARTC to a new life?
+> > I'm sorry for the subscription but the list didn't work anymore and=
+ it=20
+> > was unfeasible to CC 30+ addresses. Let me know if you want to=20
+> > unsubscribe and you don't know how to.
+>=20
+> Thanks for doing this Niccolo. However, I'd rather see it hosted at
+> vger.kernel.org for all the reasons previously outlined.
+>=20
+> I was actually going to suggest a new list called net-users instead.
+> There is netdev, netfilter-devel and netfilter, but not a general
+> networking users list.
 
->On Sat, 2011-10-22 at 15:03 +0200, Niccol=C3=B2 Belli wrote:
->> Is someone still interested to bring LARTC to a new life?
->> I'm sorry for the subscription but the list didn't work anymore and =
-it=20
->> was unfeasible to CC 30+ addresses. Let me know if you want to=20
->> unsubscribe and you don't know how to.
->
->Thanks for doing this Niccolo. However, I'd rather see it hosted at
->vger.kernel.org for all the reasons previously outlined.
->
->I was actually going to suggest a new list called net-users instead.
->There is netdev, netfilter-devel and netfilter, but not a general
->networking users list.
->
->User questions do get asked on netdev, and some non-netfilter question=
-s
->get asked on the netfilter list, but it would seem sensible to have a
->general networking users list that would include LARTC questions.
->
->Comments anyone?
+Isn't that what linux-net@vger.kernel.org is/was supposed to be about?
+Not sure what's its status, it's no longer listed on
+http://vger.kernel.org/vger-lists.html, the last message I've received
+on it was a month ago and it was mostly spam before that.
 
-Might as well just go to netfilter for now, it's not like as if the=20
-traffic was as much as linux-kernel.
+-Ben
