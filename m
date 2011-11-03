@@ -1,47 +1,26 @@
-From: Benjamin Poirier <benjamin.poirier@gmail.com>
-Subject: Re: [LARTC] LARTC mailing list
-Date: Wed, 2 Nov 2011 13:54:14 -0400
-Message-ID: <20111102175414.GA10307@synalogic.ca>
-References: <4EA2BF3D.1010107@linuxsystems.it>
- <1319292634.26402.6302.camel@andybev-desktop>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: NF_STOLEN and packets dropping
+Date: Thu, 3 Nov 2011 16:24:49 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1111031611130.19950@frira.zrqbmnf.qr>
+References: <CAH3pVZNtYOUHCGzbxi1bO-rMiZRjHgY-N=PW-72mKSSoOzjBFA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-type:content-disposition:content-transfer-encoding
-         :in-reply-to:user-agent;
-        bh=mkwHjoncxcpcNQr+9AoV0MtClz8mflreXLgjabdBsgA=;
-        b=NMOSDl1faJApSSmKlgMl32JF/sfQVGbog4CMH8rYx9mdxrubI7NCuj+hK5JAEO2yZ9
-         w8NPP51FrfJxdPlEtYZhgof/nymFy3UPYmbkprp7fKRMJ18C9XwE66xdBZZxKuxCBVQG
-         vMIVPrrYseA2XFkhpzaba6ulALsl3WQHi7sYE=
-Content-Disposition: inline
-In-Reply-To: <1319292634.26402.6302.camel@andybev-desktop>
+In-Reply-To: <CAH3pVZNtYOUHCGzbxi1bO-rMiZRjHgY-N=PW-72mKSSoOzjBFA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Andrew Beverley <andy@andybev.com>
-Cc: Linux Advanced Routing & Traffic Control project <lartc@lists.linuxsystems.it>, linux-new-lists@vger.kernel.org, netfilter@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Sergey Naumov <sknaumov@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-On 11/10/22 15:10, Andrew Beverley wrote:
-> On Sat, 2011-10-22 at 15:03 +0200, Niccol=F2 Belli wrote:
-> > Is someone still interested to bring LARTC to a new life?
-> > I'm sorry for the subscription but the list didn't work anymore and=
- it=20
-> > was unfeasible to CC 30+ addresses. Let me know if you want to=20
-> > unsubscribe and you don't know how to.
->=20
-> Thanks for doing this Niccolo. However, I'd rather see it hosted at
-> vger.kernel.org for all the reasons previously outlined.
->=20
-> I was actually going to suggest a new list called net-users instead.
-> There is netdev, netfilter-devel and netfilter, but not a general
-> networking users list.
+On Wednesday 2011-11-02 14:18, Sergey Naumov wrote:
 
-Isn't that what linux-net@vger.kernel.org is/was supposed to be about?
-Not sure what's its status, it's no longer listed on
-http://vger.kernel.org/vger-lists.html, the last message I've received
-on it was a month ago and it was mostly spam before that.
+>Hello.
+>
+>Is there is a place in linux kernel where I can determine whether
+>packet was dropped or not?
+>Looking at source code I can guess that if we got NF_DROP while
+>iterating through chains, we can determine that packet was droppped,
+>but what about NF_STOLEN? Can stolen packets be accepted?
 
--Ben
+NF_{ACCEPT,DROP,STOLEN} are all mutually exclusive verdicts.
