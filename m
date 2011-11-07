@@ -1,28 +1,15 @@
-From: Ed W <lists@wildgooses.com>
-Subject: Re: libiptc or alternative
-Date: Mon, 07 Nov 2011 07:58:20 +0000
-Message-ID: <4EB78F9C.70907@wildgooses.com>
-References: <j91h2m$sp4$1@dough.gmane.org> <20111107010219.GA30000@1984> <20111107010309.GB30000@1984> <j97eko$hs7$1@dough.gmane.org>
+From: Tarak Ranjan <contacttrm@yahoo.co.in>
+Subject: (unknown)
+Date: Mon, 7 Nov 2011 19:53:43 +0530 (IST)
+Message-ID: <1320675823.37718.yint-ygo-j2me@web95906.mail.in.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <j97eko$hs7$1@dough.gmane.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.co.in; s=s1024; t=1320675824; bh=nV1Tjt8O06zIYD2kudnCW87wUs91VmqJS4iGpOGIaSs=; h=X-YMail-OSG:Received:X-Mailer:Message-ID:Date:From:To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=UsXowidZIvLt3zacrHZ8x7g06CL+IgVVNZvJQyQ6Z7tynmZL5yNiX5aEAAwH64rV/bC3gtWC2bOM/s7iwTxjaPCHkCa8IiGy4mQ779qiyTCpxHga3yor34Bd6S9vKY7+68ylr8PZ3bOkW08CrnUzEqE81pvCYHB9XFnQHRyINXQ=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "U.Mutlu" <for-gmane@mutluit.com>
-Cc: netfilter@vger.kernel.org
+To: horde@lists.horde.org, netfilter@vger.kernel.org, mkettler_sa@verizon.net, openldap-technical@openldap.org, tarak.mukherjee@ymail.com, openldap-technical-request@openldap.org, samba@l
 
-On 07/11/2011 02:09, U.Mutlu wrote:
->
-> Hmm. I think in my case this method is suboptiomal because my
-> iptables rules do change very frequently (ie. banning individual
-> ip's at different times and then unbanning each after say x minutes,
-> again individually, ie. not as a group).
->
-> I think in this case I should stick with libiptc since it's still
-> part of the official iptables distribution.
-
-This is starting to sound like something ipset could help with?
-
-Ed W
+free trial
+http://strongerbetterandbigger.ru/trial2/
