@@ -1,93 +1,77 @@
-From: Amos Jeffries <squid3@treenet.co.nz>
-Subject: Re: [iptables] Effect of negating multiple source or dest IPs (-s  or -d)
-Date: Wed, 09 Nov 2011 11:18:26 +1300
-Message-ID: <5de257ed7b3f8c47dac2cea61ac84951@treenet.co.nz>
-References: <j9bjgb$v1f$1@dough.gmane.org>
- <c202a761ac23061d639eebb1ec1f661e.squirrel@nmvrt01.netsim.ch>
- <j9bkr5$a5f$1@dough.gmane.org>
- <alpine.LNX.2.01.1111081740580.18080@frira.zrqbmnf.qr>
- <j9bnrd$372$1@dough.gmane.org>
- <alpine.DEB.2.00.1111082112340.31624@blackhole.kfki.hu>
- <j9c8o9$3rp$1@dough.gmane.org>
+From: zhen xue <zhenxue@yahoo.com>
+Subject: HELP! problem using netfilter_queue to nat packets in user space
+Date: Tue, 8 Nov 2011 14:34:29 -0800 (PST)
+Message-ID: <1320791669.60416.YahooMailNeo@web31811.mail.mud.yahoo.com>
+Reply-To: zhen xue <zhenxue@yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <j9c8o9$3rp$1@dough.gmane.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1320791669; bh=HPnmD8vbGoTFuJD2kYL2dV/6/RE6Ro7iTab3a63o4vA=; h=X-YMail-OSG:Received:X-Mailer:Message-ID:Date:From:Reply-To:Subject:To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=VFPMGR2URPQrYKaKN//wLJQQlyUgovOYZ8uCJjDWz5nbzlt0ScmbZ65vHWvocnWkpYsd+D07OsQ4kV3isEcSn27j2VZkf87C1Le9xAcT0LbsrLOqN7FI4MGt4+T2RqvMJVRIWjYB6iluIm6NN58NvhBO1RBZfl/XrmPp0T5k8l0=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "U.Mutlu" <for-gmane@mutluit.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
- On Tue, 08 Nov 2011 22:59:37 +0100, U.Mutlu wrote:
-> Jozsef Kadlecsik wrote, On 2011-11-08 21:22:
->> On Tue, 8 Nov 2011, U.Mutlu wrote:
->>
->>> Jan Engelhardt wrote, On 2011-11-08 17:44:
->>>> On Tuesday 2011-11-08 17:19, U.Mutlu wrote:
->>>>
->>>>> sim@netmess.org wrote, On 2011-11-08 17:16:
->>>>>>> What's the effect of this rule on a multihomed box
->>>>>>> (the IPs below are just some examples, not real):
->>>>>>>
->>>>>>>      iptables -A INPUT ! -d 1.2.3.4,2.3.4.5 -p all -j DROP
->>>>>>>
->>>>>>
->>>>>> the newest version of iptables says:
->>>>>>
->>>>>> iptables v1.4.12.1: ! not allowed with multiple source or 
->>>>>> destination IP
->>>>>> addresses
->>>>>
->>>>> Oh, one wonders why they did so...
->>>>
->>>> Because it leads to a confusing result.
->>>>
->>>> 	! -d a,b,c
->>>>
->>>> could be reasonably interpreted as
->>>>
->>>> 	! -d a&&   ! -d b&&   ! -d c
->>>>
->>>> but because using "," in -s/-d means a simple rule expansion, it
->>>> actually generates an equivalent of
->>>>
->>>> 	! -d a || ! -d b || ! -d c
->>>
->>> But OR'ing them IMHO doesn't make much sense, just think about it.
->>> I would suggest to AND them.
->>> Look, a normal rule like this one
->>>    iptables -A INPUT -m state --state NEW -p tcp --dport  80 -j 
->>> ACCEPT
->>> matches only if every single part of it matches (ie. AND).
->>> Then in our negation case above it should behave similar,
->>> and not switch to OR.
->>
->> The matches are AND-ed. However the individual matches may generate 
->> OR
->> conditions, like multiport.
->>
->> What you suggest means that while
->>
->> 	-d a,b
->>
->> is interpreted as "a" OR "b", then
->>
->> 	! -d a,b
->>
->> should be interpeted as NOT "a" AND NOT "b".
->>
->> I think that'd be pretty confusing.
-
- As opposed to interpreting both as "any of this set":
-
-  (a OR b)
- versus
-   NOT (a OR b)
-
- Which can be stated in the docs.
-
- Confusion and clarity is just a matter of having the right description. 
- A technical reason should be the only blocker here.
-
- AYJ
+I am working on a proxy agent that will be running on
+client=E2=80=99s local machine, all connections to internet servers wil=
+l be first sent
+to the local proxy, then the local proxy will make connections to the i=
+nternet
+server and send data back to local client application.
+=C2=A0
+Client
+machine=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0inter=
+net
+server
+Web browser< -> proxy =C2=A0=C2=A0=C2=A0=C2=A0<-
+-------------=C3=A0 server
+=C2=A0
+The proxy is running as localhost:proxy_port
+=C2=A0
+I use netfilter_queue to act as the proxy. I have these
+rules to direct traffic to user space:
+iptables -t raw -A OUTPUT -p tcp -j NFQUEUE --queue-num 0
+iptables -t raw -A PREROUTING -p tcp -j NFQUEUE --queue-num
+0
+(also tried filter table with INPUT and OUTPUT chains, it is
+having the same problem below)
+=C2=A0
+Then the user space program will nat traffic:
+If out-going packet
+client:client_port->server:server_port
+DNAT the packet
+client:client_port->localhost:proxy_port
+User raw socket to send natted
+packet to local proxy (I also tried set_verdict NF_ACCEPT, but it did n=
+ot work)=20
+If incoming packet from proxy
+localhost:proxy_port->client:client:port
+=C2=A0=C2=A0 SNAT the packet server:server_port ->
+client:client_port=20
+=C2=A0=C2=A0=C2=A0Set verdict NF_STOP to pass on the packet
+to stack (also tried NF_ACCEPT, but it did not work)
+=C2=A0
+Thing are basically working until the server closes the
+connection.
+Server sends FIN to local proxy, local proxy pass on the FIN
+to client application, localhost:proxy_port->client:client_port(FIN), t=
+hen
+this FIN is SNATed to local client to look like a FIN from server,
+server:server_port->client:client_port, after setting verdict NF_STOP a=
+nd
+realeasing the FIN to stack, I expect to get back an ACK for the FIN wh=
+ich
+looks like client:client_port->server:server_port, HOWEVER, the stack i=
+s
+sending an ACK like client:client_port->localhost:server_port. I don=E2=
+=80=99t know
+what I am missing here!!
+=C2=A0
+Basically after I natted the packet in netfilter_queue user
+space program, I don=E2=80=99t know how to pass/reinject it to the stac=
+k.
+=C2=A0
+Any help will be highly appreciated!!!
