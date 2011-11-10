@@ -1,102 +1,147 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [iptables] Effect of negating multiple source or dest IPs (-s 
- or -d)
-Date: Wed, 9 Nov 2011 00:40:08 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1111090010350.32470@blackhole.kfki.hu>
-References: <j9bjgb$v1f$1@dough.gmane.org> <c202a761ac23061d639eebb1ec1f661e.squirrel@nmvrt01.netsim.ch> <j9bkr5$a5f$1@dough.gmane.org> <alpine.LNX.2.01.1111081740580.18080@frira.zrqbmnf.qr> <j9bnrd$372$1@dough.gmane.org> <alpine.DEB.2.00.1111082112340.31624@blackhole.kfki.hu>
- <j9c8o9$3rp$1@dough.gmane.org> <5de257ed7b3f8c47dac2cea61ac84951@treenet.co.nz>
+From: "gregry ." <gregry_7@yahoo.com>
+Subject: Removing DROP from nat table
+Date: Wed, 9 Nov 2011 16:41:50 -0800 (PST)
+Message-ID: <1320885710.82187.YahooMailNeo@web36903.mail.mud.yahoo.com>
+Reply-To: "gregry ." <gregry_7@yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <5de257ed7b3f8c47dac2cea61ac84951@treenet.co.nz>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1320885710; bh=QyUIbJ3HEeEJpZ2Gy96JYmkAdmBq9BQ9ly4ZrzfXIAo=; h=X-YMail-OSG:Received:X-Mailer:Message-ID:Date:From:Reply-To:Subject:To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=6mSyWVEe/C21xY0B1tnDPomlpHljY4+ouYBalxoJiuCnDzKdAVzki2OBZr3fqYGzXZQ8QNHaSUey68wFSmIK6zNmI6BgeOpSrgsjnEUZdkDg3osOiS99lnNSgPVQEwq6Y22oYP8rrxjXdSZqe3J4oRdpTVCbrjJ24e1hqN1GDVw=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Amos Jeffries <squid3@treenet.co.nz>
-Cc: "U.Mutlu" <for-gmane@mutluit.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Wed, 9 Nov 2011, Amos Jeffries wrote:
+Through recent upgrades I've learned that the nat table no longer allow=
+s DROP as a target.=A0 I've done googling to try to find reasons why th=
+is was removed, and hopefully find workarounds.=A0 I may have work arou=
+nds (using the raw or mangle tables to do the DROP?).=A0 I'm still inte=
+rested in the reason why this was changed, other than "it wasn't intend=
+ed to be used that way."
 
-> On Tue, 08 Nov 2011 22:59:37 +0100, U.Mutlu wrote:
-> > Jozsef Kadlecsik wrote, On 2011-11-08 21:22:
-> > > On Tue, 8 Nov 2011, U.Mutlu wrote:
-> > > 
-> > > > Jan Engelhardt wrote, On 2011-11-08 17:44:
-> > > > > On Tuesday 2011-11-08 17:19, U.Mutlu wrote:
-> > > > > 
-> > > > > > sim@netmess.org wrote, On 2011-11-08 17:16:
-> > > > > > > > What's the effect of this rule on a multihomed box
-> > > > > > > > (the IPs below are just some examples, not real):
-> > > > > > > > 
-> > > > > > > >      iptables -A INPUT ! -d 1.2.3.4,2.3.4.5 -p all -j DROP
-> > > > > > > > 
-> > > > > > > 
-> > > > > > > the newest version of iptables says:
-> > > > > > > 
-> > > > > > > iptables v1.4.12.1: ! not allowed with multiple source or
-> > > > > > > destination IP
-> > > > > > > addresses
-> > > > > > 
-> > > > > > Oh, one wonders why they did so...
-> > > > > 
-> > > > > Because it leads to a confusing result.
-> > > > > 
-> > > > > 	! -d a,b,c
-> > > > > 
-> > > > > could be reasonably interpreted as
-> > > > > 
-> > > > > 	! -d a&&   ! -d b&&   ! -d c
-> > > > > 
-> > > > > but because using "," in -s/-d means a simple rule expansion, it
-> > > > > actually generates an equivalent of
-> > > > > 
-> > > > > 	! -d a || ! -d b || ! -d c
-> > > > 
-> > > > But OR'ing them IMHO doesn't make much sense, just think about it.
-> > > > I would suggest to AND them.
-> > > > Look, a normal rule like this one
-> > > >    iptables -A INPUT -m state --state NEW -p tcp --dport  80 -j ACCEPT
-> > > > matches only if every single part of it matches (ie. AND).
-> > > > Then in our negation case above it should behave similar,
-> > > > and not switch to OR.
-> > > 
-> > > The matches are AND-ed. However the individual matches may generate OR
-> > > conditions, like multiport.
-> > > 
-> > > What you suggest means that while
-> > > 
-> > > 	-d a,b
-> > > 
-> > > is interpreted as "a" OR "b", then
-> > > 
-> > > 	! -d a,b
-> > > 
-> > > should be interpeted as NOT "a" AND NOT "b".
-> > > 
-> > > I think that'd be pretty confusing.
-> 
-> As opposed to interpreting both as "any of this set":
-> 
->  (a OR b)
-> versus
->   NOT (a OR b)
-> 
-> Which can be stated in the docs.
+I'd also like to try to describe my use case, and why using DROP from n=
+at seemed appropriate for it.
 
-But the latter is not possible due to the implementation: the matches in a 
-rule form AND conditions while rules do OR conditions. The list of IP 
-addresses in "-d" and "-s" is just a shorthand notation and is exploded 
-into that many elementary rules.
+I have 200+ users connecting to an OpenVPN server to reach services tha=
+t are not public.=A0 Each user is assigned an IP address unique to that=
+ user.=A0 The router (OpenVPN server) uses primarily the nat table's PR=
+EROUTING chain to control access and do port forwarding.
 
-So the condition "-d a,b" is equivalent to "-d a OR -d b" which is exactly 
-the two rules generated from the single one. However if "! -d a,b" is to 
-be interpreted as "NOT (-d a OR -d b)", that is actually "(NOT -d a) AND 
-(NOT -d b)" which just cannot be exploded into two rules.
+"Hold on, that's your problem right there, you should use filter instea=
+d," someone will say.=A0 Maybe, but I'll describe why I didn't.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+The router uses port forwarding based on the users source IP and the de=
+stinations they are trying to reach in order to allow the connection (m=
+eaning, DNAT) or deny the connection (meaning, DROP).
+
+
+Lets say the users VPN clients have addresses in the range 10.0.0.2 to =
+10.0.0.250, and 10.0.0.1 being the VPN router.=A0 The router is the sin=
+gle destination address that users "see" and "connect" to.=A0 In actual=
+ity, connections to its IP does port forwarding to other machines scatt=
+ered throughout multiple 192.168.*.* subnets and other non-public subne=
+t ranges.=A0 This arrangement of using 10.0.0.0/24 as the only range cl=
+ients "see" was to minimize possible IP range conflicts between our use=
+rs' local networks and our physical server destinations.=A0 Instead it =
+made sense for the users to "connect" to a single fixed destination, an=
+d let port forwarding handle the rest.
+
+
+So the VPN router has a lot of port forwards, of the form (skipping som=
+e obvious steps):
+iptables -t nat -A nat_fwd_srvc -p tcp --dport 8001 -j DNAT --to 192.16=
+8.10.23:80
+
+iptables -t nat -A nat_fwd_srvc -p tcp --dport 8002 -j DNAT --to 192.16=
+8.11.19:8080
+
+iptables -t nat -A nat_fwd_srvc -p tcp --dport 8003 -j DNAT --to 192.16=
+8.190.5:80
+
+iptables -t nat -A nat_fwd_srvc -p tcp --dport 8004 -j DNAT --to 192.16=
+8.190.5:443
+=2E.etc, for about 20 hosts.
+
+
+If a particular service moves to a different host or port number, a sin=
+gle line DNAT can be changed (which does happen).
+
+
+Access was controlled by tables called from PREROUTING for new connecti=
+ons, that checked the source and destination to see if that user was al=
+lowed to reach the given service.=A0 That table was basicly like this (=
+skipping some obvious steps):
+iptables -t nat -A natclnt_10_0_0_1 -p tcp --dport 8001 -j nat_fwd_srvc
+iptables -t nat -A natclnt_10_0_0_1 -j LOG --log-prefix NatClnt_1=3D
+
+iptables -t nat -A natclnt_10_0_0_1 -j DROP
+
+iptables -t nat -A natclnt_10_0_0_2 -p tcp --dport 8001 -j nat_fwd_srvc
+iptables -t nat -A natclnt_10_0_0_2 -p tcp --dport 8003 -j nat_fwd_srvc
+iptables -t nat -A natclnt_10_0_0_2 -p tcp --dport 8004 -j nat_fwd_srvc=
+iptables  -t nat -A natclnt_10_0_0_2 -j LOG --log-prefix NatClnt_2=3D
+
+iptables -t nat -A natclnt_10_0_0_2 -j DROP
+=2E..etc
+iptables -t nat -A nat_clnt_new -p tcp -s 10.0.0.1 -j natclnt_10_0_0_1=20
+iptables -t nat -A nat_clnt_new -p tcp -s 10.0.0.2 -j natclnt_10_0_0_2
+
+=2E..etc
+iptables -t nat -A nat_clnt_new -j LOG --log-prefix UsrUnk=3D
+
+iptables -t nat -A nat_clnt_new -j DROP
+iptables -t nat -A PREROUTING -p tcp -m state --state NEW -s 10.0.0.0/2=
+4 -d 10.0.0.1 -j nat_clnt_new
+These chains above would be called when new TCP connections come in fro=
+m VPN clients trying to reach 10.0.0.1.=A0 The filter table only needs =
+a single "blind" ACCEPT for all new TCP connections from 10.0.0.0/8.
+
+
+On average, each user is allowed to 5 different services (some just one=
+, some 12 or more).=A0 At 200 such users, that's over 1000 rules just t=
+o control access.
+
+
+The major advantage to this setup was that if a service moved to a diff=
+erent host (say, going from dev/test to production DMZ), only the DNAT =
+line for that one service needed to change.
+
+
+However, if this setup gets rebuilt using the filter table in the 'inte=
+nded' way, the rules would have to be like:iptables -t filter -A fwdcln=
+t_10_0_0_1 -p tcp -d  192.168.10.23 --dport 80 -j ACCEPT
+iptables -t filter -A fwdclnt_10_0_0_1 -j LOG --log-prefix FwdClnt_1=3D
+
+iptables -t filter -A fwdclnt_10_0_0_1 -j DROP
+
+iptables -t filter -A fwdclnt_10_0_0_2 -p tcp -d  192.168.10.23 --dport=
+ 80 -j ACCEPT
+iptables -t filter -A fwdclnt_10_0_0_2 -p tcp -d 192.168.190.5 --dport =
+80 -j ACCEPT
+iptables -t filter -A fwdclnt_10_0_0_2 -p tcp -d 192.168.190.5 --dport =
+443 -j ACCEPTiptables  -t filter -A fwdclnt_10_0_0_2 -j LOG --log-prefi=
+x FwdClnt_2=3D
+
+iptables -t filter -A fwdclnt_10_0_0_2 -j DROP
+=2E..etc
+
+iptables -t filter -A fwdclnt_new -p tcp -s 10.0.0.1 -j fwdclnt_10_0_0_=
+1=20
+iptables -t filter -A fwdclnt_new -p tcp -s 10.0.0.2 -j fwdclnt_10_0_0_=
+2
+
+=2E..etc
+
+iptables -t filter -A fwdclnt_new -j LOG --log-prefix UsrUnk=3D
+
+iptables -t filter -A fwdclnt_new -j DROP
+iptables -t filter -A FORWARD -p tcp -m state --state NEW -s 10.0.0.0/2=
+4 -d 10.0.0.1 -j fwdclnt_new
+
+Notice that in this setup, if a service gets moved to another host or p=
+ort, potentially hundreds of filter rules also have to be changed to re=
+flect that.=A0 Much more laborious and error prone.
+
+
+
+Comments welcome.
