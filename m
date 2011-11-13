@@ -1,95 +1,29 @@
-From: Dave Taht <dave.taht@gmail.com>
+From: =?ISO-8859-1?Q?Niccol=F2_Belli?= <darkbasic@linuxsystems.it>
 Subject: Re: [LARTC] LARTC mailing list
-Date: Sun, 13 Nov 2011 22:56:29 +0100
-Message-ID: <CAA93jw49j--DFrj-040ii6Tp4S3v=QVKzUS8ShtBf_dG9zAoRw@mail.gmail.com>
-References: <4EA2BF3D.1010107@linuxsystems.it>
-	<1319292634.26402.6302.camel@andybev-desktop>
-	<alpine.LNX.2.01.1111021641440.17999@frira.zrqbmnf.qr>
-	<1321220521.1965.13.camel@andybev-desktop>
+Date: Sun, 13 Nov 2011 23:02:34 +0100
+Message-ID: <4EC03E7A.3040505@linuxsystems.it>
+References: <4EA2BF3D.1010107@linuxsystems.it> <1319292634.26402.6302.camel@andybev-desktop> <alpine.LNX.2.01.1111021641440.17999@frira.zrqbmnf.qr> <1321220521.1965.13.camel@andybev-desktop> <CAA93jw49j--DFrj-040ii6Tp4S3v=QVKzUS8ShtBf_dG9zAoRw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type:content-transfer-encoding;
-        bh=7+6BFfy2a5H3quh4ASmzcKvZzM+NEnreZkSuvTFP1/o=;
-        b=v/FnRKPKYDeSv5wcRjdan4mWrLTBByooNY24+rw0ti+cOFdmwIqQuN7+TOalje17sv
-         WysvCO/+J8k3BQb7VUdtT0OMUgVELGAG06XBpt/LqBch5HqRaxpGwruun+zIE641rWSI
-         QSn3VRE41ISAvS9cHoDrlUP+kbS53hNN/2nmM=
-In-Reply-To: <1321220521.1965.13.camel@andybev-desktop>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=linuxsystems.it;
+	s=linuxsystems.it; t=1321221664;
+	bh=dCMOcJq9lg7KJBqhmu4oN3/wOxSjhTeV0oT1uhzhzak=;
+	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:References:
+	 In-Reply-To:Content-Type:Content-Transfer-Encoding;
+	b=PADo0yWOBsCPLdrgFQiBxh7OGglkGiZSjZCYWDLom2DLubrxyeUncZheKRTPPG9Rs
+	 A9GZLQ49XX7hviLM5/w/JxnHLpXtayPNnjL+ut6d4Fs2WEMNa9IbAa+bliR9hyF35y
+	 MAZzMkZE7xOqphZ4/xGvoAfXJvJUJdLlunrahjEM=
+In-Reply-To: <CAA93jw49j--DFrj-040ii6Tp4S3v=QVKzUS8ShtBf_dG9zAoRw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Andrew Beverley <andy@andybev.com>
-Cc: Jan Engelhardt <jengelh@medozas.de>, Linux Advanced Routing & Traffic Control project <lartc@lists.linuxsystems.it>, linux-new-lists@vger.kernel.org, netfilter@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Linux Advanced Routing & Traffic Control project <lartc@lists.linuxsystems.it>
+Cc: Dave Taht <dave.taht@gmail.com>, Andrew Beverley <andy@andybev.com>, linux-new-lists@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, Jan Engelhardt <jengelh@medozas.de>
 
-On Sun, Nov 13, 2011 at 10:42 PM, Andrew Beverley <andy@andybev.com> wr=
-ote:
-> On Wed, 2011-11-02 at 16:43 +0100, Jan Engelhardt wrote:
->> On Saturday 2011-10-22 16:10, Andrew Beverley wrote:
->>
->> >On Sat, 2011-10-22 at 15:03 +0200, Niccol=F2 Belli wrote:
->> >> Is someone still interested to bring LARTC to a new life?
->> >> I'm sorry for the subscription but the list didn't work anymore a=
-nd it
->> >> was unfeasible to CC 30+ addresses. Let me know if you want to
->> >> unsubscribe and you don't know how to.
->> >
->> >Thanks for doing this Niccolo. However, I'd rather see it hosted at
->> >vger.kernel.org for all the reasons previously outlined.
->> >
->> >I was actually going to suggest a new list called net-users instead=
-=2E
->> >There is netdev, netfilter-devel and netfilter, but not a general
->> >networking users list.
->> >
->> >User questions do get asked on netdev, and some non-netfilter quest=
-ions
->> >get asked on the netfilter list, but it would seem sensible to have=
- a
->> >general networking users list that would include LARTC questions.
->> >
->> >Comments anyone?
->>
->> Might as well just go to netfilter for now, it's not like as if the
->> traffic was as much as linux-kernel.
->
-> Yep, may as well, they seem to be posted there anyway. I was just
-> conscious that there doesn't appear to be many "tc" experts, because
-> those sort of questions don't get much of a response.
+I think we should just create a new list called "LARTC", on=20
+vger.kernel.org, hosted on my own servers or wherever you want.
+The most important thing is trying to keep alive the community around i=
+t.
 
-I would be interested in seeing a resurrected 'tc' list aimed more at
-users/sysadmins than developers.
-
-There has been a lot of mostly theoretical discussion about aqms and
-the like on the bloat and bloat-devel lists, but when it comes down to
-something that will actually work, not so much...
-
->
-> I'd love to spend some time on some tc documentation one day...
-
-The tc documentation is littered with less than useful examples, when
-they do exist, which is not often enough, and much of the public
-documentation is old or hard to understand.
-
-and I'd be glad to help get all that sorted out.
-
->
-> Andy
->
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netdev" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
->
-
-
-
---=20
-Dave T=E4ht
-SKYPE: davetaht
-US Tel: 1-239-829-5608
-=46R Tel: 0638645374
-http://www.bufferbloat.net
+Niccol=F2
