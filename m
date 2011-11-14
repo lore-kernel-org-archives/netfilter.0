@@ -1,29 +1,65 @@
-From: =?ISO-8859-1?Q?Niccol=F2_Belli?= <darkbasic@linuxsystems.it>
+From: Ben Hutchings <bhutchings@solarflare.com>
 Subject: Re: [LARTC] LARTC mailing list
-Date: Sun, 13 Nov 2011 23:02:34 +0100
-Message-ID: <4EC03E7A.3040505@linuxsystems.it>
-References: <4EA2BF3D.1010107@linuxsystems.it> <1319292634.26402.6302.camel@andybev-desktop> <alpine.LNX.2.01.1111021641440.17999@frira.zrqbmnf.qr> <1321220521.1965.13.camel@andybev-desktop> <CAA93jw49j--DFrj-040ii6Tp4S3v=QVKzUS8ShtBf_dG9zAoRw@mail.gmail.com>
+Date: Mon, 14 Nov 2011 00:44:31 +0000
+Message-ID: <1321231471.3059.30.camel@deadeye>
+References: <4EA2BF3D.1010107@linuxsystems.it>
+	 <1319292634.26402.6302.camel@andybev-desktop>
+	 <20111102175414.GA10307@synalogic.ca>
+	 <1321220346.1965.10.camel@andybev-desktop>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=linuxsystems.it;
-	s=linuxsystems.it; t=1321221664;
-	bh=dCMOcJq9lg7KJBqhmu4oN3/wOxSjhTeV0oT1uhzhzak=;
-	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:References:
-	 In-Reply-To:Content-Type:Content-Transfer-Encoding;
-	b=PADo0yWOBsCPLdrgFQiBxh7OGglkGiZSjZCYWDLom2DLubrxyeUncZheKRTPPG9Rs
-	 A9GZLQ49XX7hviLM5/w/JxnHLpXtayPNnjL+ut6d4Fs2WEMNa9IbAa+bliR9hyF35y
-	 MAZzMkZE7xOqphZ4/xGvoAfXJvJUJdLlunrahjEM=
-In-Reply-To: <CAA93jw49j--DFrj-040ii6Tp4S3v=QVKzUS8ShtBf_dG9zAoRw@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <linux-new-lists-owner@vger.kernel.org>
+In-Reply-To: <1321220346.1965.10.camel@andybev-desktop>
+Sender: linux-new-lists-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Linux Advanced Routing & Traffic Control project <lartc@lists.linuxsystems.it>
-Cc: Dave Taht <dave.taht@gmail.com>, Andrew Beverley <andy@andybev.com>, linux-new-lists@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, Jan Engelhardt <jengelh@medozas.de>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Andrew Beverley <andy@andybev.com>
+Cc: Benjamin Poirier <benjamin.poirier@gmail.com>, Linux Advanced Routing & Traffic Control project <lartc@lists.linuxsystems.it>, linux-new-lists@vger.kernel.org, netfilter@vger.kernel.org, netdev@vger.kernel.org
 
-I think we should just create a new list called "LARTC", on=20
-vger.kernel.org, hosted on my own servers or wherever you want.
-The most important thing is trying to keep alive the community around i=
-t.
+On Sun, 2011-11-13 at 21:39 +0000, Andrew Beverley wrote:
+> On Wed, 2011-11-02 at 13:54 -0400, Benjamin Poirier wrote:
+> > On 11/10/22 15:10, Andrew Beverley wrote:
+> > > On Sat, 2011-10-22 at 15:03 +0200, Niccol=C3=B2 Belli wrote:
+> > > > Is someone still interested to bring LARTC to a new life?
+> > > > I'm sorry for the subscription but the list didn't work anymore=
+ and it=20
+> > > > was unfeasible to CC 30+ addresses. Let me know if you want to=20
+> > > > unsubscribe and you don't know how to.
+> > >=20
+> > > Thanks for doing this Niccolo. However, I'd rather see it hosted =
+at
+> > > vger.kernel.org for all the reasons previously outlined.
+> > >=20
+> > > I was actually going to suggest a new list called net-users inste=
+ad.
+> > > There is netdev, netfilter-devel and netfilter, but not a general
+> > > networking users list.
+> >=20
+> > Isn't that what linux-net@vger.kernel.org is/was supposed to be abo=
+ut?
+>=20
+> Hmmm, hadn't even come across that before.
+>=20
+> > Not sure what's its status, it's no longer listed on
+> > http://vger.kernel.org/vger-lists.html, the last message I've recei=
+ved
+> > on it was a month ago and it was mostly spam before that.
+>=20
+> Maybe not much interest for a users' list then...
 
-Niccol=F2
+I suggested to David to delete the linux-net list because it had very
+low (legitimate) traffic and the people who could answer questions were
+mostly subscribed only to netdev.  And since he agreed, it's gone.
+
+Ben.
+
+--=20
+Ben Hutchings, Staff Engineer, Solarflare
+Not speaking for my employer; that's the marketing department's job.
+They asked us to note that Solarflare product names are trademarked.
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-new-lis=
+ts" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
