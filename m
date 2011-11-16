@@ -1,22 +1,48 @@
-From: "Lloyd Standish" <lloyd@crnatural.net>
-Subject: bandwidth-limiting on LAN interface egress (2)
-Date: Wed, 16 Nov 2011 09:50:33 -0600
-Message-ID: <op.v41qaj2hx1lyi3@debiandesk2.net>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Dropped packets logged which should be accepted by Conntrack
+Date: Wed, 16 Nov 2011 16:51:12 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1111161648420.26212@frira.zrqbmnf.qr>
+References: <1321326448.2936.43.camel@denise.theartistscloset.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <1321326448.2936.43.camel@denise.theartistscloset.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed	delsp=yes"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Cc: netfilter@vger.kernel.org
 
-I have improved my previous post in hope of some advice, or at least a suggestion on where to ask this sort of question.
+On Tuesday 2011-11-15 04:07, John A. Sullivan III wrote:
 
-Suppose one is building a netfilter router, LAN to Internet, with multiple outward-facing interfaces (eth1, eth2, and eth3). There needs to be load-balancing over the outward interfaces.  There needs to be bandwidth-limiting for users on the LAN.  Users are typical Internet users (primarily http download with some important interactive traffic such as VOIP.)
+>Hello, all.  I find myself perplexed by what I often see in our logs.
+>At the end of our FORWARD chain, we log drops for no matches:
+>
+>[root@fw01 log]# iptables -v -n -L FORWARD
+>Chain FORWARD (policy DROP 528K packets, 85M bytes)
+> pkts bytes target     prot opt in     out     source
+>destination
+>  16M  925M TCPMSS     tcp  --  *      *       0.0.0.0/0
+>0.0.0.0/0           tcp flags:0x06/0x02 TCPMSS clamp to PMTU
+>2284M 1690G ACCEPT     all  --  *      *       0.0.0.0/0
+>0.0.0.0/0           state RELATED,ESTABLISHED
+>7890K  594M VPN_ALLOW  all  --  *      *       0.0.0.0/0
+>0.0.0.0/0           MARK match 0xcccc/0xcccc
+>  27M 2609M UPEPIN_DENY  all  --  *      *       0.0.0.0/0
+>0.0.0.0/0
+>  27M 2609M UPEPIN     all  --  *      *       0.0.0.0/0
+>0.0.0.0/0
+> 528K   85M LOG        all  --  *      *       0.0.0.0/0
+>0.0.0.0/0           LOG flags 0 level 4 prefix `No Match: '
+>
+>However, my logs are always showing these drops for packets I know
+>should be matched in conntrack:
+>
+>Nov 14 18:45:51 fw01 kernel: No Match: IN=bond4 OUT=bond3 SRC=172.x.y.34
+>DST=194.187.105.194 LEN=52 TOS=0x00 PREC=0x00 TTL=63 ID=48910 DF
+>PROTO=TCP SPT=25 DPT=60261 WINDOW=4
 
-Theoretically, can per-user bandwidth-limiting be done on egress of the LAN using htb+prio+sfq without encountering insurmountable latency problems due to queuing of incoming packets in the router?  Should traffic shaping (prioritizing of packets for interactive traffic) probably be an adequate solution to any latency problems?
-
-Is there a way to use a policing queuing discipline in a case like this? (I assume it would have to be on egress of the LAN interface, since I cannot see how to police on ingress of the Internet-facing interfaces due to the per-user bandwidth-limiting.)
-
--- 
-Lloyd
+As always, post the *full* ruleset, and do so by using iptables-save. Do 
+*NOT* use -L.
+The use of TCPMSS is generally not needed either - if you do, you are 
+likely to be wrongly blocking ICMP.
