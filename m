@@ -1,47 +1,84 @@
-From: "Lloyd Standish" <lloyd@crnatural.net>
-Subject: Re: bandwidth-limiting on LAN interface egress (2)
-Date: Wed, 16 Nov 2011 23:06:58 -0600
-Message-ID: <op.v42q5wazx1lyi3@debiandesk2.net>
-References: <op.v41qaj2hx1lyi3@debiandesk2.net>
- <1321480803.2382.62.camel@andybev-desktop> <op.v419zu1bx1lyi3@debiandesk2.net>
+From: Prashant Batra <prashant0100@gmail.com>
+Subject: Linux kernel IPSec processing when acting as gateway
+Date: Thu, 17 Nov 2011 22:23:08 +0530
+Message-ID: <CAG+XuE5V7QRg3O4zAySZHx8fOkD1EwE7COVNPYOTWetWPUgpjA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <op.v419zu1bx1lyi3@debiandesk2.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=bAxgI6UES+mQvx08D+QVx4zANNjiCrVEwvWkJfGbwj8=;
+        b=a/1RSMhUkgZlhWLwv84pWhjqlQr/h1pb9ZwRI0XWtwYD6QnjndLG7PW+YG2zYjEWHU
+         aFX4VQIB1+vbfxL6mXwAu7IUREPJWUQKRm98WqKacInzz2J1LYjO8mATDEcgm/HL4oHI
+         P+VM1+EMDgq1dgQjKD6I13rhyVDyR0IwE8Ugs=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed	delsp=yes"
+Content-Type: text/plain; charset="windows-1252"
 To: netfilter@vger.kernel.org
 
-I was under the impression that one could define an HTB qdisc, then set up bandwidth classes for of it, then use u32 filters matching on LAN IP numbers to assign the flows for several IPs to the same HTB class.  I tried that and found that the total bandwidth of the class is shared among the connections, which is not what I wanted or expected!
+Hello,
 
-Apparently for bandwidth-limiting to work there needs to be a HTB class declared for *each* user IP number!  This certainly makes sense if the sum of classes' rates should total the rate of the containing HTB.
+One basic question related to IPSec processing on gateway.
+I have established IPSec tunnels between two gateway (gw1 and gw2). On
+gw1 I am using Linux kernel IPSec (a normal linux server which will
+act as gateway).
+The SPD and SAD database on gw1 is-
 
-Andy, you wrote:
-"My personal opinion is that you shouldn't limit per user. You should
-instead prioritise traffic properly. This way you'll have a lot less
-classes and a lot less overhead."
+gw1#ip xfrm policy
+src 172.16.80.1/32 dst 0.0.0.0/0
+       dir fwd priority 1024
+       tmpl    src 198.168.68.2 dst 192.168.101.101
+               proto esp spi 0x00000000 reqid 0 mode tunnel
 
-Now I understand what you mean by "a lot less classes"!
+src 0.0.0.0/0 dst 172.16.80.1/32
+       dir fwd priority 1024
+       tmpl    src 192.168.101.101 dst 198.168.68.2
+               proto esp spi 0x00000000 reqid 0 mode tunnel
 
-Unless someone corrects me, I will assume that there is no way to use filters to assign several "flows" (by user IP) to the same class, such that each flow gets the class's full configured rate.
+src 172.16.80.1/32 dst 0.0.0.0/0
+       dir out priority 1024
+       tmpl    src 198.168.68.2 dst 192.168.101.101
+               proto esp spi 0x00000000 reqid 0 mode tunnel
 
-This leads me to another question: Consider the case where there are 50 users, each with 1 Mbit download rate, but statistics show that all 50 *never* require the full bandwidth, and that a total 35 Mbit total connection rate is sufficient.  Should in this case the HTB qdisc be configured to have total 35 Mbit (or slightly less), even though the sum of all classes' rates will be 50 Mbit?
+src 0.0.0.0/0 dst 172.16.80.1/32
+       dir in priority 1024
+       tmpl    src 192.168.101.101 dst 198.168.68.2
+               proto esp spi 0x00000000 reqid 0 mode tunnel
 
-This might answer my question, or it is an error on the lartc site:
+gw1#ip xfrm state
+src 198.168.68.2 dst 192.168.101.101
+       proto esp spi 0x010000b8 reqid 0 mode tunnel
+       replay-window 32
+       auth hmac(sha1) 0x00c530455c9b7a4f3ed3824220a4c05e8b5edf97
+       enc cbc(aes) 0x03d8c8ac752c2a9c4745f1a25a9f7da9
+       sel src 172.16.80.1/32 dst 0.0.0.0/0
+src 192.168.101.101 dst 198.168.68.2
+       proto esp spi 0x00007aa1 reqid 0 mode tunnel
+       replay-window 32
+       auth hmac(sha1) 0x8d05b76456c9a52b51b6193f01c48a2fc27ada48
+       enc cbc(aes) 0x75d062288ccb7355b0b8358f83323dd9
+       sel src 0.0.0.0/0 dst 172.16.80.1/32
 
-http://lartc.org/howto/lartc.qdisc.classful.html#AEN903 shows an example in which the sum of classes' rates is higher than the total HTB qdisc rate:
+Now I am trying to send data from host1(behind gw1) 172.16.80.1 to
+host2 172.16.60.1 which is behind gw2.  But gw1 IPSec is not
+processing the packets-
 
-"9.5.5.1. Sample configuration
+host1#ping 172.16.60.1 -I 172.16.80.1
 
-Functionally almost identical to the CBQ sample configuration above:
+gw1#tcpdump =96I eth1
+13:58:03.648171 IP 172.16.80.1 > 172.16.60.1: icmp 64: echo request
+seq 1 =96 plain icmp packets
+13:58:04.647301 IP 172.16.80.1 > 172.16.60.1: icmp 64: echo request seq=
+ 2
+13:58:05.647116 IP 172.16.80.1 > 172.16.60.1: icmp 64: echo request seq=
+ 3
 
-# tc qdisc add dev eth0 root handle 1: htb default 30
+Please correct me if I my understanding is wrong.
 
-# tc class add dev eth0 parent 1: classid 1:1 htb rate 6mbit burst 15k
+Also, if the question is not appropriate for this list, please point
+me to the correct mailing list for Linux kernel IPSec.
 
-# tc class add dev eth0 parent 1:1 classid 1:10 htb rate 5mbit burst 15k
-# tc class add dev eth0 parent 1:1 classid 1:20 htb rate 3mbit ceil 6mbit burst 15k
-# tc class add dev eth0 parent 1:1 classid 1:30 htb rate 1kbit ceil 6mbit burst 15k"
-
-Thanks in advance for any advice.
+Thanks,
+Prahsant
