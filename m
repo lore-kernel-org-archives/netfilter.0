@@ -1,77 +1,47 @@
 From: "Lloyd Standish" <lloyd@crnatural.net>
 Subject: Re: bandwidth-limiting on LAN interface egress (2)
-Date: Wed, 16 Nov 2011 16:56:08 -0600
-Message-ID: <op.v419zu1bx1lyi3@debiandesk2.net>
+Date: Wed, 16 Nov 2011 23:06:58 -0600
+Message-ID: <op.v42q5wazx1lyi3@debiandesk2.net>
 References: <op.v41qaj2hx1lyi3@debiandesk2.net>
- <1321480803.2382.62.camel@andybev-desktop>
+ <1321480803.2382.62.camel@andybev-desktop> <op.v419zu1bx1lyi3@debiandesk2.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1321480803.2382.62.camel@andybev-desktop>
+In-Reply-To: <op.v419zu1bx1lyi3@debiandesk2.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed	delsp=yes"
 To: netfilter@vger.kernel.org
 
-On Wed, 16 Nov 2011 16:00:03 -0600, Andrew Beverley <andy@andybev.com> wrote:
+I was under the impression that one could define an HTB qdisc, then set up bandwidth classes for of it, then use u32 filters matching on LAN IP numbers to assign the flows for several IPs to the same HTB class.  I tried that and found that the total bandwidth of the class is shared among the connections, which is not what I wanted or expected!
 
->
->> Suppose one is building a netfilter router, LAN to Internet, with
->>  multiple outward-facing interfaces (eth1, eth2, and eth3). There needs
->>  to be load-balancing over the outward interfaces.
->
-> Have you got this part working okay?
+Apparently for bandwidth-limiting to work there needs to be a HTB class declared for *each* user IP number!  This certainly makes sense if the sum of classes' rates should total the rate of the containing HTB.
 
-Thanks very much for your comments (below). Yes, load-balancing is working.  Also, preliminary traffic-shaping of interactive traffic is working as well as the per-user bandwidth limiting, via u32 hashing filters.  My earlier post has a lot of the bash code, which I posted earlier mainly because I thought it might be of use to someone doing something similar.
+Andy, you wrote:
+"My personal opinion is that you shouldn't limit per user. You should
+instead prioritise traffic properly. This way you'll have a lot less
+classes and a lot less overhead."
 
->
->>  There needs to be
->>  bandwidth-limiting for users on the LAN.  Users are typical Internet
->>  users (primarily http download with some important interactive traffic
->>  such as VOIP.)
->>
->> Theoretically, can per-user bandwidth-limiting be done on egress of the
->>  LAN using htb+prio+sfq without encountering insurmountable latency
->>  problems due to queuing of incoming packets in the router?
->
-> If you are limiting per-user, then depending on the number of users, you
-> may run into problems. There was a similar discussion here a while ago:
->
-> http://comments.gmane.org/gmane.comp.security.firewalls.netfilter.general/41664
->
-> The upshot of that thread was to switch to u32 hashing filters if you
-> can.
+Now I understand what you mean by "a lot less classes"!
 
-I saw that thread a while back...  it was the only place I found mention of use of u32 hashing filters for the IFB device.  After seeing that I was also able to use the IFB device to limit upload speed (LAN ingress).
+Unless someone corrects me, I will assume that there is no way to use filters to assign several "flows" (by user IP) to the same class, such that each flow gets the class's full configured rate.
 
-Since I used the u32 hashing filters I think there should be no performance penalty due to iterating lots of rules, even if my friend get hundreds of users.  I even got the hashing filters working "multilevel" - that is, for lookup of the subnet portion of the IP address, but that is currently not in use since he only has a single subnet.
+This leads me to another question: Consider the case where there are 50 users, each with 1 Mbit download rate, but statistics show that all 50 *never* require the full bandwidth, and that a total 35 Mbit total connection rate is sufficient.  Should in this case the HTB qdisc be configured to have total 35 Mbit (or slightly less), even though the sum of all classes' rates will be 50 Mbit?
 
->>   Should traffic shaping (prioritizing of packets for interactive traffic)
->>  probably be an adequate solution to any latency problems?
->
-> I do it reasonably successfully with a lot of users on a small link.
-> http://andybev.com has some of the details.
+This might answer my question, or it is an error on the lartc site:
 
-Wow, what you have done looks cool.  I will study your configuration, thanks!
->
->> Is there a way to use a policing queuing discipline in a case like
->>  this?
->
-> My personal opinion is that you shouldn't limit per user. You should
-> instead prioritise traffic properly. This way you'll have a lot less
-> classes and a lot less overhead. The traffic of heavy users over-using
-> the link will get less priority than low-bandwidth applications, so you
-> will achieve the same effect.
->
-I agree in principle, but my friend needs the per-user bandwidth limiting.  Actually, there are only about 5 bandwidth classes into which all users fall (by LAN IP), and with the hashing filters it looks pretty "lean and mean" to my inexperienced eye.  The bash code that creates the tc commands is in my previous post.
+http://lartc.org/howto/lartc.qdisc.classful.html#AEN903 shows an example in which the sum of classes' rates is higher than the total HTB qdisc rate:
 
->>  (I assume it would have to be on egress of the LAN interface,
->>  since I cannot see how to police on ingress of the Internet-facing
->>  interfaces due to the per-user bandwidth-limiting.)
->
-> Correct, you need to stick with egress shaping, so your inbound links
-> from the internet will need to be shaped on the internal LAN interface.
+"9.5.5.1. Sample configuration
 
-Can I assume from your comments that you think queuing in the router should not cause big latency problems as long as interactive traffic is given highest priority?  If so, I will go ahead and install this firewall and start testing it under some simulated loads.
+Functionally almost identical to the CBQ sample configuration above:
 
-Again, thanks for the advice!
+# tc qdisc add dev eth0 root handle 1: htb default 30
+
+# tc class add dev eth0 parent 1: classid 1:1 htb rate 6mbit burst 15k
+
+# tc class add dev eth0 parent 1:1 classid 1:10 htb rate 5mbit burst 15k
+# tc class add dev eth0 parent 1:1 classid 1:20 htb rate 3mbit ceil 6mbit burst 15k
+# tc class add dev eth0 parent 1:1 classid 1:30 htb rate 1kbit ceil 6mbit burst 15k"
+
+Thanks in advance for any advice.
