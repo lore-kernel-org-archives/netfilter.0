@@ -1,32 +1,47 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: Linux kernel IPSec processing when acting as gateway
-Date: Fri, 18 Nov 2011 20:37:31 +0000
-Message-ID: <1321648651.2382.75.camel@andybev-desktop>
-References: <CAG+XuE5V7QRg3O4zAySZHx8fOkD1EwE7COVNPYOTWetWPUgpjA@mail.gmail.com>
+From: "Lloyd Standish" <lloyd@crnatural.net>
+Subject: trouble setting default route for load-balancing routing tables
+Date: Sat, 19 Nov 2011 20:11:31 -0600
+Message-ID: <op.v4721hs0x1lyi3@debiandesk2.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1321648650;
-	bh=M61FZAdvZeVq80eTYav8dxWBjMSZ6A9K+pBgH0AQ7B0=;
-	h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-ID:Mime-Version:Content-Transfer-Encoding;
-	b=v7JZE1h6yitp2TpY9B0i/EtCpOsPcbmbLknW7cunNTagVHeGuixqtfpxFF1zIirdW
-	 i7kYN/aXj4DCZPx8/i12PPNXllgGaH+ZisUA/My0vwaBagiL6k1Jk0a+0H4Zh4r+XM
-	 T+Yimqw68VhCfUptnhzueukVAdqBaKEult1GofkI=
-In-Reply-To: <CAG+XuE5V7QRg3O4zAySZHx8fOkD1EwE7COVNPYOTWetWPUgpjA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Prashant Batra <prashant0100@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed	delsp=yes"
+To: netfilter@vger.kernel.org
 
-On Thu, 2011-11-17 at 22:23 +0530, Prashant Batra wrote:
-> Also, if the question is not appropriate for this list, please point
-> me to the correct mailing list for Linux kernel IPSec.
+Hi Everyone,
 
-You could try the net-dev mailing list.
+I'm configuring a load-balancing netfilter router.  It does round-robin load balancing over 2 external interfaces, eth0 and eth1.  The natted LAN is on eth4.  eth0 is attached to table T0, and eth1 uses table T1.
 
-Andy
+I am unable to add default routes to the routing tables T0 and T1.  Here is the output from my bash script that sets up the router:
+
++ ip route flush table T0
++ ip route add 192.168.100.0/24 dev eth0 src 192.168.100.10 table T0
++ ip route add default via 192.168.100.11 table T0
+RTNETLINK answers: No such process
+
+Even with the lack of default route for T0 and T1, the router appears to properly load-balance over the 2 outgoing interfaces (!)  However, it ignores my rules which should direct certain traffic over a particular interface.
+
+After setting up the router, here is table main:
+
+root@debiandesk2:/home/lloyd/data/traffic_shaping# ip route show table main
+192.168.100.0/24 dev eth0  scope link  src 192.168.100.10
+192.168.50.0/24 dev eth4  scope link  src 192.168.50.1
+192.168.90.0/24 dev eth1  scope link  src 192.168.90.10
+default
+	nexthop via 192.168.100.11  dev eth0 weight 92
+	nexthop via 192.168.90.1  dev eth1 weight 7
 
 
+And here is table T0, devoid of a default route:
+
+root@debiandesk2:/home/lloyd/data/traffic_shaping# ip route show table T0
+192.168.100.0/24 dev eth0  scope link  src 192.168.100.10
+192.168.50.0/24 dev eth4  scope link
+127.0.0.0/8 dev lo  scope link
+
+Let me know if any more info is needed to debug this.
+
+Regards,
+Lloyd
