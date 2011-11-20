@@ -1,79 +1,91 @@
 From: Andrew Beverley <andy@andybev.com>
-Subject: Re: bandwidth-limiting on LAN interface egress (2)
-Date: Sun, 20 Nov 2011 13:46:19 +0000
-Message-ID: <1321796779.2382.956.camel@andybev-desktop>
-References: <op.v41qaj2hx1lyi3@debiandesk2.net>
-	 <1321480803.2382.62.camel@andybev-desktop>
-	 <op.v419zu1bx1lyi3@debiandesk2.net>  <op.v42q5wazx1lyi3@debiandesk2.net>
+Subject: Re: trouble setting default route for load-balancing routing tables
+Date: Sun, 20 Nov 2011 14:16:43 +0000
+Message-ID: <1321798603.2382.987.camel@andybev-desktop>
+References: <op.v4721hs0x1lyi3@debiandesk2.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1321796779;
-	bh=dmna0t9hIipIDL53qbbhSx8P+vjELkTewxwCDNLA02c=;
+	s=selector1; t=1321798603;
+	bh=N0VQzBoss5jPaRJ2thIqMnCgcnq8AWPuWRPjoumJndE=;
 	h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:Date:
 	 Message-ID:Mime-Version:Content-Transfer-Encoding;
-	b=LPGLNt/X7MNpVxZ9Ys/kY2meQxmLn9N9hqegfn7YciB38XDaeg650MV2IBY/AArg9
-	 nF0VwwXVeKWefnUQtU4u3ZG9GtYfxwdGZ9e8L6IYUu5muCNWS9kGErkbs7sjYM5Gwa
-	 2HV2RVHkzOyI248PlIoPv3ITvpsTHLiiL6xeXq7o=
-In-Reply-To: <op.v42q5wazx1lyi3@debiandesk2.net>
+	b=Poemue5uzrNFDCL2tiKg8C9Fw8LSM7MPEcGmaOoiNAxni0qhdHQBDQX45P63ctfp/
+	 Nt9GvC1WVptUgdBC5IQZZUdTmyYC931g1DwMWe35aTwNY58oSwDH818DhiA8jFr1kT
+	 72J2WG3VL7vxLEYapxieRsMjQvt4HDAZJBGoJF1w=
+In-Reply-To: <op.v4721hs0x1lyi3@debiandesk2.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: Lloyd Standish <lloyd@crnatural.net>
 Cc: netfilter@vger.kernel.org
 
-On Wed, 2011-11-16 at 23:06 -0600, Lloyd Standish wrote:
-> I was under the impression that one could define an HTB qdisc, then set
->  up bandwidth classes for of it, then use u32 filters matching on LAN
->  IP numbers to assign the flows for several IPs to the same HTB class. 
->  I tried that and found that the total bandwidth of the class is shared
->  among the connections, which is not what I wanted or expected!
+On Sat, 2011-11-19 at 20:11 -0600, Lloyd Standish wrote:
+> Hi Everyone,
 > 
-> Apparently for bandwidth-limiting to work there needs to be a HTB class
->  declared for *each* user IP number!  This certainly makes sense if the
->  sum of classes' rates should total the rate of the containing HTB.
+> I'm configuring a load-balancing netfilter router.  It does round-robin load balancing over 2 external interfaces, eth0 and eth1.  The natted LAN is on eth4.  eth0 is attached to table T0, and eth1 uses table T1.
 > 
-> Andy, you wrote:
-> "My personal opinion is that you shouldn't limit per user. You should
-> instead prioritise traffic properly. This way you'll have a lot less
-> classes and a lot less overhead."
+> I am unable to add default routes to the routing tables T0 and T1.  Here is the output from my bash script that sets up the router:
 > 
-> Now I understand what you mean by "a lot less classes"!
-> 
-> Unless someone corrects me, I will assume that there is no way to use
->  filters to assign several "flows" (by user IP) to the same class, such
->  that each flow gets the class's full configured rate.
+> + ip route flush table T0
+> + ip route add 192.168.100.0/24 dev eth0 src 192.168.100.10 table T0
+> + ip route add default via 192.168.100.11 table T0
+> RTNETLINK answers: No such process
 
-No, I don't think there is any other way. You can use the "flow"
-parameter to balance per user IP within a class, but you won't be able
-to use that to hard-limit to a particular bandwidth for the IP, just the
-overall rate limit of the class:
+I see nothing wrong with your rules. That error implies that the kernel
+doesn't know what 192.168.100.11 is, but it's clearly accepted it for
+the default route in the main routing table. Has anything changed
+between you writing the rules above and writing the rules for the main
+table?
 
-$TC filter add dev eth0 parent 30: protocol ip \
-        handle 1 flow hash keys dst divisor 1024
-
-> This leads me to another question: Consider the case where there are 50
->  users, each with 1 Mbit download rate, but statistics show that all 50
->  *never* require the full bandwidth, and that a total 35 Mbit total
->  connection rate is sufficient.  Should in this case the HTB qdisc be
->  configured to have total 35 Mbit (or slightly less), even though the
->  sum of all classes' rates will be 50 Mbit?
-
-The way to achieve this is to set a root limit of 35 Mbit, then make
-sure that all the "rate" values add up to that. You can then set a
-"ceil" value to allow the leaf classes to burst up to 1 Mbit.
+Is the IP address for eth0 correctly configured at this point? An
+incorrect netmask will cause the error above.
 
 > 
-> This might answer my question, or it is an error on the lartc site:
+> Even with the lack of default route for T0 and T1, the router appears
+>  to properly load-balance over the 2 outgoing interfaces (!)
+
+I would expect that, as the nexthop rules in the main table are doing
+the load balancing.
+
+>   However,
+>  it ignores my rules which should direct certain traffic over a
+>  particular interface.
+
+I assume that you have no need to keep the same connection stream on the
+same interface? If you do, you can use netfilter marks (and netfilter
+connection tracking) to do the load balancing instead, as described on
+this page:
+
+http://www.sysresccd.org/Sysresccd-Networking-EN-Iptables-and-netfilter-load-balancing-using-connmark
+
 > 
-> http://lartc.org/howto/lartc.qdisc.classful.html#AEN903 shows an
->  example in which the sum of classes' rates is higher than the total
->  HTB qdisc rate:
-
-I personally think that is a mistake. Everything I have read in the past
-states that the leaf classes should add up to the total root rate.
-
-Andy
+> After setting up the router, here is table main:
+> 
+> root@debiandesk2:/home/lloyd/data/traffic_shaping# ip route show table main
+> 192.168.100.0/24 dev eth0  scope link  src 192.168.100.10
+> 192.168.50.0/24 dev eth4  scope link  src 192.168.50.1
+> 192.168.90.0/24 dev eth1  scope link  src 192.168.90.10
+> default
+> 	nexthop via 192.168.100.11  dev eth0 weight 92
+> 	nexthop via 192.168.90.1  dev eth1 weight 7
+> 
+> 
+> And here is table T0, devoid of a default route:
+> 
+> root@debiandesk2:/home/lloyd/data/traffic_shaping# ip route show table T0
+> 192.168.100.0/24 dev eth0  scope link  src 192.168.100.10
+> 192.168.50.0/24 dev eth4  scope link
+> 127.0.0.0/8 dev lo  scope link
+> 
+> Let me know if any more info is needed to debug this.
+> 
+> Regards,
+> Lloyd
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
 
