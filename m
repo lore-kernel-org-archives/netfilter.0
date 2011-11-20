@@ -1,91 +1,46 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: trouble setting default route for load-balancing routing tables
-Date: Sun, 20 Nov 2011 14:16:43 +0000
-Message-ID: <1321798603.2382.987.camel@andybev-desktop>
-References: <op.v4721hs0x1lyi3@debiandesk2.net>
+From: "Lloyd Standish" <lloyd@crnatural.net>
+Subject: Re: bandwidth-limiting on LAN interface egress (2)
+Date: Sun, 20 Nov 2011 08:25:44 -0600
+Message-ID: <op.v48006r2x1lyi3@debiandesk2.net>
+References: <op.v41qaj2hx1lyi3@debiandesk2.net>
+ <1321480803.2382.62.camel@andybev-desktop> <op.v419zu1bx1lyi3@debiandesk2.net>
+ <1321796319.2382.948.camel@andybev-desktop>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1321798603;
-	bh=N0VQzBoss5jPaRJ2thIqMnCgcnq8AWPuWRPjoumJndE=;
-	h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-ID:Mime-Version:Content-Transfer-Encoding;
-	b=Poemue5uzrNFDCL2tiKg8C9Fw8LSM7MPEcGmaOoiNAxni0qhdHQBDQX45P63ctfp/
-	 Nt9GvC1WVptUgdBC5IQZZUdTmyYC931g1DwMWe35aTwNY58oSwDH818DhiA8jFr1kT
-	 72J2WG3VL7vxLEYapxieRsMjQvt4HDAZJBGoJF1w=
-In-Reply-To: <op.v4721hs0x1lyi3@debiandesk2.net>
+In-Reply-To: <1321796319.2382.948.camel@andybev-desktop>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Lloyd Standish <lloyd@crnatural.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed	delsp=yes"
+To: netfilter@vger.kernel.org
 
-On Sat, 2011-11-19 at 20:11 -0600, Lloyd Standish wrote:
-> Hi Everyone,
-> 
-> I'm configuring a load-balancing netfilter router.  It does round-robin load balancing over 2 external interfaces, eth0 and eth1.  The natted LAN is on eth4.  eth0 is attached to table T0, and eth1 uses table T1.
-> 
-> I am unable to add default routes to the routing tables T0 and T1.  Here is the output from my bash script that sets up the router:
-> 
-> + ip route flush table T0
-> + ip route add 192.168.100.0/24 dev eth0 src 192.168.100.10 table T0
-> + ip route add default via 192.168.100.11 table T0
-> RTNETLINK answers: No such process
+On Sun, 20 Nov 2011 07:38:39 -0600, Andrew Beverley <andy@andybev.com> wrote:
 
-I see nothing wrong with your rules. That error implies that the kernel
-doesn't know what 192.168.100.11 is, but it's clearly accepted it for
-the default route in the main routing table. Has anything changed
-between you writing the rules above and writing the rules for the main
-table?
+> On Wed, 2011-11-16 at 16:56 -0600, Lloyd Standish wrote:
+>> Can I assume from your comments that you think queuing in the router
+>>  should not cause big latency problems as long as interactive traffic
+>>  is given highest priority?
+>
+> My personal opinion is that it should be okay, although depends what you
+> define as "big latency". I've been running the rules previously
+> described for a while now, and whilst they're not perfect, the latency
+> is minimal (I comfortably use SSH whilst the link is saturated).
+>
+> You might also want to check out some of the "buffer bloat" discussions:
+>
+> http://netoptimizer.blogspot.com/
+>
+> http://gettys.wordpress.com/2010/12/03/introducing-the-criminal-mastermind-bufferbloat/
+>
+> Andy
+>
 
-Is the IP address for eth0 correctly configured at this point? An
-incorrect netmask will cause the error above.
+Hi Andy,
+Thanks much for your insights, and for the "buffer bloat" links.
 
-> 
-> Even with the lack of default route for T0 and T1, the router appears
->  to properly load-balance over the 2 outgoing interfaces (!)
+We will be implementing per-user bandwidth-limiting in a couple of weeks.  However, for the moment I was (urgently) asked to skip the bandwidth-limiting and just get a load-balancing router going with some traffic shaping.  That allowed me to stop using qdiscs on the LAN interface.  I have an HTB qdisc on egress of each outward-facing interface, and a policing qdisc on each ingress.
 
-I would expect that, as the nexthop rules in the main table are doing
-the load balancing.
+It appears to be load-balancing OK, using "nexthop" to multiple routing tables in the default route, but I can't set a default route in each of the "custom" routing tables.  (See my other thread.)
 
->   However,
->  it ignores my rules which should direct certain traffic over a
->  particular interface.
-
-I assume that you have no need to keep the same connection stream on the
-same interface? If you do, you can use netfilter marks (and netfilter
-connection tracking) to do the load balancing instead, as described on
-this page:
-
-http://www.sysresccd.org/Sysresccd-Networking-EN-Iptables-and-netfilter-load-balancing-using-connmark
-
-> 
-> After setting up the router, here is table main:
-> 
-> root@debiandesk2:/home/lloyd/data/traffic_shaping# ip route show table main
-> 192.168.100.0/24 dev eth0  scope link  src 192.168.100.10
-> 192.168.50.0/24 dev eth4  scope link  src 192.168.50.1
-> 192.168.90.0/24 dev eth1  scope link  src 192.168.90.10
-> default
-> 	nexthop via 192.168.100.11  dev eth0 weight 92
-> 	nexthop via 192.168.90.1  dev eth1 weight 7
-> 
-> 
-> And here is table T0, devoid of a default route:
-> 
-> root@debiandesk2:/home/lloyd/data/traffic_shaping# ip route show table T0
-> 192.168.100.0/24 dev eth0  scope link  src 192.168.100.10
-> 192.168.50.0/24 dev eth4  scope link
-> 127.0.0.0/8 dev lo  scope link
-> 
-> Let me know if any more info is needed to debug this.
-> 
-> Regards,
-> Lloyd
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-
+--
+Lloyd
