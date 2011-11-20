@@ -1,37 +1,85 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: trouble setting default route for load-balancing routing tables
-Date: Sun, 20 Nov 2011 20:34:06 +0000
-Message-ID: <1321821246.2382.1044.camel@andybev-desktop>
-References: <op.v4721hs0x1lyi3@debiandesk2.net>
-	 <1321798603.2382.987.camel@andybev-desktop>
-	 <op.v482atdzx1lyi3@debiandesk2.net>  <op.v4823hgfx1lyi3@debiandesk2.net>
+From: "Lloyd Standish" <lloyd@crnatural.net>
+Subject: Re: htb + prio trouble
+Date: Sun, 20 Nov 2011 14:46:16 -0600
+Message-ID: <op.v49inevvx1lyi3@debiandesk2.net>
+References: <op.v49c0wstx1lyi3@debiandesk2.net>
+ <1321817770.2382.996.camel@andybev-desktop>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1321821246;
-	bh=Yg0xPygFvR16iJLr2wJE2Uqi8rMRVWQvsdTNfZmY/J4=;
-	h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-ID:Mime-Version:Content-Transfer-Encoding;
-	b=rl3fn9BpOBuU3nJbrPU6zuegAfLOs3VqaEOVPQSV4b8/wXPI1HCPTaH2v38f2qd0A
-	 qWXeOfJzlkeNPq9CeuzQKzGYKe5j5H08WwXQNQ6mzZRXkNSzi0pueiEw5T4dwKvYej
-	 SHE0a0bOB6IYWxQ4zC1Nzd1ZOd3uZN70XqZ6bdOs=
-In-Reply-To: <op.v4823hgfx1lyi3@debiandesk2.net>
+In-Reply-To: <1321817770.2382.996.camel@andybev-desktop>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Lloyd Standish <lloyd@crnatural.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed	delsp=yes"
+To: netfilter@vger.kernel.org
 
-On Sun, 2011-11-20 at 09:10 -0600, Lloyd Standish wrote:
-> Now that the default routes are set in tables T1 and T0, the above
->  rules to "override" the load-balancing appear to work perfectly.  The
->  router will ONLY send packets to T1 (eth1) for those subnets,
+<snip>
+>> While configuring a load-balancing router, I have run into trouble
+>>  setting up traffic shaping (at least the load-balancing is working!)
+>>
+>> I am trying to:
+>> (1) limit total upload speed to somewhat below the interface bandwidth
+>> (2) do some traffic shaping, particularly avoid queuing of VOIP packets.
+>>
+>> To accomplish this I am trying to create a HTB qdisc on each
+>>  outward-facing interface, each containing a PRIO qdisc with the
+>>  default 3 classes.  sfq qdiscs are created for each PRIO class.
+>>
+>> Commands to set up qdiscs and filters for outward-facing interface eth0:
+>>
+>> + tc qdisc del dev eth0 root handle 1
+>> + tc qdisc del dev eth0 ingress
+>> + tc qdisc add dev eth0 root handle 1:0 htb
+>> + tc class add dev eth0 parent 1:0 classid 1:1 htb rate 3200kbit ceil 3200kbit
+>> + tc qdisc add dev eth0 parent 1:1 handle 2: prio
+>> + tc qdisc add dev eth0 parent 2:1 handle 10: sfq perturb 10 limit 3000
+>> + tc qdisc add dev eth0 parent 2:2 handle 20: sfq perturb 10
+>> + tc qdisc add dev eth0 parent 2:3 handle 30: sfq perturb 10
+>> + tc filter add dev eth0 protocol ip parent 2: prio 1 u32 match ip dport 5060 0xffff flowid 2:1
+>> + tc filter add dev eth0 protocol ip parent 2: prio 1 u32 match ip sport 5060 0xffff flowid 2:1
+>> + tc filter add dev eth0 protocol ip parent 2: prio 1 u32 match ip dport 53 0xffff flowid 2:1
+>> + tc filter add dev eth0 protocol ip parent 2: prio 1 u32 match ip dport 80 0xffff flowid 2:1
+>
+> I don't think you're filtering correctly. You've attached the filter to
+> the prio qdisc, which is below the htb qdisc. Therefore it won't see any
+> traffic, as there is no filter to send traffic into the prio qdisc
+> itself. In fact, there is no filter at all for the htb qdisc, hence the
+> reason you are seeing traffic in it but nowhere else.
+>
+> The filter needs to sit the level above in order to filter into classes
+> below it, so you'll need to do something like
+>
+> tc filter add dev eth0 protocol ip parent 1:0 prio 1 \
+> 	u32 match ip dport 80 0xffff flowid 2:1
+>
+> You may also need to change the flowid (I've never played with the prio
+> qdisc)
 
-Ah, got you. So you're splitting the network by subnets and routing over
-the link depending on the subnet. Therefore packets from one client PC
-will always go over the same link?
+Thanks for your insight.  I didn't realize that only the root qdisc receives traffic automatically.  Any subclasses need to receive traffic via a filter, or via the "default" selector.  I added "default" as follows:
 
-Andy
+tc qdisc add dev ${!interface} root handle 1:0 htb default 1
 
+I left the filters as-is, and all appears to work.  I see port 80 traffic going through prio band 1.  (I can remove that test filter now.):
 
+root@debiandesk2:/home/lloyd/data/traffic_shaping# tc -s qdisc ls dev eth0
+qdisc htb 1: root refcnt 2 r2q 10 default 1 direct_packets_stat 0
+  Sent 14082 bytes 88 pkt (dropped 0, overlimits 0 requeues 0)
+  rate 0bit 0pps backlog 0b 0p requeues 0
+qdisc prio 2: parent 1:1 bands 3 priomap  1 2 2 2 1 2 0 0 1 1 1 1 1 1 1 1
+  Sent 14082 bytes 88 pkt (dropped 0, overlimits 0 requeues 0)
+  rate 0bit 0pps backlog 0b 0p requeues 0
+qdisc sfq 10: parent 2:1 limit 127p quantum 1514b perturb 10sec
+  Sent 13115 bytes 79 pkt (dropped 0, overlimits 0 requeues 0)
+  rate 0bit 0pps backlog 0b 0p requeues 0
+qdisc sfq 20: parent 2:2 limit 127p quantum 1514b perturb 10sec
+  Sent 967 bytes 9 pkt (dropped 0, overlimits 0 requeues 0)
+  rate 0bit 0pps backlog 0b 0p requeues 0
+qdisc sfq 30: parent 2:3 limit 127p quantum 1514b perturb 10sec
+  Sent 0 bytes 0 pkt (dropped 0, overlimits 0 requeues 0)
+  rate 0bit 0pps backlog 0b 0p requeues 0
+qdisc ingress ffff: parent ffff:fff1 ----------------
+  Sent 40237 bytes 79 pkt (dropped 0, overlimits 0 requeues 0)
+  rate 0bit 0pps backlog 0b 0p requeues 0
+
+--
+Lloyd
