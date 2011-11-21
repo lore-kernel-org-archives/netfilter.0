@@ -1,36 +1,31 @@
-From: "Lloyd Standish" <lloyd@crnatural.net>
-Subject: Re: trouble setting default route for load-balancing routing tables
-Date: Sun, 20 Nov 2011 14:57:38 -0600
-Message-ID: <op.v49i6cbxx1lyi3@debiandesk2.net>
-References: <op.v4721hs0x1lyi3@debiandesk2.net>
- <1321798603.2382.987.camel@andybev-desktop>
- <op.v482atdzx1lyi3@debiandesk2.net> <op.v4823hgfx1lyi3@debiandesk2.net>
- <1321821246.2382.1044.camel@andybev-desktop>
+From: ratheesh kannoth <ratheesh.ksz@gmail.com>
+Subject: FORWARD chain in Loop Back interface
+Date: Mon, 21 Nov 2011 11:25:52 +0530
+Message-ID: <CAGZFCEEyxe-pWwZ8ZzuMV_a_20J_F9txS08aUELx7R3LauCWTw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1321821246.2382.1044.camel@andybev-desktop>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=oXTUV7lB2VqsgepsjSRPWrDhrylFzGYBWCUo3DgukME=;
+        b=fQlYBscQeap7+Ggomx6951qtP55Ply/LbXpJ3/R1QPfLsYjZMaNWNExr7o8Je6h8X8
+         7GqKPMLEItHjaRCzDLt/SEqS+VsR/aJPJw16ENEFP/ER2zZonuh2E/jWTjEf9vKnUuCv
+         RwFLaReSheehlOBmd/Lhxq2JwePWUZz0nOBlw=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed	delsp=yes"
-To: Andrew Beverley <andy@andybev.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Netfilter mailing list <netfilter@vger.kernel.org>
 
-On Sun, 20 Nov 2011 14:34:06 -0600, Andrew Beverley <andy@andybev.com> wrote:
+Hi,
 
-> On Sun, 2011-11-20 at 09:10 -0600, Lloyd Standish wrote:
->> Now that the default routes are set in tables T1 and T0, the above
->>  rules to "override" the load-balancing appear to work perfectly.  The
->>  router will ONLY send packets to T1 (eth1) for those subnets,
->
-> Ah, got you. So you're splitting the network by subnets and routing over
-> the link depending on the subnet. Therefore packets from one client PC
-> will always go over the same link?
->
+I have a linux laptop.  i have only loop back interface. i have a
+small tcp client and tcp server running on the machine  ( simple tcp
+echo server and client ).
 
-No, the subnets define destination IPs, not LAN IPs.  The subnets for a Costa Rican bank that chokes if traffic from a user during a "session" changes source IP.  The rules force all connections to those subnets to go out through the same IP, so the bank won't see an change in source IP due to my router's load-balancing.
+I would like to log these packets  using   , iptables -A FORWARD -p
+tcp -j LOG.  But there is no log getting captured when i execute
+client and server ?
 
-(A change in IP to a given destination over a short period would not be likely to happen even *without* this rule, since routes are cached, and cached routes are not subject to load-balancing.)
-
---
-Lloyd
+is there any way to  produce this  logs ( with only loop back
+interface )  in forward chain ?
