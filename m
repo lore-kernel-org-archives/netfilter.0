@@ -1,33 +1,80 @@
-From: Andy Furniss <andyqos@ukfsn.org>
-Subject: Re: htb + prio trouble
-Date: Mon, 21 Nov 2011 10:16:39 +0000
-Message-ID: <4ECA2507.8050008@ukfsn.org>
-References: <op.v49c0wstx1lyi3@debiandesk2.net> <1321817770.2382.996.camel@andybev-desktop> <op.v49inevvx1lyi3@debiandesk2.net>
+From: Pandu Poluan <pandu@poluan.info>
+Subject: How to insert a firewall with "gateway spoofing"?
+Date: Tue, 22 Nov 2011 12:43:31 +0700
+Message-ID: <CAA2qdGVFdUfO6GhAHX0Qf6L45_8sG6ZY1m=GquimuatetFWm=w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <op.v49inevvx1lyi3@debiandesk2.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Lloyd Standish <lloyd@crnatural.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-Lloyd Standish wrote:
+Hello, I need some suggestions.
 
-> Thanks for your insight. I didn't realize that only the root qdisc
-> receives traffic automatically. Any subclasses need to receive traffic
-> via a filter, or via the "default" selector. I added "default" as follows:
+(If the ASCII diagrams get messed up, I've uploaded them to
+http://pastebin.com/SbbWKds0
 
-I am very rusty and out of date with the world of tc.
+I have a network that looks like this:
 
-One thing to consider when using htb default is that all unclassified 
-traffic goes there - this includes arp.
+    ISP
+     |
+     |
+     | wan1 =3D unknown
++----o----+
+|  Router |
++----o----+
+     | lan1 =3D 192.168.0.1/24 + DHCP
+     |
+     |
+     |
+ /\/\/\/\/\
+<   LAN    >   192.168.0.0/24
+ \/\/\/\/\/
 
-HTB by default lets unclassified go unshaped so personally I always 
-preferred setting catch all "protocol ip" filters over using default.
+The Router is off-limits to me (it's the ISP's, and I am not given any
+access to the router).
 
-If you ever play with HFSC (unless it's changed in recent years) then 
-its' default behavior is to drop unclassified, which can easily bite 
-you, so you need to make default or explicitly filter protocol arp.
+I need to "insert" a firewall like this:
 
+    ISP
+     |
+     |
+     | wan1 =3D unknown
++----o----+
+|  Router |
++----o----+
+     | lan1 =3D 192.168.0.1/24 + DHCP
+     |
+     | eth1 =3D 192.168.0.2
++----o----+
+|  Linux  |
++----o----+
+     | eth0 =3D 192.168.0.1/24 + DHCP
+     | ( dest=3D=3D192.168.0.3 =3D=3DDNAT=3D=3D> 192.168.0.1 via eth1 )
+     |
+     |
+ /\/\/\/\/\
+<   LAN    >   192.168.0.0/24
+ \/\/\/\/\/
+
+=46or some complicated reasons, I can't change the subnet address of th=
+e
+LAN, nor can I change the default gateway for the systems in the LAN.
+And since I can't reconf the Router, I have to "spoof" the router.
+
+Is it doable just with iptables and iproute2? Or do I have to also go
+down the route of ebtables?
+
+And if it is doable, what caveats must I be aware of?
+
+Thanks in advance.
+
+Rgds,
+--=20
+=46dS Pandu E Poluan
+~ IT Optimizer ~
+
+=C2=A0=E2=80=A2 LOPSA Member #15248
+=C2=A0=E2=80=A2 Blog : http://pepoluan.tumblr.com
+=C2=A0=E2=80=A2 Linked-In : http://id.linkedin.com/in/pepoluan
