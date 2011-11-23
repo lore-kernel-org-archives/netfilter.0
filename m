@@ -1,59 +1,97 @@
-From: "Brian J. Murrell" <brian@interlinx.bc.ca>
-Subject: Re: How to drop an idle connection with iptables?
-Date: Wed, 23 Nov 2011 07:37:00 -0500
-Message-ID: <jaipdd$irr$1@dough.gmane.org>
-References: <4ECCCF70.1080701@gmail.com>
+From: Sergio Belkin <sebelk@gmail.com>
+Subject: ebtables and interception proxy
+Date: Wed, 23 Nov 2011 15:41:06 -0300
+Message-ID: <CABZC=5zD6ksDGg8Eq9RLqEpGKo2yMhicin3s=tN8zu1tvOgY0A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigC6F52B7A67648185690C3B53"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4ECCCF70.1080701@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:from:date:message-id:subject:to:content-type
+         :content-transfer-encoding;
+        bh=6FeFbAGJZf4rOfVfs+i/KoFKZDSfY4fD6lJdYk3l4+M=;
+        b=tH/gkt5DpVkCswf16ZKUZAAcCbu0zkQ59VBVGI4D7JMuBjgafR/QYDe8hW/5k7DXkr
+         L57xYJzhsvhZNgZiLoAvxuDTEfiDY8KAtjII6ZdCJVYyBrT62xJJ0WEdFUBvr8zdfzyJ
+         3Zd9m0tYPAClpSFUNkLYPrbQuvQv6XF6MM1RE=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigC6F52B7A67648185690C3B53
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+Hi,
 
-On 11-11-23 05:48 AM, lu zhongda wrote:
->=20
->     I felt the scenario you described is not really what I want to know=
-=2E
+I have a bridge on a openwrt box:
 
-Probably because your request was unclear.
-
->     I want to know if there is any way to set up iptables so
->     that it will drop a connection after that connection has been idle
-> for a specified period of time?
-
-Define "drop", "connection" and "idle".  And why do you feel you need to
-"drop" them?
-
->    I have tried connection tracking function of iptables, however it
-> seems not work for my case.
-
-Please explain why it doesn't.  What are you trying to achieve exactly?
- Perhaps a real-world use-case might help us understand.
-
-b.
+bridge name     bridge id               STP enabled     interfaces
+br-lan          8000.00212968312a       no              eth0.0
+                                                        wlan0
 
 
---------------enigC6F52B7A67648185690C3B53
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+I have the following rules in the nat table:
 
-iEYEARECAAYFAk7M6O0ACgkQl3EQlGLyuXD6FgCg+6r0GZsLx1vLOOKpTisSgeMt
-op8An20q9XcAPoLZzLsCH/5kVqkbTEvi
-=jrv2
------END PGP SIGNATURE-----
+Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source
+destination
+    0     0 zone_lan_prerouting  all  --  br-lan *       0.0.0.0/0
+       0.0.0.0/0
+    1    60 prerouting_rule  all  --  *      *       0.0.0.0/0
+   0.0.0.0/0
 
---------------enigC6F52B7A67648185690C3B53--
+Chain POSTROUTING (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source
+destination
+    0     0 zone_lan_nat  all  --  *      br-lan  0.0.0.0/0
+0.0.0.0/0
+    0     0 postrouting_rule  all  --  *      *       0.0.0.0/0
+    0.0.0.0/0
 
+Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source
+destination
+
+Chain postrouting_rule (1 references)
+ pkts bytes target     prot opt in     out     source
+destination
+
+Chain prerouting_lan (1 references)
+ pkts bytes target     prot opt in     out     source
+destination
+
+Chain prerouting_rule (1 references)
+ pkts bytes target     prot opt in     out     source
+destination
+    1    60 DNAT       tcp  --  br-lan *      !200.69.213.193
+0.0.0.0/0           tcp dpt:80 to:x.x.x.x:8080
+
+Chain zone_lan_nat (1 references)
+ pkts bytes target     prot opt in     out     source
+destination
+
+Chain zone_lan_prerouting (1 references)
+ pkts bytes target     prot opt in     out     source
+destination
+    0     0 prerouting_lan  all  --  *      *       0.0.0.0/0
+  0.0.0.0/0
+
+
+Where x.x.x.x is a remote proxy
+
+And my ebtables rules on broute table is as follows:
+
+Bridge table: broute
+
+Bridge chain: BROUTING, entries: 1, policy: ACCEPT
+-p IPv4 --ip-proto tcp --ip-dport 80 -j redirect , pcnt =3D 1251 -- bcn=
+t =3D 75060
+
+
+The problem is that interception proxy  (aka transparent proxy) is not
+working. Of course it works is I add by hand at browers settings....
+
+Please could you help me?
+--=20
+--
+Sergio Belkin =A0http://www.sergiobelkin.com
+Watch More TV http://sebelk.blogspot.com
+LPIC-2 Certified - http://www.lpi.org
