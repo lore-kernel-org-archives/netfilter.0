@@ -1,52 +1,47 @@
-From: Edwin van den Oosterkamp <edwin@vandenoosterkamp.com>
-Subject: IGMP packet matching and multicast routing
-Date: Wed, 23 Nov 2011 11:01:30 +0100
-Message-ID: <72ba20c051031719ef72675378e86951@edders.homeip.net>
+From: lu zhongda <luzhongda@gmail.com>
+Subject: Re: How to drop an idle connection with iptables?
+Date: Wed, 23 Nov 2011 18:48:16 +0800
+Message-ID: <4ECCCF70.1080701@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=message-id:date:from:user-agent:mime-version:to:subject
+         :content-type:content-transfer-encoding;
+        bh=QaXwMRklzJ6qA+o8wFVit/LGaKvpQJYU2Njjjm4+BUw=;
+        b=CJqHz2fXhqwRY4M/NZyxhmt5vdEklGirAKzsJOs/X9cjY24gGvp7eKGl4o9pBjS87X
+         apj1RoDuTOK9PjbKonFQby76e3Vu89MYK7PomVtT2NX+k7LixxBPdA85B0H/mIRUzfQ9
+         chZ/Vjz2S7Zu5/1U+o3ibKP71NjzsavRGAuoE=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello All,
+Hi Lloyd Standish:
+     Thanks for your feedback greatly.
+     I felt the scenario you described is not really what I want to know.
 
-The requirement I have is bit unusual and unfortunately I have not 
-found any answers searching the archives and the Internet in general. I 
-hope that if it is actually possible this knowledge will be with this 
-list. I'm a programmer with quite a bit of experience on Linux kernel 
-based systems, but fairly new to netfilter specifics.
+     I want to know if there is any way to set up iptables so
+     that it will drop a connection after that connection has been idle 
+for a specified period of time?
 
-My system has a VLAN interface and a standard network interface. The 
-standard interface will need to receive one multicast stream (always the 
-same multicast address and port) and to send one multicast stream (same 
-multicast address as it is receiving for but different port). All other 
-multicast traffic (in as well as out) should go over the VLAN.
+    I have tried connection tracking function of iptables, however it 
+seems not work for my case.
+    I wonder whether there are some other means to achieve this.
+    Thanks.
 
-The "all other multicast traffic" I have already sorted through the 
-main routing table and if I could mark the IGMP packets for the other 
-two streams then the routing tables I've setup should take care of those 
-going out of the other interface. Unfortunately I've not yet found how 
-to mark only the IGMP related to those connections while leaving the 
-rest of the IGMP packets unmarked.
+    Best Regards.
 
-On the net I have seen examples using an implicit match like "-p igmp" 
-but unfortunately I have not been able to find the documentation for 
-these igmp matches. The examples usually only DROP all igmp and give no 
-insight into the possible matches provided by "-p igmp". As such I do 
-not know if dropping as actually all that you can do, or if there is 
-more to this protocol match.
+ > Follows:
+ >      Does anyone know about how to drop an idle connection when timeouts?
+ >      Thanks for any feedback in advance.
+ > Best Regards.
+ > Lu Zhongda
+ >
 
-Could someone please point me to the documentation for the igmp match, 
-or let me know a different way to solve this issue if I'm currently 
-trying to solve this the wrong way?
-
-I hope that I have been clear, if not then please let me know and will 
-be more than happy to elaborate.
-
-Best regards,
-
-Edwin.
++ I think you are referring to what is called "dead gateway detection."  
+There are patches for current kernels to allow netfilter to do this 
+(http://www.ssi.bg/~ja/#routes).
 
 
