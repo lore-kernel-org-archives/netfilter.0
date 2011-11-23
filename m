@@ -1,53 +1,58 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: PortalShaper - details of scripts for a captive portal and traffic
- shaper
-Date: Tue, 22 Nov 2011 22:09:17 +0000
-Message-ID: <1321999757.2382.2523.camel@andybev-desktop>
+From: "Lloyd Standish" <lloyd@crnatural.net>
+Subject: Re: How to drop an idle connection with iptables?
+Date: Tue, 22 Nov 2011 21:27:48 -0600
+Message-ID: <op.v5do5sdcx1lyi3@debiandesk2.net>
+References: <21022AAE83454AF0ACBAE718CA7C7A06@luzhongda>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1321999769;
-	bh=Q5JZ3HwotxxKumdPoYd25YXlhDaa9ee11St+6hXDD5c=;
-	h=Subject:From:To:Content-Type:Date:Message-ID:Mime-Version:
-	 Content-Transfer-Encoding;
-	b=Jqrl0kVoMYBqib5K1njuUUyhW973U/c1N89lH5wKrnyHgd1Zscyiis+mAmXwQbOUZ
-	 0BGZOvioRfC0q07vO/PqhzBr7KnnkTYvfmT2VaYobpKwlFZtt4pXJZ3kQImrc1JcPZ
-	 +AgFGyCcTW+IlK9yE/Righj9T3hEOhaohDFYq5aA=
+In-Reply-To: <21022AAE83454AF0ACBAE718CA7C7A06@luzhongda>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed	delsp=yes"
+To: netfilter@vger.kernel.org, =?utf-8?B?6ZmG5Luy6L6+?= <zhongda.lu@dev.bessystem.com>
 
-Hi all,
+On Tue, 22 Nov 2011 06:22:56 -0600, =E9=99=86=E4=BB=B2=E8=BE=BE <zhongd=
+a.lu@dev.bessystem.com> wrote:
 
-I'm posting this for people's interest, in case it is of use to anybody.
+> Follows:
+>      Does anyone know about how to drop an idle connection when timeo=
+uts?
+>      Thanks for any feedback in advance.
+> Best Regards.
+> Lu Zhongda
+>
 
-I have created a set of scripts (called PortalShaper) to do the
-following:
+I think you are referring to what is called "dead gateway detection."  =
+There are patches for current kernels to allow netfilter to do this (ht=
+tp://www.ssi.bg/~ja/#routes).
 
-  * Act as a captive portal
-  * Manage the users on the captive portal
-  * Traffic shape the internet connection to optimise its speed
-  * Create a "splash page" to display adverts to users
-  * Load-share between multiple connections
+I think these patches allow the kernel to determine when the nexthop ro=
+uter is down, but I don't think they will detect failure beyond that (s=
+everal hops out).  However, I did not try the patches.
 
-I won't go into any details in this email, except to say that all the
-above is achieved with iptables and iproute2 rules, with PHP scripts for
-the captive portal web pages. It's therefore easily customised, or used
-as examples.
+In my investigation of the alternatives for detecting a bad uplink and =
+adjusting the routing accordingly, I found an open source program, lsm =
+(Link Status Monitor, http://lsm.foobar.fi/), which actually does confi=
+gurable ping traffic analysis (to any IP) to determine when an uplink s=
+hould be removed or replaced.  I am not sure, but I think this level of=
+ control is not available through the kernel patches linked to above.
 
-The details of how it works are contained at:
+lsm detects failed links and executes an user-supplied script on each f=
+ailure or recovery event, passing parameters with info on which interfa=
+ce was involved and whether it is "up" or "down".  You can rewrite your=
+ firewall script to accept these lsm-supplied parameters to readjust an=
+y load-balancing routing, send emails to announce the event, etc.  This=
+ will become clear when you check out the lsm package.
 
-http://andybev.com/index.php/PortalShaper
+If more than one interface may be down at the same time (which is my ca=
+se), the "state" of the interfaces will need to be saved.  This is beca=
+use lsm only notifies when a single link changes.  I suggest using a bi=
+t field saved to a file, using bit-wise operators.  That's what I did, =
+using bash.
 
-Full installation instructions for installing from scratch are contained
-at:
+(Since lsm keeps state information about all the monitored links, it wo=
+uld be interesting to modify lsm to pass a "state" bitfield as one of t=
+he parameters upon every state change.)
 
-http://andybev.com/index.php/Setting_up_a_captive_portal_from_scratch_using_Debian
-
-If you have any comments then please let me know.
-
-Andy
-
-
+Good luck!
