@@ -1,58 +1,52 @@
-From: "Lloyd Standish" <lloyd@crnatural.net>
-Subject: Re: How to drop an idle connection with iptables?
-Date: Tue, 22 Nov 2011 21:27:48 -0600
-Message-ID: <op.v5do5sdcx1lyi3@debiandesk2.net>
-References: <21022AAE83454AF0ACBAE718CA7C7A06@luzhongda>
+From: Edwin van den Oosterkamp <edwin@vandenoosterkamp.com>
+Subject: IGMP packet matching and multicast routing
+Date: Wed, 23 Nov 2011 11:01:30 +0100
+Message-ID: <72ba20c051031719ef72675378e86951@edders.homeip.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <21022AAE83454AF0ACBAE718CA7C7A06@luzhongda>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed	delsp=yes"
-To: netfilter@vger.kernel.org, =?utf-8?B?6ZmG5Luy6L6+?= <zhongda.lu@dev.bessystem.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Tue, 22 Nov 2011 06:22:56 -0600, =E9=99=86=E4=BB=B2=E8=BE=BE <zhongd=
-a.lu@dev.bessystem.com> wrote:
+Hello All,
 
-> Follows:
->      Does anyone know about how to drop an idle connection when timeo=
-uts?
->      Thanks for any feedback in advance.
-> Best Regards.
-> Lu Zhongda
->
+The requirement I have is bit unusual and unfortunately I have not 
+found any answers searching the archives and the Internet in general. I 
+hope that if it is actually possible this knowledge will be with this 
+list. I'm a programmer with quite a bit of experience on Linux kernel 
+based systems, but fairly new to netfilter specifics.
 
-I think you are referring to what is called "dead gateway detection."  =
-There are patches for current kernels to allow netfilter to do this (ht=
-tp://www.ssi.bg/~ja/#routes).
+My system has a VLAN interface and a standard network interface. The 
+standard interface will need to receive one multicast stream (always the 
+same multicast address and port) and to send one multicast stream (same 
+multicast address as it is receiving for but different port). All other 
+multicast traffic (in as well as out) should go over the VLAN.
 
-I think these patches allow the kernel to determine when the nexthop ro=
-uter is down, but I don't think they will detect failure beyond that (s=
-everal hops out).  However, I did not try the patches.
+The "all other multicast traffic" I have already sorted through the 
+main routing table and if I could mark the IGMP packets for the other 
+two streams then the routing tables I've setup should take care of those 
+going out of the other interface. Unfortunately I've not yet found how 
+to mark only the IGMP related to those connections while leaving the 
+rest of the IGMP packets unmarked.
 
-In my investigation of the alternatives for detecting a bad uplink and =
-adjusting the routing accordingly, I found an open source program, lsm =
-(Link Status Monitor, http://lsm.foobar.fi/), which actually does confi=
-gurable ping traffic analysis (to any IP) to determine when an uplink s=
-hould be removed or replaced.  I am not sure, but I think this level of=
- control is not available through the kernel patches linked to above.
+On the net I have seen examples using an implicit match like "-p igmp" 
+but unfortunately I have not been able to find the documentation for 
+these igmp matches. The examples usually only DROP all igmp and give no 
+insight into the possible matches provided by "-p igmp". As such I do 
+not know if dropping as actually all that you can do, or if there is 
+more to this protocol match.
 
-lsm detects failed links and executes an user-supplied script on each f=
-ailure or recovery event, passing parameters with info on which interfa=
-ce was involved and whether it is "up" or "down".  You can rewrite your=
- firewall script to accept these lsm-supplied parameters to readjust an=
-y load-balancing routing, send emails to announce the event, etc.  This=
- will become clear when you check out the lsm package.
+Could someone please point me to the documentation for the igmp match, 
+or let me know a different way to solve this issue if I'm currently 
+trying to solve this the wrong way?
 
-If more than one interface may be down at the same time (which is my ca=
-se), the "state" of the interfaces will need to be saved.  This is beca=
-use lsm only notifies when a single link changes.  I suggest using a bi=
-t field saved to a file, using bit-wise operators.  That's what I did, =
-using bash.
+I hope that I have been clear, if not then please let me know and will 
+be more than happy to elaborate.
 
-(Since lsm keeps state information about all the monitored links, it wo=
-uld be interesting to modify lsm to pass a "state" bitfield as one of t=
-he parameters upon every state change.)
+Best regards,
 
-Good luck!
+Edwin.
+
+
