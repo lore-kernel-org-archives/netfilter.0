@@ -1,97 +1,132 @@
-From: Sergio Belkin <sebelk@gmail.com>
-Subject: ebtables and interception proxy
-Date: Wed, 23 Nov 2011 15:41:06 -0300
-Message-ID: <CABZC=5zD6ksDGg8Eq9RLqEpGKo2yMhicin3s=tN8zu1tvOgY0A@mail.gmail.com>
+From: lu zhongda <luzhongda@gmail.com>
+Subject: Re: How to drop an idle connection with iptables?
+Date: Thu, 24 Nov 2011 17:46:07 +0800
+Message-ID: <4ECE125F.8090101@gmail.com>
+References: <4ECCCF70.1080701@gmail.com> <jaipdd$irr$1@dough.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/mixed;
+ boundary="------------010705060806080501050306"
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=mime-version:from:date:message-id:subject:to:content-type
-         :content-transfer-encoding;
-        bh=6FeFbAGJZf4rOfVfs+i/KoFKZDSfY4fD6lJdYk3l4+M=;
-        b=tH/gkt5DpVkCswf16ZKUZAAcCbu0zkQ59VBVGI4D7JMuBjgafR/QYDe8hW/5k7DXkr
-         L57xYJzhsvhZNgZiLoAvxuDTEfiDY8KAtjII6ZdCJVYyBrT62xJJ0WEdFUBvr8zdfzyJ
-         3Zd9m0tYPAClpSFUNkLYPrbQuvQv6XF6MM1RE=
+        h=message-id:date:from:user-agent:mime-version:to:cc:subject
+         :references:in-reply-to:content-type;
+        bh=VBBikE6u58kwbMdFDvMK9OlCRiMPdtZymiJoEJhvoTU=;
+        b=rJyp8VfPsrTAOeBDVaD3hiY9rI+fKuS+PiUZ76JgO5DU7cMfC/uzgcI8xasTawVPTJ
+         OTFitppPerlcjbE96CgvXEs/yQfZi2vxK4bFEvWvccawlcpMl7ILysktCFGsyoo7X51x
+         R9Rf6icnzvnvQtSsbYl8Rhu9Ba18/tcFeHWpk=
+In-Reply-To: <jaipdd$irr$1@dough.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
+Cc: "Brian J. Murrell" <brian@interlinx.bc.ca>
 
-Hi,
+This is a multi-part message in MIME format.
+--------------010705060806080501050306
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-I have a bridge on a openwrt box:
+Hi Brian:
+     First very sorry for confusion, I will explain it in details.
+     My question is:
+     " Is it possible to configure iptables to monitor activity on 
+socket connections, then close or block connections that haven't had any 
+activity for a specified amount of time?"
 
-bridge name     bridge id               STP enabled     interfaces
-br-lan          8000.00212968312a       no              eth0.0
-                                                        wlan0
+     As to the individual terms, I define them as follows:
+     Connection: Socket tcp connection
+     Idle:socket connections haven't had any activity for a specified 
+amount of time, for example after connection established, data is 
+transmitted through connection in big time intervals.
+     Drop:  block and discarded the packets between two endpoints of a 
+connection or just close the connection
+
+     At least, I hope iptables can confirm whether a connection is idle 
+or not by its rules, this is the key point of my problem.
+     I have used conntrack of iptables, it seems not work.
+
+     My rules for conntrack to trace and drop idle connection is:
+iptables -AINPUT     -p tcp -m state --stateESTABLISHED-j ACCEPT
+     iptables -AOUTPUT-p tcp -m state --stateNEW,ESTABLISHED-j ACCEPT
+iptables -AINPUT-p tcp ! --syn -m state --stateNEW-j DROP
+
+     I think from conntrack's perspective, a connection is idle once the 
+ESTABLISHED typed item in //proc/net/ip_conntrack///is removed after the 
+timeout interval of the item.
+     The timeout is defined in 
+//proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_established/ , 
+which is defaulted to 5 days, I change it to a short value for testing, 
+such as 1 min.
+     the linux shell command is: echo "60" > 
+//proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_established/
+     The timeout for ESTABLISHED type item does works, and the item is 
+removed after timeout, however the connection is not blocked or dropped 
+at all.
+
+     I used a simple echo alike client-server program to test.  The 
+client sends a text message to the server, the server echo the message 
+back to the client.
+    The socket channel between two sides is kept alive. The listening 
+port for server is 9999.
+
+     My environment is:
+     OS:  Redhat enterprise linux 5.2, kernel version 2.6.18
+     Iptables: v1.3.5
+
+     I attached my rules in /etc/sysconfig/iptables for reference, hope 
+it can help.
+     Thanks for your continuous help.
+
+On 2011-11-23 20:37, Brian J. Murrell wrote:
+> On 11-11-23 05:48 AM, lu zhongda wrote:
+>>      I felt the scenario you described is not really what I want to know.
+> Probably because your request was unclear.
+>
+>>      I want to know if there is any way to set up iptables so
+>>      that it will drop a connection after that connection has been idle
+>> for a specified period of time?
+> Define "drop", "connection" and "idle".  And why do you feel you need to
+> "drop" them?
+>
+>>     I have tried connection tracking function of iptables, however it
+>> seems not work for my case.
+> Please explain why it doesn't.  What are you trying to achieve exactly?
+>   Perhaps a real-world use-case might help us understand.
+>
+> b.
+>
 
 
+--------------010705060806080501050306
+Content-Type: text/plain;
+ name="iptables"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="iptables"
 
-I have the following rules in the nat table:
+# Generated by iptables-save v1.3.5 on Thu Nov 24 15:19:59 2011
+*filter
+:INPUT DROP [200:29532]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+-A INPUT -p tcp -m tcp --dport 22 -j ACCEPT 
+-A INPUT -p tcp -m tcp --dport 9999 -j LOG --log-prefix "ACCEPT 9999::" 
+-A INPUT -p tcp -m tcp --dport 9999 -j ACCEPT 
+-A INPUT -p udp -m state --state ESTABLISHED -j ACCEPT 
+-A INPUT -p tcp -m state --state ESTABLISHED -j LOG --log-prefix "conn established::" 
+-A INPUT -p tcp -m state --state ESTABLISHED -j ACCEPT 
+-A INPUT -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m state --state NEW -j LOG --log-prefix "DROP invalid::" 
+-A INPUT -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m state --state NEW -j DROP 
+-A INPUT -i eth0 -p tcp -m tcp --dport 9999 -m state --state NEW -m recent --set --name DEFAULT --rsource 
+-A INPUT -i eth0 -p tcp -m tcp --dport 9999 -m state --state NEW -m recent --update --seconds 600 --hitcount 2 --name DEFAULT --rsource -j DROP 
+-A FORWARD -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m state --state NEW -j DROP 
+-A OUTPUT -p tcp -m tcp --sport 22 -j ACCEPT 
+-A OUTPUT -p tcp -m tcp --sport 9999 -j ACCEPT 
+-A OUTPUT -p udp -m state --state NEW,ESTABLISHED -j ACCEPT 
+-A OUTPUT -p tcp -m state --state NEW,ESTABLISHED -j LOG --log-prefix "out conn established::" 
+-A OUTPUT -p tcp -m state --state NEW,ESTABLISHED -j ACCEPT 
+-A OUTPUT -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m state --state NEW -j DROP 
+COMMIT
+# Completed on Thu Nov 24 15:19:59 2011
 
-Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source
-destination
-    0     0 zone_lan_prerouting  all  --  br-lan *       0.0.0.0/0
-       0.0.0.0/0
-    1    60 prerouting_rule  all  --  *      *       0.0.0.0/0
-   0.0.0.0/0
-
-Chain POSTROUTING (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source
-destination
-    0     0 zone_lan_nat  all  --  *      br-lan  0.0.0.0/0
-0.0.0.0/0
-    0     0 postrouting_rule  all  --  *      *       0.0.0.0/0
-    0.0.0.0/0
-
-Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source
-destination
-
-Chain postrouting_rule (1 references)
- pkts bytes target     prot opt in     out     source
-destination
-
-Chain prerouting_lan (1 references)
- pkts bytes target     prot opt in     out     source
-destination
-
-Chain prerouting_rule (1 references)
- pkts bytes target     prot opt in     out     source
-destination
-    1    60 DNAT       tcp  --  br-lan *      !200.69.213.193
-0.0.0.0/0           tcp dpt:80 to:x.x.x.x:8080
-
-Chain zone_lan_nat (1 references)
- pkts bytes target     prot opt in     out     source
-destination
-
-Chain zone_lan_prerouting (1 references)
- pkts bytes target     prot opt in     out     source
-destination
-    0     0 prerouting_lan  all  --  *      *       0.0.0.0/0
-  0.0.0.0/0
-
-
-Where x.x.x.x is a remote proxy
-
-And my ebtables rules on broute table is as follows:
-
-Bridge table: broute
-
-Bridge chain: BROUTING, entries: 1, policy: ACCEPT
--p IPv4 --ip-proto tcp --ip-dport 80 -j redirect , pcnt =3D 1251 -- bcn=
-t =3D 75060
-
-
-The problem is that interception proxy  (aka transparent proxy) is not
-working. Of course it works is I add by hand at browers settings....
-
-Please could you help me?
---=20
---
-Sergio Belkin =A0http://www.sergiobelkin.com
-Watch More TV http://sebelk.blogspot.com
-LPIC-2 Certified - http://www.lpi.org
+--------------010705060806080501050306--
