@@ -1,132 +1,65 @@
-From: lu zhongda <luzhongda@gmail.com>
+From: "Brian J. Murrell" <brian@interlinx.bc.ca>
 Subject: Re: How to drop an idle connection with iptables?
-Date: Thu, 24 Nov 2011 17:46:07 +0800
-Message-ID: <4ECE125F.8090101@gmail.com>
-References: <4ECCCF70.1080701@gmail.com> <jaipdd$irr$1@dough.gmane.org>
+Date: Thu, 24 Nov 2011 06:30:17 -0500
+Message-ID: <jal9sa$t42$1@dough.gmane.org>
+References: <4ECCCF70.1080701@gmail.com> <jaipdd$irr$1@dough.gmane.org> <4ECE125F.8090101@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------010705060806080501050306"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigB5BB8F524127F83293FF7CCA"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=message-id:date:from:user-agent:mime-version:to:cc:subject
-         :references:in-reply-to:content-type;
-        bh=VBBikE6u58kwbMdFDvMK9OlCRiMPdtZymiJoEJhvoTU=;
-        b=rJyp8VfPsrTAOeBDVaD3hiY9rI+fKuS+PiUZ76JgO5DU7cMfC/uzgcI8xasTawVPTJ
-         OTFitppPerlcjbE96CgvXEs/yQfZi2vxK4bFEvWvccawlcpMl7ILysktCFGsyoo7X51x
-         R9Rf6icnzvnvQtSsbYl8Rhu9Ba18/tcFeHWpk=
-In-Reply-To: <jaipdd$irr$1@dough.gmane.org>
+In-Reply-To: <4ECE125F.8090101@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 To: netfilter@vger.kernel.org
-Cc: "Brian J. Murrell" <brian@interlinx.bc.ca>
 
-This is a multi-part message in MIME format.
---------------010705060806080501050306
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigB5BB8F524127F83293FF7CCA
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-Hi Brian:
-     First very sorry for confusion, I will explain it in details.
-     My question is:
-     " Is it possible to configure iptables to monitor activity on 
-socket connections, then close or block connections that haven't had any 
-activity for a specified amount of time?"
+On 11-11-24 04:46 AM, lu zhongda wrote:
+> Hi Brian:
 
-     As to the individual terms, I define them as follows:
-     Connection: Socket tcp connection
-     Idle:socket connections haven't had any activity for a specified 
-amount of time, for example after connection established, data is 
-transmitted through connection in big time intervals.
-     Drop:  block and discarded the packets between two endpoints of a 
-connection or just close the connection
+Hi Lu,
 
-     At least, I hope iptables can confirm whether a connection is idle 
-or not by its rules, this is the key point of my problem.
-     I have used conntrack of iptables, it seems not work.
+>     At least, I hope iptables can confirm whether a connection is idle
+> or not by its rules, this is the key point of my problem.
 
-     My rules for conntrack to trace and drop idle connection is:
-iptables -AINPUT     -p tcp -m state --stateESTABLISHED-j ACCEPT
-     iptables -AOUTPUT-p tcp -m state --stateNEW,ESTABLISHED-j ACCEPT
-iptables -AINPUT-p tcp ! --syn -m state --stateNEW-j DROP
+Perhaps there is a module which can do this but perhaps not because what
+you are proposing will actually break protocols based on TCP.
 
-     I think from conntrack's perspective, a connection is idle once the 
-ESTABLISHED typed item in //proc/net/ip_conntrack///is removed after the 
-timeout interval of the item.
-     The timeout is defined in 
-//proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_established/ , 
-which is defaulted to 5 days, I change it to a short value for testing, 
-such as 1 min.
-     the linux shell command is: echo "60" > 
-//proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_established/
-     The timeout for ESTABLISHED type item does works, and the item is 
-removed after timeout, however the connection is not blocked or dropped 
-at all.
+>     I have used conntrack of iptables, it seems not work.
 
-     I used a simple echo alike client-server program to test.  The 
-client sends a text message to the server, the server echo the message 
-back to the client.
-    The socket channel between two sides is kept alive. The listening 
-port for server is 9999.
+iptables' conntrack works exactly as it should.  When it sees a TCP
+session go to ESTABLISHED (i.e. TCP 3-way handshake is completed) it
+allows packets on that session and continues to do so until the session
+is destroyed with FIN and/or RST packets.
 
-     My environment is:
-     OS:  Redhat enterprise linux 5.2, kernel version 2.6.18
-     Iptables: v1.3.5
+To start dropping/rejecting packets before that TCP session is shutdown
+will break the protocol that is running on the socket because it expects
+the session to still be open.
 
-     I attached my rules in /etc/sysconfig/iptables for reference, hope 
-it can help.
-     Thanks for your continuous help.
+You didn't answer my other question though, which is why do you think
+you need to be dropping idle, yet still ESTABLISHED sessions (and
+breaking higher level protocols when you do that)?
 
-On 2011-11-23 20:37, Brian J. Murrell wrote:
-> On 11-11-23 05:48 AM, lu zhongda wrote:
->>      I felt the scenario you described is not really what I want to know.
-> Probably because your request was unclear.
->
->>      I want to know if there is any way to set up iptables so
->>      that it will drop a connection after that connection has been idle
->> for a specified period of time?
-> Define "drop", "connection" and "idle".  And why do you feel you need to
-> "drop" them?
->
->>     I have tried connection tracking function of iptables, however it
->> seems not work for my case.
-> Please explain why it doesn't.  What are you trying to achieve exactly?
->   Perhaps a real-world use-case might help us understand.
->
-> b.
->
+b.
 
 
---------------010705060806080501050306
-Content-Type: text/plain;
- name="iptables"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="iptables"
+--------------enigB5BB8F524127F83293FF7CCA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-# Generated by iptables-save v1.3.5 on Thu Nov 24 15:19:59 2011
-*filter
-:INPUT DROP [200:29532]
-:FORWARD DROP [0:0]
-:OUTPUT ACCEPT [0:0]
--A INPUT -p tcp -m tcp --dport 22 -j ACCEPT 
--A INPUT -p tcp -m tcp --dport 9999 -j LOG --log-prefix "ACCEPT 9999::" 
--A INPUT -p tcp -m tcp --dport 9999 -j ACCEPT 
--A INPUT -p udp -m state --state ESTABLISHED -j ACCEPT 
--A INPUT -p tcp -m state --state ESTABLISHED -j LOG --log-prefix "conn established::" 
--A INPUT -p tcp -m state --state ESTABLISHED -j ACCEPT 
--A INPUT -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m state --state NEW -j LOG --log-prefix "DROP invalid::" 
--A INPUT -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m state --state NEW -j DROP 
--A INPUT -i eth0 -p tcp -m tcp --dport 9999 -m state --state NEW -m recent --set --name DEFAULT --rsource 
--A INPUT -i eth0 -p tcp -m tcp --dport 9999 -m state --state NEW -m recent --update --seconds 600 --hitcount 2 --name DEFAULT --rsource -j DROP 
--A FORWARD -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m state --state NEW -j DROP 
--A OUTPUT -p tcp -m tcp --sport 22 -j ACCEPT 
--A OUTPUT -p tcp -m tcp --sport 9999 -j ACCEPT 
--A OUTPUT -p udp -m state --state NEW,ESTABLISHED -j ACCEPT 
--A OUTPUT -p tcp -m state --state NEW,ESTABLISHED -j LOG --log-prefix "out conn established::" 
--A OUTPUT -p tcp -m state --state NEW,ESTABLISHED -j ACCEPT 
--A OUTPUT -p tcp -m tcp ! --tcp-flags FIN,SYN,RST,ACK SYN -m state --state NEW -j DROP 
-COMMIT
-# Completed on Thu Nov 24 15:19:59 2011
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
 
---------------010705060806080501050306--
+iEYEARECAAYFAk7OKskACgkQl3EQlGLyuXDx4gCg+y+PlskTJSqdGs0VFyljt1h4
+DSUAn3yzuXaxYPM7zWEF1vCRHP1SsfPD
+=XQWM
+-----END PGP SIGNATURE-----
+
+--------------enigB5BB8F524127F83293FF7CCA--
+
