@@ -1,65 +1,70 @@
-From: "Brian J. Murrell" <brian@interlinx.bc.ca>
-Subject: Re: How to drop an idle connection with iptables?
-Date: Thu, 24 Nov 2011 06:30:17 -0500
-Message-ID: <jal9sa$t42$1@dough.gmane.org>
-References: <4ECCCF70.1080701@gmail.com> <jaipdd$irr$1@dough.gmane.org> <4ECE125F.8090101@gmail.com>
+From: Steve Hill <steve@opendium.com>
+Subject: Conntrackd entries timing out
+Date: Thu, 24 Nov 2011 17:29:54 +0000
+Message-ID: <4ECE7F12.6080004@opendium.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigB5BB8F524127F83293FF7CCA"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4ECE125F.8090101@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigB5BB8F524127F83293FF7CCA
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
 
-On 11-11-24 04:46 AM, lu zhongda wrote:
-> Hi Brian:
+I'm configuring conntrackd to support an active/active pair of 
+firewalls.  I would like to keep them as synchronised as possible so am 
+setting it up with FTFW mode and "DisableExternalCache On".
 
-Hi Lu,
+I'm monitoring the connection tracker records on both hosts with 
+"conntrack -L".
 
->     At least, I hope iptables can confirm whether a connection is idle
-> or not by its rules, this is the key point of my problem.
+If I send a single ping to something from firewall A, I correctly see 
+the conntrack entry appear for that on both firewalls.  Since the I only 
+sent 1 ping, I see the timer on both ticking down from 30 seconds, after 
+which the entry disappears from both firewalls - this bit seems fine.
 
-Perhaps there is a module which can do this but perhaps not because what
-you are proposing will actually break protocols based on TCP.
+The problem I'm having is if I start a continuous ping from firewall A, 
+sending 1 packet per second, I again see the conntrack entry appear on 
+both firewalls as expected.  However, whilst firewall A shows the timer 
+sat at 30 seconds since it is regularly being reset by each packet, 
+firewall B's connection again ticks down and is then removed.  So now, 
+the conntrack tables are unsynchronised - firewall A is still seeing the 
+pings and keeps the conntrack entry alive whilst firewall B has removed 
+the entry.
 
->     I have used conntrack of iptables, it seems not work.
+If I turn the external cache on and monitor it with "conntrackd -e", it 
+appears to behave correctly - the entry stays in the external cache so 
+long as it it in firewall A's conntrack table.
 
-iptables' conntrack works exactly as it should.  When it sees a TCP
-session go to ESTABLISHED (i.e. TCP 3-way handshake is completed) it
-allows packets on that session and continues to do so until the session
-is destroyed with FIN and/or RST packets.
+The only way I've found of keeping these machines correctly synchronised 
+with the external cache disabled is to run "conntrackd -n" every few 
+seconds on both hosts to force a resynchronisation, which does appear to 
+reset the timers correctly.
 
-To start dropping/rejecting packets before that TCP session is shutdown
-will break the protocol that is running on the socket because it expects
-the session to still be open.
-
-You didn't answer my other question though, which is why do you think
-you need to be dropping idle, yet still ESTABLISHED sessions (and
-breaking higher level protocols when you do that)?
-
-b.
+So I'm hoping someone is able to answer these questions:
+1. Is this a bug or is there something I'm missing about the way it is 
+expected to work?
+2. Is running "conntrackd -n" on both machines every few seconds a safe 
+and feasible workaround, or am I asking for trouble?
 
 
---------------enigB5BB8F524127F83293FF7CCA
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+Thanks.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+-- 
 
-iEYEARECAAYFAk7OKskACgkQl3EQlGLyuXDx4gCg+y+PlskTJSqdGs0VFyljt1h4
-DSUAn3yzuXaxYPM7zWEF1vCRHP1SsfPD
-=XQWM
------END PGP SIGNATURE-----
+  - Steve Hill
+    Technical Director
+    Opendium Limited     http://www.opendium.com
 
---------------enigB5BB8F524127F83293FF7CCA--
+Direct contacts:
+    Instant messager: xmpp:steve@opendium.com
+    Email:            steve@opendium.com
+    Phone:            sip:steve@opendium.com
 
+Sales / enquiries contacts:
+    Email:            sales@opendium.com
+    Phone:            +44-844-9791439 / sip:sales@opendium.com
+
+Support contacts:
+    Email:            support@opendium.com
+    Phone:            +44-844-4844916 / sip:support@opendium.com
