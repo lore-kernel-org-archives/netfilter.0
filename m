@@ -1,20 +1,20 @@
 From: lu zhongda <luzhongda@gmail.com>
 Subject: Re: How to drop an idle connection with iptables?
-Date: Fri, 25 Nov 2011 11:40:05 +0800
-Message-ID: <4ECF0E15.30300@gmail.com>
+Date: Fri, 25 Nov 2011 11:41:41 +0800
+Message-ID: <4ECF0E75.7030000@gmail.com>
 References: <4ECCCF70.1080701@gmail.com> <jaipdd$irr$1@dough.gmane.org> <4ECE125F.8090101@gmail.com> <4ECEEC11.5010701@cn.fujitsu.com>
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="------------060108030809060204030802"
+ boundary="------------000402010505060304050805"
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=message-id:date:from:user-agent:mime-version:to:cc:subject
          :references:in-reply-to:content-type;
-        bh=RAQBvoO/LjmssfiBLAIzfaZFNeUl+eIAhhxzpNzlTy0=;
-        b=f34uL0rPJUgC08GD4b4DsaJ7lNWSmavFHPBMoNdSlYM7fKPtB+WLD5QDgFHCYWznKK
-         5SsLjhr9vrv1zgYqSPsESDEgSpmdqfi6FzGMojaagRGGmWirTbfDm6nJYJjOZz1VBx8q
-         rjDCRfkkmaRuyrz+7afd8FnLG0F1kNHi5eURA=
+        bh=JB4HOKAhlFgoceLvHjRDpM2fw49e3j8SDLf7+9yWaHo=;
+        b=WkFbmkizrCSZJaVsgz6B4NOdWGHR3rDs4uMCrAtSVDNbOta3FS/gQJ6HJKxnMgCoc5
+         EH0ZXgAEzsm9qfQ1NQm5mPExSKknPn7M0f6eREVGiFihm+MNOEz0zUf8tL73XkWKvdm7
+         7MUJ0c/tQEdkcbYxsMA/eW4wDYp53feM3FE68=
 In-Reply-To: <4ECEEC11.5010701@cn.fujitsu.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
@@ -22,7 +22,7 @@ To: Gao feng <gaofeng@cn.fujitsu.com>
 Cc: netfilter@vger.kernel.org, "Brian J. Murrell" <brian@interlinx.bc.ca>
 
 This is a multi-part message in MIME format.
---------------060108030809060204030802
+--------------000402010505060304050805
 Content-Type: text/plain; charset="utf-8"; format="flowed"
 Content-Transfer-Encoding: 8bit
 
@@ -75,6 +75,7 @@ found in /var/log/iptables.log
      Hope you can give me another hint and related rule set.
      Thanks for your support.
 
+
 On 2011-11-25 9:14, Gao feng wrote:
 > 于 2011年11月24日 17:46, lu zhongda 写道:
 >>      The timeout is defined in //proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_timeout_established/ , which is defaulted to 5 days, I change it to a short value for testing, such as 1 min.
@@ -86,7 +87,7 @@ On 2011-11-25 9:14, Gao feng wrote:
 >
 
 
---------------060108030809060204030802
+--------------000402010505060304050805
 Content-Type: text/plain;
  name="iptables"
 Content-Transfer-Encoding: base64
@@ -115,4 +116,4 @@ dGUgLS1zdGF0ZSBORVcsRVNUQUJMSVNIRUQgLWogQUNDRVBUIAotQSBPVVRQVVQgLXAgdGNw
 IC1tIHRjcCAhIC0tdGNwLWZsYWdzIEZJTixTWU4sUlNULEFDSyBTWU4gLW0gc3RhdGUgLS1z
 dGF0ZSBORVcgLWogRFJPUCAKQ09NTUlUCiMgQ29tcGxldGVkIG9uIFRodSBOb3YgMjQgMTU6
 MTk6NTkgMjAxMQo=
---------------060108030809060204030802--
+--------------000402010505060304050805--
