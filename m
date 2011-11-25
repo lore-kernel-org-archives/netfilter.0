@@ -1,25 +1,39 @@
-From: Gao feng <gaofeng@cn.fujitsu.com>
-Subject: Re: How to drop an idle connection with iptables?
-Date: Fri, 25 Nov 2011 13:39:04 +0800
-Message-ID: <4ECF29F8.502@cn.fujitsu.com>
-References: <4ECCCF70.1080701@gmail.com> <jaipdd$irr$1@dough.gmane.org> <4ECE125F.8090101@gmail.com> <4ECEEC11.5010701@cn.fujitsu.com> <4ECF0E75.7030000@gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset 6.10 released
+Date: Fri, 25 Nov 2011 09:49:32 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1111250946440.13101@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4ECF0E75.7030000@gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: lu zhongda <luzhongda@gmail.com>
-Cc: netfilter@vger.kernel.org, "Brian J. Murrell" <brian@interlinx.bc.ca>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-=E4=BA=8E 2011=E5=B9=B411=E6=9C=8825=E6=97=A5 11:41, lu zhongda =E5=86=99=
-=E9=81=93:
->     However other rule in /etc/sysconfig/iptables did logged file, lo=
-g found in /var/log/iptables.log
->     -A INPUT -p tcp -m tcp --dport 9999 -j LOG --log-prefix "ACCEPT 9=
-999::"
+Hi,
 
-hi zhongda.
-Because -m state is based on the ip_conntrack.when ip_conntrack destroy=
-,the -m state will never match.
+I'm happy to announce ipset 6.10, which brings some corrections and fixes:
+
+Userspace changes:
+ - Tests added to check ICMP/ICMPv6 type/code parsing
+ - ICMP/ICMPv6 type/code parser bug fixed (bug reported by Sabitov)
+ - ipset: fix lookup of tcp port names (Stephen Hemminger)
+ - Optionally disable building the kernel module (Mathieu Bridon)
+ - Make tidy complete
+
+Kernel part changes:
+ - Invert the logic to include version.h in ip_set_core.c
+ - Suppress false compile-time warnings about uninitialized variable ip_to
+
+You can download the source code of ipset from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : KFKI Research Institute for Particle and Nuclear Physics
+          H-1525 Budapest 114, POB. 49, Hungary
