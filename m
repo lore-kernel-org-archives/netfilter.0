@@ -1,62 +1,62 @@
-From: =?UTF-8?B?TWFyY2luIE1pcm9zxYJhdw==?= <marcin@mejor.pl>
-Subject: iptables -n doesn't display numbers in all cases for prot column
-Date: Fri, 25 Nov 2011 10:17:28 +0100
-Message-ID: <4ECF5D28.8080703@mejor.pl>
+From: "Brian J. Murrell" <brian@interlinx.bc.ca>
+Subject: Re: How to drop an idle connection with iptables?
+Date: Fri, 25 Nov 2011 06:16:32 -0500
+Message-ID: <janteh$3ui$1@dough.gmane.org>
+References: <4ECCCF70.1080701@gmail.com> <jaipdd$irr$1@dough.gmane.org> <4ECE125F.8090101@gmail.com> <jal9sa$t42$1@dough.gmane.org> <4ECF299D.9040005@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enigE611585B768FA6A83914A17E"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mejor.pl; s=cokolwiek;
-	h=Content-Transfer-Encoding:Content-Type:Subject:To:MIME-Version:From:Date:Message-ID; bh=VW9hGkBp0356qTgQpFjFH2WqJT68hnC1mmSp8GcbYus=;
-	b=IGqjsnydp56DWKTyqmFMdOwZ79ik8Jk71pRhHG8V8erDjTekPoj1dGJrvRhp2RLs71uaoBJQj8dPzo0EXgpdgu4NX54g4Y7n4P3gOHEldx/aQJ+fSOOUeO8tAUgWSWrv;
+In-Reply-To: <4ECF299D.9040005@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello!
-I'd like to ask you about such situation. When i display rules without 
-using "-n" i'm getting:
-# iptables -L -v
-Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
-  pkts bytes target     prot opt in     out     source 
-destination
-     0     0 ACCEPT     ipencap--  any    any     anywhere 
-anywhere
-     0     0 ACCEPT     ipv6 --  any    any     anywhere 
-anywhere
-     1    88 ACCEPT     icmp --  any    any     anywhere 
-anywhere
-    94 13850 ACCEPT     udp  --  any    any     anywhere 
-anywhere
-   801  632K ACCEPT     tcp  --  any    any     anywhere 
-anywhere
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enigE611585B768FA6A83914A17E
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-It's ok. When i add "-n" switch i'm getting:
-Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
-  pkts bytes target     prot opt in     out     source 
-destination
-     0     0 ACCEPT     4    --  *      *       0.0.0.0/0 
-0.0.0.0/0
-     0     0 ACCEPT     41   --  *      *       0.0.0.0/0 
-0.0.0.0/0
-     1    88 ACCEPT     icmp --  *      *       0.0.0.0/0 
-0.0.0.0/0
-   101 14402 ACCEPT     udp  --  *      *       0.0.0.0/0 
-0.0.0.0/0
-   905  651K ACCEPT     tcp  --  *      *       0.0.0.0/0 
-0.0.0.0/0
+On 11-11-25 12:37 AM, lu zhongda wrote:
+> On 2011-11-24 19:30, Brian J. Murrell wrote:
+>>
+>> You didn't answer my other question though, which is why do you think
+>> you need to be dropping idle, yet still ESTABLISHED sessions (and
+>> breaking higher level protocols when you do that)?
+> The need to drop idle connection comes from one technical support reque=
+st:
 
-As we can see protocols "ipencap","ipv6" are shown as number but 
-icmp/tcp/udp wasn't displayed as number of protocol.
-$ grep "tcp\|udp\|icmp" /etc/protocols
-icmp    1       ICMP            # internet control message protocol
-tcp     6       TCP             # transmission control protocol
-udp     17      UDP             # user datagram protocol
+Answering my question of "why do you want to do this" with "because
+somebody asked" does not really answer the question though.
 
-# iptables -V
-iptables v1.4.12.1
+There is an important reason for me to to ask and you to answer the
+question (i.e. with a real-world use-case) and that's because typically
+when somebody is proposing to do things that are "strange" or "not as
+intended" (and indeed which will result in other things breaking -- like
+TCP in this case) it's because they are trying to solve a problem with
+the wrong tool.
 
-My question is: why some protocols are always displayed as protocol name 
-even i use "-n" switch?
-Thanks for help.
-Marcin
+Can you please provide a real-world use-case as to why you'd want/need
+to stop (i.e. break) an open TCP session?
+
+Cheers,
+b.
+
+
+--------------enigE611585B768FA6A83914A17E
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAk7PeRAACgkQl3EQlGLyuXAZnwCgyAeOegd3Yq9/Qb7h9Tm8lL7q
+yMgAn07ALiNaewR/SZtrLmsAIWmYRZws
+=AAy5
+-----END PGP SIGNATURE-----
+
+--------------enigE611585B768FA6A83914A17E--
+
