@@ -1,62 +1,63 @@
-From: "Brian J. Murrell" <brian@interlinx.bc.ca>
-Subject: Re: How to drop an idle connection with iptables?
-Date: Fri, 25 Nov 2011 06:16:32 -0500
-Message-ID: <janteh$3ui$1@dough.gmane.org>
-References: <4ECCCF70.1080701@gmail.com> <jaipdd$irr$1@dough.gmane.org> <4ECE125F.8090101@gmail.com> <jal9sa$t42$1@dough.gmane.org> <4ECF299D.9040005@gmail.com>
+From: Andy Furniss <andyqos@ukfsn.org>
+Subject: Re: PortalShaper - details of scripts for a captive portal and traffic
+ shaper
+Date: Fri, 25 Nov 2011 12:58:48 +0000
+Message-ID: <4ECF9108.4030506@ukfsn.org>
+References: <1321999757.2382.2523.camel@andybev-desktop>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enigE611585B768FA6A83914A17E"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4ECF299D.9040005@gmail.com>
+In-Reply-To: <1321999757.2382.2523.camel@andybev-desktop>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Andrew Beverley <andy@andybev.com>
+Cc: netfilter@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enigE611585B768FA6A83914A17E
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Andrew Beverley wrote:
+> Hi all,
+>
+> I'm posting this for people's interest, in case it is of use to anybody.
+>
+> I have created a set of scripts (called PortalShaper) to do the
+> following:
 
-On 11-11-25 12:37 AM, lu zhongda wrote:
-> On 2011-11-24 19:30, Brian J. Murrell wrote:
->>
->> You didn't answer my other question though, which is why do you think
->> you need to be dropping idle, yet still ESTABLISHED sessions (and
->> breaking higher level protocols when you do that)?
-> The need to drop idle connection comes from one technical support reque=
-st:
+>    * Traffic shape the internet connection to optimise its speed
 
-Answering my question of "why do you want to do this" with "because
-somebody asked" does not really answer the question though.
+Just looking at this bit.
 
-There is an important reason for me to to ask and you to answer the
-question (i.e. with a real-world use-case) and that's because typically
-when somebody is proposing to do things that are "strange" or "not as
-intended" (and indeed which will result in other things breaking -- like
-TCP in this case) it's because they are trying to solve a problem with
-the wrong tool.
+Generally, I think doing Qos on low bandwidth lines is in need of 
+tweaking on a per case basis, depending on requirements and the usage 
+patterns of the users.
 
-Can you please provide a real-world use-case as to why you'd want/need
-to stop (i.e. break) an open TCP session?
+I've only ever played with my home dsl and go for game latency as top 
+prio, with any bulk traffic of whatever nature easily classified.
 
-Cheers,
-b.
+So the points below really apply just to my personal experience - for 
+other use the script looks fine and is as good as any. None are going to 
+be perfect without tweaking for individual cases and getting a lot of 
+users sharing low bandwidth dsl is never going to be nice.
 
+Random observations.
 
---------------enigE611585B768FA6A83914A17E
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+I've never used squid, but it looks like it is exempt from shaping.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+You could tweak things so you don't have to back off more than a few 
+kbit/s on upstream and it wouldn't fail if there were lots of small 
+packets. I can't say from personal use because I do it with patched TC, 
+but it is possible to specify atm and an overhead with htb and tc will 
+use the atm size of the packets.
+The reason I don't use it is that I shape for pppoa vc mux on an eth 
+interface and tc on eth sees packets as iplen + 14 so I would need a 
+negative overhead. For ppp tc sees ip length. It's tricky for a general 
+script, of course, because you need to know exactly the overhead to use 
+which is different for different ppps and shaping interfaces.
 
-iEYEARECAAYFAk7PeRAACgkQl3EQlGLyuXAZnwCgyAeOegd3Yq9/Qb7h9Tm8lL7q
-yMgAn07ALiNaewR/SZtrLmsAIWmYRZws
-=AAy5
------END PGP SIGNATURE-----
+On bulk btb classes I found it best for latency to set burst and cburst 
+to 10 - effectively off (can't remember why I didn't use 1 - I know 0 
+didn't work).
 
---------------enigE611585B768FA6A83914A17E--
+To get the best possible latency with htb it's best to allocate way more 
+bandwidth than the class needs and set big bursts, this is not so good 
+if your classification fails though.
 
