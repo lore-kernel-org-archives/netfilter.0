@@ -1,70 +1,29 @@
-From: Steve Hill <steve@opendium.com>
-Subject: Conntrackd entries timing out
-Date: Thu, 24 Nov 2011 17:29:54 +0000
-Message-ID: <4ECE7F12.6080004@opendium.com>
+From: Gao feng <gaofeng@cn.fujitsu.com>
+Subject: Re: How to drop an idle connection with iptables?
+Date: Fri, 25 Nov 2011 09:14:57 +0800
+Message-ID: <4ECEEC11.5010701@cn.fujitsu.com>
+References: <4ECCCF70.1080701@gmail.com> <jaipdd$irr$1@dough.gmane.org> <4ECE125F.8090101@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4ECE125F.8090101@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: lu zhongda <luzhongda@gmail.com>
+Cc: netfilter@vger.kernel.org, "Brian J. Murrell" <brian@interlinx.bc.ca>
 
+=E4=BA=8E 2011=E5=B9=B411=E6=9C=8824=E6=97=A5 17:46, lu zhongda =E5=86=99=
+=E9=81=93:
+>     The timeout is defined in //proc/sys/net/ipv4/netfilter/ip_conntr=
+ack_tcp_timeout_established/ , which is defaulted to 5 days, I change i=
+t to a short value for testing, such as 1 min.
+>     the linux shell command is: echo "60" > //proc/sys/net/ipv4/netfi=
+lter/ip_conntrack_tcp_timeout_established/
+>     The timeout for ESTABLISHED type item does works, and the item is=
+ removed after timeout, however the connection is not blocked or droppe=
+d at all.
 
-I'm configuring conntrackd to support an active/active pair of 
-firewalls.  I would like to keep them as synchronised as possible so am 
-setting it up with FTFW mode and "DisableExternalCache On".
+Hi zhongda.
 
-I'm monitoring the connection tracker records on both hosts with 
-"conntrack -L".
-
-If I send a single ping to something from firewall A, I correctly see 
-the conntrack entry appear for that on both firewalls.  Since the I only 
-sent 1 ping, I see the timer on both ticking down from 30 seconds, after 
-which the entry disappears from both firewalls - this bit seems fine.
-
-The problem I'm having is if I start a continuous ping from firewall A, 
-sending 1 packet per second, I again see the conntrack entry appear on 
-both firewalls as expected.  However, whilst firewall A shows the timer 
-sat at 30 seconds since it is regularly being reset by each packet, 
-firewall B's connection again ticks down and is then removed.  So now, 
-the conntrack tables are unsynchronised - firewall A is still seeing the 
-pings and keeps the conntrack entry alive whilst firewall B has removed 
-the entry.
-
-If I turn the external cache on and monitor it with "conntrackd -e", it 
-appears to behave correctly - the entry stays in the external cache so 
-long as it it in firewall A's conntrack table.
-
-The only way I've found of keeping these machines correctly synchronised 
-with the external cache disabled is to run "conntrackd -n" every few 
-seconds on both hosts to force a resynchronisation, which does appear to 
-reset the timers correctly.
-
-So I'm hoping someone is able to answer these questions:
-1. Is this a bug or is there something I'm missing about the way it is 
-expected to work?
-2. Is running "conntrackd -n" on both machines every few seconds a safe 
-and feasible workaround, or am I asking for trouble?
-
-
-Thanks.
-
--- 
-
-  - Steve Hill
-    Technical Director
-    Opendium Limited     http://www.opendium.com
-
-Direct contacts:
-    Instant messager: xmpp:steve@opendium.com
-    Email:            steve@opendium.com
-    Phone:            sip:steve@opendium.com
-
-Sales / enquiries contacts:
-    Email:            sales@opendium.com
-    Phone:            +44-844-9791439 / sip:sales@opendium.com
-
-Support contacts:
-    Email:            support@opendium.com
-    Phone:            +44-844-4844916 / sip:support@opendium.com
+How about echo 0 > /proc/sys/net/ipv4/netfilter/ip_conntrack_tcp_loose
