@@ -1,39 +1,62 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset 6.10 released
-Date: Fri, 25 Nov 2011 09:49:32 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1111250946440.13101@blackhole.kfki.hu>
+From: =?UTF-8?B?TWFyY2luIE1pcm9zxYJhdw==?= <marcin@mejor.pl>
+Subject: iptables -n doesn't display numbers in all cases for prot column
+Date: Fri, 25 Nov 2011 10:17:28 +0100
+Message-ID: <4ECF5D28.8080703@mejor.pl>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mejor.pl; s=cokolwiek;
+	h=Content-Transfer-Encoding:Content-Type:Subject:To:MIME-Version:From:Date:Message-ID; bh=VW9hGkBp0356qTgQpFjFH2WqJT68hnC1mmSp8GcbYus=;
+	b=IGqjsnydp56DWKTyqmFMdOwZ79ik8Jk71pRhHG8V8erDjTekPoj1dGJrvRhp2RLs71uaoBJQj8dPzo0EXgpdgu4NX54g4Y7n4P3gOHEldx/aQJ+fSOOUeO8tAUgWSWrv;
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hi,
+Hello!
+I'd like to ask you about such situation. When i display rules without 
+using "-n" i'm getting:
+# iptables -L -v
+Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+  pkts bytes target     prot opt in     out     source 
+destination
+     0     0 ACCEPT     ipencap--  any    any     anywhere 
+anywhere
+     0     0 ACCEPT     ipv6 --  any    any     anywhere 
+anywhere
+     1    88 ACCEPT     icmp --  any    any     anywhere 
+anywhere
+    94 13850 ACCEPT     udp  --  any    any     anywhere 
+anywhere
+   801  632K ACCEPT     tcp  --  any    any     anywhere 
+anywhere
 
-I'm happy to announce ipset 6.10, which brings some corrections and fixes:
+It's ok. When i add "-n" switch i'm getting:
+Chain INPUT (policy ACCEPT 0 packets, 0 bytes)
+  pkts bytes target     prot opt in     out     source 
+destination
+     0     0 ACCEPT     4    --  *      *       0.0.0.0/0 
+0.0.0.0/0
+     0     0 ACCEPT     41   --  *      *       0.0.0.0/0 
+0.0.0.0/0
+     1    88 ACCEPT     icmp --  *      *       0.0.0.0/0 
+0.0.0.0/0
+   101 14402 ACCEPT     udp  --  *      *       0.0.0.0/0 
+0.0.0.0/0
+   905  651K ACCEPT     tcp  --  *      *       0.0.0.0/0 
+0.0.0.0/0
 
-Userspace changes:
- - Tests added to check ICMP/ICMPv6 type/code parsing
- - ICMP/ICMPv6 type/code parser bug fixed (bug reported by Sabitov)
- - ipset: fix lookup of tcp port names (Stephen Hemminger)
- - Optionally disable building the kernel module (Mathieu Bridon)
- - Make tidy complete
+As we can see protocols "ipencap","ipv6" are shown as number but 
+icmp/tcp/udp wasn't displayed as number of protocol.
+$ grep "tcp\|udp\|icmp" /etc/protocols
+icmp    1       ICMP            # internet control message protocol
+tcp     6       TCP             # transmission control protocol
+udp     17      UDP             # user datagram protocol
 
-Kernel part changes:
- - Invert the logic to include version.h in ip_set_core.c
- - Suppress false compile-time warnings about uninitialized variable ip_to
+# iptables -V
+iptables v1.4.12.1
 
-You can download the source code of ipset from:
-        http://ipset.netfilter.org
-        ftp://ftp.netfilter.org/pub/ipset/
-        git://git.netfilter.org/ipset.git
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlec@mail.kfki.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : KFKI Research Institute for Particle and Nuclear Physics
-          H-1525 Budapest 114, POB. 49, Hungary
+My question is: why some protocols are always displayed as protocol name 
+even i use "-n" switch?
+Thanks for help.
+Marcin
