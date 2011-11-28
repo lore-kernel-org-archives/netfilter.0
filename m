@@ -1,38 +1,50 @@
-From: Amos Jeffries <squid3@treenet.co.nz>
-Subject: Re: TPROXY getting the remote/destination address via sockets API
-Date: Sun, 27 Nov 2011 16:56:29 +1300
-Message-ID: <4ED1B4ED.4090808@treenet.co.nz>
-References: <4ED1A034.9030802@gmail.com>
+From: "Greg Scott" <GregScott@Infrasupport.com>
+Subject: ebtables on a stick
+Date: Sun, 27 Nov 2011 20:53:47 -0600
+Message-ID: <925A849792280C4E80C5461017A4B8A2A04881@mail733.InfraSupportEtc.com>
+References: <925A849792280C4E80C5461017A4B8A2A04879@mail733.InfraSupportEtc.com> <925A849792280C4E80C5461017A4B8A2A0487A@mail733.InfraSupportEtc.com> <925A849792280C4E80C5461017A4B8A2A0487F@mail733.InfraSupportEtc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4ED1A034.9030802@gmail.com>
+Content-class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Brian <unixman83@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-On 27/11/2011 3:28 p.m., Brian wrote:
-> Using the latest TPROXY, how does one accurately get the 
-> destination/remote (and the source/localish) addresses of the 
-> transparent proxy connection?
-
-Very reliable. At least we (Squid proxy) have had no problems with the 
-kernel 2.6.39+ TPROXY. Just some screwups on our side of the implementation.
-
->
-> I would assume one address would be returned by the accept() call, 
-> which one, and how do I get the other?
-
-You assume correct. The other is available from getsockname() on the new FD.
-
-With TPROXY the IPs are reversed. That is; the IP which for normal 
-traffic would arrive on accept() appears instead on getsockname(), and 
-vice versa. So any software receiving TPROXY traffic is required to 
-isolate the listening port from normal traffic listening ports to avoid 
-problems interpreting the IPs.
-
-HTH
-AYJ
-
+SSBoYXZlIGEgc2l0dWF0aW9uIHRoYXQgbmVlZHMgdG8gcm91dGUgbW9zdGx5IGFuZCBicmlkZ2Ug
+b25seSBhIGxpdHRsZSBiaXQuwqAgDQoNCkkgaGF2ZSBhIHByaXZhdGUgaW50ZXJuYWwgTEFOLCAx
+OTIuMTY4LjEwLm5ubi7CoCBCdXQgb25lIGhvc3QgaW4gdGhlIGludGVybmFsIHNpZGUgbmVlZHMg
+YSByZWFsIHB1YmxpYyBJUCBBZGRyZXNzLCBjYWxsIGl0IDEuMi4xMTUuMTU3LsKgIEV2ZXJ5dGhp
+bmcgZXhjZXB0IHRoYXQgcHVibGljIElQIGhvc3QgbmVlZHMgdG8gcm91dGUuICBUaGUgcHVibGlj
+IGhvc3QgbmVlZHMgdG8gYnJpZGdlIHNvIGl0IGNhbiBpbnRlcmFjdCB3aXRoIHRoZSB3b3JsZC4g
+IEJ1dCBpdCBhbHNvIG5lZWRzIHRvIGludGVyYWN0IHdpdGggdGhlIGludGVybmFsIExBTi4gIA0K
+DQpJIGhhdmUgYSBMaW51eCBicm91dGVyIHNldCB1cCB3aXRoIGV0aDAgZmFjaW5nIHRoZSBJbnRl
+cm5ldCwgZXRoMSBmYWNpbmcgdGhlIExBTiBhcyBmb2xsb3dzOg0KDQppZmNvbmZpZyBldGgwIDEu
+Mi4xMTUuMTQ2IG1hc2sgMjU1LjI1NS4yNTUuMjQwDQppZmNvbmZpZyBldGgxIDE5Mi4xNjguMTAu
+MSBtYXNrIDI1NS4yNTUuMjU1LjANCmJyY3RsIGFkZGJyIGJyMA0KYnJjdGwgYWRkaWYgYnIwIGV0
+aDANCmJyY3RsIGFkZGlmIGJyMCBldGgxDQplYnRhYmxlcyAtdCBicm91dGUgLUEgQlJPVVRJTkcg
+LXAgSVB2NCAtLWlwLXNvdXJjZSAxLjIuMTE1LjE1NyAtaiBBQ0NFUFQNCmVidGFibGVzIC10IGJy
+b3V0ZSAtQSBCUk9VVElORyAtcCBJUHY0IC0taXAtZGVzdGluYXRpb24gMS4yLjExNS4xNTcgLWog
+QUNDRVBUDQplYnRhYmxlcyAtdCBicm91dGUgLUEgQlJPVVRJTkcgLXAgYXJwIC0tYXJwLWlwLXNy
+YyAxLjIuMTE1LjE1NyAtaiBBQ0NFUFQNCmVidGFibGVzIC10IGJyb3V0ZSAtQSBCUk9VVElORyAt
+cCBhcnAgLS1hcnAtaXAtZHN0IDEuMi4xMTUuMTU3IC1qIEFDQ0VQVA0KZWJ0YWJsZXMgLXQgYnJv
+dXRlIC1BIEJST1VUSU5HIC1qIHJlZGlyZWN0IC0tcmVkaXJlY3QtdGFyZ2V0IERST1ANCg0KDQpU
+aGlzIG1vc3RseSB3b3JrcywgZXhjZXB0IEkgYW0gaGF2aW5nIHRyb3VibGUgY29tbXVuaWNhdGlu
+ZyB3aXRoIGhvc3RzIGluIHRoZSBwcml2YXRlIExBTi4gwqBJIGNhbiBjb21tdW5pY2F0ZSBhbnl3
+aGVyZSBlbHNlIG9uIHRoZSBJbnRlcm5ldCwganVzdCBub3QgaW4gdGhlIHByaXZhdGUgTEFOLsKg
+IMKgQWZ0ZXIgc3R1ZHlpbmcgZWJ0YWJsZXMgZXhhbXBsZXMgYW5kIHRvbnMgb2YgdHJpYWwgYW5k
+IGVycm9yLCBJIHN0aWxsIGRvbuKAmXQgZ2V0IGl0LsKgIA0KDQpXaGVuIG15IHB1YmxpYyBJUCBo
+b3N0IHBpbmdzIHRoZSBpbnRlcm5hbCBMQU4sIHRoZSBpbnRlcm5hbCBMQU4gaG9zdCByZXBsaWVz
+LCBidXQgdGhlIHJlcGxpZXMgbmV2ZXIgZ2V0IHBhc3QgdGhlIGJyb3V0ZXIuwqAgV2F0Y2hpbmcg
+dGNwZHVtcCBmcm9tIHRoZSBmaXJld2FsbCwgSSBjYW4gc2VlIHRoZSBlY2hvIHJlcXVlc3QgY29t
+ZSBpbiBhbmQgZ28gb3V0IG9uIGJvdGggYnIwIGFuZCBldGgxIGFuZMKgSSBzZWUgdGhlIGVjaG8g
+cmVwbHkgY29tZSBiYWNrIG9uIGV0aDEuwqAgQnV0IHRoZW4gdGhlIHJlcGx5IGRpZXMgYW5kIEkg
+bmV2ZXIgc2VuZCBpdCBiYWNrIG91dCBldGgxIG92ZXIgdGhlIHdpcmUuIMKgU28gdGhlIGVjaG8g
+cmVxdWVzdCBnZXRzIHRocm91Z2gsIGJ1dCB0aGUgcmVwbHkgZGllcyBhdCB0aGUgYnJvdXRlci4g
+IEFuZCB3aGVuIGEgcHJpdmF0ZSBMQU4gaG9zdCBwaW5ncyB0aGUgcHVibGljIGhvc3QsIHRoZSBl
+Y2hvIHJlcXVlc3QgZGllcyBhdCB0aGUgYnJvdXRlci7CoMKgU28gcHVibGljIC0tPiBwcml2YXRl
+IHdvcmtzLCBidXQgcHJpdmF0ZSAtLT4gcHVibGljIGluY2x1ZGluZyBJQ01QIGVjaG8gcmVwbGll
+cyBkaWUgYXQgdGhlIGJyb3V0ZXIuwqAgDQoNCkkndmUgdHJpZWQgdmFyaW91cyBzb2x1dGlvbnMg
+c3VjaCBhcyAiaXAgcm91dGUgYWRkIDEuMi4xMTUuMTU3LzMyIHZpYSBicjAiIHdpdGhvdXQgc3Vj
+Y2Vzcy4gIFdoYXQgYW0gSSBtaXNzaW5nPw0KDQpUaGFua3MNCg0KLSBHcmVnIFNjb3R0DQo=
