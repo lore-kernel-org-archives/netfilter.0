@@ -1,50 +1,31 @@
-From: Eric Leblond <eric@regit.org>
-Subject: doc: Secure use of iptables and connection tracking helpers
-Date: Mon, 28 Nov 2011 18:32:56 +0100
-Message-ID: <1322501576.20587.22.camel@tiger.regit.org>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: doc: Secure use of iptables and connection tracking helpers
+Date: Mon, 28 Nov 2011 21:19:16 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1111282118430.27238@frira.zrqbmnf.qr>
+References: <1322501576.20587.22.camel@tiger.regit.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
-	boundary="=-t2oDdGfMnTCENe8udyp2"
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <1322501576.20587.22.camel@tiger.regit.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
-Cc: netfilter-devel@vger.kernel.org, pablo@netfilter.org, kaber@trash.net
-
-
---=-t2oDdGfMnTCENe8udyp2
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Hello,
-
-Pablo Neira Ayuso, Patrick McHardy and I have worked on a document we've
-called "Secure use of iptables and connection tracking helpers".
-
-This is a guide describing how to use securely the connection tracking
-helpers. This is a recommended reading for all Netfilter/Iptables users.
-
-HTML version: http://home.regit.org/netfilter-en/secure-use-of-helpers/
-PDF version:
-http://home.regit.org/wp-content/uploads/2011/11/helper-recommandation.pdf
-
-BR,
---=20
-Eric Leblond=20
-Blog: http://home.regit.org/
-
---=-t2oDdGfMnTCENe8udyp2
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: Eric Leblond <eric@regit.org>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, pablo@netfilter.org, kaber@trash.net
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+On Monday 2011-11-28 18:32, Eric Leblond wrote:
 
-iEYEABECAAYFAk7TxcgACgkQnxA7CdMWjzLIWQCeJ5DbcJdD9DRpibuMBihqVaao
-pWoAn2vTciVPomP00RxxS1GJ9NbZBdll
-=05Gv
------END PGP SIGNATURE-----
+>Hello,
+>
+>Pablo Neira Ayuso, Patrick McHardy and I have worked on a document we've
+>called "Secure use of iptables and connection tracking helpers".
+>
+>This is a guide describing how to use securely the connection tracking
+>helpers. This is a recommended reading for all Netfilter/Iptables users.
+>
+>HTML version: http://home.regit.org/netfilter-en/secure-use-of-helpers/
+>PDF version:
+>http://home.regit.org/wp-content/uploads/2011/11/helper-recommandation.pdf
 
---=-t2oDdGfMnTCENe8udyp2--
-
+Is this available in a text/{latex,plain,etc.} source available, so one 
+can submit changes against?
