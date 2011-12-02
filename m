@@ -1,25 +1,28 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: How to drop an idle connection with iptables?
-Date: Thu, 1 Dec 2011 11:39:37 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1112011139290.4264@frira.zrqbmnf.qr>
-References: <4ECCCF70.1080701@gmail.com> <jaipdd$irr$1@dough.gmane.org> <4ECE125F.8090101@gmail.com> <jal9sa$t42$1@dough.gmane.org> <4ECF299D.9040005@gmail.com> <janteh$3ui$1@dough.gmane.org> <4ECF9C17.80804@gmail.com> <4ECFA41F.50105@oldum.net>
- <4ED0CE43.2060505@gmail.com> <CA+4D1sfSu77cv_b5R0R_SULDpGX-9i70AuxBguAqOcrN1EpWiw@mail.gmail.com>
+From: Ajith Adapa <adapa.ajith@gmail.com>
+Subject: Regarding updating netfilter rules from kernel space
+Date: Fri, 2 Dec 2011 09:45:10 +0530
+Message-ID: <CADAe=+KR0vsg8kULz3EuDWQVwZ+ojhAhOyaMV8bARBSMQ-Jhug@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CA+4D1sfSu77cv_b5R0R_SULDpGX-9i70AuxBguAqOcrN1EpWiw@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:from:date:message-id:subject:to:content-type;
+        bh=brUAyl3z84uea5TzbfJWQ/Qo1sSqTCgRnFqaq6FhmGQ=;
+        b=nE4AWYrCrtjAKFjdQoERTHn6Rh2RpxFPLj1zmKVGJSzZtuPTC2413pViCUJ95NwDC4
+         CIsx6i4lFIIyBVl4RCnLwNOL4iR1S7oTS5QVNFuXMVmFDRpjTnLxj55G4FbY5ixRQqL1
+         tAwCKGJcz6LnHPmDvwJ+HLVKtkuEmaJTpocxc=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Anatoly Muliarski <x86ever@gmail.com>
-Cc: lu zhongda <luzhongda@gmail.com>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Thursday 2011-12-01 11:22, Anatoly Muliarski wrote:
+Hi,
 
->Hi Lu,
->
->I suggest trying to drop invalid packets:
->iptables -I INPUT -m state --state INVALID -j DROP
->iptables -I OUTPUT -m state --state INVALID -j DROP
+I want to update "RULES" in netfilter from a kernel module similar to
+iptables doing the same update from user space.
 
-Or better yet, -m conntrack --ctstate INVALID.
+Is there any references or docs to above scenario which can help me out ?
+
+Regards,
+Ajith
