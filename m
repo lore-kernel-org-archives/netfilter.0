@@ -1,28 +1,44 @@
-From: Ajith Adapa <adapa.ajith@gmail.com>
-Subject: Regarding updating netfilter rules from kernel space
-Date: Fri, 2 Dec 2011 09:45:10 +0530
-Message-ID: <CADAe=+KR0vsg8kULz3EuDWQVwZ+ojhAhOyaMV8bARBSMQ-Jhug@mail.gmail.com>
+From: "Nikolay S." <nowhere@hakkenden.ath.cx>
+Subject: Re: doc: Secure use of iptables and connection tracking helpers
+Date: Sat, 03 Dec 2011 14:06:09 +0400
+Message-ID: <1322906769.8042.4.camel@hakkenden.homenet>
+References: <1322501576.20587.22.camel@tiger.regit.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:from:date:message-id:subject:to:content-type;
-        bh=brUAyl3z84uea5TzbfJWQ/Qo1sSqTCgRnFqaq6FhmGQ=;
-        b=nE4AWYrCrtjAKFjdQoERTHn6Rh2RpxFPLj1zmKVGJSzZtuPTC2413pViCUJ95NwDC4
-         CIsx6i4lFIIyBVl4RCnLwNOL4iR1S7oTS5QVNFuXMVmFDRpjTnLxj55G4FbY5ixRQqL1
-         tAwCKGJcz6LnHPmDvwJ+HLVKtkuEmaJTpocxc=
+In-Reply-To: <1322501576.20587.22.camel@tiger.regit.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: Eric Leblond <eric@regit.org>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, pablo@netfilter.org, kaber@trash.net
 
-Hi,
+=D0=92 =D0=9F=D0=BD., 28/11/2011 =D0=B2 18:32 +0100, Eric Leblond =D0=BF=
+=D0=B8=D1=88=D0=B5=D1=82:
+> Hello,
+>=20
+> Pablo Neira Ayuso, Patrick McHardy and I have worked on a document we=
+'ve
+> called "Secure use of iptables and connection tracking helpers".
+>=20
+> This is a guide describing how to use securely the connection trackin=
+g
+> helpers. This is a recommended reading for all Netfilter/Iptables use=
+rs.
+>=20
+> HTML version: http://home.regit.org/netfilter-en/secure-use-of-helper=
+s/
+> PDF version:
+> http://home.regit.org/wp-content/uploads/2011/11/helper-recommandatio=
+n.pdf
+>=20
+> BR,
 
-I want to update "RULES" in netfilter from a kernel module similar to
-iptables doing the same update from user space.
+There is one thing in "Using the CT target to refine security" section.
+If we use the CT target and pass '0' as ports to nf_conntrack_ftp as
+advised in the next section, the helper name would be "ftp-0", not
+"ftp". I know, that helper module naming is described somwhere, but wha=
+t
+if we could mention it here also?
 
-Is there any references or docs to above scenario which can help me out ?
 
-Regards,
-Ajith
