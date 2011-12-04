@@ -1,43 +1,32 @@
-From: =?utf-8?B?TMOpbyBDYXZhaWxsw6k=?= <chiron@via.ecp.fr>
-Subject: [iptables] Implement huge amount of iptables make system crash
-Date: Sun, 4 Dec 2011 14:34:20 +0100
-Message-ID: <20111204133420.GC12769@via.ecp.fr>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: doc: Secure use of iptables and connection tracking helpers
+Date: Sun, 4 Dec 2011 17:18:04 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1112041717010.30677@frira.zrqbmnf.qr>
+References: <1322501576.20587.22.camel@tiger.regit.org>     <1322906769.8042.4.camel@hakkenden.homenet>    <1322911416.603.2.camel@ice-age.regit.org>    <4EDA1BE9.4060703@googlemail.com>   <1322917503.2568.2.camel@ice-age.regit.org>   <4EDA2715.7030006@googlemail.com>
+  <1322919966.2568.5.camel@ice-age.regit.org>  <4EDA332F.2010409@googlemail.com> <1322996166.2568.9.camel@ice-age.regit.org> <4EDB62D0.3070404@googlemail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <4EDB62D0.3070404@googlemail.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mr Dash Four <mr.dash.four@googlemail.com>
+Cc: Eric Leblond <eric@regit.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
 
-Hello everyone,
+On Sunday 2011-12-04 13:08, Mr Dash Four wrote:
 
-I recently tested a new environment to account some traffic on my
-network with some iptables rules
+>
+>> Thanks a lot for all these improvements, they almost all have been used
+>> for the new version of the document. You've diserve to be on the author
+>> list, but using Mr Dash Four as name is a little strange. Any other
+>> suggestions ;)
+>>  
+> Well, I have to tell my life story if you want to understand what's behind
+> 'Mr-4' and somehow I don't think I will be doing that. If you really need to
+> place me in the list of authors, just put me simply as 'Mr-4' (or Mr Dash Four
+> - your choice) - that will suffice, thank you.
 
-1) I have got 2 rules (one for in and one for out stream) per IP I want
-to account. Since I account some contiguous adresses I wondered if a
-binary tree starting with the first IP of my /19 and then chaining
-through different tables to reach a single IP leaf will result in a
-logarithmic complexity rather than linear=E2=80=A6
-So far I am adding the whole set of rules with a perl script using
-libiptc to commit only once the rules to netfilter.
-
-
-2) These ~62k rules are not really significant for the load of my
-firewall. But unfortunately, I had sometimes in my tests to manage some=
- big=20
-failures, where an iptables command (-Z, -A or -L) is stuck on the syst=
-em=20
-and then one of my cores is used at 100% and the load increases, and ge=
-nerally=20
-I get this kernel alert :
-http://pastebin.com/F1DL7ZZT
-
-Any advice, or explanation will be great for my new installation !
-
-Thanks,
-
---=20
-L=C3=A9o Cavaill=C3=A9
+"Suggestion" usually means the striving to use real-world names, as 
+are mandated in other places, e.g. kernel's DCO (Developer's 
+Certificate of Origin).
