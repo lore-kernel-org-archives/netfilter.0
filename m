@@ -1,53 +1,48 @@
-From: Jan Engelhardt <jengelh@medozas.de>
+From: Leo Cavaille <chiron@via.ecp.fr>
 Subject: Re: [iptables] Implement huge amount of iptables make system crash
-Date: Sun, 4 Dec 2011 22:09:07 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1112042207270.5627@frira.zrqbmnf.qr>
+Date: Mon, 5 Dec 2011 01:07:58 +0100
+Message-ID: <20111205000758.GA25556@via.ecp.fr>
 References: <20111204133420.GC12769@via.ecp.fr>
+ <alpine.LNX.2.01.1112042207270.5627@frira.zrqbmnf.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20111204133420.GC12769@via.ecp.fr>
+Content-Disposition: inline
+In-Reply-To: <alpine.LNX.2.01.1112042207270.5627@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="utf-8"
-To: =?UTF-8?Q?L=C3=A9o_Cavaill=C3=A9?= <chiron@via.ecp.fr>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Jan Engelhardt <jengelh@medozas.de>
 Cc: netfilter@vger.kernel.org
 
-On Sunday 2011-12-04 14:34, L=C3=A9o Cavaill=C3=A9 wrote:
-
->Hello everyone,
->
->I recently tested a new environment to account some traffic on my
->network with some iptables rules
->
->1) I have got 2 rules (one for in and one for out stream) per IP I wan=
-t
->to account. Since I account some contiguous adresses I wondered if a
->binary tree starting with the first IP of my /19 and then chaining
->through different tables to reach a single IP leaf will result in a
->logarithmic complexity rather than linear=E2=80=A6
-
-Yes, Jesper Brouer wrote some Perl code that takes care of automaticall=
-y=20
-producing a fanned tree like that.
-
->So far I am adding the whole set of rules with a perl script using
->libiptc to commit only once the rules to netfilter.
->
->
->2) These ~62k rules are not really significant for the load of my
->firewall. But unfortunately, I had sometimes in my tests to manage som=
-e big=20
->failures, where an iptables command (-Z, -A or -L) is stuck on the sys=
-tem=20
->and then one of my cores is used at 100% and the load increases, and g=
-enerally=20
->I get this kernel alert :
->http://pastebin.com/F1DL7ZZT
-
-Keep in mind that the ruleset is replaced for each HW thread and thus=20
-puts big requirements on memory available; as such though, I would have=
+Le Sun, Dec 04, 2011 at 10:09:07PM +0100, Jan Engelhardt a =C3=A9crit :
+> >2) These ~62k rules are not really significant for the load of my
+> >firewall. But unfortunately, I had sometimes in my tests to manage s=
+ome big=20
+> >failures, where an iptables command (-Z, -A or -L) is stuck on the s=
+ystem=20
+> >and then one of my cores is used at 100% and the load increases, and=
+ generally=20
+> >I get this kernel alert :
+> >http://pastebin.com/F1DL7ZZT
+>=20
+> Keep in mind that the ruleset is replaced for each HW thread and thus=
 =20
-expected an OOM message rather than a Unable To Handle Kernel Paging=20
-Request.
+> puts big requirements on memory available; as such though, I would ha=
+ve=20
+> expected an OOM message rather than a Unable To Handle Kernel Paging=20
+> Request.
 
+I had the chance to see a 'top' running when crashing and the memory (I
+got plenty =3D16GB) was only used about 1/4.
+But the CPUs are used at full capacity ! Do you know if it is SW or HW
+issue ?
+
+It could be a coincidence but my clock is running crazy. I have got som=
+e
+huge offsets recently and I am trying to solve this other issue right
+now. (AFAIK there is no reason it could be link to the iptables kernel
+paging request)=20
+
+--=20
+Leo Cavaille
