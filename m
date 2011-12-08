@@ -1,124 +1,50 @@
-From: "Nikolay S." <nowhere@hakkenden.ath.cx>
-Subject: Re: Sending ICMP echo request out
-Date: Thu, 08 Dec 2011 23:59:04 +0400
-Message-ID: <1323374344.5818.1.camel@hakkenden.homenet>
-References: <CAGZFCEEux4TBE+JAqzx9CDJ1HGdNXnqQBHBxhJ8TXEQh3Zq7_w@mail.gmail.com>
-	 <CAHGPgw1bL7XF6Ef29N_YQ-dAW3RYQe7j4-2zuWhFXQddW+Yg_g@mail.gmail.com>
+From: "U.Mutlu" <for-gmane@mutluit.com>
+Subject: [nfqueue] nfqueue in virtualized environment (ie. on a VPS)
+Date: Thu, 08 Dec 2011 21:09:49 +0100
+Message-ID: <jbr5is$u2g$1@dough.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-newbie-owner@vger.kernel.org>
-In-Reply-To: <CAHGPgw1bL7XF6Ef29N_YQ-dAW3RYQe7j4-2zuWhFXQddW+Yg_g@mail.gmail.com>
-Sender: linux-newbie-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: anil dahiya <anildahiya80@gmail.com>
-Cc: linux-newbie <linux-newbie@vger.kernel.org>, Netfilter mailing list <netfilter@vger.kernel.org>, linux-net@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-=D0=92 =D0=9F=D1=82., 09/12/2011 =D0=B2 00:00 +0530, anil dahiya =D0=BF=
-=D0=B8=D1=88=D0=B5=D1=82:
-> Hi ,
->=20
-> I have following setup with routing table as shown below:
->=20
-> +-----------------------+
-> |    System-1      |
-> |     "client"         |
-> |------------------------|
-> |  192.168.11.5   |
-> +----------------------+
->        |
->        |
-> +------+-----+
-> |   Switch   +----------------------+
-> +------+-----+                        |
->        |                                 |
->        |                       +-------------------------+
->        |                        |  192.168.11.1      |
->        |                        |---------------------------|
->        |                        |     Router            |
->        |                        |-------------------------- |
->        |                        |   192.168.12.1     |
->        |                       +--------------------------+
->        |                                    |
->        |                                    |
-> +------------------------+                |
-> |  192.168.11.6      |                |
-> |--------------------------|                |
-> |   System-2        |                |
-> |--------------------------|                |
-> |   192.168.12.6    |                |
-> |                          |----------------+
-> +------------------------+
->=20
-> Routing table details of setup
-> ------------------------------------------
-> System-1
-> -----
-> $route -n
-> Kernel IP routing table
-> Destination     Gateway         Genmask         Flags Metric Ref    U=
-se Iface
-> 192.168.11.0    0.0.0.0         255.255.255.0   U     1      0       =
- 0 eth1
-> 0.0.0.0         192.168.11.1    0.0.0.0         UG    0      0       =
- 0 eth1
->=20
->=20
-> Router
-> -----------
-> $route -n
-> Kernel IP routing table
-> Destination     Gateway         Genmask         Flags Metric Ref    U=
-se Iface
-> 192.168.12.0    0.0.0.0         255.255.255.0   U     0      0       =
- 0 eth1
-> 192.168.11.0    0.0.0.0         255.255.255.0   U     0      0       =
- 0 eth0
->=20
->=20
-> System-2
-> ------
-> $route -n
-> Kernel IP routing table
-> Destination     Gateway         Genmask         Flags Metric Ref    U=
-se Iface
-> 192.168.12.0    0.0.0.0         255.255.255.0   U     0      0       =
- 0 eth1
-> 192.168.11.0    0.0.0.0         255.255.255.0   U     0      0       =
- 0 eth0
-> 0.0.0.0         192.168.12.1    0.0.0.0         UG    0      0       =
- 0 eth1
->=20
->=20
-> When I do ping from system-1 192.168.11.5 to system-2 192.168.12.6 ,
-> ping echo packet is reaching on system-2 through NIC 192.168.12.6 but
-> system is not sending any response to 192.168.11.5 using either of NI=
-C
-> i.e 192.168.11.6 or 192.168.12.6 ? Why this is happening ? Can you
-> help me ?
->=20
-> I have observed same type of symtoms when I do SSH from 192.168.11.5
-> to 192.168.12.6
->=20
-> FYI,
-> ip_forwarding is enable on router and iptables are no configured on
-> any of system .
+I need to use, in a virtual environment (VPS), an app
+that makes use of libnetfilter_queue (ie. the NFQUEUE target of iptables).
+Running the same app on the host machine works fine,
+but I need it to run also on VPSes.
 
-I think, reverse path filtering is the problem here.
+Is nfqueue supposed to work in such virtual environments?
+(IMO since iptables works fine on a VPS, then I think nfqueue should do too, isn't it?)
 
->=20
-> Thanks,
-> Anil
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I wonder why it's not working on my setup.
+Could someone please give me some hints & tips for diagnosing and solving this problem?
+It would be much helpful if someone who has it working simply confirm that it works.
+
+My environment: debian wheezy using openvz kernel from the debian repo:
+# uname -a
+Linux s7 2.6.32-5-openvz-amd64 #1 SMP Fri Sep 9 21:03:29 UTC 2011 x86_64 GNU/Linux
+
+# iptables --version
+iptables v1.4.12
+
+Libs installed:
+# dpkg -l | grep nfnet
+    libnfnetlink-dev        1.0.0-1    Development files for libnfnetlink0
+    libnfnetlink0           1.0.0-1    Netfilter netlink library
+# dpkg -l | grep queue
+    libnetfilter-queue-dev  0.0.17-1   Development files for libnetfilter-queue1
+    libnetfilter-queue1     0.0.17-1   Netfilter netlink-queue library
+
+NFQUEUE definition in iptables script:
+  iptables -A INPUT -p all -j NFQUEUE --queue-num 4712
+
+App output:
+   opening library handle
+   binding nfnetlink_queue as nf_queue handler for AF_INET
+   error during nfq_bind_pf()
 
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-newbie"=
- in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Please read the FAQ at http://www.linux-learn.org/faqs
+Thx
+
