@@ -1,50 +1,92 @@
-From: "U.Mutlu" <for-gmane@mutluit.com>
-Subject: [nfqueue] nfqueue in virtualized environment (ie. on a VPS)
-Date: Thu, 08 Dec 2011 21:09:49 +0100
-Message-ID: <jbr5is$u2g$1@dough.gmane.org>
+From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
+Subject: Re: Sending ICMP echo request out
+Date: Thu, 8 Dec 2011 19:27:43 -0200
+Message-ID: <CAMTjHrwBgz_m4zPdvsPTBw84at=47LfoLAkw8yF+FBmk91nspQ@mail.gmail.com>
+References: <CAGZFCEEux4TBE+JAqzx9CDJ1HGdNXnqQBHBxhJ8TXEQh3Zq7_w@mail.gmail.com>
+	<CAHGPgw1bL7XF6Ef29N_YQ-dAW3RYQe7j4-2zuWhFXQddW+Yg_g@mail.gmail.com>
+	<1323374344.5818.1.camel@hakkenden.homenet>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <1323374344.5818.1.camel@hakkenden.homenet>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: "Nikolay S." <nowhere@hakkenden.ath.cx>
+Cc: anil dahiya <anildahiya80@gmail.com>, linux-newbie <linux-newbie@vger.kernel.org>, Netfilter mailing list <netfilter@vger.kernel.org>, linux-net@vger.kernel.org
 
-I need to use, in a virtual environment (VPS), an app
-that makes use of libnetfilter_queue (ie. the NFQUEUE target of iptables).
-Running the same app on the host machine works fine,
-but I need it to run also on VPSes.
-
-Is nfqueue supposed to work in such virtual environments?
-(IMO since iptables works fine on a VPS, then I think nfqueue should do too, isn't it?)
-
-I wonder why it's not working on my setup.
-Could someone please give me some hints & tips for diagnosing and solving this problem?
-It would be much helpful if someone who has it working simply confirm that it works.
-
-My environment: debian wheezy using openvz kernel from the debian repo:
-# uname -a
-Linux s7 2.6.32-5-openvz-amd64 #1 SMP Fri Sep 9 21:03:29 UTC 2011 x86_64 GNU/Linux
-
-# iptables --version
-iptables v1.4.12
-
-Libs installed:
-# dpkg -l | grep nfnet
-    libnfnetlink-dev        1.0.0-1    Development files for libnfnetlink0
-    libnfnetlink0           1.0.0-1    Netfilter netlink library
-# dpkg -l | grep queue
-    libnetfilter-queue-dev  0.0.17-1   Development files for libnetfilter-queue1
-    libnetfilter-queue1     0.0.17-1   Netfilter netlink-queue library
-
-NFQUEUE definition in iptables script:
-  iptables -A INPUT -p all -j NFQUEUE --queue-num 4712
-
-App output:
-   opening library handle
-   binding nfnetlink_queue as nf_queue handler for AF_INET
-   error during nfq_bind_pf()
-
-
-Thx
-
+aGksIGlmIGFsbCBpdCdzIHJpZ2h0IG9uIHJvdXRlci4gaXQncyBwb3NzaWJsZSB0aGF0IHRoZXJl
+IGFyZSB2bGFucwpzZXR0aW5nIG9uIHN3aXRjaCBhbmQgdGhlIHBvcnQgU3lzdGVtLTEgYW5kIFN5
+c3RlbS0yIGFyZSBpbiBkaWZmcmVudAp2bGFucy4KCnNvIEkgYWR2aXNhYmxlIHlvdSBjaGVjayB0
+aGUgc3dpdGNoIHBvcnRzIGNvbmZpZ3VyYXRpb25zIGFzIHdlbGwgYXMgaWYKdGhlcmUgaXMgYW55
+IGZpbHRlciBpcHRhYmxlcyBydWxlLgoKCgoKCgoKCgpFbSA4IGRlIGRlemVtYnJvIGRlIDIwMTEg
+MTc6NTksIE5pa29sYXkgUy4gPG5vd2hlcmVAaGFra2VuZGVuLmF0aC5jeD4gZXNjcmV2ZXU6Cj4g
+0JIg0J/Rgi4sIDA5LzEyLzIwMTEg0LIgMDA6MDAgKzA1MzAsIGFuaWwgZGFoaXlhINC/0LjRiNC1
+0YI6Cj4+IEhpICwKPj4KPj4gSSBoYXZlIGZvbGxvd2luZyBzZXR1cCB3aXRoIHJvdXRpbmcgdGFi
+bGUgYXMgc2hvd24gYmVsb3c6Cj4+Cj4+ICstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSsKPj4gfCDC
+oCDCoFN5c3RlbS0xIMKgIMKgIMKgfAo+PiB8IMKgIMKgICJjbGllbnQiIMKgIMKgIMKgIMKgIHwK
+Pj4gfC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLXwKPj4gfCDCoDE5Mi4xNjguMTEuNSDCoCB8Cj4+
+ICstLS0tLS0tLS0tLS0tLS0tLS0tLS0tKwo+PiDCoCDCoCDCoCDCoHwKPj4gwqAgwqAgwqAgwqB8
+Cj4+ICstLS0tLS0rLS0tLS0rCj4+IHwgwqAgU3dpdGNoIMKgICstLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tKwo+PiArLS0tLS0tKy0tLS0tKyDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oHwKPj4gwqAgwqAgwqAgwqB8IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgIHwKPj4gwqAgwqAgwqAgwqB8IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgICstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKwo+PiDCoCDCoCDCoCDCoHwgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB8IMKgMTkyLjE2OC4xMS4xIMKgIMKgIMKgfAo+PiDC
+oCDCoCDCoCDCoHwgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB8LS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tfAo+PiDCoCDCoCDCoCDCoHwgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqAgwqB8IMKgIMKgIFJvdXRlciDCoCDCoCDCoCDCoCDCoCDCoHwKPj4gwqAgwqAg
+wqAgwqB8IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgfC0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tIHwKPj4gwqAgwqAgwqAgwqB8IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgIMKgIMKgfCDCoCAxOTIuMTY4LjEyLjEgwqAgwqAgfAo+PiDCoCDCoCDCoCDCoHwgwqAgwqAg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKwo+
+PiDCoCDCoCDCoCDCoHwgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAgwqAg
+wqAgwqAgwqAgwqB8Cj4+IMKgIMKgIMKgIMKgfCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoCDCoCDCoHwKPj4gKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSsg
+wqAgwqAgwqAgwqAgwqAgwqAgwqAgwqB8Cj4+IHwgwqAxOTIuMTY4LjExLjYgwqAgwqAgwqB8IMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgfAo+PiB8LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS18IMKg
+IMKgIMKgIMKgIMKgIMKgIMKgIMKgfAo+PiB8IMKgIFN5c3RlbS0yIMKgIMKgIMKgIMKgfCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoHwKPj4gfC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfCDCoCDC
+oCDCoCDCoCDCoCDCoCDCoCDCoHwKPj4gfCDCoCAxOTIuMTY4LjEyLjYgwqAgwqB8IMKgIMKgIMKg
+IMKgIMKgIMKgIMKgIMKgfAo+PiB8IMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKgIMKg
+IMKgfC0tLS0tLS0tLS0tLS0tLS0rCj4+ICstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0rCj4+Cj4+
+IFJvdXRpbmcgdGFibGUgZGV0YWlscyBvZiBzZXR1cAo+PiAtLS0tLS0tLS0tLS0tLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0KPj4gU3lzdGVtLTEKPj4gLS0tLS0KPj4gJHJvdXRlIC1uCj4+
+IEtlcm5lbCBJUCByb3V0aW5nIHRhYmxlCj4+IERlc3RpbmF0aW9uIMKgIMKgIEdhdGV3YXkgwqAg
+wqAgwqAgwqAgR2VubWFzayDCoCDCoCDCoCDCoCBGbGFncyBNZXRyaWMgUmVmIMKgIMKgVXNlIElm
+YWNlCj4+IDE5Mi4xNjguMTEuMCDCoCDCoDAuMC4wLjAgwqAgwqAgwqAgwqAgMjU1LjI1NS4yNTUu
+MCDCoCBVIMKgIMKgIDEgwqAgwqAgwqAwIMKgIMKgIMKgIMKgMCBldGgxCj4+IDAuMC4wLjAgwqAg
+wqAgwqAgwqAgMTkyLjE2OC4xMS4xIMKgIMKgMC4wLjAuMCDCoCDCoCDCoCDCoCBVRyDCoCDCoDAg
+wqAgwqAgwqAwIMKgIMKgIMKgIMKgMCBldGgxCj4+Cj4+Cj4+IFJvdXRlcgo+PiAtLS0tLS0tLS0t
+LQo+PiAkcm91dGUgLW4KPj4gS2VybmVsIElQIHJvdXRpbmcgdGFibGUKPj4gRGVzdGluYXRpb24g
+wqAgwqAgR2F0ZXdheSDCoCDCoCDCoCDCoCBHZW5tYXNrIMKgIMKgIMKgIMKgIEZsYWdzIE1ldHJp
+YyBSZWYgwqAgwqBVc2UgSWZhY2UKPj4gMTkyLjE2OC4xMi4wIMKgIMKgMC4wLjAuMCDCoCDCoCDC
+oCDCoCAyNTUuMjU1LjI1NS4wIMKgIFUgwqAgwqAgMCDCoCDCoCDCoDAgwqAgwqAgwqAgwqAwIGV0
+aDEKPj4gMTkyLjE2OC4xMS4wIMKgIMKgMC4wLjAuMCDCoCDCoCDCoCDCoCAyNTUuMjU1LjI1NS4w
+IMKgIFUgwqAgwqAgMCDCoCDCoCDCoDAgwqAgwqAgwqAgwqAwIGV0aDAKPj4KPj4KPj4gU3lzdGVt
+LTIKPj4gLS0tLS0tCj4+ICRyb3V0ZSAtbgo+PiBLZXJuZWwgSVAgcm91dGluZyB0YWJsZQo+PiBE
+ZXN0aW5hdGlvbiDCoCDCoCBHYXRld2F5IMKgIMKgIMKgIMKgIEdlbm1hc2sgwqAgwqAgwqAgwqAg
+RmxhZ3MgTWV0cmljIFJlZiDCoCDCoFVzZSBJZmFjZQo+PiAxOTIuMTY4LjEyLjAgwqAgwqAwLjAu
+MC4wIMKgIMKgIMKgIMKgIDI1NS4yNTUuMjU1LjAgwqAgVSDCoCDCoCAwIMKgIMKgIMKgMCDCoCDC
+oCDCoCDCoDAgZXRoMQo+PiAxOTIuMTY4LjExLjAgwqAgwqAwLjAuMC4wIMKgIMKgIMKgIMKgIDI1
+NS4yNTUuMjU1LjAgwqAgVSDCoCDCoCAwIMKgIMKgIMKgMCDCoCDCoCDCoCDCoDAgZXRoMAo+PiAw
+LjAuMC4wIMKgIMKgIMKgIMKgIDE5Mi4xNjguMTIuMSDCoCDCoDAuMC4wLjAgwqAgwqAgwqAgwqAg
+VUcgwqAgwqAwIMKgIMKgIMKgMCDCoCDCoCDCoCDCoDAgZXRoMQo+Pgo+Pgo+PiBXaGVuIEkgZG8g
+cGluZyBmcm9tIHN5c3RlbS0xIDE5Mi4xNjguMTEuNSB0byBzeXN0ZW0tMiAxOTIuMTY4LjEyLjYg
+LAo+PiBwaW5nIGVjaG8gcGFja2V0IGlzIHJlYWNoaW5nIG9uIHN5c3RlbS0yIHRocm91Z2ggTklD
+IDE5Mi4xNjguMTIuNiBidXQKPj4gc3lzdGVtIGlzIG5vdCBzZW5kaW5nIGFueSByZXNwb25zZSB0
+byAxOTIuMTY4LjExLjUgdXNpbmcgZWl0aGVyIG9mIE5JQwo+PiBpLmUgMTkyLjE2OC4xMS42IG9y
+IDE5Mi4xNjguMTIuNiA/IFdoeSB0aGlzIGlzIGhhcHBlbmluZyA/IENhbiB5b3UKPj4gaGVscCBt
+ZSA/Cj4+Cj4+IEkgaGF2ZSBvYnNlcnZlZCBzYW1lIHR5cGUgb2Ygc3ltdG9tcyB3aGVuIEkgZG8g
+U1NIIGZyb20gMTkyLjE2OC4xMS41Cj4+IHRvIDE5Mi4xNjguMTIuNgo+Pgo+PiBGWUksCj4+IGlw
+X2ZvcndhcmRpbmcgaXMgZW5hYmxlIG9uIHJvdXRlciBhbmQgaXB0YWJsZXMgYXJlIG5vIGNvbmZp
+Z3VyZWQgb24KPj4gYW55IG9mIHN5c3RlbSAuCj4KPiBJIHRoaW5rLCByZXZlcnNlIHBhdGggZmls
+dGVyaW5nIGlzIHRoZSBwcm9ibGVtIGhlcmUuCj4KPj4KPj4gVGhhbmtzLAo+PiBBbmlsCj4+IC0t
+Cj4+IFRvIHVuc3Vic2NyaWJlIGZyb20gdGhpcyBsaXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNj
+cmliZSBuZXRmaWx0ZXIiIGluCj4+IHRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRvbW9A
+dmdlci5rZXJuZWwub3JnCj4+IE1vcmUgbWFqb3Jkb21vIGluZm8gYXQgwqBodHRwOi8vdmdlci5r
+ZXJuZWwub3JnL21ham9yZG9tby1pbmZvLmh0bWwKPgo+Cj4gLS0KPiBUbyB1bnN1YnNjcmliZSBm
+cm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbmV0ZmlsdGVyIiBpbgo+
+IHRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnCj4gTW9y
+ZSBtYWpvcmRvbW8gaW5mbyBhdCDCoGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWlu
+Zm8uaHRtbAo=
