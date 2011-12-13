@@ -1,48 +1,151 @@
-From: "Lloyd Standish" <lloyd@crnatural.net>
-Subject: prio + policing filter on ingress?
-Date: Mon, 12 Dec 2011 09:27:03 -0600
-Message-ID: <op.v6dujdvsx1lyi3@debiandesk2.net>
+From: anil dahiya <anildahiya80@gmail.com>
+Subject: Re: Sending ICMP echo request out
+Date: Tue, 13 Dec 2011 10:19:39 +0530
+Message-ID: <CAHGPgw3hvXWnbJM=EBKbiN7LKJFbA2hHdiV0==DO_b_CFtJ37g@mail.gmail.com>
+References: <CAGZFCEEux4TBE+JAqzx9CDJ1HGdNXnqQBHBxhJ8TXEQh3Zq7_w@mail.gmail.com>
+	<CAHGPgw1bL7XF6Ef29N_YQ-dAW3RYQe7j4-2zuWhFXQddW+Yg_g@mail.gmail.com>
+	<1323374344.5818.1.camel@hakkenden.homenet>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-newbie-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type:content-transfer-encoding;
+        bh=UMEI2kVNOlGZeJQqhNsDeIRTKkgC2qkhiDtRt95pS9Y=;
+        b=maxVUbu0B6tVx4szfAEHA5B+aEY1GunxWAmdRsBrn6dqGYO7QL0HsR/NR2rQ2T5tG0
+         pCFPDIiFm5pRh9sZXAOC2lUeGpIIhWxw63pg3XmT3yRy9oK1whWfN1z8YWqgo+P/DGQf
+         U+N4M6ssavhOPm8hMCBcaDg38uqE8by+5A1v8=
+In-Reply-To: <1323374344.5818.1.camel@hakkenden.homenet>
+Sender: linux-newbie-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed	delsp=yes"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1252"
+To: "Nikolay S." <nowhere@hakkenden.ath.cx>
+Cc: linux-newbie <linux-newbie@vger.kernel.org>, Netfilter mailing list <netfilter@vger.kernel.org>, linux-net@vger.kernel.org
 
-Hello All,
+Thanks, It was issue of reverse path filtering.
 
-I would like to police traffic (bandwidth-limit with drop) on ingress of an outward-facing interface, but I would also like to make sure that inbound traffic destined for a certain IP is dropped *before* traffic to the other IPs.  I think I can do this by combining a prio qdisc with a policing filter via ifb.  I have never seen an example of this; I don't know whether or not it's possible.
+Regards,
+Anil
 
-All I have so far is the ingress prio qdisc.  I don't know how to add the policing filter to it.  (I wonder if I would have to add a policing filter to each of the prio's bands.  In that case I could not limit the total bandwidth of the interface.)
-
-eth0 is the inbound interface.
-
-tc qdisc add dev eth0 ingress
-tc qdisc add dev ifb0 root handle 1: prio default 1
-tc qdisc add dev ifb0 parent 1:1 sfq perturb 10 limit 3000
-tc qdisc add dev ifb0 parent 1:2 sfq perturb 10
-tc qdisc add dev ifb0 parent 1:3 sfq perturb 10
-
-# filters to put packets in different prio bands, only 2 are shown.
-
-# DNS
-tc filter add dev ifb0 protocol ip parent 1: prio 1 u32 match ip sport 53 0xffff flowid 1:1
-# http
-tc filter add dev ifb0 protocol ip parent 1: prio 3 u32 match ip sport 80 0xffff flowid 1:2
-
-# put traffic to LAN IP 192.168.0.5 in the lowest priority prio band
-tc filter add dev ifb0 parent 1: protocol ip prio 2 u32 match ip dst 192.168.0.5 flowid 1:3
-
-# all unfiltered traffic goes to prio band 2
-tc filter add dev ifb0 parent 1: protocol ip prio 4 u32 match ip dst 0.0.0.0/0 flowid 1:2
-
-#
-## how to add a policing filter to limit the bandwidth of the entire interface, and drop extra bandwidth from prio band 3 first?
-#
-tc filter add dev eth0 parent ffff: protocol ip prio 1 u32 match ip dst 0.0.0.0/0 flowid :1 \
-   action mirred egress redirect dev ifb0
-
-Thanks in advance for any help.
--- 
-Lloyd
+On Fri, Dec 9, 2011 at 1:29 AM, Nikolay S. <nowhere@hakkenden.ath.cx> w=
+rote:
+> =F7 =F0=D4., 09/12/2011 =D7 00:00 +0530, anil dahiya =D0=C9=DB=C5=D4:
+>> Hi ,
+>>
+>> I have following setup with routing table as shown below:
+>>
+>> +-----------------------+
+>> | =9A =9ASystem-1 =9A =9A =9A|
+>> | =9A =9A "client" =9A =9A =9A =9A |
+>> |------------------------|
+>> | =9A192.168.11.5 =9A |
+>> +----------------------+
+>> =9A =9A =9A =9A|
+>> =9A =9A =9A =9A|
+>> +------+-----+
+>> | =9A Switch =9A +----------------------+
+>> +------+-----+ =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A|
+>> =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A=
+ =9A =9A =9A |
+>> =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A +------=
+-------------------+
+>> =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A| =9A=
+192.168.11.1 =9A =9A =9A|
+>> =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A|---=
+------------------------|
+>> =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A| =9A=
+ =9A Router =9A =9A =9A =9A =9A =9A|
+>> =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A|---=
+----------------------- |
+>> =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A| =9A=
+ 192.168.12.1 =9A =9A |
+>> =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A +------=
+--------------------+
+>> =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A=
+ =9A =9A =9A =9A =9A|
+>> =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A=
+ =9A =9A =9A =9A =9A|
+>> +------------------------+ =9A =9A =9A =9A =9A =9A =9A =9A|
+>> | =9A192.168.11.6 =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A|
+>> |--------------------------| =9A =9A =9A =9A =9A =9A =9A =9A|
+>> | =9A System-2 =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A|
+>> |--------------------------| =9A =9A =9A =9A =9A =9A =9A =9A|
+>> | =9A 192.168.12.6 =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A|
+>> | =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A|--------------=
+--+
+>> +------------------------+
+>>
+>> Routing table details of setup
+>> ------------------------------------------
+>> System-1
+>> -----
+>> $route -n
+>> Kernel IP routing table
+>> Destination =9A =9A Gateway =9A =9A =9A =9A Genmask =9A =9A =9A =9A =
+=46lags Metric Ref =9A =9AUse Iface
+>> 192.168.11.0 =9A =9A0.0.0.0 =9A =9A =9A =9A 255.255.255.0 =9A U =9A =
+=9A 1 =9A =9A =9A0 =9A =9A =9A =9A0 eth1
+>> 0.0.0.0 =9A =9A =9A =9A 192.168.11.1 =9A =9A0.0.0.0 =9A =9A =9A =9A =
+UG =9A =9A0 =9A =9A =9A0 =9A =9A =9A =9A0 eth1
+>>
+>>
+>> Router
+>> -----------
+>> $route -n
+>> Kernel IP routing table
+>> Destination =9A =9A Gateway =9A =9A =9A =9A Genmask =9A =9A =9A =9A =
+=46lags Metric Ref =9A =9AUse Iface
+>> 192.168.12.0 =9A =9A0.0.0.0 =9A =9A =9A =9A 255.255.255.0 =9A U =9A =
+=9A 0 =9A =9A =9A0 =9A =9A =9A =9A0 eth1
+>> 192.168.11.0 =9A =9A0.0.0.0 =9A =9A =9A =9A 255.255.255.0 =9A U =9A =
+=9A 0 =9A =9A =9A0 =9A =9A =9A =9A0 eth0
+>>
+>>
+>> System-2
+>> ------
+>> $route -n
+>> Kernel IP routing table
+>> Destination =9A =9A Gateway =9A =9A =9A =9A Genmask =9A =9A =9A =9A =
+=46lags Metric Ref =9A =9AUse Iface
+>> 192.168.12.0 =9A =9A0.0.0.0 =9A =9A =9A =9A 255.255.255.0 =9A U =9A =
+=9A 0 =9A =9A =9A0 =9A =9A =9A =9A0 eth1
+>> 192.168.11.0 =9A =9A0.0.0.0 =9A =9A =9A =9A 255.255.255.0 =9A U =9A =
+=9A 0 =9A =9A =9A0 =9A =9A =9A =9A0 eth0
+>> 0.0.0.0 =9A =9A =9A =9A 192.168.12.1 =9A =9A0.0.0.0 =9A =9A =9A =9A =
+UG =9A =9A0 =9A =9A =9A0 =9A =9A =9A =9A0 eth1
+>>
+>>
+>> When I do ping from system-1 192.168.11.5 to system-2 192.168.12.6 ,
+>> ping echo packet is reaching on system-2 through NIC 192.168.12.6 bu=
+t
+>> system is not sending any response to 192.168.11.5 using either of N=
+IC
+>> i.e 192.168.11.6 or 192.168.12.6 ? Why this is happening ? Can you
+>> help me ?
+>>
+>> I have observed same type of symtoms when I do SSH from 192.168.11.5
+>> to 192.168.12.6
+>>
+>> FYI,
+>> ip_forwarding is enable on router and iptables are no configured on
+>> any of system .
+>
+> I think, reverse path filtering is the problem here.
+>
+>>
+>> Thanks,
+>> Anil
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe netfilter"=
+ in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at =9Ahttp://vger.kernel.org/majordomo-info.html
+>
+>
+--
+To unsubscribe from this list: send the line "unsubscribe linux-newbie"=
+ in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at http://www.linux-learn.org/faqs
