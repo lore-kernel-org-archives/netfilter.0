@@ -1,250 +1,97 @@
-From: anil dahiya <anildahiya80@gmail.com>
-Subject: Re: Sending ICMP echo request out
-Date: Tue, 13 Dec 2011 10:41:58 +0530
-Message-ID: <CAHGPgw1Pg2GLb_AX_-EFBJz9swn5_AfbNCY7F164fnoqm3yKYA@mail.gmail.com>
-References: <CAGZFCEEux4TBE+JAqzx9CDJ1HGdNXnqQBHBxhJ8TXEQh3Zq7_w@mail.gmail.com>
-	<CAHGPgw1bL7XF6Ef29N_YQ-dAW3RYQe7j4-2zuWhFXQddW+Yg_g@mail.gmail.com>
-	<1323374344.5818.1.camel@hakkenden.homenet>
-	<CAHGPgw3hvXWnbJM=EBKbiN7LKJFbA2hHdiV0==DO_b_CFtJ37g@mail.gmail.com>
+From: raviraj joshi <raviraj.j1991@gmail.com>
+Subject: Re: kenel level packet capturing
+Date: Tue, 13 Dec 2011 17:34:22 +0530
+Message-ID: <CAKj1SsOra7u21u8Zq9rDLzv_Bhx8sPsah+SHByMYQbVc_j6LQA@mail.gmail.com>
+References: <CAKj1SsP+GE=QqN8nx7aaAxXE8BODKb=vns_=SnbyySQjZp3-pg@mail.gmail.com>
+	<CAKj1SsOnYsOXjRBKm+=hTnEiesXrC3h0Q-KN2b61nPSQud9wMA@mail.gmail.com>
+	<20111019123733.GA21324@synalogic.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type:content-transfer-encoding;
-        bh=TADPOguuJ3DVcFh7yg/4mWmTDNBXz5VP3SeT2Lqmsc4=;
-        b=aNRK2GZW0+2gsYm92diK/NqTFV1L4XX1hNcPWdMJIecD3u5HlZzOq3QLwfzpXPgCjR
-         LDZrqcxW87YRMNRgN4lMido3BISIfisovFy1cVTe8n+4oicYmllW6NDe61W9/0NWuijP
-         1+pHRX5Yw6bilu2uu1DWnSc1uvH+FSHzHctuk=
-In-Reply-To: <CAHGPgw3hvXWnbJM=EBKbiN7LKJFbA2hHdiV0==DO_b_CFtJ37g@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+         :content-type;
+        bh=thX/8vZC4b1f76UNkzRKzMqZsZYg9w84ePdddJqBvhs=;
+        b=tmMyg93RAJUkGdvCEjsUYl/2OGVc2zQ3LzZEYB7cy1VbijcwAyW5UEqrBR3uEmRev5
+         /Z1qfuDQk40IwSsocuO4BFDT3FPuThRs/m36hCdt6m1hM7ys2ZRUtfTKTak9W8AYKFRk
+         fiRpEia0WgYe8qlFlB6kT5SSokRmaZygxFbbw=
+In-Reply-To: <20111019123733.GA21324@synalogic.ca>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-To: "Nikolay S." <nowhere@hakkenden.ath.cx>
-Cc: linux-newbie <linux-newbie@vger.kernel.org>, Netfilter mailing list <netfilter@vger.kernel.org>, linux-net@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-Here are my findings:
----------------------------------------------------------------------
+Hi,
+    We have to implement a kernel module for capturing of packets and
+dumping onto disk as a part of our BE project.
+We have decided to use PF_RING(a kernel module to capture packets) for
+the same due to the number of advantages.
 
-Reverse Path Filtering which is enable by default on linux.
-Basically, if the reply to the packet doesn't go out using the
-interface through which packet came in then linux box ,with Reverse
-Path Filtering enable,
-consider the packet as bogus packet and ignores it.
+We have to now write a kernel module that will interact with pf_ring
+module to get data and dump it onto disk.
+To do this we figured out two approaches :
 
-=46YI, http://tldp.org/HOWTO/Adv-Routing-HOWTO/lartc.kernel.rpf.html
+1. pf_ring has provided userland code to communicate with kernel
+module which in turn used "socket" system calls and specified protocol
+family as PF_RING(socket(PF_RING, SOCK_RAW, htons(ETH_P_ALL));) and
+subsequently used other functions like setsockopt to get packets.
+So one approach can be to use kernel counterparts of socket and
+setsockopt and reuse the userland code in our kernel module(this will
+save us from writing code to built some specific data structures and
+handleing exceptional conditions).
 
-To see if any packets are being dropped then set flag in the
-log_martians file
-(/proc/sys/net/ipv4/conf/<interfacename>/log_martians) to tell kernel
-to
-log ignored packets in syslog.
+2. second approach can be to identify functions which capture packets
+in PF_RING kernel module and invoke them from our
+kernel moduel.
 
-echo 1 >/proc/sys/net/ipv4/conf/<interfacename>/log_martians
+Can anyone please comment on these approachs or tell us about other
+options available, we have to essentially use services provided by
+pf_ring module via a kernel module?
 
-After settting log_martians for inrterface eth1 192.168.12.6, I could
-see that packets are being dropped by system-2:
-$echo 1 > /proc/sys/net/ipv4/conf/eth1/log_martians
-$dmesg
-martian source 192.168.12.6 from 192.168.11.5, on dev eth1
-ll header: 00:80:48:1e:47:68:00:80:48:3d:56:98:08:00
-martian source 192.168.12.6 from 192.168.11.5, on dev eth1
-ll header: 00:80:48:1e:47:68:00:80:48:3d:56:98:08:00
-martian source 192.168.12.6 from 192.168.11.5, on dev eth1
-ll header: 00:80:48:1e:47:68:00:80:48:3d:56:98:08:00
-martian source 192.168.12.6 from 192.168.11.5, on dev eth1
-ll header: 00:80:48:1e:47:68:00:80:48:3d:56:98:08:00
-martian source 192.168.12.6 from 192.168.11.5, on dev eth1
-ll header: 00:80:48:1e:47:68:00:80:48:3d:56:98:08:00
-martian source 192.168.12.6 from 192.168.11.5, on dev eth1
-ll header: 00:80:48:1e:47:68:00:80:48:3d:56:98:08:00
-
-After turning off Reverse Path Filtering as shown below and then I did
-ping 192.168.12.6 from 192.168.11.5 .  I could see as shown below via
-tcpdump taken on System-2, ICMP echo packet coming on eth1
-(192.168.12.6) and ICMP Reply packet going out using different
-interface eth0 192.168.11.6 as it was expected.
-
-To disable Reverse Path Filtering
-$echo 2 > /proc/sys/net/ipv4/conf/<interfacename>/rp_filter
+and what things should we follow to accomplish these approaches ?
 
 
-$tcpdump -i eth1 proto ICMP
-tcpdump: verbose output suppressed, use -v or -vv for full protocol dec=
-ode
-listening on eth1, link-type EN10MB (Ethernet), capture size 65535 byte=
-s
-12:16:12.204647 IP 192.168.11.5 > 192.168.12.6: ICMP echo request, id
-17169, seq 353, length 64
-12:16:13.204810 IP 192.168.11.5 > 192.168.12.6: ICMP echo request, id
-17169, seq 354, length 64
-12:16:14.204820 IP 192.168.11.5 > 192.168.12.6: ICMP echo request, id
-17169, seq 355, length 64
-12:16:15.204988 IP 192.168.11.5 > 192.168.12.6: ICMP echo request, id
-17169, seq 356, length 64
-12:16:16.205003 IP 192.168.11.5 > 192.168.12.6: ICMP echo request, id
-17169, seq 357, length 64
-12:16:17.205163 IP 192.168.11.5 > 192.168.12.6: ICMP echo request, id
-17169, seq 358, length 64
-12:16:18.205185 IP 192.168.11.5 > 192.168.12.6: ICMP echo request, id
-17169, seq 359, length 64
-12:16:19.205336 IP 192.168.11.5 > 192.168.12.6: ICMP echo request, id
-17169, seq 360, length 64
-12:16:20.205358 IP 192.168.11.5 > 192.168.12.6: ICMP echo request, id
-17169, seq 361, length 64
 
-$tcpdump -i eth0 proto ICMP
-tcpdump: verbose output suppressed, use -v or -vv for full protocol dec=
-ode
-listening on eth0, link-type EN10MB (Ethernet), capture size 65535 byte=
-s
-12:16:12.204677 IP 192.168.12.6 > 192.168.11.5: ICMP echo reply, id
-17169, seq 353, length 64
-12:16:13.204840 IP 192.168.12.6 > 192.168.11.5: ICMP echo reply, id
-17169, seq 354, length 64
-12:16:14.204851 IP 192.168.12.6 > 192.168.11.5: ICMP echo reply, id
-17169, seq 355, length 64
-12:16:15.205019 IP 192.168.12.6 > 192.168.11.5: ICMP echo reply, id
-17169, seq 356, length 64
-12:16:16.205033 IP 192.168.12.6 > 192.168.11.5: ICMP echo reply, id
-17169, seq 357, length 64
-12:16:17.205195 IP 192.168.12.6 > 192.168.11.5: ICMP echo reply, id
-17169, seq 358, length 64
-12:16:18.205215 IP 192.168.12.6 > 192.168.11.5: ICMP echo reply, id
-17169, seq 359, length 64
-12:16:19.205362 IP 192.168.12.6 > 192.168.11.5: ICMP echo reply, id
-17169, seq 360, length 64
-12:16:20.205388 IP 192.168.12.6 > 192.168.11.5: ICMP echo reply, id
-17169, seq 361, length 64
+PF_RING specific questions(if any one is aware of pf_ring please answer this):
+We went through the userland code of pf_ring and got to know that
+using pf_ring involves
+1.setting up socket connection
+2.binding the address
+3.setting socket options
+4.enabling socket ring
+5.use packet_recv function to get packets
+6.finally display packets and close the socket connection.
+is this procedure which we figured out right?
 
+we also found that the data we receive has two parts
+1.pfring_pkthdr
+2.sk_buff struct
 
-Thanks,
-Anil
+is this correct?
 
+we know this is not the right place to ask questions about pf_ring and
+we are extremely sorry for this ,but we posted the
+same questions on ntop mailing list and there was no response.
 
-2011/12/13 anil dahiya <anildahiya80@gmail.com>:
-> Thanks, It was issue of reverse path filtering.
+thanking,
+Raviraj Joshi
+PICT,Pune.
+
+On Wed, Oct 19, 2011 at 6:07 PM, Benjamin Poirier
+<benjamin.poirier@gmail.com> wrote:
+> On 11/10/19 12:24, raviraj joshi wrote:
+>> Hi,
+>>
+>> We are making a kernel level packet capture module as a part of our BE project .
+>> We are finding it difficult to understand kenel networking code.
+>> We studied structures and functions like sk_buff, netif_rx(),dev_alloc_skb.
+>>
+>> However we were not able to trace the actual path a simple packet follows.
 >
-> Regards,
-> Anil
+> You might find
+> http://vger.kernel.org/netconf2011_slides/jesse_brandeburg_netconf2011.pdf
+> interesting. It contains call chains of UDP processing at all levels in
+> the stack (driver, below ip stack, above ip stack) for tx and rx.
 >
-> On Fri, Dec 9, 2011 at 1:29 AM, Nikolay S. <nowhere@hakkenden.ath.cx>=
- wrote:
->> =F7 =F0=D4., 09/12/2011 =D7 00:00 +0530, anil dahiya =D0=C9=DB=C5=D4=
-:
->>> Hi ,
->>>
->>> I have following setup with routing table as shown below:
->>>
->>> +-----------------------+
->>> | =9A =9ASystem-1 =9A =9A =9A|
->>> | =9A =9A "client" =9A =9A =9A =9A |
->>> |------------------------|
->>> | =9A192.168.11.5 =9A |
->>> +----------------------+
->>> =9A =9A =9A =9A|
->>> =9A =9A =9A =9A|
->>> +------+-----+
->>> | =9A Switch =9A +----------------------+
->>> +------+-----+ =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A|
->>> =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A=
- =9A =9A =9A |
->>> =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A +-----=
---------------------+
->>> =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A| =9A=
-192.168.11.1 =9A =9A =9A|
->>> =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A|--=
--------------------------|
->>> =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A| =9A=
- =9A Router =9A =9A =9A =9A =9A =9A|
->>> =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A|--=
------------------------- |
->>> =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A| =9A=
- 192.168.12.1 =9A =9A |
->>> =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A +-----=
----------------------+
->>> =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A=
- =9A =9A =9A =9A =9A|
->>> =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A=
- =9A =9A =9A =9A =9A|
->>> +------------------------+ =9A =9A =9A =9A =9A =9A =9A =9A|
->>> | =9A192.168.11.6 =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A|
->>> |--------------------------| =9A =9A =9A =9A =9A =9A =9A =9A|
->>> | =9A System-2 =9A =9A =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A|
->>> |--------------------------| =9A =9A =9A =9A =9A =9A =9A =9A|
->>> | =9A 192.168.12.6 =9A =9A| =9A =9A =9A =9A =9A =9A =9A =9A|
->>> | =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A =9A|-------------=
----+
->>> +------------------------+
->>>
->>> Routing table details of setup
->>> ------------------------------------------
->>> System-1
->>> -----
->>> $route -n
->>> Kernel IP routing table
->>> Destination =9A =9A Gateway =9A =9A =9A =9A Genmask =9A =9A =9A =9A=
- Flags Metric Ref =9A =9AUse Iface
->>> 192.168.11.0 =9A =9A0.0.0.0 =9A =9A =9A =9A 255.255.255.0 =9A U =9A=
- =9A 1 =9A =9A =9A0 =9A =9A =9A =9A0 eth1
->>> 0.0.0.0 =9A =9A =9A =9A 192.168.11.1 =9A =9A0.0.0.0 =9A =9A =9A =9A=
- UG =9A =9A0 =9A =9A =9A0 =9A =9A =9A =9A0 eth1
->>>
->>>
->>> Router
->>> -----------
->>> $route -n
->>> Kernel IP routing table
->>> Destination =9A =9A Gateway =9A =9A =9A =9A Genmask =9A =9A =9A =9A=
- Flags Metric Ref =9A =9AUse Iface
->>> 192.168.12.0 =9A =9A0.0.0.0 =9A =9A =9A =9A 255.255.255.0 =9A U =9A=
- =9A 0 =9A =9A =9A0 =9A =9A =9A =9A0 eth1
->>> 192.168.11.0 =9A =9A0.0.0.0 =9A =9A =9A =9A 255.255.255.0 =9A U =9A=
- =9A 0 =9A =9A =9A0 =9A =9A =9A =9A0 eth0
->>>
->>>
->>> System-2
->>> ------
->>> $route -n
->>> Kernel IP routing table
->>> Destination =9A =9A Gateway =9A =9A =9A =9A Genmask =9A =9A =9A =9A=
- Flags Metric Ref =9A =9AUse Iface
->>> 192.168.12.0 =9A =9A0.0.0.0 =9A =9A =9A =9A 255.255.255.0 =9A U =9A=
- =9A 0 =9A =9A =9A0 =9A =9A =9A =9A0 eth1
->>> 192.168.11.0 =9A =9A0.0.0.0 =9A =9A =9A =9A 255.255.255.0 =9A U =9A=
- =9A 0 =9A =9A =9A0 =9A =9A =9A =9A0 eth0
->>> 0.0.0.0 =9A =9A =9A =9A 192.168.12.1 =9A =9A0.0.0.0 =9A =9A =9A =9A=
- UG =9A =9A0 =9A =9A =9A0 =9A =9A =9A =9A0 eth1
->>>
->>>
->>> When I do ping from system-1 192.168.11.5 to system-2 192.168.12.6 =
-,
->>> ping echo packet is reaching on system-2 through NIC 192.168.12.6 b=
-ut
->>> system is not sending any response to 192.168.11.5 using either of =
-NIC
->>> i.e 192.168.11.6 or 192.168.12.6 ? Why this is happening ? Can you
->>> help me ?
->>>
->>> I have observed same type of symtoms when I do SSH from 192.168.11.=
-5
->>> to 192.168.12.6
->>>
->>> FYI,
->>> ip_forwarding is enable on router and iptables are no configured on
->>> any of system .
->>
->> I think, reverse path filtering is the problem here.
->>
->>>
->>> Thanks,
->>> Anil
->>> --
->>> To unsubscribe from this list: send the line "unsubscribe netfilter=
-" in
->>> the body of a message to majordomo@vger.kernel.org
->>> More majordomo info at =9Ahttp://vger.kernel.org/majordomo-info.htm=
-l
->>
->>
+> -Ben
