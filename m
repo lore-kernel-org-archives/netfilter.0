@@ -1,79 +1,64 @@
-From: Eduardo Panisset <eduardo.panisset@gmail.com>
-Subject: Re: kenel level packet capturing
-Date: Thu, 15 Dec 2011 13:19:33 -0200
-Message-ID: <CADsjWXS5e6xdgHfJCtnj09Ky90QT4c4=W5BjpJg_4D1uJE-Ykw@mail.gmail.com>
-References: <CAKj1SsOra7u21u8Zq9rDLzv_Bhx8sPsah+SHByMYQbVc_j6LQA@mail.gmail.com>
-	<20111213.133629.1213042365300662857.davem@davemloft.net>
-	<CAKj1SsNO_uJuVtKs_-tygcd=QDesKkYa=9DVeajhK73LFV-opA@mail.gmail.com>
-	<20111214.110919.1286184647888114902.davem@davemloft.net>
+From: Marius Nicolae <marius.e.nicolae@gmail.com>
+Subject: Filtering pppoed frames
+Date: Thu, 15 Dec 2011 19:44:36 +0200
+Message-ID: <CAKEn5-LiE2Dv0zw_8JREHoyT1DHwQ17EirqGPsykU3GkX9XfvA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type:content-transfer-encoding;
-        bh=ZTiAtFf6ovXPZaD/nwEanuoiXXg7S2K2Ci5ANgNoRQU=;
-        b=ZvrgJTzzCfy7Mfjo9o/yTUsMMbrRZmGuQqCHSFGzChki8yXpC7K3InHsYASl3smTFp
-         XLsFFt2NYGe8T+Oqzn/3IS0hEo0f0hG7W6fzzFusXHX+bq/jPCWXq1G95XRUdLiKDHts
-         md06sgJFK4NuYnd2g6Ne8KcynzovK1UeuMjas=
-In-Reply-To: <20111214.110919.1286184647888114902.davem@davemloft.net>
-Sender: netfilter-devel-owner@vger.kernel.org
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=bxFHJd8I+P4TZ5E/rotSeZ3x8tX8UB/UfXyRFLk/bIg=;
+        b=iEuN2QWegstezshRzzG5p4e28/BonXxsIzejjDKB7PEKCDHp3c6tlrfh1oRwnrQavV
+         vdR8VTdx2t42qOuwLz0i0UVKJ1Dwx5xomw2PRyAblktVI8TgI4MfMdbYMObRSqq0v0S0
+         187DAktCi7/CmJYogy3sClyVSrI2GKVGdTkpo=
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: David Miller <davem@davemloft.net>
-Cc: raviraj.j1991@gmail.com, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hi Raviraj,
+Hi,
 
-You could be interested in taking a look at
-"Documentation/networking/packet_mmap.txt" (this talks about mmap()'d
-packet ring implementation for AF_PACKET).
+Im not sure if this is the right list but here we go. In our small ISP
+we've implemented a pppoe server using rp-pppoe  (
+http://www.roaringpenguin.com/products/pppoe ) on a Ubuntu server
+Lucid (last TLS) using a 2.6.32-34 linux kernel. For some time we're
+also hit by the problem described here
+http://lists.roaringpenguin.com/pipermail/rp-pppoe/2010q3/000162.html
+. Put it short, during peak hours some buggy pppoe clients are
+flooding the the server with PADT frames sent in the name of other
+clients disturbing the rest of the clients by increasing cpu load and
+traffic throughput (pings is getting worse as well). I could
+constantly monitor the buggy clients and ask the users to
+replace/upgrade their buggy routers but we're searching for a way of
+getting our server immune to such floods. Since in this scenario we
+cannot prevent the clients to send frames I'm thinking it might help
+to drop such frames as soon as they enter on the stack network. The
+involved ethernet protocol is 0x8863. It's described in the
+/etc/ethertypes like this:
+============= 8< ============
+PPP_DISC    8863            # PPPoE discovery messages
+============= 8< ============
 
-Rgds,
-Eduardo Panisset.
+After studying the problem a little bit I was thinking to implement a
+userspace application which would limit the packets in a manner
+similar witth hashlimit helper from iptables but using as hashes the
+frames' source mac. After that, other goodies like sending daily
+reports with "outlaws" macs would had been implemented but that's
+another story.
 
-On Wed, Dec 14, 2011 at 2:09 PM, David Miller <davem@davemloft.net> wro=
-te:
-> From: raviraj joshi <raviraj.j1991@gmail.com>
-> Date: Wed, 14 Dec 2011 16:16:01 +0530
->
->> On Wed, Dec 14, 2011 at 12:06 AM, David Miller <davem@davemloft.net>=
- wrote:
->>> From: raviraj joshi <raviraj.j1991@gmail.com>
->>> Date: Tue, 13 Dec 2011 17:34:22 +0530
->>>
->>>> We have decided to use PF_RING(a kernel module to capture packets)=
- for
->>>> the same due to the number of advantages.
->>>
->>> What "advantages"? =A0The AF_PACKET socket layer already upstream i=
-n the
->>> kernel supports every relevant performance feature PF_RING does, an=
-d
->>> then some.
->> I refered to the document on "A Measurement Study of Packet Receptio=
-n
->> using Linux"[1] =A0which said pf_ring maintains
->> a ring buffer, so we dont have to issue a receive system call for ea=
-ch
->> packet in contrast to AF_PACKET which issues a system call for each
->> packet(pls correct me if i am wrong).
->
-> AF_PACKET supports mmap()'d packet rings, and even supports variable
-> packet lengths within those rings.
->
-> AF_PACKET supports all the worthwhile performance features of PR_RING
-> and it's upstream, stop kidding yourself.
->
-> I'm really sick and tired of people saying PF_RING is better than
-> what we have upstream, it really isn't.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netdev" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+Since pppoed frames aren't ip packets (ethernet type 0x800) they
+cannot be matched with iptables. I didn't saw any way of matching such
+frames but to implement a kernel module registering a(some) netfillter
+hook(s) - I hope the terminology is correct. The filtering can happen
+directly in the kernel or packets can be queued to a userspace
+application. Before doing that:
+1. Is there a better and easier way of matching pppoed frames and
+limit them in the way just described?
+2. If not, do you know an open source project on which I might involve
+and contribute with such functionality?
+
+Thanks!
 --
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Best regards,
+Marius Nicolae
