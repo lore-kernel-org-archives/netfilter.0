@@ -1,57 +1,79 @@
-From: Erik Schweigert <ejschweigert@gmail.com>
-Subject: Linux Bridge Not Queuing to Ebtables under ARP Cache Storm
-Date: Wed, 14 Dec 2011 17:02:19 -0800
-Message-ID: <CADVVA4_3hAK_9AcPzToDdwJuQXaGFuT2s-dx8ups7MUiUp0DFg@mail.gmail.com>
+From: Eduardo Panisset <eduardo.panisset@gmail.com>
+Subject: Re: kenel level packet capturing
+Date: Thu, 15 Dec 2011 13:19:33 -0200
+Message-ID: <CADsjWXS5e6xdgHfJCtnj09Ky90QT4c4=W5BjpJg_4D1uJE-Ykw@mail.gmail.com>
+References: <CAKj1SsOra7u21u8Zq9rDLzv_Bhx8sPsah+SHByMYQbVc_j6LQA@mail.gmail.com>
+	<20111213.133629.1213042365300662857.davem@davemloft.net>
+	<CAKj1SsNO_uJuVtKs_-tygcd=QDesKkYa=9DVeajhK73LFV-opA@mail.gmail.com>
+	<20111214.110919.1286184647888114902.davem@davemloft.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
-        h=mime-version:date:message-id:subject:from:to:content-type
-         :content-transfer-encoding;
-        bh=BpsK3FMbp6VQgfVICgElZX8idjRPGvHnVk4vayc2S4s=;
-        b=i5HMS/t2LKaUBWfV18ZVYx9kQxqdSk+UYkgdR28rXOo7s0oeQiqwjYIBSu5nVPsOD/
-         jYHKiaCJRMYRBYbGDgkFyhigaoaKf/WbdVSKYFAZ8Yt8566pdpB3rZ6xfha38qBaMnPz
-         UAGGjOVuBM8m9ATToKydac9R4OxMoCT4fQfqM=
-Sender: netfilter-owner@vger.kernel.org
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type:content-transfer-encoding;
+        bh=ZTiAtFf6ovXPZaD/nwEanuoiXXg7S2K2Ci5ANgNoRQU=;
+        b=ZvrgJTzzCfy7Mfjo9o/yTUsMMbrRZmGuQqCHSFGzChki8yXpC7K3InHsYASl3smTFp
+         XLsFFt2NYGe8T+Oqzn/3IS0hEo0f0hG7W6fzzFusXHX+bq/jPCWXq1G95XRUdLiKDHts
+         md06sgJFK4NuYnd2g6Ne8KcynzovK1UeuMjas=
+In-Reply-To: <20111214.110919.1286184647888114902.davem@davemloft.net>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+To: David Miller <davem@davemloft.net>
+Cc: raviraj.j1991@gmail.com, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-Hi all,
+Hi Raviraj,
 
-I am running 2.6.26.5, I have a transparent bridge (two ports) running =
-ebtables.
+You could be interested in taking a look at
+"Documentation/networking/packet_mmap.txt" (this talks about mmap()'d
+packet ring implementation for AF_PACKET).
 
-The issue I am running into is the bridge mac address table growing to
-a massive size because of an ARP cache storm (for testing purposes).
-When I send the arp cache storm at the bridge (10,000 pps),
-interestingly I do not get any packets queue'd to ebtables for ARP, or
-any type of filtering. =A0The packet/byte count on my rule is 0
-(ebtables -A FORWARD -p ARP -j ACCEPT). They appear to be dropped
-somewhere in kernel?
+Rgds,
+Eduardo Panisset.
 
-If I set the ageing timer on the bridge to 1 second I am then able to
-see packets hit ebtables. =A0In my mind I should at least see a few
-thousand packets hit ebtables before the bridge is inundated with mac
-address entries? Any thoughts?
-
-I also noticed that this table can get massively large, i.e. over
-100,000 entries.
-
-# brctl showmacs transBR | wc -l
-108975
-
-I cannot imagine that Linux bridging would be susceptible to an Arp
-cache storm attack...I also thought about modifying the=A0#define
-BR_HASH_BITS 8 in br_private.h to a smaller value for the hash table,
-but that doesn't seem like a fix but more of a hack. =A0The modificatio=
+On Wed, Dec 14, 2011 at 2:09 PM, David Miller <davem@davemloft.net> wro=
+te:
+> From: raviraj joshi <raviraj.j1991@gmail.com>
+> Date: Wed, 14 Dec 2011 16:16:01 +0530
+>
+>> On Wed, Dec 14, 2011 at 12:06 AM, David Miller <davem@davemloft.net>=
+ wrote:
+>>> From: raviraj joshi <raviraj.j1991@gmail.com>
+>>> Date: Tue, 13 Dec 2011 17:34:22 +0530
+>>>
+>>>> We have decided to use PF_RING(a kernel module to capture packets)=
+ for
+>>>> the same due to the number of advantages.
+>>>
+>>> What "advantages"? =A0The AF_PACKET socket layer already upstream i=
+n the
+>>> kernel supports every relevant performance feature PF_RING does, an=
+d
+>>> then some.
+>> I refered to the document on "A Measurement Study of Packet Receptio=
 n
-to the age-ing also seems like a poor solution as I do need to have a
-working bridge.
-
-Any help, suggestions, thoughts?
-
-Thanks!
-
-Erik
+>> using Linux"[1] =A0which said pf_ring maintains
+>> a ring buffer, so we dont have to issue a receive system call for ea=
+ch
+>> packet in contrast to AF_PACKET which issues a system call for each
+>> packet(pls correct me if i am wrong).
+>
+> AF_PACKET supports mmap()'d packet rings, and even supports variable
+> packet lengths within those rings.
+>
+> AF_PACKET supports all the worthwhile performance features of PR_RING
+> and it's upstream, stop kidding yourself.
+>
+> I'm really sick and tired of people saying PF_RING is better than
+> what we have upstream, it really isn't.
+> --
+> To unsubscribe from this list: send the line "unsubscribe netdev" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
+el" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
