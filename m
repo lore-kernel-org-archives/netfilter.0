@@ -1,59 +1,57 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: prio + policing filter on ingress?
-Date: Wed, 14 Dec 2011 20:13:33 +0000
-Message-ID: <1323893613.1995.152.camel@andybev-desktop>
-References: <op.v6dujdvsx1lyi3@debiandesk2.net>
-	 <1323800724.1995.58.camel@andybev-desktop>
-	 <op.v6f2p4edx1lyi3@debiandesk2.net>
-	 <1323813101.1995.116.camel@andybev-desktop>
-	 <1323816812.8451.3.camel@denise.theartistscloset.com>
+From: Erik Schweigert <ejschweigert@gmail.com>
+Subject: Linux Bridge Not Queuing to Ebtables under ARP Cache Storm
+Date: Wed, 14 Dec 2011 17:02:19 -0800
+Message-ID: <CADVVA4_3hAK_9AcPzToDdwJuQXaGFuT2s-dx8ups7MUiUp0DFg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1323893615;
-	bh=fZGjLZxPR4FYkHc15RO6GvKkO5r35/ekYeEVkfl2jTY=;
-	h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-ID:Mime-Version:Content-Transfer-Encoding;
-	b=SaysIiUZvVIgXaXfjXKoFqQNgbhPHDQmRGrP6oRGupd/nKFr25CR4Pl0qnQ+WJ1ki
-	 HV7axMaMOj7r0xoAozBpxKEISSE72uJz/M7xDLXAg3c5UVF0vQVdF5F6Z4laSgcc4a
-	 4ZFsCaPD66coEFwQpyjNDL+/B2J4sQNs2zNqz7mU=
-In-Reply-To: <1323816812.8451.3.camel@denise.theartistscloset.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=BpsK3FMbp6VQgfVICgElZX8idjRPGvHnVk4vayc2S4s=;
+        b=i5HMS/t2LKaUBWfV18ZVYx9kQxqdSk+UYkgdR28rXOo7s0oeQiqwjYIBSu5nVPsOD/
+         jYHKiaCJRMYRBYbGDgkFyhigaoaKf/WbdVSKYFAZ8Yt8566pdpB3rZ6xfha38qBaMnPz
+         UAGGjOVuBM8m9ATToKydac9R4OxMoCT4fQfqM=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Cc: Lloyd Standish <lloyd@crnatural.net>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-On Tue, 2011-12-13 at 17:53 -0500, John A. Sullivan III wrote:
-> > > Now, my friend wants to be able to make personal use of the UNUSED
-> > >  bandwidth without infringing on his customers' paid bandwidth.  So I
-> > >  got the idea of putting all traffic to his IP (192.168.0.5 in my
-> > >  example) into band 3 of a prio qdisc.
-> > 
-> > For you to do *exactly* what you describe, I think you'd have to use the
-> > prio qdisc. And as you have found, it's quite limited. You could attach
-> > a TBF qdisc to each leaf class to rate limit, but as you have already
-> > alluded, this would not give an overall rate limit.
+Hi all,
 
-Well according to a question just posted to the (new) LARTC mailing
-list, you can use HTB with a prio attached to one of the leafs. You
-could try that. I.e. have a single HTB leaf, with a prio below it. The
-HTB leaf will throttle your traffic, but I guess that the prio will
-allow any demand on that throttled link to be prioritised, which will
-then draw on the class above it as appropriate. Something like:
+I am running 2.6.26.5, I have a transparent bridge (two ports) running =
+ebtables.
 
-tc qdisc add dev ifb0 root handle 1 htb default 5000 r2q 6
-tc class add dev ifb0 parent 1: classid 1:3 htb rate 100Mbit
-tc qdisc add dev ifb0 parent 1:3 handle 5000 prio
+The issue I am running into is the bridge mac address table growing to
+a massive size because of an ARP cache storm (for testing purposes).
+When I send the arp cache storm at the bridge (10,000 pps),
+interestingly I do not get any packets queue'd to ebtables for ARP, or
+any type of filtering. =A0The packet/byte count on my rule is 0
+(ebtables -A FORWARD -p ARP -j ACCEPT). They appear to be dropped
+somewhere in kernel?
 
-> <snip>
-> HFSC might not be a bad idea for you.  I'm still trying to get my head
-> around it
+If I set the ageing timer on the bridge to 1 second I am then able to
+see packets hit ebtables. =A0In my mind I should at least see a few
+thousand packets hit ebtables before the bridge is inundated with mac
+address entries? Any thoughts?
 
-Ah yes, I've noticed the questions on the netdev list. Thanks for that -
-I just need to spend some time reading through the details now!
+I also noticed that this table can get massively large, i.e. over
+100,000 entries.
 
-Andy
+# brctl showmacs transBR | wc -l
+108975
 
+I cannot imagine that Linux bridging would be susceptible to an Arp
+cache storm attack...I also thought about modifying the=A0#define
+BR_HASH_BITS 8 in br_private.h to a smaller value for the hash table,
+but that doesn't seem like a fix but more of a hack. =A0The modificatio=
+n
+to the age-ing also seems like a poor solution as I do need to have a
+working bridge.
 
+Any help, suggestions, thoughts?
+
+Thanks!
+
+Erik
