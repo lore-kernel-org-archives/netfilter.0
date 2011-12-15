@@ -1,54 +1,68 @@
 From: Andy Furniss <andyqos@ukfsn.org>
-Subject: Re: prio + policing filter on ingress?
-Date: Thu, 15 Dec 2011 20:48:31 +0000
-Message-ID: <4EEA5D1F.6080805@ukfsn.org>
-References: <op.v6dujdvsx1lyi3@debiandesk2.net>  <1323800724.1995.58.camel@andybev-desktop>  <op.v6f2p4edx1lyi3@debiandesk2.net>  <1323813101.1995.116.camel@andybev-desktop>  <1323816812.8451.3.camel@denise.theartistscloset.com> <1323893613.1995.152.camel@andybev-desktop>
+Subject: Re: Filtering pppoed frames
+Date: Thu, 15 Dec 2011 21:09:05 +0000
+Message-ID: <4EEA61F1.9020709@ukfsn.org>
+References: <CAKEn5-LiE2Dv0zw_8JREHoyT1DHwQ17EirqGPsykU3GkX9XfvA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1323893613.1995.152.camel@andybev-desktop>
+In-Reply-To: <CAKEn5-LiE2Dv0zw_8JREHoyT1DHwQ17EirqGPsykU3GkX9XfvA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Andrew Beverley <andy@andybev.com>
-Cc: "John A. Sullivan III" <jsullivan@opensourcedevel.com>, Lloyd Standish <lloyd@crnatural.net>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: Marius Nicolae <marius.e.nicolae@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Andrew Beverley wrote:
-
+Marius Nicolae wrote:
+> Hi,
 >
-> Well according to a question just posted to the (new) LARTC mailing
-> list,
-
-Interesting - where's the new list please?
-
-
->> HFSC might not be a bad idea for you.  I'm still trying to get my head
->> around it
+> Im not sure if this is the right list but here we go. In our small ISP
+> we've implemented a pppoe server using rp-pppoe  (
+> http://www.roaringpenguin.com/products/pppoe ) on a Ubuntu server
+> Lucid (last TLS) using a 2.6.32-34 linux kernel. For some time we're
+> also hit by the problem described here
+> http://lists.roaringpenguin.com/pipermail/rp-pppoe/2010q3/000162.html
+> . Put it short, during peak hours some buggy pppoe clients are
+> flooding the the server with PADT frames sent in the name of other
+> clients disturbing the rest of the clients by increasing cpu load and
+> traffic throughput (pings is getting worse as well). I could
+> constantly monitor the buggy clients and ask the users to
+> replace/upgrade their buggy routers but we're searching for a way of
+> getting our server immune to such floods. Since in this scenario we
+> cannot prevent the clients to send frames I'm thinking it might help
+> to drop such frames as soon as they enter on the stack network. The
+> involved ethernet protocol is 0x8863. It's described in the
+> /etc/ethertypes like this:
+> ============= 8<  ============
+> PPP_DISC    8863            # PPPoE discovery messages
+> ============= 8<  ============
 >
-> Ah yes, I've noticed the questions on the netdev list. Thanks for that -
-> I just need to spend some time reading through the details now!
+> After studying the problem a little bit I was thinking to implement a
+> userspace application which would limit the packets in a manner
+> similar witth hashlimit helper from iptables but using as hashes the
+> frames' source mac. After that, other goodies like sending daily
+> reports with "outlaws" macs would had been implemented but that's
+> another story.
+>
+> Since pppoed frames aren't ip packets (ethernet type 0x800) they
+> cannot be matched with iptables. I didn't saw any way of matching such
+> frames but to implement a kernel module registering a(some) netfillter
+> hook(s) - I hope the terminology is correct. The filtering can happen
+> directly in the kernel or packets can be queued to a userspace
+> application. Before doing that:
+> 1. Is there a better and easier way of matching pppoed frames and
+> limit them in the way just described?
+> 2. If not, do you know an open source project on which I might involve
+> and contribute with such functionality?
 
-That's a lot to digest.
+I don't know pppoe so am not sure it will help in this case, but you can 
+match/drop/limit non ip with tc and a policer - though it's not going to 
+be as sophisticated as you describe doing with iptables.
 
-One thing that I recall from when hfsc first came out is that when 
-testing it wouldn't limit bulk if the class wasn't backlogged.
+If it's possible to identify a naughty frame just from the macs and or 
+contents of the frame alone, then dropping them should be quite easy.
 
-For most people if you have enough bandwidth I doubt this is an issue, 
-but at the time I was limiting for a 256kit dsl line with five users.
+If you can't identify from the frame alone and need state from the pppoe 
+server or some statistics then it's going to be trickier.
 
-The hfsc paper says (IIRC) that the system will be backlogged until the 
-last bit is transmitted - this would have made it really useful for me, 
-but the Linux implementation didn't (doesn't?) seem to behave like this, 
-so with five empty bulk classes firing five packets at them all would 
-instantly dequeue borking my latency 5x more that I could achieve with 
-htb classes with low burst set.
 
-Of course htb isn't perfect and will sometime dequeue more than one at a 
-time when multiple classes backlogged (hfsc probably wins in this case) 
-it's just that one test put me off hfsc. Now I have more bandwidth this 
-new documentation could be very useful - thanks for taking the time and 
-effort.
-
-I assume it's still "mean" by dropping unclassified traffic if you don't 
-set a default class - that used to catch people out as htb was the 
-opposite so at least you didn't loose your arp while playing around.
