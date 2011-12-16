@@ -1,7 +1,7 @@
 From: Marius Nicolae <marius.e.nicolae@gmail.com>
-Subject: Fwd: Filtering pppoed frames
-Date: Fri, 16 Dec 2011 18:21:59 +0200
-Message-ID: <CAKEn5-LJsF2x7EAzh4RGwpVjfEVRG-FB5d-DZRnZ45jLwD-v9g@mail.gmail.com>
+Subject: Filtering pppoed frames
+Date: Fri, 16 Dec 2011 18:53:59 +0200
+Message-ID: <CAKEn5-J95Qu_Hx8bHk3F-Kde7BhGjg6W9hK=7p8CA5uOMujgRQ@mail.gmail.com>
 References: <CAKEn5-LiE2Dv0zw_8JREHoyT1DHwQ17EirqGPsykU3GkX9XfvA@mail.gmail.com>
 	<4EEA61F1.9020709@ukfsn.org>
 	<CAKEn5-Kmc=OUcThwX8DeZGNzfQ-C6Zj-=siF0okA87Fb25=FxQ@mail.gmail.com>
@@ -11,10 +11,10 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=gamma;
         h=mime-version:in-reply-to:references:date:message-id:subject:from:to
          :content-type;
-        bh=nNbL7iLcbFqkKV7lQFBU5BpW4lPfCfQzXXJeeXgs4iI=;
-        b=K/BRy01//+5o5p+rT+dWkBhlECwq9CSE/5dFHyYEl31xsfdPyiGfz1nSc7jUE9GXLy
-         5Qr6thHMF3qt8E1UAkp9QNyaSSaa4MK++RdzOdFYYgW1d0oS4/vzzc37IQaJbrNOfiKW
-         Ypwzei1qFScvmJRYFmc+LXRv4RwxC+ZRgwGQ4=
+        bh=gbwUe78fpxk5hBiTpjvQnU3v2YKLMmZvGvrOaiCtrQ4=;
+        b=JQipJg69bnQaFz74xQYXzeBg6x8s+KyYuLS45M5cvpQS6wC+mXdVUdWqcBRS1G8eBw
+         88xiue8MFhNCAYRi65aeWvx31YYVqkk4aMsS67ASayTeOWQOKiA9MFdbMzwDjIB1Uowo
+         juxqAX8nIwgo2aV7ubtmaYJy/AVsL/BTT9iMc=
 In-Reply-To: <CAKEn5-Kmc=OUcThwX8DeZGNzfQ-C6Zj-=siF0okA87Fb25=FxQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
@@ -22,7 +22,9 @@ Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Sorry, I was replying only to Andy.
+Sorry I was replying only to Andy and forgot the rule about unchanged
+subject :(.
+
 
 ---------- Forwarded message ----------
 From: Marius Nicolae <marius.e.nicolae@gmail.com>
@@ -85,9 +87,4 @@ sessions.
 
 --
 Best regards,
-Marius Nicolae
-
-
--- 
-Numai bine,
 Marius Nicolae
