@@ -1,23 +1,36 @@
-From: David Miller <davem@davemloft.net>
+From: =?ISO-8859-1?Q?Niccol=F2_Belli?= <darkbasic@linuxsystems.it>
 Subject: Re: LARTC mailing list
-Date: Mon, 19 Dec 2011 14:59:40 -0500 (EST)
-Message-ID: <20111219.145940.2030642788874548046.davem@davemloft.net>
-References: <1324288402.15020.7.camel@steve-pc>
-	<4EEF1F16.7070306@linuxsystems.it>
-	<1324314712.9582.80.camel@steve-pc>
+Date: Mon, 19 Dec 2011 21:59:54 +0100
+Message-ID: <4EEFA5CA.7000602@linuxsystems.it>
+References: <1324288402.15020.7.camel@steve-pc> <4EEF1F16.7070306@linuxsystems.it> <1324314712.9582.80.camel@steve-pc> <20111219.145940.2030642788874548046.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1324314712.9582.80.camel@steve-pc>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=linuxsystems.it;
+	s=linuxsystems.it; t=1324328253;
+	bh=lK9q17CpTnEGBTsYtr5vHxlNPO+kLUHENre2UnuekOI=;
+	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:References:
+	 In-Reply-To:Content-Type:Content-Transfer-Encoding;
+	b=HIpn1jzDRUVvDhssLb6qKcRzORNbUn1S8OSG4llGxct9OY6NEyEuQCLlqzyE0CVuS
+	 t7Pf0CkErfB+YjZL30sqMAz1aSiSlEe6GYNM2ZHvjQP1hm4AFLL7sTXLaHwHn3yJAa
+	 aQ5ArGReoYMFhmsvFdAGetBt2ADs5mi+1OGpauJs=
+In-Reply-To: <20111219.145940.2030642788874548046.davem@davemloft.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
-To: andy@andybev.com
-Cc: darkbasic@linuxsystems.it, postmaster@vger.kernel.org, netfilter@vger.kernel.org, lartc@lists.linuxsystems.it, andyqos@ukfsn.org, jsullivan@opensourcedevel.com, lloyd@crnatural.net, netdev@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: David Miller <davem@davemloft.net>
+Cc: andy@andybev.com, postmaster@vger.kernel.org, netfilter@vger.kernel.org, lartc@lists.linuxsystems.it, andyqos@ukfsn.org, jsullivan@opensourcedevel.com, lloyd@crnatural.net, netdev@vger.kernel.org
 
-From: Andrew Beverley <andy@andybev.com>
-Date: Mon, 19 Dec 2011 17:11:52 +0000
+Il 19/12/2011 20:59, David Miller ha scritto:
+> From: Andrew Beverley<andy@andybev.com>
+> Date: Mon, 19 Dec 2011 17:11:52 +0000
+>
+>> VGER postmasters: can we try a new LARTC list at VGER please?
+>
+> I've created lartc@vger.kernel.org, enjoy.
 
-> VGER postmasters: can we try a new LARTC list at VGER please?
+A-W-E-S-O-M-E, thank you so much!
 
-I've created lartc@vger.kernel.org, enjoy.
+We really need to find a place for the wiki now :)
+
+Niccol=F2
