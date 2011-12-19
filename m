@@ -1,39 +1,53 @@
-From: Marius Nicolae <marius.e.nicolae@gmail.com>
-Subject: Re: Filtering pppoed frames
-Date: Mon, 19 Dec 2011 10:43:28 +0200
-Message-ID: <CAKEn5-Kn_US9JSLg2O6_wTDMQrTrmzP7Yxx+XmqNmOCtat8Hgw@mail.gmail.com>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: prio + policing filter on ingress?
+Date: Mon, 19 Dec 2011 09:53:22 +0000
+Message-ID: <1324288402.15020.7.camel@steve-pc>
+References: <op.v6dujdvsx1lyi3@debiandesk2.net>
+	 <1323800724.1995.58.camel@andybev-desktop>
+	 <op.v6f2p4edx1lyi3@debiandesk2.net>
+	 <1323813101.1995.116.camel@andybev-desktop>
+	 <1323816812.8451.3.camel@denise.theartistscloset.com>
+	 <1323893613.1995.152.camel@andybev-desktop>  <4EEA5D1F.6080805@ukfsn.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=FcRBhH5IiYxrlrh3REy2bg0rsBe6RcZRotOHAhHhxbo=;
-        b=pEpq5jIOB92FArqSekEh4rZz2l9xmNrm8bc6j7xOMfRTmXafhL6XoSoGy6fEwx+8L4
-         cVD3BWC0rDzB8XtPdwj1TcfyTzTlNhqbTpPph1OstLMoAjfB9isRjFTHC1uAuA0m07GK
-         qEoyxV5eOvKrdW1ce+p1HT2/uyL3UcC1afqe4=
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1324288419;
+	bh=NrAGz2LQheJ0gy3qVjARMvNCNAB4oL6vIKfXL1rtk0U=;
+	h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-ID:Mime-Version:Content-Transfer-Encoding;
+	b=X89gN34FRUxvsoOpdOsMbNPWsswaJXHzYIkVpUcQef9LJ0RPfH5DSfKKUgfYnNIIw
+	 eJwK02EXCoDOBF4B4mIL63s4e6kh5hnQ8uPrRNvBYjOMRD6OrBXCxG6IFko9Yapuf+
+	 QkYNUp7MoT4zIVRX0jbPvHwoUwBWIUPv7Xy15Wxo=
+In-Reply-To: <4EEA5D1F.6080805@ukfsn.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="macroman"
+To: Andy Furniss <andyqos@ukfsn.org>
+Cc: "John A. Sullivan III" <jsullivan@opensourcedevel.com>, Lloyd Standish <lloyd@crnatural.net>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi James,
+On Thu, 2011-12-15 at 20:48 +0000, Andy Furniss wrote:=20
+> Andrew Beverley wrote:
+>=20
+> >
+> > Well according to a question just posted to the (new) LARTC mailing
+> > list,
+>=20
+> Interesting - where's the new list please?
 
-...
->>> 2. If not, do you know an open source project on which I might involve
->>> and contribute with such functionality?
->
->I'd install tshark on the ppp-oe server and try any one of the below:
->
->sudo tshark -t ad -n -i eth* pppoed
->
->it won't block anything, but may point you in the right direction on where
->they're coming from.
-This is how we are currently doing but a more robust and automated way
-we are searching for.
+Well, sort of new, it was created recently by Niccol=C3=B2 Belli who wa=
+nted
+to restart the LARTC mailing list, so he started his own and added as
+many people from the old list as he could find.
 
->
->James
--- 
-Best regards,
-Marius Nicolae
+It's had a pretty slow start, but there's been a few questions. Some
+would rather see it hosted at vger (including me), but in all honesty
+there didn't seem to be a huge amount of interest in restarting it at
+all.
+
+http://lists.linuxsystems.it/listinfo/lartc
+
+Andy
+
+
+
