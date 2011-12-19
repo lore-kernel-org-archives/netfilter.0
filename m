@@ -1,8 +1,8 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+From: Andrew Beverley <andy@andybev.com>
 Subject: Re: LARTC mailing list [was: Re: prio + policing filter on
  ingress?]
-Date: Mon, 19 Dec 2011 12:07:29 -0500
-Message-ID: <1324314449.4187.28.camel@denise.theartistscloset.com>
+Date: Mon, 19 Dec 2011 17:11:52 +0000
+Message-ID: <1324314712.9582.80.camel@steve-pc>
 References: <op.v6dujdvsx1lyi3@debiandesk2.net>
 	 <1323800724.1995.58.camel@andybev-desktop>
 	 <op.v6f2p4edx1lyi3@debiandesk2.net>
@@ -13,12 +13,20 @@ References: <op.v6dujdvsx1lyi3@debiandesk2.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1324314723;
+	bh=p6ZfpYSEHdnxvvTqqQUYLPrThSa69gl4Tro396+tt0U=;
+	h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-ID:Mime-Version:Content-Transfer-Encoding;
+	b=rYrNEG2hUH+31NU0nFIwBMAdW1EU6wcdkWUdu+m3RVm/sPNAntkr2E52iLkB+1YXr
+	 eWFetDR7AaK7WSckdfdvYQg0HJi0Gm3wmJyJcHUK5YcDfGotWJWuc9FxTTPNOr36h9
+	 r7Q2EVL86mUUK79cIyNDRsZdPWLAA5SEjmu88CnU=
 In-Reply-To: <4EEF1F16.7070306@linuxsystems.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"
-To: =?ISO-8859-1?Q?Niccol=F2?= Belli <darkbasic@linuxsystems.it>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, Linux Advanced Routing & Traffic Control project <lartc@lists.linuxsystems.it>
+To: =?ISO-8859-1?Q?Niccol=F2?= Belli <darkbasic@linuxsystems.it>, postmaster@vger.kernel.org
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, Linux Advanced Routing & Traffic Control project <lartc@lists.linuxsystems.it>, Andy Furniss <andyqos@ukfsn.org>, "John A. Sullivan III" <jsullivan@opensourcedevel.com>, Lloyd Standish <lloyd@crnatural.net>
 
 On Mon, 2011-12-19 at 12:25 +0100, Niccol=C3=B2 Belli wrote:
 > Il 19/12/2011 10:53, Andrew Beverley ha scritto:
@@ -60,22 +68,28 @@ at
 > - most people want to keep the actual "LARTC" name
 > - most people prefer vger, so we should try there first and keep the=20
 > personal server as a backup option
+
+Agreed with all the above.
+
+VGER postmasters: can we try a new LARTC list at VGER please?
+
 > - the content in the LARTC website is under an open license, so we co=
 uld=20
 > copy-paste it and create a wiki where users can keep it updated. Same=
 =20
 > question here: I can host it without problems but is there a better=20
 > suited alternative?
-<snip>
-As someone who is strictly an end user with no kernel development skill=
-s
-whatsoever, I would be delighted to see a user list again rather than m=
-y
-having to spam the developers with all my silly questions and without m=
-e
-deleting dozens of patch notifications.
 
-On the other hand, LARTC seems to be such a complicated and not always
-well documented project that I wonder how much help can be rendered if
-the developers are not on the list - John
+Transferring all the LARTC documents to a wiki would be good, as that
+would allow people with their own areas of expertise to update the
+relevant parts.
+
+However, not sure where the best place to host it would be though. It
+needs to be somewhere that can easily be found in place of the old lart=
+c
+website. Maybe somewhere in linuxfoundation.org? That's where most of
+the other networking information seems to be.
+
+Andy
+
 
