@@ -1,32 +1,29 @@
-From: =?ISO-8859-1?Q?Niccol=F2_Belli?= <darkbasic@linuxsystems.it>
+From: Jan Engelhardt <jengelh@medozas.de>
 Subject: Re: Filtering on bridges
-Date: Wed, 21 Dec 2011 16:36:41 +0100
-Message-ID: <4EF1FD09.80306@linuxsystems.it>
+Date: Wed, 21 Dec 2011 19:36:40 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1112211934120.16532@frira.zrqbmnf.qr>
 References: <4EF1B216.50303@opendium.com> <alpine.LNX.2.01.1112211430010.22587@frira.zrqbmnf.qr> <4EF1E3B0.6080200@opendium.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=linuxsystems.it;
-	s=linuxsystems.it; t=1324481654;
-	bh=vRm2PBcNgFDuLFwWyIobYfaFBse2tJ0EvPeT68VK9M0=;
-	h=Message-ID:Date:From:MIME-Version:To:Subject:References:
-	 In-Reply-To:Content-Type:Content-Transfer-Encoding;
-	b=Ij2yMM138PhNkPlwf3ziP0S/g/to3D52iJBuVBOldGLaoG9Qha1eJv45Hnm1a5BC5
-	 RymoZRylNhzYQ54esWJWe5NlmklSpczqmHRfbLqPrOz77txe+Lz1e2iTOJQFrtJxv6
-	 Z7dy1pFJDimqLub1MMcIC1uj92wgj8HvlJiJLlKw=
 In-Reply-To: <4EF1E3B0.6080200@opendium.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Steve Hill <steve@opendium.com>
+Cc: netfilter@vger.kernel.org
 
-You *can't*, that's simple.
-=46orget the ebtables/marking shit, I did a firewall with it (which wor=
-ked=20
-flawlessly of course) and then I trashed it after seeing how disgusting=
-=20
-was the code. Do not use linux, it simply can't do the task in a=20
-feasible way. We are really gone backwards concerning bridging firewall=
-s.
+On Wednesday 2011-12-21 14:48, Steve Hill wrote:
 
-Niccol=F2
+> On 21/12/11 13:30, Jan Engelhardt wrote:
+>
+>> Mark the packets leaving on brX with iptables, then use ebtables to check
+>> for the physical interface plus the mark.
+>
+>At mark-time I wouldn't actually know where the packet is going, so wouldn't
+>know what criteria to mark based on...
+
+Yes you do know where it is going; the route is set on FORWARD/OUTPUT 
+(see nf-packet-flow.svg), therefore, you can mark, and as for the bridge 
+phys interface, it too will be set at one point, at which time you can 
+check the mark.
