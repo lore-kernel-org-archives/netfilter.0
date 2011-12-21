@@ -1,40 +1,34 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: RE: Is the current firewall model static?
-Date: Wed, 21 Dec 2011 10:22:18 +0000
-Message-ID: <1324462938.4269.177.camel@steve-pc>
-References: <000301ccbef9$4a8dc180$dfa94480$@nl>
-	 <1324375868.21032.1.camel@steve-pc>  <002201ccbfc1$7743d7f0$65cb87d0$@nl>
-	 <1324459648.4269.83.camel@steve-pc>  <000001ccbfc9$8e14a0b0$aa3de210$@nl>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Filtering on bridges
+Date: Wed, 21 Dec 2011 14:30:46 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1112211430010.22587@frira.zrqbmnf.qr>
+References: <4EF1B216.50303@opendium.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1324462936;
-	bh=0wG1M8/ZtE4bbMPKM83QbZxd7/A9EzWzG4mCU9p9IG8=;
-	h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-ID:Mime-Version:Content-Transfer-Encoding;
-	b=n0c3UVS1SKNruzj4LjZWIZjumvSm5sz3IbUrYEv8Bs4pcHYxJr1jHS0jGk4VlYHb1
-	 mHoFgrSr3OaVDI0eijcR96TpL/RmOfupYZ4Q/yY14Qq904AqXy7sEwozrpvRwxYeQD
-	 10jsguwteNFgLIXYW9SAT8yZIz3hknrC6KSOG0qw=
-In-Reply-To: <000001ccbfc9$8e14a0b0$aa3de210$@nl>
+In-Reply-To: <4EF1B216.50303@opendium.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Hansa <mythtv@logic-q.nl>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Steve Hill <steve@opendium.com>
 Cc: netfilter@vger.kernel.org
 
-On Wed, 2011-12-21 at 11:16 +0100, Hansa wrote:
-> So it's all about 'how' the firewall is managed (by which tools that
->  is). Netfilter by itself isn't static. Using iptables you can change
->  the firewall dynamically. Using system-config-firewall you're static.
 
-Correct.
+On Wednesday 2011-12-21 11:16, Steve Hill wrote:
 
-> 
-> Thanks for clarifying!
+>For bridged traffic (i.e. traffic that is coming in through one physical NIC,
+>traversing a bridge and being sent out of another one without being routed),
+>physdev still works as expected.
+>
+>However, for traffic that has gone through the machine's own IP stack (either
+>by being routed or by being generated locally), --physdev-out is no longer
+>allowed.  At the time the iptables rules are being executed, the only thing you
+>know is the logical bridge interface it is being routed to rather than the
+>physical NIC it will eventually be sent from.  Is there a recommended method of
+>filtering this traffic based on the physical NIC it is being sent out of, now
+>that the deferred rule functionality has been removed?  ebtables doesn't really
+>seem to be an option since it is nowhere near as powerful as iptables when it
+>comes to IP filtering.
 
-No problem :-)
-
-Andy
-
-
+Mark the packets leaving on brX with iptables, then use ebtables to check
+for the physical interface plus the mark.
