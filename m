@@ -1,41 +1,40 @@
-From: "Hansa" <mythtv@logic-q.nl>
+From: Andrew Beverley <andy@andybev.com>
 Subject: RE: Is the current firewall model static?
-Date: Wed, 21 Dec 2011 11:16:07 +0100
-Message-ID: <000001ccbfc9$8e14a0b0$aa3de210$@nl>
-References: <000301ccbef9$4a8dc180$dfa94480$@nl>	 <1324375868.21032.1.camel@steve-pc>  <002201ccbfc1$7743d7f0$65cb87d0$@nl> <1324459648.4269.83.camel@steve-pc>
+Date: Wed, 21 Dec 2011 10:22:18 +0000
+Message-ID: <1324462938.4269.177.camel@steve-pc>
+References: <000301ccbef9$4a8dc180$dfa94480$@nl>
+	 <1324375868.21032.1.camel@steve-pc>  <002201ccbfc1$7743d7f0$65cb87d0$@nl>
+	 <1324459648.4269.83.camel@steve-pc>  <000001ccbfc9$8e14a0b0$aa3de210$@nl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1324459648.4269.83.camel@steve-pc>
-Content-Language: nl
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1324462936;
+	bh=0wG1M8/ZtE4bbMPKM83QbZxd7/A9EzWzG4mCU9p9IG8=;
+	h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-ID:Mime-Version:Content-Transfer-Encoding;
+	b=n0c3UVS1SKNruzj4LjZWIZjumvSm5sz3IbUrYEv8Bs4pcHYxJr1jHS0jGk4VlYHb1
+	 mHoFgrSr3OaVDI0eijcR96TpL/RmOfupYZ4Q/yY14Qq904AqXy7sEwozrpvRwxYeQD
+	 10jsguwteNFgLIXYW9SAT8yZIz3hknrC6KSOG0qw=
+In-Reply-To: <000001ccbfc9$8e14a0b0$aa3de210$@nl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: 'Andrew Beverley' <andy@andybev.com>
+To: Hansa <mythtv@logic-q.nl>
 Cc: netfilter@vger.kernel.org
 
-On Wed, 2011-12-21 at 10:27 +0100, Andrew Beverley wrote:
-> On Wed, 2011-12-21 at 10:18 +0100, Hansa wrote:
-> > > I think that what they mean is that the current *Fedora* firewall model
-> > > is static. It looks like firewalld still uses iptables, but is slightly
-> > > more intelligent as to how it processes changes to rules and so on.
-> >
-> > I wasn't aware the firewall model is implemented differently across
-> >  different Linux flavors. I thought netfilter implements a packet
-> >  filtering framework into the Linux kernel. Shouldn't it work the work
-> >  the same on every Linux flavor?
-> 
-> Once the iptables binary has been called and the rules have been set,
-> then yes, it's the same across any flavour of Linux (I guess).
-> 
-> I meant that the distro's implementation of how the rules are managed is
-> different. There are loads of different ways. A quick search on a Ubuntu
-> system reveals the following. I'm guessing that all of these use
-> iptables, but some are better than others at changing rules "on the
-> fly".
+On Wed, 2011-12-21 at 11:16 +0100, Hansa wrote:
+> So it's all about 'how' the firewall is managed (by which tools that
+>  is). Netfilter by itself isn't static. Using iptables you can change
+>  the firewall dynamically. Using system-config-firewall you're static.
 
-So it's all about 'how' the firewall is managed (by which tools that is). Netfilter by itself isn't static. Using iptables you can change the firewall dynamically. Using system-config-firewall you're static.
+Correct.
 
-Thanks for clarifying!
--Hansa
+> 
+> Thanks for clarifying!
+
+No problem :-)
+
+Andy
+
 
