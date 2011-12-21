@@ -1,44 +1,52 @@
 From: Andrew Beverley <andy@andybev.com>
-Subject: Re: Details on iif in ip rule
-Date: Wed, 21 Dec 2011 09:01:12 +0000
-Message-ID: <1324458072.4269.37.camel@steve-pc>
-References: <9E4E4FA919634D48ADBF608395D283EE0721B63257@exc-aus-0001>
-	 <alpine.LNX.2.01.1112210318020.5980@frira.zrqbmnf.qr>
+Subject: Re: NAT WAN IP to internal range?
+Date: Wed, 21 Dec 2011 09:07:29 +0000
+Message-ID: <1324458449.4269.49.camel@steve-pc>
+References: <CANSq30tB6vk90gORs+bcLFvF3a8iwZcw8CbUpJFZJOH2YN-SXQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1324458074;
-	bh=PxVKPpXLPAn7GKccqEx+U+srK9O4Pin21Dd3REGnbE0=;
+	s=selector1; t=1324458447;
+	bh=0/v5QTfFKif2Fpo+AQmRpPF7hhSJod+16k0Jg/Y6xOM=;
 	h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:Date:
 	 Message-ID:Mime-Version:Content-Transfer-Encoding;
-	b=FGe4J49gW9Lc6He65WJK78FIKb33wh5feqmt+4Iv72MWQ1gzAhAExHkEjeFly7hY0
-	 9x79pfaxlb8kQaGJKbM8Oz1eMB7xalDNVrspWZ26cEcpd7KR/2rM16NL17xO4FVWd1
-	 xHbQPSs1n5GMgSZGvx9oOboRPkMj+sQVn1XsIQ1I=
-In-Reply-To: <alpine.LNX.2.01.1112210318020.5980@frira.zrqbmnf.qr>
+	b=mvd0vjaiaghpT1yP4hWRxt2IixUeQO9GhFqQpQCMjwDucr7SNkReh2PMncTOouNW1
+	 xzNJiNoT57jnTW4hAkdanYq6wB8o+ph9WqqYFTXXBFZictoLh8ircwcNEiGALmJQqi
+	 waMH+Q5fzLY+A0F02pwwwzffBAWbU8L4ooC9Lsjo=
+In-Reply-To: <CANSq30tB6vk90gORs+bcLFvF3a8iwZcw8CbUpJFZJOH2YN-SXQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Aadith Koshy <ak699f@att.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="windows-1252"
+To: Andrew Stone <andrew@stonie.net>
+Cc: netfilter@vger.kernel.org
 
-On Wed, 2011-12-21 at 03:20 +0100, Jan Engelhardt wrote:
-> On Wednesday 2011-12-21 01:08, Aadith Koshy wrote:
-> 
-> >Hi Team,
-> >
-> >I am having some trouble understanding 'iif' on the ip rules. Let me 
-> >explain what I am trying out. I have 3 virtual interfaces on a single 
-> >interface.
-> 
-> stop using net-tools. Use iproute2.
+On Mon, 2011-12-19 at 14:20 +1100, Andrew Stone wrote:
+> Hello,
+>=20
+> I am having a bit of trouble following the documentation on assigning
+> a range of NATed IPs.
 
-Aadith: Jan is right. You need to use iproute2. As a starter for 10, you
-need to do something like:
+Sorry, meant to reply to this earlier but forgot. The previous netfilte=
+r
+message just reminded me.
 
-ip address add 192.168.5.0/24 dev eth0
+> My router has a several External IP=E2=80=99s assigned to the WAN int=
+erface:
+>=20
+> WANIF=3D`get_wanface`
+> ifconfig $WANIF:1 a.b.c.241 netmask 255.255.255.248 broadcast a.b.c.2=
+47
+> ifconfig $WANIF:2 a.b.c.242 netmask 255.255.255.248 broadcast a.b.c.2=
+47
+> ifconfig $WANIF:3 a.b.c.243 netmask 255.255.255.248 broadcast a.b.c.2=
+47
 
-rather than whatever ifconfig rule you are using.
+Have you tried configuring the interface using iproute2 instead?
+
+Something like:
+
+ip address add a.b.c.241/29 dev $WANIF broadcast a.b.c.247
 
 Andy
 
