@@ -1,90 +1,42 @@
-From: "Lloyd Standish" <lloyd@crnatural.net>
-Subject: can't set default route for virtual interface
-Date: Tue, 27 Dec 2011 17:32:33 -0600
-Message-ID: <op.v654qjz3x1lyi3@debiandesk2.net>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: can't set default route for virtual interface
+Date: Tue, 27 Dec 2011 23:43:01 +0000
+Message-ID: <1325029381.1672.38.camel@steve-pc>
+References: <op.v654qjz3x1lyi3@debiandesk2.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1325029389;
+	bh=V7SsEVlFL/kx5ldEGNZ5YnsaQvevBFZ9nQ5ICr+6qS8=;
+	h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-ID:Mime-Version:Content-Transfer-Encoding;
+	b=ZldnBZEudJSUfSH6Qbcq8uzRbhcj2cGXt6/WjvVf03tm6ZBr925Baj4v8x33Lrp0b
+	 TFNFlnBk4uF/GwyMLfLu9+u+a3j0wVVuDQOisQcH9v5kaageM4T3899pUa+FM9unG0
+	 ZR7bTaYZ1UC55Vi802FXahwrkrCdvw2WLvmugpIE=
+In-Reply-To: <op.v654qjz3x1lyi3@debiandesk2.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed	delsp=yes"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Lloyd Standish <lloyd@crnatural.net>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi All,
+On Tue, 2011-12-27 at 17:32 -0600, Lloyd Standish wrote:
+> + ip route add default via 192.168.2.1 table T1
+> RTNETLINK answers: No such process
 
-I'm setting up multiple virtual interfaces to allow load-balancing over several uplinks using a single NIC, on Debian Squeeze.  Packets will be marked by iptables, and sent to the proper routing tables via "ip rule add fwmark <n>".
+This normally means that the kernel doesn't think that 192.168.2.1 is a
+valid address. Is that IP address definitely set up by that point in the
+script?
 
-I'm having trouble setting routes for the VLANs.
+Have you tried *not* using ifconfig to set up your interfaces? You
+should only be using iproute2.
 
-root@debiandesk2:/etc/network# ifconfig
+> Similarly, I was unable to use "ip" to set a "nexthop via" default route for virtual interfaces.
+> 
 
-192.168.100.255  Mask:255.255.255.0
-            inet6 addr: fe80::22cf:30ff:fed8:6bea/64 Scope:Link
-            UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-            RX packets:49654 errors:0 dropped:0 overruns:0 frame:0
-            TX packets:54712 errors:0 dropped:0 overruns:0 carrier:0
-            collisions:0 txqueuelen:1000
-            RX bytes:35989170 (34.3 MiB)  TX bytes:8795113 (8.3 MiB)
-            Interrupt:27 Base address:0xc000
+Same probably applies to this.
 
-eth1      Link encap:Ethernet  HWaddr 00:08:54:dc:1b:79
-            inet addr:192.168.10.1  Bcast:192.168.10.255  Mask:255.255.255.0
-            inet6 addr: fe80::208:54ff:fedc:1b79/64 Scope:Link
-            UP BROADCAST MULTICAST  MTU:1500  Metric:1
-            RX packets:6077 errors:0 dropped:0 overruns:0 frame:0
-            TX packets:9451 errors:0 dropped:0 overruns:0 carrier:73
-            collisions:0 txqueuelen:1000
-            RX bytes:821439 (802.1 KiB)  TX bytes:9756873 (9.3 MiB)
-            Interrupt:19 Base address:0xdc00
+Andy
 
-eth0.2    Link encap:Ethernet  HWaddr 20:cf:30:d8:6b:ea
-            inet addr:192.168.200.10  Bcast:192.168.200.255  Mask:255.255.255.0
-            inet6 addr: fe80::22cf:30ff:fed8:6bea/64 Scope:Link
-            UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-            RX packets:17776 errors:0 dropped:0 overruns:0 frame:0
-            TX packets:15037 errors:0 dropped:1 overruns:0 carrier:0
-            collisions:0 txqueuelen:0
-            RX bytes:16258598 (15.5 MiB)  TX bytes:2075870 (1.9 MiB)
 
-eth0.3    Link encap:Ethernet  HWaddr 20:cf:30:d8:6b:ea
-            inet addr:192.168.2.10  Bcast:192.168.2.255  Mask:255.255.255.0
-            inet6 addr: fe80::22cf:30ff:fed8:6bea/64 Scope:Link
-            UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
-            RX packets:1083 errors:0 dropped:0 overruns:0 frame:0
-            TX packets:1320 errors:0 dropped:0 overruns:0 carrier:0
-            collisions:0 txqueuelen:0
-            RX bytes:113499 (110.8 KiB)  TX bytes:273602 (267.1 KiB)
-
-My firewall/load-balancing script is able to set the routes for the first virtual interface (eth0.2) OK:
-
-+ ip route flush table T0
-+ ip route add 192.168.200.0/24 dev eth0.2 src 192.168.200.10 table T0
-+ ip rule add from 192.168.200.10 table T0
-+ ip rule add iif lo to 201.200.105.6 table T0
-+ ip route add 192.168.10.0/24 dev eth1 table T0
-+ ip route add 127.0.0.0/8 dev lo table T0
-+ ip rule del from all fwmark 0
-+ ip rule add fwmark 0 table T0
-+ ip route add 192.168.200.0/24 dev eth0.2 src 192.168.200.10
-+ ip route add default via 192.168.200.1 table T0
-
-However, it fails as follows when adding the default route for the second virtual interface (eth0.3):
-
-+ ip route flush table T1
-+ ip route add 192.168.2.0/24 dev eth0.3 src 192.168.2.10 table T1
-+ ip rule add from 192.168.2.10 table T1
-+ ip rule add iif lo to 8.8.4.4 table T1
-+ ip route add 192.168.10.0/24 dev eth1 table T1
-+ ip route add 127.0.0.0/8 dev lo table T1
-+ ip rule del from all fwmark 1
-+ ip rule add fwmark 1 table T1
-+ ip route add 192.168.2.0/24 dev eth0.3 src 192.168.2.10
-+ ip route add default via 192.168.2.1 table T1
-RTNETLINK answers: No such process
-
-Similarly, I was unable to use "ip" to set a "nexthop via" default route for virtual interfaces.
-
-I'd greatly appreciate any help.
-
-Regards,
-Lloyd
