@@ -1,24 +1,30 @@
-From: "Lloyd Standish" <lloyd@crnatural.net>
-Subject: Re: can't set default route for virtual interface
-Date: Tue, 27 Dec 2011 19:56:55 -0600
-Message-ID: <op.v66fo5l8x1lyi3@debiandesk2.net>
-References: <op.v654qjz3x1lyi3@debiandesk2.net>
- <4EFA65DA.80001@standarduniversal.com.au>
+From: Tim Lank <timlank@timlank.com>
+Subject: how does NOTRACK work?
+Date: Tue, 27 Dec 2011 21:12:37 -0500
+Message-ID: <CAHyifnRkaVncFdpu6M7Op0tDuyhzBQqkokQJ+Oq9k-CbP5FScg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4EFA65DA.80001@standarduniversal.com.au>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed	delsp=yes"
-To: Brian Austin - Standard Universal <brian@standarduniversal.com.au>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Tue, 27 Dec 2011 18:42:02 -0600, Brian Austin - Standard Universal <brian@standarduniversal.com.au> wrote:
+Netfilter list:
 
-> or add the dev to the failed command? (yes I saw you already had that other command doh)
+I have this in my iptables and it seems to work in that it doesn't
+track the connections on the eth1 interface.
 
-Thank you - I added that and the route was added successfully!
+*raw
+:PREROUTING ACCEPT [1327:114702]
+:OUTPUT ACCEPT [2012:272100]
+-A PREROUTING -i bond1 -j NOTRACK
+-A OUTPUT -o bond1 -j NOTRACK
+COMMIT
 
---
-Lloyd
+However, it never gets to the sshd or httpd service and reply to the client.
+
+What else do I need to do in order to get the NOTRACK to accept sshd and httpd?
+
+Thanks in advance for your help.
+Tim
