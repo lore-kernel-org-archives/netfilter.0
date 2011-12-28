@@ -1,7 +1,7 @@
 From: Brian Austin - Standard Universal <brian@standarduniversal.com.au>
 Subject: Re: can't set default route for virtual interface
-Date: Wed, 28 Dec 2011 11:42:02 +1100
-Message-ID: <4EFA65DA.80001@standarduniversal.com.au>
+Date: Wed, 28 Dec 2011 11:40:05 +1100
+Message-ID: <4EFA6565.7050808@standarduniversal.com.au>
 References: <op.v654qjz3x1lyi3@debiandesk2.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -13,10 +13,10 @@ Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Lloyd Standish <lloyd@crnatural.net>
 Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-or add the dev to the failed command? (yes I saw you already had that 
-other command doh)
+table T1 needs this first?
 
 ip route add 192.168.2.0/24 dev eth0.3 src 192.168.2.10 table T1
+
 
 
 
