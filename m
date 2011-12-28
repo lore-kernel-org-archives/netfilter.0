@@ -1,43 +1,57 @@
-From: =?ISO-8859-15?Q?Niccol=F2_Belli?= <darkbasic@linuxsystems.it>
-Subject: [Announce] LARTC wiki available
-Date: Wed, 28 Dec 2011 16:52:11 +0100
-Message-ID: <4EFB3B2B.7060200@linuxsystems.it>
+From: Tom Horsley <horsley1953@gmail.com>
+Subject: how do I block NAT for a ranges of IPs?
+Date: Wed, 28 Dec 2011 10:55:06 -0500
+Message-ID: <20111228105506.0d5fa61e@zooty>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netdev-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=linuxsystems.it;
-	s=linuxsystems.it; t=1325087366;
-	bh=cudUiZ5grCxwl0u0Vj7g2qYtHetIxaQTpUHbSMfDVEs=;
-	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:Content-Type:
-	 Content-Transfer-Encoding;
-	b=ZINj6FunmlCMGZtyDi1nioixCRsTcnrWLWaGM1KRjg5+aOU2dtHiPxQEfhNb32vBc
-	 jGbsuFUgz7StEZWXhWUJLBhbWpSOt3xOcASeGbe0HoHZKBGGwE14ct569q0pt9IXkd
-	 EnlvqmFYH1G005rmva4sNYywy1tYZdw4m5P7poto=
-Sender: netdev-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=date:from:to:subject:message-id:x-mailer:mime-version:content-type
+         :content-transfer-encoding;
+        bh=1wL0I7kJHNV27ZPmgnUmQv6cn49EWzqNyljHFToEKvo=;
+        b=O59zWvykR/ARiSQvW9gAvl/4HzKvyCybiMsMb9I9Of8+kuUO9q1Lz8CRocaGtOTsPF
+         sOTKSSS+6Y42h/PCp0hmZZ21LRNq569uEA2BJagEpnPCct+gjPfp4v0wyW0/SDbO7qq/
+         WDlYBnDd/XIhqFEcbQuPbcKtr5+D/OghF46QM=
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: lartc@vger.kernel.org
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, Linux Networking Developer Mailing List <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Hi,
-I still didn't find a viable solution for the LARTC wiki, so I decided=20
-to start hosting it on my own server. Later we can easily switch=20
-somewhere else if we keep using the same wiki engine (and maybe even=20
-with another wiki engine).
-I decided to use wikimedia because it's the only one I know of, so if=20
-someone knows a better alternative please let me know, we are still in=20
-time for a change.
-Since I never used a wiki seriously I will probably need someone else=20
-who can help me maintaining it, please let me know if you are=20
-experienced and willing to help.
+I have a KVM virtual machine I would like to totally isolate from
+my local LAN. I've told libvirt to use a separate bridge for this
+KVM and I've setup NAT routing for the separate bridge so the
+KVM can get to the outside world. That all works.
 
-Here is the wiki: http://lartc.linuxsystems.it/
-And here is the new mailing list for those who still don't know:=20
-http://vger.kernel.org/vger-lists.html#lartc
+Now I want to figure out how to block any attempt from the
+KVM to get to my LAN, and my LAN (other than what is required
+for the NAT forwarding to continue working :-) from getting to
+the KVM.
 
-I just copy-pasted the Linux Advanced Routing & Traffic Control HOWTO=20
-atm, it still needs to be wikified and we still need to choose how to=20
-organize the contents.
+In my setup "br0" is the bridge that the physical interface
+and all my "normal" KVMs are attached to. It uses the
+192.168.100.0/24 address range.
 
-Cheers,
-Niccol=F2
+The "bifrost" bridge is not connected to a physical interface.
+I have assigned it address 10.10.10.1 and the KVM I want to
+isolate uses it as a gateway and has static IP 10.10.10.2.
+
+Here are the commands that do indeed seem to setup a working
+NAT for the KVM.
+
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -t nat -A POSTROUTING -o br0 -j MASQUERADE
+iptables -A FORWARD -i br0 -o bifrost -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -A FORWARD -i bifrost -o br0 -j ACCEPT
+
+Bearing in mind that I mostly cut & paste iptable rules and
+can only partially understand the stuff I read in the iptables
+man pages and wot-not, is anyone willing to tell me exactly
+what to change/add to prevent the KVM connected to bifrost
+from talking to my local LAN and vice versa? (I have a
+feeling I could understand the rules if someone told
+me what they should be, but absorbing everything
+in the man page then deducing what I need to do is beyond
+my poor brain :-).
+
+Tanks in advance for any help.
