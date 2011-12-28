@@ -1,126 +1,43 @@
-From: Barry Smoke <Barry.Smoke@arklegaudit.gov>
-Subject: help with bridged firewall with openvpn
-Date: Wed, 28 Dec 2011 08:46:45 -0600
-Message-ID: <250999BCC487ED429E1673DCFA26CDCC2A7BDA6E16@postman>
-References: <250999BCC487ED429E1673DCFA26CDCC2A7BDA6E15@postman>
+From: =?ISO-8859-15?Q?Niccol=F2_Belli?= <darkbasic@linuxsystems.it>
+Subject: [Announce] LARTC wiki available
+Date: Wed, 28 Dec 2011 16:52:11 +0100
+Message-ID: <4EFB3B2B.7060200@linuxsystems.it>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <250999BCC487ED429E1673DCFA26CDCC2A7BDA6E15@postman>
-Content-Language: en-US
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=linuxsystems.it;
+	s=linuxsystems.it; t=1325087366;
+	bh=cudUiZ5grCxwl0u0Vj7g2qYtHetIxaQTpUHbSMfDVEs=;
+	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:Content-Type:
+	 Content-Transfer-Encoding;
+	b=ZINj6FunmlCMGZtyDi1nioixCRsTcnrWLWaGM1KRjg5+aOU2dtHiPxQEfhNb32vBc
+	 jGbsuFUgz7StEZWXhWUJLBhbWpSOt3xOcASeGbe0HoHZKBGGwE14ct569q0pt9IXkd
+	 EnlvqmFYH1G005rmva4sNYywy1tYZdw4m5P7poto=
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: lartc@vger.kernel.org
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, Linux Networking Developer Mailing List <netdev@vger.kernel.org>
 
+Hi,
+I still didn't find a viable solution for the LARTC wiki, so I decided=20
+to start hosting it on my own server. Later we can easily switch=20
+somewhere else if we keep using the same wiki engine (and maybe even=20
+with another wiki engine).
+I decided to use wikimedia because it's the only one I know of, so if=20
+someone knows a better alternative please let me know, we are still in=20
+time for a change.
+Since I never used a wiki seriously I will probably need someone else=20
+who can help me maintaining it, please let me know if you are=20
+experienced and willing to help.
 
-Most of the online docs I've found deal with bridging, and virtualizati=
-on. =A0I'm trying to use bridging to link openvpn clients with our inte=
-rnal network, without nat(for a voip implementation on yealink phones).
-I've created a bridge on centos 5.6, and have openvpn using tap0.=A0 At=
- this point, I'm not sure if I'm having trouble with my bridge config, =
-or my iptables script.
-Brctl showmacs br0, does show my openvpn client mac, however it is not =
-listed as local(not sure if it is supposed to), and through tcpdump on =
-br0, I'm seeing my internal lan client that is trying to ping the openv=
-pn client get the mac address, however my ping requests never make it t=
-o br0.=A0=20
+Here is the wiki: http://lartc.linuxsystems.it/
+And here is the new mailing list for those who still don't know:=20
+http://vger.kernel.org/vger-lists.html#lartc
 
-I'm on kernel =A02.6.18-274.12.1.el5, and I modified a firewall script =
-we were previously using to work with the br0 interface instead.
-What we are seeing, is that vpn clients can ping the openvpn server.=A0=
- I can ping the clients from the openvpn server.=A0 I can't get interna=
-l machines to ping an openvpn client, nor can I get an openvpn client p=
-inging anything else on the network.
+I just copy-pasted the Linux Advanced Routing & Traffic Control HOWTO=20
+atm, it still needs to be wikified and we still need to choose how to=20
+organize the contents.
 
-The openvpn config pushes a reserved internal range to the vpn clients(=
-10.0.28.x)
-I've added tap0, and br0 to the forwarding table.
-
-Here is my current firewall script:
-
-# Set INTERFACE equal to the interface your OUTGOING connection is on.
-echo 1 > /proc/sys/net/ipv4/ip_forward
-INTERFACE=3Deth1
-#Delete user made chains. Flush and zero the tables.
-/sbin/iptables -F
-/sbin/iptables -X
-/sbin/iptables -Z
-
-#Delete `nat' and `mangle' targets.
-/sbin/iptables -t nat -F
-/sbin/iptables -t mangle -F
-
-#Create a new log and drop (LDROP) convenience target
-/sbin/iptables -N LDROP
-# --log-level 7 makes it stop logging to the console.
-# --log-prefix iptables: makes for easy syslog-ng filtering
-/sbin/iptables -A LDROP -j LOG --log-level 4 --log-prefix iptables:
-/sbin/iptables -A LDROP -j DROP
-
-#Create a new target (GOOD) to test for good intentions.
-/sbin/iptables -N GOOD
-#Allow but limit some ICMP (needed for pinging and tracerouting)
-/sbin/iptables -A GOOD -p icmp --icmp-type echo-request -m limit --limi=
-t 1/s -j ACCEPT
-/sbin/iptables -A GOOD -p icmp --icmp-type echo-reply -m limit --limit =
-1/s -j ACCEPT
-/sbin/iptables -A GOOD -p icmp --icmp-type source-quench -m limit --lim=
-it 2/s -j ACCEPT
-
-#Check State (Only allow incoming connections that have a ESTABLISHED o=
-r RELATED outgoing connection)
-/sbin/iptables -A GOOD -m state --state ESTABLISHED,RELATED -i ${INTERF=
-ACE} -j ACCEPT
-
-#Allowing specific protocols in. Add any you use.
-#Allow SSH
-/sbin/iptables -A GOOD -p tcp --dport 22 -j ACCEPT
-
-#openvpn
-/sbin/iptables -A GOOD -p udp -i eth1 -d 170.94.21.4 --dport 1194 -j AC=
-CEPT
-
-#Setting default input rule to DROP
-/sbin/iptables -P INPUT DROP
-
-#Allow all traffic on the local interfaces (Any interface EXCEPT the in=
-terface in $INTERFACE)
-#/sbin/iptables -A INPUT -i eth0 -j ACCEPT
-/sbin/iptables -A INPUT -i br0 -j ACCEPT
-/sbin/iptables -A INPUT -i tap0 -j ACCEPT
-
-#Test for good intentions (Adds the GOOD target to the INPUT chain)
-/sbin/iptables -A INPUT -j GOOD
-
-#Otherwise Log and Drop (This gets rid of anything we might have missed=
-)
-/sbin/iptables -A INPUT -j LDROP
-
-
-#Setting default forwarding rule to DROP
-/sbin/iptables -P FORWARD DROP
-
-#Let non-evil stuff out
-#/sbin/iptables -A FORWARD -i eth0=A0 -j ACCEPT
-/sbin/iptables -A FORWARD -i br0 -j ACCEPT
-/sbin/iptables -A FORWARD -i tap0 -j ACCEPT
-
-/sbin/iptables -A FORWARD -i lo -j ACCEPT
-/sbin/iptables -A FORWARD -s 10.0.0.0/16 -j ACCEPT
-/sbin/iptables -A FORWARD -d 10.0.0.0/16 -j ACCEPT
-
-#Test for good intentions (Adds the GOOD target to the FORWARD chain)
-/sbin/iptables -A FORWARD -j GOOD
-#Otherwise Log and Drop
-/sbin/iptables -A FORWARD -j LDROP
-
-#Setting default output rule to ACCEPT
-/sbin/iptables -P OUTPUT ACCEPT
-#Allow all traffic to the lo interface
-#/sbin/iptables -A OUTPUT -o lo -j ACCEPT
-
-#allows internal lan clients to use this server as a gateway
-/sbin/iptables -t nat -A POSTROUTING -s 10.0.0.0/16 -d ! 10.0.0.0/16 -o=
- ${INTERFACE} -j MASQUERADE
-
+Cheers,
+Niccol=F2
