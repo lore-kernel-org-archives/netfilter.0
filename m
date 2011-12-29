@@ -1,76 +1,33 @@
-From: Paulo Ricardo Bruck <pauloric@contatogs.com.br>
-Subject: Re: iptables rules with non-transparent squid proxy
-Date: Thu, 29 Dec 2011 09:54:41 -0200 (BRST)
-Message-ID: <1290077511.173.1325159681096.JavaMail.root@mercurio.contatogs.com.br>
-References: <CF4E8296A16C1A408B28BFFED33EA8B301FEED35@SRVEX1APS.caoamontadora.com.br>
+From: Andrew Stone <andrew@stonie.net>
+Subject: Re: NAT WAN IP to internal range?
+Date: Fri, 30 Dec 2011 00:38:31 +1100
+Message-ID: <CANSq30tgxHWZvrarzVp7R3JqzyfZyoQy23oLFoi7seNoPzc+Xg@mail.gmail.com>
+References: <CANSq30tB6vk90gORs+bcLFvF3a8iwZcw8CbUpJFZJOH2YN-SXQ@mail.gmail.com>
+	<1324458449.4269.49.camel@steve-pc>
+	<CANSq30tNeT5AUD+Veq5qhxWgTXmqhy01Tyh5a1NYLSe1u4FXOA@mail.gmail.com>
+	<4EFC46CE.8010202@atc.tcs.com>
+	<4EFC49F3.2040009@atc.tcs.com>
+	<CANSq30v-QabkFg3OYGqrRDJ_Jir5=eFiw43hjF7iA-aUeyTTRA@mail.gmail.com>
+	<4EFC5066.5060709@atc.tcs.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CF4E8296A16C1A408B28BFFED33EA8B301FEED35@SRVEX1APS.caoamontadora.com.br>
+In-Reply-To: <4EFC5066.5060709@atc.tcs.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: Vigneswaran R <vignesh@atc.tcs.com>
+Cc: netfilter@vger.kernel.org
 
------ Mensagem original -----
-> De: "Pablo Antonio Costa" <pablo.costa@caoamontadora.com.br>
-> Para: netfilter@vger.kernel.org
-> Enviadas: Quinta-feira, 29 de Dezembro de 2011 9:38:32
-> Assunto: iptables rules with non-transparent squid proxy
-> Hi all,
+Thanks Vignesh!
 
-Hi Pablo
+>iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -o $WANIF -j SNAT --to-source a.b.c.241
+>Here I am assuming that 192.168.1.0/24 is your internal network and you want to allow all the machines. If you want to allow only a few machines, put a comma separated "address[/mask]" list.
 
- 
-> for squid non-transparent ( ad auth ). how can i set for clientes
-> access??? )
-> 
-> my lines
-> 
-> 
-> iptables --policy INPUT DROP
-> iptables --policy OUTPUT ACCEPT
-> 
-> iptables -A INPUT -i lo -j ACCEPT
-> iptables -A OUTPUT -o lo -j ACCEPT
-> 
-> iptables -A INPUT -s <client_IP>/32 -p tcp --dport 22 -j ACCEPT
-> iptables -A INPUT -s <client_IP>/32 -p tcp --dport 3128(squid default
-> port) -j ACCEPT
-> iptables -A INPUT -j DROP 
+Solved it for me... in the end I used:
+iptables -t nat -I POSTROUTING -s 192.168.1.96/27 -o ppp0 -j SNAT
+--to-source a.b.c.241
+and matched the range to my DHCP leases. (96 to 127)
 
-( this last rule is not necessary)
-
-> 
-> ssh works fine, but squid not ( all rules drops on my last rule
-> "iptables -A INPUT -j DROP" )
-
-as you are not using statefull firewall, you must think about INPUT+OUTPUT
-
-you should insert a rule like this:
-
-iptables -A INPUT -i ethx ( your wan interface) -p tcp -m multiport --sport 21,80,443 -j ACCEPT
-
-BTW please read tnis doc:
-http://www.frozentux.net/documents/iptables-tutorial/
-
-it's the best document that i have already read about iptables...80)
-
-best regards
-
-> 
-> Thanks in advance!
-> 
-> At.
-> PC
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter"
-> in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at http://vger.kernel.org/majordomo-info.html
-
--- 
-Paulo Ricardo Bruck
-Consultor Linux
-cel 011 9235-4327 tel 011 3596-4881/4882
-http://www.contatogs.com.br
+Cheers,
+Andrew
