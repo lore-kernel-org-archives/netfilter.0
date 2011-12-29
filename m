@@ -1,38 +1,76 @@
-From: Pablo Antonio Costa <pablo.costa@caoamontadora.com.br>
-Subject: iptables squid non-transparent
-Date: Thu, 29 Dec 2011 12:03:08 +0000
-Message-ID: <CF4E8296A16C1A408B28BFFED33EA8B301FEED5B@SRVEX1APS.caoamontadora.com.br>
+From: Paulo Ricardo Bruck <pauloric@contatogs.com.br>
+Subject: Re: iptables rules with non-transparent squid proxy
+Date: Thu, 29 Dec 2011 09:54:41 -0200 (BRST)
+Message-ID: <1290077511.173.1325159681096.JavaMail.root@mercurio.contatogs.com.br>
+References: <CF4E8296A16C1A408B28BFFED33EA8B301FEED35@SRVEX1APS.caoamontadora.com.br>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: pt-BR
+In-Reply-To: <CF4E8296A16C1A408B28BFFED33EA8B301FEED35@SRVEX1APS.caoamontadora.com.br>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Sachin Gopal [gopalsachin@gmail.com]
+----- Mensagem original -----
+> De: "Pablo Antonio Costa" <pablo.costa@caoamontadora.com.br>
+> Para: netfilter@vger.kernel.org
+> Enviadas: Quinta-feira, 29 de Dezembro de 2011 9:38:32
+> Assunto: iptables rules with non-transparent squid proxy
+> Hi all,
 
-Try putting a established, related as accept.
+Hi Pablo
 
+ 
+> for squid non-transparent ( ad auth ). how can i set for clientes
+> access??? )
+> 
+> my lines
+> 
+> 
+> iptables --policy INPUT DROP
+> iptables --policy OUTPUT ACCEPT
+> 
+> iptables -A INPUT -i lo -j ACCEPT
+> iptables -A OUTPUT -o lo -j ACCEPT
+> 
+> iptables -A INPUT -s <client_IP>/32 -p tcp --dport 22 -j ACCEPT
+> iptables -A INPUT -s <client_IP>/32 -p tcp --dport 3128(squid default
+> port) -j ACCEPT
+> iptables -A INPUT -j DROP 
 
-------------------------------------------------------------------------
+( this last rule is not necessary)
 
-same result :*(...  cant navagate from client (172.16.39.88)
+> 
+> ssh works fine, but squid not ( all rules drops on my last rule
+> "iptables -A INPUT -j DROP" )
 
-[root@srvsc1aps ~]# iptables -nL -v --line-numbers
-Chain INPUT (policy DROP 967 packets, 68517 bytes)
-num   pkts bytes target     prot opt in     out     source               destination         
-1      885 82176 ACCEPT     all  --  lo     *       0.0.0.0/0            0.0.0.0/0           
-2     1162 71075 ACCEPT     tcp  --  *      *       172.16.0.0/16        0.0.0.0/0           tcp dpt:22 
-3        0     0 ACCEPT     tcp  --  *      *       172.16.0.0/16        0.0.0.0/0           tcp dpt:8888 
-4        9  3197 ACCEPT     tcp  --  *      *       172.16.39.88         0.0.0.0/0           state RELATED,ESTABLISHED tcp dpt:3128 
-5    34963   39M ACCEPT     all  --  *      *       172.16.33.0/24       0.0.0.0/0  <-- ALL PROXY CONNECTION (3128) -->   
+as you are not using statefull firewall, you must think about INPUT+OUTPUT
 
-Chain FORWARD (policy DROP 0 packets, 0 bytes)
-num   pkts bytes target     prot opt in     out     source               destination         
+you should insert a rule like this:
 
-Chain OUTPUT (policy ACCEPT 2774K packets, 1124M bytes)
-num   pkts bytes target     prot opt in     out     source               destination         
-1      823 75985 ACCEPT     all  --  *      lo      0.0.0.0/0            0.0.0.0/0           
-[root@srvsc1aps ~]# 
+iptables -A INPUT -i ethx ( your wan interface) -p tcp -m multiport --sport 21,80,443 -j ACCEPT
+
+BTW please read tnis doc:
+http://www.frozentux.net/documents/iptables-tutorial/
+
+it's the best document that i have already read about iptables...80)
+
+best regards
+
+> 
+> Thanks in advance!
+> 
+> At.
+> PC
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter"
+> in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at http://vger.kernel.org/majordomo-info.html
+
+-- 
+Paulo Ricardo Bruck
+Consultor Linux
+cel 011 9235-4327 tel 011 3596-4881/4882
+http://www.contatogs.com.br
