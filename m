@@ -1,60 +1,43 @@
-From: =?ISO-8859-1?Q?Niccol=F2_Belli?= <darkbasic@linuxsystems.it>
-Subject: Re: [Announce] LARTC wiki available
-Date: Thu, 29 Dec 2011 18:13:38 +0100
-Message-ID: <4EFC9FC2.1090503@linuxsystems.it>
-References: <4EFB3B2B.7060200@linuxsystems.it> <20111229002717.GB3548@hell> <4EFC34E5.4040202@linuxsystems.it> <20111229161919.GA2948@hell>
+From: "Lloyd Standish" <lloyd@crnatural.net>
+Subject: Routing for multiple uplinks/providers
+Date: Thu, 29 Dec 2011 11:21:52 -0600
+Message-ID: <op.v69g6qvbx1lyi3@debiandesk2.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netdev-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=linuxsystems.it;
-	s=linuxsystems.it; t=1325178815;
-	bh=WoipFLWs21SY5LbKCUPJELSGRHjatbmEXeEwecQ3kmY=;
-	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:References:
-	 In-Reply-To:Content-Type:Content-Transfer-Encoding;
-	b=R+l0bTuEequ6XqXYrc3G8nDZLYmAkMIU7IoInC0TJT5/5h/IiK9tHK1tseqXsLmrB
-	 aB5+DGbpDbfmHEBXfn9CYl3QzfgNGKsvtCS+mQ5BD7ikQhPtggFRLgwdgQ3x6XXXdu
-	 WCEmunaW70hhQkDZQ8rgQQY5NmqtNi7QZP8klhvw=
-In-Reply-To: <20111229161919.GA2948@hell>
-Sender: netdev-owner@vger.kernel.org
+Content-Transfer-Encoding: 7BIT
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: lartc@vger.kernel.org
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, Linux Networking Developer Mailing List <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed	delsp=yes"
+To: netfilter@vger.kernel.org
 
-Il 29/12/2011 17:19, Hagen Paul Pfeifer ha scritto:
-> But I don't like the idea to outhouse the existing wiki. Why two wiki=
-s?
+Hello Friends,
 
-Because if you need an invite to edit something then it isn't a wiki=20
-anymore, for example.
+I have have coded a load-balancing netfilters router, which seems to work fine, but I have a question about sending a router's response to queries out over the right interface.
 
+Suppose a router has 2 outward-facing interfaces (uplinks) and a LAN (3 interfaces).  The LAN addresses are SNAT'd over the 2 outward interface addresses (WANs).
 
-> What happened with the wiki server if you leave the university?
+Suppose the router also runs a few services (for example a web server), and might get incoming requests from either of its 2 uplinks.  (I realize that running services on more than one IP might be uncommon.)
 
-This isn't a problem, because relocating would be as simple as doing a=20
-database dump. Releasing dumps publicly wouldn't be a problem too. Also=
-,=20
-there is no reason to keep using my servers when better alternatives=20
-arise. I created the wiki in a dedicated server because I didn't find=20
-viable alternatives (unlike for the mailing list) and considering the=20
-few feedbacks I received hopefully doing something tangible would creat=
-e=20
-more interest: I'm pretty sure I'm not the only one who thinks there=20
-isn't enough documentation for the *end user*.
+How to ensure that answers to incoming requests are routed out over the correct interface?
 
-> So maybe the user
-> restriction on linuxfoundation.org should be changed?
+This lartc page (http://lartc.org/howto/lartc.rpdb.multiple-links.html) appears to indicate that all that is necessary are rules like these (there is a diagram in that page):
 
-Yes, IMHO.
+ip rule add from $IP1 table T1
+ip rule add from $IP2 table T2
 
-> https://www.wiki.kernel.org/.
+where $IP1 and $IP2 are the WAN addresses of each of 2 outward-facing interfaces.  The page says, "It will work for all processes running on the router itself, and for the local network, if it is masqueraded."
 
-It seems a wiki for a kernel hacker, not for the end user.
+I don't understand this.  In the first place, how does SNAT know about what interface the packet we are replying to came from? That was a *previous* packet.
 
-P.S.
-=46eedbacks are welcome, if there is no interest at all maybe we should=
-=20
-just discard the idea after all.
+Furthermore, I don't see how the policy routing rules above will work to for processes running on the router itself.
 
-Thanks,
-Niccol=F2
+It appears to me that the only way to choose the right outgoing interface for a reply packet in this situation is to use state information, as follows:
+
+1) mark the incoming packets with a number associated with each interface
+2) do a "... -m state --state ESTABLISHED,RELATED -j CONNMARK --restore-mark" on packets sent as replies (ESTABLISHED,RELATED), and
+3) choose the correct interface with a rule like "ip rule add fwmark <n> table <table>"
+
+I must be missing something important.  Please explain.
+
+-- 
+Lloyd
