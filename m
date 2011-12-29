@@ -1,46 +1,29 @@
-From: Andrew Stone <andrew@stonie.net>
-Subject: Re: NAT WAN IP to internal range?
-Date: Thu, 29 Dec 2011 20:42:24 +1100
-Message-ID: <CANSq30tNeT5AUD+Veq5qhxWgTXmqhy01Tyh5a1NYLSe1u4FXOA@mail.gmail.com>
-References: <CANSq30tB6vk90gORs+bcLFvF3a8iwZcw8CbUpJFZJOH2YN-SXQ@mail.gmail.com>
-	<1324458449.4269.49.camel@steve-pc>
+From: Viktar Palstsiuk <viktar.palstsiuk@promwad.com>
+Subject: Is it possible to convert multicast UDP stream to unicast
+Date: Thu, 29 Dec 2011 13:05:00 +0300
+Message-ID: <CAKa7sPQxr1WD3n2so65MhxtRnDvuNhWyo+X62rR9Yz86G5Tfhg@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1324458449.4269.49.camel@steve-pc>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:sender:from:date:x-google-sender-auth:message-id
+         :subject:to:content-type;
+        bh=dp64cCM7LKlGwtDY/eODAZWA3W4LsuYS8iwCZafj1Gc=;
+        b=b592KrcNnTb/3U2W/95cbanjzu02Y3IRMFRl+kQqhJYVRJ5XcGryRZLtEqvgi0mGtY
+         NC6var3sAEFCoriUBYPw387QOcfPy9aquO77qhNAawPEJbvmc7rYK2gMqCclSIJN2kfS
+         UEOE6RfwyVXia2xFZDX4doAeZzrwCtg2ZmAy4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Andrew Beverley <andy@andybev.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Hi Andy,
+Hello,
 
-> Have you tried configuring the interface using iproute2 instead?
->
-> Something like:
->
-> ip address add a.b.c.241/29 dev $WANIF broadcast a.b.c.247
+Is it possible to convert multicast UDP stream to unicast stream
+(specific destination IP) to be sent over wireless connection with
+iptables NAT?
 
-Thanks for your advice... but still no dice... ?
-
-I now have:
-
-ip address add a.b.c.240/29 dev ppp0 broadcast a.b.c.247
-
-iptables -t nat -I PREROUTING -d a.b.c.241 -j DNAT --to-destination 192.168.1.69
-iptables -t nat -I POSTROUTING -s 192.168.1.69 -j SNAT --to-source a.b.c.241
-
-iptables -t nat -A PREROUTING -d a.b.c.242 -j DNAT --to-destination
-192.168.1.100-192.168.1.150
-iptables -t nat -A POSTROUTING -s 192.168.1.100-192.168.1.150 -j SNAT
---to-source a.b.c.242
-
-
-The .69 machine correctly has .241 ... however the machines located in
-the range do not have .242 ?
-
-Is this is correct way to specify a nat range with iptables?
-
-Cheers,
-Andrew.
+-- 
+Best regards,
+Viktar Palstsiuk
