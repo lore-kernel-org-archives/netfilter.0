@@ -1,45 +1,38 @@
-From: Andrew Stone <andrew@stonie.net>
-Subject: Re: NAT WAN IP to internal range?
-Date: Thu, 29 Dec 2011 22:10:48 +1100
-Message-ID: <CANSq30v-QabkFg3OYGqrRDJ_Jir5=eFiw43hjF7iA-aUeyTTRA@mail.gmail.com>
-References: <CANSq30tB6vk90gORs+bcLFvF3a8iwZcw8CbUpJFZJOH2YN-SXQ@mail.gmail.com>
-	<1324458449.4269.49.camel@steve-pc>
-	<CANSq30tNeT5AUD+Veq5qhxWgTXmqhy01Tyh5a1NYLSe1u4FXOA@mail.gmail.com>
-	<4EFC46CE.8010202@atc.tcs.com>
-	<4EFC49F3.2040009@atc.tcs.com>
+From: Amos Jeffries <squid3@treenet.co.nz>
+Subject: Re: can't set default route for virtual interface
+Date: Fri, 30 Dec 2011 00:27:28 +1300
+Message-ID: <4EFC4EA0.9010403@treenet.co.nz>
+References: <op.v654qjz3x1lyi3@debiandesk2.net>  <1325029381.1672.38.camel@steve-pc>  <op.v66puobex1lyi3@debiandesk2.net> <1325067714.1672.691.camel@steve-pc>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4EFC49F3.2040009@atc.tcs.com>
+In-Reply-To: <1325067714.1672.691.camel@steve-pc>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Vigneswaran R <vignesh@atc.tcs.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Andrew Beverley <andy@andybev.com>
+Cc: Lloyd Standish <lloyd@crnatural.net>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
->> """
->> In Kernels up to 2.6.10 you can add several --to-destination options=
-=2E
->> For those kernels, if you specify more than one des=E2=80=90
->> tination address, either via an address range or multiple
->> --to-destination options, a simple round-robin (one after another
->> in cycle) load balancing takes place between these addresses. Later
->> Kernels (>=3D 2.6.11-rc1) don't have the ability to NAT
->> to multiple ranges anymore.
->> """
+On 28/12/2011 11:21 p.m., Andrew Beverley wrote:
+> On Tue, 2011-12-27 at 23:36 -0600, Lloyd Standish wrote:
+>>> Have you tried *not* using ifconfig to set up your interfaces? You
+>>> should only be using iproute2.
+>> I've seen that mentioned before, and I'm confused.  iproute2 means, for
+>>   firewall code, "ip" and "tc" - is that right?
+> Yes, and "ip" can do everything that all the various net-tools commands
+> do.
+>
+>>    I usually bring up interfaces with "ifup" when I can
+> Ah, therein lies an interesting situation. ifup is pretty old too, and
+> makes calls to the ifconfig command, which is a real pain. However,
+> unless someone tells me otherwise, I'm not aware of a replacement for
+> it.
 
-Yeah I read that... It does not describe what I=E2=80=99m trying to
-accomplish=E2=80=A6 hence the confusion on my part=E2=80=A6
-I=E2=80=99m trying to configure a one to many NAT.  (One WAN address to=
- a
-range of internal addresses)
+That would be ...
 
-So=E2=80=A6 Looks like I=E2=80=99m trying an incorrect approach... how =
-is one to
-configure a one to many NAT? Is there a different approach I can take
-to achieve this?
+   ip link set dev eth0 up
+   ip link set dev eth0 down
 
-Any pointers appreciated.
+   :)
 
-Kind regards,
-Andrew.
+AYJ
