@@ -1,33 +1,50 @@
-From: Andrew Stone <andrew@stonie.net>
-Subject: Re: NAT WAN IP to internal range?
-Date: Fri, 30 Dec 2011 00:38:31 +1100
-Message-ID: <CANSq30tgxHWZvrarzVp7R3JqzyfZyoQy23oLFoi7seNoPzc+Xg@mail.gmail.com>
-References: <CANSq30tB6vk90gORs+bcLFvF3a8iwZcw8CbUpJFZJOH2YN-SXQ@mail.gmail.com>
-	<1324458449.4269.49.camel@steve-pc>
-	<CANSq30tNeT5AUD+Veq5qhxWgTXmqhy01Tyh5a1NYLSe1u4FXOA@mail.gmail.com>
-	<4EFC46CE.8010202@atc.tcs.com>
-	<4EFC49F3.2040009@atc.tcs.com>
-	<CANSq30v-QabkFg3OYGqrRDJ_Jir5=eFiw43hjF7iA-aUeyTTRA@mail.gmail.com>
-	<4EFC5066.5060709@atc.tcs.com>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: can't set default route for virtual interface
+Date: Thu, 29 Dec 2011 15:39:53 +0000
+Message-ID: <1325173193.11172.150.camel@steve-pc>
+References: <op.v654qjz3x1lyi3@debiandesk2.net>
+	 <1325029381.1672.38.camel@steve-pc>  <op.v66puobex1lyi3@debiandesk2.net>
+	 <1325067714.1672.691.camel@steve-pc>  <4EFC4EA0.9010403@treenet.co.nz>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4EFC5066.5060709@atc.tcs.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1325173195;
+	bh=3bo03wDbNkl6KuFKDkh2r78J2AEfpivMfpspo3Re35Q=;
+	h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-ID:Mime-Version:Content-Transfer-Encoding;
+	b=TJFSifR9hr8WAHE8Y9nxlVdkisGCVmk9pGtoWDtX9SWwxKDzV2abix7SCwLy7nktl
+	 NmpsS6V2w8bdSeGiwMNYdaVA04PgLpgs7qLD9aWtpMIjSsxT2/Zn6o8RRkKXH1nkaA
+	 47lAlv7bJ/LO7YmEOOh4ODbOd/IGzdl4taSIdhng=
+In-Reply-To: <4EFC4EA0.9010403@treenet.co.nz>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Vigneswaran R <vignesh@atc.tcs.com>
-Cc: netfilter@vger.kernel.org
+To: Amos Jeffries <squid3@treenet.co.nz>
+Cc: Lloyd Standish <lloyd@crnatural.net>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Thanks Vignesh!
+On Fri, 2011-12-30 at 00:27 +1300, Amos Jeffries wrote:
+> On 28/12/2011 11:21 p.m., Andrew Beverley wrote:
+> > On Tue, 2011-12-27 at 23:36 -0600, Lloyd Standish wrote:
+> >>    I usually bring up interfaces with "ifup" when I can
+> > Ah, therein lies an interesting situation. ifup is pretty old too, and
+> > makes calls to the ifconfig command, which is a real pain. However,
+> > unless someone tells me otherwise, I'm not aware of a replacement for
+> > it.
+> 
+> That would be ...
+> 
+>    ip link set dev eth0 up
+>    ip link set dev eth0 down
 
->iptables -t nat -A POSTROUTING -s 192.168.1.0/24 -o $WANIF -j SNAT --to-source a.b.c.241
->Here I am assuming that 192.168.1.0/24 is your internal network and you want to allow all the machines. If you want to allow only a few machines, put a comma separated "address[/mask]" list.
+Yes :-)
 
-Solved it for me... in the end I used:
-iptables -t nat -I POSTROUTING -s 192.168.1.96/27 -o ppp0 -j SNAT
---to-source a.b.c.241
-and matched the range to my DHCP leases. (96 to 127)
+Although that only really replaces the ifconfig part. It would be nice
+to have a proper replacement for ifup/ifdown that does the rest of the
+networking stuff, such as setting the ip address and calling scripts, as
+is contained in /etc/network/interfaces. It'll also call pppd and so on
+as well.
 
-Cheers,
-Andrew
+Andy
+
+
