@@ -1,41 +1,45 @@
 From: "Lloyd Standish" <lloyd@crnatural.net>
-Subject: Re: Routing for multiple uplinks/providers
-Date: Sun, 01 Jan 2012 10:30:18 -0600
-Message-ID: <op.v7eyssd3x1lyi3@debiandesk2.net>
-References: <op.v69g6qvbx1lyi3@debiandesk2.net>
+Subject: problem with multi-level SNAT? (multiple uplinks/providers)
+Date: Sun, 01 Jan 2012 11:12:09 -0600
+Message-ID: <op.v7e0qja7x1lyi3@debiandesk2.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <op.v69g6qvbx1lyi3@debiandesk2.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed	delsp=yes"
-To: netfilter@vger.kernel.org, Lloyd Standish <lloyd@crnatural.net>
+To: netfilter@vger.kernel.org
 
-On Thu, 29 Dec 2011 11:21:52 -0600, Lloyd Standish <lloyd@crnatural.net> wrote:
+Greetings,
 
-> Suppose a router has 2 outward-facing interfaces (uplinks) and a LAN (3 interfaces).  The LAN addresses are SNAT'd over the 2 outward interface addresses (WANs).
->
+I programmed a load-balancing router for my ISP friend.  It balanced connections from a LAN with about 80 users over 3 to 5 uplinks.
 
-<snip>
-> How to ensure that answers to incoming requests are routed out over the correct interface?
-> This lartc page (http://lartc.org/howto/lartc.rpdb.multiple-links.html) appears to indicate that all that is necessary are rules like these (there is a diagram in that page):
-> ip rule add from $IP1 table T1
-> ip rule add from $IP2 table T2
-> where $IP1 and $IP2 are the WAN addresses of each of 2 outward-facing interfaces.  The page says, "It will work for all processes running on the router itself, and for the local network, if it is masqueraded."
-> I don't understand this.  In the first place, how does SNAT know about what interface the packet we are replying to came from? That was a *previous* packet.
+There were problems with breaking download connections after about 5-200 MB.  The connections would simply drop, with no indication of why in the server logs.  I believe (but cannot confirm) the problem was caused by reply packets sent out the wrong interface.
 
-I think I can answer my own question, "for the record."
+However, there was an interface that never dropped connections.  This interface was different from the others in that it had a public IP assigned to it.  The other interfaces were connected to routers, and used LAN IP interface addresses that were SNATted in the router to a public IP.  In other words, the other interfaces had "upstream NAT."
 
-It turns out that SNAT *is* stateful, according to the following tutorial (http://bec.at/support/iptables-tutorial/x4679.html):
+This failing router used the following load-balancing method:
 
-"Only the first packet in a connection is mangled by SNAT, and after that all future packets using the same connection will also be SNATted. Furthermore, the initial rules in the POSTROUTING chain will be applied to all the packets in the same stream."
+ip route add default scope global nexthop via $P1 dev $IF1 weight 15 nexthop via $P2 dev $IF2 weight 15...
 
-So SNAT keeps connection-level state information, allowing it to write in the correct source address for all ESTABLISHED,RELATED packets belonging to a connection.  That explains why a rule like
+SNAT was used to "bind" connections to each interface's source address, and a policy routing rule like this was used to choose the correct routing table (each table simply routed to a different interface:
 
-ip rule add from $IP1 table T1  (where $IP1 is our interface address)
+ip rule add from ${!wan} table $table
 
-would be routed via the right table, in a situation where there are multiple uplinks (multiple routing tables).
+The problem with dropping connections was finally fixed in router version #2.  It uses fwmark to mark all new connections, and a rule like this to send the packet to the correct routing table:
 
--- 
+ip rule add fwmark $((cardnum+1)) table $table
+
+Instead of relying on SNAT to assign the correct source address to subsequent packets in established/related packets, these packets are fwmarked like this:
+
+iptables -t mangle -A PREROUTING -i ${lan_if} -m state --state ESTABLISHED,RELATED -j CONNMARK --restore-mark
+
+Connected to the same uplinks/providers, THIS router does not drop connections.
+
+I would like to know why SNAT without packet marking drops the connections for interfaces that have "upstream NAT," while the fwmark method succeeds.  I'd appreciate any comments.  I can of course supply more information if necessary.
+
+As a related aside, I'd appreciate comments on whether or not the "-p tcp" in the following example rule is advisable (I omitted "-p tcp" from my SNAT rules.):
+iptables -t nat -A POSTROUTING -p tcp -o eth0 -j SNAT --to-source 194.236.50.155
+
+Regards,
 Lloyd
