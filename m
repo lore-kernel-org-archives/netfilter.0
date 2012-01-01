@@ -1,61 +1,41 @@
-From: Anton Melser <anton@linux.com>
-Subject: Advice on best way to set up multi-route NAT for lots of IPs
-Date: Sun, 1 Jan 2012 17:10:51 +0100
-Message-ID: <CAKywjPrbjoLhcvPXVYg+8kZ53rPRJ5+dhePx4FB=OkpNjqUGxw@mail.gmail.com>
+From: "Lloyd Standish" <lloyd@crnatural.net>
+Subject: Re: Routing for multiple uplinks/providers
+Date: Sun, 01 Jan 2012 10:30:18 -0600
+Message-ID: <op.v7eyssd3x1lyi3@debiandesk2.net>
+References: <op.v69g6qvbx1lyi3@debiandesk2.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:sender:from:date:x-google-sender-auth:message-id
-         :subject:to:content-type;
-        bh=5FAHRb4drtRkluX8ROW8BQeMNLNPB+RjitCRadW+H2s=;
-        b=rzm1z3x3UT1QOqydAl3/t4BscYmfnxiPhrqaIl6PI2e27A/9Q85C95rOAKQL1wueWW
-         +6aqilShAS0wv3qcNsAsH65O6V+9gdCydW2fXVEljdZIRsbZwf0b4qgs8jra7RaJ/ot3
-         3Ck/UvfUxprvtggb1NadyVXLPYu7hRntYQcYM=
+In-Reply-To: <op.v69g6qvbx1lyi3@debiandesk2.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed	delsp=yes"
+To: netfilter@vger.kernel.org, Lloyd Standish <lloyd@crnatural.net>
 
-Hi,
-I am very new to iptables but have been trying hard to learn as much
-as I can... I have a reasonably simple need but performance might
-quickly become an issue so would like some advice on the best way to
-go forward.
-So, I have around 1600 public IPs in 4 blocks (3 x /23 + /25 on
-different ISPs). I have a certain number of machines (somewhere from 3
-to 8, needs to be variable and changeable without FW reconfiguration),
-and each one needs to be able to send email from each external IP (and
-needs to be able to do this deterministically). The only traffic
-should be to port 25 on the external destination IPs - the machines
-are only sending email, never receiving, so AFAICT everything can be
-closed inbound (at least for NEW).
-I thought that the best way to go would be to set up NAT using blocks
-in the 10.0.0.0 range. So say for each external IP I would have a /24,
-giving me up to 250-odd potential internal machines. So 10.1.1.1,
-10.1.1.2, 10.1.1.3, etc. would map to 1.1.1.1; 10.1.2.1, 10.1.2.2,
-10.1.2.3, etc. would map to 1.1.1.2, etc.
-I have been reading as many sites as I can but I can't work out the
-best way to go forward.
+On Thu, 29 Dec 2011 11:21:52 -0600, Lloyd Standish <lloyd@crnatural.net> wrote:
 
-AFAICT the best way to do this is with iptables SNAT - is that the
-case? It's not 1 to 1 so it needs to be stateful, and can't be done
-with just iproute2 stuff - am I correct in my understanding?
+> Suppose a router has 2 outward-facing interfaces (uplinks) and a LAN (3 interfaces).  The LAN addresses are SNAT'd over the 2 outward interface addresses (WANs).
+>
 
-There seem to be many different ways I could do this in terms of
-routing - at least by source IP, TOS, and fwmark. Is one of these
-preferable? Am I absolutely going to need a rule for every external
-IP? I wouldn't have thought so, but can't work out how to do it... I
-did some testing and was able to successfully send via several default
-routes following
-http://kindlund.wordpress.com/2007/11/19/configuring-multiple-default-routes-in-linux/
-but that was when I was sending from the local machine without NAT...
-If I do need a rule for every IP, is performance going to be an issue?
-Would setting up some hashing like that explained in
-http://lartc.org/lartc.html#LARTC.ADV-FILTER.HASHING be the best way
-to mitigate these issues?
+<snip>
+> How to ensure that answers to incoming requests are routed out over the correct interface?
+> This lartc page (http://lartc.org/howto/lartc.rpdb.multiple-links.html) appears to indicate that all that is necessary are rules like these (there is a diagram in that page):
+> ip rule add from $IP1 table T1
+> ip rule add from $IP2 table T2
+> where $IP1 and $IP2 are the WAN addresses of each of 2 outward-facing interfaces.  The page says, "It will work for all processes running on the router itself, and for the local network, if it is masqueraded."
+> I don't understand this.  In the first place, how does SNAT know about what interface the packet we are replying to came from? That was a *previous* packet.
 
-Any help or suggestions most welcome.
-Thanks.
-Anton
+I think I can answer my own question, "for the record."
+
+It turns out that SNAT *is* stateful, according to the following tutorial (http://bec.at/support/iptables-tutorial/x4679.html):
+
+"Only the first packet in a connection is mangled by SNAT, and after that all future packets using the same connection will also be SNATted. Furthermore, the initial rules in the POSTROUTING chain will be applied to all the packets in the same stream."
+
+So SNAT keeps connection-level state information, allowing it to write in the correct source address for all ESTABLISHED,RELATED packets belonging to a connection.  That explains why a rule like
+
+ip rule add from $IP1 table T1  (where $IP1 is our interface address)
+
+would be routed via the right table, in a situation where there are multiple uplinks (multiple routing tables).
+
+-- 
+Lloyd
