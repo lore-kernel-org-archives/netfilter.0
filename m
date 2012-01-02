@@ -1,46 +1,140 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: help with bridged firewall with openvpn
-Date: Mon, 02 Jan 2012 15:33:30 +0000
-Message-ID: <1325518410.1621.4.camel@andy-laptop>
-References: <250999BCC487ED429E1673DCFA26CDCC2A7BDA6E15@postman>
-	 <250999BCC487ED429E1673DCFA26CDCC2A7BDA6E16@postman>
+From: Pete <pete@nrth.org>
+Subject: Re: Advice on best way to set up multi-route NAT for lots of IPs
+Date: Mon, 2 Jan 2012 18:01:15 +0000
+Message-ID: <20120102180115.GA17749@pusher.nrth.lab>
+References: <CAKywjPrbjoLhcvPXVYg+8kZ53rPRJ5+dhePx4FB=OkpNjqUGxw@mail.gmail.com>
+ <op.v7e9nhxox1lyi3@debiandesk2.net>
+ <CAKywjPpKpVdBz9boAhgj=-F488ayAtoLK1ua=GWKZ1hjNMWpZA@mail.gmail.com>
+ <op.v7fekow7x1lyi3@debiandesk2.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
+	micalg=sha1; boundary="+QahgC5+KEYLbs62"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1325523594;
-	bh=jwClQbn7d0PS5qc9Co4HcEsdJyv6dxBcDNtOvQVg5nY=;
-	h=Message-ID:Subject:From:To:Cc:In-Reply-To:References:Content-Type:
-	 Date:Mime-Version:Content-Transfer-Encoding;
-	b=fu23wXBEzlXi5KfZibEZLWP1qMCV7ULVXaBwwu0NehCiD0K0ter4Yj/V9DE2ZX2UF
-	 59pDjHAPWGvQ6faGASVKaucZS9o2Cwk0t0KHvTRrx6XPqdfylabTzPvOxjsEgkQ9WD
-	 +UZ2802zgFfP/8YGE8taVx+POCnUum3mU9bU24EQ=
-In-Reply-To: <250999BCC487ED429E1673DCFA26CDCC2A7BDA6E16@postman>
+Content-Disposition: inline
+In-Reply-To: <op.v7fekow7x1lyi3@debiandesk2.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Barry Smoke <Barry.Smoke@arklegaudit.gov>
-Cc: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
-
-On Wed, 2011-12-28 at 08:46 -0600, Barry Smoke wrote:
-> Most of the online docs I've found deal with bridging, and
-> virtualization.  I'm trying to use bridging to link openvpn clients
-> with our internal network, without nat(for a voip implementation on
-> yealink phones).
-
-<snip>
-
-> however my ping requests never make it to br0.  
-> 
-
-I realise that you've solved this now using another script, but just
-thought that I'd point out that it's always worth getting your scripts
-working with no DROPing of packets (initially).
-
-I noticed that in your rules you had various rules for LOGing and
-DROPing, but that the default policies were DROP, so there is always a
-chance that some packets could have been silently dropped.
-
-Andy
+To: netfilter@vger.kernel.org
 
 
+--+QahgC5+KEYLbs62
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Sun, Jan 01, 2012 at 04:11:02PM -0600, Lloyd Standish wrote:
+> On Sun, 01 Jan 2012 14:41:24 -0600, Anton Melser
+> <melser.anton@gmail.com> wrote:
+>=20
+> Think Mailchimp just a little smaller. Lots of clients need lots
+> > of IPs (it's a reputation thing, and quite an interesting computing
+> > problem, see
+> > http://blog.mailchimp.com/should-you-send-from-a-dedicated-ip-address/
+> > or just search for "email marketing dedicated ip" for an intro).
+
+[..]
+
+>=20
+> Frankly, this looks to me like bulk-email-laundering.  That is, it's a
+> way to convey email "reputation" from one of 3-8 "trusted" IPs to the
+> 1600 "unknown" ones.
+
+This discussion is very intriguing to myself, no matter how OT. I'm
+quite sure I'm not the only one.
+
+It sounds to me like someone needs help on how to hide a botnet using an
+iptables script at first glance. It can't be that of course so why are
+1600 hosts wanting to send bulk email ?
+
+spam has given email marketing such a bad reputation that I'd really
+like to know why there are 1600 hosts that need to send
+business/marketing email. Why 1600 ?
+
+Sorry I'm new to the list and I realise I am contributing to the
+OT-ishness of this thread.
+
+Regards,
+
+Pete.
+
+--+QahgC5+KEYLbs62
+Content-Type: application/x-pkcs7-signature
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIIPbAYJKoZIhvcNAQcCoIIPXTCCD1kCAQExCzAJBgUrDgMCGgUAMAsGCSqGSIb3DQEHAaCC
+DJ0wggY0MIIEHKADAgECAgEeMA0GCSqGSIb3DQEBBQUAMH0xCzAJBgNVBAYTAklMMRYwFAYD
+VQQKEw1TdGFydENvbSBMdGQuMSswKQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0
+ZSBTaWduaW5nMSkwJwYDVQQDEyBTdGFydENvbSBDZXJ0aWZpY2F0aW9uIEF1dGhvcml0eTAe
+Fw0wNzEwMjQyMTAxNTVaFw0xNzEwMjQyMTAxNTVaMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UE
+ChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUg
+U2lnbmluZzE4MDYGA1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0
+ZSBDbGllbnQgQ0EwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDHCYPMzi3YGrEp
+pC4Tq5a+ijKDjKaIQZZVR63UbxIP6uq/I0fhCu+cQhoUfE6ERKKnu8zPf1Jwuk0tsvVCk6U9
+b+0UjM0dLep3ZdE1gblK/1FwYT5Pipsu2yOMluLqwvsuz9/9f1+1PKHG/FaR/wpbfuIqu54q
+zHDYeqiUfsYzoVflR80DAC7hmJ+SmZnNTWyUGHJbBpA8Q89lGxahNvuryGaC/o2/ceD2uYDX
+9U8Eg5DpIpGQdcbQeGarV04WgAUjjXX5r/2dabmtxWMZwhZna//jdiSyrrSMTGKkDiXm6/3/
+4ebfeZuCYKzN2P8O2F/Xe2AC/Y7zeEsnR7FOp+uXAgMBAAGjggGtMIIBqTAPBgNVHRMBAf8E
+BTADAQH/MA4GA1UdDwEB/wQEAwIBBjAdBgNVHQ4EFgQUU3Ltkpzg2ssBXHx+ljVO8tS4UYIw
+HwYDVR0jBBgwFoAUTgvvGqRAW6UXaYcwyjRoQ9BBrvIwZgYIKwYBBQUHAQEEWjBYMCcGCCsG
+AQUFBzABhhtodHRwOi8vb2NzcC5zdGFydHNzbC5jb20vY2EwLQYIKwYBBQUHMAKGIWh0dHA6
+Ly93d3cuc3RhcnRzc2wuY29tL3Nmc2NhLmNydDBbBgNVHR8EVDBSMCegJaAjhiFodHRwOi8v
+d3d3LnN0YXJ0c3NsLmNvbS9zZnNjYS5jcmwwJ6AloCOGIWh0dHA6Ly9jcmwuc3RhcnRzc2wu
+Y29tL3Nmc2NhLmNybDCBgAYDVR0gBHkwdzB1BgsrBgEEAYG1NwECATBmMC4GCCsGAQUFBwIB
+FiJodHRwOi8vd3d3LnN0YXJ0c3NsLmNvbS9wb2xpY3kucGRmMDQGCCsGAQUFBwIBFihodHRw
+Oi8vd3d3LnN0YXJ0c3NsLmNvbS9pbnRlcm1lZGlhdGUucGRmMA0GCSqGSIb3DQEBBQUAA4IC
+AQAKgwh9eKssBly4Y4xerhy5I3dNoXHYfYa8PlVLL/qtXnkFgdtY1o95CfegFJTwqBBmf8py
+TUnFsukDFUI22zF5bVHzuJ+GxhnSqN2sD1qetbYwBYK2iyYA5Pg7Er1A+hKMIzEzcduRkIMm
+CeUTyMyikfbUFvIBivtvkR8ZFAk22BZy+pJfAoedO61HTz4qSfQoCRcLN5A0t4DkuVhTMXIz
+uQ8CnykhExD6x4e6ebIbrjZLb7L+ocR0y4YjCl/Pd4MXU91y0vTipgr/O75CDUHDRHCCKBVm
+z/Rzkc/b970MEeHt5LC3NiWTgBSvrLEuVzBKM586YoRD9Dy3OHQgWI270g+5MYA8GfgI/EPT
+5G7xPbCDz+zjdH89PeR3U4So4lSXur6H6vp+m9TQXPF3a0LwZrp8MQ+Z77U1uL7TelWO5lAp
+sbAonrqASfTpaprFVkL4nyGH+NHST2ZJPWIBk81i6Vw0ny0qZW2Niy/QvVNKbb43A43ny076
+khXO7cNbBIRdJ/6qQNq9Bqb5C0Q5nEsFcj75oxQRqlKf6TcvGbjxkJh8BYtv9ePsXklAxtm8
+J7GCUBthHSQgepbkOexhJ0wP8imUkyiPHQ0GvEnd83129fZjoEhdGwXV27ioRKbj/cIq7JRX
+un0NbeY+UdMYu9jGfIpDLtUUGSgsg2zMGs5R4jCCBmEwggVJoAMCAQICAwJivDANBgkqhkiG
+9w0BAQUFADCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNV
+BAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNpZ25pbmcxODA2BgNVBAMTL1N0YXJ0
+Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUgQ2xpZW50IENBMB4XDTExMDQwNTEz
+MjYzOVoXDTEyMDQwNTA1MjQ1OVowgYsxIDAeBgNVBA0TFzM5NzAzOC0wRFBVTGM2RjNpYzIx
+SkVnMR4wHAYDVQQKExVQZXJzb25hIE5vdCBWYWxpZGF0ZWQxKTAnBgNVBAMTIFN0YXJ0Q29t
+IEZyZWUgQ2VydGlmaWNhdGUgTWVtYmVyMRwwGgYJKoZIhvcNAQkBFg1wZXRlQG5ydGgub3Jn
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA1tVyB0KOJxlL77Il6L5/WSOB4Pax
+qOI6s9/pk66vq/S/yQW1QhWEey/M94QOptfKJiwpdq8dY14HxgI3UB3qkDowqMCFDww5gtp6
+erF6U/AJ4xz24kfrQNkturPvXvKenl7dGzsrB4TYds2xKNlqagO4oJOR8koNwVVMDFMBFj3C
+biQLA4EE7yWWuZaVNTtYjLwyTMKScl+Al9V/3EV2F5c8HVxWXqmd9Y5GnWOSWPrZk8s7vY3p
+b3RbSY+vZLyXJtC8DXtOxatMNAUGlg8Nv6UDYmTntHyJTwtP7tz72V5MbN/Lr3LmFSC5+J9+
+B3+qGRhY2cJ7OMUYumoXYTYteQIDAQABo4ICyTCCAsUwCQYDVR0TBAIwADALBgNVHQ8EBAMC
+BLAwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMB0GA1UdDgQWBBQhuJnrNa9dJy4z
+Wk/kgMv1m3VNtDAfBgNVHSMEGDAWgBRTcu2SnODaywFcfH6WNU7y1LhRgjAYBgNVHREEETAP
+gQ1wZXRlQG5ydGgub3JnMIIBQgYDVR0gBIIBOTCCATUwggExBgsrBgEEAYG1NwECAjCCASAw
+LgYIKwYBBQUHAgEWImh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYB
+BQUHAgEWKGh0dHA6Ly93d3cuc3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwgbcGCCsG
+AQUFBwICMIGqMBQWDVN0YXJ0Q29tIEx0ZC4wAwIBARqBkUxpbWl0ZWQgTGlhYmlsaXR5LCBz
+ZWUgc2VjdGlvbiAqTGVnYWwgTGltaXRhdGlvbnMqIG9mIHRoZSBTdGFydENvbSBDZXJ0aWZp
+Y2F0aW9uIEF1dGhvcml0eSBQb2xpY3kgYXZhaWxhYmxlIGF0IGh0dHA6Ly93d3cuc3RhcnRz
+c2wuY29tL3BvbGljeS5wZGYwNgYDVR0fBC8wLTAroCmgJ4YlaHR0cDovL2NybC5zdGFydHNz
+bC5jb20vY3J0dTEtY3JsLmNybDCBjgYIKwYBBQUHAQEEgYEwfzA5BggrBgEFBQcwAYYtaHR0
+cDovL29jc3Auc3RhcnRzc2wuY29tL3N1Yi9jbGFzczEvY2xpZW50L2NhMEIGCCsGAQUFBzAC
+hjZodHRwOi8vYWlhLnN0YXJ0c3NsLmNvbS9jZXJ0cy9zdWIuY2xhc3MxLmNsaWVudC5jYS5j
+cnQwIwYDVR0SBBwwGoYYaHR0cDovL3d3dy5zdGFydHNzbC5jb20vMA0GCSqGSIb3DQEBBQUA
+A4IBAQAh0npKwmSCwOGdoUy5yQEBZoNDvgQyrX11yqByIhOkm5CPNPrLgcWN8evJoCfKnbYC
+FTC8GobZVAGHQu624ypVx8oYeA87CSZOi44+U/fYe08/z8+6Elq4vQBexxP4nWLa0PHoOtKs
+KiL7VGrcYJlyRo62aCg63Iid2BFrt0bagaCizLHRFmnEpGcUleOcBSjH5VuKyejtE+pGiGno
+DB9cHHMhr8WEnpJu1KqETZwewMu1xBU5vMwV3YZxrA6eevTbwpN+k1kP/pF6Wv2ThFEQoY47
+h2CPs5uiczzNvSXYgfZ6m3jzfspEc6vZKx4vCL+fmfFO1dFCUgIvqc/aNRCgMYIClzCCApMC
+AQEwgZQwgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1TdGFydENvbSBMdGQuMSswKQYDVQQL
+EyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWduaW5nMTgwNgYDVQQDEy9TdGFydENv
+bSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENsaWVudCBDQQIDAmK8MAkGBSsOAwIa
+BQCggdgwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTIwMTAy
+MTgwMTE1WjAjBgkqhkiG9w0BCQQxFgQU19Max9UUsEcDR+1PkEXT4lV+3DsweQYJKoZIhvcN
+AQkPMWwwajALBglghkgBZQMEASowCwYJYIZIAWUDBAEWMAsGCWCGSAFlAwQBAjAKBggqhkiG
+9w0DBzAOBggqhkiG9w0DAgICAIAwDQYIKoZIhvcNAwICAUAwBwYFKw4DAgcwDQYIKoZIhvcN
+AwICASgwDQYJKoZIhvcNAQEBBQAEggEAGsGb0vHV1GdBASHtPirduvXd9qVcxJr8w6CR5Etp
+eTLSDWH4LqeE0r/KBLPC+9yhGnZ2we4M+Ikyun1qUqIUTTnboYVkV2Q+hjgesZtcq3KpZyZj
+jPmbrvTDaWH+gRXoS6tOTFNJ3706mnMCKP0+Ml1S1klCeuCs1I7eBPwdocqVPQy0R9mEegqv
+hQ/sRCCcPL5O1ni4pzOaswHhJBH2/ACizLNL8Me6/VhV5/yI4oyuk3ZkRz+Hp/35x5A7s8pr
+XrkyMjh0tfR/mhnqS7lP8zeja8HAeuENweZVWwjHQihFO6p+8mY0v2+i8/3EF3HqTPmBgz1j
+bLLYCPqh2+eM/w==
+
+--+QahgC5+KEYLbs62--
