@@ -1,59 +1,70 @@
-From: Anton Melser <melser.anton@gmail.com>
-Subject: Re: Advice on best way to set up multi-route NAT for lots of IPs
-Date: Mon, 2 Jan 2012 10:00:23 +0100
-Message-ID: <CAKywjPprq497Ox7hZRMXNApC24nkm4syEbrAkX02N-QOPBpKiA@mail.gmail.com>
-References: <CAKywjPrbjoLhcvPXVYg+8kZ53rPRJ5+dhePx4FB=OkpNjqUGxw@mail.gmail.com>
- <op.v7e9nhxox1lyi3@debiandesk2.net> <CAKywjPpKpVdBz9boAhgj=-F488ayAtoLK1ua=GWKZ1hjNMWpZA@mail.gmail.com>
- <op.v7fekow7x1lyi3@debiandesk2.net>
+From: Ed W <lists@wildgooses.com>
+Subject: Re: Routing for multiple uplinks/providers
+Date: Mon, 02 Jan 2012 12:43:37 +0000
+Message-ID: <4F01A679.8090103@wildgooses.com>
+References: <op.v69g6qvbx1lyi3@debiandesk2.net> <op.v7eyssd3x1lyi3@debiandesk2.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-type:content-transfer-encoding;
-        bh=iyZNUGk7njdO72KkywupNEWYc5tqyYc5l3tHUomiW0k=;
-        b=E5oavspIf2SxqPPyPksnS6D7PfHOIL0/9e0M13Svnntv8PcPlJt0abGDQORVuFFsia
-         I54zSV+BxVyIT2BDD7mM7rj5Q+305rqm3Ex0eWiZ4UMzX2ukqd6sNIS49QX2bNwCRgED
-         0dyG99Q0+dlhsjfM86HwIc2d05RZSy5QmGCaQ=
-In-Reply-To: <op.v7fekow7x1lyi3@debiandesk2.net>
+In-Reply-To: <op.v7eyssd3x1lyi3@debiandesk2.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Lloyd Standish <lloyd@crnatural.net>
 Cc: netfilter@vger.kernel.org
 
-> So, I understand you are setting up 3-8 mail servers that will send o=
-ut bulk
-> email for 1600 hosts, so that the sender IP in the mails will have yo=
-ur 3-8
-> "reputable" IPs rather than one of the 1600 "unknown" IPs.
+On 01/01/2012 16:30, Lloyd Standish wrote:
+> On Thu, 29 Dec 2011 11:21:52 -0600, Lloyd Standish 
+> <lloyd@crnatural.net> wrote:
 >
-> This would not be a regular email relay, since that would put the sen=
-der IP
-> in the mail headers. =C2=A0Are you thinking to use NAT to try to hide=
- the sender
-> IP? That's not the way to do it.
+>> Suppose a router has 2 outward-facing interfaces (uplinks) and a LAN 
+>> (3 interfaces).  The LAN addresses are SNAT'd over the 2 outward 
+>> interface addresses (WANs).
+>>
 >
-> Frankly, this looks to me like bulk-email-laundering. =C2=A0That is, =
-it's a way
-> to convey email "reputation" from one of 3-8 "trusted" IPs to the 160=
-0
-> "unknown" ones.
+> <snip>
+>> How to ensure that answers to incoming requests are routed out over 
+>> the correct interface?
+>> This lartc page 
+>> (http://lartc.org/howto/lartc.rpdb.multiple-links.html) appears to 
+>> indicate that all that is necessary are rules like these (there is a 
+>> diagram in that page):
+>> ip rule add from $IP1 table T1
+>> ip rule add from $IP2 table T2
+>> where $IP1 and $IP2 are the WAN addresses of each of 2 outward-facing 
+>> interfaces.  The page says, "It will work for all processes running 
+>> on the router itself, and for the local network, if it is masqueraded."
+>> I don't understand this.  In the first place, how does SNAT know 
+>> about what interface the packet we are replying to came from? That 
+>> was a *previous* packet.
 >
-> Sorry, a have a personal issue with spam, and anything that could be =
-used
-> (if not by you, then by someone else) to get spam delivered. I think =
-the
-> email reputation of a public IP address should be earned, and it *sho=
-uld*
-> take time to earn it.
+> I think I can answer my own question, "for the record."
+>
+> It turns out that SNAT *is* stateful, according to the following 
+> tutorial (http://bec.at/support/iptables-tutorial/x4679.html):
+>
+> "Only the first packet in a connection is mangled by SNAT, and after 
+> that all future packets using the same connection will also be 
+> SNATted. Furthermore, the initial rules in the POSTROUTING chain will 
+> be applied to all the packets in the same stream."
+>
+> So SNAT keeps connection-level state information, allowing it to write 
+> in the correct source address for all ESTABLISHED,RELATED packets 
+> belonging to a connection.  That explains why a rule like
+>
+> ip rule add from $IP1 table T1  (where $IP1 is our interface address)
+>
+> would be routed via the right table, in a situation where there are 
+> multiple uplinks (multiple routing tables).
+>
 
-No, you misunderstand. (At least with IPv4) Reputation ~=3D IP. The goa=
-l
-is 1 client =3D (at least) 1 IP. Reputation DOES take time to build up,
-and the best way to build it up is by sending relevant, permissioned
-newsletters from an IP that is used by only ONE client. We agree, this
-is how it should be. But lots of clients =3D lots of IPs...
-But this is *WAY* OT...
-A
+I believe also routes are cached per IP, so I guess it might 
+accidentally persist beyond even individual streams (assuming to/from 
+same IPs)
+
+I think this is why for "perfect" load balancing and routing robustness 
+it's considered "best" to mark connections and use some randomness to 
+route connections to outbound interfaces? I'm out of my depth here 
+though so ask a grown-up to confirm that...
+
+Ed W
