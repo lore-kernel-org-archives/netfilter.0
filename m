@@ -1,50 +1,46 @@
-From: "Lloyd Standish" <lloyd@crnatural.net>
-Subject: Re: Advice on best way to set up multi-route NAT for lots of IPs
-Date: Mon, 02 Jan 2012 10:10:02 -0600
-Message-ID: <op.v7gsi0a4x1lyi3@debiandesk2.net>
-References: <CAKywjPrbjoLhcvPXVYg+8kZ53rPRJ5+dhePx4FB=OkpNjqUGxw@mail.gmail.com> <op.v7e9nhxox1lyi3@debiandesk2.net> <CAKywjPpKpVdBz9boAhgj=-F488ayAtoLK1ua=GWKZ1hjNMWpZA@mail.gmail.com> <op.v7fekow7x1lyi3@debiandesk2.net> <CAKywjPprq497Ox7hZRMXNApC24nkm4syEbrAkX02N-QOPBpKiA@mail.gmail.com>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: help with bridged firewall with openvpn
+Date: Mon, 02 Jan 2012 15:33:30 +0000
+Message-ID: <1325518410.1621.4.camel@andy-laptop>
+References: <250999BCC487ED429E1673DCFA26CDCC2A7BDA6E15@postman>
+	 <250999BCC487ED429E1673DCFA26CDCC2A7BDA6E16@postman>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAKywjPprq497Ox7hZRMXNApC24nkm4syEbrAkX02N-QOPBpKiA@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1325523594;
+	bh=jwClQbn7d0PS5qc9Co4HcEsdJyv6dxBcDNtOvQVg5nY=;
+	h=Message-ID:Subject:From:To:Cc:In-Reply-To:References:Content-Type:
+	 Date:Mime-Version:Content-Transfer-Encoding;
+	b=fu23wXBEzlXi5KfZibEZLWP1qMCV7ULVXaBwwu0NehCiD0K0ter4Yj/V9DE2ZX2UF
+	 59pDjHAPWGvQ6faGASVKaucZS9o2Cwk0t0KHvTRrx6XPqdfylabTzPvOxjsEgkQ9WD
+	 +UZ2802zgFfP/8YGE8taVx+POCnUum3mU9bU24EQ=
+In-Reply-To: <250999BCC487ED429E1673DCFA26CDCC2A7BDA6E16@postman>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed	delsp=yes"
-To: Anton Melser <melser.anton@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Barry Smoke <Barry.Smoke@arklegaudit.gov>
+Cc: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
 
-On Mon, 02 Jan 2012 03:00:23 -0600, Anton Melser <melser.anton@gmail.com> wrote:
+On Wed, 2011-12-28 at 08:46 -0600, Barry Smoke wrote:
+> Most of the online docs I've found deal with bridging, and
+> virtualization.  I'm trying to use bridging to link openvpn clients
+> with our internal network, without nat(for a voip implementation on
+> yealink phones).
 
-> No, you misunderstand. (At least with IPv4) Reputation ~= IP. The goal
-> is 1 client = (at least) 1 IP. Reputation DOES take time to build up,
-> and the best way to build it up is by sending relevant, permissioned
-> newsletters from an IP that is used by only ONE client. We agree, this
-> is how it should be. But lots of clients = lots of IPs...
-> But this is *WAY* OT...
+<snip>
 
-I have considerable experience running SMTP servers (Postfix), and I see no problem with having 1600 hosts.  I understand that these hosts would be spread out among your 3-8 mail servers, so the number of hosts served might be about 200 per SMTP server.  What might be a worry is the fact that they normally send bulk email.  You may want to ask your customers to send their bulk mail at certain times, to avoid overload.
+> however my ping requests never make it to br0.  
+> 
 
-If you set up your machines as relays, Postfix and other MTAs will write the public IP of the sender into each email in the first "Received" line.  Then the receiving ISPs can check the reputation of each sender IP.  If that's your goal ("...newsletters from an IP that is used by only ONE client.  We agree, this is how it should be."), that's the proper way to do it.  Your customers would each require only an email client running on a regular PC, not a full-fledged mail server as you imply.  I'm sure that plenty of email clients suitable for sending bulk email are available.
+I realise that you've solved this now using another script, but just
+thought that I'd point out that it's always worth getting your scripts
+working with no DROPing of packets (initially).
 
-However, I don't think you want those public IPs in the bulk emails, based on the link you sent (http://blog.mailchimp.com/should-you-send-from-a-dedicated-ip-address/)  The whole idea of that service, which you pointed out as an example of your own, is to circumvent the time-consuming process of building an IP's email reputation by sending it from another, "trusted" IP.  Isn't that what you're trying to do?
+I noticed that in your rules you had various rules for LOGing and
+DROPing, but that the default policies were DROP, so there is always a
+chance that some packets could have been silently dropped.
 
-Of course, this mailing list is not the place to debate this.
+Andy
 
-Since SNAT is done in the POSTROUTING chain, you can't use SNAT to try to remove evidence of your customers' public IPs from mail sent on the *same* machine that does the SNAT.  Even if you use a NATting router to FORWARD the email to mail servers running on other machines, the MTAs will know the true origin IP and will ignore the NAT IP when they write the mail header.
 
-Hiding the true sender IP is a violation of protocol.  One way to violate protocol is to do something like remove the Received header that contains your sender's public IP.  That can easily be done, but I won't go into details.
-
-As for limiting access to the spoofing mail server to your network ranges, that's not necessary since your relaying mail servers will require authentication.  However:
-
-Allow NEW port 25 connections from each of your IP ranges:
-iptables -A INPUT -p tcp -m state --state NEW -s x.x.x.x/23 -j ALLOW
-etc.
-
-I think you will need this (one rule only) to allow email negotiation:
-iptables -A INPUT -p tcp -m state --state ESTABLISHED,RELATED -j ALLOW
-
-Then set the default policy:
-iptables -P INPUT DROP
-
--- 
-Lloyd
