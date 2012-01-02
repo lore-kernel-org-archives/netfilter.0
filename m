@@ -1,53 +1,97 @@
-From: =?ISO-8859-1?Q?Niccol=F2_Belli?= <darkbasic@linuxsystems.it>
-Subject: Re: [Announce] LARTC wiki available
-Date: Mon, 02 Jan 2012 14:07:06 +0100
-Message-ID: <4F01ABFA.8050400@linuxsystems.it>
-References: <4EFB3B2B.7060200@linuxsystems.it> <20111229002717.GB3548@hell> <4EFC34E5.4040202@linuxsystems.it> <20111229161919.GA2948@hell> <4EFC9FC2.1090503@linuxsystems.it> <4F01A797.1040406@wildgooses.com>
+From: Anton Melser <anton@linux.com>
+Subject: Re: Advice on best way to set up multi-route NAT for lots of IPs
+Date: Mon, 2 Jan 2012 14:17:51 +0100
+Message-ID: <CAKywjPqGyr+eX=BHhn65ehNn=KH9jw76SoqG6awb8AYh+htOeg@mail.gmail.com>
+References: <CAKywjPrbjoLhcvPXVYg+8kZ53rPRJ5+dhePx4FB=OkpNjqUGxw@mail.gmail.com>
+ <4F01A53A.6040704@wildgooses.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=linuxsystems.it;
-	s=linuxsystems.it; t=1325509617;
-	bh=+H5dYzLhJKRrwutSk7XYG6bZfmg9JK06BEntEMj/Dgg=;
-	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:References:
-	 In-Reply-To:Content-Type:Content-Transfer-Encoding;
-	b=Y/tQBqxUuyuZMcYJUZlqg6ceeX5AYOJ257yyPFqjnF7kK/bKkh/OhFrk3JgHXHlKi
-	 Z+8RJjPiwaeAh1ND7fr+h+v2L34HGW1Uta/fLd06y5cBXWv8XCO0uBGx2P6HNMX1Gi
-	 oaqNbic34983vemSGjdnZaSzG9dcPa08jj3521Ec=
-In-Reply-To: <4F01A797.1040406@wildgooses.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:sender:in-reply-to:references:from:date
+         :x-google-sender-auth:message-id:subject:to:cc:content-type
+         :content-transfer-encoding;
+        bh=P+k6DYhPsxkrO4E5yC3XxLd8/6fVGVY0d6DocOvSY4k=;
+        b=sD0FYNfZ3upd5oYPLiAgSI9S9GDz/Dh4DYW263AIZlkeczygHDZYnMX4qyZj9KOYCn
+         iugiz19Hyr60aJjtJmwWeRQY0EWPIN0krYawa3yoSzGp2YE6IgNN6KzjbRnKLlXk+wAP
+         WgrwCIpZz9RhV0/qzMBR+OxsMXWA28HyrMARk=
+In-Reply-To: <4F01A53A.6040704@wildgooses.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: lartc@vger.kernel.org
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, Linux Networking Developer Mailing List <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: Ed W <lists@wildgooses.com>
+Cc: netfilter@vger.kernel.org
 
-Il 02/01/2012 13:48, Ed W ha scritto:
-> Wikis seem to be massive spam targets at the moment (I run a small wi=
-ki,
-> I added registration to try and limit spammers, then I added silly
-> captchas, then I added some auto spam word recognition. I'm now at th=
-e
-> point that for such a small and niche wiki I might just get people to
-> apply to me personally for an edit option, it's just too boring deali=
-ng
-> with the spam...)
+=2E..
+> Although NAT would seem to be the most flexible solution (seems like =
+you
+> just need to read up on SNAT?
+I have been doing that but thought I'd ask here for the advice from
+the experts... There are many bad ways to skin a cat and I just wanted
+to make sure I was using a reasonable way.
 
-Thank you for your answer, I wanted a wiki because I want lartc to be a=
-s=20
-independent as possible, the final goal is to find someone who can=20
-assure continuity to the documentation even if I give up (like vger for=
-=20
-the ml): I want to avoid what happened to lartc.org and the old mailing=
-=20
-list.
+> Probably also some network stack tuning needed
+> for such a large amount of NAT..?),
+That was what I was hoping to avoid...
 
-Did you try ReCAPTCHA=20
-(http://www.mediawiki.org/wiki/Extension:ReCAPTCHA)? Do you use=20
-mediawiki or something else?
+> you can probably also do this by adding
+> the public IPs to your mailserver?
+Definitely, makes load shifting very complicated though...
 
-Again, if someone is experienced and willing to help, any help is=20
-appreciated. I can share ftp/phpmyadmin if someone wants to co-maintain=
- it.
+>=C2=A0Eg with Postfix you can either lightly
+> overload settings per transport in master.cf (
+> http://www.postfix.org/master.5.html ), or if you need something whic=
+h more
+> closely emulates a virtual machine then see the multi-instance stuff =
+(
+> http://www.postfix.org/MULTI_INSTANCE_README.html ). I see no theoret=
+ical
+> reason you couldn't have a (very) multihomed machine with the IPs on =
+the
+> servers themselves? The benefit might be that mailservers under high =
+load
+> will normally have a lot of connections open (hence high NAT requirem=
+ents)
+>
+> Postfix also has some interesting options to add connection caching a=
+nd some
+> other tricks which are helpful for larger installations and large out=
+bound
+> queue volumes.
+Postfix wasn't really designed for sending newsletters for lots of
+companies efficiently, and it doesn't do a very good job compared to
+some highly targeted products (PowerMTA, Message Systems, etc.)
 
-Thanks,
-Niccol=F2
+> You should probably spend some time on followup questions covering wh=
+y you
+> aren't a spam sender. Many technical folks will jump to the conclusio=
+n that
+> anyone asking for help pumping large volumes of mail is likely to be =
+up to
+> no good. =C2=A0Just saying how it is...
+
+:-). I was hoping to avoid that but you are right. Funnily enough,
+pretty much no one sends bulk newsletters with their own servers any
+more, and we have spammers to thank for that! Probably something like
+90% of fortune 500s use specialist providers, hence why IBM and other
+megacorps decided they needed in. The problem being that "technical
+folks" usually don't have the time or patience to properly take care
+of the "marketing folks" - mail servers need to be set up with sending
+newsletters in mind because if they aren't then the MSPs (Mailbox
+Service Providers, like Hotmail, Yahoo, GMail) or ISPs (like Comcast,
+etc.) will just block and say "this is probably spam". Most
+postmasters don't know or care (or do but don't have the time) about
+this, so tell the marketing people to send them from elsewhere, hence
+the development of an email broadcasting outsourcing sector. Receivers
+set up http://www.maawg.org/, and have welcomed in broadcasters (and
+senders) so there can be a forum for them to tell us how to send to
+them. People DO sign up for newsletters, and that means they want
+them, so ISPs can't (and don't) just block everything. ISPs and MSPs
+WANT individual clients to have dedicated IPs, so they can more easily
+identify and whitelist/throttle/trash/block. That means if you have
+many thousands of clients, you need many thousands of IPs... But you
+don't need many thousands of machines (save the planet! :-)) -
+particularly if you can set up SNAT efficiently!
+Cheers
+Anton
