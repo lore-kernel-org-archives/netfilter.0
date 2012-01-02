@@ -1,40 +1,59 @@
-From: "Lloyd Standish" <lloyd@crnatural.net>
+From: Anton Melser <melser.anton@gmail.com>
 Subject: Re: Advice on best way to set up multi-route NAT for lots of IPs
-Date: Sun, 01 Jan 2012 16:11:02 -0600
-Message-ID: <op.v7fekow7x1lyi3@debiandesk2.net>
-References: <CAKywjPrbjoLhcvPXVYg+8kZ53rPRJ5+dhePx4FB=OkpNjqUGxw@mail.gmail.com> <op.v7e9nhxox1lyi3@debiandesk2.net> <CAKywjPpKpVdBz9boAhgj=-F488ayAtoLK1ua=GWKZ1hjNMWpZA@mail.gmail.com>
+Date: Mon, 2 Jan 2012 10:00:23 +0100
+Message-ID: <CAKywjPprq497Ox7hZRMXNApC24nkm4syEbrAkX02N-QOPBpKiA@mail.gmail.com>
+References: <CAKywjPrbjoLhcvPXVYg+8kZ53rPRJ5+dhePx4FB=OkpNjqUGxw@mail.gmail.com>
+ <op.v7e9nhxox1lyi3@debiandesk2.net> <CAKywjPpKpVdBz9boAhgj=-F488ayAtoLK1ua=GWKZ1hjNMWpZA@mail.gmail.com>
+ <op.v7fekow7x1lyi3@debiandesk2.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAKywjPpKpVdBz9boAhgj=-F488ayAtoLK1ua=GWKZ1hjNMWpZA@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc:content-type:content-transfer-encoding;
+        bh=iyZNUGk7njdO72KkywupNEWYc5tqyYc5l3tHUomiW0k=;
+        b=E5oavspIf2SxqPPyPksnS6D7PfHOIL0/9e0M13Svnntv8PcPlJt0abGDQORVuFFsia
+         I54zSV+BxVyIT2BDD7mM7rj5Q+305rqm3Ex0eWiZ4UMzX2ukqd6sNIS49QX2bNwCRgED
+         0dyG99Q0+dlhsjfM86HwIc2d05RZSy5QmGCaQ=
+In-Reply-To: <op.v7fekow7x1lyi3@debiandesk2.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed	delsp=yes"
-To: Anton Melser <melser.anton@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+To: Lloyd Standish <lloyd@crnatural.net>
 Cc: netfilter@vger.kernel.org
 
-On Sun, 01 Jan 2012 14:41:24 -0600, Anton Melser <melser.anton@gmail.com> wrote:
+> So, I understand you are setting up 3-8 mail servers that will send o=
+ut bulk
+> email for 1600 hosts, so that the sender IP in the mails will have yo=
+ur 3-8
+> "reputable" IPs rather than one of the 1600 "unknown" IPs.
+>
+> This would not be a regular email relay, since that would put the sen=
+der IP
+> in the mail headers. =C2=A0Are you thinking to use NAT to try to hide=
+ the sender
+> IP? That's not the way to do it.
+>
+> Frankly, this looks to me like bulk-email-laundering. =C2=A0That is, =
+it's a way
+> to convey email "reputation" from one of 3-8 "trusted" IPs to the 160=
+0
+> "unknown" ones.
+>
+> Sorry, a have a personal issue with spam, and anything that could be =
+used
+> (if not by you, then by someone else) to get spam delivered. I think =
+the
+> email reputation of a public IP address should be earned, and it *sho=
+uld*
+> take time to earn it.
 
->> I am new to this list and I have little experience with netfilter, but I
->> think I can help you. However, I need some clarification:
->>
->> When you say your machines need to be able to send email from each of those
->> 1600 public IPs, do you mean your 3-8 machines serve as SMTP relays for 1600
->> hosts, each with a public IP?  Do you mean that you are *not* the ISP, and
->> are providing only smtp service for the hosts?
->ESP. Think Mailchimp just a little smaller. Lots of clients need lots
-> of IPs (it's a reputation thing, and quite an interesting computing
-> problem, see http://blog.mailchimp.com/should-you-send-from-a-dedicated-ip-address/
-> or just search for "email marketing dedicated ip" for an intro).
-> A
-
-So, I understand you are setting up 3-8 mail servers that will send out bulk email for 1600 hosts, so that the sender IP in the mails will have your 3-8 "reputable" IPs rather than one of the 1600 "unknown" IPs.
-
-This would not be a regular email relay, since that would put the sender IP in the mail headers.  Are you thinking to use NAT to try to hide the sender IP? That's not the way to do it.
-
-Frankly, this looks to me like bulk-email-laundering.  That is, it's a way to convey email "reputation" from one of 3-8 "trusted" IPs to the 1600 "unknown" ones.
-
-Sorry, a have a personal issue with spam, and anything that could be used (if not by you, then by someone else) to get spam delivered. I think the email reputation of a public IP address should be earned, and it *should* take time to earn it.
-
--- 
-Lloyd
+No, you misunderstand. (At least with IPv4) Reputation ~=3D IP. The goa=
+l
+is 1 client =3D (at least) 1 IP. Reputation DOES take time to build up,
+and the best way to build it up is by sending relevant, permissioned
+newsletters from an IP that is used by only ONE client. We agree, this
+is how it should be. But lots of clients =3D lots of IPs...
+But this is *WAY* OT...
+A
