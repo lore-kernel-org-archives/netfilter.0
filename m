@@ -1,88 +1,115 @@
-From: Anton Melser <melser.anton@gmail.com>
-Subject: Re: Advice on best way to set up multi-route NAT for lots of IPs
-Date: Tue, 3 Jan 2012 09:56:48 +0100
-Message-ID: <CAKywjPq1m33xZPMobhS4WAu-=ugcEdBbVOPnz1b90to66WqnLg@mail.gmail.com>
-References: <CAKywjPrbjoLhcvPXVYg+8kZ53rPRJ5+dhePx4FB=OkpNjqUGxw@mail.gmail.com>
- <op.v7e9nhxox1lyi3@debiandesk2.net> <CAKywjPpKpVdBz9boAhgj=-F488ayAtoLK1ua=GWKZ1hjNMWpZA@mail.gmail.com>
- <op.v7fekow7x1lyi3@debiandesk2.net> <CAKywjPprq497Ox7hZRMXNApC24nkm4syEbrAkX02N-QOPBpKiA@mail.gmail.com>
- <op.v7gsi0a4x1lyi3@debiandesk2.net> <CAKywjPpK97N9hCVO7hsH4grCV62rmSbH_Dm5d=WcOutor3afWg@mail.gmail.com>
- <op.v7hgf5rkx1lyi3@debiandesk2.net>
+From: Steve Hill <steve@opendium.com>
+Subject: Re: Filtering on bridges
+Date: Tue, 03 Jan 2012 13:15:13 +0000
+Message-ID: <4F02FF61.5020806@opendium.com>
+References: <4EF1B216.50303@opendium.com> <alpine.LNX.2.01.1112211430010.22587@frira.zrqbmnf.qr> <4EF1E3B0.6080200@opendium.com> <alpine.LNX.2.01.1112211934120.16532@frira.zrqbmnf.qr> <4EF26A14.2070409@opendium.com> <alpine.LNX.2.01.1112220028500.22558@frira.zrqbmnf.qr> <4EF30CCC.4090703@opendium.com> <alpine.LNX.2.01.1112221222570.3495@frira.zrqbmnf.qr> <4EF36A9A.3040803@opendium.com> <alpine.LNX.2.01.1112222302410.28561@frira.zrqbmnf.qr> <4EF40499.3020005@atc.tcs.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-type:content-transfer-encoding;
-        bh=LFJbMWZmEvcOd4QWHPH0eUzD6Zi7iwCaDAwI/Ty4vFk=;
-        b=Ra9CEaOKXfg/kl2pudrxhEosexYkcHLtM4wJjVlxYoDz7gWx0To5FtSLy137s+zBOB
-         avEC57qVqIba5JrVd7QsXFRlHM9T4aRdHciS1x1rgf4dbl/rSaK0dSpb/1Kd380SnuRa
-         hWRyijOeQ+erPIKhqDu3NiZhAZ7k7fdUS18LY=
-In-Reply-To: <op.v7hgf5rkx1lyi3@debiandesk2.net>
+In-Reply-To: <4EF40499.3020005@atc.tcs.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Lloyd Standish <lloyd@crnatural.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Vigneswaran R <vignesh@atc.tcs.com>
+Cc: Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org
 
-> I think the above makes it very clear why I understood that your serv=
-ice
-> seeks to send out email for customers with source IPs *other* than th=
-e
-> customers' own IP, at least during the IPs "break-in period".
-The link was meant to provide an introduction to some of the issues.
-You are obviously focusing exclusively on possible ways the current
-situation can be gamed or abused. Unfortunately there are not 15
-different ways to "warm up" IPs. It takes time and so costs money, as
-most people are still doing this at least semi-manually. You need to
-build up slowly, that is how the ISPs/MSPs require it. In any case, it
-takes weeks for an IP to earn a reputation and all that can be
-destroyed in a single send (couple of hours). When an IP has a
-reputation then you can dedicate it to a customer and the customer
-then becomes responsible for their own reputation. Again, this is the
-goal and there is only really one way to get there. If there were some
-magic program that all ISPs/MSPs adhered to and required a large bond
-to be posted in terms of guarantee, we would jump on it. If we could
-just say, "here are many thousands of dollars, if anyone sends
-anything dodgy from this IP then it is forfeit" that would save lots
-of time and hassle. It doesn't exist. Even whitelisting services like
-Return Path SenderScore certification require a minimum of 3mths on a
-dedicated IP before they will *consider* accepting an IP in the
-program! We have multi-year contracts with our clients - we are not at
-all interested in customers that come, send crap for a week or two and
-leave. That is not possible with our infrastructure because we have an
-involved acceptance process where databases are analysed, marketing
-programs reviewed, etc, and you sign a (absolute minimum) 12-mth
-contract. Sign up costs are also significant, and spammers need for
-things to be cheap. I recently read that on average 12.5 million spam
-messages need to be sent for $100 of "viagra" to be sold. You would be
-losing a LOT of money sending these messages on any reputable email
-service provider!
+On 23/12/11 04:33, Vigneswaran R wrote:
 
-> Now you explain what you are really trying to do is provide mail serv=
-er
-> redundancy. =C2=A0You can do that easily and cheaply with DNS failove=
-r. =C2=A0But that
-> is off-topic.
-Sending and receiving email are two quite different needs. I would be
-very, very surprised if, say, Yahoo! did sending and receiving on the
-same machines. The various SMTP standards never suggest that email
-should only be sent from machines in the MX. The ISPs and MSPs don't
-care if you use machines referenced in the MX records. I know because
-anti-abuse masters have told me so. Sure, you need to provide robust
-infrastructure for dealing with bounces and any complaints (to
-postmaster@, abuse@, etc.) but that has nothing to do with sending
-infrastructure. You should also provide rDNS but again, that has very
-little to do with reputation indexes based on IP address. DNS failover
-isn't an option for providing MTA sending uptime from a particular IP.
-What I am trying to do is DNS failover for IPs - so having a public
-token (in DNS it's a name, for me it's an IP) that is translated to
-one or many internal values (IP for DNS, LAN local IP for me). Isn't
-this NAT?
-I am all up for alternative means for making sure a particular IP can
-be available for sending 24/7 cheaply, if there are any. (Don't
-mistake cheap for provider as cheap for sender though!) I thought
-iptables/netfilter would be a good way of doing it but I might be
-wrong...
-Cheers
-Anton
+> Sorry for interrupting your discussion. I am following this thread from
+> the beginning. However, I couldn't get exactly how your setup looks
+> like. If possible, could you please give a simple (ascii) pictorial
+> representation of your setup. This may help more people (normal iptable
+> users like me) to understand the discussion better. Thank you.
+
++-----------------------------------------------------------+
+|                        Linux Server                       |
+|                                                           |
+|                            (br0)                          |
+|                              |                            |
+|     +------------+-----------+-----------+-----------+    |
+|     |            |           |           |           |    |
+|  (eth0)       (eth1)      (eth2)      (eth3)      (eth4)  |
++-----------------------------------------------------------+
+       |            |           |           |           |
+       |            |           |           |           |
++----------+  +--------+  +--------+  +--------+  +--------+
+| Upstream |  | Other  |  | Other  |  | Other  |  | Other  |
+|  Switch  |  | Server |  | Server |  | Server |  | Server |
++----------+  +--------+  +--------+  +--------+  +--------+
+
+
+As you can see, the Linux server has several network interfaces, all of 
+which are bridged together.  I'm using iptables to filter the traffic 
+between those NICs.  Filtering bridged traffic largely works as expected 
+(although there is an issue that using REJECT filter rules causes the 
+kernel to panic as the ICMP response is injected into the bridge!)  This 
+means I can write iptables filter rules in the FORWARD chain using the 
+physdev module to reference the physical NICs (e.g. "DROP TCP traffic 
+from eth0 to eth1 that has a destination port == 25")
+
+The issue I'm having is that traffic that has passed through the local 
+IP stack (whether that be from a local process, or routed) is handled 
+differently to traffic that is being bridged - iptables is no longer 
+aware of the physical NIC from which the traffic will egress.  I.e. for 
+this traffic I can only create rules referencing the whole bridge (br0) 
+rather than individual physical NICs (eth0, eth1, etc.).
+
+
+The following is NOT a description of what actually happens, it is what 
+I believe would be a cleaner model than the current system:
+Logically, I would say that routing and bridging are two completely 
+different processes, so should have separate chains.  i.e. the 
+PREROUTING, FORWARD, POSTROUTING and OUTPUT chains should refer *only* 
+to traffic that is passing through the IP stack, and there should be 
+separate PREBRIDGE, FORWARDBRIDGE, POSTBRIDGE chains for the bridged 
+traffic.  The bridge interface (br0) should be seen as just another 
+member of the bridge, exactly like the physical NICs.
+
+So following the above idea, a packet generated by a local process would 
+pass though:
+iptables:OUTPUT (egress NIC: br0)
+iptables:POSTROUTING (egress NIC: br0)
+ebtables:BROUTING (ingress NIC: br0)
+ebtables:PREROUTING (ingress NIC: br0)
+iptables:PREBRIDGE (ingress NIC: br0)
+ebtables:FORWARD (ingress NIC: br0, egress NIC: eth0)
+iptables:FORWARDBRIDGE (ingress NIC: br0, egress NIC: eth0)
+iptables:POSTBRIDGE (ingress NIC: br0, egress NIC: eth0)
+ebtables:POSTROUTING (ingress NIC: br0, egress NIC: eth0)
+
+And similarly, a bridged packet would look something like:
+ebtables:BROUTING (ingress NIC: eth1)
+ebtables:PREROUTING (ingress NIC: eth1)
+iptables:PREBRIDGE (ingress NIC: eth1)
+ebtables:FORWARD (ingress NIC: eth1, egress NIC: eth0)
+iptables:FORWARDBRIDGE (ingress NIC: eth1, egress NIC: eth0)
+iptables:POSTBRIDGE (ingress NIC: eth1, egress NIC: eth0)
+ebtables:POSTROUTING (ingress NIC: eth1, egress NIC: eth0)
+
+Unfortunately this isn't what happens :)
+
+
+
+Hope that explains what I'm talking about anyway.  In my case, the 
+"other servers" are actually virtual machines running on the Linux 
+server, so "eth1..4" aren't really physical NICs, they are tun/tap 
+interfaces.  But for the purpose of this discussion, that is unimportant.
+
+-- 
+
+  - Steve Hill
+    Technical Director
+    Opendium Limited     http://www.opendium.com
+
+Direct contacts:
+    Instant messager: xmpp:steve@opendium.com
+    Email:            steve@opendium.com
+    Phone:            sip:steve@opendium.com
+
+Sales / enquiries contacts:
+    Email:            sales@opendium.com
+    Phone:            +44-844-9791439 / sip:sales@opendium.com
+
+Support contacts:
+    Email:            support@opendium.com
+    Phone:            +44-844-4844916 / sip:support@opendium.com
