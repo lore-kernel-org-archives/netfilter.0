@@ -1,80 +1,76 @@
-From: Jan Engelhardt <jengelh@medozas.de>
+From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
 Subject: Re: Filtering on bridges
-Date: Tue, 3 Jan 2012 17:09:28 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1201031650401.4419@frira.zrqbmnf.qr>
-References: <4EF1B216.50303@opendium.com> <alpine.LNX.2.01.1112211430010.22587@frira.zrqbmnf.qr> <4EF1E3B0.6080200@opendium.com> <alpine.LNX.2.01.1112211934120.16532@frira.zrqbmnf.qr> <4EF26A14.2070409@opendium.com> <alpine.LNX.2.01.1112220028500.22558@frira.zrqbmnf.qr>
- <4EF30CCC.4090703@opendium.com> <alpine.LNX.2.01.1112221222570.3495@frira.zrqbmnf.qr> <4EF36A9A.3040803@opendium.com> <alpine.LNX.2.01.1112222302410.28561@frira.zrqbmnf.qr> <4EF40499.3020005@atc.tcs.com> <4F02FF61.5020806@opendium.com>
+Date: Tue, 03 Jan 2012 13:43:32 -0500
+Message-ID: <1325616212.7219.123.camel@denise.theartistscloset.com>
+References: <4EF1B216.50303@opendium.com>
+	 <alpine.LNX.2.01.1112211430010.22587@frira.zrqbmnf.qr>
+	 <4EF1E3B0.6080200@opendium.com>
+	 <alpine.LNX.2.01.1112211934120.16532@frira.zrqbmnf.qr>
+	 <4EF26A14.2070409@opendium.com>
+	 <alpine.LNX.2.01.1112220028500.22558@frira.zrqbmnf.qr>
+	 <4EF30CCC.4090703@opendium.com>
+	 <alpine.LNX.2.01.1112221222570.3495@frira.zrqbmnf.qr>
+	 <4EF36A9A.3040803@opendium.com>
+	 <alpine.LNX.2.01.1112222302410.28561@frira.zrqbmnf.qr>
+	 <4EF40499.3020005@atc.tcs.com>  <4F02FF61.5020806@opendium.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 In-Reply-To: <4F02FF61.5020806@opendium.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
 To: Steve Hill <steve@opendium.com>
-Cc: Vigneswaran R <vignesh@atc.tcs.com>, netfilter@vger.kernel.org
+Cc: Vigneswaran R <vignesh@atc.tcs.com>, Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org
 
+On Tue, 2012-01-03 at 13:15 +0000, Steve Hill wrote:
+> On 23/12/11 04:33, Vigneswaran R wrote:
+> 
+> > Sorry for interrupting your discussion. I am following this thread from
+> > the beginning. However, I couldn't get exactly how your setup looks
+> > like. If possible, could you please give a simple (ascii) pictorial
+> > representation of your setup. This may help more people (normal iptable
+> > users like me) to understand the discussion better. Thank you.
+> 
+> +-----------------------------------------------------------+
+> |                        Linux Server                       |
+> |                                                           |
+> |                            (br0)                          |
+> |                              |                            |
+> |     +------------+-----------+-----------+-----------+    |
+> |     |            |           |           |           |    |
+> |  (eth0)       (eth1)      (eth2)      (eth3)      (eth4)  |
+> +-----------------------------------------------------------+
+>        |            |           |           |           |
+>        |            |           |           |           |
+> +----------+  +--------+  +--------+  +--------+  +--------+
+> | Upstream |  | Other  |  | Other  |  | Other  |  | Other  |
+> |  Switch  |  | Server |  | Server |  | Server |  | Server |
+> +----------+  +--------+  +--------+  +--------+  +--------+
+> 
+> 
+> As you can see, the Linux server has several network interfaces, all of 
+> which are bridged together.  I'm using iptables to filter the traffic 
+> between those NICs.  Filtering bridged traffic largely works as expected 
+> (although there is an issue that using REJECT filter rules causes the 
+> kernel to panic as the ICMP response is injected into the bridge!)  This 
+> means I can write iptables filter rules in the FORWARD chain using the 
+> physdev module to reference the physical NICs (e.g. "DROP TCP traffic 
+> from eth0 to eth1 that has a destination port == 25")
+> 
+> The issue I'm having is that traffic that has passed through the local 
+> IP stack (whether that be from a local process, or routed) is handled 
+> differently to traffic that is being bridged - iptables is no longer 
+> aware of the physical NIC from which the traffic will egress.  I.e. for 
+> this traffic I can only create rules referencing the whole bridge (br0) 
+> rather than individual physical NICs (eth0, eth1, etc.).
+<snip>
+I wonder if you could integrate tc and iptables here.  I haven't thought
+it all the way through but you could do something like setup an ingress
+qdisc and use a tc filter ipt action (action ipt -j MARK --set-mark) to
+mark packets based upon the iif so you know where it came and then
+examine that mark on egress with a u32 filter with all the other match
+parameters and drop it if necessary.  I'm not all that familiar with
+using tc is such a way but that would get you back to the physical
+interfaces - John
 
-On Tuesday 2012-01-03 14:15, Steve Hill wrote:
->
->The following is NOT a description of what actually happens, it is
->what I believe would be a cleaner model than the current system:
->Logically, I would say that routing and bridging are two completely
->different processes, so should have separate chains. i.e. the
->PREROUTING, FORWARD, POSTROUTING and OUTPUT chains should refer
->*only* to traffic that is passing through the IP stack, and there
->should be separate PREBRIDGE, FORWARDBRIDGE, POSTBRIDGE chains for
->the bridged traffic.
-
-The packet *is* being passed through the IP stack - if you don't want
-that, set net.bridge.bridge-nf-call-{arptables,ip6tables,iptables}=0.
-
->The bridge interface (br0) should be seen as just another member of
->the bridge, exactly like the physical NICs.
-
-I don't see the point of this other than confusing the user.
-After all, it says everywhere that bridges cannot be members
-of bridges.
-
->So following the above idea, a packet generated by a local process
->would pass though:
->
->iptables:OUTPUT (egress NIC: br0)
->iptables:POSTROUTING (egress NIC: br0)
->ebtables:BROUTING (ingress NIC: br0)
->ebtables:PREROUTING (ingress NIC: br0)
-
-I know there is a saying "after the game is before the game",
-but you can't apply that to Linux here.
-
->iptables:PREBRIDGE (ingress NIC: br0)
->ebtables:FORWARD (ingress NIC: br0, egress NIC: eth0)
->iptables:FORWARDBRIDGE (ingress NIC: br0, egress NIC: eth0)
->iptables:POSTBRIDGE (ingress NIC: br0, egress NIC: eth0)
->ebtables:POSTROUTING (ingress NIC: br0, egress NIC: eth0)
-
-FORWARD and PRE*-logicry is never invoked in the local-output path
-by design, simply because there is nothing forwarded here.
-
-> And similarly, a bridged packet would look something like:
-> ebtables:BROUTING (ingress NIC: eth1)
-> ebtables:PREROUTING (ingress NIC: eth1)
-> iptables:PREBRIDGE (ingress NIC: eth1)
-> ebtables:FORWARD (ingress NIC: eth1, egress NIC: eth0)
-> iptables:FORWARDBRIDGE (ingress NIC: eth1, egress NIC: eth0)
-> iptables:POSTBRIDGE (ingress NIC: eth1, egress NIC: eth0)
-> ebtables:POSTROUTING (ingress NIC: eth1, egress NIC: eth0)
->
-> Unfortunately this isn't what happens :)
-
-The wording PREBRIDGE does not make sense, since the IP level does
-not, by abstract fashion, know or care about any bridge. This is why
-the IP-level hooks are called xxxROUTING, and skb->dev is set to
-"br0", necessiting a special -m physdev "layer-breaker" to get at
-the real dev.
-
-If anything, the ebtables hooks {BROUTING, PREROUTING, FORWARD,
-OUTPUT, POSTROUTING} would have been called something like {BROUTING,
-PREBRIDGE, BRIDGED, OUTPUT, POSTBRIDGE} -- because that it the bridge
-terminology set --, but alas, the initial developer did not choose
-so.
