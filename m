@@ -1,76 +1,40 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: Re: Filtering on bridges
-Date: Tue, 03 Jan 2012 13:43:32 -0500
-Message-ID: <1325616212.7219.123.camel@denise.theartistscloset.com>
-References: <4EF1B216.50303@opendium.com>
-	 <alpine.LNX.2.01.1112211430010.22587@frira.zrqbmnf.qr>
-	 <4EF1E3B0.6080200@opendium.com>
-	 <alpine.LNX.2.01.1112211934120.16532@frira.zrqbmnf.qr>
-	 <4EF26A14.2070409@opendium.com>
-	 <alpine.LNX.2.01.1112220028500.22558@frira.zrqbmnf.qr>
-	 <4EF30CCC.4090703@opendium.com>
-	 <alpine.LNX.2.01.1112221222570.3495@frira.zrqbmnf.qr>
-	 <4EF36A9A.3040803@opendium.com>
-	 <alpine.LNX.2.01.1112222302410.28561@frira.zrqbmnf.qr>
-	 <4EF40499.3020005@atc.tcs.com>  <4F02FF61.5020806@opendium.com>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: redundancy with Adsl modem
+Date: Tue, 03 Jan 2012 23:58:23 +0000
+Message-ID: <1325635103.2270.313.camel@andybev-desktop>
+References: <CAMTjHrw92RRMe4Y2cGfVsS6eBrvL-=1pYCueOC7vOW=RT_-=7g@mail.gmail.com>
+	 <1325574854.2270.130.camel@andybev-desktop>
+	 <CAMTjHrxMUCb1b4tKeQon9QuJCxp3YunwJ7BiPfBtCokGFLYkWg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4F02FF61.5020806@opendium.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1325635114;
+	bh=h2K8cPtwfbLIUQ/TLXU6Ua+ZTD8GHPJmLaZBGeBEqKw=;
+	h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:Date:
+	 Message-ID:Mime-Version:Content-Transfer-Encoding;
+	b=lzGBN3OI8t0uc96wZAVcbX3XuYA0fIYV679L/7dTdal32gDyHfH2M3wPvEXKr6yQ8
+	 dGYBHpi7DASS385VmvGDKQDuZhn8QOUehvj0rkt7xH0wObwCZAUKwdez7a9Guh1+V+
+	 fXeSObuS4NNnKoQuOmGjbdASrAiT2ZzkmgrreRgc=
+In-Reply-To: <CAMTjHrxMUCb1b4tKeQon9QuJCxp3YunwJ7BiPfBtCokGFLYkWg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Steve Hill <steve@opendium.com>
-Cc: Vigneswaran R <vignesh@atc.tcs.com>, Jan Engelhardt <jengelh@medozas.de>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?ISO-8859-1?Q?Usu=E1rio?= do Sistema <maiconlp@ig.com.br>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Tue, 2012-01-03 at 13:15 +0000, Steve Hill wrote:
-> On 23/12/11 04:33, Vigneswaran R wrote:
-> 
-> > Sorry for interrupting your discussion. I am following this thread from
-> > the beginning. However, I couldn't get exactly how your setup looks
-> > like. If possible, could you please give a simple (ascii) pictorial
-> > representation of your setup. This may help more people (normal iptable
-> > users like me) to understand the discussion better. Thank you.
-> 
-> +-----------------------------------------------------------+
-> |                        Linux Server                       |
-> |                                                           |
-> |                            (br0)                          |
-> |                              |                            |
-> |     +------------+-----------+-----------+-----------+    |
-> |     |            |           |           |           |    |
-> |  (eth0)       (eth1)      (eth2)      (eth3)      (eth4)  |
-> +-----------------------------------------------------------+
->        |            |           |           |           |
->        |            |           |           |           |
-> +----------+  +--------+  +--------+  +--------+  +--------+
-> | Upstream |  | Other  |  | Other  |  | Other  |  | Other  |
-> |  Switch  |  | Server |  | Server |  | Server |  | Server |
-> +----------+  +--------+  +--------+  +--------+  +--------+
-> 
-> 
-> As you can see, the Linux server has several network interfaces, all of 
-> which are bridged together.  I'm using iptables to filter the traffic 
-> between those NICs.  Filtering bridged traffic largely works as expected 
-> (although there is an issue that using REJECT filter rules causes the 
-> kernel to panic as the ICMP response is injected into the bridge!)  This 
-> means I can write iptables filter rules in the FORWARD chain using the 
-> physdev module to reference the physical NICs (e.g. "DROP TCP traffic 
-> from eth0 to eth1 that has a destination port == 25")
-> 
-> The issue I'm having is that traffic that has passed through the local 
-> IP stack (whether that be from a local process, or routed) is handled 
-> differently to traffic that is being bridged - iptables is no longer 
-> aware of the physical NIC from which the traffic will egress.  I.e. for 
-> this traffic I can only create rules referencing the whole bridge (br0) 
-> rather than individual physical NICs (eth0, eth1, etc.).
-<snip>
-I wonder if you could integrate tc and iptables here.  I haven't thought
-it all the way through but you could do something like setup an ingress
-qdisc and use a tc filter ipt action (action ipt -j MARK --set-mark) to
-mark packets based upon the iif so you know where it came and then
-examine that mark on egress with a u32 filter with all the other match
-parameters and drop it if necessary.  I'm not all that familiar with
-using tc is such a way but that would get you back to the physical
-interfaces - John
+On Tue, 2012-01-03 at 13:18 -0200, Usu=C3=A1rio do Sistema wrote:
+> Thanks, I found few documentation about lsm on Internet.
+
+Yeah, the documentation's not great. I'm hoping to write a man page
+sometime soon...
+
+> if somebody has some how to about lsm post here please.
+>=20
+
+I'm planning to post my configuration to my "PortalShaper" website,
+hopefully in the next week or so if you can wait that long.
+
+Andy
+
 
