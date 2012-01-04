@@ -1,77 +1,75 @@
-From: Anton Melser <melser.anton@gmail.com>
-Subject: Re: Advice on best way to set up multi-route NAT for lots of IPs
-Date: Wed, 4 Jan 2012 16:15:39 +0100
-Message-ID: <CAKywjPrqwnUJNrF3jEcXsFnpNcvFp7=YXEZJmkKq-J2Wr50Tww@mail.gmail.com>
-References: <CAKywjPrbjoLhcvPXVYg+8kZ53rPRJ5+dhePx4FB=OkpNjqUGxw@mail.gmail.com>
- <op.v7e9nhxox1lyi3@debiandesk2.net> <CAKywjPpKpVdBz9boAhgj=-F488ayAtoLK1ua=GWKZ1hjNMWpZA@mail.gmail.com>
- <op.v7fekow7x1lyi3@debiandesk2.net> <CAKywjPprq497Ox7hZRMXNApC24nkm4syEbrAkX02N-QOPBpKiA@mail.gmail.com>
- <op.v7gsi0a4x1lyi3@debiandesk2.net> <CAKywjPpK97N9hCVO7hsH4grCV62rmSbH_Dm5d=WcOutor3afWg@mail.gmail.com>
- <op.v7hgf5rkx1lyi3@debiandesk2.net> <CAKywjPq1m33xZPMobhS4WAu-=ugcEdBbVOPnz1b90to66WqnLg@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnetfilter_conntrack 1.0.0 release
+Date: Wed, 4 Jan 2012 17:42:57 +0100
+Message-ID: <20120104164257.GA3309@1984>
 Mime-Version: 1.0
+Content-Type: multipart/mixed; boundary="+HP7ph2BbKc20aGI"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-type;
-        bh=MGgMJxbmUs+xkXC9XTwInvWYSHtb73/x0F5DZGxpJhU=;
-        b=E3pJVcqrT6DfkO5nGJEgcZjJ+C74AXdQi+6KPGN2tkIpB0ZSlveCzICX4ImTvEvHfJ
-         Nrnw7ulsy2sJidNNzZuc+i4yUy1spVRJRJ2Ao6ONyiMgBzNfMXOIaqoKKbzOFty2LE4W
-         CTcgP7883dqmjM8d22F9D2YGJyTZDIhI2qM2A=
-In-Reply-To: <CAKywjPq1m33xZPMobhS4WAu-=ugcEdBbVOPnz1b90to66WqnLg@mail.gmail.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Lloyd Standish <lloyd@crnatural.net>
-Cc: netfilter@vger.kernel.org
+To: netfilter-devel@vger.kernel.org
+Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
-...
-> I am all up for alternative means for making sure a particular IP can
-> be available for sending 24/7 cheaply, if there are any. (Don't
-> mistake cheap for provider as cheap for sender though!) I thought
-> iptables/netfilter would be a good way of doing it but I might be
-> wrong...
 
-In the hope that one final example shows the fact that what I want to
-do is completely legitimate. Here are the headers of a *LINUX
-FOUNDATION* newsletter I received today:
+--+HP7ph2BbKc20aGI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Received: from email-gaia.pd27.com (email-gaia.pd27.com. [208.43.21.70])
-        by mx.google.com with ESMTP id gj7si35742626qab.7.2012.01.04.06.13.51;
-        Wed, 04 Jan 2012 06:13:52 -0800 (PST)
-Received-SPF: pass (google.com: domain of
-undelivered+6342+158668917@pd25.com designates 208.43.21.70 as
-permitted sender) client-ip=208.43.21.70;
-Authentication-Results: mx.google.com; spf=pass (google.com: domain of
-undelivered+6342+158668917@pd25.com designates 208.43.21.70 as
-permitted sender) smtp.mail=undelivered+6342+158668917@pd25.com
-Received: by email-gaia.pd27.com id h0hfa00oaq85 for
-<my_email@gmail.com>; Wed, 4 Jan 2012 09:09:16 -0500 (envelope-from
-<undelivered+6342+158668917@pd25.com>)
-Return-Path: <undelivered+6342+158668917@pd25.com>
-Message-ID: <1325686156.4f045d8cb7f92@swift.generated>
-Date: Wed, 04 Jan 2012 09:09:16 -0500
-Subject: CFP Deadline This Friday To Speak at Android Builders Summit and
- Embedded Linux Conference in February
-From: Linux Foundation Events <no-reply@linuxfoundation.org>
+Hi!
 
-208.43.21.70 is an IP (that seems to be, see the whois) registered to
-Pardot, an online marketing (including email) infrastructure provider,
-NOT the Linux Foundation. All the newsletters from the Linux
-foundation that I have received since 2011-10-11 have come from the
-same IP (hurrah, so it's a dedicated IP!). Pardot have declared many
-thousands of IPs as valid IPs that receivers might receive email from
-on their behalf (nslookup -type txt pd25.com, then keep digging into
-the SPF records to get the actual IPs). They almost certainly have
-thousands of clients.
-If Pardot have the same issues as we do (they do, they are a
-competitor for some products, including email sending), and the Linux
-Foundation are a client of theirs and use their email marketing
-services, then... the Linux Foundation are SPAMMERS! Yikes! We are all
-doomed... :-).
+The Netfilter project proudly presents:
 
-So in other news - does anyone have any suggestions or advice on the
-best way to do NAT + multi-routing via several gateways using
-netfilter/iptables with 1600+ IPs?
-Thanks,
-Anton
+        libnetfilter_conntrack-1.0.0
+
+libnetfilter_conntrack is a userspace library providing a programming
+interface (API) to the in-kernel connection tracking state table.
+
+See ChangeLog that comes attached to this email for more details.
+
+You can download it from:
+
+http://www.netfilter.org/projects/libnetfilter_conntrack/downloads.html
+ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/
+
+Have fun!
+
+--+HP7ph2BbKc20aGI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="changes-libnetfilter_conntrack-1.0.0.txt"
+
+Andrew Beverley (1):
+      utils: add nfct_destroy() to all examples in utils
+
+Jan Engelhardt (3):
+      Update .gitignore
+      build: use AC_CONFIG_AUX_DIR and stash away tools
+      build: disable implicit .tar.gz archive generation and use POSIX mode
+
+Jiri Popelka (1):
+      conntrack: objopt: NO_EFFECT
+
+Pablo Neira Ayuso (20):
+      build: Linux kernel-style for compilation messages
+      doc: fix missing nfct_copy function not included in doxygen report
+      expect: fix missing parsing of master tuple
+      expect: nfexp_snprintf prints expectation timeout if present
+      expect: nfexp_snprintf displays mask and master tuple information
+      expect: add nfexp_send()
+      expect: support CTA_EXPECT_HELP_NAME
+      expect: modify output by moving zone and flags to the end of the line
+      src: export NFCT_HELPER_NAME_MAX
+      utils: fix expect_get to work with expect_create
+      Merge branch 'master' of git://dev.medozas.de/libnetfilter_conntrack
+      src: clarify licensing terms of library (GPLv2+)
+      conntrack: fix size of CTA_PROTOINFO_TCP_FLAGS_ORIGINAL in ARM
+      include: remove reference to licensing terms from headers
+      src: put nf_expect and nf_conntrack into diet
+      qa: extend test_api to validate set API for conntrack objects
+      conntrack: fix set operation for master IPv6 src and dst
+      expect: extend test_api for the expectation API
+      expect: add nfexp_cmp
+      build: bump version to 1.0.0
+
+
+--+HP7ph2BbKc20aGI--
