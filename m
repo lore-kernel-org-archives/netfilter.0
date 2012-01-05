@@ -1,43 +1,55 @@
-From: Andrew Beverley <andy@andybev.com>
+From: "Rob Sterenborg (Lists)" <lists@sterenborg.info>
 Subject: Re: Advice on best way to set up multi-route NAT for lots of IPs
-Date: Thu, 05 Jan 2012 17:14:25 +0000
-Message-ID: <1325783665.2270.348.camel@andybev-desktop>
+Date: Thu, 05 Jan 2012 19:39:44 +0100
+Message-ID: <1325788784.2606.18.camel@kushiel.sterenborg.info>
 References: <CAKywjPrbjoLhcvPXVYg+8kZ53rPRJ5+dhePx4FB=OkpNjqUGxw@mail.gmail.com>
-	 <1325753945.2910.11.camel@ns014530.dcyb.net>
-	 <CAKywjPpBW-KMfS72n_fpLk10gTvZm=iDV5PjGJgPvja6sQN6NQ@mail.gmail.com>
-	 <1325782799.2270.339.camel@andybev-desktop>
-	 <1325783325.2910.58.camel@ns014530.dcyb.net>
+	 <1325748924.2270.334.camel@andybev-desktop>
+	 <CAKywjPrGnmOg9Zh4T-VzCJHrhJ52s1jmBJsKq4R=D2viFZHmsA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1325783667;
-	bh=hIUL3Zi0Mn8ET5na/fKRDNT7vfyoDqPyrAm5VgR4jRM=;
-	h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:Date:
-	 Message-ID:Mime-Version:Content-Transfer-Encoding;
-	b=ZxNcN90Nr9vnjv3DFXxGJie0OY+Duf/A9PWK7JEU9CwbMdI1V+mkRtI0jibxG3Kc7
-	 UveGyxJJXXbu+1UoNXkCIomjtdskgdjjW/eWt6W/dAzJeDgiarvh9qyaS2a6UvuOnx
-	 Oj9VKT03VPkCOYqXSGJWubQfWbTYrlCABkWJXWI0=
-In-Reply-To: <1325783325.2910.58.camel@ns014530.dcyb.net>
+In-Reply-To: <CAKywjPrGnmOg9Zh4T-VzCJHrhJ52s1jmBJsKq4R=D2viFZHmsA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "Rob Sterenborg (lists)" <lists@sterenborg.info>
-Cc: netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On Thu, 2012-01-05 at 18:08 +0100, Rob Sterenborg (lists) wrote:
-> Except if the OP wants to NAT, say, a /24 to each of his public IP's;
-> then it's not going to work with NETMAP. And that is what I understood
-> when I re-read his first post. NETMAP will only do a 1:1 NAT (each
-> private IP to a corresponding public IP) for networks.
+On Thu, 2012-01-05 at 09:15 +0100, Anton Melser wrote:
+> I was thinking that when the packets *arrive* on the router they could
+> be marked for ToS or fwmark from their source IPs. The ToS or fwmark
 
-Ah, got you. As per my other (later) post, I'm not entirely sure I
-understand the exact network configuration here.
+You could mark them with a TOS value, but since (I understand that) you
+want to NAT private subnets using 1600 public IP's, you'd need to be
+able to check 1600 different TOS values otherwise I don't see how you
+would be able to differentiate. That's not possible as the TOS field is
+8 bit according to 'man iptables' (F15's 1.4.10, yes I have to look it
+up too :-))..
 
-I was assuming that the OP could send on the internal network from a
-suitable internal IP address (per customer) and then map that 1:1 to an
-external address.
+There's also DSCP; the man page it has superseded TOS, and that there
+can be 64 DSCP values (0-63), so that would also be a no-go AFAICS.
 
-Andy
+IIRC fwmark only exists on the localhost, not in the header of the IP
+packet, so if I'm right then keep in mind that you can only use it at
+the localhost. The man page says that the mark value is 32bits wide
+which would make it usable here.
+
+But I don't think all of this is going to help you.
+
+> could then be used for routing decisions. On the surface of it there
+> is no benefit - if you can use source address for routing decisions
+> then why bother adding a step for marking? ToS and fwmark looked a
+> little simpler in the examples, but I'm a noob, so don't really know!
+> In any case, source IP seemed to be the best option, so it looks like
+> you are confirming my original suspicions.
+
+Since it seems you want to map private subnets to 1 public IP and do
+that 1600 or so times, I don't see a way to do it easier then matching
+the source address and SNAT it accordingly.
+Yes, that would mean a lot of rules to create and maintain but I just
+don't see any other way.
+
+
+--
+Rob
 
 
