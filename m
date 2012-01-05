@@ -1,55 +1,33 @@
-From: "Rob Sterenborg (Lists)" <lists@sterenborg.info>
-Subject: Re: Advice on best way to set up multi-route NAT for lots of IPs
-Date: Thu, 05 Jan 2012 19:39:44 +0100
-Message-ID: <1325788784.2606.18.camel@kushiel.sterenborg.info>
-References: <CAKywjPrbjoLhcvPXVYg+8kZ53rPRJ5+dhePx4FB=OkpNjqUGxw@mail.gmail.com>
-	 <1325748924.2270.334.camel@andybev-desktop>
-	 <CAKywjPrGnmOg9Zh4T-VzCJHrhJ52s1jmBJsKq4R=D2viFZHmsA@mail.gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Extracting info from frag packet in pre route hook
+Date: Thu, 5 Jan 2012 22:21:22 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1201052218330.26877@frira.zrqbmnf.qr>
+References: <CAKbcA9KrD4eR0tcHG4_g7JvfOZv0MH+UinESt+GNRJb4YiquRQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAKywjPrGnmOg9Zh4T-VzCJHrhJ52s1jmBJsKq4R=D2viFZHmsA@mail.gmail.com>
+In-Reply-To: <CAKbcA9KrD4eR0tcHG4_g7JvfOZv0MH+UinESt+GNRJb4YiquRQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: vivek rajagopalan <vivvek.r@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-On Thu, 2012-01-05 at 09:15 +0100, Anton Melser wrote:
-> I was thinking that when the packets *arrive* on the router they could
-> be marked for ToS or fwmark from their source IPs. The ToS or fwmark
+On Thursday 2012-01-05 06:31, vivek rajagopalan wrote:
 
-You could mark them with a TOS value, but since (I understand that) you
-want to NAT private subnets using 1600 public IP's, you'd need to be
-able to check 1600 different TOS values otherwise I don't see how you
-would be able to differentiate. That's not possible as the TOS field is
-8 bit according to 'man iptables' (F15's 1.4.10, yes I have to look it
-up too :-))..
+>Hi,
+>
+>I wrote an LKM and I am trying to get UDP port information from the
+>first fragmented packet received in PRE_ROUTING hook as follows
+>
+>struct iphdr *iph = (struct iphdr*) skb_network_header(skb);
 
-There's also DSCP; the man page it has superseded TOS, and that there
-can be 64 DSCP values (0-63), so that would also be a no-go AFAICS.
+You want: struct iphdr *iph = ip_hdr(skb);
 
-IIRC fwmark only exists on the localhost, not in the header of the IP
-packet, so if I'm right then keep in mind that you can only use it at
-the localhost. The man page says that the mark value is 32bits wide
-which would make it usable here.
+>struct udphdr *udph = (struct udphdr *)(iph + (iph->ihl)*4); //or
+>(struct udphdr *)(skb->data + (iph->ihl)*4) and other such methods
 
-But I don't think all of this is going to help you.
+You need
 
-> could then be used for routing decisions. On the surface of it there
-> is no benefit - if you can use source address for routing decisions
-> then why bother adding a step for marking? ToS and fwmark looked a
-> little simpler in the examples, but I'm a noob, so don't really know!
-> In any case, source IP seemed to be the best option, so it looks like
-> you are confirming my original suspicions.
-
-Since it seems you want to map private subnets to 1 public IP and do
-that 1600 or so times, I don't see a way to do it easier then matching
-the source address and SNAT it accordingly.
-Yes, that would mean a lot of rules to create and maintain but I just
-don't see any other way.
-
-
---
-Rob
-
+  struct udphdr *udph = skb_header_pointer(...)
 
