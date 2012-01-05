@@ -1,39 +1,69 @@
-From: "Rob Sterenborg (lists)" <lists@sterenborg.info>
-Subject: Re: Advice on best way to set up multi-route NAT for lots of IPs
-Date: Thu, 05 Jan 2012 09:59:05 +0100
-Message-ID: <1325753945.2910.11.camel@ns014530.dcyb.net>
-References: <CAKywjPrbjoLhcvPXVYg+8kZ53rPRJ5+dhePx4FB=OkpNjqUGxw@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] conntrack-tools 1.0.1 release
+Date: Thu, 5 Jan 2012 11:35:09 +0100
+Message-ID: <20120105103509.GB7046@1984>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAKywjPrbjoLhcvPXVYg+8kZ53rPRJ5+dhePx4FB=OkpNjqUGxw@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="IiVenqGWf+H9Y6IX"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
-
-On Sun, 2012-01-01 at 17:10 +0100, Anton Melser wrote:
-> I thought that the best way to go would be to set up NAT using blocks
-> in the 10.0.0.0 range. So say for each external IP I would have a /24,
-> giving me up to 250-odd potential internal machines. So 10.1.1.1,
-> 10.1.1.2, 10.1.1.3, etc. would map to 1.1.1.1; 10.1.2.1, 10.1.2.2,
-> 10.1.2.3, etc. would map to 1.1.1.2, etc.
-> I have been reading as many sites as I can but I can't work out the
-> best way to go forward.
-
-So, I think I understand that you want to SNAT a complete private subnet
-to a corresponding public subnet. Is the NETMAP target usable for you,
-or am I misunderstanding you completely?
-Something like:
-
-iptables -t nat -A POSTROUTING -s ${private_subnet} -j NETMAP --to
-${public_subnet}
+To: netfilter-devel@vger.kernel.org
+Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
 
-(http://www.frozentux.net/iptables-tutorial/iptables-tutorial.html#NETMAPTARGET)
+--IiVenqGWf+H9Y6IX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi!
+
+The Netfilter project proudly presents:
+
+        conntrack-tools 1.0.1
+
+The conntrack-tools are a set of tools targeted at system
+administrators. They are conntrack, the userspace command line
+interface, and conntrackd, the userspace daemon. The tool conntrack
+provides a full featured interface that is intended to replace the old
+/proc/net/ip_conntrack interface. Using conntrack, you can view and
+manage the in-kernel connection tracking state table from userspace.
+On the other hand, conntrackd covers the specific aspects of stateful
+firewalls to enable highly available scenarios.
+
+See ChangeLog that comes attached to this email for more details.
+
+You can download it from:
+
+http://www.netfilter.org/projects/conntrack-tools/downloads.html
+ftp://ftp.netfilter.org/pub/conntrack-tools/
+
+Have fun!
+
+--IiVenqGWf+H9Y6IX
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="changes-conntrack-tools-1.0.1.txt"
+
+Florian Westphal (4):
+      conntrack: add support for mark mask
+      conntrack: skip sending update message to kernel if conntrack is unchanged
+      testsuite: add tests for --mark option
+      conntrack: add missing break when parsing --id/--secmark options
+
+Jan Engelhardt (3):
+      Update .gitignore
+      build: use AC_CONFIG_AUX_DIR and stash away tools
+      build: disable implicit .tar.gz archive generation and use POSIX mode
+
+Pablo Neira Ayuso (8):
+      build: Linux kernel-style for compilation messages
+      conntrack: remove unused variable with -S
+      conntrackd: add missing initial caching of gettimeofday()
+      conntrackd: fix filtering of dump output if internal cache is disabled
+      Merge branch 'master' of git://dev.medozas.de/conntrack-tools
+      doc: primary-backup.sh: clarify licensing terms (GPLv2+)
+      conntrackd: fix checking of return value of queue_add()
+      build: bump version to 1.0.1
 
 
---
-Rob
-
-
+--IiVenqGWf+H9Y6IX--
