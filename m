@@ -1,82 +1,38 @@
 From: Andrew Beverley <andy@andybev.com>
 Subject: Re: Advice on best way to set up multi-route NAT for lots of IPs
-Date: Thu, 05 Jan 2012 07:35:24 +0000
-Message-ID: <1325748924.2270.334.camel@andybev-desktop>
+Date: Thu, 05 Jan 2012 07:37:30 +0000
+Message-ID: <1325749050.2270.335.camel@andybev-desktop>
 References: <CAKywjPrbjoLhcvPXVYg+8kZ53rPRJ5+dhePx4FB=OkpNjqUGxw@mail.gmail.com>
+	 <op.v7e9nhxox1lyi3@debiandesk2.net>
+	 <CAKywjPpKpVdBz9boAhgj=-F488ayAtoLK1ua=GWKZ1hjNMWpZA@mail.gmail.com>
+	 <op.v7fekow7x1lyi3@debiandesk2.net>
+	 <CAKywjPprq497Ox7hZRMXNApC24nkm4syEbrAkX02N-QOPBpKiA@mail.gmail.com>
+	 <op.v7gsi0a4x1lyi3@debiandesk2.net>
+	 <CAKywjPpK97N9hCVO7hsH4grCV62rmSbH_Dm5d=WcOutor3afWg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1325748926;
-	bh=lQSHcM32U42H/9Tfs0yUqEKCtD4tISV3Cp8AP/sUbKQ=;
+	s=selector1; t=1325749052;
+	bh=40d64bT7EdFvCz4eW4jqVPOiOOxewLZXUdvplTCi9Gk=;
 	h=Subject:From:To:Cc:In-Reply-To:References:Content-Type:Date:
 	 Message-ID:Mime-Version:Content-Transfer-Encoding;
-	b=acCnqTNcpRB4IAh5lkCfa8VB3UXL3oSPPQvqrHzKFaMdQJ1fg+dLxUh5aCAIByk5h
-	 lMGnVBquaaaU6r17oCVvnp0pv+/dorMVojg2Mn+Wxk2jLFx5xDwwOteBw8GmiCJ1mj
-	 Bg8HIkDIqlfmjgYFzvtCPK8RIT8C6TLgPmg1Fhlk=
-In-Reply-To: <CAKywjPrbjoLhcvPXVYg+8kZ53rPRJ5+dhePx4FB=OkpNjqUGxw@mail.gmail.com>
+	b=dxxiPt4cH3EWsqPhKj0cdXQFv8itwoGcy5jc1RGuXc8t8WzYcZua1TiaIcJDZSaVc
+	 VraxUPkY/nlCsNa82r5ZqGZmm9MckiJ3z7PHZcZ3HJI0IfoDIqVhJRLE8sYJy5wTMr
+	 /rsfcRASDaQaokwdtJnwcuGIZSDVvbs7Q1W4HVeg=
+In-Reply-To: <CAKywjPpK97N9hCVO7hsH4grCV62rmSbH_Dm5d=WcOutor3afWg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Anton Melser <anton@linux.com>
-Cc: netfilter@vger.kernel.org
+To: Anton Melser <melser.anton@gmail.com>
+Cc: Lloyd Standish <lloyd@crnatural.net>, netfilter@vger.kernel.org
 
-On Sun, 2012-01-01 at 17:10 +0100, Anton Melser wrote:
-> Hi,
-> I am very new to iptables but have been trying hard to learn as much
-> as I can... I have a reasonably simple need but performance might
-> quickly become an issue so would like some advice on the best way to
-> go forward.
-> So, I have around 1600 public IPs in 4 blocks (3 x /23 + /25 on
-> different ISPs). I have a certain number of machines (somewhere from 3
-> to 8, needs to be variable and changeable without FW reconfiguration),
-> and each one needs to be able to send email from each external IP (and
-> needs to be able to do this deterministically). The only traffic
-> should be to port 25 on the external destination IPs - the machines
-> are only sending email, never receiving, so AFAICT everything can be
-> closed inbound (at least for NEW).
-> I thought that the best way to go would be to set up NAT using blocks
-> in the 10.0.0.0 range. So say for each external IP I would have a /24,
-> giving me up to 250-odd potential internal machines. So 10.1.1.1,
-> 10.1.1.2, 10.1.1.3, etc. would map to 1.1.1.1; 10.1.2.1, 10.1.2.2,
-> 10.1.2.3, etc. would map to 1.1.1.2, etc.
-> I have been reading as many sites as I can but I can't work out the
-> best way to go forward.
+On Mon, 2012-01-02 at 23:14 +0100, Anton Melser wrote:
+> What I don't understand is why the list accepted my gmail
+> address when I subscribed with @linux.com...
 
-So you have something like:
-
-Server A ----|
-             |
-Server B ----|
-             |-----> Linux router ----> Internet
-Server C ----|
-             |
-Server D ----|
-
-Correct? And it's the Linux router you're asking about?
-
-> 
-> AFAICT the best way to do this is with iptables SNAT - is that the
-> case?
-
-I think the main question is: how does the Linux router know which IP
-address that the mail should be sent from? Server A/B/C/D somehow need
-to pass this information on. This can't be done with fwmarks, because
-they aren't retained between on packets between servers.
-
->  It's not 1 to 1 so it needs to be stateful, and can't be done
-> with just iproute2 stuff - am I correct in my understanding?
-
-You might be able to do this with iproute2, but depends on answer to
-above.
-
-> 
-> There seem to be many different ways I could do this in terms of
-> routing - at least by source IP, TOS, and fwmark.
-
-I'm going to guess that source IP is the only option. So can you set the
-source IP from each server depending on its eventual external IP
-address?
+I think all the vger lists are configured to accept from any address, in
+order to allow bug reports to be submitted by anyone.
 
 Andy
 
