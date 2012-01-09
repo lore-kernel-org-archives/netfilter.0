@@ -1,29 +1,48 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Extracting info from frag packet in pre route hook
-Date: Sat, 7 Jan 2012 04:21:36 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1201070421240.21818@frira.zrqbmnf.qr>
-References: <CAKbcA9KrD4eR0tcHG4_g7JvfOZv0MH+UinESt+GNRJb4YiquRQ@mail.gmail.com> <alpine.LNX.2.01.1201052218330.26877@frira.zrqbmnf.qr> <CAKbcA9JpK7z0CteJCDinY06Afmu2daT9EPygVcaPUjpjXjar9g@mail.gmail.com>
+From: Stefan Majer <stefan.majer@gmail.com>
+Subject: conntrackd high cpu usage
+Date: Mon, 9 Jan 2012 19:49:55 +0100
+Message-ID: <CADdPHGu4WFrVantzmr6rn6jvPkoxmxPMdOrPzSkRYKMbbtZWKQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAKbcA9JpK7z0CteJCDinY06Afmu2daT9EPygVcaPUjpjXjar9g@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=Pu752M6CzGlme3SEYDObqBq7VayP3EtlxguGzRss34s=;
+        b=GItqNj7NwwSlCUTmU8m4IRIMlMObH1LYmDvQ0O9CBrl90fT/UoXwnhLgDexwOcVC93
+         qTvHxQuv3Vmf5ALVsFj2OiHhVtKhsaU14pZ0Ngkcmyi3kcM1n1zGAsd9yPC1JHlcIUZ3
+         //muCxOHbmgfafFcNqjar9eMu3YMEia/75Wms=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: vivek rajagopalan <vivvek.r@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Saturday 2012-01-07 03:36, vivek rajagopalan wrote:
+Hi,
 
->On Thu, Jan 5, 2012 at 1:21 PM, Jan Engelhardt <jengelh@medozas.de> wr=
-ote:
->> You need
->>
->> =C2=A0struct udphdr *udph =3D skb_header_pointer(...)
->>
->
->This solved the problem, what offset to use was not clear to me
->initially but it eventually turned out to be 20. Thanks so much
+we have 2 8core Xeon Boxes with 2 Intel X520 10GBit Adapter running
+rhel 6.1 as redundant firewall.
+On every node we have conntrackd installed with a FTFW mode, we
+synchronize all states.
+Synchronization is made over multicast on a dedicated vlan interface.
+The Firewall itself actually have around 300 vlans active.
 
-The offset to use is of course ip_hdrlen(skb), not 20.
+Actually we see permanent ~400 new connections/sec with peaks at 800 conn/sec.
 
+With this load the conntrackd consumes about 15 - 25 % CPU from one
+CPU on the active side and about 5% CPU usage on the passive side.
+Is this expected ?
+This is our Testing environment, and we expect much higher (~10 - 20
+times) connection rates.
+
+This would not be possible with the current setup, as this would be
+cpu bound on the conntrackd, as this daemon is single threaded.
+Is there any way to make this process faster, eg. make the
+synchronization multi threaded ?
+
+I already did some perf analysis, but they didnt gave us much light.
+
+Any ideas, hints welcome
+
+Greetings
+-- 
+Stefan Majer
