@@ -1,29 +1,48 @@
-From: Michael Niehren <michael@niehren.de>
-Subject: Feature Requres for conntrack-tools
-Date: Tue, 10 Jan 2012 13:35:19 +0100
-Message-ID: <201201101335.20010.michael@niehren.de>
+From: Jon Lewis <jlewis@lewis.org>
+Subject: Re: Simplest failover solution for iptables firewall (router)
+Date: Tue, 10 Jan 2012 16:12:10 -0500 (EST)
+Message-ID: <Pine.LNX.4.61.1201101605190.24418@soloth.lewis.org>
+References: <CAKywjPpp3xsP=Rkvnfxo_7T-5xcZZuuzqSWy6M8u4bqX0C-KOA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <CAKywjPpp3xsP=Rkvnfxo_7T-5xcZZuuzqSWy6M8u4bqX0C-KOA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: Anton Melser <melser.anton@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+On Mon, 9 Jan 2012, Anton Melser wrote:
 
-i have the problem to delete all conntrack-entries sourced from an internal network,
-let's say 192.168.70.0/24. As i can see, the conntrack-tool currently does only support 
-single ip adresses. So currently i have to check for conntrack-entries for each single ip 
-adress within the network.
+> Now that I have my policy-based routing NAT FW working as expected
+> (thanks for everyone's previous comments!), I would like it to be
+> resilient. The more I think about it the less I want to bother with
+> true HA (so keeping track of connections). My solution can handle
+> 20-30 seconds of downtime with no real problems. And if on the odd
+> occasion it went up to 2-3 minutes it wouldn't actually be that much
 
-So my request was to extend the -s switch to networks. Is that possible ?
+Heartbeat can do this.  You'll want to setup something (could just be a 
+shell script either run by hand or by cron) to rsync certain things like 
+the iptables config to the standby FW...and setup a cron job on the 
+standby FW to restart iptables when necessary, i.e.
 
-best regards,
-  Michael
+# has iptables been updated?
+* * * * * root test /etc/sysconfig/iptables -nt /var/lock/subsys/iptables && service iptables restart
 
--- 
-Michael Niehren              __   _       powered by
-                            / /  (_)__  __ ____  __
-                           / /__/ / _ \/ // /\ \/ /
-                          /____/_/_//_/\_,_/ /_/\_\
+Setup properly, if FW1 dies or loses its uplink, etc., FW2 will take over, 
+and open connections will be lost, but other than that, life will go on.
+
+> Does anyone have experience with such a setup? It looks as though at a
+> minimum there is keepalived and pacemaker+heartbeat. Is one
+> better/worse for a specialised firewal box?
+
+I've been using the old heartbeat (comes with CentOS/RHEL 4/5.x) for this. 
+As of 6.x, heartbeat is deprecated and you're expected to use pacemaker 
+instead.
+
+----------------------------------------------------------------------
+  Jon Lewis, MCP :)           |  I route
+  Senior Network Engineer     |  therefore you are
+  Atlantic Net                |
+_________ http://www.lewis.org/~jlewis/pgp for PGP public key_________
