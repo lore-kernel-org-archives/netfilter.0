@@ -1,96 +1,69 @@
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-Subject: [PATCH] netfilter: fix unused variable warning in xt_hashlimit.c
-Date: Wed, 11 Jan 2012 11:52:17 +1100
-Message-ID: <20120111115217.b5db064c4bf233a4e1df42b8@canb.auug.org.au>
+From: Ye Liu <yeliu@carmelvision.com>
+Subject: Invalid arguments when using '-j TEE'
+Date: Wed, 11 Jan 2012 13:20:16 -0500
+Message-ID: <CAO=pG1As783Kach_+8_hUHBMqaYNBcvw6a13RUB4cVnuOeUB+g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA256";
- boundary="Signature=_Wed__11_Jan_2012_11_52_17_+1100_B.oiuv/7=ykjb1zD"
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:sender:from:date:x-google-sender-auth:message-id
+         :subject:to:cc:content-type;
+        bh=BNQZnnwvH6Ga3UgsD/rKOoNMkAV61by2l1tyTgYtY1w=;
+        b=GLWdLhK2pg0DqtdJVchX9kEjnA7Jc1oyKiIBRREmPAomU2ygTTFzQKsrvthLm0O/bf
+         h0ssaeSd9jvGp3YvL0g3DlLybQv4Uql36b3Pixdg8Ul3QdgaBMUDPrcbW9GrpARGZnyb
+         PepLKbjBlWfyVfFh11shVjTwroCisUBCm98oQ=
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>
-Cc: "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
+Cc: Dov Berliner <dov@carmelvision.com>
 
---Signature=_Wed__11_Jan_2012_11_52_17_+1100_B.oiuv/7=ykjb1zD
-Content-Type: text/plain; charset=UTF-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hi there,
 
-Fixes this warning when CONFIG_IP6_NF_IPTABLES is not enabled:
+I need to setup iptables rules to tee the traffic, so I've tried to
+add the following rule:
 
-net/netfilter/xt_hashlimit.c: In function =E2=80=98hashlimit_init_dst=E2=80=
-=99:
-net/netfilter/xt_hashlimit.c:448:9: warning: unused variable =E2=80=98frag_=
-off=E2=80=99 [-Wunused-variable]
+$> iptables -t mangle -A PREROUTING -j TEE --gateway xxx.xxx.xxx.xxx
 
-Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
----
- net/netfilter/xt_hashlimit.c |    5 ++++-
- 1 files changed, 4 insertions(+), 1 deletions(-)
+But the command gives an error, says
 
-Sorry for the wide posting, but the MAINTAINERS file is not clear about
-which mailing lists are relevant.
+$> iptables: Invalid argument. Run `dmesg' for more information.
 
-diff --git a/net/netfilter/xt_hashlimit.c b/net/netfilter/xt_hashlimit.c
-index 8e49921..d95f9c9 100644
---- a/net/netfilter/xt_hashlimit.c
-+++ b/net/netfilter/xt_hashlimit.c
-@@ -445,7 +445,6 @@ hashlimit_init_dst(const struct xt_hashlimit_htable *hi=
-nfo,
- {
- 	__be16 _ports[2], *ports;
- 	u8 nexthdr;
--	__be16 frag_off;
- 	int poff;
-=20
- 	memset(dst, 0, sizeof(*dst));
-@@ -466,6 +465,9 @@ hashlimit_init_dst(const struct xt_hashlimit_htable *hi=
-nfo,
- 		break;
- #if IS_ENABLED(CONFIG_IP6_NF_IPTABLES)
- 	case NFPROTO_IPV6:
-+	{
-+		__be16 frag_off;
-+
- 		if (hinfo->cfg.mode & XT_HASHLIMIT_HASH_DIP) {
- 			memcpy(&dst->ip6.dst, &ipv6_hdr(skb)->daddr,
- 			       sizeof(dst->ip6.dst));
-@@ -485,6 +487,7 @@ hashlimit_init_dst(const struct xt_hashlimit_htable *hi=
-nfo,
- 		if ((int)protoff < 0)
- 			return -1;
- 		break;
-+	}
- #endif
- 	default:
- 		BUG();
---=20
-1.7.8.197.g73c6b
+I've checked output of dmesg, there is no messages related to iptables.
 
---=20
-Cheers,
-Stephen Rothwell                    sfr@canb.auug.org.au
+Please help...
 
---Signature=_Wed__11_Jan_2012_11_52_17_+1100_B.oiuv/7=ykjb1zD
-Content-Type: application/pgp-signature
+Some more information:
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+kernel: 2.6.19.2
+iptables: v1.4.11.1
+xtables-addons: 1.41
 
-iQIcBAEBCAAGBQJPDN1BAAoJEECxmPOUX5FEr0wP/3/an3mvFqpWxZe25LjlMpzT
-3qjaVWOX5zmelm8IU5MUcjLFw5ofMxy6vUAH6CUFnCqy0di0fIOUnIXkGhcDuMI1
-O8sXILErzoV/klu5vut6RMdtQvdKj6U2CBAvBqEcAacQ3Er2r3hUXM0D4JwXhZYq
-sf5DuA7RtFCNuscLXgHJKpkEXe1WJW7bnRVOpfT6ECzu+ZreLQkoVNyAs9pWb8oK
-Zl4tspaWztat74uyMhytSiTPD07tJycIEwd6Lw/214gvi86sDmXc7pzgi/wFQgSQ
-ZNcG+DuDrDrSjPk2TzX9xol+J9PZoOEQCgQDVzSWcDgV6bokEe6qlv/Vts1tyGxp
-6o/+Yz9MtQpqlZHDfCuofQVeayTe+t+X1MYF175B5G+vdc07itn5SFnKAuRfSB2s
-u6RjGBYPm3TbwIJbijvzrhPD+oZotY+a3hTX+kWFDPZKYoLv1PTPAnc/jM3a6i+p
-8THwbtnFMAmlPkI1zW1NYrHlR+UqUpm5rMck34RqM8P+ZI2s2dLgpxZnSxGd0n7v
-umQPWDNyW5vcygZEZMiTb1AlKvhVy9p12YhiHikb/HdnIWUf/hlu41we4mw9HORM
-qSwCwVRx2HN5+e0WDR31bxUpvjQ+U+nL8RSCwIRlhyzVB5JY+JDNCdWbvZ1xCziL
-QjRWKTP9z9645O7eHyZY
-=3ZMy
------END PGP SIGNATURE-----
+$> lsmod
 
---Signature=_Wed__11_Jan_2012_11_52_17_+1100_B.oiuv/7=ykjb1zD--
+ipt_TOS 1664 0 - Live 0xbf063000
+iptable_mangle 2048 0 - Live 0xbf061000
+xt_TEE 2740 0 - Live 0xbf05f000
+compat_xtables 7584 1 xt_TEE, Live 0xbf05c000
+xt_tcpudp 2656 7 - Live 0xbf022000
+xt_state 1696 1 - Live 0xbf020000
+ipt_REJECT 3328 2 - Live 0xbf01e000
+xt_multiport 2880 1 - Live 0xbf01c000
+xt_conntrack 2144 1 - Live 0xbf01a000
+ip_conntrack 47188 2 xt_state,xt_conntrack, Live 0xbf00d000
+nfnetlink 5336 1 ip_conntrack, Live 0xbf00a000
+iptable_filter 2176 1 - Live 0xbf008000
+ip_tables 12104 2 iptable_mangle,iptable_filter, Live 0xbf004000
+x_tables 12068 8
+ipt_TOS,compat_xtables,xt_tcpudp,xt_state,ipt_REJECT,xt_multiport,xt_conntrack,ip_tables,
+Live 0xbf000000
+
+And I've tried other rules, such as
+
+$> iptables -t mangle -A PREROUTING -p tcp --dport 25 -j TOS --set-tos 0x04
+
+that is working fine.
+
+--
+Ye
