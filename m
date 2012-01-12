@@ -1,75 +1,71 @@
-From: Dimitri Yioulos <dyioulos@onpointfc.com>
+From: "Lloyd Standish" <lloyd@crnatural.net>
 Subject: Re: Dual WAN set-up
-Date: Thu, 12 Jan 2012 17:48:51 -0500
-Message-ID: <201201121748.51479.dyioulos@onpointfc.com>
-References: <201201121651.18887.dyioulos@onpointfc.com> <1326407319.2182.2.camel@andrew-desktop>
+Date: Thu, 12 Jan 2012 17:08:08 -0600
+Message-ID: <op.v7zujutux1lyi3@debiandesk2.net>
+References: <201201121651.18887.dyioulos@onpointfc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1326407319.2182.2.camel@andrew-desktop>
-Content-Disposition: inline
+In-Reply-To: <201201121651.18887.dyioulos@onpointfc.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed	delsp=yes"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Thursday 12 January 2012 5:28:39 pm Andrew Beverley wrote:
-> On Thu, 2012-01-12 at 16:51 -0500, Dimitri Yioulos wrote:
-> > Hi, folks.
-> >
-> > Please bear with me.  I may have asked something similar in
-> > the way-back, but am going to ask again, because I really
-> > need to get this set up, have absolutely no idea how, and am
-> > pertrified at the prospect:
-> >
-> > I currently have an iptables/Netfilter firewall router
-> > configured thusly:
-> >
-> >                                WAN
-> >
-> >  (192.168.x.x) LAN --  fw -- DMZ (10.x.x.x)
-> >
-> > OK, pretty basic.  And, it has worked well for a long time.
-> >
-> > Now, I need to add a second WAN (provided by a second
-> > provider). I need it to serve specific boxes in the DMZ, both
-> > inbound and outbound.  Currently, all boxes in the DMZ are
-> > served by the single WAN connection.  I'm not sure what other
-> > information I need to provide you, but I'm hoping you all can
-> > help with very specific instructions or a very detailed
-> > how-to
->
-> If you check the list archives there's been a few discussions
-> on this recently (search for load balancing).
->
-> One way of doing it is marking each connection and balancing
-> those, as described in this excellent web page:
->
-> http://www.sysresccd.org/Sysresccd-Networking-EN-Iptables-and-n
->etfilter-load-balancing-using-connmark
->
-> Andy
->
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe
-> netfilter" in the body of a message to
-> majordomo@vger.kernel.org
-> More majordomo info at 
-> http://vger.kernel.org/majordomo-info.html
+On Thu, 12 Jan 2012 15:51:18 -0600, Dimitri Yioulos <dyioulos@onpointfc.com> wrote:
+
+> I currently have an iptables/Netfilter firewall router configured
+> thusly:
+>                               WAN
+>                                   |
+>  (192.168.x.x) LAN --  fw -- DMZ (10.x.x.x)
+> OK, pretty basic.  And, it has worked well for a long time.
+> Now, I need to add a second WAN (provided by a second provider).
+> I need it to serve specific boxes in the DMZ, both inbound and
+> outbound.  Currently, all boxes in the DMZ are served by the
+> single WAN connection.  I'm not sure what other information I
+> need to provide you, but I'm hoping you all can help with very
+> specific instructions or a very detailed how-to so I can get this
+> accomplished.  And, of course, I need to get this done yesterday.
+
+Hi,
+
+I am not highly experienced compared to most other posters here, but I'll try to help :)
+
+Shouldn't your diagram indicate that the fw is connected to the WAN (not to the DMZ)?  I will proceed under that assumption.  If you have a netfilters firewall installed, I think all interfaces would go "through" it.
 
 
-Thank, Andy.  I'll give it a read.  I'm not sure I'm after load 
-balancing, though, but rather dedicating one WAN to a specific 
-set of machines, if that's even possible.  Also, I've seen 
-how-to's on the NET, but all assume that you're starting fresh, 
-and adding two WAN connections.  I already have one in place, and 
-working fine.
+Adding a second (or more) uplink to a netfilters firewall is easy.  I suggest the following:
 
-Dimitri
+1. You could follow the basic information explained here, to set up split access: http://lartc.org/howto/lartc.rpdb.multiple-links.html  After reading this and understanding about using multiple routing tables to route traffic through different interfaces (uplinks), you can proceed.
 
+2. You would set up a custom routing table for the special DMZ traffic.  Use the info in the above link to do that.  Suppose it is called "DMZSPECIAL".  You will set up routing to the new DMZ interface using the MYDMZ table, something like this:
+
+	ip route add 10.x.x.x/8 dev ${DMZinterface} src ${wan} table DMZSPECIAL
+	ip route add default via ${gateway} dev ${interface} table DMZSPECIAL
+
+(You will also keep your regular routing table to your old interface.  Also of course you keep your SNAT over your existing interface, only for LAN hosts of course.)
+
+2. You might create a custom chain for the new interface, which is supposed to serve the special DMZ hosts.  This is to mark packets for subsequent decision on routing:
+
+	iptables -t mangle -N CONNMARK1
+	iptables -t mangle -A CONNMARK1 -j MARK --set-mark 1
+	iptables -t mangle -A CONNMARK1 -j CONNMARK --save-mark
+	iptables -t mangle -A CONNMARK1 -j ACCEPT
+
+3. You would NEW mark all packets from the special DMZ hosts with fwmark 1, like this (repeat for each source IP or subnet to use the new interface):
+
+	iptables -t mangle -A PREROUTING -m state --state NEW -s 10.x.x.x -j CONNMARK1
+	etc.
+
+
+4. You would restore the connection mark to the packet mark with a rule like this:
+	iptables -t mangle -A PREROUTING -i ${dmz_if} -m state --state ESTABLISHED,RELATED -j CONNMARK --restore-mark
+
+Then add a policy routing rule, directing all traffic with the "1" mark to the new DMZ uplink:
+
+	ip rule add fwmark 1 table MYDMZ
+
+That should do it.  Post back if you have any trouble.
 -- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
-
+Lloyd
