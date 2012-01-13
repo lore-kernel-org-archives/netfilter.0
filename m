@@ -1,61 +1,59 @@
 From: Andrew Beverley <andy@andybev.com>
 Subject: Re: Dual WAN set-up
-Date: Fri, 13 Jan 2012 07:18:01 +0000
-Message-ID: <1326439081.2182.8.camel@andrew-desktop>
+Date: Fri, 13 Jan 2012 07:25:45 +0000
+Message-ID: <1326439545.2182.17.camel@andrew-desktop>
 References: <201201121651.18887.dyioulos@onpointfc.com>
-	 <1326407319.2182.2.camel@andrew-desktop>
-	 <201201121748.51479.dyioulos@onpointfc.com>
+	 <op.v7zujutux1lyi3@debiandesk2.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1326439083;
-	bh=bEyKvBSVNEWEvf13FpcmoKXgsQ8FdUw8jO9NyBMp3qs=;
+	s=selector1; t=1326439546;
+	bh=PCtrBDB6ebg/1xcG5xkIeCUvMTdRoZcplDLGNL+Z+Fg=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
 	 Content-Type:Content-Transfer-Encoding:Mime-Version;
-	b=d5mkDYvpRH+nfDVU6xqo/+MqkOCYlSrkzyp/+1olLoesflZaZhcvUQH4bn2Iodt0m
-	 WvF7w6OaegyWuZO+MVXLG8t+kZyTg28EXg94ZM0DvsxQ1KAolz09aoQABubq1mExcf
-	 7Y6TJ7eRYpyMSQqRaDMJDtZqyfoqce1/ob8TUV4s=
-In-Reply-To: <201201121748.51479.dyioulos@onpointfc.com>
+	b=TImW8dqjnIWMs+eqiG/zNJZBQDuq3p6xo+pW+o1/5KpnnYVt3A2ljfuQAA67jIHNd
+	 ESwm7byKHEP1WQq4I4IahfC+hCXHr6nskhpEEvJrIHoGpCuLVUWCvN6VaZs+hrtm9+
+	 bIJPV0M8Y1TyrIqPQknvuqML7Nm89BO+e2zWkniE=
+In-Reply-To: <op.v7zujutux1lyi3@debiandesk2.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Dimitri Yioulos <dyioulos@onpointfc.com>
-Cc: netfilter@vger.kernel.org
+To: Lloyd Standish <lloyd@crnatural.net>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Thu, 2012-01-12 at 17:48 -0500, Dimitri Yioulos wrote:
-> > > Now, I need to add a second WAN (provided by a second
-> > > provider). I need it to serve specific boxes in the DMZ, both
-> > > inbound and outbound.  Currently, all boxes in the DMZ are
-> > > served by the single WAN connection.  I'm not sure what other
-> > > information I need to provide you, but I'm hoping you all can
-> > > help with very specific instructions or a very detailed
-> > > how-to
-> >
-> > If you check the list archives there's been a few discussions
-> > on this recently (search for load balancing).
-> >
-> > One way of doing it is marking each connection and balancing
-> > those, as described in this excellent web page:
-> >
-> > http://www.sysresccd.org/Sysresccd-Networking-EN-Iptables-and-n
-> >etfilter-load-balancing-using-connmark
-> >
+Thanks for the comprehensive answer Lloyd. A couple of minor points:
+
+> 2. You would set up a custom routing table for the special DMZ traffic.
+>   Use the info in the above link to do that.  Suppose it is called
+> "DMZSPECIAL".  You will set up routing to the new DMZ interface using
+> the MYDMZ table, something like this:
 > 
-> Thank, Andy.  I'll give it a read.  I'm not sure I'm after load 
-> balancing, though, but rather dedicating one WAN to a specific 
-> set of machines, if that's even possible.
+> 	ip route add 10.x.x.x/8 dev ${DMZinterface} src ${wan} table DMZSPECIAL
+> 	ip route add default via ${gateway} dev ${interface} table DMZSPECIAL
+> 
 
-Ah, sorry, you did say that, I just misread your email (and original
-diagram of course!)
+[...]
 
->   Also, I've seen 
-> how-to's on the NET, but all assume that you're starting fresh, 
-> and adding two WAN connections.  I already have one in place, and 
-> working fine.
+> 3. You would NEW mark all packets from the special DMZ hosts with
+> fwmark 1, like this (repeat for each source IP or subnet to use the new
+> interface):
 
-Well that should be pretty easy to be honest. What Lloyd wrote looks
-pretty spot-on, and is the way that I would approach this problem.
+Using marks is one way to do this, and provides plenty of flexibility.
+However, if all the traffic is coming from the same IP address /
+interface, then you should be able to use straight iproute2 rules to
+match those aspects, without even touching iptables (see ip rule).
+
+
+> 	iptables -t mangle -A PREROUTING -m state --state NEW
+> -s 10.x.x.x -j CONNMARK1
+>
+
+Also, if you do decide to use netfilter marks (which is certainly no bad
+thing IMHO), then you probably don't need to mark connections and then
+restore them. Instead just mark a packet straight away:
+
+iptables -t mangle -A PREROUTING -s 10.x.x.x -j MARK --set-mark 1
 
 Andy
 
