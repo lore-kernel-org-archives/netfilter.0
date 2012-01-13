@@ -1,54 +1,29 @@
-From: Anton Melser <melser.anton@gmail.com>
-Subject: Re: Simplest failover solution for iptables firewall (router)
-Date: Fri, 13 Jan 2012 21:15:04 +0100
-Message-ID: <CAKywjPqQyznfSJ8iyZffosWP9oXrCK+8sP8o4fKsxeqKAeq_Eg@mail.gmail.com>
-References: <CAKywjPpp3xsP=Rkvnfxo_7T-5xcZZuuzqSWy6M8u4bqX0C-KOA@mail.gmail.com>
- <Pine.LNX.4.61.1201101605190.24418@soloth.lewis.org>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Feature Requres for conntrack-tools
+Date: Fri, 13 Jan 2012 21:28:26 +0100
+Message-ID: <20120113202826.GA23871@1984>
+References: <201201101335.20010.michael@niehren.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-type:content-transfer-encoding;
-        bh=Z+/iXLZNYaj6TEKn87KuJvorvNp+01h+ziG8GF0Qebw=;
-        b=xWrQ3H2nngT/6yGEEwDRN6iR3Prb5Z7jjAvS1gS8FEvvJAdtf25JzEIz3OY74YSLQi
-         CYyt2oA4DC0dtBQP3Sfqnn2qm0h1PigAsfqqQuB1FjLhWjzljqDrWDMeQkYIfOoGGXg1
-         xxdvhv5ePWxeVzAMz8UGvZL+4L1Q4v0OioQCY=
-In-Reply-To: <Pine.LNX.4.61.1201101605190.24418@soloth.lewis.org>
+Content-Disposition: inline
+In-Reply-To: <201201101335.20010.michael@niehren.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jon Lewis <jlewis@lewis.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Michael Niehren <michael@niehren.de>
 Cc: netfilter@vger.kernel.org
 
-=2E..
-> Heartbeat can do this. =C2=A0You'll want to setup something (could ju=
-st be a
-> shell script either run by hand or by cron) to rsync certain things l=
-ike the
-> iptables config to the standby FW...and setup a cron job on the stand=
-by FW
-> to restart iptables when necessary, i.e.
->
-> # has iptables been updated?
-> * * * * * root test /etc/sysconfig/iptables -nt /var/lock/subsys/ipta=
-bles &&
-> service iptables restart
->
-> Setup properly, if FW1 dies or loses its uplink, etc., FW2 will take =
-over,
-> and open connections will be lost, but other than that, life will go =
-on.
+On Tue, Jan 10, 2012 at 01:35:19PM +0100, Michael Niehren wrote:
+> Hi,
+> 
+> i have the problem to delete all conntrack-entries sourced from an internal network,
+> let's say 192.168.70.0/24. As i can see, the conntrack-tool currently does only support 
+> single ip adresses. So currently i have to check for conntrack-entries for each single ip 
+> adress within the network.
+> 
+> So my request was to extend the -s switch to networks. Is that possible ?
 
-That's perfect.
+This should be easy to get it done.
 
-> I've been using the old heartbeat (comes with CentOS/RHEL 4/5.x) for =
-this.
-> As of 6.x, heartbeat is deprecated and you're expected to use pacemak=
-er
-> instead.
-
-Perfect thanks. I'll give it a try this weekend.
-Cheers
-Anton
+I will be happy to take a patch for this.
