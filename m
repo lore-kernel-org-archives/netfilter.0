@@ -1,41 +1,54 @@
-From: Dimitri Yioulos <dyioulos@onpointfc.com>
-Subject: Re: Dual WAN set-up
-Date: Fri, 13 Jan 2012 15:04:34 -0500
-Message-ID: <201201131504.34206.dyioulos@onpointfc.com>
-References: <201201121651.18887.dyioulos@onpointfc.com> <201201131017.22019.dyioulos@onpointfc.com> <op.v71gimg1x1lyi3@debiandesk2.net>
+From: Anton Melser <melser.anton@gmail.com>
+Subject: Re: Simplest failover solution for iptables firewall (router)
+Date: Fri, 13 Jan 2012 21:15:04 +0100
+Message-ID: <CAKywjPqQyznfSJ8iyZffosWP9oXrCK+8sP8o4fKsxeqKAeq_Eg@mail.gmail.com>
+References: <CAKywjPpp3xsP=Rkvnfxo_7T-5xcZZuuzqSWy6M8u4bqX0C-KOA@mail.gmail.com>
+ <Pine.LNX.4.61.1201101605190.24418@soloth.lewis.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <op.v71gimg1x1lyi3@debiandesk2.net>
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc:content-type:content-transfer-encoding;
+        bh=Z+/iXLZNYaj6TEKn87KuJvorvNp+01h+ziG8GF0Qebw=;
+        b=xWrQ3H2nngT/6yGEEwDRN6iR3Prb5Z7jjAvS1gS8FEvvJAdtf25JzEIz3OY74YSLQi
+         CYyt2oA4DC0dtBQP3Sfqnn2qm0h1PigAsfqqQuB1FjLhWjzljqDrWDMeQkYIfOoGGXg1
+         xxdvhv5ePWxeVzAMz8UGvZL+4L1Q4v0OioQCY=
+In-Reply-To: <Pine.LNX.4.61.1201101605190.24418@soloth.lewis.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Jon Lewis <jlewis@lewis.org>
+Cc: netfilter@vger.kernel.org
 
-On Friday 13 January 2012 3:00:12 pm Lloyd Standish wrote:
-> On Fri, 13 Jan 2012 09:17:21 -0600, Dimitri Yioulos 
-<dyioulos@onpointfc.com> wrote:
-> > Not to throw a proverbial wrench in the works, but in my case
-> > there is NAT for the DMZ hosts.
+=2E..
+> Heartbeat can do this. =C2=A0You'll want to setup something (could ju=
+st be a
+> shell script either run by hand or by cron) to rsync certain things l=
+ike the
+> iptables config to the standby FW...and setup a cron job on the stand=
+by FW
+> to restart iptables when necessary, i.e.
 >
-> I don't have time to elaborate now, but I think you will have
-> to use connection marking (as in my previous post).  I'll reply
-> more in depth later.
+> # has iptables been updated?
+> * * * * * root test /etc/sysconfig/iptables -nt /var/lock/subsys/ipta=
+bles &&
+> service iptables restart
 >
-> Regards
-> --
-> Lloyd
+> Setup properly, if FW1 dies or loses its uplink, etc., FW2 will take =
+over,
+> and open connections will be lost, but other than that, life will go =
+on.
 
+That's perfect.
 
-Lloyd,
+> I've been using the old heartbeat (comes with CentOS/RHEL 4/5.x) for =
+this.
+> As of 6.x, heartbeat is deprecated and you're expected to use pacemak=
+er
+> instead.
 
-Excellent, and very appreciated (Andy's help, too).
-
-Dimitri
-
--- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
-
+Perfect thanks. I'll give it a try this weekend.
+Cheers
+Anton
