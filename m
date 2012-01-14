@@ -1,47 +1,28 @@
-From: "Rob Sterenborg (lists)" <lists@sterenborg.info>
-Subject: Re: Replacing firewall issues
-Date: Sat, 14 Jan 2012 03:20:41 +0100
-Message-ID: <1326507641.3369.15.camel@ns014530.dcyb.net>
-References: <1326180504.2680.14.camel@ns014530.dcyb.net>
+From: "Lloyd Standish" <lloyd@crnatural.net>
+Subject: Re: Dual WAN set-up
+Date: Fri, 13 Jan 2012 20:27:16 -0600
+Message-ID: <op.v71yfq0xx1lyi3@debiandesk2.net>
+References: <201201121651.18887.dyioulos@onpointfc.com>
+ <op.v700m6kzx1lyi3@debiandesk2.net>
+ <201201131017.22019.dyioulos@onpointfc.com>
+ <201201131022.05220.dyioulos@onpointfc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1326180504.2680.14.camel@ns014530.dcyb.net>
+In-Reply-To: <201201131022.05220.dyioulos@onpointfc.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed	delsp=yes"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, Dimitri Yioulos <dyioulos@onpointfc.com>
 
-On Tue, 2012-01-10 at 08:28 +0100, Rob Sterenborg (lists) wrote:
-> Hi,
-> 
-> I'm having trouble replacing an old server (CentOS 5) for a new one
-> (CentOS 6). The layout is basically like this:
+On Fri, 13 Jan 2012 09:22:04 -0600, Dimitri Yioulos <dyioulos@onpointfc.com> wrote:
 
-[snip rest of original post]
+> Er, sorry, seems like I don't even remember my own network scheme.
+> internal LAN addresses are 192.168.100.0/22, and internal DMZ
+> addresses are 192.168.1.0/24.  (The 10.x.x.x addresses are used
+> by our VPN.)
 
-To follow up on this.. It may happen to someone else.
+Again, I think you will have to use connection marking/mark restore as I detailed in a previous post.  I don't believe that "ip rule add from x.x.x.x fwmark 1" will work when nat is used.  Andy or another of the experts here may have comments on this.  Otherwise, I think you can go ahead and try implementing your multi-uplink firewall based on the advice Andy and I have offered.
 
-The issue here doesn't seem to be MAC addresses or ARP tables. When we
-replaced the server and configured the NIC's of the new server to have
-the MAC addresses from the old server, flushed all ARP caches, etc. it
-still didn't work.
-
-When I asked if the old and new server were on the same switch, I was
-told they weren't. When I asked if both switches are of the same type, I
-was told they aren't. (I don't know of either switch what type it is
-because I don't admin them.)
-So I asked to unplug the old server and plug the new server in the same
-switch as the old server was. Things started working at once!
-
-I'm sure it's some configuration error on the newer switch, but since I
-don't admin the switches I can't tell. (VLAN config seems to be correct
-on the switch that didn't work, because packets did arrive on the
-internet NIC.. It's just that forwarding didn't work at all. Well,
-anything goes, find that out later.)
-
-
---
-Rob
-
-
+-- 
+Lloyd
