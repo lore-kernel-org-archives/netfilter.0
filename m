@@ -1,29 +1,47 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Feature Requres for conntrack-tools
-Date: Fri, 13 Jan 2012 21:28:26 +0100
-Message-ID: <20120113202826.GA23871@1984>
-References: <201201101335.20010.michael@niehren.de>
+From: "Rob Sterenborg (lists)" <lists@sterenborg.info>
+Subject: Re: Replacing firewall issues
+Date: Sat, 14 Jan 2012 03:20:41 +0100
+Message-ID: <1326507641.3369.15.camel@ns014530.dcyb.net>
+References: <1326180504.2680.14.camel@ns014530.dcyb.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <201201101335.20010.michael@niehren.de>
+In-Reply-To: <1326180504.2680.14.camel@ns014530.dcyb.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Michael Niehren <michael@niehren.de>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Tue, Jan 10, 2012 at 01:35:19PM +0100, Michael Niehren wrote:
+On Tue, 2012-01-10 at 08:28 +0100, Rob Sterenborg (lists) wrote:
 > Hi,
 > 
-> i have the problem to delete all conntrack-entries sourced from an internal network,
-> let's say 192.168.70.0/24. As i can see, the conntrack-tool currently does only support 
-> single ip adresses. So currently i have to check for conntrack-entries for each single ip 
-> adress within the network.
-> 
-> So my request was to extend the -s switch to networks. Is that possible ?
+> I'm having trouble replacing an old server (CentOS 5) for a new one
+> (CentOS 6). The layout is basically like this:
 
-This should be easy to get it done.
+[snip rest of original post]
 
-I will be happy to take a patch for this.
+To follow up on this.. It may happen to someone else.
+
+The issue here doesn't seem to be MAC addresses or ARP tables. When we
+replaced the server and configured the NIC's of the new server to have
+the MAC addresses from the old server, flushed all ARP caches, etc. it
+still didn't work.
+
+When I asked if the old and new server were on the same switch, I was
+told they weren't. When I asked if both switches are of the same type, I
+was told they aren't. (I don't know of either switch what type it is
+because I don't admin them.)
+So I asked to unplug the old server and plug the new server in the same
+switch as the old server was. Things started working at once!
+
+I'm sure it's some configuration error on the newer switch, but since I
+don't admin the switches I can't tell. (VLAN config seems to be correct
+on the switch that didn't work, because packets did arrive on the
+internet NIC.. It's just that forwarding didn't work at all. Well,
+anything goes, find that out later.)
+
+
+--
+Rob
+
+
