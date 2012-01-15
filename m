@@ -1,38 +1,39 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: [ANNOUNCE] ipset 6.11 released
-Date: Sun, 15 Jan 2012 17:16:51 +0000
-Message-ID: <4F130A03.7080208@googlemail.com>
-References: <alpine.DEB.2.00.1201141542490.26282@blackhole.kfki.hu>
+Date: Sun, 15 Jan 2012 18:27:09 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1201151825570.29134@blackhole.kfki.hu>
+References: <alpine.DEB.2.00.1201141542490.26282@blackhole.kfki.hu> <4F130A03.7080208@googlemail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=message-id:disposition-notification-to:date:from:user-agent
-         :mime-version:to:cc:subject:references:in-reply-to:content-type
-         :content-transfer-encoding;
-        bh=5CIr+TsPENLYootLrm9XkgzqsxbLMohwyHezm4aOA58=;
-        b=sgngWvB4d6rVJJ1bgYttfFTMRULeZYW3VVr7PQP5R6XCz5WhepxRxBUO8gwGPBbPU3
-         hgpTIjr96iO3mFvv690UR5eGY1OwbFm1PKXrtU2HxN+mJjaQSvuSX4C6UlNJ5NPw5f2E
-         mx0ew0UmD4mCh8fwbXn5zXsyYKqdfmxKFlmLo=
-In-Reply-To: <alpine.DEB.2.00.1201141542490.26282@blackhole.kfki.hu>
+In-Reply-To: <4F130A03.7080208@googlemail.com>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mr Dash Four <mr.dash.four@googlemail.com>
 Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
+On Sun, 15 Jan 2012, Mr Dash Four wrote:
 
-> Kernel part changes:
->  - hash:net,iface timeout bug fixed
->  - Exceptions support added to hash:*net* types
->   
-Any chance of fixing this bug soon:
+> > Kernel part changes:
+> >  - hash:net,iface timeout bug fixed
+> >  - Exceptions support added to hash:*net* types
+> >   
+> Any chance of fixing this bug soon:
+> 
+> ~# ipset n test hash:net family inet timeout 0
+> ~# ipset a test 10.1.0.0/16
+> ~# ipset t test 10.1.12.12
+> 10.1.12.12 is in set test.
+> ~# ipset t test 10.1.12.0/24
+> 10.1.12.0/24 is NOT in test.
 
-~# ipset n test hash:net family inet timeout 0
-~# ipset a test 10.1.0.0/16
-~# ipset t test 10.1.12.12
-10.1.12.12 is in set test.
-~# ipset t test 10.1.12.0/24
-10.1.12.0/24 is NOT in test.
+It's a feature which I'm not going to fix in any near future.
 
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
