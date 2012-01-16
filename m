@@ -1,33 +1,33 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Failed to compile libnetfilter_queeu 1.0.1 under Centos 6.2
-Date: Mon, 16 Jan 2012 13:18:15 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1201161312560.4466@frira.zrqbmnf.qr>
-References: <BLU162-W1607A553582A18B27146E4F6830@phx.gbl>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH] netfilter: fix unused variable warning in
+ xt_hashlimit.c
+Date: Mon, 16 Jan 2012 13:39:25 +0100
+Message-ID: <20120116123925.GA13131@1984>
+References: <20120111115217.b5db064c4bf233a4e1df42b8@canb.auug.org.au>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BLU162-W1607A553582A18B27146E4F6830@phx.gbl>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20120111115217.b5db064c4bf233a4e1df42b8@canb.auug.org.au>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: Andres Velasco Garcia <telecom.andresvelasco@hotmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Monday 2012-01-16 12:22, Andres Velasco Garcia wrote:
+On Wed, Jan 11, 2012 at 11:52:17AM +1100, Stephen Rothwell wrote:
+> Fixes this warning when CONFIG_IP6_NF_IPTABLES is not enabled:
+>=20
+> net/netfilter/xt_hashlimit.c: In function =E2=80=98hashlimit_init_dst=
+=E2=80=99:
+> net/netfilter/xt_hashlimit.c:448:9: warning: unused variable =E2=80=98=
+frag_off=E2=80=99 [-Wunused-variable]
+>=20
+> Signed-off-by: Stephen Rothwell <sfr@canb.auug.org.au>
 
->I could not find=C2=A0a netfilter_queue RPM for Centos 6.2
-
-
-As major contributor to iptables and opensuse maintainer for their
-security:netfilter subproject, I also try keeping around builds for
-other distros.
-http://dl.medozas.de/repos/netfilter/CentOS_6/
-
->../include/libnetfilter_queue/linux_nfnetlink_queue.h:8:42: error:=20
->libnfnetlink/linux_nfnetlink.h: No such file or directory
->solved using
->//#include <libnfnetlink/linux_nfnetlink.h>
->#include <linux/netfilter/nfnetlink.h>
->Am I missing something?
-
-Are you missing libnfnetlink, perhaps?
+Applied, thanks.
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
+el" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
