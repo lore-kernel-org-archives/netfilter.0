@@ -1,55 +1,51 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [ANNOUNCE] ipset 6.11 released
-Date: Mon, 16 Jan 2012 09:27:00 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1201160914550.30763@blackhole.kfki.hu>
-References: <alpine.DEB.2.00.1201141542490.26282@blackhole.kfki.hu> <4F130A03.7080208@googlemail.com> <alpine.DEB.2.00.1201151825570.29134@blackhole.kfki.hu> <4F131551.2090608@googlemail.com> <alpine.DEB.2.00.1201152100050.29766@blackhole.kfki.hu>
- <4F135552.4070804@googlemail.com>
+From: Alexandre Moore <alexandre.j.moore@gmail.com>
+Subject: [Kernel 2.6.26][rtp/rtcp]
+Date: Mon, 16 Jan 2012 11:40:17 +0100
+Message-ID: <4F13FE91.1070205@gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4F135552.4070804@googlemail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=message-id:date:from:user-agent:mime-version:to:subject
+         :content-type:content-transfer-encoding;
+        bh=eEJ70QAUtSVqPYeyl30PRxNI8mgOYStSNz8EHDTIEt8=;
+        b=jbPfneCBkSBt0bNqfX+4QMYa3jjruCutD0KLaaODomu5Sat1WdvxIShIr4QGBAiGGi
+         XH0XvCa4IhI24cDVDc+qCfnpTbz2xLcOD4BHzU7up4M4q9KhRrkrPNcYYpngX+Lpa9XY
+         VQg0T9LLUh67RAdB5s8hkzTRPr9NjWJiqy+sg=
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Sun, 15 Jan 2012, Mr Dash Four wrote:
+Hello there,
 
-> > Your request means a third mode, which could lead to even more confusion,
-> > because that way one could not check whether the tested address as
-> > *element* is added to the set or not.
-> >   
-> This is not a feature request, it is a bug fix!
-> 
-> If ipset, for whatever reason, can't (or won't) handle ip range for match
-> testing, then such requests should be discarded with the appropriate error or
-> warning message on the console given by the ipset binary, or, the appropriate
-> functionality should be implemented so that such test matches give the right
-> result.
+I am currently working on a linux kernel 2.6.26 box with linked to 
+multiple ISP (so one or more ethernet connections) and specific ones for 
+VoIP usage.
+What i want is to restrict SIP rtp/rtcp to specific interfaces 
+(load-balance) and I can only use iptables rules kernel modules or hack 
+the kernel itself (for resource purposes).
+My problem is that I have two different servers for sip rtp (port 5060) 
+and sip rtcp (random port 10k+).
+So when the rtcp connection is established, it is not related/expected 
+to the rtp and I can't track it with iptables. (callback 
+ip_nat_sip_expected in net/ipv4/netfilter/nf_nat_sip.c is not called).
 
-ipset is a tool to build up so called sets inside the Linux kernel. The 
-sets have any use in the kernel side only and there the kernel matches 
-single IP addresses and never whole networks.
+box ----- > rtp server xxx.xxx.xxx.1
+        \-----> rtcp server xxx.xxx.xxx.2
 
-But if you say so, let it be a bug. Won't be fixed in the near future, 
-however, as it has got a very low priority.
 
-> Not to mention that the above bug is a clear *regression* as the v4.x 
-> version of the ipset binary was able, for whatever reason , to produce 
-> matches - successfully - using ip ranges like the one I used as an 
-> example in my initial post.
+I am doing it wrong ?
+Is there a kernel module that I missed ?
+is this kind of trivia is dealt differently with more recent kernels ? 
+(maybe i can convince my boss to upgrade).
 
-The single set type in v4.x which incidentally had the feature you are 
-missing was the iptreemap type alone. The *hash set types in ipset 4.x 
-behaved exactly the same way as the current ones (ignoring the fact that 
-the 4.x versions had more limitations and less functionality than the 
-successor hash:* types in ipset 6.x).
+Regards.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+(French IT dev here, so sorry if english is a bit awkward).
+
+-- 
+Alexandre Moore
+http://alexandremoore.com
+
