@@ -1,59 +1,63 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+From: Mr Dash Four <mr.dash.four@googlemail.com>
 Subject: Re: [ANNOUNCE] ipset 6.11 released
-Date: Thu, 19 Jan 2012 12:04:26 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1201191154330.7547@blackhole.kfki.hu>
-References: <alpine.DEB.2.00.1201141542490.26282@blackhole.kfki.hu> <4F130A03.7080208@googlemail.com> <alpine.DEB.2.00.1201151825570.29134@blackhole.kfki.hu> <4F131551.2090608@googlemail.com> <alpine.DEB.2.00.1201152100050.29766@blackhole.kfki.hu>
- <4F135552.4070804@googlemail.com> <alpine.DEB.2.00.1201160914550.30763@blackhole.kfki.hu> <4F175B94.60001@googlemail.com>
+Date: Thu, 19 Jan 2012 22:00:35 +0000
+Message-ID: <4F189283.4000401@googlemail.com>
+References: <alpine.DEB.2.00.1201141542490.26282@blackhole.kfki.hu> <4F130A03.7080208@googlemail.com> <alpine.DEB.2.00.1201151825570.29134@blackhole.kfki.hu> <4F131551.2090608@googlemail.com> <alpine.DEB.2.00.1201152100050.29766@blackhole.kfki.hu> <4F135552.4070804@googlemail.com> <alpine.DEB.2.00.1201160914550.30763@blackhole.kfki.hu> <4F175B94.60001@googlemail.com> <alpine.DEB.2.00.1201191154330.7547@blackhole.kfki.hu>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4F175B94.60001@googlemail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=message-id:disposition-notification-to:date:from:user-agent
+         :mime-version:to:cc:subject:references:in-reply-to:content-type
+         :content-transfer-encoding;
+        bh=zlBlsO2VJiwO0nWiPbGSAWnU6+dBLcjNaDL+DqYZcnE=;
+        b=cTfGCAZEU98s1HQgLsog6jbjiSTSrw2RnQS0OvAj4vTWZlY2hWLvE+NzxzGLy4giMm
+         yIO5NDFF/ZPhtQ/Bllbqd88TqKvRFBpQBIT7AE8nRD3jrsPJs1kxvLaJEA3+K6pAEW5J
+         D8Cf5UjhvBlT0tGyv2axX/ffLOQbFiOxEsFGg=
+In-Reply-To: <alpine.DEB.2.00.1201191154330.7547@blackhole.kfki.hu>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-On Wed, 18 Jan 2012, Mr Dash Four wrote:
 
-> >  The sets have any use in the kernel side only and there the kernel 
-> > matches single IP addresses and never whole networks.
-> >   
-> OK, I don't have intimate knowledge of the ipset code and its internal 
-> workings, but it obviously accepts IP ranges since if I have a hash:net 
-> set containing 10.1.0.0/16 for example and then test for that exact IP 
-> range (10.1.0.0/16) then the test returns true, so ipset obviously 
-> processes this IP range and returns a good result. How is that done if 
-> the kernel "matches single IP addresses and never whole networks" then?
+>> One other thing: *if* ipset can only accept single IP addresses instead 
+>> of IP ranges (I don't believe this to be the case, but anyway, if it 
+>> does), then you could process a single IP address in a loop containing 
+>> the whole range to be tested (10.1.12.0/24 in my example - i.e. looping 
+>> from 10.1.12.0 until 10.1.12.255 inclusive) and bail out as soon as 
+>> there is no match, which would then return 'false' (i.e. no match). You 
+>> could even speed things up a bit by implementing batch processing of IP 
+>> ranges internally (via a single kernel APIs instead of looping via ipset 
+>> and calling the kernel API each time for a single IP address check).
+>>
+>> I know this implementation is a bit crude, but since this testing takes 
+>> place in userspace then this delay won't matter *that* much. How doable 
+>> is that?
+>>     
+>
+> The userspace testing is passed to the kernel for execution. There's no
+> shadow or backup or whatever set in userspace. The sets exist in kernel 
+> space and therefore all operations happen there.
+>   
+So, is the above doable in any shape or form or not?
 
-The kernel uses the sets to match the source/destination addresses of IP 
-packets. And those are host, that is single IP addresses (not counting 
-broadcast, multicast addresses).
- 
-> One other thing: *if* ipset can only accept single IP addresses instead 
-> of IP ranges (I don't believe this to be the case, but anyway, if it 
-> does), then you could process a single IP address in a loop containing 
-> the whole range to be tested (10.1.12.0/24 in my example - i.e. looping 
-> from 10.1.12.0 until 10.1.12.255 inclusive) and bail out as soon as 
-> there is no match, which would then return 'false' (i.e. no match). You 
-> could even speed things up a bit by implementing batch processing of IP 
-> ranges internally (via a single kernel APIs instead of looping via ipset 
-> and calling the kernel API each time for a single IP address check).
-> 
-> I know this implementation is a bit crude, but since this testing takes 
-> place in userspace then this delay won't matter *that* much. How doable 
-> is that?
+> Why do you need such tests at all?
+>   
+Various reasons. Two common uses (at least in my case) would be to test 
+ip range against quite a large set of registered subnets (taken from the 
+geoip database and sorted using my own criteria). The tested ip range is 
+either candidate to 1). ban that network, in which case I do not want 
+duplicates if the existing range is already there; or 2) include the ip 
+range in a separate set, making sure that it is not already in the 
+'banned' set and also that it is not already included in the 'customer' 
+set (which although limited, has quite significant number of set members 
+- usually small subnets).
 
-The userspace testing is passed to the kernel for execution. There's no
-shadow or backup or whatever set in userspace. The sets exist in kernel 
-space and therefore all operations happen there.
-
-Why do you need such tests at all?
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+Because the ip range in ipset is not working correctly, I had to first 
+manually go over the testing ranges. Later on I devised a small shell 
+script doing what I just described in my previous post (quoted above), 
+but it is quite ugly and inefficient - it would be much better if ip 
+range testing in ipset was functioning properly, saving me all this hassle.
