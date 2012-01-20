@@ -1,118 +1,38 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
-Subject: Re: [ANNOUNCE] ipset 6.11 released
-Date: Fri, 20 Jan 2012 16:45:44 +0000
-Message-ID: <4F199A38.5070702@googlemail.com>
-References: <alpine.DEB.2.00.1201141542490.26282@blackhole.kfki.hu> <4F130A03.7080208@googlemail.com> <alpine.DEB.2.00.1201151825570.29134@blackhole.kfki.hu> <4F131551.2090608@googlemail.com> <alpine.DEB.2.00.1201152100050.29766@blackhole.kfki.hu> <4F135552.4070804@googlemail.com> <alpine.DEB.2.00.1201160914550.30763@blackhole.kfki.hu> <4F175B94.60001@googlemail.com> <alpine.DEB.2.00.1201191154330.7547@blackhole.kfki.hu> <4F189283.4000401@googlemail.com> <alpine.DEB.2.00.1201201342400.11124@blackhole.kfki.hu>
+From: =?UTF-8?B?TWFyY2luIE1pcm9zxYJhdw==?= <marcin@mejor.pl>
+Subject: [xtables-addons] memory usage in module geoip (probably)
+Date: Fri, 20 Jan 2012 17:12:58 +0100
+Message-ID: <4F19928A.7050005@mejor.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=message-id:disposition-notification-to:date:from:user-agent
-         :mime-version:to:cc:subject:references:in-reply-to:content-type
-         :content-transfer-encoding;
-        bh=21wmYQwl5wxjEH8zTRod0fdPGa68FkLElnHuNGPaW08=;
-        b=xR5ptMpTcNmQYryQuXqhy5oEQkJPrMU8wpIJLlQhLFLS3nnTMDOb4DEvAaGwiVm0lW
-         qAJnSRUh9sqFKg3Y7+sdk3V0tzrLozYD2kjrLMYRttDsrjfLGzRoCOczhnCbF8CsxDNk
-         oPVzMFmw8JARcqptpEbPuQ1SQMiGpxygrVbnM=
-In-Reply-To: <alpine.DEB.2.00.1201201342400.11124@blackhole.kfki.hu>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mejor.pl; s=cokolwiek;
+	h=Content-Transfer-Encoding:Content-Type:Subject:To:MIME-Version:From:Date:Message-ID; bh=VesoBDGJuVwyT+7ctLivzPx98D2t+HYJZU6EvYm6o9I=;
+	b=j9Uw1xLWWTwcRAJUViQeFF+zuX+4zsqTFQFoeWs9iOG7mAcwRU72oBRHnEmZuUK0EvoDu2QXaSqQ8G/fwdBOjGtpJ8ABPjXKO7uy2rEx8mNUVoAb1kMfWCft1kQYhAYf;
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
+Hello!
+I've noticed high size of kmalloc-512/2048 on my vps after a one, two
+weeks of work. Example:
+  OBJS ACTIVE  USE OBJ SIZE  SLABS OBJ/SLAB CACHE SIZE NAME
+ 83440  83411  99%    0.57K   5960       14     47680K kmalloc-512
+ 21615  21604  99%    2.07K   1441       15     46112K kmalloc-2048
+103776 103765  99%    0.31K   8648       12     34592K skbuff_head_cache
 
-> Doable, but needs time and would involve adding the logic to auto-merge 
-> smaller subnets into larger ones and to make possible to delete subnets 
-> from larger networks.
->   
-Merging of ip ranges would be very difficult - I am having the same 
-problem here as well. I use PostgreSQL as part of my setup and even 
-though it has some nice capabilities to deal with "common" ip/range/net 
-address operations, it is still very difficult, nigh-impossible to deal 
-with ip range merges, simply because there are so many possible 
-scenarios: any two ranges could be partially overlapping - like [ (] ), 
-one range completely overlapping another - like [ () ], or two ranges 
-"touching" one another - like [ ]( ) - that last one is very difficult 
-to spot for merging and can't see it done very easily.
+I've done a little investigation (trial by error method) to discover
+which process keep data in kmalloc. It looks those kmalloc are used by
+modules from xtables-addons-1.39. I'm using ipset6, geoip, sysrq,
+tarpit. I greped sources for string "kmalloc", kmalloc is used by sysrq
+and geoip (in some other modules too but i don't use them).
 
-Just for testing ip range matches though, things could be a bit easier 
-(pun intended).
+I'd like to ask is such usage of memory ok? Which module could take so
+much precious ram?:) (I suspect geoip). How much memory geoip can use in
+worse case (db with ipv4 and ipv6)? Can i freed this cache without
+reboot? (I tried flush rules, rmmod but without succes).
 
-If we assume that the whole ip address space (0.0.0.0-255.255.255.255, 
-similar for ipv6 as well) occupies X number of bits (0...X-1), then each 
-ip range (including a single ip address) could be represented by a 
-starting bit number, length (in bits) and an end bit number (the latter 
-is optional, but would ease ip range matching, if included). These 3 
-components would have roughly the same memory footprint no matter what 
-is the size of the actual ip range.
+Thank you for any answers!
+Marcin
 
-When adding such ip range in a set, I assume you just store their hash 
-(to find them quickly when searching for exact set members). If you 
-could add the above 3 elements, then matching ip ranges should be fairly 
-easy: you take the starting bit from the ip range which needs to be 
-tested and then isolate all those elements in the set which have their 
-starting bit and ending bit in-between the starting bit of the testing 
-range, i.e. test_start_bit between set_member_start_bit and 
-set_member_end_bit, *or*, having their ending bit also between those 
-ranges (i.e. test_end_bit between set_member_start_bit and 
-srt_member_end_bit). You also need to discard duplicates, so that you 
-don't test more than once.
-
-Once you've isolated those potential matches, you can then construct a 
-"partial" bitmap of these potential matches by using the 3 stored set 
-member attributes - starting bit, length and end bit.
-
-Then a simple bitwise "or" ("|") operation against each "partial" set 
-member bitmap matched would suffice. By "partial" I mean applying the 
-"or" only on the bit-range value we are interested in. This needs to be 
-done recursively, whereby the result of the previous bitwise "or" 
-operation should be applied to the partial bitmap of the next set 
-member, so that you get partial matches accounted for.
-
-If the end result after this leaves you with the exact bitmap of the ip 
-range being tested, then there is a complete match. If you end up with 
-something different, then there is either no or incomplete match. I hope 
-I am making sense.
-
-One very simple (and very crude) example to illustrate this: suppose the 
-ip range we are interested in testing has a start bit value of 10 and 
-its length is 16 (therefore the end bit = 25). Now, suppose we have 4 
-set members with the following values stored in the set:
-
-1. start-> 2, length-> 6
-2. start-> 13, length-> 7
-3. start-> 8, length-> 8
-4. start-> 20, length-> 6
-
-The "partial" bitmap of the ip range to be tested (stat bit = 10, end 
-bit = 25) could be presented like this, after being "normalised" 
-(position indicates bit number, starting from 0):
-
-.........1111111111111111
-
-Therefore, after initial scanning, we discard element 1 as it doesn't 
-have its either start or end bit in the range we are interested in (10 - 
-25) and that leaves us with the following set members:
-
-.........0001111111000000
-.......111111110000000000
-.........0000000000111111
-
-When we apply bitwise or ("|") on the range we are interested in (bits 
-10-25) - recursively for each member left in the pot - we are left with 
-a value of all 1's for the range of bits we are interested in (bits 
-10-25), which is exactly the same as the ip range we are testing, so 
-there is a complete match, otherwise there would either be no or 
-incomplete match.
-
-> I'm sure you are aware, this is a free time project.
->   
-I am! I am also trying to help you with this as I would benefit from 
-this bug being resolved.
-
-> Sorry, for a while you have to use workarounds like you described.
->   
-Pity that!
-
+P.S. Is any other method to check which process/module/etc uses kmallocs?
