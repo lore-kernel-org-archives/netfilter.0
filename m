@@ -1,43 +1,56 @@
-From: Amit Serper <aserper@gmail.com>
-Subject: EBTables not forwarding frames to the correct interface
-Date: Fri, 20 Jan 2012 14:44:03 +0200
-Message-ID: <CAAmn5Ak2avBdFbo=WHL+uTa1KEwoQ0T8i-8EhCeUA_oY5YBm_g@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: [ANNOUNCE] ipset 6.11 released
+Date: Fri, 20 Jan 2012 13:49:47 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1201201342400.11124@blackhole.kfki.hu>
+References: <alpine.DEB.2.00.1201141542490.26282@blackhole.kfki.hu> <4F130A03.7080208@googlemail.com> <alpine.DEB.2.00.1201151825570.29134@blackhole.kfki.hu> <4F131551.2090608@googlemail.com> <alpine.DEB.2.00.1201152100050.29766@blackhole.kfki.hu>
+ <4F135552.4070804@googlemail.com> <alpine.DEB.2.00.1201160914550.30763@blackhole.kfki.hu> <4F175B94.60001@googlemail.com> <alpine.DEB.2.00.1201191154330.7547@blackhole.kfki.hu> <4F189283.4000401@googlemail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:from:date:message-id:subject:to:content-type;
-        bh=TM+5umbzQG/Dzhhoiifj+Rj/sXKR+WLDhLmCpuBPVpg=;
-        b=mXWvA2GzfQ7+TNHzTZgqmyhcPlF2lVw1plELAmj6GB6C1dDbjYEkyzeTMFA5bO/WH6
-         mpdt2Q7ovi18h2BIKVuzGaz8NE3mHllVLRUitgYG0CYXILVHO9ZAwSToPclrq6IUBhUp
-         8+U4tqCEpitLTgOga4rUfUUG9rP6D6EUIG7vQ=
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <4F189283.4000401@googlemail.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Mr Dash Four <mr.dash.four@googlemail.com>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Hello,
-In the past week I've been fighting with EBTables over this issue, I
-hope that the mistake is mine.
+On Thu, 19 Jan 2012, Mr Dash Four wrote:
 
-The situation is that I have a bridge with 3 ports (let's say eth0,
-eth1 and eth2). The computer which holds the bridge interface works
-solely in layer-2 so it does not have any IP addresses assigned to it
-(both the bridge ports interfaces nor the bridge interface itself).
-The problem I'm initiating a connection from within the bridge towards
-the internet. The connection goes out - a SYN packet is being sent
-from 192.168.1.2 to an IP somewhere in the internet, e.g 8.8.8.8.
-After the SYN reaches 8.8.8.8, the latter replies with a SYN ACK and
-then everything just states that way. The problem is with the bridge
-not forwarding the final ACK packet to the correct bridge port. The
-packet reaches the bridge port but isn't being forwarded on to the
-correct bridge port which connects to the internet router. What am I
-doing wrong?
+> > The userspace testing is passed to the kernel for execution. There's no
+> > shadow or backup or whatever set in userspace. The sets exist in kernel
+> > space and therefore all operations happen there.
+> >   
+> So, is the above doable in any shape or form or not?
 
-I hope I've managed to make myself clear enough.
+Doable, but needs time and would involve adding the logic to auto-merge 
+smaller subnets into larger ones and to make possible to delete subnets 
+from larger networks.
 
-Thanks in Advance.
+I'm sure you are aware, this is a free time project.
 
---
-Amit Serper
+> > Why do you need such tests at all?
+> >   
+> Various reasons. Two common uses (at least in my case) would be to test ip
+> range against quite a large set of registered subnets (taken from the geoip
+> database and sorted using my own criteria). The tested ip range is either
+> candidate to 1). ban that network, in which case I do not want duplicates if
+> the existing range is already there; or 2) include the ip range in a separate
+> set, making sure that it is not already in the 'banned' set and also that it
+> is not already included in the 'customer' set (which although limited, has
+> quite significant number of set members - usually small subnets).
+> 
+> Because the ip range in ipset is not working correctly, I had to first
+> manually go over the testing ranges. Later on I devised a small shell script
+> doing what I just described in my previous post (quoted above), but it is
+> quite ugly and inefficient - it would be much better if ip range testing in
+> ipset was functioning properly, saving me all this hassle.
+
+Sorry, for a while you have to use workarounds like you described.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
