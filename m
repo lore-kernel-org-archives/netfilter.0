@@ -1,63 +1,43 @@
-From: Mr Dash Four <mr.dash.four@googlemail.com>
-Subject: Re: [ANNOUNCE] ipset 6.11 released
-Date: Thu, 19 Jan 2012 22:00:35 +0000
-Message-ID: <4F189283.4000401@googlemail.com>
-References: <alpine.DEB.2.00.1201141542490.26282@blackhole.kfki.hu> <4F130A03.7080208@googlemail.com> <alpine.DEB.2.00.1201151825570.29134@blackhole.kfki.hu> <4F131551.2090608@googlemail.com> <alpine.DEB.2.00.1201152100050.29766@blackhole.kfki.hu> <4F135552.4070804@googlemail.com> <alpine.DEB.2.00.1201160914550.30763@blackhole.kfki.hu> <4F175B94.60001@googlemail.com> <alpine.DEB.2.00.1201191154330.7547@blackhole.kfki.hu>
+From: Amit Serper <aserper@gmail.com>
+Subject: EBTables not forwarding frames to the correct interface
+Date: Fri, 20 Jan 2012 14:44:03 +0200
+Message-ID: <CAAmn5Ak2avBdFbo=WHL+uTa1KEwoQ0T8i-8EhCeUA_oY5YBm_g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=googlemail.com; s=gamma;
-        h=message-id:disposition-notification-to:date:from:user-agent
-         :mime-version:to:cc:subject:references:in-reply-to:content-type
-         :content-transfer-encoding;
-        bh=zlBlsO2VJiwO0nWiPbGSAWnU6+dBLcjNaDL+DqYZcnE=;
-        b=cTfGCAZEU98s1HQgLsog6jbjiSTSrw2RnQS0OvAj4vTWZlY2hWLvE+NzxzGLy4giMm
-         yIO5NDFF/ZPhtQ/Bllbqd88TqKvRFBpQBIT7AE8nRD3jrsPJs1kxvLaJEA3+K6pAEW5J
-         D8Cf5UjhvBlT0tGyv2axX/ffLOQbFiOxEsFGg=
-In-Reply-To: <alpine.DEB.2.00.1201191154330.7547@blackhole.kfki.hu>
+        d=gmail.com; s=gamma;
+        h=mime-version:from:date:message-id:subject:to:content-type;
+        bh=TM+5umbzQG/Dzhhoiifj+Rj/sXKR+WLDhLmCpuBPVpg=;
+        b=mXWvA2GzfQ7+TNHzTZgqmyhcPlF2lVw1plELAmj6GB6C1dDbjYEkyzeTMFA5bO/WH6
+         mpdt2Q7ovi18h2BIKVuzGaz8NE3mHllVLRUitgYG0CYXILVHO9ZAwSToPclrq6IUBhUp
+         8+U4tqCEpitLTgOga4rUfUUG9rP6D6EUIG7vQ=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
+Hello,
+In the past week I've been fighting with EBTables over this issue, I
+hope that the mistake is mine.
 
->> One other thing: *if* ipset can only accept single IP addresses instead 
->> of IP ranges (I don't believe this to be the case, but anyway, if it 
->> does), then you could process a single IP address in a loop containing 
->> the whole range to be tested (10.1.12.0/24 in my example - i.e. looping 
->> from 10.1.12.0 until 10.1.12.255 inclusive) and bail out as soon as 
->> there is no match, which would then return 'false' (i.e. no match). You 
->> could even speed things up a bit by implementing batch processing of IP 
->> ranges internally (via a single kernel APIs instead of looping via ipset 
->> and calling the kernel API each time for a single IP address check).
->>
->> I know this implementation is a bit crude, but since this testing takes 
->> place in userspace then this delay won't matter *that* much. How doable 
->> is that?
->>     
->
-> The userspace testing is passed to the kernel for execution. There's no
-> shadow or backup or whatever set in userspace. The sets exist in kernel 
-> space and therefore all operations happen there.
->   
-So, is the above doable in any shape or form or not?
+The situation is that I have a bridge with 3 ports (let's say eth0,
+eth1 and eth2). The computer which holds the bridge interface works
+solely in layer-2 so it does not have any IP addresses assigned to it
+(both the bridge ports interfaces nor the bridge interface itself).
+The problem I'm initiating a connection from within the bridge towards
+the internet. The connection goes out - a SYN packet is being sent
+from 192.168.1.2 to an IP somewhere in the internet, e.g 8.8.8.8.
+After the SYN reaches 8.8.8.8, the latter replies with a SYN ACK and
+then everything just states that way. The problem is with the bridge
+not forwarding the final ACK packet to the correct bridge port. The
+packet reaches the bridge port but isn't being forwarded on to the
+correct bridge port which connects to the internet router. What am I
+doing wrong?
 
-> Why do you need such tests at all?
->   
-Various reasons. Two common uses (at least in my case) would be to test 
-ip range against quite a large set of registered subnets (taken from the 
-geoip database and sorted using my own criteria). The tested ip range is 
-either candidate to 1). ban that network, in which case I do not want 
-duplicates if the existing range is already there; or 2) include the ip 
-range in a separate set, making sure that it is not already in the 
-'banned' set and also that it is not already included in the 'customer' 
-set (which although limited, has quite significant number of set members 
-- usually small subnets).
+I hope I've managed to make myself clear enough.
 
-Because the ip range in ipset is not working correctly, I had to first 
-manually go over the testing ranges. Later on I devised a small shell 
-script doing what I just described in my previous post (quoted above), 
-but it is quite ugly and inefficient - it would be much better if ip 
-range testing in ipset was functioning properly, saving me all this hassle.
+Thanks in Advance.
+
+--
+Amit Serper
