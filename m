@@ -1,26 +1,37 @@
-From: Quentin Aebischer <Quentin.Aebischer@USherbrooke.ca>
-Subject: [PATCH] conntrackd: basic TIPC implementation for NOTRACK mode
-Date: Fri, 20 Jan 2012 21:27:50 -0500
-Message-ID: <20120120212750.15041hktx328kk3o@www.usherbrooke.ca>
+From: Amos Jeffries <squid3@treenet.co.nz>
+Subject: Re: [ANNOUNCE] ipset 6.11 released
+Date: Sat, 21 Jan 2012 21:12:39 +1300
+Message-ID: <4F1A7377.5050301@treenet.co.nz>
+References: <alpine.DEB.2.00.1201141542490.26282@blackhole.kfki.hu> <4F130A03.7080208@googlemail.com> <alpine.DEB.2.00.1201151825570.29134@blackhole.kfki.hu> <4F131551.2090608@googlemail.com> <alpine.DEB.2.00.1201152100050.29766@blackhole.kfki.hu> <4F135552.4070804@googlemail.com> <alpine.DEB.2.00.1201160914550.30763@blackhole.kfki.hu> <4F175B94.60001@googlemail.com> <alpine.DEB.2.00.1201191154330.7547@blackhole.kfki.hu> <4F189283.4000401@googlemail.com> <alpine.DEB.2.00.1201201342400.11124@blackhole.kfki.hu> <4F199A38.5070702@googlemail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <4F199A38.5070702@googlemail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; delsp="Yes"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Mr Dash Four <mr.dash.four@googlemail.com>
+Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Hi everyone,
+On 21/01/2012 5:45 a.m., Mr Dash Four wrote:
+>
+>> Doable, but needs time and would involve adding the logic to 
+>> auto-merge smaller subnets into larger ones and to make possible to 
+>> delete subnets from larger networks.
+> Merging of ip ranges would be very difficult - I am having the same 
+> problem here as well. I use PostgreSQL as part of my setup and even 
+> though it has some nice capabilities to deal with "common" 
+> ip/range/net address operations, it is still very difficult, 
+> nigh-impossible to deal with ip range merges, simply because there are 
+> so many possible scenarios: any two ranges could be partially 
+> overlapping - like [ (] ), one range completely overlapping another - 
+> like [ () ], or two ranges "touching" one another - like [ ]( ) - that 
+> last one is very difficult to spot for merging and can't see it done 
+> very easily.
 
-I've implemented a very basic TIPC channel for the conntrackd daemon.
+Jozsef, have you had a look at how rbldnsd handles ranges? It has to 
+deal with the same issues as ipset seems to be facing now, also at some 
+high speed requirements. Maybe you could pull some inspiration out of that.
 
-You can pull from here : git@github.com:Vauteck/Conntrack-tools.git master
-
-It's still in debug proccess.
-Any feedbacks/hints/comments is appreciated.
-
-Regards,
-
-Quentin
+AYJ
 
