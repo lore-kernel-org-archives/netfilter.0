@@ -1,52 +1,38 @@
-From: "U.Mutlu" <for-gmane@mutluit.com>
-Subject: libnetfilter_queue in VM
-Date: Sun, 22 Jan 2012 21:11:23 +0100
-Message-ID: <jfhqhb$n2n$2@dough.gmane.org>
-References: <20120102195845.GA26867__10136.4863025539$1325543752$gmane$org@1984>
+From: =?ISO-8859-2?Q?Marcin_Miros=B3aw?= <marcin@mejor.pl>
+Subject: Re: [xtables-addons] memory usage in module geoip (probably)
+Date: Sun, 22 Jan 2012 21:38:51 +0100
+Message-ID: <4F1C73DB.5060503@mejor.pl>
+References: <4F19928A.7050005@mejor.pl> <alpine.LNX.2.01.1201201800150.29700@frira.zrqbmnf.qr> <8b53c851c9391f9bc9ce3427acdbab4c@mejor.pl> <alpine.LNX.2.01.1201202156410.13241@frira.zrqbmnf.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20120102195845.GA26867__10136.4863025539$1325543752$gmane$org@1984>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mejor.pl; s=cokolwiek;
+	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:References:Subject:CC:To:MIME-Version:From:Date:Message-ID; bh=PzL+mnK4jObrXYQFOXPQHpILQzvPc5LPur6eXidMyzc=;
+	b=tLW9RRK/KcVYXAO3b8Q4KcGcZwd1Fhw6+UX3uXB0ZhU7MCIXmLWGoLmVHxw0gDTq2DMljxhtqFDnHwqwa10MtRfa0OFQLkXNPPm8Rqwe6UVdrnfk1gpn/VKF5NSakIq+;
+In-Reply-To: <alpine.LNX.2.01.1201202156410.13241@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+W dniu 2012-01-20 22:00, Jan Engelhardt pisze:
+> TARPIT does not have much of a use for random ports without any services
+> because it is specific to clients sending data. You should use DELUDE at
+> the end of the chain, also because it does not keep any connections
+> around like tarpit.
 
-has any of the developers, testers or users tested the libnetfilter_queue
-library under openvz VM's?
+Hello Jan.
+Meseems TARPIT is what i need, i'd like to slow down (a little) bots 
+looking for mssql and other MS specific soft.
+I've made quick test, it looks when TARPIT is in chain then size of all 
+three slabs (kmalloc-512/2048, skbuff_head_cache) slowly grow up. 
+Without TARPIT its size is almost constant.
+It appears on host:
+domU, FV, 3.1.8-hardened (i have such situation since some time, with 
+older kernels too) , x86_64, xtables-addons-1.37 and 1.39.
+Other host doesn't suffer such problem:
+bare metal, 3.1.5-hardened, i686, xtables-addons-1.37
 
-When I boot my debian system with an openvz kernel then this library
-works only on the host node (HN), but not in the virtual machines (VM),
-even after granting all possible capabilities like NET_ADMIN etc. to the VM.
-
-In the VM the call to nfq_open() succeeds, but nfq_unbind_pf() and
-nfq_bind_pf() fail by each returning -1. What do you think could be
-the reason it's failing? Could it maybe a Selinux-issue?
-
-I would like to ask if any of you has successfully tested/used this library in VM's?
-
-Regards,
-U.Mutlu
-
-
-In netfilter.announce Pablo Neira Ayuso wrote, On 2012-01-02 20:58:
-> Hi!
->
-> The Netfilter project proudly presents:
->
->          libnetfilter_queue 1.0.1
->
-> libnetfilter_queue is a userspace library providing an API to packets
-> that have been queued by the kernel packet filter.
->
-> See ChangeLog that comes attached to this email for more details.
->
-> You can download it from:
->
-> http://www.netfilter.org/projects/libnetfilter_queue/downloads.html
-> ftp://ftp.netfilter.org/pub/libnetfilter_queue/
->
-> Have fun!
-
+How can i track down what is the reason of such situation?
+Thank you.
