@@ -1,41 +1,52 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [ANNOUNCE] ipset 6.11 released
-Date: Sat, 21 Jan 2012 15:07:49 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1201211506470.13129@blackhole.kfki.hu>
-References: <alpine.DEB.2.00.1201141542490.26282@blackhole.kfki.hu> <4F130A03.7080208@googlemail.com> <alpine.DEB.2.00.1201151825570.29134@blackhole.kfki.hu> <4F131551.2090608@googlemail.com> <alpine.DEB.2.00.1201152100050.29766@blackhole.kfki.hu>
- <4F135552.4070804@googlemail.com> <alpine.DEB.2.00.1201160914550.30763@blackhole.kfki.hu> <4F175B94.60001@googlemail.com> <alpine.DEB.2.00.1201191154330.7547@blackhole.kfki.hu> <4F189283.4000401@googlemail.com> <alpine.DEB.2.00.1201201342400.11124@blackhole.kfki.hu>
- <4F199A38.5070702@googlemail.com> <4F1A7377.5050301@treenet.co.nz>
+From: "U.Mutlu" <for-gmane@mutluit.com>
+Subject: libnetfilter_queue in VM
+Date: Sun, 22 Jan 2012 21:11:23 +0100
+Message-ID: <jfhqhb$n2n$2@dough.gmane.org>
+References: <20120102195845.GA26867__10136.4863025539$1325543752$gmane$org@1984>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4F1A7377.5050301@treenet.co.nz>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Amos Jeffries <squid3@treenet.co.nz>
-Cc: Mr Dash Four <mr.dash.four@googlemail.com>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20120102195845.GA26867__10136.4863025539$1325543752$gmane$org@1984>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Sat, 21 Jan 2012, Amos Jeffries wrote:
+Hello,
 
-> On 21/01/2012 5:45 a.m., Mr Dash Four wrote:
-> > 
-> > > Doable, but needs time and would involve adding the logic to auto-merge
-> > > smaller subnets into larger ones and to make possible to delete subnets
-> > > from larger networks.
-> > Merging of ip ranges would be very difficult - I am having the same problem
-> > here as well. I use PostgreSQL as part of my setup and even though it has
-[...] 
-> Jozsef, have you had a look at how rbldnsd handles ranges? It has to 
-> deal with the same issues as ipset seems to be facing now, also at some 
-> high speed requirements. Maybe you could pull some inspiration out of 
-> that.
+has any of the developers, testers or users tested the libnetfilter_queue
+library under openvz VM's?
 
-Thanks for the tip, I'll look into it.
+When I boot my debian system with an openvz kernel then this library
+works only on the host node (HN), but not in the virtual machines (VM),
+even after granting all possible capabilities like NET_ADMIN etc. to the VM.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+In the VM the call to nfq_open() succeeds, but nfq_unbind_pf() and
+nfq_bind_pf() fail by each returning -1. What do you think could be
+the reason it's failing? Could it maybe a Selinux-issue?
+
+I would like to ask if any of you has successfully tested/used this library in VM's?
+
+Regards,
+U.Mutlu
+
+
+In netfilter.announce Pablo Neira Ayuso wrote, On 2012-01-02 20:58:
+> Hi!
+>
+> The Netfilter project proudly presents:
+>
+>          libnetfilter_queue 1.0.1
+>
+> libnetfilter_queue is a userspace library providing an API to packets
+> that have been queued by the kernel packet filter.
+>
+> See ChangeLog that comes attached to this email for more details.
+>
+> You can download it from:
+>
+> http://www.netfilter.org/projects/libnetfilter_queue/downloads.html
+> ftp://ftp.netfilter.org/pub/libnetfilter_queue/
+>
+> Have fun!
+
