@@ -1,24 +1,38 @@
-From: =?ISO-8859-2?Q?Marcin_Miros=B3aw?= <marcin@mejor.pl>
-Subject: Re: [xtables-addons] memory usage in module geoip (probably)
-Date: Sun, 22 Jan 2012 21:53:08 +0100
-Message-ID: <4F1C7734.1080506@mejor.pl>
-References: <4F19928A.7050005@mejor.pl> <alpine.LNX.2.01.1201201800150.29700@frira.zrqbmnf.qr> <8b53c851c9391f9bc9ce3427acdbab4c@mejor.pl> <alpine.LNX.2.01.1201202156410.13241@frira.zrqbmnf.qr> <4F1C73DB.5060503@mejor.pl>
+From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
+Subject: connect: No buffer space available
+Date: Mon, 23 Jan 2012 12:27:19 -0200
+Message-ID: <CAMTjHrwO54Zaktwyt=FhcC6h85MLeCtDzYV7SBpqgAb4N+2XOA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mejor.pl; s=cokolwiek;
-	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:References:Subject:CC:To:MIME-Version:From:Date:Message-ID; bh=9xMRBVgtZZrya9xP2IK0Uwc1fyQetDbxSyl2aWpyktc=;
-	b=DeCfwLeqjKExE6ZSNVyMR26b+xhZ8cae7mIkmfzRwPrPfSygdqDmEU46CcpxbGJ2VnOnDUDQvxwN3yiP24KxEOXAtcSArcyZFpawFP47lpE6MB41KyeLTbpfpoBDUyJ2;
-In-Reply-To: <4F1C73DB.5060503@mejor.pl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-W dniu 2012-01-22 21:38, Marcin Miros=B3aw pisze:
-> Other host doesn't suffer such problem:
-> bare metal, 3.1.5-hardened, i686, xtables-addons-1.37
+Hello everyone, my firewall iptables Red Hat 5.7 is show me the follow
+bellow message when I run a ping to a IP address 172.16.30.2
 
-I forgot mention, those kernel has patch taken from=20
-http://www.ssi.bg/~ja/#routes
+connect: No buffer space available
+
+so... I've just add this network ( 172.16.30.0/30 ) on my firewall in
+the NIC Interface eth7. the error only accurs when I run a ping from
+this Interface( eth7 ) or to ip address 172.16.30.2. ( eth7 has ip
+172.16.30.1 )
+
+is very strange because when I run a ping to any other ip address all
+it's work. I have changed the follow values but does't work.
+
+# sysctl -w net.ipv4.neigh.default.gc_thresh1=512
+# sysctl -w net.ipv4.neigh.default.gc_thresh2=1024
+# sysctl -w net.ipv4.neigh.default.gc_thresh3=2048
+
+
+before I changed this values was 128, 512 and 1024.
+
+maybe I have reboot my firewall ? there is other way I solve the
+problem without reboot ?? I thought it was full arp table but it is
+with 350 average.
+
+
+thanks
