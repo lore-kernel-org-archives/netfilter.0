@@ -1,38 +1,37 @@
-From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
-Subject: connect: No buffer space available
-Date: Mon, 23 Jan 2012 12:27:19 -0200
-Message-ID: <CAMTjHrwO54Zaktwyt=FhcC6h85MLeCtDzYV7SBpqgAb4N+2XOA@mail.gmail.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: [xtables-addons] memory usage in module geoip (probably)
+Date: Tue, 24 Jan 2012 13:04:04 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1201241303001.26126@frira.zrqbmnf.qr>
+References: <4F19928A.7050005@mejor.pl> <alpine.LNX.2.01.1201201800150.29700@frira.zrqbmnf.qr> <8b53c851c9391f9bc9ce3427acdbab4c@mejor.pl> <alpine.LNX.2.01.1201202156410.13241@frira.zrqbmnf.qr> <4F1C73DB.5060503@mejor.pl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4F1C73DB.5060503@mejor.pl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="windows-1252"
+To: =?UTF-8?Q?Marcin_Miros=C5=82aw?= <marcin@mejor.pl>
+Cc: netfilter@vger.kernel.org
 
-Hello everyone, my firewall iptables Red Hat 5.7 is show me the follow
-bellow message when I run a ping to a IP address 172.16.30.2
+On Sunday 2012-01-22 21:38, Marcin Miros=C5=82aw wrote:
 
-connect: No buffer space available
+> W dniu 2012-01-20 22:00, Jan Engelhardt pisze:
+>> TARPIT does not have much of a use for random ports without any serv=
+ices
+>> because it is specific to clients sending data. You should use DELUD=
+E at
+>> the end of the chain, also because it does not keep any connections
+>> around like tarpit.
+>
+> Hello Jan.
+> Meseems TARPIT is what i need, i'd like to slow down (a little) bots =
+looking
+> for mssql and other MS specific soft.
 
-so... I've just add this network ( 172.16.30.0/30 ) on my firewall in
-the NIC Interface eth7. the error only accurs when I run a ping from
-this Interface( eth7 ) or to ip address 172.16.30.2. ( eth7 has ip
-172.16.30.1 )
+Then you should use
+ -t raw -A PREROUTING -p tcp --dport ms-sql-s -j CT --notrack
+if your service is not exposed to the internet.
 
-is very strange because when I run a ping to any other ip address all
-it's work. I have changed the follow values but does't work.
+> How can i track down what is the reason of such situation?
 
-# sysctl -w net.ipv4.neigh.default.gc_thresh1=512
-# sysctl -w net.ipv4.neigh.default.gc_thresh2=1024
-# sysctl -w net.ipv4.neigh.default.gc_thresh3=2048
-
-
-before I changed this values was 128, 512 and 1024.
-
-maybe I have reboot my firewall ? there is other way I solve the
-problem without reboot ?? I thought it was full arp table but it is
-with 350 average.
-
-
-thanks
+Also compare output of `ss -at`.
