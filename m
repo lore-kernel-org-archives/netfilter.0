@@ -1,71 +1,71 @@
-From: Enrique Huerta de la Fuente <ehuerta@ixer.mx>
-Subject: iptables udp 1195 MASQUERADE
-Date: Tue, 24 Jan 2012 17:34:02 -0600 (CST)
-Message-ID: <30967745.2025.1327448042608.JavaMail.root@ixer.mx>
-References: <13116495.2023.1327446410284.JavaMail.root@ixer.mx>
-Reply-To: ehuerta@ixer.mx
+From: Aleksey Kashin <aleksey.kashin@gmail.com>
+Subject: Re: [xtables-addons] problem with TEE and Debian Lenny (Unknown arg (null))
+Date: Wed, 25 Jan 2012 09:08:48 +0500
+Message-ID: <CAPJYFP_j990ES_TSNNz6WgH39C091ciE-ybFvgH0TZyL2O2y2w@mail.gmail.com>
+References: <CAPJYFP-XLLoupqx9t9+C98S887Hr7yDe-oZ0--2fHOcFzOM1hg@mail.gmail.com>
+	<alpine.LNX.2.01.1201242220140.5731@frira.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <13116495.2023.1327446410284.JavaMail.root@ixer.mx>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type:content-transfer-encoding;
+        bh=nJ9iLiI+EcEKZawy+FHZlVZM+bq+R4TL/wNkCP/7O6w=;
+        b=RjpQYOvWkKtp3x30eJ+IYdlQLiBmoxDSY4NwgLnL2JsH8INQUTWXNIVHr9/fKFOvBs
+         IxZ5YqZH9xNoQKx/DByIAAGb3DjHjgfntYpzWwnVhlb+FMb72G1rZciGH+hSSIaXPxj1
+         K8mtDsljcBJPXUvugonX0inNZM60foV3jvaQI=
+In-Reply-To: <alpine.LNX.2.01.1201242220140.5731@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="koi8-r"
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org
 
-Hello
+Hello.
 
-I have OpenVPN (lan to lan)
+I've compiled and installed iptables 1.4.8 from src-package debian
+squeeze and I got another error:
 
-On site 1 (4 links)
-- eth0 (LAN)
-- eth1 (internet link)
-- eth3 (enalce internet)
-- ppp0 (internet link)
-- Deafult gateway eth1
+# iptables -t mangle -A PREROUTING -i eth0 -j TEE --gateway 10.99.2.37
+iptables v1.4.8: unknown option `--gateway'
+Try `iptables -h' or 'iptables --help' for more information.
 
-On site 2 (3 links)
-- eth0 (LAN)
-- eth1 (internet link)
-- ppp0 (internet link)
-- Deafult gateway ppp0
+# dpkg -l | grep iptables
+iptables                                          1.4.8-3
 
-The eth3 interface (site 1) and the eth1 interface (site 2) are the same supplier, the same mask.
+Thank you.
 
-The VPN works with eth3 (site 1) <---> eth1 (site 2) and it works great. We must not over because they are the same provider and does not require the gateway.
-
-But if it fails any of the VPN link (eth3 o eth1), we need to change links of VPN to ppp0 (site 1) <-----> ppp0 (site 2).
-
-Here's the problem!
-
-At site 1, the UPD packets should go out by ppp0 (the default gateway is eth1). To do this:
-
-# Iptables-t nat-I POSTROUTING-p udp-m udp - dport 1195-o ppp0-j MASQUERADE
-# Iptables-t mangle-I OUTPUT-p udp-m udp - dport 1195-j MARK - set-mark 1
-
-So are the paths:
-
-# Ip rule ls
-0: from all lookup 255
-32757: from all fwmark 0x1 lookup infinitum
-32758: from 189.143.36.36 lookup infinitum
-32759: from 38.124.170.15 lookup bbs
-32766: from all lookup main
-
-# Ip route ls table infinitum
-default via 189.143.36.36 dev ppp0
-
-
-The problem is that no packets arrive from site 1 to the site 2. The UDP packets arrive to site 1 from site 2
-
-I tested with port 22 (ssh) and it works.
-
-# Iptables-t nat-I POSTROUTING-m tcp-p tcp - dport 22-o ppp0-j MASQUERADE
-# Iptables-t mangle-I OUTPUT-m tcp-p tcp - dport 22-j MARK - set-mark 1
+2012/1/25, Jan Engelhardt <jengelh@medozas.de>:
+> On Tuesday 2012-01-24 18:24, Aleksey Kashin wrote:
+>
+>>Hello.
+>>
+>>I'm using Debian Lenny amd64. I need clone traffic to another server.
+>>I'm trying to use TEE module from xtables-addons, but I've got this
+>>error:
+>># modprobe xt_TEE
+>># iptables -t mangle -A PREROUTING -i eth0 -j TEE --gateway 10.99.2.3=
+7
+>>iptables v1.4.2: Unknown arg `(null)'
+>>Try `iptables -h' or 'iptables --help' for more information.
+>>
+>>What does it mean? Can anyone help me with this problem?
+>>
+>>I use the following software:
+>>- Debian Lenny amd64 5.0.8 with 2.6.26-2-vserver-amd64 kernel
+>>- iptables - 1.4.2-6
+>>- xtables-addons-common - 1.26-2
+>>- xtables-addons-modules-2.6.26-2-vserver-amd64 - 1.26-2+2.6.26-27
+>
+> As per the INSTALL file of xt-a, version 1.26 requires iptables 1.4.3=
+=2E
+> This dependency is probably not properly recorded in the
+> xtables-addons-common-1.26-2 package, but starting with iptables
+> 1.4.12.2, the deps are properly propagated to xt-a.
+>
 
 
-Any idea why that no UDP packets  arrive to site 2?
-
-regards
-
-E.Huerta
+--=20
+=F3 =D5=D7=C1=D6=C5=CE=C9=C5=CD,
+=EB=C1=DB=C9=CE =E1=CC=C5=CB=D3=C5=CA
