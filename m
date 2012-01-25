@@ -1,30 +1,30 @@
-From: Rick Jones <rick.jones2@hp.com>
-Subject: Re: Routing the DNS Traffic via specific interface.
-Date: Wed, 25 Jan 2012 10:00:13 -0800
-Message-ID: <4F20432D.9050507@hp.com>
-References: <EB822645982FC24F99C33D9513902AFAA877C9@inba-mail02.sonusnet.com>
+From: Mrunal Upadhyay <m.upadhyay@sta.samsung.com>
+Subject: Set DSCP field for ipv6 packets using ip6tables command
+Date: Wed, 25 Jan 2012 13:35:11 -0600
+Message-ID: <083EE18768D966439D1223E96B690A910629868A65@staex7mb2.telecom.sna.samsung.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <EB822645982FC24F99C33D9513902AFAA877C9@inba-mail02.sonusnet.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netravali Ganesh <gnetravali@sonusnet.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 01/24/2012 11:41 PM, Netravali Ganesh wrote:
-> Hi ..
->
-> I have 2 interfaces eth0 and eth1 on the system connected to
-> different subnets. I need to route all the outgoing DNS traffic of
-> the system via eth1 interface. Pls let me know if below IPTABLES
-> rules is proper way ?
+Hello,
 
-Are the IPs of the DNS servers known and reasonably static?  And is 
-there any concern if other traffic to those IPs goes out the one 
-interface?  If the DNS server IPs are static, and it wouldn't hurt to 
-have other traffic go out the same interface, why not just create some 
-static host routes?
+I am currently trying to set DSCP fields for IPV4 and IPV6 packets with the version 1.3.7 of iptables using Linux kernel 2.6.35.7.
 
-rick jones
+I am able to set the DSCP fields to desired values for the IPV4 packets by the following command:
+
+iptables -t mangle -I OUTPUT -p udp --dport 10000:30000 -j DSCP --set-dscp-class EF
+
+However when I am trying to fire the same command for IPV6 packets, is does not recognize the target DSCP.
+
+So my questions are 
+Is there any way to set the TRAFFIC CLASS/ TOS/ DSCP field using ip6tables command for ipv6 packets?
+Are there any extensions/modules already developed or being developed for ipv6 packets that I can use to alter the DSCP field?
+
+Thank You,
+Mrunal
+
