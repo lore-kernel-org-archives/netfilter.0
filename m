@@ -1,71 +1,30 @@
-From: Aleksey Kashin <aleksey.kashin@gmail.com>
-Subject: Re: [xtables-addons] problem with TEE and Debian Lenny (Unknown arg (null))
-Date: Wed, 25 Jan 2012 09:08:48 +0500
-Message-ID: <CAPJYFP_j990ES_TSNNz6WgH39C091ciE-ybFvgH0TZyL2O2y2w@mail.gmail.com>
-References: <CAPJYFP-XLLoupqx9t9+C98S887Hr7yDe-oZ0--2fHOcFzOM1hg@mail.gmail.com>
-	<alpine.LNX.2.01.1201242220140.5731@frira.zrqbmnf.qr>
+From: Netravali Ganesh <gnetravali@sonusnet.com>
+Subject: Routing the DNS Traffic via specific interface.
+Date: Wed, 25 Jan 2012 07:41:37 +0000
+Message-ID: <EB822645982FC24F99C33D9513902AFAA877C9@inba-mail02.sonusnet.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type:content-transfer-encoding;
-        bh=nJ9iLiI+EcEKZawy+FHZlVZM+bq+R4TL/wNkCP/7O6w=;
-        b=RjpQYOvWkKtp3x30eJ+IYdlQLiBmoxDSY4NwgLnL2JsH8INQUTWXNIVHr9/fKFOvBs
-         IxZ5YqZH9xNoQKx/DByIAAGb3DjHjgfntYpzWwnVhlb+FMb72G1rZciGH+hSSIaXPxj1
-         K8mtDsljcBJPXUvugonX0inNZM60foV3jvaQI=
-In-Reply-To: <alpine.LNX.2.01.1201242220140.5731@frira.zrqbmnf.qr>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="koi8-r"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hello.
+Hi ..
 
-I've compiled and installed iptables 1.4.8 from src-package debian
-squeeze and I got another error:
+I have 2 interfaces eth0 and eth1 on the system connected to different subnets. I need to route all the outgoing DNS traffic of the system via eth1 interface. Pls let me know if below IPTABLES rules is proper way ?
 
-# iptables -t mangle -A PREROUTING -i eth0 -j TEE --gateway 10.99.2.37
-iptables v1.4.8: unknown option `--gateway'
-Try `iptables -h' or 'iptables --help' for more information.
+Block the output DNS traffic on eth0 interface.
 
-# dpkg -l | grep iptables
-iptables                                          1.4.8-3
+iptables -A FORWARD -p udp -o eth0 --dport 53 -j DROP
 
-Thank you.
+Forward output DNS traffic from eth1 interface
 
-2012/1/25, Jan Engelhardt <jengelh@medozas.de>:
-> On Tuesday 2012-01-24 18:24, Aleksey Kashin wrote:
->
->>Hello.
->>
->>I'm using Debian Lenny amd64. I need clone traffic to another server.
->>I'm trying to use TEE module from xtables-addons, but I've got this
->>error:
->># modprobe xt_TEE
->># iptables -t mangle -A PREROUTING -i eth0 -j TEE --gateway 10.99.2.3=
-7
->>iptables v1.4.2: Unknown arg `(null)'
->>Try `iptables -h' or 'iptables --help' for more information.
->>
->>What does it mean? Can anyone help me with this problem?
->>
->>I use the following software:
->>- Debian Lenny amd64 5.0.8 with 2.6.26-2-vserver-amd64 kernel
->>- iptables - 1.4.2-6
->>- xtables-addons-common - 1.26-2
->>- xtables-addons-modules-2.6.26-2-vserver-amd64 - 1.26-2+2.6.26-27
->
-> As per the INSTALL file of xt-a, version 1.26 requires iptables 1.4.3=
-=2E
-> This dependency is probably not properly recorded in the
-> xtables-addons-common-1.26-2 package, but starting with iptables
-> 1.4.12.2, the deps are properly propagated to xt-a.
->
+iptables -A FORWARD -p udp -o eth1 --dport 53 -j ACCEPT
 
 
---=20
-=F3 =D5=D7=C1=D6=C5=CE=C9=C5=CD,
-=EB=C1=DB=C9=CE =E1=CC=C5=CB=D3=C5=CA
+Thanks
+Ganesh
+
+
