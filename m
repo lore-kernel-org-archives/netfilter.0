@@ -1,30 +1,28 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Set DSCP field for ipv6 packets using ip6tables command
-Date: Thu, 26 Jan 2012 01:35:23 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1201260133240.27039@frira.zrqbmnf.qr>
-References: <083EE18768D966439D1223E96B690A910629868A65@staex7mb2.telecom.sna.samsung.com> <alpine.LNX.2.01.1201252203130.24440@frira.zrqbmnf.qr> <083EE18768D966439D1223E96B690A910629868C79@staex7mb2.telecom.sna.samsung.com> <alpine.LNX.2.01.1201260039130.25025@frira.zrqbmnf.qr>
- <083EE18768D966439D1223E96B690A910629868CBA@staex7mb2.telecom.sna.samsung.com>
+From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
+Subject: iptables rule for more than one target
+Date: Thu, 26 Jan 2012 18:12:39 -0200
+Message-ID: <CAMTjHrzUgXbHviHAYmaBZyTzV-pwXJYpOR4puWxgQ1WCf2TDYQ@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <083EE18768D966439D1223E96B690A910629868CBA@staex7mb2.telecom.sna.samsung.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mrunal Upadhyay <m.upadhyay@sta.samsung.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Thursday 2012-01-26 01:00, Mrunal Upadhyay wrote:
+Hello everyone, what I want is add an rule in my firewall with more
+than an destination target. for exemplo:
 
->Ok so now I understand using -j TOS --set-tos would help me to set the 
->desired DSCP value based on the value I pass.
+/sbin/iptables -t mangle -I PREROUTING -s 10.10.10.10 -d !
+192.100.100.8 10.254.253.1 172.16.0.1  -j MARK --set-mark 5
 
-TOS - DSCP - it's the same field, just with lots of different names for 
-both the field and potential values.
+when I try add this rule appear
 
->But does the current ip6tables command support TOS target for IPV6 
->packets?
+Bad argument `10.254.253.1'
+Try `iptables -h' or 'iptables --help' for more information.
 
-Yes, otherwise I would not have mentioned it :)
+I need add some "-d ! x y z ..."
 
 
+
+thanks
