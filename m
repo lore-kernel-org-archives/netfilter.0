@@ -1,12 +1,12 @@
 From: Simon Wunderlich <simon.wunderlich@s2003.tu-chemnitz.de>
 Subject: [PATCH] skbuff: Add new tc classify variable
 Date: Fri, 27 Jan 2012 17:19:50 +0100
-Message-ID: <1328639948-25232-1-git-send-email-siwu__22549.2701902569$1328646879$gmane$org@hrz.tu-chemnitz.de>
-Return-path: <netfilter-owner@vger.kernel.org>
+Message-ID: <1328639948-25232-1-git-send-email-siwu__9361.66176475144$1328646882$gmane$org@hrz.tu-chemnitz.de>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tu-chemnitz.de; s=dkim2010;
 	h=Subject:Date:Message-ID:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:To:From; bh=0XikKyMmTYoesTPyZ0LEg4L1rFP8WeoNaU9/zHlowY0=;
 	b=ciuj1Ohy4i4lO/pCuIfoSKZtiyPPGe9z1OUeYhghxYkgVIV1Eh8sYW4uWp3nnNQoApEqf8Q2+yzTL7ZAlevGeY9AWSqfVm+LiSR8kzxUZH4S2pDfmlhHlX6epnTw8cYlYWlNNN6DtobBFzG2oplNrBZp3nnkkF84MUzhw2bsmFM=;
-Sender: netfilter-owner@vger.kernel.org
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
