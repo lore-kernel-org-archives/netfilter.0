@@ -1,18 +1,18 @@
-From: Simon Wunderlich <simon.wunderlich-Y4E02TeZ33kaBlGTGt4zH4SGEyLTKazZ@public.gmane.org>
+From: Simon Wunderlich <simon.wunderlich@s2003.tu-chemnitz.de>
 Subject: [PATCH] skbuff: Add new tc classify variable
 Date: Fri, 27 Jan 2012 17:19:50 +0100
-Message-ID: <1328639948-25232-1-git-send-email-siwu__16005.1002320417$1328646878$gmane$org@hrz.tu-chemnitz.de>
-Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Message-ID: <1328639948-25232-1-git-send-email-siwu__22549.2701902569$1328646879$gmane$org@hrz.tu-chemnitz.de>
+Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tu-chemnitz.de; s=dkim2010;
 	h=Subject:Date:Message-ID:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:Cc:To:From; bh=0XikKyMmTYoesTPyZ0LEg4L1rFP8WeoNaU9/zHlowY0=;
 	b=ciuj1Ohy4i4lO/pCuIfoSKZtiyPPGe9z1OUeYhghxYkgVIV1Eh8sYW4uWp3nnNQoApEqf8Q2+yzTL7ZAlevGeY9AWSqfVm+LiSR8kzxUZH4S2pDfmlhHlX6epnTw8cYlYWlNNN6DtobBFzG2oplNrBZp3nnkkF84MUzhw2bsmFM=;
-Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: Pablo Neira Ayuso <pablo-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org>, Patrick McHardy <kaber-dcUjhNyLwpNeoWH0uzbU5w@public.gmane.org>, Jamal Hadi Salim <hadi-fAAogVwAN2Kw5LPnMra/2Q@public.gmane.org>, "David S. Miller" <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>, Johannes Berg <johannes-cdvu00un1VgdHxzADdlk8Q@public.gmane.org>, "John W. Linville" <linville-2XuSBdqkA4R54TAoqtyWWQ@public.gmane.org>, Marek Lindner <lindner_marek-LWAfsSFWpa4@public.gmane.org>, Sven Eckelmann <sven-KaDOiPu9UxWEi8DpZVb4nw@public.gmane.org>, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, coreteam-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+To: netdev@vger.kernel.org
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jamal Hadi Salim <hadi@cyberus.ca>, "David S. Miller" <davem@davemloft.net>, Johannes Berg <johannes@sipsolutions.net>, "John W. Linville" <linville@tuxdriver.com>, Marek Lindner <lindner_marek@yahoo.de>, Sven Eckelmann <sven@narfation.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-wireless@vger.kernel.org
 
 The linux traffic control mechanism has different ways to select the
 correct class of a qdisc. A common way to do this is to use tc filters
@@ -48,20 +48,20 @@ This conflict can be resolved by an additional member variable
 sk_buff::tc_class that is only used for the traffic control
 classification.
 
-Signed-off-by: Simon Wunderlich <siwu-MaAgPAbsBIVS8oHt8HbXEIQuADTiUCJX@public.gmane.org>
-Cc: Pablo Neira Ayuso <pablo-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org>
-Cc: Patrick McHardy <kaber-dcUjhNyLwpNeoWH0uzbU5w@public.gmane.org>
-Cc: Jamal Hadi Salim <hadi-fAAogVwAN2Kw5LPnMra/2Q@public.gmane.org>
-Cc: "David S. Miller" <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>
-Cc: Johannes Berg <johannes-cdvu00un1VgdHxzADdlk8Q@public.gmane.org>
-Cc: "John W. Linville" <linville-2XuSBdqkA4R54TAoqtyWWQ@public.gmane.org>
-Cc: Marek Lindner <lindner_marek-LWAfsSFWpa4@public.gmane.org>
-Cc: Sven Eckelmann <sven-KaDOiPu9UxWEi8DpZVb4nw@public.gmane.org>
-Cc: netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: coreteam-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org
-Cc: netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-Cc: linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+Signed-off-by: Simon Wunderlich <siwu@hrz.tu-chemnitz.de>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Patrick McHardy <kaber@trash.net>
+Cc: Jamal Hadi Salim <hadi@cyberus.ca>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Johannes Berg <johannes@sipsolutions.net>
+Cc: "John W. Linville" <linville@tuxdriver.com>
+Cc: Marek Lindner <lindner_marek@yahoo.de>
+Cc: Sven Eckelmann <sven@narfation.org>
+Cc: netfilter-devel@vger.kernel.org
+Cc: netfilter@vger.kernel.org
+Cc: coreteam@netfilter.org
+Cc: netdev@vger.kernel.org
+Cc: linux-wireless@vger.kernel.org
 ---
  include/linux/skbuff.h      |    2 ++
  net/netfilter/xt_CLASSIFY.c |    4 ++--
@@ -264,7 +264,3 @@ index 67494ae..79bc0ac 100644
 -- 
 1.7.8.3
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
