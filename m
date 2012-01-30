@@ -1,59 +1,26 @@
-From: Stephen Hemminger <shemminger@vyatta.com>
-Subject: Re: increase the number of routing tables
-Date: Mon, 30 Jan 2012 11:21:23 -0800
-Message-ID: <20120130112123.7602059e@nehalam.linuxnetplumber.net>
-References: <CANj2EbfR0cBaBd+t1yCZyErRpVzSC00DZohvtyazK8_9bv2aEQ@mail.gmail.com>
-	<CANj2EbesFkNd-d=_Q0wwTLspUbYyevTTc-oS915HJKtpwzBQ_Q@mail.gmail.com>
-	<alpine.LNX.2.01.1201291245001.1201@frira.zrqbmnf.qr>
-	<4F25D52B.1050701@wildgooses.com>
-	<20120129163151.416035ef@nehalam.linuxnetplumber.net>
-	<alpine.LNX.2.01.1201300300270.21178@frira.zrqbmnf.qr>
-	<20120130081458.697d6099@nehalam.linuxnetplumber.net>
-	<alpine.LNX.2.01.1201301956290.3370@frira.zrqbmnf.qr>
+From: David Zage <djzage@gmail.com>
+Subject: Concurrent netfilters
+Date: Mon, 30 Jan 2012 16:46:20 -0700
+Message-ID: <CAN9nwp7_EorcWaCuyHg64iuZf5_8EWYQ+kYFMkui3CK2k4rJRg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1201301956290.3370@frira.zrqbmnf.qr>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=CEsdV4o8X/RqEG3/rZ7y31DQtHNqG1963kWzeWIOk40=;
+        b=QwdGD7elwOrR7werSPE0sJQ23QJ23GGAcmNdocVRvWUFG9lkjyHICaKd6W0eydtJ+t
+         5choMJ2zd2GwPws3ldhBQDPEkkwCJvVxjIZWZD6Mp4xztTPZP8wfr4jNxsNqOvXJnc7H
+         EAZdOg9J/9QxuLXVdKZg8QRoO6hG0QifoIt7Y=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@medozas.de>
-Cc: Ed W <lists@wildgooses.com>, Simon Chen <simonchennj@gmail.com>, netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Mon, 30 Jan 2012 19:57:20 +0100 (CET)
-Jan Engelhardt <jengelh@medozas.de> wrote:
+Has there been work on netfilter to take advantage of multiple cores
+(e.g., concurrent packet processing)?  I have looked at the code and
+net for a bit and haven't really found anything related.  If there is
+this type of functionality, please point me in the right direction.
 
-> On Monday 2012-01-30 17:14, Stephen Hemminger wrote:
-> 
-> >> >> > There are 2147483647.
-> >> >> 
-> >> >> Any reason why it's not an unsigned 32bit int? (surely there is a corner 
-> >> >> case where this is useful...)
-> >> >
-> >> >The 8 bit value is enshrined in the API for 'struct rtmsg' and therefore
-> >> >increasing it would break existing applications. 
-> >> 
-> >> Actually, what Ed (and me too) was wondering about was:
-> >> 
-> >> why does `ip route show table $[0x80000000]` not print an empty table, 
-> >> i.e. where is it that some code uses int/s32 during parsing of 
-> >> the argument and/or the RTA_TABLE attribute?
-> >
-> >There are lots of places internally in ip utilities that use u32
-> >for route table. But the route input/output message format is still limited
-> >to 8 bits.
-> 
-> But then, adding a rule to table 258 would make it show up in table 2 as 
-> well, which is not the case.
-
-Ok, drilling deeper, overlooked the extended table support.
-Tables >= 256 are handled by setting rtm_table to RT_TABLE_UNSPEC and
-sending a RTA_TABLE attribute.
-Therefore it has worked for quite a while.
-
-But, I also see code in other utilities (like net-snmp and quagga)
-which don't know about how to handle tables other than main. But
-that is a different issue.
-
-
-
+Thanks in Advance
+~ Dave
