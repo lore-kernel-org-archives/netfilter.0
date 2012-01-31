@@ -1,43 +1,42 @@
 From: Andrew Beverley <andy@andybev.com>
-Subject: Re: Extended IPTables options
-Date: Tue, 31 Jan 2012 17:23:25 +0000
-Message-ID: <1328030605.2018.6.camel@andy-laptop>
-References: <E7E899956E6065488DBC6623F76F36A2650ADB4520@RAMNL-EX02.Ram.nl>
+Subject: Re: Hanging outgoing connections while incoming are OK
+Date: Tue, 31 Jan 2012 17:37:57 +0000
+Message-ID: <1328031477.2018.12.camel@andy-laptop>
+References: <CACP6TAgii5i3rjuZHZaC=23ZN_FqFyXcigCj9MMcYkGXYgk-1A@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <E7E899956E6065488DBC6623F76F36A2650ADB4520@RAMNL-EX02.Ram.nl>
+In-Reply-To: <CACP6TAgii5i3rjuZHZaC=23ZN_FqFyXcigCj9MMcYkGXYgk-1A@mail.gmail.com>
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1328031586;
-	bh=kFYgjJ2/djzGv8u6fzrhC7TEvBAO+Q9O/Cf6pA4e1n0=;
+	s=selector1; t=1328031589;
+	bh=h9F1e0Np2ey2NpHrpWx2VbnOUsOD+EiqayFP104rMZ8=;
 	h=Message-ID:Subject:From:To:Cc:In-Reply-To:References:Content-Type:
 	 Date:Mime-Version:Content-Transfer-Encoding;
-	b=pXPKZ76lgo0CgPFN1b5RyTrIsba2vwiQIDL9nwOcEWsBaJ6SjiA8sR/U+kbUt0PuA
-	 cwT4UACHVExBWBeCvC3e+o+IsFB+Rsh+k9p/kBKMsb+7smOFHYmJCEKvhaEs8OVbqW
-	 CV+wLhTciXqjuZieBDMGwEwgn+O8yx9jZV45zkYA=
+	b=CU8qkcsMMylfD8Ig5lZLLKesX0ZeqbQ6btf6nC/uw1/HQ6Zoed03HAjBlp9Ja0Hti
+	 AjiXtiDDUfVaBBnJS7JBLvHi2JVovYxTAbpry/AD+HmELwu9TBtluPLob25K4WblE8
+	 1eSg7KJcULppfFvEC+E6JN3wJ4Kx71QOmjR3mfDU=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Arnoud Tijssen <ATijssen@Ram.nl>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: Guido Anzuoni <ganzuoni@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-On Mon, 2012-01-30 at 08:40 +0100, Arnoud Tijssen wrote:
-> I`m looking for the more sophisticated options of iptables/netfilter
-> like: connmark, quota, qos, recent, netmap, tos, ulog, clustering and
-> failover etc etc.
+On Sat, 2012-01-28 at 09:39 +0100, Guido Anzuoni wrote:
+...
+> fw default gateway: 10.254.254.2
+> fw eth0: 10.254.254.1, PUB_IP_OUTGOING, PUB_IP_OUTGOING
+...
+> My doubt is about eth0 configuration where I bind multiple addresses,
+> an internal one and all the public assigned by the ISP.
+> Is it a correct setup ?
 
-Have you tried the iptables man page? Personally I think that's pretty
-well written and a good place to start. If you've got any specific
-questions then feel free to post to this list.
+Unless I'm misunderstanding something, this does seem like a strange set
+up. Why not just have the one IP address on eth0? Do the Cisco routers
+also have an external IP address? Are these 2 completely independent WAN
+links? If so, how is traffic shared between them?
 
-> Is it possible to create a modular setup with iptables that offers the
-> possibility to reload a specific part of the iptables rulebase instead
-> of the entire rulebase.
-
-You can add and remove rules "on the fly". There's no need to reload the
-whole ruleset. Use "iptables -L  --line-numbers" to see all your rules
-with associated rule number, and then use the "-D" command with that
-number to delete as required.
+Sorry for all the questions, but I'm not entirely understanding your set
+up and what you are trying to achieve.
 
 Andy
 
