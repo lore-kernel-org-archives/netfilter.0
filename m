@@ -1,207 +1,29 @@
-From: Dimitri Yioulos <dyioulos@onpointfc.com>
-Subject: Re: Dual WAN setup redux
-Date: Wed, 1 Feb 2012 14:46:49 -0500
-Message-ID: <201202011446.50084.dyioulos@onpointfc.com>
-References: <201201271803.19071.dyioulos@onpointfc.com> <201202011151.30910.dyioulos@onpointfc.com> <1328122183.1891.3.camel@andy-laptop>
+From: "Lloyd Standish" <lloyd@crnatural.net>
+Subject: Re: An Interface with alias
+Date: Wed, 01 Feb 2012 13:51:11 -0600
+Message-ID: <op.v80mrlm3x1lyi3@debiandesk2.net>
+References: <CAMTjHryLg65vvLBJUsDGsNt82P0iXQmFihV_8UTn=Pm8OzG0Dg@mail.gmail.com> <1328123283.1891.16.camel@andy-laptop> <CAMTjHrwsJE-FCyn6TJB+cq_+6AAvC7fcDy2Jpgc4cOJ8grYmdg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: Multipart/Mixed;
-  boundary="Boundary-00=_qaZKPI93R5HW5/S"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1328122183.1891.3.camel@andy-laptop>
+In-Reply-To: <CAMTjHrwsJE-FCyn6TJB+cq_+6AAvC7fcDy2Jpgc4cOJ8grYmdg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Cc: "DiCecca, Caitlin" <cdicecca@onpointfc.com>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed	delsp=yes"
+To: Andrew Beverley <andy@andybev.com>, =?iso-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
+On Wed, 01 Feb 2012 13:34:40 -0600, Usu=E1rio do Sistema <maiconlp@ig.c=
+om.br> wrote:
 
---Boundary-00=_qaZKPI93R5HW5/S
-Content-Type: text/plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+> Thank you Andy,
+>Why not just use multiple physical network interfaces?
+>because shortage of interfaces physical.
 
-On Wednesday 01 February 2012 1:49:43 pm Andrew Beverley wrote:
-> On Wed, 2012-02-01 at 11:51 -0500, Dimitri Yioulos wrote:
-> > On Tuesday 31 January 2012 12:15:00 pm Andrew Beverley wrote:
-> > > On Fri, 2012-01-27 at 18:03 -0500, Dimitri Yioulos wrote:
-> > > > Well, here I am, again, asking for help setting up a dual WAN.
-> > >
-> > > Any chance of an ascii diagram? It's a bit difficult to understand what
-> > > you have and what you are trying to achieve without it.
-> >
-> > Lloyd, Andy, and others,
-> >
-> > Let me see what I can do here:
->
-> <snip>
->
-> Hmmm, did you *compose* that in a fixed-width font? When *viewed* in a
-> fixed-width font it's unreadable. It's slightly more readable when
-> viewed in another font, but it would be worth sending again
-> better-formatted if you can.
->
-> Andy
->
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I would suggest, then, adding vlan virtual interfaces via a smart switc=
+h.  Smart switches are now very inexpensive.  This will allow multiple =
+network interfaces connected to a single physical interface.  I have us=
+ed this to solve exactly the same problem (shortage of physical NICs.)
 
-
-Sorry, I'm apparently not a very good ascii artist. :-)
-
-At the risk of ticking the list off, I've attached the scheme as a png.
-
-Dimitri
-
--- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
-
-
---Boundary-00=_qaZKPI93R5HW5/S
-Content-Type: image/png;
-  name="Network scheme.png"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
-	filename="Network scheme.png"
-
-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
-7fNQko7C55ZUtuLCSPcpLFXF8odtioAWB1j6z8IdLk6Q9TLHPqzQi9+zeUcT
-WJze7Ern9Xyvt/eK+l/ulv5EtRdj0rHHcUsvKmfBSNtLKXsxkwWTef7fSTr5
-7+LpizcovYbh+vfsc/cSGVMrg4yTiBc4fwXE6XxIm4kn4pxRe5P42SnBCKa5
-oCkXSfrnYlryM3uD5r/vxbP174nnrvdP+humtUUG55J9Qo9SY6Y7DvH0LF+0
-jn4o1ds/7IePgPa+6YQxZWbz1ikkpj/rdmHzT4LRzslzA6ZE0o3sn7VUTP57
-7tUfeJXRlHxYjHkeQbmi75lG/kB3eh5v8d9Df8Ja+qLWBXN6dC3/PVMiLL3v
-0C+sbF+NcN/17psXXGxe3N+6DeJajG8qDnd83KFfvxKzSXuZZOd/Jm4JWu/w
-6OMl+6y7w/T9H3vR6O4uoLyr2rxDszAynWjeRTe6OGCqzFiOMEDPzknsva3z
-B0+fQRDQ+0/7Fxihd1Z3YGLdPABiEZkAiMVUCQCxGDMBEIvIBEAsIhMAsRRF
-pip3SrrdcuEdOWcfMHL1R647I8uvTpQ9N0ruOClZ3+hidtoH8ud+Dt6Omt6h
-xc3uk75J/IE2r35A7qUjmXvsWOqreT/uiuvQbmQqWW//U/aZriSx5sXstIUv
-XbjDQ4W8skPB6Q6H8pjcVIDysp3LrZxeJ+Lu2nXUvE+2DBVd/Z7pxOF46Ckl
-G3eRP1f4eUaESF/9gFw/q9WYoMfmbV5gTvg9Ztpc4mxzGbSjb3OrQ7mX/Llx
-SvICe2/6PGnh3hO/vyRy/hbmBT5atofbZ/7nz36y48QqfJqXB/wzZlqnH13k
-J51v02pofKL7jp8/l+o23/R1Zt6F6YBf/Dy6zYmypTcuefDoq+9VpKSCr2le
-gvs9m/frX3vb3d2Pf4+ndBlO7HPz8fnHK14mmzQrm6S8JOnRuQhx00n05Mes
-AZuXJn7P5kV4UxMXHVU894Lnz6WhkkOi4WFz0+v+PJX4OHjzEkq4O20PJe6E
-ikoG060G3NfPgvm0RPOvfq9swwiWkSmbn/RW2WtqG7QQL5L+lj57m0ThrRTV
-y5k4Cw5llZx/z5R4xdOhq5fmJb7dnLbzpKXTvxK3+6VvEszeV7h3Uc1m9thW
-+XPThT+9w2wvMPio8VD1j2bmXR//6+tUy7fJvlzh4+lbALOHWfYauU/yOCy8
-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
-AElFTkSuQmCC
-
---Boundary-00=_qaZKPI93R5HW5/S--
+--=20
+Lloyd
