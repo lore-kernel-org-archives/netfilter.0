@@ -1,29 +1,42 @@
-From: "Lloyd Standish" <lloyd@crnatural.net>
-Subject: Re: An Interface with alias
-Date: Wed, 01 Feb 2012 13:51:11 -0600
-Message-ID: <op.v80mrlm3x1lyi3@debiandesk2.net>
-References: <CAMTjHryLg65vvLBJUsDGsNt82P0iXQmFihV_8UTn=Pm8OzG0Dg@mail.gmail.com> <1328123283.1891.16.camel@andy-laptop> <CAMTjHrwsJE-FCyn6TJB+cq_+6AAvC7fcDy2Jpgc4cOJ8grYmdg@mail.gmail.com>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: Dual WAN setup redux
+Date: Wed, 01 Feb 2012 20:25:54 +0000
+Message-ID: <1328127954.1891.29.camel@andy-laptop>
+References: <201201271803.19071.dyioulos@onpointfc.com>
+	 <201202011151.30910.dyioulos@onpointfc.com>
+	 <1328122183.1891.3.camel@andy-laptop>
+	 <201202011446.50084.dyioulos@onpointfc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAMTjHrwsJE-FCyn6TJB+cq_+6AAvC7fcDy2Jpgc4cOJ8grYmdg@mail.gmail.com>
+In-Reply-To: <201202011446.50084.dyioulos@onpointfc.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1328128911;
+	bh=+OU4dlGC8e3N3F7mq1orjfjZSubhMsiKLoaRWR3/rgA=;
+	h=Message-ID:Subject:From:To:Cc:In-Reply-To:References:Content-Type:
+	 Date:Mime-Version:Content-Transfer-Encoding;
+	b=HJje2cGAhyOFE7JaOdsoBXPkLgT19Y9XGoDn9bZf+eoyU5qLvL8vNDZBD/zAC5Ai7
+	 FBs57IcLF905IKx5EeCIWx9dCnhCSwdeBY8WCrzXjOI2/9DDly53azuIXfc1qYASdJ
+	 ox4qMe2/aNf9Yz9P9xIQ00BfTtgg6RhibuKNmq4g=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed	delsp=yes"
-To: Andrew Beverley <andy@andybev.com>, =?iso-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Dimitri Yioulos <dyioulos@onpointfc.com>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, "DiCecca, Caitlin" <cdicecca@onpointfc.com>
 
-On Wed, 01 Feb 2012 13:34:40 -0600, Usu=E1rio do Sistema <maiconlp@ig.c=
-om.br> wrote:
+On Wed, 2012-02-01 at 14:46 -0500, Dimitri Yioulos wrote:
+> Sorry, I'm apparently not a very good ascii artist. :-)
 
-> Thank you Andy,
->Why not just use multiple physical network interfaces?
->because shortage of interfaces physical.
+Nope, you're artistic skills are fine. If your attachment is anything to
+go by, then you didn't compose in a fixed-width font. If you're
+writing/reading plain text, it's best to use Courier or similar.
 
-I would suggest, then, adding vlan virtual interfaces via a smart switc=
-h.  Smart switches are now very inexpensive.  This will allow multiple =
-network interfaces connected to a single physical interface.  I have us=
-ed this to solve exactly the same problem (shortage of physical NICs.)
+> At the risk of ticking the list off, I've attached the scheme as a png.
 
---=20
-Lloyd
+Oh well, doesn't bother me, and that makes a lot more sense now.
+
+Stand by for a reply to your original email.
+
+Andy
+
+
