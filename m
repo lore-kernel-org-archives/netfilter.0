@@ -1,69 +1,57 @@
-From: Dimitri Yioulos <dyioulos@onpointfc.com>
-Subject: Re: Dual WAN setup redux
-Date: Wed, 1 Feb 2012 11:51:30 -0500
-Message-ID: <201202011151.30910.dyioulos@onpointfc.com>
-References: <201201271803.19071.dyioulos@onpointfc.com> <1328030100.2018.1.camel@andy-laptop>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ipset & iptables
+Date: Wed, 1 Feb 2012 19:52:05 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1202011948160.24072@blackhole.kfki.hu>
+References: <1328113968.13053.18.camel@ns014530.dcyb.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1328030100.2018.1.camel@andy-laptop>
-Content-Disposition: inline
+In-Reply-To: <1328113968.13053.18.camel@ns014530.dcyb.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Cc: "DiCecca, Caitlin" <cdicecca@onpointfc.com>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Rob Sterenborg (lists)" <lists@sterenborg.info>
+Cc: netfilter@vger.kernel.org
 
-On Tuesday 31 January 2012 12:15:00 pm Andrew Beverley wrote:
-> On Fri, 2012-01-27 at 18:03 -0500, Dimitri Yioulos wrote:
-> > Well, here I am, again, asking for help setting up a dual WAN.
->
-> Any chance of an ascii diagram? It's a bit difficult to understand what
-> you have and what you are trying to achieve without it.
->
-> Andy
->
->
+On Wed, 1 Feb 2012, Rob Sterenborg (lists) wrote:
 
-Lloyd, Andy, and others,
+> I have problems matching an ipset set using iptables. My configuration
+> is as follows:
+> 
+> # uname -r
+> 2.6.39.1
+> 
+> # iptables -V
+> iptables v1.4.12.2
+> 
+> # ipset -V
+> ipset v6.11, protocol version: 6
+> 
+> The following 3 commands are executed immediately after each other:
+> 
+> # ipset create TEST hash:ip
+> # ipset add TEST 127.0.0.5
+> # iptables -A INPUT -m set --match-set TEST src
+> iptables: No chain/target/match by that name.
+> 
+> # lsmod|grep set
+> ip_set_hash_net        15884  3 
+> ip_set_hash_ip         13584  2 
+> ip_set                 19151  2 ip_set_hash_net,ip_set_hash_ip
+> nfnetlink               3191  2 nf_conntrack_netlink,ip_set
 
-Let me see what I can do here:
+You haven't got the "set" match kernel module, I guess
 
+grep CONFIG_NETFILTER_XT_SET /boot/config-2.6.39.1
 
-                                                                WAN2                       
-                                ___________   75.x.x.24/29, gw 75.x.x.30
-                                |              |---------eth3 (75.x.x.25) 
-                                |              |      (eth0:0=75.x.x.26, ...)
-Local network           |              |                   
-192.168.100.0/22 ----|fw/router|                 WAN1
-eth1 (192.168.100.1) |              |   65.x.x.160/27, gw 65.x.x.161
-                                |__________|--------eth0 (65.x.x.162)
-                                       |             (eth0:0=65.x.x.163, ... )
-                                       |                     
-                                    DMZ  
-                           192.168.1.0/24             
-                         eth1 (192.168.1.1)    
-                                       |                                       |               
-                                       |                      
-                                       |
-          ___________________|_____________________               
-          |                   |                   |                   |
-        box1            box2             box3            box4
-   192.168.1.2  192.168.1.3   192.168.1.4   192.168.1.5
-   (65.x.x.163    (65.x.x.164   
-      eth0:0)          eth0:1)
+returns
 
-I'd like for boxes 3 and 4 to use WAN2.
+# CONFIG_NETFILTER_XT_SET is not set
 
-The above probably looks like an unholy mess (and it may be; a discussion for 
-another day, though), but hope it helps clarify things.  That's what I'm after.
-
-Thanks.
-
-Dimitri
-
--- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
