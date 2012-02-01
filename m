@@ -1,57 +1,47 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipset & iptables
-Date: Wed, 1 Feb 2012 19:52:05 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1202011948160.24072@blackhole.kfki.hu>
-References: <1328113968.13053.18.camel@ns014530.dcyb.net>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: Dual WAN setup redux
+Date: Wed, 01 Feb 2012 18:49:43 +0000
+Message-ID: <1328122183.1891.3.camel@andy-laptop>
+References: <201201271803.19071.dyioulos@onpointfc.com>
+	 <1328030100.2018.1.camel@andy-laptop>
+	 <201202011151.30910.dyioulos@onpointfc.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1328113968.13053.18.camel@ns014530.dcyb.net>
+In-Reply-To: <201202011151.30910.dyioulos@onpointfc.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1328123658;
+	bh=UxtzYFTgnEiQFv29ZI9jcdmnvCcPySjT2EntSHTEWfc=;
+	h=Message-ID:Subject:From:To:Cc:In-Reply-To:References:Content-Type:
+	 Date:Mime-Version:Content-Transfer-Encoding;
+	b=WZJy5uxlYZdyhnzr7AUtYWmqQ7Mu23HVfz5EcD7bTlpGNAgSpO8MaiZaxay4O6gPu
+	 Nn4q8F709SQ62OVQlJdku8Ctr+Gh4EWvJiHQdDwlJfLAFzqnou9wXSdj4I8HHdj3lA
+	 B8XuHLxS9wgqH3hsTu6IOY23d0K1CKS1JUvw0/oA=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Rob Sterenborg (lists)" <lists@sterenborg.info>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Dimitri Yioulos <dyioulos@onpointfc.com>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, "DiCecca, Caitlin" <cdicecca@onpointfc.com>
 
-On Wed, 1 Feb 2012, Rob Sterenborg (lists) wrote:
-
-> I have problems matching an ipset set using iptables. My configuration
-> is as follows:
+On Wed, 2012-02-01 at 11:51 -0500, Dimitri Yioulos wrote:
+> On Tuesday 31 January 2012 12:15:00 pm Andrew Beverley wrote:
+> > On Fri, 2012-01-27 at 18:03 -0500, Dimitri Yioulos wrote:
+> > > Well, here I am, again, asking for help setting up a dual WAN.
+> >
+> > Any chance of an ascii diagram? It's a bit difficult to understand what
+> > you have and what you are trying to achieve without it.
+>
+> Lloyd, Andy, and others,
 > 
-> # uname -r
-> 2.6.39.1
-> 
-> # iptables -V
-> iptables v1.4.12.2
-> 
-> # ipset -V
-> ipset v6.11, protocol version: 6
-> 
-> The following 3 commands are executed immediately after each other:
-> 
-> # ipset create TEST hash:ip
-> # ipset add TEST 127.0.0.5
-> # iptables -A INPUT -m set --match-set TEST src
-> iptables: No chain/target/match by that name.
-> 
-> # lsmod|grep set
-> ip_set_hash_net        15884  3 
-> ip_set_hash_ip         13584  2 
-> ip_set                 19151  2 ip_set_hash_net,ip_set_hash_ip
-> nfnetlink               3191  2 nf_conntrack_netlink,ip_set
+> Let me see what I can do here:
 
-You haven't got the "set" match kernel module, I guess
+<snip>
 
-grep CONFIG_NETFILTER_XT_SET /boot/config-2.6.39.1
+Hmmm, did you *compose* that in a fixed-width font? When *viewed* in a
+fixed-width font it's unreadable. It's slightly more readable when
+viewed in another font, but it would be worth sending again
+better-formatted if you can.
 
-returns
+Andy
 
-# CONFIG_NETFILTER_XT_SET is not set
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
