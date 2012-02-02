@@ -1,49 +1,69 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: Dual WAN setup redux
-Date: Thu, 02 Feb 2012 07:35:20 +0000
-Message-ID: <1328168120.18690.19.camel@andrew-desktop>
-References: <201201271803.19071.dyioulos@onpointfc.com>
-	 <1328128504.1891.38.camel@andy-laptop>
-	 <201202011708.17672.dyioulos@onpointfc.com>
+From: Guido Anzuoni <ganzuoni@gmail.com>
+Subject: Re: Hanging outgoing connections while incoming are OK
+Date: Thu, 2 Feb 2012 08:48:58 +0100
+Message-ID: <CACP6TAiwyGXZqYHG40TrsEaKr7sAKKAO+A5Z7a=DMVcf3iO4ng@mail.gmail.com>
+References: <CACP6TAgii5i3rjuZHZaC=23ZN_FqFyXcigCj9MMcYkGXYgk-1A@mail.gmail.com>
+	<1328031477.2018.12.camel@andy-laptop>
+	<CACP6TAghHWG2zHfGkPuac2o-qZbuwQHXqddyhUGx3Lwvuch5SA@mail.gmail.com>
+	<1328122709.1891.11.camel@andy-laptop>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <201202011708.17672.dyioulos@onpointfc.com>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1328168125;
-	bh=G4cUFYbq+lR7NcMDrYrtTgCxie9W9n6w9AxNhJwBc2g=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:Content-Transfer-Encoding:Mime-Version;
-	b=t+582d/55lE4w9f4iVc1CuIWgJrC20OcmzPdR+h0NYg/J9JcWljMQBIn7ROcjKvcU
-	 36+Vi7IhgPfEy2szNUgGSSNEE6MS9B9pR93sh+49nd3AHMbXzDemZm+S+uphxKB1gE
-	 WmWTR3YVlf3rRKr9XLfWODaqZ7PKw1xiDZ9+20ao=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type:content-transfer-encoding;
+        bh=v97zZuzgo77v5c5rXhMmKKuKnT7qTVr9bPz7sp2kh5c=;
+        b=PaDaQ3ie2ipGgNjmxmnk8bB0T4SuqYliAW01msfFFb9T+PFOPtkzBq0zzOOqspFNpX
+         pVNt3TMVSbbV1wgSncKLEHh/RgGtwFD80vB3NXjID8MOtV1TcICaTr6tST4cUJ9br1r8
+         DZNx6XNUj0P6W6gNVy5iQT6w+pLF8/b8JLmkk=
+In-Reply-To: <1328122709.1891.11.camel@andy-laptop>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Dimitri Yioulos <dyioulos@onpointfc.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, "DiCecca, Caitlin" <cdicecca@onpointfc.com>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Andrew Beverley <andy@andybev.com>
+Cc: netfilter@vger.kernel.org
 
-On Wed, 2012-02-01 at 17:08 -0500, Dimitri Yioulos wrote:
-> On the test machine (call it box 3 in the diagram), I changed the ip to be 
-> 75.x.x.28, netmask 255.255.255.248, network 75.x.x.24.  I set the gateway to be 
-> 75.x.x.25 (eth3 address on the firewall/router).  I can't ping anything.
+>
+> Which would explain why you are seeing this.
+>
+> Why not just have one public IP address on eth0 only? And then use th=
+at
+> for incoming and outgoing connections, at least until you've got it
+> working?
+>
+> Something like:
+>
+>
+> [Internal
+> =A0interfaces] =A0 __________
+> --------------| =A0 =A0 =A0 =A0 =A0|eth0
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0Linux =A0 |(PUB_IP_INCOMING only)
+> --------------| =A0 Box =A0 =A0|------------------------->ISP Cisco r=
+outer
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0| =A0 =A0 =A0 =A0 =A0| =A0 =A0 =A0^
+> --------------|__________| =A0 =A0 =A0|
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0|
+> =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 SNAT here=
+ to PUB_IP_INCOMING
+>
+> Andy
+>
+>
 
-I wasn't very clear in my last post. You'll need to separate out that
-small block into different subnets, as they're on different interfaces.
+=46irst, sorry for the top-post, I just start typing without thinking..=
+=2E..
+Yesterday I have tested your setup simply assigning one public address
+( I have 6 addresses) to a machine on the network
+and another to the router but the problem is still there.
+I think that ISP should monitor the external interfaces of both router
+to check if and when packets come in.
+Anyway, I don't want to bother netfilter users with connection
+problems that are out of scope.
+The much more specific question is: in order to correctly perform SNAT
+and DNAT, is it necessary to bind the referenced addresses
+to some interface ?
+I think the answer is no, it is not necessary, but I would like to
+have a confirmation on that.
 
-> If I had my choice, though, I'd rather assign an address of 192.168.1.x to the 
-> test machine (as with the rest of the devices in the DMZ), and make it use the 
-> WAN2 connection instead of WAN1 that the other devices are using.
-
-Actually, it's probably as easy to do this. Set the 192.168.1.x IP
-address on the test machine, then try pinging eth3's IP address from the
-test machine. That should work. Then try the gateway on the same subnet.
-That should also work.
-
-Once that's working, then you should be able to do a DNAT on the
-firewall to send packets coming in on eth3 to the test machine
-(192.168.1.x).
-
-Andy
-
-
+Guido
