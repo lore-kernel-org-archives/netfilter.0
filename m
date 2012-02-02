@@ -1,95 +1,49 @@
-From: Netravali Ganesh <gnetravali@sonusnet.com>
-Subject: RE: Routing the DNS Traffic via specific interface.
-Date: Thu, 2 Feb 2012 04:52:28 +0000
-Message-ID: <EB822645982FC24F99C33D9513902AFA0CCED0A2@inba-mail01.sonusnet.com>
-References: <EB822645982FC24F99C33D9513902AFAA877C9@inba-mail02.sonusnet.com>
- <607824512.20120125163350@yandex.ru>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: Dual WAN setup redux
+Date: Thu, 02 Feb 2012 07:35:20 +0000
+Message-ID: <1328168120.18690.19.camel@andrew-desktop>
+References: <201201271803.19071.dyioulos@onpointfc.com>
+	 <1328128504.1891.38.camel@andy-laptop>
+	 <201202011708.17672.dyioulos@onpointfc.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <607824512.20120125163350@yandex.ru>
-Content-Language: en-US
+In-Reply-To: <201202011708.17672.dyioulos@onpointfc.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1328168125;
+	bh=G4cUFYbq+lR7NcMDrYrtTgCxie9W9n6w9AxNhJwBc2g=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:Content-Transfer-Encoding:Mime-Version;
+	b=t+582d/55lE4w9f4iVc1CuIWgJrC20OcmzPdR+h0NYg/J9JcWljMQBIn7ROcjKvcU
+	 36+Vi7IhgPfEy2szNUgGSSNEE6MS9B9pR93sh+49nd3AHMbXzDemZm+S+uphxKB1gE
+	 WmWTR3YVlf3rRKr9XLfWODaqZ7PKw1xiDZ9+20ao=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "gapsf@yandex.ru" <gapsf@yandex.ru>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Dimitri Yioulos <dyioulos@onpointfc.com>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, "DiCecca, Caitlin" <cdicecca@onpointfc.com>
 
-Hi..
+On Wed, 2012-02-01 at 17:08 -0500, Dimitri Yioulos wrote:
+> On the test machine (call it box 3 in the diagram), I changed the ip to be 
+> 75.x.x.28, netmask 255.255.255.248, network 75.x.x.24.  I set the gateway to be 
+> 75.x.x.25 (eth3 address on the firewall/router).  I can't ping anything.
 
-Thanks for the help. This worked excellent for me. I have another question on this.
+I wasn't very clear in my last post. You'll need to separate out that
+small block into different subnets, as they're on different interfaces.
 
-Suppose if I have 2 interfaces say eth2 and eth3. If I want to implement conditional routing, say ex, eth2 is down and all DNS traffic needs to redirect via eth3 upon detecting the link failure, how do I do that.
+> If I had my choice, though, I'd rather assign an address of 192.168.1.x to the 
+> test machine (as with the rest of the devices in the DMZ), and make it use the 
+> WAN2 connection instead of WAN1 that the other devices are using.
 
+Actually, it's probably as easy to do this. Set the 192.168.1.x IP
+address on the test machine, then try pinging eth3's IP address from the
+test machine. That should work. Then try the gateway on the same subnet.
+That should also work.
 
+Once that's working, then you should be able to do a DNAT on the
+firewall to send packets coming in on eth3 to the test machine
+(192.168.1.x).
 
-Thanks
-Ganesh Netravali
+Andy
 
-
------Original Message-----
-From: gapsf@yandex.ru [mailto:gapsf@yandex.ru] 
-Sent: Wednesday, January 25, 2012 3:04 PM
-To: netfilter@vger.kernel.org; Netravali Ganesh
-Subject: Re: Routing the DNS Traffic via specific interface.
-
-No. You should use "Policy routing" with MARK target in iptables.
-
-Mark outgoing DNS packets with iptables in mangle PREOROUTING for example.
-# iptables -t mangle -A PREROUTING -p udp --dport 53 -j MARK --set-mark 0x4
-
-Create additional routing table with different routing rules.
-Add new entry in /etc/iproute2/rt_tables =========================================
-#
-# reserved values
-#
-255     local
-254     main
-253     default
-0       unspec
-#
-# local
-#
-#1     inr.ruhep
-1      isp2 # <- new entry
-=========================================
-
-Then execute
-# ip route flush table isp2
-and add defalt route into newly created table # route add default via <ip_of_your_eth2_gateway> dev eth2 table isp2
-
-Add new policy in RPDB.
-# ip rule add from all fwmark 0x4 table isp2
-
-Check RPDB
-# ip rule show
-You should view somthing like this:
-0:      from all lookup local
-32763:  from all fwmark 0x4 lookup isp2
-32766:  from all lookup main
-32767:  from all lookup default
-
-In result: all traffic routed with main routing table, except marked DNS traffic routed via "isp2" routing table via its default route and iface.
-View picture http://postimage.org/image/nn9owf5x7/ for example.
-
-NG> Hi ..
-
-NG> I have 2 interfaces eth0 and eth1 on the system connected to different subnets. I need to route all the outgoing DNS traffic of the system via eth1 interface. Pls let me know if below IPTABLES rules is proper way ?
-
-NG> Block the output DNS traffic on eth0 interface.
-
-NG> iptables -A FORWARD -p udp -o eth0 --dport 53 -j DROP
-
-NG> Forward output DNS traffic from eth1 interface
-
-NG> iptables -A FORWARD -p udp -o eth1 --dport 53 -j ACCEPT
-
-
-NG> Thanks
-NG> Ganesh
-
-
-NG> --
-NG> To unsubscribe from this list: send the line "unsubscribe netfilter" 
-NG> in the body of a message to majordomo@vger.kernel.org More majordomo 
-NG> info at  http://vger.kernel.org/majordomo-info.html
 
