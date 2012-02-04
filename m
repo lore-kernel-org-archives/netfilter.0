@@ -1,70 +1,90 @@
-From: Tom Eastep <teastep@shorewall.net>
-Subject: Re: xtables issue
-Date: Sat, 04 Feb 2012 08:53:16 -0800
-Message-ID: <4F2D627C.5010905@shorewall.net>
-References: <4F2D2730.50205@cloudways.com>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: iptables udp 1195 MASQUERADE
+Date: Sat, 04 Feb 2012 19:58:32 +0000
+Message-ID: <1328385512.1632.7.camel@andy-laptop>
+References: <30967745.2025.1327448042608.JavaMail.root@ixer.mx>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="------------enig7472833C09D30C4B13FCF000"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4F2D2730.50205@cloudways.com>
+In-Reply-To: <30967745.2025.1327448042608.JavaMail.root@ixer.mx>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1328387970;
+	bh=rTZPaXI7y4/jeFdDUa+QPGCmRer9Iwd5g84jrU0gowk=;
+	h=Message-ID:Subject:From:To:Cc:In-Reply-To:References:Content-Type:
+	 Date:Mime-Version:Content-Transfer-Encoding;
+	b=LGc7+5jD8u0cPlJqmg26rFhuUDJbaawdG496m8Qc7HDJdWbqtkxciExD8T2UAy++G
+	 4k3dELMb8Ih4hWsgitkKEBNFHVpAfdFFsVkkGGeynSr9ku61xCJwBME4DWg4Q2tyKg
+	 7Xph6amHxLYjJHwo98jd9JPNcet9DbFl41xNtsrM=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Azfar Hashmi <azfar.hashmi@cloudways.com>
+Content-Type: text/plain; charset="us-ascii"
+To: ehuerta@ixer.mx
 Cc: netfilter@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
---------------enig7472833C09D30C4B13FCF000
-Content-Type: text/plain; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
+On Tue, 2012-01-24 at 17:34 -0600, Enrique Huerta de la Fuente wrote:
+> Hello
+> 
+> I have OpenVPN (lan to lan)
+> 
+> On site 1 (4 links)
+> - eth0 (LAN)
+> - eth1 (internet link)
+> - eth3 (enalce internet)
+> - ppp0 (internet link)
+> - Deafult gateway eth1
+> 
+> On site 2 (3 links)
+> - eth0 (LAN)
+> - eth1 (internet link)
+> - ppp0 (internet link)
+> - Deafult gateway ppp0
+> 
+> The eth3 interface (site 1) and the eth1 interface (site 2) are the same supplier, the same mask.
+> 
+> The VPN works with eth3 (site 1) <---> eth1 (site 2) and it works great. We must not over because they are the same provider and does not require the gateway.
+> 
+> But if it fails any of the VPN link (eth3 o eth1), we need to change links of VPN to ppp0 (site 1) <-----> ppp0 (site 2).
+> 
+> Here's the problem!
+> 
+> At site 1, the UPD packets should go out by ppp0 (the default gateway is eth1). To do this:
+> 
+> # Iptables-t nat-I POSTROUTING-p udp-m udp - dport 1195-o ppp0-j MASQUERADE
+> # Iptables-t mangle-I OUTPUT-p udp-m udp - dport 1195-j MARK - set-mark 1
 
-On 02/04/2012 04:40 AM, Azfar Hashmi wrote:
+Are you sure you've got this rule correct? Have you tried doing a LOG
+target to check that it is matching the packets that you would expect?
 
-> I am getting following error with xtables.
->=20
-> RTNETLINK answers: Invalid argument
-> We have an error talking to the kernel
->    ERROR: Command "tc filter add dev eth0 protocol all parent 1:0 prio
-> 276 handle 0 fw classid 1:10" Failed
->=20
-> iptables-1.4.9.1
-> xtables-1.41
-> Shorewall-4.4.11.6
-> kernel-2.6.32-5-686
-> shorewall conf files:
->=20
-> tcrules:
+> 
+> So are the paths:
+> 
+> # Ip rule ls
+> 0: from all lookup 255
+> 32757: from all fwmark 0x1 lookup infinitum
+> 32758: from 189.143.36.36 lookup infinitum
+> 32759: from 38.124.170.15 lookup bbs
+> 32766: from all lookup main
+> 
+> # Ip route ls table infinitum
+> default via 189.143.36.36 dev ppp0
+> 
+> 
+> The problem is that no packets arrive from site 1 to the site 2. The UDP packets arrive to site 1 from site 2
+> 
+> I tested with port 22 (ssh) and it works.
+> 
+> # Iptables-t nat-I POSTROUTING-m tcp-p tcp - dport 22-o ppp0-j MASQUERADE
+> # Iptables-t mangle-I OUTPUT-m tcp-p tcp - dport 22-j MARK - set-mark 1
+> 
+> 
+> Any idea why that no UDP packets  arrive to site 2?
+> 
+> regards
+> 
+> E.Huerta
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
->=20
-> Same setup working on other machines. Tried from module-assistant and
-> source of different version of both xtables and iptables. Shorewall sho=
-w
-> capabilities showing all available and also shorewall check result ok.
 
-This problem seems more appropriate for the Shorewall Users mailing
-list. I suggest that you post it there.
-
--Tom
---=20
-Tom Eastep        \ When I die, I want to go like my Grandfather who
-Shoreline,         \ died peacefully in his sleep. Not screaming like
-Washington, USA     \ all of the passengers in his car
-http://shorewall.net \________________________________________________
-
-
---------------enig7472833C09D30C4B13FCF000
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
-Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
-
-iEYEARECAAYFAk8tYnwACgkQO/MAbZfjDLJ3QQCfQcKvOBq/mGuE6ZKSyAu7bBYN
-fzUAnjOnopwJcZeLlbg/NS4211zcoiHA
-=mdbn
------END PGP SIGNATURE-----
-
---------------enig7472833C09D30C4B13FCF000--
