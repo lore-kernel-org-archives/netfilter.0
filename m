@@ -1,59 +1,70 @@
-From: Azfar Hashmi <azfar.hashmi@cloudways.com>
-Subject: xtables issue
-Date: Sat, 04 Feb 2012 17:40:16 +0500
-Message-ID: <4F2D2730.50205@cloudways.com>
+From: Tom Eastep <teastep@shorewall.net>
+Subject: Re: xtables issue
+Date: Sat, 04 Feb 2012 08:53:16 -0800
+Message-ID: <4F2D627C.5010905@shorewall.net>
+References: <4F2D2730.50205@cloudways.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="------------enig7472833C09D30C4B13FCF000"
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4F2D2730.50205@cloudways.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Azfar Hashmi <azfar.hashmi@cloudways.com>
+Cc: netfilter@vger.kernel.org
 
-Hi everyone,
+This is an OpenPGP/MIME signed message (RFC 2440 and 3156)
+--------------enig7472833C09D30C4B13FCF000
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: quoted-printable
 
-I am getting following error with xtables.
+On 02/04/2012 04:40 AM, Azfar Hashmi wrote:
 
-RTNETLINK answers: Invalid argument
-We have an error talking to the kernel
-   ERROR: Command "tc filter add dev eth0 protocol all parent 1:0 prio
-276 handle 0 fw classid 1:10" Failed
+> I am getting following error with xtables.
+>=20
+> RTNETLINK answers: Invalid argument
+> We have an error talking to the kernel
+>    ERROR: Command "tc filter add dev eth0 protocol all parent 1:0 prio
+> 276 handle 0 fw classid 1:10" Failed
+>=20
+> iptables-1.4.9.1
+> xtables-1.41
+> Shorewall-4.4.11.6
+> kernel-2.6.32-5-686
+> shorewall conf files:
+>=20
+> tcrules:
 
-iptables-1.4.9.1
-xtables-1.41
-Shorewall-4.4.11.6
-kernel-2.6.32-5-686
-shorewall conf files:
+>=20
+> Same setup working on other machines. Tried from module-assistant and
+> source of different version of both xtables and iptables. Shorewall sho=
+w
+> capabilities showing all available and also shorewall check result ok.
 
-tcrules:
+This problem seems more appropriate for the Shorewall Users mailing
+list. I suggest that you post it there.
 
-RESTORE:F            -             -           all
-CONTINUE:F           -             -           all         
--              -          -       !0
-1:F                  -             -           ipp2p:all        edk
-1:F                  -             -           ipp2p:all        dc
-1:F                  -             -           ipp2p:all        kazaa
-1:F                  -             -           ipp2p:all        bit
-1:F                  -             -           ipp2p:all        apple
-1:F                  -             -           ipp2p:all        winmx
-1:F                  -             -           ipp2p:all        soul
-1:F                  -             -           ipp2p:all        ares
-SAVE:F               -             -           all         
--              -          -       1
+-Tom
+--=20
+Tom Eastep        \ When I die, I want to go like my Grandfather who
+Shoreline,         \ died peacefully in his sleep. Not screaming like
+Washington, USA     \ all of the passengers in his car
+http://shorewall.net \________________________________________________
 
-tcdevices:
-eth0            100mbps         100mbps
-tun0            100mbps         100mbps
-tun1            100mbps         100mbps
 
-tcclasses:
-eth0            0       full/2  full    1               default
-eth0            1       1kbit   1kbit   2
-tun0            0       full/4  full    1               default
-tun0            1       1kbit   1kbit   2
-tun1            0       full/4  full    1               default
-tun1            1       1kbit   1kbit   2
+--------------enig7472833C09D30C4B13FCF000
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
 
-Same setup working on other machines. Tried from module-assistant and
-source of different version of both xtables and iptables. Shorewall show
-capabilities showing all available and also shorewall check result ok.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+Comment: Using GnuPG with Mozilla - http://enigmail.mozdev.org/
+
+iEYEARECAAYFAk8tYnwACgkQO/MAbZfjDLJ3QQCfQcKvOBq/mGuE6ZKSyAu7bBYN
+fzUAnjOnopwJcZeLlbg/NS4211zcoiHA
+=mdbn
+-----END PGP SIGNATURE-----
+
+--------------enig7472833C09D30C4B13FCF000--
