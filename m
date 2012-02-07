@@ -1,29 +1,79 @@
-From: Marek Kierdelewicz <marek@piasta.pl>
-Subject: Re: netfilter performance dependent on arch
-Date: Tue, 7 Feb 2012 20:48:49 +0100
-Message-ID: <20120207204849.707a8a1f@catus>
-References: <20120207183453.522fa74b@catus>
-	<4F316C1C.5020400@hp.com>
-	<20120207195411.05a70f67@catus>
-	<20120207111120.1d9ab37a@nehalam.linuxnetplumber.net>
+From: Simon Wunderlich <simon.wunderlich@s2003.tu-chemnitz.de>
+Subject: Re: [PATCH] skbuff: Add new tc classify variable
+Date: Tue, 7 Feb 2012 21:16:33 +0100
+Message-ID: <20120207201633.GB26533@pandem0nium>
+References: <1328639948-25232-1-git-send-email-siwu@hrz.tu-chemnitz.de>
+ <20120207.135841.1753473725075272902.davem@davemloft.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20120207111120.1d9ab37a@nehalam.linuxnetplumber.net>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="aVD9QWMuhilNxW9f"
+Return-path: <netdev-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tu-chemnitz.de; s=dkim2010;
+	h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date; bh=rKT16/xmnsa9tRkkP2dp+yudL6BYGhUYC0eOFOYarAM=;
+	b=E2ABVmRg55ZlYowKMBHQ2ET2yiAF7tHOJjlfm3td/8ggAxHKPF8eGPbyEeWOTcV0hhlQFKSlTMpjle4STpg/lJvIz/89XpUINlD8R1dvQXnAEe67aj0EtXZYXD0d6oly2rgOhIBvWOOgD6o8rpcjeFlYBzKQSfy8GEqv0dthpt8=;
+Content-Disposition: inline
+In-Reply-To: <20120207.135841.1753473725075272902.davem@davemloft.net>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Stephen Hemminger <shemminger@vyatta.com>
-Cc: netfilter@vger.kernel.org, marek@piasta.pl
+To: David Miller <davem@davemloft.net>
+Cc: simon.wunderlich@s2003.tu-chemnitz.de, netdev@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jamal Hadi Salim <hadi@cyberus.ca>, Johannes Berg <johannes@sipsolutions.net>, "John W. Linville" <linville@tuxdriver.com>, Marek Lindner <lindner_marek@yahoo.de>, Sven Eckelmann <sven@narfation.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-wireless@vger.kernel.org
 
->That information is out of date.
->The bulk of the slow down in 64 bit was due to the fact that IOMMU
->(CONFIG_DMAR) was enabled. The IOMMU requires programming DMA registers
->on each packet which explains the extra overhead. After disabling
->DMA remapping, the 64 bit kernel is faster because the compiler has
->more registers and can generate better code.
 
-Thanks a lot. That's very valuable info.
+--aVD9QWMuhilNxW9f
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Best regards,
-Marek Kierdelewicz
+Hello David,
+
+On Tue, Feb 07, 2012 at 01:58:41PM -0500, David Miller wrote:
+> From: Simon Wunderlich <simon.wunderlich@s2003.tu-chemnitz.de>
+> Date: Tue,  7 Feb 2012 19:39:08 +0100
+>=20
+> > The linux traffic control mechanism has different ways to select the
+> > correct class of a qdisc. A common way to do this is to use tc filters
+> > that are directly attached to a qdisc. Another approach is to use the
+> > iptables classify module. The latter one can reduce the amount of work
+> > necessary to process a packet when iptables is already involved in the
+> > packet classification.
+>=20
+> Do not bloat up sk_buff any more.  Add this, and the other existing
+> tc_* members to the qdisc SKB control block instead.
+>=20
+
+Thanks for your feedback!
+
+I guess you mean skb->cb, but this is also used within mac80211 for various=
+ things
+(quoting include/net/mac80211.h):
+
+ * struct ieee80211_tx_info - skb transmit information
+ *
+ * This structure is placed in skb->cb for three uses:
+ *  (1) mac80211 TX control - mac80211 tells the driver what to do
+ *  (2) driver internal use (if applicable)
+ *  (3) TX status information - driver tells mac80211 what happened
+
+We could give it a try, but we most probably run into conflicts again.
+
+I've messed up the CCs in my initial mail (and just resent it) - sorry abou=
+t that.
+Maybe the mac80211 guys have a suggestion as well :)
+
+Cheers,
+	Simon
+
+--aVD9QWMuhilNxW9f
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: Digital signature
+Content-Disposition: inline
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iEYEARECAAYFAk8xhqEACgkQrzg/fFk7axbRoQCgxHGS8m8aSBvHs2Tyllbx/lmu
+Z+wAn1g2l77zpxyp4a1Slv0m8jl7cs1K
+=MyYW
+-----END PGP SIGNATURE-----
+
+--aVD9QWMuhilNxW9f--
