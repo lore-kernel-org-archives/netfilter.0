@@ -1,79 +1,129 @@
-From: Simon Wunderlich <simon.wunderlich@s2003.tu-chemnitz.de>
+From: Dave Taht <dave.taht@gmail.com>
 Subject: Re: [PATCH] skbuff: Add new tc classify variable
-Date: Tue, 7 Feb 2012 21:16:33 +0100
-Message-ID: <20120207201633.GB26533@pandem0nium>
+Date: Tue, 7 Feb 2012 20:33:49 +0000
+Message-ID: <CAA93jw7NPVm_YUFdnM1aD6bzz5vbmuF3osaHS5xE+-xCutiAbw@mail.gmail.com>
 References: <1328639948-25232-1-git-send-email-siwu@hrz.tu-chemnitz.de>
- <20120207.135841.1753473725075272902.davem@davemloft.net>
+	<20120207.135841.1753473725075272902.davem@davemloft.net>
+	<20120207201633.GB26533@pandem0nium>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="aVD9QWMuhilNxW9f"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netdev-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tu-chemnitz.de; s=dkim2010;
-	h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date; bh=rKT16/xmnsa9tRkkP2dp+yudL6BYGhUYC0eOFOYarAM=;
-	b=E2ABVmRg55ZlYowKMBHQ2ET2yiAF7tHOJjlfm3td/8ggAxHKPF8eGPbyEeWOTcV0hhlQFKSlTMpjle4STpg/lJvIz/89XpUINlD8R1dvQXnAEe67aj0EtXZYXD0d6oly2rgOhIBvWOOgD6o8rpcjeFlYBzKQSfy8GEqv0dthpt8=;
-Content-Disposition: inline
-In-Reply-To: <20120207.135841.1753473725075272902.davem@davemloft.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type:content-transfer-encoding;
+        bh=4tE3dNUzeN0nN05KPbouXHUf0EdeALpL39jYRSmpHk0=;
+        b=vWB9StfZBkYEVHGoFlaYOGaV0398/c+eYPBiXVrJRviSyz9t30DgLqBtr25iEFZkiY
+         V9H3XiZ5WPm8x/vBopb/elTIQe0d20aTHhVcfZY4zDqxVVPEuvth4uG1XG9zv8+gsIyC
+         vEHRZ8N7dzZaXb1fAy1yiRTPvP5CxQtqiRzoc=
+In-Reply-To: <20120207201633.GB26533@pandem0nium>
 Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: David Miller <davem@davemloft.net>
-Cc: simon.wunderlich@s2003.tu-chemnitz.de, netdev@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jamal Hadi Salim <hadi@cyberus.ca>, Johannes Berg <johannes@sipsolutions.net>, "John W. Linville" <linville@tuxdriver.com>, Marek Lindner <lindner_marek@yahoo.de>, Sven Eckelmann <sven@narfation.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-wireless@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Simon Wunderlich <simon.wunderlich@s2003.tu-chemnitz.de>
+Cc: David Miller <davem@davemloft.net>, netdev@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jamal Hadi Salim <hadi@cyberus.ca>, Johannes Berg <johannes@sipsolutions.net>, "John W. Linville" <linville@tuxdriver.com>, Marek Lindner <lindner_marek@yahoo.de>, Sven Eckelmann <sven@narfation.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-wireless@vger.kernel.org
+
+On Tue, Feb 7, 2012 at 7:57 PM, Simon Wunderlich <
+simon.wunderlich@s2003.tu-chemnitz.de> wrote:
+
+> On Tue, Feb 07, 2012 at 11:05:22AM -0800, Stephen Hemminger wrote:
+> > On Tue,  7 Feb 2012 19:39:08 +0100
+> > Simon Wunderlich <simon.wunderlich@s2003.tu-chemnitz.de> wrote:
+> >
+> > I don't understand why this is better, we already have mark to do t=
+his.
+> > Your method saves adding a tc filter to map mark to classid, but th=
+at i=3D
+s
+> hardly
+> > a huge burden.
+>
+> Unfortunately, it is. We have previously built our trees by setting m=
+arks
+> with iptables
+> and matching the masks with tc and the u32 matcher, but we got a rath=
+er
+> big performance
+> impact as soon as the number of users grow. The target platform are W=
+iFi
+> access points.
+> By using the proposed patch, the performance stays nearly constant at=
+ a
+> growing number
+> of users.
+>
+
+To put things in more general terms, the overspecialized behavior and u=
+se
+of magic numbers in the wireless stack
+
+=2E.. from net/wireless/util.c/*
+
+Given a data frame determine the 802.1p/1d tag to use. */
+unsigned int cfg80211_classify8021d(struct sk_buff *skb)
+{
+        unsigned int dscp;
+
+        /* skb->priority values from 256->263 are magic values to
+         * directly indicate a specific 802.1d priority.  This is used
+         * to allow 802.1d priority to be passed directly in from VLAN
+         * tags, etc.
+         */
+        if (skb->priority >=3D3D 256 && skb->priority <=3D3D 263)
+                return skb->priority - 256;
+
+        switch (skb->protocol) {
+        case htons(ETH_P_IP):
+                dscp =3D3D ipv4_get_dsfield(ip_hdr(skb)) & 0xfc;
+                break;
+        case htons(ETH_P_IPV6):
+                dscp =3D3D ipv6_get_dsfield(ipv6_hdr(skb)) & 0xfc;
+                break;
+        default:
+                return 0;
+        }
+
+        return dscp >> 5;
+}
 
 
---aVD9QWMuhilNxW9f
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+and the related select queue function calling this
+which maps the 4 hardware queues wireless has, onto 4 mq subqdiscs...
 
-Hello David,
+overrides most anything you might want to do with iptables doing
+classification directly, especially if you want to put things
+into different hw queues.
 
-On Tue, Feb 07, 2012 at 01:58:41PM -0500, David Miller wrote:
-> From: Simon Wunderlich <simon.wunderlich@s2003.tu-chemnitz.de>
-> Date: Tue,  7 Feb 2012 19:39:08 +0100
->=20
-> > The linux traffic control mechanism has different ways to select the
-> > correct class of a qdisc. A common way to do this is to use tc filters
-> > that are directly attached to a qdisc. Another approach is to use the
-> > iptables classify module. The latter one can reduce the amount of work
-> > necessary to process a packet when iptables is already involved in the
-> > packet classification.
->=20
-> Do not bloat up sk_buff any more.  Add this, and the other existing
-> tc_* members to the qdisc SKB control block instead.
->=20
+and furthermore makes using other qdiscs than mq, such as the htb rate
+limiter, problematic, as well as sch_mq has no ability to put in a top
+level filter, anyway because stuff ends up in the 1:1,1:2,1:3,1:4
+automagically...
 
-Thanks for your feedback!
+Reducing the namespace to 'marks' vs classes is ok for some uses, I gue=
+ss,
+but how to handle the hw queues and the select_queue problem?
 
-I guess you mean skb->cb, but this is also used within mac80211 for various=
- things
-(quoting include/net/mac80211.h):
+And while I'm at the problems that wireless has, having one (or 4) queu=
+es
+per actual end-point rather than 4 hardware queues would make it possib=
+le
+to address the bufferbloat problem with wireless and sanely calculating
+aggregation values....
 
- * struct ieee80211_tx_info - skb transmit information
- *
- * This structure is placed in skb->cb for three uses:
- *  (1) mac80211 TX control - mac80211 tells the driver what to do
- *  (2) driver internal use (if applicable)
- *  (3) TX status information - driver tells mac80211 what happened
+My thought on that was to be tossing a station identifier into the cb, =
+but
+that seems to alsobe a cross layer violation.
 
-We could give it a try, but we most probably run into conflicts again.
+I like the idea of separating "priority" from "classification" and from
+"hw queues" but a unifying metaphor and space in the skb seems
+to be THE problem.
 
-I've messed up the CCs in my initial mail (and just resent it) - sorry abou=
-t that.
-Maybe the mac80211 guys have a suggestion as well :)
 
-Cheers,
-	Simon
 
---aVD9QWMuhilNxW9f
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-Content-Disposition: inline
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iEYEARECAAYFAk8xhqEACgkQrzg/fFk7axbRoQCgxHGS8m8aSBvHs2Tyllbx/lmu
-Z+wAn1g2l77zpxyp4a1Slv0m8jl7cs1K
-=MyYW
------END PGP SIGNATURE-----
-
---aVD9QWMuhilNxW9f--
+--
+Dave T=E4ht
+SKYPE: davetaht
+US Tel: 1-239-829-5608
+=46R Tel: 0638645374
+http://www.bufferbloat.net
