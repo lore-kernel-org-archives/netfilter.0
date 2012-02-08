@@ -1,68 +1,87 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: kernel helper modules parameters
-Date: Wed, 8 Feb 2012 06:39:37 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1202080621310.25781@frira.zrqbmnf.qr>
-References: <4F31B772.2040102@googlemail.com> <4F31E7D3.5060203@googlemail.com> <alpine.LNX.2.01.1202080454140.12624@frira.zrqbmnf.qr> <4F31F30A.3020902@googlemail.com>
+From: Eric Dumazet <eric.dumazet@gmail.com>
+Subject: Re: [PATCH] skbuff: Add new tc classify variable
+Date: Wed, 08 Feb 2012 10:21:56 +0100
+Message-ID: <1328692916.2284.5.camel@edumazet-HP-Compaq-6005-Pro-SFF-PC>
+References: <1328639948-25232-1-git-send-email-siwu@hrz.tu-chemnitz.de>
+	 <20120207.135841.1753473725075272902.davem@davemloft.net>
+	 <20120207201633.GB26533@pandem0nium>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4F31F30A.3020902@googlemail.com>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :content-type:x-mailer:content-transfer-encoding:mime-version;
+        bh=aEUgGcVTPzsU99y5Q2t6MYQMIWtH9ZcLTBbcIWK7glI=;
+        b=O1JTiJiuJKi/fXpLrtV054YkHPsOTKDg0XNx/RQ6cE31Bl6yfldKlcgtuggHiW+7Fi
+         OP1CIJGrbs5jzH5I/e65OirvtXhokaHvm07nwf2i8aDtYOcl2buk31eyAwo95/d7hH1P
+         toedxAdo5JknJZfqBqMz4EvE0ejX9irIDDBTU=
+In-Reply-To: <20120207201633.GB26533@pandem0nium>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: Simon Wunderlich <simon.wunderlich@s2003.tu-chemnitz.de>
+Cc: David Miller <davem@davemloft.net>, netdev@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jamal Hadi Salim <hadi@cyberus.ca>, Johannes Berg <johannes@sipsolutions.net>, "John W. Linville" <linville@tuxdriver.com>, Marek Lindner <lindner_marek@yahoo.de>, Sven Eckelmann <sven@narfation.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-wireless@vger.kernel.org
 
-On Wednesday 2012-02-08 04:59, Mr Dash Four wrote:
+Le mardi 07 f=C3=A9vrier 2012 =C3=A0 21:16 +0100, Simon Wunderlich a =C3=
+=A9crit :
+> Hello David,
+>=20
+> On Tue, Feb 07, 2012 at 01:58:41PM -0500, David Miller wrote:
+> > From: Simon Wunderlich <simon.wunderlich@s2003.tu-chemnitz.de>
+> > Date: Tue,  7 Feb 2012 19:39:08 +0100
+> >=20
+> > > The linux traffic control mechanism has different ways to select =
+the
+> > > correct class of a qdisc. A common way to do this is to use tc fi=
+lters
+> > > that are directly attached to a qdisc. Another approach is to use=
+ the
+> > > iptables classify module. The latter one can reduce the amount of=
+ work
+> > > necessary to process a packet when iptables is already involved i=
+n the
+> > > packet classification.
+> >=20
+> > Do not bloat up sk_buff any more.  Add this, and the other existing
+> > tc_* members to the qdisc SKB control block instead.
+> >=20
+>=20
+> Thanks for your feedback!
+>=20
+> I guess you mean skb->cb, but this is also used within mac80211 for v=
+arious things
+> (quoting include/net/mac80211.h):
+>=20
+>  * struct ieee80211_tx_info - skb transmit information
+>  *
+>  * This structure is placed in skb->cb for three uses:
+>  *  (1) mac80211 TX control - mac80211 tells the driver what to do
+>  *  (2) driver internal use (if applicable)
+>  *  (3) TX status information - driver tells mac80211 what happened
+>=20
+> We could give it a try, but we most probably run into conflicts again=
+=2E
+>=20
+> I've messed up the CCs in my initial mail (and just resent it) - sorr=
+y about that.
+> Maybe the mac80211 guys have a suggestion as well :)
+>=20
 
->
->> tl;dr: What does ipset have to do with the tftp/sip/h323 conntrack modules?
->>  
-> Are you really *that* thick?
+I really dont understand what the conflict might be.
 
-Yes, apparently my other self was sleep-walking and missed the -j CT.
+As long as skb is in Qdisc layer, Qdisc owns skb->cb[] (a part of it
+actually, see current discussions about IB on netdev)
 
->-bash~# iptables -A OUTPUT -t raw -p udp -m set --match-set test
->dst,dst -j CT --helper ftp
->iptables: No chain/target/match by that name.
->                                                                                
->Anyone kind enough to enlighten me why do I have to specify a protocol          
->(which matches the ipset type exactly!) in order for iptables to accept and     
->create that rule? For the filter table there is no such constraint.             
+As soon as packet is given to device (mac80211), cb[] can be reused.
 
-ENOENT is traditionally returned by x_tables when a
-chain/target/match could not be found and hence ENOENT has been
-largely tied to the very translation ("No chain/target/match by that
-name") that you see. Looking at xt_set.c reveals that xt_set, too,
-can return -ENOENT from its checkentry function, which x_tables just
-passed up to userspace. Hence there is no way to distinguish between
-the two. However, xt_set also emits a message into dmesg via
-pr_warning when it does return ENOENT.
+Or are you saying tc_class also might be needed by mac80211 in the
+future ?
 
-The ip_set_nfnl_get_byindex function returning ENOENT would in turn
-indicate that there was no set by the given index, which I gather
-must have been translated from the set name in userspace already.
-It is possible that this set is removed between the time the lookup was 
-done and that the rule reached the kernel. And that is unlikely.
 
->-bash~# ipset n test hash:ip,port family inet timeout 0 hashsize 128
-><Not run:: ipset a test 10.99.99.1,tcp:17021>
->-bash~# iptables -A OUTPUT -t raw -m set --match-set test dst,dst -j CT
->--helper ftp
->iptables: No chain/target/match by that name.
 
-Given that
-
-# ipset n test hash:ip,port family inet timeout 0 hashsize 128
-# iptables -A OUTPUT -t raw -m set --match-set test dst,dst
-
-succeeds, and adding -j CT does not (and I know I do have xt_CT),
-dmesg is once again handy:
-
-[29710.653372] xt_CT: You must specify a L4 protocol, and not use inversions on
-it.
-
-(And yes, xt_CT also returns ENOENT. Guess we need to change
-the error message that the iptables frontend prints.)
-
-hth.
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
+el" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
