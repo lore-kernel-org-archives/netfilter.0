@@ -1,29 +1,28 @@
-From: Jan Engelhardt <jengelh@medozas.de>
+From: Mr Dash Four <mr.dash.four@googlemail.com>
 Subject: Re: kernel helper modules parameters
-Date: Wed, 8 Feb 2012 04:55:25 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1202080454140.12624@frira.zrqbmnf.qr>
-References: <4F31B772.2040102@googlemail.com> <4F31E7D3.5060203@googlemail.com>
+Date: Wed, 08 Feb 2012 03:59:06 +0000
+Message-ID: <4F31F30A.3020902@googlemail.com>
+References: <4F31B772.2040102@googlemail.com> <4F31E7D3.5060203@googlemail.com> <alpine.LNX.2.01.1202080454140.12624@frira.zrqbmnf.qr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4F31E7D3.5060203@googlemail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=gamma;
+        h=message-id:disposition-notification-to:date:from:user-agent
+         :mime-version:to:subject:references:in-reply-to:content-type
+         :content-transfer-encoding;
+        bh=D1J2O7kuQ3suC4ODV/tIgeJeNEI+PyOCZParMqaj99Y=;
+        b=qmdItBUZRqieW4ZyAvSfKy7wwT1KRyOal0qssurKd7XjZ9f/4dDQLjm+6avrZYsSLo
+         B4ndfAaATZm4VAXu8SLPTEJoB+iSA0WFO8M4dnlGIKw8r8HuEscz8htsOXESJLltyF1N
+         DYuSDSgmn0itgSufjJu2NB8XftxJ8CPO6kcjQ=
+In-Reply-To: <alpine.LNX.2.01.1202080454140.12624@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Wednesday 2012-02-08 04:11, Mr Dash Four wrote:
 
->
->> I would like to do some testing with the (t)ftp, sip, h323 and possibly
->> netbios_ns module helpers. I am most definitely not going to use the standard
->> ports these protocols operate on, so need to know, among other things, how can
->> I reconfigure the helpers and the degree of leverage I have (i.e. what I
->> can/cannot get away with). Thanks.
-
-> -bash~# ipset n test hash:ip family inet timeout 0 hashsize 128
-> -bash~# ipset a test 10.99.99.1
-
-tl;dr: What does ipset have to do with the tftp/sip/h323 conntrack 
-modules?
+> tl;dr: What does ipset have to do with the tftp/sip/h323 conntrack 
+> modules?
+>   
+Are you really *that* thick?
