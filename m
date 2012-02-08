@@ -1,87 +1,46 @@
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: [PATCH] skbuff: Add new tc classify variable
-Date: Wed, 08 Feb 2012 10:21:56 +0100
-Message-ID: <1328692916.2284.5.camel@edumazet-HP-Compaq-6005-Pro-SFF-PC>
-References: <1328639948-25232-1-git-send-email-siwu@hrz.tu-chemnitz.de>
-	 <20120207.135841.1753473725075272902.davem@davemloft.net>
-	 <20120207201633.GB26533@pandem0nium>
+From: Joerg Willmann <joe@clnt.de>
+Subject: alignment problem with ebt_among on ppc
+Date: Wed, 8 Feb 2012 10:27:35 +0100 (CET)
+Message-ID: <Pine.LNX.4.64.1202081027060.13222@brian.int.clnt.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :content-type:x-mailer:content-transfer-encoding:mime-version;
-        bh=aEUgGcVTPzsU99y5Q2t6MYQMIWtH9ZcLTBbcIWK7glI=;
-        b=O1JTiJiuJKi/fXpLrtV054YkHPsOTKDg0XNx/RQ6cE31Bl6yfldKlcgtuggHiW+7Fi
-         OP1CIJGrbs5jzH5I/e65OirvtXhokaHvm07nwf2i8aDtYOcl2buk31eyAwo95/d7hH1P
-         toedxAdo5JknJZfqBqMz4EvE0ejX9irIDDBTU=
-In-Reply-To: <20120207201633.GB26533@pandem0nium>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Simon Wunderlich <simon.wunderlich@s2003.tu-chemnitz.de>
-Cc: David Miller <davem@davemloft.net>, netdev@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jamal Hadi Salim <hadi@cyberus.ca>, Johannes Berg <johannes@sipsolutions.net>, "John W. Linville" <linville@tuxdriver.com>, Marek Lindner <lindner_marek@yahoo.de>, Sven Eckelmann <sven@narfation.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-wireless@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"; format="flowed"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Le mardi 07 f=C3=A9vrier 2012 =C3=A0 21:16 +0100, Simon Wunderlich a =C3=
-=A9crit :
-> Hello David,
->=20
-> On Tue, Feb 07, 2012 at 01:58:41PM -0500, David Miller wrote:
-> > From: Simon Wunderlich <simon.wunderlich@s2003.tu-chemnitz.de>
-> > Date: Tue,  7 Feb 2012 19:39:08 +0100
-> >=20
-> > > The linux traffic control mechanism has different ways to select =
-the
-> > > correct class of a qdisc. A common way to do this is to use tc fi=
-lters
-> > > that are directly attached to a qdisc. Another approach is to use=
- the
-> > > iptables classify module. The latter one can reduce the amount of=
- work
-> > > necessary to process a packet when iptables is already involved i=
-n the
-> > > packet classification.
-> >=20
-> > Do not bloat up sk_buff any more.  Add this, and the other existing
-> > tc_* members to the qdisc SKB control block instead.
-> >=20
->=20
-> Thanks for your feedback!
->=20
-> I guess you mean skb->cb, but this is also used within mac80211 for v=
-arious things
-> (quoting include/net/mac80211.h):
->=20
->  * struct ieee80211_tx_info - skb transmit information
->  *
->  * This structure is placed in skb->cb for three uses:
->  *  (1) mac80211 TX control - mac80211 tells the driver what to do
->  *  (2) driver internal use (if applicable)
->  *  (3) TX status information - driver tells mac80211 what happened
->=20
-> We could give it a try, but we most probably run into conflicts again=
-=2E
->=20
-> I've messed up the CCs in my initial mail (and just resent it) - sorr=
-y about that.
-> Maybe the mac80211 guys have a suggestion as well :)
->=20
+Hi,
 
-I really dont understand what the conflict might be.
+I'm currently faced with an alignment problem of ebt_among with ppc
+architecture.
+Trying to add a rule using the among extension leads to the following
+syslog entry:
 
-As long as skb is in Qdisc layer, Qdisc owns skb->cb[] (a part of it
-actually, see current discussions about IB on netdev)
+ebtables: among: wrong size: 2104 against expected 2100, rounded to 2100
 
-As soon as packet is given to device (mac80211), cb[] can be reused.
+I tried to analyze the problem and I observed that there have been several
+problems regarding EBT_ALIGN in the past with x86_64 and sparc
+architecure. But I didn't find anything about ppc.
 
-Or are you saying tc_class also might be needed by mac80211 in the
-future ?
+What I've seen is that ebt_among extension of ebtables uses
+__alignof__(_xt_align) while the corresponding kernel module uses
+__alignof__(ebt_replace) to determin the alignment in EBT_ALIGN().
 
+These are the results of these values on different platforms:
 
+                                 x86     x86_64  ppc
+__alignof__(_xt_align)          4       8       8
+__alignof__(ebt_replace)        4       8       4
 
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+So I assume here we can see why ebtales fails to add rules which use the
+among extension.
+
+I'm using kernel 2.6.33 and ebtables 2.0.10-4
+
+Is this a known issue or are there any suggestions how to circumvent this
+problem?
+Thankyou very much.
+
+Best regards
+Joerg
