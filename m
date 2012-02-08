@@ -1,61 +1,105 @@
-From: jamal <hadi@cyberus.ca>
-Subject: Re: [PATCH] skbuff: Add new tc classify variable
-Date: Wed, 08 Feb 2012 09:48:41 -0500
-Message-ID: <1328712521.2983.1.camel@mojatatu>
-References: <1328639948-25232-1-git-send-email-siwu@hrz.tu-chemnitz.de>
-	 <20120207.135841.1753473725075272902.davem@davemloft.net>
-	 <20120207201633.GB26533@pandem0nium>
-	 <1328692916.2284.5.camel@edumazet-HP-Compaq-6005-Pro-SFF-PC>
-Reply-To: jhs@mojatatu.com
+From: Mr Dash Four <mr.dash.four@googlemail.com>
+Subject: Re: kernel helper modules parameters
+Date: Wed, 08 Feb 2012 15:16:03 +0000
+Message-ID: <4F3291B3.1030107@googlemail.com>
+References: <4F31B772.2040102@googlemail.com> <4F31E7D3.5060203@googlemail.com> <alpine.LNX.2.01.1202080454140.12624@frira.zrqbmnf.qr> <4F31F30A.3020902@googlemail.com> <alpine.LNX.2.01.1202080621310.25781@frira.zrqbmnf.qr> <4F32846D.2060408@googlemail.com> <alpine.LNX.2.01.1202081521290.1820@frira.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=gamma;
-        h=sender:subject:from:reply-to:to:cc:in-reply-to:references
-         :content-type:date:message-id:mime-version:x-mailer
+        d=googlemail.com; s=gamma;
+        h=message-id:disposition-notification-to:date:from:user-agent
+         :mime-version:to:subject:references:in-reply-to:content-type
          :content-transfer-encoding;
-        bh=wXUfJbWrVE+SPrXWi5jsZ+YmRXsy37r1bD93NHNXDcU=;
-        b=mJUVQXKIzAa3ny9aAILmnlfo2Jb7stroSn1gsQYu4In9XTg02ssUy05leWi1sz62IJ
-         1VyvyXZlAYgzGnV183GS1nRIR5ZDMdy3/2hjNNYfN8mwvKqzOrMdwHtaBQMjeNDO/hYY
-         vgj31tX0z7AAbb292LYxojU6zp2dRDjMtS8Cg=
-In-Reply-To: <1328692916.2284.5.camel@edumazet-HP-Compaq-6005-Pro-SFF-PC>
-Sender: netfilter-devel-owner@vger.kernel.org
+        bh=9I5ehCNfS0RI8gxq34QtOOTE/s7ovRGeJ0T0P0e7XP0=;
+        b=GEsGPhSZenqWlhqFQCCihYOWQ7euXDVugQrN/LTY5xQsM4vphkD4JjBjFuV+vef1sX
+         1HCTY86eocny8MRXMDcIQp6GGZNsbU/vCpr+jBENWGov3IMkcPTQrFEKM5xcTNBTNf5p
+         1YGG2c/IlATUgDIrbvgpPNbzvfzfuUWXIejbs=
+In-Reply-To: <alpine.LNX.2.01.1202081521290.1820@frira.zrqbmnf.qr>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Eric Dumazet <eric.dumazet@gmail.com>
-Cc: Simon Wunderlich <simon.wunderlich@s2003.tu-chemnitz.de>, David Miller <davem@davemloft.net>, netdev@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Johannes Berg <johannes@sipsolutions.net>, "John W. Linville" <linville@tuxdriver.com>, Marek Lindner <lindner_marek@yahoo.de>, Sven Eckelmann <sven@narfation.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-wireless@vger.kernel.org
-
-skb->cb is the right scratch pad to use.
-The problem appears to be the wireless stack abusing some of these
-fields (prio for one). And we do have marks in place already which
-are 32 bit and global.
-
-=20
-cheers,
-jamal
-
-On Wed, 2012-02-08 at 10:21 +0100, Eric Dumazet wrote:
-> Le mardi 07 f=C3=A9vrier 2012 =C3=A0 21:16 +0100, Simon Wunderlich a =
-=C3=A9crit :
-
->=20
-> I really dont understand what the conflict might be.
->=20
-> As long as skb is in Qdisc layer, Qdisc owns skb->cb[] (a part of it
-> actually, see current discussions about IB on netdev)
->=20
-> As soon as packet is given to device (mac80211), cb[] can be reused.
->=20
-> Or are you saying tc_class also might be needed by mac80211 in the
-> future ?
->=20
->=20
->=20
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
 
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> "ENOENT has many meanings, and iptables prints just one of them,
+> which is potentially misleading."
+>   
+Thanks, this will be corrected I take it?
+
+> The reason you have to specify -p tcp is so that CT can take a
+> reference to the particular helper instance (which is identified
+> by name, L3 family, _and_ L4 family) and/or load a module that
+> does provide such instances, respectively.
+>   
+Is there a need for the L4 inclusion (seems that it causes the initial 
+error message)?
+
+Also, there are helpers (the sip one comes to mind) that work both with 
+tcp and udp protocols and are potentially great candidates to be used 
+with the two-dimensional ipsets (hash:ip,port). As it stands though, I 
+have to create two iptables statements *and* use one-dimensional ipset 
+to load and use that particular helper. Wouldn't it be easier if the L4 
+restriction is dropped/amended (if it is indeed the source of that 
+error) so that protocols could be omitted when using two-dimensional sets?
+
+> While we do know whata L4 protocol a packet is once it is received
+> from the network, there is no chance to load the required module
+> on the fly due to interrupt context constraint, so hypothetically
+> allowing "(-p all) -j CT" would be unreliable, packets would not
+> "get helped".
+>
+> As such, specify the L4 beforehand is a requirement.
+>   
+I thought the helper module is loaded once the iptables statement is 
+created, isn't that the case? Also, if the helper itself allows for "-p 
+all" (or "-p tcp" or "-p udp" at the very least) what then? The "L4 
+protocol" restriction won't be needed, would it?
+
+To me it seems rather unnecessary to have to specify a protocol where I 
+could have ipset take care of that, otherwise I am left with the 
+alternative of using one-dimensional sets only (I haven't yet tested the 
+iface-type sets, so I strongly suspect I may have a bumpy ride there as 
+well).
+
+> Precisely. "-p all" just is not the same as "-p tcp". I guess
+> one /could/ add a PF_UNSPEC instance to nf_conntrack_ftp.c,
+> thereby allowing to use -j CT without any -p (or nonsensical values
+> for -p) and ignore all packets that are not TCP.
+>
+> But that would cause some practical overhead as a packet's verdict
+> would not be known until the helper code is executed. (Currently
+> the check can be done outside the helper because the L4 is
+> known in advance.)
+>   
+What I still can't get my head around yet is why the hesitation for not 
+using a helper module, which was already specified (and I suspect loaded 
+in memory) in the iptables statement - is there a concern that more than 
+one module may be used for a particular packet? If that is so, then I 
+could easily prepare a clash with using an ftp helper module selecting 
+the same ip:protocol:port triplet for, say, ftp helper module as well as 
+sip. What happens then?
+
+On a side note, looking at Eric's "helper-recommandation.pdf" (I guess, 
+I should have spell-checked the name of that file as well), as far as I 
+understand it, there are two different methods of 
+loading/creating/setting up helper modules:
+
+1. Using the "FORWARD" chain in filter as well as specifying "RELATED" 
+and helper name matches;
+2. Using the PREROUTING/OUTPUT chain in raw by specifying the CT target 
+with a helper name match (this is what I used in my examples up to now).
+
+Are the two methods above interchangeable (i.e. use one or the other, 
+but not both) or should I configure both (in which case I haven't tried 
+my ipset trick using the first scenario!)? In that file there is no 
+indication whether I should use one or the other (or both!).
+
+If I have to use the first method above as well, why is the "FORWARD" 
+chain used (at least in the examples given in that article)? If I want 
+to set up a helper on outgoing packets then using the OUTPUT chain in 
+filter seems to be the best solution.
+
+I also take it either of the above methods is the preferred option 
+instead of using modprobe (and force the loading of that helper module). 
+Am I correct in thinking that?
