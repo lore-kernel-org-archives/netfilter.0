@@ -1,34 +1,41 @@
 From: Enrique Huerta de la Fuente <ehuerta@ixer.mx>
-Subject: Re: iptables udp 1195 MASQUERADE
-Date: Thu, 9 Feb 2012 23:44:51 -0600 (CST)
-Message-ID: <12775433.2910.1328852691898.JavaMail.root@ixer.mx>
-References: <26800503.2896.1328827967506.JavaMail.root@ixer.mx>
+Subject: Re: Masquerade UDP doesn't work
+Date: Thu, 9 Feb 2012 23:41:46 -0600 (CST)
+Message-ID: <23009397.2908.1328852505967.JavaMail.root@ixer.mx>
+References: <1993130.2906.1328852412074.JavaMail.root@ixer.mx>
 Reply-To: ehuerta@ixer.mx
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <26800503.2896.1328827967506.JavaMail.root@ixer.mx>
+In-Reply-To: <1993130.2906.1328852412074.JavaMail.root@ixer.mx>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Andrew Beverley <andy@andybev.com>
+To: giles@coochey.net
 Cc: netfilter@vger.kernel.org
 
->> Apply the rule: "iptables -t nat -I POSTROUTING -o ppp0 -j
->> MASQUERADE", this masks the port 22 (tcp) but not the 1195 (udp),
->> because I can
->> connect via ssh.
 >
->What do you mean by "masks"? What are you expecting the MASQUERADE
->target to do? From the little information I've seen, it looks like you
->are sending packets from a single interface from the local machine, in
->which case the MASQUERADE will have no effect anyway.
->
->> It seems the problem is that does not mask the port 1195 (udp).
+>> Hello,
+>>
+>> Masquerade do not work at a UDP port, but if it works at a TCP port.
+>>
+>> (works) iptables -t nat -I POSTROUTING -m tcp -p tcp --dport 22 -o
+>> ppp0 -j MASQUERADE
+>> (not working) iptables -t nat -I POSTROUTING -m udp -p udp --dport
+>> 1195 -o ppp0 -j MASQUERADE
 >>
 >
->MASQUERADE works fine with UDP whenever I have used it.
+>The "-m udp" confuses me. Do you really need to specify that module,
+>try it without the -m option for UDP, I don't tend to use it for TCP
+>either, but if it's not broken, don't fix it...
 >
->Andy
 
-Hello Andy, I have three interfaces 
+ 
+Hello,
+
+I try:
+iptables -t nat -I POSTROUTING -p udp --dport 1195 -o ppp0 -j MASQUERADE
+
+but it does not work.
+
+
