@@ -1,29 +1,30 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: new netfilter.org style
-Date: Fri, 10 Feb 2012 18:38:12 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1202101838050.4760@frira.zrqbmnf.qr>
-References: <20120210105338.GA9783@1984>
+From: Andres Velasco Garcia <telecom.andresvelasco@hotmail.com>
+Subject: netfilter_queue: multi-thread support
+Date: Fri, 10 Feb 2012 19:27:06 +0100
+Message-ID: <BLU162-W36DE4A651D427FA2FAD276F6780@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <20120210105338.GA9783@1984>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7BIT
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Netfilter Development Mailing list <netfilter-devel@vger.kernel.org>, Daniel Garcia Moreno <danigm@wadobo.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Friday 2012-02-10 11:53, Pablo Neira Ayuso wrote:
 
->Hi all!
->
->Daniel Garc=C3=ADa Moreno has contributed a new design for the
->netfilter.org website that I have applied:
+Hello,
 
-And somebody finally updated the bugzilla ;)
+ 
 
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+This is a question related to netfilter_queue (user space) and multiple threads:
+
+ 
+
+Can different threads in a single process listen to different (netfilter) queue numbers?
+
+ 
+
+Should each of the threads peform, separately, nfq_open/nfq_unbind/nfq_bind ? Or should that be executed only once and then each thread do nfq_create_queue ? 
+
+
+
+Thanks 		 	   		  
