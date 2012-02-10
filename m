@@ -1,60 +1,38 @@
-From: Enrique Huerta de la Fuente <ehuerta@ixer.mx>
+From: Andrew Beverley <andy@andybev.com>
 Subject: Re: iptables udp 1195 MASQUERADE
-Date: Fri, 10 Feb 2012 12:36:03 -0600 (CST)
-Message-ID: <22755605.2952.1328898963472.JavaMail.root@ixer.mx>
-References: <19323396.2950.1328898736467.JavaMail.root@ixer.mx>
-Reply-To: ehuerta@ixer.mx
+Date: Fri, 10 Feb 2012 20:05:47 +0000
+Message-ID: <1328904347.18690.264.camel@andrew-desktop>
+References: <22755605.2952.1328898963472.JavaMail.root@ixer.mx>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <19323396.2950.1328898736467.JavaMail.root@ixer.mx>
+In-Reply-To: <22755605.2952.1328898963472.JavaMail.root@ixer.mx>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1328904350;
+	bh=HEIVdSeqNcwzS7iNv5oou5IZ8a72+zc+mPayikH+B50=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:Content-Transfer-Encoding:Mime-Version;
+	b=UWs6Or+bV8diYF6fpXfp53J2HWEaaB0RJePABTL1+6+o63C60XKkjsanI2bf6YyZI
+	 8OWxsLJl6ZEqrLMMOq9mI8h1FexGUFW4WGDChEyFzKDaMqvZIUIYdwteJgR/n0Y8VC
+	 IkOwO4oueXSW0YeueGLaGRTC6ARy6rxa0yVr+HOo=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Andrew Beverley <andy@andybev.com>
+To: ehuerta@ixer.mx
 Cc: netfilter@vger.kernel.org
 
+On Fri, 2012-02-10 at 12:36 -0600, Enrique Huerta de la Fuente wrote:
+> iptables -t nat -I POSTROUTING -o ppp0 -j MASQUERADE
+> 
+> but it does not work.
 
->> I have four interfaces and the default gateway is eth1
->>
->> - eth0 (LAN)
->> - eth1 (internet link)
->> - eth3 (internet link)
-> - ppp0 (internet link)
->>
->> I mark (mangle) package udp (1195) for out by interface ppp0.
->> "iptables -t mangle -I OUTPUT -p udp -m udp --dport 1195 -j MARK
->> --set-mark 1
->>
->> and when i try MASQUERADE the package udp (1195) with "iptables -t nat
->> -I POSTROUTING -p udp -m udp --dport 1195 -o ppp0 -j MASQUERADE", does
->> not work!!
->
->I'm still not sure exactly what you're trying to achieve. Presumably you
->want different traffic going out on different interfaces, source-natted
->to that interface IP address.
->
->If so, why not route your traffic as you are already doing (I assume
->that is working) and then just MASQUERADE each interface:
->
->iptables -t nat -I POSTROUTING -o ppp0 -j MASQUERADE
->
->Andy
+Are you *sure* it's not working?
+
+> 
+> Any ideas?
+
+Upgrade maybe? As said previously, it's always worked for me.
+
+Andy
 
 
-Yes, I routed traffic by different interfaces, MASQUERADE each interface and it works, I know that because I do the same with the TCP (22) packages (iptables -t nat -I POSTROUTING -p tcp -m tcp --dport 22 -o ppp0 -j MASQUERADE) and it works very well. But only the UDP(1195) packages do not work.
-
-I have dealt with:
-iptables -t nat -I POSTROUTING -p udp -m udp --dport 1195 -o ppp0 -j MASQUERADE
-iptables -t nat -I POSTROUTING -p udp --dport 1195 -o ppp0 -j MASQUERADE
-iptables -t nat -I POSTROUTING -o ppp0 -j MASQUERADE
-
-but it does not work.
-
-Any ideas?
-
-E.Huerta
-
-
-
- 
