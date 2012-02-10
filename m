@@ -1,46 +1,50 @@
-From: Mihai Tanasescu <mihai@duras.ro>
-Subject: Basic dummy iptables SNAT multiple IPs algorithm question
-Date: Fri, 10 Feb 2012 15:46:58 +0100
-Message-ID: <4F352DE2.4040106@duras.ro>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: iptables udp 1195 MASQUERADE
+Date: Fri, 10 Feb 2012 15:57:16 +0000
+Message-ID: <1328889436.18690.255.camel@andrew-desktop>
+References: <20909671.2928.1328853919518.JavaMail.root@ixer.mx>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20909671.2928.1328853919518.JavaMail.root@ixer.mx>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1328889439;
+	bh=l4Z8yhgAdUCAKVvO5VB5TMGvEmlASlOnzeu10RIOwAM=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:Content-Transfer-Encoding:Mime-Version;
+	b=u75TMGx7524fIIVHVGQ1jaWWMKji6YaknqAEsbt1XSIiZG/Bnu1XJwHVuP6qpR12t
+	 pMO5zxYUUfI+9gdNpGJKk7UUkY0tS/n9kjdU0YwklNHVh2/aZecJVgJaz5J8otEfqE
+	 dUaJnnODoEc1Dmf+N1kcx2+ha4rNX43uDMNYogCA=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: ehuerta@ixer.mx
+Cc: netfilter@vger.kernel.org
 
-Hi guys,
+On Fri, 2012-02-10 at 00:05 -0600, Enrique Huerta de la Fuente wrote:
+> I have four interfaces and the default gateway is eth1
+> 
+> - eth0 (LAN)
+> - eth1 (internet link)
+> - eth3 (internet link)
+> - ppp0 (internet link)
+> 
+> I mark (mangle) package udp (1195) for out by interface ppp0.
+> "iptables -t mangle -I OUTPUT -p udp -m udp --dport 1195 -j MARK --set-mark 1
+> 
+> and when i try MASQUERADE the package udp (1195) with "iptables -t nat
+> -I POSTROUTING -p udp -m udp --dport 1195 -o ppp0 -j MASQUERADE", does
+> not work!!
 
-I've been using iptables and some of the modules it comes with for a
-while now but only recently as I stumbled into a big NAT444 setup, did I
-reach the point at which I'd like to find an answer to a theoretical
-question.
+I'm still not sure exactly what you're trying to achieve. Presumably you
+want different traffic going out on different interfaces, source-natted
+to that interface IP address.
 
-I wanted to ask:
-If I have a rule that says:
-iptables -t nat -A POSTROUTING -o eth0 -s 192.168.0.0/16 -j SNAT --to
-20.20.20.1-20.20.20.22.254
+If so, why not route your traffic as you are already doing (I assume
+that is working) and then just MASQUERADE each interface:
 
-Then how are the IPs from the private pool distributed to the ones from
-the public pool in the two following cases:
-- with persistent
-- with random
+iptables -t nat -I POSTROUTING -o ppp0 -j MASQUERADE
 
-Is it a simple mathematical thing like:
-if private pool has X IPs ( 65536 in this case) and public Pool (Y) has
-let's say 766 IPs in theory =>  X / Y = aprox 85 private IPs per public
-IP and then:
-- 192.168.0.0-84 =>  20.20.20.1
-- 192.168.0.85-169 =>  20.20.20.2
-and so on ?
-or does this depend on the number of IPs which are online and the
-algorithm is a bit more complex ?
+Andy
 
-Also, what happens in case random is being used to the same algorithm ?
-
-Hope I'm not troubling you too much with theory related questions.
-
-Thanks,
-Mihai
 
