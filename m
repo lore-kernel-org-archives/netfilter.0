@@ -1,49 +1,40 @@
 From: SamLT <sam@sltosis.org>
-Subject: Re: iptables udp 1195 MASQUERADE
-Date: Sat, 11 Feb 2012 10:13:26 +0100
-Message-ID: <20120211091326.GB6946@tosh.sltosis.org>
-References: <22755605.2952.1328898963472.JavaMail.root@ixer.mx>
- <1328904347.18690.264.camel@andrew-desktop>
+Subject: Re: how to drop a TCP segment with specific sequence
+Date: Sat, 11 Feb 2012 10:24:22 +0100
+Message-ID: <20120211092421.GC6946@tosh.sltosis.org>
+References: <1328760028.2710.5.camel@localhost>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=sltosis.org; s=mx;
-	t=1328951609; bh=pA+YGEQwvv+XtGELGccsZwngmVI/CC5EOVhZE44h2qs=;
+	t=1328952265; bh=GoqPvTY0Kzj60vlvZIoepa7POhg4t+sAshP2L5NWSsQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
 	 Content-Type:In-Reply-To;
-	b=JwC/tXAuZiqEp7RcPoZqiu3UydMBzwYICaaIGGwk3j2M6k8/sPI3wungQOHvHUDDG
-	 zN1ChYntPMOiXNnKZatFOTMP/9Lga4iv64WSGaAKt2GM+9A5gpyFYS++kQptPJ1Ies
-	 tFFW9AIhjgnz1nhhgZP3YnBbJJcacAQuT7AgvUD8=
+	b=yBWrsLooFxK1q8cFMgZEgws5n0hBIv0pWruMStIciaYakijCH7UjEiWlEM+frPsi/
+	 sWohhIWxn6ogJ9YWTfb8aZ//UXY/Mh0eUD1rUgVCPl9esrtMgBiULbIGb/V+qGRuSE
+	 zfgfCvXYzG9yBvuT79JymTm/7moh9VIvdXC7NsmI=
 Content-Disposition: inline
-In-Reply-To: <1328904347.18690.264.camel@andrew-desktop>
+In-Reply-To: <1328760028.2710.5.camel@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Andrew Beverley <andy@andybev.com>
-Cc: ehuerta@ixer.mx, netfilter@vger.kernel.org
+To: Yuwen Dai <yuwen.dai@windriver.com>
+Cc: netfilter@vger.kernel.org
 
-On Fri, Feb 10, 2012 at 08:05:47PM +0000, Andrew Beverley wrote:
-> On Fri, 2012-02-10 at 12:36 -0600, Enrique Huerta de la Fuente wrote:
-> > iptables -t nat -I POSTROUTING -o ppp0 -j MASQUERADE
-> > 
-> > but it does not work.
+On Thu, Feb 09, 2012 at 12:00:28PM +0800, Yuwen Dai wrote:
+> Dear all,
 > 
-> Are you *sure* it's not working?
+> I'm simulating an network environment that some TCP segments are
+> missing. So I want to use iptables to drop these segments. How to write
+> a rule to drop a segment with a specific sequence number from a host?
 
-Sorry to jump in here, but, I agree with Enrique, could you show some
-tcpdump output or something?
-   - Do the paquet go out from ppp0 without being MASQUERAD'ed?
-   - Do they go out from an other interface?
-   - Does it look like they are being filtered? or REDIRECT'ed?
+I suppose you can start playing around with --u32 ?
 
+
+> Thanks in advance.
 > 
-> > 
-> > Any ideas?
-> 
-> Upgrade maybe? As said previously, it's always worked for me.
-> 
-> Andy
-> 
+> Best regards,
+> Yuwen Dai
 > 
 > --
 > To unsubscribe from this list: send the line "unsubscribe netfilter" in
