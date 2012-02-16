@@ -1,46 +1,84 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: How to restrict torrent download  ?
-Date: Thu, 16 Feb 2012 17:03:04 +0000
-Message-ID: <1329411784.18690.463.camel@andrew-desktop>
-References: <20120216160904.2ea59e26@shiva.selfip.org>
-	 <1329389715.3296.12.camel@ns014530.dcyb.net>
-	 <4F3CE276.4010500@cloudways.com> <20120216171502.78212a3e@shiva.selfip.org>
-	 <20120216171909.3a3cd4c1@shiva.selfip.org>
-	 <1329393715.3296.18.camel@ns014530.dcyb.net>
+From: Shahbaz Yousefi <shabbyx@gmail.com>
+Subject: Implementing and adding a custom filter
+Date: Thu, 16 Feb 2012 18:03:58 +0100
+Message-ID: <CALeOzZ8YJ99spnbCxY9xv4j9GFxWPNGqorsKUfEym4jZffDdSg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1329393715.3296.18.camel@ns014530.dcyb.net>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1329411788;
-	bh=D4RDpG7X2Z4wisXE108tgGXLFXVEn9a15ZbeeggCoWM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:Content-Transfer-Encoding:Mime-Version;
-	b=QCi1/Dal6+HM9NIMJmTMXmJDUh9WU05rwcbsH9dYLDpXDIQGZizyTraDpb0GknPcZ
-	 nmGWjInDM9ucHVWak7XdKnFstBqBagCNSVBFNlZwIyAQQR/41xd7djkoaukjflV+MO
-	 sK2eM1RnotwEQr1G+cJc0fptXKWiVR0NiI4FXe1Q=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=9iCu04tjrdZc1FCjdZ924LMeLYhck9QcU2R6G+ybOrs=;
+        b=jgHQ/kFEgF8PWoqJTp4y144BxTSXmbQPEbHQSRYvpgezr9rIVNb2PIUUubCRKZthTw
+         qjDuNLWVa3KpL6dgrozTVu9qkkfa41v0PZ1DYXw5G3Iabu9BuzBw9Zm9mBGe+8saR/bd
+         l/I3NDdHFA+4xXJp3R/HEy7gq6ub6fOJ5EFko=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "Rob Sterenborg (lists)" <lists@sterenborg.info>, "J. Bakshi" <joydeep@infoservices.in>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-On Thu, 2012-02-16 at 13:01 +0100, Rob Sterenborg (lists) wrote:
-> I think
-> 
-> # man xtables-addons, Section ipp2p
+Hi,
 
-I believe that ipp2p is no longer maintained; their website recommends
-openDPI instead. I've never tried it myself, but it looks promising.
+I need to test the behavior of a kernel module when it is probed for
+data while some of its expected packets have arrived and some have
+not. Normally, this module expects to be polled when all packets are
+sure to have arrived. The network is a deterministic one (called
+EtherCAT). The solution that came to me was to put a bridge in between
+the network and introduce a delay between the packets being forwarded.
+This way, I can deterministically poll the kernel module in question
+when some of its packets have arrived while the rest not.
 
-Personally I use the rather brutal technique of looking for several
-connections to high port numbers from a single client. I dare say there
-are false positives, but it works for me.
+If you are interested in knowing more, you can read these two
+questions that I asked elsewhere:
 
-The details for that are here:
+http://serverfault.com/questions/360466/how-to-write-a-netfilter-kernel=
+-module-and-use-it
+http://stackoverflow.com/questions/9313088/how-to-write-custom-module-f=
+or-ebtables
 
-http://andybev.com/index.php/Fair_traffic_shaping_an_ADSL_line_for_a_local_network_using_Linux
+Unfortunately, I could not find an answer to my problem anywhere, nor
+could anyone answer them.
 
-Andy
+What I am trying to do is basically this:
 
+- Put a bridge in the middle of the network (successfully done using bl=
+ctr)
+- Write a kernel module, checking all the packets that pass through the=
+ bridge.
+=A0 * In this phase, stall inside one of the functions to make sure
+there is a certain delay between packets being forward.
+- Make ebtables use my filter
 
+I took a code from linux-source/net/bridge/netfilter/ebt_ip.c, made
+the match and check functions simply return true (so they match all
+the packets) and use xt_register_match in init_module as was done in
+ebt_ip.c
+
+This is the registration data I am using:
+
+static struct xt_match reg __read_mostly =3D {
+=A0=A0=A0 .name=A0=A0=A0=A0=A0=A0  =3D "any",=A0 // I tried "ip" also, =
+but that didn't change anything
+=A0=A0=A0 .revision =A0=A0  =3D 0,
+=A0=A0=A0 .family =A0  =A0  =3D NFPROTO_BRIDGE,
+=A0=A0=A0 .match =A0 =A0=A0  =3D match,
+=A0=A0=A0 .checkentry =3D check,
+=A0=A0=A0 .matchsize=A0 =3D XT_ALIGN(4),=A0 // I have no idea what this=
+ is! I just
+gave it 4 as if its an int
+=A0=A0=A0 .me=A0 =A0 =A0    =A0=A0 =3D THIS_MODULE
+};
+
+By the way, I'm talking about Linux 2.6.32
+
+Now I put some log inside match and check functions to make sure they
+are called, but they are not. I have no clue how to make it work and I
+can't find anything useful on the net.
+
+My question is, how can I make ebtables call my match and check
+functions before forwarding the messages? That is, how can I put my
+filter in effect?
+
+Thank you,
+Shahbaz
