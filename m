@@ -1,58 +1,51 @@
-From: Andrew Beverley <andy@andybev.com>
+From: "Lloyd Standish" <lloyd@crnatural.net>
 Subject: Re: How to restrict torrent download  ?
-Date: Fri, 17 Feb 2012 18:27:19 +0000
-Message-ID: <1329503239.30413.33.camel@andrew-desktop>
+Date: Fri, 17 Feb 2012 14:31:27 -0600
+Message-ID: <op.v9ubapr5x1lyi3@debiandesk2.net>
 References: <20120216160904.2ea59e26@shiva.selfip.org>
-	  <1329389715.3296.12.camel@ns014530.dcyb.net>
-	  <4F3CE276.4010500@cloudways.com>
-	 <20120216171502.78212a3e@shiva.selfip.org>
-	  <20120216171909.3a3cd4c1@shiva.selfip.org>
-	  <1329393715.3296.18.camel@ns014530.dcyb.net>
-	 <1329411784.18690.463.camel@andrew-desktop> <4F3D60A6.2040803@gmail.com>
+ <1329389715.3296.12.camel@ns014530.dcyb.net> <4F3CE276.4010500@cloudways.com>
+ <20120216171502.78212a3e@shiva.selfip.org>
+ <20120216171909.3a3cd4c1@shiva.selfip.org>
+ <1329393715.3296.18.camel@ns014530.dcyb.net>
+ <1329411784.18690.463.camel@andrew-desktop>
+ <op.v9saw7z7x1lyi3@debiandesk2.net> <1329502816.30413.28.camel@andrew-desktop>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4F3D60A6.2040803@gmail.com>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1329503241;
-	bh=lJZHjbij0YDxND8C/p9hguSYgb4FGye4GkAIDJE9sDU=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:Content-Transfer-Encoding:Mime-Version;
-	b=chbUoERuQ5yycTtPiUt5vhqC1yf6fwmP9yJ8LXxUqg+X95cu/rhQqDMTkLaYV0kdC
-	 1dZrMsb1ItWzp4ZxsfsLJfDPy/AC/6Ot1v3zZhAtaZ4YczCX8xgP6vnn6TRaikOoJP
-	 w2+3RVRYCsO9aHMCa0h0xbdachjWDTXcfQotLsDE=
+In-Reply-To: <1329502816.30413.28.camel@andrew-desktop>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: J Webster <jw.jwebster@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed	delsp=yes"
+To: Andrew Beverley <andy@andybev.com>
+Cc: "Rob Sterenborg (lists)" <lists@sterenborg.info>, "J. Bakshi" <joydeep@infoservices.in>, netfilter@vger.kernel.org
 
-On Thu, 2012-02-16 at 20:01 +0000, J Webster wrote:
-> > Personally I use the rather brutal technique of looking for several
-> > connections to high port numbers from a single client. I dare say there
-> > are false positives, but it works for me.
-> >
-> > The details for that are here:
-> >
-> > http://andybev.com/index.php/Fair_traffic_shaping_an_ADSL_line_for_a_local_network_using_Linux
+On Fri, 17 Feb 2012 12:20:16 -0600, Andrew Beverley <andy@andybev.com> wrote:
 
-[Top-posting fixed]
+> 2. Doing the prioritisation elsewhere to the rate limiting. This doesn't
+> work, as you can only prioritise when you have too much traffic,
+> otherwise all the packets just pass straight through. So, if you were to
+> do this, you'd have to force a queue at your router, probably by
+> rate-limiting (maybe with HTB as above). This is the same as when you
+> traffic shape inbound traffic - you have to rate-limit to a slower speed
+> than the uplink to force a queue. I'm struggling to get my head around
+> this properly, so am not sure whether that could also work somehow with
+> rate-limiting at the user's radio.
 
-> Will this work on CentOS 5?
->
+Hi Andy,
 
-No, according to this post:
+I may be wrong, but I thing prioritization at the load-balancing router will work, even though there is rate-limiting at the users' radios.  I'll call the load-balancing Linux router the "central router," to distinguish it from the routers in each user's radio.
 
-http://lists.centos.org/pipermail/centos/2008-June/059656.html
+The central router gets traffic from, say, 75 users and distributes it over the 5 uplinks.  I'm using connmark to mark the NEW packets from the LAN at random (with statistics module in probability mode).
 
-> How important are the kernal and iptables versions to implement it?
-> 
+(As an aside, this gives great load-balancing but breaks sessions.  That's because sites such as yahoo.com can't cope with a constantly-changing IP.  I'd rather use a load-balancing method that uses route-caching, such as that given by "ip route add default ... nexthop via ... nexthop via...", but that has resulted in mysteriously breaking connections.  I think I'll have to post here for help on that, in a separate post of course.)
 
-You'll need connlimit and ipset. Connlimit became part of the stable
-kernel in 2.6.23 (thanks Jan). I can't remember whether ipset has made
-it into the stable kernel yet, but it certainly won't be in the kernel
-of CentOS 5 (unless it's available as a separate package).
+So the central router establishes lots of simultaneous connections balanced over its 5 uplinks.  Each uplink is only 600 kbit, limited to maximum 500 kbit by an HTB qdisc on each uplink, to avoid queuing at the ISP.  Even though each individual user is rate-limited, the combined egress traffic can easily exceed the uplink bandwidth, and would start getting queued in the central router.
 
-Andy
+With the PRIO qdisc, if bittorrent traffic is put in the lowest priority band, bittorrent upload packets would only be dequeued when there are no packets waiting in the 1st and 2nd PRIO bands.  If all traffic except bittorent is in 1st and 2nd bands, it seems to me that no bittorrent would get out if there is any other kind of traffic waiting (queued).
 
+As far as bittorrent download goes, I understand that bittorent will not allow a user to download (much) more than he or she uploads.  So I think it should not be necessary to prioritize the incoming traffic.  In fact I am using only a policing qdisc on ingress (again, to avoid queuing at the ISP.)
 
+Does this plan sound reasonable to you, or am I overlooking or misunderstanding something?
+
+Regards,
+Lloyd
