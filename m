@@ -1,43 +1,30 @@
-From: "Rob Sterenborg (Lists)" <lists@sterenborg.info>
-Subject: Re: Compiling conntrack-tools
-Date: Sat, 18 Feb 2012 12:10:01 +0100
-Message-ID: <1329563401.2540.23.camel@kushiel.sterenborg.info>
-References: <1326902665.2646.20.camel@ns014530.dcyb.net>
-	  <alpine.LNX.2.01.1201181713170.32001@frira.zrqbmnf.qr>
-	 <1326904059.2646.25.camel@ns014530.dcyb.net>
-	 <loom.20120218T095118-20@post.gmane.org>
+From: nullv@gmx.com
+Subject: wan ip forwarding
+Date: Sat, 18 Feb 2012 14:46:16 -0500
+Message-ID: <20120218194620.300960@gmx.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <loom.20120218T095118-20@post.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-On Sat, 2012-02-18 at 08:51 +0000, ping wrote:
-> Hello,
-> 
-> I have the same problem. 
-> Could you point me how to solve the problem? 
-> Thank you so much. 
-> 
-> specifying any libs in _LIBS to actually 
-> link in into ./conntrack. <-- what can I do ?
-
-Did you set PKG_CONFIG_PATH when using configuring conntrack-tools?
-Something like:
-
-PKG_CONFIG_PATH=/path/to/lib/pkgconfig \
-./configure ...
-
-Where /path/to/lib/pkgconfig is the pkgconfig directory where the
-libnfnetlink and libnetfilter_conntrack .pc files are installed. (You
-did install these libraries, right?)
-This way the correct CFLAGS, LDFLAGS and LIBS will be set automatically.
-
-
---
-Rob
-
-
+ Hi, =C2=A0I'm hoping that you can point out what i'm missing here. I h=
+ave a server (router0) with a public ip 41.123.234.74/29 that's using a=
+n internet modem 41.123.234.73/29 as a gateway. the server (router0) al=
+so has a second card used for lan comms where it has ip address 10.0.0.=
+1/8. addresses are broadcast via dhcp along with DNS and gateway settin=
+gs and everything works perfectly when i MASQUERADE the local ips to th=
+e wan address with iptables.=C2=A0 =C2=A0The issue is this: i'm trying =
+to set up another server (db0) behind router0 on the lan side and want =
+to have it's packets go the my router0 gateway and be forwarded to the =
+internet side and vice versa. db0 has an address 41.123.234.75/29 with =
+=2E74 set as the gateway. if i set up my addressing on db0 using lan ad=
+dresses and 10.0.0.1 my db0 server can connect and everything but if i =
+use the wan address i can't connect even to the 41.123.234.74/29 router=
+0 address. i had inserted the following rule to my tables forward chain=
+:=C2=A0 iptables -I FORWARD -s 41.123.234.72/29 -j ACCEPT=C2=A0 to allo=
+w public packets from either side to be forwarded to both sides but i c=
+an't seem to get the boxes to through to each other. =C2=A0Can anyone t=
+ell me were i'm getting it wrong? =C2=A0Thanks in advance
