@@ -1,60 +1,52 @@
-From: Brian Austin - Standard Universal <brian@standarduniversal.com.au>
-Subject: Re: load-balancing router: trouble with breaking connections
-Date: Sun, 19 Feb 2012 16:17:52 +1100
-Message-ID: <4F408600.7000103@standarduniversal.com.au>
-References: <op.v9wbxmahx1lyi3@debiandesk2.net> <4F405764.5040103@standarduniversal.com.au> <op.v9woumuyx1lyi3@debiandesk2.net>
+From: Toralf =?utf-8?q?F=C3=B6rster?= <toralf.foerster@gmx.de>
+Subject: Kconfig: unmet direct dependencies in 3.3-rc4
+Date: Tue, 21 Feb 2012 22:21:26 +0100
+Message-ID: <201202212221.27202.toralf.foerster@gmx.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <op.v9woumuyx1lyi3@debiandesk2.net>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Lloyd Standish <lloyd@crnatural.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: Text/Plain; charset="iso-8859-1"
+To: netdev@vger.kernel.org, netfilter@vger.kernel.org, dri-devel@lists.freedesktop.org
+Cc: linux-kernel@vger.kernel.org
 
-Hi Lloyd,
+Hello,
 
-after months of bashing at this and I'm onto revision 3 of the rig, 
-conntrack is the answer.
+running a few "make randconfigs" gave warnings (seen below) for the cur=
+rent=20
+git kernel tree. Are there already patches in -next for all ?
 
-also conntrack allows you to connect to both wan IP eg ssh to one and 
-smtp to the other.
-without conntrack, the route cache will only allow connection to one wan 
-port, so if your
-ssh into one side, any connection to the other side will mysteriously 
-fail, then vica versa.
 
-cheers
+warning: (HAVE_TEXT_POKE_SMP) selects STOP_MACHINE which has unmet dire=
+ct=20
+dependencies (SMP && MODULE_UNLOAD ||=20
+HOTPLUG_CPU)
 
-On 19/02/2012 2:19 PM, Lloyd Standish wrote:
-> On Sat, 18 Feb 2012 19:59:00 -0600, Brian Austin - Standard Universal 
-> <brian@standarduniversal.com.au> wrote:
->
->> you need to restore connmarks coming in from the wan so the system 
->> can send them back out that way
->>
->
-> Hello Brian,
->
-> Thanks for the reply.  The router I described does not use connmark.  
-> It uses a command like this to set up round-robin balancing:
-> ip route add default scope global  nexthop via 192.168.1.1 dev eth1 
-> weight 1 nexthop via 192.168.2.1 dev eth2 weight 1 nexthop via 
-> 200.91.104.144 dev ppp0 weight 1
->
-> This is described here:
-> http://lartc.org/howto/lartc.rpdb.multiple-links.html
->
-> The article teaches that this balancing depend on the following rule 
-> (one for each interface) to route traffic out the same interface as it 
-> was received on:
-> ip rule add from ${!wan} table $table priority $((${#ifaces[@]}*100))
->
-> (Of course, the priority value can be ignored.)
->
-> Since this system results in breaking connections, I am forced for the 
-> time being to use a connmarks for balancing, and restoration of marks, 
-> as you mentioned.
->
 
+warning: (DRM_RADEON_KMS && DRM_I915 && STUB_POULSBO && FB_BACKLIGHT &&=
+=20
+USB_APPLEDISPLAY && FB_OLPC_DCON &&=20
+ASUS_LAPTOP && SONY_LAPTOP && THINKPAD_ACPI && EEEPC_LAPTOP && ACPI_ASU=
+S &&=20
+ACPI_CMPC && SAMSUNG_Q10) selects=20
+BACKLIGHT_CLASS_DEVICE which has unmet direct dependencies (HAS_IOMEM &=
+&=20
+BACKLIGHT_LCD_SUPPORT)
+
+
+warning: (WIMAX_IWMC3200_SDIO) selects IWMC3200TOP which has unmet dire=
+ct=20
+dependencies (MMC && EXPERIMENTAL)
+
+
+warning: (BRIDGE_NF_EBTABLES) selects NETFILTER_XTABLES which has unmet=
+ direct=20
+dependencies (NET && INET && NETFILTER)
+
+
+
+--=20
+MfG/Sincerely
+Toralf F=C3=B6rster
+pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
