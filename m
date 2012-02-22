@@ -1,93 +1,41 @@
-From: Brian Austin - Standard Universal <brian@standarduniversal.com.au>
+From: "Lloyd Standish" <lloyd@crnatural.net>
 Subject: Re: load-balancing router: trouble with breaking connections
-Date: Wed, 22 Feb 2012 14:46:40 +1100
-Message-ID: <4F446520.2010002@standarduniversal.com.au>
-References: <op.v9wbxmahx1lyi3@debiandesk2.net> <op.v918bckux1lyi3@debiandesk2.net>
+Date: Tue, 21 Feb 2012 22:19:52 -0600
+Message-ID: <op.v92bnewzx1lyi3@debiandesk2.net>
+References: <op.v9wbxmahx1lyi3@debiandesk2.net>
+ <op.v918bckux1lyi3@debiandesk2.net>
+ <4F446520.2010002@standarduniversal.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <op.v918bckux1lyi3@debiandesk2.net>
+In-Reply-To: <4F446520.2010002@standarduniversal.com.au>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Lloyd Standish <lloyd@crnatural.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed	delsp=yes"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi,
-you need to restore marks to packets from the local machine too.. or its 
-sessions will be messed up.
-first line in mangle output should be
+On Tue, 21 Feb 2012 21:46:40 -0600, Brian Austin - Standard Universal <brian@standarduniversal.com.au> wrote:
 
-iptables -t mangle -A OUTPUT -j CONNMARK --restore-mark;
-
-I believe conntrack replaces the route cache function entirely for 
-session persistence.
-
-cheers
-
-
-
-On 22/02/2012 2:07 PM, Lloyd Standish wrote:
-> On Sat, 18 Feb 2012 16:40:24 -0600, Lloyd Standish 
-> <lloyd@crnatural.net> wrote:
+> Hi,
+> you need to restore marks to packets from the local machine too.. or its
+> sessions will be messed up.
+> first line in mangle output should be
 >
->> Is there a known problem with this sort of load-balancing when there 
->> is a private IP on the interface?
->> I'm quite sure the problem is not in the NAT done by Provider 1, 
->> since when this same interface is used with my Linux router doing 
->> connmark-based load balancing, connections are not dropped.
->> http://lartc.org/howto/lartc.rpdb.multiple-links.html explains this 
->> simple routing scheme clearly, and I think I have followed it 
->> carefully.  Basically, for each interface I execute commands like 
->> these (IP numbers and interfaces are replaced by variables from my 
->> script, but it should be clear.  CONNMARK<n> are simply chains to put 
->> a fwmark on a packet.  This is used only for special cases on this 
->> router.):
+> iptables -t mangle -A OUTPUT -j CONNMARK --restore-mark;
 >
-> I finally found a solution to this issue, after weeks of frustration 
-> and unnecessary effort.  (This problem forced me to code a 
-> connmark-based load-balancing router, which produced unacceptable 
-> session-breaking.  I will comment on this below.)  I am posting this 
-> reply to my own post for the benefit of others who will certainly run 
-> into this problem.
+> I believe conntrack replaces the route cache function entirely for
+> session persistence.
 >
-> I refer to http://lartc.org/howto/lartc.rpdb.multiple-links.html.  
-> According to my experience, that scheme, which does not use connmark 
-> to mark packets, DOES NOT work properly when at least one of the 
-> uplinks carries a private IP number.  Under these circumstances, 
-> connmark-and-friends must be used to avoid having RELATED,ESTABLISHED 
-> packets sent out the wrong interface.
->
-> Specifically, to fix this problem the following must be done in 
-> addition to what is described at 
-> http://lartc.org/howto/lartc.rpdb.multiple-links.html:
->
-> PREROUTING
-> 1. For RELATED,ESTABLISHED packets entering from the LAN interface, do 
-> "--restore-mark"
-> 2. For all packets coming in from an outward-facing interface that has 
-> no mark, mark according to the interface
->
-> POSTROUTING
-> 3. For NEW connections leaving on an outward-facing interface, set the 
-> mark on the packet according to the outbound interface.
-> 4. For all packets leaving router on any interface, "--save-mark"
->
-> In addition, rules must be added to send packets out through 
-> interfaces that have the corresponding mark, for example:
->
-> ip rule add fwmark 1 table T1
-> ip rule add fwmark 2 table T2
-> etc.
->
-> In sum, the strategy is to allow the route cache and the round-robin 
-> interface selection of "nexthop via" to choose the outgoing interface, 
-> and connmark is used to keep the packets belonging to a connection on 
-> the same connection.
->
-> Note that if the route cache is ignored during the process of choosing 
-> an outbound connection, *sessions* will be constantly broken, 
-> resulting in a completely unacceptable Internet browsing experience 
-> for users.
+> cheers
 >
 
+Thanks for your comment.  I do --restore-mark for OUTPUT as well, although I didn't mention it in my post.
+
+The main point of my post was to show how load-balancing can be done using the route cache to choose a route based on previous routing, and use conntrack to keep packets on the same interfaces.
+
+It may be that there is confusion about my use of the word "session."  I am not referring to keeping all packets belonging to the same *connection* on the same interface, but rather to keeping a series of connections by a user to the same destination on the same interface.
+
+In my experience the only practical way to achieve session persistence is to allow the route cache to choose the route (and therefore the outbound interface).  When I ran a load-balancing router that ignored the route cache, using the statistics module in "probability" mode to choose an outbound interface at random, marking packets with connmark, I got beautiful load-balancing, but sessions (not connections) were broken constantly.  That is, websites that expected a logged-in user to keep the same IP number gave endless trouble.  Interestingly, most banking sites don't have a problem with this (although PayPal does).
+
+--
+Lloyd
