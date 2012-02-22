@@ -1,105 +1,34 @@
-From: SamLT <sam@sltosis.org>
-Subject: Re: SNAT
-Date: Wed, 22 Feb 2012 08:47:24 +0100
-Message-ID: <20120222074724.GA11787@tosh.sltosis.org>
-References: <20120222014817.M7308@kdtc.net>
+From: "Lloyd Standish" <lloyd@crnatural.net>
+Subject: Re: load-balancing router: trouble with breaking connections
+Date: Wed, 22 Feb 2012 08:53:18 -0600
+Message-ID: <op.v924y4pvx1lyi3@debiandesk2.net>
+References: <op.v9wbxmahx1lyi3@debiandesk2.net>
+ <op.v918bckux1lyi3@debiandesk2.net>
+ <4F446520.2010002@standarduniversal.com.au>
+ <op.v92bnewzx1lyi3@debiandesk2.net> <4F44979A.4030506@treenet.co.nz>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=sltosis.org; s=mx;
-	t=1329897152; bh=lF9pJOiGyKMZme0LSfDFS51/zSbED39g8WRLoYWHa6s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:In-Reply-To;
-	b=eFYa/GySdJImJbcI1f6lgGN7TbXbcrC1Myl7k7Ftd+AuSzxffPrm3Vg9JAZd+Cmj8
-	 VtwTmaRv2XYCCufC/w/pBiUqv4UvJ26+BtJaPROiuvPiJSc6aOSAEGsrVeOdhDJgwC
-	 WDCKkpRQjkVTT+wCidY2cjS5Qj/cMjfQmtnm22n0=
-Content-Disposition: inline
-In-Reply-To: <20120222014817.M7308@kdtc.net>
+In-Reply-To: <4F44979A.4030506@treenet.co.nz>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: cc <cc@kdtc.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed	delsp=yes"
+To: Amos Jeffries <squid3@treenet.co.nz>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Wed, Feb 22, 2012 at 10:04:32AM +0800, cc wrote:
-> Hi,
-> 
-> Long story short, I'm now rebuilding a netfilter firewall 
-> script as the original died with the firewall.  Well, died
-> in the sense that it got corrupted.
-> 
-> Instead of needing to specify the following for each required
-> port that needs to be used to connect to external sites,
-> how do I just let any traffic originating from the LAN
-> to connect?  (I'm feeling this isn't the right way of doing
-> things.  I appreciate any corrections.)
-> 
-> $IPT -t nat -A POSTROUTING -o $EXTETH -p tcp -s $LAN_NET \
->            --dport 1025: -j SNAT --to-source $EXTIP
-> 
-> But the above rule 'looks' like it should work; but it
-> doesn't.  tcpdumping the traffic, it seems the traffic is
-> going one way and not the other.
-> 
-> So if I want to set the firewall to allow the following
-> situations: machine A in $LAN_NET  wants to RDP to an external
-> site,  it can.  If machine B wants to surf the net, it also
-> can.  I don't need to separately do the following:
-> 
->   $IPT -A FORWARD -i $LANETH -o $EXTETH -p tcp -s $LAN_NET \
->            --dport 3389 -j ACCEPT
->   $IPT -A FORWARD -i $LANETH -o $EXTETH -p tcp -s $LAN_NET \
->            --dport 80 -j ACCEPT
->   $IPT -A FORWARD -i $LANETH -o $EXTETH -p tcp -s $LAN_NET \
->            --dport 443 -j ACCEPT
+On Wed, 22 Feb 2012 01:22:02 -0600, Amos Jeffries <squid3@treenet.co.nz> wrote:
 
-You need to allow the reply too, e.g. for tcp 443, you could add this
-rule:
-|   $IPT -A FORWARD -o $LANETH -i $EXTETH -p tcp -d $LAN_NET \
-|            --sport 443 -m state --state ESTABLISHED -j ACCEPT
+> I think the LB setup was suffering more from NAT than from routing issues. It is perfectly reasonable to expect that load balancer to work. Just as it would be perfectly reasonable to expect a router with an intermittent primary uplink to work with the same output style.
+> Only NAT on the LBs outbound interface or at the ISP level would cause the broken behaviour you describe.
+>AYJ
 
+I would certainly like to understand WHY I had to use connmarks to keep the packets belonging to a connection on the right interface.  However, I don't believe the problem was NAT, because the only changes I had to make to get this load-balancing router to work (that is, to stop breaking connections) were the ones I mentioned in a previous post.  I did not add or change any NAT rules.  The router is doing NAT the way it was before, set up with a command like this for each interface:
 
-Doing it this way, you'd also need to allow, at least, ICMP RELATED
-packets.
+iptables -t nat -A POSTROUTING -o ${interface} -j SNAT --to-source ${!wan}
 
+Furthermore, on this router I was already using connmark to mark and route packets for those destinations and origin IP for which we did not want to have load-balancing.  This by the way worked fine (connections were not broken).  The only thing I added to fix the connection-breaking was marking of NEW packets after netfilter had made the routing decision (based on either the routing cache or round-robin distribution).
 
-> 
->   $IPT -t nat -A POSTROUTING -o $EXTETH -p tcp -s $LAN_NET \
->           --dport 3389 -j SNAT --to-source $EXTIP
->   $IPT -t nat -A POSTROUTING -o $EXTETH -p tcp -s $LAN_NET \
->           --dport 80 -j SNAT --to-source $EXTIP
->   $IPT -t nat -A POSTROUTING -o $EXTETH -p tcp -s $LAN_NET \
->           --dport 443 -j SNAT --to-source $EXTIP
-> 
+I would like to know whether or not anyone has succeeded in doing load-balancing with "nexthop via..." over interfaces with *private* IPs.
 
-
-Instead of doing it per "tcp connection", if you don't have special
-needs, you could SNAT globally, allow the outbound traffic you want, and
-allow every inbound ESTABLISHED and RELATED traffic. e.g.:
-
-|   $IPT -t nat -A POSTROUTING -o $EXTETH -s $LAN_NET \
-|           -j SNAT --to-source $EXTIP
-|   $IPT -A FORWARD -o $LANETH -i $EXTETH -d $LAN_NET -m state \
-|           --state ESTABLISHED,RELATED -j ACCEPT
-|   $IPT -A FORWARD -i $LANETH -o $EXTETH -p tcp -d $LAN_NET \
-|           -m multiport --dports 80,443,3389 -j ACCEPT
-
-
-This may or may not suit you though.
-
-
-
-> 
-> 
-> Now if I remembered, I used MASQUERADE when I was using 
-> a dynamic IP.  Now with a fixed IP, I shouldn't be using
-> MASQUERADE (seems less of a headache) as the manual says 
-> it's more appropriate to use SNAT for fixed IP.
-> 
-> Any help/clarifications/hints appreciated.
-> 
-> Ed
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-- 
+Lloyd
