@@ -1,52 +1,60 @@
-From: Toralf =?utf-8?q?F=C3=B6rster?= <toralf.foerster@gmx.de>
-Subject: Kconfig: unmet direct dependencies in 3.3-rc4
-Date: Tue, 21 Feb 2012 22:21:26 +0100
-Message-ID: <201202212221.27202.toralf.foerster@gmx.de>
+From: "cc" <cc@kdtc.net>
+Subject: SNAT
+Date: Wed, 22 Feb 2012 10:04:32 +0800
+Message-ID: <20120222014817.M7308@kdtc.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="iso-8859-1"
-To: netdev@vger.kernel.org, netfilter@vger.kernel.org, dri-devel@lists.freedesktop.org
-Cc: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hello,
+Hi,
 
-running a few "make randconfigs" gave warnings (seen below) for the cur=
-rent=20
-git kernel tree. Are there already patches in -next for all ?
+Long story short, I'm now rebuilding a netfilter firewall 
+script as the original died with the firewall.  Well, died
+in the sense that it got corrupted.
+
+Instead of needing to specify the following for each required
+port that needs to be used to connect to external sites,
+how do I just let any traffic originating from the LAN
+to connect?  (I'm feeling this isn't the right way of doing
+things.  I appreciate any corrections.)
+
+$IPT -t nat -A POSTROUTING -o $EXTETH -p tcp -s $LAN_NET \
+           --dport 1025: -j SNAT --to-source $EXTIP
+
+But the above rule 'looks' like it should work; but it
+doesn't.  tcpdumping the traffic, it seems the traffic is
+going one way and not the other.
+
+So if I want to set the firewall to allow the following
+situations: machine A in $LAN_NET  wants to RDP to an external
+site,  it can.  If machine B wants to surf the net, it also
+can.  I don't need to separately do the following:
+
+  $IPT -A FORWARD -i $LANETH -o $EXTETH -p tcp -s $LAN_NET \
+           --dport 3389 -j ACCEPT
+  $IPT -A FORWARD -i $LANETH -o $EXTETH -p tcp -s $LAN_NET \
+           --dport 80 -j ACCEPT
+  $IPT -A FORWARD -i $LANETH -o $EXTETH -p tcp -s $LAN_NET \
+           --dport 443 -j ACCEPT
+
+  $IPT -t nat -A POSTROUTING -o $EXTETH -p tcp -s $LAN_NET \
+          --dport 3389 -j SNAT --to-source $EXTIP
+  $IPT -t nat -A POSTROUTING -o $EXTETH -p tcp -s $LAN_NET \
+          --dport 80 -j SNAT --to-source $EXTIP
+  $IPT -t nat -A POSTROUTING -o $EXTETH -p tcp -s $LAN_NET \
+          --dport 443 -j SNAT --to-source $EXTIP
 
 
-warning: (HAVE_TEXT_POKE_SMP) selects STOP_MACHINE which has unmet dire=
-ct=20
-dependencies (SMP && MODULE_UNLOAD ||=20
-HOTPLUG_CPU)
 
+Now if I remembered, I used MASQUERADE when I was using 
+a dynamic IP.  Now with a fixed IP, I shouldn't be using
+MASQUERADE (seems less of a headache) as the manual says 
+it's more appropriate to use SNAT for fixed IP.
 
-warning: (DRM_RADEON_KMS && DRM_I915 && STUB_POULSBO && FB_BACKLIGHT &&=
-=20
-USB_APPLEDISPLAY && FB_OLPC_DCON &&=20
-ASUS_LAPTOP && SONY_LAPTOP && THINKPAD_ACPI && EEEPC_LAPTOP && ACPI_ASU=
-S &&=20
-ACPI_CMPC && SAMSUNG_Q10) selects=20
-BACKLIGHT_CLASS_DEVICE which has unmet direct dependencies (HAS_IOMEM &=
-&=20
-BACKLIGHT_LCD_SUPPORT)
+Any help/clarifications/hints appreciated.
 
-
-warning: (WIMAX_IWMC3200_SDIO) selects IWMC3200TOP which has unmet dire=
-ct=20
-dependencies (MMC && EXPERIMENTAL)
-
-
-warning: (BRIDGE_NF_EBTABLES) selects NETFILTER_XTABLES which has unmet=
- direct=20
-dependencies (NET && INET && NETFILTER)
-
-
-
---=20
-MfG/Sincerely
-Toralf F=C3=B6rster
-pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
+Ed
