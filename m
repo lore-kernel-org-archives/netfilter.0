@@ -1,59 +1,74 @@
-From: Brian Austin - Standard Universal <brian@standarduniversal.com.au>
-Subject: Re: load-balancing router: trouble with breaking connections
-Date: Thu, 23 Feb 2012 07:57:31 +1100
-Message-ID: <4F4556BB.7020303@standarduniversal.com.au>
-References: <op.v9wbxmahx1lyi3@debiandesk2.net> <op.v918bckux1lyi3@debiandesk2.net> <4F446520.2010002@standarduniversal.com.au> <op.v92bnewzx1lyi3@debiandesk2.net> <4F44979A.4030506@treenet.co.nz> <op.v924y4pvx1lyi3@debiandesk2.net>
+From: "Rob Sterenborg (Lists)" <lists@sterenborg.info>
+Subject: Re: How to restrict torrent download  ?
+Date: Fri, 24 Feb 2012 06:59:01 +0100
+Message-ID: <1330063141.2851.1.camel@kushiel.sterenborg.info>
+References: <20120216160904.2ea59e26@shiva.selfip.org>
+	 <1329389715.3296.12.camel@ns014530.dcyb.net>
+	 <4F3CE276.4010500@cloudways.com> <20120216171502.78212a3e@shiva.selfip.org>
+	 <20120216171909.3a3cd4c1@shiva.selfip.org>
+	 <1329393715.3296.18.camel@ns014530.dcyb.net>
+	 <20120217171338.037087c5@shiva.selfip.org>
+	 <1329479608.3296.24.camel@ns014530.dcyb.net>
+	 <20120218210630.3bdd7683@shiva.selfip.org>
+	 <20120224103913.4bd282ff@shiva.selfip.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <op.v924y4pvx1lyi3@debiandesk2.net>
+In-Reply-To: <20120224103913.4bd282ff@shiva.selfip.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Lloyd Standish <lloyd@crnatural.net>
-Cc: Amos Jeffries <squid3@treenet.co.nz>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: "J. Bakshi" <joydeep@infoservices.in>
+Cc: netfilter <netfilter@vger.kernel.org>
+
+On Fri, 2012-02-24 at 10:39 +0530, J. Bakshi wrote:
+> On Sat, 18 Feb 2012 21:06:30 +0530
+> "J. Bakshi" <joydeep@infoservices.in> wrote:
+> 
+> > On Fri, 17 Feb 2012 12:53:28 +0100
+> > "Rob Sterenborg (lists)" <lists@sterenborg.info> wrote:
+> > 
+> > > On Fri, 2012-02-17 at 17:13 +0530, J. Bakshi wrote:
+> > > > I have installed xtables-addons-common in debian squeeze box.
+> > > > Then tried ti execute
+> > > > 
+> > > > #iptables -A FORWARD -m ipp2p --bit -j DROP
+> > > > 
+> > > > and it throws error
+> > > > 
+> > > > ``````````````
+> > > > iptables: No chain/target/match by that name.
+> > > > ```````````
+> > > > 
+> > > > Could anyone suggest what is wrong where ?
+> > > 
+> > > Does xt_ipp2p.ko exist?
+> > > 
+> > > # locate xt_ipp2p|grep modules
+> > > /lib/modules/2.6.39.1/extra/xt_ipp2p.ko
+> > > 
+> > > 
+> > > If it does: what does lsmod say?
+> > > 
+> > > # lsmod|grep "^xt_ipp2p"
+> > > xt_ipp2p                5611  0 
+> > > 
+> > 
+> > I have /lib/xtables/libxt_ipp2p.so
+> > 
+> > but
+> > 
+> > # lsmod|grep "ipp2p" gives nothing !!!
+> 
+> Any clue please ?
+
+I already did in a previous post:
+
+> That means the ipp2p module is not loaded so you likely can't use
+> the ipp2p match. Execute 'modprobe ipp2p' and try again.
 
 
+--
+Rob
 
-On 23/02/2012 1:53 AM, Lloyd Standish wrote:
-> On Wed, 22 Feb 2012 01:22:02 -0600, Amos Jeffries 
-> <squid3@treenet.co.nz> wrote:
->
->> I think the LB setup was suffering more from NAT than from routing 
->> issues. It is perfectly reasonable to expect that load balancer to 
->> work. Just as it would be perfectly reasonable to expect a router 
->> with an intermittent primary uplink to work with the same output style.
->> Only NAT on the LBs outbound interface or at the ISP level would 
->> cause the broken behaviour you describe.
->> AYJ
->
-> I would certainly like to understand WHY I had to use connmarks to 
-> keep the packets belonging to a connection on the right interface.  
-> However, I don't believe the problem was NAT, because the only changes 
-> I had to make to get this load-balancing router to work (that is, to 
-> stop breaking connections) were the ones I mentioned in a previous 
-> post.  I did not add or change any NAT rules.  The router is doing NAT 
-> the way it was before, set up with a command like this for each 
-> interface:
->
-> iptables -t nat -A POSTROUTING -o ${interface} -j SNAT --to-source 
-> ${!wan}
->
-> Furthermore, on this router I was already using connmark to mark and 
-> route packets for those destinations and origin IP for which we did 
-> not want to have load-balancing.  This by the way worked fine 
-> (connections were not broken).  The only thing I added to fix the 
-> connection-breaking was marking of NEW packets after netfilter had 
-> made the routing decision (based on either the routing cache or 
-> round-robin distribution).
->
-> I would like to know whether or not anyone has succeeded in doing 
-> load-balancing with "nexthop via..." over interfaces with *private* IPs.
->
-My set up has nat at the adsl modems, not at the linux box. So my router 
-is in private ip space on all interfaces.
-
-  I don't see how NAT could be an issue either, but I'm not a guru at 
-this - just enough to get it going.
-Without thorough conntrack, it was rubbish.
 
