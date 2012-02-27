@@ -1,182 +1,35 @@
-From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
-Subject: Re: fail in the connmark load-balancing
-Date: Mon, 27 Feb 2012 15:15:08 -0300
-Message-ID: <CAMTjHryS-nWPExfpprHeQ2UmW5O0bEthL+34p3RSqgAfHtk=4A@mail.gmail.com>
-References: <CAMTjHrw9SY99jV9iwVH2CaSX2s4s=m7wzSjYii_k_D8fmJrDzA@mail.gmail.com>
-	<1329084658.18690.375.camel@andrew-desktop>
-	<CAMTjHrx9EPdrBYPDSbo03wYxd8BGcqbwe3Ns3rxkK=wMOm8EUA@mail.gmail.com>
-	<CAMTjHrxzWaCx6Vp9r-x1JXBkMcdFz7gLEKYrwq5CQgveDhmshg@mail.gmail.com>
-	<1330167236.30413.175.camel@andrew-desktop>
+From: vivek rajagopalan <vivvek.r@gmail.com>
+Subject: Re: Source based routing using LKM
+Date: Mon, 27 Feb 2012 11:59:41 -0800
+Message-ID: <CAKbcA9KAuqiUCSDrMWySqkietE5V4COt08gcGUx4Gm1r6MOxvg@mail.gmail.com>
+References: <CAKbcA9L2XVTuR04TONTRo7ECrBip9VYWk3T_Ar2c_ucN1QqY_A@mail.gmail.com>
+	<alpine.LNX.2.01.1202111624290.22796@frira.zrqbmnf.qr>
+	<CAKbcA9+2iVyHdj5issA8MCHN12629B3yNdjrGmFEHuuzv9QDVQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1330167236.30413.175.camel@andrew-desktop>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=gamma;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type;
+        bh=fejzP6BSHwIr2okVzvpLi+54YJgXR3nY6P54K2L8ZYo=;
+        b=LDdJ8Fm4dR4eNQjah1/cavV62sgk2PoMUnG/LIrL/Y30F5MUX3fgNQeDbN2PXO61Tn
+         2uo7K08YwdY36IDDJF91nPo5hCxyNi24oOlZW6d/HCmv8J/4vhwzwaG45aDscxb8wVfg
+         9TjYBv6MAR1eFTXTvu6ETX1AIk1tC0wULuPV0=
+In-Reply-To: <CAKbcA9+2iVyHdj5issA8MCHN12629B3yNdjrGmFEHuuzv9QDVQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Andrew Beverley <andy@andybev.com>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jan Engelhardt <jengelh@medozas.de>
+Cc: netfilter@vger.kernel.org
 
-I can't see any restoration of the marks. You are marking the connectio=
-n
-when it is NEW, but "ip rule fwmark" will match on the packet's mark, s=
-o
-you need to copy the connection mark to the packet mark with "-j
-CONNMARK --restore-mark".
-
-
-Thank you Andy, really I have figure out this issue.....go ahead
-
-
-I forgotten include my CONNMARK RESTORE rule at the last message....
-so follow my whole script.
-
-there are two PREROUTING rule for new connections that they should do
-the load-balance but I wonder when the socond rule CONNMARK2 coming
-use it ?? I think never because data flows always going to into at the
-first rule ( CONNMARK1 ). so the second rule never is using! I think
-the statistc module could do that rotate at the use rules...but
-doesn't work!
-
-
-
-eth1: LAN Interface
-eth0: WAN1
-eth2: WAN2
-
-
-#!/bin/bash
-
-# flush all iptables entries
-iptables -t filter -F
-iptables -t filter -X
-iptables -t nat -F
-iptables -t nat -X
-iptables -t mangle -F
-iptables -t mangle -X
-iptables -t filter -P INPUT ACCEPT
-iptables -t filter -P OUTPUT ACCEPT
-iptables -t filter -P FORWARD ACCEPT
-
-iptables -t mangle -N CONNMARK1
-iptables -t mangle -A CONNMARK1 -j MARK --set-mark 1
-iptables -t mangle -A CONNMARK1 -j CONNMARK --save-mark
-
-
-iptables -t mangle -N CONNMARK2
-iptables -t mangle -A CONNMARK2 -j MARK --set-mark 2
-iptables -t mangle -A CONNMARK2 -j CONNMARK --save-mark
-
-iptables -t mangle -N RESTOREMARK
-iptables -t mangle -A RESTOREMARK -j CONNMARK --restore-mark
-
-
-iptables -t nat -N SNAT1
-iptables -t nat -A SNAT1 -j SNAT --to-source 192.168.217.254
-
-iptables -t nat -N SNAT2
-iptables -t nat -A SNAT2 -j SNAT --to-source 192.168.216.254
-
-
-iptables -t mangle -A PREROUTING -i eth1 -s 0/0 -d 0/0 -m state
---state ESTABLISHED,RELATED -j RESTOREMARK
-iptables -t mangle -A PREROUTING -p tcp -m state --state NEW -m
-statistic --mode nth --every 2 --packet 0 -j CONNMARK1
-iptables -t mangle -A PREROUTING -p tcp -m state --state NEW -m
-statistic --mode nth --every 2 --packet 1 -j CONNMARK2
-
-iptables -t nat -A POSTROUTING -o eth2 -j SNAT1
-iptables -t nat -A POSTROUTING -o eth0 -j SNAT2
-
-ip route add 192.168.217.0 via 192.168.217.1 table oitelecom
-ip route add 192.168.216.0 via 192.168.216.1 table gvttelecom
-ip route add default via 192.168.217.1 table oitelecom
-ip route add default via 192.168.216.1 table gvttelecom
-
-ip rule del from 192.168.217.254 table oitelecom
-ip rule add from 192.168.217.254 table oitelecom
-
-ip rule del fwmark 1 table oitelecom
-ip rule del fwmark 2 table gvttelecom
-
-ip rule add fwmark 1 table oitelecom
-ip rule add fwmark 2 table gvttelecom
-ip route flush cache
-
-
-thanks....any tips is welcome.
-
-
-
-
-
-
-
-
-
-
-Em 25 de fevereiro de 2012 08:53, Andrew Beverley <andy@andybev.com> es=
-creveu:
->> >> If it's not working, there must be another problem. Please show t=
-he
->> >> output of "ip rule show", "ip ro" and "ip ro show table <table>" =
-for
->> >> each of your tables where <table> is the name of the tables.
+>> Changing the addresses in-flight breaks end-to-end connectivity. It will
+>> be better if you would, for example, mark the packets in the RX
+>> path, based upon your desired criteria, and reuse this mark value to
+>> select the routing table.
 >
->>
->> [root@mtjve sbin]# ip ro
->> 192.168.215.0/24 dev eth1 =A0proto kernel =A0scope link =A0src 192.1=
-68.215.1
->> 192.168.217.0/24 dev eth2 =A0proto kernel =A0scope link =A0src 192.1=
-68.217.254
->> 192.168.216.0/24 dev eth0 =A0proto kernel =A0scope link =A0src 192.1=
-68.216.254
->> default via 192.168.216.1 dev eth0
->>
->>
->> [root@mtjve sbin]# ip rule show
->> 0: =A0 =A0from all lookup 255
->> 32763: =A0 =A0 =A0 =A0from all fwmark 0x2 lookup gvttelecom
->> 32764: =A0 =A0 =A0 =A0from all fwmark 0x1 lookup oitelecom
->> 32765: =A0 =A0 =A0 =A0from 192.168.217.254 lookup oitelecom
->> 32766: =A0 =A0 =A0 =A0from all lookup main
->> 32767: =A0 =A0 =A0 =A0from all lookup default
->>
->> [root@mtjve sbin]# ip ro show table oitelecom
->> 192.168.217.0 via 192.168.217.1 dev eth2
->> 192.168.217.254 via 192.168.217.1 dev eth2
->> default via 192.168.217.1 dev eth2
->>
->> [root@mtjve sbin]# ip ro show table gvttelecom
->> 192.168.216.0 via 192.168.216.1 dev eth0
->> default via 192.168.216.1 dev eth0
->>
->>
->> I think here is the issue! there are two PREROUTING rule that they
->> should do the load-balance but I wonder when the socond rule (
->> CONNMARK2 ) coming use it ?? I think never because data flows always
->> going to into at the first rule ( CONNMARK1 ). so...the second rule
->> never is using! today I have done a test download from three diferen=
-te
->> sites and the load-balance it wasn't work.
->>
->>
->> eth1: is my lan interface
->>
->> iptables -t mangle -A PREROUTING -i eth1 -s 0/0 -d 0/0 -m state
->> --state NEW -m statistic --mode nth --every 2 --packet 0 -j CONNMARK=
-1
->> iptables -t mangle -A PREROUTING -i eth1 -s 0/0 -d 0/0 -m state
->> --state NEW -m statistic --mode nth --every 2 --packet 1 -j CONNMARK=
-2
->
-> I can't see any restoration of the marks. You are marking the connect=
-ion
-> when it is NEW, but "ip rule fwmark" will match on the packet's mark,=
- so
-> you need to copy the connection mark to the packet mark with "-j
-> CONNMARK --restore-mark".
->
-> Andy
->
->
+> I will explore this, thanks
+
+Usage of mark (skb->mark in my case) along with policy based routing
+helped me achieve what i wanted to do with source address based
+routing. Thanks a ton for the pointer
