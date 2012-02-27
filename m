@@ -1,7 +1,7 @@
 From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
 Subject: Re: fail in the connmark load-balancing
-Date: Mon, 27 Feb 2012 13:40:56 -0300
-Message-ID: <CAMTjHrza5-dZM=2+XLsW4jU7nwNGNzXCLzqEkEZjhnMmmj=baQ@mail.gmail.com>
+Date: Mon, 27 Feb 2012 14:07:47 -0300
+Message-ID: <CAMTjHryETBpL-uhB8Xr22xza_cZ6gFnX6hTsDzkK5uEDaTEsMQ@mail.gmail.com>
 References: <CAMTjHrw9SY99jV9iwVH2CaSX2s4s=m7wzSjYii_k_D8fmJrDzA@mail.gmail.com>
 	<1329084658.18690.375.camel@andrew-desktop>
 	<CAMTjHrx9EPdrBYPDSbo03wYxd8BGcqbwe3Ns3rxkK=wMOm8EUA@mail.gmail.com>
@@ -97,12 +97,6 @@ ip route flush cache
 
 
 thanks....any tips is welcome.
-
-
-
-
-
-
 
 
 
