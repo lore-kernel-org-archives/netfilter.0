@@ -1,7 +1,7 @@
 From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
 Subject: Re: fail in the connmark load-balancing
-Date: Mon, 27 Feb 2012 14:07:47 -0300
-Message-ID: <CAMTjHryETBpL-uhB8Xr22xza_cZ6gFnX6hTsDzkK5uEDaTEsMQ@mail.gmail.com>
+Date: Mon, 27 Feb 2012 15:15:08 -0300
+Message-ID: <CAMTjHryS-nWPExfpprHeQ2UmW5O0bEthL+34p3RSqgAfHtk=4A@mail.gmail.com>
 References: <CAMTjHrw9SY99jV9iwVH2CaSX2s4s=m7wzSjYii_k_D8fmJrDzA@mail.gmail.com>
 	<1329084658.18690.375.camel@andrew-desktop>
 	<CAMTjHrx9EPdrBYPDSbo03wYxd8BGcqbwe3Ns3rxkK=wMOm8EUA@mail.gmail.com>
@@ -16,6 +16,14 @@ List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
 To: Andrew Beverley <andy@andybev.com>
 Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+
+I can't see any restoration of the marks. You are marking the connectio=
+n
+when it is NEW, but "ip rule fwmark" will match on the packet's mark, s=
+o
+you need to copy the connection mark to the packet mark with "-j
+CONNMARK --restore-mark".
+
 
 Thank you Andy, really I have figure out this issue.....go ahead
 
@@ -97,6 +105,8 @@ ip route flush cache
 
 
 thanks....any tips is welcome.
+
+
 
 
 
