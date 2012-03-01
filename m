@@ -1,27 +1,49 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH 3/3] netfilter: Remove redundant code.
-Date: Thu, 1 Mar 2012 13:30:59 +0100
-Message-ID: <20120301123059.GB7250@1984>
-References: <1330593466-19317-1-git-send-email-santoshprasadnayak@gmail.com>
+Subject: Re: [PATCH 1/3] netfilter: Fix copy_to_user too small size
+ parametre.
+Date: Thu, 1 Mar 2012 14:03:11 +0100
+Message-ID: <20120301130311.GA7429@1984>
+References: <1330593390-19233-1-git-send-email-santoshprasadnayak@gmail.com>
+ <20120301101809.GA6488@1984>
+ <CAOD=uF6yqCETUG8jMCmjYDM+L1DsM91OiRveONJkNxMf=skTSg@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Return-path: <netdev-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1330593466-19317-1-git-send-email-santoshprasadnayak@gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+In-Reply-To: <CAOD=uF6yqCETUG8jMCmjYDM+L1DsM91OiRveONJkNxMf=skTSg@mail.gmail.com>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: santosh nayak <santoshprasadnayak@gmail.com>
-Cc: bart.de.schuymer@pandora.be, kaber@trash.net, shemminger@vyatta.com, davem@davemloft.net, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, bridge@lists.linux-foundation.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+To: santosh prasad nayak <santoshprasadnayak@gmail.com>
+Cc: bart.de.schuymer@pandora.be, kaber@trash.net, shemminger@vyatta.com, davem@davemloft.net, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, bridge@lists.linux-foundation.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org, Dan Carpenter <dan.carpenter@oracle.com>
 
-On Thu, Mar 01, 2012 at 02:47:46PM +0530, santosh nayak wrote:
-> From: Santosh Nayak <santoshprasadnayak@gmail.com>
+On Thu, Mar 01, 2012 at 04:15:05PM +0530, santosh prasad nayak wrote:
+> Hi Pablo.
 > 
-> Remove the redundant code.
+> copy_to_user( dest, source, length)
+> 
+> Normally,  'length'  is equal to  'sizeof (source) '.
+> 
+> In this case "length"   =   32
+>        "sizeof(source)"  =   29.
+> 
+> Is it intentional ?
 
-This is a cleanup.
+ebtables expects 32 bytes names.
 
-I'll enqueue it for net-next, but I have to wait until 2/3 hits Linus
-tree, so I'll store this locally until I can apply it.
+> Won't it copy extra 3 bytes of kernel data to userspace ?
 
-Thank you!
+You're right. We have to copy 29 bytes but we have to fill the
+remaining bytes with zeroes. I think something like:
+
+char name[EBT_FUNCTION_MAXNAMELEN] = {};
+
+/* user-space ebtables expects 32 bytes-long names, but xt_match uses
+ * 29 bytes for that. */
+sprintf(name, "%s", m->u.match->name);
+if (copy_to_user(hlp, name, EBT_FUNCTION_MAXNAMELEN))
+...
+
+will resolve this issue.
+
+Would you resend a new patch?
