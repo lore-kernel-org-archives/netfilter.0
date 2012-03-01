@@ -1,43 +1,50 @@
-From: jonetsu <jonetsu@teksavvy.com>
-Subject: ip_conntrack_icmp_timeout now taking effect
-Date: Thu, 1 Mar 2012 08:39:08 -0500
-Message-ID: <20120301083908.7646c423@mistral.stie>
+From: John Corps <envoys@gmail.com>
+Subject: IPTABLES Setup for Internal Intranet
+Date: Thu, 1 Mar 2012 15:07:42 -0500
+Message-ID: <CAFURDX93mPW2capiuwB5vL8MP3hNEW3xHT85O=xEBKY8_Ew3Rg@mail.gmail.com>
+References: <CAFURDX_e4eU8nKFSmweCKP_LaE9z_8S2cZrk93_r0UnKXGeYjA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :content-type;
+        bh=uszWS8SIez+efFJ/QvcDFV6yEag6kRVSB0DSjMfesGE=;
+        b=YUN+M/8wpT2Nv2TVTxBG2qnfBeqI0S+A6/SKFfRQPSikcr4UqHb/93KhG6GEJMJukt
+         XxjxwgzMee8e/Amc1bCYsoTYKMVw87FJOC6Y9v2Ys9FH294BVx994plvlxS+VFa4vsuR
+         Z7IQ8UfXVX7RAHLJCJxB3090mht3P+kpXEmUFKhwBXlX9UZA6M3zqy9H522QvF2r5ern
+         LiUvldssSGErVbGAfhzhjn0zeEw2NO/0CaWIJOLT8Q5PidFe5qCIgHE/cTqHblL9vF3R
+         XeICXu2+DDc7l367W9oA+J566SI0tTHajcR5T/vwwAS67K326coarJ5q9ud0vJhDkx8w
+         q6Yg==
+In-Reply-To: <CAFURDX_e4eU8nKFSmweCKP_LaE9z_8S2cZrk93_r0UnKXGeYjA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello,
+Hello All,
 
-  I noticed that in both kernel versions 2.6.26 and 3.0 that the value
-of ip_conntrack_icmp_timeout is by default 30.  However when setting up
-the most simple firewall with a policy of DROPing everything, that a
-continuous remote ping that was started right before setting up the
-firewall will continue with kernel 3.0 whereas with kernel 2.6.26 it
-will be stopped as soon as the firewall is established.  No flushing of
-tables is done prior to setting up the simple test firewall in both
-cases. The unit booted with no firewall, all in ACCEPT, before these
-tests were made.
+I am attempting what is seeming to be an impossible scenario for some
+unknown reason. What I want to do is setup a web server in a an
+isolated vlan and on this vlan, the server is handing out IP addresses
+via dhcp to the clients and setting there gateway to this server. What
+I want to do is now, how do i make it so no matter what address they
+try and go to using a browser, they are automatically redirected to
+the internal web server saying that they do not have access to this
+network. I have tried with a clean install of Debian and doing 1
+single iptables rule of:
 
-  This is quite a change of behaviour.  Flushing everything before
-establishing the firewall solves the problem but is not the best
-solution as it is possible to remotely be ssh-logged on the unit to make
-firewall changes.  Flushing everything would mean that any error made
-while setting the firewall could cut off the remote ssh session, and
-could prevent establishing a new one.
+iptables -t nat -A PREROUTING -s 192.168.0.0/255.255.255.0 -p tcp -m
+tcp --dport 80 -j DNAT --to-destination 192.168.0.1
 
-  Having a value of 1 in ip_conntrack_icmp_timeout stops the continuous
-pings when establishing the firewall but this can very likely have
-negative effects when pinging under normal circumstances on a slow
-connection.
+Which should redirect all traffic going to port 80 to the internal web
+server at 192.168.0.1.
 
-  What is there to do to be able to stop pings as soon as the firewall
-is set up while keeping the now-observed icmp conntrack timeout ?  Is
-it possible to selectively flush only the ICMP connection tracking
-table ?
+This isn't working, but on the client I can go to http://192.168.0.1
+and get the page saying they have no access.
 
-  Any suggestions greatly appreciated, thanks.
+Am i missing something here or should this work? if it should work,
+can anyone try and help as to why it doesn't?
 
+Thanks.
