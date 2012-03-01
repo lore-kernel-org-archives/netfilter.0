@@ -1,53 +1,103 @@
-From: John Lister <john.lister@kickstone.com>
-Subject: Re: IPTABLES Setup for Internal Intranet
-Date: Thu, 01 Mar 2012 20:19:06 +0000
-Message-ID: <4F4FD9BA.7010906@kickstone.com>
-References: <CAFURDX_e4eU8nKFSmweCKP_LaE9z_8S2cZrk93_r0UnKXGeYjA@mail.gmail.com> <CAFURDX93mPW2capiuwB5vL8MP3hNEW3xHT85O=xEBKY8_Ew3Rg@mail.gmail.com>
+From: "Lesley Kimmel" <lesley.j.kimmel@cox.net>
+Subject: Private IP Getting Past IPTables
+Date: Thu, 1 Mar 2012 17:32:00 -0600
+Message-ID: <4735183F49074B86A8375F2D6E998E2E@LesKimmelPC>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAFURDX93mPW2capiuwB5vL8MP3hNEW3xHT85O=xEBKY8_Ew3Rg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: John Corps <envoys@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed	reply-type=original"
+To: netfilter@vger.kernel.org
 
-On 01/03/2012 20:07, John Corps wrote:
-> Hello All,
->
-> I am attempting what is seeming to be an impossible scenario for some
-> unknown reason. What I want to do is setup a web server in a an
-> isolated vlan and on this vlan, the server is handing out IP addresses
-> via dhcp to the clients and setting there gateway to this server. What
-> I want to do is now, how do i make it so no matter what address they
-> try and go to using a browser, they are automatically redirected to
-> the internal web server saying that they do not have access to this
-> network. I have tried with a clean install of Debian and doing 1
-> single iptables rule of:
->
-> iptables -t nat -A PREROUTING -s 192.168.0.0/255.255.255.0 -p tcp -m
-> tcp --dport 80 -j DNAT --to-destination 192.168.0.1
->
-> Which should redirect all traffic going to port 80 to the internal web
-> server at 192.168.0.1.
->
-> This isn't working, but on the client I can go to http://192.168.0.1
-> and get the page saying they have no access.
->
-> Am i missing something here or should this work? if it should work,
-> can anyone try and help as to why it doesn't?
->
-I would imagine you'd need a similar SNAT rule to do the reverse. Any 
-packet redirected to your internal server would to that server appear to 
-come from your internal network so the reply packet will be sent direct 
-and not via your router/iptables box. Therefore the client would see a 
-packet coming from a different address to the one it sent the original 
-to and ignore it. Doing a SNAT from the iptables box on those packets 
-using the router address as the source should work..
+All;
 
-John
+We have a Linux virtual server which we use as a NAT/Router (running
+IPTables 1.2.11) to front-end a set of virtual machines on a private
+(192.168.0.x) network. In this private network are two web servers and =
+a few
+other application servers. Our intent is to utilize two public IP addre=
+sses
+on the NAT server to NAT to each back-end web server:
 
--- 
-www.pricegoblin.co.uk
+External Interfaces:
+eth1 =3D xxx.xxx.xxx.1 =3D> 192.168.0.1 (webserver #1)
+eth1:0 =3D xxx.xxx.xxx.2 =3D> 192.168.0.2 (webserver #2)
+Internal Interface:
+eth0 =3D 192.168.0.3
+
+We had accomplished this with the following IPTables configuration
+Table: nat
+Chain PREROUTING (policy DROP)
+target prot in out source destination
+DNAT tcp eth1 any anywhere xxx.xxx.xxx.1 to:192.168.0.1
+DNAT tcp eth1 any anywhere xxx.xxx.xxx.2 to:192.168.0.2
+ACCEPT all eth0 any 192.168.0.0/24 anywhere #(to allow all outgoing tra=
+ffic)
+
+Chain POSTROUTING (policy DROP)
+target prot in out source destination
+SNAT all any eth1 192.168.0.1 xxx.xxx.xxx.1
+SNAT all any eth1 192.168.0.2 xxx.xxx.xxx.2
+SNAT all any eth1 192.168.0.0/24 xxx.xxx.xxx.1 #SNAT all other traffic =
+to ip
+#1
+
+Chain OUTPUT (policy ACCEPT)
+
+Table: filter
+Chain Input (policy ACCEPT)
+target prot in out source destination
+
+Chain FORWARD (policy ACCEPT)
+target prot in out source destination
+
+Chain OUTPUT (policy ACCEPT)
+target prot in out source destination
+
+Everything APPEARS to work correctly with this configuration. However,
+several times a day network monitoring tools on the public side of the =
+NAT
+server see packets with source addresses from the private network (e.g.
+192.168.0.4). In order to troubleshoot we minimized our configuration t=
+o try
+to isolate the problem. We took out the NATing for the second IP:
+
+Table: nat
+Chain PREROUTING (policy DROP)
+target prot in out source destination
+DNAT tcp eth1 any anywhere xxx.xxx.xxx.1 to:192.168.0.1
+ACCEPT all eth0 any 192.168.0.0/24 anywhere #(to allow all outgoing tra=
+ffic)
+
+Chain POSTROUTING (policy DROP)
+target prot in out source destination
+SNAT all any eth1 192.168.0.1 xxx.xxx.xxx.1
+
+Chain OUTPUT (policy ACCEPT)
+
+Table: filter
+Chain Input (policy ACCEPT)
+target prot in out source destination
+
+Chain FORWARD (policy ACCEPT)
+target prot in out source destination
+
+Chain OUTPUT (policy ACCEPT)
+target prot in out source destination
+
+With this configuration the 'leaking' of the private IP addresses seems=
+ to
+stop. However, we need to have the functionality of the second IP addre=
+ss.
+Any insight into why the 'leak' is happening and how we can add the sec=
+ond
+IP back in?
+
+Also, a tcpdump on the NAT box shows that the majority of the TCP conne=
+ction
+is performing as expected. At some random times a few packets will =E2=80=
+=98escape=E2=80=99.
+These packets have always been either FIN or RST packets.
+
 
