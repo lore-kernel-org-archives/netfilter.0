@@ -1,49 +1,39 @@
-From: Bart De Schuymer <bdschuym@pandora.be>
-Subject: Re: [PATCH 2/3] netfilter: potential null derefence.
-Date: Fri, 02 Mar 2012 22:31:23 +0100
-Message-ID: <4F513C2B.6030604@pandora.be>
-References: <1330593434-19275-1-git-send-email-santoshprasadnayak@gmail.com>
-	<20120301123004.GA7250@1984>
+From: "cmlitgUy@gmail.com" <cmlitguy@gmail.com>
+Subject: Make a redirect if NAT out interface is down
+Date: Sat, 03 Mar 2012 01:45:55 +0200
+Message-ID: <4F515BB3.2060603@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <bridge-bounces@lists.linux-foundation.org>
-In-Reply-To: <20120301123004.GA7250@1984>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/bridge>, 
-	<mailto:bridge-request@lists.linux-foundation.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/bridge/>
-List-Post: <mailto:bridge@lists.linux-foundation.org>
-List-Help: <mailto:bridge-request@lists.linux-foundation.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/bridge>,
-	<mailto:bridge-request@lists.linux-foundation.org?subject=subscribe>
-Sender: bridge-bounces@lists.linux-foundation.org
-Errors-To: bridge-bounces@lists.linux-foundation.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=message-id:date:from:user-agent:mime-version:to:subject
+         :content-type:content-transfer-encoding;
+        bh=VOV112841xjTnR0J79VRYnNOWBiDcvDc0Wibca1szfg=;
+        b=URT2f0qhns4bzf17C8sZ4YylDAW9YIcEoJGOdFJwKPZcsocMM/U29Gjn78fq43Wl6l
+         J9tciW/k0dehVfy8alMgT6UHLilh6n+62e8zKLHkvTpC2C4YeNGWS/cidOSts44cTr+K
+         ll7z0c+QrJRjDSZTPmu5Uesx+vYm6my4vhn7dyJWhovqqudyhREPUESTYRRG6FW6cWnC
+         IUgTJwLzvJ40OR7DX9FSD5/HdXazRNyJgQlA8UI6z9zJqhnPpt+BklwF3CSX89qVcwsp
+         AFIdlHlxJlDWVw83pHdC+spab8HvYwFwHwys9fgt+xqbP/08qgmv/jmevGuR38qusDZT
+         cI9Q==
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: santosh nayak <santoshprasadnayak@gmail.com>, coreteam@netfilter.org, netdev@vger.kernel.org, bridge@lists.linux-foundation.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, netfilter@vger.kernel.org, bart.de.schuymer@pandora.be, netfilter-devel@vger.kernel.org, shemminger@vyatta.com, davem@davemloft.net
+To: netfilter@vger.kernel.org
 
-Op 1/03/2012 13:30, Pablo Neira Ayuso schreef:
-> On Thu, Mar 01, 2012 at 02:47:14PM +0530, santosh nayak wrote:
->> From: Santosh Nayak<santoshprasadnayak@gmail.com>
->>
->> I am getting following error.
->> " net/bridge/netfilter/ebtables.c:269 ebt_do_table()
->>    error: potential null derefence 'cs'"
->>
->>      i = cs[sp].n;  // If cs == Null then this will cause problem.
->
-> Very sorry, I didn't see the out label.
->
-> I'll apply this to my nf [1] once David takes my previous request for
-> pulling.
->
+Hello,
+I have a question about possibility of making a redirect if  NAT out 
+interface tun0 is down.
+This is iptables rule for Masquerading our network via VPN connection.
 
-Hi,
+iptables  --table  nat  --append  POSTROUTING  --out-interface  tun0  -j  MASQUERADE  -m  comment  --comment  "Masquerading"
 
-Has this patch been tested? Really, that code in the core firewall 
-function is there for a reason, wouldn't you think?
-The chainstack is only allocated when user-defined chains are used (see 
-translate_table).
-Never blindly trust a tool.
+When VPN goes down, we can't access some resources and we need to verify 
+its status and establish it again.
+Is it possible to make a redirect of all traffic to another host - Web 
+Site(via IP address) of tun0 is down ?
+In this case all users immediately be seen that VPN should be established.
 
-Bart
+Thanks.
+
+Sorry for my English.
