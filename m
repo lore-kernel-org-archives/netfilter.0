@@ -1,81 +1,92 @@
-From: Arif Hossain <freefall1986@gmail.com>
-Subject: netfilter_queue : use --queue-balance in multithreaded environment
-Date: Fri, 02 Mar 2012 15:38:40 +0600
-Message-ID: <1330681120.2106.14.camel@arifLaptop>
+From: Roberto Suarez Soto <robe@allenta.com>
+Subject: High ksoftirqd CPU load, high latency
+Date: Fri, 02 Mar 2012 10:51:26 +0100
+Message-ID: <4F50981E.8020107@allenta.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
-	boundary="=-ZrvuJzzWES9k5TR/Gw1j"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=message-id:subject:from:to:date:content-type:x-mailer:mime-version;
-        bh=qRqlE0QFZQkB4HtieRCnikkQy4xrDv2SiCshqGoLd8s=;
-        b=P2ccB4ZGYLJSRVZ6JUDwlWfQYDd2YnMzXmWinH+B9e1Sb55Yg8rMvQnT0OeZVBBcBW
-         BXYEN/MTaa0kk3Hm0gmSSyAnY+B+1omv7rpTQHAwh8HV1HPkL6JJwogdFFRzvpG6lIEj
-         SHtdvnpUWElM1sEeBdqmkypRNRgF8HxzPPZRgET3GgiqtytFCanPTjky6hxQ/Ra+mk3h
-         YwHb4rnUwzS/nyoi8Og+flAh7TaoOdSH3KPNERBZ7aJp3FgXJzy2RJRWDupn2LBXWlGx
-         z1G5AilXm+5zTsx7Irb6yE/KLJwf6gZlZahiQ4SXQBP4CEEKZb40hRFEqVtnX/jhwGeb
-         8Isg==
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
-
-
---=-ZrvuJzzWES9k5TR/Gw1j
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
 Hi,
 
-I'm using libnetfilter_queue for userspace modification of
-incoming/outgoing packets. I have been using a single threaded model.
-But i've found out that from 2.6.31 kernel, its possible to have
-different queues for different connection. so i was wandering if its
-possible to manage each queues in different threads.
+	we've got a load problem in a firewall we administer, and we believe it could 
+be related to iptables. But we don't know for sure, and don't know either how 
+to confirm or deny it. I'm quite at a loss, and would like to get the list's 
+opinion/ideas/voodoo magic/hints on the issue. Thanks in advance!
 
-normally i set up the queue handling like bellow:
+	The symptoms are:
 
-struct nfq_handle * h =3D nfq_open();
-nfq_unbind_pf(h, AF_NET);
-nfq_bind_pf(h,m AF_NET);
-struct nfq_q_handle(h, 0, &cb, NULL);
-nfq_set_mode(qh, NFQNL_COPY_PACKET, 0xffff);
+	- High ksoftirqd load in one CPU (the one assigned to the LAN ethernet's IRQ)
+	- High network latency in the LAN, even from another box in the same switch
+	- Growing system load (up to 6) until ksoftirqd load decreases
 
-now if i want to manage like 100 queues, i will pack h,qh and que_num in
-a structure and loop over it to initialize.
+	About the system:
 
-now my question is :
+	- Two-node cluster, active/passive (problem reproduced in any of the boxes 
+that is active at that moment)
+	- Running Debian Squeeze (kernel 2.6.32-5-686-bigmem)
+	- Two Intel Xeon CPUs, 8GB RAM, no other services but firewalling
+	- Four network interfaces: WAN, LAN and cluster sync (a bit more about this 
+later)
+	- Two Intel 82571EB NICs (e1000e driver, PCI card) and Broadcom BCM5708 
+(bnx2, on board), connected to 100Mbps switches
+	- NICs are: Intel for WAN, Broadcom for LAN and cluster sync
+	- All NICs appear as "PCI-MSI-Edge" in /proc/interrupts
 
-if i initialize above in the main thread and want to run the callbacks
-in threads, is it enough to run infinite loop in a function which will
-be given to pthread_create()? Will it run the callbacks in threads?=20
+	netfilter stats:
 
-i'm not sure, but my understanding tells me, a packet is popped from the
-queues when nfq_set_verdict is returned. so i need to run
-nfq_set_verdict in separate threads so that i packets can be popped from
-queues parallel.=20
---=20
-"You have a voice"
-                                        ----The King's Speech
+	- nf_conntrack_buckets is 16384
+	- nf_conntrack_max is 1048576
+	- nf_conntrack_count is usually around 25k-30k
+	- About 2200 iptables rules, 800 of them for NAT (I read somewhere that NAT 
+is an expensive process, that's why I'm remarking that)
 
-Public Key : $ gpg --keyserver keyserver.ubuntu.com --recv-key C88CFC23
+	As the problem seems to arise in the CPU assigned to the LAN NIC (according 
+to /proc/interrupts), we tried two things:
 
---=-ZrvuJzzWES9k5TR/Gw1j
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+	- Changed coalescing values with ethtool, to send more frames per IRQ (didn't 
+hurt, but didn't solve the problem either)
+	- Created a "bond0" in balance-rr mode, aggregating the previous LAN NIC and 
+one of the Intels that wasn't in use (less IRQ calls in /proc/interrupts, but 
+didn't fix the problem; also, there's now an "events" process in peak times 
+that also occupies CPU and I think wasn't there before, but I'm a bit paranoid 
+and could be wrong)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (GNU/Linux)
+	A few statistics when the problem appears:
 
-iQEcBAABAgAGBQJPUJUgAAoJEDcRh2vIjPwjCtkIAKm/k/JemUOzWxI42FhuFnep
-lCXpShKCVxVY187c2XSK2F9zR8BmsNjpG3/AR20LPJ5/6vhQSE9/4Re0SUsEzKPe
-olblSQNgQ1BwJ9a9AGboEV5QpZpKJh0Fm5lAXv8nfOqBBfVIjRbSBlsotGAVsmR+
-xT+aJIGZSoowyrhxQLEs+Fg5KVcsC52o61Vj2z4eTRuTBEr3w4J1sXWAGIbbVXSL
-4Ro2BdJG7CkZMft7jY8RECjm97tBTPX+5R3paeJXUskcdghrgqVKC6ejpsQEzFmz
-VkEsGCb1P+8CIhgZxpuzO6I18+rDll7w/HqOW1Djz2Poc2VFY10bVFI8uKbAvks=
-=6gEn
------END PGP SIGNATURE-----
+	- Packet count is around 3k-4k per second (counting both NICs), both incoming 
+and outgoing (i.e., 3k-4k incoming, 3k-4k outgoing)
+	- Traffic is around 3MBytes/s (counting both NICs), both incoming and outgoing
+	- Packet drops rise to 200-300 per second (counting both NICs), usually is 0
 
---=-ZrvuJzzWES9k5TR/Gw1j--
+	Strange things that I've seen:
 
+	- There are higher packet and traffic counts in other moments (4k-5k pps; 5-8 
+MBytes/s), and the problem doesn't appear
+	- Using "sar -I 98,99" (being those the interrupts for the NICs in the bond), 
+I've seen that the IRQ count per second seems to be 0 most of the time, only 
+rising from time to time; I suppose it's because of the coalescing values, but 
+I found it strange anyway
+	- Though now there's a bond, ksoftirqd seems to be heavy only in one CPU; I 
+haven't confirmed it 100%, but it seems it's in the one assigned to the 
+Broadcom NIC; /proc/interrupts doesn't report a high IRQ usage, so I don't 
+know what can be causing that
+
+	Could this problem be related to iptables? I've trimmed a few rules 
+(previously there were almost 3000), but it keeps happening. And I don't 
+believe those are too many rules, anyway.
+
+	Also, is there anything else I can do to debug the problem? Unfortunately, 
+this is a production firewall and I can't do anything that means an outtage 
+without serious justification. But maybe there's something that gives us a 
+better idea of where the bottleneck is.
+
+	Thanks,
+
+-- 
+         Roberto Suarez Soto                             Allenta Consulting
+         robe@allenta.com                                   www.allenta.com
+                                                            +34 881 922 600
