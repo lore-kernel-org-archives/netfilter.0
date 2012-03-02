@@ -1,101 +1,81 @@
-From: "Lesley Kimmel" <ljkimmel99@hotmail.com>
-Subject: Private IP getting past IPTables NAT
-Date: Thu, 1 Mar 2012 21:53:05 -0600
-Message-ID: <SNT143-ds16D3D97D04EB6A5DC9E540C26D0@phx.gbl>
+From: Arif Hossain <freefall1986@gmail.com>
+Subject: netfilter_queue : use --queue-balance in multithreaded environment
+Date: Fri, 02 Mar 2012 15:38:40 +0600
+Message-ID: <1330681120.2106.14.camel@arifLaptop>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
+	boundary="=-ZrvuJzzWES9k5TR/Gw1j"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=message-id:subject:from:to:date:content-type:x-mailer:mime-version;
+        bh=qRqlE0QFZQkB4HtieRCnikkQy4xrDv2SiCshqGoLd8s=;
+        b=P2ccB4ZGYLJSRVZ6JUDwlWfQYDd2YnMzXmWinH+B9e1Sb55Yg8rMvQnT0OeZVBBcBW
+         BXYEN/MTaa0kk3Hm0gmSSyAnY+B+1omv7rpTQHAwh8HV1HPkL6JJwogdFFRzvpG6lIEj
+         SHtdvnpUWElM1sEeBdqmkypRNRgF8HxzPPZRgET3GgiqtytFCanPTjky6hxQ/Ra+mk3h
+         YwHb4rnUwzS/nyoi8Og+flAh7TaoOdSH3KPNERBZ7aJp3FgXJzy2RJRWDupn2LBXWlGx
+         z1G5AilXm+5zTsx7Irb6yE/KLJwf6gZlZahiQ4SXQBP4CEEKZb40hRFEqVtnX/jhwGeb
+         8Isg==
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
-To: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-I apologize if this is a duplicate email.  I have sent several times as I 
-was having issues with the spam filter.
 
-All;
+--=-ZrvuJzzWES9k5TR/Gw1j
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-We have a Linux virtual server which we use as a NAT/Router (running 
-IPTables 1.2.11) to front-end a set of virtual machines on a private 
-(192.168.0.x) network.  In this private network are two web servers and a 
-few other application servers.  Our intent is to utilize two public IP 
-addresses on the NAT server to NAT to each back-end web server:
+Hi,
 
-External Interfaces:
-eth1 = abc.abc.abc.1 => 192.168.0.1 (webserver #1)
-eth1:0 = abc.abc.abc.2 => 192.168.0.2 (webserver #2)
-Internal Interface:
-eth0 = 192.168.0.3
+I'm using libnetfilter_queue for userspace modification of
+incoming/outgoing packets. I have been using a single threaded model.
+But i've found out that from 2.6.31 kernel, its possible to have
+different queues for different connection. so i was wandering if its
+possible to manage each queues in different threads.
 
-We had accomplished this with the following IPTables configuration
-Table: nat
-Chain PREROUTING (policy DROP)
-target    prot    in    out    source        destination
-DNAT        tcp    eth1    any    anywhere        abc.abc.abc.1 
-to:192.168.0.1
-DNAT        tcp    eth1    any    anywhere        abc.abc.abc.2 
-to:192.168.0.2
-ACCEPT    all    eth0    any    192.168.0.0/24    anywhere    #(to allow all 
-outgoing traffic)
+normally i set up the queue handling like bellow:
 
-Chain POSTROUTING (policy DROP)
-target    prot    in    out    source        destination
-SNAT        all    any    eth1    192.168.0.1    anywhere 
-to:abc.abc.abc.1
-SNAT        all    any    eth1    192.168.0.2    anywhere 
-to:abc.abc.abc.2
-SNAT        all    any    eth1    192.168.0.0/24    anywhere 
-to:abc.abc.abc.1   #SNAT all other traffic to ip #1
+struct nfq_handle * h =3D nfq_open();
+nfq_unbind_pf(h, AF_NET);
+nfq_bind_pf(h,m AF_NET);
+struct nfq_q_handle(h, 0, &cb, NULL);
+nfq_set_mode(qh, NFQNL_COPY_PACKET, 0xffff);
 
-Chain OUTPUT (policy ACCEPT)
+now if i want to manage like 100 queues, i will pack h,qh and que_num in
+a structure and loop over it to initialize.
 
-Table: filter
-Chain Input (policy ACCEPT)
-target    prot    in    out    source        destination
+now my question is :
 
-Chain FORWARD (policy ACCEPT)
-target    prot    in    out    source        destination
+if i initialize above in the main thread and want to run the callbacks
+in threads, is it enough to run infinite loop in a function which will
+be given to pthread_create()? Will it run the callbacks in threads?=20
 
-Chain OUTPUT (policy ACCEPT)
-target    prot    in    out    source        destination
+i'm not sure, but my understanding tells me, a packet is popped from the
+queues when nfq_set_verdict is returned. so i need to run
+nfq_set_verdict in separate threads so that i packets can be popped from
+queues parallel.=20
+--=20
+"You have a voice"
+                                        ----The King's Speech
 
-Everything APPEARS to work correctly with this configuration.  However, 
-several times a day network monitoring tools on the public side of the NAT 
-server see packets with source addresses from the private network (e.g. 
-192.168.0.4).  In order to troubleshoot we minimized our configuration to 
-try to isolate the problem.  We took out the NATing for the second IP:
+Public Key : $ gpg --keyserver keyserver.ubuntu.com --recv-key C88CFC23
 
-Table: nat
-Chain PREROUTING (policy DROP)
-target    prot    in    out    source        destination
-DNAT        tcp    eth1    any    anywhere        abc.abc.abc.1 
-to:192.168.0.1
-ACCEPT    all    eth0    any    192.168.0.0/24    anywhere    #(to allow all 
-outgoing traffic)
+--=-ZrvuJzzWES9k5TR/Gw1j
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-Chain POSTROUTING (policy DROP)
-target    prot    in    out    source        destination
-SNAT        all    any    eth1    192.168.0.1    anywhere 
-to:abc.abc.abc.1
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
 
-Chain OUTPUT (policy ACCEPT)
+iQEcBAABAgAGBQJPUJUgAAoJEDcRh2vIjPwjCtkIAKm/k/JemUOzWxI42FhuFnep
+lCXpShKCVxVY187c2XSK2F9zR8BmsNjpG3/AR20LPJ5/6vhQSE9/4Re0SUsEzKPe
+olblSQNgQ1BwJ9a9AGboEV5QpZpKJh0Fm5lAXv8nfOqBBfVIjRbSBlsotGAVsmR+
+xT+aJIGZSoowyrhxQLEs+Fg5KVcsC52o61Vj2z4eTRuTBEr3w4J1sXWAGIbbVXSL
+4Ro2BdJG7CkZMft7jY8RECjm97tBTPX+5R3paeJXUskcdghrgqVKC6ejpsQEzFmz
+VkEsGCb1P+8CIhgZxpuzO6I18+rDll7w/HqOW1Djz2Poc2VFY10bVFI8uKbAvks=
+=6gEn
+-----END PGP SIGNATURE-----
 
-Table: filter
-Chain Input (policy ACCEPT)
-target    prot    in    out    source        destination
-
-Chain FORWARD (policy ACCEPT)
-target    prot    in    out    source        destination
-
-Chain OUTPUT (policy ACCEPT)
-target    prot    in    out    source        destination
-
-With this configuration the 'leaking' of the private IP addresses seems to 
-stop.  However, we need to have the functionality of the second IP address. 
-Any insight into why the 'leak' is happening and how we can add the second 
-IP back in?
-
-Also, I have monitored the traffic across the NAT box with tcpdump.  The 
-majority of traffic is NAT'd as expected.  Only occasionally do packets 
-'escape'.  These packets have always been either FIN or RST packets. 
+--=-ZrvuJzzWES9k5TR/Gw1j--
 
