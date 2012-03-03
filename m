@@ -1,78 +1,43 @@
-From: jeewan girewal <jeewan.girewal@gmail.com>
-Subject: Want to add IP options into IP header,
-	unable to resolve symbol
-Date: Fri, 2 Mar 2012 23:44:14 +0200
-Message-ID: <CAPpZ4vca4YntvCEgddJE7+0y9ePSKzqVFyuRJq3fmi8u2bMM3Q@mail.gmail.com>
-References: <CAPpZ4vfHMzez8RLPabN3Dzu4t1dkaDPncS8kwZ15q_KattCL0A@mail.gmail.com>
+From: Jonathan Gowar <jon@whiteheat.org.uk>
+Subject: Xen and netfilter
+Date: Sat, 03 Mar 2012 22:11:48 +0000
+Message-ID: <1330812708.2053.8.camel@huxley.cinosure.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============0014120775843487533=="
-Return-path: <bridge-bounces@lists.linux-foundation.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20120113;
-	h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-	:content-type; bh=wlDgvvIcabgT1S3/7eyXVWekOoo8rxNMXp6IKuJxYvs=;
-	b=pr0O0TKEBQdDtaSKHBXfLR581oI8ZWcHoEBzWgoWyaw0QjrSbWO/M6L+Jxzkvk7b+M
-	TbEp8D4WcTVZYU5bc8Lws7KQKrfzKtPIqpHnrt81ohmXKfUM5EyqfAOK/gYOkub5Ya78
-	6NvHBm2Ce5mCg4IZ+pg6Sulxt06eWye8CrYMs71RgJYmOfrbu2HDus86aZxEd1NFihZH
-	HyZdbpsIBGlL3/XhhQU3rTeU2vosD5i+PLi/ZMQP95uZ2lKgPJj0eMSc6xCpgalbgnvK
-	rAIOPgGma8jis8/ALOpKlPoUiPxaoqqI6MagsTEMKvu0SXELMCwoOkasp0YrNccyEnDH
-	XjiQ==
-In-Reply-To: <CAPpZ4vfHMzez8RLPabN3Dzu4t1dkaDPncS8kwZ15q_KattCL0A@mail.gmail.com>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/bridge>, 
-	<mailto:bridge-request@lists.linux-foundation.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/bridge/>
-List-Post: <mailto:bridge@lists.linux-foundation.org>
-List-Help: <mailto:bridge-request@lists.linux-foundation.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/bridge>,
-	<mailto:bridge-request@lists.linux-foundation.org?subject=subscribe>
-Sender: bridge-bounces@lists.linux-foundation.org
-Errors-To: bridge-bounces@lists.linux-foundation.org
-To: netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, bridge@lists.linux-foundation.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, davem@davemloft.net, bart.de.schuymer@pandora.be, netfilter-devel@vger.kernel.org, shemminger@vyatta.com
-
---===============0014120775843487533==
-Content-Type: multipart/alternative; boundary=14dae934116557747304ba497ae2
-
---14dae934116557747304ba497ae2
-Content-Type: text/plain; charset=ISO-8859-1
-
-Hi,
-
-I want to use the function defined in in net/ip_options.c file like
-ip_options_compile, ip_options_build in my netfilter module. I want to put
-options into IP packet header. I have inserted the header file that
-declares these function. I have used EXPORT_SYMBOL, but I get warning,
-"ip_options_compile" undefined. Any suggestions will be greatly respected.
-I am using Ubuntu 11.10. uname -a: 3.0.0-16-generic. Is there a way to make
-this symbol visible for newer kernel?
-
--Jeewan
-
---14dae934116557747304ba497ae2
-Content-Type: text/html; charset=ISO-8859-1
-Content-Transfer-Encoding: quoted-printable
-
-<br><div class=3D"gmail_quote">Hi,<br><br>I want to use the function define=
-d in in net/ip_options.c file like ip_options_compile, ip_options_build in =
-my netfilter module. I want to put options into IP packet header. I have in=
-serted the header file that declares these function. I have used EXPORT_SYM=
-BOL, but I get warning, &quot;ip_options_compile&quot; undefined. Any sugge=
-stions will be greatly respected. I am using Ubuntu 11.10. uname -a: 3.0.0-=
-16-generic. Is there a way to make this symbol visible for newer kernel?<sp=
-an class=3D"HOEnZb"><font color=3D"#888888"><br>
-
-<br>-Jeewan<br>
-</font></span></div><br>
-
---14dae934116557747304ba497ae2--
-
---===============0014120775843487533==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-_______________________________________________
-Bridge mailing list
-Bridge@lists.linux-foundation.org
-https://lists.linuxfoundation.org/mailman/listinfo/bridge
---===============0014120775843487533==--
+Hi there,
+
+  I've been advised to contact you guys in order to resolve an issue in
+the system log files when using netfilter with Xen.  It's with humility
+that I ask, as I can not say with authority where the problem lies.
+
+I get many of these logs, so much so that I can't see any other errors.
+
+Mar  2 13:31:07 esme-grace kernel: [98068.833692] physdev match: using
+--physdev-out in the OUTPUT, FORWARD and POSTROUTING chains for
+non-bridged traffic is not supported anymore.
+Mar  2 13:31:07 esme-grace kernel: [98068.833697] physdev match: using
+--physdev-out in the OUTPUT, FORWARD and POSTROUTING chains for
+non-bridged traffic is not supported anymore.
+
+I found a link on Xen Wiki, which has gone some way to repress the
+issue, but there are still a few that crop up.
+
+http://wiki.xensource.com/xenwiki/XenNetworking#head-602e26cd4a03b992f3938fe1bea03fa0fea0ed8b
+
+It's also been suggested to me to ask, either a) to remove the
+informal messages, or ideally b) suppressing the messages if the rule in
+question is doing bridged traffic.
+
+Thank you for your time, please let me know if I can provide any further
+assistance.
+
+Kind regards,
+Jon
+
+
