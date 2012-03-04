@@ -1,48 +1,59 @@
-From: Kerin Millar <kerframil@gmail.com>
-Subject: Re: Xen and netfilter
-Date: Sun, 04 Mar 2012 04:21:47 +0000
-Message-ID: <jiuqkr$gju$1@dough.gmane.org>
-References: <1330812708.2053.8.camel@huxley.cinosure.com>
+From: Jack Bates <uo4zau@nottheoilrig.com>
+Subject: How to mirror traffic received on WAN interface *before* NAT?
+Date: Sat, 03 Mar 2012 20:14:33 -0800
+Message-ID: <4F52EC29.9080607@nottheoilrig.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1330812708.2053.8.camel@huxley.cinosure.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=nottheoilrig.com;
+	s=mail; t=1330834353;
+	bh=/EYxYECsmdPGgL+Pe7z6QaBKiKNA7eaMeVpSq+YjxDM=;
+	h=Message-ID:Date:From:MIME-Version:To:Subject:Content-Type:
+	 Content-Transfer-Encoding;
+	b=HGJY46yr7VTs4zX1bc9ApYSTQS77ls98IKFW8Thudh2ir50Z/Vku9M54/X3L4RAFn
+	 CQeTXSqzKocedVMZ8X3H5rupLNXWtDiH246R8VUZaa1B5FadkX9Bc0h2KZhwGzpimq
+	 GgBGBc101akr6lcq5S5NANct5PaU6Jzvco36vAIk=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-On 03/03/2012 22:11, Jonathan Gowar wrote:
-> Hi there,
->
->    I've been advised to contact you guys in order to resolve an issue in
-> the system log files when using netfilter with Xen.  It's with humility
-> that I ask, as I can not say with authority where the problem lies.
->
-> I get many of these logs, so much so that I can't see any other errors.
->
-> Mar  2 13:31:07 esme-grace kernel: [98068.833692] physdev match: using
-> --physdev-out in the OUTPUT, FORWARD and POSTROUTING chains for
-> non-bridged traffic is not supported anymore.
-> Mar  2 13:31:07 esme-grace kernel: [98068.833697] physdev match: using
-> --physdev-out in the OUTPUT, FORWARD and POSTROUTING chains for
-> non-bridged traffic is not supported anymore.
->
-> I found a link on Xen Wiki, which has gone some way to repress the
-> issue, but there are still a few that crop up.
->
-> http://wiki.xensource.com/xenwiki/XenNetworking#head-602e26cd4a03b992f3938fe1bea03fa0fea0ed8b
->
-> It's also been suggested to me to ask, either a) to remove the
-> informal messages, or ideally b) suppressing the messages if the rule in
-> question is doing bridged traffic.
->
+We run "ntop" on a computer connected to our router, for traffic 
+analysis: 
+http://jdbates.blogspot.com/2012/02/this-is-followup-to-this-post-on-how-to.html
 
-Apparently, the issue is with the vif-common.sh script. The fix is to 
-add --physdev-is-bridged to the offending rules so that only bridged 
-traffic is considered.
+We forward all traffic sent and received on our WAN interface to the 
+"ntop" computer with the following lines in /etc/firewall.user:
 
-http://xenbits.xensource.com/hg/xen-unstable.hg/rev/b0fe8260cefa
 
---Kerin
+> iptables -A PREROUTING -t mangle -i eth0.1 -j TEE --gateway 192.168.1.7
+> iptables -A POSTROUTING -t mangle -o eth0.1 -j TEE --gateway 192.168.1.7
 
+
+This works well, except that we also NAT traffic on our WAN interface. 
+We want to monitor traffic *before* NAT
+
+Currently the source addresses of mirrored outgoing traffic are our 
+"private" addresses, e.g. 192.168.1.123, 192.168.1.234, etc. so these 
+rules happily mirror *outgoing* traffic before NAT
+
+However the destination address of mirrored *incoming* traffic is our 
+"public" address. I guess I want to mirror incoming traffic after NAT, 
+so I tried "POSTROUTING" for incoming traffic:
+
+
+> iptables -A POSTROUTING -t mangle -i eth0.1 -j TEE --gateway 192.168.1.7
+> iptables -A POSTROUTING -t mangle -o eth0.1 -j TEE --gateway 192.168.1.7
+
+
+  - but I get the following error:
+
+
+> iptables v1.4.6: Can't use -i with POSTROUTING
+
+
+Any advice, how to improve these rules to monitor traffic *before* NAT? 
+so analysis of incoming and outgoing traffic consistently references our 
+"private" addresses associated with the traffic?
+
+Any general advice concerning this setup?
