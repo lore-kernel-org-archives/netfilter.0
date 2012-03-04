@@ -1,75 +1,31 @@
-From: Kerin Millar <kerframil@gmail.com>
-Subject: Re: Conntrackd entries timing out
-Date: Sun, 04 Mar 2012 05:03:20 +0000
-Message-ID: <jiut2p$t3m$1@dough.gmane.org>
-References: <4ECE7F12.6080004@opendium.com>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Help tweaking asterisk rules
+Date: Sun, 4 Mar 2012 08:10:47 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1203040810190.1405@frira.zrqbmnf.qr>
+References: <450EB7580E6AE7469F8826BFBF09BAB6761D15@earwax.uent.com> <jiurm5$m0i$1@dough.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4ECE7F12.6080004@opendium.com>
+In-Reply-To: <jiurm5$m0i$1@dough.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Kerin Millar <kerframil@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-On 24/11/2011 17:29, Steve Hill wrote:
+On Sunday 2012-03-04 05:39, Kerin Millar wrote:
+
+> On 21/01/2011 02:05, Max DiOrio wrote:
+>> I was also hoping someone can provide some guidance on leaving the RTP
+>> ports UDP 10000:20000 open to all IP's on the WAN.  What type of
+>> security issue will this raise?  Should I install Fail2Ban in this
+>> setup?  The only issue I have with Fail2Ban was that it blocked my
+>> access from the LAN within 15 seconds of it coming online.
 >
-> I'm configuring conntrackd to support an active/active pair of
-> firewalls. I would like to keep them as synchronised as possible so am
-> setting it up with FTFW mode and "DisableExternalCache On".
+> They needn't be open at all. Instead, load the the ip_conntrack_sip module and
+> ensure that your iptables policy is stateful.
 >
-> I'm monitoring the connection tracker records on both hosts with
-> "conntrack -L".
->
-> If I send a single ping to something from firewall A, I correctly see
-> the conntrack entry appear for that on both firewalls. Since the I only
-> sent 1 ping, I see the timer on both ticking down from 30 seconds, after
-> which the entry disappears from both firewalls - this bit seems fine.
->
-> The problem I'm having is if I start a continuous ping from firewall A,
-> sending 1 packet per second, I again see the conntrack entry appear on
-> both firewalls as expected. However, whilst firewall A shows the timer
-> sat at 30 seconds since it is regularly being reset by each packet,
-> firewall B's connection again ticks down and is then removed. So now,
-> the conntrack tables are unsynchronised - firewall A is still seeing the
-> pings and keeps the conntrack entry alive whilst firewall B has removed
-> the entry.
->
-> If I turn the external cache on and monitor it with "conntrackd -e", it
-> appears to behave correctly - the entry stays in the external cache so
-> long as it it in firewall A's conntrack table.
->
-> The only way I've found of keeping these machines correctly synchronised
-> with the external cache disabled is to run "conntrackd -n" every few
-> seconds on both hosts to force a resynchronisation, which does appear to
-> reset the timers correctly.
->
-> So I'm hoping someone is able to answer these questions:
-> 1. Is this a bug or is there something I'm missing about the way it is
-> expected to work?
-> 2. Is running "conntrackd -n" on both machines every few seconds a safe
-> and feasible workaround, or am I asking for trouble?
+> http://www.iptel.org/sipalg/
 
-You could use conntrack -E -p icmp to monitor the propagated events in 
-both cases. That is, with and without the external cache active. In my 
-case, I use the external cache and the lifecycle of the ICMP state is as 
-thus:-
-
-[NEW] src=x.x.x.x  dst=8.8.8.8 type=8 code=0 id=9243 [UNREPLIED]
-       dst=196.34.134.87 type=0 code=0 id=9243
-
-[UPDATE] src=x.x.x.x dst=8.8.8.8 type=8 code=0 id=9243
-          src=8.8.8.8 dst=x.x.x.x type=0 code=0 id=9243
-
-Eventually, after terminating ping ...
-
-[DESTROY] src=x.x.x.x dst=8.8.8.8 type=8 code=0 id=9243 src=8.8.8.8
-           dst=x.x.x.x type=0 code=0 id=9243
-
-Observing the behaviour where the cache is not active might help shed 
-some light on the situation.
-
-Cheers,
-
---Kerin
-
+This is all outdated material. It's nf_conntrack_sip and has been long 
+merged into the kernel already.
