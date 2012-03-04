@@ -1,30 +1,25 @@
-From: Kerin Millar <kerframil@gmail.com>
-Subject: Re: ip_conntrack_icmp_timeout now taking effect
-Date: Sun, 04 Mar 2012 07:46:46 +0000
-Message-ID: <jiv6l7$fo0$1@dough.gmane.org>
-References: <20120301083908.7646c423@mistral.stie>
+From: iftikhar <iftikhar@aidentech.com>
+Subject: MPLS
+Date: Sun, 04 Mar 2012 21:38:14 +0500
+Message-ID: <4F539A76.2080300@aidentech.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20120301083908.7646c423@mistral.stie>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-On 01/03/2012 13:39, jonetsu wrote:
->    What is there to do to be able to stop pings as soon as the firewall
-> is set up while keeping the now-observed icmp conntrack timeout ?  Is
-> it possible to selectively flush only the ICMP connection tracking
-> table ?
+Hello,
 
-Regarding the second question, you might be able to do that if you 
-assign a distinct conntrack zone for ICMP traffic (via the CT target). 
-You should then be able to run conntrack -D -w <zone-id> but I haven't 
-personally tried it. Not particularly elegant but it doesn't appear to 
-be possible to use -D with -p icmp alone.
+Can someone please clarify why do we need a special MPLS patch for 
+iptables to actually "see" the packet properly? I mean iptables is a 
+layer above L2 and MPLS operates at Layer 2.5 & therefore the difference 
+between an MPLS frame and another ethernet frame should be of no concern 
+at the ip layer to iptables or for that matter any application operating 
+at L3.
 
-Cheers,
+Please guide.
 
---Kerin
+Regards,
 
