@@ -1,71 +1,75 @@
-From: "John A. Sullivan III" <jsullivan@opensourcedevel.com>
-Subject: Re: How to mirror traffic received on WAN interface *before* NAT?
-Date: Sat, 03 Mar 2012 23:54:32 -0500
-Message-ID: <1330836872.4671.200.camel@denise.theartistscloset.com>
-References: <4F52EC29.9080607@nottheoilrig.com>
+From: Kerin Millar <kerframil@gmail.com>
+Subject: Re: Conntrackd entries timing out
+Date: Sun, 04 Mar 2012 05:03:20 +0000
+Message-ID: <jiut2p$t3m$1@dough.gmane.org>
+References: <4ECE7F12.6080004@opendium.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4F52EC29.9080607@nottheoilrig.com>
+In-Reply-To: <4ECE7F12.6080004@opendium.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jack Bates <uo4zau@nottheoilrig.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Sat, 2012-03-03 at 20:14 -0800, Jack Bates wrote:
-> We run "ntop" on a computer connected to our router, for traffic 
-> analysis: 
-> http://jdbates.blogspot.com/2012/02/this-is-followup-to-this-post-on-how-to.html
-> 
-> We forward all traffic sent and received on our WAN interface to the 
-> "ntop" computer with the following lines in /etc/firewall.user:
-> 
-> 
-> > iptables -A PREROUTING -t mangle -i eth0.1 -j TEE --gateway 192.168.1.7
-> > iptables -A POSTROUTING -t mangle -o eth0.1 -j TEE --gateway 192.168.1.7
-> 
-> 
-> This works well, except that we also NAT traffic on our WAN interface. 
-> We want to monitor traffic *before* NAT
-> 
-> Currently the source addresses of mirrored outgoing traffic are our 
-> "private" addresses, e.g. 192.168.1.123, 192.168.1.234, etc. so these 
-> rules happily mirror *outgoing* traffic before NAT
-> 
-> However the destination address of mirrored *incoming* traffic is our 
-> "public" address. I guess I want to mirror incoming traffic after NAT, 
-> so I tried "POSTROUTING" for incoming traffic:
-> 
-> 
-> > iptables -A POSTROUTING -t mangle -i eth0.1 -j TEE --gateway 192.168.1.7
-> > iptables -A POSTROUTING -t mangle -o eth0.1 -j TEE --gateway 192.168.1.7
-> 
-> 
->   - but I get the following error:
-> 
-> 
-> > iptables v1.4.6: Can't use -i with POSTROUTING
-> 
-> 
-> Any advice, how to improve these rules to monitor traffic *before* NAT? 
-> so analysis of incoming and outgoing traffic consistently references our 
-> "private" addresses associated with the traffic?
-> 
-> Any general advice concerning this setup?
-<snip>
-I wonder if using an IFB interface would be a better way to go.  You
-would catch the traffic in the ingress queue which I believe will catch
-it before NAT.  These are tc rather than iptables commands.  Off the top
-of my head, it would be something like
+On 24/11/2011 17:29, Steve Hill wrote:
+>
+> I'm configuring conntrackd to support an active/active pair of
+> firewalls. I would like to keep them as synchronised as possible so am
+> setting it up with FTFW mode and "DisableExternalCache On".
+>
+> I'm monitoring the connection tracker records on both hosts with
+> "conntrack -L".
+>
+> If I send a single ping to something from firewall A, I correctly see
+> the conntrack entry appear for that on both firewalls. Since the I only
+> sent 1 ping, I see the timer on both ticking down from 30 seconds, after
+> which the entry disappears from both firewalls - this bit seems fine.
+>
+> The problem I'm having is if I start a continuous ping from firewall A,
+> sending 1 packet per second, I again see the conntrack entry appear on
+> both firewalls as expected. However, whilst firewall A shows the timer
+> sat at 30 seconds since it is regularly being reset by each packet,
+> firewall B's connection again ticks down and is then removed. So now,
+> the conntrack tables are unsynchronised - firewall A is still seeing the
+> pings and keeps the conntrack entry alive whilst firewall B has removed
+> the entry.
+>
+> If I turn the external cache on and monitor it with "conntrackd -e", it
+> appears to behave correctly - the entry stays in the external cache so
+> long as it it in firewall A's conntrack table.
+>
+> The only way I've found of keeping these machines correctly synchronised
+> with the external cache disabled is to run "conntrackd -n" every few
+> seconds on both hosts to force a resynchronisation, which does appear to
+> reset the timers correctly.
+>
+> So I'm hoping someone is able to answer these questions:
+> 1. Is this a bug or is there something I'm missing about the way it is
+> expected to work?
+> 2. Is running "conntrackd -n" on both machines every few seconds a safe
+> and feasible workaround, or am I asking for trouble?
 
-modprobe ifb
-ifconfig ifb0 up
-tc qdisc add dev eth0 ingress
-tc filter add dev eth0 parent ffff: protocol ip prio 1 u32 match u8 0 0
-action mirred egress redirect dev ifb0
+You could use conntrack -E -p icmp to monitor the propagated events in 
+both cases. That is, with and without the external cache active. In my 
+case, I use the external cache and the lifecycle of the ICMP state is as 
+thus:-
 
-You would then examine the traffic on ifb0.  I may not have remembered
-the syntax exactly and you may need a flowid parameter on the filter
-depending on your distribution.  Hope that helps - John
+[NEW] src=x.x.x.x  dst=8.8.8.8 type=8 code=0 id=9243 [UNREPLIED]
+       dst=196.34.134.87 type=0 code=0 id=9243
+
+[UPDATE] src=x.x.x.x dst=8.8.8.8 type=8 code=0 id=9243
+          src=8.8.8.8 dst=x.x.x.x type=0 code=0 id=9243
+
+Eventually, after terminating ping ...
+
+[DESTROY] src=x.x.x.x dst=8.8.8.8 type=8 code=0 id=9243 src=8.8.8.8
+           dst=x.x.x.x type=0 code=0 id=9243
+
+Observing the behaviour where the cache is not active might help shed 
+some light on the situation.
+
+Cheers,
+
+--Kerin
 
