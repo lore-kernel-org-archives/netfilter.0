@@ -1,43 +1,28 @@
 From: Kerin Millar <kerframil@gmail.com>
-Subject: Re: Help tweaking asterisk rules
-Date: Sun, 04 Mar 2012 07:25:56 +0000
-Message-ID: <jiv5e5$98q$1@dough.gmane.org>
-References: <450EB7580E6AE7469F8826BFBF09BAB6761D15@earwax.uent.com> <jiurm5$m0i$1@dough.gmane.org> <alpine.LNX.2.01.1203040810190.1405@frira.zrqbmnf.qr>
+Subject: Re: ip_conntrack_icmp_timeout now taking effect
+Date: Sun, 04 Mar 2012 07:46:46 +0000
+Message-ID: <jiv6l7$fo0$1@dough.gmane.org>
+References: <20120301083908.7646c423@mistral.stie>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1203040810190.1405@frira.zrqbmnf.qr>
+In-Reply-To: <20120301083908.7646c423@mistral.stie>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-On 04/03/2012 07:10, Jan Engelhardt wrote:
- > On Sunday 2012-03-04 05:39, Kerin Millar wrote:
- >
- >> On 21/01/2011 02:05, Max DiOrio wrote:
- >>> I was also hoping someone can provide some guidance on leaving the RTP
- >>> ports UDP 10000:20000 open to all IP's on the WAN.  What type of
- >>> security issue will this raise?  Should I install Fail2Ban in this
- >>> setup?  The only issue I have with Fail2Ban was that it blocked my
- >>> access from the LAN within 15 seconds of it coming online.
- >>
- >> They needn't be open at all. Instead, load the the ip_conntrack_sip 
-module and
- >> ensure that your iptables policy is stateful.
- >>
- >> http://www.iptel.org/sipalg/
- >
- > This is all outdated material. It's nf_conntrack_sip and has been long
- > merged into the kernel already.
+On 01/03/2012 13:39, jonetsu wrote:
+>    What is there to do to be able to stop pings as soon as the firewall
+> is set up while keeping the now-observed icmp conntrack timeout ?  Is
+> it possible to selectively flush only the ICMP connection tracking
+> table ?
 
-I am aware that it exists in the mainline kernel. Thank you for pointing 
-out that I got the name wrong. I managed asterisk in my prior job and 
-did actually use nf_conntrack_sip so I should have recalled the 
-distinction. Nevertheless, I think that the page still serves as a 
-useful intro to those unfamiliar with the sip connection tracking 
-module. At least, it did for me when I was facing the same issue as how 
-to gracefully handle SIP.
+Regarding the second question, you might be able to do that if you 
+assign a distinct conntrack zone for ICMP traffic (via the CT target). 
+You should then be able to run conntrack -D -w <zone-id> but I haven't 
+personally tried it. Not particularly elegant but it doesn't appear to 
+be possible to use -D with -p icmp alone.
 
 Cheers,
 
