@@ -1,75 +1,43 @@
-From: jonetsu <jonetsu@teksavvy.com>
-Subject: ICMP packets seeping through a DROP policy - security concern
-Date: Sun, 4 Mar 2012 17:25:06 -0500
-Message-ID: <20120304172506.2e79468a@mistral.stie>
+From: Abhi Devireddy <abhi@devireddy.com>
+Subject: Re: Replacement for nf-HiPAC
+Date: Sun, 4 Mar 2012 22:26:01 -0600
+Message-ID: <CA+tq5hx5u-VLdz45qfHNK7+CLymoqOo8WDYSgY-0E7deCV+nhQ@mail.gmail.com>
+References: <CA+tq5hxfg7pH_aYGwsREURfiRBc4=-Xu=3=UJSJ136D_NNmPhQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:sender:in-reply-to:references:from:date
+         :x-google-sender-auth:message-id:subject:to:content-type;
+        bh=BeeKHfi55O1zwN8vjd9wiauMMlRJVWUQN9on5GlRgXE=;
+        b=s6aO+bSfWQFQKbtaAnjvHY0PX3afWVozQY6pYivve30xehUZzx271fCWj7mRLGh8tq
+         CwZkIVozfXcHLarWluDBAzTGF5gSZw+/QlvllHM6bq6Vd8IKKGsiXNCOiVzBvlMAG9Df
+         vUClEJhtzjhCOHESWB6LTEecdaY+5m52vhav1An/2RUaSUS/7eiaqKTrhvWjE+yLg3lw
+         +w11r7RYSQweWHXyrELRJdYNaCY33wZ1SLl7Ij/7htpcr0OJKFbSXYMu8+XFnyL6W0Z0
+         Y/gB2o95mTFQ9EMyBypoTT43faBVyVTHGx+/B5YWA0tQZaG3DEb0kiPXKWOy0NW1V7V/
+         vWtA==
+In-Reply-To: <CA+tq5hxfg7pH_aYGwsREURfiRBc4=-Xu=3=UJSJ136D_NNmPhQ@mail.gmail.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-Hello all,
+(Trying again without HTML MIME Type)
+Hello,
+I'm trying to find a packet classifier that can be used with netfilter.
+I've looked at the Network Application Classification Library from
+Vineyard Networks but looks like that's a proprietary option.
+nf-HiPAC hasn't been updated in a while and I just wanted to get some
+feedback and opinions before I embarked on integrating my application
+with OpenDPI (opendpi.org).
+My major question / dilemma at this point: Is there an open-source /
+respected packet classification library that can run on ARM, x86 Linux
+machines? Needs to be able to classify application data if possible...
+Is HiPAC still the bet option out there? Good for high performance
+networks? For embedded applications?
 
-I have observed that there is a change of behaviour from kernel 2.6.26
-and kernel 3.0 regarding the INPUT chain and ICMP traffic going
-through it.  Kernel 2.6.26 will stop ICMP traffic as soon as the rules
-below are applied whereas kernel 3.0 will not.  In both cases an
-existing TCP connection (ssh) will be terminated, but the ICMP packets
-will be allowed when kernel 3.0 is used, even though a very square
-policy of INPUT DROP is applied.
+I have just started exploring the vast space that is network
+programming. Thanks a ton for your time and help.
 
-As far as I can see, a policy of INPUT DROP should stop all traffic.
-That the ICMP packets are still passing through is not expected and
-can be considered as a security breach.
-
-The setup is:
-
-unit1  <--> eth4  unit3  eth1 <--> unit2
-
-unit1 is continuously pinging unit2 via unit3. Rules are applied
-on unit3.
-
-1) Test passes
-
-kernel: 2.6.26
-iptables: 1.3.6.0
-
-cat /proc/sys/net/ipv4/netfilter/ip_conntrack_icmp_timeout
-30
-
-iptables -P INPUT DROP
-iptables -P FORWARD DROP
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
--> continuous ping immediately stops
-
-2) Test fails
-
-kernel: 3.0.0
-iptables: 1.4.8-3
-
-cat /proc/sys/net/ipv4/netfilter/ip_conntrack_icmp_timeout
-30
-
-iptables -P INPUT DROP
-iptables -P FORWARD DROP
-iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
-
--> continuous ping does not stop
-
-
-If a ip_conntrack_icmp_timeout of 1 is used, the ICMP packets will be
-stopped when the rules are applied.  But that means modifying the
-default ICMP conntrack timeout when establishing a firewal and putting
-it back to default when the firewall is up, but moreover, it still
-does not fix the basic problem of having a INPUT DROP policy and ICMP
-packets seeping through.  A value of 2 will not work and will let ICMP
-packets go through.
-
-Would it be possible to confirm that there is a problem with the
-handling of ICMP packets in this case or, if the tests that I'm doing
-are not right ?
-
-Thanks.
+Abhi
