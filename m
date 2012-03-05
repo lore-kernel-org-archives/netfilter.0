@@ -1,43 +1,20 @@
-From: Abhi Devireddy <abhi@devireddy.com>
+From: David Miller <davem@davemloft.net>
 Subject: Re: Replacement for nf-HiPAC
-Date: Sun, 4 Mar 2012 22:26:01 -0600
-Message-ID: <CA+tq5hx5u-VLdz45qfHNK7+CLymoqOo8WDYSgY-0E7deCV+nhQ@mail.gmail.com>
+Date: Mon, 05 Mar 2012 00:00:24 -0500 (EST)
+Message-ID: <20120305.000024.1765921018367596593.davem@davemloft.net>
 References: <CA+tq5hxfg7pH_aYGwsREURfiRBc4=-Xu=3=UJSJ136D_NNmPhQ@mail.gmail.com>
+	<CA+tq5hx5u-VLdz45qfHNK7+CLymoqOo8WDYSgY-0E7deCV+nhQ@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:sender:in-reply-to:references:from:date
-         :x-google-sender-auth:message-id:subject:to:content-type;
-        bh=BeeKHfi55O1zwN8vjd9wiauMMlRJVWUQN9on5GlRgXE=;
-        b=s6aO+bSfWQFQKbtaAnjvHY0PX3afWVozQY6pYivve30xehUZzx271fCWj7mRLGh8tq
-         CwZkIVozfXcHLarWluDBAzTGF5gSZw+/QlvllHM6bq6Vd8IKKGsiXNCOiVzBvlMAG9Df
-         vUClEJhtzjhCOHESWB6LTEecdaY+5m52vhav1An/2RUaSUS/7eiaqKTrhvWjE+yLg3lw
-         +w11r7RYSQweWHXyrELRJdYNaCY33wZ1SLl7Ij/7htpcr0OJKFbSXYMu8+XFnyL6W0Z0
-         Y/gB2o95mTFQ9EMyBypoTT43faBVyVTHGx+/B5YWA0tQZaG3DEb0kiPXKWOy0NW1V7V/
-         vWtA==
-In-Reply-To: <CA+tq5hxfg7pH_aYGwsREURfiRBc4=-Xu=3=UJSJ136D_NNmPhQ@mail.gmail.com>
+In-Reply-To: <CA+tq5hx5u-VLdz45qfHNK7+CLymoqOo8WDYSgY-0E7deCV+nhQ@mail.gmail.com>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: abhi@devireddy.com
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-(Trying again without HTML MIME Type)
-Hello,
-I'm trying to find a packet classifier that can be used with netfilter.
-I've looked at the Network Application Classification Library from
-Vineyard Networks but looks like that's a proprietary option.
-nf-HiPAC hasn't been updated in a while and I just wanted to get some
-feedback and opinions before I embarked on integrating my application
-with OpenDPI (opendpi.org).
-My major question / dilemma at this point: Is there an open-source /
-respected packet classification library that can run on ARM, x86 Linux
-machines? Needs to be able to classify application data if possible...
-Is HiPAC still the bet option out there? Good for high performance
-networks? For embedded applications?
 
-I have just started exploring the vast space that is network
-programming. Thanks a ton for your time and help.
-
-Abhi
+We have a full packet classifier in the packet scheduler,
+which gets processed before the networking stack even sees
+the packet, and have had one there for more than 15 years.
