@@ -1,68 +1,144 @@
-From: "cmlitguy@gmail.com" <cmlitguy@gmail.com>
-Subject: Re: Make a redirect if NAT out interface is down
-Date: Wed, 07 Mar 2012 18:19:21 +0200
-Message-ID: <4F578A89.4070402@gmail.com>
-References: <4F515C9B.3030209@gmail.com> <1330891448.30413.347.camel@andrew-desktop>
+From: ching <lsching17@gmail.com>
+Subject: enquiry on ownership of packet (linux iptables)
+Date: Thu, 08 Mar 2012 06:13:24 +0800
+Message-ID: <4F57DD84.6080700@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------040200050008080400040002"
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=message-id:date:from:user-agent:mime-version:to:cc:subject
-         :references:in-reply-to:content-type:content-transfer-encoding;
-        bh=3pW/iOlAQMr558GZXp5+pDrjkfow+uSZJQTDFWQHs9w=;
-        b=NOD/YWGhQSZBNfh5pbBBSAE/6aaerC/z3MuXBeKvdmLVQQb4CVqLAtQrSB1DDwwCr1
-         AP0fZHuq2hhNooUvLeMZeeeZUZgS62GAY+IuUyTfxR+eTxg7/i+gpqW1RcfwVRwTuMV/
-         WM3B+P4DBzo74FW0D1sjuNBdertj7AoJYFG/fMDyVX8EtSGlq3T1QavorxuraK8gxmcS
-         ZSIlYwbG7EFl/leSCFdKA17ZwfqIcUgjDGnESuS1lXoJvdWWX8RosBJnaH18nsYD9T/j
-         1yP5P0udeuu5Ar9hC6pTzVvknpWaQtizFIIzjWCJS2CB9m5YzKkq8oyo9mjFMwjJ+wYU
-         LuaQ==
-In-Reply-To: <1330891448.30413.347.camel@andrew-desktop>
+        h=message-id:date:from:user-agent:mime-version:to:subject
+         :content-type;
+        bh=PWThonrGjpNKhh55aV6xE2UW21kr//xYcy7OH4uoZEU=;
+        b=UslSk0ov9pHzfXCucMtZl1clHN0Vn9BDKnzc7h/e6eRLxHIKVesCp8UzTcKrvSABlr
+         QV2EbGMbikwdlAMFVwNDnMXkqZXCFQfQHhK4nEVTZSpTis9IQyYiDEbo5OymQYitKK+7
+         T1lMvHLEKFVr/QfVWxASEQ3qao6ruiQP45+5oHWKoeIOJUvajTRUg8IuMFGucGMdorsO
+         M2m2Wr+qpVYFwbU5H176KOXmGOWRh9AnJHjypCvHFuAlxeSB481DnxpMNxfpm8VeBGgL
+         zzIHyr+AdoUFY9VheEGlC0y5UfjzzDaQPdE6cfJyl9JYvN3AjU+unyzcu08ATqysWLOF
+         EbgA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Andrew Beverley <andy@andybev.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Hello Andrew Beverley,
-Thank you for reply.
-I tried this in CentOS:
+This is a multi-part message in MIME format.
+--------------040200050008080400040002
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+Content-Transfer-Encoding: 8bit
 
-vi /sbin/ifup-local
+Dear all,
 
-echo  if  is  now  up  >/tmp/log.txt
+I am learning to setup firewall using IP Tables. My system is Ubuntu 
+11.10 linux x64 (linux kernel 3.3-rc5)
 
-I tried this in CentOS:
+My goal is:
+     1. Allow authorized user to accessing internet only
+     2. Isolate network daemons from loopback device and LAN, but they 
+are allowed to access internet
 
-But it doesn't work with vpnc and tun0 interface.
-I used netplugd to monitor up/down events and generate appropriate rules in iptables.
+To achieve this, my firewall is built with the following logic:
 
+   1. Default policy drop
+   2. For input chain, listen to a few ports only
+   3. For output chain, log all dropped package for debugging.
 
+I spotted that a few package is dropped on output chain: ICMP, IGMP 
+(Proto type=2) and TCP package. They do not have owner id.
 
+Now I want to silent them by adding accept rule, but I have the 
+following question about the ownership of packet.
+According to the documentation of iptables: "Packets from kernel threads 
+do have a socket, but usually no owner.
 
+   1. Is it possible that misbehaved program send “no owner” package 
+(e.g. ICMP/IGMP)? (assume that program has no root privilege and cannot 
+access setuid executable)
+   2. Can I assume that “no owner” package always comes from kernel or 
+program with root privilege?
+   3. Why the TCP package in my log can be “no owner”?
+   4. How to write a rule to "accept" all "no-owner" outbound package?
 
+Thank a lot
+Ching
 
-On 3/4/2012 10:04 PM, Andrew Beverley wrote:
-> On Sat, 2012-03-03 at 01:49 +0200, cmlitguy@gmail.com wrote:
->> Hello,
->> I have a question about possibility of making a redirect if  NAT out
->> interface tun0 is down.
->> This is iptables rule for Masquerading our network via VPN connection.
->>
->> iptables  --table  nat  --append  POSTROUTING  --out-interface  tun0  -j  MASQUERADE  -m  comment  --comment  "Masquerading"
->>
->> When VPN goes down, we can't access some resources and we need to verify
->> its status and establish it again.
->> Is it possible to make a redirect of all traffic to another host - Web
->> Site(via IP address) of tun0 is down ?
-> If the interface actually does "down", then I would use your operating
-> system's networking scripts to run a "down" script. E.g. for Debian
-> use /etc/network/interfaces
->
-> If it just stops responding, then I'd consider LSM[1] to monitor it and
-> do something similar.
->
-> [1] http://lsm.foobar.fi/
->
->
+--------------040200050008080400040002
+Content-Type: text/plain;
+ name="dropped_package_log.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="dropped_package_log.txt"
 
+I0lHTVAgKFBST1RPPTIpCmtlcm5lbDogWyAgIDE3LjQ3NjIxOV0gW0lQVEFCTEVTXTogZHJv
+cHBlZCBJTj0gT1VUPXZtbmV0MSBTUkM9MTcyLjE2LjI3LjEgRFNUPTIyNC4wLjAuMjIgTEVO
+PTQwIFRPUz0weDAwIFBSRUM9MHhDMCBUVEw9MSBJRD0wIERGIFBST1RPPTIKa2VybmVsOiBb
+ICAgMTcuNTAwMjA2XSBbSVBUQUJMRVNdOiBkcm9wcGVkIElOPSBPVVQ9dm1uZXQ4IFNSQz0x
+NzIuMTYuMjI1LjEgRFNUPTIyNC4wLjAuMjIgTEVOPTQwIFRPUz0weDAwIFBSRUM9MHhDMCBU
+VEw9MSBJRD0wIERGIFBST1RPPTIgCgojSUNNUAprZXJuZWw6IFsgNzQ4NS45MjY1ODNdIFtJ
+UFRBQkxFU106IGRyb3BwZWQgSU49IE9VVD1ldGgwIFNSQz0xOTIuMTY4LjExLjIgRFNUPTIw
+OC44Ni4xOTguOTIgTEVOPTU3NiBUT1M9MHgwMCBQUkVDPTB4QzAgVFRMPTY0IElEPTEyOTcw
+IFBST1RPPUlDTVAgVFlQRT0xMSBDT0RFPTEgW1NSQz0yMDguODYuMTk4LjkyIERTVD0xOTIu
+MTY4LjExLjIgTEVOPTE1MDAgVE9TPTB4MDAgUFJFQz0weDAwIFRUTD00OCBJRD0yNzU3MSBN
+RiBQUk9UTz1VRFAgU1BUPTc1NjcgRFBUPTY1NDAyIExFTj0xODQ5IF0gCmtlcm5lbDogWyAg
+IDEzLjI0OTczM10gW0lQVEFCTEVTXTogZHJvcHBlZCBJTj0gT1VUPXZtbmV0OCBTUkM9ZmU4
+MDowMDAwOjAwMDA6MDAwMDowMjUwOjU2ZmY6ZmVjMDowMDA4IERTVD1mZjAyOjAwMDA6MDAw
+MDowMDAwOjAwMDA6MDAwMDowMDAwOjAwMTYgTEVOPTk2IFRDPTAgSE9QTElNSVQ9MSBGTE9X
+TEJMPTAgUFJPVE89SUNNUHY2IFRZUEU9MTQzIENPREU9MCAKCiNUQ1AgcGFja2V0IHdpdGhv
+dXQgb3duZXIKa2VybmVsOiBbIDYwOTkuMzY4NjU1XSBbSVBUQUJMRVNdOiBkcm9wcGVkIElO
+PSBPVVQ9ZXRoMCBTUkM9MTkyLjE2OC4xMS4yIERTVD0yMjIuNDkuMjUxLjE0MCBMRU49NDAg
+VE9TPTB4MDAgUFJFQz0weDAwIFRUTD02NCBJRD0wIERGIFBST1RPPVRDUCBTUFQ9NjU0MDMg
+RFBUPTQ5NjMxIFdJTkRPVz0wIFJFUz0weDAwIFJTVCBVUkdQPTAgCmtlcm5lbDogWyAgMzgw
+Ljk3NTgyMF0gW0lQVEFCTEVTXTogZHJvcHBlZCBJTj0gT1VUPWV0aDAgU1JDPTE5Mi4xNjgu
+MTEuMiBEU1Q9MS4xOTUuMjA0LjE5NyBMRU49MTIwIFRPUz0weDAwIFBSRUM9MHgwMCBUVEw9
+NjQgSUQ9NjQ3NDYgREYgUFJPVE89VENQIFNQVD00Nzg1OSBEUFQ9MTA3NTkgV0lORE9XPTI5
+IFJFUz0weDAwIEFDSyBQU0ggRklOIFVSR1A9MCA=
+--------------040200050008080400040002
+Content-Type: text/plain;
+ name="iprules.txt"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment;
+ filename="iprules.txt"
+
+KnNlY3VyaXR5CjpJTlBVVCBBQ0NFUFQgWzE1NTExNDoxMTEwNDgxMTBdCjpGT1JXQVJEIEFD
+Q0VQVCBbMDowXQo6T1VUUFVUIEFDQ0VQVCBbMTg5NTU3OjE1OTY2NTYzMV0KQ09NTUlUCgoK
+KnJhdwo6UFJFUk9VVElORyBBQ0NFUFQgWzE1NTIzNToxMTEwNjIwNTJdCjpPVVRQVVQgQUND
+RVBUIFsxODk2MDc6MTU5NjcyMTM1XQpDT01NSVQKCgoqbmF0CjpQUkVST1VUSU5HIEFDQ0VQ
+VCBbMDowXQo6SU5QVVQgQUNDRVBUIFswOjBdCjpPVVRQVVQgQUNDRVBUIFswOjBdCjpQT1NU
+Uk9VVElORyBBQ0NFUFQgWzA6MF0KQ09NTUlUCgoKKm1hbmdsZQo6UFJFUk9VVElORyBBQ0NF
+UFQgWzE1NTIzNToxMTEwNjIwNTJdCjpJTlBVVCBBQ0NFUFQgWzE1NTIzNToxMTEwNjIwNTJd
+CjpGT1JXQVJEIEFDQ0VQVCBbMDowXQo6T1VUUFVUIEFDQ0VQVCBbMTg5NjA3OjE1OTY3MjEz
+NV0KOlBPU1RST1VUSU5HIEFDQ0VQVCBbMTg5NTk0OjE1OTY3NDY3MF0KQ09NTUlUCgoqZmls
+dGVyCjpJTlBVVCBEUk9QIFswOjBdCjpGT1JXQVJEIERST1AgWzA6MF0KOk9VVFBVVCBEUk9Q
+IFswOjBdCjp6TG9nX0Ryb3AgLSBbMDowXQo6ek5ldHdvcmtfRGFlbW9uIC0gWzA6MF0KCgoj
+ZHJvcCBhbmQgbG9nIGNoYWluCi1BIHpMb2dfRHJvcCAtbSBsaW1pdCAtLWxpbWl0IDEvbWlu
+IC0tbGltaXQtYnVyc3QgMTAgLWogTE9HIC0tbG9nLXByZWZpeCAiW0lQVEFCTEVTXTogZHJv
+cHBlZCAiIC0tbG9nLXVpZCAKLUEgekxvZ19Ecm9wIC1qIERST1AKCQojbmV0d29yayBkYWVt
+b24gb3V0Ym91bmQgY2hhaW4KLUEgek5ldHdvcmtfRGFlbW9uICEgLWQgMTkyLjE2OC4wLjAv
+MTYgLW8gZXRoMCAtaiBBQ0NFUFQgICAgICAgICAgICAgICAjYWxsb3cgY29ubmVjdGlvbiB0
+byBub24tbGFuIGlwIG9ubHkKLUEgek5ldHdvcmtfRGFlbW9uIC1kIDE5Mi4xNjguMTEuMS8z
+MiAtbyBldGgwIC1wIHVkcCAtbSB1ZHAgLS1kcG9ydCA1MyAtaiBBQ0NFUFQgICAgICAgICAg
+ICAgICAjYWxsb3cgRE5TCi1BIHpOZXR3b3JrX0RhZW1vbiAhIC1vIGV0aDAgLWogRFJPUCAg
+ICAgICAgICAgICAgICNzaWxlbnQgbG9nIGJ5IGRyb3BwaW5nIGxvY2FsIHRyYWZmaWMKLUEg
+ek5ldHdvcmtfRGFlbW9uIC1qIHpMb2dfRHJvcCAgICAgICAgICAgICAgICNsb2cgYW5kIGRy
+b3AKCQojaW5wdXQgY2hhaW4KLUEgSU5QVVQgLW0gc3RhdGUgLS1zdGF0ZSBSRUxBVEVELEVT
+VEFCTElTSEVEIC1qIEFDQ0VQVCAgICAgICAgICAgICAgICNhbGxvdyBlc3RhYmxpc2hlZCBj
+b25uZWN0aW9uCi1BIElOUFVUIC1wIHRjcCAtbSBtdWx0aXBvcnQgLS1kcG9ydHMgMTAwMDA6
+MTAwMTAgLW0gc3RhdGUgLS1zdGF0ZSBORVcsUkVMQVRFRCxFU1RBQkxJU0hFRCxVTlRSQUNL
+RUQgLWogQUNDRVBUICAgICAgICAgICAgICAgICNsaXN0ZW4gdG8gYSBmZXcgcG9ydCBvbmx5
+Ci1BIElOUFVUIC1wIHVkcCAtbSBtdWx0aXBvcnQgLS1kcG9ydHMgMTAwMDA6MTAwMTAgLW0g
+c3RhdGUgLS1zdGF0ZSBORVcsUkVMQVRFRCxFU1RBQkxJU0hFRCxVTlRSQUNLRUQgLWogQUND
+RVBUICAgICAgICAgICAgICAgICNsaXN0ZW4gdG8gYSBmZXcgcG9ydCBvbmx5Ci1BIElOUFVU
+IC1pIGxvIC1qIEFDQ0VQVCAgICAgICAgICAgICAgICNhbGxvdyBsb2NhbGhvc3QgaW5ib3Vu
+ZAoKI291dHB1dCBjaGFpbgotQSBPVVRQVVQgLW0gc3RhdGUgLS1zdGF0ZSBSRUxBVEVELEVT
+VEFCTElTSEVEIC1qIEFDQ0VQVCAgICAgICAgICAgICAgICAjYWxsb3cgZXN0YWJsaXNoZWQg
+Y29ubmVjdGlvbgotQSBPVVRQVVQgLW0gb3duZXIgLS11aWQtb3duZXIgemFtdWxlIC1qIHpO
+ZXR3b3JrX0RhZW1vbiAgICAgICAgICAgICAgICAjZGFlbW9uCi1BIE9VVFBVVCAtbSBvd25l
+ciAtLXVpZC1vd25lciBkZWJpYW4tdHJhbnNtaXNzaW9uIC1qIHpOZXR3b3JrX0RhZW1vbiAg
+ICAgICAgICAgICAgICAjZGFlbW9uCi1BIE9VVFBVVCAtbSBvd25lciAtLXVpZC1vd25lciB6
+aHR0cGZpbGVzZXJ2ZXIgLWogek5ldHdvcmtfRGFlbW9uICAgICAgICAgICAgICAgICNkYWVt
+b24KLUEgT1VUUFVUIC1tIG93bmVyIC0tdWlkLW93bmVyIGF2YWhpIC1qIEFDQ0VQVCAgICAg
+ICAgICAgICAgICAjdHJ1c3RlZAotQSBPVVRQVVQgLW0gb3duZXIgLS11aWQtb3duZXIgcm9v
+dCAtaiBBQ0NFUFQgICAgICAgICAgICAgICAgI3RydXN0ZWQKIy1BIE9VVFBVVCAtcCBpY21w
+IC1qIEFDQ0VQVCAKIy1BIE9VVFBVVCAtcCBpZ21wIC1qIEFDQ0VQVCAKLUEgT1VUUFVUIC1q
+IHpMb2dfRHJvcCAgICAgICAgICAgICAgICAjYWxsb3cgZXN0YWJsaXNoZWQgY29ubmVjdGlv
+bgoKQ09NTUlU
+--------------040200050008080400040002--
