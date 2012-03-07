@@ -1,73 +1,83 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: netfilter_queue : use --queue-balance in multithreaded
- environment
-Date: Tue, 6 Mar 2012 22:45:18 +0100
-Message-ID: <20120306214518.GB19133@Chamillionaire.breakpoint.cc>
-References: <1330681120.2106.14.camel@arifLaptop>
+From: jonetsu <jonetsu@teksavvy.com>
+Subject: Re: ICMP packets seeping through a DROP policy - security concern
+Date: Tue, 6 Mar 2012 20:09:25 -0500
+Message-ID: <20120306200925.100b9dd4@mistral.stie>
+References: <20120304172506.2e79468a@mistral.stie>
+	<jj35fo$t1p$1@dough.gmane.org>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1330681120.2106.14.camel@arifLaptop>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <jj35fo$t1p$1@dough.gmane.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Arif Hossain <freefall1986@gmail.com>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Arif Hossain <freefall1986@gmail.com> wrote:
-> I'm using libnetfilter_queue for userspace modification of
-> incoming/outgoing packets. I have been using a single threaded model.
-> But i've found out that from 2.6.31 kernel, its possible to have
-> different queues for different connection. so i was wandering if its
-> possible to manage each queues in different threads.
+On Mon, 05 Mar 2012 19:51:17 +0000,
+Kerin Millar <kerframil@gmail.com> wrote :
 
-Its usually simpler to just run several instances of the same program,
-easier to maintain/debug and avoids locking/race conditions...
+> In that case, it's the FORWARD chain that matters. The behaviour of 
+> kernel 3.0.0 seems correct;
 
-If you have requirements that make this a bad choice (e.g. memory
-usage), then yes, you can use threads.
+Yes, but there are two different behaviours with the same rules.  One
+behaviour when no conntrack module is loaded that specifies this ICMP
+timeout, and one behaviour when it is loaded.
 
-See
-http://git.breakpoint.cc/cgi-bin/gitweb.cgi?p=fw/afcd.git;a=blob;f=src/in/in_nl.c;h=e298bd073f3c7e0c62432510c2b3f7de953df1ec;hb=74a2df00cdee5f3ff8360b32d711d5db086b5355#l351
+Same test as before:
 
-for a program that does this.
+1) Fresh reboot, no nf modules loaded
 
-> if i initialize above in the main thread and want to run the callbacks
-> in threads, is it enough to run infinite loop in a function which will
-> be given to pthread_create()? Will it run the callbacks in threads? 
+# cat /proc/sys/net/ipv4/netfilter/ip_conntrack_icmp_timeout
+No such file or directory
 
-Yes.
+# lsmod
+(no nf conntrack module loaded - no nf module for that matter)
 
-> i'm not sure, but my understanding tells me, a packet is popped from the
-> queues when nfq_set_verdict is returned. so i need to run
-> nfq_set_verdict in separate threads so that i packets can be popped from
-> queues parallel.
+-> ICMP pings stop immediately when the 3 rules are applied
 
-I don't understand this part.  Basically all the processing do this
-(see url above for full example):
+-> nf conntrack modules are now loaded:
 
- static int nfnl_queue_cb(struct nfq_q_handle *qh, struct nfgenmsg *nfmsg,
-               struct nfq_data *nfa, void *data) {
-        [..]
-        ret = nfq_get_payload(nfa, &pkt);
-	do_something(pkt);
-        return nfq_set_verdict2( .. )
-}
+ nf_conntrack_ipv4       9995  1 
+ nf_defrag_ipv4           879  1 nf_conntrack_ipv4
+ xt_state                 859  1 
+ nf_conntrack           47425  2 nf_conntrack_ipv4,xt_state
 
-static void *_thread_main(void *arg) {
-	[..]
-        while (!thread_should_stop) {
-                ssize_t rv = read(fd, buf, nfq_buf_len);
-                if (rv > 0)
-                        nfq_handle_packet(nfq_h, buf, (int) rv);
-                else
-                        /* error ... */
-        }
-	/* cleanup */
-        return NULL;
-}
 
-All the threads then run nfnl_queue_cb() independently.
-Of course, you'll need to add proper locking if they need to
-access shared data structures...
+2)  Flush all rules, re-test, above modules already loaded
+
+# cat /proc/sys/net/ipv4/netfilter/ip_conntrack_icmp_timeout
+30
+
+-> ICMP pings continues
+
+As observed, the nf conntrack modules are loaded automatically.  But
+at least one value (in this case the ICMP conntrack timeout - maybe
+there are others) is not taken into account when the rules are
+established in this use case.
+
+But, if the modules are previously loaded, then the values are taken
+into account.  There seems to be something not right with this.
+Shouldn't any module parameter be taken into account when they are
+automatically loaded ?  Here we see that the ICMP param is not taken
+into account in the first test - can there be any other parameters
+like that ?
+
+It can also question the automatic loading of modules.  Either they
+are automatically loaded and all params taken into account, or admins
+have to know to load the required modules manually before installing
+any rules on a freshly rebooted unit (either by script or by
+explicitly loading the needed modules at boot).
+
+Can you confirm that this behaviour is what is intended, or is a bug ?
+
+And let me know if the tests are not right.  It'd be appreciated.
+
+As a side note, as shown previously, this observance of the ICMP
+conntrack timeout was absent in kernel 2.6.26, module loaded or not,
+so this aspect has changed.  I agree that by principle, if a timeout
+is specified, then it should be observed.  Which is now the case in
+the latest kernels ... that is, if the module is manually and
+previously loaded before applying rules only.
+
+Thanks for any comments/suggestions.
+
