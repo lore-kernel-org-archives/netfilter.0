@@ -1,83 +1,68 @@
-From: jonetsu <jonetsu@teksavvy.com>
-Subject: Re: ICMP packets seeping through a DROP policy - security concern
-Date: Tue, 6 Mar 2012 20:09:25 -0500
-Message-ID: <20120306200925.100b9dd4@mistral.stie>
-References: <20120304172506.2e79468a@mistral.stie>
-	<jj35fo$t1p$1@dough.gmane.org>
+From: "cmlitguy@gmail.com" <cmlitguy@gmail.com>
+Subject: Re: Make a redirect if NAT out interface is down
+Date: Wed, 07 Mar 2012 18:19:21 +0200
+Message-ID: <4F578A89.4070402@gmail.com>
+References: <4F515C9B.3030209@gmail.com> <1330891448.30413.347.camel@andrew-desktop>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <jj35fo$t1p$1@dough.gmane.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=message-id:date:from:user-agent:mime-version:to:cc:subject
+         :references:in-reply-to:content-type:content-transfer-encoding;
+        bh=3pW/iOlAQMr558GZXp5+pDrjkfow+uSZJQTDFWQHs9w=;
+        b=NOD/YWGhQSZBNfh5pbBBSAE/6aaerC/z3MuXBeKvdmLVQQb4CVqLAtQrSB1DDwwCr1
+         AP0fZHuq2hhNooUvLeMZeeeZUZgS62GAY+IuUyTfxR+eTxg7/i+gpqW1RcfwVRwTuMV/
+         WM3B+P4DBzo74FW0D1sjuNBdertj7AoJYFG/fMDyVX8EtSGlq3T1QavorxuraK8gxmcS
+         ZSIlYwbG7EFl/leSCFdKA17ZwfqIcUgjDGnESuS1lXoJvdWWX8RosBJnaH18nsYD9T/j
+         1yP5P0udeuu5Ar9hC6pTzVvknpWaQtizFIIzjWCJS2CB9m5YzKkq8oyo9mjFMwjJ+wYU
+         LuaQ==
+In-Reply-To: <1330891448.30413.347.camel@andrew-desktop>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Andrew Beverley <andy@andybev.com>
+Cc: netfilter@vger.kernel.org
 
-On Mon, 05 Mar 2012 19:51:17 +0000,
-Kerin Millar <kerframil@gmail.com> wrote :
+Hello Andrew Beverley,
+Thank you for reply.
+I tried this in CentOS:
 
-> In that case, it's the FORWARD chain that matters. The behaviour of 
-> kernel 3.0.0 seems correct;
+vi /sbin/ifup-local
 
-Yes, but there are two different behaviours with the same rules.  One
-behaviour when no conntrack module is loaded that specifies this ICMP
-timeout, and one behaviour when it is loaded.
+echo  if  is  now  up  >/tmp/log.txt
 
-Same test as before:
+I tried this in CentOS:
 
-1) Fresh reboot, no nf modules loaded
-
-# cat /proc/sys/net/ipv4/netfilter/ip_conntrack_icmp_timeout
-No such file or directory
-
-# lsmod
-(no nf conntrack module loaded - no nf module for that matter)
-
--> ICMP pings stop immediately when the 3 rules are applied
-
--> nf conntrack modules are now loaded:
-
- nf_conntrack_ipv4       9995  1 
- nf_defrag_ipv4           879  1 nf_conntrack_ipv4
- xt_state                 859  1 
- nf_conntrack           47425  2 nf_conntrack_ipv4,xt_state
+But it doesn't work with vpnc and tun0 interface.
+I used netplugd to monitor up/down events and generate appropriate rules in iptables.
 
 
-2)  Flush all rules, re-test, above modules already loaded
 
-# cat /proc/sys/net/ipv4/netfilter/ip_conntrack_icmp_timeout
-30
 
--> ICMP pings continues
 
-As observed, the nf conntrack modules are loaded automatically.  But
-at least one value (in this case the ICMP conntrack timeout - maybe
-there are others) is not taken into account when the rules are
-established in this use case.
 
-But, if the modules are previously loaded, then the values are taken
-into account.  There seems to be something not right with this.
-Shouldn't any module parameter be taken into account when they are
-automatically loaded ?  Here we see that the ICMP param is not taken
-into account in the first test - can there be any other parameters
-like that ?
-
-It can also question the automatic loading of modules.  Either they
-are automatically loaded and all params taken into account, or admins
-have to know to load the required modules manually before installing
-any rules on a freshly rebooted unit (either by script or by
-explicitly loading the needed modules at boot).
-
-Can you confirm that this behaviour is what is intended, or is a bug ?
-
-And let me know if the tests are not right.  It'd be appreciated.
-
-As a side note, as shown previously, this observance of the ICMP
-conntrack timeout was absent in kernel 2.6.26, module loaded or not,
-so this aspect has changed.  I agree that by principle, if a timeout
-is specified, then it should be observed.  Which is now the case in
-the latest kernels ... that is, if the module is manually and
-previously loaded before applying rules only.
-
-Thanks for any comments/suggestions.
+On 3/4/2012 10:04 PM, Andrew Beverley wrote:
+> On Sat, 2012-03-03 at 01:49 +0200, cmlitguy@gmail.com wrote:
+>> Hello,
+>> I have a question about possibility of making a redirect if  NAT out
+>> interface tun0 is down.
+>> This is iptables rule for Masquerading our network via VPN connection.
+>>
+>> iptables  --table  nat  --append  POSTROUTING  --out-interface  tun0  -j  MASQUERADE  -m  comment  --comment  "Masquerading"
+>>
+>> When VPN goes down, we can't access some resources and we need to verify
+>> its status and establish it again.
+>> Is it possible to make a redirect of all traffic to another host - Web
+>> Site(via IP address) of tun0 is down ?
+> If the interface actually does "down", then I would use your operating
+> system's networking scripts to run a "down" script. E.g. for Debian
+> use /etc/network/interfaces
+>
+> If it just stops responding, then I'd consider LSM[1] to monitor it and
+> do something similar.
+>
+> [1] http://lsm.foobar.fi/
+>
+>
 
