@@ -1,60 +1,65 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: IPTable Rules... again
-Date: Thu, 08 Mar 2012 17:29:53 +0000
-Message-ID: <1331227793.30413.438.camel@andrew-desktop>
-References: <20120308151651.300950@gmx.com>
+From: Abhi Devireddy <abhi@devireddy.com>
+Subject: Re: Run a userspace script upon rule matching?
+Date: Thu, 8 Mar 2012 12:00:19 -0600
+Message-ID: <CA+tq5hwxmCGNCSRcka9Rp_k2rM+ZvetHtA6ufb3y8kQkUDZEVQ@mail.gmail.com>
+References: <4F58AA04.4010805@brain-force.ch> <1331227169.30413.432.camel@andrew-desktop>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20120308151651.300950@gmx.com>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1331227797;
-	bh=6+zZgbfBWesY3iumv+YuWiBF29EyTtcIy6o+kyP1k3M=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:Content-Transfer-Encoding:Mime-Version;
-	b=EoPdzXsckcnnLcdmaPG1+nCQxaArXARVPG4ea+kmdvOnKgGHAibFByftIU9/UHk+s
-	 zz63jNmKSzXD6MQQwWe+OTU9rT0oNeHgJVB3hbAL0J/vb4ubzeR64OcUhmiuVTDWIP
-	 vHtH2fJOcEZnSy+QNEGLJ3rg77moxjpdlvVN325Y=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:sender:in-reply-to:references:from:date
+         :x-google-sender-auth:message-id:subject:to:cc:content-type
+         :content-transfer-encoding;
+        bh=/BgqDzdBt4iz8+2hfisttQqg8pdBmt+wROArciS8InM=;
+        b=WYk9QDoi6OeC9PjWQGjQPi2FHP+zJLscovHH8tqi/doR1O2dALUHtJkWZ7jBBqaqF0
+         YQEUsdPHjHwZx/ubmSfzfEtwbdjMCYBFR852rrlmY0YuvsnJXi/Sof+uPQO5R0I1cbqq
+         8VpdjPLJhewa539QEk7CDv+DBofVYIjtaquNfRE7Fl7LJM71/nMrCMlpYd0RCeWGN5XP
+         gUOc1XYrq0U58FkCpfico8k/4drg3u65WqzjHJD1pBKEeq2tlCLNQhqlq8ljIkTSmdSH
+         agYsojm5itk0Y/pmnvyyWcIMakoIEJ6RMCEpkigOTgj7JwdcHMuGeaOSfnz4uwxfrZS4
+         cFug==
+In-Reply-To: <1331227169.30413.432.camel@andrew-desktop>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: nullv@gmx.com
-Cc: users@lists.fedoraproject.org, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Andrew Beverley <andy@andybev.com>
+Cc: tobster@brain-force.ch, netfilter@vger.kernel.org
 
-On Thu, 2012-03-08 at 10:16 -0500, nullv@gmx.com wrote:
-> Hi,
-> 
-> I have the following  rules on my router/gateway: 
-> 
-> *nat
-> :PREROUTING ACCEPT 
-> :INPUT ACCEPT 
-> :OUTPUT ACCEPT 
-> :POSTROUTING ACCEPT 
-> -A POSTROUTING -d 93.186.25.52/32 -m comment --comment "bb" -j SNAT --to-source 41.94.39.49-41.94.39.51
+I'm fairly new to netfilter as well and this might or might not be help=
+ful.
 
-> -A POSTROUTING -s 10.0.0.0/8 -p tcp -m tcp --dport 53 -m comment
-> --comment "domain" o eth0 -j SNAT --to-source 41.94.39.49-41.94.39.51
+The netfilter hacking document available here:
+http://www.netfilter.org/documentation/HOWTO//netfilter-hacking-HOWTO.t=
+xt
 
-                    ^^^^ Is this what you really have? Or is it a typo
-in your email? Obviously it should be "-o" not "o"
+Talks about the various hooks that a program can register for. Maybe
+that would be a feasible way of calling a script.
+The flow might look something like this: Call hook on packet receive
+>> Check against filters >> [Perform your operations] >> Send out one
+of the 5 status for what to do next. (NF_ACCEPT, NF_DROP, ...)
 
-> -A POSTROUTING -s 10.0.0.3/32 -j o eth0 -j SNAT --to-source
-> 41.94.39.49-41.94.39.51
+I was in the same boat trying to find something that would call a
+remote API endpoint for all packets that matched a filter.
 
-Have you tried removing all the other SNAT lines apart from this one?
-And also seeing if this is definitely matching by setting a LOG target
-first?
+Hope that helps,
+Abhi
 
-<snip>
-
-> -A FORWARD -j REJECT --reject-with icmp-host-prohibited
-
-Does it work if you remove this line?
-
-Everything else looks fine to me, assuming that all your IP addresses
-etc. are correct.
-
-Andy
-
-
+On Thu, Mar 8, 2012 at 11:19 AM, Andrew Beverley <andy@andybev.com> wro=
+te:
+> On Thu, 2012-03-08 at 13:45 +0100, tobi wrote:
+>> As mentioned in subject I want to run an external script upon matchi=
+ng
+>> of a certain rule.
+>
+> I'm not aware of any way to do that. What exactly do you want to
+> achieve? It may be that there is another way of doing what you want.
+>
+> Andy
+>
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at =C2=A0http://vger.kernel.org/majordomo-info.ht=
+ml
