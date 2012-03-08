@@ -1,35 +1,75 @@
-From: tobi <tobster@brain-force.ch>
-Subject: Run a userspace script upon rule matching?
-Date: Thu, 08 Mar 2012 13:45:56 +0100
-Message-ID: <4F58AA04.4010805@brain-force.ch>
-Reply-To: tobster@brain-force.ch
+From: nullv@gmx.com
+Subject: IPTable Rules... again
+Date: Thu, 08 Mar 2012 10:16:48 -0500
+Message-ID: <20120308151651.300950@gmx.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=brain-force.ch;
-	s=2011; t=1331210755;
-	bh=MgY2kHhTq4L9Dc22PYYls54J+x4pt5+3Eawz4+xXCyM=;
-	h=Message-ID:Date:From:Reply-To:MIME-Version:To:Subject:
-	 Content-Type:Content-Transfer-Encoding;
-	b=UYGnSvyCfTt+UsaDv/Oe3edpJJBxc6jcBlqfqOZLv9rQ8LqsLKLp8geZr5P3pL/9Z
-	 OlHa/lHIP52Z0SBXGLPAbuVHqvPHEY5HiIaYMusYaGCfsKXJp8cCAA5hsC//FwIrQ6
-	 nT8y17icJQjw8D+lEhAlO+FP6QRJc4IjhH/W36oE=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: users@lists.fedoraproject.org, netfilter@vger.kernel.org
 
-Hello list
+Hi,
 
-my first post here so I hope I do not ask something which is so clear
-that I doesn't have to be asked ;-)
-As mentioned in subject I want to run an external script upon matching
-of a certain rule. but I have no idea how or even if it's possible at
-all. I could achieve the "same" by loging those rules to the syslog and
-regularly running a cron script that checks for those loglines. But it
-would be much easier if I could tell netfilter to call an external
-script upon matching.
+I have the following =C2=A0rules on my router/gateway:=20
 
-thanks for any hints and tipps
+*nat
+:PREROUTING ACCEPT=20
+:INPUT ACCEPT=20
+:OUTPUT ACCEPT=20
+:POSTROUTING ACCEPT=20
+-A POSTROUTING -d 93.186.25.52/32 -m comment --comment "bb" -j SNAT --t=
+o-source 41.94.39.49-41.94.39.51
+-A POSTROUTING -s 10.0.0.0/8 -p tcp -m tcp --dport 53 -m comment --comm=
+ent "domain" o eth0 -j SNAT --to-source 41.94.39.49-41.94.39.51
+-A POSTROUTING -s 10.0.0.0/8 -p udp -m udp --dport 53 -m comment --comm=
+ent "domain" -j SNAT --to-source 41.94.39.49-41.94.39.51
+-A POSTROUTING -s 10.0.0.0/8 -p tcp -m tcp --dport 995 -m comment --com=
+ment "pop3s" -j SNAT --to-source 41.94.39.49-41.94.39.51
+-A POSTROUTING -s 10.0.0.0/8 -p udp -m udp --dport 995 -m comment --com=
+ment "pop3s" -j SNAT --to-source 41.94.39.49-41.94.39.51
+-A POSTROUTING -s 10.0.0.0/8 -p tcp -m tcp --dport 587 -m comment --com=
+ment "submission" -j SNAT --to-source 41.94.39.49-41.94.39.51
+-A POSTROUTING -s 10.0.0.0/8 -p udp -m udp --dport 587 -m comment --com=
+ment "submission" -j SNAT --to-source 41.94.39.49-41.94.39.51
+-A POSTROUTING -s 10.0.0.3/32 -j o eth0 -j SNAT --to-source 41.94.39.49=
+-41.94.39.51
+COMMIT
+*filter
+:INPUT ACCEPT=20
+:FORWARD ACCEPT=20
+:OUTPUT ACCEPT=20
+-A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A INPUT -p icmp -j ACCEPT
+-A INPUT -i lo -j ACCEPT
+-A INPUT -i eth1 -j ACCEPT
+-A INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+-A INPUT -j REJECT --reject-with icmp-host-prohibited
+-A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -p icmp -j ACCEPT
+-A FORWARD -i lo -j ACCEPT
+-A FORWARD -i eth1 -o eth0 -p tcp -m tcp --dport 53 -m comment --commen=
+t "domain" -j ACCEPT
+-A FORWARD -i eth1 -o eth0 -p udp -m udp --dport 53 -m comment --commen=
+t "domain" -j ACCEPT
+-A FORWARD -i eth1 -o eth0 -p tcp -m tcp --dport 995 -m comment --comme=
+nt "pop3s" -j ACCEPT
+-A FORWARD -i eth1 -o eth0 -p udp -m udp --dport 995 -m comment --comme=
+nt "pop3s" -j ACCEPT
+-A FORWARD -i eth1 -o eth0 -p tcp -m tcp --dport 587 -m comment --comme=
+nt "submission" -j ACCEPT
+-A FORWARD -i eth1 -o eth0 -p udp -m udp --dport 587 -m comment --comme=
+nt "submission" -j ACCEPT
+-A FORWARD -s 10.0.0.3/32 -i eth1 -o eth0 -j ACCEPT
+-A FORWARD -j REJECT --reject-with icmp-host-prohibited
+COMMIT
 
-tobi
+for some reason I can't make a connection to the external mail server f=
+rom inside the lan. even from the 10.0.0.3 address which should be allo=
+wed to do anything.
+everything used to work when i used MASQUERADing but stopped once i swi=
+tched to SNAT.=20
+Can anybody help me? What am I doing wrong??
+
+Thanks
