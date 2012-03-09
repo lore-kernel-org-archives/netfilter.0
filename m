@@ -1,70 +1,68 @@
-From: tobi <tobster@brain-force.ch>
-Subject: Re: Run a userspace script upon rule matching?
-Date: Thu, 08 Mar 2012 23:43:45 +0100
-Message-ID: <4F593621.3050202@brain-force.ch>
-References: <4F58AA04.4010805@brain-force.ch>  <1331227169.30413.432.camel@andrew-desktop>  <4F5928DD.4040206@brain-force.ch> <1331244128.30413.442.camel@andrew-desktop>
+From: James Anderson <japanwikidonate@gmail.com>
+Subject: quota display in iptables -L
+Date: Fri, 9 Mar 2012 09:19:42 +0900
+Message-ID: <CAL2t0L5bnu9pX_h01HtvEaurdhDa_QHdc6OeVfy3e4hoKe893g@mail.gmail.com>
+References: <CAL2t0L4JR-kPUogudF+vWaypYjQmCPureZE6yM4PjYEVV+XhTg@mail.gmail.com>
+ <CAL2t0L4r5ANvRyM=7Spnx68=wMcQCTR7qDH94V4-TRbXCKA-Gg@mail.gmail.com> <CAL2t0L4AjXx8QR22Q5cdh6ndPpmmrr58x-t6HG7kHZ6UadtOBg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=brain-force.ch;
-	s=2011; t=1331246627;
-	bh=Sm5C0sHgpcQrUjg6/syT175rs6e6PngSMQItoc9veBU=;
-	h=Date:From:MIME-Version:To:Subject:References:In-Reply-To:
-	 Content-Type:Content-Transfer-Encoding;
-	b=AqDPI+a8Vygr40AZHsAwFzwG97QiNu4Nx5ZbZBKVmis7p0N27veLPnWRcpkBSlGS6
-	 KYG2AK0tytAX3M6Amk9V6DF9yA0LGSJDHMi2fZaSUfgq2i1huub9O+aMZn9S54Sp1i
-	 tWV/AR959+W6nwM/2nNC5avVwfBFKZT82u016Ob8=
-In-Reply-To: <1331244128.30413.442.camel@andrew-desktop>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:sender:in-reply-to:references:from:date
+         :x-google-sender-auth:message-id:subject:to:content-type
+         :content-transfer-encoding;
+        bh=qZflTp4mW0x6L4IJs4on17UiI7xpZMPhwNCVJTWQEV0=;
+        b=pe7je31/zAUmBIXYgiU7fi5ebVe5BDUZN6ABPnpsN4h7bqKSrgQrNEU1gx22XmXWGg
+         4czpGL+rldPC+c0rqmw60qzUIuc49QLq/GjbHLgE/PZ/Wr0n8u5/8MWa2/4sy2oO/5iW
+         oNVa0QuVWCDSXJz63s096VbLyjAdZ7HFhNQRxOXdKq+tJ+MxFA+ZXFsCKfIyxNmM3FJn
+         dqjzruFn/EsG0M8p8kKYkFln/84LpHCXaQ8OiSlbjkbMo3E7q5+Wl520gEa3mBxsmh8M
+         eOXUncddFbo1111QN6aS1H/1y0KiJ6XPMkOiTJp/g/fm3L5zbtDbkXgXwX7k/BmUEk4I
+         F/4A==
+In-Reply-To: <CAL2t0L4AjXx8QR22Q5cdh6ndPpmmrr58x-t6HG7kHZ6UadtOBg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-Am 08.03.2012 23:02, schrieb Andrew Beverley:
-> On Thu, 2012-03-08 at 22:47 +0100, tobi wrote:
->> okay more details about my intention: I got a script that checks some
->> logs and acts upon violation by adding IPs to a sperate chain via
->> iptables -A OFFENDERS -s IP -j DROP. So such IPs get blocked. Now I
->> thought about how could I find out if IPs from OFFENDERS come again. So
->> I put another chain to iptables (before the OFFENDERS), put the IPs from
->> OFFENDERS and set the log target for each rule. But then I need a script
->> that reads the logs and searches for IPs from OFFENDERS. Too complex for
->> me :-)
->> So I thought it should somehow be possible to achieve that quite easy IF
->> I could add a script to be executed when a rule (that now goes to log
->> target) matches. Thats were I stand now :-)
->> All I "need" would be a way to excute a simple mailx command with the
->> offending IP and send a mail to myself
-> Okay, a few ideas then:
->
-> 1. Log the packets with a specific prefix, and use rsyslog with the Mail
-> Output Module and relevant configuration to alert you to such logs:
-That's how I actually do it: Log it with a prefix, I just use syslog-ng
->
-> http://www.rsyslog.com/doc/ommail.html
->
-> 2. Use ULOGD. Never really used it myself, but you might be able to
-> create some sort of userspace program that alerts you.
-I tried to find information whether ULOGD can really execute external 
-commands. For me sounds more like loggin to databases. But while 
-googling for ULOGD I found spectre, which seems to have an built-in 
-plugin EXEC which can run commands. I will give spectre the first chance 
-and if it's not working I try with ULOGD
-> 3. Log the IP addresses to an IPSET, and use a cron job to check the
-> list of IP addresses in the set.
->
-> Just thoughts, but hopefully one of the above will work.
->
-> Andy
->
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-Thanks a lot for your ideas. I think I can somehow achieve it. Although 
-I do not know for sure which way to take. First try spectre
+Hello everyone.
 
-Cheers
+I have been trying to get iptables to stop traffic to the internet
+after I have exceeded 29.8 GB and just allow traffic to the local
+subnet after that. I did the conversion on google and apparently
+29.8GB is=A031997506400 bytes. However tonight when I got home and did
+iptables -L -v, I saw this:
 
-tobi
+Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
+=A0pkts bytes target =A0 =A0 prot opt in =A0 =A0 out =A0 =A0 source
+destination
+=A0 =A028M =A0 =A032G =A0 ACCEPT =A0 =A0 all =A0-- =A0any =A0 =A0any =A0=
+ =A0 anywhere
+!192.168.2.0/24=A0=A0 =A0 =A0quota: 31997506400 bytes
+2459K 3621M =A0ACCEPT =A0 =A0 all =A0-- =A0any =A0 =A0any =A0 =A0 anywh=
+ere
+192.168.2.0/24
+=A0 5770 1151K =A0 REJECT =A0 =A0 all =A0-- =A0any =A0 =A0any =A0 =A0 a=
+nywhere
+anywhere =A0 =A0 =A0 =A0 =A0 =A0reject-with icmp-port-unreachable
+
+At first I thought the quota didn't work, but then I did iptables-save =
+-c
+
+*filter
+:INPUT ACCEPT [23078834:14787771556]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+[28216466:31997506128] -A OUTPUT ! -d 192.168.2.0/24 -m quota --quota
+31997506400 -j ACCEPT
+[2475569:3622559686] -A OUTPUT -d 192.168.2.0/24 -j ACCEPT
+[24154:2350411] -A OUTPUT -j REJECT --reject-with icmp-port-unreachable
+COMMIT
+
+which shows that it stopped at 29.7999998 GB.
+Could someone perhaps explain the discrepancy?
+Does iptables keep counting bytes even after the quota is full?
+
+many thanks in advance,
+
+James
