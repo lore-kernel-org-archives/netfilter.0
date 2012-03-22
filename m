@@ -1,49 +1,46 @@
-From: =?ISO-8859-1?Q?Fr=E9d=E9ric_Dreier?= <frederic.dreier@gmail.com>
-Subject: first packet lost by iptables
-Date: Tue, 20 Mar 2012 23:36:59 +0100
-Message-ID: <CAA5b1EuW=hiBpxxR124TepS=bZwt4MTFnEG_5U4r_MM-dO5hSA@mail.gmail.com>
+From: "Huebner, Thomas" <thomas.huebner@cassidian.com>
+Subject: Bridge IPv6 traffic between 2 interfaces
+Date: Thu, 22 Mar 2012 09:27:38 +0100
+Message-ID: <BC7EA6E099A4EE4CBC467EBF08ECB8420A4A4636@GSX300A.mxchg.m.corp>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=u7S/w1urR8KlTW9eT42BKhJ4u7iTmE+YuPH+f6zxtxM=;
-        b=lIkKy8ydvMku6oGRp7veVSzUb0+3dpG5gzFHn/PIGBBtEazbbfK8+sx6qf53daIiUl
-         4OE4YOXKI70EBdcnAJc3mWYxrEGOlr5/hzM5DmoMh9tUWGJxl9xHoBcvH3LyQ+vGf9oa
-         /peUsgWdONc30q9VduQiFliIbILpsAuAPogRdfPCQ/RtLwkXk3VCaQ4NUwEIwkhRYrO9
-         eB1ctwq8MxODMNZ0hGQLzUMO1JzuyX9eREJIzmBPhFdotuzuWl835spa7jX6Dh1yU8rT
-         TsVXyf5eE17fWKyJe1YjR1h6yEjB5fwhkQjPsp4nv6DpWOyr0gCEG2L1V1trNOzvt8ui
-         U+Pw==
+Content-class: urn:content-classes:message
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi,
+Hello,
 
-I have several machines hosting kvm VMs. VMs are connected to bridges
-which are connected to VLANs.
+I have a computer (A) which is connected on the left side to a private
+network (usb0) and on the right side to a stand alone computer (B).
 
-When I try to ping VM2 on hostB from VM1 on hostA, the first ping
-request is silently dropped. Following pings goes through.
 
-I see the ping request on the bridge of the hostB. But the packet is
-not copied on the vnet interface (which is directly connected to the
-bridge).
+----+         +-----------------+            +-------+
+NET |         |      BOX A      |            | BOX B |
+ A  +--IPv4---+---  IPv4 in  ---+------IPv4--+       |
+    +--IPv6-+ |  IPv6 'arround' | +----IPv6--+       |
+    |       | +-----------------+ |          +-------+
+----+       +->----<--->----<--->-+
 
-setting net.bridge.bridge-nf-call-iptables = 0, solve the problem but
-totally disable iptable (I will need iptables later). Therefor I think
-that the problem is iptables.
 
-iptables are empty and policies are set to ACCEPT.
+I try to find a way to bridge the IPv6 traffic completely transparent
+(including all the ICMPv6 and solicitation stuff), between the
+interfaces usb0 and usb1 while the IPv4 traffic is not affected.
 
-There is nothing in syslog (martian packets)
+I've tried using a brctl which connects the two interfaces perfectly,
+but disconnects them from the host A itself. 
+Also marking the IPv6 packets with set-mark and routing them using "ip
+route" seems not to work.
 
-It is Ubuntu 11.04.
+The iptables ROUTE target using the "--oif" option seems exactly what
+I'm looking for, but unfortunatly this target is not available for
+ip6tables.
 
-How may I debug this issue?
+Has anyone an idea or hint?
 
-Regards,
 
-Frederic
+Thanks
+
+Thomas
