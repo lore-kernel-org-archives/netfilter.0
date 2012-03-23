@@ -1,8 +1,8 @@
 From: Jiri Popelka <jpopelka@redhat.com>
 Subject: conntrack thinks that ICMPv6 Echo reply to ICMPv6 Echo request sent
  to IPv6 multicast address is INVALID
-Date: Fri, 23 Mar 2012 14:19:58 +0100
-Message-ID: <4F6C787E.90708@redhat.com>
+Date: Fri, 23 Mar 2012 19:07:06 +0100
+Message-ID: <4F6CBBCA.6010106@redhat.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -19,7 +19,8 @@ B) fe80::5054:ff:fe80:d951/64
 
 2) I set up IPv6 packet filter on A with ip6tables:
 # ip6tables -F
-# ip6tables -A INPUT -m conntrack --ctstate INVALID -j REJECT --reject-with icmp6-adm-prohibited
+# ip6tables -A INPUT -m conntrack --ctstate INVALID -j REJECT 
+--reject-with icmp6-adm-prohibited
 # ip6tables -A INPUT -p ipv6-icmp -j ACCEPT
 # ip6tables -A INPUT -j REJECT --reject-with icmp6-adm-prohibited
 
@@ -42,13 +43,13 @@ PING ff02::1(ff02::1) from fe80::5054:ff:fe09:e0b9 eth2: 56 data bytes
 # ping6 -I eth2 ff02::1
 PING ff02::1(ff02::1) from fe80::5054:ff:fe09:e0b9 eth2: 56 data bytes
 64 bytes from fe80::5054:ff:fe09:e0b9: icmp_seq=1 ttl=64 time=0.072 ms
-64 bytes from fe80::5054:ff:fe80:d951: icmp_seq=1 ttl=64 time=0.318 ms (DUP!)
+64 bytes from fe80::5054:ff:fe80:d951: icmp_seq=1 ttl=64 time=0.318 ms 
+(DUP!)
 <OK>
 
 I see this with kernels 2.6.32 and 3.3.0.
 Is it a known bug or my misunderstanding ?
 
 thanks
---
+-- 
 Jiri
-
