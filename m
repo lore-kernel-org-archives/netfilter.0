@@ -1,144 +1,103 @@
-From: "Huebner, Thomas" <thomas.huebner@cassidian.com>
-Subject: RE: Bridge IPv6 traffic between 2 interfaces
-Date: Fri, 23 Mar 2012 07:58:00 +0100
-Message-ID: <BC7EA6E099A4EE4CBC467EBF08ECB8420A4A4873@GSX300A.mxchg.m.corp>
-References: <BC7EA6E099A4EE4CBC467EBF08ECB8420A4A4636@GSX300A.mxchg.m.corp><CACuyg24rGyYX9bWO21Fbo2HMHtBwwLJQEehq1j1AoNKoew5_3A@mail.gmail.com> <CACuyg24PnPZVrffq+VSvT=oA0RM-TjMD3MUV2Zj5zAw9GtVnmA@mail.gmail.com>
+From: =?ISO-8859-1?Q?Humberto_Juc=E1?= <betolj@gmail.com>
+Subject: Re: Bridge IPv6 traffic between 2 interfaces
+Date: Fri, 23 Mar 2012 07:31:28 -0400
+Message-ID: <CACuyg25Fm7oD20W4Ss2RGgnDvy6gb=iS5vBpxPHM5FJfCOmAPw@mail.gmail.com>
+References: <BC7EA6E099A4EE4CBC467EBF08ECB8420A4A4636@GSX300A.mxchg.m.corp>
+	<CACuyg24rGyYX9bWO21Fbo2HMHtBwwLJQEehq1j1AoNKoew5_3A@mail.gmail.com>
+	<CACuyg24PnPZVrffq+VSvT=oA0RM-TjMD3MUV2Zj5zAw9GtVnmA@mail.gmail.com>
+	<BC7EA6E099A4EE4CBC467EBF08ECB8420A4A4873@GSX300A.mxchg.m.corp>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-class: urn:content-classes:message
-In-Reply-To: <CACuyg24PnPZVrffq+VSvT=oA0RM-TjMD3MUV2Zj5zAw9GtVnmA@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type:content-transfer-encoding;
+        bh=IsIuteNnv/v9dGcskTgKiIG5+ht2BzaddIz0+UnV6s4=;
+        b=T/5bSIwAjTCzPtrxG0GvcB+4HSM4rN4ObnOQJgoXxvAEqAc41JT/Bt3x6srRZzbPQ4
+         pyOdCs6Yt+k+v64d3KN5ftUXREcsNhZhSy7vWhM5gpp3fipzhkD/L2yjfujbRxR7P706
+         qiUmBkhW8jsACr0WFzy/Xoq6Oja9PYZQOt0OH4qzG1fYwADhrmVRKHE5pDqvU+GmkEeq
+         p4YLL0uWFCqeU/kMvUz25IFQFFbK7JAAMZX+whZBP8C59hQXMe8pSV+8RR6kwFnIExcu
+         Y0RwtrYXtUAI7wDZRQ9v2j1L++MDbtAAYDrBbBqCquUagf/qpzuwNwIXUv1ofNqAGtzE
+         tAQg==
+In-Reply-To: <BC7EA6E099A4EE4CBC467EBF08ECB8420A4A4873@GSX300A.mxchg.m.corp>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-1?Q?Humberto_Juc=E1?= <betolj@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+To: "Huebner, Thomas" <thomas.huebner@cassidian.com>
 Cc: netfilter@vger.kernel.org
 
 Hi,
 
-thanks for you'r quick response. I needed some time to fix and extend t=
-he kernel with ebt_broute. I'm using openembedded and all that bitbake =
-stuff needs time...
-=46inaly i've integrated ebtables and the necessary kernel modules.
+According to what you wrote I imagine that the control over the bridge
+you alread have.
+The filter made =E2=80=8B=E2=80=8Bwith ebtables only affects the traffi=
+c crossing the
+bridge (your filter in BROUTING).
 
-I assume that the preceding setup looks some thing like this (?):
+=46or IPv4 traffic you must configure the firewall as if it were a
+simple firewall/router - if you have'nt done the bridge filters.
+- Make sure the routing is active in /proc/sys/net/ipv4/ip_forward (set=
+ting 1).
+- Check the routing table on both sides (networks). If each network
+knows the routing path to another?
+- Check the filters in the FORWARD chain.
+- If you refer to the output as internet access, then confirm your NAT
+rules (SNAT or MASQUERADE).
 
-# brctl addbr br0
-# brctl addif br0 usb0
-# brctl addif br0 usb1
-# ifconfig br0 0.0.0.0 up=20
+One way to quickly verify if the problem is with your firewall rules
+(in memory - only for tests):
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -t nat -I POSTROUTING -j MASQUERADE
+iptables -I FORWARD -j ACCEPT
 
-followed by:
-# ebtables -t broute -A BROUTING -p ipv4 -j DROP
+By this way you will NAT and will accept anything that goes through
+the firewall. Of course you should not leave it, but it is a way to
+quickly verify if the problem is with your rules.
 
-After that a can no longer ping (ipv4) the box from outside.
+Start without NAT.
+
+You can use tcpdump to help you too:
+- using a shell session
+tcpdump -i <if_in> icmp -n
+
+- using a another shell session
+tcpdump -i <if_out> icmp -n
+
+So you can see what goes in and out of each interface.
+If it is too polluted, you can concatenate the host address in pcap fil=
+ter:
+tcpdump-i icmp and host <if> <target>
+
+I hope this helps
 
 
-Am I missing something, May be some sysctl's?
 
-Regards,
-
-Thomas
-
-
-> -----Original Message-----
-> From: Humberto Juc=E1 [mailto:betolj@gmail.com]=20
-> Sent: Thursday, March 22, 2012 12:08 PM
-> To: Huebner, Thomas
-> Cc: netfilter@vger.kernel.org
-> Subject: Re: Bridge IPv6 traffic between 2 interfaces
->=20
+Em 23 de mar=C3=A7o de 2012 02:58, Huebner, Thomas
+<thomas.huebner@cassidian.com> escreveu:
 > Hi,
->=20
-> I do not know if I understand correctly.
->=20
-> You want the IPv6 traffic across the bridge transparently.
-> But whether a control standard for IPv4 - is it?
->=20
-> To control what crosses the bridge or not you should use=20
-> ebtables (in broute chain).
-> I believe it is something like:
->=20
-> ebtables -t broute -A BROUTING -p ipv4 -j DROP
->=20
-> This prevents the processing of the * bridge * for IPv4=20
-> packets, but you can still use iptables to filter * routing *.
->=20
-> I hope it's this and that works.
-> Thanks.
->=20
-> Em 22 de mar=E7o de 2012 07:06, Humberto Juc=E1=20
-> <betolj@gmail.com> escreveu:
-> > Hi,
-> >
-> > I do not know if I understand correctly.
-> >
-> > You want the IPv6 traffic across the bridge transparently.
-> > But whether a control standard for IPv4 - is it?
-> >
-> > To control what crosses the bridge or not you should use=20
-> ebtables (in=20
-> > broute chain).
-> > I believe it is something like:
-> >
-> > ebtables -t broute -A BROUTING -p ipv4 -j DROP
-> >
-> > This prevents the processing of the * bridge * for IPv4=20
-> packets, but=20
-> > you can still use iptables to filter * routing *.
-> >
-> > I hope it's this and that works.
-> > Thanks.
-> >
-> >
-> > 2012/3/22 Huebner, Thomas <thomas.huebner@cassidian.com>:
-> >> Hello,
-> >>
-> >> I have a computer (A) which is connected on the left side to a=20
-> >> private network (usb0) and on the right side to a stand=20
-> alone computer (B).
-> >>
-> >>
-> >> ----+ =A0 =A0 =A0 =A0 +-----------------+ =A0 =A0 =A0 =A0 =A0 =A0+=
--------+
-> >> NET | =A0 =A0 =A0 =A0 | =A0 =A0 =A0BOX A =A0 =A0 =A0| =A0 =A0 =A0 =
-=A0 =A0 =A0| BOX B |
-> >> =A0A =A0+--IPv4---+--- =A0IPv4 in =A0---+------IPv4--+ =A0 =A0 =A0=
- |
-> >> =A0 =A0+--IPv6-+ | =A0IPv6 'arround' | +----IPv6--+ =A0 =A0 =A0 |
-> >> =A0 =A0| =A0 =A0 =A0 | +-----------------+ | =A0 =A0 =A0 =A0 =A0+-=
-------+
-> >> ----+ =A0 =A0 =A0 +->----<--->----<--->-+
-> >>
-> >>
-> >> I try to find a way to bridge the IPv6 traffic completely=20
-> transparent=20
-> >> (including all the ICMPv6 and solicitation stuff), between the=20
-> >> interfaces usb0 and usb1 while the IPv4 traffic is not affected.
-> >>
-> >> I've tried using a brctl which connects the two interfaces=20
-> perfectly,=20
-> >> but disconnects them from the host A itself.
-> >> Also marking the IPv6 packets with set-mark and routing them using=
-=20
-> >> "ip route" seems not to work.
-> >>
-> >> The iptables ROUTE target using the "--oif" option seems=20
-> exactly what=20
-> >> I'm looking for, but unfortunatly this target is not available for=
-=20
-> >> ip6tables.
-> >>
-> >> Has anyone an idea or hint?
-> >>
-> >>
-> >> Thanks
-> >>
-> >> Thomas
-> >> --
-> >> To unsubscribe from this list: send the line "unsubscribe=20
-> netfilter"=20
-> >> in the body of a message to majordomo@vger.kernel.org More=20
-> majordomo=20
-> >> info at =A0http://vger.kernel.org/majordomo-info.html
->=20
+>
+> thanks for you'r quick response. I needed some time to fix and extend=
+ the kernel with ebt_broute. I'm using openembedded and all that bitbak=
+e stuff needs time...
+> Finaly i've integrated ebtables and the necessary kernel modules.
+>
+> I assume that the preceding setup looks some thing like this (?):
+>
+> # brctl addbr br0
+> # brctl addif br0 usb0
+> # brctl addif br0 usb1
+> # ifconfig br0 0.0.0.0 up
+>
+> followed by:
+> # ebtables -t broute -A BROUTING -p ipv4 -j DROP
+>
+> After that a can no longer ping (ipv4) the box from outside.
+>
+>
+> Am I missing something, May be some sysctl's?
+>
+> Regards,
+>
+> Thomas
+>
