@@ -1,40 +1,45 @@
-From: Nils Rennebarth <nils.rennebarth@funkwerk-ec.com>
-Subject: Re: REJECT target faster for remote than for local packets?
-Date: Tue, 27 Mar 2012 19:45:15 +0200
-Message-ID: <4F71FCAB.9090208@funkwerk-ec.com>
-References: <4F71C5E6.8040001@funkwerk-ec.com> <CACuyg24vONpi0OSGMsc7MyiZJ_R+fr28KhkYrpBF1fmNKz=XoQ@mail.gmail.com>
+From: John Lister <john.lister@kickstone.co.uk>
+Subject: Has marks with conntrack changed?
+Date: Tue, 27 Mar 2012 22:28:42 +0100
+Message-ID: <4F72310A.8000700@kickstone.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CACuyg24vONpi0OSGMsc7MyiZJ_R+fr28KhkYrpBF1fmNKz=XoQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?windows-1252?Q?Humberto_Juc=E1?= <betolj@gmail.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On 27.03.2012 19:21, Humberto Juc=E1 wrote:
-> Hi,
->=20
->>  iptables -I OUTPUT --protocol tcp --dport 80 -j REJECT
-> For TCP connections, try to do with "-j REJECT --reject-with tcp-rese=
-t".
-> Its faster then port unreachable!
-Makes no difference here. Takes 3 seconds, exactly the time to the next
-SYN packet.
+Hi, I've been using rules like this in a firewall for a while (it does 
+complex routing based on the input and uses marks to identify which 
+packets go out of which interface)
 
-Oh well, that is true for the 2.6.32 kernel. But for the 3.2.0 kernel,
-it really does make a difference:
+for example (simplified use case)
 
-with --reject-with icmp-port-unreachable it takes only 1 second
-and with --reject-with tcp-reset the reaction is instantaneous
-(i.e. 32ms)
+iptables -t mangle -A PREROUTING -j CONNMARK --restore-mark
+iptables -t mangle -A PREROUTING -m mark --mark 0 -m state --state NEW 
+-j MARK
 
-What exactly did change in the kernel and when?
+iptables -t mangle -A MARK -j MARK --set-mark 1
+iptables -t mangle -A MARK -j CONNMARK --save-mark
 
---=20
+which worked fine until recently when I think the box was upgraded. By 
+fine I mean when a new connection was started the mark was set at 0, 
+which would match the rule and then set the mark  before saving it in 
+conntrack. Now it seems the mark is saved across connections.  for 
+example making 2 separate pings used to result in the mark being 0 
+initially and then getting set, now the mark is set to 1 on the second 
+ping after it gets restored.
 
-Mit freundlichen Gr=FC=DFen / with kind regards
+Is this the correct behaviour or is conntrack now tracking similar 
+connections for the restore-mark?
 
-Nils Rennebarth, Software Developer
+Any hints would be appreciated.
+
+John
+
+ps. currently running kernel  2.6.31-23
+
+-- 
+www.pricegoblin.co.uk
 
