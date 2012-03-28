@@ -1,108 +1,68 @@
-From: John Lister <john.lister@kickstone.co.uk>
-Subject: Help with packet marking
-Date: Wed, 28 Mar 2012 15:56:57 +0100
-Message-ID: <4F7326B9.2040705@kickstone.co.uk>
+From: Firstname Lastname <forbiddentransition@gmail.com>
+Subject: Re: iptables and the owner module
+Date: Wed, 28 Mar 2012 12:43:32 -0400
+Message-ID: <20120328124332.66e7ad79@gmail.com>
+References: <20120327194521.00a33d86@gmail.com>
+	<alpine.LNX.2.01.1203280325160.14701@frira.zrqbmnf.qr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kickstone.com; s=mail;
-	h=Content-Transfer-Encoding:Content-Type:Subject:To:MIME-Version:From:Date:Message-ID; bh=4adUWp6Ty/6gS7eNw4NX08D015KNULJs+DE2i5EQh+M=;
-	b=TCDlDeQEafe9JfosIbzlH99zfiuovVAvRl8MK92x343h8bPzb5Nl89+pTFguQB8/w9G2DncepwNfnrUp4gDyzn5W6o4lDHKasBcxgi3SiQCid9RbQzXdiXO0YseoFZ+j;
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=date:from:to:subject:message-id:in-reply-to:references:x-mailer
+         :mime-version:content-type:content-transfer-encoding;
+        bh=odVvgzrSfTVjeLxy86l2zMZpzUglrFy+z8khLIvMuf0=;
+        b=eFyigM+6jjo/Q+4UgWursPE4FlcAYiTJy++qJlorqTlTYgvl4eA8RWqf8HJ+imt7fo
+         HQ+Y432AvIh8znTGz5lavan6d2T1KIcIOhpPWzXbXsKd5Uf01DiVqsdXwUz1UAYyQJHe
+         yDvquUcXQRYVKl8Nt0Xs6pj4NZbizgMFaQSPYZXXNEpK5Ertw0bGzMTGYw+djj/XPgOC
+         sOKYc/KbaSjJHeRZpwkgurN9ABQaak5NR8eurNdmdBWcUNQM/SdbmdO/6Exle6+ghoTU
+         VvegSKPqavmj9yBgx5pKYqrKaGtvoxFrwXIDEoGD4iCusMwjuECaOmA0G9sruBEOCBfb
+         2IbQ==
+In-Reply-To: <alpine.LNX.2.01.1203280325160.14701@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi, I've got a multi homed system which was all working fine until it 
-was accidentally rebooted a couple of days ago and this is probably more 
-LARTC but that list seems dead?
+On Wed, 28 Mar 2012 03:32:13 +0200 (CEST)
+Jan Engelhardt <jengelh@medozas.de> wrote:
 
-Anyway I'm now seeing bizarre behaviour running ubuntu 10.04 kernel 
-2.6.32-40. Previously I would mark the packets in prerouting and then 
-have fwmark based rules in the routing table to send them out via a 
-separate custom routing table.  I have the main routing table set up 
-with a default route via one of the interfaces
+> >-A OUTPUT -o eth0 -p tcp -m tcp --sport 32768:61000 -m multiport
+> >--dports 80,443 -m conntrack --ctstate NEW,ESTABLISHED -m owner
+> >--uid-owner 1000 -j ACCEPT
+> >
+> >The following log output is generated prior to being dropped:
+> >
+> >IN= OUT=eth0 SRC=192.168.2.2 DST=173.194.73.103 LEN=60 TOS=0x00
+> >PREC=0x00 TTL=40 ID=7363 DF PROTO=TCP SPT=58642 DPT=80 WINDOW=5840
+> >RES=0x00 SYN URGP=0 OPT (020405B40402080A1D88900B0000000001030307)
+> >UID=1000 GID=1000
+> >
+> >As indicated in the log output, the packet socket's file structure
+> >is owned by userid 1000 and thus should match the preceding
+> >configuration line with the ACCEPT target.  
+> 
+> Not if a preceding match in the same rule returned false. Which is
+> what your log line indicates. Seeing it as that, the actual
+> ct state is not NEW nor EST.  
 
-Now I can see when debugging iptables, that the interface is set 
-correctly and the packet is marked, but sticking a sniffer onto the 
-interfaces shows me that the packets are coming out of the default 
-interface. If i disable the default route I get "unreachable host". 
-Another wierd thing is that conntrack is showing separate new 
-connections as established, for example if I ping 1 packet and repeat 
-the command the second ping is labelled as established which I wouldn't 
-expect... (I've posted this issue earlier as restore-mark is working for 
-what I'd expect to be new connections)
+If the ct state is not NEW nor EST, then its my understanding that none of the rules should match.
 
-Anyway my setup
-interfaces
-eth0 : 192.168.2.7
-eth1 : x.37.63.74        gw=x.37.63.73
-eth3 : x.45.115.81      gw=x.45.115.86
+The order through the chain is as stated previously: 
 
-# add extra routing tables
-ip route add x.37.63.72/29 dev eth1 table 101
-ip route add 192.168.2.0/24 dev eth0 table 101
-ip route add default via x.37.63.73 dev eth1 table 101
+  -A OUTPUT -o eth0 -p tcp -m tcp --sport 32768:61000 -m multiport --dports 80,443 -m conntrack --ctstate NEW,ESTABLISHED -m owner --uid-owner 1000 -j ACCEPT
+  -A OUTPUT -o eth0 -p tcp -m tcp --sport 32768:61000 -m multiport --dports 80,443 -m conntrack --ctstate NEW,ESTABLISHED -m owner --socket-exists -j LOG --log-tcp-options --log-ip-options --log-uid --log-level 7
+  -A OUTPUT -o eth0 -p tcp -m tcp --sport 32768:61000 -m multiport --dports 80,443 -m conntrack --ctstate NEW,ESTABLISHED -m owner --socket-exists -j DROP
 
-ip route add x.45.115.80/29 dev eth3 table 103
-ip route add 192.168.2.0/24 dev eth0 table 103
-ip route add default via x.45.115.86 dev eth3 table 103
+The 3 rules are nearly equivalent, the difference being the owner module option, --uid-owner vs. --socket-exists (and, of course, the target).
+The initial SYN packet to google.com is not matched in the first rule, and thus passed to the second rule where the packet is matched and logged.
+The packet is then passed to the third rule and dropped.
 
-# add rules
-ip rule add fwmark 101 table 101
-ip rule add fwmark 103 table 103
+Oddly, though, if I add "173.194.73.103 www.google.com" to the hosts file, the intial SYN packet is matched in the first rule and thus accepted.
+When google's IP is obtained from a DNS query, the initial SYN packet to google.com is not matched in the first rule, but is matched in the second and third rule.
+So far, I've only observed this with google.com (and bing.com).
 
-# route a specific ip out for testing sent from 192.168.2.x and 
-forwarded through this box.
-iptables -t mangle -A PREROUTING -d 98.207.221.49/32 -m state --state 
-NEW -j MATCH1
-iptables -t mangle -A MATCH1 -j MARK --set-mark 0x1
-iptables -t mangle -A MATCH1 -j CONNMARK --save-mark
+In any case, thanks for the response.
 
-iptables -t nat -A POSTROUTING -o eth1 -j SNAT --to x.37.63.74
-
-
-The above is a simplified subset but covers the basics I think. Anyway 
-doing
-ping 98.207.221.49
-from an internal machine using this as its gateway fails. I can see it 
-marks the rule, does the routing which sets the outgoing interface 
-correctly but then the packet comes out of the default interface and is 
-then lost. The following logs are generated (cropped for readability) 
-from which you can see it getting marked and the interface set correctly
-
-PREROUTING (NEW) IN=eth0 OUT=  SRC=192.168.2.133 DST=98.207.221.49 
-LEN=60 TOS=0x00 PREC=0x00 TTL=128 ID=9452 PROTO=ICMP TYPE=8 CODE=0 ID=1 
-SEQ=1354
-PREROUTING (MARK1) IN=eth0 OUT=  SRC=192.168.2.133 DST=98.207.221.49 
-LEN=60 TOS=0x00 PREC=0x00 TTL=128 ID=9452 PROTO=ICMP TYPE=8 CODE=0 ID=1 
-SEQ=1354
-FORWARD IN=eth0 OUT=eth1 SRC=192.168.2.133 DST=98.207.221.49 LEN=60 
-TOS=0x00 PREC=0x00 TTL=127 ID=9452 PROTO=ICMP TYPE=8 CODE=0 ID=1 
-SEQ=1354 MARK=0x1
-POSTROUTING IN= OUT=eth1 SRC=192.168.2.133 DST=98.207.221.49 LEN=60 
-TOS=0x00 PREC=0x00 TTL=127 ID=9452 PROTO=ICMP TYPE=8 CODE=0 ID=1 
-SEQ=1354 MARK=0x1
-SNATTING IN= OUT=eth1 SRC=192.168.2.133 DST=98.207.221.49 LEN=60 
-TOS=0x00 PREC=0x00 TTL=127 ID=9452 PROTO=ICMP TYPE=8 CODE=0 ID=1 
-SEQ=1354 MARK=0x1
-
-anyone got an idea what is going on?
-
-Thanks
-
-John
-
-
-
-
-
-
-
-
-
-
--- 
-Get the PriceGoblin Browser Addon
-www.pricegoblin.co.uk
+Bill
 
