@@ -1,85 +1,67 @@
-From: gopi bhimavarapu <gopimallikharjun@yahoo.com>
-Subject: Re: Recompile iptables
-Date: Thu, 29 Mar 2012 04:31:37 -0700 (PDT)
-Message-ID: <1333020697.52159.YahooMailNeo@web125604.mail.ne1.yahoo.com>
-References: <1333004474.86926.YahooMailNeo@web125606.mail.ne1.yahoo.com> <1333006198.2741.14.camel@ns014530.dcyb.net> <alpine.LNX.2.01.1203291007010.812@frira.zrqbmnf.qr>
-Reply-To: gopi bhimavarapu <gopimallikharjun@yahoo.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Iptables "-m time" option doesn't update when the clock changes
+Date: Thu, 29 Mar 2012 08:45:57 -0500
+Message-ID: <20120329134557.GK4603@harrier.slackbuilds.org>
+References: <4F7426FA.2060902@open-t.co.uk>
+ <alpine.LNX.2.01.1203291111080.27349@frira.zrqbmnf.qr>
+ <4F742BAD.20002@open-t.co.uk>
+ <alpine.LNX.2.01.1203291157170.3606@frira.zrqbmnf.qr>
+ <4F7437C3.5060306@open-t.co.uk>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1333020697; bh=D8qeIanoRJ4N1me7ExW/xpILyZetahQlLcmA8HYeGp0=; h=X-YMail-OSG:Received:X-Mailer:References:Message-ID:Date:From:Reply-To:Subject:To:Cc:In-Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=LArKh6yPU/qOJLZz5S3R6BAfosJtWWZajIUAR2p/0djh3fS3IchoZSiCZErqK4QaZK99AtasOrI43BL919M3jspYJ/G+vEW2+O5XFKBrg9RoZ6PPijrMT5L/OpuPmE093ySm1KdW5QR4L1XpCYQeBqTh1N1FhssyifemVt1rYpU=
-In-Reply-To: <alpine.LNX.2.01.1203291007010.812@frira.zrqbmnf.qr>
+Content-Disposition: inline
+In-Reply-To: <4F7437C3.5060306@open-t.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Jan Engelhardt <jengelh@medozas.de>, "Rob Sterenborg (lists)" <lists@sterenborg.info>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hi
+On Thu, Mar 29, 2012 at 11:21:55AM +0100, Sebastian Arcus wrote:
+> On 29/03/12 11:00, Jan Engelhardt wrote:
+> </snip>
+> >  The  caveat  with  the  kernel timezone is that Linux distributions may
+> >  ignore to set the kernel timezone, and  instead  only  set  the  system
+> >  time.  Even if a particular distribution does set the timezone at boot,
+> >  it is usually does not keep the kernel timezone offset - which is  what
+> >  changes  on DST - up to date.  ntpd will not touch the kernel timezone,
+> >  so running it will not resolve the issue. As such, one may encounter  a
+> >  timezone that is always +0000, or one that is wrong half of the time of
+> >  the year. As such, using --kerneltz is highly discouraged.
+> >
+> Thanks for taking the time to give a detailed reply. Just to make 
+> sure I understand correctly - would this mean that there is no 
+> reliable way to run time based iptables rules and have them keep up 
+> with DST changes correctly and automatically - without restarting 
+> the machine when the DST kicks in or out?
 
-So, If we had made any changes ipt_entry structure in our existing kern=
-el,
-If
- we want the change to be percolated to iptables-1.4.12.2, then we have=
-=20
-to make corresponding changes in ipt_entry structure of ip_tables.h of=20
-iptables-1.4.12.2/include directory. (Apply it as a patch).
-So that both iptables and kernel are in sync.
-Simply
- by using -with-ksource option would not suffice. As in the include=20
-path, build_dir/include path comes first and then kernel source include=
-=20
-path.
-Please correct me If I am wrong.
+Restarting the machine? Blasphemy!
 
-Regards,
-Gopi
+Why not simply reload the firewall rules?
 
+A simple at(1) job on the DST-to-standard and standard-to-DST dates 
+to reload the rules, either using your distro's firewall management 
+tools, or pipe iptables-save to iptables-restore (substituting for
+the changed times), ought to do the job just fine.
 
+If you don't want to go to the trouble of looking up the DST change 
+dates, you can brute force it with a cron job running every Sunday 
+morning. (Either way involves some effort, pick that which you find 
+less of a burden.)
 
------ Original Message -----
-=46rom: Jan Engelhardt <jengelh@medozas.de>
-To: Rob Sterenborg (lists) <lists@sterenborg.info>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>; gopimallik=
-harjun@yahoo.com
-Sent: Thursday, March 29, 2012 1:45 PM
-Subject: Re: Recompile iptables
+rob0@harrier:~$ date
+Thu Mar 29 13:43:59 UTC 2012
+rob0@harrier:~$ TZ=Europe/London date
+Thu Mar 29 14:44:10 BST 2012
+rob0@harrier:~$ TZ=Europe/London date -d 'now - 1 month'
+Wed Feb 29 13:44:19 GMT 2012
 
-On Thursday 2012-03-29 09:29, Rob Sterenborg (lists) wrote:
-
->On Thu, 2012-03-29 at 00:01 -0700, gopi bhimavarapu wrote:
->> Hi
->>=20
->> I need to recompile the iptables userspace program using the include
->> files of my kernel. (which has specific improvements in ipt_entry st=
-ructure).
->> I am using iptables-1.4.12.2 and ussing --with-ksource option and gi=
-ving my
->> kernels include directory.
->> Even then, ipt_entry sturcture of iptables-1.4.12.2/include is getti=
-ng precedence.
->> How can I force it to take my include files.
-
-# Rob, don't strip Ccs.
-
-Nah, the issue really is that ${kinclude_CPPFLAGS} comes after=20
--I${top_builddir}/include -I${top_srcdir}/include in=20
-extensions/GNUmakefile.in near AM_CPPFLAGS=3D.
-
-And as I try to find a reason (use case) why we even still have=20
---with-ksource=C2=A0=E2=80=94 iptables is completely independent of it=C2=
-=A0=E2=80=94, I guess it=20
-is so that one does not have to copy forth and back header files when=20
-developing a *new, previously non-existing extension*. For that,=20
-placement of ${kinclude_CPPFLAGS} at the end of line is sufficient.
-
-Note that by changing ipt_entry, you are making yourself incompatible t=
-o=20
-everyone and everything.
-
->Besides, if you checked ./configure --help, it says that --with-ksourc=
-e
->should point to '/lib/modules/CURRENT/source', not
->'/lib/modules/CURRENT/source/include' which is what you seem to have
->done.
-
+# bash-specific code:
+Now=($(date))
+[[ ${Now[4]} = BST ]] && load_BST_rules
+[[ ${Now[4]} = GMT ]] && load_GMT_rules
+# leaving it to you to write the load_*_rules functions
+-- 
+  http://rob0.nodns4.us/ -- system administration and consulting
+  Offlist GMX mail is seen only if "/dev/rob0" is in the Subject:
