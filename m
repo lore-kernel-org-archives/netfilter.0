@@ -1,33 +1,32 @@
-From: Sebastian Arcus <shop@open-t.co.uk>
-Subject: Iptables "-m time" option doesn't update when the clock changes
-Date: Thu, 29 Mar 2012 10:10:18 +0100
-Message-ID: <4F7426FA.2060902@open-t.co.uk>
+From: Jan Engelhardt <jengelh@medozas.de>
+Subject: Re: Iptables "-m time" option doesn't update when the clock
+ changes
+Date: Thu, 29 Mar 2012 11:12:08 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1203291111080.27349@frira.zrqbmnf.qr>
+References: <4F7426FA.2060902@open-t.co.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <4F7426FA.2060902@open-t.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Sebastian Arcus <shop@open-t.co.uk>
+Cc: netfilter@vger.kernel.org
 
-I'm using the following line in my iptables firewall to block internet 
-access for one of the machines on the network for one hour a day:
+On Thursday 2012-03-29 11:10, Sebastian Arcus wrote:
 
-Code:
+> I'm using the following line in my iptables firewall to block internet access
+> for one of the machines on the network for one hour a day:
+>
+> Code:
+>
+> iptables -A FORWARD -p ALL -o $INET_IFACE -m mac --mac-source $BLOCKED_MAC1 -m
+> time --timestart $BLOCKED_TIMESTART1 --timestop $BLOCKED_TIMESTOP1 -j DROP
+>
+>
+> Everything works fine - except that when the clocks change from winter time to
+> summer time (in UK) - the rule keeps on working on the old time.
 
-iptables -A FORWARD -p ALL -o $INET_IFACE -m mac --mac-source 
-$BLOCKED_MAC1 -m time --timestart $BLOCKED_TIMESTART1 --timestop 
-$BLOCKED_TIMESTOP1 -j DROP
-
-
-Everything works fine - except that when the clocks change from winter 
-time to summer time (in UK) - the rule keeps on working on the old time. 
-The clock of this server (checked with "date") updates correctly. If I 
-restart the server - the rule finally starts working on the correct 
-time. Last year when this happened, I posted here and I was advised to 
-change the hardware clock to UTC (from local time) - which I did. 
-However, now that the clock just changed again from winter time to 
-summer time - the user is complaining again that their Internet access 
-slot is off by an hour.
-
-Does anybody know why is this happening?
+This is documented behavior, see manpage (preferably that of a recent 
+release).
