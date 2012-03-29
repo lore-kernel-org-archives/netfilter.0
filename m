@@ -1,67 +1,61 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: Iptables "-m time" option doesn't update when the clock changes
-Date: Thu, 29 Mar 2012 08:45:57 -0500
-Message-ID: <20120329134557.GK4603@harrier.slackbuilds.org>
-References: <4F7426FA.2060902@open-t.co.uk>
- <alpine.LNX.2.01.1203291111080.27349@frira.zrqbmnf.qr>
- <4F742BAD.20002@open-t.co.uk>
- <alpine.LNX.2.01.1203291157170.3606@frira.zrqbmnf.qr>
- <4F7437C3.5060306@open-t.co.uk>
-Reply-To: netfilter@vger.kernel.org
+From: =?ISO-8859-1?Q?Humberto_Juc=E1?= <betolj@gmail.com>
+Subject: Re: Help with packet marking
+Date: Thu, 29 Mar 2012 10:55:32 -0400
+Message-ID: <CACuyg262eXScuo6aLusyOScU4NEo7PEjbUqEOX_G0E-gaKS=XQ@mail.gmail.com>
+References: <4F74194E.9030608@kickstone.co.uk>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4F7437C3.5060306@open-t.co.uk>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type;
+        bh=lGMBQ4IPnQVIMaIUKwKxXwgRerNJuk/xjEYaj523uS4=;
+        b=qngM2Z9GmgkGGatGSE948jcB6wmTi/ry+01wsy4SADMeMj3CQmalulVEaTmZWYkL5h
+         jfLYGZYhBOMynPAdtT68SYRS+WDbH5uatYI+tcHmGA6cuLFC21x5JFrrdzgZ63Qnr1NS
+         bYgRD4FKn66QIOC2NfeNE1C3hFZ0WWuteLizMRIaU3y7wQ2YXPAvu1PHQ4FwkIx28lo3
+         9BkkUDSq8IubKalPJuGTBp0CsRCAhOJ9y7ANYdZjLSao0DWQU/2vus17brn649HBBoWe
+         qtcTLFdbi1Y82mG1NF1mrFTJOSw7IQ1AbAC00ozfgDi6KDKy3Z/z4PyK1p6u7qsdhLrk
+         P/6Q==
+In-Reply-To: <4F74194E.9030608@kickstone.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: John Lister <john.lister@kickstone.co.uk>
+Cc: netfilter@vger.kernel.org
 
-On Thu, Mar 29, 2012 at 11:21:55AM +0100, Sebastian Arcus wrote:
-> On 29/03/12 11:00, Jan Engelhardt wrote:
-> </snip>
-> >  The  caveat  with  the  kernel timezone is that Linux distributions may
-> >  ignore to set the kernel timezone, and  instead  only  set  the  system
-> >  time.  Even if a particular distribution does set the timezone at boot,
-> >  it is usually does not keep the kernel timezone offset - which is  what
-> >  changes  on DST - up to date.  ntpd will not touch the kernel timezone,
-> >  so running it will not resolve the issue. As such, one may encounter  a
-> >  timezone that is always +0000, or one that is wrong half of the time of
-> >  the year. As such, using --kerneltz is highly discouraged.
-> >
-> Thanks for taking the time to give a detailed reply. Just to make 
-> sure I understand correctly - would this mean that there is no 
-> reliable way to run time based iptables rules and have them keep up 
-> with DST changes correctly and automatically - without restarting 
-> the machine when the DST kicks in or out?
+2012/3/29 John Lister <john.lister@kickstone.co.uk>:
+> It seems to be selecting the correct route using the marks as iptables
+> reports the correct interface in the log files.
+> However the packet then goes out of a different interface.
 
-Restarting the machine? Blasphemy!
+Show us all firewall and routing rules (at least the main)...
+   iptables -t mangle -nL -v
+   ip rule ls
 
-Why not simply reload the firewall rules?
+> This has always worked before, the default route is in the main table (maybe
+> not clear before) and is used so that
+> the box can route local packets out. Your example (below) would do the same
+> except skip the fwmark rules
 
-A simple at(1) job on the DST-to-standard and standard-to-DST dates 
-to reload the rules, either using your distro's firewall management 
-tools, or pipe iptables-save to iptables-restore (substituting for
-the changed times), ought to do the job just fine.
+Not exactly. In my example, to skip the fwmark process the destination
+address must be known by the main table. And you dont need to treat
+your essential routes in alternative tables (only default gw). For
+this reason,  you couldnt use a default gw in main table (*my
+example*).
 
-If you don't want to go to the trouble of looking up the DST change 
-dates, you can brute force it with a cron job running every Sunday 
-morning. (Either way involves some effort, pick that which you find 
-less of a burden.)
+But, i still not sure why your setup has stopped working.
 
-rob0@harrier:~$ date
-Thu Mar 29 13:43:59 UTC 2012
-rob0@harrier:~$ TZ=Europe/London date
-Thu Mar 29 14:44:10 BST 2012
-rob0@harrier:~$ TZ=Europe/London date -d 'now - 1 month'
-Wed Feb 29 13:44:19 GMT 2012
+> Yes, sorry when doing the example missed off the -m state --state NEW bit...
+> I still find it strange that recently packets I'd expect to be in the NEW
+> state are ESTABLISHED. eg doing
+> ping blah
+> ping blah
+> results in the first outgoing packet being NEW, but the second ping is
+> ESTABLISHED, surely this is a bug?
 
-# bash-specific code:
-Now=($(date))
-[[ ${Now[4]} = BST ]] && load_BST_rules
-[[ ${Now[4]} = GMT ]] && load_GMT_rules
-# leaving it to you to write the load_*_rules functions
--- 
-  http://rob0.nodns4.us/ -- system administration and consulting
-  Offlist GMX mail is seen only if "/dev/rob0" is in the Subject:
+Why you need to work with connection STATEs in firewall MARKs?
+
+Tell me more about your configuration.
+I can check your firewall confs if you open your ssh access for me
+(send me account in pvt - if you like).
