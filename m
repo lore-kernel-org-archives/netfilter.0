@@ -1,61 +1,30 @@
-From: =?ISO-8859-1?Q?Humberto_Juc=E1?= <betolj@gmail.com>
-Subject: Re: Help with packet marking
-Date: Thu, 29 Mar 2012 10:55:32 -0400
-Message-ID: <CACuyg262eXScuo6aLusyOScU4NEo7PEjbUqEOX_G0E-gaKS=XQ@mail.gmail.com>
-References: <4F74194E.9030608@kickstone.co.uk>
+From: =?UTF-8?Q?Fran=C3=A7ois_Legal?= <devel@thom.fr.eu.org>
+Subject: rtsp helper module
+Date: Thu, 29 Mar 2012 17:04:44 +0200
+Message-ID: <2e27e7c6d602f258d4d33c4da5b75648@thom.fr.eu.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=lGMBQ4IPnQVIMaIUKwKxXwgRerNJuk/xjEYaj523uS4=;
-        b=qngM2Z9GmgkGGatGSE948jcB6wmTi/ry+01wsy4SADMeMj3CQmalulVEaTmZWYkL5h
-         jfLYGZYhBOMynPAdtT68SYRS+WDbH5uatYI+tcHmGA6cuLFC21x5JFrrdzgZ63Qnr1NS
-         bYgRD4FKn66QIOC2NfeNE1C3hFZ0WWuteLizMRIaU3y7wQ2YXPAvu1PHQ4FwkIx28lo3
-         9BkkUDSq8IubKalPJuGTBp0CsRCAhOJ9y7ANYdZjLSao0DWQU/2vus17brn649HBBoWe
-         qtcTLFdbi1Y82mG1NF1mrFTJOSw7IQ1AbAC00ozfgDi6KDKy3Z/z4PyK1p6u7qsdhLrk
-         P/6Q==
-In-Reply-To: <4F74194E.9030608@kickstone.co.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: John Lister <john.lister@kickstone.co.uk>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="macroman"; format="flowed"
+To: netfilter@vger.kernel.org
 
-2012/3/29 John Lister <john.lister@kickstone.co.uk>:
-> It seems to be selecting the correct route using the marks as iptables
-> reports the correct interface in the log files.
-> However the packet then goes out of a different interface.
+Hello,
 
-Show us all firewall and routing rules (at least the main)...
-   iptables -t mangle -nL -v
-   ip rule ls
+I'm using mod rtsp to nat RTP stream from my internet modem to some
+machines on the network.
 
-> This has always worked before, the default route is in the main table (maybe
-> not clear before) and is used so that
-> the box can route local packets out. Your example (below) would do the same
-> except skip the fwmark rules
+I've got a problem with the patch as it only let the packet through one=
+=20
+way
+(and not let through the RTCP packets sent by the client to the=20
+streming
+server).
 
-Not exactly. In my example, to skip the fwmark process the destination
-address must be known by the main table. And you dont need to treat
-your essential routes in alternative tables (only default gw). For
-this reason,  you couldnt use a default gw in main table (*my
-example*).
+Moreover, I checked the code and did not see any expectation removal=20
+when
+the connection is terminated. Is this expected ? Anybody can help me to
+improve this ?
 
-But, i still not sure why your setup has stopped working.
-
-> Yes, sorry when doing the example missed off the -m state --state NEW bit...
-> I still find it strange that recently packets I'd expect to be in the NEW
-> state are ESTABLISHED. eg doing
-> ping blah
-> ping blah
-> results in the first outgoing packet being NEW, but the second ping is
-> ESTABLISHED, surely this is a bug?
-
-Why you need to work with connection STATEs in firewall MARKs?
-
-Tell me more about your configuration.
-I can check your firewall confs if you open your ssh access for me
-(send me account in pvt - if you like).
+=46ran=C3=A7ois
