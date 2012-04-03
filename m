@@ -1,74 +1,61 @@
-From: DIGVIJAY SINGH <digvijay09020@iiitd.ac.in>
-Subject: Fwd: Build arptables target extension module
-Date: Tue, 3 Apr 2012 08:56:20 +0530
-Message-ID: <CA+EzgVTb851Cb+FAvrVr4icKpwNKM0BAcPysaU1YKuhDwb1VpQ@mail.gmail.com>
-References: <CA+EzgVTduzG+RiuAWCWebs002+x_VTLFKk1EXZERABYtBHYrWA@mail.gmail.com>
-	<CAAjRDhY4eKGE9ULbhH274zrbBe1ubqfBmRJqvahWLHx0_MZLLQ@mail.gmail.com>
-	<CA+EzgVSTLby9n1tSBx0d1hXSNE++a4haYLQKFB-i0gDrZS4KAg@mail.gmail.com>
+From: Sebastian Arcus <shop@open-t.co.uk>
+Subject: Re: Iptables "-m time" option doesn't update when the clock changes
+Date: Tue, 03 Apr 2012 12:31:46 +0100
+Message-ID: <4F7ADFA2.9040507@open-t.co.uk>
+References: <4F7426FA.2060902@open-t.co.uk> <alpine.LNX.2.01.1203291111080.27349@frira.zrqbmnf.qr> <4F742BAD.20002@open-t.co.uk> <alpine.LNX.2.01.1203291157170.3606@frira.zrqbmnf.qr> <4F7437C3.5060306@open-t.co.uk> <20120329134557.GK4603@harrier.slackbuilds.org> <4F7A04A8.8020901@open-t.co.uk> <20120402220757.GC3502@harrier.slackbuilds.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=iiitd.ac.in; s=google;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :content-type:content-transfer-encoding;
-        bh=eFVL8ZaQCt6eFVVXkEv97QEXcY2JOI6oaC2RzyufwB4=;
-        b=iBofuq0TRQSKG8jK7aqyk5hDLrVk4ylLJ8DnNW2U2J97tW8Jq3IUQ/+H3fLcZd5GEY
-         XvF9ewPfyrcf6vVaSiHxuFAm+I/dznwd5IVd1JWU+9hMumyQ+6567fvxNXD3qzwclobb
-         lIB8NyODo0ysbRZNOkEI6gcDBBWaiOo8VEWZk=
-In-Reply-To: <CA+EzgVSTLby9n1tSBx0d1hXSNE++a4haYLQKFB-i0gDrZS4KAg@mail.gmail.com>
+In-Reply-To: <20120402220757.GC3502@harrier.slackbuilds.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
+Cc: /dev/rob0 <rob0@gmx.co.uk>
 
-Hey Brendan!
-I'll clarify what I am trying to do. I have a pc in a LAN. I need to
-redirect all my outgoing traffic to different pcs over the lan.(The
-thing is that of all the pcs which I have selected only 1 of them
-should receive one packet). These pcs will direct all my traffic to
-the required destination.
-
-This is what I have figured out: Since I need to re-direct my outgoing
-traffic to different PCs I'll have to work my way on the Layer 2. So
-arptables is probably the best way to do it. Secondly I need to create
-a target extension which takes the first frame and sends it over to
-pc1, takes the second =A0frame and sends it to pc2 and so on.(Obviously
-once the total number of pcs are over, it loopbacks). This is
-something like the nth patch in iptables but not the same.
-
-=46inally once I build this target extension I would like to build it.
-So that I can use it in arptables.
-
-This is what it is.
-
-Yours,
-Digvijay
-
-On Mon, Apr 2, 2012 at 10:52 PM, Brendan Morrison
-<morrison.brendan17@gmail.com> wrote:
-> hey what are you trying to do exactly
-> ive just finished writing a few netfilter modules to do custom packet
-> proccesing and might be able to lend a hand
-> -brendan
->
-> On Mon, Apr 2, 2012 at 1:17 PM, DIGVIJAY SINGH <digvijay09020@iiitd.a=
-c.in>
-> wrote:
+On 02/04/12 23:07, /dev/rob0 wrote:
+> On Mon, Apr 02, 2012 at 08:57:28PM +0100, Sebastian Arcus wrote:
+>> On 29/03/12 14:45, /dev/rob0 wrote:
+>>> On Thu, Mar 29, 2012 at 11:21:55AM +0100, Sebastian Arcus wrote:
+>>>> On 29/03/12 11:00, Jan Engelhardt wrote:
+>>>> </snip>
+>>>>>   The  caveat  with  the  kernel timezone is that Linux distributions may
+>>>>>   ignore to set the kernel timezone, and  instead  only  set  the  system
+>>>>>   time.  Even if a particular distribution does set the timezone at boot,
+>>>>>   it is usually does not keep the kernel timezone offset - which is  what
+>>>>>   changes  on DST - up to date.  ntpd will not touch the kernel timezone,
+>>>>>   so running it will not resolve the issue. As such, one may encounter  a
+>>>>>   timezone that is always +0000, or one that is wrong half of the time of
+>>>>>   the year. As such, using --kerneltz is highly discouraged.
+>>>>>
+>>>> Thanks for taking the time to give a detailed reply. Just to
+>>>> make sure I understand correctly - would this mean that there is
+>>>> no reliable way to run time based iptables rules and have them
+>>>> keep up with DST changes correctly and automatically - without
+>>>> restarting the machine when the DST kicks in or out?
+>>>
+>>> Restarting the machine? Blasphemy!
+>>>
+>>> Why not simply reload the firewall rules?
+>>>
+>>> A simple at(1) job on the DST-to-standard and standard-to-DST
+>>> dates to reload the rules, either using your distro's firewall
+>>> management tools, or pipe iptables-save to iptables-restore
+>>> (substituting for the changed times), ought to do the job just
+>      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+>>> fine.
 >>
->> Hey there!
->> I wanted to build a target extension module I have created. But I
->> cannot find any How-TOs or tutorials. I went through Jengelh Medozas
->> "Writing Netfilter Modules" guide, however it seems have skipped the
->> entire section of how to build the target extension. So it would be
->> great if someone could guide me through it.
->>
->> Yours truly,
->> Digvijay Singh
->> --
->> To unsubscribe from this list: send the line "unsubscribe netfilter"=
- in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+>> Thanks for the suggestion. However, restarting the firewall (which
+>> flushes and re-writes the rules) makes absolutely no difference. I
 >
->
+> Did you substitute the changed time? I don't see how using different
+> times in your rules would make no difference. Indeed, if not changing
+> times, reloading the same rules would make no difference.
+
+Sorry - you are right - I didn't substitute the times in the firewall 
+rules. On the other hand - a script which would restart the machine is 
+easier (in this particular case) - than one which would amend the 
+firewall rules and reload them.
+
+I'm happy to run any other tests on Slackware if somebody can figure out 
+what needs testing.
