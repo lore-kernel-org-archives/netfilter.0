@@ -1,33 +1,40 @@
-From: Stephen Hemminger <shemminger@vyatta.com>
-Subject: Re: Kernel Module Chaning destination mac address
-Date: Mon, 2 Apr 2012 17:01:17 -0700
-Message-ID: <20120402170117.10d359c8@s6510.linuxnetplumber.net>
-References: <CA+EzgVRmRwZPy5qBU6OMBW9gTsuAJYE0oU6KTAsLqExu9pCiVw@mail.gmail.com>
-	<CA+EzgVSYf5frmum4o-M1PLqQ480uez3OUGgeis=omPoEujUViQ@mail.gmail.com>
+From: Kesava Srinivas <vunnavafuture@gmail.com>
+Subject: Query in understanding skb_pull !!!
+Date: Tue, 3 Apr 2012 07:20:24 +0530
+Message-ID: <CADWUQZ5Opw9-1gzCDvJ6i66k_JPt89jcLem5TAEj5ACyh8SS6Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CA+EzgVSYf5frmum4o-M1PLqQ480uez3OUGgeis=omPoEujUViQ@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=A9IYblPUWOBrowk7HODmIuOKRKgwvG3PzMXRNebtPdM=;
+        b=eO5BFwiJYTvhUggimqYYEv/iQ6137buUWuYdS2d1KEOmv7P3YXr0paYSPQLLWJGvFh
+         s6Jb7sQUjumsI4OsjITG2KgdABulyryJVCmShnOudu9z7d+WgdWkRrEunqa0eHYi2GoK
+         VVVA3sROxKd092wuzHhlUnLbTgp3Gl6RESsi6BOrNKPSMmV7N4S2F+BuMnwIroagUM1n
+         FmpoCPeEZIBNJQkV6GG9JXTWJMZduqZ+zjoDepRzxWVhkcpwHRioNw49NAYLP50UprLx
+         Kg+8KFZDaCJC8v8Qy97a6/dQtmh3vk2raqN1krNuY9+FNwa5u1q71qSacYGXrZSwAA+c
+         8f2w==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: DIGVIJAY SINGH <digvijay09020@iiitd.ac.in>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Sat, 31 Mar 2012 17:52:02 +0530
-DIGVIJAY SINGH <digvijay09020@iiitd.ac.in> wrote:
+HI ,
+Looking for a Confirmation on this !
 
-> Hello there!
-> I am working on a project to create a kernel module which directs all
-> outgoing traffic from my machine to different computer in my LAN. So =
-I
-> am starting with just trying to send the traffic to just one computer=
-=2E
-> I am using the=C2=A0NF_BR_LOCAL_OUT hook. Along with the=C2=A0NFPROTO=
-_IPV4
-> family. But every time i run the module, my machine hangs. And I need
-> to reboot. =C2=A0Please see what is the problem.
->=20
+Once after Capturing the Socket Buffer in PRE_ROUTING Hook; Manipulated the
+Socket Buffer by using the "skb_pull" Kernel Function. Using skb_pull;
+stripped 28 bytes (IP+UDP) which are the Part of outer UDP/IP Header. Now;
+My intention was to route the skb based on the Inner IP Header which is
+sitting after stripping 28 bytes. At the END of the Program; returned NF_ACCEPT.
 
+Even though; skb_pull worked Fine., Kernel's Stack is still looking in to
+Outer Header only for Routing the Packet.I expected ;Kernel will look the
+Inner Header (As data Pointer was incremented by 28 bytes via skb_pull) and
+Take decision based on the Inner one. But; that didn't  happened. It looks
+to me like; we need to always use NF_STOLEN & should write our own code to
+route based on the INNER HEADER. Was my conclusion correct ??
 
-tc action redirect already does this
+-Thanks in Advance,
+VKS
