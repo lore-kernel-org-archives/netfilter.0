@@ -1,31 +1,33 @@
 From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: ip a a /32 or used netmask
-Date: Tue, 3 Apr 2012 14:22:49 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1204031421590.15235@frira.zrqbmnf.qr>
-References: <20120402230510.8b17b5dbc6d1f421fe9476aa@lucassen.org>
+Subject: Re: Kernel Module Chaning destination mac address
+Date: Tue, 3 Apr 2012 14:23:54 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1204031423330.15235@frira.zrqbmnf.qr>
+References: <CA+EzgVRmRwZPy5qBU6OMBW9gTsuAJYE0oU6KTAsLqExu9pCiVw@mail.gmail.com> <CA+EzgVSYf5frmum4o-M1PLqQ480uez3OUGgeis=omPoEujUViQ@mail.gmail.com> <20120402170117.10d359c8@s6510.linuxnetplumber.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20120402230510.8b17b5dbc6d1f421fe9476aa@lucassen.org>
+In-Reply-To: <20120402170117.10d359c8@s6510.linuxnetplumber.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="utf-8"
+To: Stephen Hemminger <shemminger@vyatta.com>
+Cc: DIGVIJAY SINGH <digvijay09020@iiitd.ac.in>, netfilter@vger.kernel.org
 
+On Tuesday 2012-04-03 02:01, Stephen Hemminger wrote:
 
-On Monday 2012-04-02 23:05, richard lucassen wrote:
+>> I am working on a project to create a kernel module which directs al=
+l
+>> outgoing traffic from my machine to different computer in my LAN. So=
+ I
+>> am starting with just trying to send the traffic to just one compute=
+r.
+>> I am using the=C2=A0NF_BR_LOCAL_OUT hook. Along with the=C2=A0NFPROT=
+O_IPV4
+>> family. But every time i run the module, my machine hangs. And I nee=
+d
+>> to reboot. =C2=A0Please see what is the problem.
 >
->Just a question:
->
->I have a NIC eth0 with address 10.0.0.1/24
->
->I want to add an ip address to that NIC. Both ways work:
->
->ip a a 10.0.0.2/32 dev eth0
->
->ip a a 10.0.0.2/24 dev eth0
->
->Is there anyhow some or other difference between the two? And is one of
->the two ways preferred?
+>tc action redirect already does this
 
-The difference lies in the route that is implicitly added.
+As does xt_TEE which, at the same time, is likely to be easier to=20
+handle.
