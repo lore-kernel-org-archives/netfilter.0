@@ -1,54 +1,54 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: NAT Reflection on Gateway with DHCP Address
-Date: Sun, 8 Apr 2012 21:31:14 -0500
-Message-ID: <20120409023114.GV3502@harrier.slackbuilds.org>
-References: <CAEH2fGxT9-F48ZT5zTm4HFY2U6ywZXxGKSXMwEaM1oRO2gK6Hw@mail.gmail.com>
- <20120409010844.GT3502@harrier.slackbuilds.org>
- <034990BB-E6AA-495C-A990-23279E5077B6@gmail.com>
-Reply-To: netfilter@vger.kernel.org
+From: Toralf =?utf-8?q?F=C3=B6rster?= <toralf.foerster@gmx.de>
+Subject: big time stamps in /proc/net/xt_recent/
+Date: Tue, 10 Apr 2012 20:15:58 +0200
+Message-ID: <201204102015.58424.toralf.foerster@gmx.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <034990BB-E6AA-495C-A990-23279E5077B6@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: Text/Plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-On Sun, Apr 08, 2012 at 06:42:51PM -0700, Aaron Clausen wrote:
-> On 2012-04-08, at 6:08 PM, /dev/rob0 <rob0@gmx.co.uk> wrote:
-> > On Sun, Apr 08, 2012 at 05:10:19PM -0700, Aaron Clausen wrote:
-> >> I'm trying to sort out how to do NAT reflection off the public 
-> >> interface where that interface's IP address is supplied via DHCP 
-> >> from the ISP. Any thoughts?
-> > 
-> > I would guess that by "NAT reflection", you mean that you think 
-> > you want to NAT internal clients to an internal host for various 
-> > requests of your external name. This only makes sense if you are 
-> > using some kind of dynamic DNS service to give you an "external 
-> > name".
-> 
-> And this works fine except for some devices which ignore my DNS and 
-> use external ones like Google's and thus fail when trying to access 
-> our public resources from our internal WiFi network.
+I'm wondering about about the big time stamps of the ip address 121.130=
+=2E59.25:
 
-So reconfigure those devices to use your internal DNS. Why are such 
-devices needing to contact you by your external hostname? Have them 
-use an internal hostname and nameserver.
+$ cat /proc/net/xt_recent/MAX_CONN_PER_IP
+src=3D92.53.20.66 ttl: 122 last_seen: 743433 oldest_pkt: 2 740470, 7434=
+33
+src=3D216.172.178.24 ttl: 53 last_seen: 714346 oldest_pkt: 1 714346
+src=3D121.130.59.25 ttl: 113 last_seen: 4294768081 oldest_pkt: 1 429476=
+8081
+src=3D2.90.50.179 ttl: 110 last_seen: 257432 oldest_pkt: 1 257432
+src=3D92.224.122.219 ttl: 64 last_seen: 175404 oldest_pkt: 1 175404
 
-BTW dnsmasq is not just a nameserver, it is also a DHCP server. You 
-might want to have your devices use DHCP, thus giving centralized
-control over such matters.
 
-Getting back on topic, you can also hijack their DNS queries ...
+The background is that I use this perl 1-liner to convert the times int=
+o readable local time strings :
 
-iptables -vt nat -A PREROUTING -i wlan0 -p udp --dport 53 -j REDIRECT
-iptables -vt nat -A PREROUTING -i wlan0 -p tcp --dport 53 -j REDIRECT
+$> perl -wane 'foreach my $i (4..$#F) {$r =3D \$F[$i]; next unless ($$r=
+); $$r =3D~ s/,//g; next unless ($$r =3D~ m/\d+$/); next unless ($$r > =
+100000); $$r =3D localtime (time() - $$r/1000); } print join ("   ", @F=
+), "\n"'=20
+/proc/net/xt_recent/MAX_CONN_PER_IP
 
-> Hence the need of reflection/loop back/whatever-you-call-it.
+and getting this output:
 
-And I gave you two links to tell you how to do that.
--- 
-  http://rob0.nodns4.us/ -- system administration and consulting
-  Offlist GMX mail is seen only if "/dev/rob0" is in the Subject:
+src=3D92.53.20.66   ttl:   122   last_seen:   Tue Apr 10 20:01:22 2012 =
+  oldest_pkt:   2   Tue Apr 10 20:01:25 2012   Tue Apr 10 20:01:22 2012
+src=3D216.172.178.24   ttl:   53   last_seen:   Tue Apr 10 20:01:51 201=
+2   oldest_pkt:   1   Tue Apr 10 20:01:51 2012
+src=3D121.130.59.25   ttl:   113   last_seen:   Tue Feb 21 02:14:17 201=
+2   oldest_pkt:   1   Tue Feb 21 02:14:17 2012
+src=3D2.90.50.179   ttl:   110   last_seen:   Tue Apr 10 20:09:28 2012 =
+  oldest_pkt:   1   Tue Apr 10 20:09:28 2012
+src=3D92.224.122.219   ttl:   64   last_seen:   Tue Apr 10 20:10:50 201=
+2   oldest_pkt:   1   Tue Apr 10 20:10:50 2012
+
+ and I do know that the dates from February can't be correct due to an =
+uptime of less than 1 day.
+
+--=20
+MfG/Sincerely
+Toralf F=C3=B6rster
+pgp finger print: 7B1A 07F4 EC82 0F90 D4C2 8936 872A E508 7DB6 9DA3
