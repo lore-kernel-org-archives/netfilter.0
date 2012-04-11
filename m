@@ -1,112 +1,60 @@
-From: John Lister <john.lister@kickstone.com>
-Subject: Re: IPTables
-Date: Wed, 11 Apr 2012 07:33:21 +0100
-Message-ID: <4F8525B1.9030300@kickstone.com>
-References: <CAODtcdf9shdm-KWvrjGHyDwjJL_p9pE4BdeSKELSTC6ww0p03g@mail.gmail.com>
+From: Marco Padovan <evcz@evcz.tk>
+Subject: hashlimit performance (--hashlimit-htable-size value)
+Date: Wed, 11 Apr 2012 10:44:39 +0200
+Message-ID: <4F854477.5070701@evcz.tk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAODtcdf9shdm-KWvrjGHyDwjJL_p9pE4BdeSKELSTC6ww0p03g@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=evcz.tk; s=google;
+        h=message-id:date:from:user-agent:mime-version:to:subject
+         :x-enigmail-version:openpgp:content-type:content-transfer-encoding;
+        bh=YLHOCDXMBVsgfESidEgzYqqlvq3/m75NgU9d+MnfPQ8=;
+        b=kfNIev1VRqLKlY4+cBPVLtpk8Hi4G6c1P0H37+hWqknLlyy629bUOV8aaLkEngNJyG
+         AKzzVV6/DU4MNtNPUiVbnbxlC6CGayNZ0oNQCMcEv1W4k10Ip8x9HRzrK5YzLrdm5qt+
+         oV6S8NssxwhC0Bo8UYHRGU+likyrxXA827qoE=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Al Grant <bigal.nz@gmail.com>
-Cc: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-You say your router forwards port 5555 to port 80 on the pc, if that is 
-the case, then you need a rule to map port 80 on 192.168.1.71 to 
-192.168.70.140. Something like
+Hi,
 
-iptables -t nat -A PREROUTING -i wlan0  -d 192.168.1.71 --dport 80 -j 
-DNAT --to 192.168.70.140
+how far can I push --hashlimit-htable-max size?
 
-make sure that your FORWARD rule allows it through. You also probably 
-need to add this depending on your routing tables
+I did some tests with 262144:
+-m hashlimit --hashlimit-mode srcip --hashlimit-name testlimiter
+--hashlimit 1/s --hashlimit-burst 10 --hashlimit-htable-size 4096
+--hashlimit-htable-max 262144 -j RETURN
 
-iptables -t nat -A POSTROUTING -i wlan0 -d 192.168.70.140 --dport 80 -j 
-SNAT --to 192.168.1.71
+but it wasn't holding:
 
-to handle the reverse case and route the packets back out.
+xxxx:11:05 white kernel: xt_hashlimit: max count of 262144 reached
+xxxx:11:05 white kernel: xt_hashlimit: max count of 262144 reached
+xxxx:11:05 white kernel: xt_hashlimit: max count of 262144 reached
+xxxx:11:05 white kernel: xt_hashlimit: max count of 262144 reached
+xxxx:11:05 white kernel: xt_hashlimit: max count of 262144 reached
+xxxx:11:05 white kernel: xt_hashlimit: max count of 262144 reached
+xxxx:11:05 white kernel: xt_hashlimit: max count of 262144 reached
+xxxx:11:05 white kernel: xt_hashlimit: max count of 262144 reached
+xxxx:11:05 white kernel: xt_hashlimit: max count of 262144 reached
+xxxx:11:10 white kernel: net_ratelimit: 239072 callbacks suppressed
+xxxx:11:10 white kernel: xt_hashlimit: max count of 262144 reached
+xxxx:11:10 white kernel: xt_hashlimit: max count of 262144 reached
 
-I'm half asleep so i'd test these fully first :)
+Am I doing it wrong?
 
-John
+Should I set hashlimit-htable-size = hashlimit-htable-max in order to
+achieve better performance and map 1 IP to 1 bucket?
 
--- 
-www.pricegoblin.co.uk
+I even tried to take a look at the module source code but I'm not
+skilled enough to fully understand it :D
 
+I'm asking if there is some in-depth documentation about how
+hashlimit-htable-max interact with the other
+parameters(--hashlimit-htable-expire & --hashlimit-htable-gcinterval) in
+order to handle high traffic flows or if anyone got real world
+experience taking hashlimit to the limit :)
 
-On 11/04/2012 04:03, Al Grant wrote:
-> Hiya All,
->
->
->
-> I am after a little guidance please on the following problem:
->
->
->
-> My topology is as follows:
->
->
->
-> inet----router 192.168.1.254-------wlan0 192.168.1.71&&  eth0
-> 192.168.70.121------ip camera 192.168.70.140:80
->
->
->
-> Note:
->
-> (1) eth0 and wlan0 are on a PC running Ubuntu.
->
-> (2) Port 5555 on the router is forwarded to 80 on 192.168.1.71
->
-> (2) in sysctl I have set sysctl net.ipv4.ip_forward=1
->
->
->
-> Now what I need to do is to be able to access the IP camera from the inet.
->
->
->
-> So I have tried adding IPTables:
->
-> iptables -t nat -A PREROUTING -i wlan0 -d 192.168.1.71 -p tcp --dport
-> 5555 -j DNAT --to 192.168.70.140:80
->
->
->
-> Now this should allow me to access the camera by pointing a web
-> browser to the real world public ip on port 5555, however I get page
-> cannot be displayed.
->
->
->
-> I have verified that:
->
-> 1. That camera is accessable from the Ubuntu computer via web browser and ping
->
->
->
-> Various people have suggsted I may need to modify conntrack and others
-> have suggested I may need a second rule.
->
->
->
-> Can anyone please help?
->
->
->
-> Thanks in advance
->
-> AL
->
->
-> --
-> "Beat it punk!"
-> - Clint Eastwood
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
+Thank you
 
