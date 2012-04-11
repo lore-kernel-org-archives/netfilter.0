@@ -1,60 +1,45 @@
-From: Marco Padovan <evcz@evcz.tk>
-Subject: hashlimit performance (--hashlimit-htable-size value)
-Date: Wed, 11 Apr 2012 10:44:39 +0200
-Message-ID: <4F854477.5070701@evcz.tk>
+From: "Ethy H. Brito" <ethy.brito@inexo.com.br>
+Subject: Re: IPTables
+Date: Wed, 11 Apr 2012 10:06:40 -0300
+Message-ID: <20120411100640.1182b257@babalu.inexo.com.br>
+References: <047d7b10cb31c8716404bd5f56a7@google.com>
+	<e89a8ff2474fc99c5604bd608a88@google.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=evcz.tk; s=google;
-        h=message-id:date:from:user-agent:mime-version:to:subject
-         :x-enigmail-version:openpgp:content-type:content-transfer-encoding;
-        bh=YLHOCDXMBVsgfESidEgzYqqlvq3/m75NgU9d+MnfPQ8=;
-        b=kfNIev1VRqLKlY4+cBPVLtpk8Hi4G6c1P0H37+hWqknLlyy629bUOV8aaLkEngNJyG
-         AKzzVV6/DU4MNtNPUiVbnbxlC6CGayNZ0oNQCMcEv1W4k10Ip8x9HRzrK5YzLrdm5qt+
-         oV6S8NssxwhC0Bo8UYHRGU+likyrxXA827qoE=
+In-Reply-To: <e89a8ff2474fc99c5604bd608a88@google.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: BigAl.NZ@gmail.com, netfilter <netfilter@vger.kernel.org>
 
-Hi,
+On Wed, 11 Apr 2012 05:30:49 +0000
+BigAl.NZ@gmail.com wrote:
 
-how far can I push --hashlimit-htable-max size?
+> As an update. When I try to connect I ran tcptrack on wlan0 and it
+> shows the incoming connection with:
+> 
+> Client Server State Idle Speed
+> 118.92.xx.55:58674 192.168.1.71:80 RESET 1s 0 b/s
+> 118.92.xx.55:58673 192.168.1.71:80 RESET 1s 0 b/s
+> 118.92.xx.55:58676 192.168.1.71:80 RESET 1s 0 b/s
+> 
+> Does this seem normal?
 
-I did some tests with 262144:
--m hashlimit --hashlimit-mode srcip --hashlimit-name testlimiter
---hashlimit 1/s --hashlimit-burst 10 --hashlimit-htable-size 4096
---hashlimit-htable-max 262144 -j RETURN
+it does. But it seems something before Ubuntu is not right.
 
-but it wasn't holding:
+If I got it right, you should see something like this:
 
-xxxx:11:05 white kernel: xt_hashlimit: max count of 262144 reached
-xxxx:11:05 white kernel: xt_hashlimit: max count of 262144 reached
-xxxx:11:05 white kernel: xt_hashlimit: max count of 262144 reached
-xxxx:11:05 white kernel: xt_hashlimit: max count of 262144 reached
-xxxx:11:05 white kernel: xt_hashlimit: max count of 262144 reached
-xxxx:11:05 white kernel: xt_hashlimit: max count of 262144 reached
-xxxx:11:05 white kernel: xt_hashlimit: max count of 262144 reached
-xxxx:11:05 white kernel: xt_hashlimit: max count of 262144 reached
-xxxx:11:05 white kernel: xt_hashlimit: max count of 262144 reached
-xxxx:11:10 white kernel: net_ratelimit: 239072 callbacks suppressed
-xxxx:11:10 white kernel: xt_hashlimit: max count of 262144 reached
-xxxx:11:10 white kernel: xt_hashlimit: max count of 262144 reached
+118.92.xx.55:58674 192.168.1.71:5555 ...(forward to port 5555 and not 80.
+this way the iptables DNAT rule won't match)
 
-Am I doing it wrong?
+I think your redirections at the router (192.168.1.254) is not doing what
+you intended it to do.
 
-Should I set hashlimit-htable-size = hashlimit-htable-max in order to
-achieve better performance and map 1 IP to 1 bucket?
+> If I monitor eth0 I see no traffic, so the fault must be in my rule  
+> somewhere?
 
-I even tried to take a look at the module source code but I'm not
-skilled enough to fully understand it :D
+You see no traffic because 192.168.1.7 thought it was a connection to itself
+at port 80 and RESETed it.
 
-I'm asking if there is some in-depth documentation about how
-hashlimit-htable-max interact with the other
-parameters(--hashlimit-htable-expire & --hashlimit-htable-gcinterval) in
-order to handle high traffic flows or if anyone got real world
-experience taking hashlimit to the limit :)
-
-Thank you
-
+Ethy
