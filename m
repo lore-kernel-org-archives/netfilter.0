@@ -1,47 +1,112 @@
-From: gopi bhimavarapu <gopimallikharjun@yahoo.com>
-Subject: flushing & deleting non existing chains
-Date: Tue, 10 Apr 2012 23:07:27 -0700 (PDT)
-Message-ID: <1334124447.96679.YahooMailNeo@web125606.mail.ne1.yahoo.com>
-Reply-To: gopi bhimavarapu <gopimallikharjun@yahoo.com>
+From: John Lister <john.lister@kickstone.com>
+Subject: Re: IPTables
+Date: Wed, 11 Apr 2012 07:33:21 +0100
+Message-ID: <4F8525B1.9030300@kickstone.com>
+References: <CAODtcdf9shdm-KWvrjGHyDwjJL_p9pE4BdeSKELSTC6ww0p03g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1334124447; bh=lqgZN7rao3frjWOInA/JagsV8iE8hxZt+DyAp4G59fk=; h=X-YMail-OSG:Received:X-Mailer:Message-ID:Date:From:Reply-To:Subject:To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=Y0zYtTM96K4ITHd1CdJFe37tPsDBBgOKRoRiieXcassWkpQZqjfj2quduITxEQ7HF5JE3NzVAeX8qRHr/lOizmyFvxYq0WdzObukB9fyMrkT/LsRSMaFGKo8KeWhRD+pwp9fwH9sezi8uIQS6PRwMLC7Cq4ZEbgz8VuD4SKXw+A=
+In-Reply-To: <CAODtcdf9shdm-KWvrjGHyDwjJL_p9pE4BdeSKELSTC6ww0p03g@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Al Grant <bigal.nz@gmail.com>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-Hi
+You say your router forwards port 5555 to port 80 on the pc, if that is 
+the case, then you need a rule to map port 80 on 192.168.1.71 to 
+192.168.70.140. Something like
 
-I was trying to flush a chain, delete all the rules and delete the chai=
-n before creation of the chain.
-This approach worked fine in iptables-1.4.0, but seems like in iptables=
--1.4.12.2, we cannot flush a non existing chain.
-Is there any change in the expected behavior ?
+iptables -t nat -A PREROUTING -i wlan0  -d 192.168.1.71 --dport 80 -j 
+DNAT --to 192.168.70.140
 
+make sure that your FORWARD rule allows it through. You also probably 
+need to add this depending on your routing tables
 
-Snippet below works fine in 1.4.0 (using iptables-restore), but complai=
-ns in iptables-1.4.12.2
+iptables -t nat -A POSTROUTING -i wlan0 -d 192.168.70.140 --dport 80 -j 
+SNAT --to 192.168.1.71
 
+to handle the reverse case and route the packets back out.
 
-*filter
-:FORWARD DROP [0:0]
--F chain_tun_0_
-=A0-D FORWARD -o tun_0_+ -j chain_tun_0_
-=A0-D FORWARD -i tun_0_+ -j chain_tun_0_
--X chain_tun_0_
-:chain_tun_0_ - [0:0]
-=A0-I chain_tun_0_ -j DROP
-=A0-I FORWARD -i tun_0_+ -j chain_tun_0_
-=A0-I FORWARD -o tun_0_+ -j chain_tun_0_
-=A0-I chain_tun_0_ --protocol all -o tun_0_+=A0=A0=A0 -j ACCEPT
-=A0-I chain_tun_0_ --protocol all -i tun_0_+=A0=A0=A0 -j ACCEPT
-=A0-o ext0 -I chain_tun_0_ -j DROP
-=A0-i ext0 -I chain_tun_0_ -j DROP
-COMMIT
+I'm half asleep so i'd test these fully first :)
+
+John
+
+-- 
+www.pricegoblin.co.uk
 
 
-Regards,
-Gopi
+On 11/04/2012 04:03, Al Grant wrote:
+> Hiya All,
+>
+>
+>
+> I am after a little guidance please on the following problem:
+>
+>
+>
+> My topology is as follows:
+>
+>
+>
+> inet----router 192.168.1.254-------wlan0 192.168.1.71&&  eth0
+> 192.168.70.121------ip camera 192.168.70.140:80
+>
+>
+>
+> Note:
+>
+> (1) eth0 and wlan0 are on a PC running Ubuntu.
+>
+> (2) Port 5555 on the router is forwarded to 80 on 192.168.1.71
+>
+> (2) in sysctl I have set sysctl net.ipv4.ip_forward=1
+>
+>
+>
+> Now what I need to do is to be able to access the IP camera from the inet.
+>
+>
+>
+> So I have tried adding IPTables:
+>
+> iptables -t nat -A PREROUTING -i wlan0 -d 192.168.1.71 -p tcp --dport
+> 5555 -j DNAT --to 192.168.70.140:80
+>
+>
+>
+> Now this should allow me to access the camera by pointing a web
+> browser to the real world public ip on port 5555, however I get page
+> cannot be displayed.
+>
+>
+>
+> I have verified that:
+>
+> 1. That camera is accessable from the Ubuntu computer via web browser and ping
+>
+>
+>
+> Various people have suggsted I may need to modify conntrack and others
+> have suggested I may need a second rule.
+>
+>
+>
+> Can anyone please help?
+>
+>
+>
+> Thanks in advance
+>
+> AL
+>
+>
+> --
+> "Beat it punk!"
+> - Clint Eastwood
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
 
