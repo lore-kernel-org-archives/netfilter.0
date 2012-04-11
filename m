@@ -1,45 +1,75 @@
-From: "Ethy H. Brito" <ethy.brito@inexo.com.br>
-Subject: Re: IPTables
-Date: Wed, 11 Apr 2012 10:06:40 -0300
-Message-ID: <20120411100640.1182b257@babalu.inexo.com.br>
-References: <047d7b10cb31c8716404bd5f56a7@google.com>
-	<e89a8ff2474fc99c5604bd608a88@google.com>
+From: Marc <ccc@lebertbro.com>
+Subject: Confusion about filtering traffic in a bridge scenario
+Date: Wed, 11 Apr 2012 16:58:11 +0200
+Message-ID: <4F859C03.1080803@lebertbro.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <e89a8ff2474fc99c5604bd608a88@google.com>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; t=1334156335; l=1620;
+	s=domk; d=eq3.info;
+	h=Content-Transfer-Encoding:Content-Type:Subject:To:MIME-Version:From:
+	Date:X-RZG-CLASS-ID:X-RZG-AUTH;
+	bh=QuCBeIPWPQYeHg/xbikszHSxQLc=;
+	b=H3EVN1q0VVibpOGgH5ePNpziHv6WAXwW323yyFM5oKVo6zo8oOL6z9LiNqhI+rKIdW9
+	bvYo7mpNNMgeiL/szedna26M25RaszTGK9zKpqQxd8IINIGCuwaFGtCuW/2fVJM9GQzgQ
+	YdddW6+oRj0KGkdwhtAoQf6oZmqMxSQjGAo=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: BigAl.NZ@gmail.com, netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On Wed, 11 Apr 2012 05:30:49 +0000
-BigAl.NZ@gmail.com wrote:
+Hello,
 
-> As an update. When I try to connect I ran tcptrack on wlan0 and it
-> shows the incoming connection with:
-> 
-> Client Server State Idle Speed
-> 118.92.xx.55:58674 192.168.1.71:80 RESET 1s 0 b/s
-> 118.92.xx.55:58673 192.168.1.71:80 RESET 1s 0 b/s
-> 118.92.xx.55:58676 192.168.1.71:80 RESET 1s 0 b/s
-> 
-> Does this seem normal?
+I was/am trying to setup packet filtering on a virtualisation host and
+couldnt get it to work and was hoping for some pointers.
 
-it does. But it seems something before Ubuntu is not right.
+Heres the setup:
 
-If I got it right, you should see something like this:
+Said host has:
+eth0 - the physical interface, no address assigned
+br0 - the bridge interface, has IP 10.0.0.1 and gateway and default
+route assigned to it
+veth0 - the virtual interface for one of the VMs, has IP 192.168.0.1
 
-118.92.xx.55:58674 192.168.1.71:5555 ...(forward to port 5555 and not 80.
-this way the iptables DNAT rule won't match)
+both eth0 and veth0 are added to the bridge, the networking setup is
+functional, however I seem to be unable to filter traffic to the VM with
+iptables. Heres what Ive tried:
 
-I think your redirections at the router (192.168.1.254) is not doing what
-you intended it to do.
+iptables -A FORWARD -m physdev --physdev-in eth0 --physdev-out veth0  -p
+tcp --dport 22
 
-> If I monitor eth0 I see no traffic, so the fault must be in my rule  
-> somewhere?
+However, this only results in a /var/log/messages entry:
 
-You see no traffic because 192.168.1.7 thought it was a connection to itself
-at port 80 and RESETed it.
+kernel: physdev match: using --physdev-out in the OUTPUT, FORWARD and
+POSTROUTING chains for non-bridged traffic is not supported anymore.
 
-Ethy
+Since this _IS_ in fact bridged traffic, I dont see why I would get this
+error?
+
+Maybe Im looking at it the completely wrong way and physdev isnt even
+the way to go here anymore, I dont know. Any kind of help is greatly
+appreciated.
+
+Oh, I figured I should add the following information:
+
+Kernel is Linux 2.6.32-11, running Debian stable (6.0.4)
+
+/etc/sysctl.conf contains these:
+
+net.ipv4.ip_forward=1
+net.ipv4.conf.all.rp_filter=1
+net.ipv4.icmp_echo_ignore_broadcasts=1
+net.ipv6.conf.all.proxy_ndp=1
+net.bridge.bridge-nf-call-arptables = 1
+net.bridge.bridge-nf-call-ip6tables = 1
+net.bridge.bridge-nf-call-iptables = 1
+
+iptables -I FORWARD -j REJECT -p tcp -i veth0 --dport 22
+didnt stop ssh from working either
+
+Regards, Marc
+
+
+
+
+
