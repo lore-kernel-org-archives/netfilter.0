@@ -1,40 +1,39 @@
-From: Vishal Jumar <vishaljumar@live.com>
-Subject: =?windows-1256?Q?Help_with_?= =?windows-1256?Q?INVALID_pa?=
- =?windows-1256?Q?ckets_rule?= =?windows-1256?Q?._Best_way?=
- =?windows-1256?Q?_to_see_th?= =?windows-1256?Q?e_actual_p?=
- =?windows-1256?Q?acket_islo?= =?windows-1256?Q?ating_the_?=
- =?windows-1256?Q?rest=3F=FE?=
-Date: Thu, 12 Apr 2012 16:25:45 +0000
-Message-ID: <BLU155-W39963085CD8F1B244A4730CB3A0@phx.gbl>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: Help with INVALID packets rule. Best way to see the actual
+ packet isloating the =?UTF-8?Q?rest=3F=E2=80=8F?=
+Date: Thu, 12 Apr 2012 20:48:32 +0100
+Message-ID: <1334260112.1603.1.camel@andy-laptop>
+References: <BLU155-W39963085CD8F1B244A4730CB3A0@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <BLU155-W39963085CD8F1B244A4730CB3A0@phx.gbl>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1334260120;
+	bh=OGROX7h0cay2Cxfz2MOAEbDzdz0XYHN5wIdE5BIFCTg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:Content-Transfer-Encoding:Mime-Version;
+	b=v8Y0z0J6dIYYOM+V8Uj7s6249g1/BMYHz6YxEyX9fpZGl9BaYwSCg2ASf+lQ1Honn
+	 m6F0pt6GVaoQOaQ6ntM7BZi5Xn977iubOcfe2bVV7D2RZMifDf1pCr+lC2JyeHtQTT
+	 Hv/3JOyXd6zahG7CDzLINXF23Njx1x1FQ+qXyIoo=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-9"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Vishal Jumar <vishaljumar@live.com>
+Cc: netfilter@vger.kernel.org
+
+On Thu, 2012-04-12 at 16:25 +0000, Vishal Jumar wrote:
+> iptables -A INPUT -m state --state INVALID -j LOG --log-prefix "
+> Invalid NOT DROPPED"
+...
+> How can I view the packet that this rule match is originating?
+
+You may be able to use ulogd as the target instead. The following
+website might help; it describes capturing strange packets and examining
+them later with wireshark.
+
+http://rm-rf.ca/blog/fun-iptables-ulogd-and-wireshark
+
+Andy
 
 
-Hello all.
-
-Iam having many entries product of this rule in my syslog...=20
-
-iptables -A INPUT -m state --state INVALID -j LOG --log-prefix " Invali=
-d NOT DROPPED"
-
-Output:
-=3D=3D> /var/log/messages <=3D=3D
-Apr 12 10:10:04 server3 kernel:=A0 Invalid NOT DROPPED IN=3Deth0 OUT=3D=
- MAC=3D40:40:f1:21:08:d9:e0:5f:b9:4a:5f:ff:08:00 SRC=3D50.50.193.113 DS=
-T=3D164.177.152.170 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D109 ID=3D2657=
-3 DF PROTO=3DTCP SPT=3D56602 DPT=3D80 WINDOW=3D16425 RES=3D0x00 ACK FIN=
- URGP=3D0
-
-
-How can I view the packet that this rule match is originating?=A0 There=
-=A0 must be a better way then sniffing all the traffic for 15 min from =
-port 80.. because that would produce toooo much data.
-
-Regards,
-Vishal
- 		 	   		 =20
