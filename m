@@ -1,76 +1,40 @@
-From: Denys Fedoryshchenko <denys@visp.net.lb>
-Subject: Re: [PATCH 1/1] netfilter: =?UTF-8?Q?xt=5Frecent=3A=20Add=20optio?=
- =?UTF-8?Q?nal=20mask=20option=20for=20xt=5Frecent?=
-Date: Thu, 12 Apr 2012 12:00:03 +0300
-Message-ID: <d8de90a8f08a092730109e72827264fe@visp.net.lb>
-References: <1331033084-23803-1-git-send-email-denys@visp.net.lb>
- <20120411231421.GA7038@1984>
+From: Vishal Jumar <vishaljumar@live.com>
+Subject: =?windows-1256?Q?Help_with_?= =?windows-1256?Q?INVALID_pa?=
+ =?windows-1256?Q?ckets_rule?= =?windows-1256?Q?._Best_way?=
+ =?windows-1256?Q?_to_see_th?= =?windows-1256?Q?e_actual_p?=
+ =?windows-1256?Q?acket_islo?= =?windows-1256?Q?ating_the_?=
+ =?windows-1256?Q?rest=3F=FE?=
+Date: Thu, 12 Apr 2012 16:25:45 +0000
+Message-ID: <BLU155-W39963085CD8F1B244A4730CB3A0@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20120411231421.GA7038@1984>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-9"
+To: netfilter@vger.kernel.org
 
-Hi Pablo
 
-On 2012-04-12 02:14, Pablo Neira Ayuso wrote:
-> Hi Denys,
->
-> On Tue, Mar 06, 2012 at 01:24:44PM +0200, Denys Fedoryshchenko wrote:
->> Use case for this feature:
->> 1)In some occasions if you need to allow,block,match specific 
->> subnet.
->> 2)I can use recent as a trigger when netfilter rule matches, with 
->> mask 0.0.0.0
->>
->> Example:
->>
->> If you ping 8.8.8.8, after that you can't ping 2.2.2.10
->
-> Could you provide an useful example for this new feature?
->
-> I also think you can make this with hashlimit, that allows you to
-> set the network mask.
+Hello all.
 
-Yes, technically hashlimit can do a lot, but not everything. Especially 
-because xt_recent can be "fine-grained" in steps, depends on timeline of 
-event, and can be updated accordingly to time of reoccurred event. It is 
-generally not related to mask option, but mask gives power to block 
-subnets.
-Why for example /24? Well, it is minimal mask for BGP announce :) It is 
-very often, that requesting ip has more ip's in same subnet 
-(load-balancing, or multiple ip's on dedicated server), and mask will be 
-highly useful for that, to reduce number of entries and to tighten weak 
-points (usually after ip blocked, they try from neighbor ip to check, if 
-destination just blocked single ip). Plus rttl and hitcount another 
-sweet things that are available in xt_recent, but aren't in hashlimit.
+Iam having many entries product of this rule in my syslog...=20
 
-iptables -t mangle -N SIP
-# If someone abuse our SIP, block him completely at least for 10 
-seconds, if he try again, update and block for new 120 seconds
-iptables -t mangle -A SIP -m recent --name X --update --seconds 10 
---mask 255.255.255.0 -j MARK --set-mark 0x1
-# 120 - 600 seconds handle him over special relay (that will log his 
-query, but wont pass him to real SIP server)
-iptables -t mangle -A SIP -m recent --name X --rcheck --seconds 600 
---mask 255.255.255.0 -j MARK --set-mark 0x2
+iptables -A INPUT -m state --state INVALID -j LOG --log-prefix " Invali=
+d NOT DROPPED"
 
-In this case i will log only invalid queries, but for example some DDoS 
-or scanners that flood servers by packets will be silently ignored. 
-Maybe if hitcount really bad, i will add them to ipset, and block 
-permanently, by -m set --add-set.
+Output:
+=3D=3D> /var/log/messages <=3D=3D
+Apr 12 10:10:04 server3 kernel:=A0 Invalid NOT DROPPED IN=3Deth0 OUT=3D=
+ MAC=3D40:40:f1:21:08:d9:e0:5f:b9:4a:5f:ff:08:00 SRC=3D50.50.193.113 DS=
+T=3D164.177.152.170 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D109 ID=3D2657=
+3 DF PROTO=3DTCP SPT=3D56602 DPT=3D80 WINDOW=3D16425 RES=3D0x00 ACK FIN=
+ URGP=3D0
 
-For me personally it is useful, because i have around 140 NAS servers, 
-and i give each of them /24 "gray" subnets, and in some cases i need to 
-handle bad users, that are changing dynamic ip and attacking from new ip 
-each time. I just block non-critical service for whole subnet then, till 
-technician on duty will solve issue completely. And sure if attack are 
-stopped, subnet will be unblocked "automagically".
 
-Sure this feature not critical, or "a must", and if code are not good, 
-it is up to you, if it should be added or not.
+How can I view the packet that this rule match is originating?=A0 There=
+=A0 must be a better way then sniffing all the traffic for 15 min from =
+port 80.. because that would produce toooo much data.
 
+Regards,
+Vishal
+ 		 	   		 =20
