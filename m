@@ -1,50 +1,46 @@
-From: Marc <ccc@lebertbro.com>
-Subject: Re: Confusion about filtering traffic in a bridge scenario
-Date: Fri, 13 Apr 2012 14:55:21 +0200
-Message-ID: <4F882239.7030404@lebertbro.com>
-References: <4F859C03.1080803@lebertbro.com> <CAHaYD9jLFw0Xfc3ytM9FLVPe4c_SzKAnaHdy8de1_AD85Sxx7g@mail.gmail.com>
+From: nullv@gmx.com
+Subject: Re: IPTables
+Date: Fri, 13 Apr 2012 23:53:47 +0000
+Message-ID: <730201539-1334373169-cardhu_decombobulator_blackberry.rim.net-2010500433-@b5.c4.bise7.blackberry>
+Reply-To: nullv@gmx.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAHaYD9jLFw0Xfc3ytM9FLVPe4c_SzKAnaHdy8de1_AD85Sxx7g@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: hannah commodore <teargas@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: Al Grant <bigal.nz@gmail.com>, netfilter-owner@vger.kernel.org, netfilter <netfilter@vger.kernel.org>
 
-On 13/04/2012 08:06, hannah commodore wrote:
-> On Thu, Apr 12, 2012 at 00:58, Marc <ccc@lebertbro.com> wrote:
->> I was/am trying to setup packet filtering on a virtualisation host and
->> couldnt get it to work and was hoping for some pointers.
->>
->> Heres the setup:
->>
->> Said host has:
->> eth0 - the physical interface, no address assigned
->> br0 - the bridge interface, has IP 10.0.0.1 and gateway and default
->> route assigned to it
->> veth0 - the virtual interface for one of the VMs, has IP 192.168.0.1
->>
->> both eth0 and veth0 are added to the bridge, the networking setup is
->> functional, however I seem to be unable to filter traffic to the VM with
->> iptables
-> do you use /etc/network/interfaces to create the bridge interface?
->
-> I've noticed in Debian that sysctl.conf is applied before the
-> if-up.d/bridge script has a chance to load the bridge module. as a
-> result, the sysctl for net.bridge remain the default.
-> i needed to add a post-up to my config to overcome this
->
-> what is the current setting of net.bridge.bridge-nf-call-iptables?
->
-> does re-applying sysctl.conf allow iptables to then pick up bridged
-> traffic (sysctl -p)?
-Thank you very much! This was indeed the problem! I have manually
-enabled net.bridge.bridge-nf-call-(ip(6)/arp)tables and that fixed the
-problem. I have now also added post-up entries to the bridge to do this
-on reboots.
+RnJvbSBub3RlIDIgeW91ciByb3V0ZXIgaXMgZm9yd2FyZGluZyBwb3J0IDU1NTUgdG8gcG9ydCAg
+ODAgb24gdGhlIFBDcycgd2xhbjAuIEJ1dCB5b3VyIHJ1bGUgb24gdGhlIHBjIGFnYWluIGZvcndh
+cmRzIGZyb20gNTU1NSB0byB0aGUgY2FtZXJhLiBCdXQgYnkgbm93IHlvdXIgZHBvcnQgd291bGQg
+ODAgbm90IDU1NTUuIHRyeSBjb3JyZWN0aW5nIHRoaXMgb3IganVzdCBhZGp1c3QgeW91ciByb3V0
+ZXIgdG8gZm9yd2FyZCBzdHJhaWdodCB0byB0aGUgY2FtZXJhDQotLS0tLS1PcmlnaW5hbCBNZXNz
+YWdlLS0tLS0tDQpGcm9tOiBBbCBHcmFudA0KU2VuZGVyOiBuZXRmaWx0ZXItb3duZXJAdmdlci5r
+ZXJuZWwub3JnDQpUbzogbmV0ZmlsdGVyDQpTdWJqZWN0OiBJUFRhYmxlcw0KU2VudDogQXByIDEx
+LCAyMDEyIDU6MDMgQU0NCg0KSGl5YSBBbGwsDQoNCg0KDQpJIGFtIGFmdGVyIGEgbGl0dGxlIGd1
+aWRhbmNlIHBsZWFzZSBvbiB0aGUgZm9sbG93aW5nIHByb2JsZW06DQoNCg0KDQpNeSB0b3BvbG9n
+eSBpcyBhcyBmb2xsb3dzOg0KDQoNCg0KaW5ldC0tLS1yb3V0ZXIgMTkyLjE2OC4xLjI1NC0tLS0t
+LS13bGFuMCAxOTIuMTY4LjEuNzEgJiYgZXRoMA0KMTkyLjE2OC43MC4xMjEtLS0tLS1pcCBjYW1l
+cmEgMTkyLjE2OC43MC4xNDA6ODANCg0KDQoNCk5vdGU6DQoNCigxKSBldGgwIGFuZCB3bGFuMCBh
+cmUgb24gYSBQQyBydW5uaW5nIFVidW50dS4NCg0KKDIpIFBvcnQgNTU1NSBvbiB0aGUgcm91dGVy
+IGlzIGZvcndhcmRlZCB0byA4MCBvbiAxOTIuMTY4LjEuNzENCg0KKDIpIGluIHN5c2N0bCBJIGhh
+dmUgc2V0IHN5c2N0bCBuZXQuaXB2NC5pcF9mb3J3YXJkPTENCg0KDQoNCk5vdyB3aGF0IEkgbmVl
+ZCB0byBkbyBpcyB0byBiZSBhYmxlIHRvIGFjY2VzcyB0aGUgSVAgY2FtZXJhIGZyb20gdGhlIGlu
+ZXQuDQoNCg0KDQpTbyBJIGhhdmUgdHJpZWQgYWRkaW5nIElQVGFibGVzOg0KDQppcHRhYmxlcyAt
+dCBuYXQgLUEgUFJFUk9VVElORyAtaSB3bGFuMCAtZCAxOTIuMTY4LjEuNzEgLXAgdGNwIC0tZHBv
+cnQNCjU1NTUgLWogRE5BVCAtLXRvIDE5Mi4xNjguNzAuMTQwOjgwDQoNCg0KDQpOb3cgdGhpcyBz
+aG91bGQgYWxsb3cgbWUgdG8gYWNjZXNzIHRoZSBjYW1lcmEgYnkgcG9pbnRpbmcgYSB3ZWINCmJy
+b3dzZXIgdG8gdGhlIHJlYWwgd29ybGQgcHVibGljIGlwIG9uIHBvcnQgNTU1NSwgaG93ZXZlciBJ
+IGdldCBwYWdlDQpjYW5ub3QgYmUgZGlzcGxheWVkLg0KDQoNCg0KSSBoYXZlIHZlcmlmaWVkIHRo
+YXQ6DQoNCjEuIFRoYXQgY2FtZXJhIGlzIGFjY2Vzc2FibGUgZnJvbSB0aGUgVWJ1bnR1IGNvbXB1
+dGVyIHZpYSB3ZWIgYnJvd3NlciBhbmQgcGluZw0KDQoNCg0KVmFyaW91cyBwZW9wbGUgaGF2ZSBz
+dWdnc3RlZCBJIG1heSBuZWVkIHRvIG1vZGlmeSBjb25udHJhY2sgYW5kIG90aGVycw0KaGF2ZSBz
+dWdnZXN0ZWQgSSBtYXkgbmVlZCBhIHNlY29uZCBydWxlLg0KDQoNCg0KQ2FuIGFueW9uZSBwbGVh
+c2UgaGVscD8NCg0KDQoNClRoYW5rcyBpbiBhZHZhbmNlDQoNCkFMDQoNCg0KLS0NCiJCZWF0IGl0
+IHB1bmshIg0KLSBDbGludCBFYXN0d29vZA0KLS0NClRvIHVuc3Vic2NyaWJlIGZyb20gdGhpcyBs
+aXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmliZSBuZXRmaWx0ZXIiIGluDQp0aGUgYm9keSBv
+ZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVsLm9yZw0KTW9yZSBtYWpvcmRvbW8g
+aW5mbyBhdCAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpvcmRvbW8taW5mby5odG1sDQoNCg==
 
-esac
 
-Regards, Marc
