@@ -1,77 +1,51 @@
-From: Amos Jeffries <squid3@treenet.co.nz>
+From: nullv@gmx.com
 Subject: Re: IPTables
-Date: Sat, 14 Apr 2012 21:35:02 +1200
-Message-ID: <4F8944C6.8010102@treenet.co.nz>
-References: <333814026-1334373171-cardhu_decombobulator_blackberry.rim.net-902722826-@b5.c4.bise7.blackberry>
+Date: Sat, 14 Apr 2012 12:20:45 +0000
+Message-ID: <878574318-1334406056-cardhu_decombobulator_blackberry.rim.net-558079861-@b5.c4.bise7.blackberry>
+Reply-To: nullv@gmx.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <333814026-1334373171-cardhu_decombobulator_blackberry.rim.net-902722826-@b5.c4.bise7.blackberry>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1254"; format="flowed"
-To: nullv@gmx.com
+content-type: text/plain
+To: Amos Jeffries <squid3@treenet.co.nz>
 Cc: "Ethy H. Brito" <ethy.brito@inexo.com.br>, netfilter-owner@vger.kernel.org, Al Grant <bigal.nz@gmail.com>, netfilter <netfilter@vger.kernel.org>
 
-On 14/04/2012 11:54 a.m., nullv@gmx.com wrote:
-> It can't be. it's a link-local address
-
-The difference between IPv4 and IPv6. IPv4 has no link-local limitation=
-=20
-outside of 127.0.0.0/8 built into the hardware, it *can* leak into the=20
-WAN if you configure things non-standard.
-
-AYJ
-
-> ------Original Message------
-> From: Ethy H. Brito
->
-> On Wed, 11 Apr 2012 15:03:46 +1200
-> Al Grant wrote:
->
->> Hiya All,
->>
->> I am after a little guidance please on the following problem:
->>
->> My topology is as follows:
->>
->> inet----router 192.168.1.254-------wlan0 192.168.1.71&&  eth0
->> 192.168.70.121------ip camera 192.168.70.140:80
->>
->> Note:
->>
->> (1) eth0 and wlan0 are on a PC running Ubuntu.
->>
->> (2) Port 5555 on the router is forwarded to 80 on 192.168.1.71
->>
->> (2) in sysctl I have set sysctl net.ipv4.ip_forward=3D1
->>
->> Now what I need to do is to be able to access the IP camera from the
->> inet.
->>
->> So I have tried adding IPTables:
->>
->> iptables -t nat -A PREROUTING -i wlan0 -d 192.168.1.71 -p tcp --dpor=
-t
->> 5555 -j DNAT --to 192.168.70.140:80
->>
->> Now this should allow me to access the camera by pointing a web
->> browser to the real world public ip on port 5555, however I get page
->> cannot be displayed.
-> Hi
->
-> just to be sure: 192.168.1.71 is NOT your "real world public ip", is =
-it?
->
-> Ethy
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
-> N=8B=A7=B2=E6=ECr=B8=9By=FA=E8=9A=D8b=B2X=AC=B6=C7=A7v=D8^=96)=DE=BA{=
-=2En=C7+=89=B7=A7z=D7=E2=96=D7=AB=8A{ay=BA=1D=CA=87=DA=99=EB,j=07=AD=A2=
-f=A3=A2=B7h=9A=8B=E0z=B9=1E=AEw=A5=A2=B8=0C=A2=B7=A6j:+v=89=A8=8Aw=E8j=D8=
-m=B6=9F=FF=BE=07=AB=91=EA=E7zZ+=83=F9=9A=8E=8A=DD=A2j"=9D=FA!tml=3D
+U29ycnkgSSBtZWFudCBub24tcm91dGFibGUuIFJvdXRlcnMgb24gdGhlIGludGVybmV0IGFyZSBt
+ZWFudCB0byBpZ25vcmUgdGhvc2UgYWRkcmVzc2VzLiAxMC54LzggMTkyLjE2OC54LzE2IDE3Mi4x
+Ni54LzIwDQotLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0tDQpGcm9tOiBBbW9zIEplZmZyaWVz
+DQpUbzogbnVsbHZAZ214LmNvbQ0KQ2M6IEV0aHkgSC4gQnJpdG8NCkNjOiBuZXRmaWx0ZXItb3du
+ZXJAdmdlci5rZXJuZWwub3JnDQpDYzogQWwgR3JhbnQNCkNjOiBuZXRmaWx0ZXINClN1YmplY3Q6
+IFJlOiBJUFRhYmxlcw0KU2VudDogQXByIDE0LCAyMDEyIDExOjM1IEFNDQoNCk9uIDE0LzA0LzIw
+MTIgMTE6NTQgYS5tLiwgbnVsbHZAZ214LmNvbSB3cm90ZToNCj4gSXQgY2FuJ3QgYmUuIGl0J3Mg
+YSBsaW5rLWxvY2FsIGFkZHJlc3MNCg0KVGhlIGRpZmZlcmVuY2UgYmV0d2VlbiBJUHY0IGFuZCBJ
+UHY2LiBJUHY0IGhhcyBubyBsaW5rLWxvY2FsIGxpbWl0YXRpb24gDQpvdXRzaWRlIG9mIDEyNy4w
+LjAuMC84IGJ1aWx0IGludG8gdGhlIGhhcmR3YXJlLCBpdCAqY2FuKiBsZWFrIGludG8gdGhlIA0K
+V0FOIGlmIHlvdSBjb25maWd1cmUgdGhpbmdzIG5vbi1zdGFuZGFyZC4NCg0KQVlKDQoNCj4gLS0t
+LS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tLQ0KPiBGcm9tOiBFdGh5IEguIEJyaXRvDQo+DQo+IE9u
+IFdlZCwgMTEgQXByIDIwMTIgMTU6MDM6NDYgKzEyMDANCj4gQWwgR3JhbnQgd3JvdGU6DQo+DQo+
+PiBIaXlhIEFsbCwNCj4+DQo+PiBJIGFtIGFmdGVyIGEgbGl0dGxlIGd1aWRhbmNlIHBsZWFzZSBv
+biB0aGUgZm9sbG93aW5nIHByb2JsZW06DQo+Pg0KPj4gTXkgdG9wb2xvZ3kgaXMgYXMgZm9sbG93
+czoNCj4+DQo+PiBpbmV0LS0tLXJvdXRlciAxOTIuMTY4LjEuMjU0LS0tLS0tLXdsYW4wIDE5Mi4x
+NjguMS43MSYmICBldGgwDQo+PiAxOTIuMTY4LjcwLjEyMS0tLS0tLWlwIGNhbWVyYSAxOTIuMTY4
+LjcwLjE0MDo4MA0KPj4NCj4+IE5vdGU6DQo+Pg0KPj4gKDEpIGV0aDAgYW5kIHdsYW4wIGFyZSBv
+biBhIFBDIHJ1bm5pbmcgVWJ1bnR1Lg0KPj4NCj4+ICgyKSBQb3J0IDU1NTUgb24gdGhlIHJvdXRl
+ciBpcyBmb3J3YXJkZWQgdG8gODAgb24gMTkyLjE2OC4xLjcxDQo+Pg0KPj4gKDIpIGluIHN5c2N0
+bCBJIGhhdmUgc2V0IHN5c2N0bCBuZXQuaXB2NC5pcF9mb3J3YXJkPTENCj4+DQo+PiBOb3cgd2hh
+dCBJIG5lZWQgdG8gZG8gaXMgdG8gYmUgYWJsZSB0byBhY2Nlc3MgdGhlIElQIGNhbWVyYSBmcm9t
+IHRoZQ0KPj4gaW5ldC4NCj4+DQo+PiBTbyBJIGhhdmUgdHJpZWQgYWRkaW5nIElQVGFibGVzOg0K
+Pj4NCj4+IGlwdGFibGVzIC10IG5hdCAtQSBQUkVST1VUSU5HIC1pIHdsYW4wIC1kIDE5Mi4xNjgu
+MS43MSAtcCB0Y3AgLS1kcG9ydA0KPj4gNTU1NSAtaiBETkFUIC0tdG8gMTkyLjE2OC43MC4xNDA6
+ODANCj4+DQo+PiBOb3cgdGhpcyBzaG91bGQgYWxsb3cgbWUgdG8gYWNjZXNzIHRoZSBjYW1lcmEg
+YnkgcG9pbnRpbmcgYSB3ZWINCj4+IGJyb3dzZXIgdG8gdGhlIHJlYWwgd29ybGQgcHVibGljIGlw
+IG9uIHBvcnQgNTU1NSwgaG93ZXZlciBJIGdldCBwYWdlDQo+PiBjYW5ub3QgYmUgZGlzcGxheWVk
+Lg0KPiBIaQ0KPg0KPiBqdXN0IHRvIGJlIHN1cmU6IDE5Mi4xNjguMS43MSBpcyBOT1QgeW91ciAi
+cmVhbCB3b3JsZCBwdWJsaWMgaXAiLCBpcyBpdD8NCj4NCj4gRXRoeQ0KPiAtLQ0KPiBUbyB1bnN1
+YnNjcmliZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbmV0Zmls
+dGVyIiBpbg0KPiB0aGUgYm9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVs
+Lm9yZw0KPiBNb3JlIG1ham9yZG9tbyBpbmZvIGF0ICBodHRwOi8vdmdlci5rZXJuZWwub3JnL21h
+am9yZG9tby1pbmZvLmh0bWwNCj4NCj4gTounsubscribefromthislistsendthelineunsubscr
+ibenetfilterinthebodyofamessagetomajordomovgerkernelorgMoremajordomoinfoatht
+tp//vgerkernelorg/majordomoinfohdG1sPQ0KDQoNCg==
 
