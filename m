@@ -1,40 +1,77 @@
-From: nullv@gmx.com
+From: Amos Jeffries <squid3@treenet.co.nz>
 Subject: Re: IPTables
-Date: Fri, 13 Apr 2012 23:54:42 +0000
-Message-ID: <333814026-1334373171-cardhu_decombobulator_blackberry.rim.net-902722826-@b5.c4.bise7.blackberry>
-Reply-To: nullv@gmx.com
+Date: Sat, 14 Apr 2012 21:35:02 +1200
+Message-ID: <4F8944C6.8010102@treenet.co.nz>
+References: <333814026-1334373171-cardhu_decombobulator_blackberry.rim.net-902722826-@b5.c4.bise7.blackberry>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <333814026-1334373171-cardhu_decombobulator_blackberry.rim.net-902722826-@b5.c4.bise7.blackberry>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: "Ethy H. Brito" <ethy.brito@inexo.com.br>, netfilter-owner@vger.kernel.org, Al Grant <bigal.nz@gmail.com>
-Cc: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="windows-1254"; format="flowed"
+To: nullv@gmx.com
+Cc: "Ethy H. Brito" <ethy.brito@inexo.com.br>, netfilter-owner@vger.kernel.org, Al Grant <bigal.nz@gmail.com>, netfilter <netfilter@vger.kernel.org>
 
-SXQgY2FuJ3QgYmUuIGl0J3MgYSBsaW5rLWxvY2FsIGFkZHJlc3MNCi0tLS0tLU9yaWdpbmFsIE1l
-c3NhZ2UtLS0tLS0NCkZyb206IEV0aHkgSC4gQnJpdG8NClNlbmRlcjogbmV0ZmlsdGVyLW93bmVy
-QHZnZXIua2VybmVsLm9yZw0KVG86IEFsIEdyYW50DQpDYzogbmV0ZmlsdGVyDQpTdWJqZWN0OiBS
-ZTogSVBUYWJsZXMNClNlbnQ6IEFwciAxMSwgMjAxMiA1OjQ1IEFNDQoNCk9uIFdlZCwgMTEgQXBy
-IDIwMTIgMTU6MDM6NDYgKzEyMDANCkFsIEdyYW50IDxiaWdhbC5uekBnbWFpbC5jb20+IHdyb3Rl
-Og0KDQo+IEhpeWEgQWxsLA0KPiANCj4gSSBhbSBhZnRlciBhIGxpdHRsZSBndWlkYW5jZSBwbGVh
-c2Ugb24gdGhlIGZvbGxvd2luZyBwcm9ibGVtOg0KPiANCj4gTXkgdG9wb2xvZ3kgaXMgYXMgZm9s
-bG93czoNCj4gDQo+IGluZXQtLS0tcm91dGVyIDE5Mi4xNjguMS4yNTQtLS0tLS0td2xhbjAgMTky
-LjE2OC4xLjcxICYmIGV0aDANCj4gMTkyLjE2OC43MC4xMjEtLS0tLS1pcCBjYW1lcmEgMTkyLjE2
-OC43MC4xNDA6ODANCj4gDQo+IE5vdGU6DQo+IA0KPiAoMSkgZXRoMCBhbmQgd2xhbjAgYXJlIG9u
-IGEgUEMgcnVubmluZyBVYnVudHUuDQo+IA0KPiAoMikgUG9ydCA1NTU1IG9uIHRoZSByb3V0ZXIg
-aXMgZm9yd2FyZGVkIHRvIDgwIG9uIDE5Mi4xNjguMS43MQ0KPiANCj4gKDIpIGluIHN5c2N0bCBJ
-IGhhdmUgc2V0IHN5c2N0bCBuZXQuaXB2NC5pcF9mb3J3YXJkPTENCj4gDQo+IE5vdyB3aGF0IEkg
-bmVlZCB0byBkbyBpcyB0byBiZSBhYmxlIHRvIGFjY2VzcyB0aGUgSVAgY2FtZXJhIGZyb20gdGhl
-DQo+IGluZXQuDQo+IA0KPiBTbyBJIGhhdmUgdHJpZWQgYWRkaW5nIElQVGFibGVzOg0KPiANCj4g
-aXB0YWJsZXMgLXQgbmF0IC1BIFBSRVJPVVRJTkcgLWkgd2xhbjAgLWQgMTkyLjE2OC4xLjcxIC1w
-IHRjcCAtLWRwb3J0DQo+IDU1NTUgLWogRE5BVCAtLXRvIDE5Mi4xNjguNzAuMTQwOjgwDQo+IA0K
-PiBOb3cgdGhpcyBzaG91bGQgYWxsb3cgbWUgdG8gYWNjZXNzIHRoZSBjYW1lcmEgYnkgcG9pbnRp
-bmcgYSB3ZWINCj4gYnJvd3NlciB0byB0aGUgcmVhbCB3b3JsZCBwdWJsaWMgaXAgb24gcG9ydCA1
-NTU1LCBob3dldmVyIEkgZ2V0IHBhZ2UNCj4gY2Fubm90IGJlIGRpc3BsYXllZC4NCg0KSGkNCg0K
-anVzdCB0byBiZSBzdXJlOiAxOTIuMTY4LjEuNzEgaXMgTk9UIHlvdXIgInJlYWwgd29ybGQgcHVi
-bGljIGlwIiwgaXMgaXQ/DQoNCkV0aHkNCi0tDQpUbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlz
-dDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbmV0ZmlsdGVyIiBpbg0KdGhlIGJvZHkgb2Yg
-YSBtZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2VyLmtlcm5lbC5vcmcNCk1vcmUgbWFqb3Jkb21vIGlu
-Zm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWluZm8uaHRtbA0KDQo=
+On 14/04/2012 11:54 a.m., nullv@gmx.com wrote:
+> It can't be. it's a link-local address
+
+The difference between IPv4 and IPv6. IPv4 has no link-local limitation=
+=20
+outside of 127.0.0.0/8 built into the hardware, it *can* leak into the=20
+WAN if you configure things non-standard.
+
+AYJ
+
+> ------Original Message------
+> From: Ethy H. Brito
+>
+> On Wed, 11 Apr 2012 15:03:46 +1200
+> Al Grant wrote:
+>
+>> Hiya All,
+>>
+>> I am after a little guidance please on the following problem:
+>>
+>> My topology is as follows:
+>>
+>> inet----router 192.168.1.254-------wlan0 192.168.1.71&&  eth0
+>> 192.168.70.121------ip camera 192.168.70.140:80
+>>
+>> Note:
+>>
+>> (1) eth0 and wlan0 are on a PC running Ubuntu.
+>>
+>> (2) Port 5555 on the router is forwarded to 80 on 192.168.1.71
+>>
+>> (2) in sysctl I have set sysctl net.ipv4.ip_forward=3D1
+>>
+>> Now what I need to do is to be able to access the IP camera from the
+>> inet.
+>>
+>> So I have tried adding IPTables:
+>>
+>> iptables -t nat -A PREROUTING -i wlan0 -d 192.168.1.71 -p tcp --dpor=
+t
+>> 5555 -j DNAT --to 192.168.70.140:80
+>>
+>> Now this should allow me to access the camera by pointing a web
+>> browser to the real world public ip on port 5555, however I get page
+>> cannot be displayed.
+> Hi
+>
+> just to be sure: 192.168.1.71 is NOT your "real world public ip", is =
+it?
+>
+> Ethy
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
+> N=8B=A7=B2=E6=ECr=B8=9By=FA=E8=9A=D8b=B2X=AC=B6=C7=A7v=D8^=96)=DE=BA{=
+=2En=C7+=89=B7=A7z=D7=E2=96=D7=AB=8A{ay=BA=1D=CA=87=DA=99=EB,j=07=AD=A2=
+f=A3=A2=B7h=9A=8B=E0z=B9=1E=AEw=A5=A2=B8=0C=A2=B7=A6j:+v=89=A8=8Aw=E8j=D8=
+m=B6=9F=FF=BE=07=AB=91=EA=E7zZ+=83=F9=9A=8E=8A=DD=A2j"=9D=FA!tml=3D
 
