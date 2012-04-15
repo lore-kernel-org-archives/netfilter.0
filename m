@@ -1,51 +1,30 @@
-From: nullv@gmx.com
-Subject: Re: IPTables
-Date: Sat, 14 Apr 2012 12:20:45 +0000
-Message-ID: <878574318-1334406056-cardhu_decombobulator_blackberry.rim.net-558079861-@b5.c4.bise7.blackberry>
-Reply-To: nullv@gmx.com
+From: Ed W <lists@wildgooses.com>
+Subject: ipset causes reverse dns lookups?
+Date: Mon, 16 Apr 2012 00:26:29 +0100
+Message-ID: <4F8B5925.5020307@wildgooses.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-content-type: text/plain
-To: Amos Jeffries <squid3@treenet.co.nz>
-Cc: "Ethy H. Brito" <ethy.brito@inexo.com.br>, netfilter-owner@vger.kernel.org, Al Grant <bigal.nz@gmail.com>, netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@vger.kernel.org>
 
-U29ycnkgSSBtZWFudCBub24tcm91dGFibGUuIFJvdXRlcnMgb24gdGhlIGludGVybmV0IGFyZSBt
-ZWFudCB0byBpZ25vcmUgdGhvc2UgYWRkcmVzc2VzLiAxMC54LzggMTkyLjE2OC54LzE2IDE3Mi4x
-Ni54LzIwDQotLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0tDQpGcm9tOiBBbW9zIEplZmZyaWVz
-DQpUbzogbnVsbHZAZ214LmNvbQ0KQ2M6IEV0aHkgSC4gQnJpdG8NCkNjOiBuZXRmaWx0ZXItb3du
-ZXJAdmdlci5rZXJuZWwub3JnDQpDYzogQWwgR3JhbnQNCkNjOiBuZXRmaWx0ZXINClN1YmplY3Q6
-IFJlOiBJUFRhYmxlcw0KU2VudDogQXByIDE0LCAyMDEyIDExOjM1IEFNDQoNCk9uIDE0LzA0LzIw
-MTIgMTE6NTQgYS5tLiwgbnVsbHZAZ214LmNvbSB3cm90ZToNCj4gSXQgY2FuJ3QgYmUuIGl0J3Mg
-YSBsaW5rLWxvY2FsIGFkZHJlc3MNCg0KVGhlIGRpZmZlcmVuY2UgYmV0d2VlbiBJUHY0IGFuZCBJ
-UHY2LiBJUHY0IGhhcyBubyBsaW5rLWxvY2FsIGxpbWl0YXRpb24gDQpvdXRzaWRlIG9mIDEyNy4w
-LjAuMC84IGJ1aWx0IGludG8gdGhlIGhhcmR3YXJlLCBpdCAqY2FuKiBsZWFrIGludG8gdGhlIA0K
-V0FOIGlmIHlvdSBjb25maWd1cmUgdGhpbmdzIG5vbi1zdGFuZGFyZC4NCg0KQVlKDQoNCj4gLS0t
-LS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tLQ0KPiBGcm9tOiBFdGh5IEguIEJyaXRvDQo+DQo+IE9u
-IFdlZCwgMTEgQXByIDIwMTIgMTU6MDM6NDYgKzEyMDANCj4gQWwgR3JhbnQgd3JvdGU6DQo+DQo+
-PiBIaXlhIEFsbCwNCj4+DQo+PiBJIGFtIGFmdGVyIGEgbGl0dGxlIGd1aWRhbmNlIHBsZWFzZSBv
-biB0aGUgZm9sbG93aW5nIHByb2JsZW06DQo+Pg0KPj4gTXkgdG9wb2xvZ3kgaXMgYXMgZm9sbG93
-czoNCj4+DQo+PiBpbmV0LS0tLXJvdXRlciAxOTIuMTY4LjEuMjU0LS0tLS0tLXdsYW4wIDE5Mi4x
-NjguMS43MSYmICBldGgwDQo+PiAxOTIuMTY4LjcwLjEyMS0tLS0tLWlwIGNhbWVyYSAxOTIuMTY4
-LjcwLjE0MDo4MA0KPj4NCj4+IE5vdGU6DQo+Pg0KPj4gKDEpIGV0aDAgYW5kIHdsYW4wIGFyZSBv
-biBhIFBDIHJ1bm5pbmcgVWJ1bnR1Lg0KPj4NCj4+ICgyKSBQb3J0IDU1NTUgb24gdGhlIHJvdXRl
-ciBpcyBmb3J3YXJkZWQgdG8gODAgb24gMTkyLjE2OC4xLjcxDQo+Pg0KPj4gKDIpIGluIHN5c2N0
-bCBJIGhhdmUgc2V0IHN5c2N0bCBuZXQuaXB2NC5pcF9mb3J3YXJkPTENCj4+DQo+PiBOb3cgd2hh
-dCBJIG5lZWQgdG8gZG8gaXMgdG8gYmUgYWJsZSB0byBhY2Nlc3MgdGhlIElQIGNhbWVyYSBmcm9t
-IHRoZQ0KPj4gaW5ldC4NCj4+DQo+PiBTbyBJIGhhdmUgdHJpZWQgYWRkaW5nIElQVGFibGVzOg0K
-Pj4NCj4+IGlwdGFibGVzIC10IG5hdCAtQSBQUkVST1VUSU5HIC1pIHdsYW4wIC1kIDE5Mi4xNjgu
-MS43MSAtcCB0Y3AgLS1kcG9ydA0KPj4gNTU1NSAtaiBETkFUIC0tdG8gMTkyLjE2OC43MC4xNDA6
-ODANCj4+DQo+PiBOb3cgdGhpcyBzaG91bGQgYWxsb3cgbWUgdG8gYWNjZXNzIHRoZSBjYW1lcmEg
-YnkgcG9pbnRpbmcgYSB3ZWINCj4+IGJyb3dzZXIgdG8gdGhlIHJlYWwgd29ybGQgcHVibGljIGlw
-IG9uIHBvcnQgNTU1NSwgaG93ZXZlciBJIGdldCBwYWdlDQo+PiBjYW5ub3QgYmUgZGlzcGxheWVk
-Lg0KPiBIaQ0KPg0KPiBqdXN0IHRvIGJlIHN1cmU6IDE5Mi4xNjguMS43MSBpcyBOT1QgeW91ciAi
-cmVhbCB3b3JsZCBwdWJsaWMgaXAiLCBpcyBpdD8NCj4NCj4gRXRoeQ0KPiAtLQ0KPiBUbyB1bnN1
-YnNjcmliZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbmV0Zmls
-dGVyIiBpbg0KPiB0aGUgYm9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVs
-Lm9yZw0KPiBNb3JlIG1ham9yZG9tbyBpbmZvIGF0ICBodHRwOi8vdmdlci5rZXJuZWwub3JnL21h
-am9yZG9tby1pbmZvLmh0bWwNCj4NCj4gTounsubscribefromthislistsendthelineunsubscr
-ibenetfilterinthebodyofamessagetomajordomovgerkernelorgMoremajordomoinfoatht
-tp//vgerkernelorg/majordomoinfohdG1sPQ0KDQoNCg==
+Hi, ipset appears to require a reverse dns lookup for say:
 
+     ipset create cp bitmap:ip,mac range 192.168.111.0/24
+
+Why?
+
+In particular if I lock down iptables (-P DROP), then the above command 
+takes quite some seconds to complete, rather than instantly if I open up 
+iptables.  This is causing me some problems with startup scripts
+
+Am I missing some configuration option? Is this a bug? Why is a reverse 
+DNS lookup needed?
+
+ipset 6.9.1, kernel 3.2.13
+
+Thanks
+
+Ed W
