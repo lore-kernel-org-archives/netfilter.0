@@ -1,51 +1,45 @@
-From: Andreas Herz <andi@geekosphere.org>
-Subject: adding more options for ipset
-Date: Mon, 16 Apr 2012 13:27:58 +0200
-Message-ID: <20120416112758.GD29947@sweethome.fritz.box>
+From: Amos Jeffries <squid3@treenet.co.nz>
+Subject: Re: ipset causes reverse dns lookups?
+Date: Tue, 17 Apr 2012 01:08:59 +1200
+Message-ID: <4F8C19EB.4070803@treenet.co.nz>
+References: <4F8B5925.5020307@wildgooses.com> <4F8B72BB.4010307@wildgooses.com> <4F8B90C4.3070600@wildgooses.com> <alpine.DEB.2.00.1204161001040.20321@blackhole.kfki.hu> <4F8BDA57.4090701@wildgooses.com> <alpine.DEB.2.00.1204161126050.20321@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.00.1204161126050.20321@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: Ed W <lists@wildgooses.com>, netfilter <netfilter@vger.kernel.org>
 
-Hi,
+On 16/04/2012 9:55 p.m., Jozsef Kadlecsik wrote:
+> On Mon, 16 Apr 2012, Ed W wrote:
+>
+>> On 16/04/2012 09:08, Jozsef Kadlecsik wrote:
+>>> Hostname and IP address are both supported as input and resolved
+>>> internally by getaddrinfo. That can generate DNS lookups, depeding on the
+>>> resolver library. What kind of system do you use, with which
+>>> resolver/libc version?
+>> Thanks so much for replying!
+>>
+>> This is a uclibc 0.9.33.1 system, x86. Resolver chain is /etc/hosts, then dns.
+>> Local dnsmasq is installed.
+>>
+>> I can very clearly observe that on something like "ipset add", if I add
+>> something that isn't quite an IP address then it generates a name lookup. What
+>> I'm confused by is why the reverse ip lookup for the ip address?  I have
+>> traced it back I think to the parser.c code, but I concede I'm stuck
+>> understanding even what is generating the lookup?  You mention resolver, so
+>> presumably it's a side effect of some other call, but could you spare a minute
+>> to explain the trigger please?  (just interested in the background in case it
+>> occurs elsewhere?)
+> That comes from the implementation of "getaddrinfo" in uclibc then. ipset
+> itself does not force reverse DNS lookups.
 
-i'm playing around with ipset and i'm adding two new options. The one is
-the possibility to add a timeout to a existing timeout value and the
-other one is to compare the timeouts of two sets. The second also gets a
-threshold value to return true or false for a match.
+FWIW, I have recently been dealing with user complains with other 
+software when built with uclibc. The uclibc implementation has been 
+caught ignoring AI_NUMERICHOST and performing full remote resolution 
+when passed numeric IPs for conversion.
 
-I got it working for several testcases, but still not finished. I'm just
-asking if there is any interest in these featueres. I already wrote the
-first idea to Josef and he did put it on the feature request list.
-
-The new options look like this:
-
-1. Addition example on the Target:
-
-iptables -A INPUT -p tcp --dport 22 -m state --state NEW -j SET
---add-set firstset src,src --timeout 4000 --exist --addition
-
-with this option the existing timeout for this source in the "firstset"
-set is now 4000 more seconds long. The "--addition" flag forces ipset to
-increase the timeout instead of replacing it.
-
-2. Compare example of the match:
-
-iptables -A INPUT -m set --compare-set firstset src,src secondsec
---threshold 1000
-
-So the match is true if the source is in both sets and the timeout
-difference between the two entries is greater then 1000 seconds.
-
-So if there is anyone interested in this i will publish the sourcecode
-here, although it's far from perfect and i'm totally new to this :)
-Nevertheless i will work on this and i will also test around with ipset
-more.
-
-Greetings
--- 
-Andreas Herz
+AYJ
