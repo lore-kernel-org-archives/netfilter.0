@@ -1,64 +1,52 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+From: Ed W <lists@wildgooses.com>
 Subject: Re: ipset causes reverse dns lookups?
-Date: Mon, 16 Apr 2012 10:08:23 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1204161001040.20321@blackhole.kfki.hu>
-References: <4F8B5925.5020307@wildgooses.com> <4F8B72BB.4010307@wildgooses.com> <4F8B90C4.3070600@wildgooses.com>
+Date: Mon, 16 Apr 2012 09:37:43 +0100
+Message-ID: <4F8BDA57.4090701@wildgooses.com>
+References: <4F8B5925.5020307@wildgooses.com> <4F8B72BB.4010307@wildgooses.com> <4F8B90C4.3070600@wildgooses.com> <alpine.DEB.2.00.1204161001040.20321@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4F8B90C4.3070600@wildgooses.com>
+In-Reply-To: <alpine.DEB.2.00.1204161001040.20321@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ed W <lists@wildgooses.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: netfilter <netfilter@vger.kernel.org>
 
-On Mon, 16 Apr 2012, Ed W wrote:
+On 16/04/2012 09:08, Jozsef Kadlecsik wrote:
+> Hostname and IP address are both supported as input and resolved
+> internally by getaddrinfo. That can generate DNS lookups, depeding on the
+> resolver library. What kind of system do you use, with which
+> resolver/libc version?
 
-> On 16/04/2012 02:15, Ed W wrote:
-> > On 16/04/2012 00:26, Ed W wrote:
-> > > In particular if I lock down iptables (-P DROP), then the above command
-> > > takes quite some seconds to complete, rather than instantly if I open up
-> > > iptables.  This is causing me some problems with startup scripts
-> > > 
-> > > Am I missing some configuration option? Is this a bug? Why is a reverse
-> > > DNS lookup needed?
-> > 
-> > eg
-> > 
-> > $ iptables -I INPUT -j REJECT
-> > $ time ipset create cp2 bitmap:ip,mac range 192.168.1.1/24
-> > ipset v6.9.1: Set cannot be created: set with the same name already exists
-> > Command exited with non-zero status 1
-> > real    0m 45.11s
-> > user    0m 0.01s
-> > sys     0m 0.00s
-> 
-> I upgraded to ipset 6.11 and note the same issue.  I also just discovered I
-> can repro this when adding to a set, eg:
-> 
-> $ time /usr/sbin/ipset -! -q add cp2 192.168.105.56,58:b0:35:78:0d:f5
-> Command exited with non-zero status 1
-> real    1m 0.09s
-> user    0m 0.00s
-> sys    0m 0.01s 
-> 
-> In this case I have multiple internet connections. Pushing IPs into an ipset
-> forces that ip over a particular connection.  If the box is currently on some
-> non responsive network, then the resolver isn't working correctly and ipset is
-> consequently also slow.
+Thanks so much for replying!
 
-Hostname and IP address are both supported as input and resolved 
-internally by getaddrinfo. That can generate DNS lookups, depeding on the 
-resolver library. What kind of system do you use, with which 
-resolver/libc version?
+This is a uclibc 0.9.33.1 system, x86. Resolver chain is /etc/hosts, 
+then dns. Local dnsmasq is installed.
 
-I could suppress DNS lookups with the price of calling twice getaddrinfo.
+I can very clearly observe that on something like "ipset add", if I add 
+something that isn't quite an IP address then it generates a name 
+lookup. What I'm confused by is why the reverse ip lookup for the ip 
+address?  I have traced it back I think to the parser.c code, but I 
+concede I'm stuck understanding even what is generating the lookup?  You 
+mention resolver, so presumably it's a side effect of some other call, 
+but could you spare a minute to explain the trigger please?  (just 
+interested in the background in case it occurs elsewhere?)
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+> I could suppress DNS lookups with the price of calling twice getaddrinfo.
+
+You are presumably giving me a clue as the source here!
+
+It would not appear to be a significant performance decrease for the 
+normal situation to call twice?  Given the outside edge case of 1+ min 
+delays I'm definitely interested in such a change?
+
+Is there any chance of a tentative patch or at least a stronger hint at 
+what I should change in order that I could deploy something quite 
+imminently?  Its become a bit of a blocker here...  Obviously I'm asking 
+with as much icing as possible and a huge cherry on top...
+
+Thanks Jozsef
+
+Ed W
+
