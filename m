@@ -1,130 +1,86 @@
 From: Andreas Herz <andi@geekosphere.org>
-Subject: Re: ipset/iptables does not check flags related to a set
-Date: Thu, 19 Apr 2012 10:11:10 +0200
-Message-ID: <20120419081110.GV29947@sweethome.fritz.box>
-References: <20120417144116.GJ29947@sweethome.fritz.box>
- <alpine.DEB.2.00.1204172016410.25638@blackhole.kfki.hu>
- <20120418070535.GL29947@sweethome.fritz.box>
- <alpine.DEB.2.00.1204190933100.30547@blackhole.kfki.hu>
+Subject: Bug in ipset with big timeouts
+Date: Thu, 19 Apr 2012 14:47:50 +0200
+Message-ID: <20120419124750.GA22975@sweethome.fritz.box>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.00.1204190933100.30547@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On 19/04/12 at 09:50, Jozsef Kadlecsik wrote:
-> On Wed, 18 Apr 2012, Andreas Herz wrote:
-> 
-> > On 17/04/12 at 20:26, Jozsef Kadlecsik wrote:
-> > > On Tue, 17 Apr 2012, Andreas Herz wrote:
-> > > 
-> > > > > iptables -A INPUT -m set --match-set foobar src -j LOG --log-prefix
-> > > > > "foobar set matched: "
-> > > > 
-> > > > Iptables doesn't complain about "src" although "src,src" would be right.
-> > > > 
-> > > > Can anyone confirm this?
-> > > 
-> > > Yes, that's also required: we have list of sets which can contain 
-> > > (sub)sets of different dimensions.
-> > 
-> > That's right, but isn't it possible to check if it's a single set or a
-> > list of sets? So the flags could be checked when it's a single set? It's
-> > no big deal, i just recognized this.
-> 
-> It'd be possible: swapping different type of sets is disallowed, so that 
-> way the dimension of the set cannot be changed "behind" the iptables rule.
+I want to report the following bug:
 
-Thanks for that reply.
+If you create sets or add an element with a big timeout this can result
+in a wrong timeout or even no entry. This occurs on 32 and 64 Bit and
+the problem comes from the msecs_to_jiffies function. But first the
+steps to reproduce the bug:
 
-> > > > I could work on this, if the bug/issue is confirmed. Although the
-> > > > priority is on the addition and compare-set feature, which is working
-> > > > quite well here :)
-> > > 
-> > > It'd be really great if you'd justify why such a comparison is a good 
-> > > thing.
-> > 
-> > Well i also requested the "addition" or "increase" feature for a
-> > timeout and you said you would put it on the feature request list :)
-> > And i guess this feature could make sense as you could set a new timeout
-> > already.
-> 
-> I can't recall, nor can find my reply stating that it'd be put on a 
-> feature list... Anyway, if such a feature is considered, then "addition" 
-> is not a complete solution, "substraction" should be supported as well. 
+x86_64/amd64:
+ 
+> ipset create test1 hash:net timeout 4294967
+> ipset create test2 hash:net timeout 4294968
+> ipset add test1 192.168.0.0/24
+> ipset add test2 192.168.0.0/24
+> ipset list
 
-It was the mail from 1.August 2011 between us two.
-And yes substraction would make it complete.
+this will result in an empty test2 set and in an test1 set with the
+entry and correct timeout.
 
-> I wrote you that because timeout is a generic feature of all set types, 
-> adding this feature would mean a new protocol version. The ipset protocol 
-> can negotiate the highest protocol version supported by both sides, but 
-> the ipset tool hasn't got the internal hooks yet to support multiple 
-> protocol versions.
-> 
-> Just adding the feature is not enough.
-> 
+Another example
 
-I agree, although i got it working for now except the fact that i can't
-use addition (substraction) with the ipset tool, it's just working with
-iptables. But that fits to your reply here,
+> ipset create test hash:net timeout 1
+> ipset add test 192.168.0.0/24 timeout 4294968
+> ipset list
 
-> > For the second feature i will give you an example:
-> > 
-> > I have a "goodset" and a "badset" and they contain ip address with
-> > timeouts. If a module like psd or hashlimit recognizes a Portscan or DoS
-> > iptables puts the source into the "badset" with a timeout, this timeout
-> > increases with every "attack". The "goodset" is filled the other way. So
-> > i have two sets and now the compare-set match comes in place.
-> > This match checks if the src ip is in both sets and reads the timeout
-> > for this src ip in those sets, if the difference between the "badset"
-> > timeout for this ip and the "goodset" timeout for this ip is greater
-> > then the threshold (parameter) than it returns true and i could block
-> > this ip completely.
-> 
-> Hm, a node is either "bad" (i.e. banning has got higher priority), or 
-> "good" (i.e. whitelisting is preferred). This timeout comparison between 
-> the two lists seems to be over-complicated. Why couldn't be the whole 
-> scheme be simplified to the decision tree "if it's on the blacklist, 
-> block", "if it's on the whitelist allow", "otherwise fall back to another 
-> method".
-> 
+empty list, but
 
-It's not that simple, in the scenario you describe i totally agree.
-But the decision is not based on a simple black- and whitelist it's more
-a dynamic way. I collect bad and good behaviour and if the bad behaviour
-exceeds the good behaviour (depending on a threshold) the src will be
-blocked completely for a specified amount of time. Until this point the
-src can still access the network and just the bad behaviour itself is
-blocked.
+> ipset add test 192.168.0.0/24 timeout 42949680
+> ipset list
 
-For example:
+results in
 
-The IP 1.2.3.4 is an external IP from the internet that represents an
-outpost of a company that connects via VPN/IPsec to the company
-headcenter. It also tries to reach the website hosted at the headcenter
-and the mailserver. So you have valid traffic for VPN, HTTP, IMAP, SMTP
-etc. this could go to the good list. Then one of the users starts a
-Portscan and DoS from the external IP, so the firewall at the headcenter
-detects the Portscan and the DoS and blocks those packets/connections.
-But it also saves the attacking attempts to the bad list. So you "good"
-and "bad" traffic coming from that IP. If the "bad" exceeds the "good"
-traffic the IP will be blocked for 1 day, if it's still going on after 1
-day, it will be blocked for 1 week and so on. It's like a dynamic
-firewall.
+> 192.168.0.0/24 timeout 5
 
-The first thing is to block just the "bad" traffic itself by using
-hashlimit/recent for DoS for example, psd/lscan/snort for Portscan so
-they won't hurt. But valid traffic should still go on. But if the
-attacks get more and more the IP should be blocked completely.
-I hope i could make it clear why i'm doing this.
+so an overflow.
 
-thanks so far.
+x86/32-Bit:
+
+> ipset create test hash:net timeout 1000
+> ipset add test 192.168.0.0/24 timeout 2147484
+> ipset list
+
+results in:
+
+> 192.168.0.0/24 timeout 1073741
+
+it's working up to 2147483.
+
+This is imho a bug as ipset says 
+
+> ipset v6.11: Syntax error: '4294967296' is out of range 0-4294967295
+
+so 4294967295 should be the maximum and it isn't.
+
+I checked the source code and i think the following fix could help:
+
+in kernel/include/linux/netfilter/ipset/ip_set_timeout.h the
+ip_set_timeout_set needs to look like this:
+
+> if ((timeout > (INT_MAX/1000)) || ((int)(timeout*1000) < 0)) timeout =
+> (INT_MAX/1000);
+> t = msecs_to_jiffies(timeout * 1000) + jiffies;
+
+I added this if clause so "t" won't get bigger then 2147483 (32-Bit) or
+4294967 (64-Bit). The problem is, that msecs_to_jiffies() returns
+"MAX_JIFFY_OFFSET" in the case mentioned at 32-Bit, this explains the
+1073741 value. And with the other values there is an overflow. My fix
+may be wrong, so no guarantee, i'm still testing around and the overflow
+isn't clear to me right now, i just figured out the problem with
+"MAX_JIFFY_OFFSET".
+Any help or recommendations welcome.
 
 -- 
 Andreas Herz
