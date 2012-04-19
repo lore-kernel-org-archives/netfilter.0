@@ -1,62 +1,86 @@
-From: Arif Hossain <aftnix@gmail.com>
-Subject: concatenate udp payloads of multiple packet
-Date: Thu, 19 Apr 2012 20:32:22 +0600
-Message-ID: <CAGuaRCt0Jmj4_prCZVvXi2oijOTprTqUntphjx_9cQqk-nqhCQ@mail.gmail.com>
+From: Jeff Haran <jharan@bytemobile.com>
+Subject: RE: concatenate udp payloads of multiple packet
+Date: Thu, 19 Apr 2012 17:58:33 +0000
+Message-ID: <471DE477E2B1F549A58F3A14A27180BE01687C@HQ-EX01.bytemobile.com>
+References: <CAGuaRCt0Jmj4_prCZVvXi2oijOTprTqUntphjx_9cQqk-nqhCQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type
-         :content-transfer-encoding;
-        bh=DKCN4flzmqO2WQTOMYPZ4B4H+zO7KQsSyhXkblaVpUI=;
-        b=We9Cpr9ClaeISCfLjFccqRJMb8DPyWt9ylQGoTe/Z20lSMIlP75bhaiZsrNTTXMxY0
-         UUAbBQ+F6AYq7YcyWpJ0HzEhLRhZQ8ryhtCwEr+FrSzGkgJqGsqpn3us/srCwpH6tYl9
-         EunymbgslS6d8EStVVwtPuEZ8ZymSF8iL5IJtT5UE1qtzESY9qVG1i3MY8rqNNh8htR/
-         F4xX/FnMyg5KLR3XnLxVsUtL5AxakckrQLyBjMnRdl0I7zdnN5/jg/Zl6+xBbGVXphGk
-         9TAnRMZ4yOxNL+0AZtfKuhFbmjIHBo2TLHax865lwR6uryi7OwnwbXFugnIRndrKi6xJ
-         e5HA==
+In-Reply-To: <CAGuaRCt0Jmj4_prCZVvXi2oijOTprTqUntphjx_9cQqk-nqhCQ@mail.gmail.com>
+Content-Language: en-US
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: Arif Hossain <aftnix@gmail.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
 
-Hi all.
+> -----Original Message-----
+> From: netfilter-devel-owner@vger.kernel.org [mailto:netfilter-devel-
+> owner@vger.kernel.org] On Behalf Of Arif Hossain
+> Sent: Thursday, April 19, 2012 7:32 AM
+> To: netfilter@vger.kernel.org; netfilter-devel@vger.kernel.org
+> Subject: concatenate udp payloads of multiple packet
+>=20
+> Hi all.
+>=20
+> I have a netfilter_queue app which receives packets on a port range
+> and do modifications on them. Now =A0i need to introduce to new featu=
+res
+> with this basic app.
+>=20
+> First the traffic is quiet high. I have seen the --queue-balance
+> option. If i want to use it how should i approach? i mean should i
+> manage every queue from separate threads or
+> separate process to manage individual queues?=A0 I'm not sure how can=
+ i
+> use fork() to manage every queue separately.
+>=20
+> Secondly How packets are distributed among different queues? Based on
+> what property a =A0packet is distributed? Any relationship i need to
+> know about
+> this distribution?
+>=20
+> Thirdly I need to concatenate udp payloads of several packet to
+> improve bandwidth usage. how should i approach this? The confusion is
+> when i stop finish processing
+> of one packet i call nfq_set_verdict() in nfq_callback().  My
+> confusion  is when  a packet popped from the NFQUEUE? when
+> nfq_set_verdict() returns or when nfq_callback()
+> returns?
+>=20
+> I mean if i push the incoming packets in user managed queues for
+> concatenation of udp payload(by this i will also drop individual
+> packets), then return from the nfq_callback().
+> After processing in user managed queues(concatenation is done) then i
+> will issue nfq_set_verdict(). Would that work?
+>=20
+> Thanks in advance.
+>=20
+> --
+> -aft
 
-I have a netfilter_queue app which receives packets on a port range
-and do modifications on them. Now =A0i need to introduce to new feature=
-s
-with this basic app.
+I'm not an expert in this interface, but what I've observed is when use=
+r space reads a packet off of a socket to an NFQUEUE, a subsequent read=
+ on that socket will block if the first packet is not returned via nfq_=
+set_verdict(), even if further packets have been queued from the kernel=
+=2E So I don't think you can expect to read a bunch of packets, concate=
+nate them and then return verdicts on them. You'd never see packets pas=
+t the first one. At least that's what I have observed. I haven't dug in=
+to the kernel code to see if that is expected behavior.
 
-=46irst the traffic is quiet high. I have seen the --queue-balance
-option. If i want to use it how should i approach? i mean should i
-manage every queue from separate threads or
-separate process to manage individual queues?=A0 I'm not sure how can i
-use fork() to manage every queue separately.
+I had written an application which poll()'ed on two fds; one a socket t=
+o an NFQUEUE and another from signalfd() to SIGUSR1. The "handler" code=
+ for the SIGUSR1 signal fd just printf()'ed some statistics maintained =
+by the application. Funny thing was, if ever my application failed to c=
+all nfq_set_verdict() for a packet read off of the socket, then poll() =
+wouldn't return even when I sent the application a SIGUSR1 via kill. No=
+t sure what was going on there.
 
-Secondly How packets are distributed among different queues? Based on
-what property a =A0packet is distributed? Any relationship i need to
-know about
-this distribution?
+Good luck,
 
-Thirdly I need to concatenate udp payloads of several packet to
-improve bandwidth usage. how should i approach this? The confusion is
-when i stop finish processing
-of one packet i call nfq_set_verdict() in nfq_callback().  My
-confusion  is when  a packet popped from the NFQUEUE? when
-nfq_set_verdict() returns or when nfq_callback()
-returns?
+Jeff Haran
 
-I mean if i push the incoming packets in user managed queues for
-concatenation of udp payload(by this i will also drop individual
-packets), then return from the nfq_callback().
-After processing in user managed queues(concatenation is done) then i
-will issue nfq_set_verdict(). Would that work?
 
-Thanks in advance.
 
---
--aft
 --
 To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
 el" in
