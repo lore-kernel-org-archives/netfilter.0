@@ -1,86 +1,64 @@
-From: Andreas Herz <andi@geekosphere.org>
-Subject: Bug in ipset with big timeouts
-Date: Thu, 19 Apr 2012 14:47:50 +0200
-Message-ID: <20120419124750.GA22975@sweethome.fritz.box>
+From: Arif Hossain <aftnix@gmail.com>
+Subject: concatenate udp payloads of multiple packet
+Date: Thu, 19 Apr 2012 20:32:22 +0600
+Message-ID: <CAGuaRCt0Jmj4_prCZVvXi2oijOTprTqUntphjx_9cQqk-nqhCQ@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=DKCN4flzmqO2WQTOMYPZ4B4H+zO7KQsSyhXkblaVpUI=;
+        b=We9Cpr9ClaeISCfLjFccqRJMb8DPyWt9ylQGoTe/Z20lSMIlP75bhaiZsrNTTXMxY0
+         UUAbBQ+F6AYq7YcyWpJ0HzEhLRhZQ8ryhtCwEr+FrSzGkgJqGsqpn3us/srCwpH6tYl9
+         EunymbgslS6d8EStVVwtPuEZ8ZymSF8iL5IJtT5UE1qtzESY9qVG1i3MY8rqNNh8htR/
+         F4xX/FnMyg5KLR3XnLxVsUtL5AxakckrQLyBjMnRdl0I7zdnN5/jg/Zl6+xBbGVXphGk
+         9TAnRMZ4yOxNL+0AZtfKuhFbmjIHBo2TLHax865lwR6uryi7OwnwbXFugnIRndrKi6xJ
+         e5HA==
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-I want to report the following bug:
+Hi all.
 
-If you create sets or add an element with a big timeout this can result
-in a wrong timeout or even no entry. This occurs on 32 and 64 Bit and
-the problem comes from the msecs_to_jiffies function. But first the
-steps to reproduce the bug:
+I have a netfilter_queue app which receives packets on a port range
+and do modifications on them. Now =A0i need to introduce to new feature=
+s
+with this basic app.
 
-x86_64/amd64:
- 
-> ipset create test1 hash:net timeout 4294967
-> ipset create test2 hash:net timeout 4294968
-> ipset add test1 192.168.0.0/24
-> ipset add test2 192.168.0.0/24
-> ipset list
+=46irst the traffic is quiet high. I have seen the --queue-balance
+option. If i want to use it how should i approach? i mean should i
+manage every queue from separate threads or
+separate process to manage individual queues?=A0 I'm not sure how can i
+use fork() to manage every queue separately.
 
-this will result in an empty test2 set and in an test1 set with the
-entry and correct timeout.
+Secondly How packets are distributed among different queues? Based on
+what property a =A0packet is distributed? Any relationship i need to
+know about
+this distribution?
 
-Another example
+Thirdly I need to concatenate udp payloads of several packet to
+improve bandwidth usage. how should i approach this? The confusion is
+when i stop finish processing
+of one packet i call nfq_set_verdict() in nfq_callback().  My
+confusion  is when  a packet popped from the NFQUEUE? when
+nfq_set_verdict() returns or when nfq_callback()
+returns?
 
-> ipset create test hash:net timeout 1
-> ipset add test 192.168.0.0/24 timeout 4294968
-> ipset list
+I mean if i push the incoming packets in user managed queues for
+concatenation of udp payload(by this i will also drop individual
+packets), then return from the nfq_callback().
+After processing in user managed queues(concatenation is done) then i
+will issue nfq_set_verdict(). Would that work?
 
-empty list, but
+Thanks in advance.
 
-> ipset add test 192.168.0.0/24 timeout 42949680
-> ipset list
-
-results in
-
-> 192.168.0.0/24 timeout 5
-
-so an overflow.
-
-x86/32-Bit:
-
-> ipset create test hash:net timeout 1000
-> ipset add test 192.168.0.0/24 timeout 2147484
-> ipset list
-
-results in:
-
-> 192.168.0.0/24 timeout 1073741
-
-it's working up to 2147483.
-
-This is imho a bug as ipset says 
-
-> ipset v6.11: Syntax error: '4294967296' is out of range 0-4294967295
-
-so 4294967295 should be the maximum and it isn't.
-
-I checked the source code and i think the following fix could help:
-
-in kernel/include/linux/netfilter/ipset/ip_set_timeout.h the
-ip_set_timeout_set needs to look like this:
-
-> if ((timeout > (INT_MAX/1000)) || ((int)(timeout*1000) < 0)) timeout =
-> (INT_MAX/1000);
-> t = msecs_to_jiffies(timeout * 1000) + jiffies;
-
-I added this if clause so "t" won't get bigger then 2147483 (32-Bit) or
-4294967 (64-Bit). The problem is, that msecs_to_jiffies() returns
-"MAX_JIFFY_OFFSET" in the case mentioned at 32-Bit, this explains the
-1073741 value. And with the other values there is an overflow. My fix
-may be wrong, so no guarantee, i'm still testing around and the overflow
-isn't clear to me right now, i just figured out the problem with
-"MAX_JIFFY_OFFSET".
-Any help or recommendations welcome.
-
--- 
-Andreas Herz
+--
+-aft
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
+el" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
