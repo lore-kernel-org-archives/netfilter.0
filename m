@@ -1,98 +1,97 @@
-From: Arif Hossain <aftnix@gmail.com>
-Subject: Re: concatenate udp payloads of multiple packet
-Date: Fri, 20 Apr 2012 17:43:19 +0600
-Message-ID: <CAGuaRCv927U1=XoucxxSnRk44q76F7ayLAkQRc9BMpohF8Yv8g@mail.gmail.com>
-References: <CAGuaRCt0Jmj4_prCZVvXi2oijOTprTqUntphjx_9cQqk-nqhCQ@mail.gmail.com>
-	<4F90555B.7070306@hp.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Bug in ipset with big timeouts
+Date: Fri, 20 Apr 2012 15:31:57 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1204201531010.1373@blackhole.kfki.hu>
+References: <20120419124750.GA22975@sweethome.fritz.box>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type:content-transfer-encoding;
-        bh=w1wluz3PaVMo7Lk5EqBHFMHDjelQILGfzX8QafTOfs8=;
-        b=Ttgt2KaPnmBMHfZ7PoXpAUFWf9xFQUFWfahOmIhQtY6CKjb+sGMyrFe4L7tyaBAW0w
-         VA0pp/lu5NL4SMsrG+RYFK20UBnTM5WInC6bRel+7VNks6+vKOxOzkv5B/tgXXGvn7AO
-         EUcGrTa8L+v5sgba+f8tFWgC8o8KbutMEp5pQo4n0UKwqRl1K34QFbLRulmM4BhYRvSQ
-         hg5dePhcA29BSo4xkezURMxDy/xgU9CpblQ7g9hXF0JWmMqDhg1q+o+/NVYe/Xf899Zf
-         Egj+SZMWpXtF9BiYLy5KSwU7zYKHd8vhcGEa7v4SVShdHwCewcODs94lL0m4bFjOjXkZ
-         URXQ==
-In-Reply-To: <4F90555B.7070306@hp.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20120419124750.GA22975@sweethome.fritz.box>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Rick Jones <rick.jones2@hp.com>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Andreas Herz <andi@geekosphere.org>
+Cc: netfilter@vger.kernel.org
 
-> It isn't clear you can. =A0An application using UDP is expecting mess=
-age
-> boundaries to be preserved. =A0That is a fundamental part of the sema=
-ntics of
-> UDP. =A0So if an application has sent three, 128 byte messages via UD=
-P, the
-> receiving side is expecting to receive three, 128 byte messages, not =
-one 384
-> byte message. =A0If the receiver can indeed deal with just one, 384 b=
-yte
-> message, that is what the sending side should have sent in the first =
-place.
->
+Hi,
 
-Ok i'm explaining it a bit more so no confusion about what i'm trying
-to achieve.
+On Thu, 19 Apr 2012, Andreas Herz wrote:
 
-In our application, we are send
-RTP(http://en.wikipedia.org/wiki/Real-time_Transport_Protocol)
-packets. These RTP packets have encoded voice data as their payload.
-When a voice communication
-occurs its quiet bandwidth consuming. Thousands of udp packets are
-transmitted in a matter of seconds.
-So when a client is in low bandwidth area, its more logical to send
-large udp packts with multiple rtp packets
-concatenated.
+> If you create sets or add an element with a big timeout this can result
+> in a wrong timeout or even no entry. This occurs on 32 and 64 Bit and
+> the problem comes from the msecs_to_jiffies function. But first the
+> steps to reproduce the bug:
+> 
+> x86_64/amd64:
+>  
+> > ipset create test1 hash:net timeout 4294967
+> > ipset create test2 hash:net timeout 4294968
+> > ipset add test1 192.168.0.0/24
+> > ipset add test2 192.168.0.0/24
+> > ipset list
+> 
+> this will result in an empty test2 set and in an test1 set with the
+> entry and correct timeout.
+> 
+> Another example
+> 
+> > ipset create test hash:net timeout 1
+> > ipset add test 192.168.0.0/24 timeout 4294968
+> > ipset list
+> 
+> empty list, but
+> 
+> > ipset add test 192.168.0.0/24 timeout 42949680
+> > ipset list
+> 
+> results in
+> 
+> > 192.168.0.0/24 timeout 5
+> 
+> so an overflow.
+> 
+> x86/32-Bit:
+> 
+> > ipset create test hash:net timeout 1000
+> > ipset add test 192.168.0.0/24 timeout 2147484
+> > ipset list
+> 
+> results in:
+> 
+> > 192.168.0.0/24 timeout 1073741
+> 
+> it's working up to 2147483.
+> 
+> This is imho a bug as ipset says 
+> 
+> > ipset v6.11: Syntax error: '4294967296' is out of range 0-4294967295
+> 
+> so 4294967295 should be the maximum and it isn't.
+> 
+> I checked the source code and i think the following fix could help:
+> 
+> in kernel/include/linux/netfilter/ipset/ip_set_timeout.h the
+> ip_set_timeout_set needs to look like this:
+> 
+> > if ((timeout > (INT_MAX/1000)) || ((int)(timeout*1000) < 0)) timeout =
+> > (INT_MAX/1000);
+> > t = msecs_to_jiffies(timeout * 1000) + jiffies;
+> 
+> I added this if clause so "t" won't get bigger then 2147483 (32-Bit) or
+> 4294967 (64-Bit). The problem is, that msecs_to_jiffies() returns
+> "MAX_JIFFY_OFFSET" in the case mentioned at 32-Bit, this explains the
+> 1073741 value. And with the other values there is an overflow. My fix
+> may be wrong, so no guarantee, i'm still testing around and the overflow
+> isn't clear to me right now, i just figured out the problem with
+> "MAX_JIFFY_OFFSET".
 
-Take for instance G729 codec has a 10ms frame. which is encoded as 10
-bytes of voice data. every rtp packets has
-12 bytes of header. its totally wasteful of bandwidth that to send
-only 10 bytes of voice data as a payload of 12 bytes of header.
-If 5 RTP frames are concatenated then we are transmitting 50 bytes
-with a single 12 byte header. then payload to header ratio
-is 50/12 which far less than 10/12. The more bigger packet we send the
-more this ratio increase and so our bandwidth
-consumption reduced. But there is also a trade off. the more frames we
-send in packet the quality of voice decreases slightly.
+It looks like a bug, I'm going to fix it at the weekend. A new ipset 
+release is to be expected...
 
-After some testing we have come to conclusion that sending 10 packets
-in a single udp datagram is a optimum choice.
-
-We use our existing netfilter_queue app to encryption/obfuscation of
-voice data to escape certain firewall and telecom operators
-malpractices. For improving our service we have decided that we will
-increase our payload size.
-
-Problem is different SIP servers vary in their capability of repack
-RTP packets.  some can do a lot but other's do not. we do not want to
-select a
-telephony  server based on this property because lot of other
-variables are involved in the selection process. And for different
-services we use several
-Telephony platform.
-
-So we want our application to be capable of repack rtp packets so that
-we can use whatever telephony platforms we want without thinking about
-this.
-This way our service implementation will be more robust and will not
-create unnecessary dependencies.
-
-Thank you for your reply
-
-
-
---=20
--aft
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
