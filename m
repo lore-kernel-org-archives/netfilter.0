@@ -1,35 +1,27 @@
 From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: MTU question
-Date: Sun, 22 Apr 2012 16:32:57 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1204221632220.14663@frira.zrqbmnf.qr>
-References: <op.wc2nftsax1lyi3@debiandesk2.net> <4F919D2B.70206@hp.com>
+Subject: Re: xtables-addons-1.41, ipset build error with
+ hardened-sources-3.2.2
+Date: Sun, 22 Apr 2012 16:49:17 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1204221647400.14663@frira.zrqbmnf.qr>
+References: <4F25C692.2090004@mejor.pl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4F919D2B.70206@hp.com>
+In-Reply-To: <4F25C692.2090004@mejor.pl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Rick Jones <rick.jones2@hp.com>
-Cc: Lloyd Standish <lloyd@crnatural.net>, netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="utf-8"
+To: =?UTF-8?Q?Marcin_Miros=C5=82aw?= <marcin@mejor.pl>
+Cc: netfilter@vger.kernel.org
 
 
-On Friday 2012-04-20 19:30, Rick Jones wrote:
->
-> I suspect the answer is some variation on:
->
-> c) Since the two systems are in the same broadcast domain, with no intervening
-> router to perform PathMTU discovery, the PC will send IP datagrams up to 1500
-> bytes, which likely as not will be dropped by the "router" as being too large
-> before it even gets to IP on the router.
->
-> I would expect that only if your "router" has a 1500 byte MTU on the interface
-> facing the PC, and a 1492 byte MTU on the interface facing the "internet" would
-> you see the PathMTU discovery activity which would cause the PC to adjust the
-> effective MTU it was using to match 1492. Only if the IPv4 DF (Don't Fragment)
-> bit is clear should the "router" split the packets.
+On Sunday 2012-01-29 23:22, Marcin Miros=C5=82aw wrote:
 
-Nope, if DF is set, no splitting is allowed and the appropriate
-ICMP message is generated.
+> /var/tmp/portage/net-firewall/xtables-addons-1.41/work/xtables-addons=
+-1.41/extensions/ipset-6/pfxlen.c:148:1:
+> warning: type defaults to =E2=80=98int=E2=80=99 in declaration of =E2=
+=80=98EXPORT_SYMBOL_GPL=E2=80=99
 
-And exactly that is how PMTU is discovered.
+This is probably because the file does not #include <linux/module.h>
+(or <linux/export.h> as it has become); it is, however, no longer
+an issue since ipset-6 is no longer included starting with 1.42.
