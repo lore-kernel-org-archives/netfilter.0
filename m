@@ -1,27 +1,25 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: xtables-addons-1.41, ipset build error with
- hardened-sources-3.2.2
-Date: Sun, 22 Apr 2012 16:49:17 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1204221647400.14663@frira.zrqbmnf.qr>
-References: <4F25C692.2090004@mejor.pl>
+From: "Flink, Mollie" <MollieFlink@juf.org>
+Subject: Re-Validate your Email Account!
+Date: Mon, 23 Apr 2012 01:19:14 +0000
+Message-ID: <02E037382450A1478A8293A4DCC666D1D98819__13157.9029061415$1335144333$gmane$org@30SWL-MB-01.JUF.NET>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4F25C692.2090004@mejor.pl>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="utf-8"
-To: =?UTF-8?Q?Marcin_Miros=C5=82aw?= <marcin@mejor.pl>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: 
+
+Re-Validate your Email Account!
+
+Your mailbox has exceeded one or more size limits set by the administrator.
+You can not send or receive new mail until size of your mail box is reduced.
+For more space, Please click the link below and fill in the details of correct account.
+================>
+
+http://xoutlootvali.moy.su/Microsoft-Outlook-WebAccess.htm
+Thanks and sorry for the inconvenience.
+System Manager.
 
 
-On Sunday 2012-01-29 23:22, Marcin Miros=C5=82aw wrote:
-
-> /var/tmp/portage/net-firewall/xtables-addons-1.41/work/xtables-addons=
--1.41/extensions/ipset-6/pfxlen.c:148:1:
-> warning: type defaults to =E2=80=98int=E2=80=99 in declaration of =E2=
-=80=98EXPORT_SYMBOL_GPL=E2=80=99
-
-This is probably because the file does not #include <linux/module.h>
-(or <linux/export.h> as it has become); it is, however, no longer
-an issue since ipset-6 is no longer included starting with 1.42.
