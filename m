@@ -1,25 +1,27 @@
-From: "Flink, Mollie" <MollieFlink@juf.org>
-Subject: Re-Validate your Email Account!
-Date: Mon, 23 Apr 2012 01:19:14 +0000
-Message-ID: <02E037382450A1478A8293A4DCC666D1D98819__13157.9029061415$1335144333$gmane$org@30SWL-MB-01.JUF.NET>
+From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
+Subject: lost interface ID snmp
+Date: Sun, 22 Apr 2012 23:49:44 -0300
+Message-ID: <CAMTjHryF9p=h6a-n_Gba5E7LkiZpU_EjAOoDV2JxtJ8MGLqBtw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: 
+Content-Transfer-Encoding: 7bit
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Re-Validate your Email Account!
+Hello, I have a CentOS 5.4 Linux machine and I'm monitoring by snmp it
+interfaces ethernet. but, when the machine  is restart ID number snmp
+that's interfaces are change.
 
-Your mailbox has exceeded one or more size limits set by the administrator.
-You can not send or receive new mail until size of your mail box is reduced.
-For more space, Please click the link below and fill in the details of correct account.
-================>
+for exemplo when the linux machine is with ID 3 on interface eth1 and
+it is reset so it come up with a different ID for exemplo 2 for eth1.
 
-http://xoutlootvali.moy.su/Microsoft-Outlook-WebAccess.htm
-Thanks and sorry for the inconvenience.
-System Manager.
+so I wonder why happen ? it's normal ? it's possible set a ID value
+for every interface ?
+
+if is change the ID number for each interface so stop my monitoring
+because my snmp software read by interface ID.
 
 
+thanks
