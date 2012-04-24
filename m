@@ -1,35 +1,31 @@
-From: =?UTF-8?B?TWFyY2luIE1pcm9zxYJhdw==?= <marcin@mejor.pl>
-Subject: Re: xtables-addons-1.41, ipset build error with hardened-sources-3.2.2
-Date: Tue, 24 Apr 2012 14:38:24 +0200
-Message-ID: <4F969EC0.8030000@mejor.pl>
-References: <4F25C692.2090004@mejor.pl> <alpine.LNX.2.01.1204221647400.14663@frira.zrqbmnf.qr>
+From: Andy Furniss <andyqos@ukfsn.org>
+Subject: Re: Having trouble properly configuring my firewall
+Date: Tue, 24 Apr 2012 14:13:31 +0100
+Message-ID: <4F96A6FB.5030309@ukfsn.org>
+References: <CA++rrJrjG6b0XCsxNo-VgLhbxH2t2_8BaxKsOPq2Oii=aAz17A@mail.gmail.com> <4F966936.3090203@kickstone.co.uk> <alpine.LNX.2.01.1204241233040.8267@frira.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mejor.pl; s=cokolwiek;
-	h=Content-Transfer-Encoding:Content-Type:In-Reply-To:References:Subject:CC:To:MIME-Version:From:Date:Message-ID; bh=IpMuBVWCalHx5pkOQgSoLevZ8nfRBd197SWUgaLJsxI=;
-	b=OoJdKydVeeK6Mdo/hmW70+duk78B5M892z9wbKssWQ1RYRPpr0T4w5CyAGc/zUDNUURGnI44Q5HsK/tVFMnCd3HoRzrRkRW230AlapUocfjCC4Kx9Tk4kiUew+JZt6iv;
-In-Reply-To: <alpine.LNX.2.01.1204221647400.14663@frira.zrqbmnf.qr>
+In-Reply-To: <alpine.LNX.2.01.1204241233040.8267@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Jan Engelhardt <jengelh@medozas.de>
-Cc: netfilter@vger.kernel.org
+Cc: John Lister <john.lister@kickstone.co.uk>, Richard Thornton <richie.thornton@gmail.com>, netfilter@vger.kernel.org
 
-W dniu 2012-04-22 16:49, Jan Engelhardt pisze:
->=20
-> On Sunday 2012-01-29 23:22, Marcin Miros=C5=82aw wrote:
->=20
->> /var/tmp/portage/net-firewall/xtables-addons-1.41/work/xtables-addon=
-s-1.41/extensions/ipset-6/pfxlen.c:148:1:
->> warning: type defaults to =E2=80=98int=E2=80=99 in declaration of =E2=
-=80=98EXPORT_SYMBOL_GPL=E2=80=99
->=20
-> This is probably because the file does not #include <linux/module.h>
-> (or <linux/export.h> as it has become); it is, however, no longer
-> an issue since ipset-6 is no longer included starting with 1.42.
+Jan Engelhardt wrote:
+> On Tuesday 2012-04-24 10:49, John Lister wrote:
 
-Hello Jan!
-Thanks for information,
-Marcin
+>>> 8-A FORWARD -o ppp0 -p tcp -m tcp --tcp-flags SYN,RST SYN -m tcpmss
+>>> --mss 1400:65495 -j TCPMSS --clamp-mss-to-pmtu
+>
+> One does not really need TCPMSS, for there is PMTUD.
+
+Hmm, did someone mend the internet for pppoe users, or maybe I 
+misunderstand what you mean.
+
+-m tcpmss --mss 1400:65495
+
+looks redundant. I suppose you really need to assess your own situation 
+in any case (I had an ISP once that for a while caused 64k mtu on ppp).
 
