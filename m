@@ -1,49 +1,261 @@
-From: SamLT <sam@sltosis.org>
-Subject: Re: using 8021.q for trunk
-Date: Fri, 27 Apr 2012 09:19:08 +0200
-Message-ID: <20120427071907.GQ20607@tosh.sltosis.org>
-References: <CAMTjHrwkg4Ydj=YdLi+t0rUyF9pih99RBOjSnmS=0Sxr-sSbzA@mail.gmail.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=sltosis.org; s=mx;
-	t=1335511151; bh=TCxrEmGDTfqngSzgThJ+cC2bht2ZNUDElpSSY8u1e9Y=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VIpqvoOzEVM6LmCRttdjHgFHd43XyTpE9KdlNL7QPXY3+AhMJrgAEm5i1WFUGG92+
-	 tPwUO04PhEEeWhf0HWBlj09bdH8CM0p5pJ0ArBrSIrAZaI7OjCUXI1TZIgG54XQBAK
-	 OcjNAYSB/6KzdFHn9d8pWk2GfR9igMn+HoP7UHFw=
-Content-Disposition: inline
-In-Reply-To: <CAMTjHrwkg4Ydj=YdLi+t0rUyF9pih99RBOjSnmS=0Sxr-sSbzA@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+From: Benjamin Poirier <bpoirier@suse.de>
+Subject: [PATCH RFC 1/2] netfilter: conntrack: remove RCU usage in conntrack notifier
+Date: Fri, 27 Apr 2012 14:28:52 -0400
+Message-ID: <1335551333-6103-1-git-send-email-bpoirier@suse.de>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=sender:from:to:cc:subject:date:message-id:x-mailer;
+        bh=eBGgbar34ihKf6exm6FpJ4oLzc8UhzM84ajKl3svII0=;
+        b=uxI99orBq5Gk9aLdRISjkTsgE3ruH4XpLOpbM53UYtvGCyRmJH634/DHx4XGf2Qx8K
+         aLaPjCg1SL7e+ZwtfEMGjWPWY6Wwk2yz118gMf8YfRMrBNqJZG/PBEEr0+YFBH/P+EYN
+         MMJdndBxR89trOL6Mh6YgIzPJmR0S0eVTDjFXko80IGHaNdRyvrXd1cQPCo0/Wc97u7D
+         RwQQoXi2Y2k2PfSUUktXISFakI3fzPn1qi1KItQquBZ/nwqF44r1j2b0/RqUGQwdJ05w
+         ORI452NWRHufW8X6A7YQ51gFzgqytQerEogUnFrLtP1ZJV2Mg8h8ih8TpZutA4/pKxtz
+         Y6kg==
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?utf-8?Q?Usu=C3=A1rio?= do Sistema <maiconlp@ig.com.br>
-Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netdev@vger.kernel.org
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, Andrew Morton <akpm@linux-foundation.org>, Eric Dumazet <eric.dumazet@gmail.com>, Mike Frysinger <vapier@gentoo.org>, Arun Sharma <asharma@fb.com>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
 
-On Fri, Apr 27, 2012 at 12:18:59AM -0300, Usu=C3=A1rio do Sistema wrote=
-:
-> Hello, I have never stablished trunk between an Linux machine and an
-> Switch. currently a customer gives me to accomplish.
->=20
-> so....I wish an suggest about how to vlan configuration on linux
-> machine. there are some docs at the Internet but I prefer get from
-> here.
->=20
+I think that the rcu usage in this code is pointless. It should either be
+removed or, if it was intended to protect against something, it ought to make
+that clear.
 
-unless I misunderstood, it really is as simple as the following:
+1) The code does not make use of the deferred deletion/wait for completion rcu
+api (ie. synchronize_rcu(), call_rcu()).
+2) It does not benefit from the barriers implied by the rcu primitives used.
+The code deals with callback pointers. There's no need to order writes to the
+function code (!) before writes to the function pointers here.
+---
+ include/net/netfilter/nf_conntrack_ecache.h |   20 +++------
+ include/net/netns/conntrack.h               |    4 +-
+ net/netfilter/nf_conntrack_ecache.c         |   58 +++++++-------------------
+ 3 files changed, 25 insertions(+), 57 deletions(-)
 
-| ip link set eth0 up
-| ip link add link eth0 eth0.10 type vlan id 10
-| ip addr add $ip/$mask dev eth0.10
-| ip link set eth0.10 up
+diff --git a/include/net/netfilter/nf_conntrack_ecache.h b/include/net/netfilter/nf_conntrack_ecache.h
+index a88fb69..ac5b8d2 100644
+--- a/include/net/netfilter/nf_conntrack_ecache.h
++++ b/include/net/netfilter/nf_conntrack_ecache.h
+@@ -99,14 +99,13 @@ nf_conntrack_eventmask_report(unsigned int eventmask,
+ 	struct nf_ct_event_notifier *notify;
+ 	struct nf_conntrack_ecache *e;
+ 
+-	rcu_read_lock();
+-	notify = rcu_dereference(net->ct.nf_conntrack_event_cb);
++	notify = net->ct.nf_conntrack_event_cb;
+ 	if (notify == NULL)
+-		goto out_unlock;
++		return ret;
+ 
+ 	e = nf_ct_ecache_find(ct);
+ 	if (e == NULL)
+-		goto out_unlock;
++		return ret;
+ 
+ 	if (nf_ct_is_confirmed(ct) && !nf_ct_is_dying(ct)) {
+ 		struct nf_ct_event item = {
+@@ -118,7 +117,7 @@ nf_conntrack_eventmask_report(unsigned int eventmask,
+ 		unsigned long missed = e->pid ? 0 : e->missed;
+ 
+ 		if (!((eventmask | missed) & e->ctmask))
+-			goto out_unlock;
++			return ret;
+ 
+ 		ret = notify->fcn(eventmask | missed, &item);
+ 		if (unlikely(ret < 0 || missed)) {
+@@ -137,8 +136,6 @@ nf_conntrack_eventmask_report(unsigned int eventmask,
+ 			spin_unlock_bh(&ct->lock);
+ 		}
+ 	}
+-out_unlock:
+-	rcu_read_unlock();
+ 	return ret;
+ }
+ 
+@@ -178,14 +175,13 @@ nf_ct_expect_event_report(enum ip_conntrack_expect_events event,
+ 	struct nf_exp_event_notifier *notify;
+ 	struct nf_conntrack_ecache *e;
+ 
+-	rcu_read_lock();
+-	notify = rcu_dereference(net->ct.nf_expect_event_cb);
++	notify = net->ct.nf_expect_event_cb;
+ 	if (notify == NULL)
+-		goto out_unlock;
++		return;
+ 
+ 	e = nf_ct_ecache_find(exp->master);
+ 	if (e == NULL)
+-		goto out_unlock;
++		return;
+ 
+ 	if (e->expmask & (1 << event)) {
+ 		struct nf_exp_event item = {
+@@ -195,8 +191,6 @@ nf_ct_expect_event_report(enum ip_conntrack_expect_events event,
+ 		};
+ 		notify->fcn(1 << event, &item);
+ 	}
+-out_unlock:
+-	rcu_read_unlock();
+ }
+ 
+ static inline void
+diff --git a/include/net/netns/conntrack.h b/include/net/netns/conntrack.h
+index 7a911ec..c96fd8c 100644
+--- a/include/net/netns/conntrack.h
++++ b/include/net/netns/conntrack.h
+@@ -18,8 +18,8 @@ struct netns_ct {
+ 	struct hlist_nulls_head	unconfirmed;
+ 	struct hlist_nulls_head	dying;
+ 	struct ip_conntrack_stat __percpu *stat;
+-	struct nf_ct_event_notifier __rcu *nf_conntrack_event_cb;
+-	struct nf_exp_event_notifier __rcu *nf_expect_event_cb;
++	struct nf_ct_event_notifier *nf_conntrack_event_cb;
++	struct nf_exp_event_notifier *nf_expect_event_cb;
+ 	int			sysctl_events;
+ 	unsigned int		sysctl_events_retry_timeout;
+ 	int			sysctl_acct;
+diff --git a/net/netfilter/nf_conntrack_ecache.c b/net/netfilter/nf_conntrack_ecache.c
+index b924f3a..0134009 100644
+--- a/net/netfilter/nf_conntrack_ecache.c
++++ b/net/netfilter/nf_conntrack_ecache.c
+@@ -38,19 +38,18 @@ void nf_ct_deliver_cached_events(struct nf_conn *ct)
+ 	struct nf_ct_event item;
+ 	int ret;
+ 
+-	rcu_read_lock();
+-	notify = rcu_dereference(net->ct.nf_conntrack_event_cb);
++	notify = net->ct.nf_conntrack_event_cb;
+ 	if (notify == NULL)
+-		goto out_unlock;
++		return;
+ 
+ 	e = nf_ct_ecache_find(ct);
+ 	if (e == NULL)
+-		goto out_unlock;
++		return;
+ 
+ 	events = xchg(&e->cache, 0);
+ 
+ 	if (!nf_ct_is_confirmed(ct) || nf_ct_is_dying(ct) || !events)
+-		goto out_unlock;
++		return;
+ 
+ 	/* We make a copy of the missed event cache without taking
+ 	 * the lock, thus we may send missed events twice. However,
+@@ -58,7 +57,7 @@ void nf_ct_deliver_cached_events(struct nf_conn *ct)
+ 	missed = e->missed;
+ 
+ 	if (!((events | missed) & e->ctmask))
+-		goto out_unlock;
++		return;
+ 
+ 	item.ct = ct;
+ 	item.pid = 0;
+@@ -67,7 +66,7 @@ void nf_ct_deliver_cached_events(struct nf_conn *ct)
+ 	ret = notify->fcn(events | missed, &item);
+ 
+ 	if (likely(ret >= 0 && !missed))
+-		goto out_unlock;
++		return;
+ 
+ 	spin_lock_bh(&ct->lock);
+ 	if (ret < 0)
+@@ -75,9 +74,6 @@ void nf_ct_deliver_cached_events(struct nf_conn *ct)
+ 	else
+ 		e->missed &= ~missed;
+ 	spin_unlock_bh(&ct->lock);
+-
+-out_unlock:
+-	rcu_read_unlock();
+ }
+ EXPORT_SYMBOL_GPL(nf_ct_deliver_cached_events);
+ 
+@@ -85,21 +81,14 @@ int nf_conntrack_register_notifier(struct net *net,
+ 				   struct nf_ct_event_notifier *new)
+ {
+ 	int ret = 0;
+-	struct nf_ct_event_notifier *notify;
+ 
+ 	mutex_lock(&nf_ct_ecache_mutex);
+-	notify = rcu_dereference_protected(net->ct.nf_conntrack_event_cb,
+-					   lockdep_is_held(&nf_ct_ecache_mutex));
+-	if (notify != NULL) {
++	if (net->ct.nf_conntrack_event_cb != NULL)
+ 		ret = -EBUSY;
+-		goto out_unlock;
+-	}
+-	rcu_assign_pointer(net->ct.nf_conntrack_event_cb, new);
++	else
++		net->ct.nf_conntrack_event_cb = new;
+ 	mutex_unlock(&nf_ct_ecache_mutex);
+-	return ret;
+ 
+-out_unlock:
+-	mutex_unlock(&nf_ct_ecache_mutex);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(nf_conntrack_register_notifier);
+@@ -107,13 +96,9 @@ EXPORT_SYMBOL_GPL(nf_conntrack_register_notifier);
+ void nf_conntrack_unregister_notifier(struct net *net,
+ 				      struct nf_ct_event_notifier *new)
+ {
+-	struct nf_ct_event_notifier *notify;
+-
+ 	mutex_lock(&nf_ct_ecache_mutex);
+-	notify = rcu_dereference_protected(net->ct.nf_conntrack_event_cb,
+-					   lockdep_is_held(&nf_ct_ecache_mutex));
+-	BUG_ON(notify != new);
+-	RCU_INIT_POINTER(net->ct.nf_conntrack_event_cb, NULL);
++	BUG_ON(net->ct.nf_conntrack_event_cb != new);
++	net->ct.nf_conntrack_event_cb = NULL;
+ 	mutex_unlock(&nf_ct_ecache_mutex);
+ }
+ EXPORT_SYMBOL_GPL(nf_conntrack_unregister_notifier);
+@@ -122,21 +107,14 @@ int nf_ct_expect_register_notifier(struct net *net,
+ 				   struct nf_exp_event_notifier *new)
+ {
+ 	int ret = 0;
+-	struct nf_exp_event_notifier *notify;
+ 
+ 	mutex_lock(&nf_ct_ecache_mutex);
+-	notify = rcu_dereference_protected(net->ct.nf_expect_event_cb,
+-					   lockdep_is_held(&nf_ct_ecache_mutex));
+-	if (notify != NULL) {
++	if (net->ct.nf_expect_event_cb != NULL)
+ 		ret = -EBUSY;
+-		goto out_unlock;
+-	}
+-	rcu_assign_pointer(net->ct.nf_expect_event_cb, new);
++	else
++		net->ct.nf_expect_event_cb = new;
+ 	mutex_unlock(&nf_ct_ecache_mutex);
+-	return ret;
+ 
+-out_unlock:
+-	mutex_unlock(&nf_ct_ecache_mutex);
+ 	return ret;
+ }
+ EXPORT_SYMBOL_GPL(nf_ct_expect_register_notifier);
+@@ -144,13 +122,9 @@ EXPORT_SYMBOL_GPL(nf_ct_expect_register_notifier);
+ void nf_ct_expect_unregister_notifier(struct net *net,
+ 				      struct nf_exp_event_notifier *new)
+ {
+-	struct nf_exp_event_notifier *notify;
+-
+ 	mutex_lock(&nf_ct_ecache_mutex);
+-	notify = rcu_dereference_protected(net->ct.nf_expect_event_cb,
+-					   lockdep_is_held(&nf_ct_ecache_mutex));
+-	BUG_ON(notify != new);
+-	RCU_INIT_POINTER(net->ct.nf_expect_event_cb, NULL);
++	BUG_ON(net->ct.nf_expect_event_cb != new);
++	net->ct.nf_expect_event_cb = NULL;
+ 	mutex_unlock(&nf_ct_ecache_mutex);
+ }
+ EXPORT_SYMBOL_GPL(nf_ct_expect_unregister_notifier);
+-- 
+1.7.7
 
-=20
->=20
-> some sites or docs are welcome.
->=20
-> thanks.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
