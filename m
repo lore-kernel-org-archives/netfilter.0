@@ -1,63 +1,49 @@
-From: Honsha N Kalita <honshank@gmail.com>
-Subject: Need help in usage of netfilters : SIP Conn track/Nat
-Date: Mon, 30 Apr 2012 13:39:39 +0530
-Message-ID: <CAODcSkkLpEoK3otMZEeTu3Jux3duSbesSB3DoW0YN+7RJoaWrA@mail.gmail.com>
+From: carlopmart <carlopmart@gmail.com>
+Subject: Recommended iptables setup for management servers
+Date: Mon, 30 Apr 2012 20:59:00 +0200
+Message-ID: <4F9EE0F4.30302@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=Hh6KIwcRoKbY3j0E3R84MTj6A8kKmF6ApIpyBj1/X8A=;
-        b=fZyra82TAd4dvbSZQTTTt22AGlT+pBrCcQ6lGuFyWgGfBzKBE8ZHKyiSnqkJDmuWeK
-         f6CBFpaR43zQ6gCG1sRfgZgwro6IGh0YHuDkPEZZTWsUIB4UlLJJpiv/SYVVrrvNSeDQ
-         8P5KufVbU4xXFqu5pH8+LYCZ6sjZAYKLlOb/uFZgxdbbJGnU1+Fa5p4nAzCIgvxs3GiR
-         xQ6xwso3QunOWowoJkzihTyMHYn78qODCR3wjxByD3YznNgqtp/QeZmHoS0mJBjswCHu
-         1kXCreAEJdvhXtYBdQNxd86SaQhNBL5hftY+Y1mYwCoyfRjX5ZA1mgr1TH9OIBpgNHFR
-         Ty1Q==
+        h=message-id:date:from:user-agent:mime-version:to:subject
+         :content-type:content-transfer-encoding;
+        bh=HdeBZLCGdlDfBFpAHufpBnQ/PB47Rqs9bglhafOn7Fk=;
+        b=wP7sZyFLUMxH9w/9lU5ZGokZHWQXS6+Wv3kVj1q9OIx6QLTXXxqJxyuDFHPuVXX/bl
+         j+OQvOI04omFjd8dnliDQur6UrwR8QJKPtn6M+Wzvu51H1W3HJQIxDmR2/uSsa2oPNCR
+         sD6SbvRbGdYOs3cq4p2qIU8diJ4iD4v9MiCZgNRH5U/9GmZA+6vj6gp2hgrlWTIgrZF3
+         X0OnuWqbXOEo198k6NXqk+q7QOwWJpLaeJecq4OB+askyHBfw2dq48NvY1F9Om5ZupT6
+         QYk/U1aOxU2ZE2in5NylcW1r49cap6CgfeY9A/4yv8EcRYkiFAupPHaDzld0/5T2tD95
+         4vTQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi,
+Hi all,
 
- My aim is to a) modify IP Addresses of some SIP headers and SDP
-message headers ( as SIP traffic passes across my node) and b) also to
-capture values from some of them. [Basically I want to develop a SIP
-ALG].
+  I am searching some tutorials about how to configure a robust/lockdown 
+iptables rules to protect management servers (for example some NSM 
+servers and firewall management servers).
 
- After exploring further, I found that 'SIP connection tracking/NAT'
-netfilters might help me in achieving this.
- I have enabled Kernal Loadable Modules "nf_conntrack_sip" and
-"nf_nat_sip" in my kernel.
+  Yes, exists a lot of info in the web but nothing pretty much concise. 
+I have used over several years BSD firewalls (pf) and this task is very 
+simple ... but with iptables I am really lost ...
 
- What I want to know now is--
+  The best tutorial that I have found is:
 
- 1. Is it already proven and tried fact that I can use above KLMs for
-achieving my purpose?
+  http://www.remetter.de/os_linux_skript.php
 
- 2. If I need to 'use' these netfilters how to use them? Should I need
-to run IPTABLES commands from userspace and refer someway to this
-netfilters ? Any sample commands??
+  .. but it seems too old, or not? My linux servers are CentOS 6 ...
 
- Or 3. Should I need to create a KLM module in kernel space and
-directly call the APIs available in those netfilters modules [ e.g
-..net/ipv4/netfilter/nf_nat_sip.c and
-../net/netfilter/nf_conntrack_sip.c] ?
+  My primary objective is to block malformed packets, scans, and control 
+packets managed by mangle. Some of these servers have two interfaces and 
+some services needs to be reached by this secondary interface.
 
- If that is the case, how can I pass those captured information
-towards userspace application?
+  Any help?
 
- or 4. Is there any alternative way to achieve above, that you are
-aware of in kernel or userspace ?
-
- My kernel details:- Monta vista linux, Release 2.6.32.46 for mips64.
-[ I am new to kernel programming though I am from SIP background ;
-hence my questions might involve very basic concepts , apologies for
-that :) ]
-Waiting for your suggestions.
-
- Regards
-
- Honsha
+  Thanks.
+-- 
+CL Martinez
+carlopmart {at} gmail {d0t} com
