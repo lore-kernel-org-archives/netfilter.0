@@ -1,142 +1,110 @@
-From: Giles Coochey <giles@coochey.net>
-Subject: Re: Recommended iptables setup for management servers
-Date: Tue, 01 May 2012 13:48:17 +0100
-Message-ID: <4F9FDB91.60807@coochey.net>
-References: <4F9EE0F4.30302@gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH RFC 2/2] netfilter: conntrack: replace mutex with
+ cmpxchg
+Date: Wed, 2 May 2012 02:51:02 +0200
+Message-ID: <20120502005102.GB14999@1984>
+References: <1335551333-6103-1-git-send-email-bpoirier@suse.de>
+ <1335551333-6103-2-git-send-email-bpoirier@suse.de>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms020504060903020107020208"
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4F9EE0F4.30302@gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1335551333-6103-2-git-send-email-bpoirier@suse.de>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: carlopmart <carlopmart@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Benjamin Poirier <bpoirier@suse.de>
+Cc: netdev@vger.kernel.org, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, Andrew Morton <akpm@linux-foundation.org>, Eric Dumazet <eric.dumazet@gmail.com>, Mike Frysinger <vapier@gentoo.org>, Arun Sharma <asharma@fb.com>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
 
-This is a cryptographically signed message in MIME format.
+On Fri, Apr 27, 2012 at 02:28:53PM -0400, Benjamin Poirier wrote:
+> This mutex protects a single pointer.
 
---------------ms020504060903020107020208
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+You seem to be using an old Linux kernel tree. This doesn't apply.
 
-On 30/04/2012 19:59, carlopmart wrote:
->
->  .. but it seems too old, or not? My linux servers are CentOS 6 ...
-system-config-firewall
-
-Essentially, set your default policies to DROP (once you configure via=20
-system-config-firewall)
-
-Then edit /etc/sysconfig/iptables to just allow additional protocols you =
-
-require that might not be done by the system-config-firewall interface.
-
---=20
-Best Regards,
-Giles Coochey, CCNA Security, CCNA
-NetSecSpec Ltd
-giles.coochey@netsecspec.co.uk
-Tel: +44 (0) 7983 877 438
-Live Messenger: giles@coochey.net
-http://www.netsecspec.co.uk
-http://www.coochey.net
-
-
---------------ms020504060903020107020208
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIOMjCC
-BjQwggQcoAMCAQICAR4wDQYJKoZIhvcNAQEFBQAwfTELMAkGA1UEBhMCSUwxFjAUBgNVBAoT
-DVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNp
-Z25pbmcxKTAnBgNVBAMTIFN0YXJ0Q29tIENlcnRpZmljYXRpb24gQXV0aG9yaXR5MB4XDTA3
-MTAyNDIxMDE1NVoXDTE3MTAyNDIxMDE1NVowgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1T
-dGFydENvbSBMdGQuMSswKQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWdu
-aW5nMTgwNgYDVQQDEy9TdGFydENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENs
-aWVudCBDQTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBAMcJg8zOLdgasSmkLhOr
-lr6KMoOMpohBllVHrdRvEg/q6r8jR+EK75xCGhR8ToREoqe7zM9/UnC6TS2y9UKTpT1v7RSM
-zR0t6ndl0TWBuUr/UXBhPk+Kmy7bI4yW4urC+y7P3/1/X7U8ocb8VpH/Clt+4iq7nirMcNh6
-qJR+xjOhV+VHzQMALuGYn5KZmc1NbJQYclsGkDxDz2UbFqE2+6vIZoL+jb9x4Pa5gNf1TwSD
-kOkikZB1xtB4ZqtXThaABSONdfmv/Z1pua3FYxnCFmdr/+N2JLKutIxMYqQOJebr/f/h5t95
-m4JgrM3Y/w7YX9d7YAL9jvN4SydHsU6n65cCAwEAAaOCAa0wggGpMA8GA1UdEwEB/wQFMAMB
-Af8wDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBRTcu2SnODaywFcfH6WNU7y1LhRgjAfBgNV
-HSMEGDAWgBROC+8apEBbpRdphzDKNGhD0EGu8jBmBggrBgEFBQcBAQRaMFgwJwYIKwYBBQUH
-MAGGG2h0dHA6Ly9vY3NwLnN0YXJ0c3NsLmNvbS9jYTAtBggrBgEFBQcwAoYhaHR0cDovL3d3
-dy5zdGFydHNzbC5jb20vc2ZzY2EuY3J0MFsGA1UdHwRUMFIwJ6AloCOGIWh0dHA6Ly93d3cu
-c3RhcnRzc2wuY29tL3Nmc2NhLmNybDAnoCWgI4YhaHR0cDovL2NybC5zdGFydHNzbC5jb20v
-c2ZzY2EuY3JsMIGABgNVHSAEeTB3MHUGCysGAQQBgbU3AQIBMGYwLgYIKwYBBQUHAgEWImh0
-dHA6Ly93d3cuc3RhcnRzc2wuY29tL3BvbGljeS5wZGYwNAYIKwYBBQUHAgEWKGh0dHA6Ly93
-d3cuc3RhcnRzc2wuY29tL2ludGVybWVkaWF0ZS5wZGYwDQYJKoZIhvcNAQEFBQADggIBAAqD
-CH14qywGXLhjjF6uHLkjd02hcdh9hrw+VUsv+q1eeQWB21jWj3kJ96AUlPCoEGZ/ynJNScWy
-6QMVQjbbMXltUfO4n4bGGdKo3awPWp61tjAFgraLJgDk+DsSvUD6EowjMTNx25GQgyYJ5RPI
-zKKR9tQW8gGK+2+RHxkUCTbYFnL6kl8Ch507rUdPPipJ9CgJFws3kDS3gOS5WFMxcjO5DwKf
-KSETEPrHh7p5shuuNktvsv6hxHTLhiMKX893gxdT3XLS9OKmCv87vkINQcNEcIIoFWbP9HOR
-z9v3vQwR4e3ksLc2JZOAFK+ssS5XMEoznzpihEP0PLc4dCBYjbvSD7kxgDwZ+Aj8Q9PkbvE9
-sIPP7ON0fz095HdThKjiVJe6vofq+n6b1NBc8XdrQvBmunwxD5nvtTW4vtN6VY7mUCmxsCie
-uoBJ9OlqmsVWQvifIYf40dJPZkk9YgGTzWLpXDSfLSplbY2LL9C9U0ptvjcDjefLTvqSFc7t
-w1sEhF0n/qpA2r0GpvkLRDmcSwVyPvmjFBGqUp/pNy8ZuPGQmHwFi2/14+xeSUDG2bwnsYJQ
-G2EdJCB6luQ57GEnTA/yKZSTKI8dDQa8Sd3zfXb19mOgSF0bBdXbuKhEpuP9wirslFe6fQ1t
-5j5R0xi72MZ8ikMu1RQZKCyDbMwazlHiMIIH9jCCBt6gAwIBAgIDA+MyMA0GCSqGSIb3DQEB
-CwUAMIGMMQswCQYDVQQGEwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMi
-U2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3RhcnRDb20g
-Q2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBDbGllbnQgQ0EwHhcNMTIwMzEzMDQ0NjQ4
-WhcNMTMwMzE0MDc1OTUzWjA+MRowGAYDVQQDDBFnaWxlc0Bjb29jaGV5Lm5ldDEgMB4GCSqG
-SIb3DQEJARYRZ2lsZXNAY29vY2hleS5uZXQwggIiMA0GCSqGSIb3DQEBAQUAA4ICDwAwggIK
-AoICAQCoA4zqMcj1394GCTq0/D42F7jr1601tA9huVU1878zQ5EgmC9oUtVBZAN8pqY54Kkf
-E+EQZ+Yv4nfYFJKCHTQdy55cYTdSW+qXBogmuUfauP2dPqdGQn4dVHvXZUdj3vCSaDlY56Ub
-BZ4xrUArnX0lQ9Mw4dQc2CYEjBF+LFBarDHy1f5iH6BRz+KB6kfAydlS8Y/R3zHA2J1mqgLD
-6/2ex/dUT5zGdhfYGxVJ1OVjh15GbdwyqKiE8xLsIrFjViPSWcEUuA/U7sZaFjvZ06fM+yoU
-WoIfe0Gmq/HHykZAHppjz9rpETXGkNmC7x/VMw0hBipGUXEU0CJr6BFB3f06vOh91jJ15vku
-EAcb2RCm1vZ6L0ECrEza8q28OEEIeGWXHOipEPL8ZRYA362YEcvefvxsBc1qZ5OlujjojEql
-7Li/tijgaDKZEnB9rQ23dq71hkZC2L1SQClz/WcmPW9KzSodQBh3o/glCHm9eYv+lYOcBcS6
-7ehOCSUYph1tFpen2v0RFfDqTdukUiR49Br2GoZi/57Jyj7k43gE+eD5ARXKdY8iPv02JEG6
-hxRtG2n4dauAlr+c5y9zMPZ29gOo0kPveVJItViSYxko5X0w5ScYeEWW6vHMON5T1qjBy1xt
-Fnasm+5/gpNW7055NJvxzSm4/z+Sa90KheApN/PvGwIDAQABo4IDrDCCA6gwCQYDVR0TBAIw
-ADALBgNVHQ8EBAMCBLAwHQYDVR0lBBYwFAYIKwYBBQUHAwIGCCsGAQUFBwMEMB0GA1UdDgQW
-BBQeUEIIGlVNa/xu8S8nRmnaWEkTizAfBgNVHSMEGDAWgBRTcu2SnODaywFcfH6WNU7y1LhR
-gjAcBgNVHREEFTATgRFnaWxlc0Bjb29jaGV5Lm5ldDCCAiEGA1UdIASCAhgwggIUMIICEAYL
-KwYBBAGBtTcBAgIwggH/MC4GCCsGAQUFBwIBFiJodHRwOi8vd3d3LnN0YXJ0c3NsLmNvbS9w
-b2xpY3kucGRmMDQGCCsGAQUFBwIBFihodHRwOi8vd3d3LnN0YXJ0c3NsLmNvbS9pbnRlcm1l
-ZGlhdGUucGRmMIH3BggrBgEFBQcCAjCB6jAnFiBTdGFydENvbSBDZXJ0aWZpY2F0aW9uIEF1
-dGhvcml0eTADAgEBGoG+VGhpcyBjZXJ0aWZpY2F0ZSB3YXMgaXNzdWVkIGFjY29yZGluZyB0
-byB0aGUgQ2xhc3MgMSBWYWxpZGF0aW9uIHJlcXVpcmVtZW50cyBvZiB0aGUgU3RhcnRDb20g
-Q0EgcG9saWN5LCByZWxpYW5jZSBvbmx5IGZvciB0aGUgaW50ZW5kZWQgcHVycG9zZSBpbiBj
-b21wbGlhbmNlIG9mIHRoZSByZWx5aW5nIHBhcnR5IG9ibGlnYXRpb25zLjCBnAYIKwYBBQUH
-AgIwgY8wJxYgU3RhcnRDb20gQ2VydGlmaWNhdGlvbiBBdXRob3JpdHkwAwIBAhpkTGlhYmls
-aXR5IGFuZCB3YXJyYW50aWVzIGFyZSBsaW1pdGVkISBTZWUgc2VjdGlvbiAiTGVnYWwgYW5k
-IExpbWl0YXRpb25zIiBvZiB0aGUgU3RhcnRDb20gQ0EgcG9saWN5LjA2BgNVHR8ELzAtMCug
-KaAnhiVodHRwOi8vY3JsLnN0YXJ0c3NsLmNvbS9jcnR1MS1jcmwuY3JsMIGOBggrBgEFBQcB
-AQSBgTB/MDkGCCsGAQUFBzABhi1odHRwOi8vb2NzcC5zdGFydHNzbC5jb20vc3ViL2NsYXNz
-MS9jbGllbnQvY2EwQgYIKwYBBQUHMAKGNmh0dHA6Ly9haWEuc3RhcnRzc2wuY29tL2NlcnRz
-L3N1Yi5jbGFzczEuY2xpZW50LmNhLmNydDAjBgNVHRIEHDAahhhodHRwOi8vd3d3LnN0YXJ0
-c3NsLmNvbS8wDQYJKoZIhvcNAQELBQADggEBALB3Ohmsu7Kvdwji3PTc90LzXRtehL5sQpu1
-cmKj22ZzG7GBG5/ZmlUCm2uDLo2gM71mFjMftB/+xLwTkPRqG+YrgZ7xLGTG7AN/Vg4g9WeE
-+k12rK4dDDWGOBNBSkamYP8y8cBksKNpiYkGED3MlBCzQA4dleqSz+nILESgK3KnJkz71VZC
-J+uRSOYbBqy/jeJT3X5QCLCywA7E7EP80+Dj2HzJ0qFENJJXiiSuXe3AvA1xQe8MlFV0ZgDG
-h4tGqN8T5j5s4km3xgeoJFFkZsSZI1teWt+9SR/Vex597EkjxuFn3F7j5jGHu6eVMbgcjLl8
-eNHURxy8FidRfg95lO8xggTQMIIEzAIBATCBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNVBAoT
-DVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRlIFNp
-Z25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlhdGUg
-Q2xpZW50IENBAgMD4zIwCQYFKw4DAhoFAKCCAhAwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEH
-ATAcBgkqhkiG9w0BCQUxDxcNMTIwNTAxMTI0ODE3WjAjBgkqhkiG9w0BCQQxFgQUAVSooJdF
-QJ7W0F0CcnkAvRsz/DAwXwYJKoZIhvcNAQkPMVIwUDALBglghkgBZQMEAQIwCgYIKoZIhvcN
-AwcwDgYIKoZIhvcNAwICAgCAMA0GCCqGSIb3DQMCAgFAMAcGBSsOAwIHMA0GCCqGSIb3DQMC
-AgEoMIGlBgkrBgEEAYI3EAQxgZcwgZQwgYwxCzAJBgNVBAYTAklMMRYwFAYDVQQKEw1TdGFy
-dENvbSBMdGQuMSswKQYDVQQLEyJTZWN1cmUgRGlnaXRhbCBDZXJ0aWZpY2F0ZSBTaWduaW5n
-MTgwNgYDVQQDEy9TdGFydENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENsaWVu
-dCBDQQIDA+MyMIGnBgsqhkiG9w0BCRACCzGBl6CBlDCBjDELMAkGA1UEBhMCSUwxFjAUBgNV
-BAoTDVN0YXJ0Q29tIEx0ZC4xKzApBgNVBAsTIlNlY3VyZSBEaWdpdGFsIENlcnRpZmljYXRl
-IFNpZ25pbmcxODA2BgNVBAMTL1N0YXJ0Q29tIENsYXNzIDEgUHJpbWFyeSBJbnRlcm1lZGlh
-dGUgQ2xpZW50IENBAgMD4zIwDQYJKoZIhvcNAQEBBQAEggIAo+P/TEq67rEO9zJ727ndAqqD
-R7igB+AS8ifjsHkB9cinfsZ1i3o3bSQdPZ2J8oHLWDFnq4i7/aRkL6K0NMhYmdipSzyQ6lwE
-WZBp1L2XCTawiBt9lC+eC7eq/0T3dG2TTklaCNWvV3+jAHWK4khgOjyG5ncwyaW46M4fPxNU
-fTnQ0x8efGiR8ti+9s5FYNCs/fc8P8QM3hafiZrxNh4c36yk4b0+hyDzU8NvmeHM2DPTniv4
-6jrOLDYpelR9z0LQcgtdoTQsvotCF41Cwg11jnwK+/PrUv+xu54TdwumMEJ/morOqJRSnrhh
-0M0OxZirhsjErDxUgXoFyzMcFukVHtb/JuvENZx+xvBlj+ubxfZeG5WlynfqAE/gwjHWO1rZ
-0rHENJAc3/ZNJc9TL1XoJmEuALgr0jr1Aon4v1xYXjSqGx6/YgV8WR2VA0SCn1d22UYxsetx
-dOkDvuv6QLNn1U9VVOpYH4k9t+a5Dq5mgPygIXBx/T3RAafyKwwaPvyFaq5ARAhkXBQqsqoy
-bZV2ayu2mbWgUAQpgr6nvzSa5uyaLd0tC1g10IHvg+/3z1X729wUGdBoDl8KKgGfIY7Fs6MN
-900hV1cQVbKtVcWuDDTmQaFqJO8FXvy9Jnf66bs/HbNkf/mBBGPm2tyIlfLgpSnKSyoYKUnU
-Lg7b6pfLBi0AAAAAAAA=
---------------ms020504060903020107020208--
+> ---
+>  net/netfilter/nf_conntrack_ecache.c |   38 +++++++++-------------------------
+>  1 files changed, 10 insertions(+), 28 deletions(-)
+> 
+> diff --git a/net/netfilter/nf_conntrack_ecache.c b/net/netfilter/nf_conntrack_ecache.c
+> index 0134009..603eb69 100644
+> --- a/net/netfilter/nf_conntrack_ecache.c
+> +++ b/net/netfilter/nf_conntrack_ecache.c
+> @@ -25,8 +25,6 @@
+>  #include <net/netfilter/nf_conntrack_core.h>
+>  #include <net/netfilter/nf_conntrack_extend.h>
+>  
+> -static DEFINE_MUTEX(nf_ct_ecache_mutex);
+> -
+>  /* deliver cached events and clear cache entry - must be called with locally
+>   * disabled softirqs */
+>  void nf_ct_deliver_cached_events(struct nf_conn *ct)
+> @@ -80,52 +78,36 @@ EXPORT_SYMBOL_GPL(nf_ct_deliver_cached_events);
+>  int nf_conntrack_register_notifier(struct net *net,
+>  				   struct nf_ct_event_notifier *new)
+>  {
+> -	int ret = 0;
+> -
+> -	mutex_lock(&nf_ct_ecache_mutex);
+> -	if (net->ct.nf_conntrack_event_cb != NULL)
+> -		ret = -EBUSY;
+> +	if (cmpxchg(&net->ct.nf_conntrack_event_cb, NULL, new) != NULL)
+> +		return -EBUSY;
+>  	else
+> -		net->ct.nf_conntrack_event_cb = new;
+> -	mutex_unlock(&nf_ct_ecache_mutex);
+> -
+> -	return ret;
+> +		return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(nf_conntrack_register_notifier);
+>  
+>  void nf_conntrack_unregister_notifier(struct net *net,
+>  				      struct nf_ct_event_notifier *new)
+>  {
+> -	mutex_lock(&nf_ct_ecache_mutex);
+> -	BUG_ON(net->ct.nf_conntrack_event_cb != new);
+> -	net->ct.nf_conntrack_event_cb = NULL;
+> -	mutex_unlock(&nf_ct_ecache_mutex);
+> +	if (xchg(&net->ct.nf_conntrack_event_cb, NULL) != new)
+> +		BUG();
+>  }
+>  EXPORT_SYMBOL_GPL(nf_conntrack_unregister_notifier);
+>  
+>  int nf_ct_expect_register_notifier(struct net *net,
+>  				   struct nf_exp_event_notifier *new)
+>  {
+> -	int ret = 0;
+> -
+> -	mutex_lock(&nf_ct_ecache_mutex);
+> -	if (net->ct.nf_expect_event_cb != NULL)
+> -		ret = -EBUSY;
+> +	if (cmpxchg(&net->ct.nf_expect_event_cb, NULL, new) != NULL)
+> +		return -EBUSY;
+>  	else
+> -		net->ct.nf_expect_event_cb = new;
+> -	mutex_unlock(&nf_ct_ecache_mutex);
+> -
+> -	return ret;
+> +		return 0;
+>  }
+>  EXPORT_SYMBOL_GPL(nf_ct_expect_register_notifier);
+>  
+>  void nf_ct_expect_unregister_notifier(struct net *net,
+>  				      struct nf_exp_event_notifier *new)
+>  {
+> -	mutex_lock(&nf_ct_ecache_mutex);
+> -	BUG_ON(net->ct.nf_expect_event_cb != new);
+> -	net->ct.nf_expect_event_cb = NULL;
+> -	mutex_unlock(&nf_ct_ecache_mutex);
+> +	if (xchg(&net->ct.nf_expect_event_cb, NULL) != new)
+> +		BUG();
+>  }
+>  EXPORT_SYMBOL_GPL(nf_ct_expect_unregister_notifier);
+>  
+> -- 
+> 1.7.7
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter-devel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
