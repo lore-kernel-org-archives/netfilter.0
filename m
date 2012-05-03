@@ -1,76 +1,121 @@
-From: "Ellad G. Yatsko" <eyatsko@ngs.ru>
-Subject: Iptables NAT with two external Interfaces
-Date: Thu, 03 May 2012 13:14:17 +0400
-Message-ID: <4FA24C69.4000607@ngs.ru>
+From: Oliver Sperke <oliver@sperke.net>
+Subject: How to redirect OUTPUT traffic to another port
+Date: Thu, 03 May 2012 15:25:34 +0200
+Message-ID: <4FA2874E.4020807@sperke.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms080602060608030305080108"
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hello!
+Dies ist eine kryptografisch unterzeichnete Nachricht im MIME-Format.
 
-May you help me in one very specific issue?
+--------------ms080602060608030305080108
+Content-Type: text/plain; charset=ISO-8859-15
+Content-Transfer-Encoding: quoted-printable
 
-- I have Ubuntu router with several interfaces with Quagga/BGP working 
-on it, and of course IPTables with NAT for internal users;
+Hi,
 
-- One interface is used to connect to ISP, it has ISP's IP-address. For 
-definiteness it is 89.222.233.165. Ubuntu connects to ISP's network via 
-this IP;
+I googled for hours, but could not find an answer. I establish a ssh
+tunnel on server 1. The traffic is marked on the OUTPUT chain with the
+owner attribute and then redirected on ip route to server 2. Everything
+works so far. But how do I redirect the outgoing traffic from port 80 to
+port 3080r? As far as I understand I can use the the OUTPUT chain to
+redirect the port but then nothing works anymore. It seems like the
+traffic is just dropped. My idea was:
 
-- Another interface - DMZ with own IP-address (delegated by RIPE NCC) of 
-own Autonomous System: 91.223.181.1;
+iptables -t mangle -A OUTPUT -m owner --uid-owner 2000 -j MARK
+--set-mark 0x1
+32765:  from #serverip# fwmark 0x1 lookup #gateway#
 
-- DMZ is terminated on Cisco 2821 (one subinterface 91.223.181.2)  which 
-is connected to second ISP (via second subinterface with IP from second 
-ISP: 188.35.132.79).
+This works so far, but this not:
 
-- There is specific routing: each of my "borders" marks a part of 
-prefixes received from corresponding ISP by higher LocalPref: Ubuntu 
-marks prefixes 0.0.0.0-127.0.0.0, and Cisco marks prefixes 128.0.0.0 up 
-to 224.0.0.0.
-That is if destination IP is more than 128.0.0.0 Ubuntu prefers to send 
-the current packet to directly connected ISP, if it is less than 
-128.0.0.0 Ubuntu prefers  to route the packet through DMZ. It is made to 
-utilize both uplinks evenly.
-I need to explain one important detail: both of my ISPs are connected to 
-the same higher-level ISP, which uses the only ISP from the pair of mine 
-to direct incoming traffic into my AS. So there is no other opportunity 
-to make balancing except egress traffic.
+iptables -t nat -A OUTPUT -s #serverip# -m owner --uid-owner 2000 -p tcp
+--dport 80 -j REDIRECT --to-ports 3080
 
-- Ubuntu has internal interfaces to give to its internal users access to 
-Internet. Internal users have "private" IPs which are "NATted" on 
-external Ubuntu's interfaces.
+Can anybody help me?
 
-- Actually the question: with probability 50% a packet from internal 
-users can be sent through one external Ubuntu's interface and reply can 
-return through another. In that case NAT is not working. Here my 
-relevant part of configuration:
-$IPTABLES -t nat -A POSTROUTING -o $EXT_IF -s $INTERNAL -d $EXTERNAL -j 
-SNAT --to $DMZ_IP
-$IPTABLES -t nat -A POSTROUTING -o $DMZ_IF -s $INTERNAL -d $EXTERNAL -j 
-SNAT --to $DMZ_IP
+Oliver
 
-What can I do except:
-$IPTABLES -t nat -A POSTROUTING -o $EXT_IF -s $INTERNAL -d $EXTERNAL -j 
-SNAT --to $EXT_IP
-$IPTABLES -t nat -A POSTROUTING -o $DMZ_IF -s $INTERNAL -d $EXTERNAL -j 
-SNAT --to $DMZ_IP
 
-Difference with above two is "$EXT_IP" in the first line. In that case 
-all works fine. But I need to hide ISP's IP from External World. I need 
-to show to others my own IPs only. It's the highest priority. Again, may 
-you help me to find an answer? Are there some "secret commands" for 
-IPTables to make NAT to ignore ingress interface to de-NAT replies? For 
-example, FreeBSD's PF can do correct "back" translations independently 
-from interface where reply-packet has come on. Ubuntu has changed 
-FreeBSD on the place of central router due to rank of reasons (one of 
-them is stability), but now I have big trouble! :-)
+--------------ms080602060608030305080108
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Kryptografische Unterschrift
 
-He-e-e-lp!...
-
-Kind regards,
-Ellad
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIILLDCC
+BUwwggQ0oAMCAQICDmijAAEAAhELyT0H4Z7mMA0GCSqGSIb3DQEBBQUAMHwxCzAJBgNVBAYT
+AkRFMRwwGgYDVQQKExNUQyBUcnVzdENlbnRlciBHbWJIMSUwIwYDVQQLExxUQyBUcnVzdENl
+bnRlciBDbGFzcyAxIEwxIENBMSgwJgYDVQQDEx9UQyBUcnVzdENlbnRlciBDbGFzcyAxIEwx
+IENBIElYMB4XDTExMTEzMDAxMDc0NloXDTEyMTEzMDAxMDc0NlowOTELMAkGA1UEBhMCREUx
+KjAoBgNVBAMUIU9saXZlciBTcGVya2UgKG9saXZlckBzcGVya2UubmV0KTCCASIwDQYJKoZI
+hvcNAQEBBQADggEPADCCAQoCggEBANayi92Fd8V75XceYI4uDYtcswPo7AXz1+Mq+gi4f2FN
+G2GNLiQm0dcCU44J53LkjEdOeOueieZUZbH+7tLZWu6VHz5C+NCOPCMEm35fhpdCZGS+dhFa
+68Ocd6Q5qBf9MWZHPiWZsEGzftdw42sl2cfOK4/pTni37GmI2otHrjp4UAYEOfyI1RLE0nbY
+FGxHhJI9OddI/+MP/jV8Kq1CY4ey+LqQTJswXoboigJWB8WjtqLGoOJj9SUYAmhz/h9U+77Z
+O7VgkLJfURGuBqg6GDmbJFFu5VurkD74MQiynrIk/FzYak6eOqwwAxdJvvGn9FrvLt68kqzZ
+j+SSiWe/FDkCAwEAAaOCAg0wggIJMIGlBggrBgEFBQcBAQSBmDCBlTBRBggrBgEFBQcwAoZF
+aHR0cDovL3d3dy50cnVzdGNlbnRlci5kZS9jZXJ0c2VydmljZXMvY2FjZXJ0cy90Y19jbGFz
+czFfTDFfQ0FfSVguY3J0MEAGCCsGAQUFBzABhjRodHRwOi8vb2NzcC5peC50Y2NsYXNzMS50
+Y3VuaXZlcnNhbC1pLnRydXN0Y2VudGVyLmRlMB8GA1UdIwQYMBaAFOm4KB1Gz/zN+E6bxe5L
+YOvYOz/RMAwGA1UdEwEB/wQCMAAwSgYDVR0gBEMwQTA/BgkqghQALAEBAQEwMjAwBggrBgEF
+BQcCARYkaHR0cDovL3d3dy50cnVzdGNlbnRlci5kZS9ndWlkZWxpbmVzMA4GA1UdDwEB/wQE
+AwIE8DAdBgNVHQ4EFgQUWmYFUMRA7VpgV7KVlVBgDH5Gf1wwYgYDVR0fBFswWTBXoFWgU4ZR
+aHR0cDovL2NybC5peC50Y2NsYXNzMS50Y3VuaXZlcnNhbC1pLnRydXN0Y2VudGVyLmRlL2Ny
+bC92Mi90Y19DbGFzczFfTDFfQ0FfSVguY3JsMDMGA1UdJQQsMCoGCCsGAQUFBwMCBggrBgEF
+BQcDBAYIKwYBBQUHAwcGCisGAQQBgjcUAgIwHAYDVR0RBBUwE4ERb2xpdmVyQHNwZXJrZS5u
+ZXQwDQYJKoZIhvcNAQEFBQADggEBAC0B+VghdTKzCK4AG9sl7ky0BuwtT2UVMa6U/lI0hkUi
+48IEpz9EwzaxVSgBRCRtSmcc5UAr2bvywckjFGeSDFAeVib6W+eKulAnZjzG20fb26VqYS/v
+yekLmNYTlC43Caq+deH9BzbPCUGQAggZv2OYYzqheWg8UsXcI3SZw09U5SFHK2PZcyTXQnjc
++M5dQlh+BbKQFlLX3I1rcohXS0TRMyagHiUKxvo2rLW5bjHswU/j2j3DfWcjUd2gChgWhHk/
+dMLIvTr/SGP2cYov5qfj5/1IxLnG3KQjHH1f6POgGdupTb8lrnxYCjiYh6GVE32vlLo6FRPC
+Asv8/vGLFukwggXYMIIEwKADAgECAg4G6AABAAJKli0kDP7FyTANBgkqhkiG9w0BAQUFADB5
+MQswCQYDVQQGEwJERTEcMBoGA1UEChMTVEMgVHJ1c3RDZW50ZXIgR21iSDEkMCIGA1UECxMb
+VEMgVHJ1c3RDZW50ZXIgVW5pdmVyc2FsIENBMSYwJAYDVQQDEx1UQyBUcnVzdENlbnRlciBV
+bml2ZXJzYWwgQ0EgSTAeFw0wOTExMDMxNDA4MTlaFw0yNTEyMzEyMTU5NTlaMHwxCzAJBgNV
+BAYTAkRFMRwwGgYDVQQKExNUQyBUcnVzdENlbnRlciBHbWJIMSUwIwYDVQQLExxUQyBUcnVz
+dENlbnRlciBDbGFzcyAxIEwxIENBMSgwJgYDVQQDEx9UQyBUcnVzdENlbnRlciBDbGFzcyAx
+IEwxIENBIElYMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAu+aQbs9i6ekLqrYQ
+1UflfF0rJ3GaaM1VbeSi7+T+8npjEcJXish9z45mH2VFS+uAYmm9Ro6LxW5alRgq3qfxH3Ua
+J6ttMlPj+01YYiz/GeXHoA2aLSGIWYTNHfHDyIo+sOXeCCTP/EAsukEjlLuAEok1SLaGBOAB
+T4y6qZj8HIntH4qhx4aYJh5yZWv+z2XZDGRLGgn1QxFgZibjM1aayT0+NGp4xuVQS8jNiOQ5
+bFAmnkAstjt8N7Kn9d3cs1HL9NyCArjXOt7aMFwN9ULdE2lTVOmAJkIzHqXXzG7KZgmfhvA9
+vsaKYRDz0f9b5LLbLbJlDKl9F6y6J01CXM4JTwIDAQABo4ICWTCCAlUwgZoGCCsGAQUFBwEB
+BIGNMIGKMFIGCCsGAQUFBzAChkZodHRwOi8vd3d3LnRydXN0Y2VudGVyLmRlL2NlcnRzZXJ2
+aWNlcy9jYWNlcnRzL3RjX3VuaXZlcnNhbF9yb290X0kuY3J0MDQGCCsGAQUFBzABhihodHRw
+Oi8vb2NzcC50Y3VuaXZlcnNhbC1JLnRydXN0Y2VudGVyLmRlMB8GA1UdIwQYMBaAFJKkdSyk
+nr6BROt5/IrFlaXrEHVzMBIGA1UdEwEB/wQIMAYBAf8CAQAwUgYDVR0gBEswSTAGBgRVHSAA
+MD8GCSqCFAAsAQEBATAyMDAGCCsGAQUFBwIBFiRodHRwOi8vd3d3LnRydXN0Y2VudGVyLmRl
+L2d1aWRlbGluZXMwDgYDVR0PAQH/BAQDAgEGMB0GA1UdDgQWBBTpuCgdRs/8zfhOm8XuS2Dr
+2Ds/0TCB/QYDVR0fBIH1MIHyMIHvoIHsoIHphkZodHRwOi8vY3JsLnRjdW5pdmVyc2FsLUku
+dHJ1c3RjZW50ZXIuZGUvY3JsL3YyL3RjX3VuaXZlcnNhbF9yb290X0kuY3JshoGebGRhcDov
+L3d3dy50cnVzdGNlbnRlci5kZS9DTj1UQyUyMFRydXN0Q2VudGVyJTIwVW5pdmVyc2FsJTIw
+Q0ElMjBJLE89VEMlMjBUcnVzdENlbnRlciUyMEdtYkgsT1U9cm9vdGNlcnRzLERDPXRydXN0
+Y2VudGVyLERDPWRlP2NlcnRpZmljYXRlUmV2b2NhdGlvbkxpc3Q/YmFzZT8wDQYJKoZIhvcN
+AQEFBQADggEBADnIxJvuvpjuSHJvjedxtg6QjNOywRUhqEaQaF9KBPE6yWiEIdil5gR1XZ/S
+1PJLd0My3JXLYL8CVdCsHLDFFJebZQrDD6Ud7NhJOZW1qb769B6rVuem5QEIiDVfZwXdRCRQ
+EiJEY3nxm1dpzqvWM1FPjfBwO46tUToXfzWWa2hoY7YcCsn43x1ezysRpWPtzNDG0yBvqvxo
+SH5tHrg6RaoShvPHvQC16/7qEp9zM3jnKDlo06Vt2nbRTuFVlYCm4Bu4zaxW70VZR5hS2zpu
+JrIxOWl1sS4k8KSdl4heMynGtbwHQDoMPbrPdIxLTnoh+hs4zcRDL2+033jumZLnOhwxggPL
+MIIDxwIBATCBjjB8MQswCQYDVQQGEwJERTEcMBoGA1UEChMTVEMgVHJ1c3RDZW50ZXIgR21i
+SDElMCMGA1UECxMcVEMgVHJ1c3RDZW50ZXIgQ2xhc3MgMSBMMSBDQTEoMCYGA1UEAxMfVEMg
+VHJ1c3RDZW50ZXIgQ2xhc3MgMSBMMSBDQSBJWAIOaKMAAQACEQvJPQfhnuYwCQYFKw4DAhoF
+AKCCAhEwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTIwNTAz
+MTMyNTM0WjAjBgkqhkiG9w0BCQQxFgQU2l1T9eiP8I4WC5b8MGiFr187bJswbAYJKoZIhvcN
+AQkPMV8wXTALBglghkgBZQMEASowCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3
+DQMCAgIAgDANBggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDCBnwYJKwYB
+BAGCNxAEMYGRMIGOMHwxCzAJBgNVBAYTAkRFMRwwGgYDVQQKExNUQyBUcnVzdENlbnRlciBH
+bWJIMSUwIwYDVQQLExxUQyBUcnVzdENlbnRlciBDbGFzcyAxIEwxIENBMSgwJgYDVQQDEx9U
+QyBUcnVzdENlbnRlciBDbGFzcyAxIEwxIENBIElYAg5oowABAAIRC8k9B+Ge5jCBoQYLKoZI
+hvcNAQkQAgsxgZGggY4wfDELMAkGA1UEBhMCREUxHDAaBgNVBAoTE1RDIFRydXN0Q2VudGVy
+IEdtYkgxJTAjBgNVBAsTHFRDIFRydXN0Q2VudGVyIENsYXNzIDEgTDEgQ0ExKDAmBgNVBAMT
+H1RDIFRydXN0Q2VudGVyIENsYXNzIDEgTDEgQ0EgSVgCDmijAAEAAhELyT0H4Z7mMA0GCSqG
+SIb3DQEBAQUABIIBAHv1R+nikxEIqiyLmKy4Ne8ARsAMnKEF/fCQ6Bg2m8SXp68pwNMRc2Rr
+rpYS5rOn2oke8mDRgVBo/0GJAZ2rNxE6XEtyIzBjOO5kdU26JVCZ6JO1j19bTCnnnHlNCk+p
+R10W7/6F8F8kfwgyxTXgvFEsMvUWUOPmR4lL9T0lEaohE4GfrvIrkmehp/n/yuZjQ8dlQQm1
+5ChenMbMwzuaEzFxga/xnxmNpAvKZpXLejXC8SQ5SDYG97UOjyDGg/sVyrXDpJxeyWKBosFO
+kAs0FjGccgK6PI8zyzy1zQT5Hp/IEUfL4xI75g4As/Onx2qkNAaqAsZe+jmoFdV8nb0hoiAA
+AAAAAAA=
+--------------ms080602060608030305080108--
