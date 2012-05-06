@@ -1,35 +1,38 @@
-From: Jan Engelhardt <jengelh@medozas.de>
-Subject: Re: Iptables NAT with two external Interfaces
-Date: Sun, 6 May 2012 15:51:30 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1205061550540.31611@frira.vanv.qr>
-References: <4FA24C69.4000607@ngs.ru> <4FA29A4D.4050606@ngs.ru> <op.wdqmxpdax1lyi3@debiandesk2.net>
+From: Waqar Hameed <waqar.hameed08@gmail.com>
+Subject: Issuing verdicts out of order
+Date: Sun, 6 May 2012 19:08:24 +0500
+Message-ID: <CAPy6qbd=sMMEGqNfsYiAdfKMfKBN=0W1m1FyF2eu9DzhxF05Kg@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <op.wdqmxpdax1lyi3@debiandesk2.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to:content-type;
+        bh=NL+ICnTINjVI1p2jX81w9aSqZ88gaRNDorIIKjK2GbU=;
+        b=e9awEBlg6huKJO5WoGXnjtTOukLGRF6Bh1upyBl79FSqieTEbLHuq+463hk4rE8BEH
+         +Od+9R1d5KPmNCqCzl0xcOMwPzhXDCWQoZz14CIJoIg0t3tV773jElHObf4bxpHRxyMQ
+         6miiheOPqi34HrE4sbvmHxhFcoLwcphNpdoNfUBqPrO3nGuP1FXI2Wd9hUmBNQGmmcdV
+         79DG5kJXdEvppknzbZd3AeeQnPuJ8GDeXVxZbyvr2sazB2Xheb9MGUrGe4JwvGg3UhAG
+         Dn/cUh5//8U/Ecc8Nnn1XVmnPmTG5S23klnZIhKRJcEzzX9NM0TwB3eEUi8Yo42F94e6
+         HjFA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Lloyd Standish <lloyd@crnatural.net>
-Cc: netfilter@vger.kernel.org, "Ellad G. Yatsko" <eyatsko@ngs.ru>
+To: netfilter@vger.kernel.org
 
-On Thursday 2012-05-03 17:06, Lloyd Standish wrote:
+Hi,
 
-> On Thu, 03 May 2012 08:46:37 -0600, Ellad G. Yatsko <eyatsko@ngs.ru> wrote:
->
->> Is anybody here? Does anybody hear me?  Did I break some rules if nobody
->> answered,
->> or was my question (or English) very difficult for understanding?  Excuse me
->> please if I wrong!
->> Kind regards,
->> Ellad
->
-> Ellad,
->
-> I think 5.5 hours after your first post is much too soon to assume that nobody
-> will answer.  You should be more patient.  People on this list are in diverse
-> time zones; many may have been sleeping when you first posted, or may still be
-> at work.
+I wanted to ask that can verdicts be issued to packets out of order?
 
-Well you can always get a support contract from diverse companies if you 
-need things fast. ;)
+I am building an application that delays the delivery of packets
+depending upon some factors. So it may be the case that the first
+packet has to be delayed whereas the second packet in queue must be
+*accepted* immediately. So can we store delaying packets in some queue
+and releasing them as required?
+
+If someone has other ideas of how to implement it using
+libnetfilter_queue, please guide me.
+
+Best,
+
+Waqar
