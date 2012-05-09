@@ -1,108 +1,93 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH 10/13] netfilter: Convert compare_ether_addr to ether_addr_equal
-Date: Tue,  8 May 2012 21:56:54 -0700
-Message-ID: <6fc964a05b125385dc75798c24226bf20e16aa5d.1336538938.git.joe@perches.com>
+From: Stephen Hemminger <shemminger@vyatta.com>
+Subject: Re: [PATCH 04/13] bridge: netfilter: Convert compare_ether_addr to
+ ether_addr_equal
+Date: Wed, 9 May 2012 08:07:52 -0700
+Message-ID: <20120509080752.43489fb0@nehalam.linuxnetplumber.net>
 References: <cover.1336538937.git.joe@perches.com>
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <cover.1336538937.git.joe@perches.com>
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+	<5a91d328db3393320170723cdfc9395ad59182c6.1336538938.git.joe@perches.com>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-To: "David S. Miller" <davem@davemloft.net>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <5a91d328db3393320170723cdfc9395ad59182c6.1336538938.git.joe@perches.com>
+Sender: netfilter-devel-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Joe Perches <joe@perches.com>
+Cc: "David S. Miller" <davem@davemloft.net>, Bart De Schuymer <bart.de.schuymer@pandora.be>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, bridge@lists.linux-foundation.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Use the new bool function ether_addr_equal to add
-some clarity and reduce the likelihood for misuse
-of compare_ether_addr for sorting.
+On Tue,  8 May 2012 21:56:48 -0700
+Joe Perches <joe@perches.com> wrote:
 
-Done via cocci script:
+> Use the new bool function ether_addr_equal to add
+> some clarity and reduce the likelihood for misuse
+> of compare_ether_addr for sorting.
+> 
+> Done via cocci script:
+> 
+> $ cat compare_ether_addr.cocci
+> @@
+> expression a,b;
+> @@
+> -	!compare_ether_addr(a, b)
+> +	ether_addr_equal(a, b)
+> 
+> @@
+> expression a,b;
+> @@
+> -	compare_ether_addr(a, b)
+> +	!ether_addr_equal(a, b)
+> 
+> @@
+> expression a,b;
+> @@
+> -	!ether_addr_equal(a, b) == 0
+> +	ether_addr_equal(a, b)
+> 
+> @@
+> expression a,b;
+> @@
+> -	!ether_addr_equal(a, b) != 0
+> +	!ether_addr_equal(a, b)
+> 
+> @@
+> expression a,b;
+> @@
+> -	ether_addr_equal(a, b) == 0
+> +	!ether_addr_equal(a, b)
+> 
+> @@
+> expression a,b;
+> @@
+> -	ether_addr_equal(a, b) != 0
+> +	ether_addr_equal(a, b)
+> 
+> @@
+> expression a,b;
+> @@
+> -	!!ether_addr_equal(a, b)
+> +	ether_addr_equal(a, b)
+> 
+> Signed-off-by: Joe Perches <joe@perches.com>
+> ---
+>  net/bridge/netfilter/ebt_stp.c |    4 ++--
+>  1 files changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/net/bridge/netfilter/ebt_stp.c b/net/bridge/netfilter/ebt_stp.c
+> index 5b33a2e..071d872 100644
+> --- a/net/bridge/netfilter/ebt_stp.c
+> +++ b/net/bridge/netfilter/ebt_stp.c
+> @@ -164,8 +164,8 @@ static int ebt_stp_mt_check(const struct xt_mtchk_param *par)
+>  	    !(info->bitmask & EBT_STP_MASK))
+>  		return -EINVAL;
+>  	/* Make sure the match only receives stp frames */
+> -	if (compare_ether_addr(e->destmac, bridge_ula) ||
+> -	    compare_ether_addr(e->destmsk, msk) || !(e->bitmask & EBT_DESTMAC))
+> +	if (!ether_addr_equal(e->destmac, bridge_ula) ||
+> +	    !ether_addr_equal(e->destmsk, msk) || !(e->bitmask & EBT_DESTMAC))
+>  		return -EINVAL;
+>  
+>  	return 0;
 
-$ cat compare_ether_addr.cocci
-@@
-expression a,b;
-@@
--	!compare_ether_addr(a, b)
-+	ether_addr_equal(a, b)
-
-@@
-expression a,b;
-@@
--	compare_ether_addr(a, b)
-+	!ether_addr_equal(a, b)
-
-@@
-expression a,b;
-@@
--	!ether_addr_equal(a, b) == 0
-+	ether_addr_equal(a, b)
-
-@@
-expression a,b;
-@@
--	!ether_addr_equal(a, b) != 0
-+	!ether_addr_equal(a, b)
-
-@@
-expression a,b;
-@@
--	ether_addr_equal(a, b) == 0
-+	!ether_addr_equal(a, b)
-
-@@
-expression a,b;
-@@
--	ether_addr_equal(a, b) != 0
-+	ether_addr_equal(a, b)
-
-@@
-expression a,b;
-@@
--	!!ether_addr_equal(a, b)
-+	ether_addr_equal(a, b)
-
-Signed-off-by: Joe Perches <joe@perches.com>
----
- net/netfilter/ipset/ip_set_bitmap_ipmac.c |    4 ++--
- net/netfilter/xt_mac.c                    |    2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/net/netfilter/ipset/ip_set_bitmap_ipmac.c b/net/netfilter/ipset/ip_set_bitmap_ipmac.c
-index 0bb16c4..d7eaf10 100644
---- a/net/netfilter/ipset/ip_set_bitmap_ipmac.c
-+++ b/net/netfilter/ipset/ip_set_bitmap_ipmac.c
-@@ -111,7 +111,7 @@ bitmap_ipmac_test(struct ip_set *set, void *value, u32 timeout, u32 flags)
- 		return -EAGAIN;
- 	case MAC_FILLED:
- 		return data->ether == NULL ||
--		       compare_ether_addr(data->ether, elem->ether) == 0;
-+		       ether_addr_equal(data->ether, elem->ether);
- 	}
- 	return 0;
- }
-@@ -225,7 +225,7 @@ bitmap_ipmac_ttest(struct ip_set *set, void *value, u32 timeout, u32 flags)
- 		return -EAGAIN;
- 	case MAC_FILLED:
- 		return (data->ether == NULL ||
--			compare_ether_addr(data->ether, elem->ether) == 0) &&
-+			ether_addr_equal(data->ether, elem->ether)) &&
- 		       !bitmap_expired(map, data->id);
- 	}
- 	return 0;
-diff --git a/net/netfilter/xt_mac.c b/net/netfilter/xt_mac.c
-index 8160f6b..d5b4fd4 100644
---- a/net/netfilter/xt_mac.c
-+++ b/net/netfilter/xt_mac.c
-@@ -36,7 +36,7 @@ static bool mac_mt(const struct sk_buff *skb, struct xt_action_param *par)
- 		return false;
- 	if (skb_mac_header(skb) + ETH_HLEN > skb->data)
- 		return false;
--	ret  = compare_ether_addr(eth_hdr(skb)->h_source, info->srcaddr) == 0;
-+	ret  = ether_addr_equal(eth_hdr(skb)->h_source, info->srcaddr);
- 	ret ^= info->invert;
- 	return ret;
- }
--- 
-1.7.8.111.gad25c.dirty
+All look good.
+Acked-by: Stephen Hemminger <shemminger@vyatta.com>
 
