@@ -1,33 +1,80 @@
-From: Christoph Lameter <cl@linux.com>
-Subject: Re: SLUB warning in netfilter code on shutdown
-Date: Tue, 8 May 2012 10:33:16 -0500 (CDT)
-Message-ID: <alpine.DEB.2.00.1205081030020.27713@router.home>
-References: <20120508111924.GA14174@otc-wbsnb-06> <20120508112236.GA15404@otc-wbsnb-06>
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH 00/13] net: Add and use ether_addr_equal
+Date: Tue,  8 May 2012 21:56:44 -0700
+Message-ID: <cover.1336538937.git.joe@perches.com>
 Mime-Version: 1.0
-Return-path: <netdev-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1336494992; bh=Memh71Neo7p0LBrGVmhg/ZFbhQtZDO3UipNee8OilDE=; h=X-Yahoo-Newman-Property:X-YMail-OSG:X-Yahoo-SMTP:Received:Received:Date:From:X-X-Sender:To:cc:Subject:In-Reply-To:Message-ID:References:User-Agent:MIME-Version:Content-Type; b=5xerykEV/iiQpQB2Qi3KJev2FoNOT3OB5gBMj8rjsc6LrLvkU6fUXuEsk/sfEkySxayeKCKimWOeGzgI/HWObizwWmwHu1kzDyiV9K/vQ99c92M+aMcPK4xZKiOjqgDk3+6aQO3GbjrNpAh0DFVur4REOYWPmN3qfTfCZP9S7C0=
-In-Reply-To: <20120508112236.GA15404@otc-wbsnb-06>
-Sender: netdev-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, Pekka Enberg <penberg@cs.helsinki.fi>
+Return-path: <bridge-bounces@lists.linux-foundation.org>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/bridge>, 
+	<mailto:bridge-request@lists.linux-foundation.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/bridge/>
+List-Post: <mailto:bridge@lists.linux-foundation.org>
+List-Help: <mailto:bridge-request@lists.linux-foundation.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/bridge>,
+	<mailto:bridge-request@lists.linux-foundation.org?subject=subscribe>
+Sender: bridge-bounces@lists.linux-foundation.org
+Errors-To: bridge-bounces@lists.linux-foundation.org
+To: "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, bridge@lists.linux-foundation.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-wireless@vger.kernel.org
+Cc: linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Tue, 8 May 2012, Kirill A. Shutemov wrote:
+Add a boolean function to test 2 ethernet addresses for equality
+Convert compare_ether_addr uses to ether_addr_equal
 
-> On Tue, May 08, 2012 at 02:19:24PM +0300, Kirill A. Shutemov wrote:
-> > Hi,
-> >
-> > Screenshot attached.
->
-> It's v3.4-rc6 on x86_64. Config attached.
+Joe Perches (13):
+  etherdevice.h: Add ether_addr_equal
+  802: Convert compare_ether_addr to ether_addr_equal
+  8021q: Convert compare_ether_addr to ether_addr_equal
+  bridge: netfilter: Convert compare_ether_addr to ether_addr_equal
+  bridge: Convert compare_ether_addr to ether_addr_equal
+  atm: Convert compare_ether_addr to ether_addr_equal
+  bluetooth: Convert compare_ether_addr to ether_addr_equal
+  mac80211: Convert compare_ether_addr to ether_addr_equal
+  mac80211: Convert compare_ether_addr to ether_addr_equal by hand
+  netfilter: Convert compare_ether_addr to ether_addr_equal
+  wireless: Convert compare_ether_addr to ether_addr_equal
+  wireless: Convert compare_ether_addr to ether_addr_equal by hand
+  dsa: Convert compare_ether_addr to ether_addr_equal
 
-Cannot see the bug report but I guess this is a message related to object
-remaining on kmem_cache_destroy? We have other reports on that one as
-well. The IPI reduction patch introduces a bug in has_cpu_slab().
+ include/linux/etherdevice.h               |   12 +++++++++
+ net/802/stp.c                             |    2 +-
+ net/8021q/vlan.c                          |   10 +++---
+ net/8021q/vlan_core.c                     |    3 +-
+ net/8021q/vlan_dev.c                      |   10 +++---
+ net/atm/lec.c                             |    6 ++--
+ net/atm/mpc.c                             |    3 +-
+ net/bluetooth/bnep/core.c                 |    6 ++--
+ net/bridge/br_device.c                    |    2 +-
+ net/bridge/br_fdb.c                       |   14 +++++-----
+ net/bridge/br_input.c                     |    2 +-
+ net/bridge/br_stp_bpdu.c                  |    2 +-
+ net/bridge/br_stp_if.c                    |   11 +++----
+ net/bridge/netfilter/ebt_stp.c            |    4 +-
+ net/dsa/slave.c                           |   10 +++---
+ net/mac80211/cfg.c                        |    2 +-
+ net/mac80211/ibss.c                       |   12 ++++----
+ net/mac80211/ieee80211_i.h                |    2 +-
+ net/mac80211/iface.c                      |    2 +-
+ net/mac80211/mesh.c                       |    4 +-
+ net/mac80211/mesh_hwmp.c                  |   14 +++++-----
+ net/mac80211/mesh_pathtbl.c               |   12 ++++----
+ net/mac80211/mlme.c                       |   29 +++++++++------------
+ net/mac80211/rx.c                         |   39 +++++++++++++---------------
+ net/mac80211/scan.c                       |    2 +-
+ net/mac80211/sta_info.c                   |    8 +++---
+ net/mac80211/sta_info.h                   |    2 +-
+ net/mac80211/status.c                     |    2 +-
+ net/mac80211/tx.c                         |   11 +++----
+ net/netfilter/ipset/ip_set_bitmap_ipmac.c |    4 +-
+ net/netfilter/xt_mac.c                    |    2 +-
+ net/wireless/ibss.c                       |    2 +-
+ net/wireless/mlme.c                       |   31 +++++++++++------------
+ net/wireless/scan.c                       |    2 +-
+ net/wireless/util.c                       |   11 +++----
+ net/wireless/wext-sme.c                   |    2 +-
+ net/wireless/wext-spy.c                   |    2 +-
+ 37 files changed, 147 insertions(+), 147 deletions(-)
 
-Modify the return statement to
-
-return c->page || c->partial;
-
+-- 
+1.7.8.111.gad25c.dirty
