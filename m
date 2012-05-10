@@ -1,62 +1,63 @@
-From: Emmanuel Grumbach <egrumbach@gmail.com>
-Subject: Re: [PATCH 00/13] net: Add and use ether_addr_equal
-Date: Thu, 10 May 2012 10:08:13 +0300
-Message-ID: <CANUX_P3hhiwAdvHqL=SvAwK2oW09RfC5LnanBSvupBROeWhVuw@mail.gmail.com>
-References: <cover.1336538937.git.joe@perches.com>
-	<20120509.212110.437114897180819434.davem@davemloft.net>
-	<1336632528.4334.1.camel@jlt3.sipsolutions.net>
-	<1336632860.22495.6.camel@joe2Laptop>
-	<1336633015.4334.2.camel@jlt3.sipsolutions.net>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset 6.12 released
+Date: Thu, 10 May 2012 12:18:59 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1205101211080.18562@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type:content-transfer-encoding;
-        bh=nLiZS513jvXyrZnObRP78S+k1DGyoc01DNxMG2C12uY=;
-        b=HcrLcM8Ge4ZMz5+Bnpe0t9dWojxqZ0t5/eJ5XoDnHQDgJKOfkRnVL+9uX7KQo5S6Oc
-         3tIh9hOQHOKLGenlsPimTnjmE0LzzO7M/TA/p3/8pa1/iiYB9uEmi5R0sdKBsUMBhR8u
-         Wf90u17MS1EgS4f9FF/9dWHlbO5bOcL6t/Nk3ZBgCHChMDmZXctP4IuZWkiswTAQHmKj
-         lPHBL83LS+hQRcPgUj4FOLR4VSZSOJb5ckQ6gw/nyRylyTia5rN6ZqQEsJTivkXgss6/
-         4uIcARrI6N4dZh+/b3YsD36raZjX5Jb8uuYAA3HCAaS9sb0NMX23cZqeDd4yOsQDbzq/
-         oYbw==
-In-Reply-To: <1336633015.4334.2.camel@jlt3.sipsolutions.net>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Johannes Berg <johannes@sipsolutions.net>
-Cc: Joe Perches <joe@perches.com>, David Miller <davem@davemloft.net>, netdev@vger.kernel.org, bridge@lists.linux-foundation.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
->> >
->> > > That case you didn't convert in mac80211 is probably the
->> > > bug Johannes was talking about which started this whole
->> > > discussion.
->> >
->> > The bug case that started it all is in net/wireless/scan.c and Emm=
-anuel
->> > has since changed it back to memcmp(). Not sure if that's the one =
-you
->> > were referring to or not :-)
->>
->> That's the one that I left alone.
->>
->> Post patch:
->> $ git grep -n -w compare_ether_addr net
->> net/batman-adv/main.h:198: * note: can't use compare_ether_addr() as=
- it requires aligned memory
->> net/wireless/scan.c:381: =A0 =A0 =A0 =A0return compare_ether_addr(a-=
->bssid, b->bssid);
->
-> Ok, great, then that means the fix from Emmanuel won't conflict when =
-it
-> gets in.
->
+Hi,
 
-Thanks Joe - as Johannes said this won't conflict with my patch. And
-yes the code is now more clear.
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I'm happy to announce ipset 6.12. This release contains a few important 
+bugfixes, dynamic module support in the ipset tool by Neutron Soutmun
+and several backports and compatibility fixes.
+
+Please note: if you compile ipset with gcc 4.7 or above, you must use this 
+release. The bug reported by Seblu in previous releases results a broken 
+binary when compiled with gcc 4.7 or above.
+
+Userspace changes:
+ - Cleanup generated files by make tidy
+ - Add more CC warning option to debug mode
+ - Report syntax error messages immediately
+ - Suppress false syntax error messages
+ - Add configure summary for the ipset userspace tool
+ - Add dynamic module support to ipset userspace tool
+   (Neutron Soutmun)
+ - Move ipset_port_usage() into lib (Neutron Soutmun)
+ - Fix invalid assignment to const void pointer (bug reported by Seblu)
+ - Remove unused variables (warnings fixed)
+ - Fix timeout value overflow bug at large timeout parameters
+   (bug reported by Andreas Herz)
+ - Improve ipset help text messages (Mr Dash Four)
+
+Kernel part changes:
+ - Backport nla_put_net* functions as NLA_PUT* were removed
+ - netlink: add netlink_dump_control structure for netlink_dump_start()
+ - ipset: Stop using NLA_PUT*().
+ - Fix hash size checking in kernel (bug reported by Seblu)
+ - Correct README file about minimal required iptables version
+   (Oskar Berggren)
+ - Sparse warnings "incorrect type in assignment" fixed
+ - Fix timeout value overflow bug at large timeout parameters
+   (bug reported by Andreas Herz)
+ - ipv6: Add fragment reporting to ipv6_skip_exthdr().
+ - net: remove ipv6_addr_copy()
+ - Fix the inclusion of linux/export.h (Henry Culver)
+
+You can download the source code of ipset from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
