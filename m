@@ -1,35 +1,36 @@
-From: Eldad Zack <eldad@fogrefinery.com>
-Subject: [PATCH] netfilter/xt_CT.c: remove redundant header include
-Date: Thu, 10 May 2012 00:03:35 +0200
-Message-ID: <1336601016-19495-1-git-send-email-eldad@fogrefinery.com>
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH 00/13] net: Add and use ether_addr_equal
+Date: Wed, 09 May 2012 21:21:10 -0400 (EDT)
+Message-ID: <20120509.212110.437114897180819434.davem@davemloft.net>
+References: <cover.1336538937.git.joe@perches.com>
+Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: "David S. Miller" <davem@davemloft.net>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Eldad Zack <eldad@fogrefinery.com>
+Return-path: <bridge-bounces@lists.linux-foundation.org>
+In-Reply-To: <cover.1336538937.git.joe@perches.com>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/bridge>, 
+	<mailto:bridge-request@lists.linux-foundation.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/bridge/>
+List-Post: <mailto:bridge@lists.linux-foundation.org>
+List-Help: <mailto:bridge-request@lists.linux-foundation.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/bridge>,
+	<mailto:bridge-request@lists.linux-foundation.org?subject=subscribe>
+Sender: bridge-bounces@lists.linux-foundation.org
+Errors-To: bridge-bounces@lists.linux-foundation.org
+To: joe@perches.com
+Cc: coreteam@netfilter.org, netdev@vger.kernel.org, bridge@lists.linux-foundation.org, linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org, linux-bluetooth@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-nf_conntrack_l4proto.h is included twice.
+From: Joe Perches <joe@perches.com>
+Date: Tue,  8 May 2012 21:56:44 -0700
 
-Signed-off-by: Eldad Zack <eldad@fogrefinery.com>
----
- net/netfilter/xt_CT.c |    1 -
- 1 file changed, 1 deletion(-)
+> Add a boolean function to test 2 ethernet addresses for equality
+> Convert compare_ether_addr uses to ether_addr_equal
 
-diff --git a/net/netfilter/xt_CT.c b/net/netfilter/xt_CT.c
-index 3746d8b..a51de9b 100644
---- a/net/netfilter/xt_CT.c
-+++ b/net/netfilter/xt_CT.c
-@@ -17,7 +17,6 @@
- #include <net/netfilter/nf_conntrack_l4proto.h>
- #include <net/netfilter/nf_conntrack_helper.h>
- #include <net/netfilter/nf_conntrack_ecache.h>
--#include <net/netfilter/nf_conntrack_l4proto.h>
- #include <net/netfilter/nf_conntrack_timeout.h>
- #include <net/netfilter/nf_conntrack_zones.h>
- 
--- 
-1.7.10
+This series looks great, I'll apply all of it.
 
+Thanks Joe.
+
+That case you didn't convert in mac80211 is probably the
+bug Johannes was talking about which started this whole
+discussion.
