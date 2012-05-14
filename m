@@ -1,75 +1,109 @@
-From: carlopmart <carlopmart@gmail.com>
+From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
 Subject: Re: Problems with a forward rule
-Date: Mon, 14 May 2012 18:47:01 +0200
-Message-ID: <4FB13705.1020503@gmail.com>
-References: <CAEjQA5JVsMUizFWODGe+OT88owqbPU0=ZjtRugq6Eg8z1U3A=w@mail.gmail.com> <alpine.LNX.2.01.1205121746300.5922@frira.vanv.qr> <4FAECDBA.9030302@saasplaza.com> <CAEjQA5LAwmxTwAGWJH5A5Bs57h8=BSXWwiWegYmVKSM7ZtvtmA@mail.gmail.com> <4FB0A732.4070909@saasplaza.com> <CAEjQA5JZ55ku3DZuQ_Oe+Ne-85Lr_zMse7VudYAryO5aH8-JLQ@mail.gmail.com> <4FB0AE39.6040805@saasplaza.com> <CAEjQA5+kYHgcm3FGkz_AEhTa6ASv8w5sWQQxAOkszeDM3=ukZQ@mail.gmail.com> <4FB0B337.4030208@saasplaza.com>
+Date: Mon, 14 May 2012 13:55:03 -0400
+Message-ID: <201205141355.03803.neal.p.murphy@alum.wpi.edu>
+References: <CAEjQA5JVsMUizFWODGe+OT88owqbPU0=ZjtRugq6Eg8z1U3A=w@mail.gmail.com> <201205140326.09455.neal.p.murphy@alum.wpi.edu> <CAEjQA5KY-6k-mFny8g=Gw8v+PZBh6tP9r4TaX+Gv3Y7V6b9aTw@mail.gmail.com>
+Reply-To: neal.p.murphy@alum.wpi.edu
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=message-id:date:from:user-agent:mime-version:to:subject:references
-         :in-reply-to:content-type:content-transfer-encoding;
-        bh=bjizKU/97CAgEeB3eEw/r6C7Q6nz0lFrpLzLiplNW7E=;
-        b=yj2vIOvFemE94QQpS4hGm0jLbUpMQvnhzJ+SX9/i7eldgPxPSkWCieoqcUtTfl/XpV
-         cHJj7O077Hq8tSfrCZUZ8Ih02Rpw9y5L1oZkVCVjITFexG12jERwxME10MHI6FHaQA7J
-         5HWVQ43vyY0bHVM4gSS8twJkFYQuUdZRP/MCebC8/neXPI96PKBbfvwp2APUbxN5WvWk
-         /QCza+dT/5v2QszMb2ahEAs1/uyHzKSbdkTN3oycYNbUdpMmJn/b2SvbkLohYhL9+Mmf
-         FGg8sD+Fg1vvBCF03tywDYI7Ct9K43ey+GASy700XE8Mf1dR3vMEdfpi01r6IrR29Oaf
-         Tufw==
-In-Reply-To: <4FB0B337.4030208@saasplaza.com>
+In-Reply-To: <CAEjQA5KY-6k-mFny8g=Gw8v+PZBh6tP9r4TaX+Gv3Y7V6b9aTw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: Text/Plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On 05/14/2012 09:24 AM, Tom van Leeuwen wrote:
-> On 05/14/2012 09:06 AM, C. L. Martinez wrote:
->> On Mon, May 14, 2012 at 9:03 AM, Tom van Leeuwen
->> <tom.van.leeuwen@saasplaza.com> wrote:
->>> So, when you do a ping from your host 172.24.50.3 to 1.1.1.x you will
->>> probably see the counter increase for your rule (with restricted
->>> destination).
->>> Do "iptables -vnL FORWARD" to check.
->>>
->>> That rule is not the problem.
->>>
->>> What traffic are you sending that times out?
->>> source ip, source port, destination ip, dest port, protocol?
->>>
->>> Your forward and postrouting rules look fine and should work
->>>
->>> Regards,
->>> Tom
->> My principal problems are with http, https and ssh. For example with a
->> https connection:
->>
->> Chain FORWARD (policy DROP 48 packets, 2432 bytes)
->> pkts bytes target prot opt in out source
->> destination
->> 4628 1901K ACCEPT all -- * * 0.0.0.0/0
->> 0.0.0.0/0 state RELATED,ESTABLISHED
->> 12 746 ACCEPT all -- * * 172.24.50.3
->> 10.196.0.0/16 state NEW
->> 42 2184 ACCEPT tcp -- * * 172.24.50.3
->> 195.76.69.66 tcp multiport dports 80,443 state NEW
->> 1 52 ACCEPT tcp -- * * 172.24.50.3
->> 195.76.69.69 tcp dpt:443 state NEW
->> 48 2432 LOG all -- * * 0.0.0.0/0
->> 0.0.0.0/0 LOG flags 0 level 4 prefix `IPT FORWARD packet
->> died: '
->>
->> First packets goes well, but after few seconds all goes to "IPT
->> FORWARD .." chain ...
-> So stuff is logged! Please show what is logged, cause that is the key!
+On Monday 14 May 2012 04:18:23 C. L. Martinez wrote:
 
-Ok, I have found the problem. Exists an intermediate fw blocking this 
-type of traffic ...
+As written and presented, your rules:
+> > As written, your rules
+> >  1. Allow all packets for established conns and the first packet for
+> > related conns to pass.
+> >  2. Allow all packets for new conns from the host to pass
+> >  3. Drop all other packets.
 
-Sorry for the noise.
+Unless I grossly misread, this is what your rules do.
 
-  .. and many thanks for your help.
+Either these are the rules you are using and you've found they don't work they 
+way you expect, or you have provided the list with an incomplete set of rules 
+and an incomplete problem statement.
 
--- 
-CL Martinez
-carlopmart {at} gmail {d0t} com
+> 
+> Sorry Neal, but exists some things in your answer that I don't understand
+> ...
+> 
+> In line:
+> > To restrict that host to a particular LAN and allow other hosts through,
+> > these rules in table 'filter':
+> > -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+> > -A FORWARD -s 172.24.50.3/32 -m state --state NEW -j ACCEPT
+> > -A FORWARD -j LOG --log-prefix "IPT FORWARD packet died: "
+> > 
+> > should be:
+> > -A FORWARD -s 172.24.50.3/32 -d a.b.c.d/netmask \
+> >  -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
+> 
+> Why this rule??:
+
+TCP/IP traffic is bi-directional. You must control the traffic in both 
+directions.
+
+You said you wanted to allow traffic from that host to a particular, but 
+unspecified, LAN; you did not say you wanted to allow hosts on that LAN to 
+initiate conns to that host. The only correct and definitive way to reach your 
+stated goal is to
+  -  allow new and related packets and packets for established conns to
+     flow from that host to that LAN
+  -  allow only related packets and packets for established conns to flow
+     from that LAN to that host
+  - explicitly block all other traffic between that host to all other LANs
+  - explicitly allow all other traffic
+You didn't provide a complete problem statement, only that a particular host 
+is to be allowed to communicate (initiate conns) only with a particular LAN. 
+Therefore I made the assumption (based on your incomplete rules) that you 
+wanted to allow all other traffic.
+
+> > -A FORWARD -s a.b.c.d/netmask -d 172.24.50.3/32 \
+> >  -m state --state RELATED,ESTABLISHED -j ACCEPT
+> > -A FORWARD -s 172.24.50.3/32 \
+> >  -j LOG --log-prefix "FORWARD dropped packet from 172.24.50.3: "
+> 
+> Why this rule??: by default all is denied if it is not exists an
+> established and related connection.
+> 
+> > -A FORWARD -s 172.24.50.3/32 -j DROP
+> > -A FORWARD -d 172.24.50.3/32 \
+> >  -j LOG --log-prefix "FORWARD dropped packet to 172.24.50.3: "
+> > -A FORWARD -d 172.24.50.3/32 -j DROP
+
+Simple logic. Filtering 101. You must handle more specific conditions before 
+you can handle more general conditions, and you must handle the traffic in 
+both directions. You could eliminate a couple rules by using negative logic. 
+But you'll be sorry next year when you can't recall your convoluted logic to 
+make sense of the negative logic. The rules I presented make it very clear 
+that (1) conns from that host to that LAN and related conns from that LAN to 
+that host are allowed, (2) traffic between that host to anywhere else is 
+prohibited.
+
+There is no such thing as an 'established and related' conn. There can be a 
+NEW packet (the first packet of a new conn). There can be a RELATED new packet 
+(the first packet of a new conn that a helper has determined to be related to 
+an existing conn). And there are ESTABLISHED conns. Once a conn is 
+established, it is not possible to determine if it started with a NEW packet 
+or a RELATED packet. I recently spent a week puzzling through this to finish 
+making a new UI for my firewall work correctly. Netfilter has limitations that 
+must be understood before you can work with or around them.
+
+> 
+> Why this rule??:
+> > -A FORWARD -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
+> 
+> I only want to allow related and established connections ... not new
+> if it is not explicit allowed.
+
+So delete that rule. Now the only traffic that will be forwarded will be NEW, 
+RELATED and ESTABLISHED packets from that host to that LAN, and RELATED and 
+ESTABLISHED packets from that LAN to that host; no other traffic shall be 
+forwarded across the router until you add rules that explicitly allow it.
+
+It might be helpful if you provided a complete problem statement.
