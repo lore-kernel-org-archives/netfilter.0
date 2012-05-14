@@ -1,68 +1,53 @@
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: [patch] netfilter: potential NULL dereference in
- get_inner_hdr()
-Date: Mon, 14 May 2012 09:53:15 +0200
-Message-ID: <1336981995.8512.56.camel@edumazet-glaptop>
-References: <20120512110003.GB19472@elgon.mountain>
-	 <201205140936.56960.hans.schillstrom@ericsson.com>
-	 <20120514.033853.1089019132135043947.davem@davemloft.net>
+From: Tom van Leeuwen <tom.van.leeuwen@saasplaza.com>
+Subject: Re: Problems with a forward rule
+Date: Mon, 14 May 2012 09:24:39 +0200
+Message-ID: <4FB0B337.4030208@saasplaza.com>
+References: <CAEjQA5JVsMUizFWODGe+OT88owqbPU0=ZjtRugq6Eg8z1U3A=w@mail.gmail.com> <alpine.LNX.2.01.1205121746300.5922@frira.vanv.qr> <4FAECDBA.9030302@saasplaza.com> <CAEjQA5LAwmxTwAGWJH5A5Bs57h8=BSXWwiWegYmVKSM7ZtvtmA@mail.gmail.com> <4FB0A732.4070909@saasplaza.com> <CAEjQA5JZ55ku3DZuQ_Oe+Ne-85Lr_zMse7VudYAryO5aH8-JLQ@mail.gmail.com> <4FB0AE39.6040805@saasplaza.com> <CAEjQA5+kYHgcm3FGkz_AEhTa6ASv8w5sWQQxAOkszeDM3=ukZQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=subject:from:to:cc:in-reply-to:references:content-type:date
-         :message-id:mime-version:x-mailer:content-transfer-encoding;
-        bh=hPdIMwvduX0t3yyrjk6K0VJKNvbAd8ZdXKIcpMUuTIE=;
-        b=VQ++a9wRn45M595VFstFAOAflZ8u4v8H86WGCJSq2qeH/u4ZHZ5Z6Iiy0SzrftpE44
-         Lb6ajZBNEkINTtTe5TgzSJ0NByqfPLXm5D9O8xruyAlgGVGKC+CeQvaJ+htWLHv9BlFT
-         9lhsnFR5m2uds7DlguoaDwODhC02Q0llsj+2bvNaNZfYRYaIekADuNdqjbtyoGKGRkNZ
-         ValCR084cX8PyGCEDBdQr+7c+rFl/geUJqBJfXrmzGqY3VlkQvWhIMaFZtZ2Hc/wN9ZM
-         B/UbaI/dwvEdwNtH4PoE/w6DecCZK5FHY2E2UDCveshMKuAuMHquvbq9wGFly7tqw7Or
-         kXLA==
-In-Reply-To: <20120514.033853.1089019132135043947.davem@davemloft.net>
+In-Reply-To: <CAEjQA5+kYHgcm3FGkz_AEhTa6ASv8w5sWQQxAOkszeDM3=ukZQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: David Miller <davem@davemloft.net>
-Cc: hans.schillstrom@ericsson.com, dan.carpenter@oracle.com, pablo@netfilter.org, kaber@trash.net, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "C. L. Martinez" <carlopmart@gmail.com>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Mon, 2012-05-14 at 03:38 -0400, David Miller wrote:
-
-> He said what he's using, "sparse", the semantic parser, which
-> is largely arch agnostic.
-> 
-> I guarantee you will see the warnings if you run it on your
-> system on this code.
-
-Some more info :
-
-http://lwn.net/Articles/205624/
-
-make C=2 CF=-D__CHECK_ENDIAN__ net/netfilter/xt_HMARK.o
-  CHECK   net/netfilter/xt_HMARK.c
-net/netfilter/xt_HMARK.c:87:21: warning: incorrect type in assignment (different base types)
-net/netfilter/xt_HMARK.c:87:21:    expected unsigned short [unsigned] [usertype] src
-net/netfilter/xt_HMARK.c:87:21:    got restricted __be16 [usertype] all
-net/netfilter/xt_HMARK.c:88:21: warning: incorrect type in assignment (different base types)
-net/netfilter/xt_HMARK.c:88:21:    expected unsigned short [unsigned] [usertype] dst
-net/netfilter/xt_HMARK.c:88:21:    got restricted __be16 [usertype] all
-net/netfilter/xt_HMARK.c:170:27: warning: incorrect type in argument 2 (different signedness)
-net/netfilter/xt_HMARK.c:170:27:    expected int *offset
-net/netfilter/xt_HMARK.c:170:27:    got unsigned int *<noident>
-net/netfilter/xt_HMARK.c:181:28: warning: incorrect type in argument 1 (different base types)
-net/netfilter/xt_HMARK.c:181:28:    expected unsigned int const [usertype] *addr32
-net/netfilter/xt_HMARK.c:181:28:    got restricted __be32 *<noident>
-net/netfilter/xt_HMARK.c:182:28: warning: incorrect type in argument 1 (different base types)
-net/netfilter/xt_HMARK.c:182:28:    expected unsigned int const [usertype] *addr32
-net/netfilter/xt_HMARK.c:182:28:    got restricted __be32 *<noident>
-net/netfilter/xt_HMARK.c:261:9: warning: invalid assignment: &=
-net/netfilter/xt_HMARK.c:261:9:    left side has type unsigned int
-net/netfilter/xt_HMARK.c:261:9:    right side has type restricted __be32
-net/netfilter/xt_HMARK.c:262:9: warning: invalid assignment: &=
-net/netfilter/xt_HMARK.c:262:9:    left side has type unsigned int
-net/netfilter/xt_HMARK.c:262:9:    right side has type restricted __be32
-
-
-
-
+On 05/14/2012 09:06 AM, C. L. Martinez wrote:
+> On Mon, May 14, 2012 at 9:03 AM, Tom van Leeuwen
+> <tom.van.leeuwen@saasplaza.com>  wrote:
+>> So, when you do a ping from your host 172.24.50.3 to 1.1.1.x you will
+>> probably see the counter increase for your rule (with restricted
+>> destination).
+>> Do "iptables -vnL FORWARD" to check.
+>>
+>> That rule is not the problem.
+>>
+>> What traffic are you sending that times out?
+>> source ip, source port, destination ip, dest port, protocol?
+>>
+>> Your forward and postrouting rules look fine and should work
+>>
+>> Regards,
+>> Tom
+> My principal problems are with http, https and ssh. For example with a
+> https connection:
+>
+> Chain FORWARD (policy DROP 48 packets, 2432 bytes)
+>   pkts bytes target     prot opt in     out     source
+> destination
+>   4628 1901K ACCEPT     all  --  *      *       0.0.0.0/0
+> 0.0.0.0/0           state RELATED,ESTABLISHED
+>     12   746 ACCEPT     all  --  *      *       172.24.50.3
+> 10.196.0.0/16       state NEW
+>     42  2184 ACCEPT     tcp  --  *      *       172.24.50.3
+> 195.76.69.66        tcp multiport dports 80,443 state NEW
+>      1    52 ACCEPT     tcp  --  *      *       172.24.50.3
+> 195.76.69.69        tcp dpt:443 state NEW
+>     48  2432 LOG        all  --  *      *       0.0.0.0/0
+> 0.0.0.0/0           LOG flags 0 level 4 prefix `IPT FORWARD packet
+> died: '
+>
+> First packets goes well, but after few seconds all goes to "IPT
+> FORWARD .." chain ...
+So stuff is logged! Please show what is logged, cause that is the key!
