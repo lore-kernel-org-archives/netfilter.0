@@ -1,135 +1,101 @@
-From: carlopmart <carlopmart@gmail.com>
+From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
 Subject: Re: Problems with a forward rule
-Date: Mon, 14 May 2012 21:35:16 +0200
-Message-ID: <4FB15E74.5070102@gmail.com>
-References: <CAEjQA5JVsMUizFWODGe+OT88owqbPU0=ZjtRugq6Eg8z1U3A=w@mail.gmail.com> <201205140326.09455.neal.p.murphy@alum.wpi.edu> <CAEjQA5KY-6k-mFny8g=Gw8v+PZBh6tP9r4TaX+Gv3Y7V6b9aTw@mail.gmail.com> <201205141355.03803.neal.p.murphy@alum.wpi.edu>
+Date: Mon, 14 May 2012 17:12:39 -0400
+Message-ID: <201205141712.39592.neal.p.murphy@alum.wpi.edu>
+References: <CAEjQA5JVsMUizFWODGe+OT88owqbPU0=ZjtRugq6Eg8z1U3A=w@mail.gmail.com> <201205141355.03803.neal.p.murphy@alum.wpi.edu> <4FB15E74.5070102@gmail.com>
+Reply-To: neal.p.murphy@alum.wpi.edu
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=message-id:date:from:user-agent:mime-version:to:subject:references
-         :in-reply-to:content-type:content-transfer-encoding;
-        bh=rGE5wW997utZbcNDPV+LRe0R9MBQ8wi990FfFEo9oNE=;
-        b=tstWOp/TBIPeW5m/V4UvpjLGB4HLjToXPPayYw5KwamsfK9w7vlsoQ37OLAkLTubJL
-         CIGM2XlYy5SjZJE8+ZN6DYeN5bHVtaFViuIOEZG+RJApCcM/c/qqJyBNg8fD57TwzNWK
-         3LxhWw2pXcn2hTTlJ+POvDCvpK/eVL6isFS4QJin0Z7HdFOGoIH0Ya1ER7tbfgJ1lSs1
-         gmMixPigTdw3U4GkSUAXou90Z6c3EsUptkweEfwv79vdq7/6CYS9qxWHzQj3gyh+qkS9
-         dyKyxuh3kHiJz6aMuDsevlUp8e5r57NakRGDPc8sl59HoHRj6DZ9MpRIKiyBptixUX3F
-         Aqow==
-In-Reply-To: <201205141355.03803.neal.p.murphy@alum.wpi.edu>
+In-Reply-To: <4FB15E74.5070102@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: Text/Plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-On 05/14/2012 07:55 PM, Neal Murphy wrote:
-> On Monday 14 May 2012 04:18:23 C. L. Martinez wrote:
->
-> As written and presented, your rules:
->>> As written, your rules
->>>   1. Allow all packets for established conns and the first packet for
->>> related conns to pass.
->>>   2. Allow all packets for new conns from the host to pass
->>>   3. Drop all other packets.
->
-> Unless I grossly misread, this is what your rules do.
->
-> Either these are the rules you are using and you've found they don't work they
-> way you expect, or you have provided the list with an incomplete set of rules
-> and an incomplete problem statement.
->
->>
->> Sorry Neal, but exists some things in your answer that I don't understand
->> ...
->>
->> In line:
->>> To restrict that host to a particular LAN and allow other hosts through,
->>> these rules in table 'filter':
->>> -A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
->>> -A FORWARD -s 172.24.50.3/32 -m state --state NEW -j ACCEPT
->>> -A FORWARD -j LOG --log-prefix "IPT FORWARD packet died: "
->>>
->>> should be:
->>> -A FORWARD -s 172.24.50.3/32 -d a.b.c.d/netmask \
->>>   -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
->>
->> Why this rule??:
->
-> TCP/IP traffic is bi-directional. You must control the traffic in both
-> directions.
->
-> You said you wanted to allow traffic from that host to a particular, but
-> unspecified, LAN; you did not say you wanted to allow hosts on that LAN to
-> initiate conns to that host. The only correct and definitive way to reach your
-> stated goal is to
->    -  allow new and related packets and packets for established conns to
->       flow from that host to that LAN
->    -  allow only related packets and packets for established conns to flow
->       from that LAN to that host
->    - explicitly block all other traffic between that host to all other LANs
->    - explicitly allow all other traffic
-> You didn't provide a complete problem statement, only that a particular host
-> is to be allowed to communicate (initiate conns) only with a particular LAN.
-> Therefore I made the assumption (based on your incomplete rules) that you
-> wanted to allow all other traffic.
->
->>> -A FORWARD -s a.b.c.d/netmask -d 172.24.50.3/32 \
->>>   -m state --state RELATED,ESTABLISHED -j ACCEPT
->>> -A FORWARD -s 172.24.50.3/32 \
->>>   -j LOG --log-prefix "FORWARD dropped packet from 172.24.50.3: "
->>
->> Why this rule??: by default all is denied if it is not exists an
->> established and related connection.
->>
->>> -A FORWARD -s 172.24.50.3/32 -j DROP
->>> -A FORWARD -d 172.24.50.3/32 \
->>>   -j LOG --log-prefix "FORWARD dropped packet to 172.24.50.3: "
->>> -A FORWARD -d 172.24.50.3/32 -j DROP
->
-> Simple logic. Filtering 101. You must handle more specific conditions before
-> you can handle more general conditions, and you must handle the traffic in
-> both directions. You could eliminate a couple rules by using negative logic.
-> But you'll be sorry next year when you can't recall your convoluted logic to
-> make sense of the negative logic. The rules I presented make it very clear
-> that (1) conns from that host to that LAN and related conns from that LAN to
-> that host are allowed, (2) traffic between that host to anywhere else is
-> prohibited.
->
-> There is no such thing as an 'established and related' conn. There can be a
-> NEW packet (the first packet of a new conn). There can be a RELATED new packet
-> (the first packet of a new conn that a helper has determined to be related to
-> an existing conn). And there are ESTABLISHED conns. Once a conn is
-> established, it is not possible to determine if it started with a NEW packet
-> or a RELATED packet. I recently spent a week puzzling through this to finish
-> making a new UI for my firewall work correctly. Netfilter has limitations that
-> must be understood before you can work with or around them.
->
->>
->> Why this rule??:
->>> -A FORWARD -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
->>
->> I only want to allow related and established connections ... not new
->> if it is not explicit allowed.
->
-> So delete that rule. Now the only traffic that will be forwarded will be NEW,
-> RELATED and ESTABLISHED packets from that host to that LAN, and RELATED and
-> ESTABLISHED packets from that LAN to that host; no other traffic shall be
-> forwarded across the router until you add rules that explicitly allow it.
->
-> It might be helpful if you provided a complete problem statement.
-> --
+On Monday 14 May 2012 15:35:16 carlopmart wrote:
+> Sorry If you have misunderstood me, but I only want to allow that host
+> to access to a specific LAN, not this LAN access to this host
+> (http://marc.info/?l=netfilter&m=133697780513851&w=2) ...
 
-Neal, I have sended my rules previously:
+Allow me to restate the rules in a slightly different format.
 
-http://marc.info/?l=netfilter&m=133697448913035&w=2
+At least four rules are required if you wish to absolutely restrict a host to 
+communicating with some other LAN. And these four rules must be the first 
+rules in the FORWARD chain in order to be guaranteed to work regardless of 
+other rules you may later add after them in the chain.
 
-Sorry If you have misunderstood me, but I only want to allow that host 
-to access to a specific LAN, not this LAN access to this host 
-(http://marc.info/?l=netfilter&m=133697780513851&w=2) ...
+Definitions:
+'the host': the host you wish to restrict.
+'the LAN': the only LAN 'the host' is allowed to access. It is specified
+    symbolically as you did not specic an address for it.
+'conn': an established TCP/IP 'relation' between two hosts, whether it is
+    using a connection-oriented protocol like TCP or SCTP or a
+    connectionless protocol.
+'NEW': the first packet of a new, not-yet-established conn.
+'RELATED': the first packet of a new, not-yet-established conn that a
+    helper module has determined is related to an existing conn between
+    those two hosts.
+'ESTABLISHED': a packet belonging to a conn that has seen traffic in both
+    directions. Once established, there is no way to determine if a conn
+    started out as NEW or RELATED (well, without resorting to CONNMARKs).
+
+The first two and last two rules below together guarantee that 'the host' may 
+communicate ONLY with nodes on 'the LAN', regardless of any rules you may add 
+after. Do note that rules you add *before* these six rules may affect 'the 
+host' if they are not written with great care.
+
+--------------
+# The first two rules explicitly allow traffic between 'the host' and
+#   'the LAN'. You must explicitly allow packets travelling in each
+#   direction. Once a packet is ACCEPTed, no further rules are processed.
+
+# Allow 'the host' to access 'the LAN' using NEW and RELATED initial
+#   packets and packets in ESTABLISHED conns
+iptables -A FORWARD -s 172.24.50.3/32 -d a.b.c.d/netmask \
+  -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
+
+# Allow nodes on 'the LAN' to access 'the host' using RELATED initial
+#   packets and packets in ESTABLISHED conns
+iptables -A FORWARD -s a.b.c.d/netmask -d 172.24.50.3/32 \
+  -m state --state RELATED,ESTABLISHED -j ACCEPT
 
 
+# The next two rules log traffic from 'the host' to anywhere else
+#   and from anywhere else to 'the host'. Rule processing continues
+#   after the packet has been LOGged.
 
--- 
-CL Martinez
-carlopmart {at} gmail {d0t} com
+# Log packets from 'the host' to anywhere else
+iptables -A FORWARD -s 172.24.50.3/32 -j LOG \
+  --log-prefix "FORWARD found packet from 172.24.50.3 to somewhere else: "
+iptables -A FORWARD -d 172.24.50.3/32 -j LOG \
+  --log-prefix "FORWARD found packet to 172.24.50.3 from somewhere else: "
+
+
+# These last two rules explicitly drop traffic between 'the host' and
+#   anywhere else. They preclude unintended consequences of new rules
+#   you may add to the end of the chain in the future.
+iptables -A FORWARD -s 172.24.50.3/32 -j DROP
+iptables -A FORWARD -d 172.24.50.3/32 -j DROP
+--------------
+
+The first two rules allow traffic between 'the host' and 'the LAN' as you 
+require. 'The host' may access any node on 'the LAN' at any time using any IP 
+protocol. Nodes on 'the LAN' may send all return traffic and may open RELATED 
+conns as detected by a netfilter helper module (such as FTP's DATA channel) 
+but may not otherwise initiate unsolicited conns to 'the host'.
+
+The second two rules are optional if you don't want to track attempts by 'the 
+host' to access other nodes.
+
+The last two rules are optional if you will never add more rules to the end of 
+the chain because the chain's policy, DROP, will drop those packets. If you 
+plan to add more rules to the end of the chain, I strongly suggest you use 
+these last two rules to ensure that your added rules don't interfere.
+
+
+Again, the two ACCEPT rules and the two DROP rules together guarantee that 
+'the host' may communicate only with nodes on 'the LAN' even if you add more 
+rules to the end of the chain. But remember that carelessly written rules you 
+insert *before* these four rules can change the restrictions you've placed on 
+'the host' and negate that guarantee.
