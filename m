@@ -1,108 +1,50 @@
-From: "C. L. Martinez" <carlopmart@gmail.com>
+From: Tom van Leeuwen <tom.van.leeuwen@saasplaza.com>
 Subject: Re: Problems with a forward rule
-Date: Mon, 14 May 2012 07:45:21 +0200
-Message-ID: <CAEjQA5LAwmxTwAGWJH5A5Bs57h8=BSXWwiWegYmVKSM7ZtvtmA@mail.gmail.com>
-References: <CAEjQA5JVsMUizFWODGe+OT88owqbPU0=ZjtRugq6Eg8z1U3A=w@mail.gmail.com>
-	<alpine.LNX.2.01.1205121746300.5922@frira.vanv.qr>
-	<4FAECDBA.9030302@saasplaza.com>
+Date: Mon, 14 May 2012 08:33:22 +0200
+Message-ID: <4FB0A732.4070909@saasplaza.com>
+References: <CAEjQA5JVsMUizFWODGe+OT88owqbPU0=ZjtRugq6Eg8z1U3A=w@mail.gmail.com> <alpine.LNX.2.01.1205121746300.5922@frira.vanv.qr> <4FAECDBA.9030302@saasplaza.com> <CAEjQA5LAwmxTwAGWJH5A5Bs57h8=BSXWwiWegYmVKSM7ZtvtmA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=047d7b339cd189df4704bff8979f
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :content-type;
-        bh=RFMiF/vUrQCs2iRC6ZR66hCZBo5frtcgW9JkYnPrrmI=;
-        b=QyMYQiH3ZbQoRcm92XmkaRkqF0YUOmuSAIOpgb7l4L9KfogiNNqRsZ9YzXENMH93pX
-         f1u9+wY1xD2+BE5WXwv5SvGC+meXKvwQ8Ose8KxltFUwfbuOQmU3c5azTrCRA0082ojX
-         U0+v5Cpyeo3imc1Ajw852/6iIdqDFpNcSRCFE69gFqRttCOoBu1N3hqRwvYt2X0Ks7S2
-         dazLrmQlPXQpEDovyxNcQxaoLjI9GuG0OQ9tdsNjQuBF0/Awie8NlfW1OhuwcsUt0lub
-         dHWqHZcpbMYQK5W3VmvimtLv919FUuXUwKvjRS8Gw/Fz96HlkOdXvDYbcgkRnObdOkSA
-         1EcQ==
-In-Reply-To: <4FAECDBA.9030302@saasplaza.com>
+In-Reply-To: <CAEjQA5LAwmxTwAGWJH5A5Bs57h8=BSXWwiWegYmVKSM7ZtvtmA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "C. L. Martinez" <carlopmart@gmail.com>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
---047d7b339cd189df4704bff8979f
-Content-Type: text/plain; charset=UTF-8
+Alright,
+Judging your ruleset the only relevant lines for your host 172.24.50.3 
+would be:
 
-On Sat, May 12, 2012 at 10:53 PM, Tom van Leeuwen
-<tom.van.leeuwen@saasplaza.com> wrote:
-> Indeed do iptables-save for the complete ruleset and tell us what you want
-> and expect.
->
->
-> On 12-5-2012 17:47, Jan Engelhardt wrote:
+:FORWARD DROP [2:80]
+-A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -s 172.24.50.3/32 -m state --state NEW -j ACCEPT
+-A FORWARD -j LOG --log-prefix "IPT FORWARD packet died: "
+
+And you said that restricting destination does not work. Your rule:
+iptables -A FORWARD -s 172.24.50.3 -d 1.1.1.0/24 -m state --state NEW -j 
+ACCEPT
+
+You say it does not work. If that is the case, your packets are logged 
+and dropped.
+Could you paste the log entries for your host 172.24.50.3?
+
+On 05/14/2012 07:45 AM, C. L. Martinez wrote:
+> On Sat, May 12, 2012 at 10:53 PM, Tom van Leeuwen
+> <tom.van.leeuwen@saasplaza.com>  wrote:
+>> Indeed do iptables-save for the complete ruleset and tell us what you want
+>> and expect.
 >>
->> On Friday 2012-05-11 17:04, C. L. Martinez wrote:
 >>
->>> Hi all,
+>> On 12-5-2012 17:47, Jan Engelhardt wrote:
+>>> On Friday 2012-05-11 17:04, C. L. Martinez wrote:
 >>>
->>> I have setup the following rules in a centos6 gateway:
->>> [ugly iptables -L]
->>
->> *Use* iptables-save and provide a *full* ruleset.
->>
-
-Ok, here they are. I want to allow connections from host 172.24.50.3
-to one specific network only.
-
---047d7b339cd189df4704bff8979f
-Content-Type: application/octet-stream; name=myiptables
-Content-Disposition: attachment; filename=myiptables
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_h273zkm40
-
-IyBHZW5lcmF0ZWQgYnkgaXB0YWJsZXMtc2F2ZSB2MS40Ljcgb24gTW9uIE1heSAxNCAwNzozNzox
-MSAyMDEyCipuYXQKOlBSRVJPVVRJTkcgQUNDRVBUIFszOTg6MTc0NjZdCjpQT1NUUk9VVElORyBB
-Q0NFUFQgWzUyOjMyMzJdCjpPVVRQVVQgQUNDRVBUIFs1MjozMjMyXQotQSBQUkVST1VUSU5HIC1p
-IHByb2RpZiAtcCB0Y3AgLW0gdGNwIC0tZHBvcnQgMjIyMiAtaiBETkFUIC0tdG8tZGVzdGluYXRp
-b24gMTcyLjI0LjUwLjI6MjIgCi1BIFBSRVJPVVRJTkcgLWkgcHJvZGlmIC1wIHRjcCAtbSB0Y3Ag
-LS1kcG9ydCA4MDgxIC1qIEROQVQgLS10by1kZXN0aW5hdGlvbiAxNzIuMjQuNTAuMzo4MDgxIAot
-QSBQUkVST1VUSU5HIC1pIHByb2RpZiAtcCB0Y3AgLW0gdGNwIC0tZHBvcnQgODQ0NCAtaiBETkFU
-IC0tdG8tZGVzdGluYXRpb24gMTcyLjI0LjUwLjM6ODQ0NCAKLUEgUFJFUk9VVElORyAtaSBwcm9k
-aWYgLXAgdGNwIC1tIHRjcCAtLWRwb3J0IDU1NTUgLWogRE5BVCAtLXRvLWRlc3RpbmF0aW9uIDE3
-Mi4yNC41MC4zOjMzODkgCi1BIFBPU1RST1VUSU5HIC1zIDE3Mi4yNC41MC4yLzMyIC1vIHByb2Rp
-ZiAtaiBNQVNRVUVSQURFIAotQSBQT1NUUk9VVElORyAtcyAxNzIuMjQuNTAuMy8zMiAtbyBwcm9k
-aWYgLWogTUFTUVVFUkFERSAKQ09NTUlUCiMgQ29tcGxldGVkIG9uIE1vbiBNYXkgMTQgMDc6Mzc6
-MTEgMjAxMgojIEdlbmVyYXRlZCBieSBpcHRhYmxlcy1zYXZlIHYxLjQuNyBvbiBNb24gTWF5IDE0
-IDA3OjM3OjExIDIwMTIKKmZpbHRlcgo6SU5QVVQgRFJPUCBbMzgwOjE2MTcyXQo6Rk9SV0FSRCBE
-Uk9QIFsyOjgwXQo6T1VUUFVUIERST1AgWzA6MF0KOkJBREZMQUdTIC0gWzA6MF0KOlNTSCAtIFsw
-OjBdCjpUQ1BGTEFHUyAtIFswOjBdCi1BIElOUFVUIC1wIHRjcCAtaiBUQ1BGTEFHUyAKLUEgSU5Q
-VVQgISAtcyAxNzIuMjQuNTAuMC8yOCAtaSBzaWVtaWYgLWogTE9HIC0tbG9nLXByZWZpeCAiSVBU
-IFNQT09GRUQgcGFja2V0OiAiIAotQSBJTlBVVCAhIC1zIDE3Mi4yNC41MC4wLzI4IC1pIHNpZW1p
-ZiAtaiBEUk9QIAotQSBJTlBVVCAtaSBsbyAtaiBBQ0NFUFQgCi1BIElOUFVUIC1zIDIyNC4wLjAu
-MC80IC1qIERST1AgCi1BIElOUFVUIC1kIDIyNC4wLjAuMC80IC1qIERST1AgCi1BIElOUFVUIC1z
-IDI0MC4wLjAuMC81IC1qIERST1AgCi1BIElOUFVUIC1kIDEwLjE5Ni4xMjkuMjU1LzMyIC1qIERS
-T1AgCi1BIElOUFVUIC1tIHN0YXRlIC0tc3RhdGUgUkVMQVRFRCxFU1RBQkxJU0hFRCAtaiBBQ0NF
-UFQgCi1BIElOUFVUIC1wIGljbXAgLW0gc3RhdGUgLS1zdGF0ZSBORVcgLW0gaWNtcCAtLWljbXAt
-dHlwZSA4IC1tIGxpbWl0IC0tbGltaXQgMS9zZWMgLS1saW1pdC1idXJzdCAxIC1qIEFDQ0VQVCAK
-LUEgSU5QVVQgLXAgdGNwIC1tIHRjcCAtLWRwb3J0IDIyIC1tIHN0YXRlIC0tc3RhdGUgTkVXIC1q
-IFNTSCAKLUEgSU5QVVQgLWogTE9HIC0tbG9nLXByZWZpeCAiSVBUIElOUFVUIHBhY2tldCBkaWVk
-OiAiIAotQSBGT1JXQVJEIC1tIHN0YXRlIC0tc3RhdGUgUkVMQVRFRCxFU1RBQkxJU0hFRCAtaiBB
-Q0NFUFQgCi1BIEZPUldBUkQgLXMgMTcyLjI0LjUwLjMvMzIgLW0gc3RhdGUgLS1zdGF0ZSBORVcg
-LWogQUNDRVBUIAotQSBGT1JXQVJEIC1qIExPRyAtLWxvZy1wcmVmaXggIklQVCBGT1JXQVJEIHBh
-Y2tldCBkaWVkOiAiIAotQSBPVVRQVVQgLXAgdGNwIC1qIFRDUEZMQUdTIAotQSBPVVRQVVQgLW8g
-bG8gLWogQUNDRVBUIAotQSBPVVRQVVQgLW0gc3RhdGUgLS1zdGF0ZSBORVcsUkVMQVRFRCxFU1RB
-QkxJU0hFRCAtaiBBQ0NFUFQgCi1BIE9VVFBVVCAtaiBMT0cgLS1sb2ctcHJlZml4ICJJUFQgT1VU
-UFVUIHBhY2tldCBkaWVkOiAiIAotQSBCQURGTEFHUyAtaiBMT0cgLS1sb2ctcHJlZml4ICJJUFQg
-VENQRkxBR1M6ICIgCi1BIEJBREZMQUdTIC1qIERST1AgCi1BIFNTSCAtbSBsaW1pdCAtLWxpbWl0
-IDMvbWluIC0tbGltaXQtYnVyc3QgMSAtaiBBQ0NFUFQgCi1BIFNTSCAtaiBMT0cgLS1sb2ctcHJl
-Zml4ICJJUFQgU1NIIGNvbm5lY3Rpb24gdG9vIGZhc3Q6ICIgCi1BIFNTSCAtaiBEUk9QIAotQSBU
-Q1BGTEFHUyAtcCB0Y3AgLW0gc3RhdGUgLS1zdGF0ZSBJTlZBTElEIC1qIExPRyAtLWxvZy1wcmVm
-aXggIklQVCBJTlZBTElEOiAiIAotQSBUQ1BGTEFHUyAtcCB0Y3AgLW0gc3RhdGUgLS1zdGF0ZSBJ
-TlZBTElEIC1qIERST1AgCi1BIFRDUEZMQUdTIC1wIHRjcCAtbSB0Y3AgISAtLXRjcC1mbGFncyBG
-SU4sU1lOLFJTVCxBQ0sgU1lOIC1tIHN0YXRlIC0tc3RhdGUgTkVXIC1qIEJBREZMQUdTIAotQSBU
-Q1BGTEFHUyAtcCB0Y3AgLW0gdGNwIC0tdGNwLWZsYWdzIFNZTixBQ0sgU1lOLEFDSyAtbSBzdGF0
-ZSAtLXN0YXRlIE5FVyAtaiBSRUpFQ1QgLS1yZWplY3Qtd2l0aCB0Y3AtcmVzZXQgCi1BIFRDUEZM
-QUdTIC1wIHRjcCAtbSB0Y3AgLS10Y3AtZmxhZ3MgRklOLEFDSyBGSU4gLWogQkFERkxBR1MgCi1B
-IFRDUEZMQUdTIC1wIHRjcCAtbSB0Y3AgLS10Y3AtZmxhZ3MgUFNILEFDSyBQU0ggLWogQkFERkxB
-R1MgCi1BIFRDUEZMQUdTIC1wIHRjcCAtbSB0Y3AgLS10Y3AtZmxhZ3MgQUNLLFVSRyBVUkcgLWog
-QkFERkxBR1MgCi1BIFRDUEZMQUdTIC1wIHRjcCAtbSB0Y3AgLS10Y3AtZmxhZ3MgRklOLFJTVCBG
-SU4sUlNUIC1qIEJBREZMQUdTIAotQSBUQ1BGTEFHUyAtcCB0Y3AgLW0gdGNwIC0tdGNwLWZsYWdz
-IEZJTixTWU4gRklOLFNZTiAtaiBCQURGTEFHUyAKLUEgVENQRkxBR1MgLXAgdGNwIC1tIHRjcCAt
-LXRjcC1mbGFncyBTWU4sUlNUIFNZTixSU1QgLWogQkFERkxBR1MgCi1BIFRDUEZMQUdTIC1wIHRj
-cCAtbSB0Y3AgLS10Y3AtZmxhZ3MgRklOLFNZTixSU1QsUFNILEFDSyxVUkcgTk9ORSAtaiBCQURG
-TEFHUyAKQ09NTUlUCiMgQ29tcGxldGVkIG9uIE1vbiBNYXkgMTQgMDc6Mzc6MTEgMjAxMgo=
---047d7b339cd189df4704bff8979f--
+>>>> Hi all,
+>>>>
+>>>> I have setup the following rules in a centos6 gateway:
+>>>> [ugly iptables -L]
+>>> *Use* iptables-save and provide a *full* ruleset.
+>>>
+> Ok, here they are. I want to allow connections from host 172.24.50.3
+> to one specific network only.
