@@ -1,101 +1,35 @@
-From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
-Subject: Re: Problems with a forward rule
-Date: Mon, 14 May 2012 17:12:39 -0400
-Message-ID: <201205141712.39592.neal.p.murphy@alum.wpi.edu>
-References: <CAEjQA5JVsMUizFWODGe+OT88owqbPU0=ZjtRugq6Eg8z1U3A=w@mail.gmail.com> <201205141355.03803.neal.p.murphy@alum.wpi.edu> <4FB15E74.5070102@gmail.com>
-Reply-To: neal.p.murphy@alum.wpi.edu
+From: Klaubert Herr da Silveira <klaubert@gmail.com>
+Subject: Are limit and hashlimit "limited"?
+Date: Mon, 14 May 2012 19:30:31 -0300
+Message-ID: <CAFoCuZqY+-i89kDSoOM08WdsnGzX86huHauNrOTjCPsEgXeNGg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4FB15E74.5070102@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to:content-type;
+        bh=/EGvgbOzZOszDGepp/xDIkgn3FdYat2uKnA7HQ624pQ=;
+        b=ctaJbGpu/mSzbwtk/LsXKA7nUSwP8kfUyrFtZgMJyY3Av9DZ+Z2mTZHtdOYSxRKJQp
+         XjOA5OtxWlvtR+cS1XA8v8iwvGM/2YS34Ep5FRfp3nX9cvrT3T4W39x7tkioBJEghCQ2
+         pr2B+RxBMm9j8j2692aqlKEmWFLSiJr8LJrgBvHlghYBvHp/n4BasrCzuR5Ek6FJEdIs
+         7S5KadpCEYWkrl6WTCSQvoNwRU7hJzdslGFte8xpq7iqg6uUwxBBA6XG2CwBtHTD5pQ1
+         cDKfp9iE5pat0/mJZ6r7A17Nl87jSMWU1BxR6tSAQ8zruJHTWCFZtej3y+B1fnqZPWKd
+         J2oA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-On Monday 14 May 2012 15:35:16 carlopmart wrote:
-> Sorry If you have misunderstood me, but I only want to allow that host
-> to access to a specific LAN, not this LAN access to this host
-> (http://marc.info/?l=netfilter&m=133697780513851&w=2) ...
+Hi,
 
-Allow me to restate the rules in a slightly different format.
+I'm playing with match modules limit and hashlimit, and they appear to
+be limited to match a maximun 100/sec. If I use hashlimit with no
+"--hashlimit-mode" I get the same, a max of 100/sec, even if I set for
+exemple to 250/sec. My command setting the 250/sec is accepted, with
+no error, but test show only 100 match/sec.
 
-At least four rules are required if you wish to absolutely restrict a host to 
-communicating with some other LAN. And these four rules must be the first 
-rules in the FORWARD chain in order to be guaranteed to work regardless of 
-other rules you may later add after them in the chain.
+Is this a hard limit of this modules, or I can go above this in some way?
 
-Definitions:
-'the host': the host you wish to restrict.
-'the LAN': the only LAN 'the host' is allowed to access. It is specified
-    symbolically as you did not specic an address for it.
-'conn': an established TCP/IP 'relation' between two hosts, whether it is
-    using a connection-oriented protocol like TCP or SCTP or a
-    connectionless protocol.
-'NEW': the first packet of a new, not-yet-established conn.
-'RELATED': the first packet of a new, not-yet-established conn that a
-    helper module has determined is related to an existing conn between
-    those two hosts.
-'ESTABLISHED': a packet belonging to a conn that has seen traffic in both
-    directions. Once established, there is no way to determine if a conn
-    started out as NEW or RELATED (well, without resorting to CONNMARKs).
+Best regards,
 
-The first two and last two rules below together guarantee that 'the host' may 
-communicate ONLY with nodes on 'the LAN', regardless of any rules you may add 
-after. Do note that rules you add *before* these six rules may affect 'the 
-host' if they are not written with great care.
-
---------------
-# The first two rules explicitly allow traffic between 'the host' and
-#   'the LAN'. You must explicitly allow packets travelling in each
-#   direction. Once a packet is ACCEPTed, no further rules are processed.
-
-# Allow 'the host' to access 'the LAN' using NEW and RELATED initial
-#   packets and packets in ESTABLISHED conns
-iptables -A FORWARD -s 172.24.50.3/32 -d a.b.c.d/netmask \
-  -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
-
-# Allow nodes on 'the LAN' to access 'the host' using RELATED initial
-#   packets and packets in ESTABLISHED conns
-iptables -A FORWARD -s a.b.c.d/netmask -d 172.24.50.3/32 \
-  -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-
-# The next two rules log traffic from 'the host' to anywhere else
-#   and from anywhere else to 'the host'. Rule processing continues
-#   after the packet has been LOGged.
-
-# Log packets from 'the host' to anywhere else
-iptables -A FORWARD -s 172.24.50.3/32 -j LOG \
-  --log-prefix "FORWARD found packet from 172.24.50.3 to somewhere else: "
-iptables -A FORWARD -d 172.24.50.3/32 -j LOG \
-  --log-prefix "FORWARD found packet to 172.24.50.3 from somewhere else: "
-
-
-# These last two rules explicitly drop traffic between 'the host' and
-#   anywhere else. They preclude unintended consequences of new rules
-#   you may add to the end of the chain in the future.
-iptables -A FORWARD -s 172.24.50.3/32 -j DROP
-iptables -A FORWARD -d 172.24.50.3/32 -j DROP
---------------
-
-The first two rules allow traffic between 'the host' and 'the LAN' as you 
-require. 'The host' may access any node on 'the LAN' at any time using any IP 
-protocol. Nodes on 'the LAN' may send all return traffic and may open RELATED 
-conns as detected by a netfilter helper module (such as FTP's DATA channel) 
-but may not otherwise initiate unsolicited conns to 'the host'.
-
-The second two rules are optional if you don't want to track attempts by 'the 
-host' to access other nodes.
-
-The last two rules are optional if you will never add more rules to the end of 
-the chain because the chain's policy, DROP, will drop those packets. If you 
-plan to add more rules to the end of the chain, I strongly suggest you use 
-these last two rules to ensure that your added rules don't interfere.
-
-
-Again, the two ACCEPT rules and the two DROP rules together guarantee that 
-'the host' may communicate only with nodes on 'the LAN' even if you add more 
-rules to the end of the chain. But remember that carelessly written rules you 
-insert *before* these four rules can change the restrictions you've placed on 
-'the host' and negate that guarantee.
+Klaubert
