@@ -1,30 +1,28 @@
-From: Bart De Schuymer <bdschuym@pandora.be>
-Subject: Re: [Bridge] [PATCH] net/bridge/netfilter: Fix the randconfig warning
-Date: Thu, 17 May 2012 09:21:41 +0200
-Message-ID: <4FB4A705.6040906@pandora.be>
-References: <1337023817-26132-1-git-send-email-devendra.aaru@gmail.com>
+From: Unni <unni@lab.mutexes.org>
+Subject: iptable stop hung
+Date: Thu, 17 May 2012 19:00:35 +0530
+Message-ID: <e88f94f075d38a9b52fa903788dd3117@lab.mutexes.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1337023817-26132-1-git-send-email-devendra.aaru@gmail.com>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Devendra Naga <devendra.aaru@gmail.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Stephen Hemminger <shemminger@vyatta.com>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, bridge@lists.linux-foundation.org, netdev@vger.kernel.org
+To: netfilter@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
 
-Op 14/05/2012 21:30, Devendra Naga schreef:
-> when ran with make randconfig got
->
-> warning: (BRIDGE_NF_EBTABLES) selects NETFILTER_XTABLES which has unmet direct dependencies (NET&&  INET&&  NETFILTER)
->
-> added NET&&  INET&&  NETFILTER dependency to the BRIDGE_NF_EBTABLES
+Hi,
 
-I really don't see why ebtables should depend on INET. To me the issue 
-lies in the fact that xtables depends on INET.
+"iptable stop" got hung in the server, so I killed that process. But 
+still there is a modprobe process running there, that I can't kill.
 
-Bart
+oot     13834 99.8  0.0   3884   596 ?        R    11:15 132:39 
+/sbin/modprobe -q -r ipt_state ip_nat_ftp iptable_nat xt_NOTRACK 
+ip_conntrack_ftp ip_conntrack_netbios_ns xt_connlimit ip_conntrack 
+ipt_recent
 
--- 
-Bart De Schuymer
-www.artinalgorithms.be
+This is what I can see in dmesg
+
+http://pastebin.com/BxEsyByC
+
+--Unni
