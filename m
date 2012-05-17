@@ -1,97 +1,85 @@
 From: "Steffen Heil (Mailinglisten)" <lists@steffen-heil.de>
-Subject: AW: AW: How to mark packet by reqid?
-Date: Thu, 17 May 2012 20:15:13 +0000
-Message-ID: <EDD810CD654E254F90731B425DE8AA6F106B5872@dc2008r2.sh-solutions.intern>
+Subject: RE: AW: How to mark packet by reqid?
+Date: Thu, 17 May 2012 20:39:07 +0000
+Message-ID: <EDD810CD654E254F90731B425DE8AA6F106B588D@dc2008r2.sh-solutions.intern>
 References: <EDD810CD654E254F90731B425DE8AA6F106B555B@dc2008r2.sh-solutions.intern>
  <alpine.LNX.2.01.1205160116330.17751@frira.zrqbmnf.qr>
  <EDD810CD654E254F90731B425DE8AA6F106B55B1@dc2008r2.sh-solutions.intern>
  <alpine.LNX.2.01.1205160843250.23441@frira.zrqbmnf.qr>
+ <EDD810CD654E254F90731B425DE8AA6F106B5872@dc2008r2.sh-solutions.intern>
 Mime-Version: 1.0
 Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
-	micalg=SHA1; boundary="----=_NextPart_000_0020_01CD347A.7FD2FA80"
+	micalg=SHA1; boundary="----=_NextPart_000_0051_01CD347D.E2B76AC0"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1205160843250.23441@frira.zrqbmnf.qr>
+In-Reply-To: <EDD810CD654E254F90731B425DE8AA6F106B5872@dc2008r2.sh-solutions.intern>
 Content-Language: de-DE
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Jan Engelhardt <jengelh@inai.de>
+To: "Steffen Heil (Mailinglisten)" <lists@steffen-heil.de>, Jan Engelhardt <jengelh@inai.de>
 Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-------=_NextPart_000_0020_01CD347A.7FD2FA80
+------=_NextPart_000_0051_01CD347D.E2B76AC0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
-Hi again,
+BTW, if that helps, here is some information about my systems.
+(Ubuntu 12.04 LTS Precise Pangolin, currently virtual, 64bit, fully
+updated.)
 
 
-Lots of experiments later, but still no luck....
+root@vpn-a:~# iptables --version
+iptables v1.4.12
 
 
-> >> xt_esp generates debug output if you have "printk" sysctl set to show
-it.
-> >How would I do so? I never used sysctl for anything but enabling ip
-> >forwarding....
-> sysctl -w kernel.printk="7 7 7 7"
-
-I did. And I tried 
-# echo "7 7 7 7" > /proc/sys/kernel/printk
-
-Nothing appears on `dmesg`.
-Also I noticed that xt_esp was not loaded automatically. I had to load it
-using `insmod`. Still no output.
-But note, that I could not use -m esp --espspi either, see below.
+root@vpn-a:~# uname -a
+Linux vpn-a 3.2.0-24-virtual #37-Ubuntu SMP Wed Apr 25 10:17:19 UTC 2012
+x86_64 x86_64 x86_64 GNU/Linux
 
 
-> ># iptables -t mangle -A PREROUTING -p esp --spi 0xcdfebb11 -j MARK
-> >--set-mark 1 iptables v1.4.12: Gives: unknown option "--spi"
->  --espspi per manpage.
-
--m esp --espspi XXXXX
-Or
--m polixy --spi XXXXX --dir in
-
-The later does not match, but I cannot even get the former one to be
-accepted:
-
-# iptables -t mangle -D PREROUTING -p esp -m esp --espspi 0xcde0e1ca -j MARK
---set-mark 1
-iptables: No chain/target/match by that name.
-
-# iptables -t mangle -D PREROUTING -p esp --espspi 0xcde0e1ca -j MARK
---set-mark 1
-iptables: No chain/target/match by that name.
-
-# iptables -t mangle -D PREROUTING -m esp --espspi 0xcde0e1ca -j MARK
---set-mark 1
-iptables: No chain/target/match by that name.
-
-Is there a way to find out what's wrong here?
-
-
-> Why don't you try --espspi 0xc4b51d18 for a change, since that is (one
-value)
-> from those obtained from ip x s.
-
---espspi does not work at all - iptables complains, see above.
-Also, I tried  -m polixy --spi XXXX -dir in  for all spi codes I could find
-anywhere - it never matched..
-
-
-BTW: If matching the SPI is a problem, I would prefer matching reqid anyway.
-But for now it would suffice to match any of those.
-
-
-I am really stuck here. Any hints are still welcome.
-Also I would be glad, if I could chat with someone using msn messenger or
-mirc or anything. I could also provide ssh root access to these machines...
+root@vpn-a:~# lsmod
+Module                  Size  Used by
+xt_policy              12670  1
+xt_esp                 12529  0
+iptable_mangle         12734  1
+xt_mark                12563  2
+ip_tables              27473  1 iptable_mangle
+x_tables               29846  5
+xt_policy,xt_esp,iptable_mangle,xt_mark,ip_tables
+authenc                17582  2
+xfrm6_mode_tunnel      12639  2
+xfrm4_mode_tunnel      12639  4
+xfrm_user              31825  2
+xfrm4_tunnel           12779  0
+tunnel4                13213  1 xfrm4_tunnel
+ipcomp                 12673  0
+xfrm_ipcomp            13556  1 ipcomp
+esp4                   17061  2
+ah4                    12885  0
+deflate                12617  0
+zlib_deflate           27139  1 deflate
+ctr                    13201  0
+twofish_generic        16635  0
+twofish_x86_64_3way    25287  0
+twofish_x86_64         12867  1 twofish_x86_64_3way
+twofish_common         20919  3
+twofish_generic,twofish_x86_64_3way,twofish_x86_64
+camellia               29348  0
+serpent                29125  0
+blowfish_generic       12530  0
+blowfish_x86_64        21466  0
+blowfish_common        16699  2 blowfish_generic,blowfish_x86_64
+cast5                  25112  0
+des_generic            21415  0
+xcbc                   12815  0
+rmd160                 16744  0
+sha512_generic         12796  0
+crypto_null            12918  0
+af_key                 36389  0
+xfs                   836508  1
 
 
-Regards,
-   Steffen
-
-
-------=_NextPart_000_0020_01CD347A.7FD2FA80
+------=_NextPart_000_0051_01CD347D.E2B76AC0
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -196,8 +184,8 @@ JKE06wX/miKum30/8WVRCqYwarP0iByADfxyiuiDXjGCBB0wggQZAgEBMIGUMIGMMQswCQYDVQQG
 EwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2Vy
 dGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVy
 bWVkaWF0ZSBDbGllbnQgQ0ECAwKjHzAJBgUrDgMCGgUAoIICXTAYBgkqhkiG9w0BCQMxCwYJKoZI
-hvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xMjA1MTcyMDE0NTlaMCMGCSqGSIb3DQEJBDEWBBT9z5ZA
-wVthVi0mpjIxgVvrNdxWZjCBpQYJKwYBBAGCNxAEMYGXMIGUMIGMMQswCQYDVQQGEwJJTDEWMBQG
+hvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xMjA1MTcyMDM5MTRaMCMGCSqGSIb3DQEJBDEWBBQd6x1S
+FD2xDdjM3ZcvZkGcSTv+qzCBpQYJKwYBBAGCNxAEMYGXMIGUMIGMMQswCQYDVQQGEwJJTDEWMBQG
 A1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUg
 U2lnbmluZzE4MDYGA1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBD
 bGllbnQgQ0ECAwKjHzCBpwYLKoZIhvcNAQkQAgsxgZeggZQwgYwxCzAJBgNVBAYTAklMMRYwFAYD
@@ -206,11 +194,11 @@ aWduaW5nMTgwNgYDVQQDEy9TdGFydENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENs
 aWVudCBDQQIDAqMfMIGrBgkqhkiG9w0BCQ8xgZ0wgZowCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQB
 FjAKBggqhkiG9w0DBzALBglghkgBZQMEAQIwDgYIKoZIhvcNAwICAgCAMAcGBSsOAwIHMA0GCCqG
 SIb3DQMCAgFAMA0GCCqGSIb3DQMCAgEoMAcGBSsOAwIaMAsGCWCGSAFlAwQCAzALBglghkgBZQME
-AgIwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBALBKzLX/WM3EwQQARy9Qv0kXpuw9EFw3
-gSvFGWPsr5octqQlp0t7M3cmx+dLw14kjNP/ak8Fc4iil2gatStF/+lEdGGKkoAC52uK3LkfSfYR
-VamNCUDSdbMhjvIeTQPrBAomQonqgZi1vdTwFxHYlOuL92vuStPkyb0D0EitQWgkEIX28XQpzP7D
-SUT+Mb2YpnMa7JLa0Mneh7ukMoGDRhmZ7lbXNWsrIXMnqGChlKDkvmhILVTXmdfxHY5P8px8Y/H8
-d/p0RNl7VF3Ix/FShs7AbHsg5pi9teoQyvQeGzDzw7Nv0823YUm6R4V9H9+gbeAOBh5AtGA/YFRC
-FoZE5igAAAAAAAA=
+AgIwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBANIhirKLMCKFBXquMLjWNTq9SvuwEr6N
+TaP8Ny2T3tlS9SEQ+OsU8amXQDFAje4t0Jh8GMVkXfqwrNnoSoD4X6PHh6j3SMgt/KN05rLd8SFO
+R/bFpUT1skj/RthJvkm7wGC5HGSZ0o4rX5n73L5XURnoLqlkMw/7K/e8WgiE4oHhIMfribMC3wsA
+wYEy/0EgQiwpUWUSoj+/fdgmxPtzke8Zpcr1YmqboM2Xl/iZrmPn6zRbLfS0Yo8v25BEb47VDtTq
+tar+Nfpq0OH1jP+vJVpsTogaaaLycI3y4LThX74TtOdhUkMz/K7tj5xDlcurCZtzWXBI4kII1Fht
+O0ChrIoAAAAAAAA=
 
-------=_NextPart_000_0020_01CD347A.7FD2FA80--
+------=_NextPart_000_0051_01CD347D.E2B76AC0--
