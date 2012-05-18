@@ -1,89 +1,63 @@
 From: Arif Hossain <aftnix@gmail.com>
-Subject: RTP stats explaination
-Date: Fri, 18 May 2012 16:21:30 +0600
-Message-ID: <CAGuaRCvvUiFeVAR6fCtz28H7h4g+u7HnxGbo-3_eBLYk+CTjOA@mail.gmail.com>
+Subject: Sending packet bypassing iptables rules
+Date: Fri, 18 May 2012 17:54:35 +0600
+Message-ID: <CAGuaRCtHNggOyR_YY=W=ZH-_QkgwGWSWPea+rg8A_GFMXpoxYw@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-devel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=W1+5/tNVlS9uxOO+WMCns9MtVeAPFk9aNkXqgKTEMVU=;
-        b=Y1irYTkFRVGyKZ4cjHqVnawny3s9ruHOSRf6BVe2Aaj1h3t4+i8FFq+Ic+wY/nGogX
-         4/fnSKycKR1y3g43/v9hDY4tfbx3dJKNK0yS1WlRyBBj+4b2gDRUEjNGRaz7Sfm3ruAB
-         WSg2yNnWcX3ap28fp0OZbOIaT0WrZ3VQI8+D/JQE3pVEcsn5+EQq9ygcwToYAOH5T1YV
-         DuHPUBHk3ek5dEbqkDixrg/Hvfsw4+SBdTSTx+zw62lnjoygn3oPfLBcmBd4cjKxrzih
-         xYwT1C+zyd+wdqgg72PZOaN4Sslb/JlyvFiBduk791phTbkanluUjD42PU5K6Oqlzv3q
-         aL3w==
+        bh=uiIM6UzQ67CznFtRfi0Ync/Wman4Mtdu4GdUP6/W1xg=;
+        b=IdHbyzH/KtJRw59oDZZZdcRvvEd0cI2NDDRDKKnxppLRpY232a8XRiEy1LIb7sbASj
+         19hQIQszi+UJY6IuHYvKi8qpkCB78tO0Cn2I0Nl5CDg7uIQaoeFy44YuVjefd3Sz+H4a
+         RyajmyMkyNIS95OX5HsGfLHDh+YmtsIk9Z0dCXH3sF7KfA328f0S+b498t6oyMROu8a2
+         YF/kMjZCLa8v1WOwgwxIAtDgas/YInTNnT7BXi8m6PMpiapwVSAOIQ/RwJVwDigS3Aq8
+         rDTbU3mbIAHVqOBooR40aJGGhOP03JNuQFxQyDnDrR9xFtRLjeYtJeeH7ASuX5ZCqfbm
+         rhYg==
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: wireshark-users@wireshark.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, CentOS mailing list <centos@centos.org>, debian-user@lists.debian.org
+To: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA1
 
-Hi all,
-We are getting very poor quality of voice during testing of a new
-filtering application of us.
+Hi,
 
-The application receives packets from kernel using netfilter_queue
-library. Then insert the packets into a new user managed queue and
-does some transformations on it, like concatenation of udp payload.
+In my userspace app, i receive packets from NF_QUEUE. I manage a
+userspace queue to do some processing over the packets. So i have to
+set nfq_set_verdict(NF_DROP,.....). Now after the processing i need to
+send the packets to the destinations. But this time i need to send
+them such way so that they won't be caught in iptable rules.
 
-The network is healthy. Its inside our lab. And it does not drop
-packets or anything .
+What i have done for now is, i've set the dscp field of the IP packet
+. And added a rule $iptables -t mangle -A PREROUTING -m dscp --dscp 10
+-j ACCEPT before the rule which queues the packets. Then send the
+packet over raw socket.
 
-In our app we do not forward packet immediately. After enough packet
-received to increase rtp packetization time (ptime) the we forward the
-message over raw socket and set dscp to be 10 so that this time
-packets can escape iptable rules.
+May be because of my intensive traffic (Traffic is real time media
+data, so delays are fatal), the performance of my system is horrible.
+So i'm thinking how i can achieve a more efficient processing. One
+thing comes to my mind is the process i'm following for forwarding
+packet is not very efficient. So i'm thinking about how can i improve
+this.
 
-From client side the RTP stream analysis shows nearly every stream as
-problematic. summery for some streams are given below :
-
-Stream 1:
-
-Max delta = 1758.72 ms at packet no. 40506
-Max jitter = 231.07 ms. Mean jitter = 9.27 ms.
-Max skew = -2066.18 ms.
-Total RTP packets = 468   (expected 468)   Lost RTP packets = 0
-(0.00%)   Sequence errors = 0
-Duration 23.45 s (-22628 ms clock drift, corresponding to 281 Hz (-96.49%)
-
-Stream 2:
-
-Max delta = 1750.96 ms at packet no. 45453
-Max jitter = 230.90 ms. Mean jitter = 7.50 ms.
-Max skew = -2076.96 ms.
-Total RTP packets = 468   (expected 468)   Lost RTP packets = 0
-(0.00%)   Sequence errors = 0
-Duration 23.46 s (-22715 ms clock drift, corresponding to 253 Hz (-96.84%)
-
-Stream 3:
-
-Max delta = 71.47 ms at packet no. 25009
-Max jitter = 6.05 ms. Mean jitter = 2.33 ms.
-Max skew = -29.09 ms.
-Total RTP packets = 258   (expected 258)   Lost RTP packets = 0
-(0.00%)   Sequence errors = 0
-Duration 10.28 s (-10181 ms clock drift, corresponding to 76 Hz (-99.05%)
-
-Any idea where should we look for the problem?
-
+Thanks in advance.
 
 - --
 - -aft
+
 -----BEGIN PGP SIGNATURE-----
 Version: OpenPGP.js v0.1
 Comment: http://openpgpjs.org
 
-wsBcBAEBAgAQBQJPtiJ7CRCJVJ6A/SK8awAAHJgH/jRURuZWygqJTX7zafjK
-807MvWxODhtw2p4ZLg+sCNJ0OpZlV5GftPKwH9XB4GfUKhmTPfCZ3n8vF6PU
-nWKMdBDM3D/K+DktpiGuAK90A5lwniFptN8DGt/ltqdAaSAlGbz1E6LGGdlw
-1w/6lPeO3J9HKpkNQA2nfn3q/s5ZHQiYoGvgFofkm85LBSYgyn4b7YDY7qnp
-wtsGkSR1h66+q37Hb+1iZyWrHj26YJ+sNRBe8GzKdEccwrKMX1gJFNl5BBfl
-frGsZ3Y02cSYFg5L1vVstl8F/yTz8JXTGk6yKbtA0N+TRhI7gIJ/VItm1SJt
-JcF94ylPjIWiw9Iacv8ec88=
-=jiIm
+wsBcBAEBAgAQBQJPtjhtCRCJVJ6A/SK8awAALMcH/jZdX3CUBl1Z9icSdBEL
+94ZSkh7QMO90xw3XRSv6L2e9QsVDrW2WLVIyqsiYoNdgUiwGgko4Q1o0Q49S
+S0xtYlF4kyXPDNVDZ+Hurdx2Clnyk7J7BhXTPQ/DikMmKjFSSDuM+8wmuE/B
+sBeM1Df+66eZVqJDKwkuKOubgfHCq3fx/iRFld+vwkDpDqqEZVr+mJwbrbea
+qWCyohJQUHAXPQvm/yIgay4A4ISqd9IR7lSw41l/uap5ywSm6o5T7h9JLPOe
+QeWK4oKmNbRgRVXynhmOR7SuiT0RXMQxTeLqCZUw67aLWSspoiDbNFY95c44
+gSh3iuZG/wn4iYG0U9n539A=
+=42Ja
 -----END PGP SIGNATURE-----
