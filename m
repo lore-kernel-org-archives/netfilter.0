@@ -1,57 +1,212 @@
 From: "Steffen Heil (Mailinglisten)" <lists@steffen-heil.de>
-Subject: RE: AW: How to mark packet by reqid?
-Date: Sat, 19 May 2012 11:33:03 +0000
-Message-ID: <EDD810CD654E254F90731B425DE8AA6F106B5A76@dc2008r2.sh-solutions.intern>
-References: <EDD810CD654E254F90731B425DE8AA6F106B555B@dc2008r2.sh-solutions.intern>
- <alpine.LNX.2.01.1205160116330.17751@frira.zrqbmnf.qr>
- <EDD810CD654E254F90731B425DE8AA6F106B55B1@dc2008r2.sh-solutions.intern>
- <alpine.LNX.2.01.1205160843250.23441@frira.zrqbmnf.qr>
+Subject: Packet dropped without reason
+Date: Sat, 19 May 2012 19:12:22 +0000
+Message-ID: <EDD810CD654E254F90731B425DE8AA6F106B5ADC@dc2008r2.sh-solutions.intern>
 Mime-Version: 1.0
 Content-Type: multipart/signed; protocol="application/x-pkcs7-signature";
-	micalg=SHA1; boundary="----=_NextPart_000_0048_01CD35C3.F0378E40"
+	micalg=SHA1; boundary="----=_NextPart_000_0008_01CD3604.1A9A47A0"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1205160843250.23441@frira.zrqbmnf.qr>
 Content-Language: de-DE
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Jan Engelhardt <jengelh@inai.de>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-------=_NextPart_000_0048_01CD35C3.F0378E40
+------=_NextPart_000_0008_01CD3604.1A9A47A0
 Content-Type: text/plain;
 	charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 
 Hi
 
-First of all, sorry for the previous posts. After taking some time off and
-giving this a fresh look, I realized I did not only do some copy and paste
-errors for these mails, but also my focus for the correct matching
-conditions was that fixed, that I totally overlooked having "-D" instead of
-"-A" in some of my commands. Obviously they didn't work...
+I follow a ping through my gateway with log-commands at the end of each
+chain:
 
-My sincere apologies for that.
 
-Now, I got the following working:
+Receiving a echo request on eth1 and forwarding it encrypted to a gateway on
+eth0 works as expected:
+(Although nat_OUTPUT is missing between step 9 and 10 and nat_POSTROUTING is
+missing after step 11 compared to http://inai.de/images/nf-packet-flow.png,
+but I expect this to be correct, as I do not use nat.)
 
-iptables -t mangle -A PREROUTING --proto esp -m esp --espspi 0xc522b7f3 -j
-MARK --set-mark 1
+1. May 19 18:58:11 vpn-a kernel: [ 4396.217687] raw_PREROUTING: IN=eth1 OUT=
+MAC=00:16:3e:0f:01:01:00:16:3e:0f:03:00:08:00 SRC=10.1.1.2 DST=10.2.1.2
+LEN=84 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=ICMP TYPE=8 CODE=0 ID=41230
+SEQ=1
 
-I tried to transform that to 
+2. May 19 18:58:11 vpn-a kernel: [ 4396.217702] mangle_PREROUTING: IN=eth1
+OUT= MAC=00:16:3e:0f:01:01:00:16:3e:0f:03:00:08:00 SRC=10.1.1.2 DST=10.2.1.2
+LEN=84 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=ICMP TYPE=8 CODE=0 ID=41230
+SEQ=1 MARK=0x1
 
-iptables -t mangle -A PREROUTING --proto esp -m policy --spi 0xc522b7f3 -j
-MARK --dir in --set-mark 1
+3. May 19 18:58:11 vpn-a kernel: [ 4396.217710] nat_PREROUTING: IN=eth1 OUT=
+MAC=00:16:3e:0f:01:01:00:16:3e:0f:03:00:08:00 SRC=10.1.1.2 DST=10.2.1.2
+LEN=84 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=ICMP TYPE=8 CODE=0 ID=41230
+SEQ=1 MARK=0x1
 
-But then it does not work anymore. Is there any fundamental difference
-between those conditions that I do not understand?
-Note: My original target was to use reqid instead of spi, because I can fix
-the reqid and the filewall rules should be independent of IKE...
+4. May 19 18:58:11 vpn-a kernel: [ 4396.217725] mangle_FORWARD: IN=eth1
+OUT=eth0 MAC=00:16:3e:0f:01:01:00:16:3e:0f:03:00:08:00 SRC=10.1.1.2
+DST=10.2.1.2 LEN=84 TOS=0x00 PREC=0x00 TTL=63 ID=0 DF PROTO=ICMP TYPE=8
+CODE=0 ID=41230 SEQ=1 MARK=0x1
 
-Regards,
+5. May 19 18:58:11 vpn-a kernel: [ 4396.217732] filter_FORWARD: IN=eth1
+OUT=eth0 MAC=00:16:3e:0f:01:01:00:16:3e:0f:03:00:08:00 SRC=10.1.1.2
+DST=10.2.1.2 LEN=84 TOS=0x00 PREC=0x00 TTL=63 ID=0 DF PROTO=ICMP TYPE=8
+CODE=0 ID=41230 SEQ=1 MARK=0x1
+
+6. May 19 18:58:11 vpn-a kernel: [ 4396.217739] mangle_POSTROUTING: IN=
+OUT=eth0 SRC=10.1.1.2 DST=10.2.1.2 LEN=84 TOS=0x00 PREC=0x00 TTL=63 ID=0 DF
+PROTO=ICMP TYPE=8 CODE=0 ID=41230 SEQ=1 MARK=0x1
+
+7. May 19 18:58:11 vpn-a kernel: [ 4396.217744] nat_POSTROUTING: IN=
+OUT=eth0 SRC=10.1.1.2 DST=10.2.1.2 LEN=84 TOS=0x00 PREC=0x00 TTL=63 ID=0 DF
+PROTO=ICMP TYPE=8 CODE=0 ID=41230 SEQ=1 MARK=0x1
+
+8. May 19 18:58:11 vpn-a kernel: [ 4396.217769] raw_OUTPUT: IN= OUT=eth0
+SRC=10.5.0.1 DST=10.5.0.2 LEN=152 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF
+PROTO=ESP SPI=0xc509ff52 MARK=0x1
+
+9. May 19 18:58:11 vpn-a kernel: [ 4396.217776] mangle_OUTPUT: IN= OUT=eth0
+SRC=10.5.0.1 DST=10.5.0.2 LEN=152 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF
+PROTO=ESP SPI=0xc509ff52 MARK=0x1
+
+10. May 19 18:58:11 vpn-a kernel: [ 4396.217781] filter_OUTPUT: IN= OUT=eth0
+SRC=10.5.0.1 DST=10.5.0.2 LEN=152 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF
+PROTO=ESP SPI=0xc509ff52 MARK=0x1
+
+11. May 19 18:58:11 vpn-a kernel: [ 4396.217786] mangle_POSTROUTING: IN=
+OUT=eth0 SRC=10.5.0.1 DST=10.5.0.2 LEN=152 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF
+PROTO=ESP SPI=0xc509ff52 MARK=0x1
+
+
+Receiving the encrypted echo reply on eth0 and decrypting it works as well,
+but it does not get forwarded as expected:
+(nat_PREROUTING is missing between steps 2 and 3 compared to
+http://inai.de/images/nf-packet-flow.png, but again, I don't use nat so I
+think this is correct.)
+
+1. May 19 18:58:11 vpn-a kernel: [ 4396.218074] raw_PREROUTING: IN=eth0 OUT=
+MAC=00:16:3e:0f:01:00:00:16:3e:0f:02:00:08:00 SRC=10.5.0.2 DST=10.5.0.1
+LEN=152 TOS=0x00 PREC=0x00 TTL=64 ID=5897 PROTO=ESP SPI=0xc0321da6
+
+2. May 19 18:58:11 vpn-a kernel: [ 4396.218082] mangle_PREROUTING: IN=eth0
+OUT= MAC=00:16:3e:0f:01:00:00:16:3e:0f:02:00:08:00 SRC=10.5.0.2 DST=10.5.0.1
+LEN=152 TOS=0x00 PREC=0x00 TTL=64 ID=5897 PROTO=ESP SPI=0xc0321da6 MARK=0x1
+
+3. May 19 18:58:11 vpn-a kernel: [ 4396.218090] mangle_INPUT: IN=eth0 OUT=
+MAC=00:16:3e:0f:01:00:00:16:3e:0f:02:00:08:00 SRC=10.5.0.2 DST=10.5.0.1
+LEN=152 TOS=0x00 PREC=0x00 TTL=64 ID=5897 PROTO=ESP SPI=0xc0321da6 MARK=0x1
+
+4. May 19 18:58:11 vpn-a kernel: [ 4396.218097] filter_INPUT: IN=eth0 OUT=
+MAC=00:16:3e:0f:01:00:00:16:3e:0f:02:00:08:00 SRC=10.5.0.2 DST=10.5.0.1
+LEN=152 TOS=0x00 PREC=0x00 TTL=64 ID=5897 PROTO=ESP SPI=0xc0321da6 MARK=0x1
+
+5. May 19 18:58:11 vpn-a kernel: [ 4396.218120] raw_PREROUTING: IN=eth0 OUT=
+MAC=00:16:3e:0f:01:00:00:16:3e:0f:02:00:08:00 SRC=10.2.1.2 DST=10.1.1.2
+LEN=84 TOS=0x00 PREC=0x00 TTL=63 ID=60912 PROTO=ICMP TYPE=0 CODE=0 ID=41230
+SEQ=1
+
+6. May 19 18:58:11 vpn-a kernel: [ 4396.218129] mangle_PREROUTING: IN=eth0
+OUT= MAC=00:16:3e:0f:01:00:00:16:3e:0f:02:00:08:00 SRC=10.2.1.2 DST=10.1.1.2
+LEN=84 TOS=0x00 PREC=0x00 TTL=63 ID=60912 PROTO=ICMP TYPE=0 CODE=0 ID=41230
+SEQ=1
+
+But that's all. It never reaches mangle_FORWARD as expected.
+
+
+My setup is below.
+I don't understand why that packet does not get routed...
+Can someone here tell me why?
+
+Best regards,
   Steffen
 
 
-------=_NextPart_000_0048_01CD35C3.F0378E40
+
+# ip rule list
+0:      from all lookup local
+1:      from all fwmark 0x1 lookup 100
+220:    from all lookup 220
+32766:  from all lookup main
+32767:  from all lookup default
+
+# ip route list table 100
+default via 10.5.0.2 dev eth0  proto static  src 10.1.1.1
+
+# ip route list table 220
+(empty)
+4
+# ip route list
+default via 192.168.178.100 dev eth3
+10.1.1.0/24 dev eth1  proto kernel  scope link  src 10.1.1.1
+10.1.2.0/24 dev eth2  proto kernel  scope link  src 10.1.2.1
+10.5.0.0/24 dev eth0  proto kernel  scope link  src 10.5.0.1
+192.168.178.0/24 dev eth3  proto kernel  scope link  src 192.168.178.1
+
+iptables (all chains ACCEPT) has only these rules (except for logging at the
+end):
+-t raw -A PREROUTING -j MARK --set-xmark 0x0/0xffffffff
+-t mangle -A PREROUTING -s 10.1.1.0/24 -d 10.2.1.0/24 -j MARK --set-xmark
+0x1/0xffffffff
+-t mangle -A PREROUTING -p esp -j MARK --set-xmark 0x1/0xffffffff
+
+# ip x s
+src 10.5.0.1 dst 10.5.0.2
+        proto esp spi 0xc509ff52 reqid 1 mode tunnel
+        replay-window 32 flag af-unspec
+        mark 1/0xffffffff
+        auth-trunc hmac(sha1) 0xfb8cd76020e5bd6e78134961052af497cfbe819e 96
+        enc cbc(aes) 0xbd46ce27cadc3f34930c39bd9abd5eb1
+src 10.5.0.2 dst 10.5.0.1
+        proto esp spi 0xc0321da6 reqid 1 mode tunnel
+        replay-window 32 flag af-unspec
+        mark 1/0xffffffff
+        auth-trunc hmac(sha1) 0xebda4251938915491005779d63e31f4d0a42c34a 96
+        enc cbc(aes) 0x48611761f98b6f260ce6db52923bd183
+
+# ip x p
+src 10.2.1.0/24 dst 10.1.1.0/24
+        dir fwd priority 1859
+        mark 1/0xffffffff
+        tmpl src 10.5.0.2 dst 10.5.0.1
+                proto esp reqid 1 mode tunnel
+src 10.2.1.0/24 dst 10.1.1.0/24
+        dir in priority 1859
+        mark 1/0xffffffff
+        tmpl src 10.5.0.2 dst 10.5.0.1
+                proto esp reqid 1 mode tunnel
+src 10.1.1.0/24 dst 10.2.1.0/24
+        dir out priority 1859
+        mark 1/0xffffffff
+        tmpl src 10.5.0.1 dst 10.5.0.2
+                proto esp reqid 1 mode tunnel
+src ::/0 dst ::/0
+        socket in priority 0
+src ::/0 dst ::/0
+        socket out priority 0
+src ::/0 dst ::/0
+        socket in priority 0
+src ::/0 dst ::/0
+        socket out priority 0
+src ::/0 dst ::/0
+        socket in priority 0
+src ::/0 dst ::/0
+        socket out priority 0
+src 0.0.0.0/0 dst 0.0.0.0/0
+        socket in priority 0
+src 0.0.0.0/0 dst 0.0.0.0/0
+        socket out priority 0
+src 0.0.0.0/0 dst 0.0.0.0/0
+        socket in priority 0
+src 0.0.0.0/0 dst 0.0.0.0/0
+        socket out priority 0
+src 0.0.0.0/0 dst 0.0.0.0/0
+        socket in priority 0
+src 0.0.0.0/0 dst 0.0.0.0/0
+        socket out priority 0
+
+
+
+------=_NextPart_000_0008_01CD3604.1A9A47A0
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Transfer-Encoding: base64
 Content-Disposition: attachment; filename="smime.p7s"
@@ -156,8 +311,8 @@ JKE06wX/miKum30/8WVRCqYwarP0iByADfxyiuiDXjGCBB0wggQZAgEBMIGUMIGMMQswCQYDVQQG
 EwJJTDEWMBQGA1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2Vy
 dGlmaWNhdGUgU2lnbmluZzE4MDYGA1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVy
 bWVkaWF0ZSBDbGllbnQgQ0ECAwKjHzAJBgUrDgMCGgUAoIICXTAYBgkqhkiG9w0BCQMxCwYJKoZI
-hvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xMjA1MTkxMTMzMTJaMCMGCSqGSIb3DQEJBDEWBBSJKgN2
-m1ZrDSruwqACFQ8u2OPWeDCBpQYJKwYBBAGCNxAEMYGXMIGUMIGMMQswCQYDVQQGEwJJTDEWMBQG
+hvcNAQcBMBwGCSqGSIb3DQEJBTEPFw0xMjA1MTkxOTEyMzFaMCMGCSqGSIb3DQEJBDEWBBRno3dY
+iHAj0kR45v8dOD1+z7zyNDCBpQYJKwYBBAGCNxAEMYGXMIGUMIGMMQswCQYDVQQGEwJJTDEWMBQG
 A1UEChMNU3RhcnRDb20gTHRkLjErMCkGA1UECxMiU2VjdXJlIERpZ2l0YWwgQ2VydGlmaWNhdGUg
 U2lnbmluZzE4MDYGA1UEAxMvU3RhcnRDb20gQ2xhc3MgMSBQcmltYXJ5IEludGVybWVkaWF0ZSBD
 bGllbnQgQ0ECAwKjHzCBpwYLKoZIhvcNAQkQAgsxgZeggZQwgYwxCzAJBgNVBAYTAklMMRYwFAYD
@@ -166,11 +321,11 @@ aWduaW5nMTgwNgYDVQQDEy9TdGFydENvbSBDbGFzcyAxIFByaW1hcnkgSW50ZXJtZWRpYXRlIENs
 aWVudCBDQQIDAqMfMIGrBgkqhkiG9w0BCQ8xgZ0wgZowCwYJYIZIAWUDBAEqMAsGCWCGSAFlAwQB
 FjAKBggqhkiG9w0DBzALBglghkgBZQMEAQIwDgYIKoZIhvcNAwICAgCAMAcGBSsOAwIHMA0GCCqG
 SIb3DQMCAgFAMA0GCCqGSIb3DQMCAgEoMAcGBSsOAwIaMAsGCWCGSAFlAwQCAzALBglghkgBZQME
-AgIwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAHkXlf5ehX+7q+LyzBhZQH5+Dzw6Ybjx
-6MzjRBO36nQtYNdvrqS6MKsxkvE7t3Ih4zOrurhYEZfEPugIbMWk+2AoRPT0GA/KRRhz3QhWKw9n
-gTKcvyiM4pkDOiWDsif0fEn8UGGFqfet8uXebhzDjk3LOm4VlG9NQtBOHpTkxnSYebPGf5hIsQMt
-xJ7Cu2SjMBOMn7LPPnHbn9qCBJut1aC+2NvdgFIwg8KBSws18Dr0Mb0CUXKfb9mJ+JWXtIoor+L2
-kQ7nhyCTIRy0NzldyBQumiGhbGKIkz5WbnQf0xquz2Avt4AZ0xxQ2moResxM6AMJLcm5cCcw8QVN
-5IQus6gAAAAAAAA=
+AgIwCwYJYIZIAWUDBAIBMA0GCSqGSIb3DQEBAQUABIIBAJ/Obw4TzKg9oEtC6OVx2XRFGTfrJ+oV
+MdtOWMAfGeZjuk4uuW2Z3otZoK2SsLb/MD/bwD8C8aM7Xmr06LN/eJsfzvvfsVtVyavXFm4ryf9x
+YvocoSnSp4jjSD7KMVNv09+ItShroHsDUfW6DZlTL7y0TlUNYPxWfBflupZ3U99ZyGAUx68EMj2E
+nsanq5ACkbr2HvLIkjD5pzziJ4T/LmHWjM96+icoPmKmHpq3jWiiheN3XHe39ZTkRyDFCLdVxzOu
+KmUmI2VrXIcJwrnxZHTC7vQ/fikl76hzf19EyOHtIA1GzA8E4CMyY773g26hpLAP6++LryjS4+Pf
+q7bmaVIAAAAAAAA=
 
-------=_NextPart_000_0048_01CD35C3.F0378E40--
+------=_NextPart_000_0008_01CD3604.1A9A47A0--
