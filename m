@@ -1,33 +1,31 @@
-From: Eric Petit <eric@lapsus.org>
-Subject: connlimit and rejected connections staying in conntrack table
-Date: Wed, 23 May 2012 17:29:46 +0200
-Message-ID: <3558CE94-A347-48A9-8F5F-D10D51390681@lapsus.org>
-Mime-Version: 1.0 (Apple Message framework v1084)
-Content-Transfer-Encoding: 8BIT
+From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
+Subject: 'swap table' feature
+Date: Wed, 23 May 2012 17:25:58 -0400
+Message-ID: <201205231725.58158.neal.p.murphy@alum.wpi.edu>
+Reply-To: neal.p.murphy@alum.wpi.edu
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hello,
+I knew I'd eventually remember why I subscribed to this list....
 
-I am trying to limit the total number of concurrent connections that may be established on a given port. I need additional connection attempts to be explicitly rejected, so I went for something like:
+While working on enhancing my firewall, it occurred to me that it'd be real 
+nice to have a 'swap chain' feature in iptables that is equivalent to the 
+'swap set' feature in ipset.
 
-iptables -P INPUT DROP
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-iptables -A INPUT -p tcp --dport 80 -m connlimit --connlimit-above 512 --connlimit-mask 0 -j REJECT
-iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+Such a feature would minimize the amount of time that rules are unavailable 
+when adding, changing or deleting them. At present, all the rules in the chain 
+being modified are deleted, then the new rules are added. So there is a period 
+of time, albeit brief, that rules are not available in that chain.
 
-My problem is, when the limit is reached and new connections are rejected, those stay in the conntrack table in a SYN_SENT / UNREPLIED state, and are only cleaned up after 120 seconds (ip_conntrack_tcp_timeout_syn_sent). As such, they are accounted for as active connections by connlimit, and new connections keep being rejected even though the number of established connections is, in fact, lower than the limit that I set. If connections keep coming in at a fast pace, it may just never accept a connection again. I've tried "--reject-with tcp-reset" and the behavior was the same.
-
-Would there be a way to work around it? I was hoping RESET'ed connections would not cause an entry to exist in the conntrack table at all (as if I did a DROP). Otherwise, connlimit would have to know somehow that those are dead connections. Lowering tcp_timeout_syn_sent mitigates the problem, but isn't a definitive solution.
-
-Version details (Debian Squeeze):
-Linux 2.6.32-5-amd64
-iptables v1.4.8
+Were there a 'swap chain' command, one could build a new chain of the changed 
+rules, swap the new and old chains, then flush and delete the new (now old) 
+chain. This would all but guarantee that no packets 'slip by' (are 
+overlooked).
 
 Thanks,
-
--- 
-Eric
+N
