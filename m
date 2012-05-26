@@ -1,35 +1,67 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: connlimit and rejected connections staying in conntrack table
-Date: Fri, 25 May 2012 11:53:32 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1205251153080.24419@frira.zrqbmnf.qr>
-References: <3558CE94-A347-48A9-8F5F-D10D51390681@lapsus.org> <83E58892-1E4E-4209-897B-88F42D739EDF@lapsus.org>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnetfilter_cttimeout 1.0.0 release
+Date: Sat, 26 May 2012 20:03:17 +0200
+Message-ID: <20120526180317.GA31938@1984>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <83E58892-1E4E-4209-897B-88F42D739EDF@lapsus.org>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="Qxx1br4bt0+wmkIi"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Eric Petit <eric@lapsus.org>
-Cc: netfilter@vger.kernel.org
+To: netfilter-devel@vger.kernel.org
+Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
-On Friday 2012-05-25 11:50, Eric Petit wrote:
 
->On May 23, 2012, at 5:29 PM, Eric Petit wrote:
->> I am trying to limit the total number of concurrent connections that may be established on a given port. I need additional connection attempts to be explicitly rejected, so I went for something like:
->> 
->> iptables -P INPUT DROP
->> iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->> iptables -A INPUT -p tcp --dport 80 -m connlimit --connlimit-above 512 --connlimit-mask 0 -j REJECT
->> iptables -A INPUT -p tcp --dport 80 -j ACCEPT
->> 
->> My problem is, when the limit is reached and new connections are rejected, those stay in the conntrack table in a SYN_SENT / UNREPLIED state, and are only cleaned up after 120 seconds (ip_conntrack_tcp_timeout_syn_sent). As such, they are accounted for as active connections by connlimit, and new connections keep being rejected even though the number of established connections is, in fact, lower than the limit that I set. If connections keep coming in at a fast pace, it may just never accept a connection again. I've tried "--reject-with tcp-reset" and the behavior was the same.
->
->Finally figured this out - those conntrack entries weren't, in fact 
->related to connlimit rejecting connections. The SYNs were unreplied 
->because SYN flood protection kicked in when I tested by throwing lots 
->of connections at it. I have enabled SYN cookies and things are now 
->working as expected.
+--Qxx1br4bt0+wmkIi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Odd, because I could reproduce what you described (with as few as 3..5 
-connections).
+Hi!
+
+The Netfilter project proudly presents:
+
+        libnetfilter_cttimeout 1.0.0
+
+libnetfilter_cttimeout is the userspace library that provides the
+programming interface to the fine-grain connection tracking timeout
+infrastructure. With this library, you can create, update and delete
+timeout policies that can be attached to traffic flows. This library
+is used by conntrack-tools.
+
+To use this library, you require a Linux kernel >= 3.4.0.
+
+See ChangeLog that comes attached to this email for more details.
+
+You can download it from:
+
+http://www.netfilter.org/projects/libnetfilter_cttimeout/downloads.html
+ftp://ftp.netfilter.org/pub/libnetfilter_cttimeout/
+
+Have fun!
+
+--Qxx1br4bt0+wmkIi
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="changes-libnetfilter_cttimeout-1.0.0.txt"
+
+Jan Engelhardt (6):
+      Add .gitignore
+      const-ify static data objects
+      Add stdint header and type corrections
+      Properly NUL-terminate name in nfct_timeout_attr_set
+      const-ify arguments of functions
+      Add extern "C" guard for C++ compilation mode
+
+Pablo Neira Ayuso (11):
+      initial commit
+      add README file
+      This library is licensed under GPLv2+
+      Merge branch 'master' of git://dev.medozas.de/libnetfilter_cttimeout
+      add nfct_timeout_policy_attr_to_name(state_attr)
+      don't add CTA_TIMEOUT_DATA nest if no policy attributes are present
+      add missing ICMPv6 support
+      src: improvements for the doxygen documentation
+      src: add new parameter type to nfct_timeout_snprintf
+      src: more minor improvements for the doxygen documentation
+      build: fix broken Makefile.am in include/linux/
+
+--Qxx1br4bt0+wmkIi--
