@@ -1,41 +1,36 @@
-From: spiro@snacorp.net
-Subject: Re: [PATCH 1/2] nfct-extensions/timeout: adjust for changed	nfct_timeout_snprintf API
-Date: Sun, 27 May 2012 02:35:03 +0000
-Message-ID: <1197458793-1338086100-cardhu_decombobulator_blackberry.rim.net-65961234-@b2.c20.bise6.blackberry>
-References: <20120526180654.GB31938@1984>
- 	<1338058955-5789-1-git-send-email-jengelh@inai.de>
- 	<1338058955-5789-2-git-send-email-jengelh@inai.de>
-  <20120526202105.GB452@1984>
-Reply-To: spiro@snacorp.net
+From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
+Subject: Re: 'swap table' feature
+Date: Sun, 27 May 2012 14:03:36 -0400
+Message-ID: <201205271403.36372.neal.p.murphy@alum.wpi.edu>
+References: <201205231725.58158.neal.p.murphy@alum.wpi.edu> <alpine.LNX.2.01.1205232352360.9230@frira.zrqbmnf.qr>
+Reply-To: neal.p.murphy@alum.wpi.edu
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20120526202105.GB452@1984>
-Sender: netdev-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.01.1205232352360.9230@frira.zrqbmnf.qr>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter-announce-bounces@lists.netfilter.org, Jan Engelhardt <jengelh@inai.de>
-Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter-announce@lists.netfilter.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-cmVtb3ZlIG1lIGZyb20gdGhpcyBsaXN0IGFuZCB5b3VyIGxpc3RzDQpTZW50IHZpYSBCbGFja0Jl
-cnJ5IGZyb20gVC1Nb2JpbGUNCg0KLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCkZyb206IFBh
-YmxvIE5laXJhIEF5dXNvIDxwYWJsb0BuZXRmaWx0ZXIub3JnPg0KU2VuZGVyOiBuZXRmaWx0ZXIt
-YW5ub3VuY2UtYm91bmNlc0BsaXN0cy5uZXRmaWx0ZXIub3JnDQpEYXRlOiBTYXQsIDI2IE1heSAy
-MDEyIDIyOjIxOjA1IA0KVG86IEphbiBFbmdlbGhhcmR0PGplbmdlbGhAaW5haS5kZT4NCkNjOiA8
-bmV0ZGV2QHZnZXIua2VybmVsLm9yZz47IDxuZXRmaWx0ZXJAdmdlci5rZXJuZWwub3JnPjsgPG5l
-dGZpbHRlci1kZXZlbEB2Z2VyLmtlcm5lbC5vcmc+OyA8bmV0ZmlsdGVyLWFubm91bmNlQGxpc3Rz
-Lm5ldGZpbHRlci5vcmc+DQpTdWJqZWN0OiBSZTogW1BBVENIIDEvMl0gbmZjdC1leHRlbnNpb25z
-L3RpbWVvdXQ6IGFkanVzdCBmb3IgY2hhbmdlZA0KCW5mY3RfdGltZW91dF9zbnByaW50ZiBBUEkN
-Cg0KT24gU2F0LCBNYXkgMjYsIDIwMTIgYXQgMDk6MDI6MzRQTSArMDIwMCwgSmFuIEVuZ2VsaGFy
-ZHQgd3JvdGU6DQo+IERlc3BpdGUgcmVxdWlyaW5nIGxpYm5ldGZpbHRlcl9jdHRpbWVvdXQgPj0g
-MS4wLjAsIGl0IGRpZCBub3QNCj4gdXNlIHRoZSBuZXcgQVBJLg0KPiANCj4gbmZjdC1leHRlbnNp
-b25zL3RpbWVvdXQuYzogSW4gZnVuY3Rpb24gJ25mY3RfdGltZW91dF9jYic6DQo+IG5mY3QtZXh0
-ZW5zaW9ucy90aW1lb3V0LmM6OTk6MjogZXJyb3I6IHRvbyBmZXcgYXJndW1lbnRzIHRvIGZ1bmN0
-aW9uDQo+IAknbmZjdF90aW1lb3V0X3NucHJpbnRmJw0KPiBJbiBmaWxlIGluY2x1ZGVkIGZyb20g
-bmZjdC1leHRlbnNpb25zL3RpbWVvdXQuYzoyNjowOg0KPiAvdXNyL2luY2x1ZGUvbGlibmV0Zmls
-dGVyX2N0dGltZW91dC0xLjAuMC9saWJuZXRmaWx0ZXJfY3R0aW1lb3V0Lw0KPiAJbGlibmV0Zmls
-dGVyX2N0dGltZW91dC5oOjExNDo1OiBub3RlOiBkZWNsYXJlZCBoZXJlDQo+IA0KPiAxMTQ6IGlu
-dCBuZmN0X3RpbWVvdXRfc25wcmludGYoY2hhciAqYnVmLCBzaXplX3Qgc2l6ZSwNCj4gCWNvbnN0
-IHN0cnVjdCBuZmN0X3RpbWVvdXQgKiwgdW5zaWduZWQgaW50IHR5cGUsIHVuc2lnbmVkIGludCBm
-bGFncyk7DQoNCldlIG5vdGljZWQgYXQgdGhlIHNhbWUgdGltZS4NCg0KSXQncyBmaXhlZCBub3cs
-IGFuZCBjb25udHJhY2stdG9vbHMgMS4yLjEgaXMgb3V0LiBUaGFua3MhDQoNCg==
+On Wednesday 23 May 2012 17:53:39 Jan Engelhardt wrote:
+> What, never heard of iptables-restore? Atomic replace has been in
+> iptables since a long long time.
+
+Yes, now that a few more neurons have fired, I experimented with iptables-
+restore a while back.
+
+I tested iptables-restore alongside Smoothwall/Roadster's ipbatch (custom 
+libiptc interface). I don't recall the system details exactly; the kernel 
+would've been around 2.6.32 and iptables would've been around 1.4.8. SWE3's 
+ipbatch program was generally 5% faster than iptables-restore. Nothing to 
+write home about. The bigger deal was that both programs exhibited errors when 
+I applied more than 14k-25k rules without a commit. As long as there was a 
+commit every 14k-25k rules, I could enter well over 250k rules; IIRC, I 
+entered more than 1M rules a time or two.
+
+Granted, not many systems have more than 14k rules. And I haven't tested newer 
+versions of the software since. But I believe that 14k-25k limit was enough to 
+prevent a larger table from being atomically replaced.
+
+N
