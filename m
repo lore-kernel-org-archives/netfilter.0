@@ -1,104 +1,120 @@
-From: miao hongbing <miao_hb@hotmail.com>
-Subject: RE: Ask an issue about how can I let netfilter-nat work normally,
- thanks
-Date: Thu, 31 May 2012 11:59:07 +0000
-Message-ID: <BAY146-W5A2226B7A9B278ED0F27A900B0@phx.gbl>
-References: <BAY146-W327D42337C6D284F3060A6900A0@phx.gbl>,<CACuyg24uZuUda3xEGD1bAVspH1WALoZ9ma+E0UbsNDb8V6Rxvg@mail.gmail.com>,<BAY146-W53DA36C0BC4E3B216E4365900B0@phx.gbl>
+From: kenxin lau <liuqixing2005@gmail.com>
+Subject: A bug of netfilter with IPSEC ?
+Date: Thu, 31 May 2012 21:44:28 +0800
+Message-ID: <CAGdXrHO_-xUZOt6mafcwGdMtaHQynO_a8QfkS5FufHO38AUvXw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BAY146-W53DA36C0BC4E3B216E4365900B0@phx.gbl>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=Vx6srocSUW1rVEzMS+K35Mg+qRogztfni8KpmQJgnlY=;
+        b=TtjEjd/WQBOICnYVpiDJ+FhF9SZRmtwwHwlElLdKJiJRt7vHWjk0q/KYZ3IclfyVpO
+         uhLh7zEZ31x0IVl+Xw2qa03Ff+7oTqjiBKZ/HTnrN6hl3u/ghFy0w2Yk3mOZFU1YFMJV
+         fHldyiG9KgXidkzWdvlDXVNVM6H4iJQ5EbCpjx5hOIA2bOQfYAK0pXB9NFz3vw+e6Lz4
+         5yNUNnlnXvqDFQ2LE6UJ5QKToLEpUObPqYGcsPNrcpZxvxpHlHc4j/dS678Ukbf/GWBE
+         JVEFJDm5LBPFfq6dPT3StixB3JwDtD6BQHj8dDyV5uAfNDLI4dOWOh9IU3kzasqtRpXn
+         GKIA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: betolj@gmail.com
-Cc: netfilter@vger.kernel.org
-
-
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
 Hi,
 
-Below is my log:
-" iptables -t nat -nL -v" in my router debug board
-" tcpdump -i eth0 host 192.168.0.100 -n", in my laptop computer, pls kindly check it, thanks!
+     I set up a test platform just as the test example  of  nat-virtual=
+-ip :
 
-# iptables -t nat -nL -v (in my router board, its IP address is 192.168.0.1)
-Chain PREROUTING (policy ACCEPT 9966 packets, 1438K bytes)
-pkts bytes target prot opt in out source destination 
-Chain POSTROUTING (policy ACCEPT 34 packets, 5118 bytes)
-pkts bytes target prot opt in out source destination 
-792 57396 MASQUERADE all -- * vlan1 192.168.0.0/24 0.0.0.0/0 
-0 0 MASQUERADE all -- * vlan1 192.168.2.0/24 0.0.0.0/0 
-Chain OUTPUT (policy ACCEPT 34 packets, 5118 bytes)
-pkts bytes target prot opt in out source destination 
+        http://www.strongswan.org/uml/testresults/ikev2/nat-virtual-ip
 
-[root@localhost ~]# tcpdump -i eth0 host 192.168.0.100 -n (in my laptop computer, its ipaddress is 192.168.0.100, connected with the above router-192.168.0.1)
-tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
-listening on eth0, link-type EN10MB (Ethernet), capture size 96 bytes
-19:38:15.640847 IP 192.168.0.100.32851 > 192.168.1.1.domain: 36823+ AAAA? www.baidu.com. (31)
-19:38:20.640079 arp who-has 192.168.0.1 tell 192.168.0.100
-19:38:20.640478 arp reply 192.168.0.1 is-at 00:90:4c:23:00:2a
-19:38:20.642144 IP 192.168.0.100.32852 > 61.147.37.1.domain: 36823+ AAAA? www.baidu.com. (31)
-19:38:25.641916 IP 192.168.0.100.32851 > 192.168.1.1.domain: 36823+ AAAA? www.baidu.com. (31)
-19:38:30.643776 IP 192.168.0.100.32852 > 61.147.37.1.domain: 36823+ AAAA? www.baidu.com. (31)
-19:38:30.653020 IP 61.147.37.1.domain > 192.168.0.100.32852: 36823 1/0/0 CNAME[|domain]
-19:38:30.656650 IP 192.168.0.100.32852 > 192.168.1.1.domain: 29489+ A? www.baidu.com. (31)
-19:38:35.656382 IP 192.168.0.100.32853 > 61.147.37.1.domain: 29489+ A? www.baidu.com. (31)
-19:38:40.657240 IP 192.168.0.100.32852 > 192.168.1.1.domain: 29489+ A? www.baidu.com. (31)
-19:38:45.657177 IP 192.168.0.100.32853 > 61.147.37.1.domain: 29489+ A? www.baidu.com. (31)
-19:38:45.665321 IP 61.147.37.1.domain > 192.168.0.100.32853: 29489 3/4/4 CNAME[|domain]
-19:38:45.669434 IP 192.168.0.100.32803 > 119.75.217.56.http: S 2547361769:2547361769(0) win 5840 <mss 1460,sackOK,timestamp 6222599 0,nop,wscale 2>
-19:38:48.668814 IP 192.168.0.100.32803 > 119.75.217.56.http: S 2547361769:2547361769(0) win 5840 <mss 1460,sackOK,timestamp 6225599 0,nop,wscale 2>
-19:38:54.667690 IP 192.168.0.100.32803 > 119.75.217.56.http: S 2547361769:2547361769(0) win 5840 <mss 1460,sackOK,timestamp 6231599 0,nop,wscale 2>
-19:39:06.666439 IP 192.168.0.100.32803 > 119.75.217.56.http: S 2547361769:2547361769(0) win 5840 <mss 1460,sackOK,timestamp 6243599 0,nop,wscale 2>
-19:39:11.666343 arp who-has 192.168.0.1 tell 192.168.0.100
-19:39:11.666676 arp reply 192.168.0.1 is-at 00:90:4c:23:00:2a
-19:39:30.662416 IP 192.168.0.100.32803 > 119.75.217.56.http: S 2547361769:2547361769(0) win 5840 <mss 1460,sackOK,timestamp 6267599 0,nop,wscale 2>
-19:40:18.655200 IP 192.168.0.100.32803 > 119.75.217.56.http: S 2547361769:2547361769(0) win 5840 <mss 1460,sackOK,timestamp 6315599 0,nop,wscale 2>
-20 packets captured
-20 packets received by filter
+     This is  the  detail of testing platform which I used  :
+
+moon :
+    cpu: 333 MHz PowerPC
+    RAM memory: DDR2 256 MB
+    software: Linux 2.6.32 ,strongswan-4.5.2, iptables-1.4.5
+
+SUN =A3=BA
+    cpu: 3 GHz x86
+    RAM memory: DDR2 3 GB
+    software: Linux 2.6.32 ,strongswan-4.5.2
+
+Alice, bob :
+    cpu: 3 GHz x86
+    RAM memory: DDR2 3 GB
+    software: Linux 2.6.32 ,strongswan-4.5.2
+
+    All the configuration script I used is the same as the example
+nat-virtual-ip :
+
+          http://www.strongswan.org/uml/testresults/ikev2/nat-virtual-i=
+p
+
+   The router moon set up a connection to gateway sun,  and the
+gateway sun had assigned a virtual IP address to router
+
+moon. A special updown script on moon specified by
+leftupdown=3D/etc/nat_updown dynamically inserted a source NAT rule
+which
+
+mapped the IP address of client alice to the virtual IP of moon.
+
+     Then the client alice  send  the udp packets of 100 bytes length
+every 10 milliseconds  with about 10 threads at one
+
+time.
+    Under these circumstances ,  the  idle of moon's CPU would be less
+than 10%, even 0% . As a result , the moon could not
+
+printf anything. If the router moon PING the client alice at the same
+time, there would  appear a big time delay  which was
+
+above 10 seconds.
+
+      I had ever  thought that  this phenomena might be arisen from
+the low performance of moon'CPU.So I aslo did two
+
+experiments. The first experiment, I used the same hardware platform
+to set up the environment as the example of  Test
+
+ikev2/net2net-psk:
+
+          http://www.strongswan.org/uml/testresults/ikev2/net2net-psk/i=
+ndex.html
+
+      And I want to know what would happen with this instance. The
+result is that  the  idle of moon's CPU would be  more
+
+than 90% all the time and there was not any big time delay when the
+router moon PING the client alice at the same time
+
+,which was fewer than 1 milliseconds all the time.
+
+      The second experiment,  I used the same hardware platform to set
+up a  environment which just set up the NAT and
+
+open the ip_forward in the moon. And the udp packets of alice sent out
+to the gateway sun only through the NAT of moon. The
+
+result is  that  the  idle of moon's CPU would be  more than 95% all
+the time and there was not any big time delay when the
+
+router moon PING the client alice at the same time, which was fewer
+than 1 milliseconds all the time.
+
+     These two experiments had approved that the "big time delay"
+phenomena was not arisen from  the low performance of
+
+moon'CPU. They were both working well when the NAT was separated from
+the IPSEC. But when joined the NAT and IPSEC together
+
+in the moon, the moon could not work normally. Why ?  Is this  a bug
+of Netfilter ?
+
+
+ Regards ,
 
 
 
-
-
-> Date: Wed, 30 May 2012 12:59:03 -0400
-> Subject: Re: Ask an issue about how can I let netfilter-nat work normally, thanks
-> From: betolj@gmail.com
-> To: miao_hb@hotmail.com
-> CC: netfilter@vger.kernel.org
-> 
-> Hi,
-> 
-> Show us your NAT rules...
-> iptables -t nat -nL -v
-> or
-> Firewall dump with iptables-save
-> 
-> 
-> Use tcpdump to see if the IP translation occurs.
-> tcpdump -i <if_net> host <ip_address> -n
-> 
-> 
-> 2012/5/30 miao hongbing <miao_hb@hotmail.com>:
-> >
-> >
-> > Hi Sirs,
-> >
-> > I am Steve Miao from China, currently we use broadcom's WiFi chipset, the chipset version is 5356 the software version is linux-2.6-router-5.70.48.10.
-> >
-> > We meet an issue about fast-nat, we plan to remove fast-nat and use common netfilter-nat base some reasons, when we removed fastnat by disabling CONFIG_BCM_NAT(the option of kernle's menuconfig) or let "ipv4_conntrack_fastnat=0", fast-nat is disabled succesfully, but netfilter-NAT can not work normally, the phenomenon is: we can ping any website, can not surf it. that means ICMP can work normally but TCP/UDP can not.
-> >
-> > Could anyone pls tell me how I can let netfilter-NAT work normally? if you know it pls kindly let me know.
-> >
-> > Thank you very much!!!
-> >
-> > Regards,
-> > Steve --
-> > To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> > the body of a message to majordomo@vger.kernel.org
-> > More majordomo info at http://vger.kernel.org/majordomo-info.html
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at http://vger.kernel.org/majordomo-info.html 		 	   		  
+                                    Kenxin
