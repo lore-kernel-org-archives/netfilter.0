@@ -1,59 +1,49 @@
-From: =?ISO-8859-15?Q?Niccol=F2_Belli?= <darkbasic@linuxsystems.it>
-Subject: Re: [Announce] LARTC wiki available
-Date: Fri, 01 Jun 2012 18:42:12 +0200
-Message-ID: <4FC8F0E4.6060102@linuxsystems.it>
-References: <4EFB3B2B.7060200@linuxsystems.it>
+From: Jeff Haran <jharan@bytemobile.com>
+Subject: RE: Documentation for writing new nf_contrack module
+Date: Fri, 1 Jun 2012 17:09:18 +0000
+Message-ID: <4AB110E2FA959F41AC8480E845163711048D1F@HQ-EX01.bytemobile.com>
+References: <CAGuaRCs_wVR4Usj6sALb=EDK=7m+3Oy6KNzo0Aui27Xgkbgu8Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netdev-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=linuxsystems.it;
-	s=linuxsystems.it; t=1338568921;
-	bh=c9yIF3XvfIAs6w/+zBpwu6qC+8jOLHLnLOK42sq6Jsk=;
-	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:References:
-	 In-Reply-To:Content-Type:Content-Transfer-Encoding;
-	b=Fw2tR5IFRsLOHhIGWElwAgdRCySV7zdZqiWm5Z3cS3nKDP7rM38yfnNT6P09pNm2I
-	 Q+X3O/ljlx4UVRUaantGwdCQQ/dT3Vl+g+CDJReNCnd+SvNEQDBdu8qbw089G/rGbV
-	 iSVVCv2KPjbJud5ofJ/iqBAWf5JY2dROx1j1Utxk=
-In-Reply-To: <4EFB3B2B.7060200@linuxsystems.it>
-Sender: netdev-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <CAGuaRCs_wVR4Usj6sALb=EDK=7m+3Oy6KNzo0Aui27Xgkbgu8Q@mail.gmail.com>
+Content-Language: en-US
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: lartc@vger.kernel.org
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, Linux Networking Developer Mailing List <netdev@vger.kernel.org>
+To: Aft nix <aftnix@gmail.com>, "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Since I keep receiving lots of visits to lartc.linuxsystems.it from=20
-spinics archives & co, I'd like to point out I closed the wiki when the=
-=20
-original domain changed maintainer:=20
-http://www.spinics.net/lists/lartc/msg22400.html
-
-http://lartc.org is alive and kicking and there is no need for another=20
-wiki anymore. I'd like to thank both Bert and Carl-Daniel.
-
-Niccol=F2
-
-Il 28/12/2011 16:52, Niccol=F2 Belli ha scritto:
+> -----Original Message-----
+> From: netfilter-devel-owner@vger.kernel.org [mailto:netfilter-devel-
+> owner@vger.kernel.org] On Behalf Of Aft nix
+> Sent: Friday, June 01, 2012 7:17 AM
+> To: netfilter-devel@vger.kernel.org; netfilter@vger.kernel.org
+> Subject: Documentation for writing new nf_contrack module
+> 
 > Hi,
-> I still didn't find a viable solution for the LARTC wiki, so I decide=
-d
-> to start hosting it on my own server. Later we can easily switch
-> somewhere else if we keep using the same wiki engine (and maybe even
-> with another wiki engine).
-> I decided to use wikimedia because it's the only one I know of, so if
-> someone knows a better alternative please let me know, we are still i=
-n
-> time for a change.
-> Since I never used a wiki seriously I will probably need someone else
-> who can help me maintaining it, please let me know if you are
-> experienced and willing to help.
->
-> Here is the wiki: http://lartc.linuxsystems.it/
-> And here is the new mailing list for those who still don't know:
-> http://vger.kernel.org/vger-lists.html#lartc
->
-> I just copy-pasted the Linux Advanced Routing & Traffic Control HOWTO
-> atm, it still needs to be wikified and we still need to choose how to
-> organize the contents.
->
-> Cheers,
-> Niccol=F2
+> 
+> I looking for good documention for writing or modifying netfilter
+> modules. To be exact nf_contrack modules.
+> 
+> The netfilter hacking how to seems outdated and incomplete. So any
+> other documentaion which can help me?
+> 
+> I'm interested in nf_contrack_sip module, which i will try to modify
+> as my needs. I've tried to read the sources or nf_contrack_sip, but
+> without a good background in netfilter core, it seems too much for me.
+> 
+> Any advice or links to kind of documents i'm looking for will be more
+> than welcome.
+> Cheers.
+> 
+> --
+> -aft
+
+I recommend "Writing Netfilter modules" by Jan Engelhardt and Nicolas Bouliane"
+
+Just do a search on the above. The PDF is free.
+
+Jeff Haran
+
+
+
