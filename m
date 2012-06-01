@@ -1,19 +1,21 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: Routing traffic between 2 iptables machines (FORMATTING EDIT)
-Date: Fri, 1 Jun 2012 22:38:05 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1206012237380.16932@frira.zrqbmnf.qr>
-References: <BB8FE926AC28184C9B786671F4A2EE524AEDDD18@MAIL-MBX-004.internal.amnh.org>
+From: Nazim Wahid Djafar <nwd@oglug.org>
+Subject: Re: Documentation for writing new nf_contrack module
+Date: Fri, 01 Jun 2012 23:16:31 +0100
+Message-ID: <87aa0mzni8.fsf@oglug.org>
+References: <CAGuaRCs_wVR4Usj6sALb=EDK=7m+3Oy6KNzo0Aui27Xgkbgu8Q@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BB8FE926AC28184C9B786671F4A2EE524AEDDD18@MAIL-MBX-004.internal.amnh.org>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=oglug.org; s=default;
+	h=Content-Type:MIME-Version:Message-ID:Date:In-Reply-To:Subject:Cc:To:From; bh=3Kev+kGre3KdtSttIPzSb5zVji+ubvJgmyZbppSlMpQ=;
+	b=FMzYGrWuXvh3yFtIIaKJq/Vtpl6RvGVXz+EeV1XCyGeyzGf4pS9L0v58M4V81qXlD31h7FKH2PC3bRzdJxD2SdjoGzG69zgZ0RqiBxuscWT5mzNAqWpS9EePC50COuJQ;
+In-Reply-To: <CAGuaRCs_wVR4Usj6sALb=EDK=7m+3Oy6KNzo0Aui27Xgkbgu8Q@mail.gmail.com> (message from Aft nix on Fri, 1 Jun 2012 20:16:52 +0600)
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Sajesh Singh <ssingh@amnh.org>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: Aft nix <aftnix@gmail.com>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-On Friday 2012-06-01 21:00, Sajesh Singh wrote:
->(FORMATTING EDIT)
 
-jfyi, it was better before the edit ;-)
+
+http://inai.de/documents/Netfilter_Modules.pdf
