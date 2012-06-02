@@ -1,38 +1,51 @@
-From: Aft nix <aftnix@gmail.com>
-Subject: Re: Documentation for writing new nf_contrack module
-Date: Sat, 2 Jun 2012 13:56:00 +0600
-Message-ID: <CAGuaRCsGGMXpTo7vFiTm4K5j-kOHzWAEgOX5tj4MD6pvWN9vMw@mail.gmail.com>
-References: <CAGuaRCs_wVR4Usj6sALb=EDK=7m+3Oy6KNzo0Aui27Xgkbgu8Q@mail.gmail.com>
-	<87aa0mzni8.fsf@oglug.org>
+From: Andy Furniss <andyqos@ukfsn.org>
+Subject: Re: [Announce] LARTC wiki available
+Date: Sat, 02 Jun 2012 15:37:57 +0100
+Message-ID: <4FCA2545.60702@ukfsn.org>
+References: <4EFB3B2B.7060200@linuxsystems.it> <4FC8F0E4.6060102@linuxsystems.it> <8063b8e35d17fd072cbdc9908cf12519@njm.linuxwall.info>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=uOJLbAQNFwjZvtWbIDMK/OmdN/tTj9TSXx7URX8kRkE=;
-        b=pxDaUVWMugs9JgEvagt1nnAl+rYbqqU8TWTDLlyy0R9K+uneUtLK19jbMeHRrZW+Hx
-         ZElKajkHiU4Qrc0jpFp5I4Wp/7OZZXCSU8iBMHkoFAApcNADMlInZE48pHIGngqjdNrF
-         fu4mY5y/Zb8CzdxbTy+B4bE5Mc+J3Aytot5Zl16yovU41HxjYUk0dGmcYQ6hmdoQrqaq
-         7fQx/ehNi6GPiUdaTsd8Qj/sTfCol0HXj6I1rm6lhgGAZ93ectDCBXsG+5jwi4UM2VN7
-         iQxs2vyLTbXWZ+R2iLh3Fus5PEGY/sjI1PLLHTlLeizd7i+l8vqM5BKbgw7lF4zXhi/o
-         /wBw==
-In-Reply-To: <87aa0mzni8.fsf@oglug.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <8063b8e35d17fd072cbdc9908cf12519@njm.linuxwall.info>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Nazim Wahid Djafar <nwd@oglug.org>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: Julien Vehent <julien@linuxwall.info>
+Cc: =?UTF-8?B?TmljY29sw7IgQmVsbGk=?= <darkbasic@linuxsystems.it>, lartc@vger.kernel.org, netfilter@vger.kernel.org, Linux Networking Developer Mailing List <netdev@vger.kernel.org>
 
-On Sat, Jun 2, 2012 at 4:16 AM, Nazim Wahid Djafar <nwd@oglug.org> wrote:
+Julien Vehent wrote:
+> On 2012-06-01 12:42, Niccol=C3=B2 Belli wrote:
+>> http://lartc.org is alive and kicking and there is no need for
+>> another
+>> wiki anymore. I'd like to thank both Bert and Carl-Daniel.
+>>
+>> Niccol=C3=B2
+>>
 >
->
-> http://inai.de/documents/Netfilter_Modules.pdf
+> Very cool !
+> I'll try to find some time and move over some of the content I have
+> here:
+> http://wiki.linuxwall.info/doku.php/en:ressources:dossiers:networking=
+:traffic_control
 
-Thank you for the suggestion. I will look through it.
-Cheers.
+A couple of things that stand out after skimming through.
 
+DSL - Jeesper's overhead as noted in the comments is not 5 and anyway I=
+=20
+think his good work has now been superseded by stab as it allows for=20
+negative overheads, which his did not.
 
--- 
--aft
+man tc-stab has clear and good explanations and examples.
+
+SFQ - well it's literally been years since I knew it in detail, but=20
+limit was (back then at least) for all flows combined.
+
+I tested (maybe not hard enough) quantum < mtu and never managed to=20
+prevent dequeues - I know it's not efficient and "forbiden" but back=20
+then at least it didn't break.
+
+Anyway it seems that early this year SFQ got some love and now has=20
+several more options (red, headdrop, limit >127, depth as param) - so a=
+s=20
+long as your iproute/kernel is current have a look at man tc-sfq for=20
+details.
