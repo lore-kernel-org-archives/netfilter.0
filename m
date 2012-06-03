@@ -1,32 +1,75 @@
-From: Andy Furniss <andyqos@ukfsn.org>
+From: Jesper Dangaard Brouer <hawk@diku.dk>
 Subject: Re: [Announce] LARTC wiki available
-Date: Sat, 02 Jun 2012 17:58:54 +0100
-Message-ID: <4FCA464E.5030002@ukfsn.org>
-References: <4EFB3B2B.7060200@linuxsystems.it>  <4FC8F0E4.6060102@linuxsystems.it>  <8063b8e35d17fd072cbdc9908cf12519@njm.linuxwall.info>  <4FCA2545.60702@ukfsn.org> <1338652231.2760.1706.camel@edumazet-glaptop>
+Date: Sun, 3 Jun 2012 04:36:11 +0200 (CEST)
+Message-ID: <Pine.LNX.4.64.1206030343400.3122@ask.diku.dk>
+References: <4EFB3B2B.7060200@linuxsystems.it> <4FC8F0E4.6060102@linuxsystems.it>
+ <8063b8e35d17fd072cbdc9908cf12519@njm.linuxwall.info> <4FCA2545.60702@ukfsn.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1338652231.2760.1706.camel@edumazet-glaptop>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: MULTIPART/MIXED; BOUNDARY="-511516320-346819181-1338690971=:3122"
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <4FCA2545.60702@ukfsn.org>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Eric Dumazet <eric.dumazet@gmail.com>
-Cc: Julien Vehent <julien@linuxwall.info>, =?UTF-8?B?TmljY29sw7IgQmVsbGk=?= <darkbasic@linuxsystems.it>, lartc@vger.kernel.org, netfilter@vger.kernel.org, Linux Networking Developer Mailing List <netdev@vger.kernel.org>
+To: Andy Furniss <andyqos@ukfsn.org>
+Cc: Julien Vehent <julien@linuxwall.info>, =?iso-8859-1?Q?Niccol=F2_Belli?= <darkbasic@linuxsystems.it>, lartc@vger.kernel.org, netfilter@vger.kernel.org, Linux Networking Developer Mailing List <netdev@vger.kernel.org>, brouer@redhat.com
 
-Eric Dumazet wrote:
-> On Sat, 2012-06-02 at 15:37 +0100, Andy Furniss wrote:
->
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
+
+---511516320-346819181-1338690971=:3122
+Content-Type: TEXT/PLAIN; charset="iso-8859-1"; format="flowed"
+Content-Transfer-Encoding: quoted-printable
+
+On Sat, 2 Jun 2012, Andy Furniss wrote:
+
+> Julien Vehent wrote:
+>>  On 2012-06-01 12:42, Niccol=F2 Belli wrote:
+>> >  http://lartc.org is alive and kicking and there is no need for
+>> >  another
+>> >  wiki anymore. I'd like to thank both Bert and Carl-Daniel.
+>> >=20
+>> >  Niccol=F2
+>> >=20
 >>
->> Anyway it seems that early this year SFQ got some love and now has
->> several more options (red, headdrop, limit>127, depth as param) - so as
->> long as your iproute/kernel is current have a look at man tc-sfq for
->> details.
+>>  Very cool !
+>>  I'll try to find some time and move over some of the content I have
+>>  here:
+>>  http://wiki.linuxwall.info/doku.php/en:ressources:dossiers:networking:t=
+raffic_control
 >
-> Yes, but fq_codel is really better than SFQ.
+> A couple of things that stand out after skimming through.
+>
+> DSL - Jeesper's overhead as noted in the comments is not 5 and anyway I t=
+hink=20
+> his good work has now been superseded by stab as it allows for negative=20
+> overheads, which his did not.
 
-Ooh, that does look interesting. I hadn't seen that, thanks.
-I should really start checking netdev again.
+Thanks for the credits :-)
 
-Just pulled iproute git, and see there is a man for codel, but not 
-fq_codel (yet?).
-It would be handy if it/them were added to man tc's "SEE ALSO" section.
+Its been a while since I looked at that code.  I think, the 5 bytes might=20
+ref to the ATM header 5 + 48 =3D 53 bytes the ATM cell size.  But 5 is not =
+
+used as overhead.
+
+The linklayer ATM hack is to adjust the rtable array, that the kernel uses =
+
+for lookups.  The problem is that the rtable array only have an 8 bytes=20
+"resolution" (well depend on cell_log), thus to get this aligned, I use=20
+the ATM payload size of 48, when populating the rtable array.  Then=20
+when storing the "data" I the rtable array I use *53 byte ATM cell size.
+
+> man tc-stab has clear and good explanations and examples.
+
+Good to see some documentation on stab, I always found it difficult to=20
+use.
+
+Cheers,
+   Jesper Brouer
+
+--
+-------------------------------------------------------------------
+MSc. Master of Computer Science
+Dept. of Computer Science, University of Copenhagen
+Author of http://www.adsl-optimizer.dk
+-------------------------------------------------------------------
+---511516320-346819181-1338690971=:3122--
