@@ -1,54 +1,135 @@
-From: Philip Prindeville <philipp@redfish-solutions.com>
-Subject: Re: [Announce] LARTC wiki available
-Date: Sun, 03 Jun 2012 14:05:20 -0600
-Message-ID: <4FCBC380.8050704@redfish-solutions.com>
-References: <4EFB3B2B.7060200@linuxsystems.it>
+From: Gregory Nietsky <gregory@distrotech.co.za>
+Subject: libnetfilter_conntrack userspace nat via NFQUEUE
+Date: Sun, 03 Jun 2012 23:05:19 +0200
+Message-ID: <4FCBD18F.2020607@distrotech.co.za>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <4EFB3B2B.7060200@linuxsystems.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?ISO-8859-1?Q?Niccol=F2_Belli?= <darkbasic@linuxsystems.it>
-Cc: lartc@vger.kernel.org, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, Linux Networking Developer Mailing List <netdev@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On 12/28/11 8:52 AM, Niccol=F2 Belli wrote:
-> Hi,
-> I still didn't find a viable solution for the LARTC wiki, so I decide=
-d=20
-> to start hosting it on my own server. Later we can easily switch=20
-> somewhere else if we keep using the same wiki engine (and maybe even=20
-> with another wiki engine).
-> I decided to use wikimedia because it's the only one I know of, so if=
-=20
-> someone knows a better alternative please let me know, we are still i=
-n=20
-> time for a change.
-> Since I never used a wiki seriously I will probably need someone else=
-=20
-> who can help me maintaining it, please let me know if you are=20
-> experienced and willing to help.
->=20
-> Here is the wiki: http://lartc.linuxsystems.it/
-> And here is the new mailing list for those who still don't know:=20
-> http://vger.kernel.org/vger-lists.html#lartc
->=20
-> I just copy-pasted the Linux Advanced Routing & Traffic Control HOWTO=
-=20
-> atm, it still needs to be wikified and we still need to choose how to=
-=20
-> organize the contents.
->=20
-> Cheers,
-> Niccol=F2
 
-Between command-line stuff for users/administrators and the kernel hack=
-ing bits on linux-net, etc. I'd like to see a middle ground: i.e. bette=
-r documentation about the C API to userspace from the kernel routing me=
-chanisms.
+Greetings
 
-Better documentation about rtnetlink would be appreciated, and maybe th=
-e low-level libraries that run atop that as well, such as libmnl.
+I have been working on userspace nat via NFQUEUE i have it working but 
+something does not make
+sense to me.
 
--Philip
+the code below is to build the conntrack and attach the nat attributes.
+
+i cannot get it working unless i use the following
+
+nfct_set_attr_u8(ct, ATTR_TCP_STATE, TCP_CONNTRACK_ESTABLISHED);
+
+the documentation and examples suggest this is not correct however this way
+it works no other options function.
+
+as the documentation is not extensive perhaps someone will be able to 
+comment on this.
+
+am i correct to only use this for TCP connections.
+
+the code for this is available @ 
+http://pbx.distrotech.co.za/svn/taploop/trunk/ in the framework directory.
+
+Regards
+
+Greg
+
+extern struct nf_conntrack *nf_ctrack_buildct(uint8_t *pkt) {
+         struct nf_conntrack *ct;
+         struct iphdr *ip = (struct iphdr*)pkt;
+         union l4hdr *l4 = (union l4hdr*)(pkt + (ip->ihl * 4));
+
+         if (!(ct = nfct_new())) {
+                 return (NULL);
+         };
+
+         /*Build tuple*/
+         nfct_set_attr_u8(ct, ATTR_L3PROTO, PF_INET);
+         nfct_set_attr_u32(ct, ATTR_IPV4_SRC, ip->saddr);
+         nfct_set_attr_u32(ct, ATTR_IPV4_DST, ip->daddr);
+         nfct_set_attr_u8(ct, ATTR_L4PROTO, ip->protocol);
+         switch(ip->protocol) {
+                 case IPPROTO_TCP:
+                         nfct_set_attr_u16(ct, ATTR_PORT_SRC, 
+l4->tcp.source);
+                         nfct_set_attr_u16(ct, ATTR_PORT_DST, l4->tcp.dest);
+                         break;
+                 case IPPROTO_UDP:
+                         nfct_set_attr_u16(ct, ATTR_PORT_SRC, 
+l4->udp.source);
+                         nfct_set_attr_u16(ct, ATTR_PORT_DST, l4->udp.dest);
+                         break;
+                 case IPPROTO_ICMP:
+                         nfct_set_attr_u8(ct, ATTR_ICMP_TYPE, 
+l4->icmp.type);
+                         nfct_set_attr_u8(ct, ATTR_ICMP_CODE, 
+l4->icmp.code);
+                         nfct_set_attr_u16(ct, ATTR_ICMP_ID, 
+l4->icmp.un.echo.id);
+                         /* no break */
+                 default:
+                         break;
+         };
+
+         return (ct);
+}
+
+extern uint8_t nf_ctrack_nat(uint8_t *pkt, uint32_t addr, uint16_t port, 
+uint8_t dnat) {
+         struct iphdr *ip = (struct iphdr*)pkt;
+         struct nf_conntrack *ct;
+         uint8_t unref = 0;
+         uint8_t ret = 0;
+
+         if (!ctrack) {
+                 if (nf_ctrack_init()) {
+                         return (-1);
+                 }
+                 unref = 1;
+         }
+
+         ct = nf_ctrack_buildct(pkt);
+         nfct_setobjopt(ct, NFCT_SOPT_SETUP_REPLY);
+
+         nfct_set_attr_u32(ct, ATTR_TIMEOUT, 120);
+         nfct_set_attr_u32(ct, (dnat) ? ATTR_DNAT_IPV4 : ATTR_SNAT_IPV4, 
+addr);
+
+         switch(ip->protocol) {
+                 case IPPROTO_TCP:
+                         nfct_set_attr_u8(ct, ATTR_TCP_STATE, 
+TCP_CONNTRACK_ESTABLISHED);
+                         /* no break */
+                 case IPPROTO_UDP:
+                         if (port) {
+                                 nfct_set_attr_u16(ct, (dnat) ? 
+ATTR_DNAT_PORT : ATTR_SNAT_PORT, port);
+                         }
+                         break;
+         }
+
+         objlock(ctrack);
+         if (nfct_query(ctrack->nfct, NFCT_Q_CREATE_UPDATE, ct) < 0) {
+                 ret = -1;
+         }
+         objunlock(ctrack);
+         nfct_destroy(ct);
+
+         if (unref) {
+                 nf_ctrack_close();
+         }
+
+         return (ret);
+}
+
+--
+This message has been scanned for viruses and
+dangerous content by Distrotech Solutions, 
+it is believed to be clean.
+
+http://www.distrotech.co.za
+
