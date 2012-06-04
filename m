@@ -1,49 +1,23 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: libnetfilter_conntrack userspace nat via NFQUEUE
-Date: Mon, 4 Jun 2012 14:20:11 +0200
-Message-ID: <20120604122011.GA15680@1984>
-References: <4FCBD18F.2020607@distrotech.co.za>
+From: Sajesh Singh <ssingh@amnh.org>
+Subject: RE: Routing traffic between 2 iptables machines
+Date: Mon, 4 Jun 2012 13:29:17 +0000
+Message-ID: <BB8FE926AC28184C9B786671F4A2EE524AEE35F3@MAIL-MBX-004.internal.amnh.org>
+References: <BB8FE926AC28184C9B786671F4A2EE524AEDDC78@MAIL-MBX-004.internal.amnh.org>
+ <201206011602.47087.neal.p.murphy@alum.wpi.edu>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <4FCBD18F.2020607@distrotech.co.za>
+In-Reply-To: <201206011602.47087.neal.p.murphy@alum.wpi.edu>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Gregory Nietsky <gregory@distrotech.co.za>
-Cc: netfilter@vger.kernel.org
+To: "neal.p.murphy@alum.wpi.edu" <neal.p.murphy@alum.wpi.edu>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Sun, Jun 03, 2012 at 11:05:19PM +0200, Gregory Nietsky wrote:
-> 
-> Greetings
-> 
-> I have been working on userspace nat via NFQUEUE i have it working
-> but something does not make
-> sense to me.
 
-So, you're implementing NAT in user-space with NFQUEUE, right?
+>>This isn't *really* a netfilter problem. Unless it's an 'academic' exercise.
 
-> the code below is to build the conntrack and attach the nat attributes.
-> 
-> i cannot get it working unless i use the following
-> 
-> nfct_set_attr_u8(ct, ATTR_TCP_STATE, TCP_CONNTRACK_ESTABLISHED);
+Wouldn't say that it is a purely academic exercise as I try to ensure that traffic traverses the 2 machines running iptables to ensure that application that was developed using the netfilter queuing mechanism works as expected.
 
-Yes, this is mandatory to create a new conntrack entry, with and without
-NAT.
+-Sajesh-
 
-> the documentation and examples suggest this is not correct however this way
-> it works no other options function.
-> 
-> as the documentation is not extensive perhaps someone will be able
-> to comment on this.
-> 
-> am i correct to only use this for TCP connections.
-> 
-> the code for this is available @
-> http://pbx.distrotech.co.za/svn/taploop/trunk/ in the framework
-> directory.
-
-I have a patch here to improve integration between ctnetlink and
-nfnl_queue, but you'll have to wait to see that in mainstream.
