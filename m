@@ -1,90 +1,60 @@
-From: Aidas Kasparas <a.kasparas@gmc.lt>
+From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
 Subject: Re: ipset: stops working after a while
-Date: Thu, 07 Jun 2012 20:43:25 +0300
-Message-ID: <4FD0E83D.7030806@gmc.lt>
-References: <4FD03AE5.9000509@gmc.lt> <alpine.DEB.2.00.1206070856221.11710@blackhole.kfki.hu>
+Date: Thu, 7 Jun 2012 17:22:41 -0400
+Message-ID: <201206071722.41790.neal.p.murphy@alum.wpi.edu>
+References: <4FD03AE5.9000509@gmc.lt> <alpine.DEB.2.00.1206070856221.11710@blackhole.kfki.hu> <4FD0E83D.7030806@gmc.lt>
+Reply-To: neal.p.murphy@alum.wpi.edu
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1206070856221.11710@blackhole.kfki.hu>
+In-Reply-To: <4FD0E83D.7030806@gmc.lt>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@vger.kernel.org
+Content-Type: Text/Plain; charset="windows-1252"
+To: netfilter@vger.kernel.org
 
-On 2012.06.07 09:59, Jozsef Kadlecsik wrote:
-> On Thu, 7 Jun 2012, Aidas Kasparas wrote:
-> 
->> I have a strange problem with iptables/ipset. I'm under 80Mbps+ SYN
->> flood (if to believe hoster's monitoring). Attack is not sofisticated --
->> SYN packet's source address is [pseudo]random, spread more or less
->> evenly over all available IPv4 address space (even block E). Idea was to
->> drop first SYN packet from every IP address I haven't seen in past 10
->> secs. So, I set up the following setup:
->>
->> iptables -N firstdrop
->>
->> iptables -N fd_0; iptables -A firstdrop -s 0.0.0.0/5 -j fd_0
->> iptables -N fd_8; iptables -A firstdrop -s 8.0.0.0/5 -j fd_8
->> ...
->> iptables -N fd_216; iptables -A firstdrop -s 216.0.0.0/5 -j fd_216
->>
->> ipset create fd_1 hash:ip timeout 10
->> ipset create fd_2 hash:ip timeout 10
->> ...
->> ipset create fd_223 hash:ip timeout 10
->>
->> iptables -A fd_0 -s 1.0.0.0/8 -m set --match-set fd_1 src -j RETURN;
->> iptables -A fd_0 -s 1.0.0.0/8 -j SET --add-set fd_1 src;
->> iptables -A fd_0 -s 2.0.0.0/8 -m set --match-set fd_2 src -j RETURN;
->> iptables -A fd_0 -s 2.0.0.0/8 -j SET --add-set fd_2 src;
->> ...
->> iptables -A fd_0 -s 7.0.0.0/8 -m set --match-set fd_7 src -j RETURN;
->> iptables -A fd_0 -s 7.0.0.0/8 -j SET --add-set fd_7 src;
->> iptables -A fd_8 -s 8.0.0.0/8 -m set --match-set fd_8 src -j RETURN;
->> iptables -A fd_8 -s 8.0.0.0/8 -j SET --add-set fd_8 src;
->> ...
->> iptables -A fd_216 -s 223.0.0.0/8 -m set --match-set fd_223 src -j RETURN;
->> iptables -A fd_216 -s 223.0.0.0/8 -j SET --add-set fd_223 src;
->>
->> iptables -A fd_0 -j DROP
->> iptables -A fd_8 -j DROP
->> ...
->> iptables -A fd_216 -j DROP
->>
->> iptables -A INPUT -s admin's_IP -j ACCEPT
->> iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
->> iptables -A INPUT -j firstdrop
->>
->> That works. Legitimate connections goes through. Outgoing traffic drops
->> to few megabits, as required for normal operations.
->>
->> But, after a while (sometimes day, sometimes few hours) no IP addresses
->> are added to fd_$i's by these iptables rules. And all the packets become
->> DROP'ed. But if I try to add address by ipset command, or by different
->> iptables rule -- then these addresses are added to ipsets (not sure, if
->> that would work for any and all of them).
-> 
-> Maybe your given set gets full. From the manpage:
-> 
-> "When  entries  added  by the SET target of iptables/ip6tables, then the
-> hash size is fixed and the set won't be duplicated,  even  if  the  new
-> entry cannot be added to the set."
-> 
+On Thursday 07 June 2012 13:43:25 Aidas Kasparas wrote:
+> On 2012.06.07 09:59, Jozsef Kadlecsik wrote:
+> > Maybe your given set gets full. From the manpage:
+> >=20
+> > "When  entries  added  by the SET target of iptables/ip6tables, the=
+n the
+> > hash size is fixed and the set won't be duplicated,  even  if  the =
+ new
+> > entry cannot be added to the set."
+>=20
+> Ok. But if set is full, and I list it, it should show at least some
+> members present. When it stops working, it shows no members at all.
+>=20
+> On the other hand, I create sets with timeout 10. So, every 3 secs th=
+ere
+> should be expiration process which trows ~ 1/3 of entries from each
+> chain. And this should make place for some new entries.
 
-Ok. But if set is full, and I list it, it should show at least some
-members present. When it stops working, it shows no members at all.
+I'll address *your* problem, not the problem you observed with the ipse=
+t code=20
+(which may be a real problem).
 
-On the other hand, I create sets with timeout 10. So, every 3 secs there
-should be expiration process which trows ~ 1/3 of entries from each
-chain. And this should make place for some new entries.
+How many entres are in the set when it is 'full'? Have you tried settin=
+g the=20
+initial size of the hash to the maximum (64ki?)?
 
+Utilization of a set ought to be non-deterministic because you can't kn=
+ow how=20
+many 'new' addresses will arrive in any given time interval. In other w=
+ords (a=20
+contrived example), suppose at time T you had 64ki addresses in the has=
+h with=20
+20,000 set to expire in 3=E2=85=93 seconds (the rest later). In the nex=
+t 3333ms, 2000=20
+new addresses arrive but can't fitin the set. At T+3333ms, 20k addresse=
+s=20
+expire. In the next 2000ms, 21k new addresses arrive; 1000 of them won'=
+t fit=20
+in the set. 80Mb/s allows for a lot of packets; even slow consumer-grad=
+e=20
+switches can exceed 64ki addresses in 10 seconds via SYN packets.
 
--- 
-Aidas Kasparas
-IT administrator
-GM Consult Group, UAB
-
-+370 686 08473
-http://www.gmc.lt
+Given all that, can you redesign your sets so you don't (maybe can't) f=
+ill=20
+them?
