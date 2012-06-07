@@ -1,23 +1,29 @@
-From: Sajesh Singh <ssingh@amnh.org>
-Subject: RE: Routing traffic between 2 iptables machines
-Date: Mon, 4 Jun 2012 13:29:17 +0000
-Message-ID: <BB8FE926AC28184C9B786671F4A2EE524AEE35F3@MAIL-MBX-004.internal.amnh.org>
-References: <BB8FE926AC28184C9B786671F4A2EE524AEDDC78@MAIL-MBX-004.internal.amnh.org>
- <201206011602.47087.neal.p.murphy@alum.wpi.edu>
+From: jonetsu <jonetsu@teksavvy.com>
+Subject: conntrackd config syntax inflexibility
+Date: Wed, 6 Jun 2012 21:03:58 -0400
+Message-ID: <20120606210358.089a4bc8@mistral.stie>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <201206011602.47087.neal.p.murphy@alum.wpi.edu>
-Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "neal.p.murphy@alum.wpi.edu" <neal.p.murphy@alum.wpi.edu>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
+Hello,
 
->>This isn't *really* a netfilter problem. Unless it's an 'academic' exercise.
+  I'm using 0.9.14 to try out the stateful firewall feature, along
+  with keepalived.  Trying out first the most simple 'notrack' option.
+  Copied the provided config file, modified interfaces and IP
+  addresses.  Problem is, conntrackd gives a syntax error when an
+  interface in contrackd.conf is either:
 
-Wouldn't say that it is a purely academic exercise as I try to ensure that traffic traverses the 2 machines running iptables to ensure that application that was developed using the netfilter queuing mechanism works as expected.
+  Interface fe-3-1
 
--Sajesh-
+  or:
 
+  Interface te1-5-1c02ppp
+
+  Is there any plan to allow more flexible interface names ?
+
+Thanks.
