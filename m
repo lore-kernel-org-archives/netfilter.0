@@ -1,50 +1,35 @@
-From: Jan Engelhardt <jengelh@inai.de>
+From: =?iso-8859-1?b?Sm9z6Q==?= Pablo =?iso-8859-1?b?UOlyZXo=?= 
+	<josepablo@correo.co.cr>
 Subject: Re: iptable rate limit challenge.. help please..!
-Date: Fri, 8 Jun 2012 01:18:31 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1206080118001.7096@frira.zrqbmnf.qr>
-References: <20120607154038.bz3m3vzcqowsos4g@correo.co.cr> <alpine.LNX.2.01.1206080025540.5045@frira.zrqbmnf.qr>
+Date: Thu, 07 Jun 2012 19:28:47 -0600
+Message-ID: <20120607192847.cvyx1bimyo4g8g8o@correo.co.cr>
+References: <20120607154038.bz3m3vzcqowsos4g@correo.co.cr>
+	<alpine.LNX.2.01.1206080025540.5045@frira.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 In-Reply-To: <alpine.LNX.2.01.1206080025540.5045@frira.zrqbmnf.qr>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="utf-8"
-To: =?UTF-8?Q?Jos=C3=A9_Pablo_P=C3=A9rez?= <josepablo@correo.co.cr>
+Content-Type: text/plain; charset="us-ascii"; delsp="Yes"; format="flowed"
+To: Jan Engelhardt <jengelh@inai.de>
 Cc: netfilter@vger.kernel.org
 
-On Friday 2012-06-08 00:38, Jan Engelhardt wrote:
+Jan thank you so much..
 
->On Thursday 2012-06-07 23:40, Jos=C3=A9 Pablo P=C3=A9rez wrote:
->
->> I have CentOS and iptables with GeoIP module enabled,
->>
->> So far I have this rule working which works perfect:
->>
->> iptables -I INPUT -m geoip --src-cc GB -j DROP;
->>
->> But i need to make it more complex:
->>
->> Before dropping traffic I need to:
->>
->>1. allow up to a connection limit of 50 for the entire country.
->>2. allow up to 30 requests/second to the entire country.
->>3. drop the particular IPs with -m recent and a timeout of 3800 for t=
-hose IPs from
->> that country that violated that limit.
->>4. And finally log whatever has been dropped with excessive logging p=
-rotection.
->>5. A plus.. if I can get to DROP the entire class C (/24) of the offe=
-nding IP that
->> violated the limits instead of just the /32
->
->-A INPUT -m recent --recent-name offenders --rcheck --seconds 3800
->	-j DROP # you don't want to log these, it would be just noise
->-A INPUT -m geoip --src-cc GB -j gb
->-A gb -m connlimit --connlimit-upto 50 -m limit --limit 30/s -j RETURN
+I have been exploring severla options. Yes iam aware the risk of  
+blocking a country but one only serves a select group of countries as  
+the end user so...
 
-Since you wanted only 50 for the entire country, add --connlimit-mask 0=
-=2E
+Finally can you please help me understand why this rule alone does not  
+drop packets from an IP that is sending more then 3 requests per  
+minute to port 80?
 
->-A gb -m recent --recent-name offenders --set -j LOG ...
->-A gb -j DROP
+
+iptables -A INPUT -p tcp --dport 80 -m state --state NEW -m limit  
+--limit 3/min --limit-burst 3 -j DROP
+
+Regards,
+JP
+
