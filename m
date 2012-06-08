@@ -1,78 +1,63 @@
-From: =?iso-8859-1?b?Sm9z6Q==?= Pablo =?iso-8859-1?b?UOlyZXo=?= 
-	<josepablo@correo.co.cr>
-Subject: Re: iptable rate limit challenge.. help please..!
-Date: Fri, 08 Jun 2012 00:47:39 -0600
-Message-ID: <20120608004739.p2ee3b6x4wwcskg0@correo.co.cr>
-References: <20120607154038.bz3m3vzcqowsos4g@correo.co.cr>
-	<alpine.LNX.2.01.1206080025540.5045@frira.zrqbmnf.qr>
-	<20120607192847.cvyx1bimyo4g8g8o@correo.co.cr>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ipset: stops working after a while
+Date: Fri, 8 Jun 2012 09:29:50 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1206080923110.14633@blackhole.kfki.hu>
+References: <4FD03AE5.9000509@gmc.lt> <alpine.DEB.2.00.1206070856221.11710@blackhole.kfki.hu> <4FD0E83D.7030806@gmc.lt> <201206071722.41790.neal.p.murphy@alum.wpi.edu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20120607192847.cvyx1bimyo4g8g8o@correo.co.cr>
-Content-Disposition: inline
+In-Reply-To: <201206071722.41790.neal.p.murphy@alum.wpi.edu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; delsp="Yes	format=flowed"
-To: netfilter@vger.kernel.org
-Cc: Jan Engelhardt <jengelh@inai.de>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Neal Murphy <neal.p.murphy@alum.wpi.edu>
+Cc: netfilter@vger.kernel.org
 
-Jan,
+On Thu, 7 Jun 2012, Neal Murphy wrote:
 
-Thanks to your examples I was able to get this far to what I want. My  
-idea with this is try to mitigate the DoS attack first by blocking  
-individual IPs that are misbehaving.. (STEP 2-6)
+> On Thursday 07 June 2012 13:43:25 Aidas Kasparas wrote:
+> > On 2012.06.07 09:59, Jozsef Kadlecsik wrote:
+> > > Maybe your given set gets full. From the manpage:
+> > > 
+> > > "When  entries  added  by the SET target of iptables/ip6tables, then the
+> > > hash size is fixed and the set won't be duplicated,  even  if  the  new
+> > > entry cannot be added to the set."
+> > 
+> > Ok. But if set is full, and I list it, it should show at least some
+> > members present. When it stops working, it shows no members at all.
+> > 
+> > On the other hand, I create sets with timeout 10. So, every 3 secs there
+> > should be expiration process which trows ~ 1/3 of entries from each
+> > chain. And this should make place for some new entries.
+> 
+> I'll address *your* problem, not the problem you observed with the ipset code 
+> (which may be a real problem).
+> 
+> How many entres are in the set when it is 'full'? Have you tried setting the 
+> initial size of the hash to the maximum (64ki?)?
 
-Also at the same time Iam putting the country in a "container" so that  
-it doesnt consume more then the resources in STEP 7 AND 8 so I can  
-continue to serve pages with the webserver
+According to the listing of the set:
 
-I have other defense mechanisms for DoS.. like fail2ban etc.. this is  
-just one layer of defense.
+# ipset list fd_88
+Name: fd_88
+Type: hash:ip
+Header: family inet hashsize 1024 maxelem 65536 timeout 10
+                             ^^^^
+Size in memory: 82040
+References: 3
+Members:
 
-Iam still a newbie so if you can help me complete the blanks it would  
-be much appreciated.
+Because the SET target won't trigger increasing the hash size and the 
+max collision is limited to 12, that means there can be at the maximum 
+12*1024 elements in that set. And that's the theoretical maximum.
 
+By the way the hash size is not limited in ipset 6.x when creating a hash 
+type of set.
 
-####################################################################
-
-
-#STEP 1 We create our chain that will hold the group
-iptables -N limit_rated_group1;
-
-#STEP 2 We create the ipset table
-#Blah blah blah blah
-
-#STEP 3 We REJECT ips in the ipset table
-#Blah blah blah blah
-
-#STEP 4 We define the countries in the chain
-iptables -A INPUT -m geoip --src-cc AR -j limit_rated_group1
-
-#STEP 5 We match _individual_ IPs that have exceeded more then 8  
-requests/second and add them to the ipset list
-iptables -A INPUT  -m limit --limit 10/second  -j <ADD TO IPSET LIST>;
-
-#STEP 6 wE Match IPs _individual_ IPs that have exceeded conn_limit of  
-50 and add them to the ipset list
-iptables -A limit_rated_group1 -m connlimit --connlimit-above 50  
---connlimit-mask 32 -j  <ADD TO IPSET LIST>;
-
-#STEP 7 Limit for all the country to 20 requests per second, the rest REJECT
-iptables -A limit_rated_group1 -m limit --limit  10/min --limit-burst  
-20 -j LOG --log-prefix "CR REQ/SEC LIMIT: "
-iptables -A limit_rated_group1 -m limit --limit  10/min --limit-burst  
-20 -j REJECT
-
-#STEP 8 Limit for all the country to 100 concurrent connections, the  
-rest REJECT
-iptables -A limit_rated_group1 -m connlimit --connlimit-above 100  
---connlimit-mask 0 -j  REJECT;
-
-########################### ALLOW HTTP
-iptables -A INPUT -p tcp --dport 80 -j ACCEPT
-
-
-Regards,
-JP
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
