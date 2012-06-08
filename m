@@ -1,49 +1,49 @@
-From: Stephane Chazelas <stephane.chazelas@gmail.com>
-Subject: Re: How to obtain KBytes/sec in/out from a rule in real time
-Date: Fri, 8 Jun 2012 13:33:01 +0100
-Message-ID: <20120608123301.GA13651@chaz.gmail.com>
-References: <20120608003037.0ud7f668g84kgk4c@correo.co.cr>
+From: Stefan Keller <sk@open.ch>
+Subject: Re: Virtual packet tracer for iptables
+Date: Fri, 08 Jun 2012 15:36:49 +0200
+Message-ID: <4FD1FFF1.1080604@open.ch>
+References: <4FD1E2B1.80801@open.ch> <4FD1E87C.5020004@univ-nantes.fr> <4FD1F102.2010609@open.ch> <4FD1F728.8050107@univ-nantes.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20120608003037.0ud7f668g84kgk4c@correo.co.cr>
+In-Reply-To: <4FD1F728.8050107@univ-nantes.fr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: jean-philippe.menil@univ-nantes.fr
+Cc: netfilter@vger.kernel.org
 
-2012-06-08 00:30:37 -0600, Jos=E9 Pablo P=E9rez:
-> HellO!
->=20
-> Anybody know if a tool or script exists out there to obtain the
-> KBytes/sec in/out from a rule in real time
->=20
-> In other words something that can parse something like this:
->=20
-> # iptables -L INET_IN_PORT -v -x
-> # iptables -L INET_IN_PORT -v -x -n
-[...]
+> But you do not have to enable TRACE for all your sessions, only
+> the informations you are looking for.
 
-You could do things like:
+Hi,
 
-a=3D$(tput clear) perl -e 'while (1) {
-  open IT, "-|", "iptables", "-vxnL", "INPUT";
-   $. =3D 0; print $ENV{a};
-   while (<IT>) {
-      s{^\s*(\d+)\s+(\d+)}{
-        $n =3D ($1-$a[$.]) . " " . ($2-$b[$.]);
-        $a[$.]=3D$1;
-        $b[$.] =3D $2;
-        $n
-      }e;
-      print
-   };
-   close IT;
-   sleep 1}'
+Yes, that's true, TRACE does not have to be enabled for all sessions.
+But with TRACE I rely on real traffic and there is some interaction
+necessary to create such traffic (if multiple parties are involved).
 
-as a first approximation.
+The idea I have is a bit the same as with routing. If I want to know
+where a packet is routed to, then I use 'ip route get <dst_ip>' and
+can even add other information such as incoming interface, source IP
+address, FWMARK, etc. to consider my routing policy.
+I don't wait or look for traffic that matches my requirements and
+check with tcpdump where it is routed to - I ask the system for the
+action based on my input.
 
---=20
-Stephane
+It would be great to have a similar mechanism with iptables.
 
+Best regards
+Stefan Keller
+
+-- 
+stefan keller
+product manager
+
+open systems ag
+raeffelstrasse 29
+ch-8045 zurich
+t: +41 44 455 74 00
+f: +44 44 455 74 01
+stefan.keller@open.ch
+
+http://www.open.ch
