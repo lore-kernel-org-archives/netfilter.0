@@ -1,80 +1,50 @@
-From: Marco Padovan <evcz@evcz.tk>
-Subject: Re: Conntrack & Unreplied exhausts hashsize
-Date: Sat, 09 Jun 2012 20:15:53 +0200
-Message-ID: <4FD392D9.9010706@evcz.tk>
-References: <f8da378bd8c865bf9618b0d52f7b4441@njm.linuxwall.info>
+From: =?UTF-8?B?WXVjb25nIFN1biAo5Y+26Zuo6aOeKQ==?= <sunyucong@gmail.com>
+Subject: iptables hashlimit question
+Date: Sat, 9 Jun 2012 11:33:31 -0700
+Message-ID: <CAJygYd1qba-vxbCqtBB2k_XrL4GSz_ysDrDOJ96VSk5uCbo7cQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=evcz.tk; s=google;
-        h=message-id:date:from:user-agent:mime-version:cc:subject:references
-         :in-reply-to:x-enigmail-version:openpgp:content-type
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to:content-type
          :content-transfer-encoding;
-        bh=eFllwsc3G0Mom8jZ0JRDvS5EikOXDLjKFRUedbzv/d8=;
-        b=Zliv7coxYIjSJLwnPx/227xiABwASTl3B/6cUA0A6TeRRbAT+luLlCSbi49uC1YYWl
-         ydG3O3dRokMCYsxfvukwBA6Rf23/VvUbtuPgct5lNDf6lFK2vqW8rNX0Bdiq6P3b1IeO
-         zmZx41aaxuR7ZT80iw+WmVX6pmXlM9SmTYpMk=
-In-Reply-To: <f8da378bd8c865bf9618b0d52f7b4441@njm.linuxwall.info>
+        bh=ndqt9wquQaJYIzvtN3lm/cE2ReMJqHipDE2zcNSoNhI=;
+        b=S68abR/EXlBQuFzjD+nVJAzzOtzN9/udfF5YClS8y/JJOCtJjZnq4Ba4roa2kEjGrE
+         N4WYcfiaCX3UvHAxz7Co3IHtL1yKBNISYR/WZhtY3awor+uALDBnvKvXK7obJXvYAfnf
+         9ZW7RJheu2a7U4+Dg79qqzbGmQ3lfK77AdDbOc3xtXyS4iTIxVcAmp+rcEv8baiZyCam
+         7zF626c0NiU9gonOauFQyhB+4zii1cqygNaXegEpvW90q8BApt4cbZhKCmDcx6wj0Gl5
+         vijIUqYIlPmueil4rQNE/SVdFEOvqM/rO5ilUhPJDhmSzpHuXQAG/UzMQ74oH6Uh8kJB
+         3alg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: 
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-Looks like it's an intendend behaviour:
+Hi,
 
-http://www.netfilter.org/documentation/FAQ/netfilter-faq-3.html#ss3.17
+I've been trying to setup hashlimit on a linux (as a l3 gateway) to
+limit the pps per each IP, i have two questions:
 
-<<UNREPLIED entries are temporary entries, i.e. as soon as we run out of
-connection tracking entries (we reach
-/proc/sys/net/ipv4/ip_conntrack_max), we delete old UNREPLIED entries.
-In other words: instead of having empty conntrack entries, we'd rather
-keep some maybe useful information in them until we really need them.>>
+1) for performance reason I have marked all traffic forwared by the
+box to NOTRACK in raw table, would that affect hashlimit in anyway?
 
-when having the conntrack table full "error" did you still have
-unreplied entries in the table?
+2) (there's only about 200 ips total) I found out when I =C2=A0use this
+iptables -A FORWARD
+=C2=A0-m hashlimit --hashlimit-name limit1 \
+=C2=A0--hashlimit-htable-size 4096 --hashlimit-htable-expire 60000 \
+=C2=A0--hashlimit-srcmask 32 --hashlimit-mode srcip \
+=C2=A0--hashlimit-upto 100/sec \
+=C2=A0-j ACCEPT
 
-Il 09/06/2012 17:12, Julien Vehent ha scritto:
-> Hi everyone,
->
-> I'm analyzing a configuration problem that we are encountering with
-> conntrack at work. We have a farm of frontend servers that run apache.
-> Those servers run into the classical table full problem:
->
->     Jun 5 09:57:51 web-front1 kernel: [7177214.445925] nf_conntrack:
-> table full, dropping packet.
->
-> So I started tuning the kernel of one member of the farm. This server
-> has 2 interfaces: one public and one in the LAN. The problem is on the
-> public interface, it seems that connections in the UNREPLIED state
-> continue to grow and never get cleaned up by conntrack. Below is a
-> diagram that shows the issue:
->
-> http://4u.1nw.eu/conntrack_stat3.png
->
-> The orange line counts connections on the public IP that are in the
-> unreplied state. The script parses /etc/net/ip_conntrack every 10
-> minutes (nothing fancy, see https://gist.github.com/2901349 ).
->
-> My questions are:
->
-> Should these UNREPLIED connection get removed from conntrack after a
-> certain timeout?
->
-> What is the parameter that controls this timeout ?
-> I'm afraid it might be
-> `net.netfilter.nf_conntrack_tcp_timeout_established = 432000`, which
-> is 5 days. If this is the case, would it be safe to set this parameter
-> to 300 seconds instead (5 minutes) ?
->
-> Note: apache runs with `KeepAlive On` and `KeepAliveTimeout 3`, in
-> case this might be relevant.
->
->
-> Thanks a lot,
-> Julien
->
->
+it still drops quite a few packets even thought the rate is well under
+100/sec, then I found out if I add
 
+--hashlimit-burst 100 , no packets will be dropped anymore (it appears
+to be working correctly), the doucment is very vague on this burst
+param, how much should I set it to if I just want to limit packet at
+100/sec ?
 
+also does =C2=A0-hashlimit-htable-expire affect the rate limiting?
+
+Thanks.
