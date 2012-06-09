@@ -1,77 +1,89 @@
-From: Marco Padovan <evcz@evcz.tk>
-Subject: Re: iptables hashlimit question
-Date: Sat, 09 Jun 2012 21:06:10 +0200
-Message-ID: <4FD39EA2.20302@evcz.tk>
-References: <CAJygYd1qba-vxbCqtBB2k_XrL4GSz_ysDrDOJ96VSk5uCbo7cQ@mail.gmail.com>
+From: Julien Vehent <julien@linuxwall.info>
+Subject: Fwd: Re: Conntrack & Unreplied exhausts hashsize
+Date: Sat, 09 Jun 2012 16:15:42 -0400
+Message-ID: <1c26dc9ebe0d0e22d5309b6bc0a73e41@njm.linuxwall.info>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=evcz.tk; s=google;
-        h=message-id:date:from:user-agent:mime-version:cc:subject:references
-         :in-reply-to:x-enigmail-version:openpgp:content-type
-         :content-transfer-encoding;
-        bh=7cyr86YrgbyAE12GsqTjTzql58vdh3CNGo9OjcbvQ0E=;
-        b=RpSf3ErqkAxxDmzpCZJKhX4n4qfHohoWn1naBkMA50L7KV3Xm3Z4chWQSjzcIRUdR8
-         ln4w5Xj4Bfih59g0JoIPVs8DCQG7IMA3vUoVL7ZH9FJ6kIfHuq38gojCCojq+lZRX6nA
-         lcemE+6AoS2tKMd9mRGk7rkplSaSveoXsehjU=
-In-Reply-To: <CAJygYd1qba-vxbCqtBB2k_XrL4GSz_ysDrDOJ96VSk5uCbo7cQ@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=linuxwall.info; h=
+	mime-version:content-type:content-transfer-encoding:date:from:to
+	:subject:message-id; s=lnw-dkim; bh=Y+bilmtk5DI6MgxnSQ6S/dRQx+Mf
+	CAOXOu5sRWkv5do=; b=iTaamowjIqyXT64yT0i6C5MKbLuA1NXjmMn6crPuY807
+	T2VomlBfSyg3dBbXZr0p1VTUsWZ572piu9RCN3PV3bIBAcOgQs/ZsXuUx3KUBPHH
+	HyySwrHj1BgxMlsiHduto4EKFfpdFGe1tRGpUfZZTzFxiEXjK9AKVhHXYN5iGGw=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: 
-Cc: netfilter@vger.kernel.org
-
-Default burst AFAIK is set to 5 ( #define XT_HASHLIMIT_BURST    5 ) so
-in your case the bucket is filled with 105 (100+5) coins AFTER the firs=
-t
-second is passed... that means that *before* the full second ticks your
-bucket will have less then 105 coins....
-
-you should set the burst at least to the same value of the rate
-limititing you want to achieve...
-
-high hashlimit-htable-expire values shouldn't affect the rate limiting
-*if you are not reaching the table size limits*...
-if the table is full and expire is too long you can have problems and
-cause the rule to get skipped/fail...
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@vger.kernel.org>
 
 
-Il 09/06/2012 20:33, Yucong Sun (=E5=8F=B6=E9=9B=A8=E9=A3=9E) ha scritt=
-o:
-> Hi,
->
-> I've been trying to setup hashlimit on a linux (as a l3 gateway) to
-> limit the pps per each IP, i have two questions:
->
-> 1) for performance reason I have marked all traffic forwared by the
-> box to NOTRACK in raw table, would that affect hashlimit in anyway?
->
-> 2) (there's only about 200 ips total) I found out when I  use this
-> iptables -A FORWARD
->  -m hashlimit --hashlimit-name limit1 \
->  --hashlimit-htable-size 4096 --hashlimit-htable-expire 60000 \
->  --hashlimit-srcmask 32 --hashlimit-mode srcip \
->  --hashlimit-upto 100/sec \
->  -j ACCEPT
->
-> it still drops quite a few packets even thought the rate is well unde=
-r
-> 100/sec, then I found out if I add
->
-> --hashlimit-burst 100 , no packets will be dropped anymore (it appear=
-s
-> to be working correctly), the doucment is very vague on this burst
-> param, how much should I set it to if I just want to limit packet at
-> 100/sec ?
->
-> also does  -hashlimit-htable-expire affect the rate limiting?
->
-> Thanks.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Very interesting find ! So, what that means is that the 5 days timeout will 
+not
+hurt other connections, because unreplied connections will get removed
+automatically if new connections need the spot ?
 
+That would definitely explain why the total of unreplied connection went 
+down a
+little bit on June 8th at 4am: http://4u.1nw.eu/conntrack_stat3.png
+
+We did fix other parameters earlier, like enabling tcp_tw_reuse and 
+directing
+localhost traffic to NOTRACK. It would explain why we didn't get more of 
+those
+`table full, dropping packet`.
+
+- Julien
+
+On 2012-06-09 14:14, Marco Padovan wrote:
+
+> Looks like it's an intendend behaviour:
+>
+> http://www.netfilter.org/documentation/FAQ/netfilter-faq-3.html#ss3.17 [1]
+>
+> <
+> Jun 5 09:57:51 web-front1 kernel: [7177214.445925] nf_conntrack: table 
+> full,
+> dropping packet.
+>
+> So I started tuning the kernel of one member of the farm. This server has 
+> 2
+> interfaces: one public and one in the LAN. The problem is on the public
+> interface, it seems that connections in the UNREPLIED state continue to 
+> grow
+> and never get cleaned up by conntrack. Below is a diagram that shows the
+> issue:
+>
+> http://4u.1nw.eu/conntrack_stat3.png [2]
+>
+> The orange line counts connections on the public IP that are in the
+> unreplied state. The script parses /etc/net/ip_conntrack every 10 minutes
+> (nothing fancy, see https://gist.github.com/2901349 [3] ).
+>
+> My questions are:
+>
+> Should these UNREPLIED connection get removed from conntrack after a 
+> certain
+> timeout?
+>
+> What is the parameter that controls this timeout ?
+> I'm afraid it might be `net.netfilter.nf_conntrack_tcp_timeout_established 
+> =
+> 432000`, which is 5 days. If this is the case, would it be safe to set 
+> this
+> parameter to 300 seconds instead (5 minutes) ?
+>
+> Note: apache runs with `KeepAlive On` and `KeepAliveTimeout 3`, in case 
+> this
+> might be relevant.
+>
+> Thanks a lot,
+> Julien
+
+
+
+Links:
+------
+[1] http://www.netfilter.org/documentation/FAQ/netfilter-faq-3.html#ss3.17
+[2] http://4u.1nw.eu/conntrack_stat3.png
+[3] https://gist.github.com/2901349
 
