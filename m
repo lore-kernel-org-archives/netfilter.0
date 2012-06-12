@@ -1,97 +1,99 @@
-From: Aidas Kasparas <a.kasparas@gmc.lt>
-Subject: Re: ipset: stops working after a while
-Date: Tue, 12 Jun 2012 08:24:03 +0300
-Message-ID: <4FD6D273.1000308@gmc.lt>
-References: <4FD03AE5.9000509@gmc.lt> <alpine.DEB.2.00.1206070856221.11710@blackhole.kfki.hu> <4FD0E83D.7030806@gmc.lt> <201206071722.41790.neal.p.murphy@alum.wpi.edu>
+From: Julien Vehent <julien@linuxwall.info>
+Subject: Re: Conntrack & Unreplied exhausts hashsize
+Date: Tue, 12 Jun 2012 07:22:10 -0400
+Message-ID: <be60760695706721924e9a5008138b3f@njm.linuxwall.info>
+References: <1c26dc9ebe0d0e22d5309b6bc0a73e41@njm.linuxwall.info>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <201206071722.41790.neal.p.murphy@alum.wpi.edu>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=linuxwall.info; h=
+	mime-version:content-type:content-transfer-encoding:date:from:to
+	:subject:in-reply-to:references:message-id; s=lnw-dkim; bh=mZBzO
+	xtFzR7jNPaZsTSt7O9OQUNFpUIo0zU9jOulKSg=; b=l43GtEj+TdaxjQXKi3nhx
+	YUFtP3sqEFzxl5mGBvA3ZYzd0zEkoKjSNhJa9ows+Y91wI4bzvAbu4Ef1yhdF5vF
+	r1sG61NkPz+cFPSIxQDKB12kx07XMfEZ8tO2zES28szNmS8JGiyQO6+J+V228LE4
+	UomyVQGLcrQ3us0kMca6Rk=
+In-Reply-To: <1c26dc9ebe0d0e22d5309b6bc0a73e41@njm.linuxwall.info>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-To: neal.p.murphy@alum.wpi.edu
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@vger.kernel.org>
 
-On 2012.06.08 00:22, Neal Murphy wrote:
-> On Thursday 07 June 2012 13:43:25 Aidas Kasparas wrote:
->> On 2012.06.07 09:59, Jozsef Kadlecsik wrote:
->>> Maybe your given set gets full. From the manpage:
->>>
->>> "When  entries  added  by the SET target of iptables/ip6tables, the=
-n the
->>> hash size is fixed and the set won't be duplicated,  even  if  the =
- new
->>> entry cannot be added to the set."
+On 2012-06-09 16:15, Julien Vehent wrote:
+> Very interesting find ! So, what that means is that the 5 days timeout 
+> will
+> not
+> hurt other connections, because unreplied connections will get removed
+> automatically if new connections need the spot ?
+>
+> That would definitely explain why the total of unreplied connection went 
+> down
+> a
+> little bit on June 8th at 4am: http://4u.1nw.eu/conntrack_stat3.png
+>
+> We did fix other parameters earlier, like enabling tcp_tw_reuse and 
+> directing
+> localhost traffic to NOTRACK. It would explain why we didn't get more of
+> those
+> `table full, dropping packet`.
+>
+> - Julien
+>
+> On 2012-06-09 14:14, Marco Padovan wrote:
+>
+>> Looks like it's an intendend behaviour:
 >>
->> Ok. But if set is full, and I list it, it should show at least some
->> members present. When it stops working, it shows no members at all.
+>> http://www.netfilter.org/documentation/FAQ/netfilter-faq-3.html#ss3.17 
+>> [1]
 >>
->> On the other hand, I create sets with timeout 10. So, every 3 secs t=
-here
->> should be expiration process which trows ~ 1/3 of entries from each
->> chain. And this should make place for some new entries.
->=20
-> I'll address *your* problem, not the problem you observed with the ip=
-set code=20
-> (which may be a real problem).
->=20
 
-Thanks. I tried to increase hash sizes, reenable DROPs and found out
-that there was an error in the destination IP address of ACCEPT rule,
-which had to pass good packets through. System corrected works for
-several days now, so I believe the ipset code had no problems which
-affected my setup.
+So, I've been monitoring conntrack for a few days now, and I can definitely 
+see the UNREPLIED connections get removed when the space is needed for new 
+connections. Which is the intended behavior.
 
-> How many entres are in the set when it is 'full'? Have you tried sett=
-ing the=20
-> initial size of the hash to the maximum (64ki?)?
->=20
-> Utilization of a set ought to be non-deterministic because you can't =
-know how=20
-> many 'new' addresses will arrive in any given time interval. In other=
- words (a=20
-> contrived example), suppose at time T you had 64ki addresses in the h=
-ash with=20
-> 20,000 set to expire in 3=E2=85=93 seconds (the rest later). In the n=
-ext 3333ms, 2000=20
-> new addresses arrive but can't fitin the set. At T+3333ms, 20k addres=
-ses=20
-> expire. In the next 2000ms, 21k new addresses arrive; 1000 of them wo=
-n't fit=20
-> in the set. 80Mb/s allows for a lot of packets; even slow consumer-gr=
-ade=20
-> switches can exceed 64ki addresses in 10 seconds via SYN packets.
->=20
-> Given all that, can you redesign your sets so you don't (maybe can't)=
- fill=20
-> them?
+http://4u.1nw.eu/conntrack_stat6.png
 
-Well, lets do the math.
-80Mbps is 10MBps.
-60 bytes on wire for SYN packet makes 167k SYN packets/s.
-I have 222 sets, so, if I'm lucky and attack spreads evenly over all of
-them, I have 750 inserts/ set * sec.
-In practice, I never seen a set filled with more than 9000 entries.
-Maybe monitoring lies and attack is not so big. Maybe small fraction of
-packets overflow collision bucket and are not inserted.
+However, I still get `nf_conntrack: table full, dropping packet` in my logs 
+from time to time. Should I be worried about those ? Are they related to 
+conntrack removing UNREPLIED connections ?
 
-Anyway, I upped hash size to 8k and 16k on two different boxes. As in
-latter case this can use up to 2.5GB of RAM just for ipsets, and
-hardware I'm renting has 4 and 8GB of RAM, I was not able to go higher.
+# grep conntrack /var/log/kern.log
+Jun 10 13:23:42 web-forms1 kernel: [8485564.759240] nf_conntrack: table 
+full, dropping packet.
+Jun 10 14:01:42 web-forms1 kernel: [8487844.952658] nf_conntrack: table 
+full, dropping packet.
+Jun 11 07:35:49 web-forms1 kernel: [8551092.298203] nf_conntrack: table 
+full, dropping packet.
+Jun 11 08:10:56 web-forms1 kernel: [8553199.262974] nf_conntrack: table 
+full, dropping packet.
+Jun 11 08:10:59 web-forms1 kernel: [8553202.270012] nf_conntrack: table 
+full, dropping packet.
+Jun 11 08:11:05 web-forms1 kernel: [8553208.270012] nf_conntrack: table 
+full, dropping packet.
+Jun 11 09:36:23 web-forms1 kernel: [8558325.832413] nf_conntrack: table 
+full, dropping packet.
+Jun 11 10:09:40 web-forms1 kernel: [8560322.716116] nf_conntrack: table 
+full, dropping packet.
+Jun 11 10:52:30 web-forms1 kernel: [8562892.668218] nf_conntrack: table 
+full, dropping packet.
+Jun 11 12:14:34 web-forms1 kernel: [8567817.116556] nf_conntrack: table 
+full, dropping packet.
+Jun 11 12:29:56 web-forms1 kernel: [8568739.067132] nf_conntrack: table 
+full, dropping packet.
+Jun 11 15:20:50 web-forms1 kernel: [8578993.309849] nf_conntrack: table 
+full, dropping packet.
+Jun 11 15:29:18 web-forms1 kernel: [8579500.895662] nf_conntrack: table 
+full, dropping packet.
+Jun 11 15:29:21 web-forms1 kernel: [8579503.901261] nf_conntrack: table 
+full, dropping packet.
+Jun 11 15:29:21 web-forms1 kernel: [8579504.043856] nf_conntrack: table 
+full, dropping packet.
+Jun 11 15:54:59 web-forms1 kernel: [8581042.188246] nf_conntrack: table 
+full, dropping packet.
+Jun 11 15:55:00 web-forms1 kernel: [8581042.695267] nf_conntrack: table 
+full, dropping packet.
+Jun 11 21:46:37 web-forms1 kernel: [8602139.638368] nf_conntrack: table 
+full, dropping packet.
 
-On the other hand I still need to check, how good jhash2 is for my case=
-,
-as all the IPs in one set have the same first byte. And how difficult
-would be to construct addresses to collide with given IP address of goo=
-d
-guys.
+- Julien
 
-Thanks again.
-
---=20
-Aidas Kasparas
-IT administrator
-GM Consult Group, UAB
-
-http://www.gmc.lt
