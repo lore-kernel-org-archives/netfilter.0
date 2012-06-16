@@ -1,37 +1,34 @@
-From: =?iso-8859-1?b?Sm9z6Q==?= Pablo =?iso-8859-1?b?UOlyZXo=?= 
-	<josepablo@correo.co.cr>
-Subject: Re: (NOT RESOLVED YET) How to list connections and its state PER
-	CHAIN? Possible?
-Date: Sat, 16 Jun 2012 13:01:48 -0600
-Message-ID: <20120616130148.z1bxs5ogg8wsg8ck@correo.co.cr>
-References: <20120614163818.k1vfdtxr40sokwk0@correo.co.cr>
-	<alpine.LNX.2.01.1206151519570.12865@frira.zrqbmnf.qr>
-	<20120616095025.ga90dzk0lcg08wg4@correo.co.cr>
-	<alpine.LNX.2.01.1206162013490.6986@frira.zrqbmnf.qr>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: conntrackd config syntax inflexibility
+Date: Sat, 16 Jun 2012 21:28:21 +0200
+Message-ID: <20120616192821.GA20265@1984>
+References: <20120606210358.089a4bc8@mistral.stie>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1206162013490.6986@frira.zrqbmnf.qr>
 Content-Disposition: inline
+In-Reply-To: <20120606210358.089a4bc8@mistral.stie>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; delsp="Yes"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: jonetsu <jonetsu@teksavvy.com>
+Cc: netfilter@vger.kernel.org
 
-Hello!!
+On Wed, Jun 06, 2012 at 09:03:58PM -0400, jonetsu wrote:
+> Hello,
+> 
+>   I'm using 0.9.14 to try out the stateful firewall feature, along
+>   with keepalived.  Trying out first the most simple 'notrack' option.
+>   Copied the provided config file, modified interfaces and IP
+>   addresses.  Problem is, conntrackd gives a syntax error when an
+>   interface in contrackd.conf is either:
+> 
+>   Interface fe-3-1
+> 
+>   or:
+> 
+>   Interface te1-5-1c02ppp
+> 
+>   Is there any plan to allow more flexible interface names ?
 
-Jan Engelhardt <jengelh@inai.de> ha escrito:
-
-
->> LOGMARK
->> The LOGMARK target will log packet and connection marks to syslog.
->
-> That is not the only thing it does. I must know, because I wrote it.
->
-
-
-Jan, Please point is to the manual entry... as we have this one:  
-http://dev.medozas.de/files/xtables/xtables-addons.8.html  and it says  
-only about logging to syslog..
-
-
+Are you defining those mappings in /etc/network/interfaces or udev ?
