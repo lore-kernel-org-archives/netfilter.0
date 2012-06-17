@@ -1,32 +1,41 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: (NOT RESOLVED YET) How to list connections and its state PER
- CHAIN? Possible?
-Date: Sat, 16 Jun 2012 22:27:54 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1206162219160.10502@frira.zrqbmnf.qr>
-References: <20120614163818.k1vfdtxr40sokwk0@correo.co.cr> <alpine.LNX.2.01.1206151519570.12865@frira.zrqbmnf.qr> <20120616095025.ga90dzk0lcg08wg4@correo.co.cr> <alpine.LNX.2.01.1206162013490.6986@frira.zrqbmnf.qr>
- <20120616130148.z1bxs5ogg8wsg8ck@correo.co.cr>
+From: Yang Yang <kormny@gmail.com>
+Subject: How to fix 'undefined symbol: ip6tc_ops'
+Date: Sun, 17 Jun 2012 16:28:39 +0800
+Message-ID: <CAMOvP7fwUCn0v+BVYeR7mX9XGu7O1m8fx0YxrW0BeiZYZ2rm=A@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20120616130148.z1bxs5ogg8wsg8ck@correo.co.cr>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=s1AqTnJbWth6O3imXyQwPYvy9ubwudIEeg6X/DcgJiQ=;
+        b=MJ4494K+pxd6LVVoAA2Q8LNWlrurV8uIdx/YuqbG3o+4ymRN6GVJ3RVpfYtnLl2K9H
+         I1wvjOddli4/P/Cf6HX/BsXd0DomkZghFTcG8ljkhZe9iTRfZWX1gmjKxsmF86GYhaFK
+         VysH8F+G2q++L1MUVy4ql54RFwhwcu7D6aZVH4ATdaxEvBki/p7KR8h3ItgjGcDjp8uQ
+         cIUpJGQPHd4pry+XA5j89b/TJIQxdJ8PR+cCohW132UfBCE30NAztTchRQ8cSg/1TM3D
+         pDYav9iG+T6ewYn5U/N+DvEUQTu57uunX7FfdOGSkBVza6M6JUHaQRUp+TzMxBwbT0y8
+         7JmA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: =?UTF-8?Q?Jos=C3=A9_Pablo_P=C3=A9rez?= <josepablo@correo.co.cr>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
->>> The LOGMARK target will log packet and connection marks to syslog.
->>
->> That is not the only thing it does. I must know, because I wrote it.
->
-> Jan, Please point is to the manual entry... as we have this one:
-> http://dev.medozas.de/files/xtables/xtables-addons.8.html  and it says only
-> about logging to syslog..
+Hi,
 
-You really make a case to want getting mocked (cf. recent LWN article, 
-https://lwn.net/Articles/501670/).
+I just have cross compiled iptables for my ARM-Linux board, but when I
+tried run it, the error 'iptables: symbol lookup error: iptables:
+undefined symbol: ip6tc_ops' occurred.
 
-	http://xtables-addons.git.sourceforge.net/git/gitweb.cgi?p=xtables-addons/xtables-addons;a=blob;f=extensions/xt_LOGMARK.c;h=1931c4a209c127b5e1167dcfa186e6fc30f65359;hb=HEAD#l37
+I have no idea how to fix it, is there anyone can help?
 
-The effing code does it. Absence of documentation has never reliably 
-implied a feature is absolutely not present.
+here're the details:
+
+s3c6410 (ARM11)
+Linux-3.0.1
+iptables-1.4.14
+Error : iptables: symbol lookup error: iptables: undefined symbol: ip6tc_ops
+
+Thanks.
+--------
+Regards,
+Yang Yang
