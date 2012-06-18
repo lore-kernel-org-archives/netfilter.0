@@ -1,45 +1,49 @@
-From: Shao Miller <Shao.Miller@yrdsb.edu.on.ca>
-Subject: Re: Filter MAC Destination
-Date: Mon, 18 Jun 2012 11:58:40 -0400
-Message-ID: <4FDF5030.5060008@YRDSB.Edu.On.Ca>
-References: <F0E5F8699DE1364584CDB894E99713552EEE6946@YRDSB5.YRDSB.YRDSB.NET> <alpine.LNX.2.01.1205311918550.13599@frira.zrqbmnf.qr> <4FDF4A7F.8000609@YRDSB.Edu.On.Ca> <alpine.LNX.2.01.1206181750340.12745@frira.zrqbmnf.qr>
+From: =?windows-1252?Q?Nejc_=8Akoberne?= <nejc@skoberne.net>
+Subject: Source port translation only
+Date: Tue, 19 Jun 2012 00:28:11 +0200
+Message-ID: <4FDFAB7B.9060002@skoberne.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1206181750340.12745@frira.zrqbmnf.qr>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=skoberne.net; s=google;
+        h=message-id:date:from:user-agent:mime-version:to:subject
+         :content-type:content-transfer-encoding;
+        bh=qVG/JCeSEaDPrlR+PaJPRSyj/TZ5q4gwr5u06xRTrhU=;
+        b=GN5wUm+oimpyyP5DDxQwCr0f8sqVtL4snO6hnxxteLYxmlLorJDMLC/UWyMP9lIJyV
+         2sUglwwp6nABSwvt+So5NqdE/xXTTcIxlgEAe5TY3tmP9nX42407lNody/i4+VAkC6w2
+         TEAy5ACWYdai8YAvPULdv1kHHLTkTXGDe7Ug4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-On 6/18/2012 11:51, Jan Engelhardt wrote:
-> On Monday 2012-06-18 17:34, Shao Miller wrote:
->> On 5/31/2012 13:19, Jan Engelhardt wrote:
->>> On Thursday 2012-05-31 19:14, Miller, Shao wrote:
->>>> I would like to filter Spanning-Tree Protocol data units, which 
->>>> have a common destination MAC address. Is filtering based on a 
->>>> destination MAC address possible, or only based on a source MAC 
->>>> address? 
->>> It is indeed possible to check for source and/or destination MAC 
->>> address for STP packets. 
->> Thanks a lot, Jan. My guess is that a certain vendor is using 
->> netfilter "underneath", so I was trying to figure out why their 
->> firewalls had the ability to filter based on source MAC, but not 
->> destination. So I've no idea. 
-> They probably have a lame web interface that just does not show the 
-> destination field. It certainly is possible with the ebtables command 
-> line tool. 
+Hi,
 
-Actually, their user interfaces (one web, one CLI) are pretty extensive, 
-and quite good at hiding the Linux behind.  In this instance, it can't 
-be done through either interface, and it's not mentioned in the user 
-guide, and a support case yielded that it wasn't possible.
+I want to do (stateful) source port translation (restriction actually) 
+on my outgoing packets, but no source address translation. And I want to 
+do it for IPv6.
 
-However, I figure that if they use their magic CLI command (and magic 
-"engineer" password that it requires) to get a bash (or something) shell 
-prompt, then they probably could issue an 'ebtables' command, just as 
-you mention. *sigh*
+So if there is a TCP packet like this:
 
-Thanks again.
+SRC ADDR: 2001:db8::10
+DST ADDR: 2001:c0de:
+SRC PORT: 53523
+DST PORT: 80
 
-- Shao Miller
+I want to translate it so that the source port falls into a specific 
+port range, say [1024:2047]:
+
+SRC ADDR: 2001:db8::10
+DST ADDR: 2001:c0de:
+SRC PORT: 1500
+DST PORT: 80
+
+If the source port is already in the requested port range, no 
+translation is needed (but the state has to be kept anyway).
+
+Is this possible to do with netfilter? If not, does anybody know for any 
+other (simple) way to do it?
+
+Thanks,
+Nejc
