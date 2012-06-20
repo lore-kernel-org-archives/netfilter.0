@@ -1,49 +1,37 @@
-From: =?windows-1252?Q?Nejc_=8Akoberne?= <nejc@skoberne.net>
-Subject: Source port translation only
-Date: Tue, 19 Jun 2012 00:28:11 +0200
-Message-ID: <4FDFAB7B.9060002@skoberne.net>
+From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
+Subject: ipt_netflow
+Date: Wed, 20 Jun 2012 10:59:25 -0300
+Message-ID: <CAMTjHryR_fh4AfC9eKmgj+s6x5xxHjSsgNGMEJ1rXY7CzBAgBg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=skoberne.net; s=google;
-        h=message-id:date:from:user-agent:mime-version:to:subject
-         :content-type:content-transfer-encoding;
-        bh=qVG/JCeSEaDPrlR+PaJPRSyj/TZ5q4gwr5u06xRTrhU=;
-        b=GN5wUm+oimpyyP5DDxQwCr0f8sqVtL4snO6hnxxteLYxmlLorJDMLC/UWyMP9lIJyV
-         2sUglwwp6nABSwvt+So5NqdE/xXTTcIxlgEAe5TY3tmP9nX42407lNody/i4+VAkC6w2
-         TEAy5ACWYdai8YAvPULdv1kHHLTkTXGDe7Ug4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hi,
+Hello people, I think my issue doesn't has many mach with this
+maillist but maybe anyone can help me.....so go ahead.
 
-I want to do (stateful) source port translation (restriction actually) 
-on my outgoing packets, but no source address translation. And I want to 
-do it for IPv6.
+I have installed ipt_netflow module on my firewall Red Hat 5.6 to
+control package flow forward it. sometimes appear many error messages
+as follow
 
-So if there is a TCP packet like this:
 
-SRC ADDR: 2001:db8::10
-DST ADDR: 2001:c0de:
-SRC PORT: 53523
-DST PORT: 80
+Jun 19 15:22:46 fw4 kernel: netflow_send_pdu[0]: sendmsg error -1:
+data loss 181 pkt, 92107 bytes
+Jun 19 15:22:46 fw4 kernel: netflow_send_pdu[0]: sendmsg error -1:
+data loss 249 pkt, 148217 bytes
+Jun 19 15:22:46 fw4 kernel: netflow_send_pdu[0]: sendmsg error -1:
+data loss 225 pkt, 311729 bytes
+Jun 19 15:22:46 fw4 kernel: netflow_send_pdu[0]: sendmsg error -1:
+data loss 89 pkt, 24367 bytes
+Jun 19 15:22:46 fw4 kernel: netflow_send_pdu[0]: sendmsg error -1:
+data loss 248 pkt, 299891 bytes
+Jun 19 15:22:46 fw4 kernel: netflow_send_pdu[0]: sendmsg error -1:
+data loss 252 pkt, 48311 bytes
 
-I want to translate it so that the source port falls into a specific 
-port range, say [1024:2047]:
+I wonder what are this messages ? there is any problem with my
+ipt_netflow module ?
 
-SRC ADDR: 2001:db8::10
-DST ADDR: 2001:c0de:
-SRC PORT: 1500
-DST PORT: 80
-
-If the source port is already in the requested port range, no 
-translation is needed (but the state has to be kept anyway).
-
-Is this possible to do with netfilter? If not, does anybody know for any 
-other (simple) way to do it?
-
-Thanks,
-Nejc
+any tip is welcome.
