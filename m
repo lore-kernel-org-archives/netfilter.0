@@ -1,40 +1,42 @@
-From: sreejith menon <sreejithjmenon@gmail.com>
-Subject: Re: Applying Nat rules during traffic
-Date: Wed, 20 Jun 2012 21:16:53 +0530
-Message-ID: <CACJKonr+HUCzwKdRYCcADFkR-0qp8n1NPf34h+uxkpZNAVqCdA@mail.gmail.com>
-References: <CACJKonqQND2VnPgsiE5=FTJp6qkjKjTZKVvfMAvTVThsjo=vPA@mail.gmail.com>
+From: rahul shrivastava <shrivastavaone@gmail.com>
+Subject: -f option used with iptables
+Date: Thu, 21 Jun 2012 16:16:56 +0530
+Message-ID: <CAE1WnGeiopf-gCWFzSVpZSDU6H56VqaPxL6K5AVL_o2xZm1pVw@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :content-type;
-        bh=aGLVhkmqO2nadzbFvC3ULhRH43CHVj6LDQhW1wACttA=;
-        b=aa12JaHpB+QEBNyUCtogkxbW0P5A3lvengz9uKeKOQPboKcO6KaEZn1/QTz5L1Lewd
-         bTr4XcqOHyLqjjQtYAElEwQaeGcvNm5s/2/w39QklktgOufMcDnTW+pGyCzEzOnGEpA4
-         kIqcUOy0blQtzGXAIHMtlkqf5iQi2of9YCtySshwDvsCI0ulZAcC3pksQ/1HVWQDKvWi
-         9qoZTo0jqlkdnjGV2WsSbsQ+08ZyKSktG1naThQ/3ENBNI4tFUhatgAqSR15436N6pWy
-         Vvu86o+Y8tMDmXL6W6g1h9M1ipJX+Vxqc9airWikB79OkCYAindRcfCGcVvOuSOlCMCe
-         +Kcg==
-In-Reply-To: <CACJKonqQND2VnPgsiE5=FTJp6qkjKjTZKVvfMAvTVThsjo=vPA@mail.gmail.com>
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=gCF4mqpk8UpX7iRTkJC7Q3YYKiTfj5ZBgFYbsbS56zM=;
+        b=mYwDE8wCV5oakBWJMfgbgzBqVLRgdzWtbHV0qwWTlOkRmZRlTiXtv2NzQik/r0tLta
+         Vf/v1daKFDY4XZoy7b7kW2zAlZKQkiL1IBkQbq4KPl3NcbL3Dg0433cJZU2DErbOWSGx
+         GeiwOv3EXOYj3C1zUhVdDWx2b6qBiQDpHl7xYuusEYITD6LTDpbDaJt4Op7dRYIx39q6
+         FjiGqWonJJBstfgDbSw1m9iQpiFgxQ9olarxK4Fk0ZMpTSR+0krB1jZmgG5t7hqPCV7q
+         NEc7W6i0oMs/P6U3lnesOXaqKMTFe5sh97Im+8nQkky4P5qUpFDnOyb69mlxMV97eV0R
+         eJXA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-> It's not a bug. The connection tracking table is independent from the
-> ruleset by design. There is not much point in (automatically) changing
-> the NAT tuples while a TCP connection is open anyway - since it would
-> rupture the connection (and that's what can happen if you force it with
-> conntrack -F.)
+Hi,
+kernel version is 2.6.35+
+I am defining following ACL
 
-Thanks for the information. So even if i install xtables add on the
-behavior will be the same.?
- ie if i was sending some icmp packets through output interface eth0,
-i need to stop and start the traffic again after applying NAT.
+iptables -A INPUT -p icmp -i eth1 -m iprange --src-range
+172.31.114.1-172.31.114.254 -m iprange --dst-range 192.168.1.1-192.168.1.254 -j
+DROP
 
-I was thinking of installing x-tables add on to solve this.
+with above rule i can dop all icmp packets on eth1 interface
+but when i add -f option to deny on fragmented packets rule doesnt work
 
-regards
-sreejith
+iptables -A INPUT -p icmp -i eth1 -m iprange --src-range
+172.31.114.1-172.31.114.254 -m iprange --dst-range 192.168.1.1-192.168.1.254 -f
+-j DROP
+
+My abjective is to deny only fragmented packets with specified ip, protocol and
+interface and "-f" option doesnt seem to work
+
+Thanks and Regards,
+Rahul Shrivastava
