@@ -1,8 +1,8 @@
-From: Alan Jenkins <alan.christopher.jenkins@gmail.com>
-Subject: Re: SNAT/MASQ on a single subnet
-Date: Sat, 23 Jun 2012 13:07:59 +0000 (UTC)
-Message-ID: <loom.20120623T145657-66@post.gmane.org>
-References: <1337271506.23670.13.camel@mutsumi.paige>
+From: richard lucassen <mailinglists@lucassen.org>
+Subject: netmask 255.248.255.0
+Date: Mon, 25 Jun 2012 12:45:45 +0200
+Message-ID: <20120625124545.273ae920b609bc0b0da20e9b@lucassen.org>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -11,64 +11,37 @@ List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Andrew <nfml7 <at> k1k2.com> writes:
+Hello list,
 
-> 
-> Hi I'm trying to work out what I guess might not be possible
-> with iptables or is simple and I"m just missing something
-> 
-> I have 3 devices on the same subnet
-> 
-> 192.168.0.1 ADSL Router
-> 192.168.0.240 Linux Server
-> 192.168.0.100 Windows PC
-> 
-> The Linux server has no rules and ACCEPT on all
-> 
-> What would the minimum necessary rule(s) to get the Linux Server
-> to forward (with SNAT or MASQUERADE) packets through the Router
-> from 192.168.0.100 and also send the replies back?
-> 
-> The Linux Server has 192.168.0.1 as it's gateway and also
-> has ip forwarding enabled
-> 
-> I set the gateway on the windows PC to 192.168.0.240
-> 
-> I tried a few simple single rules and failed.
-> (Just the single rule and deleted it after)
-> 2 examples were:
-> 
-> iptables -t nat -A POSTROUTING -o br0 -s 192.168.0.0/24 ! -d
-> 192.168.0.0/24 -j SNAT --to 192.168.0.240
-> 
-> iptables -t nat -A POSTROUTING -o br0 -s 192.168.0.0/24 -j SNAT --to
-> 192.168.0.240
-> 
-> Single ping shows:
-> 192.168.0.100 -> 74.125.237.113
-> 192.168.0.240 -> 74.125.237.113
-> 74.125.237.113 -> 192.168.0.240
-> 
-> but no "74.125.237.113 -> 192.168.0.100"
+I want access to 8 different /24 networks:
 
-[snip tcpdump]
+10.32.0.0/24
+10.33.0.0/24
+10.34.0.0/24
+10.35.0.0/24
+10.36.0.0/24
+10.37.0.0/24
+10.38.0.0/24
+10.39.0.0/24
 
-Right, looks like you have a rule working for one way, but not the other...  But
-you don't want to just Translate the Network Address (NAT).  Because you're
-trying to share one IP address between two machines.  You also need to translate
-the Port as well (NAPT), so that you share your tcp/udp port space between the
-Linux server and the Windows machine...
+This can of course be achieved by adding 8 seperate rules using a /24
+netmask. I tried to catch it in 1 rule and indeed, this seems to work
+well:
 
-> Anyone know what it should really be (or if it isn't possible why?)
-> 
-> Thanks for your help.
+10.32.0.0/255.248.255.0
 
-I think you want
+but AFAIK this is not documented anywhere. Is this a legitmate way to
+do this?
 
-iptables -t nat -A POSTROUTING -o br0 -j MASQUERADE
+R.
 
-(grabbed from http://tldp.org/HOWTO/IP-Masquerade-HOWTO/firewall-examples.html).
+-- 
+___________________________________________________________________
+It is better to remain silent and be thought a fool, than to speak
+aloud and remove all doubt.
 
-Regards
-Alan
-
++------------------------------------------------------------------+
+| Richard Lucassen, Utrecht                                        |
+| Public key and email address:                                    |
+| http://www.lucassen.org/mail-pubkey.html                         |
++------------------------------------------------------------------+
