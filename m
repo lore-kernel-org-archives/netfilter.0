@@ -1,51 +1,53 @@
-From: Jeremy Schaeffer <service@phonesplus.biz>
-Subject: netfilter dropping wanted packets
-Date: Mon, 25 Jun 2012 18:20:15 -0500
-Message-ID: <4FE8F22F.3010008@phonesplus.biz>
+From: Oguz Yilmaz <oguzyilmazlist@gmail.com>
+Subject: connmark problem
+Date: Tue, 26 Jun 2012 11:38:21 +0300
+Message-ID: <CAAo+KFkwRHnyxPPaEjbhzBJaB-x3qf5w_6ogg-dJQipqP4npyg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------080900070304070202090408"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to:content-type
+         :content-transfer-encoding;
+        bh=kG+xOVLzO1v4TZEESySGUF6PxxzWrmiHUmBoGDIuPPI=;
+        b=ocjduZwuKXmGGzsen5m3MkmdMwWfeIwUA54m4vIONJ/c1WdxvP57yftTQzrlTlqqHN
+         iFfwpRFSQo+zYC8miFyzqlpD+z0HFoT9o8hs9lvMkgyg2S4Cld+HAUmiMdP6FwQ+NFgw
+         J2i9X14xcgC+CtRGA6b8U8VetU83dxYR1y0KWTJ+3NjYESthXZH7VU1TGDtrkcmmXZtU
+         kFhJZ2H0PdtuxvBpS1vkcxo0xCYxNPIGzTmRqP5T27ST3pHQKkQ99I75PrJLMOGe4QU+
+         cFabfobcYLe+A41vK6ZjdvqVBrGQRKhDy1jj8zD86OgedUk54CHsmrjy4lqFKaZeTjma
+         xRGg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="windows-1252"
 To: netfilter@vger.kernel.org
 
-This is a multi-part message in MIME format.
---------------080900070304070202090408
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: 7bit
+Hi
 
-I keep having an issue where I have a ipsec tunnel and on the remote end 
-there is a megeco IP phone. It keeps dying and I get the following error:
+I use connmark in raw table. Please look at the following -L output.
+At the beginning of the chain I copy packet mark to the connection. -m
+mark matches packets. However -m connmark not matches. It is clearly
+visible from packet counters.
+How can we explain this?
 
-Message from syslogd@services at Jun 21 07:17:33 ...
-  kernel:nf_ct_RAS: dropping packetIN= OUT=eth0 SRC=172.29.102.105 
-DST=172.28.130.5 LEN=175 TOS=0x00 PREC=0x00 TTL=63 ID=40 PROTO=UDP 
-SPT=49736 DPT=1719 LEN=155
-
-I noticed that port 1719 is a H.32x port, is there a way to have 
-netfilter not try to decode that packet? I am not using H.32x, I want 
-those packets to forward instead of being dropped. - Jeremy
-
---------------080900070304070202090408
-Content-Type: text/x-vcard; charset=utf-8;
- name="service.vcf"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="service.vcf"
-
-begin:vcard
-fn:Jeremy Schaeffer
-n:Schaeffer;Jeremy
-org:Phones Plus of Janesville
-adr:;;123 W. Milwaukee St.;Janesville;WI;53548;US
-email;internet:jeremy@phonesplus.biz
-title:Service Technician
-tel;work:(608) 531-6290
-tel;fax:(608) 756-8810
-url:http://www.phonesplus.biz
-version:2.1
-end:vcard
+Regards,
+O=C4=9Fuz.
 
 
---------------080900070304070202090408--
+-t raw
+Chain PREROUTING (policy ACCEPT 61M packets, 32G bytes)
+
+ 8173 4803K ACCEPT     all  --  *      *       127.0.0.1            0.0=
+=2E0.0/0
+ 127K   35M CONNMARK   all  --  *      *       0.0.0.0/0
+0.0.0.0/0           CONNMARK save
+    0     0 LOG        all  --  *      *       0.0.0.0/0
+0.0.0.0/0           CONNMARK match 0x12/0xfff LOG flags 0 level 6
+prefix `ACCEPT:
+'
+    0     0 ACCEPT     all  --  *      *       0.0.0.0/0
+0.0.0.0/0           CONNMARK match 0x12/0xfff
+ 7897 4074K LOG        all  --  *      *       0.0.0.0/0
+0.0.0.0/0           MARK match 0x12/0xfff LOG flags 0 level 6 prefix
+`ACCEPT:'
+ 7897 4074K ACCEPT     all  --  *      *       0.0.0.0/0
+0.0.0.0/0           MARK match 0x12/0xfff
