@@ -1,45 +1,40 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: -f option used with iptables
-Date: Tue, 26 Jun 2012 12:46:10 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1206261245040.7681@frira.zrqbmnf.qr>
-References: <CAE1WnGeiopf-gCWFzSVpZSDU6H56VqaPxL6K5AVL_o2xZm1pVw@mail.gmail.com> <alpine.LNX.2.01.1206211626120.23123@frira.zrqbmnf.qr> <CAE1WnGcwvto-Dc25XqcskyYfnO2whR=D=YBfO-VCSKZjm7jkCg@mail.gmail.com>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: connmark problem
+Date: Tue, 26 Jun 2012 22:35:42 +0100
+Message-ID: <1340746542.1654.26.camel@andrew-desktop>
+References: <CAAo+KFkwRHnyxPPaEjbhzBJaB-x3qf5w_6ogg-dJQipqP4npyg@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAE1WnGcwvto-Dc25XqcskyYfnO2whR=D=YBfO-VCSKZjm7jkCg@mail.gmail.com>
+In-Reply-To: <CAAo+KFkwRHnyxPPaEjbhzBJaB-x3qf5w_6ogg-dJQipqP4npyg@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1340746546;
+	bh=x0sr1FagMGVJVZjy8DZt5fnBqQ9PEmhysb0rMKZts5A=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:Content-Transfer-Encoding:Mime-Version;
+	b=hZhrsELAIGyqAE0Pi8X3c+o8YD2T9JXmrKmsxBrJx6fNnBDLRU/sekC3HLqGawD/5
+	 lB548yB3gmXNtuUFPco8VhyywLI1rmugmmb+4JapKZCoQboIkqzP2Q8AGGgENYW3/k
+	 2lyb6v1o4osGe+PPNr0rD4I3F4vf/7QUXhdVck3k=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: rahul shrivastava <shrivastavaone@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+To: Oguz Yilmaz <oguzyilmazlist@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-On Tuesday 2012-06-26 12:24, rahul shrivastava wrote:
+On Tue, 2012-06-26 at 11:38 +0300, Oguz Yilmaz wrote:
+> Hi
+> 
+> I use connmark in raw table. Please look at the following -L output.
+> At the beginning of the chain I copy packet mark to the connection. -m
+> mark matches packets. However -m connmark not matches. It is clearly
+> visible from packet counters.
+> How can we explain this?
 
->this rule is not working for me
+I'm guessing this is because the raw table is traversed before
+connection tracking. See:
 
-Then you don't have any fragments.
-Remember that there may be defragmenter modules (nf_defrag_ipv4/ipv6)
-loaded.
+http://upload.wikimedia.org/wikipedia/commons/3/37/Netfilter-packet-flow.svg
 
-(And cease top-posting.)
-
->if you know if provide me a rule to drop only fragmented packets
+Andy
 
 
->
->On 6/21/12, Jan Engelhardt <jengelh@inai.de> wrote:
->> On Thursday 2012-06-21 12:46, rahul shrivastava wrote:
->>
->>>iptables -A INPUT -p icmp -i eth1 -m iprange --src-range
->>>172.31.114.1-172.31.114.254 -m iprange --dst-range
->>> 192.168.1.1-192.168.1.254
->>>-f -j DROP
->>>
->>>My abjective is to deny only fragmented packets with specified ip,
->>> protocol
->>>and interface and "-f" option doesnt seem to work
->>
->> I can guarantee you that -f matches fragments -- if there are any
->> by the time the rule is executed.
->>
->
