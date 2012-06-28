@@ -1,33 +1,20 @@
-From: =?utf-8?Q?Stefan_Bauer?= <stefan.bauer@cubewerk.de>
+From: =?utf-8?B?VGhvbWFzIELDpHR6bGVy?= <t.baetzler@bringe.com>
 Subject: AW: general question about DNAT-rule
-Date: Thu, 28 Jun 2012 20:00:13 +0200
-Message-ID: <zarafa.4fec9bad.2bea.6f3d3f574cbe426e@zarafa.cubewerk.int>
-References: <CAJygYd29i6Rh+ZsVASsC7W267Srueas9DHNYGhLQgJhAd8iEXg@mail.gmail.com>
+Date: Thu, 28 Jun 2012 17:43:21 +0000
+Message-ID: <515168F006F2D643952F8FFD24F2E073015AD663A6@sonne2.gw.bringe.net>
+References: <zarafa.4fec9690.2921.2a067fab23d16ee0@zarafa.cubewerk.int>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAJygYd29i6Rh+ZsVASsC7W267Srueas9DHNYGhLQgJhAd8iEXg@mail.gmail.com>
+In-Reply-To: <zarafa.4fec9690.2921.2a067fab23d16ee0@zarafa.cubewerk.int>
+Content-Language: de-DE
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: =?utf-8?Q?netfilter=40vger=2Ekernel=2Eorg?= <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Cc: Stefan Bauer <stefan.bauer@cubewerk.de>
 
------Urspr=C3=BCngliche Nachricht-----
-Von:	Yucong Sun (=E5=8F=B6=E9=9B=A8=E9=A3=9E) <sunyucong@gmail.com>
-Gesendet:	Do 28.06.2012 19:58
-Betreff:	Re: general question about DNAT-rule
-An:	Stefan Bauer <stefan.bauer@cubewerk.de>;=20
-CC:	netfilter@vger.kernel.org;=20
-> unless you have NOTRACK in raw table to specific turned off connectio=
-n
-> tracking for forwarding traffic, it be default still being tracked an=
-d
-> DNAT/SNAT auto match will still in effect.
-
-Yucong Sun,
-
-thank you very much being that precise.
-
-Have a nice day.
-
-Stefan
+U3RlZmFuIEJhdWVyIGFza2VkOg0KPiBUaGlzIGlzIGRvbmUgaW50ZXJuYWxseSByaWdodD8gaGVu
+Y2UgaSBkb250IHNlZSBzdWNoIGEgcnVsZSBpbiB0aGUgaXB0YWJsZXMgLXQgbmF0DQo+IC12bkwg
+b3V0cHV0Pw0KDQpIYXZlIGEgbG9vayBhdCAvcHJvYy9uZXQvaXBfY29ubnRyYWNrLCBvciBiZXR0
+ZXIgeWV0LCBpbnN0YWxsIHRoZSBjb25udHJhY2sgdXRpbGl0eS4NCg0KSFRILA0KVGhvbWFzDQo=
