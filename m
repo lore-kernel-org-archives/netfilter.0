@@ -1,7 +1,7 @@
 From: =?utf-8?Q?Stefan_Bauer?= <stefan.bauer@cubewerk.de>
 Subject: general question about DNAT-rule
-Date: Thu, 28 Jun 2012 18:55:12 +0200
-Message-ID: <zarafa.4fec8c70.24ca.5dedba9b62c4a926@zarafa.cubewerk.int>
+Date: Thu, 28 Jun 2012 19:29:29 +0200
+Message-ID: <zarafa.4fec9479.280e.5ab9092960b1b61e@zarafa.cubewerk.int>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
