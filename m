@@ -1,33 +1,26 @@
 From: =?utf-8?Q?Stefan_Bauer?= <stefan.bauer@cubewerk.de>
 Subject: general question about DNAT-rule
-Date: Thu, 28 Jun 2012 19:29:29 +0200
-Message-ID: <zarafa.4fec9479.280e.5ab9092960b1b61e@zarafa.cubewerk.int>
+Date: Thu, 28 Jun 2012 19:38:24 +0200
+Message-ID: <zarafa.4fec9690.2921.2a067fab23d16ee0@zarafa.cubewerk.int>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="utf-8"
 To: =?utf-8?Q?netfilter=40vger=2Ekernel=2Eorg?= <netfilter@vger.kernel.org>
 
-Dear Users,
+-----Urspr=C3=BCngliche Nachricht-----
+Von:	Yucong Sun (=E5=8F=B6=E9=9B=A8=E9=A3=9E) <sunyucong@gmail.com>
+Gesendet:	Do 28.06.2012 19:35
+Betreff:	Re: general question about DNAT-rule
+An:	Stefan Bauer <stefan.bauer@cubewerk.de>;=20
+CC:	netfilter@vger.kernel.org;=20
+> DNAT will auto create a SNAT rule for=C2=A0reverse=C2=A0stream, it is=
+ based on connection=20
+> tracking .=C2=A0
 
-please help me to understand the processing of packages when a DNAT-rule is setup.
-With DNAT on a Router the destination address is changed so a package with 
-SRC: 1.2.3 and DST 4.5.6 
-will become
-SRC: 1.2.3 and DST 7.8.9
+This is done internally right? hence i dont see such a rule in the ipta=
+bles -t nat -vnL output?
 
-If the receiver answers it is
-
-SRC: 7.8.9 and DST 1.2.3
-
-so if this packages is arriving on 1.2.3 it will get dropped as the sender was talking to 4.5.6 and not 7.8.9.
-
-Now to my question - is a SNAT-rule mandatory on the Router or is there some other process of "reverse-NAT" the answer packages to the initial sender?
-
-I want to understand what is happening with the packages and answer-packages in detail.
-
-thank you in advance
-
-Stefan
+Stefa
