@@ -1,43 +1,46 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset 6.13 released
-Date: Fri, 29 Jun 2012 22:04:17 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1206292201340.29738@blackhole.kfki.hu>
+From: Steven Kath <steven.kath@vyatta.com>
+Subject: Re: dropping fragmented packetsusing iptables -f option
+Date: Fri, 29 Jun 2012 13:35:29 -0700
+Message-ID: <CAKgro6D_ZkHWo8zhZ9nRRMa1Ov+g0jVa8KH3-ydG_i+5ZfT+iw@mail.gmail.com>
+References: <CAE1WnGfxNuu1yhySKaMF7LOVubHcyJg_o+n8N9Vt69A=z+BQFw@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <CAE1WnGfxNuu1yhySKaMF7LOVubHcyJg_o+n8N9Vt69A=z+BQFw@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: rahul shrivastava <shrivastavaone@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+On Fri, Jun 29, 2012 at 12:13 AM, rahul shrivastava
+<shrivastavaone@gmail.com> wrote:
+> my objective is to drop all fragmented packets on my system
+> following rules are used
+>
+> iptables -A INPUT -f -j DROP
+> iptables -A OUTPUT -f -j DROP
+> iptables -A FORWARD -f -j DROP
+>
+> above rules are not making any effect
 
-I have just released ipset 6.13 with a few bugfixes and some new features.
+I would check whether your interface has offloading parameters
+enabled.  I think it's possible for the NIC or driver to reassemble
+fragments before passing them up the stack to netfilter.
 
-Userspace changes:
- - Explain in more detail src/dst for hash:net,iface
- - ipset help lists set types multiple times, fixed 
-   (reported by Mr Dash Four)
- - The commandline parser was too permissive, make it more strict
- - Allow saving to/restoring from a file without shell redirection
- - Fix typo of word "unkown" to "unknown" (Neutron Soutmun)
+$ sudo ethtool -k eth0
+Offload parameters for eth0:
+rx-checksumming: on
+tx-checksumming: on
+scatter-gather: on
+tcp-segmentation-offload: off
+udp-fragmentation-offload: off
+generic-segmentation-offload: on
+generic-receive-offload: on
+large-receive-offload: off
+ntuple-filters: off
+receive-hashing: off
 
-Kernel part changes:
- - ipset: Handle properly an IPSET_CMD_NONE (Tomasz Bursztyka)
- - netfilter: ipset: hash:net,iface: fix interface comparison (Florian
-   Westphal)
- - Timeout fixing bug broke SET target special timeout value, fixed
- - Use MSEC_PER_SEC instead of harcoded value
-
-You can download the source code of ipset from:
-        http://ipset.netfilter.org
-        ftp://ftp.netfilter.org/pub/ipset/
-        git://git.netfilter.org/ipset.git
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+GRO, LRO and possibly GSO could impact the case of detecting ICMP
+fragments.  TSO and UFO might impact the detection of TCP and UDP
+fragments.
