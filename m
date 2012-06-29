@@ -1,66 +1,104 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: Failed to compile libnetfilter_queeu 1.0.1 under Centos 6.2
-Date: Fri, 29 Jun 2012 23:51:52 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1206292342540.6785@frira.zrqbmnf.qr>
-References: <CAFs09d4CPqyotppJCm4ZxYDxe6KGO5ZtTtSZztRDuXD55u5s3A@mail.gmail.com> <CAFs09d65BuVHh58og-5dx2sFW=3yJBZ5gVrU=cPuwdOxbftZ7A@mail.gmail.com>
+From: Valts Silaputnins <valts@velns.org>
+Subject: iptables + local server via udp + conntracking + 2 uplinks  = wrong
+ source address for replies
+Date: Sat, 30 Jun 2012 01:16:28 +0300
+Message-ID: <4FEE293C.9090102@velns.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAFs09d65BuVHh58og-5dx2sFW=3yJBZ5gVrU=cPuwdOxbftZ7A@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="utf-8"
-To: David Hajoglou <dhajoglou@stillsecure.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@vger.kernel.org>
 
-On Friday 2012-06-29 23:36, David Hajoglou wrote:
+Greetings,
 
->I hope the message subject will make it to the appropriate thread, but
->if not, I'm responding to
->http://marc.info/?l=3Dnetfilter&m=3D132671646831409
+ maybe someone can advise. The situation is following - ventrilo server
+is a voip software that uses UDP protocol for the communication.
 
-This post references dl.medozas.de, which has been replaced by=20
-dl.inai.de in the meantime.
+Unfortunately it's not working correctly if I have 2 uplinks available
 
->In short, the original problem was linked to a missing
->/usr/include/libnfnetlink/linux_nfnetlink.h
+(routing is:
+ default
+        nexthop via 46.109.xxx.1  dev wan0 weight 100
+        nexthop via 46.109.xxx.1  dev wan1 weight 100
+)
 
-libnetfilter_queue provides its own copies of certain headers exactly=20
-because they may not be present (or present and too old) in=20
-/usr/include.
+I have enabled connection tracking and connection marking for all the
+packets arriving from the specified interfaces:
 
->I too had the same problem but it was with an RRM of libnfnetlink form
->the epel repo
->http://dl.fedoraproject.org/pub/epel/6/x86_64/repoview/libnfnetlink-de=
-vel.html
-> After getting a hold of the source rpm off that repo I found that
->they're patching to remove both=C2=A0linux_nfnetlink.h and
->linux_nfnetlink_compat.h and instead, pointing=C2=A0libnfnetlink.h at =
-the
->kernel header=C2=A0nfnetlink.h.
+Chain PREROUTING (policy ACCEPT 4800K packets, 2097M bytes)
+ pkts bytes target     prot opt in     out     source
+destination
+8248K 4108M CONNMARK   all  --  any    any     anywhere
+anywhere             CONNMARK restore
+3079K 1990M ACCEPT     all  --  any    any     anywhere
+anywhere             mark match ! 0x0
+ 272K   16M MARK       all  --  wan0   any     anywhere
+anywhere             MARK set 0x1
+ 272K   16M CONNMARK   all  --  wan0   any     anywhere
+anywhere             mark match ! 0x0 CONNMARK save
+ 272K   16M ACCEPT     all  --  wan0   any     anywhere
+anywhere             mark match ! 0x0
+96275 5666K MARK       all  --  wan1   any     anywhere
+anywhere             MARK set 0x2
+96275 5666K CONNMARK   all  --  wan1   any     anywhere
+anywhere             mark match ! 0x0 CONNMARK save
+96275 5666K ACCEPT     all  --  wan1   any     anywhere
+anywhere             mark match ! 0x0
 
-epel bugs to epel people.
 
->I'm not sure if this is a good thing or bad thing as it impacted my
->ability to build DAQ (for snort). =C2=A0My install of=C2=A0libnetfilte=
-r_queue
->references=C2=A0#include <libnfnetlink/linux_nfnetlink.h> which makes =
-the
->install of DAQ fail.
+So I have set ip rules & routing tables for it:
+100:    from all fwmark 0x1 lookup 1
+101:    from all fwmark 0x2 lookup 2
 
-An original libnetfilter_queue also has that line -- commented out.
+And it works _great_ for TCP connections either for web server running
+on same box or for NATed & forwarded connections. What I see in tcpdump
+for ventrilo is that it "randomly" picks the source address of either
+uplink to send replies to clients, so naturally it does not work because
+clients don't expect reply wrong wrong IP address.
 
-#include <libnfnetlink/libnfnetlink.h>
-// #include <libnfnetlink/liunx_nfnetlink.h>
+So in my naivety I thought that issue must be that connection tracking
+for some reason is not working for me. So I added rules into mangle
+table of OUTPUT chain to MARK packets to go out of specific interface at
+least:
 
-#include <libnetfilter_queue/linux_nfnetlink_queue.h>
+Chain OUTPUT (policy ACCEPT 4792K packets, 2107M bytes)
+ pkts bytes target     prot opt in     out     source
+destination
+7872K 2567M CONNMARK   all  --  any    any     anywhere
+anywhere             CONNMARK restore
+3080K  460M ACCEPT     all  --  any    any     anywhere
+anywhere             mark match ! 0x0
+   12  2688 MARK       udp  --  any    wan+    anywhere
+anywhere             udp spt:3784 MARK set 0x1
+    0     0 MARK       tcp  --  any    wan+    anywhere
+anywhere             tcp spt:3784 MARK set 0x1
+   12  2688 CONNMARK   all  --  any    wan+    anywhere
+anywhere             mark match ! 0x0 CONNMARK save
 
->=C2=A0I could patch and rebuild libnetfilter_queue or
->I could rebuild libnfnetlink, or I could make some hacky edits here
->and there. =C2=A0It is friday and beer drinking might just be in order=
- for
->these fixes so no telling what I might attempt :)
+And it kind of worked - packets started to go out the "wan0" interface.
+However the source address was still wrong. Ok so I tried to fix that by
+adding SNAT to POSTROUTING chain. Only to realize that for some reason
+those packets don't hit it (checked by -j TRACE...).
 
-You could grab libnetfilter_queue - or for that matter the entire stack=
-=20
-- from dl.inai.de/repos/CentOS_6 and see if that works.
+So I started googling for reasons for this problem, however results seem
+to condradict each other, some say it (well for tcp I suppose) works
+fine, some say SNAT for OUTPUT doesn't work at all.
+
+Sorry for long rambling, I am just stomped on this issue.
+
+#uname -a
+Linux arcturus 3.4.2-arcturus #7 SMP Tue Jun 19 21:08:02 EEST 2012
+x86_64 Intel(R) Pentium(R) Dual  CPU  E2200  @ 2.20GHz GenuineIntel
+GNU/Linux
+
+# iptables --version
+iptables v1.4.14
+
+
+P.S. Can't make it to bind to specific interface sadly.
+
+-- 
+Best regards,                            mailto:valts@velns.org
+Valts Silaputnins.
