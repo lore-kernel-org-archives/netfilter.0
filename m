@@ -1,53 +1,61 @@
-From: Amos Jeffries <squid3@treenet.co.nz>
-Subject: Re: Valid requirement for REDIRECT target on IPv6 where TPROXY won't
- do.
-Date: Sun, 01 Jul 2012 23:23:14 +1200
-Message-ID: <4FF03322.3050104@treenet.co.nz>
-References: <072301cd54cd$f434eaf0$dc9ec0d0$@telsatbb.vu> <4FEBE69D.4020400@treenet.co.nz> <074301cd550b$6e3942a0$4aabc7e0$@telsatbb.vu>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: [ANNOUNCE] ipset 6.13 released
+Date: Sun, 1 Jul 2012 14:09:32 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1207011405160.2289@blackhole.kfki.hu>
+References: <alpine.DEB.2.00.1206292201340.29738@blackhole.kfki.hu> <4FF02A93.8080603@googlemail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <074301cd550b$6e3942a0$4aabc7e0$@telsatbb.vu>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <4FF02A93.8080603@googlemail.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "Steve (Telsat Broadband)" <steve@telsatbb.vu>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Mr Dash Four <mr.dash.four@googlemail.com>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-On 28/06/2012 8:52 p.m., Steve (Telsat Broadband) wrote:
-> Hi AYJ,
->
-> Thanks for the reply.
->
-> In this particular instance it's not for redirecting packets to Squid, it's
-> to a custom service listening on a socket for both TCP and UDP data.
+On Sun, 1 Jul 2012, Mr Dash Four wrote:
 
-My point was that it *is* working, for at least one software 
-implementation. I've heard of other software too, but not sure enough to 
-name names.
+> > I have just released ipset 6.13 with a few bugfixes and some new features.
+> > 
+> > Userspace changes:
+> >  - Explain in more detail src/dst for hash:net,iface
+> >   
+> Assuming this is what you've had in mind (taken from "man ipset"):
+> 
+> The second direction parameter of the set match and
+> SET target modules corresponds to the incoming/outgoing interface:
+> src to the incoming one (similar to the -i flag of iptables), while
+> dst to the outgoing one (similar to the -o flag of iptables). When
+> the interface is flagged with physdev:, the interface is interpreted
+> as the incoming/outgoing bridge port.
+> 
+> I think that is plain wrong!
+> 
+> You refer to the incoming interface (interface on which packets arrive) as the
+> "source". That cannot be right. To me, it should be a "destination", not
+> "source" as the very definition of a "destination" is where something ends,
+> this is where a packet arrives and where the journey of the packet "stops" (or
+> where the packet is "destined" to arrive anyway). It should definitely not be
+> a "source" as the packet does not originate there, nor does it start its
+> journey there.
+> 
+> Similarly for the outgoing interface - this isn't a "destination" interface as
+> the packet doesn't arrive there - it is where it starts its journey from!
+> 
+> So, I think you should reverse both definitions and match "src" with the
+> outgoing interface and "dst" with the incoming interface - exactly the
+> opposite of what you have now. Documenting something which was done wrong in
+> the first place doesn't make it right.
 
+The hash:net,iface type is out for a long time. It is not possible to 
+change the meaning of src/dst without breaking backward compatibility, 
+therefore I won't do it. As a "workaround" I tried to explain the meaning 
+of src/dst for iface as clearly as possible.
 
->    It's
-> capturing packets on all ports and forwarding to their appropriate handler.
-> In addition for unauthenticated users it's also 'redirecting' their DNS
-> queries to the built-in DNS server so as to properly handle the
-> authentication process.
->
-> This all works seamless (without NAT) on IPv4 but there are simply no signs
-> of life when using TPROXY; it's simply as if the packets disappear into thin
-> air.
->
-> In the setup of the TPROXY rules, I can see packets getting counted on the
-> rule and the appropriate TPROXY mark and ip rules are in place, but they
-> never appear on the service nor do any of the DNS queries arrive.
-
-At the very minimum you should be receiving the packets. We see this 
-missing behaviour in two circumstances:
-  1) rpfilter in the system is configured to drop the packets.
-  2) NAT is configured on the same box as TPROXY.
-
-I'm not sure what is going on there in that second case. Just that NAT 
-and TPROXY on the same packets does not mix well on any kernel up to 3.2.
-
-AYJ
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
