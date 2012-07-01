@@ -1,43 +1,41 @@
-From: rahul shrivastava <shrivastavaone@gmail.com>
-Subject: compilation issues with xtables-addons-1.43
-Date: Sun, 1 Jul 2012 19:10:04 +0530
-Message-ID: <CAE1WnGeJ0rgSvYWMZh5-N4osDBwABEkUw0XH4gLWur2j-kkLVg@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: [ANNOUNCE] ipset 6.13 released
+Date: Sun, 1 Jul 2012 16:44:33 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1207011642300.2749@blackhole.kfki.hu>
+References: <alpine.DEB.2.00.1206292201340.29738@blackhole.kfki.hu> <20120701132152.GD9358@workstation>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=cix6ItjqQ1xHQKOxnnwv74eJp+/1UgdDxxX5AWn3h74=;
-        b=hUYJGciFY5wXkiz5wosnk1PvxbZ6H+yXtaKqIWJ/5p5+t/iqlVCs7boN/yku1Qc/rz
-         jdZCGxATZyROWodJrvJzr5chLTEjdAkB5zF3OhTb1OqnhoPE+XEL/w4r885IEZfjZ/51
-         O5/x+w+Blp703m+zStMoWjK4icHIS+IP5+Kk3rcvIWtlEfCuYaMZG5GjKSWtDSYxh7ae
-         ZmuAvYypL+GWUqzOybPxUG0DBXAKsrHC7jWdhBmmjJ2lwZ3CXyVYh5lJragFf2kBkD/Q
-         XsZ64uGL9++FkXrOUl35fBM6NyeS5oEQF2WSZQeK1VhjbaP/3VhWWkBkkOdB0zO3ewRV
-         56Sw==
+In-Reply-To: <20120701132152.GD9358@workstation>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter <netfilter@vger.kernel.org>
+To: Andreas Herz <andi@geekosphere.org>
+Cc: netfilter@vger.kernel.org
 
-Hi,
-i am cross compiling xtable-addons for powerpc plateform
-am following below mentioned procedure
-  ./configure --host=powerpc
-  make
-  make install
+On Sun, 1 Jul 2012, Andreas Herz wrote:
 
-i am getting following error
-make: *** No targets specified and no makefile found.  Stop.
+> On 29/06/12 at 22:04, Jozsef Kadlecsik wrote:
+> > I have just released ipset 6.13 with a few bugfixes and some new features.
+> 
+> Great, perfect timing, because i will go back to the testing and coding
+> stuff for my ipset setup :)
+> 
+> >  - Timeout fixing bug broke SET target special timeout value, fixed
+> >  - Use MSEC_PER_SEC instead of harcoded value
+> 
+> Does this also fix the jiffies issue with the kernel?
 
-there seem to be no Makefile
-If i am wrong plese correct me but there are 1)Makefile.am
-2)Makefile.extra 3)Makefile.in 4)Makefile.iptrules.in
-5)Makefile.mans.in but there is no Makefile
+That was fixed in the previous version. 
 
-Please find attached package for reference that i am using
+> But i will see it in my testcases nevertheless.
 
+I'm looking forward your testing results!
 
-
-Thanks and Regards,
-Rahul Shrivastava
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
