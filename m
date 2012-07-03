@@ -1,73 +1,64 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [ANNOUNCE] ipset 6.13 released
-Date: Mon, 2 Jul 2012 22:26:57 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1207022218010.5831@blackhole.kfki.hu>
-References: <alpine.DEB.2.00.1206292201340.29738@blackhole.kfki.hu> <4FF02A93.8080603@googlemail.com> <alpine.DEB.2.00.1207011405160.2289@blackhole.kfki.hu> <4FF04038.4080306@googlemail.com> <alpine.DEB.2.00.1207011434010.2486@blackhole.kfki.hu>
- <4FF04647.7060807@googlemail.com> <alpine.DEB.2.00.1207011446260.2486@blackhole.kfki.hu> <4FF04DDA.3020609@googlemail.com> <alpine.DEB.2.00.1207011646110.2749@blackhole.kfki.hu> <f1ffdaf291ae86a1e111d3edbae4cfa3@treenet.co.nz> <alpine.DEB.2.00.1207020916030.4335@blackhole.kfki.hu>
- <4FF19E01.6090400@googlemail.com> <alpine.DEB.2.00.1207021513540.4335@blackhole.kfki.hu> <4FF1B016.7010807@googlemail.com>
+From: Julien Vehent <julien@linuxwall.info>
+Subject: Re: module order: tcp/conntrack vs. conntrack/tcp
+Date: Mon, 02 Jul 2012 21:57:45 -0400
+Message-ID: <6b9bf8d2fbee67290e206ae8bef72242@njm.linuxwall.info>
+References: <9bfb14742a7ec35d775699fc955f437b@localhost>
+ <alpine.LNX.2.01.1207021414160.9210@frira.zrqbmnf.qr>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <4FF1B016.7010807@googlemail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mr Dash Four <mr.dash.four@googlemail.com>
-Cc: Amos Jeffries <squid3@treenet.co.nz>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Patrick McHardy <kaber@trash.net>
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed; d=linuxwall.info; h=
+	mime-version:content-type:content-transfer-encoding:date:from:to
+	:cc:subject:in-reply-to:references:message-id; s=lnw-dkim; bh=H1
+	SKRFkAVUer2+J0yN8h50xeG7MKm+bh7Kea0LF0r7k=; b=ZxNm6A3C4I4sehXkmv
+	YPRW+6ANOQ6bdHAvxZP6759f4ic1HoEkTRRCzPQi9j/4pUQhJcjrLy5tmYWARt5R
+	Kguq46Y6DvXrAs4+Rw3Czp98ndqsML6K+0tyhUh+4MKImAPAKGMXlpAi6Ve1W5Go
+	00L2G7lHNH8VBL0cHIa00ULyg=
+In-Reply-To: <alpine.LNX.2.01.1207021414160.9210@frira.zrqbmnf.qr>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jan Engelhardt <jengelh@inai.de>
+Cc: netfilter@vger.kernel.org
 
-On Mon, 2 Jul 2012, Mr Dash Four wrote:
- 
-> > > > Maybe ASCII art helps better to explain the different views:
-> > > > 
-> > > > - Mr Dash Four
-> > > > 
-> > > >                      -----------
-> > > >   pkt comes in ----- | machine | ----- pkt goes out
-> > > >                    ^ ----------- ^
-> > > >                  destination   source
-> > > > 
-> > > > - my view follows how the subsytem sees the interfaces
-> > > > 
-> > > >                              ------------------
-> > > >   pkt comes in --- interface | ipset subsytem | interface --- pkt goes
-> > > > out
-> > > >                            ^ ------------------ ^
-> > > >                        source               destination
-> > > > 
-> > > >         
-> > > How do you explain that the same "ipset subsystem" treats the IP address
-> > > of the "source" interface (according to your diagram above) as
-> > > "destination" when I match the same (incoming) packet above?
-> > >     
-> > 
-> > The source and destination IP addresses come of course from the packets.
-> > They have nothing to do with the interfaces - one can route any (sort of)
-> > packet with any source/destination IP addresses to whatever interface.
-> > 
-> > Do you skip routers and think of end hosts only, where the
-> > destination/source IP address is that of the receiving/sending interface?
-> >   
-> I see you are avoiding my questions as per usual, so I'll ask them again, for
-> the last time:-
-> 
-> 1) Why is it that the same "ipset subsystem" in your diagram above doesn't
-> seem to apply the same criteria and treats the IP address of the "source"
-> interface as a "destination" (not "source"), in order to get a match for the
-> same type of (incoming) packet; and
+On 2012-07-02 8:16, Jan Engelhardt wrote:
+> The use of -m conntrack (state is obsolete) is cheaper than people
+> think, because the ct belonging to a packet is already long determined,
+> so looking at the state is quite simple.
 
-Nobody talks about the IP address of the interface - just you.
- 
-> 2) How do you explain that the same designation ("destination") applies for
-> everything else in that "ipset system" (not to mention iptables/netfilter)
-> with the notable exception of hash:net,iface set for the same type of match
-> (incoming packet)?
+I just discovered that -m state is obsolete. There not much to read about -m 
+conntrack on the mailing lists (this one or the dev one). Would you care the 
+elaborate on the advantages of the conntrack module as opposed to the state 
+one ?
 
-I have wasted my time, so I stop here and the thread is ended for me.
+Should we also stop using -p, -s, -d, --sport and --dport and replace them 
+with the equivalents in the conntrack module ?
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+conntrack match options:
+[!] --ctstate {INVALID|ESTABLISHED|NEW|RELATED|UNTRACKED|SNAT|DNAT}[,...]
+                                State(s) to match
+[!] --ctproto proto            Protocol to match; by number or name, e.g. 
+"tcp"
+[!] --ctorigsrc address[/mask]
+[!] --ctorigdst address[/mask]
+[!] --ctreplsrc address[/mask]
+[!] --ctrepldst address[/mask]
+                                Original/Reply source/destination address
+[!] --ctorigsrcport port
+[!] --ctorigdstport port
+[!] --ctreplsrcport port
+[!] --ctrepldstport port
+                                TCP/UDP/SCTP orig./reply source/destination 
+port
+[!] --ctstatus {NONE|EXPECTED|SEEN_REPLY|ASSURED|CONFIRMED}[,...]
+                                Status(es) to match
+[!] --ctexpire time[:time]     Match remaining lifetime in seconds against
+                                value or range of values (inclusive)
+     --ctdir {ORIGINAL|REPLY}   Flow direction of packet
+
+
+Thanks,
+Julien
+
+-- 
+Julien Vehent - http://1nw.eu/!j
