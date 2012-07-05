@@ -1,36 +1,59 @@
-From: Sven-Haegar Koch <haegar@sdinet.de>
-Subject: Re: What is localnet?
-Date: Thu, 5 Jul 2012 20:59:52 +0200 (CEST)
-Message-ID: <alpine.DEB.2.02.1207052059010.5284@aurora.sdinet.de>
-References: <CAHEKYV6iST2_rFqaEUibAZqGG2jwUhMHUP3ve7xro-UgjrtTNw@mail.gmail.com>
+From: Michael Vallaly <netfilter@nolatency.com>
+Subject: IPSet Interface Matching
+Date: Thu, 5 Jul 2012 16:19:58 -0500
+Message-ID: <20120705161958.aa3403ffc39ac5c4e041fa1d@nolatency.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAHEKYV6iST2_rFqaEUibAZqGG2jwUhMHUP3ve7xro-UgjrtTNw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mauricio Tavares <raubvogel@gmail.com>
-Cc: Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Thu, 5 Jul 2012, Mauricio Tavares wrote:
 
-> When I check my deed, instead of having 10.0.0.0/24 or even intnet, I
-> get localnet:
-> 
-> iptables -L -t nat
-> Chain PREROUTING (policy ACCEPT)
-> target     prot opt source               destination
-> FORWARDS   all  --  anywhere             firewall.fake.domain.com
-> SUBNETFWD  all  --  192.168.42.0/24      firewall.fake.domain.com
-> SUBNETFWD  all  --  localnet/24          firewall.fake.domain.com
-> SUBNETFWD  all  --  192.168.22.0/24      firewall.fake.domain.com
+Hello all,
 
-I suspect from your /etc/networks (or maybe even /etc/hosts).
+Not sure if this is a known issue/feature request for ipset and/or
+iptables not: 
 
-c'ya
-sven-haegar
+Using ipset + iptables as follows:
+
+<snip>
+ipset create newset hash:net,iface
+ipset add newset 192.168.0.0/24,eth+
+ 
+ipset -L newset
+
+Name: newset
+Type: hash:net,iface
+Header: family inet hashsize 1024 maxelem 65536 
+Size in memory: 17360
+References: 1
+Members:
+192.168.0.0/24,eth+
+
+iptables -I INPUT -m set --match-set newset dst,src -j ACCEPT
+
+</snip>
+
+I was expecting the above set match line to to be equivalent to:
+
+"iptables -I INPUT -i eth+ -d 192.168.0.0/24 -j ACCEPT"
+
+The rule set doesn't seem to match the interface names as I would
+expect (trying to match multiple eth adapters). 
+
+Iptables docs seems to indicate 'If the interface name ends in a "+",
+then any interface which begins with this name will match.'
+
+Is this expected behavior? 
+
+If I manually add each interface (ie: eth0,eth1,ethN) to the ipset it
+seems to work, but seems less than ideal. 
+
+Thanks for your time.
+
+-Mike
 
 -- 
-Three may keep a secret, if two of them are dead.
-- Ben F.
+Michael Vallaly <netfilter@nolatency.com>
