@@ -1,7 +1,7 @@
-From: Jan Engelhardt <jengelh@inai.de>
+From: Sven-Haegar Koch <haegar@sdinet.de>
 Subject: Re: What is localnet?
-Date: Thu, 5 Jul 2012 21:06:13 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1207052105540.20003@frira.zrqbmnf.qr>
+Date: Thu, 5 Jul 2012 20:59:52 +0200 (CEST)
+Message-ID: <alpine.DEB.2.02.1207052059010.5284@aurora.sdinet.de>
 References: <CAHEKYV6iST2_rFqaEUibAZqGG2jwUhMHUP3ve7xro-UgjrtTNw@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -13,17 +13,24 @@ Content-Transfer-Encoding: 7bit
 To: Mauricio Tavares <raubvogel@gmail.com>
 Cc: Netfilter <netfilter@vger.kernel.org>
 
+On Thu, 5 Jul 2012, Mauricio Tavares wrote:
 
-On Thursday 2012-07-05 20:03, Mauricio Tavares wrote:
->iptables -L -t nat
->Chain PREROUTING (policy ACCEPT)
->target     prot opt source               destination
->FORWARDS   all  --  anywhere             firewall.fake.domain.com
->SUBNETFWD  all  --  192.168.42.0/24      firewall.fake.domain.com
->SUBNETFWD  all  --  localnet/24          firewall.fake.domain.com
->SUBNETFWD  all  --  192.168.22.0/24      firewall.fake.domain.com
->
->and yet the other two subnets are fine. Why does it want to make
->10.0.0.0/24 localnet?
+> When I check my deed, instead of having 10.0.0.0/24 or even intnet, I
+> get localnet:
+> 
+> iptables -L -t nat
+> Chain PREROUTING (policy ACCEPT)
+> target     prot opt source               destination
+> FORWARDS   all  --  anywhere             firewall.fake.domain.com
+> SUBNETFWD  all  --  192.168.42.0/24      firewall.fake.domain.com
+> SUBNETFWD  all  --  localnet/24          firewall.fake.domain.com
+> SUBNETFWD  all  --  192.168.22.0/24      firewall.fake.domain.com
 
-Because you have defined it that way in /etc/networks?
+I suspect from your /etc/networks (or maybe even /etc/hosts).
+
+c'ya
+sven-haegar
+
+-- 
+Three may keep a secret, if two of them are dead.
+- Ben F.
