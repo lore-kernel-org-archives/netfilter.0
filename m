@@ -1,37 +1,62 @@
-From: Sven-Haegar Koch <haegar@sdinet.de>
-Subject: Re: ebtables does not forward net request, help please.
-Date: Sun, 8 Jul 2012 07:20:27 +0200 (CEST)
-Message-ID: <alpine.DEB.2.02.1207080716420.31302@aurora.sdinet.de>
-References: <201207081128365653380@gmail.com>
+From: gmail <zhangjin2272@gmail.com>
+Subject: Re: Re: ebtables does not forward net request, help please.
+Date: Sun, 8 Jul 2012 15:23:57 +0800
+Message-ID: <201207081523496825740@gmail.com>
+References: <201207081128365653380@gmail.com> <alpine.DEB.2.02.1207080716420.31302@aurora.sdinet.de>, 
+	<CAGHLOKDWC-99cXnSPezVxnbYyW9Y4_b9-o27ncYF8O7Rc9G1aA@mail.gmail.com>
+Reply-To: zhangjin2272 <zhangjin2272@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <201207081128365653380@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=date:from:to:cc:reply-to:subject:references:x-priority:x-guid
+         :x-has-attach:x-mailer:mime-version:message-id:content-type
+         :content-transfer-encoding;
+        bh=AsYgWVQBsDGKdvbmUJEkHMVIQ/y2Er+KljaHwsuReAE=;
+        b=Y5u/+a9MEEzSWYliRa9oGv0dvWN8Ye0IcsQbqGUi30pQXF3dYYgtmYNO7Gigms6Gtu
+         yiqqTAV/AmBcT8RqMSrYm1GZlXRvZ2wYy3NLMU881KKHTGbKVB7HNbwxKhMHSiusUUdZ
+         LuwcetdifFF9R2IklNG0vkoSgMtLxFQW4OkAdct6OupC7iut9R9kzSId/gvRhGUem0x0
+         ojuKau7LVPYOJg12dr+bwkd/zb3CRu1r8tQYzJ9vCZdSVhA70CzrPphdUUAakJD98yFE
+         ltENM4pEeYPiMO3kOLG8fuROdbGdq0qrdTCC3Zro/ojdJ2ZaDjOLjoxjdlRP9CpwrQ3q
+         AErw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: gmail <zhangjin2272@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+To: Sven-Haegar Koch <haegar@sdinet.de>
 Cc: netfilter <netfilter@vger.kernel.org>
 
-On Sun, 8 Jul 2012, gmail wrote:
+VGhhbmtzIGZvciB5b3VyIHJlcGx5LiBCZWxvdyBlYnRhYmxlcyBydWxlcyBhcmUgdGhlIGVudGly
+ZSBjb250ZW50IEkgdXNlZC4gQWN0dWFsbHkgaXQgd2lsbCBhbGxvdyBBUlAgcXVlcnkgcmVxdWVz
+dCB0byBmb3J3YXJkLiBXaGF0IEkgY29uZnVzZWQgYWJvdXQgaXMgdGhhdCB3aHkgdGhlIHNlY29u
+ZCBmb3J3YXJkaW5nIHdpbGwgb25seSBoYXBwZW4gYWZ0ZXIgdGhlIGNsaWVudCB0cmlnZ2VyIGEg
+QVJQIHJlcXVlc3QgKHF1ZXJ5IE1BQyBvZiB0YXJnZXQgaG9zdCk/DQoNCg0KLS1hbGxvdyBjbGll
+bnQgQSgwMDoxMToyMjozMzo0NDo1NSkNCmVidGFibGVzIC10IG5hdCAtRg0KZWJ0YWxiZXMgLXQg
+YnJvdXRlIC1GDQplYnRhYmxlcyAtdCBmaWx0ZXIgLUYNCmVidGFibGVzIC10IGZpbHRlciAtUCBG
+T1JXQVJEIEFDQ0VQVA0KZWJ0YWJsZXMgLUEgRk9SV0FSRCAtcyAhIDAwOjExOjIyOjMzOjQ0OjU1
+IC1kICEgMDA6MTE6MjI6MzM6NDQ6NTUgLWogRFJPUA0KDQoNCi0tZGVueSBhbnkgbmV0IHJlcXVl
+c3QgZm9yd2FyZGluZw0KZWJ0YWJsZXMgLXQgbmF0IC1GDQplYnRhYmxlcyAtdCBicm91dGUgLUYN
+CmVidGFibGVzIC10IGZpbHRlciAtRg0KZWJ0YWJsZXMgLXQgZmlsdGVyIC1QIEZPUldBUkQgRFJP
+UA0KDQoNCjIwMTIvNy84IFN2ZW4tSGFlZ2FyIEtvY2ggPGhhZWdhckBzZGluZXQuZGU+DQoNCk9u
+IFN1biwgOCBKdWwgMjAxMiwgZ21haWwgd3JvdGU6DQoNCj4gNSwgTm93IGFnYWluIGFsbG93IHRo
+aXMgc3BlY2lmaWMgbWFjIHRvIHRyYXZlbCBiZXR3ZWVuIGV0aDAgYW5kIGV0aDIuDQo+IGVidGFi
+bGUgLUEgRk9SV0FSRCAtcyAhIDAwOjExOjIyOjMzOjQ0OjU1IC1kICEgMDA6MTE6MjI6OjMzOjQ0
+OjU1IC1qIERST1ANCj4gNiwgTm93IGFnYWluLCB1c2luZyBwaW5nIHRvb2wgdG8gY2hlY2sgbmV0
+d29yayBjb25uZWN0aXZpdHkuIChldGgwLWV0aDIpLg0KPiBUaGUgZXhwZWN0ZWQgcmVzdWx0IGlz
+IHRoYXQgbmV0d29yayBjb25uZWN0aW9uIGJldHdlZW4gZXRoMCBhbmQgZXRoMiBzaG91bGQgYmUg
+YXZhaWxhYmxlLiBCdXQgdW5mb3J0dW50bHkgc29tZXRpbWVzIHRoZSBjb25uZWN0aXZpdHkgaXMg
+bm90IGF2YWlsYWJsZS4gVGhpcyBoYXBwZW5kcyBhYm91dCAyLTMgdGltZXMgd2hlbiBJIHRyaWVk
+IHRoaXMgZm9yIDEwIHRpbWVzLiBUaGlzIGlzIGEgbGl0dGxlIHN0cmFuZ2UgdG8gbWUuIEFuZCB0
+aGUgbmV0d29yayBpcyBvbmx5IGF2YWlsYWJsZSBhZnRlciB0aGUgaG9zdCBzZW5kIGEgQVJQIHJl
+cXVlc3QgdGhyb3VnaCBldGgwLCBvbmx5IHRoZW4gdGhlIG5ldHdvcmsgYmVjb21lcyBhdmFpbGFi
+bGUgYWdhaW4uDQo+IFBsZWFzZSBjYW4gYW55b25lIGhlbHAgYWJvdXQgdGhpcz8gVGhhbmtzIGEg
+bG90Lg0KDQoNCkRpZCB5b3UgZm9yZ2V0IGFib3V0IHRoZSBBUlAgcXVlcmllcyBmcm9tIHRoZSBv
+dGhlciBib3hlcyBhc2tpbmcgZm9yIHRoZQ0KaXAgb2YgdGhlIGJveCB3aXRoIHRoZSBtYWMgMDA6
+MTE6MjI6MzM6NDQ6NTU/DQoNClRoZXkgY29tZSBmcm9tIHRoZSBxdWVyeSBob3N0cyBtYWMgYW5k
+IGdvIHRvIHRoZSBicm9hZGNhc3QNCihmZjpmZjpmZjpmZjpmZjpmZiksIGFza2luZyBmb3IgdGhl
+IG1hYyBvZiBpcCBhLmIuYy5kLiBUaG9zZSBnZXQgZHJvcHBlZA0Kd2l0aCB5b3VyIGFib3ZlIHNl
+dHVwIGFuZCBuZXZlciByZWFjaGluZyB5b3VyIHNwZWNpYWwgaG9zdCwgc28gdGhlIG90aGVyDQpo
+b3N0cyBkbyBub3Qga25vdyB0byB3aGljaCBtYWMgdG8gc2VuZCB0aGUgcGFja2V0cy4NCg0KYyd5
+YQ0Kc3Zlbi1oYWVnYXINCg0KLS0NClRocmVlIG1heSBrZWVwIGEgc2VjcmV0LCBpZiB0d28gb2Yg
+dGhlbSBhcmUgZGVhZC4NCi0gQmVuIEYuDQoNCg0KDQoNCg0KDQotLSANCkppbiBaaGFuZw==
 
-> 5, Now again allow this specific mac to travel between eth0 and eth2. 
-> ebtable -A FORWARD -s ! 00:11:22:33:44:55 -d ! 00:11:22::33:44:55 -j DROP
-> 6, Now again, using ping tool to check network connectivity. (eth0-eth2).
-> The expected result is that network connection between eth0 and eth2 should be available. But unfortuntly sometimes the connectivity is not available. This happends about 2-3 times when I tried this for 10 times. This is a little strange to me. And the network is only available after the host send a ARP request through eth0, only then the network becomes available again. 
-> Please can anyone help about this? Thanks a lot.
-
-Did you forget about the ARP queries from the other boxes asking for the 
-ip of the box with the mac 00:11:22:33:44:55?
-
-They come from the query hosts mac and go to the broadcast 
-(ff:ff:ff:ff:ff:ff), asking for the mac of ip a.b.c.d. Those get dropped 
-with your above setup and never reaching your special host, so the other 
-hosts do not know to which mac to send the packets.
-
-c'ya
-sven-haegar
-
--- 
-Three may keep a secret, if two of them are dead.
-- Ben F.
