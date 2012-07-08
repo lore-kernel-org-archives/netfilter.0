@@ -1,52 +1,37 @@
-From: gmail <zhangjin2272@gmail.com>
-Subject: ebtables does not forward net request, help please.
-Date: Sun, 8 Jul 2012 11:29:27 +0800
-Message-ID: <201207081128365653380@gmail.com>
-Reply-To: zhangjin2272 <zhangjin2272@gmail.com>
+From: Sven-Haegar Koch <haegar@sdinet.de>
+Subject: Re: ebtables does not forward net request, help please.
+Date: Sun, 8 Jul 2012 07:20:27 +0200 (CEST)
+Message-ID: <alpine.DEB.2.02.1207080716420.31302@aurora.sdinet.de>
+References: <201207081128365653380@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=date:from:to:reply-to:subject:x-priority:x-guid:x-has-attach
-         :x-mailer:mime-version:message-id:content-type
-         :content-transfer-encoding;
-        bh=NijyT47GXW8J63XWiwl3ciuPolNjKYmnl5ih7M1TW28=;
-        b=HmjKlYbVpGXNM4PSA4l66dZNhiFMgbrdYBTxUBiZhRvmh+AXn+oXDyp9xlv68t+ez8
-         WDF+7WJj6MkaZw/cWOboPSP2dbrtBe2oldKqhnZWu1oF1GyzcCHhPG7uBvYJ7OlBcXx/
-         +TBu88ACgYrVFSYA1enQxO9mbAmk1Mqgl7assvUMJoY7D6+CIbSXVrU32q8BCRpKfaaW
-         laE5p4T4Gq288TvPIlzJlYpL7Omj8Jy7aX9dIjxd7JO5rmBFLpDGmLqvMQdpHTzke88C
-         ssTF2DsxQYQHL4IHCcRhG0Swk8izTADOrFAKH2KJpaq6EujoOVp+pibnOeOMM1v1dadF
-         YpsA==
+In-Reply-To: <201207081128365653380@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: gmail <zhangjin2272@gmail.com>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-SGkgYWxsLA0KDQpJIG5lZWQgc29tZSBoZWxwIG9mIGVidGFibGVzIGJlaGF2aW9yLiBIZXJlIGlz
-IG15IHdvcmtpbmcgZW52aXJvbm1lbnQuDQprZXJuZWwgOiAyLjYuMzUNCndlIGhhdmUgNCBpbnRl
-cmZhY2VzIGV0aDAvZXRoMS9ldGgyL2V0aDMgYW5kIGFkZGVkIHRvIGJyMCB1c2luZyBicmN0bC4N
-CmJyY3RsIGJyMCBldGgwDQpicmN0bCBicjAgZXRoMg0KDQpOb3cgSSB1c2UgZWJ0YWJsZXMgdG8g
-Y29udHJvbCBwYWNrYWdpbmcgZm9yd2FyZGluZy4gDQoxLCB1c2UgZWJ0YWJsZXMgdG8gZmlsdGVy
-IG91dCBhbGwgcGFja2FnaW5nIGV4Y2VwdCB0aGUgc3BlY2lhbCBob3N0IG1hYy4NCmVidGFibGUg
-LUEgRk9SV0FSRCAtcyAhIDAwOjExOjIyOjMzOjQ0OjU1IC1kICEgMDA6MTE6MjI6OjMzOjQ0OjU1
-IC1qIERST1ANCjIsIHVzaW5nIHBpbmcgdG9vbCB0byBjaGVjayB0aGUgbmV0d29yayBjb25uZWN0
-aW9uIGZyb20gZXRoMCBzaWRlIHRvIGV0aDIgc2lkZS4gKFRoaXMgc3RlcCBpdCB3b3JrZWQgZmlu
-ZS4pDQozLCB1c2luZyBlYnRhYmxlcyB0byBkZW55IGFsbCBmb3J3YXJkaW5nLg0KemVybyBlYnRh
-Ymxlcy4uLg0KZWJ0YWJsZXMgLVAgRk9SV0FSRCBEUk9QDQo0LCB1c2luZyBwaW5nIHRvb2wgdG8g
-Y2hlY2sgdGhlIG5ldHdvcmsgY29ubmVjdGlvbiBmcm9tIGV0aDAgc2lkZSB0byBldGgyIHNpZGUg
-YWdhaW4uIChUaGlzIHN0ZXAsIGl0IGFsbCB3b3JrZWQgZmluZS4gaXQgY2Fubm90IGNvbm5lY3Qg
-ZWFjaCBvdGhlciBmcm9tIGV0aDAgdG8gZXRoMi4pDQo1LCBOb3cgYWdhaW4gYWxsb3cgdGhpcyBz
-cGVjaWZpYyBtYWMgdG8gdHJhdmVsIGJldHdlZW4gZXRoMCBhbmQgZXRoMi4gDQplYnRhYmxlIC1B
-IEZPUldBUkQgLXMgISAwMDoxMToyMjozMzo0NDo1NSAtZCAhIDAwOjExOjIyOjozMzo0NDo1NSAt
-aiBEUk9QDQo2LCBOb3cgYWdhaW4sIHVzaW5nIHBpbmcgdG9vbCB0byBjaGVjayBuZXR3b3JrIGNv
-bm5lY3Rpdml0eS4gKGV0aDAtZXRoMikuDQpUaGUgZXhwZWN0ZWQgcmVzdWx0IGlzIHRoYXQgbmV0
-d29yayBjb25uZWN0aW9uIGJldHdlZW4gZXRoMCBhbmQgZXRoMiBzaG91bGQgYmUgYXZhaWxhYmxl
-LiBCdXQgdW5mb3J0dW50bHkgc29tZXRpbWVzIHRoZSBjb25uZWN0aXZpdHkgaXMgbm90IGF2YWls
-YWJsZS4gVGhpcyBoYXBwZW5kcyBhYm91dCAyLTMgdGltZXMgd2hlbiBJIHRyaWVkIHRoaXMgZm9y
-IDEwIHRpbWVzLiBUaGlzIGlzIGEgbGl0dGxlIHN0cmFuZ2UgdG8gbWUuIEFuZCB0aGUgbmV0d29y
-ayBpcyBvbmx5IGF2YWlsYWJsZSBhZnRlciB0aGUgaG9zdCBzZW5kIGEgQVJQIHJlcXVlc3QgdGhy
-b3VnaCBldGgwLCBvbmx5IHRoZW4gdGhlIG5ldHdvcmsgYmVjb21lcyBhdmFpbGFibGUgYWdhaW4u
-IA0KUGxlYXNlIGNhbiBhbnlvbmUgaGVscCBhYm91dCB0aGlzPyBUaGFua3MgYSBsb3QuDQoNCkl2
-YW4=
+On Sun, 8 Jul 2012, gmail wrote:
 
+> 5, Now again allow this specific mac to travel between eth0 and eth2. 
+> ebtable -A FORWARD -s ! 00:11:22:33:44:55 -d ! 00:11:22::33:44:55 -j DROP
+> 6, Now again, using ping tool to check network connectivity. (eth0-eth2).
+> The expected result is that network connection between eth0 and eth2 should be available. But unfortuntly sometimes the connectivity is not available. This happends about 2-3 times when I tried this for 10 times. This is a little strange to me. And the network is only available after the host send a ARP request through eth0, only then the network becomes available again. 
+> Please can anyone help about this? Thanks a lot.
+
+Did you forget about the ARP queries from the other boxes asking for the 
+ip of the box with the mac 00:11:22:33:44:55?
+
+They come from the query hosts mac and go to the broadcast 
+(ff:ff:ff:ff:ff:ff), asking for the mac of ip a.b.c.d. Those get dropped 
+with your above setup and never reaching your special host, so the other 
+hosts do not know to which mac to send the packets.
+
+c'ya
+sven-haegar
+
+-- 
+Three may keep a secret, if two of them are dead.
+- Ben F.
