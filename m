@@ -1,62 +1,47 @@
-From: gmail <zhangjin2272@gmail.com>
-Subject: Re: Re: ebtables does not forward net request, help please.
-Date: Sun, 8 Jul 2012 15:23:57 +0800
-Message-ID: <201207081523496825740@gmail.com>
-References: <201207081128365653380@gmail.com> <alpine.DEB.2.02.1207080716420.31302@aurora.sdinet.de>, 
-	<CAGHLOKDWC-99cXnSPezVxnbYyW9Y4_b9-o27ncYF8O7Rc9G1aA@mail.gmail.com>
-Reply-To: zhangjin2272 <zhangjin2272@gmail.com>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: iptables + local server via udp + conntracking + 2 uplinks =
+ wrong source address for replies
+Date: Sun, 08 Jul 2012 22:15:40 +0100
+Message-ID: <1341782140.2557.10.camel@andylaptop>
+References: <4FF05213.3020204@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=date:from:to:cc:reply-to:subject:references:x-priority:x-guid
-         :x-has-attach:x-mailer:mime-version:message-id:content-type
-         :content-transfer-encoding;
-        bh=AsYgWVQBsDGKdvbmUJEkHMVIQ/y2Er+KljaHwsuReAE=;
-        b=Y5u/+a9MEEzSWYliRa9oGv0dvWN8Ye0IcsQbqGUi30pQXF3dYYgtmYNO7Gigms6Gtu
-         yiqqTAV/AmBcT8RqMSrYm1GZlXRvZ2wYy3NLMU881KKHTGbKVB7HNbwxKhMHSiusUUdZ
-         LuwcetdifFF9R2IklNG0vkoSgMtLxFQW4OkAdct6OupC7iut9R9kzSId/gvRhGUem0x0
-         ojuKau7LVPYOJg12dr+bwkd/zb3CRu1r8tQYzJ9vCZdSVhA70CzrPphdUUAakJD98yFE
-         ltENM4pEeYPiMO3kOLG8fuROdbGdq0qrdTCC3Zro/ojdJ2ZaDjOLjoxjdlRP9CpwrQ3q
-         AErw==
+In-Reply-To: <4FF05213.3020204@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1341782454;
+	bh=tsYdAOwAHL+3vPFY/ACV8NfMVB4PT3Y7YVDlSBE0SH0=;
+	h=Message-ID:Subject:From:To:Cc:In-Reply-To:References:Content-Type:
+	 Date:Mime-Version:Content-Transfer-Encoding;
+	b=l5gUajAH/rnE8vkCHWU8Gm9vjtPDvMy7rhGoCBjXQAM8PisWuwgPDWJwSAhjYJag4
+	 FsGfHAQlSZ9CGxrTQIwTUeATNeGaObR/SKLqBq4AtJrOtb53IR6DBn+UllCAUaKruM
+	 xSse+s4wKjtMdch6PMVl2nQyRLY7H+YXt303B62M=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Sven-Haegar Koch <haegar@sdinet.de>
-Cc: netfilter <netfilter@vger.kernel.org>
+To: ValtsS@gmail.com
+Cc: netfilter@vger.kernel.org
 
-VGhhbmtzIGZvciB5b3VyIHJlcGx5LiBCZWxvdyBlYnRhYmxlcyBydWxlcyBhcmUgdGhlIGVudGly
-ZSBjb250ZW50IEkgdXNlZC4gQWN0dWFsbHkgaXQgd2lsbCBhbGxvdyBBUlAgcXVlcnkgcmVxdWVz
-dCB0byBmb3J3YXJkLiBXaGF0IEkgY29uZnVzZWQgYWJvdXQgaXMgdGhhdCB3aHkgdGhlIHNlY29u
-ZCBmb3J3YXJkaW5nIHdpbGwgb25seSBoYXBwZW4gYWZ0ZXIgdGhlIGNsaWVudCB0cmlnZ2VyIGEg
-QVJQIHJlcXVlc3QgKHF1ZXJ5IE1BQyBvZiB0YXJnZXQgaG9zdCk/DQoNCg0KLS1hbGxvdyBjbGll
-bnQgQSgwMDoxMToyMjozMzo0NDo1NSkNCmVidGFibGVzIC10IG5hdCAtRg0KZWJ0YWxiZXMgLXQg
-YnJvdXRlIC1GDQplYnRhYmxlcyAtdCBmaWx0ZXIgLUYNCmVidGFibGVzIC10IGZpbHRlciAtUCBG
-T1JXQVJEIEFDQ0VQVA0KZWJ0YWJsZXMgLUEgRk9SV0FSRCAtcyAhIDAwOjExOjIyOjMzOjQ0OjU1
-IC1kICEgMDA6MTE6MjI6MzM6NDQ6NTUgLWogRFJPUA0KDQoNCi0tZGVueSBhbnkgbmV0IHJlcXVl
-c3QgZm9yd2FyZGluZw0KZWJ0YWJsZXMgLXQgbmF0IC1GDQplYnRhYmxlcyAtdCBicm91dGUgLUYN
-CmVidGFibGVzIC10IGZpbHRlciAtRg0KZWJ0YWJsZXMgLXQgZmlsdGVyIC1QIEZPUldBUkQgRFJP
-UA0KDQoNCjIwMTIvNy84IFN2ZW4tSGFlZ2FyIEtvY2ggPGhhZWdhckBzZGluZXQuZGU+DQoNCk9u
-IFN1biwgOCBKdWwgMjAxMiwgZ21haWwgd3JvdGU6DQoNCj4gNSwgTm93IGFnYWluIGFsbG93IHRo
-aXMgc3BlY2lmaWMgbWFjIHRvIHRyYXZlbCBiZXR3ZWVuIGV0aDAgYW5kIGV0aDIuDQo+IGVidGFi
-bGUgLUEgRk9SV0FSRCAtcyAhIDAwOjExOjIyOjMzOjQ0OjU1IC1kICEgMDA6MTE6MjI6OjMzOjQ0
-OjU1IC1qIERST1ANCj4gNiwgTm93IGFnYWluLCB1c2luZyBwaW5nIHRvb2wgdG8gY2hlY2sgbmV0
-d29yayBjb25uZWN0aXZpdHkuIChldGgwLWV0aDIpLg0KPiBUaGUgZXhwZWN0ZWQgcmVzdWx0IGlz
-IHRoYXQgbmV0d29yayBjb25uZWN0aW9uIGJldHdlZW4gZXRoMCBhbmQgZXRoMiBzaG91bGQgYmUg
-YXZhaWxhYmxlLiBCdXQgdW5mb3J0dW50bHkgc29tZXRpbWVzIHRoZSBjb25uZWN0aXZpdHkgaXMg
-bm90IGF2YWlsYWJsZS4gVGhpcyBoYXBwZW5kcyBhYm91dCAyLTMgdGltZXMgd2hlbiBJIHRyaWVk
-IHRoaXMgZm9yIDEwIHRpbWVzLiBUaGlzIGlzIGEgbGl0dGxlIHN0cmFuZ2UgdG8gbWUuIEFuZCB0
-aGUgbmV0d29yayBpcyBvbmx5IGF2YWlsYWJsZSBhZnRlciB0aGUgaG9zdCBzZW5kIGEgQVJQIHJl
-cXVlc3QgdGhyb3VnaCBldGgwLCBvbmx5IHRoZW4gdGhlIG5ldHdvcmsgYmVjb21lcyBhdmFpbGFi
-bGUgYWdhaW4uDQo+IFBsZWFzZSBjYW4gYW55b25lIGhlbHAgYWJvdXQgdGhpcz8gVGhhbmtzIGEg
-bG90Lg0KDQoNCkRpZCB5b3UgZm9yZ2V0IGFib3V0IHRoZSBBUlAgcXVlcmllcyBmcm9tIHRoZSBv
-dGhlciBib3hlcyBhc2tpbmcgZm9yIHRoZQ0KaXAgb2YgdGhlIGJveCB3aXRoIHRoZSBtYWMgMDA6
-MTE6MjI6MzM6NDQ6NTU/DQoNClRoZXkgY29tZSBmcm9tIHRoZSBxdWVyeSBob3N0cyBtYWMgYW5k
-IGdvIHRvIHRoZSBicm9hZGNhc3QNCihmZjpmZjpmZjpmZjpmZjpmZiksIGFza2luZyBmb3IgdGhl
-IG1hYyBvZiBpcCBhLmIuYy5kLiBUaG9zZSBnZXQgZHJvcHBlZA0Kd2l0aCB5b3VyIGFib3ZlIHNl
-dHVwIGFuZCBuZXZlciByZWFjaGluZyB5b3VyIHNwZWNpYWwgaG9zdCwgc28gdGhlIG90aGVyDQpo
-b3N0cyBkbyBub3Qga25vdyB0byB3aGljaCBtYWMgdG8gc2VuZCB0aGUgcGFja2V0cy4NCg0KYyd5
-YQ0Kc3Zlbi1oYWVnYXINCg0KLS0NClRocmVlIG1heSBrZWVwIGEgc2VjcmV0LCBpZiB0d28gb2Yg
-dGhlbSBhcmUgZGVhZC4NCi0gQmVuIEYuDQoNCg0KDQoNCg0KDQotLSANCkppbiBaaGFuZw==
+On Sun, 2012-07-01 at 16:35 +0300, Valts Silaputnins wrote:
+<snip>
+> However the source address was still wrong. Ok so I tried to fix that by
+> adding SNAT to POSTROUTING chain. Only to realize that for some reason
+> those packets don't hit it (checked by -j TRACE...).
+
+What are your rules for this? As long as the packets are actually
+hitting that chain then I don't see why they wouldn't be sent to the
+SNAT target.
+
+> So I started googling for reasons for this problem, however results seem
+> to condradict each other, some say it (well for tcp I suppose) works
+> fine, some say SNAT for OUTPUT doesn't work at all.
+
+I don't see why it should be a problem, but you have to use SNAT in the
+POSTROUTING chain not OUTPUT. From the man page:
+
+ SNAT   This  target  is only valid in the nat table, in the POSTROUTING
+chain.
+
+Andy
+
 
