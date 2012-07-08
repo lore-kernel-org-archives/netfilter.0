@@ -1,61 +1,52 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: IPSet Interface Matching
-Date: Thu, 5 Jul 2012 23:30:00 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1207052328500.13360@blackhole.kfki.hu>
-References: <20120705161958.aa3403ffc39ac5c4e041fa1d@nolatency.com>
+From: gmail <zhangjin2272@gmail.com>
+Subject: ebtables does not forward net request, help please.
+Date: Sun, 8 Jul 2012 11:29:27 +0800
+Message-ID: <201207081128365653380@gmail.com>
+Reply-To: zhangjin2272 <zhangjin2272@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20120705161958.aa3403ffc39ac5c4e041fa1d@nolatency.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=date:from:to:reply-to:subject:x-priority:x-guid:x-has-attach
+         :x-mailer:mime-version:message-id:content-type
+         :content-transfer-encoding;
+        bh=NijyT47GXW8J63XWiwl3ciuPolNjKYmnl5ih7M1TW28=;
+        b=HmjKlYbVpGXNM4PSA4l66dZNhiFMgbrdYBTxUBiZhRvmh+AXn+oXDyp9xlv68t+ez8
+         WDF+7WJj6MkaZw/cWOboPSP2dbrtBe2oldKqhnZWu1oF1GyzcCHhPG7uBvYJ7OlBcXx/
+         +TBu88ACgYrVFSYA1enQxO9mbAmk1Mqgl7assvUMJoY7D6+CIbSXVrU32q8BCRpKfaaW
+         laE5p4T4Gq288TvPIlzJlYpL7Omj8Jy7aX9dIjxd7JO5rmBFLpDGmLqvMQdpHTzke88C
+         ssTF2DsxQYQHL4IHCcRhG0Swk8izTADOrFAKH2KJpaq6EujoOVp+pibnOeOMM1v1dadF
+         YpsA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Michael Vallaly <netfilter@nolatency.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter <netfilter@vger.kernel.org>
 
-On Thu, 5 Jul 2012, Michael Vallaly wrote:
+SGkgYWxsLA0KDQpJIG5lZWQgc29tZSBoZWxwIG9mIGVidGFibGVzIGJlaGF2aW9yLiBIZXJlIGlz
+IG15IHdvcmtpbmcgZW52aXJvbm1lbnQuDQprZXJuZWwgOiAyLjYuMzUNCndlIGhhdmUgNCBpbnRl
+cmZhY2VzIGV0aDAvZXRoMS9ldGgyL2V0aDMgYW5kIGFkZGVkIHRvIGJyMCB1c2luZyBicmN0bC4N
+CmJyY3RsIGJyMCBldGgwDQpicmN0bCBicjAgZXRoMg0KDQpOb3cgSSB1c2UgZWJ0YWJsZXMgdG8g
+Y29udHJvbCBwYWNrYWdpbmcgZm9yd2FyZGluZy4gDQoxLCB1c2UgZWJ0YWJsZXMgdG8gZmlsdGVy
+IG91dCBhbGwgcGFja2FnaW5nIGV4Y2VwdCB0aGUgc3BlY2lhbCBob3N0IG1hYy4NCmVidGFibGUg
+LUEgRk9SV0FSRCAtcyAhIDAwOjExOjIyOjMzOjQ0OjU1IC1kICEgMDA6MTE6MjI6OjMzOjQ0OjU1
+IC1qIERST1ANCjIsIHVzaW5nIHBpbmcgdG9vbCB0byBjaGVjayB0aGUgbmV0d29yayBjb25uZWN0
+aW9uIGZyb20gZXRoMCBzaWRlIHRvIGV0aDIgc2lkZS4gKFRoaXMgc3RlcCBpdCB3b3JrZWQgZmlu
+ZS4pDQozLCB1c2luZyBlYnRhYmxlcyB0byBkZW55IGFsbCBmb3J3YXJkaW5nLg0KemVybyBlYnRh
+Ymxlcy4uLg0KZWJ0YWJsZXMgLVAgRk9SV0FSRCBEUk9QDQo0LCB1c2luZyBwaW5nIHRvb2wgdG8g
+Y2hlY2sgdGhlIG5ldHdvcmsgY29ubmVjdGlvbiBmcm9tIGV0aDAgc2lkZSB0byBldGgyIHNpZGUg
+YWdhaW4uIChUaGlzIHN0ZXAsIGl0IGFsbCB3b3JrZWQgZmluZS4gaXQgY2Fubm90IGNvbm5lY3Qg
+ZWFjaCBvdGhlciBmcm9tIGV0aDAgdG8gZXRoMi4pDQo1LCBOb3cgYWdhaW4gYWxsb3cgdGhpcyBz
+cGVjaWZpYyBtYWMgdG8gdHJhdmVsIGJldHdlZW4gZXRoMCBhbmQgZXRoMi4gDQplYnRhYmxlIC1B
+IEZPUldBUkQgLXMgISAwMDoxMToyMjozMzo0NDo1NSAtZCAhIDAwOjExOjIyOjozMzo0NDo1NSAt
+aiBEUk9QDQo2LCBOb3cgYWdhaW4sIHVzaW5nIHBpbmcgdG9vbCB0byBjaGVjayBuZXR3b3JrIGNv
+bm5lY3Rpdml0eS4gKGV0aDAtZXRoMikuDQpUaGUgZXhwZWN0ZWQgcmVzdWx0IGlzIHRoYXQgbmV0
+d29yayBjb25uZWN0aW9uIGJldHdlZW4gZXRoMCBhbmQgZXRoMiBzaG91bGQgYmUgYXZhaWxhYmxl
+LiBCdXQgdW5mb3J0dW50bHkgc29tZXRpbWVzIHRoZSBjb25uZWN0aXZpdHkgaXMgbm90IGF2YWls
+YWJsZS4gVGhpcyBoYXBwZW5kcyBhYm91dCAyLTMgdGltZXMgd2hlbiBJIHRyaWVkIHRoaXMgZm9y
+IDEwIHRpbWVzLiBUaGlzIGlzIGEgbGl0dGxlIHN0cmFuZ2UgdG8gbWUuIEFuZCB0aGUgbmV0d29y
+ayBpcyBvbmx5IGF2YWlsYWJsZSBhZnRlciB0aGUgaG9zdCBzZW5kIGEgQVJQIHJlcXVlc3QgdGhy
+b3VnaCBldGgwLCBvbmx5IHRoZW4gdGhlIG5ldHdvcmsgYmVjb21lcyBhdmFpbGFibGUgYWdhaW4u
+IA0KUGxlYXNlIGNhbiBhbnlvbmUgaGVscCBhYm91dCB0aGlzPyBUaGFua3MgYSBsb3QuDQoNCkl2
+YW4=
 
-> Not sure if this is a known issue/feature request for ipset and/or
-> iptables not: 
-> 
-> Using ipset + iptables as follows:
-> 
-> <snip>
-> ipset create newset hash:net,iface
-> ipset add newset 192.168.0.0/24,eth+
->  
-> ipset -L newset
-> 
-> Name: newset
-> Type: hash:net,iface
-> Header: family inet hashsize 1024 maxelem 65536 
-> Size in memory: 17360
-> References: 1
-> Members:
-> 192.168.0.0/24,eth+
-> 
-> iptables -I INPUT -m set --match-set newset dst,src -j ACCEPT
-> 
-> </snip>
-> 
-> I was expecting the above set match line to to be equivalent to:
-> 
-> "iptables -I INPUT -i eth+ -d 192.168.0.0/24 -j ACCEPT"
-> 
-> The rule set doesn't seem to match the interface names as I would
-> expect (trying to match multiple eth adapters). 
-> 
-> Iptables docs seems to indicate 'If the interface name ends in a "+",
-> then any interface which begins with this name will match.'
-> 
-> Is this expected behavior? 
-
-ipset does not support interface pattern matching.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
