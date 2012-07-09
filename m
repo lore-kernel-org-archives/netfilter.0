@@ -1,94 +1,35 @@
-From: Valts Silaputnins <support@proxyswitcher.com>
-Subject: Re: iptables + local server via udp + conntracking + 2 uplinks =
- wrong source address for replies
-Date: Mon, 09 Jul 2012 12:50:55 +0300
-Message-ID: <4FFAA97F.6090404@gmail.com>
-References: <4FF05213.3020204@gmail.com> <1341782140.2557.10.camel@andylaptop>
-Reply-To: ValtsS@gmail.com
+From: gmail <zhangjin2272@gmail.com>
+Subject: Re: is it possiable to filter  multiple MAC address using -s/-d ?
+Date: Mon, 9 Jul 2012 22:53:17 +0800
+Message-ID: <201207092253011022561@gmail.com>
+References: <201207081128365653380@gmail.com> <alpine.DEB.2.02.1207080716420.31302@aurora.sdinet.de>, 
+	<CAGHLOKDWC-99cXnSPezVxnbYyW9Y4_b9-o27ncYF8O7Rc9G1aA@mail.gmail.com>, 
+	<201207081523496825740@gmail.com>
+Reply-To: zhangjin2272 <zhangjin2272@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1341782140.2557.10.camel@andylaptop>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=date:from:to:reply-to:subject:references:x-priority:x-guid
+         :x-has-attach:x-mailer:mime-version:message-id:content-type
+         :content-transfer-encoding;
+        bh=RRu4ns/GXt4nY+KrUrmKndff6XNwMyoRqCBcHBG5nko=;
+        b=ytatjNBq2pZgiRj431mXz3kpMksGnYWrLf+ICEZF48HvyLOi/Ffs7ZiC4nlfGq6E9w
+         bdZS4SoO+48MQ1Efk/FJmDtAuT1TP1eTMgAyCy5VRorPu9pWW4iZsdrRiAKqvRl2WIZ1
+         QzUKPKWPSm7ZprMBIV4KeVKIwYQvB5J7vpATSeG/6vgjCQkmpbK9ibgkhxfMdUmfOSsU
+         BnYFJqFHSH3BANT/u3a0n3Sz3qjafim0BeRu6JUfIiosEsjMqiThkXJtQnWTIKR1bqVG
+         jcQV1S7ERNCSRMRGxC/eakx2KTSVGOPp9BzlG7tEP8Awd1LWm55BmfC2KjFbEtngnx5W
+         VSFg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Andrew Beverley <andy@andybev.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter <netfilter@vger.kernel.org>
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA1
+SGkgQWxsLA0KDQpBcyBzdWJqZWN0IHN0YXRlcywgaXMgaXQgcG9zc2libGUgdG8gdXNlIGVidGFi
+bGVzIHRvIGZpbHRlciBvdXQgbXVsdGlwbGUgTUFDIGFkZHJlc3MgKGJvdGggc291cmNlIGFuZCB0
+YXJnZXQpID8gSWYgcG9zc2libGUsIGhvdyB0byB3cml0ZSBlYnRhYmxlcyBydWxlcz8gVGhhbmtz
+LiANCihJIGtub3cgLS1hbW9uZyBvcHRpb24gY2FuIGhlbHAgdGhpcywgYnV0IHVuZm9ydHVhdGx5
+IG15IGVidGFibGVzIG1vZHVlbCBpcyBub3QgY29tcGlsZWQgd2l0aCAtLWFtb25nIHN1cHBvcnQp
+Lg0KDQpUaGFua3MsDQpJdmFuLg==
 
-
-Thanks for the reply Andrew,
-
-Andrew Beverley said the following on 7/9/2012 00:15:
-> On Sun, 2012-07-01 at 16:35 +0300, Valts Silaputnins wrote:
-> <snip>
->> However the source address was still wrong. Ok so I tried to fix that by
->> adding SNAT to POSTROUTING chain. Only to realize that for some reason
->> those packets don't hit it (checked by -j TRACE...).
-> 
-> What are your rules for this? As long as the packets are actually
-> hitting that chain then I don't see why they wouldn't be sent to the
-> SNAT target.
-
-
-POSTROUTING nat table is pretty basic:
-
-Chain POSTROUTING (policy ACCEPT 2503 packets, 131K bytes)
- pkts bytes target     prot opt in     out     source
-destination
-    6   450 SNAT       all  --  any    wan0    anywhere
-anywhere             to:46.109.116.xx
-    6   544 SNAT       all  --  any    wan1    anywhere
-anywhere             to:46.109.237.xx
-
-
-according to TRACE they would hit mangle table of POSTROUTING but not NAT:
-
-//TRACE udp sport=3784
-TRACE: raw:OUTPUT:policy:2 IN= OUT=wan1 SRC=46.109.237.xx
-DST=213.175.115.xx LEN=228 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP
-SPT=3784 DPT=57341 LEN=208 UID=1001 GID=99
-
-//CONNMARK restore
-TRACE: mangle:OUTPUT:rule:1 IN= OUT=wan1 SRC=46.109.237.xx
-DST=213.175.115.xx LEN=228 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP
-SPT=3784 DPT=57341 LEN=208 UID=1001 GID=99
-
-//ACCEPT if mark !=0
-TRACE: mangle:OUTPUT:rule:2 IN= OUT=wan1 SRC=46.109.237.xx
-DST=213.175.115.xx LEN=228 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP
-SPT=3784 DPT=57341 LEN=208 UID=1001 GID=99 MARK=0x1
-
-//ACCEPT
-TRACE: filter:OUTPUT:policy:1 IN= OUT=wan1 SRC=46.109.237.xx
-DST=213.175.115.xx LEN=228 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP
-SPT=3784 DPT=57341 LEN=208 UID=1001 GID=99 MARK=0x1
-
-//policy ACCEPT, table is empty
-TRACE: mangle:POSTROUTING:policy:1 IN= OUT=wan0 SRC=46.109.237.xx
-DST=213.175.115.xx LEN=228 TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=UDP
-SPT=3784 DPT=57341 LEN=208 UID=1001 GID=99 MARK=0x1
-
-And that's it, TRACE doesn't show it reaching the nat table of POSTROUTING.
-
-What I see from trace is that packet was going to go out via WAN1, had
-it's mark restored, routing matched it to go via WAN0 but it didn't
-reach SNAT according to TRACE.
-
-> I don't see why it should be a problem, but you have to use SNAT in the
-> POSTROUTING chain not OUTPUT. From the man page:
-> 
->  SNAT   This  target  is only valid in the nat table, in the POSTROUTING
-> chain.
-> 
-
-I wasn't precise. Of course I can't SNAT in OUTPUT chain nat table.
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.11 (MingW32)
-
-iEYEARECAAYFAk/6qX8ACgkQ7nq3gp3q9WPaOQCgvoWvqtrInors/VarPClOre0U
-7lEAoPuQsEmfCgbJatRbUywap1aIGOw/
-=BG4q
------END PGP SIGNATURE-----
