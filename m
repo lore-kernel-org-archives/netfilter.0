@@ -1,137 +1,48 @@
-From: Nikolai Lusan <nikolai@lusan.id.au>
-Subject: Re: iptables and vlan tagging
-Date: Tue, 10 Jul 2012 21:46:04 +1000
-Message-ID: <1341920764.5850.36.camel@donetsk.home.lusan.id.au>
+From: =?utf-8?B?VGhvbWFzIELDpHR6bGVy?= <t.baetzler@bringe.com>
+Subject: AW: iptables and vlan tagging
+Date: Tue, 10 Jul 2012 11:51:50 +0000
+Message-ID: <515168F006F2D643952F8FFD24F2E073016447DCA6@sonne2.gw.bringe.net>
 References: <1341903855.5850.20.camel@donetsk.home.lusan.id.au>
-	 <20120710101314.GB5772@tosh.sltosis.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="=-GhHglbGlyCDvW4voYlni"
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20120710101314.GB5772@tosh.sltosis.org>
+In-Reply-To: <1341903855.5850.20.camel@donetsk.home.lusan.id.au>
+Content-Language: de-DE
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1254"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-
---=-GhHglbGlyCDvW4voYlni
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Tue, 2012-07-10 at 12:13 +0200, SamLT wrote:=20
-> On Tue, Jul 10, 2012 at 05:04:15PM +1000, Nikolai Lusan wrote:
-> > Hi,
-> > I have a 2 vlans, 1 untagged with private IP's (vlan1) and 1 tagged
-> > (vlan2) with non-private IP addresses, and I want to remove the vlan
-> > tags before sending vlan2 packets out over my internet link and add the=
-m
-> > back before sending packets from the internet to vlan2. Should this be
-> > done in the iptbales mangle table? or do I need to use ebtables? And
-> > exactly how should I go doing this?
->=20
-> I'm not really sure to understand your question.=20
-
-My main concern is that I have packets that will end up in the forward
-chain and exit out my ADSL link onto the internet with their vlan
-tagging in place.
-
-
-> Viewing the commands
-> you used to set this up would certainly help.
-
-The config (on the server/firewall) is done in the
-Debian /etc/network/interfaces file:
-
-auto dsl-provider
-iface dsl-provider inet ppp
-   pre-up /sbin/ifconfig eth0 up
-   provider dsl-provider
-
-auto
-iface bond0 inet static
-   address 10.XXX.XXX.XXX
-   netmask 255.255.255.0
-   broadcast 10.XXX.XXX.255
-   bond-slaves eth1 eth2 eth3
-   bond-mode 4
-   bond-miimon 100
-   bond-lacp-rate 1
-   mtu 9000
-   bond-primary eth1 eth2 eth3
-  =20
-
-auto vlan2
-iface vlan2 inet static
-   vlan-raw-device bond0
-   address 150.XXX.XXX.XXX
-   netmask 255.255.255.248
-   broadcast 150.XXX.XXX.XXX
-
-
-A similar method is used on the clients, so all the instances of the
-"vlan2" interface on machines are tagged vlans on the 150.XXX.XXX.XXX/29
-subnet.
-
-
-> anyway, assuming you configured this with iproute: eg:
-> ip link add link eth0 eth0.10 type vlan id 10
-> Then the tagging depends on your routing:
->    * If it has to go out from eth0.10 -> tagging
->    * If it has to go out from eth0 -> no tagging
->=20
-
-The routing table looks like this on the firewall:
-
-# ip route list
-default dev ppp0  scope link=20
-10.XX.XX.0/24 dev bond0  proto kernel  scope link  src 10.XX.XX.XX=20
-150.XX.XX.XX dev ppp0 proto kernel scope link src 59.XX.XX.XX=20
-150.XX.XX.XX/29 dev vlan2 proto kernel scope link src 150.XX.XX.XX=20
-192.168.XX.0/24 dev eth0  proto kernel  scope link  src 192.168.XX.XX=20
-
-
-on the network hosts that need to be routed it looks like this
-
-# ip route list
-default via 10.XX.XX.XX dev eth0=20
-10.XX.XX.0/24 dev eth0  proto kernel  scope link  src 10.XX.XX.XX=20
-150.XX.XX.XX/29 dev vlan2 proto kernel scope link src 150.XX.XX.XX=20
-
-
-So, I guess the question is twofold:=20
-1) Do I need to worry about tagged packets leaking onto the internet?
-2) If so how do I use the netfilter toolset to stop this from happening?
-
-Thanks
---=20
-Nikolai Lusan
-
-Email:     nikolai@lusan.id.au
-Phone(H):  (07) 3136 3065
-Phone(M):  0425 661 620
-
---=-GhHglbGlyCDvW4voYlni
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iQIcBAABCgAGBQJP/BX8AAoJEJOjmtAqHQSLORwP/0Frrk/zsUNL03oeGj7gCYUw
-IG6sWbP8APnyymunyyACSjXCXLrR4KZv1Ugtf8s3QaH8wdLSGCeybCLejt/Zu51G
-7C2vdeSeJINcUGFPOZN8fv/2VG+z7fehBDLp3Jp0y/92cGk0ao9DQUxKNKuXxtdF
-xKjrRqLKWWt+ryRooQCkR1IJC6h2GaFaLXCshGBwBnMDGr5fjRZw07tyneejyL+/
-CqcDdVfGyfUvikLkzwF1cFNQvaXE5iF8DLjxra2r6TMvEa9jCvD9U3HtDVVj6pC7
-Pamci5BqFdjD3CVCGfN2jAbEj2P3zshZ+yKpbuxjMkWHpd5S7B5aiBS4VvX88aqw
-7mgGH5z/l91Rc4wqzCIUQyG7RgZLtllB7qU1T1Zr4RQyAEWwPTIAtnIOvg4heDO3
-sk8Xd/CilbyC+f7EZU3DjG67C/xr+ThbCZh8R0KpXyGxfvRQdm94RT5VNYZDEM41
-rUSjSWV2AVwhCJ4I/LQ/YWvZq41P8dkork5lEvdk84jHTTSzzPhwOt3AN+t6wGf7
-9oIm84KMopV2GOf7idE0LAbxKVgHbXMxIIR7FJfJotL5lEOgvTrC7/Oz0qLFxecn
-TpqrYGXs8UGhnHID0uQAXcRe3c0pOoaGWwKmLKZ4PTROqEAJ0Hom3CvpGlX7bivI
-u/DZW8ckRzVM18HkPkvI
-=KEHJ
------END PGP SIGNATURE-----
-
---=-GhHglbGlyCDvW4voYlni--
-
+Tmlrb2xhaSBMdXNhbiBhc2tlZDoNCj4gSSBoYXZlIGEgMiB2bGFucywgMSB1bnRhZ2dlZCB3aXRo
+IHByaXZhdGUgSVAncyAodmxhbjEpIGFuZCAxIHRhZ2dlZA0KPiAodmxhbjIpIHdpdGggbm9uLXBy
+aXZhdGUgSVAgYWRkcmVzc2VzLCBhbmQgSSB3YW50IHRvIHJlbW92ZSB0aGUgdmxhbg0KPiB0YWdz
+IGJlZm9yZSBzZW5kaW5nIHZsYW4yIHBhY2tldHMgb3V0IG92ZXIgbXkgaW50ZXJuZXQgbGluayBh
+bmQgYWRkIHRoZW0NCj4gYmFjayBiZWZvcmUgc2VuZGluZyBwYWNrZXRzIGZyb20gdGhlIGludGVy
+bmV0IHRvIHZsYW4yLiBTaG91bGQgdGhpcyBiZQ0KPiBkb25lIGluIHRoZSBpcHRiYWxlcyBtYW5n
+bGUgdGFibGU/IG9yIGRvIEkgbmVlZCB0byB1c2UgZWJ0YWJsZXM/IEFuZA0KPiBleGFjdGx5IGhv
+dyBzaG91bGQgSSBnbyBkb2luZyB0aGlzPw0KDQpZb3UgbmVlZCB0byBoYXZlIGEgdmxhbiB0YWdn
+ZWQgc3ViaW50ZXJmYWNlIG9uIHRoZSBsaW5rIHRoYXQgY29ubmVjdHMgdG8geW91ciBzd2l0Y2gu
+IFRoaXMgd2lsbCAicmVtb3ZlIiB0aGUgVkxBTiB0YWcgb24gaW5jb21pbmcgcGFja2V0cyBhbmQg
+YWRkIG9uZSBvbiBvdXRnb2luZyBwYWNrZXRzLg0KDQpBc3N1bWluZyB0aGF0J3MgZXRoMSwgeW91
+J2QgY3JlYXRlIGEgc3ViaW50ZXJmYWNlIGxpa2UgdGhpczoNCg0KICMgdmNvbmZpZyBhZGQgZXRo
+MSA8dmxhbmQyLWlkPg0KDQpOb3RlIHRoYXQgeW91ciBkaXN0cm8gbWlnaHQgaGF2ZSBmYW5jaWVy
+IHdheXMgdG8gc2V0IHVwIHZsYW4gdGFnZ2VkIGludGVyZmFjZXMuDQoNCkFwYXJ0IGZyb20gdGhh
+dCB5b3UgcmVhbGx5IGRpZG4ndCB0ZWxsIHVzIHF1aXRlIGVub3VnaCBhYm91dCB5b3VyIHNldHVw
+Lg0KDQpJZiB2bGFuMiBuZWVkcyB0byBiZSByb3V0ZWQgKGkuZS4gaXQncyBhIGRpZmZlcmVudCBu
+ZXQgZnJvbSB3aGF0IGlzIG9uIGV0aDApLCB0aGVuIA0KDQogIyBpZmNvbmZpZyBldGgxLjx2bGFu
+Mi1pZD4gPGd3LWFkZHJlc3MtaW4tbmV0d29yaz4gbmV0bWFzayAuLi4gYnJvYWRjYXN0IC4uLg0K
+ICMgZWNobyAiMSIgPiAvcHJvYy9zeXMvbmV0L2lwdjQvaXBfZm9yd2FyZA0KDQpzaG91bGQgZG8g
+dGhlIHRyaWNrIG9uY2UgeW91IGhhdmUgcm91dGluZyBzZXQgdXAgcHJvcGVybHkgLSBpLmUuIGhv
+c3RzIGluIHZsYW4yIG5lZWQgdG8gdXNlIHRoZSB0YWdnZWQgc3ViaW50ZXJmYWNlJ3MgaXAgYXMg
+Z2F0ZXdheTsgZXh0ZXJuYWwgaG9zdHMgbmVlZCB0byBrbm93IHRoYXQgdGhleSBjYW4gcmVhY2gg
+aG9zdHMgb24gdGhlIHZsYW4yIG5ldHdvcmsgdmlhIGV0aDAgb2YgeW91ciBib3guDQoNCklmLCBv
+biB0aGUgb3RoZXIgaGFuZCwgdmxhbjIgbmVlZHMgdG8gYmUgYnJpZGdlZCAoaS5lLiBpdCdzIHNh
+bWUgbmV0d29yayBhcyBvbiBldGgwKSwgdGhlbiB5b3UgbmVlZCB0byBzZXR1cCBhIGJyaWRnZQ0K
+DQogIyBicmN0bCBhZGRiciBicjANCiAjIGJyY3RsIGFkZGlmIGJyMCBldGgwDQogIyBicmN0bCBh
+ZGRpZiBicjAgZXRoMS48dmxhbjItaWQ+DQogIyBpZmNvbmZpZyBldGgwIDAuMC4wLjAgcHJvbWlz
+YyB1cA0KICMgaWZjb25maWcgZXRoMS48dmxhbjItaWQ+IHByb21pc2MgdXANCiAjIGlmY29uZmln
+IGJyMCA8Zm9ybWVyLWV0aDAtaXA+IG5ldG1hc2sgPGZvcm1lci1ldGgwLW5ldG1hc2s+IGJyb2Fk
+Y2FzdCA8Zm9ybWVyLWV0aDAtYnJvYWRjYXN0Pg0KICMgcm91dGUgYWRkIGRlZmF1bHQgZ3cgPGZv
+cm1lci1kZWZhdWx0LWdhdGV3YXk+DQoNCk9uY2UgYWdhaW4geW91ciBkaXN0cm8gbWlnaHQgaGF2
+ZSBhIG1vcmUgY29udmVuaWVudCB3YXkgdG8gc2V0dXAgYSBicmlkZ2UuDQoNCkFsbCB0b3RhbGx5
+IE9UVE9IIHNvIFlNTVYgOy0pDQoNCkhUSCwNClRob21hcw0K
