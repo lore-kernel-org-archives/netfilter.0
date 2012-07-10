@@ -1,35 +1,55 @@
-From: gmail <zhangjin2272@gmail.com>
-Subject: Re: is it possiable to filter  multiple MAC address using -s/-d ?
-Date: Mon, 9 Jul 2012 22:53:17 +0800
-Message-ID: <201207092253011022561@gmail.com>
-References: <201207081128365653380@gmail.com> <alpine.DEB.2.02.1207080716420.31302@aurora.sdinet.de>, 
-	<CAGHLOKDWC-99cXnSPezVxnbYyW9Y4_b9-o27ncYF8O7Rc9G1aA@mail.gmail.com>, 
-	<201207081523496825740@gmail.com>
-Reply-To: zhangjin2272 <zhangjin2272@gmail.com>
+From: Nikolai Lusan <nikolai@lusan.id.au>
+Subject: iptables and vlan tagging
+Date: Tue, 10 Jul 2012 17:04:15 +1000
+Message-ID: <1341903855.5850.20.camel@donetsk.home.lusan.id.au>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="=-GlGuWw4S+F/OWSKsePmp"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=date:from:to:reply-to:subject:references:x-priority:x-guid
-         :x-has-attach:x-mailer:mime-version:message-id:content-type
-         :content-transfer-encoding;
-        bh=RRu4ns/GXt4nY+KrUrmKndff6XNwMyoRqCBcHBG5nko=;
-        b=ytatjNBq2pZgiRj431mXz3kpMksGnYWrLf+ICEZF48HvyLOi/Ffs7ZiC4nlfGq6E9w
-         bdZS4SoO+48MQ1Efk/FJmDtAuT1TP1eTMgAyCy5VRorPu9pWW4iZsdrRiAKqvRl2WIZ1
-         QzUKPKWPSm7ZprMBIV4KeVKIwYQvB5J7vpATSeG/6vgjCQkmpbK9ibgkhxfMdUmfOSsU
-         BnYFJqFHSH3BANT/u3a0n3Sz3qjafim0BeRu6JUfIiosEsjMqiThkXJtQnWTIKR1bqVG
-         jcQV1S7ERNCSRMRGxC/eakx2KTSVGOPp9BzlG7tEP8Awd1LWm55BmfC2KjFbEtngnx5W
-         VSFg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-SGkgQWxsLA0KDQpBcyBzdWJqZWN0IHN0YXRlcywgaXMgaXQgcG9zc2libGUgdG8gdXNlIGVidGFi
-bGVzIHRvIGZpbHRlciBvdXQgbXVsdGlwbGUgTUFDIGFkZHJlc3MgKGJvdGggc291cmNlIGFuZCB0
-YXJnZXQpID8gSWYgcG9zc2libGUsIGhvdyB0byB3cml0ZSBlYnRhYmxlcyBydWxlcz8gVGhhbmtz
-LiANCihJIGtub3cgLS1hbW9uZyBvcHRpb24gY2FuIGhlbHAgdGhpcywgYnV0IHVuZm9ydHVhdGx5
-IG15IGVidGFibGVzIG1vZHVlbCBpcyBub3QgY29tcGlsZWQgd2l0aCAtLWFtb25nIHN1cHBvcnQp
-Lg0KDQpUaGFua3MsDQpJdmFuLg==
+
+--=-GlGuWw4S+F/OWSKsePmp
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi,
+I have a 2 vlans, 1 untagged with private IP's (vlan1) and 1 tagged
+(vlan2) with non-private IP addresses, and I want to remove the vlan
+tags before sending vlan2 packets out over my internet link and add them
+back before sending packets from the internet to vlan2. Should this be
+done in the iptbales mangle table? or do I need to use ebtables? And
+exactly how should I go doing this?
+
+Thanks
+--=20
+Nikolai Lusan <nikolai@lusan.id.au>
+
+--=-GlGuWw4S+F/OWSKsePmp
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABCgAGBQJP+9PvAAoJEJOjmtAqHQSLqGgP/AojIewv+ORMpIS1Tqr/G/yZ
+xEyl74tpoQb/EoK9A8XyJfTh9PaByjFJ7UzfyJ9eoXjC7nDG2XXtJhPqUQBVttH7
+dvoLtLiSgRQ+ygYh6TiX9LoWgPvxACbETbLIyRn7KEdULL5PgEqBB+JJpQVxCpqm
+FHNdJoHTCvR/A9BRyPCHauiovhHlUyLqOcAzUFi1t8iOOI6XXqDvJJDbkxLIAfAP
+D41ejFn92smoEbjE4Og7Yk6bPH1O3dx2HsX3YuphoBlXyf5Cp886WAJf9yOkO5vK
+R0yadM9Hx1zRHWlKadS6sljRAZW7ihCZEh1uQv9si/OTuxBVgH2e78ZQJl955s3s
+VSyoWZUL/e1PCo9R0uFpK7cnp6NA1O/AjspFEcxw+GrUOHp0lBXqepL3uYOdLZJW
+Y7Ds4L+k9WGHVtJIZqSfvlo5F0vkF+A00UFNi0nN+0cPCv6KS9Ku6EgZRWt8rVIb
+gjUJDF4MEY1QTFZAeswkry+gwrIBZxqPnA6Z65mngENZC8SApKfuT662PP6ctpQn
+0rukovJs6UDknM7aqpLfxQ6xoW40E9S+q12UYRhnD+ydVj9h7L0E34ZENMHHBwZd
+v/Zca1CYp3tRxXtrgxW9H0B3VQBrfKe/TDIDSr6I3XvRjpDvi5ig0tZI/j90B4BI
+QM7NN/amrNrk/oRq4v5J
+=/V2T
+-----END PGP SIGNATURE-----
+
+--=-GlGuWw4S+F/OWSKsePmp--
 
