@@ -1,60 +1,51 @@
-From: Andreas Herz <andi@geekosphere.org>
-Subject: Re: [ANNOUNCE] ipset 6.13 released
-Date: Tue, 10 Jul 2012 11:12:55 +0200
-Message-ID: <20120710091255.GP9358@workstation>
-References: <alpine.DEB.2.00.1206292201340.29738@blackhole.kfki.hu>
- <20120701132152.GD9358@workstation>
- <alpine.DEB.2.00.1207011642300.2749@blackhole.kfki.hu>
+From: SamLT <sam@sltosis.org>
+Subject: Re: iptables and vlan tagging
+Date: Tue, 10 Jul 2012 12:13:14 +0200
+Message-ID: <20120710101314.GB5772@tosh.sltosis.org>
+References: <1341903855.5850.20.camel@donetsk.home.lusan.id.au>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=sltosis.org; s=mx;
+	t=1341915197; bh=FnxTyt4i3bHc2QueKBA7vYEBTc/ibrgM4XJIusbS6qo=;
+	h=Date:From:To:Subject:References:In-Reply-To:From;
+	b=lryXvzigrpZlLP5cfhD3r6CJZFU71Sip+9PBKTTKu6zaNtS37UyT0HSlTHuKZxCwv
+	 49Dl5CwM+X2rwE288E3Iwxo0E6Py/EViVy3iPrNR/0wRTDoO2kInGw7mEIHdViUxVf
+	 Q+PcJ+rTUA2qHvhM+qT0wHNCsFRkNGUzCeq8nGtQ=
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.00.1207011642300.2749@blackhole.kfki.hu>
+In-Reply-To: <1341903855.5850.20.camel@donetsk.home.lusan.id.au>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On 01/07/12 at 16:44, Jozsef Kadlecsik wrote:
-> On Sun, 1 Jul 2012, Andreas Herz wrote:
+On Tue, Jul 10, 2012 at 05:04:15PM +1000, Nikolai Lusan wrote:
+> Hi,
+> I have a 2 vlans, 1 untagged with private IP's (vlan1) and 1 tagged
+> (vlan2) with non-private IP addresses, and I want to remove the vlan
+> tags before sending vlan2 packets out over my internet link and add them
+> back before sending packets from the internet to vlan2. Should this be
+> done in the iptbales mangle table? or do I need to use ebtables? And
+> exactly how should I go doing this?
+
+I'm not really sure to understand your question. Viewing the commands
+you used to set this up would certainly help.
+
+anyway, assuming you configured this with iproute: eg:
+ip link add link eth0 eth0.10 type vlan id 10
+...
+
+Then the tagging depends on your routing:
+   * If it has to go out from eth0.10 -> tagging
+   * If it has to go out from eth0 -> no tagging
+
+
+HTH
+
+
 > 
-> > On 29/06/12 at 22:04, Jozsef Kadlecsik wrote:
-> > > I have just released ipset 6.13 with a few bugfixes and some new features.
-> > 
-> > Great, perfect timing, because i will go back to the testing and coding
-> > stuff for my ipset setup :)
-> > 
-> > >  - Timeout fixing bug broke SET target special timeout value, fixed
-> > >  - Use MSEC_PER_SEC instead of harcoded value
-> > 
-> > Does this also fix the jiffies issue with the kernel?
-> 
-> That was fixed in the previous version. 
-> 
+> Thanks
+> -- 
+> Nikolai Lusan <nikolai@lusan.id.au>
 
-I thought so, but:
 
-> > But i will see it in my testcases nevertheless.
-> 
-> I'm looking forward your testing results!
-
-$IPSET create bset32 hash:ip family inet hashsize 1024 maxelem 65536
-timeout 1000
-
-ipset add bset32 192.168.0.21 timeout 2147483; ipset list
-=> 192.168.0.21 timeout 2147482
-ipset add bset32 192.168.0.20 timeout 2147485; ipset list
-=> 192.168.0.20 timeout 1073650
-
-although the range should be 0-4294967 as pointed when i enter a value
-much higher.
-
-This is for 32-Bit. But i still think this is caused by the kernel bug i
-mentioned some time ago. Can you or anyone else confirm this issue with
-32-Bit?
-I have a workaround patch but i would love to get the maximum value to
-lock IPs for more then ~12 days :)
-
--- 
-Andreas Herz
