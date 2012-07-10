@@ -1,48 +1,52 @@
-From: =?utf-8?B?VGhvbWFzIELDpHR6bGVy?= <t.baetzler@bringe.com>
-Subject: AW: iptables and vlan tagging
-Date: Tue, 10 Jul 2012 11:51:50 +0000
-Message-ID: <515168F006F2D643952F8FFD24F2E073016447DCA6@sonne2.gw.bringe.net>
-References: <1341903855.5850.20.camel@donetsk.home.lusan.id.au>
+From: Alex Bligh <alex@alex.org.uk>
+Subject: Re: [ANNOUNCE] ipset 6.13 released
+Date: Tue, 10 Jul 2012 17:27:59 +0100
+Message-ID: <E33FE2CD2A549167CCF7D2E9@Ximines.local>
+References: <alpine.DEB.2.00.1206292201340.29738@blackhole.kfki.hu>
+ <4FF02A93.8080603@googlemail.com>
+ <alpine.DEB.2.00.1207011405160.2289@blackhole.kfki.hu>
+ <4FF04038.4080306@googlemail.com>
+ <alpine.DEB.2.00.1207011434010.2486@blackhole.kfki.hu>
+ <4FF04647.7060807@googlemail.com>
+ <alpine.DEB.2.00.1207011446260.2486@blackhole.kfki.hu>
+ <4FF04DDA.3020609@googlemail.com>
+ <alpine.DEB.2.00.1207011646110.2749@blackhole.kfki.hu>
+ <f1ffdaf291ae86a1e111d3edbae4cfa3@treenet.co.nz>
+ <alpine.DEB.2.00.1207020916030.4335@blackhole.kfki.hu>
+Reply-To: Alex Bligh <alex@alex.org.uk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1341903855.5850.20.camel@donetsk.home.lusan.id.au>
-Content-Language: de-DE
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <alpine.DEB.2.00.1207020916030.4335@blackhole.kfki.hu>
+Content-Disposition: inline
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1254"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Amos Jeffries <squid3@treenet.co.nz>
+Cc: Mr Dash Four <mr.dash.four@googlemail.com>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, Patrick McHardy <kaber@trash.net>, Alex Bligh <alex@alex.org.uk>
 
-Tmlrb2xhaSBMdXNhbiBhc2tlZDoNCj4gSSBoYXZlIGEgMiB2bGFucywgMSB1bnRhZ2dlZCB3aXRo
-IHByaXZhdGUgSVAncyAodmxhbjEpIGFuZCAxIHRhZ2dlZA0KPiAodmxhbjIpIHdpdGggbm9uLXBy
-aXZhdGUgSVAgYWRkcmVzc2VzLCBhbmQgSSB3YW50IHRvIHJlbW92ZSB0aGUgdmxhbg0KPiB0YWdz
-IGJlZm9yZSBzZW5kaW5nIHZsYW4yIHBhY2tldHMgb3V0IG92ZXIgbXkgaW50ZXJuZXQgbGluayBh
-bmQgYWRkIHRoZW0NCj4gYmFjayBiZWZvcmUgc2VuZGluZyBwYWNrZXRzIGZyb20gdGhlIGludGVy
-bmV0IHRvIHZsYW4yLiBTaG91bGQgdGhpcyBiZQ0KPiBkb25lIGluIHRoZSBpcHRiYWxlcyBtYW5n
-bGUgdGFibGU/IG9yIGRvIEkgbmVlZCB0byB1c2UgZWJ0YWJsZXM/IEFuZA0KPiBleGFjdGx5IGhv
-dyBzaG91bGQgSSBnbyBkb2luZyB0aGlzPw0KDQpZb3UgbmVlZCB0byBoYXZlIGEgdmxhbiB0YWdn
-ZWQgc3ViaW50ZXJmYWNlIG9uIHRoZSBsaW5rIHRoYXQgY29ubmVjdHMgdG8geW91ciBzd2l0Y2gu
-IFRoaXMgd2lsbCAicmVtb3ZlIiB0aGUgVkxBTiB0YWcgb24gaW5jb21pbmcgcGFja2V0cyBhbmQg
-YWRkIG9uZSBvbiBvdXRnb2luZyBwYWNrZXRzLg0KDQpBc3N1bWluZyB0aGF0J3MgZXRoMSwgeW91
-J2QgY3JlYXRlIGEgc3ViaW50ZXJmYWNlIGxpa2UgdGhpczoNCg0KICMgdmNvbmZpZyBhZGQgZXRo
-MSA8dmxhbmQyLWlkPg0KDQpOb3RlIHRoYXQgeW91ciBkaXN0cm8gbWlnaHQgaGF2ZSBmYW5jaWVy
-IHdheXMgdG8gc2V0IHVwIHZsYW4gdGFnZ2VkIGludGVyZmFjZXMuDQoNCkFwYXJ0IGZyb20gdGhh
-dCB5b3UgcmVhbGx5IGRpZG4ndCB0ZWxsIHVzIHF1aXRlIGVub3VnaCBhYm91dCB5b3VyIHNldHVw
-Lg0KDQpJZiB2bGFuMiBuZWVkcyB0byBiZSByb3V0ZWQgKGkuZS4gaXQncyBhIGRpZmZlcmVudCBu
-ZXQgZnJvbSB3aGF0IGlzIG9uIGV0aDApLCB0aGVuIA0KDQogIyBpZmNvbmZpZyBldGgxLjx2bGFu
-Mi1pZD4gPGd3LWFkZHJlc3MtaW4tbmV0d29yaz4gbmV0bWFzayAuLi4gYnJvYWRjYXN0IC4uLg0K
-ICMgZWNobyAiMSIgPiAvcHJvYy9zeXMvbmV0L2lwdjQvaXBfZm9yd2FyZA0KDQpzaG91bGQgZG8g
-dGhlIHRyaWNrIG9uY2UgeW91IGhhdmUgcm91dGluZyBzZXQgdXAgcHJvcGVybHkgLSBpLmUuIGhv
-c3RzIGluIHZsYW4yIG5lZWQgdG8gdXNlIHRoZSB0YWdnZWQgc3ViaW50ZXJmYWNlJ3MgaXAgYXMg
-Z2F0ZXdheTsgZXh0ZXJuYWwgaG9zdHMgbmVlZCB0byBrbm93IHRoYXQgdGhleSBjYW4gcmVhY2gg
-aG9zdHMgb24gdGhlIHZsYW4yIG5ldHdvcmsgdmlhIGV0aDAgb2YgeW91ciBib3guDQoNCklmLCBv
-biB0aGUgb3RoZXIgaGFuZCwgdmxhbjIgbmVlZHMgdG8gYmUgYnJpZGdlZCAoaS5lLiBpdCdzIHNh
-bWUgbmV0d29yayBhcyBvbiBldGgwKSwgdGhlbiB5b3UgbmVlZCB0byBzZXR1cCBhIGJyaWRnZQ0K
-DQogIyBicmN0bCBhZGRiciBicjANCiAjIGJyY3RsIGFkZGlmIGJyMCBldGgwDQogIyBicmN0bCBh
-ZGRpZiBicjAgZXRoMS48dmxhbjItaWQ+DQogIyBpZmNvbmZpZyBldGgwIDAuMC4wLjAgcHJvbWlz
-YyB1cA0KICMgaWZjb25maWcgZXRoMS48dmxhbjItaWQ+IHByb21pc2MgdXANCiAjIGlmY29uZmln
-IGJyMCA8Zm9ybWVyLWV0aDAtaXA+IG5ldG1hc2sgPGZvcm1lci1ldGgwLW5ldG1hc2s+IGJyb2Fk
-Y2FzdCA8Zm9ybWVyLWV0aDAtYnJvYWRjYXN0Pg0KICMgcm91dGUgYWRkIGRlZmF1bHQgZ3cgPGZv
-cm1lci1kZWZhdWx0LWdhdGV3YXk+DQoNCk9uY2UgYWdhaW4geW91ciBkaXN0cm8gbWlnaHQgaGF2
-ZSBhIG1vcmUgY29udmVuaWVudCB3YXkgdG8gc2V0dXAgYSBicmlkZ2UuDQoNCkFsbCB0b3RhbGx5
-IE9UVE9IIHNvIFlNTVYgOy0pDQoNCkhUSCwNClRob21hcw0K
+
+
+--On 2 July 2012 09:54:20 +0200 Jozsef Kadlecsik <kadlec@blackhole.kfki.hu> 
+wrote:
+
+> - my view follows how the subsytem sees the interfaces
+>
+>                              ------------------
+>   pkt comes in --- interface | ipset subsytem | interface --- pkt goes out
+>                            ^ ------------------ ^
+>                        source               destination
+
+I have no comment on the back compatibility issue, but from a clean sheet
+these interfaces should probably be called "ingress" and "egress"
+interfaces (or, if you must 'input' and 'output' but those are ripe for
+confusion with iptables rules). If those aren't the terms in the RFCs, they
+are certainly terms of art commonly used by router vendors.
+
+From my point of view, the current nomenclature is better than reversing
+them (as I think is being proposed), but they are confusing in the case of
+forwarded traffic where neither interface might be the 'source' or
+'destination' in an IP sense. Swapping them would cause more confusion.
+
+-- 
+Alex Bligh
