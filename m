@@ -1,43 +1,41 @@
-From: richard lucassen <mailinglists@lucassen.org>
-Subject: Re: recent question
-Date: Mon, 16 Jul 2012 16:15:19 +0200
-Message-ID: <20120716161519.96348ce40ffc294dd344366f@lucassen.org>
-References: <20120716151223.e5eb4406717f6e0186d7ca7f@lucassen.org>
-	<50041659.6090601@evcz.tk>
-Reply-To: netfilter@vger.kernel.org
+From: Ray Soucy <rps@maine.edu>
+Subject: RFC6296 (NPTv6) for ip6tables
+Date: Mon, 16 Jul 2012 13:42:03 -0400
+Message-ID: <CALFTrnP3xr89ej_f9CEd4LdoUZ5=a4OP__5oPuVa2gto1FSFUA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <50041659.6090601@evcz.tk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-On Mon, 16 Jul 2012 15:25:45 +0200
-Marco Padovan <evcz@evcz.tk> wrote:
+A while back Kaber posted a kind of "fist stab" at implementations for
+NPTv6 and other "NAT" -like functionality.
 
-> on centos
-> 
-> rmmod xt_recent
-> modprobe xt_recent ip_list_tot=5000
-> 
-> will increase it to 5000 ;)
-> 
-> (to run rmmod you need to remove the rules using recent before
-> proceeding)
+https://github.com/kaber/nf-nat-ipv6
 
-Of course, that's in the manpage and in modinfo. But I just wonder what
-will happen if you don't increase the modules parameter. I fear Jan
-Engelhardt is on holiday ;-)
+Understanding that the use of "NAT" with v6 can be a religious issue;
+I'm not trying to start a flame war on it or anything.
+
+Two questions:
+
+1) Are there any plans to include this functionality in a production
+release of iptables (perhaps even just having it be a compile option
+disabled by default)
+
+2) Has any more work been done on this since the work by Kaber
+mentioned above?  If so, where can I find it?
+
+
+
 
 -- 
-___________________________________________________________________
-It is better to remain silent and be thought a fool, than to speak
-aloud and remove all doubt.
+Ray Soucy
 
-+------------------------------------------------------------------+
-| Richard Lucassen, Utrecht                                        |
-| Public key and email address:                                    |
-| http://www.lucassen.org/mail-pubkey.html                         |
-+------------------------------------------------------------------+
+Epic Communications Specialist
+
+Phone: +1 (207) 561-3526
+
+Networkmaine, a Unit of the University of Maine System
+http://www.networkmaine.net/
