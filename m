@@ -1,40 +1,30 @@
-From: =?iso-8859-1?Q?Thomas_B=E4tzler?= <t.baetzler@bringe.com>
-Subject: AW: conntrackd and TCP flow recovery
-Date: Wed, 18 Jul 2012 08:09:52 +0000
-Message-ID: <515168F006F2D643952F8FFD24F2E073016D566704@sonne2.gw.bringe.net>
+From: kay <kay.diam@gmail.com>
+Subject: Re: conntrackd and TCP flow recovery
+Date: Wed, 18 Jul 2012 12:13:51 +0400
+Message-ID: <CANaOheYxQb0QC4g1VbWYNtv_uc8-TE0qmxv8BFp1Kp3p4KEq7Q@mail.gmail.com>
 References: <CANaOheZh5o_XY+nyyguo6PjYn00-fmS79ypTybCosEFmB0Qypg@mail.gmail.com>
+ <515168F006F2D643952F8FFD24F2E073016D566704@sonne2.gw.bringe.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CANaOheZh5o_XY+nyyguo6PjYn00-fmS79ypTybCosEFmB0Qypg@mail.gmail.com>
-Content-Language: de-DE
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :content-type;
+        bh=IfOcs67CgZ/TpkGVVMxeJ5N5yDwusopl+MBqG5H8nm0=;
+        b=LGwhNS7OA7L8X3rKIIPKb5Vh4AsehIqmbNPD3PHTHYQ+EXZgOjvbNVxiFBN4pHrsj9
+         AynLa1oJFxdlKW2eDOAc/j9DGNqVH5LjLLb2lpOiEY0YpRXZieCSEZMYLOlXqULE5qU7
+         ywWcdxX4dqlkdkJiOsh4cMscM86Ss5xWEr/QSkKz5c3pPlgJ2VXXjlIze+N5vcM99rNh
+         1mqDDQfv/aMS/YEg/D7Vp2dX39MsbuLctIHg0lvxiDs8fNLB6ug3K+v13mfWA8SrWUQo
+         sbcNIEshog9CyoQSgQigLcdng9sFS8EjXp0Z7+rPzDQbzMurY3GRZrlowZP+txw2/XCj
+         vhyg==
+In-Reply-To: <515168F006F2D643952F8FFD24F2E073016D566704@sonne2.gw.bringe.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Cc: kay <kay.diam@gmail.com>
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hi,
+That is what I am trying to achieve. Fake TCP handshake with automatic
+TCP session recovery once traffic goes to web2.
 
-kay <kay.diam@gmail.com> asked:
-> I have very strange requirement. I need to DNAT (using RAWDNAT) the
-> already established connection (simple HTTP keepalive) to another
-> server without TCP session reestablishment.
-> 
-> For example I have web0 (input gateway), web1 (primary server), web2
-> (slave server). SYN/ACK should be processed by web1, but "GET
-> HTTP/1.1" request should be passed to web2. For this purposes, I
-> guess, I need to establish fake connections on web2 which should be
-> the same as on web1. I've already implemented RAWDNAT + RAWSNAT and
-> SYN/ACK packet goes to web1 and all subsequent packets goes to web2,
-> but web2 ignores them as it doesn't know about them. Is it possible to
-> implement my requirement using conntrackd?
-
-conntrackd is for synchronizing the connection tracking tables on a redundant pair of NAT gateways, so it's no use to you.
-
-I imagine the problem is that the webserver on web2 doesn't know that there's an established connection that it should handle - how could it, without the tcp handshake?
-
-Care to elaborate on what you're trying to achieve (vs. what you're tyring to do ;-))?
-
-Cheers,
-Thomas
+>  how could it, without the tcp handshake?
