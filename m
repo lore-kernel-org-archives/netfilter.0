@@ -1,42 +1,39 @@
-From: =?UTF-8?B?WXVjb25nIFN1biAo5Y+26Zuo6aOeKQ==?= <sunyucong@gmail.com>
+From: kay <kay.diam@gmail.com>
 Subject: Re: conntrackd and TCP flow recovery
-Date: Wed, 18 Jul 2012 01:17:55 -0700
-Message-ID: <CAJygYd1uK29fk0LRtEMUZ5keRnXGMFpRU0G9fQcTPk+tRmC40A@mail.gmail.com>
+Date: Wed, 18 Jul 2012 18:13:55 +0400
+Message-ID: <CANaOhebE4yvW5wjecC-222hkMBJz042JmYsR9=Xv6xLH8Z0acQ@mail.gmail.com>
 References: <CANaOheZh5o_XY+nyyguo6PjYn00-fmS79ypTybCosEFmB0Qypg@mail.gmail.com>
- <515168F006F2D643952F8FFD24F2E073016D566704@sonne2.gw.bringe.net> <CANaOheYxQb0QC4g1VbWYNtv_uc8-TE0qmxv8BFp1Kp3p4KEq7Q@mail.gmail.com>
+ <515168F006F2D643952F8FFD24F2E073016D566704@sonne2.gw.bringe.net>
+ <CANaOheYxQb0QC4g1VbWYNtv_uc8-TE0qmxv8BFp1Kp3p4KEq7Q@mail.gmail.com> <CAJygYd1uK29fk0LRtEMUZ5keRnXGMFpRU0G9fQcTPk+tRmC40A@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-type;
-        bh=AXpZSGjQhzo58IqQTbymepJquz2YCOzJWnsbqT+/e1Q=;
-        b=V4ncyp8foW+v6QHANoRamXYw/5p0550B6rLVpI7xtgx+EgtoN65elJGqVbVL9ALGqp
-         t8mCcGHBgs9GDhpyLBkIP4/6dsnVL3YzM9auHuJSOVMPUnlQzFGikMj7sNH/pEhi7CUK
-         AM3j0GeiCNPWWDdqWp5uL9xksFDA6AaJ4OXT37iRSUggubcrDbBVcs9ScC+PO8qZrn1p
-         kXxFiFq7QafRK0wW+PVExfXLRK/M8EY1OcHSIUEwFvyt1EPCMR4oOsa8WryOYk0F9u6D
-         3S9UMISn542ckbE3tLaFstFrwkWFvRuBLUAY0gi2jTRjT9WfIFlpoIEacWdK8wFwRLZJ
-         f7PA==
-In-Reply-To: <CANaOheYxQb0QC4g1VbWYNtv_uc8-TE0qmxv8BFp1Kp3p4KEq7Q@mail.gmail.com>
+         :content-type:content-transfer-encoding;
+        bh=6cNuQwarZTYbazSZWimDKE5VaynT2BPzmJ9nuuyE/88=;
+        b=vzDiyBJq7GbXaWwKpgB9AEvvsevFyprI1e9wgASMJR2F7mjCm3z62hO/pKlnOWXOGA
+         2tkJYRKMiohYbugP/TuXbZ03vxXvX6RZ3tLH9DGiBQdt27iJnKTtedJSqK49mrSMZSnJ
+         r9IyXdBlWzxGZ5znXxXJWPPZTuZpE/gMgY97x114XK+Lv/hlPBgw3ooPMDu3c+fD4qpj
+         Gwl5FWGh1hbv46lx0VdNus+oEawbtjbzvnU5PBG1iOjybMy/bgoScgGR1EeG39vqv13G
+         Q2LL4H6AVcbb0S/qYvMHTKj+ZNCFTW1TrlzG/vJEQ99D6wlnKo0vs6Y2E0v/5EcsB1lv
+         zK1w==
+In-Reply-To: <CAJygYd1uK29fk0LRtEMUZ5keRnXGMFpRU0G9fQcTPk+tRmC40A@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: kay <kay.diam@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-I know what you mean, and I said in my email , this is what I see most
-close to it.
+IPVS and etc can't send handshake packet to one server and rest
+packets to second one. At least I was not able even change server in
+keep-alive HTTP connections, I had to Ctrl+R in Firefox to change
+server.
 
-http://dragon.linux-vs.org/~dragonfly/htm/tcpha.htm
-
-On Wed, Jul 18, 2012 at 1:13 AM, kay <kay.diam@gmail.com> wrote:
+2012/7/18 Yucong Sun (=E5=8F=B6=E9=9B=A8=E9=A3=9E) <sunyucong@gmail.com=
+>:
+> I know what you mean, and I said in my email , this is what I see mos=
+t
+> close to it.
 >
-> That is what I am trying to achieve. Fake TCP handshake with automatic
-> TCP session recovery once traffic goes to web2.
->
-> >  how could it, without the tcp handshake?
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> http://dragon.linux-vs.org/~dragonfly/htm/tcpha.htm
