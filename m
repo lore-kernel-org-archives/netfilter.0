@@ -1,69 +1,40 @@
 From: Jared <list-virt@legroom.net>
-Subject: enabling firewalling of bridged interfaces
-Date: Sun, 22 Jul 2012 16:23:55 -0500
-Message-ID: <500C6F6B.7090908@legroom.net>
+Subject: Re: enabling firewalling of bridged interfaces
+Date: Sun, 22 Jul 2012 17:38:19 -0500
+Message-ID: <500C80DB.60105@legroom.net>
+References: <500C6F6B.7090908@legroom.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=legroom.net;
-	s=legroom; t=1342992232;
-	bh=nAW7JhUnGqTzva1C57A3BPB9HZfyn5xt65aQqeMHiDk=;
-	h=Date:From:To:Subject;
-	b=lkpqovfPm6XOcYEWHwlcJTs5eVXhTqQJcD/HTi620l9kKanlcy4oPV0md5AoTur6O
-	 sw7axYR7w4xuiB5k5+Jfpmmt4c7Z7CD4VLEVR0D7LE6q0MYT+T5J3hERf5ITNok3CX
-	 qE5J54Y2uf638O5x5qlrlDof9gkW72LRgmQZ/LcQ=
+	s=legroom; t=1342996697;
+	bh=PoOoodqNNrie9Ep0Wg5W67SttTDFGI3FCWUHPvl3lME=;
+	h=Date:From:To:Subject:References:In-Reply-To;
+	b=eV2OFD8ypdSJ6FftcVO1z/vQjLSKSy+X2fX9KE0V4qhogkbL8h8waRmwoTbFOeNT5
+	 N+DHJrmuAc4a4eBU3Rf8WS4RAWJpdYeAyiWtT962HvFgO11fkFGNpDqVcJDEfEYaZG
+	 9Mz2U44BHRvhhc7GCcx/kdc6FvAAR7IXHbwFAW6g=
+In-Reply-To: <500C6F6B.7090908@legroom.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi.
+On 07/22/2012 04:23 PM, Jared wrote:
+> What do I need to do to enable iptables support for bridged interfaces?  I'm
+> setting up a Gentoo/KVM VM host, and iptables will handle all traffic
+> to/from the host system, but not any of the guests.  I seem to be missing
+> some key kernel config option for this (specifically, whatever provides
+> net.bridge.bridge-nf-call-iptables), but can't figure out what (more details
+> below).  Is there a specific list of options I should enable, or perhaps a
+> reference guide for this somewhere?
 
-What do I need to do to enable iptables support for bridged interfaces?  I'm
-setting up a Gentoo/KVM VM host, and iptables will handle all traffic
-to/from the host system, but not any of the guests.  I seem to be missing
-some key kernel config option for this (specifically, whatever provides
-net.bridge.bridge-nf-call-iptables), but can't figure out what (more details
-below).  Is there a specific list of options I should enable, or perhaps a
-reference guide for this somewhere?
+Well, nevermind.  Rebooting fixed the problem.  I was certain I had already
+configured all of the necessary bridging settings before my last reboot, so
+I didn't bother trying that before sending this e-mail.  After wasting
+another hour and still having no luck, though, I figured what the hell...
+and sure enough it worked.
 
-Long version:
-
-This is going to replace an aging Debian-based Xen VM host, where iptables
-firewalling of the guests from the host works perfectly fine.  On the
-current system, iptables seems to completely ignore (and, thus, permit) all
-traffic to/from the bridged interfaces.
-
-According to the libvirt wiki
-(http://wiki.libvirt.org/page/Networking#Bridged_networking_.28aka_.22shared_physical_device.22.29),
-the following sysctl parameters should be enabled to see bridged traffic:
-
-net.bridge.bridge-nf-call-ip6tables
-net.bridge.bridge-nf-call-iptables
-net.bridge.bridge-nf-call-arptables
-
-But, those values don't exist on my Gentoo host.  Similarly, the
-/proc/sys/net/bridge directory doesn't exist on on my Gentoo host, whereas
-it does exist on Debian and all files within that directory are set to 1.
-
-Since I compiled my own kernel, I'm assuming I must be missing something
-required for this.  Problem is, I can't figure out what.  Based on what I've
-read, support for "802.1d Ethernet Bridging" and "Bridged IP/ARP packets
-filtering" should be all I need, which I do have enabled:
-
-CONFIG_BRIDGE=y
-CONFIG_BRIDGE_NETFILTER=y
-# CONFIG_BRIDGE_NF_EBTABLES is not set
-# CONFIG_BRIDGE_IGMP_SNOOPING is not set
-# CONFIG_EDAC_SBRIDGE is not set
-
-Any ideas what else I'm missing?  Here's my full kernel config, if it'd help:
-http://www.legroom.net/public/config-kvm
-
-I've been beating my head against this for a while now.  Would appreciate
-any guidance.
-
-Thanks!
+So, I'm good now.  Sorry for the noise.  :-)
 
 -- 
 Jared
