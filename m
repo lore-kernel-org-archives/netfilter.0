@@ -1,78 +1,26 @@
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: [PATCH] iptables-restore: move code to add_param_to_argv,
- cleanup (fix gcc-4.7)
-Date: Mon, 23 Jul 2012 13:38:48 +0200
-Message-ID: <1343043528.2626.10755.camel@edumazet-glaptop>
+From: Jan Engelhardt <jengelh@inai.de>
+Subject: Re: [PATCH] iptables-restore: move code to add_param_to_argv, cleanup
+ (fix gcc-4.7)
+Date: Mon, 23 Jul 2012 14:19:11 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1207231418550.32073@frira.zrqbmnf.qr>
 References: <1343039903-7230-1-git-send-email-pablo@netfilter.org>
-	 <1343042946.2626.10727.camel@edumazet-glaptop>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=subject:from:to:cc:in-reply-to:references:content-type:date
-         :message-id:mime-version:x-mailer:content-transfer-encoding;
-        bh=PnKIJh3zKhb8uiieM6DwX8mJoCp71FacnjIQfwnfUkQ=;
-        b=tz3Bi+iTUuM8H+PyOuO8ifM5ao7UnzNAKjWe6b/t4okhMzbOFMpbXLF2UxDG0GL1nM
-         lr7QhUnH7iOZkfvlwsU0cIsxq6RUr974vGkRVm23rcvAJYxWT+mbUGngiSmRLFoWt4I/
-         //EPmClYgJu9VkaVs96F3waouqH3wqYXaaE7K3ZsMRAeLfEtP7PGmTXtff1xWAP4oC1j
-         Pjk7Qt1TAiqf+CN5UzLTeUEilM2uPvDKE3M1B+VXrI4OgRFNuBu8I7VxtZLHC2hjn8KD
-         gtT3YdBXtXNuIx9j1DO31eoyy8dRml0WRuzW6FwNLcZymMco3dtnsTPdH5yA3QRFBuN7
-         EZyQ==
-In-Reply-To: <1343042946.2626.10727.camel@edumazet-glaptop>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <1343039903-7230-1-git-send-email-pablo@netfilter.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: pablo@netfilter.org
 Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-On Mon, 2012-07-23 at 13:29 +0200, Eric Dumazet wrote:
-> On Mon, 2012-07-23 at 12:38 +0200, pablo@netfilter.org wrote:
-> > From: Pablo Neira Ayuso <pablo@netfilter.org>
-> > 
-> > This patch seems to be a mere cleanup that moves the parameter parsing
-> > code to add_param_to_argv.
-> > 
-> > But, in reality, it also fixes iptables whe compiled with gcc-4.7.
-> > 
-> > Moving param_buffer declaration out of the loop seems to resolve the
-> > issue. gcc-4.7 seems to be generating bad code regarding param_buffer.
-> > 
-> > @@ -380,9 +380,9 @@
-> >                         quote_open = 0;
-> >                         escaped = 0;
-> >                         param_len = 0;
-> > +                       char param_buffer[1024];
-> > 
-> >                         for (curchar = parsestart; *curchar; curchar++) {
-> > -                               char param_buffer[1024];
-> > 
-> >                                 if (quote_open) {
-> >                                         if (escaped) {
-> > 
-> > But I have hard time to apply this patch in such a way. Instead, I came
-> > up with the idea of this cleanup, which does not harm after all (and fixes
-> > the issue for us).
-> > 
-> > Sorry, I didn't have the time to further debug this issue, but it would be
-> > worth to investigate what's going wrong and ping gcc people.
-> 
-> Bug seems that iptables forgot that "char param_buffer[1024];" can
-> disappear at the end of the block :
-> 
-> for (curchar = parsestart; *curchar; curchar++) {
-> 	char param_buffer[1024];
-> 	...
-> }
-> 
-> // here param_buffer[1024] is lost, so any var pointing 
-> // to it can mess stack
-> 
-> previous gcc were probably not so aggressive.
-> 
-> 
+On Monday 2012-07-23 12:38, pablo@netfilter.org wrote:
 
-Oh well, add_argv() does a strdup(), so iptables code seems fine.
+>From: Pablo Neira Ayuso <pablo@netfilter.org>
+>
+>This patch seems to be a mere cleanup that moves the parameter parsing
+>code to add_param_to_argv.
+>
+>But, in reality, it also fixes iptables whe compiled with gcc-4.7.
 
-
-
+How does the problem manifest?
