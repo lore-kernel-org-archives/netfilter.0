@@ -1,60 +1,367 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: per host accounting
-Date: Mon, 23 Jul 2012 10:00:47 +0200
-Message-ID: <1343030447.12730.5.camel@tiger.regit.org>
-References: <CAJygYd3B1rReg_-cLX599CScd7u2SBcO7_7uU1gb83knS4MM3w@mail.gmail.com>
-Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
-	boundary="=-c5rKnpL6s5tsM5cu1ecT"
+From: pablo@netfilter.org
+Subject: [PATCH] iptables-restore: move code to add_param_to_argv, cleanup (fix gcc-4.7)
+Date: Mon, 23 Jul 2012 12:38:23 +0200
+Message-ID: <1343039903-7230-1-git-send-email-pablo@netfilter.org>
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAJygYd3B1rReg_-cLX599CScd7u2SBcO7_7uU1gb83knS4MM3w@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Yucong Sun =?UTF-8?Q?=28=E5=8F=B6=E9=9B=A8=E9=A3=9E=29?= <sunyucong@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter-devel@vger.kernel.org
 Cc: netfilter@vger.kernel.org
 
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 
---=-c5rKnpL6s5tsM5cu1ecT
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+This patch seems to be a mere cleanup that moves the parameter parsing
+code to add_param_to_argv.
 
-Hello,
+But, in reality, it also fixes iptables whe compiled with gcc-4.7.
 
-Le dimanche 22 juillet 2012 =C3=A0 20:22 -0700, Yucong Sun (=E5=8F=B6=E9=9B=
-=A8=E9=A3=9E) a =C3=A9crit :
-> Hi,
->=20
-> I need a way to account traffic (bytes) for ~500 ips (fixed),  and it
-> seems creating a plain 500 rules will affect the performance a lot.
-> Without implement layered rule (like a binary search?) , is there
-> something existing to do automatic hashing?
-> Things like hashlimit is great, but I don't need limit matching
-> function, just a way to create a hashtable and count bytes and
-> packets.
->=20
-> If there's none, I suppose it would easy enough to fork some hashlimit
-> code to do this.
+Moving param_buffer declaration out of the loop seems to resolve the
+issue. gcc-4.7 seems to be generating bad code regarding param_buffer.
 
-You can have a look at how ulogd2 and nfacct can be used for accounting:
-https://home.regit.org/2012/07/flow-accounting-with-netfilter-and-ulogd2/
+@@ -380,9 +380,9 @@
+                        quote_open = 0;
+                        escaped = 0;
+                        param_len = 0;
++                       char param_buffer[1024];
 
-BR,
---=20
-Eric Leblond=20
-Blog: http://home.regit.org/ - Portfolio: http://regit.500px.com/
+                        for (curchar = parsestart; *curchar; curchar++) {
+-                               char param_buffer[1024];
 
---=-c5rKnpL6s5tsM5cu1ecT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+                                if (quote_open) {
+                                        if (escaped) {
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+But I have hard time to apply this patch in such a way. Instead, I came
+up with the idea of this cleanup, which does not harm after all (and fixes
+the issue for us).
 
-iEYEABECAAYFAlANBK8ACgkQnxA7CdMWjzI+BACfej2oIky2MRvmwA6WmwdF/v6d
-+5IAnA1BoMTH2ovQaI0Jixu2w5egJcIQ
-=XofB
------END PGP SIGNATURE-----
+Sorry, I didn't have the time to further debug this issue, but it would be
+worth to investigate what's going wrong and ping gcc people.
 
---=-c5rKnpL6s5tsM5cu1ecT--
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+---
+ iptables/ip6tables-restore.c |  133 +++++++++++++++++++++---------------------
+ iptables/iptables-restore.c  |  133 +++++++++++++++++++++---------------------
+ 2 files changed, 130 insertions(+), 136 deletions(-)
+
+diff --git a/iptables/ip6tables-restore.c b/iptables/ip6tables-restore.c
+index 3894d68..9a03dff 100644
+--- a/iptables/ip6tables-restore.c
++++ b/iptables/ip6tables-restore.c
+@@ -114,6 +114,70 @@ static void free_argv(void) {
+ 		free(newargv[i]);
+ }
+ 
++static void add_param_to_argv(char *parsestart)
++{
++	int quote_open = 0, escaped = 0, param_len = 0;
++	char param_buffer[1024], *curchar;
++
++	/* After fighting with strtok enough, here's now
++	 * a 'real' parser. According to Rusty I'm now no
++	 * longer a real hacker, but I can live with that */
++
++	for (curchar = parsestart; *curchar; curchar++) {
++		if (quote_open) {
++			if (escaped) {
++				param_buffer[param_len++] = *curchar;
++				escaped = 0;
++				continue;
++			} else if (*curchar == '\\') {
++				escaped = 1;
++				continue;
++			} else if (*curchar == '"') {
++				quote_open = 0;
++				*curchar = ' ';
++			} else {
++				param_buffer[param_len++] = *curchar;
++				continue;
++			}
++		} else {
++			if (*curchar == '"') {
++				quote_open = 1;
++				continue;
++			}
++		}
++
++		if (*curchar == ' '
++		    || *curchar == '\t'
++		    || * curchar == '\n') {
++			if (!param_len) {
++				/* two spaces? */
++				continue;
++			}
++
++			param_buffer[param_len] = '\0';
++
++			/* check if table name specified */
++			if (!strncmp(param_buffer, "-t", 2)
++                            || !strncmp(param_buffer, "--table", 8)) {
++				xtables_error(PARAMETER_PROBLEM,
++				   "Line %u seems to have a "
++				   "-t table option.\n", line);
++				exit(1);
++			}
++
++			add_argv(param_buffer);
++			param_len = 0;
++		} else {
++			/* regular character, copy to buffer */
++			param_buffer[param_len++] = *curchar;
++
++			if (param_len >= sizeof(param_buffer))
++				xtables_error(PARAMETER_PROBLEM,
++				   "Parameter too long!");
++		}
++	}
++}
++
+ int ip6tables_restore_main(int argc, char *argv[])
+ {
+ 	struct xtc_handle *handle = NULL;
+@@ -325,11 +389,6 @@ int ip6tables_restore_main(int argc, char *argv[])
+ 			char *bcnt = NULL;
+ 			char *parsestart;
+ 
+-			/* the parser */
+-			char *curchar;
+-			int quote_open, escaped;
+-			size_t param_len;
+-
+ 			/* reset the newargv */
+ 			newargc = 0;
+ 
+@@ -370,69 +429,7 @@ int ip6tables_restore_main(int argc, char *argv[])
+ 				add_argv((char *) bcnt);
+ 			}
+ 
+-			/* After fighting with strtok enough, here's now
+-			 * a 'real' parser. According to Rusty I'm now no
+-			 * longer a real hacker, but I can live with that */
+-
+-			quote_open = 0;
+-			escaped = 0;
+-			param_len = 0;
+-
+-			for (curchar = parsestart; *curchar; curchar++) {
+-				char param_buffer[1024];
+-
+-				if (quote_open) {
+-					if (escaped) {
+-						param_buffer[param_len++] = *curchar;
+-						escaped = 0;
+-						continue;
+-					} else if (*curchar == '\\') {
+-						escaped = 1;
+-						continue;
+-					} else if (*curchar == '"') {
+-						quote_open = 0;
+-						*curchar = ' ';
+-					} else {
+-						param_buffer[param_len++] = *curchar;
+-						continue;
+-					}
+-				} else {
+-					if (*curchar == '"') {
+-						quote_open = 1;
+-						continue;
+-					}
+-				}
+-
+-				if (*curchar == ' '
+-				    || *curchar == '\t'
+-				    || * curchar == '\n') {
+-					if (!param_len) {
+-						/* two spaces? */
+-						continue;
+-					}
+-
+-					param_buffer[param_len] = '\0';
+-
+-					/* check if table name specified */
+-					if (!strncmp(param_buffer, "-t", 2)
+-                                            || !strncmp(param_buffer, "--table", 8)) {
+-						xtables_error(PARAMETER_PROBLEM,
+-						   "Line %u seems to have a "
+-						   "-t table option.\n", line);
+-						exit(1);
+-					}
+-
+-					add_argv(param_buffer);
+-					param_len = 0;
+-				} else {
+-					/* regular character, copy to buffer */
+-					param_buffer[param_len++] = *curchar;
+-
+-					if (param_len >= sizeof(param_buffer))
+-						xtables_error(PARAMETER_PROBLEM,
+-						   "Parameter too long!");
+-				}
+-			}
++			add_param_to_argv(parsestart);
+ 
+ 			DEBUGP("calling do_command6(%u, argv, &%s, handle):\n",
+ 				newargc, curtable);
+diff --git a/iptables/iptables-restore.c b/iptables/iptables-restore.c
+index 034f960..c974cb3 100644
+--- a/iptables/iptables-restore.c
++++ b/iptables/iptables-restore.c
+@@ -113,6 +113,70 @@ static void free_argv(void) {
+ 		free(newargv[i]);
+ }
+ 
++static void add_param_to_argv(char *parsestart)
++{
++	int quote_open = 0, escaped = 0, param_len = 0;
++	char param_buffer[1024], *curchar;
++
++	/* After fighting with strtok enough, here's now
++	 * a 'real' parser. According to Rusty I'm now no
++	 * longer a real hacker, but I can live with that */
++
++	for (curchar = parsestart; *curchar; curchar++) {
++		if (quote_open) {
++			if (escaped) {
++				param_buffer[param_len++] = *curchar;
++				escaped = 0;
++				continue;
++			} else if (*curchar == '\\') {
++				escaped = 1;
++				continue;
++			} else if (*curchar == '"') {
++				quote_open = 0;
++				*curchar = ' ';
++			} else {
++				param_buffer[param_len++] = *curchar;
++				continue;
++			}
++		} else {
++			if (*curchar == '"') {
++				quote_open = 1;
++				continue;
++			}
++		}
++
++		if (*curchar == ' '
++		    || *curchar == '\t'
++		    || * curchar == '\n') {
++			if (!param_len) {
++				/* two spaces? */
++				continue;
++			}
++
++			param_buffer[param_len] = '\0';
++
++			/* check if table name specified */
++			if (!strncmp(param_buffer, "-t", 2)
++			    || !strncmp(param_buffer, "--table", 8)) {
++				xtables_error(PARAMETER_PROBLEM,
++				   "Line %u seems to have a "
++				   "-t table option.\n", line);
++				exit(1);
++			}
++
++			add_argv(param_buffer);
++			param_len = 0;
++		} else {
++			/* regular character, copy to buffer */
++			param_buffer[param_len++] = *curchar;
++
++			if (param_len >= sizeof(param_buffer))
++				xtables_error(PARAMETER_PROBLEM,
++				   "Parameter too long!");
++		}
++	}
++}
++
+ int
+ iptables_restore_main(int argc, char *argv[])
+ {
+@@ -325,11 +389,6 @@ iptables_restore_main(int argc, char *argv[])
+ 			char *bcnt = NULL;
+ 			char *parsestart;
+ 
+-			/* the parser */
+-			char *curchar;
+-			int quote_open, escaped;
+-			size_t param_len;
+-
+ 			/* reset the newargv */
+ 			newargc = 0;
+ 
+@@ -370,69 +429,7 @@ iptables_restore_main(int argc, char *argv[])
+ 				add_argv((char *) bcnt);
+ 			}
+ 
+-			/* After fighting with strtok enough, here's now
+-			 * a 'real' parser. According to Rusty I'm now no
+-			 * longer a real hacker, but I can live with that */
+-
+-			quote_open = 0;
+-			escaped = 0;
+-			param_len = 0;
+-
+-			for (curchar = parsestart; *curchar; curchar++) {
+-				char param_buffer[1024];
+-
+-				if (quote_open) {
+-					if (escaped) {
+-						param_buffer[param_len++] = *curchar;
+-						escaped = 0;
+-						continue;
+-					} else if (*curchar == '\\') {
+-						escaped = 1;
+-						continue;
+-					} else if (*curchar == '"') {
+-						quote_open = 0;
+-						*curchar = ' ';
+-					} else {
+-						param_buffer[param_len++] = *curchar;
+-						continue;
+-					}
+-				} else {
+-					if (*curchar == '"') {
+-						quote_open = 1;
+-						continue;
+-					}
+-				}
+-
+-				if (*curchar == ' '
+-				    || *curchar == '\t'
+-				    || * curchar == '\n') {
+-					if (!param_len) {
+-						/* two spaces? */
+-						continue;
+-					}
+-
+-					param_buffer[param_len] = '\0';
+-
+-					/* check if table name specified */
+-					if (!strncmp(param_buffer, "-t", 2)
+-					    || !strncmp(param_buffer, "--table", 8)) {
+-						xtables_error(PARAMETER_PROBLEM,
+-						   "Line %u seems to have a "
+-						   "-t table option.\n", line);
+-						exit(1);
+-					}
+-
+-					add_argv(param_buffer);
+-					param_len = 0;
+-				} else {
+-					/* regular character, copy to buffer */
+-					param_buffer[param_len++] = *curchar;
+-
+-					if (param_len >= sizeof(param_buffer))
+-						xtables_error(PARAMETER_PROBLEM,
+-						   "Parameter too long!");
+-				}
+-			}
++			add_param_to_argv(parsestart);
+ 
+ 			DEBUGP("calling do_command4(%u, argv, &%s, handle):\n",
+ 				newargc, curtable);
+-- 
+1.7.10.4
 
