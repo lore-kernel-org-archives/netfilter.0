@@ -1,227 +1,135 @@
-From: Gomathivinayagam Muthuvinayagam <sankarmail@gmail.com>
+From: Eric Leblond <eric@regit.org>
 Subject: Re: ulogd - ip_conntrack_netlink - how to get it working one
-Date: Sat, 28 Jul 2012 12:04:33 -0700
-Message-ID: <CAAJpzgbWivGLg6YDOwFb-Rtgr-kYnHeZLWADqgtDzvJzeq=bLQ@mail.gmail.com>
-References: <CAAJpzgb2ZEoRayuzvUVevvRvJ=oXA6=heQa98fKD_63QXVe4xg@mail.gmail.com>
- <CAAJpzgbutOBLB1t9vXYeXSPS=wwxeeSanTYJo+qNkjTfQr2rVw@mail.gmail.com>
- <CAAJpzga_Bga+2=hG_PpZcs9OSrpGed+gue-j=TLrg4bL9cPPNA@mail.gmail.com>
- <CAAJpzgaMLex=6QEd4YKik-XnAvGcOXTN7Zovo54ZfO-N=P9aDQ@mail.gmail.com> <1343497474.7072.4.camel@tiger.regit.org>
+Date: Sat, 28 Jul 2012 21:41:25 +0200
+Message-ID: <rgu14k39xifc9a2d4trq2t69.1343504485786@email.android.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-type:content-transfer-encoding;
-        bh=wMrd/tFwyEnwYNO3ykNrgDT8sMUy2BxYOwseoY9rdmU=;
-        b=RYwPet4BpW1V5v3P1Sl50696Oqzq/El70PML5mkCgvHs0xkYQ2YJt+CwJf/12OXe7a
-         yh6kgb1rkJGMsZj630H8Fb1iL43dIRr1BOy8K9O2I85R+IqaDjexxsNbX4HpuaeYd6AE
-         vBT3r0xHPUNABvD40+rKhQtq0J7lauuY9Bbii8dTGtc6KdFYFnAUAhWrQoLS4Temng0a
-         JmU+7HCLV3F4arDPO6nHGey6dDBqcDglEQC3GKerrW3fQekTT2UPDcV8OSX8B0WsCpYk
-         MMyTQwsDjgtbREyO1tWI+ZLcrYGBwZYB3hAHVXiqGYYLVWnUJ9ehYyuK2ZEiduPqu0uu
-         YL/g==
-In-Reply-To: <1343497474.7072.4.camel@tiger.regit.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-To: Eric Leblond <eric@regit.org>
+Content-Type: text/plain; charset="windows-1254"
+To: Gomathivinayagam Muthuvinayagam <sankarmail@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-Thank you for your mail. Its difficult to upgrade the kernel. My
-question is whether ulogd will work with ip_conntrack_netlink.
-If you can answer the following questions, that would be very helpful.
+SGVsbG8KClRoaXMgaXMgYW4gYWxpYXM6IGlwX2Nvbm50cmFja19uZXQgbGluayBhbmQgbmYqIGFy
+ZSB0aGUgc2FtZS4KSG93ZXZlciB0aGVyZSBjb3VsZCBiZSBhbiBpc3N1ZSBpZiBrZXJuZWwgaXMg
+dG9vIG9sZC4gU29tZSBzcGVjaWZpYyBwYXJhbXMgY291bGQgbm90IHdvcmsuCgpCUgoKR29tYXRo
+aXZpbmF5YWdhbSBNdXRodXZpbmF5YWdhbSA8c2Fua2FybWFpbEBnbWFpbC5jb20+IGEgw6ljcml0
+wqA6Cgo+VGhhbmsgeW91IGZvciB5b3VyIG1haWwuIEl0cyBkaWZmaWN1bHQgdG8gdXBncmFkZSB0
+aGUga2VybmVsLiBNeQo+cXVlc3Rpb24gaXMgd2hldGhlciB1bG9nZCB3aWxsIHdvcmsgd2l0aCBp
+cF9jb25udHJhY2tfbmV0bGluay4KPklmIHlvdSBjYW4gYW5zd2VyIHRoZSBmb2xsb3dpbmcgcXVl
+c3Rpb25zLCB0aGF0IHdvdWxkIGJlIHZlcnkgaGVscGZ1bC4KPgo+IDEpIElzIHRoZXJlIGFueSB3
+YXkgdGhhdCBJIGNhbiBtYWtlIHVsb2dkIHRvIHRhbGsgdG8KPj4gPiBpcF9jb25udHJhY2tfbmV0
+bGluaywgYW5kIHdoZXRoZXIgaXBfY29ubnRyYWNrX25ldGxpbmsgaXMgZXF1aXZhbGVudAo+PiA+
+IG9mIG5mX2Nvbm50cmFja19uZXRsaW5rPwo+PiA+Cj4+ID4gMikgSWYgKDEpIGlzIG5vdCBwb3Nz
+aWJsZSwgY2FuIEkgYWJsZSB0byBpbmNsdWRlIGp1c3QgdGhlCj4+ID4gbmZfY29ubnRyYWNrX25l
+dGxpbmsgaW4gUkhFTDUgd2l0aG91dCBjaGFuZ2luZyBhbnkgZXhpc3RpbmcKPj4gPiBmdW5jdGlv
+bmFsaXR5PyBuZl9jb25udHJhY2tfbmV0bGluayBhbmQgaXBfY29ubnRyYWNrX25ldGxpbmsgY2Fu
+IHdvcmsKPj4gPiB3ZWxsIHNpbXVsdGFuZW91c2x5Pwo+PiA+Cj4+ID4gMykgSWYgKDIpIGlzIG5v
+dCBwb3NzaWJsZSwgd2hhdCB3b3VsZCBiZSB5b3VyIGFkdmljZSBvbiB0aGlzPyBSSEVMNSArCj4+
+ID4gaXBfY29ubnRyYWNrX25ldGxpbmsgaXMgdXNlZCBpbiBtYW55IHNlcnZlcnMobWF5IGJlIG1v
+cmUgdGhhbiAxMDAwCj4+ID4gc2VydmVycykgaW4gbXkgb3JnYW5pemF0aW9uLiBDb25zaWRlcmlu
+ZyB0aGlzLCBhbnkgY2hhbmdlIHdvdWxkIGNhdXNlCj4+ID4gcG90ZW50aWFsIHRlc3RpbmcuIFNv
+IGEgc2ltcGxlIHNvbHV0aW9uIHdvdWxkIGJlIGVhc2lseSBhY2NlcHRlZCBpbiBteQo+PiA+IG9y
+Z2FuaXphdGlvbi4KPgo+Cj5UaGFua3MgJiBSZWdhcmRzLAo+Cj4KPgo+Cj5PbiBTYXQsIEp1bCAy
+OCwgMjAxMiBhdCAxMDo0NCBBTSwgRXJpYyBMZWJsb25kIDxlcmljQHJlZ2l0Lm9yZz4gd3JvdGU6
+Cj4+IEhlbGxvLAo+Pgo+PiBMZSB2ZW5kcmVkaSAyNyBqdWlsbGV0IDIwMTIgw6AgMjA6NDMgLTA3
+MDAsIEdvbWF0aGl2aW5heWFnYW0KPj4gTXV0aHV2aW5heWFnYW0gYSDDqWNyaXQgOgo+Pj4gRm9y
+IHRoZSBmbG93IGJhc2VkIGxvZ2dpbmcgKE5GQ1QgcGx1Z2luKSwgd2l0aG91dCBpcHRhYmxlIHJ1
+bGVzIHVsb2dkCj4+PiB3b3JrcyBwZXJmZWN0bHkuIEJhc2ljYWxseSB1bG9nZCBORkNUIHBsdWdp
+biBkaXJlY3RseSBjb21tdW5pY2F0ZXMKPj4+IHdpdGggY29ubnRyYWNrIHN5c3RlbSB0aHJvdWdo
+IG5mX2Nvbm50cmFja19uZXRsaW5rLiBUaGlzIHRoaW5nIEkgaGF2ZQo+Pj4gdGVzdGVkIGluIG15
+IHVidW50dSBzeXN0ZW0gYW5kIHdvcmtzIGZpbmUuIE9ubHkgcHJvYmxlbSBpcyB3aXRoIFJIRUw1
+Cj4+PiBzeXN0ZW0sIGJlY2F1c2UgdGhlcmUgaXMgbmZfY29ubnRyYWNrX25ldGxpbmsgbW9kdWxl
+Lgo+Pgo+PiBUaGVuIGFsbCB5b3UgY2FuIGRvIGlzIHRvIHVwZ3JhZGUgeW91ciBrZXJuZWwuLi4g
+UkhFTDUgaXMgYWxtb3N0IGZyb20KPj4gcHJldmlvdXMgY2VudHVyeS4uLgo+Pgo+PiBCUiwKPj4K
+Pj4+Cj4+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQo+Pj4gRnJvbTogbmV0ZmlsdGVyLW93
+bmVyQHZnZXIua2VybmVsLm9yZwo+Pj4gW21haWx0bzpuZXRmaWx0ZXItb3duZXJAdmdlci5rZXJu
+ZWwub3JnXSBPbiBCZWhhbGYgT2Yga2F5Cj4+PiBTZW50OiBGcmlkYXksIEp1bHkgMjcsIDIwMTIg
+ODozOSBQTQo+Pj4gVG86IG5ldGZpbHRlckB2Z2VyLmtlcm5lbC5vcmcKPj4+IFN1YmplY3Q6IFJl
+OiB1bG9nZCAtIGlwX2Nvbm50cmFja19uZXRsaW5rIC0gaG93IHRvIGdldCBpdCB3b3JraW5nIG9u
+ZQo+Pj4KPj4+IENvdWxkIHlvdSBwbGVhc2UgcHJvdmlkZSB5b3VyIGlwdGFibGVzIHJ1bGVzIHdp
+dGggVUxPRyBhY3Rpb24/Cj4+Pgo+Pj4gMjAxMi83LzI4IEdvbWF0aGl2aW5heWFnYW0gTXV0aHV2
+aW5heWFnYW0gPHNhbmthcm1haWxAZ21haWwuY29tPjoKPj4+ID4gVGhhbmsgeW91IGZvciB5b3Vy
+IHJlcGx5Lgo+Pj4gPgo+Pj4gPiBMZXQgbWUgcHJpbnQgdGhlIHVsb2dkIGNvbmZpZ3VyYXRpb25z
+IGhlcmUsIHNvIHRoYXQgSSBjYW4gZGVzY3JpYmUgbXkKPj4+ID4gcHJvYmxlbSBiZXR0ZXIuCj4+
+PiA+Cj4+PiA+ICMgdGhpcyBpcyBhIHN0YWNrIGZvciBmbG93LWJhc2VkIGxvZ2dpbmcgdmlhIExP
+R0VNVQo+Pj4gPiBzdGFjaz1jdDE6TkZDVCxpcDJzdHIxOklQMlNUUixwcmludDE6UFJJTlRGTE9X
+LGVtdTE6TE9HRU1VCj4+PiA+Cj4+PiA+IFtjdDFdCj4+PiA+IG5ldGxpbmtfc29ja2V0X2J1ZmZl
+cl9zaXplPTIxNzA4OAo+Pj4gPiBuZXRsaW5rX3NvY2tldF9idWZmZXJfbWF4c2l6ZT0xMDg1NDQw
+Cj4+PiA+ICNuZXRsaW5rX3Jlc3luY190aW1lb3V0PTYwICMgc2Vjb25kcyB0byB3YWl0IHRvIHBl
+cmZvcm0KPj4+ID4gcmVzeW5jaHJvbml6YXRpb24KPj4+ID4gcG9sbGludGVydmFsPTUgIyB1c2Ug
+cG9sbC1iYXNlZCBsb2dnaW5nIGluc3RlYWQgb2YgZXZlbnQtZHJpdmVuCj4+PiA+IGhhc2hfZW5h
+YmxlPTEKPj4+ID4KPj4+ID4gdWxvZ2QgaXMgcnVubmluZyB3aXRob3V0IGFueSBlcnJvciBtZXNz
+YWdlcy4gQnV0LCB1bG9nZF9zeXNsb2dlbXUubG9nCj4+PiA+IGhhcyBubyBjb250ZW50cy4gY29u
+bnRyYWNrIC1FIGRpc3BsYXlzIHRoZSBmbG93IHBlcmZlY3RseS4KPj4+ID4KPj4+ID4gSSB0cmll
+ZCB0byBmaW5kIG91dCB0aGUgY2F1c2Ugb2Ygbm8gY29udGVudCBpbiB0aGUgdWxvZ2Rfc3lzbG9n
+ZW11LmxvZwo+Pj4gPiBpbiB0aGUgbG9nIGZpbGUuIHVsb2dkIHJlcXVpcmVzIG5mX2Nvbm50cmFj
+a19uZXRsaW5rIHN1YnN5c3RlbS9tb2R1bGUuCj4+PiA+IEluIG15IGxpbnV4IHZlcnNpb24gKFJI
+RUwgNSksIEkgZG9udCBoYXZlIHRoYXQuIEluc3RlYWQgb2YgdGhhdCBJIGhhdmUKPj4+ID4gaXBf
+Y29ubnRyYWNrX25ldGxpbmsgbW9kdWxlLgo+Pj4gPgo+Pj4gPiAxKSBJcyB0aGVyZSBhbnkgd2F5
+IHRoYXQgSSBjYW4gbWFrZSB1bG9nZCB0byB0YWxrIHRvCj4+PiA+IGlwX2Nvbm50cmFja19uZXRs
+aW5rLCBhbmQgd2hldGhlciBpcF9jb25udHJhY2tfbmV0bGluayBpcyBlcXVpdmFsZW50Cj4+PiA+
+IG9mIG5mX2Nvbm50cmFja19uZXRsaW5rPwo+Pj4gPgo+Pj4gPiAyKSBJZiAoMSkgaXMgbm90IHBv
+c3NpYmxlLCBjYW4gSSBhYmxlIHRvIGluY2x1ZGUganVzdCB0aGUKPj4+ID4gbmZfY29ubnRyYWNr
+X25ldGxpbmsgaW4gUkhFTDUgd2l0aG91dCBjaGFuZ2luZyBhbnkgZXhpc3RpbmcKPj4+ID4gZnVu
+Y3Rpb25hbGl0eT8gbmZfY29ubnRyYWNrX25ldGxpbmsgYW5kIGlwX2Nvbm50cmFja19uZXRsaW5r
+IGNhbiB3b3JrCj4+PiA+IHdlbGwgc2ltdWx0YW5lb3VzbHk/Cj4+PiA+Cj4+PiA+IDMpIElmICgy
+KSBpcyBub3QgcG9zc2libGUsIHdoYXQgd291bGQgYmUgeW91ciBhZHZpY2Ugb24gdGhpcz8gUkhF
+TDUgKwo+Pj4gPiBpcF9jb25udHJhY2tfbmV0bGluayBpcyB1c2VkIGluIG1hbnkgc2VydmVycyht
+YXkgYmUgbW9yZSB0aGFuIDEwMDAKPj4+ID4gc2VydmVycykgaW4gbXkgb3JnYW5pemF0aW9uLiBD
+b25zaWRlcmluZyB0aGlzLCBhbnkgY2hhbmdlIHdvdWxkIGNhdXNlCj4+PiA+IHBvdGVudGlhbCB0
+ZXN0aW5nLiBTbyBhIHNpbXBsZSBzb2x1dGlvbiB3b3VsZCBiZSBlYXNpbHkgYWNjZXB0ZWQgaW4g
+bXkKPj4+ID4gb3JnYW5pemF0aW9uLgo+Pj4gPgo+Pj4gPgo+Pj4gPiAtLS0tLU9yaWdpbmFsIE1l
+c3NhZ2UtLS0tLQo+Pj4gPiBGcm9tOiBuZXRmaWx0ZXItb3duZXJAdmdlci5rZXJuZWwub3JnCj4+
+PiA+IFttYWlsdG86bmV0ZmlsdGVyLW93bmVyQHZnZXIua2VybmVsLm9yZ10gT24gQmVoYWxmIE9m
+IGtheQo+Pj4gPiBTZW50OiBGcmlkYXksIEp1bHkgMjcsIDIwMTIgODoxMiBQTQo+Pj4gPiBUbzog
+bmV0ZmlsdGVyQHZnZXIua2VybmVsLm9yZwo+Pj4gPiBTdWJqZWN0OiBSZTogdWxvZ2QgLSBpcF9j
+b25udHJhY2tfbmV0bGluayAtIGhvdyB0byBnZXQgaXQgd29ya2luZyBvbmUKPj4+ID4KPj4+ID4g
+RGVhciBHb21hdGhpdmluYXlhZ2FtLAo+Pj4gPgo+Pj4gPiBXaGF0IGV4YWN0bHkgeW91IHdvdWxk
+IGxpa2UgdG8gYWNoaWV2ZSBhbmQgd2hhdCB5b3UgYWxyZWFkeSBhY2hpZXZlZD8KPj4+ID4KPj4+
+ID4gV2hhdCBkaWQgeW91IG1lYW4gc2F5aW5nICJjYXB0dXJlIGZsb3cgYmFzZWQgbG9nZ2luZyI/
+Cj4+PiA+Cj4+PiA+IEZvciBleGFtcGxlIGhlcmUgaXMgbXkgdWxvZyBkYXRhOgo+Pj4gPgo+Pj4g
+PiBKdWwgMjggMDE6MDM6MTUgZXNhZ2lsYSBEUk9QIHBhY2tldDogIElOPWV0aDAgT1VUPSBNQUM9
+KioqICBTUkM9KioqCj4+PiA+IERTVD0qKiogTEVOPTUyIFRPUz0wMCBQUkVDPTB4MDAgVFRMPTU1
+IElEPTM3MTg4IENFIERGIFBST1RPPVRDUAo+Pj4gPiBTUFQ9NTExODMgRFBUPTIyIFNFUT0yNTYz
+MjQ1MTA3IEFDSz0xMzgyNDY2MTcgV0lORE9XPTYxIEFDSyBVUkdQPTAKPj4+ID4KPj4+ID4gRG8g
+eW91IG5lZWQgc29tZXRoaW5nIG1vcmUgd2l0aCB0aGUgcGFja2V0IGRhdGEgb3Igd2hhdD8KPj4+
+ID4KPj4+ID4gMjAxMi83LzI4IEdvbWF0aGl2aW5heWFnYW0gTXV0aHV2aW5heWFnYW0gPHNhbmth
+cm1haWxAZ21haWwuY29tPjoKPj4+ID4+IEkgZG9u4oCZdCBrbm93IHdoZXRoZXIgSeKAmW0gYXNr
+aW5nIHN0dXBpZCBxdWVzdGlvbnMsIGJ1dCBpZiBzb21lb25lCj4+PiA+PiBjb3VsZCByZXNwb25k
+IGZvciB0aGlzIHBvc3QsIHRoYXQgd2lsbCBiZSBncmVhdC4KPj4+ID4+Cj4+PiA+PiBUaGFua3Mg
+JiBSZWdhcmRzLAo+Pj4gPj4KPj4+ID4+Cj4+PiA+Pgo+Pj4gPj4KPj4+ID4+IE9uIEZyaSwgSnVs
+IDI3LCAyMDEyIGF0IDc6MjYgUE0sIEdvbWF0aGl2aW5heWFnYW0gTXV0aHV2aW5heWFnYW0KPj4+
+ID4+IDxzYW5rYXJtYWlsQGdtYWlsLmNvbT4gd3JvdGU6Cj4+PiA+Pj4gSGksCj4+PiA+Pj4KPj4+
+ID4+PiBJIGhhdmUgYSBSSEVMIDUgb3MgaW4gbXkgc3lzdGVtLiBJIGhhdmUgc2V0dXAgdWxvZ2Qg
+aW4gbXkgbG9jYWwKPj4+ID4+PiBzeXN0ZW0uIEnigJltIGFibGUgdG8gZG8gcGFja2V0IGNhcHR1
+cmluZy4KPj4+ID4+PiBJ4oCZbSBub3QgYWJsZSB0byBjYXB0dXJlIGZsb3cgYmFzZWQgbG9nZ2lu
+Zy4gV2hhdCBJIGhhdmUgZm91bmQgd2FzLAo+Pj4gPj4+IGluIG15IHN5c3RlbSBJIGRvbuKAmXQg
+aGF2ZSBuZl9jb25udHJhY2tfbmV0bGluay4KPj4+ID4+PiBJbnN0ZWFkIEkgaGF2ZSBpcF9jb25u
+dHJhY2tfbmV0bGluay4gSXMgdGhhdCBwb3NzaWJsZSBJIGNhbgo+Pj4gPj4+IGluY29ycG9yYXRl
+IG5mX2Nvbm50cmFja19uZXRsaW5rIGludG8gUkhFTDU/IEFuZCBtYWtlIHVsb2dkIHRvIGJlCj4+
+PiA+Pj4gd29ya2luZyBvbmUuCj4+PiA+Pj4KPj4+ID4+PiBZb3VyIGhlbHAgd291bGQgYmUgbXVj
+aCBhcHByZWNpYXRlZC4KPj4+ID4+Pgo+Pj4gPj4+IFRoYW5rcywKPj4+ID4+Pgo+Pj4gPj4+Cj4+
+PiA+Pj4gVGhhbmtzICYgUmVnYXJkcywKPj4+ID4+IC0tCj4+PiA+PiBUbyB1bnN1YnNjcmliZSBm
+cm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbmV0ZmlsdGVyIgo+Pj4g
+Pj4gaW4gdGhlIGJvZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2VyLmtlcm5lbC5vcmcg
+TW9yZSBtYWpvcmRvbW8KPj4+ID4+IGluZm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFq
+b3Jkb21vLWluZm8uaHRtbAo+Pj4gPiAtLQo+Pj4gPiBUbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMg
+bGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbmV0ZmlsdGVyIgo+Pj4gPiBpbiB0aGUg
+Ym9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVsLm9yZyBNb3JlIG1ham9y
+ZG9tbwo+Pj4gPiBpbmZvIGF0ICBodHRwOi8vdmdlci5rZXJuZWwub3JnL21ham9yZG9tby1pbmZv
+Lmh0bWwKPj4+ID4gLS0KPj4+ID4gVG8gdW5zdWJzY3JpYmUgZnJvbSB0aGlzIGxpc3Q6IHNlbmQg
+dGhlIGxpbmUgInVuc3Vic2NyaWJlIG5ldGZpbHRlciIKPj4+ID4gaW4gdGhlIGJvZHkgb2YgYSBt
+ZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2VyLmtlcm5lbC5vcmcgTW9yZSBtYWpvcmRvbW8KPj4+ID4g
+aW5mbyBhdCAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpvcmRvbW8taW5mby5odG1sCj4+PiAt
+LQo+Pj4gVG8gdW5zdWJzY3JpYmUgZnJvbSB0aGlzIGxpc3Q6IHNlbmQgdGhlIGxpbmUgInVuc3Vi
+c2NyaWJlIG5ldGZpbHRlciIKPj4+IGluIHRoZSBib2R5IG9mIGEgbWVzc2FnZSB0byBtYWpvcmRv
+bW9Admdlci5rZXJuZWwub3JnIE1vcmUgbWFqb3Jkb21vCj4+PiBpbmZvIGF0ICBodHRwOi8vdmdl
+ci5rZXJuZWwub3JnL21ham9yZG9tby1pbmZvLmh0bWwKPj4+IC0tCj4+PiBUbyB1bnN1YnNjcmli
+ZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbmV0ZmlsdGVyIiBp
+bgo+Pj4gdGhlIGJvZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2VyLmtlcm5lbC5vcmcK
+Pj4+IE1vcmUgbWFqb3Jkb21vIGluZm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jk
+b21vLWluZm8uaHRtbAo+Pgo+PiAtLQo+PiBFcmljIExlYmxvbmQKPj4gQmxvZzogaHR0cDovL2hv
+bWUucmVnaXQub3JnLyAtIFBvcnRmb2xpbzogaHR0cDovL3JlZ2l0LjUwMHB4LmNvbS8K
 
- 1) Is there any way that I can make ulogd to talk to
-> > ip_conntrack_netlink, and whether ip_conntrack_netlink is equivalen=
-t
-> > of nf_conntrack_netlink?
-> >
-> > 2) If (1) is not possible, can I able to include just the
-> > nf_conntrack_netlink in RHEL5 without changing any existing
-> > functionality? nf_conntrack_netlink and ip_conntrack_netlink can wo=
-rk
-> > well simultaneously?
-> >
-> > 3) If (2) is not possible, what would be your advice on this? RHEL5=
- +
-> > ip_conntrack_netlink is used in many servers(may be more than 1000
-> > servers) in my organization. Considering this, any change would cau=
-se
-> > potential testing. So a simple solution would be easily accepted in=
- my
-> > organization.
-
-
-Thanks & Regards,
-
-
-
-
-On Sat, Jul 28, 2012 at 10:44 AM, Eric Leblond <eric@regit.org> wrote:
-> Hello,
->
-> Le vendredi 27 juillet 2012 =E0 20:43 -0700, Gomathivinayagam
-> Muthuvinayagam a =E9crit :
->> For the flow based logging (NFCT plugin), without iptable rules ulog=
-d
->> works perfectly. Basically ulogd NFCT plugin directly communicates
->> with conntrack system through nf_conntrack_netlink. This thing I hav=
-e
->> tested in my ubuntu system and works fine. Only problem is with RHEL=
-5
->> system, because there is nf_conntrack_netlink module.
->
-> Then all you can do is to upgrade your kernel... RHEL5 is almost from
-> previous century...
->
-> BR,
->
->>
->> -----Original Message-----
->> From: netfilter-owner@vger.kernel.org
->> [mailto:netfilter-owner@vger.kernel.org] On Behalf Of kay
->> Sent: Friday, July 27, 2012 8:39 PM
->> To: netfilter@vger.kernel.org
->> Subject: Re: ulogd - ip_conntrack_netlink - how to get it working on=
-e
->>
->> Could you please provide your iptables rules with ULOG action?
->>
->> 2012/7/28 Gomathivinayagam Muthuvinayagam <sankarmail@gmail.com>:
->> > Thank you for your reply.
->> >
->> > Let me print the ulogd configurations here, so that I can describe=
- my
->> > problem better.
->> >
->> > # this is a stack for flow-based logging via LOGEMU
->> > stack=3Dct1:NFCT,ip2str1:IP2STR,print1:PRINTFLOW,emu1:LOGEMU
->> >
->> > [ct1]
->> > netlink_socket_buffer_size=3D217088
->> > netlink_socket_buffer_maxsize=3D1085440
->> > #netlink_resync_timeout=3D60 # seconds to wait to perform
->> > resynchronization
->> > pollinterval=3D5 # use poll-based logging instead of event-driven
->> > hash_enable=3D1
->> >
->> > ulogd is running without any error messages. But, ulogd_syslogemu.=
-log
->> > has no contents. conntrack -E displays the flow perfectly.
->> >
->> > I tried to find out the cause of no content in the ulogd_syslogemu=
-=2Elog
->> > in the log file. ulogd requires nf_conntrack_netlink subsystem/mod=
-ule.
->> > In my linux version (RHEL 5), I dont have that. Instead of that I =
-have
->> > ip_conntrack_netlink module.
->> >
->> > 1) Is there any way that I can make ulogd to talk to
->> > ip_conntrack_netlink, and whether ip_conntrack_netlink is equivale=
-nt
->> > of nf_conntrack_netlink?
->> >
->> > 2) If (1) is not possible, can I able to include just the
->> > nf_conntrack_netlink in RHEL5 without changing any existing
->> > functionality? nf_conntrack_netlink and ip_conntrack_netlink can w=
-ork
->> > well simultaneously?
->> >
->> > 3) If (2) is not possible, what would be your advice on this? RHEL=
-5 +
->> > ip_conntrack_netlink is used in many servers(may be more than 1000
->> > servers) in my organization. Considering this, any change would ca=
-use
->> > potential testing. So a simple solution would be easily accepted i=
-n my
->> > organization.
->> >
->> >
->> > -----Original Message-----
->> > From: netfilter-owner@vger.kernel.org
->> > [mailto:netfilter-owner@vger.kernel.org] On Behalf Of kay
->> > Sent: Friday, July 27, 2012 8:12 PM
->> > To: netfilter@vger.kernel.org
->> > Subject: Re: ulogd - ip_conntrack_netlink - how to get it working =
-one
->> >
->> > Dear Gomathivinayagam,
->> >
->> > What exactly you would like to achieve and what you already achiev=
-ed?
->> >
->> > What did you mean saying "capture flow based logging"?
->> >
->> > For example here is my ulog data:
->> >
->> > Jul 28 01:03:15 esagila DROP packet:  IN=3Deth0 OUT=3D MAC=3D***  =
-SRC=3D***
->> > DST=3D*** LEN=3D52 TOS=3D00 PREC=3D0x00 TTL=3D55 ID=3D37188 CE DF =
-PROTO=3DTCP
->> > SPT=3D51183 DPT=3D22 SEQ=3D2563245107 ACK=3D138246617 WINDOW=3D61 =
-ACK URGP=3D0
->> >
->> > Do you need something more with the packet data or what?
->> >
->> > 2012/7/28 Gomathivinayagam Muthuvinayagam <sankarmail@gmail.com>:
->> >> I don=92t know whether I=92m asking stupid questions, but if some=
-one
->> >> could respond for this post, that will be great.
->> >>
->> >> Thanks & Regards,
->> >>
->> >>
->> >>
->> >>
->> >> On Fri, Jul 27, 2012 at 7:26 PM, Gomathivinayagam Muthuvinayagam
->> >> <sankarmail@gmail.com> wrote:
->> >>> Hi,
->> >>>
->> >>> I have a RHEL 5 os in my system. I have setup ulogd in my local
->> >>> system. I=92m able to do packet capturing.
->> >>> I=92m not able to capture flow based logging. What I have found =
-was,
->> >>> in my system I don=92t have nf_conntrack_netlink.
->> >>> Instead I have ip_conntrack_netlink. Is that possible I can
->> >>> incorporate nf_conntrack_netlink into RHEL5? And make ulogd to b=
-e
->> >>> working one.
->> >>>
->> >>> Your help would be much appreciated.
->> >>>
->> >>> Thanks,
->> >>>
->> >>>
->> >>> Thanks & Regards,
->> >> --
->> >> To unsubscribe from this list: send the line "unsubscribe netfilt=
-er"
->> >> in the body of a message to majordomo@vger.kernel.org More majord=
-omo
->> >> info at  http://vger.kernel.org/majordomo-info.html
->> > --
->> > To unsubscribe from this list: send the line "unsubscribe netfilte=
-r"
->> > in the body of a message to majordomo@vger.kernel.org More majordo=
-mo
->> > info at  http://vger.kernel.org/majordomo-info.html
->> > --
->> > To unsubscribe from this list: send the line "unsubscribe netfilte=
-r"
->> > in the body of a message to majordomo@vger.kernel.org More majordo=
-mo
->> > info at  http://vger.kernel.org/majordomo-info.html
->> --
->> To unsubscribe from this list: send the line "unsubscribe netfilter"
->> in the body of a message to majordomo@vger.kernel.org More majordomo
->> info at  http://vger.kernel.org/majordomo-info.html
->> --
->> To unsubscribe from this list: send the line "unsubscribe netfilter"=
- in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
-> --
-> Eric Leblond
-> Blog: http://home.regit.org/ - Portfolio: http://regit.500px.com/
