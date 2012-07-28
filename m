@@ -1,7 +1,7 @@
-From: kay <kay.diam@gmail.com>
+From: Gomathivinayagam Muthuvinayagam <sankarmail@gmail.com>
 Subject: Re: ulogd - ip_conntrack_netlink - how to get it working one
-Date: Sat, 28 Jul 2012 07:11:56 +0400
-Message-ID: <CANaOheZJ0Pe8f59LrVJ+Mtes6DXMRg+WWsFGxRUqnLpQ1-c0Aw@mail.gmail.com>
+Date: Fri, 27 Jul 2012 20:28:00 -0700
+Message-ID: <CAAJpzga_Bga+2=hG_PpZcs9OSrpGed+gue-j=TLrg4bL9cPPNA@mail.gmail.com>
 References: <CAAJpzgb2ZEoRayuzvUVevvRvJ=oXA6=heQa98fKD_63QXVe4xg@mail.gmail.com>
  <CAAJpzgbutOBLB1t9vXYeXSPS=wwxeeSanTYJo+qNkjTfQr2rVw@mail.gmail.com>
 Mime-Version: 1.0
@@ -11,18 +11,65 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=mime-version:in-reply-to:references:from:date:message-id:subject:to
          :content-type:content-transfer-encoding;
-        bh=CcfjIoHeahrkXs+ChHBn9sbKLI4Ggz06Oln90mkZxXE=;
-        b=MdoF3UhSvDyqh3JS0sW3N/AKtAOjDyiyUdbXWeg16Tdd04f2S6cxXIuOwWXWmgjrF1
-         bTe3F8xzHxvoi0h2s2PgNWP7wsblSEfc1hu31sbJ/RLVC2hcT8K5EVmFuAsbt73AudR1
-         EWz6jpeQejLZCKV56k6MZy2je4Vn6D9H8yLPIOd7y3Rdz0eGnOdYGiiHfFyK4IHfwLC8
-         oA6pmGFPp1QUsbPckKHQ/hJFTHNVqyMp5k5sHmhC/zkwEuBnVVP9w6Tgq3E5IvH3hblk
-         B22OgKRRWtqkgliZ5Rx551mnL3nCcNoSUATq3k+kKydY94yj7w1O7+jt4lbIBCJ5HlMX
-         U9KQ==
+        bh=bdWpkaZGTp+Q57UIeV+jV4jxmYyUELj0WUi+4brHzOE=;
+        b=GDssjsCZd6uLAIOPHJ2DHV5t5IMmb5PSjBu5ccZTBScLI38G7M3uJq99VaBJJAlkfS
+         FBNH/cY0rp3WOComMNw77iVkqTInkrdknlGIv8UxZxKkwr+SFXchx4sTDdMREFtR/2So
+         rlll4VwhOJht4vnF+bx2BqM/A6pPvaRuZJSTC4HUuMlr3ka6Cf4p9S5Kzn2upRi5leoZ
+         WUS7oniDFW5x1CKX2PmIpmqMiAdhN7JPQwjVVldanlhIIGlYvHMhxfQYYRhG4NLyQEfL
+         QmRqNYSVNea/K0D51AcO3Y92sdj33R9HgaT0FRzt8y8lPDsYujFOsbI1KZUxi/ytL0kN
+         KXfg==
 In-Reply-To: <CAAJpzgbutOBLB1t9vXYeXSPS=wwxeeSanTYJo+qNkjTfQr2rVw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="windows-1252"
 To: netfilter@vger.kernel.org
+
+Thank you for your reply.
+
+Let me print the ulogd configurations here, so that I can describe my
+problem better.
+
+# this is a stack for flow-based logging via LOGEMU
+stack=3Dct1:NFCT,ip2str1:IP2STR,print1:PRINTFLOW,emu1:LOGEMU
+
+[ct1]
+netlink_socket_buffer_size=3D217088
+netlink_socket_buffer_maxsize=3D1085440
+#netlink_resync_timeout=3D60 # seconds to wait to perform resynchroniza=
+tion
+pollinterval=3D5 # use poll-based logging instead of event-driven
+hash_enable=3D1
+
+ulogd is running without any error messages. But, ulogd_syslogemu.log
+has no contents. conntrack -E displays the flow perfectly.
+
+I tried to find out the cause of no content in the ulogd_syslogemu.log
+in the log file. ulogd requires nf_conntrack_netlink subsystem/module.
+In my linux version (RHEL 5), I dont have that. Instead of that I have
+ip_conntrack_netlink module.
+
+1) Is there any way that I can make ulogd to talk to
+ip_conntrack_netlink, and whether ip_conntrack_netlink is equivalent
+of nf_conntrack_netlink?
+
+2) If (1) is not possible, can I able to include just the
+nf_conntrack_netlink in RHEL5 without changing any existing
+functionality? nf_conntrack_netlink and ip_conntrack_netlink can work
+well simultaneously?
+
+3) If (2) is not possible, what would be your advice on this? RHEL5 +
+ip_conntrack_netlink is used in many servers(may be more than 1000
+servers) in my organization. Considering this, any change would cause
+potential testing. So a simple solution would be easily accepted in my
+organization.
+
+
+-----Original Message-----
+=46rom: netfilter-owner@vger.kernel.org
+[mailto:netfilter-owner@vger.kernel.org] On Behalf Of kay
+Sent: Friday, July 27, 2012 8:12 PM
+To: netfilter@vger.kernel.org
+Subject: Re: ulogd - ip_conntrack_netlink - how to get it working one
 
 Dear Gomathivinayagam,
 
@@ -71,7 +118,10 @@ could
 >>
 >> Thanks & Regards,
 > --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> To unsubscribe from this list: send the line "unsubscribe netfilter"
+> in the body of a message to majordomo@vger.kernel.org More majordomo
+> info at  http://vger.kernel.org/majordomo-info.html
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter"
+in the body of a message to majordomo@vger.kernel.org More majordomo
+info at  http://vger.kernel.org/majordomo-info.html
