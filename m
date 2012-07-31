@@ -1,65 +1,102 @@
-From: kay <kay.diam@gmail.com>
-Subject: Re: RHEL backported '--queue-bypass'
-Date: Mon, 30 Jul 2012 09:07:30 +0400
-Message-ID: <CANaOhea_i8JbsHLMC5hv0HXWNVUJEjvqnxFt64H1r_wcFeS-rw@mail.gmail.com>
-References: <CANaOheaxLhfPwXf0f7P=8HZn+wj4A94PqVfV2uqcBD5ypAA7hA@mail.gmail.com>
- <CANaOheZZXP1sCTTD4LAJkFPaOX-yfXGdH4jqu-2xC+3vT0weaA@mail.gmail.com>
- <alpine.LNX.2.01.1207291829030.2056@frira.zrqbmnf.qr> <CANaOheYPA0o6n5oyS2vFJ1knFWCBo98XwZ1aG_95HyLcyUz_Jg@mail.gmail.com>
- <alpine.LNX.2.01.1207291937080.14123@frira.zrqbmnf.qr> <CANaOheaDK5znOzq-S5WEH--8N2RMbc5avOfBMJi3mJKcPzMgdA@mail.gmail.com>
- <alpine.LNX.2.01.1207292006350.18302@frira.zrqbmnf.qr>
+From: Peter LaDow <petela@gocougs.wsu.edu>
+Subject: Process Hang
+Date: Mon, 30 Jul 2012 17:38:28 -0700
+Message-ID: <CAN8Q1Ec9WUPh4mKw6Yn5G5hstzYxcJOKM8r_eGchjGo+h6FFLA@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :content-type;
-        bh=p6mmH88/B7wNqPFzb5UM/S9+0SzMvCUujqNRp1XqSmI=;
-        b=GqZfis9Sctp8EogSJlnU+umn65ySgftXR2ifF9tGm873fZbKKNbjyfaoD6zbUm3pfm
-         2CNFKOYdKJPJbCA8NvUq/U2Hlu0BHyFOmug1ek4Z7I01u8nBjMHOpFaIXlaL+KbXpYp2
-         RNNxwHxu8cBKZjWUO+j4oYBeODSY+7foji6n2CbEfaZ49eo8vlUmJ5zgp+GGBB/tjzaJ
-         9KTR/sUPUX+OJ+mygqpIxDlzh1eRT683jYDriK7SAVTZd5JCGRCsDn6AX3v62djcC0G4
-         QOAt+XwHxLw1nD9D4MD6aoZIPYsyZTTMrOB2AaAubyjQ8OzI3OaPk4n2ctsCzdAR/Hm1
-         QsGA==
-In-Reply-To: <alpine.LNX.2.01.1207292006350.18302@frira.zrqbmnf.qr>
+        h=mime-version:sender:date:x-google-sender-auth:message-id:subject
+         :from:to:content-type;
+        bh=DM1mo20VjnOybXQSKE6tHJntiH/8x8JGXt9SCNzHVks=;
+        b=eqYglsqgxgL3VmiM/6c46ZKMYvhsDzK6nu+91JyC7UulVFzbB4FgJMROJzTjT/kLm1
+         gV8uIfgFFEJjls+zLk7riuTmY2cRh46HzVlNcAqMQLVbCzwRyuRXo7GcctWkkH5cHK9K
+         XQJ1H9y7x2o17FchFTkYLYfGCnYr8U4DCP0dvoGJ6CeIliVT0hTxXvSV/3SlGxomj/Qo
+         JmKxpYuC5TDgzDI0qf/22d3wQKgXgsQWX1jE5CWp2MhRlaCCwXleI9aS45OqM9PUT3GW
+         QhkFRtSfOmMqoFU7qNL6YvAkUeFQlprkoFHViM3bPzFHTnPr1IIt2PAPbLLHDuV7o0Tk
+         p5bw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-I have asked Florian how to backport that functionality and he
-provided me with the  origin kernel patches, so I'm not sure that new
-iptables rule will work on old kernel. Anyway I got extra skills.
+I posted this on the RT mailing list, but haven't heard back.  And
+after some digging, I think perhaps this may be related to the
+netfilter code.  I presume this is the correct list (rather than
+netfilter-dev).  If not, please let me know.
 
-As for the topic theme, that's my poor english, I'm not working on
-redhat, just use their kernel. Sorry for confusing.
+We are running 3.0.36-rt57 on a powerpc box.  During some testing with
+heavy loads and interfaces coming up/going down (specifically PPP), we
+have run into a case where iptables hangs and cannot be killed.  It
+requires a reboot to fix the problem.  We are using 3.0.36-rt57 along
+with iptables 1.3.8.
 
-Regards.
+We can re-create the problem, but it takes 5-6 hours each time.  So
+debugging this has been very difficult.
 
-2012/7/29 Jan Engelhardt <jengelh@inai.de>:
-> On Sunday 2012-07-29 19:52, kay wrote:
->
->>Do you mean that if I compile latest iptables for 2.6.32 kernel
->>everything will work?
->
-> Where does it say that it would not?
-> It should even work with linux 2.4 (once you got it compiled), but we
-> don't bother testing that old piece of software.
->
-> Do you actually work for Redhat or how did it came you came about with
-> "RHEL backported --queue-bypass"?
->
-> Oh, and in these circles of Internet, we don't top-post like you did.
->
->>
->>2012/7/29 Jan Engelhardt <jengelh@inai.de>:
->>> On Sunday 2012-07-29 18:42, kay wrote:
->>>
->>>>New iptables require new kernels
->>>
->>> No it does not.
->>--
->>To unsubscribe from this list: send the line "unsubscribe netfilter" in
->>the body of a message to majordomo@vger.kernel.org
->>More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>
+Connecting the BDI and debugging the kernel, we get:
+
+#0  get_counters (t=0xdd5145a0, counters=0xe3458000)
+    at include/linux/seqlock.h:66
+#1  0xc026b4ac in do_ipt_get_ctl (sk=<value optimized out>,
+    cmd=<value optimized out>, user=0x10612078, len=<value optimized out>)
+    at net/ipv4/netfilter/ip_tables.c:918
+#2  0xc022226c in nf_sockopt (sk=<value optimized out>, pf=2 '\002',
+    val=<value optimized out>, opt=<value optimized out>, len=0xdd4c7d4c,
+    get=1) at net/netfilter/nf_sockopt.c:109
+#3  0xc0236b1c in ip_getsockopt (sk=0xdf071480, level=<value optimized out>,
+    optname=65, optval=0x10612078 <Address 0x10612078 out of bounds>,
+    optlen=0xbfbe0c2c) at net/ipv4/ip_sockglue.c:1308
+#4  0xc02522a8 in raw_getsockopt (sk=0xdf071480, level=<value optimized out>,
+    optname=<value optimized out>, optval=<value optimized out>,
+    optlen=<value optimized out>) at net/ipv4/raw.c:811
+#5  0xc01f4c38 in sock_common_getsockopt (sock=<value optimized out>,
+    level=<value optimized out>, optname=<value optimized out>,
+    optval=<value optimized out>, optlen=<value optimized out>)
+    at net/core/sock.c:2157
+#6  0xc01f2df8 in sys_getsockopt (fd=<value optimized out>, level=0,
+    optname=65, optval=0x10612078 <Address 0x10612078 out of bounds>,
+    optlen=0xbfbe0c2c) at net/socket.c:1839
+#7  0xc01f45b4 in sys_socketcall (call=15, args=<value optimized out>)
+    at net/socket.c:2421
+
+It seems to be stuck in __read_seqcount_begin.  From include/linux/seqlock.h:
+
+static inline unsigned __read_seqcount_begin(const seqcount_t *s)
+{
+        unsigned ret;
+
+repeat:
+        ret = ACCESS_ONCE(s->sequence);
+        if (unlikely(ret & 1)) {
+                cpu_relax(); <----- It is always here
+                goto repeat;
+        }
+        return ret;
+}
+
+Now, digging through things, it seems the lock is acquired via
+xt_write_recseq_begin, which only occurs in a few places.  The only
+place that looks suspicious is in ipt_do_table.  There is a do while
+loop that is preceded by xt_write_recseq_begin (and terminated with
+xt_write_recseq_end).  Our suspicion that we may have a case where it
+is spinning in side this loop, but we aren't sure how to determine if
+this is the case.  Our first thought is the continue statement near
+the top of the loop that could keep jumping to the end of the loop,
+and since acpar.hotplug never changes, this loop never exits.
+
+(My speculations below are uninformed, since I don't know exactly how
+netfilter works.  They are based upon the variable and function names.
+ If I'm way off, help would be appreciated.)
+
+However, it seems this would only be the case if none of the table
+entries match the the ip of the skb (the call to ip_packet_match).  Or
+if the table becomes corrupted and the table entry keeps pointing to
+itself.
+
+I've since turned on netfilter debugging and I'm hoping for a failure
+soon that I can use to get more information.  But any hints on what
+could be the problem would be greatly appreciated.
+
+Pete
