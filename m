@@ -1,27 +1,35 @@
-From: Gomathivinayagam Muthuvinayagam <sankarmail@gmail.com>
-Subject: ulogd - works with AF_INET, but not with AF_UNSPEC
-Date: Mon, 30 Jul 2012 18:55:38 -0700
-Message-ID: <CAAJpzgbK4NxV=0+b214kw493GyvXm1s=1yFFHz4QmBme6LKHrg@mail.gmail.com>
+From: rajesh <rajesh.modhwadiya@elitecore.com>
+Subject: replace nf_nat_seqofs_lock with spin_lock of nf_conn
+Date: Tue, 31 Jul 2012 12:31:55 +0530
+Message-ID: <501782E3.4010009@elitecore.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:from:date:message-id:subject:to:content-type;
-        bh=dU1EF/QIY80tqJBD+UnHM5BzLL1aaRiH5uDo5PIBjDk=;
-        b=AwOgicYyoUFbWAStJ47jpY+YTg2XNMdTaiPL+3kV3lgO+bPi+lukB5vfwuR06CwFo6
-         4aLwWZuWcfzx4mdIrGzWvnWhla4rr1PynXEco+HxrKu3b/JN0HlzQF8Wm3E27auqn1z8
-         kol0WUMqm2A8Z5moIaWrpvdArQWiZygT9mDY1j8xkJWxBCD4z27xfofQwRsAWGkRFLid
-         jbUvlmx9jKn4hkouGNPZp8X7/4+2mcxqFlUsVZbFhyKA4ScTHCrHogFrdeFG1M6P9aNg
-         WDgt4rKuX6T9e++tlHvn7VPLGW+a2OAApf7Q2ePdi71IY0S6mNspM7DSWS4bsNt9BOWT
-         TBDw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-I'm trying to use ulogd in RHEL5 system. When I changed the address
-family from AF_UNSPEC to AF_INET, NFCT_Q_DUMP function works.
-Otherwise it is failing. Anyone know the reason for this?
+Hi,
+     My kernel version is 2.6.32.
+     I have verify that same lock is also used in 3.4.6.
+     there is global spin lock at net/ipv4/netfilter/nf_nat_helper.c
+     static DEFINE_SPINLOCK(nf_nat_seqofs_lock);
 
-Thanks & Regards,
+     this is used in following functions:
+     adjust_tcp_sequence();
+     nf_nat_get_offset();
+
+     This lock will reduce performance in case of multicore machines.
+     There is a spin_lock in nf_conn structure itself, which is used by
+     tcp_packet() at
+     net/netfilter/nf_conntrack_proto_tcp.c
+     and other places.
+
+     So can we replace
+     spin_lock_bh(&nf_nat_seqofs_lock);
+     with
+     spin_lock_bh(&ct->lock);
+
+     regards
+     rajesh
