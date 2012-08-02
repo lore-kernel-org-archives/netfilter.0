@@ -1,35 +1,22 @@
 From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: [PATCH] iptables-restore: move code to add_param_to_argv, cleanup
- (fix gcc-4.7)
-Date: Thu, 2 Aug 2012 21:37:10 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1208022136350.21772@frira.zrqbmnf.qr>
-References: <1343039903-7230-1-git-send-email-pablo@netfilter.org> <1343042946.2626.10727.camel@edumazet-glaptop> <1343043528.2626.10755.camel@edumazet-glaptop> <20120730013707.GA2350@1984>
+Subject: Re: tproxy between 2 local processes ?
+Date: Thu, 2 Aug 2012 22:32:08 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1208022231250.31335@frira.zrqbmnf.qr>
+References: <1343744245.78982.YahooMailNeo@web124904.mail.ne1.yahoo.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <20120730013707.GA2350@1984>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <1343744245.78982.YahooMailNeo@web124904.mail.ne1.yahoo.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Eric Dumazet <eric.dumazet@gmail.com>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+To: Ming-Ching Tiew <mctiew@yahoo.com>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
+On Tuesday 2012-07-31 16:17, Ming-Ching Tiew wrote:
 
-On Monday 2012-07-30 03:37, Pablo Neira Ayuso wrote:
->> > // here param_buffer[1024] is lost, so any var pointing 
->> > // to it can mess stack
->> > 
->> > previous gcc were probably not so aggressive.
->> 
->> Oh well, add_argv() does a strdup(), so iptables code seems fine.
->
->I thought the same, but one contributor has put some on light on this.
->
->I'm going to revert the patch that I applied to fix this and apply
->the one that comes with this email instead.
->
->It contains a simple description of the problem, I think it's good for
->the record (distro maintainers will likely google for this).
+>Is there any hope that tproxy between 2 local processes will become possible ?
 
-Your code cleanup, by moving the code into a separate function,
-is however still desired :)
+The recipe should be the same as for incoming traffic, since in both 
+incoming and locally-outgoing cases, traffic will pass through the 
+routing table, where you specify that a target is in fact local.
