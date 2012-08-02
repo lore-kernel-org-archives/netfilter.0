@@ -1,36 +1,54 @@
-From: julien <julien@linuxwall.info>
-Subject: Netfilter and Iptables talk at AWeber
-Date: Wed, 01 Aug 2012 17:34:17 -0400
-Message-ID: <0191896170a6fdc7c917390b79464804@linuxwall.info>
+From: Nikolai Lusan <nikolai@lusan.id.au>
+Subject: Using multiple ipsets in a single rule.
+Date: Thu, 02 Aug 2012 13:50:33 +1000
+Message-ID: <1343879433.4471.3.camel@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="=-4tHAVgOAl4JV9KUEy8rk"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=linuxwall.info;
-	s=samchiel; t=1343856857;
-	bh=6CfyP/OCeVJ5/kCU6ai/kkLAazvoupbCoCtLq70phhY=;
-	h=Date:From:To:Subject:From;
-	b=QMWg1ew9L9VjunaywfVoxRlK6i6CHaSBGELSNxyR8oCaSxHzCtpqwdjhj+WJfFnmS
-	 sKay5dVUcifiw6P9J++5puWvPGiCGYIiwF7BadeGvYxTnlc+s+7m2Vy1lZyBboeRX7
-	 +k7zp31Bvs9UqcShuTwyh2+gF7WtV6KAEsSm8XWM=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Hi All,
 
-A few weeks ago, I gave a presentation on Netfilter & Iptables at my 
-company. The goal was to educate developers and give them the tools to 
-diagnose firewall related issues.
+--=-4tHAVgOAl4JV9KUEy8rk
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-I figured it would of interest to this list. I am also curious to get 
-feedback from the community, as I will be holding a Netfilter workshop at 
-Fosscon Philadelphia on August 11th. So if you have any comment, please reply 
-here, or to me directly.
+Hi,
 
-http://jve.linuxwall.info/blog/index.php?post/2012/08/01/Netfilter-and-Iptables-talk-at-AWeber
+After receiving advice that multiple set matching was supported I have
+written a firewall that uses multiple set matches in a single iptables
+rule only to receive the error message "--match-set can on be used
+once". Is there support for matching against more than one set? Or is it
+possible that this can be done in a future release?
 
-Cheers,
 
--- 
-Julien Vehent - http://jve.linuxwal.info
+--=20
+Nikolai Lusan <nikolai@lusan.id.au>
+
+--=-4tHAVgOAl4JV9KUEy8rk
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
+
+iQIcBAABCgAGBQJQGfkKAAoJEJOjmtAqHQSLq1UP/0+TGS91Nypy7W/J66VuOxnA
+L2RV79nhnm7iYKgSvwgDGSvELSJTS4WUW5cHSbZlbEjleJAX/X6oFd5RHVuCfjpQ
+ENdlxdK8G9vFETnrwujVIqOTRyjjBe0rZi5DwiI5xGy++kiu+EIDQ/HkR4gsn5Yk
+ADiYBFYF3GYocOYjYW3VxTWC2E6I+N5SEW7+89J2GsN3ZyUDYnzQZRw/fNuBmwCr
+O/cV4UrF+ztGdgbiX52ctgoJEVWPSnuGaroCsYt4XLHAAv2G19xrM82C6yngRdtA
+hrSRXR4J2fo1Ar/O8/0EQjH0eQ8Z8jnNiKxa2MmTJdjLGTSIvLINATwFmo/cTjuO
+QgtraHGAIs90DpfSmJjAUVZIxrNEK0Ve9VV913e+czhG0aqOdVJz5hmTZg5QWRBM
+ncC7mPnrA0vb41aVH4+qUfCSJnrwlOAVCPjmZ9yBfoqYDrz6U/rW2d3qM2pVFQYL
+amLXmDTyaMAQ/cguw3yi5wBa91qkHHtVQeX/w9ajfxovWUL5HgKnCeJ+HP9f4N2q
+NZAE43r852qPPsSdI9kyXFTdUuqonA5U8shdbw6rNYguFZUXv2mjMwtQcOd/8jXJ
+C9556cbsAmWjQL0KnbUOyNop5nKlVFwxQbImNX23PBXqKpw7Nbswkgk8J7lUayfj
+XKGjWcNIAPupwLj2A7Vu
+=jZSY
+-----END PGP SIGNATURE-----
+
+--=-4tHAVgOAl4JV9KUEy8rk--
+
