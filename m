@@ -1,41 +1,30 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Using multiple ipsets in a single rule.
-Date: Thu, 2 Aug 2012 10:44:33 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1208021042250.26318@blackhole.kfki.hu>
-References: <1343879433.4471.3.camel@localhost> <alpine.DEB.2.00.1208021021500.26245@blackhole.kfki.hu>
+From: Jan Engelhardt <jengelh@inai.de>
+Subject: Re: Netfilter and Iptables talk at AWeber
+Date: Thu, 2 Aug 2012 17:46:55 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1208021742120.10019@frira.zrqbmnf.qr>
+References: <0191896170a6fdc7c917390b79464804@linuxwall.info>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1208021021500.26245@blackhole.kfki.hu>
+In-Reply-To: <0191896170a6fdc7c917390b79464804@linuxwall.info>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Nikolai Lusan <nikolai@lusan.id.au>
-Cc: netfilter@vger.kernel.org
+To: julien <julien@linuxwall.info>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-On Thu, 2 Aug 2012, Jozsef Kadlecsik wrote:
+On Wednesday 2012-08-01 23:34, julien wrote:
+>
+>I figured it would of interest to this list. I am also curious to get 
+>feedback from the community, as I will be holding a Netfilter workshop 
+>at Fosscon Philadelphia on August 11th. So if you have any comment, 
+>please reply here, or to me directly.
+>
+>http://jve.linuxwall.info/blog/index.php?post/2012/08/01/Netfilter-and-Iptables-talk-at-AWeber
 
-> On Thu, 2 Aug 2012, Nikolai Lusan wrote:
-> 
-> > After receiving advice that multiple set matching was supported I have
-> > written a firewall that uses multiple set matches in a single iptables
-> > rule only to receive the error message "--match-set can on be used
-> > once". Is there support for matching against more than one set? Or is it
-> > possible that this can be done in a future release?
-> 
-> Which is the iptables version you use? The parser has changed several 
-> times since the multiple same match support had been added, so the feature 
-> might get lost.
+For geoip blocking, there is also -m geoip from Xtables-addons.
 
-No, you must use wrong syntax. Matching against multiple sets is supported 
-via multiple matches, i.e.
+AFW is not using -m conntrack though you used it earlier.
 
-iptables ... -m set --match-set foo src,dst -m set --match-set bar src ...
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+And a big grin for the christmas example.
