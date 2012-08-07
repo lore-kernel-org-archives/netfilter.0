@@ -1,37 +1,41 @@
-From: Gomathivinayagam Muthuvinayagam <sankarmail@gmail.com>
-Subject: conntrack output - question
-Date: Mon, 6 Aug 2012 22:38:03 -0700
-Message-ID: <CAAJpzgba1eL73KxNZWLU7DxJsrZitdb2WkUOe=An_J-Q677+sg@mail.gmail.com>
+From: Michal =?utf-8?B?S3ViZcSNZWs=?= <mkubecek@suse.cz>
+Subject: Re: -f option used with iptables
+Date: Tue, 07 Aug 2012 08:15:54 +0200
+Message-ID: <1723425.lveZBpEbj8@alaris>
+References: <CAE1WnGfTxjoEov7QCU0W32Z=Uy9y+rSEmCzZ94KiB0__AjSvmQ@mail.gmail.com>
+Reply-To: Michal =?utf-8?B?S3ViZcSNZWs=?= <mkubecek@suse.cz>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:from:date:message-id:subject:to:content-type;
-        bh=ntCB5jpna3SlPH5yhCFiPByBzfX7JCmBnSLp0DAl0MY=;
-        b=ftzjpy/6aehpVgNLTsENJYbqxVRncMjO77bNftJIRZwO88pybNCUlpsapLUPyQFzVk
-         6SVczNz9IdJUD8a/gu/AAkD+OuzaezeBldtWr5bch1i4a271tLGrtOc6IYYCNZE28xdf
-         B/Ufb0l3oVglMpxidzBI3ZURigfc5mzm/hxu5T7HIvyjPUUCv3orankP21XBD0Rr4aOO
-         NwB1VrHmD2hOrhyb1WhadcTV+mgaOphjWmFlb3d/jaRJOc4rWQ3mW8mPk1h0JBjkIzt0
-         MYeFoYYJ5KhorfkQZh5bDMxvqIvet5/5qR/VnpnYDE+m2hOY//YVP6nvKs5rZrSY+tlZ
-         2pcg==
+In-Reply-To: <CAE1WnGfTxjoEov7QCU0W32Z=Uy9y+rSEmCzZ94KiB0__AjSvmQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter <netfilter@vger.kernel.org>
+Cc: rahul shrivastava <shrivastavaone@gmail.com>
 
-Conntrack classifies a packet to a flow based on protocol no, srcip,
-destip, srcport, and destport.
+On Monday 06 of August 2012 20:00EN, rahul shrivastava wrote:
+>=20
+> my objective is to drop all fragmented packets on my system
+> following rules are used
 
-A sample output is shown below,
+Not a good idea, IMHO.
 
-[NEW] udp      17 30 src=192.168.2.100 dst=192.168.2.1 sport=57767
-dport=53 [UNREPLIED] src=192.168.2.1 dst=192.168.2.100 sport=53
-dport=57767
+> iptables -A INPUT -f -j DROP
+> iptables -A OUTPUT -f -j DROP
+> iptables -A FORWARD -f -j DROP
 
-Here, what's the need of reply srcip, reply destip, reply srcport,
-reply destport? (Since we can imply these information from original
-srcp ip, original destip, original srcport, original destport)
-Is it just for avoiding for confusion, or anyother reasons behind this?
+This doesn't drop every fragmented packet, only second and further=20
+fragments. Thus the first fragment passes through, waits in a queue=20
+until it times out (30 seconds on my system) and then causes a=20
+"fragmentation timeout exceeded" ICMP message.
 
-Thanks & Regards,
+> i am using ping -s 32768 10.2.2.2 for generating fragments
+
+You should at least tell where are the rules from above set. On the=20
+system sending the packets, on the system receiving the packets or=20
+somewhere between them? Also don't forget to mention the kernel version=
+=2E
+
+                                                      Michal Kube=E8ek
+
