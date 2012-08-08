@@ -1,33 +1,47 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: conntrack output - question
-Date: Wed, 8 Aug 2012 16:12:47 +0200
-Message-ID: <20120808141247.GA1734@1984>
-References: <CAAJpzgba1eL73KxNZWLU7DxJsrZitdb2WkUOe=An_J-Q677+sg@mail.gmail.com>
+From: Gomathivinayagam Muthuvinayagam <sankarmail@gmail.com>
+Subject: ulogd - hashtable_find function - question
+Date: Wed, 8 Aug 2012 07:27:33 -0700
+Message-ID: <CAAJpzgbEgy9WsLvCSkQbVpdUXWL-ivbnSEcY9zbm5M6m-kawRA@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAAJpzgba1eL73KxNZWLU7DxJsrZitdb2WkUOe=An_J-Q677+sg@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to:content-type;
+        bh=MV31ZeI7aeR5DvlWTAQ2qnWyWxRnVdYfB+YoCHYXViE=;
+        b=v/TqLqYNRuy2JAk18MR6VvjYFdpRvZXcgkw+lGSybsbdGbha22/xafNWdUh8Xtey3b
+         z6TWcrOlRNomybjv9I/GB3zlOarwhpjaWqLDc4iMG7E6a7mbH1uZSHbK8Xg4yir2/Hdq
+         p1GFVIwmW3JLh/LVqfs9SRY95+FAbAJKVpqaHszaqsxRGClxJffNo00ZUm4NAiNRJNF0
+         FmP6iiNIGyB76oLqquCvRPJ31tXUFfhTPe3jAZKoxeoBkH7879KKPW+TQtdx2GdTcopH
+         JelHCYxWV8rSundVZlLe0/PQ/YUvfvFuYZvv2cps3hn+bKnTEokbK++w4Gq0ytJb+cK7
+         px9Q==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Gomathivinayagam Muthuvinayagam <sankarmail@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Mon, Aug 06, 2012 at 10:38:03PM -0700, Gomathivinayagam Muthuvinayagam wrote:
-> Conntrack classifies a packet to a flow based on protocol no, srcip,
-> destip, srcport, and destport.
-> 
-> A sample output is shown below,
-> 
-> [NEW] udp      17 30 src=192.168.2.100 dst=192.168.2.1 sport=57767
-> dport=53 [UNREPLIED] src=192.168.2.1 dst=192.168.2.100 sport=53
-> dport=57767
-> 
-> Here, what's the need of reply srcip, reply destip, reply srcport,
-> reply destport? (Since we can imply these information from original
-> srcp ip, original destip, original srcport, original destport)
-> Is it just for avoiding for confusion, or anyother reasons behind this?
+I'm going through ulogd hash.c code. I have a question on
+hashtable_find function.
 
-We need the reply tuple for NAT scenarios. In those cases, original
-tuples does not match the reply tuple.
+struct hashtable_node *
+hashtable_find(const struct hashtable *table, const void *data, int id)
+{
+	struct llist_head *e;
+	struct hashtable_node *n;
+
+	llist_for_each(e, &table->members[id]) {
+		n = llist_entry(e, struct hashtable_node, head);
+		if (table->compare(n, data)) {
+			return n;
+		}
+	}
+	errno = ENOENT;
+	return NULL;
+}
+
+In the above function, you are passing the id which is the hash value.
+Basically it allows you to find the hashnode in the hashtable.
+But why we are again calling  compare function and check the
+equivalence of the values? Is the id itself not enough?
+
+Thanks & Regards,
