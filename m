@@ -1,36 +1,47 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: [iptables] misleading print
-Date: Fri, 10 Aug 2012 00:00:48 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1208100000010.12067@frira.zrqbmnf.qr>
-References: <jbinrb$2l7$1@dough.gmane.org> <2026716.mRmHE8f3qx@dhcp91>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Filtering incoming 3G smartphone traffic using iptables?
+Date: Thu, 9 Aug 2012 18:33:42 -0500
+Message-ID: <20120809233342.GO3672@harrier.slackbuilds.org>
+References: <CAM91gdBFqPw-Z5C9khGJ1JNjmQ2ZOtZh4XrEWK6yCmAiE2T2Jw@mail.gmail.com>
+ <20120809194914.GN3672@harrier.slackbuilds.org>
+ <CAM91gdBWbAcAo6480ZVA4YO+cj3ipeTNhBX7t4CwOpN8ROPq7Q@mail.gmail.com>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <2026716.mRmHE8f3qx@dhcp91>
+Content-Disposition: inline
+In-Reply-To: <CAM91gdBWbAcAo6480ZVA4YO+cj3ipeTNhBX7t4CwOpN8ROPq7Q@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="windows-1252"
-To: =?UTF-8?Q?Michal_Kube=C4=8Dek?= <mkubecek@suse.cz>
-Cc: netfilter@vger.kernel.org, "U.Mutlu" <for-gmane@mutluit.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Monday 2011-12-05 16:44, Michal Kube=C4=8Dek wrote:
+On Thu, Aug 09, 2012 at 03:09:30PM -0500, Bryan K. Walton wrote:
+> On Thu, Aug 9, 2012 at 2:49 PM, /dev/rob0 <rob0@gmx.co.uk> wrote:
+> > On Thu, Aug 09, 2012 at 02:34:43PM -0500, Bryan K. Walton wrote:
+> >> But how can I restrict port 22 access to this smart phone when
+> >> using 3g service for its Internet?  Do I have any options?
+> >
+> > You can Google around and find port knocking solutions. That 
+> > would be on topic here. But the real question, "how do I secure 
+> > my ssh against attackers?" is less so.
+> 
+> Thanks for the reply.  I should have worded my question more
+> precisely.  I'm not really looking for tips to lock down my ssh
+> server.  I recognize that is off-topic.  What I'm really trying to
+> figure out is if there is an IP tables module that makes use of
+> something like the MEID.
 
->On Monday 05 of December 2011 16:26EN, U.Mutlu wrote:
->> I have in my script these statements:
->>    iptables -A INPUT  -i lo -j ACCEPT
->>    iptables -A OUTPUT -o lo -j ACCEPT
->>=20
->> When doing "iptables -L -n" then the above gets shown as this:
->>    ACCEPT     all  --  0.0.0.0/0            0.0.0.0/0
->>=20
->> IMHO, this could easily be misinterpreted if one looks
->> only at the iptables output, because the crucial info,
->> ie. that it applies to the "lo" device only, is missing...
->
->Output of "iptables -L" doesn't show -i and -o matches by default. If=20
->you want to see them, use "-v" option.
+I'm quite sure that the MEID does not transmit over IP. Neither do 
+MAC addresses, outside their own physical segment. Every packet 
+arriving from the Internet has the MAC address of your default 
+gateway. MEID is not applicable in IP networking.
 
-
-Let's start a vote (of sorts) for getting rid of -L. Yes, it'll break=20
-people's oh-so-sacred scripts. But heck, you can't reasonably parse it=20
-anyway.
+I did give you an on-topic reply concerning iptables -m recent, which 
+was omitted from your quoting. I suggest that you go back and review 
+that. You don't need to restrict your sshd that much. In fact I find 
+it quite entertaining to review my statistics of deflected SSH 
+attackers. :) 37 of them this week, at home.
+-- 
+  http://rob0.nodns4.us/ -- system administration and consulting
+  Offlist GMX mail is seen only if "/dev/rob0" is in the Subject:
