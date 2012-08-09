@@ -1,80 +1,76 @@
-From: "Rob Sterenborg (lists)" <lists@sterenborg.info>
-Subject: Re: iptables devel
-Date: Thu, 09 Aug 2012 13:10:32 +0200
-Message-ID: <1344510632.2818.10.camel@ns014530.dcyb.net>
-References: <CAE1WnGe08Tmy=x4EHx3P0h4B8Sw6ahq_c_Fkr1zvC-n6GvfPfg@mail.gmail.com>
-	 <1344508664.2818.1.camel@ns014530.dcyb.net>
-	 <CAE1WnGexkPOSgwdWxfAWHw6fBNZ20iE1r2PzVLYG6WnK9xDVEg@mail.gmail.com>
+From: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
+Subject: Re: lost interface ID snmp
+Date: Thu, 9 Aug 2012 11:56:38 -0300
+Message-ID: <CAMTjHrx8pk=mLteG7zi6P84J8HqHUzD+udGBFjA_b=8Th-=ARQ@mail.gmail.com>
+References: <CAMTjHryF9p=h6a-n_Gba5E7LkiZpU_EjAOoDV2JxtJ8MGLqBtw@mail.gmail.com>
+	<1335150838.9302.9.camel@hakkenden.homenet>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAE1WnGexkPOSgwdWxfAWHw6fBNZ20iE1r2PzVLYG6WnK9xDVEg@mail.gmail.com>
+In-Reply-To: <1335150838.9302.9.camel@hakkenden.homenet>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: rahul shrivastava <shrivastavaone@gmail.com>
-Cc: anandkumarkm@gmail.com, netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: "Nikolay S." <nowhere@hakkenden.ath.cx>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On Thu, 2012-08-09 at 16:27 +0530, rahul shrivastava wrote:
-> Hi,
+Hello,
 
-Hi,
+Sorry for my return about that issue after a long time but I should
+like if it were put an Description on linux interface like in router
+cisco for exemplo. that way my software SNMP could read by that
+description
 
-Please keep the discussion on the list and do not top-post.
-
-> i am compiling xtable-addons1.45 and linking iptable-devel files for
-> powerpc (iptables-dev_1.4.8-3_powerpc.deb) using LDFLAG
-> Running iptables command says i dont have correct version of
-> iptable-devel files , error is thrown by iptables as below
-> 
-> [root@localhost ~]# iptables -A INPUT -m ipv4options -j ACCEPT
-> iptables: match "ipv4options" has version "libxtables.so.4", but
-> "libxtables.so.5" is required.
-> 
-> where do i download correct version of dev files?
-
-Like I said: from your favourite Linux distro. You don't mention which
-one you're using, so I don't know.
-Probably you can use the package manager from your distro to do that,
-e.g. yum install iptables-devel (on RHEL/CentOS/etc compatibles).
-
-> Or something wrong with the patch installation procedure?
-
-Likely not. You just don't have the iptables devel package installed so
-you're missing files that the compilation process needs.
-
-But we know nothing about your system. If it's not possible to get the
-devel package from your distro, you could first download iptables from
-ftp.netfilter.org and compile and install that on your system. That way
-you will also have the (iptables!) files needed for compilation of
-xtables-addons.
-
-
---
-Rob
+thanks.
 
 
 
-> On Thu, Aug 9, 2012 at 4:07 PM, Rob Sterenborg (lists)
-> <lists@sterenborg.info> wrote:
-> > On Thu, 2012-08-09 at 16:01 +0530, rahul shrivastava wrote:
-> >> Hi,
-> >> kernel version: 2.6.35
-> >> iptables v1.4.9.1
-> >>
-> >> my version of iptables has libxtables.so.5
-> >> from were i can get iptable-devel files for this version
-> >
-> > From your favourite Linux distro I guess?
-> >
-> > If that's not an option (I wouldn't know why, but still), the iptables
-> > source can be downloaded from ftp.netfilter.org.
-> >
-> >
-> > --
-> > Rob
-> >
-> >
 
 
-
+2012/4/23 Nikolay S. <nowhere@hakkenden.ath.cx>:
+> =D0=92 =D0=92=D1=81., 22/04/2012 =D0=B2 23:49 -0300, Usu=C3=A1rio do =
+Sistema =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+>> Hello, I have a CentOS 5.4 Linux machine and I'm monitoring by snmp =
+it
+>> interfaces ethernet. but, when the machine  is restart ID number snm=
+p
+>> that's interfaces are change.
+>>
+>> for exemplo when the linux machine is with ID 3 on interface eth1 an=
+d
+>> it is reset so it come up with a different ID for exemplo 2 for eth1=
+=2E
+>>
+>> so I wonder why happen ? it's normal ? it's possible set a ID value
+>> for every interface ?
+>
+> Hello,
+> This is perfectly normal, not only for Linux, but for every device,
+> supporting SNMP. Interface id's are not persistent not only across
+> reboots, but even between interface destruction/creation (i.e., ppp
+> interfaces, when ppp reconnects, will have different ids even though
+> their names are still ppp0). Id's are assigned sequentially by kernel
+> during creation time, which in turn depends on the modules loading or=
+der
+> and udev's actions. You can not manually assign interface id, as this
+> could potentially lead to collisions and inconsistencies.
+>
+>> if is change the ID number for each interface so stop my monitoring
+>> because my snmp software read by interface ID.
+>
+> That's bad for your software. It should identify interfaces by some
+> other means, say, by ifAlias, and check ifAlias<->ID consistency eith=
+er
+> before each poll or periodically or by detecting events, that lead to=
+ ID
+> change (reboots)
+>
+>>
+>> thanks
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe netfilter"=
+ in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
+>
