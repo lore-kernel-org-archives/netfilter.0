@@ -1,36 +1,27 @@
-From: Luigi Rizzo <rizzo@iet.unipi.it>
-Subject: new ipfw/dummynet releases available (also netmap enabled)
-Date: Mon, 13 Aug 2012 13:06:51 +0200
-Message-ID: <20120813110651.GA79223@onelab2.iet.unipi.it>
+From: Jan Engelhardt <jengelh@inai.de>
+Subject: Re: new ipfw/dummynet releases available (also netmap enabled)
+Date: Mon, 13 Aug 2012 13:01:10 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1208131259340.27005@frira.zrqbmnf.qr>
+References: <20120813110651.GA79223@onelab2.iet.unipi.it>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <20120813110651.GA79223@onelab2.iet.unipi.it>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Luigi Rizzo <rizzo@iet.unipi.it>
+Cc: netfilter@vger.kernel.org
 
-I have updated the ipfw/dummynet code for Linux, which should now compile
-cleanly also on recent version of the OS. You can find it at
+On Monday 2012-08-13 13:06, Luigi Rizzo wrote:
 
-	http://info.iet.unipi.it/~luigi/dummynet/
+>I have updated the ipfw/dummynet code for Linux, which should now compile
+>cleanly also on recent version of the OS. You can find it at
+>
+>	http://info.iet.unipi.it/~luigi/dummynet/
+>
+>(dummynet is a packet scheduler/link emulator that works together
+>with ipfw, a flexible packet classifier).
 
-(dummynet is a packet scheduler/link emulator that works together
-with ipfw, a flexible packet classifier).
-
-Also of possible interest, I just finished a netmap-enabled version
-of the above, which runs in userspace and is able to process over
-6 million packets per second (Mpps) with simple rulesets, and over
-2.2 Mpps through dummynet pipes (tested on an i7-3400 connected to
-VALE ports -- VALE is a software switch part of netmap).
-
-	http://info.iet.unipi.it/~luigi/dummynet/#8696
-
-To run this you might want to use the most recent version of netmap,
-also recently updated so it works with recent kernels
-
-	http://info.iet.unipi.it/~luigi/netmap/
-
-cheers
-luigi
+The most important aspect you seemed to have forgotten: if it runs only 
+with ipfw, what relevance does that have to Linux?
