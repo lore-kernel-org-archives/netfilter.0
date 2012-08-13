@@ -1,43 +1,68 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Conntrackd issue with bonding
-Date: Mon, 13 Aug 2012 20:01:06 +0200
-Message-ID: <20120813180106.GA23002@1984>
-References: <5024B38E.1060200@cica.es>
- <20120810091927.GB1729@1984>
- <5024DC4E.1080201@cica.es>
- <20120812190548.GA512@1984>
- <5028A96E.7090905@cica.es>
- <20120813094608.GA22561@1984>
- <alpine.LNX.2.01.1208131214450.27005@frira.zrqbmnf.qr>
-Mime-Version: 1.0
+From: Denis Efremov <yefremov.denis@gmail.com>
+Subject: [PATCH] bridge: rcu_deref outside read-lock section
+Date: Tue, 14 Aug 2012 02:47:42 +0400
+Message-ID: <1344898062-23633-1-git-send-email-yefremov.denis@gmail.com>
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.01.1208131214450.27005@frira.zrqbmnf.qr>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=from:to:cc:subject:date:message-id:x-mailer;
+        bh=vGZDjqBl86lA09aNR/ySl68vgXya7Qi+gypRI0YFCKk=;
+        b=qlQida+PrP+ah/ke2zG8NJ9aQCdGtTkSVNYV+t1wN5uLKsPreMN5XzXe0I/vgb9atn
+         B/xsvjGkuIEyvU+e2qCF3R/dhRBdC3ijdVe7+7lON7yboB0kaFmfnSYu7iJZJ+wQmU4Y
+         sBQeRMsCaFIo8v74WcY2RLyXzriE+BQ3Vehkf5k9L2ctMcL7UoC3QVg15otsTiNWHSyX
+         NA+2QeAeJJ3SUznZZECv3BgFc0XcEor+kZaZOTcon3WnlxJnw1Bq2ck3ycrVY3/DmCLS
+         cf4VV207/oaR44klrGYI/Tlf9EmA5HhW1Ua3QLU1FCZAujA2IeqgJnBKwWAMkMpBykis
+         miPw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@inai.de>
-Cc: Arturo Borrero <aborrero@cica.es>, netfilter@vger.kernel.org
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Denis Efremov <yefremov.denis@gmail.com>, Patrick McHardy <kaber@trash.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, ldv-project@ispras.ru
 
-On Mon, Aug 13, 2012 at 12:35:21PM +0200, Jan Engelhardt wrote:
-> 
-> On Monday 2012-08-13 11:46, Pablo Neira Ayuso wrote:
-> >
-> >Please, git pull again, run make check, run the test and send me the
-> >results.
-> 
-> The problem is that nlif_receive is only called once by nlif_catch,
-> and ignores RTM_F_MULTI, therefore missing most interfaces.
+As it noted in the comment before the br_handle_frame_finish
+function, this function should be called under rcu_read_lock.
 
-Thanks Jan. That was indeed the problem.
+The problem callgraph:
+br_dev_xmit -> br_nf_pre_routing_finish_bridge_slow ->
+-> br_handle_frame_finish -> br_port_get_rcu -> rcu_dereference
 
-I have committed the fix for this issue:
+And in this case there is no read-lock section.
+I have put lock/unlock in br_nf_pre_routing_finish_bridge_slow,
+as the only function that calls it(for now) - is br_dev_xmit.
 
-http://git.netfilter.org/cgi-bin/gitweb.cgi?p=libnfnetlink.git;a=commit;h=8b15e485c0d5f4a1e56b2148a34995ed1fa9e95b
+Found by Linux Driver Verification project (linuxtesting.org).
 
-@Arturo: Please, install a fresh working copy of libnfnetlink and let
-me know if the problem persists.
+Signed-off-by: Denis Efremov <yefremov.denis@gmail.com>
+---
+ include/linux/netfilter_bridge.h |    6 +++++-
+ 1 files changed, 5 insertions(+), 1 deletions(-)
 
-Before that, check that ./iftest bond1 displays valid device
-information.
+diff --git a/include/linux/netfilter_bridge.h b/include/linux/netfilter_bridge.h
+index 31d2844..ceb048e 100644
+--- a/include/linux/netfilter_bridge.h
++++ b/include/linux/netfilter_bridge.h
+@@ -79,6 +79,7 @@ extern int br_handle_frame_finish(struct sk_buff *skb);
+ /* Only used in br_device.c */
+ static inline int br_nf_pre_routing_finish_bridge_slow(struct sk_buff *skb)
+ {
++	int res;
+ 	struct nf_bridge_info *nf_bridge = skb->nf_bridge;
+ 
+ 	skb_pull(skb, ETH_HLEN);
+@@ -86,7 +87,10 @@ static inline int br_nf_pre_routing_finish_bridge_slow(struct sk_buff *skb)
+ 	skb_copy_to_linear_data_offset(skb, -(ETH_HLEN-ETH_ALEN),
+ 				       skb->nf_bridge->data, ETH_HLEN-ETH_ALEN);
+ 	skb->dev = nf_bridge->physindev;
+-	return br_handle_frame_finish(skb);
++	rcu_read_lock();
++	res = br_handle_frame_finish(skb);
++	rcu_read_unlock();
++	return res;
+ }
+ 
+ /* This is called by the IP fragmenting code and it ensures there is
+-- 
+1.7.7
+
