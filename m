@@ -1,54 +1,38 @@
-From: Stephen Hemminger <shemminger@vyatta.com>
-Subject: Re: NCD, a light scripting language for network configs and much
- more
-Date: Fri, 17 Aug 2012 09:22:53 -0700
-Message-ID: <20120817092253.41ade51b@nehalam.linuxnetplumber.net>
+From: Ambroz Bizjak <ambrop7@gmail.com>
+Subject: Re: NCD, a light scripting language for network configs and much more
+Date: Fri, 17 Aug 2012 21:04:04 +0200
+Message-ID: <CAOA3yKLQNQ-t4VGENKTH683eLXA3A8GwPJ1w7zwT=AUus_CkFw@mail.gmail.com>
 References: <CAOA3yKKmuAi=CPE=4-hyoGJJ7D7Oa_Bug5G=1Z3xif-5iFGeOw@mail.gmail.com>
+	<20120817092253.41ade51b@nehalam.linuxnetplumber.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-hotplug-owner@vger.kernel.org>
-In-Reply-To: <CAOA3yKKmuAi=CPE=4-hyoGJJ7D7Oa_Bug5G=1Z3xif-5iFGeOw@mail.gmail.com>
-Sender: linux-hotplug-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :content-type;
+        bh=wwOnkIQLEUBaV5oHPtJawRJhEedvBAJxVo9vdJbzgNU=;
+        b=SZwIw8r5h9+n9oGPR2Js1hZUNUsgEVo9vwsscglS4oPRj8BV4f/EYWrbTs1lYqg5Jh
+         uagy0VXUSfuF9U4LA+lBCbftI/ziFa9H/kTgMvmf9fpZha+R0Nf5EOJ1reLyQxe3HvPA
+         6Cdrox0SBnenz2w6ADtgydPisyvI4OUUJSqqC3bnnOMZSDRrQb79PN0BSybO+N6BdLdO
+         ZTw+LFK9ri757TFxUTAm8oBSruKbu1r5KZsf5bGyCi8NsMFo0EKx/aU5BLijkBa84GTj
+         LX9eY6Xdw9kprOs+KGE/n9x6Pasj75n63i9O28+zDWfaR9ktUt6Il+U8N62UP/oANAfj
+         GlEg==
+In-Reply-To: <20120817092253.41ade51b@nehalam.linuxnetplumber.net>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Ambroz Bizjak <ambrop7@gmail.com>
-Cc: linux-embedded@vger.kernel.org, linux-hotplug@vger.kernel.org, netfilter@vger.kernel.org, linux-admin@vger.kernel.org, torvalds@osdl.org
+Content-Transfer-Encoding: 7bit
+To: Stephen Hemminger <shemminger@vyatta.com>, netfilter@vger.kernel.org
 
-On Fri, 17 Aug 2012 12:03:55 +0200
-Ambroz Bizjak <ambrop7@gmail.com> wrote:
+Huh, really? I can't seem to find those commands. I only see a
+"bridge" program added to iproute2 which does "forwarding database
+management", and doesn't seem to have the usual addbr/addif commands.
+Anyway, if brctl did suddenly disappear, imagine how easier it would
+be to fix that script I showed you compared to fixing something
+hardcoded like NetworkManager :)
 
-> Hi. I'm developing a special kind of scripting language which many
-> might find useful: http://code.google.com/p/badvpn/wiki/NCD
-> 
-> It was (originally) designed for programming dynamic configuration of
-> network interfaces, iptables etc. For example, there are commands that
-> observe the presence and link status of network interfaces. Many
-> commands are reversible, which makes it very easy to do cleanup
-> automatically and implicitly, like removing IP addresses or routes
-> when the link goes down on an interface.
-> 
-> The major advantage of this language compared to existing systems like
-> NetworkManager and wicd is that it's extremely hackable; you can fine
-> tune almost any part of the process. For example, this simple script
-> will create a network bridge, ensure that interfaces eth0 and eth1 are
-> in the bridge whenever they exist (consider hotplugging USB
-> interfaces), and only after eth0 (!) is up and running will it obtain
-> an IP address on br0 (!) using DHCP (since we know DHCP server is on
-> eth0 not eth1).
-> 
-> process bridge {
->     # Choose name of bridge.
->     var("br6") bridge_dev;
-> 
->     # Create the bridge (and destroy it on deinit).
->     run({"/sbin/brctl", "addbr", bridge_dev},
->         {"/sbin/brctl", "delbr", bridge_dev});
-> 
->     # Set bridge up.
->     net.up(bridge_dev);
-> 
->     # Wake up ports.
->     provide("BRIDGE");
-
-FYI - you can use ip commands now to control bridge.
-For all the new features planned, they won't be controllable via brctl.
+On Fri, Aug 17, 2012 at 6:22 PM, Stephen Hemminger
+<shemminger@vyatta.com> wrote:
+>
+> FYI - you can use ip commands now to control bridge.
+> For all the new features planned, they won't be controllable via brctl.
