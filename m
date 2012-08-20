@@ -1,49 +1,188 @@
-From: Ambroz Bizjak <ambrop7@gmail.com>
-Subject: Re: NCD, a light scripting language for network configs and much more
-Date: Fri, 17 Aug 2012 21:16:54 +0200
-Message-ID: <CAOA3yKKUANXu37eph1ohAUSrrJGd-fAQvi2qsz5CphKn7gMvXw@mail.gmail.com>
-References: <CAOA3yKKmuAi=CPE=4-hyoGJJ7D7Oa_Bug5G=1Z3xif-5iFGeOw@mail.gmail.com>
-	<20120817092253.41ade51b@nehalam.linuxnetplumber.net>
-	<CAOA3yKLQNQ-t4VGENKTH683eLXA3A8GwPJ1w7zwT=AUus_CkFw@mail.gmail.com>
-	<20120817120702.62103ae4@nehalam.linuxnetplumber.net>
+From: Mauricio Tavares <raubvogel@gmail.com>
+Subject: Re: FAQ: Cannot port forward/DNAT
+Date: Mon, 20 Aug 2012 10:03:20 -0400
+Message-ID: <CAHEKYV6io1PMyw=Q_CKsRmG+Z6mDYsCyoJ70aubodR8f4H-BMA@mail.gmail.com>
+References: <CAHEKYV5kM-_0GWg1RxDufED=dpaB5yL88qpgZDukB+anzAEhcw@mail.gmail.com>
+	<20120808200812.GJ3672@harrier.slackbuilds.org>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=yjuANEfB/KYLFSxEAjcVKMMMjyFCJYQkzPZ6wh0+nFQ=;
-        b=nWSN6A1wzTOJh2KM7azWwyh23HxxiCcM+uhgIhvpcgyD6w4WBab7t9q3blON5gaoPj
-         4YvJmNhcuQxITcnr4ggzd0bZVncRhDuIH04CHYN3R0lHlwnPwaBjbq7kNIG57wUq48Se
-         N020SuSnGvlLqAF8fM7Y7dVsfRNKVENy/0p0T+1bjHZjwfaPwFMnF5uDD4DQim6j4uA8
-         HhHgmkqcjMHasnqAMDUVpABa9TpESRXgyWGlTxpmEDX4B9rOAeQizslmngmsSDrgWC1d
-         Cnmr6EpH+CPRkU/njq6o+omdO7iSoe2RpQS4E5VvV7DHLgUpi2evI6aUFpQCrkaNmUOi
-         Hvtw==
-In-Reply-To: <20120817120702.62103ae4@nehalam.linuxnetplumber.net>
+         :content-type;
+        bh=RCVA2cuE9LwYffimiRA035evm6NB8xXdHvbhquUNMq8=;
+        b=swcmjXiruhGPoddtqdFOLarsf3skr5EEI5SRYojYH4GMy6KDYjAxH+3jlEVShc3ygw
+         HTkqOY3sHu9ug03Xn7F25HJj69m2w1NSB6Qriajb09eukOhXlojZ+lhbaxBpv/W4QIJI
+         Fw8oUUvKTb4o+1y7OMlmMpewejFvoeI8stsMJog8oPWz9qGqMTosQKHtzOW1KZfG+URa
+         eQ3ymCpJ6iEB6fF9CM/7rl6/G1TstLWJjgF5HS9xMm+U7q2cvH2h1W4oe8uSx7gQElRQ
+         QNVTpcF5e4Pxq/sw79ODpBR/5wbg8F38HpcbybaxWYlh3P0RXM9ae3HKyXEgDHooIChX
+         bfSQ==
+In-Reply-To: <20120808200812.GJ3672@harrier.slackbuilds.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Stephen Hemminger <shemminger@vyatta.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-I see, thanks, it's even mentioned in the ip-link manpage. I think it
-would be nice if it was a little less hidden though. I would never
-guess "set master" is how you add a device to a bridge. Still, it's
-good all the network config stuff is getting into a single command.
+On Wed, Aug 8, 2012 at 4:08 PM, /dev/rob0 <rob0@gmx.co.uk> wrote:
+> On Wed, Aug 08, 2012 at 01:07:59PM -0400, Mauricio Tavares wrote:
+>>       This is a trivial question; I have done this many times before,
+>> but I must be missing something here and just can't see what. So, I
+>> have a firewall where eth0 faces the external network
+>> (192.168.42.0/24) and eth1 the internal one (10.0.0.0/24). Now, I want
+>
+	I apologize for taking so long to reply but I followed you advice and
+spent some time reading
+http://www.frozentux.net/iptables-tutorial/iptables-tutorial.html. It
+is working now -- has been for a week -- but I would like to post the
+outcome not only in case might be useful to someone else but also to
+make sure I understand what is going on.
 
-On Fri, Aug 17, 2012 at 9:07 PM, Stephen Hemminger
-<shemminger@vyatta.com> wrote:
-> You can make a bridge with:
->  # ip link add br3 type bridge
+> First off, you should never NAT from one RFC 1918 network to another.
+> Simply set up proper routing on both sides and enjoy.
 >
-> and delete with
->  # ip link del br3
+      Could you explain why that is the case? You see, this is my test
+setup which emulates a production environment. That is why in my rules
+have comments referring to "internet" even though it is a rather
+enclosed test environment. As such, I would like to have the test
+firewall behave exactly as the production one, save of course the
+addresses of the networks involved.
+
+>> to have a machine in the external net access, through port 2424, host
+>> 10.0.0.20 in internal network, at the same port since I am lazy. So I
+>> have
+>>
+>> iptables -A FORWARD -i eth0 -o eth1 -m comment --comment "internet
+>> (eth0) to internal subnet (eth1) " -j ACCEPT
+>> iptables -A INPUT -i eth0 -p tcp -m tcp --dport 2424 -m state --state
+>> NEW,ESTABLISHED -j ACCEPT
+>> iptables -A PREROUTING -i eth0 -p tcp -m tcp --dport 2424 -j DNAT
+>> --to-destination 10.0.0.20:2424
 >
-> To add device to bridge
->  # ip li set dev eth2 master br3
+> Why not just directly connect to this 10.0.0.20:2424 ? What is the
+> purpose of the DNAT?
 >
-> To take out of bridge
->  # ip li set dev eth2 nomaster
+
+      Correct me if I am wrong but since a machine in my external test
+network knows nothing about the addresses in the test lan, I need to
+grab its packets and change their destination address (and port as
+needed) to 10.0.0.20:2424. I thought that was what DNAT was all about.
+ To quote what is said at
+http://www.frozentux.net/iptables-tutorial/iptables-tutorial.html#DNATTARGET,
+I have hosts inside the lan that need to be accessed from the external
+network, like the classic cases of accessing a webserver placed in the
+lan (their example) or ssh into a machine in the lan. In this test I
+am using the same port on both ends since I just want to verify it is
+working.
+
+>> And I am not detecting any traffic on that port in 10.0.0.20 (I used
+>> netcat to listen at that port). Could the rest of my firewall rules be
+>> interfering with that? Or could it be something else; they are all in
+>> a vm server, so I want to verify first my iptable rules make sense.
+>>
+>> For the sake of completeness, I have included my current firewall rules below:
+>>
+>> # Generated by iptables-save v1.4.10 on Wed Aug  8 11:38:31 2012
+>> *mangle
+>> :PREROUTING ACCEPT [1367372:206923329]
+>> :INPUT ACCEPT [660972:49675926]
+>> :FORWARD ACCEPT [706400:157247403]
+>> :OUTPUT ACCEPT [658176:163253429]
+>> :POSTROUTING ACCEPT [1364576:320500832]
+>> COMMIT
+>> # Completed on Wed Aug  8 11:38:31 2012
+>> # Generated by iptables-save v1.4.10 on Wed Aug  8 11:38:31 2012
+>> *nat
+>> :PREROUTING ACCEPT [660101:48069054]
+>> :INPUT ACCEPT [643521:47000112]
+>> :OUTPUT ACCEPT [8489:647170]
+>> :POSTROUTING ACCEPT [8489:647170]
+>> -A PREROUTING -i eth0 -p tcp -m tcp --dport 2424 -j DNAT
+>> --to-destination 10.0.0.20:2424
+>> -A POSTROUTING -s 10.0.0.0/24 -o eth0 -m comment --comment "NAT for
+>> internal network" -j SNAT --to-source 192.168.42.90
+>> -A POSTROUTING -m comment --comment "Loopback support" -m mark --mark
+>> 0xd001 -j SNAT --to-source 192.168.42.90
+>> COMMIT
+>> # Completed on Wed Aug  8 11:38:31 2012
+>> # Generated by iptables-save v1.4.10 on Wed Aug  8 11:38:31 2012
+>> *filter
+>> :INPUT DROP [2564:82048]
+>> :FORWARD DROP [0:0]
 >
-> The point is that bridge isn't special.
+> Nothing is hitting this policy. Probably because you ACCEPT
+> everything in the FORWARD chain.
+>
+      I am looking at
+http://www.frozentux.net/iptables-tutorial/images/tables_traverse.jpg
+trying to see what you mean. The prerouting chain does come before the
+forward one. Does that mean it suffices to describe how to get to
+10.0.0.0:2424 from 192.168.42.0/24?
+
+>> :OUTPUT ACCEPT [8489:647170]
+>> :SERVICES - [0:0]
+>> -A INPUT -i eth0 -m state --state RELATED,ESTABLISHED -m comment
+>> --comment "Allow existing connections or their relatives" -j ACCEPT
+>> -A INPUT -i eth0 -p icmp -m icmp --icmp-type 8 -m limit --limit 1/sec
+>> -m comment --comment "Only allow 1 ping per sec" -j ACCEPT
+>> -A INPUT -i lo -m comment --comment "allow all localhost traffic" -j ACCEPT
+>> -A INPUT -s 10.0.0.0/24 -m comment --comment "Allow internal network
+>> traffic" -j ACCEPT
+>> -A INPUT -j SERVICES
+>> -A INPUT -i eth0 -p tcp -m tcp --dport 2424 -m state --state
+>> NEW,ESTABLISHED -j ACCEPT
+>> -A FORWARD -m state --state RELATED,ESTABLISHED -m comment --comment
+>> "always allow related/established connections" -j ACCEPT
+>> -A FORWARD -i eth0 -o eth1 -m comment --comment "internet (eth0) to
+>> internal subnet (eth1) " -j ACCEPT
+>> -A FORWARD -i eth1 -o eth0 -m comment --comment "internal subnet
+>> (eth1) to internet (eth0)" -j ACCEPT
+>> -A FORWARD -i eth1 -o eth1 -m comment --comment "allow stuff looping
+>> back to itself on internal subnet" -j ACCEPT
+>> -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+>> -A SERVICES -p tcp -m tcp --dport 22 -m comment --comment "SSH Server
+>> (sshd)" -j ACCEPT
+>> COMMIT
+>> # Completed on Wed Aug  8 11:38:31 2012
+>>
+>>
+>> sysctl -p
+>> net.ipv4.ip_forward = 1
+>> net.ipv4.conf.all.accept_redirects = 0
+>> net.ipv4.conf.default.accept_redirects = 0
+>> net.ipv4.conf.all.send_redirects = 0
+>> net.ipv4.conf.default.send_redirects = 0
+>
+> You put enough information here to say definitely that the firewall
+> isn't blocking this traffic. I'm guessing that what you missed is
+> that return packets are not SNATed. See the Frozentux iptables
+> tutorial DNAT page for a detailed discussion of this.
+>
+	I agree with you completely; I looked at my TRACE output and realized
+traffic is getting all the way to 10.0.0.20, but it is not getting
+back (yes I omitted some of the traffic because I did not see the . I
+thought that
+
+$IPTABLES -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+would suffice to make that work. Since it didn't, I kept rereading  to
+see what you were trying to say.
+
+> But no, don't SNAT. As above, when your routing is right, you can
+> directly connect to 10.0.0.20:2424 from hosts in the 192.168.42.0/24
+> segment.
+
+After a while I realized what you meant:
+
+-A POSTROUTING -d 10.0.0.20/32 -p tcp -m tcp --dport 2424 -j SNAT
+--to-source 10.0.0.1
+
+And then finally traffic was getting back to 192.168.42.66. Thanks!
+
+> --
+>   http://rob0.nodns4.us/ -- system administration and consulting
+>   Offlist GMX mail is seen only if "/dev/rob0" is in the Subject:
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
