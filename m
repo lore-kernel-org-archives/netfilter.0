@@ -1,77 +1,47 @@
-From: "Paul E. McKenney" <paulmck@linux.vnet.ibm.com>
-Subject: Re: [PATCH 3/3] netfilter: replace list_for_each_continue_rcu with
- new interface
-Date: Mon, 20 Aug 2012 17:02:55 -0700
-Message-ID: <20120821000254.GP2435@linux.vnet.ibm.com>
-References: <502CB939.3050008@linux.vnet.ibm.com>
- <502DC9A3.2070703@linux.vnet.ibm.com>
-Reply-To: paulmck@linux.vnet.ibm.com
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: old question revisited: can rely in 'iptables-restore' format?
+Date: Mon, 20 Aug 2012 19:30:26 -0500
+Message-ID: <20120821003026.GD3672@harrier.slackbuilds.org>
+References: <COL124-W20E1581415198E1293F5D484B40@phx.gbl>
+ <20530.51137.458307.357243@tree.ty.sabi.co.UK>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <502DC9A3.2070703@linux.vnet.ibm.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+In-Reply-To: <20530.51137.458307.357243@tree.ty.sabi.co.UK>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Michael Wang <wangyun@linux.vnet.ibm.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, netfilter@vger.kernel.org, coreteam@netfilter.org, netfilter-devel@vger.kernel.org, David Miller <davem@davemloft.net>, kaber@trash.net, pablo@netfilter.org
+To: netfilter@vger.kernel.org
 
-On Fri, Aug 17, 2012 at 12:33:39PM +0800, Michael Wang wrote:
-> From: Michael Wang <wangyun@linux.vnet.ibm.com>
+On Tue, Aug 21, 2012 at 12:26:57AM +0100, Peter Grandi wrote:
+> Perhaps it is useful to ask again an old question:
 > 
-> This patch replaces list_for_each_continue_rcu() with
-> list_for_each_entry_continue_rcu() to allow removing
-> list_for_each_continue_rcu().
+> Is the format of files produced by 'iptables-saved' and consumed
+> by 'iptables-restore' still considered an internal, undocumented
+> format that may change at any time?
 > 
-> Signed-off-by: Michael Wang <wangyun@linux.vnet.ibm.com>
+> How stable is in practice that format?
+> 
+> Because I reckon that format has been stable for at least 10
+> years, and I wonder whether it may be desirable to write
+> firewall configurations directly in it, rather than using long
+> 'iptables' command shell scripts.
 
-Reviewed-by: Paul E. McKenney <paulmck@linux.vnet.ibm.com>
+I can't say why there's no official iptables-save(5) manual page, 
+but I can definitely say that it IS desirable and recommended to
+use iptables-restore rulesets in your boot sequence. Most major 
+distros that provide rulesets do use iptables-save and 
+iptables-restore, and this has been the case for many years.
 
-> ---
->  net/netfilter/core.c |   11 +++++++----
->  1 files changed, 7 insertions(+), 4 deletions(-)
-> 
-> diff --git a/net/netfilter/core.c b/net/netfilter/core.c
-> index e19f365..50225bd 100644
-> --- a/net/netfilter/core.c
-> +++ b/net/netfilter/core.c
-> @@ -131,14 +131,14 @@ unsigned int nf_iterate(struct list_head *head,
->  			int hook_thresh)
->  {
->  	unsigned int verdict;
-> +	struct nf_hook_ops *elem = list_entry_rcu(*i,
-> +						struct nf_hook_ops, list);
-> 
->  	/*
->  	 * The caller must not block between calls to this
->  	 * function because of risk of continuing from deleted element.
->  	 */
-> -	list_for_each_continue_rcu(*i, head) {
-> -		struct nf_hook_ops *elem = (struct nf_hook_ops *)*i;
-> -
-> +	list_for_each_entry_continue_rcu(elem, head, list) {
->  		if (hook_thresh > elem->priority)
->  			continue;
-> 
-> @@ -155,11 +155,14 @@ repeat:
->  				continue;
->  			}
->  #endif
-> -			if (verdict != NF_REPEAT)
-> +			if (verdict != NF_REPEAT) {
-> +				*i = &elem->list;
->  				return verdict;
-> +			}
->  			goto repeat;
->  		}
->  	}
-> +	*i = &elem->list;
->  	return NF_ACCEPT;
->  }
-> 
-> -- 
-> 1.7.4.1
-> 
-> 
+The main benefit is that iptables-restore is atomic. All changes
+are committed in one pass. Any error in the ruleset means your 
+existing ruleset is not replaced.
 
+iptables OTOH has to read and rewrite the entire ruleset for each 
+command given, and there is a potential for race conditions if a 
+script is triggered to run before the previous run completed.
+-- 
+  http://rob0.nodns4.us/ -- system administration and consulting
+  Offlist GMX mail is seen only if "/dev/rob0" is in the Subject:
