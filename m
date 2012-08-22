@@ -1,41 +1,43 @@
-From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
-Subject: Re: old question revisited: can rely in 'iptables-restore' format?
-Date: Mon, 20 Aug 2012 22:21:37 -0400
-Message-ID: <201208202221.37529.neal.p.murphy@alum.wpi.edu>
-References: <COL124-W20E1581415198E1293F5D484B40@phx.gbl> <20530.51137.458307.357243@tree.ty.sabi.co.UK> <20120821003026.GD3672@harrier.slackbuilds.org>
-Reply-To: neal.p.murphy@alum.wpi.edu
+From: A G <utopian201@hotmail.com>
+Subject: Force routing
+Date: Thu, 23 Aug 2012 01:12:29 +1200
+Message-ID: <COL124-W41DC84ADA57640D31B0ACF84BF0@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20120821003026.GD3672@harrier.slackbuilds.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-On Monday 20 August 2012 20:30:26 /dev/rob0 wrote:
-> The main benefit is that iptables-restore is atomic. All changes
-> are committed in one pass. Any error in the ruleset means your
-> existing ruleset is not replaced.
 
-[Minor digression]
-By 'atomic', do you mean that all of the changes are made with a single 
-COMMIT, regardless of how many tables are accessed and regardless of how many 
-rules are processed?
+Hi
+I have a bridge setup with an application listening on port 8080. What I want is for the traffic on port 80 to be intercepted by the bridge and sent to my listening application.
+I have the following setup:
+#setup the bridge
+brctl addbr0
+brctl addif br0 eth1
+brctl addif br0 eth2
+ifconfig eth1 0.0.0.0
+ifconfig eth2 0.0.0.0
+ip link set br0 up
 
-It's been my experience that there is an implicit COMMIT at every table 
-change, and there is a ballpark limit of around 20,000 rules per commit. Thus:
-  - if the file you are feeding to iptables-restore references one table only
-    and contains fewer than around 20,000 rules, the operation will be atomic.
-  - if the file you are feeding to iptables-restore references more than one
-    table and contains fewer than around 20,000 rules per table, then only the
-    changes *per table* will be atomic.
-  - If the changes to a table contain more than around 20,000 rules, then 
-    that operation will require more than one COMMIT and will NOT be atomic.
+#set the ebtables to force intercept any frame coming in on port 80
+ebtables -t broute -A BROUTING -p ipv4 --ip-proto tcp --ip-dport 80 -j redirect --redirect-target DROP
 
-When relatively small change sets are involved, I agree that iptables-restore 
-is atomic. But when very large change sets are involved, I disagree: iptables-
-restore is *not* necessarily atomic. To be pedantic, it would be correct to 
-say that iptables-restore operates atomically only under certain conditions.
+#set iptables to forward this traffic to msy app listening on port 8080
+iptables -t mangle -A PREROUTING -p tcp --dport 80 -j TPROXY --on-port 8080 --tproxy-mark 1/1
+iptables -t mangle -A PREROUTING -p tcp -j MARK --set-mark 1/1
 
-N
+#once the flows are marked, have them delivered locally via loopback interface
+ip rule add fwmark 1/1 table 1
+ip route add local 0.0.0.0/0 dev lo table 1
+
+#enable ip packet forwarding
+echo 1 > /proc/sys/net/ipv4/ip_forward
+
+However nothing is coming into my application. Am I missing anything? My understanding is that the target DROP on the broute BROUTING chain will push it up to be processed by iptables.
+
+Thanks
+
+ 		 	   		  
