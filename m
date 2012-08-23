@@ -1,26 +1,36 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH 3/3] netfilter: replace list_for_each_continue_rcu with
- new interface
-Date: Thu, 23 Aug 2012 00:32:28 +0200
-Message-ID: <20120822223228.GA11141@1984>
-References: <502CB939.3050008@linux.vnet.ibm.com>
- <502DC9A3.2070703@linux.vnet.ibm.com>
+From: Michael Wang <wangyun@linux.vnet.ibm.com>
+Subject: [PATCH 0/2] netfilter: code refine for using new interface 'list_for_each_entry_continue_rcu'
+Date: Thu, 23 Aug 2012 13:59:49 +0800
+Message-ID: <5035C6D5.6020608@linux.vnet.ibm.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <502DC9A3.2070703@linux.vnet.ibm.com>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Michael Wang <wangyun@linux.vnet.ibm.com>
-Cc: LKML <linux-kernel@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, netfilter@vger.kernel.org, coreteam@netfilter.org, netfilter-devel@vger.kernel.org, David Miller <davem@davemloft.net>, kaber@trash.net, "paulmck@linux.vnet.ibm.com" <paulmck@linux.vnet.ibm.com>
+To: LKML <linux-kernel@vger.kernel.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, coreteam@netfilter.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Cc: David Miller <davem@davemloft.net>, kaber@trash.net, pablo@netfilter.org
 
-On Fri, Aug 17, 2012 at 12:33:39PM +0800, Michael Wang wrote:
-> From: Michael Wang <wangyun@linux.vnet.ibm.com>
-> 
-> This patch replaces list_for_each_continue_rcu() with
-> list_for_each_entry_continue_rcu() to allow removing
-> list_for_each_continue_rcu().
+From: Michael Wang <wangyun@linux.vnet.ibm.com>
 
-Applied, thanks.
+Since 'list_for_each_continue_rcu' has been replaced with the new interface
+'list_for_each_entry_continue_rcu' by commit 6705e86, we can no longer saving
+code by passing 'list_head' to nf_iterate() and nf_queue() any more.
+
+This patch set will pass 'nf_hook_ops' instead of 'list_head' to nf_iterate()
+and nf_queue() as the parameter and saving some code.
+
+Tested:
+	add rule to iptables and check result by ping.
+	nfqnl_test which is a test utility of libnetfilter_queue.
+
+Signed-off-by: Michael Wang <wangyun@linux.vnet.ibm.com>
+---
+ b/net/netfilter/core.c         |   24 ++++++++++--------------
+ b/net/netfilter/nf_internals.h |    2 +-
+ b/net/netfilter/nf_queue.c     |    6 +++---
+ net/netfilter/core.c           |    4 ++--
+ net/netfilter/nf_internals.h   |    2 +-
+ net/netfilter/nf_queue.c       |    8 ++++----
+ 6 files changed, 21 insertions(+), 25 deletions(-)
+
