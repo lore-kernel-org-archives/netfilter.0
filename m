@@ -1,32 +1,50 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: Fwd: iptables devel
-Date: Thu, 23 Aug 2012 15:24:54 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1208231524100.2060@frira.zrqbmnf.qr>
-References: <CAE1WnGe08Tmy=x4EHx3P0h4B8Sw6ahq_c_Fkr1zvC-n6GvfPfg@mail.gmail.com> <1344508664.2818.1.camel@ns014530.dcyb.net> <CAE1WnGexkPOSgwdWxfAWHw6fBNZ20iE1r2PzVLYG6WnK9xDVEg@mail.gmail.com> <1344510632.2818.10.camel@ns014530.dcyb.net>
- <CABNW7=8fQ3xnuSQKoP1gp3uxEv8kBHgscpPyYFdnTva1ifVsLQ@mail.gmail.com> <CABNW7=9yiO-jqSkOdEPmoU_-T+YpONFcZnF54VfD1NFKTh=Dvw@mail.gmail.com>
+From: pg@netf.list.sabi.co.UK (Peter Grandi)
+Subject: Re: old question revisited: can rely in 'iptables-restore' format?
+Date: Thu, 23 Aug 2012 20:20:04 +0100
+Message-ID: <20534.33380.922012.499011@tree.ty.sabi.co.UK>
+References: <COL124-W20E1581415198E1293F5D484B40@phx.gbl>
+	<20530.51137.458307.357243@tree.ty.sabi.co.UK>
+	<20120821003026.GD3672@harrier.slackbuilds.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CABNW7=9yiO-jqSkOdEPmoU_-T+YpONFcZnF54VfD1NFKTh=Dvw@mail.gmail.com>
+In-Reply-To: <20120821003026.GD3672@harrier.slackbuilds.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Anand kumar <anandkumarkm@gmail.com>
-Cc: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Linux netfilter <netfilter@vger.kernel.org>
 
 
-On Thursday 2012-08-16 12:59, Anand kumar wrote:
->>
-> We downloaded iptalbes from netfilter ftp, compiled and installed on our
-> system. Now we are getting below error.
->
->
-> [root@localhost ~]# iptables -A INPUT -m ipv4options -j ACCEPT
->
->  Iptables: No chain/target/match by that name.
->
->
->any clues on this?
+>> Is the format of files produced by 'iptables-saved' and consumed
+>> by 'iptables-restore' still considered an internal, undocumented
+>> format that may change at any time?
 
-The iptables tarball from netfilter.org nor the kernel from kernel.org
-ship the "ipv4options" module(s).
+>> How stable is in practice that format?
+   ======================================
+
+>> Because I reckon that format has been stable for at least 10
+>> years, and I wonder whether it may be desirable to write
+>> firewall configurations directly in it, rather than using long
+>> 'iptables' command shell scripts.
+
+> I can't say why there's no official iptables-save(5) manual page, 
+> but I can definitely say that it IS desirable and recommended to
+> use iptables-restore rulesets in your boot sequence. Most major 
+> distros that provide rulesets do use iptables-save and 
+> iptables-restore, and this has been the case for many years.
+
+That's a misunderstanding of the question I asked, which was not
+at all whether using 'iptables-restore' is desirable or common.
+
+The question is whether the syntax accepted by 'iptables-restore'
+format is going to be stable, so that one might invest in
+generating rulesets from programs other than 'iptables-save',
+rather than running many 'iptables' commands, then 'iptables-save'
+and then 'iptables-restore'.
+
+The only "guarantee" that I have seen is that whatever is output
+by 'iptables-save' will be accepted by 'iptables-restore', and
+that the syntax may be changed at any time.
+
+However in practice the syntax accepted by 'iptables-restore' has
+not substantially changed for many years.
