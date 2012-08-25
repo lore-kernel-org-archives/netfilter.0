@@ -1,50 +1,56 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: Double stack IPv4&&IPv6 for a firewall
-Date: Sat, 25 Aug 2012 01:46:30 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1208250137290.30075@frira.zrqbmnf.qr>
-References: <50375A06.6000808@cica.es> <1345818598.2977.265.camel@denise.theartistscloset.com> <alpine.LNX.2.01.1208241640240.16184@frira.zrqbmnf.qr> <CAPfcJatemcsT5PK+m8__xhB7gBRinAuq2wNX_g93CQrSmvtDhQ@mail.gmail.com>
+From: =?iso-8859-1?Q?Markus_Th=FCs?= <markus@thues.net>
+Subject: Netfilter / IPTables Question
+Date: Sat, 25 Aug 2012 20:40:54 +0200
+Message-ID: <!&!AAAAAAAAAAAYAAAAAAAAAOX6SiiIyH5Pl9vlxsZOj/nigAAAEAAAAKXCGN6FBIdCsHRvk6orE2gBAAAAAA==@thues.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAPfcJatemcsT5PK+m8__xhB7gBRinAuq2wNX_g93CQrSmvtDhQ@mail.gmail.com>
+Content-Language: de
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Arturo Borrero <aborrero@cica.es>
-Cc: netfilter@vger.kernel.org, "John A. Sullivan III" <jsullivan@opensourcedevel.com>
+Content-Type: text/plain; charset="windows-1252"
+To: netfilter@vger.kernel.org
 
-
-On Friday 2012-08-24 23:12, Arturo Borrero wrote:
->
->DNS lookups are a problem in a big ruleset (~10.000) rules, so the point is
->to do some kind of local cache.
-
-So run a local BIND server, lwresd, dnsmasq, nscd, or whatever.
-
->As I supposed, the doble stack method is not being well aproached yet.
-
-What isn't?
-
->The code (bash) is here:
->https://github.com/aborrero/fw-admin
-
-sh is amongst the *slowest* of all. Your README.md says
-
->You usally set your ruleset in this way:
->
->$IPT -A INPUT -i $IF -s $INTERNET -d $MYSERVER -p tcp --sport 1024: --dport
->$SSH_PORT -j ACCEPT 
-
-If you begin with something like this, no wonder it's all going slow,
-because you are needlessy reloading all the damn rules.
-That's why smart people use iptables-restore.
-
-Also, the --sport 1024: is pretty dull, because there is no RFC
-that forbids the use of numbers lower than that.
-
-
->Also, fw-admin is just a complex bash script
-
-Its greatest problem, btw.
-
+RGVhciBhbGwsDQoNCkmSbSBuZXcgdG8gaXB0YWJsZXMgLyBuZXRmaWx0ZXIgYW5kIEkgaGF2ZSB0
+aGUgcHJvYmxlbSB0aGF0IGkgbmVlZCB0bw0KY29uZmlndXJlIGEgbGludXggU3lzdGVtIChEZWJp
+YW4tUG93ZXJQQyB4NjQpIGFuZCBJIGRvbpJ0IGtub3cgaG93IHRvIGRvIHNvDQqFIDooDQoNCkhl
+cmWScyB0aGUgU3lzdGVtOg0KDQpFdGgwOqCgoKAgZGlzYWJsZWQNCkV0aDE6oKCgoCBkaXNhYmxl
+ZA0KRXRoMjqgoKCgIElQOiAxMC4wLjAuNKCgoKCgoKCgIKCgoKCgoKCgoKCgoKCgoCBTdWJuZXQ6
+DQoyNTUuMjU1LjI1NS4xMjigoKCgoKCgoKCgoKCgIEdhdGV3YXkgLyBETlM6IDEwLjAuMC4xDQqg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKAgoKCgoKCgoKCgoKCgoKCgIEludGVyZmFjZSB0byB0
+aGUgSW50ZXJuZXQNCkV0aDM6oKCgoCBJUDogMTkyLjE2OC4wLjagoKCgoKCgoKCgoKCgoKCgoCBT
+dWJuZXQ6IDI1NS4yNTUuMjU0LjCgoCBHYXRld2F5IC8NCkROUzogdGhlIFN5c3RlbSBpdHNlbGag
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoCBUaGlzIGlzIHRoZSBJUCBJbnRlcmZhY2UgdG8NCnRo
+ZSBzY2hvb2xzIE5ldHdvcmsgKGZvciBTdHVkZW50cyBhbmQgc3R1ZmYpDQpFdGg0OqCgoKAgSVA6
+IDE5Mi4xNjguMi4yoKCgoKCgoKCgoKCgoKCgoKAgU3VibmV0IDI1NS4yNTUuMjU0LjCgoKAgR2F0
+ZXdheSAvDQpETlM6IHRoZSBTeXN0ZW0gaXRzZWxmoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKAg
+VGhpcyBpcyB0aGUgSVAgSW50ZXJmYWNlIHRvDQp0aGUgTmV0d29yayBvZiB0aGUgc2Nob29scyBB
+ZG1pbmlzdHJhdGlvbg0KRXRoNTqgoKCgIElQOiAxNzIuMTYuMC4yMKCgoKCgoKCgoKCgoKCgoKCg
+IFN1Ym5ldDogMjU1LjI1NS4yNTUuMKCgIEdhdGV3YXkgLw0KRE5TOiBub25loKCgoKCgoKCgoKCg
+oKCgoKCgIKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoCBUaGlzIGlzIHRoZSBJUA0KSW50
+ZXJmYWNlIHRvIHRoZSBDaXNjbyBNYW5hZ2VtZW50IE5ldHdvcmsNCg0KVGhlIFN5c3RlbSBpcyBy
+dW5uaW5nIHRoZSBmb2xsb3dpbmcgU2VydmljZXM6DQoNCkJvdW5kIHRvIHRoZSBJUCBvZiB0aGUg
+RXRoMyBJbnRlcmZhY2U6oCCgoKCgoKCgoKCgoKCgoKAgRE5TLCBXZWJtaW4sDQpVc2VybWluLCBM
+REFQLCBTcXVpZCwgTlRQLCBESENQLCBOYWdpb3MsIEFwYWNoZSwgU1NIDQpCb3VuZCB0byB0aGUg
+SVAgb2YgdGhlIEV0aDQgSW50ZXJmYWNlOqAgoKCgoKCgoKCgoKCgoKCgIEROUywgV2VibWluLA0K
+VXNlcm1pbiwgTERBUCwgU3F1aWQsIE5UUCwgREhDUCwgTmFnaW9zLCBBcGFjaGUsIFNTSA0KQm91
+bmQgdG8gdGhlIElQIG9mIHRoZSBFdGg1IEludGVyZmFjZTqgoKCgoKCgoKCgoKCgoKCgoCBOYWdp
+b3MsIFNTSCwgQXBhY2hlDQoNCldoYXQgc2hvdWxkIGJlIGRvbmU6oKCgoKCgoKCgoKCgoKCgoKAg
+UmVxdWVzdHMgZnJvbQ0KRXRoMjqgoKCgoKCgoKCgoKCgoKCgoKCgoCBOb25lLCBjYXVzZSB0aGlz
+IGlzIG9ubHkgdGhlIEludGVyZmFjZSB0b3dhcmRzIHRoZQ0KSW50ZXJuZXQNCqCgoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgIFJlcXVl
+c3RzIGZyb20NCkV0aDM6oKCgoKCgoKCgoKCgoKCgoKCgoKAgQ291bGQgcmVhY2ggZXZlcnkgUG9y
+dCBvbiB0aGUgSG9zdCBpdHNlbGYsIGJ1dA0Kbm9uZSBpbiB0aGUgb3RoZXIgbmV0d29ya3MsIGFu
+ZCBldmVyeSB1c2VyIGZyb20gdGhlIG5ldCBzaG91bGQgaGF2ZSBhY2Nlc3MNCnRvIEROUywgTlRQ
+IGFuZCBVRFAgLyBUQ1AgUG9ydCAzMzM5IG9uIGV2ZXJ5IEhvc3Qgb24gdGhlIGludGVybmV0Ow0K
+ZXZlcnl0aGluZyBlbHNlIHNob3VsZCBiZSBhY2Nlc3NhYmxlIHZpYSBzcXVpZA0KoKCgoKCgoKCg
+oKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKAgUmVx
+dWVzdHMgZnJvbQ0KRXRoNDqgoKCgoKCgoKCgoKCgoKCgoKCgoCBNYWlsIFNlcnZpY2VzIChJTUFQ
+LCBQT1AzLCBTTVRQKSBhbmQgRE5TLCBOVFAgaXMNCnBlcm1pdHRlZCB0byBiZSBhY2Nlc3NlZCBv
+biB0aGUgbmV0LCBldmVyeXRoaW5nIGVsc2Ugc2hvdWxkIGJlIGFjY2Vzc2FibGUNCnZpYSBzcXVp
+ZCANCqCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgDQpFdGg1OqCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCg
+oKCgoKCgoKCgoCBOb3QgYWNjZXNzYWJsZSBmcm9tDQphbnkgTmV0d29yaywgb25seSBiZSB0aGUg
+aG9zdCBpdHNlbGYuDQoNCg0KSXMgdGhpcyBwb3NzaWJsZT8NCg0KVGhhbmtzIGluIGFkdmFuY2Us
+DQoNCk1hcmt1cw0KDQoNCg==
 
