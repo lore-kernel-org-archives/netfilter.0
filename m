@@ -1,72 +1,56 @@
-From: Thomas Martin <tmartincpp@gmail.com>
-Subject: Hashlimit and burst questions.
-Date: Mon, 27 Aug 2012 13:22:03 +0200
-Message-ID: <CAO1iXZKa+ME2STjZ3MqYx_yZV9=GxumRBQM7cUTYxGZo7mj98A@mail.gmail.com>
+From: Net Warrior <netwarrior863@gmail.com>
+Subject: ssh configuration issue / doubt
+Date: Mon, 27 Aug 2012 16:51:05 -0300
+Message-ID: <CAP7y58OmPxEPRR=73BFwChc2t=08VFuqNffTJzmqnON4yRoajQ@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=DsE9jsnYRu2eIsfza54tkSVoxp9fgGlkZN/fWasPOtw=;
-        b=OuxV/zM+r8g3qdGFywH9JkiDVT+0sCeiQzFt+dfeCzRqwMxODDfWs/cCytS7NPrFpl
-         6R+hCrZHwJrNdL2YaCK6MSwGEloPgEYNKVtyFUp1Hc9PYewLQrizsObsjXqpUK5YlQHr
-         F6xglkJieRmW/0A7StxxPUcEfa3CCPPfyupALigt8DdFVg+DOkue+4vSwL9tWSuEhT7s
-         olFSaFkWiD2xajR7Y45T3TIwfi9KdW2r45eHWO998CrkALCrxzCHaSvdV8h2gojPsjrj
-         V/D1+FvbuhUkKbdbuqq+K/ew/SBYKwmvwXWib8VS8hDhsT/81QDD1EmfL9gfI/E39yXN
-         uZLA==
+        bh=2vKMINUChHK6cWyWEJgt/kGqKJmjnIBiXuHTipBe0d8=;
+        b=Ul4IwRhL+Dn6QHsGeH+mBm573a8xFGlIm/TaK+x6q3SPnBAVhuY72mg4f9D7C9fmBq
+         JwNfocYWYFQoC7xHl+rCxhT8M8c49wLfGlJlCjlt+oo2yYXktb51NSMTFKb6k3RJEmef
+         1Sh+wB3ryAD4Ja6VFSXM9VP/lB2XGcXeDK/Ijdp9deqGmp5GfeXIz/8pFxLxFYJ6RyAt
+         6yu5/88QzaWiOejU2NqEq8vjot2gZUkQWU9nRrBK3Bjennvwxn2EDOjG2lC4mjG37twf
+         2v5U0M365vGEmmSG47noKgqY9qxWzFNPocDJY9+Hnr8sr7cdGGzIfQM/n7myiBWXEWpy
+         RZFg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi all.
+Hi there.
+I've got a simple question regarding ssh configuration.
+Reading the documentation and googling, It seems that to enable ssh is
+the simple thing in the world, I've got this.
 
-I am trying to start to use the hashlimit module and I'm a bit lost.
-I read the manual but it didn't was so helpful to me.
+ $IPTABLES -A INPUT -i $ETH_PRIMARY -p tcp -s $ANY_MACHINE\
+        --dport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
 
+With this rule I can connec to the machine, so far so good, now if I
+want to do scp or to scp to another machine I get blocked,
+I permit ALL the output chain.
 
-Indeed I'm not understanding very well the burst option.
+The only way I'm able to do ssh to another host or do scp is by adding this
 
-During my tests I believed that the burst was the maximum amount of
-packets allowed (depending to the unity used -second or minute for
-example- ).
+ $IPTABLES -A INPUT -i $ETH_PRIMARY -p tcp -s $ANY_MACHINE\
+        --sport 22 -m state --state NEW,ESTABLISHED -j ACCEPT
 
-Here is my test rule:
-iptables -A INPUT -m hashlimit --hashlimit-name synflood
---hashlimit-upto 100/s \
---hashlimit-mode srcip --hashlimit-htable-expire 300000 \
---hashlimit-burst 150 \
--j ACCEPT
+So I've got this
+ 8   560 ACCEPT     tcp  --  eth0   *       0.0.0.0/0
+0.0.0.0/0           tcp dpt:22 state NEW,ESTABLISHED
+    0     0 ACCEPT     tcp  --  eth0   *       0.0.0.0/0
+0.0.0.0/0           tcp spt:22 state NEW,ESTABLISHED
+With this two rules I can ssh to another host and do scp, I'm confused
+cuz all the examples I've been reading do not
+talk to enable both, only destination port.
 
-
-So with there values I believed that an IP can do up to 150 requests per second.
-When the burst limit is reached the IP can't do no more than the
-"hashlimit-upto" parameter (so no more than 100 r/s here).
-
-
-In /proc/net/ipt_hashlimit/
-synflood, after one request, I can see:
-230 10.59.128.41:0->0.0.0.0:0 47680 48000 320
-
-So that means the burst limit will be available again when 48000 is
-reached (third column) or when this entry will be clear of the hash
-table.
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
 
 
-Am I wrong?
-According to http://www.spinics.net/lists/netfilter/msg52926.html it seems so :/
+Is this the  right way or I'm missing reading something?
 
-
-Also if someone can tell me why "one second" seems to be "32000" I
-would be glad too.
-
-
-Thanks in advance.
-Regards.
-
-MHT
-
-
-PS: Sorry for my English and maybe for this noob question but I don't
-read C code.
+Thanks in advance
+Best Regards
