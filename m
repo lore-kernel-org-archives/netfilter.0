@@ -1,29 +1,72 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: [Patch net-next] netfilter: remove xt_NOTRACK
-Date: Sun, 26 Aug 2012 22:04:48 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1208262201520.32152@frira.zrqbmnf.qr>
-References: <1345962219-2999-1-git-send-email-amwang@redhat.com> <CAHo-Ooz0SDBZTvBKRR-bZs0wHk25bSLaYgUYF0njUgxY8iGWpA@mail.gmail.com>
+From: Thomas Martin <tmartincpp@gmail.com>
+Subject: Hashlimit and burst questions.
+Date: Mon, 27 Aug 2012 13:22:03 +0200
+Message-ID: <CAO1iXZKa+ME2STjZ3MqYx_yZV9=GxumRBQM7cUTYxGZo7mj98A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <CAHo-Ooz0SDBZTvBKRR-bZs0wHk25bSLaYgUYF0njUgxY8iGWpA@mail.gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=DsE9jsnYRu2eIsfza54tkSVoxp9fgGlkZN/fWasPOtw=;
+        b=OuxV/zM+r8g3qdGFywH9JkiDVT+0sCeiQzFt+dfeCzRqwMxODDfWs/cCytS7NPrFpl
+         6R+hCrZHwJrNdL2YaCK6MSwGEloPgEYNKVtyFUp1Hc9PYewLQrizsObsjXqpUK5YlQHr
+         F6xglkJieRmW/0A7StxxPUcEfa3CCPPfyupALigt8DdFVg+DOkue+4vSwL9tWSuEhT7s
+         olFSaFkWiD2xajR7Y45T3TIwfi9KdW2r45eHWO998CrkALCrxzCHaSvdV8h2gojPsjrj
+         V/D1+FvbuhUkKbdbuqq+K/ew/SBYKwmvwXWib8VS8hDhsT/81QDD1EmfL9gfI/E39yXN
+         uZLA==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="iso-8859-1"
-To: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Cc: Cong Wang <amwang@redhat.com>, netfilter-devel@vger.kernel.org, Cong Wang <xiyou.wangcong@gmail.com>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Sunday 2012-08-26 12:42, Maciej =C5=BBenczykowski wrote:
+Hi all.
 
->Sounds like the old -t raw ... -j NOTRACK is replaced by -t raw ... -j
->CT --notrack.
->Will -j NOTRACK continue to work?  Could it be added as an alias to CT=
-?
+I am trying to start to use the hashlimit module and I'm a bit lost.
+I read the manual but it didn't was so helpful to me.
 
-No, and, dunno. There are currently no provisions for aliasing in the=20
-userspace side.
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+Indeed I'm not understanding very well the burst option.
+
+During my tests I believed that the burst was the maximum amount of
+packets allowed (depending to the unity used -second or minute for
+example- ).
+
+Here is my test rule:
+iptables -A INPUT -m hashlimit --hashlimit-name synflood
+--hashlimit-upto 100/s \
+--hashlimit-mode srcip --hashlimit-htable-expire 300000 \
+--hashlimit-burst 150 \
+-j ACCEPT
+
+
+So with there values I believed that an IP can do up to 150 requests per second.
+When the burst limit is reached the IP can't do no more than the
+"hashlimit-upto" parameter (so no more than 100 r/s here).
+
+
+In /proc/net/ipt_hashlimit/
+synflood, after one request, I can see:
+230 10.59.128.41:0->0.0.0.0:0 47680 48000 320
+
+So that means the burst limit will be available again when 48000 is
+reached (third column) or when this entry will be clear of the hash
+table.
+
+
+Am I wrong?
+According to http://www.spinics.net/lists/netfilter/msg52926.html it seems so :/
+
+
+Also if someone can tell me why "one second" seems to be "32000" I
+would be glad too.
+
+
+Thanks in advance.
+Regards.
+
+MHT
+
+
+PS: Sorry for my English and maybe for this noob question but I don't
+read C code.
