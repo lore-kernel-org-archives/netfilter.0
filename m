@@ -1,52 +1,49 @@
-From: rahul shrivastava <shrivastavaone@gmail.com>
-Subject: -f option with iptables
-Date: Tue, 28 Aug 2012 18:40:24 +0530
-Message-ID: <CAE1WnGd1ZHJDJEbOkBqbWqRSuNUTBy_Guo4bG3DMP783y=0Q9A@mail.gmail.com>
+From: Wei Yongjun <weiyj.lk@gmail.com>
+Subject: [PATCH] netfilter: nfnetlink_queue: remove pointless conditional
+ before kfree_skb()
+Date: Tue, 28 Aug 2012 21:14:15 +0800
+Message-ID: <CAPgLHd_dNe3ZLzkAZC7p6V7oQLohmFQxfPjVtK-SBhXG1yYxWw@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=tUR/UHlifSSawKQxNNNn08nJWvNiKUOSQsvrXCBHjHs=;
-        b=B+HfxHR/GCaxxW0m6BEfam13jpKWGLlyCc5lbFlCTjcXOM//LARBn1Nmsu3qC9Q2t1
-         PWemU5dXXcccHebHKxXv8bWO7/oUZzdDP5QzvzW7SneBut59pQm5wYsMCv3ste4u0aEy
-         awcpt/K8+2+WTN/zw+tEtzIL23tosy2ZM8mTqh1q9jJAGoF5k7X+XBPKO2gcpth/22Iu
-         4ZK1DFA6w6Q90GOCkwMfoG7xtc0gSELejjGNCu3HAwKS5LHRaOT3nQBr0zW53S1yhpW/
-         eC8K722hs/I8My8HuKBCvC7BYcuqfZqiU1Ak0WwnuwquQzHAg0JMpxtZSUZdbI/P89lc
-         pNbw==
-Sender: netfilter-owner@vger.kernel.org
+        h=mime-version:date:message-id:subject:from:to:cc:content-type;
+        bh=jDLdOupbzSTjhUajqNnAe2Y2glKOjtlHITiGoFnlns8=;
+        b=fdpokB/xY71lzXDgTDw79m/M5F3KnZBrnVDfrx81SSv/dsehO25UmaBnMzGk5TL4yW
+         TvirC14Bx2qzR2kJFYioiztyupkqQkm6sDc6Y3LFXJZvMGXZ03rmaGrXv9uOjSHzZ1/8
+         aWQ9dkJ7UMl8Kq6bUFBuPGJEQuOV1Pffx6vG210wmyT/cecb0tca88OURP6EnWfSciPd
+         8y2bHfGZiLpTX8b5/ZQNqmaWyNByhUIz5YfFsN9fZFmxygPdQbrlouEL00HERfJiiXLU
+         e/+LIPXlI9DFIIiDtHv2LzDPVNg3AJIDu72XpICOKLejtydcVt2gLMX7gmqGjDSbYkCG
+         iSPQ==
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter <netfilter@vger.kernel.org>
+To: pablo@netfilter.org, kaber@trash.net
+Cc: yongjun_wei@trendmicro.com.cn, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
 
-Hi,
-linux version 2.6.35
-iptables v1.4.9.1
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-my setup consists of two systems system A and system B
-i am using following rules on  system A
+Remove pointless conditional before kfree_skb().
 
-iptables -I INPUT  -f -j DROP
-iptables -I OUTPUT  -f -j DROP
-iptables -I FORWARD  -f -j DROP
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+---
+ net/netfilter/nfnetlink_queue_core.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-from system B i am doing  ping -s 32768 172.31.114.239(system A)
-
-ping -s 32768 172.31.114.239
-PING 172.31.114.239 (172.31.114.239) 32768(32796) bytes of data.
-32776 bytes from 172.31.114.239: icmp_req=1 ttl=64 time=6.02 ms
-32776 bytes from 172.31.114.239: icmp_req=2 ttl=64 time=6.00 ms
-32776 bytes from 172.31.114.239: icmp_req=3 ttl=64 time=6.01 ms
-32776 bytes from 172.31.114.239: icmp_req=4 ttl=64 time=6.01 ms
-32776 bytes from 172.31.114.239: icmp_req=5 ttl=64 time=6.02 ms
-32776 bytes from 172.31.114.239: icmp_req=6 ttl=64 time=6.00 ms
-
-i am getting ping reply from system A
--f is supposed to drop 2nd  and further fragments of a packet, but
-since i am getting reply it is clear that fragments are not getting
-dropped.
-my objective is to drop fragments. please help
+diff --git a/net/netfilter/nfnetlink_queue_core.c b/net/netfilter/nfnetlink_queue_core.c
+index c0496a5..5c2d78d 100644
+--- a/net/netfilter/nfnetlink_queue_core.c
++++ b/net/netfilter/nfnetlink_queue_core.c
+@@ -406,8 +406,7 @@ nfqnl_build_packet_message(struct nfqnl_instance *queue,
+ 	return skb;
+ 
+ nla_put_failure:
+-	if (skb)
+-		kfree_skb(skb);
++	kfree_skb(skb);
+ 	net_err_ratelimited("nf_queue: error creating packet message\n");
+ 	return NULL;
+ }
 
 
-Thanks in advance.
