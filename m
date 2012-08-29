@@ -1,11 +1,11 @@
 From: Julia Lawall <Julia.Lawall@lip6.fr>
-Subject: [PATCH 6/7] net/netfilter/nfnetlink_log.c: fix error return code
-Date: Wed, 29 Aug 2012 18:49:17 +0200
-Message-ID: <1346258957-7649-8-git-send-email-Julia.Lawall@lip6.fr>
+Subject: [PATCH 7/7] net/netfilter/nf_conntrack_netlink.c: fix error return code
+Date: Wed, 29 Aug 2012 18:49:16 +0200
+Message-ID: <1346258957-7649-7-git-send-email-Julia.Lawall@lip6.fr>
 References: <1346258957-7649-1-git-send-email-Julia.Lawall@lip6.fr>
-Return-path: <netfilter-owner@vger.kernel.org>
+Return-path: <linux-kernel-owner@vger.kernel.org>
 In-Reply-To: <1346258957-7649-1-git-send-email-Julia.Lawall@lip6.fr>
-Sender: netfilter-owner@vger.kernel.org
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
@@ -41,23 +41,20 @@ ret@p1 = 0
 Signed-off-by: Julia Lawall <Julia.Lawall@lip6.fr>
 
 ---
- net/netfilter/nfnetlink_log.c |    4 +++-
- 1 file changed, 3 insertions(+), 1 deletion(-)
+ net/netfilter/nf_conntrack_netlink.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/netfilter/nfnetlink_log.c b/net/netfilter/nfnetlink_log.c
-index 4142aac..9ef5438 100644
---- a/net/netfilter/nfnetlink_log.c
-+++ b/net/netfilter/nfnetlink_log.c
-@@ -1002,8 +1002,10 @@ static int __init nfnetlink_log_init(void)
+diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
+index da4fc37..9807f32 100644
+--- a/net/netfilter/nf_conntrack_netlink.c
++++ b/net/netfilter/nf_conntrack_netlink.c
+@@ -2790,7 +2790,8 @@ static int __init ctnetlink_init(void)
+ 		goto err_unreg_subsys;
+ 	}
  
- #ifdef CONFIG_PROC_FS
- 	if (!proc_create("nfnetlink_log", 0440,
--			 proc_net_netfilter, &nful_file_ops))
-+			 proc_net_netfilter, &nful_file_ops)) {
-+		status = -ENOMEM;
- 		goto cleanup_logger;
-+	}
- #endif
- 	return status;
- 
-
+-	if (register_pernet_subsys(&ctnetlink_net_ops)) {
++	ret = register_pernet_subsys(&ctnetlink_net_ops);
++	if (ret < 0) {
+ 		pr_err("ctnetlink_init: cannot register pernet operations\n");
+ 		goto err_unreg_exp_subsys;
+ 	}
