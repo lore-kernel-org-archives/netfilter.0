@@ -1,17 +1,34 @@
-From: Dennis Jacobfeuerborn <dennisml@conversis.de>
-Subject: Re: Adding support for Stateless Static NAT for TAP devices
-Date: Thu, 30 Aug 2012 14:38:05 +0200
-Message-ID: <503F5EAD.3070008@conversis.de>
-References: <7F9A6D26EB51614FBF9F81C0DA4CFEC8026E2BC561E5@il-ex01.ad.checkpoint.com> <20120830091416.GD6814@stefanha-thinkpad.localdomain> <7F9A6D26EB51614FBF9F81C0DA4CFEC8026E2BC56295@il-ex01.ad.checkpoint.com> <CAJSP0QWnZ6Nrf4q6QnU9avkNnEy8d7_CP8pbcU2QQhMJq-eeLg@mail.gmail.com> <7F9A6D26EB51614FBF9F81C0DA4CFEC8026E2BC562D6@il-ex01.ad.checkpoint.com>
+From: John Basila <jbasila@checkpoint.com>
+Subject: RE: Adding support for Stateless Static NAT for TAP devices
+Date: Thu, 30 Aug 2012 16:32:33 +0300
+Message-ID: <7F9A6D26EB51614FBF9F81C0DA4CFEC8026E2BC56327@il-ex01.ad.checkpoint.com>
+References: <7F9A6D26EB51614FBF9F81C0DA4CFEC8026E2BC561E5@il-ex01.ad.checkpoint.com>
+ <20120830091416.GD6814@stefanha-thinkpad.localdomain>
+ <7F9A6D26EB51614FBF9F81C0DA4CFEC8026E2BC56295@il-ex01.ad.checkpoint.com>
+ <CAJSP0QWnZ6Nrf4q6QnU9avkNnEy8d7_CP8pbcU2QQhMJq-eeLg@mail.gmail.com>
+ <7F9A6D26EB51614FBF9F81C0DA4CFEC8026E2BC562D6@il-ex01.ad.checkpoint.com>
+ <503F5EAD.3070008@conversis.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <7F9A6D26EB51614FBF9F81C0DA4CFEC8026E2BC562D6@il-ex01.ad.checkpoint.com>
+In-Reply-To: <503F5EAD.3070008@conversis.de>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: John Basila <jbasila@checkpoint.com>
+To: Dennis Jacobfeuerborn <dennisml@conversis.de>
 Cc: Stefan Hajnoczi <stefanha@gmail.com>, "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>, Anthony Liguori <aliguori@us.ibm.com>, Rusty Russell <rusty@rustcorp.com.au>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+
+I have a setup that requires to run virtual machines using QEMU. All these machines will be executed from the same snapshot thus giving them the save same state when they come to life, this is why they all will have the same source IP, the only difference between them is that each one is connected to a different TAP device.
+
+I have tried using iptables to NAT the connections based on the TAP interface and make it change the source IP of the connection to an IP that upon return will go back to the correct TAP device, but alas, the problem of state fullness of the iptables caused the problem with the second instance of the virtual machine that sent the same packet that was did pass the rule base as it was matched on an already opened connection that thus was NATed to the first virtual machine source IP.
+
+-----Original Message-----
+From: Dennis Jacobfeuerborn [mailto:dennisml@conversis.de] 
+Sent: Thursday, August 30, 2012 3:38 PM
+To: John Basila
+Cc: Stefan Hajnoczi; qemu-devel@nongnu.org; Anthony Liguori; Rusty Russell; netfilter@vger.kernel.org
+Subject: Re: Adding support for Stateless Static NAT for TAP devices
 
 On 08/30/2012 12:58 PM, John Basila wrote:
 > Please allow me to add a few comments:
@@ -21,10 +38,11 @@ On 08/30/2012 12:58 PM, John Basila wrote:
 > John
 > 
 > -----Original Message-----
-> From: Stefan Hajnoczi [mailto:stefanha@gmail.com] 
+> From: Stefan Hajnoczi [mailto:stefanha@gmail.com]
 > Sent: Thursday, August 30, 2012 1:44 PM
 > To: John Basila
-> Cc: qemu-devel@nongnu.org; Anthony Liguori; Rusty Russell; netfilter@vger.kernel.org
+> Cc: qemu-devel@nongnu.org; Anthony Liguori; Rusty Russell; 
+> netfilter@vger.kernel.org
 > Subject: Re: Adding support for Stateless Static NAT for TAP devices
 > 
 > On Thu, Aug 30, 2012 at 10:27 AM, John Basila <jbasila@checkpoint.com> wrote:
@@ -50,9 +68,10 @@ On 08/30/2012 12:58 PM, John Basila wrote:
 > 
 > How can this be done using iptables and friends?
 
-Why do the systems have the same IP? That seems like a broken network
-config to me.
+Why do the systems have the same IP? That seems like a broken network config to me.
 
 Regards,
   Dennis
 
+
+Scanned by Check Point Total Security Gateway.
