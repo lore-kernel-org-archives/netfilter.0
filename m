@@ -1,45 +1,20 @@
-From: Ivan Shmakov <oneingray@gmail.com>
-Subject: Re: Adding support for Stateless Static NAT for TAP
-	devices
-Date: Thu, 30 Aug 2012 18:43:01 +0700
-Message-ID: <86393438sa.fsf@gray.siamics.net>
-References: <7F9A6D26EB51614FBF9F81C0DA4CFEC8026E2BC561E5@il-ex01.ad.checkpoint.com>
-	<20120830091416.GD6814@stefanha-thinkpad.localdomain>
-	<7F9A6D26EB51614FBF9F81C0DA4CFEC8026E2BC56295@il-ex01.ad.checkpoint.com>
-	<CAJSP0QWnZ6Nrf4q6QnU9avkNnEy8d7_CP8pbcU2QQhMJq-eeLg@mail.gmail.com>
-	<7F9A6D26EB51614FBF9F81C0DA4CFEC8026E2BC562D6@il-ex01.ad.checkpoint.com>
+From: Guillaume Rembert <guillaume.rembert@euryecetelecom.com>
+Subject: Re: Failed to compile =?utf-8?b?bGlibmV0ZmlsdGVyX3F1ZWV1?= 1.0.1 under Centos 6.2
+Date: Thu, 30 Aug 2012 12:45:11 +0000 (UTC)
+Message-ID: <loom.20120830T144217-112@post.gmane.org>
+References: <BLU162-W1607A553582A18B27146E4F6830@phx.gbl> <20120116155809.GC16285@1984>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Return-path: <qemu-devel-bounces+gceq-qemu-devel=gmane.org@nongnu.org>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.nongnu.org/mailman/options/qemu-devel>,
-	<mailto:qemu-devel-request@nongnu.org?subject=unsubscribe>
-List-Archive: <http://lists.nongnu.org/archive/html/qemu-devel>
-List-Post: <mailto:qemu-devel@nongnu.org>
-List-Help: <mailto:qemu-devel-request@nongnu.org?subject=help>
-List-Subscribe: <https://lists.nongnu.org/mailman/listinfo/qemu-devel>,
-	<mailto:qemu-devel-request@nongnu.org?subject=subscribe>
-Errors-To: qemu-devel-bounces+gceq-qemu-devel=gmane.org@nongnu.org
-Sender: qemu-devel-bounces+gceq-qemu-devel=gmane.org@nongnu.org
-Content-Type: text/plain; charset="utf-8"
-To: qemu-devel@nongnu.org
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
->>>>> John Basila <jbasila@checkpoint.com> writes:
+I had the same issue. Fixing this problem was done not by modifying the code as
+you did, but by installing both: libnfnetlink AND libnfnetlink-devel.
 
-[…]
-
- > The problem here is related to the fact that QEMU is executed with
- > multiple instances and all instances start from the same snapshot,
-
-	Isn't it possible to resolve such an issue using, e. g., DHCPv6
-	or DHCP?  All the QEMU instances will (AIUI) have random MAC
-	addresses by default, but a static “instance to MAC” mapping is
-	also possible, as is the respective “MAC to IP” mapping.
-
-[…]
-
--- 
-FSF associate member #7257	http://sfd.am-1.org/
+Just add EPEL repository and execute:
+yum install libnfnetlink*
 
 
