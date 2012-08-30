@@ -1,59 +1,45 @@
-From: John Basila <jbasila@checkpoint.com>
-Subject: RE: Adding support for Stateless Static NAT for TAP devices
-Date: Thu, 30 Aug 2012 13:58:51 +0300
-Message-ID: <7F9A6D26EB51614FBF9F81C0DA4CFEC8026E2BC562D6@il-ex01.ad.checkpoint.com>
+From: Ivan Shmakov <oneingray@gmail.com>
+Subject: Re: Adding support for Stateless Static NAT for TAP
+	devices
+Date: Thu, 30 Aug 2012 18:43:01 +0700
+Message-ID: <86393438sa.fsf@gray.siamics.net>
 References: <7F9A6D26EB51614FBF9F81C0DA4CFEC8026E2BC561E5@il-ex01.ad.checkpoint.com>
 	<20120830091416.GD6814@stefanha-thinkpad.localdomain>
 	<7F9A6D26EB51614FBF9F81C0DA4CFEC8026E2BC56295@il-ex01.ad.checkpoint.com>
- <CAJSP0QWnZ6Nrf4q6QnU9avkNnEy8d7_CP8pbcU2QQhMJq-eeLg@mail.gmail.com>
+	<CAJSP0QWnZ6Nrf4q6QnU9avkNnEy8d7_CP8pbcU2QQhMJq-eeLg@mail.gmail.com>
+	<7F9A6D26EB51614FBF9F81C0DA4CFEC8026E2BC562D6@il-ex01.ad.checkpoint.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAJSP0QWnZ6Nrf4q6QnU9avkNnEy8d7_CP8pbcU2QQhMJq-eeLg@mail.gmail.com>
-Content-Language: en-US
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-To: Stefan Hajnoczi <stefanha@gmail.com>
-Cc: "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>, Anthony Liguori <aliguori@us.ibm.com>, Rusty Russell <rusty@rustcorp.com.au>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <qemu-devel-bounces+gceq-qemu-devel=gmane.org@nongnu.org>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.nongnu.org/mailman/options/qemu-devel>,
+	<mailto:qemu-devel-request@nongnu.org?subject=unsubscribe>
+List-Archive: <http://lists.nongnu.org/archive/html/qemu-devel>
+List-Post: <mailto:qemu-devel@nongnu.org>
+List-Help: <mailto:qemu-devel-request@nongnu.org?subject=help>
+List-Subscribe: <https://lists.nongnu.org/mailman/listinfo/qemu-devel>,
+	<mailto:qemu-devel-request@nongnu.org?subject=subscribe>
+Errors-To: qemu-devel-bounces+gceq-qemu-devel=gmane.org@nongnu.org
+Sender: qemu-devel-bounces+gceq-qemu-devel=gmane.org@nongnu.org
+Content-Type: text/plain; charset="utf-8"
+To: qemu-devel@nongnu.org
+Cc: netfilter@vger.kernel.org
 
-Please allow me to add a few comments:
+>>>>> John Basila <jbasila@checkpoint.com> writes:
 
-The problem here is related to the fact that QEMU is executed with multiple instances and all instances start from the same snapshot, thus if they all send a UDP DNS query, they will all create a packet - for example - 10.0.0.2:2345 -> DNSERVER:53. The source port is the same. The first packet that reaches the ipfilter will result in going over the iptables rules and get NATed properly, the second QEMU instance that will send the same UDP packet will not get to run over the iptables rules as the ipfilter already saw this packet and the packet should be "RELATED" to a different connection and thus will cause the response packets of machine B to be received via machine A as the NAT rule will de-NAT the return packet to to the relevant connection which is related to machine A.
+[…]
 
-John
+ > The problem here is related to the fact that QEMU is executed with
+ > multiple instances and all instances start from the same snapshot,
 
------Original Message-----
-From: Stefan Hajnoczi [mailto:stefanha@gmail.com] 
-Sent: Thursday, August 30, 2012 1:44 PM
-To: John Basila
-Cc: qemu-devel@nongnu.org; Anthony Liguori; Rusty Russell; netfilter@vger.kernel.org
-Subject: Re: Adding support for Stateless Static NAT for TAP devices
+	Isn't it possible to resolve such an issue using, e. g., DHCPv6
+	or DHCP?  All the QEMU instances will (AIUI) have random MAC
+	addresses by default, but a static “instance to MAC” mapping is
+	also possible, as is the respective “MAC to IP” mapping.
 
-On Thu, Aug 30, 2012 at 10:27 AM, John Basila <jbasila@checkpoint.com> wrote:
-> I have tried NAT and this is why I came up with this feature.
+[…]
 
-QEMU's net/tap.c is the wrong place to add NAT code.  The point of tap is to use the host network stack.  If you want userspace networking, use -netdev user or -netdev socket.
+-- 
+FSF associate member #7257	http://sfd.am-1.org/
 
-Please look into iptables more.  I have CCed the netfilter mailing list.  The question is:
 
-The host has several tap interfaces (tap0, tap1, ...) and the machine on the other end of each tap interface uses IP address 10.0.0.2.  So we have:
-
-tap0 <-> virtual machine #0 (10.0.0.2)
-tap1 <-> virtual machine #1 (10.0.0.2)
-tap2 <-> virtual machine #2 (10.0.0.2)
-
-Because the virtual machines all use the same static IP address, they cannot communicate with each other or the outside world (they fight over ARP).  We'd like to NAT the tap interfaces:
-
-tap0 <-> virtual machine #0 (10.0.0.2 NAT to 192.168.0.2)
-tap1 <-> virtual machine #1 (10.0.0.2 NAT to 192.168.0.3)
-tap2 <-> virtual machine #2 (10.0.0.2 NAT to 192.168.0.4)
-
-This would allow the virtual machines to communicate even though each believes it is 10.0.0.2.
-
-How can this be done using iptables and friends?
-
-Thanks,
-Stefan
-
-Scanned by Check Point Total Security Gateway.
