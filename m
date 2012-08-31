@@ -1,77 +1,112 @@
-From: John Basila <jbasila@checkpoint.com>
-Subject: RE: Adding support for Stateless Static NAT for TAP devices
-Date: Thu, 30 Aug 2012 16:32:33 +0300
-Message-ID: <7F9A6D26EB51614FBF9F81C0DA4CFEC8026E2BC56327@il-ex01.ad.checkpoint.com>
-References: <7F9A6D26EB51614FBF9F81C0DA4CFEC8026E2BC561E5@il-ex01.ad.checkpoint.com>
- <20120830091416.GD6814@stefanha-thinkpad.localdomain>
- <7F9A6D26EB51614FBF9F81C0DA4CFEC8026E2BC56295@il-ex01.ad.checkpoint.com>
- <CAJSP0QWnZ6Nrf4q6QnU9avkNnEy8d7_CP8pbcU2QQhMJq-eeLg@mail.gmail.com>
- <7F9A6D26EB51614FBF9F81C0DA4CFEC8026E2BC562D6@il-ex01.ad.checkpoint.com>
- <503F5EAD.3070008@conversis.de>
+From: kay <kay.diam@gmail.com>
+Subject: resets received for embryonic SYN_RECV sockets
+Date: Fri, 31 Aug 2012 13:08:39 +0400
+Message-ID: <CANaOhebiw9N1kisgAb2dAUjQFj-s_W_XhJjCDek3_7b8QMScDg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/mixed; boundary=e89a8ff1c71c8fed4c04c88c24a0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <503F5EAD.3070008@conversis.de>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to:content-type;
+        bh=PpiRp2OJj9x2h1DywqbLaW3//KohAj1TAtOkYS8O1xM=;
+        b=MQDIFAjYUOYxV+fFIGV4RBDiY1BhFuR4HWq2ERycLb7BHCF33TaWvOfvrA5/tPdvE3
+         EOpKk2IFReSpx3AWzqInaGbRwgwdYq+E7d0/CbR51EJfOPiH34vWyObBjy8XGjlQ6ayJ
+         ptKNHVOb+3CyNkzmYHrOY1lABKqH7nbc6DpGAgoatzmubdZ5hJnEANv5qBvPJ57JZNC7
+         iIRLgHbmw9XHk8acfQ/lrrqTI0foaPOd+0LjU6XSKqP1xl6YHuQ1db1gpuSjE9wlbxEL
+         qKPXWh0u1a+2wgwMT/Z1/J1FdXmZFGMtupbss8lx8Q95d7i3zijgFqv8GvgSajnNkI2r
+         8foA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Dennis Jacobfeuerborn <dennisml@conversis.de>
-Cc: Stefan Hajnoczi <stefanha@gmail.com>, "qemu-devel@nongnu.org" <qemu-devel@nongnu.org>, Anthony Liguori <aliguori@us.ibm.com>, Rusty Russell <rusty@rustcorp.com.au>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-I have a setup that requires to run virtual machines using QEMU. All these machines will be executed from the same snapshot thus giving them the save same state when they come to life, this is why they all will have the same source IP, the only difference between them is that each one is connected to a different TAP device.
+--e89a8ff1c71c8fed4c04c88c24a0
+Content-Type: text/plain; charset=ISO-8859-1
 
-I have tried using iptables to NAT the connections based on the TAP interface and make it change the source IP of the connection to an IP that upon return will go back to the correct TAP device, but alas, the problem of state fullness of the iptables caused the problem with the second instance of the virtual machine that sent the same packet that was did pass the rule base as it was matched on an already opened connection that thus was NATed to the first virtual machine source IP.
+Dear community,
 
------Original Message-----
-From: Dennis Jacobfeuerborn [mailto:dennisml@conversis.de] 
-Sent: Thursday, August 30, 2012 3:38 PM
-To: John Basila
-Cc: Stefan Hajnoczi; qemu-devel@nongnu.org; Anthony Liguori; Rusty Russell; netfilter@vger.kernel.org
-Subject: Re: Adding support for Stateless Static NAT for TAP devices
+I'm new in network stack optimization and I have rather big subj value
+on back end servers:
 
-On 08/30/2012 12:58 PM, John Basila wrote:
-> Please allow me to add a few comments:
-> 
-> The problem here is related to the fact that QEMU is executed with multiple instances and all instances start from the same snapshot, thus if they all send a UDP DNS query, they will all create a packet - for example - 10.0.0.2:2345 -> DNSERVER:53. The source port is the same. The first packet that reaches the ipfilter will result in going over the iptables rules and get NATed properly, the second QEMU instance that will send the same UDP packet will not get to run over the iptables rules as the ipfilter already saw this packet and the packet should be "RELATED" to a different connection and thus will cause the response packets of machine B to be received via machine A as the NAT rule will de-NAT the return packet to to the relevant connection which is related to machine A.
-> 
-> John
-> 
-> -----Original Message-----
-> From: Stefan Hajnoczi [mailto:stefanha@gmail.com]
-> Sent: Thursday, August 30, 2012 1:44 PM
-> To: John Basila
-> Cc: qemu-devel@nongnu.org; Anthony Liguori; Rusty Russell; 
-> netfilter@vger.kernel.org
-> Subject: Re: Adding support for Stateless Static NAT for TAP devices
-> 
-> On Thu, Aug 30, 2012 at 10:27 AM, John Basila <jbasila@checkpoint.com> wrote:
->> I have tried NAT and this is why I came up with this feature.
-> 
-> QEMU's net/tap.c is the wrong place to add NAT code.  The point of tap is to use the host network stack.  If you want userspace networking, use -netdev user or -netdev socket.
-> 
-> Please look into iptables more.  I have CCed the netfilter mailing list.  The question is:
-> 
-> The host has several tap interfaces (tap0, tap1, ...) and the machine on the other end of each tap interface uses IP address 10.0.0.2.  So we have:
-> 
-> tap0 <-> virtual machine #0 (10.0.0.2)
-> tap1 <-> virtual machine #1 (10.0.0.2)
-> tap2 <-> virtual machine #2 (10.0.0.2)
-> 
-> Because the virtual machines all use the same static IP address, they cannot communicate with each other or the outside world (they fight over ARP).  We'd like to NAT the tap interfaces:
-> 
-> tap0 <-> virtual machine #0 (10.0.0.2 NAT to 192.168.0.2)
-> tap1 <-> virtual machine #1 (10.0.0.2 NAT to 192.168.0.3)
-> tap2 <-> virtual machine #2 (10.0.0.2 NAT to 192.168.0.4)
-> 
-> This would allow the virtual machines to communicate even though each believes it is 10.0.0.2.
-> 
-> How can this be done using iptables and friends?
+2479229 resets received for embryonic SYN_RECV sockets
 
-Why do the systems have the same IP? That seems like a broken network config to me.
+I've googled for it but didn't find exact explanation of this value.
+How can I catch it using tcpdump and how can I avoid it?
 
-Regards,
-  Dennis
+sysctl custom values:
+net.ipv4.tcp_timestamps = 1
+net.ipv4.tcp_window_scaling = 1
+net.ipv4.tcp_fack = 1
+net.ipv4.tcp_sack = 1
+net.ipv4.ip_forward = 0
+net.ipv4.conf.default.rp_filter = 1
+net.ipv4.conf.default.accept_source_route = 0
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.tcp_tw_recycle = 1
 
+I have attached netstat -s. CentOS 6.2, kvm virtual machine.
 
-Scanned by Check Point Total Security Gateway.
+P.S. Also I use ipvs + keepalived.
+
+--e89a8ff1c71c8fed4c04c88c24a0
+Content-Type: application/octet-stream; name=netstat
+Content-Disposition: attachment; filename=netstat
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_h6j241oz0
+
+SXA6CiAgICAzMTQ0MDI4NDg0IHRvdGFsIHBhY2tldHMgcmVjZWl2ZWQKICAgIDEwMzQyOSB3aXRo
+IGludmFsaWQgYWRkcmVzc2VzCiAgICAwIGZvcndhcmRlZAogICAgMCBpbmNvbWluZyBwYWNrZXRz
+IGRpc2NhcmRlZAogICAgMzAwMzAwNDM2OCBpbmNvbWluZyBwYWNrZXRzIGRlbGl2ZXJlZAogICAg
+MzI0MjMxMzc4MyByZXF1ZXN0cyBzZW50IG91dApJY21wOgogICAgMTM2NDYxNiBJQ01QIG1lc3Nh
+Z2VzIHJlY2VpdmVkCiAgICAyODYgaW5wdXQgSUNNUCBtZXNzYWdlIGZhaWxlZC4KICAgIElDTVAg
+aW5wdXQgaGlzdG9ncmFtOgogICAgICAgIGRlc3RpbmF0aW9uIHVucmVhY2hhYmxlOiA3NDUxMDcK
+ICAgICAgICB0aW1lb3V0IGluIHRyYW5zaXQ6IDYKICAgICAgICByZWRpcmVjdHM6IDkKICAgICAg
+ICBlY2hvIHJlcXVlc3RzOiA2MTk0OTQKICAgIDYyMjgzNyBJQ01QIG1lc3NhZ2VzIHNlbnQKICAg
+IDAgSUNNUCBtZXNzYWdlcyBmYWlsZWQKICAgIElDTVAgb3V0cHV0IGhpc3RvZ3JhbToKICAgICAg
+ICBkZXN0aW5hdGlvbiB1bnJlYWNoYWJsZTogMzM0MwogICAgICAgIGVjaG8gcmVwbGllczogNjE5
+NDk0CkljbXBNc2c6CiAgICAgICAgSW5UeXBlMzogNzQ1MTA3CiAgICAgICAgSW5UeXBlNTogOQog
+ICAgICAgIEluVHlwZTg6IDYxOTQ5NAogICAgICAgIEluVHlwZTExOiA2CiAgICAgICAgT3V0VHlw
+ZTA6IDYxOTQ5NAogICAgICAgIE91dFR5cGUzOiAzMzQzClRjcDoKICAgIDU5ODQxMjY5MSBhY3Rp
+dmUgY29ubmVjdGlvbnMgb3BlbmluZ3MKICAgIDUyNjQzODIxMSBwYXNzaXZlIGNvbm5lY3Rpb24g
+b3BlbmluZ3MKICAgIDI3MTg2NDYgZmFpbGVkIGNvbm5lY3Rpb24gYXR0ZW1wdHMKICAgIDY4ODQ0
+OCBjb25uZWN0aW9uIHJlc2V0cyByZWNlaXZlZAogICAgMTM4IGNvbm5lY3Rpb25zIGVzdGFibGlz
+aGVkCiAgICAyNDQ4NDExMDUxIHNlZ21lbnRzIHJlY2VpdmVkCiAgICAyNjg3NTg1NDg4IHNlZ21l
+bnRzIHNlbmQgb3V0CiAgICAyNTE5NjkzIHNlZ21lbnRzIHJldHJhbnNtaXRlZAogICAgMCBiYWQg
+c2VnbWVudHMgcmVjZWl2ZWQuCiAgICAxNTg2NjQgcmVzZXRzIHNlbnQKVWRwOgogICAgNTUxOTQ2
+MDI2IHBhY2tldHMgcmVjZWl2ZWQKICAgIDAgcGFja2V0cyB0byB1bmtub3duIHBvcnQgcmVjZWl2
+ZWQuCiAgICAwIHBhY2tldCByZWNlaXZlIGVycm9ycwogICAgNTUxOTUwNDE5IHBhY2tldHMgc2Vu
+dApUY3BFeHQ6CiAgICAyNTExIGludmFsaWQgU1lOIGNvb2tpZXMgcmVjZWl2ZWQKICAgIDI0Nzky
+NDEgcmVzZXRzIHJlY2VpdmVkIGZvciBlbWJyeW9uaWMgU1lOX1JFQ1Ygc29ja2V0cwogICAgMzQg
+SUNNUCBwYWNrZXRzIGRyb3BwZWQgYmVjYXVzZSB0aGV5IHdlcmUgb3V0LW9mLXdpbmRvdwogICAg
+MzIgSUNNUCBwYWNrZXRzIGRyb3BwZWQgYmVjYXVzZSBzb2NrZXQgd2FzIGxvY2tlZAogICAgMTE1
+NDI3ODkgVENQIHNvY2tldHMgZmluaXNoZWQgdGltZSB3YWl0IGluIGZhc3QgdGltZXIKICAgIDM5
+OTU1MCB0aW1lIHdhaXQgc29ja2V0cyByZWN5Y2xlZCBieSB0aW1lIHN0YW1wCiAgICA1MTc5NzYy
+MTIgVENQIHNvY2tldHMgZmluaXNoZWQgdGltZSB3YWl0IGluIHNsb3cgdGltZXIKICAgIDE2ODQy
+IHBhc3NpdmUgY29ubmVjdGlvbnMgcmVqZWN0ZWQgYmVjYXVzZSBvZiB0aW1lIHN0YW1wCiAgICA4
+NzkgcGFja2V0cyByZWplY3RzIGluIGVzdGFibGlzaGVkIGNvbm5lY3Rpb25zIGJlY2F1c2Ugb2Yg
+dGltZXN0YW1wCiAgICAxNDMxMDA1MzMgZGVsYXllZCBhY2tzIHNlbnQKICAgIDIzNDE0IGRlbGF5
+ZWQgYWNrcyBmdXJ0aGVyIGRlbGF5ZWQgYmVjYXVzZSBvZiBsb2NrZWQgc29ja2V0CiAgICBRdWlj
+ayBhY2sgbW9kZSB3YXMgYWN0aXZhdGVkIDUyMDAgdGltZXMKICAgIDEyMDE3OTE5MiBwYWNrZXRz
+IGRpcmVjdGx5IHF1ZXVlZCB0byByZWN2bXNnIHByZXF1ZXVlLgogICAgMTUzMzA2OTYgcGFja2V0
+cyBkaXJlY3RseSByZWNlaXZlZCBmcm9tIGJhY2tsb2cKICAgIDI1NzYwMjE1NiBwYWNrZXRzIGRp
+cmVjdGx5IHJlY2VpdmVkIGZyb20gcHJlcXVldWUKICAgIDc3OTEwNTE5MiBwYWNrZXRzIGhlYWRl
+ciBwcmVkaWN0ZWQKICAgIDIyMzkzNSBwYWNrZXRzIGhlYWRlciBwcmVkaWN0ZWQgYW5kIGRpcmVj
+dGx5IHF1ZXVlZCB0byB1c2VyCiAgICAyMzQyNTEwNjExIGFja25vd2xlZGdtZW50cyBub3QgY29u
+dGFpbmluZyBkYXRhIHJlY2VpdmVkCiAgICA1MjYwMzMwNDEgcHJlZGljdGVkIGFja25vd2xlZGdt
+ZW50cwogICAgNDE3MjEgdGltZXMgcmVjb3ZlcmVkIGZyb20gcGFja2V0IGxvc3MgZHVlIHRvIFNB
+Q0sgZGF0YQogICAgRGV0ZWN0ZWQgcmVvcmRlcmluZyAxOSB0aW1lcyB1c2luZyBGQUNLCiAgICBE
+ZXRlY3RlZCByZW9yZGVyaW5nIDg2NSB0aW1lcyB1c2luZyBTQUNLCiAgICBEZXRlY3RlZCByZW9y
+ZGVyaW5nIDEgdGltZXMgdXNpbmcgdGltZSBzdGFtcAogICAgMiBjb25nZXN0aW9uIHdpbmRvd3Mg
+ZnVsbHkgcmVjb3ZlcmVkCiAgICA0IGNvbmdlc3Rpb24gd2luZG93cyBwYXJ0aWFsbHkgcmVjb3Zl
+cmVkIHVzaW5nIEhvZSBoZXVyaXN0aWMKICAgIFRDUERTQUNLVW5kbzogNQogICAgNjY1OSBjb25n
+ZXN0aW9uIHdpbmRvd3MgcmVjb3ZlcmVkIGFmdGVyIHBhcnRpYWwgYWNrCiAgICAxODE0NzAgVENQ
+IGRhdGEgbG9zcyBldmVudHMKICAgIDEwOTQyIHRpbWVvdXRzIGFmdGVyIFNBQ0sgcmVjb3ZlcnkK
+ICAgIDQ3NjQgdGltZW91dHMgaW4gbG9zcyBzdGF0ZQogICAgMTM3Mzk3IGZhc3QgcmV0cmFuc21p
+dHMKICAgIDE0MjcxIGZvcndhcmQgcmV0cmFuc21pdHMKICAgIDc3NzUzMSByZXRyYW5zbWl0cyBp
+biBzbG93IHN0YXJ0CiAgICA5NDg3MDEgb3RoZXIgVENQIHRpbWVvdXRzCiAgICAyMDMzIHNhY2sg
+cmV0cmFuc21pdHMgZmFpbGVkCiAgICA1MjAxIERTQUNLcyBzZW50IGZvciBvbGQgcGFja2V0cwog
+ICAgMzYxNyBEU0FDS3MgcmVjZWl2ZWQKICAgIDcgRFNBQ0tzIGZvciBvdXQgb2Ygb3JkZXIgcGFj
+a2V0cyByZWNlaXZlZAogICAgMTM5ODU3IGNvbm5lY3Rpb25zIHJlc2V0IGR1ZSB0byB1bmV4cGVj
+dGVkIGRhdGEKICAgIDQzMzk4OCBjb25uZWN0aW9ucyByZXNldCBkdWUgdG8gZWFybHkgdXNlciBj
+bG9zZQogICAgODI0MjYgY29ubmVjdGlvbnMgYWJvcnRlZCBkdWUgdG8gdGltZW91dApJcEV4dDoK
+ICAgIEluTWNhc3RQa3RzOiAxNDEzNTY3CiAgICBJbkJjYXN0UGt0czogMjM0NDUwCg==
+--e89a8ff1c71c8fed4c04c88c24a0--
