@@ -1,112 +1,53 @@
-From: kay <kay.diam@gmail.com>
-Subject: resets received for embryonic SYN_RECV sockets
-Date: Fri, 31 Aug 2012 13:08:39 +0400
-Message-ID: <CANaOhebiw9N1kisgAb2dAUjQFj-s_W_XhJjCDek3_7b8QMScDg@mail.gmail.com>
+From: <mabra@manfbraun.de>
+Subject: IPTABLES:Let external address appear as an internal address
+Date: Fri, 31 Aug 2012 13:11:16 +0200
+Message-ID: <!&!AAAAAAAAAAAYAAAAAAAAAOosgHnoPqdNlUO2DUrQ/DfCgAAAEAAAACcGGLxSfBNPu0OwD65yae8BAAAAAA==@manfbraun.de>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary=e89a8ff1c71c8fed4c04c88c24a0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:from:date:message-id:subject:to:content-type;
-        bh=PpiRp2OJj9x2h1DywqbLaW3//KohAj1TAtOkYS8O1xM=;
-        b=MQDIFAjYUOYxV+fFIGV4RBDiY1BhFuR4HWq2ERycLb7BHCF33TaWvOfvrA5/tPdvE3
-         EOpKk2IFReSpx3AWzqInaGbRwgwdYq+E7d0/CbR51EJfOPiH34vWyObBjy8XGjlQ6ayJ
-         ptKNHVOb+3CyNkzmYHrOY1lABKqH7nbc6DpGAgoatzmubdZ5hJnEANv5qBvPJ57JZNC7
-         iIRLgHbmw9XHk8acfQ/lrrqTI0foaPOd+0LjU6XSKqP1xl6YHuQ1db1gpuSjE9wlbxEL
-         qKPXWh0u1a+2wgwMT/Z1/J1FdXmZFGMtupbss8lx8Q95d7i3zijgFqv8GvgSajnNkI2r
-         8foA==
+Content-Language: de
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
---e89a8ff1c71c8fed4c04c88c24a0
-Content-Type: text/plain; charset=ISO-8859-1
+Hi All !
 
-Dear community,
+Just this moment, I am completely "destroyed", I am working on iptables
+rules and cannot make it work.
 
-I'm new in network stack optimization and I have rather big subj value
-on back end servers:
+[usining debian squeeze, iptables, monit monitoring program].
+[eth1: internet==$EXTIF, eth0: local==$INTIF]
+[192.168.6.254 ist the LAN port of the firewall at eth0]
 
-2479229 resets received for embryonic SYN_RECV sockets
+The problem is this: The monit daemon is configured to accepts
+packtes on the internal address only and I think, this is right.
+Usually nearly nothing internal should accepts packets from outside.
+The daemon cannot be bind to a specific interface, but just by
+ip address and mask. Internally, everything works fine [http requests
+from inside 192.168.26.0/24 are working]. To allow to redirect packtes
+from outside to this daemon, I wrote this two filters, where the
+incoming external trafiic should use port 9995:
 
-I've googled for it but didn't find exact explanation of this value.
-How can I catch it using tcpdump and how can I avoid it?
+$IPTABLES -t nat -A PREROUTING -p tcp -d $EXTADDR --dport 9995 \
+-j DNAT --to-destination 192.168.6.254:2812
 
-sysctl custom values:
-net.ipv4.tcp_timestamps = 1
-net.ipv4.tcp_window_scaling = 1
-net.ipv4.tcp_fack = 1
-net.ipv4.tcp_sack = 1
-net.ipv4.ip_forward = 0
-net.ipv4.conf.default.rp_filter = 1
-net.ipv4.conf.default.accept_source_route = 0
-net.ipv4.tcp_tw_reuse = 1
-net.ipv4.tcp_tw_recycle = 1
+$IPTABLES -t nat -A POSTROUTING -p tcp -d 192.168.6.254 --dport 2812 \
+-j SNAT --to-source 192.168.6.254:3000
 
-I have attached netstat -s. CentOS 6.2, kvm virtual machine.
+The deamon gets accessed, but denies the request, because it's seen
+source address is not from the LAN, but the external client ip address.
+So my SNAT does not seem to work.
 
-P.S. Also I use ipvs + keepalived.
+I used the same pair of rules to redirect the traffic to another LAN
+machine. Making a tcpdump there shows, that it works. That
+tcpdump shows 192.168.6.254:3000 as the source address.
 
---e89a8ff1c71c8fed4c04c88c24a0
-Content-Type: application/octet-stream; name=netstat
-Content-Disposition: attachment; filename=netstat
-Content-Transfer-Encoding: base64
-X-Attachment-Id: f_h6j241oz0
+Could someone probably give me some help??
 
-SXA6CiAgICAzMTQ0MDI4NDg0IHRvdGFsIHBhY2tldHMgcmVjZWl2ZWQKICAgIDEwMzQyOSB3aXRo
-IGludmFsaWQgYWRkcmVzc2VzCiAgICAwIGZvcndhcmRlZAogICAgMCBpbmNvbWluZyBwYWNrZXRz
-IGRpc2NhcmRlZAogICAgMzAwMzAwNDM2OCBpbmNvbWluZyBwYWNrZXRzIGRlbGl2ZXJlZAogICAg
-MzI0MjMxMzc4MyByZXF1ZXN0cyBzZW50IG91dApJY21wOgogICAgMTM2NDYxNiBJQ01QIG1lc3Nh
-Z2VzIHJlY2VpdmVkCiAgICAyODYgaW5wdXQgSUNNUCBtZXNzYWdlIGZhaWxlZC4KICAgIElDTVAg
-aW5wdXQgaGlzdG9ncmFtOgogICAgICAgIGRlc3RpbmF0aW9uIHVucmVhY2hhYmxlOiA3NDUxMDcK
-ICAgICAgICB0aW1lb3V0IGluIHRyYW5zaXQ6IDYKICAgICAgICByZWRpcmVjdHM6IDkKICAgICAg
-ICBlY2hvIHJlcXVlc3RzOiA2MTk0OTQKICAgIDYyMjgzNyBJQ01QIG1lc3NhZ2VzIHNlbnQKICAg
-IDAgSUNNUCBtZXNzYWdlcyBmYWlsZWQKICAgIElDTVAgb3V0cHV0IGhpc3RvZ3JhbToKICAgICAg
-ICBkZXN0aW5hdGlvbiB1bnJlYWNoYWJsZTogMzM0MwogICAgICAgIGVjaG8gcmVwbGllczogNjE5
-NDk0CkljbXBNc2c6CiAgICAgICAgSW5UeXBlMzogNzQ1MTA3CiAgICAgICAgSW5UeXBlNTogOQog
-ICAgICAgIEluVHlwZTg6IDYxOTQ5NAogICAgICAgIEluVHlwZTExOiA2CiAgICAgICAgT3V0VHlw
-ZTA6IDYxOTQ5NAogICAgICAgIE91dFR5cGUzOiAzMzQzClRjcDoKICAgIDU5ODQxMjY5MSBhY3Rp
-dmUgY29ubmVjdGlvbnMgb3BlbmluZ3MKICAgIDUyNjQzODIxMSBwYXNzaXZlIGNvbm5lY3Rpb24g
-b3BlbmluZ3MKICAgIDI3MTg2NDYgZmFpbGVkIGNvbm5lY3Rpb24gYXR0ZW1wdHMKICAgIDY4ODQ0
-OCBjb25uZWN0aW9uIHJlc2V0cyByZWNlaXZlZAogICAgMTM4IGNvbm5lY3Rpb25zIGVzdGFibGlz
-aGVkCiAgICAyNDQ4NDExMDUxIHNlZ21lbnRzIHJlY2VpdmVkCiAgICAyNjg3NTg1NDg4IHNlZ21l
-bnRzIHNlbmQgb3V0CiAgICAyNTE5NjkzIHNlZ21lbnRzIHJldHJhbnNtaXRlZAogICAgMCBiYWQg
-c2VnbWVudHMgcmVjZWl2ZWQuCiAgICAxNTg2NjQgcmVzZXRzIHNlbnQKVWRwOgogICAgNTUxOTQ2
-MDI2IHBhY2tldHMgcmVjZWl2ZWQKICAgIDAgcGFja2V0cyB0byB1bmtub3duIHBvcnQgcmVjZWl2
-ZWQuCiAgICAwIHBhY2tldCByZWNlaXZlIGVycm9ycwogICAgNTUxOTUwNDE5IHBhY2tldHMgc2Vu
-dApUY3BFeHQ6CiAgICAyNTExIGludmFsaWQgU1lOIGNvb2tpZXMgcmVjZWl2ZWQKICAgIDI0Nzky
-NDEgcmVzZXRzIHJlY2VpdmVkIGZvciBlbWJyeW9uaWMgU1lOX1JFQ1Ygc29ja2V0cwogICAgMzQg
-SUNNUCBwYWNrZXRzIGRyb3BwZWQgYmVjYXVzZSB0aGV5IHdlcmUgb3V0LW9mLXdpbmRvdwogICAg
-MzIgSUNNUCBwYWNrZXRzIGRyb3BwZWQgYmVjYXVzZSBzb2NrZXQgd2FzIGxvY2tlZAogICAgMTE1
-NDI3ODkgVENQIHNvY2tldHMgZmluaXNoZWQgdGltZSB3YWl0IGluIGZhc3QgdGltZXIKICAgIDM5
-OTU1MCB0aW1lIHdhaXQgc29ja2V0cyByZWN5Y2xlZCBieSB0aW1lIHN0YW1wCiAgICA1MTc5NzYy
-MTIgVENQIHNvY2tldHMgZmluaXNoZWQgdGltZSB3YWl0IGluIHNsb3cgdGltZXIKICAgIDE2ODQy
-IHBhc3NpdmUgY29ubmVjdGlvbnMgcmVqZWN0ZWQgYmVjYXVzZSBvZiB0aW1lIHN0YW1wCiAgICA4
-NzkgcGFja2V0cyByZWplY3RzIGluIGVzdGFibGlzaGVkIGNvbm5lY3Rpb25zIGJlY2F1c2Ugb2Yg
-dGltZXN0YW1wCiAgICAxNDMxMDA1MzMgZGVsYXllZCBhY2tzIHNlbnQKICAgIDIzNDE0IGRlbGF5
-ZWQgYWNrcyBmdXJ0aGVyIGRlbGF5ZWQgYmVjYXVzZSBvZiBsb2NrZWQgc29ja2V0CiAgICBRdWlj
-ayBhY2sgbW9kZSB3YXMgYWN0aXZhdGVkIDUyMDAgdGltZXMKICAgIDEyMDE3OTE5MiBwYWNrZXRz
-IGRpcmVjdGx5IHF1ZXVlZCB0byByZWN2bXNnIHByZXF1ZXVlLgogICAgMTUzMzA2OTYgcGFja2V0
-cyBkaXJlY3RseSByZWNlaXZlZCBmcm9tIGJhY2tsb2cKICAgIDI1NzYwMjE1NiBwYWNrZXRzIGRp
-cmVjdGx5IHJlY2VpdmVkIGZyb20gcHJlcXVldWUKICAgIDc3OTEwNTE5MiBwYWNrZXRzIGhlYWRl
-ciBwcmVkaWN0ZWQKICAgIDIyMzkzNSBwYWNrZXRzIGhlYWRlciBwcmVkaWN0ZWQgYW5kIGRpcmVj
-dGx5IHF1ZXVlZCB0byB1c2VyCiAgICAyMzQyNTEwNjExIGFja25vd2xlZGdtZW50cyBub3QgY29u
-dGFpbmluZyBkYXRhIHJlY2VpdmVkCiAgICA1MjYwMzMwNDEgcHJlZGljdGVkIGFja25vd2xlZGdt
-ZW50cwogICAgNDE3MjEgdGltZXMgcmVjb3ZlcmVkIGZyb20gcGFja2V0IGxvc3MgZHVlIHRvIFNB
-Q0sgZGF0YQogICAgRGV0ZWN0ZWQgcmVvcmRlcmluZyAxOSB0aW1lcyB1c2luZyBGQUNLCiAgICBE
-ZXRlY3RlZCByZW9yZGVyaW5nIDg2NSB0aW1lcyB1c2luZyBTQUNLCiAgICBEZXRlY3RlZCByZW9y
-ZGVyaW5nIDEgdGltZXMgdXNpbmcgdGltZSBzdGFtcAogICAgMiBjb25nZXN0aW9uIHdpbmRvd3Mg
-ZnVsbHkgcmVjb3ZlcmVkCiAgICA0IGNvbmdlc3Rpb24gd2luZG93cyBwYXJ0aWFsbHkgcmVjb3Zl
-cmVkIHVzaW5nIEhvZSBoZXVyaXN0aWMKICAgIFRDUERTQUNLVW5kbzogNQogICAgNjY1OSBjb25n
-ZXN0aW9uIHdpbmRvd3MgcmVjb3ZlcmVkIGFmdGVyIHBhcnRpYWwgYWNrCiAgICAxODE0NzAgVENQ
-IGRhdGEgbG9zcyBldmVudHMKICAgIDEwOTQyIHRpbWVvdXRzIGFmdGVyIFNBQ0sgcmVjb3ZlcnkK
-ICAgIDQ3NjQgdGltZW91dHMgaW4gbG9zcyBzdGF0ZQogICAgMTM3Mzk3IGZhc3QgcmV0cmFuc21p
-dHMKICAgIDE0MjcxIGZvcndhcmQgcmV0cmFuc21pdHMKICAgIDc3NzUzMSByZXRyYW5zbWl0cyBp
-biBzbG93IHN0YXJ0CiAgICA5NDg3MDEgb3RoZXIgVENQIHRpbWVvdXRzCiAgICAyMDMzIHNhY2sg
-cmV0cmFuc21pdHMgZmFpbGVkCiAgICA1MjAxIERTQUNLcyBzZW50IGZvciBvbGQgcGFja2V0cwog
-ICAgMzYxNyBEU0FDS3MgcmVjZWl2ZWQKICAgIDcgRFNBQ0tzIGZvciBvdXQgb2Ygb3JkZXIgcGFj
-a2V0cyByZWNlaXZlZAogICAgMTM5ODU3IGNvbm5lY3Rpb25zIHJlc2V0IGR1ZSB0byB1bmV4cGVj
-dGVkIGRhdGEKICAgIDQzMzk4OCBjb25uZWN0aW9ucyByZXNldCBkdWUgdG8gZWFybHkgdXNlciBj
-bG9zZQogICAgODI0MjYgY29ubmVjdGlvbnMgYWJvcnRlZCBkdWUgdG8gdGltZW91dApJcEV4dDoK
-ICAgIEluTWNhc3RQa3RzOiAxNDEzNTY3CiAgICBJbkJjYXN0UGt0czogMjM0NDUwCg==
---e89a8ff1c71c8fed4c04c88c24a0--
+Thanks anyway,
+++mabra
+
+
+
+
