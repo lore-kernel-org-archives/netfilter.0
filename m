@@ -1,134 +1,47 @@
-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: Using Netfilter with high bandwidth
-Date: Mon, 03 Sep 2012 09:56:20 +0200
-Message-ID: <1346658980.3069.584.camel@localhost>
-References: <56bebadff4785d716c997d7aba22b9dd@linuxwall.info>
-	 <alpine.LNX.2.01.1209010028550.27474@frira.zrqbmnf.qr>
+From: Cong Wang <xiyou.wangcong@gmail.com>
+Subject: Re: [Patch net-next] netfilter: remove xt_NOTRACK
+Date: Mon, 3 Sep 2012 15:57:53 +0800
+Message-ID: <CAM_iQpU2GPgHP1BVfL_JL6dadjHeiU08en+UpAicjmH3H0QX5Q@mail.gmail.com>
+References: <1345962219-2999-1-git-send-email-amwang@redhat.com>
+	<CAHo-Ooz0SDBZTvBKRR-bZs0wHk25bSLaYgUYF0njUgxY8iGWpA@mail.gmail.com>
+	<alpine.LNX.2.01.1208262201520.32152@frira.zrqbmnf.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1209010028550.27474@frira.zrqbmnf.qr>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type:content-transfer-encoding;
+        bh=os6a4DgwgFV5dsPID8X7i/8RvnpgdmCrKFAz2gx0CnE=;
+        b=EFTYFwFqALbtr2rRqqFp8gPJqzyq9iWZw9m/yAim207+MccLLmdmv/X+MeizqrVIl9
+         cNtFb2Cna0NdoMXDL9Ue87lOr4o4u+1jyzMBsh5iIrJD38nVZJ4aL3hUjaXaZBI3ZgmM
+         GS7IfXccU4u/6KtLsn90h3s8r5kpKuNcx6PBFObFOc9K2CvidM0H7R1Zls4WVmqnIgEH
+         x98hX+LT14GaU1ZVVNrpfoOpUNmCzkFKOgZmjI70QG/m2ipt+lLdj5v1ws+lLiLUqvcD
+         E6BU/kQqsfT+NlqRFyKm79O6pw1gq11ZUhOpkNXnCKMR6S8s2Qlp10fVTaeknwR5ZaAK
+         dewg==
+In-Reply-To: <alpine.LNX.2.01.1208262201520.32152@frira.zrqbmnf.qr>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: Jan Engelhardt <jengelh@inai.de>
-Cc: Julien Vehent <julien@linuxwall.info>, netfilter <netfilter@vger.kernel.org>
+Cc: =?UTF-8?Q?Maciej_=C5=BBenczykowski?= <zenczykowski@gmail.com>, Cong Wang <amwang@redhat.com>, netfilter-devel@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter@vger.kernel.org
 
-On Sat, 2012-09-01 at 00:39 +0200, Jan Engelhardt wrote:
-> On Friday 2012-08-31 21:38, Julien Vehent wrote:
-> 
-> > Hi All,
-> >
-> > At work, we're building a new office, and we are considering building our own
-> > edge firewalls instead of giving bucket loads of money to the big guys. We're a
-> > Linux shop, so it makes sense to build those new firewall/vpn boxes using
-> > Linux. But we are concerned about performances and complexity. I make a simple
-> > diagram of what we want below. We would have a point to point WAN connection
-> > between the two networks, and then an uplink on each side.
-> >
-> > So I figured I would ask the Netfilter heavy users:
-> > * How much traffic can we expect to route to a decently configured Firewall ?
-> > Can we target 10GBPS with good NICs/CPUs and proper kernel tuning, or is that
-> > completely out of range ?
-
-I did a lot of 10Gbit/s routing testing back in 2009:
-http://vger.kernel.org/netconf2009_slides/LinuxCon2009_JesperDangaardBrouer_final.pdf
-
-Which showed that Intels Nehalem microarchitecture, was capable of doing
-10Gbit bi-directional routing on Linux.  Combined with multiqueue NICs,
-where the Intel 10G NIC were the winning NIC.  (Disclaimer, this testing
-were without iptables rules)
-
-Notice this was 2009, based on the first Nehalem arch.  I know that
-Sandy bridge will improve performance (due to better handling of
-outstanding PCI-transactions) but I have not tested the details.
-
-I'm also eager to test the new Intel CPUs E5-26xx, which have something
-called  DDIO (Direct Data I/O).  Where they basically allow the NIC to
-map data directly into L3-cache:
- http://www.intel.in/content/www/in/en/io/direct-data-i-o.html
-
-
-> > * If I recall correctly, some ISPs are using Linux/Netfilter boxes on their
-> > network. 
-
-I can confirm that I used to work for an ISP, that still have
-Linux/Netfilter boxes, that route and police all their customers
-Internet traffic.  Just before I left, we replaced all machines with
-Nehalem based machines to prepare for 10G upgrade, but I only a single
-machine was deployed with 10Gbit/s NICs while I was still there.
-
-
-> Do we know the limits of such systems ?
-
-I did some lab tests on 10Gbit/s routing on the new hardware, with
-approx 150.000 iptables rules and a corresponding HTB (bandwidth
-shaping) tree.  We ran into some limits around 4.5Gbit/s, but that was
-due to the HTB tree, because it causes serialization the traffic control
-layer when transmitting/queueing packets.
-
-Notice that you really have to careful how you structure your ruleset,
-if you want this many rules:
-http://www.slideshare.net/brouer/netfilter-making-large-iptables-rulesets-scale
-
-
-> > * Can we consider conntrack and conntrack synchronization between master and
-> > slave ?
-
-Never played with contrackd.  Perhaps someone could share their
-experience in this area?
-
-
-> > * What type of network cards will handle 1GBPS and 10GBPS (eventually) ? Any
-> > recommendation on the hardware ?
+On Mon, Aug 27, 2012 at 4:04 AM, Jan Engelhardt <jengelh@inai.de> wrote=
+:
+> On Sunday 2012-08-26 12:42, Maciej =C5=BBenczykowski wrote:
 >
-> Those with multiqueue. Intel is known to have some offerings, check 
-> there (I don't have the chip numbers at hand).
+>>Sounds like the old -t raw ... -j NOTRACK is replaced by -t raw ... -=
+j
+>>CT --notrack.
+>>Will -j NOTRACK continue to work?  Could it be added as an alias to C=
+T?
+>
+> No, and, dunno. There are currently no provisions for aliasing in the
+> userspace side.
 
-The Intel chip number for the 1Gbit/s NIC is 82576 and for the 10Gbit/s
-NIC is 82599.
-
-
-
-> > * We are considering starting with a base ubuntu setup and then tuning the
-> > kernel/system to fit our needs. Some distros are more network oriented than
-> > others, is there anything that would stand out for our setup ?
-
-If you plan to manage the server yourself, I really recommend you just
-choose your favorite Linux distro on a standard server.  I have spend
-too much time on getting stuff to work on minimal semi-homebrewed
-distributions running on flash or disk-drives.
-
-And please remember to increase the number of conntrack entries.
-
-E.g.:
- /proc/sys/net/netfilter/nf_conntrack_max = 900000
-
-And to the calc: Conntrack element size 228 bytes found
-in /proc/slabinfo: "nf_conntrack <objsize> = 228 "
-
- 228 * 900000 / 10^6 = 205.2 MB
-
-You should also change the nf_conntrack hash bucket size, as just
-increasing the number of conntrack entries, will cause more collisions. 
-
-This is done either when loading the module:
-  modprobe nf_conntrack hashsize=300000
-Or runtime via /sys:
-  echo 300000 > /sys/module/nf_conntrack/parameters/hashsize
-
-
-Do you plan to write the iptables rules manually in a script, or do you
-plan to use a GUI for config?
-(I'm just asking because I don't know if there is some good free GUIs
-out-there... I once approx 2001 used fwbuilder.org, for a system that
-someone else had to admin, they seemed happy...)
-
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Sr. Network Kernel Developer at Red Hat
-  Author of http://www.iptv-analyzer.org
-  LinkedIn: http://www.linkedin.com/in/brouer
-
-
+So no objections from you, right? :)
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
+el" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
