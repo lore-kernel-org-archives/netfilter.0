@@ -1,28 +1,40 @@
-From: Didier Gaudin <didier.gaudin@gmail.com>
-Subject: Tracking/statistics forwarded packets retransmission
-Date: Tue, 4 Sep 2012 11:13:44 +0200
-Message-ID: <CACjL_QW0UDJouVF3j6Wv-L_SWidMc=b3aUeG=zLbBn8qwA6T3g@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Connection Tracking
+Date: Tue, 4 Sep 2012 13:30:16 +0200
+Message-ID: <20120904113016.GA2920@1984>
+References: <5044DC6C.1070806@cats-muvva.net>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=lZzngr4tNFx5t8Y3VqPyMCe0g3lsnZv5VqlPiPhUS98=;
-        b=NY/hI7NDdZiARLpKCGB8aOZqVLkPJfGKkeE9sdNdMtpChhLqecydbyBIYRTyazJ6JF
-         DT9vQJX2HQmspHPDoOJbnDLWb5/bCl7a1F8xWreSYKwX1STV7jsKg8RqqXkxIJrskCeX
-         rPmLLnEHyzIw35jw8Ea3TTDRqPxh0nwNMFtysQJcbUahOLI56pBHUYgAdU77RIlQNcqZ
-         IOOXP+Qcj5Q6u9PGnAgETD51aV8P+yuMAvsx5/tDhLZqLfwVU2K3vHc14WNfoU8Ri7Oj
-         adbBYQUS5AkYCHogM77jww0RlVfd41+A5kJirQs8gou1AExYk5C6rvYsb6zCDZHf4YT6
-         JZoA==
+Content-Disposition: inline
+In-Reply-To: <5044DC6C.1070806@cats-muvva.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Nicole <nicole@cats-muvva.net>
+Cc: netfilter@vger.kernel.org
 
-Hi,
-is it possible to view the number of retransmission not for local
-process (netstat -s) but for forwarded/routed packets (like
-packeshaper's network efficiency) with the conntrack ?
+On Mon, Sep 03, 2012 at 05:35:56PM +0100, Nicole wrote:
+> Hello everyone,
+> 
+> I would be grateful for some advice. Am writing a target using xtables.
+> This target saves and restores a field in the IPv{4,6} header to/from
+> the connection mark.
+> 
+> I have read Jan Engelhardt's booklet (3 July 2012), but remain unclear
+> on how to ensure that connection tracking is turned on.
+> 
+> My difficulty arises in the following code snippet:
+> 
+>         const struct nf_conn *ct;
+>         ct = nf_ct_get(skb, &ctinfo);
+>         if (ct == NULL) {
+>                 return false;
+>         }
+> 	/* use ct-> */
+> 
+> ct is always false and therefore I cannot do the save and restore.
+> 
+> Any suggestions?
 
-Didier.
+Make sure nf_conntrack and nf_conntrack_ipv4 are loaded.
