@@ -1,42 +1,28 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [Patch net-next] netfilter: remove xt_NOTRACK
-Date: Tue, 4 Sep 2012 10:58:13 +0200
-Message-ID: <20120904085813.GA24911@1984>
-References: <1345962219-2999-1-git-send-email-amwang@redhat.com>
- <CAHo-Ooz0SDBZTvBKRR-bZs0wHk25bSLaYgUYF0njUgxY8iGWpA@mail.gmail.com>
- <alpine.LNX.2.01.1208262201520.32152@frira.zrqbmnf.qr>
- <CAM_iQpU2GPgHP1BVfL_JL6dadjHeiU08en+UpAicjmH3H0QX5Q@mail.gmail.com>
- <20120903153121.GA19926@1984>
- <20120903192455.GA3527@1984>
- <CAHo-Ooy=fg23B5TU7vL95V_-W=Fq+qxHFiycWwPGYBwrfVFdzQ@mail.gmail.com>
- <alpine.LNX.2.01.1209040539040.9352@frira.zrqbmnf.qr>
- <CAHo-OoyEKNM4ZL5ucrrjWGOFu6iizNBzvsKUBbd5aVtpccG0hw@mail.gmail.com>
+From: Didier Gaudin <didier.gaudin@gmail.com>
+Subject: Tracking/statistics forwarded packets retransmission
+Date: Tue, 4 Sep 2012 11:13:44 +0200
+Message-ID: <CACjL_QW0UDJouVF3j6Wv-L_SWidMc=b3aUeG=zLbBn8qwA6T3g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAHo-OoyEKNM4ZL5ucrrjWGOFu6iizNBzvsKUBbd5aVtpccG0hw@mail.gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=lZzngr4tNFx5t8Y3VqPyMCe0g3lsnZv5VqlPiPhUS98=;
+        b=NY/hI7NDdZiARLpKCGB8aOZqVLkPJfGKkeE9sdNdMtpChhLqecydbyBIYRTyazJ6JF
+         DT9vQJX2HQmspHPDoOJbnDLWb5/bCl7a1F8xWreSYKwX1STV7jsKg8RqqXkxIJrskCeX
+         rPmLLnEHyzIw35jw8Ea3TTDRqPxh0nwNMFtysQJcbUahOLI56pBHUYgAdU77RIlQNcqZ
+         IOOXP+Qcj5Q6u9PGnAgETD51aV8P+yuMAvsx5/tDhLZqLfwVU2K3vHc14WNfoU8Ri7Oj
+         adbBYQUS5AkYCHogM77jww0RlVfd41+A5kJirQs8gou1AExYk5C6rvYsb6zCDZHf4YT6
+         JZoA==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Maciej =?utf-8?Q?=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Cc: Jan Engelhardt <jengelh@inai.de>, Cong Wang <xiyou.wangcong@gmail.com>, Cong Wang <amwang@redhat.com>, netfilter-devel@vger.kernel.org, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Mon, Sep 03, 2012 at 10:29:40PM -0700, Maciej =C5=BBenczykowski wrot=
-e:
-[...]
-> > Not solved:
-> > 4. Since NOTRACK now always maps to CT, "-j NOTRACK"
-> >    has become unusable on sufficiently old kernels.
-> >    Should we even bother?
->=20
-> Yes, we must, otherwise distros can't upgrade to latest iptables
-> without either patching or upgrading kernel.
+Hi,
+is it possible to view the number of retransmission not for local
+process (netstat -s) but for forwarded/routed packets (like
+packeshaper's network efficiency) with the conntrack ?
 
-Why not? They will upgrade and they will start using the CT target
-sooner than any other, which seems good to me.
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Didier.
