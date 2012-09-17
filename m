@@ -1,38 +1,37 @@
-From: <joydeep@infoservices.in>
-Subject: iptables port redirect question
-Date: Mon, 17 Sep 2012 11:03:00 +0530
-Message-ID: <20120917110300.5e546d0c@shiva.selfip.org>
+From: Michal =?utf-8?B?S3ViZcSNZWs=?= <mkubecek@suse.cz>
+Subject: Re: iptables port redirect question
+Date: Mon, 17 Sep 2012 08:12:23 +0200
+Message-ID: <3980014.EOsJlpYLpK@alaris>
+References: <20120917110300.5e546d0c@shiva.selfip.org>
+Reply-To: Michal =?utf-8?B?S3ViZcSNZWs=?= <mkubecek@suse.cz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20120917110300.5e546d0c@shiva.selfip.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
 
-Hello,
+On Monday 17 of September 2012 11:03EN, joydeep@infoservices.in wrote:
+> Hello,
+>=20
+> How can I redirect all packets exclude the packets for lan (
+> 192.168.0.0 ) and all packets to/from lo (localhost) ?
+=2E..
+> But this also redirect all local lan packets naturally, as it compare=
+s
+> with lo . How can I combined both lo and local lan ? Can a customized
+> chain help ?
 
-How can I redirect all packets exclude the packets for lan ( 192.168.0.0 ) and
-all packets to/from lo (localhost) ?
+Yes, in general, custom chain and RETURN target can help to simulate=20
+"or" operator. But in your case, you should be able to combine "! -o lo=
+"=20
+and "! -d 192.168.0.0/16" matches to do what you need.
 
-I have done something like
+On the other hand, I prefer to explicitly state what I want to=20
+masquerade rather than masqeurading everything with some exceptions.
 
-[.......]
+                                                          Michal Kube=E8=
+ek
 
-    # Traffic on the loopback interface is accepted.
-    iptables -A INPUT -i lo -j ACCEPT
-
-   # Internal network connections are accepted. 
-    iptables -A OUTPUT -d 192.168.0.0/255.255.0.0 -j ACCEPT
-
-
- iptables -t nat -A OUTPUT ! -o lo -p tcp -m tcp -j REDIRECT --to-ports 8080
- iptables -t filter -A OUTPUT -p tcp -m tcp --dport 8080 -j ACCEPT
- iptables -t filter -A OUTPUT ! -o lo -j DROP
-
-[...............]
-
-But this also redirect all local lan packets naturally, as it compares with lo . How can I combined both lo and local lan ?
-Can a customized chain help ?
-
-Thanks
