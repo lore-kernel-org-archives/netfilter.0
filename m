@@ -1,27 +1,34 @@
-From: "U.Mutlu" <for-gmane@mutluit.com>
-Subject: Re: LOG target missing
-Date: Tue, 18 Sep 2012 22:16:48 +0200
-Message-ID: <k3akrf$kjp$1@ger.gmane.org>
-References: <k3aan9$n75$1@ger.gmane.org>
+From: Pawel <pzlist@mp.pl>
+Subject: Re: tcp connection time limit
+Date: Wed, 19 Sep 2012 10:59:43 +0200
+Message-ID: <5059897F.4000705@mp.pl>
+References: <50584813.4080205@mp.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <k3aan9$n75$1@ger.gmane.org>
+In-Reply-To: <50584813.4080205@mp.pl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-U.Mutlu wrote, On 09/18/2012 07:23 PM:
+I agree that the best way to manage connections is application layer,
+but I can touch the software.
+
+I need to limit the time that SINGLE application wait for app server...
+Is anyone who can suggest how to do it ?
+
+Thanks
+Pawel
+
+
+
+On 2012-09-18 12:08, Pawel wrote:
 > Hi,
-> on a newly setup system I can't find iptables LOG target, neither ipt_LOG nor xt_LOG nor nf_LOG is present.
-> Has the module name changed, or what's the reason it's not found anymore?
-<snip>
-
-My experiments to locate the reason indicate that the kernel compilation
-command "make menuconfig" is the culprit: it seems it just doesn't take
-the provided .config, instead creates a new one, one with missing/disabled
-CONFIG_NETFILTER_XT_TARGET_LOG ... And that of course explains much... :-)
-Now recompiling the kernel... takes about an hour... :-)
-
+> Is there any way to RESET particular tcp connections that are take 
+> longer than  n seconds?
+>
+> Thanks
+> Pawel
+>
 
