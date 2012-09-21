@@ -1,34 +1,60 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: nfq_set_verdict
-Date: Fri, 21 Sep 2012 21:00:55 +0100
-Message-ID: <1348257655.4663.97.camel@andrew-desktop>
-References: <CA+JxU+5mE7cYFR53HZwwOMLhB9Ho1C4+eTrs81Z2r0yy6Yh=4A@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset 6.14 released
+Date: Fri, 21 Sep 2012 23:11:48 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1209212301110.16781@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CA+JxU+5mE7cYFR53HZwwOMLhB9Ho1C4+eTrs81Z2r0yy6Yh=4A@mail.gmail.com>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1348257658;
-	bh=6VQ2qZArxVJAdVJOf7jjoAyQBtH8euIEk4PJSM9z3r4=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:Content-Transfer-Encoding:Mime-Version;
-	b=NWl30/reiD9R7P0559ro+uGYwN/KDhIosvon4PBpJg4r6lnzx6wZnC5ygkaKv6Dr3
-	 swU7WwT0q3QChgiQaGDzdO+vdpiEQInaOjFbLp/ZEdy/LaSogdpMwSBfy+CswEPUDg
-	 okbQ87VzlKBDlZGSCj0oSWZuodJGDWap+oXH4+DU=
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Bradley Kite <bradley.kite@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-On Fri, 2012-09-21 at 14:38 +0100, Bradley Kite wrote:
-> Any clarification would be appreciated - or perhaps someone can point
-> me in the direction of the right way to introduce delays to specific
-> packets in this way?
+Hi,
 
-Could you use the netem qdisc instead, and filter only the required
-packets into it?
+I'm happy to announce ipset 6.14, which includes two important bugfixes
+and a few new features. 
 
-Andy
+If you use hash:*net* types, then consider upgrading: when the number of 
+different sized networks are greater than the smallest CIDR value of the 
+networks in such sets, the broken internal cidr book-keeping could lead 
+invalid matching.
 
+If you want to use the new feature of matching elements marked with 
+"nomatch" in hash:*net* sets, then you need the corresponding new
+revision of the "set" match in iptables 1.4.16 - which is unreleased yet - 
+or use the iptables git tree :-).
 
+Userspace changes:
+ - Support to match elements marked with "nomatch" in hash:*net* sets
+ - Coding style fixes
+ - The set type revision number is added to the header part of listing
+ - Help prints list type revision and terse description
+ - Add /0 network support to hash:net,iface type
+ - Fix errors when compiling in debug mode (Krunal Patel)
+ - Make sure IPPROTO_UDPLITE is defined
+ - build: restore -version-info (Jan Engelhardt)
+
+Kernel part changes:
+ - Support to match elements marked with "nomatch" in hash:*net* sets
+ - Coding style fixes
+ - Include supported revisions in module description
+ - Add /0 network support to hash:net,iface type
+ - Fix cidr book keeping for hash:*net* types
+ - Check and reject crazy /0 input parameters
+ - Backport ether_addr_equal
+ - Coding style fix, backport from kernel
+ - net: cleanup unsigned to unsigned int (Eric Dumazet)
+
+You can download the source code of ipset from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
