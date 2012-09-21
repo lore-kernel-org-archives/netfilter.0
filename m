@@ -1,32 +1,29 @@
-From: Oguz Yilmaz <oguzyilmazlist@gmail.com>
-Subject: wildcard subnets with ipset
-Date: Fri, 21 Sep 2012 10:28:53 +0300
-Message-ID: <CAAo+KFmHJzk-9bLdj36RMtu_Xs8KjtBbRq24a6Ce=G5CcQiZhQ@mail.gmail.com>
+From: =?UTF-8?Q?=C4=B0brahim_Ercan?= <ibrahim.ercan@engineer.com>
+Subject: How to add wildcard netmask to ipset?
+Date: Fri, 21 Sep 2012 10:35:19 +0300
+Message-ID: <CAK6Qs9=Q4tpOjB6JfcSS3fbnyQdAv_Oqcz4zzqqZx5e10PvrAg@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:from:date:message-id:subject:to:content-type;
-        bh=3Gm3QBykO64+sTyB7yg543VTFQdeUcYm9FYgFWRrQMY=;
-        b=FCIG/6rPNnz2sOfeoqUMuYL8KBmWYChBse4W7TLd3PGjXi6sHuMQHs9wIlWruKVQEL
-         1ts/DdwE9vkpxQPPLmIipmsetR/WXK6ts7fvIQjEu2bmtKVXDRLjX8W4nvNjIcBahVYR
-         CnH4zrlBk0a6EuPdmgrAGEoPlY+sHv19sjsZ+GJy+Rv1S39ur1Kt7vlnCsby25pnYOBU
-         wpN/DuZaaxxZ2U4igOUx5gSC7xnrZR/qRuU1BORPQphY0axEU0PZ3qmv8WMuJsHKRISB
-         rzfSBdxJl3TZbRNZxmJYbzqzcy/d8t6NVbHz2E5EVYi6w9KF2lFU6tmLdIBC8hTOnbQt
-         oxog==
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"
 To: netfilter@vger.kernel.org
+Cc: netfilter-devel@vger.kernel.org
 
-Hi,
+Hello,
 
-Currently iptables supports network definitions such as
-10.0.10.0/255.0.255.0 (wildcard subnets). What do you suggest to
-implement such wildcard subnets with ipset?
+We are using ipset and we want to add wildcard netmasks to ipset. We
+are using hash:net to store our ips. Ipset does not accept adding
+netmasks so when adding a network like 192.168.1.0/255.255.255.0 we
+convert it to 192.168.1.0/24 CIDR notation and add. But a network like
+192.168.2.0/255.0.255.0 cannot be converted to CIDR nor can be added
+to ipset. What can we do?
 
-Regards,
-
+--=20
+=C4=B0brahim Ercan
 --
-Oguz YILMAZ
+To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
+el" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
