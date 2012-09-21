@@ -1,38 +1,50 @@
-From: Aidas Kasparas <a.kasparas@gmc.lt>
-Subject: Re: How to add wildcard netmask to ipset?
-Date: Fri, 21 Sep 2012 11:27:17 +0300
-Message-ID: <505C24E5.1090307@gmc.lt>
-References: <CAK6Qs9=Q4tpOjB6JfcSS3fbnyQdAv_Oqcz4zzqqZx5e10PvrAg@mail.gmail.com>
+From: Bradley Kite <bradley.kite@gmail.com>
+Subject: nfq_set_verdict
+Date: Fri, 21 Sep 2012 14:38:40 +0100
+Message-ID: <CA+JxU+5mE7cYFR53HZwwOMLhB9Ho1C4+eTrs81Z2r0yy6Yh=4A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAK6Qs9=Q4tpOjB6JfcSS3fbnyQdAv_Oqcz4zzqqZx5e10PvrAg@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=6a5/x5VemfgiwOo6JOwPNoBf1T0jBx+veVPlzstEphQ=;
+        b=pHwYi8ozmBcNKjuriLJrumnwfI3uaA637hpJpHeqDrZYSZ3NCsgDoD2JgeAHEfzNtk
+         2S8CbTcb32W13b4qjVanee+iMLOqQayiukdBekXrVInkP/PrQ99W44S/ZKICKRZpDOn9
+         lhkIWIIMIy555Dfu1NL6aXQI2BKdkfVbvLpAuQfE3LgVMlK/fASz/oIdjj1aXOJ+DHo3
+         W33S9qkeRukiiq3/g76sh9bMgQKmohUDEkzUz6tJDtu8wup67lEkLlNfgv/xOJiyhmR0
+         BfUZSi2WylqbXM66ah87tBnxV3ldiLDEJLZaDAV6qLVNxy7RPKLGSEpuVuZbgcqtdtLj
+         9k+A==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?UTF-8?B?xLBicmFoaW0gRXJjYW4=?= <ibrahim.ercan@engineer.com>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 2012.09.21 10:35, =C4=B0brahim Ercan wrote:
-> Hello,
->
-> We are using ipset and we want to add wildcard netmasks to ipset. We
-> are using hash:net to store our ips. Ipset does not accept adding
-> netmasks so when adding a network like 192.168.1.0/255.255.255.0 we
-> convert it to 192.168.1.0/24 CIDR notation and add. But a network lik=
-e
-> 192.168.2.0/255.0.255.0 cannot be converted to CIDR nor can be added
-> to ipset. What can we do?
->
-You can allways add 256 entries into your ipset: 192.i.2.0/24 for all i
-in 0..255 .
-On the other hand, what do you use masks like these for?
+Hi all,
 
---=20
-Aidas Kasparas
-IT administrator
-GM Consult Group, UAB
+I am trying to introduce a delay to specific packets using
+libnetfilter_queue, but do not want to affect the latency of others.
 
-+370 686 08473
-http://www.gmc.lt
+So far I have this working by storing the packet info (id etc.) in a
+queue and not issuing a verdict within the callback called by
+nfq_handle_packet(), but rather in a different thread that calls
+nfq_set_verdict() when the packets are ready to be sent.
 
+This seems to work OK for a short period of time (a few minutes),
+after which performance seems to become really slow, with nothing
+displayed in "dmesg" or any thing else.
+
+The documentation, states "Every queued packet _must_ have a verdict
+specified by userspace".
+
+Does this mean that the verdict MUST also be issued within the
+nfq_handle_packet() callback, or is it OK to delay the verdict and
+call it outside of the callback?
+
+Any clarification would be appreciated - or perhaps someone can point
+me in the direction of the right way to introduce delays to specific
+packets in this way?
+
+Kind Regards
+--
+Brad.
