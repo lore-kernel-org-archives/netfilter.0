@@ -1,52 +1,77 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: Using Netfilter with high bandwidth
-Date: Tue, 25 Sep 2012 13:30:20 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1209251324520.8321@nerf07.vanv.qr>
-References: <56bebadff4785d716c997d7aba22b9dd@linuxwall.info> <alpine.LNX.2.01.1209010028550.27474@frira.zrqbmnf.qr>
+From: <joydeep@infoservices.in>
+Subject: firewall cause  [ping: sendmsg: Operation not permitted]
+Date: Wed, 26 Sep 2012 12:39:18 +0530
+Message-ID: <20120926123918.18003d60@shiva.selfip.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1209010028550.27474@frira.zrqbmnf.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Julien Vehent <julien@linuxwall.info>
-Cc: netfilter <netfilter@vger.kernel.org>, brouer@redhat.com
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
+
+Hello list,
+
+I have installed a pdnsd server and trying to force all DNS request through it.
+I have configure iptables to do the same as below
+
+iptables -F
+iptables -X
+iptables -Z
+iptables -t nat -Z 2>/dev/null
+iptables -t mangle -Z
+iptables -t nat -F
+iptables -t mangle -F
+
+    iptables -P INPUT DROP
+    iptables -P FORWARD DROP
+    iptables -P OUTPUT DROP
+
+    # Established incoming connections are accepted.
+    iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+    # Traffic on the loopback interface is accepted.
+    iptables -A INPUT -i lo -j ACCEPT
+
+   # Established outgoing connections are accepted.
+    iptables -A OUTPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+    # Internal network connections are accepted.
+    iptables -A OUTPUT -d 127.0.0.0/255.0.0.0 -j ACCEPT
+
+    # Local network connections should be passed but DNS shall be
+    # rejected.
+    iptables -N lan
+    iptables -A lan -p TCP --dport domain -j REJECT
+    iptables -A lan -p UDP --dport domain -j REJECT
+    iptables -A lan -j ACCEPT
+
+   # Sort out traffic to local network
+    # Note that we exclude the VirtualAddrNetwork used for .onion:s here.
+    iptables -A OUTPUT -d 192.168.0.0/255.255.0.0 -j lan
+    iptables -A OUTPUT -d 10.0.0.0/255.0.0.0 -j lan
+    iptables -A OUTPUT -d 172.16.0.0/255.240.0.0 -j lan
+
+iptables -t nat -A OUTPUT -p udp --dport 53 -m state --state NEW -j REDIRECT --to-ports 53
+iptables -t filter -A OUTPUT -p udp -m udp --dport 53 -j ACCEPT
 
 
-On Saturday 2012-09-01 00:39, Jan Engelhardt wrote:
->On Friday 2012-08-31 21:38, Julien Vehent wrote:
->
->>At work, we're building a new office, and we are considering
->>building our own edge firewalls instead of giving bucket loads of
->>money to the big guys. We're a Linux shop, so it makes sense to
->>build those new firewall/vpn boxes using Linux. But we are
->>concerned about performances and complexity. I make a simple
->>diagram of what we want below. We would have a point to point WAN
->>connection between the two networks, and then an uplink on each
->>side.
->>
->>[...]
->>* What type of network cards will handle 1GBPS and 10GBPS
->>(eventually) ? Any recommendation on the hardware ?
->
->Those with multiqueue. Intel is known to have some offerings, check
->there (I don't have the chip numbers at hand).
 
-The chip/card I was thinking of (lspci output):
+    # Everything else is dropped.
+	iptables -t filter -A OUTPUT ! -o lan -j DROP
+	
 
-02:00.0 Ethernet controller [0200]:
-Broadcom Corporation NetXtreme II BCM5716 Gigabit Ethernet [14e4:163b] (rev 20)
-        Subsystem: Dell Device [1028:02a5]
-                Product Name: Broadcom NetXtreme II Ethernet Controller
-                Read-only fields:
-                        [PN] Part number: BCM95716C1
-                        [V0] Vendor specific: 5.0.13
+    # log incomming connection attempts
+    iptables -A INPUT -p tcp -m tcp -m state --state NEW -j LOG --log-prefix "input(tcp) " -m limit --limit 1/minute 
+    iptables -A INPUT ! -p tcp -j LOG --log-prefix "input(all) " -m limit --limit 1/minute
 
-This card has 8 queues according to /proc/interrupts.
+`````````````````````````````````````````````````````````````
 
->> kernel/system to fit our needs. Some distros are more network oriented than
->> others, is there anything that would stand out for our setup ?
->
->openSUSE is the only known one to offer the complete Netfilter package 
->spectrum.
+And when try to ping gmail.com   it reports  
+
+ping: sendmsg: Operation not permitted
+
+I don't understand what is causing the issue. Any clue / fix please  ?
+
+Thanks
+
