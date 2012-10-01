@@ -1,46 +1,34 @@
-From: Eliezer Croitoru <eliezer@ngtech.co.il>
-Subject: Re: ip6tables REDIRECT support
-Date: Sat, 29 Sep 2012 04:31:59 +0200
-Message-ID: <50665D9F.3080602@ngtech.co.il>
-References: <CAAq25NTpN5bvPyHKfQ0e-rHU2OWg+Sjb00mq=rVKrt1c9POctg@mail.gmail.com> <06b901cd9cd4$98ebea50$cac3bef0$@telsatbb.vu> <5065E9CA.2020103@ngtech.co.il> <075301cd9db7$0f0e8c00$2d2ba400$@telsatbb.vu>
+From: Net Warrior <netwarrior863@gmail.com>
+Subject: More that one not ! condition in a single rule.
+Date: Mon, 1 Oct 2012 15:14:10 -0300
+Message-ID: <CAP7y58PK9++n7ueLtQd8okKpqhhAeSBFYnO+JLeK60M-_Fqsbg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <075301cd9db7$0f0e8c00$2d2ba400$@telsatbb.vu>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=OyWW2t4XXFGKMyR384G2Ds0dKVHtj+WbHj2qQuAL830=;
+        b=a2fAHD3V77r91npi6fhAk7vhbZuSnHfWQWSwbyLgu8KfX4B9CLPyq61EaggW2IHWvD
+         CguXgIxGModr7UbH2h2RpT2bXgcw8X6U2ZOu+Io0/u4k0zbghjqbnhO0sHbXOEf+0OGb
+         dbCiASOFyvYGryaYETZCf1f5Gx7xsz6DV2yGqKYrsQhb6RWPln1Kjhd4hksTXurdkZ33
+         0gdkvlcAbnnUVtDM6jOPtuCyM/yUq9OnyNqJCz7/gh0J8pVX8GAHFWnVtUAhDyFup62W
+         DKdAuAFrI0jaKixkQen/sV/keHwCM616KEyYc1RzDMs1IlzOUqonkgAnLCt3uIDwY7+s
+         7MkA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "Steve (Telsat Broadband)" <steve@telsatbb.vu>
-Cc: 'Joao Pereira' <joaopapereira@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 9/28/2012 10:22 PM, Steve (Telsat Broadband) wrote:
-> Hi Eliezer,
->
-> We use our own custom server.  The server listens for connections on all
-> ports for both TCP & UDP and forwards any unauthenticated connections to two
-> separate services running on the same machine.  The problem with TPROXY was
-> that despite it being configured exactly as we've configured it in the past
-> when we used a squid proxy, the data packets never hit the services on the
-> server which were supposed to handle them.
->
-So I ask, Why if it worked with squid it's not working with your server?
-the only answer I can think of is that you didn't used the right 
-configurations on the server to work with tproxy.
-it requires special socket options that are not similar to any regular ones.
+Hi there.
+Does anyone know if it's possible to include more than one ! not
+clause in a single rule ?
+I' have the following
 
-Works for me with tproxy and does what I need.
+IPTABLES -A AUDIT-RULE  -d $D_INT  ! -s x.x.x.x \
+         -m limit --limit 10/s -j LOG \
 
-Eliezer
-> The redirect target worked perfectly for this situation, simply capturing
-> any packets on dport 1-65535 and redirecting it to port xxx on the same
-> machine.  Simply shifting port X to port Y without any other modifications.
->
-> Cheers.
-> Steve.
->
->
-> Steve Noorderbroek
-> C.T.O.
-> Telsat Broadband Limited
-> www.telsatbb.vu
-<SNIP>
+I'd like to include other IP's, do I have to duplicate the sentence ?
+
+Thanks for your time and support
+Regards
