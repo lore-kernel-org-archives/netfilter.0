@@ -1,39 +1,33 @@
-From: Vigneswaran R <vignesh@atc.tcs.com>
-Subject: Re: how the packet is traversed
-Date: Wed, 03 Oct 2012 10:21:11 +0530
-Message-ID: <506BC43F.9090602@atc.tcs.com>
-References: <CAFpD06STVTqteasiBmH+ahw2O1Ad2PNPuWePfzgx9xPHZbG41w@mail.gmail.com>
+From: Eliezer Croitoru <eliezer@ngtech.co.il>
+Subject: DPI and set's of users.
+Date: Wed, 03 Oct 2012 13:04:03 +0200
+Message-ID: <506C1BA3.7050106@ngtech.co.il>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAFpD06STVTqteasiBmH+ahw2O1Ad2PNPuWePfzgx9xPHZbG41w@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Giuseppe Longo <giuseppelng@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Wednesday 03 October 2012 01:50 AM, Giuseppe Longo wrote:
-> Hello,
-> i'm a student of computer science, working on a project using iptables.
-> I'm confused how the packet is treated when it's arrived in the iptables.
->
-> Someone can explain me this process?
+I managed to use opendpi for Deep packets inspection and it seems to be 
+more suitable then other layer 7 DPI solutions.
 
-I found the following very useful to start with,
+I have 9 categories of connections such as p2p messenger etc and I have 
+ip addresses of users that can or cant use the service.
+basically the rule is to block service unless I allow the specific IP.
+but there is a big list of IP addresses and I need to update them on 6 
+machines when I change anything and needs to be effecting immediately.
+what is the best tool to manage big lists of IP's and to match them to a 
+rule?
+it seems to me the best choice is ipset ? but I didnt understood how to 
+use it?
 
-<http://adminsehow.internexsolution.netdna-cdn.com/wp-content/uploads/2011/09/iptables.png>
+Thanks,
+Eliezer
 
-
-Regards,
-Vignesh
-
->
-> Thanks in advice,
-> Regards.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
-
+-- 
+Eliezer Croitoru
+https://www1.ngtech.co.il
+IT consulting for Nonprofit organizations
+eliezer <at> ngtech.co.il
