@@ -1,37 +1,56 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: Odd use of netmasks - Supported?
-Date: Fri, 5 Oct 2012 01:41:09 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1210050135180.3658@nerf07.vanv.qr>
-References: <506E088B.8000203@yahoo.com>
+From: Markus Feldmann <feldmann_markus@gmx.de>
+Subject: Bad Argument `lo'
+Date: Wed, 03 Oct 2012 22:16:58 +0200
+Message-ID: <k4i6fp$ni7$1@ger.gmane.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <506E088B.8000203@yahoo.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: tlhackque <tlhackque@yahoo.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
+Hi All,
 
-On Friday 2012-10-05 00:07, tlhackque wrote:
->
-> The syntax -A FOO -s 001:c000::0/0f:f000::  (note the leading 1s in the
-> "netmask") seems to be accepted by iptables, and the rule appears with -L.
+i using iptables (version 1.4.14) on a LMDE(Debian like) with kernel 
+3.5.3. Some days before i watched my logs after several weeks again. :-) 
+And i spotted the error message:
 
-Yes, that is officially supported. So all that's lacking is the
-mention in iptables.8.
+Bad argument `lo'
 
+So i searched at google to get a solution and i got one. Some user told 
+to put the <lo> into ticks, like this
 
-> Of course, it would be nice to have a chain type that didn't have sequential
-> evaluation semantics and just dispatched based on netmask and address... but
-> that's how things might be, not how they are...
->
-> (Why ridiculous chain lengths, you ask?  Country blocking.  But no
-> philosophical discussions about why this is a bad idea/easy to subvert,
-> please.)
+'!lo'
 
-To match on countries, you can preferably use xt_geoip (space
-efficient and reasonably time efficient), or construct
-something handmade with ipsets (time efficient but space is
-secondary).
+My iptables-rules regarding on this problem were looking so,
+
+...
+iptables -A INPUT -i ! lo -s 127.0.0.1 -j DROP
+...
+
+and i changed this line to,
+
+...
+iptables -A INPUT -i '!lo' -s 127.0.0.1 -j DROP
+...
+
+Now i am not sure, if this works correctly. <iptables -L> shows me the 
+device "!lo",
+
+######################################################################
+Chain INPUT (policy DROP 0 packets, 0 bytes)
+  pkts bytes target     prot opt in     out     source 
+destination
+     0     0 LOG        all  --  !lo    any     localhost 
+anywhere             limit: avg 3/sec burst 5 LOG level warning prefix 
+"Loopback gespooft: "
+     0     0 DROP       all  --  !lo    any     localhost 
+anywhere
+######################################################################
+
+but i am not sure if this works correctly. Does somebody knows if this 
+trick works correctly?
+
+regards Markus
+
