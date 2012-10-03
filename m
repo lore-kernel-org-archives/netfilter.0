@@ -1,23 +1,42 @@
-From: shadowarrx@gmail.com
-Subject: netfilter@vger.kernel.org
-Date: Wed, 03 Oct 2012 13:17:32 -0700
-Message-ID: <506c9d42.6988980a.2c74.6c8f@mx.google.com>
+From: Jan Engelhardt <jengelh@inai.de>
+Subject: Re: Strange problems on iptables (FC17) .... need your help
+Date: Thu, 4 Oct 2012 01:02:10 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1210040058160.6228@nerf07.vanv.qr>
+References: <1349288885.6825.9.camel@indica.cc.iitb.ac.in>
+Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=message-id:date:from:to:subject;
-        bh=YKBqy5dlM7VD+HVgV1GxQSumNBxJyHu2zNSJc54vj1g=;
-        b=iATh7MVoU7Wwoiq6t+JgsQ/BAGDkXxH2hpfmiJLFYI+6SHeUhvs3kcx0npbXXDYzvb
-         zR0CwHSzLYonXCg/Qi7abrfbKmMOH/YXsH+U1/6VnjN+rG6Mm/Y3y9E8hpHCghDOoONm
-         cj4vK643Xias1tulQhFFVPqwPnuBNsdETMV7qLnXPZD4wTtEJCtUlwgY9f1LVDfsOphP
-         VsnPJcOuwrj1EiDRbHBPUPAiJgVoKHZi4zwoMxFvkSqQJNT80z+9npRtBx6E1gXQtZmu
-         9f1G8RCRdoiUMscuyM+gPC5H00MwWCESxSO1CdzKLKXl+UGHz5M6fMaQH0WYsjO+UXiL
-         qfIA==
+In-Reply-To: <1349288885.6825.9.camel@indica.cc.iitb.ac.in>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Ajit K Jena <ajit@iitb.ac.in>
+Cc: netfilter@vger.kernel.org
 
-netfilter
+
+On Wednesday 2012-10-03 20:28, Ajit K Jena wrote:
+>
+># The following is to just produce a log of all outgoing packets from
+># IPs that are members in the set src_nm_set.
+># The set has only one member with IP 10.209.13.6.
+>
+>-A FORWARD -p tcp -m set --match-set src_nm_set src \
+>        -m multiport --dports 80:64000 -j LOG --log-level 4 --log-prefix
+>"nm_http_outword: "
+
+Why would you allow ports 81 through 64000? That seems like the oddest
+range ever, even more so than the usually pointless 1024:65535.
+
+># The following is to just produce a log of all incoming packets
+>-A FORWARD -p tcp -m set --match-set src_nm_set dst \
+>        -m multiport --sports 80:64000 -j LOG --log-level 4 --log-prefix
+>"nm_http_inword: "
+
+(outward - inward. No words here.)
+
+>  c) The "inward" log entry is **NOT** produced in the logfile.
+>  d) It appears as if the packet is simply dropped.
+>  How do I go about debugging this further ?
+
+Log all other packets that are not logged by the outward or inward one.
+Their contents may be sufficiently different that your rules don't fire.
