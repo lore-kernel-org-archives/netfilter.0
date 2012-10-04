@@ -1,100 +1,49 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: Bad Argument `lo'
-Date: Thu, 04 Oct 2012 21:23:57 +0200
-Message-ID: <1349378637.4593.29.camel@tiger.regit.org>
-References: <506DE015.2090606@gmx.de>
+From: tlhackque <tlhackque@yahoo.com>
+Subject: Odd use of netmasks - Supported?
+Date: Thu, 04 Oct 2012 18:07:07 -0400
+Message-ID: <506E088B.8000203@yahoo.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
-	boundary="=-gBrj0GnR7vlAaxISteOL"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <506DE015.2090606@gmx.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1349388429; bh=oBCSATABX1RdApX/70QGE9JyLKrVcwAHX/euVp520Ew=; h=X-Yahoo-Newman-Id:X-Yahoo-Newman-Property:X-YMail-OSG:X-Yahoo-SMTP:Received:Message-ID:Date:From:User-Agent:MIME-Version:To:Subject:Content-Type:Content-Transfer-Encoding; b=zgj+s6dBFCE7OglQdoxqLebFo6Yeq3coj5ROqUwaMcyif9uGWNwsm7pqCyph0jOpzMZB5j74MF3xI/8kqJKvguXp9QY64u3qy0WrEkLgQI/SNvI2mbgw1ffri9cDj2Rlut8UbXf3wia1UEzsjjjJQKZQv6w1/D93JrQYUCsNAnM=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Markus Feldmann <feldmann_markus@gmx.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
+I have some very long (thousands of rules) rule chains, which I wish to 
+shorten by dispatching on part of the address.
 
---=-gBrj0GnR7vlAaxISteOL
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Clearly, I can do something like  -A FOO -s 2001:db8:1000/36 -j SUBCHAIN-81.
 
-Hi,
+But in IPV6, the high order bits really aren't interesting.
 
-Le jeudi 04 octobre 2012 =C3=A0 21:14 +0200, Markus Feldmann a =C3=A9crit :
-> Hi All,
->=20
-> i using iptables (version 1.4.14) on a LMDE(Debian like) with kernel=20
-> 3.5.3. Some days before i watched my logs after several weeks again. :-)=
-=20
-> And i spotted the error message:
->=20
-> Bad argument `lo'
->=20
-> So i searched at google to get a solution and i got one. Some user told=
-=20
-> to put the <lo> into ticks, like this
->=20
-> '!lo'
+The syntax -A FOO -s 001:c000::0/0f:f000::  (note the leading 1s in the 
+"netmask") seems to be accepted by iptables, and the rule appears with -L.
 
-Nope the solution is given in the man page:
-   [!] -i, --in-interface name
+I would expect an address to be XORed with the -s address, ANDed with 
+the mask, and be true if 0.  Even though this is an illegal mask for 
+routing, it's interesting for this.
 
-So you need
-	iptables -A INPUT ! -i lo -s 127.0.0.1 -j DROP
+Rather than experiment and rely on some undocumented behavior, I thought 
+I should ask:
 
-BR,
->=20
-> My iptables-rules regarding on this problem were looking so,
->=20
-> ...
-> iptables -A INPUT -i ! lo -s 127.0.0.1 -j DROP
-> ...
->=20
-> and i changed this line to,
->=20
-> ...
-> iptables -A INPUT -i '!lo' -s 127.0.0.1 -j DROP
-> ...
->=20
-> Now i am not sure, if this works correctly. <iptables -L> shows me the=
-=20
-> device "!lo",
->=20
-> ######################################################################
-> Chain INPUT (policy DROP 0 packets, 0 bytes)
->   pkts bytes target     prot opt in     out     source destination
->      0     0 LOG        all  --  !lo    any     localhost anywhere=20
->         limit: avg 3/sec burst 5 LOG level warning prefix "Loopback=20
-> gespooft: "
->      0     0 DROP       all  --  !lo    any     localhost anywhere
-> ######################################################################
->=20
-> but i am not sure if this works correctly. Does somebody knows if this=
-=20
-> trick works correctly?
->=20
-> regards Markus
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Is this usage supported (in the sense that it will behave as described 
+and will continue to do so)?  Or is this living dangerously?
 
---=20
-Eric Leblond=20
-Blog: http://home.regit.org/ - Portfolio: http://regit.500px.com/
+Of course, it would be nice to have a chain type that didn't have 
+sequential evaluation semantics and just dispatched based on netmask and 
+address... but that's how things might be, not how they are...
 
---=-gBrj0GnR7vlAaxISteOL
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+(Why ridiculous chain lengths, you ask?  Country blocking.  But no 
+philosophical discussions about why this is a bad idea/easy to subvert, 
+please.)
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Thanks.
 
-iEYEABECAAYFAlBt4k0ACgkQnxA7CdMWjzKnOQCfaCY/v6psHInVKtI4rgH0DVTs
-4PUAoIJ2I9IfBbULRdQ9Onqzmb9Av+xN
-=zgbK
------END PGP SIGNATURE-----
+-- 
 
---=-gBrj0GnR7vlAaxISteOL--
+---------------------------------------------------------
+This communication may not represent my employer's views,
+if any, on the matters discussed.
 
