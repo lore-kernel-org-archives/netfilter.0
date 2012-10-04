@@ -1,44 +1,53 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: Strange problems on iptables (FC17) .... need your help
-Date: Thu, 4 Oct 2012 11:15:36 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1210041106360.12092@nerf07.vanv.qr>
-References: <1349288885.6825.9.camel@indica.cc.iitb.ac.in>  <alpine.LNX.2.01.1210040058160.6228@nerf07.vanv.qr> <1349327392.14307.15.camel@indica.cc.iitb.ac.in>
+From: Markus Feldmann <feldmann_markus@gmx.de>
+Subject: Bad Argument `lo'
+Date: Thu, 04 Oct 2012 21:14:29 +0200
+Message-ID: <506DE015.2090606@gmx.de>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1349327392.14307.15.camel@indica.cc.iitb.ac.in>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Ajit K Jena <ajit@iitb.ac.in>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
+Hi All,
 
-On Thursday 2012-10-04 07:09, Ajit K Jena wrote:
->On Thu, 2012-10-04 at 01:02 +0200, Jan Engelhardt wrote:
->> On Wednesday 2012-10-03 20:28, Ajit K Jena wrote:
->> 
->> >  c) The "inward" log entry is **NOT** produced in the logfile.
->> >  d) It appears as if the packet is simply dropped.
->> >  How do I go about debugging this further ?
->> 
->> Log all other packets that are not logged by the outward or inward one.
->> Their contents may be sufficiently different that your rules don't fire.
->
->[...] I am beginning to suspect that there is some difference in
->iproute software between FC10 and FC11 (or FC17). The iptables/ipset
->part per se have no problem.
+i using iptables (version 1.4.14) on a LMDE(Debian like) with kernel 
+3.5.3. Some days before i watched my logs after several weeks again. :-) 
+And i spotted the error message:
 
-There is sort of a "checklist" one can go through to see what
-happens.
+Bad argument `lo'
 
-1. Make sure the packet does arrive at all at the machine - tcpdump.
+So i searched at google to get a solution and i got one. Some user told 
+to put the <lo> into ticks, like this
 
-2. Determine if the packet passes the routing lookup.
-   http://backreference.org/2010/06/11/iptables-debugging/
+'!lo'
 
-The log entries will reveal where it is dropped. - Namely, the
-absence of entries will. If there is no filter:FORWARD:rule:XXX line
-but a xxx:PREROUTING:rule:XXX line, it is an indication that it went
-missing between those two points, which can be an indicator that
-the route lookup yielded no usable route.
+My iptables-rules regarding on this problem were looking so,
+
+...
+iptables -A INPUT -i ! lo -s 127.0.0.1 -j DROP
+...
+
+and i changed this line to,
+
+...
+iptables -A INPUT -i '!lo' -s 127.0.0.1 -j DROP
+...
+
+Now i am not sure, if this works correctly. <iptables -L> shows me the 
+device "!lo",
+
+######################################################################
+Chain INPUT (policy DROP 0 packets, 0 bytes)
+  pkts bytes target     prot opt in     out     source destination
+     0     0 LOG        all  --  !lo    any     localhost anywhere 
+        limit: avg 3/sec burst 5 LOG level warning prefix "Loopback 
+gespooft: "
+     0     0 DROP       all  --  !lo    any     localhost anywhere
+######################################################################
+
+but i am not sure if this works correctly. Does somebody knows if this 
+trick works correctly?
+
+regards Markus
