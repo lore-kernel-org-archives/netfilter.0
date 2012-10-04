@@ -1,84 +1,44 @@
-From: Ajit K Jena <ajit@iitb.ac.in>
+From: Jan Engelhardt <jengelh@inai.de>
 Subject: Re: Strange problems on iptables (FC17) .... need your help
-Date: Thu, 04 Oct 2012 10:39:52 +0530
-Message-ID: <1349327392.14307.15.camel@indica.cc.iitb.ac.in>
-References: <1349288885.6825.9.camel@indica.cc.iitb.ac.in>
-	 <alpine.LNX.2.01.1210040058160.6228@nerf07.vanv.qr>
-Reply-To: ajit@iitb.ac.in
+Date: Thu, 4 Oct 2012 11:15:36 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1210041106360.12092@nerf07.vanv.qr>
+References: <1349288885.6825.9.camel@indica.cc.iitb.ac.in>  <alpine.LNX.2.01.1210040058160.6228@nerf07.vanv.qr> <1349327392.14307.15.camel@indica.cc.iitb.ac.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1210040058160.6228@nerf07.vanv.qr>
+In-Reply-To: <1349327392.14307.15.camel@indica.cc.iitb.ac.in>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@inai.de>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Ajit K Jena <ajit@iitb.ac.in>
 Cc: netfilter@vger.kernel.org
 
-Hi Jan and Other Listmembers,
 
-Thanks for your quick reply and pointing out my
-English deficiencies.
+On Thursday 2012-10-04 07:09, Ajit K Jena wrote:
+>On Thu, 2012-10-04 at 01:02 +0200, Jan Engelhardt wrote:
+>> On Wednesday 2012-10-03 20:28, Ajit K Jena wrote:
+>> 
+>> >  c) The "inward" log entry is **NOT** produced in the logfile.
+>> >  d) It appears as if the packet is simply dropped.
+>> >  How do I go about debugging this further ?
+>> 
+>> Log all other packets that are not logged by the outward or inward one.
+>> Their contents may be sufficiently different that your rules don't fire.
+>
+>[...] I am beginning to suspect that there is some difference in
+>iproute software between FC10 and FC11 (or FC17). The iptables/ipset
+>part per se have no problem.
 
-The port range issues u have mentioned are just
-for the experimental setup. We will change them
-suitably when we go "live".
+There is sort of a "checklist" one can go through to see what
+happens.
 
-Continuing with my test environment, I noticed
-another issue. I setup a web server in the public
-network with IP address 59.162.23.252. I tried to
-reach that server from my intranet machine
-(with IP 10.209.13.6). Everything works fine in
-that test case. If I run tcpdump on the external
-ethernet interface I see the request packet
-originating from 59.162.23.79 and going out to
-59.162.23.252. The reply packet comes back with
-target IP 59.162.23.79. Subsequently the reply
-packet dst address gets mapped properly to the IP
-10.209.13.6 and routed to the intranet machine
-properly.
+1. Make sure the packet does arrive at all at the machine - tcpdump.
 
-I am beginning to suspect that there is some
-difference in iproute software between FC10 and
-FC11 (or FC17). The iptables/ipset part per se
-have no problem.
+2. Determine if the packet passes the routing lookup.
+   http://backreference.org/2010/06/11/iptables-debugging/
 
-Please do share your views and help me out.
-
-Regards.
-
---ajit
-
-On Thu, 2012-10-04 at 01:02 +0200, Jan Engelhardt wrote:
-> On Wednesday 2012-10-03 20:28, Ajit K Jena wrote:
-> >
-> ># The following is to just produce a log of all outgoing packets from
-> ># IPs that are members in the set src_nm_set.
-> ># The set has only one member with IP 10.209.13.6.
-> >
-> >-A FORWARD -p tcp -m set --match-set src_nm_set src \
-> >        -m multiport --dports 80:64000 -j LOG --log-level 4 --log-prefix
-> >"nm_http_outword: "
-> 
-> Why would you allow ports 81 through 64000? That seems like the oddest
-> range ever, even more so than the usually pointless 1024:65535.
-> 
-> ># The following is to just produce a log of all incoming packets
-> >-A FORWARD -p tcp -m set --match-set src_nm_set dst \
-> >        -m multiport --sports 80:64000 -j LOG --log-level 4 --log-prefix
-> >"nm_http_inword: "
-> 
-> (outward - inward. No words here.)
-> 
-> >  c) The "inward" log entry is **NOT** produced in the logfile.
-> >  d) It appears as if the packet is simply dropped.
-> >  How do I go about debugging this further ?
-> 
-> Log all other packets that are not logged by the outward or inward one.
-> Their contents may be sufficiently different that your rules don't fire.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-
+The log entries will reveal where it is dropped. - Namely, the
+absence of entries will. If there is no filter:FORWARD:rule:XXX line
+but a xxx:PREROUTING:rule:XXX line, it is an indication that it went
+missing between those two points, which can be an indicator that
+the route lookup yielded no usable route.
