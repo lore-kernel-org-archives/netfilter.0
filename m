@@ -1,56 +1,66 @@
-From: Markus Feldmann <feldmann_markus@gmx.de>
-Subject: Bad Argument `lo'
-Date: Wed, 03 Oct 2012 22:16:58 +0200
-Message-ID: <k4i6fp$ni7$1@ger.gmane.org>
+From: morlix <morlix@morlix.de>
+Subject: Error while trying to compile libnetfilter_cttimeout 1.0.0
+Date: Fri, 05 Oct 2012 15:08:27 +0200
+Message-ID: <506EDBCB.6030703@morlix.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi All,
+Hello,
 
-i using iptables (version 1.4.14) on a LMDE(Debian like) with kernel 
-3.5.3. Some days before i watched my logs after several weeks again. :-) 
-And i spotted the error message:
+i want to compile libnetfilter_cttimeout 1.0.0 in my IPFire (Firewall
+distribution) development environment.
 
-Bad argument `lo'
+But a i got the following error after entering make:
 
-So i searched at google to get a solution and i got one. Some user told 
-to put the <lo> into ticks, like this
+make[1]: Entering directory `/usr/src/libnetfilter_cttimeout-1.0.0'
+make  all-recursive
+make[2]: Entering directory `/usr/src/libnetfilter_cttimeout-1.0.0'
+Making all in src
+make[3]: Entering directory `/usr/src/libnetfilter_cttimeout-1.0.0/src'
+  CC     libnetfilter_cttimeout.lo
+libnetfilter_cttimeout.c:107: error: 'IPPROTO_DCCP' undeclared here (not
+in a function)
+libnetfilter_cttimeout.c:107: error: array index in initializer not of
+integer type
+libnetfilter_cttimeout.c:107: error: (near initialization for
+'timeout_protocol')
+libnetfilter_cttimeout.c:112: error: 'IPPROTO_UDPLITE' undeclared here
+(not in a function)
+libnetfilter_cttimeout.c:112: error: array index in initializer not of
+integer type
+libnetfilter_cttimeout.c:112: error: (near initialization for
+'timeout_protocol')
+libnetfilter_cttimeout.c: In function 'timeout_nlmsg_parse_attr_cb':
+libnetfilter_cttimeout.c:541: warning: passing argument 1 of
+'mnl_attr_get_type' from incompatible pointer type
+libnetfilter_cttimeout.c: In function 'parse_timeout_attr_policy_cb':
+libnetfilter_cttimeout.c:586: warning: passing argument 1 of
+'mnl_attr_get_type' from incompatible pointer type
+libnetfilter_cttimeout.c: In function 'timeout_parse_attr_data':
+libnetfilter_cttimeout.c:619: warning: passing argument 1 of
+'mnl_attr_get_u32' from incompatible pointer type
+libnetfilter_cttimeout.c: In function 'nfct_timeout_nlmsg_parse_payload':
+libnetfilter_cttimeout.c:642: warning: passing argument 1 of
+'mnl_attr_get_str' from incompatible pointer type
+libnetfilter_cttimeout.c:646: warning: passing argument 1 of
+'mnl_attr_get_u16' from incompatible pointer type
+libnetfilter_cttimeout.c:650: warning: passing argument 1 of
+'mnl_attr_get_u8' from incompatible pointer type
+make[3]: *** [libnetfilter_cttimeout.lo] Error 1
+make[3]: Leaving directory `/usr/src/libnetfilter_cttimeout-1.0.0/src'
+make[2]: *** [all-recursive] Error 1
+make[2]: Leaving directory `/usr/src/libnetfilter_cttimeout-1.0.0'
+make[1]: *** [all] Error 2
+make[1]: Leaving directory `/usr/src/libnetfilter_cttimeout-1.0.0'
+make: *** [/usr/src/log/libnetfilter_cttimeout-1.0.0] Error 2
 
-'!lo'
+Does anybody have a hint for me on how to fix this?
 
-My iptables-rules regarding on this problem were looking so,
+Kind regards,
 
-...
-iptables -A INPUT -i ! lo -s 127.0.0.1 -j DROP
-...
-
-and i changed this line to,
-
-...
-iptables -A INPUT -i '!lo' -s 127.0.0.1 -j DROP
-...
-
-Now i am not sure, if this works correctly. <iptables -L> shows me the 
-device "!lo",
-
-######################################################################
-Chain INPUT (policy DROP 0 packets, 0 bytes)
-  pkts bytes target     prot opt in     out     source 
-destination
-     0     0 LOG        all  --  !lo    any     localhost 
-anywhere             limit: avg 3/sec burst 5 LOG level warning prefix 
-"Loopback gespooft: "
-     0     0 DROP       all  --  !lo    any     localhost 
-anywhere
-######################################################################
-
-but i am not sure if this works correctly. Does somebody knows if this 
-trick works correctly?
-
-regards Markus
-
+morlix
