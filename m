@@ -1,18 +1,18 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] ulogd 2.0.1 release
-Date: Mon, 8 Oct 2012 14:15:35 +0200
-Message-ID: <20121008121535.GA27399@1984>
+Subject: [ANNOUNCE] libnetfilter_cthelper 1.0.0 release
+Date: Mon, 8 Oct 2012 17:15:39 +0200
+Message-ID: <20121008151539.GA1647@1984>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="sdtB3X0nJg68CQEu"
-Return-path: <netdev-owner@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="/04w6evG8XlLl3ft"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 Content-Disposition: inline
-Sender: netdev-owner@vger.kernel.org
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 To: netfilter-devel@vger.kernel.org
 Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
 
---sdtB3X0nJg68CQEu
+--/04w6evG8XlLl3ft
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -20,48 +20,36 @@ Hi!
 
 The Netfilter project proudly presents:
 
-        ulogd 2.0.1
+        libnetfilter_cthelper 1.0.0
 
-This releases includes support for the nfacct extended iptables
-accounting infrastructure.
+This library provides the infrastructure for the user-space helper
+infrastructure available since the Linux kernel 3.6.
 
 See ChangeLog that comes attached to this email for more details.
 
 You can download it from:
 
-http://www.netfilter.org/projects/ulogd/downloads.html
-ftp://ftp.netfilter.org/pub/ulogd/
+http://www.netfilter.org/projects/libnetfilter_cthelper/downloads.html
+ftp://ftp.netfilter.org/pub/libnetfilter_cthelper/
 
 Have fun!
 
---sdtB3X0nJg68CQEu
+--/04w6evG8XlLl3ft
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="changes-ulogd-2.0.1.txt"
+Content-Disposition: attachment; filename="changes-libnetfilter_cthelper-1.0.0.txt"
 
-Eric Leblond (6):
-      NFCT: fix crash in polling mode if used by two stacks
-      nfacct: add variable to not zero counter after read
-      pgsql schema: add nfacct table
-      pgsql schema: fix timestamp default value
-      pgsql: only disable key if it starts with underscore
-      nfacct: add timestamp option
+Jan Engelhardt (1):
+      build: remove unnecessary pkgconfig->config.status dependency
 
-Michael Tremer (1):
-      sqlite3: Add more logging if database initialization fails.
-
-Pablo Neira Ayuso (9):
-      src: add ULOGD_DTYPE_SUM for nfacct-based accounting
-      output: XML: support for NFACCT input plugin
-      output: XML: display time for NFACCT
-      input: NFCT: fix compilation warning with gcc-4.7
-      src: fix version that -V displays
-      ulogd.conf: slightly expand documentation on zerocounter option for nfacct
-      filter: IP2HBIN: fix compilation warning with gcc-4.7
-      src: update copyright and authors information
-      bump version to 2.0.1
-
-Thomas Jarosch (1):
-      ipfix: fix bracket imbalance if IPPROTO_SCTP is defined
+Pablo Neira Ayuso (8):
+      initial import
+      cthelper: add NFCTH_ATTR_PRIV_DATA_LEN
+      include: update NFNL_SUBSYS_CTHELPER
+      fix libnetfilter_cthelper.pc.in file
+      src: add NFCTH_STATUS and other enhancements
+      examples: fix nfct-helper-add example
+      fix licensing terms
+      bump version to 1.0.0
 
 
---sdtB3X0nJg68CQEu--
+--/04w6evG8XlLl3ft--
