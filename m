@@ -1,18 +1,18 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] conntrack-tools 1.4.0 release
-Date: Mon, 8 Oct 2012 13:50:21 +0200
-Message-ID: <20121008115021.GA26222@1984>
+Subject: [ANNOUNCE] ulogd 2.0.1 release
+Date: Mon, 8 Oct 2012 14:15:35 +0200
+Message-ID: <20121008121535.GA27399@1984>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="1yeeQ81UyVL57Vl7"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="sdtB3X0nJg68CQEu"
+Return-path: <netdev-owner@vger.kernel.org>
 Content-Disposition: inline
-Sender: netfilter-devel-owner@vger.kernel.org
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 To: netfilter-devel@vger.kernel.org
 Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
 
---1yeeQ81UyVL57Vl7
+--sdtB3X0nJg68CQEu
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
@@ -20,56 +20,48 @@ Hi!
 
 The Netfilter project proudly presents:
 
-        conntrack-tools 1.4.0
+        ulogd 2.0.1
 
-This release adds the user-space helper infrastructure which includes
-the RPC portmapper (to support NFSv3) and Oracle*TNS helpers.
-
-More information available at:
-
-http://conntrack-tools.netfilter.org/manual.html
+This releases includes support for the nfacct extended iptables
+accounting infrastructure.
 
 See ChangeLog that comes attached to this email for more details.
 
 You can download it from:
 
-http://www.netfilter.org/projects/conntrack-tools/downloads.html
-ftp://ftp.netfilter.org/pub/conntrack-tools/
+http://www.netfilter.org/projects/ulogd/downloads.html
+ftp://ftp.netfilter.org/pub/ulogd/
 
 Have fun!
 
---1yeeQ81UyVL57Vl7
+--sdtB3X0nJg68CQEu
 Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="changes-conntrack-tools-1.4.0.txt"
+Content-Disposition: attachment; filename="changes-ulogd-2.0.1.txt"
 
-Ansis Atteka (1):
-      tests: conntrackd: fix compile errors and warnings
+Eric Leblond (6):
+      NFCT: fix crash in polling mode if used by two stacks
+      nfacct: add variable to not zero counter after read
+      pgsql schema: add nfacct table
+      pgsql schema: fix timestamp default value
+      pgsql: only disable key if it starts with underscore
+      nfacct: add timestamp option
 
-Jozsef Kadlecsik (2):
-      conntrackd: RPC helper added to cthelper
-      conntrackd: TNS helper added to cthelper
+Michael Tremer (1):
+      sqlite3: Add more logging if database initialization fails.
 
-Nicolas Dichtel (1):
-      build: fix libraries dependencies in Makefiles
+Pablo Neira Ayuso (9):
+      src: add ULOGD_DTYPE_SUM for nfacct-based accounting
+      output: XML: support for NFACCT input plugin
+      output: XML: display time for NFACCT
+      input: NFCT: fix compilation warning with gcc-4.7
+      src: fix version that -V displays
+      ulogd.conf: slightly expand documentation on zerocounter option for nfacct
+      filter: IP2HBIN: fix compilation warning with gcc-4.7
+      src: update copyright and authors information
+      bump version to 2.0.1
 
-Pablo Neira Ayuso (14):
-      conntrack: add support for stats dumping via ctnetlink
-      conntrack: -C uses ctnetlink instead of /proc/sys/net/netfilter/nf_conntrack_count
-      conntrackd: generalize file descriptor infrastructure
-      conntrackd: move ctnetlink code to ctnl.c (removed from run.c)
-      conntrackd: add cthelper infrastructure (+ example FTP helper)
-      tests: conntrackd: add cthelper-test infrastructure
-      nfct: helper: use CONNTRACKD_LIB_DIR variable set during configuration
-      cthelper: disable debugging information by default
-      cthelper: ftp: fix EPRT case for IPv4
-      conntrackd: parse: fix wrong maximum length for ATTR_EXP_FN
-      conntrackd: cthelper: add QueueLen option
-      conntrackd: fix crash if ExpectationSync is enabled on old Linux kernels
-      doc: detail user-space helper support
-      bump version to 1.4.0 and update dependencies
-
-Vincent Bernat (1):
-      conntrackd: don't resync expectations if such sync has been disabled
+Thomas Jarosch (1):
+      ipfix: fix bracket imbalance if IPPROTO_SCTP is defined
 
 
---1yeeQ81UyVL57Vl7--
+--sdtB3X0nJg68CQEu--
