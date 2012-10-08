@@ -1,37 +1,58 @@
-From: Brian G <bgunlogson5@comcast.net>
-Subject: TPROXY doesn't properly close connections in Linux 2.6.39
-Date: Sun, 07 Oct 2012 18:38:40 -0500
-Message-ID: <50721280.4020401@comcast.net>
+From: Jan Engelhardt <jengelh@inai.de>
+Subject: Re: [ANNOUNCE] iptables 1.4.16.1 release
+Date: Mon, 8 Oct 2012 02:14:53 +0200 (CEST)
+Message-ID: <alpine.LNX.2.01.1210080141140.2933@nerf07.vanv.qr>
+References: <20121007231706.GA7400@1984>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <20121007231706.GA7400@1984>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
-I've been using TPROXY for a transparent HTTP proxy. I've noticed that 
-it is not closing the connection when the other side does.
 
-The module is marked EXPERIMENTAL in Linux kernel 2.6.39. What is the 
-oldest version of the Kernel that TPROXY is not marked EXPERIMENTAL, so 
-I can upgrade to that Kernel? Or is TPROXY still marked EXPERIMENTAL in 
-the latest kernels?
+On Monday 2012-10-08 01:17, Pablo Neira Ayuso wrote:
+>The Netfilter project proudly presents:
+>
+>        iptables 1.4.16.1
+>
+>iptables -I INPUT -j ACCEPT
+>says:
+>iptables: No chain/target/match by that name.
+>This also breaks iptables-restore, of course. Jan, you'll have to explain
+>me how you have tested this.
 
-Why is TPROXY marked as EXPERIMENTAL? Are there any known bugs in 2.6.39?
+This was tested by adding rules with different targets that had both
+aliases defined and those without.
 
-Here is the firewall script I am using to setup TPROXY:
+ ./iptables/xtables-multi main4 -t raw -N foo
+ ./iptables/xtables-multi main4 -t raw -A foo -j NOTRACK
+ with kernels that had xt_CT and no xt_CT at all
 
-ip -f inet rule add fwmark 1 lookup 100
-ip -f inet route add local default dev eth0 table 100
-echo 0 > /proc/sys/net/ipv4/conf/eth0/rp_filter
+ ./iptables/xtables-multi main4 -N foo
+ ./iptables/xtables-multi main4 -A foo -m state --state NEW
+ with kernels that had xt_conntrack.3, and xt_conntrack.3 removed
+ (leaving only xt_conntrack.2)
 
-iptables -t mangle -N DIVERT
-iptables -t mangle -A DIVERT -j MARK --set-mark 1
-iptables -t mangle -A DIVERT -j ACCEPT
+ ./iptables/xtables-multi main4 -t raw -N bar
+ ./iptables/xtables-multi main4 -t raw -A bar -j MARK --set-xmark 1
+ ./iptables/xtables-multi main4 -t raw -A foo -j bar
 
-iptables -t mangle -A PREROUTING -p tcp -m socket -j DIVERT
+plus of course the "standard" (no pun intended) testsuite that we
+had so far:
 
-iptables -t mangle -A PREROUTING -p tcp --dport 80 -j TPROXY 
---tproxy-mark 0x1/0x1 --on-port 12380
+ # ./iptables/xtables-multi restore6 tests/options-most.rules 
+ WARNING: --localtz is being replaced by --kerneltz, since "local" is ambiguous.
+ Note the kernel timezone has caveats - see manpage for details.
 
+As you spotted, options-most.rules did not include -j <verdict>.
+
+While v1.4.16-1-g2aaa7ec fixes -j verdict, it breaks NOTRACK in all
+instances. To reuse a line, "you'll have to explain me how you have
+tested this."
+
+A patch to what I think should fly is posted as a reply hereto.
+Please give that a spin.
