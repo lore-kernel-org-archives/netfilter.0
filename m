@@ -1,35 +1,41 @@
 From: Eliezer Croitoru <eliezer@ngtech.co.il>
-Subject: Re: TPROXY doesn't properly close connections in Linux 2.6.39
-Date: Mon, 08 Oct 2012 21:04:50 +0200
-Message-ID: <507323D2.4090200@ngtech.co.il>
-References: <50721280.4020401@comcast.net> <50722737.3050202@comcast.net>
+Subject: Re: DPI and set's of users.
+Date: Mon, 08 Oct 2012 21:08:34 +0200
+Message-ID: <507324B2.4020909@ngtech.co.il>
+References: <506C1BA3.7050106@ngtech.co.il> <506F1997.9020801@wildgooses.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <50722737.3050202@comcast.net>
+In-Reply-To: <506F1997.9020801@wildgooses.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Brian G <bgunlogson5@comcast.net>
+To: Ed W <lists@wildgooses.com>
 Cc: netfilter@vger.kernel.org
 
-On 10/8/2012 3:07 AM, Brian G wrote:
-> I found this changelog on  Wed, 19 Oct 2011 07:21:35:
+On 10/5/2012 7:32 PM, Ed W wrote:
+> On 03/10/2012 12:04, Eliezer Croitoru wrote:
+>> I managed to use opendpi for Deep packets inspection and it seems to
+>> be more suitable then other layer 7 DPI solutions.
 >
-> tproxy: copy transparent flag when creating a time wait
+> Can you please test my fork of opendpi-netfilter for nDPI (the ntop fork
+> of opendpi)
+> https://github.com/ewildgoose/ndpi-netfilter
 >
-> The transparent socket option setting was not copied to the time wait
-> socket when an inet socket was being replaced by a time wait socket. This
-> broke the --transparent option of the socket match and may have caused
-> that FIN packets belonging to sockets in FIN_WAIT2 or TIME_WAIT state
-> were being dropped by the packet filter.
+> You need svn nDPI from here:
+> http://www.ntop.org/get-started/download/
 >
-> Does this look like a fix to the problem I was having? What kernel
-> version on kernel.org is this patch included in?
-TPROXY is only a socket it wont close itself.. the software should know 
-the state and other stuff on it and close it.
-you should look at the software part to see why it wont close the 
-connection and move on from there.
+> It may support more protocols... it may crash a lot...
+>
+> Good luck
+>
+> Ed W
+Nice.
+Thanks for the info.
 
-Regards,
+If you would change the module canonical name from opendpi to another 
+that will fit the ndpi it will be less of a problem in a case that it's 
+buggy( I can revert instead of a lot of trouble).
+
+Thanks,
 Eliezer
