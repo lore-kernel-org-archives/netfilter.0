@@ -1,107 +1,27 @@
-From: Arturo Borrero <aborrero@cica.es>
-Subject: Re: [ipset] adding a fqdn and get all A or AAAA registers in the
- set
-Date: Thu, 11 Oct 2012 12:15:59 +0200
-Message-ID: <50769C5F.1020706@cica.es>
-References: <CAPfcJasWf=w1U=wK=ErOH+w6veOgUdjTFbp1JiqjXVYE=7Ay0w@mail.gmail.com> <CAPfcJatY3XEfyE8YmBwMZQQkQ5gkVdnxdaSsm0cj1d9u3_Bz5A@mail.gmail.com> <5075896E.8030305@ngtech.co.il> <CAPfcJasHXPKs8Qo9wrg0qcyiNaRkf+3_VoMFZ-EraadwjpM=Nw@mail.gmail.com> <alpine.DEB.2.00.1210102004160.10737@blackhole.kfki.hu> <CAPfcJatOE8BC4JLGa6_s5+-mTQQ17KMyjVAxbpYpnpUWo-oOzQ@mail.gmail.com> <50769AE9.6010905@ngtech.co.il>
+From: Markus Feldmann <feldmann_markus@gmx.de>
+Subject: senseful setup against flooding attack
+Date: Thu, 11 Oct 2012 19:45:30 +0200
+Message-ID: <k570jp$88c$1@ger.gmane.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms080301000106070708070502"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <50769AE9.6010905@ngtech.co.il>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Eliezer Croitoru <eliezer@ngtech.co.il>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-This is a cryptographically signed message in MIME format.
+Hi All,
 
---------------ms080301000106070708070502
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
-Content-Transfer-Encoding: quoted-printable
+i have problems and i am not not sure how to setup my flooding attack 
+rule withe senseful values. Here is my iptable-rule:
 
-On 11/10/12 12:09, Eliezer Croitoru wrote:
-> It's quite simple task for perl\python\ruby script to the what you need=
-=2E
+> iptables -A attacksinput -p tcp -m conntrack --ctstate NEW -m multiport --dports 1:79,81:442,444:65535 -m hashlimit --hashlimit-name attacksinnot_80 --hashlimit-upto 6/hour --hashlimit-burst 20 --hashlimit-mode srcip -j LOG --log-level info --log-prefix "attacksinput(!80): " && \
 
-Yes, I know it.
+So my hashlimit-burst is only 20 and my hashlimit-upto is 6/hour. I want 
+to run a server application which doesnt fit with this setting. The 
+incoming connection is really fast blocked. Which values are critical or 
+the maximal limit for a mini-ITX server with intel atom N270 cpu? I have 
+DSL 6000.
 
-But having a layer over ipset was not what I was looking for.
+regards Markus
 
-Also, I considered this a nice/basic/standar/awsome feature that I=20
-didn't know why ipset doesn't implement it.
-
---=20
-Arturo Borrero Gonz=E1lez
-Departamento de Seguridad Inform=E1tica, @NIS_CICA (twitter)
-Centro Inform=E1tico Cient=EDfico de Andaluc=EDa (CICA)
-Avda. Reina Mercedes s/n - 41012 - Sevilla (Spain)
-Tfno.: +34 955 056 600 / FAX: +34 955 056 650
-Consejer=EDa de Econom=EDa, Innovaci=F3n, Ciencia y Empleo
-Junta de Andaluc=EDa
-
-
-
---------------ms080301000106070708070502
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Description: S/MIME Cryptographic Signature
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJfTCC
-BLIwggOaoAMCAQICEQDy6BWBJobnk2WsauX3S3w/MA0GCSqGSIb3DQEBBQUAMDsxCzAJBgNV
-BAYTAk5MMQ8wDQYDVQQKEwZURVJFTkExGzAZBgNVBAMTElRFUkVOQSBQZXJzb25hbCBDQTAe
-Fw0xMTA1MjMwMDAwMDBaFw0xNDA1MjIyMzU5NTlaMH0xOTA3BgkqhkiG9w0BCQIWKmh0dHA6
-Ly95by5yZWRpcmlzLmVzL3NveS9hYm9ycmVyb0BjaWNhLmVzLzEhMB8GA1UEAwwYQXJ0dXJv
-IEJvcnJlcm8gR29uesOhbGV6MRAwDgYDVQQKEwdjaWNhLmVzMQswCQYDVQQGEwJFUzCCASIw
-DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALMi3aU+yjOXMogxr3HtgGjQzDnDPJKkHjUU
-eXwA+BofJLjv9L971Qyy+a6il7QiVwOmYhehUsF68ES6sbsgPw+joBGfGfSN1ebxSVPKGg2b
-urK/m4xIlg5LNjhQg+f8/w17mYkSedpCgMQDyg8UM5zNxmL51Ix/qiRI6N7m0wZAQhJA3A9c
-OdcZV5rG83OBotWOUu4/2I/VuESyN5fXXtFOuMHsXAxGNvjPfhCU6rORwerltivEzB5BokST
-mSWMoLcgfIvGNBqMvaC4WBZlbiOhRPM8f5i8ANu5eYeu47wWJfVDigD0z0RETzFqQKWlLdyx
-FMeVJ/P211wPfkD3JZMCAwEAAaOCAW0wggFpMB8GA1UdIwQYMBaAFGNNQ1oZSD/ERsECur/u
-DuWCt2amMB0GA1UdDgQWBBSEVzsHMp9emXaOpMhgaen1cGLrAzAOBgNVHQ8BAf8EBAMCBaAw
-DAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDBAYIKwYBBQUHAwIwGAYDVR0gBBEw
-DzANBgsrBgEEAbIxAQICHTA/BgNVHR8EODA2MDSgMqAwhi5odHRwOi8vY3JsLnRjcy50ZXJl
-bmEub3JnL1RFUkVOQVBlcnNvbmFsQ0EuY3JsMHIGCCsGAQUFBwEBBGYwZDA6BggrBgEFBQcw
-AoYuaHR0cDovL2NydC50Y3MudGVyZW5hLm9yZy9URVJFTkFQZXJzb25hbENBLmNydDAmBggr
-BgEFBQcwAYYaaHR0cDovL29jc3AudGNzLnRlcmVuYS5vcmcwGwYDVR0RBBQwEoEQYWJvcnJl
-cm9AY2ljYS5lczANBgkqhkiG9w0BAQUFAAOCAQEAmWWeCzuCHMDvz2/NNgQdW5KpMiVYYwDP
-bf3fMrYCodRkZ7mO5x58tNQPljMiJLpGf0LG4N/TvnWS5l7LuXchBURAXeIkZ0n7M/W8qjsA
-vSRQKQ3ftduad6jPDvWxu7ZPZacftRg/k0ydDnC/TMH8OdRg+vu+rLVWX90vrxBHqHuxDWIo
-rNAUIxPMc1rySQVCOwoZwi5m6w0sAMVae1Y1A0k6ZhP5LJOuBXnLxVDCHW7Hs4cRGC8vBvcY
-v5hchMLglCEMBltPQZ5mNMFx2VU8bvXn2fIKSr+AnUJgxMG1FnyDhd+TjxoZzReCbS39Yiry
-EJkf+UjnSjsG1VAcRquYLzCCBMMwggOroAMCAQICEHP+V/rfuMUIgXtmuWvwLe8wDQYJKoZI
-hvcNAQEFBQAwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2FsdCBM
-YWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMYaHR0
-cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBB
-dXRoZW50aWNhdGlvbiBhbmQgRW1haWwwHhcNMDkwNTE4MDAwMDAwWhcNMjgxMjMxMjM1OTU5
-WjA7MQswCQYDVQQGEwJOTDEPMA0GA1UEChMGVEVSRU5BMRswGQYDVQQDExJURVJFTkEgUGVy
-c29uYWwgQ0EwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDIFdn1M2ojoZANz7sF
-RMOrH0o1hRohhaBP+PBA4kpDm/5bsbC/tFfcdYBBS2Qa9ttPb4/QJUU1+erLSvr72tPtRYgR
-lDbkzKgN78U9N+0We+PClZ5YM38i+/j/7Oa+264KZSUih9pvhItG6ECGKD+/VgjiSumDouki
-+y36tigfkcHDcftTwCtOpAyhbp1V7ezhJIc6COINHOTETdDLJ/qEZObRl51WJFuTuykuQ+JB
-aj3iSmX8ml9ahoe8h8d5gJaZUcaQD2SRmX0Q3awsAyrheGT+zj1O9CtQEUvRWNSbA/B/9TtT
-sFND+8UvxAQpGjqs11Xp0Q6V0Tsxf3hPriktAgMBAAGjggFNMIIBSTAfBgNVHSMEGDAWgBSJ
-gmd9xJ0mcABLtFBIfN49rgRufTAdBgNVHQ4EFgQUY01DWhlIP8RGwQK6v+4O5YK3ZqYwDgYD
-VR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8CAQAwGAYDVR0gBBEwDzANBgsrBgEEAbIx
-AQICHTBYBgNVHR8EUTBPME2gS6BJhkdodHRwOi8vY3JsLnVzZXJ0cnVzdC5jb20vVVROLVVT
-RVJGaXJzdC1DbGllbnRBdXRoZW50aWNhdGlvbmFuZEVtYWlsLmNybDBvBggrBgEFBQcBAQRj
-MGEwOAYIKwYBBQUHMAKGLGh0dHA6Ly9jcnQudXNlcnRydXN0LmNvbS9VVE5BQUFDbGllbnRf
-Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0GCSqGSIb3
-DQEBBQUAA4IBAQAGK6lTLxPcXDkWzIafXkx7cvvsjVWKXpoK/1NMdvQGPVDPV/Ciz6+ZjKr+
-oBl2PpkDMvp1gziKu2uapQwTstQbduaULmeYWeORbAKQmpzIYEtVq8qIWo0r5WmVAwfR1A78
-JCIuWbFjpF/t2SNy5JzOOlxsH0+pAMkd/vp/RS22LoTdDyegWRhO1XYlRfSZJnnbb58j90O7
-Kw8Eo4EmLLd7Nfk9d19AIeZ/HaWWWr3QyxY6bLthi4r9BDlECsss4cvOLhCYGtvgk+1JZGQI
-IJ+3o1Dwot3KtMZ8DD3nXhXcJ4bkOjtSWherqQZTK50Jc2QcAcP9MNKHA2/kFQN6OV9oMYIC
-RTCCAkECAQEwUDA7MQswCQYDVQQGEwJOTDEPMA0GA1UEChMGVEVSRU5BMRswGQYDVQQDExJU
-RVJFTkEgUGVyc29uYWwgQ0ECEQDy6BWBJobnk2WsauX3S3w/MAkGBSsOAwIaBQCggcswGAYJ
-KoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTIxMDExMTAxNTU5WjAj
-BgkqhkiG9w0BCQQxFgQUMQnWJEMHdCYjvnSZq5YNWdfVoV4wbAYJKoZIhvcNAQkPMV8wXTAL
-BglghkgBZQMEASowCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDAN
-BggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDANBgkqhkiG9w0BAQEFAASC
-AQAhLgn//7M0iMBAwA+8DqbqcB7DzpaYx22YYfAxI4kSv1J4Y3cVBqNmlCE4NsS93GkV6fwH
-D+Q4907pPyXY6nwC0+HYmvO3nfkA90L1qZc0I0KD2XF0QsFyVPBvCeaHK4o3+0uh721lc+g5
-mDcpK8fRz28k2DXqkIWJ4iiGjKaOLq9nFzE3KhD//FDWzdywvzQYQzEX507JS4lE1io4GXtn
-BNhoTkrZAfDIno+Zp/c0ilRPPhTohCWjFJVhxfZqom+b2OH9d+Op8O3fIbJl7ECY7hV5TQDv
-yefoYSzGV9EY3YC1Pky6LuSk+8kgbiqUmyJKnjXXZZbzDa0Wmzzost5PAAAAAAAA
---------------ms080301000106070708070502--
