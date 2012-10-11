@@ -1,36 +1,28 @@
-From: Arturo Borrero <aborrero@cica.es>
-Subject: Re: [ipset] adding a fqdn and get all A or AAAA registers in the set
-Date: Wed, 10 Oct 2012 20:27:23 +0200
-Message-ID: <CAPfcJatOE8BC4JLGa6_s5+-mTQQ17KMyjVAxbpYpnpUWo-oOzQ@mail.gmail.com>
-References: <CAPfcJasWf=w1U=wK=ErOH+w6veOgUdjTFbp1JiqjXVYE=7Ay0w@mail.gmail.com>
- <CAPfcJatY3XEfyE8YmBwMZQQkQ5gkVdnxdaSsm0cj1d9u3_Bz5A@mail.gmail.com>
- <5075896E.8030305@ngtech.co.il> <CAPfcJasHXPKs8Qo9wrg0qcyiNaRkf+3_VoMFZ-EraadwjpM=Nw@mail.gmail.com>
- <alpine.DEB.2.00.1210102004160.10737@blackhole.kfki.hu>
+From: Denys Fedoryshchenko <denys@visp.net.lb>
+Subject: conntrack, NAT and icmp echo reply
+Date: Thu, 11 Oct 2012 12:41:52 +0300
+Message-ID: <e457eb3b6f3e357c3681c7af5f504161@visp.net.lb>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.DEB.2.00.1210102004160.10737@blackhole.kfki.hu>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: Eliezer Croitoru <eliezer@ngtech.co.il>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netdev@vger.kernel.org, netfilter@vger.kernel.org
 
-> That's not possible: you can't call a session loop over the IP addres=
-ses
-> from lib/parse.c in the current framework. (That's why it's not alrea=
-dy
-> done.)
+Hi all
 
-Ok, thanks.
+I have NAT box, with very simple rule
+iptables -t nat -I POSTROUTING -s 10.0.0.0/8 -j MASQUERADE
+It can be SNAT also, and it works fine, as NAT.
 
-Regards.
+When i generate icmp _reply_ packet, to some host
+hping -I ppp0 -1 --icmptype 0 8.8.8.8
 
---=20
-Arturo Borrero Gonz=E1lez
-Departamento de Seguridad Inform=E1tica, @NIS_CICA (twitter)
-Centro Informatico Cientifico de Andalucia (CICA)
-Avda. Reina Mercedes s/n - 41012 - Sevilla (Spain)
-Tfno.: +34 955 056 600 / FAX: +34 955 056 650
-Consejer=EDa de Econom=EDa, Innovaci=F3n, Ciencia y Empleo
-Junta de Andaluc=EDa
+It will pass the box, and will exit it without NAT, e.g. with original 
+IP 10.x.x.x
+on outgoing interface, which is not expected behavior IMHO.
+Is it a bug or feature?
+
+---
+Denys Fedoryshchenko, Network Engineer, Virtual ISP S.A.L.
