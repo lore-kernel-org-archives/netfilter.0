@@ -1,27 +1,30 @@
-From: Markus Feldmann <feldmann_markus@gmx.de>
-Subject: senseful setup against flooding attack
-Date: Thu, 11 Oct 2012 19:45:30 +0200
-Message-ID: <k570jp$88c$1@ger.gmane.org>
+From: "Brian Morris" <bmorris@comtechefdata.com>
+Subject: helper match bug?
+Date: Thu, 11 Oct 2012 12:09:55 -0700
+Message-ID: <5076D333020000E200012986@tempegwia1.comtechefdata.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi All,
-
-i have problems and i am not not sure how to setup my flooding attack 
-rule withe senseful values. Here is my iptable-rule:
-
-> iptables -A attacksinput -p tcp -m conntrack --ctstate NEW -m multiport --dports 1:79,81:442,444:65535 -m hashlimit --hashlimit-name attacksinnot_80 --hashlimit-upto 6/hour --hashlimit-burst 20 --hashlimit-mode srcip -j LOG --log-level info --log-prefix "attacksinput(!80): " && \
-
-So my hashlimit-burst is only 20 and my hashlimit-upto is 6/hour. I want 
-to run a server application which doesnt fit with this setting. The 
-incoming connection is really fast blocked. Which values are critical or 
-the maximal limit for a mini-ITX server with intel atom N270 cpu? I have 
-DSL 6000.
-
-regards Markus
-
+It seems the helper match shouldn't succeed if the strings being
+compared aren't the same length.
+ 
+For example, both of these nat rules match the helper connections if I
+start an FTP session on master port 212 with FTP conntrack configured to
+support both ports:
+ 
+-A PREROUTING -p tcp -m state --state RELATED -m helper --helper
+"ftp-212" 
+-A PREROUTING -p tcp -m state --state RELATED -m helper --helper
+"ftp-2122" 
+ 
+because the strncmp is just using the length of the helper. Is this by
+design?
+ 
+Thanks
+Brian
