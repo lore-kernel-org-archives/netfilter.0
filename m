@@ -1,78 +1,30 @@
-From: Denys Fedoryshchenko <denys@visp.net.lb>
-Subject: Re: conntrack, NAT and icmp echo reply
-Date: Thu, 11 Oct 2012 13:02:20 +0300
-Message-ID: <10293136eb284457b47cbffd6c91d1ef@visp.net.lb>
-References: <e457eb3b6f3e357c3681c7af5f504161@visp.net.lb>
- <1349949430.21172.8435.camel@edumazet-glaptop>
+From: Eliezer Croitoru <eliezer@ngtech.co.il>
+Subject: Re: [ipset] adding a fqdn and get all A or AAAA registers in the
+ set
+Date: Thu, 11 Oct 2012 12:09:45 +0200
+Message-ID: <50769AE9.6010905@ngtech.co.il>
+References: <CAPfcJasWf=w1U=wK=ErOH+w6veOgUdjTFbp1JiqjXVYE=7Ay0w@mail.gmail.com> <CAPfcJatY3XEfyE8YmBwMZQQkQ5gkVdnxdaSsm0cj1d9u3_Bz5A@mail.gmail.com> <5075896E.8030305@ngtech.co.il> <CAPfcJasHXPKs8Qo9wrg0qcyiNaRkf+3_VoMFZ-EraadwjpM=Nw@mail.gmail.com> <alpine.DEB.2.00.1210102004160.10737@blackhole.kfki.hu> <CAPfcJatOE8BC4JLGa6_s5+-mTQQ17KMyjVAxbpYpnpUWo-oOzQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1349949430.21172.8435.camel@edumazet-glaptop>
+In-Reply-To: <CAPfcJatOE8BC4JLGa6_s5+-mTQQ17KMyjVAxbpYpnpUWo-oOzQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Eric Dumazet <eric.dumazet@gmail.com>
-Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org
+To: Arturo Borrero <aborrero@cica.es>
+Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, netfilter@vger.kernel.org
 
-On 2012-10-11 12:57, Eric Dumazet wrote:
-> On Thu, 2012-10-11 at 12:41 +0300, Denys Fedoryshchenko wrote:
->> Hi all
->>
->> I have NAT box, with very simple rule
->> iptables -t nat -I POSTROUTING -s 10.0.0.0/8 -j MASQUERADE
->> It can be SNAT also, and it works fine, as NAT.
->>
->> When i generate icmp _reply_ packet, to some host
->> hping -I ppp0 -1 --icmptype 0 8.8.8.8
->>
->> It will pass the box, and will exit it without NAT, e.g. with 
->> original
->> IP 10.x.x.x
->> on outgoing interface, which is not expected behavior IMHO.
->> Is it a bug or feature?
->>
+On 10/10/2012 8:27 PM, Arturo Borrero wrote:
+> Ok, thanks.
 >
-> It depends, -s 10.0.0.0/8 wont match the rule if the source address
-> should be 198.23.44.55 I guess ?
->
-> I would try the more obvious
->
-> iptables -t nat -I POSTROUTING -o device -j MASQUERADE
-Source is correct, it is 10.0.0.0/8 range. I tested also ICMP code 3, 
-it wont be NATed also.
-But ICMP echo passing OK.
-Also TCP RST generated same way, (i guess that don't have any match in 
-conntrack table), won't be NATed too.
-hping -I ppp0 -R 8.8.8.8
-13:01:07.074134 IP 10.0.0.142.2106 > 8.8.8.8.0: Flags [R], seq 
-510333079, win 512, length 0
-13:01:08.074239 IP 10.0.0.142.2107 > 8.8.8.8.0: Flags [R], seq 
-1169580528, win 512, length 0
-13:01:09.074253 IP 10.0.0.142.2108 > 8.8.8.8.0: Flags [R], seq 
-186548661, win 512, length 0
-13:01:10.074376 IP 10.0.0.142.2109 > 8.8.8.8.0: Flags [R], seq 
-2135508128, win 512, length 0
-13:01:11.074553 IP 10.0.0.142.2110 > 8.8.8.8.0: Flags [R], seq 
-1507433100, win 512, length 0
+> Regards.
+It's quite simple task for perl\python\ruby script to the what you need.
 
-And ICMP here you can see correct behavior with icmp echo request:
+Regards,
+Eliezer
 
-12:58:22.917458 IP 10.0.0.142 > 8.8.8.8: ICMP echo reply, id 62548, seq 
-0, length 8
-12:58:23.917543 IP 10.0.0.142 > 8.8.8.8: ICMP echo reply, id 62548, seq 
-256, length 8
-12:58:24.917657 IP 10.0.0.142 > 8.8.8.8: ICMP echo reply, id 62548, seq 
-512, length 8
-12:58:31.047475 IP 10.0.0.142 > 8.8.8.8: ICMP net 5.6.7.8 unreachable, 
-length 36
-12:58:32.047562 IP 10.0.0.142 > 8.8.8.8: ICMP net 5.6.7.8 unreachable, 
-length 36
-12:58:33.047734 IP 10.0.0.142 > 8.8.8.8: ICMP net 5.6.7.8 unreachable, 
-length 36
-12:58:54.014601 IP X.146.153.X > 8.8.8.8: ICMP echo request, id 10462, 
-seq 0, length 8
-12:58:54.081897 IP 8.8.8.8 > X.146.153.X: ICMP echo reply, id 10462, 
-seq 0, length 8
-
----
-Denys Fedoryshchenko, Network Engineer, Virtual ISP S.A.L.
+-- 
+Eliezer Croitoru
+https://www1.ngtech.co.il
+IT consulting for Nonprofit organizations
+eliezer <at> ngtech.co.il
