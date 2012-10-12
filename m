@@ -1,38 +1,32 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
-Subject: Re: helper match bug?
-Date: Thu, 11 Oct 2012 19:15:47 -0500
-Message-ID: <20121012001547.GY3672@harrier.slackbuilds.org>
-References: <5076D333020000E200012986@tempegwia1.comtechefdata.com>
-Reply-To: netfilter@vger.kernel.org
+From: Eliezer Croitoru <eliezer@ngtech.co.il>
+Subject: Re: [ipset] adding a fqdn and get all A or AAAA registers in the
+ set
+Date: Fri, 12 Oct 2012 03:46:53 +0200
+Message-ID: <5077768D.1060408@ngtech.co.il>
+References: <CAPfcJasWf=w1U=wK=ErOH+w6veOgUdjTFbp1JiqjXVYE=7Ay0w@mail.gmail.com> <CAPfcJatY3XEfyE8YmBwMZQQkQ5gkVdnxdaSsm0cj1d9u3_Bz5A@mail.gmail.com> <5075896E.8030305@ngtech.co.il> <CAPfcJasHXPKs8Qo9wrg0qcyiNaRkf+3_VoMFZ-EraadwjpM=Nw@mail.gmail.com> <alpine.DEB.2.00.1210102004160.10737@blackhole.kfki.hu> <CAPfcJatOE8BC4JLGa6_s5+-mTQQ17KMyjVAxbpYpnpUWo-oOzQ@mail.gmail.com> <50769AE9.6010905@ngtech.co.il> <50769C5F.1020706@cica.es>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5076D333020000E200012986@tempegwia1.comtechefdata.com>
+In-Reply-To: <50769C5F.1020706@cica.es>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Arturo Borrero <aborrero@cica.es>
+Cc: netfilter@vger.kernel.org
 
-On Thu, Oct 11, 2012 at 12:09:55PM -0700, Brian Morris wrote:
-> It seems the helper match shouldn't succeed if the strings being
-> compared aren't the same length.
->  
-> For example, both of these nat rules match the helper connections 
-> if I start an FTP session on master port 212 with FTP conntrack 
-> configured to support both ports:
->  
-> -A PREROUTING -p tcp -m state --state RELATED -m helper --helper
-> "ftp-212" 
-> -A PREROUTING -p tcp -m state --state RELATED -m helper --helper
-> "ftp-2122" 
->  
-> because the strncmp is just using the length of the helper. Is
-> this by design?
+On 10/11/2012 12:15 PM, Arturo Borrero wrote:
+> Yes, I know it.
+>
+> But having a layer over ipset was not what I was looking for.
+>
+> Also, I considered this a nice/basic/standar/awsome feature that I 
+> didn't know why ipset doesn't implement it. 
+it's not really a layer over ipset since it's not constant usage.
+it will be only used on adding and others.
+In any case something will do the dns naming resolution and will make 
+the ipset rules only per resolution so for a more dynamic resolution you 
+will need a helper.
 
-The nat table only sees -m state --state (or preferred, -m conntrack 
---ctstate) NEW packets. You have restricted your rule to match 
-packets which will never reach that table/chain.
--- 
-  http://rob0.nodns4.us/ -- system administration and consulting
-  Offlist GMX mail is seen only if "/dev/rob0" is in the Subject:
+Regards,
+Eliezer
+
