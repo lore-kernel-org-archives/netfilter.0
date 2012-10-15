@@ -1,54 +1,126 @@
-From: Ricardo Klein <klein.rfk@gmail.com>
-Subject: Re: Ipset kernel panic
-Date: Mon, 15 Oct 2012 09:41:31 -0300
-Message-ID: <CADuigkW5n0vxVm3eKykw-pV7WH6xe7YP0cAEQcS5EF5BnNaTkw@mail.gmail.com>
-References: <CADuigkXeFM+N89kwzr8pUPKN5A-qccK5-4juYmutYCcq8XHC4g@mail.gmail.com>
-	<alpine.DEB.2.00.1210150927390.4945@blackhole.kfki.hu>
+From: Arturo Borrero <aborrero@cica.es>
+Subject: [ipset] possible bug handling multi-resolved FQDNs
+Date: Mon, 15 Oct 2012 19:08:26 +0200
+Message-ID: <507C430A.5010201@cica.es>
 Mime-Version: 1.0
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha1; boundary="------------ms030400090905070307040705"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=JM2NNWp0w2bB0lI7+S4LTUUzANd1Xl65AfckKWMhYIs=;
-        b=QJTdm2hVWG17B6Hdtwz19lXQxJrSPc4bLtoWpDGlJk7U27UVihahZJXtZ6XWl6UVz8
-         Vp+qwCwvBZYQUnJ8pyuOeepD3WXLm2vzQScZnz9gv+L3iD34+zy7WnFbPM0ws5GKVDR5
-         7/TY+5hD/yhjJJU51LmK75el+avGZ9tvLQh4VpsmJw++Avr9yTgFeMpIze2G3tSCF+y0
-         p6cgk62Xzc9GgerdEv4PoYFyG65ZW6WVeQPekcu8HGocgu/JbcqyWZyD5B44pBXhxY/s
-         l1Sxr9zK7j1/mO5yFabpw2oYCxJpjz8uiuwDn5HHbSdW2quGlKmrSCwRs/gl6JR6OXVd
-         M4cg==
-In-Reply-To: <alpine.DEB.2.00.1210150927390.4945@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-ouch, sorry, I didnt saw nothing about in the changelogs.
-Thanks for the advice.
+This is a cryptographically signed message in MIME format.
 
---
-Att...
+--------------ms030400090905070307040705
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: quoted-printable
 
-Ricardo Felipe Klein
-klein.rfk@gmail.com
+Hi there,
+I found this:
+
+root@pica:~# ipset create repos_ipv6 hash:ip family inet6
+root@pica:~# ipset add repos_ipv6 wildcart.fedoraproject.org
+ipset v6.12.1: Syntax error: cannot resolve 'wildcart.fedoraproject.org' =
+
+to an IPv6 address: Name or service not known
+Syntax error: cannot parse wildcart.fedoraproject.org: resolving to IPv6 =
+
+address failed
+root@pica:~# dig +short wildcard.fedoraproject.org AAAA
+2001:4178:2:1269::fed2
+2607:f188::dead:beef:cafe:fed1
+2610:28:3090:3001:dead:beef:cafe:fed4
+
+The IPset package is the Debian Wheezy one:
+Package: ipset
+Version: 6.12.1-1
+
+Kernel: Linux 3.2.0-2-686-pae (SMP w/4 CPU cores)
+Architecture: i386 (i686)
 
 
-On Mon, Oct 15, 2012 at 4:28 AM, Jozsef Kadlecsik
-<kadlec@blackhole.kfki.hu> wrote:
-> On Mon, 15 Oct 2012, Ricardo Klein wrote:
->
->> When I create a set like this "ipset create test bitmap:ip,mac range
->> 0.0.0.0/0" and try to list with "ipset list" I got a kernel panic.
->> ipset v 6.11 CentOS 6.3
->
-> That's a bug which is fixed in ipset 6.14.
->
-> Best regards,
-> Jozsef
-> -
-> E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-> Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
->           H-1525 Budapest 114, POB. 49, Hungary
+In a machine with the same version of the package but amd64 the=20
+bug/error doesn't exist.
+
+Any idea?
+
+Best regards
+
+
+
+
+--=20
+Arturo Borrero Gonz=E1lez
+Departamento de Seguridad Inform=E1tica, @NIS_CICA (twitter)
+Centro Inform=E1tico Cient=EDfico de Andaluc=EDa (CICA)
+Avda. Reina Mercedes s/n - 41012 - Sevilla (Spain)
+Tfno.: +34 955 056 600 / FAX: +34 955 056 650
+Consejer=EDa de Econom=EDa, Innovaci=F3n, Ciencia y Empleo
+Junta de Andaluc=EDa
+
+
+
+--------------ms030400090905070307040705
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExCzAJBgUrDgMCGgUAMIAGCSqGSIb3DQEHAQAAoIIJfTCC
+BLIwggOaoAMCAQICEQDy6BWBJobnk2WsauX3S3w/MA0GCSqGSIb3DQEBBQUAMDsxCzAJBgNV
+BAYTAk5MMQ8wDQYDVQQKEwZURVJFTkExGzAZBgNVBAMTElRFUkVOQSBQZXJzb25hbCBDQTAe
+Fw0xMTA1MjMwMDAwMDBaFw0xNDA1MjIyMzU5NTlaMH0xOTA3BgkqhkiG9w0BCQIWKmh0dHA6
+Ly95by5yZWRpcmlzLmVzL3NveS9hYm9ycmVyb0BjaWNhLmVzLzEhMB8GA1UEAwwYQXJ0dXJv
+IEJvcnJlcm8gR29uesOhbGV6MRAwDgYDVQQKEwdjaWNhLmVzMQswCQYDVQQGEwJFUzCCASIw
+DQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALMi3aU+yjOXMogxr3HtgGjQzDnDPJKkHjUU
+eXwA+BofJLjv9L971Qyy+a6il7QiVwOmYhehUsF68ES6sbsgPw+joBGfGfSN1ebxSVPKGg2b
+urK/m4xIlg5LNjhQg+f8/w17mYkSedpCgMQDyg8UM5zNxmL51Ix/qiRI6N7m0wZAQhJA3A9c
+OdcZV5rG83OBotWOUu4/2I/VuESyN5fXXtFOuMHsXAxGNvjPfhCU6rORwerltivEzB5BokST
+mSWMoLcgfIvGNBqMvaC4WBZlbiOhRPM8f5i8ANu5eYeu47wWJfVDigD0z0RETzFqQKWlLdyx
+FMeVJ/P211wPfkD3JZMCAwEAAaOCAW0wggFpMB8GA1UdIwQYMBaAFGNNQ1oZSD/ERsECur/u
+DuWCt2amMB0GA1UdDgQWBBSEVzsHMp9emXaOpMhgaen1cGLrAzAOBgNVHQ8BAf8EBAMCBaAw
+DAYDVR0TAQH/BAIwADAdBgNVHSUEFjAUBggrBgEFBQcDBAYIKwYBBQUHAwIwGAYDVR0gBBEw
+DzANBgsrBgEEAbIxAQICHTA/BgNVHR8EODA2MDSgMqAwhi5odHRwOi8vY3JsLnRjcy50ZXJl
+bmEub3JnL1RFUkVOQVBlcnNvbmFsQ0EuY3JsMHIGCCsGAQUFBwEBBGYwZDA6BggrBgEFBQcw
+AoYuaHR0cDovL2NydC50Y3MudGVyZW5hLm9yZy9URVJFTkFQZXJzb25hbENBLmNydDAmBggr
+BgEFBQcwAYYaaHR0cDovL29jc3AudGNzLnRlcmVuYS5vcmcwGwYDVR0RBBQwEoEQYWJvcnJl
+cm9AY2ljYS5lczANBgkqhkiG9w0BAQUFAAOCAQEAmWWeCzuCHMDvz2/NNgQdW5KpMiVYYwDP
+bf3fMrYCodRkZ7mO5x58tNQPljMiJLpGf0LG4N/TvnWS5l7LuXchBURAXeIkZ0n7M/W8qjsA
+vSRQKQ3ftduad6jPDvWxu7ZPZacftRg/k0ydDnC/TMH8OdRg+vu+rLVWX90vrxBHqHuxDWIo
+rNAUIxPMc1rySQVCOwoZwi5m6w0sAMVae1Y1A0k6ZhP5LJOuBXnLxVDCHW7Hs4cRGC8vBvcY
+v5hchMLglCEMBltPQZ5mNMFx2VU8bvXn2fIKSr+AnUJgxMG1FnyDhd+TjxoZzReCbS39Yiry
+EJkf+UjnSjsG1VAcRquYLzCCBMMwggOroAMCAQICEHP+V/rfuMUIgXtmuWvwLe8wDQYJKoZI
+hvcNAQEFBQAwga4xCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJVVDEXMBUGA1UEBxMOU2FsdCBM
+YWtlIENpdHkxHjAcBgNVBAoTFVRoZSBVU0VSVFJVU1QgTmV0d29yazEhMB8GA1UECxMYaHR0
+cDovL3d3dy51c2VydHJ1c3QuY29tMTYwNAYDVQQDEy1VVE4tVVNFUkZpcnN0LUNsaWVudCBB
+dXRoZW50aWNhdGlvbiBhbmQgRW1haWwwHhcNMDkwNTE4MDAwMDAwWhcNMjgxMjMxMjM1OTU5
+WjA7MQswCQYDVQQGEwJOTDEPMA0GA1UEChMGVEVSRU5BMRswGQYDVQQDExJURVJFTkEgUGVy
+c29uYWwgQ0EwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDIFdn1M2ojoZANz7sF
+RMOrH0o1hRohhaBP+PBA4kpDm/5bsbC/tFfcdYBBS2Qa9ttPb4/QJUU1+erLSvr72tPtRYgR
+lDbkzKgN78U9N+0We+PClZ5YM38i+/j/7Oa+264KZSUih9pvhItG6ECGKD+/VgjiSumDouki
++y36tigfkcHDcftTwCtOpAyhbp1V7ezhJIc6COINHOTETdDLJ/qEZObRl51WJFuTuykuQ+JB
+aj3iSmX8ml9ahoe8h8d5gJaZUcaQD2SRmX0Q3awsAyrheGT+zj1O9CtQEUvRWNSbA/B/9TtT
+sFND+8UvxAQpGjqs11Xp0Q6V0Tsxf3hPriktAgMBAAGjggFNMIIBSTAfBgNVHSMEGDAWgBSJ
+gmd9xJ0mcABLtFBIfN49rgRufTAdBgNVHQ4EFgQUY01DWhlIP8RGwQK6v+4O5YK3ZqYwDgYD
+VR0PAQH/BAQDAgEGMBIGA1UdEwEB/wQIMAYBAf8CAQAwGAYDVR0gBBEwDzANBgsrBgEEAbIx
+AQICHTBYBgNVHR8EUTBPME2gS6BJhkdodHRwOi8vY3JsLnVzZXJ0cnVzdC5jb20vVVROLVVT
+RVJGaXJzdC1DbGllbnRBdXRoZW50aWNhdGlvbmFuZEVtYWlsLmNybDBvBggrBgEFBQcBAQRj
+MGEwOAYIKwYBBQUHMAKGLGh0dHA6Ly9jcnQudXNlcnRydXN0LmNvbS9VVE5BQUFDbGllbnRf
+Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0GCSqGSIb3
+DQEBBQUAA4IBAQAGK6lTLxPcXDkWzIafXkx7cvvsjVWKXpoK/1NMdvQGPVDPV/Ciz6+ZjKr+
+oBl2PpkDMvp1gziKu2uapQwTstQbduaULmeYWeORbAKQmpzIYEtVq8qIWo0r5WmVAwfR1A78
+JCIuWbFjpF/t2SNy5JzOOlxsH0+pAMkd/vp/RS22LoTdDyegWRhO1XYlRfSZJnnbb58j90O7
+Kw8Eo4EmLLd7Nfk9d19AIeZ/HaWWWr3QyxY6bLthi4r9BDlECsss4cvOLhCYGtvgk+1JZGQI
+IJ+3o1Dwot3KtMZ8DD3nXhXcJ4bkOjtSWherqQZTK50Jc2QcAcP9MNKHA2/kFQN6OV9oMYIC
+RTCCAkECAQEwUDA7MQswCQYDVQQGEwJOTDEPMA0GA1UEChMGVEVSRU5BMRswGQYDVQQDExJU
+RVJFTkEgUGVyc29uYWwgQ0ECEQDy6BWBJobnk2WsauX3S3w/MAkGBSsOAwIaBQCggcswGAYJ
+KoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMTIxMDE1MTcwODI2WjAj
+BgkqhkiG9w0BCQQxFgQUsP+hk38PsEGhP7xdTgxgtWX3YU0wbAYJKoZIhvcNAQkPMV8wXTAL
+BglghkgBZQMEASowCwYJYIZIAWUDBAECMAoGCCqGSIb3DQMHMA4GCCqGSIb3DQMCAgIAgDAN
+BggqhkiG9w0DAgIBQDAHBgUrDgMCBzANBggqhkiG9w0DAgIBKDANBgkqhkiG9w0BAQEFAASC
+AQBhrLN+OQ6hAIs9APVntXi3K4ukaJ+LsgXjOkZTcy8rlvggEwA+tIlHew/3FubcE7HVY2pO
+2xli6iTomwOZsMzz1hr5Do61dKhkIWUYCP+aQcoOF9+PADb3feQU5La6OIKJCWcwY694VArl
+S6xWJyhoMzAIa0C1DMjzenW2SamkA13t6w34N/DQwV02Z8LWIpCdw9pESWSF2V+iLckqjGaM
+ojRF9OPkDT/joPKon0glQfMjUOsdGb1yRIZ+nwwtmBFpdJrbAuZXkYQmzgS1dYWioZCcbn0g
+bBGuwsF19Qd1zeM91a42BM+9wXNvarO8TbOWiHF3ElSlNvGcohquuGy7AAAAAAAA
+--------------ms030400090905070307040705--
