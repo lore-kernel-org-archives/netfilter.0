@@ -1,68 +1,101 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: problem in h323 kernel module loading through CT target
-Date: Wed, 17 Oct 2012 16:47:23 +0200
-Message-ID: <20121017144723.GA7078@1984>
-References: <CAAo+KF=2yufzaNPrAf7uVLqnXJOVLxf4RVgi0U9Vg--2mUPrAQ@mail.gmail.com>
+From: Ricardo Klein <klein.rfk@gmail.com>
+Subject: Re: Ipset kernel panic
+Date: Wed, 17 Oct 2012 20:39:37 -0300
+Message-ID: <CADuigkX4ZsMidhC5Bkfs3XQAX9xYPs3zCyZvDv4_v58xbX2ODw@mail.gmail.com>
+References: <CADuigkXeFM+N89kwzr8pUPKN5A-qccK5-4juYmutYCcq8XHC4g@mail.gmail.com>
+	<alpine.DEB.2.00.1210150927390.4945@blackhole.kfki.hu>
+	<CADuigkW5n0vxVm3eKykw-pV7WH6xe7YP0cAEQcS5EF5BnNaTkw@mail.gmail.com>
+	<CADuigkWtZzuWRavME_YOx5wfn+dtge=iuXF+HhO540J--D8a7A@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAAo+KF=2yufzaNPrAf7uVLqnXJOVLxf4RVgi0U9Vg--2mUPrAQ@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type;
+        bh=GOwA5fJYBUu4VvzTlX/T/zGxhxRWgTHrntIIf5HG8Nk=;
+        b=0rfA/SUopm259dik644GYPYlLTkjB/aFS599EMc0MV6kbiMebgiH2gGFBcGzi5760Z
+         Z5lfDWFsIMqPcw66EZcvxSQ+wCuH3vQL4fKsdH5TtkEWjmXsT8kIsBhIz098NuI4FHxY
+         yC2IrPn+xdER9Zs9yUQLT03q3KB2Jp5CX8zSU49LJK8A5kDuLLZnjW/kYMhMkutNw2wB
+         dhpnlphUo/IhWfg5Ze8P0/6gKTReBhtD/uEMae58+U+bCfMNvHvdlUSJ8j5jpC+tolSn
+         faSW0YMnlkixhQRaCOy9vl9f8f6KwzkPY92gpcS0GBvrD2s8fThiVdVOhWLAx0zh81g4
+         +cpg==
+In-Reply-To: <CADuigkWtZzuWRavME_YOx5wfn+dtge=iuXF+HhO540J--D8a7A@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Oguz Yilmaz <oguzyilmazlist@gmail.com>
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: netfilter@vger.kernel.org
 
-On Tue, Oct 16, 2012 at 10:51:37AM +0300, Oguz Yilmaz wrote:
-> Hello,
-> 
-> I try to enable h323 helper for specific internal hosts. However
-> system gives error "No such helper h323"
-> Actually when I enable modules without disabling
-> /proc/sys/net/netfilter/nf_conntrack_helper module seems work. Kernel
-> is 3.5.3.
-> 
-> What do you think the problem is?
-> 
-> Regards,
-> 
-> echo 0 > /proc/sys/net/netfilter/nf_conntrack_helper
-> 
-> # iptables -A PREROUTING -t raw -p tcp -s 10.14.1.7 -j CT --helper h323
-> iptables: No chain/target/match by that name.
+Jozsef,
 
-h323 is a set of three helpers, you have to use the real names behind:
+it still explode with kernel panic when I try:
+[root@fwbalance bin]# ipset create allowed_macs bitmap:ip,mac range 0.0.0.0/0
+[root@fwbalance bin]# ipset list
 
-* RAS (usually port UDP/1719)
-* Q.931 (usually port UDP/TCP/1720)
-* H.245 (usually UDP)
 
-You'll have use one per rule depending depending on what you need.
+CentOS 6.3 64bits
+ipset 6.14 (compiled right now only with --prefix=/usr --libdir=/usr/lib64)
 
-Let me you if you still hit problems.
+--
+Att...
 
-> # dmesg  |grep -v lfp
-> [502137.581136] xt_CT: No such helper "h323"
-> 
-> # iptables -A PREROUTING -t raw -p tcp --dport 1720 -s 10.14.1.7 -j CT
-> --helper h323
-> iptables: No chain/target/match by that name.
-> [root@test14 ~]# dmesg  |grep -v lfp
-> [502289.808258] xt_CT: No such helper "h323"
-> 
-> 
-> # iptables -A PREROUTING -t raw -p tcp -s 10.14.1.7 -j CT --helper
-> h323 --notrack
-> 
-> 
-> # lsmod |grep 323
-> nf_nat_h323             4981  0
-> nf_conntrack_h323      45112  1 nf_nat_h323
-> nf_nat                 13980  4 iptable_nat,nf_nat_sip,nf_nat_h323,nf_nat_ftp
-> nf_conntrack           68100  13
-> xt_CT,xt_state,xt_connlimit,xt_connmark,iptable_nat,nf_nat_sip,nf_conntrack_sip,nf_nat_h323,nf_conntrack_h323,nf_nat_ftp,nf_nat,nf_conntrack_ipv4,nf_conntrack_ftp
+Ricardo Felipe Klein
+klein.rfk@gmail.com
+
+
+On Wed, Oct 17, 2012 at 8:39 PM, Ricardo Klein <klein.rfk@gmail.com> wrote:
+>
+> Jozsef,
+>
+> it still explode with kernel panic when I try:
+> [root@fwbalance bin]# ipset create allowed_macs bitmap:ip,mac range
+> 0.0.0.0/0
+> [root@fwbalance bin]# ipset list
+>
+>
+> CentOS 6.3 64bits
+> ipset 6.14 (compiled right now only with --prefix=/usr
+> --libdir=/usr/lib64)
+>
+>
 > --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> Att...
+>
+> Ricardo Felipe Klein
+> klein.rfk@gmail.com
+>
+>
+> On Mon, Oct 15, 2012 at 9:41 AM, Ricardo Klein <klein.rfk@gmail.com>
+> wrote:
+>>
+>> ouch, sorry, I didnt saw nothing about in the changelogs.
+>> Thanks for the advice.
+>>
+>> --
+>> Att...
+>>
+>> Ricardo Felipe Klein
+>> klein.rfk@gmail.com
+>>
+>>
+>> On Mon, Oct 15, 2012 at 4:28 AM, Jozsef Kadlecsik
+>> <kadlec@blackhole.kfki.hu> wrote:
+>> > On Mon, 15 Oct 2012, Ricardo Klein wrote:
+>> >
+>> >> When I create a set like this "ipset create test bitmap:ip,mac range
+>> >> 0.0.0.0/0" and try to list with "ipset list" I got a kernel panic.
+>> >> ipset v 6.11 CentOS 6.3
+>> >
+>> > That's a bug which is fixed in ipset 6.14.
+>> >
+>> > Best regards,
+>> > Jozsef
+>> > -
+>> > E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+>> > PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+>> > Address : Wigner Research Centre for Physics, Hungarian Academy of
+>> > Sciences
+>> >           H-1525 Budapest 114, POB. 49, Hungary
+>
+>
