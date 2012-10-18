@@ -1,33 +1,68 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+From: Ricardo Klein <klein.rfk@gmail.com>
 Subject: Re: Ipset kernel panic
-Date: Thu, 18 Oct 2012 14:42:03 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1210181439560.2232@blackhole.kfki.hu>
-References: <CADuigkXeFM+N89kwzr8pUPKN5A-qccK5-4juYmutYCcq8XHC4g@mail.gmail.com> <alpine.DEB.2.00.1210150927390.4945@blackhole.kfki.hu> <CADuigkW5n0vxVm3eKykw-pV7WH6xe7YP0cAEQcS5EF5BnNaTkw@mail.gmail.com> <CADuigkWtZzuWRavME_YOx5wfn+dtge=iuXF+HhO540J--D8a7A@mail.gmail.com>
- <alpine.DEB.2.00.1210180929340.2232@blackhole.kfki.hu> <CADuigkVCEYuLdMA=Qgtphr81YnPZROyx5p-fy8imoUnPCViU3g@mail.gmail.com> <alpine.DEB.2.00.1210181330540.2232@blackhole.kfki.hu> <CADuigkVxYZHd==J97_g1ABCE=ExVfKRNabAqzuZhNjV0XCcLnQ@mail.gmail.com>
- <CADuigkXm99qcdm-GcaLSQQt0vreK7WxTs4AXv6sZKH+jxe4hDQ@mail.gmail.com> <alpine.DEB.2.00.1210181425120.2232@blackhole.kfki.hu> <CADuigkUPiUJMEooH7xbngxV_COWTDWpz+QnszPp_7AP4Pmopeg@mail.gmail.com>
+Date: Thu, 18 Oct 2012 09:45:40 -0300
+Message-ID: <CADuigkXgXLkoivronrBwuYSQo+faQG9Xx=F8=G33hss7s5Tfgg@mail.gmail.com>
+References: <CADuigkXeFM+N89kwzr8pUPKN5A-qccK5-4juYmutYCcq8XHC4g@mail.gmail.com>
+	<alpine.DEB.2.00.1210150927390.4945@blackhole.kfki.hu>
+	<CADuigkW5n0vxVm3eKykw-pV7WH6xe7YP0cAEQcS5EF5BnNaTkw@mail.gmail.com>
+	<CADuigkWtZzuWRavME_YOx5wfn+dtge=iuXF+HhO540J--D8a7A@mail.gmail.com>
+	<alpine.DEB.2.00.1210180929340.2232@blackhole.kfki.hu>
+	<CADuigkVCEYuLdMA=Qgtphr81YnPZROyx5p-fy8imoUnPCViU3g@mail.gmail.com>
+	<alpine.DEB.2.00.1210181330540.2232@blackhole.kfki.hu>
+	<CADuigkVxYZHd==J97_g1ABCE=ExVfKRNabAqzuZhNjV0XCcLnQ@mail.gmail.com>
+	<CADuigkXm99qcdm-GcaLSQQt0vreK7WxTs4AXv6sZKH+jxe4hDQ@mail.gmail.com>
+	<alpine.DEB.2.00.1210181425120.2232@blackhole.kfki.hu>
+	<CADuigkUPiUJMEooH7xbngxV_COWTDWpz+QnszPp_7AP4Pmopeg@mail.gmail.com>
+	<alpine.DEB.2.00.1210181439560.2232@blackhole.kfki.hu>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CADuigkUPiUJMEooH7xbngxV_COWTDWpz+QnszPp_7AP4Pmopeg@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type;
+        bh=KOzqw5D6Fm0jkAkNqnJAZx1+I+BGJakRwyAmo8GGo+I=;
+        b=naHE8XGJI/i474FvKaDRtoI+/yu6CTcSw7Ea+LV4BqQS2K1pccP24zzG+nhB5qbjmf
+         F0Trmzf2T8AWnZhe5Jgc7rQVJi/DmXAoZuPQG6MlhZu/c3KVbxYd5wmcJ+6ZYNebiI3J
+         BFIik+fAqyeOoY/a4Z9WCeCouccjqOM+4zh+z9skJTR3TA4oqOUO6Xwn8UrDFSXh+SFj
+         lhqAEciP7nuvzvJChL+gVuNIEAr57K6Wd1nY+AiNaL5KKjJkDmK8iqXuKV+lJHAqaPJh
+         CppMx7iPIN7YcuQbFLqWa6kW/cdvZxRegrYHJOMi4BBFelbbmkxQY6T5mEd4jyk9CzKO
+         rQJg==
+In-Reply-To: <alpine.DEB.2.00.1210181439560.2232@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Ricardo Klein <klein.rfk@gmail.com>
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: netfilter@vger.kernel.org
 
-On Thu, 18 Oct 2012, Ricardo Klein wrote:
+ok... I will do it as soon as I get my connection back (I am in work
+and my testing virtual machines are in home, and internet goes down
+there now)
 
-> yeah... it not shows "revision xx" so I should need to recompile all
-> entire kernel or can I just recompile this module?
+Great thanks Jozsef
 
-Just follow the README file from ipset-6.14: compile and install the 
-kernel modules from the package. There's no need to recompile the whole 
-kernel tree.
+--
+Att...
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+Ricardo Felipe Klein
+klein.rfk@gmail.com
+
+
+On Thu, Oct 18, 2012 at 9:42 AM, Jozsef Kadlecsik
+<kadlec@blackhole.kfki.hu> wrote:
+> On Thu, 18 Oct 2012, Ricardo Klein wrote:
+>
+>> yeah... it not shows "revision xx" so I should need to recompile all
+>> entire kernel or can I just recompile this module?
+>
+> Just follow the README file from ipset-6.14: compile and install the
+> kernel modules from the package. There's no need to recompile the whole
+> kernel tree.
+>
+> Best regards,
+> Jozsef
+> -
+> E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+> Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+>           H-1525 Budapest 114, POB. 49, Hungary
