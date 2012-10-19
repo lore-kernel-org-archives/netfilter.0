@@ -1,51 +1,166 @@
-From: Pavel Roskin <proski-mXXj517/zsQ@public.gmane.org>
-Subject: Re: [ath9k-devel] [PATCH net-next 00/21] treewide: Use
- consistent api style for address testing
-Date: Fri, 19 Oct 2012 11:55:17 -0400
-Message-ID: <20121019115517.7b8514a8@mj>
-References: <cover.1350618006.git.joe@perches.com>
-	<1350630254.2293.183.camel@edumazet-glaptop>
+From: "Benjamin Beckmeyer" <B.Beckmeyer@stud.hs-esslingen.de>
+Subject: Ebtables NFQUEUE Support
+Date: Fri, 19 Oct 2012 20:32:59 +0200 (CEST)
+Message-ID: <37777.70.67.211.174.1350671579.squirrel@webmail.hs-esslingen.de>
+Reply-To: B.Beckmeyer@stud.hs-esslingen.de
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-Return-path: <dev-bounces-yBygre7rU0TnMu66kgdUjQ@public.gmane.org>
-In-Reply-To: <1350630254.2293.183.camel@edumazet-glaptop>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://openvswitch.org/mailman/options/dev>,
-	<mailto:dev-request-yBygre7rU0TnMu66kgdUjQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://openvswitch.org/pipermail/dev>
-List-Post: <mailto:dev-yBygre7rU0TnMu66kgdUjQ@public.gmane.org>
-List-Help: <mailto:dev-request-yBygre7rU0TnMu66kgdUjQ@public.gmane.org?subject=help>
-List-Subscribe: <http://openvswitch.org/mailman/listinfo/dev>,
-	<mailto:dev-request-yBygre7rU0TnMu66kgdUjQ@public.gmane.org?subject=subscribe>
-Sender: dev-bounces-yBygre7rU0TnMu66kgdUjQ@public.gmane.org
-Errors-To: dev-bounces-yBygre7rU0TnMu66kgdUjQ@public.gmane.org
-To: Eric Dumazet <eric.dumazet-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Cc: linux-mips-6z/3iImG2C8G8FEW9MqTrA@public.gmane.org, b.a.t.m.a.n-ZwoEplunGu2X36UT3dwllkB+6BGkLq7r@public.gmane.org, linux-doc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, brcm80211-dev-list-dY08KVG/lbpWk0Htik3J/w@public.gmane.org, users-poMEt7QlJxcwIE2E9O76wjtx2kNaKg5H@public.gmane.org, linux-sctp-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, devel-s9riP+hp16TNLxjTenLetw@public.gmane.org, dev-yBygre7rU0TnMu66kgdUjQ@public.gmane.org, linux-s390-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, wimax-BPSAo7wm5JOHVYUYWc+uSQ@public.gmane.org, linux-scsi-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-rdma-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, bridge-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, lvs-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, coreteam-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org, b43-dev-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, cbe-oss-dev-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, devel-gWbeCf7V1WCQmaza687I9mD2FQJk+8+b@public.gmane.org, user-mode-linux-devel-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, devicetree-discuss-uLR06cmDAlY/bJ5BZ2RsiQ@public.gmane.org, davinci-linux-open-source-VycZQUHpC/PFrsHnngEfi1aTQe2KTcn/@public.gmane.org, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, user-mode-linux-user-5NWGOfrQmneRv+LV9MX5uipxlwaOVQ5f@public.gmane.org, linux-arm-kernel-IAPFreCvJWM7uuMidbF8XUB+6BGkLq7r@public.gmane.org, linux-nfs-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-parisc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-usb-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, l
+To: netfilter@vger.kernel.org
 
-On Fri, 19 Oct 2012 09:04:14 +0200
-Eric Dumazet <eric.dumazet-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org> wrote:
+Hi all,
 
-> Yes they are some names discrepancies, thats a big deal.
-> 
-> And we have alloc_skb() / kfree_skb() / skb_clone() 
-> 
-> Why not skb_alloc() / skb_free() / skb_clone() ?
-> 
-> Some people actually know current code by name of functions, they dont
-> want to change their mind and having to grep include files and git log
-> to learn the new names of an old function, especially when traveling
-> and using a laptop.
+I am trying to build an Ebtables NFQUEUE module to also move layer 2
+traffic to the NFQUEUE system provided by IPtables.  A few years ago a
+Pierre Chifflier provided 3 patches to Ebtables that appear to try and
+utilize the NFQUEUE xt_tables target within Ebtables to pass the layer 2
+data via nfnetlink_queue.
 
-I agree.
+Some background, I am trying to get this working on 2.6.26.5 kernel
+version and have applied the patches listed here:
 
-Also, it makes sense to introduce a more consistent name for a function
-when it's improved in some way and the callers need to be adjusted or
-re-checked.
+http://permalink.gmane.org/gmane.comp.security.firewalls.netfilter.devel/37859
+http://permalink.gmane.org/gmane.comp.security.firewalls.netfilter.devel/37862
 
-That way, the old name can be phased out as the code is made compatible
-with the new function.
+I have also patched the Ebtables (2.0.8) userspace utility to produce the
+shared object ebt_NFQUEUE.so with code also from Pierre, which can be
+found here:
 
--- 
-Regards,
-Pavel Roskin
+https://www.wzdftpd.net/downloads/ebt_NFQUEUE.c
+
+To get the patches to work for the ebt_nfqueue kernel object, due to an
+older kernel, I had to modify the target and check function arguments as
+the "const struct xt_action_param" does not exist in my kernel version:
+
+static int ebt_nfqueue_tg(const struct sk_buff *skb, const struct
+net_device *in,
+				   const struct net_device *out, const void *data, unsigned int datalen)
+{
+    const struct ebt_nfqueue_info *info = data;
+    struct nf_loginfo li;
+    unsigned int verdict = NF_ACCEPT;
+
+    printk(KERN_NOTICE "ebt_NFQUEUE: returning EBT_QUEUE\n");
+    return EBT_QUEUE; // return -5
+}
+
+static struct ebt_target ebt_nfqueue __read_mostly = {
+    .name 		= "NFQUEUE",
+    .target 	= ebt_nfqueue_tg,
+    .check = ebt_nfqueue_check,
+    .me 		= THIS_MODULE,
+};
+
++++++ VERSUS +++++
+
+static struct xt_target ebt_xt_nfqueue __read_mostly = {
+    .name 		= "NFQUEUE",
+    .revision   = 0,
+    .family     = 7, // NFPROTO_BRIDGE
+    .target 	= ebt_nfqueue_tg,
+    .checkentry = ebt_nfqueue_check,
+    .targetsize = sizeof(struct ebt_nfqueue_info),
+    .me 		= THIS_MODULE,
+};
+
+Nevertheless, the return value from this target is just the EBT_QUEUE (-5)
+to inform the Netfilter system of the queue number.  If I use the
+ebt_target rather than xt_target the kernel module will build and can be
+inserted into ebtables with no errors - the problem is that queuing does
+not work.  If I use the xt_target rather than the ebt_target then Ebtables
+userspace complains that it is not supported from this kernel version
+(error in communication.c in userspace and appears to fail on the
+"setsockopt" calls).
+
+I have printed out the entire contents of using the xt_target vs
+ebt_target and all data going into this call is identical, which boggles
+my mind as to why xt_target will trigger the error in the ebtables
+userspace program and ebt_target will not.
+
+I think that I MUST use the xt_target within ebtables to properly pass
+this data to the NFQUEUE system.  This comes from an earlier discussion:
+
++++
+
+On 04.02.2011 14:40, Pierre Chifflier wrote:
+> On 02/04/2011 02:25 PM, Patrick McHardy wrote:
+>> On 03.02.2011 15:32, Pierre Chifflier wrote:
+>>> This adds support for sending bridge packets to userspace using
+>>> the NFQUEUE target with ebtables.
+>>
+>> I don't think we need a new target for this (and the EBT_QUEUE
+>> definition), just using xt_NFQUEUE should work fine.
+>
+> I thought ebtables did not support sending packet to xtables ? (that's
+> on the TODO list for ebtables).
+
+It can use xtables targets and matches if I'm not completely
+mistaken.
+
++++
+
+It appears I can 'use' xtables targets, it will compile correctly, but
+ebtables will not actually allow me to insert the rules to jump to the
+NFQUEUE target, so I am unable to actually verify if packets would be
+queue'd by the system.
+
+When using the ebt_target I can insert my NFQUEUE rules into the nat
+PREROUTING table, and the packet counter will actually increment on layer
+2 traffic, but the packets do not appear to actually hit any of the
+nfnetlink_queue functions (I have added a printk to every function). I
+even see that my target has been hit via a printk:
+
+user.notice kernel: ebt_NFQUEUE: returning EBT_QUEUE
+
+But then it appears that is as far as the packet goes.
+
+When queueing a packet from IPtables I see a huge amount of output:
+
+user.notice kernel: BB: File: nfnetlink_queue.c        Function:
+__enqueue_entry
+user.notice kernel: BB: File: nfnetlink.c      Function: nfnetlink_rcv
+user.notice kernel: BB: File: nfnetlink.c      Function: nfnl_lock
+user.notice kernel: BB: File: nfnetlink.c      Function: nfnetlink_rcv_msg
+user.notice kernel: BB: File: nfnetlink.c      Function: nfnetlink_get_subsys
+user.notice kernel: BB: File: nfnetlink.c      Function:
+nfnetlink_find_client
+user.notice kernel: BB: File: nfnetlink_queue.c        Function:
+nfqnl_recv_verdict
+user.notice kernel: BB: File: nfnetlink_queue.c        Function:
+instance_lookup
+user.notice kernel: BB: File: nfnetlink_queue.c        Function:
+find_dequeue_entry
+user.notice kernel: BB: File: nfnetlink.c      Function: nfnl_unlock
+user.notice kernel: BB: File: nfnetlink_queue.c        Function:
+nfqnl_enqueue_packet
+user.notice kernel: BB: File: nfnetlink_queue.c        Function:
+instance_lookup
+user.notice kernel: BB: File: nfnetlink_queue.c        Function:
+nfqnl_build_packet_message
+user.notice kernel: BB: File: nfnetlink.c      Function: nfnetlink_unicast
+
+But from my ebtables -j NFQUEUE there are no calls to the nfnetlink.c or
+nfnetlink_queue.c functions.  It is almost like the target is hit then the
+packet is just mysteriously gone...or hits other functions unrelated to
+the queueing system.
+
+In summation, the problem is if using the ebt_target struct in the kernel
+module for ebtables, it will be inserted and can be utilized by the
+userspace Ebtables - but it doesnt appear to pass the packet to the
+IPtables nfqueue correctly.  If using the xt_target struct in the kernel
+module for ebtables, it will compile, but fails to be utilized by Ebtables
+userspace due to a "setsockopt error mentioned above.
+
+Any help or suggestions are greatly appreciated!
+
+Thank you, Benny
+
+
+
+
+
+
+
