@@ -1,106 +1,62 @@
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: [PATCH net-next 00/21] treewide: Use consistent api
- style for address testing
-Date: Fri, 19 Oct 2012 09:04:14 +0200
-Message-ID: <1350630254.2293.183.camel@edumazet-glaptop>
-References: <cover.1350618006.git.joe@perches.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Ipset kernel panic
+Date: Fri, 19 Oct 2012 10:33:57 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1210191028520.5049@blackhole.kfki.hu>
+References: <CADuigkXeFM+N89kwzr8pUPKN5A-qccK5-4juYmutYCcq8XHC4g@mail.gmail.com> <alpine.DEB.2.00.1210150927390.4945@blackhole.kfki.hu> <CADuigkW5n0vxVm3eKykw-pV7WH6xe7YP0cAEQcS5EF5BnNaTkw@mail.gmail.com> <CADuigkWtZzuWRavME_YOx5wfn+dtge=iuXF+HhO540J--D8a7A@mail.gmail.com>
+ <alpine.DEB.2.00.1210180929340.2232@blackhole.kfki.hu> <CADuigkVCEYuLdMA=Qgtphr81YnPZROyx5p-fy8imoUnPCViU3g@mail.gmail.com> <alpine.DEB.2.00.1210181330540.2232@blackhole.kfki.hu> <CADuigkVxYZHd==J97_g1ABCE=ExVfKRNabAqzuZhNjV0XCcLnQ@mail.gmail.com>
+ <CADuigkXm99qcdm-GcaLSQQt0vreK7WxTs4AXv6sZKH+jxe4hDQ@mail.gmail.com> <alpine.DEB.2.00.1210181425120.2232@blackhole.kfki.hu> <CADuigkUPiUJMEooH7xbngxV_COWTDWpz+QnszPp_7AP4Pmopeg@mail.gmail.com> <alpine.DEB.2.00.1210181439560.2232@blackhole.kfki.hu>
+ <CADuigkXgXLkoivronrBwuYSQo+faQG9Xx=F8=G33hss7s5Tfgg@mail.gmail.com> <CADuigkU+S9-9SjT6=VFYr93NAdk42Yrw7PyfgSkhgg_hZKakBQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <bridge-bounces@lists.linux-foundation.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmail.com; s=20120113;
-	h=subject:from:to:cc:in-reply-to:references:content-type:date
-	:message-id:mime-version:x-mailer:content-transfer-encoding;
-	bh=z9IYakRRuaFD7C90rUVp7JLEdzYtCqYxlGvAWd8/cZk=;
-	b=oA9o1jQgEt4eButXQGpoR8a1WGgmRCclEanLv7BkHVcv0+Z8ziVkCU/QyWPX89l5Cn
-	4q5hSbiFs/Dd0wTaQVd61LpK76MrZGFiLMgvXHxBAOt/lRVHnM5VEqAxZWtj6MESVBBv
-	w/elzVRle9aBoySI97wuUpHpqS/1bjouont1eOVd3QgKSkzgKFRImDrDZHyfcuxuSSu8
-	UBNjT7eIElZ0NbaGLdUttlZ54iWx9fGMV4emuiikVIi/h4oUG0UzpXVge0xau31neKOp
-	KylhtR6EqcgE6EvSUPVRObmFLEFixCHqLa1yJQ6kP7Ti6J/VOQgTF9J8sm2NMkgANplW
-	dX4w==
-In-Reply-To: <cover.1350618006.git.joe@perches.com>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/bridge>, 
-	<mailto:bridge-request@lists.linux-foundation.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/bridge/>
-List-Post: <mailto:bridge@lists.linux-foundation.org>
-List-Help: <mailto:bridge-request@lists.linux-foundation.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/bridge>,
-	<mailto:bridge-request@lists.linux-foundation.org?subject=subscribe>
-Sender: bridge-bounces@lists.linux-foundation.org
-Errors-To: bridge-bounces@lists.linux-foundation.org
-Content-Type: text/plain; charset="us-ascii"
-To: Joe Perches <joe@perches.com>
-Cc: linux-mips@linux-mips.org, linux-usb@vger.kernel.org, linux-doc@vger.kernel.org, brcm80211-dev-list@broadcom.com, linux-kernel@vger.kernel.org, linux-sctp@vger.kernel.org, devel@open-fcoe.org, dev@openvswitch.org, linux-s390@vger.kernel.org, user-mode-linux-devel@lists.sourceforge.net, linux-scsi@vger.kernel.org, linux-rdma@vger.kernel.org, bridge@lists.linux-foundation.org, lvs-devel@vger.kernel.org, coreteam@netfilter.org, b43-dev@lists.infradead.org, cbe-oss-dev@lists.ozlabs.org, devel@driverdev.osuosl.org, wimax@linuxwimax.org, devicetree-discuss@lists.ozlabs.org, linux-nfs@vger.kernel.org, netfilter@vger.kernel.org, user-mode-linux-user@lists.sourceforge.net, linux-arm-kernel@lists.infradead.org, davinci-linux-open-source@linux.davincidsp.com, linux-parisc@vger.kernel.org, netdev@vger.kernel.org, b.a.t.m.a.n@lists.open-mesh.org, linux-wireless@vger.kernel.org, us
+Content-Type: MULTIPART/MIXED; BOUNDARY="110391812-152756917-1350635637=:5049"
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <CADuigkU+S9-9SjT6=VFYr93NAdk42Yrw7PyfgSkhgg_hZKakBQ@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+To: Ricardo Klein <klein.rfk@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-On Thu, 2012-10-18 at 20:55 -0700, Joe Perches wrote:
-> ethernet, ipv4, and ipv6 address testing uses 3 different api naming styles.
-> 
-> ethernet uses:	is_<foo>_ether_addr
-> ipv4 uses:	ipv4_is_<foo>
-> ipv6 uses:	ipv6_addr_<foo>
-> 
-> Standardize on the ipv6 style of <prefix>_addr_<type> to reduce
-> the number of styles to remember.
-> 
-> The new consistent styles are:
-> 
-> eth_addr_<foo>(const u8 *)
-> ipv4_addr_<foo>(__be32)
-> ipv6_addr_<foo>(const struct in6_addr *)
-> 
-> Add temporary backward compatibility #defines for the old names too.
-> 
-> Joe Perches (21):
->   etherdevice: Rename is_<foo>_ether_addr tests to eth_addr_<foo>
->   net: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
->   arch: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
->   wireless: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
->   drivers: net: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
->   staging: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
->   infiniband: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
->   scsi: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
->   of: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
->   s390: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
->   usb: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
->   uwb: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
->   Documentation: networking: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
->   llc_if.h: Convert is_<foo>_ether_addr uses to eth_addr_<foo>
->   in.h: Rename ipv4_is_<foo> functions to ipv4_addr_<foo>
->   net: Convert ipv4_is_<foo> uses to ipv4_addr_<foo>
->   infiniband: Convert ipv4_is_<foo> uses to ipv4_addr_<foo>
->   ath6kl: Convert ipv4_is_<foo> uses to ipv4_addr_<foo>
->   parisc: Convert ipv4_is_<foo> uses to ipv4_addr_<foo>
->   lockd: Convert ipv4_is_<foo> uses to ipv4_addr_<foo>
->   sctp: Convert ipv4_is_<foo> uses to ipv4_addr_<foo>
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Yes they are some names discrepancies, thats a big deal.
+--110391812-152756917-1350635637=:5049
+Content-Type: TEXT/PLAIN; charset=ISO-8859-1
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-And we have alloc_skb() / kfree_skb() / skb_clone() 
+On Fri, 19 Oct 2012, Ricardo Klein wrote:
 
-Why not skb_alloc() / skb_free() / skb_clone() ?
+> I am sorry, dont know what I am doing wrong, follow the steps on README b=
+ut,
+> still get compile errors...
+> Se attached log file.
+>=20
+> And, I think the problem is this old kernel
+> version(2.6.32-279.11.1.el6.x86_64), as the README says, I think I really
+> will need to recompile the kernel if want this working:
+> 0. You need the source tree of your kernel (version >=3D 2.6.34)
+> =A0 =A0and it have to be configured with ip6tables support enabled,
+> =A0 =A0modules compiled. For kernel versions < 2.6.39 please apply
+> =A0 =A0the netlink.patch against your kernel tree, which adds the
+> =A0 =A0new subsystem identifier for ipset.
+>=20
+> right? Or can I apply in some way apply the patch only to the kernel=20
+> source files to compile ipset? (have no experience in kernel modules=20
+> compilation)
 
-Some people actually know current code by name of functions, they dont
-want to change their mind and having to grep include files and git log
-to learn the new names of an old function, especially when traveling and
-using a laptop.
+Sigh, "struct xt_action_param" was introduced in 2.6.35... I have to=20
+re-check what'd be needed to support kernels versions between 2.6.39 and=20
+2.6.34.
+=20
+> I'm starting to think that ipset is a great tool, but, not for rhel/CentO=
+S
+> yet (well, my loved Slackware should work like a charm, but, client whant=
+s
+> CentOS/RHEL)
 
-Sure, when we want to use eth_random_addr(), a grep into include files
-to check if its still the right name (old one was random_ether_addr())
-is OK because we dont use this one often.
-
-If you think about it, eth_random_addr() was not the perfect name.
-
-Think about all the documentation you can find outside of kernel tree,
-RFC and things like that, copy/pasting some linux kernel code.
-
-This kind of changes make our life more difficult, when we have to
-backport patches or rebase code, or even perform some searches to find
-prior issues/discussions.
-
-Life of a kernel developer is not only dealing with latest Linus (or
--next) tree, and using automatic 'tools'.
-
-Thats a real pain for me at least.
-
-
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
+--110391812-152756917-1350635637=:5049--
