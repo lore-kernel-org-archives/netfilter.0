@@ -1,64 +1,80 @@
-From: Kristian Evensen <kristian.evensen@gmail.com>
-Subject: Prioritizing IPs on interface with multiple addresses
-Date: Mon, 22 Oct 2012 11:36:37 +0200
-Message-ID: <CAKfDRXiAL37+H2k0SepwmUzYv4chtKr_Fn0CQSFt2UV5NejsUw@mail.gmail.com>
+From: =?UTF-8?B?bWF0amHFvg==?= <matjazbercic@lavabit.com>
+Subject: Possible bug in iptables : -m --uid-owner not working with ping
+Date: Mon, 22 Oct 2012 16:38:35 +0200
+Message-ID: <50855A6B.1070000@lavabit.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=eoImYokgVKyJAuzN1CplgIAm4aI5hJ7tiEyPV5wpiL0=;
-        b=WKFZcZQtENW431VzzPKAOj1FN/kekaZSRXs3pMqtrMHIXvwTY933DFowU2avOCusLo
-         wlfAqTz+fyFpU4LXet7ZKMNJYMN3uhMh7rfODWFPOZ42d9rLFKgTX3e5Ct3F6Ol49feL
-         7UJeVdIeOw134vNALBeBGTl57dEbxmG0F02QoonX8ThD3UaiZAhVK+C70JrwziYQncCH
-         4XxpwR80QLei6MQGFICXJEdCFQSg6CrKPxgHImDhUER8Wngngh8bnKq9LQQ1pDq7KoTG
-         EabSEfZ15MKmndrMDNzYir9meMMeU6VxmI3OgEnszPtPZq6V+4onAbnEdy2GnYWLS9D1
-         6gHA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netdev@vger.kernel.org, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hello,
+Hi all,
+Is it possible that owner matching does not work correctly ?
+I tried blocking internet access to one user, but found out he can stil=
+l=20
+use ping.
+Pleas see below : (I removed some lines from ping output for clarity -=20
+also there are no other rules in iptables)
 
-I am currently working on configuring an embedded system that will be
-used as an access point for other devices. In order to reduce the
-number of external devices, we want to connect the LAN on the embedded
-system to a switch. Then, two separate networks will also be connected
-to this switch, and the LAN interface assigned one IP from each
-network. The IPs are static and network addresses are not overlapping.
-One interface is the main interface for all traffic from clients,
-while the other is used as fallback and for some monitoring traffic.
-The clients that connect to this AP will be assigned IPs using DHCP
-and traffic from them will be NAT'ed.
+matjaz@laptop:~$ iptables --version
+iptables v1.4.16.3
+matjaz@laptop:~$ sudo iptables -F -t nat ; sudo iptables -F
+matjaz@laptop:~$ sudo -u nonet ping -c 3 173.194.35.145
+PING 173.194.35.145 (173.194.35.145) 56(84) bytes of data.
+64 bytes from 173.194.35.145: icmp_req=3D1 ttl=3D51 time=3D46.9 ms
+# ok, works
+matjaz@laptop:~$ id nonet
+uid=3D1002(nonet) gid=3D1003(nonet) groups=3D1003(nonet)
+matjaz@laptop:~$ sudo iptables -A OUTPUT -p icmp -m owner --uid-owner=20
+1002 -j REJECT
+matjaz@laptop:~$ sudo -u nonet ping -c 3 173.194.35.145
+PING 173.194.35.145 (173.194.35.145) 56(84) bytes of data.
+64 bytes from 173.194.35.145: icmp_req=3D1 ttl=3D51 time=3D46.7 ms
+# not ok, still works
+matjaz@laptop:~$ sudo iptables -A OUTPUT -p icmp -j REJECT
+matjaz@laptop:~$ sudo -u nonet ping -c 3 173.194.35.145
+PING 173.194.35.145 (173.194.35.145) 56(84) bytes of data.
+ping: sendmsg: Operation not permitted
 
-Initially, this setup works fine. The devices connected to this AP are
-able to send traffic through the intended network and to the correct
-hosts. If I disconnect from the main network, the routing tables are
-updated and traffic is routed through the secondary network. However,
-when I connect to the main network again, things break. The problem is
-that there is an inconsistency between the order in the routing table
-and the order of IP addresses assigned to the interface, which causes
-problems when I do NAT (MASQUERADE). The default route (with the
-lowest metric) points to the main network, but the first IP address
-belongs to the secondary network. So what happens is that the packets
-have the MAC-address of the first hop in the main network, but a
-source IP address from the second network (chosen by the NAT). This
-causes the traffic to be discarded by the network. Deleting (and then
-later adding) the IP of the secondary network is not an option as it
-is needed for the monitoring traffic.
+My machine :
+matjaz@laptop:~$ cat /etc/issue
+Ubuntu 12.04.1 LTS \n \l
+matjaz@laptop:~$ uname -a
+Linux laptop 3.2.0-32-generic #51-Ubuntu SMP Wed Sep 26 21:33:09 UTC=20
+2012 x86_64 x86_64 x86_64 GNU/Linux
 
-My question is, is there some way to prioritize the different IP
-addresses assigned to an interface? For example, is there an
-equivalent to a metric, index or something similar? Based on my
-understanding, ip addr is only able to append addresses. I believe
-this would solve the problem, as it would then be possible to ensure
-that addresses and the routing table are in sync.
+I installed the latest version of iptables (this didn't work even with=20
+the ubuntu supplied version) from source and rebooted before testing. I=
+=20
+didn't uninstall the previous version before installation.
 
-Another soulution would be to monitor network events and create/delete
-SNAT rules on-demand, but this is a big hack if you ask me and I would
-like to try to avoid it.
+Also : the -match --uid-owner seems to work on other protocols.
 
-Thanks in advance for any help!
-Kristian
+Oddly enough, using group id instead seems to work :
+matjaz@laptop:~$ sudo -u nonet ping -c 3 173.194.35.145
+PING 173.194.35.145 (173.194.35.145) 56(84) bytes of data.
+64 bytes from 173.194.35.145: icmp_req=3D1 ttl=3D51 time=3D47.6 ms
+--- 173.194.35.145 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2002ms
+rtt min/avg/max/mdev =3D 46.284/46.994/47.659/0.615 ms
+matjaz@laptop:~$ sudo iptables -A OUTPUT -p icmp -m owner --gid-owner=20
+1003 -j REJECT
+matjaz@laptop:~$ sudo -u nonet ping -c 3 173.194.35.145
+PING 173.194.35.145 (173.194.35.145) 56(84) bytes of data.
+ From 192.168.2.151 icmp_seq=3D1 Destination Port Unreachable
+--- 173.194.35.145 ping statistics ---
+0 packets transmitted, 0 received, +3 errors
+matjaz@laptop:~$ ping -c 3 173.194.35.145
+PING 173.194.35.145 (173.194.35.145) 56(84) bytes of data.
+64 bytes from 173.194.35.145: icmp_req=3D1 ttl=3D51 time=3D47.3 ms
+--- 173.194.35.145 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2003ms
+rtt min/avg/max/mdev =3D 46.645/46.933/47.373/0.402 ms
+
+Is this expected behaviour ?
+Best regards,
+Matja=C5=BE Ber=C4=8Di=C4=8D
+
+
