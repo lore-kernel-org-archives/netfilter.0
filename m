@@ -1,166 +1,64 @@
-From: "Benjamin Beckmeyer" <B.Beckmeyer@stud.hs-esslingen.de>
-Subject: Ebtables NFQUEUE Support
-Date: Fri, 19 Oct 2012 20:32:59 +0200 (CEST)
-Message-ID: <37777.70.67.211.174.1350671579.squirrel@webmail.hs-esslingen.de>
-Reply-To: B.Beckmeyer@stud.hs-esslingen.de
+From: Kristian Evensen <kristian.evensen@gmail.com>
+Subject: Prioritizing IPs on interface with multiple addresses
+Date: Mon, 22 Oct 2012 11:36:37 +0200
+Message-ID: <CAKfDRXiAL37+H2k0SepwmUzYv4chtKr_Fn0CQSFt2UV5NejsUw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=eoImYokgVKyJAuzN1CplgIAm4aI5hJ7tiEyPV5wpiL0=;
+        b=WKFZcZQtENW431VzzPKAOj1FN/kekaZSRXs3pMqtrMHIXvwTY933DFowU2avOCusLo
+         wlfAqTz+fyFpU4LXet7ZKMNJYMN3uhMh7rfODWFPOZ42d9rLFKgTX3e5Ct3F6Ol49feL
+         7UJeVdIeOw134vNALBeBGTl57dEbxmG0F02QoonX8ThD3UaiZAhVK+C70JrwziYQncCH
+         4XxpwR80QLei6MQGFICXJEdCFQSg6CrKPxgHImDhUER8Wngngh8bnKq9LQQ1pDq7KoTG
+         EabSEfZ15MKmndrMDNzYir9meMMeU6VxmI3OgEnszPtPZq6V+4onAbnEdy2GnYWLS9D1
+         6gHA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netdev@vger.kernel.org, netfilter@vger.kernel.org
 
-Hi all,
+Hello,
 
-I am trying to build an Ebtables NFQUEUE module to also move layer 2
-traffic to the NFQUEUE system provided by IPtables.  A few years ago a
-Pierre Chifflier provided 3 patches to Ebtables that appear to try and
-utilize the NFQUEUE xt_tables target within Ebtables to pass the layer 2
-data via nfnetlink_queue.
+I am currently working on configuring an embedded system that will be
+used as an access point for other devices. In order to reduce the
+number of external devices, we want to connect the LAN on the embedded
+system to a switch. Then, two separate networks will also be connected
+to this switch, and the LAN interface assigned one IP from each
+network. The IPs are static and network addresses are not overlapping.
+One interface is the main interface for all traffic from clients,
+while the other is used as fallback and for some monitoring traffic.
+The clients that connect to this AP will be assigned IPs using DHCP
+and traffic from them will be NAT'ed.
 
-Some background, I am trying to get this working on 2.6.26.5 kernel
-version and have applied the patches listed here:
+Initially, this setup works fine. The devices connected to this AP are
+able to send traffic through the intended network and to the correct
+hosts. If I disconnect from the main network, the routing tables are
+updated and traffic is routed through the secondary network. However,
+when I connect to the main network again, things break. The problem is
+that there is an inconsistency between the order in the routing table
+and the order of IP addresses assigned to the interface, which causes
+problems when I do NAT (MASQUERADE). The default route (with the
+lowest metric) points to the main network, but the first IP address
+belongs to the secondary network. So what happens is that the packets
+have the MAC-address of the first hop in the main network, but a
+source IP address from the second network (chosen by the NAT). This
+causes the traffic to be discarded by the network. Deleting (and then
+later adding) the IP of the secondary network is not an option as it
+is needed for the monitoring traffic.
 
-http://permalink.gmane.org/gmane.comp.security.firewalls.netfilter.devel/37859
-http://permalink.gmane.org/gmane.comp.security.firewalls.netfilter.devel/37862
+My question is, is there some way to prioritize the different IP
+addresses assigned to an interface? For example, is there an
+equivalent to a metric, index or something similar? Based on my
+understanding, ip addr is only able to append addresses. I believe
+this would solve the problem, as it would then be possible to ensure
+that addresses and the routing table are in sync.
 
-I have also patched the Ebtables (2.0.8) userspace utility to produce the
-shared object ebt_NFQUEUE.so with code also from Pierre, which can be
-found here:
+Another soulution would be to monitor network events and create/delete
+SNAT rules on-demand, but this is a big hack if you ask me and I would
+like to try to avoid it.
 
-https://www.wzdftpd.net/downloads/ebt_NFQUEUE.c
-
-To get the patches to work for the ebt_nfqueue kernel object, due to an
-older kernel, I had to modify the target and check function arguments as
-the "const struct xt_action_param" does not exist in my kernel version:
-
-static int ebt_nfqueue_tg(const struct sk_buff *skb, const struct
-net_device *in,
-				   const struct net_device *out, const void *data, unsigned int datalen)
-{
-    const struct ebt_nfqueue_info *info = data;
-    struct nf_loginfo li;
-    unsigned int verdict = NF_ACCEPT;
-
-    printk(KERN_NOTICE "ebt_NFQUEUE: returning EBT_QUEUE\n");
-    return EBT_QUEUE; // return -5
-}
-
-static struct ebt_target ebt_nfqueue __read_mostly = {
-    .name 		= "NFQUEUE",
-    .target 	= ebt_nfqueue_tg,
-    .check = ebt_nfqueue_check,
-    .me 		= THIS_MODULE,
-};
-
-+++++ VERSUS +++++
-
-static struct xt_target ebt_xt_nfqueue __read_mostly = {
-    .name 		= "NFQUEUE",
-    .revision   = 0,
-    .family     = 7, // NFPROTO_BRIDGE
-    .target 	= ebt_nfqueue_tg,
-    .checkentry = ebt_nfqueue_check,
-    .targetsize = sizeof(struct ebt_nfqueue_info),
-    .me 		= THIS_MODULE,
-};
-
-Nevertheless, the return value from this target is just the EBT_QUEUE (-5)
-to inform the Netfilter system of the queue number.  If I use the
-ebt_target rather than xt_target the kernel module will build and can be
-inserted into ebtables with no errors - the problem is that queuing does
-not work.  If I use the xt_target rather than the ebt_target then Ebtables
-userspace complains that it is not supported from this kernel version
-(error in communication.c in userspace and appears to fail on the
-"setsockopt" calls).
-
-I have printed out the entire contents of using the xt_target vs
-ebt_target and all data going into this call is identical, which boggles
-my mind as to why xt_target will trigger the error in the ebtables
-userspace program and ebt_target will not.
-
-I think that I MUST use the xt_target within ebtables to properly pass
-this data to the NFQUEUE system.  This comes from an earlier discussion:
-
-+++
-
-On 04.02.2011 14:40, Pierre Chifflier wrote:
-> On 02/04/2011 02:25 PM, Patrick McHardy wrote:
->> On 03.02.2011 15:32, Pierre Chifflier wrote:
->>> This adds support for sending bridge packets to userspace using
->>> the NFQUEUE target with ebtables.
->>
->> I don't think we need a new target for this (and the EBT_QUEUE
->> definition), just using xt_NFQUEUE should work fine.
->
-> I thought ebtables did not support sending packet to xtables ? (that's
-> on the TODO list for ebtables).
-
-It can use xtables targets and matches if I'm not completely
-mistaken.
-
-+++
-
-It appears I can 'use' xtables targets, it will compile correctly, but
-ebtables will not actually allow me to insert the rules to jump to the
-NFQUEUE target, so I am unable to actually verify if packets would be
-queue'd by the system.
-
-When using the ebt_target I can insert my NFQUEUE rules into the nat
-PREROUTING table, and the packet counter will actually increment on layer
-2 traffic, but the packets do not appear to actually hit any of the
-nfnetlink_queue functions (I have added a printk to every function). I
-even see that my target has been hit via a printk:
-
-user.notice kernel: ebt_NFQUEUE: returning EBT_QUEUE
-
-But then it appears that is as far as the packet goes.
-
-When queueing a packet from IPtables I see a huge amount of output:
-
-user.notice kernel: BB: File: nfnetlink_queue.c        Function:
-__enqueue_entry
-user.notice kernel: BB: File: nfnetlink.c      Function: nfnetlink_rcv
-user.notice kernel: BB: File: nfnetlink.c      Function: nfnl_lock
-user.notice kernel: BB: File: nfnetlink.c      Function: nfnetlink_rcv_msg
-user.notice kernel: BB: File: nfnetlink.c      Function: nfnetlink_get_subsys
-user.notice kernel: BB: File: nfnetlink.c      Function:
-nfnetlink_find_client
-user.notice kernel: BB: File: nfnetlink_queue.c        Function:
-nfqnl_recv_verdict
-user.notice kernel: BB: File: nfnetlink_queue.c        Function:
-instance_lookup
-user.notice kernel: BB: File: nfnetlink_queue.c        Function:
-find_dequeue_entry
-user.notice kernel: BB: File: nfnetlink.c      Function: nfnl_unlock
-user.notice kernel: BB: File: nfnetlink_queue.c        Function:
-nfqnl_enqueue_packet
-user.notice kernel: BB: File: nfnetlink_queue.c        Function:
-instance_lookup
-user.notice kernel: BB: File: nfnetlink_queue.c        Function:
-nfqnl_build_packet_message
-user.notice kernel: BB: File: nfnetlink.c      Function: nfnetlink_unicast
-
-But from my ebtables -j NFQUEUE there are no calls to the nfnetlink.c or
-nfnetlink_queue.c functions.  It is almost like the target is hit then the
-packet is just mysteriously gone...or hits other functions unrelated to
-the queueing system.
-
-In summation, the problem is if using the ebt_target struct in the kernel
-module for ebtables, it will be inserted and can be utilized by the
-userspace Ebtables - but it doesnt appear to pass the packet to the
-IPtables nfqueue correctly.  If using the xt_target struct in the kernel
-module for ebtables, it will compile, but fails to be utilized by Ebtables
-userspace due to a "setsockopt error mentioned above.
-
-Any help or suggestions are greatly appreciated!
-
-Thank you, Benny
-
-
-
-
-
-
-
+Thanks in advance for any help!
+Kristian
