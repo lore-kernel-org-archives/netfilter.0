@@ -1,590 +1,345 @@
-From: JieYue Ma <xiaoma80.dev@gmail.com>
-Subject: Re: Ebtables NFQUEUE Support
-Date: Thu, 25 Oct 2012 13:54:13 +0800
-Message-ID: <CAJ6iH_gPC5A-7VoUVHLo3ujh0JyOP98nqmXLXfzABSDibHjupQ@mail.gmail.com>
-References: <37777.70.67.211.174.1350671579.squirrel@webmail.hs-esslingen.de>
-	<CAJ6iH_hB9WYyAuC7OmmkDbfm9YxqZ4hMO02xuSh75tEdiXqk_w@mail.gmail.com>
-	<CAJ6iH_gfXbxMK504OJHEGYXne96oRDjULfjdPkfyStgkKnxFdg@mail.gmail.com>
-	<1bb094409be71ee7824b1cf5ff72a736.squirrel@webmail.hs-esslingen.de>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Ipset kernel panic
+Date: Thu, 25 Oct 2012 10:19:43 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1210251009400.31762@blackhole.kfki.hu>
+References: <CADuigkXeFM+N89kwzr8pUPKN5A-qccK5-4juYmutYCcq8XHC4g@mail.gmail.com> <CADuigkW5n0vxVm3eKykw-pV7WH6xe7YP0cAEQcS5EF5BnNaTkw@mail.gmail.com> <CADuigkWtZzuWRavME_YOx5wfn+dtge=iuXF+HhO540J--D8a7A@mail.gmail.com> <alpine.DEB.2.00.1210180929340.2232@blackhole.kfki.hu>
+ <CADuigkVCEYuLdMA=Qgtphr81YnPZROyx5p-fy8imoUnPCViU3g@mail.gmail.com> <alpine.DEB.2.00.1210181330540.2232@blackhole.kfki.hu> <CADuigkVxYZHd==J97_g1ABCE=ExVfKRNabAqzuZhNjV0XCcLnQ@mail.gmail.com> <CADuigkXm99qcdm-GcaLSQQt0vreK7WxTs4AXv6sZKH+jxe4hDQ@mail.gmail.com>
+ <alpine.DEB.2.00.1210181425120.2232@blackhole.kfki.hu> <CADuigkUPiUJMEooH7xbngxV_COWTDWpz+QnszPp_7AP4Pmopeg@mail.gmail.com> <alpine.DEB.2.00.1210181439560.2232@blackhole.kfki.hu> <CADuigkXgXLkoivronrBwuYSQo+faQG9Xx=F8=G33hss7s5Tfgg@mail.gmail.com>
+ <CADuigkU+S9-9SjT6=VFYr93NAdk42Yrw7PyfgSkhgg_hZKakBQ@mail.gmail.com> <alpine.DEB.2.00.1210191028520.5049@blackhole.kfki.hu> <CADuigkWVW3Lyij-goXypXAD4SrXEi3-YdKrjAL1kXxnz=1qJwA@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=A6F7RxabS6B9h85QiqfAHidz9F0ZvQRoqhIc8Bk2ofo=;
-        b=JpAzx5kV1QEA+GQIJqEpeoNTiFuxEuJDGuLuY60vRf1VSz62JFe0V6I0MDEXGmlUhX
-         CHyAhAf9AHV2WivKZrY9yW1ETW3ajm27Um9PKll+JCyIJ/5tB+oo1yzr8fKLtDfp/Qr5
-         M7b7bivdvrgLkAJr8geJ8/rLyJRUa5qdv721ki5UVbfrGVC1Nu2MqbmmUkSvRVloMgzA
-         EP9849Ef2UCHVUY7EXkRsI6CLOWQOkLADJ40L+pvxJWR4grAE/wJjvlZwK7H7wUHOtUs
-         CuCm7NCW1hokk49lIlzAG9MbKMs40OCikAD1WlWjHvPhYnBcuA6jh0iZiSREmBPcHwYt
-         bp3g==
-In-Reply-To: <1bb094409be71ee7824b1cf5ff72a736.squirrel@webmail.hs-esslingen.de>
+In-Reply-To: <CADuigkWVW3Lyij-goXypXAD4SrXEi3-YdKrjAL1kXxnz=1qJwA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: B.Beckmeyer@stud.hs-esslingen.de
+To: Ricardo Klein <klein.rfk@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-kernel is 2.6.32, while ebtables is 2.0.10-4
+On Fri, 19 Oct 2012, Ricardo Klein wrote:
 
-On Thu, Oct 25, 2012 at 7:39 AM, Benjamin Beckmeyer
-<B.Beckmeyer@stud.hs-esslingen.de> wrote:
-> Thank you JieYue Ma!
->
-> This is excellent.  Out of curiousity which kernel version and ebtables
-> version were you working against?
->
-> Benny
->
->> I forgot the ebtables command patch, here it is..
->>
->> diff -upNr old/extensions/ebt_nfqueue.c new/extensions/ebt_nfqueue.c
->> --- old/extensions/ebt_nfqueue.c    1970-01-01 08:00:00.000000000 +0800
->> +++ new/extensions/ebt_nfqueue.c    2012-10-24 14:35:40.000000000 +0800
->> @@ -0,0 +1,127 @@
->> +/*
->> + * Shared library add-on to ebtables for NFQ
->> + *
->> + * (C) 2012 by Ma Jie Yue <jieyue.majy@aliyun-inc.com>
->> + *
->> + * This program is distributed under the terms of GNU GPLv2, 1991
->> + */
->> +
->> +#include <stdio.h>
->> +#include <string.h>
->> +#include <stdlib.h>
->> +#include <getopt.h>
->> +#include <errno.h>
->> +
->> +#include "../include/ebtables_u.h"
->> +#include <linux/netfilter/x_tables.h>
->> +#include <linux/netfilter_bridge/ebt_nfqueue.h>
->> +
->> +#define NFQUEUE_QUEUENUM 0x1
->> +#define NFQUEUE_QUEUEBALANCE 0x2
->> +
->> +static int string_to_number(const char *s, unsigned int min, unsigned
->> int max, unsigned int *ret)
->> +{
->> +   long number;
->> +   char *end;
->> +   errno = 0;
->> +   number = strtol(s, &end, 0);
->> +
->> +   if (*end == '\0' && end != s) {
->> +       if (errno != ERANGE && min <= number && number <= max) {
->> +           *ret = number;
->> +           return 0;
->> +       }
->> +   }
->> +   return -1;
->> +}
->> +
->> +static void nfqueue_help(void)
->> +{
->> +   printf("NFQUEUE target options\n"
->> +           "  --queue-num value       Send packet to QUEUE number
->> <value>.\n"
->> +           "                          Valid queue numbers are
->> 0-65535\n");
->> +}
->> +
->> +static void nfqueue_init(struct ebt_entry_target* target) {
->> +   struct xt_NFQ_info* info = (struct xt_NFQ_info *)target->data;
->> +
->> +   info->queuenum = 0;
->> +}
->> +
->> +static const struct option nfqueue_opts[] = {
->> +   { "queue-num", 1, NULL, 'F' },
->> +   { "queue-balance", 1, NULL, 'B' },
->> +   { .name = NULL }
->> +};
->> +
->> +static void parse_num(const char *s, struct xt_NFQ_info *tinfo)
->> +{
->> +   unsigned int num = 0;
->> +   if (string_to_number(s, 0, 65535, &num) < 0) {
->> +       ebt_print_error("Invalid queue number %s\n", s);
->> +   }
->> +
->> +   tinfo->queuenum = num;
->> +}
->> +
->> +static int nfqueue_parse(int c, char **argv, int argc,
->> +       const struct ebt_u_entry *entry, unsigned int *flags,
->> +       struct ebt_entry_target **target)
->> +{
->> +   struct xt_NFQ_info *tinfo = (struct xt_NFQ_info *)(*target)->data;
->> +   tinfo->queuenum = 0;
->> +
->> +   switch (c) {
->> +       case 'F':
->> +           if (*flags)
->> +               ebt_print_error2("NFQUEUE target: "
->> +                               "Only use --queue-num ONCE!");
->> +           *flags |= NFQUEUE_QUEUENUM;
->> +           parse_num(optarg, tinfo);
->> +           break;
->> +
->> +       case 'B':
->> +           ebt_print_error2("NFQUEUE target: "
->> +                           "--queue-balance not supported (kernel too
->> old?)");
->> +
->> +       default:
->> +           break;
->> +   }
->> +   return 1;
->> +}
->> +
->> +static void nfqueue_print(const struct ebt_u_entry* entry, const
->> struct ebt_entry_target *target) {
->> +   struct xt_NFQ_info *tinfo = (struct xt_NFQ_info *)target->data;
->> +
->> +   printf("--queue-num %u ", tinfo->queuenum);
->> +}
->> +
->> +static void nfqueue_check(const struct ebt_u_entry *entry,
->> +               const struct ebt_entry_target *target, const char *name,
->> +               unsigned int hookmask, unsigned int time) {
->> +
->> +}
->> +
->> +static int nfqueue_compare(const struct ebt_entry_target *t1, const
->> struct ebt_entry_target *t2) {
->> +   struct xt_NFQ_info *info1 = (struct xt_NFQ_info *)t1->data;
->> +   struct xt_NFQ_info *info2 = (struct xt_NFQ_info *)t2->data;
->> +
->> +   return (info1->queuenum == info2->queuenum);
->> +}
->> +
->> +static struct ebt_u_target nfqueue_target = {
->> +   .name       = "nfqueue",
->> +   .init       = nfqueue_init,
->> +   .size       = sizeof(struct xt_NFQ_info),
->> +   .help       = nfqueue_help,
->> +   .parse      = nfqueue_parse,
->> +   .print      = nfqueue_print,
->> +   .final_check    = nfqueue_check,
->> +   .compare    = nfqueue_compare,
->> +   .extra_ops  = nfqueue_opts,
->> +};
->> +
->> +void _init(void) {
->> +   ebt_register_target(&nfqueue_target);
->> +}
->> +
->> diff -upNr old/extensions/Makefile new/extensions/Makefile
->> --- old/extensions/Makefile 2011-12-16 04:02:47.000000000 +0800
->> +++ new/extensions/Makefile 2012-10-24 14:18:50.000000000 +0800
->> @@ -1,7 +1,7 @@
->>  #! /usr/bin/make
->>
->>  EXT_FUNC+=802_3 nat arp arpreply ip ip6 standard log redirect vlan
->> mark_m mark \
->> -          pkttype stp among limit ulog nflog
->> +          pkttype stp among limit ulog nflog nfqueue
->>  EXT_TABLES+=filter nat broute
->>  EXT_OBJS+=$(foreach T,$(EXT_FUNC), extensions/ebt_$(T).o)
->>  EXT_OBJS+=$(foreach T,$(EXT_TABLES), extensions/ebtable_$(T).o)
->> diff -upNr old/include/linux/netfilter_bridge/ebt_nfqueue.h
->> new/include/linux/netfilter_bridge/ebt_nfqueue.h
->> --- old/include/linux/netfilter_bridge/ebt_nfqueue.h    1970-01-01
->> 08:00:00.000000000 +0800
->> +++ new/include/linux/netfilter_bridge/ebt_nfqueue.h    2012-10-24
->> 14:17:02.000000000 +0800
->> @@ -0,0 +1,11 @@
->> +#ifndef __LINUX_BRIDGE_EBT_NFQUEUE_H
->> +#define __LINUX_BRIDGE_EBT_NFQUEUE_H
->> +
->> +#include <linux/types.h>
->> +
->> +struct xt_NFQ_info {
->> +   __u16 queuenum;
->> +   int target;
->> +};
->> +
->> +#endif
->>
->>
->> On Wed, Oct 24, 2012 at 1:16 PM, JieYue Ma <xiaoma80.dev@gmail.com> wrote:
->>> Well, I wrote the nfqueue patch for both ebtables and arptables a few
->>> months ago, it did work well, so I think it is appropriate to release
->>> these patches. Hope it will help you.
->>>
->>> I am not sure if I understand the problem you raised correctly. I
->>> guess it might be the netfilter sus-subsystem currently not supporting
->>> queue verdict for bridge very well. As you can see, you need a
->>> nf_afinfo structure to be registered before using netfilter queue
->>> verdict for this protocol. Unfortunately, during initialization of
->>> netfilter, it did register such nf_afinfo for ipv4, ipv6, maybe arp as
->>> well.. but not for bridge. So in order to enable queue verdict to work
->>> under bridge, you need to register it by yourself, maybe during
->>> initialization of ebtables nfqueue target module
->>>
->>> here is my patch for ebtables:
->>>
->>>
->>> diff -upNr old/include/linux/netfilter_bridge/ebt_nfqueue.h
->>> new/include/linux/netfilter_bridge/ebt_nfqueue.h
->>> --- old/include/linux/netfilter_bridge/ebt_nfqueue.h    1969-12-31
->>> 19:00:00.000000000 -0500
->>> +++ new/include/linux/netfilter_bridge/ebt_nfqueue.h    2012-05-29
->>> 23:59:06.940194206 -0400
->>> @@ -0,0 +1,10 @@
->>> +#ifndef __LINUX_BRIDGE_EBT_NFQUEUE_H
->>> +#define __LINUX_BRIDGE_EBT_NFQUEUE_H
->>> +#include <linux/types.h>
->>> +
->>> +struct xt_NFQ_info {
->>> +        __u16 queuenum;
->>> +        int target;
->>> +};
->>> +
->>> +#endif
->>> diff -upNr old/net/bridge/netfilter/ebtables.c
->>> new/net/bridge/netfilter/ebtables.c
->>> --- old/net/bridge/netfilter/ebtables.c 2012-05-27 08:48:00.095617214
->>> -0400
->>> +++ new/net/bridge/netfilter/ebtables.c 2012-05-27 08:57:27.644193954
->>> -0400
->>> @@ -252,6 +252,17 @@ letsreturn:
->>>             return NF_DROP;
->>>         }
->>>  #endif
->>> +       /*
->>> +        * We add NFQUEUE support in ebtables here:
->>> +        *
->>> +        * If verdict is NF_QUEUE type, pass it to Netfilter. Netfilter
->>> will
->>> +        * call nf_queue to handle this.
->>> +        */
->>> +       if (verdict > 0 && (verdict & NF_VERDICT_MASK) == NF_QUEUE) {
->>> +           read_unlock_bh(&table->lock);
->>> +           return verdict;
->>> +       }
->>> +
->>>         /* jump to a udc */
->>>         cs[sp].n = i + 1;
->>>         cs[sp].chaininfo = chaininfo;
->>>
->>> diff -upNr old/net/bridge/netfilter/ebt_nfqueue.c
->>> new/net/bridge/netfilter/ebt_nfqueue.c
->>> --- old/net/bridge/netfilter/ebt_nfqueue.c  1969-12-31
->>> 19:00:00.000000000 -0500
->>> +++ new/net/bridge/netfilter/ebt_nfqueue.c  2012-05-27
->>> 08:58:58.511193378 -0400
->>> @@ -0,0 +1,117 @@
->>> +/*
->>> + * This program is free software; you can redistribute it and/or modify
->>> + * it under the terms of the GNU General Public License version 2 as
->>> + * published by the Free Software Foundation.
->>> + *
->>> + */
->>> +
->>> +#include <linux/module.h>
->>> +#include <linux/skbuff.h>
->>> +#include <linux/kernel.h>
->>> +#include <linux/types.h>
->>> +#include <linux/netfilter.h>
->>> +#include <linux/netfilter/x_tables.h>
->>> +#include <linux/netfilter_bridge/ebtables.h>
->>> +#include <linux/netfilter_bridge/ebt_nfqueue.h>
->>> +
->>> +MODULE_AUTHOR("alibaba");
->>> +MODULE_DESCRIPTION("ebtables: forwarding to netlink");
->>> +MODULE_LICENSE("GPL");
->>> +
->>> +static unsigned int ebt_nfqueue_tg(struct sk_buff *skb, const struct
->>> xt_target_param *par) {
->>> +   const struct xt_NFQ_info *info = par->targinfo;
->>> +
->>> +   return NF_QUEUE_NR(info->queuenum);
->>> +}
->>> +
->>> +static bool ebt_nfqueue_tg_check(const struct xt_tgchk_param* par) {
->>> +   const struct xt_NFQ_info *info = par->targinfo;
->>> +
->>> +   if (BASE_CHAIN && info->target == EBT_RETURN) {
->>> +       printk(KERN_INFO"ebt_nfqueue: ebt_nfqueue_tg_check failed\n");
->>> +       return false;
->>> +   }
->>> +
->>> +   return true;
->>> +}
->>> +
->>> +void dummy_from_user(void *dst, void *src) {
->>> +}
->>> +
->>> +int dummy_to_user(void __user *dst, void *src) {
->>> +   return 0;
->>> +}
->>> +
->>> +static struct xt_target nfqueue_tg_reg __read_mostly = {
->>> +   .name           = "nfqueue",
->>> +   .revision   = 0,
->>> +   .family     = NFPROTO_BRIDGE,
->>> +   .table      = "filter",
->>> +   .hooks      = (1 << NF_BR_NUMHOOKS) | (1 << NF_BR_LOCAL_IN) | (1
->>> << NF_BR_LOCAL_OUT) | (1 << NF_BR_FORWARD),
->>> +        .target         = ebt_nfqueue_tg,
->>> +        .checkentry     = ebt_nfqueue_tg_check,
->>> +        .targetsize     = XT_ALIGN(sizeof(struct xt_NFQ_info)),
->>> +   .compat_from_user = dummy_from_user,
->>> +   .compat_to_user = dummy_to_user,
->>> +        .me             = THIS_MODULE,
->>> +};
->>> +
->>> +
->>> +__sum16 nf_br_checksum(struct sk_buff* skb, unsigned int hook,
->>> unsigned int dataoff, u_int8_t protocol) {
->>> +   return 0;
->>> +}
->>> +
->>> +static __sum16 nf_br_checksum_partial(struct sk_buff* skb, unsigned int
->>> hook,
->>> +       unsigned int dataoff, unsigned int len,
->>> +       u_int8_t protocol) {
->>> +   return 0;
->>> +}
->>> +
->>> +static int nf_br_route(struct dst_entry **dst, struct flowi *fl) {
->>> +   return 0;
->>> +}
->>> +
->>> +static void nf_br_saveroute(const struct sk_buff *skb, struct
->>> nf_queue_entry *entry) {
->>> +
->>> +}
->>> +
->>> +static int nf_br_reroute(struct sk_buff *skb, const struct
->>> nf_queue_entry *entry) {
->>> +   return 0;
->>> +}
->>> +
->>> +static const struct nf_afinfo nf_br_afinfo = {
->>> +   .family     = NFPROTO_BRIDGE,
->>> +   .checksum   = nf_br_checksum,
->>> +   .checksum_partial = nf_br_checksum_partial,
->>> +   .route      = nf_br_route,
->>> +   .saveroute  = nf_br_saveroute,
->>> +   .reroute    = nf_br_reroute,
->>> +   .route_key_size = 0,
->>> +};
->>> +
->>> +
->>> +static int __init nfqueue_tg_init(void)
->>> +{
->>> +   int ret;
->>> +   /*
->>> +    * a tricky hack here, we forge a bridge nf_afinfo struct and
->>> register it
->>> +    *
->>> +    * We have to do this, coz currently netfilter subsystem doesn't
->>> support bridge in nf_queue
->>> +    */
->>> +   ret = nf_register_afinfo(&nf_br_afinfo);
->>> +   if (ret < 0) {
->>> +       printk("[ebt_nfqueue] nf_register_afinfo failed, cannot
->>> install ebt_nfqueue.ko\n");
->>> +       return ret;
->>> +   }
->>> +
->>> +   return xt_register_target(&nfqueue_tg_reg);
->>> +}
->>> +
->>> +static void __exit nfqueue_tg_exit(void)
->>> +{
->>> +   nf_unregister_afinfo(&nf_br_afinfo);
->>> +   xt_unregister_target(&nfqueue_tg_reg);
->>> +}
->>> +
->>> +module_init(nfqueue_tg_init);
->>> +module_exit(nfqueue_tg_exit);
->>>
->>>
->>>
->>>
->>> On Sat, Oct 20, 2012 at 2:32 AM, Benjamin Beckmeyer
->>> <B.Beckmeyer@stud.hs-esslingen.de> wrote:
->>>> Hi all,
->>>>
->>>> I am trying to build an Ebtables NFQUEUE module to also move layer 2
->>>> traffic to the NFQUEUE system provided by IPtables.  A few years ago a
->>>> Pierre Chifflier provided 3 patches to Ebtables that appear to try and
->>>> utilize the NFQUEUE xt_tables target within Ebtables to pass the layer
->>>> 2
->>>> data via nfnetlink_queue.
->>>>
->>>> Some background, I am trying to get this working on 2.6.26.5 kernel
->>>> version and have applied the patches listed here:
->>>>
->>>> http://permalink.gmane.org/gmane.comp.security.firewalls.netfilter.devel/37859
->>>> http://permalink.gmane.org/gmane.comp.security.firewalls.netfilter.devel/37862
->>>>
->>>> I have also patched the Ebtables (2.0.8) userspace utility to produce
->>>> the
->>>> shared object ebt_NFQUEUE.so with code also from Pierre, which can be
->>>> found here:
->>>>
->>>> https://www.wzdftpd.net/downloads/ebt_NFQUEUE.c
->>>>
->>>> To get the patches to work for the ebt_nfqueue kernel object, due to an
->>>> older kernel, I had to modify the target and check function arguments
->>>> as
->>>> the "const struct xt_action_param" does not exist in my kernel version:
->>>>
->>>> static int ebt_nfqueue_tg(const struct sk_buff *skb, const struct
->>>> net_device *in,
->>>>                                    const struct net_device *out, const
->>>> void *data, unsigned int datalen)
->>>> {
->>>>     const struct ebt_nfqueue_info *info = data;
->>>>     struct nf_loginfo li;
->>>>     unsigned int verdict = NF_ACCEPT;
->>>>
->>>>     printk(KERN_NOTICE "ebt_NFQUEUE: returning EBT_QUEUE\n");
->>>>     return EBT_QUEUE; // return -5
->>>> }
->>>>
->>>> static struct ebt_target ebt_nfqueue __read_mostly = {
->>>>     .name               = "NFQUEUE",
->>>>     .target     = ebt_nfqueue_tg,
->>>>     .check = ebt_nfqueue_check,
->>>>     .me                 = THIS_MODULE,
->>>> };
->>>>
->>>> +++++ VERSUS +++++
->>>>
->>>> static struct xt_target ebt_xt_nfqueue __read_mostly = {
->>>>     .name               = "NFQUEUE",
->>>>     .revision   = 0,
->>>>     .family     = 7, // NFPROTO_BRIDGE
->>>>     .target     = ebt_nfqueue_tg,
->>>>     .checkentry = ebt_nfqueue_check,
->>>>     .targetsize = sizeof(struct ebt_nfqueue_info),
->>>>     .me                 = THIS_MODULE,
->>>> };
->>>>
->>>> Nevertheless, the return value from this target is just the EBT_QUEUE
->>>> (-5)
->>>> to inform the Netfilter system of the queue number.  If I use the
->>>> ebt_target rather than xt_target the kernel module will build and can
->>>> be
->>>> inserted into ebtables with no errors - the problem is that queuing
->>>> does
->>>> not work.  If I use the xt_target rather than the ebt_target then
->>>> Ebtables
->>>> userspace complains that it is not supported from this kernel version
->>>> (error in communication.c in userspace and appears to fail on the
->>>> "setsockopt" calls).
->>>>
->>>> I have printed out the entire contents of using the xt_target vs
->>>> ebt_target and all data going into this call is identical, which
->>>> boggles
->>>> my mind as to why xt_target will trigger the error in the ebtables
->>>> userspace program and ebt_target will not.
->>>>
->>>> I think that I MUST use the xt_target within ebtables to properly pass
->>>> this data to the NFQUEUE system.  This comes from an earlier
->>>> discussion:
->>>>
->>>> +++
->>>>
->>>> On 04.02.2011 14:40, Pierre Chifflier wrote:
->>>>> On 02/04/2011 02:25 PM, Patrick McHardy wrote:
->>>>>> On 03.02.2011 15:32, Pierre Chifflier wrote:
->>>>>>> This adds support for sending bridge packets to userspace using
->>>>>>> the NFQUEUE target with ebtables.
->>>>>>
->>>>>> I don't think we need a new target for this (and the EBT_QUEUE
->>>>>> definition), just using xt_NFQUEUE should work fine.
->>>>>
->>>>> I thought ebtables did not support sending packet to xtables ? (that's
->>>>> on the TODO list for ebtables).
->>>>
->>>> It can use xtables targets and matches if I'm not completely
->>>> mistaken.
->>>>
->>>> +++
->>>>
->>>> It appears I can 'use' xtables targets, it will compile correctly, but
->>>> ebtables will not actually allow me to insert the rules to jump to the
->>>> NFQUEUE target, so I am unable to actually verify if packets would be
->>>> queue'd by the system.
->>>>
->>>> When using the ebt_target I can insert my NFQUEUE rules into the nat
->>>> PREROUTING table, and the packet counter will actually increment on
->>>> layer
->>>> 2 traffic, but the packets do not appear to actually hit any of the
->>>> nfnetlink_queue functions (I have added a printk to every function). I
->>>> even see that my target has been hit via a printk:
->>>>
->>>> user.notice kernel: ebt_NFQUEUE: returning EBT_QUEUE
->>>>
->>>> But then it appears that is as far as the packet goes.
->>>>
->>>> When queueing a packet from IPtables I see a huge amount of output:
->>>>
->>>> user.notice kernel: BB: File: nfnetlink_queue.c        Function:
->>>> __enqueue_entry
->>>> user.notice kernel: BB: File: nfnetlink.c      Function: nfnetlink_rcv
->>>> user.notice kernel: BB: File: nfnetlink.c      Function: nfnl_lock
->>>> user.notice kernel: BB: File: nfnetlink.c      Function:
->>>> nfnetlink_rcv_msg
->>>> user.notice kernel: BB: File: nfnetlink.c      Function:
->>>> nfnetlink_get_subsys
->>>> user.notice kernel: BB: File: nfnetlink.c      Function:
->>>> nfnetlink_find_client
->>>> user.notice kernel: BB: File: nfnetlink_queue.c        Function:
->>>> nfqnl_recv_verdict
->>>> user.notice kernel: BB: File: nfnetlink_queue.c        Function:
->>>> instance_lookup
->>>> user.notice kernel: BB: File: nfnetlink_queue.c        Function:
->>>> find_dequeue_entry
->>>> user.notice kernel: BB: File: nfnetlink.c      Function: nfnl_unlock
->>>> user.notice kernel: BB: File: nfnetlink_queue.c        Function:
->>>> nfqnl_enqueue_packet
->>>> user.notice kernel: BB: File: nfnetlink_queue.c        Function:
->>>> instance_lookup
->>>> user.notice kernel: BB: File: nfnetlink_queue.c        Function:
->>>> nfqnl_build_packet_message
->>>> user.notice kernel: BB: File: nfnetlink.c      Function:
->>>> nfnetlink_unicast
->>>>
->>>> But from my ebtables -j NFQUEUE there are no calls to the nfnetlink.c
->>>> or
->>>> nfnetlink_queue.c functions.  It is almost like the target is hit then
->>>> the
->>>> packet is just mysteriously gone...or hits other functions unrelated to
->>>> the queueing system.
->>>>
->>>> In summation, the problem is if using the ebt_target struct in the
->>>> kernel
->>>> module for ebtables, it will be inserted and can be utilized by the
->>>> userspace Ebtables - but it doesnt appear to pass the packet to the
->>>> IPtables nfqueue correctly.  If using the xt_target struct in the
->>>> kernel
->>>> module for ebtables, it will compile, but fails to be utilized by
->>>> Ebtables
->>>> userspace due to a "setsockopt error mentioned above.
->>>>
->>>> Any help or suggestions are greatly appreciated!
->>>>
->>>> Thank you, Benny
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>>
->>>> --
->>>> To unsubscribe from this list: send the line "unsubscribe netfilter" in
->>>> the body of a message to majordomo@vger.kernel.org
->>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>
->
+> so are you a ipsec developer?
+> If you need help to test something, I can help you.
+
+I develop ipset :-). So, here follows the patch on top of 6.14, which 
+restores the support of kernels below 2.6.35. I have tested the 
+compilation against 2.6.32.57. It'd be great if you could run the 
+testsuite in ipset.
+
+diff --git a/kernel/include/linux/netfilter/ipset/ip_set.h b/kernel/include/linux/netfilter/ipset/ip_set.h
+index 81d9213..1217faf 100644
+--- a/kernel/include/linux/netfilter/ipset/ip_set.h
++++ b/kernel/include/linux/netfilter/ipset/ip_set.h
+@@ -210,8 +210,13 @@ enum ip_set_kopt {
+ #include <linux/netfilter/x_tables.h>
+ #include <linux/stringify.h>
+ #include <linux/vmalloc.h>
++#include <linux/version.h>
+ #include <net/netlink.h>
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 35)
++#define xt_action_param	xt_match_param
++#endif
++
+ #define _IP_SET_MODULE_DESC(a, b, c)		\
+ 	MODULE_DESCRIPTION(a " type of IP sets, revisions " b "-" c)
+ #define IP_SET_MODULE_DESC(a, b, c)		\
+diff --git a/kernel/include/linux/netfilter/ipset/ip_set_ahash.h b/kernel/include/linux/netfilter/ipset/ip_set_ahash.h
+index ef9acd3..df6eb04 100644
+--- a/kernel/include/linux/netfilter/ipset/ip_set_ahash.h
++++ b/kernel/include/linux/netfilter/ipset/ip_set_ahash.h
+@@ -4,6 +4,9 @@
+ #include <linux/rcupdate.h>
+ #include <linux/jhash.h>
+ #include <linux/netfilter/ipset/ip_set_timeout.h>
++#ifndef rcu_dereference_bh
++#define rcu_dereference_bh(p)	rcu_dereference(p)
++#endif
+ 
+ #define CONCAT(a, b, c)		a##b##c
+ #define TOKEN(a, b, c)		CONCAT(a, b, c)
+diff --git a/kernel/net/netfilter/xt_set.c b/kernel/net/netfilter/xt_set.c
+index 865a9e5..0556151 100644
+--- a/kernel/net/netfilter/xt_set.c
++++ b/kernel/net/netfilter/xt_set.c
+@@ -27,6 +27,14 @@ MODULE_ALIAS("ip6t_set");
+ MODULE_ALIAS("ipt_SET");
+ MODULE_ALIAS("ip6t_SET");
+ 
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 35)
++#define CHECK_OK	1
++#define CHECK_FAIL(err)	0
++#else /* LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,35) */
++#define CHECK_OK	0
++#define CHECK_FAIL(err)	(err)
++#endif
++
+ static inline int
+ match_set(ip_set_id_t index, const struct sk_buff *skb,
+ 	  const struct xt_action_param *par,
+@@ -94,19 +102,19 @@ set_match_v0_checkentry(const struct xt_mtchk_param *par)
+ 	if (index == IPSET_INVALID_ID) {
+ 		pr_warning("Cannot find set indentified by id %u to match\n",
+ 			   info->match_set.index);
+-		return -ENOENT;
++		return CHECK_FAIL(-ENOENT);
+ 	}
+ 	if (info->match_set.u.flags[IPSET_DIM_MAX-1] != 0) {
+ 		pr_warning("Protocol error: set match dimension "
+ 			   "is over the limit!\n");
+ 		ip_set_nfnl_put(info->match_set.index);
+-		return -ERANGE;
++		return CHECK_FAIL(-ERANGE);
+ 	}
+ 
+ 	/* Fill out compatibility data */
+ 	compat_flags(&info->match_set);
+ 
+-	return 0;
++	return CHECK_OK;
+ }
+ 
+ static void
+@@ -117,6 +125,60 @@ set_match_v0_destroy(const struct xt_mtdtor_param *par)
+ 	ip_set_nfnl_put(info->match_set.index);
+ }
+ 
++/* Revision 1 */
++
++static bool
++set_match_v1(const struct sk_buff *skb, struct xt_action_param *par)
++{
++	const struct xt_set_info_match_v1 *info = par->matchinfo;
++	ADT_OPT(opt, par->family, info->match_set.dim,
++		info->match_set.flags, 0, UINT_MAX);
++
++	return match_set(info->match_set.index, skb, par, &opt,
++			 info->match_set.flags & IPSET_INV_MATCH);
++}
++
++static int
++set_match_v1_checkentry(const struct xt_mtchk_param *par)
++{
++	struct xt_set_info_match_v1 *info = par->matchinfo;
++	ip_set_id_t index;
++
++	index = ip_set_nfnl_get_byindex(info->match_set.index);
++
++	if (index == IPSET_INVALID_ID) {
++		pr_warning("Cannot find set indentified by id %u to match\n",
++			   info->match_set.index);
++		return CHECK_FAIL(-ENOENT);
++	}
++	if (info->match_set.dim > IPSET_DIM_MAX) {
++		pr_warning("Protocol error: set match dimension "
++			   "is over the limit!\n");
++		ip_set_nfnl_put(info->match_set.index);
++		return CHECK_FAIL(-ERANGE);
++	}
++
++	return CHECK_OK;
++}
++
++static void
++set_match_v1_destroy(const struct xt_mtdtor_param *par)
++{
++	struct xt_set_info_match_v1 *info = par->matchinfo;
++
++	ip_set_nfnl_put(info->match_set.index);
++}
++
++/* Revision 0 interface: backward compatible with netfilter/iptables */
++
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 35)
++#undef xt_action_param
++#define xt_action_param	xt_target_param
++#define CAST_TO_MATCH	(const struct xt_match_param *)
++#else
++#define	CAST_TO_MATCH
++#endif
++
+ static unsigned int
+ set_target_v0(struct sk_buff *skb, const struct xt_action_param *par)
+ {
+@@ -127,9 +189,9 @@ set_target_v0(struct sk_buff *skb, const struct xt_action_param *par)
+ 		info->del_set.u.compat.flags, 0, UINT_MAX);
+ 
+ 	if (info->add_set.index != IPSET_INVALID_ID)
+-		ip_set_add(info->add_set.index, skb, par, &add_opt);
++		ip_set_add(info->add_set.index, skb, CAST_TO_MATCH par, &add_opt);
+ 	if (info->del_set.index != IPSET_INVALID_ID)
+-		ip_set_del(info->del_set.index, skb, par, &del_opt);
++		ip_set_del(info->del_set.index, skb, CAST_TO_MATCH par, &del_opt);
+ 
+ 	return XT_CONTINUE;
+ }
+@@ -145,7 +207,7 @@ set_target_v0_checkentry(const struct xt_tgchk_param *par)
+ 		if (index == IPSET_INVALID_ID) {
+ 			pr_warning("Cannot find add_set index %u as target\n",
+ 				   info->add_set.index);
+-			return -ENOENT;
++			return CHECK_FAIL(-ENOENT);
+ 		}
+ 	}
+ 
+@@ -156,7 +218,7 @@ set_target_v0_checkentry(const struct xt_tgchk_param *par)
+ 				   info->del_set.index);
+ 			if (info->add_set.index != IPSET_INVALID_ID)
+ 				ip_set_nfnl_put(info->add_set.index);
+-			return -ENOENT;
++			return CHECK_FAIL(-ENOENT);
+ 		}
+ 	}
+ 	if (info->add_set.u.flags[IPSET_DIM_MAX-1] != 0 ||
+@@ -167,14 +229,14 @@ set_target_v0_checkentry(const struct xt_tgchk_param *par)
+ 			ip_set_nfnl_put(info->add_set.index);
+ 		if (info->del_set.index != IPSET_INVALID_ID)
+ 			ip_set_nfnl_put(info->del_set.index);
+-		return -ERANGE;
++		return CHECK_FAIL(-ERANGE);
+ 	}
+ 
+ 	/* Fill out compatibility data */
+ 	compat_flags(&info->add_set);
+ 	compat_flags(&info->del_set);
+ 
+-	return 0;
++	return CHECK_OK;
+ }
+ 
+ static void
+@@ -188,49 +250,7 @@ set_target_v0_destroy(const struct xt_tgdtor_param *par)
+ 		ip_set_nfnl_put(info->del_set.index);
+ }
+ 
+-/* Revision 1 match and target */
+-
+-static bool
+-set_match_v1(const struct sk_buff *skb, struct xt_action_param *par)
+-{
+-	const struct xt_set_info_match_v1 *info = par->matchinfo;
+-	ADT_OPT(opt, par->family, info->match_set.dim,
+-		info->match_set.flags, 0, UINT_MAX);
+-
+-	return match_set(info->match_set.index, skb, par, &opt,
+-			 info->match_set.flags & IPSET_INV_MATCH);
+-}
+-
+-static int
+-set_match_v1_checkentry(const struct xt_mtchk_param *par)
+-{
+-	struct xt_set_info_match_v1 *info = par->matchinfo;
+-	ip_set_id_t index;
+-
+-	index = ip_set_nfnl_get_byindex(info->match_set.index);
+-
+-	if (index == IPSET_INVALID_ID) {
+-		pr_warning("Cannot find set indentified by id %u to match\n",
+-			   info->match_set.index);
+-		return -ENOENT;
+-	}
+-	if (info->match_set.dim > IPSET_DIM_MAX) {
+-		pr_warning("Protocol error: set match dimension "
+-			   "is over the limit!\n");
+-		ip_set_nfnl_put(info->match_set.index);
+-		return -ERANGE;
+-	}
+-
+-	return 0;
+-}
+-
+-static void
+-set_match_v1_destroy(const struct xt_mtdtor_param *par)
+-{
+-	struct xt_set_info_match_v1 *info = par->matchinfo;
+-
+-	ip_set_nfnl_put(info->match_set.index);
+-}
++/* Revision 1 target */
+ 
+ static unsigned int
+ set_target_v1(struct sk_buff *skb, const struct xt_action_param *par)
+@@ -242,9 +262,9 @@ set_target_v1(struct sk_buff *skb, const struct xt_action_param *par)
+ 		info->del_set.flags, 0, UINT_MAX);
+ 
+ 	if (info->add_set.index != IPSET_INVALID_ID)
+-		ip_set_add(info->add_set.index, skb, par, &add_opt);
++		ip_set_add(info->add_set.index, skb, CAST_TO_MATCH par, &add_opt);
+ 	if (info->del_set.index != IPSET_INVALID_ID)
+-		ip_set_del(info->del_set.index, skb, par, &del_opt);
++		ip_set_del(info->del_set.index, skb, CAST_TO_MATCH par, &del_opt);
+ 
+ 	return XT_CONTINUE;
+ }
+@@ -260,7 +280,7 @@ set_target_v1_checkentry(const struct xt_tgchk_param *par)
+ 		if (index == IPSET_INVALID_ID) {
+ 			pr_warning("Cannot find add_set index %u as target\n",
+ 				   info->add_set.index);
+-			return -ENOENT;
++			return CHECK_FAIL(-ENOENT);
+ 		}
+ 	}
+ 
+@@ -271,7 +291,7 @@ set_target_v1_checkentry(const struct xt_tgchk_param *par)
+ 				   info->del_set.index);
+ 			if (info->add_set.index != IPSET_INVALID_ID)
+ 				ip_set_nfnl_put(info->add_set.index);
+-			return -ENOENT;
++			return CHECK_FAIL(-ENOENT);
+ 		}
+ 	}
+ 	if (info->add_set.dim > IPSET_DIM_MAX ||
+@@ -282,10 +302,10 @@ set_target_v1_checkentry(const struct xt_tgchk_param *par)
+ 			ip_set_nfnl_put(info->add_set.index);
+ 		if (info->del_set.index != IPSET_INVALID_ID)
+ 			ip_set_nfnl_put(info->del_set.index);
+-		return -ERANGE;
++		return CHECK_FAIL(-ERANGE);
+ 	}
+ 
+-	return 0;
++	return CHECK_OK;
+ }
+ 
+ static void
+@@ -315,9 +335,9 @@ set_target_v2(struct sk_buff *skb, const struct xt_action_param *par)
+ 	    add_opt.timeout > UINT_MAX/MSEC_PER_SEC)
+ 		add_opt.timeout = UINT_MAX/MSEC_PER_SEC;
+ 	if (info->add_set.index != IPSET_INVALID_ID)
+-		ip_set_add(info->add_set.index, skb, par, &add_opt);
++		ip_set_add(info->add_set.index, skb, CAST_TO_MATCH par, &add_opt);
+ 	if (info->del_set.index != IPSET_INVALID_ID)
+-		ip_set_del(info->del_set.index, skb, par, &del_opt);
++		ip_set_del(info->del_set.index, skb, CAST_TO_MATCH par, &del_opt);
+ 
+ 	return XT_CONTINUE;
+ }
+diff --git a/netlink.patch b/netlink.patch
+index e51d9ba..faa873b 100644
+--- a/netlink.patch
++++ b/netlink.patch
+@@ -44,16 +44,3 @@ index 373f1a9..8a3906a 100644
+  #define NLA_PUT_STRING(skb, attrtype, value) \
+  	NLA_PUT(skb, attrtype, strlen(value) + 1, value)
+  
+-diff --git a/net/netfilter/nfnetlink.c b/net/netfilter/nfnetlink.c
+-index b4a4532..51dd302 100644
+---- a/net/netfilter/nfnetlink.c
+-+++ b/net/netfilter/nfnetlink.c
+-@@ -35,7 +35,7 @@ MODULE_LICENSE("GPL");
+- MODULE_AUTHOR("Harald Welte <laforge@netfilter.org>");
+- MODULE_ALIAS_NET_PF_PROTO(PF_NETLINK, NETLINK_NETFILTER);
+- 
+--static char __initdata nfversion[] = "0.30";
+-+static char __initdata nfversion[] = "0.30 with ipset netlink.patch";
+- 
+- static const struct nfnetlink_subsystem *subsys_table[NFNL_SUBSYS_COUNT];
+- static DEFINE_MUTEX(nfnl_mutex);
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
