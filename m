@@ -1,82 +1,35 @@
-From: Peter LaDow <petela@gocougs.wsu.edu>
+From: Thomas Gleixner <tglx@linutronix.de>
 Subject: Re: Process Hang in __read_seqcount_begin
-Date: Fri, 26 Oct 2012 14:25:52 -0700
-Message-ID: <CAN8Q1Ecx-pDR=NBQm4O=VaynQsxBU1wku9e_kcKkWB=xU0OtMA@mail.gmail.com>
-References: <CAN8Q1EdobyFuAvtajGRSqNsCG+XoPA+FkwN=2j_H126mmfEjTQ@mail.gmail.com>
-	<1350925299.8609.978.camel@edumazet-glaptop>
-	<CAN8Q1EeqmHMHD-VUgr7Wzv0Z_DAD1SrEniftg==L14d+hGwu+Q@mail.gmail.com>
-	<CAN8Q1EcTRsHjCJD90q0bKRJFMvi7Vn8YRsyQTAHNtTFVuuNdWQ@mail.gmail.com>
-	<CAN8Q1EeB2kC6A_YP9zdtp_qYHMG5FF7-Usjx7Rz5pv--bjhqkQ@mail.gmail.com>
-	<1351053164.6537.95.camel@edumazet-glaptop>
-	<CAN8Q1Ef9sCAG8-KNWXEeuRUcmFNcg93mMG=HRQw6i3UuGtJCVg@mail.gmail.com>
-	<1351270087.30380.9.camel@edumazet-glaptop>
-	<CAN8Q1Ed1J-jmO9LppcA=rFXPvxFkk-J9mMb2-NhDYyAQKO2jvQ@mail.gmail.com>
-	<1351285552.30380.20.camel@edumazet-glaptop>
+Date: Fri, 26 Oct 2012 23:54:28 +0200 (CEST)
+Message-ID: <alpine.LFD.2.02.1210262351330.2756@ionos>
+References: <CAN8Q1EdobyFuAvtajGRSqNsCG+XoPA+FkwN=2j_H126mmfEjTQ@mail.gmail.com> <1350925299.8609.978.camel@edumazet-glaptop> <CAN8Q1EeqmHMHD-VUgr7Wzv0Z_DAD1SrEniftg==L14d+hGwu+Q@mail.gmail.com> <CAN8Q1EcTRsHjCJD90q0bKRJFMvi7Vn8YRsyQTAHNtTFVuuNdWQ@mail.gmail.com>
+ <CAN8Q1EeB2kC6A_YP9zdtp_qYHMG5FF7-Usjx7Rz5pv--bjhqkQ@mail.gmail.com> <1351053164.6537.95.camel@edumazet-glaptop> <CAN8Q1Ef9sCAG8-KNWXEeuRUcmFNcg93mMG=HRQw6i3UuGtJCVg@mail.gmail.com> <1351270087.30380.9.camel@edumazet-glaptop>
+ <CAN8Q1Ed1J-jmO9LppcA=rFXPvxFkk-J9mMb2-NhDYyAQKO2jvQ@mail.gmail.com> <1351285552.30380.20.camel@edumazet-glaptop> <CAN8Q1Ecx-pDR=NBQm4O=VaynQsxBU1wku9e_kcKkWB=xU0OtMA@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <linux-kernel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:sender:in-reply-to:references:date
-         :x-google-sender-auth:message-id:subject:from:to:cc:content-type;
-        bh=c0hZFsM7jgFOOeLOFfa5ohH3nkLE21x5MUVn9dcckcI=;
-        b=TkaCVZv5CG+F3K0oXOLzfb7Z6U3shQpnTwsPdvFW5bP9AT29HIHTolnSM1YtGITsw4
-         Rrf7z6vZPclr6BmR+qr070Br12GJ68FLO7J/ctmiuZd90MTLnC7PmcYeN3vrdQ/y1kqG
-         RR6ukdpzxronu7zhBGDGeZI+m6mFumJAaloDV0B7gKkSao0ChvvL9b5N3WFGiu8OT2Gx
-         olv78777egOPN+aA65eWtGQ/LblyNTHtpWGig8D7KqgGZXk6nTsrMpVOnZAfrG9MP6IQ
-         1jJvBgQ5eutQG4eIj5+fU8hKzx6TUCAZxe3bjZakynkU7wSMwtrt50WxbVt+Da4s59J6
-         2bYg==
-In-Reply-To: <1351285552.30380.20.camel@edumazet-glaptop>
+In-Reply-To: <CAN8Q1Ecx-pDR=NBQm4O=VaynQsxBU1wku9e_kcKkWB=xU0OtMA@mail.gmail.com>
 Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Eric Dumazet <eric.dumazet@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org, netfilter@vger.kernel.org
+To: Peter LaDow <petela@gocougs.wsu.edu>
+Cc: Eric Dumazet <eric.dumazet@gmail.com>, linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org, netfilter@vger.kernel.org
 
-On Fri, Oct 26, 2012 at 2:05 PM, Eric Dumazet <eric.dumazet@gmail.com> wrote:
-> Do you know what is per cpu data in linux kernel ?
+On Fri, 26 Oct 2012, Peter LaDow wrote:
+> On Fri, Oct 26, 2012 at 2:05 PM, Eric Dumazet <eric.dumazet@gmail.com> wrote:
+> If this were safe, we wouldn't be seeing this lockup and your patch
+> wouldn't be needed.  So it seems that your patch doesn't really
+> address the issue that we are not "sure a thread cannot be interrupted
+> by a softirq, and cannot migrate to another cpu".  Well, we know it
+> cannot migrate to another CPU, because there isn't another CPU.  So
+> apparently, it can be interrupted by a softirq.  So local_bh_disable
+> isn't doing anything useful in the RT patches with regard to this.
 
-I sorta did.  But since your response, I did more reading, and now I
-see what you mean.  But I don't think this is a per cpu issue.  More
-below.
+RT changes the semantics slightly. And yes it's not prepared for stuff
+which is relying on some of the magic mainline implicit semantics.
 
-> Because its not needed. Really I dont know why you want that.
->
-> Once you are sure a thread cannot be interrupted by a softirq, and
-> cannot migrate to another cpu, access to percpu data doesnt need other
-> synchronization at all.
+Let me have a look at the whole scenario, once I'm more awake.
 
-Because there are multiple entry points on the same CPU.  In
-net/ipv4/netfilter/ip_tables, there are two entries to
-xt_write_recseq_begin().  The first is in ipt_do_table and the other
-is in get_counters.  Where we are seeing the lockup is with a
-getsockopt syscall leading to do_counters.  The other path is through
-ipt_do_table, which is installed as a hook.  I'm not sure from what
-context the hooks are called, but it is certainly from a different
-context than the syscall.
+Thanks,
 
-> Following sequence is safe :
->
-> addend = (__this_cpu_read(xt_recseq.sequence) + 1) & 1;
-> /*
->  * This is kind of a write_seqcount_begin(), but addend is 0 or 1
->  * We dont check addend value to avoid a test and conditional jump,
->  * since addend is most likely 1
->  */
-> __this_cpu_add(xt_recseq.sequence, addend);
-
-If this were safe, we wouldn't be seeing this lockup and your patch
-wouldn't be needed.  So it seems that your patch doesn't really
-address the issue that we are not "sure a thread cannot be interrupted
-by a softirq, and cannot migrate to another cpu".  Well, we know it
-cannot migrate to another CPU, because there isn't another CPU.  So
-apparently, it can be interrupted by a softirq.  So local_bh_disable
-isn't doing anything useful in the RT patches with regard to this.
-
-As I mentioned earlier, I think perhaps what your patch did was ensure
-an atomic update of the sequence counter.  But it does nothing to
-synchronize two writers.  If they were already synchronized (such as
-via the call to local_bh_disable), then we wouldn't see sequence
-counter corruption, no?
-
-Pete
+	tglx
