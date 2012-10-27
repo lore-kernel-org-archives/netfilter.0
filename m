@@ -1,35 +1,44 @@
-From: Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: Process Hang in __read_seqcount_begin
-Date: Fri, 26 Oct 2012 23:54:28 +0200 (CEST)
-Message-ID: <alpine.LFD.2.02.1210262351330.2756@ionos>
-References: <CAN8Q1EdobyFuAvtajGRSqNsCG+XoPA+FkwN=2j_H126mmfEjTQ@mail.gmail.com> <1350925299.8609.978.camel@edumazet-glaptop> <CAN8Q1EeqmHMHD-VUgr7Wzv0Z_DAD1SrEniftg==L14d+hGwu+Q@mail.gmail.com> <CAN8Q1EcTRsHjCJD90q0bKRJFMvi7Vn8YRsyQTAHNtTFVuuNdWQ@mail.gmail.com>
- <CAN8Q1EeB2kC6A_YP9zdtp_qYHMG5FF7-Usjx7Rz5pv--bjhqkQ@mail.gmail.com> <1351053164.6537.95.camel@edumazet-glaptop> <CAN8Q1Ef9sCAG8-KNWXEeuRUcmFNcg93mMG=HRQw6i3UuGtJCVg@mail.gmail.com> <1351270087.30380.9.camel@edumazet-glaptop>
- <CAN8Q1Ed1J-jmO9LppcA=rFXPvxFkk-J9mMb2-NhDYyAQKO2jvQ@mail.gmail.com> <1351285552.30380.20.camel@edumazet-glaptop> <CAN8Q1Ecx-pDR=NBQm4O=VaynQsxBU1wku9e_kcKkWB=xU0OtMA@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Status of iptables target support in ipset
+Date: Sat, 27 Oct 2012 09:26:30 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1210270916590.2637@blackhole.kfki.hu>
+References: <CABpXQ7aX_LtYxP5UCo454-V9yu07kc8BpUBesCWy-4V_2ZqRvw@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAN8Q1Ecx-pDR=NBQm4O=VaynQsxBU1wku9e_kcKkWB=xU0OtMA@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: MULTIPART/MIXED; BOUNDARY="110391812-1912830798-1351322790=:2637"
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <CABpXQ7aX_LtYxP5UCo454-V9yu07kc8BpUBesCWy-4V_2ZqRvw@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Peter LaDow <petela@gocougs.wsu.edu>
-Cc: Eric Dumazet <eric.dumazet@gmail.com>, linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org, netfilter@vger.kernel.org
+To: =?ISO-8859-15?Q?Csord=E1s_Csaba_Ifj=2E?= <cscsordas@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-On Fri, 26 Oct 2012, Peter LaDow wrote:
-> On Fri, Oct 26, 2012 at 2:05 PM, Eric Dumazet <eric.dumazet@gmail.com> wrote:
-> If this were safe, we wouldn't be seeing this lockup and your patch
-> wouldn't be needed.  So it seems that your patch doesn't really
-> address the issue that we are not "sure a thread cannot be interrupted
-> by a softirq, and cannot migrate to another cpu".  Well, we know it
-> cannot migrate to another CPU, because there isn't another CPU.  So
-> apparently, it can be interrupted by a softirq.  So local_bh_disable
-> isn't doing anything useful in the RT patches with regard to this.
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-RT changes the semantics slightly. And yes it's not prepared for stuff
-which is relying on some of the magic mainline implicit semantics.
+--110391812-1912830798-1351322790=:2637
+Content-Type: TEXT/PLAIN; charset=UTF-8
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 
-Let me have a look at the whole scenario, once I'm more awake.
+On Fri, 26 Oct 2012, Csord=C3=A1s Csaba Ifj. wrote:
 
-Thanks,
+> I would like to ask when will it possible writing such rules as
+> mentioned in $SUBJECT.
+>=20
+> For example:
+>=20
+> ipset new foo hash:ip
+> ipset add foo 192.168.1.1 -t filter -A FORWARD -j LOG ... -t nat -A
+> POSTROUTING -j SNAT ... -t mangle -A PREROUTING -j MARK ...
 
-	tglx
+That's still on the todo list of ipset. Also, it requires some (small)=20
+changes in the netfilter core itself. After adding some locking=20
+improvements to ipset, hopefully I can start working on the subject.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
+--110391812-1912830798-1351322790=:2637--
