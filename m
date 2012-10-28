@@ -1,52 +1,54 @@
 From: Eliezer Croitoru <eliezer@ngtech.co.il>
-Subject: Re: New/Updated L7 netfilter  option - nDPI
-Date: Sun, 28 Oct 2012 17:07:02 +0200
-Message-ID: <508D4A16.5020509@ngtech.co.il>
-References: <5088717B.6080300@wildgooses.com>
+Subject: Re: 2 nics and traffic delayed/lost on LAN
+Date: Sun, 28 Oct 2012 17:31:57 +0200
+Message-ID: <508D4FED.4040105@ngtech.co.il>
+References: <CAG5MBdXsm-bD2diJKif3mF3p=h6YCfbV__SY55gjtas81ForqA@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <5088717B.6080300@wildgooses.com>
+In-Reply-To: <CAG5MBdXsm-bD2diJKif3mF3p=h6YCfbV__SY55gjtas81ForqA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Ed W <lists@wildgooses.com>
-Cc: netfilter@vger.kernel.org, ntop-dev@unipi.it, "G. Elian Gidoni" <geg@gnu.org>
+To: Kim Emax <kimemax@gmail.com>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-On 10/25/2012 12:53 AM, Ed W wrote:
-> The practical upshot is that you can do stuff like:
+On 10/26/2012 5:19 PM, Kim Emax wrote:
+> Hello
 >
->      iptables -I FORWARD -m opendpi --WinUpdate -j LOG
-> or
->      iptables -I FORWARD -m opendpi --skype -j REJECT
+> I have two nics and a DHCP server on my server (192.168.0.1), which
+> iptables controlled fine for years, but when i got a new job and
+> switched to a new server + started working through VPN i saw some
+> problems.
+> I'm having issues with the VPN, i can sit for like 10 minutes an try
+> to make a proper connection with Ciscos anyConnect against the company
+> network, getting all kinds of responses, often not even a connect
+> prompt. The local firewall has been disabled on this PC
+> 192.168.0.132). If i plug this PC straight to the WAN instead of the
+> server, VPN works fine and fast.
 >
-> In theory you can also filter Facebook, Twitter, etc, but I concede that
-> doesn't seem to work as expected right now...
+> It seems that the traffic on my internal network somehow is being
+> delayed, for instance SSH, i can wait for 30 seconds before the
+> keystrokes are shown on the screen. I don't recall that was an issue
+> before the VPN issue appeared.
 >
-> Another of the clever things that nDPI does is to try and classify SSL
-> traffic by examining the name on the cert.  A technique that seems
-> likely to allow crude identification of significant traffic.
+> Also there seems to be some packageloss, sending 10 packages from the
+> company PC at home to the server/gateway results in packageloss from
+> 10 to 40%
 >
->
-> We could benefit from more eyes on this, both the netfilter module and
-> the nDPI library
->
-> Thanks for your feedback
->
-> Ed W
-I tried the new version which is suppose to work with:
-iptables -m ndpi --help
-but it seems like there is an error:
-iptables v1.4.12.1: Couldn't load match `ndpi':No such file or directory
+> Anyone got an idea for this? I've been trying to figure out the
+> problem for some time now and thought i had solved it some months ago,
+> but apparently not.
+> WAN is connected to eth0 and LAN to eth1
+> LAN is 192.168.0.0/24
+Hello Kim,
 
-but work with opendpi.
-I am using kernel 3.3.8 64 bit.
+it seems to me like there nothing wrong with the FW software but 
+something else lower in the chain.
 
-did you tested the new changes to work?
-for now I cant restart the server and I was hoping to test it without 
-doing it.
+What Distro are you using?
 
-Thanks,
+Regards,
 Eliezer
 
 -- 
