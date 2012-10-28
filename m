@@ -1,44 +1,42 @@
 From: Eliezer Croitoru <eliezer@ngtech.co.il>
 Subject: Re: New/Updated L7 netfilter  option - nDPI
-Date: Sun, 28 Oct 2012 18:39:20 +0200
-Message-ID: <508D5FB8.1080000@ngtech.co.il>
-References: <5088717B.6080300@wildgooses.com> <1351412418.2740.5.camel@andylaptop> <508D5EA6.8040004@wildgooses.com>
+Date: Sun, 28 Oct 2012 18:51:54 +0200
+Message-ID: <508D62AA.8070304@ngtech.co.il>
+References: <5088717B.6080300@wildgooses.com> <508D4A16.5020509@ngtech.co.il> <508D5747.1000304@wildgooses.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <508D5EA6.8040004@wildgooses.com>
+In-Reply-To: <508D5747.1000304@wildgooses.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Ed W <lists@wildgooses.com>
-Cc: Andrew Beverley <andy@andybev.com>, netfilter@vger.kernel.org
+Cc: netfilter@vger.kernel.org
 
-On 10/28/2012 6:34 PM, Ed W wrote:
-> Actually, just to augment my last answer.
+On 10/28/2012 6:03 PM, Ed W wrote:
+> Test??  What does that word mean? :-)
 >
-> The biggest thing I pick out as "interesting" in nDPI is that it has a
-> go at inspecting SSL traffic and odd sub protocols of http (eg Skype,
-> Windows Update).  Given that we are rapidly seeing everything start to
-> look like an HTTP protocol and then there is SSL on top, it's tricky to
-> classify stuff like Skype or Facebook traffic.  nDPI can do this
-> (although would benefit from more work in this area). So if your SSL
-> certificate says mail.google.com, then you can guess the "protocol" in
-> use...
 >
-> So if you want a one trick reason to try nDPI, right now you can use it
-> to block/prioritise/time-restrict Skype... (or Windows Update, etc)
+> I think the error means that you don't have libxt_ndpi.so in a location
+> that your iptables expects to find it?  Often it's /usr/lib/xtables or
+> /lib/xtables.  Check where other things are and place the file
+> appropriately
 >
-> I have a load of users on expensive satellite connections and I need to
-> help protect them from themselves so being able to prevent Windows
-> Update from banging 10MB down a $30/MB connection is very helpful.  I
-> also use your squid patches to do sticky per user conntrack labelling of
-> traffic and hence enabling users to choose a traffic profile (so they
-> can choose to do the above if they really want to...)
+> Does that fix it?
+/usr/lib it is, /lib/ .. dosnt work for me.
+
+also notice that the "MODULES_DIR" and "KERNEL_DIR" are needed for my 
+system.
+If and only if you have an idea how to make the Makefile recognize the 
+proper "lib" directory and install the module it will be much more 
+helpful to others.
+
+Thanks,
+Eliezer
+
 >
-> Cheers
->
-> Ed W
-Or just use WGET to download the internet into you LAN ;)
+> Ed
+
 
 -- 
 Eliezer Croitoru
