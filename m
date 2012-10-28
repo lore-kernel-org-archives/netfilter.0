@@ -1,44 +1,41 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Status of iptables target support in ipset
-Date: Sat, 27 Oct 2012 09:26:30 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1210270916590.2637@blackhole.kfki.hu>
-References: <CABpXQ7aX_LtYxP5UCo454-V9yu07kc8BpUBesCWy-4V_2ZqRvw@mail.gmail.com>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: New/Updated L7 netfilter  option - nDPI
+Date: Sun, 28 Oct 2012 08:20:18 +0000
+Message-ID: <1351412418.2740.5.camel@andylaptop>
+References: <5088717B.6080300@wildgooses.com>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="110391812-1912830798-1351322790=:2637"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CABpXQ7aX_LtYxP5UCo454-V9yu07kc8BpUBesCWy-4V_2ZqRvw@mail.gmail.com>
+In-Reply-To: <5088717B.6080300@wildgooses.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1351412427;
+	bh=RHdALlwHO+xkTnI4X6nxK/BVMCaes12G20hIbQPHDVg=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:Content-Transfer-Encoding:Mime-Version;
+	b=IxxQxF4U498J8eP0APPxndBgLADMmuzf7MuK335A0812/EmnbzzELCRfBFSqrvl52
+	 M1QXH8pYHULZ+wNgO6/Uhbx766d+vaHFfQPhi1cSGb/fk9kXTNQcqm7YCczybmzM/W
+	 liY5sA1OiK4D3cIulTLQV74iJH/GngrTGwSCNDE8=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: =?ISO-8859-15?Q?Csord=E1s_Csaba_Ifj=2E?= <cscsordas@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Ed W <lists@wildgooses.com>
+Cc: netfilter@vger.kernel.org, ntop-dev@unipi.it, "G. Elian Gidoni" <geg@gnu.org>
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On Wed, 2012-10-24 at 23:53 +0100, Ed W wrote:
+> Hi all.  There is an interesting project that was called opendpi 
+> (originally by ipoque GmbH) and recently been forked and maintained by 
+> the ntop guys under the nDPI label.  It offers a new and currently 
+> maintained layer 7 (L7) packet identification library.
 
---110391812-1912830798-1351322790=:2637
-Content-Type: TEXT/PLAIN; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+That's great news.
 
-On Fri, 26 Oct 2012, Csord=C3=A1s Csaba Ifj. wrote:
+I had a play with l7-filter some time ago, which I assume is similar to
+nDPI. How do the 2 projects compare?
 
-> I would like to ask when will it possible writing such rules as
-> mentioned in $SUBJECT.
->=20
-> For example:
->=20
-> ipset new foo hash:ip
-> ipset add foo 192.168.1.1 -t filter -A FORWARD -j LOG ... -t nat -A
-> POSTROUTING -j SNAT ... -t mangle -A PREROUTING -j MARK ...
+I have to admit that I only had limited success with l7-filter, although
+it no longer appears to be maintained anyway.
 
-That's still on the todo list of ipset. Also, it requires some (small)=20
-changes in the netfilter core itself. After adding some locking=20
-improvements to ipset, hopefully I can start working on the subject.
+Andy
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
---110391812-1912830798-1351322790=:2637--
+
+
