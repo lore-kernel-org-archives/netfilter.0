@@ -1,36 +1,82 @@
-From: Eliezer Croitoru <eliezer@ngtech.co.il>
-Subject: Re: 2 nics and traffic delayed/lost on LAN
-Date: Tue, 30 Oct 2012 23:52:50 +0200
-Message-ID: <50904C32.3020606@ngtech.co.il>
-References: <CAG5MBdXsm-bD2diJKif3mF3p=h6YCfbV__SY55gjtas81ForqA@mail.gmail.com> <508D4FED.4040105@ngtech.co.il> <CAG5MBdUoGwooO7VHy6ae+KyeRcypo2p9A2zxP+egLjkE_6H-KA@mail.gmail.com> <508DC35D.1020303@ngtech.co.il> <CAG5MBdXd0Jn8bPrkVrWJ_7yDU6qop3E3xJErcgEJ7p6=n=ewYg@mail.gmail.com> <509035B7.8050205@ngtech.co.il> <CAG5MBdXqZ9=8HFP3itm0SyTzdpeYSbFm3THAbLx8uaVPHyMPWQ@mail.gmail.com>
+From: Peter LaDow <petela@gocougs.wsu.edu>
+Subject: Re: Process Hang in __read_seqcount_begin
+Date: Tue, 30 Oct 2012 16:09:24 -0700
+Message-ID: <CAN8Q1Ef1_OOTpqSrvPB6ja3A3e9-Lky-iceH4NKjWLw8HcW2AA@mail.gmail.com>
+References: <CAN8Q1EdobyFuAvtajGRSqNsCG+XoPA+FkwN=2j_H126mmfEjTQ@mail.gmail.com>
+	<1350925299.8609.978.camel@edumazet-glaptop>
+	<CAN8Q1EeqmHMHD-VUgr7Wzv0Z_DAD1SrEniftg==L14d+hGwu+Q@mail.gmail.com>
+	<CAN8Q1EcTRsHjCJD90q0bKRJFMvi7Vn8YRsyQTAHNtTFVuuNdWQ@mail.gmail.com>
+	<CAN8Q1EeB2kC6A_YP9zdtp_qYHMG5FF7-Usjx7Rz5pv--bjhqkQ@mail.gmail.com>
+	<1351053164.6537.95.camel@edumazet-glaptop>
+	<CAN8Q1Ef9sCAG8-KNWXEeuRUcmFNcg93mMG=HRQw6i3UuGtJCVg@mail.gmail.com>
+	<1351270087.30380.9.camel@edumazet-glaptop>
+	<CAN8Q1Ed1J-jmO9LppcA=rFXPvxFkk-J9mMb2-NhDYyAQKO2jvQ@mail.gmail.com>
+	<1351285552.30380.20.camel@edumazet-glaptop>
+	<CAN8Q1Ecx-pDR=NBQm4O=VaynQsxBU1wku9e_kcKkWB=xU0OtMA@mail.gmail.com>
+	<alpine.LFD.2.02.1210262351330.2756@ionos>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAG5MBdXqZ9=8HFP3itm0SyTzdpeYSbFm3THAbLx8uaVPHyMPWQ@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:sender:in-reply-to:references:date
+         :x-google-sender-auth:message-id:subject:from:to:cc:content-type;
+        bh=qM/tsSjqkwoiLOXdyptK4eyV56BjcOIJDlnIbbXjQOA=;
+        b=kfLztw5kyFMFZJfbJIDvFKGwtLO/Xryn+IJ6ivXQ/pEtED9fviSg8xqsx13AIvtWso
+         g4zybWY8mx41REe0atQ/cwQ2e/q4Qeg5O39tHhCizx5q1zlLgSwDECC4FmqZBQgn7fcj
+         +rbMe13PCxszqjWlU54WqVig7tzG4fJRHKKBndpUKtLdvyTXyBovWWFQEpuHMzHBFIDc
+         TpPsi8tAK0yUHLhf92sLBBZwJsovCfqaI+zzfzoAVK2WFiwyNJss8DZx5XLj1hXKH10S
+         lkNUeqKPhLmgLZs5epRBJeSsUg0o1s8RtlC6CwP4MuVB7Bbh1dx92iAvzk2qHbqPbZDL
+         fwYg==
+In-Reply-To: <alpine.LFD.2.02.1210262351330.2756@ionos>
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Kim Emax <kimemax@gmail.com>
-Cc: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Eric Dumazet <eric.dumazet@gmail.com>, linux-kernel@vger.kernel.org, linux-rt-users@vger.kernel.org, netfilter@vger.kernel.org
 
-On 10/30/2012 11:19 PM, Kim Emax wrote:
->>> >>10 pings gave 10, 30 and 40% packetloss.
->>> >>
->> >ping to where?
->> >try pinging the "firewall" and to other places by the topology.
->> >lan to lan
->> >lan to firewall
->> >lan to other throw firewall
-> Sorry, i pinged the companys VPN address.
->
-If you will describe in more detail the network I will might have one or 
-more good points for you.
+Ok.  More of an update.  We've managed to create a scenario that
+exhibits the problem much earlier.  We can now cause the lockup to
+occur within a few hours (rather than the 12 to 24 hours in our other
+scenario).
 
-Regards,
-Eliezer
+ Our setup is to to have a a lot of traffic constantly being processed
+by the netfilter code.  After about 2 hours, any external attempt to
+read the table entries (such as with getsocktopt and
+IPT_SO_GET_ENTRIES) triggers the lockup.  What is strange is that this
+does not appear until after a couple of hours of heavy traffic.  We
+cannot trigger this problem in the first hour, rarely in the second
+hour, and always after the second hour.
 
--- 
-Eliezer Croitoru
-https://www1.ngtech.co.il
-IT consulting for Nonprofit organizations
-eliezer <at> ngtech.co.il
+Now, our original setup did not have as much traffic.  But based upon
+a quick, back of the napkin computation, it seems to occurring after a
+certain amount of traffic.  I can try to get more firm numbers.  But
+this kind of behavior hints less at a race condition between two
+writers, and is instead somehow dependent upon the amount of traffic.
+Indeed, my test program only uses IPT_SO_GET_ENTRIES which does not
+trigger the second path do do_add_counters.  So I'm no longer thinking
+the path through setsockopts is a cause of the problem.
+
+So instead, it seems that the only way there could be multiple writers
+(assuming that is the problem), is if there are multiple contexts
+through which ipt_do_table() is called.  So far, my perusal of the
+code indicates only through the hooks in each of the iptables modules.
+ And it isn't clear to me how these are called.  But it does seem that
+even with the patch Eric provided (which fixes the seqcount update),
+there is still a potential problem.
+
+If indeed we have multiple contexts executing ipt_do_table(), it is
+possible for more than just the seqcount to be corrupted.  Indeed, it
+seems that any updates to the internal structures could cause
+problems.  It isn't clear to me if there is anything modified here,
+other than the counters, so I'm not sure if there are any other
+issues.  But regardless, if the counters could become corrupted, then
+it is possible to break any rules that use them.
+
+Anyway, based on earlier discussion, is there any reason not to use a
+lock (presuming any solution properly takes into account possible
+recursion)?  I understand that the mainline is protected, but perhaps
+in the RT version we can use seqlock (and prevent a recursive lock)?
+
+Thanks,
+Pete LaDow
