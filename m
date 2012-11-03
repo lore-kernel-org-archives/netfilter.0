@@ -1,74 +1,56 @@
-From: Ed W <lists@wildgooses.com>
-Subject: Re: New/Updated L7 netfilter  option - nDPI
-Date: Fri, 02 Nov 2012 13:40:21 +0000
-Message-ID: <5093CD45.8090607@wildgooses.com>
-References: <5088717B.6080300@wildgooses.com>
-	<1351412418.2740.5.camel@andylaptop>
-	<508D47E2.8020800@ngtech.co.il>
-	<1351807382.2243.51.camel@andylaptop>
-	<5092FE2D.40009@wildgooses.com> <5093BEAB.2040002@metu.edu.tr>
-Reply-To: ntop-dev@unipi.it
+From: Thomas Perl <th.perl@gmail.com>
+Subject: How to enable "bytes=" output in "conntrack -L" output
+Date: Sat, 3 Nov 2012 12:48:48 +0100
+Message-ID: <CA+uOhx6tc0EZO8atcN+=vN_Buv_mWbOwNF+RM4wnr3PpYp6vrA@mail.gmail.com>
 Mime-Version: 1.0
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:cc:content-type;
+        bh=77G3om5OivId8DPYDjMiP1FLq9yxTzFMnqgUk4BCaho=;
+        b=FqmSJyzHSsVuSbWn04joI57d4+TOhzvstYHBClsr3WFoSWM2B+iU2wggdT60KKNGJ5
+         1xmwEmBGoKmpDFMJuTf88m2Fm+HfSXj5kt83O2yYpW8D9YqRi5wg9wRDK+EDFJVYDDY6
+         H/yT+wsE8AZ/O5VFCet2aQCj0fkD/ocPQoLp0wYNJcx4hejomedmfPPD3M5Zkbs5tlhY
+         YXCFiHMQ255N/mAiCrng8ifqJQzgh8BS0IAg7k8i4ru7jV3uS0teA0os4ThjVm3j6JeW
+         JvCUgh9pZBVezfCD9AE9mMzq8+9Xpb4+aWVVTWquJdS+uj0OHaZlQoaiM3PU4lRz52WA
+         CJHA==
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <ntop-dev-bounces@listgateway.unipi.it>
-In-Reply-To: <5093BEAB.2040002@metu.edu.tr>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://listgateway.unipi.it/mailman/options/ntop-dev>,
-	<mailto:ntop-dev-request@listgateway.unipi.it?subject=unsubscribe>
-List-Archive: <http://listgateway.unipi.it/pipermail/ntop-dev>
-List-Post: <mailto:ntop-dev@listgateway.unipi.it>
-List-Help: <mailto:ntop-dev-request@listgateway.unipi.it?subject=help>
-List-Subscribe: <http://listgateway.unipi.it/mailman/listinfo/ntop-dev>,
-	<mailto:ntop-dev-request@listgateway.unipi.it?subject=subscribe>
-Sender: ntop-dev-bounces@listgateway.unipi.it
-Errors-To: ntop-dev-bounces@listgateway.unipi.it
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Lutfi ODUNCUOGLU <lutfio@metu.edu.tr>
-Cc: netfilter@vger.kernel.org, Eliezer Croitoru <eliezer@ngtech.co.il>, ntop-dev@unipi.it
+To: netfilter@vger.kernel.org
+Cc: Kamal Ahmed <kamal2222ahmed@yahoo.com>, =?ISO-8859-1?Q?Stefan_K=F6gl?= <stefan@skoegl.net>
 
-On 02/11/2012 12:38, Lutfi ODUNCUOGLU wrote:
-> Hello,
->
-> I compiled nDPI-nefilter patch and it works fine. What I want is to 
-> shape the p2p traffic in my network. For this purpose i just 
-> implemented the nDPI-netfilter patch as two different ways for testing
->
->  iptables -t mangle -A POSTROUTING -o XXX -m ndpi --bittorrent -j 
-> CONNMARK --set-mark 1
->
->
-> iptables -t mangle -A POSTROUTING -m connmark --mark 1  -j CLASSIFY 
-> --set-class 0001:0010
->
-> or
->
-> iptables -t mangle -A POSTROUTING -m ndpi --bittorrent  -j CLASSIFY 
-> --set-class 0001:0010
->
->
-> So which one is more suitable for use? I don't know if this patch 
-> inspects connections (marks connection) or every single packet (marks 
-> every single) for a match.
+Hi,
 
-I would be interested in your feedback on CPU usage for both actually?
+I've been using /proc/net/ip_conntrack two years ago to do some rough
+measurements of IP traffic. As this feature seems to be gone in recent
+kernels, I've looked into replacements and found "conntrack" from
+conntrack-tools.
 
-Internally nDPI implements a "connection cache", which means that it 
-asks conntrack to maintain the connection, but internally it maintains a 
-cache of what protocol is matched to a given connection.  This should be 
-quite similar to asking conntrack to --set-mark *if* you also have some 
-iptables to subsequently skip the test once the connection is marked?
+Looking at the manual, I can see that the "bytes=" output is there in
+the examples:
+http://conntrack-tools.netfilter.org/manual.html
 
-So, either way, the connection gets marked at some point and thereafter 
-no CPU is expended checking the connection further.  Of course theory 
-and practice aren't the same...
+However, on my machine when running "conntrack -L" (as root), I do get
+output, but without the "bytes=" part:
 
-Just beware that the connection may only get marked several packets in, 
-ie the first few packets might not match anything, then the protocol 
-will be detected, thereafter the protocol is wedged as being detected as 
-that protocol.  This can obviously mean several packets potentially 
-going out unmarked even if the connection is subsequently marked (not 
-normally a problem)
+tcp      6 ZZZZ ESTABLISHED src=X.X.X.X dst=Y.Y.Y.Y sport=XXX
+dport=YYY src=X.X.X.X dst=Y.Y.Y.Y sport=XXX dport=YYY [ASSURED] mark=0
+use=1
 
-Grateful for your benchmarks!
+As you can see, there is no bytes= or packets= count in the output
+(compared to the example of the conntrack-tools manual and old
+/proc/net/ip_conntrack output).
 
-Ed W
+The following kernel modules are loaded (as described in the manual):
+nf_conntrack nf_conntrack_ipv4 nf_conntrack_netlink
+I'm using a stock Ubuntu 12.10 kernel (3.5.0-17-generic). The version
+of the "conntrack" package is 1:1.2.1-1ubuntu1 (also from the Ubuntu
+12.10 repos).
+
+What do I need to do/configure to get the bytes= and packets= count
+output in "conntrack -L"?
+
+Thanks,
+Thomas
