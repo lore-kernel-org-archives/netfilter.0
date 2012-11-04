@@ -1,39 +1,58 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: New/Updated L7 netfilter  option - nDPI
-Date: Sun, 04 Nov 2012 15:45:11 +0000
-Message-ID: <1352043911.2187.1.camel@andylaptop>
-References: <5088717B.6080300@wildgooses.com>
-	 <1351412418.2740.5.camel@andylaptop> <508D47E2.8020800@ngtech.co.il>
-	 <1351807382.2243.51.camel@andylaptop> <5092FE2D.40009@wildgooses.com>
+From: Arthur Titeica <arthur@psw.ro>
+Subject: nfacct + ipset usage
+Date: Sun, 04 Nov 2012 20:03:36 +0200
+Message-ID: <8053765.UAHfcTIRLq@lhart>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <5092FE2D.40009@wildgooses.com>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1352045694;
-	bh=eFIKbXpMkX48b7jjKAdWNOX+N+mpk6ORgHi1Tm8bX8U=;
-	h=Message-ID:Subject:From:To:Cc:In-Reply-To:References:Content-Type:
-	 Date:Mime-Version:Content-Transfer-Encoding;
-	b=Z7txShKJsjNCvOEspzvvkg7LZS/Ix2uCJ5H23YUb4hlUCMPKGkSzxg1Tycr0Cw6AZ
-	 jykxYKAZTnrvChjPumEJ/b7qcdfrJgqxg7XPIvLuHvboVT4IOsXhafuKim7pNs+FdZ
-	 r3Ualdxv10fNcXcKWzSXloELrGlNUKoXg2IMeADY=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=psw.ro; h=
+	user-agent:content-type:content-type:content-transfer-encoding
+	:mime-version:organization:message-id:date:date:subject:subject
+	:from:from:received; s=mail; t=1352052217; bh=mGqfqHsxYVT+7SNRGs
+	T1nVHaP0DZUewh6yY3IuQD9bY=; b=JESmjDDn3iM+WbFQS6FT1i7KqXpt3Fo5+H
+	MKVlPtELZ8KVn/LoQdAOQr4W59iH7M5/euSKm7TItdNZiIDkNrw9/IbR2Zz5FsZ3
+	a++uwOWleYzAQb/v3mNeh3QEQombuYzWIGaY8nj8F2cPRE3ro9Ziq5E205VKSdEs
+	TsZ3vQ1sM=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Ed W <lists@wildgooses.com>
-Cc: Eliezer Croitoru <eliezer@ngtech.co.il>, netfilter@vger.kernel.org, ntop-dev@unipi.it, "G. Elian Gidoni" <geg@gnu.org>
+To: Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-On Thu, 2012-11-01 at 22:56 +0000, Ed W wrote:
-> I guess you just invented an "L7 Filter" yourself... It's just as good a 
-> match for certain requirements...!
-> 
-> Let me know if you measure this thing against your problem?
+Hello,
 
-I no longer work on the project that required this, but I will give nDPI
-a try next time I'm involved in something similar!
+I'm trying to get some numbers regarding the usage of certain services (vnc 
+and samba). For this I've created 2 accounting objects with nfacct and used 
+the bellow iptables rules.
 
-Thanks,
+# nfacct add vnc-test
+# nfacct add smb-test
+# iptables -A FORWARD -m set --match-set test src \
+                    -m set --match-set test dst \
+                    -m nfacct --nfacct-name vnc-test \
+                    -p tcp --dport 5900:5902
 
-Andy
+# iptables -A FORWARD -m set --match-set test src \
+                    -m set --match-set test dst \
+                    -m nfacct --nfacct-name smb-test \
+                    -p udp -m multiport --dports 137,138
 
+# iptables -A FORWARD -m set --match-set test src \
+                    -m set --match-set test dst \
+                    -m nfacct --nfacct-name smb-test \
+                    -p tcp -m multiport --dports 139,445
 
+However, something seems wrong as I get the same numbers for both objects:
+
+{ pkts = 00000000000000040947, bytes = 00000000000036315309 } = vnc-test;
+{ pkts = 00000000000000040947, bytes = 00000000000036315309 } = smb-test;
+
+Is there something I'm missing?
+
+nfacct v1.0.0
+iptables v1.4.16.2
+kernek 3.6.5
+
+Thank you!
+
+-- 
+Arthur Titeica
