@@ -1,58 +1,40 @@
-From: Arthur Titeica <arthur@psw.ro>
-Subject: nfacct + ipset usage
-Date: Sun, 04 Nov 2012 20:03:36 +0200
-Message-ID: <8053765.UAHfcTIRLq@lhart>
+From: =?UTF-8?Q?Csord=C3=A1s_Csaba_Ifj=2E?= <cscsordas@gmail.com>
+Subject: Connection tracking FTP and ICMP
+Date: Sun, 4 Nov 2012 22:23:59 +0100
+Message-ID: <CABpXQ7ZA6oJKCMjcNZDcnMqUS0aGkQc+5P53_4k7QVhDsyZg=g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7Bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=psw.ro; h=
-	user-agent:content-type:content-type:content-transfer-encoding
-	:mime-version:organization:message-id:date:date:subject:subject
-	:from:from:received; s=mail; t=1352052217; bh=mGqfqHsxYVT+7SNRGs
-	T1nVHaP0DZUewh6yY3IuQD9bY=; b=JESmjDDn3iM+WbFQS6FT1i7KqXpt3Fo5+H
-	MKVlPtELZ8KVn/LoQdAOQr4W59iH7M5/euSKm7TItdNZiIDkNrw9/IbR2Zz5FsZ3
-	a++uwOWleYzAQb/v3mNeh3QEQombuYzWIGaY8nj8F2cPRE3ro9Ziq5E205VKSdEs
-	TsZ3vQ1sM=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=y4oWUqkEqXuU1nEmj/fF9hka/NlVecig/GfbOJJB0UQ=;
+        b=lmzlAC2Jer1Tl3IeCu6LMB12E9Czh1dmWs2gQjbva/Sde/MhBsFjM1jEZRL7n5PteC
+         8nJ7NDpBooeYw5t2zluVjfkP3TeVzIQCqceeb19pMLWT1LpnY9QVmLE1rUwuScM1lBYD
+         2ZiqFbkTBcGnoO9SXVcS7eOqgTmmYttCHai3Eb3PTrpfwAXIJpLQJxfTvToMwiaTASom
+         OQZ0o/CL74CWuAGGpaaOXMRFIZAxg3Nx9AvoUNk2MJHdd44AZaDnJxhHETiSzO+efXNt
+         u1LOGz+mGY0zMGFzL/5zkMukzuq1WaakL7PTdLjLH22CO3pvYaj+zPhZnfUlbNeQOO6Z
+         Q6YA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Netfilter Users Mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="macroman"
+To: netfilter@vger.kernel.org
 
-Hello,
+Hi List,
 
-I'm trying to get some numbers regarding the usage of certain services (vnc 
-and samba). For this I've created 2 accounting objects with nfacct and used 
-the bellow iptables rules.
+I would like to ask you about the correctness of the information
+published in a blog (www.sns.ias.edu/~jns/wp) around 2006.
 
-# nfacct add vnc-test
-# nfacct add smb-test
-# iptables -A FORWARD -m set --match-set test src \
-                    -m set --match-set test dst \
-                    -m nfacct --nfacct-name vnc-test \
-                    -p tcp --dport 5900:5902
+The rules in the FTP part of the document seems too lazy for me and
+the ICMP rules seems also "uncommon". But most probably _I'm wrong_
+and need to further investigate.
 
-# iptables -A FORWARD -m set --match-set test src \
-                    -m set --match-set test dst \
-                    -m nfacct --nfacct-name smb-test \
-                    -p udp -m multiport --dports 137,138
 
-# iptables -A FORWARD -m set --match-set test src \
-                    -m set --match-set test dst \
-                    -m nfacct --nfacct-name smb-test \
-                    -p tcp -m multiport --dports 139,445
+Here is a copy of the webpage:
+http://dl.dropbox.com/u/3715374/sns_ias_edu.pdf
 
-However, something seems wrong as I get the same numbers for both objects:
+Sorry for my bad English.
 
-{ pkts = 00000000000000040947, bytes = 00000000000036315309 } = vnc-test;
-{ pkts = 00000000000000040947, bytes = 00000000000036315309 } = smb-test;
-
-Is there something I'm missing?
-
-nfacct v1.0.0
-iptables v1.4.16.2
-kernek 3.6.5
-
-Thank you!
-
--- 
-Arthur Titeica
+Regards,
+Csord=C3=A1s Csaba Ifj.
