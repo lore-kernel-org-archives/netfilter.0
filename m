@@ -1,31 +1,57 @@
-From: valerio balbi <valerio.balbi@gmail.com>
-Subject: Re: SYNACK not generated
-Date: Tue, 6 Nov 2012 12:31:15 +0100
-Message-ID: <CABA9q+MGsKiC9ZGtrWnq6AWmsRrV2=x=GSeJ9gEX=fdxF6GEwg@mail.gmail.com>
-References: <CABA9q+Pa8eaGnYxfxqFnOvp9WCFPGEshG4Cb4JwXHqtmMvjJ=w@mail.gmail.com>
+From: Eliezer Croitoru <eliezer@ngtech.co.il>
+Subject: Re: [Ntop-dev] New/Updated L7 netfilter  option - nDPI
+Date: Tue, 06 Nov 2012 16:13:06 +0200
+Message-ID: <50991AF2.30107@ngtech.co.il>
+References: <5088717B.6080300@wildgooses.com> <1351412418.2740.5.camel@andylaptop> <508D47E2.8020800@ngtech.co.il> <1351807382.2243.51.camel@andylaptop> <5092FE2D.40009@wildgooses.com> <5093BEAB.2040002@metu.edu.tr>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :content-type;
-        bh=sZDyO/y2hnPCNsOk6faKXXffvdHvq4+U8ld8jaYBKcw=;
-        b=0FwkNMO8qlOwsIZDl7xKpWW1NbrlnViXWR8wPlnBDzpd8fQT9SZngp2SwZHiGPCZJR
-         uvhIbMkMhEK1Ax4eil5cmuHR+7bdL8pcP28V4Z6RnJPZ1ntsz0XEoxKUqcuCxy5aTrvM
-         YoDzWG00cLiCmwWU5+jLlZqjzD3z1geMaSB4yZs5m2vmo7djPVlj9IZYP/NA24vkB3QD
-         dmZakBxwLYuflrECuz1Q4bd9LenOHWXfznmUzp7coMUurRw4ue2lnCrgGBMXyw3jBCxg
-         Ys0IAwVF5RLYqsF2oah57CEpDSsFm5ucPPoqQDecUNLNFN7X1jwlBn6j5AKz3z4tXgGn
-         9ryw==
-In-Reply-To: <CABA9q+Pa8eaGnYxfxqFnOvp9WCFPGEshG4Cb4JwXHqtmMvjJ=w@mail.gmail.com>
+In-Reply-To: <5093BEAB.2040002@metu.edu.tr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Lutfi ODUNCUOGLU <lutfio@metu.edu.tr>
+Cc: ntop-dev@unipi.it, Ed W <lists@wildgooses.com>, netfilter@vger.kernel.org
 
-It's me again, just for track the analisys.
+On 11/2/2012 2:38 PM, Lutfi ODUNCUOGLU wrote:
+> Hello,
+>
+> I compiled nDPI-nefilter patch and it works fine. What I want is to
+> shape the p2p traffic in my network. For this purpose i just implemented
+> the nDPI-netfilter patch as two different ways for testing
+>
+>   iptables -t mangle -A POSTROUTING -o XXX -m ndpi --bittorrent -j
+> CONNMARK --set-mark 1
+>
+>
+> iptables -t mangle -A POSTROUTING -m connmark --mark 1  -j CLASSIFY
+> --set-class 0001:0010
+>
+> or
+>
+> iptables -t mangle -A POSTROUTING -m ndpi --bittorrent  -j CLASSIFY
+> --set-class 0001:0010
+>
+>
+> So which one is more suitable for use? I don't know if this patch
+> inspects connections (marks connection) or every single packet (marks
+> every single) for a match.
+>
+>
+> Regards,
+>
+> Lutfi
+Hey Lutfi,
 
-Well SYNACK packet is not generated because an incorrect cksum in the
-SYN request.
-Now I digg backwards to identify in which network apparate the
-corruption take place.
+it seems to me that the set-mark is used more then classify and from 
+ndpi point of view it's better then restoring marks etc since ndpi 
+stores the connection status.
+
+Regards,
+Eliezer
+
+-- 
+Eliezer Croitoru
+https://www1.ngtech.co.il
+IT consulting for Nonprofit organizations
+eliezer <at> ngtech.co.il
