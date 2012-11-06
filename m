@@ -1,110 +1,31 @@
-From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
-Subject: Re: Connection tracking FTP and ICMP
-Date: Sun, 4 Nov 2012 18:20:42 -0500
-Message-ID: <201211041820.42671.neal.p.murphy@alum.wpi.edu>
-Reply-To: neal.p.murphy@alum.wpi.edu
+From: valerio balbi <valerio.balbi@gmail.com>
+Subject: Re: SYNACK not generated
+Date: Tue, 6 Nov 2012 12:31:15 +0100
+Message-ID: <CABA9q+MGsKiC9ZGtrWnq6AWmsRrV2=x=GSeJ9gEX=fdxF6GEwg@mail.gmail.com>
+References: <CABA9q+Pa8eaGnYxfxqFnOvp9WCFPGEshG4Cb4JwXHqtmMvjJ=w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :content-type;
+        bh=sZDyO/y2hnPCNsOk6faKXXffvdHvq4+U8ld8jaYBKcw=;
+        b=0FwkNMO8qlOwsIZDl7xKpWW1NbrlnViXWR8wPlnBDzpd8fQT9SZngp2SwZHiGPCZJR
+         uvhIbMkMhEK1Ax4eil5cmuHR+7bdL8pcP28V4Z6RnJPZ1ntsz0XEoxKUqcuCxy5aTrvM
+         YoDzWG00cLiCmwWU5+jLlZqjzD3z1geMaSB4yZs5m2vmo7djPVlj9IZYP/NA24vkB3QD
+         dmZakBxwLYuflrECuz1Q4bd9LenOHWXfznmUzp7coMUurRw4ue2lnCrgGBMXyw3jBCxg
+         Ys0IAwVF5RLYqsF2oah57CEpDSsFm5ucPPoqQDecUNLNFN7X1jwlBn6j5AKz3z4tXgGn
+         9ryw==
+In-Reply-To: <CABA9q+Pa8eaGnYxfxqFnOvp9WCFPGEshG4Cb4JwXHqtmMvjJ=w@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-On Sunday, November 04, 2012 04:23:59 PM Csord=C3=A1s Csaba Ifj. wrote:
-> Hi List,
->=20
-> I would like to ask you about the correctness of the information
-> published in a blog (www.sns.ias.edu/~jns/wp) around 2006.
->=20
-> The rules in the FTP part of the document seems too lazy for me and
-> the ICMP rules seems also "uncommon". But most probably _I'm wrong_
-> and need to further investigate.
+It's me again, just for track the analisys.
 
-When allowing conns, you need only specify port 21 when you have the FT=
-P=20
-helper running. (These two rules normally include port 115 for sftp whi=
-ch is=20
-why I use 'multiport'.)
-
-# Allow all outbound client ftp conns to remote servers (actually a
-#   conn to anything listening on port 21, FTP or not).
-iptables -A OUTPUT -o eth0 -p tcp -m multiport --dports 21 \
-  -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
-
-# Allow only related inbound (s)ftp conns to local clients
-iptables -A INPUT -i eth0 -p tcp -m multiport --sports 21 \
-  -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-The forward chain uses similar rules when passing packets between two=20
-interfaces. The FTP helper recognizes when the first packet of a new FT=
-P DATA=20
-conn is related to an existing FTP CTRL conn, regardless of the DATA pa=
-cket's=20
-src & dest ports.
-
-This scheme works just great when allowing conns through the firewall.
-
-[Digression]
-The scheme falls down when using the 'time' functions to shut down exis=
-ting=20
-conns. At least I haven't found a way to tell a rule to include *establ=
-ished=20
-conns related to this rule*. Once a conn becomes ESTABLISHED, the DATA =
-conn's=20
-relation to its CTRL conn is lost; that is, it is no longer RELATED. Th=
-us,=20
-these rules:
-
-# Allow all outbound client ftp packets to remote servers. But first re=
-ject
-#   them Mondays from 2AM to 5AM and reset the TCP conn.*
-iptables -A OUTPUT -o eth0 -p tcp -m multiport --dports 21 \
-  -m time --timestart 02:00:00 --timestop 05:00:00 --weekdays Mon \
-  -m state --state NEW,RELATED,ESTABLISHED -j REJECT --reject-with tcp-=
-reset
-iptables -A OUTPUT -o eth0 -p tcp -m multiport --dports 21 \
-  -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
-
-# Allow only related/est'ed inbound ftp packets to local clients, but r=
-eject
-#   them Mondays from 2AM to 5AM
-iptables -A INPUT -i eth0 -p tcp -m multiport --sports 21 \
-  -m time --timestart 02:00:00 --timestop 05:00:00 --weekdays Mon \
-  -m state --state RELATED,ESTABLISHED -j REJECT --reject-with tcp-rese=
-t
-iptables -A INPUT -i eth0 -p tcp -m multiport --sports 21 \
-  -m state --state RELATED,ESTABLISHED -j ACCEPT
-
-will reset only existing CTRL conns--and block new conn attempts--Monda=
-ys=20
-2AM-5AM. If you add port 20, they'll handle ACTV data conns. But while =
-they=20
-can block new PASV conns, they can never see existing PASV data conns t=
-o reset=20
-them *because the ports in use cannot be known to the netfilter rules*.
-
-Yes, I know I could use CONNMARKs to mark related conns, but that's a l=
-ot of=20
-extra rules. There should be a packet/conn state, perhaps something lik=
-e=20
-RELCONN, that essentially says, "this rule also applies to packets belo=
-nging=20
-to conns that were RELATED to this rule." With such states, netfilter=20
-firewalls would become much more solid in that while it is important to=
- allow=20
-and block unwanted new connections, it is also important to be able to=20
-implement time-based access controls that can allow new connections and=
-=20
-immediately sever existing connections. This can't be done right now in=
- all=20
-cases.
-
-N
-
-
-* Actually, the rejection process is more involved. If it's an establis=
-hed TCP=20
-conn, it gets reset. Otherwise (UDP/GRE/etc., SYN) it gets an ICMP admi=
-n-
-prohibited packet.
+Well SYNACK packet is not generated because an incorrect cksum in the
+SYN request.
+Now I digg backwards to identify in which network apparate the
+corruption take place.
