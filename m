@@ -1,50 +1,46 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: conntrack mysql database. Plausible?
-Date: Wed, 07 Nov 2012 18:46:02 +0100
-Message-ID: <1352310362.14921.2.camel@tourtet>
-References: <20121107151118.1976dd3f@pulsar>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Status of iptables target support in ipset
+Date: Wed, 7 Nov 2012 21:51:39 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1211072149480.3544@blackhole.kfki.hu>
+References: <CABpXQ7aX_LtYxP5UCo454-V9yu07kc8BpUBesCWy-4V_2ZqRvw@mail.gmail.com> <509A31E1.8030703@ngtech.co.il>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20121107151118.1976dd3f@pulsar>
+In-Reply-To: <509A31E1.8030703@ngtech.co.il>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: "Ethy H. Brito" <ethy.brito@inexo.com.br>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Eliezer Croitoru <eliezer@ngtech.co.il>
+Cc: =?ISO-8859-15?Q?=22Csord=E1s_Csaba_Ifj=2E=22?= <cscsordas@gmail.com>, netfilter@vger.kernel.org
 
-Hi,
+On Wed, 7 Nov 2012, Eliezer Croitoru wrote:
 
-Le mercredi 07 novembre 2012 =C3=A0 15:11 -0200, Ethy H. Brito a =C3=A9=
-crit :
-> Hi All
->=20
-> Is it possible to (or how to) maintain a mysql database with the assu=
-red
-> connections' time range?
+> On 10/26/2012 3:58 PM, Csord?s Csaba Ifj. wrote:
+> > 
+> > I would like to ask when will it possible writing such rules as
+> > mentioned in $SUBJECT.
+> > 
+> > For example:
+> > 
+> > ipset new foo hash:ip
+> > ipset add foo 192.168.1.1 -t filter -A FORWARD -j LOG ... -t nat -A
+> > POSTROUTING -j SNAT ... -t mangle -A PREROUTING -j MARK ...
+> > 
+> > 
+> > Sorry for my bad English.
+> 
+> I wont say it will not give some benefits but it seems to me like a simple
+> bash script can do the same thing.
 
-You can do that easily with ulogd2. Just setup and use the following
-stack and you will have what you want:
-stack=3Dct1:NFCT,ip2bin1:IP2BIN,mysql2:MYSQL
+No, the idea is to add targets per set entry. I.e. 
 
-BR,
+ipset add foo 192.168.1.1 -t filter -A FORWARD -j LOG --log-prefix foo
+ipset add foo 192.168.1.2 -t filter -A FORWARD -j LOG --log-prefix bar
 
-> Something like: time ASSURE'd, time DESTROYed, and the 5'tuple IPs ds=
-t and
-> src, ports dst and src and protocol.
->=20
-> Have you guys seem something like this?
->=20
-> This would be useful to point out which clients behind a NAT accessed=
- in
-> the last few days.
->=20
-> Regards
-> Ethy
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
