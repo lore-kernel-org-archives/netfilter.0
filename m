@@ -1,28 +1,23 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: undefined symbol: lib_dir
-Date: Thu, 8 Nov 2012 09:04:22 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1211080903540.23481@nerf07.vanv.qr>
-References: <alpine.LNX.2.02.1211072223430.2303@bigred.russwhit.org>
-Mime-Version: 1.0
+From: Alex Bligh <alex@alex.org.uk>
+Subject: Use iptables to force next hop
+Date: Thu, 8 Nov 2012 21:08:10 +0000
+Message-ID: <FABE6FFC-E757-421A-BB4B-F18975F31E9B@alex.org.uk>
+Mime-Version: 1.0 (Apple Message framework v1084)
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.02.1211072223430.2303@bigred.russwhit.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Russell Whitaker <russ@ashlandhome.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
+Cc: Alex Bligh <alex@alex.org.uk>
 
-On Thursday 2012-11-08 07:33, Russell Whitaker wrote:
+Is it possible to use iptables to force the next hop in (e.g.) the FORWARD table?
 
->
-> Hi
->
-> iptables -v gives me an error message: undefined symbol lib_dir
->
-> Where do I find lib_dir?
+I know it is possible to do this with 'ip rule' and friends, but for various reasons (non-proliferation of tables) I'd like to do this in just iptables if possible. Let's assume I know what I'm doing, and the effect that I want is that if the iptables rule matches, I want to set the next hop (irrespective of the routing table) to an IP address which I can guarantee is on a directly connected interface.
 
-Nowhere (it has been removed).
-You must have updated some libraries without updating your actual 
-binary.
+-- 
+Alex Bligh
+
+
+
 
