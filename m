@@ -1,42 +1,35 @@
-From: Torsten Luettgert <ml-netfilter@enda.eu>
-Subject: Re: Use iptables to force next hop
-Date: Fri, 9 Nov 2012 08:44:41 +0100
-Message-ID: <20121109084441.22bb21f1@goldlack.enda.eu>
-References: <FABE6FFC-E757-421A-BB4B-F18975F31E9B@alex.org.uk>
-	<509C2EA5.6050201@ziu.info>
+From: T L <tl196108@gmail.com>
+Subject: Re: Ebtables NFQUEUE Support
+Date: Fri, 9 Nov 2012 11:07:55 +0100
+Message-ID: <CAGvFV4v=DK7PJDieMJ1ngqtrAF_pNbnbBQQjgLQTDaW5tuNo-Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <509C2EA5.6050201@ziu.info>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=1RuTYToReWBQUMTsWUVL8EoNfI1b2tiQce+9aZkYGMA=;
+        b=H7xCqbJ43cELcULFgXUd1AwK0IlQqGKa0Ht5OLk/vlbieDdfgJsMvfKi3Sdsr58VG+
+         oZAzyS3W8mknzuhpN5pygT73wUDDE64pkYA3XAXpBrUnRPFgxIcpvaa15abTmGn3iH/j
+         jIQd2577QgHWF6Z3TKdJEcD/eAgD6pgxnxjp4ogOgqbVdrL9ObYLAWbFFfRGEUb4/5hh
+         gTWxNaiNz5JmXaJ1NUjj9qIOGn6zeNUCICz0bl+ejPdruxy5PTPIEaU4yH+G5gpSCxLz
+         e6o97q1gqyP5s+d7hcbdFbVHYj0EIFhTc1+Bc7yewqVda5sSfV49OLmPGnpOQ+qsZCcX
+         Scxg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-On Thu, 08 Nov 2012 23:13:57 +0100
-Michal Soltys <soltys@ziu.info> wrote:
+Great!
 
-> On 2012-11-08 22:08, Alex Bligh wrote:
-> > Is it possible to use iptables to force the next hop in (e.g.) the
-> > FORWARD table?
-[...]
-> You can do hybrid of sorts - that is set mark in iptables (with all
-> the matching power of iptables), then use fwmark match in ip rule.
-> 
-> Not precisely what you're after, but gives you the same - unless of
-> course you want to avoid ip rule at all cost. Once in the past there
-> was ROUTE target, but it was dropped at some point (I think).
-> Besides, ip rule fwmark provides essentially the same.
 
-That's right, except you have to use up the mark (or, at least, a few
-bits of it). I was also sad that the ROUTE target was dropped back then
-and ported it a few versions up, but after 2.6.24 (iirc) it became
-increasingly difficult so I switched to mark+ip rule.
+I would like to try it out and have tried to apply both patches to
+ebtables-v2.0.10-4, but not succeeded.
 
-One could probably look into TEE and rip out the appropriate parts, but
-I lack the time.
+I can't figure out what to do with ebtables.c, the diff seems not
+towards the 2.0.10-4 version.
 
-For now, marking and using ip rule is the only option I know of.
+Could you provide a new patch to 2.0.10-4 version?
 
-Regards,
-Torsten
+
+/Torgny
