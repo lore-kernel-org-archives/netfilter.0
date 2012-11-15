@@ -1,110 +1,190 @@
-From: =?UTF-8?Q?J=C3=B6rn_Krebs?= <jk@smartbyte.de>
-Subject: Re: VoIP conntrack issue
-Date: Thu, 15 Nov 2012 18:43:17 +1100
-Message-ID: <CABY2qi8QcstBOJnozEn38aV=j7HLhex_-biq5xmKsYzyyCwzcQ@mail.gmail.com>
-References: <CABY2qi8n0ttC99_UktcT+Jwnd9WCCsvk5+ug1GXrrYbd9ixxWw@mail.gmail.com>
- <alpine.LNX.2.01.1211150035180.32273@nerf07.vanv.qr> <CABY2qi9AnCJDXUFxo_ocUwU0dCmUEJ4W8aMQUbVBmRcS_=5EzA@mail.gmail.com>
- <alpine.LNX.2.01.1211150553090.7649@nerf07.vanv.qr>
+From: Vladimir Budnev <vladimir.budnev@gmail.com>
+Subject: Iptables rules with module string give strange counter results
+Date: Thu, 15 Nov 2012 16:50:17 +0300
+Message-ID: <CAAvRK95Pk8LakkvyV-F6CoLMhjDrMStC9OzHt6RvLxWaDA4TrA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
+Return-path: <bounce-debian-firewall=debian-firewall=m.gmane.org@lists.debian.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:sender:in-reply-to:references:from:date
-         :x-google-sender-auth:message-id:subject:to:content-type
-         :content-transfer-encoding;
-        bh=BQLEX6kfP6cHrRr31ivPFTIlmkBhh5Wv/okXTUi1pJ0=;
-        b=rUHDxEZJj9dtmJS/8ZyT2H9XJpUB95oEX4b7t6cIS1Q0sMIysLURzss3VJVPJDDNIH
-         BaI4NkNETQ6DelyU45QAYqlZ1C+FoWLRGBdGi+tvuOnjYQzT3j5AxitXzTo45+WtKxj8
-         ORZl3jB8mboOehjOumvXhxMaa+vwPeoxAS6nzDQltiAprG5RsU8895ln3fG9O4d23I3d
-         y94d9X+nRvsLCYoDZelPRtA3n0pSEJa4UrdfTwdinEMbZW8dzbDxvZGfOchzi5JiXo7r
-         tfvgJlOkvU25Ru6xKTYCewNY0b4v+cSi9vXPuOiluBQBnB6MNj3p9xkdO+Kz+Xe/cT5X
-         93sQ==
-In-Reply-To: <alpine.LNX.2.01.1211150553090.7649@nerf07.vanv.qr>
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter <netfilter@vger.kernel.org>
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=L9cz1zdq+Y/loAl7ltjcVqHyomy50iy6sKmmQl2tgRA=;
+        b=AVctBl0saJIy2nzbomKiPii25uGsrT9dXMie9nIL41Y6BddY1fhPzBQuYbeKr0hqkD
+         zSv3WtQcCZy/hu5CMe9JNSwn1c4i4CpLgsNyjmnqf8iSoallvIup2C0uqy5zq+LQ1bcv
+         QT9dQP3jLbXWTZVDMAlDfvfB6aEIFo64m+TKeDB0+dZfXonqZC31kKjUYo75HQlHfKQA
+         fpLt27pyN/4Ajd1JrJx9Ocp/x1hHijSilmNwozMLpguX8u665gfOoFI7cHXp8ei5ZnTx
+         We+yCw/KtSYJIMZt0VPKMwyuOBRyAElCqvQIFI+0jy92VJZt6N2Hb1yWzn6tak3QwFj/
+         iTJw==
+Resent-Message-ID: <PS75IrtxKmC.A.hkD.7MPpQB@bendel>
+List-Id: <netfilter.vger.kernel.org>
+List-URL: <http://lists.debian.org/debian-firewall/>
+List-Post: <mailto:debian-firewall@lists.debian.org>
+List-Help: <mailto:debian-firewall-request@lists.debian.org?subject=help>
+List-Subscribe: <mailto:debian-firewall-request@lists.debian.org?subject=subscribe>
+List-Unsubscribe: <mailto:debian-firewall-request@lists.debian.org?subject=unsubscribe>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, debian-firewall@lists.debian.org
 
-Hi there,
+Hello everyone.
 
-On Thu, Nov 15, 2012 at 4:04 PM, Jan Engelhardt <jengelh@inai.de> wrote=
-:
-> On Thursday 2012-11-15 01:15, J=C3=B6rn Krebs wrote:
->
->>Hi,
->>
->>I think you don't get the point.
->
-> I really think I don't. Which means your description was too convolut=
-ed.
-Yes, maybe I should describe it even easier, so you understand it...
+This is the first time I'm using matching string module for iptables
+and faced with some strange behaviour I can't overcome.
 
->>I WANT A SYMMETRIC NAT!!!! -> Why doesn't anybody understand that?
->>I mean I am on the netfilter list. Everyone here should know what I
->>mean with the term symmetric NAT
->
-> NF does not use these terms, so no. WP also warns about the problems
-> with the term in http://en.wikipedia.org/wiki/Symmetric_NAT .
-No, he does not, he warns that people use it, although they have no
-clue what they are talking about, well that's not the case here.
+In short, it looks like iptables passes "trimmed" packets to module,
+so module can not parse whole packet for string. I cant find any
+information about such behaviour on net. All examples and tutors
+should work like a charm, but they dont.
 
-But let me state that even simpler:
-192.168.1.38 is the internal host
-router is the router (with iptables nf and conntrack on it, and an
-iptables MASQUERADE or SNAT rule)
-123.0.0.1 is the external host
-234.0.0.1 is the second external host
+Now in details.
 
-I will show the packets in the sequence they are send out:
-Netfilter/Conntrack should do the following, protocol is UDP:
-192.168.1.38:1234      -> router:1234 -> 123.0.0.1:4321
-123.0.0.1:4321           -> router:1234 -> 192.168.1.38:1234
-192.168.1.38:1234      -> router:1234 -> 234.0.0.1:5678
-234.0.0.1:5678           -> router:1234 -> 192.168.1.38:1234
+OS: debian testing, kernel 3.2.0-3-686-pae
+IPTABLES: iptables v1.4.14
+OTHER:
+ tcpdump version 4.3.0,
+ libpcap version 1.3.0
 
-That doesn't work, because for some unknown reason netfilter/conntrack
-creates a mapping for port 1234 for the external host 123.123.123.123,
-and cannot create a second mapping for port 1234 for the external host
-234.234.234.234.
-It has to change the port in between.
+# lsmod|grep ipt
+ipt_LOG                12533  0
+iptable_nat            12800  0
+nf_nat                 17924  1 iptable_nat
+nf_conntrack_ipv4      13726  3 nf_nat,iptable_nat
+nf_conntrack           43121  3 nf_conntrack_ipv4,nf_nat,iptable_nat
+iptable_filter         12488  0
+ip_tables              17079  2 iptable_filter,iptable_nat
+x_tables               18121  6
+ip_tables,iptable_filter,iptable_nat,xt_string,xt_tcpudp,ipt_LOG
 
-What happens is (and this has nothing to do with STUN!)
-192.168.1.38:1234      -> router:1234 -> 123.0.0.1:4321
-123.0.0.1:4321           -> router:1234 -> 192.168.1.38:1234
-192.168.1.38:1234      -> router:1025 -> 234.0.0.1:5678
-234.0.0.1:5678           -> router:1234 (FAILS!!!!)
 
-To be clear:
-192.168.1.38:1234      -> router:1025 -> 234.0.0.1:5678
-(In this case the linux router should not use port 1025, but use port
-1234, as this was the port used by the internal host)
-234.0.0.1:5678           -> router:1234 (FAILS!!!!)
-(This is just the consequence of the wrong mapping!)
 
-> Fact is outgoing streams don't magically add mappings for incoming on=
-es,
-> unless you use a nf_conntrack_* module that explicitly does it.
-The NAT module does that, am I right?
+I'v reseted all rules to default(nat,mangle,filter tables) and added
+only two rules in following order:
+iptables -t filter -A OUTPUT --protocol tcp --dport 80 --match string
+--algo bm --from 0 --to 1500 --string "/index.php" --jump LOG
+--log-prefix "matched :"
+iptables -t filter -A OUTPUT --protocol tcp --dport 80 --jump LOG
+--log-prefix "OUT : "
 
-> There's no nf_conntrack_stun, so if your STUN exchange with
-(I cut off here, this should be "normal" NAT behaviour and has nothing
-to do with STUN.)
+The example idea is obvious - match requests to any ip to port 80
+containing string "/index.php" and signal matched to log, and also log
+all the data passed to 80 port.
 
->>I more and more got the impression, that you are developing in your
->>own little world, and not the world where we have different types of
->>NAT.
->
-> We don't even think "types of NAT". We think in absolute > {a:b, c:d}=
- tuples.
-Well, but you should know what a symmetric NAT is?
-You are complaining about my description not beeing accurate, and at
-the same time you are sending me links to WIKI pages, where the
-correct description can be found.
-So, you are investing more time in finding reasons not to help, than
-actually recognize the problem and help!
+So the iptables -L -xvn :
 
-So what are {a:b, c:d} tuples? Is a the ip and b the port? If it that
-easy, see my description above, I am nearly using these terms there.)
+Chain INPUT (policy ACCEPT 3 packets, 693 bytes)
+    pkts      bytes target     prot opt in     out     source
+     destination
 
-Thanks, Joern.
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+    pkts      bytes target     prot opt in     out     source
+     destination
+
+Chain OUTPUT (policy ACCEPT 3 packets, 184 bytes)
+    pkts      bytes target     prot opt in     out     source
+     destination
+       0        0 LOG        tcp  --  *      *       0.0.0.0/0
+   0.0.0.0/0            tcp dpt:80 STRING match  "/index.php" ALGO
+name bm TO 1500 LOG flags 0 level 4 prefix "matched :"
+       0        0 LOG        tcp  --  *      *       0.0.0.0/0
+   0.0.0.0/0            tcp dpt:80 LOG flags 0 level 4 prefix "OUT : "
+
+
+Counters for rules are zeroed.
+
+Ok, now browser goes to www.gentoo.org/index.php. This is the only
+request url in browser.
+And I get the following for iptables -L -xvn:
+
+Chain INPUT (policy ACCEPT 61 packets, 16657 bytes)
+    pkts      bytes target     prot opt in     out     source
+     destination
+
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+    pkts      bytes target     prot opt in     out     source
+     destination
+
+Chain OUTPUT (policy ACCEPT 63 packets, 4394 bytes)
+    pkts      bytes target     prot opt in     out     source
+     destination
+       1      380 LOG        tcp  --  *      *       0.0.0.0/0
+   0.0.0.0/0            tcp dpt:80 STRING match  "/index.php" ALGO
+name bm TO 1500 LOG flags 0 level 4 prefix "matched :"
+      13     1392 LOG        tcp  --  *      *       0.0.0.0/0
+   0.0.0.0/0            tcp dpt:80 LOG flags 0 level 4 prefix "OUT : "
+
+
+So we have only ONE match for 1st rule. But that is wrong. Here is
+tcpdump for output for connection.
+First ip request 89.16.167.134:
+
+<handshake omitted>
+16:56:38.440308 IP 192.168.66.106.54704 > 89.16.167.134.80: Flags
+[P.], seq 1:373, ack 1, win 913,
+options [nop,nop,TS val 85359 ecr 3026115253], length 372
+<...>
+    0x0030:  b45e dab5 4745 5420 2f69 6e64 6578 2e70  .^..GET./index.p
+    0x0040:  6870 2048 5454 502f 312e 310d 0a48 6f73  hp.HTTP/1.1..Hos
+    0x0050:  743a 2077 7777 2e67 656e 746f 6f2e 6f72  t:.www.gentoo.or
+    0x0060:  670d 0a55 7365 722d 4167 656e 743a 204d  g..User-Agent:.M
+    0x0070:  6f7a 696c 6c61 2f35 2e30 2028 5831 313b  ozilla/5.0.(X11;
+
+
+Here we see string in HTTP GET, but iptables did not match it (ill
+explain below)!
+Ok some packets later we have request for some more content to ip
+140.211.166.176:
+
+16:56:38.772432 IP 192.168.66.106.59766 > 140.211.166.176.80: Flags
+[P.], seq 1:329, ack 1, win 913,
+options [nop,nop,TS val 85442 ecr 110101513], length 328
+<...>
+    0x0030:  0690 0409 4745 5420 2f20 4854 5450 2f31  ....GET./.HTTP/1
+<...>
+    0x0130:  6566 6c61 7465 0d0a 436f 6e6e 6563 7469  eflate..Connecti
+    0x0140:  6f6e 3a20 6b65 6570 2d61 6c69 7665 0d0a  on:.keep-alive..
+    0x0150:  5265 6665 7265 723a 2068 7474 703a 2f2f  Referer:.http://
+    0x0160:  7777 772e 6765 6e74 6f6f 2e6f 7267 2f69  www.gentoo.org/i
+    0x0170:  6e64 6578 2e70 6870 0d0a 0d0a            ndex.php....
+
+Here we see "/index.php" again.
+
+And LOG rule gives the following info:
+
+kernel: [  641.386182] OUT : IN= OUT=eth0 SRC=192.168.66.106
+DST=89.16.167.134 LEN=60
+kernel: [  641.435946] OUT : IN= OUT=eth0 SRC=192.168.66.106
+DST=89.16.167.134 LEN=52
+kernel: [  641.436226] OUT : IN= OUT=eth0 SRC=192.168.66.106
+DST=89.16.167.134 LEN=424
+kernel: [  641.512594] OUT : IN= OUT=eth0 SRC=192.168.66.106
+DST=89.16.167.134 LEN=52
+kernel: [  641.512762] OUT : IN= OUT=eth0 SRC=192.168.66.106
+DST=89.16.167.134 LEN=52
+kernel: [  641.512819] OUT : IN= OUT=eth0 SRC=192.168.66.106
+DST=89.16.167.134 LEN=52
+kernel: [  641.567496] OUT : IN= OUT=eth0 SRC=192.168.66.106
+DST=140.211.166.176 LEN=60
+kernel: [  641.767707] OUT : IN= OUT=eth0 SRC=192.168.66.106
+DST=140.211.166.176 LEN=52
+kernel: [  641.768328] matched :IN= OUT=eth0 SRC=192.168.66.106
+DST=140.211.166.176 LEN=380 <--
+kernel: [  641.768352] OUT : IN= OUT=eth0 SRC=192.168.66.106
+DST=140.211.166.176 LEN=380
+kernel: [  641.990287] OUT : IN= OUT=eth0 SRC=192.168.66.106
+DST=140.211.166.176 LEN=52
+kernel: [  641.990455] OUT : IN= OUT=eth0 SRC=192.168.66.106
+DST=140.211.166.176 LEN=52
+kernel: [  641.990507] OUT : IN= OUT=eth0 SRC=192.168.66.106
+DST=140.211.166.176 LEN=52
+kernel: [  641.990559] OUT : IN= OUT=eth0 SRC=192.168.66.106
+DST=140.211.166.176 LEN=52
+
+So we have match on only one packet, going to 140.211.166.176. But
+where is the first match?
+The more strange for me is that on other machine with ubuntu, it gives
+different counters, like 6 matches for string.
+
+Mb there is some kind of options to tune module data passing or am I
+completly don't understand string matching idea?
+
+Tnx in advance.
+
