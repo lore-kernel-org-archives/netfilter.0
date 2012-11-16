@@ -1,40 +1,37 @@
-From: "Steve \(Telsat Broadband\)" <steve@telsatbb.vu>
-Subject: Can't add ff::/8 to ip6tables.
-Date: Fri, 16 Nov 2012 21:38:51 +1100
-Message-ID: <09f201cdc3e6$91ffb080$b5ff1180$@telsatbb.vu>
+From: Jan Engelhardt <jengelh@inai.de>
+Subject: Re: Can't add ff::/8 to ip6tables.
+Date: Fri, 16 Nov 2012 14:35:58 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1211161432210.9788@nerf07.vanv.qr>
+References: <09f201cdc3e6$91ffb080$b5ff1180$@telsatbb.vu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-au
+In-Reply-To: <09f201cdc3e6$91ffb080$b5ff1180$@telsatbb.vu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "Steve (Telsat Broadband)" <steve@telsatbb.vu>
+Cc: netfilter@vger.kernel.org
 
-Hi All,
+On Friday 2012-11-16 11:38, Steve (Telsat Broadband) wrote:
 
-For one of my filtering rules, I'm trying to add the following rules:
+>Hi All,
+>
+>For one of my filtering rules, I'm trying to add the following rules:
+>
+>ip6tables -t mangle -I AuthCheck 1 -d ff::/8 -j RETURN ip6tables -t mangle
+>-I AuthCheck 1 -d fc::/7 -j RETURN
+>
+>However, when I check the rule entries they show up as ::/7, ::/8 [...]
+>Which obviously doesn't catch the packets as ::/7 or ::/8 is not fc::/7 or
+>ff::/8
 
-ip6tables -t mangle -I AuthCheck 1 -d ff::/8 -j RETURN ip6tables -t mangle
--I AuthCheck 1 -d fc::/7 -j RETURN
+ip6tables is absolutely correct.
 
-However, when I check the rule entries they show up as:
+  00ff:0000:0000:0000 :0000:0000:0000:0000   (ff::)
+& ff00:0000:0000:0000 :0000:0000:0000:0000   (/8)
+= 0000:0000:0000:0000 :0000:0000:0000:0000   (::(/8))
 
-1           0        0 RETURN     all      *      *       ::/0
-::/7                
-2           0        0 RETURN     all      *      *       ::/0
-::/8                
-
-Which obviously doesn't catch the packets as ::/7 or ::/8 is not fc::/7 or
-ff::/8
-
-This is with ip6tables version:
-
-ip6tables v1.4.15
-
-
-Cheers.
-Steve.
-
-
-
+  00fc:0000:0000:0000 :0000:0000:0000:0000   (fc::)
+& fe00:0000:0000:0000 :0000:0000:0000:0000   (/7)
+= 0000:0000:0000:0000 :0000:0000:0000:0000   (::(/7))
