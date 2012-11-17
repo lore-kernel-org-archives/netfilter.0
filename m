@@ -1,21 +1,28 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: Best kernel version
-Date: Sat, 17 Nov 2012 22:42:29 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1211172241450.24164@nerf07.vanv.qr>
-References: <CAFpD06RRrCJMQ-9Cqkb98fwj=bLYyPQf4m9OahuLSEFRernK=Q@mail.gmail.com>
+From: Marco Padovan <evcz@evcz.tk>
+Subject: ipt_SYNPROXY
+Date: Sun, 18 Nov 2012 00:17:02 +0100
+Message-ID: <50A81AEE.8000904@evcz.tk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAFpD06RRrCJMQ-9Cqkb98fwj=bLYyPQf4m9OahuLSEFRernK=Q@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=evcz.tk; s=google;
+        h=message-id:date:from:user-agent:mime-version:to:subject
+         :x-enigmail-version:openpgp:content-type:content-transfer-encoding;
+        bh=FbNt0Bt/AvouFYTWzDieEBGTcAfqVsP0DwohknE/74I=;
+        b=eoHuZKDGmpNC9o8Jmwdu7C3n0BRnfO2EaFqORmFYAgyK64JD6S+8RMcHtuoINfYe55
+         uIy1kPYCEXuyA/oV/2q7HWwii0U3DMcIY0A3ZwZWomzF6rcoEPgvxRq0qTfDCqBXtMlf
+         Wm6TT0GMDhCPMoe64ave5oInby9Wjl93HV+o0=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Giuseppe Longo <giuseppelng@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Saturday 2012-11-17 22:19, Giuseppe Longo wrote:
+I was searching around for an efficient synproxy implementation (to
+filter incoming spoofed/reflected syn floods) and this one popped up:
 
->Hi,
->what is the best kernel version to utilize with netfilter module?
+https://github.com/xiaosuo/xiaosuo/tree/master/synproxy
 
-The ones from the future.
+anybody got a first hand experience on it?
+
+Is there anything else similar?
