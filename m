@@ -1,67 +1,51 @@
-From: Vladimir Budnev <vladimir.budnev@gmail.com>
-Subject: Re: Iptables rules with module string give strange counter results
-Date: Mon, 19 Nov 2012 12:10:10 +0300
-Message-ID: <CAAvRK96ZmHyqnKOfkr3P5J-cKpwLcrq1a-9rdyg0Gj7iDUDJYw@mail.gmail.com>
-References: <CAAvRK95Pk8LakkvyV-F6CoLMhjDrMStC9OzHt6RvLxWaDA4TrA@mail.gmail.com>
-	<20121116124526.GA11345@lia.ch>
-	<CAAvRK97NbO2fdW4T=7_WFCiuhd=93nwL0WcOrtr8FCXezgp8zw@mail.gmail.com>
-	<20121116163043.GA13245@lia.ch>
-	<50A967F3.3060707@fastmail.fm>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset 6.15 released
+Date: Mon, 19 Nov 2012 14:03:09 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1211191356240.21756@blackhole.kfki.hu>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=OmNoIl7V5/b0Og2GWoBZphmSGFjeLVfnqNAjWMg8be4=;
-        b=RSdpoOi6kon5ztIGhu39q54fJ9hk6G9NZOhBb/LVG6mhlOSwI0NJVbEcrwQsPS1zKc
-         hJgTWMVFdCyPA2STlnLTZOP0AbiPnwQfNpeBPafkYQ+2JDBfIWwAr8PrqUZRtksdTvIx
-         DBvDgSzYqJaYDiJdaz/AuQE9ZXTToHc4TKTBmmKWEC9C7IYI9PTNPWa+GCa0xrG5OBDi
-         TMSfNZZPaTiL/5d+rCFwKv70GWLHvn4aC/CN/syQAoGU6gRVbnsZ9KqolngEjzIfucpx
-         eq9WOSNHYps5GHQGZkhhxTDhIkVLV8AouzeWwfIFJd63qgghvxZHssO/sBTw1ENcVDxP
-         vNxg==
-In-Reply-To: <50A967F3.3060707@fastmail.fm>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: linbloke <linbloke@fastmail.fm>
-Cc: debian-firewall@lists.debian.org
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-2012/11/19 linbloke <linbloke@fastmail.fm>:
->
->
-> Perhaps your log daemon is squashing duplicate entries?
->
-To be honest i dont care much about log messages, I do care about rule
-counters:) The thing that scares me is my missunderstanding of "what
-is going on?"
+Hi,
 
-But I found when counters get incremented. Bulmer test with nc hinted
-me to play a bit with  tcp packet payload.
+I'm happy to announce ipset 6.15, which brings a few bugfixes and 
+corrections. The most important is that there was a range input bug in 
+hash:ip,port,net type: if a single element was to be added/deleted, due to 
+a missing initialization, a range of elements were added/deleted.
 
-First run:
-echo -n "GET /index.php HTTP/1.1\r\nHost: www.gentoo.org\r\n\r\n" | nc
-89.16.167.134 80
+From now on the "ipset" tool uses gethostbyname2 instead of getaddrinfo: 
+in newer glibc, getaddrinfo issues an extra system call to kernel, which 
+slows down ipset.
 
-gives no counters change. I get the page, but counters still unchanged. Okey...
+Userspace changes:
+ - Fix interactive mode (Fredrik Eriksson)
+ - Use gethostbyname2 instead of getaddrinfo
+ - Make tests/check_cidrs.sh script executable
+ - Add tests to check completely ranges with hash types
+ - Make easier to apply the netlink.patch
+ - Support protocol numbers as well, not only protocol names
+ - Add (back) the debug flag to configure
+ - Add simple test to check cidr book-keeping
 
-Doing request like:
-echo -n "GET BUBA-BUBA /index.php HTTP/1.1\r\nHost:
-www.gentoo.org\r\n\r\n" | nc 89.16.167.134 80
+Kernel part changes:
+ - Increase the number of maximal sets automatically as needed
+ - Restore the support of kernel versions between 2.6.32 and 2.6.35
+ - Fix range bug in hash:ip,port,net
+ - Revert, then reapply cidr book keeping patch to handle /0
 
-I get "400 Bad request" and counters still unchaged. Okey....
+You can download the source code of ipset from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
 
-!!! BUT !!!!
-if I do something like
-echo -n "GET BUBA-BUBA-BUBA-BUBAaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
-/index.php HTTP/1.1\r\nHost: www.gentoo.org\r\n\r\n| nc 89.16.167.134
-80
-
-I get the same "400 Bad request", BUT now counters got incremented.
-
-Seems like module start matching from the wrong position thus even
---from 0 (ommiting --from 0 for default does not change result) simply
-does not work.
-
-Ehm...
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
