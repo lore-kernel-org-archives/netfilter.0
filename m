@@ -1,38 +1,68 @@
-From: Emilio Lazo Zaia <emiliolazozaia@gmail.com>
-Subject: Explanation about RATEEST interval and ewmalog
-Date: Thu, 22 Nov 2012 02:25:51 -0430
-Message-ID: <50ADCC77.7000202@gmail.com>
+From: pawa@tormail.org
+Subject: Blocking incoming non-localhost traffic, *except* for certain gid
+Date: Sun, 25 Nov 2012 04:01:55 +0000
+Message-ID: <1TcTOh-000KTd-Fd@internal.tormail.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=message-id:date:from:user-agent:mime-version:to:subject
-         :content-type:content-transfer-encoding;
-        bh=vgozfhqmFheR/Nmxg5xsaCyC6Sd0fB5p8uMaaeLHt/8=;
-        b=oi6opk51V9j9J0boKW0OlWzbJ+8LJXsYexAnonN8//tRqofegIO/+g8p3Pa0qwvAik
-         8mT/xFc5He2Z69blaQrgoLmr5IWZkhETVE9mbx2TzxnD+uV61dDz8Zf3v9JkO2mnM8NL
-         MU58JOqS6g+SF0nOJskngwkk2g08sckMr3zvhm96ZZIJADdecH9L2B51S2id0yMHLx/R
-         81ljJS+16XTLdez8PpNHwySmJ5jtFiq/N3r5y+Q0xGhk7FcXCJpeshTnnqmnynV/HYxz
-         RRrB1pPByHEVskFSBEHhhV5c2wm4jgbd6pTu8bFWvEkrHOuwE/yqZAh36fbzRVBvA8IW
-         uUcw==
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=tormail.org; s=tm;
+	h=Message-Id:X-TorMail-User:Content-Type:MIME-Version:Subject:To:From:Date; bh=LHpalzSn08D+QPU+buHe3/HucD54/VRWoRwoXk+OajY=;
+	b=QkstFmXibkP+DKWa4ncAxoBkFjD6qJyIpBdgb8DX9lST0nbvk3AO0an9G4jvtqi9szPKczivoDHGcxIs+aPEse6+2l0+EMRiUUvU1kVsCkDoCpRdrtipVPOGKOxvuty4rx6RpuZLrdfhmW1Rjyf7jd3NdDB0kco7vMIp36czgU8=;
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi
+I'm trying to block all non-localhost IPv4 traffic, outgoing and
+incoming, on my computer, except for processes with gid 1111 which
+should be able to interact with my LAN (and the Internet through a
+gateway in it). Here's what generates my ruleset (iptables-save shows
+nothing beyond that):
 
-What is --rateest-interval and --rateest-ewmalog?
+    FILTER='iptables -A OUTPUT'
+       LOG='LOG --log-uid --log-prefix'
 
-        --rateest-interval amount{s|ms|us}
-               Rate measurement interval, in seconds, milliseconds or 
-microseconds.
+    $FILTER -o lo -j $LOG accept_lo:
+    $FILTER -o lo -j ACCEPT
 
-        --rateest-ewmalog value
-               Rate measurement averaging time constant.
+    $FILTER -d 127.0.0.1 -j $LOG accept_127.0.0.1:
+    $FILTER -d 127.0.0.1 -j ACCEPT
 
-I'm using interval 1.0s and ewmalog 2.0s but I don't understand how 
-these parameters works together.
+    $FILTER -m owner --gid-owner 1111 -j $LOG accept_gid1111:
+    $FILTER -m owner --gid-owner 1111 -j ACCEPT
 
-Any further explanation?
+    $FILTER -j $LOG reject:
+    $FILTER -j REJECT --reject-with icmp-net-prohibited
+
+It works for outgoing connections, but incoming connections somehow
+get blocked regardless of which group they are in. My PC runs kernel
+kernel 3.6.7 + iptables 1.4.16.3. It is at 192.168.1.1, for testing I
+let netcat listen:
+
+    nc -v -n -l -p 1234
+
+And connect from another computer (192.168.1.2):
+
+    nc -v -n 192.168.1.1 1234
+
+That gives me these kind of kernel log entries, no matter what gid
+the listening process has:
+
+    reject:IN= OUT=eth0 SRC=192.168.1.1 DST=192.168.1.2 LEN=60
+    TOS=0x00 PREC=0x00 TTL=64 ID=0 DF PROTO=TCP SPT=1234 DPT=64079
+    WINDOW=14480 RES=0x00 ACK SYN URGP=0
+    accept_lo:IN= OUT=lo SRC=192.168.1.1 DST=192.168.1.1 LEN=88
+    TOS=0x00 PREC=0xC0 TTL=64 ID=20114 PROTO=ICMP TYPE=3 CODE=9
+    [SRC=192.168.1.1 DST=192.168.1.2 LEN=60 TOS=0x00 PREC=0x00 TTL=64
+    ID=0 DF PROTO=TCP SPT=1234 DPT=64079 WINDOW=14480 RES=0x00 ACK SYN
+    URGP=0 ]
+    ... and those two repeated (except for the ICMP packet's ID
+    incrementing) as the connecting netcat retries ...
+
+So I suppose the incoming SYN is accepted but not important enough
+to be logged? (Any way to get complete logging?)
+But why does the SYN-ACK get rejected?
+And how can I get it to work?
+
+Cheers
