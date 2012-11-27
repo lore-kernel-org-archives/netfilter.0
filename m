@@ -1,78 +1,64 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipset 6.16 kernel panic on bitmap:hash,ip
-Date: Tue, 27 Nov 2012 14:11:05 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1211271403550.14623@blackhole.kfki.hu>
-References: <CADuigkVyCJVe5yKVvcKweZ=FmnTTWE1JQ55a35LrCLi2oWBHoQ@mail.gmail.com> <alpine.DEB.2.00.1211271352350.14623@blackhole.kfki.hu> <CADuigkX8Q0AJ_-PHyzn+1orKuXfqgrdPPC3yZ1aORBJrdcxBLg@mail.gmail.com>
+From: Safuat Hamdy <safuat.hamdy@secorvo.de>
+Subject: Packet forwarding question
+Date: Tue, 27 Nov 2012 14:00:57 +0100
+Message-ID: <50B4B989.5000705@secorvo.de>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <CADuigkX8Q0AJ_-PHyzn+1orKuXfqgrdPPC3yZ1aORBJrdcxBLg@mail.gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Ricardo Klein <klein.rfk@gmail.com>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Tue, 27 Nov 2012, Ricardo Klein wrote:
 
-> I know, I have 6.15 tested, but the problem came back in 6.16
 
-Can't be, I have verified before replying to you.
+Hello all,
 
-Kernel, running 6.16 modules:
+I am performing a security audit for a customer.  They have client
+machines (mainly desktop PCs) that need to authenticate regularly (every
+few minutes) via 802.1x, which is not accessible for iptables (802.1x is
+eap/eapol in wireshark with ethertype 0x888e).  In order to perform a
+security scan under the presumption, that the autit machine is not given
+access at the gateway, one idea was to write a small program using
+libpcap that shovels the frames as necessary to the "other" interface.
+But then I came recently across ebtables, which seems to be a suitable
+tool.  I read the docs and played with ebtables.  However, so far I had
+no success with with what I wanted.  And that's what I need:
 
-# ipset -N SET_MACS bitmap:ip,mac range 0.0.0.0/0
-ipset v6.16: The range you specified exceeds the size limit of the set 
-type
-# ipset-6.14 -N SET_MACS bitmap:ip,mac range 0.0.0.0/0
-ipset v6.14: The range you specified exceeds the size limit of the set 
-type
+Suppose a setup like this
 
-Best regards,
-Jozsef
+	Gateway - Switch - Pentest Machine - Client PC
 
-> On Tue, Nov 27, 2012 at 10:58 AM, Jozsef Kadlecsik
-> <kadlec@blackhole.kfki.hu> wrote:
-> > On Tue, 27 Nov 2012, Ricardo Klein wrote:
-> >
-> >> When I creta an ipset like this:
-> >> ipset -N SET_MACS bitmap:ip,mac range 0.0.0.0/0
-> >>
-> >> I got kernel panic when run:
-> >> ipset list
-> >
-> > That can't be ipset 6.16, neither in the kernel, nor the ipset binary.
-> > The bug is fixed in ipset 6.15. You are running kernel modules and
-> > ipset binary from earlier releases.
-> >
-> >> Anyway, we need some rules here based on mac address (no matter what
-> >> ip address the machine have, because some of them are in DHCP).
-> >> I know that a mac address can be easy cloned, but, still, we need that
-> >> for some rules...
-> >>
-> >> Can we have a set type "mac address" ? Only mac, with no ip?
-> >>
-> >> O tried "ipset -N SET_MACS_ADM bitmap:ip,mac range 10.0.0.0/8" too but got:
-> >> ipset v6.16: The range you specified exceeds the size limit of the set type
-> >>
-> >> "ipset -N SET_MACS_ADM bitmap:ip,mac range 10.0.0.0/16" woked...
-> >>
-> >> But again, this does not do the job because I need to set a rule based
-> >> on mac address and dinamic ip addresses.
-> >
-> > Holger Eitzenberger is working on a hash:mac type.
-> >
-> > Best regards,
-> > Jozsef
-> > -
-> > E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-> > PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-> > Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-> >           H-1525 Budapest 114, POB. 49, Hungary
-> 
+The gateway sends regularly 802.1x requests to the client pc, where the
+gateway expects the pc to have a known MAC-address and IP-address.  Thus
+the pentest machine must appear as client pc (either via address
+spoofing or NATing) and just to relay the 802.1x packets forth and back
+as necessary (and maybe a few other things such as ARP and DHCP).
 
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+The pentest machine has two ethernet interfaces (eth0 and eth1),
+ebtables support is enabled (BackTrack 5R3).  I have bridged the two
+interfaces together.  Indeed, traffic coming from outside (say through
+eth0) is seen on the other side as well (say eth1), but the responses
+from the client are absorbed somewhere.
+
+I tried first to spoof the MAC and IP address on the pentest machine,
+but then the machine seems to believe that packets with the said MAC
+address are destined to itself and doesn't forward them.  So then I
+tried MAC-NATing, in which case the pentest machine seems to lose
+interest in the packets on the wire at all (i.e. ping an the like
+doesn't work) - of course, since the replies have the "wrong" MAC-address.
+
+The ebtables broute table policy for the BROUTING chain was set in both
+cases to ACCEPT (i.e. bridge all traffic); the filter table had some
+filer rules but the policy for FORWARD was set (for playing) to ACCEPT
+as well.  For MAC source NAT I used a rule in the POSTROUTING chain.
+However, no matter what I did, I didn't get it to fly as I hoped.
+
+The first question is whether ebtables is the right tool to look at, and
+if so, the second question is how to wield it.  Has anyone reading here
+some hints in that direction?
+
+
+Thanks
+
+S. Hamdy
