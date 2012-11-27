@@ -1,64 +1,240 @@
-From: Safuat Hamdy <safuat.hamdy@secorvo.de>
-Subject: Packet forwarding question
-Date: Tue, 27 Nov 2012 14:00:48 +0100
-Message-ID: <50B4B980.2020603@secorvo.de>
+From: Ricardo Klein <klein.rfk@gmail.com>
+Subject: Re: ipset 6.16 kernel panic on bitmap:hash,ip
+Date: Tue, 27 Nov 2012 11:36:34 -0200
+Message-ID: <CADuigkUwmj1d2PWW7wWvu12e7J9K6V9gvs+8BiM_J8QjYT5RGw@mail.gmail.com>
+References: <CADuigkVyCJVe5yKVvcKweZ=FmnTTWE1JQ55a35LrCLi2oWBHoQ@mail.gmail.com>
+	<alpine.DEB.2.00.1211271352350.14623@blackhole.kfki.hu>
+	<CADuigkX8Q0AJ_-PHyzn+1orKuXfqgrdPPC3yZ1aORBJrdcxBLg@mail.gmail.com>
+	<alpine.DEB.2.00.1211271403550.14623@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type:content-transfer-encoding;
+        bh=9t8yP6FjzyWfNa6nBpLte5VupgAlfq0yfhxLsp3pekw=;
+        b=LRdqxn8znTQZrIFOWF8L6ae3M6xc0ckHiNwo0NR880Y9JYwr2BY3MeuN6jLsZWx6pu
+         GZWci2r8lu6ely4kVw0A6set5zDcJVm2AJ6gPQMSnSs14WzJLPjSt674LyUf0DjRXYA7
+         E5kvhNu4zb3S82LiT/u24kO6msJut0Uty1RGBy1Kj3Wy9Qu9aP5lL7UEehMjHHrySZ4C
+         +kEjs4r3qb3mupZObmBNIGkgch6kKudaWgG08ALj93m+tE7z86hTDDg+IzVGh/XrGS4o
+         AU/pkEmT75AQgptpG4gFXgQICSlgw+t/Xsxv7BwNVJZo5hI7Qytu6imfOMPiPHmPYSJm
+         /u+A==
+In-Reply-To: <alpine.DEB.2.00.1211271403550.14623@blackhole.kfki.hu>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1252"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+
+crap... I didnt saw the compilation error on make modules:
+[root@fw01 ipset-6.16]# make modules
+make -C /lib/modules/`uname -r`/build M=3D$PWD/kernel/net/netfilter V=3D=
+ \
+IP_SET_MAX=3D256 KDIR=3D$PWD/kernel modules
+make[1]: Entering directory `/usr/src/kernels/2.6.32-279.14.1.el6.x86_6=
+4'
+  CC [M]  /root/div/ipset-6.16/kernel/net/netfilter/xt_set.o
+  CC [M]  /root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.o
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:34:
+error: expected =91=3D=92, =91,=92, =91;=92, =91asm=92 or =91__attribut=
+e__=92 before =91*=92
+token
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c: In
+function =91ip_set_rcu_get=92:
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:369:
+error: =91ip_set_list=92 undeclared (first use in this function)
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:369:
+error: (Each undeclared identifier is reported only once
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:369:
+error: for each function it appears in.)
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:369:
+warning: type defaults to =91int=92 in declaration of =91_________p1=92
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:369:
+warning: type defaults to =91int=92 in declaration of =91type name=92
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:369:
+error: subscripted value is neither array nor pointer
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c: In
+function =91ip_set_get_byname=92:
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:473:
+error: =91ip_set_list=92 undeclared (first use in this function)
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:473:
+warning: type defaults to =91int=92 in declaration of =91_________p1=92
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:473:
+warning: type defaults to =91int=92 in declaration of =91type name=92
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:473:
+error: subscripted value is neither array nor pointer
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c: In
+function =91ip_set_put_byindex=92:
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:499:
+error: =91ip_set_list=92 undeclared (first use in this function)
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:499:
+warning: type defaults to =91int=92 in declaration of =91_________p1=92
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:499:
+warning: type defaults to =91int=92 in declaration of =91type name=92
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:499:
+error: subscripted value is neither array nor pointer
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c: In
+function =91ip_set_nfnl_get=92:
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:545:
+error: implicit declaration of function =91rcu_dereference_protected=92
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:545:
+error: =91ip_set_list=92 undeclared (first use in this function)
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c: In
+function =91ip_set_nfnl_get_byindex=92:
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:573:
+error: =91ip_set_list=92 undeclared (first use in this function)
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c: In
+function =91ip_set_nfnl_put=92:
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:596:
+error: =91ip_set_list=92 undeclared (first use in this function)
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c: In
+function =91find_set_and_id=92:
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:663:
+error: =91ip_set_list=92 undeclared (first use in this function)
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c: In
+function =91find_free_id=92:
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:688:
+error: =91ip_set_list=92 undeclared (first use in this function)
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c: In
+function =91ip_set_create=92:
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:809:
+error: =91ip_set_list=92 undeclared (first use in this function)
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c: In
+function =91ip_set_destroy_set=92:
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:851:
+error: =91ip_set_list=92 undeclared (first use in this function)
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c: In
+function =91ip_set_destroy=92:
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:887:
+error: =91ip_set_list=92 undeclared (first use in this function)
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c: In
+function =91ip_set_flush=92:
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:943:
+error: =91ip_set_list=92 undeclared (first use in this function)
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c: In
+function =91ip_set_rename=92:
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:996:
+error: =91ip_set_list=92 undeclared (first use in this function)
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c: In
+function =91ip_set_swap=92:
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:1053:
+error: =91ip_set_list=92 undeclared (first use in this function)
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c: In
+function =91ip_set_dump_done=92:
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:1074:
+error: =91ip_set_list=92 undeclared (first use in this function)
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c: In
+function =91ip_set_dump_start=92:
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:1172:
+error: =91ip_set_list=92 undeclared (first use in this function)
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c: In
+function =91ip_set_sockfn_get=92:
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:1806:
+error: =91ip_set_list=92 undeclared (first use in this function)
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c: In
+function =91ip_set_init=92:
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:1850:
+error: =91ip_set_list=92 undeclared (first use in this function)
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c: In
+function =91ip_set_fini=92:
+/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_core.c:1872:
+error: =91ip_set_list=92 undeclared (first use in this function)
+make[3]: *** [/root/div/ipset-6.16/kernel/net/netfilter/ipset/ip_set_co=
+re.o]
+Error 1
+make[2]: *** [/root/div/ipset-6.16/kernel/net/netfilter/ipset] Error 2
+make[1]: *** [_module_/root/div/ipset-6.16/kernel/net/netfilter] Error =
+2
+make[1]: Leaving directory `/usr/src/kernels/2.6.32-279.14.1.el6.x86_64=
+'
+make: *** [modules] Error 2
+
+Sorry, I will try 6.15 again.
+--
+Att...
+
+Ricardo Felipe Klein
+klein.rfk@gmail.com
 
 
-
-Hello all,
-
-I am performing a security audit for a customer.  They have client
-machines (mainly desktop PCs) that need to authenticate regularly (every
-few minutes) via 802.1x, which is not accessible for iptables (802.1x is
-eap/eapol in wireshark with ethertype 0x888e).  In order to perform a
-security scan under the presumption, that the autit machine is not given
-access at the gateway, one idea was to write a small program using
-libpcap that shovels the frames as necessary to the "other" interface.
-But then I came recently across ebtables, which seems to be a suitable
-tool.  I read the docs and played with ebtables.  However, so far I had
-no success with with what I wanted.  And that's what I need:
-
-Suppose a setup like this
-
-	Gateway - Switch - Pentest Machine - Client PC
-
-The gateway sends regularly 802.1x requests to the client pc, where the
-gateway expects the pc to have a known MAC-address and IP-address.  Thus
-the pentest machine must appear as client pc (either via address
-spoofing or NATing) and just to relay the 802.1x packets forth and back
-as necessary (and maybe a few other things such as ARP and DHCP).
-
-The pentest machine has two ethernet interfaces (eth0 and eth1),
-ebtables support is enabled (BackTrack 5R3).  I have bridged the two
-interfaces together.  Indeed, traffic coming from outside (say through
-eth0) is seen on the other side as well (say eth1), but the responses
-from the client are absorbed somewhere.
-
-I tried first to spoof the MAC and IP address on the pentest machine,
-but then the machine seems to believe that packets with the said MAC
-address are destined to itself and doesn't forward them.  So then I
-tried MAC-NATing, in which case the pentest machine seems to lose
-interest in the packets on the wire at all (i.e. ping an the like
-doesn't work) - of course, since the replies have the "wrong" MAC-address.
-
-The ebtables broute table policy for the BROUTING chain was set in both
-cases to ACCEPT (i.e. bridge all traffic); the filter table had some
-filer rules but the policy for FORWARD was set (for playing) to ACCEPT
-as well.  For MAC source NAT I used a rule in the POSTROUTING chain.
-However, no matter what I did, I didn't get it to fly as I hoped.
-
-The first question is whether ebtables is the right tool to look at, and
-if so, the second question is how to wield it.  Has anyone reading here
-some hints in that direction?
-
-
-Thanks
-
-S. Hamdy
+On Tue, Nov 27, 2012 at 11:11 AM, Jozsef Kadlecsik
+<kadlec@blackhole.kfki.hu> wrote:
+> On Tue, 27 Nov 2012, Ricardo Klein wrote:
+>
+>> I know, I have 6.15 tested, but the problem came back in 6.16
+>
+> Can't be, I have verified before replying to you.
+>
+> Kernel, running 6.16 modules:
+>
+> # ipset -N SET_MACS bitmap:ip,mac range 0.0.0.0/0
+> ipset v6.16: The range you specified exceeds the size limit of the se=
+t
+> type
+> # ipset-6.14 -N SET_MACS bitmap:ip,mac range 0.0.0.0/0
+> ipset v6.14: The range you specified exceeds the size limit of the se=
+t
+> type
+>
+> Best regards,
+> Jozsef
+>
+>> On Tue, Nov 27, 2012 at 10:58 AM, Jozsef Kadlecsik
+>> <kadlec@blackhole.kfki.hu> wrote:
+>> > On Tue, 27 Nov 2012, Ricardo Klein wrote:
+>> >
+>> >> When I creta an ipset like this:
+>> >> ipset -N SET_MACS bitmap:ip,mac range 0.0.0.0/0
+>> >>
+>> >> I got kernel panic when run:
+>> >> ipset list
+>> >
+>> > That can't be ipset 6.16, neither in the kernel, nor the ipset bin=
+ary.
+>> > The bug is fixed in ipset 6.15. You are running kernel modules and
+>> > ipset binary from earlier releases.
+>> >
+>> >> Anyway, we need some rules here based on mac address (no matter w=
+hat
+>> >> ip address the machine have, because some of them are in DHCP).
+>> >> I know that a mac address can be easy cloned, but, still, we need=
+ that
+>> >> for some rules...
+>> >>
+>> >> Can we have a set type "mac address" ? Only mac, with no ip?
+>> >>
+>> >> O tried "ipset -N SET_MACS_ADM bitmap:ip,mac range 10.0.0.0/8" to=
+o but got:
+>> >> ipset v6.16: The range you specified exceeds the size limit of th=
+e set type
+>> >>
+>> >> "ipset -N SET_MACS_ADM bitmap:ip,mac range 10.0.0.0/16" woked...
+>> >>
+>> >> But again, this does not do the job because I need to set a rule =
+based
+>> >> on mac address and dinamic ip addresses.
+>> >
+>> > Holger Eitzenberger is working on a hash:mac type.
+>> >
+>> > Best regards,
+>> > Jozsef
+>> > -
+>> > E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+>> > PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+>> > Address : Wigner Research Centre for Physics, Hungarian Academy of=
+ Sciences
+>> >           H-1525 Budapest 114, POB. 49, Hungary
+>>
+>
+> -
+> E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+> Address : Wigner Research Centre for Physics, Hungarian Academy of Sc=
+iences
+>           H-1525 Budapest 114, POB. 49, Hungary
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
+el" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
