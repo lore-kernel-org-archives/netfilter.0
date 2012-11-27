@@ -1,51 +1,73 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+From: Ricardo Klein <klein.rfk@gmail.com>
 Subject: Re: ipset 6.16 kernel panic on bitmap:hash,ip
-Date: Tue, 27 Nov 2012 13:58:28 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1211271352350.14623@blackhole.kfki.hu>
+Date: Tue, 27 Nov 2012 11:01:31 -0200
+Message-ID: <CADuigkX8Q0AJ_-PHyzn+1orKuXfqgrdPPC3yZ1aORBJrdcxBLg@mail.gmail.com>
 References: <CADuigkVyCJVe5yKVvcKweZ=FmnTTWE1JQ55a35LrCLi2oWBHoQ@mail.gmail.com>
+	<alpine.DEB.2.00.1211271352350.14623@blackhole.kfki.hu>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CADuigkVyCJVe5yKVvcKweZ=FmnTTWE1JQ55a35LrCLi2oWBHoQ@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type;
+        bh=H4WYTDMQme8/AqoJ7dYwpyROmtOUtnwhWnAr1w4kMo4=;
+        b=Y8h3KXjeay2TWfxquMVkaafHcw9pG5rLm9otV8Ibg1DSMoNu6Cpsde4KCFYP/OrnRs
+         +XEtokkiy+BckeCOYgcIFun86RlGaR7XcqCDjzauQ0/ReaVf7UorQn3Xupb3ny/bp1Pp
+         yQH74Au72H6n7CXZsqXe2Gd7Jb7n9KAx4S7QHyPkIvhm70CggAt4kGOYJEKcggqxgTwG
+         ZYdKpCmZSDWz2F6SkGWspN/Sl8D5mBqgsLkCLrQr97pkAVc8uvoCqhi/UsX+myUEILFb
+         O/HUHCMUJPPridD/pevg/10IXkJ3hFlHePPXsPAsPV7tP5BE6DfNKlywvXpNxXCTZu4y
+         mY/w==
+In-Reply-To: <alpine.DEB.2.00.1211271352350.14623@blackhole.kfki.hu>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Ricardo Klein <klein.rfk@gmail.com>
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-On Tue, 27 Nov 2012, Ricardo Klein wrote:
+I know, I have 6.15 tested, but the problem came back in 6.16
+--
+Att...
 
-> When I creta an ipset like this:
-> ipset -N SET_MACS bitmap:ip,mac range 0.0.0.0/0
-> 
-> I got kernel panic when run:
-> ipset list
+Ricardo Felipe Klein
+klein.rfk@gmail.com
 
-That can't be ipset 6.16, neither in the kernel, nor the ipset binary.
-The bug is fixed in ipset 6.15. You are running kernel modules and 
-ipset binary from earlier releases.
- 
-> Anyway, we need some rules here based on mac address (no matter what
-> ip address the machine have, because some of them are in DHCP).
-> I know that a mac address can be easy cloned, but, still, we need that
-> for some rules...
-> 
-> Can we have a set type "mac address" ? Only mac, with no ip?
-> 
-> O tried "ipset -N SET_MACS_ADM bitmap:ip,mac range 10.0.0.0/8" too but got:
-> ipset v6.16: The range you specified exceeds the size limit of the set type
-> 
-> "ipset -N SET_MACS_ADM bitmap:ip,mac range 10.0.0.0/16" woked...
-> 
-> But again, this does not do the job because I need to set a rule based
-> on mac address and dinamic ip addresses.
 
-Holger Eitzenberger is working on a hash:mac type.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+On Tue, Nov 27, 2012 at 10:58 AM, Jozsef Kadlecsik
+<kadlec@blackhole.kfki.hu> wrote:
+> On Tue, 27 Nov 2012, Ricardo Klein wrote:
+>
+>> When I creta an ipset like this:
+>> ipset -N SET_MACS bitmap:ip,mac range 0.0.0.0/0
+>>
+>> I got kernel panic when run:
+>> ipset list
+>
+> That can't be ipset 6.16, neither in the kernel, nor the ipset binary.
+> The bug is fixed in ipset 6.15. You are running kernel modules and
+> ipset binary from earlier releases.
+>
+>> Anyway, we need some rules here based on mac address (no matter what
+>> ip address the machine have, because some of them are in DHCP).
+>> I know that a mac address can be easy cloned, but, still, we need that
+>> for some rules...
+>>
+>> Can we have a set type "mac address" ? Only mac, with no ip?
+>>
+>> O tried "ipset -N SET_MACS_ADM bitmap:ip,mac range 10.0.0.0/8" too but got:
+>> ipset v6.16: The range you specified exceeds the size limit of the set type
+>>
+>> "ipset -N SET_MACS_ADM bitmap:ip,mac range 10.0.0.0/16" woked...
+>>
+>> But again, this does not do the job because I need to set a rule based
+>> on mac address and dinamic ip addresses.
+>
+> Holger Eitzenberger is working on a hash:mac type.
+>
+> Best regards,
+> Jozsef
+> -
+> E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+> Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+>           H-1525 Budapest 114, POB. 49, Hungary
