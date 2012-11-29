@@ -1,72 +1,87 @@
-From: tlhackque <tlhackque@yahoo.com>
-Subject: -m recent recently broken?
-Date: Wed, 28 Nov 2012 11:01:52 -0500
-Message-ID: <50B63570.7090008@yahoo.com>
+From: Born Without <blackhole@airpost.net>
+Subject: Deleting set/SET rules by exact match fails
+Date: Thu, 29 Nov 2012 12:31:10 +0100
+Message-ID: <50B7477E.8050603@airpost.net>
+Reply-To: blackhole@airpost.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1354118514; bh=syHwoEtFOI+6n8f/4DQRETzhWo947O6y9D8TMfFs300=; h=X-Yahoo-Newman-Id:X-Yahoo-Newman-Property:X-YMail-OSG:X-Yahoo-SMTP:Received:Message-ID:Date:From:User-Agent:MIME-Version:To:Subject:Content-Type:Content-Transfer-Encoding; b=aui7flwBSDP+OrX/moUBSDTJPXZioJKxnMv3ui0+6Vy2H0lvJ8xAM3jGzAWNAmnGRwEFxJIjjEtujcfVNZuDusCNMAUfnSAlGqldPowO7y0hY0AZMLa57WVev0kjjAYC9FCuDJpGew0B8Bogu0xcjyUMs5U0cgL0XF2V16UXF0w=
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=airpost.net; h=
+	message-id:date:from:reply-to:mime-version:to:subject
+	:content-type:content-transfer-encoding; s=mesmtp; bh=C4bVPLqmGN
+	XqxkYT5GqDAyrsgxs=; b=i0h6cwnaQfDMMpiBA+/S4Kn0KvqEIg5N9pcnP4eEbN
+	vgPN4aSPPfmLOnvozJptWhYL5BTTpa9zOtALfL0lHCXH144t8fo5XSvJmvZPLV32
+	/ife5R8FjK1G9SP+fdr5iq896/KSOY9RDQJAtIxROEPSrw3OWlXJj2kpD4/gW9N/
+	4=
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
+	messagingengine.com; h=message-id:date:from:reply-to
+	:mime-version:to:subject:content-type:content-transfer-encoding;
+	 s=smtpout; bh=C4bVPLqmGNXqxkYT5GqDAyrsgxs=; b=MXOMtyCLbJwF/on74
+	Zl7d91BcwyCMSagZQ5ioh7+8JkDoq11Ij0iwjWBL84t5iZM1uTYiXpgs2mBORcGe
+	kUfb7oOPU2V+DhVo2XPGTlPqszVooVDEPGnlf0ca57PSGdKTjS0x0yxtsQIYEJB4
+	dSZN/dL/Df6c/zEY1CSTBk+fwM=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-I recently noticed that a script that sets up a filter is failing. It 
-may have started failing when I updated iptables to V1.4.15 - I've 
-updated again to 1.4.16.3 (current, so far as I know).
+Hello list,
 
-The culprit seems to be libxt_recent.  I've reduced the case to this:
+the problem I ran into is, that I'm unable to delete any iptables rule, 
+which uses either the set match or the SET target, by the exact matching 
+rule options. Deleting by rule number works though.
+See below output.
 
-Environment:
--------------------
-cat /proc/sys/kernel/osrelease  # Yes, I'd like to update, but can't at 
-the moment...
-2.6.22.14-72.fc6
+System is Debian squeeze with debian kernel 2.6.32.
+I downloaded the debian kernel source package.
+Applied the netlink.patch and compiled/run it successfully.
+Installed latest ipset successfully:
 
-/sbin/ip6tables --version
-ip6tables v1.4.16.3
+# ipset version
+ipset v6.16.1, protocol version: 6
 
-Failing command:
--------------------------
-/sbin/ip6tables -A INPUT -p tcp --dport 333 -m recent --name white6 
---rcheck -j ACCEPT
-ip6tables: No chain/target/match by that name.
+I tried to apt-src iptables and compile that, but made no difference.
 
-Additional data:
-----------------------
-If I remove "-m recent --name white6 --rcheck", the command is accepted. 
-(But of course is quite useless.)
+# iptables -V
+iptables v1.4.8
 
-/proc/net/ipt_recent does not contain white6 (adding this rule should 
-create it).
-   >> Could it be that libxt_recent wants the newer location 
-(/proc/net/xt_recent)?
+Any ideas on that?
 
-iptables was built with no options.  /sbin/ip6tables is a symbolic link 
-to ../usr/local/sbin/ip6tables.
+Thank you very much!
 
-strace reveals (edited to remove clutter):
-...
-stat64("/usr/local/lib/xtables/libxt_recent.so", {st_mode=S_IFREG|0755, 
-st_size=21699, ...}) = 0
-open("/usr/local/lib/xtables/libxt_recent.so", O_RDONLY) = 3
-...(mmap, close)
-socket(PF_INET6, SOCK_RAW, IPPROTO_RAW) = 3
-fcntl64(3, F_SETFD, FD_CLOEXEC)         = 0
-getsockopt(3, SOL_IPV6, 0x40 /* IPV6_??? */, 
-"filter\0\0\250R\366\267\267\342\22\0\377\377\377\377\300\357\21\0000\211\4\10P\366\21\0"..., 
-[84]) = 0
-getsockopt(3, SOL_IPV6, 0x41 /* IPV6_??? */, 
-"filter\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 
-[22328]) = 0
-setsockopt(3, SOL_IPV6, 0x40 /* IPV6_??? */, 
-"filter\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 22888) 
-= -1 ENOENT (No such file or directory)
-close(3)                                = 0
-write(2, "ip6tables: No chain/target/match"..., 47ip6tables: No 
-chain/target/match by that name.) = 47
 
--- 
-This communication may not represent my employer's views,
-if any, on the matters discussed.
+-----------------------------------------------------------------
+iptables -vnL FOO
+Chain FOO (1 references)
+  pkts bytes target     prot opt in     out     source 
+destination
 
+# iptables -A FOO -s 192.168.13.0/24 -p icmp -j SET --add-set foo src
+# iptables -A FOO -m set --match-set foo src -j ACCEPT
+
+- generate some traffic...
+
+iptables -vnL FOO
+Chain FOO (1 references)
+  pkts bytes target     prot opt in     out     source 
+destination
+     4   240 SET        icmp --  *      *       192.168.13.0/24 
+0.0.0.0/0           add-set foo src
+    18  1148 ACCEPT     all  --  *      *       0.0.0.0/0 
+0.0.0.0/0           match-set foo src
+
+iptables -D FOO -s 192.168.13.0/24 -p icmp -j SET --add-set foo src
+iptables: No chain/target/match by that name.
+
+# iptables -D FOO -m set --match-set foo src -j ACCEPT
+iptables: Bad rule (does a matching rule exist in that chain?).
+
+# ipset list foo
+Name: foo
+Type: hash:ip
+Revision: 0
+Header: family inet hashsize 1024 maxelem 65536
+Size in memory: 8288
+References: 2
+Members:
+192.168.13.254
