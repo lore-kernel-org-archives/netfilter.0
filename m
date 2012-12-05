@@ -1,161 +1,163 @@
-From: Jack Bates <uo4zau@nottheoilrig.com>
-Subject: Re: Mark traffic on one machine, match on another machine?
-Date: Wed, 05 Dec 2012 06:17:42 -0800
-Message-ID: <50BF5786.3050208@nottheoilrig.com>
-References: <08eb317b-c614-4117-855b-66ade5d2244d@tahiti.vyatta.com> <3a947589368a2610486404839274d7cb@imap.netsecspec.co.uk> <50B84725.3080608@nottheoilrig.com> <50B851E8.8070107@ngtech.co.il> <50BC6639.3090502@nottheoilrig.com> <50BC9297.3050507@ngtech.co.il> <50BCB80F.4090208@nottheoilrig.com> <CA+4D1sfikOc6BqVpGNxyYUOv-CA9j0ofSf-QJ_Fvz+JSw=SH3w@mail.gmail.com> <50BF1011.1050709@ngtech.co.il>
+From: forums@sidekicker.net
+Subject: problems with iptables ptpd
+Date: Wed, 05 Dec 2012 21:03:30 +0000
+Message-ID: <20121205210330.49254aja9l5a51uq@webmail-srv2.servage.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=nottheoilrig.com;
-	s=mail; t=1354717077;
-	bh=YLN48rMSbi6Jh2i7jxp/m4aafWG0iLW9qjeyq3a7VWQ=;
-	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:References:
-	 In-Reply-To:Content-Type:Content-Transfer-Encoding;
-	b=28e1jXpCAQnmEYh1cgvDpYmVBgI8Ut/03P/AAj2R0Re9tXUsMz4z9WQbd0IyIJ34K
-	 MgNHY0/nxJmfTnlRkMtcEny9bA+4NqP6ZFro/BbLQyjpZIJvesAVES2NlzUwB4LnLj
-	 oAkm3z2WpMCEt2QWBNEZ46gBjuOhTcEOTr0XF3Ek=
-In-Reply-To: <50BF1011.1050709@ngtech.co.il>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Eliezer Croitoru <eliezer@ngtech.co.il>
-Cc: Anatoly Muliarski <x86ever@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; delsp="Yes"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Thanks for this help, I think the marks are getting saved/restored 
-successfully, and I can successfully classify request traffic from the 
-proxy server based on the mark (statistics on the eth0.2 classes are 
-incrementing) but response traffic from the origin server isn't getting 
-classified yet (statistics on the ifb0 classes remain zero).
+I'm having a problem routing pptpd on my server throuhg iptables.
+I cannot connect from client.
+Any ideas what could be wrong?
+I have a part in the iptables that is:
+-A FORWARD -i ppp+ -o eth0 -j ACCEPT
+-A FORWARD -i eth0 -o ppp+ -j ACCEPT
 
-Here is my complete work in progress script. How can I investigate why 
-response traffic isn't getting classified? Are there any more details 
-that would help explain why not?
+but I think there might be more wrong than just that
 
-How can I classify traffic based on the restored mark? or is there 
-another way to classify response traffic from the origin server based on 
-the TOS/DSCP field of the request?
+This is my current routing:
+[root ~]# route -n
+Kernel IP routing table
+Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
+10.8.0.2        0.0.0.0         255.255.255.255 UH    0      0        0 tun1
+172.16.0.2      0.0.0.0         255.255.255.255 UH    0      0        0 tun0
+10.8.0.0        10.8.0.2        255.255.255.0   UG    0      0        0 tun1
+172.16.0.0      172.16.0.2      255.255.255.0   UG    0      0        0 tun0
+88.xxx.xxx.0    0.0.0.0         255.255.252.0   U     0      0        0 eth0
+169.254.0.0     0.0.0.0         255.255.0.0     U     0      0        0 eth0
+0.0.0.0         88.xxx.xxx.1    0.0.0.0         UG    0      0        0 eth0
+[root ~]#
 
-    1: # Save/restore connection mark based on TOS field
-    2: iptables -A PREROUTING -t mangle -j CONNMARK --restore-mark
-    3: iptables -A PREROUTING -t mangle -m tos --tos 12 -j MARK --set-mark 1
-    4: iptables -A PREROUTING -t mangle -m tos --tos 28 -j MARK --set-mark 2
-    5: iptables -A PREROUTING -t mangle -j CONNMARK --save-mark
-    6:
-    7: ifconfig ifb0 up
-    8:
-    9: insmod sch_ingress
-   10: tc qdisc add dev eth0.2 ingress
-   11:
-   12: # Classify response traffic from origin server based on restored mark
-   13: insmod cls_fw
-   14: insmod act_mirred
-   15: tc filter add dev eth0.2 parent ffff: protocol ip pref 1 handle 1 
-fw flowid 2:1 action mirred egress redirect dev ifb0
-   16: tc filter add dev eth0.2 parent ffff: protocol ip pref 1 handle 2 
-fw flowid 2:3 action mirred egress redirect dev ifb0
-   17:
-   18: # Send unmarked traffic to class 2:2
-   19: insmod cls_u32
-   20: tc filter add dev eth0.2 parent ffff: protocol ip pref 1 u32 
-match u32 0 0 flowid 2:2 action mirred egress redirect dev ifb0
-   21:
-   22: # Limit up and downstream to 1mbit, to "own" the queue
-   23: insmod sch_tbf
-   24: tc qdisc add dev eth0.2 root handle 1 tbf rate 1mbit burst 5k 
-latency 70ms
-   25: tc qdisc add dev ifb0 root handle 1 tbf rate 1mbit burst 5k 
-latency 70ms
-   26:
-   27: # High, low, and "other" priority
-   28: insmod sch_prio
-   29: tc qdisc add dev eth0.2 parent 1: handle 2 prio
-   30: tc qdisc add dev ifb0 parent 1: handle 2 prio
-   31:
-   32: # Classify request traffic from proxy server based on mark
-   33: tc filter add dev eth0.2 parent 2: protocol ip pref 1 handle 1 fw 
-flowid :1
-   34: tc filter add dev eth0.2 parent 2: protocol ip pref 1 handle 2 fw 
-flowid :3
+I want to add a 3rd network for use with a PPTP VPN 10.8.1.0/24
+10.8.0.0 is for OpenVPN on tcp
+172.16.0.0 is OpenVPN on udp
 
-On 05/12/12 01:12 AM, Eliezer Croitoru wrote:
-> Thanks Anatoly,
->
-> My idea was that based on a mark he will jump the packets to another
-> table which HE will mark TOS/DSCP.
->
-> Eliezer
->
-> On 12/5/2012 4:39 AM, Anatoly Muliarski wrote:
->> Hi Jack,
->>
->> --restore-mark should be used for existing connections and to mark new
->> ones you may use something like that:
->>
->> iptables -t mangle -A PREROUTING -i eth0.2 -m tos --tos 1 -m conntrack
->> --cstate NEW,RELATED -j MARK --set-mark 1
->>
->> The main idea consists in marking packets on the physical input
->> interface and shaping them on ifb0( where they arrive already marked
->> ).
->> iptables' packet marks exist only in memory of one computer, TOS/DSCP
->> may be used for transmitting a map of them to another one.
->> BTW, use --restore-mark on the output interface of your shaper too.
->>
->> 2012/12/3, Jack Bates <uo4zau@nottheoilrig.com>:
->>> Thanks a lot for your help, how can I evaluate --restore-mark before I
->>> classify and shape response traffic from the origin server?
->>>
->>> I think you mean something like:
->>>
->>>     # Copy ctmart to nfmark (e.g. 1, 2)
->>>     iptables -A PREROUTING -t mangle -i eth0.2 -j CONNMARK
->>> --restore-mark
->>>
->>>     # Classify by nfmark (e.g. 1, 2), send unmarked traffic to class 2:2
->>>     tc filter add dev eth0.2 parent ffff: protocol ip handle 1 fw flowid
->>> 2:1 action mirred egress redirect dev ifb0
->>>     tc filter add dev eth0.2 parent ffff: protocol ip handle 2 fw flowid
->>> 2:3 action mirred egress redirect dev ifb0
->>>     tc filter add dev eth0.2 parent ffff: protocol ip u32 match u32 0 0
->>> flowid 2:2 action mirred egress redirect dev ifb0
->>>
->>> Just how can I get --restore-mark to evaluate before tc filter?
->>>
->>> Another way I can imagine is with the CLASSIFY target:
->>>
->>>     # Send unmarked traffic to class 2:2
->>>     iptables -A PREROUTING -t mangle -i eth0.2 -m connmark --mark 1 -j
->>> CLASSIFY 2:1
->>>     iptables -A PREROUTING -t mangle -i eth0.2 -m connmark --mark 2 -j
->>> CLASSIFY 2:3
->>>     iptables -A PREROUTING -t mangle -i eth0.2 -j CLASSIFY 2:2
->>>
->>> But I have the same challenge, how can I evaluate the CLASSIFY target
->>> before I shape traffic?
->>>
->>> Or is there another way to classify and shape response traffic from the
->>> origin server based on the TOS/DSCP field of the request?
->>>
->>> On 03/12/12 03:52 AM, Eliezer Croitoru wrote:
->>>> You use iptables mark + restore mark based on connection tracking.
->>>> you can mark the TOS on the outgoing postrouting table.
->>>> you can take a look at the iptabes man pages:
->>>> http://ipset.netfilter.org/iptables.man.html
->>>> which has --restore-mark  exaple.
->>>>
->>>> Eliezer
->>>>
->>>> On 12/3/2012 10:43 AM, Jack Bates wrote:
->>>>> I can imagine a couple ways of classifying traffic from our proxy
->>>>> server
->>>>> based on the TOS/DSCP field, and also how to set the connection mark
->>>>> based on this field. But how do I classify and shape response traffic
->>>>> from the origin server based on the connection mark?
->>> --
->>> To unsubscribe from this list: send the line "unsubscribe netfilter" in
->>> the body of a message to majordomo@vger.kernel.org
->>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>>
->>
->>
->
+Also, I have this routing in ioptables, so how do I get the pptp port  
+to be redirected?
+
+-A PREROUTING -d 88.xxx.xxx.xx9 -p tcp -m tcp --dport 443 -j DNAT  
+--to-destination 88.xxx.xxx.xx9:1194
+-A POSTROUTING -s 172.16.0.0/255.255.255.0 -o eth0 -j MASQUERADE
+-A POSTROUTING -s 10.8.0.0/255.255.255.0 -o eth0 -j SNAT --to-source  
+88.xxx.xxx.xx9
+-A POSTROUTING -o eth0 -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS  
+--set-mss 1460
+-A POSTROUTING -o eth0 -p tcp -m tcp --tcp-flags SYN,RST SYN -j TCPMSS  
+--clamp-mss-to-pmtu
+
+
+add port 1723
+-A PREROUTING -d 88.xxx.xxx.xx9 -p tcp -m tcp --dport 1723 -j DNAT  
+--to-destination 88.xxx.xxx.xx9:1723
+-A POSTROUTING -s 10.8.1.0/255.255.255.0 -o eth0 -j MASQUERADE
+
+Here is my iptables:
+# Generated by iptables-save v1.4.7 on Sun Nov 25 22:45:46 2012
+*mangle
+:PREROUTING ACCEPT [1490053707:1036617946585]
+:INPUT ACCEPT [625694708:365286746462]
+:FORWARD ACCEPT [859720908:670949790610]
+:OUTPUT ACCEPT [760469091:982961370679]
+:POSTROUTING ACCEPT [1620189999:1653911161289]
+COMMIT
+# Completed on Sun Nov 25 22:45:46 2012
+# Generated by iptables-save v1.4.7 on Sun Nov 25 22:45:46 2012
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [390:204397]
+:RH-Firewall-1-INPUT - [0:0]
+-A INPUT -j RH-Firewall-1-INPUT
+-A INPUT -i tun+ -j ACCEPT
+-A FORWARD -j RH-Firewall-1-INPUT
+-A FORWARD -i ppp+ -o eth0 -j ACCEPT
+-A FORWARD -i eth0 -o ppp+ -j ACCEPT
+-A OUTPUT -o tun+ -j ACCEPT
+-A RH-Firewall-1-INPUT -i lo -j ACCEPT
+-A RH-Firewall-1-INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport 22 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 20 -m state --state NEW -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 21 -m state --state NEW -j ACCEPT
+-A RH-Firewall-1-INPUT -p udp -m udp --dport 53 -m state --state NEW -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 53 -m state --state NEW -j ACCEPT
+-A RH-Firewall-1-INPUT -p udp -m udp --dport 123 -m state --state NEW  
+-j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 8002 -m state --state NEW  
+-j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 9001 -m state --state NEW  
+-j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 80 -m state --state NEW -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 8080 -m state --state  
+NEW,RELATED,ESTABLISHED -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 1935 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 443 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 1194 -j ACCEPT
+-A RH-Firewall-1-INPUT -p udp -m udp --dport 1194 -j ACCEPT
+-A RH-Firewall-1-INPUT -p udp -m udp --dport 5001 -j ACCEPT
+-A RH-Firewall-1-INPUT -p tcp -m tcp --dport 5001 -j ACCEPT
+-A RH-Firewall-1-INPUT -i eth0 -p tcp -m tcp --dport 1723 -j ACCEPT
+-A RH-Firewall-1-INPUT -i eth0 -p gre -j ACCEPT
+-A RH-Firewall-1-INPUT -i lo -j ACCEPT
+-A RH-Firewall-1-INPUT -i tun+ -j ACCEPT
+-A RH-Firewall-1-INPUT -i tap+ -j ACCEPT
+-A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
+COMMIT
+# Completed on Sun Nov 25 22:45:46 2012
+# Generated by iptables-save v1.4.7 on Sun Nov 25 22:45:46 2012
+*nat
+:PREROUTING ACCEPT [11980035:900517415]
+:POSTROUTING ACCEPT [2124769:132314589]
+:OUTPUT ACCEPT [2124633:132309469]
+-A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
+-A POSTROUTING -s 172.16.0.0/24 -o eth0 -j MASQUERADE
+COMMIT
+# Completed on Sun Nov 25 22:45:46 2012
+
+
+I get this in the log and the Windows connection just times out
+
+Nov 25 00:00:12 jason rsyslogd: [origin software="rsyslogd"  
+swVersion="5.8.10" x-pid="5395" x-info="web"] rsyslogd was HUPed
+Nov 25 22:29:53 jason kernel: tun0: Disabled Privacy Extensions
+Nov 25 22:31:04 jason kernel: tun0: Disabled Privacy Extensions
+Nov 25 22:38:01 jason pptpd[25853]: MGR: Maximum of 100 connections  
+reduced to 91, not enough IP addresses given
+Nov 25 22:38:01 jason pptpd[25854]: MGR: Manager process started
+Nov 25 22:38:01 jason pptpd[25854]: MGR: Maximum of 91 connections available
+Nov 25 22:42:15 jason pptpd[25916]: MGR: Maximum of 100 connections  
+reduced to 91, not enough IP addresses given
+Nov 25 22:42:15 jason pptpd[25917]: MGR: Manager process started
+Nov 25 22:42:15 jason pptpd[25917]: MGR: Maximum of 91 connections available
+Nov 25 22:50:05 jason kernel: ip_tables: (C) 2000-2006 Netfilter Core Team
+Nov 25 22:50:05 jason kernel: nf_conntrack version 0.5.0 (16384  
+buckets, 65536 max)
+Nov 25 22:50:41 jason pptpd[26072]: CTRL: Client 86.15.42.109 control  
+connection started
+Nov 25 22:50:41 jason pptpd[26072]: CTRL: Starting call (launching  
+pppd, opening GRE)
+Nov 25 22:50:41 jason pppd[26073]: Warning: can't open options file  
+/root/.ppprc: Permission denied
+Nov 25 22:50:41 jason pppd[26073]: Plugin  
+/usr/lib64/pptpd/pptpd-logwtmp.so loaded.
+Nov 25 22:50:41 jason kernel: PPP generic driver version 2.4.2
+Nov 25 22:50:41 jason pppd[26073]: pppd 2.4.5 started by root, uid 0
+Nov 25 22:50:41 jason pppd[26073]: Using interface ppp0
+Nov 25 22:50:41 jason pppd[26073]: Connect: ppp0 <--> /dev/pts/0
+Nov 25 22:50:41 jason pptpd[26072]: GRE: Bad checksum from pppd.
+Nov 25 22:51:11 jason pppd[26073]: LCP: timeout sending Config-Requests
+Nov 25 22:51:11 jason pppd[26073]: Connection terminated.
+Nov 25 22:51:11 jason pppd[26073]: Modem hangup
+Nov 25 22:51:11 jason pppd[26073]: Exit.
+Nov 25 22:51:11 jason pptpd[26072]: GRE:  
+read(fd=6,buffer=611860,len=8196) from PTY failed: status = -1 error =  
+Input/output error, usually caused by unexpected termination of $
+Nov 25 22:51:11 jason pptpd[26072]: CTRL: PTY read or GRE write failed  
+(pty,gre)=(6,7)
+Nov 25 22:51:11 jason pptpd[26072]: CTRL: Client 86.15.42.109 control  
+connection finished
+
