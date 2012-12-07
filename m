@@ -1,70 +1,137 @@
-From: haibbo@gmail.com
-Subject: [PATCH] fix conntrack reassembly expire code
-Date: Fri,  7 Dec 2012 17:42:17 +0800
-Message-ID: <1354873337-3776-1-git-send-email-haibbo@gmail.com>
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+From: Abhijit Pawar <abhi.c.pawar@gmail.com>
+Subject: [PATCH 2/4] net: remove obsolete simple_strto<foo>
+Date: Fri,  7 Dec 2012 17:19:58 +0530
+Message-ID: <1354880998-23417-1-git-send-email-abhi.c.pawar@gmail.com>
+Return-path: <netdev-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=from:to:cc:subject:date:message-id:x-mailer;
-        bh=AKiGmhHhg8FT3MGSvZxgHezbhYakGy6wQzR40laJ04w=;
-        b=xriVuNDXDTEdNqxBIjx/FMVlRwAFBbxAocHnKJnLxtko4SW/gUwl4wvDOpRRQ1+9OQ
-         qzenMucgmgXQBvl4VE9hBEKdf9Lcmz2kcbWr5w88n5O6ADSQPl4vEKkO8i8+KlG2E7P7
-         gUqaEk52+QHuyjRkKJJojAvbOL7WLwjZDmnygJWAoj9hEjLr9wXc+PdKWyLDVYE1PZjA
-         d7PkXNfx8v7SXVfCdRk0xUhyy7WstymNI/RDbpehy8vwVBlHxEQRFkhx35OYCSljZ5sO
-         sMgoeVqSDIqiApW3NXkKBRGVgnqdHvr+fMA0HNp33CowCKRPQZpgGhQ9ih0Xh2OBmZEv
-         bfdg==
-Sender: netfilter-devel-owner@vger.kernel.org
+        bh=igc0KxB35n3AqOFAu0q+sHnfYGwB/LZjYggxYo9iIOs=;
+        b=zGul9s2O3lGtKdxxAYFmRgkypoFPU4O/3MzgfI6AMcTH1h2NM2wwCFcl3gyi5wZQFT
+         OqtQ5gibtKCoEXNPwPfRdMnaRIT3nEkazJOWuAWDtuoohDDeUrBVDaJj+AtnxDN682O8
+         enf2+hOpdPriE48sf8xlZ8HBxT46GADYMNcDm8TS9uugQPjaoqz3EQjCCwY2eUAbZ61K
+         J+rXSkQi/tZn0ARa4DwAk5yxZ8cfENo8q2O5dJmklPtxrzP52LmC3Rc8bt1/P19ZhnIo
+         q0gEGcm8iMxPW9hMsBW/c65MeFnx6eo39lnx6sC4fynup11O9jEq155SBgpqBYDe7jxT
+         NgRQ==
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: pablo@netfilter.org, kaber@trash.net, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
-Cc: Haibo Xi <haibbo@gmail.com>
+To: "David S. Miller" <davem@davemloft.net>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, James Morris <jmorris@namei.org>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, "John W. Linville" <linville@tuxdriver.com>, Johannes Berg <johannes@sipsolutions.net>, Cong Wang <amwang@redhat.com>, Eric Dumazet <edumazet@google.com>, Neil Horman <nhorman@tuxdriver.com>, Joe Perches <joe@perches.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-wireless@vger.kernel.org, Abhijit Pawar <abhi.c.pawar@gmail.com>
 
-From: Haibo Xi <haibbo@gmail.com>
+This patch replace the obsolete simple_strto<foo> with kstrto<foo>
 
-Commit b836c99fd6c9 (ipv6: unify conntrack reassembly expire
-code with standard one) use the standard IPv6 reassembly
-code(ip6_expire_frag_queue) to handle conntrack reassembly expire.
-
-In ip6_expire_frag_queue, it invoke dev_get_by_index_rcu to get
-which device received this expired packet.so we must save ifindex
-when NF_conntrack get this packet.
-
-With this patch applied, I can see ICMP Time Exceeded sent
-from the receiver when the sender sent out 1/2 fragmented
-IPv6 packet.
-
-Signed-off-by: Haibo Xi <haibbo@gmail.com>
+Signed-off-by: Abhijit Pawar <abhi.c.pawar@gmail.com>
 ---
- net/ipv6/netfilter/nf_conntrack_reasm.c |    7 ++++++-
- 1 files changed, 6 insertions(+), 1 deletions(-)
+ net/core/netpoll.c                 |    9 +++++++--
+ net/ipv4/netfilter/ipt_CLUSTERIP.c |    9 +++++++--
+ net/mac80211/debugfs_sta.c         |    4 +++-
+ net/netfilter/nf_conntrack_core.c  |    6 ++++--
+ 4 files changed, 21 insertions(+), 7 deletions(-)
 
-diff --git a/net/ipv6/netfilter/nf_conntrack_reasm.c b/net/ipv6/netfilter/nf_conntrack_reasm.c
-index 22c8ea9..e7197be 100644
---- a/net/ipv6/netfilter/nf_conntrack_reasm.c
-+++ b/net/ipv6/netfilter/nf_conntrack_reasm.c
-@@ -196,6 +196,7 @@ static int nf_ct_frag6_queue(struct frag_queue *fq, struct sk_buff *skb,
- 	struct sk_buff *prev, *next;
- 	unsigned int payload_len;
- 	int offset, end;
-+	struct net_device *dev = NULL;
+diff --git a/net/core/netpoll.c b/net/core/netpoll.c
+index 77a0388..596b127 100644
+--- a/net/core/netpoll.c
++++ b/net/core/netpoll.c
+@@ -668,13 +668,16 @@ EXPORT_SYMBOL(netpoll_print_options);
  
- 	if (fq->q.last_in & INET_FRAG_COMPLETE) {
- 		pr_debug("Already completed\n");
-@@ -311,7 +312,11 @@ found:
- 	else
- 		fq->q.fragments = skb;
+ int netpoll_parse_options(struct netpoll *np, char *opt)
+ {
++	int rc;
+ 	char *cur=opt, *delim;
  
--	skb->dev = NULL;
-+	dev = skb->dev;
-+	if (dev) {
-+		fq->iif = dev->ifindex;
-+		skb->dev = NULL;
-+	}
- 	fq->q.stamp = skb->tstamp;
- 	fq->q.meat += skb->len;
- 	if (payload_len > fq->q.max_size)
+ 	if (*cur != '@') {
+ 		if ((delim = strchr(cur, '@')) == NULL)
+ 			goto parse_failed;
+ 		*delim = 0;
+-		np->local_port = simple_strtol(cur, NULL, 10);
++		rc = kstrtol(cur, 10, &np->local_port);
++		if (rc)
++			goto parse_failed;
+ 		cur = delim;
+ 	}
+ 	cur++;
+@@ -705,7 +708,9 @@ int netpoll_parse_options(struct netpoll *np, char *opt)
+ 		*delim = 0;
+ 		if (*cur == ' ' || *cur == '\t')
+ 			np_info(np, "warning: whitespace is not allowed\n");
+-		np->remote_port = simple_strtol(cur, NULL, 10);
++		rc = kstrtol(cur, 10, &np->remote_port);
++		if (rc)
++			goto parse_failed;
+ 		cur = delim;
+ 	}
+ 	cur++;
+diff --git a/net/ipv4/netfilter/ipt_CLUSTERIP.c b/net/ipv4/netfilter/ipt_CLUSTERIP.c
+index fe5daea..55e7b73 100644
+--- a/net/ipv4/netfilter/ipt_CLUSTERIP.c
++++ b/net/ipv4/netfilter/ipt_CLUSTERIP.c
+@@ -661,6 +661,7 @@ static ssize_t clusterip_proc_write(struct file *file, const char __user *input,
+ #define PROC_WRITELEN	10
+ 	char buffer[PROC_WRITELEN+1];
+ 	unsigned long nodenum;
++	int rc;
+ 
+ 	if (size > PROC_WRITELEN)
+ 		return -EIO;
+@@ -669,11 +670,15 @@ static ssize_t clusterip_proc_write(struct file *file, const char __user *input,
+ 	buffer[size] = 0;
+ 
+ 	if (*buffer == '+') {
+-		nodenum = simple_strtoul(buffer+1, NULL, 10);
++		rc = kstrtoul(buffer+1, 10, &nodenum);
++		if (rc)
++			return -EINVAL;
+ 		if (clusterip_add_node(c, nodenum))
+ 			return -ENOMEM;
+ 	} else if (*buffer == '-') {
+-		nodenum = simple_strtoul(buffer+1, NULL,10);
++		rc = kstrtoul(buffer+1, 10, &nodenum);
++		if (rc)
++			return -EINVAL;
+ 		if (clusterip_del_node(c, nodenum))
+ 			return -ENOENT;
+ 	} else
+diff --git a/net/mac80211/debugfs_sta.c b/net/mac80211/debugfs_sta.c
+index 89281d2..18754fd 100644
+--- a/net/mac80211/debugfs_sta.c
++++ b/net/mac80211/debugfs_sta.c
+@@ -219,7 +219,9 @@ static ssize_t sta_agg_status_write(struct file *file, const char __user *userbu
+ 	} else
+ 		return -EINVAL;
+ 
+-	tid = simple_strtoul(buf, NULL, 0);
++	ret = kstrtoul(buf, 0, &tid);
++	if (ret)
++		return -EINVAL;
+ 
+ 	if (tid >= IEEE80211_NUM_TIDS)
+ 		return -EINVAL;
+diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
+index af17516..18ce24b 100644
+--- a/net/netfilter/nf_conntrack_core.c
++++ b/net/netfilter/nf_conntrack_core.c
+@@ -1409,7 +1409,7 @@ EXPORT_SYMBOL_GPL(nf_ct_alloc_hashtable);
+ 
+ int nf_conntrack_set_hashsize(const char *val, struct kernel_param *kp)
+ {
+-	int i, bucket;
++	int i, bucket, rc;
+ 	unsigned int hashsize, old_size;
+ 	struct hlist_nulls_head *hash, *old_hash;
+ 	struct nf_conntrack_tuple_hash *h;
+@@ -1422,7 +1422,9 @@ int nf_conntrack_set_hashsize(const char *val, struct kernel_param *kp)
+ 	if (!nf_conntrack_htable_size)
+ 		return param_set_uint(val, kp);
+ 
+-	hashsize = simple_strtoul(val, NULL, 0);
++	rc = kstrtouint(val, 0, &hashsize);
++	if (rc)
++		return -EINVAL;
+ 	if (!hashsize)
+ 		return -EINVAL;
+ 
 -- 
-1.7.0.4
-
+1.7.7.6
