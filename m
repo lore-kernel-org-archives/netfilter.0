@@ -1,40 +1,42 @@
-From: Darius Jahandarie <djahandarie@gmail.com>
-Subject: Limits higher than 10000/sec
-Date: Sun, 9 Dec 2012 15:05:31 -0500
-Message-ID: <CAFANWtU9aeFjgUvczjnCETxy4h01aFs6JnDcK_ikxz-ijJ=Adg@mail.gmail.com>
+From: Mike Wright <mike.wright@mailinator.com>
+Subject: help with --helper sane
+Date: Sun, 09 Dec 2012 12:14:09 -0800
+Message-ID: <50C4F111.8090702@mailinator.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=xaptUmbojEWALIJNn/KWhTVQTa0BOfoQTQOPI6rdQ7w=;
-        b=VFJv5wGzw1iriy6oeQDDEhr3IyUYIkrpUY4GnKt0rrOuUb82VHJa9VgxKFKCeU7kIx
-         sxPngh49THR0NLttqR3AnTI0/RqhkDnJ4QT35o16YIXrN90RVKdK7l56Gv3pOdXUGkJP
-         RbQ4djzxq88tFNGsIneZijwiMsj+rrsWH36JNcV3I7LHdx5yy+ije4DRfFVr9IrLhjFK
-         yboIJgVGqR9MHbeG8GtLxRoEfv1gEv82gEJk2wCDphA1U2j13MjZ7ptsw1VFpWlwgXyI
-         WgxgSdnE0qWDIWmcaqsv/U3FKX5uPIfRR4cBZ9mU8Tr1mdD5wXbUQ0BR+cTOEsNIH83F
-         gCoA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter list <netfilter@vger.kernel.org>
 
-Hi all. I currently have an iptables rule like follows in the raw table:
+Hi all,
 
--A PREROUTING -p tcp --dport 1234 --syn -m limit --limit 10000/sec
---limit-burst 10000 -j ACCEPT
--A PREROUTING -p tcp --syn -j DROP
+I'm trying to make a usb scanner network available using "saned".  The 
+machines involved are both running "saned -a".  It works well until I 
+turn on iptables on the machine with the scanner.
 
-Unfortunately, it seems like 10000 is the highest limit and
-limit-burst can go. I could duplicate that rule multiple times to get
-higher, but that would create a massive file for the limits I want,
-and would likely create a much greater slowdown than what could be
-achieved with a more flexible module.
+If I enable firewalling with port 6566 open the scanner initializes but 
+never proceeds beyond that point.
 
-Does anyone have thoughts on a way to get some sort of rate-limiting
-(TBF or otherwise) that can handle more PPS than the limit module
-while still being as efficient as possible?
+I tried these:
 
--- 
-Darius Jahandarie
+-A INPUT -p tcp -m tcp --dport 6566 -m conntrack --ctstate NEW -m helper 
+--helper "sane" -j ACCEPT
+-A INPUT -p udp -m udp --dport 6566 -m conntrack --ctstate NEW -m helper 
+--helper "sane" -j ACCEPT
+
+but that results in "no scanners found".
+
+Using CUPS as an example I did this on both sides and didn't have any 
+luck that way either.
+
+Sorry if I can't better describe this.  I've never used a scanner over 
+the net before and netfilter's helpers are new to me.  Google finds many 
+references to iptables and sane, but only in the context of sanity, 
+which I am quickly losing ;D
+
+Any helpers?
+
+TIA,
+Mike Wright
