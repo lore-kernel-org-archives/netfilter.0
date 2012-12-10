@@ -1,68 +1,126 @@
-From: Arnoud Tijssen <ATijssen@Ram.nl>
-Subject: RE: About cluster deployments.
-Date: Mon, 10 Dec 2012 07:21:00 +0100
-Message-ID: <E7E899956E6065488DBC6623F76F36A275BF60EA6B@RAMNL-EX02.Ram.nl>
-References: <CACuyg27siFFNibqe4rZCQnUX0KGatmGscoKyA7ViCi1uGg=drw@mail.gmail.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CACuyg27siFFNibqe4rZCQnUX0KGatmGscoKyA7ViCi1uGg=drw@mail.gmail.com>
-Content-Language: en-US
-Sender: netfilter-owner@vger.kernel.org
+From: Abhijit Pawar <abhi.c.pawar@gmail.com>
+Subject: [PATCH RESEND] net: remove obsolete simple_strto<foo>
+Date: Mon, 10 Dec 2012 14:42:28 +0530
+Message-ID: <1355130748-7828-1-git-send-email-abhi.c.pawar@gmail.com>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=from:to:cc:subject:date:message-id:x-mailer;
+        bh=Pw9CB9vYrt5o20IB6H1DR6WtDvB0MpNeLvWY46/QVBw=;
+        b=nHIBa6c/uzhAiXvUh6V9yVHxx02GoWuZxY3HTDRSgVk8cC4x1So7OWdB6uiFmt9q1W
+         MP8MYQDG2Fkmwis+PCf33FoJ43u+vLSJ46DhpLjSkPiyBBKc5bM7cQeYMT+3q0VQPKK+
+         DitY5UBu8ocPX0WzGKvRqNZPR+XgJJKzPbT4Jdv628nQbYbH7nYrpl8wnZB0Mt/w9+oD
+         DoZPyyAorKQISwf5S70jl5h7VMfn/1gsUrlXa4aZbpw91vt3nh6zok7yTho8USbRbec9
+         1PtygqQibheHqzHi4eTFrQ8/BZXapfakKnf8O7v5TFevo22jfjdW+xeEFINQVvL/8/Lc
+         LLug==
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-1?Q?Humberto_Juc=E1?= <betolj@gmail.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: "David S. Miller" <davem@davemloft.net>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, James Morris <jmorris@namei.org>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, "John W. Linville" <linville@tuxdriver.com>, Johannes Berg <johannes@sipsolutions.net>, Cong Wang <amwang@redhat.com>, Eric Dumazet <edumazet@google.com>, Neil Horman <nhorman@tuxdriver.com>, Joe Perches <joe@perches.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-wireless@vger.kernel.org, Abhijit Pawar <abhi.c.pawar@gmail.com>
 
-=46or IPTables have a look at:
+This patch replace the obsolete simple_strto<foo> with kstrto<foo>
 
-http://www.linuxjournal.com/article/10964
+Signed-off-by: Abhijit Pawar <abhi.c.pawar@gmail.com>
+---
+ net/core/netpoll.c                 |    5 ++++-
+ net/ipv4/netfilter/ipt_CLUSTERIP.c |    9 +++++++--
+ net/mac80211/debugfs_sta.c         |    3 +++
+ net/netfilter/nf_conntrack_core.c  |    5 ++++-
+ 4 files changed, 18 insertions(+), 4 deletions(-)
 
+diff --git a/net/core/netpoll.c b/net/core/netpoll.c
+index 77a0388..12c129f 100644
+--- a/net/core/netpoll.c
++++ b/net/core/netpoll.c
+@@ -674,7 +674,8 @@ int netpoll_parse_options(struct netpoll *np, char *opt)
+ 		if ((delim = strchr(cur, '@')) == NULL)
+ 			goto parse_failed;
+ 		*delim = 0;
+-		np->local_port = simple_strtol(cur, NULL, 10);
++		if (kstrtou16(cur, 10, &np->local_port))
++			goto parse_failed;
+ 		cur = delim;
+ 	}
+ 	cur++;
+@@ -706,6 +707,8 @@ int netpoll_parse_options(struct netpoll *np, char *opt)
+ 		if (*cur == ' ' || *cur == '\t')
+ 			np_info(np, "warning: whitespace is not allowed\n");
+ 		np->remote_port = simple_strtol(cur, NULL, 10);
++		if (kstrtou16(cur, 10, &np->remote_port))
++			goto parse_failed;
+ 		cur = delim;
+ 	}
+ 	cur++;
+diff --git a/net/ipv4/netfilter/ipt_CLUSTERIP.c b/net/ipv4/netfilter/ipt_CLUSTERIP.c
+index fe5daea..75e33a7 100644
+--- a/net/ipv4/netfilter/ipt_CLUSTERIP.c
++++ b/net/ipv4/netfilter/ipt_CLUSTERIP.c
+@@ -661,6 +661,7 @@ static ssize_t clusterip_proc_write(struct file *file, const char __user *input,
+ #define PROC_WRITELEN	10
+ 	char buffer[PROC_WRITELEN+1];
+ 	unsigned long nodenum;
++	int rc;
+ 
+ 	if (size > PROC_WRITELEN)
+ 		return -EIO;
+@@ -669,11 +670,15 @@ static ssize_t clusterip_proc_write(struct file *file, const char __user *input,
+ 	buffer[size] = 0;
+ 
+ 	if (*buffer == '+') {
+-		nodenum = simple_strtoul(buffer+1, NULL, 10);
++		rc = kstrtoul(buffer+1, 10, &nodenum);
++		if (rc)
++			return rc;
+ 		if (clusterip_add_node(c, nodenum))
+ 			return -ENOMEM;
+ 	} else if (*buffer == '-') {
+-		nodenum = simple_strtoul(buffer+1, NULL,10);
++		rc = kstrtoul(buffer+1, 10, &nodenum);
++		if (rc)
++			return rc;
+ 		if (clusterip_del_node(c, nodenum))
+ 			return -ENOENT;
+ 	} else
+diff --git a/net/mac80211/debugfs_sta.c b/net/mac80211/debugfs_sta.c
+index 49a1c70..0dedb4b 100644
+--- a/net/mac80211/debugfs_sta.c
++++ b/net/mac80211/debugfs_sta.c
+@@ -221,6 +221,9 @@ static ssize_t sta_agg_status_write(struct file *file, const char __user *userbu
+ 		return -EINVAL;
+ 
+ 	tid = simple_strtoul(buf, NULL, 0);
++	ret = kstrtoul(buf, 0, &tid);
++	if (ret)
++		return ret;
+ 
+ 	if (tid >= IEEE80211_NUM_TIDS)
+ 		return -EINVAL;
+diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
+index af17516..37d9e62 100644
+--- a/net/netfilter/nf_conntrack_core.c
++++ b/net/netfilter/nf_conntrack_core.c
+@@ -1409,7 +1409,7 @@ EXPORT_SYMBOL_GPL(nf_ct_alloc_hashtable);
+ 
+ int nf_conntrack_set_hashsize(const char *val, struct kernel_param *kp)
+ {
+-	int i, bucket;
++	int i, bucket, rc;
+ 	unsigned int hashsize, old_size;
+ 	struct hlist_nulls_head *hash, *old_hash;
+ 	struct nf_conntrack_tuple_hash *h;
+@@ -1423,6 +1423,9 @@ int nf_conntrack_set_hashsize(const char *val, struct kernel_param *kp)
+ 		return param_set_uint(val, kp);
+ 
+ 	hashsize = simple_strtoul(val, NULL, 0);
++	rc = kstrtouint(val, 0, &hashsize);
++	if (rc)
++		return rc;
+ 	if (!hashsize)
+ 		return -EINVAL;
+ 
+-- 
+1.7.7.6
 
-________________________________________
-=46rom: netfilter-owner@vger.kernel.org [netfilter-owner@vger.kernel.or=
-g] On Behalf Of Humberto Juc=E1 [betolj@gmail.com]
-Sent: Friday, December 07, 2012 5:27 PM
-To: netfilter@vger.kernel.org
-Subject: About cluster deployments.
-
-Hi all,
-
-I'd like to know the group opnion about available GPL cluster
-solutions. At the  moment I'm working with a solution based on ucarp
-(vip address) and rsync (conf
- syncs) without synchronizing the conntrack table - im using active /
-passive model.
-
- I'm adopting a configuration with two ucarp groups. One group
-determines which firewall will be dedicated to Internet control and
-other is for internal control.
-
-The most suitable configuration into Internet has been keepalived + con=
-ntrackd.
- I think it's a great alternative, but ... I'm having some doubts.
-
-What do you think of implementations with CLUSTERIP?
-I did some tests, but found it a bit unstable. Maybe for my mistakes.
-I found articles  criticizing and others saying that the target
-CLUSTERIP will sync the conntrack table too. It's true?
-
-To synchronize the configuration i thought about using the DRDB, but i
- found it very complex to manage - increases the difficulty in adding
-or removing nodes. In tests that i did, I prefer GlusterFS. But i'm
-undecided. I still think rsync  the most simple, secure and fast way
-to synchronize settings. In my opinion the other methods amplify the
-complexity unnecessarily (for firewalls).
-
-I found articles defending the cluster configuration with corosync + pa=
-cemaker.
-It seems a fairly complete solution, but thought is not ideal for firew=
-all.
-
-I intend to test models with active/active, but there isn't much
-documentation on the subject.
-
-What opinion do you have about it (cluster solutions)?
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
