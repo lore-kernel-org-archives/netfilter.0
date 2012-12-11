@@ -1,29 +1,43 @@
-From: =?ISO-8859-1?Q?Humberto_Juc=E1?= <betolj@gmail.com>
-Subject: Re: About cluster deployments.
-Date: Tue, 11 Dec 2012 07:19:36 -0300
-Message-ID: <CACuyg25y_0DHZumvdLUY0455t+AJeckNkYKmCmZj747C3S1vqg@mail.gmail.com>
+From: Arnoud Tijssen <ATijssen@Ram.nl>
+Subject: RE: About cluster deployments.
+Date: Tue, 11 Dec 2012 11:28:48 +0100
+Message-ID: <E7E899956E6065488DBC6623F76F36A275BF60EA81@RAMNL-EX02.Ram.nl>
 References: <CACuyg27siFFNibqe4rZCQnUX0KGatmGscoKyA7ViCi1uGg=drw@mail.gmail.com>
-	<E7E899956E6065488DBC6623F76F36A275BF60EA6B@RAMNL-EX02.Ram.nl>
+	<E7E899956E6065488DBC6623F76F36A275BF60EA6B@RAMNL-EX02.Ram.nl>,<CACuyg25y_0DHZumvdLUY0455t+AJeckNkYKmCmZj747C3S1vqg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type:content-transfer-encoding;
-        bh=FAztOVpomsPVxJEDSy9/bUxGZOU8PZ3rrbi/Gclm5eM=;
-        b=NJGLE23KNJfLcMIAMsgOKkgufj9CQjFLgQT0iY6DA6ylwNYDioeLcrNFJbcJQyg3cL
-         X1TO7au/f8QnRELW3OefxGS9Gt1TBa8lRegLR1/IB/1kPHbuvP424WGNzmx/3CqaDNmA
-         3SwrKwg0tCeLKwcdoNR4nxLzi4G1JC+PR+gOBb/f4QPd7f8rlKRdkdmHOlK4nbx7S3Dl
-         EB8HVUBqUIMO7txg+mXmDAIRY6kybQNskB/8563x+ikr257+EEmdcCB8hnygbzgW9PVa
-         bxSIashgFXe9VkdZtDFNZmvHewPZmBX/LmBqede0V3JZjUozt8d4F4V86Crmr0LMR9D7
-         SB6w==
-In-Reply-To: <E7E899956E6065488DBC6623F76F36A275BF60EA6B@RAMNL-EX02.Ram.nl>
+In-Reply-To: <CACuyg25y_0DHZumvdLUY0455t+AJeckNkYKmCmZj747C3S1vqg@mail.gmail.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Arnoud Tijssen <ATijssen@ram.nl>
+To: =?iso-8859-1?Q?Humberto_Juc=E1?= <betolj@gmail.com>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+
+I just tested this setup for the sake of administration.
+Not everybody is very familiar with the cli and a good Linux IPTables c=
+luster was untill recently not really an option unless scripting was yo=
+ur second nature.=20
+I tested it in an active-passive setup, which worked pretty good.
+It is based on keepalived and conntrackd, thuis implementing multicast.
+Although it takes some time to configure it properly and I haven`t test=
+ed a active-active setup.
+
+=46rom previous experiences I can vouch for the OpenBSD together with C=
+ARP.
+That worked like a charm. But then again I used no gui so a clustered p=
+fsense setup could be a good alternative there.
+
+Hope this helps.
+
+Cheers
+________________________________________
+=46rom: Humberto Juc=E1 [betolj@gmail.com]
+Sent: Tuesday, December 11, 2012 11:19 AM
+To: Arnoud Tijssen
 Cc: netfilter@vger.kernel.org
+Subject: Re: About cluster deployments.
 
 Hi, thanks for response!
 
