@@ -1,75 +1,108 @@
-From: Abhijit Pawar <abhi.c.pawar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
-Subject: [PATCH 2/2] net: remove obsolete simple_strto<foo>
-Date: Tue, 11 Dec 2012 11:00:52 +0530
-Message-ID: <1355203852-12749-1-git-send-email-abhi.c.pawar@gmail.com>
-Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+From: =?ISO-8859-1?Q?Humberto_Juc=E1?= <betolj@gmail.com>
+Subject: Re: About cluster deployments.
+Date: Tue, 11 Dec 2012 07:19:36 -0300
+Message-ID: <CACuyg25y_0DHZumvdLUY0455t+AJeckNkYKmCmZj747C3S1vqg@mail.gmail.com>
+References: <CACuyg27siFFNibqe4rZCQnUX0KGatmGscoKyA7ViCi1uGg=drw@mail.gmail.com>
+	<E7E899956E6065488DBC6623F76F36A275BF60EA6B@RAMNL-EX02.Ram.nl>
+Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=from:to:cc:subject:date:message-id:x-mailer;
-        bh=oeRTPU64flpJZpRiKi3UZVpAm1y/aGgNZrogsgYXKBU=;
-        b=FwX/ZDqk3AK4heshoJC8ofWxCHlLxrocwk9Qskqk43nZXMi8Q+QXlE0dC4zHZTLLDd
-         e2WEyFiCyZ35oxRl1CsJyTmhMxt+riFGtSencAxXSWqJBLW0mE27tylPXjCkO4Z4eAXe
-         ZKc5uL8g6gjnN4uhrnEdJZ7RHiI7FHpx24mvSeHtVJOIeRtzMFJ1vlLiyPhZVoCfvaKP
-         ECTbxLSvhtl2nZiFaibWb4jpVqkLZ7RiFLIcrEK0p5QQ26DqSZ/HGzHz4jI/kSrDM1Vf
-         h8bh1DOlk2VLALQJTsIAexUEYiuailalrBG16fd/Zr23Za0DikUNnte9hBpLGpWGxUJB
-         mbwQ==
-Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type:content-transfer-encoding;
+        bh=FAztOVpomsPVxJEDSy9/bUxGZOU8PZ3rrbi/Gclm5eM=;
+        b=NJGLE23KNJfLcMIAMsgOKkgufj9CQjFLgQT0iY6DA6ylwNYDioeLcrNFJbcJQyg3cL
+         X1TO7au/f8QnRELW3OefxGS9Gt1TBa8lRegLR1/IB/1kPHbuvP424WGNzmx/3CqaDNmA
+         3SwrKwg0tCeLKwcdoNR4nxLzi4G1JC+PR+gOBb/f4QPd7f8rlKRdkdmHOlK4nbx7S3Dl
+         EB8HVUBqUIMO7txg+mXmDAIRY6kybQNskB/8563x+ikr257+EEmdcCB8hnygbzgW9PVa
+         bxSIashgFXe9VkdZtDFNZmvHewPZmBX/LmBqede0V3JZjUozt8d4F4V86Crmr0LMR9D7
+         SB6w==
+In-Reply-To: <E7E899956E6065488DBC6623F76F36A275BF60EA6B@RAMNL-EX02.Ram.nl>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "David S. Miller" <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>, Pablo Neira Ayuso <pablo-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org>, Patrick McHardy <kaber-dcUjhNyLwpNeoWH0uzbU5w@public.gmane.org>, Alexey Kuznetsov <kuznet-v/Mj1YrvjDBInbfyfbPRSQ@public.gmane.org>, James Morris <jmorris-gx6/JNMH7DfYtjvyW6yDsg@public.gmane.org>, Hideaki YOSHIFUJI <yoshfuji-VfPWfsRibaP+Ru+s062T9g@public.gmane.org>, "John W. Linville" <linville-2XuSBdqkA4R54TAoqtyWWQ@public.gmane.org>, Johannes Berg <johannes-cdvu00un1VgdHxzADdlk8Q@public.gmane.org>, Cong Wang <amwang-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Eric Dumazet <edumazet-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Neil Horman <nhorman-2XuSBdqkA4R54TAoqtyWWQ@public.gmane.org>, Joe Perches <joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org>
-Cc: netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, coreteam-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Abhijit Pawar <abhi.c.pawar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Arnoud Tijssen <ATijssen@ram.nl>
+Cc: netfilter@vger.kernel.org
 
-This patch removes the redundant occurences of simple_strto<foo>
+Hi, thanks for response!
 
-Signed-off-by: Abhijit Pawar <abhi.c.pawar-Re5JQEeQqe8AvxtiuMwx3w@public.gmane.org>
----
- net/core/netpoll.c                |    1 -
- net/mac80211/debugfs_sta.c        |    1 -
- net/netfilter/nf_conntrack_core.c |    1 -
- 3 files changed, 0 insertions(+), 3 deletions(-)
+But I like to known what were your experiences.
 
-diff --git a/net/core/netpoll.c b/net/core/netpoll.c
-index 12c129f..3151acf 100644
---- a/net/core/netpoll.c
-+++ b/net/core/netpoll.c
-@@ -706,7 +706,6 @@ int netpoll_parse_options(struct netpoll *np, char *opt)
- 		*delim = 0;
- 		if (*cur == ' ' || *cur == '\t')
- 			np_info(np, "warning: whitespace is not allowed\n");
--		np->remote_port = simple_strtol(cur, NULL, 10);
- 		if (kstrtou16(cur, 10, &np->remote_port))
- 			goto parse_failed;
- 		cur = delim;
-diff --git a/net/mac80211/debugfs_sta.c b/net/mac80211/debugfs_sta.c
-index 0dedb4b..6fb1168 100644
---- a/net/mac80211/debugfs_sta.c
-+++ b/net/mac80211/debugfs_sta.c
-@@ -220,7 +220,6 @@ static ssize_t sta_agg_status_write(struct file *file, const char __user *userbu
- 	} else
- 		return -EINVAL;
- 
--	tid = simple_strtoul(buf, NULL, 0);
- 	ret = kstrtoul(buf, 0, &tid);
- 	if (ret)
- 		return ret;
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index 37d9e62..08cdc71 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -1422,7 +1422,6 @@ int nf_conntrack_set_hashsize(const char *val, struct kernel_param *kp)
- 	if (!nf_conntrack_htable_size)
- 		return param_set_uint(val, kp);
- 
--	hashsize = simple_strtoul(val, NULL, 0);
- 	rc = kstrtouint(val, 0, &hashsize);
- 	if (rc)
- 		return rc;
--- 
-1.7.7.6
+You already made active/active configurations?
+How you handled the traffic to the two firewalls?
+Worked with multicast arp or port mirroring?
 
---
-To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
-the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I believe that working with multicast arp is better.
+But, I must confirm that the gateways with firewall support this
+feature as well.
+
+A few years ago I tested pfsync + carp from a unix Openbsd.
+There is a feature called arp balance - there is something in Linux?
+I was impressed, but i prefer the netfilter resources (i think most fle=
+xible) .
+
+What do you have configured?
+What wasn't good? And what was cool?
+
+I've read several documentations for linux.
+I'm opening this thread to help me to define the best methodology and
+make my scripts more expert!
+
+
+2012/12/10 Arnoud Tijssen <ATijssen@ram.nl>:
+> For IPTables have a look at:
+>
+> http://www.linuxjournal.com/article/10964
+>
+>
+> ________________________________________
+> From: netfilter-owner@vger.kernel.org [netfilter-owner@vger.kernel.or=
+g] On Behalf Of Humberto Juc=E1 [betolj@gmail.com]
+> Sent: Friday, December 07, 2012 5:27 PM
+> To: netfilter@vger.kernel.org
+> Subject: About cluster deployments.
+>
+> Hi all,
+>
+> I'd like to know the group opnion about available GPL cluster
+> solutions. At the  moment I'm working with a solution based on ucarp
+> (vip address) and rsync (conf
+>  syncs) without synchronizing the conntrack table - im using active /
+> passive model.
+>
+>  I'm adopting a configuration with two ucarp groups. One group
+> determines which firewall will be dedicated to Internet control and
+> other is for internal control.
+>
+> The most suitable configuration into Internet has been keepalived + c=
+onntrackd.
+>  I think it's a great alternative, but ... I'm having some doubts.
+>
+> What do you think of implementations with CLUSTERIP?
+> I did some tests, but found it a bit unstable. Maybe for my mistakes.
+> I found articles  criticizing and others saying that the target
+> CLUSTERIP will sync the conntrack table too. It's true?
+>
+> To synchronize the configuration i thought about using the DRDB, but =
+i
+>  found it very complex to manage - increases the difficulty in adding
+> or removing nodes. In tests that i did, I prefer GlusterFS. But i'm
+> undecided. I still think rsync  the most simple, secure and fast way
+> to synchronize settings. In my opinion the other methods amplify the
+> complexity unnecessarily (for firewalls).
+>
+> I found articles defending the cluster configuration with corosync + =
+pacemaker.
+> It seems a fairly complete solution, but thought is not ideal for fir=
+ewall.
+>
+> I intend to test models with active/active, but there isn't much
+> documentation on the subject.
+>
+> What opinion do you have about it (cluster solutions)?
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
