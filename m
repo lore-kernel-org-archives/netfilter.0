@@ -1,68 +1,45 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH] fix conntrack reassembly expire code
-Date: Tue, 11 Dec 2012 02:50:20 +0100
-Message-ID: <20121211015019.GA18425@1984>
-References: <1354873337-3776-1-git-send-email-haibbo@gmail.com>
+From: Abhijit Pawar <abhi.c.pawar@gmail.com>
+Subject: Re: [PATCH RESEND] net: remove obsolete simple_strto<foo>
+Date: Tue, 11 Dec 2012 09:03:41 +0530
+Message-ID: <50C6A995.1020908@gmail.com>
+References: <1355130748-7828-1-git-send-email-abhi.c.pawar@gmail.com> <20121210.141002.450030380391247897.davem@davemloft.net>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1354873337-3776-1-git-send-email-haibbo@gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <linux-kernel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=message-id:date:from:user-agent:mime-version:to:cc:subject
+         :references:in-reply-to:content-type:content-transfer-encoding;
+        bh=EwCM4XPsAdCgv7x+5TnX/aPgGAs3stpUaxrdA3Ljreo=;
+        b=y2T0esAB7oOyBUjnSbQ9IO3M5HDwDWpQCobZwXFu2eAccS1aZlYpHsYrS27FAQ5KDD
+         G3tA06NuDwyf6r7V5VFqad4m/0DP1y1PfnP/ICw4IsZ615szBopTc8sUX8XVFy2LFRZj
+         7WOcEFWmnKDtRqoRl4J2ZKB4kTaAAa84q4jQj/RvkJcrjwgLh3ErWokWmDrBqUYJWFrg
+         wL55THo2Ro42lmL96svbDX7JjawynMzHZ8nwNx/8YfbuAo+uftSzRM88qOfNMIu8wl0x
+         Swyu+98DwSSFKabh4jk3btFN6H6hbTw0k5NnNELsRhWMvvkgw5+YdxxG2ad2TT42SYG+
+         nYHg==
+In-Reply-To: <20121210.141002.450030380391247897.davem@davemloft.net>
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: haibbo@gmail.com
-Cc: kaber@trash.net, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+To: David Miller <davem@davemloft.net>
+Cc: abhi.c.pawar@gmail.com, pablo@netfilter.org, kaber@trash.net, kuznet@ms2.inr.ac.ru, jmorris@namei.org, yoshfuji@linux-ipv6.org, linville@tuxdriver.com, johannes@sipsolutions.net, amwang@redhat.com, edumazet@google.com, nhorman@tuxdriver.com, joe@perches.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-wireless@vger.kernel.org
 
-Hi Haibbo,
+On 12/11/2012 12:40 AM, David Miller wrote:
+> From: Abhijit Pawar <abhi.c.pawar@gmail.com>
+> Date: Mon, 10 Dec 2012 14:42:28 +0530
+> 
+>> This patch replace the obsolete simple_strto<foo> with kstrto<foo>
+>>
+>> Signed-off-by: Abhijit Pawar <abhi.c.pawar@gmail.com>
+> 
+> Applied.
+> 
+Hi David,
+It seems that there are occurences of simple_strto* still present in the
+couple of files which are not yet removed correctly by this patch. I
+will send a modified patch shortly. Please revert this commit and use
+the newly sent patch to merge with the tree.
 
-On Fri, Dec 07, 2012 at 05:42:17PM +0800, haibbo@gmail.com wrote:
-> From: Haibo Xi <haibbo@gmail.com>
-> 
-> Commit b836c99fd6c9 (ipv6: unify conntrack reassembly expire
-> code with standard one) use the standard IPv6 reassembly
-> code(ip6_expire_frag_queue) to handle conntrack reassembly expire.
-> 
-> In ip6_expire_frag_queue, it invoke dev_get_by_index_rcu to get
-> which device received this expired packet.so we must save ifindex
-> when NF_conntrack get this packet.
-> 
-> With this patch applied, I can see ICMP Time Exceeded sent
-> from the receiver when the sender sent out 1/2 fragmented
-> IPv6 packet.
-> 
-> Signed-off-by: Haibo Xi <haibbo@gmail.com>
-> ---
->  net/ipv6/netfilter/nf_conntrack_reasm.c |    7 ++++++-
->  1 files changed, 6 insertions(+), 1 deletions(-)
-> 
-> diff --git a/net/ipv6/netfilter/nf_conntrack_reasm.c b/net/ipv6/netfilter/nf_conntrack_reasm.c
-> index 22c8ea9..e7197be 100644
-> --- a/net/ipv6/netfilter/nf_conntrack_reasm.c
-> +++ b/net/ipv6/netfilter/nf_conntrack_reasm.c
-> @@ -196,6 +196,7 @@ static int nf_ct_frag6_queue(struct frag_queue *fq, struct sk_buff *skb,
->  	struct sk_buff *prev, *next;
->  	unsigned int payload_len;
->  	int offset, end;
-> +	struct net_device *dev = NULL;
-
-This assignation above is superfluous.
-
->  	if (fq->q.last_in & INET_FRAG_COMPLETE) {
->  		pr_debug("Already completed\n");
-> @@ -311,7 +312,11 @@ found:
->  	else
->  		fq->q.fragments = skb;
->  
-> -	skb->dev = NULL;
-> +	dev = skb->dev;
-> +	if (dev) {
-> +		fq->iif = dev->ifindex;
-> +		skb->dev = NULL;
-> +	}
->  	fq->q.stamp = skb->tstamp;
->  	fq->q.meat += skb->len;
->  	if (payload_len > fq->q.max_size)
-> -- 
-> 1.7.0.4
-> 
+-- 
+-
+Abhijit
