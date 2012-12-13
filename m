@@ -1,65 +1,92 @@
-From: Andrew Collins <bsderandrew@gmail.com>
-Subject: Re: Mark traffic on one machine, match on another machine?
-Date: Wed, 12 Dec 2012 22:45:47 -0700
-Message-ID: <CAKTPYJT6VsNASyLN1Z4qEagSnyA5sZrBztuWr+5wqCHPoK1GmQ@mail.gmail.com>
-References: <08eb317b-c614-4117-855b-66ade5d2244d@tahiti.vyatta.com>
-	<3a947589368a2610486404839274d7cb@imap.netsecspec.co.uk>
-	<50B84725.3080608@nottheoilrig.com>
-	<50B851E8.8070107@ngtech.co.il>
-	<50BC6639.3090502@nottheoilrig.com>
-	<50BC9297.3050507@ngtech.co.il>
-	<50BCB80F.4090208@nottheoilrig.com>
-	<CA+4D1sfikOc6BqVpGNxyYUOv-CA9j0ofSf-QJ_Fvz+JSw=SH3w@mail.gmail.com>
-	<50BF1011.1050709@ngtech.co.il>
-	<50BF5786.3050208@nottheoilrig.com>
-	<CA+4D1sdBSzM6QKH1xrgXsG3SS1Quu63omvJtGPDyt1b1gDgiiA@mail.gmail.com>
-	<50C60B48.70003@nottheoilrig.com>
-	<CA+4D1sdwNr3zi41YaKDBg3x7O8k1VxnfbCy1RTDX=KsrTLKvow@mail.gmail.com>
-	<50C8A1D0.9010303@nottheoilrig.com>
+From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
+Subject: conn association query
+Date: Thu, 13 Dec 2012 01:02:02 -0500
+Message-ID: <201212130102.02617.neal.p.murphy@alum.wpi.edu>
+Reply-To: neal.p.murphy@alum.wpi.edu
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=qpvwamFzhFdt520ZzjeeErk/5wgLt/zSc2qiJh4Du3c=;
-        b=WJ43uKIhZJvwMJN9F0Kiqq34pC2DlOxD30XWkrgs8G48O7plg/EFK5Z46nWfy+BgGm
-         fMghnQQ/QGJEV2B5/6HlpVcC0vl4QJdUX8JtZUaEl5/9zvlkRwMb6kUQXVujs/lxhyfq
-         ObuuOhYyH59IHsYE3aOUDGw1Wrr9iCt+Hc4YiVgPAhvKEXA0dUAxExgfws+Ozd7xFWNg
-         JbFEaCjo1l1M+e/6kvelV1aQh5S8beRdR4GsN/edhizdA+cIY8i4vD+D+INLNX/K1eWp
-         SX9Ru/LGRwEkbetbb2Fk3wAL3ESB2luoXZvw4A03hWvUX9PGyG535okSNYqe6O6PSxlX
-         Pc9Q==
-In-Reply-To: <50C8A1D0.9010303@nottheoilrig.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jack Bates <uo4zau@nottheoilrig.com>
-Cc: Anatoly Muliarski <x86ever@gmail.com>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-> Here is the corrected script:
->
->
->    1: iptables -N NEW_CONN -t mangle
->    2: iptables -A NEW_CONN -t mangle -m tos --tos 12 -j MARK --set-mark 1
->    3: iptables -A NEW_CONN -t mangle -m tos --tos 28 -j MARK --set-mark 2
->    4: iptables -A NEW_CONN -t mangle -m mark --mark 0 -j MARK --set-mark 3
->    5: iptables -A NEW_CONN -t mangle -j CONNMARK --save-mark
->    6:
->    7: iptables -A PREROUTING -t mangle -m conntrack --ctstate INVALID -j
-> DROP
->    8: iptables -A PREROUTING -t mangle -m conntrack --ctstate ESTABLISHED -j
-> CONNMARK --restore-mark
->    9: iptables -A PREROUTING -t mangle -m conntrack --ctstate NEW,RELATED -j
-> NEW_CONN
+Brief summary
+-------------
+  I want to be certain that my firewall stops all communication on a conn and
+  its related conns when that 'master' conn becomes prohibited or is
+  disconnected.
+  (1) Does netfilter (via conntracking and/or helpers) already ensure this?
+  (2) If not, is there a given method in netfilter/iptables to do this?
+  (3) Do I misunderstand some aspect of netfilter operations?
+I can do it myself (I've pondered it sufficiently), but only if there's no 
+other way.
 
-Ingress qdisc traffic is handled before conntrack has seen the
-traffic, so the mark you're restoring hasn't actually been restored at
-the time when your classifier rules are executing.  It's a general
-problem that makes ingress shaping based upon connection information
-difficult to achieve.
+Copious details
+---------------
+One premise of a firewall is to prevent unwanted conns. Duh; netfilter does 
+this very well. Another premise (of abolute firewall control) is to disconnect 
+unwanted existing conns. The problem I perceive is that there is no given way 
+to associate a related conn to the rule that allowed it in the first place (1) 
+once that related CONN becomes ESTABLISHED and (2)when neither port matches 
+the rule. The problem becomes clear in the case of FTP when neither port of 
+the data conn is port 20 (and the allowing rule specifies ports 20-21) and one 
+uses the '-m time' facility to control when conns are allowed and prohibited.
 
-The only way I've found to solve this is to classify directly in TC
-without the use of conntrack/marks, or use IMQ
-(http://www.linuximq.net/).  Perhaps there's a clever way to hook into
-connmark with act_ipt, but I haven't found it.
+Let me (try to) extract relevant rules from my F/W to illustrate. The rules 
+should allow FTP from 2AM to 5AM on Mondays, and both reject new conns and 
+shut down existing conns at all other times. The FTP helper module is loaded. 
+The shutdown happens independently on each half (internal and external) of the 
+conn only when the firewall receives the next packet on that half. In 
+abbreviated iptables-save format:
+
+-------------
+*filter
+# connmark 0x80/0x3c0 matches conns initiated from internal zones
+#   to internet hosts; these marks are set in mangle. Conns from internet
+#   to internal zones and conns between internal zones have different marks.
+-A FORWARD -m connmark --mark 0x80/0x3c0 -j tofcScreen
+-A FORWARD -m state --state RELATED,ESTABLISHED -j ACCEPT 
+
+# eth0 is the internal NIC
+# eth3 is the internet NIC
+
+# Handle incoming packets for outbound conns
+-A tofcScreen -i eth3 -j tofcfwd2Int 
+# Handle outgoing packets for outbound conns
+-A tofcScreen -j tofcfwd2Ext
+
+# Match outgoing packets for outbound conns
+-A tofcfwd2Ext -i eth0 -p tcp -m multiport --dports 21 \
+   -m time --timestart 02:00:00 --timestop 05:00:00 --weekdays Mon \
+   -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
+-A tofcfwd2Ext -j tofcblock 
+
+# Match incoming packets for outbound conns
+-A tofcfwd2Int -o eth0 -p tcp -m multiport --sports 21 \
+   -m time --timestart 02:00:00 --timestop 05:00:00 --weekdays Mon \
+   -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A tofcfwd2Int -j tofcblock 
+
+# Log and reject undesired packets
+-A tofcblock -j LOG --log-prefix "Denied-by-filter:tofcblock " 
+# Shut down existing TCP conns.
+# This works on each side of the conn independently.
+-A tofcblock -p tcp -m state --state ESTABLISHED \
+   -j REJECT --reject-with tcp-reset 
+# Reject all other packets
+-A tofcblock -j REJECT --reject-with icmp-admin-prohibited 
+-------------
+
+As I understand, RELATED refers only to the first packet of a conn related to 
+an existing conn; and once a RELATED conn becomes ESTABLISHED, there is no way 
+to match its packets to the original allowing rule. Have I overlooked anything 
+in netfilter that would allow me to perform such matches? Does, perhaps, 
+netfilter reset and/or prohibit existing conns when the 'master' conn closes 
+(thus invalidating RELATED conns)?
+
+A random neuron just fired. Are related conns transitioned to INVALID when 
+their 'master' conns are disconnected or become invalidated?
+
+Thanks,
+Neal
