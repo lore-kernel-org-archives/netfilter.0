@@ -1,58 +1,54 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Jan Engelhardt <jengelh@inai.de>
 Subject: Re: Formal submission of Xtables2
-Date: Thu, 13 Dec 2012 18:25:23 +0100
-Message-ID: <20121213172523.GB14333@1984>
-References: <alpine.LNX.2.01.1212130601210.9421@nerf07.vanv.qr>
- <20121213110046.GA22337@1984>
- <alpine.LNX.2.01.1212131214100.20007@nerf07.vanv.qr>
- <20121213120509.GA26118@1984>
- <alpine.LNX.2.01.1212131405170.786@nerf07.vanv.qr>
- <20121213142820.GA3489@1984>
- <alpine.LNX.2.01.1212131528410.1273@nerf07.vanv.qr>
- <20121213151615.GA6962@1984>
- <alpine.LNX.2.01.1212131623480.10856@nerf07.vanv.qr>
+Date: Thu, 13 Dec 2012 19:19:28 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1212131826040.5486@nerf07.vanv.qr>
+References: <alpine.LNX.2.01.1212130601210.9421@nerf07.vanv.qr> <20121213110046.GA22337@1984> <alpine.LNX.2.01.1212131214100.20007@nerf07.vanv.qr> <20121213120509.GA26118@1984> <alpine.LNX.2.01.1212131405170.786@nerf07.vanv.qr> <20121213142820.GA3489@1984>
+ <alpine.LNX.2.01.1212131528410.1273@nerf07.vanv.qr> <20121213151615.GA6962@1984> <alpine.LNX.2.01.1212131623480.10856@nerf07.vanv.qr> <20121213172523.GB14333@1984>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.01.1212131623480.10856@nerf07.vanv.qr>
+In-Reply-To: <20121213172523.GB14333@1984>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@inai.de>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, Netfilter user mailing list <netfilter@vger.kernel.org>
 
-On Thu, Dec 13, 2012 at 05:41:28PM +0100, Jan Engelhardt wrote:
-> On Thursday 2012-12-13 16:16, Pablo Neira Ayuso wrote:
-> 
-> >On Thu, Dec 13, 2012 at 03:53:45PM +0100, Jan Engelhardt wrote:
-> >[...]
-> >> In my opinion, there is nothing wrong with keeping some concepts. A
-> >> developer is not required to reevaluate and reinnovate every concept
-> >> there has been just for the heck of it. (The old "evolution, not
-> >> revolution" credo.) Throwing everything overboard generally does not
-> >> turn out to work these days.
-> >
-> >Nobody is going to throw everything overboard. Nftables is backward
-> >compatible while providing a new framework[,]
-> 
-> That sounds just like xt2. Compatibility exists such that there is a 
-> defined mapping from xt1->xt2 rules (at one point I did write a 
-> setsockopt translator in the past...); the userspace tool mimics 
-> iptables in syntax, though I have allowed myself to not have certain 
-> options in the CLI tool.
 
-We provided that compatibility layer that mimics iptables in Oct 2012
-[1]. However, it seems you prefered to code it your way from almost
-scratch, that's confusing.
+On Thursday 2012-12-13 18:25, Pablo Neira Ayuso wrote:
+>> >> turn out to work these days.
+>> >
+>> >Nobody is going to throw everything overboard. Nftables is backward
+>> >compatible while providing a new framework[,]
+>> 
+>> That sounds just like xt2. Compatibility exists such that there is a 
+>> defined mapping from xt1->xt2 rules (at one point I did write a 
+>> setsockopt translator in the past...); the userspace tool mimics 
+>> iptables in syntax, though I have allowed myself to not have certain 
+>> options in the CLI tool.
+>
+>We provided that compatibility layer that mimics iptables in Oct 2012
+>[1]. However, it seems you prefered to code it your way from almost
+>scratch, that's confusing.
 
-> New framework, same thing, I guess. xt_core is independent of
-> xt_nfnetlink and I do not see any hurdle in introducing new concepts
-> if so desired.
+That's just not true; I did post before on the xt2 matter as well,
+in its various stages.
 
-We have already new concepts in nftables, have a look at it.
+xtables2_a8: http://marc.info/?l=netfilter-devel&m=132699055220975&w=2
+xtables2_a7: https://lwn.net/Articles/426896/
+             https://lwn.net/Articles/417619/
 
-Please, I think this conversation just started spinning and the same
-arguments are showing up over and over again, it's time to stop this.
+There is even older experimenting stuff in my git repo, which you
+can look at. (The dates are not forged - you will have to trust me
+on that.)
 
-[1] http://www.spinics.net/lists/netfilter-devel/msg23831.html
+
+
+Each of us are (understandably) biased, as each has contributed
+to "their" implementation. But, you also have the decisive power
+as the Linux kernel Netfilter subsystem maintainer, and I fear
+that you might use this to reject xt2 to force nft.
+That thought _terrifies_ me, and were it so, it would not be an
+environment I want to work in.
+
+Just say so if I am to GTFO.
