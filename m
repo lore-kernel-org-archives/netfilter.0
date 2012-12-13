@@ -1,42 +1,51 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Jan Engelhardt <jengelh@inai.de>
 Subject: Re: Formal submission of Xtables2
-Date: Thu, 13 Dec 2012 15:28:20 +0100
-Message-ID: <20121213142820.GA3489@1984>
-References: <alpine.LNX.2.01.1212130601210.9421@nerf07.vanv.qr>
- <20121213110046.GA22337@1984>
- <alpine.LNX.2.01.1212131214100.20007@nerf07.vanv.qr>
- <20121213120509.GA26118@1984>
- <alpine.LNX.2.01.1212131405170.786@nerf07.vanv.qr>
+Date: Thu, 13 Dec 2012 15:53:45 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1212131528410.1273@nerf07.vanv.qr>
+References: <alpine.LNX.2.01.1212130601210.9421@nerf07.vanv.qr> <20121213110046.GA22337@1984> <alpine.LNX.2.01.1212131214100.20007@nerf07.vanv.qr> <20121213120509.GA26118@1984> <alpine.LNX.2.01.1212131405170.786@nerf07.vanv.qr> <20121213142820.GA3489@1984>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.01.1212131405170.786@nerf07.vanv.qr>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <20121213142820.GA3489@1984>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@inai.de>
+Content-Type: TEXT/PLAIN; charset="utf-8"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, Netfilter user mailing list <netfilter@vger.kernel.org>
 
-On Thu, Dec 13, 2012 at 02:08:03PM +0100, Jan Engelhardt wrote:
-> On Thursday 2012-12-13 13:05, Pablo Neira Ayuso wrote:
-> >> >[...]
-> >> >> Please consider for merging.
-> >> >
-> >> >nftables and its compatibility layer already provide this and we will
-> >> >not have to maintain two different netlink interfaces, which is too
-> >> >much overhead.
-> >> 
-> >> I refer you to our previous discussion on the topic
-> >> for the justifications:
-> >>
-> >> http://www.spinics.net/lists/netfilter-devel/msg23919.html
-> >
-> >I don't think that feature-set provides compelling reasons to push
-> >this mainstream.
-> 
-> Well, if not that, then what - documentation, code size?
 
-Not only that. Xtables2 (in its feature-set) inherits many of the
-design decisions that were taken while designing iptables back in the
-late nineties.
+On Thursday 2012-12-13 15:28, Pablo Neira Ayuso wrote:
+>> >>
+>> >> http://www.spinics.net/lists/netfilter-devel/msg23919.html
+>> >
+>> >I don't think that feature-set provides compelling reasons to push
+>> >this mainstream.
+>>=20
+>> Well, if not that, then what - documentation, code size?
+>
+>Not only that. Xtables2 (in its feature-set) inherits many of the
+>design decisions that were taken while designing iptables back in the
+>late nineties.
+
+nf_tables itself retains some "late nineties" design decisions as
+well.
+
+In my opinion, there is nothing wrong with keeping some concepts. A
+developer is not required to reevaluate and reinnovate every concept
+there has been just for the heck of it. (The old "evolution, not
+revolution" credo.) Throwing everything overboard generally does not
+turn out to work these days.
+
+That reminds me of Linus's statement from this year's LinuxCon:
+
+	'''there were all these crazy people doing =E2=80=9Cinnovative=E2=80=9D=
+ operating
+	systems, and they were all horrible. And they were trying to
+	do things in new ways, and it turns out, sometimes, the old
+	ways are the correct ways, and, you have done something for
+	30 years one way, because that works.'''
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
+el" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
