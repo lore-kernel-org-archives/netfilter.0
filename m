@@ -1,33 +1,42 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Formal submission of Xtables2
-Date: Thu, 13 Dec 2012 16:16:15 +0100
-Message-ID: <20121213151615.GA6962@1984>
-References: <alpine.LNX.2.01.1212130601210.9421@nerf07.vanv.qr>
- <20121213110046.GA22337@1984>
- <alpine.LNX.2.01.1212131214100.20007@nerf07.vanv.qr>
- <20121213120509.GA26118@1984>
- <alpine.LNX.2.01.1212131405170.786@nerf07.vanv.qr>
- <20121213142820.GA3489@1984>
- <alpine.LNX.2.01.1212131528410.1273@nerf07.vanv.qr>
+From: Felix <credzba@gmail.com>
+Subject: Packet performance impact of using netfilter
+Date: Thu, 13 Dec 2012 09:23:17 -0600
+Message-ID: <CAOZ=-EUJEWuXN7o3YZpwhq5EiooOzttB2+MAMiOxb=uYN1w0aw@mail.gmail.com>
+Reply-To: credzba@gmail.com
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.01.1212131528410.1273@nerf07.vanv.qr>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:reply-to:date:message-id:subject:from:to:content-type;
+        bh=qTXCheifpcDf8Glx/5oqe40qxTnS7BAJonecIzS1Sjg=;
+        b=lWohXpga/9aXxvj0pkQYBsJnOTBixHSg2+kvoQa884lUS/11VMgIbJxDAnmto7NqBC
+         bTA9sYzeNoQhy7gp78h/TmocmD+eOvA6WQxup0dwud3syBsrXA6ZArHWeB/bCF4cYD9W
+         4wlbyOiVjnqppBzg+Z86z3qgRTX0a3V42TxH5tTEvHaf0YA8kc4QsddOAXw67Reat3Hy
+         cbmb21FxqaXY3D96KJvNp/yR1J8VdmspzdrfAXMz6c5MX4jAxBdBNuS/2S6RGKQQG9TN
+         mXmMk/e2hyPBjKuvlbhSK8fIHVI9t/gbUMUWNqBXjAeWvshcv/mpKsZeUp1ctERfbQbB
+         gzKw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@inai.de>
-Cc: Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, Netfilter user mailing list <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-On Thu, Dec 13, 2012 at 03:53:45PM +0100, Jan Engelhardt wrote:
-[...]
-> In my opinion, there is nothing wrong with keeping some concepts. A
-> developer is not required to reevaluate and reinnovate every concept
-> there has been just for the heck of it. (The old "evolution, not
-> revolution" credo.) Throwing everything overboard generally does not
-> turn out to work these days.
+I have a load balancing implementation using neighbor discovery packet
+control, and I used nfqueue to route the neighbor solicitation packets
+to user space. In user space I make the decision of which real vip
+should answer, and generate the appropriate neighbor advertisement.  I
+then use the nfqueue disposition to drop the solicitation packet so
+linux doesn't respond.
 
-Nobody is going to throw everything overboard. Nftables is backward
-compatible while providing a new framework, revolutions are never
-backward compatible.
+During my design review, a concern was raised as to the performance
+impact using netfilter has on the non-selected packets.
+By that, I mean the performance of answering the neighbor solicitation
+is not a concern, but if the implementation of netfilter in the kernel
+causes a performance problem for the other packets being processed on
+that same nic and/or ip then it is a serious concern.
+
+Does anyone have ideas on the performance impact of netfilter on
+non-selected packets?
+
+Thanks,
+Credzba
