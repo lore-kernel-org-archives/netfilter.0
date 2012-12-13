@@ -1,54 +1,41 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: Formal submission of Xtables2
-Date: Thu, 13 Dec 2012 19:19:28 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1212131826040.5486@nerf07.vanv.qr>
-References: <alpine.LNX.2.01.1212130601210.9421@nerf07.vanv.qr> <20121213110046.GA22337@1984> <alpine.LNX.2.01.1212131214100.20007@nerf07.vanv.qr> <20121213120509.GA26118@1984> <alpine.LNX.2.01.1212131405170.786@nerf07.vanv.qr> <20121213142820.GA3489@1984>
- <alpine.LNX.2.01.1212131528410.1273@nerf07.vanv.qr> <20121213151615.GA6962@1984> <alpine.LNX.2.01.1212131623480.10856@nerf07.vanv.qr> <20121213172523.GB14333@1984>
+From: Andrew Beverley <andy@andybev.com>
+Subject: Re: conn association query
+Date: Thu, 13 Dec 2012 20:11:57 +0000
+Message-ID: <1355429517.26190.193.camel@andrew-desktop>
+References: <201212130102.02617.neal.p.murphy@alum.wpi.edu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20121213172523.GB14333@1984>
+In-Reply-To: <201212130102.02617.neal.p.murphy@alum.wpi.edu>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
+	s=selector1; t=1355429525;
+	bh=gjZP1klFo6C479qPswtxNn7Qd3X/y/a+YyjN25OqeZ4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:Content-Transfer-Encoding:Mime-Version;
+	b=Yp1A5x+ie4QRIHiNkRYRCooLZUQ2v/XpTGpS7vC5dJqNKKCnumzOcfhLWTy1UP1pc
+	 TQ2ckEHDammr3wmtTo96xm9bRbp2OmyeYVzeykF1t3naUVvgvV342FBzUDO1gf7bBO
+	 VTeejcbV1tErnyUbz3AiIQQbMWANQPnxlj7BrPrI=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, Netfilter user mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: neal.p.murphy@alum.wpi.edu
+Cc: netfilter@vger.kernel.org
+
+On Thu, 2012-12-13 at 01:02 -0500, Neal Murphy wrote:
+> Brief summary
+> -------------
+>   I want to be certain that my firewall stops all communication on a conn and
+>   its related conns when that 'master' conn becomes prohibited or is
+>   disconnected.
+
+I've not tried recently, but I seem to recall from past experience that
+it doesn't. Why not just try? Use your FTP example, start an FTP
+connection, prohibit the "master" FTP connection and see what happens to
+the related connections?
+
+It may not be the answer you want, but one way around this might be to
+flush the conntrack table (conntrack -F) at the relevant point in time.
+
+Andy
 
 
-On Thursday 2012-12-13 18:25, Pablo Neira Ayuso wrote:
->> >> turn out to work these days.
->> >
->> >Nobody is going to throw everything overboard. Nftables is backward
->> >compatible while providing a new framework[,]
->> 
->> That sounds just like xt2. Compatibility exists such that there is a 
->> defined mapping from xt1->xt2 rules (at one point I did write a 
->> setsockopt translator in the past...); the userspace tool mimics 
->> iptables in syntax, though I have allowed myself to not have certain 
->> options in the CLI tool.
->
->We provided that compatibility layer that mimics iptables in Oct 2012
->[1]. However, it seems you prefered to code it your way from almost
->scratch, that's confusing.
-
-That's just not true; I did post before on the xt2 matter as well,
-in its various stages.
-
-xtables2_a8: http://marc.info/?l=netfilter-devel&m=132699055220975&w=2
-xtables2_a7: https://lwn.net/Articles/426896/
-             https://lwn.net/Articles/417619/
-
-There is even older experimenting stuff in my git repo, which you
-can look at. (The dates are not forged - you will have to trust me
-on that.)
-
-
-
-Each of us are (understandably) biased, as each has contributed
-to "their" implementation. But, you also have the decisive power
-as the Linux kernel Netfilter subsystem maintainer, and I fear
-that you might use this to reject xt2 to force nft.
-That thought _terrifies_ me, and were it so, it would not be an
-environment I want to work in.
-
-Just say so if I am to GTFO.
