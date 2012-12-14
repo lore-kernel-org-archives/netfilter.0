@@ -1,40 +1,30 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: Formal submission of Xtables2
-Date: Fri, 14 Dec 2012 19:49:17 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1212141943060.16532@nerf07.vanv.qr>
-References: <alpine.LNX.2.01.1212130601210.9421@nerf07.vanv.qr> <20121213110046.GA22337@1984> <20121214094141.GO2606@workstation>
+From: =?UTF-8?B?5Y+26Zuo6aOe?= <sunyucong@gmail.com>
+Subject: UDP fragments , legitimate ?
+Date: Fri, 14 Dec 2012 12:06:12 -0800
+Message-ID: <CAJygYd1+1W7HqokAwgD2hi+ixeor+Eesz6BetbB-cScgsmd7NQ@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20121214094141.GO2606@workstation>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to:content-type;
+        bh=HSo8AQt/Z90Z5InEhhFBACX5vMUgutevN7yH0bmseFc=;
+        b=TG4rjxAYbMQXaC71vgG5Th80Q+3KRKoffkWw3tOBOuLewi0s0J23p+RRbL/1EQeKXR
+         5pkRHnT/mnOHf3tu2T3nLBfBwGPMXRX67mGegiY8oMslNGj/rIZIXS8y+38lyWE7qu4k
+         agigP+6LwDoPaj2nI5toz03Zc3SucQprFW222QQpJ0PaBtRFgJtYplKEMOmB0/cdKZG3
+         YYHrTB2f2RggGvwmOd91A6sBjDxqfLSxIqgnKH5+TB9WwKgYvd4rASxl1nFf6jVzWlle
+         RFLr3lP0/Qw0wIQqfCWoPrzL/KNqQhul2lkCC+qowSGI1FdSY/Qec15dZYTLoZnCldC9
+         tipA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Andreas Herz <andi@geekosphere.org>
-Cc: Netfilter user mailing list <netfilter@vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Friday 2012-12-14 10:41, Andreas Herz wrote:
->On 13/12/12 at 12:00, Pablo Neira Ayuso wrote:
->> On Thu, Dec 13, 2012 at 07:00:07AM +0100, Jan Engelhardt wrote:
->> [...]
->> > Please consider for merging.
->> 
->> nftables and its compatibility layer already provide this and we will
->> not have to maintain two different netlink interfaces, which is too
->> much overhead.
->
->Apart of your discussion (i think it's quite interesting although you
->might not agree), is there a summary of the status of nftables?
->The last time i read about it, while i was at the university, i thought
->it was dead.
->I read that Patrick McHardy was the one pushing the project but never
->heard any news after 2010. Now i read that Pablo is taking care of it.
->
->So i would love to hear more details on the roadmap for nftables, might
->be interesting for me and my work here.
+This is more like a general networking question
 
-For parity, I am posting my roadmap document as it exists so far
-as well. Please see http://inai.de/nfxt/ .
+Is there legitimate use of UDP fragments in the wild? have you seen
+commonly used application sending/receving UDP packets that is large
+than MTU ? Is it safe to assume such traffic is nothing but dumb
+attacks?
 
-And before the question of "who's maintaining?" coming up again -
-I'd be glad to maintain if only I was given the chance to.
+Thanks.
