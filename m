@@ -1,28 +1,59 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH] fix conntrack reassembly expire code
-Date: Sun, 16 Dec 2012 23:43:17 +0100
-Message-ID: <20121216224317.GD1304@1984>
-References: <1354873337-3776-1-git-send-email-haibbo@gmail.com>
- <20121211015019.GA18425@1984>
- <CAOa9=yr+r6TP33j1Ugp=UveS3yuEssZcbTfRxvaBYqboW_Lz_g@mail.gmail.com>
+Subject: Re: Formal submission of Xtables2
+Date: Mon, 17 Dec 2012 00:57:51 +0100
+Message-ID: <20121216235751.GA7528@1984>
+References: <alpine.LNX.2.01.1212130601210.9421@nerf07.vanv.qr>
+ <20121213110046.GA22337@1984>
+ <20121214094141.GO2606@workstation>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAOa9=yr+r6TP33j1Ugp=UveS3yuEssZcbTfRxvaBYqboW_Lz_g@mail.gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+In-Reply-To: <20121214094141.GO2606@workstation>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Haibo Xi <haibbo@gmail.com>
-Cc: kaber@trash.net, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+To: Andreas Herz <andi@geekosphere.org>
+Cc: Netfilter user mailing list <netfilter@vger.kernel.org>, netfilter-devel@vger.kernel.org
 
-On Tue, Dec 11, 2012 at 10:52:16AM +0800, Haibo Xi wrote:
->    Hi Pablo,
+Hi Andreas,
+
+On Fri, Dec 14, 2012 at 10:41:41AM +0100, Andreas Herz wrote:
+> On 13/12/12 at 12:00, Pablo Neira Ayuso wrote:
+> > On Thu, Dec 13, 2012 at 07:00:07AM +0100, Jan Engelhardt wrote:
+> > [...]
+> > > Please consider for merging.
+> > 
+> > nftables and its compatibility layer already provide this and we will
+> > not have to maintain two different netlink interfaces, which is too
+> > much overhead.
 > 
->    Thanks for your advice.
->    Given below is new patch.
+> Apart of your discussion (i think it's quite interesting although
+> you might not agree), is there a summary of the status of nftables?
+> The last time i read about it, while i was at the university, i
+> thought it was dead.  I read that Patrick McHardy was the one
+> pushing the project but never heard any news after 2010. Now i read
+> that Pablo is taking care of it.
 
-Applied, thanks.
+It's true that nftables suffered an hiatus in its development, but
+we're back on it and there has been quite a lot of activity on it
+recently. This is the kernel branch, you can check the changelog here:
 
-Minor nitpick: Please, next time check that your mail client is
-sending plain text, HTML makes no good to the patch.
+http://1984.lsi.us.es/git/nf-next/log/?h=nf_tables8
+
+And there's an iptables compatibility layer that is ready for IPv4,
+you can find details here:
+
+http://www.spinics.net/lists/netfilter-devel/msg23831.html
+
+> So i would love to hear more details on the roadmap for nftables, might
+> be interesting for me and my work here.
+
+I understand you want to know more on the future of nftables, but
+because the way I am, I prefer to skip "hot air" wording by now and
+talk on code done anytime soon.
+
+So I have to request some patience from you. We promise to deliver as
+much information as possible once we are done with the core features.
+
+Thanks.
