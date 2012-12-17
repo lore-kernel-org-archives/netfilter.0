@@ -1,54 +1,47 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: Formal submission of Xtables2
-Date: Mon, 17 Dec 2012 02:39:07 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1212170214350.29351@nerf07.vanv.qr>
-References: <20121213110046.GA22337@1984> <alpine.LNX.2.01.1212131214100.20007@nerf07.vanv.qr> <20121213120509.GA26118@1984> <alpine.LNX.2.01.1212131405170.786@nerf07.vanv.qr> <20121213142820.GA3489@1984> <alpine.LNX.2.01.1212131528410.1273@nerf07.vanv.qr>
- <20121213151615.GA6962@1984> <alpine.LNX.2.01.1212131623480.10856@nerf07.vanv.qr> <20121213172523.GB14333@1984> <alpine.LNX.2.01.1212131826040.5486@nerf07.vanv.qr> <20121217000841.GA9331@1984>
+From: Kevin Cernekee <cernekee@gmail.com>
+Subject: Re: [PATCH v3] netfilter: nf_conntrack_sip: Handle Cisco 7941/7945 IP phones
+Date: Sun, 16 Dec 2012 23:26:31 -0800
+Message-ID: <CAJiQ=7BBquMQmQWp3=aD_s3-rSYr4Y+gke0GJKCkJV-mq5buug@mail.gmail.com>
+References: <f0955e6c2110044fa058d0f3ecf945ca@localhost>
+	<1290412334.2756.141.camel@edumazet-laptop>
+	<1355703441.18919.6.camel@shinybook.infradead.org>
+	<20121217004457.GA12234@1984>
 Mime-Version: 1.0
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <20121217000841.GA9331@1984>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type;
+        bh=uFjfVvl/RSFk6JT85hDzDh/ZoPNNdY8zjjKIsX+wRAc=;
+        b=wF54Stg1iCNF9aVHpJM+XhRgcsgWhVaeH0zVmKCLar5hrrkGsD3Gz5YGYzyTitHQrZ
+         PCfmrc6BPdUarA5O7Re86LJecAuD/cY3xoVZ7K6G4TiwbIF9vV39HWGjqunzFXNNsfYq
+         5FdieSfW9v4jU4ripAoNDMGEO23Cu157S7i7iDEGMEjAHqigM2FuDOtAD/+LPoToIBxe
+         /KtIRXahWV9txqEj44T5XddKHes+SVtmhsgN1JHyk+WBaib/67n/I8Xj/WrmTNOUQQjb
+         HNXCaXWkWkH6etMGVz4yEf+rG+c8St3sSTs2soODz4xYKWHGe+1XhYp1A80UjtfYkd7K
+         mrLg==
+In-Reply-To: <20121217004457.GA12234@1984>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, Netfilter user mailing list <netfilter@vger.kernel.org>
+Cc: David Woodhouse <dwmw2@infradead.org>, Eric Dumazet <eric.dumazet@gmail.com>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, "Pekka Savola (ipv6)" <pekkas@netcore.fi>, James Morris <jmorris@namei.org>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org
 
-On Monday 2012-12-17 01:08, Pablo Neira Ayuso wrote:
-
->On Thu, Dec 13, 2012 at 07:19:28PM +0100, Jan Engelhardt wrote:
->[...]
->> Each of us are (understandably) biased, as each has contributed
->> to "their" implementation. But, you also have the decisive power as
->> the Linux kernel Netfilter subsystem maintainer, and I fear that you
->> might use this to reject xt2 to force nft.
+On Sun, Dec 16, 2012 at 4:44 PM, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+>> What happened to this? OpenWRT is still carrying it, and it broke in
+>> 3.7. Here's a completely untested update...
 >
->I have to ask you to stick to technical arguments.
+> I requested Kevin to resend a new version based on the current kernel
+> tree while spinning on old pending patches since I have no access to
+> that hardware, but no luck.
+>
+> So I'll review this and, since OpenWRT is carrying, I guess we can get
+> this into net-next merge window.
 
-Ok, let me try again then. We should merge xtables2, because
-(some selected arguments follow):
+Sorry, been putting it off since the OpenWRT version has worked flawlessly...
 
- - It brings a NL-type (<- long-sought) interface
+I just reassembled my test rig and I'll get you a working patch this week.
 
- - It uses a single table because there simply is no need
-   to have multiple ones. This has benefits for replacement atomicity 
-   guarantees, and gives some memory previously spent for modules
-   back to the user, for example.
-
- - This table is NFPROTO_UNSPEC which means that the duplication of
-   rules between ip(4)tables and ip6tables users had to make is
-   gone, meaning less maintenance/complexity/etc. for the administrator, 
-   and of course, less rules lead to less memory usage.
-
- - and because it retains some characteristics, for example
-   atomic replaces and netns.
-
->You wrote on Thu, 13 Dec 2012 13:05:09 +0100:
->>I don't think that feature-set provides compelling reasons to push [xt2]
-
-   Not everybody cares about these things, that would be unrealistic.
-   However, some users, and me included, _do have_ an interest in having
-   what is presented, because they do e.g. run containers. Otherwise,
-   we would not be having netns in iptables today, right?
-
-Now, don't dismiss these arguments.
+Is it OK to use
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net.git as the
+baseline?
