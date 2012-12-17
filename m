@@ -1,45 +1,56 @@
-From: Eliezer Croitoru <eliezer@ngtech.co.il>
-Subject: Re: UDP fragments , legitimate ?
-Date: Mon, 17 Dec 2012 23:27:07 +0200
-Message-ID: <50CF8E2B.9040909@ngtech.co.il>
-References: <CAJygYd1+1W7HqokAwgD2hi+ixeor+Eesz6BetbB-cScgsmd7NQ@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: Formal submission of Xtables2
+Date: Tue, 18 Dec 2012 00:49:26 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1212172356530.16469@blackhole.kfki.hu>
+References: <20121213142820.GA3489@1984> <alpine.LNX.2.01.1212131528410.1273@nerf07.vanv.qr> <20121213151615.GA6962@1984> <alpine.LNX.2.01.1212131623480.10856@nerf07.vanv.qr> <20121213172523.GB14333@1984> <alpine.LNX.2.01.1212131826040.5486@nerf07.vanv.qr>
+ <20121217000841.GA9331@1984> <alpine.LNX.2.01.1212170214350.29351@nerf07.vanv.qr> <20121217095330.GA17148@1984> <alpine.LNX.2.01.1212171155090.25980@nerf07.vanv.qr> <20121217143018.GB1106@1984> <alpine.LNX.2.01.1212171936410.18910@nerf07.vanv.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAJygYd1+1W7HqokAwgD2hi+ixeor+Eesz6BetbB-cScgsmd7NQ@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <alpine.LNX.2.01.1212171936410.18910@nerf07.vanv.qr>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: =?UTF-8?B?5Y+26Zuo6aOe?= <sunyucong@gmail.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jan Engelhardt <jengelh@inai.de>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>, Netfilter user mailing list <netfilter@vger.kernel.org>, =?ISO-8859-2?Q?Maciej_=AFenczykowski?= <zenczykowski@gmail.com>
 
-The basic answer for that is your network usage\users.
-A UDP application shouldn't care about MTU since the data Is suppose to=
-=20
-get from one end to the other.
+On Mon, 17 Dec 2012, Jan Engelhardt wrote:
 
-Also notice that MTU size is not a must since there are also=20
-Jumbo-frames which are big and many OS can fragment a packet from 1500=20
-to 400 so this is not really something you can rely on.
+> On Monday 2012-12-17 15:30, Pablo Neira Ayuso wrote:
+> 
+> >On Mon, Dec 17, 2012 at 02:01:07PM +0100, Jan Engelhardt wrote:
+> >[...]
+> >> >So far, I haven't see any *strong reason* to drop nftables code
+> >> 
+> >> In all fairness, I have never said anything about dropping nft.
+> >> I am focused on xt2, its inclusion and subsequent maintenance, because 
+> >> it resolves the ipt shortcomings in a way that I think appeals most to 
+> >> the userspace crowd.
+> >
+> >I'm still not convinced but I want find a short-term compromise
+> >solution for this which does not involve tons of email. We'll announce
+> >the netfilter workshop soon, likely to happen at Q1 2013 depending on
+> >availability of the organizer, but maybe Q2 2013 (but not later), I
+> >think it's the place to debate your proposal and nftables, of course.
+> >
+> >I will not get anything into mainline until then.
+> 
+> Delaying this for more months is not a good idea, I think.
+> 
+> The amount of patches will grow as more features are implemented. If
+> there is an objection to a patch, then this can have implications for
+> all those that follow (not rebase conflicts, but actual
+> invalidating), which gets more painful the larger the patchset is.
 
-If you have specific applications running in your environment you will=20
-have no problem testing it.
+A few months won't really hurt - TPROXY had been discussed for a couple of 
+years at every workshop (and it was much simpler, smaller code). Both 
+nftables and xtables2 have got nice features, so it's not a simple 
+question.
 
-Eliezer
-
-On 12/14/2012 10:06 PM, =E5=8F=B6=E9=9B=A8=E9=A3=9E wrote:
-> This is more like a general networking question
->
-> Is there legitimate use of UDP fragments in the wild? have you seen
-> commonly used application sending/receving UDP packets that is large
-> than MTU ? Is it safe to assume such traffic is nothing but dumb
-> attacks?
->
-> Thanks.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
