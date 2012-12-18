@@ -1,45 +1,69 @@
-From: Jan Engelhardt <jengelh@inai.de>
+From: Leonardo Rodrigues <leolistas@solutti.com.br>
 Subject: Re: Discriminate client requests from transparent proxy requests?
-Date: Tue, 18 Dec 2012 09:27:09 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1212180909200.28945@nerf07.vanv.qr>
+Date: Tue, 18 Dec 2012 11:35:57 -0200
+Message-ID: <50D0713D.4070800@solutti.com.br>
 References: <50D01F13.7030707@nottheoilrig.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=solutti.com.br; s=google;
+        h=x-received:message-id:date:from:user-agent:mime-version:to:cc
+         :subject:references:in-reply-to:content-type
+         :content-transfer-encoding;
+        bh=cxsE8QwfzfM0+YAhpxmt3/c1P9+tKQenH841e7vN678=;
+        b=iHR+qNJmohqftI8YHokU3j7M8z9Dy+ictGXUg0HLNVEUHk0qBO+fe9gA8Cxxzcj/sL
+         MEvPS9vH9wSwkbtTqOrywNZg7xlkT/UOQWwE9HCDe2o6xWheWQ22Lq7yQ15bCs++xSbR
+         PBRzNKcLA/eWR2BJrLnPv8j55gmls6ZstvM/U=
 In-Reply-To: <50D01F13.7030707@nottheoilrig.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: Jack Bates <uo4zau@nottheoilrig.com>
 Cc: netfilter@vger.kernel.org
 
-On Tuesday 2012-12-18 08:45, Jack Bates wrote:
 
->Do you have any advice how to discriminate traffic from clients from 
->traffic from our transparent proxy?
+     How about configuring two ports, one for transparent proxy and=20
+other for your 'normal' proxy? Doing that, you could create ACLs for=20
+matching your normal and transparent ports
+
+     Changing the port on your transparent proxy rule will be absolutel=
+y=20
+transparent to your users ...
+
+http_port 12345 transparent
+http_port 3128
+
+acl transparent_access myport 12345
+acl normal_access myport 3128
+
+
+     i cant think on any easier way of discriminating normal and=20
+transparent-intercepted traffic ...
+
+
+Em 18/12/12 05:45, Jack Bates escreveu:
+> Do you have any advice how to discriminate traffic from clients from=20
+> traffic from our transparent proxy?
 >
->Our proxy sends requests to origin servers with the same source address 
->as the request from the client, so we can do per-host traffic shaping 
->on our router. [What options are there?]
+> Our proxy sends requests to origin servers with the same source=20
+> address as the request from the client, so we can do per-host traffic=
+=20
+> shaping on our router. But consequently I wonder how to discriminate=20
+> client requests from proxy requests, and route the former to the=20
+> proxy, but not route the latter. What options are there?
 
-I take it you might be using something like squid and tproxy.
+--=20
 
->But consequently I wonder how to discriminate client requests from proxy
->requests,
 
-The origin servers can inspect the "Via:" HTTP request header to 
-determine the presence of a proxy. There might be other headers your 
-proxy server is emitting that you would normally not find in a pure 
-client request.
+	Atenciosamente / Sincerily,
+	Leonardo Rodrigues
+	Solutti Tecnologia
+	http://www.solutti.com.br
 
-A second possibility, when proxy server and origin server are on the 
-same Ethernet subnet, is to look at the L2 address. Of course the L2 
-addr can be "tproxified" as well, but usually is not worth doing.
+	Minha armadilha de SPAM, N=C3O mandem email
+	gertrudes@solutti.com.br
+	My SPAMTRAP, do not email it
 
->and route the former to the proxy, but not route the latter.
 
-As you have noticed, if the original client address is used, routing 
-topology/rules needs to be laid out such that packets to client 
-addresses always pass through the proxy server machine in both 
-directions. (This is the same prerequisite as for connection-tracked 
-NAT.)
+
