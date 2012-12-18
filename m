@@ -1,51 +1,60 @@
-From: Andreas Herz <andi@geekosphere.org>
-Subject: Re: Formal submission of Xtables2
-Date: Tue, 18 Dec 2012 15:09:57 +0100
-Message-ID: <20121218140957.GJ2606@workstation>
-References: <alpine.LNX.2.01.1212130601210.9421@nerf07.vanv.qr>
- <20121213110046.GA22337@1984>
- <20121214094141.GO2606@workstation>
- <alpine.LNX.2.01.1212141943060.16532@nerf07.vanv.qr>
+From: Alex Bligh <alex@alex.org.uk>
+Subject: Using DNAT with multiple upstreams
+Date: Tue, 18 Dec 2012 20:46:30 +0000
+Message-ID: <4B5F9CC88C3B87ECDEAD7A5D@Ximines.local>
+Reply-To: Alex Bligh <alex@alex.org.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.01.1212141943060.16532@nerf07.vanv.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@inai.de>
-Cc: Netfilter user mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
+Cc: Alex Bligh <alex@alex.org.uk>
 
-On 14/12/12 at 19:49, Jan Engelhardt wrote:
-> On Friday 2012-12-14 10:41, Andreas Herz wrote:
-> >On 13/12/12 at 12:00, Pablo Neira Ayuso wrote:
-> >> On Thu, Dec 13, 2012 at 07:00:07AM +0100, Jan Engelhardt wrote:
-> >> [...]
-> >> > Please consider for merging.
-> >> 
-> >> nftables and its compatibility layer already provide this and we will
-> >> not have to maintain two different netlink interfaces, which is too
-> >> much overhead.
-> >
-> >Apart of your discussion (i think it's quite interesting although you
-> >might not agree), is there a summary of the status of nftables?
-> >The last time i read about it, while i was at the university, i thought
-> >it was dead.
-> >I read that Patrick McHardy was the one pushing the project but never
-> >heard any news after 2010. Now i read that Pablo is taking care of it.
-> >
-> >So i would love to hear more details on the roadmap for nftables, might
-> >be interesting for me and my work here.
-> 
-> For parity, I am posting my roadmap document as it exists so far
-> as well. Please see http://inai.de/nfxt/ .
-> 
-> And before the question of "who's maintaining?" coming up again -
-> I'd be glad to maintain if only I was given the chance to.
+I have a multihomed configuration as follows:
 
-Thanks so far for the informations. I will just see how the development
-is going on and if i/we need some parts.
+            Provider A     Provider B
+               ^              ^
+          eth1 |              | eth2
+192.200.0.2/24 |              | 192.200.1.2/24
+              ROUTERRUNNINGLINUX
+                      | eth3
+                      | 10.10.10.1/24
+                      |
+                   ---+----
+                          |
+                         10.10.10.99/24
+
+Internet connections A and B both inject default routes when
+they are up. I use SNAT on eth1 and eth2 to NAT the range
+on eth3 to the appropriate IP address (well, SNAT on one
+and MASQUERADE on the other for boring reasons). Connection
+B is faster so injects its default route with a lower distance.
+This gives me resilience and uses the fastest connection.
+So far so good.
+
+Now, I also want to use DNAT on eth1 so that incoming connections
+to 10.200.0.2:1234 get mapped to (say) 10.10.10.99:5678. When
+the connection to provider B is down, all this works just fine.
+However, when the connection to provider B is up, the connection
+fails. As far as I can tell, this is because return traffic
+to the external host initiating the connection follows the
+default route with the lowest distance, and goes out provider B
+instead (who knows how it gets NATted).
+
+What I'd really like to do is say "if the connection is in
+your DNAT table, send it out the way it came", but I think
+the DNAT is undone after the routing decision. I can think
+of a pile of ways to solve this, many of which involve
+ugly source routing. I could use the connmark stuff I think.
+I could also (conceivably) SNAT the incoming connection
+to be originated by 192.200.0.1 so that the route out would
+always be via provider A (as that's an interface route).
+I know I have a million options. My question is what is the
+fastest way to do this (with minimal impact on other traffic).
+I'm loathe to go down the ip rule route unless I really need to.
 
 -- 
-Andreas Herz
+Alex Bligh
