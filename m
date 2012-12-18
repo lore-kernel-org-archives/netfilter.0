@@ -1,28 +1,118 @@
-From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
-Subject: Re: Formal submission of Xtables2
-Date: Mon, 17 Dec 2012 20:51:52 -0500
-Message-ID: <201212172051.52499.neal.p.murphy@alum.wpi.edu>
-References: <20121213142820.GA3489@1984> <alpine.DEB.2.00.1212172356530.16469@blackhole.kfki.hu> <alpine.LNX.2.01.1212180205180.24618@nerf07.vanv.qr>
-Reply-To: neal.p.murphy@alum.wpi.edu
+From: Alex Samad - Yieldbroker <Alex.Samad@yieldbroker.com>
+Subject: RE: help with cluster and/or clusterip
+Date: Tue, 18 Dec 2012 01:59:53 +0000
+Message-ID: <A3FB5D9FD28C50429DF7692DC31054E604BA7037@DC1INTADCW8201.yieldbroker.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1212180205180.24618@nerf07.vanv.qr>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-As a disinterested third party*, I think Jan is voicing stronger arguments, 
-and that Pablo may need to enhance his debating skills.
 
-N
 
-* Disinterested in that I don't have a bone to pick in this debate. I do have 
-a few netfilter thoughts, though, concerning general usability enhancements to 
-the facility: 32 bit connmarks can be rather limiting (64 bits would be far 
-more adequate), integrated IPv4/IPv6 (it'd be nice to be able to specify both 
-addresses for a node in a single rule, for dual-stacked nodes), and a way to 
-explicitly include related conns in a rule (after establishment, there seems 
-to be no way to associate a related conn with the rule that allowed it in the 
-first place).
+> -----Original Message-----
+> From: Alex Samad - Yieldbroker
+> Sent: Tuesday, 18 December 2012 11:41 AM
+> To: 'netfilter@vger.kernel.org'
+> Subject: help with cluster and/or clusterip
+> 
+> Hi
+> 
+> I have been spending some time trying to get clusterip and just recently
+> cluster working.  Seems like there are not many people using this !
+> 
+> Basically I have 2 machines (centos 6.3)
+> 10.32.21.31 node1
+> 10.32.21.32 node2
+> 10.32.21.30 VIP multi cast addr 01:00:5e:20:15:1e
+> 
+> 
+> I will start with clusterip way
+> 
+> *filter
+> :INPUT ACCEPT [0:0]
+> :FORWARD ACCEPT [0:0]
+> :OUTPUT ACCEPT [0:0]
+> :CLUSTER - [0:0]
+> -A INPUT -m state --state INVALID -j DROP -A INPUT -m state --state
+> ESTABLISHED,RELATED -j ACCEPT -A INPUT -p icmp -j ACCEPT -A INPUT -i lo -j
+> ACCEPT # Allow from any where -A INPUT -m state --state NEW -m tcp -p tcp
+> --dport 22 -j ACCEPT # Cluster IP Check -A INPUT -j CLUSTER # cluster -A
+> CLUSTER -d 10.32.21.30 -i eth0 -p tcp -m multiport  --dport 10000,10001  -j
+> CLUSTERIP --new --clustermac 01:00:5e:20:15:1e --total-nodes 2 --local-node
+> 1 --hashmode sourceip-sourceport --hash-init 0x12341234
+> 
+> With the change for local-node to 2 for node 2. This is about the same
+> 
+> 
+> I tried this setup, I attempted to do a telnet 10.32.21.30 10001 from a remote
+> machine and I see packets arrive on both nodes.. okay, I would have thought
+> I should only see it on one node. But maybe iptables sees it on both and it
+> should get blocked at this line.  but I get ICMP rejects coming back from both
+> nodes..
+> 
+> I actually like CLUSTERIP over cluster because I have access to the
+> /proc/net/ipt_CLUSTERIP/10.32.21.30 where I can dynamically add and
+> remove which nodes are accepted
+> 
+> -m cluster way
+> 
+> Well I didn't get very far with this
+> I used a setup scripts to install these lines
+>                 /sbin/iptables -A PRECLUSTER -t mangle -i $DEV -d $VIP -m cluster --
+> cluster-total-nodes $MND --cluster-local-node $ND --cluster-hash-seed
+> $CLHASH -j MARK --set-mark $IPTMARK
+>                 /sbin/iptables -A PRECLUSTER -t mangle -i $DEV -d $VIP -m mark ! --
+> mark $IPTMARK
+> 
+> And add my m mac
+>                /sbin/ip maddr add $MMAC dev $DEV
+> 
+> But pings are not working via the switch ... I haven't done the arptables
+> changes ... but they are not needed for the CLUSTERIP... I haven't
+> investigated any further. Because I noticed that there is not /proc interface
+> to handle the local node.
+> 
+> My aim was to use rgmanager or hearbeat to assign iptable nodes to each
+> server depending on weather the other server was up or not !
+> If I have to change iptables lines in mange that seems to be are rathe archaic
+> method considering we the /proc method for clusterip
+> 
+> The only reason I started to look at -m cluster is because I read that clusterip
+> was deprecated and this new method was the way forward...
+> 
+> So I have come to the list to see if I can get some help to fix this :)
+> 
+> Thanks
+> 
+> 
+> 
+
+Thought I would add some more 
+
+I retested the clusterip.  
+
+So I have something like 
+
+/sbin/iptables -A CLUSTER -i $DEV -d $VIP -j CLUSTERIP --new --clustermac $MMAC --total-nodes $MND --local-node $ND --hashmode sourceip-sourceport --hash-init $CLHASH
+/sbin/iptables -A CLUSTER -i $DEV -d $VIP -p tcp -m multiport --dport 10000,10001 -j ACCEPT
+
+The line in INPUT is
+-p tcp -d $IP -j CLUSTER
+
+So I am seeing packets hit the first line and it seems like it stops if the packets don't match.
+
+But now I think I have another problem, which the list might be able to help with.
+
+
+These are VM's on different ESXi hosts. And the switch doesn't send packets to both host and thus the packets don't get to both VM's
+
+Strangely when I get on another VM on the same vlan it can ping both vm's 
+
+Thanks
+Alex
+
+And seasons greats/cheer to all !
