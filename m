@@ -1,69 +1,51 @@
-From: Leonardo Rodrigues <leolistas@solutti.com.br>
-Subject: Re: Discriminate client requests from transparent proxy requests?
-Date: Tue, 18 Dec 2012 11:35:57 -0200
-Message-ID: <50D0713D.4070800@solutti.com.br>
-References: <50D01F13.7030707@nottheoilrig.com>
+From: Andreas Herz <andi@geekosphere.org>
+Subject: Re: Formal submission of Xtables2
+Date: Tue, 18 Dec 2012 15:09:57 +0100
+Message-ID: <20121218140957.GJ2606@workstation>
+References: <alpine.LNX.2.01.1212130601210.9421@nerf07.vanv.qr>
+ <20121213110046.GA22337@1984>
+ <20121214094141.GO2606@workstation>
+ <alpine.LNX.2.01.1212141943060.16532@nerf07.vanv.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=solutti.com.br; s=google;
-        h=x-received:message-id:date:from:user-agent:mime-version:to:cc
-         :subject:references:in-reply-to:content-type
-         :content-transfer-encoding;
-        bh=cxsE8QwfzfM0+YAhpxmt3/c1P9+tKQenH841e7vN678=;
-        b=iHR+qNJmohqftI8YHokU3j7M8z9Dy+ictGXUg0HLNVEUHk0qBO+fe9gA8Cxxzcj/sL
-         MEvPS9vH9wSwkbtTqOrywNZg7xlkT/UOQWwE9HCDe2o6xWheWQ22Lq7yQ15bCs++xSbR
-         PBRzNKcLA/eWR2BJrLnPv8j55gmls6ZstvM/U=
-In-Reply-To: <50D01F13.7030707@nottheoilrig.com>
+Content-Disposition: inline
+In-Reply-To: <alpine.LNX.2.01.1212141943060.16532@nerf07.vanv.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Jack Bates <uo4zau@nottheoilrig.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jan Engelhardt <jengelh@inai.de>
+Cc: Netfilter user mailing list <netfilter@vger.kernel.org>
 
+On 14/12/12 at 19:49, Jan Engelhardt wrote:
+> On Friday 2012-12-14 10:41, Andreas Herz wrote:
+> >On 13/12/12 at 12:00, Pablo Neira Ayuso wrote:
+> >> On Thu, Dec 13, 2012 at 07:00:07AM +0100, Jan Engelhardt wrote:
+> >> [...]
+> >> > Please consider for merging.
+> >> 
+> >> nftables and its compatibility layer already provide this and we will
+> >> not have to maintain two different netlink interfaces, which is too
+> >> much overhead.
+> >
+> >Apart of your discussion (i think it's quite interesting although you
+> >might not agree), is there a summary of the status of nftables?
+> >The last time i read about it, while i was at the university, i thought
+> >it was dead.
+> >I read that Patrick McHardy was the one pushing the project but never
+> >heard any news after 2010. Now i read that Pablo is taking care of it.
+> >
+> >So i would love to hear more details on the roadmap for nftables, might
+> >be interesting for me and my work here.
+> 
+> For parity, I am posting my roadmap document as it exists so far
+> as well. Please see http://inai.de/nfxt/ .
+> 
+> And before the question of "who's maintaining?" coming up again -
+> I'd be glad to maintain if only I was given the chance to.
 
-     How about configuring two ports, one for transparent proxy and=20
-other for your 'normal' proxy? Doing that, you could create ACLs for=20
-matching your normal and transparent ports
+Thanks so far for the informations. I will just see how the development
+is going on and if i/we need some parts.
 
-     Changing the port on your transparent proxy rule will be absolutel=
-y=20
-transparent to your users ...
-
-http_port 12345 transparent
-http_port 3128
-
-acl transparent_access myport 12345
-acl normal_access myport 3128
-
-
-     i cant think on any easier way of discriminating normal and=20
-transparent-intercepted traffic ...
-
-
-Em 18/12/12 05:45, Jack Bates escreveu:
-> Do you have any advice how to discriminate traffic from clients from=20
-> traffic from our transparent proxy?
->
-> Our proxy sends requests to origin servers with the same source=20
-> address as the request from the client, so we can do per-host traffic=
-=20
-> shaping on our router. But consequently I wonder how to discriminate=20
-> client requests from proxy requests, and route the former to the=20
-> proxy, but not route the latter. What options are there?
-
---=20
-
-
-	Atenciosamente / Sincerily,
-	Leonardo Rodrigues
-	Solutti Tecnologia
-	http://www.solutti.com.br
-
-	Minha armadilha de SPAM, N=C3O mandem email
-	gertrudes@solutti.com.br
-	My SPAMTRAP, do not email it
-
-
-
+-- 
+Andreas Herz
