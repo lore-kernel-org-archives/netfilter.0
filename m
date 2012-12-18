@@ -1,28 +1,45 @@
-From: Jack Bates <uo4zau@nottheoilrig.com>
-Subject: Discriminate client requests from transparent proxy requests?
-Date: Mon, 17 Dec 2012 23:45:23 -0800
-Message-ID: <50D01F13.7030707@nottheoilrig.com>
+From: Jan Engelhardt <jengelh@inai.de>
+Subject: Re: Discriminate client requests from transparent proxy requests?
+Date: Tue, 18 Dec 2012 09:27:09 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1212180909200.28945@nerf07.vanv.qr>
+References: <50D01F13.7030707@nottheoilrig.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=nottheoilrig.com;
-	s=mail; t=1355816746;
-	bh=FQGOb0qeFjlmhYtjI8DmsMj+7aqOvqn3+DRSiN2v02g=;
-	h=Message-ID:Date:From:MIME-Version:To:Subject:Content-Type:
-	 Content-Transfer-Encoding;
-	b=Yoob8GeKm9cEtNkvDMzuFC5dmb0/AZQEEMFpUk+TeepUnrF35MGiNgliVdPn+nBCG
-	 d4BgKTEqo9T0WTpWF1r+sxvmNhF4fUMOuMrHmHxiL96x9nFUo3FDRlJ9QV3LAE7/ia
-	 9ct6fL6UNHXVsTTHaO0fUzkuqzehtGWIFto8O3sw=
+In-Reply-To: <50D01F13.7030707@nottheoilrig.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Jack Bates <uo4zau@nottheoilrig.com>
+Cc: netfilter@vger.kernel.org
 
-Do you have any advice how to discriminate traffic from clients from 
-traffic from our transparent proxy?
+On Tuesday 2012-12-18 08:45, Jack Bates wrote:
 
-Our proxy sends requests to origin servers with the same source address 
-as the request from the client, so we can do per-host traffic shaping on 
-our router. But consequently I wonder how to discriminate client 
-requests from proxy requests, and route the former to the proxy, but not 
-route the latter. What options are there?
+>Do you have any advice how to discriminate traffic from clients from 
+>traffic from our transparent proxy?
+>
+>Our proxy sends requests to origin servers with the same source address 
+>as the request from the client, so we can do per-host traffic shaping 
+>on our router. [What options are there?]
+
+I take it you might be using something like squid and tproxy.
+
+>But consequently I wonder how to discriminate client requests from proxy
+>requests,
+
+The origin servers can inspect the "Via:" HTTP request header to 
+determine the presence of a proxy. There might be other headers your 
+proxy server is emitting that you would normally not find in a pure 
+client request.
+
+A second possibility, when proxy server and origin server are on the 
+same Ethernet subnet, is to look at the L2 address. Of course the L2 
+addr can be "tproxified" as well, but usually is not worth doing.
+
+>and route the former to the proxy, but not route the latter.
+
+As you have noticed, if the original client address is used, routing 
+topology/rules needs to be laid out such that packets to client 
+addresses always pass through the proxy server machine in both 
+directions. (This is the same prerequisite as for connection-tracked 
+NAT.)
