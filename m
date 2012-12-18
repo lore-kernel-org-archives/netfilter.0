@@ -1,7 +1,7 @@
 From: Alex Samad - Yieldbroker <Alex.Samad@yieldbroker.com>
 Subject: RE: help with cluster and/or clusterip
-Date: Tue, 18 Dec 2012 01:59:53 +0000
-Message-ID: <A3FB5D9FD28C50429DF7692DC31054E604BA7037@DC1INTADCW8201.yieldbroker.com>
+Date: Tue, 18 Dec 2012 04:30:17 +0000
+Message-ID: <A3FB5D9FD28C50429DF7692DC31054E604BA741B@DC1INTADCW8201.yieldbroker.com>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
@@ -11,108 +11,60 @@ Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
+[snip]
+
+> >
+> 
+> Thought I would add some more
+> 
+> I retested the clusterip.
+> 
+> So I have something like
+> 
+> /sbin/iptables -A CLUSTER -i $DEV -d $VIP -j CLUSTERIP --new --clustermac
+> $MMAC --total-nodes $MND --local-node $ND --hashmode sourceip-
+> sourceport --hash-init $CLHASH /sbin/iptables -A CLUSTER -i $DEV -d $VIP -p
+> tcp -m multiport --dport 10000,10001 -j ACCEPT
+> 
+> The line in INPUT is
+> -p tcp -d $IP -j CLUSTER
+> 
+> So I am seeing packets hit the first line and it seems like it stops if the packets
+> don't match.
+> 
+> But now I think I have another problem, which the list might be able to help
+> with.
+> 
+> 
+> These are VM's on different ESXi hosts. And the switch doesn't send packets
+> to both host and thus the packets don't get to both VM's
+> 
+> Strangely when I get on another VM on the same vlan it can ping both vm's
+
+So I have progressed further.
+I am sticking with clusterip... until somebody show / explains why cluster module is better ....
+My default gateway had the wrong mac associated with the ip address, I had the VIP assigned to the nic before I had the CLUSTERIP iptables line. So arp request where being answered with the mac of the nic not the maddr ! so I cleared the switched arp table for that entry and now I am getting packets to both machines.
+
+And tcpdump sees all the inbound packets.  The line in iptables consumes the packet if it fails ie not for this machine.  The interesting thing is seeing all the reply packets from the test machine go to second node ( the one that is not handling the link ... oh well)
+
+Now  when I try to make a https connection so 
+
+Client -> router -> cluster vlan 
+
+I can see the tree way hand shake syn, syn/ack, ack. Well from the client side
+
+But on the server side I have this
+tcp        0      0 10.32.21.30:10001           10.172.207.133:60123        SYN_RECV
+
+tcpdump has the ack ... but some reason it's not making it up the stack 
 
 
-> -----Original Message-----
-> From: Alex Samad - Yieldbroker
-> Sent: Tuesday, 18 December 2012 11:41 AM
-> To: 'netfilter@vger.kernel.org'
-> Subject: help with cluster and/or clusterip
-> 
-> Hi
-> 
-> I have been spending some time trying to get clusterip and just recently
-> cluster working.  Seems like there are not many people using this !
-> 
-> Basically I have 2 machines (centos 6.3)
-> 10.32.21.31 node1
-> 10.32.21.32 node2
-> 10.32.21.30 VIP multi cast addr 01:00:5e:20:15:1e
-> 
-> 
-> I will start with clusterip way
-> 
-> *filter
-> :INPUT ACCEPT [0:0]
-> :FORWARD ACCEPT [0:0]
-> :OUTPUT ACCEPT [0:0]
-> :CLUSTER - [0:0]
-> -A INPUT -m state --state INVALID -j DROP -A INPUT -m state --state
-> ESTABLISHED,RELATED -j ACCEPT -A INPUT -p icmp -j ACCEPT -A INPUT -i lo -j
-> ACCEPT # Allow from any where -A INPUT -m state --state NEW -m tcp -p tcp
-> --dport 22 -j ACCEPT # Cluster IP Check -A INPUT -j CLUSTER # cluster -A
-> CLUSTER -d 10.32.21.30 -i eth0 -p tcp -m multiport  --dport 10000,10001  -j
-> CLUSTERIP --new --clustermac 01:00:5e:20:15:1e --total-nodes 2 --local-node
-> 1 --hashmode sourceip-sourceport --hash-init 0x12341234
-> 
-> With the change for local-node to 2 for node 2. This is about the same
-> 
-> 
-> I tried this setup, I attempted to do a telnet 10.32.21.30 10001 from a remote
-> machine and I see packets arrive on both nodes.. okay, I would have thought
-> I should only see it on one node. But maybe iptables sees it on both and it
-> should get blocked at this line.  but I get ICMP rejects coming back from both
-> nodes..
-> 
-> I actually like CLUSTERIP over cluster because I have access to the
-> /proc/net/ipt_CLUSTERIP/10.32.21.30 where I can dynamically add and
-> remove which nodes are accepted
-> 
-> -m cluster way
-> 
-> Well I didn't get very far with this
-> I used a setup scripts to install these lines
->                 /sbin/iptables -A PRECLUSTER -t mangle -i $DEV -d $VIP -m cluster --
-> cluster-total-nodes $MND --cluster-local-node $ND --cluster-hash-seed
-> $CLHASH -j MARK --set-mark $IPTMARK
->                 /sbin/iptables -A PRECLUSTER -t mangle -i $DEV -d $VIP -m mark ! --
-> mark $IPTMARK
-> 
-> And add my m mac
->                /sbin/ip maddr add $MMAC dev $DEV
-> 
-> But pings are not working via the switch ... I haven't done the arptables
-> changes ... but they are not needed for the CLUSTERIP... I haven't
-> investigated any further. Because I noticed that there is not /proc interface
-> to handle the local node.
-> 
-> My aim was to use rgmanager or hearbeat to assign iptable nodes to each
-> server depending on weather the other server was up or not !
-> If I have to change iptables lines in mange that seems to be are rathe archaic
-> method considering we the /proc method for clusterip
-> 
-> The only reason I started to look at -m cluster is because I read that clusterip
-> was deprecated and this new method was the way forward...
-> 
-> So I have come to the list to see if I can get some help to fix this :)
+So many steps forward....
+
+A
+
 > 
 > Thanks
+> Alex
 > 
-> 
-> 
-
-Thought I would add some more 
-
-I retested the clusterip.  
-
-So I have something like 
-
-/sbin/iptables -A CLUSTER -i $DEV -d $VIP -j CLUSTERIP --new --clustermac $MMAC --total-nodes $MND --local-node $ND --hashmode sourceip-sourceport --hash-init $CLHASH
-/sbin/iptables -A CLUSTER -i $DEV -d $VIP -p tcp -m multiport --dport 10000,10001 -j ACCEPT
-
-The line in INPUT is
--p tcp -d $IP -j CLUSTER
-
-So I am seeing packets hit the first line and it seems like it stops if the packets don't match.
-
-But now I think I have another problem, which the list might be able to help with.
-
-
-These are VM's on different ESXi hosts. And the switch doesn't send packets to both host and thus the packets don't get to both VM's
-
-Strangely when I get on another VM on the same vlan it can ping both vm's 
-
-Thanks
-Alex
-
-And seasons greats/cheer to all !
+> And seasons greats/cheer to all !
