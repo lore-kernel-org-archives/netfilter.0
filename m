@@ -1,50 +1,54 @@
-From: =?UTF-8?B?5Y+26Zuo6aOe?= <sunyucong@gmail.com>
-Subject: Re: Using DNAT with multiple upstreams
-Date: Tue, 18 Dec 2012 16:47:49 -0800
-Message-ID: <CAJygYd3CqumqPDfBRkYLFFcigZ=kgxduXiGdq5n9+BL98WTzFQ@mail.gmail.com>
-References: <4B5F9CC88C3B87ECDEAD7A5D@Ximines.local> <CAJygYd1Emv_3M7nDLD8c2XwO=hc8OOMeTm1M-M4R4CDEOmi1ew@mail.gmail.com>
- <0FFCF6E8-318F-43C3-8B99-CE92630C3309@alex.org.uk>
+From: Michael Ludvig <mludvig@logix.net.nz>
+Subject: How to use IPv6 SNPT?
+Date: Thu, 20 Dec 2012 01:07:10 +1300
+Message-ID: <50D1ADEE.8010805@logix.net.nz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-type:content-transfer-encoding;
-        bh=+ylBiuw5lbLoaubzftomUxhLXIOFE4bXey7xEHUYuqg=;
-        b=vkI1/ea5o9sv2XS/ZayVux+WTGH1CBcdFbwOuJ23XEepRRXpmjrfzXxyt1K4oZoAWp
-         PYti6byEWvA54ORHMkYlyrJgT4tUcR9rRClRB8ihqyqu66qrVFY6Jw1kpAylUPuRTlSr
-         VpOAmXMnvgbm+ZCuqXtGLDjG6sB0MYSn/ZObsCW8fxMe9DNUbOCF5HXjZrC6jDOAB1Lk
-         6Yvl3CX1PAPDia1UTCdBh6wYNQinD87MN8XKFgsStxExi66k9H75xuJYwfXWyhKdfIhE
-         7w8DyLm8xTrgJCuun9OWa+6HlWQmk7xZgh4Dv8WUfZGTrW62d1pz/bPHHCzdgE2k96YK
-         l0GA==
-In-Reply-To: <0FFCF6E8-318F-43C3-8B99-CE92630C3309@alex.org.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Alex Bligh <alex@alex.org.uk>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-it can also match CONNMARK (fwmark). so just mark what you want to
-send back then.
+Hi guys
 
-On Tue, Dec 18, 2012 at 4:34 PM, Alex Bligh <alex@alex.org.uk> wrote:
->
-> On 18 Dec 2012, at 23:51, =E5=8F=B6=E9=9B=A8=E9=A3=9E wrote:
->
->>
->> ip route add table <table_name> default via xxxx dev xxx
->> ip rule add from xxxx table <table_name>
->>
->> This will give you ability to choose nexthop base on source ip.
->
-> The issue with that approach is that I don't want arbitrary
-> traffic from 10.10.10.99/24 to go via Provider A - just
-> the replies to DNAT inbound traffic.
->
-> --
-> Alex Bligh
->
->
->
->
+I did some experimenting with the new NAT support for IPv6 and was quite
+impressed how smoothly MASQUERADE and SNAT work.
+
+However I didn't have any success with IPv6 SNPT. As I understand it
+SNPT is meant for 1:1 address translation and should simply replace src
+prefix with dst prefix.
+
+For testing I use fd00::/64 address range in my VirtualBox network with
+SLAAC addresses.
+
+ip6tables -t nat -I POSTROUTING -s fd00::/64 \
+    -j SNPT --src-pfx fd00::/64 --dst-pfx 2001:e20:2000:xx::/64
+
+The strange thing is that only the first ping6 packet to google is
+translated, the subsequent ones on the external interface are still in
+fd00::/64:
+
+Seq 1 - translated:
+00:49:25.699206 IP6 2001:e20:2000:xx:b5d0:27ff:feec:3987 > \
+    2404:6800:4006:804::1017: ICMP6, echo request, seq 1, length 64
+
+Seq 2&3 - untranslated source:
+00:49:26.699498 IP6 fd00::a00:27ff:feec:3987 > \
+    2404:6800:4006:804::1017: ICMP6, echo request, seq 2, length 64
+00:49:27.699436 IP6 fd00::a00:27ff:feec:3987 > \
+    2404:6800:4006:804::1017: ICMP6, echo request, seq 3, length 64
+
+Once I remove the SNPT rule and replace it with a simple -j MASQUERADE
+it begins to work. Forwarding is obviously enabled and no other firewall
+rules are in place (neither in 'nat' table nor elsewhere). My kernel is
+3.7.0-rc8, iptables from the current git checkout.
+
+What am I doing wrong?
+
+Thanks!
+
+Michael
+
+
+
