@@ -1,54 +1,136 @@
-From: Michael Ludvig <mludvig@logix.net.nz>
-Subject: How to use IPv6 SNPT?
-Date: Thu, 20 Dec 2012 01:07:10 +1300
-Message-ID: <50D1ADEE.8010805@logix.net.nz>
+From: Christoph Anton Mitterer <christoph.anton.mitterer@lmu.de>
+Subject: ipset save and restore
+Date: Wed, 19 Dec 2012 15:53:06 +0100
+Message-ID: <1355928786.30355.22.camel@heisenberg.scientia.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg="sha512";
+	protocol="application/x-pkcs7-signature";
+	boundary="=-y5rfOsUDAR0MtIImGtjc"
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi guys
 
-I did some experimenting with the new NAT support for IPv6 and was quite
-impressed how smoothly MASQUERADE and SNAT work.
+--=-y5rfOsUDAR0MtIImGtjc
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-However I didn't have any success with IPv6 SNPT. As I understand it
-SNPT is meant for 1:1 address translation and should simply replace src
-prefix with dst prefix.
+Hi.
 
-For testing I use fd00::/64 address range in my VirtualBox network with
-SLAAC addresses.
-
-ip6tables -t nat -I POSTROUTING -s fd00::/64 \
-    -j SNPT --src-pfx fd00::/64 --dst-pfx 2001:e20:2000:xx::/64
-
-The strange thing is that only the first ping6 packet to google is
-translated, the subsequent ones on the external interface are still in
-fd00::/64:
-
-Seq 1 - translated:
-00:49:25.699206 IP6 2001:e20:2000:xx:b5d0:27ff:feec:3987 > \
-    2404:6800:4006:804::1017: ICMP6, echo request, seq 1, length 64
-
-Seq 2&3 - untranslated source:
-00:49:26.699498 IP6 fd00::a00:27ff:feec:3987 > \
-    2404:6800:4006:804::1017: ICMP6, echo request, seq 2, length 64
-00:49:27.699436 IP6 fd00::a00:27ff:feec:3987 > \
-    2404:6800:4006:804::1017: ICMP6, echo request, seq 3, length 64
-
-Once I remove the SNPT rule and replace it with a simple -j MASQUERADE
-it begins to work. Forwarding is obviously enabled and no other firewall
-rules are in place (neither in 'nat' table nor elsewhere). My kernel is
-3.7.0-rc8, iptables from the current git checkout.
-
-What am I doing wrong?
-
-Thanks!
-
-Michael
+I wanted to use ipset (ipset v6.11, protocol version: 6) to load it's
+sets from a cluster wide distributed file, e.g. at boot, or every time
+that file changes.
 
 
+Now unfortunately it seems that ipset restore doesn't work as e.g.
+iptables restore does and seems to me therefore pretty much useless.
+
+ipset restore < file
+gives me errors about the sets already existing, but even with -exist it
+doesn't help a lot, because entries removed from the file, are not
+removed from the actual ipsets.
+
+So it seems as if ipset restore is not what the manpage describes
+(restore a session) but rather an additive merge of another session to
+the current one.
+
+Of course I understand that it could not delete sets which are in use,
+but at least it could empty them.
+
+
+Now when I use the following instead:
+ipset flush
+ipset destroy
+ipset restore < file
+
+To first flush all entries possibly no longer in the current version of
+file and to destroy all sets that got removed and that are no longer
+used... and only then reload the rules.... I have of course some time
+where even the sets that are in use are empty... and my connections will
+fail.
+
+
+So is there some workaround or who is the whole thing intended to be
+used?
+
+
+Thanks,
+Chris.
+
+--=-y5rfOsUDAR0MtIImGtjc
+Content-Type: application/x-pkcs7-signature; name="smime.p7s"
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Transfer-Encoding: base64
+
+MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgMFADCABgkqhkiG9w0BBwEAAKCCC5ww
+ggXKMIIEsqADAgECAgcU58ExtpytMA0GCSqGSIb3DQEBBQUAMFgxCzAJBgNVBAYTAkRFMRMwEQYD
+VQQKEwpERk4tVmVyZWluMRAwDgYDVQQLEwdERk4tUEtJMSIwIAYDVQQDExlERk4tVmVyZWluIFBD
+QSBHcmlkIC0gRzAxMB4XDTEyMTIxMjA4NDMxM1oXDTE0MDEwOTA4NDMxM1oweTELMAkGA1UEBhMC
+REUxFDASBgNVBAoTC0dyaWRHZXJtYW55MTEwLwYDVQQLEyhMdWR3aWctTWF4aW1pbGlhbnMtVW5p
+dmVyc2l0YWV0IE11ZW5jaGVuMSEwHwYDVQQDExhDaHJpc3RvcGggQW50b24gTWl0dGVyZXIwggEi
+MA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC9X0sutkL97kWEpV8WpoTvg9h4/9ghtoDNSVx9
+XFLSR0ce2QWp+WuYs1l+i39vGd/0zvCMI5ioIAm7JMD4hyu2Ni4IMxbZ/B6IhFYhb+peEYozB8Es
+wJYXIHCo24qR6V3FpNiOUoF/wq1Em8p28ejHp9rX8aokkB2s0059i4gn9vn3xVY3z6U7zW4giCLK
+s5qG8r4w7bBuzkQshtjn9+VsKicemHcfrH/gM33ZFBuFqTgDZPsphBLupE60Nylf0br2jrinFt0K
+kkxTDQhR021lZ01XFsPf1AtMjqBh+vsGvCfZGSt4wZ7qwIrHI88P6dkhSiP6+5v0haLsJ1vkKhbp
+AgMBAAGjggJ2MIICcjAMBgNVHRMBAf8EAjAAMA4GA1UdDwEB/wQEAwIEsDAdBgNVHSUEFjAUBggr
+BgEFBQcDAgYIKwYBBQUHAwQwHQYDVR0OBBYEFMZatm//jhCHTlmzPd8Oc9IvwmyQMB8GA1UdIwQY
+MBaAFJbs3K2aw/5Qozwi5T3Cxf/K2SLGMCoGA1UdEQQjMCGBH2NocmlzdG9waC5hbnRvbi5taXR0
+ZXJlckBsbXUuZGUwKgYDVR0gBCMwITARBg8rBgEEAYGtIYIsAQEDAQYwDAYKKoZIhvdMBQICATCB
+wQYDVR0fBIG5MIG2MFmgV6BVhlNodHRwOi8vY2RwMS5wY2EuZGZuLmRlL2Rmbi1wa2kvY2VydGlm
+aWNhdGlvbi94NTA5L2dyaWQvZzEvZGF0YS9jcmxzL3Jvb3QtY2EtY3JsLmNybDBZoFegVYZTaHR0
+cDovL2NkcDIucGNhLmRmbi5kZS9kZm4tcGtpL2NlcnRpZmljYXRpb24veDUwOS9ncmlkL2cxL2Rh
+dGEvY3Jscy9yb290LWNhLWNybC5jcmwwgdYGCCsGAQUFBwEBBIHJMIHGMGEGCCsGAQUFBzAChlVo
+dHRwOi8vY2RwMS5wY2EuZGZuLmRlL2Rmbi1wa2kvY2VydGlmaWNhdGlvbi94NTA5L2dyaWQvZzEv
+ZGF0YS9jZXJ0cy9yb290LWNhLWNlcnQuY3J0MGEGCCsGAQUFBzAChlVodHRwOi8vY2RwMi5wY2Eu
+ZGZuLmRlL2Rmbi1wa2kvY2VydGlmaWNhdGlvbi94NTA5L2dyaWQvZzEvZGF0YS9jZXJ0cy9yb290
+LWNhLWNlcnQuY3J0MA0GCSqGSIb3DQEBBQUAA4IBAQBC8rkXZzIbWa6lhtcA4z9zJ6XqDgD4hloG
+ZxLowGI6QyYeeZJngIJ2Zzbf9NLoqp68kjA3paZdNNfbgHO/hLCz+23VwyJ0b54rrGWXQ9b2VVNF
+LB1H43VmXxLU78vurvREk6K/uAeXl7h8hKSsI9Wc8GOeJ7abe0FhkpCjT0O3cwxs3v53DS8XZmoQ
+hQ6oRPKRk/K+ahbP6KbVYWuhNLqmKUVCJqlFYawtccrHWFtuiKQqfyQqH7Rv51CFWyL7SRfxOSrM
+a0HVQcftW7F/7zQqJpltpvZFHiMEZatfuYldNVYLwA3P5VzFpPfJ5K4xzgiS/pJ0d+Fl55zssL2E
+/mhLMIIFyjCCBLKgAwIBAgIHFOfBMbacrTANBgkqhkiG9w0BAQUFADBYMQswCQYDVQQGEwJERTET
+MBEGA1UEChMKREZOLVZlcmVpbjEQMA4GA1UECxMHREZOLVBLSTEiMCAGA1UEAxMZREZOLVZlcmVp
+biBQQ0EgR3JpZCAtIEcwMTAeFw0xMjEyMTIwODQzMTNaFw0xNDAxMDkwODQzMTNaMHkxCzAJBgNV
+BAYTAkRFMRQwEgYDVQQKEwtHcmlkR2VybWFueTExMC8GA1UECxMoTHVkd2lnLU1heGltaWxpYW5z
+LVVuaXZlcnNpdGFldCBNdWVuY2hlbjEhMB8GA1UEAxMYQ2hyaXN0b3BoIEFudG9uIE1pdHRlcmVy
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvV9LLrZC/e5FhKVfFqaE74PYeP/YIbaA
+zUlcfVxS0kdHHtkFqflrmLNZfot/bxnf9M7wjCOYqCAJuyTA+IcrtjYuCDMW2fweiIRWIW/qXhGK
+MwfBLMCWFyBwqNuKkeldxaTYjlKBf8KtRJvKdvHox6fa1/GqJJAdrNNOfYuIJ/b598VWN8+lO81u
+IIgiyrOahvK+MO2wbs5ELIbY5/flbConHph3H6x/4DN92RQbhak4A2T7KYQS7qROtDcpX9G69o64
+pxbdCpJMUw0IUdNtZWdNVxbD39QLTI6gYfr7Brwn2RkreMGe6sCKxyPPD+nZIUoj+vub9IWi7Cdb
+5CoW6QIDAQABo4ICdjCCAnIwDAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCBLAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMB0GA1UdDgQWBBTGWrZv/44Qh05Zsz3fDnPSL8JskDAfBgNV
+HSMEGDAWgBSW7NytmsP+UKM8IuU9wsX/ytkixjAqBgNVHREEIzAhgR9jaHJpc3RvcGguYW50b24u
+bWl0dGVyZXJAbG11LmRlMCoGA1UdIAQjMCEwEQYPKwYBBAGBrSGCLAEBAwEGMAwGCiqGSIb3TAUC
+AgEwgcEGA1UdHwSBuTCBtjBZoFegVYZTaHR0cDovL2NkcDEucGNhLmRmbi5kZS9kZm4tcGtpL2Nl
+cnRpZmljYXRpb24veDUwOS9ncmlkL2cxL2RhdGEvY3Jscy9yb290LWNhLWNybC5jcmwwWaBXoFWG
+U2h0dHA6Ly9jZHAyLnBjYS5kZm4uZGUvZGZuLXBraS9jZXJ0aWZpY2F0aW9uL3g1MDkvZ3JpZC9n
+MS9kYXRhL2NybHMvcm9vdC1jYS1jcmwuY3JsMIHWBggrBgEFBQcBAQSByTCBxjBhBggrBgEFBQcw
+AoZVaHR0cDovL2NkcDEucGNhLmRmbi5kZS9kZm4tcGtpL2NlcnRpZmljYXRpb24veDUwOS9ncmlk
+L2cxL2RhdGEvY2VydHMvcm9vdC1jYS1jZXJ0LmNydDBhBggrBgEFBQcwAoZVaHR0cDovL2NkcDIu
+cGNhLmRmbi5kZS9kZm4tcGtpL2NlcnRpZmljYXRpb24veDUwOS9ncmlkL2cxL2RhdGEvY2VydHMv
+cm9vdC1jYS1jZXJ0LmNydDANBgkqhkiG9w0BAQUFAAOCAQEAQvK5F2cyG1mupYbXAOM/cyel6g4A
++IZaBmcS6MBiOkMmHnmSZ4CCdmc23/TS6KqevJIwN6WmXTTX24Bzv4Sws/tt1cMidG+eK6xll0PW
+9lVTRSwdR+N1Zl8S1O/L7q70RJOiv7gHl5e4fISkrCPVnPBjnie2m3tBYZKQo09Dt3MMbN7+dw0v
+F2ZqEIUOqETykZPyvmoWz+im1WFroTS6pilFQiapRWGsLXHKx1hbboikKn8kKh+0b+dQhVsi+0kX
+8TkqzGtB1UHH7Vuxf+80KiaZbab2RR4jBGWrX7mJXTVWC8ANz+VcxaT3yeSuMc4Ikv6SdHfhZeec
+7LC9hP5oSzGCAwUwggMBAgEBMGMwWDELMAkGA1UEBhMCREUxEzARBgNVBAoTCkRGTi1WZXJlaW4x
+EDAOBgNVBAsTB0RGTi1QS0kxIjAgBgNVBAMTGURGTi1WZXJlaW4gUENBIEdyaWQgLSBHMDECBxTn
+wTG2nK0wDQYJYIZIAWUDBAIDBQCgggFzMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
+hvcNAQkFMQ8XDTEyMTIxOTE0NTMwNlowTwYJKoZIhvcNAQkEMUIEQJ+ua7evEZYX79hp4cM63xBm
+HyimKfuZ54m6DQleZ1Sq9eK0qoeandZrQYL2W5IRh2Y7s1rGXow5wYzZdmoHIZAwcgYJKwYBBAGC
+NxAEMWUwYzBYMQswCQYDVQQGEwJERTETMBEGA1UEChMKREZOLVZlcmVpbjEQMA4GA1UECxMHREZO
+LVBLSTEiMCAGA1UEAxMZREZOLVZlcmVpbiBQQ0EgR3JpZCAtIEcwMQIHFOfBMbacrTB0BgsqhkiG
+9w0BCRACCzFloGMwWDELMAkGA1UEBhMCREUxEzARBgNVBAoTCkRGTi1WZXJlaW4xEDAOBgNVBAsT
+B0RGTi1QS0kxIjAgBgNVBAMTGURGTi1WZXJlaW4gUENBIEdyaWQgLSBHMDECBxTnwTG2nK0wDQYJ
+KoZIhvcNAQEBBQAEggEAHvpVZmfzJAQzDzz3kuXB4cgoA2Tu++yRJy2fwOKP7eEeDhHeky+rJqna
+s28HqLiMsKCKzYS/sXdeLsdXRl9IN1z7Xot3l5nvUiO4uUDV0A9KkarWo6jzHozJ2sNGm8oo8Yzq
+46pSkWDx2PNkhfkbmJdhzjLvSvqa2oJO1+XuL3jVfJbraYejqMzAtUoIuuwnbsKLeVUC70xrY9ol
+lq0oY84xihW/MQuJkQiHwgjP7oeAA0GcaKpU4IBeXA4UDW9CQ/NwWgVl+95TyTH9dazQmWFs85J1
+VaQh2+FlbV2+chnLGUwYiheUlr7HT9i46ceRZtoVwp76xKRRD6XfMtiDiQAAAAAAAA==
+
+
+--=-y5rfOsUDAR0MtIImGtjc--
 
