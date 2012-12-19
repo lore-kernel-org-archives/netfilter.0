@@ -1,64 +1,104 @@
-From: Jack Bates <uo4zau@nottheoilrig.com>
+From: Leonardo Rodrigues <leolistas@solutti.com.br>
 Subject: Re: Discriminate client requests from transparent proxy requests?
-Date: Wed, 19 Dec 2012 10:33:48 -0800
-Message-ID: <50D2088C.5060903@nottheoilrig.com>
-References: <50D01F13.7030707@nottheoilrig.com> <50D0713D.4070800@solutti.com.br>
+Date: Wed, 19 Dec 2012 17:05:45 -0200
+Message-ID: <50D21009.50702@solutti.com.br>
+References: <50D01F13.7030707@nottheoilrig.com> <50D0713D.4070800@solutti.com.br> <50D2088C.5060903@nottheoilrig.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=nottheoilrig.com;
-	s=mail; t=1355942067;
-	bh=1x7Jn+eJRyFNNq5V4DBUUc5ERLhlU8XxjovyyImIdD4=;
-	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:References:
-	 In-Reply-To:Content-Type:Content-Transfer-Encoding;
-	b=Zce1lJRoc92xpMiya54MCHlG+1DGURvOJr3jMvm8NqV4CFBqkV2RWJifMFnf3AQ00
-	 pm82mTVo57CLGvmKvDqiM780cJyh1J6ct8hYmlxotinr9QQvRayej6qCl7e0ry/nlt
-	 yp/Nm0UG3JRzKOndbXmL8VOqFM8sM1aOpE2MTkvw=
-In-Reply-To: <50D0713D.4070800@solutti.com.br>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=solutti.com.br; s=google;
+        h=x-received:message-id:date:from:user-agent:mime-version:to:cc
+         :subject:references:in-reply-to:content-type
+         :content-transfer-encoding;
+        bh=4lKV887H7rQNAC6opukeREqw6xoO2NvCkdXUnkCotfE=;
+        b=t9W35NRAn4s0xqC1xosA9SphrvXGHwOGAgy+5O5Mtj+gzbEmzW9O95I/gwx0SIO/x0
+         tZ9hC7cZ3siKYUuRLVDVuxrLGtm/SFDoYoDI7f56xHAwHafmri07vk9cvSXJhMs/c/KW
+         lmqNTDVoViplf44VlGXnWvEkcHnP/fsctVZ40=
+In-Reply-To: <50D2088C.5060903@nottheoilrig.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Leonardo Rodrigues <leolistas@solutti.com.br>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Jack Bates <uo4zau@nottheoilrig.com>
 Cc: netfilter@vger.kernel.org
 
-Thank you, but what I want is for our *router* to be able to tell the 
-difference between requests from clients to origin servers (and 
-intercept these) and requests from our transparent proxy to origin 
-servers (and not intercept these). I'm wondering what options there are 
-to do this because our proxy makes "transparent" requests to origin 
-servers, with the same source address as the request from the client.
 
-I think what you're describing instead is how the *proxy* can tell the 
-difference between requests that were intercepted and requests that were 
-explicitly sent to the proxy.
+     how about adjusting TOS values on the packets using those created=20
+ACLs ?? That would probably make identification easier/possible on=20
+routing layers, your routers included.
 
-On 18/12/12 05:35 AM, Leonardo Rodrigues wrote:
+     you can specify a specific TOS value for your 'normal proxy' port=20
+and another one for your 'transparent proxy'.
+
+     but you're right, i didnt catch your idea and, maybe, my answer wa=
+s=20
+for a different scenario than yours. But i think that using the=20
+transparent port ACL and adjusting TOS on those packets, you could catc=
+h=20
+that on your routers.
+
+
+
+from http://www.squid-cache.org/Doc/config/tcp_outgoing_tos/
+
+     Allows you to select a TOS/Diffserv value for packets outgoing
+     on the server side, based on an ACL.
+
+     tcp_outgoing_tos ds-field [!]aclname ...
+
+     Example where normal_service_net uses the TOS value 0x00
+     and good_service_net uses 0x20
+
+     acl normal_service_net src 10.0.0.0/24
+     acl good_service_net src 10.0.1.0/24
+     tcp_outgoing_tos 0x00 normal_service_net
+     tcp_outgoing_tos 0x20 good_service_net
+
+     TOS/DSCP values really only have local significance - so you shoul=
+d
+     know what you're specifying. For more information, see RFC2474,
+     RFC2475, and RFC3260.
+
+     The TOS/DSCP byte must be exactly that - a octet value  0 - 255, o=
+r
+     "default" to use whatever default your host has. Note that in
+     practice often only multiples of 4 is usable as the two rightmost =
+bits
+     have been redefined for use by ECN (RFC 3168 section 23.1).
+
+     Processing proceeds in the order specified, and stops at first ful=
+ly
+     matching line.
+
+
+Em 19/12/12 16:33, Jack Bates escreveu:
+> Thank you, but what I want is for our *router* to be able to tell the=
+=20
+> difference between requests from clients to origin servers (and=20
+> intercept these) and requests from our transparent proxy to origin=20
+> servers (and not intercept these). I'm wondering what options there=20
+> are to do this because our proxy makes "transparent" requests to=20
+> origin servers, with the same source address as the request from the=20
+> client.
 >
->      How about configuring two ports, one for transparent proxy and
-> other for your 'normal' proxy? Doing that, you could create ACLs for
-> matching your normal and transparent ports
+> I think what you're describing instead is how the *proxy* can tell th=
+e=20
+> difference between requests that were intercepted and requests that=20
+> were explicitly sent to the proxy.
 >
->      Changing the port on your transparent proxy rule will be absolutely
-> transparent to your users ...
->
-> http_port 12345 transparent
-> http_port 3128
->
-> acl transparent_access myport 12345
-> acl normal_access myport 3128
->
->
->      i cant think on any easier way of discriminating normal and
-> transparent-intercepted traffic ...
->
->
-> Em 18/12/12 05:45, Jack Bates escreveu:
->> Do you have any advice how to discriminate traffic from clients from
->> traffic from our transparent proxy?
->>
->> Our proxy sends requests to origin servers with the same source
->> address as the request from the client, so we can do per-host traffic
->> shaping on our router. But consequently I wonder how to discriminate
->> client requests from proxy requests, and route the former to the
->> proxy, but not route the latter. What options are there?
->
+
+
+--=20
+
+
+	Atenciosamente / Sincerily,
+	Leonardo Rodrigues
+	Solutti Tecnologia
+	http://www.solutti.com.br
+
+	Minha armadilha de SPAM, N=C3O mandem email
+	gertrudes@solutti.com.br
+	My SPAMTRAP, do not email it
+
+
+
