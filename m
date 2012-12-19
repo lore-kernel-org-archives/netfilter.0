@@ -1,136 +1,47 @@
-From: Christoph Anton Mitterer <christoph.anton.mitterer@lmu.de>
-Subject: ipset save and restore
-Date: Wed, 19 Dec 2012 15:53:06 +0100
-Message-ID: <1355928786.30355.22.camel@heisenberg.scientia.net>
+From: Giuseppe Longo <giuseppelng@gmail.com>
+Subject: Redirect network traffic
+Date: Wed, 19 Dec 2012 15:59:01 +0000
+Message-ID: <CAFpD06Q+6f_U6NCk7q+S-H3VzB6vLNRJVpgCbzOx+-XU4aFPwg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="sha512";
-	protocol="application/x-pkcs7-signature";
-	boundary="=-y5rfOsUDAR0MtIImGtjc"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type
+         :content-transfer-encoding;
+        bh=hTQT4oCd90SRSLvqw83gZAoJDYwY26ft3Pc4DhQDigg=;
+        b=sZwhcIQZDjYTH9Z5D8uSDE5E3ouyJFWbFkD4U+kYNsg77U4K21Q1nBdtMCTA7aORIC
+         B4muaiWCM3sglMSM227nXtEGLuqKKo8zFMqLl1t8Zxmw7CGL9huUTUTx6IuhWtP/Ywp4
+         ve+1wJ6Ulaa92NHPpmY3WFMudnmDI4G6//C7+zMA4Y0GYseqPeuHwQI9Ufe0B6LrwUa/
+         dZBJAz7YSYKLDAQQXmjm9J0zJgio6i819ZCEmeQLU8ppNH/MzHF13RglIC2s8bnCWnTA
+         mH1WKwx5Bfxb/e7MauvsViobiuuyJ5QXBqTOGGuFXuDpr5BqElGpCuMmT43qJ81jdiYG
+         1Qog==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="windows-1252"
 To: netfilter@vger.kernel.org
 
+Hi guys,
+I've an openvpn server with two ethernet interfaces, eth0 and eth1.
 
---=-y5rfOsUDAR0MtIImGtjc
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+The network traffic is coming through eth0 interface, and i would like
+to redirect all traffic in a specific host (ip address 172.16.1.2)
+through eth1 interface.
+I'm trying to explain with an example
 
-Hi.
+If i want to ping the host 172.16.1.4, the ping must first pass from
+the host 172.16.1.2:
 
-I wanted to use ipset (ipset v6.11, protocol version: 6) to load it's
-sets from a cluster wide distributed file, e.g. at boot, or every time
-that file changes.
+Internet ---> VPN ---> Host1 (172.16.1.2) ---> Host2 (172.16.1.4)
 
-
-Now unfortunately it seems that ipset restore doesn't work as e.g.
-iptables restore does and seems to me therefore pretty much useless.
-
-ipset restore < file
-gives me errors about the sets already existing, but even with -exist it
-doesn't help a lot, because entries removed from the file, are not
-removed from the actual ipsets.
-
-So it seems as if ipset restore is not what the manpage describes
-(restore a session) but rather an additive merge of another session to
-the current one.
-
-Of course I understand that it could not delete sets which are in use,
-but at least it could empty them.
+I've tried with these rules:
 
 
-Now when I use the following instead:
-ipset flush
-ipset destroy
-ipset restore < file
+iptables -t nat -A PREROUTING -p -j DNAT =96to-destination 172.16.1.2
+iptables -t nat -A POSTROUTING -j MASQUERADE
 
-To first flush all entries possibly no longer in the current version of
-file and to destroy all sets that got removed and that are no longer
-used... and only then reload the rules.... I have of course some time
-where even the sets that are in use are empty... and my connections will
-fail.
+But, I think that is not correct.
+Any ideas?
 
-
-So is there some workaround or who is the whole thing intended to be
-used?
-
-
-Thanks,
-Chris.
-
---=-y5rfOsUDAR0MtIImGtjc
-Content-Type: application/x-pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgMFADCABgkqhkiG9w0BBwEAAKCCC5ww
-ggXKMIIEsqADAgECAgcU58ExtpytMA0GCSqGSIb3DQEBBQUAMFgxCzAJBgNVBAYTAkRFMRMwEQYD
-VQQKEwpERk4tVmVyZWluMRAwDgYDVQQLEwdERk4tUEtJMSIwIAYDVQQDExlERk4tVmVyZWluIFBD
-QSBHcmlkIC0gRzAxMB4XDTEyMTIxMjA4NDMxM1oXDTE0MDEwOTA4NDMxM1oweTELMAkGA1UEBhMC
-REUxFDASBgNVBAoTC0dyaWRHZXJtYW55MTEwLwYDVQQLEyhMdWR3aWctTWF4aW1pbGlhbnMtVW5p
-dmVyc2l0YWV0IE11ZW5jaGVuMSEwHwYDVQQDExhDaHJpc3RvcGggQW50b24gTWl0dGVyZXIwggEi
-MA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC9X0sutkL97kWEpV8WpoTvg9h4/9ghtoDNSVx9
-XFLSR0ce2QWp+WuYs1l+i39vGd/0zvCMI5ioIAm7JMD4hyu2Ni4IMxbZ/B6IhFYhb+peEYozB8Es
-wJYXIHCo24qR6V3FpNiOUoF/wq1Em8p28ejHp9rX8aokkB2s0059i4gn9vn3xVY3z6U7zW4giCLK
-s5qG8r4w7bBuzkQshtjn9+VsKicemHcfrH/gM33ZFBuFqTgDZPsphBLupE60Nylf0br2jrinFt0K
-kkxTDQhR021lZ01XFsPf1AtMjqBh+vsGvCfZGSt4wZ7qwIrHI88P6dkhSiP6+5v0haLsJ1vkKhbp
-AgMBAAGjggJ2MIICcjAMBgNVHRMBAf8EAjAAMA4GA1UdDwEB/wQEAwIEsDAdBgNVHSUEFjAUBggr
-BgEFBQcDAgYIKwYBBQUHAwQwHQYDVR0OBBYEFMZatm//jhCHTlmzPd8Oc9IvwmyQMB8GA1UdIwQY
-MBaAFJbs3K2aw/5Qozwi5T3Cxf/K2SLGMCoGA1UdEQQjMCGBH2NocmlzdG9waC5hbnRvbi5taXR0
-ZXJlckBsbXUuZGUwKgYDVR0gBCMwITARBg8rBgEEAYGtIYIsAQEDAQYwDAYKKoZIhvdMBQICATCB
-wQYDVR0fBIG5MIG2MFmgV6BVhlNodHRwOi8vY2RwMS5wY2EuZGZuLmRlL2Rmbi1wa2kvY2VydGlm
-aWNhdGlvbi94NTA5L2dyaWQvZzEvZGF0YS9jcmxzL3Jvb3QtY2EtY3JsLmNybDBZoFegVYZTaHR0
-cDovL2NkcDIucGNhLmRmbi5kZS9kZm4tcGtpL2NlcnRpZmljYXRpb24veDUwOS9ncmlkL2cxL2Rh
-dGEvY3Jscy9yb290LWNhLWNybC5jcmwwgdYGCCsGAQUFBwEBBIHJMIHGMGEGCCsGAQUFBzAChlVo
-dHRwOi8vY2RwMS5wY2EuZGZuLmRlL2Rmbi1wa2kvY2VydGlmaWNhdGlvbi94NTA5L2dyaWQvZzEv
-ZGF0YS9jZXJ0cy9yb290LWNhLWNlcnQuY3J0MGEGCCsGAQUFBzAChlVodHRwOi8vY2RwMi5wY2Eu
-ZGZuLmRlL2Rmbi1wa2kvY2VydGlmaWNhdGlvbi94NTA5L2dyaWQvZzEvZGF0YS9jZXJ0cy9yb290
-LWNhLWNlcnQuY3J0MA0GCSqGSIb3DQEBBQUAA4IBAQBC8rkXZzIbWa6lhtcA4z9zJ6XqDgD4hloG
-ZxLowGI6QyYeeZJngIJ2Zzbf9NLoqp68kjA3paZdNNfbgHO/hLCz+23VwyJ0b54rrGWXQ9b2VVNF
-LB1H43VmXxLU78vurvREk6K/uAeXl7h8hKSsI9Wc8GOeJ7abe0FhkpCjT0O3cwxs3v53DS8XZmoQ
-hQ6oRPKRk/K+ahbP6KbVYWuhNLqmKUVCJqlFYawtccrHWFtuiKQqfyQqH7Rv51CFWyL7SRfxOSrM
-a0HVQcftW7F/7zQqJpltpvZFHiMEZatfuYldNVYLwA3P5VzFpPfJ5K4xzgiS/pJ0d+Fl55zssL2E
-/mhLMIIFyjCCBLKgAwIBAgIHFOfBMbacrTANBgkqhkiG9w0BAQUFADBYMQswCQYDVQQGEwJERTET
-MBEGA1UEChMKREZOLVZlcmVpbjEQMA4GA1UECxMHREZOLVBLSTEiMCAGA1UEAxMZREZOLVZlcmVp
-biBQQ0EgR3JpZCAtIEcwMTAeFw0xMjEyMTIwODQzMTNaFw0xNDAxMDkwODQzMTNaMHkxCzAJBgNV
-BAYTAkRFMRQwEgYDVQQKEwtHcmlkR2VybWFueTExMC8GA1UECxMoTHVkd2lnLU1heGltaWxpYW5z
-LVVuaXZlcnNpdGFldCBNdWVuY2hlbjEhMB8GA1UEAxMYQ2hyaXN0b3BoIEFudG9uIE1pdHRlcmVy
-MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAvV9LLrZC/e5FhKVfFqaE74PYeP/YIbaA
-zUlcfVxS0kdHHtkFqflrmLNZfot/bxnf9M7wjCOYqCAJuyTA+IcrtjYuCDMW2fweiIRWIW/qXhGK
-MwfBLMCWFyBwqNuKkeldxaTYjlKBf8KtRJvKdvHox6fa1/GqJJAdrNNOfYuIJ/b598VWN8+lO81u
-IIgiyrOahvK+MO2wbs5ELIbY5/flbConHph3H6x/4DN92RQbhak4A2T7KYQS7qROtDcpX9G69o64
-pxbdCpJMUw0IUdNtZWdNVxbD39QLTI6gYfr7Brwn2RkreMGe6sCKxyPPD+nZIUoj+vub9IWi7Cdb
-5CoW6QIDAQABo4ICdjCCAnIwDAYDVR0TAQH/BAIwADAOBgNVHQ8BAf8EBAMCBLAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwIGCCsGAQUFBwMEMB0GA1UdDgQWBBTGWrZv/44Qh05Zsz3fDnPSL8JskDAfBgNV
-HSMEGDAWgBSW7NytmsP+UKM8IuU9wsX/ytkixjAqBgNVHREEIzAhgR9jaHJpc3RvcGguYW50b24u
-bWl0dGVyZXJAbG11LmRlMCoGA1UdIAQjMCEwEQYPKwYBBAGBrSGCLAEBAwEGMAwGCiqGSIb3TAUC
-AgEwgcEGA1UdHwSBuTCBtjBZoFegVYZTaHR0cDovL2NkcDEucGNhLmRmbi5kZS9kZm4tcGtpL2Nl
-cnRpZmljYXRpb24veDUwOS9ncmlkL2cxL2RhdGEvY3Jscy9yb290LWNhLWNybC5jcmwwWaBXoFWG
-U2h0dHA6Ly9jZHAyLnBjYS5kZm4uZGUvZGZuLXBraS9jZXJ0aWZpY2F0aW9uL3g1MDkvZ3JpZC9n
-MS9kYXRhL2NybHMvcm9vdC1jYS1jcmwuY3JsMIHWBggrBgEFBQcBAQSByTCBxjBhBggrBgEFBQcw
-AoZVaHR0cDovL2NkcDEucGNhLmRmbi5kZS9kZm4tcGtpL2NlcnRpZmljYXRpb24veDUwOS9ncmlk
-L2cxL2RhdGEvY2VydHMvcm9vdC1jYS1jZXJ0LmNydDBhBggrBgEFBQcwAoZVaHR0cDovL2NkcDIu
-cGNhLmRmbi5kZS9kZm4tcGtpL2NlcnRpZmljYXRpb24veDUwOS9ncmlkL2cxL2RhdGEvY2VydHMv
-cm9vdC1jYS1jZXJ0LmNydDANBgkqhkiG9w0BAQUFAAOCAQEAQvK5F2cyG1mupYbXAOM/cyel6g4A
-+IZaBmcS6MBiOkMmHnmSZ4CCdmc23/TS6KqevJIwN6WmXTTX24Bzv4Sws/tt1cMidG+eK6xll0PW
-9lVTRSwdR+N1Zl8S1O/L7q70RJOiv7gHl5e4fISkrCPVnPBjnie2m3tBYZKQo09Dt3MMbN7+dw0v
-F2ZqEIUOqETykZPyvmoWz+im1WFroTS6pilFQiapRWGsLXHKx1hbboikKn8kKh+0b+dQhVsi+0kX
-8TkqzGtB1UHH7Vuxf+80KiaZbab2RR4jBGWrX7mJXTVWC8ANz+VcxaT3yeSuMc4Ikv6SdHfhZeec
-7LC9hP5oSzGCAwUwggMBAgEBMGMwWDELMAkGA1UEBhMCREUxEzARBgNVBAoTCkRGTi1WZXJlaW4x
-EDAOBgNVBAsTB0RGTi1QS0kxIjAgBgNVBAMTGURGTi1WZXJlaW4gUENBIEdyaWQgLSBHMDECBxTn
-wTG2nK0wDQYJYIZIAWUDBAIDBQCgggFzMBgGCSqGSIb3DQEJAzELBgkqhkiG9w0BBwEwHAYJKoZI
-hvcNAQkFMQ8XDTEyMTIxOTE0NTMwNlowTwYJKoZIhvcNAQkEMUIEQJ+ua7evEZYX79hp4cM63xBm
-HyimKfuZ54m6DQleZ1Sq9eK0qoeandZrQYL2W5IRh2Y7s1rGXow5wYzZdmoHIZAwcgYJKwYBBAGC
-NxAEMWUwYzBYMQswCQYDVQQGEwJERTETMBEGA1UEChMKREZOLVZlcmVpbjEQMA4GA1UECxMHREZO
-LVBLSTEiMCAGA1UEAxMZREZOLVZlcmVpbiBQQ0EgR3JpZCAtIEcwMQIHFOfBMbacrTB0BgsqhkiG
-9w0BCRACCzFloGMwWDELMAkGA1UEBhMCREUxEzARBgNVBAoTCkRGTi1WZXJlaW4xEDAOBgNVBAsT
-B0RGTi1QS0kxIjAgBgNVBAMTGURGTi1WZXJlaW4gUENBIEdyaWQgLSBHMDECBxTnwTG2nK0wDQYJ
-KoZIhvcNAQEBBQAEggEAHvpVZmfzJAQzDzz3kuXB4cgoA2Tu++yRJy2fwOKP7eEeDhHeky+rJqna
-s28HqLiMsKCKzYS/sXdeLsdXRl9IN1z7Xot3l5nvUiO4uUDV0A9KkarWo6jzHozJ2sNGm8oo8Yzq
-46pSkWDx2PNkhfkbmJdhzjLvSvqa2oJO1+XuL3jVfJbraYejqMzAtUoIuuwnbsKLeVUC70xrY9ol
-lq0oY84xihW/MQuJkQiHwgjP7oeAA0GcaKpU4IBeXA4UDW9CQ/NwWgVl+95TyTH9dazQmWFs85J1
-VaQh2+FlbV2+chnLGUwYiheUlr7HT9i46ceRZtoVwp76xKRRD6XfMtiDiQAAAAAAAA==
-
-
---=-y5rfOsUDAR0MtIImGtjc--
-
+Thanks in advice,
+Regards.
