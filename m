@@ -1,87 +1,50 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipset save and restore
-Date: Thu, 20 Dec 2012 20:12:42 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1212202001350.25774@blackhole.kfki.hu>
-References: <1355928786.30355.22.camel@heisenberg.scientia.net>   <alpine.DEB.2.00.1212192146330.23162@blackhole.kfki.hu>   <1355955834.5199.27.camel@fermat.scientia.net>   <alpine.DEB.2.00.1212200011460.23577@blackhole.kfki.hu>  <1355963003.5199.52.camel@fermat.scientia.net>
-  <alpine.DEB.2.00.1212201244070.24774@blackhole.kfki.hu> <1356019930.11041.13.camel@heisenberg.scientia.net>
+From: Jan Engelhardt <jengelh@inai.de>
+Subject: Re: Discriminate client requests from transparent proxy requests?
+Date: Thu, 20 Dec 2012 20:35:44 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1212202003130.26093@nerf07.vanv.qr>
+References: <50D01F13.7030707@nottheoilrig.com> <50D2C156.2050801@nottheoilrig.com> <alpine.LNX.2.01.1212200858460.2026@nerf07.vanv.qr> <201212201054.25174.neal.p.murphy@alum.wpi.edu>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1356019930.11041.13.camel@heisenberg.scientia.net>
+In-Reply-To: <201212201054.25174.neal.p.murphy@alum.wpi.edu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Christoph Anton Mitterer <christoph.anton.mitterer@lmu.de>
+To: Neal Murphy <neal.p.murphy@alum.wpi.edu>
 Cc: netfilter@vger.kernel.org
 
-On Thu, 20 Dec 2012, Christoph Anton Mitterer wrote:
 
-> On Thu, 2012-12-20 at 13:00 +0100, Jozsef Kadlecsik wrote:
-> > No, "ipset restore" is not identical with iptables-restore. For example 
-> > with the latter you are not able to incrementally update existing 
-> > rulesets.
-> Well incrementally updating would also mean removing entries that are no
-> longer existing.... otherwise it's only making a union.
+On Thursday 2012-12-20 16:54, Neal Murphy wrote:
+>> >--destination is the ultimate destination. The default gateway for the
+>> >proxy is 192.168.1.84, so when it makes a request to the origin server,
+>> >it forwards it to 192.168.1.84 (--destination is 12.34.56.78)
+>> >
+>> >I think iptables can't tell whether the request was forwarded to
+>> >192.168.1.1 or 192.168.1.84, so it can't tell whether it arrived on the
+>> >"br-lan" interface or the "br-lan:1" alias?
+>> 
+>> It is not an iptables problem.
+>> 
+>> The question is, how do you define "arriving on br-lan:1"? That is,
+>> looking only at one Ethernet packet, how would you tell it is "for
+>> br-lan:1" rather than for br-lan? Open a hexdump, tell me which byte(s)
+>> shall represent "br-lan:1".
+>
+>You can... Hmmm... The packet from the proxy to internet (via the gateway) 
+>doesn't contain 192.168.1.84, does it?
+>Perhaps the only way to make such a scheme work would be to add a second 
+>primary address (i.e., in another subnet) to br-lan and to the proxy's NIC.
+>Assuming the existing netmask is /24, one could `ip addr add 192.168.2.1/30 dev
+>br-lan` on the gateway and `ip addr add 192.168.2.2/30 dev ethN`
+>on the proxy system, then tell the proxy to use 192.168.1.84 on its internal 
+>side and 192.168.2.2 on its external side.
 
-By "update" I meant adding/deleting entries, creating/swapping/destroying 
-sets.
- 
-> And as I said before... anyone who wants to do this can easily sed
-> "s/^/ipset //" | sh
->  
-> > Nothing prevents you to write a few liner in any scripting language, which 
-> > either adds a "flush" command or wraps "create, add" into "create temp, 
-> > add to temp, swap, destroy temp".
-> Of course one can do this and actually I'm doing right now... but it's
-> quite unhandy if anybody has to do this just to get a proper restore.
-> 
-> And when doing it "proper" it's not just a one liner... it has to work
-> with different names for the actions like create, creat, crea, etc. and
-> one always risks to break things (and even get security issues by that)
-> when the syntax of ipset should change or be extended.
-> With temp names there's the issue, that (I guess) there is a maximum
-> name for set names, so one cannot just add all new sets as
-> tmp_<originalname> as this might already fail
-> 
-> Last but not least, while this allows atomic swaps of single set... one
-> cannot swap the whole ipset configuration in one atomic step. 
+Again: where in the Ethernet/IP packet would that be recorded? Don't
+guess; *construct* one. Your favorite IP reference (be that a book,
+the RFCs, Wikipedia, ...) can tell you what fields exist and need to
+be filled out. Consider yourself a Linux machine sending a packet,
+fill in the fields, in the direction from TCP to IP to Ethernet (i.e.
+backwards). Once done, parse it (in the forward direction), like a
+Linux machine receiving the packet.
 
-That's not possible in the current framework: individual sets can be 
-changed atomically by swapping (not counting add/del elements), whole 
-config doesn't.
- 
-> ipset's current restore should actually be called exec, or merge, or
-> load...
-
-Maybe, but I'm not going to change it, in order to keep backward 
-compatibility.
- 
-> btw: I might have noticed a bug(?) in at least 6.11
-> With the following output of store:
-> # ipset list | grep ^Name
-> 
-> I'd have expected to get the same sets with
-> list -names
-> but it gives me one twice:
-> # ipset list -name
-> lrz_lcg_se_cn
-> lrz_lcg_se_pn
-> lrz_lcg_ce_cn
-> lrz_lcg_ce_compn
-> lrz_lcg_ce_compn
-> lrz_lcg_se
-> lrz_lcg_ce
-> DROPPED
-> 
-> Is that expected?
-
-It's seems not right, but it's hard to tell without the actual sets.
-Send me the data in private so that I could reproduce it.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+The exercise here is that one sees that it is (im)possible.
