@@ -1,54 +1,55 @@
-From: Leonardo Rodrigues <leolistas@solutti.com.br>
+From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
 Subject: Re: Discriminate client requests from transparent proxy requests?
-Date: Thu, 20 Dec 2012 10:58:02 -0200
-Message-ID: <50D30B5A.1030605@solutti.com.br>
-References: <50D01F13.7030707@nottheoilrig.com> <alpine.LNX.2.01.1212180909200.28945@nerf07.vanv.qr> <50D1EE31.6060201@nottheoilrig.com> <alpine.LNX.2.01.1212192247440.17747@nerf07.vanv.qr> <50D2C156.2050801@nottheoilrig.com> <alpine.LNX.2.01.1212200858460.2026@nerf07.vanv.qr>
+Date: Thu, 20 Dec 2012 10:54:24 -0500
+Message-ID: <201212201054.25174.neal.p.murphy@alum.wpi.edu>
+References: <50D01F13.7030707@nottheoilrig.com> <50D2C156.2050801@nottheoilrig.com> <alpine.LNX.2.01.1212200858460.2026@nerf07.vanv.qr>
+Reply-To: neal.p.murphy@alum.wpi.edu
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=solutti.com.br; s=google;
-        h=x-received:message-id:date:from:user-agent:mime-version:to:cc
-         :subject:references:in-reply-to:content-type
-         :content-transfer-encoding;
-        bh=SDou8flo5kp7a0qDlzNn27Jlqul+moRRi8qT/mOAQEw=;
-        b=uesLUEsPa17ciinLqffK876uZRxnPnmEIqWAF3FG3jrEi1Fstbo0pKL5qiFJhnrtzT
-         cazMMxWNf5gDXsbbrN1ZIUbhTT7+RrB4P/CNd4t9G3UYQSuGR+L1Hf7g0GBbhpNz1XrF
-         k6bGJiBQtWryybL9ly5uUmUnYmlBpfwEm+Uwo=
 In-Reply-To: <alpine.LNX.2.01.1212200858460.2026@nerf07.vanv.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Jan Engelhardt <jengelh@inai.de>
-Cc: Jack Bates <uo4zau@nottheoilrig.com>, netfilter@vger.kernel.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Em 20/12/12 06:18, Jan Engelhardt escreveu:
->
->>   * TOS/DSCP field
-> I would not put too much reliance on this one, as hosts take more
-> freedom in setting this field to whatever they like.
->
+On Thursday, December 20, 2012 03:18:43 AM Jan Engelhardt wrote:
+> On Thursday 2012-12-20 08:42, Jack Bates wrote:
+> >>> with "iptables -i br-lan:1" but I discovered that --in-interface
+> >>> doesn't support aliases (I guess this makes sense, traffic doesn't
+> >>> reference the IP of
+> >>> the next hop, so how can you tell which alias it arrived on?)
+> >> 
+> >> Obviously, using the iptables -d option.
+> >
+> >--destination is the ultimate destination. The default gateway for the
+> >proxy is 192.168.1.84, so when it makes a request to the origin server,
+> >it forwards it to 192.168.1.84 (--destination is 12.34.56.78)
+> >
+> >I think iptables can't tell whether the request was forwarded to
+> >192.168.1.1 or 192.168.1.84, so it can't tell whether it arrived on the
+> >"br-lan" interface or the "br-lan:1" alias?
+> 
+> It is not an iptables problem.
+> 
+> The question is, how do you define "arriving on br-lan:1"? That is,
+> looking only at one Ethernet packet, how would you tell it is "for
+> br-lan:1" rather than for br-lan? Open a hexdump, tell me which byte(s)
+> shall represent "br-lan:1".
 
-     as this is, in fact, a useless information for general purposes,=20
-you can always force all packets with some specific TOS/DSCP field and=20
-later alter that to meet your criterias. That way, even if hosts set=20
-those to something that would mess with your internal matching/routing,=
-=20
-ensuring that it will be changed to your default ones would do it.
+You can... Hmmm... The packet from the proxy to internet (via the gateway) 
+doesn't contain 192.168.1.84, does it?
 
+Perhaps the only way to make such a scheme work would be to add a second 
+primary address (i.e., in another subnet) to br-lan and to the proxy's NIC. 
+Assuming the existing netmask is /24, one could
+  ip addr add 192.168.2.1/30 dev br-lan
+on the gateway and
+  ip addr add 192.168.2.2/30 dev ethN
+on the proxy system, then tell the proxy to use 192.168.1.84 on its internal 
+side and 192.168.2.2 on its external side. Now netfilter can differentiate the 
+traffic using the source address. But now netfilter need do nothing because 
+simple routing properly directs the packets.
 
-
---=20
-
-
-	Atenciosamente / Sincerily,
-	Leonardo Rodrigues
-	Solutti Tecnologia
-	http://www.solutti.com.br
-
-	Minha armadilha de SPAM, N=C3O mandem email
-	gertrudes@solutti.com.br
-	My SPAMTRAP, do not email it
-
-
-
+I'd say you're right. It more closely resembles an addressing/routing issue 
+than it does a packet filtering issue.
