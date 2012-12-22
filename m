@@ -1,86 +1,71 @@
-From: Ulrich Weber <ulrich.weber@sophos.com>
-Subject: Re: How to use IPv6 SNPT?
-Date: Fri, 21 Dec 2012 16:00:06 +0100
-Message-ID: <50D47976.6090409@sophos.com>
-References: <50D1ADEE.8010805@logix.net.nz>
+From: Ronnie Zheng <jeromezhr@gmail.com>
+Subject: iptables will match the following ICMP request packet as ESTABLISHED
+ state after the first reply packet is sent
+Date: Sat, 22 Dec 2012 14:55:34 +0800
+Message-ID: <CAMQZvgFzqJer2pxA_G6hWtfxFqUn54hKTDmBJyP1K_fnT3cOCQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <50D1ADEE.8010805@logix.net.nz>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sophos.com; h=message-id:date:from:mime-version:to:subject:references:in-reply-to:content-type:content-transfer-encoding; s=global; bh=AztFd18iurv+NL4kOwkYsqvkdw2Ndm+CFLPzQ86Sz8s=; b=iOqSAnmKmnNVuk2tbAB2jQtXgmDnLLaRBnQPXNT0EnrgsDqJCZaMUO4kf2Vt8NWIx/7G48tgpQLcubJ2XoBWe0GNjDwEWM/da/VbMGrM9gTRjhFrNfHF5w3AvmLRXZ+YlszRxHgdZ+L0nNddjnwt+O0IKpH8VZ6HPjCqjwzpl7U=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=QZUGX9pTUU63Trisqh9yT51QWF99UTUuuVP0UIPIKp0=;
+        b=qaTrMlOB4zxgJ9GV32+UH6+kff/CQxDReF2yjLgSvMJ/U9zgBgb56fq36uwKU3Bq5D
+         t99b2SGu+MoM4rTXTx9lZdARh9PWmt8UcPk5wrzxDP+PABdzIm6lIOaPTlv/RgwnyYCk
+         nio2ZvCjMgtaiAbRxOBpqWWiDj354zwmeUqUmA3cuIOyYMW943yOC00wcj/emHmVqopD
+         fvECqzOZNPkkOFhfSPNkpJSn2jAzeLTDLEG0kj6DPYBNKd+ivfeB7SHmMVZMFf0mnMht
+         U2uw/VXW+mEiFJr1N3scL1ygrwlNnjLLFHtdLCzJNjPxYz92afOgK6NMth4f5JCvmWhL
+         Bq3Q==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi Michael,
+Test environment: CentOS 6.3 - kernel 2.6.32-279.el6.i686, iptables v1.4.7
+Win7 <---> CentOS
+Windows is constantly replaying ICMP echo request in 10pkt/sec rate to CentOS.
 
-NAT table is only called once for each connection.
-Since you use stateless NAT better use the mangle table.
+In iptables, I added the rules as below to limit the incoming icmp
+request packet rate. But it didn't work. Because after the 1st
+incoming icmp request was accepted by the 1st rule and my host
+replied, all the following ICMP request will accepted by the 2nd rule,
+which will accept the incoming ICMPrequest as ESTABLISHED state
+packet. I think this doesn't make sense.
 
-Cheers
-Ulrich
+ACCEPT     icmp --  anywhere             anywhere            icmp
+echo-request limit: avg 1/sec burst 1
+ACCEPT     all  --  anywhere             anywhere            state ESTABLISHED
+DROP       icmp --  anywhere             anywhere
 
-On 12/19/12 13:07, Michael Ludvig wrote:
-> Hi guys
->
-> I did some experimenting with the new NAT support for IPv6 and was qu=
-ite
-> impressed how smoothly MASQUERADE and SNAT work.
->
-> However I didn't have any success with IPv6 SNPT. As I understand it
-> SNPT is meant for 1:1 address translation and should simply replace s=
-rc
-> prefix with dst prefix.
->
-> For testing I use fd00::/64 address range in my VirtualBox network wi=
-th
-> SLAAC addresses.
->
-> ip6tables -t nat -I POSTROUTING -s fd00::/64 \
->      -j SNPT --src-pfx fd00::/64 --dst-pfx 2001:e20:2000:xx::/64
->
-> The strange thing is that only the first ping6 packet to google is
-> translated, the subsequent ones on the external interface are still i=
-n
-> fd00::/64:
->
-> Seq 1 - translated:
-> 00:49:25.699206 IP6 2001:e20:2000:xx:b5d0:27ff:feec:3987 > \
->      2404:6800:4006:804::1017: ICMP6, echo request, seq 1, length 64
->
-> Seq 2&3 - untranslated source:
-> 00:49:26.699498 IP6 fd00::a00:27ff:feec:3987 > \
->      2404:6800:4006:804::1017: ICMP6, echo request, seq 2, length 64
-> 00:49:27.699436 IP6 fd00::a00:27ff:feec:3987 > \
->      2404:6800:4006:804::1017: ICMP6, echo request, seq 3, length 64
->
-> Once I remove the SNPT rule and replace it with a simple -j MASQUERAD=
-E
-> it begins to work. Forwarding is obviously enabled and no other firew=
-all
-> rules are in place (neither in 'nat' table nor elsewhere). My kernel =
-is
-> 3.7.0-rc8, iptables from the current git checkout.
->
-> What am I doing wrong?
->
-> Thanks!
->
-> Michael
->
->
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Expected result:
+1 pkt/sec will be accepted by CentOS and 1 reply will be sent out,
+while other 9 requests will be drop by the last rule.
+
+Observed result:
+1 pkt/sec accepted by the first rule and the other 9 were accepted by
+the second rule. 10 echo reply were sent back. No pkt dropped.
 
 
---=20
-Ulrich Weber | ulrich.weber@sophos.com | Senior Software Engineer
-Astaro - a Sophos company | Amalienbadstr 41 | 76227 Karlsruhe | German=
-y
-Phone +49-721-25516-0 | Fax =96200 | www.astaro.com
+I checked the "Iptables Tutorial 1.2.2" and I found the statement as below.
+"The reply packet is considered as being ESTABLISHED, as we have
+already explained. However, we can know for sure that after the ICMP
+reply, there will be absolutely no more legal traffic in the same
+connection. For this reason, the connection tracking entry is
+destroyed once the reply has traveled all the way through the
+Netfilter structure. In each of the above cases, the request is
+considered as NEW, while the reply is considered as ESTABLISHED."
 
+However, I found the conntrack entry was always there in
+/proc/net/nf_conntrack after the first reply was sent. It will only be
+deleted after 29 seconds once an ICMP connection is established.
+
+ipv4 2 icmp 1 24 src=192.168.56.1 dst=192.168.56.101 type=8 code=0
+id=1 src=192.168.56.101 dst=192.168.56.1 type=0 code=0 id=1 mark=0
+secmark=0 use=2
+
+I think each incoming ICMP request should be treated as NEW state not
+ESTABLISHED even an ICMP connection has been established.
+Correct me if I don't understand the state match in a proper way.
+
+Regards,
+Ronnie.
