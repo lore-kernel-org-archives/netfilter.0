@@ -1,77 +1,83 @@
-From: canqun zhang <canqunzhang@gmail.com>
-Subject: kernel panic when running /etc/init.d/iptables restart
-Date: Mon, 24 Dec 2012 13:51:41 +0800
-Message-ID: <CAFFEFTXxsPRf1Rmxyih0wL4O6q8G0OFmz0iRLX0tOYedYfajHw@mail.gmail.com>
+From: Richard A Nelson <cowboy@cavein.org>
+Subject: conntrack-tools rpc helper
+Date: Mon, 24 Dec 2012 21:23:04 -0500
+Message-ID: <50D90E08.40100@cavein.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:cc:content-type
-         :content-transfer-encoding;
-        bh=mnVbndydaPABXYoLndpigGYvL2brASyNfUIGuRZq1lA=;
-        b=CKs9jg2fVCJYrDiDqaSDsCPXlqK3G91Axdsw7a0Sf70EU9F6wMS9/+1XkcKtaxewUp
-         EqlqVQL1MUj6o41Y30j12ROumLI9e+R2Ucg/hHnTFWJ9xN5iMzh11RZz6CMB7UY9IhTy
-         u/TzQsAkJD+kcbQQBhbJijEBx46o8rCMZWpkuAIQfesr7XtLWP4UYmj/SdNrf+RBNI6W
-         LCJfFu7V8y7YDpITb4P113gUTO+6KwUTXvXhhjjxSjPQtmZ9G2E8hJsDt+wBhYdwyowy
-         UPE77oUxcRMsjT8orEByK0XQC13taEK9aeldUH68HD2cA52HblEYXVtktZN303EYwx+5
-         O4Ug==
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cavein.org; s=2008;
+	t=1356402185; bh=Je6duJZSZGIpTOF1DMTUWS67l++LFQG+weOWsgVh9wY=;
+	l=1913;
+	h=Message-ID:Date:From:MIME-Version:To:Subject:Content-Type:
+	 Content-Transfer-Encoding;
+	b=IZNX8YHlCaDKAxLU9sFZDqzZpA+goiNrMIlAbwoHD4nH34o9bRUxQKmZc//fyk4NP
+	 uWthFx3db5TbrxQj66FVcsYjcfUMzViWXG9qNAQOS2KNP8CSiGINcITnX0IMKcsk6e
+	 7ovidGJdhr3cy1ecnFfcKkgX3FfqetvrCjQeEQT8=
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Patrick McHardy <kaber@trash.net>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hi Patrick=A3=AC
-If i start  one lxc container instance, and then in the system there
-will be two net namespaces,one is init_net namespace, the other is
-created by lxc.If running "/etc/init.d/iptables restart",the system
-will be panic. I find iptables restarting will clean init_net
-namespace firstly,then clean the net namespace created by lxc,buf
-related functions about cleaning up init_net namespace will destroy
-global variables such as nf_ct_destroy,ip_ct_attach=A3=ACetc.So,funtion=
-s
-cleaning up  the other net namespace will be panic.
+I'm having a heck of a time getting this all going ;)
 
-I fixed it up (see below) .If the system need cleaning init_net
-namespace, Ip conntrack belonging to other namespaces will be cleaned
-up firstly.
+Debian Sid/Experimental
+Linux 3.7.1
+conntrack toolchain downloded yesterday (stable, not git)
 
-diff -r 7884e663ef6f -r 57fd45b8a144 net/netfilter/nf_conntrack_
-core.c
---- a/net/netfilter/nf_conntrack_core.c Sun Dec 09 21:41:08 2012 +0800
-+++ b/net/netfilter/nf_conntrack_core.c Sun Dec 23 16:28:15 2012 +0800
-@@ -1122,7 +1122,22 @@
-diff -r 7884e663ef6f -r 57fd45b8a144 net/netfilter/nf_conntrack_core.c
---- a/net/netfilter/nf_conntrack_core.c Sun Dec 09 21:41:08 2012 +0800
-+++ b/net/netfilter/nf_conntrack_core.c Sun Dec 23 16:28:15 2012 +0800
-@@ -1122,7 +1122,22 @@
+I'm following the doc on conntrack-tools to enable RPC tracking (for NFS 
+support), and wind up with this state:
+# nfct helper list
+{
+     .name = rpc,
+     .queuenum = 0,
+     .l3protonum = 2,
+     .l4protonum = 6,
+     .priv_data_len = 16,
+     .status = disabled,
+};
+{
+     .name = rpc,
+     .queuenum = 0,
+     .l3protonum = 2,
+     .l4protonum = 17,
+     .priv_data_len = 16,
+     .status = disabled,
+};
 
- static void nf_conntrack_cleanup_net(struct net *net)
- {
-- i_see_dead_people:
-+       if (net =3D=3D &init_net) {
-+               struct net *net_poll;
-+               rcu_read_lock();
-+               for_each_net_rcu(net_poll) {
-+                       synchronize_net();
-+               again:
-+                       nf_ct_iterate_cleanup(net_poll, kill_all, NULL)=
-;
-+                       nf_ct_release_dying_list(net_poll);
-+                       if (atomic_read(&net_poll->ct.count) !=3D 0) {
-+                               schedule();
-+                               goto again;
-+                       }
-+               }
-+               rcu_read_unlock();
-+       }
-+i_see_dead_people:
-        nf_ct_iterate_cleanup(net, kill_all, NULL);
-        nf_ct_release_dying_list(net);
-        if (atomic_read(&net->ct.count) !=3D 0) {
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Why disabled?  conntrackd startup went fine, the nfct helper add went fine, what 
+am I missing ?
+
+And, of course, it doesn't work ;)
+
+I may be royally screwed anyway - due to the bizarre situation I'm trying to 
+support...
+LAN:  192.168/16 - mix of Linux, Windows, and AIX clients
+Gateway: 192.168.1.205 (Linux Gateway/Firewall)
+OpenConnect VPN to work (CISCO ASA client) - IBM
+IBM network - GSA NFS Servers
+
+The sticky point for a statefull firewall seems to be twofold:
+1) AIX (at least 5.3) still does RPC mount lookups - even if NFSV4 and port=2049 
+are specified
+     Which, it seems, is totally needless
+
+2) The GSA infrastructure is layered, and littered with High Availability & load 
+balancing - but seems to break
+     extant rules...
+- My LAN client does a RPC GETPORT (MOUNT -V3) to snjgsa.sanjose.ibm.com
+- My firewall NATs the request
+- The GSA mainline server delegates (forwards, whatever) to a disk sever
+- The disk server (snjxgsasd2.sanjose.ibm.com) replies the RCP GETPORT request
+
+At this point, we have two streams, with matching ports, but differing IP sets, 
+both in UNREPLIED status.
+
+I am not at all sure, that even were I to get the RPC helper going, and it 
+issues and EXPECT, that things will work, but am willing to hack to make it so :)
+
+
+-- 
+Rick Nelson
+Life'll kill ya                         -- Warren Zevon
+Then you'll be dead                     -- Life'll kill ya
+
