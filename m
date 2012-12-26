@@ -1,65 +1,48 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] iptables 1.4.17 release
-Date: Tue, 25 Dec 2012 14:09:07 +0100
-Message-ID: <20121225130907.GA27528@1984>
+From: Jesper Juhl <jj@chaosbits.net>
+Subject: [PATCH] netfilter: Don't leak 'exp' in ctnetlink_create_expect()
+Date: Wed, 26 Dec 2012 22:49:40 +0100 (CET)
+Message-ID: <alpine.LNX.2.00.1212262246390.23814@swampdragon.chaosbits.net>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="YZ5djTAD1cGYuMQK"
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter-devel@vger.kernel.org
-Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, coreteam@netfilter.org, netfilter-devel@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Patrick McHardy <kaber@trash.net>, Pablo Neira Ayuso <pablo@netfilter.org>, Jay Schulist <jschlst@samba.org>, Harald Welte <laforge@gnumonks.org>
+
+'if ((!help) && (!cda[CTA_EXPECT_TIMEOUT]))' then we should remember
+to free 'exp' that was allocated by 'nf_ct_expect_alloc()' by jumping
+to the 'err_out' label rather than the 'out' label in
+ctnetlink_create_expect().
+This patch should get rid of the leak.
+
+Signed-off-by: Jesper Juhl <jj@chaosbits.net>
+---
+ net/netfilter/nf_conntrack_netlink.c |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+ note: compile tested only.
+
+diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
+index 4e078cd..627b0e5 100644
+--- a/net/netfilter/nf_conntrack_netlink.c
++++ b/net/netfilter/nf_conntrack_netlink.c
+@@ -2624,7 +2624,7 @@ ctnetlink_create_expect(struct net *net, u16 zone,
+ 	if (!help) {
+ 		if (!cda[CTA_EXPECT_TIMEOUT]) {
+ 			err = -EINVAL;
+-			goto out;
++			goto err_out;
+ 		}
+ 		exp->timeout.expires =
+ 		  jiffies + ntohl(nla_get_be32(cda[CTA_EXPECT_TIMEOUT])) * HZ;
+-- 
+1.7.1
 
 
---YZ5djTAD1cGYuMQK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+-- 
+Jesper Juhl <jj@chaosbits.net>       http://www.chaosbits.net/
+Don't top-post http://www.catb.org/jargon/html/T/top-post.html
+Plain text mails only, please.
 
-Hi!
-
-The Netfilter project proudly presents:
-
-        iptables 1.4.17
-
-More relevantly, this release includes the IPv6 NAT extensions from
-Patrick McHardy, the ignore day transition from Florian Westphal and
-a couple of fixes.
-
-See ChangeLog that comes attached to this email for more details.
-
-You can download it from:
-
-http://www.netfilter.org/projects/iptables/downloads.html
-ftp://ftp.netfilter.org/pub/iptables/
-
-Have fun!
-
---YZ5djTAD1cGYuMQK
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="changes-iptables-1.4.17.txt"
-
-Florian Westphal (1):
-      libxt_time: add support to ignore day transition
-
-Jozsef Kadlecsik (1):
-      Manpage update: matches are evaluated in the order they are specified.
-
-Pablo Neira Ayuso (2):
-      Merge branch 'next' branch that contains new features scheduled for     Linux kernel 3.7
-      bump version to 1.4.17
-
-Patrick McHardy (7):
-      Convert the NAT targets to use the kernel supplied nf_nat.h header
-      extensions: add IPv6 MASQUERADE extension
-      extensions: add IPv6 SNAT extension
-      extensions: add IPv6 DNAT target
-      extensions: add IPv6 REDIRECT extension
-      extensions: add IPv6 NETMAP extension
-      extensions: add NPT extension
-
-Tom Eastep (1):
-      extensions: libxt_statistic: Fix save output
-
-
---YZ5djTAD1cGYuMQK--
