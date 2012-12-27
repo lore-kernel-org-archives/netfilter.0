@@ -1,101 +1,47 @@
-From: Richard A Nelson <cowboy@cavein.org>
-Subject: Re: conntrack-tools rpc helper
-Date: Wed, 26 Dec 2012 19:36:33 -0500
-Message-ID: <50DB9811.7040002@cavein.org>
-References: <50D90E08.40100@cavein.org> <20121226224301.GA32453@1984>
+From: Born Without <blackhole@airpost.net>
+Subject: osf match, --ttl & --log options missing in iptables[-save] [-[L|S]]
+Date: Thu, 27 Dec 2012 07:25:13 +0100
+Message-ID: <50DBE9C9.8090500@airpost.net>
+Reply-To: blackhole@airpost.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cavein.org; s=2008;
-	t=1356568595; bh=Y335RJZD7b/fjbSvUv8XJUEgWPK1Vv4jum0pYjyj2BA=;
-	l=2236;
-	h=Message-ID:Date:From:MIME-Version:To:CC:Subject:References:
-	 In-Reply-To:Content-Type:Content-Transfer-Encoding;
-	b=zI3OJqCWdyu9M4UdgVP4q/VdAm6kAxvVHAhnEaOZgX+/21uHHKair92tVaJ3vh9xB
-	 Y8BX5OfVbZU9pGNK/odglqN42X76ktcRWP5yxF3ZiPhezFKdjiZwyDxBqbYVP0McE4
-	 WnP2daHqVerlJb402nOiUu3SWOs1K9xSF0vZWb/o=
-In-Reply-To: <20121226224301.GA32453@1984>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=airpost.net; h=
+	message-id:date:from:reply-to:mime-version:to:subject
+	:content-type:content-transfer-encoding; s=mesmtp; bh=+zq9mwOpYq
+	bye1uRHE9ZcRUXEzA=; b=omquau/ameIZ0XrN6wnpQgQMeGAE8eyY6vnyJWSX/V
+	xhbWNDvyhcSK+hGj9OSEaYo/lgnzh7bOK2WhXk9NjsUgR2BY9CsnVFaIp4azh8xY
+	8WnfsDLEuSEQxs0zVTQW06Wh+NRgbQWZe2pBlOs6N+nejT+O2dLe+KnmFCb0TVqi
+	k=
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
+	messagingengine.com; h=message-id:date:from:reply-to
+	:mime-version:to:subject:content-type:content-transfer-encoding;
+	 s=smtpout; bh=+zq9mwOpYqbye1uRHE9ZcRUXEzA=; b=VbBgdTq8Xrzvx2voN
+	0XLeSpF9ymtuEO9YckIJmeKwUchaVog+sQHtls8G7hRk2DCTyuBs5Fg8t6HvVdz5
+	lvya4sW69FfoB7oPKiDFxg3P6q6KV8xq6nQeQMJ3e//a8buPf820myg/r2Fz8vLy
+	Phi92DvNWgW0UL1FuD/5s5CLZg=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 12/26/2012 05:43 PM, Pablo Neira Ayuso wrote:
-> Hi Richard,
+Hello list!
 
-Thanks for the quick, and on target note !
 
->
-> {
->      .name = rpc,
->      .queuenum = 0,
->      .l3protonum = 2,
->      .l4protonum = 17,
->      .priv_data_len = 16,
->      .status = disabled,
-> };
->
-> Why disabled?  conntrackd startup went fine, the nfct helper add
-> went fine, what am I missing ?
-> That means conntrackd did not configured the helper so far, so it
-> remains dormant in the kernel.
->
-> Did you add the corresponding Helper clause to conntrackd.conf?
->
-> It should be something similar to what you can find under
-> conntrack-tools/doc/helper/conntrackd.conf.
->
-> Please, check /var/log/conntrackd.log (or custom path in case you set
-> it). It should report some information regarding the helper
-> configuration.
+# $IPTABLES -N FOO
+# $IPTABLES -A FOO -p tcp --dport 445 -m osf --genre Windows --ttl 1 --log 1
+# $IPTABLES -S FOO
+-N FOO
+-A FOO -p tcp -m tcp --dport 445 -m osf --genre Windows
 
-My confusion seemed to have been the requisite three part dance - even though 
-they're pretty well described in the docs.
-1) Register helpers via nfct
-2) Add iptables rules in -t raw (output & prerouting)
-3) (Re)Start conntrackd
+kernel: 3.2.35
+iptables: 1.4.16.3
 
-I now see:
-# nfct helper list
-{
-     .name = rpc,
-     .queuenum = 2,
-     .l3protonum = 2,
-     .l4protonum = 6,
-     .priv_data_len = 16,
-     .status = enabled,
-};
-{
-     .name = rpc,
-     .queuenum = 1,
-     .l3protonum = 2,
-     .l4protonum = 17,
-     .priv_data_len = 16,
-     .status = enabled,
-};
 
-I rebooted, and made sure things came back up in the same state... looking good.
->
-> This was tested with NFSv3 running both Linux in the client and the
-> server sides.
-Perfect, then - there is a good chance this'll go...  I'm still somewhat worried 
-about the fact that the RPC call is answered by a different machine than the 
-request was made to... but trial and error is called for now ;)
->
-> I'd suggest to start by getting that "disabled" issue resolved first,
-> then, move on to see what other problem you find.
-Exactly, one down - and I have removed the old rules allowing arbitrary replies 
-from port 111, and things are working well on the server side (NFSv3 mounts work 
-fine).
+iptables -[L|S] and iptables-save seem to miss the --ttl and --log options.
+Therefore on restore, those settings get omitted.
+Looks like a bug to me!? If so, should I report it to some bug-tracker 
+or so?
 
-Now, to see if I can coax the AIX box into booting again - otherwise I'll try 
-another Linux client behind the server.
 
-Thanks again!
-
--- 
-Rick Nelson
-Life'll kill ya                         -- Warren Zevon
-Then you'll be dead                     -- Life'll kill ya
-
+Best regards
