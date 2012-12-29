@@ -1,8 +1,8 @@
 From: Born Without <blackhole@airpost.net>
 Subject: Re: osf match, --ttl & --log options missing in iptables[-save] [-[L|S]]
-Date: Sat, 29 Dec 2012 09:08:52 +0100
-Message-ID: <50DEA514.4050006@airpost.net>
-References: <50DBE9C9.8090500@airpost.net>
+Date: Sat, 29 Dec 2012 09:12:39 +0100
+Message-ID: <50DEA5F7.6060806@airpost.net>
+References: <50DBE9C9.8090500@airpost.net> <50DEA514.4050006@airpost.net>
 Reply-To: blackhole@airpost.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -10,84 +10,31 @@ Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=airpost.net; h=
 	message-id:date:from:reply-to:mime-version:to:subject:references
 	:in-reply-to:content-type:content-transfer-encoding; s=mesmtp;
-	 bh=TdnwdCpVZEkTzmVCm9Nu2NC+sN8=; b=PLPzTnLbMFiklz5rPlvsCYkJR3rG
-	sbEzpiruvAxzQQw0nKiffwbYYQdUpCkMD5mYaWVAuS3DM83nByGOv0eBDhADo1yw
-	i4XsKRpupvIu8Js+IJ++KYNz8dw4nwx+QrO7RlqkzHqFpj0O6f8NRrtxPa7BrwU3
-	/Q650AF/kXSEmJg=
+	 bh=6SSzEDTIu3WFPKqyrIcDwhW7lNk=; b=ZsbvFIGiiPDUASgoXsLThKGmSmxf
+	9JhDdBGrjOSFsLVTOqY6muWRoU2leaZwXOSPOFD8uDi+B2MI6YAUPKfbNCwY+Nkx
+	eH45FwDnblYElDAL+GFkBhrDRGRRJWIfD/rRfiiXUgN7nu4T/umt0g3M75nbOgnd
+	TdcPIvKSH+VH/w4=
 DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
 	messagingengine.com; h=message-id:date:from:reply-to
 	:mime-version:to:subject:references:in-reply-to:content-type
-	:content-transfer-encoding; s=smtpout; bh=TdnwdCpVZEkTzmVCm9Nu2N
-	C+sN8=; b=sh0aFRjhwSFcy+VsFmrIoQNNcMLsyiCFn7XkG9+Nmm75pmcbzMMAU6
-	OkV51TDK11NPHjV5wZAphZ97gguvEyTRvKw04Ql5mRy0TfIS6WRzA/LbpbeL6TvY
-	xleiY37xBerbNR84sKAljPX4kGL+k+6u6aGPAcqlAMPb9rg/XEVP8=
-In-Reply-To: <50DBE9C9.8090500@airpost.net>
+	:content-transfer-encoding; s=smtpout; bh=6SSzEDTIu3WFPKqyrIcDwh
+	W7lNk=; b=Juq5VrBGwxCoGYK9NXbu+3pDe87Elon3kOAMzez6BWcirMy7OKHLZM
+	urPvhC+UZ4OS5w+8zAjkNO2uOCB9WDZWdjYk3D2x9rAs6KoC+AVH4pkWX4Q4RTRj
+	F1hnDZlC2v+DrJq3UlnO/p93FMgkUa52KWr+FMz9hQBsbD6HcVWxI=
+In-Reply-To: <50DEA514.4050006@airpost.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 27.12.2012 07:25, Born Without wrote:
-> Hello list!
->
->
-> # $IPTABLES -N FOO
-> # $IPTABLES -A FOO -p tcp --dport 445 -m osf --genre Windows --ttl 1
-> --log 1
-> # $IPTABLES -S FOO
-> -N FOO
-> -A FOO -p tcp -m tcp --dport 445 -m osf --genre Windows
->
-> kernel: 3.2.35
-> iptables: 1.4.16.3
->
->
-> iptables -[L|S] and iptables-save seem to miss the --ttl and --log options.
-> Therefore on restore, those settings get omitted.
-> Looks like a bug to me!? If so, should I report it to some bug-tracker
-> or so?
+On 29.12.2012 09:08, Born Without wrote:
+[...]
 
+> $IPTABLES -A PROBERS -p tcp -m osf --genre Windows --ttl 1 -j SET
+> --add-set windows_probers src
+> $IPTABLES -A PROBERS -p tcp -m osf --genre Windows --ttl 1 -j SET
+> --add-set windows_probers src
 
-Yet another things with osf, that I noticed:
+copy and paste error, that this rule is listed twice - sorry :/
 
-(installed vanilla 3.7.1 kernel to test)
-
-Using this test ruleset to collect probes to my firewalls external 
-interface, which does not allow any NEW (ctstate) connection, then 
-divide by windows and non windows hosts:
-
-$IPSET create other_probers hash:ip
-$IPSET create windows_probers hash:ip
-$IPTABLES -N PROBERS
-$IPTABLES -A PROBERS -m set --match-set windows_probers src -j RETURN
-$IPTABLES -A PROBERS -m set --match-set other_probers src -j RETURN
-$IPTABLES -A PROBERS -p tcp -m osf --genre Windows --ttl 1 -j SET 
---add-set windows_probers src
-$IPTABLES -A PROBERS -p tcp -m osf --genre Windows --ttl 1 -j SET 
---add-set windows_probers src
-$IPTABLES -A PROBERS -p tcp -m osf ! --genre Windows --ttl 1 -j SET 
---add-set other_probers src
-$IPTABLES -I INPUT -i eth0 -p tcp -m conntrack --ctstate NEW -j PROBERS
-
-
-The result is, that the two rules with the '--genre' and the negated '! 
---genre', always both match, though that should not be, of course.
-The two sets always contain the same ip addresses.
-So the negation is not working at all.
-
-iptables -vS output:
--A PROBERS -m set --match-set windows_probers src -c 4 192 -j RETURN
--A PROBERS -m set --match-set other_probers src -c 0 0 -j RETURN
--A PROBERS -p tcp -m osf --genre Windows -c 4 192 -j SET --add-set 
-windows_probers src
--A PROBERS -p tcp -m osf --genre ! Windows -c 4 192 -j SET --add-set 
-other_probers src
-
-
-The other thing is:
-
-The man page says, it operates on SYN packets.
-When I reduce the match using '-m tcp --syn', nothing gets matched by 
-osf anymore.
-
-Best regards
+[...]
