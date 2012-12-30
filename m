@@ -1,40 +1,62 @@
-From: Born Without <blackhole@airpost.net>
-Subject: Re: osf match, --ttl & --log options missing in iptables[-save] [-[L|S]]
-Date: Sat, 29 Dec 2012 09:12:39 +0100
-Message-ID: <50DEA5F7.6060806@airpost.net>
-References: <50DBE9C9.8090500@airpost.net> <50DEA514.4050006@airpost.net>
-Reply-To: blackhole@airpost.net
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Concurrent Sessions/Sessions per second
+Date: Sun, 30 Dec 2012 04:21:49 +0100
+Message-ID: <20121230032149.GA13848@1984>
+References: <CAMTjHrwtaUV60nB5exUkiwNDsrFUDU4Rv2ep67c3VV230C-fvQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=airpost.net; h=
-	message-id:date:from:reply-to:mime-version:to:subject:references
-	:in-reply-to:content-type:content-transfer-encoding; s=mesmtp;
-	 bh=6SSzEDTIu3WFPKqyrIcDwhW7lNk=; b=ZsbvFIGiiPDUASgoXsLThKGmSmxf
-	9JhDdBGrjOSFsLVTOqY6muWRoU2leaZwXOSPOFD8uDi+B2MI6YAUPKfbNCwY+Nkx
-	eH45FwDnblYElDAL+GFkBhrDRGRRJWIfD/rRfiiXUgN7nu4T/umt0g3M75nbOgnd
-	TdcPIvKSH+VH/w4=
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
-	messagingengine.com; h=message-id:date:from:reply-to
-	:mime-version:to:subject:references:in-reply-to:content-type
-	:content-transfer-encoding; s=smtpout; bh=6SSzEDTIu3WFPKqyrIcDwh
-	W7lNk=; b=Juq5VrBGwxCoGYK9NXbu+3pDe87Elon3kOAMzez6BWcirMy7OKHLZM
-	urPvhC+UZ4OS5w+8zAjkNO2uOCB9WDZWdjYk3D2x9rAs6KoC+AVH4pkWX4Q4RTRj
-	F1hnDZlC2v+DrJq3UlnO/p93FMgkUa52KWr+FMz9hQBsbD6HcVWxI=
-In-Reply-To: <50DEA514.4050006@airpost.net>
+Content-Disposition: inline
+In-Reply-To: <CAMTjHrwtaUV60nB5exUkiwNDsrFUDU4Rv2ep67c3VV230C-fvQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: =?iso-8859-1?Q?Usu=E1rio?= do Sistema <maiconlp@ig.com.br>
+Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-On 29.12.2012 09:08, Born Without wrote:
-[...]
+Hi,
 
-> $IPTABLES -A PROBERS -p tcp -m osf --genre Windows --ttl 1 -j SET
-> --add-set windows_probers src
-> $IPTABLES -A PROBERS -p tcp -m osf --genre Windows --ttl 1 -j SET
-> --add-set windows_probers src
+On Thu, Dec 27, 2012 at 03:17:04PM -0200, Usu=E1rio do Sistema wrote:
+> Hello everyone,
+>=20
+> anyone help me how can I figure out the follows value in my Linux box=
+ ?
+>=20
+> Max Concurrent Session
+> New Sessions per second
+>=20
+> they are related with CPU of the machine ?
 
-copy and paste error, that this rule is listed twice - sorry :/
+CPU and other hardware aspects are important. But there several
+configuration parameters (like using the irqbalance daemon, tweaking
+the conntrack table) and they make a difference.
 
-[...]
+I suggest you a read of the evaluation part of these articles:
+
+http://1984.lsi.us.es/~pablo/docs/intcomp09.pdf
+http://people.netfilter.org/kadlec/nftest.pdf
+
+Another important thing while benchmarking is that you have to make
+sure that neither your client nor your benchmark server become the
+bottleneck. Otherwise, you end up getting misleading benchmarking
+results.
+
+> there is any way how to figure out how many connections are through
+> my firewall iptables ?
+
+You can obtain the maximum sessions/s by generating lots of well small
+connections, ie. assuming TCP, 3-way handshake and then immediately
+tearing down the connection.
+
+=46or the client side, you can probably check this utility, it generate=
+s
+plain HTTP requests:
+
+http://1984.lsi.us.es/git/http-client-benchmark/
+
+=46or the server side, I suggest you to grab Willy Tarreau's httpterm:
+
+http://1wt.eu/tools/httpterm/
+
+I have tried many other utilities in the past, but those are my
+favorite ones so far.
