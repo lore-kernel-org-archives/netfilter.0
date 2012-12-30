@@ -1,62 +1,58 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Eliezer Croitoru <eliezer@ngtech.co.il>
 Subject: Re: Concurrent Sessions/Sessions per second
-Date: Sun, 30 Dec 2012 04:21:49 +0100
-Message-ID: <20121230032149.GA13848@1984>
+Date: Sun, 30 Dec 2012 06:49:04 +0200
+Message-ID: <50DFC7C0.7050002@ngtech.co.il>
 References: <CAMTjHrwtaUV60nB5exUkiwNDsrFUDU4Rv2ep67c3VV230C-fvQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
 In-Reply-To: <CAMTjHrwtaUV60nB5exUkiwNDsrFUDU4Rv2ep67c3VV230C-fvQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: =?iso-8859-1?Q?Usu=E1rio?= do Sistema <maiconlp@ig.com.br>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: =?ISO-8859-1?Q?Usu=E1rio_do_Sistema?= <maiconlp@ig.com.br>
 Cc: Mail List - Netfilter <netfilter@vger.kernel.org>
 
-Hi,
+It depends on a lot of stuff...
+if you are using connection tracking in your IPTABLES it will reduce th=
+e=20
+number of open connections your machine can handle.
 
-On Thu, Dec 27, 2012 at 03:17:04PM -0200, Usu=E1rio do Sistema wrote:
+if you will use DEEP INSPECTION modules it will handle even less.
+
+In most cases a nice and modern PC(not a server) can handle more then=20
+100k connections with any trouble.
+but this is about IPTABLES...
+if you have applications on your server it's another thing.
+
+With a nice 8 cores 16gb Server you can max it with a proxy on it to=20
+about 30M connections with no trouble at all.
+
+Regards,
+Eliezer
+
+On 27/12/2012 19:17, Usu=E1rio do Sistema wrote:
 > Hello everyone,
->=20
+>
+>
 > anyone help me how can I figure out the follows value in my Linux box=
  ?
->=20
+>
 > Max Concurrent Session
+>
 > New Sessions per second
->=20
+>
 > they are related with CPU of the machine ?
-
-CPU and other hardware aspects are important. But there several
-configuration parameters (like using the irqbalance daemon, tweaking
-the conntrack table) and they make a difference.
-
-I suggest you a read of the evaluation part of these articles:
-
-http://1984.lsi.us.es/~pablo/docs/intcomp09.pdf
-http://people.netfilter.org/kadlec/nftest.pdf
-
-Another important thing while benchmarking is that you have to make
-sure that neither your client nor your benchmark server become the
-bottleneck. Otherwise, you end up getting misleading benchmarking
-results.
-
+>
 > there is any way how to figure out how many connections are through
 > my firewall iptables ?
-
-You can obtain the maximum sessions/s by generating lots of well small
-connections, ie. assuming TCP, 3-way handshake and then immediately
-tearing down the connection.
-
-=46or the client side, you can probably check this utility, it generate=
-s
-plain HTTP requests:
-
-http://1984.lsi.us.es/git/http-client-benchmark/
-
-=46or the server side, I suggest you to grab Willy Tarreau's httpterm:
-
-http://1wt.eu/tools/httpterm/
-
-I have tried many other utilities in the past, but those are my
-favorite ones so far.
+>
+> any tip is welcome
+>
+> thanks
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
