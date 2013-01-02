@@ -1,70 +1,35 @@
-From: Akinobu Mita <akinobu.mita@gmail.com>
-Subject: [PATCH -v2 22/26] net/netfilter: rename random32() to prandom_u32()
-Date: Thu,  3 Jan 2013 21:19:18 +0900
-Message-ID: <1357215562-6288-23-git-send-email-akinobu.mita@gmail.com>
-References: <1357215562-6288-1-git-send-email-akinobu.mita@gmail.com>
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=x-received:from:to:cc:subject:date:message-id:x-mailer:in-reply-to
-         :references;
-        bh=wKY+DDVah2zEOHvoSHaBZ86h+vfl83CpqkW0UTcUhCY=;
-        b=rOevG0YQ/NqhRjXKWluMcDN1KcOO9HnbsbyVyKRy85WL6EszJgUVxX2X4qbcyJ5Xpt
-         G1tY6AAsyrevaw8+/yK9i0z6uzxKDnDiWmw9KH2CzEXOeM3R69BGVVoYR6XW0ocFaOwP
-         4oe59/Hr9kZ8cjjPhBDe6w1wEKOSAChkN//igBfaUckA8vm9rvUw/OL2T47j4X6mZYDp
-         Q6pJTTqHdlvpjdkceeoUAq1RIVzPuKveFwIc2zSAYcL01sc6N1JZM3G5wAEoR+EzNBWa
-         qThrbj1yTXST359+wbSVUwWaf3knRiBf5cpdxmFcM6Kr7lWDrvrUA2hwKNkXBRZV/4gV
-         V4Ag==
-In-Reply-To: <1357215562-6288-1-git-send-email-akinobu.mita@gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+From: Eliezer Croitoru <eliezer@ngtech.co.il>
+Subject: Re: Native support of counting rules?
+Date: Wed, 02 Jan 2013 15:58:31 +0200
+Message-ID: <50E43D07.50009@ngtech.co.il>
+References: <20130102134421.GA17997@devnull>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-To: linux-kernel@vger.kernel.org, akpm@linux-foundation.org
-Cc: Akinobu Mita <akinobu.mita@gmail.com>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20130102134421.GA17997@devnull>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Aaron Lewis <the.warl0ck.1989@gmail.com>
+Cc: netfilter mailing list <netfilter@vger.kernel.org>
 
-Use more preferable function name which implies using a pseudo-random
-number generator.
+Hey Aaron,
 
-Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Patrick McHardy <kaber@trash.net>
-Cc: netfilter-devel@vger.kernel.org
-Cc: netfilter@vger.kernel.org
-Cc: coreteam@netfilter.org
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: netdev@vger.kernel.org
----
+I feel kind of odd but this should answer you:
+http://linux.die.net/man/8/iptables
+www.garron.me/linux/iptables-manual.html
 
-* Change from v1
-- leave net_random() callers as-is because that is a useful indirection
+Eliezer
 
- net/netfilter/nf_conntrack_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index 08cdc71..a8f5c7a 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -263,7 +263,7 @@ static void death_by_event(unsigned long ul_conntrack)
- 	if (nf_conntrack_event(IPCT_DESTROY, ct) < 0) {
- 		/* bad luck, let's retry again */
- 		ecache->timeout.expires = jiffies +
--			(random32() % net->ct.sysctl_events_retry_timeout);
-+			(prandom_u32() % net->ct.sysctl_events_retry_timeout);
- 		add_timer(&ecache->timeout);
- 		return;
- 	}
-@@ -282,7 +282,7 @@ void nf_ct_dying_timeout(struct nf_conn *ct)
- 	/* set a new timer to retry event delivery */
- 	setup_timer(&ecache->timeout, death_by_event, (unsigned long)ct);
- 	ecache->timeout.expires = jiffies +
--		(random32() % net->ct.sysctl_events_retry_timeout);
-+		(prandom_u32() % net->ct.sysctl_events_retry_timeout);
- 	add_timer(&ecache->timeout);
- }
- EXPORT_SYMBOL_GPL(nf_ct_dying_timeout);
--- 
-1.7.11.7
+On 1/2/2013 3:48 PM, Aaron Lewis wrote:
+> Hi,
+>      I want to know if I could get how many rules are present, i.e in
+>      filter table?
+>
+>      Now I do `iptables -L | wc -l` like stuff, I know it's not right,
+>      but iptables itself doesn't seem to count rules anyway.
+>
+>      I need this just to let user to know how many rules are present,
+>      without root privileges, and now being able to view actual rules.
+>
 
