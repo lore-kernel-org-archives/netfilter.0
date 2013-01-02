@@ -1,49 +1,73 @@
-From: "me" <todh@todhackett.com>
-Subject: Connlimit troubles  ( still )
-Date: Wed, 2 Jan 2013 07:49:15 -0800
-Message-ID: <20130102153847.M1860@todhackett.com>
+From: Stephen Hemminger <shemminger@vyatta.com>
+Subject: Fw: [Bug 52171] New: Error: No such file or directory
+Date: Wed, 2 Jan 2013 08:01:35 -0800
+Message-ID: <20130102080135.6f3944d0@nehalam.linuxnetplumber.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org
 
-Hi All
 
-Over the holiday I upgraded to:
-Netfilter v1.4.14
-OS 3.6.10-2.fc17.i686
 
-I have the following in my rules:
--A PREROUTING -i p1p1 -p tcp --dport 4800 -j DNAT --to 192.168.1.253
-...
--A FORWARD -i p1p1 -o em1 -d 192.168.1.253 -p tcp --syn -m connlimit --connlimit-above 1
--j LOG --log-prefix " MultiIP "
--A FORWARD -i p1p1 -o em1 -d 192.168.1.253 -p tcp --syn -m connlimit --connlimit-above 1
--j REJECT --reject-with tcp-reset
+Begin forwarded message:
 
-With the old OS - I would see the above log entry some of the time and assumed that the
-packet was dropped.
+Date: Wed,  2 Jan 2013 11:42:12 +0000 (UTC)
+From: bugzilla-daemon@bugzilla.kernel.org
+To: shemminger@linux-foundation.org
+Subject: [Bug 52171] New: Error: No such file or directory
 
-With the NEW OS - I am not seeing anything.
 
-conntrack shows incoming and outgoing ( conntrack -L ) but the filter is not logging or
-rejecting any of the connections.
+https://bugzilla.kernel.org/show_bug.cgi?id=52171
 
-What am I missing?
+           Summary: Error: No such file or directory
+           Product: Networking
+           Version: 2.5
+    Kernel Version: 3.6.3
+          Platform: All
+        OS/Version: Linux
+              Tree: Mainline
+            Status: NEW
+          Severity: high
+          Priority: P1
+         Component: IPV4
+        AssignedTo: shemminger@linux-foundation.org
+        ReportedBy: ganeshsurfs@yahoo.com
+                CC: ganeshsurfs@yahoo.com
+        Regression: No
 
-Oh, folks connect on tcp 4800, then get a UDP port from the endpoint application.  I can
-view the endpoint application and see multiple connections from the same IP.
 
-Thanks and Happy New Year!
+Created an attachment (id=90141)
+ --> (https://bugzilla.kernel.org/attachment.cgi?id=90141)
+Part of console script for the end port where the build stopped
 
-todh
+I am getting an error when building the kernel for use. The menuconfig is new
+and is not copied from my system or other system. "make defconfig" ran
+successfully to create a .config file. "make menuconfig" ran successfully to
+.Kconfig. I am using i3 machine with gentoo linux livecd. I received this error
+when running "make arch=x86" command to build the core. It compiled a lot of
+files but stops at "net" folder compilation with error
 
---
-Todd Hackett             Chief Bottle Washer
-PoBox 1168
-Libby, MT 59923
-406.293.3843
+  CC      net/ipv4/netfilter/ipt_ah.o
+  CC      net/ipv4/netfilter/ipt_rpfilter.o
+  CC      net/ipv4/netfilter/ipt_CLUSTERIP.o
+  CC      net/ipv4/netfilter/ipt_ECN.o
+net/ipv4/netfilter/ipt_ECN.c:20:42: fatal error:
+linux/netfilter_ipv4/ipt_ECN.h: No such file or directory
+compilation terminated.
+make[3]: *** [net/ipv4/netfilter/ipt_ECN.o] Error 1
+make[2]: *** [net/ipv4/netfilter] Error 2
+make[1]: *** [net/ipv4] Error 2
+make: *** [net] Error 2
 
+
+Any workaround or you suggest a different version download? Will be using this
+for my personal system on a insecure network. So need this?
+
+-- 
+Configure bugmail: https://bugzilla.kernel.org/userprefs.cgi?tab=email
+------- You are receiving this mail because: -------
+You are the assignee for the bug.
