@@ -1,37 +1,24 @@
-From: Born Without <blackhole@airpost.net>
-Subject: Re: osf match, --ttl & --log options missing in iptables[-save] [-[L|S]]
-Date: Mon, 31 Dec 2012 08:06:40 +0100
-Message-ID: <50E13980.8000008@airpost.net>
-References: <50DBE9C9.8090500@airpost.net>
-Reply-To: blackhole@airpost.net
+From: =?UTF-8?B?TWFyY2luIE1pcm9zxYJhdw==?= <marcin@mejor.pl>
+Subject: Clang static analysis of iptables-1.4.17
+Date: Wed, 02 Jan 2013 11:45:46 +0100
+Message-ID: <50E40FDA.9030209@mejor.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=airpost.net; h=
-	message-id:date:from:reply-to:mime-version:to:subject:references
-	:in-reply-to:content-type:content-transfer-encoding; s=mesmtp;
-	 bh=+nDJthsM0iUJyUynJ+jp0ruIkW0=; b=FQVBshgrXkcJPhyyCEhmSIudeANG
-	WliJKE8b9GM5uhEztp7MoLnLiyBB02yVi2ZsRPCeMRuS+Pf5b6bE/7OCtejBC75p
-	40KZIV+PtkgICRvFXkzH3rlLz5Q5O8ONuV5ZFU+cuoJV9ieuykMU2eT7hvXqvK27
-	eAD5R1gxtu72Su4=
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
-	messagingengine.com; h=message-id:date:from:reply-to
-	:mime-version:to:subject:references:in-reply-to:content-type
-	:content-transfer-encoding; s=smtpout; bh=+nDJthsM0iUJyUynJ+jp0r
-	uIkW0=; b=BcntAPJJshVw3wg/1rjrRdLV1xwdhVFMln79TpmM/W87f2AVH7jXLM
-	OefSjBe4foXoCMLO5Pyb+xaygOeS0sVFeAvBG7XVyjvlZz1J1X0W6ZZMw8sj+YkD
-	roJRfnnCOYHMTDIe4cCeNHoCC3sNHYcT39og5oACuvM5imttLbswk=
-In-Reply-To: <50DBE9C9.8090500@airpost.net>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mejor.pl; s=cokolwiek;
+	h=Content-Transfer-Encoding:Content-Type:Subject:To:MIME-Version:From:Date:Message-ID; bh=HmCDd3NDgVZbLDmQ1Vnojr5dW/RhrkZM0hMsKTHyXmg=;
+	b=zBQZ6xOA39HMugwb9VcXJ6gHFE5+Fto7E04iIx+OCRvKIS2iPxCt2LYSXHNJNxhcAcYj37Ujgvfr6VyoKqAr9kUrlQLg8Jus9W/AuPxZ3pCJW9eNuv7VBa68+XH4fsDG;
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On 27.12.2012 07:25, Born Without wrote:
-[...]
+Hi!
+Happy New Year!
+I created static analysis of iptables-1.4.17 [1]. I'm not programmer I
+can't say how accurate it is. I hope it can be more useful for somebody
+more familiar with C and iptables.
+Regards,
+Marcin
 
-another oddity with osf:
-
-if you try to restore a rulset using osf with iptables-restore, it will 
-fail on the very last COMMIT without giving any clue what the error is, 
-if the signatures were not loaded before with nfnl_osf.
+[1] - http://mejor.pl/clang-analysis/iptables-1.4.17/
