@@ -1,8 +1,8 @@
 From: Born Without <blackhole@airpost.net>
 Subject: Re: [SOLVED] Re: Native support of counting rules?
-Date: Fri, 04 Jan 2013 06:39:43 +0100
-Message-ID: <50E66B1F.3050805@airpost.net>
-References: <20130102134421.GA17997@devnull> <50E43D07.50009@ngtech.co.il> <CAJZVxRkyDyZyWUBbhP+H5gv2Dk1_Jj=v4QRAheHKWEnSKTdrhg@mail.gmail.com> <50E6626B.8040705@ngtech.co.il>
+Date: Fri, 04 Jan 2013 06:45:53 +0100
+Message-ID: <50E66C91.9000505@airpost.net>
+References: <20130102134421.GA17997@devnull> <50E43D07.50009@ngtech.co.il> <CAJZVxRkyDyZyWUBbhP+H5gv2Dk1_Jj=v4QRAheHKWEnSKTdrhg@mail.gmail.com> <50E59C32.5090003@jvales.net> <alpine.LNX.2.01.1301031704440.32551@nerf07.vanv.qr> <50E5BF89.1010505@jvales.net>
 Reply-To: blackhole@airpost.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
@@ -10,42 +10,45 @@ Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=airpost.net; h=
 	message-id:date:from:reply-to:mime-version:to:cc:subject
 	:references:in-reply-to:content-type:content-transfer-encoding;
-	 s=mesmtp; bh=p5n09qL4nzKJjnVl/uzkDjdRQ9k=; b=NFB7pyaWlMbuRZvl7d
-	J8T6ODO3vgWpvx07xVbIx3mUcxvuplLXbjZ/nnk4p/hrtH5Fre+B546ot0I+RkeI
-	3chToz62hMtreM8IFvkVQj0RrXW1rWNXTjDZhaWHr6bcQao/RTTTYlmX/n9AWCgK
-	jiG4ZlEL1mTyM1Qu1e+Quz8cM=
+	 s=mesmtp; bh=GPh/88u016FzuN8sLoCgmycJOiQ=; b=evfDEmAc2eVxMPLwkJ
+	Q0Ufp/HNoIK7txisWfxEtKWyEHUXbLdk2Ev6cfvRMq7/ByM+tsZr15w7p5+Hi4DM
+	L/QYtIysEAh83Y6grcC6g4xUf5DtpvO6dCGG7NOkhSwzCUax2zO+Wadsrd9Ia5Al
+	KJAKiaNkw/kDxiKsMZT4wS8s8=
 DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
 	messagingengine.com; h=message-id:date:from:reply-to
 	:mime-version:to:cc:subject:references:in-reply-to:content-type
-	:content-transfer-encoding; s=smtpout; bh=p5n09qL4nzKJjnVl/uzkDj
-	dRQ9k=; b=Q3dtMqDIf2FaWoiEyAe9ZNjEd2yMSj40bf1fhw/IQXJJfXhb3obzPD
-	Tti2i5QMsML+dAzcMwLV3s+7vcnFpUQBllqGUDcGS5Ck3y0+Ms0MT4dI2FU9QH9a
-	OeYm907aYRyh03onQw3SSnEc69OkMfAmQps1dnY7jXCKE1phNpe/c=
-In-Reply-To: <50E6626B.8040705@ngtech.co.il>
+	:content-transfer-encoding; s=smtpout; bh=GPh/88u016FzuN8sLoCgmy
+	cJOiQ=; b=klFWYT4e8lw8ivj2WGK1v7moqsG58Kzj08sR+sXYiDzoxi5KGwz05K
+	zcGxP0irjZClc6tre4P9tvk1BpHqWPhbUScXf3DSHf7q2Zbd+c75e1UoVFMq46vk
+	4sjuGKVFPR1ClVPM6daL/6QI5gSa7HANTMMT5D+WcJ0xcCcEBbOTI=
+In-Reply-To: <50E5BF89.1010505@jvales.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Eliezer Croitoru <eliezer@ngtech.co.il>
-Cc: Aaron Lewis <the.warl0ck.1989@gmail.com>, netfilter mailing list <netfilter@vger.kernel.org>
+To: netfilter-owner@vger.kernel.org
+Cc: Jan Engelhardt <jengelh@inai.de>, Aaron Lewis <the.warl0ck.1989@gmail.com>, netfilter mailing list <netfilter@vger.kernel.org>
 
-On 04.01.2013 06:02, Eliezer Croitoru wrote:
-> Since iptables are kind of static I think a simple script should be good
-> enough.
+On 03.01.2013 18:27, netfilter-owner@vger.kernel.org wrote:
+> On 03/01/13 17:05, Jan Engelhardt wrote:
+>> On Thursday 2013-01-03 15:56, Jan Vales wrote:
+>>
+>>> Hi,
+>>>
+>>> why dont you use ...
+>>> iptables-save | grep "\-A" | wc -l
+>>
+>> grep ^-A
+>>
+>> But the foremost question is: how is the rule count alone going to be
+>> useful?
+>>
 >
-> A one liner should do the trick:
-> tables="filter nat raw mangle";counter="0"; for i in $tables; do
-> add=`iptables -t $i -L -n --line-numbers |egrep "^[0-9]+\ " |wc -l`;
-> counter=`expr $counter + $add`;done ;echo $counter
+> I dont think its useful at all - I just like stats and wanted to help ;)
 >
-> You dont need to read the proc file system to know that there are only
-> four tables exits in iptables.
+> Especially with OP's requirement to allow non-root users to view this count.
+> Therefore know that/when you changed something.
 
-That is not true.
-There also is the security table.
-And if you have xtables-addons installed, there might also be the 
-rawpost table.
-But any of those might not be loaded, if compiled in as loadable module.
-So you might need to read /proc/net/ip_tables_names to work only on 
-existing tables, without loading unwanted/needed ones.
+you can swap the whole ruleset, as long as the total count of rules 
+stays the same, this test won't detect it, therefore is totally 
+unreliable. Nothing but stats, yes.
 
-[...]
