@@ -1,50 +1,59 @@
 From: Born Without <blackhole@airpost.net>
-Subject: Wrapper script for ipset listing
-Date: Sat, 05 Jan 2013 17:05:50 +0100
-Message-ID: <50E84F5E.8060704@airpost.net>
+Subject: Re: Wrapper script for ipset listing
+Date: Sat, 05 Jan 2013 17:16:09 +0100
+Message-ID: <50E851C9.6010404@airpost.net>
+References: <50E84F5E.8060704@airpost.net>
 Reply-To: blackhole@airpost.net
 Mime-Version: 1.0
 Content-Type: multipart/mixed;
- boundary="------------010904070704030704050306"
+ boundary="------------030105060207050107040703"
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=airpost.net; h=
-	message-id:date:from:reply-to:mime-version:to:subject
-	:content-type; s=mesmtp; bh=2xOkvblj7+AfJM5cUMg5p7sYrp0=; b=qgtF
-	tplgoX8LHUVvri5nPheiqMkioUn9cRPyc+1dJ3p2gv81ZZIjczgPN3DSzX7fVmsW
-	e20MtSCUg2QuOeOX0oDYDLNJdZ4UpyaDbf39h0PJwB9qe6s30kpl7vmyxW4wsabR
-	ZnrSfqhydiX1yIz+NdT2iFJL5WA7TyEy/cacclE=
+	message-id:date:from:reply-to:mime-version:to:subject:references
+	:in-reply-to:content-type; s=mesmtp; bh=otZXRxOH05fwXjzrnePCo/ka
+	eNw=; b=j3/tXIzqABAX0k6XZvE2DlE7JnNd+BGGFpgNnVbPEDW1DiqbUrwh4lBt
+	FOJVMpcUYS67wMBCR1g34/UxDwfRuuZ0S2oUhJaikGH2hlcsNH9hHiCpkS9eytbK
+	d423Bq9RMtwTCWsMQ5VFOgovKGhXV6YdqEutL3BI2olhi1YLtSQ=
 DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
 	messagingengine.com; h=message-id:date:from:reply-to
-	:mime-version:to:subject:content-type; s=smtpout; bh=2xOkvblj7+A
-	fJM5cUMg5p7sYrp0=; b=NXnm64xxDAU6OS8R+c1/Ku1tBfXknTK72NKg4HAFXeF
-	RWAQ0ckpJSYYMA+9rXUvt8G6JQA9eckcu/LziulbDkhK3Jju/iSJiQVnpF7zPjNk
-	6xZUyTTQtAnvOKv2EdzyGy241t+j3/T/AUoq5w0xhMzxThlvLLzrousD1vrDV0cE
-	=
+	:mime-version:to:subject:references:in-reply-to:content-type; s=
+	smtpout; bh=otZXRxOH05fwXjzrnePCo/kaeNw=; b=qBiy3Td3tQAYKA9mWkEN
+	RqQZP3LbY1Cv0U/7mBiRkNGP275PiLYXTYyMPFshq0WDCYabehQyqAug0/XOfkxd
+	8vbtMshlyCdyTRV7xHZ+R29N4N+WVQyPxnPHMF+LAIJntuW8IeVKS6njSFPUGZmz
+	9qN0+bX172zeHHcng3CVbUY=
+In-Reply-To: <50E84F5E.8060704@airpost.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
 This is a multi-part message in MIME format.
---------------010904070704030704050306
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+--------------030105060207050107040703
+Content-Type: text/plain; charset=windows-1252; format=flowed
 Content-Transfer-Encoding: 7bit
 
-Hello list!
+On 05.01.2013 17:05, Born Without wrote:
+> Hello list!
+>
+> As I was missing those features in the ipset set listing capabilities:
+>
+> - show sum of set members
+> - suppress listing of headers
+> - choose a delimiter character for separating member entries
+>
+> I wrote a little wrapper script (for the bash shell) to support them.
+> For those who like, you'll find it attached.
+>
+> Comments etc. welcome...
+>
+> Best regards
 
-As I was missing those features in the ipset set listing capabilities:
-
-- show sum of set members
-- suppress listing of headers
-- choose a delimiter character for separating member entries
-
-I wrote a little wrapper script (for the bash shell) to support them.
-For those who like, you'll find it attached.
-
-Comments etc. welcome...
+Just noticed, that for sets with 0 members the sum is not shown.
+Attached version changes that.
+Sorry for the noise.
 
 Best regards
 
---------------010904070704030704050306
+--------------030105060207050107040703
 Content-Type: text/plain; charset=windows-1252;
  name="ipset_list.bash"
 Content-Transfer-Encoding: 7bit
@@ -158,9 +167,9 @@ for x in "${!arr_opts[@]}"; do
 	if ((show_members)); then
 		printf "\n"
 	fi
-	if ((show_count && i)); then
+	if ((show_count)); then
 		printf "Member count: %d\n" $i
 	fi
 done
 
---------------010904070704030704050306--
+--------------030105060207050107040703--
