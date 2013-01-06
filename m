@@ -1,241 +1,48 @@
-From: forums@sidekicker.net
-Subject: Fwd: Re: problems iptables pptpd
-Date: Sun, 06 Jan 2013 17:29:58 +0000
-Message-ID: <20130106172958.21770mp9r50w30d2@webmail-srv2.servage.net>
+From: Jan Engelhardt <jengelh@inai.de>
+Subject: Re: Wrapper script for ipset listing
+Date: Sun, 6 Jan 2013 21:06:23 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1301062030320.14070@nerf07.vanv.qr>
+References: <50E84F5E.8060704@airpost.net> <alpine.LNX.2.01.1301051809460.23031@nerf07.vanv.qr> <50E8F495.40307@airpost.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <50E8F495.40307@airpost.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; delsp="Yes"; format="flowed"
-To: netfilter@vger.kernel.org
-
-Any ideas on how I can solve this?
-The client will not connect via pptpd
-and the only error I get in the # grep 'pptp' /var/log/messages
-Jan  6 12:28:27 jason pptpd[10716]: CTRL: Client 86.15.42.109 control  
-connection started
-Jan  6 12:28:27 jason pptpd[10716]: CTRL: Starting call (launching  
-pppd, opening GRE)
-Jan  6 12:28:27 jason pppd[10717]: Plugin  
-/usr/lib64/pptpd/pptpd-logwtmp.so loaded.
-Jan  6 12:28:28 jason pptpd[10716]: GRE: Bad checksum from pppd.
-Jan  6 12:28:58 jason pptpd[10716]: GRE:  
-read(fd=6,buffer=611860,len=8196) from PTY failed: status = -1 error =  
-Input/output error, usually caused by unexpected termination of pppd,  
-check option syntax and pppd logs
-Jan  6 12:28:58 jason pptpd[10716]: CTRL: PTY read or GRE write failed  
-(pty,gre)=(6,7)
-Jan  6 12:28:58 jason pptpd[10716]: CTRL: Client 86.15.42.109 control  
-connection finished
-pptpd logs is:
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Born Without <blackhole@airpost.net>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 
 
-
------ Forwarded message from forums@sidekicker.net -----
-     Date: Sun, 06 Jan 2013 11:12:41 +0000
-     From: forums@sidekicker.net
-  Subject: Re: problems iptables pptpd
-       To: forums@sidekicker.net
-       Cc: lartc@vger.kernel.org
-
-Hi the problem is not only the forwarding of gre but also what subnet to use?
-I already have a proxy on 172.xxx and a VPN on 10.8.0.x
-so what can I use for the pptpd network?
-This is my current routing:
-> [root ~]# route -n
-> Kernel IP routing table
-> Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
-> 10.8.0.2        0.0.0.0         255.255.255.255 UH    0      0        0 tun1
-> 172.16.0.2      0.0.0.0         255.255.255.255 UH    0      0        0 tun0
-> 10.8.0.0        10.8.0.2        255.255.255.0   UG    0      0        0 tun1
-> 172.16.0.0      172.16.0.2      255.255.255.0   UG    0      0        0 tun0
-> 88.xxx.xxx.0    0.0.0.0         255.255.252.0   U     0      0        0 eth0
-> 169.254.0.0     0.0.0.0         255.255.0.0     U     0      0        0 eth0
-> 0.0.0.0         88.xxx.xxx.1    0.0.0.0         UG    0      0        0 eth0
-
-Quoting forums@sidekicker.net:
-
-> Do I need GRE forwarding for this?
+On Sunday 2013-01-06 04:50, Born Without wrote:
+>>> As I was missing those features in the ipset set listing capabilities:
+>>>
+>>> - show sum of set members
+>>> - suppress listing of headers
+>>> - choose a delimiter character for separating member entries
+>>>
+>>> I wrote a little wrapper script (for the bash shell) to support them.
+>>> For those who like, you'll find it attached.
+>>
+>> There's libipset, with which this task should be achievable to the
+>> maximum customizable degree without involving ugly text parsing with sh.
 >
-> Quoting forums@sidekicker.net:
+> Hello Jan,
 >
->> I'm having a problem routing pptpd on my server throuhg iptables.
->> I cannot connect from client.
->> Any ideas what could be wrong?
->> I have a part in the iptables that is:
->> -A FORWARD -i ppp+ -o eth0 -j ACCEPT
->> -A FORWARD -i eth0 -o ppp+ -j ACCEPT
->>
->> but I think there might be more wrong than just that
->>
->> This is my current routing:
->> [root ~]# route -n
->> Kernel IP routing table
->> Destination     Gateway         Genmask         Flags Metric Ref     
->> Use Iface
->> 10.8.0.2        0.0.0.0         255.255.255.255 UH    0      0        0 tun1
->> 172.16.0.2      0.0.0.0         255.255.255.255 UH    0      0        0 tun0
->> 10.8.0.0        10.8.0.2        255.255.255.0   UG    0      0        0 tun1
->> 172.16.0.0      172.16.0.2      255.255.255.0   UG    0      0        0 tun0
->> 88.xxx.xxx.0    0.0.0.0         255.255.252.0   U     0      0        0 eth0
->> 169.254.0.0     0.0.0.0         255.255.0.0     U     0      0        0 eth0
->> 0.0.0.0         88.xxx.xxx.1    0.0.0.0         UG    0      0        0 eth0
->> [root ~]#
->>
->> I want to add a 3rd network for use with a PPTP VPN 10.8.1.0/24
->> 10.8.0.0 is for OpenVPN on tcp
->> 172.16.0.0 is OpenVPN on udp
->>
->> Also, I have this routing in ioptables, so how do I get the pptp  
->> port to be redirected?
->>
->> -A PREROUTING -d 88.xxx.xxx.xx9 -p tcp -m tcp --dport 443 -j DNAT  
->> --to-destination 88.xxx.xxx.xx9:1194
->> -A POSTROUTING -s 172.16.0.0/255.255.255.0 -o eth0 -j MASQUERADE
->> -A POSTROUTING -s 10.8.0.0/255.255.255.0 -o eth0 -j SNAT  
->> --to-source 88.xxx.xxx.xx9
->> -A POSTROUTING -o eth0 -p tcp -m tcp --tcp-flags SYN,RST SYN -j  
->> TCPMSS --set-mss 1460
->> -A POSTROUTING -o eth0 -p tcp -m tcp --tcp-flags SYN,RST SYN -j  
->> TCPMSS --clamp-mss-to-pmtu
->>
->>
->> add port 1723
->> -A PREROUTING -d 88.xxx.xxx.xx9 -p tcp -m tcp --dport 1723 -j DNAT  
->> --to-destination 88.xxx.xxx.xx9:1723
->> -A POSTROUTING -s 10.8.1.0/255.255.255.0 -o eth0 -j MASQUERADE
->>
->> Here is my iptables:
->> # Generated by iptables-save v1.4.7 on Sun Nov 25 22:45:46 2012
->> *mangle
->> :PREROUTING ACCEPT [1490053707:1036617946585]
->> :INPUT ACCEPT [625694708:365286746462]
->> :FORWARD ACCEPT [859720908:670949790610]
->> :OUTPUT ACCEPT [760469091:982961370679]
->> :POSTROUTING ACCEPT [1620189999:1653911161289]
->> COMMIT
->> # Completed on Sun Nov 25 22:45:46 2012
->> # Generated by iptables-save v1.4.7 on Sun Nov 25 22:45:46 2012
->> *filter
->> :INPUT ACCEPT [0:0]
->> :FORWARD ACCEPT [0:0]
->> :OUTPUT ACCEPT [390:204397]
->> :RH-Firewall-1-INPUT - [0:0]
->> -A INPUT -j RH-Firewall-1-INPUT
->> -A INPUT -i tun+ -j ACCEPT
->> -A FORWARD -j RH-Firewall-1-INPUT
->> -A FORWARD -i ppp+ -o eth0 -j ACCEPT
->> -A FORWARD -i eth0 -o ppp+ -j ACCEPT
->> -A OUTPUT -o tun+ -j ACCEPT
->> -A RH-Firewall-1-INPUT -i lo -j ACCEPT
->> -A RH-Firewall-1-INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
->> -A RH-Firewall-1-INPUT -p tcp -m state --state NEW -m tcp --dport  
->> 22 -j ACCEPT
->> -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 20 -m state --state  
->> NEW -j ACCEPT
->> -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 21 -m state --state  
->> NEW -j ACCEPT
->> -A RH-Firewall-1-INPUT -p udp -m udp --dport 53 -m state --state  
->> NEW -j ACCEPT
->> -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 53 -m state --state  
->> NEW -j ACCEPT
->> -A RH-Firewall-1-INPUT -p udp -m udp --dport 123 -m state --state  
->> NEW -j ACCEPT
->> -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 8002 -m state --state  
->> NEW -j ACCEPT
->> -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 9001 -m state --state  
->> NEW -j ACCEPT
->> -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 80 -m state --state  
->> NEW -j ACCEPT
->> -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 8080 -m state --state  
->> NEW,RELATED,ESTABLISHED -j ACCEPT
->> -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 1935 -j ACCEPT
->> -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 443 -j ACCEPT
->> -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 1194 -j ACCEPT
->> -A RH-Firewall-1-INPUT -p udp -m udp --dport 1194 -j ACCEPT
->> -A RH-Firewall-1-INPUT -p udp -m udp --dport 5001 -j ACCEPT
->> -A RH-Firewall-1-INPUT -p tcp -m tcp --dport 5001 -j ACCEPT
->> -A RH-Firewall-1-INPUT -i eth0 -p tcp -m tcp --dport 1723 -j ACCEPT
->> -A RH-Firewall-1-INPUT -i eth0 -p gre -j ACCEPT
->> -A RH-Firewall-1-INPUT -i lo -j ACCEPT
->> -A RH-Firewall-1-INPUT -i tun+ -j ACCEPT
->> -A RH-Firewall-1-INPUT -i tap+ -j ACCEPT
->> -A RH-Firewall-1-INPUT -j REJECT --reject-with icmp-host-prohibited
->> COMMIT
->> # Completed on Sun Nov 25 22:45:46 2012
->> # Generated by iptables-save v1.4.7 on Sun Nov 25 22:45:46 2012
->> *nat
->> :PREROUTING ACCEPT [11980035:900517415]
->> :POSTROUTING ACCEPT [2124769:132314589]
->> :OUTPUT ACCEPT [2124633:132309469]
->> -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
->> -A POSTROUTING -s 172.16.0.0/24 -o eth0 -j MASQUERADE
->> COMMIT
->> # Completed on Sun Nov 25 22:45:46 2012
->>
->>
->> I get this in the log and the Windows connection just times out
->>
->> Nov 25 00:00:12 jason rsyslogd: [origin software="rsyslogd"  
->> swVersion="5.8.10" x-pid="5395" x-info="web"] rsyslogd was HUPed
->> Nov 25 22:29:53 jason kernel: tun0: Disabled Privacy Extensions
->> Nov 25 22:31:04 jason kernel: tun0: Disabled Privacy Extensions
->> Nov 25 22:38:01 jason pptpd[25853]: MGR: Maximum of 100 connections  
->> reduced to 91, not enough IP addresses given
->> Nov 25 22:38:01 jason pptpd[25854]: MGR: Manager process started
->> Nov 25 22:38:01 jason pptpd[25854]: MGR: Maximum of 91 connections available
->> Nov 25 22:42:15 jason pptpd[25916]: MGR: Maximum of 100 connections  
->> reduced to 91, not enough IP addresses given
->> Nov 25 22:42:15 jason pptpd[25917]: MGR: Manager process started
->> Nov 25 22:42:15 jason pptpd[25917]: MGR: Maximum of 91 connections available
->> Nov 25 22:50:05 jason kernel: ip_tables: (C) 2000-2006 Netfilter Core Team
->> Nov 25 22:50:05 jason kernel: nf_conntrack version 0.5.0 (16384  
->> buckets, 65536 max)
->> Nov 25 22:50:41 jason pptpd[26072]: CTRL: Client 86.15.42.109  
->> control connection started
->> Nov 25 22:50:41 jason pptpd[26072]: CTRL: Starting call (launching  
->> pppd, opening GRE)
->> Nov 25 22:50:41 jason pppd[26073]: Warning: can't open options file  
->> /root/.ppprc: Permission denied
->> Nov 25 22:50:41 jason pppd[26073]: Plugin  
->> /usr/lib64/pptpd/pptpd-logwtmp.so loaded.
->> Nov 25 22:50:41 jason kernel: PPP generic driver version 2.4.2
->> Nov 25 22:50:41 jason pppd[26073]: pppd 2.4.5 started by root, uid 0
->> Nov 25 22:50:41 jason pppd[26073]: Using interface ppp0
->> Nov 25 22:50:41 jason pppd[26073]: Connect: ppp0 <--> /dev/pts/0
->> Nov 25 22:50:41 jason pptpd[26072]: GRE: Bad checksum from pppd.
->> Nov 25 22:51:11 jason pppd[26073]: LCP: timeout sending Config-Requests
->> Nov 25 22:51:11 jason pppd[26073]: Connection terminated.
->> Nov 25 22:51:11 jason pppd[26073]: Modem hangup
->> Nov 25 22:51:11 jason pppd[26073]: Exit.
->> Nov 25 22:51:11 jason pptpd[26072]: GRE:  
->> read(fd=6,buffer=611860,len=8196) from PTY failed: status = -1  
->> error = Input/output error, usually caused by unexpected  
->> termination of $
->> Nov 25 22:51:11 jason pptpd[26072]: CTRL: PTY read or GRE write  
->> failed (pty,gre)=(6,7)
->> Nov 25 22:51:11 jason pptpd[26072]: CTRL: Client 86.15.42.109  
->> control connection finished
->>
->> --
->> To unsubscribe from this list: send the line "unsubscribe lartc" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>
->
->
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe lartc" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+> good you mention libipset, because not even the man page does, nor does any
+> documentation or similar exist.
 
+I have taken Joszef into Cc..
 
+> Interesting, that you belittle text parsing, it's such a common task in linux.
+> And thank you for telling us, that C has more power that sh. Really great
+> insight!
 
+"Common" does not mean "the right thing", especially if the output is prone to
+change - and by definition, everything that has not been declared as giving a
+stable output can easily change at inconvenient times, depending on moon phase
+and locale settings.
 
------ End forwarded message -----
-
-
+Stable output does not necessarily mean a C API. Tools default to output
+human-readable prose, and may require specific options to put them into
+machine-parseable mode. Compare: `date` vs. `date -d +"%F %T"` (parseable).
