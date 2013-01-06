@@ -1,50 +1,51 @@
-From: "Steve \(Telsat Broadband\)" <steve@telsatbb.vu>
-Subject: RE: FW: Packets missing the NAT table
-Date: Mon, 7 Jan 2013 03:58:46 +1100
-Message-ID: <00ad01cdec2f$18f156a0$4ad403e0$@telsatbb.vu>
-References: <00a901cdec28$006d1c10$01475430$@telsatbb.vu> <alpine.LNX.2.01.1301061753140.6663@nerf07.vanv.qr>
+From: Born Without <blackhole@airpost.net>
+Subject: Re: FW: Packets missing the NAT table
+Date: Sun, 06 Jan 2013 18:08:23 +0100
+Message-ID: <50E9AF87.7070403@airpost.net>
+References: <00a901cdec28$006d1c10$01475430$@telsatbb.vu>
+Reply-To: blackhole@airpost.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1301061753140.6663@nerf07.vanv.qr>
-Content-Language: en-au
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=airpost.net; h=
+	message-id:date:from:reply-to:mime-version:to:cc:subject
+	:references:in-reply-to:content-type:content-transfer-encoding;
+	 s=mesmtp; bh=WrbHmtkUheSCgDwFRgVr8OpjjmI=; b=fOp2HDZyXEVaY8WsBH
+	5eC+hX8Vjm+bYIRSOkAetJ/3kpDChwztYbrMtMEDFX91EosqxvM1WEbuO8k0cymZ
+	10uT5/qyQmxnvjTXfBj60cWlnWtLx9eXo2F3GVYGBHGViZn5mRowjBzKJ7h7Wptb
+	fRcSHI2ctQcLmICA49t1BhFM4=
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
+	messagingengine.com; h=message-id:date:from:reply-to
+	:mime-version:to:cc:subject:references:in-reply-to:content-type
+	:content-transfer-encoding; s=smtpout; bh=WrbHmtkUheSCgDwFRgVr8O
+	pjjmI=; b=VIGwF3t/4kahIXs2X6Qok2pW2+ZbWKtqb/QsgyZTU5XRy3r9dofJHn
+	NaWiKkOAadBOYwfV0gEcQ/Kzg6/X3ssFkh/5PTYMkMOJPCaU6ai0C0RdGgj19Ggx
+	ib62/r4gOxGQnhkXP9JykuI/JIoRi+PUKdfJR+zXlasm/+z4Nwids=
+In-Reply-To: <00a901cdec28$006d1c10$01475430$@telsatbb.vu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Jan Engelhardt' <jengelh@inai.de>
+Content-Type: text/plain; charset="windows-1252"; format="flowed"
+To: "Steve (Telsat Broadband)" <steve@telsatbb.vu>
 Cc: netfilter@vger.kernel.org
 
-
-Hi Jan,
-
-Thanks for the quick reply.
-
-That make sense; however now I just need to find a way to modify my rules to account for that :)
-
-Thanks.
-Steve.
-
-
-
-
------Original Message-----
-From: Jan Engelhardt [mailto:jengelh@inai.de] 
-Sent: Monday, 7 January 2013 3:55 AM
-To: Steve (Telsat Broadband)
-Cc: netfilter@vger.kernel.org
-Subject: Re: FW: Packets missing the NAT table
-
-On Sunday 2013-01-06 17:08, Steve (Telsat Broadband) wrote:
-
->Hi All,
+On 06.01.2013 17:08, Steve (Telsat Broadband) wrote:
+> Hi All,
 >
->I?m just trying to debug an issue on our network and I?ve noticed that 
->some packets are being missed from some rules in the NAT table.
+> I=92m just trying to debug an issue on our network and I=92ve noticed=
+ that some
+> packets are being missed from some rules in the NAT table.
 >
->Do all packets go through the NAT table or is there some exclusion?  
->I?m seeing the packet hitting the mangle table as well as the filter 
->table, but not the NAT?
+> Do all packets go through the NAT table or is there some exclusion?  =
+I=92m
+> seeing the packet hitting the mangle table as well as the filter tabl=
+e, but
+> not the NAT?
 
-The nat table is a configuration database of sorts that is only consulted when necessary.
-
+What I've read in the past, the nat table is only consulted at=20
+connection initiation for conntrack state NEW packets.
+If conntrack qualifies a packet as INVALID this won't get natted and=20
+sent out as is (if not dropped from another rule).
+Try to catch the invalid packets with:
+-m conntrack --ctstate INVALID
+and see if these are the suspected ones.
 
