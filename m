@@ -1,66 +1,53 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Wrapper script for ipset listing
-Date: Mon, 7 Jan 2013 08:59:53 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1301070852290.591@blackhole.kfki.hu>
-References: <50E84F5E.8060704@airpost.net> <alpine.LNX.2.01.1301051809460.23031@nerf07.vanv.qr> <50E8F495.40307@airpost.net> <alpine.LNX.2.01.1301062030320.14070@nerf07.vanv.qr>
+From: Darius Jahandarie <djahandarie@gmail.com>
+Subject: Re: Limits higher than 10000/sec
+Date: Mon, 7 Jan 2013 21:13:13 -0500
+Message-ID: <CAFANWtUCkZWEAeqkLDbdZdWs6dhxzTPzkr4j0rG05fVsS6616A@mail.gmail.com>
+References: <CAFANWtU9aeFjgUvczjnCETxy4h01aFs6JnDcK_ikxz-ijJ=Adg@mail.gmail.com>
+	<alpine.LNX.2.01.1212092341330.15774@nerf07.vanv.qr>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1301062030320.14070@nerf07.vanv.qr>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:x-received:in-reply-to:references:date:message-id
+         :subject:from:to:cc:content-type;
+        bh=D3DCBjQqSim1KvX7KL3BffqHJRwGA+sRbC6coPdHvU4=;
+        b=rjawwh2O5yt60pxDn5wcatwezjB0HXc48PzP3JjKJE0AF/3C4+tFjemWDPYBbisSRK
+         9bVjJ+MY+jCO3IuK/wDGN415YqvTRlbiUh5ETUZbnp8jh1q3Yjr0Y6CDjxS43hDE6Bjj
+         pGLVfwg0eESnrNb+cGxN3+FGDJMRh3Y15Nj5U7Sn4jOL9yBxp9IAtkO0zBjez7tMd1TB
+         gdw+9RigoHezIW906HEzrzbKVIzsvsBFceT6pcvNA144bNtjFFKf1bYnXd1QuSXcWCFr
+         3E7YMJr42KExaqgYiPJpFdEhRlcZk402frA7HmZORMrZALoXK+3XSXtyouUQ9f3bybhx
+         uInA==
+In-Reply-To: <alpine.LNX.2.01.1212092341330.15774@nerf07.vanv.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: Jan Engelhardt <jengelh@inai.de>
-Cc: Born Without <blackhole@airpost.net>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Cc: netfilter@vger.kernel.org
 
-On Sun, 6 Jan 2013, Jan Engelhardt wrote:
+On Sun, Dec 9, 2012 at 5:41 PM, Jan Engelhardt <jengelh@inai.de> wrote:
+> On Sunday 2012-12-09 21:05, Darius Jahandarie wrote:
+>
+>>Hi all. I currently have an iptables rule like follows in the raw table:
+>>
+>>-A PREROUTING -p tcp --dport 1234 --syn -m limit --limit 10000/sec
+>>--limit-burst 10000 -j ACCEPT
+>>-A PREROUTING -p tcp --syn -j DROP
+>>
+>>Does anyone have thoughts on a way to get some sort of rate-limiting
+>>(TBF or otherwise) that can handle more PPS than the limit module
+>>while still being as efficient as possible?
+>
+>  -j RATEEST, -m rateest
 
-> On Sunday 2013-01-06 04:50, Born Without wrote:
-> >>> As I was missing those features in the ipset set listing capabilities:
-> >>>
-> >>> - show sum of set members
-> >>> - suppress listing of headers
-> >>> - choose a delimiter character for separating member entries
-> >>>
-> >>> I wrote a little wrapper script (for the bash shell) to support them.
-> >>> For those who like, you'll find it attached.
-> >>
-> >> There's libipset, with which this task should be achievable to the
-> >> maximum customizable degree without involving ugly text parsing with sh.
-> >
-> > good you mention libipset, because not even the man page does, nor does any
-> > documentation or similar exist.
-> 
-> I have taken Joszef into Cc..
-> 
-> > Interesting, that you belittle text parsing, it's such a common task 
-> > in linux. And thank you for telling us, that C has more power that sh. 
-> > Really great insight!
-> 
-> "Common" does not mean "the right thing", especially if the output is 
-> prone to change - and by definition, everything that has not been 
-> declared as giving a stable output can easily change at inconvenient 
-> times, depending on moon phase and locale settings.
-> 
-> Stable output does not necessarily mean a C API. Tools default to output
-> human-readable prose, and may require specific options to put them into
-> machine-parseable mode. Compare: `date` vs. `date -d +"%F %T"` (parseable).
+Thanks for the tip Jan -- but I've failed in my attempts to use this
+target/module combo. I'm not entirely sure what my rules should be to
+do something similar to the limit rule I posted.
 
-In order to parse the output produced by ipset, one should take into 
-account the followings:
+I have indeed tried to figure it out from the docs, but the examples
+there are hard for me to understand, and it doesn't provide any
+English for exactly how the target and the module interact with one
+another.
 
-- New header elements may appear but the header part is always 
-  started by "Name:" and ended by "Members:".
-- New value parameters may appear but those are appended to the existing
-  ones.
-
-If those "rules" are taken into account, then shell/perl/etc scripts can 
-safely parse the output.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+-- 
+Darius Jahandarie
