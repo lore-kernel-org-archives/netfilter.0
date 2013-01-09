@@ -1,58 +1,57 @@
-From: Andreas Herz <andi@geekosphere.org>
-Subject: Re: [ANNOUNCE] ipset 6.16.1 released
-Date: Wed, 9 Jan 2013 14:48:04 +0100
-Message-ID: <20130109134804.GL31644@workstation>
-References: <alpine.DEB.2.00.1211271510180.15929@blackhole.kfki.hu>
+From: Eliezer Croitoru <eliezer@ngtech.co.il>
+Subject: Re: Deleting subnet range from conntrack
+Date: Wed, 09 Jan 2013 15:50:01 +0200
+Message-ID: <50ED7589.6050900@ngtech.co.il>
+References: <026801cded4b$cda64b10$68f2e130$@telsatbb.vu> <20130108035050.GA19114@1984>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.00.1211271510180.15929@blackhole.kfki.hu>
+In-Reply-To: <20130108035050.GA19114@1984>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: "Steve (Telsat Broadband)" <steve@telsatbb.vu>, netfilter@vger.kernel.org
 
-On 27/11/12 at 15:16, Jozsef Kadlecsik wrote:
-> I'm happy to announce ipset 6.16.1. The most important part is the patch 
-> from Florian Westphal, which fixes netiface set name overflow in the 
-> kernel. The RCU handling of the automating increase of the maximal sets 
-> feature introduced in 6.15 is also fixed.
+Hey there,
 
-It works fine on new machines, but i got this compiler error with some
-older system:
+A simple script that will invoke all conntrack sessions can do that and 
+it is not really advised to do that in a very busy gateway or allow 
+users trigger such event freely.
 
-In file included from
-/usr/src/redhat/BUILD/ipset-6.16.1/kernel/net/netfilter/ipset/ip_set_hash_ip.c:115:
+How exactly a AUTH processing listener works on data-grams? Just wondering?
 
-/usr/src/redhat/BUILD/ipset-6.16.1/kernel/include/linux/netfilter/ipset/ip_set_ahash.h:
-In function `hash_ip4_add':
+In most cases UDP should be dropped to prevent this kind of issues.
 
-/usr/src/redhat/BUILD/ipset-6.16.1/kernel/include/linux/netfilter/ipset/ip_set_ahash.h:448:
-sorry, unimplemented: inlining failed in call to 'hash_ip4_data_next':
-function body not available
+Regards,
+Eliezer
 
-/usr/src/redhat/BUILD/ipset-6.16.1/kernel/include/linux/netfilter/ipset/ip_set_ahash.h:489:
-sorry, unimplemented: called from here
-
-make[3]: ***
-[/usr/src/redhat/BUILD/ipset-6.16.1/kernel/net/netfilter/ipset/ip_set_hash_ip.o]
-Error 1
-
-gcc version 3.4.5 20051201 (Red Hat 3.4.5-2)
-
-Yes it's old and i know gcc update may fix this. But still, is there
-another way to fix it? removing the "inline" in front of
-type_pf_data_next resolves it somehow as it's compiling through and
-seems to work just fine. It "just" results in this warning:
-
-/usr/src/redhat/BUILD/ipset-6.16.1/kernel/include/linux/netfilter/ipset/ip_set_ahash.h:448:
-warning: 'hash_ip4_data_next' declared inline after being called
-
-/usr/src/redhat/BUILD/ipset-6.16.1/kernel/include/linux/netfilter/ipset/ip_set_ahash.h:448:
-warning: previous declaration of 'hash_ip4_data_next' was here
-
-thanks so far.
-
--- 
-Andreas Herz
+On 1/8/2013 5:50 AM, Pablo Neira Ayuso wrote:
+> Hi Steve,
+>
+> On Tue, Jan 08, 2013 at 01:56:48PM +1100, Steve (Telsat Broadband) wrote:
+>> Hi All,
+>>
+>> As part of a walled gateway I have written, the gateway is listening on both
+>> TCP and UDP for incoming connections.  For TCP, the connection is picked up
+>> and authenticated and allowed to proceed through the gateway; this all
+>> appears to work normally; however, under UDP, the unauthenticated data is
+>> sent to the auth processing listener via a NAT 'REDIRECT' command.  This
+>> command then authenticates the data, BUT the problem is that UDP data still
+>> continues to be redirected to the auth processor even after authorisation.
+>>
+>> If have found that if I run a 'conntrack -D -s xxx.xxx.xxx.xxx' on the IP in
+>> question, the UDP data then flows through as expected.  The problem is, that
+>> for some instances, I'm needing the authorise/permit a subnet or network
+>> xxx.xxx.xxx.xxx/xx or and IPv6 subnet and it appears that conntrack doesn't
+>> support this.
+>>
+>> Is there a way to get around this and delete conntrack entries for the
+>> subnet?
+>
+> Unfortunately not yet. But it is doable.
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
