@@ -1,84 +1,48 @@
-From: Dimitri Yioulos <dyioulos@onpointfc.com>
-Subject: Dropping brute force attacks
-Date: Thu, 10 Jan 2013 13:55:12 -0500
-Message-ID: <201301101355.12763.dyioulos@onpointfc.com>
+From: Peter McAlpine <peter@aoeu.ca>
+Subject: Basic bridge routing via ebtables and iproute2
+Date: Thu, 10 Jan 2013 14:28:03 -0500
+Message-ID: <CAEDV4yqDKuEvafDsh=FpRGD4-AyXzcyU8-Z0aWdQ=_LV9A6C_g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter <netfilter@vger.kernel.org>
 
-Hello, all, and Happy New Year.
+Hello,
 
-A few weeks ago I added a post about how to tweak the set up 
-of rules to  drop the ip addresses of machines trying to do 
-a brute force login via ipop3d.  What I've noticed is that 
-few, if any, addresses are being dropped.  Fortunately, I 
-have fail2ban installed on our mail server, so the attacks 
-are being blunted.  Still, I'd like to cut these attacks 
-off at the pass, so to speak.  With you kind indulgence, 
-allow me to provide information on my set-up again so that 
-perhaps someone can help me get this working properly.
+I am attempting to route bridged ipv4 traffic via ebtables & iproute2,
+but am experiencing problems.
 
-Our mail server sits in a DMZ; NAT and Forward rules are in 
-place to make the mail server work (and it does, very 
-well).  So, what I did was set the Forward rules to jump to 
-a chain I created called "block_email_brute" (the name 
-sucks, but, hey).  Here are the rules:
+[client 10.8.7.101] ---- eth2 (no addr)[brouter (br0: 10.8.7.10)] eth3
+(no addr)---- [gateway 10.8.7.99]
 
-block_email_brute  tcp  --  anywhere             
-server.mydomain.com tcp dpt:pop3
+I have flushed all iptables and ebtables rules. All policies are "ACCEPT".
 
-block_email_brute  tcp  --  anywhere             
-server.mydomain.com tcp dpt:smtp
+At this point, pinging 'gateway' from 'client' is successful.
 
-And here are the rules in the "block_email_brute" chain:
+Then I add an ebtables rule on 'brouter' to route traffic destined to
+'gateway' via the routing table:
+ebtables -t broute -A BROUTING -p ipv4 --ip-dst 10.8.7.99 --log-ip -j
+redirect --redirect-target DROP
+For good measure I also enable ip_forward:
+echo '1' > /proc/sys/net/ipv4/ip_forward
 
-           tcp  --  anywhere             server.mydomain.com 
-tcp dpt:pop3 state NEW recent: SET name: DEFAULT side: 
-source
+What I expect to happen:
+1) The packet comes in on eth2 on 'brouter'
+2) The ebtables rule matches the traffic and sends it to the routing
+table (via the DROP target)
+3) The packet (destined for 10.8.7.99) matches the default route and
+is sent to 'gateway'
+4) The packet is sent out eth3 to 'gateway'
 
-LOG        tcp  --  anywhere             server.mydomain.com 
-tcp dpt:pop3 state NEW recent: UPDATE seconds: 60 
-hit_count: 6 TTL-Match name: DEFAULT25 side: source LOG 
-level info prefix `Anti Email Bruteforce: '
+What is actually happening:
+1) The packet comes in on eth2 on 'brouter' - CONFIRMED via 'tcpdump -i eth2'
+2) The ebtables rule matches the traffic - CONFIRMED via syslog
+message due to '--log-ip' option in ebtables rule
+3) ... The packet vanishes.
 
-DROP       tcp  --  anywhere             server.mydomain.com 
-tcp dpt:pop3 state NEW recent: UPDATE seconds: 60 
-hit_count: 6 TTL-Match name: DEFAULT side: source
+Can anyone help me figure out why this is happening?
 
-           tcp  --  anywhere             server.mydomain.com 
-tcp dpt:smtp state NEW recent: SET name: DEFAULT25 side: 
-source
-
-LOG        tcp  --  anywhere             server.mydomain.com 
-tcp dpt:smtp state NEW recent: UPDATE seconds: 60 
-hit_count: 6 TTL-Match name: DEFAULT25 side: source LOG 
-level info prefix `Anti Email Bruteforce: '
-
-DROP       tcp  --  anywhere             server.mydomain.com 
-tcp dpt:smtp state NEW recent: UPDATE seconds: 60 
-hit_count: 6 TTL-Match name: DEFAULT25 side: source
-
-ACCEPT     tcp  --  anywhere             anywhere            
-tcp flags:SYN,RST,ACK/SYN
-
-ACCEPT     tcp  --  anywhere             anywhere            
-tcp state RELATED,ESTABLISHED
-
-I realize that port 110 is the one being attacked, but I 
-added 25 just for good measure.
-
-I hope the above information is clear and complete enough.  
-Your help is greatly appreciated.
-
-Dimitri
-
--- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
-
+-Peter
