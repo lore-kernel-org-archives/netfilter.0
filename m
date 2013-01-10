@@ -1,54 +1,75 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: v3.8-rc3: uninitialized warnings in net/netfilter/xt_CT.c
-Date: Thu, 10 Jan 2013 13:16:02 +0100
-Message-ID: <20130110121602.GA20429@1984>
-References: <20130110111821.GA23008@liondog.tnic>
- <20130110114742.GA17883@1984>
- <20130110120121.GD23008@liondog.tnic>
+From: Born Without <blackhole@airpost.net>
+Subject: Re: Wrapper script for ipset listing
+Date: Thu, 10 Jan 2013 13:53:48 +0100
+Message-ID: <50EEB9DC.7070902@airpost.net>
+References: <50E84F5E.8060704@airpost.net> <alpine.LNX.2.01.1301051809460.23031@nerf07.vanv.qr> <50E8F495.40307@airpost.net> <alpine.LNX.2.01.1301062030320.14070@nerf07.vanv.qr> <alpine.DEB.2.00.1301070852290.591@blackhole.kfki.hu> <50ED13BC.6010005@airpost.net> <20130109115232.GA19321@1984>
+Reply-To: blackhole@airpost.net
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20130110120121.GD23008@liondog.tnic>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=airpost.net; h=
+	message-id:date:from:reply-to:mime-version:to:cc:subject
+	:references:in-reply-to:content-type:content-transfer-encoding;
+	 s=mesmtp; bh=PALnlKcVjfmn9PccXXX/5hupfto=; b=TzNuKw0XZ30TYc9/yL
+	+HJM7C3okVtlnPEWH+uAqGYWOb1SCkqhdeIZ1cpWZwaSzLpDGir9lmwN2kuHhyzM
+	fnXdXlSLJVGMR0MOD3wW5+Fx0PbJgHc2egZd5bNhHBRFLZgOIBoLlvUXl1PwdSVn
+	I98h7Atg4PWbrXnBdPnORsJn4=
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
+	messagingengine.com; h=message-id:date:from:reply-to
+	:mime-version:to:cc:subject:references:in-reply-to:content-type
+	:content-transfer-encoding; s=smtpout; bh=PALnlKcVjfmn9PccXXX/5h
+	upfto=; b=mAmCPIdezQ9fH3q1deMCFTRVYC31uQIlXz1N1kgXofQwvkrB5za95O
+	nX4mIahgJgMFJ6hLBrI2fPkkzhluXIHH6Rm2GgA4SLYxlAsMHMEnEJvFp1yFtt6L
+	VqFMj+WXp+AEH0giO9445OyH5/cfkXda3mzgDFZDGhpQr6ZZGDG8Y=
+In-Reply-To: <20130109115232.GA19321@1984>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Borislav Petkov <bp@alien8.de>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Jan Engelhardt <jengelh@inai.de>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Thu, Jan 10, 2013 at 01:01:21PM +0100, Borislav Petkov wrote:
-> On Thu, Jan 10, 2013 at 12:47:42PM +0100, Pablo Neira Ayuso wrote:
-> > Patch attached to address this issue.
->=20
-> > From 3ceaa3b1baa660aaeef63b86ea9771dcab6d0acd Mon Sep 17 00:00:00 2=
-001
-> > From: Pablo Neira Ayuso <pablo@netfilter.org>
-> > Date: Thu, 10 Jan 2013 12:42:15 +0100
-> > Subject: [PATCH] netfilter: xt_CT: fix unset return value if conntr=
-ack zone
-> >  are disabled
-> > MIME-Version: 1.0
-> > Content-Type: text/plain; charset=3DUTF-8
-> > Content-Transfer-Encoding: 8bit
-> >=20
-> > net/netfilter/xt_CT.c: In function =E2=80=98xt_ct_tg_check_v1=E2=80=
-=99:
-> > net/netfilter/xt_CT.c:250:6: warning: =E2=80=98ret=E2=80=99 may be =
-used uninitialized in this function [-Wmaybe-uninitialized]
-> > net/netfilter/xt_CT.c: In function =E2=80=98xt_ct_tg_check_v0=E2=80=
-=99:
-> > net/netfilter/xt_CT.c:112:6: warning: =E2=80=98ret=E2=80=99 may be =
-used uninitialized in this function [-Wmaybe-uninitialized]
-> >=20
-> > Reported-by: Borislav Petkov <bp@alien8.de>
-> > Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
->=20
-> Yep, that's exactly what I meant, thanks Pablo.
->=20
-> Acked-by: Borislav Petkov <bp@alien8.de>
+On 09.01.2013 12:52, Pablo Neira Ayuso wrote:
+[...]
+>>>> On Sunday 2013-01-06 04:50, Born Without wrote:
+>>>>>>> As I was missing those features in the ipset set listing capabilities:
+>>>>>>>
+>>>>>>> - show sum of set members
+>>>>>>> - suppress listing of headers
+>>>>>>> - choose a delimiter character for separating member entries
+>>>>>>>
+>>>>>>> I wrote a little wrapper script (for the bash shell) to support them.
 
-Applied, thanks Borislav.
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+[...]
+
+> Suggestion: Some explicit header with licensing terms of your script
+> is a good idea if you want to share things, otherwise the law in most
+> countries defaults to "all right reserved".
+>
+> And if you use the same license than ipset, it may help Jozsef to
+> consider adding that to some contrib directory. Or you can just
+> publish it in your personal website.
+
+Thank you for the suggestion.
+I wasn't even thinking of license stuff...
+This is just a simple helper script. Anybody can use it freely.
+But no problem, I'll add some license :)
+Don't know much about them.
+But I guess GPL 3 will do?
+Also for Jozsef, if he would consider adding it to contrib?
+
+One thing still is missing, to make it more foolproof, there's no 
+checking for supported ipset versions (i.e v2.x) in the script.
+I only have 6.16.1 installed.
+I don't know if the -v|--version option is persistent through ipset 
+versions.
+I don't know if the format of the version output is persistent through 
+ipset versions.
+I don't know from what version the \`list' action is valid (before it 
+was -L i think?).
+I don't know if the plain listing output (header - members) is 
+persistent through ipset versions.
+
+With this information I could incorporate version checking and 
+eventually support older versions.
+
+Best regards
