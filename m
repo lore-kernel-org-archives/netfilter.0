@@ -1,50 +1,103 @@
-From: Born Without <blackhole@airpost.net>
-Subject: Re: Wrapper script for ipset listing
-Date: Fri, 11 Jan 2013 09:19:13 +0100
-Message-ID: <50EFCB01.3070008@airpost.net>
-References: <50E84F5E.8060704@airpost.net> <alpine.LNX.2.01.1301051809460.23031@nerf07.vanv.qr> <50E8F495.40307@airpost.net> <alpine.LNX.2.01.1301062030320.14070@nerf07.vanv.qr> <alpine.DEB.2.00.1301070852290.591@blackhole.kfki.hu> <50ED13BC.6010005@airpost.net> <20130109115232.GA19321@1984>
-Reply-To: blackhole@airpost.net
+From: Peter McAlpine <peter@aoeu.ca>
+Subject: Re: Basic bridge routing via ebtables and iproute2
+Date: Fri, 11 Jan 2013 09:43:32 -0500
+Message-ID: <CAEDV4yqst5u+L7OcLi09x2O3TegYWiDS7drMXL08vLuxGuNpfA@mail.gmail.com>
+References: <CAEDV4yqDKuEvafDsh=FpRGD4-AyXzcyU8-Z0aWdQ=_LV9A6C_g@mail.gmail.com>
+	<CAJygYd1CC_FFmXNYRfZmX6UKBWM7PJJ5e1ym897CuJBeoebHsA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=airpost.net; h=
-	message-id:date:from:reply-to:mime-version:to:cc:subject
-	:references:in-reply-to:content-type:content-transfer-encoding;
-	 s=mesmtp; bh=GpynhLFJ/KKkBi7T2Pb+mHGOtek=; b=GmAQZlTbik6Jf0fb0g
-	hnGWsrJXf9OmEJPMyH3v18x8JiAuVz9mvE+WaHp+cmrkefcL2+nUydgycBb6avXm
-	IY7pIYSyy8MYfoFQ4P2I+iBqBjmBikfeUwKKRF7tVCHnnL4VqZgZcODANfTl3fJq
-	jjxp94DTqPNrr5HwdPALifAZ0=
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
-	messagingengine.com; h=message-id:date:from:reply-to
-	:mime-version:to:cc:subject:references:in-reply-to:content-type
-	:content-transfer-encoding; s=smtpout; bh=GpynhLFJ/KKkBi7T2Pb+mH
-	GOtek=; b=UEvnFZnP4b5hvna6IPBevMhDfE7U2fFjlcufCfcNeML5SdiLOz79g7
-	NkTy73S8VEWJDFpQRLMZsharMY2KAdWSqcKnmRNdN8nxIdyBv3SRJq9ZTG3Y3dk1
-	EXtWLi3LhjQghQ9PTa3+DIABaUsGk5nXJ+6x6P/bvom2Lqy5w8QLI=
-In-Reply-To: <20130109115232.GA19321@1984>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=aoeu.ca; h=mime-version
+	:in-reply-to:references:date:message-id:subject:from:to:cc
+	:content-type:content-transfer-encoding; s=aoeu.ca; bh=4NeiqknOu
+	x/S/q4yUpwK3uQkXK4=; b=bSeKRzd2PZ7XafxtZb+riQAyHYRZb025Cxp4dYRRK
+	+WwrX+WH+PRcyBf5Anm1udPK2VTgJvyT8TVZszia9gnQpUKRHKUyqyjo1KD7Suzh
+	csLgumS/HiIX1gnaMPdOY5oms76ZxFwqjkkKQFVusVQ512dkL7PzNVHWsxHHNg94
+	UM=
+In-Reply-To: <CAJygYd1CC_FFmXNYRfZmX6UKBWM7PJJ5e1ym897CuJBeoebHsA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: =?UTF-8?B?5Y+26Zuo6aOe?= <sunyucong@gmail.com>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-On 09.01.2013 12:52, Pablo Neira Ayuso wrote:
-[...]
->>>> On Sunday 2013-01-06 04:50, Born Without wrote:
-[...]
->>>>>>> I wrote a little wrapper script (for the bash shell) to support them.
->>>>>>> For those who like, you'll find it attached.
+Hi,
 
-[...]
+Thanks for your reply.
 
-> And if you use the same license than ipset, it may help Jozsef to
-> consider adding that to some contrib directory. Or you can just
-> publish it in your personal website.
+The end-goal is to be able to selectively route some traffic down a
+tapX interface. Step #1 was to be able to route something without the
+tapX interface.
 
-for the ease of use and maybe a good place to store, it's now on github 
-also:
+My goal is similar to this:
+http://ebtables.sourceforge.net/examples/real.html#example3
+=2E.. but that didn't work for me. (note: I'm using OpenVPN instead of =
+=46reeswan)
 
-https://github.com/AllKind/ipset_list
+Since my email yesterday I have been able to broute traffic thanks to
+this: http://ebtables.sourceforge.net/examples/basic.html#ex_brouter
+However, I don't want my bridged interfaces to have addresses. I only
+want the bridge to have a single address which is accessible from
+either side of the bridge.
 
-Best regards
+-Peter
 
+On Thu, Jan 10, 2013 at 5:52 PM, =E5=8F=B6=E9=9B=A8=E9=A3=9E <sunyucong=
+@gmail.com> wrote:
+> maybe you can add some log in your iptables INPUT/OUTPUT/FORWARD chai=
+n
+> to see where the packet goes.
+>
+> But I'm confused about what you are trying to do here, is it for doin=
+g
+> transparent filtering?
+>
+> On Thu, Jan 10, 2013 at 11:28 AM, Peter McAlpine <peter@aoeu.ca> wrot=
+e:
+>> Hello,
+>>
+>> I am attempting to route bridged ipv4 traffic via ebtables & iproute=
+2,
+>> but am experiencing problems.
+>>
+>> [client 10.8.7.101] ---- eth2 (no addr)[brouter (br0: 10.8.7.10)] et=
+h3
+>> (no addr)---- [gateway 10.8.7.99]
+>>
+>> I have flushed all iptables and ebtables rules. All policies are "AC=
+CEPT".
+>>
+>> At this point, pinging 'gateway' from 'client' is successful.
+>>
+>> Then I add an ebtables rule on 'brouter' to route traffic destined t=
+o
+>> 'gateway' via the routing table:
+>> ebtables -t broute -A BROUTING -p ipv4 --ip-dst 10.8.7.99 --log-ip -=
+j
+>> redirect --redirect-target DROP
+>> For good measure I also enable ip_forward:
+>> echo '1' > /proc/sys/net/ipv4/ip_forward
+>>
+>> What I expect to happen:
+>> 1) The packet comes in on eth2 on 'brouter'
+>> 2) The ebtables rule matches the traffic and sends it to the routing
+>> table (via the DROP target)
+>> 3) The packet (destined for 10.8.7.99) matches the default route and
+>> is sent to 'gateway'
+>> 4) The packet is sent out eth3 to 'gateway'
+>>
+>> What is actually happening:
+>> 1) The packet comes in on eth2 on 'brouter' - CONFIRMED via 'tcpdump=
+ -i eth2'
+>> 2) The ebtables rule matches the traffic - CONFIRMED via syslog
+>> message due to '--log-ip' option in ebtables rule
+>> 3) ... The packet vanishes.
+>>
+>> Can anyone help me figure out why this is happening?
+>>
+>> -Peter
+>> --
+>> To unsubscribe from this list: send the line "unsubscribe netfilter"=
+ in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
