@@ -1,72 +1,22 @@
-From: Eric Leblond <eric@regit.org>
-Subject: [libnetfilter_queue PATCH 2/2] doxygen: improve documentation
-Date: Sun, 13 Jan 2013 23:49:36 +0100
-Message-ID: <1358117376-7522-2-git-send-email-eric@regit.org>
-References: <1358117216.4629.2.camel@tiger2>
- <1358117376-7522-1-git-send-email-eric@regit.org>
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <1358117376-7522-1-git-send-email-eric@regit.org>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
+Subject: Re: [libnetfilter_queue PATCH 1/2] doxygen: improve fail-open documentation.
+Date: Sun, 13 Jan 2013 18:40:30 -0500
+Message-ID: <201301131840.30692.neal.p.murphy@alum.wpi.edu>
+Reply-To: neal.p.murphy@alum.wpi.edu
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
-Cc: netfilter-devel@vger.kernel.org, pablo@netfilter.org, Eric Leblond <eric@regit.org>
 
-This patch improves the doxygen documentation and adds a reference
-to an external article.
----
- src/libnetfilter_queue.c |   22 +++++++++++++++++++++-
- 1 file changed, 21 insertions(+), 1 deletion(-)
+On Sunday, January 13, 2013 05:49:35 PM you wrote:
 
-diff --git a/src/libnetfilter_queue.c b/src/libnetfilter_queue.c
-index f93ac66..be25217 100644
---- a/src/libnetfilter_queue.c
-+++ b/src/libnetfilter_queue.c
-@@ -51,7 +51,21 @@
-  *  - receiving queued packets from the kernel nfnetlink_queue subsystem
-  *  - issuing verdicts and/or reinjecting altered packets to the kernel
-  *  nfnetlink_queue subsystem
-- * 
-+ *
-+ * The cinematic is the following: When an iptables rules with target NFQUEUE
-+ * matches, the kernel en-queued the packet in a chained list. It then format
-+ * a nfnetlink message and sends the information (packet data , packet id and
-+ * metadata) via a socket to the software connected to the queue. The software
-+ * can then read the message.
-+ *
-+ * To remove the packet from the queue, the userspace software must issue a
-+ * verdict asking kernel to accept or drop the packet. Userspace can also alter
-+ * the packet. Verdict can be done in asynchronous manner, as the only needed
-+ * information is the packet id.
-+ *
-+ * When a queue is full, packets that should have been en-queued are dropped by
-+ * kernel instead of being en-queued.
-+ *
-  * \section Git Tree
-  * The current development version of libnetfilter_queue can be accessed
-  * at https://git.netfilter.org/cgi-bin/gitweb.cgi?p=libnetfilter_queue.git;a=summary.
-@@ -66,6 +80,10 @@
-  * the doxygen documentation (start by \link LibrarySetup \endlink page) and
-  * nf-queue.c source file.
-  *
-+ * Another source of information on libnetfilter_queue usage is the following
-+ * article:
-+ *  https://home.regit.org/netfilter-en/using-nfqueue-and-libnetfilter_queue/
-+ *
-  * \section errors ENOBUFS errors in recv()
-  *
-  * recv() may return -1 and errno is set to ENOBUFS in case that your
-@@ -89,6 +107,8 @@
-  * (it requires Linux kernel >= 2.6.31).
-  * - consider using fail-open option see nfq_set_queue_flags() (it requires
-  *  Linux kernel >= 3.6)
-+ * - increase queue max length with nfq_set_queue_maxlen() to resist to packets
-+ * burst
-  */
- 
- struct nfq_handle
--- 
-1.7.10.4
+> + * results in the system being able to handle high network load but at
+> + * the depend of the control on the packets.
 
+Might you have meant to say, "... but at the expense of control of the
+packets." ?
+
+N
