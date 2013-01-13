@@ -1,61 +1,43 @@
-From: Sebastian Poehn <sebastian.poehn@googlemail.com>
-Subject: How to use TROXY target only for specific outgoing interface
-Date: Sun, 13 Jan 2013 09:54:41 +0100
-Message-ID: <1358067281.1669.27.camel@localhost.localdomain>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: libnetfilter_queue issues
+Date: Sun, 13 Jan 2013 12:29:40 +0100
+Message-ID: <20130113112940.GA15424@1984>
+References: <50F15A68.3060806@o2.pl>
+ <CAOZ=-EUzjDe8YtZYZA_BjZt_cmP=ivcjUa6R5EecCmNZEEh0Rg@mail.gmail.com>
+ <1358017441.18655.1.camel@tiger2>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=x-received:message-id:subject:from:to:date:content-type:x-mailer
-         :mime-version:content-transfer-encoding;
-        bh=4MOJBv7cIvsDa2P8t5ifWcyWscG0403LrNgaroLEkgg=;
-        b=pPDnOyS9kXcv1NQx2fh7I791QUVuaiOkSP4+Kh0DnetqwJOlb6bwU9kElM0xa25/Vw
-         L9wIHCQ4fBIa9AW5Ly5e//hdi4hlfxrO9bYlnYDtd3iDUtidxUa9MY/feeBCqyBkfcmx
-         Aa27cxIziLgZhhrstcKEHslNI2xZ3FplzA+rL5vfTd4wFjjTxQTjhKTcDPgWELL9lICc
-         jsZ8pHXNrP8BXC7PzhNZSKvRNrJioKVwH83EOYvaG065Z/iZzSnGlOjnBHR7qGUBXlym
-         BKzNeFw/1S3SNyYy9zKoZLo9fzO+RTrx5fOcQHuVDNTgVSMT6VcbtrVumFL3KpMFUvOA
-         WQ8Q==
+Content-Disposition: inline
+In-Reply-To: <1358017441.18655.1.camel@tiger2>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: Eric Leblond <eric@regit.org>
+Cc: credzba@gmail.com, dorian33@o2.pl, netfilter@vger.kernel.org
 
-I want to run a tcp transparent proxy ( with TPROXY ) processing only traffic outgoing a specific interface. That's what my setup looks like:
-                                                      
-                                                        
-                   lan1 ############                                
-    local net 1 <-------#  ROUTER  # wan                            
-                        #    +     #-------------> internet                       
-    local net 2 <-------#  TPROXY  #                            
-                   lan2 ############                                
-                                                        
-Local traffic to lan1 and lan2 shall not be proxied, traffic to wan shall be proxied.
-Other routers may be connected to the local networks, so we can not match for any destination netmasks.
+On Sat, Jan 12, 2013 at 08:04:01PM +0100, Eric Leblond wrote:
+> Hello,
+> 
+> On Sat, 2013-01-12 at 07:23 -0600, Felix wrote:
+> > excellent question !
+> > I too am interested in this.
+> > 
+> > Another similar, related question is do packets that are not filtered
+> > wait on a verdict for a filtered packet?
+> > Again, if not, it means we can change packet order?
+> > If so,it means we can degrade system performance unrelated to our
+> > filtered packets.
+> 
+> I've just wrote an article describing libnetfilter_queue and NFQUEUE. It
+> has been written to answer your questions:
+> https://home.regit.org/netfilter-en/using-nfqueue-and-libnetfilter_queue/
 
-The TPROXY target requires being entered in PREROUTING chain. Naturally the outgoing interface is only known after routing (POSTROUTING),
-but then it's to late for TPROXY.
+It would be good to integrate part of this information to the doxygen
+library documentation:
 
-I was already thinking of possible solutions but all look more or less quirky to me (just pseudo calls, please do not insist on correctness ;-)
+http://www.netfilter.org/projects/libnetfilter_queue/
 
-Solution 1 (run the stack twice):
-ip link add dev loopback name tprox
-iptables -A POSTROUTING -o wan -j ROUTE -oif tprox
-iptables -A PREROUTING -i tprox -j TPROXY
+Or simply add reference to Eric's page in the main page of the doxygen.
 
-Solution 2 (do it on your own):
-iptables -A PREROUTING -j NFQUEUE
-Use a small homebrew program using destination address and performing route lookup. If outgoing interface is wan mark packet and NF_REPEAT.
-iptables -A PREROUTING --match-mark X -j PROXY
-
-Solution 3 (just another idea):
-TPROXY requires a ip route add local 0.0.0.0/0 (deliver everything locally).
-If you'd jump to a the regular routing table traffic will not be proxied.
-Unfortunately policy routing (ip rule *) can not 'match' for an outgoing interface (because the route lookup has not happened yet).
-
-It would be great if you could give me any hints.
-
-Greetings
-Sebastian Poehn
----
-
+Regards.
