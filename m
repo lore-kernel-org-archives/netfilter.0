@@ -1,52 +1,48 @@
 From: Eric Leblond <eric@regit.org>
-Subject: Re: libnetfilter_queue issues
-Date: Sun, 13 Jan 2013 23:46:56 +0100
-Message-ID: <1358117216.4629.2.camel@tiger2>
-References: <50F15A68.3060806@o2.pl>
-	 <CAOZ=-EUzjDe8YtZYZA_BjZt_cmP=ivcjUa6R5EecCmNZEEh0Rg@mail.gmail.com>
-	 <1358017441.18655.1.camel@tiger2> <20130113112940.GA15424@1984>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20130113112940.GA15424@1984>
-Sender: netfilter-owner@vger.kernel.org
+Subject: [libnetfilter_queue PATCH 1/2] doxygen: improve fail-open documentation.
+Date: Sun, 13 Jan 2013 23:49:35 +0100
+Message-ID: <1358117376-7522-1-git-send-email-eric@regit.org>
+References: <1358117216.4629.2.camel@tiger2>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <1358117216.4629.2.camel@tiger2>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: credzba@gmail.com, dorian33@o2.pl, netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
+Cc: netfilter-devel@vger.kernel.org, pablo@netfilter.org, Eric Leblond <eric@regit.org>
 
-Hello,
+---
+ src/libnetfilter_queue.c |    8 ++++++++
+ 1 file changed, 8 insertions(+)
 
-On Sun, 2013-01-13 at 12:29 +0100, Pablo Neira Ayuso wrote:
-> On Sat, Jan 12, 2013 at 08:04:01PM +0100, Eric Leblond wrote:
-> > Hello,
-> > 
-> > On Sat, 2013-01-12 at 07:23 -0600, Felix wrote:
-> > > excellent question !
-> > > I too am interested in this.
-> > > 
-> > > Another similar, related question is do packets that are not filtered
-> > > wait on a verdict for a filtered packet?
-> > > Again, if not, it means we can change packet order?
-> > > If so,it means we can degrade system performance unrelated to our
-> > > filtered packets.
-> > 
-> > I've just wrote an article describing libnetfilter_queue and NFQUEUE. It
-> > has been written to answer your questions:
-> > https://home.regit.org/netfilter-en/using-nfqueue-and-libnetfilter_queue/
-> 
-> It would be good to integrate part of this information to the doxygen
-> library documentation:
-> 
-> http://www.netfilter.org/projects/libnetfilter_queue/
-> 
-> Or simply add reference to Eric's page in the main page of the doxygen.
-
-To follow a small patchset trying to improve libnetfilter_queue doxygen
-documentation.
-
-BR,
+diff --git a/src/libnetfilter_queue.c b/src/libnetfilter_queue.c
+index 9fe9dfa..f93ac66 100644
+--- a/src/libnetfilter_queue.c
++++ b/src/libnetfilter_queue.c
+@@ -87,6 +87,8 @@
+  * (requires Linux kernel >= 2.6.30).
+  * - see --queue-balance option in NFQUEUE target for multi-threaded apps
+  * (it requires Linux kernel >= 2.6.31).
++ * - consider using fail-open option see nfq_set_queue_flags() (it requires
++ *  Linux kernel >= 3.6)
+  */
+ 
+ struct nfq_handle
+@@ -620,6 +622,12 @@ int nfq_set_mode(struct nfq_q_handle *qh,
+ 	flags &= ~NFQA_CFG_F_FAIL_OPEN;
+ 	err = nfq_set_queue_flags(qh, mask, flags);
+ \endverbatim
++ *
++ * If NFQA_CFG_F_FAIL_OPEN is used, the kernel will accept instead of
++ * drop packets that should have been enqueued to a full queue. This
++ * results in the system being able to handle high network load but at
++ * the depend of the control on the packets.
++ *
+  * \return -1 on error with errno set appropriately; =0 otherwise.
+  */
+ int nfq_set_queue_flags(struct nfq_q_handle *qh,
 -- 
-Eric Leblond <eric@regit.org>
-Blog: https://home.regit.org/
+1.7.10.4
 
