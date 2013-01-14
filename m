@@ -1,91 +1,127 @@
-From: Sebastian Poehn <sebastian.poehn@googlemail.com>
-Subject: Re: How to use TROXY target only for specific outgoing interface
-Date: Mon, 14 Jan 2013 20:12:15 +0100
-Message-ID: <1358190735.2257.12.camel@localhost.localdomain>
-References: <1358067281.1669.27.camel@localhost.localdomain>
-	  <alpine.LNX.2.01.1301131229450.31714@nerf07.vanv.qr>
-	 <1358095169.1668.9.camel@localhost.localdomain>
-	 <50F33624.3010208@ngtech.co.il>
+From: Dimitri Yioulos <dyioulos@onpointfc.com>
+Subject: Re: Dropping brute force attacks
+Date: Mon, 14 Jan 2013 14:49:47 -0500
+Message-ID: <201301141449.48517.dyioulos@onpointfc.com>
+References: <201301101355.12763.dyioulos@onpointfc.com> <CAJygYd2u=N_26Ei1t049dP-yD6R9OUutF_bWTzYMcjqhgXyvNQ@mail.gmail.com> <201301101801.24381.dyioulos@onpointfc.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=x-received:message-id:subject:from:to:cc:date:in-reply-to
-         :references:content-type:x-mailer:mime-version
-         :content-transfer-encoding;
-        bh=mgEgUiheUkhr7g88wfeSS0LU6IogQalyq5OnC5cqOwA=;
-        b=psL18oq462dhgHSdnBGkBTauxLyh8O+vxPIOHeZgLP/gVKNJiE6GQEyboWHsE0qSnp
-         Kz9jibSEGtOBRnB4wQ/E/KpdWRLpeLttwnaJ76sH5uOXwk0EtherJ8svBfGuBYt6fszc
-         nlFCRdJQOtSymIZXtXlhiQC2w+3fCKaGrkNrYGtewJzPtB6jHbVXC4urXOU8AKQu8Cds
-         rRTeI7TQ+nub4fKluIW0RPpuWz34554jclRnXStSZ95zLXxch/qszWk71Ua1Jd4eNYbf
-         hP+Ya3GYSRQoIARGptJLMHLbxH0hr1yp9JExRNA52XbeiPl9+FeCs5qffddkIIGS0vzI
-         FsNg==
-In-Reply-To: <50F33624.3010208@ngtech.co.il>
+In-Reply-To: <201301101801.24381.dyioulos@onpointfc.com>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Eliezer Croitoru <eliezer@ngtech.co.il>
-Cc: jengelh@inai.de, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter <netfilter@vger.kernel.org>
 
-I've drawn a new picture. We want to connect from Node 1 to the 'internet'. All traffic via wan1 shall be proxied, traffic over lan1 not.
-
-The only valid match for this situation is the outgoing interface ( oif == wan1 do proxy, else no proxy). It is not possible to match for
-dst networks, as routing metrics may change and so even the use of wan1 or wan2 (for the uplink).
-
-I can not -A POSTROUTING -o wan1 -j TPROXY as TPROXY must be called in PREROUTING (there -o is not present).
-
-               internet
-  ____________________________________
-   A                              A
-   |wan1                          |wan2
-   |                              |
-#########      #########      #########
-#ROUTER1# lan1 #ROUTER2# lan3 #ROUTER3#
-#   +   #<---->#       #<---->#       #
-#TPROXY #  igp #       # igp  #       #
-#########      #########      #########
-   |
-   | lan2
-   |
-#########
-# NODE 1#
-#       #
-#       #
-#########
-
-
-
-
-
-
-On Mon, 2013-01-14 at 00:33 +0200, Eliezer Croitoru wrote:
-> If you would give an ip example rather then a sketch I think I have an 
-> idea on how to do it using some local routing daemon on the router machine.
-> 
-> Another thing to notice is that if you are using tproxy it should be 
-> used based on a known network data or globally with specific exceptions.
-> else then these situation you will need to plan some iptables structure 
-> to fit maybe ipset or any other way of organizing the dynamic tproxy rules.
-> 
-> Eliezer
-> 
-> On 1/13/2013 6:39 PM, Sebastian Poehn wrote:
-> > For a simple setup this is more than sufficient. But I want to realize
-> > something with dynamic routing. So to clarify:
+On Thursday 10 January 2013 6:01:24 pm Dimitri Yioulos=20
+wrote:
+> On Thursday 10 January 2013 5:42:03 pm =E5=8F=B6=E9=9B=A8=E9=A3=9E wr=
+ote:
+> > I would suggest look into use hashlimit module, which
+> > allow you to peek into /proc and have a better
+> > understanding what ip/block is triggering
 > >
-> >          ospf            lan1 ############
-> > local3 <----> local1 <-------#  ROUTER  # wan
-> >                               #    +     #-------------> internet
-> >                local2 <-------#  TPROXY  #
-> >                          lan2 ############
+> > On Thu, Jan 10, 2013 at 10:55 AM, Dimitri Yioulos
 > >
-> > For me it's not possible to even know every subnet which is on the local
-> > side. It would even be possible that there is a multi-homed environment
-> > with e.g. local3 connected to the internet, too. (Thank means that even
-> > a non-local destination could go from local2, via lan2, lan1, local1 and
-> > local3 to the "internet" ).
-> >
-> > Thank for your reply Jan
+> > <dyioulos@onpointfc.com> wrote:
+> > > Hello, all, and Happy New Year.
+> > >
+> > > A few weeks ago I added a post about how to tweak the
+> > > set up of rules to  drop the ip addresses of machines
+> > > trying to do a brute force login via ipop3d.  What
+> > > I've noticed is that few, if any, addresses are being
+> > > dropped.  Fortunately, I have fail2ban installed on
+> > > our mail server, so the attacks are being blunted.=20
+> > > Still, I'd like to cut these attacks off at the pass,
+> > > so to speak.  With you kind indulgence, allow me to
+> > > provide information on my set-up again so that
+> > > perhaps someone can help me get this working
+> > > properly.
+> > >
+> > > Our mail server sits in a DMZ; NAT and Forward rules
+> > > are in place to make the mail server work (and it
+> > > does, very well).  So, what I did was set the Forward
+> > > rules to jump to a chain I created called
+> > > "block_email_brute" (the name sucks, but, hey).  Here
+> > > are the rules:
+> > >
+> > > block_email_brute  tcp  --  anywhere
+> > > server.mydomain.com tcp dpt:pop3
+> > >
+> > > block_email_brute  tcp  --  anywhere
+> > > server.mydomain.com tcp dpt:smtp
+> > >
+> > > And here are the rules in the "block_email_brute"
+> > > chain:
+> > >
+> > >            tcp  --  anywhere
+> > > server.mydomain.com tcp dpt:pop3 state NEW recent:
+> > > SET name: DEFAULT side: source
+> > >
+> > > LOG        tcp  --  anywhere
+> > > server.mydomain.com tcp dpt:pop3 state NEW recent:
+> > > UPDATE seconds: 60 hit_count: 6 TTL-Match name:
+> > > DEFAULT25 side: source LOG level info prefix `Anti
+> > > Email Bruteforce: '
+> > >
+> > > DROP       tcp  --  anywhere
+> > > server.mydomain.com tcp dpt:pop3 state NEW recent:
+> > > UPDATE seconds: 60 hit_count: 6 TTL-Match name:
+> > > DEFAULT side: source
+> > >
+> > >            tcp  --  anywhere
+> > > server.mydomain.com tcp dpt:smtp state NEW recent:
+> > > SET name: DEFAULT25 side: source
+> > >
+> > > LOG        tcp  --  anywhere
+> > > server.mydomain.com tcp dpt:smtp state NEW recent:
+> > > UPDATE seconds: 60 hit_count: 6 TTL-Match name:
+> > > DEFAULT25 side: source LOG level info prefix `Anti
+> > > Email Bruteforce: '
+> > >
+> > > DROP       tcp  --  anywhere
+> > > server.mydomain.com tcp dpt:smtp state NEW recent:
+> > > UPDATE seconds: 60 hit_count: 6 TTL-Match name:
+> > > DEFAULT25 side: source
+> > >
+> > > ACCEPT     tcp  --  anywhere             anywhere
+> > > tcp flags:SYN,RST,ACK/SYN
+> > >
+> > > ACCEPT     tcp  --  anywhere             anywhere
+> > > tcp state RELATED,ESTABLISHED
+> > >
+> > > I realize that port 110 is the one being attacked,
+> > > but I added 25 just for good measure.
+> > >
+> > > I hope the above information is clear and complete
+> > > enough. Your help is greatly appreciated.
+> > >
+> > > Dimitri
+> > >
+> > > --
+> > > This message has been scanned for viruses and
+> > > dangerous content by MailScanner, and is
+> > > believed to be clean.
+> > >
+> > > --
+> > > To unsubscribe from this list: send the line
+> > > "unsubscribe netfilter" in the body of a message to
+> > > majordomo@vger.kernel.org More majordomo info at
+> > > http://vger.kernel.org/majordomo-info.html
+>
+> I appreciate the suggestion, and will take a look at
+> hashlimit.  But, why isn't rate-limiting working for me,
+> as per the above rules?
 
+
+Bump - Can anyone else shed light on this?
+
+Many thanks.
+
+Dimitri
+
+--=20
+This message has been scanned for viruses and
+dangerous content by MailScanner, and is
+believed to be clean.
 
