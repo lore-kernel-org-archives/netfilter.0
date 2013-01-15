@@ -1,40 +1,40 @@
-From: Nick Edwards <nick.z.edwards@gmail.com>
-Subject: state match is obsolete 1.4.17
-Date: Tue, 15 Jan 2013 15:09:29 +1000
-Message-ID: <CAMD-=V+PhM3NLpWyxB0G4KUN6D+-XKL0PZCBAuyUXUw56gmuJw@mail.gmail.com>
+From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
+Subject: Re: NAT, DROP and walled-gardens (~= captive portal)
+Date: Tue, 15 Jan 2013 01:31:52 -0500
+Message-ID: <201301150131.52465.neal.p.murphy@alum.wpi.edu>
+Reply-To: neal.p.murphy@alum.wpi.edu
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=LnYX5NdJUpwTy3m9XhVki4Uq+tEbUdaHX9GSaugoFWI=;
-        b=Wjm6xcjpXeTC0H1D7m+s//t/qlMysvVGTYFAdg7plUMaQRQNMnAzOaolL75AtGSxLV
-         NkjP/m1ryTUYIu3QhQXx0pJ+hXjN/bq8CH6l2QF047iNR4tJD+R+dfQC85+IqkWASxDH
-         EZIZIQdVksLHnaKEYR3sO9cS23TQhI1etqO71Y8Njuotor1UBzncCu4lr1duGwtY+oLC
-         mmiHdRdHGfT7IrPoDZMw9XCCOk0oVkaAeA2glLNvsqNoRXbwaognXwTQDr8a+OFoeFJG
-         XJOX9mvAc5omkSIQGHv/qK1aHd6KrQXhRJKi4K4sTLuosVwziJqKGlyJq3IE1WoTD3di
-         nCIw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-WARNING: The state match is obsolete. Use conntrack instead.
+On Monday, January 14, 2013 11:13:39 PM tom@then.fr wrote:
+> Hey guys,
+> 
+> *Problem*
+> I've just hit the deprecation of DROP in the NAT tables.
+> iptables v1.4.7:
+> The "nat" table is not intended for filtering, the use of DROP is
+> therefore inhibited.
+> ...
+> *Question*
+> Now, as you know we cannot DROP anymore in a NAT table. Therefore my
+> gardens are useless because I cannot drop at the end anymore. For the
+> moment I really don't see how I can easily have the same behaviour than
+> before. I can see a possible solution with more chains that would
+> involve the software to iptables -A to different chains which I'd like
+> to avoid :)
 
-Getting these errors since upgrading to 1.4.17, google shows me a lot
-of people getting these errors since 1.4.16, with little in change log
-that says this is obsoleted that I can understand anyway.
+One solution:
 
-Am I right in assuming that :
+If you cannot rely on default policy, then rely on active policy. Pick an 
+unused bit in packet MARKs; say it's bit 32 (mask 80000000). Have INPUT, 
+OUTPUT and FORWARD chains in nat end with a rule to set the high-order bit in 
+the packet's MARK; the assumption is that allowed packets will have caused a 
+return before reaching the end of these chains. Then in INPUT, OUTPUT and 
+FORWARD in filter, you first check that bit; if set, drop the packet.
 
-iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-
-must now become :
-
-iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-
-or does that not do the same thing?
-
-thanks
-Niki
+N
