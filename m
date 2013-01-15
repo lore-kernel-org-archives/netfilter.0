@@ -1,35 +1,56 @@
-From: Eliezer Croitoru <eliezer@ngtech.co.il>
-Subject: Re: How to use TROXY target only for specific outgoing interface
-Date: Tue, 15 Jan 2013 20:54:04 +0200
-Message-ID: <50F5A5CC.7090904@ngtech.co.il>
-References: <1358067281.1669.27.camel@localhost.localdomain>    <alpine.LNX.2.01.1301131229450.31714@nerf07.vanv.qr>   <1358095169.1668.9.camel@localhost.localdomain>   <50F33624.3010208@ngtech.co.il>  <1358190735.2257.12.camel@localhost.localdomain>  <50F54560.4080200@ngtech.co.il> <1358275060.1792.8.camel@localhost.localdomain>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1358275060.1792.8.camel@localhost.localdomain>
-Sender: netfilter-owner@vger.kernel.org
+From: Cong Ding <dinggnu@gmail.com>
+Subject: [PATCH] net: netfilter/xt_CT.c: fix uninitialized variable
+Date: Tue, 15 Jan 2013 19:58:34 +0100
+Message-ID: <1358276314-9536-1-git-send-email-dinggnu@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=x-received:from:to:cc:subject:date:message-id:x-mailer;
+        bh=GrxCywxohS3Lq0djz3UM9PNjDvB6yh4WZduYDS59g9Q=;
+        b=MKDnxExclc+FSn2K2g5twlXuA3QNz9NX8TfDMS1kJRYQ7SNUMcmxqdycHv5NHG7xTP
+         dKhwMaPWu2yQo2ssU7FttjDii3bI9sLBhA5PG8Aj+AAgzB5QEHQAeWzqNZMC7Rcr1PHX
+         TlLhygb8dlZ5D4jzT4A5DgXIHyfIrMzwbtOjdBp0velaa70AwhrZ8uZOl/1nm0WG1L1T
+         qdXOs/fGoKuNFfYCVH3zcTof5I3oUSIKheh9ryuqmKiS01f35OF0b1G2xSohJoQxt/JK
+         a2tz6cVrx5ZFa1A4atcJceh+Zxcsyo4gMCyGFdtmgt34SnyIQfI1hLITc/GriWIQidXt
+         P/gg==
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Sebastian Poehn <sebastian.poehn@googlemail.com>
-Cc: jengelh@inai.de, netfilter@vger.kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: Cong Ding <dinggnu@gmail.com>
 
-Very nice!!
+If CONFIG_NF_CONNTRACK_ZONES is not defined, the variable ret might be
+uninitialized when it goes to err1 through line 125 and 263 respectively.
+So I change these goto err1 to return -EINVAL directly.
 
-Can you share this code by any chance?
+Signed-off-by: Cong Ding <dinggnu@gmail.com>
+---
+ net/netfilter/xt_CT.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Eliezer
-On 1/15/2013 8:37 PM, Sebastian Poehn wrote:
-> Thanks Eliezer. You are right. Creating a ipset containing all routes is
-> the only thing you can do in PREROUTING. As this solution is not useable
-> for me, I ended up writing a small piece of code taking a packet from
-> NFQUEUE and performing a nexthop lookup and outgoing if and accordingly
-> setting a fwmark.
->
-> -m mark --mark LOCAL -j CONNMARK --set-mark LOCAL
-> -m mark --mark WIDE -j CONNMARK --set-mark WIDE
-> -m connmark --mark LOCAL -j ACCEPT
-> -m connmark --mark WIDE -j TPROXY
-> -m TPROXYTRAFFIC -j NFQUEUE
->
-> Notice the usage of connmark so only one lookup is needed for a stream.
-
+diff --git a/net/netfilter/xt_CT.c b/net/netfilter/xt_CT.c
+index 2a08430..941f600 100644
+--- a/net/netfilter/xt_CT.c
++++ b/net/netfilter/xt_CT.c
+@@ -122,7 +122,7 @@ static int xt_ct_tg_check_v0(const struct xt_tgchk_param *par)
+ 
+ #ifndef CONFIG_NF_CONNTRACK_ZONES
+ 	if (info->zone)
+-		goto err1;
++		return -EINVAL;
+ #endif
+ 
+ 	ret = nf_ct_l3proto_try_module_get(par->family);
+@@ -260,7 +260,7 @@ static int xt_ct_tg_check_v1(const struct xt_tgchk_param *par)
+ 
+ #ifndef CONFIG_NF_CONNTRACK_ZONES
+ 	if (info->zone)
+-		goto err1;
++		return -EINVAL;
+ #endif
+ 
+ 	ret = nf_ct_l3proto_try_module_get(par->family);
+-- 
+1.7.10.4
