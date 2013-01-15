@@ -1,40 +1,32 @@
-From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
-Subject: Re: NAT, DROP and walled-gardens (~= captive portal)
-Date: Tue, 15 Jan 2013 01:31:52 -0500
-Message-ID: <201301150131.52465.neal.p.murphy@alum.wpi.edu>
-Reply-To: neal.p.murphy@alum.wpi.edu
+From: =?UTF-8?B?5Y+26Zuo6aOe?= <sunyucong@gmail.com>
+Subject: connlimit performance
+Date: Mon, 14 Jan 2013 22:32:56 -0800
+Message-ID: <CAJygYd1435Juip=6rMVyF5oQ7F53+eMB_ezAptJ0OVy7N02=aA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to:content-type;
+        bh=/IjK+TbWd9x4/8czMnrUkWfXCTY1Vf3SSUBx3zJ3cCc=;
+        b=mhRhnTaWlS+8tBCB1tTVmIzH4iW//oXDsQSK4X7pCxQ7Y37quZJB/bSoYxnjgNhaHP
+         6DTs11uu2LINe7HyDQi/dWoY5laE/6kloKsIrhmsNWqTPSFlPX0e4VZbBtDgoLDBT5TH
+         BbOIYKXnsB6yqn5CLMJjLenRvnjtoHH08GjEyyXHEd3rxgg4j0+xV1MvaNm55u4nM6JO
+         8yRAC7vm32Ew0aGShSnn9rLwDVhuznmRLpMdNF+BUck5ar/g+06htQahykt14U2Cfe99
+         RmQMiI4/UrTop0kv5dAQisCgW51ty6dA/OVj0xXVxV4kuepWwhW9Kjga7GQftWT+XXYQ
+         2PFg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Monday, January 14, 2013 11:13:39 PM tom@then.fr wrote:
-> Hey guys,
-> 
-> *Problem*
-> I've just hit the deprecation of DROP in the NAT tables.
-> iptables v1.4.7:
-> The "nat" table is not intended for filtering, the use of DROP is
-> therefore inhibited.
-> ...
-> *Question*
-> Now, as you know we cannot DROP anymore in a NAT table. Therefore my
-> gardens are useless because I cannot drop at the end anymore. For the
-> moment I really don't see how I can easily have the same behaviour than
-> before. I can see a possible solution with more chains that would
-> involve the software to iptables -A to different chains which I'd like
-> to avoid :)
+Hi,
 
-One solution:
+Is anyone here have experience on connnlimit performance?   I am
+trying to use it to limit connection per dest IP (about 1K of them )
+on a 100Mbps firewall.  (without only about 70k connections) and as
+soon as put this rule in, cpu usage sky raise.
 
-If you cannot rely on default policy, then rely on active policy. Pick an 
-unused bit in packet MARKs; say it's bit 32 (mask 80000000). Have INPUT, 
-OUTPUT and FORWARD chains in nat end with a rule to set the high-order bit in 
-the packet's MARK; the assumption is that allowed packets will have caused a 
-return before reaching the end of these chains. Then in INPUT, OUTPUT and 
-FORWARD in filter, you first check that bit; if set, drop the packet.
+On the otherhand, hashlimit works like a charm, with almost 0 cpu usage.
 
-N
+Cheers.
