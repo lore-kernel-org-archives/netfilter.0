@@ -1,113 +1,44 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: state match is obsolete 1.4.17
-Date: Wed, 16 Jan 2013 01:11:09 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1301160105200.8938@nerf07.vanv.qr>
-References: <CAMD-=V+PhM3NLpWyxB0G4KUN6D+-XKL0PZCBAuyUXUw56gmuJw@mail.gmail.com> <alpine.LNX.2.01.1301150958390.16853@nerf07.vanv.qr> <CAMD-=V+p0gv+amQearBpGPD0q3zALUEfQj6xCoTTg197jN3_5A@mail.gmail.com>
+From: =?UTF-8?B?5Y+26Zuo6aOe?= <sunyucong@gmail.com>
+Subject: Re: connlimit performance
+Date: Tue, 15 Jan 2013 18:54:03 -0800
+Message-ID: <CAJygYd0dc63P0Xx+TAcX23CV1H5GT41DJ0MtEJSdEEqP42t_ng@mail.gmail.com>
+References: <CAJygYd1435Juip=6rMVyF5oQ7F53+eMB_ezAptJ0OVy7N02=aA@mail.gmail.com>
+ <alpine.LNX.2.01.1301151012570.16853@nerf07.vanv.qr>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <CAMD-=V+p0gv+amQearBpGPD0q3zALUEfQj6xCoTTg197jN3_5A@mail.gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc:content-type:content-transfer-encoding;
+        bh=aVgA+8tx/w5VnoqJEG6vRmL480sdiRc2+cYr9TGZ+p4=;
+        b=renCPFiOejZNJ1qu5l/6EhBD7EU4wu8J/YEwPiAjzrYB54dZ/2Krd/2vHYJKZfefuF
+         6u4iBnH7J8RFGZhdZUnG+poPc/ZkrOaH/d1uNA9dxBEfivAGhyvIU9m+lpr7kBjpm2/P
+         qWmUMNXkXVncUFgypSufpKxvUFY8V9oOuM5I9JBtna/0OzdEt27u81LQ4VDazz8haSSz
+         6Air5Km09Qr+cSmi8vf47LIBNpZGuglyQMffhHN5z+wbSaASXOQA4Dq7Bi2Qyl767++1
+         i7eXRlf2/GhN4dzptkeA3ydMZ4haPWwlXHwvz4qMDY+tdIvdhodnq5epewI2olXmn3TG
+         Atbg==
+In-Reply-To: <alpine.LNX.2.01.1301151012570.16853@nerf07.vanv.qr>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Nick Edwards <nick.z.edwards@gmail.com>
-Cc: Netfilter user mailing list <netfilter@vger.kernel.org>, Netfilter Developer Mailing List <netfilter-devel@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: Jan Engelhardt <jengelh@inai.de>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
+Any chance making it configurable ?
 
-On Wednesday 2013-01-16 00:27, Nick Edwards wrote:
->> On Tuesday 2013-01-15 06:09, Nick Edwards wrote:
->>
->>>WARNING: The state match is obsolete. Use conntrack instead.
->>>Getting these errors since upgrading to 1.4.17
->>
->> It is a warning, not an error. (An error would not let use you
->> the command at all.)
+On Tue, Jan 15, 2013 at 1:49 AM, Jan Engelhardt <jengelh@inai.de> wrote=
+:
+> On Tuesday 2013-01-15 07:32, =E5=8F=B6=E9=9B=A8=E9=A3=9E wrote:
 >
->I can understand that if there is a lot of pre warning, as others have
->mentioned, most guides show the former..
->And can you confirm my change is the correct method to obtain the same
->net result please?
-
-Yes.
-
->Maybe the warning could be changed to
->WARNING: The state match is deprecated and will eventually go away.
->Use conntrack instead.
->That wont panic people into thinking the rule is not working.
-
-Cannot guarantee that it will make it in, but I support your
-position with this patch.
-
-
-git://git.inai.de/iptables obsol
-From 6ef6c8821c26d5a8738cf90e397972c97986ac98 Mon Sep 17 00:00:00 2001
-From: Jan Engelhardt <jengelh@inai.de>
-Date: Wed, 16 Jan 2013 01:03:40 +0100
-Subject: [PATCH] iptables: reword warning on using an alias
-
-This by suggestion of Nick Edward.
-
-References: http://marc.info/?l=netfilter&m=135829245822520&w=2
-Signed-off-by: Jan Engelhardt <jengelh@inai.de>
----
- iptables/ip6tables.c |    9 +++++----
- iptables/iptables.c  |    9 +++++----
- 2 files changed, 10 insertions(+), 8 deletions(-)
-
-diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
-index 556647f..ba71aca 100644
---- a/iptables/ip6tables.c
-+++ b/iptables/ip6tables.c
-@@ -1229,8 +1229,8 @@ static void command_jump(struct iptables_command_state *cs)
- 		strcpy(cs->target->t->u.user.name, cs->jumpto);
- 	} else {
- 		strcpy(cs->target->t->u.user.name, cs->target->real_name);
--		fprintf(stderr, "WARNING: The %s target is obsolete. "
--		        "Use %s instead.\n",
-+		fprintf(stderr, "WARNING: The %s target is obsolete and will "
-+		        "eventually go away. Use %s instead.\n",
- 		        cs->jumpto, cs->target->real_name);
- 	}
- 	cs->target->t->u.user.revision = cs->target->revision;
-@@ -1265,8 +1265,9 @@ static void command_match(struct iptables_command_state *cs)
- 		strcpy(m->m->u.user.name, m->name);
- 	} else {
- 		strcpy(m->m->u.user.name, m->real_name);
--		fprintf(stderr, "WARNING: The %s match is obsolete. "
--		        "Use %s instead.\n", m->name, m->real_name);
-+		fprintf(stderr, "WARNING: The %s match is obsolete and will "
-+		        "eventually go away. Use %s instead.\n",
-+		        m->name, m->real_name);
- 	}
- 	m->m->u.user.revision = m->revision;
- 
-diff --git a/iptables/iptables.c b/iptables/iptables.c
-index 00e3f01..f0dc14b 100644
---- a/iptables/iptables.c
-+++ b/iptables/iptables.c
-@@ -1222,8 +1222,8 @@ static void command_jump(struct iptables_command_state *cs)
- 	} else {
- 		/* Alias support for userspace side */
- 		strcpy(cs->target->t->u.user.name, cs->target->real_name);
--		fprintf(stderr, "WARNING: The %s target is obsolete. "
--		        "Use %s instead.\n",
-+		fprintf(stderr, "WARNING: The %s target is obsolete and will "
-+		        "eventually go away. Use %s instead.\n",
- 		        cs->jumpto, cs->target->real_name);
- 	}
- 	cs->target->t->u.user.revision = cs->target->revision;
-@@ -1259,8 +1259,9 @@ static void command_match(struct iptables_command_state *cs)
- 		strcpy(m->m->u.user.name, m->name);
- 	} else {
- 		strcpy(m->m->u.user.name, m->real_name);
--		fprintf(stderr, "WARNING: The %s match is obsolete. "
--		        "Use %s instead.\n", m->name, m->real_name);
-+		fprintf(stderr, "WARNING: The %s match is obsolete and will "
-+		        "eventually go away. Use %s instead.\n",
-+		        m->name, m->real_name);
- 	}
- 	m->m->u.user.revision = m->revision;
- 
--- 
-1.7.10.4
-
+>>Hi,
+>>
+>>Is anyone here have experience on connnlimit performance?   I am
+>>trying to use it to limit connection per dest IP (about 1K of them )
+>>on a 100Mbps firewall.  (without only about 70k connections) and as
+>>soon as put this rule in, cpu usage sky raise.
+>
+>
+> connlimit uses a fixed hash table of 256 buckets and thus a lot less
+> optimal than hashlimit's default table-size of 4096 buckets (assuming
+> a machine with >=3D 1 GB RAM and 64-bit kernel).
