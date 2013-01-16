@@ -1,44 +1,49 @@
-From: =?UTF-8?B?5Y+26Zuo6aOe?= <sunyucong@gmail.com>
-Subject: Re: connlimit performance
-Date: Tue, 15 Jan 2013 18:54:03 -0800
-Message-ID: <CAJygYd0dc63P0Xx+TAcX23CV1H5GT41DJ0MtEJSdEEqP42t_ng@mail.gmail.com>
-References: <CAJygYd1435Juip=6rMVyF5oQ7F53+eMB_ezAptJ0OVy7N02=aA@mail.gmail.com>
- <alpine.LNX.2.01.1301151012570.16853@nerf07.vanv.qr>
+From: Manuel Scheub <manuel.scheub@kraftcom.de>
+Subject: Re: iptables deactivate "getportbyname"
+Date: Wed, 16 Jan 2013 11:52:15 +0100
+Message-ID: <50F6865F.9000709@kraftcom.de>
+References: <50F5483C.9050807@kraftcom.de> <alpine.LNX.2.01.1301151350060.19279@nerf07.vanv.qr> <50F56710.30600@kraftcom.de> <alpine.LNX.2.01.1301151534340.20597@nerf07.vanv.qr> <50F57C59.9050607@kraftcom.de> <alpine.LNX.2.01.1301151920100.5425@nerf07.vanv.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-type:content-transfer-encoding;
-        bh=aVgA+8tx/w5VnoqJEG6vRmL480sdiRc2+cYr9TGZ+p4=;
-        b=renCPFiOejZNJ1qu5l/6EhBD7EU4wu8J/YEwPiAjzrYB54dZ/2Krd/2vHYJKZfefuF
-         6u4iBnH7J8RFGZhdZUnG+poPc/ZkrOaH/d1uNA9dxBEfivAGhyvIU9m+lpr7kBjpm2/P
-         qWmUMNXkXVncUFgypSufpKxvUFY8V9oOuM5I9JBtna/0OzdEt27u81LQ4VDazz8haSSz
-         6Air5Km09Qr+cSmi8vf47LIBNpZGuglyQMffhHN5z+wbSaASXOQA4Dq7Bi2Qyl767++1
-         i7eXRlf2/GhN4dzptkeA3ydMZ4haPWwlXHwvz4qMDY+tdIvdhodnq5epewI2olXmn3TG
-         Atbg==
-In-Reply-To: <alpine.LNX.2.01.1301151012570.16853@nerf07.vanv.qr>
+In-Reply-To: <alpine.LNX.2.01.1301151920100.5425@nerf07.vanv.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: Jan Engelhardt <jengelh@inai.de>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Cc: netfilter@vger.kernel.org
 
-Any chance making it configurable ?
+Am 15.01.2013 19:22, schrieb Jan Engelhardt:
+> On Tuesday 2013-01-15 16:57, Manuel Scheub wrote:
+>
+>>>>>> #iptables -A INPUT -p udp -i eth0 --dport 67 --sport 68 -j ACCEPT
+>>>>>> iptables v1.4.16.3: Port "67" does not resolve to anything.
+>> # /lib/libc.so.6
+>> GNU C Library stable release version 2.3.2
+> Fixed and posted a 2-patch fix on netfilter-devel:
+>
+> ==
+> The following changes since commit 983196ceb4d3bb7b6d3cf6da18bb6d5a5eafb347:
+>
+>    doc: document the -4 and -6 options (2013-01-07 02:26:16 +0100)
+>
+> are available in the git repository at:
+>
+>    git://git.inai.de/iptables old-linux
+>
+> for you to fetch changes up to 1071ec54e6d7af406fe34afea1ce2c3e49ee1914:
+>
+>    parser: workaround glibc-2.3.2 bug 358 (2013-01-15 19:16:55 +0100)
+>
+> ----------------------------------------------------------------
+> Jan Engelhardt (2):
+>        build: fix libiptc build failure on old linux-glibc-devel headers
+>        parser: workaround glibc-2.3.2 bug 358
+>
+>   libiptc/linux_list.h   |    4 ++--
+>   libiptc/linux_stddef.h |    4 ++--
+>   libxtables/xtoptions.c |   14 ++++++++++++++
+>   3 files changed, 18 insertions(+), 4 deletions(-)
 
-On Tue, Jan 15, 2013 at 1:49 AM, Jan Engelhardt <jengelh@inai.de> wrote=
-:
-> On Tuesday 2013-01-15 07:32, =E5=8F=B6=E9=9B=A8=E9=A3=9E wrote:
->
->>Hi,
->>
->>Is anyone here have experience on connnlimit performance?   I am
->>trying to use it to limit connection per dest IP (about 1K of them )
->>on a 100Mbps firewall.  (without only about 70k connections) and as
->>soon as put this rule in, cpu usage sky raise.
->
->
-> connlimit uses a fixed hash table of 256 buckets and thus a lot less
-> optimal than hashlimit's default table-size of 4096 buckets (assuming
-> a machine with >=3D 1 GB RAM and 64-bit kernel).
+Awesome - Thank you very much!
+
