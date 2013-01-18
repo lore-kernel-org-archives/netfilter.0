@@ -1,27 +1,215 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH v4] netfilter: nf_conntrack_sip: Handle Cisco 7941/7945
- IP phones
-Date: Fri, 18 Jan 2013 03:10:07 +0100
-Message-ID: <20130118021007.GA26517@1984>
-References: <1355805238-2460-1-git-send-email-cernekee@gmail.com>
- <20130117233539.GA15576@1984>
- <CACuyg24kxP3Ck280LBcPuUc6bp26DbWqpWaLyHAkz6pwd8WMVA@mail.gmail.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CACuyg24kxP3Ck280LBcPuUc6bp26DbWqpWaLyHAkz6pwd8WMVA@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+From: Jiri Pirko <jiri@resnulli.us>
+Subject: [patch v3] doc: add nf_conntrack sysctl api documentation
+Date: Fri, 18 Jan 2013 10:05:08 +0100
+Message-ID: <1358499908-1268-1-git-send-email-jiri@resnulli.us>
+Return-path: <linux-doc-owner@vger.kernel.org>
+Sender: linux-doc-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Humberto =?iso-8859-1?Q?Juc=E1?= <betolj@gmail.com>
-Cc: netfilter@vger.kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netdev@vger.kernel.org
+Cc: davem@davemloft.net, rob@landley.net, linux-doc@vger.kernel.org, kuznet@ms2.inr.ac.ru, jmorris@namei.org, yoshfuji@linux-ipv6.org, pablo@netfilter.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, fw@strlen.de
 
-On Thu, Jan 17, 2013 at 10:55:38PM -0300, Humberto Juc=E1 wrote:
-> For now I'm using "siproxd" to solve this.
->=20
-> I glad to hear that already has a patch for this.
-> I will wait for official kernel support (Ubuntu)!
+I grepped through the code and picked bits about nf_conntrack sysctl api
+and put that into one documentation file.
 
-This will happen in upcoming Linux kernel 3.9, as this will hit the
--next tree at some point.
+Signed-off-by: Jiri Pirko <jiri@resnulli.us>
+---
+
+v2->v3:
+processed in changes suggested by Pablo Neira Ayuso
+
+v1->v2:
+processed in changes suggested by Florian Westphal
+
+ Documentation/networking/nf_conntrack-sysctl.txt | 177 +++++++++++++++++++++++
+ 1 file changed, 177 insertions(+)
+ create mode 100644 Documentation/networking/nf_conntrack-sysctl.txt
+
+diff --git a/Documentation/networking/nf_conntrack-sysctl.txt b/Documentation/networking/nf_conntrack-sysctl.txt
+new file mode 100644
+index 0000000..11e450e
+--- /dev/null
++++ b/Documentation/networking/nf_conntrack-sysctl.txt
+@@ -0,0 +1,177 @@
++/proc/sys/net/netfilter/nf_conntrack_* Variables:
++
++nf_conntrack_acct - BOOLEAN
++	0 - disabled (default)
++	not 0 - enabled
++
++	Enable connection tracking flow accounting. 64-bits byte and packet
++	counters per flow are added.
++
++nf_conntrack_buckets - INTEGER (read-only)
++	Size of hash table.  Value depends on total memory size according to
++	following rules:
++	Use 1/16384 of memory.
++	If memory size is bigger than 1GB have 16384 buckets.
++	Minimum value is 32.
++
++nf_conntrack_checksum - BOOLEAN
++	0 - disabled
++	not 0 - enabled (default)
++
++	Verify checksum of incoming packets.  Packets with bad checksum
++	will not be considered for connection tracking, i.e. such packets
++	will be in INVALID state.
++
++nf_conntrack_count - INTEGER (read-only)
++	Number of currently allocated flow entries.
++
++nf_conntrack_events - BOOLEAN
++	0 - disabled
++	not 0 - enabled (default)
++
++	If this option is enabled, the connection tracking code will
++	provide userspace with connection tracking events via ctnetlink.
++
++nf_conntrack_events_retry_timeout - INTEGER (seconds)
++	default 15
++
++	This option is only relevant when "reliable connection tracking
++	events" are used.  Normally, ctnetlink is "lossy", i.e. when
++	userspace listeners can't keep up, events are dropped.
++
++	Userspace can request "reliable event mode".  When this mode is
++	active, the conntrack will only be destroyed after the event was
++	delivered.  If event delivery fails, the kernel periodically
++	re-tries to send the event to userspace.
++
++	This is the maximum interval the kernel should use when re-trying
++	to deliver the destroy event.
++
++	Higher number means less delivery re-tries (but it will then take
++	longer for a backlog to be processed).
++
++nf_conntrack_expect_max - INTEGER
++	Maximum size of expectation table.  Default value is
++	nf_conntrack_buckets / 256. Minimum is 1.
++
++nf_conntrack_frag6_high_thresh - INTEGER
++	default 262144
++
++	Maximum memory used to reassemble IPv6 fragments.  When
++	nf_conntrack_frag6_high_thresh bytes of memory is allocated for this
++	purpose, the fragment handler will toss packets until
++	nf_conntrack_frag6_low_thresh is reached.
++
++nf_conntrack_frag6_low_thresh - INTEGER
++	default 196608
++
++	See nf_conntrack_frag6_low_thresh
++
++nf_conntrack_frag6_timeout - INTEGER (seconds)
++	default 60
++
++	Time to keep an IPv6 fragment in memory.
++
++nf_conntrack_generic_timeout - INTEGER (seconds)
++	default 600
++
++	Default for generic timeout.  This refers to layer 4 unknown/unsupported
++	protocols.
++
++nf_conntrack_helper - BOOLEAN
++	0 - disabled
++	not 0 - enabled (default)
++
++	Enable automatic conntrack helper assignment.
++
++nf_conntrack_icmp_timeout - INTEGER (seconds)
++	default 30
++
++	Default for ICMP timeout.
++
++nf_conntrack_icmpv6_timeout - INTEGER (seconds)
++	default 30
++
++	Default for ICMP6 timeout.
++
++nf_conntrack_log_invalid - INTEGER
++	0   - disable (default)
++	1   - log ICMP packets
++	6   - log TCP packets
++	17  - log UDP packets
++	33  - log DCCP packets
++	41  - log ICMPv6 packets
++	136 - log UDPLITE packets
++	255 - log packets of any protocol
++
++	Log invalid packets of a type specified by value.
++
++nf_conntrack_max - INTEGER
++	Size of connection tracking table.  Default value is
++	nf_conntrack_buckets value * 4.
++
++nf_conntrack_tcp_be_liberal - BOOLEAN
++	0 - disabled (default)
++	not 0 - enabled
++
++	Be conservative in what you do, be liberal in what you accept from others.
++	If it's non-zero, we mark only out of window RST segments as INVALID.
++
++nf_conntrack_tcp_loose - BOOLEAN
++	0 - disabled
++	not 0 - enabled (default)
++
++	If it is set to zero, we disable picking up already established
++	connections.
++
++nf_conntrack_tcp_max_retrans - INTEGER
++	default 3
++
++	Max number of the retransmitted packets without receiving an
++	(acceptable) ACK from the destination.  If this number is reached,
++	a shorter timer will be started.
++
++nf_conntrack_tcp_timeout_close - INTEGER (seconds)
++	default 10
++
++nf_conntrack_tcp_timeout_close_wait - INTEGER (seconds)
++	default 60
++
++nf_conntrack_tcp_timeout_established - INTEGER (seconds)
++	default 432000 (5 days)
++
++nf_conntrack_tcp_timeout_fin_wait - INTEGER (seconds)
++	default 120
++
++nf_conntrack_tcp_timeout_last_ack - INTEGER (seconds)
++	default 30
++
++nf_conntrack_tcp_timeout_max_retrans - INTEGER (seconds)
++	default 300
++
++nf_conntrack_tcp_timeout_syn_recv - INTEGER (seconds)
++	default 60
++
++nf_conntrack_tcp_timeout_syn_sent - INTEGER (seconds)
++	default 120
++
++nf_conntrack_tcp_timeout_time_wait - INTEGER (seconds)
++	default 120
++
++nf_conntrack_tcp_timeout_unacknowledged - INTEGER (seconds)
++	default 300
++
++nf_conntrack_timestamp - BOOLEAN
++	0 - disabled (default)
++	not 0 - enabled
++
++	Enable connection tracking flow timestamping.
++
++nf_conntrack_udp_timeout - INTEGER (seconds)
++	default 30
++
++nf_conntrack_udp_timeout_stream2 - INTEGER (seconds)
++	default 180
++
++	This extended timeout will be used in case there is an UDP stream
++	detected.
+-- 
+1.8.1
+
