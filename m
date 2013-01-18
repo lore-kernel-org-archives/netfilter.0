@@ -1,49 +1,33 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH]: Keep the "state" match as alias [Re: state match is
- obsolete 1.4.17]
-Date: Fri, 18 Jan 2013 01:28:18 +0100
-Message-ID: <20130118002818.GA19003@1984>
-References: <CAMD-=V+PhM3NLpWyxB0G4KUN6D+-XKL0PZCBAuyUXUw56gmuJw@mail.gmail.com>
- <alpine.LNX.2.01.1301150958390.16853@nerf07.vanv.qr>
- <50F5273F.5020205@inliniac.net>
- <alpine.DEB.2.00.1301151102490.11129@blackhole.kfki.hu>
- <alpine.LNX.2.01.1301151342440.19279@nerf07.vanv.qr>
- <alpine.DEB.2.00.1301151406540.11172@blackhole.kfki.hu>
- <alpine.LNX.2.01.1301151444250.20224@nerf07.vanv.qr>
- <alpine.DEB.2.00.1301151534360.11172@blackhole.kfki.hu>
- <alpine.DEB.2.00.1301151820230.12091@blackhole.kfki.hu>
+Subject: Re: [libnetfilter_queue PATCH 1/2] doxygen: improve fail-open
+ documentation.
+Date: Fri, 18 Jan 2013 01:51:19 +0100
+Message-ID: <20130118005119.GA20869@1984>
+References: <201301131840.30692.neal.p.murphy@alum.wpi.edu>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.00.1301151820230.12091@blackhole.kfki.hu>
-Sender: netfilter-devel-owner@vger.kernel.org
+In-Reply-To: <201301131840.30692.neal.p.murphy@alum.wpi.edu>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: Jan Engelhardt <jengelh@inai.de>, Victor Julien <lists@inliniac.net>, Nick Edwards <nick.z.edwards@gmail.com>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: Neal Murphy <neal.p.murphy@alum.wpi.edu>
+Cc: netfilter@vger.kernel.org
 
-Hi Jozsef,
+Hi Neal,
 
-On Tue, Jan 15, 2013 at 06:28:11PM +0100, Jozsef Kadlecsik wrote:
-> On Tue, 15 Jan 2013, Jozsef Kadlecsik wrote:
+On Sun, Jan 13, 2013 at 06:40:30PM -0500, Neal Murphy wrote:
+> On Sunday, January 13, 2013 05:49:35 PM you wrote:
 > 
-> > With passing one more internal flag, indicating that the "state" alias is 
-> > used, the "conntrack" module can remain completely hidden and the user can 
-> > list/save exactly the same command as the issued one.
+> > + * results in the system being able to handle high network load but at
+> > + * the depend of the control on the packets.
 > 
-> Here follows the patch which introduces match module aliases (the same can 
-> be done for targets as well). The alias is handled as it were a real 
-> extension while it's actually handled by another module. Listing/saving 
-> keeps the alias name and options.
-> 
-> The "state" extension is the first example of such an alias.
+> Might you have meant to say, "... but at the expense of control of the
+> packets." ?
 
-I like this symmetrical aliasing approach.
+It would be great if you can do more documentation review assuming
+you're native English speaker.
 
-The aim is to get rid of redundant things in the kernel. And with
-this, we can get that without disturbing users.
-
-Would you do the same for the NOTRACK target?
-
-Thanks.
+The coreteam is a handful of people from France, Germany, Hungary and
+Spain doing our best in this lingua franca.
