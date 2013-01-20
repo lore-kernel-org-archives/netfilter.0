@@ -1,61 +1,134 @@
-From: Jesper Dangaard Brouer <brouer@redhat.com>
-Subject: Re: [ANNOUNCE] 9th Netfilter Workshop in Copenhagen, Denmark
-Date: Sat, 19 Jan 2013 08:51:59 +0100
-Message-ID: <1358581919.2653.71.camel@localhost>
-References: <20130114190945.GA15386@1984>
-	 <alpine.LNX.2.01.1301190413260.9934@nerf07.vanv.qr>
+From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
+Subject: Re: [patch v3] doc: add nf_conntrack sysctl api documentation
+Date: Sat, 19 Jan 2013 23:56:43 -0500
+Message-ID: <201301192356.43174.neal.p.murphy@alum.wpi.edu>
+References: <1358499908-1268-1-git-send-email-jiri@resnulli.us>
+Reply-To: neal.p.murphy@alum.wpi.edu
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LNX.2.01.1301190413260.9934@nerf07.vanv.qr>
+In-Reply-To: <1358499908-1268-1-git-send-email-jiri@resnulli.us>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jan Engelhardt <jengelh@inai.de>
-Cc: Netfilter Development Mailing list <netfilter-devel@vger.kernel.org>, Netfilter Users Mailing list <netfilter@vger.kernel.org>, Pablo Neira Ayuso <pablo@netfilter.org>, Jon Bendtsen <jon@opensourcedays.org>
+Content-Type: Text/Plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Sat, 2013-01-19 at 04:16 +0100, Jan Engelhardt wrote:
-> On Monday 2013-01-14 20:09, Pablo Neira Ayuso wrote:
-> >
-> >The official workshop website [2] will collect the important
-> >information regarding this event. You may notice that some areas still
-> >lack of important information, we are working hard to deliver those as
-> >soon as possible. So, please, be patient.
+Grammar nazi again. I grok that these were pulled from code. If they're OK, 
+maybe they can find their way back to the source files in due time.
 
-[2] http://workshop.netfilter.org/2013/
+N
 
-> There has traditionally been a wiki set up in the namespaces below
-> (e.g. workshop.netfilter.org/2011/wiki/). Could this be made available
-> for /2013 as well?
+On Friday, January 18, 2013 04:05:08 AM Jiri Pirko wrote:
 
-Yes, it is my plan, to setup a wiki like I did in 2011. I just have not
-had time to do so, yet...
-Thanks for reminding me.
+> diff --git a/Documentation/networking/nf_conntrack-sysctl.txt
+> b/Documentation/networking/nf_conntrack-sysctl.txt new file mode 100644
+> index 0000000..11e450e
+> --- /dev/null
+> +++ b/Documentation/networking/nf_conntrack-sysctl.txt
+> @@ -0,0 +1,177 @@
+> +/proc/sys/net/netfilter/nf_conntrack_* Variables:
+> +
+> +nf_conntrack_acct - BOOLEAN
+> +	0 - disabled (default)
+> +	not 0 - enabled
+> +
+> +	Enable connection tracking flow accounting. 64-bits byte and packet
 
-Remember:
-  The is a public users-day, where everybody is welcome to attend.
+Make it '64-bit' (singular).
 
-This public users-day is done in collaboration with Open Source Days
-(http://www.opensourcedays.org/) in Copenhagen.  Attending the users-day
-will require tickets to this conference.  (They will soon open ticket
-sales, and it is possible to only buy for a single day)
+> +	counters per flow are added.
+> +
+> +nf_conntrack_buckets - INTEGER (read-only)
+> +	Size of hash table.  Value depends on total memory size according to
+> +	following rules:
+> +	Use 1/16384 of memory.
+> +	If memory size is bigger than 1GB have 16384 buckets.
+> +	Minimum value is 32.
 
-Dates:
-  Open Source Days, starts 9.th March
-  Netfilter Users-day, is on 10.th March
+This might be clearer: "Size of hash table. Divide total memory by 16384 to 
+determine the number of buckets. But the hash table will never have fewer than 
+32 or more than 16384 buckets."
 
-Netfilter talks will have an entire track for our self, with exciting
-and interesting talks related to Netfilter/iptables.
+> +
+> +nf_conntrack_checksum - BOOLEAN
+> +	0 - disabled
+> +	not 0 - enabled (default)
+> +
+> +	Verify checksum of incoming packets.  Packets with bad checksum
+> +	will not be considered for connection tracking, i.e. such packets
+> +	will be in INVALID state.
 
-So, if you want to see how the kernel developers look like in person,
-then here is you chance.  (p.s. I should be easy to spot with my Red
-Hat/fedora)
+Perhaps clearer: "... Packets with bad checksums are in INVALID state. If this 
+is enabled, such packets will not be considered for connection tracking."
 
--- 
-Best regards,
-  Jesper Dangaard Brouer
-  MSc.CS, Sr. Network Kernel Developer at Red Hat
-  Author of http://www.iptv-analyzer.org
-  LinkedIn: http://www.linkedin.com/in/brouer
+> +
+> +nf_conntrack_count - INTEGER (read-only)
+> +	Number of currently allocated flow entries.
+> +
+> +nf_conntrack_events - BOOLEAN
+> +	0 - disabled
+> +	not 0 - enabled (default)
+> +
+> +	If this option is enabled, the connection tracking code will
+> +	provide userspace with connection tracking events via ctnetlink.
+> +
+> +nf_conntrack_events_retry_timeout - INTEGER (seconds)
+> +	default 15
+> +
+> +	This option is only relevant when "reliable connection tracking
+> +	events" are used.  Normally, ctnetlink is "lossy", i.e. when
+> +	userspace listeners can't keep up, events are dropped.
 
+Minor tweak: "... Cnetlink is normally "lossy"; that is, events are normally 
+dropped when userspace listeners can't keep up."
 
+> +
+> +	Userspace can request "reliable event mode".  When this mode is
+> +	active, the conntrack will only be destroyed after the event was
+> +	delivered.  If event delivery fails, the kernel periodically
+> +	re-tries to send the event to userspace.
+> +
+> +	This is the maximum interval the kernel should use when re-trying
+> +	to deliver the destroy event.
+> +
+> +	Higher number means less delivery re-tries (but it will then take
+> +	longer for a backlog to be processed).
+
+Better: "A higher number means there will be fewer delivery retries and it 
+will take longer for a backlog to be processed."
+
+> +
+> +nf_conntrack_expect_max - INTEGER
+> +	Maximum size of expectation table.  Default value is
+> +	nf_conntrack_buckets / 256. Minimum is 1.
+> +
+> +nf_conntrack_frag6_high_thresh - INTEGER
+> +	default 262144
+> +
+
+> ...
+
+> > +nf_conntrack_tcp_loose - BOOLEAN
+> +	0 - disabled
+> +	not 0 - enabled (default)
+> +
+> +	If it is set to zero, we disable picking up already established
+> +	connections.
+> +
+> +nf_conntrack_tcp_max_retrans - INTEGER
+> +	default 3
+> +
+> +	Max number of the retransmitted packets without receiving an
+> +	(acceptable) ACK from the destination.  If this number is reached,
+> +	a shorter timer will be started.
+
+Maybe better: "Maximum number of packets that can be retransmitted without 
+receiving an ..."
+
+> +
+> +nf_conntrack_tcp_timeout_close - INTEGER (seconds)
+> +	default 10
+> +
+> +nf_conntrack_tcp_timeout_close_wait - INTEGER (seconds)
+> +	default 60
+> +
