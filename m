@@ -1,28 +1,38 @@
-From: Jiri Pirko <jiri@resnulli.us>
-Subject: Re: [patch v3] doc: add nf_conntrack sysctl api documentation
-Date: Mon, 21 Jan 2013 16:35:23 +0100
-Message-ID: <20130121153523.GA1845@minipsycho.brq.redhat.com>
-References: <1358499908-1268-1-git-send-email-jiri@resnulli.us>
- <20130121115202.GA5074@1984>
+From: benjamin fernandis <benjo11111@gmail.com>
+Subject: cluster ip for heavy application
+Date: Mon, 21 Jan 2013 21:41:31 +0530
+Message-ID: <CAARrgqyA+=fkv2aRRaFMELnGKbZubiuwy_K-Kji0TVLDZOoDHA@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20130121115202.GA5074@1984>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:x-received:date:message-id:subject:from:to
+         :content-type;
+        bh=au7Yi0JHDs3GfygmQiopB95IsCl9xLTjTZWB42Uezrk=;
+        b=kwVwoMLq6bX30m51T9KZKaLlsR2oHwFiRHMElRNAZ6Z3VVZo2Qy1rIxUFi2/dwQTji
+         578qgGp2d5PjlBJzOfk9VFyKd+DhIQdnjryUjT8EkeR4jBLeLi8a8J8YwBZTnQNhdSt4
+         khnoGxzTT4pcEP28K4DytUA8dTx6GPUxOnnD/Ko705Z9P7uQUh6Tu2uosbMLV6aYTg/x
+         h1u8i5jDH1yfOCMjbLfUPgvD39kdWbJ3W063T6c87ReTE/cAW3t1QnFJxtC1QtiEmYB2
+         6uhfXVmW20rtVhUsJr9aNeuPMScGIed2fdq3b5l2TMVJvjxECxgZE7GIF0TFDzPk68z9
+         NQIA==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, rob@landley.net, linux-doc@vger.kernel.org, kuznet@ms2.inr.ac.ru, jmorris@namei.org, yoshfuji@linux-ipv6.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, fw@strlen.de, Neal Murphy <neal.p.murphy@alum.wpi.edu>
+To: netfilter@vger.kernel.org
 
-Mon, Jan 21, 2013 at 12:52:02PM CET, pablo@netfilter.org wrote:
->On Fri, Jan 18, 2013 at 10:05:08AM +0100, Jiri Pirko wrote:
->> I grepped through the code and picked bits about nf_conntrack sysctl api
->> and put that into one documentation file.
->
->Applied, thanks a lot Jiri.
->
->I have also included some grammar improvements that Neil Murphy has
->proposed (he seems to have accidentally trimmed off the CC list).
+Hi,
 
-Okay, Thanks a lot Pablo
+We have a requirement to configure active-active cluster solution with
+two server which runs our parsing application and it accepts traffic
+from other device.
+
+Can we use cluster ip module for this requirement ? as we have very
+heavy usage because data comes from network device is very high.
+
+Or is there any other method ? Suppose if we do port mirroring on that
+network device ( sender ) then how to do configure both server (
+receiver ) as we are using udp protocol...?
+
+Regards,
+Ben
