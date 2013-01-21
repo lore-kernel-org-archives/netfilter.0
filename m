@@ -1,24 +1,44 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [patch v3] doc: add nf_conntrack sysctl api documentation
-Date: Mon, 21 Jan 2013 12:52:02 +0100
-Message-ID: <20130121115202.GA5074@1984>
-References: <1358499908-1268-1-git-send-email-jiri@resnulli.us>
+From: Prashant Batra <prashant0100@gmail.com>
+Subject: netlink queue to implement ipsec
+Date: Mon, 21 Jan 2013 17:29:40 +0530
+Message-ID: <CAG+XuE4sKZp8TwT4f_eXmEV0efGFWgKOFPB4ShvNOfZsOh9+Xw@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <linux-doc-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1358499908-1268-1-git-send-email-jiri@resnulli.us>
-Sender: linux-doc-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:x-received:date:message-id:subject:from:to
+         :content-type;
+        bh=g+XrTsV/HDo60niXfXpVRmyIf9eCkaAWn49/Pis/Gx4=;
+        b=lOYxATmGAAq0/EBaHpVaCvFXysVieYZg0LV9pW5LYjuOqtkZ9lO7dg7qQCdB7jAgvU
+         i7ZV+MvdZ9jk3A9QiU/7FJ1zWKPZVRqtSYi8lCWET+eybBZTY/DUcs0W2aKKD1Y0IGNX
+         /DVs2MJvPtZz9t/c7G6GSbAiF/gmLXjmiP/KKkdr+W1PX80or46F+bVvDdbceTTSHE1A
+         l0cas+Ft/nNnLXU+IQP4kIUavXnmQCnUHale3+c3rvUyUmneh3VOhB5mqCuUu4+h42cU
+         +NrzgahoVDyxNXZjuohw1r6Tp85EZiptq8C2NkbslWFi6AI73qvKzuZukxSQrVphgoak
+         LT1A==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jiri Pirko <jiri@resnulli.us>
-Cc: netdev@vger.kernel.org, davem@davemloft.net, rob@landley.net, linux-doc@vger.kernel.org, kuznet@ms2.inr.ac.ru, jmorris@namei.org, yoshfuji@linux-ipv6.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, fw@strlen.de, Neal Murphy <neal.p.murphy@alum.wpi.edu>
+To: netfilter@vger.kernel.org
 
-On Fri, Jan 18, 2013 at 10:05:08AM +0100, Jiri Pirko wrote:
-> I grepped through the code and picked bits about nf_conntrack sysctl api
-> and put that into one documentation file.
+Hi Guys,
 
-Applied, thanks a lot Jiri.
+Guidance is needed to verify small user space ipsec application design
+using netlink socket.
 
-I have also included some grammar improvements that Neil Murphy has
-proposed (he seems to have accidentally trimmed off the CC list).
+The architecture looks something like this-
+- Install iptable rules (to match certain ipsec policies) and get the
+packet in user-space using nf_queue target.
+- Do the IPSec part and send the processed packet out.
+- To optimize use memory mapped IO as in https://lwn.net/Articles/512442/
+- An important point here is - Kernel transport and IP stack will be
+building the complete IP packet, data of which comes from some user
+space process like (ssh), so the iptable rule has to be applied after
+IP layer, maybe post routing.
+
+Is it a feasible thing?
+
+Please provide your comments.
+
+Thanks,
+Prashant
