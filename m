@@ -1,31 +1,37 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Wrapper script for ipset listing
-Date: Mon, 21 Jan 2013 09:55:11 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1301210952220.28412@blackhole.kfki.hu>
-References: <50E84F5E.8060704@airpost.net> <alpine.LNX.2.01.1301051809460.23031@nerf07.vanv.qr> <50E8F495.40307@airpost.net> <alpine.LNX.2.01.1301062030320.14070@nerf07.vanv.qr> <alpine.DEB.2.00.1301070852290.591@blackhole.kfki.hu> <50ED13BC.6010005@airpost.net>
- <20130109115232.GA19321@1984> <50FCFCEB.5020704@airpost.net>
+From: Eric Leblond <eric@regit.org>
+Subject: Re: [libnetfilter_queue PATCH 1/2] doxygen: improve fail-open
+ documentation.
+Date: Mon, 21 Jan 2013 11:02:02 +0100
+Message-ID: <1358762522.31152.7.camel@tiger2>
+References: <201301131840.30692.neal.p.murphy@alum.wpi.edu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <50FCFCEB.5020704@airpost.net>
+In-Reply-To: <201301131840.30692.neal.p.murphy@alum.wpi.edu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Born Without <blackhole@airpost.net>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Eliezer Croitoru <eliezer@ngtech.co.il>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: neal.p.murphy@alum.wpi.edu
+Cc: netfilter@vger.kernel.org
 
-On Mon, 21 Jan 2013, Born Without wrote:
+Hello,
 
-> @Jozsef - please be sure to check github for eventually updated versions, in
-> case you put it in /contrib for ipset release.
+On Sun, 2013-01-13 at 18:40 -0500, Neal Murphy wrote:
+> On Sunday, January 13, 2013 05:49:35 PM you wrote:
+> 
+> > + * results in the system being able to handle high network load but at
+> > + * the depend of the control on the packets.
+> 
+> Might you have meant to say, "... but at the expense of control of the
+> packets." ?
 
-I'm going to add it to the next ipset release, including a reference to 
-the original source at github.
+Thanks for the correction. I've fixed it in my private repository.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+Is there other mistakes in the proposed patches ? If not, I will push
+them to the git tree.
+
+BR,
+-- 
+Eric Leblond <eric@regit.org>
+Blog: https://home.regit.org/
+
