@@ -1,43 +1,38 @@
-From: David Gubler <dg@doodle.com>
-Subject: Re: connlimit reached - cannot open connections even after I close
- some
-Date: Thu, 24 Jan 2013 16:08:15 +0100
-Message-ID: <51014E5F.9070804@doodle.com>
-References: <77346cbd-787d-4e7e-a918-d1b858d56b25@me.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: Jean-Michel DILLY <jm@dilly.me>
+Subject: ip6tables -S & NPT, bug ?
+Date: Thu, 24 Jan 2013 18:15:51 +0100
+Message-ID: <AB784066-DF78-45DA-9380-16E9DC8FFA7D@dilly.me>
+Mime-Version: 1.0 (Apple Message framework v1283)
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <77346cbd-787d-4e7e-a918-d1b858d56b25@me.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=dilly.me; s=mail;
+	t=1359047748; bh=XctuvKMDlPv4yMisC8UgrpM5MdXJePs/zwVSGYEgoSU=;
+	h=From:Content-Type:Content-Transfer-Encoding:Subject:Date:
+	 Message-Id:To:Mime-Version;
+	b=lbAkL7JPtqDrvkvCfyEp1Qelw0/fKUz2PQ0MjchT5QmbF3RIDt2UozwJ+fTqTqJpK
+	 2k9bvVajAqbkOEKCE9VPu1yOWNm5BZSsNI+zyXey+4ZeA9KJ4iB9XmLEtl8dmhNbCT
+	 KxdSIHmJyo6EtsJURj9vgsU8GWfAw/5zOjneti3A=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi Bryan,
+Hi all,
 
- > I would think you could approach the problem by using apache's builtin
- > rate limiting function,
+I have a problem when saving my ip6tables configurations with ip6tables-save or ip6tables -S when using IPv6 NPT.
 
-Yes we're using Apache and I researched that as well, but:
+root@linux:/mnt/kernel# ip6tables -t mangle -S
+-P PREROUTING ACCEPT
+-P INPUT ACCEPT
+-P FORWARD ACCEPT
+-P OUTPUT ACCEPT
+-P POSTROUTING ACCEPT
+Target `DNPT' is missing save function
 
-First, I'm thinking that an Apache module cannot reliably enforce a 
-connection limit - after all, the module can only act *after* the 
-connection has been established.
+and then it crashes.
 
-Second, I have not found an apache module that is included in Debian 
-(required for automatic security updates) and is able to do that.
-* mod_limitipconn is not available for Debian (it seems)
-* mod_bw cannot limit connections per IP, only per scope
-* mod_evasive counts hits on an object, not parallel connections
-However, if you can point me to one I would give it a try anyway.
+Does anyone has this problem ?
 
-And after all, it really bugs me that apparently connlimit is supposed 
-to do what I want, but shows this erratic behavior...
 
-David
-
--- 
-David Gubler
-Senior Software & Operations Engineer
-MeetMe: http://doodle.com/david
-E-Mail: dg@doodle.com
+Regards,
+JMichel
