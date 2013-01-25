@@ -1,43 +1,33 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: ip6tables -S & NPT, bug ?
-Date: Thu, 24 Jan 2013 20:40:45 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1301242037040.27614@nerf07.vanv.qr>
-References: <AB784066-DF78-45DA-9380-16E9DC8FFA7D@dilly.me>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] ipvs: freeing uninitialized pointer on error
+Date: Fri, 25 Jan 2013 18:44:57 +0300
+Message-ID: <20130125154456.GB5908@elgon.mountain>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <AB784066-DF78-45DA-9380-16E9DC8FFA7D@dilly.me>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <lvs-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: lvs-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jean-Michel DILLY <jm@dilly.me>
-Cc: netfilter@vger.kernel.org
+To: Wensong Zhang <wensong@linux-vs.org>
+Cc: Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, kernel-janitors@vger.kernel.org
 
-On Thursday 2013-01-24 18:15, Jean-Michel DILLY wrote:
+If state != IP_VS_STATE_BACKUP then tinfo->buf is uninitialized.  If
+kthread_run() fails then it means we free random memory resulting in an
+oops.
 
->Hi all,
->
->I have a problem when saving my ip6tables configurations with ip6tables-save or ip6tables -S when using IPv6 NPT.
->
->root@linux:/mnt/kernel# ip6tables -t mangle -S
->-P PREROUTING ACCEPT
->-P INPUT ACCEPT
->-P FORWARD ACCEPT
->-P OUTPUT ACCEPT
->-P POSTROUTING ACCEPT
->Target `DNPT' is missing save function
->
->and then it crashes.
->
->Does anyone has this problem ?
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-I have sent a fix to netfilter-devel. It consists of
-
-	7bbf65b libxtables: centralize checking for a .save function
-	b485d24 extensions: eui64: set userspacesize=0
-	27156df extensions: S/DNPT: add missing save function
-
-from git://git.inai.de/iptables master.
-
-P.S.: And hooray, the commit summary turns out not to match the content.
-Oh well.
+diff --git a/net/netfilter/ipvs/ip_vs_sync.c b/net/netfilter/ipvs/ip_vs_sync.c
+index effa10c..44fd10c 100644
+--- a/net/netfilter/ipvs/ip_vs_sync.c
++++ b/net/netfilter/ipvs/ip_vs_sync.c
+@@ -1795,6 +1795,8 @@ int start_sync_thread(struct net *net, int state, char *mcast_ifn, __u8 syncid)
+ 					     GFP_KERNEL);
+ 			if (!tinfo->buf)
+ 				goto outtinfo;
++		} else {
++			tinfo->buf = NULL;
+ 		}
+ 		tinfo->id = id;
+ 
