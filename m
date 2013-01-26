@@ -1,50 +1,70 @@
-From: Julian Anastasov <ja@ssi.bg>
-Subject: Re: [patch] ipvs: freeing uninitialized pointer on error
-Date: Fri, 25 Jan 2013 22:56:11 +0200 (EET)
-Message-ID: <alpine.LFD.2.00.1301252244200.1872@ja.ssi.bg>
-References: <20130125154456.GB5908@elgon.mountain>
+From: lejeczek <peljasz@yahoo.co.uk>
+Subject: iptables and slave interfaces
+Date: Sat, 26 Jan 2013 11:03:25 +0000
+Message-ID: <5103B7FD.3010504@yahoo.co.uk>
 Mime-Version: 1.0
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <20130125154456.GB5908@elgon.mountain>
-Sender: netdev-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Wensong Zhang <wensong@linux-vs.org>, Simon Horman <horms@verge.net.au>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, kernel-janitors@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.co.uk; s=s1024; t=1359198206; bh=mmFQn0V77ynyUJN+EZSKzRLu0ph5Y14fGst3KBiLn6w=; h=X-Yahoo-Newman-Id:X-Yahoo-Newman-Property:X-YMail-OSG:X-Yahoo-SMTP:Received:Message-ID:Date:From:User-Agent:MIME-Version:To:Subject:Content-Type:Content-Transfer-Encoding; b=g54PekUvvKlGo0p+tHics/FrFdIS4KofwKjk4Dh+MuKzemqGB99QwtTmj1sNFPhZ4249sgpPxH28kzGJEb36eb8U+PDJbKgR790CyII3FtvPYH0u7tC7QOS274HxM7MeIRDawGvbIlFfp9RXLQge+hmO0FM6WQ1s1cmVUsXWEQ4=
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
+newbie sort of question:
+does slave ifs of a bridge need to iptabled? does one need
+to forward/input etc.. them? It should be only bridges in
+this situation, right?
 
-	Hello,
+also maybe someone could share his/her thoughts on this one
+problem I have, that boggles my mind for I'm unable to fix
+it, namely:
 
-On Fri, 25 Jan 2013, Dan Carpenter wrote:
+I had to introduce additional routing tablesand rules in
+order to allow for source based routing, before it was working
+what was? - guests(VMs) behind a bridge interface(that
+comprised of tap interfaces, one tap IF per VM) could
+see/reach hostsystem one specific, separate/physical interface
+now these guests cannot do that anymore, I think ever since
+I introduced source based routes into this environment
+I should try to provide you with better picture....
 
-> If state != IP_VS_STATE_BACKUP then tinfo->buf is uninitialized.  If
-> kthread_run() fails then it means we free random memory resulting in an
-> oops.
+VM(via tap) --- HOST
+VM(via tap) --- ------ > br0(taps + em4 + eth0); br1(em1 +
+eth1); em2; em3
+etc ...... ---
 
-	Good catch. Simon, please apply!
+now, VMsreach allthe interfaces but one em3! VMs also reach
+outside world to which em3 is the gateway(masquerade)
+naturally VMS are reachable from the HOST itself and each
+other, but not from/behind br1
 
-	Problem is in 3.5+ caused by commit f73181c828
-(ipvs: add support for sync threads)
+VMs are on/behind br0
+here are rutes+rules:
 
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+ip route add table internal from 172.25.12.0/24 to
+192.168.2.64/27 via 192.168.2.65 dev br0
+ip route add table internal from 172.25.12.0/24 to
+192.168.2.0/24 via 192.168.2.100 dev br1
+ip route add table internal to 172.25.12.0/24 via
+172.25.12.203 dev em2
 
-Acked-by: Julian Anastasov <ja@ssi.bg>
+ip route add table external to 192.168.2.0/24 via 192.168.2.100
+ip route add table external to 192.168.2.0/27 via 192.168.2.65
+ip route add table external to ext_NET/24 dev em3
 
-> diff --git a/net/netfilter/ipvs/ip_vs_sync.c b/net/netfilter/ipvs/ip_vs_sync.c
-> index effa10c..44fd10c 100644
-> --- a/net/netfilter/ipvs/ip_vs_sync.c
-> +++ b/net/netfilter/ipvs/ip_vs_sync.c
-> @@ -1795,6 +1795,8 @@ int start_sync_thread(struct net *net, int state, char *mcast_ifn, __u8 syncid)
->  					     GFP_KERNEL);
->  			if (!tinfo->buf)
->  				goto outtinfo;
-> +		} else {
-> +			tinfo->buf = NULL;
->  		}
->  		tinfo->id = id;
+ip route add table external default viaext_IP(via em3)
 
-Regards
+ip rule add from 172.25.12.0/24 table internal
+ip rule add from 192.168.2.0/24 table internal
+ip rule add from ext_NET table external
 
---
-Julian Anastasov <ja@ssi.bg>
+or is it iptables?? but there is:
+-A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEPT
+-A FORWARD -i br+ -o br+ -m state --state NEW -j ACCEPT
+
+i really cannot get my head around it, have tampered with
+routes+rules, iptables..cannot..
+anybody's input much! appreciated
+regards
+
