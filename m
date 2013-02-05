@@ -1,108 +1,46 @@
-From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: connlimit reached - cannot open connections even after I close
- some
-Date: Tue, 05 Feb 2013 20:54:13 +0100
-Message-ID: <51116365.4070801@plouf.fr.eu.org>
-References: <51014395.1000101@doodle.com> <510E4F4C.50202@plouf.fr.eu.org> <510F9B9B.8070907@doodle.com>
+From: Roman Gelfand <rgelfand2@gmail.com>
+Subject: Ver 1.4.17 Error Appending Prerouting
+Date: Tue, 5 Feb 2013 18:13:37 -0500
+Message-ID: <CAJbW+rmxKmvLT_g8c7Aj1zCfmEH6M6g2gHPx6_xnMBR43JY_2Q@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <510F9B9B.8070907@doodle.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:x-received:date:message-id:subject:from:to
+         :content-type;
+        bh=JT4jRHljQxZCOiIwSzPNBTI1TzEoniCn5ZOt8Xt79dI=;
+        b=hA7j+Y0ieywOTklhkuhbCrlMdtzFfT4NO0++yAVhPUTwKRsCfRvQbWBDOSL1kro3Ys
+         qW/5Y4cCMdCLrsZ7TN30MkXX1j9CCzZHiynWVipxykN5nOB0MsIvYWh+u6XZRhPYkUki
+         U0FcNb9uxdO9bdQ24aJKlbxbVTkEDDL1G9+l7IZA9cCXY+AilAXphngfek3gNzio/eUu
+         l/cCQplBAWhCWqeAYidvRjT7zT5DBuPkEf5f89QbngR07fkjeF1htV6CX0Xxy+MRLWvt
+         L+naDaU9gywx1LIX2DmMvNeu0Tj02DVAbE0lal30D19W2mKWoaLYPL0pwGZAC93VUzZf
+         ScTA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: David Gubler <dg@doodle.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-David Gubler a =E9crit :
->=20
-> Starting a fifth download fails:
->=20
-> $ wget --limit-rate=3D1  http://localhost:8080/....
-> --2013-02-04 11:48:41--  http://localhost:8080/...
-> Aufl=F6sen des Hostnamen =BBlocalhost (localhost)=AB... 127.0.0.1
-> Verbindungsaufbau zu localhost (localhost)|127.0.0.1|:8080... fehlges=
-chlagen: Verbindungsaufbau abgelehnt.
-> (connection rejected)
->=20
-> # conntrack -L | grep 8080
-> tcp      6 431949 ESTABLISHED src=3D127.0.0.1 dst=3D127.0.0.1 sport=3D=
-60279 dport=3D8080 src=3D127.0.0.1 dst=3D127.0.0.1 sport=3D8080 dport=3D=
-60279 [ASSURED] mark=3D0 use=3D1
-> tcp      6 431990 ESTABLISHED src=3D127.0.0.1 dst=3D127.0.0.1 sport=3D=
-60278 dport=3D8080 src=3D127.0.0.1 dst=3D127.0.0.1 sport=3D8080 dport=3D=
-60278 [ASSURED] mark=3D0 use=3D1
-> tcp      6 431956 ESTABLISHED src=3D127.0.0.1 dst=3D127.0.0.1 sport=3D=
-60284 dport=3D8080 src=3D127.0.0.1 dst=3D127.0.0.1 sport=3D8080 dport=3D=
-60284 [ASSURED] mark=3D0 use=3D1
-> tcp      6 431963 ESTABLISHED src=3D127.0.0.1 dst=3D127.0.0.1 sport=3D=
-60285 dport=3D8080 src=3D127.0.0.1 dst=3D127.0.0.1 sport=3D8080 dport=3D=
-60285 [ASSURED] mark=3D0 use=3D1
-> tcp      6 71 SYN_SENT src=3D127.0.0.1 dst=3D127.0.0.1 sport=3D60291 =
-dport=3D8080 [UNREPLIED] src=3D127.0.0.1 dst=3D127.0.0.1 sport=3D8080 d=
-port=3D60291 mark=3D0 use=3D1
->=20
-> Note: The rejected connection is in the conntrack table in the state =
-SYN_SENT.
+I have installed iptables ver 1.4.17 on debian squeeze where current
+iptables version is 1.4.8. The kernel version is 2.6.32-5-686.
 
-It appears that you're testing over the loopback interface. Note that
-the connection tracking behaves a bit differently on this interface :
-the connection is confirmed when the first packet reaches the end of
-POSTROUTING chains, before entering back the PREROUTING and INPUT
-chains. So even though the packet is dropped in the INPUT chain, the
-conntrack entry is not new any more and left in the SYN_STATE.
+After running the following statements, I get the error below.
 
-> Killing one of the four running downloads with CTRL+C:
->=20
-> # conntrack -L | grep 8080
-> tcp      6 431950 ESTABLISHED src=3D127.0.0.1 dst=3D127.0.0.1 sport=3D=
-60279 dport=3D8080 src=3D127.0.0.1 dst=3D127.0.0.1 sport=3D8080 dport=3D=
-60279 [ASSURED] mark=3D0 use=3D1
-> tcp      6 7 CLOSE src=3D127.0.0.1 dst=3D127.0.0.1 sport=3D60278 dpor=
-t=3D8080 src=3D127.0.0.1 dst=3D127.0.0.1 sport=3D8080 dport=3D60278 [AS=
-SURED] mark=3D0 use=3D1
-> tcp      6 431958 ESTABLISHED src=3D127.0.0.1 dst=3D127.0.0.1 sport=3D=
-60284 dport=3D8080 src=3D127.0.0.1 dst=3D127.0.0.1 sport=3D8080 dport=3D=
-60284 [ASSURED] mark=3D0 use=3D1
-> tcp      6 431965 ESTABLISHED src=3D127.0.0.1 dst=3D127.0.0.1 sport=3D=
-60285 dport=3D8080 src=3D127.0.0.1 dst=3D127.0.0.1 sport=3D8080 dport=3D=
-60285 [ASSURED] mark=3D0 use=3D1
-> tcp      6 17 SYN_SENT src=3D127.0.0.1 dst=3D127.0.0.1 sport=3D60291 =
-dport=3D8080 [UNREPLIED] src=3D127.0.0.1 dst=3D127.0.0.1 sport=3D8080 d=
-port=3D60291 mark=3D0 use=3D1
->=20
-> Now we have a connection in state CLOSED and one in state SYN_SENT in
-> the table. wget still fails as it did before.
+modprobe ip_gre
+modprobe ip_tables
+modprobe x_tables
 
-As expected, as there are already four active (SYN_SENT and ESTABLISHED=
-)
-connections.
 
-> On 03.02.2013 12:51, Pascal Hambourg wrote:
->  >
->  > This is not the expected behaviour. AFAIK, when a packet creating =
-a new
->  > connection is DROPPed or REJECTed, the conntrack entry should be
->  > deleted. This is what I observe on my system.
+/usr/local/sbin/iptables -t tproxy -A PREROUTING -i wccp0 -p tcp -m
+tcp --dport 80 -j TPROXY --on-port 3228
+/usr/local/sbin/iptables -t tproxy -A PREROUTING -i wccp0 -p tcp -m
+tcp --dport 443 -j TPROXY --on-port 3229
 
-Edit : I observe this if the connections are from a remote host. If the
-connections are from the local host over loopback, I observer the same
-behaviour as you. I tested both conditions with a Debian Squeeze 2.6.32
-kernel. I could not test with other kerne versions.
+Why am I getting the following error:
 
-> Ok this is weird. I have made a similar (although not exactly the
-> same) attempt on "Linux 2.6.32-5-amd64 #1 SMP Sun Sep 23 10:07:46 UTC
-> 2012 x86_64 GNU/Linux" (Debian stable with stock kernel). On that ker=
-nel
-> it behaves as you describe it! No SYN_SENT entries pop up in the
-> conntrack table, instead the denied connections directly go into
-> TIME_WAIT, and the connection limit works fine.
->=20
-> On "Linux 3.2.0-2-amd64 #1 SMP Mon Jun 11 17:24:18 UTC 2012 x86_64
-> GNU/Linux" (Debian stable with backports kernel), on the other hand, =
-I
-> get the exact same behavior as with 3.2 in Ubuntu (broken).
+iptables v1.4.17: can't initialize iptables table `tproxy': Table does
+not exist (do you need to insmod?)
+Perhaps iptables or your kernel needs to be upgraded.
 
-Did you test all kernels in the exact same conditions, connecting eithe=
-r
- from a remote host or over loopback ?
+
+Thanks in advance
