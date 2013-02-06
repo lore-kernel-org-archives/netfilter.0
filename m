@@ -1,50 +1,46 @@
-From: Francesco <francesco@bsod.eu>
-Subject: Re: How to use TPROXY with 2 lan interfaces and one wan
-Date: Wed, 06 Feb 2013 14:39:32 +0100
-Message-ID: <f5be014b32dd1de84bce075e2761053d@bsod.eu>
-References: <bc1efe8ab3ae9b4a050915eeb4d8454e@bsod.eu>
- <5112511B.9020007@ngtech.co.il>
+From: Born Without <blackhole@airpost.net>
+Subject: [Announce] ipset - programmable completion (bash)
+Date: Wed, 06 Feb 2013 22:26:52 +0100
+Message-ID: <5112CA9C.1040802@airpost.net>
+Reply-To: blackhole@airpost.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <5112511B.9020007@ngtech.co.il>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=airpost.net; h=
+	message-id:date:from:reply-to:mime-version:to:cc:subject
+	:content-type:content-transfer-encoding; s=mesmtp; bh=B9E8CFswYH
+	S3gPeHEc82xQ8o9ZI=; b=mluMZgmx2GMPsYlHh+ME55YloYn98Evqqgt1rHx7+c
+	jHs0K5Ar8aZl46nowRgHigIEYn//YHqIQ3NKJC9zk3qEQkHZB/wLdCOx310cpV6e
+	OiYNEScR7VkYkyZbvW0yFxvurpSnYKxyyXr9QLCFKPFXJ1aK2FE7bJyvTR/zWZVT
+	A=
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
+	messagingengine.com; h=message-id:date:from:reply-to
+	:mime-version:to:cc:subject:content-type
+	:content-transfer-encoding; s=smtpout; bh=B9E8CFswYHS3gPeHEc82xQ
+	8o9ZI=; b=MJsOXxWWYEG/Vuhx2GXctGDrT6pdlqlXcWzRYvZznOXJr3lHKO+4Yc
+	Ty9EyzMEJFmqVcGp9zC1bJFDJwx2R/k3FVwYVG5f7PP3qk6tjYHtTO8ycTp5r99J
+	7+npUZoaLMMJepc7uRkB0EA4mVnpg78SQ/q26u3UIxeDT8BmqtXPU=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Eliezer Croitoru <eliezer@ngtech.co.il>
-Cc: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 
-Il 2013-02-06 13:48 Eliezer Croitoru ha scritto:
-> On 02/06/2013 12:54 PM, Francesco wrote:
->>
-> I'm not sure you understood how it works.
-> Take a look at:
-> 
-> http://wiki.squid-cache.org/ConfigExamples/UbuntuTproxy4Wccp2#Linux_and_Squid_Configuration
-> the divert is a match for a local socket connection which is not
-> related to marks and should not be marked in the same way as
-> intercepted connection.
-> For what have you used CONNTRACK and save mark?
-> Lets imagine what you have just written:
-> #In order the to start a car turn the switch on
-> - if you are entering the car switch on the car.
-> - if you are switching the car on then continue to step one...
->
-> Does it make sense to me? no.
-> (take the example as illustration only and might not fit as BIT to 
-> BIT match)
+Hello community!
 
-Thanks Eliezer for your prompt response.
-You're right, is not very clear to me how the things works.
-I'm going to read the doc you posted and tyr to figure out how the 
-things really work, since i'm a little bit confused regards routing of 
-the package.
-Thanks a lot for your advices.
-See ya
--- 
-:: Francesco ::
-Blog.....http://fc1979.blogspot.com
-Twit.....http://twitter.com/fcolista
-Jabber...francesco@jabber.org
-E-Mail...francesco@bsod.eu
-AboutMe..http://about.me/fcolista
+I've written programmable completion code for ipset.
+This can be used in your bash shell, to interactively show and complete 
+options, commands, set names and types for you.
+
+Code and files are available here:
+
+https://sourceforge.net/projects/ipset-bashcompl/
+https://github.com/AllKind/ipset-bash-completion
+
+I hope this becomes useful for the one or the other.
+Constructive comments, ideas, etc are of course very much welcome.
+
+@Jozsef: feel free to include it ...
+
+Best regards
+
