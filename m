@@ -1,46 +1,71 @@
-From: Born Without <blackhole@airpost.net>
-Subject: [Announce] ipset - programmable completion (bash)
-Date: Wed, 06 Feb 2013 22:26:52 +0100
-Message-ID: <5112CA9C.1040802@airpost.net>
-Reply-To: blackhole@airpost.net
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: Alex Bligh <alex@alex.org.uk>
+Subject: Re: SNAT using the same internal address multiple times
+Date: Thu, 7 Feb 2013 09:21:18 +0000
+Message-ID: <F39A895F-6E7F-4B38-BC6E-738ABDB0F321@alex.org.uk>
+References: <738ED808-0B35-4645-9D73-3CB3B5CBC4D7@alex.org.uk> <1360147947.2455.0.camel@BEWS005.euractiv.com>
+Mime-Version: 1.0 (Apple Message framework v1085)
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=airpost.net; h=
-	message-id:date:from:reply-to:mime-version:to:cc:subject
-	:content-type:content-transfer-encoding; s=mesmtp; bh=B9E8CFswYH
-	S3gPeHEc82xQ8o9ZI=; b=mluMZgmx2GMPsYlHh+ME55YloYn98Evqqgt1rHx7+c
-	jHs0K5Ar8aZl46nowRgHigIEYn//YHqIQ3NKJC9zk3qEQkHZB/wLdCOx310cpV6e
-	OiYNEScR7VkYkyZbvW0yFxvurpSnYKxyyXr9QLCFKPFXJ1aK2FE7bJyvTR/zWZVT
-	A=
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
-	messagingengine.com; h=message-id:date:from:reply-to
-	:mime-version:to:cc:subject:content-type
-	:content-transfer-encoding; s=smtpout; bh=B9E8CFswYHS3gPeHEc82xQ
-	8o9ZI=; b=MJsOXxWWYEG/Vuhx2GXctGDrT6pdlqlXcWzRYvZznOXJr3lHKO+4Yc
-	Ty9EyzMEJFmqVcGp9zC1bJFDJwx2R/k3FVwYVG5f7PP3qk6tjYHtTO8ycTp5r99J
-	7+npUZoaLMMJepc7uRkB0EA4mVnpg78SQ/q26u3UIxeDT8BmqtXPU=
+In-Reply-To: <1360147947.2455.0.camel@BEWS005.euractiv.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Content-Type: text/plain; charset="us-ascii"
+To: Jimmy Thrasibule <thrasibule.jimmy@gmail.com>
+Cc: Alex Bligh <alex@alex.org.uk>, netfilter@vger.kernel.org
 
-Hello community!
+Jimmy,
 
-I've written programmable completion code for ipset.
-This can be used in your bash shell, to interactively show and complete 
-options, commands, set names and types for you.
+On 6 Feb 2013, at 10:52, Jimmy Thrasibule wrote:
 
-Code and files are available here:
+>> Is it possible to use SNAT like this? (what I'm really asking is whether one can use the ingress interface as part of the NAT tuple):
+>> 
+>>                  LINUX
+>>   eth0 <-------- ROUTER ----------- 10.0.1.0/24
+>>                  \\\\\\\------------ 10.0.1.0/24
+>>                   \\\\\\------------ 10.0.1.0/24
+>>                    \\\\\------------ 10.0.1.0/24
+>>                     \\\\------------ 10.0.1.0/24
+>>                      \\\------------ 10.0.1.0/24
+>>                       \\------------ 10.0.1.0/24
+>>                        \------------ 10.0.1.0/24
+>> 
+>> Each private / internal address is the same on every interface. I plan to use
+>> unnumbered interfaces and proxy ARP at the linux level.
+>> 
+> 
+> Hi Alex,
+> 
+> I don't really get what you are trying to achieve. Can you detail a
+> little bit more?
 
-https://sourceforge.net/projects/ipset-bashcompl/
-https://github.com/AllKind/ipset-bash-completion
+A typical use case: consider all the downstream interfaces are veth
+interfaces into either a network container (separate namespaces) or
+bridge interfaces into a VM. Let's assume you want to number the
+ethernet interface in the container/VM with the same IP address (*)
+(10.0.1.1/24 in the above example) and the router will act both
+as default route and proxy ARP for things apparently on the same
+subnet. Assume the only requirement is for outbound connectivity
+through eth0.
 
-I hope this becomes useful for the one or the other.
-Constructive comments, ideas, etc are of course very much welcome.
+There's no reason in theory (I think) why such a NAT should not
+work. Outbound packets get NATted to the IP of eth0 saving
+the inbound interface in the NAT table. Inbound packets are matched
+against the NAT table, have their destination rewritten to the
+original source address, and a routed directly out the interface
+from which the relevant inbound connection came, rather like a
+static interface route.
 
-@Jozsef: feel free to include it ...
+My question is does iptables support this?
 
-Best regards
+
+(*) = why on earth would I want to do this? Suppose you have a huge
+number of VMs which can live migrate between physical machines. Without
+this, IP addressing needs to be globally unique across all VMs
+across all physical machines. This is somewhat tedious.
+
+-- 
+Alex Bligh
+
+
+
 
