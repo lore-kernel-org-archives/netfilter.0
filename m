@@ -1,43 +1,79 @@
-From: Amos Jeffries <squid3@treenet.co.nz>
-Subject: Re: SNAT using the same internal address multiple times
-Date: Fri, 08 Feb 2013 14:51:52 +1300
-Message-ID: <51145A38.6020705@treenet.co.nz>
-References: <738ED808-0B35-4645-9D73-3CB3B5CBC4D7@alex.org.uk> <1360147947.2455.0.camel@BEWS005.euractiv.com> <F39A895F-6E7F-4B38-BC6E-738ABDB0F321@alex.org.uk> <1360256176.2455.15.camel@BEWS005.euractiv.com> <7E0B2326-5799-4BC0-B28E-A0DCCDAEB601@alex.org.uk>
+From: Prashant Batra <prashant0100@gmail.com>
+Subject: IPv6 routes too much
+Date: Fri, 8 Feb 2013 16:18:31 +0530
+Message-ID: <CAG+XuE7FaAwwSq98JTSr3SOxSP2rN1hxFYQ7O=0L_3E=9kVreg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <7E0B2326-5799-4BC0-B28E-A0DCCDAEB601@alex.org.uk>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <linux-newbie-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:x-received:date:message-id:subject:from:to
+         :content-type;
+        bh=QEgXzK9sTedjFDdCVOnsCwvoLB//jEk85mRGYnTv5OY=;
+        b=XsnT2IwqlzHUXtWkZ/HP3xSRLXXV1iNjWZHUuysrHujm3jhBg6vuWoXk7Q0xGOQF3B
+         T+32NEnzVqq7iA+tYCZjbmYbQjzB3mp4Jb614f/o+eNgycTRkaMjwdzXwS7mrFq0Auhf
+         507rF5JgTdfvaRFDEinVAKqn2CcqFHme5+uKxxaJoTu+pwjqp8tU9qeB9iy1b/Y6YWB2
+         Yqcogn9TiL+OMGeUnZHEcCFTCxdb/lEwcUtQrUTb7BVXjDOWSVay/dhTM1O3ZW0n6zFr
+         VSlTlEpIs3xlFKf89jjefamXk4yjzD/E6UcBts9c1x48TjS4ppjvTYyd/rjvVS5fcu4P
+         5iBA==
+Sender: linux-newbie-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Alex Bligh <alex@alex.org.uk>
-Cc: Jimmy Thrasibule <thrasibule.jimmy@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: linux-newbie@vger.kernel.org, netfilter@vger.kernel.org
 
-On 8/02/2013 9:39 a.m., Alex Bligh wrote:
-> On 7 Feb 2013, at 16:56, Jimmy Thrasibule wrote:
->
->> OK, the problem here is to keep your interface MAC address when sending
->> a packet. You have the `bonding` driver to group interface but I don't
->> think it permits such a thing as it is more for load-balancing.
-> Towards the VM? It doesn't care about the originating MAC. The destination
-> MAC should be in the neighbor table in the normal way.
->
->>> (*) = why on earth would I want to do this? Suppose you have a huge
->>> number of VMs which can live migrate between physical machines. Without
->>> this, IP addressing needs to be globally unique across all VMs
->>> across all physical machines. This is somewhat tedious.
->> But in any case, how would you set up your virtual machines as they need
->> an IP address?
-> I could configure them statically. Actually what I'd do is use an extremely
-> lightweight tiny DHCP server I have written that would simply answer with
-> the same IP address for any query. Given they all have the same IP address,
-> this seems satisfactory.
->
+Hi,
 
-What I'd do is access them all individually using their automatic fe80:: 
-internal MAC-based IPv6 address.
-This address often works regardless of what global access IPv4 or IPv6 
-address screwups have been done, allowing easy administrative fixes of 
-said problems.
+I have a case wherein I have a route to a network connected to my
+linux machine via an interface, which I added like-
 
-AYJ
+route add -inet6 9aa::/16 gw 2001:db8:0:242::2 dev eth0
+
+Now, when I send packets to ipv6 addresses in this network, from my
+linux server, I see kernel adding routes for each of these addresses.
+Is this behaviour correct. How can it be avoided?
+
+My problem starts when I have millions of addresses in this network
+that I am trying to reach.
+
+A look of my routing table shows-
+9aa:0:0:250::/128                           2001:db8:0:242::2
+             UGC   0      23       0 eth0
+9aa:0:0:251::/128                           2001:db8:0:242::2
+             UGC   0      23       0 eth0
+9aa:0:0:252::/128                           2001:db8:0:242::2
+             UGC   0      23       0 eth0
+9aa:0:0:253::/128                           2001:db8:0:242::2
+             UGC   0      23       0 eth0
+9aa:0:0:254::/128                           2001:db8:0:242::2
+             UGC   0      23       0 eth0
+9aa:0:0:255::/128                           2001:db8:0:242::2
+             UGC   0      23       0 eth0
+9aa:0:0:256::/128                           2001:db8:0:242::2
+             UGC   0      23       0 eth0
+9aa:0:0:257::/128                           2001:db8:0:242::2
+             UGC   0      23       0 eth0
+9aa:0:0:258::/128                           2001:db8:0:242::2
+             UGC   0      23       0 eth0
+9aa:0:0:259::/128                           2001:db8:0:242::2
+             UGC   0      23       0 eth0
+9aa:0:0:25a::/128                           2001:db8:0:242::2
+             UGC   0      23       0 eth0
+9aa:0:0:25b::/128                           2001:db8:0:242::2
+             UGC   0      23       0 eth0
+9aa:0:0:25c::/128                           2001:db8:0:242::2
+             UGC   0      23       0 eth0
+
+like this I get 10k routes
+#cat /proc/net/ipv6_route | wc -l
+10015
+
+
+Any help is highly appreciated.
+
+thanks,
+Prashant
+--
+To unsubscribe from this list: send the line "unsubscribe linux-newbie" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Please read the FAQ at http://www.linux-learn.org/faqs
