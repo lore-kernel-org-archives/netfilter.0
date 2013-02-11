@@ -1,24 +1,39 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: IPv6 routes too much
-Date: Sat, 9 Feb 2013 04:31:42 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1302090428001.25836@nerf07.vanv.qr>
-References: <CAG+XuE7FaAwwSq98JTSr3SOxSP2rN1hxFYQ7O=0L_3E=9kVreg@mail.gmail.com> <alpine.LNX.2.01.1302081615450.10125@nerf07.vanv.qr> <CAG+XuE5g9jJTP4uu5ymQfzvx-O6U9SfK85XGoK+H7yqtVA6A0A@mail.gmail.com>
+From: Aaron Lewis <the.warl0ck.1989@gmail.com>
+Subject: Is it safe to use libnetfilter_queue in these cases?
+Date: Mon, 11 Feb 2013 12:43:22 +0800
+Message-ID: <CAJZVxRmmCeft+f-9wS4LbWzposct+3Ed5586E7opGa=xZKfyag@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAG+XuE5g9jJTP4uu5ymQfzvx-O6U9SfK85XGoK+H7yqtVA6A0A@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:x-received:date:message-id:subject:from:to
+         :content-type;
+        bh=qfc2u48jSLiIzkBZd9Cj8mGXzSaWNMv3HdejPJGHdgQ=;
+        b=LYOb+8BbZJIImFRZEZXnTJxYEoiLlACyxTu+2HGCmuPe6oQFN8qTSvTJ0yzzgeVP+V
+         AqM0ix9gNYuIa/tnZoMGJjc/4mJ8uzWIN1QjHEpD6mkiMqobraJnq0STe3cs7MN34TTM
+         cRzzNd5GIv8jm+/DsjAQdxE6If3JwOI8VvYIOoviSKHnH955z3ULjDhLHv4QOg55ZSnt
+         8UZZJHZu2+JGdAt0Iiyubp9VsEGyq+eNz4AJ+rQo5Ay2VAVCmuDV2nWaCKi4QH7u4AUX
+         EMEQzHxVgsixR0qRRxDIEmM+4mJtJKTv05OQUfiGHUrP0kX7Sgs7QYtV3YkLYxq0mHjh
+         omRw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Prashant Batra <prashant0100@gmail.com>
-Cc: "linux-newbie@vger.kernel.org" <linux-newbie@vger.kernel.org>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: netfilter mailing list <netfilter@vger.kernel.org>
 
+Hi,
 
-On Friday 2013-02-08 18:33, Prashant Batra wrote:
->
->So, any advice onto how the kernel configs specially under
->/proc/sys/net/ipv6/route/* should be controlled to get best performance.
+When I process a packet with libnetfilter_queue, would it be safe to:
 
-The defaults should be good enough.
+1) Consider a packet is always valid, for example,
 
-If they are not: Measure it.
+In the callback, you extract the payload to a "char *data", now you
+want the protocol id, so you check data[9],
+
+Is it safe if I don't check the package length first? (Would Iptables
+drop it manually?)
+
+-- 
+Best Regards,
+Aaron Lewis - PGP: 0xDFE6C29E ( http://keyserver.veridis.com )
+Finger Print: 9482 448F C7C3 896C 1DFE 7DD3 2492 A7D0 DFE6 C29E
