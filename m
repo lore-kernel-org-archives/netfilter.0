@@ -1,35 +1,56 @@
 From: Aaron Lewis <the.warl0ck.1989@gmail.com>
-Subject: Append rule to a NFQUEUE?
-Date: Tue, 12 Feb 2013 17:50:49 +0800
-Message-ID: <20130212095049.GA21858@devnull>
+Subject: [SOLVED] Re: LOG target with MARK?
+Date: Tue, 12 Feb 2013 17:44:31 +0800
+Message-ID: <20130212094430.GA20707@devnull>
+References: <20130212030235.GA16352@devnull>
+ <1360654592.30430.153.camel@andrew-desktop>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=x-received:date:from:to:subject:message-id:mime-version
-         :content-type:content-disposition:user-agent;
-        bh=/wEOh2hdPCbsx8Yyvyelee2SzUH+xVjq8qYaJWtROPY=;
-        b=Mv/u7UIjec6oRp5geYqkRevJaclekPrBQWYUTYdBEft8pW/Xnn/9ItlJVqNZcHvvWv
-         CmXa/9lHB1LBYUzrNlaUC/roDy5kJYIbAbEKOceJgmj7Ef/lg3/RHIZBZBjjhiTEf6LU
-         RxAc+l7hBc/TtrQrmyH51u1bWprxP2V7NcZXPa0UtaAeSL79iMoZKTPznYIlye4xViOV
-         k6u30YGV9+/xbvy1XPA/6o2+XKTpsQ1SphSNdJgwP+ccU1twBmgy8zf6z7mRnOxJZDwu
-         4LQBhgUmxZgjp2Gnvv65llR/CVJTrUKCvtY6xNVgYnT5rn9KmFVDpzy4Pu1IjfLgal5H
-         bjkw==
+        h=x-received:date:from:to:cc:subject:message-id:references
+         :mime-version:content-type:content-disposition:in-reply-to
+         :user-agent;
+        bh=agl1q+g6wXKqqATYG1+m0NaAYd9ql3yVaMfSbXN5bvg=;
+        b=UiizJ0TDPbQSvtEFRwiO87BdRj2NARcGBJbslu1es71ZZH33zf9XdMiMFXjW8CRoDR
+         6RcEeY/jubk22JgG3wxYo0suJjC+Ye5MP3qHpDsJJsAumP2j82PSsGm+nrhzYKF6qoh4
+         E0uFNiGw+jJ/vOfXtrQFdK/fbrpP4yRW1rHlOihoCNTfjgRyfVkP+78yhunnJCfZxSqS
+         wgzjf0ZHm2JJzKwKkAfAwQRkEoMMfJBzccv9yM72N9+10F0Wvt0f1nmbUe219xLtymkE
+         0EenzYjRe4Z23HEy/1I4aCNnvMEG1Gkw3vilh32ysKriKGUJvc1U8LONRPuKt3ATbFWF
+         FkJA==
 Content-Disposition: inline
+In-Reply-To: <1360654592.30430.153.camel@andrew-desktop>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter mailing list <netfilter@vger.kernel.org>
+To: Andrew Beverley <andy@andybev.com>
+Cc: Aaron Lewis <the.warl0ck.1989@gmail.com>, netfilter mailing list <netfilter@vger.kernel.org>
 
-Hi,
+Hi Andrew,
 
-I would like to log everything in a created queue,
+On 07:36 Tue 12 Feb     , Andrew Beverley wrote:
+> On Tue, 2013-02-12 at 11:02 +0800, Aaron Lewis wrote:
+> > Hi,
+> > 
+> > Looks like the LOG target doesn't output the mark of a packet?
+> > 
+> > I checked -j LOG --help and there's no such option, so what should I do
+> > to get the mark of each packet and print them?
+> 
+> It will log marks on packets by default. If there is no mark then
+> nothing will be printed; if there is, the value will be printed at the
+> end of the logging line (eg MARK=0x64).
 
-iptables -A NFQUEUE --queue-num 0 -j LOG
+Ah, thanks I get it, I did some experiment, if MARK is not set, it won't
+get printed.
 
-But that doesn't work, any ideas?
+Now it works.
 
+> 
+> Andy
+> 
+> 
 
 -- 
 Best Regards,
