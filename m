@@ -1,20 +1,20 @@
 From: Aaron Lewis <the.warl0ck.1989@gmail.com>
-Subject: --and-mark while matching?
-Date: Tue, 12 Feb 2013 17:47:23 +0800
-Message-ID: <20130212094723.GB20707@devnull>
+Subject: Append rule to a NFQUEUE?
+Date: Tue, 12 Feb 2013 17:50:49 +0800
+Message-ID: <20130212095049.GA21858@devnull>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=x-received:date:from:to:subject:message-id:mime-version
          :content-type:content-disposition:user-agent;
-        bh=8H0eK3weFFw9MIImQPk0SjZSjbWSlRO1/YPK8j2LfbY=;
-        b=JfzL6/xYu1u7FuY3KQy08cXASd7pp4HlLxXN/rWsLFNLM1jXyR/K9BIcLcTiG9kIYI
-         L/AVtIeyxWnXYRwh4ZFI5th0tnkot+0Arm549ar2cAzWdX7IMKaUSY8PMLGrHbvQarCX
-         K7K2Ibkecvjtbah9PAPFr2To3IN5LqMcZHDS1AkwnhqgN4J5mVHHUyuQjY92IIpJ5888
-         koiPay5cT40Nv3X42S6LNe4fnhVPxFC34ho5Y5Hvhs1mv8UoKWlPhfnBsX34fQ41I0Q0
-         IppbAJg9v2xbQ8NWkz+/13BKBXSZe3RfV9D5zR00hUaLpNieYxWyMeXi/VX6PdwUnHJC
-         nyRw==
+        bh=/wEOh2hdPCbsx8Yyvyelee2SzUH+xVjq8qYaJWtROPY=;
+        b=Mv/u7UIjec6oRp5geYqkRevJaclekPrBQWYUTYdBEft8pW/Xnn/9ItlJVqNZcHvvWv
+         CmXa/9lHB1LBYUzrNlaUC/roDy5kJYIbAbEKOceJgmj7Ef/lg3/RHIZBZBjjhiTEf6LU
+         RxAc+l7hBc/TtrQrmyH51u1bWprxP2V7NcZXPa0UtaAeSL79iMoZKTPznYIlye4xViOV
+         k6u30YGV9+/xbvy1XPA/6o2+XKTpsQ1SphSNdJgwP+ccU1twBmgy8zf6z7mRnOxJZDwu
+         4LQBhgUmxZgjp2Gnvv65llR/CVJTrUKCvtY6xNVgYnT5rn9KmFVDpzy4Pu1IjfLgal5H
+         bjkw==
 Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
@@ -24,12 +24,12 @@ To: netfilter mailing list <netfilter@vger.kernel.org>
 
 Hi,
 
-Looks like the mark module doesn't support "and" matching mechanism,
+I would like to log everything in a created queue,
 
-iptables -I INPUT -m mark --and-mark 0x20 -j REJECT
+iptables -A NFQUEUE --queue-num 0 -j LOG
 
-I want to match the packet when the mark has all bit of 0x20 set,
-possible? 
+But that doesn't work, any ideas?
+
 
 -- 
 Best Regards,
