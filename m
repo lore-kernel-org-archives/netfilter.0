@@ -1,30 +1,35 @@
-From: David Gubler <dg@doodle.com>
-Subject: Re: connlimit reached - cannot open connections even after I close
- some
-Date: Mon, 11 Feb 2013 13:44:07 +0100
-Message-ID: <5118E797.40506@doodle.com>
-References: <51014395.1000101@doodle.com> <510E4F4C.50202@plouf.fr.eu.org> <510F9B9B.8070907@doodle.com> <51116365.4070801@plouf.fr.eu.org>
+From: Aaron Lewis <the.warl0ck.1989@gmail.com>
+Subject: LOG target with MARK?
+Date: Tue, 12 Feb 2013 11:02:54 +0800
+Message-ID: <20130212030235.GA16352@devnull>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <51116365.4070801@plouf.fr.eu.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=x-received:date:from:to:subject:message-id:mime-version
+         :content-type:content-disposition:user-agent;
+        bh=/aXSvP3DU8a+lD9JsQOzP78pigEL0kkZbt6lVJAUOAk=;
+        b=sBAu3459iFiSLIdW58iZjO0gxwuszri2P8orBvmw7vMM5LSFJeYI8o/DiI18JVoDUN
+         P+oboA+q/YuPx4ZlQNmAiRBoLmgf0GcaGeVKqjug40TKrAvN8urAALI9jM2RjYM8bSdX
+         +77eqsfHodOp0k4QBtv8YRSIyvfeSPGB0MaaSPElW4syP0Oz8avaERbRX3S3MD9Lw9aV
+         T34Hbwx0eKdoAIUtR3maJr71VXYUBOnIdO2Lkz6l0bjI+iV18wyxK3/RHNc6W8/yNGlA
+         AubfTjOB/LERlNbVfKRCyUbySqH+bYj/A7Ex3uHUK+wETsLSxOpgfv/Y8Xu0UOl9HxPE
+         kzug==
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter mailing list <netfilter@vger.kernel.org>
 
-Hi Pascal,
+Hi,
 
-Sorry for the delay, I only just got around to test it again.
+Looks like the LOG target doesn't output the mark of a packet?
 
-Indeed my testing methodology was flawed. Whenever I test over loopback 
-the weird behaviour shows, but when I test over the network it does 
-exactly what it's supposed to, just as you said.
+I checked -j LOG --help and there's no such option, so what should I do
+to get the mark of each packet and print them?
 
-So works as designed, probably, and that's exactly what we need. Thanks 
-a lot!
-
-Best regards,
-
-David
+-- 
+Best Regards,
+Aaron Lewis - PGP: 0xDFE6C29E ( http://pgp.mit.edu/ )
+Finger Print: 9482 448F C7C3 896C 1DFE 7DD3 2492 A7D0 DFE6 C29E
