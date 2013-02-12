@@ -1,58 +1,51 @@
-From: Aaron Lewis <the.warl0ck.1989@gmail.com>
-Subject: [SOLVED] Re: LOG target with MARK?
-Date: Tue, 12 Feb 2013 17:44:31 +0800
-Message-ID: <20130212094430.GA20707@devnull>
-References: <20130212030235.GA16352@devnull>
- <1360654592.30430.153.camel@andrew-desktop>
+From: Ambroz Bizjak <ambrop7@gmail.com>
+Subject: Re: --and-mark while matching?
+Date: Tue, 12 Feb 2013 13:25:00 +0100
+Message-ID: <CAOA3yKJiV6nd-pP8bJSRyGAxA09re5z7HOp6SSsxVgJfRN7-ow@mail.gmail.com>
+References: <20130212094723.GB20707@devnull>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=x-received:date:from:to:cc:subject:message-id:references
-         :mime-version:content-type:content-disposition:in-reply-to
-         :user-agent;
-        bh=agl1q+g6wXKqqATYG1+m0NaAYd9ql3yVaMfSbXN5bvg=;
-        b=UiizJ0TDPbQSvtEFRwiO87BdRj2NARcGBJbslu1es71ZZH33zf9XdMiMFXjW8CRoDR
-         6RcEeY/jubk22JgG3wxYo0suJjC+Ye5MP3qHpDsJJsAumP2j82PSsGm+nrhzYKF6qoh4
-         E0uFNiGw+jJ/vOfXtrQFdK/fbrpP4yRW1rHlOihoCNTfjgRyfVkP+78yhunnJCfZxSqS
-         wgzjf0ZHm2JJzKwKkAfAwQRkEoMMfJBzccv9yM72N9+10F0Wvt0f1nmbUe219xLtymkE
-         0EenzYjRe4Z23HEy/1I4aCNnvMEG1Gkw3vilh32ysKriKGUJvc1U8LONRPuKt3ATbFWF
-         FkJA==
-Content-Disposition: inline
-In-Reply-To: <1360654592.30430.153.camel@andrew-desktop>
+        h=mime-version:x-received:in-reply-to:references:date:message-id
+         :subject:from:to:cc:content-type;
+        bh=8BczhY7Z/TEk6+vJH+o0EZGJxAIEPVYTKSPLGGc+OfI=;
+        b=xCy0VS2vZaQL2xYgoLVgiu7KU7UHPkZpwIFmCz3ZVCM00h2zRnUfzm4GHv1i/JeWO9
+         xr5SvyZ0hYHVoxd21yYYNMC/2NY7IoeQTkG/BLptevhRlAuQuvzCDFfYyf9TJ7ho3ZJp
+         VbFxNzOPfbEbfn/bukwIABe/uOEfhW84A0OoSt26Px/6nkZ8r6zukxjbEOJO/kcJb4MR
+         RR0fYjBDp2RoGrn8ao1HCqoKI9ZLGrsBKdNcgofx7SmZIcIhVM0XoUf2ZzffvLOKKFic
+         C3/KrPCuurDO2oZ5fOHWWYx8TuZcuZLlOuarKDkFiTX2eJCSg0lSkry/bvOhNDhzVJRk
+         up1A==
+In-Reply-To: <20130212094723.GB20707@devnull>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Andrew Beverley <andy@andybev.com>
-Cc: Aaron Lewis <the.warl0ck.1989@gmail.com>, netfilter mailing list <netfilter@vger.kernel.org>
+To: Aaron Lewis <the.warl0ck.1989@gmail.com>
+Cc: netfilter mailing list <netfilter@vger.kernel.org>
 
-Hi Andrew,
+iptables -I INPUT -m mark --mark 0x20/0x20 -j REJECT
 
-On 07:36 Tue 12 Feb     , Andrew Beverley wrote:
-> On Tue, 2013-02-12 at 11:02 +0800, Aaron Lewis wrote:
-> > Hi,
-> > 
-> > Looks like the LOG target doesn't output the mark of a packet?
-> > 
-> > I checked -j LOG --help and there's no such option, so what should I do
-> > to get the mark of each packet and print them?
-> 
-> It will log marks on packets by default. If there is no mark then
-> nothing will be printed; if there is, the value will be printed at the
-> end of the logging line (eg MARK=0x64).
+See the description of the mark match. If you specify "-m mark --mark
+A/B", the mark is first and'ed with B and then the result is checked
+for equality to A.
 
-Ah, thanks I get it, I did some experiment, if MARK is not set, it won't
-get printed.
-
-Now it works.
-
-> 
-> Andy
-> 
-> 
-
--- 
-Best Regards,
-Aaron Lewis - PGP: 0xDFE6C29E ( http://pgp.mit.edu/ )
-Finger Print: 9482 448F C7C3 896C 1DFE 7DD3 2492 A7D0 DFE6 C29E
+On Tue, Feb 12, 2013 at 10:47 AM, Aaron Lewis
+<the.warl0ck.1989@gmail.com> wrote:
+> Hi,
+>
+> Looks like the mark module doesn't support "and" matching mechanism,
+>
+> iptables -I INPUT -m mark --and-mark 0x20 -j REJECT
+>
+> I want to match the packet when the mark has all bit of 0x20 set,
+> possible?
+>
+> --
+> Best Regards,
+> Aaron Lewis - PGP: 0xDFE6C29E ( http://pgp.mit.edu/ )
+> Finger Print: 9482 448F C7C3 896C 1DFE 7DD3 2492 A7D0 DFE6 C29E
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
