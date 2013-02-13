@@ -1,30 +1,33 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: Make packets go through when NFQUEUE app crashed
-Date: Wed, 13 Feb 2013 13:23:35 +0100
-Message-ID: <x9b89wseb1jvatb87cqei016.1360758215647@email.android.com>
+From: Daniel Reurich <daniel@centurion.net.nz>
+Subject: nf_nat_sip with CT target
+Date: Thu, 14 Feb 2013 11:41:58 +1300
+Message-ID: <511C16B6.3000607@centurion.net.nz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Aaron Lewis <the.warl0ck.1989@gmail.com>
-Cc: netfilter mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-SGVsbG8KCkNhbiB5b3UgcmVhZCB0aGUgcGFyYWdyYXBoIGFib3V0IHF1ZXVlLWJ5cGFzcyBpbiB0
-aGUgYXJ0aWNsZSBJIHBvaW50IHlvdSB0byBhbmQgdGVsbCBtZSBpZiBpdCBzZWVtcyBjbGVhciBl
-bm91Z2ggOykKCkJSCgpBYXJvbiBMZXdpcyA8dGhlLndhcmwwY2suMTk4OUBnbWFpbC5jb20+IGEg
-w6ljcml0wqA6Cgo+SGksCj4KPkkgZm91bmQgdGhhdCBJZiB0aGUgYXBwIHRoYXQgaGFuZGxlcyBO
-RlFVRVVFIGNyYXNoZWQsCj5hbGwgcGFja2V0cyBnb2VzIHRocm91Z2ggdGhhdCBxdWV1ZSBnb3Qg
-c3R1Y2suCj4KPklzIHRoZXJlIGEgd2F5IHRvIHByZXZlbnQgdGhhdCBmcm9tIGhhcHBlbmluZz8g
-Cj5JIHByZWZlciB0byBsZXQgQUNDRVBUIGFsbCBwYWNrZXRzIGluc3RlYWQgb2YgYmxvY2tpbmcg
-dGhlbSwgcG9zc2libGU/Cj4KPmlwdGFibGVzIC1JIElOUFVUIC1wIGljbXAgLWogTkZRVUVVRSAt
-LXF1ZXVlLW51bSAwCj4jIElmIG5vIGFwcCBoYW5kbGVzIHRoYXQgcXVldWUsIG5vIHBhY2tldHMg
-Y291bGQgZ28gdGhyb3VnaAo+Cj4tLSAKPkJlc3QgUmVnYXJkcywKPkFhcm9uIExld2lzIC0gUEdQ
-OiAweERGRTZDMjlFICggaHR0cDovL3BncC5taXQuZWR1LyApCj5GaW5nZXIgUHJpbnQ6IDk0ODIg
-NDQ4RiBDN0MzIDg5NkMgMURGRSA3REQzIDI0OTIgQTdEMCBERkU2IEMyOUUKPi0tCj5UbyB1bnN1
-YnNjcmliZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3JpYmUgbmV0Zmls
-dGVyIiBpbgo+dGhlIGJvZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2VyLmtlcm5lbC5v
-cmcKPk1vcmUgbWFqb3Jkb21vIGluZm8gYXQgIGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jk
-b21vLWluZm8uaHRtbAo=
+Hi,
 
+I'm having trouble figuring out how to set up nf_nat_sip when using the 
+CT target for loading nf_conntrack_sip.
+
+The CT target for sip works fine.
+
+What I'm struggling with is finding any documentation that indicates how 
+to add the fucntion of nf_nat_sip as well.
+
+Do I still need to manually load the nf_nat_sip module or can it be 
+loaded by the conntrack helper or some similar method?
+
+Thanks and regards,
+	Daniel
+
+
+-- 
+Daniel Reurich
+Centurion Computer Technology (2005) Ltd.
+021 797 722
