@@ -1,36 +1,37 @@
 From: John Corps <envoys@gmail.com>
 Subject: Re: Redirecting DNS Not Working
-Date: Fri, 15 Feb 2013 13:46:51 -0500
-Message-ID: <CAFURDX-j3AhJ-3uUdWqoaX3N17-Q6PzKaS-waWHOzRkq6BD-hw@mail.gmail.com>
+Date: Fri, 15 Feb 2013 14:19:57 -0500
+Message-ID: <CAFURDX9zCPW9e85sexJcF2T7O5J=beJ1QZabUhQ7C3jZR48QHw@mail.gmail.com>
 References: <CAFURDX-tc6+LgpcUhAeOE3i2=uh=bjjVaCHTGvZbO_Ty2+zV_A@mail.gmail.com>
 	<1360946103.2251.2.camel@andylaptop>
 	<CAFURDX-qor3-w4tVMt-aLfH2_tbNNz1KQwRHMA99MrzZL1UT9w@mail.gmail.com>
 	<1360947911.2251.24.camel@andylaptop>
 	<CAFURDX9==GRygRJNADXJa3zS1qxm1p0xomXGdtFGOOJz-eD2FA@mail.gmail.com>
-	<1360952022.2174.1.camel@andylaptop>
+	<F86EAF6A-D26B-4162-8E1A-C3123FB89F31@logix.net.nz>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=mime-version:x-received:in-reply-to:references:date:message-id
          :subject:from:to:cc:content-type;
-        bh=Gt62VoCnKgEP64CliOzMAMG//AIVMq0V5pGyCQV7CxY=;
-        b=y0PrGUfOLYnFubTgrdWqM9VRi/rGhhCPKVvoixCfGE3Dgen9wxdEaMlUXXGGnEydBc
-         aBWBP8Wx8eZuL/sPRC4dRcQPs1i8U4PljbvyGqhdOL3Edz57t97/O1OnCcom9iAVJNro
-         PO3xisFXaUBHTcSyW0WATrQDcakOFbD7dn2CqvHR060uGVmIJC33kUgJn/sLVy39+5Hm
-         4/DKiY1iXuZcSYVI3zBvCFWC0SVU0nYQ3QJYT4Nmiql3iROdGovgQxryQMWo/6WID7IF
-         Zr19KIHqTNaAi3ztkgSIP0I2wEemMPj3LCt0u26W16VY83EcTQ0gSWnEx3A35QvQTDil
-         vAkA==
-In-Reply-To: <1360952022.2174.1.camel@andylaptop>
+        bh=x19iZHRNoi8eKTbzXYSqHjnuBv8SwSfDZy709hkpYMc=;
+        b=W2ijR7YFfXTQvL2kP4804e7EHsnMXnZBVnOQ+IFXcHiCr/9Nh6XvqU9B4DHsGsZS6k
+         swV7Tcgm6bbx5cJgLarTSNenM5DCkfvQWugHcDVIYrIZXBgHweSG/MasI3Hk6nplOUwc
+         /4KDzZaly3JUvojaoIJiOyn9lDSpLkcX8DB+lO8UPmqSuXC0/JYblRgi9O4o0fJTv2oF
+         G1qK7IgH4nLrLcPW/xxEbBZkCRGTes9V+fn9uHH9uWyEXDtwBJl3Mr1iqFA6/lCzqI/s
+         frvfDEP27C2uPlRMACxTUJlOpbTf8A7kYGeWvsQ+QE87YHwRaP+PBypFTWncvxMOF+7h
+         wwFA==
+In-Reply-To: <F86EAF6A-D26B-4162-8E1A-C3123FB89F31@logix.net.nz>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Andrew Beverley <andy@andybev.com>
-Cc: netfilter@vger.kernel.org
+To: Michael Ludvig <mludvig@logix.net.nz>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Fri, Feb 15, 2013 at 1:13 PM, Andrew Beverley <andy@andybev.com> wrote:
-> On Fri, 2013-02-15 at 12:28 -0500, John Corps wrote:
+On Fri, Feb 15, 2013 at 2:15 PM, Michael Ludvig <mludvig@logix.net.nz> wrote:
+> On 16/02/2013, at 6:28, John Corps <envoys@gmail.com> wrote:
+>
 >> Very odd...put on a simple logging of
 >> iptables -A INPUT -i eth1 -j LOG --log-prefix "DNS TEST INPUT drop: "
 >>
@@ -39,22 +40,13 @@ On Fri, Feb 15, 2013 at 1:13 PM, Andrew Beverley <andy@andybev.com> wrote:
 >> the 192.168.1.2 dns, set it to google for a test of 8.8.8.8 and get
 >> nothing in logs or with tcpdump.
 >
-> What's your network topology? Any chance that the packets are not being
-> routed through your server?
+> Let me guess - your DHCP doesn't provide default gw, only client IP and DNS server.
 >
+> With no default route the requests to 8.8.8.8 don't even make it out from the client (no route to host). With 192.168.1.2 it works because that IP is on the same subnet as the client and doesn't require default route to reach it.
 >
+> Could that be the reason? Just a guess...
+>
+> Michael
 >
 
-I wouldn't think they wouldn't be getting routed through as all the
-test devices are all on the same switch and all on the same vlan.
-It's simple a switch, the server i'm trying iptables with is plugged
-into port 1 which is untagged on vlan 1000, and the client pc is on
-port 2 which is also untagged on vlan 1000. There is no uplink to any
-other switch or router etc, just this switch and 2 devices plugged
-into it.
-
-Since the 1 client pc is windows, i haven't got dig on that to test,
-but doing simple nslookup with dns statically configured on the nic to
-8.8.8.8, its trying to go to that one and gets timed out, but doing
-nslookup pointing to the 192.168.1.2 which has the iptables rules,
-give me back the right IP.
+DHCP is definitely giving out the default gateway to the clients of 192.168.1.2.
