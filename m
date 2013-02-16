@@ -1,33 +1,48 @@
-From: Michael Ludvig <mludvig@logix.net.nz>
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
 Subject: Re: Redirecting DNS Not Working
-Date: Sat, 16 Feb 2013 08:15:48 +1300
-Message-ID: <F86EAF6A-D26B-4162-8E1A-C3123FB89F31@logix.net.nz>
-References: <CAFURDX-tc6+LgpcUhAeOE3i2=uh=bjjVaCHTGvZbO_Ty2+zV_A@mail.gmail.com> <1360946103.2251.2.camel@andylaptop> <CAFURDX-qor3-w4tVMt-aLfH2_tbNNz1KQwRHMA99MrzZL1UT9w@mail.gmail.com> <1360947911.2251.24.camel@andylaptop> <CAFURDX9==GRygRJNADXJa3zS1qxm1p0xomXGdtFGOOJz-eD2FA@mail.gmail.com>
-Mime-Version: 1.0 (1.0)
-Content-Transfer-Encoding: 8BIT
+Date: Sat, 16 Feb 2013 12:35:15 +0100
+Message-ID: <511F6EF3.5090506@plouf.fr.eu.org>
+References: <CAFURDX-tc6+LgpcUhAeOE3i2=uh=bjjVaCHTGvZbO_Ty2+zV_A@mail.gmail.com> <1360946103.2251.2.camel@andylaptop>
+Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAFURDX9==GRygRJNADXJa3zS1qxm1p0xomXGdtFGOOJz-eD2FA@mail.gmail.com>
+In-Reply-To: <1360946103.2251.2.camel@andylaptop>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: John Corps <envoys@gmail.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Andrew Beverley <andy@andybev.com>
+Cc: John Corps <envoys@gmail.com>, netfilter@vger.kernel.org
 
-On 16/02/2013, at 6:28, John Corps <envoys@gmail.com> wrote:
+Hello,
 
-> Very odd...put on a simple logging of
-> iptables -A INPUT -i eth1 -j LOG --log-prefix "DNS TEST INPUT drop: "
-> 
-> getting nothing in the logs...this is mind baffling. Even with TCPDUMP
-> not seeing any packets unless i set client DNS to local ip of server,
-> the 192.168.1.2 dns, set it to google for a test of 8.8.8.8 and get
-> nothing in logs or with tcpdump.
+Andrew Beverley a =E9crit :
+> On Fri, 2013-02-15 at 11:24 -0500, John Corps wrote:
+>>
+>> iptables -t nat -A PREROUTING -s 192.168.1.0/24 -p tcp -m tcp --dpor=
+t
+>> 53 -j REDIRECT --to-ports 53
+>> iptables -t nat -A PREROUTING -s 192.168.1.0/24 -p udp -m udp --dpor=
+t
+>> 53 -j REDIRECT --to-ports 53
+>=20
+> If you want to redirect the requests to the local server, then you'll
+> need to use the DNAT target instead. All you're doing in your rules i=
+s
+> changing to port 53 a packet that is destined to port 53 (so nothing =
+at
+> all).
 
-Let me guess - your DHCP doesn't provide default gw, only client IP and DNS server.
+Nonsense. You should read the manpage more carefully.
 
-With no default route the requests to 8.8.8.8 don't even make it out from the client (no route to host). With 192.168.1.2 it works because that IP is on the same subnet as the client and doesn't require default route to reach it. 
-
-Could that be the reason? Just a guess...
-
-Michael
-
+QUOTE
+ REDIRECT
+ This  target is only valid in the nat table, in the PREROUTING and OUT=
+-
+ PUT chains, and user-defined chains which are only  called  from  thos=
+e
+ chains.   It redirects the packet to the machine itself by changing th=
+e
+ destination IP  to  the  primary  address  of  the  incoming  interfac=
+e
+ (locally-generated packets are mapped to the 127.0.0.1 address).
+END OF QUOTE
