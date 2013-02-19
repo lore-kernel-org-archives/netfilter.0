@@ -1,89 +1,205 @@
-From: John Brendler <brendlerjg@gmail.com>
-Subject: ipset nomatch generating kernel error: "directory not empty"
-Date: Sun, 17 Feb 2013 17:21:19 -0500
-Message-ID: <20130217172119.73e427f5@typhoon.localnet>
+From: Marco <listaddr@gmail.com>
+Subject: conntrackd questions
+Date: Tue, 19 Feb 2013 15:18:09 +0100
+Message-ID: <CAHPDOiHUU+4qXB3iz6_6ZKOBRg8beBL_7SHC8c4zULw1vJ2CnA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=x-received:date:from:to:subject:message-id:x-mailer:mime-version
-         :content-type:content-transfer-encoding;
-        bh=820XByeXU6Sa1ZAKw7BswtGD19P+OCMrkTVv4oTvkLE=;
-        b=XeJCfUOK95O7VUEEUs3KtTxOgv7mj1AIRdXFv6Mxhza0LBkcCJQY6jDZh/QMRe/vFS
-         9L2LYKZyW4DKbx/DAXmQwY/mJSc8PRI0WmD0HyPOOB8aNq4YW/iZZy2DIIN+BItFUXX4
-         JZLI+oONkavTvekEgqNLCSjUQ2gC0cAPnhYYmlGwH6Fcu92PLLhYCueTRv4iUoRYJQDC
-         FzCcIpScqI/bMXhVCdD5eSe/Kl5NiqDb5ViefHCBEPj5oP5oWujPPewZw5F2z6X6Jet6
-         YHNWHX6dvrh7hkyTlWPUg8iIquChQh/qVB7gHlBITVIWe46tA0L4IIyL79FJ/GXjejrw
-         /NLg==
+        h=mime-version:x-received:date:message-id:subject:from:to
+         :content-type;
+        bh=y3AwpEdfa5UM4+jHJsZ5DOCGScekcAFIlQA9ogf6SBU=;
+        b=ysM3sfVHDDPFsRgatLO7ep6t087fH2a2e5n9bu95EwpdPGTVuvW3AruLzyoS5PR6C3
+         LOiorq4O+/wHL7qZbH9p2gV4fXyOH5q5V/J6nuIjKwjl7aL7XVwP9WFV7DHwi1jE4j1x
+         DSyPPCM4RofS3SXwtTdlmryUeFM5x4MxNRtE84KvXe1O/jYMYonGJUpDohSqbWoFZYgf
+         VC0KxygGdEg4LWJmbu3z/puSJ6e8xic0vS0OpjCPukBrvCbiAn3Eso7o7ab6TTU4drca
+         XvG+RUptW2i84XACLH488HnmugZEFVi9WIc9Qaeg/1YZGQfNrXZBgSpsgS9ODVv7ZtqN
+         RmFg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-When using 'ipset test' against a 'nomatch' entry in a 'net:hash' set,
-I get a kernel error of "Directory not empty".
+I'm setting up a virtual environment to test conntrackd in an
+active/backup configuration using FTFW. While it mostly works fine,
+I'm seeing some issues and I don't know whether they are expected or
+not.
+I'm using keepalived to handle the VIPs, and the provided
+primary-backup.sh script to manage conntrackd cache synchronization.
 
-This is using linux-3.7.5 with ipset-6.16.
+This is my setup:
 
-A quick demonstration may be clearer than a verbose description. This
-shows creation of a net:hash ipset which works fine, except that'ipset
-test' against a 'nomatch' entry results in an error.
 
-What am I doing wrong?
-------------------------------------------------------------------------
-~ # ipset create tester hash:net
+  external VIP: 10.0.0.200
+ eth0 (.201)      eth0 (.202)
++-----+          +-----+
+| FW1 |          | FW2 |
++-----+          +-----+
+ eth1 (.2)        eth1 (.3)
+  internal VIP: 192.168.1.1
 
-~ # ipset add tester 192.168.0.0/24
 
-~ # ipset add tester 192.168.128.0/23
+      +--------+
+      | client |
+      +--------+
 
-~ # ipset list tester
-Name: tester
-Type: hash:net
-Revision: 2
-Header: family inet hashsize 1024 maxelem 65536 
-Size in memory: 8572
-References: 0
-Members:
-192.168.0.0/24
-192.168.128.0/23
 
-~ # ipset test tester 192.168.129.1
-192.168.129.1 is in set tester.
+Both firewalls are configured to perform SNAT --to-source 10.0.0.200
+for the traffic coming from the client.
 
-~ # ipset add tester 192.168.129.1 nomatch
+The client generates traffic continuously with this simple script:
 
-~ # ipset list tester
-Name: tester
-Type: hash:net
-Revision: 2
-Header: family inet hashsize 1024 maxelem 65536 
-Size in memory: 8604
-References: 0
-Members:
-192.168.129.1 nomatch 
-192.168.0.0/24
-192.168.128.0/23
+while true; do
+  for i in www.site1.com www.site2.com www.site3.com www.site4.com
+www.site5.com www.site6.com; do
+    wget -O/dev/null http://$i
+  done
+done
 
-~ # ipset test tester 192.168.129.1
-ipset v6.16: Kernel error received: Directory not empty
+To do failover, I stop keepalived on FW1 so FW2 becomes active. To do
+failback, I restart it so FW1 is again the active.
 
-~ # ipset test tester 192.168.129.2
-192.168.129.2 is in set tester.
+What happens is that sometimes (apparently randomly) the client's wget
+gets stuck after a failover or a failback, and does not even time out;
+I have to stop it with ctrl-c.
 
-~ # ipset test tester 10.100.200.1
-10.100.200.1 is NOT in set tester.
+Here are my configuration files:
 
-~ # ipset test tester 192.168.129.1
-ipset v6.16: Kernel error received: Directory not empty
+keepalived.conf on FW1:
 
-~ # ipset test tester 192.168.129.1
-192.168.129.1 is NOT in set tester.
+vrrp_sync_group G1 {   # must be before vrrp_instance declaration
+  group {
+    E1
+    I1
+  }
+  notify_master "/etc/conntrackd/primary-backup.sh primary"
+  notify_backup "/etc/conntrackd/primary-backup.sh backup"
+  notify_fault "/etc/conntrackd/primary-backup.sh fault"
+}
 
-~ # ipset add tester 192.168.129.1/32 nomatch
+vrrp_instance E1 {
+    interface eth0
+    state MASTER
+    virtual_router_id 61
+    priority 100
+    advert_int 1
+    authentication {
+      auth_type PASS
+      auth_pass papas_con_tomate
+    }
+    virtual_ipaddress {
+        10.0.0.200/24 dev eth0
+    }
+}
 
-~ # ipset test tester 192.168.129.1
-ipset v6.16: Kernel error received: Directory not empty
+vrrp_instance I1 {
+    interface eth1
+    state MASTER
+    virtual_router_id 62
+    priority 100
+    advert_int 1
+    authentication {
+      auth_type PASS
+      auth_pass papas_con_tomate
+    }
+    virtual_ipaddress {
+        192.168.1.1/24 dev eth1
+    }
+}
 
--------------------------------------------------------------
+On fw2, it's the same but with state BACKUP and priority 50.
+
+conntrackd.conf on FW1  (for simplicity, I'm not using a dedicated
+link for now):
+
+Sync {
+	Mode FTFW {
+		DisableExternalCache Off
+	}
+	Multicast {
+		IPv4_address 225.0.0.50
+		Group 3780
+		IPv4_interface 192.168.1.2
+		Interface eth1
+		SndSocketBuffer 1249280
+		RcvSocketBuffer 1249280
+		Checksum on
+	}
+}
+General {
+	Nice -20
+	HashSize 32768
+	HashLimit 131072
+	LogFile on
+	Syslog on
+	LockFile /var/lock/conntrack.lock
+	UNIX {
+		Path /var/run/conntrackd.ctl
+		Backlog 20
+	}
+	NetlinkBufferSize 2097152
+	NetlinkBufferSizeMaxGrowth 8388608
+	Filter From Userspace {
+		Protocol Accept {
+			TCP
+			UDP
+			ICMP # This requires a Linux kernel >= 2.6.31
+		}
+		Address Ignore {
+        IPv4_address 127.0.0.1 # loopback
+        IPv4_address 10.0.0.202
+        IPv4_address 10.0.0.200
+        IPv4_address 192.168.1.2
+        IPv4_address 192.168.1.1
+		}
+	}
+}
+
+on FW2:
+
+Sync {
+	Mode FTFW {
+		DisableExternalCache Off
+	}
+	Multicast {
+		IPv4_address 225.0.0.50
+		Group 3780
+		IPv4_interface 192.168.1.3
+		Interface eth1
+		SndSocketBuffer 1249280
+		RcvSocketBuffer 1249280
+		Checksum on
+	}
+}
+General {
+	Nice -20
+	HashSize 32768
+	HashLimit 131072
+	LogFile on
+	Syslog on
+	LockFile /var/lock/conntrack.lock
+	UNIX {
+		Path /var/run/conntrackd.ctl
+		Backlog 20
+	}
+	NetlinkBufferSize 2097152
+	NetlinkBufferSizeMaxGrowth 8388608
+	Filter From Userspace {
+		Protocol Accept {
+			TCP
+			UDP
+			ICMP # This requires a Linux kernel >= 2.6.31
+		}
+		Address Ignore {
+        IPv4_address 127.0.0.1 # loopback
+        IPv4_address 10.0.0.203
+        IPv4_address 10.0.0.200
+        IPv4_address 192.168.1.3
+        IPv4_address 192.168.1.1
+		}
+	}
+}
+
+
+Thanks in advance for any help.
