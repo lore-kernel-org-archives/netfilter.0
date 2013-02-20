@@ -1,46 +1,51 @@
-From: Andrew Beverley <andy@andybev.com>
-Subject: Re: Bittorrent blocking
-Date: Wed, 20 Feb 2013 17:45:19 +0000
-Message-ID: <1361382319.1694.6.camel@andrew-desktop>
-References: <51249E58.1080307@stidia.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ipset nomatch generating kernel error: "directory not empty"
+Date: Wed, 20 Feb 2013 22:38:15 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1302202235100.9720@blackhole.kfki.hu>
+References: <20130217172119.73e427f5@typhoon.localnet>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <51249E58.1080307@stidia.com>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=andybev.com;
-	s=selector1; t=1361382351;
-	bh=l5iLlu42Vncdf7eBS2dGmxN8gQlAS6Y2W/ImVT96hPI=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:Content-Transfer-Encoding:Mime-Version;
-	b=edQXijvllxkIWXkhRMVHZFoxggw8IpyBCibdPQlrk28zF+ML9jKvM1LY5pnG7Nfw/
-	 kUn6Pq+cXSW8hUuwIFGz9SgoTKJUdGb3PzOnp9cSn170E34qTW/3bvynz/vKeuswwv
-	 gIqg3TMzE6G2eS5z4s7W9ltYZTfFTcBuNmgCozjs=
+In-Reply-To: <20130217172119.73e427f5@typhoon.localnet>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: dmitry.korzhevin@stidia.com
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: John Brendler <brendlerjg@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-On Wed, 2013-02-20 at 11:58 +0200, Dmitry Korzhevin wrote:
-> Guys, i understand, that this is too frequent question, and i'm already 
-> made solid investigation in google, but.. mabe you already have good 
-> iptables rules to block such type of traffic (Bittorrent), or maby you 
-> can give advice.
+On Sun, 17 Feb 2013, John Brendler wrote:
 
-What's your reason for blocking? Is it just to stop excessive use of
-bandwidth? If so, I'd recommend shaping the traffic instead of blocking,
-otherwise you just create an arms race whereby users will try and get
-around your blocks (and it's unlikely any block will be perfect).
+> When using 'ipset test' against a 'nomatch' entry in a 'net:hash' set,
+> I get a kernel error of "Directory not empty".
+> 
+> This is using linux-3.7.5 with ipset-6.16.
+> 
+> A quick demonstration may be clearer than a verbose description. This
+> shows creation of a net:hash ipset which works fine, except that'ipset
+> test' against a 'nomatch' entry results in an error.
+> 
+> What am I doing wrong?
+> ------------------------------------------------------------------------
+> ~ # ipset create tester hash:net
+> 
+> ~ # ipset add tester 192.168.0.0/24
+> 
+> ~ # ipset add tester 192.168.128.0/23
+> 
+> ~ # ipset add tester 192.168.129.1 nomatch
+> 
+> ~ # ipset test tester 192.168.129.1
+> ipset v6.16: Kernel error received: Directory not empty
 
-I've had quite good success with some rudimentary detection rules that
-just look for lots of traffic to lots of high port numbers. I wrote it
-up here:
+That's a harmless bug - the internal error code is not converted into the 
+no match result text. Thanks for the reporting, the return code was 
+checked in the testsuite and not the textual message. It'll be fixed in 
+the next release.
 
-http://www.andybev.com/index.php/Fair_traffic_shaping_an_ADSL_line_for_a_local_network_using_Linux
-
-I've not updated the page for a while, but the concept should still work
-even if you need to adjust the rules.
-
-Andy
-
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
