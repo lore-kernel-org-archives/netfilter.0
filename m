@@ -1,52 +1,49 @@
-From: Marco <listaddr@gmail.com>
-Subject: Re: conntrackd questions
-Date: Thu, 21 Feb 2013 13:23:30 +0100
-Message-ID: <CAHPDOiFpF2+F8CTJ_fF26bXaCtTCUMDPV8JtZT-HX+m2u1j3AA@mail.gmail.com>
-References: <CAHPDOiHUU+4qXB3iz6_6ZKOBRg8beBL_7SHC8c4zULw1vJ2CnA@mail.gmail.com>
-	<20130219195237.GA3208@localhost>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset 6.17 released
+Date: Thu, 21 Feb 2013 16:59:17 +0100 (CET)
+Message-ID: <alpine.DEB.2.00.1302211654250.11434@blackhole.kfki.hu>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:x-received:in-reply-to:references:date:message-id
-         :subject:from:to:cc:content-type;
-        bh=2srbCU4uERtx61F13C0/LKgl9yOOkzWOMsn9wvumNtc=;
-        b=w2cCdZl27hC7CPRcWKUmU49d9jwXUGn6wHV6I9bK0KNs9B2cx+tnLAs0sF3GqGDf6k
-         EwYpEh8kmA3z5+93FyDTeR0MjZGGEHUK/NgijmUwp0ls38d7SKbo5CZRv1odhL88vmf6
-         t6Jl3kho99eg/VAdS60qsHILc/ZVb3CPBy07VFsS/4fqJdmIfFS64m7+pDdimt5zfSlz
-         YS1WeNSe1UffUy9f1MaL9OWmSZTSb6WzAlKbqI1VYCbQzb0DP1DV6Lc9zbVE3Dfav53C
-         Mv4Lg9gddujnKzcLhuGx3XsBFxcC9V13yj31Tu9KWBRuHgK0cvkY6jZ25FPmbAMJjTSu
-         /XsQ==
-In-Reply-To: <20130219195237.GA3208@localhost>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-2013/2/19 Pablo Neira Ayuso <pablo@netfilter.org>:
+Hi,
 
-> There are several things that you can check to troubleshoot
-> conntrackd:
+I'm happy to announce ipset 6.17. The new release comes with a few fixes, 
+the most important is the timeout value corruption fix from Josh Hunt when 
+hash types with timeouts are resized.
 
-Ok, I think I see what's happening. To understand, I captured traffic
-both on the client, and on the upstream router (upstream to fw1 and
-fw2).
-On the client, I just see that when wget stops downloading, the
-traffic stops in the middle of the TCP flow. The client is just
-waiting for the server to send more data.
+Also, the package contains the ipset_bash_completion and ipset_list tools:
 
-But on the capture taken on the upstream router, I see that, at the
-point when the client hangs, there are many RST packets directed to
-the website from which the client was downloading. Obviously, this
-resets the connection and the client has a hard time waiting for more
-data. I suspect these RST are coming from one of the firewalls. For
-example, while there is a failover from fw1 to fw2, but fw2 hasn't
-synchronized the full conntrack table yet, data comes back from the
-website; fw2 doesn't know anything about it yet, so it sends RSTs.
-Could a race like this be possible? I can probably live with that, but
-I'd like to understand if my analysis is correct.
-If I disable external cache, it still happens, although less frequently.
+	http://sourceforge.net/projects/ipset-bashcompl
+	http://sourceforge.net/projects/ipset-list
 
-Thanks!
+Userspace changes:
+ - Fix revision printing in XML mode (reported by Mart Frauenlob)
+ - Correct "Suspicious condition (assignment + comparison)" (Thomas 
+   Jarosch)
+ - Fix error path when protocol number is used with port range
+ - Interactive mode error after syntax error (reported by Mart Frauenlob)
+ - The ipset_bash_completion tool is added
+ - The ipset_list tool is added
+
+Kernel part changes:
+  - Make sure ip_set_max isn't set to IPSET_INVALID_ID
+  - netfilter: ipset: timeout values corrupted on set resize (Josh Hunt)
+  - "Directory not empty" error message (reported by John Brendler)
+
+You can download the source code of ipset from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
