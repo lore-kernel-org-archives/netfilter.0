@@ -1,95 +1,50 @@
-From: Michael Rash <mbr@cipherdyne.org>
-Subject: Re: Bittorrent blocking
-Date: Wed, 20 Feb 2013 21:58:46 -0500
-Message-ID: <20130221025846.GA26649@cipherdyne.org>
-References: <51249E58.1080307@stidia.com>
- <CACuyg2506HY+FudxuN4yaPKrOdetJ6M6ejv-bdL87916gtZgiQ@mail.gmail.com>
+From: Marco <listaddr@gmail.com>
+Subject: Re: conntrackd questions
+Date: Thu, 21 Feb 2013 11:14:45 +0100
+Message-ID: <CAHPDOiH0jLaV3vdu4whkPC2rF560Ag6cTAFfs7jH_d3aR8XijA@mail.gmail.com>
+References: <CAHPDOiHUU+4qXB3iz6_6ZKOBRg8beBL_7SHC8c4zULw1vJ2CnA@mail.gmail.com>
+	<20130219195237.GA3208@localhost>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CACuyg2506HY+FudxuN4yaPKrOdetJ6M6ejv-bdL87916gtZgiQ@mail.gmail.com>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=comcast.net;
-	s=q20121106; t=1361415529;
-	bh=0YQXZW2axmRKvAunUKW5JeOGd/Pq/W2i97+LpZcPUR8=;
-	h=Received:Received:Received:Date:From:To:Subject:Message-ID:
-	 MIME-Version:Content-Type;
-	b=U4auQ/j3z0kng8Ay5B2CXtlVP7X0dOYFztd4Szx9icI94baHXerQi7Bems0U3TPsu
-	 q2paz9lMlwlI5lucCISyDV9KmHusdCljipYOUAtSJmRIa+/h9asDmjg7hixsyNFrHQ
-	 uyKCgoCSVN+XUos5SFq4qvuEXpFXVBZpUvMrlzp/1l7+QdC6va2DdlNYDlndsGsPNw
-	 rxrOcdD2MXmwUCWwSrsIUqb3Wj2U9UfATnyFdjpL7JfSAVnsxNgbNXn9PZdgqOHO1T
-	 hT4PojvVR56n7Kv0GzQY15Li+t516UjKUj1InW63riKsYD7VtJnR3lUYt1gj5qf2OT
-	 r2npsgYO/gYuw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:x-received:in-reply-to:references:date:message-id
+         :subject:from:to:cc:content-type;
+        bh=VzNjbVd4YLCTUY+BkJYPKOmmw9LKoeC8CijYoHMlk5k=;
+        b=Fak//HYkTyFjnClLRCtPSFMRkBGpurPJ2dap1o0OX5C+nYxw0VYdkESdy6ZoX0czc7
+         VQoJUjsGl/8Esm+VFvFe6pFjhE+F1iEiFp1WE4HydVVJA8SrF7BH+5ViqjPzAw5vDqPQ
+         jhdc4qGAnxBLmeA9eLyo2/mUpSnd4QSJOEk3TcQP/0SYwYJaN+TtkBlBDbBDHh1o8UQa
+         TueEEfoB3UBM2brJ0DXZR1RiTKqadyKJrfzwEXtqAnap+Y0CUJuTrSl/tbEWFZAs8O+H
+         VmgJHLoAU1sFQvhWeuFTXL+Ssu7qUKscekA7uvFw7FA8PflwsoV/bRX7JViouvST4Uvf
+         iGnQ==
+In-Reply-To: <20130219195237.GA3208@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org
 
-On Feb 20, 2013, Humberto Juc? wrote:
+2013/2/19 Pablo Neira Ayuso <pablo@netfilter.org>:
 
-> Hi,
-> 
-> I usually set a policy "default drop" - It's what I prefer.
-> Keeping the range of high ports (UDP) closed, many P2P clients will crash.
-> 
-> There are alternatives like "l7filter" or "opendpi-netfilter for nDPI"
-> but the processing cost can be quite high in larger networks.
-> Particularly, it is something that i avoid doing.
-> https://github.com/ewildgoose/ndpi-netfilter
-> 
-> The snort can help too. You can use a signature like this (local.rules):
-> alert tcp $HOME_NET any -> $EXTERNAL_NET any (msg:"RST P2P BitTorrent
-> transfer"; flow:to_server; content:"|13|BitTorrent protocol";
-> depth:20; metadata:policy security-ips drop;
-> classtype:policy-violation; sid:1000000; rev:4; resp:rst_all;)
-> 
-> In this example i set flexresp reaction, but the result is more
-> efficient in "inline mode".
+> There are several things that you can check to troubleshoot
+> conntrackd:
+>
+> 1) Log files: /var/log/conntrackd.log and /var/log/keepalived.log
+> 2) See if entries are actually synchronized via `conntrackd -i' and
+> `conntrackd -e' and other statistics.
+> 3) echo 255 > /proc/sys/net/netfilter/nf_conntrack_log_invalid, to
+> see if the connection tracking system is marking packets as invalid.
+>
+> I also suggest you to read the official documentation:
+>
+> http://conntrack-tools.netfilter.org/manual.html
 
-If you go the snort rule route, fwsnort can translates this to (after
-removing the metadata keyword - need to update that):
+I had read the official documentation. I will keep testing to see if I
+can come up with more information.
 
--A FWSNORT_FORWARD -p tcp -m tcp -m string --hex-string
-"|13426974546f7272656e742070726f746f636f6c|" --algo bm --to 84 -m
-comment --comment "sid:1000000; msg:RST P2P BitTorrent transfer;
-classtype:policy-violation; rev:4; FWS:1.6.3;" -j LOG --log-ip-options
---log-tcp-options --log-prefix "[1] REJ SID1000000 " 
+On a related note, am I understanding correctly that if external cache
+is disabled, then there's no need to use the notify_* scripts in
+keepalived.conf? or it's harmless to use them anyway?
 
--A FWSNORT_FORWARD -p tcp -m tcp -m string --hex-string
-"|13426974546f7272656e742070726f746f636f6c|" --algo bm --to 84 -j REJECT
---reject-with tcp-reset 
-
-The above rule is generated with the fwsnort --ipt-reject option if you
-really want iptables to reset the connection.
-
---Mike
-
-
-> 2013/2/20 Dmitry Korzhevin <dmitry.korzhevin@stidia.com>:
-> > Hello,
-> >
-> > Guys, i understand, that this is too frequent question, and i'm already made
-> > solid investigation in google, but.. mabe you already have good iptables
-> > rules to block such type of traffic (Bittorrent), or maby you can give
-> > advice.
-> >
-> > For now i use snort with bittorrent-related detection rules, but seems it is
-> > not best solution.
-> >
-> >
-> > Best Regards,
-> > Dmitry
-> >
-> > ---
-> > Dmitry KORZHEVIN
-> > System Administrator
-> > STIDIA S.A. - Luxembourg
-> >
-> > e: dmitry.korzhevin@stidia.com
-> > m: +38 093 874 5453
-> > w: http://www.stidia.com
-> >
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Thanks.
