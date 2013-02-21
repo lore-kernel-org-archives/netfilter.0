@@ -1,51 +1,95 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipset nomatch generating kernel error: "directory not empty"
-Date: Wed, 20 Feb 2013 22:38:15 +0100 (CET)
-Message-ID: <alpine.DEB.2.00.1302202235100.9720@blackhole.kfki.hu>
-References: <20130217172119.73e427f5@typhoon.localnet>
+From: Michael Rash <mbr@cipherdyne.org>
+Subject: Re: Bittorrent blocking
+Date: Wed, 20 Feb 2013 21:58:46 -0500
+Message-ID: <20130221025846.GA26649@cipherdyne.org>
+References: <51249E58.1080307@stidia.com>
+ <CACuyg2506HY+FudxuN4yaPKrOdetJ6M6ejv-bdL87916gtZgiQ@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20130217172119.73e427f5@typhoon.localnet>
+Content-Disposition: inline
+In-Reply-To: <CACuyg2506HY+FudxuN4yaPKrOdetJ6M6ejv-bdL87916gtZgiQ@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=comcast.net;
+	s=q20121106; t=1361415529;
+	bh=0YQXZW2axmRKvAunUKW5JeOGd/Pq/W2i97+LpZcPUR8=;
+	h=Received:Received:Received:Date:From:To:Subject:Message-ID:
+	 MIME-Version:Content-Type;
+	b=U4auQ/j3z0kng8Ay5B2CXtlVP7X0dOYFztd4Szx9icI94baHXerQi7Bems0U3TPsu
+	 q2paz9lMlwlI5lucCISyDV9KmHusdCljipYOUAtSJmRIa+/h9asDmjg7hixsyNFrHQ
+	 uyKCgoCSVN+XUos5SFq4qvuEXpFXVBZpUvMrlzp/1l7+QdC6va2DdlNYDlndsGsPNw
+	 rxrOcdD2MXmwUCWwSrsIUqb3Wj2U9UfATnyFdjpL7JfSAVnsxNgbNXn9PZdgqOHO1T
+	 hT4PojvVR56n7Kv0GzQY15Li+t516UjKUj1InW63riKsYD7VtJnR3lUYt1gj5qf2OT
+	 r2npsgYO/gYuw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: John Brendler <brendlerjg@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Sun, 17 Feb 2013, John Brendler wrote:
+On Feb 20, 2013, Humberto Juc? wrote:
 
-> When using 'ipset test' against a 'nomatch' entry in a 'net:hash' set,
-> I get a kernel error of "Directory not empty".
+> Hi,
 > 
-> This is using linux-3.7.5 with ipset-6.16.
+> I usually set a policy "default drop" - It's what I prefer.
+> Keeping the range of high ports (UDP) closed, many P2P clients will crash.
 > 
-> A quick demonstration may be clearer than a verbose description. This
-> shows creation of a net:hash ipset which works fine, except that'ipset
-> test' against a 'nomatch' entry results in an error.
+> There are alternatives like "l7filter" or "opendpi-netfilter for nDPI"
+> but the processing cost can be quite high in larger networks.
+> Particularly, it is something that i avoid doing.
+> https://github.com/ewildgoose/ndpi-netfilter
 > 
-> What am I doing wrong?
-> ------------------------------------------------------------------------
-> ~ # ipset create tester hash:net
+> The snort can help too. You can use a signature like this (local.rules):
+> alert tcp $HOME_NET any -> $EXTERNAL_NET any (msg:"RST P2P BitTorrent
+> transfer"; flow:to_server; content:"|13|BitTorrent protocol";
+> depth:20; metadata:policy security-ips drop;
+> classtype:policy-violation; sid:1000000; rev:4; resp:rst_all;)
 > 
-> ~ # ipset add tester 192.168.0.0/24
-> 
-> ~ # ipset add tester 192.168.128.0/23
-> 
-> ~ # ipset add tester 192.168.129.1 nomatch
-> 
-> ~ # ipset test tester 192.168.129.1
-> ipset v6.16: Kernel error received: Directory not empty
+> In this example i set flexresp reaction, but the result is more
+> efficient in "inline mode".
 
-That's a harmless bug - the internal error code is not converted into the 
-no match result text. Thanks for the reporting, the return code was 
-checked in the testsuite and not the textual message. It'll be fixed in 
-the next release.
+If you go the snort rule route, fwsnort can translates this to (after
+removing the metadata keyword - need to update that):
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+-A FWSNORT_FORWARD -p tcp -m tcp -m string --hex-string
+"|13426974546f7272656e742070726f746f636f6c|" --algo bm --to 84 -m
+comment --comment "sid:1000000; msg:RST P2P BitTorrent transfer;
+classtype:policy-violation; rev:4; FWS:1.6.3;" -j LOG --log-ip-options
+--log-tcp-options --log-prefix "[1] REJ SID1000000 " 
+
+-A FWSNORT_FORWARD -p tcp -m tcp -m string --hex-string
+"|13426974546f7272656e742070726f746f636f6c|" --algo bm --to 84 -j REJECT
+--reject-with tcp-reset 
+
+The above rule is generated with the fwsnort --ipt-reject option if you
+really want iptables to reset the connection.
+
+--Mike
+
+
+> 2013/2/20 Dmitry Korzhevin <dmitry.korzhevin@stidia.com>:
+> > Hello,
+> >
+> > Guys, i understand, that this is too frequent question, and i'm already made
+> > solid investigation in google, but.. mabe you already have good iptables
+> > rules to block such type of traffic (Bittorrent), or maby you can give
+> > advice.
+> >
+> > For now i use snort with bittorrent-related detection rules, but seems it is
+> > not best solution.
+> >
+> >
+> > Best Regards,
+> > Dmitry
+> >
+> > ---
+> > Dmitry KORZHEVIN
+> > System Administrator
+> > STIDIA S.A. - Luxembourg
+> >
+> > e: dmitry.korzhevin@stidia.com
+> > m: +38 093 874 5453
+> > w: http://www.stidia.com
+> >
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
