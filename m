@@ -1,65 +1,71 @@
-From: Sean <sean@helpbytes.co.uk>
-Subject: Established Connections Timeout dropping to Unacknowledged Timeout
-Date: Sun, 24 Feb 2013 15:13:43 +0000
-Message-ID: <CADsND8yd6h+DgM1FuN4mrggJ49t5a+HRT2kb-6MiMB9_bjih+Q@mail.gmail.com>
+From: Daniel huhardeaux <daniel.huhardeaux@tootai.com>
+Subject: Using set mark to split traffic against 2 IF
+Date: Mon, 25 Feb 2013 15:28:23 +0100
+Message-ID: <512B7507.7000008@tootai.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-On my gateway I am seeing an odd situation in the nf_conntrack output.
+Hello,
 
-I have this scenario:
+I'm running a Debian Squeeze with iptables 1.4.8. The server has 3 
+physical interfaces, local one (eth2) being bridged as br0. Both other 
+interfaces are connected too 2 providers in ADSL (eth0) and SDSL (eth1).
 
-192.168.1.101 (LAN client) <-> 192.168.1.1 (GATEWAY) <-> 1.2.3.4 (REMOTE server)
+Default route is going out through eth1. Two computers are going out 
+using eth1, ip rule make this setup working.
 
-IP Masquerading is enabled on the gateway.  I have an established TCP
-connection from 192.168.1.101 to an outside IP address, say 1.2.3.4,
-sat mostly idle, except that for every 5 minutes the client wakes up
-and sends a [PING]\r\n to the server, the other side sends a
-[PING]\r\n back and that's it.  Viewing the details in Wireshark,
-everything is ACKd.
+What I want now, is to mark packets 0x1 for eth0 0x2 (or nothing) for 
+eth1, so I will be able to use the links by services for instane (like 
+ssh and http connections going out using eth0, doesn't matter which 
+computer) rest of traffic using the default route.
 
-However, in the nf_conntrack output, the timer resets to 300 seconds
-after this little exchange, not 1800.  I don't understand this because
-there is nothing unacknowledged?  Am I missing something here as to
-why the timer does not reset to 1800?  (1800 is configured, as below)
+My mangle table (Relevant part):
 
-Wireshark Summary:
+*mangle
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+:CONNMARK1 - [0:0]
+:CONNMARK2 - [0:0]
+:RESTOREMARK - [0:0]
+-A PREROUTING -j RESTOREMARK
+-A PREROUTING -s 192.168.10.6/32 -m mark --mark 0x0 -j CONNMARK1
+-A PREROUTING -p tcp -m mark --mark 0x0 -m tcp --sport 55555 -j CONNMARK1
+-A POSTROUTING -p tcp -m mark --mark 0x0 -m tcp --dport 55555 -j CONNMARK1
+-A POSTROUTING -j CONNMARK --save-mark --nfmask 0xffffffff --ctmask 
+0xffffffff
+-A CONNMARK1 -j LOG --log-prefix "MARK=1" --log-level 5
+-A CONNMARK1 -j CONNMARK --set-xmark 0x1/0xffffffff
+-A CONNMARK2 -j LOG --log-prefix "MARK=2" --log-level 5
+-A CONNMARK2 -j CONNMARK --set-xmark 0x2/0xffffffff
+-A RESTOREMARK -j CONNMARK --restore-mark --nfmask 0xffffffff --ctmask 
+0xffffffff
+COMMIT
 
-109	5171.499249	192.168.1.101	1.2.3.4	TCP	62	51425 > mmcc [PSH, ACK]
-Seq=392 Ack=506 Win=66224 Len=8
-110	5171.577596	1.2.3.4	192.168.1.101	TCP	62	mmcc > 51425 [PSH, ACK]
-Seq=506 Ack=400 Win=65792 Len=8
-111	5171.618954	192.168.1.101	1.2.3.4	TCP	54	51425 > mmcc [ACK]
-Seq=400 Ack=514 Win=66216 Len=0
+Nat Table
 
-cat /proc/net/nf_conntrack (after that last ACK occurred, and before
-the next 5 minute wakeup)
+-A POSTROUTING -m mark --mark 0x1 -j SNAT --to-source xxx.xxx.xxx.xxx
+-A POSTROUTING -j SNAT --to-source yyy.yyy.yyy.yyy
 
-ipv4     2 tcp      6 289 ESTABLISHED src=192.168.1.101 dst=1.2.3.4
-sport=51425 dport=5050 packets=7 bytes=464 src=1.2.3.4
-dst=83.100.201.147 sport=5050 dport=51425 packets=1 bytes=40 [ASSURED]
-mark=0 use=2
+xxx.xxx.xxx.xxx being public IP address of eth0/Provider 1
+yyy.yyy.yyy.yyy being public IP address of eth1/Provider 2
 
-# cat /proc/version
-Linux version 2.6.32.32
-# cat /proc/sys/net/netfilter/nf_conntrack_tcp_timeout_unacknowledged
-300
-# cat /proc/sys/net/netfilter/nf_conntrack_tcp_timeout_established
-1800
+Now I run nc -kl 55555 on an outside server as well as tshark - i eth0 
+port 55555. From the office router or from a worksattion from the 
+intranet I run nc -vvv <ip of far server> 55555 as well as tshark -i 
+eth0 dst <ip of far server> What I see is that the trafic is still going 
+out using default route insteed of eth0/IP xxx.xxx.xxx.xxx
 
-Could anybody add any explanation?  The 5 minute timer in the client
-application is not very accurate, and sometimes this comes a few
-seconds late, there are rare scenarios the server sends something in
-this few seconds and closes the connection because it doesn't make it
-through the gateway (as the entry is no longer there).  Regardless of
-this inaccurate timer though, if that was a 10 minute ping, this would
-leave a 5 minute gap where if the server was to send a bit of data it
-would break the connection.
+What is wrong with my setup?
 
-Thanks,
-Sean.
+Thanks for any hint.
+
+-- 
+Daniel
