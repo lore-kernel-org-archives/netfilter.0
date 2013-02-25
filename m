@@ -1,71 +1,44 @@
-From: Daniel huhardeaux <daniel.huhardeaux@tootai.com>
-Subject: Using set mark to split traffic against 2 IF
-Date: Mon, 25 Feb 2013 15:28:23 +0100
-Message-ID: <512B7507.7000008@tootai.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: conntrackd questions
+Date: Mon, 25 Feb 2013 16:45:32 +0100
+Message-ID: <20130225154532.GD20561@localhost>
+References: <CAHPDOiHUU+4qXB3iz6_6ZKOBRg8beBL_7SHC8c4zULw1vJ2CnA@mail.gmail.com>
+ <20130219195237.GA3208@localhost>
+ <CAHPDOiFpF2+F8CTJ_fF26bXaCtTCUMDPV8JtZT-HX+m2u1j3AA@mail.gmail.com>
+ <20130221183711.GA6061@localhost>
+ <CAHPDOiEvpU1hEKkNJMpUrxJP6Lb=9pKDsEbMjqbr7DWKyZt_Ew@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAHPDOiEvpU1hEKkNJMpUrxJP6Lb=9pKDsEbMjqbr7DWKyZt_Ew@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Marco <listaddr@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+On Fri, Feb 22, 2013 at 11:12:55AM +0100, Marco wrote:
+[...]
+> > In your previous config, assuming you use a 3.x kernel, I saw you did
+> > not enabled TCPWindowTracking On. That allows the new primary to
+> > recover TCP window tracking from the middle.
+> 
+> Unfortunately, the system where this will run has a 2.6.32 kernel, so
+> this is not an option for the moment.
 
-I'm running a Debian Squeeze with iptables 1.4.8. The server has 3 
-physical interfaces, local one (eth2) being bridged as br0. Both other 
-interfaces are connected too 2 providers in ADSL (eth0) and SDSL (eth1).
+I really recommend you to upgrade to some stable branch of 3.x. Many
+relevant updates and fixes went into the ctnetlink code since that
+version you're using.
 
-Default route is going out through eth1. Two computers are going out 
-using eth1, ip rule make this setup working.
+[...]
+> Well, the docs mention window tracking here and there, but (at least
+> to me) it's not clear what that does, and that it's (or could be) the
+> solution to this problem I'm seeing.
+> Furthermore, I found no documentation or explanation of
+> nf_conntrack_tcp_be_liberal on google, neither it is in the sysctl.txt
+> file that documents the /proc/sys/net entries, nor anywhere else.
 
-What I want now, is to mark packets 0x1 for eth0 0x2 (or nothing) for 
-eth1, so I will be able to use the links by services for instane (like 
-ssh and http connections going out using eth0, doesn't matter which 
-computer) rest of traffic using the default route.
+http://git.kernel.org/?p=linux/kernel/git/davem/net-next.git;a=blob;f=Documentation/networking/nf_conntrack-sysctl.txt;h=70da5086153dbd24a9c9258e73cc16440d247519;hb=HEAD
 
-My mangle table (Relevant part):
-
-*mangle
-:PREROUTING ACCEPT [0:0]
-:INPUT ACCEPT [0:0]
-:FORWARD ACCEPT [0:0]
-:OUTPUT ACCEPT [0:0]
-:POSTROUTING ACCEPT [0:0]
-:CONNMARK1 - [0:0]
-:CONNMARK2 - [0:0]
-:RESTOREMARK - [0:0]
--A PREROUTING -j RESTOREMARK
--A PREROUTING -s 192.168.10.6/32 -m mark --mark 0x0 -j CONNMARK1
--A PREROUTING -p tcp -m mark --mark 0x0 -m tcp --sport 55555 -j CONNMARK1
--A POSTROUTING -p tcp -m mark --mark 0x0 -m tcp --dport 55555 -j CONNMARK1
--A POSTROUTING -j CONNMARK --save-mark --nfmask 0xffffffff --ctmask 
-0xffffffff
--A CONNMARK1 -j LOG --log-prefix "MARK=1" --log-level 5
--A CONNMARK1 -j CONNMARK --set-xmark 0x1/0xffffffff
--A CONNMARK2 -j LOG --log-prefix "MARK=2" --log-level 5
--A CONNMARK2 -j CONNMARK --set-xmark 0x2/0xffffffff
--A RESTOREMARK -j CONNMARK --restore-mark --nfmask 0xffffffff --ctmask 
-0xffffffff
-COMMIT
-
-Nat Table
-
--A POSTROUTING -m mark --mark 0x1 -j SNAT --to-source xxx.xxx.xxx.xxx
--A POSTROUTING -j SNAT --to-source yyy.yyy.yyy.yyy
-
-xxx.xxx.xxx.xxx being public IP address of eth0/Provider 1
-yyy.yyy.yyy.yyy being public IP address of eth1/Provider 2
-
-Now I run nc -kl 55555 on an outside server as well as tshark - i eth0 
-port 55555. From the office router or from a worksattion from the 
-intranet I run nc -vvv <ip of far server> 55555 as well as tshark -i 
-eth0 dst <ip of far server> What I see is that the trafic is still going 
-out using default route insteed of eth0/IP xxx.xxx.xxx.xxx
-
-What is wrong with my setup?
-
-Thanks for any hint.
-
--- 
-Daniel
+Regards.
