@@ -1,102 +1,47 @@
-From: jboyce@meridianenv.com
-Subject: Re: Block all input but two non-contiguous networks
-Date: Wed, 27 Feb 2013 13:46:38 -0800 (PST)
-Message-ID: <51089.23.25.137.89.1362001598.squirrel@www.meridianenv.com>
-References: <50296.23.25.137.89.1361987914.squirrel@www.meridianenv.com>   
-    <Pine.LNX.4.61.1302271336130.26706@soloth.lewis.org>
-    <50999.23.25.137.89.1361998761.squirrel@www.meridianenv.com>
-    <Pine.LNX.4.61.1302271605040.26706@soloth.lewis.org>
+From: Daniel huhardeaux <daniel.huhardeaux@tootai.com>
+Subject: Re: Using set mark to split traffic against 2 IF
+Date: Wed, 27 Feb 2013 23:17:43 +0100
+Message-ID: <512E8607.5020201@tootai.com>
+References: <512B7507.7000008@tootai.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.61.1302271605040.26706@soloth.lewis.org>
+In-Reply-To: <512B7507.7000008@tootai.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jon Lewis <jlewis@lewis.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: netfilter@vger.kernel.org
 
-
-
-
-On Wed, February 27, 2013 1:09 pm, Jon Lewis wrote:
-> On Wed, 27 Feb 2013 jboyce@meridianenv.com wrote:
+Le 25/02/2013 15:28, Daniel huhardeaux a =C3=A9crit :
+> Hello,
 >
+> I'm running a Debian Squeeze with iptables 1.4.8. The server has 3=20
+> physical interfaces, local one (eth2) being bridged as br0. Both othe=
+r=20
+> interfaces are connected too 2 providers in ADSL (eth0) and SDSL (eth=
+1).
 >
->> The list below is from my /etc/sysconfig/iptable file.  I rules I would
->>  propose to add are preceeded with ***.
->>
->> *filter
->> :FORWARD ACCEPT [0:0]
->> :INPUT ACCEPT [0:0]
->> :OUTPUT ACCEPT [0:0]
->> -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
->> -A INPUT -p icmp -j ACCEPT
->> -A INPUT -i lo -j ACCEPT
->> -A INPUT -i tun0 -j ACCEPT
->> ***-A INPUT -s 192.168.112.0/24 -j ACCEPT
->> ***-A INPUT -s 10.9.8.0/24 -j ACCEPT
->>
+> Default route is going out through eth1. Two computers are going out=20
+> using eth1, ip rule make this setup working.
 >
-> You could add those lines, but keep in mind, by doing so, you're allowing
->  all IP traffic from those networks.  Not just Samba-related traffic.
-> That
-> may be fine...it's up to you.
+> What I want now, is to mark packets 0x1 for eth0 0x2 (or nothing) for=
+=20
+> eth1, so I will be able to use the links by services for instane (lik=
+e=20
+> ssh and http connections going out using eth0, doesn't matter which=20
+> computer) rest of traffic using the default route.
 
-Yes, I would be fine with that.
+I got it, for archives. Two problems:
 
->
->> -A INPUT -p udp -m state -m udp --dport 1194 --state NEW -j ACCEPT
->> -A INPUT -p udp -m state -m udp --dport 137 --state NEW -j ACCEPT
->> -A INPUT -p udp -m state -m udp --dport 138 --state NEW -j ACCEPT
->> -A INPUT -p tcp -m state -m tcp --dport 139 --state NEW -j ACCEPT
->> -A INPUT -p tcp -m tcp -m state --dport 445 --state NEW -j ACCEPT
->> -A INPUT -p tcp -m state -m tcp --dport 22 --state NEW -j ACCEPT
->> -A INPUT -p tcp -m state -m tcp --dport 10000 --state NEW -j ACCEPT
->> -A INPUT -p udp -m state -m udp --dport 1195 --state NEW -j ACCEPT
->> -A FORWARD -j REJECT --reject-with icmp-host-prohibited
->> -A INPUT -j REJECT --reject-with icmp-host-prohibited
->>
->
-> The rest of this is troubling.  Your above rules open Samba, SSH, and
-> whatever is using 1194, 1195, and 10000 to the world.  What's the point of
->  explicitly allowing traffic from the two private networks if you have
-> these ports wide open anyway?  If this machine is on a non-filtered
-> internet connection, you're probably also seeing SSH brute force login
-> attempts.
+=2E -J CONNMARK doesn't do the job as -j MARK does
+=2E have to deativate reverse path filtering which protect from IP=20
+spoofing ( /etc/sysctl.conf net.ipv4.conf.all.rp_filter =3D0)
 
-Interesting, that makes sense, and that is why I was originally thinking
-of using a negated rule in my iptables.  I was also thinking that the
-INPUT REJECT at the end was address most everything else.  I just used the
-standard firewall configuration tool in RHEL6 when I set it up, and since
-then using Webmin.  The 1194 and 1195 are the ports for my OpenVPN, and
-10000 is the port for Webmin.  I do have to keep SSH, OpenVPN, and Webmin
-open because I have to have access to the system from wherever I am, when
-I am not in the office.  This could be from my home, or from anywhere I
-might be doing fieldwork (my duties are also as a forester), essentially a
-non-fixed public ip address.
+More info here=20
+http://www.sysresccd.org/Sysresccd-Networking-EN-Iptables-and-netfilter=
+-load-balancing-using-connmark
 
-I do see occassion hits from SSH login attempts.  I have /etc/hostsallow
-to accept SSH and Samba from my lan and vpn networks, and /etc/hostdeny to
-reject all.  So the hits to SSH and Samba are getting rejected at host
-allow/deny, which is what I am seeing in my daily logwatch email.  If you
-have an idea for some simple changes that I should make, I am all ears.  I
-have always avoided doing a firewall script like I see discussed
-everywhere, so if you have something that I can add or change via Webmin I
-am game to try it.  Thanks.
+Regards
 
-Jeff Boyce
-Meridian Environmental
-
-
->
-> ----------------------------------------------------------------------
-> Jon Lewis, MCP :)           |  I route
-> Senior Network Engineer     |  therefore you are
-> Atlantic Net                |
-> _________ http://www.lewis.org/~jlewis/pgp for PGP public key_________
->
->
->
-
-
+--=20
+TOOTAi
