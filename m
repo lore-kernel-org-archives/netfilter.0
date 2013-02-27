@@ -1,59 +1,54 @@
-From: pedro noticioso <cucnews@yahoo.com>
-Subject: Re: (no subject)
-Date: Tue, 26 Feb 2013 12:04:17 -0800 (PST)
-Message-ID: <1361909057.97916.YahooMailNeo@web140702.mail.bf1.yahoo.com>
-Reply-To: pedro noticioso <cucnews@yahoo.com>,
-	Mondo mailing list <mondo-devel@lists.sourceforge.net>
+From: jboyce@meridianenv.com
+Subject: Block all input but two non-contiguous networks
+Date: Wed, 27 Feb 2013 09:58:34 -0800 (PST)
+Message-ID: <50296.23.25.137.89.1361987914.squirrel@www.meridianenv.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="===============5294997966060303574=="
-Return-path: <mondo-devel-bounces@lists.sourceforge.net>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/mondo-devel>, 
-	<mailto:mondo-devel-request@lists.sourceforge.net?subject=unsubscribe>
-List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=mondo-devel>
-List-Post: <mailto:mondo-devel@lists.sourceforge.net>
-List-Help: <mailto:mondo-devel-request@lists.sourceforge.net?subject=help>
-List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/mondo-devel>,
-	<mailto:mondo-devel-request@lists.sourceforge.net?subject=subscribe>
-Errors-To: mondo-devel-bounces@lists.sourceforge.net
-To: netfilter <netfilter@vger.kernel.org>, angie <tevoachingar28@hotmail.com>, Claudia Luna <Claudia.Luna@cpimex.com>, mondo devel <mondo-devel@lists.sourceforge.net>
-
---===============5294997966060303574==
-Content-Type: multipart/alternative;
-	boundary="-589800495-1486667704-1361909057=:97916"
-
----589800495-1486667704-1361909057=:97916
-Content-Type: text/plain; charset=us-ascii
-
-http://www.directbuypromotions.com/tmp/lifeblog.php?rgmqnob231xpeb
----589800495-1486667704-1361909057=:97916
-Content-Type: text/html; charset=us-ascii
-
-<html><body><div style="color:#000; background-color:#fff; font-family:times new roman, new york, times, serif;font-size:12pt"><a href="http://www.directbuypromotions.com/tmp/lifeblog.php?rgmqnob231xpeb">http://www.directbuypromotions.com/tmp/lifeblog.php?rgmqnob231xpeb</a><div></div></div></body></html>
----589800495-1486667704-1361909057=:97916--
-
-
---===============5294997966060303574==
+Content-Transfer-Encoding: 7BIT
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+To: netfilter@vger.kernel.org
 
-------------------------------------------------------------------------------
-Everyone hates slow websites. So do we.
-Make your web apps faster with AppDynamics
-Download AppDynamics Lite for free today:
-http://p.sf.net/sfu/appdyn_d2d_feb
---===============5294997966060303574==
-Content-Type: text/plain; charset="us-ascii"
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Content-Disposition: inline
+Greetings -
 
-_______________________________________________
-Mondo-devel mailing list
-Mondo-devel@lists.sourceforge.net
-https://lists.sourceforge.net/lists/listinfo/mondo-devel
+I am trying to figure out a simple way to block all incoming connections
+to my server, except for two non-contiguous address ranges.  I thought I
+could do it with a single rule, but that does not look to be the case, and
+I am not sure how to do it.
 
---===============5294997966060303574==--
+My use case.
+I have a Samba file server that has an fixed public ip address.  This
+server also runs my OpenVPN instance.  I have done a good job configuring
+my applications (Samba, SSH, hosts/allow/deny) to allow connections from
+only my local network and my VPN network address.  However, I am seeing in
+my Samba logs connection attemps directly to it that are getting denied. 
+I would like to set a rule in iptables that denys these connection
+attempts at an earlier point in the network.
+
+My internal network is 192.168.112.0/24
+My VPN network is 10.9.8.0/24
+
+I was thinking logically that I could use something like the rule listed
+below using negation, but I don't think this syntax is allowed.
+
+iptables -I INPUT ! -s 192.168.112.0/24 OR 10.9.8.0/24 -j DROP
+
+A little research indicates that rules with multiple network addresses
+would be broken into two rules, such as below.
+
+iptables -I INPUT ! -s 192.168.112.0/24 -j DROP
+iptables -I INPUT ! -s 10.9.8.0/24 -j DROP
+
+With the use of negation, this would cause a problem because the second
+network range would not be allowed through, regardless of which rule was
+listed first.
+
+Can anyone offer any ideas on how I might be able to do something like
+this with iptables.  Thanks.
+
+Jeff Boyce
+Meridian Environmental
+
+
 
