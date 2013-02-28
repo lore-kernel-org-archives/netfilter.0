@@ -1,23 +1,34 @@
-From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
-Subject: Re: Block all input but two non-contiguous networks
-Date: Wed, 27 Feb 2013 23:54:04 -0500
-Message-ID: <201302272354.04606.neal.p.murphy@alum.wpi.edu>
-Reply-To: neal.p.murphy@alum.wpi.edu
+From: Donghua Liu <liudonghua123@gmail.com>
+Subject: how to discard a netfilter rule
+Date: Thu, 28 Feb 2013 14:26:52 +0800
+Message-ID: <CAJhv45jOTpijtRJrqV7TCE6Y469W1DY8d1NWBnSSz0NYw+6-Jg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:x-received:date:message-id:subject:from:to
+         :content-type;
+        bh=Tr9iJ6J8V9dqkoXIMp0j5SPzwxHFnkEvNVV7JKmtm3M=;
+        b=Hh3nULY1pTWeindHvXTXaNBdA2fEhhm7+bFSmgxTgtC15KeE+y87e3lOxxsZMjPb2j
+         J193fxwK8G83VvEM0QaRSZ4U62rMDE6UOi0ESOXr8XCe/NN4kpO89PoBDP5ZF5xcTkF1
+         gu90si+lbGjnnE/F8bQBCQZR3+brUzO4HJjPuQOViAi5t2jeEiXyg4ow71Qj72RwsYSb
+         HOtRRQFr5VqgCdAEXSScIbef6S40eIMqhcJpeAXEaLw2/mxweMUVscq9u9HOCitWOGLw
+         En9ZaLNApfS/TU2btRt2jj/bC6Llm0qynmUG1KtjxApCpWi/sjxxlF8Cso0VbkVmH+WI
+         ocMQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-On Wednesday, February 27, 2013 06:43:33 PM jboyce@meridianenv.com wrote:
-> On Wed, February 27, 2013 2:06 pm, Neal Murphy wrote:
+Hi,
 
-> > You also jumbled your port and state options.
-> 
-> That is interesting, because that is how Webmin wrote the rules.  From
-> your statement does this mean that the rule is not working properly, and I
-> should fix something?
+Say if I set a netfilter rule by "iptables -t nat -A custom_chain -p
+tcp -dport 80 -j DNAT --to-destination 127.0.0.1:1234" for some
+requirement.
 
-Not necessarily misfunctioning, but impedes understanding.
+I also have a LKM which will check the availablity of service
+"127.0.0.1:1234" and how can I cancel the rule's operation(Do NOT
+delete this rule), let the packet go as usual ignore the nat.
+
+Thanks!
