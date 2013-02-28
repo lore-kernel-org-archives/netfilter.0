@@ -1,47 +1,35 @@
-From: "Rob Sterenborg (lists)" <lists@sterenborg.info>
-Subject: Re: how to discard a netfilter rule
-Date: Thu, 28 Feb 2013 15:37:55 +0100
-Message-ID: <512F6BC3.3000307@sterenborg.info>
-References: <CAJhv45jOTpijtRJrqV7TCE6Y469W1DY8d1NWBnSSz0NYw+6-Jg@mail.gmail.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: Steve Kann <stevek@stevek.com>
+Subject: SYN Cookies vs ip_conntrack in SYN Flood conditions
+Date: Thu, 28 Feb 2013 12:28:52 -0500
+Message-ID: <27426969-529E-4D02-A526-39BB80C685D1@stevek.com>
+Mime-Version: 1.0 (Mac OS X Mail 6.2 \(1499\))
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAJhv45jOTpijtRJrqV7TCE6Y469W1DY8d1NWBnSSz0NYw+6-Jg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Donghua Liu <liudonghua123@gmail.com>
-Cc: netfilter@vger.kernel.org
-
-On 02/28/2013 07:26 AM, Donghua Liu wrote:
-> Hi,
->
-> Say if I set a netfilter rule by "iptables -t nat -A custom_chain -p
-> tcp -dport 80 -j DNAT --to-destination 127.0.0.1:1234" for some
-> requirement.
->
-> I also have a LKM which will check the availablity of service
-> "127.0.0.1:1234" and how can I cancel the rule's operation(Do NOT
-> delete this rule), let the packet go as usual ignore the nat.
-
-man iptables says there is a -R command to replace rules:
-
-----
-        -R, --replace chain rulenum rule-specification
-               Replace a rule in the selected chain.  If the source 
-and/or destination names resolve to multiple addresses, the command will 
-fail.  Rules are numbered starting at 1.
-----
-
-Assuming you know which rulenum must be changed, you can do this:
-
-iptables -t nat -R custom_chain 1 -p tcp -dport 80
-
-IOW, lose the -j parameter from the rule, keeping the others. The result 
-is that the rule will still be there, but effectively won't do anything 
-except for matching and updating packet/byte counting.
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
 
---
-Rob
+Netfilter-wizards,
+
+	I've been playing around with using iptables and syncookies to try to harden a linux box against SYN Flood attacks, and I seem to have run into something which doesn't work the way I'd want it to.
+
+	Ideally, I'd like to create a situation where there protected host could withstand very high volume SYN attacks (in the order of hundreds of thousands of forged SYN packets per second), as well as fairly significant legitimate traffic volumes (hundreds of megabits).
+
+	From what I've observed, if you have a host which uses ip_conntrack to track connections, and that host is under SYN flood conditions and has begun to send SYN cookies, connection table entries are created for these embryonic connections.
+
+	This seems counter to the design intent of syn cookies, in that ideally, we would like to keep no state at all for TCP connections until the TCP handshake is completed.
+
+It seems there's a couple of options:
+a)  Abandon ip_conntrack (and all stateful iptables rules):   This seems to work, but it limits the scope of available rules.   I've also read some concerns about performance implications here.
+
+b) (this is why I'm coming here):  Is there any way to defer ip_conntrack table population until the TCP initiator sends back their valid ACK packet with the SYN Cookie response?  This would seem to be the ideal solution, as it would retain the stateless intent of syncookies, but allow state tracking for more advanced iptables rules.
+
+This seems like something others would have run into before, so I hope I've come to the right place for advice.
+
+Thanks!
+
+-SteveK
+
 
