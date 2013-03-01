@@ -1,75 +1,74 @@
-From: Donghua Liu <liudonghua123@gmail.com>
-Subject: Re: how to discard a netfilter rule
-Date: Fri, 1 Mar 2013 11:19:57 +0800
-Message-ID: <CAJhv45gSuVfEC357retUoWGePP4vjuunmH0bmbAyzjLBJ-tCRg@mail.gmail.com>
-References: <CAJhv45jOTpijtRJrqV7TCE6Y469W1DY8d1NWBnSSz0NYw+6-Jg@mail.gmail.com>
-	<512F6BC3.3000307@sterenborg.info>
+From: Dovydas Sankauskas <laisve@gmail.com>
+Subject: brouting different VLANs
+Date: Fri, 1 Mar 2013 15:10:18 +0200
+Message-ID: <CAB_DuvBof5krc-1J2iCA0zn4qc6vgOGD6O9OsmY+7oEfNfrv3Q@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:x-received:in-reply-to:references:date:message-id
-         :subject:from:to:content-type;
-        bh=+a2+EJZCvaexObOgFhRrewf4tJOwhZWRUARimoMdwZA=;
-        b=XliB1W/HXiJlFohHvTJefELsbrEamyENI8ISKrbSDKFPaYAQm4ME+8xuOOsaPmMQNm
-         X89IaCurUIjPsFbqNvITVuQyu8s7I4X3CaIp4I1C6EvUqyijpI0VXEYTcuAK9Vu7ognL
-         r/XpZjY+UwsbUrlHqJZ78INZ6kkOaQSiTONzQlvsPO5JyCy5BBbhQmMdHcr5kM5B65w0
-         NeRU+U8HPAeOpNASEyO79Np+yJx5RpF1kysa/Gqtu7L5cE88qv5ZBGtsPhmwu9iCdfQf
-         /s/94IpPtXWtAyqXmv8MiWew3/GdUxYTknS08oRBRoU40UXPeWFm566GMn5R8vCvldcb
-         hWGw==
-In-Reply-To: <512F6BC3.3000307@sterenborg.info>
+        h=mime-version:x-received:date:message-id:subject:from:to
+         :content-type;
+        bh=YnJgYU8MpNN5eA+n+zPprrokG+owBxs7tHN77pcrOVI=;
+        b=rOu56HD7HJSg9RfhFD7T2uxrZ23c6RJr/lSuOg3+gqtJHGQ2OCdP0h0pE4uVlWwRf7
+         VPAPdzG1a2hHR788YXh6tkyHJ7L/c86ewojuRZL59IKyk72aZdbSOuGtfH+wyw6q8RgK
+         5Ba5PrJqv5NwOG0ZC5dToVLS4FDvs6kuLAWshw2MCJiTzV8XBFjRSeZzsKsNmZ0nCczq
+         q8qqDBSaR7HJ+I6wScexe1+dLPgeeL9MF6gcE7jV7ZHSBSSGkPKE2Bd42tHjOGnjNTRC
+         E7N3rXzvD6dKXhBzDr63Jl9kvmzEltrj1wnY0xzWHYFksfb8HlG37Bc+rAf9HHtrnS70
+         Ba+Q==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-2013/2/28 Rob Sterenborg (lists) <lists@sterenborg.info>
->
-> On 02/28/2013 07:26 AM, Donghua Liu wrote:
->>
->> Hi,
->>
->> Say if I set a netfilter rule by "iptables -t nat -A custom_chain -p
->> tcp -dport 80 -j DNAT --to-destination 127.0.0.1:1234" for some
->> requirement.
->>
->> I also have a LKM which will check the availablity of service
->> "127.0.0.1:1234" and how can I cancel the rule's operation(Do NOT
->> delete this rule), let the packet go as usual ignore the nat.
->
->
-> man iptables says there is a -R command to replace rules:
->
-> ----
->        -R, --replace chain rulenum rule-specification
->               Replace a rule in the selected chain.  If the source and/or
-> destination names resolve to multiple addresses, the command will fail.
-> Rules are numbered starting at 1.
-> ----
->
-> Assuming you know which rulenum must be changed, you can do this:
->
-> iptables -t nat -R custom_chain 1 -p tcp -dport 80
->
-> IOW, lose the -j parameter from the rule, keeping the others. The result
-> is that the rule will still be there, but effectively won't do anything
-> except for matching and updating packet/byte counting.
->
->
-> --
-> Rob
->
+Hi,
 
-Replace rules maybe solve my problem, but I must do it in kernelspace.
-Now I have some ideas
-Maybe I should extend the netfilter/xtables like
-    iptables -t nat -A custom_chain -p tcp -dport 80 -m
-process_available --process_name some_process_name -j DNAT
---to-destination 127.0.0.1:1234
-    or
-    iptables -t nat -A custom_chain -p tcp -dport 80 -j SAFE_DNAT
---to-destination 127.0.0.1:1234
-But how can I implement these.
-Can anyone provide me some tutorial or write a small example to explain this.
-Thanks in advance!
+I am having some troubles with brouter setup.
+I have customers on different VLANS but on the same subnet. I want to
+allow access between customers and to allow access to internet.
+Unfortunatelly I can't make customers on VLAN 10 to ping customers on
+VLAN 20. Both VLANS 10 and 20 are on the _same_subnet_ 10.0.0.0/24.
+
+Here is my current setup:
+
+                INTERNET
+                    |
+  +-----------+------------+----------+
+  |           |    eth2    |          |
+  |           | 1.2.3.4/30 |          |
+  |           +------------+          |
+  |                                   |
+  |   +---------------------------+   |
+  |   |            br0            |   |
+  |   |        10.0.0.1/24        |   |
+  |   +-------------+-------------+   |
+  |   |   bond0.10  |  bond0.20   |   |
+  |   |   vlan 10   |  vlan 20    |   |
+  +---+-------------+-------------+---+
+           |                 |
+         10.0.0.10     10.0.0.20
+
+
+I have eth0 and eth1 bonded into bond0. On bond0 I have VLAN
+interfaces bond0.10 and bond0.20 for VLAN 10 and VLAN 20 respectively.
+These bond0.10 and bond0.20 interfaces are bridged into interface br0.
+br0 address 10.0.0.1 is default gateway IP for customer1 10.0.0.10/24
+on VLAN 10 and for customer2 10.0.0.20/24 on VLAN 20.
+eth2 is my internet facing interface. There is no NAT.
+
+Internet access for both customers is working just fine with the
+following ebtables rules:
+ebtables -A FORWARD -i bond0.10 -j DROP
+ebtables -A FORWARD -i bond0.20 -j DROP
+ebtables -t broute -A BROUTING -p ! arp -i bond0.10 -j DROP
+ebtables -t broute -A BROUTING -p ! arp -i bond0.20 -j DROP
+
+However I am struggling to enable access between customer 10.0.0.10
+and customer 10.0.0.20.
+Please can you advise?
+
+
+
+
+-- 
+Dovydas Sankauskas
