@@ -1,29 +1,57 @@
-From: "TAN KONG" <tanyokekong732@qq.com>
-Subject: Re-profiling funds.
-Date: Sun, 3 Mar 2013 18:54:40 +0300 (EAT)
-Message-ID: <45393.46.19.137.194.1362326080.squirrel__28046.6594188058$1362339845$gmane$org@mail.ifm.ac.tz>
-Reply-To: 2365088653@qq.com
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnetfilter_acct 1.0.2 release
+Date: Sun, 3 Mar 2013 23:01:27 +0100
+Message-ID: <20130303220127.GA19632@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="uAKRQypu60I7Lcqm"
+Return-path: <netdev-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: 
-
-Hello,I am Mr. Tan Yoke Kong and I have a confidential
-brief from Hong Kong, I am asking for your partnership in re-profiling
-funds. Your sincere co-operation is anticipated and I shall furnish you
-with the details and procedures, upon the receipt of your email
-via:( 2365088653@qq.com ).
-Thank you and My Regards.
-Tan Kong.
+To: netfilter-devel@vger.kernel.org
+Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
 
+--uAKRQypu60I7Lcqm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi!
+
+The Netfilter project proudly presents:
+
+        libnetfilter_acct 1.0.2
+
+libnetfilter_acct is the userspace library providing interface to
+extended accounting infrastructure starting Linux kernel 3.3.
+
+See ChangeLog that comes attached to this email for more details.
+
+You can download it from:
+
+http://www.netfilter.org/projects/libnetfilter_acct/downloads.html
+ftp://ftp.netfilter.org/pub/libnetfilter_acct/
+
+Have fun!
 
 
--- 
-This message has been scanned for viruses and
-dangerous content by MailScanner, and is
-believed to be clean.
+--uAKRQypu60I7Lcqm
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="changes-libnetfilter_acct-1.0.2.txt"
 
+Eric Leblond (2):
+      Add include needed for integer types definition.
+      Fix packets and bytes inversion.
+
+Jan Engelhardt (3):
+      build: resolve automake-1.12 warnings
+      build: resolve compile abort on RHEL5 #1
+      build: resolve compile abort on RHEL5 #2
+
+Pablo Neira Ayuso (3):
+      Merge git://git.inai.de/libnetfilter_acct master
+      Partially revert "src: remove unnecessary castings"
+      build: bump version to 1.0.2
+
+
+--uAKRQypu60I7Lcqm--
