@@ -1,26 +1,25 @@
 From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: Append rule to a NFQUEUE?
-Date: Mon, 4 Mar 2013 21:06:36 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1303042106250.23678@nerf07.vanv.qr>
-References: <20130212095049.GA21858@devnull>
+Subject: Re: [ANNOUNCE] iptables 1.4.18 release
+Date: Mon, 4 Mar 2013 22:23:07 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1303042220530.14520@nerf07.vanv.qr>
+References: <20130303222008.GA28215@localhost>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20130212095049.GA21858@devnull>
+In-Reply-To: <20130303222008.GA28215@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Aaron Lewis <the.warl0ck.1989@gmail.com>
-Cc: netfilter mailing list <netfilter@vger.kernel.org>
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org, netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
-On Tuesday 2013-02-12 10:50, Aaron Lewis wrote:
 
->Hi,
+On Sunday 2013-03-03 23:20, Pablo Neira Ayuso wrote:
+>The Netfilter project proudly presents:
 >
->I would like to log everything in a created queue,
+>        iptables 1.4.18
 >
->iptables -A NFQUEUE --queue-num 0 -j LOG
->
->But that doesn't work, any ideas?
+>iptables is the userspace command line program used to configure the
+>Linux 2.4.x and later packet filtering ruleset.
 
-Log first, then feed to queue.
+This ought to be updated to "Linux 3.0.x".
