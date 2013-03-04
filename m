@@ -1,144 +1,64 @@
-From: =?ISO-8859-1?Q?Humberto_Juc=E1?= <betolj@gmail.com>
-Subject: Re: brouting different VLANs
-Date: Mon, 4 Mar 2013 07:41:32 -0400
-Message-ID: <CACuyg24Rs7e=8yG7z9kmcEntHGBOG0ch7uMppUH_h-nBEcKg8Q@mail.gmail.com>
-References: <CAB_DuvBof5krc-1J2iCA0zn4qc6vgOGD6O9OsmY+7oEfNfrv3Q@mail.gmail.com>
-	<5133379A.7060803@plouf.fr.eu.org>
-	<CAB_DuvCOyACnPxUAPY_j287BpjixZ9OmFP5y1Y+63AG8+TaeUQ@mail.gmail.com>
+From: Paul Bolle <pebolle@tiscali.nl>
+Subject: [PATCH] netfilter: nfnetlink: silence warning if CONFIG_PROVE_RCU
+ isn't set
+Date: Mon, 04 Mar 2013 13:45:41 +0100
+Message-ID: <1362401141.16460.24.camel@x61.thuisdomein>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:x-received:in-reply-to:references:date:message-id
-         :subject:from:to:cc:content-type:content-transfer-encoding;
-        bh=f8Dw+I9KD25+9ziZwVZ4et94h7+4lerZJchY4SVNsAM=;
-        b=vE2UzqK/QJ8v/VUp9ntboPFJduSCBWMAkJcYRX0uxu5lxQU9t+ZB4BOc6h76MTqwlN
-         ON3zbnZMzhTdDTISp/Z6QDoX8B42k1dqkli5ma1ms4gmpMnPnx/G9e2pl/HqNLp/HziA
-         OP1l+qBTif2O9Jl1OwPd7ocBRkEe7CYyQbsNAjQaQRoYhCBqvjRnKDeIR+zKJGPbRjJ9
-         A58eneUs+5YreYWtFA24QEPjbdO/491KqXLbAZPLDX38xQyKYzR20oXcRibvjxohFFa9
-         Zc7YyTRIl0bJp05I1B16F192ah2T5dbsx6aIOwTgIf18zDJnTT53WXZyfwn2re2KUEAM
-         0ozA==
-In-Reply-To: <CAB_DuvCOyACnPxUAPY_j287BpjixZ9OmFP5y1Y+63AG8+TaeUQ@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Dovydas Sankauskas <laisve@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-Hi,
+Since commit c14b78e7decd0d1d5add6a4604feb8609fe920a9 ("netfilter:
+nfnetlink: add mutex per subsystem") building nefnetlink.o without
+CONFIG_PROVE_RCU set, triggers this GCC warning:
+    net/netfilter/nfnetlink.c:65:22: warning: =E2=80=98nfnl_get_lock=E2=
+=80=99 defined but not used [-Wunused-function]
 
-I'm not sure if I understand right.
-This configuration is not very common and I've never tried something li=
-ke this.
-The arp traffic by bridge will not work because the VLANs are
-different, but with proxy-arp your firewall becomes arp router - can
-it work.
+The cause of that warning is, in short, that rcu_lockdep_assert()
+compiles away if CONFIG_PROVE_RCU is not set. Silence this warning by
+open coding nfnl_get_lock() in the sole place it was called, which
+allows to remove that function.
 
-ebtables -t broute -A BROUTING -i bond0.10 -j DROP
-ebtables -t broute -A BROUTING -i bond0.20 -j DROP
+Signed-off-by: Paul Bolle <pebolle@tiscali.nl>
+---
+0) Compile tested only, but without CONFIG_PROVE_RCU set! This patch
+needs building and running by someone who actually uses that option.
 
-echo 0 > /proc/sys/net/ipv4/conf/bond0.10/rp_filter
-echo 0 > /proc/sys/net/ipv4/conf/bond0.20/rp_filter
-echo 0 > /proc/sys/net/ipv4/conf/br0/rp_filter
+1) This patch triggers a checkpatch "line over 80 characters" warning.
+But note that it actually shortens the line checkpatch complains about
+(by one character!).
 
-echo 1 > /proc/sys/net/ipv4/conf/br0/proxy_arp
+ net/netfilter/nfnetlink.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-I chose the br0 interface (proxy_arp), because the logical
-configuration of the network is defined in br0.
-I don't know if works!
-
-
-2013/3/4 Dovydas Sankauskas <laisve@gmail.com>:
-> 2013/3/3 Pascal Hambourg <pascal@plouf.fr.eu.org>:
->> Hello,
->>
->> Dovydas Sankauskas a =E9crit :
->>> Hi,
->>>
->>> I am having some troubles with brouter setup.
->>
->> Why are you using brouting in this setup ?
->>
->>> I have customers on different VLANS but on the same subnet. I want =
-to
->>> allow access between customers and to allow access to internet.
->>> Unfortunatelly I can't make customers on VLAN 10 to ping customers =
-on
->>> VLAN 20. Both VLANS 10 and 20 are on the _same_subnet_ 10.0.0.0/24.
->>>
->>> Here is my current setup:
->>>
->>>                 INTERNET
->>>                     |
->>>   +-----------+------------+----------+
->>>   |           |    eth2    |          |
->>>   |           | 1.2.3.4/30 |          |
->>>   |           +------------+          |
->>>   |                                   |
->>>   |   +---------------------------+   |
->>>   |   |            br0            |   |
->>>   |   |        10.0.0.1/24        |   |
->>>   |   +-------------+-------------+   |
->>>   |   |   bond0.10  |  bond0.20   |   |
->>>   |   |   vlan 10   |  vlan 20    |   |
->>>   +---+-------------+-------------+---+
->>>            |                 |
->>>          10.0.0.10     10.0.0.20
->>>
->>>
->>> I have eth0 and eth1 bonded into bond0. On bond0 I have VLAN
->>> interfaces bond0.10 and bond0.20 for VLAN 10 and VLAN 20 respective=
-ly.
->>> These bond0.10 and bond0.20 interfaces are bridged into interface b=
-r0.
->>> br0 address 10.0.0.1 is default gateway IP for customer1 10.0.0.10/=
-24
->>> on VLAN 10 and for customer2 10.0.0.20/24 on VLAN 20.
->>> eth2 is my internet facing interface. There is no NAT.
->>>
->>> Internet access for both customers is working just fine with the
->>> following ebtables rules:
->>> ebtables -A FORWARD -i bond0.10 -j DROP
->>> ebtables -A FORWARD -i bond0.20 -j DROP
->>> ebtables -t broute -A BROUTING -p ! arp -i bond0.10 -j DROP
->>> ebtables -t broute -A BROUTING -p ! arp -i bond0.20 -j DROP
->>>
->>> However I am struggling to enable access between customer 10.0.0.10
->>> and customer 10.0.0.20.
->>> Please can you advise?
->>
->> According to your ebtables rules, your drop all bridged traffic on
->> bond0.10 and bond0.20 and you force routing of all traffic except AR=
-P on
->> these interfaces. Why is that so, and can you explain how local dire=
-ct
->> communication between these VLANs would be possible ?
->
-> I am trying to avoid bridging between VLAN 10 and VLAN 20 because I
-> have a pair of redundant identical Linux boxes sharing a common IP vi=
-a
-> VRRP. I have blocked bridging because I want to avoid a Layer2 loop
-> and a broadcast storm.
->
-> I have a C class network for assigning IP addresses to my customers
-> however the customers are connected via different VLANs. I don't own
-> part of my Layer2 network, so Vlan numbers are assigned by my Layer2
-> transport providers. I want customers on VLAN 10 to access customers
-> on VLAN 20 and also to access internet. And to avoid Layer2 loop I
-> want to use routing, not bridging. I believe this should be possible
-> with proxy arp enabled on br0.
->
-> My current commands allow customer1 and customer2 to access internet
-> and also to access the gateway itself.
->
-> Please can you help with the brouting logic to enable access between
-> the customers?
->
-> --
-> Dovydas Sankauskas
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+diff --git a/net/netfilter/nfnetlink.c b/net/netfilter/nfnetlink.c
+index d578ec2..0b1b32c 100644
+--- a/net/netfilter/nfnetlink.c
++++ b/net/netfilter/nfnetlink.c
+@@ -62,11 +62,6 @@ void nfnl_unlock(__u8 subsys_id)
+ }
+ EXPORT_SYMBOL_GPL(nfnl_unlock);
+=20
+-static struct mutex *nfnl_get_lock(__u8 subsys_id)
+-{
+-	return &table[subsys_id].mutex;
+-}
+-
+ int nfnetlink_subsys_register(const struct nfnetlink_subsystem *n)
+ {
+ 	nfnl_lock(n->subsys_id);
+@@ -199,7 +194,7 @@ replay:
+ 			rcu_read_unlock();
+ 			nfnl_lock(subsys_id);
+ 			if (rcu_dereference_protected(table[subsys_id].subsys,
+-				lockdep_is_held(nfnl_get_lock(subsys_id))) !=3D ss ||
++				lockdep_is_held(&table[subsys_id].mutex)) !=3D ss ||
+ 			    nfnetlink_find_client(type, ss) !=3D nc)
+ 				err =3D -EAGAIN;
+ 			else if (nc->call)
+--=20
+1.7.11.7
