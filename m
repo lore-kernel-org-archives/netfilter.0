@@ -1,68 +1,86 @@
-From: Akinobu Mita <akinobu.mita@gmail.com>
-Subject: [PATCH -v3 19/23] net/netfilter: rename random32() to prandom_u32()
-Date: Mon,  4 Mar 2013 21:58:27 +0900
-Message-ID: <1362401911-14074-20-git-send-email-akinobu.mita@gmail.com>
-References: <1362401911-14074-1-git-send-email-akinobu.mita@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
+From: Dovydas Sankauskas <laisve@gmail.com>
+Subject: Re: brouting different VLANs
+Date: Mon, 4 Mar 2013 16:46:06 +0200
+Message-ID: <CAB_DuvD1vSGu8mgbSB=LrrMWZ8-wJ0v+9Hnwp+XbDjpa6jO5aw@mail.gmail.com>
+References: <CAB_DuvBof5krc-1J2iCA0zn4qc6vgOGD6O9OsmY+7oEfNfrv3Q@mail.gmail.com>
+	<5133379A.7060803@plouf.fr.eu.org>
+	<CAB_DuvCOyACnPxUAPY_j287BpjixZ9OmFP5y1Y+63AG8+TaeUQ@mail.gmail.com>
+	<CACuyg24Rs7e=8yG7z9kmcEntHGBOG0ch7uMppUH_h-nBEcKg8Q@mail.gmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=x-received:from:to:cc:subject:date:message-id:x-mailer:in-reply-to
-         :references;
-        bh=4+86HsSetn+M1niH59LZkEPh70NiO6UIOHc0fgOXAMc=;
-        b=LUKbaP5pIT8UMRKQPacSJSKbGcks7n414zKEk9n8vv5pTJQcGT0fdO4+kVf8VL5h/j
-         B3z2uD5jH57BKu1yxG1iFQEehkjuavpsWvVrFAtNntO4XQqDTY9MRvnHEEgdWyDcizjr
-         UE4JmiAkrkc2nCYzGtDhM0vTNKB9WRrdUyGDbv9syvvuH/CwT0UkONwkLQDkJs9F+lz+
-         2XZ/Wb2S80ri0Qx63vDlfdQ1dGFada8RVUy4uLGadQQcug+PxdS0WR4dECTGIS0A15Bu
-         1HJ3i3ylG9pL0rr7NzzjWQnzRHXUkXeO+cGQ/aUn/u8nCWKrmgOgq+p3j3RkOFmC08fP
-         ORwQ==
-In-Reply-To: <1362401911-14074-1-git-send-email-akinobu.mita@gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+        h=mime-version:x-received:in-reply-to:references:date:message-id
+         :subject:from:to:cc:content-type:content-transfer-encoding;
+        bh=z+xRnLJBl2zf0taAZIdm6Jg11mP32xLhRaPD5dzRjMs=;
+        b=tRSWjQxYiSBqEZV+7AWdKpeicYdE67AjS2bMY+4rCzWp49wu4ZsfyfZJLq8YNUOCCB
+         dWQf1Iyj3O3vB2zCkSAc1Q/RmP/GlkFH23sJS95XLYoR2eDjqd3pLMjjZElIoJqAVvm5
+         lrmxIRmMwdXcx2Wzd1lLNMOOvAOKTiarlMXiik00Ty45NKLjFWxUgUiwAGJCVEwIWEyi
+         mxdtBHFLaXZdCCAXk0X2W7NnfLCEGhIInJ+/7nx/H57QouLrsSqauaQOQyn4kNjv7okZ
+         QtuX7bjZNGDZcDyimcAp5kLjj7mMpMhBnhF3ekEYQGdOH9rYdsLPNWuuAxGD1JBC3X90
+         FRgg==
+In-Reply-To: <CACuyg24Rs7e=8yG7z9kmcEntHGBOG0ch7uMppUH_h-nBEcKg8Q@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: linux-kernel@vger.kernel.org, akpm@linux-foundation.org
-Cc: Akinobu Mita <akinobu.mita@gmail.com>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org
-
-Use more preferable function name which implies using a pseudo-random
-number generator.
-
-Signed-off-by: Akinobu Mita <akinobu.mita@gmail.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Patrick McHardy <kaber@trash.net>
-Cc: netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="macroman"
+To: =?UTF-8?Q?Humberto_Juc=C3=A1?= <betolj@gmail.com>
 Cc: netfilter@vger.kernel.org
-Cc: coreteam@netfilter.org
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: netdev@vger.kernel.org
----
 
-No change from v2
+2013/3/4 Humberto Juc=C3=A1 <betolj@gmail.com>:
+> Hi,
+>
+> I'm not sure if I understand right.
+> This configuration is not very common and I've never tried something =
+like this.
+> The arp traffic by bridge will not work because the VLANs are
+> different, but with proxy-arp your firewall becomes arp router - can
+> it work.
+>
+> ebtables -t broute -A BROUTING -i bond0.10 -j DROP
+> ebtables -t broute -A BROUTING -i bond0.20 -j DROP
+>
+> echo 0 > /proc/sys/net/ipv4/conf/bond0.10/rp_filter
+> echo 0 > /proc/sys/net/ipv4/conf/bond0.20/rp_filter
+> echo 0 > /proc/sys/net/ipv4/conf/br0/rp_filter
+>
+> echo 1 > /proc/sys/net/ipv4/conf/br0/proxy_arp
+>
+> I chose the br0 interface (proxy_arp), because the logical
+> configuration of the network is defined in br0.
+> I don't know if works!
+>
+>
 
- net/netfilter/nf_conntrack_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Hi,
 
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index c8e001a..f84965a 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -264,7 +264,7 @@ static void death_by_event(unsigned long ul_conntrack)
- 	if (nf_conntrack_event(IPCT_DESTROY, ct) < 0) {
- 		/* bad luck, let's retry again */
- 		ecache->timeout.expires = jiffies +
--			(random32() % net->ct.sysctl_events_retry_timeout);
-+			(prandom_u32() % net->ct.sysctl_events_retry_timeout);
- 		add_timer(&ecache->timeout);
- 		return;
- 	}
-@@ -283,7 +283,7 @@ void nf_ct_dying_timeout(struct nf_conn *ct)
- 	/* set a new timer to retry event delivery */
- 	setup_timer(&ecache->timeout, death_by_event, (unsigned long)ct);
- 	ecache->timeout.expires = jiffies +
--		(random32() % net->ct.sysctl_events_retry_timeout);
-+		(prandom_u32() % net->ct.sysctl_events_retry_timeout);
- 	add_timer(&ecache->timeout);
- }
- EXPORT_SYMBOL_GPL(nf_ct_dying_timeout);
--- 
-1.8.1.2
+If I broute all packets (including ARP) then I get the following result=
+s:
+
+1. Customer1 sends echo-request from 10.0.0.10 to 8.8.8.8.
+2. Linux router receives this ping on eth0 which handles it to bond0
+which recognizes vlan10 tag and handles it to bond0.10 which broutes
+it to br0.
+3. Then router sends arp who-has with customer1 MAC address from br0
+interface which handles it to both bridge ports bond0.10 and bond0.20
+which tags it with respective vlan tags and handles it to bond0 which
+handles it to eth0 which sends it out on the wire.
+4. Customer replies with arp reply is-at with his MAC address.
+5. Linux router receives this arp reply on eth0 which handles it to
+bond0 which recognizes vlan10 tag and handles it to bond0.10. However
+my arp reply doesn't go up to br0 from here.
+
+After I add this rule:
+ebtables -t broute -A BROUTING -p ! arp -i bond0.10 -j DROP
+
+Now arp reply goes up to br0 and I can see customer1 MAC in ip
+neighbor table. Now internet works fine.
+
+You say my config is something unusual? After a few days of reading
+manuals and then trial and error this is how I've managed to connect
+customer1 to the internet.
+
+
+
+--=20
+Dovydas Sankauskas
