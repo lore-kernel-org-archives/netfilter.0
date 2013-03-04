@@ -1,61 +1,35 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] libnetfilter_conntrack 1.0.3 release
-Date: Mon, 4 Mar 2013 16:42:15 +0100
-Message-ID: <20130304154215.GA19207@localhost>
+Subject: Re: [PATCH] netfilter: nfnetlink: silence warning if
+ CONFIG_PROVE_RCU isn't set
+Date: Mon, 4 Mar 2013 16:59:46 +0100
+Message-ID: <20130304155946.GA25980@localhost>
+References: <1362401141.16460.24.camel@x61.thuisdomein>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="NzB8fVQJ5HfG6fxh"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-devel-owner@vger.kernel.org>
 Content-Disposition: inline
+In-Reply-To: <1362401141.16460.24.camel@x61.thuisdomein>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter-devel@vger.kernel.org
-Cc: netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
+Content-Type: text/plain; charset="utf-8"
+To: Paul Bolle <pebolle@tiscali.nl>
+Cc: Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
+On Mon, Mar 04, 2013 at 01:45:41PM +0100, Paul Bolle wrote:
+> Since commit c14b78e7decd0d1d5add6a4604feb8609fe920a9 ("netfilter:
+> nfnetlink: add mutex per subsystem") building nefnetlink.o without
+> CONFIG_PROVE_RCU set, triggers this GCC warning:
+>     net/netfilter/nfnetlink.c:65:22: warning: =E2=80=98nfnl_get_lock=E2=
+=80=99 defined but not used [-Wunused-function]
+>=20
+> The cause of that warning is, in short, that rcu_lockdep_assert()
+> compiles away if CONFIG_PROVE_RCU is not set. Silence this warning by
+> open coding nfnl_get_lock() in the sole place it was called, which
+> allows to remove that function.
 
---NzB8fVQJ5HfG6fxh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-
-Hi!
-
-The Netfilter project proudly presents:
-
-        libnetfilter_conntrack 1.0.3
-
-libnetfilter_conntrack is a userspace library providing a programming
-interface (API) to the in-kernel connection tracking state table. The
-library libnetfilter_conntrack has been previously known as
-libnfnetlink_conntrack and libctnetlink.
-
-See ChangeLog that comes attached to this email for more details.
-
-You can download it from:
-
-http://www.netfilter.org/projects/libnetfilter_conntrack/downloads.html
-ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/
-
-Have fun!
-
---NzB8fVQJ5HfG6fxh
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="changes-libnetfilter_conntrack-1.0.3.txt"
-
-Florian Westphal (2):
-      qa: fix handling of ATTR_HELPER_INFO attribute
-      conntrack: fix nfct_clone with certain attribute data types
-
-Jan Engelhardt (1):
-      build: resolve automake-1.12 warnings
-
-Pablo Neira Ayuso (5):
-      refresh our public copy of nfnetlink_conntrack.h
-      Merge branch 'next' into libnetfilter_conntrack master branch
-      qa: fix bogus eror in test_api
-      qa: add final OK message after checking release of clone objects
-      build: bump version to 1.0.3
-
-Thomas Jarosch (1):
-      Fix logic typo in cmp_secctx
-
-
---NzB8fVQJ5HfG6fxh--
+Applied, thanks Paul.
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
+el" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
