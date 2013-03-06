@@ -1,57 +1,66 @@
-From: Marco Padovan <evcz@evcz.tk>
-Subject: Re: SYN Cookies vs ip_conntrack in SYN Flood conditions
-Date: Wed, 06 Mar 2013 00:22:04 +0100
-Message-ID: <51367E1C.30003@evcz.tk>
-References: <27426969-529E-4D02-A526-39BB80C685D1@stevek.com>
+From: Marco <listaddr@gmail.com>
+Subject: Re: conntrackd questions
+Date: Wed, 6 Mar 2013 11:54:43 +0100
+Message-ID: <CAHPDOiGMZKSeVg6TDEiih3aNm_Hr70+P6AqVEnC1Fad2XyaJdQ@mail.gmail.com>
+References: <CAHPDOiHUU+4qXB3iz6_6ZKOBRg8beBL_7SHC8c4zULw1vJ2CnA@mail.gmail.com>
+	<20130219195237.GA3208@localhost>
+	<CAHPDOiFpF2+F8CTJ_fF26bXaCtTCUMDPV8JtZT-HX+m2u1j3AA@mail.gmail.com>
+	<20130221183711.GA6061@localhost>
+	<CAHPDOiEvpU1hEKkNJMpUrxJP6Lb=9pKDsEbMjqbr7DWKyZt_Ew@mail.gmail.com>
+	<20130225154532.GD20561@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=evcz.tk; s=google;
-        h=x-received:message-id:date:from:user-agent:mime-version:to:cc
-         :subject:references:in-reply-to:x-enigmail-version:openpgp
-         :content-type:content-transfer-encoding;
-        bh=BnXodsmsURXz3hqX6YFwjK30yqHPeslSNR3BbsuXS68=;
-        b=tTA1nOC6Zx67X7G+cJR+WeUJR287tyc6XkVXTnzHW6fxyHrgaunnbBbxkKSgxf5jeP
-         up6KMNC32Ju0vSzYtrGxvyF/M/z52Tv7lMEAFTUdBCTTRm2Hzt2QE5rpicx64zemf+9d
-         HCIhlYP1Fhr/s4p5kjVO5ZxXLBJXY0ACiHANs=
-In-Reply-To: <27426969-529E-4D02-A526-39BB80C685D1@stevek.com>
+        d=gmail.com; s=20120113;
+        h=mime-version:x-received:in-reply-to:references:date:message-id
+         :subject:from:to:cc:content-type;
+        bh=FufXnP6XCtnat+YFwBwI9/RmHSy84lCpRd/xSmVso30=;
+        b=Rh0NNbTwwYto8OaiUjhT/PK7XrT2cYqCT9vGwum+sYLKVftuBCfq5cOj/fP4e+KTH/
+         QRfKyfZze51lQzpJPpzWky2GHxaYmJsS5NQlaLp5Fy2W7qUueZ8gzufUwxHWbdUJeDot
+         yaKxSGkuO2/Jn37kOZFDxIqKe78rAGp4Pf0ECHVitLVqEjcbyjwOxR+rtlDJBFoFzKhL
+         1CpdnEDncYkvbLD+W2ZeAwtodeuTVm2w0VT2nDKBflkLW8s8Z73JUbkXtgfRAi/cK+Jw
+         tZqL+LJtMNNfD2jSOJ5xAG+0tFoNWPJMnEUH6mCULIBvxi4n8CbfE1BYlUa5/MUR1a2I
+         18pQ==
+In-Reply-To: <20130225154532.GD20561@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Steve Kann <stevek@stevek.com>
+Content-Transfer-Encoding: 7bit
+To: Pablo Neira Ayuso <pablo@netfilter.org>
 Cc: netfilter@vger.kernel.org
 
-Having same kind of issues here... :D
+2013/2/25 Pablo Neira Ayuso <pablo@netfilter.org>:
 
-btw syn cookies are not much useful (at least in my case) with decent
-pps rates (>10k) :(
+> On Fri, Feb 22, 2013 at 11:12:55AM +0100, Marco wrote:
+> [...]
+>> > In your previous config, assuming you use a 3.x kernel, I saw you did
+>> > not enabled TCPWindowTracking On. That allows the new primary to
+>> > recover TCP window tracking from the middle.
+>>
+>> Unfortunately, the system where this will run has a 2.6.32 kernel, so
+>> this is not an option for the moment.
+>
+> I really recommend you to upgrade to some stable branch of 3.x. Many
+> relevant updates and fixes went into the ctnetlink code since that
+> version you're using.
 
-Il 28/02/2013 18.28, Steve Kann ha scritto:
-> Netfilter-wizards,
->
-> 	I've been playing around with using iptables and syncookies to try to harden a linux box against SYN Flood attacks, and I seem to have run into something which doesn't work the way I'd want it to.
->
-> 	Ideally, I'd like to create a situation where there protected host could withstand very high volume SYN attacks (in the order of hundreds of thousands of forged SYN packets per second), as well as fairly significant legitimate traffic volumes (hundreds of megabits).
->
-> 	From what I've observed, if you have a host which uses ip_conntrack to track connections, and that host is under SYN flood conditions and has begun to send SYN cookies, connection table entries are created for these embryonic connections.
->
-> 	This seems counter to the design intent of syn cookies, in that ideally, we would like to keep no state at all for TCP connections until the TCP handshake is completed.
->
-> It seems there's a couple of options:
-> a)  Abandon ip_conntrack (and all stateful iptables rules):   This seems to work, but it limits the scope of available rules.   I've also read some concerns about performance implications here.
->
-> b) (this is why I'm coming here):  Is there any way to defer ip_conntrack table population until the TCP initiator sends back their valid ACK packet with the SYN Cookie response?  This would seem to be the ideal solution, as it would retain the stateless intent of syncookies, but allow state tracking for more advanced iptables rules.
->
-> This seems like something others would have run into before, so I hope I've come to the right place for advice.
->
-> Thanks!
->
-> -SteveK
->
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Ok, I've finally found some time to set this up. Now I'm using kernel
+3.7.10, keepalived 1.2.2 and contrack-tools 1.4.0, with
+"TCPWindowTracking On". I'm sorry to report that I'm still seeing the
+original behavior (ie firewall sends RST to origin server and client
+hangs).
 
+> [...]
+>> Well, the docs mention window tracking here and there, but (at least
+>> to me) it's not clear what that does, and that it's (or could be) the
+>> solution to this problem I'm seeing.
+>> Furthermore, I found no documentation or explanation of
+>> nf_conntrack_tcp_be_liberal on google, neither it is in the sysctl.txt
+>> file that documents the /proc/sys/net entries, nor anywhere else.
+>
+> http://git.kernel.org/?p=linux/kernel/git/davem/net-next.git;a=blob;f=Documentation/networking/nf_conntrack-sysctl.txt;h=70da5086153dbd24a9c9258e73cc16440d247519;hb=HEAD
+
+Thanks! Hopefully at some point it will be published in some place
+where search engines can find it (the obvious place seems to be
+https://www.kernel.org/doc/Documentation/networking/, where it still
+isn't visible)..
