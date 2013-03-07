@@ -1,65 +1,54 @@
-From: Jan Engelhardt <jengelh@inai.de>
+From: "Daniel L. Miller" <dmiller@amfes.com>
 Subject: Re: Connection tracking counters increasing
-Date: Thu, 7 Mar 2013 18:44:16 +0100 (CET)
-Message-ID: <alpine.LNX.2.01.1303071842460.24878@nerf07.vanv.qr>
-References: <5138BC91.9060903@amfes.com> <alpine.LNX.2.01.1303071726260.2529@nerf07.vanv.qr> <5138C95B.1080405@amfes.com> <alpine.LNX.2.01.1303071816090.23717@nerf07.vanv.qr> <assp.177886a3c9.5138CCB6.3050705@amfes.com>
+Date: Thu, 07 Mar 2013 10:22:14 -0800
+Message-ID: <assp.0778ac5759.5138DAD6.6040602@amfes.com>
+References: <5138BC91.9060903@amfes.com> <alpine.LNX.2.01.1303071726260.2529@nerf07.vanv.qr> <5138C95B.1080405@amfes.com> <alpine.LNX.2.01.1303071816090.23717@nerf07.vanv.qr> <5138CCB6.3050705@amfes.com> <9C84D171-3207-4A02-81BC-9652F50A254B@alex.org.uk>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <assp.177886a3c9.5138CCB6.3050705@amfes.com>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=amfes.com;
+	h=Message-ID:From:Subject:To:MIME-Version:Content-Type; s=sep2012.mail;
+	bh=/2lAZ+zx56S0Bf9lv5K3gcq3GLI=; b=Q5VyAlCnwayX5YNYn281Xn46bt0LlOR+Cz02dAgYqbHXgPju928jAhrn0AqMVmlUh19rOPivrlkPXp55iXcTfLdW1oEmTVkI661Shd2TruhJqz2oS78AE2Xi/PwKYI3WCk8iwWiQ7Qvtt9xvUw+eAJqfwgO5VfKbqO/FMT14NgY=
+In-Reply-To: <9C84D171-3207-4A02-81BC-9652F50A254B@alex.org.uk>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Daniel L. Miller" <dmiller@amfes.com>
-Cc: Netfilter-Users <netfilter@vger.kernel.org>, Pablo Neira Ayuso <pablo@netfilter.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter-Users <netfilter@vger.kernel.org>
 
-
-On Thursday 2013-03-07 18:21, Daniel L. Miller wrote:
->>>
->>> I've noticed that my connection tracking counters keep increasing -
->>> /proc/sys/net/netfilter/nf_conntrack_count
->>> and when it reaches /proc/sys/net/netfilter/nf_conntrack_max things break.
->>
->> Could it be you are being DDoSed?
+On 3/7/2013 10:10 AM, Alex Bligh wrote:
+> On 7 Mar 2013, at 17:21, Daniel L. Miller wrote:
 >
-> Anything's possible - but I don't have a high-visibility site.  The connection
-> counter increments gradually - a new connection every couple of seconds or so.
+>> Anything's possible - but I don't have a high-visibility site.  The connection counter increments gradually - a new connection every couple of seconds or so.
+> Why would you not expect this to happen? It's an absolute count of the number of
+> connections since reboot. Are you quite sure nothing is opening any inbound or
+> outbound connections or trying to? Do you have connection tracking on loopback?
 >
-> Trying to understand what's going on, I installed the "conntrack" tool.
-> conntrack -S yields:
-> entries                 28752
-> searched                27822
-> found                   11950927
-> new                     457431
-> invalid                 333
-> ignore                  347677
-> delete                  465404
-> delete_list             428962
-> insert                  414575
-> insert_failed           0
-> drop                    0
-> early_drop              0
-> icmp_error              0
-> expect_new              0
-> expect_create           0
-> expect_delete           0
-> search_restart          0
->
-> But more confusing is conntrack -L only shows 52 entries.
+If it's an informative counter - then I don't care.  If it's active 
+state counter - and blocks new connections from happening when it 
+reaches the defined maximum - then it's very much a concern.
 
-You need to count in entries from different conntrack tables
-too. I see something similar, however:
+I'm assuming something has changed - whether it's due to an upgrade, new 
+software, or new device on the network I don't know.  I don't know how 
+to look at the list of connections to determine what's getting 
+opened/accessed/left so I can narrow it down.
 
-18:42 ares07:/home/jengelh # conntrack -L >/dev/null; conntrack -L expect
->/dev/null; cat /proc/sys/net/netfilter/nf_conntrack_count
-conntrack v1.4.0 (conntrack-tools): 32 flow entries have been shown.
-conntrack v1.4.0 (conntrack-tools): 0 expectations have been shown.
-43
-18:42 ares07:/home/jengelh # conntrack -L >/dev/null; conntrack -L expect
->/dev/null; cat /proc/sys/net/netfilter/nf_conntrack_count
-conntrack v1.4.0 (conntrack-tools): 31 flow entries have been shown.
-conntrack v1.4.0 (conntrack-tools): 0 expectations have been shown.
-42
+At the moment, I have a very small firehol config plus fail2ban. That's 
+all I know actively using iptables.  I'm running OpenVPN - at times I 
+will setup some iptables dnat/snat for connections to remotes.  So I do 
+need to have NAT available otherwise I'd just unload the modules and 
+forget about it.  My primary firewall is a Mikrotik router that doesn't 
+have these issues - but I want at least a little protection on my main 
+server (which this is).
 
-That might be connections in state DYING, but perhaps Pablo has an idea
-what could be going on w.r.t. different numbers.
+I have a web server running on a VirtualBox virtual machine via a 
+bridged interface.  I do not have connection tracking on the VM.  I 
+would think the web server would be the primary target of inbound 
+connections - for whatever that's worth.  I also run mail and DNS.
+
+I've never had this problem before - but I've been dealing with it for 
+about the past month.  I'm sure something's changed - whether it's my 
+website's google visibility or a software change I don't know.
+
+-- 
+Daniel
+
