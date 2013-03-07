@@ -1,66 +1,37 @@
-From: Marco <listaddr@gmail.com>
-Subject: Re: conntrackd questions
-Date: Wed, 6 Mar 2013 11:54:43 +0100
-Message-ID: <CAHPDOiGMZKSeVg6TDEiih3aNm_Hr70+P6AqVEnC1Fad2XyaJdQ@mail.gmail.com>
-References: <CAHPDOiHUU+4qXB3iz6_6ZKOBRg8beBL_7SHC8c4zULw1vJ2CnA@mail.gmail.com>
-	<20130219195237.GA3208@localhost>
-	<CAHPDOiFpF2+F8CTJ_fF26bXaCtTCUMDPV8JtZT-HX+m2u1j3AA@mail.gmail.com>
-	<20130221183711.GA6061@localhost>
-	<CAHPDOiEvpU1hEKkNJMpUrxJP6Lb=9pKDsEbMjqbr7DWKyZt_Ew@mail.gmail.com>
-	<20130225154532.GD20561@localhost>
+From: Hamed Afshar <hamed_afshar@yahoo.com>
+Subject: question about port forwarding using dnat
+Date: Thu, 7 Mar 2013 05:02:13 -0800 (PST)
+Message-ID: <1362661333.71899.YahooMailClassic@web142706.mail.bf1.yahoo.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:x-received:in-reply-to:references:date:message-id
-         :subject:from:to:cc:content-type;
-        bh=FufXnP6XCtnat+YFwBwI9/RmHSy84lCpRd/xSmVso30=;
-        b=Rh0NNbTwwYto8OaiUjhT/PK7XrT2cYqCT9vGwum+sYLKVftuBCfq5cOj/fP4e+KTH/
-         QRfKyfZze51lQzpJPpzWky2GHxaYmJsS5NQlaLp5Fy2W7qUueZ8gzufUwxHWbdUJeDot
-         yaKxSGkuO2/Jn37kOZFDxIqKe78rAGp4Pf0ECHVitLVqEjcbyjwOxR+rtlDJBFoFzKhL
-         1CpdnEDncYkvbLD+W2ZeAwtodeuTVm2w0VT2nDKBflkLW8s8Z73JUbkXtgfRAi/cK+Jw
-         tZqL+LJtMNNfD2jSOJ5xAG+0tFoNWPJMnEUH6mCULIBvxi4n8CbfE1BYlUa5/MUR1a2I
-         18pQ==
-In-Reply-To: <20130225154532.GD20561@localhost>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1362661333; bh=SiTH9bD+nYXZrk8FM+8D+Frh7xKwbfZv3Q3MTW4uWF8=; h=X-YMail-OSG:Received:X-Rocket-MIMEInfo:X-Mailer:Message-ID:Date:From:Subject:To:MIME-Version:Content-Type; b=YAzO4ke4ajL5msVpBOA1oANjlzFZUE6cyU/v1451MzSlsZ8AjaDB3AbyJsUhFBwUK4FsMZSk74j7RYmzDWJWrm9i9nvWn8TUhY3gM6QAe15Oc7xR7FObzpEfR5+5neWrDsBjam/q21yEHZgQSGjrn9GglBpWeQeC61O9OQ4fID0=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-2013/2/25 Pablo Neira Ayuso <pablo@netfilter.org>:
+Hi,
+I need to manipulate all output requests for an IP range and change the destination port.
+For a specific IP, the following rule works for me:
 
-> On Fri, Feb 22, 2013 at 11:12:55AM +0100, Marco wrote:
-> [...]
->> > In your previous config, assuming you use a 3.x kernel, I saw you did
->> > not enabled TCPWindowTracking On. That allows the new primary to
->> > recover TCP window tracking from the middle.
->>
->> Unfortunately, the system where this will run has a 2.6.32 kernel, so
->> this is not an option for the moment.
->
-> I really recommend you to upgrade to some stable branch of 3.x. Many
-> relevant updates and fixes went into the ctnetlink code since that
-> version you're using.
+iptables -t nat -A OUTPUT -p tcp -d 1.2.3.4 --dport 22 -j DNAT --to-destination 1.2.3.4:555
 
-Ok, I've finally found some time to set this up. Now I'm using kernel
-3.7.10, keepalived 1.2.2 and contrack-tools 1.4.0, with
-"TCPWindowTracking On". I'm sorry to report that I'm still seeing the
-original behavior (ie firewall sends RST to origin server and client
-hangs).
+which is changing the destination port to 555 on all outgoing requests for port 22 for IP 1.2.3.4.
+But I need to apply this to an IP range.
+something like this:
 
-> [...]
->> Well, the docs mention window tracking here and there, but (at least
->> to me) it's not clear what that does, and that it's (or could be) the
->> solution to this problem I'm seeing.
->> Furthermore, I found no documentation or explanation of
->> nf_conntrack_tcp_be_liberal on google, neither it is in the sysctl.txt
->> file that documents the /proc/sys/net entries, nor anywhere else.
->
-> http://git.kernel.org/?p=linux/kernel/git/davem/net-next.git;a=blob;f=Documentation/networking/nf_conntrack-sysctl.txt;h=70da5086153dbd24a9c9258e73cc16440d247519;hb=HEAD
+iptables -t nat -A OUTPUT -p tcp -d 1.2.3.0/24 --dport 22 -j DNAT --to-destination 1.2.3.0/24:555
 
-Thanks! Hopefully at some point it will be published in some place
-where search engines can find it (the obvious place seems to be
-https://www.kernel.org/doc/Documentation/networking/, where it still
-isn't visible)..
+to do the following:
+1.2.3.1:22 => 1.2.3.1:555
+1.2.3.2:22 => 1.2.3.2:555
+1.2.3.3:22 => 1.2.3.3:555
+etc
+
+iptables accepts IP range with "-d" switch. but as for "--to-destination", it doesn't accept IP range.
+
+Does anyone have any idea how should I do this?
+
+Thanks in advance
+Hamed Afshar
