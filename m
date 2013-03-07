@@ -1,37 +1,30 @@
-From: Hamed Afshar <hamed_afshar@yahoo.com>
-Subject: question about port forwarding using dnat
-Date: Thu, 7 Mar 2013 05:02:13 -0800 (PST)
-Message-ID: <1362661333.71899.YahooMailClassic@web142706.mail.bf1.yahoo.com>
+From: "Daniel L. Miller" <dmiller@amfes.com>
+Subject: Connection tracking counters increasing
+Date: Thu, 07 Mar 2013 08:13:05 -0800
+Message-ID: <assp.17785d9ff5.5138BC91.9060903@amfes.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1362661333; bh=SiTH9bD+nYXZrk8FM+8D+Frh7xKwbfZv3Q3MTW4uWF8=; h=X-YMail-OSG:Received:X-Rocket-MIMEInfo:X-Mailer:Message-ID:Date:From:Subject:To:MIME-Version:Content-Type; b=YAzO4ke4ajL5msVpBOA1oANjlzFZUE6cyU/v1451MzSlsZ8AjaDB3AbyJsUhFBwUK4FsMZSk74j7RYmzDWJWrm9i9nvWn8TUhY3gM6QAe15Oc7xR7FObzpEfR5+5neWrDsBjam/q21yEHZgQSGjrn9GglBpWeQeC61O9OQ4fID0=
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=amfes.com;
+	h=Message-ID:From:Subject:To:MIME-Version:Content-Type; s=sep2012.mail;
+	bh=kugul2KXlYM2YPDpjVKhepKwx5I=; b=yPMgKe2HvYODXxrRlU4llsRU21CQJq4fpv5jtqwicbi2hhSbtQsQ4dSetEKOidA/iy8posLO9JkQMhcTu6XSajor6V8xACZ24Wp0uhlcB/Iw93cdauqss93C1ye8id2VljXsgCFmR2+u4kquMn+Q2wewxGRXuxc9OSX9epOWH3k=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Netfilter-Users <netfilter@vger.kernel.org>
 
-Hi,
-I need to manipulate all output requests for an IP range and change the destination port.
-For a specific IP, the following rule works for me:
+Sorry if this is answered elsewhere - my initial googling didn't show me.
 
-iptables -t nat -A OUTPUT -p tcp -d 1.2.3.4 --dport 22 -j DNAT --to-destination 1.2.3.4:555
+I have an Ubuntu Precise server that is using iptables.  I've noticed 
+that my connection tracking counters keep increasing - and will do so 
+until failure.  I've tried a few different timeout settings to see if 
+that fixes it - but so far nothing helps except increasing the maximums 
+and then rebooting prior to failure.
 
-which is changing the destination port to 555 on all outgoing requests for port 22 for IP 1.2.3.4.
-But I need to apply this to an IP range.
-something like this:
+I'm assuming I'm doing something wrong - but I don't even know where to 
+look.  The only things that helps is NOT using iptables - which isn't a 
+good answer!
 
-iptables -t nat -A OUTPUT -p tcp -d 1.2.3.0/24 --dport 22 -j DNAT --to-destination 1.2.3.0/24:555
+-- 
+Daniel
 
-to do the following:
-1.2.3.1:22 => 1.2.3.1:555
-1.2.3.2:22 => 1.2.3.2:555
-1.2.3.3:22 => 1.2.3.3:555
-etc
-
-iptables accepts IP range with "-d" switch. but as for "--to-destination", it doesn't accept IP range.
-
-Does anyone have any idea how should I do this?
-
-Thanks in advance
-Hamed Afshar
