@@ -1,54 +1,66 @@
-From: "Daniel L. Miller" <dmiller@amfes.com>
-Subject: Re: Connection tracking counters increasing
-Date: Thu, 07 Mar 2013 10:22:14 -0800
-Message-ID: <assp.0778ac5759.5138DAD6.6040602@amfes.com>
-References: <5138BC91.9060903@amfes.com> <alpine.LNX.2.01.1303071726260.2529@nerf07.vanv.qr> <5138C95B.1080405@amfes.com> <alpine.LNX.2.01.1303071816090.23717@nerf07.vanv.qr> <5138CCB6.3050705@amfes.com> <9C84D171-3207-4A02-81BC-9652F50A254B@alex.org.uk>
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Subject: Re: question about port forwarding using dnat
+Date: Thu, 07 Mar 2013 21:56:16 +0100
+Message-ID: <5138FEF0.8070608@plouf.fr.eu.org>
+References: <1362661333.71899.YahooMailClassic@web142706.mail.bf1.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=amfes.com;
-	h=Message-ID:From:Subject:To:MIME-Version:Content-Type; s=sep2012.mail;
-	bh=/2lAZ+zx56S0Bf9lv5K3gcq3GLI=; b=Q5VyAlCnwayX5YNYn281Xn46bt0LlOR+Cz02dAgYqbHXgPju928jAhrn0AqMVmlUh19rOPivrlkPXp55iXcTfLdW1oEmTVkI661Shd2TruhJqz2oS78AE2Xi/PwKYI3WCk8iwWiQ7Qvtt9xvUw+eAJqfwgO5VfKbqO/FMT14NgY=
-In-Reply-To: <9C84D171-3207-4A02-81BC-9652F50A254B@alex.org.uk>
+In-Reply-To: <1362661333.71899.YahooMailClassic@web142706.mail.bf1.yahoo.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Netfilter-Users <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Hamed Afshar <hamed_afshar@yahoo.com>
+Cc: netfilter@vger.kernel.org
 
-On 3/7/2013 10:10 AM, Alex Bligh wrote:
-> On 7 Mar 2013, at 17:21, Daniel L. Miller wrote:
->
->> Anything's possible - but I don't have a high-visibility site.  The connection counter increments gradually - a new connection every couple of seconds or so.
-> Why would you not expect this to happen? It's an absolute count of the number of
-> connections since reboot. Are you quite sure nothing is opening any inbound or
-> outbound connections or trying to? Do you have connection tracking on loopback?
->
-If it's an informative counter - then I don't care.  If it's active 
-state counter - and blocks new connections from happening when it 
-reaches the defined maximum - then it's very much a concern.
+Hello,
 
-I'm assuming something has changed - whether it's due to an upgrade, new 
-software, or new device on the network I don't know.  I don't know how 
-to look at the list of connections to determine what's getting 
-opened/accessed/left so I can narrow it down.
+Hamed Afshar a =E9crit :
+> Hi,
+> I need to manipulate all output requests for an IP range and change t=
+he destination port.
+> For a specific IP, the following rule works for me:
+>=20
+> iptables -t nat -A OUTPUT -p tcp -d 1.2.3.4 --dport 22 -j DNAT --to-d=
+estination 1.2.3.4:555
+>=20
+> which is changing the destination port to 555 on all outgoing request=
+s for port 22 for IP 1.2.3.4.
+> But I need to apply this to an IP range.
+> something like this:
+>=20
+> iptables -t nat -A OUTPUT -p tcp -d 1.2.3.0/24 --dport 22 -j DNAT --t=
+o-destination 1.2.3.0/24:555
+>=20
+> to do the following:
+> 1.2.3.1:22 =3D> 1.2.3.1:555
+> 1.2.3.2:22 =3D> 1.2.3.2:555
+> 1.2.3.3:22 =3D> 1.2.3.3:555
+> etc
+>=20
+> iptables accepts IP range with "-d" switch. but as for "--to-destinat=
+ion", it doesn't accept IP range.
 
-At the moment, I have a very small firehol config plus fail2ban. That's 
-all I know actively using iptables.  I'm running OpenVPN - at times I 
-will setup some iptables dnat/snat for connections to remotes.  So I do 
-need to have NAT available otherwise I'd just unload the modules and 
-forget about it.  My primary firewall is a Mikrotik router that doesn't 
-have these issues - but I want at least a little protection on my main 
-server (which this is).
+Yes it does. The DNAT section in the iptables man page states :
 
-I have a web server running on a VirtualBox virtual machine via a 
-bridged interface.  I do not have connection tracking on the VM.  I 
-would think the web server would be the primary target of inbound 
-connections - for whatever that's worth.  I also run mail and DNS.
+ --to-destination [ipaddr][-ipaddr][:port[-port]]
+        which can specify a single new destination IP address, an inclu=
+-
+        sive range of IP addresses, and optionally, a port range  (whic=
+h
+        is  only valid if the rule also specifies -p tcp or -p udp).
 
-I've never had this problem before - but I've been dealing with it for 
-about the past month.  I'm sure something's changed - whether it's my 
-website's google visibility or a software change I don't know.
+But address range do not act as a 1:1 mapping, rather as a round-robin
+or random mapping.
 
--- 
-Daniel
+> Does anyone have any idea how should I do this?
+
+The man page gives the answer in the following lines :
+
+        If
+        no port range is specified, then the destination port will neve=
+r
+        be  modified. If no IP address is specified then only the desti=
+-
+        nation port will be modified.
 
