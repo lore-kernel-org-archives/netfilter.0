@@ -1,35 +1,27 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Netfilter applied to specific interfaces only
-Date: Sat, 9 Mar 2013 23:10:44 +0100
-Message-ID: <20130309221044.GA3419@localhost>
-References: <CADju=b7RdboFOXvPRSn=Ax-+pihecm_Txf-JCHLYum_gjSC9dw@mail.gmail.com>
- <alpine.LNX.2.01.1303082046110.28399@nerf07.vanv.qr>
+From: <ggeorgiev@eurista.com>
+Subject: RE: Need a way to match vlan / pcp fields in 802.1Q header
+Date: Sat, 09 Mar 2013 19:58:54 -0700
+Message-ID: <20130309195854.e96aff9bbdc3fe78db33ffdcbc125810.594040746d.wbe@email03.secureserver.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.LNX.2.01.1303082046110.28399@nerf07.vanv.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@inai.de>
-Cc: Jim Mellander <jmellander@lbl.gov>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Fri, Mar 08, 2013 at 08:52:37PM +0100, Jan Engelhardt wrote:
-> 
-> On Friday 2013-03-08 20:14, Jim Mellander wrote:
-> >
-> >In the HPC world, and in network intrusion detection, network
-> >performance is paramount.  We've found that just having the iptables
-> >kernel module loaded without any ruleset substantially reduces
-> >performance at high traffic rates.
-> 
-> This one is a known issue with ip_tables/x_tables, and solved in 
-> xtables2 where you can deallocate the base chains when empty -- (more 
-> accurately, they do not exist by default and need to be created first) 
-> -- given finer control over what is being executed.
+Hello again, looks the only way for matching the vlan/CoS tag on a linux
+box will be to write a small application that registers on the
+prerouting hook on non-vlan interface (eth0), inspects the vlan tag and
+marks the packet in, say, DSCP or ttl field, which can be after
+inspected by iptables.
 
-Just for the record: this idea was initially introduced by nftables
-back in 2009.
+I will appreciate if someone can point to an example for similar task,
+or to the right libraries to use - are libnetlink / libnetfilter_queue
+the right choice? Can I get access to the raw coming packet on eth0 via
+those libraries? Unfortunately libpcap is not a choice, it does not
+alter packets.
 
-Regards.
+Thanks, George.
+
+
