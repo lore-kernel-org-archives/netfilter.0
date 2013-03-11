@@ -1,91 +1,55 @@
-From: =?ISO-8859-1?Q?Humberto_Juc=E1?= <betolj@gmail.com>
+From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
 Subject: Re: Netfilter applied to specific interfaces only
-Date: Sun, 10 Mar 2013 10:34:36 -0400
-Message-ID: <CACuyg26567c3v=4fph1LMOAhPm6HW1yT8YXX1madzWyoLeqCSg@mail.gmail.com>
-References: <CADju=b7RdboFOXvPRSn=Ax-+pihecm_Txf-JCHLYum_gjSC9dw@mail.gmail.com>
+Date: Sun, 10 Mar 2013 22:46:47 -0400
+Message-ID: <201303102246.48024.neal.p.murphy@alum.wpi.edu>
+Reply-To: neal.p.murphy@alum.wpi.edu
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:x-received:in-reply-to:references:date:message-id
-         :subject:from:to:cc:content-type;
-        bh=n83R2nNFAZ7LfMD3cC14qp/zhF/f2eFQbAOPW0TxJbA=;
-        b=O7sikaSuXshofYV61G6mNS0fFSKI9T7b3Uu3TBtz7SOn8FIN/G6nnc2hNIMUYUE1Us
-         bhh1p33cbxLOqdGum7bzfbYobCjMgbtDVO2jz6y7rAdD3JtLVtF3ON8bhp2/FtNsp1XJ
-         HZvi560AgzAbmEHOuSau+Nodm6e6amY9R+Kz+EPCwCl/80OYCEf9dGM43Bdq5oDIOVxP
-         CHFb5wHkXr91riScCIYKeWhc+BjwVKyMey5oiDcxxAqCkonUEtEfMENYiQL1yJGLr9ox
-         WlujYWlFpWHR6YbrB0Te9/1oaLNifUcwS4XcHlH0V2X1TWauB4LWXGEEl6fHwrzO9nJI
-         4hhQ==
-In-Reply-To: <CADju=b7RdboFOXvPRSn=Ax-+pihecm_Txf-JCHLYum_gjSC9dw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jim Mellander <jmellander@lbl.gov>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-Hi,
+On Sunday, March 10, 2013 10:34:36 AM Humberto Juc=E1 wrote:
+> Hi,
+>=20
+> This is an much discussed issue in firewall forums.
+> I need to study a little more about it, but my current opinion:
+>=20
+> 1. The servers should not do "any filtering" - except in specific
+> cases. They should be placed in a DMZ segment or serverfarm. However,
+> the access to these segments is controlled by a firewall (clustered o=
+r
+> not). So, you can focus on optimizing firewalls.
 
-This is an much discussed issue in firewall forums.
-I need to study a little more about it, but my current opinion:
+I humbly disagree. Any server exposed to the internet should be configu=
+red to=20
+limit inbound and outbound access to exactly that which is needed for i=
+t to=20
+operate. For example, an simple web server should allow only new incomi=
+ng=20
+conns to ports HTTP and HTTPS from internet; they should block new outg=
+oing=20
+conns (since a simple web server only serves data over existing conns).=
+=20
+Management ports, like ssh, should be limited to the least reasonable s=
+et of=20
+addresses expected. Periodic audits should show if these limits have be=
+en=20
+altered. The server is its own first line of defense. The nearest firew=
+all is=20
+the second line of defense. The perimeter firewall is the last line of=20
+defense.
 
-1. The servers should not do "any filtering" - except in specific
-cases. They should be placed in a DMZ segment or serverfarm. However,
-the access to these segments is controlled by a firewall (clustered or
-not). So, you can focus on optimizing firewalls.
-
-2. I don't believe there is a native solution for this issue. It's not
-for nothing that the business solutions that promise this are the
-highest price. This is the kind of solution you'll have to "design" -
-If you want a fairly significant performance gain.
-- Search for "fpga firewall".
-  Something like this: http://netfpga.org/ or
-http://www.xilinx.com/products/intellectual-property/TEMAC.htm
-
-- You can also look for solutions based on GPU.
-  Take a look at the Suricata project
-(http://suricata-ids.org/features/) - Experimental GPU (Unfortunately
-it is still experimental).
-
-
-
-
-2013/3/8 Jim Mellander <jmellander@lbl.gov>:
-> Greetings.
->
-> In the HPC world, and in network intrusion detection, network
-> performance is paramount.  We've found that just having the iptables
-> kernel module loaded without any ruleset substantially reduces
-> performance at high traffic rates.  Some preliminary performance
-> measurements:
->
-> The total traffic (reported by the iperfs) was:
->
-> ~18 Gbps with IPTables enabled - no ruleset
-> ~24 Gbps with IPTables disabled
->
-> Disabling IPTables (and unloading the associated kernel modules)
-> seemed to significantly improve performance, but running with IPTables
-> disabled in production is undesirable.
->
-> Typically, we have interfaces that are external facing that we would
-> like to run IPtables on, but the internal interfaces which are just
-> for internal cluster communications must run as fast as possible.  A
-> similar issue occurs during high-speed network intrusion detection -
-> we want the management interface to be subject to iptables, but we
-> don't want the performance hit of netfilter impeding traffic at the
-> interfaces monitoring the network.
->
-> So, what would be desirable to see is a sysctl setting that would tell
-> netfilter to *completely* stay out of the way on a per-interface
-> basis.  Many supercomputers run linux, and it would be nice to also
-> run iptables, but the performance hit is unacceptable.
->
-> Thanks in advance,
->
-> Jim Mellander
-> NERSC Cybersecurty
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Of course, when talking about multi-Gbps links, one needs to install ha=
+rdware=20
+that can handle filtering that much data. If the OP has all his inter-L=
+AN=20
+traffic passing through a firewall, I might suggest his firewall is und=
+er-
+powered, or might suggest his network topology should be reviewed. If n=
+o=20
+topology changes are possible, then the only recourse is to install a f=
+irewall=20
+that *can* handle filtering that much data.
