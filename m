@@ -1,39 +1,49 @@
-From: AZ 9901 <az9901@gmail.com>
-Subject: iptables as a protocol demultiplexer
-Date: Tue, 12 Mar 2013 19:09:51 +0100
-Message-ID: <E7857ABB-9A3D-4FB2-AFA9-B282454FC070@gmail.com>
-Mime-Version: 1.0 (Apple Message framework v1283)
-Content-Transfer-Encoding: 8BIT
-Return-path: <netfilter-owner@vger.kernel.org>
+From: Silviu-Mihai Popescu <silviupopescu1990@gmail.com>
+Subject: [PATCH] bridge: netfilter: use PTR_RET instead of IS_ERR + PTR_ERR
+Date: Tue, 12 Mar 2013 20:11:33 +0200
+Message-ID: <1363111893-25146-1-git-send-email-silviupopescu1990@gmail.com>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=x-received:from:content-type:content-transfer-encoding:subject:date
-         :message-id:to:mime-version:x-mailer;
-        bh=fVxG+b/P09QKMRJzG8WiNAaz1lZTa2Idyk0fg+3tdf0=;
-        b=MMhRZfYMQ2oC+vsQgZfACRzQ05mZHl397vT7UKjkdsJ4N0lCVHnvOSba42Xve/gE4/
-         vHuqe2lASBwN1+BltmaTEfKQmtqVu1PFnxV2ofZmocDr1Y0Ohj5aUHeIRrYpd2GISeMv
-         GnNYSJyNhUrppVvTLpeEs+0j+QKvWK3cfNQSzQIQukhtQC3aEsp7NkMT2jFdODG5DTa9
-         zN6zeOmwaWpL2utGPToz6FGRBzy397lLdz4025uCd9AXzvBzQ7dVmrpwFWVU2uogUZwW
-         kKqpUcibQhoRMWNyR/M9tOQcCoCh81X8Ua5TlfMQHlVPbuiVfAElpGSjoQTp5bkmzXyx
-         7h4w==
-Sender: netfilter-owner@vger.kernel.org
+        h=x-received:from:to:cc:subject:date:message-id:x-mailer;
+        bh=Y7WbPuQ35jqn38WN1ZvX/3LuHf6HlnAASJ4b8bLP+vo=;
+        b=jCsiUyY7Ibjb4jLUt6/JS3DMceymkO1zuX19sIgCSmtZFSrs9BP6e5Er6yGCTsSCHe
+         CRDacw+xOvshM6DnOipHWpPAF3KPBdAv1CJx+7bJ/IB44rff+NS33CnnpD0lIb3Fj3H+
+         KcjPDxHv+P4rKYYfvTvN/lTmo+JX5XgakSrqaS2E/cHQ6DHXUSWgzfOhxXhOLBI9n80S
+         vLlypg3zR2pmWhsMazjpoUvZpuSzeXsbMVZCjIlDgHbl4rQ2Ao7OvIQUVxJ/mhorYJIV
+         G6In3bAjD8684MKWXExHOhUor8ALQF0h53j1JuNLuozYrETdZ/c6FFtsd9frCo/6UTqw
+         MStQ==
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter-devel@vger.kernel.org
+Cc: bart.de.schuymer@pandora.be, pablo@netfilter.org, kaber@trash.net, stephen@networkplumber.org, davem@davemloft.net, netfilter@vger.kernel.org, coreteam@netfilter.org, bridge@lists.linux-foundation.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Silviu-Mihai Popescu <silviupopescu1990@gmail.com>
 
-Hello,
+This uses PTR_RET instead of IS_ERR and PTR_ERR in order to increase
+readability.
 
-sslh (http://www.rutschle.net/tech/sslh.shtml) works as a protocol demultiplexer, it allows to separate SSH and HTTPS streams which arrive on the same port (443 for instance).
-I would like to do the same thing but with iptables only.
-Is it possible ?
-I think that using PREROUTING, string, conntrack... it could be.
-I tried but I did not manage to make it work.
+Signed-off-by: Silviu-Mihai Popescu <silviupopescu1990@gmail.com>
+---
+ net/bridge/netfilter/ebtable_broute.c |    4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-Could you help me ?
-
-Thank you very much for your support !
-
-Best regards,
-
-Ben
+diff --git a/net/bridge/netfilter/ebtable_broute.c b/net/bridge/netfilter/ebtable_broute.c
+index 40d8258..70f656c 100644
+--- a/net/bridge/netfilter/ebtable_broute.c
++++ b/net/bridge/netfilter/ebtable_broute.c
+@@ -64,9 +64,7 @@ static int ebt_broute(struct sk_buff *skb)
+ static int __net_init broute_net_init(struct net *net)
+ {
+ 	net->xt.broute_table = ebt_register_table(net, &broute_table);
+-	if (IS_ERR(net->xt.broute_table))
+-		return PTR_ERR(net->xt.broute_table);
+-	return 0;
++	return PTR_RET(net->xt.broute_table);
+ }
+ 
+ static void __net_exit broute_net_exit(struct net *net)
+-- 
+1.7.9.5
 
