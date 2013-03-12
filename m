@@ -1,34 +1,39 @@
-From: <ggeorgiev@eurista.com>
-Subject: RE: Need a way to match vlan / pcp fields in 802.1Q header
-Date: Tue, 12 Mar 2013 06:38:30 -0700
-Message-ID: <20130312063830.e96aff9bbdc3fe78db33ffdcbc125810.385c1da50f.wbe@email03.secureserver.net>
-Mime-Version: 1.0
+From: AZ 9901 <az9901@gmail.com>
+Subject: iptables as a protocol demultiplexer
+Date: Tue, 12 Mar 2013 19:09:51 +0100
+Message-ID: <E7857ABB-9A3D-4FB2-AFA9-B282454FC070@gmail.com>
+Mime-Version: 1.0 (Apple Message framework v1283)
 Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=x-received:from:content-type:content-transfer-encoding:subject:date
+         :message-id:to:mime-version:x-mailer;
+        bh=fVxG+b/P09QKMRJzG8WiNAaz1lZTa2Idyk0fg+3tdf0=;
+        b=MMhRZfYMQ2oC+vsQgZfACRzQ05mZHl397vT7UKjkdsJ4N0lCVHnvOSba42Xve/gE4/
+         vHuqe2lASBwN1+BltmaTEfKQmtqVu1PFnxV2ofZmocDr1Y0Ohj5aUHeIRrYpd2GISeMv
+         GnNYSJyNhUrppVvTLpeEs+0j+QKvWK3cfNQSzQIQukhtQC3aEsp7NkMT2jFdODG5DTa9
+         zN6zeOmwaWpL2utGPToz6FGRBzy397lLdz4025uCd9AXzvBzQ7dVmrpwFWVU2uogUZwW
+         kKqpUcibQhoRMWNyR/M9tOQcCoCh81X8Ua5TlfMQHlVPbuiVfAElpGSjoQTp5bkmzXyx
+         7h4w==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hello again,
+Hello,
 
-Looks this is a tough topic, no one knows something about. No wonder,
-barely someone has similar need - but given that in Linux all is
-possible, even such a weird task shall be doable. 
+sslh (http://www.rutschle.net/tech/sslh.shtml) works as a protocol demultiplexer, it allows to separate SSH and HTTPS streams which arrive on the same port (443 for instance).
+I would like to do the same thing but with iptables only.
+Is it possible ?
+I think that using PREROUTING, string, conntrack... it could be.
+I tried but I did not manage to make it work.
 
-I am still digging into this, and I can imagine two ways up to now:
+Could you help me ?
 
-  - First, find some way (sysctl setting?) that will permit
-ebtables/iptables to work on the raw vlan trunk, eth0. Then tell
-ebtables 'do what I tell you, don't think', u32 match CoS in offset 14,
-and accordingly modify DSCP in offset 20. After it is easy with
-iptables. This is the best solution I can imagine. 
+Thank you very much for your support !
 
-  - Second, do a small application using libnetfilter_queue which hooks
-on PREROUTING at eth0 and does the same. Writing C code needs thinking,
-so this is second-best.
+Best regards,
 
-If someone has some thought about this, let discuss. I am heading to
-libnetfilter_queue for now, reluctantly.
+Ben
 
-All the best, George.
