@@ -1,157 +1,70 @@
-From: Vladimir Davydov <vdavydov@parallels.com>
-Subject: [PATCH] netfilter: nf_conntrack: Batch cleanup
-Date: Thu, 14 Mar 2013 13:40:14 +0400
-Message-ID: <1363254014-10725-1-git-send-email-vdavydov@parallels.com>
+From: Stefan Sabolowitsch <Stefan.Sabolowitsch@felten-group.com>
+Subject: need help with nfqueue and bridge
+Date: Thu, 14 Mar 2013 14:51:57 +0000
+Message-ID: <E7F178B652D7E546A7B0B46511A3A5B919843D2A@SFG21.feltengroup.local>
+Reply-To: Stefan.Sabolowitsch@felten-group.com
 Mime-Version: 1.0
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, devel@openvz.org, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, "Eric W. Biederman" <ebiederm@xmission.com>
+Content-Transfer-Encoding: 8BIT
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=felten-group.com;
+	s=feltengroup_com; l=3529; t=1363272722; x=1363877522;
+	q=dns/txt; h=DomainKey-Signature:Received:VBR-Info:Received:From:
+	To:Subject:Thread-Topic:Thread-Index:Date:Message-ID:
+	Accept-Language:Content-Language:Content-Type:Content-ID:
+	Content-Transfer-Encoding:MIME-Version:Reply-To; bh=6rZfsvN/3XJ1
+	zpglR0r5qs/u2x/40+IKIlSRckrvKWE=; b=OwNLyeVaeDkqddofmUcwDDiGQQoB
+	vuy6Ppkbrzbx9zwnirQ337GAxLF2zEu7ZzdAKLAioD1P5REl8rRmOHZfYgvNXQ7I
+	/3JWCsjW144R67mP0SDkEmlj9E42QUN5z3d1rMEWZ/0qmWddwcqGfEFjtuuUOQ1/
+	agbQ/CGqentxMl4=
+Content-Language: de-DE
+Content-ID: <BADEFC195B47924AAED47E9E154583B3@felten-group.com>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-The patch introduces nf_conntrack_cleanup_net_list(), which cleanups
-nf_conntrack for a list of netns and calls synchronize_net() only once
-for them all. This should reduce netns destruction time.
---
-I've measured cleanup time for 1k dummy net ns. Here are the results:
+Hi all,
+i have here Centos 6.4 with 3.8.2-2.el6.elrepo.x86_64 kernel an latest iptables.
 
- <without the patch>
- # modprobe nf_conntrack
- # time modprobe -r nf_conntrack
+I have the following Queue:
+iptables -A FORWARD -i br0 -j NFQUEUE --queue-bypass --queue-num 1
+iptables -A FORWARD -i br1 -j NFQUEUE --queue-bypass --queue-num 2
+iptables -A FORWARD -i br2 -j NFQUEUE --queue-bypass --queue-num 3
 
- real	0m10.337s
- user	0m0.000s
- sys	0m0.376s
+Queue 1 and 2 have data but not 3 (br2)
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+num   pkts bytes target     prot opt in     out     source               destination         
+1     901K  728M NFQUEUE    all  --  br0    *       0.0.0.0/0            0.0.0.0/0            NFQUEUE num 1 bypass
+2     117K 9150K NFQUEUE    all  --  br1    *       0.0.0.0/0            0.0.0.0/0            NFQUEUE num 2 bypass
+3        0     0 NFQUEUE    all  --  br2    *       0.0.0.0/0            0.0.0.0/0            NFQUEUE num 3 bypass
 
- <with the patch>
- # modprobe nf_conntrack
- # time modprobe -r nf_conntrack
+However br2 gets data, you can see it with tcpdump
 
- real    0m5.661s
- user    0m0.000s
- sys     0m0.216s
+[root@ipd2 Wecker-DMZ]# tcpdump -i br2
+tcpdump: WARNING: br2: no IPv4 address assigned
+tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
+listening on br2, link-type EN10MB (Ethernet), capture size 65535 bytes
+14:48:12.557657 ARP, Reply 192.168.22.13 is-at d4:20:6d:4b:dc:4f (oui Unknown), length 46
+14:48:14.872485 ARP, Reply 192.168.22.11 is-at 1c:b0:94:49:81:ad (oui Unknown), length 46
+14:48:17.366026 ARP, Request who-has 192.168.21.1 tell 192.168.21.12, length 46
+14:48:17.366332 ARP, Reply 192.168.21.1 is-at 00:10:db:d0:90:07 (oui Unknown), length 46
+14:48:17.674916 IP 192.168.21.12.55191 > 239.255.255.250.ssdp: UDP, length 133
+14:48:20.682336 IP 192.168.21.12.55191 > 239.255.255.250.ssdp: UDP, length 133
+14:48:23.777492 IP 192.168.21.12.55191 > 239.255.255.250.ssdp: UDP, length 133
+14:48:26.735148 IP 192.168.21.12.55191 > 239.255.255.250.ssdp: UDP, length 133
+14:48:27.733482 ARP, Reply 192.168.22.13 is-at d4:20:6d:4b:dc:4f (oui Unknown), length 46
+14:48:29.741766 IP 192.168.21.12.55191 > 239.255.255.250.ssdp: UDP, length 133
+14:48:29.983638 ARP, Reply 192.168.22.11 is-at 1c:b0:94:49:81:ad (oui Unknown), length 46
+14:48:32.752335 IP 192.168.21.12.55191 > 239.255.255.250.ssdp: UDP, length 133
+14:48:36.645248 IP 192.168.21.12.netbios-dgm > 192.168.21.255.netbios-dgm: NBT UDP PACKET(138)
+14:48:42.909740 ARP, Reply 192.168.22.13 is-at d4:20:6d:4b:dc:4f (oui Unknown), length 46
+14:48:45.098749 ARP, Reply 192.168.22.11 is-at 1c:b0:94:49:81:ad (oui Unknown), length 46
+14:48:53.830337 IP 192.168.21.16.54218 > fa-in-f108.1e100.net.imaps: Flags [S], seq 4290929463, win 14600, options [mss 1460,sackOK,TS val 56595795 ecr 0,nop,wscale 6], length 0
+14:48:54.126394 IP 192.168.22.13.39232 > 173.192.219.140-static.reverse.softlayer.com.https: Flags [P.], seq 2793050904:2793050905, ack 1478286381, win 8120, options [nop,nop,TS val 3886140 ecr 3960200924], length 1
+14:48:54.269009 IP 173.192.219.140-static.reverse.softlayer.com.https > 192.168.22.13.39232: Flags [.], ack 1, win 513, options [nop,nop,TS val 3960484207 ecr 3886140], length 0
+14:48:55.165501 IP 192.168.22.13.39232 > 173.192.219.140-static.reverse.softlayer.com.https: Flags [P.], seq 1:3, ack 1, win 8120, options [nop,nop,TS val 3886198 ecr 3960484207], length 2
+14:48:55.308009 IP 173.192.219.140-static.reverse.softlayer.com.https > 192.168.22.13.39232: Flags [.], ack 3, win 513, options [nop,nop,TS val 3960485246 ecr 3886198], length 0
 
-Signed-off-by: Vladimir Davydov <vdavydov@parallels.com>
-Cc: Patrick McHardy <kaber@trash.net>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: "Eric W. Biederman" <ebiederm@xmission.com>
----
- include/net/netfilter/nf_conntrack_core.h |    1 +
- net/netfilter/nf_conntrack_core.c         |   46 ++++++++++++++++++++---------
- net/netfilter/nf_conntrack_standalone.c   |   16 ++++++----
- 3 files changed, 43 insertions(+), 20 deletions(-)
-
-diff --git a/include/net/netfilter/nf_conntrack_core.h b/include/net/netfilter/nf_conntrack_core.h
-index 930275f..fb2b623 100644
---- a/include/net/netfilter/nf_conntrack_core.h
-+++ b/include/net/netfilter/nf_conntrack_core.h
-@@ -27,6 +27,7 @@ extern unsigned int nf_conntrack_in(struct net *net,
- 
- extern int nf_conntrack_init_net(struct net *net);
- extern void nf_conntrack_cleanup_net(struct net *net);
-+extern void nf_conntrack_cleanup_net_list(struct list_head *net_exit_list);
- 
- extern int nf_conntrack_proto_pernet_init(struct net *net);
- extern void nf_conntrack_proto_pernet_fini(struct net *net);
-diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-index c8e001a..09c02ef 100644
---- a/net/netfilter/nf_conntrack_core.c
-+++ b/net/netfilter/nf_conntrack_core.c
-@@ -1364,30 +1364,48 @@ void nf_conntrack_cleanup_end(void)
-  */
- void nf_conntrack_cleanup_net(struct net *net)
- {
-+	LIST_HEAD(single);
-+
-+	list_add(&net->exit_list, &single);
-+	nf_conntrack_cleanup_net_list(&single);
-+}
-+
-+void nf_conntrack_cleanup_net_list(struct list_head *net_exit_list)
-+{
-+	int busy;
-+	struct net *net;
-+
- 	/*
- 	 * This makes sure all current packets have passed through
- 	 *  netfilter framework.  Roll on, two-stage module
- 	 *  delete...
- 	 */
- 	synchronize_net();
-- i_see_dead_people:
--	nf_ct_iterate_cleanup(net, kill_all, NULL);
--	nf_ct_release_dying_list(net);
--	if (atomic_read(&net->ct.count) != 0) {
-+i_see_dead_people:
-+	busy = 0;
-+	list_for_each_entry(net, net_exit_list, exit_list) {
-+		nf_ct_iterate_cleanup(net, kill_all, NULL);
-+		nf_ct_release_dying_list(net);
-+		if (atomic_read(&net->ct.count) != 0)
-+			busy = 1;
-+	}
-+	if (busy) {
- 		schedule();
- 		goto i_see_dead_people;
- 	}
- 
--	nf_ct_free_hashtable(net->ct.hash, net->ct.htable_size);
--	nf_conntrack_proto_pernet_fini(net);
--	nf_conntrack_helper_pernet_fini(net);
--	nf_conntrack_ecache_pernet_fini(net);
--	nf_conntrack_tstamp_pernet_fini(net);
--	nf_conntrack_acct_pernet_fini(net);
--	nf_conntrack_expect_pernet_fini(net);
--	kmem_cache_destroy(net->ct.nf_conntrack_cachep);
--	kfree(net->ct.slabname);
--	free_percpu(net->ct.stat);
-+	list_for_each_entry(net, net_exit_list, exit_list) {
-+		nf_ct_free_hashtable(net->ct.hash, net->ct.htable_size);
-+		nf_conntrack_proto_pernet_fini(net);
-+		nf_conntrack_helper_pernet_fini(net);
-+		nf_conntrack_ecache_pernet_fini(net);
-+		nf_conntrack_tstamp_pernet_fini(net);
-+		nf_conntrack_acct_pernet_fini(net);
-+		nf_conntrack_expect_pernet_fini(net);
-+		kmem_cache_destroy(net->ct.nf_conntrack_cachep);
-+		kfree(net->ct.slabname);
-+		free_percpu(net->ct.stat);
-+	}
- }
- 
- void *nf_ct_alloc_hashtable(unsigned int *sizep, int nulls)
-diff --git a/net/netfilter/nf_conntrack_standalone.c b/net/netfilter/nf_conntrack_standalone.c
-index 6bcce40..6c69fbd 100644
---- a/net/netfilter/nf_conntrack_standalone.c
-+++ b/net/netfilter/nf_conntrack_standalone.c
-@@ -545,16 +545,20 @@ out_init:
- 	return ret;
- }
- 
--static void nf_conntrack_pernet_exit(struct net *net)
-+static void nf_conntrack_pernet_exit(struct list_head *net_exit_list)
- {
--	nf_conntrack_standalone_fini_sysctl(net);
--	nf_conntrack_standalone_fini_proc(net);
--	nf_conntrack_cleanup_net(net);
-+	struct net *net;
-+
-+	list_for_each_entry(net, net_exit_list, exit_list) {
-+		nf_conntrack_standalone_fini_sysctl(net);
-+		nf_conntrack_standalone_fini_proc(net);
-+	}
-+	nf_conntrack_cleanup_net_list(net_exit_list);
- }
- 
- static struct pernet_operations nf_conntrack_net_ops = {
--	.init = nf_conntrack_pernet_init,
--	.exit = nf_conntrack_pernet_exit,
-+	.init		= nf_conntrack_pernet_init,
-+	.exit_batch	= nf_conntrack_pernet_exit,
- };
- 
- static int __init nf_conntrack_standalone_init(void)
--- 
-1.7.1
+any idea ?
+thanks for any help
+Stefan
