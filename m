@@ -1,63 +1,83 @@
-From: Bourne Without <blackhole@airpost.net>
-Subject: Re: [Announce] ipset - programmable completion (bash)
-Date: Mon, 18 Mar 2013 06:04:01 +0100
-Message-ID: <5146A041.9010309@airpost.net>
-References: <5112CA9C.1040802@airpost.net>
-Reply-To: blackhole@airpost.net
+From: Gao feng <gaofeng@cn.fujitsu.com>
+Subject: Re: [PATCH] netfilter: nf_conntrack: Batch cleanup
+Date: Mon, 18 Mar 2013 17:33:02 +0800
+Message-ID: <5146DF4E.9030609@cn.fujitsu.com>
+References: <1363254014-10725-1-git-send-email-vdavydov@parallels.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=airpost.net; h=
-	message-id:date:from:reply-to:mime-version:to:subject:references
-	:in-reply-to:content-type:content-transfer-encoding; s=mesmtp;
-	 bh=Dwb53MLs0h82WYL4YKHIie4vCCI=; b=puYyXfC49wBDJUsawGYVtwtZstcR
-	7uO1FJv81MA2YYkW+wtzagyFw0eO5GCLh4TEwP7Xt6FwyeXa14Nm1DgnqxKcNjQa
-	2ou7laq/Dp/QNS+BytuX60WtYzDeq9yA1c6A2p0Qws+tIn91Dkqhke6nlipjVed2
-	5C10NPSLhVCYoyQ=
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
-	messagingengine.com; h=message-id:date:from:reply-to
-	:mime-version:to:subject:references:in-reply-to:content-type
-	:content-transfer-encoding; s=smtpout; bh=Dwb53MLs0h82WYL4YKHIie
-	4vCCI=; b=e1eBQPuCn8XdjCcFSj5vssatdaByge5dE00iPejs3vc1NHWDNyn8Dm
-	xlaRFUObGfs0V3Er8Ff1+t3kCeDlyVcZDWlS+O9Hu/nA47cGQRLtlsF1D+D2HKzb
-	7mypkfljys5q0P13l+uWLDFSPeslD+LJtDHYdVSWY/GzTx6Fid3zU=
-In-Reply-To: <5112CA9C.1040802@airpost.net>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <1363254014-10725-1-git-send-email-vdavydov@parallels.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Vladimir Davydov <vdavydov@parallels.com>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, devel@openvz.org, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, "Eric W. Biederman" <ebiederm@xmission.com>
 
-On 06.02.2013 22:26, Born Without wrote:
-> Hello community!
->
-> I've written programmable completion code for ipset.
-[...]
+On 2013/03/14 17:40, Vladimir Davydov wrote:
+> The patch introduces nf_conntrack_cleanup_net_list(), which cleanups
+> nf_conntrack for a list of netns and calls synchronize_net() only once
+> for them all. This should reduce netns destruction time.
+> --
+> I've measured cleanup time for 1k dummy net ns. Here are the results:
+> 
+>  <without the patch>
+>  # modprobe nf_conntrack
+>  # time modprobe -r nf_conntrack
+> 
+>  real	0m10.337s
+>  user	0m0.000s
+>  sys	0m0.376s
+> 
+>  <with the patch>
+>  # modprobe nf_conntrack
+>  # time modprobe -r nf_conntrack
+> 
+>  real    0m5.661s
+>  user    0m0.000s
+>  sys     0m0.216s
+> 
+> Signed-off-by: Vladimir Davydov <vdavydov@parallels.com>
+> Cc: Patrick McHardy <kaber@trash.net>
+> Cc: "David S. Miller" <davem@davemloft.net>
+> Cc: "Eric W. Biederman" <ebiederm@xmission.com>
+> ---
+>  include/net/netfilter/nf_conntrack_core.h |    1 +
+>  net/netfilter/nf_conntrack_core.c         |   46 ++++++++++++++++++++---------
+>  net/netfilter/nf_conntrack_standalone.c   |   16 ++++++----
+>  3 files changed, 43 insertions(+), 20 deletions(-)
+> 
+> diff --git a/include/net/netfilter/nf_conntrack_core.h b/include/net/netfilter/nf_conntrack_core.h
+> index 930275f..fb2b623 100644
+> --- a/include/net/netfilter/nf_conntrack_core.h
+> +++ b/include/net/netfilter/nf_conntrack_core.h
+> @@ -27,6 +27,7 @@ extern unsigned int nf_conntrack_in(struct net *net,
+>  
+>  extern int nf_conntrack_init_net(struct net *net);
+>  extern void nf_conntrack_cleanup_net(struct net *net);
+> +extern void nf_conntrack_cleanup_net_list(struct list_head *net_exit_list);
+>  
+>  extern int nf_conntrack_proto_pernet_init(struct net *net);
+>  extern void nf_conntrack_proto_pernet_fini(struct net *net);
+> diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
+> index c8e001a..09c02ef 100644
+> --- a/net/netfilter/nf_conntrack_core.c
+> +++ b/net/netfilter/nf_conntrack_core.c
+> @@ -1364,30 +1364,48 @@ void nf_conntrack_cleanup_end(void)
+>   */
+>  void nf_conntrack_cleanup_net(struct net *net)
+>  {
+> +	LIST_HEAD(single);
+> +
+> +	list_add(&net->exit_list, &single);
+> +	nf_conntrack_cleanup_net_list(&single);
+> +}
+> +
 
-> Code and files are available here:
->
-> https://sourceforge.net/projects/ipset-bashcompl/
-> https://github.com/AllKind/ipset-bash-completion
+After adding net->exit_list to this single list,in setup_net we will
+re-add this net->exit_list to net_exit_list. So there has no invalid
+pointer problem.
 
+This patch looks good to me.
+Acked-by: Gao feng <gaofeng@cn.fujitsu.com>
 
-I'm glad to announce a new version (2.0).
-This release comes with a lot of fixes and improvements.
-
-New features are:
-
-Choose short, long or both forms of options by setting an environment 
-variable.
-
-Completion on add/create/del options has been added.
-
-Hostname completion has been extended.
-
-MAC and IP addresses can be retrieved from the system and/or from a file.
-
-
-Direct download link:
-https://sourceforge.net/projects/ipset-bashcompl/files/latest/download?source=navbar
-
-
-Best regards
-
-
+Thanks!
