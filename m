@@ -1,83 +1,64 @@
-From: Gao feng <gaofeng@cn.fujitsu.com>
-Subject: Re: [PATCH] netfilter: nf_conntrack: Batch cleanup
-Date: Mon, 18 Mar 2013 17:33:02 +0800
-Message-ID: <5146DF4E.9030609@cn.fujitsu.com>
-References: <1363254014-10725-1-git-send-email-vdavydov@parallels.com>
+From: Roman Hoog Antink <rha@open.ch>
+Subject: conntrackd: fix IPv6 address pattern
+Date: Tue, 19 Mar 2013 15:36:18 +0100
+Message-ID: <514877E2.9050105@open.ch>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <1363254014-10725-1-git-send-email-vdavydov@parallels.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Type: multipart/mixed;
+ boundary="------------010305010902000709040001"
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Vladimir Davydov <vdavydov@parallels.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, devel@openvz.org, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, "Eric W. Biederman" <ebiederm@xmission.com>
+To: netfilter@vger.kernel.org
 
-On 2013/03/14 17:40, Vladimir Davydov wrote:
-> The patch introduces nf_conntrack_cleanup_net_list(), which cleanups
-> nf_conntrack for a list of netns and calls synchronize_net() only once
-> for them all. This should reduce netns destruction time.
-> --
-> I've measured cleanup time for 1k dummy net ns. Here are the results:
-> 
->  <without the patch>
->  # modprobe nf_conntrack
->  # time modprobe -r nf_conntrack
-> 
->  real	0m10.337s
->  user	0m0.000s
->  sys	0m0.376s
-> 
->  <with the patch>
->  # modprobe nf_conntrack
->  # time modprobe -r nf_conntrack
-> 
->  real    0m5.661s
->  user    0m0.000s
->  sys     0m0.216s
-> 
-> Signed-off-by: Vladimir Davydov <vdavydov@parallels.com>
-> Cc: Patrick McHardy <kaber@trash.net>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: "Eric W. Biederman" <ebiederm@xmission.com>
-> ---
->  include/net/netfilter/nf_conntrack_core.h |    1 +
->  net/netfilter/nf_conntrack_core.c         |   46 ++++++++++++++++++++---------
->  net/netfilter/nf_conntrack_standalone.c   |   16 ++++++----
->  3 files changed, 43 insertions(+), 20 deletions(-)
-> 
-> diff --git a/include/net/netfilter/nf_conntrack_core.h b/include/net/netfilter/nf_conntrack_core.h
-> index 930275f..fb2b623 100644
-> --- a/include/net/netfilter/nf_conntrack_core.h
-> +++ b/include/net/netfilter/nf_conntrack_core.h
-> @@ -27,6 +27,7 @@ extern unsigned int nf_conntrack_in(struct net *net,
->  
->  extern int nf_conntrack_init_net(struct net *net);
->  extern void nf_conntrack_cleanup_net(struct net *net);
-> +extern void nf_conntrack_cleanup_net_list(struct list_head *net_exit_list);
->  
->  extern int nf_conntrack_proto_pernet_init(struct net *net);
->  extern void nf_conntrack_proto_pernet_fini(struct net *net);
-> diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-> index c8e001a..09c02ef 100644
-> --- a/net/netfilter/nf_conntrack_core.c
-> +++ b/net/netfilter/nf_conntrack_core.c
-> @@ -1364,30 +1364,48 @@ void nf_conntrack_cleanup_end(void)
->   */
->  void nf_conntrack_cleanup_net(struct net *net)
->  {
-> +	LIST_HEAD(single);
-> +
-> +	list_add(&net->exit_list, &single);
-> +	nf_conntrack_cleanup_net_list(&single);
-> +}
-> +
+This is a multi-part message in MIME format.
+--------------010305010902000709040001
+Content-Type: text/plain; charset=ISO-8859-1
+Content-Transfer-Encoding: 7bit
 
-After adding net->exit_list to this single list,in setup_net we will
-re-add this net->exit_list to net_exit_list. So there has no invalid
-pointer problem.
+Hi
 
-This patch looks good to me.
-Acked-by: Gao feng <gaofeng@cn.fujitsu.com>
+Please consider accepting the following patch that fixes an IPv6 address
+pattern in the lexical parser.
 
-Thanks!
+-Roman
+
+--------------010305010902000709040001
+Content-Type: text/x-patch;
+ name="ipv6-conntrackd.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="ipv6-conntrackd.patch"
+
+commit 747bb23944cca2e6927f05f60fc6fba70e187ca0
+Author: James Guthrie <jag@open.ch>
+Date:   Tue Mar 19 15:12:35 2013 +0100
+
+    conntrackd: fix IPv6 address pattern
+    
+    The conntrackd configuration allows for IPv6 addresses to be specified that
+    should be ignored (connections for which should not be synchronised). The
+    Conntrackd config accepts two forms of IPv6 address:
+    1: fe80::1
+    2: fe80:0:0:0:0:0:0:1
+    
+    This patch fixes the lexical parser for form 2.
+    
+    Signed-off-by: Roman Hoog Antink <rha@open.ch>
+
+diff --git a/src/read_config_lex.l b/src/read_config_lex.l
+index bec2d81..b4d11d4 100644
+--- a/src/read_config_lex.l
++++ b/src/read_config_lex.l
+@@ -44,8 +44,8 @@ ip4		{ip4_part}\.{ip4_part}\.{ip4_part}\.{ip4_part}{ip4_cidr}?
+ hex_255		[0-9a-fA-F]{1,4}
+ ip6_cidr	\/[0-1]*[0-9]*[0-9]+
+ ip6_part	{hex_255}":"?
+-ip6_form1	{ip6_part}{0,16}"::"{ip6_part}{0,16}
+-ip6_form2	({hex_255}":"){16}{hex_255}
++ip6_form1	{ip6_part}{0,7}"::"{ip6_part}{0,7}
++ip6_form2	({hex_255}":"){0,7}{hex_255}
+ ip6		{ip6_form1}{ip6_cidr}?|{ip6_form2}{ip6_cidr}?
+ string		[a-zA-Z][a-zA-Z0-9\.\-]*
+ persistent	[P|p][E|e][R|r][S|s][I|i][S|s][T|t][E|e][N|n][T|T]
+
+--------------010305010902000709040001--
