@@ -1,78 +1,28 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: [PATCH] ip[6]tables: show --protocol instead of --proto in usage
-Date: Wed, 20 Mar 2013 15:14:06 +0100
-Message-ID: <5149C42E.4040900@chello.at>
-Reply-To: mart.frauenlob@chello.at
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: conntrackd: fix IPv6 address pattern
+Date: Wed, 20 Mar 2013 15:53:18 +0100
+Message-ID: <20130320145318.GA14299@localhost>
+References: <514877E2.9050105@open.ch>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------050208020601000006090209"
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <514877E2.9050105@open.ch>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter-devel@vger.kernel.org
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-
-This is a multi-part message in MIME format.
---------------050208020601000006090209
-Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: Roman Hoog Antink <rha@open.ch>
+Cc: netfilter@vger.kernel.org, Netfilter Development Mailing list <netfilter-devel@vger.kernel.org>
 
-Good day!
+Hi Roman,
 
-As the man page shows --protocol not --proto, also do so in the usage 
-text displayed by ip[6]tables -h.
+On Tue, Mar 19, 2013 at 03:36:18PM +0100, Roman Hoog Antink wrote:
+> Hi
+> 
+> Please consider accepting the following patch that fixes an IPv6 address
+> pattern in the lexical parser.
 
-Attached patch does the change.
+Applied, thanks.
 
-Best regards
-
-Mart
-
---------------050208020601000006090209
-Content-Type: text/plain; charset=windows-1252;
- name="Show-protocol-instead-of-proto-in-usage-text.patch"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="Show-protocol-instead-of-proto-in-usage-text.patch"
-
-From b93b66aed17fb53fd3c5b4787694f1bf99a585a6 Mon Sep 17 00:00:00 2001
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Date: Wed, 20 Mar 2013 14:51:03 +0100
-Subject: [PATCH] Show --protocol instead of --proto in usage text.
-
----
- iptables/ip6tables.c |    2 +-
- iptables/iptables.c  |    2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
-index 4cfbea3..d150a7b 100644
---- a/iptables/ip6tables.c
-+++ b/iptables/ip6tables.c
-@@ -237,7 +237,7 @@ exit_printhelp(const struct xtables_rule_match *matches)
- "Options:\n"
- "    --ipv4	-4		Error (line is ignored by ip6tables-restore)\n"
- "    --ipv6	-6		Nothing (line is ignored by iptables-restore)\n"
--"[!] --proto	-p proto	protocol: by number or name, eg. `tcp'\n"
-+"[!] --protocol	-p proto	protocol: by number or name, eg. `tcp'\n"
- "[!] --source	-s address[/mask][,...]\n"
- "				source specification\n"
- "[!] --destination -d address[/mask][,...]\n"
-diff --git a/iptables/iptables.c b/iptables/iptables.c
-index 085eea1..79fa37b 100644
---- a/iptables/iptables.c
-+++ b/iptables/iptables.c
-@@ -231,7 +231,7 @@ exit_printhelp(const struct xtables_rule_match *matches)
- "Options:\n"
- "    --ipv4	-4		Nothing (line is ignored by ip6tables-restore)\n"
- "    --ipv6	-6		Error (line is ignored by iptables-restore)\n"
--"[!] --proto	-p proto	protocol: by number or name, eg. `tcp'\n"
-+"[!] --protocol	-p proto	protocol: by number or name, eg. `tcp'\n"
- "[!] --source	-s address[/mask][...]\n"
- "				source specification\n"
- "[!] --destination -d address[/mask][...]\n"
--- 
-1.7.2.5
-
-
---------------050208020601000006090209--
+BTW, please, next time post your patch to netfilter-devel ML. That
+should help to make sure the patch hits mainstream.
