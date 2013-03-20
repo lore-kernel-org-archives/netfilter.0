@@ -1,67 +1,78 @@
-From: Nikolai Zhubr <n-a-zhubr@yandex.ru>
-Subject: Re: netfilter+libvirt=(smth got broken?)
-Date: Wed, 20 Mar 2013 17:41:37 +0400
-Message-ID: <5149BC91.4090502@yandex.ru>
-References: <5149AFD3.2070108@yandex.ru>
+From: Mart Frauenlob <mart.frauenlob@chello.at>
+Subject: [PATCH] ip[6]tables: show --protocol instead of --proto in usage
+Date: Wed, 20 Mar 2013 15:14:06 +0100
+Message-ID: <5149C42E.4040900@chello.at>
+Reply-To: mart.frauenlob@chello.at
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/mixed;
+ boundary="------------050208020601000006090209"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1363786252;
-	bh=FOSah6iwimWzfa/9OsyR4dza8XU69EPqENRlr3A5pPM=;
-	h=Message-ID:Date:From:User-Agent:MIME-Version:To:Subject:
-	 References:In-Reply-To:Content-Type:Content-Transfer-Encoding;
-	b=H/WFNTyymLJSkCMlUfiDiwazBxtXdynzgqay5hyPytNubaCwEUSfl6sWjAYKyOM6h
-	 6pDTVfEds8qKAibHr8RjCKzgAX/kaH2HKf+HCcxnskJULOHB5nFyTFaf9PMasQgYRj
-	 fVhxdblfcmdgwpOHwQpU/22K0QjsmxO1jRlNN/qY=
-In-Reply-To: <5149AFD3.2070108@yandex.ru>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: libvirt-users@redhat.com, netfilter@vger.kernel.org
+To: netfilter-devel@vger.kernel.org
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hello,
-20.03.2013 16:47, I wrote:
-[...]
-> This all looks to me as if "--ctdir" argument somehow magically changed
-> its meaning to the opposite, but this just cannot be! I'm out of ideas
-> and looking for insights. Any hints appreciated quite a lot.
+This is a multi-part message in MIME format.
+--------------050208020601000006090209
+Content-Type: text/plain; charset=ISO-8859-1; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Some more searching over maillists yielded this (quite astonishing):
+Good day!
 
-net/netfilter/xt_conntrack.c	
-diff --git a/net/netfilter/xt_conntrack.c b/net/netfilter/xt_conntrack.c
-index 2c0086a..481a86f 100644
---- a/net/netfilter/xt_conntrack.c
-+++ b/net/netfilter/xt_conntrack.c
-@@ -195,7 +195,7 @@ conntrack_mt(const struct sk_buff *skb, struct 
-xt_action_param *par,
-  		return info->match_flags & XT_CONNTRACK_STATE;
-  	if ((info->match_flags & XT_CONNTRACK_DIRECTION) &&
-  	    (CTINFO2DIR(ctinfo) == IP_CT_DIR_ORIGINAL) ^
--	    !!(info->invert_flags & XT_CONNTRACK_DIRECTION))
-+	    !(info->invert_flags & XT_CONNTRACK_DIRECTION))
-  		return false;
+As the man page shows --protocol not --proto, also do so in the usage 
+text displayed by ip[6]tables -h.
 
-  	if (info->match_flags & XT_CONNTRACK_ORIGSRC)
+Attached patch does the change.
 
-So apparently, netfilter's behaviour was indeed reversed at some point, 
-therefore libvirt stopped working properly.
+Best regards
 
-I'd guess libvirt needs to be adapted then? Is it a known issue or 
-should I fill in bugreport at Novell/Red Hat?
+Mart
+
+--------------050208020601000006090209
+Content-Type: text/plain; charset=windows-1252;
+ name="Show-protocol-instead-of-proto-in-usage-text.patch"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+ filename="Show-protocol-instead-of-proto-in-usage-text.patch"
+
+From b93b66aed17fb53fd3c5b4787694f1bf99a585a6 Mon Sep 17 00:00:00 2001
+From: Mart Frauenlob <mart.frauenlob@chello.at>
+Date: Wed, 20 Mar 2013 14:51:03 +0100
+Subject: [PATCH] Show --protocol instead of --proto in usage text.
+
+---
+ iptables/ip6tables.c |    2 +-
+ iptables/iptables.c  |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/iptables/ip6tables.c b/iptables/ip6tables.c
+index 4cfbea3..d150a7b 100644
+--- a/iptables/ip6tables.c
++++ b/iptables/ip6tables.c
+@@ -237,7 +237,7 @@ exit_printhelp(const struct xtables_rule_match *matches)
+ "Options:\n"
+ "    --ipv4	-4		Error (line is ignored by ip6tables-restore)\n"
+ "    --ipv6	-6		Nothing (line is ignored by iptables-restore)\n"
+-"[!] --proto	-p proto	protocol: by number or name, eg. `tcp'\n"
++"[!] --protocol	-p proto	protocol: by number or name, eg. `tcp'\n"
+ "[!] --source	-s address[/mask][,...]\n"
+ "				source specification\n"
+ "[!] --destination -d address[/mask][,...]\n"
+diff --git a/iptables/iptables.c b/iptables/iptables.c
+index 085eea1..79fa37b 100644
+--- a/iptables/iptables.c
++++ b/iptables/iptables.c
+@@ -231,7 +231,7 @@ exit_printhelp(const struct xtables_rule_match *matches)
+ "Options:\n"
+ "    --ipv4	-4		Nothing (line is ignored by ip6tables-restore)\n"
+ "    --ipv6	-6		Error (line is ignored by iptables-restore)\n"
+-"[!] --proto	-p proto	protocol: by number or name, eg. `tcp'\n"
++"[!] --protocol	-p proto	protocol: by number or name, eg. `tcp'\n"
+ "[!] --source	-s address[/mask][...]\n"
+ "				source specification\n"
+ "[!] --destination -d address[/mask][...]\n"
+-- 
+1.7.2.5
 
 
-Thank you.
-Nikolai
->
-> Thank you.
-> Nikolai
->
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at http://vger.kernel.org/majordomo-info.html
->
->
-
+--------------050208020601000006090209--
