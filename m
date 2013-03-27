@@ -1,45 +1,27 @@
-From: Rodrigo Salazar <rodrodsalazar@gmail.com>
-Subject: libnetfilter_queue not picking up any packets during recv step.
-Date: Tue, 26 Mar 2013 16:32:36 -0700
-Message-ID: <CAPgMsH3poJJ4w0ub+03i3OmTyK7Q+WYM+QPpix5a248eDYZg0w@mail.gmail.com>
+From: Jan Engelhardt <jengelh@inai.de>
+Subject: Re: Question about xt_ipp2p module
+Date: Wed, 27 Mar 2013 14:32:34 +0100 (CET)
+Message-ID: <alpine.LNX.2.01.1303271432150.12443@nerf07.vanv.qr>
+References: <5151FCD4.8020901@stidia.com> <1364333332.1819.5.camel@andrew-desktop> <5152B9AE.4020901@stidia.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:x-received:sender:date:x-google-sender-auth:message-id
-         :subject:from:to:content-type;
-        bh=DnmghRWUr/io6sGOc4B9fN0hx3j291DI+wWHP/5c9jo=;
-        b=G08tIQPobeGY90BiIdetcKsL7T/lZZkJU6Ps6G+A79weB3XlPWwvAUMi3vmrunOOA8
-         HdW/nOHj7cNVrCI1sfL10ykb+0j4UZ2EjtNqYMlceQ2jmyBwsjz81tZVIXXjhy+HC/JD
-         MfZ5j0sZroQtrAl1p9hleYQVF1Wqxv6heZPj7Fw6fSjuQK1+aNdAXEoIYyD1sTBYZlFu
-         wnFy8J21okhF5dxXe07VkjUqU2yJc+iRvBClur9txBF9tjqRqpQVtODvwvWq/Qcx86o1
-         VD+AocXEXmQjYj+WBzDJXCnj/coXu0WIgEK9W67aLEHsfaEJHWqV/csbfAsS3Qzk6Po4
-         zhYg==
+In-Reply-To: <5152B9AE.4020901@stidia.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Dmitry Korzhevin <dmitry.korzhevin@stidia.com>
+Cc: netfilter@vger.kernel.org, andy@andybev.com
 
-Thanks in advance for your help,
+On Wednesday 2013-03-27 10:19, Dmitry Korzhevin wrote:
+>
+> 1 33  2970 ACCEPT     all  --  eth0   *       10.2.0.2   0.0.0.0/0      policy
+> match dir in pol ipsec reqid 116 proto 50
+> 2       26 10983 ACCEPT     all  --  *      eth0    0.0.0.0/0
+>  10.2.0.2            policy match dir out pol ipsec reqid 116 proto 50
+>
+>
+> But, this rules is inserted automaticaly by strongswan ipsec daemon, after my
+> connection..
 
-I am running the demo test code (with queue num 100) nfqnl_test.c
-which is found in the documentation.
-http://www.netfilter.org/projects/libnetfilter_queue/doxygen/nfqnl__test_8c_source.html
-
-I have added the following rules to my iptables:
-sudo iptables -A OUTPUT ! --out-interface lo -p tcp --syn -j NFQUEUE
---queue-bypass --queue-num 100
-sudo iptables -A OUTPUT ! --out-interface lo -p tcp --syn -j LOG --log-level 7
-
-There are many packets arriving at the LOG. But none ever arrive to
-NFQUEUE on the userspace side. recv(fd, buf, sizeof(buf), 0) just
-hangs waiting for the message from the kernel.
-The binding and creation of the queue seems to have gone fine, no
-errors were thrown before reaching this call. I am also running my
-program as root. My output of `lsmod`: http://pastebin.com/m3gBKVst
-
-Any tips to debug this are appreciated!
-
-Thanks,
--- Rod Salazar
+So turn it off in strongswan?
