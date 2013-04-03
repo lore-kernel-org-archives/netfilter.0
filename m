@@ -1,33 +1,66 @@
-From: Lawrence Lee <lawrenceqli@gmail.com>
-Subject: How to directly deliver packets to the L4 layer in the
- NF_IP_PRE_ROUTING hook
-Date: Mon, 1 Apr 2013 18:01:08 +0200
-Message-ID: <CAGXkBO-KcSZqK4v1BvCiGiCyT0pq5mHCK_-a5--myN6k+ZU4Jw@mail.gmail.com>
+From: Daniele Iamartino <danieleiamartino@gmail.com>
+Subject: Source process (PID) of a packet
+Date: Wed, 03 Apr 2013 18:09:10 +0200
+Message-ID: <515C5426.3050909@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:x-received:date:message-id:subject:from:to
-         :content-type;
-        bh=8cj6bWHN2u2Ud5TedtRRiKLiZN/AF1X4ouFE3JBLUdw=;
-        b=D2al+IAxnN27mMY6CWJqp5qLlSu2ZHXZWgfqoQ54RPfF8tKWzQZme5Z5c8GsIz/W88
-         NWXAjwy4CNxh5wOTopWRdAAyXxqRg6nqbFg/5zj5p1z97DHS/jl+aCgsl2exM4qcNBf9
-         54yjPNRADR+SotDwI8tFS8DiAs1CxgqGJYuNl+v1lA4PhISIweBq0E1jwd8srO9lNVOh
-         di2NB710jyHuLmWN9kYnfs0xhzJBC3d2ld+FP88Kyz7BIPn5VhwK4HyTsREYRaX6fNQG
-         m5qOS0t6I7q/xw/M6J2fBu4lVy5BON6zNQb88S0uUGLfww/xaLYJBxShys/oCDevoJzR
-         xDdQ==
+        h=x-received:message-id:date:from:user-agent:mime-version:to:subject
+         :x-enigmail-version:content-type:content-transfer-encoding;
+        bh=MB6c/m30OnHeebhNELKMZzTDG4j1kbCXcwlcBXmthGo=;
+        b=TgvmnvU4a3q5oQg61cIhpLi0RhzqVIOGaEF0lWD3zaL71fLO6fxTTrtrRPd+LYd9cU
+         dcgHQYbh7pHWyfW400ez3vqX5Ya6ALZUcpzHV3Ph1JL9Tpfo/Kth7Xefizi7SlDGX4QJ
+         LbNSJHO6PlR4H7Vh8H2f0SrRbiervcCm2y9bOqNLweopzvmBvi4RIpsf3jod7PpKl3Jm
+         RQzLCYLi0O+pwsb6F0AR9Lhv1mE49XP1s00/EuFor08uX3QGhKX30GN8DnPC0rr2BB7r
+         ijKZ8IALOjHveedPmukMoATPfhv6nrEKRzlKK/Guex6p++Ev1SBK2QS4D1fH0wlSM3O+
+         G7Dg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi,
+Hello,
 
-I  want to directly deliver some packets to the L4 layer when the
-packets get to the hook of NF_IP_PRE_ROUTING. I use the use
-ip_local_deliver() function. However, it does not work. May I know how
-I can make it work. Thank you!
+I've got a problem on my server and I had to find out which process was
+sending UDP packets to a specified host opening and closing the socket
+fastly.
+I can see the UDP requests using
 
-Best Regards,
-Lawrence
+$ netstat -unap
+or
+$ ss -uap
+
+I was finally able to catch the request running netstat in a fast loop
+and catching it.
+
+I was now wandering if it was possibile to do that in another way.
+Something like log the source PID using -j LOG.
+But I saw that LOG target just support the uid/gid.
+Reading the sources of netfilter I saw that's not possibile and I think
+that's because one socket could be used by several processes (I think
+about the case of a process with a socket using a fork).
+So is it not technically possible?
+
+Is it the only way writing an xtables target doing somethin like this:
+# for any fd on the system:
+#   if fd == skb->sk->..->file
+#      match...
+#      ...
+Is this the only way?
+That's looks a bit heavy for the system to process.
+
+I wander also about the outgoing traffic:
+Is it not possible to match any packet coming from a certain PID using a
+match module? I saw the xt_owner and how was the old --pid-owner match
+(I've also fixed it for the new kernel to try it)
+Is it the only way to check for every fd open by that PID and than match
+against the socket related to the packet coming?
+
+Thanks!
+
+-- 
+Daniele Iamartino
+Computer engineering student at Politecnico di Milano, Italy
+
