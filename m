@@ -1,25 +1,38 @@
-From: Bob Reiber <bob@bkss.net>
-Subject: session timers in iiptables-1.3.5-9.1.el5
-Date: Wed, 3 Apr 2013 22:18:14 +0000
-Message-ID: <16F881F4B142A44DA19CD53978B96C481D6E02EF@DAGN02C-E6.exg6.exghost.com>
+From: Nick Edwards <nick.z.edwards@gmail.com>
+Subject: ipv6 rule icmp bug maybe
+Date: Thu, 4 Apr 2013 10:02:28 +1000
+Message-ID: <CAMD-=VJU3PesmF7P4c0nQuk1Nw_XdoUf559h8tXfbEGXEv=2dQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:x-received:date:message-id:subject:from:to
+         :content-type;
+        bh=UNDG+7VYTbIGLDypKAtP5OZLG0Y8Pb6xirTbD9VVk24=;
+        b=NCNgda6xGeVrTpWb9Hac0qhym1YPHL6jsiQKwiSz3OGwJJfjnVpN75QNwY4UKgCsVR
+         Zlwf+AZEHdXjvnkIsi5RWYj4IBVMttpHkPDyJanPmpDhDhz+Ovno6TNsZeDnhy4sUDOW
+         YDQRVtV/L9HH1QvRUB7NOQ6epIDxQNJt9a6DAPxp1vtzIlc5NYXH2+UzRSfH3lc5l7Zd
+         8bxeOn5cfFxSePrAnhqj+hyjkQdAn/DPGNuTeX7g2NsuE1VY83sVdpriQzIY4eAcAFGx
+         zKSMVR2H8xP9w9AcG/IqF32HSZhvjlzJ4eCRNg0drtBbmVoD1y3NOJ4tKvOZqryV/eF8
+         z3KA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-I want to a) determine what the current session timer values are for TCP and UDP traffic and b)how to change those values. I am sure there is a way to do this but so far I have not figured it out. Any help would be appreciated.
+Hi,
 
-Bob Reiber
-BK Sales and Service
-3211 Longfellow Dr
-Belmont, CA 94002
-Tel: 650 376 1122
-Fax: 650 240 4556
+Wondering if this is by design, or  bug
 
+with ipv4 we have been able to
+-P INPUT DROP
+loopback accepts etc...
 
+-A INPUT -s 192.168.1.0/24 -j ACCEPT
 
-The information in this electronic mail is intended for the named recipients only. It may contain privileged and confidential matter; and if you are not an intended recipient, you are hereby notified that copying, forwarding or other dissemination or distribution of thiscommunication by any means is prohibited. If you have received this electronic mail in error, please notify the sender immediately.CONFIDENTIALITY NOTICE: This email message is for the sole use of the intended recipient and may contain confidential and privileged information. Any unauthorized review, use, disclosure or distribution is prohibited. If you are not the intended recipient, please contact the sender by reply email and destroy all copies of the original message and any attachments. Thank you.
+hitting this, means allow all from 192.168.1.1/2/3/4.... etc  - tcp.
+udp. icmp whatever..
+
+But with ip6tables this same approach does not seem to work, it
+permits tcp/udp, but it does not allow icmp, bug?
