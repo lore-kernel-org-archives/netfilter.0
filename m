@@ -1,71 +1,93 @@
-From: Alex Flex <aflexzor@gmail.com>
-Subject: =?UTF-8?B?RFJPUElORyBJQ01QIGFuZCBzdGlsbCBnZXR0aW5nIGtlcm5lbCBtZXM=?=
- =?UTF-8?B?c2FnZXMgb2YgaWNtcCB0cmFmZmljP+KAjw==?=
-Date: Mon, 08 Apr 2013 12:06:59 -0600
-Message-ID: <51630743.2020404@gmail.com>
+From: Jimmy Thrasibule <thrasibule.jimmy@gmail.com>
+Subject: Zone based rules
+Date: Tue, 09 Apr 2013 17:31:46 +0200
+Message-ID: <1365521506.25705.28.camel@BEWS005.euractiv.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=x-received:message-id:date:from:user-agent:mime-version:to:subject
-         :content-type:content-transfer-encoding;
-        bh=J8UTEEUEhjsSAc0Mq5g6gnM7WsU6wL3DDOQoJbRbSuw=;
-        b=kkHOVIDt9gSz2tqHdB0aSxvQDPEi2Wee/YmhflnFAnocW9ojxu90aiSrCFAWcMtqps
-         39ZmBfZIj4e2N6oxHT0+bDjL++Xad5D7xhJa6kUVOplVdrIxqKbVO95wgK31tplKm4B+
-         d4df/1f3fDymF5Tla+9zJGlLHTFPAChb9pBtLQH5J1Bmx7/WQcaItdu5QQkPDbzVpfba
-         ebXKwrUoE9IveJWJnhdQbXxFsQ4wZD1muJzObDbFreaDgFiywUEOj9ObpP0k8gE4uBG1
-         9riLW2rkcWf+vRSzvFgTjnpokAcDqopojQ/6cHwU7O52iCyXTEXkpG4WfAfLgKmW9foB
-         3wAg==
+        h=x-received:message-id:subject:from:to:date:content-type:x-mailer
+         :mime-version:content-transfer-encoding;
+        bh=PeDhzbh2kkeKXRiTtENSOvzSgpq/6xKZq1wAUASErLE=;
+        b=kjMAZ4xTVJiGofEtahsfoLPhznfjV3FiBD6nf6huVInclUrgC1bc7Vc7p/cn+GzRAC
+         wc7oNP7Yctv8mAay4dC/MTahY5LeFJNte+JF5oKIIAy+9/OGYOA3PNMVmrLzmUkD41FJ
+         DQ1N531fONKrsmqjjvMGIDuKuqgs9YwCAItffL6tMovbHjR9InJYFy5tmOdKYtaCtb5r
+         BmNd9+SNYr3s5ztBhVEAb669GhiauDSLmJq5bKx11prtNjOmCbbQ+b3pGE0A6/hquJmu
+         L92v8aZ9dvkz68uJsrDdiJjPYZ5ne8Sawdtvvq2zfZhbqTu0HxAhu1ZxJHxSHYbFEkJB
+         wo1Q==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hello,
+Hi,
 
-I recently got a medium size DoS attack against my uplink, I deduce that 
-because the attack was bigger than my uplink then I was effectively DoSed.
+I've got a Linux box sitting between different local networks. I'd like
+to set up access policies between each network so I though about a zone
+based firewall.
 
-The attack nature was ICMP, but i had a ruleset to DROP all incomign 
-ICMP. What confuses me the most is that I saw messages AS IF the kernel 
-was dealing with ICMP traffic selectively. The result I was expecting 
-was to not have any type of syslog ICMP messages regarding ICMP because 
-in theory DROP means DROP silently.
+Each zone is responsible of its incoming and outgoing traffic. However
+this role is played by the same box and if a packet is accepted by a
+zone, it cannot be denied by another zone.
+
+Let me give you an example:
+
+ -----------
+| Marketing |---------
+ -----------          | eth0
+                 ----------
+                | Firewall |
+                 ----------
+ ---------            | eth1
+| Servers |-----------
+ ---------
+
+Marketing wants to reach a server. However, marketing is very large on
+its outgoing traffic (allows everything) on the server side however we
+would reject any SSH connection coming from marketing.
+
+Here are the iptables rules I would go for:
+
+  # Zones creation.
+  -N ZONE_MRKT
+  -N MRKT_OUT
+
+  -N ZONE_SRV
+  -N SRV_IN
+
+  # Traffic coming from the zones.
+  -A FORWARD -i eth0 ZONE_MRKT
+  -A FORWARD -i eth1 ZONE_SRV
+
+  # Traffic to the zones.
+  -A FORWARD -o eth0 ZONE_MRKT
+  -A FORWARD -o eth1 ZONE_SRV
 
 
-Can anybody explain to me what could have occured?
+  # Let's look at marketing.
+  -A ZONE_MKRT -i eth0 -s mar.ket.ing.net/mask -d any/0 -j MRKT_OUT
+  # Marketing allows any outgoing traffic.
+  -A MRKT_OUT -j ACCEPT
 
-Feb 27 14:27:11  kernel: Redirect from 125.215.162.43 on eth0 about 
-125.215.162.46 ignored.
-Feb 27 14:27:11  kernel:  Advised path = 4.221.27.8 -> 192.168.11.6
-Feb 27 14:27:11  kernel: Redirect from 72.15.39.88 on eth0 about 
-72.15.39.99 ignored.
-Feb 27 14:27:11  kernel:  Advised path = 4.221.27.8 -> 72.15.39.99
-Feb 27 14:27:12  kernel: Redirect from 23.128.38.14 on eth0 about 
-85.20.63.101 ignored.
-Feb 27 14:27:12  kernel:  Advised path = 4.221.27.8 -> 85.20.63.101
-Feb 27 14:27:13  kernel: Redirect from 89.167.45.143 on eth0 about 
-89.167.45.118 ignored.
-Feb 27 14:27:13  kernel:  Advised path = 4.221.27.8 -> 89.167.45.118
-Feb 27 14:27:13  kernel: Redirect from 94.255.230.139 on eth0 about 
-94.255.231.10 ignored.
-Feb 27 14:27:14  kernel:  Advised path = 4.221.27.8 -> 94.255.231.10
-Feb 27 14:27:14  kernel: Redirect from 120.192.115.1 on eth0 about 
-120.192.115.11 ignored.
-Feb 27 14:27:14  kernel:  Advised path = 4.221.27.8 -> 120.192.115.11
-Feb 27 14:27:15  kernel: Redirect from 183.61.108.1 on eth0 about 
-183.61.108.112 ignored.
-Feb 27 14:27:16  kernel:  Advised path = 4.221.27.8 -> 183.61.108.112
-Feb 27 14:27:16  kernel: Redirect from 109.164.253.57 on eth0 about 
-109.164.253.59 ignored.
-Feb 27 14:27:16  kernel:  Advised path = 4.221.27.8 -> 109.164.253.59
-Feb 27 14:27:16  kernel: Redirect from 61.92.213.127 on eth0 about 
-61.92.212.1 ignored.
-Feb 27 14:27:16  kernel:  Advised path = 4.221.27.8 -> 119.247.29.11
+  # Servers
+  -A ZONE_SRV -o eth1 -s any/0 -d ser.ver.s.net/mask -j SRV_IN
+  -A SRV_IN -s mar.ket.ing.net/mask -p tcp --dport 22 -j DROP
 
 
-Finally, is there any difference between DROPing ICMP and using the 
-sysctl variable to ignore all ICMP?
+In this example traffic leaving a zone is checked first so any traffic
+from marketing is allowed while the servers zone denies traffic from
+marketing.
 
-Alex
+In can change the rules order but this will not solve the problem.
+Another solution would be to mark the packet and then check the mark at
+the end to decide on whether to accept or reject. But how about
+performances on a large set of rules as the firewall will have to go
+through all of them before taking a decision?
+
+How would you manage such a case?
+
+--
+Jimmy
+
+
