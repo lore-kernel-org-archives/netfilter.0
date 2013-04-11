@@ -1,46 +1,45 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+From: Jimmy Thrasibule <thrasibule.jimmy@gmail.com>
 Subject: Re: [ipset] Match both on source AND destination
-Date: Thu, 11 Apr 2013 17:02:55 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1304111701570.32023@blackhole.kfki.hu>
+Date: Thu, 11 Apr 2013 17:23:51 +0200
+Message-ID: <1365693831.25705.50.camel@BEWS005.euractiv.com>
 References: <1365691926.25705.48.camel@BEWS005.euractiv.com>
+	 <alpine.DEB.2.00.1304111701570.32023@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1365691926.25705.48.camel@BEWS005.euractiv.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=x-received:message-id:subject:from:to:cc:date:in-reply-to
+         :references:content-type:x-mailer:mime-version
+         :content-transfer-encoding;
+        bh=rcDWcPgFwt7ONHQ0sgbe7Rr+3DcgS8x1HGmC8eIm+sc=;
+        b=oKsnPqvESFxtmwEy0rzjw2SjZpQbWuxGfKSZ6H3+ROip98aOLGenqjst/RIoVybmC5
+         U99tKUY2oogPxnjpl9gZBEM+jPaazeeDOLFKTJLEGVuT81Yb0YNXQA11gSD43EcqqT0s
+         WAopbJhq4R33wsSq4grpmIuGOCjVMvBxV4V07hiLzb5wNfSw49BHQ3VQVD6KIrvneOw1
+         53JlTQ2UWMB7ZOYyWeFRA9E2kcTo2DI9foIJWJEYGWz1Kyeu6WV684J/w5BSJB9JMZUv
+         GCSCpiYbG+138bjwjlKb8/qLWkmbB3trvYqDiDSUiBIThb2q2+ItKeYCAiq7vpaiHeP6
+         2Lzg==
+In-Reply-To: <alpine.DEB.2.00.1304111701570.32023@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jimmy Thrasibule <thrasibule.jimmy@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: netfilter@vger.kernel.org
 
-On Thu, 11 Apr 2013, Jimmy Thrasibule wrote:
 
-> Is it possible to match both source and destination from the same set.
 > 
-> I have two networks:
+> Apply two matches:
 > 
-> - 192.168.1.0/24
-> - 192.168.2.0/24
-> 
-> And I'd like to match packets going from one to another (the set can be
-> bigger of course).
-> 
-> Without ipset it would be:
-> 
-> -A FORWARD -s 192.168.1.0/24 -d 192.168.2.0/24 -j ACCEPT
-> 
-> However this won't work using ipset:
-> 
-> -A FORWARD -m set --match-set mynets src,dst -j ACCEPT
+> -A FORWARD -m set --match-set mynets src -m set --match-set mynets dst ...
 
-Apply two matches:
+Ah,
 
--A FORWARD -m set --match-set mynets src -m set --match-set mynets dst ...
+That's the first thing I tried but as I didn't load the module twice it
+wouldn't work.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+Thanks.
+
+--
+Jimmy
+
+
