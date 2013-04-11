@@ -1,44 +1,41 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipset - bitmap:ip,mac kernel crashes, errors
-Date: Thu, 11 Apr 2013 16:55:54 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1304111652180.32023@blackhole.kfki.hu>
-References: <7a05d31eedfbe24e7ebf47c00df77176.squirrel@webmail.univ-nantes.fr>
+Subject: Re: [ipset] Match both on source AND destination
+Date: Thu, 11 Apr 2013 17:02:55 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1304111701570.32023@blackhole.kfki.hu>
+References: <1365691926.25705.48.camel@BEWS005.euractiv.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <7a05d31eedfbe24e7ebf47c00df77176.squirrel@webmail.univ-nantes.fr>
+In-Reply-To: <1365691926.25705.48.camel@BEWS005.euractiv.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Yoann JUET <yoann.juet@univ-nantes.fr>
+To: Jimmy Thrasibule <thrasibule.jimmy@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-On Thu, 11 Apr 2013, Yoann JUET wrote:
+On Thu, 11 Apr 2013, Jimmy Thrasibule wrote:
 
-> We are experiencing crashes with ipset (6.12) on a debian/wheezy with
-> default kernel image (3.2.0). Using the bitmap:ip,mac set type + timeout
-> support (all is ok without timeout support) triggers the problem
-> systematically. A kernel panic occurs after issuing command 'ipset list'
-> (sometimes a couple of times) when the total number of entries within a
-> set exceeds a limit - 101 in my case -.
+> Is it possible to match both source and destination from the same set.
 > 
-> A recent kernel (tested on 3.8.6) improves the situation. No more crashes,
-> but it's still impossible to output all entries. We get a Kernel error:
+> I have two networks:
 > 
-> - With the default debian ipset version:
-> ipset v6.12.1: Kernel error received: No buffer space available
+> - 192.168.1.0/24
+> - 192.168.2.0/24
 > 
-> - And the last version:
-> ipset v6.17: Kernel error received: No buffer space available
+> And I'd like to match packets going from one to another (the set can be
+> bigger of course).
+> 
+> Without ipset it would be:
+> 
+> -A FORWARD -s 192.168.1.0/24 -d 192.168.2.0/24 -j ACCEPT
+> 
+> However this won't work using ipset:
+> 
+> -A FORWARD -m set --match-set mynets src,dst -j ACCEPT
 
-Were the kernel modules from the ipset package installed?
-What's the output of the command 'modinfo ip_set_hash_netport'?
- 
-> I've seen on this list discussions about crashes, then a bug fix on
-> version 6.15. Some have experienced the same kernel error but no
-> workaround seems to be available. We are using the bitmap:ip,mac set type
-> on several captive portal servers. 'ipset list' command is a convenient
-> way for us to check for active users. Ideas to fix this problem ?
+Apply two matches:
+
+-A FORWARD -m set --match-set mynets src -m set --match-set mynets dst ...
 
 Best regards,
 Jozsef
