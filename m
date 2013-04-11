@@ -1,48 +1,53 @@
-From: "Yoann JUET" <yoann.juet@univ-nantes.fr>
-Subject: ipset - bitmap:ip,mac kernel crashes, errors
-Date: Thu, 11 Apr 2013 16:39:31 +0200 (CEST)
-Message-ID: <7a05d31eedfbe24e7ebf47c00df77176.squirrel@webmail.univ-nantes.fr>
+From: Jimmy Thrasibule <thrasibule.jimmy@gmail.com>
+Subject: [ipset] Match both on source AND destination
+Date: Thu, 11 Apr 2013 16:52:06 +0200
+Message-ID: <1365691926.25705.48.camel@BEWS005.euractiv.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=x-received:message-id:subject:from:to:date:content-type:x-mailer
+         :mime-version:content-transfer-encoding;
+        bh=RyqY8NtfvaZOMsdmEEfSDn1yySa956D2T6+3IyQtxxg=;
+        b=rV2bnUZpo/qtb8HG9a+Dz7h/iSdTLsNpcM193URBR24AkyyC+kByuoFBw/3kjIL96E
+         CPCHhGVBKoaPJFXaNiv1lWs0G4Q+E4k3DHz/MlJTEsrIlEUsIBeLsnvFVUC0kHM1ZmwZ
+         3/hZBCQPEcTXDiDcaVzK/8DjFATgNqRsM8ogALiUpBy6tBssttiWn2BY4Gok2nxDsjAy
+         tYkvU2ad+RmmL8UcfNn1nf7KltvQojvs3deNVKJdnBrVnAWovAXLBIsDJSPPPw3bUbe8
+         OXEbFKOQ/KhwwlWMarg7ZW+gyLVzgXC9gASjKqeIcVzNske6n6DMpKeeB6I3L09je+Cl
+         vCxA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi all,
+Hi,
 
-We are experiencing crashes with ipset (6.12) on a debian/wheezy with
-default kernel image (3.2.0). Using the bitmap:ip,mac set type + timeou=
-t
-support (all is ok without timeout support) triggers the problem
-systematically. A kernel panic occurs after issuing command 'ipset list=
-'
-(sometimes a couple of times) when the total number of entries within a
-set exceeds a limit - 101 in my case -.
+Is it possible to match both source and destination from the same set.
 
-A recent kernel (tested on 3.8.6) improves the situation. No more crash=
-es,
-but it's still impossible to output all entries. We get a Kernel error:
+I have two networks:
 
-- With the default debian ipset version:
-ipset v6.12.1: Kernel error received: No buffer space available
+- 192.168.1.0/24
+- 192.168.2.0/24
 
-- And the last version:
-ipset v6.17: Kernel error received: No buffer space available
+And I'd like to match packets going from one to another (the set can be
+bigger of course).
 
-I've seen on this list discussions about crashes, then a bug fix on
-version 6.15. Some have experienced the same kernel error but no
-workaround seems to be available. We are using the bitmap:ip,mac set ty=
-pe
-on several captive portal servers. 'ipset list' command is a convenient
-way for us to check for active users. Ideas to fix this problem ?
+Without ipset it would be:
 
-Thanks in advance,
-Best regards,
-Yoann.
+-A FORWARD -s 192.168.1.0/24 -d 192.168.2.0/24 -j ACCEPT
 
---=20
-Universit=E9 de Nantes - Direction des Syst=E8mes d'Information
-IM jabber: yoann.juet@univ-nantes.fr
+However this won't work using ipset:
+
+-A FORWARD -m set --match-set mynets src,dst -j ACCEPT
+
+However, as stated in the man page match is done only on src and
+therefore this is not the behavior I was expecting.
+
+A part from listing each networks one by one, do you see any solution
+for that?
+
+--
+Jimmy
+
 
