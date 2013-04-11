@@ -1,69 +1,37 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipset - bitmap:ip,mac kernel crashes, errors
-Date: Thu, 11 Apr 2013 18:19:00 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1304111810520.32023@blackhole.kfki.hu>
-References: <7a05d31eedfbe24e7ebf47c00df77176.squirrel@webmail.univ-nantes.fr>    <alpine.DEB.2.00.1304111652180.32023@blackhole.kfki.hu> <b4b9d9095cc35c0d3c167d09d9ac269b.squirrel@webmail.univ-nantes.fr>
-Mime-Version: 1.0
+From: Jozef Balaz <jozef.balaz.237@gmail.com>
+Subject: [DNAT] applying a new rule for a connection marked as UNREPLIED
+Date: Thu, 11 Apr 2013 18:24:06 +0200
+Message-ID: <03A41D63-B87F-405D-A4D2-FED951FF9FC8@gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 6.3 \(1503\))
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <b4b9d9095cc35c0d3c167d09d9ac269b.squirrel@webmail.univ-nantes.fr>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=x-received:from:content-type:content-transfer-encoding:subject
+         :message-id:date:to:mime-version:x-mailer;
+        bh=OkaAe6ZpSTY7ExoYze17jSUAKVQ9Dhrrjzhg1XMy56o=;
+        b=PVKE/dBApwt0kEdrVLr6Kj0lDKSf1HSSXsDhYSDKSbSGOq1psws3P0hY8h/Dyh/1Oo
+         eF8pi+saqV6MkQacrtixhFAofn1vc9Bh8HngCIuSTx6sD/tYfhLe408BbuOqvnwyA/EU
+         KIVl6afyeU/XTxr+xao2xkdxOFb5CjAdyUQGLuGwGaCKdD+stEM7vQD9Bit0ebodI0JJ
+         +k0LeaRQxHknehcW/ty4ZuqMbAfpLejTIvlWMKo0oYIKK4KzCVW7WD0nlT2z6ys1HosO
+         PksJYd/gR10W1hXoCPQ6cq5XTqGnvbQ9oAseLuVe6OycI7UTTVCez7VdUvi9M9XHGgdA
+         xrYA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Yoann JUET <yoann.juet@univ-nantes.fr>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Thu, 11 Apr 2013, Yoann JUET wrote:
+Hello,
 
-> > On Thu, 11 Apr 2013, Yoann JUET wrote:
-> >
-> >> We are experiencing crashes with ipset (6.12) on a debian/wheezy with
-> >> default kernel image (3.2.0). Using the bitmap:ip,mac set type + timeout
-> >> support (all is ok without timeout support) triggers the problem
-> >> systematically. A kernel panic occurs after issuing command 'ipset list'
-> >> (sometimes a couple of times) when the total number of entries within a
-> >> set exceeds a limit - 101 in my case -.
-> >>
-> >> A recent kernel (tested on 3.8.6) improves the situation. No more
-> >> crashes,
-> >> but it's still impossible to output all entries. We get a Kernel error:
-> >>
-> >> - With the default debian ipset version:
-> >> ipset v6.12.1: Kernel error received: No buffer space available
-> >>
-> >> - And the last version:
-> >> ipset v6.17: Kernel error received: No buffer space available
-> >
-> > Were the kernel modules from the ipset package installed?
-> > What's the output of the command 'modinfo ip_set_hash_netport'?
-> 
-> I'm using ipset modules from the kernel tree:
-> 
-> # modinfo ip_set_hash_netport
-> filename:      
-> /lib/modules/3.8.6-dsiun-130219/kernel/net/netfilter/ipset/ip_set_hash_netport.ko
-> alias:          ip_set_hash:net,port
-> description:    hash:net,port type of IP sets, revisions 0-3
-> author:         Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-> license:        GPL
-> depends:        ip_set
-> intree:         Y
-> vermagic:       3.8.6-dsiun-130219 SMP mod_unload modversions
+I am developing a SIP proxy server with a media proxy feature which I would like to implement as a set of iptables rules (if the packet comes from the address and port specified in SDP, forward it to the specified destination address and port...).
 
-That looks OK. However, I'm unable to reproduce the problem: I created a 
-bitmap:ip,mac set with timeout, added 255 entries and can list it just 
-fine.
+The problem is that the user agent sends the SIP message with the SDP containing the needed address and port practically simultaneously with the first RTP packets. This causes the DNAT rule to be added after some RTP packets being already received by the proxy. 
 
-Is your machine stressed in memory? What's your architecture? Does the
-"Kernel error received: No buffer space available" returned immediately
-after the set is created/elements added, or after some time?
+From what I have experienced if I add a DNAT rule for a stream of packets that is already listed in the conntrack table as UNREPLIED the rule isn't applied for this stream until it times out.
 
-ENOBUFS is returned by netlink itself.
+My question is, is there a way to apply new rules for connections that are already listed in the conntrack table as UNREPLIED without having to wait until they time out? Or did I understand it wrong?
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+What I need is something like the RAWDNAT but I also need to be able to change the destination port and not just the address.
+
+Thanks for any help in advance,
+Jozef
