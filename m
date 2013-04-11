@@ -1,87 +1,66 @@
-From: Jimmy Thrasibule <thrasibule.jimmy@gmail.com>
-Subject: Re: [ipset] Match both on source AND destination
-Date: Thu, 11 Apr 2013 18:58:08 +0200
-Message-ID: <1365699488.5674.3.camel@draco>
-References: <1365691926.25705.48.camel@BEWS005.euractiv.com>
-	  <alpine.DEB.2.00.1304111701570.32023@blackhole.kfki.hu>
-	 <1365693831.25705.50.camel@BEWS005.euractiv.com>
-	 <alpine.DEB.2.00.1304111726560.32023@blackhole.kfki.hu>
+From: "Yoann JUET" <yoann.juet@univ-nantes.fr>
+Subject: Re: ipset - bitmap:ip,mac kernel crashes, errors
+Date: Thu, 11 Apr 2013 19:04:04 +0200 (CEST)
+Message-ID: <b108bc79c3422cb7b587039ff4232f50.squirrel@webmail.univ-nantes.fr>
+References: <7a05d31eedfbe24e7ebf47c00df77176.squirrel@webmail.univ-nantes.fr>
+    <alpine.DEB.2.00.1304111652180.32023@blackhole.kfki.hu>
+    <b4b9d9095cc35c0d3c167d09d9ac269b.squirrel@webmail.univ-nantes.fr>
+    <alpine.DEB.2.00.1304111810520.32023@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
-	boundary="=-arhLu0yJKgfa0G6Z6HLy"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=x-received:message-id:subject:from:to:cc:date:in-reply-to
-         :references:content-type:x-mailer:mime-version;
-        bh=0XBAA/0E4hj6aZwKxp4PAwlFuYydGly0GUBeqoziduc=;
-        b=VFUMKuQcQUAOeQBpINFSNBGXFvSFmOKsdhXK0eXT56+xPdDWJbXXojDrRq/zbXsGCU
-         T9+Ru1d6J1ZoI0ZuSCKICG/j/8oWfbW3TgGWJGFbjeS881p0QmM6zEqLBi4GN+Mg9RWj
-         t78quJd6+uzSuaparKFjFrB57qU43wCUFNPUiTMVWPHuR6chxswFbno23VuP1zOviJww
-         FQWG0U2o2O5dZ8Gib2oNr7PxGhgWGJBLHAsvaTZUN7AxdawXDFEo9ntHWC471JGtQeW1
-         rrqnTstyMXEKye+XxFo8fwHiaK/EfUx/8PA0i99cv1iT6+qmY3WorKSllPGy1IdRIVCp
-         F9QQ==
-In-Reply-To: <alpine.DEB.2.00.1304111726560.32023@blackhole.kfki.hu>
+In-Reply-To: <alpine.DEB.2.00.1304111810520.32023@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
 To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter@vger.kernel.org
+Cc: Yoann JUET <yoann.juet@univ-nantes.fr>, netfilter@vger.kernel.org
 
 
---=-arhLu0yJKgfa0G6Z6HLy
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> That looks OK. However, I'm unable to reproduce the problem: I create=
+d a
+> bitmap:ip,mac set with timeout, added 255 entries and can list it jus=
+t
+> fine.
+>
+> Is your machine stressed in memory? What's your architecture? Does th=
+e
+> "Kernel error received: No buffer space available" returned immediate=
+ly
+> after the set is created/elements added, or after some time?
+>
+> ENOBUFS is returned by netlink itself.
+>
+> Best regards,
+> Jozsef
+> -
+> E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+> Address : Wigner Research Centre for Physics, Hungarian Academy of
+> Sciences
+>           H-1525 Budapest 114, POB. 49, Hungary
+>
+
+Tests are conducted on a dedicated virtual machine (KVM, architecture
+AMD64). No I/O, memory stress. I observe the same problem on a "physica=
+l"
+debian or ubuntu machine. The string " "Kernel error received" is
+immediately returned by 'ipset list'. I just wait a few seconds after t=
+he
+last 'ipset add' before executing 'ipset list'.
+
+I've just compiled ipset modules provided by your package 6.17 with a
+kernel 3.2... And that's much better. Don't know why ?! No more kernel
+errors when issuing command 'ipset list'. Unfortunately, the ouput is n=
+ow
+troncated at the first 99 entries.
+
+Regards,
+Yoann.
+--=20
+Universit=E9 de Nantes - Direction des Syst=E8mes d'Information
+IM jabber: yoann.juet@univ-nantes.fr
 
 
-> On Thu, 11 Apr 2013, Jimmy Thrasibule wrote:
->=20
-> > > Apply two matches:
-> > >=20
-> > > -A FORWARD -m set --match-set mynets src -m set --match-set mynets ds=
-t ...
-> >=20
-> > Ah,
-> >=20
-> > That's the first thing I tried but as I didn't load the module twice it
-> > wouldn't work.
->=20
-> Sorry, I don't understand. Why would you need to load the module twice?
-> There's no need to load the module at all.
 
-I just mean that I tried something like:
-
--m set --match-set mynets src --match-set mynets dst
-
-And I got an error saying that --match-set can only be used once. And by
-module I was more talking about the match option -m until now I was
-thinking that calling it only once would be enough for the whole rule.
-
---
-Jimmy
-
-
---=-arhLu0yJKgfa0G6Z6HLy
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.13 (GNU/Linux)
-
-iQIcBAABAgAGBQJRZuugAAoJEFNYtCSAPHIVPg4QAKyN4/fScrK6hZNunhFHKs1L
-p29x/7vI7ZKZ0S60w0rj/fsmNZbHA1K2h13j5dJuSP2v/6WCO0l37QT9YLyf1ndY
-QZouNoDVVKh4x95g3hVYB1pH2XlU20IPBp3YwkUp3xLsNsek7O0E+H1aJjQ+0LZh
-Vpvhq/9bf0FCzBqd9RNze0OCKGvBXQDzusKDUadRyIkKEBeRd0UgkvjilvDRnVG3
-b1zN+gWk3SmWvDqSodgHdhFLqq3+VCGFoVD0YUQPynBsEXPknGlC4PfeWo1KBZDT
-2EBHgppvT0OLiIv0XkomKhh/7zxX9CNf7PEi43OakurQGd22V7nqQJ3UYV5ctkaN
-GP1QRlk0JeV1D9MuJtHXmMkObSzWuK1e5ngU96YCfZgAFqEnChFBZvdHQNBQuoPs
-BeEXqPGwaGMs9LR/+GfIvjsXwCFuieHAunZIg1KNsl+XtDUZPC+2PGdPzWN3KSVX
-w68jVuXXOlnWS6hi+5uoAyTlMKqyfPK4IdqoYLppVonzWS4xnNT9FiV1FYYWS+FE
-SQcWwQ7uH8TkxepH9ODRWObSiWUWM/JDashVx9dE75FGqVb6ZCCmtmisEqdKOOQK
-qu1J09yi48/SnqJP9LvcV48CKUykjDecnwRIjeALR8N4LlWU+5ecp3D7iwBlbO8s
-ru3yaTN3fd5KrQdYYNY8
-=01cC
------END PGP SIGNATURE-----
-
---=-arhLu0yJKgfa0G6Z6HLy--
 
