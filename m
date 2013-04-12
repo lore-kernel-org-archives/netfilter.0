@@ -1,31 +1,42 @@
-From: Vladimir <ml@foomx.de>
-Subject: Re: ipset - understanding hash size and maxelem
-Date: Fri, 12 Apr 2013 10:53:43 +0200
-Message-ID: <20130412105343.40ba965d@vd.bk.hosteurope.de>
-References: <20130410141955.590b9ef8@vd.bk.hosteurope.de>
-	<1365689159.25705.39.camel@BEWS005.euractiv.com>
+From: Flavio Poletti <polettix@gmail.com>
+Subject: nf-queue.c as an example of libnetfilter_queue
+Date: Fri, 12 Apr 2013 15:38:39 +0200
+Message-ID: <CAM-TR1qfrCA-SvkfpNbdFr9dYTpc53FmL4WOvzxJs9_M3f6H7w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1365689159.25705.39.camel@BEWS005.euractiv.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=x-received:mime-version:from:date:message-id:subject:to
+         :content-type;
+        bh=PrhTM0mxpP9450cH9EslZBFj+6TuAL2SL+m9l7EdjOo=;
+        b=cT6KZt/P7XJnDRikunp2N3NOVwKvtPmGaofnFCPAoeAVir5rHXO4UYi6oZkLakmVSx
+         4C+NRHzejfua0Ul98hyXbwGJKSzf+Y+PdEX3CB74B7x/sthcETeiijP5AK3LoIhpRD58
+         m0nHDZUzQJGwE8YuW8TsmWyxKGmgM3g9TXV6i+mMIV8Fdq36+EonajQFkd0UAfu0oueM
+         9Loo2VqLUZTzkklG/6GbGfoIpgoAkhNTWrMSnJ0oPnMntSjvyQApe/MD568iVjiNwCLD
+         mvh4W3upZOICq0VsXzT8rpptE8g5g3FuPmbHFT27AGUCySllk/2K6e/ekikKbHd0OUnE
+         yEwg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Jimmy Thrasibule <thrasibule.jimmy@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Thu, 11 Apr 2013 16:05:59 +0200
-Jimmy Thrasibule <thrasibule.jimmy@gmail.com> wrote:
+Hello All,
 
-> hashsize default value is 1024, minimum seems to be 64 on my system.
-> You can specify hashsize to gain memory or have a bigger hash. If you
-> already know the maximum size of your set, you can specify hashsize
-> near to that value and maxelem to limit the set (for example to
-> prevent accidental additions).  
+    I was curious about NFQUEUE/QUEUE targets for iptables and I
+eventually landed on libnetfilter_queue.
 
-Thanks for your answer. Is there a way to calculate the memory footprint
-of certain number of ipset entries? For example 100.000 entries need
-100.000 x 2 byte... Or is it possible to display it somehow for an
-existing set? 
+As documented by the doxygen stuff online, the library provides some
+functions (e.g. nfq_open(), nfq_handle_packet(), nfq_set_verdict(),
+etc.).
 
-@jimmy: sorry for double sending. 
+On the other hand, the example nf-queue.c program in the examples
+directory does not seem to use these functions at all.
+
+Is there some place where I can find out some examples of usage of
+libnetfilter_queue functions? Are they deprecated and should I go for
+the Netlink-based solution as in the example?
+
+Thank you,
+
+    Flavio.
