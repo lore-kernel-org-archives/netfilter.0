@@ -1,42 +1,62 @@
-From: Flavio Poletti <polettix@gmail.com>
-Subject: nf-queue.c as an example of libnetfilter_queue
-Date: Fri, 12 Apr 2013 15:38:39 +0200
-Message-ID: <CAM-TR1qfrCA-SvkfpNbdFr9dYTpc53FmL4WOvzxJs9_M3f6H7w@mail.gmail.com>
-Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
+From: Jonghwan Choi <jhbird.choi@gmail.com>
+Subject: [PATCH 3.8-stable] netfilter: nfnetlink_queue: fix error return code in nfnetlink_queue_init()
+Date: Sat, 13 Apr 2013 00:14:23 +0900
+Message-ID: <1365779663-11862-1-git-send-email-jhbird.choi@samsung.com>
+Return-path: <stable-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=x-received:mime-version:from:date:message-id:subject:to
-         :content-type;
-        bh=PrhTM0mxpP9450cH9EslZBFj+6TuAL2SL+m9l7EdjOo=;
-        b=cT6KZt/P7XJnDRikunp2N3NOVwKvtPmGaofnFCPAoeAVir5rHXO4UYi6oZkLakmVSx
-         4C+NRHzejfua0Ul98hyXbwGJKSzf+Y+PdEX3CB74B7x/sthcETeiijP5AK3LoIhpRD58
-         m0nHDZUzQJGwE8YuW8TsmWyxKGmgM3g9TXV6i+mMIV8Fdq36+EonajQFkd0UAfu0oueM
-         9Loo2VqLUZTzkklG/6GbGfoIpgoAkhNTWrMSnJ0oPnMntSjvyQApe/MD568iVjiNwCLD
-         mvh4W3upZOICq0VsXzT8rpptE8g5g3FuPmbHFT27AGUCySllk/2K6e/ekikKbHd0OUnE
-         yEwg==
-Sender: netfilter-owner@vger.kernel.org
+        h=x-received:from:to:cc:subject:date:message-id:x-mailer;
+        bh=qltZ2HbC2n4ojNHT4YzM+p4P8HSJ+sOfY8y6PXLgY7k=;
+        b=lqL8JrE95zVsLSPT3+dGYEQHXnKDy4iZ9h9DW5u5cW/2IEo2BjfWxlV2mNxcKe8BPw
+         c/vsnzfToOhdSVj/jRAfQAAEqLwBU0CZ0q44hN6V7bDRAA/ws/WG1NSaoZ1apvtuQWO5
+         lo8YmY8mDuz1vlmuaOjnEHnG+LrUwZcq27nY7pnNZDFI04etkeCQoRMX+dpTae1OnHWW
+         Rx7cV+0/0Qsgluvs+3OIwNC1TeMj7HFnV41AKhgnQo5+c9T4FcW3xZlET7crNHM05aBk
+         ThsPqlcbFWNpbqU5KykSCT6g3eLMfuM8+gN4xBfmQk4PoHPwG2FeP923IfHmqGIDP4bT
+         r3Kg==
+Sender: stable-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Wei Yongjun <yongjun_wei@trendmicro.com.cn>, Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: stable@vger.kernel.org, netfilter@vger.kernel.org, Jonghwan Choi <jhbird.choi@samsung.com>
 
-Hello All,
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-    I was curious about NFQUEUE/QUEUE targets for iptables and I
-eventually landed on libnetfilter_queue.
+This patch looks like it should be in the 3.8-stable tree, should we apply
+it?
 
-As documented by the doxygen stuff online, the library provides some
-functions (e.g. nfq_open(), nfq_handle_packet(), nfq_set_verdict(),
-etc.).
+------------------
 
-On the other hand, the example nf-queue.c program in the examples
-directory does not seem to use these functions at all.
+From: "Wei Yongjun <yongjun_wei@trendmicro.com.cn>"
 
-Is there some place where I can find out some examples of usage of
-libnetfilter_queue functions? Are they deprecated and should I go for
-the Netlink-based solution as in the example?
+commit 558724a5b2a73ad0c7638e21e8dffc419d267b6c upstream
 
-Thank you,
+Fix to return a negative error code from the error handling
+case instead of 0, as returned elsewhere in this function.
 
-    Flavio.
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+Signed-off-by: Jonghwan Choi <jhbird.choi@samsung.com>
+---
+ net/netfilter/nfnetlink_queue_core.c |    4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/net/netfilter/nfnetlink_queue_core.c b/net/netfilter/nfnetlink_queue_core.c
+index 3158d87..39006c9 100644
+--- a/net/netfilter/nfnetlink_queue_core.c
++++ b/net/netfilter/nfnetlink_queue_core.c
+@@ -1064,8 +1064,10 @@ static int __init nfnetlink_queue_init(void)
+ 
+ #ifdef CONFIG_PROC_FS
+ 	if (!proc_create("nfnetlink_queue", 0440,
+-			 proc_net_netfilter, &nfqnl_file_ops))
++			 proc_net_netfilter, &nfqnl_file_ops)) {
++		status = -ENOMEM;
+ 		goto cleanup_subsys;
++	}
+ #endif
+ 
+ 	register_netdevice_notifier(&nfqnl_dev_notifier);
+-- 
+1.7.10.4
