@@ -1,41 +1,44 @@
 From: Alex Flex <aflexzor@gmail.com>
-Subject: Question about behaviour of rule in a syn attack.
-Date: Fri, 12 Apr 2013 17:05:30 -0600
-Message-ID: <5168933A.30409@gmail.com>
+Subject: =?UTF-8?B?UmU6IERST1BJTkcgSUNNUCBhbmQgc3RpbGwgZ2V0dGluZyBrZXJuZWw=?=
+ =?UTF-8?B?IG1lc3NhZ2VzIG9mIGljbXAgdHJhZmZpYz/igI8=?=
+Date: Fri, 12 Apr 2013 17:10:23 -0600
+Message-ID: <5168945F.5060308@gmail.com>
+References: <51630743.2020404@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=x-received:message-id:date:from:user-agent:mime-version:to:subject
-         :content-type:content-transfer-encoding;
-        bh=UI6azi+aAzw0TKKB+tKqHKJjQ8vPUZgnhv37gycCN4c=;
-        b=Db6S0HWsUPgVvEHK59bl2wIDKQFTpRhTrAKPmeLru5WNBAb7e/NSERSpv5sAE3f0w7
-         UJtLSiaGt/YJQaIWtuEg1g9IjjperqWI2Y9BNQmyW2CWxfYN3fNIECOnEI94PAPEvaem
-         0n1WBQnhp1EgH8qqOBHfP0Ba2tKFHvYOGGAdY222xSu42Qlfo5VRbse9EQMz5CziQKbl
-         Dt12D8D/cq1anpDEKk0rp7pQtBPgQj0Ny7f4aeMhAns7JlPHDpM4//Ru7nP+zlTX/J3C
-         +mdJP5OykciFYxq/mvwE+13v3dqGHTzOOCYC6GF6aOf0N5NtVd2SbdDgfN79oW+XIqAq
-         xr6w==
+         :references:in-reply-to:content-type:content-transfer-encoding;
+        bh=a+XYgJMkUG0aSHxnxPKrYz+sDgsYLR1gvnsolVx4uCg=;
+        b=N/AdScCtnWSOguZkIO1qVf4UPewwPwDZGmU6I3maODJz7xMX7jReEtmIZD4CEKH/q0
+         e2PknDWbjsNZ8NKATqxrArYjzwxV0Whr3e+gdGbkP/06XuUxUVin+lay4EQEHKtAjy95
+         bG9s21auUFRFkpA0TQMnxzY0vRtP7fwUC2+dUurq3oaqZIuD4RgiFyTE6e7zwY43MM3L
+         sN1ZQxZF6Z4dr4QDGKbgxMn5G00ja4FrH6RFPECeb4kwiBTQVd6WBGRS3ApG7HgQANWi
+         sYHcREBb3MsPn36XhPBvetHYCjlClnCPZb7pCLJAe0RhsFkGjJpTSCP8kMvXSm+VHasf
+         ythQ==
+In-Reply-To: <51630743.2020404@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Greetings !
+Hello...
 
-Id be thankful if somebody can shed some light here:
+I have not recieved a response, maybe my question was a bit messy if it 
+was I apologize for that..
 
-If Iam getting a syn attack, and I have syn cookies enabled via sysctl 
-would any of these two rules match  those connections?
+In concrete anybody know what is the difference in utilizing iptables to 
+DROP all ICMP, vrs using sysctl to ignore all ICMP ?
 
+Does it make sense I was droping all ICMP in iptables  but still 
+recieving messages in syslog that ICMP redirect packets where getting 
+ignored every now and then (by that time i had not used sysctl, but i 
+was recommended to do so hence my question)
 
-iptables -A INPUT -p tcp --syn --dport 80 -m connlimit --connlimit-above 
-10 --connlimit-mask 32 -j DROP
-iptables -A INPUT -p tcp --syn --dport 80 -m hashlimit  
---hashlimit-above 25/second --hashlimit-srcmask 32 --hashlimit-name 
-IP_LIMIT_REQ  -j DROP
+Thanks guys
 
-Or do these only apply to connections that have undergone the handshake?
-
-Thanks
 Alex
+
+
