@@ -1,22 +1,22 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH 3.8-stable] netfilter: nfnetlink_queue: fix error return
- code in nfnetlink_queue_init()
-Date: Sat, 13 Apr 2013 12:08:27 +0200
-Message-ID: <20130413100827.GA7230@localhost>
-References: <1365779663-11862-1-git-send-email-jhbird.choi@samsung.com>
+Subject: Re: [PATCH 3.8-stable] netfilter: nfnetlink_acct: return -EINVAL if
+ object name is empty
+Date: Sat, 13 Apr 2013 12:08:38 +0200
+Message-ID: <20130413100838.GB7230@localhost>
+References: <1365779765-11924-1-git-send-email-jhbird.choi@samsung.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
+Return-path: <stable-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1365779663-11862-1-git-send-email-jhbird.choi@samsung.com>
-Sender: netfilter-owner@vger.kernel.org
+In-Reply-To: <1365779765-11924-1-git-send-email-jhbird.choi@samsung.com>
+Sender: stable-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: Jonghwan Choi <jhbird.choi@gmail.com>
-Cc: Wei Yongjun <yongjun_wei@trendmicro.com.cn>, stable@vger.kernel.org, netfilter@vger.kernel.org, Jonghwan Choi <jhbird.choi@samsung.com>
+Cc: stable@vger.kernel.org, netfilter@vger.kernel.org, Jonghwan Choi <jhbird.choi@samsung.com>
 
-On Sat, Apr 13, 2013 at 12:14:23AM +0900, Jonghwan Choi wrote:
-> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+On Sat, Apr 13, 2013 at 12:16:05AM +0900, Jonghwan Choi wrote:
+> From: Pablo Neira Ayuso <pablo@netfilter.org>
 > 
 > This patch looks like it should be in the 3.8-stable tree, should we apply
 > it?
@@ -25,36 +25,33 @@ Please, hold on with this. I'm preparing a -stable batch.
 
 > ------------------
 > 
-> From: "Wei Yongjun <yongjun_wei@trendmicro.com.cn>"
+> From: "Pablo Neira Ayuso <pablo@netfilter.org>"
 > 
-> commit 558724a5b2a73ad0c7638e21e8dffc419d267b6c upstream
+> commit deadcfc3324410726cd6a663fb4fc46be595abe7 upstream
 > 
-> Fix to return a negative error code from the error handling
-> case instead of 0, as returned elsewhere in this function.
+> If user-space tries to create accounting object with an empty
+> name, then return -EINVAL.
 > 
-> Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+> Reported-by: Michael Zintakis <michael.zintakis@googlemail.com>
 > Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
 > Signed-off-by: Jonghwan Choi <jhbird.choi@samsung.com>
 > ---
->  net/netfilter/nfnetlink_queue_core.c |    4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
+>  net/netfilter/nfnetlink_acct.c |    2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/net/netfilter/nfnetlink_queue_core.c b/net/netfilter/nfnetlink_queue_core.c
-> index 3158d87..39006c9 100644
-> --- a/net/netfilter/nfnetlink_queue_core.c
-> +++ b/net/netfilter/nfnetlink_queue_core.c
-> @@ -1064,8 +1064,10 @@ static int __init nfnetlink_queue_init(void)
+> diff --git a/net/netfilter/nfnetlink_acct.c b/net/netfilter/nfnetlink_acct.c
+> index 589d686..dc3fd5d 100644
+> --- a/net/netfilter/nfnetlink_acct.c
+> +++ b/net/netfilter/nfnetlink_acct.c
+> @@ -49,6 +49,8 @@ nfnl_acct_new(struct sock *nfnl, struct sk_buff *skb,
+>  		return -EINVAL;
 >  
->  #ifdef CONFIG_PROC_FS
->  	if (!proc_create("nfnetlink_queue", 0440,
-> -			 proc_net_netfilter, &nfqnl_file_ops))
-> +			 proc_net_netfilter, &nfqnl_file_ops)) {
-> +		status = -ENOMEM;
->  		goto cleanup_subsys;
-> +	}
->  #endif
+>  	acct_name = nla_data(tb[NFACCT_NAME]);
+> +	if (strlen(acct_name) == 0)
+> +		return -EINVAL;
 >  
->  	register_netdevice_notifier(&nfqnl_dev_notifier);
+>  	list_for_each_entry(nfacct, &nfnl_acct_list, head) {
+>  		if (strncmp(nfacct->name, acct_name, NFACCT_NAME_MAX) != 0)
 > -- 
 > 1.7.10.4
 > 
