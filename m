@@ -1,44 +1,44 @@
-From: Alex Flex <aflexzor@gmail.com>
-Subject: =?UTF-8?B?UmU6IERST1BJTkcgSUNNUCBhbmQgc3RpbGwgZ2V0dGluZyBrZXJuZWw=?=
- =?UTF-8?B?IG1lc3NhZ2VzIG9mIGljbXAgdHJhZmZpYz/igI8=?=
-Date: Fri, 12 Apr 2013 17:10:23 -0600
-Message-ID: <5168945F.5060308@gmail.com>
-References: <51630743.2020404@gmail.com>
+From: Bourne Without <blackhole@airpost.net>
+Subject: CT target without options
+Date: Sat, 13 Apr 2013 11:41:29 +0200
+Message-ID: <51692849.6090505@airpost.net>
+Reply-To: blackhole@airpost.net
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=x-received:message-id:date:from:user-agent:mime-version:to:subject
-         :references:in-reply-to:content-type:content-transfer-encoding;
-        bh=a+XYgJMkUG0aSHxnxPKrYz+sDgsYLR1gvnsolVx4uCg=;
-        b=N/AdScCtnWSOguZkIO1qVf4UPewwPwDZGmU6I3maODJz7xMX7jReEtmIZD4CEKH/q0
-         e2PknDWbjsNZ8NKATqxrArYjzwxV0Whr3e+gdGbkP/06XuUxUVin+lay4EQEHKtAjy95
-         bG9s21auUFRFkpA0TQMnxzY0vRtP7fwUC2+dUurq3oaqZIuD4RgiFyTE6e7zwY43MM3L
-         sN1ZQxZF6Z4dr4QDGKbgxMn5G00ja4FrH6RFPECeb4kwiBTQVd6WBGRS3ApG7HgQANWi
-         sYHcREBb3MsPn36XhPBvetHYCjlClnCPZb7pCLJAe0RhsFkGjJpTSCP8kMvXSm+VHasf
-         ythQ==
-In-Reply-To: <51630743.2020404@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=airpost.net; h=
+	message-id:date:from:reply-to:mime-version:to:subject
+	:content-type:content-transfer-encoding; s=mesmtp; bh=ZWmPNPSXbh
+	qdaQFOFrjTq7ASS0U=; b=ivGtWoMcM28IW4GJVft8upmsbQJToPNlxMsOE+xLWt
+	qnIN/23Oewr9Rr9PEb7ROkvDaifAH2GUYQgOEfnjU/2+3iXvf62KbuYyIlOMisAZ
+	abaFf2WfSOqtBU0WKSssFk7KmeHkKZ5tR5kBnHyEoyiln6nsEJv0CjnFSGMM+OEz
+	g=
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
+	messagingengine.com; h=message-id:date:from:reply-to
+	:mime-version:to:subject:content-type:content-transfer-encoding;
+	 s=smtpout; bh=ZWmPNPSXbhqdaQFOFrjTq7ASS0U=; b=QSSS+rf+cLh30UFRd
+	51Bjt6pa/n7spHactYSlXNnLyUH+2/1tbIdFsnEKjzUAESPBbUYEDBScnjZEXDDd
+	UUKLpxptmbEZyGw/78oCPsIC5XAyMgJwe95OFFw41JJDq68hFo4im4CM1oZugBND
+	BoeU/FjGfs56XCIyb29H4amjy4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hello...
+Good day,
 
-I have not recieved a response, maybe my question was a bit messy if it 
-was I apologize for that..
+I wonder what a rule like this:
+-A foo -t raw -j CT
 
-In concrete anybody know what is the difference in utilizing iptables to 
-DROP all ICMP, vrs using sysctl to ignore all ICMP ?
+actually does?
+It shows up like this:
 
-Does it make sense I was droping all ICMP in iptables  but still 
-recieving messages in syslog that ICMP redirect packets where getting 
-ignored every now and then (by that time i had not used sysctl, but i 
-was recommended to do so hence my question)
+Chain foo (0 references)
+target     prot opt source               destination
+CT         all  --  anywhere             anywhere             CT
 
-Thanks guys
+but what does it mean?
+The opposite of --notrack?
 
-Alex
-
+thanks for your answers
 
