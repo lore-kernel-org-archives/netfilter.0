@@ -1,31 +1,38 @@
-From: =?ISO-8859-1?Q?Bj=F8rnar_Ness?= <bjornar.ness@gmail.com>
-Subject: Re: cluster match and ipvsadm (not connection tracked)
-Date: Mon, 15 Apr 2013 16:12:10 +0200
-Message-ID: <CAJO99Tk-wna+oP43Kgckj1m1UpWp+HVbABrgUr1urrw80Z+zMA@mail.gmail.com>
-References: <CAJO99Tm4q3+RWheV9q9psvQ6dtL7sRLihGKA6w2epPEAKUVbfw@mail.gmail.com>
+From: Bourne Without <blackhole@airpost.net>
+Subject: Re: EPERM instead of ENETUNREACH for "to unreachable" route
+Date: Mon, 15 Apr 2013 16:46:51 +0200
+Message-ID: <516C12DB.1090804@airpost.net>
+References: <trinity-0ed09791-dae7-40db-b90e-85e114c79679-1366032496429@3capp-gmx-bs01>
+Reply-To: blackhole@airpost.net
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:x-received:in-reply-to:references:date:message-id
-         :subject:from:to:content-type;
-        bh=m5FPTQgHBTbTzLYUEW8DYv2zWL0/p+bKjlAL2JM0p1o=;
-        b=j1nIc3cQko8M3vtCl4I2aBNiSe/meMR3PkwJQwC8+wodY64+jm4q+dvZU2wDVqdQ+u
-         Bf/tjJagdokCj1gpnHA2BCNcz/hwlb+Idbl1PrOz2KzFrTkuYhiAm+m93QlYx5kmGPNs
-         cSkKX5jV3sjkz3Bv0v8TmvOoLL/yqNj7P2CNfjdWfaJnAfJUsWaZkuzkl/0NhpJuVHjA
-         1A4ZHh99S3H9XNJT2AqDBmYGTyFe/31MxsAm7fiE4Az1v8ynjhZqY6k/zzdWhlMqbOlf
-         SU6EGiEJtXJzNN5EBjiNJyS5xctY/QRqYIQAvLow4Mj6iEYN1XV3OP3X8OXJU+XOyXY8
-         lWIA==
-In-Reply-To: <CAJO99Tm4q3+RWheV9q9psvQ6dtL7sRLihGKA6w2epPEAKUVbfw@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=airpost.net; h=
+	message-id:date:from:reply-to:mime-version:to:cc:subject
+	:references:in-reply-to:content-type:content-transfer-encoding;
+	 s=mesmtp; bh=uvIJbHtb5djBrr23NFpoVJiBKmc=; b=d6XYIDFv2o8qEy7iQM
+	p2vM2rq7v+1s/+O9YlTUEK+uUhAwt5DVz2YHM8J7RswJEjyH8sZxUqlCjEz2dfoR
+	MgFS+9gG6WCCZvMw+Ym5+UR9O0LeO14g9PhWfEmxifb/odQ6I2dJy6EmeMOiTli1
+	4aG0Le/CcbLb+2U5SrUji7KpY=
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
+	messagingengine.com; h=message-id:date:from:reply-to
+	:mime-version:to:cc:subject:references:in-reply-to:content-type
+	:content-transfer-encoding; s=smtpout; bh=uvIJbHtb5djBrr23NFpoVJ
+	iBKmc=; b=WvJ2TknjuuAvM3OzIrQa1Jc7FIwaWxu0psoCuUIiSZdgGOF3F1txmv
+	HiYJOkOkJUMW3NM7UIALQJgfQPHKMJN75FIYiaiI5BB868msx+/yMmTqScSMLU5G
+	b39lT03FmBviKYJWyDb0aNujpJFwydpmedA8Tg9klYicuCVyBak0c=
+In-Reply-To: <trinity-0ed09791-dae7-40db-b90e-85e114c79679-1366032496429@3capp-gmx-bs01>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: markus lottmann <LottvomSchlott@gmx.de>
+Cc: netfilter@vger.kernel.org
 
-Seems I found my own answer,
+On 15.04.2013 15:28, markus lottmann wrote:
+[...]
+> In this setup the command: ping -Q 1 8.8.8.8 yields EPERM instead of the expected ENETUNREACH. Does anyone have an explanation for this? The only thing I found in a web search was that EPERM is returned if an OUTPUT rule in the filter table is dropping packets.
 
-net.ipv4.vs.conntrack was 0, setting to 1 has so far solved my problem.
+http://marc.info/?l=netfilter-devel&m=136518055130415&w=2
 
---
-Bj(/)rnar
+might answer this
+
