@@ -1,52 +1,37 @@
-From: =?ISO-8859-1?Q?Bj=F8rnar_Ness?= <bjornar.ness@gmail.com>
-Subject: cluster match and ipvsadm (not connection tracked)
-Date: Mon, 15 Apr 2013 10:29:48 +0200
-Message-ID: <CAJO99Tm4q3+RWheV9q9psvQ6dtL7sRLihGKA6w2epPEAKUVbfw@mail.gmail.com>
+From: "markus lottmann" <LottvomSchlott@gmx.de>
+Subject: EPERM instead of ENETUNREACH for "to unreachable" route
+Date: Mon, 15 Apr 2013 15:28:16 +0200 (CEST)
+Message-ID: <trinity-0ed09791-dae7-40db-b90e-85e114c79679-1366032496429@3capp-gmx-bs01>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:x-received:date:message-id:subject:from:to
-         :content-type;
-        bh=+rN9NMp5mIE8g5tJ2jGHiT5woAi5B2mK5X6gYWWHoS0=;
-        b=Pqs4kVZ0LW0/izJ4Kc470pcCNOxrhP8TEWXP44gSeFjDvGNOTsgqS0aYHKUO8jChXF
-         TRHf9LCYIGfbbOxGJdkCLRxINB64eNozv9yis1mkIbkg3FiaZueyWd2CXopqR+b6P+OM
-         Jr/shJZLQU6Pb1Yrhf8x2LF3zCZTk5xsRBjgc7df2ZTYdoGr4LGom/m55213kfc7EoO5
-         7i/3CC7VgKQ3ah7xuMNdpb6o3wnulZiKzBUb3pNf2voptyxK7PZcr0r5/WHiUTVsacLh
-         HHm51h3RW/0WMR+iWa8uCfjbD/xkKOa17f02XlnpbWCi6WxujZNDH2mghTareA1zytC6
-         O5TA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-I am experiencing problems with a active-active gateway setup, where
-the gateway(s) also
-act as ipvs load balancers.
+Hi everyone,
 
-This problem seems to be caused by ipvs not doing connection tracking
-(connections handled
-by ipvs is not visible to conntracktools atleast), the following happends:
+I am trying to set up a quite complex routing in which the packets from my software are tos marked and should then leave the system via different interfaces based on this marking. I thereby ran into a problem with a route which goes "to unreachable". The returned error code is EPERM instead of ENETUNREACH and I do not understand why. I broke down the setup to a minimum for the mailing list request to ease the discussion.
+The setup is:
 
-* gateway nat's (ipvs masquerade) the correct packets to realserver
-* realserver gets packet
-* reply packet gets dropped by --state INVALID -j DROP match (not tracked)
-* I remove invalid drop, but gateway's still drop reply packets
-* seems this is caused by the following lines of code in xt_cluster.c:
+ip route shows:
+default via 10.0.0.1 dev eth0
+10.0.0/24 dev eth0 proto kernel scope link src 10.0.0.2
 
-xt_cluster_mt(const struct sk_buff *skb, struct xt_action_param *par)
-[...]
-    ct = nf_ct_get(skb, &ctinfo);
-    if (ct == NULL)
-        return false;
+ip rule shows:
+form all lookup local
+from all fwmark 0x1 lookup 101
+form all lookup main
+from all lookup default
 
-    if (nf_ct_is_untracked(ct))
-        return false;
+ip route show table 101 shows:
+unreachable default
 
-Is there any way to make this work without code modifications?
+iptables only one entry and the default behaviour is set to ACCEPT for all tables:
+iptabltes -t mangle -A OUTPUT -m tos --tos 0x1 -j MARK --set-mark 0x1
 
-Best regards from Norway,
+In this setup the command: ping -Q 1 8.8.8.8 yields EPERM instead of the expected ENETUNREACH. Does anyone have an explanation for this? The only thing I found in a web search was that EPERM is returned if an OUTPUT rule in the filter table is dropping packets.
 
---
-Bj(/)rnar
+Greetings,
+Markus
