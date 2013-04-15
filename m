@@ -1,37 +1,31 @@
-From: "markus lottmann" <LottvomSchlott@gmx.de>
-Subject: EPERM instead of ENETUNREACH for "to unreachable" route
-Date: Mon, 15 Apr 2013 15:28:16 +0200 (CEST)
-Message-ID: <trinity-0ed09791-dae7-40db-b90e-85e114c79679-1366032496429@3capp-gmx-bs01>
+From: =?ISO-8859-1?Q?Bj=F8rnar_Ness?= <bjornar.ness@gmail.com>
+Subject: Re: cluster match and ipvsadm (not connection tracked)
+Date: Mon, 15 Apr 2013 16:12:10 +0200
+Message-ID: <CAJO99Tk-wna+oP43Kgckj1m1UpWp+HVbABrgUr1urrw80Z+zMA@mail.gmail.com>
+References: <CAJO99Tm4q3+RWheV9q9psvQ6dtL7sRLihGKA6w2epPEAKUVbfw@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:x-received:in-reply-to:references:date:message-id
+         :subject:from:to:content-type;
+        bh=m5FPTQgHBTbTzLYUEW8DYv2zWL0/p+bKjlAL2JM0p1o=;
+        b=j1nIc3cQko8M3vtCl4I2aBNiSe/meMR3PkwJQwC8+wodY64+jm4q+dvZU2wDVqdQ+u
+         Bf/tjJagdokCj1gpnHA2BCNcz/hwlb+Idbl1PrOz2KzFrTkuYhiAm+m93QlYx5kmGPNs
+         cSkKX5jV3sjkz3Bv0v8TmvOoLL/yqNj7P2CNfjdWfaJnAfJUsWaZkuzkl/0NhpJuVHjA
+         1A4ZHh99S3H9XNJT2AqDBmYGTyFe/31MxsAm7fiE4Az1v8ynjhZqY6k/zzdWhlMqbOlf
+         SU6EGiEJtXJzNN5EBjiNJyS5xctY/QRqYIQAvLow4Mj6iEYN1XV3OP3X8OXJU+XOyXY8
+         lWIA==
+In-Reply-To: <CAJO99Tm4q3+RWheV9q9psvQ6dtL7sRLihGKA6w2epPEAKUVbfw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi everyone,
+Seems I found my own answer,
 
-I am trying to set up a quite complex routing in which the packets from my software are tos marked and should then leave the system via different interfaces based on this marking. I thereby ran into a problem with a route which goes "to unreachable". The returned error code is EPERM instead of ENETUNREACH and I do not understand why. I broke down the setup to a minimum for the mailing list request to ease the discussion.
-The setup is:
+net.ipv4.vs.conntrack was 0, setting to 1 has so far solved my problem.
 
-ip route shows:
-default via 10.0.0.1 dev eth0
-10.0.0/24 dev eth0 proto kernel scope link src 10.0.0.2
-
-ip rule shows:
-form all lookup local
-from all fwmark 0x1 lookup 101
-form all lookup main
-from all lookup default
-
-ip route show table 101 shows:
-unreachable default
-
-iptables only one entry and the default behaviour is set to ACCEPT for all tables:
-iptabltes -t mangle -A OUTPUT -m tos --tos 0x1 -j MARK --set-mark 0x1
-
-In this setup the command: ping -Q 1 8.8.8.8 yields EPERM instead of the expected ENETUNREACH. Does anyone have an explanation for this? The only thing I found in a web search was that EPERM is returned if an OUTPUT rule in the filter table is dropping packets.
-
-Greetings,
-Markus
+--
+Bj(/)rnar
