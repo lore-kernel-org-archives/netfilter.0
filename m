@@ -1,7 +1,7 @@
-From: =?ISO-8859-1?Q?Humberto_Juc=E1?= <betolj@gmail.com>
+From: Ambroz Bizjak <ambrop7@gmail.com>
 Subject: Re: Remote IP in packet sent from WAN to LAN
-Date: Fri, 19 Apr 2013 07:07:49 -0400
-Message-ID: <CACuyg24o=7QG8SpT4r1HYZYUcL85T38P0VGx2x_ZeQXgVieHnw@mail.gmail.com>
+Date: Fri, 19 Apr 2013 13:13:04 +0200
+Message-ID: <CAOA3yK+twroq_pO0Y2H0r_b_h19WGBapdAv3dK_8GDbWpp_mfA@mail.gmail.com>
 References: <47E0AF00D6313049B892E93D60AACDCA45C7193D@AMSPRD0410MB361.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
@@ -10,30 +10,35 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=mime-version:x-received:in-reply-to:references:date:message-id
          :subject:from:to:content-type:content-transfer-encoding;
-        bh=gRjQd9lR/fuWm+me3nkSPLgHuuEJrmi2D2RGgRfuIJ0=;
-        b=d5VVyV4YCGByr/pPSc7LvHnjfcHVd6US798zggICiBCzIC/yoiSuGv4QCeHB7a+LNv
-         6tQQ5/mSw5e+9SMSLWpOYx1JAO6CTprgmOySImq7yY1x00JXW2fQ+wXSg1sfXDIner7o
-         gjyfEaEH0YCjKQ++qlqywpJ/LQ/RukCud/dlD3bamZ8jsit/s+I/xeLL4ry0k+pdtS5d
-         TMwHPq1Uvfw8fD1Zq2nmI+T8QIzDWwtpnPDwhCPJar0Ye3x4xx2zvHyeCL1621t22sEA
-         cU53SGa4UwvL3RmxliJKN5L/kQkKZez4rzUF17HmMzdMRgRddbrZn0A7lNoH39SgIEGi
-         u/7A==
+        bh=dnwY0ekHcFMOKhLNFJS4Q3aeLJYHOVf2PU61YTsE3Ak=;
+        b=p65BxJvZzv0SfuxGyGR8gBdXwfxIE0ViqjjBgTcdlaKq9miJQ30bAPQp0coQhathu6
+         ceKZX1eKkDykAjuNodHnTLukoKFuMMtbzXq1xTGqBrrxg/9rwLS8VBocPaWcEjsgOSi7
+         7NP9f9DjGH7uHFs1ffAbe5djA2ufBnhMtnmSyWOLJhzas1wY3Ik4+VVlzm4ouz+neuDd
+         fU7mRDJevbB8MRSfvJW2Ucm/OKJP6PNDEGkFy4284ZeOowTycADUpj8uAeI5RTgLrWWA
+         xb5my4Cm4U1KJWhwjnKXUoFpPw5gyKAmgtTkAalS1M7BT6pOx+dZEc6h37QodvXOR9t8
+         Mn/Q==
 In-Reply-To: <47E0AF00D6313049B892E93D60AACDCA45C7193D@AMSPRD0410MB361.eurprd04.prod.outlook.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"
-To: =?ISO-8859-2?Q?Piotr_Paw=B3owski?= <piotr.pawlowski@goyello.com>, netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-As I understand it, your problem is the internal NAT.
+Do you mean that when an internal client connects to the extrernal
+address of the server (as forwarded by the router), the server sees
+the router itself connecting?
 
-Configure your firewall without doing SNAT or MASQUERADE for packets
-destined to the internal server - you can use RETURN rules to do this,
-for example.
+I believe there is no direct solution to this; if the router was to
+state the client's IP address as the source, the client would get the
+replies from the server (directly over the LAN), *but* they would have
+the source address the internal address of the server, so the client
+will discard them (because it expects them to arrive from the external
+address).
 
-But, If you can not avoid this ...
-Try something like this:
-http://engi.neir.org/tips-tricks/fix-apache-proxy-logging/
+A workaround is to set up DNS so that the domain name of the server
+resolves to the internal address for clients on the LAN.
 
-2013/4/19 Piotr Paw=C5=82owski <piotr.pawlowski@goyello.com>:
+On Fri, Apr 19, 2013 at 9:40 AM, Piotr Paw=C5=82owski
+<piotr.pawlowski@goyello.com> wrote:
 > Hi All,
 >
 > I have iptables-based router which provides access to the Internet fo=
