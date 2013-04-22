@@ -1,50 +1,87 @@
-From: Moahn Reddy <mohanreddykv@gmail.com>
-Subject: Re: [patch] ipvs: off by one in set_sctp_state()
-Date: Mon, 22 Apr 2013 15:19:24 +0530
-Message-ID: <517507A4.7070406@gmail.com>
-References: <20130420112455.GA30198@elgon.mountain> <alpine.LFD.2.00.1304201504510.1593@ja.ssi.bg> <20130422041151.GM15680@verge.net.au> <alpine.LFD.2.00.1304220843560.1626@ja.ssi.bg> <51750016.5080600@gmail.com> <20130422093016.GB8936@mwanda>
+From: Husnu Demir <hdemir@metu.edu.tr>
+Subject: Fwd: ipset and counters
+Date: Mon, 22 Apr 2013 15:46:59 +0300
+Message-ID: <51753143.8090908@metu.edu.tr>
+References: <51752B00.8090908@metu.edu.tr>
+Reply-To: hdemir@metu.edu.tr
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <lvs-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=x-received:message-id:date:from:user-agent:mime-version:to:cc
-         :subject:references:in-reply-to:content-type
-         :content-transfer-encoding;
-        bh=ap8DOTZF91V9bC362y1bMkVySP09Qfsn56pkTpQUsSQ=;
-        b=PuTRjWRe3SMe+av0lYzyxAOk/GfpMbFSzHjjsLKILREtROp5cdPfC9rLzyYEvUnhBi
-         VyFvnL9n8Zx7+FnjBWvVDSlULICPV1Aotw/SDV6dRVQZyrnuRYascrQd6VuCxFWu+728
-         tiYzsD5qpsXUjnC7U3T6fAIfVG0WbvnM3eF4hFlyB1+yG3YlRChBE3hi/poDLPvgozPy
-         L8w4zAMjrtQVcTVV2DdwOAMZz4t6TeCUTF54nH3zQfuOqAH15qpAtNmrn5SBPVdOni6g
-         Q7q90KH8CZ9gSQRjDmFzJ7H1sW3Qyu5WBI8OgOh19Z6G2CUEjPSpFMYUHTpu/0OfXlq6
-         ffpg==
-In-Reply-To: <20130422093016.GB8936@mwanda>
-Sender: lvs-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <51752B00.8090908@metu.edu.tr>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Julian Anastasov <ja@ssi.bg>, Simon Horman <horms@verge.net.au>, Wensong Zhang <wensong@linux-vs.org>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Hi Dan,
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-I am not saying that that is not a problem. Yes, we need to fix that 
-array issue. I just said that I thought 0 to 254 enough at that time.
 
-Thanks,
-Mohan
+Hi,
 
-On Monday 22 April 2013 03:00 PM, Dan Carpenter wrote:
-> On Mon, Apr 22, 2013 at 02:47:10PM +0530, Moahn Reddy wrote:
->> Hi,
->>
->> I see there is no problem in the code regarding the state change.
->> And the thing why I took 255 in the sctp_events array is that as per
->> the sctp specification, the 255 message is reserved, so I thought 0
->> to 254 messages are enough.
-> The issue is can chunk_type in set_sctp_state() be 255?  How is
-> this prevented in the code?
->
-> regards,
-> dan carpenter
->
+I want to give a try for COUNTERS properties of IPSET. But I could not
+manage it;
 
+# ipset create COUNTERS bitmap:ip  counters
+ipset v6.17: Unknown argument: `counters'
+Try `ipset help' for more information.
+
+
+# man ipset
+..
+..
+   counters, packets, bytes
+       All set types support the optional counters option when
+creating a set. If the option is specified then the set is created
+with packet and byte counters per element support. The packet and byte
+ counters  are  initialized  to
+       zero when the elements are (re-)added to the set, unless the
+packet and byte counter values are explicitly specified by the packets
+and bytes options. An example when an element is added to a set with
+non-zero counter values:
+
+              ipset create foo hash:ip counters
+
+              ipset add foo 192.168.1.1 packets 42 bytes 1024
+
+..
+
+
+I could not set counters. How can I activate it?
+
+I used ipset-20130422 BUILD. And;
+
+# autogen.sh
+# ./configure
+# make
+# make install
+# make CONFIG_IP_SET_MAX=2048 modules
+# make CONFIG_IP_SET_MAX=2048 modules_install
+
+# ipset -V
+ipset v6.17, protocol version: 6
+
+There is a ipset v6.18 bu daily build says 6.17.
+
+
+Please help.
+
+Thanks in advance.
+
+Husnu Demir.
+Network.
+
+
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+Comment: Using GnuPG with undefined - http://www.enigmail.net/
+
+iQEcBAEBAgAGBQJRdTFDAAoJEISpBAM51qlEP1oH+wfBPOQLmmU8wD+EQ83fUx85
+u62Rj0S189piWKNzc4Mb/TijHjDLelGuems7CMGvlqsxSBQQtltog8+15n/GmP3I
+jeIGXjg4q638ax6+04q+zZwjIm7uF3axWUBuoAhEJgcf0bjjJVXg7QDJTdwWTgU0
+jJVRK01NbdIT32PqmpLvlq0CtovtsOmwfv98ENVHqUPyiUjcJuzBh1SjMvZgFO6G
+94tez2gevM0mRjz8Dq5J2nxzE6zlsQlGI7mQA7NHW84pTGAgeil2UG1SJV2+mlAL
+m2GbOL5b2bUQrtNXdLV/00EMlYOj4nZ3vhzAd0rptDKV21SiabP8pVCeQlvXI9w=
+=bLRy
+-----END PGP SIGNATURE-----
