@@ -1,20 +1,22 @@
-From: =?ISO-8859-1?Q?Humberto_Juc=E1?= <betolj@gmail.com>
-Subject: ndpi-netfilter
-Date: Mon, 22 Apr 2013 19:53:09 -0400
-Message-ID: <CACuyg27HFxRtgbUp_eZTx8HztdN2pXJWPVXpWwEUYwvvxx3zuw@mail.gmail.com>
+From: Flavio Poletti <polettix@gmail.com>
+Subject: Re: nf-queue.c as an example of libnetfilter_queue
+Date: Tue, 23 Apr 2013 02:13:22 +0200
+Message-ID: <CAM-TR1qMrqOvWk_Y5fVeY2BzgkQPG6QJR1x-4_pUsu2SRqRQdQ@mail.gmail.com>
+References: <CAM-TR1qfrCA-SvkfpNbdFr9dYTpc53FmL4WOvzxJs9_M3f6H7w@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:x-received:date:message-id:subject:from:to
-         :content-type;
-        bh=d6zG3pjplK+wSomozn3AB5gRHFNPDvuQfpbORK9xR/g=;
-        b=LKjXwHUTRdOoQ0RBA2oTpx5/MoXzfelEUTzdvvWx4OeLtBXy0O/bPL0qpUxM7SXwIQ
-         GTjSTZyCQatv+FkABREHNdCjPChrCmrN2pZMW/pQlcPsNSRnfAEmEoa0UuLDia7+Aj4K
-         4C4TB6LljIwm5vtdAdePXAAVh1VZ/HB5NQwo+52B+np41IjYjlLg193poR5fCetaDKFu
-         3zC6VHLqnPDTiwr8wA8Qyo+2QyNE+JE7NYzEkFzoCeXzh6vq/ooHLmZZmEyubrQNYnoC
-         tx9dLOZLoGHwbknApxK7JoltnYmMKOBT4ELWJhwJV8vEP2L76YdhfLgRMdcTMIfjrK7w
-         IrGw==
+        h=x-received:mime-version:in-reply-to:references:from:date:message-id
+         :subject:to:content-type;
+        bh=SZoli/XafRq07BQ+WaFWbAqqhuXHQ/Dhf7KHUhVRqAk=;
+        b=LlOjfI5kFAxJrzl78gRihDWKRaqPpJVhvkDDj/PKHqV09DqGcSHH5/6v1Y3HGyhwu5
+         dXLuYz0ZXp56y4aK+9VaHX3qRF5mKY/VtbtptqSwy/kBMK46IUEuOEcPhABUjIfppuGN
+         7rrSBV9HpVMvM8gLGE8CAYvxMRIevi+Lc0eO1950MkKjam0uqduox33lbd+k/DqE7bGc
+         omZoUP9RtAmgGBpD5cj0UAopJu9fJZb3I1vC+wn9dl7j1etQRNW+tTVJNd7ski/D2BOl
+         FzIs19cI7/L2xj9XPUqmSo0H9Mz2pw0FqcsQ92b+nHs+Oh89K2CjlYwAFHJIrGRKtYUd
+         BEBg==
+In-Reply-To: <CAM-TR1qfrCA-SvkfpNbdFr9dYTpc53FmL4WOvzxJs9_M3f6H7w@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
@@ -23,7 +25,17 @@ To: netfilter@vger.kernel.org
 
 Hi,
 
-I did some fix to new versions of nDPI and Ubuntu 12.04.
-http://www54.zippyshare.com/v/9554405/file.html
+The example file nf-queue.c program in the examples
+directory does not seem to use the functions in the library at all.
 
-Some "protocols", like facebook and twitter, dont work well!
+Are they deprecated in favor of something else?
+
+This is a repetition of a question I sent some 10 days ago, sorry for
+bothering again
+but I'm interested into this. Anyway I won't post it again if I get no
+answers, please
+accept apologies in advance if inconvenient.
+
+Thanks,
+
+    Flavio.
