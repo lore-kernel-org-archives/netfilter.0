@@ -1,45 +1,63 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nf-queue.c as an example of libnetfilter_queue
-Date: Tue, 23 Apr 2013 02:43:44 +0200
-Message-ID: <20130423004344.GA5846@localhost>
-References: <CAM-TR1qfrCA-SvkfpNbdFr9dYTpc53FmL4WOvzxJs9_M3f6H7w@mail.gmail.com>
- <CAM-TR1qMrqOvWk_Y5fVeY2BzgkQPG6QJR1x-4_pUsu2SRqRQdQ@mail.gmail.com>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [patch] ipvs: off by one in set_sctp_state()
+Date: Tue, 23 Apr 2013 11:22:43 +0900
+Message-ID: <20130423022243.GQ12017@verge.net.au>
+References: <20130420112455.GA30198@elgon.mountain>
+ <alpine.LFD.2.00.1304201504510.1593@ja.ssi.bg>
+ <20130422041151.GM15680@verge.net.au>
+ <alpine.LFD.2.00.1304220843560.1626@ja.ssi.bg>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
+Return-path: <lvs-devel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAM-TR1qMrqOvWk_Y5fVeY2BzgkQPG6QJR1x-4_pUsu2SRqRQdQ@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+In-Reply-To: <alpine.LFD.2.00.1304220843560.1626@ja.ssi.bg>
+Sender: lvs-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Flavio Poletti <polettix@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: Julian Anastasov <ja@ssi.bg>
+Cc: Dan Carpenter <dan.carpenter@oracle.com>, Wensong Zhang <wensong@linux-vs.org>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
 
-On Tue, Apr 23, 2013 at 02:13:22AM +0200, Flavio Poletti wrote:
-> Hi,
+On Mon, Apr 22, 2013 at 09:03:28AM +0300, Julian Anastasov wrote:
 > 
-> The example file nf-queue.c program in the examples
-> directory does not seem to use the functions in the library at all.
+> 	Hello,
 > 
-> Are they deprecated in favor of something else?
+> On Mon, 22 Apr 2013, Simon Horman wrote:
 > 
-> This is a repetition of a question I sent some 10 days ago, sorry
-> for bothering again but I'm interested into this. Anyway I won't
-> post it again if I get no answers, please accept apologies in
-> advance if inconvenient.
+> > > 	There are more confusing (still, non-fatal)
+> > > problems in this IPVS-SCTP support, eg.
+> > > 
+> > >         if (direction == IP_VS_DIR_OUTPUT)
+> > > -               event++;
+> > > +               event *= 2;
+> > > 
+> > > 	I guess we are running with wrong timeouts.
+> > 
+> > IMHO there seem to be many problems with SCTP, but it is good to
+> > fix the ones we find as we find them.
+> 
+> 	At the time I found it (during IPVS optimizations
+> development), it didn't looked fatal, I preferred to
+> allocate more time for SCTP for debugging.
+> 
+> > Would you like to make a patch for the above change or should I?
+> 
+> 	May be the code is correct, my mistake. I was
+> confused from the order in sctp_events[] but ipvs_sctp_event_t
+> allocates values for _SER states.
 
-Both APIs are currently supported, nf-queue uses libmnl. The former
-uses the old libnfnetlink. I needed a rather more flexible API for the
-connection tracking support in user-space in conntrackd over libmnl.
+Thanks, it sounds like we should study things more carefully
+before making any changes.
 
-The new API also provides also helpers for ipv4, ipv6, tcp and udp,
-which seems to be a common requirement for everyone. See the
-libnetfilter_queue/src/extra/ directory in case you want to check
-implementation details.
-
-You can generate up to date doxygen documentation with the following
-command:
-
-libnetfilter_queue$ doxygen doxygen.cfg
-
-Regards.
+> > > 	Also, I'm not sure we support properly the
+> > > one-way states as done for TCP (IP_VS_DIR_INPUT_ONLY).
+> > > May be this code deserves more serious review, for example,
+> > > net/netfilter/nf_conntrack_proto_sctp.c looks as good
+> > > source for comparison.
+> > 
+> > I believe it does need a more serious review.
+> 
+> Regards
+> 
+> --
+> Julian Anastasov <ja@ssi.bg>
+> 
