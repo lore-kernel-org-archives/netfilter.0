@@ -1,63 +1,40 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [patch] ipvs: off by one in set_sctp_state()
-Date: Tue, 23 Apr 2013 11:22:43 +0900
-Message-ID: <20130423022243.GQ12017@verge.net.au>
-References: <20130420112455.GA30198@elgon.mountain>
- <alpine.LFD.2.00.1304201504510.1593@ja.ssi.bg>
- <20130422041151.GM15680@verge.net.au>
- <alpine.LFD.2.00.1304220843560.1626@ja.ssi.bg>
+From: Vigneswaran R <vignesh@atc.tcs.com>
+Subject: Re: Remote IP in packet sent from WAN to LAN
+Date: Tue, 23 Apr 2013 10:11:19 +0530
+Message-ID: <517610EF.2020009@atc.tcs.com>
+References: <47E0AF00D6313049B892E93D60AACDCA45C7193D@AMSPRD0410MB361.eurprd04.prod.outlook.com>,<CAOA3yK+twroq_pO0Y2H0r_b_h19WGBapdAv3dK_8GDbWpp_mfA@mail.gmail.com> <47E0AF00D6313049B892E93D60AACDCA45C7730F@AMSPRD0410MB361.eurprd04.prod.outlook.com>
 Mime-Version: 1.0
-Return-path: <lvs-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <alpine.LFD.2.00.1304220843560.1626@ja.ssi.bg>
-Sender: lvs-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <47E0AF00D6313049B892E93D60AACDCA45C7730F@AMSPRD0410MB361.eurprd04.prod.outlook.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Julian Anastasov <ja@ssi.bg>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>, Wensong Zhang <wensong@linux-vs.org>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Cc: piotr.pawlowski@goyello.com
 
-On Mon, Apr 22, 2013 at 09:03:28AM +0300, Julian Anastasov wrote:
-> 
-> 	Hello,
-> 
-> On Mon, 22 Apr 2013, Simon Horman wrote:
-> 
-> > > 	There are more confusing (still, non-fatal)
-> > > problems in this IPVS-SCTP support, eg.
-> > > 
-> > >         if (direction == IP_VS_DIR_OUTPUT)
-> > > -               event++;
-> > > +               event *= 2;
-> > > 
-> > > 	I guess we are running with wrong timeouts.
-> > 
-> > IMHO there seem to be many problems with SCTP, but it is good to
-> > fix the ones we find as we find them.
-> 
-> 	At the time I found it (during IPVS optimizations
-> development), it didn't looked fatal, I preferred to
-> allocate more time for SCTP for debugging.
-> 
-> > Would you like to make a patch for the above change or should I?
-> 
-> 	May be the code is correct, my mistake. I was
-> confused from the order in sctp_events[] but ipvs_sctp_event_t
-> allocates values for _SER states.
+On 04/19/2013 06:20 PM, Piotr Paw=B3owski wrote:
+> Not exactly.
+> On the iptables-based router there is port forwarding to services run=
+ning on servers inside LAN. I.e. WWW server is running on 192.168.1.2:8=
+0 , in iptables I have port forwarding (nat/prerouting) from external I=
+P (2.3.4.5:80) to 192.168.1.2:80 . Now on 192.168.1.2 in WWW access log=
+s I see internal IP of the router instead of remote IP of the client, w=
+hich requested 2.3.4.5:80 in browser.
 
-Thanks, it sounds like we should study things more carefully
-before making any changes.
+1. Instead of using iptables-based port forwarding (DNAT), if you use=20
+some reverse proxy (eg., apache) on the router, I think you can log the=
+=20
+actual client IP by following the instructions in the below URL (taken=20
+from Humberto Juca's mail).
 
-> > > 	Also, I'm not sure we support properly the
-> > > one-way states as done for TCP (IP_VS_DIR_INPUT_ONLY).
-> > > May be this code deserves more serious review, for example,
-> > > net/netfilter/nf_conntrack_proto_sctp.c looks as good
-> > > source for comparison.
-> > 
-> > I believe it does need a more serious review.
-> 
-> Regards
-> 
-> --
-> Julian Anastasov <ja@ssi.bg>
-> 
+http://engi.neir.org/tips-tricks/fix-apache-proxy-logging/
+
+2. Otherwise, you can LOG the packet on the router before doing DNAT.=20
+Then the router log and webserver log together can make some sense=20
+(provided that the servers are time synchronized).
+
+
+Regards,
+Vignesh
+
