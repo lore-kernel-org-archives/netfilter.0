@@ -1,22 +1,31 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [patch -next] netfilter: nf_nat: missing condition in
- nf_xfrm_me_harder()
-Date: Thu, 25 Apr 2013 01:59:47 +0200
-Message-ID: <20130424235947.GA6528@localhost>
-References: <20130424151151.GA16783@elgon.mountain>
+Subject: [ANNOUNCE] Netfilter is participating in the Google Summer of Code
+ 2013
+Date: Thu, 25 Apr 2013 13:12:37 +0200
+Message-ID: <20130425111237.GA4441@localhost>
 Mime-Version: 1.0
-Return-path: <netdev-owner@vger.kernel.org>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <20130424151151.GA16783@elgon.mountain>
-Sender: netdev-owner@vger.kernel.org
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org
+To: Netfilter Development Mailing list <netfilter-devel@vger.kernel.org>
+Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>, Carol Smith <carols@google.com>
 
-On Wed, Apr 24, 2013 at 06:11:51PM +0300, Dan Carpenter wrote:
-> This if statement was accidentally dropped in a merge commit so now it
-> returns unconditionally.
+Hi!
 
-Applied, thanks Dan.
+Netfilter is participating in the GSoC 2013:
+
+http://www.google-melange.com/gsoc/org/google/gsoc2013/netfilter
+
+All proposed tasks this year are going around nftables:
+
+http://www.netfilter.org/projects/nftables/index.html
+
+If you are a student with background on networking and C programming,
+and you have public code available somewhere (e.g. github) that you
+can use as credentials (no need to be Netfilter specific code BTW),
+then consider sending us your application.
+
+Have fun!
