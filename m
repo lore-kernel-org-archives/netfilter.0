@@ -1,114 +1,91 @@
-From: xavier droubay <xavier.droubay@gmail.com>
-Subject: port forwarding to web server with different netmask than default netmask.
-Date: Sun, 28 Apr 2013 05:11:27 +0200
-Message-ID: <CAHyoP5wSne5W_ufVD8OzVmsH=eFrXon-uoDrohT_yCAyrkmEcg@mail.gmail.com>
+From: Ravi Kanth Vanapalli <vvnrk.vanapalli@gmail.com>
+Subject: Changing the incoming interface of the packet using iptables MARK and
+ ip route commands
+Date: Tue, 30 Apr 2013 23:06:03 -0400
+Message-ID: <CALyk9ewHd1EgDJ-LhSQsOZwasJE-CM9nuLH9djtLOMKHPnJm0A@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=mime-version:x-received:date:message-id:subject:from:to
          :content-type;
-        bh=jWu9NXrbCr0JBpu97WUJXF9kF9vwf0hRhG6ltF+S+CY=;
-        b=ZIwkmAP3/WfgarMBVyB0GrA/SUq9V7sRu/dK6CEzBbgOZmllwQ56MSYkIqhjRXXHAv
-         FFV4WBSisstjT2nM4kdYqQjGZ3tp4pAIfc3BUSwDv/EkFn96k+WBhgSPSNlBw8Ffz/XX
-         YNgWfT71U6cdGQxe2hEWl2UiU9BTUv2sVFzfVlKjFhkdxYkh9OlZJlkpJd3nK+cMXmdB
-         eIfZvPs6zsQmPjbz9bPNTfH6tK/j6KYzdkC3Hp+u/tvCK9k0E9Jui8Zaif9YKJEbwNje
-         tWl6RppmTk2eWopyb8hwkqMPneCzOGxKZyWGuh301nvXPCYPcCatC1USiHmpua+kiXOz
-         I3eQ==
+        bh=CWeKn5KT2Nvp6PNr1GNa0cjJtqbf83mTsi/fRDZv7DM=;
+        b=gAda7heBDL6VWviGy7JgpTPG5WpYPY8pk2/x4ga30rVZCrYotot7pqKJm+nB+Uh2H5
+         R7rfth/woP5F/VjNoTQkf9oC4AmPjC0Yu0xlMzn18jeHGXt8eKwFMArheyvnGzGdPhxI
+         zz+GDWYWdQve5x7PL4BvUdAedUDUpPMNZJhnJB2e18ixqsDj4eRcCY02702pj5RbpSHB
+         FTKo5ILFC01ozmq+kB67i8J9W9BTRjMXP5qAcoOM4kMsOf9uQWQcyCvplJej2o7PH8GW
+         cdnsMwOivALoBkymzu6KEWYI8A+pqOfCu3VE3STUMJILM12A/Y7bGlh70wGEsnxMCnc2
+         Su3Q==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-have the following config.
+I was trying to change the incoming interface of the packet using
+iptables MARK and ip route commands.
 
+I have tried this approach after going through the weblink
+belowhttp://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-4.html#ss4.5
+which suggests the use of iptable Mark and iproute2 utilities instead
+of ROUTE target. but could not find any success chaging the incoming
+interface of the packet in the receiving path.
 
-Internet  ----(WAN)- pfsense -(DMZ)------(eth0)- COOVA Hostpot box
--(eth1)----WIFI + AP Zone
+I have an application 'A' which binds to an interface 'intfA' in linux
+i.e the application sends and receives packets only on via intfA.
 
-I configured pfsense to forward 8001 to 172.1.1.1 port 8001
-eth0 : 172.1.1.1/248
-eth1 : 10.0.0.1/16
+Sending path
 
+In a tunnel based setup, I was able to send packet's out from 'intfA'
+to 'tap0' using the following iptable commands.
 
-My pbm is to port forward port 8001 to several WEB servers APS.
+iptables -t mangle -A OUTPUT -d 8.9.10.11/32 -j MARK --set-mark 1 ip
+rule add fwmark 1 priority 9000 table 1
 
-All my APs have /24 netmask, ie 10.127.127.11/24
+My default routing entry in main table is pointing to 'intfA'
 
-On the coova, I defined alias eth1:AP1 to 10.127.127.251/24 in order
-to ping the AP1 (no ping without this alias)
+In table '1' I have made the default routing table entry point to 'tap0'
 
-nmap -sT 10.127.127.11 -p 80
-PORT   STATE SERVICE
-80/tcp open  http
+route add default dev tap0 table 1
 
-And to confirm, "lynx 10.127.127.11" is ok
+I could observe from the kernel dmesg logs that the outgoing interface
+of the packet changed succesfully from 'intfA' to 'tap0'.
 
-But I cannot reach AP1 from internet.
-tcpdump shows www queries reaching eth1, but ther is no www answer from the AP1.
-# tcpdump -i eth1 'host 10.127.127.11'
-04:23:40.647819 ARP, Request who-has 10.127.127.11 tell 10.127.0.1, length 28
-04:23:40.648375 ARP, Reply 10.127.127.11 is-at c0:c1:c0:1a:7a:e1 (oui
-Unknown), length 46
-04:23:40.648387 IP myhomeip.org.53874 > 10.127.127.11.www: Flags [S],
-seq 3716296767, win 8192, options [mss 1352,nop,wscale 2,sackOK,TS val
-14138801 ecr 0], length 0
-...
-04:23:49.647643 IP myhomeip.org.53874 > 10.127.127.11.www: Flags [S],
-seq 3716296767, win 8192, options [mss 1352,sackOK,TS val 14139701 ecr
-0], length 0
-04:23:49.897440 IP myhomeip.org.42759 > 10.127.127.11.www: Flags [S],
-seq 1470074896, win 8192, options [mss 1352,sackOK,TS val 14139726 ecr
-0], length 0
-04:24:13.331817 ARP, Request who-has 10.127.127.11 tell 10.127.0.1, length 28
-04:24:13.332183 ARP, Reply 10.127.127.11 is-at c0:c1:c0:1a:7a:e1 (oui
-Unknown), length 46
-04:24:17.329358 IP myhomeip.org.51567 > 10.127.127.11.www: Flags [S],
-seq 2987723356, win 8192, options [mss 1352,sackOK,TS val 14142469 ecr
-0], length 0
-...
+In the return path
 
+After 'tap0' gets the encrypted packet from tunnel, it decrypts it and
+injects the plain text packet with destination 'a.b.c.d' into the
+linux kernel via the 'tap0' interface.
 
-For me problem in port forwarding comes from the AP1 netmask set to
-"24" while default netmask is "16".
+So at the kernel prerouting hook, I see the packet coming with IP =
+'a.b.c.d' and with incoming 'tap0'.
 
-I am at the end of my tests.
+Following iptable rules were used to change the incoming interface
 
-Any help is appreciated.
+iptables -t mangle -A PREROUTING -d a.b.c.d/32 -j MARK --set-mark 2 ip
+rule add fwmark 2 priority 8000 table 2
 
-Regards,
+In table '2' I have made the default routing table entry point to 'intfA'
 
-Xavier Droubay
+route add default dev intfA table 2
 
-Here are below netfiler rules :
+I tried to log the packets at the PREROUTING hook and the INPUT hook
+using the following iptable commands.
 
-# iptables -L -n -v -t filter
-Chain INPUT (policy ACCEPT 373K packets, 53M bytes)
- pkts bytes target     prot opt in     out     source               destination
+iptables -t mangle -A PREROUTING -d a.b.c.d/32 -j LOG --log-level 0
+--log-prefix "VPN PREOUTING: " iptables -t mangle -A INPUT -d
+a.b.c.d/32 -j LOG --log-level 0 --log-prefix "VPN INPUT: "
 
-Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
- pkts bytes target     prot opt in     out     source               destination
- 801K   44M TCPMSS     tcp  --  *      *       0.0.0.0/0
-0.0.0.0/0           tcp flags:0x06/0x02 TCPMSS clamp to PMTU
-  21M 4405M ACCEPT     all  --  eth1   *       0.0.0.0/0            0.0.0.0/0
-  31M   37G ACCEPT     all  --  *      eth1    0.0.0.0/0            0.0.0.0/0
-    0     0 ACCEPT     tcp  --  *      *       0.0.0.0/0
-10.127.127.0/24     tcp dpt:8011
+I was hoping the incoming interface of the packet to be changed from
+'tap0' to 'intfA' between the PREROUTING hook and INPUT hook. But
+surpisingly the interface doesn't change in both the kernel log trace.
+I could see the incoming packets marked with mark 2 as well.
 
-Chain OUTPUT (policy ACCEPT 310K packets, 44M bytes)
- pkts bytes target     prot opt in     out     source               destination
+From the dmesg log's i confirmed that the Incoming interface still
+remains as 'tap0' after the INPUT hook.
 
-# iptables -L -n -v -t nat
-Chain PREROUTING (policy ACCEPT 758K packets, 59M bytes)
- pkts bytes target     prot opt in     out     source               destination
-  103  6180 DNAT       tcp  --  eth0   *       0.0.0.0/0
-0.0.0.0/0           tcp dpt:8011 to:10.127.127.11:80
+I wanted to understand the reason behind this behaviour for the
+iptables commands I have used. . Not sure if I missed anything in
+iptables commands I used which is causing this issue.
 
-Chain POSTROUTING (policy ACCEPT 7872 packets, 330K bytes)
- pkts bytes target     prot opt in     out     source               destination
- 238K   18M MASQUERADE  all  --  *      eth0    0.0.0.0/0            0.0.0.0/0
-
-Chain OUTPUT (policy ACCEPT 107K packets, 6925K bytes)
- pkts bytes target     prot opt in     out     source               destination
-root@baltimo-radius:~#
+- RV
