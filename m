@@ -1,8 +1,8 @@
 From: Alex <world.peace.200887@gmail.com>
 Subject: Re: How to use IPv6 SNPT?
-Date: Wed, 1 May 2013 13:10:10 +0000 (UTC)
-Message-ID: <loom.20130501T150831-19@post.gmane.org>
-References: <50D1ADEE.8010805@logix.net.nz> <50D47976.6090409@sophos.com> <50E01952.7040901@logix.net.nz>
+Date: Thu, 2 May 2013 08:12:48 +0000 (UTC)
+Message-ID: <loom.20130502T095607-839@post.gmane.org>
+References: <50D1ADEE.8010805@logix.net.nz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -11,10 +11,14 @@ List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-hi,
 
-can you please tell me what kernel version are you using? im using Fedora17 
-running kernel 3.8.10 but NPTv6 is not working for me.
+Hello Michael,
 
-Thank you
+can you please tell me how to assign ipv6 address to the Ethernet in the 
+linux box that is connected to the provider. 
+
+thank you
+
+
+
 
