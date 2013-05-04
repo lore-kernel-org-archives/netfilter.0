@@ -1,7 +1,7 @@
 From: Alex Flex <aflexzor@gmail.com>
 Subject: SynFloods and CPU usage with and without iptables. Confused!
-Date: Sat, 04 May 2013 11:15:30 -0600
-Message-ID: <51854232.1030306@gmail.com>
+Date: Sat, 04 May 2013 11:24:27 -0600
+Message-ID: <5185444B.3090602@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -10,12 +10,12 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         h=x-received:message-id:date:from:user-agent:mime-version:to:subject
          :content-type:content-transfer-encoding;
         bh=aNtacV+YCKTaErHMozE3fS065E92p+0P9DAN679EQUg=;
-        b=CwAKqJdnWlBwNolckRRcScdQycox0NFxjGL1Gt+BofYoquuZHYE059qx6DtFiItBcP
-         6PwPf4ouFBOjlIGcv2eoKsM+jVTOagGxubCPeya38CTJ/yOSFMjnonIxwAi+Vx10pQlc
-         Wi7rEQtsTLV8ji9aHVPwiqPOBavtBCqV5biDfSDRv13UKvOQ5swJiMfMplTXsiMV+Wu0
-         XBYbh/ek/NCsF2VRpLUqUPD2rop6fEP+KNnbmvbeYjIcU6Wlp41F4+HTXNIoofnk73ZM
-         f77fLCaYptX+omM64t+cwVDnm8NBp8VE/PZ6o7Ka0bI+20kNEXWSyJs8R1EDDYjDQVMn
-         nwTg==
+        b=GSLbhhRi8xCxSh4aQHmVDuKL7vBG4M+tBaiV+5DOyGcqcB5WACXXejjKWuIRKcfMNt
+         ClE8ec4A7jNzwNTj85G2xs+eZdyxYVInFQGIVNE1hqz8+E5gsVbjO7p+ZBX4fj3cDjl1
+         bFbNL2uC3ajzRWq8tvRThwaaPnMUWbcImFUU8vlutuCmpYFeo2XgYn5IVw9VIBbOzXJ9
+         GxUePUTtgT0uES2o9JWlgRovaXANejE4JvA/Yq7mRXLN8Lf/AGG4HNsXjChJUHhRuNTS
+         XxBFXaGEUmOTVtGhTqiJ0/slEy2wJJg05qjrdtXZUJMmA/xwF5RrnjuD8FItPjNYzqIT
+         0L3w==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
@@ -62,3 +62,4 @@ seeing?
 Thanks for the help guys
 
 Alex
+
