@@ -1,8 +1,8 @@
 From: Alex Flex <aflexzor@gmail.com>
 Subject: Re: SynFloods and CPU usage with and without iptables. Confused!
-Date: Sat, 04 May 2013 19:27:55 -0600
-Message-ID: <5185B59B.1070407@gmail.com>
-References: <5185444B.3090602@gmail.com> <9a3b8ec43ac420e45247dd70d2a597e1.squirrel@sqrl.metu.edu.tr> <806D468E-D006-41C3-AD0B-DC24747DC05F@stevek.com>
+Date: Sat, 04 May 2013 19:29:53 -0600
+Message-ID: <5185B611.3080008@gmail.com>
+References: <5185444B.3090602@gmail.com> <9a3b8ec43ac420e45247dd70d2a597e1.squirrel@sqrl.metu.edu.tr>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -10,29 +10,30 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=x-received:message-id:date:from:user-agent:mime-version:to:subject
          :references:in-reply-to:content-type:content-transfer-encoding;
-        bh=q8CPDheDCAuJVyCABLhbhmc/UKQkYdFoItFwm4P8eJo=;
-        b=K/kPzHYf6o03RklA+NXSnydTvQcQv5nnbUNji58qt8KFwanTgD4QzT5IUUISlf7fqC
-         3weM3cM9nVWTckwPkwTFPkPdejjA62EfOeybA6/xlTBEDEwWr/jXKfQiUjCK2XKjTZNi
-         Dmwn1hMSowEceYfgacj6dRNmb2TyYnz7yFNC2fhPshaoRzG4HKGDfBHsBWkQwGVF8WBX
-         H5wFwLNPDgADAAOsyklByDzUb/x3cTsHmZ4gBlQ8Te+ZESY7Rwv7w5MNMOqW3Cd//QE+
-         pUX6qyIziZZxgo+275Vg238qXQ0I3xuMUs/POgNbD7Q+jfkw6BOaERxiQ2EX4CI2Au69
-         F+uw==
-In-Reply-To: <806D468E-D006-41C3-AD0B-DC24747DC05F@stevek.com>
+        bh=eFBCYdksXKAb6NzlyMla0aXjmAst+0tgsD/6MkQ67Sw=;
+        b=hQIJpqcmFr3yDgpTSasFv4WgY+KeYn+9wOOF5g5VYIyRdhuI+GzaPxf3qyHzrYFyZ8
+         gGS2I0FoTd/X8Kx4N/Gm+r8t6ow5xlY2LIH2Dgw5ewHMaPu86REjLLCLVbbm+HumQPAp
+         kBZxAiYydVTNeATmI1kncD2UPlQ7sP2umbORb+GRQRgu4GEjrnCGaN4uKuQEBmDsdxoB
+         3cbwoi1kcfSBV710YrM8Mf61iyIpCUJ5nSollSjU+/hgqfMeZbgVfaRj9t1KLIljIMEG
+         tw2d0syXaIRTcUmQ0EOuL5nlK+bjwq2IQaDze242/N/Dbcs86FWWNKdQrmjq/GtxEmFL
+         zhaQ==
+In-Reply-To: <9a3b8ec43ac420e45247dd70d2a597e1.squirrel@sqrl.metu.edu.tr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Steven,
+Hdemir,
 
-In other words you are saying that having the following lines in my 
-iptables script defeats the purpose of syn cookies?
+I think that after thr attacks are over, iam going "back to the drawing 
+board" ...
 
-/sbin/iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
-/sbin/iptables -A OUTPUT -m conntrack --ctstate ESTABLISHED,RELATED -j 
-ACCEPT
+Can you please confirm if you are able to load test your server with 
+hping3 for a syn flood? For some reason i have not been able to get more 
+then 8k pps so far with the flood option.
 
-Just confirming.
+Iam currently looking for ways to load test different scenarios as per 
+Stevens advice.
 
 Thanks
 Alex
