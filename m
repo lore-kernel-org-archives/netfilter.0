@@ -1,25 +1,59 @@
-From: Timothy Arceri <t_arceri@yahoo.com.au>
-Subject: Re: Simulating router breaking idle TCP connections with IPTABLES
-Date: Mon, 6 May 2013 00:32:39 -0700 (PDT)
-Message-ID: <1367825559.80527.BPMail_high_carrier@web163401.mail.gq1.yahoo.com>
+From: Vishesh kumar <linuxtovishesh@gmail.com>
+Subject: Re: syn flood load test
+Date: Mon, 6 May 2013 16:09:09 +0530
+Message-ID: <CAKpaJ1zZVywuQ-CppwHZ7sjzr2yKGxd9OX=+qnuFYkXf0gH1jA@mail.gmail.com>
+References: <51869EE6.5090506@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com.au; s=s1024; t=1367825559; bh=/ED3M+x8YXosh881LJHYcC2QzNLAGoQwbYN//TTG0dc=; h=X-YMail-OSG:Received:X-Rocket-MIMEInfo:X-Mailer:Message-ID:Date:From:Subject:To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=QD78TH5a47CTgK7ktmWkjpgIkbZLWKdQ0/KPLq7J+xbG0NFm4T4QLdf49cxO9Nyk9kmmd8MKotEdq5vqrXtImJvE75bAHufPSrms6RYJ42RvzaOWOMO7Y+0Z1lk8JgYCapDUQdLzSc84dW0xW6KffkN7B0ag0AZbe4iRYMkP3NQ=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:x-received:in-reply-to:references:date:message-id
+         :subject:from:to:cc:content-type;
+        bh=DpQXBx3Ky566eeGHl5xC7Kn6dNdGUJkCZ/HtoX5eRCo=;
+        b=InSiytucTMEpF0+1lfNlJTHbOTAp/NJgPhT3uYK62Ar+nahMMGCtCxCvqyd70PgoxQ
+         UFPITMcUlVj/ehndhegwHS9wSif88mUEn4y8SCRDRwulKnwUb4g5L/FbrldMf8JltPRz
+         wJF81WporKbFkYGnMdAybtG2BXtk4rN6PRiUkBEjP9br8Ed3vnE4V+DwQ0DT4wOPuhUr
+         CYtriQW2108nkNH81ZR0MT+yPf0UE7mH8I567uYERutx+pCkyd/E4ErCLvXw8hrjLH9K
+         OpVPQ0911rlofFW381p74NBRgkxfEi0AaNvBr2xWPNOWl3uMjmX2utXwIgThK5YEbSh6
+         xWQw==
+In-Reply-To: <51869EE6.5090506@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: Alex Flex <aflexzor@gmail.com>
+Cc: netfilter <netfilter@vger.kernel.org>
+
+For me scapy does this. You can also try scapy for this purpose. Scapy
+written in python is very rich but may be a bit of python scripting.
+
+Thanks
+Vishesh Kumar
+http://linuxmantra.com
+
+On Sun, May 5, 2013 at 11:33 PM, Alex Flex <aflexzor@gmail.com> wrote:
+> Hello all!
+>
+> Not exactly an iptables question, but iam looking to stress load such
+> config.
+>
+> I tried using:
+>
+> hping3 -p 80 --flood --rand-source -S my-ip-here
+>
+> However  i wasnt able to get more then 10k pps, i even tried running two
+> instances of hping so i ca use two cores of CPU and it doesnt make a
+> difference.
+>
+> Anybody have a suggestion? Iam looking forward to generate 300k pps flood
+>
+> Alex
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
 
->Why dont you tune the system tcp stack then? All of what your asking for can be done by modifying the tcp settings... Tho of course >under normal cases its not recommended 
 
-
-Thanks for you reply,
-
-
-To answer your question: Because I dont know which settings will cause the scenario I described. Are you able to point out which settings I need to change?
-I cant see any (with my limited knowledge) that will help.
-
-Thanks,
-Tim
+-- 
+http://linuxmantra.com
