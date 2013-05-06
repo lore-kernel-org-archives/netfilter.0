@@ -1,33 +1,60 @@
-From: Timothy Arceri <t_arceri@yahoo.com.au>
-Subject: Re: Simulating router breaking idle TCP connections with IPTABLES
-Date: Sun, 5 May 2013 19:28:29 -0700 (PDT)
-Message-ID: <1367807309.57629.YahooMailNeo@web163402.mail.gq1.yahoo.com>
-References: <51869EE6.5090506@gmail.com>  <1367806399.46023.YahooMailNeo@web163402.mail.gq1.yahoo.com>
-Reply-To: Timothy Arceri <t_arceri@yahoo.com.au>
+From: Bob Reiber <bob@bkss.net>
+Subject: RE: Simulating router breaking idle TCP connections with IPTABLES
+Date: Mon, 6 May 2013 03:10:24 +0000
+Message-ID: <16F881F4B142A44DA19CD53978B96C481D714D69@DAGN02C-E6.exg6.exghost.com>
+References: <51869EE6.5090506@gmail.com>
+  <1367806399.46023.YahooMailNeo@web163402.mail.gq1.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com.au; s=s1024; t=1367807309; bh=3RBewgEqAeaI9I5kPxojdSwD8YgyMlsBKI17Ia2ZdUo=; h=X-YMail-OSG:Received:X-Rocket-MIMEInfo:X-Mailer:References:Message-ID:Date:From:Reply-To:Subject:To:In-Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=DjiOeCISjDuj7UxpipVAVTsHukS7ZRi9iRvHznU0RZAb3aTeNPl2gEEjvtNr6Iy2/0nxVhVYqRfdhsm7qVn8cTjpCjBR5Wtjf4vFQzSXMDj2MBIj4yR74fwvKHDn+JbInMSawAonrsVpTUnlQYqEaOgduiSrDVHbM8OveYmk750=
 In-Reply-To: <1367806399.46023.YahooMailNeo@web163402.mail.gq1.yahoo.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: Timothy Arceri <t_arceri@yahoo.com.au>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
->Hi All,
-
->
->It seems there are some routers floating around that break idle TCP connections after a specified amount of time. 
->For example: "Sonicwall devices have that feature to close established connections when they hit a predefined timeout value
->with no data passing through."
->
->This causes some issues with Gnome's Nautilus/GVFS and sftp connections that I'm trying to handle more gracfully. The problem is I >dont have a router that has this behaviour so I'm looking for a way to simulate it using iptables on my PC.
->I have read the thread about this from 2011 http://www.spinics.net/lists/netfilter/msg51963.html but it looks like a solution wasnt provided >as the usecase didnt call for doing what was requested.
->I however DO want to break the established TCP connections. Does anyone know how I can do this? I don't mind if I need to edit code >and rebuild as this is just for testing perposes so I will be reverting once I'm finished.
->
->Thanks for your time,
->Tim
-
-To be a little bit clearer I want to causse the behaviour described in section 2.4 here: http://tldp.org/HOWTO/TCP-Keepalive-HOWTO/overview.html
-
-Where the TCP connection is still thought to be active to the peers but the proxy/firewall has no knowlegde on the connection and so the connection breaks up. 
+VW0sIHdoYXQga2luZCBvZiByb3V0ZXIgZG8geW91IGhhdmU/IEV2ZW4gc29tZSBvZiB0aGUgdmVy
+eSBiYXNpYyBob21lIHJvdXRlcnMgaGF2ZSB0Y3AgdGltZXJzIG9uIHRoZW0uIA0KDQpCb2IgUmVp
+YmVyDQpCSyBTYWxlcyBhbmQgU2VydmljZQ0KMzIxMSBMb25nZmVsbG93IERyDQpCZWxtb250LCBD
+QSA5NDAwMg0KVGVsOiA2NTAgMzc2IDExMjINCkZheDogNjUwIDI0MCA0NTU2DQoNCi0tLS0tT3Jp
+Z2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBuZXRmaWx0ZXItb3duZXJAdmdlci5rZXJuZWwub3Jn
+IFttYWlsdG86bmV0ZmlsdGVyLW93bmVyQHZnZXIua2VybmVsLm9yZ10gT24gQmVoYWxmIE9mIFRp
+bW90aHkgQXJjZXJpDQpTZW50OiBTdW5kYXksIE1heSA1LCAyMDEzIDc6MTMgUE0NClRvOiBuZXRm
+aWx0ZXJAdmdlci5rZXJuZWwub3JnDQpTdWJqZWN0OiBTaW11bGF0aW5nIHJvdXRlciBicmVha2lu
+ZyBpZGxlIFRDUCBjb25uZWN0aW9ucyB3aXRoIElQVEFCTEVTDQoNCkhpIEFsbCwNCg0KSXQgc2Vl
+bXMgdGhlcmUgYXJlIHNvbWUgcm91dGVycyBmbG9hdGluZyBhcm91bmQgdGhhdCBicmVhayBpZGxl
+IFRDUCBjb25uZWN0aW9ucyBhZnRlciBhIHNwZWNpZmllZCBhbW91bnQgb2YgdGltZS4gDQpGb3Ig
+ZXhhbXBsZTogIlNvbmljd2FsbCBkZXZpY2VzIGhhdmUgdGhhdCBmZWF0dXJlIHRvIGNsb3NlIGVz
+dGFibGlzaGVkIGNvbm5lY3Rpb25zIHdoZW4gdGhleSBoaXQgYSBwcmVkZWZpbmVkIHRpbWVvdXQg
+dmFsdWUgd2l0aCBubyBkYXRhIHBhc3NpbmcgdGhyb3VnaC4iDQoNClRoaXMgY2F1c2VzIHNvbWUg
+aXNzdWVzIHdpdGggR25vbWUncyBOYXV0aWx1cy9HVkZTIGFuZCBzZnRwIGNvbm5lY3Rpb25zIHRo
+YXQgSSdtIHRyeWluZyB0byBoYW5kbGUgbW9yZSBncmFjZnVsbHkuIFRoZSBwcm9ibGVtIGlzIEkg
+ZG9udCBoYXZlIGEgcm91dGVyIHRoYXQgaGFzIHRoaXMgYmVoYXZpb3VyIHNvIEknbSBsb29raW5n
+IGZvciBhIHdheSB0byBzaW11bGF0ZSBpdCB1c2luZyBpcHRhYmxlcyBvbiBteSBQQy4NCkkgaGF2
+ZSByZWFkIHRoZSB0aHJlYWQgYWJvdXQgdGhpcyBmcm9tIDIwMTEgaHR0cDovL3d3dy5zcGluaWNz
+Lm5ldC9saXN0cy9uZXRmaWx0ZXIvbXNnNTE5NjMuaHRtbCBidXQgaXQgbG9va3MgbGlrZSBhIHNv
+bHV0aW9uIHdhc250IHByb3ZpZGVkIGFzIHRoZSB1c2VjYXNlIGRpZG50IGNhbGwgZm9yIGRvaW5n
+IHdoYXQgd2FzIHJlcXVlc3RlZC4NCkkgaG93ZXZlciBETyB3YW50IHRvIGJyZWFrIHRoZSBlc3Rh
+Ymxpc2hlZCBUQ1AgY29ubmVjdGlvbnMuIERvZXMgYW55b25lIGtub3cgaG93IEkgY2FuIGRvIHRo
+aXM/IEkgZG9uJ3QgbWluZCBpZiBJIG5lZWQgdG8gZWRpdCBjb2RlIGFuZCByZWJ1aWxkIGFzIHRo
+aXMgaXMganVzdCBmb3IgdGVzdGluZyBwZXJwb3NlcyBzbyBJIHdpbGwgYmUgcmV2ZXJ0aW5nIG9u
+Y2UgSSdtIGZpbmlzaGVkLg0KDQpUaGFua3MgZm9yIHlvdXIgdGltZSwNClRpbQ0KDQotLQ0KVG8g
+dW5zdWJzY3JpYmUgZnJvbSB0aGlzIGxpc3Q6IHNlbmQgdGhlIGxpbmUgInVuc3Vic2NyaWJlIG5l
+dGZpbHRlciIgaW4gdGhlIGJvZHkgb2YgYSBtZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2VyLmtlcm5l
+bC5vcmcgTW9yZSBtYWpvcmRvbW8gaW5mbyBhdCAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpv
+cmRvbW8taW5mby5odG1sDQoNCg0KDQpUaGUgaW5mb3JtYXRpb24gaW4gdGhpcyBlbGVjdHJvbmlj
+IG1haWwgaXMgaW50ZW5kZWQgZm9yIHRoZSBuYW1lZCByZWNpcGllbnRzIG9ubHkuIEl0IG1heSBj
+b250YWluIHByaXZpbGVnZWQgYW5kIGNvbmZpZGVudGlhbCBtYXR0ZXI7IGFuZCBpZiB5b3UgYXJl
+IG5vdCBhbiBpbnRlbmRlZCByZWNpcGllbnQsIHlvdSBhcmUgaGVyZWJ5IG5vdGlmaWVkIHRoYXQg
+Y29weWluZywgZm9yd2FyZGluZyBvciBvdGhlciBkaXNzZW1pbmF0aW9uIG9yIGRpc3RyaWJ1dGlv
+biBvZiB0aGlzY29tbXVuaWNhdGlvbiBieSBhbnkgbWVhbnMgaXMgcHJvaGliaXRlZC4gSWYgeW91
+IGhhdmUgcmVjZWl2ZWQgdGhpcyBlbGVjdHJvbmljIG1haWwgaW4gZXJyb3IsIHBsZWFzZSBub3Rp
+ZnkgdGhlIHNlbmRlciBpbW1lZGlhdGVseS4KQ09ORklERU5USUFMSVRZIE5PVElDRTogVGhpcyBl
+bWFpbCBtZXNzYWdlIGlzIGZvciB0aGUgc29sZSB1c2Ugb2YgdGhlIGludGVuZGVkIHJlY2lwaWVu
+dCBhbmQgbWF5IGNvbnRhaW4gY29uZmlkZW50aWFsIGFuZCBwcml2aWxlZ2VkIGluZm9ybWF0aW9u
+LiBBbnkgdW5hdXRob3JpemVkIHJldmlldywgdXNlLCBkaXNjbG9zdXJlIG9yIGRpc3RyaWJ1dGlv
+biBpcyBwcm9oaWJpdGVkLiBJZiB5b3UgYXJlIG5vdCB0aGUgaW50ZW5kZWQgcmVjaXBpZW50LCBw
+bGVhc2UgY29udGFjdCB0aGUgc2VuZGVyIGJ5IHJlcGx5IGVtYWlsIGFuZCBkZXN0cm95IGFsbCBj
+b3BpZXMgb2YgdGhlIG9yaWdpbmFsIG1lc3NhZ2UgYW5kIGFueSBhdHRhY2htZW50cy4gVGhhbmsg
+eW91Lg==
