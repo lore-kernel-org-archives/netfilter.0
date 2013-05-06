@@ -1,21 +1,58 @@
-From: Timothy Arceri <t_arceri@yahoo.com.au>
-Subject: Re: Simulating router breaking idle TCP connections with IPTABLES
-Date: Mon, 6 May 2013 03:58:56 -0700 (PDT)
-Message-ID: <1367837936.99912.YahooMailNeo@web163404.mail.gq1.yahoo.com>
-References: <51869EE6.5090506@gmail.com>
-  <1367806399.46023.YahooMailNeo@web163402.mail.gq1.yahoo.com> <16F881F4B142A44DA19CD53978B96C481D714D69@DAGN02C-E6.exg6.exghost.com>
-Reply-To: Timothy Arceri <t_arceri@yahoo.com.au>
+From: Husnu Demir <hdemir@metu.edu.tr>
+Subject: Re: SynFloods and CPU usage with and without iptables. Confused!
+Date: Mon, 06 May 2013 14:27:05 +0300
+Message-ID: <51879389.1030102@metu.edu.tr>
+References: <5185444B.3090602@gmail.com> <9a3b8ec43ac420e45247dd70d2a597e1.squirrel@sqrl.metu.edu.tr> <5185B611.3080008@gmail.com>
+Reply-To: hdemir@metu.edu.tr
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com.au; s=s1024; t=1367837936; bh=08n2INa29W/afhWIB4LtbtrhTA2C/5lGKe7DtFUakkg=; h=X-YMail-OSG:Received:X-Rocket-MIMEInfo:X-Mailer:References:Message-ID:Date:From:Reply-To:Subject:To:In-Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=DvmvD+We7XXadlIKoe2W0bKU+uXNY/wMTYpuEPgvGKZbIsiWPCLEbkLz8AtFswYHX6ove7M2W8LQ77rHs9wA+JsxSs8a+9gjlL7HallWDJ66AXtTSnV3xmw0R//kA7rOxKHWayHgDMEzqeqEZ0AcHjRfLKoifmVLKVX4rK1IHN8=
-In-Reply-To: <16F881F4B142A44DA19CD53978B96C481D714D69@DAGN02C-E6.exg6.exghost.com>
+In-Reply-To: <5185B611.3080008@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: Alex Flex <aflexzor@gmail.com>
+Cc: netfilter@vger.kernel.org
 
->Um, what kind of router do you have? Even some of the very basic home routers have tcp timers on them. 
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Hi Alex,
+
+http://www.binarytides.com/python-syn-flood-program-raw-sockets-linux/
+
+this simple script allows me to make +200K pps.
+
+hdemir.
 
 
-I have a Netgear WNR1000v3. Cant find any settings for tcp timers.
+On 05-05-2013 04:29, Alex Flex wrote:
+> Hdemir,
+> 
+> I think that after thr attacks are over, iam going "back to the
+> drawing board" ...
+> 
+> Can you please confirm if you are able to load test your server
+> with hping3 for a syn flood? For some reason i have not been able
+> to get more then 8k pps so far with the flood option.
+> 
+> Iam currently looking for ways to load test different scenarios as
+> per Stevens advice.
+> 
+> Thanks Alex
+> 
+> -- To unsubscribe from this list: send the line "unsubscribe
+> netfilter" in the body of a message to majordomo@vger.kernel.org 
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+Comment: Using GnuPG with undefined - http://www.enigmail.net/
+
+iQEcBAEBAgAGBQJRh5OJAAoJEISpBAM51qlENQ0H/A1Gq31Dhj0Pq4DOLSvozgd8
+8z+47/bbBPX4Xj3D15/pJj9a6Fj64cRGq2KetPV4zlmargk0MMnanZEERqRkwkJI
+EI6bgNuOe2Mw3PA14wvplF6zgtJYnLRN4JkyObqofpyfKEorAlrmrxcMe5seKYEy
+ljoYdyOjTG5p6+D94miCJjHRMadGHjd5wGCi2knCE3+4kg4E5FptU/DVLSJhXm3X
+RCQ5yPq2mIyJQ5y6M1phstUE39HJaO7QiyX3BLXGz2JamFIIadBV7FGBaSDj4mLL
+rB0ybyL3S9jL8sIUyVyUDvmX6pGsGrSrujJzqdnScyeaupJg7fDFyOP3uWY1FCM=
+=wYOr
+-----END PGP SIGNATURE-----
