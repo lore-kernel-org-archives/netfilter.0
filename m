@@ -1,39 +1,28 @@
-From: Alex Flex <aflexzor@gmail.com>
-Subject: syn flood load test
-Date: Sun, 05 May 2013 12:03:18 -0600
-Message-ID: <51869EE6.5090506@gmail.com>
+From: Timothy Arceri <t_arceri@yahoo.com.au>
+Subject: Simulating router breaking idle TCP connections with IPTABLES
+Date: Sun, 5 May 2013 19:13:19 -0700 (PDT)
+Message-ID: <1367806399.46023.YahooMailNeo@web163402.mail.gq1.yahoo.com>
+References: <51869EE6.5090506@gmail.com>
+Reply-To: Timothy Arceri <t_arceri@yahoo.com.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=x-received:message-id:date:from:user-agent:mime-version:to:subject
-         :content-type:content-transfer-encoding;
-        bh=+rG48vsHQdm3U8m0mlk/FPljUbEIv3u024S1tNxWEGM=;
-        b=a8fBFCDNq/Tdd1eM6N7BDNu6ol50JgYL7rqQnsyqvPGd4oMtVrN/4E+xmxrIY3DUCE
-         92GVJ4VrW5oEAJ4VZIj2G0Um2yYiIY2KYA8Xy3tQqO5MjVVx+WYhLK3n++pbZuOx5Q4B
-         GmEzosmvm/SzbYXj27KewuI+xxlzLWPEHyQJPN6A8gutTmGbtQraE7OS1k2wfiPu4KZq
-         Tn1tFHl0m8gprjSMFiS7hgD69e2qP8ZrX5C6oiL6R/BF2n8qKctUeduAjof7yTzRUKAM
-         WK/u20mJ+ZhQIztUZKLiwPgfhopMVa5GfUsYEPQjXlC4/sEhm0/XbGwACuFMUldPmVx6
-         MUsg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com.au; s=s1024; t=1367806399; bh=DzlrNHnc0rrQz1AeGsd8Vj+5pnnM9A9RRuqJ5D7BTE8=; h=X-YMail-OSG:Received:X-Rocket-MIMEInfo:X-Mailer:References:Message-ID:Date:From:Reply-To:Subject:To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=SNOl2V8wp904xDYBVXZES5LbdL/u4qhJhK1tLV0aG4IBAsIY8bHBHAoLZr9tuOx8fH+AeLEeeEPyZ1lnby2ty93mVb735DlRICVslojdFL8qASt+jI2DQUZPKUM/+O3TX+XRq6TG0TccSGQsIt1m8OZxlEkUWymMf9GZ1cgSkNY=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hello all!
+Hi All,
 
-Not exactly an iptables question, but iam looking to stress load such 
-config.
+It seems there are some routers floating around that break idle TCP connections after a specified amount of time. 
+For example: "Sonicwall devices have that feature to close established connections when they hit a predefined timeout value
+with no data passing through."
 
-I tried using:
+This causes some issues with Gnome's Nautilus/GVFS and sftp connections that I'm trying to handle more gracfully. The problem is I dont have a router that has this behaviour so I'm looking for a way to simulate it using iptables on my PC.
+I have read the thread about this from 2011 http://www.spinics.net/lists/netfilter/msg51963.html but it looks like a solution wasnt provided as the usecase didnt call for doing what was requested.
+I however DO want to break the established TCP connections. Does anyone know how I can do this? I don't mind if I need to edit code and rebuild as this is just for testing perposes so I will be reverting once I'm finished.
 
-hping3 -p 80 --flood --rand-source -S my-ip-here
+Thanks for your time,
+Tim
 
-However  i wasnt able to get more then 10k pps, i even tried running two 
-instances of hping so i ca use two cores of CPU and it doesnt make a 
-difference.
-
-Anybody have a suggestion? Iam looking forward to generate 300k pps flood
-
-Alex
