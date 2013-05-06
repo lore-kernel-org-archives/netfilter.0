@@ -1,58 +1,55 @@
-From: Vladimir Ondrus <vladimir.ondrus@gmail.com>
-Subject: conntrack full with TIME_WAIT on tcp passive close site
-Date: Mon, 6 May 2013 19:14:01 +0200
-Message-ID: <CA+WDh75vQ1yPeM8KMPhs4yKgK0apeVUvmvTPUxFjCgcKp6P0qg@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: RE: Fwd: ipset and counters
+Date: Mon, 6 May 2013 20:28:01 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1305062022050.15306@blackhole.kfki.hu>
+References: <51752B00.8090908@metu.edu.tr> <51753143.8090908@metu.edu.tr> <alpine.DEB.2.00.1304221554230.16792@blackhole.kfki.hu> <5175432F.2060304@metu.edu.tr> <alpine.DEB.2.00.1304221921001.19576@blackhole.kfki.hu> <loom.20130506T151314-549@post.gmane.org>
+ <alpine.DEB.2.00.1305061535250.12392@blackhole.kfki.hu> <003a01ce4a68$7ccb5e40$76621ac0$@com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:x-received:date:message-id:subject:from:to
-         :content-type;
-        bh=IiGzMU2z9dn6rvWN6o6ZP9asEzvXN1Obllrbh4LsvLc=;
-        b=Al6VxynxElJ/Cml+GIQaDwO7S1nea4dKiqYK9fAuTNXNnvTfF9CmcQCam6VmtMKUG/
-         sHxDDKptAIAAJSMtDmwmFrnRaWQ4/dQRU5DJTmJGFha6PhV2ikZZjrjsVzncdofVYuil
-         vE3AH1pEpRzpWYri6s/w8F2Ir2IiADu1pqVyyL7Zzdx/pIQ3Zn62Uepb6j9HSRuhywRD
-         zMarIzd9wyY9L4wQ5uEM5W2wU4u/tjdYkWBaQsH5ieL1cvJ4dmqY/9XfEwIoizUbUZKn
-         9xcQP091tQxdUb7RYNBiCxCqdkVqlrFwZ7Grm+bFI2rBslVU4NCxk7bkOnPdpXncMwpG
-         bTRA==
+In-Reply-To: <003a01ce4a68$7ccb5e40$76621ac0$@com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: tian fang <tianfang@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+On Mon, 6 May 2013, tian fang wrote:
 
-We have a setup with many tcp connections, which are after short time
-activelly closed from remote site.
-However we have our nf_conntrack table full with connections in TIME_WAIT state.
-Output from netstat shows no connection in TIME_WAIT state, which we
-think is correct, because we are passive close site, so connection
-should not go through TIME_WAIT state.
+> > > > create SETNAME bitmap:ip range IP/CIDR|FROM-TO
+> > > >                [netmask CIDR] [timeout VALUE] [counters]
+> > > 
+> > > So the ipset binary does support counters. Then what is the output 
+> > > of "modinfo ip_set_bitmap_ip"? Also, if you had the previous ipset 
+> > > kernel modules loaded in, then just installing them won't unload them.
+> >
+> >     I successfully built and executed ipset 6.19 ,but when I try to 
+> > run this command, I failed.
+> > 
+> > iptables -t nat -A POSTROUTING -m set --match-set ipc src,dst -j 
+> > MASQUERADE
+> > iptables: No chain/target/match by that name.
+> > 
+> > could you please help me on this ?
+> 
+> [There's no ipset 6.19 yet.]
+> 
+> I succeeded after I sudo cp xt_set.ko
+> /lib/modules/3.5.0-28-generic/kernel/net/netfilter/ . 
+> Thanks for your help.
+> But I am just alittlebit curious why can't I do it by make install.
 
-Why tcp connection in conntrack table goes through TIME_WAIT, even we
-are pasive close site in tcp?
+I suspect your "depmod" utility is not configured to process the 
+/lib/modules/`uname -r`/extra/ directory, in which the modules are 
+installed by the command "make modules_install".
 
-Regards,
-Vladimir Ondrus
+It's strange. You're the second reporting such kind of problem.
+What is your distribution and what's its version?
 
-suf-ins:~ # uname -a
-Linux suf-ins 3.0.58-0.6.6-default #1 SMP Tue Feb 19 11:07:00 UTC 2013
-(1576ecd) x86_64 x86_64 x86_64 GNU/Linux
-suf-ins:~ # lsmod | grep conntrack
-nf_conntrack_ipv4      14856  4 iptable_nat,nf_nat
-nf_conntrack           91963  4 xt_state,iptable_nat,nf_nat,
-nf_conntrack_ipv4
-nf_defrag_ipv4         12729  1 nf_conntrack_ipv4
-suf-ins:~ # modinfo nf_conntrack
-filename:
-/lib/modules/3.0.58-0.6.6-default/kernel/net/netfilter/nf_conntrack.ko
-license:        GPL
-srcversion:     BAAB16A923443DCF4CD66A3
-depends:
-supported:      yes
-vermagic:       3.0.58-0.6.6-default SMP mod_unload modversions
-parm:           tstamp:Enable connection tracking flow timestamping. (bool)
-parm:           acct:Enable connection tracking flow accounting. (bool)
-parm:           expect_hashsize:uint
-suf-ins:~ #
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
