@@ -1,214 +1,62 @@
-From: Jiri Slaby <jslaby@suse.cz>
-Subject: [PATCH 06/15] netfilter: Implement RFC 1123 for FTP conntrack
-Date: Tue,  7 May 2013 16:18:14 +0200
-Message-ID: <1367936303-13386-6-git-send-email-jslaby@suse.cz>
-References: <1367936303-13386-1-git-send-email-jslaby@suse.cz>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1367936303-13386-1-git-send-email-jslaby@suse.cz>
-Sender: linux-kernel-owner@vger.kernel.org
+From: jack seth <bird_112@hotmail.com>
+Subject: RE: How to isolate wireless clients from each other
+Date: Tue, 7 May 2013 15:35:11 +0000
+Message-ID: <SNT134-W48DA80A0AEDA4067881B97BFBA0@phx.gbl>
+References: <SNT134-W45C322454357AF0D27D06EBFB90@phx.gbl>,<20130507121720.GL3672@harrier.slackbuilds.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20130507121720.GL3672@harrier.slackbuilds.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: jirislaby@gmail.com
-Cc: linux-kernel@vger.kernel.org, Jeff Mahoney <jeffm@suse.com>, Jiri Slaby <jslaby@suse.cz>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-From: Jeff Mahoney <jeffm@suse.com>
+----------------------------------------
+> Date: Tue, 7 May 2013 07:17:20 -0500
+> From: rob0@gmx.co.uk
+> To: netfilter@vger.kernel.org
+> Subject: Re: How to isolate wireless clients from each other
+>
+> On Mon, May 06, 2013 at 06:36:52PM +0000, jack seth wrote:
+> > Does anyone know how to totally isolate wireless clients from
+> > each other that are on a hotspot/guest WLAN?  I thought ebtables
+> > might be the way but I can't figure it out.  Thanks!
+>
+> If CONFIG_BRIDGE_NETFILTER=3Dy you should be able to filter this in
+> your FORWARD chain, e.g., for an unbridged wlan0:
+>
+> -A FORWARD -i wlan0 -o wlan0 -j DROP
+>
+> (You might want to use a user chain with appropriate REJECT rules for
+> the protocol in question.)
+>
+> If CONFIG_BRIDGE_NETFILTER=3Dy and wlan0 is part of a bridge, you wou=
+ld
+> need the physdev match:
+>
+> -A FORWARD -i br0 -o br0 -m physdev --physdev-in wlan0 --physdev-out =
+wlan0 -j DROP
+>
+> However, do note that 802.11, being radio traffic, can be sniffed by
+> any receiver. You cannot prevent that.
+> --
+> http://rob0.nodns4.us/ -- system administration and consulting
+> Offlist GMX mail is seen only if "/dev/rob0" is in the Subject:
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at http://vger.kernel.org/majordomo-info.html
 
- The FTP conntrack code currently only accepts the following format for
- the 227 response for PASV:
- 227 Entering Passive Mode (148,100,81,40,31,161).
-
- It doesn't accept the following format from an obscure server:
- 227 Data transfer will passively listen to 67,218,99,134,50,144
-
- From RFC 1123:
- The format of the 227 reply to a PASV command is not
- well standardized.  In particular, an FTP client cannot
- assume that the parentheses shown on page 40 of RFC-959
- will be present (and in fact, Figure 3 on page 43 omits
- them).  Therefore, a User-FTP program that interprets
- the PASV reply must scan the reply for the first digit
- of the host and port numbers.
-
- This patch adds support for the RFC 1123 clarification by:
- - Allowing a search filter to specify NUL as the terminator so that
-   try_number will return successfully if the array of numbers has been
-   filled when an unexpected character is encountered.
- - Using space as the separator for the 227 reply and then scanning for
-   the first digit of the number sequence. The number sequence is parsed
-   out using the existing try_rfc959 but with a NUL terminator.
-
-References: https://bugzilla.novell.com/show_bug.cgi?id=466279
-References: http://bugzilla.netfilter.org/show_bug.cgi?id=574
-Reported-by: Mark Post <mpost@novell.com>
-Signed-off-by: Jeff Mahoney <jeffm@suse.com>
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Patrick McHardy <kaber@trash.net>
-Cc: "David S. Miller" <davem@davemloft.net>
-Cc: netfilter-devel@vger.kernel.org
-Cc: netfilter@vger.kernel.org
-Cc: coreteam@netfilter.org
-Cc: netdev@vger.kernel.org
----
- net/netfilter/nf_conntrack_ftp.c | 73 +++++++++++++++++++++++++++++-----------
- 1 file changed, 54 insertions(+), 19 deletions(-)
-
-diff --git a/net/netfilter/nf_conntrack_ftp.c b/net/netfilter/nf_conntrack_ftp.c
-index 6b21707..b8a0924 100644
---- a/net/netfilter/nf_conntrack_ftp.c
-+++ b/net/netfilter/nf_conntrack_ftp.c
-@@ -55,10 +55,14 @@ unsigned int (*nf_nat_ftp_hook)(struct sk_buff *skb,
- 				struct nf_conntrack_expect *exp);
- EXPORT_SYMBOL_GPL(nf_nat_ftp_hook);
- 
--static int try_rfc959(const char *, size_t, struct nf_conntrack_man *, char);
--static int try_eprt(const char *, size_t, struct nf_conntrack_man *, char);
-+static int try_rfc959(const char *, size_t, struct nf_conntrack_man *,
-+		      char, unsigned int *);
-+static int try_rfc1123(const char *, size_t, struct nf_conntrack_man *,
-+		       char, unsigned int *);
-+static int try_eprt(const char *, size_t, struct nf_conntrack_man *,
-+		    char, unsigned int *);
- static int try_epsv_response(const char *, size_t, struct nf_conntrack_man *,
--			     char);
-+			     char, unsigned int *);
- 
- static struct ftp_search {
- 	const char *pattern;
-@@ -66,7 +70,7 @@ static struct ftp_search {
- 	char skip;
- 	char term;
- 	enum nf_ct_ftp_type ftptype;
--	int (*getnum)(const char *, size_t, struct nf_conntrack_man *, char);
-+	int (*getnum)(const char *, size_t, struct nf_conntrack_man *, char, unsigned int *);
- } search[IP_CT_DIR_MAX][2] = {
- 	[IP_CT_DIR_ORIGINAL] = {
- 		{
-@@ -90,10 +94,8 @@ static struct ftp_search {
- 		{
- 			.pattern	= "227 ",
- 			.plen		= sizeof("227 ") - 1,
--			.skip		= '(',
--			.term		= ')',
- 			.ftptype	= NF_CT_FTP_PASV,
--			.getnum		= try_rfc959,
-+			.getnum		= try_rfc1123,
- 		},
- 		{
- 			.pattern	= "229 ",
-@@ -132,8 +134,9 @@ static int try_number(const char *data, size_t dlen, u_int32_t array[],
- 			i++;
- 		else {
- 			/* Unexpected character; true if it's the
--			   terminator and we're finished. */
--			if (*data == term && i == array_size - 1)
-+			   terminator (or we don't care about one)
-+			   and we're finished. */
-+			if ((*data == term || !term) && i == array_size - 1)
- 				return len;
- 
- 			pr_debug("Char %u (got %u nums) `%u' unexpected\n",
-@@ -148,7 +151,8 @@ static int try_number(const char *data, size_t dlen, u_int32_t array[],
- 
- /* Returns 0, or length of numbers: 192,168,1,1,5,6 */
- static int try_rfc959(const char *data, size_t dlen,
--		      struct nf_conntrack_man *cmd, char term)
-+		      struct nf_conntrack_man *cmd, char term,
-+		      unsigned int *offset)
- {
- 	int length;
- 	u_int32_t array[6];
-@@ -163,6 +167,33 @@ static int try_rfc959(const char *data, size_t dlen,
- 	return length;
- }
- 
-+/*
-+ * From RFC 1123:
-+ * The format of the 227 reply to a PASV command is not
-+ * well standardized.  In particular, an FTP client cannot
-+ * assume that the parentheses shown on page 40 of RFC-959
-+ * will be present (and in fact, Figure 3 on page 43 omits
-+ * them).  Therefore, a User-FTP program that interprets
-+ * the PASV reply must scan the reply for the first digit
-+ * of the host and port numbers.
-+ */
-+static int try_rfc1123(const char *data, size_t dlen,
-+		       struct nf_conntrack_man *cmd, char term,
-+		       unsigned int *offset)
-+{
-+	int i;
-+	for (i = 0; i < dlen; i++)
-+		if (isdigit(data[i]))
-+			break;
-+
-+	if (i == dlen)
-+		return 0;
-+
-+	*offset += i;
-+
-+	return try_rfc959(data + i, dlen - i, cmd, 0, offset);
-+}
-+
- /* Grab port: number up to delimiter */
- static int get_port(const char *data, int start, size_t dlen, char delim,
- 		    __be16 *port)
-@@ -191,7 +222,7 @@ static int get_port(const char *data, int start, size_t dlen, char delim,
- 
- /* Returns 0, or length of numbers: |1|132.235.1.2|6275| or |2|3ffe::1|6275| */
- static int try_eprt(const char *data, size_t dlen, struct nf_conntrack_man *cmd,
--		    char term)
-+		    char term, unsigned int *offset)
- {
- 	char delim;
- 	int length;
-@@ -239,7 +270,8 @@ static int try_eprt(const char *data, size_t dlen, struct nf_conntrack_man *cmd,
- 
- /* Returns 0, or length of numbers: |||6446| */
- static int try_epsv_response(const char *data, size_t dlen,
--			     struct nf_conntrack_man *cmd, char term)
-+			     struct nf_conntrack_man *cmd, char term,
-+			     unsigned int *offset)
- {
- 	char delim;
- 
-@@ -261,9 +293,10 @@ static int find_pattern(const char *data, size_t dlen,
- 			unsigned int *numlen,
- 			struct nf_conntrack_man *cmd,
- 			int (*getnum)(const char *, size_t,
--				      struct nf_conntrack_man *, char))
-+				      struct nf_conntrack_man *, char,
-+				      unsigned int *))
- {
--	size_t i;
-+	size_t i = plen;
- 
- 	pr_debug("find_pattern `%s': dlen = %Zu\n", pattern, dlen);
- 	if (dlen == 0)
-@@ -293,16 +326,18 @@ static int find_pattern(const char *data, size_t dlen,
- 	pr_debug("Pattern matches!\n");
- 	/* Now we've found the constant string, try to skip
- 	   to the 'skip' character */
--	for (i = plen; data[i] != skip; i++)
--		if (i == dlen - 1) return -1;
-+	if (skip) {
-+		for (i = plen; data[i] != skip; i++)
-+			if (i == dlen - 1) return -1;
- 
--	/* Skip over the last character */
--	i++;
-+		/* Skip over the last character */
-+		i++;
-+	}
- 
- 	pr_debug("Skipped up to `%c'!\n", skip);
- 
- 	*numoff = i;
--	*numlen = getnum(data + i, dlen - i, cmd, term);
-+	*numlen = getnum(data + i, dlen - i, cmd, term, numoff);
- 	if (!*numlen)
- 		return -1;
- 
--- 
-1.8.2.1
+=46irst, thanks for the response.=A0 I'm not sure what 'CONFIG_BRIDGE_N=
+ETFILTER=3Dy' is.=A0 Is this 'setting' and the rules you posted for ipt=
+ables or ebtables?=A0 Let me provide some additional information.=A0 Th=
+is is on my router.=A0 The clients are on 'wl0.1' interface.=A0 This in=
+terface is inside 'br1' bridge.=A0 Another question I have is what inte=
+rface is the router on in this scenario?=A0 The 2.4ghz wireless interfa=
+ce is 'eth1' for this router but 'brctl show' doesn't show that interfa=
+ce in the bridge.=A0 Is the router somehow on 'wl0.1' also?=A0 I am won=
+dering what interface the router is on because I want to block the clie=
+nts from the router also except what is necessary for internet to work.=
+ 		 	   		  
