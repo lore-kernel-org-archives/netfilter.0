@@ -1,90 +1,41 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: RE: Fwd: ipset and counters
-Date: Tue, 7 May 2013 14:19:26 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1305071409560.16401@blackhole.kfki.hu>
-References: <51752B00.8090908@metu.edu.tr> <51753143.8090908@metu.edu.tr> <alpine.DEB.2.00.1304221554230.16792@blackhole.kfki.hu> <5175432F.2060304@metu.edu.tr> <alpine.DEB.2.00.1304221921001.19576@blackhole.kfki.hu> <loom.20130506T151314-549@post.gmane.org>
- <alpine.DEB.2.00.1305061535250.12392@blackhole.kfki.hu> <003a01ce4a68$7ccb5e40$76621ac0$@com> <alpine.DEB.2.00.1305062022050.15306@blackhole.kfki.hu> <002b01ce4b1b$1e766980$5b633c80$@com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: How to isolate wireless clients from each other
+Date: Tue, 7 May 2013 07:17:20 -0500
+Message-ID: <20130507121720.GL3672@harrier.slackbuilds.org>
+References: <SNT134-W45C322454357AF0D27D06EBFB90@phx.gbl>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <002b01ce4b1b$1e766980$5b633c80$@com>
+Content-Disposition: inline
+In-Reply-To: <SNT134-W45C322454357AF0D27D06EBFB90@phx.gbl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: tian fang <tianfang@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Tue, 7 May 2013, tian fang wrote:
+On Mon, May 06, 2013 at 06:36:52PM +0000, jack seth wrote:
+> Does anyone know how to totally isolate wireless clients from
+> each other that are on a hotspot/guest WLAN?=A0 I thought ebtables
+> might be the way but I can't figure it out.=A0 Thanks!
 
-> I suspect your "depmod" utility is not configured to process the
-> /lib/modules/`uname -r`/extra/ directory, in which the modules are installed
-> by the command "make modules_install".
-> 
-> It's strange. You're the second reporting such kind of problem.
-> What is your distribution and what's its version?
-> 
->      I am using ubuntu 12.04 LTS.
+If CONFIG_BRIDGE_NETFILTER=3Dy you should be able to filter this in=20
+your FORWARD chain, e.g., for an unbridged wlan0:
 
-I'll check this out: it should work without any extra effort.
+-A FORWARD -i wlan0 -o wlan0 -j DROP
 
-> And I got an issue ,I am sorry if I am wrong because I am a quite newbie.
-> 
-> I am confused of the "--match-set setname src,dst" .  it seems only the one
-> before the comma is functional. Please look at this .
-> 
-> I added an IP into the ipset sec,and set the iptables FORWARD Chain as "dst,
-> src" ,I guess this means dst OR src, but unfortunately ,my outgoing packages
-> was dropped.
-> 
-> If I set two separated lines ,it works.
+(You might want to use a user chain with appropriate REJECT rules for=20
+the protocol in question.)
 
-If the dimension of the set is less than the direction parameters of the 
-set match/SET target, then that's ignored.
+If CONFIG_BRIDGE_NETFILTER=3Dy and wlan0 is part of a bridge, you would=
+=20
+need the physdev match:
 
-With "--match-set setname src,dst" you instruct ipset that if the named 
-set stores IP address and port number pairs, then get the source and 
-destination parameters from the packets, say 192.168.1.1 as source 
-address, TCP port 80 as destination, form the element 192.168.1.1,tcp:80 
-and look it up in the given set.
+-A FORWARD -i br0 -o br0 -m physdev --physdev-in wlan0 --physdev-out wl=
+an0 -j DROP
 
-You can't store and lookup IP address pairs, if that's what you want.
-
-Best regards,
-Jozsef
- 
-> tfang@gateway:~$ sudo iptables -nvL
-> Chain INPUT (policy ACCEPT 83 packets, 4308 bytes)
->  pkts bytes target     prot opt in     out     source
-> destination
-> 
-> Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
->  pkts bytes target     prot opt in     out     source
-> destination
->     0     0 ACCEPT     all  --  *      *       0.0.0.0/0
-> 0.0.0.0/0            match-set sec dst,src
->     4   252 DROP       all  --  *      *       0.0.0.0/0
-> 0.0.0.0/0
-> 
-> Chain OUTPUT (policy ACCEPT 114 packets, 14440 bytes)
->  pkts bytes target     prot opt in     out     source
-> destination
-> 
-> 
-> 
-> 
-> E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu PGP key :
-> http://www.kfki.hu/~kadlec/pgp_public_key.txt
-> Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
->           H-1525 Budapest 114, POB. 49, Hungary
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
-
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+However, do note that 802.11, being radio traffic, can be sniffed by=20
+any receiver. You cannot prevent that.
+--=20
+  http://rob0.nodns4.us/ -- system administration and consulting
+  Offlist GMX mail is seen only if "/dev/rob0" is in the Subject:
