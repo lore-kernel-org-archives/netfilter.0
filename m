@@ -1,49 +1,38 @@
-From: xiuming zhu <xmzhu@cs.utexas.edu>
-Subject: ipset binding feature
-Date: Tue, 7 May 2013 21:44:09 -0500
-Message-ID: <CABoU=UoFp7MsiKSr2khWtdDS8v7z4DceJFa-axh9yJHNmTjj2g@mail.gmail.com>
+From: "John P. Goldman" <gliceaga@mendoza-conicet.gob.ar>
+Subject: dringender Vorschlag
+Date: Wed, 8 May 2013 05:46:28 -0300 (ART)
+Message-ID: <351326728.69416.1368002788604.JavaMail.root__22918.5375771069$1368004080$gmane$org@correo.mendoza-conicet.gob.ar>
+Reply-To: "John P. Goldman" <johnp.goldman@yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:x-received:sender:date:x-google-sender-auth:message-id
-         :subject:from:to:content-type;
-        bh=3s+ENyrNhFQGrCCLgyK1edCbpOMNMIspxTQIvfFZjEo=;
-        b=BiuWmYKsdLR3VyfDFFHyxvW4QKrfUYJECibK+LLi2zdmoT1thAG/mjn+NIp0mgb6pY
-         YtuGEBSFR92vqe9FLIPmvHoWnNUgYyhC9HUcHnlitom7iZ3K5On1Wf96bjDy1NQMTJHq
-         jtbdQeQN5lLDwQO+8k3/ZglqPTPMOq+g2SnbZHEY8Ls6fVUQaVZm+xqd/nSHoC7eaGAC
-         mkSm6zlFdZQl5v34uOkHVw6zWkLILIL32pE9XPEd3UyRXP+uOHmJaTAeoONmbVGCXRo5
-         7mGJFJSK+EIe30NiLM8Z6/kPtlEEqAjPlKH/gAuwSx5nzE0YpUDZr6WW4dgsuGeh8MJH
-         k8xg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter <netfilter@vger.kernel.org>
-
-By reading ipset manual, after ipset 4.0, the binding feature is removed. I
-wonder there is any other way to implement the examples listed in
-http://people.netfilter.org/kadlec/ipset/features.html
-
-Let's see an example:
-
-# ipmap set storing the IP addresses of two machines
-ipset -N servers ipmap --network 192.168.0.0/16
-ipset -A servers 192.168.0.1
-ipset -A servers 192.168.0.2
-# portmap set storing the allowed ports for 192.168.0.2
-ipset -N ports portmap --from 1 --to 1024
-ipset -A ports 21
-ipset -A ports 22
-ipset -A ports 25
-# Binding, which attaches ports to 192.168.0.2
-ipset -B servers 192.168.0.2 -b ports
-
-# iptables rule using the set match
-...
-iptables -A FORWARD -m set --set servers dst,dst -j ACCEPT
-iptables -A FORWARD -j DROP
+Content-Type: text/plain; charset="utf-8"
+To: 
 
 
 
-thanks a lot
+Entschuldigungen f=C3=BCr kommen in Ihre Privatsph=C3=A4re! Ich bin Rec=
+htsanwalt
+Werner Erich Zeller; Ich habe einen meiner einflussreichen und
+wohlhabenden Kunden zum Tode; und er hatte eine sehr geheime und privat=
+e
+Investitionen von =E2=82=AC15,000,000.00 bei einer privaten Bank in Gro=
+=C3=9Fbritannien
+hier zu Lebzeiten. Diese Investition wurde ohne einen deklarierten
+n=C3=A4chsten Angeh=C3=B6rigen und beg=C3=BCnstigte. Jetzt brauche ich =
+Sie arbeiten mit
+mir als mein Partner zu erholen und zu je 50 % Aktienfonds. Alle Dokume=
+nte
+werden rechtlich beantragt und beschafft, und in 5 Werktage, wird diese
+Transaktion auftreten. Aber ich brauche einen ernsten, treuen und
+glaubw=C3=BCrdigen Partner.
+
+Bitte senden Sie mir eine vertrauliche Antwort, wenn Sie denken, Sie
+vertraut werden k=C3=B6nnen und sind von den Qualit=C3=A4ten! Ich warte=
+ auf Ihre
+schnelle Antwort.
+
+Werner Erich Zeller (Rechtsanwalt)
+Rufen Sie + 44-702-409-0820 (Office)
