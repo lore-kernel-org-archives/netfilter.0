@@ -1,63 +1,49 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH 05/15] connection tracking helper for SLP
-Date: Wed, 8 May 2013 04:03:28 +0200
-Message-ID: <20130508020328.GA7747@localhost>
-References: <1367936303-13386-1-git-send-email-jslaby@suse.cz>
- <1367936303-13386-5-git-send-email-jslaby@suse.cz>
+From: xiuming zhu <xmzhu@cs.utexas.edu>
+Subject: ipset binding feature
+Date: Tue, 7 May 2013 21:44:09 -0500
+Message-ID: <CABoU=UoFp7MsiKSr2khWtdDS8v7z4DceJFa-axh9yJHNmTjj2g@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1367936303-13386-5-git-send-email-jslaby@suse.cz>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:x-received:sender:date:x-google-sender-auth:message-id
+         :subject:from:to:content-type;
+        bh=3s+ENyrNhFQGrCCLgyK1edCbpOMNMIspxTQIvfFZjEo=;
+        b=BiuWmYKsdLR3VyfDFFHyxvW4QKrfUYJECibK+LLi2zdmoT1thAG/mjn+NIp0mgb6pY
+         YtuGEBSFR92vqe9FLIPmvHoWnNUgYyhC9HUcHnlitom7iZ3K5On1Wf96bjDy1NQMTJHq
+         jtbdQeQN5lLDwQO+8k3/ZglqPTPMOq+g2SnbZHEY8Ls6fVUQaVZm+xqd/nSHoC7eaGAC
+         mkSm6zlFdZQl5v34uOkHVw6zWkLILIL32pE9XPEd3UyRXP+uOHmJaTAeoONmbVGCXRo5
+         7mGJFJSK+EIe30NiLM8Z6/kPtlEEqAjPlKH/gAuwSx5nzE0YpUDZr6WW4dgsuGeh8MJH
+         k8xg==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jiri Slaby <jslaby@suse.cz>
-Cc: jirislaby@gmail.com, linux-kernel@vger.kernel.org, Jiri Bohac <jbohac@suse.cz>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, Patrick McHardy <kaber@trash.net>
+To: netfilter <netfilter@vger.kernel.org>
 
-On Tue, May 07, 2013 at 04:18:13PM +0200, Jiri Slaby wrote:
-> From: Jiri Bohac <jbohac@suse.cz>
-> 
-> A simple connection tracking helper for SLP. Marks replies to a
-> SLP broadcast query as ESTABLISHED to allow them to pass through the
-> firewall.
-> 
-> Signed-off-by: Jiri Bohac <jbohac@suse.cz>
-> Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-> Cc: netfilter-devel@vger.kernel.org
-> Cc: netfilter@vger.kernel.org
-> Cc: coreteam@netfilter.org
-> Cc: netdev@vger.kernel.org
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Patrick McHardy <kaber@trash.net>
-> Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-> ---
->  net/netfilter/Kconfig            |  15 +++++
->  net/netfilter/Makefile           |   1 +
->  net/netfilter/nf_conntrack_slp.c | 131 +++++++++++++++++++++++++++++++++++++++
->  3 files changed, 147 insertions(+)
->  create mode 100644 net/netfilter/nf_conntrack_slp.c
-> 
-> diff --git a/net/netfilter/Kconfig b/net/netfilter/Kconfig
-> index 56d22ca..ec61b30 100644
-> --- a/net/netfilter/Kconfig
-> +++ b/net/netfilter/Kconfig
-> @@ -320,6 +320,21 @@ config NF_CONNTRACK_TFTP
->  
->  	  To compile it as a module, choose M here.  If unsure, say N.
->  
-> +config NF_CONNTRACK_SLP
-> +	tristate "SLP protocol support"
-> +	depends on NF_CONNTRACK
-> +	depends on NETFILTER_ADVANCED
-> +	help
-> +	  SLP queries are sometimes sent as broadcast messages from an
-> +	  unprivileged port and responded to with unicast messages to the
-> +	  same port. This make them hard to firewall properly because connection
-> +	  tracking doesn't deal with broadcasts. This helper tracks locally
-> +	  originating broadcast SLP queries and the corresponding
-> +	  responses. It relies on correct IP address configuration, specifically
-> +	  netmask and broadcast address.
+By reading ipset manual, after ipset 4.0, the binding feature is removed. I
+wonder there is any other way to implement the examples listed in
+http://people.netfilter.org/kadlec/ipset/features.html
 
-We have the user-space helper infrastructure in the conntrack-tools,
-this helper has to go there.
+Let's see an example:
+
+# ipmap set storing the IP addresses of two machines
+ipset -N servers ipmap --network 192.168.0.0/16
+ipset -A servers 192.168.0.1
+ipset -A servers 192.168.0.2
+# portmap set storing the allowed ports for 192.168.0.2
+ipset -N ports portmap --from 1 --to 1024
+ipset -A ports 21
+ipset -A ports 22
+ipset -A ports 25
+# Binding, which attaches ports to 192.168.0.2
+ipset -B servers 192.168.0.2 -b ports
+
+# iptables rule using the set match
+...
+iptables -A FORWARD -m set --set servers dst,dst -j ACCEPT
+iptables -A FORWARD -j DROP
+
+
+
+thanks a lot
