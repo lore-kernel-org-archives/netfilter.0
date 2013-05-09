@@ -1,34 +1,58 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: Changing the incoming interface of the packet using iptables
- MARK and ip route commands
-Date: Wed, 8 May 2013 13:16:45 +0200 (CEST)
-Message-ID: <alpine.LNX.2.01.1305081314590.29391@nerf07.vanv.qr>
-References: <CALyk9ewHd1EgDJ-LhSQsOZwasJE-CM9nuLH9djtLOMKHPnJm0A@mail.gmail.com>
+From: Al Grant <bigal.nz@gmail.com>
+Subject: loopback between tun and eth
+Date: Thu, 9 May 2013 18:12:08 +1200
+Message-ID: <CAODtcdeizmjL37M_E+bYckJQtz+UE=QDXOfpwfcGdy1O51pGNg@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CALyk9ewHd1EgDJ-LhSQsOZwasJE-CM9nuLH9djtLOMKHPnJm0A@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:x-received:date:message-id:subject:from:to
+         :content-type;
+        bh=khavBA5inkIw6HCR9Mdjd63zT4AL7sOaestOPvbXYD4=;
+        b=ga//ZtAMLKwvkeYdtGakE8rHgsz7vojgwmkJsA1gNEb2QZYhGhFkU7dQjHFGUY18tS
+         qIWXbWFqvXTq1PIkRqctRE+7ZxqAfbypJei5qrt6Ua3nW5nYwdU3wVUc+hk0Wh0n3bpi
+         rAWdmUsgPbKYgYvzrYtpjhqtIYisGugL0Sp8Nc10nWUQMc6ZsIF/qGSZq0+PmU/BtOSl
+         57kLOe6HLBrZzKIqvlpPlLwN+f/0BhgwT1v9tBH5BK+knhIsh/0E9u4K6VVLWUWS1jRy
+         r/ou/ksk/Q4Q5GwhIMR58mCHcU9aK7g1+I6qZgwd6JySoE+HTjNHsy8EZfCzmg4LoYsA
+         y8wA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Ravi Kanth Vanapalli <vvnrk.vanapalli@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter <netfilter@vger.kernel.org>
 
-On Wednesday 2013-05-01 05:06, Ravi Kanth Vanapalli wrote:
+Hi All,
 
->I was trying to change the incoming interface of the packet using
->iptables MARK and ip route commands.
->
->I have tried this approach after going through the weblink
->belowhttp://www.netfilter.org/documentation/HOWTO//netfilter-extensions-HOWTO-4.html#ss4.5
->which suggests the use of iptable Mark and iproute2 utilities instead
->of ROUTE target. but could not find any success chaging the incoming
->interface of the packet in the receiving path.
->
->I have an application 'A' which binds to an interface 'intfA' in linux
->i.e the application sends and receives packets only on via intfA.
+I have a QNAP NAS which I have setup as a OpenVPN server. The NAS is
+behind a modem/router which is also the gateway to the internet.
 
-If it uses bind(2), it does not bind to an interface, but an address. 
-Therefore, changing the interface is the wrong thing to do. Make your 
-program listen on the particular address(es) that you intend to send to 
-instead.
+I have a routed OpenVPN connection to the QNAP NAS.
+
+The QNAP subnet is 10.1.1.0
+The OpenVPN subnet is 10.8.0.0
+My LAN (client) is 192.168.150.0
+
+In the router on the VPN server LAN I have a static route for 10.8.0.0
+to 10.1.1.2 (QNAP NAS IP and also OpenVPN IP) - so there is a return
+path so to speak for clients on the remote lan when accessed by VPN
+clients.
+
+The strange issue is that when I connect to the remote LAN I can
+connect to all remote clients using the remote LAN subnet addresses
+(10.1.1.0) *except* for the QNAP iteself (10.1.1.2).
+
+Apparently this behavious is due to no loopback connection between the
+tun and eth (someone suggested QNAP did this by design, but I dont
+know why).
+
+Anyway, the question is - is there a way using iptables I can fix this
+loopback problem so I can access the QNAP/OpenVPN server on its remote
+LAN IP? (10.1.1.2)
+
+Cheers
+
+
+
+--
+"Beat it punk!"
+- Clint Eastwood
