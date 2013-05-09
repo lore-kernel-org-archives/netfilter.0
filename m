@@ -1,52 +1,51 @@
-From: Timothy Arceri <t_arceri@yahoo.com.au>
-Subject: Re: Simulating router breaking idle TCP connections with IPTABLES
-Date: Thu, 9 May 2013 00:46:46 -0700 (PDT)
-Message-ID: <1368085606.46753.YahooMailNeo@web163403.mail.gq1.yahoo.com>
-References: <51869EE6.5090506@gmail.com>
-  <1367806399.46023.YahooMailNeo@web163402.mail.gq1.yahoo.com>
- <16F881F4B142A44DA19CD53978B96C481D714D69@DAGN02C-E6.exg6.exghost.com>
- <1367837936.99912.YahooMailNeo@web163404.mail.gq1.yahoo.com> <16F881F4B142A44DA19CD53978B96C481D7156E8@DAGN02C-E6.exg6.exghost.com>
-Reply-To: Timothy Arceri <t_arceri@yahoo.com.au>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com.au; s=s1024; t=1368085606; bh=dlofaGONvAvrOf8nAeaTFvIYm0VxOXJtnRUiiywLfHI=; h=X-YMail-OSG:Received:X-Rocket-MIMEInfo:X-Mailer:References:Message-ID:Date:From:Reply-To:Subject:To:In-Reply-To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=IebgKq/cHDPRuEUwJWIvPdrQdURlRJ7laNpspVwOMyr8ju0fou+9WAAwa9tYS7YTq2XABq/Uhk/GMa62sKown9VvJEB9wZhQfIQ5jN6BcRgNmnzo5K05KR/lptNzIOvGjXCfm/FjsW6VpsZ6wzBAlW8cy8ZVDzZVk/oz1TqpfWk=
-In-Reply-To: <16F881F4B142A44DA19CD53978B96C481D7156E8@DAGN02C-E6.exg6.exghost.com>
-Sender: netfilter-owner@vger.kernel.org
+From: Denis Efremov <yefremov.denis@gmail.com>
+Subject: [PATCH 07/21] netfilter: nf_nat: remove inline marking of EXPORT_SYMBOL functions
+Date: Thu,  9 May 2013 13:19:38 +0400
+Message-ID: <1368091192-10245-2-git-send-email-yefremov.denis@gmail.com>
+References: <1368086241-9357-1-git-send-email-yefremov.denis@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=x-received:from:to:cc:subject:date:message-id:x-mailer:in-reply-to
+         :references;
+        bh=TX3Qfzi3jmY1//fTshdgToopZ1avkEqguhlrt8XdhXc=;
+        b=AlZG1j04+coJKEjErF2yppRd5qifXMLDsEuSOZpctNjhESzjmulD8cJE8NyMQXGtmv
+         ASGZzA5UvlvVsE8j0EEltb3SV4QVg+QorSrLUtwD/iG7Y1Y9OILmZLl4OvRpwD6/K8Xf
+         qhBWshEShSviCaekWZFuAh0sFtgEJjCXK0EczRAFs3YOYQXds+Bhd2BBrIRqVw4r4oC3
+         Y7MsFagY2tlS9hHLW6OX5MAgNM5yjhvxmShcwS+bwbSJ9HS10+uPZiGrPRVjaTVIBR33
+         4y7ZrttSbCEm5uBLkDNxoTP8r3vHYrp1sgOunzkXtvoK3snJ+iegHZd7ccv8zgOLJ55M
+         EPTQ==
+In-Reply-To: <1368086241-9357-1-git-send-email-yefremov.denis@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: "David S. Miller" <davem@davemloft.net>
+Cc: Denis Efremov <yefremov.denis@gmail.com>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, netfilter@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, trivial@kernel.org, ldv-project@linuxtesting.org
 
-Thanks Bob, I have been attempting to use the port triggering for sftp i.e ssh connections on port 22 but they dont seem to be getting triggered. Is it likely that the ssh port would be ignored from port triggering on this router?? The router logs do not show anything to indicate that it even attempted port triggering.
+EXPORT_SYMBOL and inline directives are contradictory to each other.
+The patch fixes this inconsistency.
 
-Thanks for your help,
-Tim
+Found by Linux Driver Verification project (linuxtesting.org).
 
+Signed-off-by: Denis Efremov <yefremov.denis@gmail.com>
+---
+ net/netfilter/nf_nat_core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
------ Original Message -----
-From: Bob Reiber <bob@bkss.net>
-To: Timothy Arceri <t_arceri@yahoo.com.au>; "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Cc: 
-Sent: Tuesday, 7 May 2013 1:34 AM
-Subject: RE: Simulating router breaking idle TCP connections with IPTABLES
-
-Look in port triggering. I think there is a timer setting there where you can specify when to close the tcp port
-
-Bob Reiber
-BK Sales and Service
-3211 Longfellow Dr
-Belmont, CA 94002
-Tel: 650 376 1122
-Fax: 650 240 4556
-
------Original Message-----
-From: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.kernel.org] On Behalf Of Timothy Arceri
-Sent: Monday, May 6, 2013 3:59 AM
-To: netfilter@vger.kernel.org
-Subject: Re: Simulating router breaking idle TCP connections with IPTABLES
-
->Um, what kind of router do you have? Even some of the very basic home routers have tcp timers on them. 
-
-
-I have a Netgear WNR1000v3. Cant find any settings for tcp timers.
+diff --git a/net/netfilter/nf_nat_core.c b/net/netfilter/nf_nat_core.c
+index 038eee5..38492e0 100644
+--- a/net/netfilter/nf_nat_core.c
++++ b/net/netfilter/nf_nat_core.c
+@@ -44,7 +44,7 @@ __nf_nat_l3proto_find(u8 family)
+ 	return rcu_dereference(nf_nat_l3protos[family]);
+ }
+ 
+-inline const struct nf_nat_l4proto *
++const struct nf_nat_l4proto *
+ __nf_nat_l4proto_find(u8 family, u8 protonum)
+ {
+ 	return rcu_dereference(nf_nat_l4protos[family][protonum]);
+-- 
+1.8.1.4
