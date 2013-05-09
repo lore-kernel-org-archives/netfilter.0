@@ -1,32 +1,37 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipset binding feature
-Date: Thu, 9 May 2013 11:32:37 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1305091129580.24331@blackhole.kfki.hu>
-References: <CABoU=UoFp7MsiKSr2khWtdDS8v7z4DceJFa-axh9yJHNmTjj2g@mail.gmail.com>
+From: "David Laight" <David.Laight@ACULAB.COM>
+Subject: RE: [PATCH 07/21] netfilter: nf_nat: remove inline marking of EXPORT_SYMBOL functions
+Date: Thu, 9 May 2013 10:47:33 +0100
+Message-ID: <AE90C24D6B3A694183C094C60CF0A2F6026B722B@saturn3.aculab.com>
+References: <1368086241-9357-1-git-send-email-yefremov.denis@gmail.com> <1368091192-10245-2-git-send-email-yefremov.denis@gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CABoU=UoFp7MsiKSr2khWtdDS8v7z4DceJFa-axh9yJHNmTjj2g@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 8BIT
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-class: urn:content-classes:message
+In-Reply-To: <1368091192-10245-2-git-send-email-yefremov.denis@gmail.com>
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: xiuming zhu <xmzhu@cs.utexas.edu>
-Cc: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Denis Efremov <yefremov.denis@gmail.com>, "David S. Miller" <davem@davemloft.net>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, netfilter@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, trivial@kernel.org, ldv-project@linuxtesting.org
 
-On Tue, 7 May 2013, xiuming zhu wrote:
+> EXPORT_SYMBOL and inline directives are contradictory to each other.
+> The patch fixes this inconsistency.
+...
+> -inline const struct nf_nat_l4proto *
+> +const struct nf_nat_l4proto *
+>  __nf_nat_l4proto_find(u8 family, u8 protonum)
+>  {
+>  	return rcu_dereference(nf_nat_l4protos[family][protonum]);
 
-> By reading ipset manual, after ipset 4.0, the binding feature is removed. I
-> wonder there is any other way to implement the examples listed in
-> http://people.netfilter.org/kadlec/ipset/features.html
+If it makes sense to inline the local calls (ie the cost
+of the call is significant) then possibly add an inlined
+(or inlinable) static function that is called locally and
+by the exported one?
 
-No, the feature was badly designed and therefore was removed. 
+I'm not sure that gcc is allowed to make the assumption
+that the local exported function will be called - and
+thus inline it.
 
-I updated the page and deleted examples referring to removed features.
+	David
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+
