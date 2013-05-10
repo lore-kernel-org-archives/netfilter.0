@@ -1,86 +1,67 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset 6.19 released
-Date: Thu, 9 May 2013 22:28:26 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1305092214320.25002@blackhole.kfki.hu>
+From: jack seth <bird_112@hotmail.com>
+Subject: RE: How to isolate wireless clients from each other
+Date: Fri, 10 May 2013 00:05:45 +0000
+Message-ID: <SNT134-W20011F937B4526A1878921BFA50@phx.gbl>
+References: <SNT134-W45C322454357AF0D27D06EBFB90@phx.gbl>,<20130507121720.GL3672@harrier.slackbuilds.org>,<SNT134-W48DA80A0AEDA4067881B97BFBA0@phx.gbl>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <SNT134-W48DA80A0AEDA4067881B97BFBA0@phx.gbl>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi,
+> ----------------------------------------
+> > Date: Tue, 7 May 2013 07:17:20 -0500
+> > From: rob0@gmx.co.uk
+> > To: netfilter@vger.kernel.org
+> > Subject: Re: How to isolate wireless clients from each other
+> >
+> > On Mon, May 06, 2013 at 06:36:52PM +0000, jack seth wrote:
+> > > Does anyone know how to totally isolate wireless clients from
+> > > each other that are on a hotspot/guest WLAN?  I thought ebtables
+> > > might be the way but I can't figure it out.  Thanks!
+> >
+> > If CONFIG_BRIDGE_NETFILTER=3Dy you should be able to filter this in
+> > your FORWARD chain, e.g., for an unbridged wlan0:
+> >
+> > -A FORWARD -i wlan0 -o wlan0 -j DROP
+> >
+> > (You might want to use a user chain with appropriate REJECT rules f=
+or
+> > the protocol in question.)
+> >
+> > If CONFIG_BRIDGE_NETFILTER=3Dy and wlan0 is part of a bridge, you w=
+ould
+> > need the physdev match:
+> >
+> > -A FORWARD -i br0 -o br0 -m physdev --physdev-in wlan0 --physdev-ou=
+t wlan0 -j DROP
+> >
+> > However, do note that 802.11, being radio traffic, can be sniffed b=
+y
+> > any receiver. You cannot prevent that.
+> > --
+> > http://rob0.nodns4.us/ -- system administration and consulting
+> > Offlist GMX mail is seen only if "/dev/rob0" is in the Subject:
+> > --
+> > To unsubscribe from this list: send the line "unsubscribe netfilter=
+" in
+> > the body of a message to majordomo@vger.kernel.org
+> > More majordomo info at http://vger.kernel.org/majordomo-info.html
+>=20
+=A0First, thanks for the response.=A0 I'm not sure what 'CONFIG_BRIDGE_=
+NETFILTER=3Dy' is.=A0 Is this 'setting' and the rules you posted for ip=
+tables or ebtables?=A0 Let me provide some additional information.=A0 T=
+his is on my router.=A0 The clients are on 'wl0.1' interface.=A0 This i=
+nterface is inside 'br1' bridge.=A0 Another question I have is what int=
+erface is the router on in this scenario?=A0 The 2.4ghz wireless interf=
+ace is 'eth1' for this router but 'brctl show' doesn't show that interf=
+ace in the bridge.=A0 Is the router somehow on 'wl0.1' also?=A0 I am wo=
+ndering what interface the router is on because I want to block the cli=
+ents from the router also except what is necessary for internet to work=
+=2E 		 	   		 =20
 
-I'm happy to announce ipset 6.19. The main new feature in this release is 
-the per element byte and packet counters for every set type, which is 
-based on the new internal extension infrastructure. Please read the 
-updated manpage on how to use counters, initialize or change them.
 
-The management and matching of counters is added to the "set" match of 
-iptables/ip6tables, which is available in the "next" branch of the 
-iptables git tree.
-
-Userspace changes:
-  - Check at modules_install whether depmod ignores the extra subdir
-    (reported by Husnu Demir and tian fang)
-  - The utils are updated from their sources
-  - Manpage typing error correction (reported by Husnu Demir)
-  - Update testsuite as the trailing space was eliminated at listings
-  - Add sparse checking support to userspace
-  - Improve XML output: add element tag and root element (suggested by 
-    Lucas Hamie)
-  - Manpage updates
-  - Add new testsuite entries to verify counters and the new type
-    implementation
-  - Introduce the new set type revisions with counter support
-  - Support counters in the ipset library
-  - The uapi include split in the package itself
-
-Kernel part changes:
-  - Compatibility fixes to keep the support of kernels back to 2.6.32
-  - Backport nla_put_net64
-  - Support package fragments for IPv4 protos without ports
-    (Anders K. Pedersen)
-  - Use fix sized type for timeout in the extension part
-  - Make sure kernel configured properly for sparse checkings
-  - Fix "may be used uninitialized" warnings (reported by Pablo Neira
-    Ayuso)
-  - Rename simple macro names to avoid namespace issues (reported by
-    David Laight)
-  - Fix sparse warnings due to missing rcu annotations (reported by
-    Pablo Neira Ayuso)
-  - Sparse warning about shadowed variable fixed
-  - Don't call ip_nest_end needlessly in the error path (suggested by
-    Pablo Neira Ayuso)
-  - set match: add support to match the counters
-  - The list:set type with counter support
-  - The hash types with counter support
-  - The bitmap types with counter support
-  - Introduce the counter extension in the core
-  - list:set type using the extension interface
-  - Hash types using the unified code base
-  - Unified hash type generation
-  - Bitmap types using the unified code base
-  - Unified bitmap type generation
-  - Introduce extensions to elements in the core
-  - Move often used IPv6 address masking function to header file
-  - Make possible to test elements marked with nomatch, from userspace
-  - netfilter ipset: Use ipv6_addr_equal() where appropriate.
-    (YOSHIFUJI Hideaki)
-  - Add a compatibility header file for easier maintenance
-  - The uapi include split in the package itself
-  - Reorder modules a little bit in Kbuild
-
-You can download the source code of ipset from:
-        http://ipset.netfilter.org
-        ftp://ftp.netfilter.org/pub/ipset/
-        git://git.netfilter.org/ipset.git
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+Can someone help with this? 		 	   		  
