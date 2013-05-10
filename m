@@ -1,53 +1,58 @@
-From: Alex Flex <aflexzor@gmail.com>
-Subject: synflood +syncookies + conntrack strange behaviour
-Date: Thu, 09 May 2013 19:04:29 -0600
-Message-ID: <518C479D.1070904@gmail.com>
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Subject: Re: loopback between tun and eth
+Date: Fri, 10 May 2013 11:28:54 +0200
+Message-ID: <518CBDD6.4060407@plouf.fr.eu.org>
+References: <CAODtcdeizmjL37M_E+bYckJQtz+UE=QDXOfpwfcGdy1O51pGNg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=x-received:message-id:date:from:user-agent:mime-version:to:subject
-         :content-type:content-transfer-encoding;
-        bh=gF9kZSDirjffE/fb5XZM+FnKi6f86UyIabuwlPB59nQ=;
-        b=QaFRqVKAjYf+MYMd32Fod1ze15WZ4o1qMtUrASYVc4YyXPazvy1Hua7PUF31fWEmR8
-         0ylFQRo3bFJQ1qxJODQshgzGyFV/vTNaZPUECLqbgpeJ0iSuom5FElOv+Bnf1ZjhoEOF
-         o3qQuU5ZLxESjpjurHtIsAdvy/uWuvWPvGFtkJzCFAJ5MuKd314n1o8TisqSIx+53Apa
-         zff8ympkkfF3DOKafFCwm7y4Oe2QNhRQiP+qzNUt9p7OYb8rtEl5bLwV/opFRfREhAeN
-         CjmDdbjddJUGwNVIwE2LtXKWpd3Hn3RzBhJNbiRuVqyNTFEGN3HSDO88WP5EGvgwBc0N
-         ctlg==
+In-Reply-To: <CAODtcdeizmjL37M_E+bYckJQtz+UE=QDXOfpwfcGdy1O51pGNg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Al Grant <bigal.nz@gmail.com>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-Hello Netfilter,
+Hello,
 
-Today I wanted to do some LAN tests with two machines, where i would use 
-one to syn flood the other.
+Al Grant a =E9crit :
+>=20
+> I have a QNAP NAS which I have setup as a OpenVPN server. The NAS is
+> behind a modem/router which is also the gateway to the internet.
+>=20
+> I have a routed OpenVPN connection to the QNAP NAS.
+>=20
+> The QNAP subnet is 10.1.1.0
+> The OpenVPN subnet is 10.8.0.0
+> My LAN (client) is 192.168.150.0
+>=20
+> In the router on the VPN server LAN I have a static route for 10.8.0.=
+0
+> to 10.1.1.2 (QNAP NAS IP and also OpenVPN IP) - so there is a return
+> path so to speak for clients on the remote lan when accessed by VPN
+> clients.
+>=20
+> The strange issue is that when I connect to the remote LAN I can
+> connect to all remote clients using the remote LAN subnet addresses
+> (10.1.1.0) *except* for the QNAP iteself (10.1.1.2).
 
-Iam using a firewall with conntrack enabled. I noticed that while I made 
-the attack (50k pps @ 15mbitsfrom random IPs) I immediately  saw the 
-conntrack max count reach 65535 which is my max value. Packets 
-immediately started being lost almost in full.
+Maybe the filtering rules in the INPUT chain on the NAS do no allow
+packets received on the tun interface with a destination address other
+than the address of the tun interface.
 
-Questions:
+> Apparently this behavious is due to no loopback connection between th=
+e
+> tun and eth (someone suggested QNAP did this by design, but I dont
+> know why).
 
-a.) Shouldnt syn cookies (which is enabled) deal with the syn flood 
-without compromising my state table?
-b.) Why if my state table is full am I not getting any table full error 
-message in dmesg or syslog? I tried setting max conntrack to something 
-lower (10,000)and even maxed out it didnt give any warning. In fact i 
-had to set it to 100 and only at that time I got the conntrack error 
-full message??
-c.) I  tried disabling iptables all together (thus no conntrack)and I 
-still saw 100% packetloss , iam sure iamnot hitting a  cpu or link limit 
-because previously i hit a 100k pps 50mbits, and now iam doing half that 
-for testing and still using syncookies. Why would i still be lossing 
-packets?
+Sounds like bullshit. There is no such thing as a "loopback connection"
+between network interfaces in the Linux kernel.
 
-Thanks for the help!
+> Anyway, the question is - is there a way using iptables I can fix thi=
+s
+> loopback problem so I can access the QNAP/OpenVPN server on its remot=
+e
+> LAN IP? (10.1.1.2)
 
-Alex
-
-
+Please post the iptables ruleset on the NAS, preferably with
+iptables-save or iptables -S if the former is not available.
