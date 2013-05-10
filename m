@@ -1,67 +1,53 @@
-From: jack seth <bird_112@hotmail.com>
-Subject: RE: How to isolate wireless clients from each other
-Date: Fri, 10 May 2013 00:05:45 +0000
-Message-ID: <SNT134-W20011F937B4526A1878921BFA50@phx.gbl>
-References: <SNT134-W45C322454357AF0D27D06EBFB90@phx.gbl>,<20130507121720.GL3672@harrier.slackbuilds.org>,<SNT134-W48DA80A0AEDA4067881B97BFBA0@phx.gbl>
+From: Alex Flex <aflexzor@gmail.com>
+Subject: synflood +syncookies + conntrack strange behaviour
+Date: Thu, 09 May 2013 19:04:29 -0600
+Message-ID: <518C479D.1070904@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <SNT134-W48DA80A0AEDA4067881B97BFBA0@phx.gbl>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=x-received:message-id:date:from:user-agent:mime-version:to:subject
+         :content-type:content-transfer-encoding;
+        bh=gF9kZSDirjffE/fb5XZM+FnKi6f86UyIabuwlPB59nQ=;
+        b=QaFRqVKAjYf+MYMd32Fod1ze15WZ4o1qMtUrASYVc4YyXPazvy1Hua7PUF31fWEmR8
+         0ylFQRo3bFJQ1qxJODQshgzGyFV/vTNaZPUECLqbgpeJ0iSuom5FElOv+Bnf1ZjhoEOF
+         o3qQuU5ZLxESjpjurHtIsAdvy/uWuvWPvGFtkJzCFAJ5MuKd314n1o8TisqSIx+53Apa
+         zff8ympkkfF3DOKafFCwm7y4Oe2QNhRQiP+qzNUt9p7OYb8rtEl5bLwV/opFRfREhAeN
+         CjmDdbjddJUGwNVIwE2LtXKWpd3Hn3RzBhJNbiRuVqyNTFEGN3HSDO88WP5EGvgwBc0N
+         ctlg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-> ----------------------------------------
-> > Date: Tue, 7 May 2013 07:17:20 -0500
-> > From: rob0@gmx.co.uk
-> > To: netfilter@vger.kernel.org
-> > Subject: Re: How to isolate wireless clients from each other
-> >
-> > On Mon, May 06, 2013 at 06:36:52PM +0000, jack seth wrote:
-> > > Does anyone know how to totally isolate wireless clients from
-> > > each other that are on a hotspot/guest WLAN?  I thought ebtables
-> > > might be the way but I can't figure it out.  Thanks!
-> >
-> > If CONFIG_BRIDGE_NETFILTER=3Dy you should be able to filter this in
-> > your FORWARD chain, e.g., for an unbridged wlan0:
-> >
-> > -A FORWARD -i wlan0 -o wlan0 -j DROP
-> >
-> > (You might want to use a user chain with appropriate REJECT rules f=
-or
-> > the protocol in question.)
-> >
-> > If CONFIG_BRIDGE_NETFILTER=3Dy and wlan0 is part of a bridge, you w=
-ould
-> > need the physdev match:
-> >
-> > -A FORWARD -i br0 -o br0 -m physdev --physdev-in wlan0 --physdev-ou=
-t wlan0 -j DROP
-> >
-> > However, do note that 802.11, being radio traffic, can be sniffed b=
-y
-> > any receiver. You cannot prevent that.
-> > --
-> > http://rob0.nodns4.us/ -- system administration and consulting
-> > Offlist GMX mail is seen only if "/dev/rob0" is in the Subject:
-> > --
-> > To unsubscribe from this list: send the line "unsubscribe netfilter=
-" in
-> > the body of a message to majordomo@vger.kernel.org
-> > More majordomo info at http://vger.kernel.org/majordomo-info.html
->=20
-=A0First, thanks for the response.=A0 I'm not sure what 'CONFIG_BRIDGE_=
-NETFILTER=3Dy' is.=A0 Is this 'setting' and the rules you posted for ip=
-tables or ebtables?=A0 Let me provide some additional information.=A0 T=
-his is on my router.=A0 The clients are on 'wl0.1' interface.=A0 This i=
-nterface is inside 'br1' bridge.=A0 Another question I have is what int=
-erface is the router on in this scenario?=A0 The 2.4ghz wireless interf=
-ace is 'eth1' for this router but 'brctl show' doesn't show that interf=
-ace in the bridge.=A0 Is the router somehow on 'wl0.1' also?=A0 I am wo=
-ndering what interface the router is on because I want to block the cli=
-ents from the router also except what is necessary for internet to work=
-=2E 		 	   		 =20
+Hello Netfilter,
+
+Today I wanted to do some LAN tests with two machines, where i would use 
+one to syn flood the other.
+
+Iam using a firewall with conntrack enabled. I noticed that while I made 
+the attack (50k pps @ 15mbitsfrom random IPs) I immediately  saw the 
+conntrack max count reach 65535 which is my max value. Packets 
+immediately started being lost almost in full.
+
+Questions:
+
+a.) Shouldnt syn cookies (which is enabled) deal with the syn flood 
+without compromising my state table?
+b.) Why if my state table is full am I not getting any table full error 
+message in dmesg or syslog? I tried setting max conntrack to something 
+lower (10,000)and even maxed out it didnt give any warning. In fact i 
+had to set it to 100 and only at that time I got the conntrack error 
+full message??
+c.) I  tried disabling iptables all together (thus no conntrack)and I 
+still saw 100% packetloss , iam sure iamnot hitting a  cpu or link limit 
+because previously i hit a 100k pps 50mbits, and now iam doing half that 
+for testing and still using syncookies. Why would i still be lossing 
+packets?
+
+Thanks for the help!
+
+Alex
 
 
-Can someone help with this? 		 	   		  
