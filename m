@@ -1,49 +1,49 @@
 From: Alex Flex <aflexzor@gmail.com>
-Subject: Re: synflood +syncookies + conntrack strange behaviour
-Date: Sat, 11 May 2013 12:47:05 -0600
-Message-ID: <518E9229.20504@gmail.com>
-References: <518C479D.1070904@gmail.com> <518E8D5B.3060200@plouf.fr.eu.org>
+Subject: syncookies load testing
+Date: Mon, 13 May 2013 19:15:38 -0600
+Message-ID: <5191903A.20708@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=x-received:message-id:date:from:user-agent:mime-version:to:subject
-         :references:in-reply-to:content-type:content-transfer-encoding;
-        bh=i/lGh30G/U8gs1HSPbTX5UgEoSUpdXsN/rlz+jFN0Yw=;
-        b=t9sj3ThJVIzUeUvrUDQK0khWsZDqJ8T4cS3iUYNskUyPlWLxn9ZXc2hwem1TjW3u3m
-         oDr2LIYEHVaTXm9xua5PdeWFFZihL+C/JvyZzbz/GDxzYxNcexym4/IbiYqmP9qEuEWm
-         VkUmZqc2PQTBcXJybmZGP/IyiyAPfsj3uD/QzJx12/oY/0j2ImkTYmgsC4lSP80j99TM
-         CDRG4s2bfl0ok23JzW/b0KwhoP3Qbo9sKv/32IY32Wu2fj9IEXJJO4pFdTcoEmnh+zYU
-         u0kZbvvEn8H6Ikr9VluWDS8TbE1Js+VHh3j/5sZx+aTrAze3NInJhCfr3HK7v5l6EmMd
-         bdXA==
-In-Reply-To: <518E8D5B.3060200@plouf.fr.eu.org>
+         :content-type:content-transfer-encoding;
+        bh=b1wmgHuhO8jAOG1NtqGbg6Nn/JQlLc5wPZ2C4QXf5eo=;
+        b=dZK+QgmqVRx8EBAGAzWKPlfazgoM1Fd8DctGP5TDqqHh1ffwHtAWKTMTlW/B9j661M
+         e8+Ot+ie0tAF0BRjDlxPOGvSfY8kMYhPkYt1NrGVgRr4jwhp71feOD1xHTbXPspihs9e
+         okDn3UF51v2+qmjwgBNFsTWtldlCaaSj41nmsm0KXt2MZx4JnB1+XTZIROqVeQpO/ITD
+         PjpJW9Gsb0dWAvIvZx8q7r3x0Pz7aGl8IK2OCMY84WyggzXP3Xnkp6Gt7R4sG3RYfu/h
+         Lo/324Mev1kBMCUXzcc9oULVjmqZHplvZxwgbtOW6CWWi4JrM4LjrqbKuhEf5ZamaI0D
+         CSOg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Pascal,
+Hello Netfilter,
 
-Thank you for your reply.
+As some of you may know iam doing some work with syn cookies in my LAN.. 
+Id like to understand the process better which is why i have a few 
+questions:
 
-Ok, I made sure:
+Assume the system has conntrack off.
 
-a.) conntrack is 100% disabled.
-b.) iptables is enabled with a simple stateless ruleset.
-c.) Syn cookies is enabled.
+a.) I noticed that while creating a synflood with syn cookies enabled 
+VRS syn cookies disabled the output of netstat remains exactly the same 
+(even on different hardware architecture) ... :
 
-The issue is: In my testing Iam still being able to exaust *something* 
-because immediately when i hit  a syn flood on port 80 (medium size) I 
-get imediate packet loss (as seen through ICMP, also i cannot ssh in the 
-machine and unable to reach port 80.
+[root@cl-t055-211cl ~]# netstat -nat | awk '{print $6}' | sort | uniq -c 
+| sort -n
+[...]
+     256 SYN_RECV
 
-IF i disable syncookies then: I can ping the machine fine no packetloss 
-but I cannot reach port 80 (seems this port is the only one in packetloss)
+Could anybody explain to me why this is so?
 
-Question: What resource can be exausted both when syncookies is enabled 
-and disabled for this to happen?
+b.) From my understanding the syn back log is the memory of half open 
+connections, could anybody tell me what effect this has on syn cookies? 
+and if there is anyway to monitor its usage?
 
 Thanks
-
 Alex
+
