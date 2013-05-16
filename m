@@ -1,85 +1,41 @@
-From: Federico Di Sante <federico.disante@duet.it>
-Subject: Re: LOG natted packet.
-Date: Wed, 15 May 2013 16:50:11 +0200
-Message-ID: <CANQgTcLuxROtwCR26efz_pgc31U3Oo0T_AiZ=4-CG6KrOruRLw@mail.gmail.com>
-References: <0c9a093fffc283dd8d4ea216e32a6763@duet.it>
-	<5192CD3D.5090500@plouf.fr.eu.org>
-	<CANQgTc+SdLpTrF2Ob=_OywDfLZn7UQkMPQHyaRrPngqimqb=vg@mail.gmail.com>
+From: arr <arunaa.n23@wipro.com>
+Subject: To block multicast traffic to one of the two VLAN interfaces
+Date: Thu, 16 May 2013 04:50:44 +0000 (UTC)
+Message-ID: <loom.20130516T064448-541@post.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CANQgTc+SdLpTrF2Ob=_OywDfLZn7UQkMPQHyaRrPngqimqb=vg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: 
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Thank you Pascal.
+Hi,
 
-2013/5/15 Federico Di Sante <federico.disante@duet.it>:
-> Thank you Pascal.
->
-> Federico
->
->
->
-> 2013/5/15 Pascal Hambourg <pascal@plouf.fr.eu.org>
->>
->> Hello,
->>
->> federico.disante a =E9crit :
->> >
->> > My question is: why I do not get the log from the nat table in the
->> > PREROUTING chain?
->>
->> Quote from iptables' manpage :
->>
->> =3D=3D=3D=3D=3D=3D=3D=3D
->> nat:
->>      This table is consulted when a packet  that  creates  a  new
->>      connection  is encountered.
->> =3D=3D=3D=3D=3D=3D=3D=3D
->>
->> Obviously, a reply packet does not create a new connection.
->> --
->> To unsubscribe from this list: send the line "unsubscribe netfilter"=
- in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
->
+I am using WRT54GL V1.1 wireless router.
+
+I need to multicast two different data items between two PC's using two VLAN
+ID's (eth0.2 and eth0.3).
 
 
-2013/5/15 Federico Di Sante <federico.disante@duet.it>:
-> Thank you Pascal.
->
-> Federico
->
->
->
-> 2013/5/15 Pascal Hambourg <pascal@plouf.fr.eu.org>
->>
->> Hello,
->>
->> federico.disante a =E9crit :
->> >
->> > My question is: why I do not get the log from the nat table in the
->> > PREROUTING chain?
->>
->> Quote from iptables' manpage :
->>
->> =3D=3D=3D=3D=3D=3D=3D=3D
->> nat:
->>      This table is consulted when a packet  that  creates  a  new
->>      connection  is encountered.
->> =3D=3D=3D=3D=3D=3D=3D=3D
->>
->> Obviously, a reply packet does not create a new connection.
->> --
->> To unsubscribe from this list: send the line "unsubscribe netfilter"=
- in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
->
+PC-1                         PC-2
+eth0.2                       eth0.2
+eth0.3                       eth0.3
+
+Each PC has two VLAN IDs.
+
+The problem is if I send a data from  PC-1(eth0.2) to multicast MAC address,
+which PC-2(eth0.2),only should receive.
+
+But PC-2(eth0.3)also receives it.
+
+I need to block the mulicast traffic to the VLANID (here eth0.3) or
+interface which does not need it.
+Is it possible to enable the router to block the traffic?
+
+
+Please help me to find a solution.
+
+Thank you.
+
+
