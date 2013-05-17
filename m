@@ -1,41 +1,59 @@
-From: arr <arunaa.n23@wipro.com>
-Subject: To block multicast traffic to one of the two VLAN interfaces
-Date: Thu, 16 May 2013 04:50:44 +0000 (UTC)
-Message-ID: <loom.20130516T064448-541@post.gmane.org>
+From: Chen Gang <gang.chen@asianux.com>
+Subject: [PATCH] bridge: netfilter: using strlcpy() instead of strncpy()
+Date: Fri, 17 May 2013 16:07:22 +0800
+Message-ID: <5195E53A.4060406@asianux.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
-
-Hi,
-
-I am using WRT54GL V1.1 wireless router.
-
-I need to multicast two different data items between two PC's using two VLAN
-ID's (eth0.2 and eth0.3).
+To: bart.de.schuymer@pandora.be, pablo@netfilter.org, kaber@trash.net, stephen@networkplumber.org
+Cc: David Miller <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, bridge@lists.linux-foundation.org, netdev <netdev@vger.kernel.org>
 
 
-PC-1                         PC-2
-eth0.2                       eth0.2
-eth0.3                       eth0.3
+'name' has already set all zero when it is defined, so not need let
+strncpy() to pad it again.
 
-Each PC has two VLAN IDs.
-
-The problem is if I send a data from  PC-1(eth0.2) to multicast MAC address,
-which PC-2(eth0.2),only should receive.
-
-But PC-2(eth0.3)also receives it.
-
-I need to block the mulicast traffic to the VLANID (here eth0.3) or
-interface which does not need it.
-Is it possible to enable the router to block the traffic?
+'name' is a string, better always let is NUL terminated, so use
+strlcpy() instead of strncpy().
 
 
-Please help me to find a solution.
+Signed-off-by: Chen Gang <gang.chen@asianux.com>
+---
+ net/bridge/netfilter/ebtables.c |    6 +++---
+ 1 files changed, 3 insertions(+), 3 deletions(-)
 
-Thank you.
-
-
+diff --git a/net/bridge/netfilter/ebtables.c b/net/bridge/netfilter/ebtables.c
+index 3d110c4..ac78024 100644
+--- a/net/bridge/netfilter/ebtables.c
++++ b/net/bridge/netfilter/ebtables.c
+@@ -1339,7 +1339,7 @@ static inline int ebt_make_matchname(const struct ebt_entry_match *m,
+ 
+ 	/* ebtables expects 32 bytes long names but xt_match names are 29 bytes
+ 	   long. Copy 29 bytes and fill remaining bytes with zeroes. */
+-	strncpy(name, m->u.match->name, sizeof(name));
++	strlcpy(name, m->u.match->name, sizeof(name));
+ 	if (copy_to_user(hlp, name, EBT_FUNCTION_MAXNAMELEN))
+ 		return -EFAULT;
+ 	return 0;
+@@ -1351,7 +1351,7 @@ static inline int ebt_make_watchername(const struct ebt_entry_watcher *w,
+ 	char __user *hlp = ubase + ((char *)w - base);
+ 	char name[EBT_FUNCTION_MAXNAMELEN] = {};
+ 
+-	strncpy(name, w->u.watcher->name, sizeof(name));
++	strlcpy(name, w->u.watcher->name, sizeof(name));
+ 	if (copy_to_user(hlp , name, EBT_FUNCTION_MAXNAMELEN))
+ 		return -EFAULT;
+ 	return 0;
+@@ -1377,7 +1377,7 @@ ebt_make_names(struct ebt_entry *e, const char *base, char __user *ubase)
+ 	ret = EBT_WATCHER_ITERATE(e, ebt_make_watchername, base, ubase);
+ 	if (ret != 0)
+ 		return ret;
+-	strncpy(name, t->u.target->name, sizeof(name));
++	strlcpy(name, t->u.target->name, sizeof(name));
+ 	if (copy_to_user(hlp, name, EBT_FUNCTION_MAXNAMELEN))
+ 		return -EFAULT;
+ 	return 0;
+-- 
+1.7.7.6
