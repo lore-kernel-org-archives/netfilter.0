@@ -1,75 +1,26 @@
-From: Chen Gang <gang.chen@asianux.com>
-Subject: [PATCH] ipv4: netfilter: always let NUL terminated string ended by
- '\0'
-Date: Fri, 17 May 2013 16:39:15 +0800
-Message-ID: <5195ECB3.5000006@asianux.com>
+From: <konrad.vrba@gmail.com>
+Subject: using "recent" module to prevent port scanning
+Date: Sat, 18 May 2013 10:09:45 +0200
+Message-ID: <e11b81fc-e140-441e-812e-cfec74990113@edge10s.ethz.ch>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: pablo@netfilter.org, kaber@trash.net, kuznet@ms2.inr.ac.ru, jmorris@namei.org, yoshfuji@linux-ipv6.org
-Cc: David Miller <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev <netdev@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
+Dear list, 
+I am using the "recent" module to prevent port scanning, such as:
 
-For NUL terminated string, better always be sure of ended by '\0'.
+    -A INPUT -i eth0 -m recent --name PORTSCAN --update --seconds 60 -j DROP
+    -A INPUT -i eth0 -p tcp -m tcp --dport 22 -j ACCEPT
+    -A INPUT         -m recent --name PORTSCAN --set -j DROP
 
-'pm' is 'struct ulog_packet_msg_t' which may be copied to user mode
-(defined in "include/uapi/..."), so can not use strlcpy() instead of.
+The --update option, contrary to its name (ie, update old value with new one), does not update the last-seen entry, but rather adds another one. In my simple setup, I am only interested in the last entry. I dont need the whole history of packets seen.
 
+ Is there a way, I could only keep the last seen packet ? There used to be an option --reap, to delete entries older than "seconds", but AFAIK has been removed.
 
-Signed-off-by: Chen Gang <gang.chen@asianux.com>
----
- net/ipv4/netfilter/ipt_ULOG.c |   27 ++++++++++++++++-----------
- 1 files changed, 16 insertions(+), 11 deletions(-)
+My concern is, that on a busy server, the PORTSCAN list could quickly grow pretty large. I dont know what the limit is, but I am sure there must be some limit. 
 
-diff --git a/net/ipv4/netfilter/ipt_ULOG.c b/net/ipv4/netfilter/ipt_ULOG.c
-index f8a222cb..4a93382 100644
---- a/net/ipv4/netfilter/ipt_ULOG.c
-+++ b/net/ipv4/netfilter/ipt_ULOG.c
-@@ -231,11 +231,13 @@ static void ipt_ulog_packet(unsigned int hooknum,
- 	put_unaligned(tv.tv_usec, &pm->timestamp_usec);
- 	put_unaligned(skb->mark, &pm->mark);
- 	pm->hook = hooknum;
--	if (prefix != NULL)
--		strncpy(pm->prefix, prefix, sizeof(pm->prefix));
--	else if (loginfo->prefix[0] != '\0')
--		strncpy(pm->prefix, loginfo->prefix, sizeof(pm->prefix));
--	else
-+	if (prefix != NULL) {
-+		strncpy(pm->prefix, prefix, sizeof(pm->prefix) - 1);
-+		pm->prefix[sizeof(pm->prefix) - 1] = '\0';
-+	} else if (loginfo->prefix[0] != '\0') {
-+		strncpy(pm->prefix, loginfo->prefix, sizeof(pm->prefix) - 1);
-+		pm->prefix[sizeof(pm->prefix) - 1] = '\0';
-+	} else
- 		*(pm->prefix) = '\0';
- 
- 	if (in && in->hard_header_len > 0 &&
-@@ -246,14 +248,17 @@ static void ipt_ulog_packet(unsigned int hooknum,
- 	} else
- 		pm->mac_len = 0;
- 
--	if (in)
--		strncpy(pm->indev_name, in->name, sizeof(pm->indev_name));
--	else
-+	if (in) {
-+		strncpy(pm->indev_name, in->name, sizeof(pm->indev_name) - 1);
-+		pm->indev_name[sizeof(pm->indev_name) - 1] = '\0';
-+	} else
- 		pm->indev_name[0] = '\0';
- 
--	if (out)
--		strncpy(pm->outdev_name, out->name, sizeof(pm->outdev_name));
--	else
-+	if (out) {
-+		strncpy(pm->outdev_name, out->name,
-+			sizeof(pm->outdev_name) - 1);
-+		pm->outdev_name[sizeof(pm->outdev_name) - 1] = '\0';
-+	} else
- 		pm->outdev_name[0] = '\0';
- 
- 	/* copy_len <= skb->len, so can't fail. */
--- 
-1.7.7.6
+could somebody please advise?
