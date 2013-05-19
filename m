@@ -1,28 +1,27 @@
-From: julioarr@fisica.uh.cu
-Subject: It is correct to write: iptables -A INPUT -i ppp+,eth0+,tap+   . .
- .
-Date: Sun, 19 May 2013 11:39:25 -0400
-Message-ID: <8d3c593ab7094d244e32a6788a950355.squirrel@mail.fisica.uh.cu>
+From: Bart De Schuymer <bdschuym@pandora.be>
+Subject: Re: [PATCH] bridge: netfilter: using strlcpy() instead of strncpy()
+Date: Sun, 19 May 2013 21:43:43 +0200
+Message-ID: <51992B6F.70309@pandora.be>
+References: <5195E53A.4060406@asianux.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <5195E53A.4060406@asianux.com>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Chen Gang <gang.chen@asianux.com>
+Cc: bart.de.schuymer@pandora.be, pablo@netfilter.org, kaber@trash.net, stephen@networkplumber.org, David Miller <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, bridge@lists.linux-foundation.org, netdev <netdev@vger.kernel.org>
 
-Hello again
-
-It is correct to write:
-
-iptables -A INPUT -i ppp+,eth0+,tap+ ...
-
-or it is need to write:
-
-iptables -A INPUT -i ppp+ ...
-iptables -A INPUT -i eth+ ...
-iptables -A INPUT -i tap+ ...
-
-thanks,
-julio
+Op 17/05/2013 10:07, Chen Gang schreef:
+>
+> 'name' has already set all zero when it is defined, so not need let
+> strncpy() to pad it again.
+>
+> 'name' is a string, better always let is NUL terminated, so use
+> strlcpy() instead of strncpy().
+>
+>
+> Signed-off-by: Chen Gang <gang.chen@asianux.com>
+Acked-by: Bart De Schuymer <bdschuym@pandora.be>
 
