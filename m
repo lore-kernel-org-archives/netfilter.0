@@ -1,38 +1,92 @@
-From: Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
-Subject: performing some analysis over netfilter logs
-Date: Mon, 20 May 2013 10:43:11 +0200
-Message-ID: <CAOkSjBhWPBjMWVg-EjTKL4NgQe+Q0yf5Z=PEmQiTZ-LuQiWkYA@mail.gmail.com>
+From: Nick Khamis <symack@gmail.com>
+Subject: IPTables - Going Stateless
+Date: Tue, 21 May 2013 11:07:10 -0400
+Message-ID: <CAGWRaZbwp8jDPxDzHX6g_LkpK74iB6K4GSoU7c_5THDSx1oDmQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=x-received:mime-version:from:date:message-id:subject:to
-         :content-type:content-transfer-encoding;
-        bh=ooiFxsrA716ZrW0u7rFWQzfwcyn0I219liMoVO8X+ZI=;
-        b=gCWzzts6iw99cf8NT+8NXMujmhJZq9tn/x+zv3YaYl5qrdzAmhuXpz4G0SZxNLyz2m
-         dspw+opefLQg37C5Mo7CWbx/BY47cUP9UUUNp2lr8bzzO3MCd2noHkwsZlBVNt09QcxR
-         9Gq6ihoA5oYMkA1xeWKhWnGuZcBcJH44cTLfVOU1X2unGtvXQn/EnhXebN/ycPJUQCN4
-         8b0t+RXS36f+eqDSHe2JOXKoFQ/KaeIBQcfPw7r15IU1gMpE6UDONomf9aIuFteduaWG
-         hjdAJlQy6MKhnPyZ0gqsNC+anKK+0gvKgZbB0yXS4QFbESmJHlvcJKz5VBqWggVmq6m0
-         bbLw==
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=/plckz5wJvizOGZoU3KYfZW8/q6q21k1dC2FNHw8Wv8=;
+        b=l+qBL/PFuHlXHjoGgES4X/72y4im+PAghyaMMUDGtNUEExfNbLay+91kEnJ4bIXVIm
+         cNT4cHALVb4Lr9lRxnqWJlMm6c/CWs5xZGVktArpOoZv170Xk/eX6Onfq42/d94qauZy
+         SU2amScP4yBJP61RlR0mY/QNC4/26+VEGIUvYcbYv3YaV4XJIxZuXlwSNo8FJuc5/rNU
+         rsjyGQQ0zngIb+Jitxs5gsN9uvohq4djgM28rNgAZrAorI4y8yVFO9FPiPDjOGztWujT
+         +CGy8U/coyiHl1XVpBslHIShaQSReAP6BPC4E+pz2SrWm647kHS4JiRDpWqQoxhfMCnX
+         IuIg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Netfilter Users Mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-HI there!
+Hello Everyone,
 
-I'm wondering how do you face a huge log-generating firewall?.
+We recently moved our stateful firewall inside, and would like to
+strip down the firewall at our router connected to the outside world.
+The problem I am experiencing is getting things to work properly
+without connection tracking. I hope I am not in breach of mailing list
+rules however, a stripped down configuration is as follows:
 
-Some kind of log analizing needs to be done, but I don't know if there
-is a standar tool to do it, or maybe not standar but widely used.
+#!/bin/bash
+IPTABLES='/sbin/iptables'
 
-I'm looking for a CLI-like tool, written in perl/python/bash to get
-most dropped IP, most dropped port, and so on.
+#Set interface values
+INTIF1='eth0'
 
-Any idea?
+#flush rules and delete chains
+$IPTABLES -F
+$IPTABLES -X
 
-Regards
---
-Arturo Borrero Gonz=E1lez
+#echo -e "       - Accepting input lo traffic"
+$IPTABLES -A INPUT -i lo -j ACCEPT
+
+#echo -e "       - Accepting output lo traffic"
+$IPTABLES -A OUTPUT -o lo -j ACCEPT
+
+#echo -e "       - Defined Chains"
+$IPTABLES -N TCP
+$IPTABLES -N UDP
+
+#echo -e "       - Accepting SSH Traffic"
+$IPTABLES -A TCP -p tcp -m tcp -s 192.168.2.0/24 -d 192.168.2.5
+--dport 22 -j ACCEPT
+$IPTABLES -A TCP -p tcp -m tcp -s 0.0.0.0/0 -d 192.168.2.5 --dport 22 -j DROP
+
+#echo -e "       - Accepting input TCP and UDP traffic to open ports"
+$IPTABLES -A INPUT -i $INTIF1 -p tcp --syn -j TCP
+$IPTABLES -A INPUT -i $INTIF1 -p udp -j UDP
+
+#echo -e "       - Accepting output TCP and UDP traffic to open ports"
+$IPTABLES -A OUTPUT -o $INTIF1 -p tcp --syn -j TCP
+$IPTABLES -A OUTPUT -o $INTIF1 -p udp -j UDP
+
+#echo -e "       - Dropping input TCP and UDP traffic to closed ports"
+# $IPTABLES -A INPUT -i $INTIF1 -p tcp -j REJECT --reject-with tcp-rst
+# $IPTABLES -A INPUT -i $INTIF1 -p udp -j REJECT --reject-with
+icmp-port-unreachable
+
+#echo -e "       - Dropping output TCP and UDP traffic to closed ports"
+# $IPTABLES -A OUTPUT -o $INTIF1 -p tcp -j REJECT --reject-with tcp-rst
+# $IPTABLES -A OUTPUT -o $INTIF1 -p udp -j REJECT --reject-with
+icmp-port-unreachable
+
+#echo -e "       - Dropping input traffic to remaining protocols sent
+to closed ports"
+# $IPTABLES -A INPUT -i $INTIF1 -j REJECT --reject-with icmp-proto-unreachable
+
+#echo -e "       - Dropping output traffic to remaining protocols sent
+to closed ports"
+# $IPTABLES -A OUTPUT -o $INTIF1 -j REJECT --reject-with icmp-proto-unreachable
+
+
+Everything works fine with the REJECT rules commented out, but when
+included SSH access is blocked out. Not sure why, isn't the sequence
+correct (i.e., the ACCPET entries before the DROP and REJECT)?
+
+Also, any pointers or heads up when going stateless would be greatly
+appreciated.
+
+Kind Regards,
+
+Nick
