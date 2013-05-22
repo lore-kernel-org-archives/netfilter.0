@@ -1,198 +1,214 @@
-From: Nick Khamis <symack@gmail.com>
-Subject: Re: IPTables - Going Stateless
-Date: Wed, 22 May 2013 08:40:12 -0400
-Message-ID: <CAGWRaZZxhStfEHDVZrtzZvZxKH66DEZ0gL+hs0RUFPv2EtdWAg@mail.gmail.com>
-References: <CAGWRaZbwp8jDPxDzHX6g_LkpK74iB6K4GSoU7c_5THDSx1oDmQ@mail.gmail.com>
-	<ACBD9B315535B2489252E981FF05808602C2A0A034@EDBCL19EX001.edb.local>
-	<CAGWRaZYbbKFeeRViAcbrV3LGv1s_fcbVk4qbcJjQKD4sy5i7uA@mail.gmail.com>
-Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=Jq9XJkCxwWsEBfCPvVT6A8M2ClopskVOfKbKjBi37Zg=;
-        b=bOLpBvpu1Q3E5w/xDMPtjG2YB9e5BcgPK52wnzkTVaenVuO+l+76L1cP7LExzqTb1u
-         IPrClU72iorIdIPww1htSPwd7OnWif7ctmpSC5akXcWYKNYsR4GTdStxYsDnhbPSK+ia
-         K/oG0zSMn4UxejAztP20xOowBQPsfan9sGO8lAdapa0LOcH97udab2Hi1brS05d3Od6c
-         nDNKm/ao1li9n3KB3FwWkedjF27leIyGesFsQZzhxVzhE3TIGMP/xegyI0ZJ1OdslHmf
-         AuzOodpT2fxV7d0RKYjbFpCXoifVU21XglHPirhQyN5mrtIxuBUFhZLxX8nDX1yfJc7x
-         +NNA==
-In-Reply-To: <CAGWRaZYbbKFeeRViAcbrV3LGv1s_fcbVk4qbcJjQKD4sy5i7uA@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+From: Jiri Slaby <jslaby@suse.cz>
+Subject: [PATCH -resend 4/6] netfilter: Implement RFC 1123 for FTP conntrack
+Date: Wed, 22 May 2013 14:59:10 +0200
+Message-ID: <1369227552-11743-4-git-send-email-jslaby@suse.cz>
+References: <1369227552-11743-1-git-send-email-jslaby@suse.cz>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1369227552-11743-1-git-send-email-jslaby@suse.cz>
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: =?ISO-8859-1?Q?Paulsberg_Andr=E9?= <Andre.Paulsberg@evry.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: jirislaby@gmail.com
+Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, Jeff Mahoney <jeffm@suse.com>, Jiri Slaby <jslaby@suse.cz>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org
 
-Moving forward I would like to put some measures in place to thwart
-some DOS attacks at bay. The obvious place to start is with the
-logs.No need to log everything that gets dropped, the first 3-5
-packets should be fine. I tried adding the following to the config:
+From: Jeff Mahoney <jeffm@suse.com>
 
-# Set Log Limit
-LOGLIMIT="2/s"
-LOGLIMITBURST="10"
+ The FTP conntrack code currently only accepts the following format for
+ the 227 response for PASV:
+ 227 Entering Passive Mode (148,100,81,40,31,161).
 
-$IPTABLES -A LOGINPUT -i $INTIF1 -p icmp -j LOG --log-prefix "ICMP
-LOGINPUTDROP: " --log-tcp-options --log-ip-options -m limit --limit
-$LOGLIMIT
+ It doesn't accept the following format from an obscure server:
+ 227 Data transfer will passively listen to 67,218,99,134,50,144
 
-I am getting the following error: iptables: No chain/target/match by that name
-And it's due to the "limit" flag.
+ From RFC 1123:
+ The format of the 227 reply to a PASV command is not
+ well standardized.  In particular, an FTP client cannot
+ assume that the parentheses shown on page 40 of RFC-959
+ will be present (and in fact, Figure 3 on page 43 omits
+ them).  Therefore, a User-FTP program that interprets
+ the PASV reply must scan the reply for the first digit
+ of the host and port numbers.
 
-lsmod
-Module                  Size  Used by
-xt_LOG                  6531  7
-ipt_REJECT              1917  6
-iptable_filter           988  1
-ip_tables               8370  1 iptable_filter
-e100                   28046  0
+ This patch adds support for the RFC 1123 clarification by:
+ - Allowing a search filter to specify NUL as the terminator so that
+   try_number will return successfully if the array of numbers has been
+   filled when an unexpected character is encountered.
+ - Using space as the separator for the 227 reply and then scanning for
+   the first digit of the number sequence. The number sequence is parsed
+   out using the existing try_rfc959 but with a NUL terminator.
 
-uname -r
-3.5.7-gentoo
+References: https://bugzilla.novell.com/show_bug.cgi?id=466279
+References: http://bugzilla.netfilter.org/show_bug.cgi?id=574
+Reported-by: Mark Post <mpost@novell.com>
+Signed-off-by: Jeff Mahoney <jeffm@suse.com>
+Signed-off-by: Jiri Slaby <jslaby@suse.cz>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Patrick McHardy <kaber@trash.net>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: netfilter-devel@vger.kernel.org
+Cc: netfilter@vger.kernel.org
+Cc: coreteam@netfilter.org
+Cc: netdev@vger.kernel.org
+---
+ net/netfilter/nf_conntrack_ftp.c | 73 +++++++++++++++++++++++++++++-----------
+ 1 file changed, 54 insertions(+), 19 deletions(-)
 
-Kind Regards,
-
-Nick.
-
-On 5/22/13, Nick Khamis <symack@gmail.com> wrote:
-> Hello Everyone,
->
-> Thank you so much for your help. We have migrated to bare stateless
-> with modest performance gain to our front router (2 full bgp links).
-> At first glance we see a minimum of 3% of leaked bandwith getting put
-> back into use. For us that means 3000 kilobytes per link. This is
-> during bellow average traffic hours, I suspect more during peak.
->
-> Since I took bits an pieces from the different posts, I only find it
-> fair to post snippets of the config file that might help some future
-> poor souls. Nothing interesting for a lot of you here:
->
-> #Set interface values
-> INTIF1='eth0'
->
-> # Set Log Limit
-> LOGLIMIT="2/s"
-> LOGLIMITBURST="10"
->
-> #flush rules and delete chains
-> $IPTABLES -F
-> $IPTABLES -X
->
-> #echo -e "       - Dropping Forward Requests"
-> $IPTABLES -P FORWARD DROP
->
-> #echo -e "       - Dropping Input Requests"
-> $IPTABLES -P INPUT ACCEPT
->
-> #echo -e "       - Dropping output requests"
-> $IPTABLES -P OUTPUT ACCEPT
->
-> #echo -e "       - Accepting input lo traffic"
-> $IPTABLES -A INPUT -i lo -j ACCEPT
->
-> #echo -e "       - Accepting output lo traffic"
-> $IPTABLES -A OUTPUT -o lo -j ACCEPT
->
-> #echo -e "       - Defined Chains"
-> $IPTABLES -N ICMP
-> $IPTABLES -N TCP
-> $IPTABLES -N UDP
-> $IPTABLES -N LOGINPUT
-> $IPTABLES -N LOGOUTPUT
->
-> #echo -e "       - Accepting incomming ICMP pings"
-> $IPTABLES -A ICMP -p icmp -m icmp -s 10.10.1.0/24 -d 10.10.1.10
-> --icmp-type 8 -j ACCEPT
-> $IPTABLES -A ICMP -p icmp -m icmp -s 10.10.1.10 --icmp-type 0 -j ACCEPT
->
-> #echo -e "       - Accepting outgoing ICMP pings"
-> $IPTABLES -A ICMP -p icmp -m icmp -s 10.10.1.10 -d 10.10.1.0/24
-> --icmp-type 8 -j ACCEPT
-> $IPTABLES -A ICMP -p icmp -m icmp -s 10.10.1.0/24 --icmp-type 0 -j ACCEPT
->
-> #echo -e "       - Accepting incomming SSH Traffic"
-> $IPTABLES -A TCP -p tcp -m tcp -s 10.10.1.0/24 -d 10.10.1.10 --dport
-> 22 -j ACCEPT
-> $IPTABLES -A TCP -p tcp -m tcp -s 0.0.0.0/0 -d 10.10.1.10 --dport 22 -j
-> DROP
->
-> #echo -e "       - Accepting outgoing SSH Traffic"
-> $IPTABLES -A TCP -p tcp -m tcp -s 10.10.1.10 --sport 22 -d
-> 10.10.1.0/24 -j ACCEPT
-> $IPTABLES -A TCP -p tcp -m tcp -s 10.10.1.10 --sport 22 -d 0.0.0.0/0 -j
-> DROP
->
-> #echo -e "       - Accepting input ICMP, TCP, and UDP traffic to open
-> ports"
-> $IPTABLES -A INPUT -i $INTIF1 -p icmp -j ICMP
-> $IPTABLES -A INPUT -i $INTIF1 -p tcp -j TCP
-> $IPTABLES -A INPUT -i $INTIF1 -p udp -j UDP
->
-> #echo -e "       - Accepting output ICMP, TCP, and UDP traffic to open
-> ports"
-> $IPTABLES -A OUTPUT -o $INTIF1 -p icmp -j ICMP
-> $IPTABLES -A OUTPUT -o $INTIF1 -p tcp -j TCP
-> $IPTABLES -A OUTPUT -o $INTIF1 -p udp -j UDP
->
-> #echo -e "       - Logging Dropped Input Traffic"
-> $IPTABLES -A LOGINPUT -i $INTIF1 -p icmp -j LOG --log-prefix "ICMP
-> LOGINPUTDROP: " --log-tcp-options --log-ip-options
-> $IPTABLES -A LOGINPUT -i $INTIF1 -p tcp --tcp-flags FIN,SYN,RST,ACK
-> SYN -j LOG --log-prefix "TCP LOGINPUTDROP:: " --log-tcp-options
-> --log-ip-options
-> $IPTABLES -A LOGINPUT -i $INTIF1 -p udp  -j LOG --log-prefix "UDP
-> LOGINPUTDROP: " --log-tcp-options --log-ip-options
-> $IPTABLES -A LOGINPUT -i $INTIF1 -f      -j LOG --log-prefix "FRAGMENT
-> LOGINPUTDROP: " --log-tcp-options --log-ip-options
->
-> $IPTABLES -A LOGINPUT -j DROP
-> $IPTABLES -A INPUT -p icmp -i $INTIF1 -j LOGINPUT
-> $IPTABLES -A INPUT -p tcp  -i $INTIF1 -j LOGINPUT
-> $IPTABLES -A INPUT -p udp  -i $INTIF1 -j LOGINPUT
->
-> #echo -e "       - Logging Dropped Output Traffic"
-> $IPTABLES -A LOGOUTPUT -o $INTIF1 -p icmp -j LOG --log-prefix "ICMP
-> LOGOUTPUTDROP: " --log-tcp-options --log-ip-options
-> $IPTABLES -A LOGOUTPUT -o $INTIF1 -p tcp --tcp-flags FIN,SYN,RST,ACK
-> SYN -j LOG --log-prefix "TCP LOGOUTPUTDROP: " --log-tcp-options
-> --log-ip-options
-> $IPTABLES -A LOGOUTPUT -o $INTIF1 -p udp  -j LOG --log-prefix "UDP
-> LOGOUTPUTDROP: " --log-tcp-options --log-ip-options
-> $IPTABLES -A LOGOUTPUT -o $INTIF1 -f      -j LOG --log-prefix
-> "FRAGMENT LOGOUTPUTDROP: " --log-tcp-options --log-ip-options
->
-> $IPTABLES -A LOGOUTPUT -j DROP
-> $IPTABLES -A OUTPUT -p icmp -o $INTIF1 -j LOGOUTPUT
-> $IPTABLES -A OUTPUT -p tcp  -o $INTIF1 -j LOGOUTPUT
-> $IPTABLES -A OUTPUT -p udp  -o $INTIF1 -j LOGOUTPUT
->
-> #echo -e "       - Rejecting input TCP and UDP traffic to closed ports"
-> $IPTABLES -A INPUT -i $INTIF1 -p tcp -j REJECT --reject-with tcp-rst
-> $IPTABLES -A INPUT -i $INTIF1 -p udp -j REJECT --reject-with
-> icmp-port-unreachable
->
-> #echo -e "       - Rejecting output TCP and UDP traffic to closed ports"
-> $IPTABLES -A OUTPUT -o $INTIF1 -p tcp -j REJECT --reject-with tcp-rst
-> $IPTABLES -A OUTPUT -o $INTIF1 -p udp -j REJECT --reject-with
-> icmp-port-unreachable
->
-> #echo -e "       - Rejecting input traffic to remaining protocols sent
-> to closed ports"
-> $IPTABLES -A INPUT -i $INTIF1 -j REJECT --reject-with
-> icmp-proto-unreachable
->
-> #echo -e "       - Rejecting output traffic to remaining protocols
-> sent to closed ports"
-> $IPTABLES -A OUTPUT -o $INTIF1 -j REJECT --reject-with
-> icmp-proto-unreachable
->
-> Moving forward I am looking to add some DDOS measures in place,
-> starting with logs. I will post my problem in a separate email.
->
-> Kind Regards,
->
-> Nick.
->
+diff --git a/net/netfilter/nf_conntrack_ftp.c b/net/netfilter/nf_conntrack_ftp.c
+index 6b21707..b8a0924 100644
+--- a/net/netfilter/nf_conntrack_ftp.c
++++ b/net/netfilter/nf_conntrack_ftp.c
+@@ -55,10 +55,14 @@ unsigned int (*nf_nat_ftp_hook)(struct sk_buff *skb,
+ 				struct nf_conntrack_expect *exp);
+ EXPORT_SYMBOL_GPL(nf_nat_ftp_hook);
+ 
+-static int try_rfc959(const char *, size_t, struct nf_conntrack_man *, char);
+-static int try_eprt(const char *, size_t, struct nf_conntrack_man *, char);
++static int try_rfc959(const char *, size_t, struct nf_conntrack_man *,
++		      char, unsigned int *);
++static int try_rfc1123(const char *, size_t, struct nf_conntrack_man *,
++		       char, unsigned int *);
++static int try_eprt(const char *, size_t, struct nf_conntrack_man *,
++		    char, unsigned int *);
+ static int try_epsv_response(const char *, size_t, struct nf_conntrack_man *,
+-			     char);
++			     char, unsigned int *);
+ 
+ static struct ftp_search {
+ 	const char *pattern;
+@@ -66,7 +70,7 @@ static struct ftp_search {
+ 	char skip;
+ 	char term;
+ 	enum nf_ct_ftp_type ftptype;
+-	int (*getnum)(const char *, size_t, struct nf_conntrack_man *, char);
++	int (*getnum)(const char *, size_t, struct nf_conntrack_man *, char, unsigned int *);
+ } search[IP_CT_DIR_MAX][2] = {
+ 	[IP_CT_DIR_ORIGINAL] = {
+ 		{
+@@ -90,10 +94,8 @@ static struct ftp_search {
+ 		{
+ 			.pattern	= "227 ",
+ 			.plen		= sizeof("227 ") - 1,
+-			.skip		= '(',
+-			.term		= ')',
+ 			.ftptype	= NF_CT_FTP_PASV,
+-			.getnum		= try_rfc959,
++			.getnum		= try_rfc1123,
+ 		},
+ 		{
+ 			.pattern	= "229 ",
+@@ -132,8 +134,9 @@ static int try_number(const char *data, size_t dlen, u_int32_t array[],
+ 			i++;
+ 		else {
+ 			/* Unexpected character; true if it's the
+-			   terminator and we're finished. */
+-			if (*data == term && i == array_size - 1)
++			   terminator (or we don't care about one)
++			   and we're finished. */
++			if ((*data == term || !term) && i == array_size - 1)
+ 				return len;
+ 
+ 			pr_debug("Char %u (got %u nums) `%u' unexpected\n",
+@@ -148,7 +151,8 @@ static int try_number(const char *data, size_t dlen, u_int32_t array[],
+ 
+ /* Returns 0, or length of numbers: 192,168,1,1,5,6 */
+ static int try_rfc959(const char *data, size_t dlen,
+-		      struct nf_conntrack_man *cmd, char term)
++		      struct nf_conntrack_man *cmd, char term,
++		      unsigned int *offset)
+ {
+ 	int length;
+ 	u_int32_t array[6];
+@@ -163,6 +167,33 @@ static int try_rfc959(const char *data, size_t dlen,
+ 	return length;
+ }
+ 
++/*
++ * From RFC 1123:
++ * The format of the 227 reply to a PASV command is not
++ * well standardized.  In particular, an FTP client cannot
++ * assume that the parentheses shown on page 40 of RFC-959
++ * will be present (and in fact, Figure 3 on page 43 omits
++ * them).  Therefore, a User-FTP program that interprets
++ * the PASV reply must scan the reply for the first digit
++ * of the host and port numbers.
++ */
++static int try_rfc1123(const char *data, size_t dlen,
++		       struct nf_conntrack_man *cmd, char term,
++		       unsigned int *offset)
++{
++	int i;
++	for (i = 0; i < dlen; i++)
++		if (isdigit(data[i]))
++			break;
++
++	if (i == dlen)
++		return 0;
++
++	*offset += i;
++
++	return try_rfc959(data + i, dlen - i, cmd, 0, offset);
++}
++
+ /* Grab port: number up to delimiter */
+ static int get_port(const char *data, int start, size_t dlen, char delim,
+ 		    __be16 *port)
+@@ -191,7 +222,7 @@ static int get_port(const char *data, int start, size_t dlen, char delim,
+ 
+ /* Returns 0, or length of numbers: |1|132.235.1.2|6275| or |2|3ffe::1|6275| */
+ static int try_eprt(const char *data, size_t dlen, struct nf_conntrack_man *cmd,
+-		    char term)
++		    char term, unsigned int *offset)
+ {
+ 	char delim;
+ 	int length;
+@@ -239,7 +270,8 @@ static int try_eprt(const char *data, size_t dlen, struct nf_conntrack_man *cmd,
+ 
+ /* Returns 0, or length of numbers: |||6446| */
+ static int try_epsv_response(const char *data, size_t dlen,
+-			     struct nf_conntrack_man *cmd, char term)
++			     struct nf_conntrack_man *cmd, char term,
++			     unsigned int *offset)
+ {
+ 	char delim;
+ 
+@@ -261,9 +293,10 @@ static int find_pattern(const char *data, size_t dlen,
+ 			unsigned int *numlen,
+ 			struct nf_conntrack_man *cmd,
+ 			int (*getnum)(const char *, size_t,
+-				      struct nf_conntrack_man *, char))
++				      struct nf_conntrack_man *, char,
++				      unsigned int *))
+ {
+-	size_t i;
++	size_t i = plen;
+ 
+ 	pr_debug("find_pattern `%s': dlen = %Zu\n", pattern, dlen);
+ 	if (dlen == 0)
+@@ -293,16 +326,18 @@ static int find_pattern(const char *data, size_t dlen,
+ 	pr_debug("Pattern matches!\n");
+ 	/* Now we've found the constant string, try to skip
+ 	   to the 'skip' character */
+-	for (i = plen; data[i] != skip; i++)
+-		if (i == dlen - 1) return -1;
++	if (skip) {
++		for (i = plen; data[i] != skip; i++)
++			if (i == dlen - 1) return -1;
+ 
+-	/* Skip over the last character */
+-	i++;
++		/* Skip over the last character */
++		i++;
++	}
+ 
+ 	pr_debug("Skipped up to `%c'!\n", skip);
+ 
+ 	*numoff = i;
+-	*numlen = getnum(data + i, dlen - i, cmd, term);
++	*numlen = getnum(data + i, dlen - i, cmd, term, numoff);
+ 	if (!*numlen)
+ 		return -1;
+ 
+-- 
+1.8.2.3
