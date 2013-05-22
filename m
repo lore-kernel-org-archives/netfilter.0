@@ -1,47 +1,30 @@
-From: Jeff Wiegley <jeffw@csun.edu>
-Subject: marking/mangling of local packets for altering routes?
-Date: Wed, 22 May 2013 12:30:23 -0700
-Message-ID: <519D1CCF.2030707@csun.edu>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: Bryan Harris <bryanlharris@me.com>
+Subject: Re: marking/mangling of local packets for altering routes?
+Date: Wed, 22 May 2013 16:22:09 -0400
+Message-ID: <FE275ABF-CAB1-4F7B-9287-E781D6684C67@me.com>
+References: <519D1CCF.2030707@csun.edu>
+Mime-Version: 1.0 (Mac OS X Mail 6.3 \(1503\))
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+In-reply-to: <519D1CCF.2030707@csun.edu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Jeff Wiegley <jeffw@csun.edu>
+Cc: netfilter@vger.kernel.org
 
-I'm trying to do to some service based routing using the "ip rule" and 
-"ip route"
-by marking packets.
 
-I'm confused by: http://www.iptables.info/en/structure-of-iptables.html
+On May 22, 2013, at 3:30 PM, Jeff Wiegley <jeffw@csun.edu> wrote:
 
-For forwarded packets (those generated on another machine, passing through
-my router) it is obvious that I can mark all my traffic for routing in 
-the mangle
-table's PREROUTING chain just like I want to.
+> I'm trying to do to some service based routing using the "ip rule" and "ip route"
+> by marking packets.
 
-But Table 6-2 Source Local host (our own machine) indicates that traffic
-generated on the routing machine itself (say you are logged in and want to
-SSH to another box) can't be marked for special routing. According to the
-table the routing decision for these packets happens before ANY iptables 
-table
-or chain is consulted.
+Is this what you mean?  Sorry if I misunderstood.
 
-This is problematic. I have two interfaces
-eth0 and eth1 and each has a default route associated with it. I want 
-certain
-traffic to go out eth0's gateway as the default and the rest of the 
-traffic I want
-to go out eth1.  But according to Table 6-2 I cannot make such routing 
-decisions
-for locally generated packets. Only those forwarded from another machine.
+echo "2 myGreatTable" >> /etc/iproute2/rt_tables
+iptables -t mangle -A OUTPUT -p tcp --dport 22 -j MARK --set-mark 1
+ip rule add fwmark 1 table myGreatTable
+ip route add default via 192.168.1.1 dev eth1 table myGreatTable
 
-That lack of ability to traffic shape local traffic seems unreasonable. 
-Is Table 6-2
-only taking about 127.0.0.1 (and the IPv6 equivalent) when they are talking
-about "Source Local Host"? Or can you really not traffic shape all 
-locally generated
-outbound traffic?
+Bryan
 
-Thank you.
