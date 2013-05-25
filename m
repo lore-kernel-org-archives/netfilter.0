@@ -1,91 +1,43 @@
-From: Vigneswaran R <vignesh@atc.tcs.com>
-Subject: Re: Fwd: Security in Virtual machine with DNAT
-Date: Fri, 24 May 2013 14:32:28 +0530
-Message-ID: <519F2CA4.7040205@atc.tcs.com>
-References: <519DCEDC.9030704@bersol.info> <519DD30C.70500@bersol.info>
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Subject: Re: about a LOG rule
+Date: Sat, 25 May 2013 14:39:55 +0200
+Message-ID: <51A0B11B.3030007@plouf.fr.eu.org>
+References: <ab378212c155fe05c806847dc5435193.squirrel@mail.fisica.uh.cu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <519DD30C.70500@bersol.info>
+In-Reply-To: <ab378212c155fe05c806847dc5435193.squirrel@mail.fisica.uh.cu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Alberto <alberto@bersol.info>
+Content-Type: text/plain; charset="iso-8859-1"
+To: julioarr@fisica.uh.cu
 Cc: netfilter@vger.kernel.org
 
-Hi Alberto,
+Hello,
 
-I think, you can remove the bridge and keep guests in a different 
-network. Then use host firewall to DNAT the traffic (to hostIP:80) to 
-Guest (guestIP:80). You can filter the traffic in the FORWARD chain (not 
-INPUT).
+julioarr@fisica.uh.cu a =E9crit :
+>=20
+> What does this mean?
+>=20
+> May 18 12:14:55 firewall kernel: [97390.813579] INPUT_ALL_ACCEPT_lo-1
+> IN=3Dlo OUT=3D MAC=3D00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=3D=
+10.0.0.2
+> DST=3D10.0.0.2 LEN=3D107 TOS=3D0x00 PREC=3D0xC0 TTL=3D64 ID=3D62342 P=
+ROTO=3DICMP TYPE=3D3
+> CODE=3D1 [SRC=3D10.0.0.2 DST=3D173.194.69.108 LEN=3D79 TOS=3D0x00 PRE=
+C=3D0x00 TTL=3D64
+> ID=3D61005 DF PROTO=3DTCP SPT=3D38040 DPT=3D587 WINDOW=3D133 RES=3D0x=
+00 ACK PSH FIN
+> URGP=3D0 ]
 
+Some iptables rule logged that the local machine 10.0.0.2 sent to itsel=
+f
+an ICMP packet with type 3 (destination unreachable) and code 1 (host
+unreachable) in response to an attempt to send a TCP packet to
+173.194.69.108.
 
-Regards,
-Vignesh
-
-On 05/23/2013 01:57 PM, Alberto wrote:
-> I have tried send in html format, with a graphic, but the list policy 
-> has not permitted me.
->
-> Sorry.
-> This is the plain text from the message.
->
->
->
-> -------- Mensaje original --------
-> Asunto:     Security in Virtual machine with DNAT
-> Fecha:     Thu, 23 May 2013 10:10:04 +0200
-> De:     Alberto <alberto@bersol.info>
-> Para:     netfilter@vger.kernel.org
->
->
->
-> Hi Everybody,
->
-> I have a Physical HOST (*/Server Fisico/*) connected to internet. It
-> have 2 network cards, the first one (*/eth0/*) connected to the router
-> and the Internet, another (/*eth1*/) is connected to LAN.
-> /*eth1*/ is bridged to virtual machines network, and one of them
-> (*/virtual1/*) have an HTTP Server. Everything is running correctly.
->
->
-> Escenario
-> I have IPTABLES Firewall running on the HOST with DNAT forwarding HTTP
-> traffic to /*Virtual1*/. I have IPTABLES Rules in HOST, for block some
-> IPs that give me problems, but these rules not protect to /*Virtual1*/.
-> All HTTP traffic is forwarded to /*Virtual1*/, even the source IP is
-> blocked for IPTABLES rules.
->
-> I had an attack, and I couldn't block the HTTP traffic about
-> /*Virtual1*/, the IPTABLES rules not affect it.
->
-> What can I do for give security to Virtual machines?
-> These are some rules:
->
->     _Chain PREROUTING (policy ACCEPT 97192 packets, 8175K bytes)_
->     pkts bytes target prot opt in out source destination
->     374 20884 DNAT tcp -- eth0 * 0.0.0.0/0 0.0.0.0/0 tcp dpt:80
->     to:Virtual1:80
->     2 104 DNAT tcp -- eth0 * 0.0.0.0/0 0.0.0.0/0 tcp dpt:443 
-> to:Virtual1:443
->     ...
->
->     _Chain INPUT (policy DROP 39407 packets, 5120K bytes)_
->     pkts bytes target prot opt in out source destination
->     0 0 REJECT all -- * * 99.24.186.236 0.0.0.0/0 reject-with
->     icmp-port-unreachable
->     0 0 REJECT all -- * * 64.60.169.59 0.0.0.0/0 reject-with
->     icmp-port-unreachable
->     ...
->
->
-> Thanks a lot
-> Alberto
->
-> -- 
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
-
+"Host unreachable" usually means ARP resolution failure, but
+173.194.69.108 is not on the network directly connected to 10.0.0.2, so
+it probably means that the ARP resolution for the gateway IP address
+found in the routing table for that destination failed for any reason
+(wrong gateway address, network failure...).
