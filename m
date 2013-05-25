@@ -1,41 +1,39 @@
-From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: IPv6 connection tracking mDNS
-Date: Sat, 25 May 2013 15:43:13 +0200
-Message-ID: <51A0BFF1.8070309@plouf.fr.eu.org>
-References: <20130523125852.591af01c@leda>
+From: Julien Vehent <julien@linuxwall.info>
+Subject: 2013 Workshop photos & videos
+Date: Sat, 25 May 2013 12:22:56 -0400
+Message-ID: <3a03614f83f5f9760e4778e52961d4e5@linuxwall.info>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20130523125852.591af01c@leda>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=linuxwall.info;
+	s=samchiel; t=1369498977;
+	bh=it9KOFuhc1zQJ1buhYzSGddBsaXU2QxP9qU9SaLYExw=;
+	h=Date:From:To:Subject:From;
+	b=uUVuIAmBVSeyTTNlRe7m/BpKXhNciP0K0QcY7n/ufEFeAFSYc3sQysi73GOqpDHt8
+	 WmVWfrJKvSboBuRuBD7rJ0aCEehYjWyk5mq9XHDGljAoh1RDtuwsDoJVEIaMqsgUf5
+	 dOdIzx0AQQFDEnOngmh/LFC+zPl73UZPbDQEsJkU=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Christian Hesse <list@eworm.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@vger.kernel.org>, netfilter-workshop@lists.netfilter.org
 
-Hello,
+Hi everyone,
 
-Christian Hesse a =E9crit :
->=20
-> I have problems with my IPv6 firewall concerning connection tracking =
-and
-> mDNS. This is part of the rules:
->=20
-> -A INPUT -m conntrack --ctstate RELATED,ESTABLISHED -j ACCEPT
-> -A INPUT -m conntrack --ctstate INVALID -j DROP
-> -A INPUT -s fe80::/64 -d ff02::fb -p udp -j LOG --log-prefix "DEBUG1:=
- "
-> -A INPUT -s fe80::/64 -d ff02::fb -p udp --dport 5353 -j ACCEPT
-> [...]
-> -A INPUT -j LOG --log-prefix "DEBUG2: "
-> -A INPUT -j REJECT
->=20
-> So why is the connection not tracked? I would expect the fragment to =
-belong
-> to an established connection and accepted.
+After two months of running around (and officially joining Mozilla), I 
+finally got a chance to sort through the photos and videos of the workshop !
 
-mDNS uses multicast, and AFAIK netfilter connection tracking does not
-(yet ?) handle multicast because the source/destination addresses in th=
-e
-reply packet do not match those in the request packet, so it does not
-qualify as a "connection" by the conntrack standards.
+Photos: https://www.dropbox.com/sh/bui3ey94u6v9ip0/9iAdgkLiKB
+
+Videos: http://jve.linuxwall.info/talks/NetfilterWorkshop2013/
+
+I didn't finish encoding all the videos yet, but it should be done within 
+the next week.
+
+Thanks again to Jesper for organizing everything. It was awesome! I'm really 
+looking forward to the next workshop in Montpelier :)
+
+Cheers,
+Julien
+
+-- 
+Julien Vehent - http://jve.linuxwall.info
