@@ -1,69 +1,51 @@
-From: Nick Khamis <symack@gmail.com>
-Subject: Re: IPTables - Going Stateless
-Date: Sat, 25 May 2013 16:14:52 -0400
-Message-ID: <CAGWRaZZ-eMegt5RVKy+Om309A1b=PpmKyO=WWoeeZq1wppgpqw@mail.gmail.com>
-References: <CAGWRaZbwp8jDPxDzHX6g_LkpK74iB6K4GSoU7c_5THDSx1oDmQ@mail.gmail.com>
-	<ACBD9B315535B2489252E981FF05808602C2A0A034@EDBCL19EX001.edb.local>
-	<CAGWRaZYbbKFeeRViAcbrV3LGv1s_fcbVk4qbcJjQKD4sy5i7uA@mail.gmail.com>
-	<CAGWRaZZxhStfEHDVZrtzZvZxKH66DEZ0gL+hs0RUFPv2EtdWAg@mail.gmail.com>
-	<51A0BE2D.3020105@plouf.fr.eu.org>
+From: abdullah <aoner01@yahoo.com>
+Subject: ndpi-netfilter for filtering FTP
+Date: Sun, 26 May 2013 12:21:42 +0000 (UTC)
+Message-ID: <loom.20130526T141905-462@post.gmane.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type:content-transfer-encoding;
-        bh=0T2hBiIeDVVIG24E0v/Hu1mOB2EsKBOr2YsuhzyjGhI=;
-        b=DaZvuZUW3f2A/6LDRFa0nBgO3sAxdmCMA8nxI1CZpoAwj8iljQvvH9kBHpMOTq6m+0
-         GpfGMPm3TVjekTqTjeb4IC0QO9YYUQ8l97VEprz17vxrjacFPTDKh5Iwu7WIVEZpnsb9
-         RPK6RAPir78YZacH+7M7iPvP8Hrej2ExI0M5SVUkmbai5OkC/CikzQMnwAWMi2HaPfcn
-         AZPVeyGGJXxjjrKyGfeFXfCcUDMoeyc72HGOjavQqzu3LYtcAJnl8bArGEMt9MWZOhk4
-         CSp6xfI3Hck/Ni7n0mt17r1T0kOC3cIT8MR4voGNM5Z/ykq4ZLtzvSSD5rNMqCbFPVSu
-         16Mw==
-In-Reply-To: <51A0BE2D.3020105@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Thank you so much Pascal!!! It took me a while to find it, but for
-future googlers
+Hi,
 
-"limit" match support =3D CONFIG_NETFILTER_XT_MATCH_LIMIT
+I installed ndpi-netfilter and ndpi to redhat 6 ( kernel 2.6.32.220 ) test
+machine, say X. Among installation, I encountered no big problem or warning.
 
-Make sure limit match support is included as a module.
+When I add the following rule to X:
 
-Kind Regards,
+"iptables -A INPUT -m ndpi --icmp -j REJECT"
 
-Nick
+then I can't ping X.
 
+But when I add REJECT rule for ftp with following rule:
 
-On 5/25/13, Pascal Hambourg <pascal@plouf.fr.eu.org> wrote:
-> Nick Khamis a =E9crit :
->>
->> # Set Log Limit
->> LOGLIMIT=3D"2/s"
->> LOGLIMITBURST=3D"10"
->>
->> $IPTABLES -A LOGINPUT -i $INTIF1 -p icmp -j LOG --log-prefix "ICMP
->> LOGINPUTDROP: " --log-tcp-options --log-ip-options -m limit --limit
->> $LOGLIMIT
->>
->> I am getting the following error: iptables: No chain/target/match by=
- that
->> name
->> And it's due to the "limit" flag.
->>
->> lsmod
->> Module                  Size  Used by
->> xt_LOG                  6531  7
->> ipt_REJECT              1917  6
->> iptable_filter           988  1
->> ip_tables               8370  1 iptable_filter
->> e100                   28046  0
->
-> Looks like the "limit" match is not enabled in your kernel. Check
-> CONFIG_NETFILTER_XT_MATCH_LIMIT in your kernel config file.
->
+"iptables -A INPUT -m ndpi --ftp -j REJECT"
+
+then I can still open FTP connections and make transaction via FTP to X from
+another machine.
+
+Same situation occurs when I used "-j NFQUEUE" option: I can capture ICMP
+packets in userspace by using libnetfilter_queue library, but I can't get
+FTP packets with second rule.
+
+Why doesn't "ftp" filter work ?
+
+lsmod command produces following result:
+
+Module                  Size  Used by
+nf_conntrack_ftp       12913  0
+iptable_raw             2264  0
+iptable_mangle          3349  0
+ipt_REJECT              2383  1
+nf_conntrack_ipv4       9506  1
+nf_defrag_ipv4          1483  1 nf_conntrack_ipv4
+iptable_filter          2793  1
+ip_tables              17831  3 iptable_raw,iptable_mangle,iptable_filter
+xt_ndpi               186018  1
+nf_conntrack           79453  3 nf_conntrack_ftp,nf_conntrack_ipv4,xt_ndpi
+..... 
+
