@@ -1,51 +1,38 @@
-From: abdullah <aoner01@yahoo.com>
-Subject: ndpi-netfilter for filtering FTP
-Date: Sun, 26 May 2013 12:21:42 +0000 (UTC)
-Message-ID: <loom.20130526T141905-462@post.gmane.org>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH -resend 4/6] netfilter: Implement RFC 1123 for FTP
+ conntrack
+Date: Mon, 27 May 2013 14:20:33 +0200
+Message-ID: <20130527122033.GA16107@localhost>
+References: <1369227552-11743-1-git-send-email-jslaby@suse.cz>
+ <1369227552-11743-4-git-send-email-jslaby@suse.cz>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1369227552-11743-4-git-send-email-jslaby@suse.cz>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: Jiri Slaby <jslaby@suse.cz>
+Cc: jirislaby@gmail.com, akpm@linux-foundation.org, linux-kernel@vger.kernel.org, Jeff Mahoney <jeffm@suse.com>, Patrick McHardy <kaber@trash.net>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org
 
-Hi,
+On Wed, May 22, 2013 at 02:59:10PM +0200, Jiri Slaby wrote:
+> From: Jeff Mahoney <jeffm@suse.com>
+> 
+>  The FTP conntrack code currently only accepts the following format for
+>  the 227 response for PASV:
+>  227 Entering Passive Mode (148,100,81,40,31,161).
+> 
+>  It doesn't accept the following format from an obscure server:
+>  227 Data transfer will passively listen to 67,218,99,134,50,144
+> 
+>  From RFC 1123:
+>  The format of the 227 reply to a PASV command is not
+>  well standardized.  In particular, an FTP client cannot
+>  assume that the parentheses shown on page 40 of RFC-959
+>  will be present (and in fact, Figure 3 on page 43 omits
+>  them).  Therefore, a User-FTP program that interprets
+>  the PASV reply must scan the reply for the first digit
+>  of the host and port numbers.
 
-I installed ndpi-netfilter and ndpi to redhat 6 ( kernel 2.6.32.220 ) test
-machine, say X. Among installation, I encountered no big problem or warning.
-
-When I add the following rule to X:
-
-"iptables -A INPUT -m ndpi --icmp -j REJECT"
-
-then I can't ping X.
-
-But when I add REJECT rule for ftp with following rule:
-
-"iptables -A INPUT -m ndpi --ftp -j REJECT"
-
-then I can still open FTP connections and make transaction via FTP to X from
-another machine.
-
-Same situation occurs when I used "-j NFQUEUE" option: I can capture ICMP
-packets in userspace by using libnetfilter_queue library, but I can't get
-FTP packets with second rule.
-
-Why doesn't "ftp" filter work ?
-
-lsmod command produces following result:
-
-Module                  Size  Used by
-nf_conntrack_ftp       12913  0
-iptable_raw             2264  0
-iptable_mangle          3349  0
-ipt_REJECT              2383  1
-nf_conntrack_ipv4       9506  1
-nf_defrag_ipv4          1483  1 nf_conntrack_ipv4
-iptable_filter          2793  1
-ip_tables              17831  3 iptable_raw,iptable_mangle,iptable_filter
-xt_ndpi               186018  1
-nf_conntrack           79453  3 nf_conntrack_ftp,nf_conntrack_ipv4,xt_ndpi
-..... 
-
+Applied, thanks.
