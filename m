@@ -1,42 +1,43 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+From: Jimmy Thrasibule <thrasibule.jimmy@gmail.com>
 Subject: Re: Strange behavior with ipset not matching on public range
-Date: Mon, 27 May 2013 20:13:38 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1305272011390.13657@blackhole.kfki.hu>
-References: <1369662135.4058.24.camel@BEWS005.euractiv.com>  <alpine.DEB.2.00.1305271548390.11760@blackhole.kfki.hu> <1369665896.4058.29.camel@BEWS005.euractiv.com>
+Date: Tue, 28 May 2013 15:30:04 +0200
+Message-ID: <1369747804.5217.2.camel@BEWS005.euractiv.com>
+References: <1369662135.4058.24.camel@BEWS005.euractiv.com>
+	  <alpine.DEB.2.00.1305271548390.11760@blackhole.kfki.hu>
+	 <1369665896.4058.29.camel@BEWS005.euractiv.com>
+	 <alpine.DEB.2.00.1305272011390.13657@blackhole.kfki.hu>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1369665896.4058.29.camel@BEWS005.euractiv.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :content-type:x-mailer:mime-version:content-transfer-encoding;
+        bh=VnBEUK7uvUvCzgYxHjUkYxkvUrNDFWchJQlQwfmfH1U=;
+        b=xts+ivrwJObibMJl9O4GmKK1V8hRVJmSHJE470HSMyeK6QGHz/3mb60aloF13HJZbZ
+         8TGwUlb241nUl/diqder1EE8ZOpDpoHqs/6d9K/lGv02cshZiDtWIKpN0vqEZtDQWUt2
+         QOrAZNXqaKm6PSfUH9wC/7bjomJyhsHDVMtIYIyU0gHleCB8+pFw2H3WcVreuDoH2NwO
+         hzeGyf1pLOj0OgTYfiZIvO9T6Vq90RF9VjMRWON8J/4eDHVQkZkFfCxRvkB+irdqBTeB
+         ITDztyFMZsxYRW78gMuWwBYelMJmpJhbNJ+wrrS89wQgTW1Ez6A/NkMdTuiZcVFFrQfD
+         enAA==
+In-Reply-To: <alpine.DEB.2.00.1305272011390.13657@blackhole.kfki.hu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jimmy Thrasibule <thrasibule.jimmy@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Cc: netfilter@vger.kernel.org
 
-On Mon, 27 May 2013, Jimmy Thrasibule wrote:
 
-> > What is your ipset version? You should post iptables rules in 
-> > iptables-save format...
 > 
-> # ipset -V
-> ipset v6.12.1, protocol version: 6
-> 
-> And here are the rules corresponding to my previous iptables output:
-> 
-> -A FW_OUT -p icmp -j CTRLOUT
-> -A FW_OUT -m set --match-set fw_iface_all src,dst  -j FW_OUT_common   # Match
-> -A FW_OUT -m set --match-set fw_iface_pub src,dst  -j FW_OUT_pub      # No match
-> -A FW_OUT -o eth1 -s 217.x.x.122/32 -d any/0 -j FW_OUT_pub            # Match
-> -A FW_OUT -m set --match-set fw_iface_priv src,dst -j FW_OUT_priv     # Match
-> -A FW_OUT -m comment --comment "EOF" -j DROP
+> I think you should upgrade: some drivers doesn't zero pad interface names 
+> and than can fool ipset up to 6.12.1. It was fixed in 6.13.
 
-I think you should upgrade: some drivers doesn't zero pad interface names 
-and than can fool ipset up to 6.12.1. It was fixed in 6.13.
+Looking at the changelog, it looks like 6.13 is fixing an issue which
+can be the one I encounter. Do you have a link to this commit or a
+commit hash so I can report the bug to the Debian team?
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+--
+Jimmy
+
+
+
