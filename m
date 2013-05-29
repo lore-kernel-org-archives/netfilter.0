@@ -1,52 +1,76 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: Strange behavior with ipset not matching on public range
-Date: Tue, 28 May 2013 15:35:16 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1305281534080.15994@blackhole.kfki.hu>
-References: <1369662135.4058.24.camel@BEWS005.euractiv.com>   <alpine.DEB.2.00.1305271548390.11760@blackhole.kfki.hu>  <1369665896.4058.29.camel@BEWS005.euractiv.com>  <alpine.DEB.2.00.1305272011390.13657@blackhole.kfki.hu>
- <1369747804.5217.2.camel@BEWS005.euractiv.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] iptables 1.4.19 release
+Date: Wed, 29 May 2013 15:33:40 +0200
+Message-ID: <20130529133340.GA14566@localhost>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1369747804.5217.2.camel@BEWS005.euractiv.com>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="rwEMma7ioTxnRzrJ"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jimmy Thrasibule <thrasibule.jimmy@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter-devel@vger.kernel.org
+Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
-On Tue, 28 May 2013, Jimmy Thrasibule wrote:
 
-> > I think you should upgrade: some drivers doesn't zero pad interface names 
-> > and than can fool ipset up to 6.12.1. It was fixed in 6.13.
-> 
-> Looking at the changelog, it looks like 6.13 is fixing an issue which
-> can be the one I encounter. Do you have a link to this commit or a
-> commit hash so I can report the bug to the Debian team?
+--rwEMma7ioTxnRzrJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-commit ef5b6e127761667f78d99b7510a3876077fe9abe
-Author: Florian Westphal <fw@strlen.de>
-Date:   Sun Jun 17 09:56:46 2012 +0000
+Hi!
 
-    netfilter: ipset: fix interface comparision in hash-netiface sets
-    
-    ifname_compare() assumes that skb->dev is zero-padded,
-    e.g 'eth1\0\0\0\0\0...'. This isn't always the case. e1000 driver does
-    
-    strncpy(netdev->name, pci_name(pdev), sizeof(netdev->name) - 1);
-    
-    in e1000_probe(), so once device is registered dev->name memory contains
-    'eth1\0:0:3\0\0\0' (or something like that), which makes eth1 compare
-    fail.
-    
-    Use plain strcmp() instead.
-    
-    Signed-off-by: Florian Westphal <fw@strlen.de>
-    Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+The Netfilter project proudly presents:
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+        iptables 1.4.19
+
+This release includes support for the new connlabel and bpf matches
+available in Linux 3.9, several fixes and manpage updates.
+
+See ChangeLog that comes attached to this email for more details.
+
+You can download it from:
+
+http://www.netfilter.org/projects/iptables/downloads.html
+ftp://ftp.netfilter.org/pub/iptables/
+
+Have fun!
+
+
+--rwEMma7ioTxnRzrJ
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="changes-iptables-1.4.19.txt"
+
+Florian Westphal (3):
+      libxt_NFQUEUE: fix bypass option documentation
+      extensions: add connlabel match
+      extensions: add connlabel match
+
+Mart Frauenlob (3):
+      ip[6]tables: show --protocol instead of --proto in usage
+      libxt_recent: Fix missing space in manpage for --mask option
+      extensions: libxt_multiport: Update manpage to list valid protocols
+
+Nicolas Dichtel (1):
+      utils: nfnl_osf: use the right nfnetlink lib
+
+Pablo Neira Ayuso (11):
+      libip6t_NETMAP: Use xtables_ip6mask_to_cidr and get rid of libip6tc dependency
+      Revert "build: resolve link failure for ip6t_NETMAP"
+      libxt_osf: fix missing --ttl and --log in save output
+      libxt_osf: fix bad location for location in --genre
+      libip6t_SNPT: add manpage
+      libip6t_DNPT: add manpage
+      Merge branch 'stable'
+      utils: updates .gitignore to include nfbpf_compile
+      extensions: libxt_bpf: clarify --bytecode argument
+      libxtables: fix parsing of dotted network mask format
+      build: bump version to 1.4.19
+
+Patrick McHardy (1):
+      libxt_conntrack: fix state match alias state parsing
+
+Willem de Bruijn (2):
+      extensions: add libxt_bpf extension
+      utils: nfbpf_compile
+
+
+--rwEMma7ioTxnRzrJ--
