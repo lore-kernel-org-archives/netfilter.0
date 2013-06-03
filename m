@@ -1,32 +1,46 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] ipvs: info leak in __ip_vs_get_dest_entries()
-Date: Mon, 3 Jun 2013 12:00:49 +0300
-Message-ID: <20130603090049.GA16171@debian>
+From: Kevin Wilson <wkevils@gmail.com>
+Subject: xt_SECMARK: unable to map security context 'httpcontext (error)
+Date: Mon, 3 Jun 2013 20:12:53 +0300
+Message-ID: <CAGXs5wVYPa4k_fM1CtGG9VFstgeAAvX+F4Mq8wf_yrTM2Opp5Q@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=JJPjxFuVqTPQu3Ve2rCeWVKm43cLn8i+llFb+3+HfDg=;
+        b=LagQrqggSONlKgmjt+lZW2rJtMJ2Vv+Tu4bR1j/kKBySejVjcu3F4ZVMlcCy4g2jhZ
+         vl2KruN2Twwh4sidqFWGkex0C+/F8D+hbjgkeLQavapuxitRNOnEPIxxmzyPDrBJE+wc
+         pJUxLzlHvYlGxkMinBlkzRwDIkBQfN7YcCdAmfZcOTVtrwHANMVpk1q8zVSDK/LlDv82
+         N0CKznhwSFff7X0wpGkpH8RZGUlU5fKZXIvyj3lkh0iQLrcsgeV1A1dvL5ssHRyhzO4I
+         OxQtxpXKkxUp1hXE0g+GXmGht1eRdg1PiglY/8tg7daSOKAm9HukP0lHwXoTRGOJVw12
+         VM0g==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Wensong Zhang <wensong@linux-vs.org>
-Cc: Simon Horman <horms@verge.net.au>, Julian Anastasov <ja@ssi.bg>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, kernel-janitors@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-The entry struct has a 2 byte hole after ->port and another 4 byte
-hole after ->stats.outpkts.  You must have CAP_NET_ADMIN in your
-namespace to hit this information leak.
+Hi,
+I am trying in Ubuntu 13.04 to run this:
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+ -
+modprobe xt_SECMARK
+than:
+iptables -t mangle -A PREROUTING -p tcp --dport 80 -j SECMARK --selctx httpconte
 
-diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-index df05c1c..e336535 100644
---- a/net/netfilter/ipvs/ip_vs_ctl.c
-+++ b/net/netfilter/ipvs/ip_vs_ctl.c
-@@ -2542,6 +2542,7 @@ __ip_vs_get_dest_entries(struct net *net, const struct ip_vs_get_dests *get,
- 		struct ip_vs_dest *dest;
- 		struct ip_vs_dest_entry entry;
- 
-+		memset(&entry, 0, sizeof(entry));
- 		list_for_each_entry(dest, &svc->destinations, n_list) {
- 			if (count >= get->num_dests)
- 				break;
+And I get:
+iptables: No chain/target/match by that name.
+
+syslog says:
+Jun  3 20:09:48 amd kernel: [ 3269.413962] xt_SECMARK: unable to map
+security context 'httpcontext
+
+what should I do ?
+
+Kernel:
+3.8.0-19-generic
+iptables v1.4.12
+
+
+regards,
+Kevin
