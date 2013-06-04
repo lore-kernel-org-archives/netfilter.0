@@ -1,46 +1,44 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [patch] ipvs: info leak in __ip_vs_get_dest_entries()
-Date: Tue, 4 Jun 2013 10:03:27 +0900
-Message-ID: <20130604010327.GA23054@verge.net.au>
-References: <20130603090049.GA16171@debian>
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Subject: Re: Filtering Broadcasted UDP Packets on a Specific Bridged Interface
+Date: Tue, 04 Jun 2013 09:35:13 +0200
+Message-ID: <51AD98B1.6000105@plouf.fr.eu.org>
+References: <CAO9Kb4BjaV-C0OzPJmifhVZ5p6MTX8=4o2BN7yMthzy+Q89TjA@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <lvs-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20130603090049.GA16171@debian>
-Sender: lvs-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <CAO9Kb4BjaV-C0OzPJmifhVZ5p6MTX8=4o2BN7yMthzy+Q89TjA@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Dan Carpenter <dan.carpenter@oracle.com>
-Cc: Wensong Zhang <wensong@linux-vs.org>, Julian Anastasov <ja@ssi.bg>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Dan Osawa <dkosawa@gmail.com>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-On Mon, Jun 03, 2013 at 12:00:49PM +0300, Dan Carpenter wrote:
-> The entry struct has a 2 byte hole after ->port and another 4 byte
-> hole after ->stats.outpkts.  You must have CAP_NET_ADMIN in your
-> namespace to hit this information leak.
+Hello,
 
-Hi Dan,
+Dan Osawa a =E9crit :
+>=20
+> iptables -A OUTPUT -p udp --dport 7000 -m physdev --physdev-out eth0 =
+-j DROP
+>=20
+> Doing the above results in an error: *xt_physdev: using --physdev-out
+> in the OUTPUT, FORWARD and POSTROUTING chains for non-bridged traffic
+> is not supported anymore.*
 
-can I verify that it is actually possible to hit this and
-thus the patch is a -stable candidate?
+Weird message. I wonder how bridged traffic could ever reach the OUTPUT
+chain...
 
-> 
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> 
-> diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
-> index df05c1c..e336535 100644
-> --- a/net/netfilter/ipvs/ip_vs_ctl.c
-> +++ b/net/netfilter/ipvs/ip_vs_ctl.c
-> @@ -2542,6 +2542,7 @@ __ip_vs_get_dest_entries(struct net *net, const struct ip_vs_get_dests *get,
->  		struct ip_vs_dest *dest;
->  		struct ip_vs_dest_entry entry;
->  
-> +		memset(&entry, 0, sizeof(entry));
->  		list_for_each_entry(dest, &svc->destinations, n_list) {
->  			if (count >= get->num_dests)
->  				break;
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter-devel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+> So i tried the following:
+>=20
+> iptables -F
+>=20
+> iptables -A OUTPUT -p udp --dport 7000 -m physdev --physdev-out eth0
+> --physdev-is-bridged -j DROP
+>=20
+> The above doesn't fail, but also doesn't suppress the packets.
+>=20
+> Any suggestions?  Am I way off in thinking that IP tables can do this=
+?
+>  Do I need to use etables instead?
+
+Yes. At the time iptables handles the packet, the output port is not
+known yet.
