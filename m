@@ -1,44 +1,80 @@
-From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: Filtering Broadcasted UDP Packets on a Specific Bridged Interface
-Date: Tue, 04 Jun 2013 09:35:13 +0200
-Message-ID: <51AD98B1.6000105@plouf.fr.eu.org>
-References: <CAO9Kb4BjaV-C0OzPJmifhVZ5p6MTX8=4o2BN7yMthzy+Q89TjA@mail.gmail.com>
+From: Vijay Tandeker <vijayt@india.tejasnetworks.com>
+Subject: Locally transmitted Multicast packets are being looped back, even
+ if IP_MULTICAST_LOOP option is set to zero
+Date: Wed, 5 Jun 2013 16:17:08 +0530
+Message-ID: <51AF172C.9090803@india.tejasnetworks.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAO9Kb4BjaV-C0OzPJmifhVZ5p6MTX8=4o2BN7yMthzy+Q89TjA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Dan Osawa <dkosawa@gmail.com>
-Cc: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
+Cc: netfilter-devel@vger.kernel.org
 
-Hello,
+Hi,
+   I am Vijay Tandeker working in TejasNetworks Bangalore, which works 
+in a telecommunication domain. I have one query regarding 
+IP_MULTICAST_LOOP option.
 
-Dan Osawa a =E9crit :
->=20
-> iptables -A OUTPUT -p udp --dport 7000 -m physdev --physdev-out eth0 =
--j DROP
->=20
-> Doing the above results in an error: *xt_physdev: using --physdev-out
-> in the OUTPUT, FORWARD and POSTROUTING chains for non-bridged traffic
-> is not supported anymore.*
+My configuration:
+Kernel version: 2.6.32
+One OSPF routing protocol deamon is running in my system. It has opened 
+one raw socket with
+- IP_HDRINCL option set to 1
+- IP_MULTICAST_LOOP option set to 0
 
-Weird message. I wonder how bridged traffic could ever reach the OUTPUT
-chain...
+IP fragmentation logic is implemented in my application. Means if OSPF 
+tries to send any packet which exceeds MTU of the transmitting 
+interface, it fragments it and gives to the kernel using sendmsg(). In 
+my case, I am getting all my fragmented packets back to the application 
+(which should not happen if IP_MULTICAST_LOOP option is set to zero).
 
-> So i tried the following:
->=20
-> iptables -F
->=20
-> iptables -A OUTPUT -p udp --dport 7000 -m physdev --physdev-out eth0
-> --physdev-is-bridged -j DROP
->=20
-> The above doesn't fail, but also doesn't suppress the packets.
->=20
-> Any suggestions?  Am I way off in thinking that IP tables can do this=
-?
->  Do I need to use etables instead?
+Following are my observations:
+1) In ip_mc_output() function inside "net/ipv4/ip_output.c" file:
 
-Yes. At the time iptables handles the packet, the output port is not
-known yet.
+
+/*
+  *  Multicasts are looped back for other local users
+  */
+
+     if (rt->rt_flags&RTCF_MULTICAST) {
+         if ((!sk || inet_sk(sk)->mc_loop)
+#ifdef CONFIG_IP_MROUTE
+                 /* Small optimization: do not loopback not local frames,
+                    which returned after forwarding; they will be  dropped
+                    by ip_mr_input in any case.
+                    Note, that local frames are looped back to be delivered
+                    to local recipients.
+
+                    This check is duplicated in ip_mr_input at the moment.
+                  */
+&& ((rt->rt_flags&RTCF_LOCAL) || !(IPCB(skb)->flags&IPSKB_FORWARDED))
+#endif
+            ) {
+              }
+
+  Here sk(or skb->sk) pointer is NULL and "((rt->rt_flags&RTCF_LOCAL) || 
+!(IPCB(skb)->flags&IPSKB_FORWARDED))" condition is True. Because of this 
+I am getting all my fragmented packets looped back to application.
+
+
+
+  2) On further debugging I found that:
+  In nf_ct_ipv4_gather_frags() function inside 
+"ipv4/netfilter/nf_defrag_ipv4.c" file
+  - skb_orphan(skb); is being called, which is setting skb->sk to NULL.
+  - No call to restore skb->sk back to some valid value later on.
+
+My questions:-
+  - Is this done intentionally ?
+  - If No, please suggest the solution to restore skb->sk pointer.
+  - If Yes, please suggest the solution to restore skb->sk pointer.
+
+Kindly let me know in case if the problem is not clear or you need any 
+more data.
+
+  Thanks & Regards,
+  Vijay
+
+
