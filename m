@@ -1,80 +1,44 @@
-From: Vijay Tandeker <vijayt@india.tejasnetworks.com>
-Subject: Locally transmitted Multicast packets are being looped back, even
- if IP_MULTICAST_LOOP option is set to zero
-Date: Wed, 5 Jun 2013 16:17:08 +0530
-Message-ID: <51AF172C.9090803@india.tejasnetworks.com>
+From: Eric Dumazet <eric.dumazet@gmail.com>
+Subject: Re: Locally transmitted Multicast packets are being looped back,
+ even if IP_MULTICAST_LOOP option is set to zero
+Date: Wed, 05 Jun 2013 06:46:43 -0700
+Message-ID: <1370440003.24311.249.camel@edumazet-glaptop>
+References: <51AF172C.9090803@india.tejasnetworks.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=message-id:subject:from:to:cc:date:in-reply-to:references
+         :content-type:x-mailer:content-transfer-encoding:mime-version;
+        bh=FyL0cjnz3RACOC2wLj5cLpISf5HEQeD8yupVQOC0AFw=;
+        b=lCe/hq5tffluPlcH00b4CSppGW8+CDx42Jau1fj8bRudTlwC4H5p11z6yD4Hzqflvw
+         bki1HQS2QKK0qULmUb0j/xAI+4PS6/O/HizLySw/0UZw0KtUbWgNV45ZYjhl6T8GCl1o
+         BXFnOZXsnplswGRTZO/bHOjqozWfZrNh+YPsINHzPKamaHtPXpHkuXD7PgdRIPO8w4WV
+         OVcjWgcFzgHxagnhyJnycxHfbQlRpvhqep9WFCCytMLkntWvcVSEkWsE8pHWeq3Y25J/
+         cqkxDuQe/r+1qNfX8yMenHsDSQPNYeKHlgkWgJiXbZorbtop0N2ph4vhbf3QubdifDRz
+         J+0w==
+In-Reply-To: <51AF172C.9090803@india.tejasnetworks.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
-Cc: netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Vijay Tandeker <vijayt@india.tejasnetworks.com>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Hi,
-   I am Vijay Tandeker working in TejasNetworks Bangalore, which works 
-in a telecommunication domain. I have one query regarding 
-IP_MULTICAST_LOOP option.
+On Wed, 2013-06-05 at 16:17 +0530, Vijay Tandeker wrote:
 
-My configuration:
-Kernel version: 2.6.32
-One OSPF routing protocol deamon is running in my system. It has opened 
-one raw socket with
-- IP_HDRINCL option set to 1
-- IP_MULTICAST_LOOP option set to 0
+> My questions:-
+>   - Is this done intentionally ?
+>   - If No, please suggest the solution to restore skb->sk pointer.
+>   - If Yes, please suggest the solution to restore skb->sk pointer.
+> 
+> Kindly let me know in case if the problem is not clear or you need any 
+> more data.
+> 
 
-IP fragmentation logic is implemented in my application. Means if OSPF 
-tries to send any packet which exceeds MTU of the transmitting 
-interface, it fragments it and gives to the kernel using sendmsg(). In 
-my case, I am getting all my fragmented packets back to the application 
-(which should not happen if IP_MULTICAST_LOOP option is set to zero).
+Have you tried 
 
-Following are my observations:
-1) In ip_mc_output() function inside "net/ipv4/ip_output.c" file:
-
-
-/*
-  *  Multicasts are looped back for other local users
-  */
-
-     if (rt->rt_flags&RTCF_MULTICAST) {
-         if ((!sk || inet_sk(sk)->mc_loop)
-#ifdef CONFIG_IP_MROUTE
-                 /* Small optimization: do not loopback not local frames,
-                    which returned after forwarding; they will be  dropped
-                    by ip_mr_input in any case.
-                    Note, that local frames are looped back to be delivered
-                    to local recipients.
-
-                    This check is duplicated in ip_mr_input at the moment.
-                  */
-&& ((rt->rt_flags&RTCF_LOCAL) || !(IPCB(skb)->flags&IPSKB_FORWARDED))
-#endif
-            ) {
-              }
-
-  Here sk(or skb->sk) pointer is NULL and "((rt->rt_flags&RTCF_LOCAL) || 
-!(IPCB(skb)->flags&IPSKB_FORWARDED))" condition is True. Because of this 
-I am getting all my fragmented packets looped back to application.
-
-
-
-  2) On further debugging I found that:
-  In nf_ct_ipv4_gather_frags() function inside 
-"ipv4/netfilter/nf_defrag_ipv4.c" file
-  - skb_orphan(skb); is being called, which is setting skb->sk to NULL.
-  - No call to restore skb->sk back to some valid value later on.
-
-My questions:-
-  - Is this done intentionally ?
-  - If No, please suggest the solution to restore skb->sk pointer.
-  - If Yes, please suggest the solution to restore skb->sk pointer.
-
-Kindly let me know in case if the problem is not clear or you need any 
-more data.
-
-  Thanks & Regards,
-  Vijay
+int one = 1;
+setsockopt(fd, SOL_IP, IP_NODEFRAG, &one, sizeof(one));
 
 
