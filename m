@@ -1,60 +1,38 @@
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: Locally transmitted Multicast packets are being looped back,
- even if IP_MULTICAST_LOOP option is set to zero
-Date: Wed, 05 Jun 2013 07:20:07 -0700
-Message-ID: <1370442007.24311.258.camel@edumazet-glaptop>
-References: <51AF172C.9090803@india.tejasnetworks.com>
-	 <1370440003.24311.249.camel@edumazet-glaptop>
-	 <51AF4789.9090807@india.tejasnetworks.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: Re: [patch] ipvs: info leak in __ip_vs_get_dest_entries()
+Date: Fri, 7 Jun 2013 11:33:14 +0300
+Message-ID: <20130607083314.GQ23987@mwanda>
+References: <20130603090049.GA16171@debian>
+ <20130604010327.GA23054@verge.net.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :content-type:x-mailer:content-transfer-encoding:mime-version;
-        bh=MNHU7ZfLsXSueQpgUTLXdH3i2G6RAfe6qKyT6inLX+8=;
-        b=zlMceK53AuMps3D50vWxQRotessxOrC21NwbayClAONJz23R04F3o4VXC+MysbFIgg
-         XOpIZpiRMlUYKuEbqmHir5phF5LDJl11WeXQA0rHDLDu6xWlGBGixHfAEkAFlOBCoPkN
-         5qWtflplSnDpWk6cT5+4EnnPPOgxteL4PCZg50I9JkUnLj8fpVeJ816QK6F4DDJs1nES
-         IoPtuNvIOF/P2BVOuHVmWis6YA5ZH8/IB3G2ngT5uMimQbBSzboRd+bjKnjg0phP63gy
-         P4EZYKMCOOin1o+X47ppB8Ust/7E6c4jNJh1BvPBKI4tRKVoaCBNNDdTEa3J8UtpNOkh
-         5Mwg==
-In-Reply-To: <51AF4789.9090807@india.tejasnetworks.com>
+Content-Disposition: inline
+In-Reply-To: <20130604010327.GA23054@verge.net.au>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Vijay Tandeker <vijayt@india.tejasnetworks.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: Simon Horman <horms@verge.net.au>
+Cc: Wensong Zhang <wensong@linux-vs.org>, Julian Anastasov <ja@ssi.bg>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, kernel-janitors@vger.kernel.org
 
-On Wed, 2013-06-05 at 19:43 +0530, Vijay Tandeker wrote:
-> Thanks Eric for your quick reply. Sorry but in linux-2.6.32, IP_NODEFRAG 
-> option is not supported. Is this a new socket option to fix this problem ?
+On Mon, Jun 03, 2013 at 06:03:27PM -0700, Simon Horman wrote:
+> On Mon, Jun 03, 2013 at 12:00:49PM +0300, Dan Carpenter wrote:
+> > The entry struct has a 2 byte hole after ->port and another 4 byte
+> > hole after ->stats.outpkts.  You must have CAP_NET_ADMIN in your
+> > namespace to hit this information leak.
 > 
-> Regards,
-> Vijay
+> Hi Dan,
 > 
-> On Wednesday 05 June 2013 07:16 PM, Eric Dumazet wrote:
-> > On Wed, 2013-06-05 at 16:17 +0530, Vijay Tandeker wrote:
-> >
-> >    
-> >> My questions:-
-> >>    - Is this done intentionally ?
-> >>    - If No, please suggest the solution to restore skb->sk pointer.
-> >>    - If Yes, please suggest the solution to restore skb->sk pointer.
-> >>
-> >> Kindly let me know in case if the problem is not clear or you need any
-> >> more data.
-> >>
-> >>      
-> > Have you tried
-> >
-> > int one = 1;
-> > setsockopt(fd, SOL_IP, IP_NODEFRAG,&one, sizeof(one));
+> can I verify that it is actually possible to hit this and
+> thus the patch is a -stable candidate?
 
-Yes, it was added in 2.6.36
+This is a static checker fix.  To me it seems like it's obviously a
+real info leak.
 
-http://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git/commit/?id=7b2ff18ee7b0ec4bc3162f821e221781aaca48bd
+I'm not certain of the impact though.  CLONE_NEWNET requires
+CAP_SYS_ADMIN but on the other hand people are making virtualization
+products where they give everyone their own namespace with admin
+privileges.
 
-
-
+regards,
+dan carpenter
