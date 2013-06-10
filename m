@@ -1,40 +1,46 @@
-From: LakshmiPathi Raju Poranki <raju.poranki@gmail.com>
-Subject: error during nfq_bind_pf() for PF_INET6
-Date: Fri, 7 Jun 2013 21:31:16 +0530
-Message-ID: <CAD5ayN1XXH7Q_VwN2yMyBG6cCd8rmCsbqigbH4YA2g-2jZ8JbA@mail.gmail.com>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [patch] ipvs: info leak in __ip_vs_get_dest_entries()
+Date: Mon, 10 Jun 2013 17:38:50 +0900
+Message-ID: <20130610083849.GD1563@verge.net.au>
+References: <20130603090049.GA16171@debian>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=qGSaC/hewRkbdEk1FC+HiCnyOHqGUq24TGOCno4D928=;
-        b=lO9ZP2uj2WhoKmykIiny8HUxVkmvqAxRmK3dsNsZ2vd8vzAbxzN34t72jOGCDnNlBv
-         YyXUO4L0qdktUEpjf1vQBYO1GZxRyvTONWMnhra08Y5TqTJq0zLMt1kyoFzc06gx0Fvs
-         3f1CO9Z8f+hgDvaerOQB6QFMskoA3ZduH2Svjb5ZB2p6QGrflenmB7cwiH3CZ4gnuBP1
-         22NP05VTC6dIFQcZPSVVeJ1alBQsu7OBpscrlri9pp3RSvSxMDBCHP0SW2MoFKhlNMOu
-         1biGz+ku+jDTN1uSh8fx83BZIHpQaGiicbjc8HIawePmytiuWTlhsGl8VRVLqJnmvlbB
-         yaVw==
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130603090049.GA16171@debian>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Dan Carpenter <dan.carpenter@oracle.com>, Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Wensong Zhang <wensong@linux-vs.org>, Julian Anastasov <ja@ssi.bg>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, kernel-janitors@vger.kernel.org
 
-Hi,
+On Mon, Jun 03, 2013 at 12:00:49PM +0300, Dan Carpenter wrote:
+> The entry struct has a 2 byte hole after ->port and another 4 byte
+> hole after ->stats.outpkts.  You must have CAP_NET_ADMIN in your
+> namespace to hit this information leak.
+> 
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Not able to bind nfnetlink_queue for ipv6. The following is the error message.
+Signed-off-by: Simon Horman <horms@verge.net.au>
 
-binding nfnetlink_queue as nf_queue handler for AF_INET6 family.
-error during nfq_bind_pf()
+Pablo, could you take this directly into your tree.
+If possible for v3.10. It also appears to be relevant for stable.
 
-Can someone please guide me to resolve the issue.
-
-
-I have these modules
-
-nfnetlink_queue        17149  0
-nfnetlink              12906  1 nfnetlink_queue
-
---
-Thanks,
-Raju.
+> 
+> diff --git a/net/netfilter/ipvs/ip_vs_ctl.c b/net/netfilter/ipvs/ip_vs_ctl.c
+> index df05c1c..e336535 100644
+> --- a/net/netfilter/ipvs/ip_vs_ctl.c
+> +++ b/net/netfilter/ipvs/ip_vs_ctl.c
+> @@ -2542,6 +2542,7 @@ __ip_vs_get_dest_entries(struct net *net, const struct ip_vs_get_dests *get,
+>  		struct ip_vs_dest *dest;
+>  		struct ip_vs_dest_entry entry;
+>  
+> +		memset(&entry, 0, sizeof(entry));
+>  		list_for_each_entry(dest, &svc->destinations, n_list) {
+>  			if (count >= get->num_dests)
+>  				break;
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter-devel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
