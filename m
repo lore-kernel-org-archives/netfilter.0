@@ -1,34 +1,68 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [patch] ipvs: info leak in __ip_vs_get_dest_entries()
-Date: Mon, 10 Jun 2013 14:58:22 +0200
-Message-ID: <20130610125822.GA4968@localhost>
-References: <20130603090049.GA16171@debian>
- <20130610083849.GD1563@verge.net.au>
+From: Dan Cook <dan.cook@illum.io>
+Subject: Simple libipset program fails to link on Ubuntu 12.04 (precise)
+Date: Mon, 10 Jun 2013 14:15:00 -0700
+Message-ID: <CADpubdra9zEtSZkz+-vJXcm0eAXqXt2asXnvRDWJ+redFneEWA@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20130610083849.GD1563@verge.net.au>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Simon Horman <horms@verge.net.au>
-Cc: Dan Carpenter <dan.carpenter@oracle.com>, Wensong Zhang <wensong@linux-vs.org>, Julian Anastasov <ja@ssi.bg>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, kernel-janitors@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Mon, Jun 10, 2013 at 05:38:50PM +0900, Simon Horman wrote:
-> On Mon, Jun 03, 2013 at 12:00:49PM +0300, Dan Carpenter wrote:
-> > The entry struct has a 2 byte hole after ->port and another 4 byte
-> > hole after ->stats.outpkts.  You must have CAP_NET_ADMIN in your
-> > namespace to hit this information leak.
-> > 
-> > Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
-> 
-> Signed-off-by: Simon Horman <horms@verge.net.au>
-> 
-> Pablo, could you take this directly into your tree.
+Greetings,
 
-Applied, thanks Simon.
+I am trying to write a very simple ipset program using libipset on
+Ubuntu 12.04 (precise).  I have libipset-dev installed and the
+following program fails to link.
 
-> If possible for v3.10. It also appears to be relevant for stable.
+#include <assert.h>     /* assert */
+#include <ctype.h>      /* isspace */
+#include <errno.h>      /* errno */
+#include <stdarg.h>     /* va_* */
+#include <stdbool.h>      /* bool */
+#include <stdio.h>      /* fprintf, fgets */
+#include <stdlib.h>     /* exit */
+#include <string.h>     /* str* */
 
-Sure, will do.
+#include <libipset/data.h>    /* enum ipset_data */
+#include <libipset/parse.h>   /* ipset_parse_* */
+#include <libipset/session.h>   /* ipset_session_* */
+#include <libipset/types.h>   /* struct ipset_type */
+#include <libipset/ui.h>    /* core options, commands */
+#include <libipset/utils.h>   /* STREQ */
+
+int main(int argc, char *argv[]) {
+
+  struct ipset_session *session;
+
+  session = ipset_session_init(printf);
+  if (session == NULL) {
+    fprintf(stderr, "Cannot initialize ipset session, aborting.\n");
+    return -1;
+  }
+
+  ipset_session_fini(session);
+
+  return 0;
+}
+
+$ gcc ipsetTest.c -lipset -lmnl -o ipsetTest
+/usr/lib/gcc/x86_64-linux-gnu/4.6/../../../x86_64-linux-gnu/libipset.so:
+undefined reference to `ipset_port_usage'
+collect2: ld returned 1 exit status
+
+I can not install a new kernel module or over write the system library
+of libipset, this has to work with the kernel modules already
+installed on customer machines.
+
+I could however build a custom version of the library and reference it
+from our executable, but it has to be compatible with the kernel
+version installed in 12.04.
+
+Is libipset broken on 12.04?  How do I fix it - can I patch a version
+to work w/ 12.04?
+12.04 reports ipset version 6.11 protocol version 6.
+
+Regards,
+Dan
