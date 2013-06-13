@@ -1,41 +1,36 @@
-From: Daniel Wagner <wagi@monom.org>
-Subject: Re: xt_SECMARK: unable to map security context 'httpcontext (error)
-Date: Thu, 13 Jun 2013 17:13:05 +0200
-Message-ID: <51B9E181.2060401@monom.org>
-References: <CAGXs5wVYPa4k_fM1CtGG9VFstgeAAvX+F4Mq8wf_yrTM2Opp5Q@mail.gmail.com>
+From: LakshmiPathi Raju Poranki <raju.poranki@gmail.com>
+Subject: Poll on netfilter_queue filedescriptor doesn't work.
+Date: Thu, 13 Jun 2013 22:24:34 +0530
+Message-ID: <CAD5ayN3cE0Wj08hP2J_LTRHH-ATs5L1WTq26Yu1ojpp-hh1HjA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAGXs5wVYPa4k_fM1CtGG9VFstgeAAvX+F4Mq8wf_yrTM2Opp5Q@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=Dx6k/xadty1kY20gKtofC/Lqsj0nb/S9RZzrFJch9P4=;
+        b=DhBynzMYTQMUWp1GRVxN3HBXqRGr+Gz/Z1WYy4AnQbDAuCFNZYYf7V6Cct+LAHRh6R
+         6oq20voxJg74RBTnB/c8JE4/qt/YfGIlC7uw9oEgq9+ctAL92Hfp2n4egVyQLYHWQI3U
+         +1Jor9M76Ankhh2+e0EHKRuPrBcs3BHC2zKmUj2BEB51R4lZfuqVK0BAe/vpZETUzSBC
+         ItJlnIQnmCT7lGSbIftPZb88bv+qf+c+uWuipQsDU0nbLoNeLAuyctHD6VBvkFV8umQ2
+         BaxKs9feKgoW6fc0GE+JqbbIwj/MiYrlDVpHhMdo20jca39n4iKDIQdvbnB9PFxC0hLV
+         xbrg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Kevin Wilson <wkevils@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hi Kevin,
+Hi,
 
-On 06/03/2013 07:12 PM, Kevin Wilson wrote:
-> Hi,
-> I am trying in Ubuntu 13.04 to run this:
->
->   -
-> modprobe xt_SECMARK
-> than:
-> iptables -t mangle -A PREROUTING -p tcp --dport 80 -j SECMARK --selctx httpconte
->
-> And I get:
-> iptables: No chain/target/match by that name.
->
-> syslog says:
-> Jun  3 20:09:48 amd kernel: [ 3269.413962] xt_SECMARK: unable to map
-> security context 'httpcontext
->
-> what should I do ?
+Poll on the file descriptor returned by nfq_fd() doesn't work. I am
+polling for the following events
+POLLIN | POLLPRI | POLLERR | POLLHUP.
 
-IIRC, you need to specify the complete SELinux context, e.g.
+But none of these events are set when there is a packet on the netfilter_queue.
 
-system_u:object_r:user_home_t
+Can someone please let me know the best way to poll or missing things
+on the nfq file descriptor
 
-HTH,
-daniel
+--
+Thanks,
+Raju.
