@@ -1,36 +1,55 @@
-From: LakshmiPathi Raju Poranki <raju.poranki@gmail.com>
-Subject: Poll on netfilter_queue filedescriptor doesn't work.
-Date: Thu, 13 Jun 2013 22:24:34 +0530
-Message-ID: <CAD5ayN3cE0Wj08hP2J_LTRHH-ATs5L1WTq26Yu1ojpp-hh1HjA@mail.gmail.com>
+From: Alex Flex <aflexzor@gmail.com>
+Subject: Quick help with stateless firewall
+Date: Sat, 15 Jun 2013 17:38:47 -0600
+Message-ID: <51BCFB07.3060408@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=Dx6k/xadty1kY20gKtofC/Lqsj0nb/S9RZzrFJch9P4=;
-        b=DhBynzMYTQMUWp1GRVxN3HBXqRGr+Gz/Z1WYy4AnQbDAuCFNZYYf7V6Cct+LAHRh6R
-         6oq20voxJg74RBTnB/c8JE4/qt/YfGIlC7uw9oEgq9+ctAL92Hfp2n4egVyQLYHWQI3U
-         +1Jor9M76Ankhh2+e0EHKRuPrBcs3BHC2zKmUj2BEB51R4lZfuqVK0BAe/vpZETUzSBC
-         ItJlnIQnmCT7lGSbIftPZb88bv+qf+c+uWuipQsDU0nbLoNeLAuyctHD6VBvkFV8umQ2
-         BaxKs9feKgoW6fc0GE+JqbbIwj/MiYrlDVpHhMdo20jca39n4iKDIQdvbnB9PFxC0hLV
-         xbrg==
+        h=message-id:date:from:user-agent:mime-version:to:subject
+         :content-type:content-transfer-encoding;
+        bh=bbaV6a8AbWZ2t/i8JhSWkmW2W/gndc5u97vTRkvRDmg=;
+        b=Uc0Q9QoY8UEbvwUKUCcba5DlCVXB26ggE66pPk8FmiiyX5FAo0a1gnt+GZtgkpGtL1
+         LbiAWBhqow8oRfZfKYRgQmMfgJYCGQo18OpOUO0jqoujSYdOeSGM4MxPEP/0Y5mGooT3
+         8+dIjnv/uAnvltOesCy0lCta+ZKZNXLRUFAgLPucVGeFMGWPTK0Een0SRYimn21C4PS3
+         4lS7cFPMx3BSdRI8LY0GPuIgOLCn+4kcBJfG6/5r6GL86PqVpak0QFlgph1DKrJx2qE5
+         81Mbc4bfJHg2uqKNAYGQdtRO8uLfhHo/HST952T/pcOFkAx1QB4niH9Dg//OUEQH+WuW
+         Of6Q==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi,
+Hello,
 
-Poll on the file descriptor returned by nfq_fd() doesn't work. I am
-polling for the following events
-POLLIN | POLLPRI | POLLERR | POLLHUP.
+I have the following simpel stateless firewall... the issue is iam not 
+able to send ICMPs queries from within the machine. What could I modify 
+or add for this to be able to happen .  Also iam only intending to run a 
+HTTP service and DNS service is it fine the way it is?
 
-But none of these events are set when there is a packet on the netfilter_queue.
+Also, I intend to keep the script stateless not wanting to use conntrack 
+at all.
 
-Can someone please let me know the best way to poll or missing things
-on the nfq file descriptor
+Thanks
+Alex
 
---
-Thanks,
-Raju.
+
+#!/bin/bash
+
+/sbin/iptables -F
+/sbin/iptables -X
+
+/sbin/iptables -P INPUT DROP
+/sbin/iptables -P FORWARD DROP
+/sbin/iptables -P OUTPUT ACCEPT
+
+#Accept SSH
+/sbin/iptables -A INPUT -p tcp -m tcp -s 204.199.62.74 --dport 22 -j ACCEPT
+
+/sbin/iptables -A INPUT -p tcp --dport 1000:65535 -j ACCEPT
+/sbin/iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+/sbin/iptables -A INPUT -p udp --dport 53 -j ACCEPT
+/sbin/iptables -A INPUT -p tcp --dport 53 -j ACCEPT
+
+
