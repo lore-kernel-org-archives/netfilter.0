@@ -1,70 +1,89 @@
-From: =?iso-8859-1?Q?Andr=E9_Paulsberg?= <Andre.Paulsberg@evry.com>
-Subject: RE: Quick help with stateless firewall
-Date: Mon, 17 Jun 2013 07:23:22 +0000
-Message-ID: <838AB161BE491743AE3CA3A916CF1CC601A35086@ccdex004>
-References: <51BCFB07.3060408@gmail.com>
+From: Allen Seelye <alleninmt@gmail.com>
+Subject: 'Invalid packet' problem since upgrading
+Date: Mon, 17 Jun 2013 07:36:50 -0600
+Message-ID: <51BF10F2.2040808@gmail.com>
+Reply-To: alleninmt@gmail.com
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <51BCFB07.3060408@gmail.com>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=message-id:date:from:reply-to:user-agent:mime-version:to:subject
+         :content-type:content-transfer-encoding;
+        bh=ddhmIDbPGJsni0lJd8sLauux7DYVnSMbgpVNKX/1ntQ=;
+        b=TImc19dD5mrM8BuPI6D1eNn9z5ebCOzjIBxoPp9OffmZWejworZOBbES7cGC6FOHeI
+         kcPgR92k7HCiN2SJkfCQTO6det//6Ow4IO0PniyQSMp8lvtlSeCSWvNiXWSF6kFoXjbV
+         aFcwzODqQg3mpecDQZIPjULqxhFCx/K56xRQnmTNudgwEv+CpIL5NPvvqvb+oHrhL8PT
+         15DevHk43OhfibRnV7+w5kV+nbOCd95KmndjQidKCMUj+/VDcgJmDu5GQ5tHqEOGpqSL
+         d0gg+K4GPWOzS9p0jAgPuhMEqmfz1SCFkLHaYtHvJB1mI9jaSYQ7kiGJtav0EUP6V3/G
+         oOOw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-There are no ICMP rules at all in your example , I would reckon you nee=
-d 2 rules on a stateless firewall ( atleast ).
+I'm not sure if this is an iptables issue or an Ubuntu issue.
 
-ONE for ICMP type 8 on OUTPUT ( your machine sending ECHO REQUEST ) , n=
-ot need as long as you have ACCEPT for all OUTPUT .
-and ONE for ICMP type 0 on INPUT ( other machines sending ECHO REPLY ba=
-ck to your machine ) .
+I have a PC acting as a firewall and router, using iptables. We have a
+Wii-U inside the network and until a few days ago, it had no
+connectivity problems at all. I upgraded the firewall PC from Kubuntu
+10.04 to 12.04 and suddenly the Wii-U cannot connect.
 
-/sbin/iptables -A OUTPUT -p icmp -icmp-type 8 -j ACCEPT
-/sbin/iptables -A INPUT -p icmp -icmp-type 0 -j ACCEPT
+It would appear that this is not a problem with the Wii-U. If I connect
+it directly to the Optimum modem, everything works fine. It's something
+wonky with the Kubuntu PC, since I upgraded. Nothing in my
+iptables.rules has changed. I'm using the same set of rules as before
+the upgrade.
 
-If you want others to be able to ping your machine you do the reverse w=
-ay with the rules !
+I called Nintendo tech support and they insist that there is nothing
+special that needs to be done. Their solution was to put it in a DMZ but
+I'd rather not do that if I can avoid it.
 
-And since you ONLY need 2 services , you may want to remove this rule=20
-/sbin/iptables -A INPUT -p tcp --dport 1000:65535 -j ACCEPT
+I do an internet connection test in the Wii-U and it passes but it can't
+connect to any services which require talking to the nintendo network,
+such as Hulu, Netflix, the Nintendo e-shop and quite a few games.
 
-If you need to allow for outgoing return traffic you should allow sourc=
-e-services you need/use .
-/sbin/iptables -A INPUT -p tcp --sport 80 --dport 1025:65535 -j ACCEPT
-/sbin/iptables -A INPUT -p tcp --sport 53 --dport 1025:65535 -j ACCEPT
-/sbin/iptables -A INPUT -p udp --sport 53 --dport 1025:65535 -j ACCEPT
+I also have several PC's, three Android devices, an old Wii, two
+Nintendo DS's, an old Xbox, a PSP and a PS3 and none of them have
+experienced any problems since the upgrade, they're all able to connect
+fine.
 
-And same for OUTPUT ( unless you continue with all ACCEPT )
-/sbin/iptables -A OUTPUT -p tcp --dport 80 --sport 1025:65535 -j ACCEPT
-/sbin/iptables -A OUTPUT -p tcp --dport 53 --sport 1025:65535 -j ACCEPT
-/sbin/iptables -A OUTPUT -p udp --dport 53 --sport 1025:65535 -j ACCEPT
-Or just
-/sbin/iptables -A OUTPUT -p tcp --dport 80 -j ACCEPT
-/sbin/iptables -A OUTPUT -p tcp --dport 53 -j ACCEPT
-/sbin/iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
+I checked Nintendo's support site and their advice is to forward all
+ports (specifically 1-65535) to the Wii-U, which I can't do for obvious
+reasons.
 
-As a common rule with stateless firewalls YOU might wanna accept 2 more=
- ICMP types
+Other things I've tried:
 
-/sbin/iptables -A OUTPUT -p icmp -icmp-type 3 -j ACCEPT
-/sbin/iptables -A OUTPUT -p icmp -icmp-type 11 -j ACCEPT
-/sbin/iptables -A INPUT -p icmp -icmp-type 3 -j ACCEPT
-/sbin/iptables -A INPUT -p icmp -icmp-type 11 -j ACCEPT
+I've opened the firewall up completely, allowing all traffic through.
+I've explicitly allowed all traffic on all ports, to and from the Wii-U.
+I've tried running several older kernels.
+I've tried shutting down apparmor.
 
-Type 3 is used for all types of "unreachable" messages , and type 11 is=
- "time exceed" -
-most commonly used for traceroute replies , but it is also sent for pac=
-kets that travel "too far" :)
+None of these have worked.
 
+The only thing that did work, was to remove the Kubuntu box completely
+and connect my switch directly to the Optimum modem.
 
-Best regards
-Andr=E9 Paulsberg
-Senior Network Engineer=20
-Core Network
-Operation, Network, Nordic Operations
-andre.paulsberg@evry.com
-M +47 xxx yyyyy
+I have no rules in place restricting the Wii-U at all. I do a grep in
+syslog for the Wii-U's IP and I get a lot of this:
 
+--------------------------
+kernel: [ 7236.919902] Invalid packet: IN=eth0 OUT=eth1
+MAC=00:c0:f0:2d:9e:b4:18:2a:7b:85:09:e5:08:00 SRC=192.168.58.38
+DST=23.43.226.90 LEN=1042 TOS=0x00 PREC=0x00 TTL=63 ID=3693 PROTO=TCP
+SPT=1772 DPT=443 WINDOW=32768 RES=0x00 ACK PSH FIN URGP=0
+--------------------------
 
+If I'm interpreting this correctly, it thinks that there is a problem
+with the packets coming from the Wii-U and it's dropping them. I've
+tried removing the rule that drops invalid packets and it stopped
+putting these warnings in the log, but the Wii-U still can't connect to
+the Nintendo network.
+
+There has to be a change in the way that iptables or something else on
+the system is routing traffic or handling packets, but I have no idea
+what that is.
+
+Any help or advice is appreciated.
+
+Thanks!
