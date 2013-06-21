@@ -1,26 +1,46 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: iptables 1.4.18 on linux 2.4
-Date: Fri, 21 Jun 2013 10:29:03 +0200 (CEST)
-Message-ID: <alpine.LSU.2.10.9.1306211028030.3279@nerf07.vanv.qr>
-References: <E1UTEWD-0003jD-AR@taizong.lan>
+From: "Bo Lynch" <blynch@ameliaschools.com>
+Subject: Routing Question
+Date: Fri, 21 Jun 2013 11:34:53 -0400 (EDT)
+Message-ID: <46449.69.21.103.130.1371828893.squirrel@ameliaschools.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <E1UTEWD-0003jD-AR@taizong.lan>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Horst Wente <horst.wente@acm.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Friday 2013-04-19 18:50, Horst Wente wrote:
+Hello,
 
->Occasionally I live backwards in time and use my i386/33 running
->linux 2.4.25 to handle my telephone line.
->
->So I tried to compile the recent iptables-1.4.18 ( with gcc-3.4.3 ) and
->would like to share my experience ( iff anybody is interested ):
+I have an iptables firewall/router with 2 NICS and one alias setup. What I
+am trying to accomplish is route traffic coming in off the alias to an
+internal server ip address. All normal web traffic goes through eth1 and
+out eth0.
 
-The problems you report are known, I even had patches for it.
+eth0 = external interface 69.21.X.1
+eth0:1 external interface 69.21.X.2
+eth1 = internal interface 192.168.1.1
 
-Since 2.4 is unmaintained, Pablo does not care.
+My iptables script looks like this....
+echo "1" > /proc/sys/net/ipv4/ip_forward
+
+iptables -A INPUT -i eth1 -j ACCEPT
+iptables -A INPUT -i eth0:1 -j ACCEPT
+iptables -A OUTPUT -o eth0:1 -j ACCEPT
+iptables -A INPUT -i eth0 -m state --state ESTABLISHED,RELATED -j ACCEPT
+iptables -A INPUT -i eth0 -m state --state INVALID -j DROP
+iptables -A INPUT -p tcp --syn -j DROP
+iptables -t nat -A PREROUTING -p tcp -i eth0:1 -d 69.21.103.132 --dport 80
+-j DNAT --to-destination 192.168.1.3:80
+iptables -A FORWARD -p tcp -d 192.168.1.3 --dport 80 -j ACCEPT
+iptables -t nat -A POSTROUTING -s 69.21.X.2 -j SNAT --to-source 192.168.1.X
+
+Having a hard time figuring out what Im doing wrong with this. Any help
+would be greatly appreciated.
+-- 
+Bo Lynch
+
+
+
+
+
