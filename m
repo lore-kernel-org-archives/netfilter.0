@@ -1,42 +1,67 @@
-From: adam <adam_vs@o2.pl>
-Subject: ftp tracking for outgoing connections
-Date: Fri, 21 Jun 2013 03:45:32 +0200
-Message-ID: <CALE+ZtAxnV4BjeiJc22-TkRjBnn=GZ62nz0TfT1F6vhnbDLBcg@mail.gmail.com>
+From: =?iso-8859-1?Q?Andr=E9_Paulsberg?= <Andre.Paulsberg@evry.com>
+Subject: RE: 'Invalid packet' problem since upgrading
+Date: Fri, 21 Jun 2013 06:36:55 +0000
+Message-ID: <838AB161BE491743AE3CA3A916CF1CC601A35F13@ccdex004>
+References: <51BF10F2.2040808@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:sender:date:x-google-sender-auth:message-id:subject
-         :from:to:content-type;
-        bh=so35k33nhwJhzQwuO+ZtxQxwWZujcTMClgeRHMRdGa0=;
-        b=zIEx7OXsY3XSjXeX5U85Hpw3Jspp4NkQqe6i6V8PRFNtyVPTB4GR/8j663sB61cMyu
-         2z7LWtun8UE++CEFK/8ZJohdoTce1QVOcpw3gkJ2DMIzA4jqFp+utwkv/4RBOf4IAezP
-         E1D9tqmMRsGzQCyeiHOHDZeqKW90P2MWPk6oCFKlJgK2D8S4Fmf2AZeXeYiTNtAuiLa9
-         SjvfnFZpzyvaQKc+AW7fphIzIFwnaLNxx2RAeMXuMTKKU+R2VdZ8vO2EYrHm2MBVPo3I
-         qjrfVAOvPTPh6ADnV6lu07Af9OoL8+hybwXp+Psan7WW1H++V1fkuCpemMtsogwdD0YN
-         UkJw==
+In-Reply-To: <51BF10F2.2040808@gmail.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-I use iptables DNAT which rerouts outgoin packets from my system to
-127.0.0.1:121. On that port I have redsocks program that converts this
-into socks traffic and then I route this traffic through outside
-servers over the internet.
+Hello Allen ,
 
-simplyfying greatly:
-iptables -t mangle -A OUTPUT -j MARK --set-mark 1 (some conditions
-were here originaly)
-iptables -t mangle -A OUTPUT -p tcp --dport 21 -j MARK --set-mark 0
-#exception for ftp # does not work ok
-iptables -t mangle -A OUTPUT -p tcp --dport 22 -j MARK --set-mark 0
-#exception for sftp,ssh
-iptables -t nat -A OUTPUT -p tcp -m mark --mark 1 -j DNAT --to 127.0.0.1:121
+There is not enough info in this case to solve it with any good certain=
+ty ,
+However IF I should make an educated guess it would be some sort of pro=
+blem with the Wii-U .
 
-I don't want to DNAT outgoing sftp and ftp connections. Exceptions
-work well with sftp but FTP of course not because it uses another data
-chanell - in passive mode another outgoing connection from high port
-to high port. I don't think conntrack can track ougoint FTP protocol
-connections. Is there any solution for me
+My reasoning is simple , since I lack all the facts :
+
+1. All other traffic seems to go fine .
+2. The new versin of Ubuntu probably has a new version of IPTABLES ( bu=
+t this is unknown to me since you did not include this info )
+3. The stateful inspection might have been change in a way that either =
+blocks traffic that it should but didn't before ( a fix in the new vers=
+ion ),
+   or it now blocks traffic it should not block but handled correctly b=
+efore ( a bug added to the new version ).
+
+With this lack of information , I will ASSUME there is a fix in the new=
+ version ( this typicaly the way with new versions ).
+and since no other traffic is affected there is a possibility the Wii-U=
+ is doing something wrong that earlier versions did not take into
+considerartion during stateful inspection .
+( this also explains why a setup without firewall works , since a "fire=
+wallless" environment has no stateful inspection ).
+
+I would recommend doing a TCPDUMP into a file , and having all traffic =
+to/from Wii-U analyzed .
+This would actually make it possible to spot any state mismatch in pack=
+ets created by Wii-U and verify my teory
+( or prove my assumptions wrong :)
+
+My personaly would do a dump to pcap file , and analyze in wireshark .
+It colormarks packets who it thinks are "OFF" in some manner , and has =
+a more readable trace in a big tcpdump .
+
+tcpdump -n -s 0 -i eth0 host 192.168.58.38 -w Wii-U.pcap
+
+Should do the trick , I would personally dump during a bootup , a "inte=
+rnet connection test" and finaly try connect to nintendo services .
+
+Hope this helps in you in any way ...
+
+
+Best regards
+Andr=E9 Paulsberg
+Senior Network Engineer=20
+Core Network
+Operation, Network, Nordic Operations
+andre.paulsberg@evry.com
+M +47 xxx yyyyy
+
