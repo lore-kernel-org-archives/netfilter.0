@@ -1,30 +1,20 @@
-From: hu-lei <hu-lei@neusoft.com>
-Subject: quetion about netfilter
-Date: Mon, 24 Jun 2013 17:56:40 +0800
-Message-ID: <201306241756401317959@neusoft.com>
-Reply-To: hu-lei <hu-lei@neusoft.com>
-Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+From: "George Spelvin" <linux@horizon.com>
+Subject: Re: v3.10-rc7 oops soon after boot
+Date: 24 Jun 2013 06:01:33 -0400
+Message-ID: <20130624100133.21128.qmail@science.horizon.com>
+References: <51C816C8.4080709@cn.fujitsu.com>
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <51C816C8.4080709@cn.fujitsu.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter <netfilter@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: gaofeng@cn.fujitsu.com, linux@horizon.com
+Cc: bp@alien8.de, kaber@trash.net, linux-kernel@vger.kernel.org, netfilter@vger.kernel.org, pablo@netfilter.org
 
-SGkhDQoJV2lsbCB0aGUgbmV0ZmlsdGVyIGZvciBUQ1AgcGFja2V0IGZyYWdtZW50YXRpb24gcmVz
-dHJ1Y3R1cmluZ6O/DQotLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0K
-Q29uZmlkZW50aWFsaXR5IE5vdGljZTogVGhlIGluZm9ybWF0aW9uIGNvbnRhaW5lZCBpbiB0aGlz
-IGUtbWFpbCBhbmQgYW55IGFjY29tcGFueWluZyBhdHRhY2htZW50KHMpIAppcyBpbnRlbmRlZCBv
-bmx5IGZvciB0aGUgdXNlIG9mIHRoZSBpbnRlbmRlZCByZWNpcGllbnQgYW5kIG1heSBiZSBjb25m
-aWRlbnRpYWwgYW5kL29yIHByaXZpbGVnZWQgb2YgCk5ldXNvZnQgQ29ycG9yYXRpb24sIGl0cyBz
-dWJzaWRpYXJpZXMgYW5kL29yIGl0cyBhZmZpbGlhdGVzLiBJZiBhbnkgcmVhZGVyIG9mIHRoaXMg
-Y29tbXVuaWNhdGlvbiBpcyAKbm90IHRoZSBpbnRlbmRlZCByZWNpcGllbnQsIHVuYXV0aG9yaXpl
-ZCB1c2UsIGZvcndhcmRpbmcsIHByaW50aW5nLCAgc3RvcmluZywgZGlzY2xvc3VyZSBvciBjb3B5
-aW5nIAppcyBzdHJpY3RseSBwcm9oaWJpdGVkLCBhbmQgbWF5IGJlIHVubGF3ZnVsLklmIHlvdSBo
-YXZlIHJlY2VpdmVkIHRoaXMgY29tbXVuaWNhdGlvbiBpbiBlcnJvcixwbGVhc2UgCmltbWVkaWF0
-ZWx5IG5vdGlmeSB0aGUgc2VuZGVyIGJ5IHJldHVybiBlLW1haWwsIGFuZCBkZWxldGUgdGhlIG9y
-aWdpbmFsIG1lc3NhZ2UgYW5kIGFsbCBjb3BpZXMgZnJvbSAKeW91ciBzeXN0ZW0uIFRoYW5rIHlv
-dS4gCi0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0t
-LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQo=
+Hooray!  This one seems to work.
 
+Thank you very much for the quick response!
+
+Tested-by: George Spelvin <linux@horizon.com>
