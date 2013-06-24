@@ -1,62 +1,64 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Borislav Petkov <bp@alien8.de>
 Subject: Re: v3.10-rc7 oops soon after boot
-Date: Mon, 24 Jun 2013 17:10:31 +0200
-Message-ID: <20130624151031.GB3917@localhost>
+Date: Mon, 24 Jun 2013 18:13:05 +0200
+Message-ID: <20130624161305.GC26766@pd.tnic>
 References: <20130624094145.2576.qmail@science.horizon.com>
  <51C816C8.4080709@cn.fujitsu.com>
  <20130624113441.GA2583@localhost>
+ <20130624151031.GB3917@localhost>
 Mime-Version: 1.0
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alien8.de; s=alien8;
+	t=1372090388; bh=tZy0+db4JqPZXYcWnqNEzqKljYRN4nLu1x5K79nd60g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:In-Reply-To; b=sfbQiB36+pJGfe/r7Ic5pCmvPscXsxfgIoTCBh
+	V/vJDCLjNXYiVUExd8jh/EX/uoDVNX4CyIrnvzoRR7kdLzBxYlYz+s6EKN8sqxznUBH
+	STxkP+1rA5PfggMv7rKjLlW5735C7zfg6G7nZINF93EYDT6JO5D7d4gOQ6QBshi45c=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=alien8.de; s=alien8;
+	t=1372090388; bh=tZy0+db4JqPZXYcWnqNEzqKljYRN4nLu1x5K79nd60g=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:In-Reply-To; b=sfbQiB36+pJGfe/r7Ic5pCmvPscXsxfgIoTCBh
+	V/vJDCLjNXYiVUExd8jh/EX/uoDVNX4CyIrnvzoRR7kdLzBxYlYz+s6EKN8sqxznUBH
+	STxkP+1rA5PfggMv7rKjLlW5735C7zfg6G7nZINF93EYDT6JO5D7d4gOQ6QBshi45c=
 Content-Disposition: inline
-In-Reply-To: <20130624113441.GA2583@localhost>
-Sender: linux-kernel-owner@vger.kernel.org
+In-Reply-To: <20130624151031.GB3917@localhost>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Gao feng <gaofeng@cn.fujitsu.com>
-Cc: George Spelvin <linux@horizon.com>, bp@alien8.de, kaber@trash.net, linux-kernel@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Gao feng <gaofeng@cn.fujitsu.com>, George Spelvin <linux@horizon.com>, kaber@trash.net, linux-kernel@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-On Mon, Jun 24, 2013 at 01:34:41PM +0200, Pablo Neira Ayuso wrote:
-> On Mon, Jun 24, 2013 at 05:52:08PM +0800, Gao feng wrote:
-> > On 06/24/2013 05:41 PM, George Spelvin wrote:
-> > >> Please try the patch below,
-> > >> I think this bug is introduced by me :(
-> > >>
-> > >> Thanks!
-> > > 
-> > > Well, you changed it, but it still crashes.
-> > > 
-> > > It's now at del_timer+0x9/0x58, with the code being:
+On Mon, Jun 24, 2013 at 05:10:31PM +0200, Pablo Neira Ayuso wrote:
+> > I have mangled your patch, find it attached.
+> 
+> > From 79da8ea854c06ca9320decbb2f9d2e8d25b2f7e5 Mon Sep 17 00:00:00 2001
+> > From: Gao feng <gaofeng@cn.fujitsu.com>
+> > Date: Mon, 24 Jun 2013 17:04:02 +0800
+> > Subject: [PATCH] netfilter: ipt_ULOG: fix incorrect setting of ulog timer
 > > 
-> > This one should work.
+> > The parameter of setup_timer should be &ulog->nlgroup[i].
+> > the incorrect parameter will cause kernel panic in
+> > ulog_timer.
 > > 
-> > Thanks for your quickly reply.
-> 
-> I managed to crash it using a group != 1 (default) and enabling
-> batching:
-> 
-> iptables -I INPUT -j ULOG --ulog-nlgroup 2 --ulog-qthresh 50
-> 
-> It seems ulog->nlgroup[i] is always left unset.
-> 
-> I have mangled your patch, find it attached.
+> > Bug introducted in commit 355430671ad93546b34b4e91bdf720f3a704efa4
+> > "netfilter: ipt_ULOG: add net namespace support for ipt_ULOG"
+> > 
+> > ebt_ULOG doesn't have this problem.
+> > 
+> > Reported-by: Borislav Petkov <bp@alien8.de>
 
-> From 79da8ea854c06ca9320decbb2f9d2e8d25b2f7e5 Mon Sep 17 00:00:00 2001
-> From: Gao feng <gaofeng@cn.fujitsu.com>
-> Date: Mon, 24 Jun 2013 17:04:02 +0800
-> Subject: [PATCH] netfilter: ipt_ULOG: fix incorrect setting of ulog timer
-> 
-> The parameter of setup_timer should be &ulog->nlgroup[i].
-> the incorrect parameter will cause kernel panic in
-> ulog_timer.
-> 
-> Bug introducted in commit 355430671ad93546b34b4e91bdf720f3a704efa4
-> "netfilter: ipt_ULOG: add net namespace support for ipt_ULOG"
-> 
-> ebt_ULOG doesn't have this problem.
-> 
-> Reported-by: Borislav Petkov <bp@alien8.de>
-> Signed-off-by: Gao feng <gaofeng@cn.fujitsu.com>
-> Signed-off-by: Pablo Neira Ayuso <pablo@netfilter.org>
+This should be:
 
-I have applied the patch that I sent you.
+Reported-by: George Spelvin <linux@horizon.com>
+
+I only connected the dots...
+
+:-)
+
+-- 
+Regards/Gruss,
+    Boris.
+
+Sent from a fat crate under my desk. Formatting is fine.
+--
