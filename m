@@ -1,46 +1,35 @@
-From: David Binderman <dcb314@hotmail.com>
-Subject: ebtables-2.0.10: 2 * bad if statements
-Date: Mon, 24 Jun 2013 19:15:11 +0000
-Message-ID: <DUB118-W344B0826EA66ED19D5BD439C8A0@phx.gbl>
-Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+From: "George Spelvin" <linux@horizon.com>
+Subject: Re: v3.10-rc7 oops soon after boot
+Date: 24 Jun 2013 18:17:08 -0400
+Message-ID: <20130624221708.15489.qmail@science.horizon.com>
+References: <20130624161305.GC26766@pd.tnic>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <20130624161305.GC26766@pd.tnic>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: bp@alien8.de, pablo@netfilter.org
+Cc: gaofeng@cn.fujitsu.com, kaber@trash.net, linux-kernel@vger.kernel.org, linux@horizon.com, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-Hello there,
+>> Reported-by: Borislav Petkov <bp@alien8.de>
 
-I just ran the static analysis checker "cppcheck" over the
-source code of ebtables-2.0.10. It said
+> This should be:
+>
+> Reported-by: George Spelvin <linux@horizon.com>
+>
+> I only connected the dots...
 
-1.
+Well, you did a whole lot more than me!  I just lobbed a "d'oh, it
+crashes" into the seething ocean of lkml.  (Admittedly, I had reason
+to act fast: we're very close to release.)
 
-[extensions/ebt_ip.c:58]: (warning) Logical disjunction always evaluate=
-s to true: port>=3D 0 || port <=3D 65535.
+You figured out what subsystem was at fault and got the right people
+involved.  Definitely a valuable contribution.
 
-Source code is
+Me, personally, I don't give a flying f*** about such credit; I had
+an itch and was trolling for someone to scratch it.
 
-=A0=A0=A0 else if (port>=3D 0 || port <=3D 0xFFFF) {
-=A0=A0=A0=A0=A0=A0=A0 return port;
-=A0=A0=A0 }
-
-Some thing like
-
-=A0=A0=A0 else if (port>=3D 0 && port <=3D 0xFFFF) {
-=A0=A0=A0=A0=A0=A0=A0 return port;
-=A0=A0=A0 }
-
-might be better.
-
-2.
-
-[extensions/ebt_ip6.c:111]: (warning) Logical disjunction always evalua=
-tes to true: port>=3D 0 || port <=3D 65535.
-
-Duplicate
-
-Regards
-
-David Binderman 		 	   		  
+So feel free to take Reported-by (you are the one who reported it *to
+someone who could fix it*), Triaged-by, or whatever.
