@@ -1,50 +1,45 @@
 From: Gao feng <gaofeng@cn.fujitsu.com>
 Subject: Re: v3.10-rc7 oops soon after boot
-Date: Tue, 25 Jun 2013 09:36:39 +0800
-Message-ID: <51C8F427.4010601@cn.fujitsu.com>
-References: <20130624221708.15489.qmail@science.horizon.com>
+Date: Tue, 25 Jun 2013 14:17:24 +0800
+Message-ID: <51C935F4.4080401@cn.fujitsu.com>
+References: <20130624094145.2576.qmail@science.horizon.com> <51C816C8.4080709@cn.fujitsu.com> <20130624113441.GA2583@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <20130624221708.15489.qmail@science.horizon.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20130624113441.GA2583@localhost>
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: George Spelvin <linux@horizon.com>
-Cc: bp@alien8.de, pablo@netfilter.org, kaber@trash.net, linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: George Spelvin <linux@horizon.com>, bp@alien8.de, kaber@trash.net, linux-kernel@vger.kernel.org, netfilter@vger.kernel.org
 
-On 06/25/2013 06:17 AM, George Spelvin wrote:
->>> Reported-by: Borislav Petkov <bp@alien8.de>
-> 
->> This should be:
+On 06/24/2013 07:34 PM, Pablo Neira Ayuso wrote:
+> On Mon, Jun 24, 2013 at 05:52:08PM +0800, Gao feng wrote:
+>> On 06/24/2013 05:41 PM, George Spelvin wrote:
+>>>> Please try the patch below,
+>>>> I think this bug is introduced by me :(
+>>>>
+>>>> Thanks!
+>>>
+>>> Well, you changed it, but it still crashes.
+>>>
+>>> It's now at del_timer+0x9/0x58, with the code being:
 >>
->> Reported-by: George Spelvin <linux@horizon.com>
+>> This one should work.
 >>
->> I only connected the dots...
+>> Thanks for your quickly reply.
 > 
-> Well, you did a whole lot more than me!  I just lobbed a "d'oh, it
-> crashes" into the seething ocean of lkml.  (Admittedly, I had reason
-> to act fast: we're very close to release.)
+> I managed to crash it using a group != 1 (default) and enabling
+> batching:
 > 
-> You figured out what subsystem was at fault and got the right people
-> involved.  Definitely a valuable contribution.
+> iptables -I INPUT -j ULOG --ulog-nlgroup 2 --ulog-qthresh 50
 > 
-> Me, personally, I don't give a flying f*** about such credit; I had
-> an itch and was trolling for someone to scratch it.
-> 
-> So feel free to take Reported-by (you are the one who reported it *to
-> someone who could fix it*), Triaged-by, or whatever.
+> It seems ulog->nlgroup[i] is always left unset.
 
-It's my mistake, the reported-by should be you.
-of course we should thank Borislav, I didn't notice this bug report
-mail until he forwarded it.
+Yes, we should set ulog->nlgroup..
 
-Thanks all you guys! Sorry for my mistake..
-
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-kernel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> Please read the FAQ at  http://www.tux.org/lkml/
+> 
+> I have mangled your patch, find it attached.
 > 
 
+Thanks!
