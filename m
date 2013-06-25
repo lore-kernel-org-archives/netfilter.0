@@ -1,45 +1,62 @@
-From: Gao feng <gaofeng@cn.fujitsu.com>
-Subject: Re: v3.10-rc7 oops soon after boot
-Date: Tue, 25 Jun 2013 14:17:24 +0800
-Message-ID: <51C935F4.4080401@cn.fujitsu.com>
-References: <20130624094145.2576.qmail@science.horizon.com> <51C816C8.4080709@cn.fujitsu.com> <20130624113441.GA2583@localhost>
+From: Michael Ludvig <mludvig@logix.net.nz>
+Subject: Re: ipset hash:ip,port not matching
+Date: Tue, 25 Jun 2013 18:33:43 +1200
+Message-ID: <51C939C7.50007@logix.net.nz>
+References: <51C9371E.8020305@logix.net.nz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20130624113441.GA2583@localhost>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <51C9371E.8020305@logix.net.nz>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: George Spelvin <linux@horizon.com>, bp@alien8.de, kaber@trash.net, linux-kernel@vger.kernel.org, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On 06/24/2013 07:34 PM, Pablo Neira Ayuso wrote:
-> On Mon, Jun 24, 2013 at 05:52:08PM +0800, Gao feng wrote:
->> On 06/24/2013 05:41 PM, George Spelvin wrote:
->>>> Please try the patch below,
->>>> I think this bug is introduced by me :(
->>>>
->>>> Thanks!
->>>
->>> Well, you changed it, but it still crashes.
->>>
->>> It's now at del_timer+0x9/0x58, with the code being:
->>
->> This one should work.
->>
->> Thanks for your quickly reply.
-> 
-> I managed to crash it using a group != 1 (default) and enabling
-> batching:
-> 
-> iptables -I INPUT -j ULOG --ulog-nlgroup 2 --ulog-qthresh 50
-> 
-> It seems ulog->nlgroup[i] is always left unset.
+On 25/06/13 18:22, Michael Ludvig wrote:
+> Hi
+>
+> I'm struggling with ipset 6.11 on CentOS 6.4 (default package) where I
+> can't make it match on hash:ip,port sets.
 
-Yes, we should set ulog->nlgroup..
+I managed to update ipset and iptables to the current git version but
+still having the same problem. I'm sure I'm doing something wrong or
+misunderstanding how to use ipset...?
 
-> 
-> I have mangled your patch, find it attached.
-> 
+Michael
 
-Thanks!
+> My simple testcase is (on 172.31.170.102):
+>
+> ~ # ipset restore << _EOF_
+> create test-ipport hash:ip,port family inet hashsize 1024 maxelem 65536
+> add test-ipport 172.31.170.102,tcp:12345
+> add test-ipport 172.31.170.1,tcp:12345
+> _EOF_
+>
+> ~ # iptables -F
+> ~ # iptables -I INPUT -m set --match-set test-ipport dst -j LOG
+> --log-prefix "IPSET(test-ipport,dst): "
+> ~ # iptables -I INPUT -m set --match-set test-ipport src -j LOG
+> --log-prefix "IPSET(test-ipport,src): "
+>
+> Then from my client 172.31.170.1 I run netcat:
+> ~ # nc -p 12345 172.31.170.102 12345
+>
+> On the target I can see the packets:
+>
+> 16:55:40.945624 IP 172.31.170.1.12345 > 172.31.170.102.12345: Flags [S],
+> seq 471135462, win 14600, options [mss 1460,sackOK,TS val 631328194 ecr
+> 0,nop,wscale 7], length 0
+> 16:55:40.945684 IP 172.31.170.102.12345 > 172.31.170.1.12345: Flags
+> [R.], seq 0, ack 471135463, win 0, length 0
+>
+> But nothing is logged. Even if I change it to DROP any other target the
+> match still seems to be ignored.
+>
+> With hash:ip it works but as soon as I use one of the port-hashes it fails.
+>
+> What am I doing wrong?
+>
+> Thanks
+>
+> Michael
+
