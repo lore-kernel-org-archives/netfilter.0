@@ -1,131 +1,55 @@
-From: Rodrigo Stuffs <rbs@brasilia.br>
-Subject: Re: nf_nat_sip questions
-Date: Wed, 26 Jun 2013 12:17:22 -0300
-Message-ID: <CADOAAgo=r-5Q-sAvaZWCu5DxdDYdnPSx2otnSLuVhK6BmOWssQ@mail.gmail.com>
-References: <CADOAAgrAR9t+tS7dSHp-FQeQk_6L8JDreb3pF053XzKBC=ccmg@mail.gmail.com>
-	<3b7a6336f0f74f3384bf3b240c571bd7@BLUPR07MB146.namprd07.prod.outlook.com>
+From: Horst Wente <horst.wente@acm.org>
+Subject: Re: iptables 1.4.18 on linux 2.4
+Date: Wed, 26 Jun 2013 19:11:11 +0200
+Message-ID: <E1UrtFb-0000NF-BW@taizong.lan>
+References: <E1UTEWD-0003jD-AR@taizong.lan>
+	<alpine.LSU.2.10.9.1306211028030.3279@nerf07.vanv.qr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Type: multipart/signed; protocol="application/pgp-signature";
+ micalg="PGP-SHA1";
+ boundary="Signature=_Wed__26_Jun_2013_19_11_11_+0200_qYKEr3IrVaw++IQF"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <3b7a6336f0f74f3384bf3b240c571bd7@BLUPR07MB146.namprd07.prod.outlook.com>
+In-Reply-To: <alpine.LSU.2.10.9.1306211028030.3279@nerf07.vanv.qr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Bob Reiber <bob@bkss.net>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: Jan Engelhardt <jengelh@inai.de>
+Cc: netfilter@vger.kernel.org
 
-On Tue, Jun 25, 2013 at 5:52 PM, Bob Reiber <bob@bkss.net> wrote:
-> You did not define the internal networks properly in the pbx. Asterisk needs to know which nets are internal and which are external. Typically in the sip.conf file you will find the local nets defined.
->
-> Bob Reiber
-> BK Sales and Service
-> 3211 Longfellow Dr
-> Belmont, CA 94002
-> Tel: 650 376 1122
-> Fax: 650 240 4556
->
-> -----Original Message-----
-> From: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.kernel.org] On Behalf Of Rodrigo Stuffs
-> Sent: Tuesday, June 25, 2013 9:30 AM
-> To: netfilter@vger.kernel.org
-> Subject: nf_nat_sip questions
->
-> Hello List,
->
-> Let a scenario:
->
-> [ Internal network 172.16.9.0/24 eth1 ] ---- <raspberry pi> ---- [ valid internet IP address eth0 ]
->
-> Recently, I got myself adventuring on Asterisk, and in order to address some issues, I found nf_nat_sip. So, my Raspberry Pi is doing the IP masquerading job for my internal network. And then, I installed Asterisk in the Pi, which is bound to both internal and external interfaces.
->
-> Ok, the internal softphones works just nicely. It happens that external phones have 1-way communication (just listens) with internal phones.
->
-> While running a tcpdump, I found that SIP was telling my external phones to send the RTP data to a internal IP address instead. See a dump below:
->
-> --------------------8<-------------------
->
-> INVITE sip:soft-01@179.245.20.148:5060 SIP/2.0
-> Via: SIP/2.0/UDP <home valid ip address>:5060;branch=z9hG4bK7a17bb7b;rport
-> Max-Forwards: 70
-> From: <sip:102@<home hostname>>;tag=as1a71f0f6
-> To: "soft-01" <sip:soft-01@<home hostname>:5060>;tag=63f8e4a543
-> Contact: <sip:102@<home valid ip address>:5060>
-> Call-ID: cf6587a53b2ef650
-> CSeq: 102 INVITE
-> User-Agent: Asterisk PBX 1.8.13.1~dfsg-3
-> Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, SUBSCRIBE, NOTIFY, INFO, PUBLISH
-> Supported: replaces, timer
-> Content-Type: application/sdp
-> Content-Length: 265
->
-> v=0
-> o=root 899324373 899324374 IN IP4 172.16.9.5   <------ WRONG!
-> s=Asterisk PBX 1.8.13.1~dfsg-3
-> c=IN IP4 172.16.9.5   <-------- WRONG!
-> t=0 0
-> m=audio 16428 RTP/AVP 0 125
-> a=rtpmap:0 PCMU/8000
-> a=rtpmap:125 telephone-event/8000
-> a=fmtp:125 0-16
-> a=silenceSupp:off - - - -
-> a=ptime:20
-> a=sendrecv
->
-> --------------------8<-------------------
->
-> As I highlighted in the dump (seek for WRONG!), SIP is telling my external phone to talk back to a internal phone, so this is why the internal peer doesn't hear back.
->
-> Ok, just prior to send me to whine to asterisk-users list, here comes my NF relevant questions.
->
-> 1. Is just loading the module nf_nat_sip enough, is it active and mangling packets? Or should I tie it to some fancy iptables rule?
-> http://people.netfilter.org/chentschel/docs/sip-conntrack-nat.html is not very clear about it.
->
-> 2. Does nf_nat_sip mangles that IP address, in o= and c= lines? Does it mangle whatever else?
->
-> 3. As I described, the Pi also serves internal network. Is there a risk to nf_nat_sip *also* mangle the *internal - internal*  SIP traffic to the server?
->
-> 4. If 2 is true, how can I mitigate it? -j CT --notrack -o <internal if> ?
->
-> Thanks a lot,
->
-> - RF.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in the body of a message to majordomo@vger.kernel.org More majordomo info at  http://vger.kernel.org/majordomo-info.html
+--Signature=_Wed__26_Jun_2013_19_11_11_+0200_qYKEr3IrVaw++IQF
+Content-Type: text/plain; charset=US-ASCII
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, 21 Jun 2013 10:29:03 +0200 (CEST)
+Jan Engelhardt <jengelh@inai.de> wrote:
+
+> The problems you report are known, I even had patches for it.
+>=20
+> Since 2.4 is unmaintained, Pablo does not care.
 
 
-Hi Bob & list;
+I guessed it.  Fortunately it is not too complicated to fix it, it just
+takes some time.
 
-Yes, I configured it:
+So I would have appreciated a note  ( and maybe a link ) somewhere.
+Just to have known issues documented.
 
-[general]
-context=default
-allowguest=no
-localnet=172.16.9.0/24
-externhost=<FQDN>
-externrefresh=3600
 
-Since here is no asterisk help forum, and going back to nf_nat_sip questions:
+greetings
 
-1. Is just loading the module nf_nat_sip enough, is it active and
-mangling packets? Or should I tie it to some fancy iptables rule?
-http://people.netfilter.org/chentschel/docs/sip-conntrack-nat.html is
-not very clear about it.
-==> A: While browsing the list archives, I found that yes, it is enough.
-Several people asking just the same, and I think Pablo might be fed
-up of answering it all the time.
+horst wente
 
-2. Does nf_nat_sip mangles that IP address, in o= and c= lines? Does
-it mangle whatever else?
-==> A: ????
 
-3. As I described, the Pi also serves internal network. Is there a
-risk to nf_nat_sip *also* mangle the *internal - internal*  SIP
-traffic to the server?
-==> A: ?????
 
-4. If 2 is true, how can I mitigate it? -j CT --notrack -o <internal if> ?
-==> A: ?????
+--Signature=_Wed__26_Jun_2013_19_11_11_+0200_qYKEr3IrVaw++IQF
+Content-Type: application/pgp-signature
 
-Thanks a lot,
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-- RF.
+iEYEARECAAYFAlHLIK8ACgkQGIdmTsGuhHTREgCfUSZ7e6T+9y6BvLi3QpFqun79
+ObIAoKg5rQ6BKwihHhnSBiALLkOvWTtQ
+=6Jsq
+-----END PGP SIGNATURE-----
+
+--Signature=_Wed__26_Jun_2013_19_11_11_+0200_qYKEr3IrVaw++IQF--
