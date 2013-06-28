@@ -1,56 +1,69 @@
-From: Ricardo Klein <klein.rfk@gmail.com>
-Subject: Re: Dabase BAcked IPTables
-Date: Fri, 28 Jun 2013 12:12:02 -0300
-Message-ID: <CADuigkUCfERrvP3cM_nXPiP-27MP3FPRdf0rzPVNSqDEJ3YQMg@mail.gmail.com>
-References: <CAGWRaZYZnq3bneKNdisrRAfk=9PvKD=cXVWN_b0ySVRMaPw9Dw@mail.gmail.com>
+From: richard lucassen <mailinglists@lucassen.org>
+Subject: iptables-restore
+Date: Fri, 28 Jun 2013 22:57:35 +0200
+Message-ID: <20130628225735.3ba1a655d45c1d455b88ac61@lucassen.org>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=lgZU2wdanSKlfoOmOierGMx9ZaV5ce7zFzoefNiU5+A=;
-        b=yc/pqNa+ZMA9EZeaHTHyFReCCJjVVqgSIPzqql6RiDcKR8ysBTe2JEq48PaeuQO+TE
-         k3CMTZaTqTA3of2CHSS8HV7dG4OSOVQ8A17EUpuYXBdXju9lMqThp7JLZn+FCuQ0w1YH
-         WX6AD/ZFjOLfvT4+BTFt/KSOZTEg5CzHbXl5/dTDLRWvkAumFbnK+6Gwwe6qbdS8CVAi
-         36FCjO1fX1qRkdLA/qNboa4tnxXMdsQsfuXUG5tO1QYXyQOXx2D12l9jAQG3w1AxduCr
-         gu57QuJZbSuPkSZiINuVlqk2vWR4Bpofhp57egOyD6Zop6jUUDoFxn8JkKAqhhUwIXin
-         0M+g==
-In-Reply-To: <CAGWRaZYZnq3bneKNdisrRAfk=9PvKD=cXVWN_b0ySVRMaPw9Dw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Nick Khamis <symack@gmail.com>
-Cc: netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-I think someone is already working in a ipset module for that.
-We need that here too...
+I'm just mucking about with iptables-restore. I noticed some very nice
+behaviour which AFAIK is undocumented and I'd like to know if this
+behaviour can be used in a production environment. I set up some rules
+using a shell script, without using "iptables-restore". This works
+fine.
 
+Now, without restarting the script, I will insert a new user
+defined chain called CH_INP_TEST using "iptables-restore". Mind that I
+do NOT re-invoke the original script:
 
---
-Att...
+# cat CH_INP_TEST.txt 
+*filter
+:CH_INP_TEST - [0:0]
+-A CH_INP_TEST -s 10.0.0.0/8 -j ACCEPT
+-A CH_INP_TEST -s 172.16.0.0/12 -j ACCEPT
+-A CH_INP_TEST -j RETURN
+COMMIT
 
-Ricardo Felipe Klein
-klein.rfk@gmail.com
+Ok, lets go:
 
+# iptables-restore --noflush < CH_INP_TEST.txt
 
-On Fri, Jun 28, 2013 at 12:01 PM, Nick Khamis <symack@gmail.com> wrote:
-> Hello Everyone,
->
-> Is it possible to have a MySQL backed IPTables? What we are trying to
-> accomplish is having our clients supply us with a mac address (or ip),
-> and we would let them through our core network. This would be done
-> automatically on our website i.e.:
->
-> * User logs into the website, and provides mac address
-> * We insert the record in the database as an allow rule...
-> * Restart iptables?
->
-> Kind Regards,
->
-> Nick.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Check:
+
+# iptables-save | grep CH_INP_TEST
+:CH_INP_TEST - [0:0]
+-A CH_INP_TEST -s 10.0.0.0/8 -j ACCEPT
+-A CH_INP_TEST -s 172.16.0.0/12 -j ACCEPT
+-A CH_INP_TEST -j RETURN
+
+A thing that is undocumented but very useful AFAIK is this: I can alter
+the entries of this particular user defined chain, simply by invoking
+the iptables-restore again (I changed the /12 into /16):
+
+iptables-save | grep CH_INP_TEST
+:CH_INP_TEST - [0:0]
+-A CH_INP_TEST -s 10.0.0.0/8 -j ACCEPT
+-A CH_INP_TEST -s 172.16.0.0/16 -j ACCEPT
+-A CH_INP_TEST -j RETURN
+
+Apparently the "iptables-restore --noflush" flushes the user defined
+chain "CH_INP_TEST" and replaces the old entries.
+
+This is all very useful of course, but is it documented somewhere or am
+I hitting a bug?
+
+R.
+
+-- 
+___________________________________________________________________
+It is better to remain silent and be thought a fool, than to speak
+aloud and remove all doubt.
+
++------------------------------------------------------------------+
+| Richard Lucassen, Utrecht                                        |
++------------------------------------------------------------------+
