@@ -1,55 +1,36 @@
-From: Horst Wente <horst.wente@acm.org>
-Subject: Re: iptables 1.4.18 on linux 2.4
-Date: Wed, 26 Jun 2013 19:11:11 +0200
-Message-ID: <E1UrtFb-0000NF-BW@taizong.lan>
-References: <E1UTEWD-0003jD-AR@taizong.lan>
-	<alpine.LSU.2.10.9.1306211028030.3279@nerf07.vanv.qr>
+From: Nick Khamis <symack@gmail.com>
+Subject: Dabase BAcked IPTables
+Date: Fri, 28 Jun 2013 11:01:10 -0400
+Message-ID: <CAGWRaZYZnq3bneKNdisrRAfk=9PvKD=cXVWN_b0ySVRMaPw9Dw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; protocol="application/pgp-signature";
- micalg="PGP-SHA1";
- boundary="Signature=_Wed__26_Jun_2013_19_11_11_+0200_qYKEr3IrVaw++IQF"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <alpine.LSU.2.10.9.1306211028030.3279@nerf07.vanv.qr>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=mQVn6XK6+1mFuWzwDUGj6dXZYmC1d1ENO9ZKG4rFSbM=;
+        b=pU2Zyai9f1iMjg/fFEoTydAXpmhBcb5DaXfhr+61k6VNQbF4olRcIgy1QgKnECZ1Kf
+         rsnMg3hh7kNfaGhKFDnCQUsImwRSC0B+IJlghuNUzAzygngJ7c+Lb+Coq86yk1VcXIGI
+         uaGlIFu95fGn0v4zIz5X2FNLbSs9FuaXiXJKGDFuHih/NHDruRGPgFr1wDH2ip/TkTsd
+         cZ11v2MSVYGwKJFITsQZDnaxp9Czdf4hpvKseaTafkDDz5i/h2Ba5difRnafm4KxQ7Vw
+         36k7kAuOZC79zvhUlre6QUFty23LK1XaQcXI7wuaMXEq2C9fVZt00HaNZ4/hYeecSrD/
+         MvMA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Jan Engelhardt <jengelh@inai.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@vger.kernel.org>
 
---Signature=_Wed__26_Jun_2013_19_11_11_+0200_qYKEr3IrVaw++IQF
-Content-Type: text/plain; charset=US-ASCII
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Hello Everyone,
 
-On Fri, 21 Jun 2013 10:29:03 +0200 (CEST)
-Jan Engelhardt <jengelh@inai.de> wrote:
+Is it possible to have a MySQL backed IPTables? What we are trying to
+accomplish is having our clients supply us with a mac address (or ip),
+and we would let them through our core network. This would be done
+automatically on our website i.e.:
 
-> The problems you report are known, I even had patches for it.
->=20
-> Since 2.4 is unmaintained, Pablo does not care.
+* User logs into the website, and provides mac address
+* We insert the record in the database as an allow rule...
+* Restart iptables?
 
+Kind Regards,
 
-I guessed it.  Fortunately it is not too complicated to fix it, it just
-takes some time.
-
-So I would have appreciated a note  ( and maybe a link ) somewhere.
-Just to have known issues documented.
-
-
-greetings
-
-horst wente
-
-
-
---Signature=_Wed__26_Jun_2013_19_11_11_+0200_qYKEr3IrVaw++IQF
-Content-Type: application/pgp-signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iEYEARECAAYFAlHLIK8ACgkQGIdmTsGuhHTREgCfUSZ7e6T+9y6BvLi3QpFqun79
-ObIAoKg5rQ6BKwihHhnSBiALLkOvWTtQ
-=6Jsq
------END PGP SIGNATURE-----
-
---Signature=_Wed__26_Jun_2013_19_11_11_+0200_qYKEr3IrVaw++IQF--
+Nick.
