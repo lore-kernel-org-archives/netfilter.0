@@ -1,69 +1,37 @@
-From: richard lucassen <mailinglists@lucassen.org>
-Subject: iptables-restore
-Date: Fri, 28 Jun 2013 22:57:35 +0200
-Message-ID: <20130628225735.3ba1a655d45c1d455b88ac61@lucassen.org>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: Dabase BAcked IPTables
+Date: Fri, 28 Jun 2013 18:19:10 -0500
+Message-ID: <20130628231910.GE10741@harrier.slackbuilds.org>
+References: <CAGWRaZYZnq3bneKNdisrRAfk=9PvKD=cXVWN_b0ySVRMaPw9Dw@mail.gmail.com>
 Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CAGWRaZYZnq3bneKNdisrRAfk=9PvKD=cXVWN_b0ySVRMaPw9Dw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@vger.kernel.org>
 
-I'm just mucking about with iptables-restore. I noticed some very nice
-behaviour which AFAIK is undocumented and I'd like to know if this
-behaviour can be used in a production environment. I set up some rules
-using a shell script, without using "iptables-restore". This works
-fine.
+On Fri, Jun 28, 2013 at 11:01:10AM -0400, Nick Khamis wrote:
+> Is it possible to have a MySQL backed IPTables?
 
-Now, without restarting the script, I will insert a new user
-defined chain called CH_INP_TEST using "iptables-restore". Mind that I
-do NOT re-invoke the original script:
+No, network packets need to be handled in real time. Your SQL query 
+would take too long.
 
-# cat CH_INP_TEST.txt 
-*filter
-:CH_INP_TEST - [0:0]
--A CH_INP_TEST -s 10.0.0.0/8 -j ACCEPT
--A CH_INP_TEST -s 172.16.0.0/12 -j ACCEPT
--A CH_INP_TEST -j RETURN
-COMMIT
+> What we are trying to accomplish is having our clients supply us 
+> with a mac address (or ip), and we would let them through our core 
+> network. This would be done automatically on our website i.e.:
+> 
+> * User logs into the website, and provides mac address
+> * We insert the record in the database as an allow rule...
 
-Ok, lets go:
+Sounds like a job for ipset(8).
 
-# iptables-restore --noflush < CH_INP_TEST.txt
+> * Restart iptables?
 
-Check:
-
-# iptables-save | grep CH_INP_TEST
-:CH_INP_TEST - [0:0]
--A CH_INP_TEST -s 10.0.0.0/8 -j ACCEPT
--A CH_INP_TEST -s 172.16.0.0/12 -j ACCEPT
--A CH_INP_TEST -j RETURN
-
-A thing that is undocumented but very useful AFAIK is this: I can alter
-the entries of this particular user defined chain, simply by invoking
-the iptables-restore again (I changed the /12 into /16):
-
-iptables-save | grep CH_INP_TEST
-:CH_INP_TEST - [0:0]
--A CH_INP_TEST -s 10.0.0.0/8 -j ACCEPT
--A CH_INP_TEST -s 172.16.0.0/16 -j ACCEPT
--A CH_INP_TEST -j RETURN
-
-Apparently the "iptables-restore --noflush" flushes the user defined
-chain "CH_INP_TEST" and replaces the old entries.
-
-This is all very useful of course, but is it documented somewhere or am
-I hitting a bug?
-
-R.
-
+Restart? What does that mean? iptables is not a daemon.
 -- 
-___________________________________________________________________
-It is better to remain silent and be thought a fool, than to speak
-aloud and remove all doubt.
-
-+------------------------------------------------------------------+
-| Richard Lucassen, Utrecht                                        |
-+------------------------------------------------------------------+
+  http://rob0.nodns4.us/ -- system administration and consulting
+  Offlist GMX mail is seen only if "/dev/rob0" is in the Subject:
