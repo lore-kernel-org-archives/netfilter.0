@@ -1,48 +1,46 @@
-From: Eliezer Croitoru <eliezer@ngtech.co.il>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 Subject: Re: Dabase BAcked IPTables
-Date: Sat, 29 Jun 2013 17:47:29 +0300
-Message-ID: <51CEF381.9000701@ngtech.co.il>
-References: <CAGWRaZYZnq3bneKNdisrRAfk=9PvKD=cXVWN_b0ySVRMaPw9Dw@mail.gmail.com> <20130628231910.GE10741@harrier.slackbuilds.org> <CAGWRaZYeBkaVrY3YgmgZdi7oUb9jGOkwtCZSnNU0c31wssYkpQ@mail.gmail.com> <20130629002801.GG10741@harrier.slackbuilds.org> <CAGWRaZbhje76Lxxp_jr=xGpshyPYz-=k=H3N_XEgeH3nmqPJMg@mail.gmail.com>
+Date: Sat, 29 Jun 2013 20:19:19 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1306292014350.26742@blackhole.kfki.hu>
+References: <CAGWRaZYZnq3bneKNdisrRAfk=9PvKD=cXVWN_b0ySVRMaPw9Dw@mail.gmail.com> <CADuigkUCfERrvP3cM_nXPiP-27MP3FPRdf0rzPVNSqDEJ3YQMg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAGWRaZbhje76Lxxp_jr=xGpshyPYz-=k=H3N_XEgeH3nmqPJMg@mail.gmail.com>
+In-Reply-To: <CADuigkUCfERrvP3cM_nXPiP-27MP3FPRdf0rzPVNSqDEJ3YQMg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Nick Khamis <symack@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Ricardo Klein <klein.rfk@gmail.com>
+Cc: Nick Khamis <symack@gmail.com>, netfilter <netfilter@vger.kernel.org>
 
-The internet works on IP not on mac....
-it's like "I want to buy a car who don't move"
-OK NP just buy something else then a car...
+On Fri, 28 Jun 2013, Ricardo Klein wrote:
 
-ipset is the tool and you would need couple security levels in order to 
-prevent spoofing and defending aginst Some malicious attempts on this 
-site..
+> I think someone is already working in a ipset module for that.
+> We need that here too...
 
-Eliezer
+I'd be fairly surprised at such a module...
 
-On 06/29/2013 04:21 AM, Nick Khamis wrote:
-> Ooops, I realized how many blanks I am leaving in my messages. The
-> website is only used to allow the user to enter their mac address in
-> order to have access to our services (not HTTP).
->
-> Yes, ./iptables.sh is the ruleset script.
->
->>> When you update your ipset, any rule referring to that set uses the
->>> new set right away. There would be no point in dumping and then
->>> reloading your ruleset.
->
-> Hmm, this covers adding *new* mac or even ip addresses however, how
-> would delete/modify existing entries dynamically.
->
-> Kind Regards.
->
-> Nick.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+> On Fri, Jun 28, 2013 at 12:01 PM, Nick Khamis <symack@gmail.com> wrote:
+> >
+> > Is it possible to have a MySQL backed IPTables? What we are trying to
+> > accomplish is having our clients supply us with a mac address (or ip),
+> > and we would let them through our core network. This would be done
+> > automatically on our website i.e.:
+> >
+> > * User logs into the website, and provides mac address
+> > * We insert the record in the database as an allow rule...
+> > * Restart iptables?
 
+That's pretty similar to a captive portal, which is quite simple to setup: 
+you need a small webpage written say in PHP (IP and MAC can be gathered 
+directly if the webserver is on the same LAN) and a bitmap:ip,mac type of 
+set with timeout, and some static iptables rules. It's almost trivial if 
+the things run on the gateway.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
