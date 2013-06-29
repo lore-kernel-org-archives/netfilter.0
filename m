@@ -1,44 +1,30 @@
-From: Nick Khamis <symack@gmail.com>
-Subject: Re: Dabase BAcked IPTables
-Date: Fri, 28 Jun 2013 21:21:08 -0400
-Message-ID: <CAGWRaZbhje76Lxxp_jr=xGpshyPYz-=k=H3N_XEgeH3nmqPJMg@mail.gmail.com>
-References: <CAGWRaZYZnq3bneKNdisrRAfk=9PvKD=cXVWN_b0ySVRMaPw9Dw@mail.gmail.com>
-	<20130628231910.GE10741@harrier.slackbuilds.org>
-	<CAGWRaZYeBkaVrY3YgmgZdi7oUb9jGOkwtCZSnNU0c31wssYkpQ@mail.gmail.com>
-	<20130629002801.GG10741@harrier.slackbuilds.org>
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Subject: Re: ftp tracking for outgoing connections
+Date: Sat, 29 Jun 2013 13:09:12 +0200
+Message-ID: <51CEC058.7020409@plouf.fr.eu.org>
+References: <CALE+ZtAxnV4BjeiJc22-TkRjBnn=GZ62nz0TfT1F6vhnbDLBcg@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :content-type;
-        bh=7KBaDl5kSxd7VJopn8IuBMQhZuE9cW0PkR58QIDHYNE=;
-        b=ilP+sdArBCKI8F2jkAef8Pw7UTHg6SRCPYUnay1HyxMBL6A8PpbO9IUYvQ79NLW9qE
-         PJPBI+DVhyOo2PRDauIQVfXwbUK+WzNh63vkOPUT1QKg47y/XQOaNFHW1wbvYbifu7HR
-         h7oN1+ac/TBruFFfSrfWMx/MrkNCQqS1j43EWg4Hxl3k5foU98Lk3jqw1Xcv8t75RRYz
-         AIUjzWfF7fJhit1tHSjv1HqXU8QpUIDxgJ49SOCX9une6neyyBG6iMuQPftKRw6QVoe6
-         wJXJAvyo7hjRM7IPV9019kn55PLzKcmPUBlgy22GO11HwF3ablDU5CHUhPBIgDfuasou
-         8J0g==
-In-Reply-To: <20130629002801.GG10741@harrier.slackbuilds.org>
+In-Reply-To: <CALE+ZtAxnV4BjeiJc22-TkRjBnn=GZ62nz0TfT1F6vhnbDLBcg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: adam <adam_vs@o2.pl>
+Cc: netfilter@vger.kernel.org
 
-Ooops, I realized how many blanks I am leaving in my messages. The
-website is only used to allow the user to enter their mac address in
-order to have access to our services (not HTTP).
+Hello,
 
-Yes, ./iptables.sh is the ruleset script.
+adam a =E9crit :
+>=20
+> I don't want to DNAT outgoing sftp and ftp connections. Exceptions
+> work well with sftp but FTP of course not because it uses another dat=
+a
+> chanell - in passive mode another outgoing connection from high port
+> to high port. I don't think conntrack can track ougoint FTP protocol
+> connections.
 
->> When you update your ipset, any rule referring to that set uses the
->> new set right away. There would be no point in dumping and then
->> reloading your ruleset.
-
-Hmm, this covers adding *new* mac or even ip addresses however, how
-would delete/modify existing entries dynamically.
-
-Kind Regards.
-
-Nick.
+Of course it can, with the FTP conntrack helper nf_conntrack_ftp loaded=
+=2E
+See also the RELATED state and the "helper" match in the iptables man p=
+age.
