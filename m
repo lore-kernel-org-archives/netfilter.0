@@ -1,55 +1,47 @@
-From: Nick Khamis <symack@gmail.com>
-Subject: Re: Dabase BAcked IPTables
-Date: Sun, 30 Jun 2013 09:27:43 -0400
-Message-ID: <CAGWRaZaCaXiHabg478qKrFu=vdghJ2=oofkDYhm243DciZvEtg@mail.gmail.com>
-References: <CAGWRaZYZnq3bneKNdisrRAfk=9PvKD=cXVWN_b0ySVRMaPw9Dw@mail.gmail.com>
-	<1372536635.3924.89.camel@andrew-desktop>
-	<CAGWRaZbQXv=J8YfofS4HEUYovcLTdoW5yvLpKdfP83rOkyRyng@mail.gmail.com>
-	<201306291700.53177.neal.p.murphy@alum.wpi.edu>
-	<CAGWRaZaWGwQ1KcdXXLN-fVCOVJzMa83s7_1h9eBcBnzQZK1bcQ@mail.gmail.com>
-	<51D02105.4070201@googlemail.com>
+From: Petr Chmelar <chmelab@gmail.com>
+Subject: ULOGD2 Help
+Date: Sun, 30 Jun 2013 20:26:29 +0200
+Message-ID: <51D07855.2060508@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=RzSmw0fRxLNuG2Vc98GNpkek7SKRNMiOl2Ma9/hmFFw=;
-        b=JKQzbqQCbIM9Wo1uVyEyNEorpcPXAyRYU7YLqomZizFUaiYULicTgd6uIMp5x3jMV+
-         Qy9gIuKgCasQEWn0NZoJf6Hgw2Hym0hNsAKpKvz8YUd1coByLYyAQ8y9tbK0tUVhhnry
-         RML0owsdocbejzRFbzaD42vJGjOwnDWvRMFkjzomwR5SB1oyNAP36nrM4U3DNSCmJ6db
-         9dR0XiotsE1a6NQvn8f9e3fGQwGdHaOrN3RjuYEWGcpXmoeb8VenXSy3yldS9oIBy3ox
-         F9WfedXzWvykPBWNQttFIOS75WifMK5OQpYuJ+t1KQ46RmPIWSoplACUmTRUV4kfcFZU
-         5oRQ==
-In-Reply-To: <51D02105.4070201@googlemail.com>
+        h=message-id:date:from:user-agent:mime-version:to:subject
+         :content-type:content-transfer-encoding;
+        bh=MsGXLXLX3iKMFUg7y+oj5jgVDJi5R0p8kt1LfLCLDzk=;
+        b=FmgVnzlQscyUD8BOC/9frdeqAF07CIty1UOpdwEB+LXFRgHOwp/Ym00/DxXLX0rNmB
+         YnxVwA4eigJt1jx+6GlqhKnhBuaHDNs46scC3kjsjRswHwhnk+V94/X7b4VffHD3t8ux
+         b05W+sbaUg2U53vymGsq54Fn94Ck21bDXt4mp1qekmlOiiTRkYtAAgVnF4JRjbnzMNUd
+         ME3RYREvYV+pxJFdozk6eQQNr+IjvBWgm+magxUi7PlJWbvTe6lt9pDtqW92VtWv39Qq
+         ma0cae4jdsKz6U+adbwXd5DaFRggdejutfVCn+9H6Zj/L3eaSAoKJpJejJQjZmMKDN5A
+         mW1w==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Dash Four <mr.dash.four@googlemail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
->> why don't you secure the signalling using PKI
+Hi there,
 
-I think this is the smarter way of doing it.
+we are trying to use the ULOGD2 to produce net flow and "sums" into one 
+PostgreSQL table. We have some questions:
 
->> The server on your side of the connection won't accept it unless a secure handshake has >> been established - job done.
+Where is the nflog-prefix for NFCT (ct1) and NFACCT (acct1)? I tried 
+almost all of them (0 to 32), but no luck. NFCT works fine, if I turn on 
+UFW firewall - is this a standard behavior? How do I make NFACCT work if 
+the UFW method under Debian/Ubuntu (and CentOS) doesn't work.
 
-I am familiar with PKI and SSH handshake. In this scenario what would
-be responsible for securing the handshake? Can we use iptables to
-match public/private keys and establish a secure connection? We really
-like to abstract outwards the different services (i.e., leave SIP
-related doings to the SIP server, and handshake securing to OpenVPN?).
+The NFCT plugin doesn't give numbers of packets and sums of their 
+lenghts. From the documentation and source codes there is unclear how to 
+chain plugins - how can we interconnect NFCT and NFACCT so they produce 
+output to a single PostgreSQL table (ulog2_ct)?
 
->> OK, that won't prevent you from somebody ddos-ing you, but you could easily protect
->> yourself from this using standard iptables tools.
+Can you send us the config file, please? And the iptables command? Is it 
+possibe to use something like:
+iptables -D PREROUTING -t mangle -j NFLOG --nflog-group 1 --nflog-prefix 
+pre1 ?
 
-I think with PKI, and standard iptables ddos is less of an issue?
+Thank you,
 
-Guys, thank you so much! And thank you iptables for making our
-networks a little more secure, and the internet a little more
-bearable!
+Petr Chmelar
 
-Kind Regards,
-
-Nick.
