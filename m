@@ -1,30 +1,41 @@
-From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
-Subject: Build ipset for package (using DESTDIR)
-Date: Mon, 1 Jul 2013 23:16:48 -0400
-Message-ID: <201307012316.48741.neal.p.murphy@alum.wpi.edu>
-Reply-To: neal.p.murphy@alum.wpi.edu
+From: Aaron Lewis <the.warl0ck.1989@gmail.com>
+Subject: Understanding --tcp-flags option
+Date: Thu, 4 Jul 2013 20:09:17 +0800
+Message-ID: <CAJZVxRkQmbFdi32VRu7jg4aoJoYgQmhjfMoGii5u-Jai_dAvHg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=/p7V7MavdZmvcuizpbnLYYlFdLpxCsBbAJ41NYh/Br8=;
+        b=dIHpUheMzDDXIGj5O+0lzGDhET7dNA0w8y+F3Bfahd2pC+FTD/72w0R5NOxVf+Nj6H
+         +v1ocj8hrYnhxr91FXnBcCX+qvC+hyM62fKZ9mdUAZDSOSqBjcJRhS/oq+1NSUWGkRi5
+         jqBsYiAFumfH5SOqKb8cg+jftmPJ6qbuPvEVex72OA7n1MVCQh5Bfb37qDVT1qGl4WJi
+         a5+BOWTF6VJ1UCdU2ViZN6+f9KAIZlMcPUvzJDUAgp0FxwYeVlQCgK9bWj6wnl8AtQwj
+         lnb8cJJa0J4HWex1eCXMnyDoOKArGqSRgvcZMdB/M0aUjSw/bUUv/CXlrl8J3MvhRQ+U
+         D2ZQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter mailing list <netfilter@vger.kernel.org>
 
-I can't figure it out.
+Hi,
 
-I'm integrating ipset 6.19 into Smoothwall Express 3.1 (linux 3.4.50, iptables 
-1.4.14, gcc 4.7.2, glibc 2.14.1). I had integrated 6.15 a long time ago and 
-never noticed it wasn't 'integrated'. I just bumped to 6.19 because I may need 
-the counters that are now available.
+How should I understand --tcp-flags option?
 
-Userland builds and installs into the alternate destination (via DESTDIR) just 
-fine. The kernel modules just won't behave; the makefile seems to insist on 
-installing them in the chroot's /lib/modules. Am I missing a config option 
-somewhere? Or do I need to find the .kos that ipset builds and copy them into 
-my pkg dir 'manually'?
+1) There's two parameters, why need two of them?
 
-I have a build log if it'll help.
+e.g I might just need to match a packet with SYN and RST bit set,
+ why do I need to place it for twice (--tcp-flags SYN RST, SYN RST
+
+2) What does this mean? I don't really get what "mask" and "comp" do here
+
+--tcp-flags FIN,SYN,RST,PSH,ACK,URG FIN,SYN
 
 Thanks!
-N
+
+--
+Best Regards,
+Aaron Lewis - PGP: 0xDFE6C29E ( http://keyserver.veridis.com )
+Finger Print: 9482 448F C7C3 896C 1DFE 7DD3 2492 A7D0 DFE6 C29E
