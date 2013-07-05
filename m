@@ -1,69 +1,165 @@
-From: Aaron Lewis <the.warl0ck.1989@gmail.com>
-Subject: Re: Understanding --tcp-flags option
-Date: Fri, 5 Jul 2013 09:01:10 +0800
-Message-ID: <CAJZVxRknnadn1GAfhfDHL7qCLew9cXiLBfmYZETdqaD1SedbbQ@mail.gmail.com>
-References: <CAJZVxRkQmbFdi32VRu7jg4aoJoYgQmhjfMoGii5u-Jai_dAvHg@mail.gmail.com>
-	<51D5717E.60604@plouf.fr.eu.org>
+From: Bill Fink <billfink@mindspring.com>
+Subject: conntrackd segfault on EPSV IPv6 ftp command when using ftp
+ ExpectationSync
+Date: Fri, 5 Jul 2013 02:03:12 -0400
+Message-ID: <20130705020312.25783ccd.billfink@mindspring.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type:content-transfer-encoding;
-        bh=y3vHT0L1tihvyOVP+ZfxyNp067Z8FFnNpWcYbRyrUsM=;
-        b=q5vZoI+LmhCRf1vCjVp75p0RP85BwS2DcDSc0cUuwSavbRU4o2XWjLQT7+mCrl5NhD
-         carDPdHyRugsdxn5zYNDEnox0fcAsCQX4kxirvQz96db2GfM0pFo3TYqPp2ZgcojZble
-         352Edj2oab3x4YOxpNcyIkS32/ydSbTcJWdPXnsKfkJWBK2RJUb9ptlUod2bFSpaL7Gp
-         SyBFWuH+A9j1CYnmzPZxXkiUTnXcIa17ABSztD9BzGoG5YqJOV7VJLmAARQPiovnE4Bo
-         jUKrCuDKoQm928szXn42FY2skSK81pOunYzGmInOyNKnN1Qi7EP2SpIMZkwAmsx1MgUQ
-         VSxw==
-In-Reply-To: <51D5717E.60604@plouf.fr.eu.org>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Cc: netfilter mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Merci beaucoup Pascal, I get it now.
+[not sure whether to send to netfilter or netfilter-devel,
+so sending to both, but trim replies as appropriate]
 
-On Thu, Jul 4, 2013 at 8:58 PM, Pascal Hambourg <pascal@plouf.fr.eu.org=
-> wrote:
-> Hello,
->
-> Aaron Lewis a =E9crit :
->>
->> How should I understand --tcp-flags option?
->>
->> 1) There's two parameters, why need two of them?
->
-> It allows to match packets with some flags cleared.
->
->> e.g I might just need to match a packet with SYN and RST bit set,
->>  why do I need to place it for twice (--tcp-flags SYN RST, SYN RST
->
-> Wrong syntax.
->
->> 2) What does this mean? I don't really get what "mask" and "comp" do=
- here
->
-> The mask specifies which flags must be examined, and the comp which
-> flags must be set. Therefore flags in the mask but not in the comp mu=
-st
-> be cleared. Flags not in the mask may have any value.
->
->> --tcp-flags FIN,SYN,RST,PSH,ACK,URG FIN,SYN
->
-> This means match if FIN,SYN set and RST,PSH,ACK,URG cleared.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I am trying to use the ftp ExpectationSync capability of conntrackd
+for both IPv4 and IPv6 for connections through a pair of bridged
+firewalls (primary / hot backup).  I have the following config
+snippet in conntrackd.conf:
+
+	Options {
+		ExpectationSync {
+			ftp
+			sip
+			ras	# for H.323
+			q.931	# for H.323
+			h.245	# for H.323
+		}
+	}
+
+For IPv4, things work as expected.  But when I try the basic
+analogous IPv6 test to the suggested IPv4 test from the
+documentation:
+
+x100ssd2% nc 2001:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx 21
+220 FTP Server ready.
+USER anonymous
+331 Anonymous login ok, send your complete email address as your password
+PASS bill@
+230-
+                *** Welcome to this anonymous ftp server! ***
+ 
+     You are user 1 out of a maximum of 10 authorized anonymous logins.
+     The current time here is Thu Jul 04 23:40:51 2013.
+     If you experience any problems here, contact : root@localhost
+ 
+ 
+230 Anonymous login ok, restrictions apply.
+EPSV
+229 Entering Extended Passive Mode (|||1584|)
+
+As soon as I enter the EPSV command, I get the following
+conntrackd segfault:
+
+Jul  5 00:41:06 sen-fw1 kernel: [274422.060695] conntrackd[4821]: segfault at 0 ip 000000000040c660 sp 00007fffebb098a8 error 4 in conntrackd[400000+3d000]
+
+I am using a Fedora 17 3.7.3-101.fc17.x86_64 kernel with
+conntrack-tools-1.4.0-1.fc17.x86_64.
+
+I had to use the attached patch to get "conntrackd -R" to resync
+both IPv4 and IPv6 (enabled with a "Family IPv4-IPv6" entry in
+conntrackd.conf).  It works well for me for the basic ct table,
+but I'm not sure about the expect table part since I can't really
+exercise it due to the segfault.  Note the segfault also occurs
+with the original unpatched conntrackd, so it's not related to
+my patch.
+
+Any help would be greatly appreciated.
+
+					-Thanks
+
+					-Bill
+
+P.S.  I am not subscribed to either netfilter or netfilter-devel.
 
 
 
---
-Best Regards,
-Aaron Lewis - PGP: 0xDFE6C29E ( http://keyserver.veridis.com )
-=46inger Print: 9482 448F C7C3 896C 1DFE 7DD3 2492 A7D0 DFE6 C29E
+Patch to add IPv6 to "conntrackd -R":
+------------------------------------------------------------------------
+
+diff -Nurp conntrack-tools-1.4.0.orig/src/netlink.c conntrack-tools-1.4.0/src/netlink.c
+--- conntrack-tools-1.4.0.orig/src/netlink.c	2012-09-21 10:06:07.000000000 -0400
++++ conntrack-tools-1.4.0/src/netlink.c	2013-07-04 23:32:36.302310719 -0400
+@@ -148,7 +148,16 @@ void nl_resize_socket_buffer(struct nfct
+ 
+ int nl_dump_conntrack_table(struct nfct_handle *h)
+ {
+-	return nfct_query(h, NFCT_Q_DUMP, &CONFIG(family));
++	int fam, ret;
++
++	if (!CONFIG(both_ipv4_ipv6))
++		return nfct_query(h, NFCT_Q_DUMP, &CONFIG(family));
++	fam = AF_INET;
++	ret = nfct_query(h, NFCT_Q_DUMP, &fam);
++	if (ret < 0)
++		return ret;
++	fam = AF_INET6;
++	return nfct_query(h, NFCT_Q_DUMP, &fam);
+ }
+ 
+ static int
+@@ -380,7 +389,16 @@ int nl_get_expect(struct nfct_handle *h,
+ 
+ int nl_dump_expect_table(struct nfct_handle *h)
+ {
+-	return nfexp_query(h, NFCT_Q_DUMP, &CONFIG(family));
++	int fam, ret;
++
++	if (!CONFIG(both_ipv4_ipv6))
++		return nfexp_query(h, NFCT_Q_DUMP, &CONFIG(family));
++	fam = AF_INET;
++	ret = nfexp_query(h, NFCT_Q_DUMP, &fam);
++	if (ret < 0)
++		return ret;
++	fam = AF_INET6;
++	return nfexp_query(h, NFCT_Q_DUMP, &fam);
+ }
+ 
+ int nl_flush_expect_table(struct nfct_handle *h)
+diff -Nurp conntrack-tools-1.4.0.orig/src/read_config_yy.y conntrack-tools-1.4.0/src/read_config_yy.y
+--- conntrack-tools-1.4.0.orig/src/read_config_yy.y	2012-09-21 10:06:07.000000000 -0400
++++ conntrack-tools-1.4.0/src/read_config_yy.y	2013-03-20 18:47:36.391160857 -0400
+@@ -1193,10 +1193,27 @@ scheduler_line : T_PRIO T_NUMBER
+ 
+ family : T_FAMILY T_STRING
+ {
+-	if (strncmp($2, "IPv6", strlen("IPv6")) == 0)
++	if (strncmp($2, "IPv6-IPv4", strlen("IPv6-IPv4")) == 0) {
+ 		conf.family = AF_INET6;
+-	else
++		conf.both_ipv4_ipv6 = 1;
++	}
++	else if (strncmp($2, "IPv6", strlen("IPv6")) == 0) {
++		conf.family = AF_INET6;
++		conf.both_ipv4_ipv6 = 0;
++	}
++	else if (strncmp($2, "IPv4-IPv6", strlen("IPv4-IPv6")) == 0) {
++		conf.family = AF_INET;
++		conf.both_ipv4_ipv6 = 1;
++	}
++	else if (strncmp($2, "IPv4", strlen("IPv4")) == 0) {
+ 		conf.family = AF_INET;
++		conf.both_ipv4_ipv6 = 0;
++	}
++	else {
++		print_err(CTD_CFG_WARN, "%s is not a valid Family, "
++					"ignoring", $2);
++		break;
++	}
+ };
+ 
+ event_iterations_limit : T_EVENT_ITER_LIMIT T_NUMBER
+@@ -1864,8 +1881,10 @@ init_config(char *filename)
+ 	fclose(fp);
+ 
+ 	/* default to IPv4 */
+-	if (CONFIG(family) == 0)
++	if (CONFIG(family) == 0) {
+ 		CONFIG(family) = AF_INET;
++		CONFIG(both_ipv4_ipv6) = 0;
++	}
+ 
+ 	/* set to default is not specified */
+ 	if (strcmp(CONFIG(lockfile), "") == 0)
