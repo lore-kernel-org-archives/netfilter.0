@@ -1,91 +1,86 @@
-From: Bill Fink <billfink@mindspring.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 Subject: Re: conntrackd segfault on EPSV IPv6 ftp command when using ftp
  ExpectationSync
-Date: Fri, 5 Jul 2013 19:52:26 -0400
-Message-ID: <20130705195226.fd3e4065.billfink@mindspring.com>
+Date: Sat, 6 Jul 2013 15:23:33 +0200
+Message-ID: <20130706132333.GA3279@localhost>
 References: <20130705020312.25783ccd.billfink@mindspring.com>
-	<20130705154527.8f18a181.billfink@mindspring.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <20130705154527.8f18a181.billfink@mindspring.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20130705020312.25783ccd.billfink@mindspring.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: Bill Fink <billfink@mindspring.com>
-Cc: Florian Westphal <fw@strlen.de>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, fw@strlen.de
 
-On Fri, 5 Jul 2013, Bill Fink wrote:
+Hi,
 
-> [Please Cc: me on replies as I am not subscribed]
+On Fri, Jul 05, 2013 at 02:03:12AM -0400, Bill Fink wrote:
+> [not sure whether to send to netfilter or netfilter-devel,
+> so sending to both, but trim replies as appropriate]
 > 
-> On Fri, 5 Jul 2013, Florian Westphal wrote:
+> I am trying to use the ftp ExpectationSync capability of conntrackd
+> for both IPv4 and IPv6 for connections through a pair of bridged
+> firewalls (primary / hot backup).  I have the following config
+> snippet in conntrackd.conf:
 > 
-> > Bill Fink <billfink@xxxxxxxxxxxxxx> wrote:
-> > > 230 Anonymous login ok, restrictions apply.
-> > > EPSV
-> > > 229 Entering Extended Passive Mode (|||1584|)
-> > > 
-> > > As soon as I enter the EPSV command, I get the following
-> > > conntrackd segfault:
-> > > 
-> > > Jul  5 00:41:06 sen-fw1 kernel: [274422.060695] conntrackd[4821]: segfault at 0 ip 000000000040c660 sp 00007fffebb098a8 error 4 in conntrackd[400000+3d000]
-> > 
-> > #0  0x000000000040f217 in jhash2 (k=0x0, length=4, initval=0) at
-> > ../include/jhash.h:99
-> > 99                      a += k[0];
-> > (gdb) bt f
-> > #0  0x000000000040f217 in jhash2 (k=0x0, length=4, initval=0) at ../include/jhash.h:99
-> >         a = 2654435769 b = 2654435769 c = 0 len = 4
-> > #1  0x000000000040f564 in ct_filter_hash6 (data=0x0, table=0x16ef630) at filter.c:57
-> > #2  0x000000000040ad34 in hashtable_hash (table=0x16ef630, data=0x0) at hash.c:63
-> > #3  0x000000000040fd19 in __ct_filter_test_ipv6 (f=0x16eeba0, ct=0x1703760) at filter.c:265
-> > id_src = 51 id_dst = 24051376 src = 0x1703760 dst = 0x0
-> > 
-> > NULL deref in __ct_filter_test_ipv6.  Doesn't happen for ipv4 because
-> > nfct_get_attr_u32() return 0, but nfct_get_attr() returns NULL instead.
-> > 
-> > @@ -261,8 +264,8 @@ __ct_filter_test_ipv6(struct ct_filter *f, const
-> > 		struct nf_conntrack *ct)
-> >         src = nfct_get_attr(ct, ATTR_ORIG_IPV6_SRC);
-> >         dst = nfct_get_attr(ct, ATTR_REPL_IPV6_SRC);
-> > 
-> > -       id_src = hashtable_hash(f->h6, src);
-> > -       id_dst = hashtable_hash(f->h6, dst);
-> > +       id_src = src ? hashtable_hash(f->h6, src) : 0;
-> > +       id_dst = dst ? hashtable_hash(f->h6, dst) : 0;
-> > 
-> > 
-> > Not sure if this is enough, there are other callers
-> > of nfct_get_attr() that don't check for NULL.
+> 	Options {
+> 		ExpectationSync {
+> 			ftp
+> 			sip
+> 			ras	# for H.323
+> 			q.931	# for H.323
+> 			h.245	# for H.323
+> 		}
+> 	}
 > 
-> This cured my immediate problem.  conntrackd no longer segfaults
-> and I now get IPv6 expectations.
+> For IPv4, things work as expected.  But when I try the basic
+> analogous IPv6 test to the suggested IPv4 test from the
+> documentation:
 > 
-> [root@sen-fw1 ~]# conntrackd -i expect
-> proto=6 src=2001:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx dst=2001:yyyy:yyyy:yyyy:yyyy:yyyy:yyyy:yyyy sport=0 dport=23046 mask-src=ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff mask-dst=ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff sport=0 dport=65535 master-src=2001:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx master-dst=2001:yyyy:yyyy:yyyy:yyyy:yyyy:yyyy:yyyy sport=38142 dport=21 class=0 helper=ftp [active since 44s]
+> x100ssd2% nc 2001:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx 21
+> 220 FTP Server ready.
+> USER anonymous
+> 331 Anonymous login ok, send your complete email address as your password
+> PASS bill@
+> 230-
+>                 *** Welcome to this anonymous ftp server! ***
+>  
+>      You are user 1 out of a maximum of 10 authorized anonymous logins.
+>      The current time here is Thu Jul 04 23:40:51 2013.
+>      If you experience any problems here, contact : root@localhost
+>  
+>  
+> 230 Anonymous login ok, restrictions apply.
+> EPSV
+> 229 Entering Extended Passive Mode (|||1584|)
 > 
-> I will now continue further testing.
+> As soon as I enter the EPSV command, I get the following
+> conntrackd segfault:
+> 
+> Jul  5 00:41:06 sen-fw1 kernel: [274422.060695] conntrackd[4821]: segfault at 0 ip 000000000040c660 sp 00007fffebb098a8 error 4 in conntrackd[400000+3d000]
 
-While definitely making progress, the next problem is that while
-the active firewall sees the IPv6 ftp expectation, it is not
-successfully synced to the backup firewall, and the following
-error appears in the conntrackd.log on the backup firewall:
+I have pushed this patch to fix this issue.
 
-[Fri Jul  5 16:28:50 2013] (pid=5128) [ERROR] inject-add2: Invalid argument
-Fri Jul  5 16:28:50 2013	300 proto=6 src=2001:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx dst=2001:yyyy:yyyy:yyyy:yyyy:yyyy:yyyy:yyyy sport=0 dport=11645 mask-src=ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff mask-dst=ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff sport=0 dport=65535 master-src=2001:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx master-dst=2001:yyyy:yyyy:yyyy:yyyy:yyyy:yyyy:yyyy sport=46231 dport=21 class=0 helper=ftp
+http://git.netfilter.org/conntrack-tools/commit/?id=479a37a549abf197ce59a4ae1666d8cba80fe977
 
-I don't see anything wrong with the above, which matches exactly
-the IPv6 ftp expectation seen on the primary firewall:
+Thanks Florian for diagnosing this, and you for reporting.
 
-[root@sen-fw1 ~]# conntrackd -i expect
-proto=6 src=2001:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx dst=2001:yyyy:yyyy:yyyy:yyyy:yyyy:yyyy:yyyy sport=0 dport=11645 mask-src=ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff mask-dst=ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff sport=0 dport=65535 master-src=2001:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx master-dst=2001:yyyy:yyyy:yyyy:yyyy:yyyy:yyyy:yyyy sport=46231 dport=21 class=0 helper=ftp [active since 185s]
+> I am using a Fedora 17 3.7.3-101.fc17.x86_64 kernel with
+> conntrack-tools-1.4.0-1.fc17.x86_64.
+> 
+> I had to use the attached patch to get "conntrackd -R" to resync
+> both IPv4 and IPv6 (enabled with a "Family IPv4-IPv6" entry in
+> conntrackd.conf).  It works well for me for the basic ct table,
+> but I'm not sure about the expect table part since I can't really
+> exercise it due to the segfault.  Note the segfault also occurs
+> with the original unpatched conntrackd, so it's not related to
+> my patch.
 
-I started looking at external_inject_exp_new() in external_inject.c,
-where the inject-add2 error presumably comes from, but I haven't
-gotten too far yet since I'm not that familiar with the code.
-Anyone have any ideas about what might be wrong?
+For this, I have applied the following patch:
 
-						-Thanks
+http://git.netfilter.org/conntrack-tools/commit/?id=e2c6576e775652c35d336afa0551676339c6a793
 
-						-Bill
+Let me know.
