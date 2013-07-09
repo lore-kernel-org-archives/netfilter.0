@@ -1,76 +1,38 @@
-From: Bill Fink <billfink@mindspring.com>
-Subject: Re: conntrackd segfault on EPSV IPv6 ftp command when using ftp
- ExpectationSync
-Date: Tue, 9 Jul 2013 01:30:23 -0400
-Message-ID: <20130709013023.2fb1fef1.billfink@mindspring.com>
-References: <20130705020312.25783ccd.billfink@mindspring.com>
-	<20130706132333.GA3279@localhost>
-	<20130707030458.fbf22472.billfink@mindspring.com>
+From: Petr Chmelar <chmelab@gmail.com>
+Subject: How to make conntrack to process all packets?
+Date: Tue, 09 Jul 2013 20:09:15 +0200
+Message-ID: <51DC51CB.5050002@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <20130707030458.fbf22472.billfink@mindspring.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=message-id:date:from:user-agent:mime-version:to:subject
+         :content-type:content-transfer-encoding;
+        bh=1uSoGRxinwzrXlC5wIKMKcG8IZeZarA5/IM5TgFOJTQ=;
+        b=h9K7mNrnrTllQXrbGi4FWpcgasNA3AS+zIa/NS/URMiCmEsBOAVJpjLcm+S/MSe1Ae
+         b7I9yMn8it7oPd9xs8MVZW2GWwMFa5gL4XvZkz6EGPGdOIRUU+KPCB91pyRVe8wqic54
+         O+1olZ8qwKEL7je4/YmR4aztiBTOOj9iv/njAqnlOFsQT/P9MfnzxfD9zCOFtPH4h/hg
+         2OsUBSUcB4HByMiOa6D4+1xJKj+WpsPHIUAdg0IarWMQJzDVUjK2RanNu0E7gQLcsGUg
+         CWxAjBrLmZqm5vipdXBFmKbvQXZHNywCchYsdajYR8w6bZWb58zDJoXaEIvD9kQNLpNw
+         bCyQ==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Bill Fink <billfink@mindspring.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, fw@strlen.de
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On Sun, 7 Jul 2013, Bill Fink wrote:
+Hi there,
 
-> I still have the remaining problem that the IPv6 expectation
-> is not successfully synced from the primary firewall to the
-> backup firewall.  I see the following error in conntrackd.log
-> on the backup firewall:
-> 
-> [Sun Jul  7 01:56:38 2013] (pid=24763) [ERROR] inject-add2: Invalid argument
-> Sun Jul  7 01:56:38 2013	300 proto=6 src=2001:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx dst=2001:yyyy:yyyy:yyyy:yyyy:yyyy:yyyy:yyyy sport=0 dport=39767 mask-src=ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff mask-dst=ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff sport=0 dport=65535 master-src=2001:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx master-dst=2001:yyyy:yyyy:yyyy:yyyy:yyyy:yyyy:yyyy sport=37484 dport=21 class=0 helper=ftp
-> 
-> This exactly matches the IPv6 expectation on the primary firewall:
-> 
-> [root@sen-fw1 ~]# conntrackd -i expect
-> proto=6 src=2001:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx dst=2001:yyyy:yyyy:yyyy:yyyy:yyyy:yyyy:yyyy sport=0 dport=39767 mask-src=ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff mask-dst=ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff sport=0 dport=65535 master-src=2001:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx:xxxx master-dst=2001:yyyy:yyyy:yyyy:yyyy:yyyy:yyyy:yyyy sport=37484 dport=21 class=0 helper=ftp [active since 9s]
-> 
-> IPv4 expectations are working fine.
-> 
-> I tried to track down the error, and followed the error path:
-> 
-> 	external_inject_exp_new() ->
-> 	  nl_create_expect()->
-> 	    nfexp_query() ->
-> 	      nfnl_query() ->
-> 		nfnl_catch() ->
-> 		  nfnl_process() ->
-> 		    nfnl_step() ->
-> 		      nfnl_is_error() because
-> 			nlh->nlmsg_type == NLMSG_ERROR
-> 
-> but I wasn't sure how to proceed further.
+We would like to use Ulogd's NFCT input for intelligent netflow-based 
+statistics reporting. The problem is that the netfilter_conntrack 
+doesn't process connections that don't go through the system (we have 
+noticed and found in man conntrack /TABLES), which we need to process 
+because of sniffing in promisc mode (we have forwarded traffic from 
+different vlans). This doesn't work even when we do something like:
+iptables -I PREROUTING -i eth9.10 -t raw -j CT
 
-I made some more progress, but still haven't found the root
-cause.  I put some printks in the nf_conntrack_netlink and
-nf_conntrack_ipv6 modules and tracked the error path there:
+In fact we're looking for an opposite of NOTRACK. Do you have any idea 
+how to setup or recompile the libnetfilter_conntrack or similar (ulogd2) 
+so we get also flows not destined for the system?
 
-	ctnetlink_new_expect() ->
-	  ctnetlink_create_expect() ->
-	    ctnetlink_parse_expect_nat() ->
-	      ctnetlink_parse_tuple() ->
-		ctnetlink_parse_tuple_ip() ->
-		  l3proto->nlattr_to_tuple() ->
-		    ipv6_nlattr_to_tuple() which fails
-
-because tb[CTA_IP_V6_SRC] and tb[CTA_IP_V6_DST] are null.
-
-But I'm currently stuck there.  Where are tb[CTA_IP_V6_SRC]
-and tb[CTA_IP_V6_DST] supposed to be set?  Is it in conntrackd
-during the build of the netlink message, or somewhere in one
-of the conntrack kernel modules during processing of the
-netlink message?  Is there a map somewhere of the control
-flow betwwen conntrackd and the conntrack kernel modules?
-
-I was also a little confused by the call to ctnetlink_parse_expect_nat()
-since I'm not using NAT.
-
-					-Thanks
-
-					-Bill
+Thank you, Petr
