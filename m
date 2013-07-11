@@ -1,67 +1,81 @@
-From: Bill Fink <billfink@mindspring.com>
-Subject: Re: conntrackd segfault on EPSV IPv6 ftp command when using ftp
- ExpectationSync
-Date: Thu, 11 Jul 2013 11:19:16 -0400
-Message-ID: <20130711111916.8a9b9d73.billfink@mindspring.com>
-References: <20130705020312.25783ccd.billfink@mindspring.com>
-	<20130706132333.GA3279@localhost>
-	<20130707030458.fbf22472.billfink@mindspring.com>
-	<20130709013023.2fb1fef1.billfink@mindspring.com>
-	<20130709182223.GA6266@localhost>
-	<20130710055815.a1bd2c1d.billfink@mindspring.com>
-	<20130710220820.GA20666@localhost>
-	<20130711004827.GA5500@localhost>
+From: "Nestor A. Diaz" <nestor@tiendalinux.com>
+Subject: Re: Clarification on the use of the statistic module
+Date: Thu, 11 Jul 2013 13:49:08 -0500
+Message-ID: <51DEFE24.8030601@tiendalinux.com>
+References: <51DD79C7.3080707@tiendalinux.com> <51DE7697.3020204@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20130711004827.GA5500@localhost>
+In-Reply-To: <51DE7697.3020204@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, fw@strlen.de
+To: netfilter@vger.kernel.org
 
-On Thu, 11 Jul 2013, Pablo Neira Ayuso wrote:
+Hi, thanks for your answer, as i understand the statistic module use a
+static counter that change everytime the packet traverse the chains, i
+though the counter got altered just one time while the packet traverse
+the chains.
 
-> On Thu, Jul 11, 2013 at 12:08:20AM +0200, Pablo Neira Ayuso wrote:
-> > On Wed, Jul 10, 2013 at 05:58:15AM -0400, Bill Fink wrote:
-> > > Almost there.  With the above patch, I now successfully get
-> > > IPv6 expectations on the backup firewall.  Unfortunately they're
-> > > not quite right.  On the backup firewall, the expectation src-IP
-> > > is the same as the dst-IP (either IPv4 or IPv6).
-> > > 
-> > > Primary firewall:
-> > > 
-> > > [root@sen-fw1 linux-3.7.3-101.fc17.x86_64]# conntrack -L expect
-> > > 251 proto=6 src=192.168.218.199 dst=192.168.28.198 sport=0 dport=54705 mask-src=255.255.255.255 mask-dst=255.255.255.255 sport=0 dport=65535 master-src=192.168.218.199 master-dst=192.168.28.198 sport=56877 dport=21 class=0 helper=ftp
-> > > conntrack v1.4.0 (conntrack-tools): 1 expectations have been shown.
-> > > 
-> > > Backup firewall:
-> > > 
-> > > [root@sen-fw2 linux-3.7.3-101.fc17.x86_64]# conntrack -L expect
-> > > 245 proto=6 src=192.168.28.198 dst=192.168.28.198 sport=0 dport=54705 mask-src=255.255.255.255 mask-dst=255.255.255.255 sport=0 dport=65535 master-src=192.168.218.199 master-dst=192.168.28.198 sport=56877 dport=21 class=0 helper=ftp
-> > > conntrack v1.4.0 (conntrack-tools): 1 expectations have been shown.
-> > > 
-> > > This was an unfortunate side affect of the patch to fix the
-> > > conntrackd segfault problem.  If I use Florian's version
-> > > of the fix segfault patch rather than Pablo's then all is
-> > > good.
-> > 
-> > Thanks for the information, however, we still need to get working back
-> > the filtering support.
-> > 
-> > Could you give a try to the following patch, please?
-> > 
-> > It applies on top of conntrack-tools master branch, thanks.
-> 
-> There are still some downsides in the previous solution, please, give
-> a try to this patch instead.
+According to your suggestion if i remove the line with the "-j ACCEPT"
+then the statistic log as I want and in fact it does.
 
-The firewalls are now in production, so I don't have the same freedom
-I did previously.  I'll check the patch out sometime after hours.
-Normally, this weekend would be a good time, but I'm going to be
-away this weekend.  So it might be a few days until I get a chance.
+However if i jump to a 'DNAT' directly, the problem persist as (50/25)
+it doesn't work as i have read from some websites
 
-Thanks again for all your (and Florian's) great help!
+# This doesn't work:
 
-						-Bill
+/sbin/iptables -t nat -A prerouting_rule -m statistic --mode nth --every
+2 --packet 0 -i eth0 -s 0.0.0.0/0 -d 192.168.1.1 -p tcp --dport 7100 -j
+DNAT --to-destination 192.168.2.20:7101
+/sbin/iptables -t nat -A prerouting_rule -m statistic --mode nth --every
+2 --packet 1 -i eth0 -s 0.0.0.0/0 -d 192.168.1.1 -p tcp --dport 7100 -j
+DNAT --to-destination 192.168.2.20:7102
+
+As solution if I want to jump to DNAT directly then i have to decrease
+the 'every' option as follows which do what i want:
+
+# This works:
+/sbin/iptables -t nat -A prerouting_rule -m statistic --mode nth --every
+2 --packet 0 -i eth0 -s 0.0.0.0/0 -d 192.168.1.1 -p tcp --dport 7100 -j
+DNAT --to-destination 192.168.2.20:7101
+/sbin/iptables -t nat -A prerouting_rule -m statistic --mode nth --every
+1 --packet 0 -i eth0 -s 0.0.0.0/0 -d 192.168.1.1 -p tcp --dport 7100 -j
+DNAT --to-destination 192.168.2.20:7102
+
+I am experimenting with the behavior and if I jump to custom chain which
+performs other operations like 'log' statistics keep working as
+expected. (50/50) however if i put a 'DNAT' rule things become (50/25),
+it seems DNAT affects the behavior but i don't know why,  Any
+explanation for this will be appreciated.
+
+# Still don't work:
+
+/sbin/iptables -t nat -N custom_chain_1
+/sbin/iptables -t nat -F custom_chain_1
+/sbin/iptables -t nat -A custom_chain_1 -j LOG --log-prefix
+20130711120831_packet_0
+/sbin/iptables -t nat -A custom_chain_1 -i eth0 -s 0.0.0.0/0 -d
+192.168.1.1 -p tcp --dport 7100 -j DNAT --to-destination 192.168.2.20:7101
+
+/sbin/iptables -t nat -N custom_chain_2
+/sbin/iptables -t nat -F custom_chain_2
+/sbin/iptables -t nat -A custom_chain_2 -j LOG --log-prefix
+20130711120831_packet_1
+/sbin/iptables -t nat -A custom_chain_2 -i eth0 -s 0.0.0.0/0 -d
+192.168.1.1 -p tcp --dport 7100 -j DNAT --to-destination 192.168.2.20:7102
+
+/sbin/iptables -t nat -A prerouting_rule -m statistic --mode nth --every
+2 --packet 0 -i eth0 -s 0.0.0.0/0 -d 192.168.1.1 -p tcp --dport 7100 -j
+custom_chain_1
+/sbin/iptables -t nat -A prerouting_rule -m statistic --mode nth --every
+2 --packet 1 -i eth0 -s 0.0.0.0/0 -d 192.168.1.1 -p tcp --dport 7100 -j
+custom_chain_2
+
+Slds.
+
+-- 
+Typed on my key64.org keyboard
+
+Nestor A Diaz
+
