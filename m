@@ -1,64 +1,44 @@
 From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: Clarification on the use of the statistic module
-Date: Thu, 11 Jul 2013 11:10:47 +0200
-Message-ID: <51DE7697.3020204@plouf.fr.eu.org>
-References: <51DD79C7.3080707@tiendalinux.com>
+Subject: Re: How to make conntrack to process all packets?
+Date: Thu, 11 Jul 2013 11:21:15 +0200
+Message-ID: <51DE790B.9070708@plouf.fr.eu.org>
+References: <51DC51CB.5050002@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <51DD79C7.3080707@tiendalinux.com>
+In-Reply-To: <51DC51CB.5050002@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: "Nestor A. Diaz" <nestor@tiendalinux.com>
+To: Petr Chmelar <chmelab@gmail.com>
 Cc: netfilter@vger.kernel.org
 
 Hello,
 
-Nestor A. Diaz a =E9crit :
+Petr Chmelar a =E9crit :
 >=20
-> /sbin/iptables -t nat -A prerouting_rule -i eth0 -p tcp --dport 7000 =
--m
-> state --state NEW -m statistic --mode nth --every 2 --packet 0 -j LOG
-> --log-prefix 20130710095901_packet_0
-> /sbin/iptables -t nat -A prerouting_rule -i eth0 -p tcp --dport 7000 =
--m
-> state --state NEW -m statistic --mode nth --every 2 --packet 0 -j ACC=
-EPT
-> /sbin/iptables -t nat -A prerouting_rule -i eth0 -p tcp --dport 7000 =
--m
-> state --state NEW -m statistic --mode nth --every 2 --packet 1 -j LOG
-> --log-prefix 20130710095901_packet_1
-> /sbin/iptables -t nat -A prerouting_rule -i eth0 -p tcp --dport 7000 =
--m
-> state --state NEW -m statistic --mode nth --every 2 --packet 1 -j ACC=
-EPT
-> # default
-> /sbin/iptables -t nat -A prerouting_rule -i eth0 -p tcp --dport 7000 =
--m
-> state --state NEW -j LOG --log-prefix 20130710095901_packet_2
-> /sbin/iptables -t nat -A prerouting_rule -i eth0 -p tcp --dport 7000 =
--m
-> state --state NEW -j ACCEPT
+> We would like to use Ulogd's NFCT input for intelligent netflow-based=
+=20
+> statistics reporting. The problem is that the netfilter_conntrack=20
+> doesn't process connections that don't go through the system (we have=
+=20
+> noticed and found in man conntrack /TABLES), which we need to process=
+=20
+> because of sniffing in promisc mode (we have forwarded traffic from=20
+> different vlans). This doesn't work even when we do something like:
+> iptables -I PREROUTING -i eth9.10 -t raw -j CT
 
-Note : the state match is useless here : by definition packets in the
-nat table cannot have any other state than NEW.
+=46rom reading the manpage, I do not think that CT without any option d=
+oes
+anything.
 
-> ./count_packets.sh 20130710093659
-> 0: 500
-> 1: 250
-> 2: 250
+> In fact we're looking for an opposite of NOTRACK. Do you have any ide=
+a=20
+> how to setup or recompile the libnetfilter_conntrack or similar (ulog=
+d2)=20
+> so we get also flows not destined for the system?
 
-Exactly as expected.
-
-> When i was expecting the following result:
->=20
-> 0: 500
-> 1: 500
-> 2: 0
->=20
-> What i am doing wrong ?
-
-You ACCEPT the packets matching the first statistic set, so they won't
-reach the second one. Therefore the second statistic set matches 50% of
-the remaining packets, i.e. 50% * 50% =3D 25%.
+IMO, you are looking in the wrong direction. The whole netfilter (not
+only conntrack) won't process packets not destined to the host because
+these packets do no reach the IP layer. A workaround may be to use a
+bridge with bridge-nf-call-iptables enabled.
