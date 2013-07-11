@@ -1,81 +1,64 @@
-From: "Nestor A. Diaz" <nestor@tiendalinux.com>
-Subject: Re: Clarification on the use of the statistic module
-Date: Thu, 11 Jul 2013 13:49:08 -0500
-Message-ID: <51DEFE24.8030601@tiendalinux.com>
-References: <51DD79C7.3080707@tiendalinux.com> <51DE7697.3020204@plouf.fr.eu.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <51DE7697.3020204@plouf.fr.eu.org>
-Sender: netfilter-owner@vger.kernel.org
+From: Dragos Foianu <dragos.foianu@gmail.com>
+Subject: [PATCH] ipvs: fixed style errors in ip_vs_dh
+Date: Thu, 11 Jul 2013 22:15:44 +0300
+Message-ID: <1373570144-4785-1-git-send-email-dragos.foianu@gmail.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=from:to:cc:subject:date:message-id:x-mailer;
+        bh=Q0Sa1nQaX2qgw5lnlwpFhEKVR5MIyUEFmW4+9CQr/zM=;
+        b=SUpG59jgZEfuy44Q15vYqieXtKLkHrGvvPc24t82DtsUm2Jx+7G1r/M02uMba3mblr
+         PFYxSYhVJrdNGvtEMWDXF08/4gd/bH21Q+bJHiJamoZc6jUAhgYzWKyygfPc3IhV4nLx
+         Oh26EMef0PS4zsF0OsRdm11GhJQxWGubyMew26S0pCyo21j8mQgesD1UyyQBAwUeFwvn
+         Ftf7NcfyNdFJ7DIcDeRuWSZ7EwpFSmVdMpcPOhOmHtq+5fGpBIq9UQ/01kNzepZBZmD/
+         y1pprWhoohRbOCdJxIehxuwdi9zKTRITSKjNDGY0O4z0w8C4lLJKejpNkpwvw+UJ/gZr
+         rb6A==
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: wensong@linux-vs.org
+Cc: horms@verge.net.au, ja@ssi.bg, pablo@netfilter.org, kaber@trash.net, kadlec@blackhole.kfki.hu, davem@davemloft.net, netdev@vger.kernel.org, lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org, Dragos Foianu <dragos.foianu@gmail.com>
 
-Hi, thanks for your answer, as i understand the statistic module use a
-static counter that change everytime the packet traverse the chains, i
-though the counter got altered just one time while the packet traverse
-the chains.
+found with the help of checkpatch.pl
 
-According to your suggestion if i remove the line with the "-j ACCEPT"
-then the statistic log as I want and in fact it does.
+Signed-off-by: Dragos Foianu <dragos.foianu@gmail.com>
+---
+ net/netfilter/ipvs/ip_vs_dh.c |    7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-However if i jump to a 'DNAT' directly, the problem persist as (50/25)
-it doesn't work as i have read from some websites
-
-# This doesn't work:
-
-/sbin/iptables -t nat -A prerouting_rule -m statistic --mode nth --every
-2 --packet 0 -i eth0 -s 0.0.0.0/0 -d 192.168.1.1 -p tcp --dport 7100 -j
-DNAT --to-destination 192.168.2.20:7101
-/sbin/iptables -t nat -A prerouting_rule -m statistic --mode nth --every
-2 --packet 1 -i eth0 -s 0.0.0.0/0 -d 192.168.1.1 -p tcp --dport 7100 -j
-DNAT --to-destination 192.168.2.20:7102
-
-As solution if I want to jump to DNAT directly then i have to decrease
-the 'every' option as follows which do what i want:
-
-# This works:
-/sbin/iptables -t nat -A prerouting_rule -m statistic --mode nth --every
-2 --packet 0 -i eth0 -s 0.0.0.0/0 -d 192.168.1.1 -p tcp --dport 7100 -j
-DNAT --to-destination 192.168.2.20:7101
-/sbin/iptables -t nat -A prerouting_rule -m statistic --mode nth --every
-1 --packet 0 -i eth0 -s 0.0.0.0/0 -d 192.168.1.1 -p tcp --dport 7100 -j
-DNAT --to-destination 192.168.2.20:7102
-
-I am experimenting with the behavior and if I jump to custom chain which
-performs other operations like 'log' statistics keep working as
-expected. (50/50) however if i put a 'DNAT' rule things become (50/25),
-it seems DNAT affects the behavior but i don't know why,  Any
-explanation for this will be appreciated.
-
-# Still don't work:
-
-/sbin/iptables -t nat -N custom_chain_1
-/sbin/iptables -t nat -F custom_chain_1
-/sbin/iptables -t nat -A custom_chain_1 -j LOG --log-prefix
-20130711120831_packet_0
-/sbin/iptables -t nat -A custom_chain_1 -i eth0 -s 0.0.0.0/0 -d
-192.168.1.1 -p tcp --dport 7100 -j DNAT --to-destination 192.168.2.20:7101
-
-/sbin/iptables -t nat -N custom_chain_2
-/sbin/iptables -t nat -F custom_chain_2
-/sbin/iptables -t nat -A custom_chain_2 -j LOG --log-prefix
-20130711120831_packet_1
-/sbin/iptables -t nat -A custom_chain_2 -i eth0 -s 0.0.0.0/0 -d
-192.168.1.1 -p tcp --dport 7100 -j DNAT --to-destination 192.168.2.20:7102
-
-/sbin/iptables -t nat -A prerouting_rule -m statistic --mode nth --every
-2 --packet 0 -i eth0 -s 0.0.0.0/0 -d 192.168.1.1 -p tcp --dport 7100 -j
-custom_chain_1
-/sbin/iptables -t nat -A prerouting_rule -m statistic --mode nth --every
-2 --packet 1 -i eth0 -s 0.0.0.0/0 -d 192.168.1.1 -p tcp --dport 7100 -j
-custom_chain_2
-
-Slds.
-
+diff --git a/net/netfilter/ipvs/ip_vs_dh.c b/net/netfilter/ipvs/ip_vs_dh.c
+index c3b8454..8ab2fc8 100644
+--- a/net/netfilter/ipvs/ip_vs_dh.c
++++ b/net/netfilter/ipvs/ip_vs_dh.c
+@@ -110,7 +110,7 @@ ip_vs_dh_reassign(struct ip_vs_dh_state *s, struct ip_vs_service *svc)
+ 	b = &s->buckets[0];
+ 	p = &svc->destinations;
+ 	empty = list_empty(p);
+-	for (i=0; i<IP_VS_DH_TAB_SIZE; i++) {
++	for (i = 0; i < IP_VS_DH_TAB_SIZE; i++) {
+ 		dest = rcu_dereference_protected(b->dest, 1);
+ 		if (dest)
+ 			ip_vs_dest_put(dest);
+@@ -142,7 +142,7 @@ static void ip_vs_dh_flush(struct ip_vs_dh_state *s)
+ 	struct ip_vs_dest *dest;
+ 
+ 	b = &s->buckets[0];
+-	for (i=0; i<IP_VS_DH_TAB_SIZE; i++) {
++	for (i = 0; i < IP_VS_DH_TAB_SIZE; i++) {
+ 		dest = rcu_dereference_protected(b->dest, 1);
+ 		if (dest) {
+ 			ip_vs_dest_put(dest);
+@@ -244,8 +244,7 @@ ip_vs_dh_schedule(struct ip_vs_service *svc, const struct sk_buff *skb,
+ /*
+  *      IPVS DH Scheduler structure
+  */
+-static struct ip_vs_scheduler ip_vs_dh_scheduler =
+-{
++static struct ip_vs_scheduler ip_vs_dh_scheduler = {
+ 	.name =			"dh",
+ 	.refcnt =		ATOMIC_INIT(0),
+ 	.module =		THIS_MODULE,
 -- 
-Typed on my key64.org keyboard
-
-Nestor A Diaz
-
+1.7.10.4
