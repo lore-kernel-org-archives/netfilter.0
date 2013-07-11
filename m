@@ -1,73 +1,64 @@
-From: Dragos Foianu <dragos.foianu@gmail.com>
-Subject: [PATCH] ipvs: fixed spacing at for statements
-Date: Thu, 11 Jul 2013 09:45:42 +0300
-Message-ID: <1373525142-9099-1-git-send-email-dragos.foianu@gmail.com>
-Return-path: <lvs-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=from:to:cc:subject:date:message-id:x-mailer;
-        bh=6CXIFuTzoQOwHLf5Wl6OoZcry92tbAFgoRUtgXTI6s0=;
-        b=qTornWUUGL8rN4G35jTsDdlK0zYW6KPy99IdVz7ktbidPX5ApSi2Xu719QGvJ7LbxY
-         rHH4UihzzcqYvKP5cmeSAzus66fcG2EBHrI0ZB3AUZPNQLGrQ3NsfKsH+/MhUxRGo7Ph
-         zp0M2WK8Wa/YP4ARj4hmPM2Qfg6uJMI+hWXtr/8qchPe8qSL06E5f4uQooyqQd+syoYA
-         UzCv8yMsQLgXZgBFzHF8pjdwG7ozTMTHmys2ZjRir3IYh6ytPQo7uV9HHwgt+C3da7T3
-         +Z97qakHxGNoi2MLq6HGSLIFyoPb5/kZSZFRuhiuwvXN3UpSXaFOjrCT2JHZbAJr4Y9E
-         0rIA==
-Sender: lvs-devel-owner@vger.kernel.org
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Subject: Re: Clarification on the use of the statistic module
+Date: Thu, 11 Jul 2013 11:10:47 +0200
+Message-ID: <51DE7697.3020204@plouf.fr.eu.org>
+References: <51DD79C7.3080707@tiendalinux.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <51DD79C7.3080707@tiendalinux.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: wensong@linux-vs.org
-Cc: linux-kernel@vger.kernel.org, coreteam@netfilter.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, lvs-devel@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net, kadlec@blackhole.kfki.hu, kaber@trash.net, pablo@netfilter.org, ja@ssi.bg, horms@verge.net.au, Dragos Foianu <dragos.foianu@gmail.com>
+Content-Type: text/plain; charset="iso-8859-1"
+To: "Nestor A. Diaz" <nestor@tiendalinux.com>
+Cc: netfilter@vger.kernel.org
 
-found using checkpatch.pl
+Hello,
 
-Signed-off-by: Dragos Foianu <dragos.foianu@gmail.com>
----
- net/netfilter/ipvs/ip_vs_lblcr.c |    8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+Nestor A. Diaz a =E9crit :
+>=20
+> /sbin/iptables -t nat -A prerouting_rule -i eth0 -p tcp --dport 7000 =
+-m
+> state --state NEW -m statistic --mode nth --every 2 --packet 0 -j LOG
+> --log-prefix 20130710095901_packet_0
+> /sbin/iptables -t nat -A prerouting_rule -i eth0 -p tcp --dport 7000 =
+-m
+> state --state NEW -m statistic --mode nth --every 2 --packet 0 -j ACC=
+EPT
+> /sbin/iptables -t nat -A prerouting_rule -i eth0 -p tcp --dport 7000 =
+-m
+> state --state NEW -m statistic --mode nth --every 2 --packet 1 -j LOG
+> --log-prefix 20130710095901_packet_1
+> /sbin/iptables -t nat -A prerouting_rule -i eth0 -p tcp --dport 7000 =
+-m
+> state --state NEW -m statistic --mode nth --every 2 --packet 1 -j ACC=
+EPT
+> # default
+> /sbin/iptables -t nat -A prerouting_rule -i eth0 -p tcp --dport 7000 =
+-m
+> state --state NEW -j LOG --log-prefix 20130710095901_packet_2
+> /sbin/iptables -t nat -A prerouting_rule -i eth0 -p tcp --dport 7000 =
+-m
+> state --state NEW -j ACCEPT
 
-diff --git a/net/netfilter/ipvs/ip_vs_lblcr.c b/net/netfilter/ipvs/ip_vs_lblcr.c
-index 3cd85b2..5199448 100644
---- a/net/netfilter/ipvs/ip_vs_lblcr.c
-+++ b/net/netfilter/ipvs/ip_vs_lblcr.c
-@@ -414,7 +414,7 @@ static void ip_vs_lblcr_flush(struct ip_vs_service *svc)
- 
- 	spin_lock_bh(&svc->sched_lock);
- 	tbl->dead = 1;
--	for (i=0; i<IP_VS_LBLCR_TAB_SIZE; i++) {
-+	for (i = 0; i < IP_VS_LBLCR_TAB_SIZE; i++) {
- 		hlist_for_each_entry_safe(en, next, &tbl->bucket[i], list) {
- 			ip_vs_lblcr_free(en);
- 		}
-@@ -440,7 +440,7 @@ static inline void ip_vs_lblcr_full_check(struct ip_vs_service *svc)
- 	struct ip_vs_lblcr_entry *en;
- 	struct hlist_node *next;
- 
--	for (i=0, j=tbl->rover; i<IP_VS_LBLCR_TAB_SIZE; i++) {
-+	for (i = 0, j = tbl->rover; i < IP_VS_LBLCR_TAB_SIZE; i++) {
- 		j = (j + 1) & IP_VS_LBLCR_TAB_MASK;
- 
- 		spin_lock(&svc->sched_lock);
-@@ -495,7 +495,7 @@ static void ip_vs_lblcr_check_expire(unsigned long data)
- 	if (goal > tbl->max_size/2)
- 		goal = tbl->max_size/2;
- 
--	for (i=0, j=tbl->rover; i<IP_VS_LBLCR_TAB_SIZE; i++) {
-+	for (i = 0, j = tbl->rover; i < IP_VS_LBLCR_TAB_SIZE; i++) {
- 		j = (j + 1) & IP_VS_LBLCR_TAB_MASK;
- 
- 		spin_lock(&svc->sched_lock);
-@@ -536,7 +536,7 @@ static int ip_vs_lblcr_init_svc(struct ip_vs_service *svc)
- 	/*
- 	 *    Initialize the hash buckets
- 	 */
--	for (i=0; i<IP_VS_LBLCR_TAB_SIZE; i++) {
-+	for (i = 0; i < IP_VS_LBLCR_TAB_SIZE; i++) {
- 		INIT_HLIST_HEAD(&tbl->bucket[i]);
- 	}
- 	tbl->max_size = IP_VS_LBLCR_TAB_SIZE*16;
--- 
-1.7.10.4
+Note : the state match is useless here : by definition packets in the
+nat table cannot have any other state than NEW.
 
+> ./count_packets.sh 20130710093659
+> 0: 500
+> 1: 250
+> 2: 250
+
+Exactly as expected.
+
+> When i was expecting the following result:
+>=20
+> 0: 500
+> 1: 500
+> 2: 0
+>=20
+> What i am doing wrong ?
+
+You ACCEPT the packets matching the first statistic set, so they won't
+reach the second one. Therefore the second statistic set matches 50% of
+the remaining packets, i.e. 50% * 50% =3D 25%.
