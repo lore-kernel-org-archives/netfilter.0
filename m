@@ -1,128 +1,86 @@
-From: Emilio Lazo Zaia <emiliolazozaia@gmail.com>
-Subject: Re: Clarification on the use of the statistic module
-Date: Fri, 12 Jul 2013 02:07:44 -0430
-Message-ID: <51DFA438.6000504@gmail.com>
-References: <51DD79C7.3080707@tiendalinux.com> <51DE7697.3020204@plouf.fr.eu.org> <51DEFE24.8030601@tiendalinux.com>
+From: Bill Fink <billfink@mindspring.com>
+Subject: Re: conntrackd segfault on EPSV IPv6 ftp command when using ftp
+ ExpectationSync
+Date: Fri, 12 Jul 2013 03:01:14 -0400
+Message-ID: <20130712030114.0362fb5a.billfink@mindspring.com>
+References: <20130705020312.25783ccd.billfink@mindspring.com>
+	<20130706132333.GA3279@localhost>
+	<20130707030458.fbf22472.billfink@mindspring.com>
+	<20130709013023.2fb1fef1.billfink@mindspring.com>
+	<20130709182223.GA6266@localhost>
+	<20130710055815.a1bd2c1d.billfink@mindspring.com>
+	<20130710220820.GA20666@localhost>
+	<20130711004827.GA5500@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=message-id:date:from:user-agent:mime-version:to:cc:subject
-         :references:in-reply-to:content-type:content-transfer-encoding;
-        bh=9ysH4l0tiftW3oen8A7veI62UJLDG+X9rv2m1q6wcjs=;
-        b=1EG13rg757BE3800ItxdFfqdeVGA+lf9IfU/JCf36nCJW2YkS6NJGcfk0YiTwv+R2U
-         t1I9ugOCgYxk2xMSE0B3GLIxNOvxammOQ3CdgJlTvkXWx0MvAGx3AnvdXkpKOsD6hct5
-         54O+hEVxSgg60j/RvMOwkp5pL2/RLbLr10EiDGrYDcirUqoI8cZIhvFwADYidi+MKNwg
-         M/cT4IGrNqY7YatcaIaTKKPfIVwpIvOi26eURgU70+/JpcdusFRC0j0szI3mhap1dqum
-         eBYsFoCCtBWgr9mPpbchyh89/gGXFIt86ogAkeiHKom4ODA+r+KRpZOIXyvGwIENymT0
-         413Q==
-In-Reply-To: <51DEFE24.8030601@tiendalinux.com>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <20130711004827.GA5500@localhost>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: "Nestor A. Diaz" <nestor@tiendalinux.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, fw@strlen.de
 
-N=C3=A9stor,
+Pablo,
 
-=46irst pair or rules (LOG+ACCEPT) matchs on 50% of all packets, all th=
-e=20
-remaining rules matchs on the other 50%, so if you use again statistic,=
-=20
-it will create a new statistic starting with 50% of the total.
+On Thu, 11 Jul 2013, Pablo Neira Ayuso wrote:
 
-E.g. first packet match first pair or rules, second packet match second=
-=20
-rule, third packet match again _first_ rule, fourth packet match third=20
-rule (50% + 25% + 25% -> 500 + 250 + 250 packets).
+> On Thu, Jul 11, 2013 at 12:08:20AM +0200, Pablo Neira Ayuso wrote:
+> > On Wed, Jul 10, 2013 at 05:58:15AM -0400, Bill Fink wrote:
+> > > Almost there.  With the above patch, I now successfully get
+> > > IPv6 expectations on the backup firewall.  Unfortunately they're
+> > > not quite right.  On the backup firewall, the expectation src-IP
+> > > is the same as the dst-IP (either IPv4 or IPv6).
+> > > 
+> > > Primary firewall:
+> > > 
+> > > [root@sen-fw1 linux-3.7.3-101.fc17.x86_64]# conntrack -L expect
+> > > 251 proto=6 src=192.168.218.199 dst=192.168.28.198 sport=0 dport=54705 mask-src=255.255.255.255 mask-dst=255.255.255.255 sport=0 dport=65535 master-src=192.168.218.199 master-dst=192.168.28.198 sport=56877 dport=21 class=0 helper=ftp
+> > > conntrack v1.4.0 (conntrack-tools): 1 expectations have been shown.
+> > > 
+> > > Backup firewall:
+> > > 
+> > > [root@sen-fw2 linux-3.7.3-101.fc17.x86_64]# conntrack -L expect
+> > > 245 proto=6 src=192.168.28.198 dst=192.168.28.198 sport=0 dport=54705 mask-src=255.255.255.255 mask-dst=255.255.255.255 sport=0 dport=65535 master-src=192.168.218.199 master-dst=192.168.28.198 sport=56877 dport=21 class=0 helper=ftp
+> > > conntrack v1.4.0 (conntrack-tools): 1 expectations have been shown.
+> > > 
+> > > This was an unfortunate side affect of the patch to fix the
+> > > conntrackd segfault problem.  If I use Florian's version
+> > > of the fix segfault patch rather than Pablo's then all is
+> > > good.
+> > 
+> > Thanks for the information, however, we still need to get working back
+> > the filtering support.
+> > 
+> > Could you give a try to the following patch, please?
+> > 
+> > It applies on top of conntrack-tools master branch, thanks.
+> 
+> There are still some downsides in the previous solution, please, give
+> a try to this patch instead.
 
-As Pascal said, you will need to remove the statistic match on the=20
-second pair.
+It appears to work pretty well and does fix the src-IP issue!
 
-On 11.07.2013 14:19, Nestor A. Diaz wrote:
-> Hi, thanks for your answer, as i understand the statistic module use =
-a
-> static counter that change everytime the packet traverse the chains, =
-i
-> though the counter got altered just one time while the packet travers=
-e
-> the chains.
->
-> According to your suggestion if i remove the line with the "-j ACCEPT=
-"
-> then the statistic log as I want and in fact it does.
->
-> However if i jump to a 'DNAT' directly, the problem persist as (50/25=
-)
-> it doesn't work as i have read from some websites
->
-> # This doesn't work:
->
-> /sbin/iptables -t nat -A prerouting_rule -m statistic --mode nth --ev=
-ery
-> 2 --packet 0 -i eth0 -s 0.0.0.0/0 -d 192.168.1.1 -p tcp --dport 7100 =
--j
-> DNAT --to-destination 192.168.2.20:7101
-> /sbin/iptables -t nat -A prerouting_rule -m statistic --mode nth --ev=
-ery
-> 2 --packet 1 -i eth0 -s 0.0.0.0/0 -d 192.168.1.1 -p tcp --dport 7100 =
--j
-> DNAT --to-destination 192.168.2.20:7102
->
-> As solution if I want to jump to DNAT directly then i have to decreas=
-e
-> the 'every' option as follows which do what i want:
->
-> # This works:
-> /sbin/iptables -t nat -A prerouting_rule -m statistic --mode nth --ev=
-ery
-> 2 --packet 0 -i eth0 -s 0.0.0.0/0 -d 192.168.1.1 -p tcp --dport 7100 =
--j
-> DNAT --to-destination 192.168.2.20:7101
-> /sbin/iptables -t nat -A prerouting_rule -m statistic --mode nth --ev=
-ery
-> 1 --packet 0 -i eth0 -s 0.0.0.0/0 -d 192.168.1.1 -p tcp --dport 7100 =
--j
-> DNAT --to-destination 192.168.2.20:7102
->
-> I am experimenting with the behavior and if I jump to custom chain wh=
-ich
-> performs other operations like 'log' statistics keep working as
-> expected. (50/50) however if i put a 'DNAT' rule things become (50/25=
-),
-> it seems DNAT affects the behavior but i don't know why,  Any
-> explanation for this will be appreciated.
->
-> # Still don't work:
->
-> /sbin/iptables -t nat -N custom_chain_1
-> /sbin/iptables -t nat -F custom_chain_1
-> /sbin/iptables -t nat -A custom_chain_1 -j LOG --log-prefix
-> 20130711120831_packet_0
-> /sbin/iptables -t nat -A custom_chain_1 -i eth0 -s 0.0.0.0/0 -d
-> 192.168.1.1 -p tcp --dport 7100 -j DNAT --to-destination 192.168.2.20=
-:7101
->
-> /sbin/iptables -t nat -N custom_chain_2
-> /sbin/iptables -t nat -F custom_chain_2
-> /sbin/iptables -t nat -A custom_chain_2 -j LOG --log-prefix
-> 20130711120831_packet_1
-> /sbin/iptables -t nat -A custom_chain_2 -i eth0 -s 0.0.0.0/0 -d
-> 192.168.1.1 -p tcp --dport 7100 -j DNAT --to-destination 192.168.2.20=
-:7102
->
-> /sbin/iptables -t nat -A prerouting_rule -m statistic --mode nth --ev=
-ery
-> 2 --packet 0 -i eth0 -s 0.0.0.0/0 -d 192.168.1.1 -p tcp --dport 7100 =
--j
-> custom_chain_1
-> /sbin/iptables -t nat -A prerouting_rule -m statistic --mode nth --ev=
-ery
-> 2 --packet 1 -i eth0 -s 0.0.0.0/0 -d 192.168.1.1 -p tcp --dport 7100 =
--j
-> custom_chain_2
->
-> Slds.
->
+I did notice a couple of other things but they're not necessarily
+related to these patches.  I noticed that my long lived BGP tcp
+connection was getting some duplicate conntrackd ct entries (both
+IPv4 and IPv6).  The duplicate ct entry occurred 60 seconds after
+the original, and once I saw a second duplicate ct IPv4 entry,
+again with about a 60 second separation.
 
+And on the expectation entries, they seem to have a lifetime
+of 300 seconds.  The IPv6 expectation entries are deleted after
+the 300 seconds as expected, but the IPv4 expectation entries
+actually go away in a minute or less.  I don't know if that
+is expected behavior or not.  Note I was leaving the ftp
+control connection open the entire time.  Also it may have
+just been my imagination, but it seemed if I queried it more
+often with "conntrack -L expect" it would stick around somewhat
+longer (but would go away within the minute).
+
+As I mentioned in my previous e-mail, I will be away for the
+weekend.
+
+					-Thanks
+
+					-Bill
