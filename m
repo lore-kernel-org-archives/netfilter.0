@@ -1,66 +1,30 @@
-From: "podo" <podo@hnup.de>
-Subject: Limit rule for ICMP not working properly?
-Date: Thu, 18 Jul 2013 18:55:58 +0200
-Message-ID: <002e01ce83d7$ad77f410$0867dc30$@hnup.de>
+From: higkoohk <higkoohk@gmail.com>
+Subject: How to use a random IP from a pool of static IPs for outgoing traffic
+Date: Fri, 19 Jul 2013 11:36:58 +0800
+Message-ID: <CAMkC2Wjqx_R=_LCRnjiE1ppZYm+73ATjrLT0+C=UEw+Bp=gBMg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-us
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=F8U2anYXut7+NVzuJKgkiSm6B+Sq7YhpjwG4Th5F6ao=;
+        b=HCW+7sh/blAklJrBIox4Sd5W3zDJPjqxiES+7qk2pHwczrYa1u+xCVTMwJd2b3WCoX
+         j8pLEL30edC+LTQnJPNniIRHRaZ9cIKZ73y2o6/27LHDMXYH6Qbn5RMDN1EsYbdt9i2w
+         k67cy/oZNvdltehoEewbvoKJiWjQEyXUwvtijE+bg9nM2QKN297d/+zKqTkG/0cscAjR
+         V5P+QErgG3F19jXNOg4A3Nss2jG/++WxMynt2xInnhureQHnTSEQM+uvoLn+oUjr1e4Z
+         Y2/2cronejSfBMHVncH+9UDicNtjyGK9nU1XhjEdmUFsdOi70tsojT0B1zhg3AX+wyom
+         4kjw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello all,
+I have a linux server , use iptables as nat router.
 
-I have a problem with the limit module. The goal is to limit the incoming
-ICMP echo-requests to max 1/s.
-The following rule does it (as example using the INPUT) :
+This server has many public static IPs , but the machines in LAN
+always use the default public ip as route.
 
--A INPUT -p icmp -m icmp --icmp-type 8 -m limit --limit 1/sec -j ACCEPT
+We need random use out going IPs .
 
-The above is working fine. But when there is a rule for accepting the
-ESTABLISHED packets, the limit does not work:
-
--A INPUT -p icmp -m icmp --icmp-type 8 -m limit --limit 1/sec -j ACCEPT
--A INPUT -m state --state ESTABLISHED -j ACCEPT
-
-With these 2 rules the limit does not work...
-
-Using the "iptables -A INPUT -m state --state ESTABLISHED -p ICMP -j ACCEPT"
-and  "watch -d -n 1  iptables -nvL" is showing, that all the ICMP
-echo-requests from the same host are being considered ESTABLISHED.
-
-I am not sure, but I think after sending the ICMP echo-reply the session
-should be closed. With new echo-request a new session is opened.
-
-Please could somebody confirm, if this behavior is correct ? And if yes
-please explain ?
-
-See also:
-
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=598513
-
-and from
-"http://www.netfilter.org/documentation/HOWTO//packet-filtering-HOWTO-7.html
-" :
-
-"ESTABLISHED
- A packet which belongs to an existing connection (i.e., a reply 
-packet, or outgoing packet on a connection which has seen replies)."
-
-And from "http://www.lug.or.kr/docs/iptables-tutorial/onepage/" :
-
-"The reply packet is considered as being ESTABLISHED, as we have already 
-explained. However, we can know for sure that after the ICMP reply, 
-there will be absolutely no more legal traffic in the same connection. 
-For this reason, the connection tracking entry is destroyed once the 
-reply has traveled all the way through the Netfilter structure."
-
-I am using iptables v1.4.14.
-
-Thanks in advance,
-Regards,
-Podo.
-
-
+ Anybody know howto with iptables ?
