@@ -1,7 +1,7 @@
 From: Alexey Perevalov <a.perevalov@samsung.com>
-Subject: [PATCH 3/4] iptables: Use DEBUGP macro from trace.h
-Date: Thu, 25 Jul 2013 13:23:48 +0400
-Message-ID: <1374744229-5427-4-git-send-email-a.perevalov@samsung.com>
+Subject: [PATCH 2/4] extensions: Use DEBUGP macro from trace.h
+Date: Thu, 25 Jul 2013 13:23:47 +0400
+Message-ID: <1374744229-5427-3-git-send-email-a.perevalov@samsung.com>
 References: <1374744229-5427-1-git-send-email-a.perevalov@samsung.com>
 Return-path: <netfilter-devel-owner@vger.kernel.org>
 In-reply-to: <1374744229-5427-1-git-send-email-a.perevalov@samsung.com>
@@ -15,65 +15,61 @@ Cc: pablo@netfilter.org, netfilter@vger.kernel.org, Alexey Perevalov <a.perevalo
 
 Signed-off-by: Alexey Perevalov <a.perevalov@samsung.com>
 ---
- iptables/ip6tables-restore.c |    7 +------
- iptables/iptables-restore.c  |    7 +------
- iptables/iptables-xml.c      |    7 +------
- 3 files changed, 3 insertions(+), 18 deletions(-)
+ extensions/libxt_dccp.c |    8 +-------
+ extensions/libxt_sctp.c |    8 +-------
+ extensions/libxt_set.c  |    1 +
+ 3 files changed, 3 insertions(+), 14 deletions(-)
 
-diff --git a/iptables/ip6tables-restore.c b/iptables/ip6tables-restore.c
-index b8b9e0d..2f08640 100644
---- a/iptables/ip6tables-restore.c
-+++ b/iptables/ip6tables-restore.c
-@@ -18,12 +18,7 @@
- #include "xtables.h"
- #include "libiptc/libip6tc.h"
- #include "ip6tables-multi.h"
+diff --git a/extensions/libxt_dccp.c b/extensions/libxt_dccp.c
+index 06cd23d..13a6451 100644
+--- a/extensions/libxt_dccp.c
++++ b/extensions/libxt_dccp.c
+@@ -15,13 +15,7 @@
+ #include <linux/dccp.h>
+ #include <linux/netfilter/x_tables.h>
+ #include <linux/netfilter/xt_dccp.h>
 -
 -#ifdef DEBUG
--#define DEBUGP(x, args...) fprintf(stderr, x, ## args)
+-#define DEBUGP(format, first...) printf(format, ##first)
+-#define static
 -#else
--#define DEBUGP(x, args...)
+-#define DEBUGP(format, fist...)
 -#endif
 +#include "trace.h"
  
- static int binary = 0, counters = 0, verbose = 0, noflush = 0;
- 
-diff --git a/iptables/iptables-restore.c b/iptables/iptables-restore.c
-index 8c942ff..611049b 100644
---- a/iptables/iptables-restore.c
-+++ b/iptables/iptables-restore.c
-@@ -15,12 +15,7 @@
- #include "xtables.h"
- #include "libiptc/libiptc.h"
- #include "iptables-multi.h"
--
--#ifdef DEBUG
--#define DEBUGP(x, args...) fprintf(stderr, x, ## args)
--#else
--#define DEBUGP(x, args...)
--#endif
-+#include "trace.h"
- 
- static int binary = 0, counters = 0, verbose = 0, noflush = 0;
- 
-diff --git a/iptables/iptables-xml.c b/iptables/iptables-xml.c
-index 4b12bd4..79eba8d 100644
---- a/iptables/iptables-xml.c
-+++ b/iptables/iptables-xml.c
-@@ -16,12 +16,7 @@
- #include "libiptc/libiptc.h"
- #include "xtables-multi.h"
+ enum {
+ 	O_SOURCE_PORT = 0,
+diff --git a/extensions/libxt_sctp.c b/extensions/libxt_sctp.c
+index f5959cb..dab59d5 100644
+--- a/extensions/libxt_sctp.c
++++ b/extensions/libxt_sctp.c
+@@ -19,13 +19,7 @@
  #include <xtables.h>
+ 
+ #include <linux/netfilter/xt_sctp.h>
 -
--#ifdef DEBUG
--#define DEBUGP(x, args...) fprintf(stderr, x, ## args)
+-#if DEBUG
+-#define DEBUGP(format, first...) printf(format, ##first)
+-#define static
 -#else
--#define DEBUGP(x, args...)
+-#define DEBUGP(format, fist...)
 -#endif
 +#include "trace.h"
  
- struct xtables_globals iptables_xml_globals = {
- 	.option_offset = 0,
+ static void
+ print_chunk(uint32_t chunknum, int numeric);
+diff --git a/extensions/libxt_set.c b/extensions/libxt_set.c
+index 2cb9e78..4099541 100644
+--- a/extensions/libxt_set.c
++++ b/extensions/libxt_set.c
+@@ -21,6 +21,7 @@
+ #include <xtables.h>
+ #include <linux/netfilter/xt_set.h>
+ #include "libxt_set.h"
++#include "trace.h"
+ 
+ /* Revision 0 */
+ 
 -- 
 1.7.9.5
 
