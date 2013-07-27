@@ -1,51 +1,60 @@
-From: Pascal Hambourg <pascal@plouf.fr.eu.org>
+From: Christoph Anton Mitterer 
+	<christoph.anton.mitterer@physik.uni-muenchen.de>
 Subject: Re: dropping UNTRACKED packets, breaks IPv6 - why?
-Date: Sat, 27 Jul 2013 21:49:37 +0200
-Message-ID: <51F42451.9010308@plouf.fr.eu.org>
+Date: Sat, 27 Jul 2013 22:53:21 +0200
+Message-ID: <1374958401.5194.13.camel@fermat.scientia.net>
 References: <1374803962.5489.12.camel@fermat.scientia.net>
+	 <51F42451.9010308@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1374803962.5489.12.camel@fermat.scientia.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+	physik.uni-muenchen.de; h=content-transfer-encoding:x-mailer
+	:mime-version:message-id:date:date:organization:content-type
+	:content-type:references:in-reply-to:from:from:subject:subject
+	:received:received; s=sel-2011; t=1374958403; bh=VEQE541qdsKCgcp
+	GLRV/WDjeBsyDZUTH4JINCywRxzM=; b=QqqdijHOhhKLZJTKj4iy+nFFDtF/XDY
+	jXiDeZstr0orb5WEC49lPUs6L9H4+Vhr7iwsOpzLfPiEsal6qUydizzVl3CynSwx
+	ze2PfAniIILIpId2+v8CCTkP5M4pDh4ky/fk588mgIWOa7V8V66tMHGp3FHv7R/I
+	pzm1xeaAih+Y=
+In-Reply-To: <51F42451.9010308@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Christoph Anton Mitterer <christoph.anton.mitterer@physik.uni-muenchen.de>
+Content-Type: text/plain; charset="us-ascii"
+To: Pascal Hambourg <pascal@plouf.fr.eu.org>
 Cc: netfilter <netfilter@vger.kernel.org>
 
-Hello,
+Hi Pascal.
 
-Christoph Anton Mitterer a =E9crit :
->=20
-> The idea with dropping the UNTRACKED/INVALID was that such packages a=
-re
-> probably not good fellows and should stay out...
 
-You should not blindly drop UNTRACKED or INVALID IPv6 packets.
+On Sat, 2013-07-27 at 21:49 +0200, Pascal Hambourg wrote:
+> You should not blindly drop UNTRACKED or INVALID IPv6 packets.
+I see,... thanks.
+Why not INVALID IPv6 packets? AFAICS, the patch you've mentioned only
+removes tracking for these kinds of packets, but doesn't mark them
+invalid.
 
-Originally, ICMPv6 types related to NDP (Neighbour Discovery Protocol),
-i.e. Router Solicitation and Router Advertisement (used for stateless
-autoconfiguration), Neighbour Solicitation and Neighbour Advertisement
-(used as a replacement for ARP request and reply), and a few others had
-the INVALID state. However these types are required for proper IPv6
-operation on ethernet-like links. Since kernel 2.6.29, they are not
-tracked any more and have the UNTRACKED state. See the commit below.
 
-commit 3f9007135c1dc896db9a9e35920aafc65b157230
-Author: Eric Leblond <eric@inl.fr>
-Date:   Mon Feb 9 14:33:20 2009 -0800
+1) So... are there any other reasonable default rules one should make
+for IPv6 (or IPv4) then?
+I guess the kernel itself already assures that any address of his own
+interfaces are not accepted as source address for packages coming over
+the wire? I.e. to prevent spoofing of the hosts own addresses.
 
-    netfilter: nf_conntrack_ipv6: don't track ICMPv6 negotiation messag=
-e
+2) What about INVALID/UNTRACKED with respect to IPv4? Is it there still
+advisable to DROP them unconditionally?
 
-    This patch removes connection tracking handling for ICMPv6 messages
-    related to Stateless Address Autoconfiguration, MLD, and MLDv2. The=
-y
-    can not be tracked because they are massively using multicast (on
-    pre-defined address). But they are not invalid and should not be
-    detected as such.
 
-    Signed-off-by: Eric Leblond <eric@inl.fr>
-    Signed-off-by: Patrick McHardy <kaber@trash.net>
-    Signed-off-by: David S. Miller <davem@davemloft.net>
+Oh and btw: Does the IPsec handling I do still work with IPv6 or has
+anything changed there as well?
+
+I.e. the idea is that I jump to the ipsec-only-in/out chain for any
+source/destination host with that I want to accept only
+incoming/outgoing packages when they're IPsec'ed.
+The jump happens of course before the:
+-A INPUT        -m state  --state ESTABLISHED,RELATED   -j ACCEPT
+
+
+Thanks,
+Chris.
 
