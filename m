@@ -1,62 +1,54 @@
-From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: dropping UNTRACKED packets, breaks IPv6 - why?
-Date: Sun, 28 Jul 2013 09:51:03 +0200
-Message-ID: <51F4CD67.8010600@plouf.fr.eu.org>
-References: <1374803962.5489.12.camel@fermat.scientia.net>	 <51F42451.9010308@plouf.fr.eu.org> <1374958401.5194.13.camel@fermat.scientia.net>
+From: Al Grant <bigal.nz@gmail.com>
+Subject: SNAT (again)
+Date: Tue, 30 Jul 2013 06:02:50 +1200
+Message-ID: <CAODtcdcOmJ8UYxGetn7M=JEQ1pwgz-104LbBFnJ+OKnDiqeW2g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1374958401.5194.13.camel@fermat.scientia.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=lO7/v+7dUc8o6DNWjenpJBPAE8U2MeEeUMqj6a+o3vo=;
+        b=ZYwEQ0AfFemA4ThNXsr7qSNScC0eTiIEmec8K7wDNq4GnMPPM4lmiva+FgSgOYPQP2
+         BVNHW6E7UpTNOR0MCxHOwYGv6wWsxHVPzAmzAyjBhnpidcn5QlbAi69XoS+Gk1Qit3AU
+         IIzuGSukzaTn9TZFjXG+GHBUjWHLuTKL7+vqepweanNMwxtRDj57OU4WazbP+ym5b9BG
+         tkhUXN90WCP2UmdsBhunkxnoxAahkElsUC7jlMlZ88VcvyxUbgwXCrH9ID5dovgKOr3h
+         0ROz4J7/JPg1RBNyjhCgspkUkFLgRMsnn49NCxN6HGKxFT/FQtQPum4mtyc4jusE+FMl
+         EknQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Christoph Anton Mitterer <christoph.anton.mitterer@physik.uni-muenchen.de>
-Cc: netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@vger.kernel.org>
 
-Christoph Anton Mitterer a =E9crit :
->=20
-> On Sat, 2013-07-27 at 21:49 +0200, Pascal Hambourg wrote:
->> You should not blindly drop UNTRACKED or INVALID IPv6 packets.
->=20
-> Why not INVALID IPv6 packets? AFAICS, the patch you've mentioned only
-> removes tracking for these kinds of packets, but doesn't mark them
-> invalid.
+ Hi Folks,
 
-Because before the patch, older kernels marked NDP packets INVALID.
+I have a network that is setup in the following way:
 
-> 1) So... are there any other reasonable default rules one should make
-> for IPv6 (or IPv4) then?
+www.dropbox.com/s/dt7q9owe5y997ug/Drawing1%20%282%29.jpg
 
-Sure. On an ethernet-like interface, accept the following ICMPv6 types,
-with hop limit 255 as these packets are link-local only :
-- neighbour solicitation and neighbour advertisement in both directions
-- router solicitation in output and router advertisement in input if th=
-e
-box is an IPv6 host using stateless autoconfiguration
-- router solicitation in input and router advertisement in output if th=
-e
-box is an IPv6 router with radvd or the like listening on this interfac=
-e.
-Then you can drop anything else you (don't) like.
+As you can see in the drawing I am trying to access a SMB share over a
+port forward (DNAT). The issue is that the source address does not get
+changed on the packet and when 192.168.150.100 goes to reply to
+192.168.0.101 it drops the packet as it does not know where to send
+it.
 
-> I guess the kernel itself already assures that any address of his own
-> interfaces are not accepted as source address for packages coming ove=
-r
-> the wire? I.e. to prevent spoofing of the hosts own addresses.
+I need to add a SNAT rule to iptables in the Air Router.
 
-Yes.
+I am not good with iptables but think it would be something like:
 
-> 2) What about INVALID/UNTRACKED with respect to IPv4? Is it there sti=
-ll
-> advisable to DROP them unconditionally?
+iptables -t NAT -A POSTROUTING -o Br0 -J SNAT --to-source 192.168.150.243
 
-AFAIK, IPv4 has nothing like NDP, so
-- INVALID : normally, yes.
-- UNTRACKED : AFAIK, it can only be the result of the NOTRACK target, s=
-o
-you would know about it.
+This should change the source of the packet to 192.168.150.243. Any
+advances on that? At the moment it does not seem to be changing the
+src.
 
-> Oh and btw: Does the IPsec handling I do still work with IPv6 or has
-> anything changed there as well?
+I KNOW there are better ways to do it with new hardware etc, but there
+constraints on solving this problem such that I need to NAT/SNAT.
 
-I don't use IPSec and don't know about its handling by iptables.
+Cheers
+
+-Al
+
+-- 
+"Beat it punk!"
+- Clint Eastwood
