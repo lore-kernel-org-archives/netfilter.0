@@ -1,58 +1,62 @@
-From: "Adam N." <adam.n@justnet.pl>
-Subject: Re: Conntrackd and Stats
-Date: Thu, 01 Aug 2013 11:23:09 +0200
-Message-ID: <d22255983d977623c2cb29dedbd9e717@justnet.pl>
-References: <ebed8973f57495e3091005d880fcb4ca@justnet.pl>
- <1375345894.11948.5.camel@ice-age.regit.org>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] netfilter: information leaks building packet message
+Date: Thu, 1 Aug 2013 12:36:57 +0300
+Message-ID: <20130801093656.GA12455@elgon.mountain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=justnet.pl; s=dkim;
-	h=Message-ID:References:In-Reply-To:Subject:Cc:To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version; bh=3e2o108TF2D7WW4q7PtikYGrvRve/T1blqOgw+Ho+/4=;
-	b=fZJxgVY8QPb3c89HB4lZnMfWESd92nffHSdGX6BYyyyWLtjetGkfhmOKoWBfNvWnmYLVaIjtOpwkXrv6plwt95EqaeKu5MCmeeC2CFaR9adCCF4Sgf239DSrFK8all2YAyxR6vQN+SXLSvN3CQRge9bcfFq1+TEJvYTA8W/yZMc=;
-In-Reply-To: <1375345894.11948.5.camel@ice-age.regit.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Eric Leblond <eric@regit.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org
 
-W dniu 01.08.2013 10:31, Eric Leblond napisa=C5=82(a):
+These structs have a "_pad" member.  Also the "phw" structs have an 8
+byte "hw_addr[]" array but sometimes only the first 6 bytes are
+initialized.
 
-> Hi,
->=20
-> Le jeudi 01 ao=C3=BBt 2013 =C3=A0 09:46 +0200, Adam N. a =C3=A9crit :
->=20
->> Hello everyone, At the beginning I would like to thank everyone for=20
->> the work put into the project netfilter.
->=20
-> Thanks Adam :)
->=20
->> We use conntrackd projekt to save NAT connections. Recently we notic=
-ed=20
->> that with the change of the kernel version also changed format logs(=
-=20
->> disappeared amount of transferred packets and bytes). My question is=
-:=20
->> Is it possible to restore the record containing the number of packet=
-s=20
->> and bytes transferred in connection?
->=20
-> You can do
-> echo "1" > /proc/sys/net/netfilter/nf_conntrack_acct
->=20
-> If you want to have start time of the conntrack entries, you can also=
-=20
-> do
->=20
-> echo "1" > /proc/sys/net/netfilter/nf_conntrack_timestamp
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+Applies to -next and -mainline.
 
-Thank you very much
-you know in what version of the kernel was presented=20
-nf_conntrack_timestamp?
-
-In order not to ask unnecessary questions in the future, are somewhere=20
-information about such changes, except for the kernel sources :)
-
-Pozdrawiam,
-Adam N.
+diff --git a/net/netfilter/nfnetlink_log.c b/net/netfilter/nfnetlink_log.c
+index 962e979..d92cc31 100644
+--- a/net/netfilter/nfnetlink_log.c
++++ b/net/netfilter/nfnetlink_log.c
+@@ -419,6 +419,7 @@ __build_packet_message(struct nfnl_log_net *log,
+ 	nfmsg->version = NFNETLINK_V0;
+ 	nfmsg->res_id = htons(inst->group_num);
+ 
++	memset(&pmsg, 0, sizeof(pmsg));
+ 	pmsg.hw_protocol	= skb->protocol;
+ 	pmsg.hook		= hooknum;
+ 
+@@ -498,7 +499,10 @@ __build_packet_message(struct nfnl_log_net *log,
+ 	if (indev && skb->dev &&
+ 	    skb->mac_header != skb->network_header) {
+ 		struct nfulnl_msg_packet_hw phw;
+-		int len = dev_parse_header(skb, phw.hw_addr);
++		int len;
++
++		memset(&phw, 0, sizeof(phw));
++		len = dev_parse_header(skb, phw.hw_addr);
+ 		if (len > 0) {
+ 			phw.hw_addrlen = htons(len);
+ 			if (nla_put(inst->skb, NFULA_HWADDR, sizeof(phw), &phw))
+diff --git a/net/netfilter/nfnetlink_queue_core.c b/net/netfilter/nfnetlink_queue_core.c
+index 971ea14..8a703c3 100644
+--- a/net/netfilter/nfnetlink_queue_core.c
++++ b/net/netfilter/nfnetlink_queue_core.c
+@@ -463,7 +463,10 @@ nfqnl_build_packet_message(struct nfqnl_instance *queue,
+ 	if (indev && entskb->dev &&
+ 	    entskb->mac_header != entskb->network_header) {
+ 		struct nfqnl_msg_packet_hw phw;
+-		int len = dev_parse_header(entskb, phw.hw_addr);
++		int len;
++
++		memset(&phw, 0, sizeof(phw));
++		len = dev_parse_header(entskb, phw.hw_addr);
+ 		if (len) {
+ 			phw.hw_addrlen = htons(len);
+ 			if (nla_put(skb, NFQA_HWADDR, sizeof(phw), &phw))
