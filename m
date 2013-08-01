@@ -1,64 +1,58 @@
-From: Eric Leblond <eric@regit.org>
+From: "Adam N." <adam.n@justnet.pl>
 Subject: Re: Conntrackd and Stats
-Date: Thu, 01 Aug 2013 10:31:34 +0200
-Message-ID: <1375345894.11948.5.camel@ice-age.regit.org>
+Date: Thu, 01 Aug 2013 11:23:09 +0200
+Message-ID: <d22255983d977623c2cb29dedbd9e717@justnet.pl>
 References: <ebed8973f57495e3091005d880fcb4ca@justnet.pl>
+ <1375345894.11948.5.camel@ice-age.regit.org>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
-	boundary="=-YyV3bb8Oszo9KLI2x9Iu"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <ebed8973f57495e3091005d880fcb4ca@justnet.pl>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=justnet.pl; s=dkim;
+	h=Message-ID:References:In-Reply-To:Subject:Cc:To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version; bh=3e2o108TF2D7WW4q7PtikYGrvRve/T1blqOgw+Ho+/4=;
+	b=fZJxgVY8QPb3c89HB4lZnMfWESd92nffHSdGX6BYyyyWLtjetGkfhmOKoWBfNvWnmYLVaIjtOpwkXrv6plwt95EqaeKu5MCmeeC2CFaR9adCCF4Sgf239DSrFK8all2YAyxR6vQN+SXLSvN3CQRge9bcfFq1+TEJvYTA8W/yZMc=;
+In-Reply-To: <1375345894.11948.5.camel@ice-age.regit.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "Adam N." <adam.n@justnet.pl>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: Eric Leblond <eric@regit.org>
 Cc: netfilter@vger.kernel.org
 
+W dniu 01.08.2013 10:31, Eric Leblond napisa=C5=82(a):
 
---=-YyV3bb8Oszo9KLI2x9Iu
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-
-Hi,
-
-Le jeudi 01 ao=FBt 2013 =E0 09:46 +0200, Adam N. a =E9crit :
-> Hello everyone,
-> At the beginning I would like to thank everyone for the work put into=20
-> the project netfilter.
-
-Thanks Adam :)
-
-> We use conntrackd projekt to save NAT connections. Recently we noticed=
-=20
-> that with the change of the kernel version also changed format logs(=20
-> disappeared amount of transferred packets and bytes).
+> Hi,
 >=20
-> My question is:
-> Is it possible to restore the record containing the number of packets=20
-> and bytes transferred in connection?
+> Le jeudi 01 ao=C3=BBt 2013 =C3=A0 09:46 +0200, Adam N. a =C3=A9crit :
+>=20
+>> Hello everyone, At the beginning I would like to thank everyone for=20
+>> the work put into the project netfilter.
+>=20
+> Thanks Adam :)
+>=20
+>> We use conntrackd projekt to save NAT connections. Recently we notic=
+ed=20
+>> that with the change of the kernel version also changed format logs(=
+=20
+>> disappeared amount of transferred packets and bytes). My question is=
+:=20
+>> Is it possible to restore the record containing the number of packet=
+s=20
+>> and bytes transferred in connection?
+>=20
+> You can do
+> echo "1" > /proc/sys/net/netfilter/nf_conntrack_acct
+>=20
+> If you want to have start time of the conntrack entries, you can also=
+=20
+> do
+>=20
+> echo "1" > /proc/sys/net/netfilter/nf_conntrack_timestamp
 
-You can do
-echo "1" > /proc/sys/net/netfilter/nf_conntrack_acct
+Thank you very much
+you know in what version of the kernel was presented=20
+nf_conntrack_timestamp?
 
-If you want to have start time of the conntrack entries, you can also do
+In order not to ask unnecessary questions in the future, are somewhere=20
+information about such changes, except for the kernel sources :)
 
-echo "1" > /proc/sys/net/netfilter/nf_conntrack_timestamp
-
-BR,
---
-Eric
-
---=-YyV3bb8Oszo9KLI2x9Iu
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.14 (GNU/Linux)
-
-iD8DBQBR+hznnxA7CdMWjzIRAggeAKCE+O5wlfSKYF8GkN3PNFHU2lj88wCfbJjZ
-tbAzO8RJEccEilk0/sr6vVU=
-=G2Nm
------END PGP SIGNATURE-----
-
---=-YyV3bb8Oszo9KLI2x9Iu--
-
+Pozdrawiam,
+Adam N.
