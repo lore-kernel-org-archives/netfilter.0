@@ -1,62 +1,62 @@
-From: Dan Carpenter <dan.carpenter@oracle.com>
-Subject: [patch] netfilter: information leaks building packet message
-Date: Thu, 1 Aug 2013 12:36:57 +0300
-Message-ID: <20130801093656.GA12455@elgon.mountain>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Conntrackd and Stats
+Date: Thu, 1 Aug 2013 11:54:06 +0200
+Message-ID: <20130801095406.GA11906@localhost>
+References: <ebed8973f57495e3091005d880fcb4ca@justnet.pl>
+ <1375345894.11948.5.camel@ice-age.regit.org>
+ <d22255983d977623c2cb29dedbd9e717@justnet.pl>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-Sender: netfilter-devel-owner@vger.kernel.org
+In-Reply-To: <d22255983d977623c2cb29dedbd9e717@justnet.pl>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: "Adam N." <adam.n@justnet.pl>
+Cc: Eric Leblond <eric@regit.org>, netfilter@vger.kernel.org
 
-These structs have a "_pad" member.  Also the "phw" structs have an 8
-byte "hw_addr[]" array but sometimes only the first 6 bytes are
-initialized.
+On Thu, Aug 01, 2013 at 11:23:09AM +0200, Adam N. wrote:
+> W dniu 01.08.2013 10:31, Eric Leblond napisa=C5=82(a):
+>=20
+> >Hi,
+> >
+> >Le jeudi 01 ao=C3=BBt 2013 =C3=A0 09:46 +0200, Adam N. a =C3=A9crit =
+:
+> >
+> >>Hello everyone, At the beginning I would like to thank everyone
+> >>for the work put into the project netfilter.
+> >
+> >Thanks Adam :)
+> >
+> >>We use conntrackd projekt to save NAT connections. Recently we
+> >>noticed that with the change of the kernel version also changed
+> >>format logs( disappeared amount of transferred packets and
+> >>bytes). My question is: Is it possible to restore the record
+> >>containing the number of packets and bytes transferred in
+> >>connection?
+> >
+> >You can do
+> >echo "1" > /proc/sys/net/netfilter/nf_conntrack_acct
+> >
+> >If you want to have start time of the conntrack entries, you can
+> >also do
+> >
+> >echo "1" > /proc/sys/net/netfilter/nf_conntrack_timestamp
+>=20
+> Thank you very much
+> you know in what version of the kernel was presented
+> nf_conntrack_timestamp?
+>=20
+> In order not to ask unnecessary questions in the future, are
+> somewhere information about such changes, except for the kernel
+> sources :)
 
-Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
----
-Applies to -next and -mainline.
+See Documentation/networking/nf_conntrack-sysctl.txt in recent
+kernels.
 
-diff --git a/net/netfilter/nfnetlink_log.c b/net/netfilter/nfnetlink_log.c
-index 962e979..d92cc31 100644
---- a/net/netfilter/nfnetlink_log.c
-+++ b/net/netfilter/nfnetlink_log.c
-@@ -419,6 +419,7 @@ __build_packet_message(struct nfnl_log_net *log,
- 	nfmsg->version = NFNETLINK_V0;
- 	nfmsg->res_id = htons(inst->group_num);
- 
-+	memset(&pmsg, 0, sizeof(pmsg));
- 	pmsg.hw_protocol	= skb->protocol;
- 	pmsg.hook		= hooknum;
- 
-@@ -498,7 +499,10 @@ __build_packet_message(struct nfnl_log_net *log,
- 	if (indev && skb->dev &&
- 	    skb->mac_header != skb->network_header) {
- 		struct nfulnl_msg_packet_hw phw;
--		int len = dev_parse_header(skb, phw.hw_addr);
-+		int len;
-+
-+		memset(&phw, 0, sizeof(phw));
-+		len = dev_parse_header(skb, phw.hw_addr);
- 		if (len > 0) {
- 			phw.hw_addrlen = htons(len);
- 			if (nla_put(inst->skb, NFULA_HWADDR, sizeof(phw), &phw))
-diff --git a/net/netfilter/nfnetlink_queue_core.c b/net/netfilter/nfnetlink_queue_core.c
-index 971ea14..8a703c3 100644
---- a/net/netfilter/nfnetlink_queue_core.c
-+++ b/net/netfilter/nfnetlink_queue_core.c
-@@ -463,7 +463,10 @@ nfqnl_build_packet_message(struct nfqnl_instance *queue,
- 	if (indev && entskb->dev &&
- 	    entskb->mac_header != entskb->network_header) {
- 		struct nfqnl_msg_packet_hw phw;
--		int len = dev_parse_header(entskb, phw.hw_addr);
-+		int len;
-+
-+		memset(&phw, 0, sizeof(phw));
-+		len = dev_parse_header(entskb, phw.hw_addr);
- 		if (len) {
- 			phw.hw_addrlen = htons(len);
- 			if (nla_put(skb, NFQA_HWADDR, sizeof(phw), &phw))
+Kernel timestamping is there since 2.6.39. Accounting for conntrack
+since long time ago (I can find it in 2.6.27 as an optional
+extension that you can enable on demand via /proc interface).
+
+Regards.
