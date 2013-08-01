@@ -1,39 +1,86 @@
-From: Michal Kubecek <mkubecek@suse.cz>
-Subject: Re: PROBLEM: Netfilter time matching matches all packets when time
- start and time stop is the same
-Date: Thu, 1 Aug 2013 13:24:44 +0200
-Message-ID: <20130801112444.GE21352@unicorn.suse.cz>
-References: <CAK+MRYuFUCvkker9sq7LFa42t=vQ7FhWwzz37Mtw3sLMZTJ+EQ@mail.gmail.com>
+From: Nick Edwards <nick.z.edwards@gmail.com>
+Subject: net unreachable ipv6
+Date: Fri, 2 Aug 2013 00:28:41 +1000
+Message-ID: <CAMD-=VJjymnAL9FuGnSTLvxFLnmAy9nrO9mdMkvbWNdiDxw1GA@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAK+MRYuFUCvkker9sq7LFa42t=vQ7FhWwzz37Mtw3sLMZTJ+EQ@mail.gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=nhwDVJAza3dB7T8LzPK76oI4rvw8rNEaAezY2NT6eWg=;
+        b=1AY1MBNhMuEpzZa4N86xJRra4KYboiKlP0MEAuO/nfXtGWANERpeyxvbtqXarpNEXL
+         hZHp6HiLrZ4RAmhNZdkfgNoXl81am2rESNnqYpHFaI/1Rm2gsRYQkC65riLbiqh/EF2Y
+         Wht6TgA/R+E/trwXsrAa9GmGugs+kqmwS6r1KWNImOmlM00/U2w7Lp1B3bJou7yV/fVj
+         xPV8t8holm8VIVBm3Bd9KQhawQ78KeFEhztMVJJrlugzeC0ZnkSkTlz8NiugkIjNIqEI
+         ma0EjU/BG6ycN27Y4eOouqvGHvX0UzkA6iDTeXBcVyM3ftmub9gndbNvmeuP2wd2bqCM
+         RUJA==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Henry Lee <henryronlee@gmail.com>
-Cc: pablo@netfilter.org, kaber@trash.net, kadlec@blackhole.kfki.hu, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+To: netfilter@vger.kernel.org
 
-On Wed, Jul 31, 2013 at 04:42:15PM +0800, Henry Lee wrote:
-> diff --git a/net/netfilter/xt_time.c b/net/netfilter/xt_time.c
-> index 0ae55a3..753573c 100644
-> --- a/net/netfilter/xt_time.c
-> +++ b/net/netfilter/xt_time.c
-> @@ -192,7 +192,7 @@ time_mt(const struct sk_buff *skb, struct
-> xt_action_param *par)
-> 
->      packet_time = localtime_1(&current_time, stamp);
-> 
-> -   if (info->daytime_start < info->daytime_stop) {
-> +   if (info->daytime_start <= info->daytime_stop) {
->          if (packet_time < info->daytime_start ||
->              packet_time > info->daytime_stop)
->              return false;
-> 
+Christ I hate ipv6, POS it is...
 
-As far as I can see, this would cause only packets arriving at midnight
-to match by default (i.e. without both --timestart and --timestop).
+OK, steam vented...
 
-                                                         Michal Kubecek
+Folks,  I must be doing something wrong, so any pointers be appreciated.
 
+I can not even ping6 _OUT_ unless I clear all ipv6 rules or change def
+policy input to accept,  despite it being globally "allowed" already.
+the machine can also not be reached either despite the ipv6 range included
+
+Is there something broken?
+
+(v1.4.14)
+
+#!/bin/sh
+/usr/sbin/iptables -F
+/usr/sbin/ip6tables -F
+
+/usr/sbin/iptables -P INPUT DROP
+/usr/sbin/ip6tables -P INPUT DROP
+/usr/sbin/iptables -P OUTPUT ACCEPT
+/usr/sbin/ip6tables -P OUTPUT ACCEPT
+/usr/sbin/iptables -P FORWARD DROP
+/usr/sbin/ip6tables -P FORWARD DROP
+
+/usr/sbin/iptables -A INPUT -p tcp -m tcp --dport 22 -m state --state
+INVALID,NEW -j LOG
+
+
+/usr/sbin/iptables -A INPUT -i lo -j ACCEPT
+/usr/sbin/ip6tables -A INPUT -i lo -j ACCEPT
+/usr/sbin/ip6tables -A INPUT -s fe80::/10 -j ACCEPT
+/usr/sbin/ip6tables -A INPUT -d ff00::/8 -j ACCEPT
+
+/usr/sbin/iptables -A INPUT -s 207.x.x.x -j ACCEPT
+/
+/usr/sbin/ip6tables -A INPUT -s 2a00:1c18:401:c00::531:2 -j ACCEPT
+
+/usr/sbin/iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+/usr/sbin/ip6tables -A INPUT -m conntrack --ctstate
+ESTABLISHED,RELATED -j ACCEPT
+
+/usr/sbin/iptables -A INPUT -p tcp --dport 25 -j ACCEPT
+/usr/sbin/ip6tables -A INPUT -p tcp --dport 25 -j ACCEPT
+
+/usr/sbin/ip6tables -A INPUT -p icmpv6 --icmpv6-type 1 -j ACCEPT
+/usr/sbin/ip6tables -A INPUT -p icmpv6 --icmpv6-type 2 -j ACCEPT
+/usr/sbin/ip6tables -A INPUT -p icmpv6 --icmpv6-type 3 -j ACCEPT
+/usr/sbin/ip6tables -A INPUT -p icmpv6 --icmpv6-type 4 -j ACCEPT
+/usr/sbin/ip6tables -A INPUT -p icmpv6 -j DROP
+
+#/usr/sbin/ip6tables -A INPUT -p icmpv6 --icmpv6-type echo-request -j DROP
+#/usr/sbin/ip6tables -A INPUT -m rt --rt-type 0 -j DROP
+
+/usr/sbin/iptables -A INPUT -p icmp --icmp-type 3 -j ACCEPT
+/usr/sbin/iptables -A INPUT -p icmp --icmp-type 4 -j ACCEPT
+/usr/sbin/iptables -A INPUT -p icmp --icmp-type 11 -j ACCEPT
+/usr/sbin/iptables -A INPUT -p icmp --icmp-type 12 -j ACCEPT
+/usr/sbin/iptables -A INPUT -p icmp -j DROP
+
+..
+and before anyone asks, yes, IPv4 works perfect :)
+
+Thanks
