@@ -1,31 +1,46 @@
 From: Eliezer Croitoru <eliezer@ngtech.co.il>
-Subject: Re: [RES] Re: net unreachable ipv6
-Date: Sat, 03 Aug 2013 15:19:22 +0300
-Message-ID: <51FCF54A.9080807@ngtech.co.il>
-References: <CAMD-=VJjymnAL9FuGnSTLvxFLnmAy9nrO9mdMkvbWNdiDxw1GA@mail.gmail.com> <51FAA2EF.4070001@ngtech.co.il> <CAMD-=VKHbG8dXDtrUJAsZMG3ipHOBED6u=dCQUwifc8bQo8CQA@mail.gmail.com> <CAMD-=V+myg5gef_7L2R+2Lq071PseYZeqDbFmjVDy4X1uBexBQ@mail.gmail.com>
+Subject: how to set multiHOP gw rules for forward table?
+Date: Sat, 03 Aug 2013 15:36:10 +0300
+Message-ID: <51FCF93A.6080002@ngtech.co.il>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-reply-to: <CAMD-=V+myg5gef_7L2R+2Lq071PseYZeqDbFmjVDy4X1uBexBQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Nick Edwards <nick.z.edwards@gmail.com>
-Cc: Netfilter user mailing list <netfilter@vger.kernel.org>
+To: Netfilter user mailing list <netfilter@vger.kernel.org>
 
-On 08/02/2013 06:17 AM, Nick Edwards wrote:
-> Thanks to a very helpful member of this list, off-list (so not sure if
-> he wants to be named and famed), the problem has been resolved, by
-> allowing INPUT for neigh discovery packets type 135 and 136
-> 
-> I have quickly learned that the ipv4 habits of yesteryear must go out
-> the window for ipv6 to work.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
-Indeed so much is different..
-Can you share the rules as rules form to show others how it is being done?
+My network is like that:
+
+GW+DHCP 192.168.1.1, eth0:192.168.100.1 eth1:192.168.168.1.1
+HOST1+DHCP 192.168.1.100, eth0:192.168.1.100 eth1:192.168.2.1
+CLIENT1 192.168.2.100
+There is a double NAT here at both GW and HOST1
+The DHCP from GW is only towards the eth1 network and subnet.
+The DHCP from HOST1 is only towards eth1.
+in GW there is a masquerade rule which works fine and allows all
+forwarded packets.
+
+I do not want packets from clients in the CLIENT1 side of the network to
+get access using the nat to the local network resources but that they
+will have access to the internet using GW.
+So basically I want to allow all forwarded traffic from the
+192.168.2.0/24 network to be allowed to all networks but not the
+localnet and the local GW resources.
+
+I am a bit in a conflict in it since the next rules should work or at
+least should do the trick..:
+------
+-A FORWARD -s 192.168.2.0/24 -i eth1 -p tcp -m state --state ESTABLISHED
+-j ACCEPT
+-A FORWARD -i eth1 -p icmp -j ACCEPT
+-A FORWARD -s 192.168.2.0/24 -i eth1 -p tcp -m multiport --dports
+53,443,80,21,22,23,110,25,143,995,993,3128,8080 -j ACCEPT
+-A FORWARD ! -i eth1 -m state --state NEW -j DROP
+-A FORWARD -o eth1 -j ACCEPT
+-A FORWARD -d 192.168.1.0/24 -j DROP
+------
+Before I press the "save" button I would like for someone else to take a
+small look at it.
 
 Eliezer
