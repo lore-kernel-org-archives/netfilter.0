@@ -1,46 +1,75 @@
-From: Eliezer Croitoru <eliezer@ngtech.co.il>
-Subject: how to set multiHOP gw rules for forward table?
-Date: Sat, 03 Aug 2013 15:36:10 +0300
-Message-ID: <51FCF93A.6080002@ngtech.co.il>
+From: Simon Horman <horms@verge.net.au>
+Subject: Re: [PATCH] ipvs: fixed spacing at for statements
+Date: Tue, 6 Aug 2013 15:12:17 +0900
+Message-ID: <20130806061217.GD18246@verge.net.au>
+References: <1373525142-9099-1-git-send-email-dragos.foianu@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1373525142-9099-1-git-send-email-dragos.foianu@gmail.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Netfilter user mailing list <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: Dragos Foianu <dragos.foianu@gmail.com>
+Cc: wensong@linux-vs.org, linux-kernel@vger.kernel.org, coreteam@netfilter.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, lvs-devel@vger.kernel.org, netdev@vger.kernel.org, davem@davemloft.net, kadlec@blackhole.kfki.hu, kaber@trash.net, pablo@netfilter.org, ja@ssi.bg
 
-My network is like that:
+On Thu, Jul 11, 2013 at 09:45:42AM +0300, Dragos Foianu wrote:
+> found using checkpatch.pl
 
-GW+DHCP 192.168.1.1, eth0:192.168.100.1 eth1:192.168.168.1.1
-HOST1+DHCP 192.168.1.100, eth0:192.168.1.100 eth1:192.168.2.1
-CLIENT1 192.168.2.100
-There is a double NAT here at both GW and HOST1
-The DHCP from GW is only towards the eth1 network and subnet.
-The DHCP from HOST1 is only towards eth1.
-in GW there is a masquerade rule which works fine and allows all
-forwarded packets.
+This seems reasonable to me. I will queue it up in the ipvs-next tree.
 
-I do not want packets from clients in the CLIENT1 side of the network to
-get access using the nat to the local network resources but that they
-will have access to the internet using GW.
-So basically I want to allow all forwarded traffic from the
-192.168.2.0/24 network to be allowed to all networks but not the
-localnet and the local GW resources.
-
-I am a bit in a conflict in it since the next rules should work or at
-least should do the trick..:
-------
--A FORWARD -s 192.168.2.0/24 -i eth1 -p tcp -m state --state ESTABLISHED
--j ACCEPT
--A FORWARD -i eth1 -p icmp -j ACCEPT
--A FORWARD -s 192.168.2.0/24 -i eth1 -p tcp -m multiport --dports
-53,443,80,21,22,23,110,25,143,995,993,3128,8080 -j ACCEPT
--A FORWARD ! -i eth1 -m state --state NEW -j DROP
--A FORWARD -o eth1 -j ACCEPT
--A FORWARD -d 192.168.1.0/24 -j DROP
-------
-Before I press the "save" button I would like for someone else to take a
-small look at it.
-
-Eliezer
+> 
+> Signed-off-by: Dragos Foianu <dragos.foianu@gmail.com>
+> ---
+>  net/netfilter/ipvs/ip_vs_lblcr.c |    8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/net/netfilter/ipvs/ip_vs_lblcr.c b/net/netfilter/ipvs/ip_vs_lblcr.c
+> index 3cd85b2..5199448 100644
+> --- a/net/netfilter/ipvs/ip_vs_lblcr.c
+> +++ b/net/netfilter/ipvs/ip_vs_lblcr.c
+> @@ -414,7 +414,7 @@ static void ip_vs_lblcr_flush(struct ip_vs_service *svc)
+>  
+>  	spin_lock_bh(&svc->sched_lock);
+>  	tbl->dead = 1;
+> -	for (i=0; i<IP_VS_LBLCR_TAB_SIZE; i++) {
+> +	for (i = 0; i < IP_VS_LBLCR_TAB_SIZE; i++) {
+>  		hlist_for_each_entry_safe(en, next, &tbl->bucket[i], list) {
+>  			ip_vs_lblcr_free(en);
+>  		}
+> @@ -440,7 +440,7 @@ static inline void ip_vs_lblcr_full_check(struct ip_vs_service *svc)
+>  	struct ip_vs_lblcr_entry *en;
+>  	struct hlist_node *next;
+>  
+> -	for (i=0, j=tbl->rover; i<IP_VS_LBLCR_TAB_SIZE; i++) {
+> +	for (i = 0, j = tbl->rover; i < IP_VS_LBLCR_TAB_SIZE; i++) {
+>  		j = (j + 1) & IP_VS_LBLCR_TAB_MASK;
+>  
+>  		spin_lock(&svc->sched_lock);
+> @@ -495,7 +495,7 @@ static void ip_vs_lblcr_check_expire(unsigned long data)
+>  	if (goal > tbl->max_size/2)
+>  		goal = tbl->max_size/2;
+>  
+> -	for (i=0, j=tbl->rover; i<IP_VS_LBLCR_TAB_SIZE; i++) {
+> +	for (i = 0, j = tbl->rover; i < IP_VS_LBLCR_TAB_SIZE; i++) {
+>  		j = (j + 1) & IP_VS_LBLCR_TAB_MASK;
+>  
+>  		spin_lock(&svc->sched_lock);
+> @@ -536,7 +536,7 @@ static int ip_vs_lblcr_init_svc(struct ip_vs_service *svc)
+>  	/*
+>  	 *    Initialize the hash buckets
+>  	 */
+> -	for (i=0; i<IP_VS_LBLCR_TAB_SIZE; i++) {
+> +	for (i = 0; i < IP_VS_LBLCR_TAB_SIZE; i++) {
+>  		INIT_HLIST_HEAD(&tbl->bucket[i]);
+>  	}
+>  	tbl->max_size = IP_VS_LBLCR_TAB_SIZE*16;
+> -- 
+> 1.7.10.4
+> 
+> --
+> To unsubscribe from this list: send the line "unsubscribe lvs-devel" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> 
