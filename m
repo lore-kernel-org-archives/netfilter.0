@@ -1,89 +1,69 @@
-From: Simon Horman <horms@verge.net.au>
-Subject: Re: [PATCH] ipvs: fixed style errors in ip_vs_dh
-Date: Tue, 6 Aug 2013 15:20:33 +0900
-Message-ID: <20130806062033.GE18246@verge.net.au>
-References: <1373570144-4785-1-git-send-email-dragos.foianu@gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnetfilter_conntrack 1.0.4 release
+Date: Tue, 6 Aug 2013 17:45:21 +0200
+Message-ID: <20130806154521.GA14118@localhost>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="O5XBE6gyVG5Rl6Rj"
+Return-path: <netdev-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1373570144-4785-1-git-send-email-dragos.foianu@gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Dragos Foianu <dragos.foianu@gmail.com>
-Cc: wensong@linux-vs.org, ja@ssi.bg, pablo@netfilter.org, kaber@trash.net, kadlec@blackhole.kfki.hu, davem@davemloft.net, netdev@vger.kernel.org, lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel@vger.kernel.org
+To: netfilter-devel@vger.kernel.org
+Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
-On Thu, Jul 11, 2013 at 10:15:44PM +0300, Dragos Foianu wrote:
-> found with the help of checkpatch.pl
 
-Thanks for your contribution and sorry for taking so long to look at it.
+--O5XBE6gyVG5Rl6Rj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-While in principle I have no problem with these changes.
-I would like them to be be accompanied by more descriptive changelogs.
+Hi!
 
-In the case of this patch there seem to be two fixes.
+The Netfilter project proudly presents:
 
-1. Fix whitespace associated with for statements.
-2. Place opening '{' of structure initialiser on its won line.
+        libnetfilter_conntrack 1.0.4
 
-I'm sure that the wording above can be improved, but as a minimum
-I would like something like that included in the changelog.
+libnetfilter_conntrack is a userspace library providing a programming
+interface (API) to the in-kernel connection tracking state table. This
+library is currently used by conntrack-tools and iptables, among other
+applications.
 
-I think that I would also prefer each of the two changes in their own
-patch, rather than grouping them together because they happen to be in the
-same file.
+This release includes connlabel support, one memleak fix and fixes in
+the comparison API. See ChangeLog that comes attached to this email
+for more details.
 
-Likewise for the following patches that you also submitted:
+You can download it from:
 
-* [PATCH] ipvs: fixed style error in ip_vs_sched
-* [PATCH] ipvs: fixed style errors and warnings in ip_vs_conn
+http://www.netfilter.org/projects/libnetfilter_conntrack/downloads.html
+ftp://ftp.netfilter.org/pub/libnetfilter_conntrack/
 
-I would not object if you grouped together the same change in multiple
-files into a single patch.
+Have fun!
 
-> Signed-off-by: Dragos Foianu <dragos.foianu@gmail.com>
-> ---
->  net/netfilter/ipvs/ip_vs_dh.c |    7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/net/netfilter/ipvs/ip_vs_dh.c b/net/netfilter/ipvs/ip_vs_dh.c
-> index c3b8454..8ab2fc8 100644
-> --- a/net/netfilter/ipvs/ip_vs_dh.c
-> +++ b/net/netfilter/ipvs/ip_vs_dh.c
-> @@ -110,7 +110,7 @@ ip_vs_dh_reassign(struct ip_vs_dh_state *s, struct ip_vs_service *svc)
->  	b = &s->buckets[0];
->  	p = &svc->destinations;
->  	empty = list_empty(p);
-> -	for (i=0; i<IP_VS_DH_TAB_SIZE; i++) {
-> +	for (i = 0; i < IP_VS_DH_TAB_SIZE; i++) {
->  		dest = rcu_dereference_protected(b->dest, 1);
->  		if (dest)
->  			ip_vs_dest_put(dest);
-> @@ -142,7 +142,7 @@ static void ip_vs_dh_flush(struct ip_vs_dh_state *s)
->  	struct ip_vs_dest *dest;
->  
->  	b = &s->buckets[0];
-> -	for (i=0; i<IP_VS_DH_TAB_SIZE; i++) {
-> +	for (i = 0; i < IP_VS_DH_TAB_SIZE; i++) {
->  		dest = rcu_dereference_protected(b->dest, 1);
->  		if (dest) {
->  			ip_vs_dest_put(dest);
-> @@ -244,8 +244,7 @@ ip_vs_dh_schedule(struct ip_vs_service *svc, const struct sk_buff *skb,
->  /*
->   *      IPVS DH Scheduler structure
->   */
-> -static struct ip_vs_scheduler ip_vs_dh_scheduler =
-> -{
-> +static struct ip_vs_scheduler ip_vs_dh_scheduler = {
->  	.name =			"dh",
->  	.refcnt =		ATOMIC_INIT(0),
->  	.module =		THIS_MODULE,
-> -- 
-> 1.7.10.4
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe netdev" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+--O5XBE6gyVG5Rl6Rj
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename="changes-libnetfilter_conntrack-1.0.4.txt"
+
+Afschin Hormozdiary (1):
+      libnetfilter_conntrack: don't ignore ATTR_CONNLABELS
+
+Florian Westphal (18):
+      api: add nfct_bitmask object
+      api: add connlabel api and attribute
+      examples: add connlabel dump/set/clear demo programs
+      api: add CTA_LABEL_MASK attribute handling
+      qa: add api test for nfct_cmp and nfct_exp functions
+      conntrack, expect: fix _cmp api with STRICT checking
+      expect: consider all expect attributes when comparing
+      conntrack: nfct_cmp: also compare labels
+      qa: nfct_cmp: verify individual attr comparision
+      connlabel: fix NULL deref on malloc failure
+      conntrack: CONNLABELS are not a nested attribute
+      conntrack: connlabel: remove useless test
+      conntrack: labels: skip labels with non-alnum characters
+      src: callback: fix memory leak when ct has dynamically allocated attr
+      conntrack: api: add nfct_snprintf_labels
+      qa: test_connlabel: don't abort when system-wide config exists
+      conntrack: labels: labelmap_new: make sure errno is 0 when no labels are found
+      build: bump version to 1.0.4
+
+
+--O5XBE6gyVG5Rl6Rj--
