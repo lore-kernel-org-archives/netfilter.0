@@ -1,78 +1,35 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] conntrack-tools 1.4.2 release
-Date: Tue, 6 Aug 2013 18:55:09 +0200
-Message-ID: <20130806165509.GA18035@localhost>
+From: Alex Flex <aflexzor@gmail.com>
+Subject: Limit based on req/sec and connections/sec plus accounting
+Date: Tue, 06 Aug 2013 15:28:41 -0600
+Message-ID: <52016A89.8040407@gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="pf9I7BMVVzbSWLtt"
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=message-id:date:from:user-agent:mime-version:to:subject
+         :content-type:content-transfer-encoding;
+        bh=E40K5VxzFR6Q1Ss5obG+iTSe6GMOt6poeVSz137FKFo=;
+        b=xineJXjXC+hl6dYRY/r7lMdjCaVSe4o8P/gg2mjfLGGOpyDwYi+alXYqeuheeQAbw0
+         kdEth+RA+LBHACCf36GYN8h+D2oMYGHywLgOmfafEBgjb4g2+6up3eHmnOWiOKfiBx8s
+         rn0YwDt8M9FOjPbSU/lkJK145xHPcAE2RMooge6OjgwgRuSYHgcCG2KKHeoszPQgC4f5
+         zEYz3zJqWlHSRQNJXM/Wise3MyJz3bdQ4WGs0arGWNbJDdQ41s/f5p6ZUVT8ae3Dx/Ij
+         cKJgOLUHh1HX278gCPxOjuWD8s5Xjt3SRDGw1BzonNitjTVdaajFzDFwAY0A2+pTExrD
+         q8cg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter-devel@vger.kernel.org
-Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
+Hello Netfilter
 
---pf9I7BMVVzbSWLtt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Iam trying to limit the amount of connections/sec and requests/sec my 
+server sends to a single destination IP. At the same time iam looking to 
+account/poll periodically what those values are for statistics .
 
-Hi!
+Is there a simple way I can accomplish this with iptables or some other 
+feature in the linux kernel?
 
-The Netfilter project proudly presents:
+Thanks for the help
 
-        conntrack-tools 1.4.2
-
-The conntrack-tools are the userspace command line interface
-`conntrack' and the userspace daemon `conntrackd'. The conntrack
-utility replaces the old /proc/net/nf_conntrack interface. With
-conntrack, you can dump, modify and delete entries from the connection
-tracking state table from userspace. On the other hand, conntrackd
-allows you to deploy highly available stateful firewall clusters and
-to run connection tracking helpers from user-space.
-
-More information in the official manual at:
-http://conntrack-tools.netfilter.org/manual.html
-
-This release includes bugfixes and the connlabel support. See ChangeLog that
-comes attached to this email for more details.
-
-You can download it from:
-
-http://www.netfilter.org/projects/nfacct/downloads.html
-ftp://ftp.netfilter.org/pub/nfacct/
-
-Have fun!
-
---pf9I7BMVVzbSWLtt
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: attachment; filename="changes-conntrack-tools-1.4.2.txt"
-
-Clemence Faure (2):
-      conntrack: introduce -l option to filter by labels
-      conntrack: fix reporting of unknown arguments
-
-Florian Westphal (5):
-      conntrackd: fix compiler warnings
-      include: kill unused PLD_* macros
-      conntrack: add connlabel format attribute
-      conntrackd: support replication of connlabels
-      conntrack: fix -L format output
-
-James Guthrie (1):
-      conntrackd: fix parsing of non-abbreviated IPv6 address in config file
-
-Pablo Neira Ayuso (11):
-      build: requires libnetfilter_conntrack >= 1.0.3
-      conntrack: fix timestamps when microseconds are less than 100000
-      tests: cthelper: remove test infrastructure from this tree
-      cthelper: add IPv6 support
-      cthelper: helpers may not use private information area
-      conntrackd: cache: fix hashing based on IPv6 address
-      conntrackd: deprecate `Family' in configuration file
-      conntrackd: fix crash with IPv6 expectation in the filtering code
-      conntrackd: simplify expectation filtering
-      cthelper: fix IPv6 address and mask in newly created expectations
-      conntrack-tools 1.4.2 release
-
-
---pf9I7BMVVzbSWLtt--
+Alex
