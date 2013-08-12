@@ -1,65 +1,48 @@
-From: /dev/rob0 <rob0@gmx.co.uk>
+From: Alex Flex <aflexzor@gmail.com>
 Subject: Re: Help with stateless firewall
-Date: Mon, 12 Aug 2013 16:41:51 -0500
-Message-ID: <20130812214151.GE13717@harrier.slackbuilds.org>
-References: <5209377B.5030105@gmail.com>
-Reply-To: netfilter@vger.kernel.org
+Date: Mon, 12 Aug 2013 16:19:30 -0600
+Message-ID: <52095F72.7070808@gmail.com>
+References: <5209377B.5030105@gmail.com> <20130812214151.GE13717@harrier.slackbuilds.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <5209377B.5030105@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=message-id:date:from:user-agent:mime-version:to:subject:references
+         :in-reply-to:content-type:content-transfer-encoding;
+        bh=2aIp7xyRLvGMhEghCcEcRNGKDF1yuGCXaOxObjXJoMo=;
+        b=na+75/xUaJCE7OmHR+ePcccMTvZgP4YJxvyZqvAXA24DH6YbYay1dA5kOHI89GfSRm
+         /pn0QqG3wYd27hPU0b6LIYLDunO+SVMo52LJXBvprSp1I87WyTDdeQ6xtmsbjUBKPBnz
+         hvJ5coDvpcrZKH0QutRjdBc438/QMJxSIqebxk6vgXRq5mqqAjsr0E5uLPE8iAniGYZz
+         IeyujbBPfhQ7B/pdHiD8WHOHr3BYzt1eYQCrFbgpmRsf+trx9nQ5+PkPaJ+7Cp2mEOrZ
+         oRXh1ihwByIxtFljiP0gaiOt/EUjEFtxkK8iGedj53LKIUhBMQhyYF+Gj4n1d0gSsKJd
+         eBsg==
+In-Reply-To: <20130812214151.GE13717@harrier.slackbuilds.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-On Mon, Aug 12, 2013 at 01:28:59PM -0600, Alex Flex wrote:
-> Iam working with a stateless firewall to help keep up with DoS
-> and a state flood. I have a few doubts about my setup:
+Hello Rob,
 
-What is a "state flood"? Why do you think a stateless firewall is 
-superior, or even desirable?
+On 08/12/2013 03:41 PM, /dev/rob0 wrote:
+> On Mon, Aug 12, 2013 at 01:28:59PM -0600, Alex Flex wrote:
+>> Iam working with a stateless firewall to help keep up with DoS
+>> and a state flood. I have a few doubts about my setup:
+> What is a "state flood"? Why do you think a stateless firewall is
+> superior, or even desirable?
+With a state flood, i meant a syn flood for example. My experience has 
+taught that small bandwith attacks (those that my uplink stands) are 
+done based on my state table reaching its limits.
 
-> a.) When allowing web traffic, is it neecessary to allow port
-> range 1000:65535 ?
+Knowing this, do you think I should have taken another approach?
 
-Regardless of the inbound port or protocol, for most, you *must* 
-accept return traffic, or the connection cannot be made.
+Is there anyway I can assign conntrack resources per chain, this would 
+greatly help at isolating damage.
 
-> i saw that due to this rule sending packets to those ports
-> directly respond with a REJECT instead of a DROP which is
-> preffered. Any work arround and still have a stateless setup?
-> 
-> b.) What is needed to safely have a default OUTPUT DROP,
+The OUTPUT deny is a paranoid method to have a more complete 
+understanding of that traffic and future applications cannot misbehave 
+so easily. It is not meant to guard from ssh users.
 
-rob0 Rule of Thumb: If you need help to make it work, you do not need 
-OUTPUT filtering. Just say No to DROP. :)
 
-Why do you want OUTPUT DROP? What are you defending against? 
-Generally a stronger and more effective defense against hostile 
-system users would be something like SELinux. Another good idea: 
-don't give untrusted people shell access.
 
-> apparently as soon as i change it to that iam unable to access it 
-> via ssh, even if I add a rule like this: /sbin/iptables -A OUTPUT 
-> -p tcp --dport 22 -j ACCEPT
-
-See --sport in the manual. It seems that you have confused what you 
-might have as source or destination port.
-
-> Thanks for your help.
-> Alex
-> 
-> #!/bin/bash
-[snip]
-
-Scripting like this is the wrong way to go about loading a ruleset. 
-Dump your ruleset using iptables-save(8) and load it at boot time 
-using iptables-restore(8). These might help:
-
-http://inai.de/links/iptables/
-http://inai.de/documents/Perfect_Ruleset.pdf
--- 
-  http://rob0.nodns4.us/ -- system administration and consulting
-  Offlist GMX mail is seen only if "/dev/rob0" is in the Subject:
