@@ -1,78 +1,41 @@
-From: =?iso-8859-1?Q?Andr=E9_Paulsberg?= <Andre.Paulsberg@evry.com>
-Subject: RE: Help with stateless firewall
-Date: Tue, 13 Aug 2013 06:56:49 +0000
-Message-ID: <838AB161BE491743AE3CA3A916CF1CC60D087585@ccdex004>
-References: <5209377B.5030105@gmail.com>
+From: Alex Flex <aflexzor@gmail.com>
+Subject: Segment the conntrack table resources per chain?
+Date: Tue, 13 Aug 2013 14:37:12 -0600
+Message-ID: <520A98F8.5090607@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <5209377B.5030105@gmail.com>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=message-id:date:from:user-agent:mime-version:to:subject
+         :content-type:content-transfer-encoding;
+        bh=BDa/8ZZxwz1USTxX6h99R4oa1Rfey6k6pEhKZ+g7BUU=;
+        b=lVBpQEbdflJrxYNWX1BSXr2jjXAQ+VY3+z3qtJmLxPNdakaA5ofzqiZZPQZnl4Qivr
+         PMkoiORCPo/OAI4DZaiQA82mmf42QEpg8bNpAVD5x5bhZh0dzi63F4VL11qcyOSObn78
+         S7jRov532huReILl+x5ZNQrxz8dX6vlyHbXoAWj6enC3JnnBUu6xPvmRU7JfOKCmufwu
+         jSbL6qArOEWtx9s1ZMKYLpMhNSvhX1CC1IkJaWqCvJqRGumFBFgOG8lXitkG1+4LJ5iA
+         iKUqWe+tPiBfQR1nC+vFIo6l5l52N9sFBUpGuqt8m0ZSb1rHZz9ILMtKaci5b6Tpnxch
+         fisQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, Alex Flex <aflexzor@gmail.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-I agree with Rob0 , but the problem here is that you do not specify WHA=
-T you are doing from your machine .
-=46rom your rules , it's obvious you are running a SSH and WEB deamon o=
-n this machine .
+Hello Netfilter,
 
-> a.) When allowing web traffic, is it neecessary to allow port range 1=
-000:65535 ?
+I understand that the state table is managed by the conntrack has table 
+and its size can be modified in /proc, however I would like to know if 
+there is anyway to actually segment that resource on how iptables uses 
+it. My goal would be to have a couple of chains each have their own 
+piece of the pie, in state information.
 
-However you do not need to open port 1000-65535 for this or any other r=
-eason , except MAYBE return traffic from your machine .
-Since your mail does not specify any traffic originating from this mach=
-ine , it should not be needed !
+The above is due to the fact to better isolate DoS attacks that are 
+aimed to fill the state table.. so this way iam thinking the damage can 
+be isolated.
 
-IF however you use this machine for "client" access , you should rather=
- add source ports (--sport) for each client ports you need on INPUT .
+If there is no conventional way, perhaps a creative way?
 
-Typical you need port 53 UDP and TCP for name resolution , and you shou=
-ld consider opening up for ICMP TYPE 3 for error messages .
-Adding your DNS servers IP and allowing all traffic from them is possib=
-le , but I think this is bad solution . ( not best practice )
+Thanks
+Alex
 
-> b.) What is needed to safely have a default OUTPUT DROP, apparently a=
-s=20
-> soon as i change it to that iam unable to access it via ssh, even if =
-I=20
-> add a rule like this: /sbin/iptables -A OUTPUT -p tcp --dport 22 -j A=
-CCEPT
-
-
-DROP OUTPUT fails because you don't have any source ports allowed ,
-
-/sbin/iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT
-/sbin/iptables -A OUTPUT -p tcp --sport 80 -j ACCEPT
-
-And you will also need to ADD rules for DNS traffic going out
-
-/sbin/iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
-/sbin/iptables -A OUTPUT -p tcp --dport 53 -j ACCEPT
-
-ATLEAST !!
-
-
-> i saw that due to this rule sending packets to those ports directly r=
-espond with a REJECT instead of a DROP which is preffered.
-
-This is because you have made a rule ACCEPTing port 1000-65535 INPUT , =
-and also made a default rule ACCEPTing tcp nack OUTPUT=20
-
-
-> Any workaround and still have a stateless setup?
-
-Well yes , remove/replace the port 1000 - 65535 opening INPUT !
-( or DROP tcp nack OUTPUT , which would just be silly )
-
-
-I cannot tell you anymore since there is not any more info on what you =
-are doing ,
-But adding a LOG statement in INPUT and OUTPUT before the DROP should h=
-elp you spot any trouble .
-
-
-Kind Regards Andr=E9
 
