@@ -1,48 +1,78 @@
-From: Alex Flex <aflexzor@gmail.com>
-Subject: Re: Help with stateless firewall
-Date: Mon, 12 Aug 2013 16:19:30 -0600
-Message-ID: <52095F72.7070808@gmail.com>
-References: <5209377B.5030105@gmail.com> <20130812214151.GE13717@harrier.slackbuilds.org>
+From: =?iso-8859-1?Q?Andr=E9_Paulsberg?= <Andre.Paulsberg@evry.com>
+Subject: RE: Help with stateless firewall
+Date: Tue, 13 Aug 2013 06:56:49 +0000
+Message-ID: <838AB161BE491743AE3CA3A916CF1CC60D087585@ccdex004>
+References: <5209377B.5030105@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=message-id:date:from:user-agent:mime-version:to:subject:references
-         :in-reply-to:content-type:content-transfer-encoding;
-        bh=2aIp7xyRLvGMhEghCcEcRNGKDF1yuGCXaOxObjXJoMo=;
-        b=na+75/xUaJCE7OmHR+ePcccMTvZgP4YJxvyZqvAXA24DH6YbYay1dA5kOHI89GfSRm
-         /pn0QqG3wYd27hPU0b6LIYLDunO+SVMo52LJXBvprSp1I87WyTDdeQ6xtmsbjUBKPBnz
-         hvJ5coDvpcrZKH0QutRjdBc438/QMJxSIqebxk6vgXRq5mqqAjsr0E5uLPE8iAniGYZz
-         IeyujbBPfhQ7B/pdHiD8WHOHr3BYzt1eYQCrFbgpmRsf+trx9nQ5+PkPaJ+7Cp2mEOrZ
-         oRXh1ihwByIxtFljiP0gaiOt/EUjEFtxkK8iGedj53LKIUhBMQhyYF+Gj4n1d0gSsKJd
-         eBsg==
-In-Reply-To: <20130812214151.GE13717@harrier.slackbuilds.org>
+In-Reply-To: <5209377B.5030105@gmail.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, Alex Flex <aflexzor@gmail.com>
 
-Hello Rob,
+I agree with Rob0 , but the problem here is that you do not specify WHA=
+T you are doing from your machine .
+=46rom your rules , it's obvious you are running a SSH and WEB deamon o=
+n this machine .
 
-On 08/12/2013 03:41 PM, /dev/rob0 wrote:
-> On Mon, Aug 12, 2013 at 01:28:59PM -0600, Alex Flex wrote:
->> Iam working with a stateless firewall to help keep up with DoS
->> and a state flood. I have a few doubts about my setup:
-> What is a "state flood"? Why do you think a stateless firewall is
-> superior, or even desirable?
-With a state flood, i meant a syn flood for example. My experience has 
-taught that small bandwith attacks (those that my uplink stands) are 
-done based on my state table reaching its limits.
+> a.) When allowing web traffic, is it neecessary to allow port range 1=
+000:65535 ?
 
-Knowing this, do you think I should have taken another approach?
+However you do not need to open port 1000-65535 for this or any other r=
+eason , except MAYBE return traffic from your machine .
+Since your mail does not specify any traffic originating from this mach=
+ine , it should not be needed !
 
-Is there anyway I can assign conntrack resources per chain, this would 
-greatly help at isolating damage.
+IF however you use this machine for "client" access , you should rather=
+ add source ports (--sport) for each client ports you need on INPUT .
 
-The OUTPUT deny is a paranoid method to have a more complete 
-understanding of that traffic and future applications cannot misbehave 
-so easily. It is not meant to guard from ssh users.
+Typical you need port 53 UDP and TCP for name resolution , and you shou=
+ld consider opening up for ICMP TYPE 3 for error messages .
+Adding your DNS servers IP and allowing all traffic from them is possib=
+le , but I think this is bad solution . ( not best practice )
+
+> b.) What is needed to safely have a default OUTPUT DROP, apparently a=
+s=20
+> soon as i change it to that iam unable to access it via ssh, even if =
+I=20
+> add a rule like this: /sbin/iptables -A OUTPUT -p tcp --dport 22 -j A=
+CCEPT
 
 
+DROP OUTPUT fails because you don't have any source ports allowed ,
+
+/sbin/iptables -A OUTPUT -p tcp --sport 22 -j ACCEPT
+/sbin/iptables -A OUTPUT -p tcp --sport 80 -j ACCEPT
+
+And you will also need to ADD rules for DNS traffic going out
+
+/sbin/iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
+/sbin/iptables -A OUTPUT -p tcp --dport 53 -j ACCEPT
+
+ATLEAST !!
+
+
+> i saw that due to this rule sending packets to those ports directly r=
+espond with a REJECT instead of a DROP which is preffered.
+
+This is because you have made a rule ACCEPTing port 1000-65535 INPUT , =
+and also made a default rule ACCEPTing tcp nack OUTPUT=20
+
+
+> Any workaround and still have a stateless setup?
+
+Well yes , remove/replace the port 1000 - 65535 opening INPUT !
+( or DROP tcp nack OUTPUT , which would just be silly )
+
+
+I cannot tell you anymore since there is not any more info on what you =
+are doing ,
+But adding a LOG statement in INPUT and OUTPUT before the DROP should h=
+elp you spot any trouble .
+
+
+Kind Regards Andr=E9
 
