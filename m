@@ -1,40 +1,43 @@
-From: Florian Westphal <fw@strlen.de>
+From: Kristian Evensen <kristian.evensen@gmail.com>
 Subject: Re: MASQUERADE/SNAT and multiple interfaces with the same IP
-Date: Fri, 16 Aug 2013 13:18:26 +0200
-Message-ID: <20130816111826.GC5154@breakpoint.cc>
+Date: Fri, 16 Aug 2013 13:23:31 +0200
+Message-ID: <CAKfDRXjqm-7q_2g=KZPCQj2bSU+Th_p3zjXPQvhsaxXOMK2+rw@mail.gmail.com>
 References: <CAKfDRXjXkY--PjXAa1m=As+Vf_1__WBokkTAE5BHg+gxsM9Yxw@mail.gmail.com>
- <20130816110443.GB5154@breakpoint.cc>
- <CAKfDRXgNtPgQjtrSL=oVkws6GB_sTv+h+-_GLVvVvpWoEHBRnw@mail.gmail.com>
+	<20130816110443.GB5154@breakpoint.cc>
+	<CAKfDRXgNtPgQjtrSL=oVkws6GB_sTv+h+-_GLVvVvpWoEHBRnw@mail.gmail.com>
+	<20130816111826.GC5154@breakpoint.cc>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAKfDRXgNtPgQjtrSL=oVkws6GB_sTv+h+-_GLVvVvpWoEHBRnw@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type;
+        bh=xNEdjKrYuFTwsRWkxtuV0qBk1peOIxtVdVmLTGeFAPs=;
+        b=Qn02HJB/iRF/RFeG7/MxAusnz5mqSf74ZOCcikBrM8kOJjFKmz7dMDP16YMF7yGoKi
+         Oe9e7W1mdQ06InSju2n+GIOqO+DxT/n+IftFyKTFO3bUcy0/eqz1nZmcaGrK/sf56ajH
+         oyrRU08ffRwUDaEIE6g0+IyvLI79gO6NaPJ8nHwuS7BmnCqnyZMf3q3cH3wUfMUlyLZe
+         YZq0oQvhS+T5t0xQpHiQRg329/xI+p5lsonWKW9tAwmQpi6+iz81T/r8lZ1EWVWDRk3h
+         Yl7TkXVDjP2H3HcbBuIoePiEgJUtIeqN6src5P+2ZFCiEWLLzXgVJURf9FXSVxcTobCH
+         5xpA==
+In-Reply-To: <20130816111826.GC5154@breakpoint.cc>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Kristian Evensen <kristian.evensen@gmail.com>
-Cc: Florian Westphal <fw@strlen.de>, netfilter@vger.kernel.org, netdev@vger.kernel.org
+To: Florian Westphal <fw@strlen.de>
+Cc: netfilter@vger.kernel.org, netdev@vger.kernel.org
 
-Kristian Evensen <kristian.evensen@gmail.com> wrote:
-> I added a pr_info() here to see when this function was called. It is
-> triggered when the link goes down, as expected, but not when I just
-> change the mark and move the flows to another interface. I still see
-> the DESTROY/NEW-behavior though.
+On Fri, Aug 16, 2013 at 1:18 PM, Florian Westphal <fw@strlen.de> wrote:
+>> Does this mean that even when using SNAT, the old mapping is deleted
+>> and a new created?
+>
+> No.
 
-Yes, its handled by iptable_nat.c
+Thank you very much for the help, I see now that I was a little bit
+too fast and missed a detail in nf_nat_oif_changed(). If anyone ever
+stumbles across the question in the future: SNAT does not set
+masq_index and, thus, nf_nat_oif_changed() will always return false.
 
-> > Also, the nat core zaps conntracks when they are sent out on an
-> > interface other than the original interface.
-> >
-> > See nf_nat_oif_changed() in iptable_nat.c
-> 
-> Thanks for letting me know, I will start looking into this function.
-> Does this mean that even when using SNAT, the old mapping is deleted
-> and a new created?
+Have a nice weekend!
 
-No.
-
-> And does this event not notify conntrack?
-
-It generates a destroy event.
+-Kristian
