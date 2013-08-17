@@ -1,43 +1,34 @@
-From: Kristian Evensen <kristian.evensen@gmail.com>
-Subject: Re: MASQUERADE/SNAT and multiple interfaces with the same IP
-Date: Fri, 16 Aug 2013 13:23:31 +0200
-Message-ID: <CAKfDRXjqm-7q_2g=KZPCQj2bSU+Th_p3zjXPQvhsaxXOMK2+rw@mail.gmail.com>
-References: <CAKfDRXjXkY--PjXAa1m=As+Vf_1__WBokkTAE5BHg+gxsM9Yxw@mail.gmail.com>
-	<20130816110443.GB5154@breakpoint.cc>
-	<CAKfDRXgNtPgQjtrSL=oVkws6GB_sTv+h+-_GLVvVvpWoEHBRnw@mail.gmail.com>
-	<20130816111826.GC5154@breakpoint.cc>
+From: Kevin Peterson <qh.resu01@gmail.com>
+Subject: OpenSuse blocks outgoing connections to 3260 port. IPTABLES is not configured
+Date: Sat, 17 Aug 2013 17:15:38 +0000
+Message-ID: <abcd1234abc123ab12a0000010803000010000006401@gmail.com>
+Reply-To: Kevin Peterson <qh.resu01@gmail.com>
 Mime-Version: 1.0
-Return-path: <netdev-owner@vger.kernel.org>
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=xNEdjKrYuFTwsRWkxtuV0qBk1peOIxtVdVmLTGeFAPs=;
-        b=Qn02HJB/iRF/RFeG7/MxAusnz5mqSf74ZOCcikBrM8kOJjFKmz7dMDP16YMF7yGoKi
-         Oe9e7W1mdQ06InSju2n+GIOqO+DxT/n+IftFyKTFO3bUcy0/eqz1nZmcaGrK/sf56ajH
-         oyrRU08ffRwUDaEIE6g0+IyvLI79gO6NaPJ8nHwuS7BmnCqnyZMf3q3cH3wUfMUlyLZe
-         YZq0oQvhS+T5t0xQpHiQRg329/xI+p5lsonWKW9tAwmQpi6+iz81T/r8lZ1EWVWDRk3h
-         Yl7TkXVDjP2H3HcbBuIoePiEgJUtIeqN6src5P+2ZFCiEWLLzXgVJURf9FXSVxcTobCH
-         5xpA==
-In-Reply-To: <20130816111826.GC5154@breakpoint.cc>
-Sender: netdev-owner@vger.kernel.org
+        h=date:to:from:reply-to:subject:message-id:mime-version
+         :content-transfer-encoding:content-type;
+        bh=51xhnmrxoJRIeUjcUjirvqt20lBzVB1uCkb5Vkj4I+8=;
+        b=maJ8Uz+Z2dhU8QDCv3IlB1pICZRXDm8WU0YmdBR/Mco08OGChJIaE6Tc6RRb0FElPN
+         NbQgp5c3NpZ3dL3zF33j95Z/dUot1Gj6ZuRqPbUK1zmU6i/lbmWamA08XFiQCtmp30Wm
+         /rcP/C8Kh8KknGTeCSfsEDCy3+ZUwxNL7LdXdtPJd02mRCoxeaLctIky3MpFkRo+ks2B
+         dHR3KgWvem7Scsg3D6Ss1JrYxdxDpJp1uYMhFLzVDatpvta36DYgjfAGt+gXR1WsL6J1
+         tmfBeQY4ZHv9bb8sKDZMXlUM8Oe5IOppYosEgPbpjcKM7c9coV2kabf3eWLjRufpOxKk
+         8MKw==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Florian Westphal <fw@strlen.de>
-Cc: netfilter@vger.kernel.org, netdev@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Fri, Aug 16, 2013 at 1:18 PM, Florian Westphal <fw@strlen.de> wrote:
->> Does this mean that even when using SNAT, the old mapping is deleted
->> and a new created?
->
-> No.
+Hi, 
 
-Thank you very much for the help, I see now that I was a little bit
-too fast and missed a detail in nf_nat_oif_changed(). If anyone ever
-stumbles across the question in the future: SNAT does not set
-masq_index and, thus, nf_nat_oif_changed() will always return false.
+I use OpenSuse 12.2. IPTABLES is not configured. I could connect to any port from the server except 3260. What could be the problem?
 
-Have a nice weekend!
+The server is a qemu guest. From the guest, I cannot make outgoing connections to port 3260. Connections to other ports are working fine.
 
--Kristian
+Thanks,
+Kevin Peterson
+
+
