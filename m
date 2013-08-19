@@ -1,34 +1,29 @@
-From: Kevin Peterson <qh.resu01@gmail.com>
-Subject: OpenSuse blocks outgoing connections to 3260 port. IPTABLES is not configured
-Date: Sat, 17 Aug 2013 17:15:38 +0000
-Message-ID: <abcd1234abc123ab12a0000010803000010000006401@gmail.com>
-Reply-To: Kevin Peterson <qh.resu01@gmail.com>
+From: John Donnelly <john_donnelly@persistentsys.com>
+Subject: Minimal development platform for netfilter + libnetfilter_queue ?
+Date: Mon, 19 Aug 2013 16:01:13 +0000
+Message-ID: <2E13285DED113046A773BD29BABDCC2032B9431B@US-MBX1.persistent.co.in>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=date:to:from:reply-to:subject:message-id:mime-version
-         :content-transfer-encoding:content-type;
-        bh=51xhnmrxoJRIeUjcUjirvqt20lBzVB1uCkb5Vkj4I+8=;
-        b=maJ8Uz+Z2dhU8QDCv3IlB1pICZRXDm8WU0YmdBR/Mco08OGChJIaE6Tc6RRb0FElPN
-         NbQgp5c3NpZ3dL3zF33j95Z/dUot1Gj6ZuRqPbUK1zmU6i/lbmWamA08XFiQCtmp30Wm
-         /rcP/C8Kh8KknGTeCSfsEDCy3+ZUwxNL7LdXdtPJd02mRCoxeaLctIky3MpFkRo+ks2B
-         dHR3KgWvem7Scsg3D6Ss1JrYxdxDpJp1uYMhFLzVDatpvta36DYgjfAGt+gXR1WsL6J1
-         tmfBeQY4ZHv9bb8sKDZMXlUM8Oe5IOppYosEgPbpjcKM7c9coV2kabf3eWLjRufpOxKk
-         8MKw==
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi, 
+Hi,
 
-I use OpenSuse 12.2. IPTABLES is not configured. I could connect to any port from the server except 3260. What could be the problem?
+I am using RH  63 desktop w/ kernel 2.6.32 and I had a number of issues building the 
+current netfilter libs   - What development platform should I be on - a 2.6 or 
+ 3.0 ?
 
-The server is a qemu guest. From the guest, I cannot make outgoing connections to port 3260. Connections to other ports are working fine.
-
-Thanks,
-Kevin Peterson
+See https://bugzilla.netfilter.org/show_bug.cgi?id=845 
 
 
+Regards,
+
+
+JD
+DISCLAIMER
+==========
+This e-mail may contain privileged and confidential information which is the property of Persistent Systems Ltd. It is intended only for the use of the individual or entity to which it is addressed. If you are not the intended recipient, you are not authorized to read, retain, copy, print, distribute or use this message. If you have received this communication in error, please notify the sender and delete all copies of this message. Persistent Systems Ltd. does not accept any liability for virus infected mails.
