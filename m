@@ -1,102 +1,37 @@
-From: John Donnelly <john_donnelly@persistentsys.com>
-Subject: RE: libnetfilter_queue:   ./nfqnl_test usage ? FAILS ON
-  2.6.32-279.el6.i686
-Date: Tue, 20 Aug 2013 15:40:32 +0000
-Message-ID: <2E13285DED113046A773BD29BABDCC2032B973C4@US-MBX1.persistent.co.in>
+From: "Nestor A. Diaz" <nestor@tiendalinux.com>
+Subject: Machine in the middle
+Date: Wed, 21 Aug 2013 12:11:06 -0500
+Message-ID: <5214F4AA.4010409@tiendalinux.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-
-
-FYI - I got a solution:
-
-You have to point a port to the QUEUE using iptables:
-
-iptables -I INPUT -p tcp --dport 5001 -j QUEUE
-
-This sets the port used by iperf to be monitored. 
-
-nfqnl_test  program works on Fedora 19 with a  3.10.7 kernel 
-
-It fails with a 2.6.32 :
-
-[root@RH63-x86 utils]# ./nfqnl_test
-opening library handle
-unbinding existing nf_queue handler for AF_INET (if any)
-error during nfq_unbind_pf()
-
-
-Is this feature not available on 2.6.32 ?
-
-
-________________________________________
-From: netfilter-owner@vger.kernel.org [netfilter-owner@vger.kernel.org] on behalf of John Donnelly [john_donnelly@persistentsys.com]
-Sent: Monday, August 19, 2013 5:39 PM
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
-Subject: libnetfilter_queue:   ./nfqnl_test usage ? no activity shown
 
 Hi,
 
+According to your experience what would be the best strategy to
+intercept traffic from one machine to another and process some (not all)
+request in a transparent way.
 
+I explain, i have two machines:
 
+192.168.1.1/24 <-> 192.168.1.2/24
 
+All I want to do is to intercept traffic from a specific port(s), i.e.
+4000/tcp and process it in a 'machine in the middle'.
 
-Hi,
- I am trying to get   libnetfilter_queue  usermode  example working on 3.10.3 kernel , and I
-don't see any activity reported:
+192.168.1.1/24 <-> machine-in-the-middle <-> 192.168.1.2/24
 
+The idea is that when 192.168.1.1 connects to 192.168.1.2:4000 then the
+machine in the middle will answer those requests, but the remaining
+traffic from 192.168.1.1 to 192.168.1.2 keep forwarding as is, and the
+same for the opposite direction.
 
-info:
+Thanks.
 
-[root@rh62-x86 utils]# cat /usr/share/pkgconfig/lib* | egrep "Ver|Name"
-Name: libmnl
-Version: 1.0.3
-Name: libnetfilter_queue
-Version: 1.0.2
-Name: libnfnetlink
-Version: 1.0.1
-Name: libnftables
-Version: 1.0.0
+-- 
+Nestor.Diaz.
 
-[root@rh62-x86 utils]# pwd
-/root/ntest/libnetfilter_queue/utils
-
-insmod  /lib/modules/`uname -r`/kernel/net/netfilter/nfnetlink_queue.ko
-
-[root@rh62-x86 utils]# lsmod
-Module                  Size  Used by
-nfnetlink_queue         7851  0
-
-installed
-
-Running  nfqnl_test yields no captures:
-
-[root@rh62-x86 utils]# ./nfqnl_test
-opening library handle
-unbinding existing nf_queue handler for AF_INET (if any)
-binding nfnetlink_queue as nf_queue handler for AF_INET
-binding this socket to queue '0'
-setting copy_packet mode
-
-
-< nothing >
-
-Should I  see activity if I  ssh to the machine ?
-
-Suggestions welcome .
-DISCLAIMER
-==========
-This e-mail may contain privileged and confidential information which is the property of Persistent Systems Ltd. It is intended only for the use of the individual or entity to which it is addressed. If you are not the intended recipient, you are not authorized to read, retain, copy, print, distribute or use this message. If you have received this communication in error, please notify the sender and delete all copies of this message. Persistent Systems Ltd. does not accept any liability for virus infected mails.
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-DISCLAIMER
-==========
-This e-mail may contain privileged and confidential information which is the property of Persistent Systems Ltd. It is intended only for the use of the individual or entity to which it is addressed. If you are not the intended recipient, you are not authorized to read, retain, copy, print, distribute or use this message. If you have received this communication in error, please notify the sender and delete all copies of this message. Persistent Systems Ltd. does not accept any liability for virus infected mails.
