@@ -1,67 +1,153 @@
-From: Julian Anastasov <ja@ssi.bg>
-Subject: Re: ipvsadm: One-packet scheduling with UDP service is unstable
-Date: Thu, 22 Aug 2013 17:14:02 +0300 (EEST)
-Message-ID: <alpine.LFD.2.00.1308221558160.2993@ja.ssi.bg>
-References: <CAJiejCQPa7V703RwOeWPpbQMJQvfswRn+pvTKFmNdeU05RU3SQ@mail.gmail.com> <alpine.LFD.2.00.1308220925340.1727@ja.ssi.bg> <CAJiejCSdfBKC3c1dqya55R5T0VBCTm3qaM6nL-CY+H0o5hbwoA@mail.gmail.com>
+From: John Donnelly <john_donnelly@persistentsys.com>
+Subject: RE: libnfnetlink error:   ./nfqnl_test usage ? FAILS ON
+  2.6.32-279.el6.i686
+Date: Thu, 22 Aug 2013 15:10:58 +0000
+Message-ID: <2E13285DED113046A773BD29BABDCC2032B984FE@US-MBX1.persistent.co.in>
 Mime-Version: 1.0
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <CAJiejCSdfBKC3c1dqya55R5T0VBCTm3qaM6nL-CY+H0o5hbwoA@mail.gmail.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Language: en-US
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Drunkard Zhang <gongfan193@gmail.com>
-Cc: Wensong Zhang <wensong@linux-vs.org>, Simon Horman <horms@verge.net.au>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel <linux-kernel@vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
 
-	Hello,
 
-On Thu, 22 Aug 2013, Drunkard Zhang wrote:
+NOTE: this appears to work on 3.10 kernels, but not 2.6.32 . I wonder why ?
 
-> 2013/8/22 Julian Anastasov <ja@ssi.bg>:
-> >
-> >         No kernel options should be related to OPS. I assume
-> > you are not using the SH scheduler. Make sure the OPS mode
-> > is properly applied to the virtual service, check for "ops"
-> > in the configuration:
-> >
-> > cat /proc/net/ip_vs
-> 
-> Still no lucky here, ops is set in running config, but it's not like
-> that in real world.
-> 
-> vs3 ~ # cat /proc/net/ip_vs
-> IP Virtual Server version 1.2.1 (size=1024)
-> Prot LocalAddress:Port Scheduler Flags
->   -> RemoteAddress:Port Forward Weight ActiveConn InActConn
-> UDP  96A46478:0202 wrr ops
+I have debugged the test down to the library libnfnetlink and the recvfrom() message is returning 
+a EINVALID 
 
->   -> 96A46450:0202      Route   25     0          1
+[root@RH63-x86 utils]# ./nfqnl_test
+opening library handle
+unbinding existing nf_queue handler for AF_INET (if any)
+errno sent 22
+error from nfnl_step
+error -1 during nfq_unbind_pf()
 
-	The OPS connections are accounted in InActConn
-for a very short period, they live up to 1 jiffie, eg. 10ms.
-Also, WRR should be reliable for OPS while other
-schedulers (eg. *LC) are not suitable.
 
-> And the traffic routed to each realserver didn't following weight I
-> set, it's routed pretty much one to one. I got 17 udp sources sending
-> to 16 different realservers, the others are bonding to another VIP.
-> 
-> Prot LocalAddress:Port                 CPS    InPPS   OutPPS    InBPS   OutBPS
->   -> RemoteAddress:Port
-> UDP  x.x.x.120:514                 0    67622        0 12339373        0
->   -> x.x.x.65:514                  0       29        0     2895        0
->   -> x.x.x.66:514                  0      225        0    21850        0
+file:
 
-	Do you see the same problem with ipvsadm -Ln --stats ?
-ipvsadm -Z may be needed to zero the stats after restoring all
-rules. "Conns" counter in stats should be according to WRR
-weights, it shows the scheduler decisions.
+libnfnetlink/src/libnfnetlink.c
 
-	In your rates listing CPS 0 is confusing, even for OPS.
-Is it from the new ipvsadm?
+static int nfnl_is_error(struct nfnl_handle *h, struct nlmsghdr *nlh)
+{
+        /* This message is an ACK or a DONE */
+        if (nlh->nlmsg_type == NLMSG_ERROR ||
+            (nlh->nlmsg_type == NLMSG_DONE &&
+             nlh->nlmsg_flags & NLM_F_MULTI)) {
+                if (nlh->nlmsg_len < NLMSG_ALIGN(sizeof(struct nlmsgerr))) {
+                        errno = EBADMSG;
+                fprintf(stderr,"EBADMSG \n");
+                        return 1;
+                }
+                errno = -(*((int *)NLMSG_DATA(nlh)));
+                fprintf(stderr,"errno sent %d\n",errno);
+                return 1;
+        }
+        return 0;
+}
 
-Regards
 
+________________________________________
+From: netfilter-owner@vger.kernel.org [netfilter-owner@vger.kernel.org] on behalf of John Donnelly [john_donnelly@persistentsys.com]
+Sent: Tuesday, August 20, 2013 10:40 AM
+To: netfilter@vger.kernel.org
+Subject: RE: libnetfilter_queue:   ./nfqnl_test usage ? FAILS ON  2.6.32-279.el6.i686
+
+FYI - I got a solution:
+
+You have to point a port to the QUEUE using iptables:
+
+iptables -I INPUT -p tcp --dport 5001 -j QUEUE
+
+This sets the port used by iperf to be monitored.
+
+nfqnl_test  program works on Fedora 19 with a  3.10.7 kernel
+
+It fails with a 2.6.32 :
+
+[root@RH63-x86 utils]# ./nfqnl_test
+opening library handle
+unbinding existing nf_queue handler for AF_INET (if any)
+error during nfq_unbind_pf()
+
+
+Is this feature not available on 2.6.32 ?
+
+
+________________________________________
+From: netfilter-owner@vger.kernel.org [netfilter-owner@vger.kernel.org] on behalf of John Donnelly [john_donnelly@persistentsys.com]
+Sent: Monday, August 19, 2013 5:39 PM
+To: netfilter@vger.kernel.org
+Subject: libnetfilter_queue:   ./nfqnl_test usage ? no activity shown
+
+Hi,
+
+
+
+
+
+Hi,
+ I am trying to get   libnetfilter_queue  usermode  example working on 3.10.3 kernel , and I
+don't see any activity reported:
+
+
+info:
+
+[root@rh62-x86 utils]# cat /usr/share/pkgconfig/lib* | egrep "Ver|Name"
+Name: libmnl
+Version: 1.0.3
+Name: libnetfilter_queue
+Version: 1.0.2
+Name: libnfnetlink
+Version: 1.0.1
+Name: libnftables
+Version: 1.0.0
+
+[root@rh62-x86 utils]# pwd
+/root/ntest/libnetfilter_queue/utils
+
+insmod  /lib/modules/`uname -r`/kernel/net/netfilter/nfnetlink_queue.ko
+
+[root@rh62-x86 utils]# lsmod
+Module                  Size  Used by
+nfnetlink_queue         7851  0
+
+installed
+
+Running  nfqnl_test yields no captures:
+
+[root@rh62-x86 utils]# ./nfqnl_test
+opening library handle
+unbinding existing nf_queue handler for AF_INET (if any)
+binding nfnetlink_queue as nf_queue handler for AF_INET
+binding this socket to queue '0'
+setting copy_packet mode
+
+
+< nothing >
+
+Should I  see activity if I  ssh to the machine ?
+
+Suggestions welcome .
+DISCLAIMER
+==========
+This e-mail may contain privileged and confidential information which is the property of Persistent Systems Ltd. It is intended only for the use of the individual or entity to which it is addressed. If you are not the intended recipient, you are not authorized to read, retain, copy, print, distribute or use this message. If you have received this communication in error, please notify the sender and delete all copies of this message. Persistent Systems Ltd. does not accept any liability for virus infected mails.
 --
-Julian Anastasov <ja@ssi.bg>
+To unsubscribe from this list: send the line "unsubscribe netfilter" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+DISCLAIMER
+==========
+This e-mail may contain privileged and confidential information which is the property of Persistent Systems Ltd. It is intended only for the use of the individual or entity to which it is addressed. If you are not the intended recipient, you are not authorized to read, retain, copy, print, distribute or use this message. If you have received this communication in error, please notify the sender and delete all copies of this message. Persistent Systems Ltd. does not accept any liability for virus infected mails.
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+DISCLAIMER
+==========
+This e-mail may contain privileged and confidential information which is the property of Persistent Systems Ltd. It is intended only for the use of the individual or entity to which it is addressed. If you are not the intended recipient, you are not authorized to read, retain, copy, print, distribute or use this message. If you have received this communication in error, please notify the sender and delete all copies of this message. Persistent Systems Ltd. does not accept any liability for virus infected mails.
