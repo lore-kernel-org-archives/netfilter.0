@@ -1,84 +1,95 @@
-From: "Nestor A. Diaz" <nestor@tiendalinux.com>
-Subject: Re: Machine in the middle
-Date: Wed, 21 Aug 2013 14:24:21 -0500
-Message-ID: <521513E5.2030908@tiendalinux.com>
-References: <5214F4AA.4010409@tiendalinux.com> <CAHUGJcG9=wBzy256c2Rk1NMi8TSWp_DCUrqLoA5Tvo+3QgHYMA@mail.gmail.com>
+From: Julian Anastasov <ja@ssi.bg>
+Subject: Re: ipvsadm: One-packet scheduling with UDP service is unstable
+Date: Thu, 22 Aug 2013 09:43:21 +0300 (EEST)
+Message-ID: <alpine.LFD.2.00.1308220925340.1727@ja.ssi.bg>
+References: <CAJiejCQPa7V703RwOeWPpbQMJQvfswRn+pvTKFmNdeU05RU3SQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAHUGJcG9=wBzy256c2Rk1NMi8TSWp_DCUrqLoA5Tvo+3QgHYMA@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <lvs-devel-owner@vger.kernel.org>
+In-Reply-To: <CAJiejCQPa7V703RwOeWPpbQMJQvfswRn+pvTKFmNdeU05RU3SQ@mail.gmail.com>
+Sender: lvs-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Matty Sarro <msarro@gmail.com>
-Cc: netfilter@vger.kernel.org
-
-Hi, thanks for your answer, I forgot to say that the ports I will be
-intercepting are going to be redirected to a third host, so I can't just
-listen or drop, I need to respond to those packets.
-
-I am planning to use an openwrt router for this.
-
-Initially I though that could be done with two routers as follows:
-
-Original scenario:
-
-192.168.1.1/24 <-> 192.168.1.2/24
-
-New scenario:
-
-192.168.1.1/24 <-> ( 192.168.1.2/24 natting to from 169.254.1.2/24) <->
-( 169.254.1.1/24 natting to from 192.168.1.1/24) <-> 192.168.1.2/24
-
-The idea is that every router take the other side IP address then DNAT
-to a zeroconf ip address and send to the other one, the other router
-will receive the packet and SNAT to the original IP address, problem
-solved, I thought.
-
-That way I could intercept the traffic in any of the two devices and
-with another network interface I could send that packet to another host.
-
-But I prefer a solution where I don't have to use two routers, can it be
-done using just one router reinjecting the packet after the first NAT ?
-
-Another option I was thinking is to define a router with two network
-interfaces where I put an ip address of the other side as an alias and
-then mark the packet, then put into another routing table and forward
-via the other interface, seems confusing, I will try to explain:
-
-192.168.1.1/24 <-> (eth0.1: 169.254.1.2/24,192.168.1.2/24 and eth0.2:
-169.254.1.1/24,192.168.1.1/24) <-> 192.168.1.2/24
-
-I will receive the packet from one side, then at the mangle stage I will
-mark the packet, I will have just set up a new route table that obeys
-the packet and forward via another interface, this way I will not have
-to deal with NAT and the same the other way.  But this is just my
-hypothesis, Could it be possible or I am smoking marihuana ?
-
-Thanks.
-
--- 
-Nestor.Diaz.
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Drunkard Zhang <gongfan193@gmail.com>
+Cc: Wensong Zhang <wensong@linux-vs.org>, Simon Horman <horms@verge.net.au>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org, lvs-devel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, linux-kernel <linux-kernel@vger.kernel.org>
 
 
-On 08/21/2013 12:30 PM, Matty Sarro wrote:
-> 1) An ethernet tap is your best bet to do this. They can be purchased
-> to run at line speed (up to 1GBps, perhaps faster), and are made
-> specifically to do what you want. You can attempt to make one on your
-> own if you don't have a budget, but they rarely perform as well as a
-> manufactured one.
->
-> 2) A switch with a SPAN port may work as well. You can specify a port,
-> and then duplicate all ethernet frames going into/out of that port on
-> to another port, which is cabled to a box that is sniffing traffic.
->
-> 3) If transparency and throughput aren't really that important, you
-> can use a network hub. Because of how hubs function, all traffic is
-> sent out all ports. You'd connect the sniffing box and be done. The
-> downside is you will have lots of collissions, nothing will run at
-> full duplex (no gigabit speeds).
->
-> There are dedicated solutions for sucking in network traffic once you
-> have a tap installed (namely snort, http://www.snort.org/).
->
-[...]
+	Hello,
+
+On Tue, 20 Aug 2013, Drunkard Zhang wrote:
+
+> Need help here, thank you for replying :-)
+> 
+> I'm setting up a syslog cluster based on IPVS, all UDP datagrams sent
+> from firewall with fixed source IP and fixed source port, so
+> pseudo-random balancing based on client IP and port won't working. And
+> it seems that keepalived is not supporting One-packet scheduling
+> option, so I did some hacks on it after keepalived started:
+> 
+> 1. dump LVS rules with ipvsadm -S -n > rules-vs3;
+> 2. add --ops option;
+> 3. restore LVS rules with ipvsadm-restore < rules-vs3;
+> 4. dump the running LVS rules with ipvsadm -S -n
+> 
+> So, I got two problems here:
+> 
+> 1. Dumped rules in step 4 above is not usable anymore, the double-dash
+> in --ops lost, so I can't restore rule with this dump anymore. This
+> must be a bug.
+> 
+> 2. The --ops option is not working sometimes you applied the rules,
+> and in most of times the --ops just not working. To make it work, just
+> 'ipvsadm-restore < rules-vs3' for plenty of times until it's working.
+> I haven't find the patterns make it work yet. This is lucky, I can't
+> get it work on second host at all.
+> 
+> The "not working" above means the UDP datagrams from one source IP is
+> sticked to one realserver, it doesn't distribute to other realservers
+> which --ops designed for.
+
+	Can you try with recent ipvsadm from git:
+
+git clone git://git.kernel.org/pub/scm/utils/kernel/ipvsadm/ipvsadm.git
+
+	I see related commit that will print -o for
+the OPS feature:
+
+===
+commit 6a03100c189d00e3a8235215392465b5b877ba8f
+Author: Krzysztof Gajdemski <songo@debian.org.pl>
+Date:   Thu Mar 21 11:40:06 2013 +0100
+
+    ipvsadm: Fix wrong format of -o option in FMT_RULE listing
+
+    'ipvsadm -S' listed one-packet scheduling option in wrong format
+    ('ops' instead of '--ops' or '-o') preventing any service with OPS
+    feature from restoring using 'ipvsadm -R'.  Now we use '-o' which
+    works well with save/restore commands.
+
+    Signed-off-by: Krzysztof Gajdemski <songo@debian.org.pl>
+    Signed-off-by: Simon Horman <horms@verge.net.au>
+===
+
+	Let me know if you still have any problems with OPS.
+Sending to lvs-devel@vger.kernel.org and
+lvs-users@linuxvirtualserver.org should be enough for
+ipvsadm related discussions.
+
+> So I wondering if there's some CONFIG_* options that ipvs needs, or
+> recent development broke the code?
+
+	No kernel options should be related to OPS. I assume
+you are not using the SH scheduler. Make sure the OPS mode
+is properly applied to the virtual service, check for "ops"
+in the configuration:
+
+cat /proc/net/ip_vs
+
+> Do I need to attach kernel config file?
+
+	No
+
+Regards
+
+--
+Julian Anastasov <ja@ssi.bg>
