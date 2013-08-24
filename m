@@ -1,50 +1,42 @@
-From: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Subject: Re: [PATCH] netfilter: avoid array overflow in nf_register_hook
-Date: Fri, 23 Aug 2013 22:14:39 +0400
-Message-ID: <5217A68F.2050302@cogentembedded.com>
-References: <1377313651-16096-1-git-send-email-yp.fangdong@gmail.com>
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Subject: Re: Machine in the middle
+Date: Sat, 24 Aug 2013 11:43:11 +0200
+Message-ID: <5218802F.5000102@plouf.fr.eu.org>
+References: <5214F4AA.4010409@tiendalinux.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <1377313651-16096-1-git-send-email-yp.fangdong@gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <5214F4AA.4010409@tiendalinux.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Dong Fang <yp.fangdong@gmail.com>
-Cc: pablo@netfilter.org, kaber@trash.net, kadlec@blackhole.kfki.hu, davem@davemloft.net, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "Nestor A. Diaz" <nestor@tiendalinux.com>
+Cc: netfilter@vger.kernel.org
 
-Hello.
+Hello,
 
-On 08/24/2013 07:07 AM, Dong Fang wrote:
+Nestor A. Diaz a =E9crit :
+>=20
+> According to your experience what would be the best strategy to
+> intercept traffic from one machine to another and process some (not a=
+ll)
+> request in a transparent way.
+>=20
+> I explain, i have two machines:
+>=20
+> 192.168.1.1/24 <-> 192.168.1.2/24
+>=20
+> All I want to do is to intercept traffic from a specific port(s), i.e=
+=2E
+> 4000/tcp and process it in a 'machine in the middle'.
+>=20
+> 192.168.1.1/24 <-> machine-in-the-middle <-> 192.168.1.2/24
+>=20
+> The idea is that when 192.168.1.1 connects to 192.168.1.2:4000 then t=
+he
+> machine in the middle will answer those requests, but the remaining
+> traffic from 192.168.1.1 to 192.168.1.2 keep forwarding as is, and th=
+e
+> same for the opposite direction.
 
-> This patch fix the array overflow in nf_register_hook function
-
-> Signed-off-by: Dong Fang <yp.fangdong@gmail.com>
-> ---
->   net/netfilter/core.c |    5 ++++-
->   1 files changed, 4 insertions(+), 1 deletions(-)
-
-> diff --git a/net/netfilter/core.c b/net/netfilter/core.c
-> index 2217363..819eee1 100644
-> --- a/net/netfilter/core.c
-> +++ b/net/netfilter/core.c
-> @@ -68,8 +68,11 @@ static DEFINE_MUTEX(nf_hook_mutex);
->   int nf_register_hook(struct nf_hook_ops *reg)
->   {
->   	struct nf_hook_ops *elem;
-> -	int err;
-> +	int err = -EINVAL;
->
-> +	if (reg->pf >= NFPROTO_NUMPROTO || reg->hooknum >= NF_MAX_HOOKS)
-> +		return err;
-
-    Why not just return -EINVAL and avoid unneeded 'err' initialization?
-
-> +
->   	err = mutex_lock_interruptible(&nf_hook_mutex);
->   	if (err < 0)
->   		return err;
-
-WBR, Sergei
-
-
+Bridge with TPROXY, I guess.
