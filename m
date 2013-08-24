@@ -1,25 +1,25 @@
 From: Dong Fang <yp.fangdong@gmail.com>
 Subject: [PATCH] netfilter: avoid array overflow in nf_register_hook
-Date: Fri, 23 Aug 2013 23:04:55 -0400
-Message-ID: <1377313495-16060-1-git-send-email-yp.fangdong@gmail.com>
-Return-path: <netfilter-owner@vger.kernel.org>
+Date: Fri, 23 Aug 2013 23:07:31 -0400
+Message-ID: <1377313651-16096-1-git-send-email-yp.fangdong@gmail.com>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=from:to:cc:subject:date:message-id;
         bh=UoEMEY+jpD7Qvi55coWwYzUW1T95EInBrputZLbehQs=;
-        b=xK3UMyv0ebGKiwsEsSByU/+hYclgJQY0ZNQU//mLitGv+JtBE73Pn5Q8g0bQcAX0My
-         ugTrOa9YJhNSWSF2eNvhCmC/SSmLncCNaA3pxBHIPsCrfzcFtRqdX/1//Mf1XnGiXCht
-         oVcr2FwVA51OZW+J3AWcTddBgw8nFFeJfcgpV26RMtWFHK0/gZPwO3MJfhuJIkLH55SL
-         dfMXQriujMcYwUjJjW4RQ7Ur7JhhpWfqrcOHK3FsrI/J5DvFCseGBxgh3j38gJXyjJCT
-         8MiGiyx2FyUdlv9HK/7P+sCoWGfur4lkB9aBc/M4wN9zGVGvqIVKWQhuPWPhbRvQK6Zo
-         +PPQ==
-Sender: netfilter-owner@vger.kernel.org
+        b=QrV0FsJndiTlOtqcGjZxjPbtd7p62e0+Ccru5DWcHq2oqKYNmvhMLfYf3o1AuQC6Bh
+         oCbR5Jz7hPs16y4P5HgO/k2rFHqF0JM7ha+7FFSiGfk21oay6a+dCMozbOLYXflBn/X4
+         z/cH4z2Cbrq1qfjAxaD2lz/m3cFNwLmxRPWJ7dmZyHjL+etSzwhpWfALlFGvkdK7IxfQ
+         CYi/woaQAnGASUw2txiNvX8mHs+bo45OkdNwD9YFdliYyz7JheWQ2ZouhjOYvT1uqJRP
+         pTiLKINYN5eQmkaFkTmkWICSHIT3pd+Nd17fnfaEuEWo/PQS1l6z8QProzI7+nXeucZ6
+         utzw==
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: pablo@netfilter.org, kaber@trash.net, kadlec@blackhole.kfki.hu, davem@davemloft.net
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, Dong Fang <yp.fangdong@gmail.com>
+To: pablo@netfilter.org, kaber@trash.net, kadlec@blackhole.kfki.hu, davem@davemloft.net, yp.fangdong@gmail.com
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org
 
 This patch fix the array overflow in nf_register_hook function
 
