@@ -1,37 +1,50 @@
-From: Nathan Hintz <nlhintz@hotmail.com>
-Subject: [PATCH] netfilter: nf_defrag_ipv6.o included twice
-Date: Thu, 22 Aug 2013 22:09:12 -0700
-Message-ID: <BLU0-SMTP246C0F210C1747FE63C4E97AC4E0@phx.gbl>
-Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+From: Dong Fang <yp.fangdong@gmail.com>
+Subject: [PATCH] netfilter: avoid array overflow in nf_register_hook
+Date: Fri, 23 Aug 2013 23:04:55 -0400
+Message-ID: <1377313495-16060-1-git-send-email-yp.fangdong@gmail.com>
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=from:to:cc:subject:date:message-id;
+        bh=UoEMEY+jpD7Qvi55coWwYzUW1T95EInBrputZLbehQs=;
+        b=xK3UMyv0ebGKiwsEsSByU/+hYclgJQY0ZNQU//mLitGv+JtBE73Pn5Q8g0bQcAX0My
+         ugTrOa9YJhNSWSF2eNvhCmC/SSmLncCNaA3pxBHIPsCrfzcFtRqdX/1//Mf1XnGiXCht
+         oVcr2FwVA51OZW+J3AWcTddBgw8nFFeJfcgpV26RMtWFHK0/gZPwO3MJfhuJIkLH55SL
+         dfMXQriujMcYwUjJjW4RQ7Ur7JhhpWfqrcOHK3FsrI/J5DvFCseGBxgh3j38gJXyjJCT
+         8MiGiyx2FyUdlv9HK/7P+sCoWGfur4lkB9aBc/M4wN9zGVGvqIVKWQhuPWPhbRvQK6Zo
+         +PPQ==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: pablo@netfilter.org
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, Nathan Hintz <nlhintz@hotmail.com>
+To: pablo@netfilter.org, kaber@trash.net, kadlec@blackhole.kfki.hu, davem@davemloft.net
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, Dong Fang <yp.fangdong@gmail.com>
 
-'nf_defrag_ipv6' is built as a separate module; it shouldn't be
-included in the 'nf_conntrack_ipv6' module as well.
+This patch fix the array overflow in nf_register_hook function
 
-Signed-off-by: Nathan Hintz <nlhintz@hotmail.com>
+Signed-off-by: Dong Fang <yp.fangdong@gmail.com>
 ---
- net/ipv6/netfilter/Makefile | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ net/netfilter/core.c |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
 
-diff --git a/net/ipv6/netfilter/Makefile b/net/ipv6/netfilter/Makefile
-index 2d11fcc..ad13bf0 100644
---- a/net/ipv6/netfilter/Makefile
-+++ b/net/ipv6/netfilter/Makefile
-@@ -14,7 +14,7 @@ obj-$(CONFIG_NF_NAT_IPV6) += ip6table_nat.o
- nf_conntrack_ipv6-y  :=  nf_conntrack_l3proto_ipv6.o nf_conntrack_proto_icmpv6.o
+diff --git a/net/netfilter/core.c b/net/netfilter/core.c
+index 2217363..819eee1 100644
+--- a/net/netfilter/core.c
++++ b/net/netfilter/core.c
+@@ -68,8 +68,11 @@ static DEFINE_MUTEX(nf_hook_mutex);
+ int nf_register_hook(struct nf_hook_ops *reg)
+ {
+ 	struct nf_hook_ops *elem;
+-	int err;
++	int err = -EINVAL;
  
- # l3 independent conntrack
--obj-$(CONFIG_NF_CONNTRACK_IPV6) += nf_conntrack_ipv6.o nf_defrag_ipv6.o
-+obj-$(CONFIG_NF_CONNTRACK_IPV6) += nf_conntrack_ipv6.o
- 
- nf_nat_ipv6-y		:= nf_nat_l3proto_ipv6.o nf_nat_proto_icmpv6.o
- obj-$(CONFIG_NF_NAT_IPV6) += nf_nat_ipv6.o
++	if (reg->pf >= NFPROTO_NUMPROTO || reg->hooknum >= NF_MAX_HOOKS)
++		return err;
++
+ 	err = mutex_lock_interruptible(&nf_hook_mutex);
+ 	if (err < 0)
+ 		return err;
 -- 
-1.8.3.1
+1.7.1
 
