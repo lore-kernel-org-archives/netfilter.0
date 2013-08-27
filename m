@@ -1,49 +1,21 @@
-From: Mike Wright <mike.wright@mailinator.com>
-Subject: Re: a dos?
-Date: Mon, 26 Aug 2013 18:13:42 -0700
-Message-ID: <521BFD46.7020203@mailinator.com>
-References: <521BF007.4040907@mailinator.com> <Pine.LNX.4.61.1308262032410.17328@soloth.lewis.org>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH] netfilter: nf_defrag_ipv6.o included twice
+Date: Wed, 28 Aug 2013 00:50:11 +0200
+Message-ID: <20130827225011.GA15556@localhost>
+References: <BLU0-SMTP246C0F210C1747FE63C4E97AC4E0@phx.gbl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <Pine.LNX.4.61.1308262032410.17328@soloth.lewis.org>
+Content-Disposition: inline
+In-Reply-To: <BLU0-SMTP246C0F210C1747FE63C4E97AC4E0@phx.gbl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Nathan Hintz <nlhintz@hotmail.com>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-08/26/2013 05:35 PM, Jon Lewis wrote:
-> On Mon, 26 Aug 2013, Mike Wright wrote:
->
->> Hi all,
->>
->> Don't know if this is the appropriate place to ask so if not please
->> just ignore.
->>
->> There is some unexplained, non-stop traffic that won't go away.
->>
->> 27.50.2.191:80 keeps calling me at 63.192.15.229:4460.
->>
->> tcpdump shows 2 types of Flags: [S.] and [.], each one's packet
->> numbers never change.  Almost all of the packets are type 1.
->
+On Thu, Aug 22, 2013 at 10:09:12PM -0700, Nathan Hintz wrote:
+> 'nf_defrag_ipv6' is built as a separate module; it shouldn't be
+> included in the 'nf_conntrack_ipv6' module as well.
 
-Thanks for your help.
-
-> The [S.] is likely step 2 of the 3-way handshake in making a TCP
-> connection.  If you're not sending syns to 27.50.2.191:80, then perhaps
-> someone else is, either as an attack against 27.50.2.191, or because
-> they're using your IP space (likely on a private network) and have leaky
-> NAT.
->
->> Something puzzling was that the source IP may be related to the
->> DEBOGON Project?
->
-> Why do you think that?
->
-
- From their whois info:
-
-route:          27.50.0.0/22
-descr:          APNIC debogon project testing
-
+Applied, thanks.
