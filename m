@@ -1,21 +1,35 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH] netfilter: nf_defrag_ipv6.o included twice
-Date: Wed, 28 Aug 2013 00:50:11 +0200
-Message-ID: <20130827225011.GA15556@localhost>
-References: <BLU0-SMTP246C0F210C1747FE63C4E97AC4E0@phx.gbl>
+From: Serge Kosyrev <skosyrev@ptsecurity.ru>
+Subject: DNAT on loopback
+Date: Wed, 28 Aug 2013 18:10:23 +0400
+Message-ID: <87vc38taw7.fsf@wintermute.ptsecurity.ru>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <BLU0-SMTP246C0F210C1747FE63C4E97AC4E0@phx.gbl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Nathan Hintz <nlhintz@hotmail.com>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Thu, Aug 22, 2013 at 10:09:12PM -0700, Nathan Hintz wrote:
-> 'nf_defrag_ipv6' is built as a separate module; it shouldn't be
-> included in the 'nf_conntrack_ipv6' module as well.
+Good day folks!
 
-Applied, thanks.
+Is it possible to DNAT locally-originated, locally-destined packets to a
+non-local destination?
+
+The use-case is port forwarding to a locally-routed VM guest.
+For externally originating access the following is adequate:
+
+iptables -t nat -A PREROUTING -d external.iface.ip -p tcp --dport 80 -j DNAT --to-destination target.ip.add.ress
+
+A logical complement for locally originating accesses would have been:
+
+iptables -t nat -A OUTPUT     -d 127.0.0.0/16      -p tcp --dport 80 -j DNAT --to-destination target.ip.add.ress
+
+..but all I can observe is silent packet disappearance, which I presume
+takes place during routing decision-making immediately following the
+processing by the OUTPUT chain of the nat table.
+
+So, is it possible at all, or should I go the userspace port forwarding way?
+
+
+regards,
+Samium Gromoff
