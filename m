@@ -1,60 +1,114 @@
-From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: DNAT on loopback
-Date: Sat, 31 Aug 2013 12:33:58 +0200
-Message-ID: <5221C696.4070301@plouf.fr.eu.org>
-References: <87vc38taw7.fsf@wintermute.ptsecurity.ru>
+From: Eric Leblond <eric@regit.org>
+Subject: Re: automatic helper assignment is deprecated and it will be
+ removed soon
+Date: Sat, 31 Aug 2013 14:36:22 +0200
+Message-ID: <1377952582.3513.45.camel@ice-age.regit.org>
+References: <CAMD-=V+QAVw23X9eSAuzF4nz0kH0+vw0Om46+ofr0EGMVW6PNA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
+	boundary="=-2W/wVysbRZZ4Ol8S4tyy"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <87vc38taw7.fsf@wintermute.ptsecurity.ru>
+In-Reply-To: <CAMD-=V+QAVw23X9eSAuzF4nz0kH0+vw0Om46+ofr0EGMVW6PNA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Serge Kosyrev <skosyrev@ptsecurity.ru>
-Cc: netfilter@vger.kernel.org
+To: Nick Edwards <nick.z.edwards@gmail.com>
+Cc: Netfilter user mailing list <netfilter@vger.kernel.org>
+
+
+--=-2W/wVysbRZZ4Ol8S4tyy
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
 
 Hello,
 
-Serge Kosyrev a =E9crit :
+Le samedi 31 ao=FBt 2013 =E0 16:09 +1000, Nick Edwards a =E9crit :
+> Hi,
+>  This message is now appearing on some of our servers..
+> google is full of much info, and confusion.
+
+This is linked with the document that can be found here:
+ https://home.regit.org/netfilter-en/secure-use-of-helpers/
+
+Don't hesitate to command this document if you find some part needs
+explanation.
+
+The change in automatic helper assignment is motivated by an attack
+found on helper and implemented in the tool named opensvp:
+
+https://home.regit.org/2012/06/opensvp-a-new-tool-to-analyse-the-security-o=
+f-firewalls-using-algs/
+
+> I understand it to be
+> iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+> becomes
+> iptables -A INPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
 >=20
-> Is it possible to DNAT locally-originated, locally-destined packets t=
-o a
-> non-local destination?
+> with new rules to add being
+> -A FORWARD -m conntrack --ctstate RELATED -m helper --helper ftp -p
+> tcp --dport 21 -j ACCEPT
 
-Sometimes, but not alway.
+This change you have just described is a security improvement. By the
+way, it should not work. The last rule you wrote states that packets
+RELATED to a connection, going to port 21 and linked with the FTP helper
+have to be accepted. This is not what you want as port 21 is the
+original connection.
 
-> The use-case is port forwarding to a locally-routed VM guest.
-> For externally originating access the following is adequate:
+A correct rule will be something like
+iptables -A FORWARD -m conntrack --ctstate RELATED -m helper \\
+       --helper ftp -p tcp \\
+       --dport 1024: -j ACCEPT
+
+You accept all packets RELATED to an ftp connection on port > 1024. If
+you know where the FTP connection took place, you can add more filter to
+discriminate the flow.
+
+> then some sites talk about
+>  -A PREROUTING -t raw -p tcp --dport 21 -j CT --helper ftp
+
+Here, you say: traffic to port 21 IS FTP. This will mimic the current
+behavior of helper (automatic assignement) and this only rule (without
+the previously mentioned change) will allow you to support the future
+change to non automatic assignment (assuming you only need the ftp
+helper on your system).=20
+
 >=20
-> iptables -t nat -A PREROUTING -d external.iface.ip -p tcp --dport 80 =
--j DNAT --to-destination target.ip.add.ress
+> So, does removal of ESTABLISHED on original rules, now mean we need
+> one of, of both of, these new rules?
 >=20
-> A logical complement for locally originating accesses would have been=
-:
+> I tried on our IRC server, but it balked with ip6tables  at xt_CT: No
+> such helper "irc"
+> same command with iptables seemed to take..
 >=20
-> iptables -t nat -A OUTPUT     -d 127.0.0.0/16      -p tcp --dport 80 =
--j DNAT --to-destination target.ip.add.ress
+> What is the correct way to replace this ESTABLISED since nf_conntrack
+> will soon be removed
+
+No removal of nf_conntrack is planned. The only change planned is the
+removal of automatic assignement ie 21->ftp helper is used.
+
 >=20
-> ..but all I can observe is silent packet disappearance, which I presu=
-me
-> takes place during routing decision-making immediately following the
-> processing by the OUTPUT chain of the nat table.
+> Are they even needed anymore?  (I think irc helper is only needed for dcc=
+ etc)
+>  is FTP still  needed for ftp?
 
-Yes, packets are discarded because the output interface is non-loopback
-and the source address is within 127.0.0.0/8, which is restrited to
-loopback. Unfortunately you can only change the source address in
-POSTROUTING, which comes too late.
+As mentioned before NO change on helper logic. They are still needed to
+handle protocol with dynamic connection opening.
 
-> So, is it possible at all, or should I go the userspace port forwardi=
-ng way?
+BR,
+--
+Eric
 
-It is possible if the original source adress is not within 127.0.0.0/8.
+--=-2W/wVysbRZZ4Ol8S4tyy
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-=46or local destinations the default source adresse is the same as the
-destination, but some applications allow to specify a different address=
-=2E
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
 
-However why don't you use the same destination address external.iface.i=
-p
-as in the PREROUTING rule, so that the default source adress would not
-be a loopback address ?
+iD8DBQBSIeNGnxA7CdMWjzIRAsBEAJ4iC9wyRHCCNpaMugzd8VLki3tcVACff2e4
+OcAF5swykamT4iqScu3VYVc=
+=ksGq
+-----END PGP SIGNATURE-----
+
+--=-2W/wVysbRZZ4Ol8S4tyy--
+
