@@ -1,181 +1,132 @@
-From: Nick Edwards <nick.z.edwards@gmail.com>
-Subject: Re: automatic helper assignment is deprecated and it will be removed soon
-Date: Wed, 4 Sep 2013 21:29:02 +1000
-Message-ID: <CAMD-=V+FC-Cq-zSd3H7j+DvuMrZ6m-xm-qAikPBwW31_VuNCZQ@mail.gmail.com>
-References: <CAMD-=V+QAVw23X9eSAuzF4nz0kH0+vw0Om46+ofr0EGMVW6PNA@mail.gmail.com>
-	<1377952582.3513.45.camel@ice-age.regit.org>
-	<CAMD-=V+yrawW6hPSLxp=0j+4=Gt88uo5sEL4gqoRJ8n3dMWWnw@mail.gmail.com>
-	<1378067313.3513.54.camel@ice-age.regit.org>
+From: "podo" <podo@hnup.de>
+Subject: RE: Limit rule for ICMP not working properly?
+Date: Thu, 5 Sep 2013 16:58:27 +0200
+Message-ID: <000901ceaa48$60fe2a40$22fa7ec0$@hnup.de>
+References: <002e01ce83d7$ad77f410$0867dc30$@hnup.de> <CAKpaJ1wgnikpc9WcwCVgzf45F1Lpwbp9LMr4_2bXk6XYf7nRjw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type:content-transfer-encoding;
-        bh=PQnudAM9bpuQX+PdibXaiXO2DctfUN/khm0tqdRufOU=;
-        b=gSYZid/EXxK87QOUeZiGQnD33cWPiuEHcltei2TAR5b0dbX1uAZIDzaskY6g2IucKk
-         GwwzJUnhLufYF2aIYlKwgGsbhOaTqZLv02Lo5FHSBU+k9OH3MvrMqAnTRyfkyhSxIbmz
-         cppBt0dVWLaejfUFj7Cu93qEqDkVPCCjy+T0YFYITLUPGPQT6ziOgVqplO33MZQuQXx9
-         CXhPibrr76kDS17y2yUb7Qi9yQeddh/QKZ+3CPvoZccKupb1BfcVhy8dRFF2dvocqJ2L
-         miVOWLIsoXha/kmPLKcYjLCbkGb7wmPT621pPHduSC64diGOv9GSz7JH0FXustBAiGrp
-         rgOg==
-In-Reply-To: <1378067313.3513.54.camel@ice-age.regit.org>
+In-Reply-To: <CAKpaJ1wgnikpc9WcwCVgzf45F1Lpwbp9LMr4_2bXk6XYf7nRjw@mail.gmail.com>
+Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Eric Leblond <eric@regit.org>
-Cc: Netfilter user mailing list <netfilter@vger.kernel.org>
+To: 'netfilter' <netfilter@vger.kernel.org>
 
-thanks for clearing that up, as for IPv6,
+Hi,
 
-iptables -A PREROUTING -t raw -m multiport -p tcp --dports 6667,7777
--j CT --helper irc
+the default is DROP:
 
-/usr/local/sbin/ip6tables -A PREROUTING -t raw -m multiport -p tcp
---dports 6667,7777 -j CT --helper irc
-ip6tables: No chain/target/match by that name.
+iptables -L -n -v
+Chain INPUT (policy DROP 314 packets, 98684 bytes)
+pkts bytes target     prot opt in     out     source
+destination
+  963 66540 ACCEPT     tcp  --  *      *       0.0.0.0/0
+0.0.0.0/0
+   29  1740 ACCEPT     icmp --  *      *       0.0.0.0/0
+0.0.0.0/0            icmptype 8 limit: avg 1/sec burst 5
+   39  2836 ACCEPT     all  --  *      *       0.0.0.0/0
+0.0.0.0/0            state ESTABLISHED
 
-I must have left something out of the kernel build then, that's the
-only IPv6 rule that fails
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+pkts bytes target     prot opt in     out     source
+destination
 
+Chain OUTPUT (policy ACCEPT 5384 packets, 387K bytes)
+pkts bytes target     prot opt in     out     source
+destination
 
+The problem is, that the second rule gets hit, even if it shoud not (my
+opinion). ICMP can not be "established". Or ?
 
-On 9/2/13, Eric Leblond <eric@regit.org> wrote:
-> Hello,
->
-> Le dimanche 01 septembre 2013 =E0 17:11 +1000, Nick Edwards a =E9crit=
- :
->> Hi Eric,
->>
->> Thank you for that, one thing though on PREROUTING, is that just ext=
-ra
->> security, not critical for ftp to work,or not really needed after I
->> fix my forwarding rule up.
->
-> FORWARD changes are not needed at a functional level. It is a securit=
-y
-> improvement.
-> Using CT target in PREROUTING (raw) to affect helper to flow will be
-> needed once the automatic helper affectation will be disabled by
-> default.
->
->> As you can tell I'm far from an expert, but since the CT line wouldn=
-t
->> take with IPv6, I am assuming it is not critical to its functioning
->> (bless I hit a IPv6 bug)
->
-> CT target is working with IPv6. The same change will needs to be made=
+I know I could add new rule after the limit - with ICMP reject. This wo=
+uld
+probably work. But it should work also without explicit reject for ICMP=
 =2E
->
-> BR,
->
->
->> Thanks
->>
->>
->>
->>
->>
->>
->> On 8/31/13, Eric Leblond <eric@regit.org> wrote:
->> > Hello,
->> >
->> > Le samedi 31 ao=FBt 2013 =E0 16:09 +1000, Nick Edwards a =E9crit :
->> >> Hi,
->> >>  This message is now appearing on some of our servers..
->> >> google is full of much info, and confusion.
->> >
->> > This is linked with the document that can be found here:
->> >  https://home.regit.org/netfilter-en/secure-use-of-helpers/
->> >
->> > Don't hesitate to command this document if you find some part need=
-s
->> > explanation.
->> >
->> > The change in automatic helper assignment is motivated by an attac=
-k
->> > found on helper and implemented in the tool named opensvp:
->> >
->> > https://home.regit.org/2012/06/opensvp-a-new-tool-to-analyse-the-s=
-ecurity-of-firewalls-using-algs/
->> >
->> >> I understand it to be
->> >> iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j A=
-CCEPT
->> >> becomes
->> >> iptables -A INPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
->> >>
->> >> with new rules to add being
->> >> -A FORWARD -m conntrack --ctstate RELATED -m helper --helper ftp =
--p
->> >> tcp --dport 21 -j ACCEPT
->> >
->> > This change you have just described is a security improvement. By =
-the
->> > way, it should not work. The last rule you wrote states that packe=
-ts
->> > RELATED to a connection, going to port 21 and linked with the FTP
->> > helper
->> > have to be accepted. This is not what you want as port 21 is the
->> > original connection.
->> >
->> > A correct rule will be something like
->> > iptables -A FORWARD -m conntrack --ctstate RELATED -m helper \\
->> >        --helper ftp -p tcp \\
->> >        --dport 1024: -j ACCEPT
->> >
->> > You accept all packets RELATED to an ftp connection on port > 1024=
-=2E If
->> > you know where the FTP connection took place, you can add more fil=
-ter
->> > to
->> > discriminate the flow.
->> >
->> >> then some sites talk about
->> >>  -A PREROUTING -t raw -p tcp --dport 21 -j CT --helper ftp
->> >
->> > Here, you say: traffic to port 21 IS FTP. This will mimic the curr=
-ent
->> > behavior of helper (automatic assignement) and this only rule (wit=
-hout
->> > the previously mentioned change) will allow you to support the fut=
-ure
->> > change to non automatic assignment (assuming you only need the ftp
->> > helper on your system).
->> >
->> >>
->> >> So, does removal of ESTABLISHED on original rules, now mean we ne=
-ed
->> >> one of, of both of, these new rules?
->> >>
->> >> I tried on our IRC server, but it balked with ip6tables  at xt_CT=
-: No
->> >> such helper "irc"
->> >> same command with iptables seemed to take..
->> >>
->> >> What is the correct way to replace this ESTABLISED since nf_connt=
-rack
->> >> will soon be removed
->> >
->> > No removal of nf_conntrack is planned. The only change planned is =
-the
->> > removal of automatic assignement ie 21->ftp helper is used.
->> >
->> >>
->> >> Are they even needed anymore?  (I think irc helper is only needed=
- for
->> >> dcc
->> >> etc)
->> >>  is FTP still  needed for ftp?
->> >
->> > As mentioned before NO change on helper logic. They are still need=
-ed to
->> > handle protocol with dynamic connection opening.
->> >
->> > BR,
->> > --
->> > Eric
->> >
->
->
+
+
+Thanks,
+Regards,
+Podo.
+
+=46rom: Vishesh kumar [mailto:linuxtovishesh@gmail.com]=20
+Sent: 05 September, 2013 16:15
+To: podo
+Cc: netfilter
+Subject: Re: Limit rule for ICMP not working properly?
+
+Hi,
+Does 2nd rule getting hit . Also where is the REJECT rule ?
+iptables -L -n -v
+Thanks
+
+On Thu, Jul 18, 2013 at 10:25 PM, podo <podo@hnup.de> wrote:
+Hello all,
+
+I have a problem with the limit module. The goal is to limit the incomi=
+ng
+ICMP echo-requests to max 1/s.
+The following rule does it (as example using the INPUT) :
+
+-A INPUT -p icmp -m icmp --icmp-type 8 -m limit --limit 1/sec -j ACCEPT
+
+The above is working fine. But when there is a rule for accepting the
+ESTABLISHED packets, the limit does not work:
+
+-A INPUT -p icmp -m icmp --icmp-type 8 -m limit --limit 1/sec -j ACCEPT
+-A INPUT -m state --state ESTABLISHED -j ACCEPT
+
+With these 2 rules the limit does not work...
+
+Using the "iptables -A INPUT -m state --state ESTABLISHED -p ICMP -j AC=
+CEPT"
+and =A0"watch -d -n 1 =A0iptables -nvL" is showing, that all the ICMP
+echo-requests from the same host are being considered ESTABLISHED.
+
+I am not sure, but I think after sending the ICMP echo-reply the sessio=
+n
+should be closed. With new echo-request a new session is opened.
+
+Please could somebody confirm, if this behavior is correct ? And if yes
+please explain ?
+
+See also:
+
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=3D598513
+
+and from
+"http://www.netfilter.org/documentation/HOWTO//packet-filtering-HOWTO-7=
+=2Ehtml
+" :
+
+"ESTABLISHED
+=A0A packet which belongs to an existing connection (i.e., a reply
+packet, or outgoing packet on a connection which has seen replies)."
+
+And from "http://www.lug.or.kr/docs/iptables-tutorial/onepage/" :
+
+"The reply packet is considered as being ESTABLISHED, as we have alread=
+y
+explained. However, we can know for sure that after the ICMP reply,
+there will be absolutely no more legal traffic in the same connection.
+=46or this reason, the connection tracking entry is destroyed once the
+reply has traveled all the way through the Netfilter structure."
+
+I am using iptables v1.4.14.
+
+Thanks in advance,
+Regards,
+Podo.
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at =A0http://vger.kernel.org/majordomo-info.html
+
+
+
+--=20
+http://linuxmantra.com=20
+
+
