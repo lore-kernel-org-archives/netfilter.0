@@ -1,144 +1,58 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: ip6tables no target CT
-Date: Fri, 6 Sep 2013 13:35:56 +0200
-Message-ID: <20130906113556.GA10241@localhost>
-References: <CAMD-=VK6oTYC==N2+EJPRYxgkovtwrU0hunMJ8eWdh-7fzCzMA@mail.gmail.com>
+From: budi wibowo <bwibowo@gmail.com>
+Subject: router and masquerade
+Date: Mon, 9 Sep 2013 06:41:27 +0700
+Message-ID: <CAKnRR0ZrEyKL1oQTLiP8AoWhoC7kyTajbzboHdPn6-9RLxoBtA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="1yeeQ81UyVL57Vl7"
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAMD-=VK6oTYC==N2+EJPRYxgkovtwrU0hunMJ8eWdh-7fzCzMA@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=CYW4xav4BY0zcPgxvaXQILY2Kk3R7O6usdGVL6QCW8U=;
+        b=KQg3dSpfcVGrYYHBwZuKR0cLSlgjchLTPjNMeHHUzc4qU/jkigYYuXBdcsXL1HltE2
+         ETsrOQYROExmzZ5sVSVDZqBenMssB86WLk/UU52o3sxNFAn6/yKyMUQlKPJrldQ1CSGO
+         qc+DdME7E82BNFPQnoUV0G06JddsMGVCQehXIBU3ZquSriDKdftF6UOIwiqbps+HeSvD
+         s+V7aQ+C3DcGWAVaL7dC+T9cJSysv6RYRBnV2Z10+N8nVnMzQENqxn5kEB/TEhUD2luy
+         +J7j4+XOCFZs+T3yi/kzudfBZxPdaHGVpN10sL4ddv0aMCM3lRaIvafDYQKWjc6Rvg+Q
+         KfRA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Nick Edwards <nick.z.edwards@gmail.com>
-Cc: Netfilter user mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
+
+Hi
+i have question and i hope the question is on the right list .
+
+i setup PC router running on ubuntu 10.12, since it is router all IP
+address are public IP.
+Topology will be like this
 
 
---1yeeQ81UyVL57Vl7
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Fri, Sep 06, 2013 at 08:18:22PM +1000, Nick Edwards wrote:
-> HI,
->  I still have this issue, I checked the kernel build, and everything
-> under ipv6 except ipv6nat is enabled, yet the CT target fails.
-> 
-> This same rule on ipv4 works
->   iptables 1.4.20 on kernel 3.10.10
-> 
-> ip6tables -v -A PREROUTING -t raw -m multiport -p tcp --dports
-> 6667,8888,16667 -j CT --helper irc
-> 
-> CT  tcp opt    in * out *  ::/0  -> ::/0   multiport dports
-> 6667,8888,16667 CT helper irc
-> ip6tables: No chain/target/match by that name.
-> 
-> incase it was multi upsetting it, also tried
-> 
-> ip6tables -v -A PREROUTING -t raw -p tcp --dport 6667 -j CT --helper irc
-> CT  tcp opt    in * out *  ::/0  -> ::/0   tcp dpt:6667 CT helper irc
-> ip6tables: No chain/target/match by that name.
-> 
-> any suggestions?
+Router_to_Intl             Router_to_local_IX
+       |                                   |
+       |                                   |
+       |                                   |
+       |                                   |
+        \                                 /
+          \                              /
+            \                           /
+              \                        /
+               \                     /
+           Distribution Router
+                         |
+                         |
+                    Client
 
-It seems we never had IPv6 support for the irc helper. You've been the
-first one to notice.
+on Router_to_Intl i have define rule to ACCEPT all INPUT OUTPUT and FORWARD
+chain, also have enable ip_forward in sysctl.
+the result is client cant ping outside, but when i define MASQUERADE, ping
+and connection to internet are working normally.
+i dont want masquerade happen in this case
 
 
---1yeeQ81UyVL57Vl7
-Content-Type: text/x-diff; charset=us-ascii
-Content-Disposition: attachment; filename="irc.patch"
+anything missing on my configuration?
 
-diff --git a/net/netfilter/nf_conntrack_irc.c b/net/netfilter/nf_conntrack_irc.c
-index 0fd2976..3e36a2b 100644
---- a/net/netfilter/nf_conntrack_irc.c
-+++ b/net/netfilter/nf_conntrack_irc.c
-@@ -227,14 +227,14 @@ static int help(struct sk_buff *skb, unsigned int protoff,
- 	return ret;
- }
- 
--static struct nf_conntrack_helper irc[MAX_PORTS] __read_mostly;
-+static struct nf_conntrack_helper irc[MAX_PORTS][2] __read_mostly;
- static struct nf_conntrack_expect_policy irc_exp_policy;
- 
- static void nf_conntrack_irc_fini(void);
- 
- static int __init nf_conntrack_irc_init(void)
- {
--	int i, ret;
-+	int i, j, ret;
- 
- 	if (max_dcc_channels < 1) {
- 		printk(KERN_ERR "nf_ct_irc: max_dcc_channels must not be zero\n");
-@@ -253,25 +253,34 @@ static int __init nf_conntrack_irc_init(void)
- 		ports[ports_c++] = IRC_PORT;
- 
- 	for (i = 0; i < ports_c; i++) {
--		irc[i].tuple.src.l3num = AF_INET;
--		irc[i].tuple.src.u.tcp.port = htons(ports[i]);
--		irc[i].tuple.dst.protonum = IPPROTO_TCP;
--		irc[i].expect_policy = &irc_exp_policy;
--		irc[i].me = THIS_MODULE;
--		irc[i].help = help;
--
--		if (ports[i] == IRC_PORT)
--			sprintf(irc[i].name, "irc");
--		else
--			sprintf(irc[i].name, "irc-%u", i);
--
--		ret = nf_conntrack_helper_register(&irc[i]);
--		if (ret) {
--			printk(KERN_ERR "nf_ct_irc: failed to register helper "
--			       "for pf: %u port: %u\n",
--			       irc[i].tuple.src.l3num, ports[i]);
--			nf_conntrack_irc_fini();
--			return ret;
-+		irc[i][0].tuple.src.l3num = AF_INET;
-+		irc[i][0].tuple.src.u.tcp.port = htons(ports[i]);
-+		irc[i][0].tuple.dst.protonum = IPPROTO_TCP;
-+		irc[i][0].expect_policy = &irc_exp_policy;
-+		irc[i][0].me = THIS_MODULE;
-+		irc[i][0].help = help;
-+
-+		irc[i][1].tuple.src.l3num = AF_INET6;
-+		irc[i][1].tuple.src.u.tcp.port = htons(ports[i]);
-+		irc[i][1].tuple.dst.protonum = IPPROTO_TCP;
-+		irc[i][1].expect_policy = &irc_exp_policy;
-+		irc[i][1].me = THIS_MODULE;
-+		irc[i][1].help = help;
-+
-+		for (j = 0; j < ARRAY_SIZE(irc[i]); j++) {
-+			if (ports[i] == IRC_PORT)
-+				sprintf(irc[i][j].name, "irc");
-+			else
-+				sprintf(irc[i][j].name, "irc-%u", i);
-+
-+			ret = nf_conntrack_helper_register(&irc[i][j]);
-+			if (ret) {
-+				printk(KERN_ERR "nf_ct_irc: failed to register helper "
-+				       "for pf: %u port: %u\n",
-+				       irc[i][j].tuple.src.l3num, ports[i]);
-+				nf_conntrack_irc_fini();
-+				return ret;
-+			}
- 		}
- 	}
- 	return 0;
-@@ -281,10 +290,12 @@ static int __init nf_conntrack_irc_init(void)
-  * it is needed by the init function */
- static void nf_conntrack_irc_fini(void)
- {
--	int i;
-+	int i, j;
- 
--	for (i = 0; i < ports_c; i++)
--		nf_conntrack_helper_unregister(&irc[i]);
-+	for (i = 0; i < ports_c; i++) {
-+		for (j = 0; j < ARRAY_SIZE(irc[i]); j++)
-+			nf_conntrack_helper_unregister(&irc[i][j]);
-+	}
- 	kfree(irc_buffer);
- }
- 
+Regards
 
---1yeeQ81UyVL57Vl7--
+Budi Wibowo
