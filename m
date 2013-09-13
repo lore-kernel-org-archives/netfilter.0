@@ -1,187 +1,24 @@
-From: Nikolaus Rath <Nikolaus@rath.org>
-Subject: Re: Wrong routing when combining ip rule with SNAT
-Date: Fri, 13 Sep 2013 09:09:26 -0700
-Message-ID: <87mwng66vd.fsf@rath.org>
-References: <8761u59uit.fsf@vostro.rath.org> <5232B01B.2030007@atc.tcs.com>
+From: Alexis Salinas <alexis.salinas@inmotiontechnology.com>
+Subject: clarification on the use of --state parameter within  conntrack
+ command
+Date: Fri, 13 Sep 2013 17:00:17 +0000
+Message-ID: <FC9EDC96CA021943AB23AE4C96151F620DC4D5@van-mail14-n4.exchange.electric.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <5232B01B.2030007@atc.tcs.com> (Vigneswaran R.'s message of "Fri,
-	13 Sep 2013 11:56:35 +0530")
+Content-Language: en-CA
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Vigneswaran R <vignesh@atc.tcs.com>
-Cc: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Vigneswaran R <vignesh@atc.tcs.com> writes:
-> On 09/13/2013 10:40 AM, Nikolaus Rath wrote:
->> I've enabled packet forwarding and SNAT on the "ebox" computer as
->> follows:
->>
->> root@ebox:~# ip route
->> default via 23.92.25.1 dev eth0
->> 23.92.25.0/24 dev eth0  proto kernel  scope link  src 23.92.25.96
->> 192.168.12.0/24 dev rath  proto kernel  scope link  src 192.168.12.1
->>
->> root@ebox:~# iptables  -L -n -v
->> Chain INPUT (policy ACCEPT 1314 packets, 1736K bytes)
->>   pkts bytes target     prot opt in     out     source              =
- destination
->>
->> Chain FORWARD (policy DROP 0 packets, 0 bytes)
->>   pkts bytes target     prot opt in     out     source              =
- destination
->>   150K   62M ACCEPT     all  --  rath   eth0    0.0.0.0/0           =
- 0.0.0.0/0
->> 86746  200M ACCEPT     all  --  eth0   rath    0.0.0.0/0            =
-0.0.0.0/0            state RELATED,ESTABLISHED
->>    319 22076 LOG        all  --  *      *       0.0.0.0/0           =
- 0.0.0.0/0            limit: avg 1/min burst 30 LOG flags 0 level 4 pre=
-fix "Rejected forwarding: "
->>    393 26172 REJECT     all  --  *      *       0.0.0.0/0           =
- 0.0.0.0/0            reject-with icmp-net-prohibited
->>
->> Chain OUTPUT (policy ACCEPT 1142 packets, 2412K bytes)
->>   pkts bytes target     prot opt in     out     source destination
->>   root@ebox:~# iptables -t nat -L -n -v
->> Chain PREROUTING (policy ACCEPT 36378 packets, 2383K bytes)
->>
->> Chain INPUT (policy ACCEPT 19982 packets, 1334K bytes)
->>   pkts bytes target     prot opt in     out     source              =
- destination
->>
->> Chain OUTPUT (policy ACCEPT 61430 packets, 4601K bytes)
->>   pkts bytes target     prot opt in     out     source              =
- destination
->>
->> Chain POSTROUTING (policy ACCEPT 8333 packets, 564K bytes)
->>   pkts bytes target     prot opt in     out     source              =
- destination
->> 69488 5081K SNAT       all  --  *      eth0    0.0.0.0/0            =
-0.0.0.0/0            to:23.92.25.96
->>
->>     >From a second computer "vostro", I can now use ebox as a
->> gateway:
->>
->> root@vostro:~# ip route add 190.93.249.164 via 192.168.12.1
->>
->> This works fine, now connections to whatismyip.com (190.93.249.164) =
-go
->> through ebox.
->>
->> However, when I try to be a bit more selective on vostro and use a
->> special routing table, things don't work anymore:
->>
->> root@vostro:~# iptables -t mangle -L -n
->> Chain PREROUTING (policy ACCEPT)
->> target     prot opt source               destination
->>
->> Chain INPUT (policy ACCEPT)
->> target     prot opt source               destination
->>
->> Chain FORWARD (policy ACCEPT)
->> target     prot opt source               destination
->>
->> Chain OUTPUT (policy ACCEPT)
->> target     prot opt source               destination
->> MARK       tcp  --  0.0.0.0/0            190.93.249.164       tcp dp=
-t:80 MARK set 0x1
->> LOG        tcp  --  0.0.0.0/0            190.93.249.164       tcp dp=
-t:80 LOG flags 0 level 4 prefix "marked: "
->>
->> Chain POSTROUTING (policy ACCEPT)
->> target     prot opt source               destination
->>
->> root@vostro:~# ip route del 190.93.249.164 via 192.168.12.1
->> root@vostro:~# ip route add default via 192.168.12.1 table tovpn
->> root@vostro:~# ip rule add fwmark 0x1 table tovpn
->>
->> Now connections from vostro to 190.93.249.164 still make it to ebox,=
- and
->> from ebox to 190.93.249.164, but the answers get stuck on ebox:
->>
->> Sep 13 04:47:53 ebox kernel: Rejected forwarding: IN=3Deth0 OUT=3Det=
-h0 MAC=3Df2:3c:91:69:db:07:84:78:ac:0d:79:c1:08:00 SRC=3D190.93.249.164=
- DST=3D192.168.17.47 LEN=3D60 TOS=3D0x00 PREC=3D0x00 TTL=3D58 ID=3D0 DF=
- PROTO=3DTCP SPT=3D80 DPT=3D39024 WINDOW=3D14480 RES=3D0x00 ACK SYN URG=
-P=3D0
->>
->> It seems that ebox tries to send the packet destined to go trough th=
-e
->> rath to eth0 instead, and consequency rejects them because forwardin=
-g is
->> only enabled from eth0 to rath.
->>
->> However, this only happens when vostro has the gateway route set in =
-a
->> special routing table rather than the default table -- but how does =
-ebox
->> even know about that?
->>
->> Can someone explain to me what is happening here and why?
->
-> I have a doubt. It seems, rath of ebox is assigned with IP address in
-> the range 192.168.12.0/24.
-> However, IP address of vostro seems to be
-> 192.168.17.47 (assuming /24). Ebox doesn't have any route to this
-> range. So it try to use default route via eth0.
->
-> What I assume is, 'vostro' has IP addresses in (atleast) two ranges
-> (192.168.12.0/24, 192.168.17.0/24).
+Hi All,
+Could someone help me understand the correct use of the protocol filter parameter "--state". I figure it would be something like this " conntrack -L -p TCP --state ESTABLISHED" but 2 different versions of conntrack-tools give the same error (conntrack v1.2.1 (conntrack-tools): unknown option `--state'
+Try `conntrack -h' or 'conntrack --help' for more information.)
 
-That's correct.
+Is ts a deprecated parameter? What I'm trying to do is to selectively delete entries that are in a particular state. For instance TCP SYN_SENT, or UDP UNREPLIED.
 
-nikratio@vostro:~$ ip addr
-5: br0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state =
-UP=20
-    link/ether c8:60:00:bf:a2:7f brd ff:ff:ff:ff:ff:ff
-    inet 192.168.17.47/24 brd 192.168.17.255 scope global br0
-       valid_lft forever preferred_lft forever
-    inet6 fe80::ca60:ff:febf:a27f/64 scope link=20
-       valid_lft forever preferred_lft forever
-6: rath: <POINTOPOINT,MULTICAST,NOARP,UP,LOWER_UP> mtu 1500 qdisc pfifo=
-_fast state UNKNOWN qlen 500
-    link/none=20
-    inet 192.168.12.4/24 scope global rath
-       valid_lft forever preferred_lft forever
-
-> In the default routing table, the src IP is set to 192.168.12.x (for
-> the packets originating from vostro). However, the 'tovpn' table
-> didn't specify the src IP. So, when the 'tovpn' table is being used,
-> the packets may have got the src IP as 192.168.17.x.
-
-Hmm. This would make sense, but looking at the default table, the sourc=
-e
-address for the route via 192.168.12.x is actually also not set:
-
-nikratio@vostro:~$ ip route
-default via 192.168.17.1 dev br0=20
-190.93.249.164 via 192.168.12.1 dev rath=20
-192.168.12.0/24 dev rath  proto kernel  scope link  src 192.168.12.4=20
-192.168.17.0/24 dev br0  proto kernel  scope link  src 192.168.17.47=20
-
-This works just fine, despite the entry having no source address. So wh=
-y
-is it working in the default table, but not in the tovpn table?
+Thanks,
+Alexis.
 
 
-> I think, you can avoid this by explicitly specifying the src IP when
-> adding the route to 'tovpn' table,
->
->     ip route add default via 192.168.12.1 src 192.168.12.x table tovp=
-n
-
-
-I'll of course try this nevertheless, thanks!
-
-
-Best,
-Nikolaus
-
---=20
-Encrypted emails preferred.
-PGP fingerprint: 5B93 61F8 4EA2 E279 ABF6  02CF A9AD B7F8 AE4E 425C
-
-             =C2=BBTime flies like an arrow, fruit flies like a Banana.=
-=C2=AB
