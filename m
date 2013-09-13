@@ -1,152 +1,132 @@
-From: budi wibowo <bwibowo@gmail.com>
-Subject: Re: router and masquerade
-Date: Fri, 13 Sep 2013 06:25:29 +0700
-Message-ID: <CAKnRR0YfNchKWd9DwSdPgVB6hi4r4Ok8dpzNrKER814_4SYnsw@mail.gmail.com>
-References: <CAKnRR0ZrEyKL1oQTLiP8AoWhoC7kyTajbzboHdPn6-9RLxoBtA@mail.gmail.com>
-	<523088AA.3050509@saasplaza.com>
-	<CAKnRR0bfVCa9x_cXSmzp2kV4TggC_3ckiMHmqgF3cZDw4cB=fw@mail.gmail.com>
-	<5231DB7D.1090601@saasplaza.com>
-	<5231DDE0.6070305@saasplaza.com>
+From: Nikolaus Rath <Nikolaus@rath.org>
+Subject: Wrong routing when combining ip rule with SNAT
+Date: Thu, 12 Sep 2013 22:10:18 -0700
+Message-ID: <8761u59uit.fsf@vostro.rath.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=5FhE9S61nuIgmhscSgxErPma3TSsAmdHYGb0buEyWj4=;
-        b=tN/6i7bfH81HAJtk5GIdMFfYwD2fEiCP3ku9OE/d3lI/YlCp8Sen9m1czCT23Y8mL5
-         miNP4sGHvDz25HQnQ3qOT9HiIlWkkZTv81K6XOKZkIJZSkda8ptK7qdT6KdMgL/l6b9v
-         UFVeOnkQX30BCrUEbo4NGoKP0iqYWAgX9rYuOSDERWV29dyy4k070I+oqqdi9KjZhNyn
-         bcKOSMaj1r9OxwU3Bt1GPuQThdTrGl6zFdq1iAMP6H84r9BXWa95pVrzemy6X/ihgKz7
-         mShTNmcH1ARexfgPRomiLWyDomXQ85QGe0CwdBACwJ72xdrAFimnf+4g0VHjvNsgDqdX
-         VdxA==
-In-Reply-To: <5231DDE0.6070305@saasplaza.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Tom van Leeuwen <tom.van.leeuwen@saasplaza.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-Hi Tom
-thx a lot for your suggestion, i didnt put the ip proxy arp and ip rp
-filter, i will try again and revert back
+Hello,
+
+Thanks for working on this great networking stack!
+
+I'm trying to set up a configuration with SNAT and routing rules, but
+I'm having weird problems that I do not understand:
+
+I've enabled packet forwarding and SNAT on the "ebox" computer as
+follows:
+
+root@ebox:~# ip route
+default via 23.92.25.1 dev eth0=20
+23.92.25.0/24 dev eth0  proto kernel  scope link  src 23.92.25.96=20
+192.168.12.0/24 dev rath  proto kernel  scope link  src 192.168.12.1=20
+
+root@ebox:~# iptables  -L -n -v
+Chain INPUT (policy ACCEPT 1314 packets, 1736K bytes)
+ pkts bytes target     prot opt in     out     source               des=
+tination        =20
+
+Chain FORWARD (policy DROP 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source               des=
+tination        =20
+ 150K   62M ACCEPT     all  --  rath   eth0    0.0.0.0/0            0.0=
+=2E0.0/0          =20
+86746  200M ACCEPT     all  --  eth0   rath    0.0.0.0/0            0.0=
+=2E0.0/0            state RELATED,ESTABLISHED
+  319 22076 LOG        all  --  *      *       0.0.0.0/0            0.0=
+=2E0.0/0            limit: avg 1/min burst 30 LOG flags 0 level 4 prefi=
+x "Rejected forwarding: "
+  393 26172 REJECT     all  --  *      *       0.0.0.0/0            0.0=
+=2E0.0/0            reject-with icmp-net-prohibited
+
+Chain OUTPUT (policy ACCEPT 1142 packets, 2412K bytes)
+ pkts bytes target     prot opt in     out     source destination
+=20
+root@ebox:~# iptables -t nat -L -n -v
+Chain PREROUTING (policy ACCEPT 36378 packets, 2383K bytes)
+
+Chain INPUT (policy ACCEPT 19982 packets, 1334K bytes)
+ pkts bytes target     prot opt in     out     source               des=
+tination        =20
+
+Chain OUTPUT (policy ACCEPT 61430 packets, 4601K bytes)
+ pkts bytes target     prot opt in     out     source               des=
+tination        =20
+
+Chain POSTROUTING (policy ACCEPT 8333 packets, 564K bytes)
+ pkts bytes target     prot opt in     out     source               des=
+tination        =20
+69488 5081K SNAT       all  --  *      eth0    0.0.0.0/0            0.0=
+=2E0.0/0            to:23.92.25.96
+
+  =20
+=46rom a second computer "vostro", I can now use ebox as a gateway:
+
+root@vostro:~# ip route add 190.93.249.164 via 192.168.12.1
+
+This works fine, now connections to whatismyip.com (190.93.249.164) go
+through ebox.
+
+However, when I try to be a bit more selective on vostro and use a
+special routing table, things don't work anymore:
+
+root@vostro:~# iptables -t mangle -L -n
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination        =20
+
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination        =20
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination        =20
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination        =20
+MARK       tcp  --  0.0.0.0/0            190.93.249.164       tcp dpt:8=
+0 MARK set 0x1
+LOG        tcp  --  0.0.0.0/0            190.93.249.164       tcp dpt:8=
+0 LOG flags 0 level 4 prefix "marked: "
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination        =20
+
+root@vostro:~# ip route del 190.93.249.164 via 192.168.12.1
+root@vostro:~# ip route add default via 192.168.12.1 table tovpn
+root@vostro:~# ip rule add fwmark 0x1 table tovpn
+
+Now connections from vostro to 190.93.249.164 still make it to ebox, an=
+d
+from ebox to 190.93.249.164, but the answers get stuck on ebox:
+
+Sep 13 04:47:53 ebox kernel: Rejected forwarding: IN=3Deth0 OUT=3Deth0 =
+MAC=3Df2:3c:91:69:db:07:84:78:ac:0d:79:c1:08:00 SRC=3D190.93.249.164 DS=
+T=3D192.168.17.47 LEN=3D60 TOS=3D0x00 PREC=3D0x00 TTL=3D58 ID=3D0 DF PR=
+OTO=3DTCP SPT=3D80 DPT=3D39024 WINDOW=3D14480 RES=3D0x00 ACK SYN URGP=3D=
+0=20
+
+It seems that ebox tries to send the packet destined to go trough the
+rath to eth0 instead, and consequency rejects them because forwarding i=
+s
+only enabled from eth0 to rath.
+
+However, this only happens when vostro has the gateway route set in a
+special routing table rather than the default table -- but how does ebo=
+x
+even know about that?
+
+Can someone explain to me what is happening here and why?
 
 
-regards
 
-budi
+Best,
 
-On Thu, Sep 12, 2013 at 10:29 PM, Tom van Leeuwen
-<tom.van.leeuwen@saasplaza.com> wrote:
-> I'm thinking that maybe rp_filter (reverse path filter) is biting you,
-> especially since you have multiple upstream providers.
->
-> Please check current setings:
-> sysctl -a 2>/dev/null | grep '\.rp_filter'
->
-> And set them to zero (for the appropriate) interfaces:
-> sysctl -a 2>/dev/null | grep '\.rp_filter' | while read key rest ; do sudo
-> sysctl $key=0;done
->
-> This is what an interface looks like in my ubuntu12.04 bgp server:
-> auto eth0
-> iface eth0 inet static
->  address 1.1.1.1
->  netmask 255.255.255.0
->  ip-proxy-arp 0
->  ip-rp-filter 0
->
-> Kind regards,
-> Tom
->
->
-> On 09/12/2013 05:19 PM, Tom van Leeuwen wrote:
->>
->> Hi Budi,
->>
->> I have experience running ubuntu10.04 and ubuntu12.04 as BGP routers and
->> it works perfectly.
->> They are not doing any NAT.
->>
->> It must be your configuration.
->>
->> Kind regards,
->> Tom van Leeuwen
->>
->> On 09/12/2013 06:29 AM, budi wibowo wrote:
->>>
->>> outside IP is 8.8.8.8 google DNS.
->>> the ubuntu running BIRD for BGP and bgp connection is established.
->>> for ubuntu all search result after enable ip forwarding then do
->>> masquerade.
->>> and then i conclude that ubuntu cant be used as BGP core router, only
->>> can do routing is interface is masquerade.
->>> change OS to freebsd 9.1 and everything is working perfectly.
->>> Bird is working and no Nat required
->>>
->>>
->>> On Wed, Sep 11, 2013 at 10:13 PM, Tom van Leeuwen
->>> <tom.van.leeuwen@saasplaza.com> wrote:
->>>>
->>>> With "outside" you mean an ip on internet?
->>>> What IP address does your client have that you don't want to MASQUERADE.
->>>>
->>>> Sounds like the outside world doesn't have a route to get back to your
->>>> client.
->>>>
->>>> Regards,
->>>> Tom
->>>>
->>>>
->>>> On 09/09/2013 01:41 AM, budi wibowo wrote:
->>>>>
->>>>> Hi
->>>>> i have question and i hope the question is on the right list .
->>>>>
->>>>> i setup PC router running on ubuntu 10.12, since it is router all IP
->>>>> address are public IP.
->>>>> Topology will be like this
->>>>>
->>>>>
->>>>>
->>>>> Router_to_Intl             Router_to_local_IX
->>>>>           |                                   |
->>>>>           |                                   |
->>>>>           |                                   |
->>>>>           |                                   |
->>>>>            \                                 /
->>>>>              \                              /
->>>>>                \                           /
->>>>>                  \                        /
->>>>>                   \                     /
->>>>>               Distribution Router
->>>>>                             |
->>>>>                             |
->>>>>                        Client
->>>>>
->>>>> on Router_to_Intl i have define rule to ACCEPT all INPUT OUTPUT and
->>>>> FORWARD
->>>>> chain, also have enable ip_forward in sysctl.
->>>>> the result is client cant ping outside, but when i define MASQUERADE,
->>>>> ping
->>>>> and connection to internet are working normally.
->>>>> i dont want masquerade happen in this case
->>>>>
->>>>>
->>>>> anything missing on my configuration?
->>>>>
->>>>> Regards
->>>>>
->>>>> Budi Wibowo
->>>>> --
->>>>> To unsubscribe from this list: send the line "unsubscribe netfilter" in
->>>>> the body of a message to majordomo@vger.kernel.org
->>>>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->>
->> --
->> To unsubscribe from this list: send the line "unsubscribe netfilter" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
->
+   -Nikolaus
+
+--=20
+ =C2=BBTime flies like an arrow, fruit flies like a Banana.=C2=AB
+
+  PGP fingerprint: 5B93 61F8 4EA2 E279 ABF6  02CF A9AD B7F8 AE4E 425C
