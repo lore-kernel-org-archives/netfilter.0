@@ -1,84 +1,76 @@
-From: Nikolaus Rath <Nikolaus@rath.org>
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
 Subject: Re: Wrong routing when combining ip rule with SNAT
-Date: Sat, 14 Sep 2013 08:40:19 -0700
-Message-ID: <52348363.6080804@rath.org>
-References: <8761u59uit.fsf@vostro.rath.org> <5232B01B.2030007@atc.tcs.com> <5234678F.6010401@plouf.fr.eu.org>
+Date: Sat, 14 Sep 2013 19:17:22 +0200
+Message-ID: <52349A22.9060307@plouf.fr.eu.org>
+References: <8761u59uit.fsf@vostro.rath.org> <5232B01B.2030007@atc.tcs.com> <5234678F.6010401@plouf.fr.eu.org> <52348363.6080804@rath.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <5234678F.6010401@plouf.fr.eu.org>
+In-Reply-To: <52348363.6080804@rath.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-On 09/14/2013 06:41 AM, Pascal Hambourg wrote:
-> Vigneswaran R a =C3=A9crit :
->> Hello Nikolaus,
->>
->> I have a doubt. It seems, rath of ebox is assigned with IP address i=
-n=20
->> the range 192.168.12.0/24. However, IP address of vostro seems to be=
-=20
->> 192.168.17.47 (assuming /24). Ebox doesn't have any route to this ra=
-nge.=20
->> So it try to use default route via eth0.
+Nikolaus Rath a =E9crit :
 >=20
-> Correct.
+> I see. Out of curiosity: how is the source address selected when the
+> packet is created, and in which situation would the source entry in t=
+he
+> routing table become effective?
+
+The source address selection process is quite complicated and I'm not
+sure I know all the details. As far as I know, the selected source
+address is, in decreasing order of priority :
+- the source address specified by the sending process/socket
+- the source address specified in the routing table entry used for the
+destination
+- the address of the output interface matching the destination prefix o=
+f
+the routing table entry
+- the address of the output interface
+- any other suitable address of any other interface (i.e. not a loopbac=
+k
+address if the destination is not local)
+
+>> Possible workarounds :
+>> - Add a route on ebox to let it know that 192.168.17.47 is reachable
+>> through rath. My favourite choice.
 >=20
->> What I assume is, 'vostro' has IP addresses in (atleast) two ranges=20
->> (192.168.12.0/24, 192.168.17.0/24). In the default routing table, th=
-e=20
->> src IP is set to 192.168.12.x (for the packets originating from vost=
-ro).=20
->> However, the 'tovpn' table didn't specify the src IP. So, when the=20
->> 'tovpn' table is being used, the packets may have got the src IP as=20
->> 192.168.17.x.
->>
->> I think, you can avoid this by explicitly specifying the src IP when=
-=20
->> adding the route to 'tovpn' table,
->>
->>      ip route add default via 192.168.12.1 src 192.168.12.x table to=
-vpn
+> Yes, that would be the simplest solution. But the problem is that thi=
+s
+> address varies depending how and where vostro got its connectivity. O=
+r
+> did you mean something other than a static extra route?
+
+I mean any means to create that route. May be dynamic, using a routing
+protocol. However if ath is a tunnel using the other address for
+encapsulation, this workaround may not be applicable easily
+(encapsulated packets must still be routed normally).
+
+>> - Use SNAT to the address of the output interface on vostro.
 >=20
-> This won't work. It's too late. The source address has already been
-> selected by the TCP layer when the packet was created and won't be
-> changed when the packet is re-routed due to the mark.
+> Sounds ugly...
 
-I see. Out of curiosity: how is the source address selected when the
-packet is created, and in which situation would the source entry in the
-routing table become effective?
+Yes. But simple to setup and effective.
 
-> Possible workarounds :
-> - Add a route on ebox to let it know that 192.168.17.47 is reachable
-> through rath. My favourite choice.
+>> - Use connection mark (connmark) by iptables on ebox so that replies=
+ to
+>> original packets received on a given interface are forwarded to the =
+same
+>> interface.
+>=20
+> I guess I'll try this. Could you give some more details? I'm not sure
+> how to create a rule that *changes* the outgoing interface.
 
-Yes, that would be the simplest solution. But the problem is that this
-address varies depending how and where vostro got its connectivity. Or
-did you mean something other than a static extra route?
+It's not very different from marking packets for advanced routing.
+I haven't done that recently, but here is a basic overview :
 
-> - Use SNAT to the address of the output interface on vostro.
+# mark the connections of packets received on rath
+iptables -t mangle -A PREROUTING -i rath -j CONNMARK --set-mark 1
 
-Sounds ugly...
+# copy the connection mark to the packets received on eth0
+iptables -t mangle -A PREROUTING -i eth0 -j CONNMARK --restore-mark
 
-> - Use connection mark (connmark) by iptables on ebox so that replies =
-to
-> original packets received on a given interface are forwarded to the s=
-ame
-> interface.
-
-I guess I'll try this. Could you give some more details? I'm not sure
-how to create a rule that *changes* the outgoing interface.
-
-
-
-Best,
-
-   -Nikolaus
-
---=20
- =C2=BBTime flies like an arrow, fruit flies like a Banana.=C2=AB
-
-  PGP fingerprint: 5B93 61F8 4EA2 E279 ABF6  02CF A9AD B7F8 AE4E 425C
+# use the mark to route packets received on eth0
+ip rule add fwmark 1 dev eth0 table tovpn
