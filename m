@@ -1,76 +1,54 @@
-From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: Wrong routing when combining ip rule with SNAT
-Date: Sat, 14 Sep 2013 19:17:22 +0200
-Message-ID: <52349A22.9060307@plouf.fr.eu.org>
-References: <8761u59uit.fsf@vostro.rath.org> <5232B01B.2030007@atc.tcs.com> <5234678F.6010401@plouf.fr.eu.org> <52348363.6080804@rath.org>
+From: james <commercials24@yahoo.de>
+Subject: tc redirecting vpn traffic, ifb0 output not readable?
+Date: Sun, 15 Sep 2013 22:59:09 +0200
+Message-ID: <52361F9D.30506@yahoo.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <52348363.6080804@rath.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.de; s=s1024; t=1379278750; bh=Go7B0mxV+/GUwnlelSjGigEfZXTzbT7hp2zEDEcbCb4=; h=X-Yahoo-Newman-Id:X-Yahoo-Newman-Property:X-YMail-OSG:X-Yahoo-SMTP:X-Rocket-Received:Message-ID:Date:From:User-Agent:MIME-Version:To:Subject:Content-Type:Content-Transfer-Encoding; b=5ryfjElr0ekQtbBSmJqcME9+DJbHLA9bOXyCHOPQbec/0lIWUn7FuKLikHNErP/iHdb3xaYJpD+H6JGOzJHBGtYQxxcVXBrlVErfrZpbXSKyQWB+PKa30fbWHxvvCv9B33Az38d60cAn5mJnfn3+qI955YgEv+YobAMP865xVZg=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Nikolaus Rath a =E9crit :
->=20
-> I see. Out of curiosity: how is the source address selected when the
-> packet is created, and in which situation would the source entry in t=
-he
-> routing table become effective?
+hi,
 
-The source address selection process is quite complicated and I'm not
-sure I know all the details. As far as I know, the selected source
-address is, in decreasing order of priority :
-- the source address specified by the sending process/socket
-- the source address specified in the routing table entry used for the
-destination
-- the address of the output interface matching the destination prefix o=
-f
-the routing table entry
-- the address of the output interface
-- any other suitable address of any other interface (i.e. not a loopbac=
-k
-address if the destination is not local)
+when i use these commands to redirect the output from tun0 to ifb0:
 
->> Possible workarounds :
->> - Add a route on ebox to let it know that 192.168.17.47 is reachable
->> through rath. My favourite choice.
->=20
-> Yes, that would be the simplest solution. But the problem is that thi=
-s
-> address varies depending how and where vostro got its connectivity. O=
-r
-> did you mean something other than a static extra route?
+  dev=tun0; indev=ifb0;
+tc qdisc add dev $dev handle ffff: ingress
+tc filter add dev $dev parent ffff: protocol ip prio 1 u32 match u32 0 0 
+action \
+mirred egress redirect dev $indev
 
-I mean any means to create that route. May be dynamic, using a routing
-protocol. However if ath is a tunnel using the other address for
-encapsulation, this workaround may not be applicable easily
-(encapsulated packets must still be routed normally).
+i get this tcpdump output:
+tcpdump -i ifb0
+tcpdump: WARNING: ifb0: no IPv4 address assigned
 
->> - Use SNAT to the address of the output interface on vostro.
->=20
-> Sounds ugly...
+listening on ifb0, link-type EN10MB (Ethernet), capture size 65535 bytes
+22:44:38.333033 00:00:40:01:43:58 (oui Unknown) > 45:00:00:54:23:22 (oui 
+Unknown), ethertype Unknown (0x0a08), length 84:
+     0x0000:  000a 0a08 0016 0000 2e57 39db 0009 361c .........W9...6.
+     0x0010:  3652 3c53 0400 0809 0a0b 0c0d 0e0f 1011 6R<S............
+     0x0020:  1213 1415 1617 1819 1a1b 1c1d 1e1f 2021 ...............!
+     0x0030:  2223 2425 2627 2829 2a2b 2c2d 2e2f 3031 "#$%&'()*+,-./01
+     0x0040:  3233 3435 3637                           234567
+22:44:39.333253 00:00:40:01:43:57 (oui Unknown) > 45:00:00:54:23:23 (oui 
+Unknown), ethertype Unknown (0x0a08), length 84:
+     0x0000:  000a 0a08 0016 0000 3e52 39db 000a 371c ........>R9...7.
+     0x0010:  3652 2b57 0400 0809 0a0b 0c0d 0e0f 1011 6R+W............
+     0x0020:  1213 1415 1617 1819 1a1b 1c1d 1e1f 2021 ...............!
+     0x0030:  2223 2425 2627 2829 2a2b 2c2d 2e2f 3031 "#$%&'()*+,-./01
+     0x0040:  3233 3435 3637                           234567
 
-Yes. But simple to setup and effective.
+why dont i get the icmp packets that went into the openvpn tunnel?
+and what do i get instead?
 
->> - Use connection mark (connmark) by iptables on ebox so that replies=
- to
->> original packets received on a given interface are forwarded to the =
-same
->> interface.
->=20
-> I guess I'll try this. Could you give some more details? I'm not sure
-> how to create a rule that *changes* the outgoing interface.
+the target is to manage all incoming traffic, but if use eth0 (the real 
+physical device) as root
+all that goes over the vpn connection is already encrypted and 
+encapsulated by openvpn.
+so its all one big blob with dst port 1194.
 
-It's not very different from marking packets for advanced routing.
-I haven't done that recently, but here is a basic overview :
-
-# mark the connections of packets received on rath
-iptables -t mangle -A PREROUTING -i rath -j CONNMARK --set-mark 1
-
-# copy the connection mark to the packets received on eth0
-iptables -t mangle -A PREROUTING -i eth0 -j CONNMARK --restore-mark
-
-# use the mark to route packets received on eth0
-ip rule add fwmark 1 dev eth0 table tovpn
+is there a better way to manage the traffic that goes to the internet 
+and the one that goes trough a vpn at one bottleneck?
