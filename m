@@ -1,61 +1,57 @@
-From: Vigneswaran R <vignesh@atc.tcs.com>
-Subject: Re: PREROUTING to a non local subnet
-Date: Mon, 16 Sep 2013 14:53:02 +0530
-Message-ID: <5236CDF6.3080802@atc.tcs.com>
-References: <522DDC72.4000402@club-internet.fr>
+From: Eric Leblond <eric@regit.org>
+Subject: [ANNOUNCE] 10th Netfilter Workshop in Montpellier, France
+Date: Mon, 16 Sep 2013 23:00:08 +0200
+Message-ID: <1379365208.5155.41.camel@ice-age.regit.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <522DDC72.4000402@club-internet.fr>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
+	boundary="=-hxH0+nphIRw/tIgnpOka"
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Manu <traqueur@club-internet.fr>
-Cc: netfilter@vger.kernel.org
+To: Netfilter Development Mailing list <netfilter-devel@vger.kernel.org>
+Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>, Christophe Brocas <christophe@brocas.org>
 
-On 09/09/2013 08:04 PM, Manu wrote:
-> Hello
->
-> I'm running iptable v1.4.7 on a linux with two NIC.
-> One has adress 192.168.1.31 (the lan)
-> The other has a public IP. Let's say 180.180.180.180
->
-> On the lan, I have a VPN which join two network : 192.168.1.0 and 
-> 192.168.2.0
->
-> I'm trying to forward 5900 port (vnc) to a computer which is on the 
-> second subnet with adress 192.168.2.100
-> iptables -A PREROUTING -t nat -p tcp  -i eth1 --dport 5900 -j DNAT 
-> --to-destination 192.168.2.100:5900
-> iptables -A FORWARD -p tcp -d 192.168.2.100--dport 5900 -j ACCEPT
-> and it doesn't work
 
-Does this machine have route to 192.168.2.0 network? Try to use tcpdump 
-and see where the traffic is being dropped.
+--=-hxH0+nphIRw/tIgnpOka
+Content-Type: text/plain; charset="ISO-8859-15"
+Content-Transfer-Encoding: quoted-printable
 
-Regards,
-Vignesh
+Hi!
 
->
-> I've tried the same on the local network with adress 192.168.1.99
-> iptables -A PREROUTING -t nat -p tcp  -i eth1 --dport 5900 -j DNAT 
-> --to-destination 192.168.1.99:5900
-> iptables -A FORWARD -p tcp -d 192.168.1.99--dport 5900 -j ACCEPT
-> and it's working like a charm
->
-> I've done my test with another computer with public adress 
-> 200.200.200.200
->
-> I've done a netstat one the two computers
-> on 192.168.2.100 i've seen he's talking to 180.180.180.180 (<-- my 
-> server running iptable)
-> on 192.168.1.99 i've seen he's talking to 200.200.200.200 (<-- the 
-> computer on internet which i'm running my test from)
->
-> thanks for your attention
-> -- 
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+We are happy to announce the next edition in the workshop series. This
+year the event will be co-hosted with the Libre Software Meeting 2014
+[1] in Montpellier, France from 7th to 11th July, 2014.
+
+As usual, it will feature one user-day and the remaining days will be
+dedicated to the Developers Workshop.
+
+The official workshop website [2] will collect the important
+information regarding this event. You may notice that some areas still
+lack of important information, we are working to deliver those as soon
+as possible. So, please, be patient.
+
+We are looking for sponsors, if you think you can help us to get
+funds to run the workshop, please, contact me and I'll be glad to send
+you our sponsorship policy.
+
+Regards.
+
+[1] https://2014.rmll.info/
+[2] http://workshop.netfilter.org/2014/
+
+
+--=-hxH0+nphIRw/tIgnpOka
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.14 (GNU/Linux)
+
+iD8DBQBSN3FYnxA7CdMWjzIRAlgFAJwJp62pjy8ok+xBniUqUc/vLtd/cgCghe0z
+Ug7/WGRvjnJdX1bc7nWX8tA=
+=iIvV
+-----END PGP SIGNATURE-----
+
+--=-hxH0+nphIRw/tIgnpOka--
 
