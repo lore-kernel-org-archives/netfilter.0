@@ -1,54 +1,105 @@
-From: james <commercials24@yahoo.de>
-Subject: tc redirecting vpn traffic, ifb0 output not readable?
-Date: Sun, 15 Sep 2013 22:59:09 +0200
-Message-ID: <52361F9D.30506@yahoo.de>
+From: Vigneswaran R <vignesh@atc.tcs.com>
+Subject: Re: Wrong routing when combining ip rule with SNAT
+Date: Mon, 16 Sep 2013 12:44:52 +0530
+Message-ID: <5236AFEC.5020505@atc.tcs.com>
+References: <8761u59uit.fsf@vostro.rath.org> <5232B01B.2030007@atc.tcs.com> <5234678F.6010401@plouf.fr.eu.org> <52348363.6080804@rath.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.de; s=s1024; t=1379278750; bh=Go7B0mxV+/GUwnlelSjGigEfZXTzbT7hp2zEDEcbCb4=; h=X-Yahoo-Newman-Id:X-Yahoo-Newman-Property:X-YMail-OSG:X-Yahoo-SMTP:X-Rocket-Received:Message-ID:Date:From:User-Agent:MIME-Version:To:Subject:Content-Type:Content-Transfer-Encoding; b=5ryfjElr0ekQtbBSmJqcME9+DJbHLA9bOXyCHOPQbec/0lIWUn7FuKLikHNErP/iHdb3xaYJpD+H6JGOzJHBGtYQxxcVXBrlVErfrZpbXSKyQWB+PKa30fbWHxvvCv9B33Az38d60cAn5mJnfn3+qI955YgEv+YobAMP865xVZg=
+In-Reply-To: <52348363.6080804@rath.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Nikolaus Rath <Nikolaus@rath.org>
+Cc: netfilter@vger.kernel.org
 
-hi,
+On 09/14/2013 09:10 PM, Nikolaus Rath wrote:
+> On 09/14/2013 06:41 AM, Pascal Hambourg wrote:
+>> Vigneswaran R a =C3=A9crit :
+>>> Hello Nikolaus,
+>>>
+>>> I have a doubt. It seems, rath of ebox is assigned with IP address =
+in
+>>> the range 192.168.12.0/24. However, IP address of vostro seems to b=
+e
+>>> 192.168.17.47 (assuming /24). Ebox doesn't have any route to this r=
+ange.
+>>> So it try to use default route via eth0.
+>> Correct.
+>>
+>>> What I assume is, 'vostro' has IP addresses in (atleast) two ranges
+>>> (192.168.12.0/24, 192.168.17.0/24). In the default routing table, t=
+he
+>>> src IP is set to 192.168.12.x (for the packets originating from vos=
+tro).
+>>> However, the 'tovpn' table didn't specify the src IP. So, when the
+>>> 'tovpn' table is being used, the packets may have got the src IP as
+>>> 192.168.17.x.
+>>>
+>>> I think, you can avoid this by explicitly specifying the src IP whe=
+n
+>>> adding the route to 'tovpn' table,
+>>>
+>>>       ip route add default via 192.168.12.1 src 192.168.12.x table =
+tovpn
+>> This won't work. It's too late. The source address has already been
+>> selected by the TCP layer when the packet was created and won't be
+>> changed when the packet is re-routed due to the mark.
+> I see. Out of curiosity: how is the source address selected when the
+> packet is created, and in which situation would the source entry in t=
+he
+> routing table become effective?
 
-when i use these commands to redirect the output from tun0 to ifb0:
+=46ollowing is my understanding.
 
-  dev=tun0; indev=ifb0;
-tc qdisc add dev $dev handle ffff: ingress
-tc filter add dev $dev parent ffff: protocol ip prio 1 u32 match u32 0 0 
-action \
-mirred egress redirect dev $indev
+=46or a packet created by local process, it seems, there are two places=
+ in=20
+which the IP Rules have been evaluated and various routing tables have=20
+been consulted.
 
-i get this tcpdump output:
-tcpdump -i ifb0
-tcpdump: WARNING: ifb0: no IPv4 address assigned
+1. Just before getting into OUTPUT chain
+   -- Here, the outgoing Interface, SRC IP have been decided for the pa=
+cket
 
-listening on ifb0, link-type EN10MB (Ethernet), capture size 65535 bytes
-22:44:38.333033 00:00:40:01:43:58 (oui Unknown) > 45:00:00:54:23:22 (oui 
-Unknown), ethertype Unknown (0x0a08), length 84:
-     0x0000:  000a 0a08 0016 0000 2e57 39db 0009 361c .........W9...6.
-     0x0010:  3652 3c53 0400 0809 0a0b 0c0d 0e0f 1011 6R<S............
-     0x0020:  1213 1415 1617 1819 1a1b 1c1d 1e1f 2021 ...............!
-     0x0030:  2223 2425 2627 2829 2a2b 2c2d 2e2f 3031 "#$%&'()*+,-./01
-     0x0040:  3233 3435 3637                           234567
-22:44:39.333253 00:00:40:01:43:57 (oui Unknown) > 45:00:00:54:23:23 (oui 
-Unknown), ethertype Unknown (0x0a08), length 84:
-     0x0000:  000a 0a08 0016 0000 3e52 39db 000a 371c ........>R9...7.
-     0x0010:  3652 2b57 0400 0809 0a0b 0c0d 0e0f 1011 6R+W............
-     0x0020:  1213 1415 1617 1819 1a1b 1c1d 1e1f 2021 ...............!
-     0x0030:  2223 2425 2627 2829 2a2b 2c2d 2e2f 3031 "#$%&'()*+,-./01
-     0x0040:  3233 3435 3637                           234567
+2. After processing OUTPUT chain and just before getting into=20
+POSTROUTING chain
+   -- Here, the outgoing Interface is getting modified, if necessary.=20
+However, the SRC IP didn't.
 
-why dont i get the icmp packets that went into the openvpn tunnel?
-and what do i get instead?
+So, in our case,
 
-the target is to manage all incoming traffic, but if use eth0 (the real 
-physical device) as root
-all that goes over the vpn connection is already encrypted and 
-encapsulated by openvpn.
-so its all one big blob with dst port 1194.
+1. Just before getting into OUTPUT chain
+   -- At this point, the IP Rule (based on FWMARK) doesn't evaluate to=20
+true as the MARK is not yet set.
+   -- Due to that 'tovpn' table is not consulted
+   -- This means, there is no explicit route to 190.93.249.164. So, it=20
+uses default route 'via 192.168.17.1 dev br0' (based on main table entr=
+y).
+   -- This results in SRC IP being 192.168.17.47 and the outgoing=20
+Interface being 'br0'.
 
-is there a better way to manage the traffic that goes to the internet 
-and the one that goes trough a vpn at one bottleneck?
+2. After processing OUTPUT chain and just before getting into=20
+POSTROUTING chain
+   -- At this point, the IP Rule (based on FWMARK) evaluates to true as=
+=20
+the MARK is added by OUTPUT chain.
+   -- Now, the 'tovpn' table is also consulted which has route to=20
+190.93.249.164 'via 192.168.12.1 dev rath'.
+   -- In my observation, only the outgoing Interface is updated at this=
+=20
+point.
+   -- This results in SRC IP being 192.168.17.47 and the outgoing=20
+Interface being 'rath'.
+
+The following workaround solves our purpose. However ugly and not=20
+scalable, I think.
+
+Using some condition for IP Rule which evaluates to true at the 1st ste=
+p=20
+itself. eg., (matching destination IP).
+
+     ip rule add to 190.93.249.164 table tovpn
+
+
+Regards,
+Vignesh
