@@ -1,39 +1,53 @@
-From: gapsf@yandex.ru
-Subject: Is DDR qdisc capable for bandwidth sharing between classes in a specific proportion?
-Date: Tue, 17 Sep 2013 12:02:57 +0700
-Message-ID: <578924965.20130917120257@yandex.ru>
-Reply-To: gapsf@yandex.ru
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ipset 6.19 build fails on CentOS 6.4 64bits
+Date: Tue, 17 Sep 2013 09:07:20 +0200 (CEST)
+Message-ID: <alpine.DEB.2.00.1309170903010.15566@blackhole.kfki.hu>
+References: <CADuigkUZx24ssKBsu21QxwShTHKmZn7dyXnhwsNwt4aLbM7Jcw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1379394178;
-	bh=vRiUUMbaMFJfPYUJV7HmX24b2lvc/dO4B1Bu9F9Ljws=;
-	h=Date:From:Reply-To:X-Priority:Message-ID:To:Subject:MIME-Version:
-	 Content-Type:Content-Transfer-Encoding;
-	b=stw+LGp6SCYo3XWB8NH3wbhC62QMRI6XxUTzXBqnJ8XxYolvF0iWMMC2lfBzEpVKt
-	 48VtWMH3cUFGOzj2HWfi6UlhEVKhAMLCnGGH5DYPVY5EhxlGYADE9F02/dB12OaBDm
-	 +NyzLYlL0MFizi/pfgyFWMFHdt5wMhrDHX7zpJa0=
+In-Reply-To: <CADuigkUZx24ssKBsu21QxwShTHKmZn7dyXnhwsNwt4aLbM7Jcw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Ricardo Klein <klein.rfk@gmail.com>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-Hi!
-I would like to ask question about DRR qdisc.
-Is DDR designed for bandwidth sharing between classes proportionally to 'quantum' parameter?
+On Mon, 16 Sep 2013, Ricardo Klein wrote:
 
-Consider example:
-tc qdisc add dev eth0 root handle 1: htb
-tc class add dev eth0 parent 1: classid 1:1 htb rate 100mbit ceil 100mbit
-tc qdisc add dev eth0 parent 1:1 handle 2: drr
-tc class add dev eth0 parent 2: classid 2:1 drr quantum 1500
-tc class add dev eth0 parent 2: classid 2:2 drr quantum 3000
-tc filter add dev eth0 parent 1: protocol ip prio 1 u32 match ip dport 8111 0xffff classid 2:1
-tc filter add dev eth0 parent 1: protocol ip prio 1 u32 match ip dport 8112 0xffff classid 2:2
+> I was trying to build ipset 6.19 on CentOS 6.4 bit it fails.
+> I did a try on git version (the current one right?) and it fails too
+> on make modules
+> 
+> [root@localhost ipset]# make modules
+> make -C /lib/modules/`uname -r`/build M=$PWD/kernel/net V= \
+> KCFLAGS="-DPACKAGE_VERSION=6.19" \
+> IP_SET_MAX=256 KDIR=$PWD/kernel modules
+> make[1]: Entering directory `/usr/src/kernels/2.6.32-358.18.1.el6.x86_64'
+> Makefile:626: "WARNING: Appending $KCFLAGS (-DPACKAGE_VERSION=6.19)
+> from command line to kernel $CFLAGS"
+>   CC [M]  /root/ipset/kernel/net/netfilter/xt_set.o
+> In file included from
+> /root/ipset/kernel/include/linux/netfilter/ipset/ip_set.h:22,
+>                  from /root/ipset/kernel/net/netfilter/xt_set.c:18:
+> /root/ipset/kernel/include/linux/netfilter/ipset/ip_set_compat.h:42:
+> error: redefinition of ?ether_addr_equal?
+> include/linux/etherdevice.h:185: note: previous definition of
+> ?ether_addr_equal? was here
+> make[3]: *** [/root/ipset/kernel/net/netfilter/xt_set.o] Error 1
+> make[2]: *** [/root/ipset/kernel/net/netfilter] Error 2
+> make[1]: *** [_module_/root/ipset/kernel/net] Error 2
+> make[1]: Leaving directory `/usr/src/kernels/2.6.32-358.18.1.el6.x86_64'
+> make: *** [modules] Error 2
 
-Here, for 1500 byte packets, I expect packets classified for 2:2 will be dequeued as twice often
-as packets for class 2:1.
-The result is a 2:2 class will receive two times greater bandwidth than the class 2:1, isn't it?
+That's because apparently ether_addr_equal was backported to 2.6.32-358.
+As a quick fix, comment out the definition of ether_addr_equal in
+kernel/include/linux/netfilter/ipset/ip_set_compat.h.
 
-Regards.
-
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
