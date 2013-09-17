@@ -1,43 +1,39 @@
-From: Martin Kraus <lists_mk@wujiman.net>
-Subject: conntrackd, internal cache keeps filling up
-Date: Mon, 5 May 2014 12:40:58 +0200
-Message-ID: <20140505104058.GA30297@finrod>
+From: gapsf@yandex.ru
+Subject: Is DRR qdisc capable for bandwidth sharing between classes in a specific proportion?
+Date: Tue, 17 Sep 2013 14:12:31 +0700
+Message-ID: <65619545.20130917141231@yandex.ru>
+Reply-To: gapsf@yandex.ru
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1399367996;
+	bh=8G/CEzVy0BFOecaMuVgTfnbhR85gNpNAFbke6UKfeng=;
+	h=Date:From:Reply-To:X-Priority:Message-ID:To:Subject:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding;
+	b=pzXEkJHUTQpEzRoXqM9wEdKnKAUGHzPmShy4WR6ge5BzzGbIs6V1Qj3iaGAdO3dDY
+	 3NgxNwwW1mnNzAOCpJ2YLPC1GTyW2pHp5nxpu4jhm5L7zXOoGY7DW9zndUKSbI4KFQ
+	 vlYyxjbpTt7JiUJDGMr7uqXJPUUnt7tA/zZz2Tk4=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi.
-I'm running conntrackd 1.2.1 on debian wheezy between two routers with 
-conntrackd external cache disabled.
+Hi!
+I would like to ask question about DRR qdisc.
+Is DRR designed for bandwidth sharing between classes proportionally to 'quantum' parameter?
 
-After running for some time the states stop replicating due to conntrackd hitting
-HashLimit in the internal cache. When I looked at it it's basically broadcast
-and multicast connections that never time out even though they are no longer
-in the conntrack tables on both routers. I filtered some of it out using
-NOTRACK in iptables. That helped for a while but now it's back with 
-tcp LAST_ACK state.
+Consider example:
+tc qdisc add dev eth0 root handle 1: htb
+tc class add dev eth0 parent 1: classid 1:1 htb rate 100mbit ceil 100mbit
+tc qdisc add dev eth0 parent 1:1 handle 2: drr
+tc class add dev eth0 parent 2: classid 2:1 drr quantum 1500
+tc class add dev eth0 parent 2: classid 2:2 drr quantum 3000
+tc filter add dev eth0 parent 1: protocol ip prio 1 u32 match ip dport 8111 0xffff classid 2:1
+tc filter add dev eth0 parent 1: protocol ip prio 1 u32 match ip dport 8112 0xffff classid 2:2
 
-tcp      6 LAST_ACK src=172.20.6.74 dst=172.20.20.23 sport=48818 dport=445 src=172.20.20.23 dst=172.20.6.74 sport=445 dport=48818 [ASSURED] [active since 249398s]
-tcp      6 LAST_ACK src=172.20.6.119 dst=172.20.20.21 sport=55843 dport=80 src=172.20.20.21 dst=172.20.6.119 sport=80 dport=55843 [ASSURED] [active since 15458s]
-tcp      6 LAST_ACK src=172.20.6.119 dst=172.20.20.21 sport=58573 dport=80 src=172.20.20.21 dst=172.20.6.119 sport=80 dport=58573 [ASSURED] [active since 7426s]
-tcp      6 LAST_ACK src=172.20.6.119 dst=172.20.20.21 sport=57923 dport=80 src=172.20.20.21 dst=172.20.6.119 sport=80 dport=57923 [ASSURED] [active since 9946s]
-tcp      6 LAST_ACK src=172.20.6.74 dst=172.20.20.23 sport=47560 dport=445 src=172.20.20.23 dst=172.20.6.74 sport=445 dport=47560 [ASSURED] [active since 252927s]
+Here, for 1500 byte packets, I expect packets classified for 2:2 will be dequeued as twice often
+as packets for class 2:1.
+The result is a 2:2 class will receive two times greater bandwidth than the class 2:1, isn't it?
 
-There's thousands of these entries and in a few days they'll fill up the
-internal cache and break internal routing.
+Regards.
 
-My understanding was that the internal cache is a copy of the kernel conntrack
-table on each router so it should not be larger then the current conntrack
-table plus some information about terminated connections that need to be
-synced to the other router. 
-
-How are the entries in internal cache purged? Most of them seem to be deleted
-when the connection is terminated but some of the just keep hanging around.
-
-thanks for help
-Martin
