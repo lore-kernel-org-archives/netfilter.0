@@ -1,95 +1,39 @@
-From: Vigneswaran R <vignesh@atc.tcs.com>
-Subject: Re: PREROUTING to a non local subnet
-Date: Tue, 17 Sep 2013 10:10:40 +0530
-Message-ID: <5237DD48.5020808@atc.tcs.com>
-References: <522DDC72.4000402@club-internet.fr> <5236CDF6.3080802@atc.tcs.com> <5236FAB3.2000401@club-internet.fr>
+From: gapsf@yandex.ru
+Subject: Is DDR qdisc capable for bandwidth sharing between classes in a specific proportion?
+Date: Tue, 17 Sep 2013 12:02:57 +0700
+Message-ID: <578924965.20130917120257@yandex.ru>
+Reply-To: gapsf@yandex.ru
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <5236FAB3.2000401@club-internet.fr>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1379394178;
+	bh=vRiUUMbaMFJfPYUJV7HmX24b2lvc/dO4B1Bu9F9Ljws=;
+	h=Date:From:Reply-To:X-Priority:Message-ID:To:Subject:MIME-Version:
+	 Content-Type:Content-Transfer-Encoding;
+	b=stw+LGp6SCYo3XWB8NH3wbhC62QMRI6XxUTzXBqnJ8XxYolvF0iWMMC2lfBzEpVKt
+	 48VtWMH3cUFGOzj2HWfi6UlhEVKhAMLCnGGH5DYPVY5EhxlGYADE9F02/dB12OaBDm
+	 +NyzLYlL0MFizi/pfgyFWMFHdt5wMhrDHX7zpJa0=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Manu <traqueur@club-internet.fr>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-[seems the mailing list IP is missed. adding it]
+Hi!
+I would like to ask question about DRR qdisc.
+Is DDR designed for bandwidth sharing between classes proportionally to 'quantum' parameter?
 
-On 09/16/2013 06:03 PM, Manu wrote:
-> For me the traffic is being dropped in the right place as when I do a=
-=20
-> netstat on the 192.168.2.100 I see that there is an open connection=20
-> with 180.180.180.180 (<-- my server running iptable).
-> But the IP of the computer i'm running my test from is 200.200.200.20=
-0
-> There is the strange point as when I use the same rules for forwardin=
-g=20
-> a port to a computer on the same subnet than the server i see a=20
-> connection from 200.200.200.200 and not 180.180.180.180
-> It seem that iptables rewrite the from ip adresse when it does port=20
-> forwarding to a computer which is not on the same subnet.
+Consider example:
+tc qdisc add dev eth0 root handle 1: htb
+tc class add dev eth0 parent 1: classid 1:1 htb rate 100mbit ceil 100mbit
+tc qdisc add dev eth0 parent 1:1 handle 2: drr
+tc class add dev eth0 parent 2: classid 2:1 drr quantum 1500
+tc class add dev eth0 parent 2: classid 2:2 drr quantum 3000
+tc filter add dev eth0 parent 1: protocol ip prio 1 u32 match ip dport 8111 0xffff classid 2:1
+tc filter add dev eth0 parent 1: protocol ip prio 1 u32 match ip dport 8112 0xffff classid 2:2
 
-I think, some SNAT rule is doing that (may be as a side effect of your=20
-VPN configuration?).
+Here, for 1500 byte packets, I expect packets classified for 2:2 will be dequeued as twice often
+as packets for class 2:1.
+The result is a 2:2 class will receive two times greater bandwidth than the class 2:1, isn't it?
 
-> I hope 'im clear enough. Tell me if it is not the case.
-
-Regards,
-Vignesh
-
-> Le 16/09/2013 11:23, Vigneswaran R a =E9crit :
->> On 09/09/2013 08:04 PM, Manu wrote:
->>> Hello
->>>
->>> I'm running iptable v1.4.7 on a linux with two NIC.
->>> One has adress 192.168.1.31 (the lan)
->>> The other has a public IP. Let's say 180.180.180.180
->>>
->>> On the lan, I have a VPN which join two network : 192.168.1.0 and=20
->>> 192.168.2.0
->>>
->>> I'm trying to forward 5900 port (vnc) to a computer which is on the=
-=20
->>> second subnet with adress 192.168.2.100
->>> iptables -A PREROUTING -t nat -p tcp  -i eth1 --dport 5900 -j DNAT=20
->>> --to-destination 192.168.2.100:5900
->>> iptables -A FORWARD -p tcp -d 192.168.2.100--dport 5900 -j ACCEPT
->>> and it doesn't work
->>
->> Does this machine have route to 192.168.2.0 network? Try to use=20
->> tcpdump and see where the traffic is being dropped.
->>
->> Regards,
->> Vignesh
->>
->>>
->>> I've tried the same on the local network with adress 192.168.1.99
->>> iptables -A PREROUTING -t nat -p tcp  -i eth1 --dport 5900 -j DNAT=20
->>> --to-destination 192.168.1.99:5900
->>> iptables -A FORWARD -p tcp -d 192.168.1.99--dport 5900 -j ACCEPT
->>> and it's working like a charm
->>>
->>> I've done my test with another computer with public adress=20
->>> 200.200.200.200
->>>
->>> I've done a netstat one the two computers
->>> on 192.168.2.100 i've seen he's talking to 180.180.180.180 (<-- my=20
->>> server running iptable)
->>> on 192.168.1.99 i've seen he's talking to 200.200.200.200 (<-- the=20
->>> computer on internet which i'm running my test from)
->>>
->>> thanks for your attention
->>> --=20
->>> To unsubscribe from this list: send the line "unsubscribe netfilter=
-" in
->>> the body of a message to majordomo@vger.kernel.org
->>> More majordomo info at http://vger.kernel.org/majordomo-info.html
->>>
->>
->> --=20
->> To unsubscribe from this list: send the line "unsubscribe netfilter"=
- in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at http://vger.kernel.org/majordomo-info.html
->>
->
+Regards.
 
