@@ -1,37 +1,30 @@
-From: iptables@trodman.com
-Subject: Re: basic NAT/masquerading setup [thanks Phil, that was it..
-Date: Thu, 19 Sep 2013 12:58:26 -0500
-Message-ID: <201309191758.r8JHwQGr030358@localhost.localdomain>
-References: <201309191636.r8JGaUsc027762@localhost.localdomain> <20130919173648.GA2602@home.localdomain>
+From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
+Subject: Re: basic NAT/masquerading setup
+Date: Thu, 19 Sep 2013 13:38:57 -0400
+Message-ID: <201309191338.57155.neal.p.murphy@alum.wpi.edu>
+References: <201309191636.r8JGaUsc027762@localhost.localdomain>
+Reply-To: neal.p.murphy@alum.wpi.edu
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-reply-to: <20130919173648.GA2602@home.localdomain>
+In-Reply-To: <201309191636.r8JGaUsc027762@localhost.localdomain>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: Text/Plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-On Thu 9/19/13 10:36 PDT Phil Oester wrote:
-> On Thu, Sep 19, 2013 at 11:36:30AM -0500, iptables@trodman.com wrote:
-> > I'm trying to set up simple NAT/masquerading on a dual NIC host
-> > (hostname == "psi") running fedora 19, so hosts on my LAN can access
-> > Internet by routing thru host "psi".
-> > 
-> > Interface p1p1 is on my LAN, p2p1 is on Internet.
-> > 
-> > I got the "design" of below /etc/iptables from another of my older (fedora core 10) hosts,
-> > where NAT/masquerading works fine.
-> > 
-> > Everything but the NAT/masquerading works.  
+On Thursday, September 19, 2013 12:36:30 PM iptables@trodman.com wrote:
+> Hello:
 > 
-> What does `sysctl net.ipv4.ip_forward` show?  If 0, you need to change to 1.  
+> I'm trying to set up simple NAT/masquerading on a dual NIC host
+> (hostname == "psi") running fedora 19, so hosts on my LAN can access
+> Internet by routing thru host "psi".
+> 
+> Interface p1p1 is on my LAN, p2p1 is on Internet.
+> 
+> I got the "design" of below /etc/iptables from another of my older (fedora
+> core 10) hosts, where NAT/masquerading works fine.
+> 
+> Everything but the NAT/masquerading works.
 
-Thanks Phil, that was it!  (embarrassed) I wrongly recalled updating /etc/sysctl.conf, and assumed
-net.ipv4.ip_forward was '1'.  It's fixed/working across a reboot now.
-
---
-Tom
-
-
-
+Perhaps I missed it: where do you ACCEPT *NEW* conns in chain FORWARD?
