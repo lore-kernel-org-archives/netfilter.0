@@ -1,112 +1,209 @@
-From: steven <commercials24@yahoo.de>
-Subject: Re: tc redirecting vpn traffic, ifb0 output not readable?
-Date: Fri, 20 Sep 2013 15:06:21 +0200
-Message-ID: <523C484D.6000404@yahoo.de>
-References: <52361F9D.30506@yahoo.de> <CAEjQA5Kd9W5MCXTwXH1XKDMmFy-sQzXw8JXbdxUqymKAmkX0sA@mail.gmail.com>
+From: Ray Soucy <rps@maine.edu>
+Subject: Re: traffic shape per ip
+Date: Fri, 20 Sep 2013 09:17:20 -0400
+Message-ID: <CALFTrnM6OtNjcuvgm5meyeo_2XEJfQ6qhwrHxtO02bA5tx+cyw@mail.gmail.com>
+References: <523B45EA.5090501@gmail.com>
+	<1379622866.3407.93.camel@andylaptop>
+	<CALFTrnNDLHW0NDJVE_sKRjP7DMsnfKXcuiEXado+p6nYUJpUbA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.de; s=s1024; t=1379682387; bh=gBoz7PPzZ2aOCcw/s3T9lN8OfdZiyGAxjL+aoXyiM1Y=; h=X-Yahoo-Newman-Id:X-Yahoo-Newman-Property:X-YMail-OSG:X-Yahoo-SMTP:X-Rocket-Received:Message-ID:Date:From:User-Agent:MIME-Version:To:Subject:References:In-Reply-To:Content-Type:Content-Transfer-Encoding; b=wb6Tnw1I7sfJ4BQCSo0BpO5YR/rxyplWuAtaZPmNPjCnmhj2gJ2WizwMAUXA8VH2N6hwEwq4l0Q2DTtqnyb6Mt+NiQtudbnMN0FUzLRomcaBD77NrduOQGkCDOowot3MqlrQPBhdMvRYswJlgr5nh5KUTwHIgrsVa2cWH5Kjiac=
-In-Reply-To: <CAEjQA5Kd9W5MCXTwXH1XKDMmFy-sQzXw8JXbdxUqymKAmkX0sA@mail.gmail.com>
+In-Reply-To: <CALFTrnNDLHW0NDJVE_sKRjP7DMsnfKXcuiEXado+p6nYUJpUbA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Andrew Beverley <andy@andybev.com>
+Cc: binary <dreamer.binary@gmail.com>, netfilter@vger.kernel.org
 
-Am 19.09.2013 13:05, schrieb C. L. Martinez:
-> On Sun, Sep 15, 2013 at 8:59 PM, james <commercials24@yahoo.de> wrote:
->> hi,
+Bounced for HTML.  Re-sending as plaintext.
+
+On Fri, Sep 20, 2013 at 9:15 AM, Ray Soucy <rps@maine.edu> wrote:
+> Try something like this.
+>
+> It's not perfect, but it will work for a pool of up to 8000 IPs (TC limit is
+> 9999 I believe).  Sorry for it being in PHP, it was tossed on a box where
+> everything else is already PHP.
+>
+> Verified to work, and a modest Linux system doesn't have a problem keeping
+> up with it.
+>
+> #!/bin/php
+> <?php
+>
+> $config['wan_if']            = 'eth0';
+> $config['lan_if']            = 'eth1';
+> $config['global_down']       = '300mbit';
+> $config['global_up']         = '300mbit';
+> $config['default_down']      = '1mbit';
+> $config['default_up']        = '1mbit';
+> $config['network_list'] = array('172.19.0.0/20');
+>
+>
+>
+>
+> function cidrtorange($network) {
+>   list($ip, $bits) = explode('/', $network);
+>   $ip = ip2long($ip);
+>   $mask = ~((1 << (32 - $bits)) - 1);
+>   $start = ($ip & $mask) + 1;
+>   $end = ($start - 3) - $mask;
+>   $range = array($start, $end);
+>   return $range;
+> }
+>
+> function exec_cmds($cmd) {
+>   $log_data = "";
+>   $cmd = str_replace('iptables ', '/usr/local/sbin/iptables ', $cmd);
+>   $cmd = str_replace('tc ', '/usr/sbin/tc ', $cmd);
+>   $cmd_list = explode("\n", $cmd);
+>   foreach ($cmd_list as $c) {
+>     if (strlen($c) < 1) continue;
+>     $out = array();
+>     exec($c . ' 2>&1', $out, $status);
+>     if ($status == 0) $log_data .= $c . "\n";
+>     else {
+>       $log_data .= '# FAILED ' . $c . "\n";
+>       foreach ($out as $o) $log_data .= '# ' . $o . "\n";
+>     }
+>   }
+>   echo $log_data;
+> }
+>
+>
+>
+> function do_start() {
+>   global $config;
+>   $host_list = array();
+>   foreach ($config['network_list'] as $network) {
+>     list($start_ip, $end_ip) = cidrtorange($network);
+>     for ($i = $start_ip + 1; $i < $end_ip; $i++) {
+>       $host = long2ip($i);
+>       $host_list[$host]['down'] = $config['default_down'];
+>       $host_list[$host]['up'] = $config['default_up'];
+>     }
+>   }
+>   $cmd = "";
+>   $cmd .= 'iptables -t mangle -N Traffic_Control' . "\n";
+>   $cmd .= 'iptables -t mangle -A PREROUTING -i ' . $config['lan_if'] . ' -j
+> Traffic_Control' . "\n";
+>   $cmd .= 'tc qdisc add dev ' . $config['lan_if'] . ' root handle 1: htb
+> default 9999' . "\n";
+>   $cmd .= 'tc class add dev ' . $config['lan_if'] . ' parent 1: classid
+> 1:9999 htb rate ' . $config['global_down'] . "\n";
+>   $cmd .= 'tc qdisc add dev ' . $config['lan_if'] . ' parent 1:9999 handle
+> 9999: sfq perturb 10' . "\n";
+>   $cmd .= 'tc qdisc add dev ' . $config['wan_if'] . ' root handle 1: htb
+> default 9999' . "\n";
+>   $cmd .= 'tc class add dev ' . $config['wan_if'] . ' parent 1: classid
+> 1:9999 htb rate ' . $config['global_up'] . "\n";
+>   $cmd .= 'tc qdisc add dev ' . $config['wan_if'] . ' parent 1:9999 handle
+> 9999: sfq perturb 10' . "\n";
+>   $tc_index = 1;
+>   foreach ($host_list as $host => $lim) {
+>     $cmd .= 'iptables -t mangle -A Traffic_Control -s ' . $host . ' -j MARK
+> --set-mark ' . $tc_index . "\n";
+>     $cmd .= 'tc class add dev ' . $config['wan_if'] . ' parent 1: classid
+> 1:' . $tc_index . ' htb rate ' . $lim['up'] . "\n";
+>     $cmd .= 'tc filter add dev ' . $config['wan_if'] . ' protocol ip parent
+> 1: prio 1 handle ' . $tc_index . ' fw flowid 1:' . $tc_index . "\n";
+>     $cmd .= 'tc class add dev ' . $config['lan_if'] . ' parent 1: classid
+> 1:' . $tc_index . ' htb rate ' . $lim['down'] . "\n";
+>     $cmd .= 'tc filter add dev ' . $config['lan_if'] . ' protocol ip parent
+> 1: prio 1 u32 match ip dst ' . $host . ' flowid 1:' . $tc_index . "\n";
+>     $tc_index++;
+>   }
+>   exec_cmds($cmd);
+> }
+>
+> function do_stop() {
+>   global $config;
+>   $cmd = "";
+>   $cmd .= 'tc qdisc del dev ' . $config['lan_if'] . ' root' . "\n";
+>   $cmd .= 'tc qdisc del dev ' . $config['wan_if'] . ' root' . "\n";
+>   $cmd .= 'iptables -t mangle -D PREROUTING -i ' . $config['lan_if'] . ' -j
+> Traffic_Control' . "\n";
+>   $cmd .= 'iptables -t mangle -F Traffic_Control' . "\n";
+>   $cmd .= 'iptables -t mangle -X Traffic_Control' . "\n";
+>   exec_cmds($cmd);
+> }
+>
+>
+>
+>
+> if ($argc == 2) {
+>   if ($argv[1] == 'start') {
+>     do_start();
+>   } elseif ($argv[1] == 'stop') {
+>     do_stop();
+>   } elseif ($argv[1] == 'restart') {
+>     do_stop();
+>     do_start();
+>   } else {
+>     echo 'Usage: ' . $argv[0] . ' {start|stop|restart}' . "\n";
+>   }
+>
+> } else {
+>   echo 'Usage: ' . $argv[0] . ' {start|stop|restart}' . "\n";
+> }
+>
+>
+>
+> On Thu, Sep 19, 2013 at 4:34 PM, Andrew Beverley <andy@andybev.com> wrote:
 >>
->> when i use these commands to redirect the output from tun0 to ifb0:
+>> On Thu, 2013-09-19 at 21:43 +0300, binary wrote:
+>> > i would to limit the bandwidth of some users based on IPs:
 >>
->>   dev=tun0; indev=ifb0;
->> tc qdisc add dev $dev handle ffff: ingress
->> tc filter add dev $dev parent ffff: protocol ip prio 1 u32 match u32 0 0
->> action \
->> mirred egress redirect dev $indev
+>> [...]
 >>
->> i get this tcpdump output:
->> tcpdump -i ifb0
->> tcpdump: WARNING: ifb0: no IPv4 address assigned
+>> This is not as simple as you might think. In order to shape per-IP,
+>> you'll need to set up a class for each individual IP address, and then
+>> filter to that class. I am not aware of a way to write one rule to say
+>> "limit each IP address to this amount".
 >>
->> listening on ifb0, link-type EN10MB (Ethernet), capture size 65535 bytes
->> 22:44:38.333033 00:00:40:01:43:58 (oui Unknown) > 45:00:00:54:23:22 (oui
->> Unknown), ethertype Unknown (0x0a08), length 84:
->>      0x0000:  000a 0a08 0016 0000 2e57 39db 0009 361c .........W9...6.
->>      0x0010:  3652 3c53 0400 0809 0a0b 0c0d 0e0f 1011 6R<S............
->>      0x0020:  1213 1415 1617 1819 1a1b 1c1d 1e1f 2021 ...............!
->>      0x0030:  2223 2425 2627 2829 2a2b 2c2d 2e2f 3031 "#$%&'()*+,-./01
->>      0x0040:  3233 3435 3637                           234567
->> 22:44:39.333253 00:00:40:01:43:57 (oui Unknown) > 45:00:00:54:23:23 (oui
->> Unknown), ethertype Unknown (0x0a08), length 84:
->>      0x0000:  000a 0a08 0016 0000 3e52 39db 000a 371c ........>R9...7.
->>      0x0010:  3652 2b57 0400 0809 0a0b 0c0d 0e0f 1011 6R+W............
->>      0x0020:  1213 1415 1617 1819 1a1b 1c1d 1e1f 2021 ...............!
->>      0x0030:  2223 2425 2627 2829 2a2b 2c2d 2e2f 3031 "#$%&'()*+,-./01
->>      0x0040:  3233 3435 3637                           234567
+>> Presumably the reason to filter per-IP is to stop single users hogging
+>> the bandwidth. If so, a better approach might be to classify the type of
+>> traffic and then shape on that, or alternatively share bandwidth evenly
+>> per-IP rather than per-connection (as is the default). There is some
+>> information on how to do this on this page at the end of the "downlink"
+>> section:
 >>
->> why dont i get the icmp packets that went into the openvpn tunnel?
->> and what do i get instead?
 >>
->> the target is to manage all incoming traffic, but if use eth0 (the real
->> physical device) as root
->> all that goes over the vpn connection is already encrypted and encapsulated
->> by openvpn.
->> so its all one big blob with dst port 1194.
+>> http://www.andybev.com/index.php/Fair_traffic_shaping_an_ADSL_line_for_a_local_network_using_Linux
 >>
->> is there a better way to manage the traffic that goes to the internet and
->> the one that goes trough a vpn at one bottleneck?
+>> If you have any more questions you might want to use the LARTC mailing
+>> list instead of this mailing list.
+>>
+>> Andy
+>>
+>>
 >> --
-> Can you try "protocol all" instead of "protocol ip"??
+>> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+>> the body of a message to majordomo@vger.kernel.org
+>> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
+>
+>
+>
+> --
+> Ray Patrick Soucy
+> Network Engineer
+> University of Maine System
+>
+> T: 207-561-3526
+> F: 207-561-3531
+>
+> MaineREN, Maine's Research and Education Network
+> www.maineren.net
 
 
-should have checkd what ping packets look like on the receiving side, i 
-was expecting a tc filter that matches small packets to hit it and be 
-redirected in a qdisc. since that qdisc never got any packets i assumed 
-that they never reached the machine...but:
 
-this is the output of "wget 10.8.0.1" (receiving the default ubuntu 
-12.04.2 apache index.html with protocol ip)
+-- 
+Ray Patrick Soucy
+Network Engineer
+University of Maine System
 
-tcpdump -i ifb0
-tcpdump: WARNING: ifb0: no IPv4 address assigned
-tcpdump: verbose output suppressed, use -v or -vv for full protocol decode
-listening on ifb0, link-type EN10MB (Ethernet), capture size 65535 bytes
-14:47:35.410818 40:00:40:06:a2:11 (oui Unknown) > 45:00:00:3c:84:94 (oui 
-Unknown), ethertype Unknown (0x0a08), length 60:
-     0x0000:  0006 0a08 0001 cfaf 0050 8415 9ccd 0000 .........P......
-     0x0010:  0000 a002 3908 edf5 0000 0204 0558 0402 ....9........X..
-     0x0020:  080a 040f 1859 0000 0000 0103 0304       .....Y........
-14:47:35.458207 40:00:40:06:a2:18 (oui Unknown) > 45:00:00:34:84:95 (oui 
-Unknown), ethertype Unknown (0x0a08), length 52:
-     0x0000:  0006 0a08 0001 cfaf 0050 8415 9cce ddbc .........P......
-     0x0010:  6282 8010 0391 469c 0000 0101 080a 040f b.....F.........
-     0x0020:  1865 06a1 c441                           .e...A
-14:47:35.460451 40:00:40:06:a1:ab (oui Unknown) > 45:00:00:a0:84:96 (oui 
-Unknown), ethertype Unknown (0x0a08), length 160:
-     0x0000:  0006 0a08 0001 cfaf 0050 8415 9cce ddbc .........P......
-     0x0010:  6282 8018 0391 bbee 0000 0101 080a 040f b...............
-     0x0020:  1865 06a1 c441 4745 5420 2f20 4854 5450 .e...AGET./.HTTP
-     0x0030:  2f31 2e31 0d0a 5573 6572 2d41 6765 6e74 /1.1..User-Agent
-     0x0040:  3a20 5767 6574 2f31 2e31 332e 3420 286c :.Wget/1.13.4.(l
-     0x0050:  696e 7578 2d67 6e75 290d 0a41 6363 6570 inux-gnu)..Accep
-     0x0060:  743a 202a 2f2a 0d0a 486f 7374 3a20 3130 t:.*/*..Host:.10
-     0x0070:  2e38 2e30 2e31 0d0a 436f 6e6e 6563 7469 .8.0.1..Connecti
-     0x0080:  6f6e 3a20 4b65 6570 2d41 6c69 7665 0d0a on:.Keep-Alive..
-     0x0090:  0d0a                                     ..
-14:47:35.546704 40:00:40:06:a2:16 (oui Unknown) > 45:00:00:34:84:97 (oui 
-Unknown), ethertype Unknown (0x0a08), length 52:
-     0x0000:  0006 0a08 0001 cfaf 0050 8415 9d3a ddbc .........P...:..
-     0x0010:  646c 8010 03d4 43e0 0000 0101 080a 040f dl....C.........
-     0x0020:  187b 06a1 c44e                           .{...N
-14:47:35.548458 40:00:40:06:a2:15 (oui Unknown) > 45:00:00:34:84:98 (oui 
-Unknown), ethertype Unknown (0x0a08), length 52:
-     0x0000:  0006 0a08 0001 cfaf 0050 8415 9d3a ddbc .........P...:..
-     0x0010:  646c 8014 03d4 43dc 0000 0101 080a 040f dl....C.........
-     0x0020:  187b 06a1 c44e                           .{...N
+T: 207-561-3526
+F: 207-561-3531
 
-
-that looks like a beginning of a valid html document.
-have to check why my filter didnt match, thx for your time.
-
-
+MaineREN, Maine's Research and Education Network
+www.maineren.net
