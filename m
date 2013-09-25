@@ -1,30 +1,30 @@
-From: Alessandro Vesely <vesely@tana.it>
-Subject: Alternatives to netfilter
-Date: Tue, 24 Sep 2013 15:58:24 +0200
-Message-ID: <52419A80.7070304@tana.it>
+From: Anand Raj Manickam <anandrm@gmail.com>
+Subject: nftables dports/Multiport
+Date: Wed, 25 Sep 2013 14:21:36 +0530
+Message-ID: <CAEyr1FS7WQD_H4vzC4-yqXrrwGrqkeodpBtrd5_g8GYpC-T_Ww@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tana.it; s=beta;
-	t=1380031104; bh=ICFsJdqMqhZKHW75gInpBezePchCuewmVv9H8qfQk7k=;
-	l=448; h=Date:From:To;
-	b=nunNCok4aIxLphJ6jwD68AChlXZmsVuLfkplknQ5oOfvSF3SAqmDTMcY0smOAuNlg
-	 Yu9n+Yt/XmAOPDLJA+wSTPLuqLtCc8ZrMl9u7oUFubyp75vs9qaGJj58GlOLn1SKq0
-	 0HpS1wytTChppp3LMVDOUXDDgiFL/yvnwor8x43s=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=ZcrWRGhoNH4sF0THS6qJrtMuOjfplLzz/Os+L7vT5qE=;
+        b=rxOY43t0rUodgye3IrY9pbwDNUGIBNjR40vOLThVouIs4rR7lQJZ5fc450ElfFwtQS
+         kIA+eDtAhny7BAItvGS4l3MoVv2RfPnyfhkvZmQC8lQ703+O+OQu+CMVNYqKFTLpegGq
+         6lI0oUg5UddpqSy+FaHaAswLaiVKIYECGjBSAeXDFMM6eL5Xk//CrZmYgFkLmvGJ7wIo
+         tcnKQQMqEo90IYC72Bu3L0c/GVAXSEh3ykHoivNCgxl5nEjMhU1muPQBNSC0l41antle
+         OVQD83nFaz589hVQSOSZWUf8LICsSEqpZxTaYp0MDdm402gxHQ8QrH98gmgMpQ1NRZVh
+         0asA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-I added an entry for netfilter in the AlternativesTo web site, since
-various packages using netfilter are present, but netfilter itself
-wasn't.  I don't think there are alternatives on Linux, maybe ipfw and
-similar stuff will be added too.
+How do i add a multiport rule
+ nft add rule ip filter output tcp dports 99,200 ip daddr 1.1.1.1
+counter meta oif eth0 fails.
 
-If anyone wants to comment or vote (requires some auth):
-http://alternativeto.net/software/netfilter/
 
--- 
-AlternativeTo itself is mentioned in wikipedia:
-http://en.wikipedia.org/wiki/AlternativeTo
-
+I see that the range works,
+ nft add rule ip filter output tcp dport 99-105 ip daddr 1.1.1.1
+counter meta oif eth0
