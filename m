@@ -1,27 +1,17 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: [PATCH 11/12] netfilter: Remove extern from function
- prototypes
-Date: Sat, 28 Sep 2013 21:17:54 +0200 (CEST)
-Message-ID: <alpine.LSU.2.11.1309282117370.24233@nerf07.vanv.qr>
-References: <445209f8885ccd8234fa787c30d63e63fc7917d7.1379961014.git.joe@perches.com> <de1106130366672acb936422f4da7cbb1aafbda1.1379961014.git.joe@perches.com>
+From: jack seth <bird_112@hotmail.com>
+Subject: Getting iptables not to reply
+Date: Mon, 30 Sep 2013 15:58:48 +0000
+Message-ID: <SNT147-W156511006C6569D034DE84BF140@phx.gbl>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <de1106130366672acb936422f4da7cbb1aafbda1.1379961014.git.joe@perches.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Joe Perches <joe@perches.com>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, linux-kernel@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Monday 2013-09-23 20:37, Joe Perches wrote:
-
->There are a mix of function prototypes with and without extern
->in the kernel sources.  Standardize on not using extern for
->function prototypes.
->
->Function prototypes don't need to be written with extern.
->extern is assumed by the compiler.  Its use is as unnecessary as
->using auto to declare automatic/local variables in a block.
-
-Or you could just extern all functions for consistency with variables.
+Ok, if you have an 'accept' rule for a service that is not currently ru=
+nning, is it possible to have iptables to simply not respond instead of=
+ reporting the port as 'closed'?=A0 During a port scan at grc.com, if t=
+he router doesn't reply the port will be reported as 'stealth'. 		 	   =
+		  
