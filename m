@@ -1,63 +1,34 @@
-From: gaurav sharma <reach2gaurav@gmail.com>
-Subject: Is there anyway for Netfilter_queue to provide only control packets.
-Date: Tue, 1 Oct 2013 09:18:11 +0530
-Message-ID: <CAFHb1iHBWSMbM6vmNLeKGLf80MmLqrEG_dRG+9vx7usP2BmAjg@mail.gmail.com>
+From: tristen <tristen_e@yahoo.com>
+Subject: statistic mode / every nth / packet problem
+Date: Tue, 1 Oct 2013 06:02:13 -0700 (PDT)
+Message-ID: <1380632533.32003.YahooMailNeo@web162406.mail.bf1.yahoo.com>
+Reply-To: tristen <tristen_e@yahoo.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=vn9a01wAKo/dybYRocNnNkgHCTR+/1kLnVBtVQLQjOg=;
-        b=lnl9f6YZki7ZySh56y/P5McB4fHLNPr29gClcy3gP7lKV0vzvaWunHHotbR8C4nCTF
-         hCNquI8evv9plWKXMTHXCcXubuuHobdlEU3nI51eZvC7DhsloAWgCcg7ZVOVv/ZMVlrD
-         4Otr4HtmyvJajz6Cb52k2Cgw0yZWCP3B6m1wHyiM2eGk2z12mSOQAwnYeiTW/SbDIRiW
-         Aq46XlniGTCiVeIsmUnYvftRr2rfRGHq1oJHkfvrkznc45eZQBnIqEAIeeNpxszRwjL1
-         CQXppJvgFQrodDyLpKr2elrWbFBBmlyrjUZF4dF4Icp++EzbjJK0BczZSl7W6Or3P0E9
-         G+sg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s1024; t=1380632533; bh=B2sqP2ON7TVnpDTEh7/263GBSzYTseTHCJ7g5EBy43Y=; h=X-YMail-OSG:Received:X-Rocket-MIMEInfo:X-Mailer:Message-ID:Date:From:Reply-To:Subject:To:MIME-Version:Content-Type:Content-Transfer-Encoding; b=Xp0M1VTF7nvkBqT6UWodR84IXYDc1waej4rp05ETEme12y+zl5m/0Bioj0JVv+MeD9M7D/OvT6eYtaHP2VXceAhT0PtpWIhPBxWuxpCQK2dmol2zZgY7dUm4oFeS8f1ibkp7tj9gAMjSf5ffMSCQVT3qo3tBFgL1m0J2JuxIzBs=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hello All,
+hello
 
-      I am working on a project to provide ability to intercept
-network connections originating from, and coming into Linux machines
-at various stages during the network connections life-cycle.
+i have a situation where i want to round-robin new http connections to different ports, but i'm finding that the following is resulting in a significant amount "falling through" to my catch-all on port 9000, rather than being evenly distributed across 8080-8084.
 
-      These stages include the following:
-      1. Just before an outbound network connection is made - i.e.
-when the first SYN packet is sent out.
-      2. Just after an outbound network connection is established.
-      3. Just after the connection is terminated.
-      4. When an inbound connection is established - i.e. when the
-first SYN packet is received from outside.
+iptables -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+iptables -P INPUT ACCEPT
+iptables -t nat -A PREROUTING -p tcp --dport 80 -m statistic --mode nth --every 5 --packet 0 -j REDIRECT --to-port 8080
+iptables -t nat -A PREROUTING -p tcp --dport 80 -m statistic --mode nth --every 5 --packet 1 -j REDIRECT --to-port 8081
+iptables -t nat -A PREROUTING -p tcp --dport 80 -m statistic --mode nth --every 5 --packet 2 -j REDIRECT --to-port 8082
+iptables -t nat -A PREROUTING -p tcp --dport 80 -m statistic --mode nth --every 5 --packet 3 -j REDIRECT --to-port 8083
+iptables -t nat -A PREROUTING -p tcp --dport 80 -m statistic --mode nth --every 5 --packet 4 -j REDIRECT --to-port 8084
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 9000
 
-      For above requirements, I was evaluating netfilter_queue to get
-the packets in the user-space and then decide the verdict whether to
-allow or drop the packet.
+it's about 80-20, where 80% are evenly distributed amongst 8080-8084 and 20% are winding up on 9000.
 
-      My main concern here is, that once I am done with
-netfilter_queue registration, I'll start getting all the packets. But
-I am only interested in control packets and don't want data packets to
-be sent to user-space.
+i'd prefer 100% evenly distributed on 8080-8084 and none on 9000. i put 9000 there as a catch-all "hack" because i found connections were failing to be caught by the 8080-8084 range.
 
-      So, my question is - Is there any existing way to tell the
-netfilter_queue kernel module to send only the control packets and not
-the data packets ? Also, would it be possible to get notified about
-the connection establishment and termination ?
+any help would be really appreciated, thank you in advance!
 
-      If there is no ready way to achive above, then would it make
-sense to modify libnfnetfilter_queue and netfilter_queue kernel module
-to provide only control packets depending upon the config mode set,
-i.e. introducing NFQNL_COPY_CONTROL_PACKET for copying only control
-packets to user-space ?
-
-      Sorry if my questions seems naive as I am still exploring netfilter_queue.
-
-      Thanks for all the help.
-
-
-Thanks,
-Gaurav
+tristen
