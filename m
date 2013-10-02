@@ -1,28 +1,54 @@
-From: jack seth <bird_112@hotmail.com>
-Subject: Why can't I access my modem using Openvpn?
-Date: Wed, 2 Oct 2013 00:51:15 +0000
-Message-ID: <SNT147-W80335136C068A867D37283BF160@phx.gbl>
+From: Husnu Demir <hdemir@metu.edu.tr>
+Subject: ipset iface list
+Date: Wed, 02 Oct 2013 09:12:13 +0300
+Message-ID: <524BB93D.6040803@metu.edu.tr>
+Reply-To: hdemir@metu.edu.tr
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Here is my setup.=A0 My dsl modem is attached to the WAN port of my rou=
-ter.=A0 Vlan2 is the WAN port interface.=A0 Vlan2 has been assigned an =
-IP address (192.168.1.253) in the same subnet as the modem to allow acc=
-ess.=A0 This rule is used to make it work 'iptables -I POSTROUTING -t n=
-at -o vlan2 -d 192.168.1.254 -j MASQUERADE'=A0 With this setup from ins=
-ide my lan (on a different subnet) I can still access the dsl modem.=A0=
-=A0 Tap0 is my openvpn interface.=A0 It is part of the bridge 'br0' and=
- gets assigned an ip address within the same subnet as my lan.=A0=A0 Ef=
-fectively, when using Openvpn I become part of my lan and can access la=
-n resources.=A0 So far so good. Here is the problem.=A0 When testing op=
-envpn from public wifi, I can't access the dsl modem.=A0 I am on my lan=
- as I can access other things.=A0 I can access my dsl modem testing ope=
-nvpn from inside my lan, just not from the outside.=A0 When I remotely =
-connect, I want EVERYTHING to be as if I were on my lan.=A0 I don't get=
- why this doesn't work.=A0 Is there a rule that I am missing that would=
- solve this? 		 	   		  
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
+
+Hi,
+
+I tried to get an interface list with IPSET. Since there is no only
+iface list, I tried to write like this and it works. Perhaps anybody
+can use that.
+
+
+ipset create IntList hash:net,iface family inet hashsize 1024 maxelem
+65536
+ipset add IntList 0.0.0.0/0,vlan1
+ipset add IntList 0.0.0.0/0,eth2
+ipset add IntList 0.0.0.0/0,vlan3
+
+
+iptables -t raw -A PREROUTING \! -s 10.10.0.0/16 -m set --match-set
+IntList dst,src -j SPOOFING
+
+The key point is the 0.0.0.0/0.
+
+
+Best regards,
+
+Husnu Demir.
+Network.
+
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iQEcBAEBAgAGBQJSS7k9AAoJEISpBAM51qlEsxwIAKY9RSdzTeUQFs4eLP4eAmep
+H+gu6m17Q+hj4DLg7sOH81QGlW4FVMi7MzV3P8pFb7wtW7UZxxB/0ARkzU10LgPx
+srqmYr4SdNLi7a/nq3x5ZLc+FuY4bKUZh4Tvc2ZJFIMFHMGXAE12sn5w6di51wmE
+sGR7Rdn/mn1ChCi96RJwJdyKChp7eTC/b2rchXyR4gGt2gwBYZKwmT/lkEw+/nDm
+RnKt4z8k9hcFmjrTRXdTvUE79gB7bZgr+BMt6FPecrtxTGj2Xqsu70B02BCyPDEM
+x7PtvVPULO4dMNhBId/OXAW/ZfuLrRqX1u3bCUifdDVYreKWgcD1wjPivsF66BE=
+=UO+y
+-----END PGP SIGNATURE-----
