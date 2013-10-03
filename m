@@ -1,30 +1,47 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset package kernel support changes
-Date: Wed, 2 Oct 2013 23:35:02 +0200 (CEST)
-Message-ID: <alpine.DEB.2.00.1310022322210.5975@blackhole.kfki.hu>
+From: Husnu Demir <hdemir@metu.edu.tr>
+Subject: is it a BUG?
+Date: Thu, 03 Oct 2013 15:42:20 +0300
+Message-ID: <524D662C.30301@metu.edu.tr>
+Reply-To: hdemir@metu.edu.tr
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
 Hi,
 
-The ipset package still supports kernel versions back to 2.6.32. 
-Unfortunately I have no resources to keep up this support.
+Today I found that mistakenly I have wrote VLAN5 instead of vlan5 for
+the interface name in iptables. And found out that capital letter is
+not same with small letters :) When I think as *nix user it is correct
+but somehow I didnot think about that. So CASE is important for iptables.
 
-The ipset package release 6.20 is the last one which supports the kernel 
-versions below 3.2, the next releases will work with 3.2 and above. 
 
-Bugfixes will be backported to the 6.20 tree for one year from now and 
-will be released with version numbers 6.20.x.
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+
+
+
+Interesting.
+
+Best Regards,
+
+Husnu Demir.
+Network.
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.11 (GNU/Linux)
+Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
+
+iQEcBAEBAgAGBQJSTWYsAAoJEISpBAM51qlEtkAH/1xyHDvKHQFFgcja2BAqbYgc
+khv+/XHjeWomKSZQGiTwo4x4BPmS6nvQ9tuw8Q8i0u7MXZp9esZ+fneWoe+cwglO
+rtiHgsfRN/99lkVupQIuyf0FTm727jL3uQDIXqfMHCBZF+r6hbxZiZsFRZJ2mexG
+h0thG7G3B3OBfHPldSx0Ura6qmVkP6PQoRcwHtl2LwCO520AbXV1hYyIeXSYfqNR
+MB4IzGz4hpwpSkO4z3C3BYL3fDjJSSIqTYAfmsvdH5u7BomSK551TGIU8Rl1mjbP
+1u3EfBQDW4L4hLxmIX8C2IAQOK9KxPb1CTYq1XfoYsFH+mK2uk88JI7C1/ITdHQ=
+=MWFJ
+-----END PGP SIGNATURE-----
