@@ -1,75 +1,59 @@
-From: Tom van Leeuwen <tom.van.leeuwen@saasplaza.com>
-Subject: Re: iptables fails to NAT some packets
-Date: Fri, 11 Oct 2013 08:26:17 +0200
-Message-ID: <52579A09.50508@saasplaza.com>
-References: <5257309B.8030204@systech.com>
+From: Justin Yaple <yaplej@gmail.com>
+Subject: Marking packets from source router?
+Date: Fri, 11 Oct 2013 09:10:34 -0700
+Message-ID: <CAOW2CBftfVFEh0rYat_4R4DonOKj=Lzid3TRhzhzyVvuqzHeNQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <5257309B.8030204@systech.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to:content-type;
+        bh=bcW8+fW3bftnj2zVA15V+tNGd0B/MlngU/LydnD9+GE=;
+        b=Exta/Rk/gv7zBQYr57Ay6Lx5KLHAaiAwMGmQGoujj/HYLd1N1eN++1UzYStRbdyAvz
+         IhboucqrkRMaE+k6oSAPvRtDHNivO2wTkEvLQ8q5BpygGSzIenF3z5fyPIqAFkEuj+Hx
+         +DudFlk1T8ZQOg/7JqqnocUkNQ3O1d3E84Jec3QcTEcnf/hojEYixeLePIIZOMjS9oV+
+         cwgyP6yJwmYXIZLDVaziApgjntdz4UF2NqowylOs7X5IH/JF3utOfamT27dPxRg81WTd
+         //bqAtXIyBCFxxxcQ6PQNj7FB4LgVep4WBvQQk0jLEIiKAO9i1Cwtt/9XxVsn75p04GR
+         US5w==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "jay@systech.com" <jay@systech.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hi Jay,
+Hello,
 
-If your gateway haven't seen the SYN packet that creates the session, it 
-is not able to FIN (or RST) the established session. That's what a FIN 
-does: terminate an existing tcp session.
-If it would decide to create a new NAT translation on a FIN packet, the 
-receiving host would not know the tcp session coming from the new NAT 
-translation. It would probably respond with a RST.
-So: starting a NAT translation on a FIN or RST packet services no 
-purpose imho.
+Is there any way to mark inbound packets from a particular router? Not
+by the source/destination IP but by the previous-hop device.
+Here is my senario:
 
-Other possibility would be that the SYN packet did go through the 
-gateway and that it was correctly natted, but the session has been idle 
-for too long and was deleted from the NAT table.
-My guess is this sysctl setting: 
-net.netfilter.nf_conntrack_tcp_timeout_established
+I have two WAN connections each with a dedicated router. These routers
+redirect traffic entering the "lan" and "wan" interfaces to a Linux
+box via another interface (can be done with Policy Based Routing or
+WCCPv2). That traffic is queued to my userspace daemon, processed then
+sent back.
 
-Kind regards,
-Tom
+I want to return the processed packets back to the original router
+that redirected the packets though. I expect this would be pretty
+simple if the packets were marked somehow. So is there some method to
+mark packets by "previous-hop" or possibly by the source MAC address?
+Not sure how this could be done.
 
-On 10/11/2013 12:56 AM, Jay Foster wrote:
-> I have a gateway application which I am using iptables to NAT from a LAN
-> interface to a WAN interface (linux 3.2.6).  This mostly works well,
-> except that I sometimes see (via wireshark) IP packets being sent out
-> the WAN interface that originated from the LAN interface that iptables
-> fails to apply NAT.
->
-> These packets seem to usually be FIN, FIN/ACK, or RST packets.  I
-> suspect that these are for IP connections from the device connected to
-> the LAN interface that were setup prior to being connected to the
-> gateway on which I am running iptables.  After some time, I think the
-> application on the connected device decides to close these connections
-> (FIN), but iptables fails to NAT these packets.  Why?
->
->   From the iptables man page:
->
->                 nat:
->                     This table is consulted when a packet  that  creates
-> a  new
->                     connection  is encountered.  It consists of three
-> built-ins:
->                     PREROUTING (for altering packets as soon as they
-> come  in),
->                     OUTPUT  (for altering locally-generated packets
-> before rout-
->                     ing), and POSTROUTING (for  altering  packets  as
-> they  are
->                     about to go out).
->
-> I'm concerned about the statement that says, "when a packet that creates
-> a new connection is encountered".  Since the SYN packet for the problem
-> FIN,RST packets was not seen by iptables, does this mean that iptables
-> will not NAT the FIN packet?  This would seem wrong to me.
->
-> Jay
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+The routers and Linux box are all on one subnet. So I cannot mark by
+inbound interface.
 
+It seems like once that issue is worked out either of these could push
+the packets to where it would need to go.
+nfq_set_verdict2
+nfq_set_verdict_mark
+
+My original through was do something in my netfilter hook by modifying
+the destination MAC address but it did not seem like that is possible
+at least not from the netfilter hook but might work with
+dev_add_pack() when packets enter the Ethernet interface and storing
+the source MAC somewhere in the skb then using dev_add_pack() on
+outbound packets to determine if they are going out the same interface
+they entered. If so just modify the destination MAC and re-checksum so
+it would get delivered back to where it originated. That seemed pretty
+hackish to me but might still be an option.
+
+Thank you.
