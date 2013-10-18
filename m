@@ -1,52 +1,43 @@
-From: Kefeng Wang <wangkefeng.wang@huawei.com>
-Subject: Re: [PATCH 14/18] net: usb: use wrapper functions of net_ratelimit()
- to simplify code
-Date: Wed, 16 Oct 2013 11:27:00 +0800
-Message-ID: <525E0784.1070805@huawei.com>
-References: <1381837514-50660-1-git-send-email-wangkefeng.wang@huawei.com> <1381837514-50660-15-git-send-email-wangkefeng.wang@huawei.com> <525D921C.2030709@cogentembedded.com>
+From: Joe Perches <joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org>
+Subject: Re: [PATCH 00/23 v2] cleanup: introduce
+ br/netdev/netif/wiphy_<foo>_ratelimited() and use them to simplify code
+Date: Thu, 17 Oct 2013 21:11:22 -0700
+Message-ID: <1382069482.22110.164.camel@joe-AO722>
+References: <1382068363-10088-1-git-send-email-wangkefeng.wang@huawei.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <525D921C.2030709@cogentembedded.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+In-Reply-To: <1382068363-10088-1-git-send-email-wangkefeng.wang-hv44wF8Li93QT0dZR+AlfA@public.gmane.org>
+Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
-Cc: linux-kernel@vger.kernel.org, Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "David S. Miller" <davem@davemloft.net>, Pablo Neira Ayuso <pablo@netfilter.org>, Stephen Hemminger <stephen@networkplumber.org>, Johannes Berg <johannes@sipsolutions.net>, "John W. Linville" <linville@tuxdriver.com>, Stanislaw Gruszka <sgruszka@redhat.com>, Johannes Berg <johannes.berg@intel.com>, Francois Romieu <romieu@fr.zoreil.com>, Ben Hutchings <bhutchings@solarflare.com>, Chas Williams <chas@cmf.nrl.navy.mil>, Marc Kleine-Budde <mkl@pengutronix.de>, Samuel Ortiz <samuel@sortiz.org>, Paul Mackerras <paulus@samba.org>, Oliver Neukum <oneukum@suse.de>, Konrad Rzeszutek Wilk <konrad.wilk@oracle.com>, Boris Ostrovsky <boris.ostrovsky@oracle.com>, David Vrabel <david.vrabel@citrix.com>, Rusty Russell <rusty@rustcorp.com.au>, "Michael S. Tsirkin" <mst@redhat.com>, netfilter@vger.k
+To: Kefeng Wang <wangkefeng.wang-hv44wF8Li93QT0dZR+AlfA@public.gmane.org>
+Cc: linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 
-Thanks for you reply.
-On 10/16 3:06, Sergei Shtylyov wrote:
-> Hello.
-> 
-> On 10/15/2013 03:45 PM, Kefeng Wang wrote:
-> 
->> net_ratelimited_function() is called to simplify code.
-> 
->> Signed-off-by: Kefeng Wang <wangkefeng.wang@huawei.com>
->> ---
->>   drivers/net/usb/usbnet.c | 4 ++--
->>   1 file changed, 2 insertions(+), 2 deletions(-)
-> 
->> diff --git a/drivers/net/usb/usbnet.c b/drivers/net/usb/usbnet.c
->> index bf94e10..edf81de 100644
->> --- a/drivers/net/usb/usbnet.c
->> +++ b/drivers/net/usb/usbnet.c
->> @@ -450,8 +450,8 @@ void usbnet_defer_kevent (struct usbnet *dev, int work)
->>   {
->>       set_bit (work, &dev->flags);
->>       if (!schedule_work (&dev->kevent)) {
->> -        if (net_ratelimit())
->> -            netdev_err(dev->net, "kevent %d may have been dropped\n", work);
->> +        net_ratelimited_function(netdev_err, dev->net,
->> +            "kevent %d may have been dropped\n", work);
-> 
->    The continuation line should start under 'netdev_err'. Same about the other patches where you didn't change the indentation of the continuation lines though you should have.
+(resending to lists only because of multiple X's in the subject line)
 
-Got it, indentation will be changed.
+On Fri, 2013-10-18 at 11:52 +0800, Kefeng Wang wrote:
+> v1-v2:
+> 
+>   Introduce macro br/netdev/netif/wiphy_XXX_ratelimited() according
+>   to Joe Perches's advice. The macros are similar to net_XXX_ratelimited()
+>   which is more clarifying than net_ratelimited_function(), then use them
+>   to simplify code.
 
-> WBR, Sergei
-> 
-> 
-> .
-> 
+There are some conceptual differences between these
+implementations and other <foo>_ratelimited uses.
 
+For every other subsystem but net, there is a per-location
+struct ratelimit_state.
+
+Here you've made the global net_ratelimit_state replace all
+of these individual structs so there is some new interaction.
+
+Dunno if that's good or bad.
+
+
+
+--
+To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
