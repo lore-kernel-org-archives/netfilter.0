@@ -1,41 +1,35 @@
-From: Sergio Belkin <sebelk@gmail.com>
-Subject: Failing to apply tc filter
-Date: Wed, 23 Oct 2013 06:36:49 -0200
-Message-ID: <CABZC=5w_nmdJ3zhhOqTiXUA8dTuyvzq_z3o012nvaZyFfKV79w@mail.gmail.com>
-Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:from:date:message-id:subject:to:content-type;
-        bh=Ce3xZheHlUZwvhxADmOPCcthkemQexP9l0yPFoTJdcI=;
-        b=RLmfSxiU8hNbhoQdFiVh4R5lYVgaDlFWbrto+B1LCMdNkFoDJij2ifd9terRKLlXWV
-         +A2aA7zDdDMOCCmTwd5DxhVY4ftrj/Smmvh4wyva2Kr7ULZB+S2Vd+anxuG/KmkQvobd
-         nJF7QECLZOKx7ygqzUXOEpe6QaoofNFeZu5lJ4JA0P20kvKUfYY46wtwbeQvM6oQ2nE0
-         kiruUbjRBf8qEy7U9gJ2qv0WroMGZTfxBnn4smkH3V/6EcNZxAzJ+IP99jlO+F7sC+6v
-         +gYbP4lQvCIVdDkOFY5Fyms+LuAOCCUzy/5uPa/7GP+SM+DVdVhhiBBKUbHjNpWgr0jX
-         48Sg==
-Sender: netfilter-owner@vger.kernel.org
+From: Michael Opdenacker <michael.opdenacker@free-electrons.com>
+Subject: [PATCH] netfilter: ipset: remove duplicate define
+Date: Wed, 23 Oct 2013 12:36:14 +0200
+Message-ID: <1382524574-3214-1-git-send-email-michael.opdenacker@free-electrons.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: pablo@netfilter.org, kaber@trash.net, kadlec@blackhole.kfki.hu, davem@davemloft.net
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Michael Opdenacker <michael.opdenacker@free-electrons.com>
 
-Hi, I've run the example at ifb both con Centos and on Fedora with no success
+This patch removes a duplicate define from
+net/netfilter/ipset/ip_set_hash_gen.h
 
-tc filter add dev eth0 parent 1: protocol ip prio 10 u32  match ip src
-192.168.200.200/32 flowid 1:2  action police rate 10kbit burst 90k
-drop  action mirred egress mirror dev ifb0
-Illegal "action"
-bad action parsing
-parse_action: bad value (12:police)!
-Illegal "action"
+Signed-off-by: Michael Opdenacker <michael.opdenacker@free-electrons.com>
+---
+ net/netfilter/ipset/ip_set_hash_gen.h | 1 -
+ 1 file changed, 1 deletion(-)
 
-Is it about a known bug? Any ideas?
-
-Thanks in advance!!
-
+diff --git a/net/netfilter/ipset/ip_set_hash_gen.h b/net/netfilter/ipset/ip_set_hash_gen.h
+index 707bc52..b37a65f 100644
+--- a/net/netfilter/ipset/ip_set_hash_gen.h
++++ b/net/netfilter/ipset/ip_set_hash_gen.h
+@@ -243,7 +243,6 @@ hbucket_elem_add(struct hbucket *n, u8 ahash_max, size_t dsize)
+ #define mtype_uadt		TOKEN(MTYPE, _uadt)
+ #define mtype			MTYPE
+ 
+-#define mtype_elem		TOKEN(MTYPE, _elem)
+ #define mtype_add		TOKEN(MTYPE, _add)
+ #define mtype_del		TOKEN(MTYPE, _del)
+ #define mtype_test_cidrs	TOKEN(MTYPE, _test_cidrs)
 -- 
---
-Sergio Belkin  http://www.sergiobelkin.com
-Watch More TV http://sebelk.blogspot.com
-LPIC-2 Certified - http://www.lpi.org
+1.8.1.2
