@@ -1,59 +1,41 @@
-From: Stephen Hemminger <stephen@networkplumber.org>
-Subject: Re: traffic shaping / full HFSC class no effect on ping time?
-Date: Tue, 22 Oct 2013 16:05:17 -0700
-Message-ID: <20131022160517.57e4ad21@nehalam.linuxnetplumber.net>
-References: <52668032.40304@yahoo.com>
+From: Sergio Belkin <sebelk@gmail.com>
+Subject: Failing to apply tc filter
+Date: Wed, 23 Oct 2013 06:36:49 -0200
+Message-ID: <CABZC=5w_nmdJ3zhhOqTiXUA8dTuyvzq_z3o012nvaZyFfKV79w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <52668032.40304@yahoo.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to:content-type;
+        bh=Ce3xZheHlUZwvhxADmOPCcthkemQexP9l0yPFoTJdcI=;
+        b=RLmfSxiU8hNbhoQdFiVh4R5lYVgaDlFWbrto+B1LCMdNkFoDJij2ifd9terRKLlXWV
+         +A2aA7zDdDMOCCmTwd5DxhVY4ftrj/Smmvh4wyva2Kr7ULZB+S2Vd+anxuG/KmkQvobd
+         nJF7QECLZOKx7ygqzUXOEpe6QaoofNFeZu5lJ4JA0P20kvKUfYY46wtwbeQvM6oQ2nE0
+         kiruUbjRBf8qEy7U9gJ2qv0WroMGZTfxBnn4smkH3V/6EcNZxAzJ+IP99jlO+F7sC+6v
+         +gYbP4lQvCIVdDkOFY5Fyms+LuAOCCUzy/5uPa/7GP+SM+DVdVhhiBBKUbHjNpWgr0jX
+         48Sg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: patrick <nocommercials45@yahoo.com>
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On Tue, 22 Oct 2013 15:40:02 +0200
-patrick <nocommercials45@yahoo.com> wrote:
+Hi, I've run the example at ifb both con Centos and on Fedora with no success
 
-> hi,
-> 
-> 
-> im playing around with traffic shaping(ingress) and was wondering why 
-> this basic HFSC setup does not influence ping time?
-> all traffic goes into default class 1:30, when downloading wget shows a 
-> speed of 205kb/s which is 15kbyte/s less then expected but this is 
-> probably just a estimate over time.
-> since tcp does into congestion avoidance after slow start at some point 
-> it will fill the download queue completely and ping should suffer.
-> but it doesnt, why is that?
-> 
-> 
-> ping -c 100 google.com says:
-> without download:
-> rtt min/avg/max/mdev = 5.908/6.151/6.445/0.112 ms
-> with download:
-> rtt min/avg/max/mdev = 5.867/6.133/6.489/0.129 ms
-> 
-> eth1 is the interface facing the big bad internet
-> 
-> 
-> traffic shaper script output is:
-> + ip link set dev ifb0 up
-> + tc qdisc add dev eth1 handle ffff: ingress
-> + tc filter add dev eth1 parent ffff: protocol ip prio 1 u32 match u32 0 
-> 0 action mirred egress redirect dev ifb0
-> + tc qdisc add dev ifb0 root handle 1: hfsc default 30
-> + tc class add dev ifb0 parent 1: classid 1:1 hfsc sc rate 1760kbit ul 
-> rate 1760kbit
-> + tc class add dev ifb0 parent 1:1 classid 1:30 hfsc sc rate 1760kbit ls 
-> rate 1760kbit
+tc filter add dev eth0 parent 1: protocol ip prio 10 u32  match ip src
+192.168.200.200/32 flowid 1:2  action police rate 10kbit burst 90k
+drop  action mirred egress mirror dev ifb0
+Illegal "action"
+bad action parsing
+parse_action: bad value (12:police)!
+Illegal "action"
 
-Ingress traffic handling is 'traffic policing' i.e drop only, you can't put qdisc or
-filters directly ingress and have it do anything.
+Is it about a known bug? Any ideas?
 
-You can do incoming traffic shaping by using the input-functional-block (ifb)
-device. Basically, you redirect traffic to the ifb device, and put the qdisc
-on that pseudo-device and the qdisc runs.
+Thanks in advance!!
 
-
+-- 
+--
+Sergio Belkin  http://www.sergiobelkin.com
+Watch More TV http://sebelk.blogspot.com
+LPIC-2 Certified - http://www.lpi.org
