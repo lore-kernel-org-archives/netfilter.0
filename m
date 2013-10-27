@@ -1,41 +1,31 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nftables setup issues
-Date: Fri, 25 Oct 2013 12:04:40 +0200
-Message-ID: <20131025100440.GA5475@localhost>
-References: <DUB109-W3830A6FF0AC8FBC3F59F6CE10D0@phx.gbl>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ipsets and network accounting
+Date: Sun, 27 Oct 2013 18:48:04 +0100 (CET)
+Message-ID: <alpine.DEB.2.10.1310271846550.6494@blackhole.kfki.hu>
+References: <526549CA.80508@inspire.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <DUB109-W3830A6FF0AC8FBC3F59F6CE10D0@phx.gbl>
+In-Reply-To: <526549CA.80508@inspire.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Alex Chapman <ajchapman88@hotmail.co.uk>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: Anthony Sheetz <sheetzam@inspire.com>
+Cc: netfilter@vger.kernel.org
 
-On Fri, Oct 25, 2013 at 09:57:02AM +0100, Alex Chapman wrote:
-> Hi,
-> 
-> 
-> I have followed the setup in the online howto guide:
-> 
-> <a href="https&#58;&#47;&#47;home.regit.org&#47;netfilter-en&#47;nftables-quick-howto&#47;" target="_blank" class="newlyinsertedlink">https&#58;&#47;&#47;home.regit.org&#47;netfilter-en&#47;nftables-quick-howto&#47;</a>
-> 
-> Only difference being using the following kernel source as per Pablo's recent mail:
-> 
-> <a href="http&#58;&#47;&#47;marc.info&#47;&#63;l&#61;netfilter-devel&#38;m&#61;138176887917614&#38;w&#61;2" target="_blank" class="newlyinsertedlink">http&#58;&#47;&#47;marc.info&#47;&#63;l&#61;netfilter-devel&#38;m&#61;138176887917614&#38;w&#61;2</a>
-> 
-> 
-> git://git.kernel.org/pub/scm/linux/kernel/git/pablo/nftables.git net-next
-> 
-> When I attempt to run nft -f files/nftables/ipv4-filter I get the following error:
-> 
-> In file included from internal:0:0-0:
-> files/nftables/ipv4-filter:3:1-2: Error: Could not add table: Invalid argument
-> table filter {
-> ^^
-> 
-> Any ideas as to why this is happening?
+On Mon, 21 Oct 2013, Anthony Sheetz wrote:
 
-First thing to check is to make sure you can load the nf_tables module.
+> Is there any way to get network accounting information for individual blocks
+> made using ipsets? The network accounting information from iptables has
+> aggregate information for ipsets, but is there any way to get detailed
+> information for each ip address referenced in a set?
+
+Ipset supports per entry packet and byte counters since version 6.19.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
