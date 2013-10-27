@@ -1,26 +1,42 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [PATCH] netfilter: ipset: remove duplicate define
-Date: Sun, 27 Oct 2013 19:07:52 +0100 (CET)
-Message-ID: <alpine.DEB.2.10.1310271907130.6494@blackhole.kfki.hu>
-References: <1382524574-3214-1-git-send-email-michael.opdenacker@free-electrons.com>
+Subject: [ANNOUNCE] ipset 6.20.1 released
+Date: Sun, 27 Oct 2013 19:52:01 +0100 (CET)
+Message-ID: <alpine.DEB.2.10.1310271947300.7144@blackhole.kfki.hu>
 Mime-Version: 1.0
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1382524574-3214-1-git-send-email-michael.opdenacker@free-electrons.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Michael Opdenacker <michael.opdenacker@free-electrons.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, David Miller <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-On Wed, 23 Oct 2013, Michael Opdenacker wrote:
+Hi,
 
-> This patch removes a duplicate define from
-> net/netfilter/ipset/ip_set_hash_gen.h
-> 
-> Signed-off-by: Michael Opdenacker <michael.opdenacker@free-electrons.com>
+I'm happy to announce ipset 6.20.1. The most important fix in this release 
+is the memory allocation for bitmap:port: unnecessarily large memory was 
+allocated in versions 6.19-6.20.
 
-Patch is applied to the ipset git tree, thanks.
+Userspace changes:
+  - build: fix incorrect library versioning (Jan Engelhardt)
+  - netfilter: ipset: Fix configure failure when --with-kmod=no
+    (Oliver Smith)
+  - Avoid clashing with configured kernel in [CONFIG_]IP_SET_MAX
+
+Kernel part changes:
+  - netfilter: ipset: remove duplicate define (Michael Opdenacker)
+  - net->user_ns is available starting from 3.8, add compatibility
+    checking (reported by Jan Engelhardt)
+  - Fix memory allocation for bitmap:port (reported by Quentin Armitage)
+  - Avoid clashing with configured kernel in [CONFIG_]IP_SET_MAX
+  - The unnamed union initialization may lead to compilation error
+    (reported by Husnu Demir)
+  - Use dev_net() instead of the direct access to ->nd_net (reported by
+    the kbuild test robot)
+
+You can download the source code of ipset from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
 
 Best regards,
 Jozsef
