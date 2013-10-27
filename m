@@ -1,26 +1,26 @@
 From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: ipsets and network accounting
-Date: Sun, 27 Oct 2013 18:48:04 +0100 (CET)
-Message-ID: <alpine.DEB.2.10.1310271846550.6494@blackhole.kfki.hu>
-References: <526549CA.80508@inspire.com>
+Subject: Re: [PATCH] netfilter: ipset: remove duplicate define
+Date: Sun, 27 Oct 2013 19:07:52 +0100 (CET)
+Message-ID: <alpine.DEB.2.10.1310271907130.6494@blackhole.kfki.hu>
+References: <1382524574-3214-1-git-send-email-michael.opdenacker@free-electrons.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <526549CA.80508@inspire.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1382524574-3214-1-git-send-email-michael.opdenacker@free-electrons.com>
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Anthony Sheetz <sheetzam@inspire.com>
-Cc: netfilter@vger.kernel.org
+To: Michael Opdenacker <michael.opdenacker@free-electrons.com>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, David Miller <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-On Mon, 21 Oct 2013, Anthony Sheetz wrote:
+On Wed, 23 Oct 2013, Michael Opdenacker wrote:
 
-> Is there any way to get network accounting information for individual blocks
-> made using ipsets? The network accounting information from iptables has
-> aggregate information for ipsets, but is there any way to get detailed
-> information for each ip address referenced in a set?
+> This patch removes a duplicate define from
+> net/netfilter/ipset/ip_set_hash_gen.h
+> 
+> Signed-off-by: Michael Opdenacker <michael.opdenacker@free-electrons.com>
 
-Ipset supports per entry packet and byte counters since version 6.19.
+Patch is applied to the ipset git tree, thanks.
 
 Best regards,
 Jozsef
