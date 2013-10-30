@@ -1,47 +1,45 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset 6.20.1 released
-Date: Sun, 27 Oct 2013 19:52:01 +0100 (CET)
-Message-ID: <alpine.DEB.2.10.1310271947300.7144@blackhole.kfki.hu>
+From: Wei Yongjun <weiyj.lk@gmail.com>
+Subject: [PATCH -next] netfilter: nf_tables: remove duplicated include from nf_tables_ipv4.c
+Date: Wed, 30 Oct 2013 13:31:30 +0800
+Message-ID: <CAPgLHd_rvGiaM-XVo8AoVXz=et4gzp1F2zKuxGZsAmLDPODRwQ@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:cc:content-type;
+        bh=+KMH8JjJlFZ0BzVY0/maezU64QtIwjpxGl5+JSeGcPY=;
+        b=FDFv4XXEkq2yoXNwC7V3H4xdyGKSLy1EqLdiTwzNObKNWOYk1mITi4eT0HOVgYmJob
+         YWi5t6iJbUHgEJ+0PU2ydbBUSHwqvcVjDG6fglG5jpN9HwVLRNL4Q477Njbaf4L37b8g
+         mKx1yhQqkIBG/jsSc4sZI5tVlyuBeGZ4zh1kVEkFze4SVhOxClXlETOZ6n1SydNBy84R
+         Kzq+xSd5XkuhFdGpY/3rl6fOb7XBqqc2NZ716sHXERxLnLpY80ArRFwS0GL01m9GmX7n
+         OchOs+Y0CL9UT25h9TBgnnUtdck8xnP1i7cfceSvzhXAQa67NmQxAUiRVMmD/cuOP2IL
+         zgtA==
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: pablo@netfilter.org, kaber@trash.net, kadlec@blackhole.kfki.hu, kuznet@ms2.inr.ac.ru, jmorris@namei.org, yoshfuji@linux-ipv6.org
+Cc: yongjun_wei@trendmicro.com.cn, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
 
-Hi,
+From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
 
-I'm happy to announce ipset 6.20.1. The most important fix in this release 
-is the memory allocation for bitmap:port: unnecessarily large memory was 
-allocated in versions 6.19-6.20.
+Remove duplicated include.
 
-Userspace changes:
-  - build: fix incorrect library versioning (Jan Engelhardt)
-  - netfilter: ipset: Fix configure failure when --with-kmod=no
-    (Oliver Smith)
-  - Avoid clashing with configured kernel in [CONFIG_]IP_SET_MAX
+Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+---
+ net/ipv4/netfilter/nf_tables_ipv4.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-Kernel part changes:
-  - netfilter: ipset: remove duplicate define (Michael Opdenacker)
-  - net->user_ns is available starting from 3.8, add compatibility
-    checking (reported by Jan Engelhardt)
-  - Fix memory allocation for bitmap:port (reported by Quentin Armitage)
-  - Avoid clashing with configured kernel in [CONFIG_]IP_SET_MAX
-  - The unnamed union initialization may lead to compilation error
-    (reported by Husnu Demir)
-  - Use dev_net() instead of the direct access to ->nd_net (reported by
-    the kbuild test robot)
+diff --git a/net/ipv4/netfilter/nf_tables_ipv4.c b/net/ipv4/netfilter/nf_tables_ipv4.c
+index 8f7536b..0f4cbfe 100644
+--- a/net/ipv4/netfilter/nf_tables_ipv4.c
++++ b/net/ipv4/netfilter/nf_tables_ipv4.c
+@@ -16,7 +16,6 @@
+ #include <net/netfilter/nf_tables.h>
+ #include <net/net_namespace.h>
+ #include <net/ip.h>
+-#include <net/net_namespace.h>
+ #include <net/netfilter/nf_tables_ipv4.h>
+ 
+ static unsigned int nft_ipv4_output(const struct nf_hook_ops *ops,
 
-You can download the source code of ipset from:
-        http://ipset.netfilter.org
-        ftp://ftp.netfilter.org/pub/ipset/
-        git://git.netfilter.org/ipset.git
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
