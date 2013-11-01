@@ -1,45 +1,63 @@
-From: Wei Yongjun <weiyj.lk@gmail.com>
-Subject: [PATCH -next] netfilter: nf_tables: remove duplicated include from nf_tables_ipv4.c
-Date: Wed, 30 Oct 2013 13:31:30 +0800
-Message-ID: <CAPgLHd_rvGiaM-XVo8AoVXz=et4gzp1F2zKuxGZsAmLDPODRwQ@mail.gmail.com>
-Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:cc:content-type;
-        bh=+KMH8JjJlFZ0BzVY0/maezU64QtIwjpxGl5+JSeGcPY=;
-        b=FDFv4XXEkq2yoXNwC7V3H4xdyGKSLy1EqLdiTwzNObKNWOYk1mITi4eT0HOVgYmJob
-         YWi5t6iJbUHgEJ+0PU2ydbBUSHwqvcVjDG6fglG5jpN9HwVLRNL4Q477Njbaf4L37b8g
-         mKx1yhQqkIBG/jsSc4sZI5tVlyuBeGZ4zh1kVEkFze4SVhOxClXlETOZ6n1SydNBy84R
-         Kzq+xSd5XkuhFdGpY/3rl6fOb7XBqqc2NZ716sHXERxLnLpY80ArRFwS0GL01m9GmX7n
-         OchOs+Y0CL9UT25h9TBgnnUtdck8xnP1i7cfceSvzhXAQa67NmQxAUiRVMmD/cuOP2IL
-         zgtA==
-Sender: netfilter-devel-owner@vger.kernel.org
+From: Cody P Schafer <cody@linux.vnet.ibm.com>
+Subject: [PATCH 1/8] net ipset: use rbtree postorder iteration instead of opencoding
+Date: Fri,  1 Nov 2013 15:38:45 -0700
+Message-ID: <1383345566-25087-1-git-send-email-cody@linux.vnet.ibm.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: pablo@netfilter.org, kaber@trash.net, kadlec@blackhole.kfki.hu, kuznet@ms2.inr.ac.ru, jmorris@namei.org, yoshfuji@linux-ipv6.org
-Cc: yongjun_wei@trendmicro.com.cn, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+To: "David S. Miller" <davem@davemloft.net>, Florian Westphal <fw@strlen.de>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Pablo Neira Ayuso <pablo@netfilter.org>, YOSHIFUJI Hideaki <yoshfuji@linux-ipv6.org>
+Cc: Cody P Schafer <cody@linux.vnet.ibm.com>, coreteam@netfilter.org, linux-kernel@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, Patrick McHardy <kaber@trash.net>
 
-From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+Use rbtree_postorder_for_each_entry_safe() to destroy the rbtree instead
+of opencoding an alternate postorder iteration that modifies the tree
 
-Remove duplicated include.
-
-Signed-off-by: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
+Signed-off-by: Cody P Schafer <cody@linux.vnet.ibm.com>
 ---
- net/ipv4/netfilter/nf_tables_ipv4.c | 1 -
- 1 file changed, 1 deletion(-)
+ net/netfilter/ipset/ip_set_hash_netiface.c | 27 ++++-----------------------
+ 1 file changed, 4 insertions(+), 23 deletions(-)
 
-diff --git a/net/ipv4/netfilter/nf_tables_ipv4.c b/net/ipv4/netfilter/nf_tables_ipv4.c
-index 8f7536b..0f4cbfe 100644
---- a/net/ipv4/netfilter/nf_tables_ipv4.c
-+++ b/net/ipv4/netfilter/nf_tables_ipv4.c
-@@ -16,7 +16,6 @@
- #include <net/netfilter/nf_tables.h>
- #include <net/net_namespace.h>
- #include <net/ip.h>
--#include <net/net_namespace.h>
- #include <net/netfilter/nf_tables_ipv4.h>
+diff --git a/net/netfilter/ipset/ip_set_hash_netiface.c b/net/netfilter/ipset/ip_set_hash_netiface.c
+index 7d798d5..99dba4c 100644
+--- a/net/netfilter/ipset/ip_set_hash_netiface.c
++++ b/net/netfilter/ipset/ip_set_hash_netiface.c
+@@ -45,31 +45,12 @@ struct iface_node {
+ static void
+ rbtree_destroy(struct rb_root *root)
+ {
+-	struct rb_node *p, *n = root->rb_node;
+-	struct iface_node *node;
+-
+-	/* Non-recursive destroy, like in ext3 */
+-	while (n) {
+-		if (n->rb_left) {
+-			n = n->rb_left;
+-			continue;
+-		}
+-		if (n->rb_right) {
+-			n = n->rb_right;
+-			continue;
+-		}
+-		p = rb_parent(n);
+-		node = rb_entry(n, struct iface_node, node);
+-		if (!p)
+-			*root = RB_ROOT;
+-		else if (p->rb_left == n)
+-			p->rb_left = NULL;
+-		else if (p->rb_right == n)
+-			p->rb_right = NULL;
++	struct iface_node *node, *next;
  
- static unsigned int nft_ipv4_output(const struct nf_hook_ops *ops,
-
++	rbtree_postorder_for_each_entry_safe(node, next, root, node)
+ 		kfree(node);
+-		n = p;
+-	}
++
++	*root = RB_ROOT;
+ }
+ 
+ static int
+-- 
+1.8.4.2
