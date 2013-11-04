@@ -1,23 +1,47 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH -next] netfilter: nf_tables: remove duplicated include
- from nf_tables_ipv4.c
-Date: Sun, 3 Nov 2013 22:36:52 +0100
-Message-ID: <20131103213652.GA10594@localhost>
-References: <CAPgLHd_rvGiaM-XVo8AoVXz=et4gzp1F2zKuxGZsAmLDPODRwQ@mail.gmail.com>
+From: Dan Carpenter <dan.carpenter@oracle.com>
+Subject: [patch] netfilter: nf_tables: use _safe version of list_for_each
+Date: Mon, 4 Nov 2013 15:58:56 +0300
+Message-ID: <20131104125856.GB12213@longonot.mountain>
 Mime-Version: 1.0
 Return-path: <netfilter-devel-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <CAPgLHd_rvGiaM-XVo8AoVXz=et4gzp1F2zKuxGZsAmLDPODRwQ@mail.gmail.com>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Wei Yongjun <weiyj.lk@gmail.com>
-Cc: kaber@trash.net, kadlec@blackhole.kfki.hu, kuznet@ms2.inr.ac.ru, jmorris@namei.org, yoshfuji@linux-ipv6.org, yongjun_wei@trendmicro.com.cn, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, kernel-janitors@vger.kernel.org
 
-On Wed, Oct 30, 2013 at 01:31:30PM +0800, Wei Yongjun wrote:
-> From: Wei Yongjun <yongjun_wei@trendmicro.com.cn>
-> 
-> Remove duplicated include.
+We need to use the _safe version of list_for_each_entry() here otherwise
+we have a use after free bug.
 
-Applied, thanks.
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+
+diff --git a/net/netfilter/nft_compat.c b/net/netfilter/nft_compat.c
+index 4811f76..a82667c 100644
+--- a/net/netfilter/nft_compat.c
++++ b/net/netfilter/nft_compat.c
+@@ -634,9 +634,9 @@ nft_match_select_ops(const struct nft_ctx *ctx,
+ 
+ static void nft_match_release(void)
+ {
+-	struct nft_xt *nft_match;
++	struct nft_xt *nft_match, *tmp;
+ 
+-	list_for_each_entry(nft_match, &nft_match_list, head)
++	list_for_each_entry_safe(nft_match, tmp, &nft_match_list, head)
+ 		kfree(nft_match);
+ }
+ 
+@@ -705,9 +705,9 @@ nft_target_select_ops(const struct nft_ctx *ctx,
+ 
+ static void nft_target_release(void)
+ {
+-	struct nft_xt *nft_target;
++	struct nft_xt *nft_target, *tmp;
+ 
+-	list_for_each_entry(nft_target, &nft_target_list, head)
++	list_for_each_entry_safe(nft_target, tmp, &nft_target_list, head)
+ 		kfree(nft_target);
+ }
+ 
