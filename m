@@ -1,65 +1,60 @@
-From: Cody P Schafer <cody@linux.vnet.ibm.com>
-Subject: [PATCH v2 04/11] net ipset: use rbtree postorder iteration instead of opencoding
-Date: Wed,  6 Nov 2013 17:42:33 -0800
-Message-ID: <1383788572-25938-5-git-send-email-cody@linux.vnet.ibm.com>
-References: <1383788572-25938-1-git-send-email-cody@linux.vnet.ibm.com>
-Return-path: <netdev-owner@vger.kernel.org>
-In-Reply-To: <1383788572-25938-1-git-send-email-cody@linux.vnet.ibm.com>
-Sender: netdev-owner@vger.kernel.org
+From: =?ISO-8859-1?Q?Humberto_Juc=E1?= <betolj@gmail.com>
+Subject: Re: A question about routing cache (for load balancing).
+Date: Thu, 7 Nov 2013 07:26:36 -0300
+Message-ID: <CACuyg26oOJY7puRHkH9ZZC5QM--H=EBvZuAGk34WxBTS2mNzpQ@mail.gmail.com>
+References: <5278501B.4040406@ngtech.co.il>
+Mime-Version: 1.0
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :content-type;
+        bh=RRk/4WF7uEH2NsFiZul97S2WzRxm2PX+A4sRwbtoNbI=;
+        b=zPbKfp/xvYh1ZB4WgR+poq8abVQBPLP9vPTSWwNd6dq81ubtsxA9VHiFjpwmWz2X8L
+         XmGW9pMHZAFpdMV7hamq41AiwvOirz12IJ3GRoXGbk+m1s09L8G+oZ7ys27VHzRrsaYl
+         NC2nAKRuCqbfs9obh7MnftROESBSH5Pkq4jivm1UWdnQOQ0GSXh5MgvA3+/lW6VjUG80
+         sLi+LY+TJrOXh2pk1xoaII0CFYnqyuamskh00OW2iUqdwKgIvwzzDtpGOu6cfuAARERm
+         iTwR6Cdq+A39AUBtfNHOWVOBUJDUdV1U1iaT6bGpVQQPvSeTtB/djyKSw/mmOJxNIZxC
+         p/Rg==
+In-Reply-To: <5278501B.4040406@ngtech.co.il>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Andrew Morton <akpm@linux-foundation.org>, EXT4 <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>, rostedt@goodmis.org, "David S. Miller" <davem@davemloft.net>, Florian Westphal <fw@strlen.de>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Pablo Neira Ayuso <pablo@netfilter.org>, YOSHIFUJI Hideaki <yoshfuji@linux-ipv6.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Cody P Schafer <cody@linux.vnet.ibm.com>, coreteam@netfilter.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, Patrick McHardy <kaber@trash.net>
+To: Eliezer Croitoru <eliezer@ngtech.co.il>, netfilter@vger.kernel.org
 
-Use rbtree_postorder_for_each_entry_safe() to destroy the rbtree instead
-of opencoding an alternate postorder iteration that modifies the tree
+Hi,
 
-Signed-off-by: Cody P Schafer <cody@linux.vnet.ibm.com>
----
- net/netfilter/ipset/ip_set_hash_netiface.c | 27 ++++-----------------------
- 1 file changed, 4 insertions(+), 23 deletions(-)
+The cache control for load balance can be done with:
 
-diff --git a/net/netfilter/ipset/ip_set_hash_netiface.c b/net/netfilter/ipset/ip_set_hash_netiface.c
-index 7d798d5..99dba4c 100644
---- a/net/netfilter/ipset/ip_set_hash_netiface.c
-+++ b/net/netfilter/ipset/ip_set_hash_netiface.c
-@@ -45,31 +45,12 @@ struct iface_node {
- static void
- rbtree_destroy(struct rb_root *root)
- {
--	struct rb_node *p, *n = root->rb_node;
--	struct iface_node *node;
--
--	/* Non-recursive destroy, like in ext3 */
--	while (n) {
--		if (n->rb_left) {
--			n = n->rb_left;
--			continue;
--		}
--		if (n->rb_right) {
--			n = n->rb_right;
--			continue;
--		}
--		p = rb_parent(n);
--		node = rb_entry(n, struct iface_node, node);
--		if (!p)
--			*root = RB_ROOT;
--		else if (p->rb_left == n)
--			p->rb_left = NULL;
--		else if (p->rb_right == n)
--			p->rb_right = NULL;
-+	struct iface_node *node, *next;
- 
-+	rbtree_postorder_for_each_entry_safe(node, next, root, node)
- 		kfree(node);
--		n = p;
--	}
-+
-+	*root = RB_ROOT;
- }
- 
- static int
--- 
-1.8.4.2
+1. scheduled flush (to remove old entries)
+/proc/sys/net/ipv4/route/gc_interval
+
+2. Lifetime of each learned route
+/proc/sys/net/ipv4/route/gc_timeout
+
+If you want a aggressive load balance
+echo 1 > /proc/sys/net/ipv4/route/gc_interval
+echo 1 > /proc/sys/net/ipv4/route/gc_timeout
+
+But the ideal is not to change the gc_timeout.
+You certainly have problems with https.
+
+I tend to set gc_interval with 1 and  a higher value for gc_timeout.
+
+
+2013/11/4 Eliezer Croitoru <eliezer@ngtech.co.il>:
+> If it's not the right place please help out.
+> I have seen that there was a commit in the linux kernel that removes or
+> removes in a way the ipv4 route cache.
+> I Had couple questions to make sure I understood how it all chances from
+> with cache to without cache.
+> and also is there any level of routing cache that is still in place and
+> works??
+>
+> Thanks,
+> Eliezer
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
