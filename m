@@ -1,40 +1,65 @@
-From: Phil Oester <kernel@linuxace.com>
-Subject: Re: nftables install error
-Date: Tue, 5 Nov 2013 10:22:11 -0800
-Message-ID: <20131105182210.GA4427@home>
-References: <DUB116-W124BE6B6B01E0E32700AA42E3F10@phx.gbl>
-Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <DUB116-W124BE6B6B01E0E32700AA42E3F10@phx.gbl>
-Sender: netfilter-owner@vger.kernel.org
+From: Cody P Schafer <cody@linux.vnet.ibm.com>
+Subject: [PATCH v2 04/11] net ipset: use rbtree postorder iteration instead of opencoding
+Date: Wed,  6 Nov 2013 17:42:33 -0800
+Message-ID: <1383788572-25938-5-git-send-email-cody@linux.vnet.ibm.com>
+References: <1383788572-25938-1-git-send-email-cody@linux.vnet.ibm.com>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1383788572-25938-1-git-send-email-cody@linux.vnet.ibm.com>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Alex Chapman <ave_it_son1@hotmail.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Andrew Morton <akpm@linux-foundation.org>, EXT4 <linux-ext4@vger.kernel.org>, Jan Kara <jack@suse.cz>, rostedt@goodmis.org, "David S. Miller" <davem@davemloft.net>, Florian Westphal <fw@strlen.de>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, Pablo Neira Ayuso <pablo@netfilter.org>, YOSHIFUJI Hideaki <yoshfuji@linux-ipv6.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Cody P Schafer <cody@linux.vnet.ibm.com>, coreteam@netfilter.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, Patrick McHardy <kaber@trash.net>
 
-On Tue, Nov 05, 2013 at 05:48:01PM +0000, Alex Chapman wrote:
-> I have successfully installed nftables previously, but now running th=
-rough the installation on a second machine I get the following error du=
-ring nftables make:
->=20
-> =A0 CC =A0 =A0 =A0 =A0 =A0 =A0src/scanner.c
-> <stdout>: In function =E2nft_lex=E2:
-> <stdout>:1738:23: error: comparison between signed and unsigned integ=
-er expressions [-Werror=3Dsign-compare]
-> <stdout>: In function =E2nft__scan_bytes=E2:
-> <stdout>:3583:17: error: comparison between signed and unsigned integ=
-er expressions [-Werror=3Dsign-compare]
-> cc1: all warnings being treated as errors
-> Makefile.rules:15: recipe for target 'src/scanner.o' failed
-> make[1]: *** [src/scanner.o] Error 1
-> Makefile.rules:88: recipe for target 'src' failed
-> make: *** [src] Error 2
->=20
-> These are using the latest Kernel, libnftables and nftables source.
+Use rbtree_postorder_for_each_entry_safe() to destroy the rbtree instead
+of opencoding an alternate postorder iteration that modifies the tree
 
-See https://bugzilla.redhat.com/show_bug.cgi?id=3D993447.  Update your =
-flex.
+Signed-off-by: Cody P Schafer <cody@linux.vnet.ibm.com>
+---
+ net/netfilter/ipset/ip_set_hash_netiface.c | 27 ++++-----------------------
+ 1 file changed, 4 insertions(+), 23 deletions(-)
 
-Phil
+diff --git a/net/netfilter/ipset/ip_set_hash_netiface.c b/net/netfilter/ipset/ip_set_hash_netiface.c
+index 7d798d5..99dba4c 100644
+--- a/net/netfilter/ipset/ip_set_hash_netiface.c
++++ b/net/netfilter/ipset/ip_set_hash_netiface.c
+@@ -45,31 +45,12 @@ struct iface_node {
+ static void
+ rbtree_destroy(struct rb_root *root)
+ {
+-	struct rb_node *p, *n = root->rb_node;
+-	struct iface_node *node;
+-
+-	/* Non-recursive destroy, like in ext3 */
+-	while (n) {
+-		if (n->rb_left) {
+-			n = n->rb_left;
+-			continue;
+-		}
+-		if (n->rb_right) {
+-			n = n->rb_right;
+-			continue;
+-		}
+-		p = rb_parent(n);
+-		node = rb_entry(n, struct iface_node, node);
+-		if (!p)
+-			*root = RB_ROOT;
+-		else if (p->rb_left == n)
+-			p->rb_left = NULL;
+-		else if (p->rb_right == n)
+-			p->rb_right = NULL;
++	struct iface_node *node, *next;
+ 
++	rbtree_postorder_for_each_entry_safe(node, next, root, node)
+ 		kfree(node);
+-		n = p;
+-	}
++
++	*root = RB_ROOT;
+ }
+ 
+ static int
+-- 
+1.8.4.2
