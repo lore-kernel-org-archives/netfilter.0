@@ -1,58 +1,36 @@
-From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
-Subject: Re: A question about routing cache (for load balancing).
-Date: Thu, 7 Nov 2013 17:39:23 -0500
-Message-ID: <201311071739.23230.neal.p.murphy@alum.wpi.edu>
-References: <5278501B.4040406@ngtech.co.il> <CACuyg25xzoDS7wMyc8Ah=ZpoEvRoqbwgMMwA-vtetFFRU0Q9Wg@mail.gmail.com> <527C0E1A.6050003@ngtech.co.il>
-Reply-To: neal.p.murphy@alum.wpi.edu
+From: Jim Mellander <jmellander@lbl.gov>
+Subject: iptables as landmine subnet rejector
+Date: Thu, 7 Nov 2013 15:14:28 -0800
+Message-ID: <CADju=b7zs7uGryLgM-R9_zSohh7Vknr52LL75Xx28dQyeEXgGw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <527C0E1A.6050003@ngtech.co.il>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-On Thursday, November 07, 2013 05:03:06 PM Eliezer Croitoru wrote:
+Hi all:
 
-> OK so the next scenario:
-> Client: 192.168.1.1/24
-> 
-> Lan Router: 192.168.1.254/24
-> Lan Router wan side:192.168.100.254/24
-> 
-> Wan Router 1:192.168.100.1/24
-> Wan Router 1-wanip: 3.3.3.3
-> 
-> Wan Router 1:192.168.100.2/24
-> Wan Router 1-wanip: 4.4.4.4
+I'm working on replacing a freebsd box with custom C code with a linux box.
 
-This should be Wan Router 2?
+The code has a configured pcap filter, and does the following with
+traffic that matches the pcap filter.  BTW, the pcap filter is not
+complex, basically 'tcp and (net a.b.c.d/xx or net e.f.g.h/xx)', so
+the equivalent should be easily mappable to iptables rules.
 
-> 
-> Simple HTTP\SMTP\SSH\TCP server: 6.6.6.6
-> 
-> Client -> SYN --> Lan ROUTER: --> *WAN-router1*(which does NAT) --> BIG
-> INTERNET --> TCP server
-> 
-> TCP server SYN-ACK --> BIG INTERNET -> *WAN-router1*(NAT) --> Lan ROUTER
-> --> Client
-> 
-> Client -> ACK --> Lan ROUTER: --> *WAN-router2*(which does NAT) --> BIG
-> INTERNET --> TCP server
-> 
-> OK so now stop and feel the TCP server FW:
-> "Hmm what is this strange packet?? I think it's an invalid packet and
-> the sentence for this one is *DROP*"
-> In the application level it will be almost the same:
-> "Hmm I do not recall any existing connection from this IP so
-> *DROP*\ignore that"
-> 
+1. If TCP sends RST back as response (obviously not RST in response to RST)
+2. Responds to pings, ICMP echo response sent in response to icmp echo request.
 
-In order for you to do what you want to (balance the load--to arbitrary 
-internet hosts--across two links), don't you need a single NAT with a single 
-public address, and BGP (or equivalent) to inform the internet routers that 
-your single IP can be reached via either route?
+I starting porting the code, but it occurred to me that perhaps the
+entire job could be done in iptables using DNAT
 
-With the setup as described, can you only load balance at the conn level, not 
-at the packet level?
+1. Nat the tcp connection and issue a -j REJECT, or redirect to a
+closed port on the the responder host, which will send a RST.
+2. NAT the icmp echo request
+
+With a bit of experimentation, I'm fairly certain I could work this
+out, but some pointer to get me in the right direction would be
+appreciated.
+
+Thanks in advance.
