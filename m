@@ -1,36 +1,49 @@
-From: Jim Mellander <jmellander@lbl.gov>
-Subject: iptables as landmine subnet rejector
-Date: Thu, 7 Nov 2013 15:14:28 -0800
-Message-ID: <CADju=b7zs7uGryLgM-R9_zSohh7Vknr52LL75Xx28dQyeEXgGw@mail.gmail.com>
+From: =?ISO-8859-1?Q?Humberto_Juc=E1?= <betolj@gmail.com>
+Subject: Re: A question about routing cache (for load balancing).
+Date: Thu, 7 Nov 2013 20:53:57 -0300
+Message-ID: <CACuyg25f1m5dxUzLK+yJE2VeLqPAQMuWUrd_i_X7+MThJtNimA@mail.gmail.com>
+References: <5278501B.4040406@ngtech.co.il>
+	<CACuyg26oOJY7puRHkH9ZZC5QM--H=EBvZuAGk34WxBTS2mNzpQ@mail.gmail.com>
+	<527BC564.1000008@ngtech.co.il>
+	<CACuyg25xzoDS7wMyc8Ah=ZpoEvRoqbwgMMwA-vtetFFRU0Q9Wg@mail.gmail.com>
+	<527C0E1A.6050003@ngtech.co.il>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type;
+        bh=ByGC3fWXr3Q6lXxXcrc3lEWG1ba8YuaKgtUDZoLwcXw=;
+        b=ucete9ANykmqckKQwhKqQMsQ5f6uDKjA+ClQ6mZ/BdVeHKgsZApHIZpwLvbxg65XW3
+         gLbwrrEKl4PduWpQkIRdIRsJg4/GBzD3Kg8ooMu6DS7kBaY9JfhdpJl6Jj5D493KxGyK
+         zQLY8wgzZ6wR0ssvKr23BdfuDqjwMqoWdmXZ8Jwc7Vnwp7fCiJ5i2kIptCk5pQhhrxoK
+         SAgtYfTnq7abCfs7Af8/NSQqelMagB/VlXepyi8FC5m7H5cRiFYFWvG2TO2NzDYPYxTB
+         MeeN0wfdZ2Kg5Gu0mYtuWlnWb/28DEfxEYssfA2cvLLKmfaTG70nVqKB4CLLnTb1Y5Sj
+         TQKA==
+In-Reply-To: <527C0E1A.6050003@ngtech.co.il>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Eliezer Croitoru <eliezer@ngtech.co.il>
+Cc: netfilter@vger.kernel.org
 
-Hi all:
+2013/11/7 Eliezer Croitoru <eliezer@ngtech.co.il>:
+> This is the part when I got confused while trying to understand the "ipv4
+> route cache removed".
+> ip route show cache will show "blank".
+> but when I run ip route get 201 I see the result with "cache".
 
-I'm working on replacing a freebsd box with custom C code with a linux box.
+I was a little confused... rs
+Are you working with a *disabled routing cache kernel*?
 
-The code has a configured pcap filter, and does the following with
-traffic that matches the pcap filter.  BTW, the pcap filter is not
-complex, basically 'tcp and (net a.b.c.d/xx or net e.f.g.h/xx)', so
-the equivalent should be easily mappable to iptables rules.
+IMHO, as the Neal Murphy comment... the configuration that you showed
+does not allow balance per packet.
+You need the routing cache to avoid this problem. Just set gc_interval
+and gc_timeout values according to what you need.
 
-1. If TCP sends RST back as response (obviously not RST in response to RST)
-2. Responds to pings, ICMP echo response sent in response to icmp echo request.
+During 60sec (default) you get the same gateway (for all lookups).
+But each learned path will be maintained by gc_timeout sec.
+After this time, the system selects a new gateway and eliminates expired paths.
 
-I starting porting the code, but it occurred to me that perhaps the
-entire job could be done in iptables using DNAT
-
-1. Nat the tcp connection and issue a -j REJECT, or redirect to a
-closed port on the the responder host, which will send a RST.
-2. NAT the icmp echo request
-
-With a bit of experimentation, I'm fairly certain I could work this
-out, but some pointer to get me in the right direction would be
-appreciated.
-
-Thanks in advance.
+Just decrease these values and not set to 0.
