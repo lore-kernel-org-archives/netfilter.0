@@ -1,59 +1,80 @@
-From: =?ISO-8859-1?Q?Humberto_Juc=E1?= <betolj@gmail.com>
-Subject: Re: Multiple mangling
-Date: Wed, 13 Nov 2013 13:07:57 -0300
-Message-ID: <CACuyg25QY2xKLkd6vj6-jF6jFLJTxfAJF3XeLkeFLYgJwuyxkQ@mail.gmail.com>
-References: <1384202754.19072.44.camel@localhost>
+From: Jim Mellander <jmellander@lbl.gov>
+Subject: Re: iptables as landmine subnet rejector
+Date: Wed, 13 Nov 2013 09:58:13 -0800
+Message-ID: <CADju=b6PKTwOmO39YnHSd_6RxMfxgEDPV=jna-NzC2RSZYMSnQ@mail.gmail.com>
+References: <CADju=b7zs7uGryLgM-R9_zSohh7Vknr52LL75Xx28dQyeEXgGw@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :content-type;
-        bh=o8v24fduBa2eRwApH+pwV716uXM+2cf4Fu4MCzU0r80=;
-        b=jpB/a5aMNDqKp6nx/MDA5ji4ou3oOwjX3wKAV52TsBM7J0uOnjLHOUYnU/UM3G7Til
-         czh8pV4kCBVV5w7ufHdjob3IZM11OJOdEgQhVNpuLcmBg/nvPlOfnc7BEJPR98dPvHgh
-         cR2eA2mc+6vPh6qdUxa7vncqKHQBryO/DDz75wqWuwA1cfPZWWyBeEzQl7WMAj3LgvsK
-         oV7BPWMUXcQXX+yltaCKF+UKln7mwxOd3xgvF6igVdHVa2nvudF8hfSZlMMaZ/ftoJse
-         kmUf6wWIc79VtFyz4rDa+CvEPHpUWFpuzFNw+a8l9slDRM7isOf5fXMhX5sQ8+C9AKSR
-         v0Og==
-In-Reply-To: <1384202754.19072.44.camel@localhost>
+In-Reply-To: <CADju=b7zs7uGryLgM-R9_zSohh7Vknr52LL75Xx28dQyeEXgGw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Nikolai Lusan <nikolai@lusan.id.au>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Hi,
+Here's what I ended up doing
 
-The DSCP and CONNMARK/MARK targets are not decisive.
-The last rule processing determines what will be done with the packet.
+*nat
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+:PREROUTING ACCEPT [0:0]
 
-Both controls can coexist.
-The markings (MARK) are made internally (by conntrack) - its a local
-control (only your kernel works with this).
-And the DSCP is set in the IP header (in the address space of the TOS).
+# Just fwd to kernel to provide ping response
+-A PREROUTING -d a.b.c.d/xx -p icmp --icmp-type echo-request -j REDIRECT
 
-Thus, other routers on the network can open the ip packet and identify
-the DSCP value that you set.
+# Forward to a closed port
+-A PREROUTING -d a.b.c.d/xx-p tcp -j DNAT --to-destination myhost:aaaa
+
+.... and further down
+
+*filter
+# Here, we let the kernel send the RST from the closed port.
+-A INPUT -p tcp -d myhost --dport aaaa -j ACCEPT
+# This was a test to see if iptables would do a better job
+#-A INPUT -p tcp -d myhost --dport aaaa -j REJECT --reject-with tcp-reset
 
 
 
-2013/11/11 Nikolai Lusan <nikolai@lusan.id.au>:
-> Greetings all,
+
+....
+For tcp, I tried the simpler
+-A INPUT -d a.b.c.d/xx-p tcp -j REJECT --reject-with tcp-reset
+
+
+
+.... but that didn't.  I wonder if anyone has any suggestions on how
+to do this task more efficiently?  I'm happy with the ping response,
+but natting tcp to a closed port seems kludgy.
+
+Thanks in advance
+
+
+
+
+
+
+On Thu, Nov 7, 2013 at 3:14 PM, Jim Mellander <jmellander@lbl.gov> wrote:
+> Hi all:
 >
-> I am at the point in writing my "new and improved"(tm) firewall where I
-> am adding QoS. I am marking the packets in the MANGLE table with DSCP
-> values, but I also want to mark packets again so that my iproute2 qdiscs
-> can have an easier time handling them. This requires that I mark the
-> packets twice (i.e. once with "-j DSCP --set-dscp-class AF32", and again
-> with "-j MARK --set-mark 6").
+> I'm working on replacing a freebsd box with custom C code with a linux box.
 >
-> The question is: can I do this with consecutive rules in the MANGLE
-> table? What is the behaviour once a packet has matched a rule in one of
-> the MANGLE table chains? Does it continue to drop through? Does it
-> effect a RETURN?
+> The code has a configured pcap filter, and does the following with
+> traffic that matches the pcap filter.  BTW, the pcap filter is not
+> complex, basically 'tcp and (net a.b.c.d/xx or net e.f.g.h/xx)', so
+> the equivalent should be easily mappable to iptables rules.
 >
+> 1. If TCP sends RST back as response (obviously not RST in response to RST)
+> 2. Responds to pings, ICMP echo response sent in response to icmp echo request.
+>
+> I starting porting the code, but it occurred to me that perhaps the
+> entire job could be done in iptables using DNAT
+>
+> 1. Nat the tcp connection and issue a -j REJECT, or redirect to a
+> closed port on the the responder host, which will send a RST.
+> 2. NAT the icmp echo request
+>
+> With a bit of experimentation, I'm fairly certain I could work this
+> out, but some pointer to get me in the right direction would be
+> appreciated.
 >
 > Thanks in advance.
-> --
-> Nikolai Lusan <nikolai@lusan.id.au>
