@@ -1,25 +1,47 @@
-From: Phil Oester <kernel@linuxace.com>
-Subject: Re: iptables as landmine subnet rejector
-Date: Wed, 13 Nov 2013 14:17:12 -0800
-Message-ID: <20131113221711.GA9944@home>
-References: <CADju=b7zs7uGryLgM-R9_zSohh7Vknr52LL75Xx28dQyeEXgGw@mail.gmail.com>
- <CADju=b6PKTwOmO39YnHSd_6RxMfxgEDPV=jna-NzC2RSZYMSnQ@mail.gmail.com>
+From: Alex Chapman <ajchapman88@hotmail.co.uk>
+Subject: nftables jump <chain> target invalid argument
+Date: Thu, 14 Nov 2013 16:53:11 +0000
+Message-ID: <DUB109-W87FE1E5161E5C42ED6593AE1F80@phx.gbl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CADju=b6PKTwOmO39YnHSd_6RxMfxgEDPV=jna-NzC2RSZYMSnQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Jim Mellander <jmellander@lbl.gov>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Wed, Nov 13, 2013 at 09:58:13AM -0800, Jim Mellander wrote:
-> For tcp, I tried the simpler
-> -A INPUT -d a.b.c.d/xx-p tcp -j REJECT --reject-with tcp-reset
+Hi,
 
-If this isn't intended for the firewall itself, you should not
-add this to the INPUT chain.  Try FORWARD instead.
+When attempting to use the jump target to forward traffic to a newly cr=
+eated chain I get the following error:
 
-Phil
+[root@home nftables]# nft add rule filter forward ip daddr 9.9.9.9 jump=
+ new
+<cmdline>:1:1-49: Error: Could not process rule in batch: Invalid argum=
+ent
+add rule filter forward ip daddr 9.9.9.9 jump new
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+
+[root@home nftables]# nft list table filter
+table ip filter {
+=A0 =A0 =A0 =A0 chain input {
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0type filter hook input priority 0;
+=A0 =A0 =A0 =A0 }
+
+=A0 =A0 =A0 =A0 chain forward {
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0type filter hook forward priority 0;
+=A0 =A0 =A0 =A0 }
+
+=A0 =A0 =A0 =A0 chain output {
+=A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0 =A0type filter hook output priority 0;
+=A0 =A0 =A0 =A0 }
+
+=A0 =A0 =A0 =A0 chain new {
+=A0 =A0 =A0 =A0 }
+}
+
+
+Is this the correct use of the command?=A0
+
+Thanks! 		 	   		  
