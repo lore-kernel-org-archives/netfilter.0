@@ -1,29 +1,37 @@
-From: Phil Oester <kernel@linuxace.com>
+From: Antonio Prado <thinkofit@gmail.com>
 Subject: Re: iptables redirects packets to local proxy
-Date: Sat, 30 Nov 2013 12:17:50 -0800
-Message-ID: <20131130201749.GB23089@home>
-References: <529A42E6.7030504@gmail.com>
+Date: Sat, 30 Nov 2013 21:39:33 +0000
+Message-ID: <529A5B15.5030207@gmail.com>
+References: <529A42E6.7030504@gmail.com> <20131130201749.GB23089@home>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <529A42E6.7030504@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=message-id:date:from:user-agent:mime-version:to:cc:subject
+         :references:in-reply-to:content-type:content-transfer-encoding;
+        bh=a9V1vi5QDujUN7pPB0At7VadeZaSNNnEFZodZW4z8b8=;
+        b=02RgFp/jgO9ufsodiUEP+psTeS9lls6ccGIAhyvvegdMJiOhAtMOsRD1IGwkJWyBhM
+         NgaWz2E1Bfri29ct/tCFCpWj1dmgjn1wQ6zJLIUpf8kHiNqxrSSujlRAjI6oS5DjAd6s
+         tnICcMUPkZfevCEj2a+GBYvf2roBNF6GJqcDQu7lGGurAs2rfRbbbgBGeVdGzhQPA6fs
+         VfwWgKKc13FTN4qO/gXF3ZLEKiQ9heQfstW+XRYLCAp3VfG/YVTToVdtEvEp8j/w+elB
+         my5rsTQVwC4BGC49J/9+Y1ejJZZwdve/fhEhs0QgHacIrRk0haVErrIbrg6YtnoHyK/0
+         dk2Q==
+In-Reply-To: <20131130201749.GB23089@home>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Antonio Prado <thinkofit@gmail.com>
+To: Phil Oester <kernel@linuxace.com>
 Cc: ilic_68@yopmail.com, netfilter@vger.kernel.org
 
-On Sat, Nov 30, 2013 at 07:56:22PM +0000, Antonio Prado wrote:
-> On 30/11/13 17:40, Phil Oester wrote:
-> > Use -j REDIRECT --to 12345
-> 
-> If I get it correctly, the OP wants to redirect to 127.0.0.1:12345 after
-> having changed destination address and port to the packets.
-> Is that possible anyway?
+On 30/11/13 20:17, Phil Oester wrote:
+> Seems the socks proxy should be configured to send the traffic to y:40000.
 
-You have to pick where you want to change the destination to.  Either x:12345
-or y:40000 - can't have it both ways.  Seems the socks proxy should be configured
-to send the traffic to y:40000.  
+Right, without using iptables at all for redirecting, socat can do it all.
 
-Phil
+For example:
+socat TCP4-LISTEN:20000,reuseaddr,fork \
+SOCKS4:127.0.0.1:A.B.C.D:40000,socksport=12345
+
+--
+antonio
