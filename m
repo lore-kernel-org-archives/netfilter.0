@@ -1,49 +1,40 @@
-From: Michal Nazarewicz <mpn@google.com>
-Subject: [PATCH] netfilter: remove unused variable
-Date: Fri, 29 Nov 2013 18:03:11 +0100
-Message-ID: <1385744591-9743-1-git-send-email-mpn@google.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20120113;
-        h=from:to:cc:subject:date:message-id;
-        bh=QYTerNV5neeVC1G+ecmyKa/G6M0dWIHTtpzYkchfHYE=;
-        b=eRACcC7r7rmxoCakXdCBhs6ANzp6jIaFYTMsvDiqQQGQagSWU4Pg0ipAAR7J9v0NUx
-         2nPMgx551C/heHnsr9onFUdWdvpyLm/EhPDdO7FxaI0uuO4KN57ofSufJoo5UTrVnKID
-         IOSke6KAqVcPfbhEEM+OIZ6xh2d9nnel+uYWneQPycSuNl9Yv7QaHQUA6Rly/ZLH7/YM
-         ZR3Ar3vaFY4E2jzHbNn+BXzFjyoxpZ7HUCm/xBfJDyRyuNOMMDqh4SImQEk00VRW+mX9
-         zw92CyL+9E1nuuMGbN5okm0VLhYHgdvBaho/e6OUq7ZKUk1kAAUF/Ldmhy4BVwtSrVw1
-         hx9Q==
-Sender: linux-kernel-owner@vger.kernel.org
+From: ilic_68@yopmail.com
+Subject: iptables redirects packets to local proxy
+Date: Sat, 30 Nov 2013 09:46:06 -0700
+Message-ID: <201311301646.rAUGk6rg005227@p3slhssl14.shr.phx3.secureserver.net>
+Mime-Version: 1.0
+Content-Type: multipart/mixed;
+ boundary="------------37644e13935173f9d80cd76ab0c6d80e"
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
+
+This is a multi-part message in MIME format.
+--------------37644e13935173f9d80cd76ab0c6d80e
+Content-Type: text/plain; charset=us-ascii
 Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>
-Cc: netfilter@vger.kernel.org, linux-kernel@vger.kernel.org
 
-From: Michal Nazarewicz <mina86@mina86.com>
+Hello,
 
-The nfmsg variable is not used (except in sizeof operator which does
-not care about its value) between the first and second time it is
-assigned the value.  Furthermore, nlmsg_data has no side effects, so
-the whole assignment insruction can be safely removed.
+consider this scenario:
 
-Signed-off-by: Michal Nazarewicz <mina86@mina86.com>
----
- net/netfilter/nf_tables_api.c | 1 -
- 1 file changed, 1 deletion(-)
+PC1 wants to telnet to SRV1 tcp 40000.
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index dcddc49..ebf2f96 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -2501,7 +2501,6 @@ static int nf_tables_dump_set(struct sk_buff *skb, struct netlink_callback *cb)
- 	u32 portid, seq;
- 	int event, err;
- 
--	nfmsg = nlmsg_data(cb->nlh);
- 	err = nlmsg_parse(cb->nlh, sizeof(*nfmsg), nla, NFTA_SET_ELEM_LIST_MAX,
- 			  nft_set_elem_list_policy);
- 	if (err < 0)
--- 
-1.8.4.1
+I would like to put a proxy in the middle that receives the
+connection, rewrites the destination, sends packet to a local socks proxy (redsocks).
+
+So the scenario would be:
+
+PC1 --> PROXY tcp 20000 [iptables rewrites destination to SRV tcp 40000 --> redsocks 127.0.0.1 tcp 12345] --> SRV1 tcp 40000
+
+I tried:
+iptables -t nat -A PREROUTING -p tcp -s $MYSOURCEIP --dport 20000 -j DNAT --to $SRV1:40000
+
+It works, but I know it doesn't go through redsocks.
+I just changed the destination for the packets but how can I force them to flow into redsocks?
+
+Thank you for any help, Ilic
+
+
+--------------37644e13935173f9d80cd76ab0c6d80e--
