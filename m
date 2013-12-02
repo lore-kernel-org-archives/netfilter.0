@@ -1,37 +1,45 @@
-From: Antonio Prado <thinkofit@gmail.com>
-Subject: Re: iptables redirects packets to local proxy
-Date: Sat, 30 Nov 2013 21:39:33 +0000
-Message-ID: <529A5B15.5030207@gmail.com>
-References: <529A42E6.7030504@gmail.com> <20131130201749.GB23089@home>
+From: Olaf Zaplinski <oz42@oz42.eu>
+Subject: packets rejected as invalid, =?UTF-8?Q?why=3F?=
+Date: Mon, 02 Dec 2013 14:43:14 +0100
+Message-ID: <1c23a9c49af4cca75004123c0166f546@mail.zaplinski.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=message-id:date:from:user-agent:mime-version:to:cc:subject
-         :references:in-reply-to:content-type:content-transfer-encoding;
-        bh=a9V1vi5QDujUN7pPB0At7VadeZaSNNnEFZodZW4z8b8=;
-        b=02RgFp/jgO9ufsodiUEP+psTeS9lls6ccGIAhyvvegdMJiOhAtMOsRD1IGwkJWyBhM
-         NgaWz2E1Bfri29ct/tCFCpWj1dmgjn1wQ6zJLIUpf8kHiNqxrSSujlRAjI6oS5DjAd6s
-         tnICcMUPkZfevCEj2a+GBYvf2roBNF6GJqcDQu7lGGurAs2rfRbbbgBGeVdGzhQPA6fs
-         VfwWgKKc13FTN4qO/gXF3ZLEKiQ9heQfstW+XRYLCAp3VfG/YVTToVdtEvEp8j/w+elB
-         my5rsTQVwC4BGC49J/9+Y1ejJZZwdve/fhEhs0QgHacIrRk0haVErrIbrg6YtnoHyK/0
-         dk2Q==
-In-Reply-To: <20131130201749.GB23089@home>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=oz42.eu; s=20131022;
+	t=1385991794; bh=9NvjARX0lGOtcdsFtGm8Uqr6EcWRy4hMgAitn0QEHa0=;
+	h=Date:From:To:Subject;
+	b=PsTYaLGtbDaK3Hjxvl4Ofrbjz5V9SCRW6B77ihCRFmX1KRrQem4tEO9xr1PXPnORz
+	 nVVlefUH0eQ6PrLY8Id7Rj7A0zNpzUXM3nu8ETKj15YqqjfcTvnoF2b4j0E1W4xuqV
+	 bQ70/XwFj+diTmFFZhQBLaQTx/jeLNMRNk09aI6dOm304u8W5MWOqsuY+gfg0KIDKW
+	 X1m6+N+26iF2Y5+q4FEU4ksFYBevmTm09PZ6FBnk7CL2mrkk5tpbrMv1wlQ4FqpFPL
+	 +RCpc03H1Nyc2j24VbTM+jpCcdRggMzHg/0siur3bjyFa4OPbhFC0nckwnMY0Og+5e
+	 vT21Igk/fAY2Q==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Phil Oester <kernel@linuxace.com>
-Cc: ilic_68@yopmail.com, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On 30/11/13 20:17, Phil Oester wrote:
-> Seems the socks proxy should be configured to send the traffic to y:40000.
+Hello all,
 
-Right, without using iptables at all for redirecting, socat can do it all.
+since Dec. 1st I see 60 rejected packets from well known and "good" 
+SMTP hosts:
 
-For example:
-socat TCP4-LISTEN:20000,reuseaddr,fork \
-SOCKS4:127.0.0.1:A.B.C.D:40000,socksport=12345
+Dec  2 12:12:02 binky kernel: [873572.327219] iptables-INVALID IN=eth0 
+OUT= MAC=00:f1:70:00:58:f0:fc:fb:fb:2d:55:48:08:00 SRC=213.165.67.104 
+DST=109.75.188.214 LEN=40 TOS=0x00 PREC=0x00 TTL=58 ID=0 DF PROTO=TCP 
+SPT=25 DPT=37022 SEQ=3171195917 ACK=0 WINDOW=0 RES=0x00 RST URGP=0
 
---
-antonio
+Why are these logged and rejected?
+
+The rules:
+
+$IPTABLES -A INPUT -m conntrack --ctstate INVALID -m limit \
+--limit 3/s -j LOG --log-prefix="iptables-INVALID " \
+--log-tcp-sequence --log-tcp-options
+
+$IPTABLES -A INPUT -m conntrack --ctstate INVALID -j DROP
+
+I think this packet was part of the TCP closing handshake, so it should 
+have been ESTABLISHED and not INVALID. Am I wrong?
+
+Olaf
