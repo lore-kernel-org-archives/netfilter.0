@@ -1,27 +1,47 @@
-From: David Miller <davem@davemloft.net>
-Subject: Re: [net 4/6] netfilter: Fix FSF address in file headers
-Date: Fri, 06 Dec 2013 12:39:14 -0500 (EST)
-Message-ID: <20131206.123914.797180241139683237.davem@davemloft.net>
-References: <1386350024-25308-1-git-send-email-jeffrey.t.kirsher@intel.com>
-	<1386350024-25308-4-git-send-email-jeffrey.t.kirsher@intel.com>
+From: Josh Cepek <josh.cepek@usa.net>
+Subject: iptables-restore BNF description
+Date: Fri, 06 Dec 2013 15:24:55 -0600
+Message-ID: <l7tfat$534$1@ger.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1386350024-25308-4-git-send-email-jeffrey.t.kirsher@intel.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
-To: jeffrey.t.kirsher@intel.com
-Cc: netdev@vger.kernel.org, gospo@redhat.com, sassmann@redhat.com, netfilter@vger.kernel.org, pablo@netfilter.org, kaber@trash.net, kadlec@blackhole.kfki.hu
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-From: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
-Date: Fri,  6 Dec 2013 09:13:42 -0800
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA1
 
-> Several files refer to an old address for the Free Software Foundation
-> in the file header comment.  Resolve by replacing the address with
-> the URL <http://www.gnu.org/licenses/> so that we do not have to keep
-> updating the header comments anytime the address changes.
-> 
-> Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+I've created a BNF-style description and associated Readme for the
+iptables-restore file syntax. I'm not aware of a similar project, and hope that
+this can be useful enough as a reference for others.
 
-Applied.
+The project is available here: https://github.com/QueuingKoala/iptables-bnf
+
+While much of the restore-file syntax is apparent to users familiar with
+Netfilter, I think it's useful to supply such information as a reference.
+Advanced users may also find interesting ways to use some of the less-common
+features as well.
+
+Perhaps eventually this information could be included in official distributions
+as a formal reference. If there are improvements or errata feel free to let me
+know or open a pull request.
+
+- --
+Josh Cepek
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2.0.20 (GNU/Linux)
+
+iQGcBAEBAgAGBQJSokCnAAoJENcx2Xpgb9Rj+vAL/iDVfjhJmLxPS+G4mRhbSwry
+qlM2fqApceo81L7pxkC5Rld0bS+fDjSAd+fpcDFojAa3XHJQoqj7hYixQy4qEvX1
+UjNMNf89C0KysojxiFb8qx25/EEu+d5U5+kwS1IWPg4oFznVYsRn2DbH07rpJbuX
+0o+sogJc6sxg628LkZgy4LfVwKDOwSc49dgGylUR0XiqTlLtfO6TJdxOtbynrtmM
+eUYlVmKj+ePrCzud2bwxLMhp22xXiq5wK5rwajx+aJJ7ebe1UD4bTQZ+dCxxM8OZ
+9zIsrpMmLJBBOF/AyE/zxpMMgzqH4PNXUK33llNnC2h1h/V03ZaNNtIA0p1yFd/T
+GrnRE6hv6TbpFLmZesv3zfuQoZfzJNJwzQFg7VGtBDEME2IqhWYJ6P1zZx0xWrJA
+ckb1DzQOE8xL56qmDdX70YOiM452v4zf1B0nA9NafP8uoFAy67YOPnwnuBv1QAFu
+IvkZ4iDUmpFwPRpEnzsMOi0KCJ7kFcSL8bhAgl2TIQ==
+=h8Hb
+-----END PGP SIGNATURE-----
+
