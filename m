@@ -1,50 +1,105 @@
-From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: packets rejected as invalid, why?
-Date: Mon, 02 Dec 2013 22:29:45 +0100
-Message-ID: <529CFBC9.3000604@plouf.fr.eu.org>
-References: <1c23a9c49af4cca75004123c0166f546@mail.zaplinski.de>
-Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1c23a9c49af4cca75004123c0166f546@mail.zaplinski.de>
-Sender: netfilter-owner@vger.kernel.org
+From: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+Subject: [net 4/6] netfilter: Fix FSF address in file headers
+Date: Fri,  6 Dec 2013 09:13:42 -0800
+Message-ID: <1386350024-25308-4-git-send-email-jeffrey.t.kirsher@intel.com>
+References: <1386350024-25308-1-git-send-email-jeffrey.t.kirsher@intel.com>
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1386350024-25308-1-git-send-email-jeffrey.t.kirsher@intel.com>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: davem@davemloft.net
+Cc: Jeff Kirsher <jeffrey.t.kirsher@intel.com>, netdev@vger.kernel.org, gospo@redhat.com, sassmann@redhat.com, netfilter@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
 
-Hello,
+Several files refer to an old address for the Free Software Foundation
+in the file header comment.  Resolve by replacing the address with
+the URL <http://www.gnu.org/licenses/> so that we do not have to keep
+updating the header comments anytime the address changes.
 
-Olaf Zaplinski a =E9crit :
->=20
-> since Dec. 1st I see 60 rejected packets from well known and "good"=20
-> SMTP hosts:
->=20
-> Dec  2 12:12:02 binky kernel: [873572.327219] iptables-INVALID IN=3De=
-th0=20
-> OUT=3D MAC=3D00:f1:70:00:58:f0:fc:fb:fb:2d:55:48:08:00 SRC=3D213.165.=
-67.104=20
-> DST=3D109.75.188.214 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D58 ID=3D0 =
-DF PROTO=3DTCP=20
-> SPT=3D25 DPT=3D37022 SEQ=3D3171195917 ACK=3D0 WINDOW=3D0 RES=3D0x00 R=
-ST URGP=3D0
->=20
-> Why are these logged and rejected?
+CC: netfilter@vger.kernel.org
+CC: Pablo Neira Ayuso <pablo@netfilter.org>
+CC: Patrick McHardy <kaber@trash.net>
+CC: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Signed-off-by: Jeff Kirsher <jeffrey.t.kirsher@intel.com>
+---
+ include/uapi/linux/netfilter/xt_osf.h | 3 +--
+ net/bridge/netfilter/ebt_vlan.c       | 3 +--
+ net/netfilter/ipvs/ip_vs_nfct.c       | 3 +--
+ net/netfilter/xt_connmark.c           | 3 +--
+ net/netfilter/xt_osf.c                | 3 +--
+ 5 files changed, 5 insertions(+), 10 deletions(-)
 
-Because your rules below say so.
-
-> The rules:
->=20
-> $IPTABLES -A INPUT -m conntrack --ctstate INVALID -m limit \
-> --limit 3/s -j LOG --log-prefix=3D"iptables-INVALID " \
-> --log-tcp-sequence --log-tcp-options
->=20
-> $IPTABLES -A INPUT -m conntrack --ctstate INVALID -j DROP
->=20
-> I think this packet was part of the TCP closing handshake, so it shou=
-ld=20
-> have been ESTABLISHED and not INVALID. Am I wrong?
-
-RST is not part of the normal TCP closing handshake (FIN+ACK, FIN+ACK,
-ACK). My guess is that this packet is related to an old connection whic=
-h
-is considered already closed by conntrack.
+diff --git a/include/uapi/linux/netfilter/xt_osf.h b/include/uapi/linux/netfilter/xt_osf.h
+index 18afa49..5d66cae 100644
+--- a/include/uapi/linux/netfilter/xt_osf.h
++++ b/include/uapi/linux/netfilter/xt_osf.h
+@@ -13,8 +13,7 @@
+  * GNU General Public License for more details.
+  *
+  * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++ * along with this program; if not, see <http://www.gnu.org/licenses/>.
+  */
+ 
+ #ifndef _XT_OSF_H
+diff --git a/net/bridge/netfilter/ebt_vlan.c b/net/bridge/netfilter/ebt_vlan.c
+index eae67bf..8d3f8c7 100644
+--- a/net/bridge/netfilter/ebt_vlan.c
++++ b/net/bridge/netfilter/ebt_vlan.c
+@@ -14,8 +14,7 @@
+  * GNU General Public License for more details.
+  *
+  * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ * along with this program; if not, see <http://www.gnu.org/licenses/>.
+  */
+ 
+ #include <linux/if_ether.h>
+diff --git a/net/netfilter/ipvs/ip_vs_nfct.c b/net/netfilter/ipvs/ip_vs_nfct.c
+index c8beafd..d5f4151 100644
+--- a/net/netfilter/ipvs/ip_vs_nfct.c
++++ b/net/netfilter/ipvs/ip_vs_nfct.c
+@@ -19,8 +19,7 @@
+  * GNU General Public License for more details.
+  *
+  * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ * along with this program; if not, see <http://www.gnu.org/licenses/>.
+  *
+  *
+  * Authors:
+diff --git a/net/netfilter/xt_connmark.c b/net/netfilter/xt_connmark.c
+index 7278145..69f78e9 100644
+--- a/net/netfilter/xt_connmark.c
++++ b/net/netfilter/xt_connmark.c
+@@ -17,8 +17,7 @@
+  * GNU General Public License for more details.
+  *
+  * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
++ * along with this program; if not, see <http://www.gnu.org/licenses/>.
+  */
+ 
+ #include <linux/module.h>
+diff --git a/net/netfilter/xt_osf.c b/net/netfilter/xt_osf.c
+index 647d989..7174611 100644
+--- a/net/netfilter/xt_osf.c
++++ b/net/netfilter/xt_osf.c
+@@ -13,8 +13,7 @@
+  * GNU General Public License for more details.
+  *
+  * You should have received a copy of the GNU General Public License
+- * along with this program; if not, write to the Free Software
+- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
++ * along with this program; if not, see <http://www.gnu.org/licenses/>.
+  */
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ #include <linux/module.h>
+-- 
+1.8.3.1
