@@ -1,29 +1,34 @@
-From: "Partnership Request" <postmaster@unimetro.ed.ao>
-Subject: Profitable & Important
-Date: Sat, 7 Dec 2013 15:30:21 -0200
-Message-ID: <d8b617ce7412aa7ec861d156ccc4ca13.squirrel__9478.10336151651$1386445373$gmane$org@41.221.245.42>
-Reply-To: wa60shu@qq.com
+From: "Nicki P." <xastx@gmx.de>
+Subject: ipt_SYNPROXY: kernel panic with nullpointer dereference at
+ dst_ifdown()
+Date: Sun, 8 Dec 2013 07:59:17 +0100
+Message-ID: <645a249c0e76a622fb7bfdc35bd19dc1.squirrel@webmail.interwerk.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: 
+To: netfilter@vger.kernel.org
 
+Hi,
 
-Good day,
+when activating ipt_SYNPROXY with:
+iptables -t raw -A PREROUTING -p tcp -d 1.2.3.4 --dport 80 --tcp-flags
+SYN,ACK,RST,FIN SYN -j SYNPROXY
 
-I have a business proposal which will be of
-great benefit to you. Contact me for details
-through:
+and sending a SYN packet to port 80:
+hping3 -S -d 64 1.2.3.4 -p 80
 
-Email: wa60shu@qq.com
+I get kernel panic:
+http://goo.gl/L6dCz6
 
-I await your prompt response.
+I'm using kernel v3.12.2 and iptables v1.4.21. Am I doing something wrong,
+or is it a bug?
 
-Thanks.
-wa60shu@qq.com
+thank you for help beforehand :)
 
+greetings,
+nicki
 
 
