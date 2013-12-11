@@ -1,70 +1,58 @@
-From: Chris Elston <celston@katalix.com>
-Subject: Curious breakage with nested prio qdiscs
-Date: Mon, 09 Dec 2013 11:30:13 +0000
-Message-ID: <1386588613.6112.4.camel@Desktop>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+From: Joe Perches <joe@perches.com>
+Subject: [PATCH -next 0/3] seq_printf/puts/putc: Start to convert to return void
+Date: Tue, 10 Dec 2013 21:12:41 -0800
+Message-ID: <cover.1386738050.git.joe@perches.com>
+Return-path: <linux-fsdevel-owner@vger.kernel.org>
+Sender: linux-fsdevel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: Alexander Viro <viro@zeniv.linux.org.uk>
+Cc: Kees Cook <keescook@chromium.org>, linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, b.a.t.m.a.n@lists.open-mesh.org
 
-Hi all,
+Many uses of the return value of seq_printf/seq_puts/seq_putc are
+incorrect.  Many assume that the return value is the number of
+chars emitted into a buffer like printf/puts/putc.
 
-This was posted to the LARTC list a few days ago, but received no
-response. I hope that it's not bad form to cross-post, I'm hoping that
-this list has a wider audience.
+It would be better to make the return value of these functions void
+to avoid these misuses.
 
----------
+Start to do so.
+Convert seq_overflow to a public function from a static function.
 
-Background: I've implemented a system which requires distinct TBF limits
-for a large number of different user sessions. Therefore I'm using two
-layers of nested prio qdiscs, each with 16 bands - giving a maximum
-total of 256 TBF user session limits. Where packets get queued is
-determined by iptables packet marks and tc filters (this bit is not
-immediately relevant)
+Remove the return uses of seq_printf/seq_puts/seq_putc from net.
+Add a seq_overflow function call instead.
 
-I've discovered either a bug, or a major misunderstanding on my part :) 
+Joe Perches (3):
+  seq: Add a seq_overflow test.
+  batman-adv: Use seq_overflow
+  netfilter: Use seq_overflow
 
-The following commands:
+ fs/seq_file.c                                      | 15 ++++----
+ include/linux/seq_file.h                           |  2 +
+ include/net/netfilter/nf_conntrack_acct.h          |  3 +-
+ net/batman-adv/gateway_client.c                    | 25 ++++++------
+ net/ipv4/netfilter/nf_conntrack_l3proto_ipv4.c     |  6 ++-
+ .../netfilter/nf_conntrack_l3proto_ipv4_compat.c   | 42 +++++++++++++--------
+ net/ipv6/netfilter/nf_conntrack_l3proto_ipv6.c     |  6 ++-
+ net/ipv6/netfilter/nf_conntrack_proto_icmpv6.c     | 10 +++--
+ net/netfilter/nf_conntrack_acct.c                  | 11 +++---
+ net/netfilter/nf_conntrack_expect.c                |  4 +-
+ net/netfilter/nf_conntrack_proto_dccp.c            | 12 ++++--
+ net/netfilter/nf_conntrack_proto_gre.c             | 15 +++++---
+ net/netfilter/nf_conntrack_proto_sctp.c            | 12 ++++--
+ net/netfilter/nf_conntrack_proto_tcp.c             | 11 ++++--
+ net/netfilter/nf_conntrack_proto_udp.c             |  7 ++--
+ net/netfilter/nf_conntrack_proto_udplite.c         |  7 ++--
+ net/netfilter/nf_conntrack_standalone.c            | 44 +++++++++++++---------
+ net/netfilter/nf_log.c                             | 26 ++++++-------
+ net/netfilter/nfnetlink_log.c                      | 12 +++---
+ net/netfilter/nfnetlink_queue_core.c               | 14 ++++---
+ net/netfilter/x_tables.c                           |  8 ++--
+ net/netfilter/xt_hashlimit.c                       | 34 +++++++++--------
+ 22 files changed, 191 insertions(+), 135 deletions(-)
 
-tc qdisc add dev eth1 root handle 1: prio bands 16
-tc qdisc add dev eth1 parent 1:2 handle 11:2 prio bands 16
-tc qdisc add dev eth1 parent 11:2 handle 111: tbf rate 65536 burst 15000
-latency 70
-tc qdisc del dev eth1 parent 11:2 handle 111: tbf rate 65536 burst 15000
-latency 70
-
-prevent any traffic from leaving eth1 (tried on kernels 3.8.19 and
-3.2.56)
-
-So that's 2 nested prio qdiscs: one at the root, and one in the second
-band of the root prio qdisc/
-
-Then I add a TBF to the second band of the nested prio qdisc and
-immediately remove it.  This leaves just the nested prio qdiscs in
-place, and me unable to ping anything across eth1.
-
-It seems to matter that the handle of the nested prio qdisc is 11:2 -
-the values 11:1 and 11:3 don't cause the same problem.
-
-It seems to matter that the nested prio qdisc is in band 2 of the root
-prio qdisc - if I try the same with the nested prio qdisc in 1:1 and 1:3
-the problem doesn't occur.
-
-Problems only start when the TBF is deleted - it is possible to do all
-the add commands and the interface still works.
-
-One would assume that the delete command simply reverses the add
-command, but it seems to have some side effect :(
-
-Any thoughts?
-
-Cheers,
-
-Chris.
-
-
-
+-- 
+1.8.1.2.459.gbcd45b4.dirty
 
