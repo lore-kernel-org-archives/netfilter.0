@@ -1,7 +1,7 @@
 From: Igor S <nat4592@scarlet.be>
 Subject: Re: SNAT range does not use unique IP
-Date: Tue, 17 Dec 2013 12:05:53 +0100
-Message-ID: <c49582c73d9f5580c01ce5df893044a8@scarlet.be>
+Date: Tue, 17 Dec 2013 12:07:16 +0100
+Message-ID: <ee051910e29a3de0916a5356adb38517@scarlet.be>
 References: <e7ab2e194832d5b3253cf7d6cdde9f63@scarlet.be>
  <20131212223443.GA2211@home> <dbbe65eac46a94f6da1bf3b22ec75b34@scarlet.be>
  <20131213172115.GB3067@home> <b52fefde900473c435ec56a50c2f5242@scarlet.be>
@@ -10,13 +10,13 @@ Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=scarlet.be;
-	s=scarlet; t=1387278354;
+	s=scarlet; t=1387278437;
 	bh=cXv9pMxNw9NFUM8wuUi1wsCxI87CEmcV988ZwasPOWA=;
 	h=MIME-Version:Content-Type:Content-Transfer-Encoding:Date:From:To:
 	 Cc:Subject:In-Reply-To:References:Message-ID;
-	b=uxqxeKzgB4w9/qeeQjxIbM0k0QQcFjqxCWFCsV5/zHF8ww8SYgulHLEXvp8H7TgXW
-	 KZFi/HAvuCfyc5bXfEOujciGre5eTbcldvaCRy0lI8DGei7n+FiDRzOGHmURrVJ4hR
-	 3HBc9YbKrlSKJ8mZFqbtBiHBfzMWU1KcK/JKWuUM=
+	b=QoB5hceZ8EWaG7UTHiyT2uy2QeAAL2YPz+yJQ5ia2YJGzr1KV55WC5zF5hCuHAe5n
+	 t/sS+8mHfUy//OMZCZjInvwjP0dKa4JCz9i3hNoF5qzC5DmvkTI+Y2RA73HltKg7wa
+	 GNVFe1nV3Oe8gjwe3DUmjvZXWaOCEIH7Aa1juxEU=
 In-Reply-To: <52AEC675.4020702@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
