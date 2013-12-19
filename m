@@ -1,57 +1,50 @@
-From: Phil Oester <kernel@linuxace.com>
-Subject: Re: Bug in owner module
-Date: Wed, 18 Dec 2013 13:15:02 -0800
-Message-ID: <20131218211501.GA21881@home>
-References: <52ADB534.7020700@zensecurity.su>
- <20131215163832.GA4337@home>
- <52ADE190.8010405@zensecurity.su>
+From: Noel Butler <noel.butler@ausics.net>
+Subject: BUG ip6tables and helper
+Date: Thu, 19 Dec 2013 17:35:38 +1000
+Message-ID: <1387438538.10463.0.camel@tardis>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-rhTMraGRCNsCWPk3ahfw"
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <52ADE190.8010405@zensecurity.su>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: ZenSecurity <mailto@zensecurity.su>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Sun, Dec 15, 2013 at 08:06:24PM +0300, ZenSecurity wrote:
-> Kernel version: Linux lab 3.2.0-4-amd64 #1 SMP Debian 3.2.51-1 x86_64
-> GNU/Linux
-> 
-> # iptables -t nat -L
-> DNAT       tcp  --  domain.com   anywhere             owner GID match
-> usergroup to: X.X.X.X:80
-> 
-> Rule:
-> iptables -t nat -A OUTPUT -o eth0 -p tcp -s X.X.X.X -m owner --gid-owner
-> usergroup -j DNAT --to-destination X.X.X.X:80;
-> 
-> Doesn't match (usergroup exist).
 
-Works fine here, on kernel.org kernel.
+--=-rhTMraGRCNsCWPk3ahfw
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-[root@f20_main ~]# uname -r
-3.13.0-rc1+
-[root@f20_main ~]# iptables -t nat -A OUTPUT -m owner --gid-owner 1000
-[root@f20_main ~]# su - phil
-[phil@f20_main ~]$ id
-uid=1000(phil) gid=1000(phil) groups=1000(phil)
-[phil@f20_main ~]$ ping -c1 10.10.10.1
-PING 10.10.10.1 (10.10.10.1) 56(84) bytes of data.
-64 bytes from 10.10.10.1: icmp_seq=1 ttl=64 time=1.02 ms
+Hi Pablo,
 
---- 10.10.10.1 ping statistics ---
-1 packets transmitted, 1 received, 0% packet loss, time 0ms
-rtt min/avg/max/mdev = 1.022/1.022/1.022/0.000 ms
-[phil@f20_main ~]$ logout
-[root@f20_main ~]# iptables -t nat -nvL OUTPUT
-Chain OUTPUT (policy ACCEPT 1 packets, 84 bytes)
- pkts bytes target     prot opt in     out     source               destination         
-    1    84            all  --  *      *       0.0.0.0/0            0.0.0.0/0            owner GID match 1000
+Bug with ip6tables and helpers
 
-I suggest filing a bug with Debian bugzilla if you suspect a problem in a Debian
-kernel.  
+-j CT --helper irc
 
-Phil
+ip6tables: No chain/target/match by that name.
+
+
+This *does* work with iptables
+
+
+On 22/11/2013 22:12, Pablo Neira Ayuso wrote:
+> Hi! The Netfilter project proudly presents: iptables 1.4.21
+
+
+--=-rhTMraGRCNsCWPk3ahfw
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
+
+iQEcBAABAgAGBQJSsqHFAAoJECg/hgl/0DbHTZUIAKjJbQCnM9yGLZaPpaH8tpmu
+xA8uDcGPmsKGKZ17TUq19JcFk11PiHROdFELaxLN/+o28NMHKf5w9rqDrWbED7Ji
+hKcLIChi48AZs3rWwSsA8q+lyIpow06jxxEBEhWX0cmQGxFNk0QALPQRwh0nvZrS
+H0myHwV/tx5KASS2A0lRVlNcyg+ML/CtMiUjO/nNZQgMizVcXBhP8bUTPjOVC2im
+UD9MzY8YX5bTJYtuEmgpnwzy4Jpr/yAP/S6uO0GaWxniPHtlJRgPC3QJnULvemzX
+vgmjCavt4FXjL89IAo8wuOuMxFUXpgV/ydQkVpPJHFqrx2sCZj9aH4bNbyQk9h8=
+=GeLP
+-----END PGP SIGNATURE-----
+
+--=-rhTMraGRCNsCWPk3ahfw--
+
