@@ -1,99 +1,76 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH 1/1] netfilter: xtables: add quota support to nfacct
-Date: Thu, 19 Dec 2013 20:43:39 +0100
-Message-ID: <20131219194339.GA4561@localhost>
-References: <1386780798-24374-1-git-send-email-mathieu.poirier@linaro.org>
- <1386780798-24374-2-git-send-email-mathieu.poirier@linaro.org>
- <20131218095322.GA4740@localhost>
- <CANLsYkxMzdFCpJ3456PPd8KsEPi-U70kJDqGv8c3BhCsKY8RiQ@mail.gmail.com>
+From: Noel Butler <noel.butler@ausics.net>
+Subject: Re: BUG ip6tables and helper
+Date: Fri, 20 Dec 2013 07:50:14 +1000
+Message-ID: <1387489814.4038.5.camel@tardis>
+References: <1387438538.10463.0.camel@tardis>
+	 <20131219092252.GA4828@localhost>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-rR13/mjWMX//8M3NnkQX"
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CANLsYkxMzdFCpJ3456PPd8KsEPi-U70kJDqGv8c3BhCsKY8RiQ@mail.gmail.com>
+In-Reply-To: <20131219092252.GA4828@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, John Stultz <john.stultz@linaro.org>, JP Abgrall <jpa@google.com>
+To: netfilter@vger.kernel.org
 
-On Thu, Dec 19, 2013 at 10:20:56AM -0700, Mathieu Poirier wrote:
->      >       NFNLGRP_CONNTRACK_EXP_DESTROY,
->      >  #define NFNLGRP_CONNTRACK_EXP_DESTROY
->      NFNLGRP_CONNTRACK_EXP_DESTROY
->      > +     NFNLGRP_CONNTRACK_QUOTA,
->      > +#define NFNLGRP_CONNTRACK_QUOTA
->      NFNLGRP_CONNTRACK_QUOTA
->      Use NFNLGRP_ACCT_QUOTA, this has nothing to do with conntrack.
-> 
->    Please confirm that you suggest to create a
->    "enum nfnl_acct_groups{}"
->    in include/uapi/linux/netfilter/nfnetlink_acct.h, the same way as
->    above?
 
-No. I just mean that you rename that since it this has nothing to do
-with conntrack.
+--=-rR13/mjWMX//8M3NnkQX
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
->      >       __NFNLGRP_MAX,
->      >  };
->      >  #define NFNLGRP_MAX  (__NFNLGRP_MAX - 1)
->      > diff --git a/include/uapi/linux/netfilter/nfnetlink_acct.h
->      b/include/uapi/linux/netfilter/nfnetlink_acct.h
->      > index c7b6269..ae8ea0a 100644
->      > --- a/include/uapi/linux/netfilter/nfnetlink_acct.h
->      > +++ b/include/uapi/linux/netfilter/nfnetlink_acct.h
->      > @@ -19,6 +19,7 @@ enum nfnl_acct_type {
->      >       NFACCT_PKTS,
->      >       NFACCT_BYTES,
->      >       NFACCT_USE,
->      > +     NFACCT_QUOTA,
->      >       __NFACCT_MAX
->      >  };
->      >  #define NFACCT_MAX (__NFACCT_MAX - 1)
->      > diff --git a/include/uapi/linux/netfilter/xt_nfacct.h
->      b/include/uapi/linux/netfilter/xt_nfacct.h
->      > index 3e19c8a..c2e49a6 100644
->      > --- a/include/uapi/linux/netfilter/xt_nfacct.h
->      > +++ b/include/uapi/linux/netfilter/xt_nfacct.h
->      > @@ -3,11 +3,22 @@
->      >
->      >  #include <linux/netfilter/nfnetlink_acct.h>
->      >
->      > +enum xt_quota_flags {
->      > +     XT_QUOTA_INVERT    = 1 << 0,
->      I don't understand the interaction of invert and the event delivery.
-> 
->    It was added for flexibility [...]
+Hi Pablo,
 
-I mean: This is currently broken in your patch, it is always
-delivering an event when the quota is reached, no matter if invert is
-set or not.
+Thanks, patched.
+build:        OK
+execute:   OK
+work for remote users:   time will tell :)
 
->      > +     XT_QUOTA_PACKET    = 1 << 1,
->      > +     XT_QUOTA_QUOTA     = 1 << 2,
->      XT_QUOTA_QUOTA ? :-)
-> 
->    Yes - quotas are not mandatory [...]
 
-I'm just proposing a plain rename:
+On Thu, 2013-12-19 at 10:22 +0100, Pablo Neira Ayuso wrote:=20
+> Hi Noel,
+>=20
+> On Thu, Dec 19, 2013 at 05:35:38PM +1000, Noel Butler wrote:
+> > Hi Pablo,
+>=20
+> Please, CC me if this is addressed to me. I read all mailing lists
+> quite often but I have lots of email and chances are this gets lost
+> increases.
+>=20
+> > Bug with ip6tables and helpers
+> >=20
+> > -j CT --helper irc
+> >=20
+> > ip6tables: No chain/target/match by that name.
+> >=20
+> > This *does* work with iptables
+>=20
+> I sent this patch time ago, just compiled tested:
+>=20
+> http://www.spinics.net/lists/netfilter/msg54642.html
+>=20
+> But got no feedback on it. Could you take it, give it a try and let me
+> know if it fixes this issue? Thanks!
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
-s/XT_QUOTA_PACKET/XT_NFACCT_QUOTA_PKTS
-s/XT_QUOTA_QUOTA/XT_NFACCT_QUOTA_BYTES
 
-XT_QUOTA refers to the xt_quota match, which is a different iptables
-match extensions.
 
-Thinking again on the event delivery, I think it's better if the
-nfacct match using the new --quota does not deliver the event itself.
-You can use libnetfilter_queue instead, eg.
+--=-rR13/mjWMX//8M3NnkQX
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
 
-        iptables -I INPUT -p icmp \
-                 -m nfacct icmp --quota 12345 --mode bytes --match-once \
-                 -j NFLOG --nflog-prefix "icmp: " --nflog-group 34
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.10 (GNU/Linux)
 
-The --once parameter tells to match only if you just crossed the quota
-limit (so the event is sent once). The idea is to use nflog to deliver
-the event, which is way more flexible as it includes useful
-information.
+iQEcBAABAgAGBQJSs2oVAAoJECg/hgl/0DbHiVsH/0R7dRC8BLokuSI8WukEIez4
+SG81Tr6FTwhkb2rnPsFc5Gf4Mt6KMIKpWeCoD1VMVPSSbI3+heCjuUXf6MQaQeKd
+t9XV3/qi7YG65TyTcBxZKFc7JGErMNo4Ai5b3qr3s1sNjIagHov3l3k+9BIcX2Rx
+XXGH0i4E6jsdNSXJuFFTQe2xvWkPDeJ1d5UngBnD0LAXY8d4Z8rT4RO8mc0CJbJF
+EzZlTQu9DQ5ZS9XAuLWOxkeRclFdo44Z+T+4wYxa7ffU9hDXU1wsgtzd31DVFb45
++GukK7wTf7FDtzpMOl/QiTt7Tp6JOrhGaYHzKxq5NDBlRadZgBkXuqSgtBM78GA=
+=/jus
+-----END PGP SIGNATURE-----
 
-P.S: please disable HTML in your emails. Thanks.
+--=-rR13/mjWMX//8M3NnkQX--
+
