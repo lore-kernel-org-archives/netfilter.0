@@ -1,39 +1,70 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: BUG ip6tables and helper
-Date: Thu, 19 Dec 2013 10:22:52 +0100
-Message-ID: <20131219092252.GA4828@localhost>
-References: <1387438538.10463.0.camel@tardis>
+From: Chen Weilong <chenweilong@huawei.com>
+Subject: [PATCH] netfilter: fix checkpatch error for netfilter
+Date: Thu, 19 Dec 2013 19:24:24 +0800
+Message-ID: <1387452264-8896-1-git-send-email-chenweilong@huawei.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1387438538.10463.0.camel@tardis>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Noel Butler <noel.butler@ausics.net>
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: pablo@netfilter.org, davem@davemloft.net, kaber@trash.net, kadlec@blackhole.kfki.hu
+Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org
 
-Hi Noel,
+From: Weilong Chen <chenweilong@huawei.com>
 
-On Thu, Dec 19, 2013 at 05:35:38PM +1000, Noel Butler wrote:
-> Hi Pablo,
+This patch fix some checkpatch errors,clean up the code.
 
-Please, CC me if this is addressed to me. I read all mailing lists
-quite often but I have lots of email and chances are this gets lost
-increases.
+Signed-off-by: Weilong Chen <chenweilong@huawei.com>
+---
+ net/netfilter/nf_tables_api.c | 4 ++--
+ net/netfilter/xt_osf.c        | 4 ++--
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-> Bug with ip6tables and helpers
-> 
-> -j CT --helper irc
-> 
-> ip6tables: No chain/target/match by that name.
-> 
-> This *does* work with iptables
+diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+index f93b7d0..045efa1 100644
+--- a/net/netfilter/nf_tables_api.c
++++ b/net/netfilter/nf_tables_api.c
+@@ -130,7 +130,7 @@ static int __nf_tables_chain_type_lookup(int family, const struct nlattr *nla)
+ {
+ 	int i;
+ 
+-	for (i=0; i<NFT_CHAIN_T_MAX; i++) {
++	for (i = 0; i < NFT_CHAIN_T_MAX; i++) {
+ 		if (chain_type[family][i] != NULL &&
+ 		    !nla_strcmp(nla, chain_type[family][i]->name))
+ 			return i;
+@@ -814,7 +814,7 @@ static int nf_tables_newchain(struct sock *nlsk, struct sk_buff *skb,
+ 			      const struct nlattr * const nla[])
+ {
+ 	const struct nfgenmsg *nfmsg = nlmsg_data(nlh);
+-	const struct nlattr * uninitialized_var(name);
++	const struct nlattr *uninitialized_var(name);
+ 	const struct nft_af_info *afi;
+ 	struct nft_table *table;
+ 	struct nft_chain *chain;
+diff --git a/net/netfilter/xt_osf.c b/net/netfilter/xt_osf.c
+index 7174611..b93154c 100644
+--- a/net/netfilter/xt_osf.c
++++ b/net/netfilter/xt_osf.c
+@@ -371,7 +371,7 @@ static int __init xt_osf_init(void)
+ 	int err = -EINVAL;
+ 	int i;
+ 
+-	for (i=0; i<ARRAY_SIZE(xt_osf_fingers); ++i)
++	for (i = 0; i < ARRAY_SIZE(xt_osf_fingers); ++i)
+ 		INIT_LIST_HEAD(&xt_osf_fingers[i]);
+ 
+ 	err = nfnetlink_subsys_register(&xt_osf_nfnetlink);
+@@ -404,7 +404,7 @@ static void __exit xt_osf_fini(void)
+ 	xt_unregister_match(&xt_osf_match);
+ 
+ 	rcu_read_lock();
+-	for (i=0; i<ARRAY_SIZE(xt_osf_fingers); ++i) {
++	for (i = 0; i < ARRAY_SIZE(xt_osf_fingers); ++i) {
+ 
+ 		list_for_each_entry_rcu(f, &xt_osf_fingers[i], finger_entry) {
+ 			list_del_rcu(&f->finger_entry);
+-- 
+1.7.12
 
-I sent this patch time ago, just compiled tested:
-
-http://www.spinics.net/lists/netfilter/msg54642.html
-
-But got no feedback on it. Could you take it, give it a try and let me
-know if it fixes this issue? Thanks!
