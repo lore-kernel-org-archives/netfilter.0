@@ -1,50 +1,39 @@
-From: Noel Butler <noel.butler@ausics.net>
-Subject: BUG ip6tables and helper
-Date: Thu, 19 Dec 2013 17:35:38 +1000
-Message-ID: <1387438538.10463.0.camel@tardis>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: BUG ip6tables and helper
+Date: Thu, 19 Dec 2013 10:22:52 +0100
+Message-ID: <20131219092252.GA4828@localhost>
+References: <1387438538.10463.0.camel@tardis>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature"; boundary="=-rhTMraGRCNsCWPk3ahfw"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1387438538.10463.0.camel@tardis>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: Noel Butler <noel.butler@ausics.net>
+Cc: netfilter@vger.kernel.org
 
+Hi Noel,
 
---=-rhTMraGRCNsCWPk3ahfw
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+On Thu, Dec 19, 2013 at 05:35:38PM +1000, Noel Butler wrote:
+> Hi Pablo,
 
-Hi Pablo,
+Please, CC me if this is addressed to me. I read all mailing lists
+quite often but I have lots of email and chances are this gets lost
+increases.
 
-Bug with ip6tables and helpers
+> Bug with ip6tables and helpers
+> 
+> -j CT --helper irc
+> 
+> ip6tables: No chain/target/match by that name.
+> 
+> This *does* work with iptables
 
--j CT --helper irc
+I sent this patch time ago, just compiled tested:
 
-ip6tables: No chain/target/match by that name.
+http://www.spinics.net/lists/netfilter/msg54642.html
 
-
-This *does* work with iptables
-
-
-On 22/11/2013 22:12, Pablo Neira Ayuso wrote:
-> Hi! The Netfilter project proudly presents: iptables 1.4.21
-
-
---=-rhTMraGRCNsCWPk3ahfw
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.10 (GNU/Linux)
-
-iQEcBAABAgAGBQJSsqHFAAoJECg/hgl/0DbHTZUIAKjJbQCnM9yGLZaPpaH8tpmu
-xA8uDcGPmsKGKZ17TUq19JcFk11PiHROdFELaxLN/+o28NMHKf5w9rqDrWbED7Ji
-hKcLIChi48AZs3rWwSsA8q+lyIpow06jxxEBEhWX0cmQGxFNk0QALPQRwh0nvZrS
-H0myHwV/tx5KASS2A0lRVlNcyg+ML/CtMiUjO/nNZQgMizVcXBhP8bUTPjOVC2im
-UD9MzY8YX5bTJYtuEmgpnwzy4Jpr/yAP/S6uO0GaWxniPHtlJRgPC3QJnULvemzX
-vgmjCavt4FXjL89IAo8wuOuMxFUXpgV/ydQkVpPJHFqrx2sCZj9aH4bNbyQk9h8=
-=GeLP
------END PGP SIGNATURE-----
-
---=-rhTMraGRCNsCWPk3ahfw--
-
+But got no feedback on it. Could you take it, give it a try and let me
+know if it fixes this issue? Thanks!
