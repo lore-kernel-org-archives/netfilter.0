@@ -1,70 +1,99 @@
-From: Chen Weilong <chenweilong@huawei.com>
-Subject: [PATCH] netfilter: fix checkpatch error for netfilter
-Date: Thu, 19 Dec 2013 19:24:24 +0800
-Message-ID: <1387452264-8896-1-git-send-email-chenweilong@huawei.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH 1/1] netfilter: xtables: add quota support to nfacct
+Date: Thu, 19 Dec 2013 20:43:39 +0100
+Message-ID: <20131219194339.GA4561@localhost>
+References: <1386780798-24374-1-git-send-email-mathieu.poirier@linaro.org>
+ <1386780798-24374-2-git-send-email-mathieu.poirier@linaro.org>
+ <20131218095322.GA4740@localhost>
+ <CANLsYkxMzdFCpJ3456PPd8KsEPi-U70kJDqGv8c3BhCsKY8RiQ@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CANLsYkxMzdFCpJ3456PPd8KsEPi-U70kJDqGv8c3BhCsKY8RiQ@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: pablo@netfilter.org, davem@davemloft.net, kaber@trash.net, kadlec@blackhole.kfki.hu
-Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org
+To: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, John Stultz <john.stultz@linaro.org>, JP Abgrall <jpa@google.com>
 
-From: Weilong Chen <chenweilong@huawei.com>
+On Thu, Dec 19, 2013 at 10:20:56AM -0700, Mathieu Poirier wrote:
+>      >       NFNLGRP_CONNTRACK_EXP_DESTROY,
+>      >  #define NFNLGRP_CONNTRACK_EXP_DESTROY
+>      NFNLGRP_CONNTRACK_EXP_DESTROY
+>      > +     NFNLGRP_CONNTRACK_QUOTA,
+>      > +#define NFNLGRP_CONNTRACK_QUOTA
+>      NFNLGRP_CONNTRACK_QUOTA
+>      Use NFNLGRP_ACCT_QUOTA, this has nothing to do with conntrack.
+> 
+>    Please confirm that you suggest to create a
+>    "enum nfnl_acct_groups{}"
+>    in include/uapi/linux/netfilter/nfnetlink_acct.h, the same way as
+>    above?
 
-This patch fix some checkpatch errors,clean up the code.
+No. I just mean that you rename that since it this has nothing to do
+with conntrack.
 
-Signed-off-by: Weilong Chen <chenweilong@huawei.com>
----
- net/netfilter/nf_tables_api.c | 4 ++--
- net/netfilter/xt_osf.c        | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+>      >       __NFNLGRP_MAX,
+>      >  };
+>      >  #define NFNLGRP_MAX  (__NFNLGRP_MAX - 1)
+>      > diff --git a/include/uapi/linux/netfilter/nfnetlink_acct.h
+>      b/include/uapi/linux/netfilter/nfnetlink_acct.h
+>      > index c7b6269..ae8ea0a 100644
+>      > --- a/include/uapi/linux/netfilter/nfnetlink_acct.h
+>      > +++ b/include/uapi/linux/netfilter/nfnetlink_acct.h
+>      > @@ -19,6 +19,7 @@ enum nfnl_acct_type {
+>      >       NFACCT_PKTS,
+>      >       NFACCT_BYTES,
+>      >       NFACCT_USE,
+>      > +     NFACCT_QUOTA,
+>      >       __NFACCT_MAX
+>      >  };
+>      >  #define NFACCT_MAX (__NFACCT_MAX - 1)
+>      > diff --git a/include/uapi/linux/netfilter/xt_nfacct.h
+>      b/include/uapi/linux/netfilter/xt_nfacct.h
+>      > index 3e19c8a..c2e49a6 100644
+>      > --- a/include/uapi/linux/netfilter/xt_nfacct.h
+>      > +++ b/include/uapi/linux/netfilter/xt_nfacct.h
+>      > @@ -3,11 +3,22 @@
+>      >
+>      >  #include <linux/netfilter/nfnetlink_acct.h>
+>      >
+>      > +enum xt_quota_flags {
+>      > +     XT_QUOTA_INVERT    = 1 << 0,
+>      I don't understand the interaction of invert and the event delivery.
+> 
+>    It was added for flexibility [...]
 
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index f93b7d0..045efa1 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -130,7 +130,7 @@ static int __nf_tables_chain_type_lookup(int family, const struct nlattr *nla)
- {
- 	int i;
- 
--	for (i=0; i<NFT_CHAIN_T_MAX; i++) {
-+	for (i = 0; i < NFT_CHAIN_T_MAX; i++) {
- 		if (chain_type[family][i] != NULL &&
- 		    !nla_strcmp(nla, chain_type[family][i]->name))
- 			return i;
-@@ -814,7 +814,7 @@ static int nf_tables_newchain(struct sock *nlsk, struct sk_buff *skb,
- 			      const struct nlattr * const nla[])
- {
- 	const struct nfgenmsg *nfmsg = nlmsg_data(nlh);
--	const struct nlattr * uninitialized_var(name);
-+	const struct nlattr *uninitialized_var(name);
- 	const struct nft_af_info *afi;
- 	struct nft_table *table;
- 	struct nft_chain *chain;
-diff --git a/net/netfilter/xt_osf.c b/net/netfilter/xt_osf.c
-index 7174611..b93154c 100644
---- a/net/netfilter/xt_osf.c
-+++ b/net/netfilter/xt_osf.c
-@@ -371,7 +371,7 @@ static int __init xt_osf_init(void)
- 	int err = -EINVAL;
- 	int i;
- 
--	for (i=0; i<ARRAY_SIZE(xt_osf_fingers); ++i)
-+	for (i = 0; i < ARRAY_SIZE(xt_osf_fingers); ++i)
- 		INIT_LIST_HEAD(&xt_osf_fingers[i]);
- 
- 	err = nfnetlink_subsys_register(&xt_osf_nfnetlink);
-@@ -404,7 +404,7 @@ static void __exit xt_osf_fini(void)
- 	xt_unregister_match(&xt_osf_match);
- 
- 	rcu_read_lock();
--	for (i=0; i<ARRAY_SIZE(xt_osf_fingers); ++i) {
-+	for (i = 0; i < ARRAY_SIZE(xt_osf_fingers); ++i) {
- 
- 		list_for_each_entry_rcu(f, &xt_osf_fingers[i], finger_entry) {
- 			list_del_rcu(&f->finger_entry);
--- 
-1.7.12
+I mean: This is currently broken in your patch, it is always
+delivering an event when the quota is reached, no matter if invert is
+set or not.
 
+>      > +     XT_QUOTA_PACKET    = 1 << 1,
+>      > +     XT_QUOTA_QUOTA     = 1 << 2,
+>      XT_QUOTA_QUOTA ? :-)
+> 
+>    Yes - quotas are not mandatory [...]
+
+I'm just proposing a plain rename:
+
+s/XT_QUOTA_PACKET/XT_NFACCT_QUOTA_PKTS
+s/XT_QUOTA_QUOTA/XT_NFACCT_QUOTA_BYTES
+
+XT_QUOTA refers to the xt_quota match, which is a different iptables
+match extensions.
+
+Thinking again on the event delivery, I think it's better if the
+nfacct match using the new --quota does not deliver the event itself.
+You can use libnetfilter_queue instead, eg.
+
+        iptables -I INPUT -p icmp \
+                 -m nfacct icmp --quota 12345 --mode bytes --match-once \
+                 -j NFLOG --nflog-prefix "icmp: " --nflog-group 34
+
+The --once parameter tells to match only if you just crossed the quota
+limit (so the event is sent once). The idea is to use nflog to deliver
+the event, which is way more flexible as it includes useful
+information.
+
+P.S: please disable HTML in your emails. Thanks.
