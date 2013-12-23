@@ -1,49 +1,74 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH 1/1] netfilter: xtables: add quota support to nfacct
-Date: Sat, 21 Dec 2013 09:55:09 +0100
-Message-ID: <20131221085509.GA4230@localhost>
-References: <1386780798-24374-1-git-send-email-mathieu.poirier@linaro.org>
- <1386780798-24374-2-git-send-email-mathieu.poirier@linaro.org>
- <20131218095322.GA4740@localhost>
- <CANLsYkxMzdFCpJ3456PPd8KsEPi-U70kJDqGv8c3BhCsKY8RiQ@mail.gmail.com>
- <20131219194339.GA4561@localhost>
- <CANLsYkzoa0E6T8ZGYmKHSPdFyGkLeQw8_dsB_NAJx9YA2qD8uw@mail.gmail.com>
+From: chenweilong <chenweilong@huawei.com>
+Subject: Re: [patch net-next 6/7] ipv4: ERROR: code indent should use tabs
+ where possible
+Date: Mon, 23 Dec 2013 10:11:40 +0800
+Message-ID: <52B79BDC.4060107@huawei.com>
+References: <1387540630-11052-1-git-send-email-chenweilong@huawei.com>	 <1387540630-11052-7-git-send-email-chenweilong@huawei.com> <1387561986.1549.9.camel@bwh-desktop.uk.level5networks.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CANLsYkzoa0E6T8ZGYmKHSPdFyGkLeQw8_dsB_NAJx9YA2qD8uw@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <1387561986.1549.9.camel@bwh-desktop.uk.level5networks.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, John Stultz <john.stultz@linaro.org>, JP Abgrall <jpa@google.com>
+To: Ben Hutchings <bhutchings@solarflare.com>
+Cc: davem@davemloft.net, kuznet@ms2.inr.ac.ru, jmorris@namei.org, yoshfuji@linux-ipv6.org, kaber@trash.net, steffen.klassert@secunet.com, herbert@gondor.apana.org.au, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-On Fri, Dec 20, 2013 at 01:34:00PM -0700, Mathieu Poirier wrote:
-> On 19 December 2013 12:43, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-[...]
-> > Thinking again on the event delivery, I think it's better if the
-> > nfacct match using the new --quota does not deliver the event itself.
-> > You can use libnetfilter_queue instead, eg.
-> >
-> >         iptables -I INPUT -p icmp \
-> >                  -m nfacct icmp --quota 12345 --mode bytes --match-once \
-> >                  -j NFLOG --nflog-prefix "icmp: " --nflog-group 34
-> >
-> > The --once parameter tells to match only if you just crossed the quota
-> > limit (so the event is sent once). The idea is to use nflog to deliver
-> > the event, which is way more flexible as it includes useful
-> > information.
+On 2013/12/21 1:53, Ben Hutchings wrote:
+> On Fri, 2013-12-20 at 19:57 +0800, Chen Weilong wrote:
+>> From: Weilong Chen <chenweilong@huawei.com>
+>>
+>>
+>> Signed-off-by: Weilong Chen <chenweilong@huawei.com>
+>> ---
+>>  net/ipv4/cipso_ipv4.c      | 6 +++---
+>>  net/ipv4/sysctl_net_ipv4.c | 2 +-
+>>  net/ipv4/xfrm4_mode_beet.c | 2 +-
+>>  3 files changed, 5 insertions(+), 5 deletions(-)
+>>
+>> diff --git a/net/ipv4/cipso_ipv4.c b/net/ipv4/cipso_ipv4.c
+>> index 4b59b6e..081f51a 100644
+>> --- a/net/ipv4/cipso_ipv4.c
+>> +++ b/net/ipv4/cipso_ipv4.c
+>> @@ -1336,7 +1336,7 @@ static int cipso_v4_parsetag_rbm(const struct cipso_v4_doi *doi_def,
+>>  
+>>  	if (tag_len > 4) {
+>>  		secattr->attr.mls.cat =
+>> -		                       netlbl_secattr_catmap_alloc(GFP_ATOMIC);
+>> +				       netlbl_secattr_catmap_alloc(GFP_ATOMIC);
+>>  		if (secattr->attr.mls.cat == NULL)
+>>  			return -ENOMEM;
+>>  
+>> @@ -1432,7 +1432,7 @@ static int cipso_v4_parsetag_enum(const struct cipso_v4_doi *doi_def,
+>>  
+>>  	if (tag_len > 4) {
+>>  		secattr->attr.mls.cat =
+>> -			               netlbl_secattr_catmap_alloc(GFP_ATOMIC);
+>> +				       netlbl_secattr_catmap_alloc(GFP_ATOMIC);
+>>  		if (secattr->attr.mls.cat == NULL)
+>>  			return -ENOMEM;
+>>  
+>> @@ -1527,7 +1527,7 @@ static int cipso_v4_parsetag_rng(const struct cipso_v4_doi *doi_def,
+>>  
+>>  	if (tag_len > 4) {
+>>  		secattr->attr.mls.cat =
+>> -			               netlbl_secattr_catmap_alloc(GFP_ATOMIC);
+>> +				       netlbl_secattr_catmap_alloc(GFP_ATOMIC);
+>>  		if (secattr->attr.mls.cat == NULL)
+>>  			return -ENOMEM;
+>>  
+> [...]
 > 
-> I'm not against the idea as it is less code for me to write.  Is this
-> "--match-one" thing already available?  If not I'll come up with it.
+> These lines are still excessively indented (one extra tab is enough),
+> and could just be appended to the lines above them:
+> 
+> 		secattr->attr.mls.cat = netlbl_secattr_catmap_alloc(GFP_ATOMIC);
+> 
+> (exactly 80 columns long).
+> 
+> Ben.
+> 
+OK,
+That's very good,
+Thanks!
 
-The --match-once that I propose is specific to nfacct, so you need to
-add a new flag to indicate this matching mode and return true only
-once for that rule.
-
-> Just to be clear, if "--match-one" isn't specified a message is sent
-> each time we try to send a packets and the quota has been reached.
-
-Exactly, in the example I provided above, if no --match-once is
-specified, you will get a log message per packet over quota.
