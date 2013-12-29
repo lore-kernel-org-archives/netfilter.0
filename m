@@ -1,63 +1,77 @@
-From: Mathieu Poirier <mathieu.poirier@linaro.org>
-Subject: Re: [PATCH 1/1] netfilter: xtables: add quota support to nfacct
-Date: Sun, 29 Dec 2013 14:53:15 -0700
-Message-ID: <CANLsYkx32_sUzZvy697Vhyu7cBUaoYtB__FNTvdhwWDguLmT2Q@mail.gmail.com>
-References: <1386780798-24374-1-git-send-email-mathieu.poirier@linaro.org>
-	<1386780798-24374-2-git-send-email-mathieu.poirier@linaro.org>
-	<20131218095322.GA4740@localhost>
-	<CANLsYkxMzdFCpJ3456PPd8KsEPi-U70kJDqGv8c3BhCsKY8RiQ@mail.gmail.com>
-	<20131219194339.GA4561@localhost>
-	<CANLsYkzoa0E6T8ZGYmKHSPdFyGkLeQw8_dsB_NAJx9YA2qD8uw@mail.gmail.com>
-	<20131221085509.GA4230@localhost>
+From: =?UTF-8?B?0K7RgNC40Lkg0J/Rg9GF0LDQu9GM0YHQutC40Lk=?= 
+	<aikipooh@gmail.com>
+Subject: mangling packets with nfqueue and conntrack
+Date: Mon, 30 Dec 2013 02:06:00 +0400
+Message-ID: <CAKws=GR7BD9ESiuwpxSQXY7=vGO8iiCYE21cmwLemOrCe6vK6A@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20131221085509.GA4230@localhost>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=3jEpw6c3MENz/eC3lpn/jCYC9RGJvm8Iq3JLP0X29eI=;
+        b=ui91uG8VwdXE7hv+Y6CBIdRQ5T4GISMMfFk22imqyasVzIXHRw/KHenOtFDX0qn0sr
+         N8jtRyVxuIpQkGLI4p6pCe2BQJHlubn1vxbP2hdPmqClZA+Rhcr4hWQ6cblSZ3MRp1VH
+         5fxc6qn8LnUv+gXim+pxHb0Fvdgqs9vUHkyCuR/RrSr4vwwP5LjFelD+xzJJ9AqsZy5L
+         ScLemrSawc6JeDzlM9MXXhUe8xVEQ6TAGyUt6EFWgolY+IgvW9/blbfWq6JKVIM+B6nm
+         EY9L0LLppbZK6wiL4qzwwEWHxJxGzui1gRNQztbuia7olC9ITJsRA9mJD4oXhLwzp1Oc
+         Ccxw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, John Stultz <john.stultz@linaro.org>, JP Abgrall <jpa@google.com>
+To: netfilter@vger.kernel.org
 
-On 21 December 2013 01:55, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> On Fri, Dec 20, 2013 at 01:34:00PM -0700, Mathieu Poirier wrote:
->> On 19 December 2013 12:43, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> [...]
->> > Thinking again on the event delivery, I think it's better if the
->> > nfacct match using the new --quota does not deliver the event itself.
->> > You can use libnetfilter_queue instead, eg.
->> >
->> >         iptables -I INPUT -p icmp \
->> >                  -m nfacct icmp --quota 12345 --mode bytes --match-once \
->> >                  -j NFLOG --nflog-prefix "icmp: " --nflog-group 34
->> >
+Good UTC night, everyone!
 
-Thinking further on this...
+I have one host, let's call it server, with iptables setup like this:
 
-Unless I'm missing something the above only specifies when to log
-quota transgression, hence introducing the need to write yet another
-rule do explicitly deal with the packet.  My previous solution logged
-quota excess _and_ dealt with the packet.
+iptables -tmangle -A PREROUTING -j CONNMARK --restore-mark
+iptables -tmangle -A PREROUTING -j LOG --log-prefix "pre "
+iptables -tmangle -A PREROUTING -p tcp -s 192.168.3.10 --dport 80 -j
+MARK --set-mark 0x10
+iptables -tmangle -A PREROUTING -j LOG --log-prefix "test "
+iptables -tmangle -A PREROUTING -m mark --mark 0x10 -j NFQUEUE
+iptables -tmangle -A POSTROUTING -j LOG --log-prefix "post "
+iptables -tmangle -A POSTROUTING -j CONNMARK --save-mark
 
-Using ' nfulnl_log_packet()' (if even possible) would seem hackish to me.
+The program employs libnetfilter_queue to mangle packets, it gets a
+packet from a host in the internal network (192.168.3.10), changes the
+srcaddr to external interface, and destaddr to the target address and
+calls nfq_set_verdict to ACCEPT it. The packet leaves then the
+external interface without problem.
+Now I want to route all incoming replies to the same nfqueue, but the
+reply packet (the very first one with SYNACK) doesn't have the mark.
+The excerpt of the kernel log follows:
 
-Can you suggest anything that would unite our two vision?
+Dec 30 01:42:18 localhost kernel: pre IN=enp0s19f5u2 OUT=
+MAC=00:0a:cd:23:fb:3f:00:0a:cd:23:fb:ab:08:00 SRC=192.168.3.10
+DST=10.232.68.43 LEN=64 TOS=0x10 PREC=0x00 TTL=64 ID=2753 DF PROTO=TCP
+SPT=48053 DPT=80 WINDOW=29200 RES=0x00 SYN URGP=0
+Dec 30 01:42:18 localhost kernel: test IN=enp0s19f5u2 OUT=
+MAC=00:0a:cd:23:fb:3f:00:0a:cd:23:fb:ab:08:00 SRC=192.168.3.10
+DST=10.232.68.43 LEN=64 TOS=0x10 PREC=0x00 TTL=64 ID=2753 DF PROTO=TCP
+SPT=48053 DPT=80 WINDOW=29200 RES=0x00 SYN URGP=0 MARK=0x10
+Dec 30 01:42:18 localhost kernel: post IN= OUT=enp3s0 SRC=10.232.68.43
+DST=173.194.32.160 LEN=60 TOS=0x10 PREC=0x00 TTL=63 ID=2753 DF
+PROTO=TCP SPT=48053 DPT=80 WINDOW=29200 RES=0x00 SYN URGP=0 MARK=0x10
+Dec 30 01:42:18 localhost kernel: pre IN=enp3s0 OUT=
+MAC=00:1e:8c:0c:c4:54:a0:f3:e4:5f:2a:30:08:00 SRC=173.194.32.160
+DST=10.232.68.43 LEN=52 TOS=0x00 PREC=0x00 TTL=55 ID=0 DF PROTO=TCP
+SPT=80 DPT=48053 WINDOW=29200 RES=0x00 ACK SYN URGP=0
+Dec 30 01:42:18 localhost kernel: test IN=enp3s0 OUT=
+MAC=00:1e:8c:0c:c4:54:a0:f3:e4:5f:2a:30:08:00 SRC=173.194.32.160
+DST=10.232.68.43 LEN=52 TOS=0x00 PREC=0x00 TTL=55 ID=0 DF PROTO=TCP
+SPT=80 DPT=48053 WINDOW=29200 RES=0x00 ACK SYN URGP=0
+Dec 30 01:42:18 localhost kernel: post IN= OUT=enp3s0 SRC=10.232.68.43
+DST=173.194.32.160 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=7701 DF
+PROTO=TCP SPT=48053 DPT=80 WINDOW=0 RES=0x00 RST URGP=0
 
+When I set up the server as a simple router and try to connect from
+internal network, the conntrack works and the reply packets are
+marked.
 
->> > The --once parameter tells to match only if you just crossed the quota
->> > limit (so the event is sent once). The idea is to use nflog to deliver
->> > the event, which is way more flexible as it includes useful
->> > information.
->>
->> I'm not against the idea as it is less code for me to write.  Is this
->> "--match-one" thing already available?  If not I'll come up with it.
->
-> The --match-once that I propose is specific to nfacct, so you need to
-> add a new flag to indicate this matching mode and return true only
-> once for that rule.
->
->> Just to be clear, if "--match-one" isn't specified a message is sent
->> each time we try to send a packets and the quota has been reached.
->
-> Exactly, in the example I provided above, if no --match-once is
-> specified, you will get a log message per packet over quota.
+What can be the problem here? I have tried to ask people on
+serverfault and superuser, but no one could help.
+
+-- 
+Point of presence: http://aikipooh.ipernity.com
