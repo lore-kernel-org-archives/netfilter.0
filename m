@@ -1,49 +1,71 @@
-From: Michal Nazarewicz <mina86@mina86.com>
-Subject: [PATCH RESEND] netfilter: remove unused variable
-Date: Wed,  1 Jan 2014 06:27:19 +0100
-Message-ID: <1388554039-28452-1-git-send-email-mina86@mina86.com>
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=sender:from:to:cc:subject:date:message-id;
-        bh=4eu9fH9VzRNMoBKo19TtI+LOwdBsgi5DJ1PUl+fm7qY=;
-        b=DSQK5waCmJXoHyBhFJ6acAg7X0HnevGBjhsnu6MCeYpQDATbG9KrUZzYDoRbowqvas
-         yPfCXdRwVILaPVLrFJo3okKY4JI3f5nXn8t0EEXHI+hqdfy4P16uTYH+0fH+Rxht6vRl
-         QU8Jx4Lt9E7L8YLyYZlgl1ejVAaKUN6G9+k+2h2EXXRA/Je+nE+J86CHavX3mRtqhN/F
-         9XX5qNheCAqjJn5kQHJ7aV+mjJjQpeub03VaIzfXz0B3PC9WYOTdtnK+NGh42aE1tyXm
-         9nYU5xAm/eW5NUGc2ldOgoT5tmWAV09xryGK9MY5wIrJUF6BB1G21AO04dosFoTddrdN
-         D7Yw==
-Sender: netfilter-devel-owner@vger.kernel.org
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH 1/1] netfilter: xtables: add quota support to nfacct
+Date: Fri, 3 Jan 2014 16:54:10 +0100
+Message-ID: <20140103155410.GA13894@localhost>
+References: <CANLsYkxMzdFCpJ3456PPd8KsEPi-U70kJDqGv8c3BhCsKY8RiQ@mail.gmail.com>
+ <20131219194339.GA4561@localhost>
+ <CANLsYkzoa0E6T8ZGYmKHSPdFyGkLeQw8_dsB_NAJx9YA2qD8uw@mail.gmail.com>
+ <20131221085509.GA4230@localhost>
+ <CANLsYkx32_sUzZvy697Vhyu7cBUaoYtB__FNTvdhwWDguLmT2Q@mail.gmail.com>
+ <20131230173655.GA21288@localhost>
+ <CANLsYkx34A97NwJyFb05MT=zneT8ET=Nyz7HTGEDWHhGAZP_-Q@mail.gmail.com>
+ <20131230214653.GP29632@breakpoint.cc>
+ <CANLsYkxr2eRyz0aWDD8OMJDf2YWpwg3SOBpEhoopfy6N+kzfWg@mail.gmail.com>
+ <CANLsYkzRPDQsKFDsHTZKDOLmX=_yhBa3FBCbuY1-Uy2TG3jYQg@mail.gmail.com>
+Mime-Version: 1.0
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <CANLsYkzRPDQsKFDsHTZKDOLmX=_yhBa3FBCbuY1-Uy2TG3jYQg@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, Michal Nazarewicz <mina86@mina86.com>
+To: Mathieu Poirier <mathieu.poirier@linaro.org>
+Cc: Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, John Stultz <john.stultz@linaro.org>, JP Abgrall <jpa@google.com>
 
-The nfmsg variable is not used (except in sizeof operator which does
-not care about its value) between the first and second time it is
-assigned the value.  Furthermore, nlmsg_data has no side effects, so
-the assignment can be safely removed.
+On Mon, Dec 30, 2013 at 04:14:21PM -0700, Mathieu Poirier wrote:
+> On 30 December 2013 15:17, Mathieu Poirier <mathieu.poirier@linaro.org> wrote:
+> > Hey Florian - I think that is an acceptable compromise.  The LOG chain
+> > and rules are extra but it is setup only once and as such scale well.
+> >
+> > Thank you for that,
+> > Mathieu
+> >
+> > On 30 December 2013 14:46, Florian Westphal <fw@strlen.de> wrote:
+> >> Mathieu Poirier <mathieu.poirier@linaro.org> wrote:
+> >>> Upon reaching the limit of 10000 byte of http traffic, any outgoing
+> >>> http packets will be dropped and a single broadcast message will be
+> >>> sent to user space.  That is because the match explicitly takes care
+> >>> of sending the notification.
+> >>>
+> >>> With your proposal:
+> >>>
+> >>> iptables -I OUTPUT -p http \
+> >>>          -m nfacct --nfacct-name http-limit --quota 10000 --match-once \
+> >>>          -j NFLOG --nflog-prefix "http: " --nflog-group 34
+> >>>
+> >>> will log the quota reached event but won't prevent further http
+> >>> traffic from going out.  One could instinctively add another rule
+> >>> right after the above one, something like:
+> >>>
+> >>> iptables -I OUTPUT -p http \
+> >>>          -m nfacct --nfacct-name http-limit --quota 10000 \
+> >>>          -j REJECT
+> >>>
+> >>> but that won't work either because the packet/byte could will be
+> >>> incremented twice.
+> >>
+> >> The usual workaround is to create custom chains to deal with this,
+> >> i.e.
+> >> iptables -N LOG_DROP_HTTP
+> >> iptables -A LOG_DROP_HTTP -j NFLOG --nflog-prefix "http: " --nflog-group 34
+> >> iptables -A LOG_DROP_HTTP -j REJECT
+> >> iptables -I OUTPUT -p http -m nfacct ... -j LOG_DROP_HTTP
+> 
+> I may have spoken too quickly.  With this solution a log message is
+> sent every time a packet over quota is received, something we
+> definitely want to avoid.  I was able to cover that case when sending
+> a notification from the match function.
 
-Signed-off-by: Michal Nazarewicz <mina86@mina86.com>
-Cc: Patrick McHardy <kaber@trash.net>
----
- net/netfilter/nf_tables_api.c | 1 -
- 1 file changed, 1 deletion(-)
-
-diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
-index f93b7d0..9c56adc 100644
---- a/net/netfilter/nf_tables_api.c
-+++ b/net/netfilter/nf_tables_api.c
-@@ -2521,7 +2521,6 @@ static int nf_tables_dump_set(struct sk_buff *skb, struct netlink_callback *cb)
- 	u32 portid, seq;
- 	int event, err;
- 
--	nfmsg = nlmsg_data(cb->nlh);
- 	err = nlmsg_parse(cb->nlh, sizeof(*nfmsg), nla, NFTA_SET_ELEM_LIST_MAX,
- 			  nft_set_elem_list_policy);
- 	if (err < 0)
--- 
-1.8.4
-
+Then, keep your code to send netlink notifications, I don't find any
+better solution at this moment.
