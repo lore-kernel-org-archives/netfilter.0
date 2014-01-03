@@ -1,59 +1,53 @@
-From: Mathieu Poirier <mathieu.poirier@linaro.org>
-Subject: Re: [PATCH 1/1] netfilter: xtables: add quota support to nfacct
-Date: Fri, 3 Jan 2014 13:38:45 -0700
-Message-ID: <CANLsYkyA-DT3jWeYJUJG-6rNTDcfv22BrjfBBAaaL4qHu+H+PA@mail.gmail.com>
-References: <1386780798-24374-1-git-send-email-mathieu.poirier@linaro.org>
-	<1386780798-24374-2-git-send-email-mathieu.poirier@linaro.org>
-	<20131218095322.GA4740@localhost>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH RESEND] netfilter: remove unused variable
+Date: Sat, 4 Jan 2014 00:11:46 +0100
+Message-ID: <20140103231146.GA23904@localhost>
+References: <1388554039-28452-1-git-send-email-mina86@mina86.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <20131218095322.GA4740@localhost>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1388554039-28452-1-git-send-email-mina86@mina86.com>
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, John Stultz <john.stultz@linaro.org>, JP Abgrall <jpa@google.com>
+To: Michal Nazarewicz <mina86@mina86.com>
+Cc: Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org
 
-...
+On Wed, Jan 01, 2014 at 06:27:19AM +0100, Michal Nazarewicz wrote:
+> The nfmsg variable is not used (except in sizeof operator which does
+> not care about its value) between the first and second time it is
+> assigned the value.  Furthermore, nlmsg_data has no side effects, so
+> the assignment can be safely removed.
 
-> I think you can avoid this private area (including the spinlock) by
-> storing a copy of the packet/byte counter before calling
-> nfnl_acct_update(). Then if you note that old packet/byte counter was
-> below quota but new is overquota, then you have to send an event, ie.
->
->         old_pkts = atomic64_read(info->nfacct->pkts);
->         new_pkts = nfnl_acct_update(skb, info->nfacct, info->flags);
->         if (old_pkts < info->quota && new_pkts > info->quota)
->                 send event
->
-> There's still one problem with this approach since it is racy, as it
-> may send several events, so you can refine it with:
->
->         if (old_pkts < info->quota && new_pkts > info->quota
->             && old_pkts + 1 == new_pkts)
->                 send event
->
-> You will need two different functions depending on the quota mode
-> (packet or bytes), and you will also need to modify nfnl_acct_update()
-> to return the new number of packets or bytes (depending on the flags),
-> you can use atomic_add_return and atomic_inc_return respectively to
-> retrieve the new (updated) value.
+Applied with minor glitch, see below.
 
-Now that we've dealt with the logging issue we can concentrate on the
-above suggestion that tries to avoid using a spinlock.  It works well
-in packet mode but not so much in byte mode.
+Thanks.
 
-Whether working in byte or packet mode the solution is using packets
-to determine who will send the notification.  When dealing with bytes
-identifying which packet made the byte count go over quota is of prime
-importance.  The problem is that the upgrade of packet and bytes in
-"nfnl_acct_update()" is not atomic to the caller - there is always a
-possibility that the thread will lose the CPU between incrementing
-packet and bytes.  This could eventually lead to erroneous arithmetic
-and an imprecise recognition of a quota attainment.
+> Signed-off-by: Michal Nazarewicz <mina86@mina86.com>
+> Cc: Patrick McHardy <kaber@trash.net>
+> ---
+>  net/netfilter/nf_tables_api.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/net/netfilter/nf_tables_api.c b/net/netfilter/nf_tables_api.c
+> index f93b7d0..9c56adc 100644
+> --- a/net/netfilter/nf_tables_api.c
+> +++ b/net/netfilter/nf_tables_api.c
+> @@ -2521,7 +2521,6 @@ static int nf_tables_dump_set(struct sk_buff *skb, struct netlink_callback *cb)
+>  	u32 portid, seq;
+>  	int event, err;
+>  
+> -	nfmsg = nlmsg_data(cb->nlh);
+>  	err = nlmsg_parse(cb->nlh, sizeof(*nfmsg), nla, NFTA_SET_ELEM_LIST_MAX,
 
-No matter how I turn things around in my head we need a spinlock -
-either in nfnl_acct_update() or in the match function of xt_nfacct.c.
+mangled this patch to use sizeof(struct nfgenmsg) instead. That change
+is not required from the semantic point of view, of course, but for
+readability reasons I think it's better not to refer to a variable
+that is not used in that context.
 
-Comments are welcomed.
+>  			  nft_set_elem_list_policy);
+>  	if (err < 0)
+> -- 
+> 1.8.4
+> 
