@@ -1,120 +1,74 @@
-From: Andrew Vagin <avagin@gmail.com>
+From: Florian Westphal <fw@strlen.de>
 Subject: Re: [PATCH] netfilter: nf_conntrack: release conntrack from rcu
  callback
-Date: Tue, 7 Jan 2014 00:54:15 +0400
-Message-ID: <20140106205414.GA19788@gmail.com>
+Date: Mon, 6 Jan 2014 22:23:26 +0100
+Message-ID: <20140106212326.GB9894@breakpoint.cc>
 References: <1389023672-14351-1-git-send-email-avagin@openvz.org>
  <20140106170235.GJ28854@breakpoint.cc>
+ <20140106172130.GA2360@moon>
 Mime-Version: 1.0
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-type:content-disposition:in-reply-to:user-agent;
-        bh=TtVaNsn7V9cJatAoJsVPFsYKVu/heIoEDGyalChegso=;
-        b=YMCD8/S+D289vlZTZdN5aiR61LYtCiFQ9URBghRK5z4utkWZjZJZaIh+THJNlXNmGv
-         qI8bO0X0/VhgpUkCz9k8vV6xvnNRo5HpMLS41xf/yrojzkMyRnLHCzpsg0SgBHvUCZIO
-         ULRwJ271o/2p+n224AjHQnhSpHI5D+Ez2YJwbQ0Z3JsdZLn52/mjNhCOIt/uiesrBIfU
-         hZvu3REdKxZjs6bGyDvDWs6uDzHtoiaJd4R1tlKE4BlnFYE7yCn8+ZJtx7a/LVPNuBEl
-         /9gGtmvgxBmxqvjDJn/W7gV0hfMBS3poKXkox8ulkhYApUR6cWyS9KMX2DxouL36X79m
-         16yA==
 Content-Disposition: inline
-In-Reply-To: <20140106170235.GJ28854@breakpoint.cc>
+In-Reply-To: <20140106172130.GA2360@moon>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Florian Westphal <fw@strlen.de>
-Cc: Andrey Vagin <avagin@openvz.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, vvs@openvz.org, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>, Cyrill Gorcunov <gorcunov@openvz.org>
+To: Cyrill Gorcunov <gorcunov@gmail.com>
+Cc: Florian Westphal <fw@strlen.de>, Andrey Vagin <avagin@openvz.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, vvs@openvz.org, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>
 
-On Mon, Jan 06, 2014 at 06:02:35PM +0100, Florian Westphal wrote:
-> Andrey Vagin <avagin@openvz.org> wrote:
-> > Lets look at destroy_conntrack:
+Cyrill Gorcunov <gorcunov@gmail.com> wrote:
+> On Mon, Jan 06, 2014 at 06:02:35PM +0100, Florian Westphal wrote:
 > > 
-> > hlist_nulls_del_rcu(&ct->tuplehash[IP_CT_DIR_ORIGINAL].hnnode);
-> > ...
-> > nf_conntrack_free(ct)
-> > 	kmem_cache_free(net->ct.nf_conntrack_cachep, ct);
+> > Can you elaborate?
+> > Yes, nf_ct_is_dying(ct) might be called for the wrong conntrack.
 > > 
-> > The hash is protected by rcu, so readers look up conntracks without
-> > locks.
-> > A conntrack is removed from the hash, but in this moment a few readers
-> > still can use the conntrack, so if we call kmem_cache_free now, all
-> > readers will read released object.
+> > But, in case we _think_ that its the right one we call
+> > nf_ct_tuple_equal() to verify we indeed found the right one:
 > > 
-> > Bellow you can find more tricky race condition of three tasks.
-> > 
-> > task 1			task 2			task 3
-> > 			nf_conntrack_find_get
-> > 			 ____nf_conntrack_find
-> > destroy_conntrack
-> >  hlist_nulls_del_rcu
-> >  nf_conntrack_free
-> >  kmem_cache_free
-> > 						__nf_conntrack_alloc
-> > 						 kmem_cache_alloc
-> > 						 memset(&ct->tuplehash[IP_CT_DIR_MAX],
-> > 			 if (nf_ct_is_dying(ct))
-> > 
-> > In this case the task 2 will not understand, that it uses a wrong
-> > conntrack.
+> >        h = ____nf_conntrack_find(net, zone, tuple, hash);
+> >        if (h) { // might be released right now, but page won't go away (SLAB_BY_RCU)
+> >                 ct = nf_ct_tuplehash_to_ctrack(h);
+> >                 if (unlikely(nf_ct_is_dying(ct) ||
+> >                              !atomic_inc_not_zero(&ct->ct_general.use)))
+> > 			// which means we should hit this path (0 ref).
+> >                         h = NULL;
+> >                 else {
+> > 			// otherwise, it cannot go away from under us, since
+> > 			// we own a reference now.
+> >                         if (unlikely(!nf_ct_tuple_equal(tuple, &h->tuple) ||
+> >                                      nf_ct_zone(ct) != zone)) {
+> > 			// if we get here, the entry got recycled on other cpu
+> > 			// for a different tuple, we can bail out and drop
+> > 			// the reference safely and re-try the lookup
+> >                                 nf_ct_put(ct);
+> >                                 goto begin;
+> >                         }
+> >                 }
 > 
-> Can you elaborate?
-> Yes, nf_ct_is_dying(ct) might be called for the wrong conntrack.
+> I think tuple may match if
 > 
-> But, in case we _think_ that its the right one we call
-> nf_ct_tuple_equal() to verify we indeed found the right one:
-
-Ok. task3 creates a new contrack and nf_ct_tuple_equal() returns true on
-it. Looks like it's possible. In this case we have two threads with one
-unitialized contrack. It's really bad, because the code supposes that
-conntrack can not be initialized in two threads concurrently. For
-example BUG can be triggered from nf_nat_setup_info():
-
-BUG_ON(nf_nat_initialized(ct, maniptype));
-
-
+> task 1                  task 2                  task 3
+>                         nf_conntrack_find_get
+>                          ____nf_conntrack_find
+> destroy_conntrack
+>  hlist_nulls_del_rcu
+>  nf_conntrack_free
+>  kmem_cache_free
+>                                                 __nf_conntrack_alloc
+>                                                  kmem_cache_alloc
+>                          if (nf_ct_is_dying(ct))
 > 
->        h = ____nf_conntrack_find(net, zone, tuple, hash);
->        if (h) { // might be released right now, but page won't go away (SLAB_BY_RCU)
+> 						data is not yet cleaned
+> 
+>                                                  memset(&ct->tuplehash[IP_CT_DIR_MAX],
+> 
+> No? Or there something obvious I'm missing?
 
-I did not take SLAB_BY_RCU into account. Thank you. But it doesn't say,
-that we don't have the race condition here. It explains why we don't
-have really bad situations, when a completely wrong contract is
-used. We always use a "right" conntrack, but sometimes it is
-uninitialized and here is a problem.
+IMHO this isn't obvious at all :-)
 
-The race window is tiny, because usually we check that conntrack is not
-initialized and only then we execute its initialization. We don't hold
-any locks in these moments.
+But, in the example above, the atomic_inc_not_zero() should fail
+until after __nf_conntrack_alloc() re-inits the refcount to 1.
 
-Task2					| Task3
-if (!nf_nat_initialized(ct))		|
-					| if (!nf_nat_initialized(ct)
- alloc_null_binding			|
-					|  alloc_null_binding
-  nf_nat_setup_info			|
-   ct->status |= IPS_SRC_NAT_DONE	|
-					|   nf_nat_setup_info
-					|    BUG_ON(nf_nat_initialized(ct));
-
->                 ct = nf_ct_tuplehash_to_ctrack(h);
->                 if (unlikely(nf_ct_is_dying(ct) ||
->                              !atomic_inc_not_zero(&ct->ct_general.use)))
-> 			// which means we should hit this path (0 ref).
->                         h = NULL;
->                 else {
-> 			// otherwise, it cannot go away from under us, since
-> 			// we own a reference now.
->                         if (unlikely(!nf_ct_tuple_equal(tuple, &h->tuple) ||
->                                      nf_ct_zone(ct) != zone)) {
-> 			// if we get here, the entry got recycled on other cpu
-> 			// for a different tuple, we can bail out and drop
-> 			// the reference safely and re-try the lookup
->                                 nf_ct_put(ct);
->                                 goto begin;
->                         }
->                 }
-
-Thanks,
-Andrey
+The mb there should make sure ____nf_conntrack_find() doesn't
+find an outdated tuple before this.
