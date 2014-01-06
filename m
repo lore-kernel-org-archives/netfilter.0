@@ -1,25 +1,26 @@
 From: Cyrill Gorcunov <gorcunov@gmail.com>
 Subject: Re: [PATCH] netfilter: nf_conntrack: release conntrack from rcu
- callback
-Date: Mon, 6 Jan 2014 21:21:30 +0400
-Message-ID: <20140106172130.GA2360@moon>
+  callback
+Date: Mon, 6 Jan 2014 22:09:33 +0400
+Message-ID: <20140106180933.GB2360@moon>
 References: <1389023672-14351-1-git-send-email-avagin@openvz.org>
  <20140106170235.GJ28854@breakpoint.cc>
+ <20140106172130.GA2360@moon>
 Mime-Version: 1.0
 Return-path: <linux-kernel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-type:content-disposition:in-reply-to:user-agent;
-        bh=3+JColI7pI7Fv8/njUpjz51WeGA7fDTV/0O5N9W0vgc=;
-        b=UJd84jJ3+XEOodROq66Yqx/GZ9sxFZeKpxiUIRi3GZtW6uH9zbfaf7C4NdfimecfCT
-         3QHaFx/ft/UtCaH0ehBipCVNNbYmp7xhMv0ndimygKWZyaNoAJKO06lbO+sbDMyTi4ji
-         S2B58xwq/5WODl63/MHQIkPPmYxv2xbvzcIx/ZcQFg/BEZYBl/QzoqdlQdVq1CMsiu+p
-         DhB+RsexaSmx14un0krgyTJMP7NE1aC0sngqzQs3V7L/xcJvVdtpk0PRz3ZdeyLROvvx
-         b6sekiFYT38nuctdewYaEmb/UI7FKdOLaurHqZVcfY9XSSYRH+Ozo62dVC2XpQ0cH3WO
-         m4ZQ==
+        bh=TEo5KuKtE6CkvNzp/O84amlPdHSDuU9MFV0K4U3NWhI=;
+        b=y9NTKWSMKdA90t53CG/s4cI5Mijq6XMCpbSbUns1Fcbr0eSpTVu6VTAFmSfJaQXXLC
+         CszyWJN30ODXkFav0hGKanzHa3+kGpg6l+R1UoPk0OnQ5K8ATXHPniems4DYR0aCYvtK
+         5/UPcgxHgK2oGyhicDpT//9oAY1gGt5Lla+N5zozI9cBB97iBwH/EutVV6WwZRHU1Hq1
+         o2Pjdd0/Db6K3hAOkStrZlLufk7pfWhsKwvuO59rP/VgkcqN+lqCxcge7mWHDVfeQvmz
+         n6bc+gOdoI0mgT17x3DRA0cFP9k3iMUWfRNBjNhOQuqY3ve76F0oOPy4XmCzqyHpOl3S
+         CvPg==
 Content-Disposition: inline
-In-Reply-To: <20140106170235.GJ28854@breakpoint.cc>
+In-Reply-To: <20140106172130.GA2360@moon>
 Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
@@ -27,49 +28,9 @@ Content-Transfer-Encoding: 7bit
 To: Florian Westphal <fw@strlen.de>
 Cc: Andrey Vagin <avagin@openvz.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, vvs@openvz.org, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>
 
-On Mon, Jan 06, 2014 at 06:02:35PM +0100, Florian Westphal wrote:
+On Mon, Jan 06, 2014 at 09:21:30PM +0400, Cyrill Gorcunov wrote:
 > 
-> Can you elaborate?
-> Yes, nf_ct_is_dying(ct) might be called for the wrong conntrack.
-> 
-> But, in case we _think_ that its the right one we call
-> nf_ct_tuple_equal() to verify we indeed found the right one:
-> 
->        h = ____nf_conntrack_find(net, zone, tuple, hash);
->        if (h) { // might be released right now, but page won't go away (SLAB_BY_RCU)
->                 ct = nf_ct_tuplehash_to_ctrack(h);
->                 if (unlikely(nf_ct_is_dying(ct) ||
->                              !atomic_inc_not_zero(&ct->ct_general.use)))
-> 			// which means we should hit this path (0 ref).
->                         h = NULL;
->                 else {
-> 			// otherwise, it cannot go away from under us, since
-> 			// we own a reference now.
->                         if (unlikely(!nf_ct_tuple_equal(tuple, &h->tuple) ||
->                                      nf_ct_zone(ct) != zone)) {
-> 			// if we get here, the entry got recycled on other cpu
-> 			// for a different tuple, we can bail out and drop
-> 			// the reference safely and re-try the lookup
->                                 nf_ct_put(ct);
->                                 goto begin;
->                         }
->                 }
+> No? Or there something obvious I'm missing?
 
-I think tuple may match if
-
-task 1                  task 2                  task 3
-                        nf_conntrack_find_get
-                         ____nf_conntrack_find
-destroy_conntrack
- hlist_nulls_del_rcu
- nf_conntrack_free
- kmem_cache_free
-                                                __nf_conntrack_alloc
-                                                 kmem_cache_alloc
-                         if (nf_ct_is_dying(ct))
-
-						data is not yet cleaned
-
-                                                 memset(&ct->tuplehash[IP_CT_DIR_MAX],
-
-No? Or there something obvious I'm missing?
+Drop my assumption, it can't happen (iow either dying bit is set,
+either it clean but tuple can't match then).
