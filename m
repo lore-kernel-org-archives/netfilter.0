@@ -1,36 +1,120 @@
-From: Cyrill Gorcunov <gorcunov@gmail.com>
+From: Andrew Vagin <avagin@gmail.com>
 Subject: Re: [PATCH] netfilter: nf_conntrack: release conntrack from rcu
-  callback
-Date: Mon, 6 Jan 2014 22:09:33 +0400
-Message-ID: <20140106180933.GB2360@moon>
+ callback
+Date: Tue, 7 Jan 2014 00:54:15 +0400
+Message-ID: <20140106205414.GA19788@gmail.com>
 References: <1389023672-14351-1-git-send-email-avagin@openvz.org>
  <20140106170235.GJ28854@breakpoint.cc>
- <20140106172130.GA2360@moon>
 Mime-Version: 1.0
-Return-path: <linux-kernel-owner@vger.kernel.org>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-type:content-disposition:in-reply-to:user-agent;
-        bh=TEo5KuKtE6CkvNzp/O84amlPdHSDuU9MFV0K4U3NWhI=;
-        b=y9NTKWSMKdA90t53CG/s4cI5Mijq6XMCpbSbUns1Fcbr0eSpTVu6VTAFmSfJaQXXLC
-         CszyWJN30ODXkFav0hGKanzHa3+kGpg6l+R1UoPk0OnQ5K8ATXHPniems4DYR0aCYvtK
-         5/UPcgxHgK2oGyhicDpT//9oAY1gGt5Lla+N5zozI9cBB97iBwH/EutVV6WwZRHU1Hq1
-         o2Pjdd0/Db6K3hAOkStrZlLufk7pfWhsKwvuO59rP/VgkcqN+lqCxcge7mWHDVfeQvmz
-         n6bc+gOdoI0mgT17x3DRA0cFP9k3iMUWfRNBjNhOQuqY3ve76F0oOPy4XmCzqyHpOl3S
-         CvPg==
+        bh=TtVaNsn7V9cJatAoJsVPFsYKVu/heIoEDGyalChegso=;
+        b=YMCD8/S+D289vlZTZdN5aiR61LYtCiFQ9URBghRK5z4utkWZjZJZaIh+THJNlXNmGv
+         qI8bO0X0/VhgpUkCz9k8vV6xvnNRo5HpMLS41xf/yrojzkMyRnLHCzpsg0SgBHvUCZIO
+         ULRwJ271o/2p+n224AjHQnhSpHI5D+Ez2YJwbQ0Z3JsdZLn52/mjNhCOIt/uiesrBIfU
+         hZvu3REdKxZjs6bGyDvDWs6uDzHtoiaJd4R1tlKE4BlnFYE7yCn8+ZJtx7a/LVPNuBEl
+         /9gGtmvgxBmxqvjDJn/W7gV0hfMBS3poKXkox8ulkhYApUR6cWyS9KMX2DxouL36X79m
+         16yA==
 Content-Disposition: inline
-In-Reply-To: <20140106172130.GA2360@moon>
-Sender: linux-kernel-owner@vger.kernel.org
+In-Reply-To: <20140106170235.GJ28854@breakpoint.cc>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: Florian Westphal <fw@strlen.de>
-Cc: Andrey Vagin <avagin@openvz.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, vvs@openvz.org, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>
+Cc: Andrey Vagin <avagin@openvz.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, vvs@openvz.org, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>, Cyrill Gorcunov <gorcunov@openvz.org>
 
-On Mon, Jan 06, 2014 at 09:21:30PM +0400, Cyrill Gorcunov wrote:
+On Mon, Jan 06, 2014 at 06:02:35PM +0100, Florian Westphal wrote:
+> Andrey Vagin <avagin@openvz.org> wrote:
+> > Lets look at destroy_conntrack:
+> > 
+> > hlist_nulls_del_rcu(&ct->tuplehash[IP_CT_DIR_ORIGINAL].hnnode);
+> > ...
+> > nf_conntrack_free(ct)
+> > 	kmem_cache_free(net->ct.nf_conntrack_cachep, ct);
+> > 
+> > The hash is protected by rcu, so readers look up conntracks without
+> > locks.
+> > A conntrack is removed from the hash, but in this moment a few readers
+> > still can use the conntrack, so if we call kmem_cache_free now, all
+> > readers will read released object.
+> > 
+> > Bellow you can find more tricky race condition of three tasks.
+> > 
+> > task 1			task 2			task 3
+> > 			nf_conntrack_find_get
+> > 			 ____nf_conntrack_find
+> > destroy_conntrack
+> >  hlist_nulls_del_rcu
+> >  nf_conntrack_free
+> >  kmem_cache_free
+> > 						__nf_conntrack_alloc
+> > 						 kmem_cache_alloc
+> > 						 memset(&ct->tuplehash[IP_CT_DIR_MAX],
+> > 			 if (nf_ct_is_dying(ct))
+> > 
+> > In this case the task 2 will not understand, that it uses a wrong
+> > conntrack.
 > 
-> No? Or there something obvious I'm missing?
+> Can you elaborate?
+> Yes, nf_ct_is_dying(ct) might be called for the wrong conntrack.
+> 
+> But, in case we _think_ that its the right one we call
+> nf_ct_tuple_equal() to verify we indeed found the right one:
 
-Drop my assumption, it can't happen (iow either dying bit is set,
-either it clean but tuple can't match then).
+Ok. task3 creates a new contrack and nf_ct_tuple_equal() returns true on
+it. Looks like it's possible. In this case we have two threads with one
+unitialized contrack. It's really bad, because the code supposes that
+conntrack can not be initialized in two threads concurrently. For
+example BUG can be triggered from nf_nat_setup_info():
+
+BUG_ON(nf_nat_initialized(ct, maniptype));
+
+
+> 
+>        h = ____nf_conntrack_find(net, zone, tuple, hash);
+>        if (h) { // might be released right now, but page won't go away (SLAB_BY_RCU)
+
+I did not take SLAB_BY_RCU into account. Thank you. But it doesn't say,
+that we don't have the race condition here. It explains why we don't
+have really bad situations, when a completely wrong contract is
+used. We always use a "right" conntrack, but sometimes it is
+uninitialized and here is a problem.
+
+The race window is tiny, because usually we check that conntrack is not
+initialized and only then we execute its initialization. We don't hold
+any locks in these moments.
+
+Task2					| Task3
+if (!nf_nat_initialized(ct))		|
+					| if (!nf_nat_initialized(ct)
+ alloc_null_binding			|
+					|  alloc_null_binding
+  nf_nat_setup_info			|
+   ct->status |= IPS_SRC_NAT_DONE	|
+					|   nf_nat_setup_info
+					|    BUG_ON(nf_nat_initialized(ct));
+
+>                 ct = nf_ct_tuplehash_to_ctrack(h);
+>                 if (unlikely(nf_ct_is_dying(ct) ||
+>                              !atomic_inc_not_zero(&ct->ct_general.use)))
+> 			// which means we should hit this path (0 ref).
+>                         h = NULL;
+>                 else {
+> 			// otherwise, it cannot go away from under us, since
+> 			// we own a reference now.
+>                         if (unlikely(!nf_ct_tuple_equal(tuple, &h->tuple) ||
+>                                      nf_ct_zone(ct) != zone)) {
+> 			// if we get here, the entry got recycled on other cpu
+> 			// for a different tuple, we can bail out and drop
+> 			// the reference safely and re-try the lookup
+>                                 nf_ct_put(ct);
+>                                 goto begin;
+>                         }
+>                 }
+
+Thanks,
+Andrey
