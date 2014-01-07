@@ -1,118 +1,77 @@
-From: Eric Dumazet <eric.dumazet@gmail.com>
+From: Florian Westphal <fw@strlen.de>
 Subject: Re: [PATCH] netfilter: nf_conntrack: fix RCU race in
  nf_conntrack_find_get
-Date: Tue, 07 Jan 2014 07:08:25 -0800
-Message-ID: <1389107305.26646.20.camel@edumazet-glaptop2.roam.corp.google.com>
+Date: Tue, 7 Jan 2014 16:25:20 +0100
+Message-ID: <20140107152520.GF9894@breakpoint.cc>
 References: <1389090711-15843-1-git-send-email-avagin@openvz.org>
+ <1389107305.26646.20.camel@edumazet-glaptop2.roam.corp.google.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :content-type:content-transfer-encoding:mime-version;
-        bh=3OzthCzwb6QmU7VTxs+UFNV2/TJrya9GivVpsuagvkI=;
-        b=l/Nm6s9ShMEJKb/TrzNHKpT+ekoOXoJ0IoRe1zNOu3R1oZpPolOckITp7Ka4qJ5Vz6
-         VCAQknND0gVtd0wxc2J0+kWVrKxuVrv3LgteCIgXdlXaUvrS9X2D2niokenR3puwdVfN
-         FPOFP6BvXpHybH4axAS/Ti1zCBxn6w7v2+OtTYbTBhqDBH1tUu7I4uChd4MJNBC1Me3k
-         sBrtMV5Q8D7fvcM7BOGgBiMd3mImvOBBBrkhMp44UUz0XcKiZY4Kf70XlSNgffD8xrU8
-         1tR3fshWm6pEGRN2qDH4sWI/PuFTFWemRq2xfdzT8Up28gMyHKpZxH09y6Ai+H8l1hjK
-         mmbA==
-In-Reply-To: <1389090711-15843-1-git-send-email-avagin@openvz.org>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1389107305.26646.20.camel@edumazet-glaptop2.roam.corp.google.com>
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Andrey Vagin <avagin@openvz.org>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, vvs@openvz.org, Florian Westphal <fw@strlen.de>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>, Cyrill Gorcunov <gorcunov@openvz.org>
+Content-Transfer-Encoding: 7bit
+To: Eric Dumazet <eric.dumazet@gmail.com>
+Cc: Andrey Vagin <avagin@openvz.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, vvs@openvz.org, Florian Westphal <fw@strlen.de>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>, Cyrill Gorcunov <gorcunov@openvz.org>
 
-On Tue, 2014-01-07 at 14:31 +0400, Andrey Vagin wrote:
-> Lets look at destroy_conntrack:
+Eric Dumazet <eric.dumazet@gmail.com> wrote:
+> > diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
+> > index 43549eb..7a34bb2 100644
+> > --- a/net/netfilter/nf_conntrack_core.c
+> > +++ b/net/netfilter/nf_conntrack_core.c
+> > @@ -387,8 +387,12 @@ begin:
+> >  			     !atomic_inc_not_zero(&ct->ct_general.use)))
+> >  			h = NULL;
+> >  		else {
+> > +			/* A conntrack can be recreated with the equal tuple,
+> > +			 * so we need to check that the conntrack is initialized
+> > +			 */
+> >  			if (unlikely(!nf_ct_tuple_equal(tuple, &h->tuple) ||
+> > -				     nf_ct_zone(ct) != zone)) {
+> > +				     nf_ct_zone(ct) != zone) ||
+> > +				     !nf_ct_is_confirmed(ct)) {
+> >  				nf_ct_put(ct);
+> >  				goto begin;
+> >  			}
 > 
-> hlist_nulls_del_rcu(&ct->tuplehash[IP_CT_DIR_ORIGINAL].hnnode);
-> ...
-> nf_conntrack_free(ct)
-> 	kmem_cache_free(net->ct.nf_conntrack_cachep, ct);
+> I do not think this is the right way to fix this problem (if said
+> problem is confirmed)
 > 
-> net->ct.nf_conntrack_cachep is created with SLAB_DESTROY_BY_RCU.
+> Remember the rule about SLAB_DESTROY_BY_RCU :
 > 
-> The hash is protected by rcu, so readers look up conntracks without
-> locks.
-> A conntrack is removed from the hash, but in this moment a few readers
-> still can use the conntrack. Then this conntrack is released and another
-> thread creates conntrack with the same address and the equal tuple.
-> After this a reader starts to validate the conntrack:
-> * It's not dying, because a new conntrack was created
-> * nf_ct_tuple_equal() returns true.
+> When a struct is freed, then reused, its important to set the its refcnt
+> (from 0 to 1) only when the structure is fully ready for use.
 > 
-> But this conntrack is not initialized yet, so it can not be used by two
-> threads concurrently. In this case BUG_ON may be triggered from
-> nf_nat_setup_info().
-> 
-> Florian Westphal suggested to check the confirm bit too. I think it's
-> right.
-> 
-> task 1			task 2			task 3
-> 			nf_conntrack_find_get
-> 			 ____nf_conntrack_find
-> destroy_conntrack
->  hlist_nulls_del_rcu
->  nf_conntrack_free
->  kmem_cache_free
-> 						__nf_conntrack_alloc
-> 						 kmem_cache_alloc
-> 						 memset(&ct->tuplehash[IP_CT_DIR_MAX],
-> 			 if (nf_ct_is_dying(ct))
-> 			 if (!nf_ct_tuple_equal()
-> 
-> I'm not sure, that I have ever seen this race condition in a real life.
-> Currently we are investigating a bug, which is reproduced on a few node.
-> In our case one conntrack is initialized from a few tasks concurrently,
-> we don't have any other explanation for this.
+> If a lookup finds a structure which is not yet setup, the
+> atomic_inc_not_zero() will fail.
 
-> 
-> Cc: Florian Westphal <fw@strlen.de>
-> Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-> Cc: Patrick McHardy <kaber@trash.net>
-> Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-> Cc: "David S. Miller" <davem@davemloft.net>
-> Cc: Cyrill Gorcunov <gorcunov@openvz.org>
-> Signed-off-by: Andrey Vagin <avagin@openvz.org>
-> ---
->  net/netfilter/nf_conntrack_core.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
-> 
-> diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-> index 43549eb..7a34bb2 100644
-> --- a/net/netfilter/nf_conntrack_core.c
-> +++ b/net/netfilter/nf_conntrack_core.c
-> @@ -387,8 +387,12 @@ begin:
->  			     !atomic_inc_not_zero(&ct->ct_general.use)))
->  			h = NULL;
->  		else {
-> +			/* A conntrack can be recreated with the equal tuple,
-> +			 * so we need to check that the conntrack is initialized
-> +			 */
->  			if (unlikely(!nf_ct_tuple_equal(tuple, &h->tuple) ||
-> -				     nf_ct_zone(ct) != zone)) {
-> +				     nf_ct_zone(ct) != zone) ||
-> +				     !nf_ct_is_confirmed(ct)) {
->  				nf_ct_put(ct);
->  				goto begin;
->  			}
+Indeed.  But, the structure itself might be ready (or rather,
+can be ready since the allocation side will set the refcount to one
+after doing the initial work, such as zapping old ->status flags and
+setting tuple information).
 
-I do not think this is the right way to fix this problem (if said
-problem is confirmed)
+The problem is with nat extension area stored in the ct->ext area.
+This extension area is preallocated but the snat/dnat action
+information is only set up after the ct (or rather, the skb that grabbed
+a reference to the nf_conn entry) traverses nat pre/postrouting.
 
-Remember the rule about SLAB_DESTROY_BY_RCU :
+This will also set up a null-binding when no matching SNAT/DNAT/MASQERUADE
+rule existed.
 
-When a struct is freed, then reused, its important to set the its refcnt
-(from 0 to 1) only when the structure is fully ready for use.
+The manipulations of the skb->nfct->ext nat area are performed without
+a lock.  Concurrent access is supposedly impossible as the conntrack
+should not (yet) be in the hash table.
 
-If a lookup finds a structure which is not yet setup, the
-atomic_inc_not_zero() will fail.
+The confirmed bit is set right before we insert the conntrack into
+the hash table (after we traversed rules, ct is ready to be
+'published').
 
-Take a look at sk_clone_lock() and Documentation/RCU/rculist_nulls.txt
+i.e. when the confirmed bit is NOT set we should not be 'seeing' the nf_conn
+struct when we perform the lookup, as it should still be sitting on the
+'unconfirmed' list, being invisible to readers.
 
+Does that explanation make sense to you?
 
-
-
+Thanks for looking into this.
