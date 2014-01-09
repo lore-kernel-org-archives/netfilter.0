@@ -1,37 +1,42 @@
-From: Chris Frederick <cdf123@cdf123.net>
-Subject: Packets not hitting the nat POSTROUTING table
-Date: Thu, 09 Jan 2014 15:57:20 -0600
-Message-ID: <52CF1B40.2070201@cdf123.net>
+From: Kristian Evensen <kristian.evensen@gmail.com>
+Subject: Re: Packets not hitting the nat POSTROUTING table
+Date: Thu, 9 Jan 2014 23:31:41 +0100
+Message-ID: <CAKfDRXg6ikUtbe3WF6EZTPpDSm_-nPSNPGgXGC95A4GPN9YEhw@mail.gmail.com>
+References: <52CF1B40.2070201@cdf123.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type;
+        bh=SjoK8L0YKIT7MwYlFy8BBI1dR3LbCu7XetssxEXuWJo=;
+        b=BTSxkspURuZmpggd/KNtfSkmAeCWw6L5N2Er6NypizIUgBXuAl+oytRCtZI75MRqGr
+         9EacWHWml9/zrm4tCprkiBG/AG+2izAiGmzdXNyCEgFgPUM7Pfv/kxFw8/Z/rc/PQAIi
+         iyR730FQ96/kXxMze50E8oMKM/x1oSSwYLr6ZahvqooT9pPRA8YU68cxPYv5KV1bCT31
+         t+SZ7zL9WETCwsvBMk2YOO9ljcnBOCUw3/v/nLI4botOiTOmG6R3PoydioShDQtadnWd
+         n6axwOwfJjQkjShqA2oPB6DflFU5WZ+DxB7O/8oWpPPFctR5ZlGaJUrlUduuCU9iD2E5
+         aFvQ==
+In-Reply-To: <52CF1B40.2070201@cdf123.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Chris Frederick <cdf123@cdf123.net>
+Cc: netfilter@vger.kernel.org
 
-Can someone help me understand this issue?
+Hi Chris,
 
-I'm trying to do some load balancing, and nothing seems to be working quite right.  The plan would be to have an apache server listening on a 
-private interface, while the load balancing happens on the public interface using keepalived's virtual address functions.  I seem to have 
-everything setup right, but the apache responses are coming from the private interface.
+On Thu, Jan 9, 2014 at 10:57 PM, Chris Frederick <cdf123@cdf123.net> wrote:
+> Any ideas would be helpful.
 
-I've added a TRACE rule to figure out what's happening and none of the response packets are hitting the nat table's POSTROUTING chain. 
-Everywhere I've found online mentions packet traversal going through nat/POSTROUTING before being sent on.
+If I have understood things correctly, packets belonging to an
+established connection does not hit any of the chains in the nat
+table. If you want to mangle/filter/manipulate/... these packets, you
+can use for example the POSTROUTING chain in the mangle table or in
+rawpost. The latter requires xtables-addons as well as slight change
+to compilation as rawpost was removed in a recent commit. See:
+http://sourceforge.net/p/xtables-addons/xtables-addons/ci/9414a5df343bf30ba13e76dbd7181c55683b11cb/
 
-Here's a flow of what seems to be happening:
+-Kristian
 
-Client (A.B.C.D) sends request to load balanced virtual ip (SYN from A.B.C.D to 1.2.3.4)
-Keepalived recieves packet and sends it to a mirrored apache (SYN from A.B.C.D to 10.0.0.X)
-Apache responds to client (SYN/ACK from 10.0.0.X to A.B.C.D)
-Client receives response from unknown source, rightfully discards it (SYN/ACK from 10.0.0.X should have been from 1.2.3.4)
-
-If I could just SNAT the packets with a rule like this:
-iptables -t nat -A POSTROUTING -o eth0 -s 10.10.10.0/24 --sport 443 -j SNAT --to 12.34.56.78
-
-I've run similar setups like this before, and they have worked, but I can't figure out why nothing is hitting the POSTROUTING chain in the nat 
-table.
-
-Any ideas would be helpful.
-
-Chris Frederick
+-Kristian
