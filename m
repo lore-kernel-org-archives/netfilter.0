@@ -1,39 +1,49 @@
-From: maom_onet <maom_onet@poczta.onet.pl>
-Subject: Packet logging with dynamic config?
-Date: Fri, 10 Jan 2014 11:07:46 +0100
-Message-ID: <59896600-eba4f9864a79309ed6ed960ea05c85dc@pmq5.m5r2.onet>
+From: Kristian Evensen <kristian.evensen@gmail.com>
+Subject: Re: Packets not hitting the nat POSTROUTING table
+Date: Fri, 10 Jan 2014 13:18:47 +0100
+Message-ID: <CAKfDRXgitOtCSBrCmCjJ_Njwhh1HScBfjt2sYY2MQ0PjsVXEDQ@mail.gmail.com>
+References: <52CF1B40.2070201@cdf123.net>
+	<CAKfDRXg6ikUtbe3WF6EZTPpDSm_-nPSNPGgXGC95A4GPN9YEhw@mail.gmail.com>
+	<52CF2A9B.3000903@cdf123.net>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=poczta.onet.pl;
-	s=2011; t=1389348468;
-	bh=/1czStwgBgjoT0psyddlxj4K2P/4wzfCVAQu+DOjXXE=;
-	h=Content-Type:MIME-Version:Content-Transfer-Encoding:From:To:Date:
-	 Message-Id:Subject;
-	b=ezJcHPLhDrprGMEZmHdD1DxXVsOPSa9iW1WXKiBHp3ezDNA/RqfyWOpCUuHz3tReW
-	 /putN1do9cPp8ZvYXK13R1Vn90PLycO+Qk36C4VbLUZZG2btMQftNEi1yQ1uEUx0MH
-	 PdUbEbjmLOAEG1UxRWST+G775DItZniSdi5yFjzw=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type;
+        bh=BC55SMTBy2qoU4OMsIDvJu5fMPV0qg7rnB8WXktKhZI=;
+        b=Wgpfnn7Woss9SZu3e6uMLFoLrUoDPYYRaIyMyd+Zl8HXa1tKqsKV9W3dTGPp1BIz1E
+         Mrl2emmEEiwbP/g5DhkdC/dzGEXVo8qiTqarHtF+efGt/wlqkQKVqzKkxgZDAeUG3vU5
+         9WQ+/LBGzn8tdKlf5F6A0AkRCGqAlwgKzR44ufj/HGk31HN70N1WX2mG8BkV/K/wPMTc
+         SaH65pYiG+Ru5Gm0qZ98mxevPzDA19ZoUPMMOM3y8YIah8ZSZh3REUj2soYMQbZy4B64
+         pAjVteY+d0O8xzEDALGEZb33Pbcd52UGizKcshC63fIQUwWk1VrqG1X6MO6/8vKwnOJ2
+         Xtdg==
+In-Reply-To: <52CF2A9B.3000903@cdf123.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: Chris Frederick <cdf123@cdf123.net>
+Cc: netfilter@vger.kernel.org
 
-Dear Sirs,
+Hi,
 
-I need to capture packets from some subset of interfaces (on a given Linux host), then:
-- log all the packets in the pcap format, which is the easy part
-- match the packets against a dynamically changing configuration and generate alarms on mismatch
+On Fri, Jan 10, 2014 at 12:02 AM, Chris Frederick <cdf123@cdf123.net> wrote:
+> When you say "established connection" are you talking TCP level established
+> connection, or is this from contrack identifying the connection?  I guess
+> what I'm asking is if doing a NOTRACK in raw would allow the packets through
+> and still pass through nat/POSTROUTING?
 
-My software is notified about current configuration by a userspace application, probably using dbus, if it matters. So, the software should probably be a userspace application itself.
+Sorry for not being accurate, I meant established as in an established
+mapping. If you use NOTRACK, I believe packets skip conntrack and
+thereby the NAT table altogether.
 
-I have read about possible approaches to achieve this, there are quite many: libpcap, PF_RING, netfilter/iptables probably with ulogd2. I just think that modifying iptables rules according to config changes would be quite complex (opposed to checking if a packet complies with the config or not).
+> I did see that they are hitting the POSTROUTING chain in the mangle table,
+> but I can't SNAT from there.  Does xtables-addons provide this?  I'll
+> probably start looking there.
 
-As I am not an experienced networking Linux developer, I would like to ask what would be the best approach from
-1. Performance
-2. Easy of implementation (the less/easier code, the better),
+Yes, xtables-addons used to provide this in the RAWDNAT/SNAT targets.
+I am not sure why there were removed, but the modules compile fine so
+keeping an out-of-tree patch is no problem, at least for now.
 
-in that order, point of view?
-
-Thank you,
-
-Marek
+-Kristian
