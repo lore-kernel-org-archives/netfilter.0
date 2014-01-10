@@ -1,43 +1,39 @@
-From: Chris Frederick <cdf123@cdf123.net>
-Subject: Re: Packets not hitting the nat POSTROUTING table
-Date: Thu, 09 Jan 2014 17:02:51 -0600
-Message-ID: <52CF2A9B.3000903@cdf123.net>
-References: <52CF1B40.2070201@cdf123.net> <CAKfDRXg6ikUtbe3WF6EZTPpDSm_-nPSNPGgXGC95A4GPN9YEhw@mail.gmail.com>
+From: maom_onet <maom_onet@poczta.onet.pl>
+Subject: Packet logging with dynamic config?
+Date: Fri, 10 Jan 2014 11:07:46 +0100
+Message-ID: <59896600-eba4f9864a79309ed6ed960ea05c85dc@pmq5.m5r2.onet>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAKfDRXg6ikUtbe3WF6EZTPpDSm_-nPSNPGgXGC95A4GPN9YEhw@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=poczta.onet.pl;
+	s=2011; t=1389348468;
+	bh=/1czStwgBgjoT0psyddlxj4K2P/4wzfCVAQu+DOjXXE=;
+	h=Content-Type:MIME-Version:Content-Transfer-Encoding:From:To:Date:
+	 Message-Id:Subject;
+	b=ezJcHPLhDrprGMEZmHdD1DxXVsOPSa9iW1WXKiBHp3ezDNA/RqfyWOpCUuHz3tReW
+	 /putN1do9cPp8ZvYXK13R1Vn90PLycO+Qk36C4VbLUZZG2btMQftNEi1yQ1uEUx0MH
+	 PdUbEbjmLOAEG1UxRWST+G775DItZniSdi5yFjzw=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
-Cc: Kristian Evensen <kristian.evensen@gmail.com>
 
-On 01/09/14 16:31, Kristian Evensen wrote:
-> Hi Chris,
->
-> On Thu, Jan 9, 2014 at 10:57 PM, Chris Frederick <cdf123@cdf123.net> wrote:
->> Any ideas would be helpful.
->
-> If I have understood things correctly, packets belonging to an
-> established connection does not hit any of the chains in the nat
-> table. If you want to mangle/filter/manipulate/... these packets, you
-> can use for example the POSTROUTING chain in the mangle table or in
-> rawpost. The latter requires xtables-addons as well as slight change
-> to compilation as rawpost was removed in a recent commit. See:
-> http://sourceforge.net/p/xtables-addons/xtables-addons/ci/9414a5df343bf30ba13e76dbd7181c55683b11cb/
->
-> -Kristian
+Dear Sirs,
 
-When you say "established connection" are you talking TCP level established connection, or is this from contrack identifying the connection?  I 
-guess what I'm asking is if doing a NOTRACK in raw would allow the packets through and still pass through nat/POSTROUTING?
+I need to capture packets from some subset of interfaces (on a given Linux host), then:
+- log all the packets in the pcap format, which is the easy part
+- match the packets against a dynamically changing configuration and generate alarms on mismatch
 
-I did see that they are hitting the POSTROUTING chain in the mangle table, but I can't SNAT from there.  Does xtables-addons provide this?  I'll 
-probably start looking there.
+My software is notified about current configuration by a userspace application, probably using dbus, if it matters. So, the software should probably be a userspace application itself.
 
-The Changelog from the sourceforge link mentions the code was removed because it was unmaintained.  Is that the only reason, or was this a 
-policy decision to remove that functionality to make way for something different?  I would just worry about the future if I patch the system now.
+I have read about possible approaches to achieve this, there are quite many: libpcap, PF_RING, netfilter/iptables probably with ulogd2. I just think that modifying iptables rules according to config changes would be quite complex (opposed to checking if a packet complies with the config or not).
 
-Thanks Kristian,
+As I am not an experienced networking Linux developer, I would like to ask what would be the best approach from
+1. Performance
+2. Easy of implementation (the less/easier code, the better),
 
-Chris Frederick
+in that order, point of view?
+
+Thank you,
+
+Marek
