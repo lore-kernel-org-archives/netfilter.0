@@ -1,49 +1,160 @@
-From: Kristian Evensen <kristian.evensen@gmail.com>
-Subject: Re: Packets not hitting the nat POSTROUTING table
-Date: Fri, 10 Jan 2014 13:18:47 +0100
-Message-ID: <CAKfDRXgitOtCSBrCmCjJ_Njwhh1HScBfjt2sYY2MQ0PjsVXEDQ@mail.gmail.com>
-References: <52CF1B40.2070201@cdf123.net>
-	<CAKfDRXg6ikUtbe3WF6EZTPpDSm_-nPSNPGgXGC95A4GPN9YEhw@mail.gmail.com>
-	<52CF2A9B.3000903@cdf123.net>
-Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=BC55SMTBy2qoU4OMsIDvJu5fMPV0qg7rnB8WXktKhZI=;
-        b=Wgpfnn7Woss9SZu3e6uMLFoLrUoDPYYRaIyMyd+Zl8HXa1tKqsKV9W3dTGPp1BIz1E
-         Mrl2emmEEiwbP/g5DhkdC/dzGEXVo8qiTqarHtF+efGt/wlqkQKVqzKkxgZDAeUG3vU5
-         9WQ+/LBGzn8tdKlf5F6A0AkRCGqAlwgKzR44ufj/HGk31HN70N1WX2mG8BkV/K/wPMTc
-         SaH65pYiG+Ru5Gm0qZ98mxevPzDA19ZoUPMMOM3y8YIah8ZSZh3REUj2soYMQbZy4B64
-         pAjVteY+d0O8xzEDALGEZb33Pbcd52UGizKcshC63fIQUwWk1VrqG1X6MO6/8vKwnOJ2
-         Xtdg==
-In-Reply-To: <52CF2A9B.3000903@cdf123.net>
-Sender: netfilter-owner@vger.kernel.org
+From: Andrey Vagin <avagin@openvz.org>
+Subject: [PATCH] netfilter: nf_conntrack: fix RCU race in nf_conntrack_find_get (v3)
+Date: Sun, 12 Jan 2014 21:50:33 +0400
+Message-ID: <1389549033-23523-1-git-send-email-avagin@openvz.org>
+References: <1389188841.26646.87.camel@edumazet-glaptop2.roam.corp.google.com>
+Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <1389188841.26646.87.camel@edumazet-glaptop2.roam.corp.google.com>
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Chris Frederick <cdf123@cdf123.net>
-Cc: netfilter@vger.kernel.org
+To: netfilter-devel@vger.kernel.org
+Cc: netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, vvs@openvz.org, Andrey Vagin <avagin@openvz.org>, Eric Dumazet <eric.dumazet@gmail.com>, Florian Westphal <fw@strlen.de>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>, Cyrill Gorcunov <gorcunov@openvz.org>
 
-Hi,
+Lets look at destroy_conntrack:
 
-On Fri, Jan 10, 2014 at 12:02 AM, Chris Frederick <cdf123@cdf123.net> wrote:
-> When you say "established connection" are you talking TCP level established
-> connection, or is this from contrack identifying the connection?  I guess
-> what I'm asking is if doing a NOTRACK in raw would allow the packets through
-> and still pass through nat/POSTROUTING?
+hlist_nulls_del_rcu(&ct->tuplehash[IP_CT_DIR_ORIGINAL].hnnode);
+...
+nf_conntrack_free(ct)
+	kmem_cache_free(net->ct.nf_conntrack_cachep, ct);
 
-Sorry for not being accurate, I meant established as in an established
-mapping. If you use NOTRACK, I believe packets skip conntrack and
-thereby the NAT table altogether.
+net->ct.nf_conntrack_cachep is created with SLAB_DESTROY_BY_RCU.
 
-> I did see that they are hitting the POSTROUTING chain in the mangle table,
-> but I can't SNAT from there.  Does xtables-addons provide this?  I'll
-> probably start looking there.
+The hash is protected by rcu, so readers look up conntracks without
+locks.
+A conntrack is removed from the hash, but in this moment a few readers
+still can use the conntrack. Then this conntrack is released and another
+thread creates conntrack with the same address and the equal tuple.
+After this a reader starts to validate the conntrack:
+* It's not dying, because a new conntrack was created
+* nf_ct_tuple_equal() returns true.
 
-Yes, xtables-addons used to provide this in the RAWDNAT/SNAT targets.
-I am not sure why there were removed, but the modules compile fine so
-keeping an out-of-tree patch is no problem, at least for now.
+But this conntrack is not initialized yet, so it can not be used by two
+threads concurrently. In this case BUG_ON may be triggered from
+nf_nat_setup_info().
 
--Kristian
+Florian Westphal suggested to check the confirm bit too. I think it's
+right.
+
+task 1			task 2			task 3
+			nf_conntrack_find_get
+			 ____nf_conntrack_find
+destroy_conntrack
+ hlist_nulls_del_rcu
+ nf_conntrack_free
+ kmem_cache_free
+						__nf_conntrack_alloc
+						 kmem_cache_alloc
+						 memset(&ct->tuplehash[IP_CT_DIR_MAX],
+			 if (nf_ct_is_dying(ct))
+			 if (!nf_ct_tuple_equal()
+
+I'm not sure, that I have ever seen this race condition in a real life.
+Currently we are investigating a bug, which is reproduced on a few nodes.
+In our case one conntrack is initialized from a few tasks concurrently,
+we don't have any other explanation for this.
+
+<2>[46267.083061] kernel BUG at net/ipv4/netfilter/nf_nat_core.c:322!
+...
+<4>[46267.083951] RIP: 0010:[<ffffffffa01e00a4>]  [<ffffffffa01e00a4>] nf_nat_setup_info+0x564/0x590 [nf_nat]
+...
+<4>[46267.085549] Call Trace:
+<4>[46267.085622]  [<ffffffffa023421b>] alloc_null_binding+0x5b/0xa0 [iptable_nat]
+<4>[46267.085697]  [<ffffffffa02342bc>] nf_nat_rule_find+0x5c/0x80 [iptable_nat]
+<4>[46267.085770]  [<ffffffffa0234521>] nf_nat_fn+0x111/0x260 [iptable_nat]
+<4>[46267.085843]  [<ffffffffa0234798>] nf_nat_out+0x48/0xd0 [iptable_nat]
+<4>[46267.085919]  [<ffffffff814841b9>] nf_iterate+0x69/0xb0
+<4>[46267.085991]  [<ffffffff81494e70>] ? ip_finish_output+0x0/0x2f0
+<4>[46267.086063]  [<ffffffff81484374>] nf_hook_slow+0x74/0x110
+<4>[46267.086133]  [<ffffffff81494e70>] ? ip_finish_output+0x0/0x2f0
+<4>[46267.086207]  [<ffffffff814b5890>] ? dst_output+0x0/0x20
+<4>[46267.086277]  [<ffffffff81495204>] ip_output+0xa4/0xc0
+<4>[46267.086346]  [<ffffffff814b65a4>] raw_sendmsg+0x8b4/0x910
+<4>[46267.086419]  [<ffffffff814c10fa>] inet_sendmsg+0x4a/0xb0
+<4>[46267.086491]  [<ffffffff814459aa>] ? sock_update_classid+0x3a/0x50
+<4>[46267.086562]  [<ffffffff81444d67>] sock_sendmsg+0x117/0x140
+<4>[46267.086638]  [<ffffffff8151997b>] ? _spin_unlock_bh+0x1b/0x20
+<4>[46267.086712]  [<ffffffff8109d370>] ? autoremove_wake_function+0x0/0x40
+<4>[46267.086785]  [<ffffffff81495e80>] ? do_ip_setsockopt+0x90/0xd80
+<4>[46267.086858]  [<ffffffff8100be0e>] ? call_function_interrupt+0xe/0x20
+<4>[46267.086936]  [<ffffffff8118cb10>] ? ub_slab_ptr+0x20/0x90
+<4>[46267.087006]  [<ffffffff8118cb10>] ? ub_slab_ptr+0x20/0x90
+<4>[46267.087081]  [<ffffffff8118f2e8>] ? kmem_cache_alloc+0xd8/0x1e0
+<4>[46267.087151]  [<ffffffff81445599>] sys_sendto+0x139/0x190
+<4>[46267.087229]  [<ffffffff81448c0d>] ? sock_setsockopt+0x16d/0x6f0
+<4>[46267.087303]  [<ffffffff810efa47>] ? audit_syscall_entry+0x1d7/0x200
+<4>[46267.087378]  [<ffffffff810ef795>] ? __audit_syscall_exit+0x265/0x290
+<4>[46267.087454]  [<ffffffff81474885>] ? compat_sys_setsockopt+0x75/0x210
+<4>[46267.087531]  [<ffffffff81474b5f>] compat_sys_socketcall+0x13f/0x210
+<4>[46267.087607]  [<ffffffff8104dea3>] ia32_sysret+0x0/0x5
+<4>[46267.087676] Code: 91 20 e2 01 75 29 48 89 de 4c 89 f7 e8 56 fa ff ff 85 c0 0f 84 68 fc ff ff 0f b6 4d c6 41 8b 45 00 e9 4d fb ff ff e8 7c 19 e9 e0 <0f> 0b eb fe f6 05 17 91 20 e2 80 74 ce 80 3d 5f 2e 00 00 00 74
+<1>[46267.088023] RIP  [<ffffffffa01e00a4>] nf_nat_setup_info+0x564/0x590
+
+v2: move nf_ct_is_confirmed into the unlikely() annotation
+v3: Eric suggested to fix refcnt, so that it becomes zero before adding
+    in a hash, but we can't find a way how to do that. Another way is to
+    interpret the confirm bit as part of a search key and check it in
+    ____nf_conntrack_find() too.
+
+Cc: Eric Dumazet <eric.dumazet@gmail.com>
+Cc: Florian Westphal <fw@strlen.de>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Patrick McHardy <kaber@trash.net>
+Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Cyrill Gorcunov <gorcunov@openvz.org>
+Signed-off-by: Andrey Vagin <avagin@openvz.org>
+---
+ net/netfilter/nf_conntrack_core.c | 21 +++++++++++++++++----
+ 1 file changed, 17 insertions(+), 4 deletions(-)
+
+diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
+index 43549eb..af6ad2e 100644
+--- a/net/netfilter/nf_conntrack_core.c
++++ b/net/netfilter/nf_conntrack_core.c
+@@ -318,6 +318,21 @@ static void death_by_timeout(unsigned long ul_conntrack)
+ 	nf_ct_delete((struct nf_conn *)ul_conntrack, 0, 0);
+ }
+ 
++static inline bool
++nf_ct_key_equal(struct nf_conntrack_tuple_hash *h,
++			const struct nf_conntrack_tuple *tuple,
++			u16 zone)
++{
++	struct nf_conn *ct = nf_ct_tuplehash_to_ctrack(h);
++
++	/* A conntrack can be recreated with the equal tuple,
++	 * so we need to check that the conntrack is confirmed
++	 */
++	return nf_ct_tuple_equal(tuple, &h->tuple) &&
++		nf_ct_zone(ct) == zone &&
++		nf_ct_is_confirmed(ct);
++}
++
+ /*
+  * Warning :
+  * - Caller must take a reference on returned object
+@@ -339,8 +354,7 @@ ____nf_conntrack_find(struct net *net, u16 zone,
+ 	local_bh_disable();
+ begin:
+ 	hlist_nulls_for_each_entry_rcu(h, n, &net->ct.hash[bucket], hnnode) {
+-		if (nf_ct_tuple_equal(tuple, &h->tuple) &&
+-		    nf_ct_zone(nf_ct_tuplehash_to_ctrack(h)) == zone) {
++		if (nf_ct_key_equal(h, tuple, zone)) {
+ 			NF_CT_STAT_INC(net, found);
+ 			local_bh_enable();
+ 			return h;
+@@ -387,8 +401,7 @@ begin:
+ 			     !atomic_inc_not_zero(&ct->ct_general.use)))
+ 			h = NULL;
+ 		else {
+-			if (unlikely(!nf_ct_tuple_equal(tuple, &h->tuple) ||
+-				     nf_ct_zone(ct) != zone)) {
++			if (unlikely(!nf_ct_key_equal(h, tuple, zone))) {
+ 				nf_ct_put(ct);
+ 				goto begin;
+ 			}
+-- 
+1.8.4.2
