@@ -1,45 +1,59 @@
 From: Paul Gortmaker <paul.gortmaker@windriver.com>
-Subject: Re: randconfig build error with next-20140113, in net/netfilter/nft_reject.c
-Date: Mon, 13 Jan 2014 13:12:49 -0500
-Message-ID: <CAP=VYLqWGjOnH0uw_=JDYEy2p-V5a0y3DvfuNGi600ZVPgVjRA@mail.gmail.com>
-References: <CA+r1Zhjqrmm8a9fVsjfXamCE1qQq=YBexpeU95ODi=BiSie7aA@mail.gmail.com>
+Subject: [PATCH-next] netfilter: don't use module_init/exit in core IPV4 code
+Date: Mon, 13 Jan 2014 13:35:47 -0500
+Message-ID: <1389638147-30399-1-git-send-email-paul.gortmaker@windriver.com>
 Mime-Version: 1.0
 Return-path: <netdev-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:sender:in-reply-to:references:from:date:message-id
-         :subject:to:cc:content-type;
-        bh=jszXYyEFGD4jr+5lXJ1yGx1Yo1hIVTa0j5+9rgiUpBQ=;
-        b=iJXz23/ePbRRNGx4v7QqIioE9tQ8MYc3LEYQOWSEgELRrYi/a7T+6pLQ5JFw11nGtK
-         OGeK59maOk8shA6HOIW3X3HfRm5+1zQ36JMzBtXZuTZEKTl8FuJYhVoKoklboGJDMnoR
-         6eHlF89OZLPR4w4RQeXAB0rdy/2e/b2sDoQS72gmzYf26/vzP0q1Q2ruLEeBkACzeo44
-         Eb5kFb5XEKLXqoHIRUvLQb64ah3wx/B0EAGwGL1vVHk7Xza4xkfb79yVZ5YRN+4/5wsB
-         XI65UzvSKsWG2IK/iDCuj+c1HbguOXFCLq/jKpQXDYbgySJrO1wuZEHHpQsS4DnEWI4B
-         +Vgw==
-In-Reply-To: <CA+r1Zhjqrmm8a9fVsjfXamCE1qQq=YBexpeU95ODi=BiSie7aA@mail.gmail.com>
 Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jim Davis <jim.epost@gmail.com>
-Cc: Stephen Rothwell <sfr@canb.auug.org.au>, "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, pablo@netfilter.org, Patrick McHardy <kaber@trash.net>, kadlec@blackhole.kfki.hu, "David S. Miller" <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev <netdev@vger.kernel.org>
+To: Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>
+Cc: netfilter@vger.kernel.org, netdev@vger.kernel.org, Paul Gortmaker <paul.gortmaker@windriver.com>
 
-On Mon, Jan 13, 2014 at 8:51 AM, Jim Davis <jim.epost@gmail.com> wrote:
-> Building with the attached random configuration file,
->
-> warning: (NF_TABLES_INET) selects NF_TABLES_IPV6 which has unmet
-> direct dependencies (NET && INET && IPV6 && NETFILTER && NF_TABLES)
-> warning: (NF_TABLES_INET) selects NF_TABLES_IPV6 which has unmet
-> direct dependencies (NET && INET && IPV6 && NETFILTER && NF_TABLES)
->
->   LD      init/built-in.o
-> net/built-in.o: In function `nft_reject_eval':
-> nft_reject.c:(.text+0x67bc1): undefined reference to `nf_ip6_checksum'
-> nft_reject.c:(.text+0x67c28): undefined reference to `ip6_route_output'
-> nft_reject.c:(.text+0x67d09): undefined reference to `ip6_dst_hoplimit'
-> make: *** [vmlinux] Error 1
+The file net/ipv4/netfilter.o is created based on whether
+CONFIG_NETFILTER is set.  However that is defined as a bool, and
+hence this file with the core netfilter hooks will never be
+modular.  So using module_init as an alias for __initcall can be
+somewhat misleading.
 
-I came across the same thing independently while working on an
-unrelated netfilter patch.  Bisected and fix sent.
+Fix this up now, so that we can relocate module_init from
+init.h into module.h in the future.  If we don't do this, we'd
+have to add module.h to obviously non-modular code, and that
+would be a worse thing.  Also add an inclusion of init.h, as
+that was previously implicit here in the netfilter.c file.
 
-http://patchwork.ozlabs.org/patch/310298/
+Note that direct use of __initcall is discouraged, vs. one
+of the priority categorized subgroups.  As __initcall gets
+mapped onto device_initcall, our use of subsys_initcall (which
+seems to make sense for netfilter code) will thus change this
+registration from level 6-device to level 4-subsys (i.e. slightly
+earlier).  However no observable impact of that small difference
+has been observed during testing, or is expected. (i.e. the
+location of the netfilter messages in dmesg remains unchanged
+with respect to all the other surrounding messages.)
+
+Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
+
+diff --git a/net/ipv4/netfilter.c b/net/ipv4/netfilter.c
+index c3e0adea9c27..e1237a64b14e 100644
+--- a/net/ipv4/netfilter.c
++++ b/net/ipv4/netfilter.c
+@@ -7,6 +7,7 @@
+ #include <linux/kernel.h>
+ #include <linux/netfilter.h>
+ #include <linux/netfilter_ipv4.h>
++#include <linux/init.h>
+ #include <linux/ip.h>
+ #include <linux/skbuff.h>
+ #include <linux/gfp.h>
+@@ -203,5 +204,5 @@ static void __exit ipv4_netfilter_fini(void)
+ 	nf_unregister_afinfo(&nf_ip_afinfo);
+ }
+ 
+-module_init(ipv4_netfilter_init);
+-module_exit(ipv4_netfilter_fini);
++subsys_initcall(ipv4_netfilter_init);
++__exitcall(ipv4_netfilter_fini);
+-- 
+1.8.5.2
