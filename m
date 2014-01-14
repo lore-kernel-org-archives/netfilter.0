@@ -1,33 +1,22 @@
-From: Cyrill Gorcunov <gorcunov@gmail.com>
+From: Florian Westphal <fw@strlen.de>
 Subject: Re: [PATCH] [RFC] netfilter: nf_conntrack: don't relase a conntrack
  with non-zero refcnt
-Date: Tue, 14 Jan 2014 21:44:22 +0400
-Message-ID: <20140114174421.GC1916@moon>
+Date: Tue, 14 Jan 2014 19:53:29 +0100
+Message-ID: <20140114185329.GB28205@breakpoint.cc>
 References: <1389710201.31367.255.camel@edumazet-glaptop2.roam.corp.google.com>
  <1389720948-7883-1-git-send-email-avagin@openvz.org>
 Mime-Version: 1.0
-Return-path: <linux-kernel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-type:content-disposition:in-reply-to:user-agent;
-        bh=xjBNhkB6C5KvZ5dbQKHxIhe1c/WAEozqc4MKLp24JqQ=;
-        b=Wzo1/rkCtkKed3Q4PYwzXkCwAlsAAbfm/0ZzpuvPGWIGdGgEmK1ka6UTxHnbmuQNOi
-         FROJga2lAeyZPOjEhG3sM+FbQt6AAlJeP9XjZEA/2UDnQH6Boo8eUOz+PDke54QaT4sr
-         HGjkmT26FRvmnruQCKc7mEvhRa54vDrikuT474BuVusM7MD2uB+OPoVfTmraQKRsAGmu
-         bV4tGC+uwnaGLnUjJSbwBpMHKSFk9OELZxavhFfDtj55WPByd2XH+zhuDj9GBX+W6GLB
-         Abz4a7TSf1v4bQdInpDhdvv+U3h7emFo4k8kAin09eoVDRpUkuJaWguhUoODVWh7k2mu
-         8joQ==
+Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
 In-Reply-To: <1389720948-7883-1-git-send-email-avagin@openvz.org>
-Sender: linux-kernel-owner@vger.kernel.org
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: Andrey Vagin <avagin@openvz.org>
-Cc: netfilter-devel@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, vvs@openvz.org, Florian Westphal <fw@strlen.de>, Vasiliy Averin <vvs@parallels.com>
+Cc: netfilter-devel@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>, netfilter@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, vvs@openvz.org, Florian Westphal <fw@strlen.de>, Cyrill Gorcunov <gorcunov@openvz.org>, Vasiliy Averin <vvs@parallels.com>
 
-On Tue, Jan 14, 2014 at 09:35:48PM +0400, Andrey Vagin wrote:
+Andrey Vagin <avagin@openvz.org> wrote:
 > ----
 > Eric and Florian, could you look at this patch. When you say,
 > that it looks good, I will ask the user to validate it.
@@ -37,7 +26,9 @@ On Tue, Jan 14, 2014 at 09:35:48PM +0400, Andrey Vagin wrote:
 > 
 > nf_conntrack_free can't be called for a conntract with non-zero ref-counter,
 > because it can race with nf_conntrack_find_get().
-> 
+
+Indeed.
+
 > A conntrack slab is created with SLAB_DESTROY_BY_RCU. Non-zero
 > ref-conunter says that this conntrack is used now. So when we release a
 > conntrack with non-zero counter, we break this assumption.
@@ -53,11 +44,20 @@ On Tue, Jan 14, 2014 at 09:35:48PM +0400, Andrey Vagin wrote:
 >                                          if (!l4proto->new(ct, skb, dataoff, timeouts))
 >                                           nf_conntrack_free(ct); (use = 2 !!!)
 >                                         ...
->                                         __nf_conntrack_alloc (set use = 1)
->  if (!nf_ct_key_equal(h, tuple, zone))
->   nf_ct_put(ct); (use = 0)
->    destroy_conntrack()
->                                         /* continue to work with CT */
 
-If I didn't miss something obvious this looks like a pretty possible
-scenario. Thanks!
+Yes, I think this sequence is possible; we must not use nf_conntrack_free here.
+
+> -	/* We overload first tuple to link into unconfirmed or dying list.*/
+> -	BUG_ON(hlist_nulls_unhashed(&ct->tuplehash[IP_CT_DIR_ORIGINAL].hnnode));
+> -	hlist_nulls_del_rcu(&ct->tuplehash[IP_CT_DIR_ORIGINAL].hnnode);
+> +	if (!hlist_nulls_unhashed(&ct->tuplehash[IP_CT_DIR_ORIGINAL].hnnode))
+> +		hlist_nulls_del_rcu(&ct->tuplehash[IP_CT_DIR_ORIGINAL].hnnode);
+
+This is the only thing that I don't like about this patch.  Currently
+all the conntracks in the system are always put on a list before they're
+supposed to be visible/handled via refcnt system (unconfirmed, hash, or
+dying list).
+
+I think it would be nice if we could keep it that way.
+If everything fails we could proably intoduce a 'larval' dummy list
+similar to the one used by template conntracks?
