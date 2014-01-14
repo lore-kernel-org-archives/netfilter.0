@@ -1,42 +1,56 @@
-From: Andrey Wagin <avagin@gmail.com>
-Subject: Re: [PATCH] netfilter: nf_conntrack: fix RCU race in
- nf_conntrack_find_get (v3)
-Date: Tue, 14 Jan 2014 15:10:50 +0400
-Message-ID: <CANaxB-zSkmVy+TBCa0CyReiSgubBUmyz6iUp8bxByOr7Jb9oGw@mail.gmail.com>
-References: <1389188841.26646.87.camel@edumazet-glaptop2.roam.corp.google.com>
-	<1389549033-23523-1-git-send-email-avagin@openvz.org>
-	<1389558074.31367.187.camel@edumazet-glaptop2.roam.corp.google.com>
-	<20140114105147.GA14538@paralelels.com>
+From: Patrick McHardy <kaber@trash.net>
+Subject: Re: [PATCH] netfilter: Add dependency on IPV6 for NF_TABLES_INET
+Date: Tue, 14 Jan 2014 11:35:42 +0000
+Message-ID: <85d5725b-16f8-464a-ad88-7def74571021@email.android.com>
+References: <1389636070-26312-1-git-send-email-paul.gortmaker@windriver.com>
 Mime-Version: 1.0
-Return-path: <linux-kernel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=AqAFeATP6Q8FljZjYpHLwO3jOJsfZlRoVkkBXOCmrX0=;
-        b=XF5jR8/JwKtnTq1rq7LnNHbNKQLgRMumP+MnZJNZ3tMKuA9bZvYGbSkgPthP2xI4bX
-         enqT1LbUwxkQoeluQKTr0xAcKnD7plfaWkN0mEZrUDwzJSX/r9C0AWNCVsj4BN2O5LTa
-         qV3zpRebWchJf5pb6ObsnY5QLVvYUDHSCDNnsxY1O77wJct/yM7j7LMD16NNJhVUHwKB
-         FG4uBJcEM1zy3IjV527jOemvEhx/4aM32kZnXBLXLu9P3p3SoUYE/qDhOp1tplw3z3i8
-         N19ZJb83Vqssld9jPUOu3CWsfR6QsdLeJLDLWtCb1oPJft7v21KwKEEYggc8WpcamQN0
-         dT5g==
-In-Reply-To: <20140114105147.GA14538@paralelels.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1389636070-26312-1-git-send-email-paul.gortmaker@windriver.com>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Andrew Vagin <avagin@parallels.com>
-Cc: Eric Dumazet <eric.dumazet@gmail.com>, Florian Westphal <fw@strlen.de>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, vvs@openvz.org, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>, Cyrill Gorcunov <gorcunov@openvz.org>
+To: Paul Gortmaker <paul.gortmaker@windriver.com>, "David S. Miller" <davem@davemloft.net>, Pablo Neira Ayuso <pablo@netfilter.org>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: netfilter@vger.kernel.org, netdev@vger.kernel.org
+
+Paul Gortmaker <paul.gortmaker@windriver.com> schrieb:
+>Commit 1d49144c0aaa61be4e3ccbef9cc5c40b0ec5f2fe ("netfilter: nf_tables:
+>add "inet" table for IPv4/IPv6") allows creation of non-IPV6 enabled
+>.config files that will fail to configure/link as follows:
+>
+>warning: (NF_TABLES_INET) selects NF_TABLES_IPV6 which has unmet direct
+>dependencies (NET && INET && IPV6 && NETFILTER && NF_TABLES)
+>warning: (NF_TABLES_INET) selects NF_TABLES_IPV6 which has unmet direct
+>dependencies (NET && INET && IPV6 && NETFILTER && NF_TABLES)
+>warning: (NF_TABLES_INET) selects NF_TABLES_IPV6 which has unmet direct
+>dependencies (NET && INET && IPV6 && NETFILTER && NF_TABLES)
+>net/built-in.o: In function `nft_reject_eval':
+>nft_reject.c:(.text+0x651e8): undefined reference to `nf_ip6_checksum'
+>nft_reject.c:(.text+0x65270): undefined reference to `ip6_route_output'
+>nft_reject.c:(.text+0x656c4): undefined reference to `ip6_dst_hoplimit'
+>make: *** [vmlinux] Error 1
+>
+>Since the feature is to allow for a mixed IPV4 and IPV6 table, it
+>seems sensible to make it depend on IPV6.
+
+Acked-by: Patrick McHardy <kaber@trash.net>
 
 >
-> Eh, looks like this path is incomplete too:(
+>Cc: Patrick McHardy <kaber@trash.net>
+>Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+>Signed-off-by: Paul Gortmaker <paul.gortmaker@windriver.com>
 >
-> I think we can't set a reference counter for objects which is allocated
-> from a SLAB_DESTROY_BY_RCU cache. Look at the following backtrace.
->
-> cpu1                                    cpu2
-> ct = ____nf_conntrack_find()
->                                         destroy_conntrack
-> atomic_inc_not_zero(ct)
+>diff --git a/net/netfilter/Kconfig b/net/netfilter/Kconfig
+>index afe50c0f526f..c37467562fd0 100644
+>--- a/net/netfilter/Kconfig
+>+++ b/net/netfilter/Kconfig
+>@@ -429,7 +429,7 @@ config NF_TABLES
+> 	  To compile it as a module, choose M here.
+> 
+> config NF_TABLES_INET
+>-	depends on NF_TABLES
+>+	depends on NF_TABLES && IPV6
+> 	select NF_TABLES_IPV4
+> 	select NF_TABLES_IPV6
+> 	tristate "Netfilter nf_tables mixed IPv4/IPv6 tables support"
 
-ct->ct_general.use is zero after destroy_conntrack(). Sorry for the noise.
