@@ -1,51 +1,44 @@
-From: Eric Dumazet <eric.dumazet@gmail.com>
-Subject: Re: [PATCH] netfilter: nf_conntrack: fix RCU race in
- nf_conntrack_find_get (v3)
-Date: Tue, 14 Jan 2014 06:36:41 -0800
-Message-ID: <1389710201.31367.255.camel@edumazet-glaptop2.roam.corp.google.com>
-References: <1389188841.26646.87.camel@edumazet-glaptop2.roam.corp.google.com>
-	 <1389549033-23523-1-git-send-email-avagin@openvz.org>
-	 <1389558074.31367.187.camel@edumazet-glaptop2.roam.corp.google.com>
-	 <20140114105147.GA14538@paralelels.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH] netfilter: Add dependency on IPV6 for NF_TABLES_INET
+Date: Tue, 14 Jan 2014 16:34:54 +0100
+Message-ID: <20140114153454.GA9425@localhost>
+References: <1389636070-26312-1-git-send-email-paul.gortmaker@windriver.com>
+ <85d5725b-16f8-464a-ad88-7def74571021@email.android.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=message-id:subject:from:to:cc:date:in-reply-to:references
-         :content-type:content-transfer-encoding:mime-version;
-        bh=5v6uVw3yiBMwr73kuTeh78KT6k9QCcY/D6w1QEHxHms=;
-        b=NlQqqnHX37556vJ6yASXw/Lzp7JuIgVSzz6OXnaMc4vzlStKKAuclii4GvVUcvJoB3
-         vtdtXxal6fecU+cTCOaL8/Lbyi/DMJCsKK/GoF+dsVaHmAM/BVxdf2zQGiO5mGupROH7
-         KP43nxS4DayTqKkv0WMo3rnrijE2GM8ZH+wuN70g/N8ZeNTR26vrvLKzWLoCbdSlx4YW
-         JG3qmbMwG4L2Cwmyh5wKTxPT1yVEhq0yyssqSTzrEzTb8+TLHEesmbkmsSKYywIDMB5U
-         0igvYoeRuMFQgZ6faFJp33ABOfmL1LVpae9WsgXI1xCBqpv2w2C/cChJcjR8KNLhEb7Z
-         dY5A==
-In-Reply-To: <20140114105147.GA14538@paralelels.com>
+Content-Disposition: inline
+In-Reply-To: <85d5725b-16f8-464a-ad88-7def74571021@email.android.com>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Andrew Vagin <avagin@parallels.com>
-Cc: Florian Westphal <fw@strlen.de>, Andrey Vagin <avagin@openvz.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, vvs@openvz.org, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>, Cyrill Gorcunov <gorcunov@openvz.org>
+Content-Transfer-Encoding: 7bit
+To: Patrick McHardy <kaber@trash.net>
+Cc: Paul Gortmaker <paul.gortmaker@windriver.com>, "David S. Miller" <davem@davemloft.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, netfilter@vger.kernel.org, netdev@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-On Tue, 2014-01-14 at 14:51 +0400, Andrew Vagin wrote:
+On Tue, Jan 14, 2014 at 11:35:42AM +0000, Patrick McHardy wrote:
+> Paul Gortmaker <paul.gortmaker@windriver.com> schrieb:
+> >Commit 1d49144c0aaa61be4e3ccbef9cc5c40b0ec5f2fe ("netfilter: nf_tables:
+> >add "inet" table for IPv4/IPv6") allows creation of non-IPV6 enabled
+> >.config files that will fail to configure/link as follows:
+> >
+> >warning: (NF_TABLES_INET) selects NF_TABLES_IPV6 which has unmet direct
+> >dependencies (NET && INET && IPV6 && NETFILTER && NF_TABLES)
+> >warning: (NF_TABLES_INET) selects NF_TABLES_IPV6 which has unmet direct
+> >dependencies (NET && INET && IPV6 && NETFILTER && NF_TABLES)
+> >warning: (NF_TABLES_INET) selects NF_TABLES_IPV6 which has unmet direct
+> >dependencies (NET && INET && IPV6 && NETFILTER && NF_TABLES)
+> >net/built-in.o: In function `nft_reject_eval':
+> >nft_reject.c:(.text+0x651e8): undefined reference to `nf_ip6_checksum'
+> >nft_reject.c:(.text+0x65270): undefined reference to `ip6_route_output'
+> >nft_reject.c:(.text+0x656c4): undefined reference to `ip6_dst_hoplimit'
+> >make: *** [vmlinux] Error 1
+> >
+> >Since the feature is to allow for a mixed IPV4 and IPV6 table, it
+> >seems sensible to make it depend on IPV6.
+> 
+> Acked-by: Patrick McHardy <kaber@trash.net>
 
-> I think __nf_conntrack_alloc must use atomic_inc instead of
-> atomic_set. And we must be sure, that the first object from a new page is
-> zeroized.
+Applied, thanks.
 
-No you can not do that, and we do not need.
-
-If a new page is allocated, then you have the guarantee nobody can ever
-uses it, its content can be totally random.
-
-Only 'living' objects, the ones that were previously inserted in the
-hash table, can be found, and their refcnt must be accurate.
-
-A freed object has refcnt == 0, thats the golden rule.
-
-When the page is freed (after RCU grace period), nobody cares of refcnt
-anymore.
-
-
-
+@Paul: Please, use netfilter-devel ML instead next time. The netfilter
+ML is reserved for user questions only. Thanks.
