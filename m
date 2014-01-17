@@ -1,25 +1,52 @@
-From: =?UTF-8?B?TWFyY2luIE1pcm9zxYJhdw==?= <marcin@mejor.pl>
-Subject: Can be "xt_gateway match" added to xtables-addons?
-Date: Fri, 17 Jan 2014 16:35:10 +0100
-Message-ID: <52D94DAE.4010705@mejor.pl>
+From: Bart De Schuymer <bdschuym@pandora.be>
+Subject: Re: Fwd: Linux bridge for route
+Date: Fri, 17 Jan 2014 21:30:44 +0100
+Message-ID: <52D992F4.8070500@pandora.be>
+References: <CA+qZnSRGKiFh8FiKMpVQku7CiWCMPq47FpPwrawvTC6KBPwz7A@mail.gmail.com> <CA+qZnSQY9dpZDdULtH3GNDEbB0fgoEJ=pa4gOOtwFhrGTgj4bg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mejor.pl; s=cokolwiek;
-	h=Content-Transfer-Encoding:Content-Type:Subject:To:MIME-Version:From:Date:Message-ID; bh=8hrLcZBa+ASFKN1U+Wnb7mW28H2FOWNNuh8TO+pwAKI=;
-	b=ediojNIv++6BdevMR2GwkRgxXxFMMdwA4sZOrg/CnukFtL/rF/cWLuuPWWMv9pJElblt0s0hUH4Th8ku02vE2hM+d8uq3WDkLQyi7ML46NOS3aYEp0eQmkvuPXICQK2I;
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <CA+qZnSQY9dpZDdULtH3GNDEbB0fgoEJ=pa4gOOtwFhrGTgj4bg@mail.gmail.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: tingwei liu <tingw.liu@gmail.com>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, netdev@vger.kernel.org
 
-Hi!
-I was looking for a way to count traffic routed to diffrent gateways
-through the same interface. I've found module xt_gateway[1] wrote by
-Amin Azez and Jan Engelhardt. As I can see it wasn't merged to kernel
-and iptables.
-Can it be added to xtables-addons?
+tingwei liu schreef op 17/01/2014 10:14:
+> Dear all,
+>
+>         There is  a question has puzzled me for a long time.
+>         You can find the topology from attachment.
+>
+>         Normal traffic is:
+>
+>                 PC(192.168.1.8)--->Bridge(eth0)--->Bridget(eth1)--->NAT
+> server-->switch--->Server(192.168.5.3)
+>
+>         Now I want the ssh traffic like this:
+>                PC(182.168.1.8)--->Bridge(eth0)--->eth2--->NAT
+> server--->switch--->Server(192.168.5.3)
+>
+>
+>        What I have done on LINUX Server:
+>                #net.bridge.bridge-nf-call-iptables = 1
+>                #iptables -t nat -A POSTROUTING -s 192.168.1.8 -p tcp
+> --dport 22 -j SNAT --to-source 192.168.5.2
+>
+>        I have find the rule matched through command "iptables -t nat
+> -nvL", but the packets doesn't sent to 192.168.5.3.
+>        and "tcpdump -i eth2 tcp port 22" can not capture any packet!
 
-Marcin
+You are trying to make a brouter. You don't need to set 
+net.bridge.bridge-nf-call-iptables to 1, instead you need to add an 
+ebtables rule in the BROUTING chain, see:
+http://ebtables.sourceforge.net/examples/basic.html#ex_brouter
 
-[1] - http://lkml.org/lkml/2007/6/2/85
+Something like this (in combination with your existing iptables rules):
+ebtables -t broute -A BROUTING -p ipv4 --ip-source 192.168.1.8 \
+--ip-protocol tcp --ip-destination-port 22 \
+-j redirect --redirect-target DROP
+
+cheers,
+Bart
+
