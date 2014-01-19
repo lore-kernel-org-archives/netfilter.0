@@ -1,52 +1,73 @@
-From: Bart De Schuymer <bdschuym@pandora.be>
-Subject: Re: Fwd: Linux bridge for route
-Date: Fri, 17 Jan 2014 21:30:44 +0100
-Message-ID: <52D992F4.8070500@pandora.be>
-References: <CA+qZnSRGKiFh8FiKMpVQku7CiWCMPq47FpPwrawvTC6KBPwz7A@mail.gmail.com> <CA+qZnSQY9dpZDdULtH3GNDEbB0fgoEJ=pa4gOOtwFhrGTgj4bg@mail.gmail.com>
+From: Nick Edwards <nick.z.edwards@gmail.com>
+Subject: rate limits
+Date: Sun, 19 Jan 2014 12:43:56 +1000
+Message-ID: <CAMD-=VLUemcvn4GG6cP9SEyMP4O605s=ZK2-OGDUN=hYd2g9vQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <CA+qZnSQY9dpZDdULtH3GNDEbB0fgoEJ=pa4gOOtwFhrGTgj4bg@mail.gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=D3NBVPq7Dsx6sKhT+iBEm0ktkM7bNtJ6EwMwT2kPTJ8=;
+        b=QedLS5BuHpzXMuuA8vjkTm1PjWnm7WOKD6Ndg6kMENZRPLFd/T+s3mv/Gkwqn9mBeg
+         NswQORFdjZoLhwTi64kYeqA6iMcBPHAVTmqw5E35NdTlypKtHR07eopovuQTl498SS45
+         v5h7EFF18gDWTHq6ZdX7+hfqkAqKR+SQAFv4vEoRv0zQjeYEJt48GlltNm8DReyXZ+js
+         dJGf73K0ihoHuYGbqZtR6o48BY2iX8/B2pvudxCgECz6l4qdTvKeWqqDxiE14A+0a3r8
+         LZAAFLQg8B2s+XPiC1k1+y8gjE0gOLcnMTeILn2Dwt2ntfdfeVB1KZZKgq0/NyPdaVQ4
+         bmeA==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: tingwei liu <tingw.liu@gmail.com>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, netdev@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Netfilter user mailing list <netfilter@vger.kernel.org>
 
-tingwei liu schreef op 17/01/2014 10:14:
-> Dear all,
->
->         There is  a question has puzzled me for a long time.
->         You can find the topology from attachment.
->
->         Normal traffic is:
->
->                 PC(192.168.1.8)--->Bridge(eth0)--->Bridget(eth1)--->NAT
-> server-->switch--->Server(192.168.5.3)
->
->         Now I want the ssh traffic like this:
->                PC(182.168.1.8)--->Bridge(eth0)--->eth2--->NAT
-> server--->switch--->Server(192.168.5.3)
->
->
->        What I have done on LINUX Server:
->                #net.bridge.bridge-nf-call-iptables = 1
->                #iptables -t nat -A POSTROUTING -s 192.168.1.8 -p tcp
-> --dport 22 -j SNAT --to-source 192.168.5.2
->
->        I have find the rule matched through command "iptables -t nat
-> -nvL", but the packets doesn't sent to 192.168.5.3.
->        and "tcpdump -i eth2 tcp port 22" can not capture any packet!
+Hi,
+We have some rate limits on port 80 only, they work as intended
+(almost) and we are happy with the outcome (almost)
 
-You are trying to make a brouter. You don't need to set 
-net.bridge.bridge-nf-call-iptables to 1, instead you need to add an 
-ebtables rule in the BROUTING chain, see:
-http://ebtables.sourceforge.net/examples/basic.html#ex_brouter
+So now, the " almost"'s
 
-Something like this (in combination with your existing iptables rules):
-ebtables -t broute -A BROUTING -p ipv4 --ip-source 192.168.1.8 \
---ip-protocol tcp --ip-destination-port 22 \
--j redirect --redirect-target DROP
+We obviously do not want to limit our lan, but our lan is affected..
+I'm sure its an out of order rule, but here goes :->
 
-cheers,
-Bart
+/usr/sbin/iptables -F
+/usr/sbin/ip6tables -F
 
+/usr/sbin/iptables -X
+/usr/sbin/ip6tables -X
+
+/usr/sbin/iptables -P INPUT ACCEPT
+/usr/sbin/iptables -P OUTPUT ACCEPT
+/usr/sbin/iptables -P FORWARD DROP
+
+/usr/sbin/ip6tables -P INPUT ACCEPT
+/usr/sbin/ip6tables -P OUTPUT ACCEPT
+/usr/sbin/ip6tables -P FORWARD DROP
+
+/usr/sbin/iptables -A INPUT -i lo -j ACCEPT
+/usr/sbin/ip6tables -A INPUT -i lo -j ACCEPT
+/usr/sbin/ip6tables -A INPUT -s fe80::/10 -j ACCEPT
+/usr/sbin/ip6tables -A INPUT -d ff00::/8 -j ACCEPT
+
+/usr/sbin/iptables -A INPUT -s 199.x.x.x/22 -j ACCEPT
+/usr/sbin/iptables -A INPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
+/usr/sbin/ip6tables -A INPUT -m conntrack --ctstate ESTABLISHED -j ACCEPT
+
+..some other rules for other ports...
+
+/usr/sbin/iptables -I INPUT -p tcp --dport 80 -m state --state NEW -m
+recent --set
+/usr/sbin/iptables -I INPUT -p tcp --dport 80 -m state --state NEW -m
+recent --update --seconds 5 --hitcount 2 -j DROP
+/usr/sbin/iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+
+/usr/sbin/iptables -A INPUT -p tcp --dport 1:1023 -j DROP
+
+We obviously dont want our 199.x.x.x/22  limited but it is, I thought
+being before this rule, it would be immune, also, if we use localhost,
+it too is limited, I guess its because we use -I which inserts at top
+of rules, but if we used -A in the two recent rule lines we found it
+didnt always work at all?
+
+any suggestions?
+Thanks
+Nik
