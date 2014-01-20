@@ -1,21 +1,29 @@
-From: Tomasz Bursztyka <tomasz.bursztyka@linux.intel.com>
+From: Patrick McHardy <kaber@trash.net>
 Subject: Re: [HEADS UP] libnftables renamed to libnftnl
-Date: Mon, 20 Jan 2014 15:52:40 +0200
-Message-ID: <52DD2A28.8030005@linux.intel.com>
+Date: Mon, 20 Jan 2014 13:52:51 +0000
+Message-ID: <20140120135250.GA5495@macbook.localnet>
 References: <20140120121935.GA2794@localhost>
+ <52DD2997.4040506@linux.intel.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20140120121935.GA2794@localhost>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <52DD2997.4040506@linux.intel.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Tomasz Bursztyka <tomasz.bursztyka@linux.intel.com>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-Small typo:
+On Mon, Jan 20, 2014 at 03:50:15PM +0200, Tomasz Bursztyka wrote:
+> Hi Pablo,
+> 
+> Thus we have to adapt iptables to look for libnfnl headers instead
+> of libnftables?
+> (and nftables too btw).
 
-> We have renamed libnftables to libnfnl to reserve this name for the
-> higher layer library API.
+Crap, indeed, seems the change to configure.ac was not complete:
 
-Lack of 't', it's libnftnl as seen on git.netfilter.org
+AC_CHECK_LIB([nftables], [nft_rule_alloc], ,                                    
+             AC_MSG_ERROR([No suitable version of libnftnl found]))
 
