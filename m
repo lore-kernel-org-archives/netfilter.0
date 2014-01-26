@@ -1,43 +1,48 @@
-From: Nick Edwards <nick.z.edwards@gmail.com>
-Subject: Re: rate limits
-Date: Wed, 22 Jan 2014 12:00:58 +1000
-Message-ID: <CAMD-=V+wkwPTUm=Ngq53NYcrqeOYGimXL=AnxhQ5XL10=Pq2+Q@mail.gmail.com>
-References: <CAMD-=VLUemcvn4GG6cP9SEyMP4O605s=ZK2-OGDUN=hYd2g9vQ@mail.gmail.com>
-	<20140119040111.GA22074@home>
-	<201401191549.17016.neal.p.murphy@alum.wpi.edu>
-Mime-Version: 1.0
+From: mathieu.poirier@linaro.org
+Subject: [PATCH RESEND v2 0/1] Add quota capabilities to nfacct
+Date: Sun, 26 Jan 2014 13:04:32 -0700
+Message-ID: <1390766673-21444-1-git-send-email-mathieu.poirier@linaro.org>
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=Gplrpu+i7I7eoYIcf88jZGopt4k8x5+9mGjrAME8UYo=;
-        b=H5rDklA4wr56AsdocgYfQ3v/AkV3cjtXNL3odrMO+hXGh+TTsdW3+uw7x5MMvQXqBq
-         SCegJ1y0ikrC2wNYBoUKdJQaUcWGZu/xh/WoXXpp5CdltVWKgkdcQ9xQuV9GYv1LIPTE
-         CPaVWhdGcO5R5tcskifef2/GHx3DD3HepoRMKZcw+Ps9ppZcAZH9aQnju0OhuKWsYw5J
-         TvM19ogCU78+mDjpVgWCwBTriykZuv5spzfpOcsRENGZDZARDYza/joMHWxresCu6O0n
-         +KTayfI5cgoPvnTPVgI6C05A7vHs+SRAPD5Dh/Zu+0f7DcQ0M+5y3NfOc6wh+XwOqqzP
-         vC+Q==
-In-Reply-To: <201401191549.17016.neal.p.murphy@alum.wpi.edu>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: neal.p.murphy@alum.wpi.edu
-Cc: netfilter@vger.kernel.org
+To: pablo@netfilter.org, kaber@trash.net, kadlec@blackhole.kfki.hu
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, mathieu.poirier@linaro.org
 
-Thanks, opted for -A  seems to work now, no idea why it didn't originally
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-On 1/20/14, Neal Murphy <neal.p.murphy@alum.wpi.edu> wrote:
-> On Saturday, January 18, 2014 11:01:11 PM Phil Oester wrote:
->> Yes, don't use -I to insert the limit rules at the very top of the INPUT
->> chain.  But if you insist upon doing so, exempt your LAN from the rules
->> by adding "-s ! 199.x.x.x/22" to the two recent rules.
->
-> Or "! -s 199.x.x.x/22" since 'infix' notation has been removed from recent
-> versions of iptables.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+Can I ask one of the maintainers to have a quick look at this please? 
+The code is simple to understand and the mofications self contained.  
+We missed the 3.14 merge window, it would be very disappointing to
+miss the next one.
+
+This is the second version of the feature rebased on the 3.13 kernel - all
+comments from the maintainer have been followed except for the removal of
+a spinlock that protects the integrity of an internal accounting structure.
+
+I have sent a scenario for the output path that explains the concequence of
+not having the structure guarded by said spinlock but received no answer.
+
+As such I am sending this second version with all comments addressed less
+the spinlock removal in the hope of getting more feedback on the matter.
+
+Corresponding iptables modifications can be found here:
+https://git.linaro.org/people/mathieu.poirier/iptables.git
+
+Mathieu Poirier (1):
+  netfilter: xtables: add quota support to nfacct
+
+ include/linux/netfilter/nfnetlink_acct.h      |  11 ++-
+ include/uapi/linux/netfilter/nfnetlink.h      |   2 +
+ include/uapi/linux/netfilter/nfnetlink_acct.h |   1 +
+ include/uapi/linux/netfilter/xt_nfacct.h      |  14 ++++
+ net/netfilter/Kconfig                         |   3 +-
+ net/netfilter/nfnetlink_acct.c                |  35 ++++++---
+ net/netfilter/xt_nfacct.c                     | 107 +++++++++++++++++++++++---
+ 7 files changed, 150 insertions(+), 23 deletions(-)
+
+-- 
+1.8.3.2
+
