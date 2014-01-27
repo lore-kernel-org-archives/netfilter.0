@@ -1,89 +1,65 @@
-From: Ray Soucy <rps@maine.edu>
-Subject: Re: Public IP to Private IP
-Date: Mon, 27 Jan 2014 15:48:16 -0500
-Message-ID: <CALFTrnO7SAm0ghr7b1p+o9cWnbwtRJQMtSmtJy_VXJxd-xxkcw@mail.gmail.com>
-References: <CAFPGR9jhpurA644xdfWc6dF58iVCc5t7mbUw6NsjxPqYQxtUHw@mail.gmail.com>
+From: Al Grant <bigal.nz@gmail.com>
+Subject: Transparent proxy mitm
+Date: Tue, 28 Jan 2014 10:01:24 +1300
+Message-ID: <CAODtcdexW_mcvWbZOH=P9ATt8t+4m0+y288MY7bCmqe1Wuaq-Q@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAFPGR9jhpurA644xdfWc6dF58iVCc5t7mbUw6NsjxPqYQxtUHw@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=bvcaf5ycktYBZBshGqf+UmLwIFXisPAdw18CBJkjCQA=;
+        b=tU3+aKnyfORHMlOLJ9ALLqxXKpX+pHhx0Pq0DPU9zoeKCb3W/LL+RAcacwRVeuvaTL
+         IyFhid6ey2qXxZO0c4NtvUtSl4boTkUkzXd+pNYFzhfCUXKzy8R4/Xdx8O4gc4V70z7n
+         +lue+dupdhpc+OKZh/KVMuygKzNBoJZdbbBl5A2nHOqw0mkeee1DJu7oFTE5e9W6jR92
+         FEgI3U8R3VDOX5h/mDpm2UIhGCQYjzLTzjwPKTQFkEtiK8x72kkMRg38th3pXW4vGkkG
+         BY+tPXZz89Jdx1el7sZO/D8IwS9YGpQlAAA1jt6jCbRuURxDDhPNwLTfazUy7F91Fp6A
+         Cz7A==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Scott Mayo <scotgmayo@gmail.com>
-Cc: netfilter list <netfilter@vger.kernel.org>
+To: netfilter <netfilter@vger.kernel.org>
 
-The term you're looking for is "NAT reflection" or "hairpin NAT".
+Hi All,
 
-If you're not running split DNS, then trying to reach a system via its
-"outside" IP from an internal system will present a problem because
-the source IP of the request is seen as on-link by the server, so the
-server responds directly from an unexpected source IP and the
-requesting host drops the request.
+First thigns first. What I am doing, I am doing on my own network for
+learning. Now with that out of the way this is my problem:
 
-You can get around this issue by NATing the return traffic when its to
-and from the internal network.
+I have a linux machine which I want to use to conduct a simulated man
+in the middle attack.
 
-Assuming that your inside interface is eth1, and your inside IP
-network is 192.168.0.0/23:
+My target I am using is my android phone (10.2.1.3).
 
-iptables -A POSTROUTING -s 192.168.0.0/23 -d 192.168.0.0/23 -o eth1 -j
-MASQUERADE
+I am arppoisoning the network with :
 
-Split DNS, however, is a better approach, if you can do it (using
-views in BIND).
+arpspoof -i wlan0 -t 10.2.1.3 -r 10.2.1.1
+IP forwarding is enabled
 
+Now at this point google shows two methods for the next step of the attack:
 
+(1) dnsspoof (this works); or
+(2) add some iptables rules:
 
+iptables -F
+iptables -t nat -F
+iptables -P INPUT ACCEPT
+iptables -P FORWARD ACCEPT
+iptables -P OUTPUT ACCEPT
+iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
+iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-ports 8080
 
-On Mon, Jan 27, 2014 at 2:22 PM, Scott Mayo <scotgmayo@gmail.com> wrote:
-> I am having some troubles getting my public IPs routed to my private IPs.
->
-> Here is an example.
-> Private IP of the main server with my IPTables:  192.168.0.1
-> Public IP of the main server:  1.1.1.1
-> I also have 1.1.1.2 and 1.1.1.3 as public IPs attached to the public nic.
-> Domain name example.org is pointed to 1.1.1.2
->
-> I am trying to get the following public IPs to Private IPs:
-> 1.1.1.2 -> 192.168.0.2
-> 1.1.1.3 -> 192.168.0.3
->
-> If I am outside my network and go to example.org, it seems to work fine.
-> If I am inside my network and go to 192.168.0.2 then it works fine.
-> If I go to example.org from inside my network then it goes back to
-> 192.168.0.1 instead of 192.168.0.2
->
-> Maybe this does not have to do with IPTables even since it works with
-> an IP, but I thought I would ask here.  I do not have an internal DNS
-> server.
->
-> Here are the rules that I have:
->
-> IPTABLES -t nat -A PREROUTING -d 1.1.1.2 -p tcp -j DNAT
-> --to-destination 192.168.0.2
-> IPTABLES -t nat -A POSTROUTING -d 192.168.0.2 -j SNAT --to-destination 1.1.1.2
->
-> Any suggestions would be appreciated.
-> Thanks.
->
-> --
-> Scott Mayo
-> Mayo's Pioneer Seeds   PH: 573-568-3235   CE: 573-614-2138
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Then run burpsuite which does transparent proxying and you should be
+able to see, and even modfy traffic between the target and the
+website.
 
+The problem is that once I add those iptable rules I cant browse at all.
 
+Any ideas?
+
+Cheers
+
+Al
 
 -- 
-Ray Patrick Soucy
-Network Engineer
-University of Maine System
-
-T: 207-561-3526
-F: 207-561-3531
-
-MaineREN, Maine's Research and Education Network
-www.maineren.net
+"Beat it punk!"
+- Clint Eastwood
