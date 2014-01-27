@@ -1,48 +1,58 @@
-From: Bob Reiber <bob@bkss.net>
-Subject: RE: Public IP to Private IP
-Date: Mon, 27 Jan 2014 20:46:57 +0000
-Message-ID: <86ea7ff85aee4b38b99afb2970247d79@BLUPR07MB146.namprd07.prod.outlook.com>
+From: Scott Mayo <scotgmayo@gmail.com>
+Subject: Re: Public IP to Private IP
+Date: Mon, 27 Jan 2014 15:01:59 -0600
+Message-ID: <CAFPGR9guTGspBJ8yfOVNZAAMy44YGS+UeV+QmYNLpAJ+ZxTuxw@mail.gmail.com>
 References: <CAFPGR9jhpurA644xdfWc6dF58iVCc5t7mbUw6NsjxPqYQxtUHw@mail.gmail.com>
+	<CALFTrnO7SAm0ghr7b1p+o9cWnbwtRJQMtSmtJy_VXJxd-xxkcw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAFPGR9jhpurA644xdfWc6dF58iVCc5t7mbUw6NsjxPqYQxtUHw@mail.gmail.com>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type;
+        bh=g32/+TCmv4g4UgiyCQAJg1BLzsWrTblZvXLVKpa/AU8=;
+        b=EIFKqBR29Zdj1HBn5kHBwNX0ie0jv3/Ns0vOaytE+ZCkoNBuCbzpwXks7wRJ8LkUHE
+         TGHNljMRzFfOqtWk86oJ8lPcoFYddIS0fAgpSWCSs3T+U8sRY1EJkVIX6RtPF+Dz0D79
+         5R2sl3RIywsqBgu9SW760YVmNAbbaGUwl5nfu/dtjmRqTAOaL1VV4WbJXQ3/+PF5YFGj
+         chOlzylt0zvBIWiJVzAyaAFpHTulBZR2mF+3DgrlJiDlT9lGK/f2HLCo3x4ZkKl6MXPN
+         hWu51Xyi2G9rbI4b5M/pkNc+xd22V9Jh5YtCsDJBgUlp2GPWt8b2VHsJeCwh9/mo2EP8
+         1Q1w==
+In-Reply-To: <CALFTrnO7SAm0ghr7b1p+o9cWnbwtRJQMtSmtJy_VXJxd-xxkcw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Scott Mayo <scotgmayo@gmail.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+To: Ray Soucy <rps@maine.edu>
+Cc: netfilter list <netfilter@vger.kernel.org>
 
-TXkgZ3Vlc3MgaXMgdGhhdCBleGFtcGxlLm9yZyByZXNvbHZlcyB0byB5b3VyIHB1YmxpYyBpcCBh
-ZGRyZXNzLiBBZGQgZXhhbXBsZS5vcmcgdG8geW91ciBob3N0cyBmaWxlLiBUaGlzIHdpbGwgcmVz
-b2x2ZSBleGFtcGxlLm9yZyB0byB0aGUgbG9jYWwgaXAgYWRkcmVzcyB3aGVuIHlvdSBhcmUgaW5z
-aWRlIHRoZSBmaXJld2FsbC4gDQoNCkJvYiBSZWliZXINCkJLIFNhbGVzIGFuZCBTZXJ2aWNlDQpU
-ZWw6ICg2NTApIDM3Ni0xMTIyDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBu
-ZXRmaWx0ZXItb3duZXJAdmdlci5rZXJuZWwub3JnIFttYWlsdG86bmV0ZmlsdGVyLW93bmVyQHZn
-ZXIua2VybmVsLm9yZ10gT24gQmVoYWxmIE9mIFNjb3R0IE1heW8NClNlbnQ6IE1vbmRheSwgSmFu
-dWFyeSAyNywgMjAxNCAxMToyMiBBTQ0KVG86IG5ldGZpbHRlckB2Z2VyLmtlcm5lbC5vcmcNClN1
-YmplY3Q6IFB1YmxpYyBJUCB0byBQcml2YXRlIElQDQoNCkkgYW0gaGF2aW5nIHNvbWUgdHJvdWJs
-ZXMgZ2V0dGluZyBteSBwdWJsaWMgSVBzIHJvdXRlZCB0byBteSBwcml2YXRlIElQcy4NCg0KSGVy
-ZSBpcyBhbiBleGFtcGxlLg0KUHJpdmF0ZSBJUCBvZiB0aGUgbWFpbiBzZXJ2ZXIgd2l0aCBteSBJ
-UFRhYmxlczogIDE5Mi4xNjguMC4xIFB1YmxpYyBJUCBvZiB0aGUgbWFpbiBzZXJ2ZXI6ICAxLjEu
-MS4xIEkgYWxzbyBoYXZlIDEuMS4xLjIgYW5kIDEuMS4xLjMgYXMgcHVibGljIElQcyBhdHRhY2hl
-ZCB0byB0aGUgcHVibGljIG5pYy4NCkRvbWFpbiBuYW1lIGV4YW1wbGUub3JnIGlzIHBvaW50ZWQg
-dG8gMS4xLjEuMg0KDQpJIGFtIHRyeWluZyB0byBnZXQgdGhlIGZvbGxvd2luZyBwdWJsaWMgSVBz
-IHRvIFByaXZhdGUgSVBzOg0KMS4xLjEuMiAtPiAxOTIuMTY4LjAuMg0KMS4xLjEuMyAtPiAxOTIu
-MTY4LjAuMw0KDQpJZiBJIGFtIG91dHNpZGUgbXkgbmV0d29yayBhbmQgZ28gdG8gZXhhbXBsZS5v
-cmcsIGl0IHNlZW1zIHRvIHdvcmsgZmluZS4NCklmIEkgYW0gaW5zaWRlIG15IG5ldHdvcmsgYW5k
-IGdvIHRvIDE5Mi4xNjguMC4yIHRoZW4gaXQgd29ya3MgZmluZS4NCklmIEkgZ28gdG8gZXhhbXBs
-ZS5vcmcgZnJvbSBpbnNpZGUgbXkgbmV0d29yayB0aGVuIGl0IGdvZXMgYmFjayB0bw0KMTkyLjE2
-OC4wLjEgaW5zdGVhZCBvZiAxOTIuMTY4LjAuMg0KDQpNYXliZSB0aGlzIGRvZXMgbm90IGhhdmUg
-dG8gZG8gd2l0aCBJUFRhYmxlcyBldmVuIHNpbmNlIGl0IHdvcmtzIHdpdGggYW4gSVAsIGJ1dCBJ
-IHRob3VnaHQgSSB3b3VsZCBhc2sgaGVyZS4gIEkgZG8gbm90IGhhdmUgYW4gaW50ZXJuYWwgRE5T
-IHNlcnZlci4NCg0KSGVyZSBhcmUgdGhlIHJ1bGVzIHRoYXQgSSBoYXZlOg0KDQpJUFRBQkxFUyAt
-dCBuYXQgLUEgUFJFUk9VVElORyAtZCAxLjEuMS4yIC1wIHRjcCAtaiBETkFUIC0tdG8tZGVzdGlu
-YXRpb24gMTkyLjE2OC4wLjIgSVBUQUJMRVMgLXQgbmF0IC1BIFBPU1RST1VUSU5HIC1kIDE5Mi4x
-NjguMC4yIC1qIFNOQVQgLS10by1kZXN0aW5hdGlvbiAxLjEuMS4yDQoNCkFueSBzdWdnZXN0aW9u
-cyB3b3VsZCBiZSBhcHByZWNpYXRlZC4NClRoYW5rcy4NCg0KLS0NClNjb3R0IE1heW8NCk1heW8n
-cyBQaW9uZWVyIFNlZWRzICAgUEg6IDU3My01NjgtMzIzNSAgIENFOiA1NzMtNjE0LTIxMzgNCi0t
-DQpUbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3Jp
-YmUgbmV0ZmlsdGVyIiBpbiB0aGUgYm9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIu
-a2VybmVsLm9yZyBNb3JlIG1ham9yZG9tbyBpbmZvIGF0ICBodHRwOi8vdmdlci5rZXJuZWwub3Jn
-L21ham9yZG9tby1pbmZvLmh0bWwNCg==
+On Mon, Jan 27, 2014 at 2:48 PM, Ray Soucy <rps@maine.edu> wrote:
+> The term you're looking for is "NAT reflection" or "hairpin NAT".
+>
+> If you're not running split DNS, then trying to reach a system via its
+> "outside" IP from an internal system will present a problem because
+> the source IP of the request is seen as on-link by the server, so the
+> server responds directly from an unexpected source IP and the
+> requesting host drops the request.
+>
+> You can get around this issue by NATing the return traffic when its to
+> and from the internal network.
+>
+> Assuming that your inside interface is eth1, and your inside IP
+> network is 192.168.0.0/23:
+>
+> iptables -A POSTROUTING -s 192.168.0.0/23 -d 192.168.0.0/23 -o eth1 -j
+> MASQUERADE
+>
+
+That did not seem to work either.  Getting the same results.  Thanks.
+
+
+> Split DNS, however, is a better approach, if you can do it (using
+> views in BIND).
+
+
+Yes, if I can get time to setup a Bind server. I just need some more time.
+
+-- 
+Scott Mayo
+Mayo's Pioneer Seeds   PH: 573-568-3235   CE: 573-614-2138
