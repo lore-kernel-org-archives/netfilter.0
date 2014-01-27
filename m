@@ -1,225 +1,354 @@
-From: Andrew Vagin <avagin@parallels.com>
-Subject: Re: [PATCH] [RFC] netfilter: nf_conntrack: don't relase a conntrack
- with non-zero refcnt
-Date: Mon, 27 Jan 2014 17:44:54 +0400
-Message-ID: <20140127134453.GA26336@paralelels.com>
-References: <1389710201.31367.255.camel@edumazet-glaptop2.roam.corp.google.com>
- <1389720948-7883-1-git-send-email-avagin@openvz.org>
-Mime-Version: 1.0
-Return-path: <linux-kernel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1389720948-7883-1-git-send-email-avagin@openvz.org>
-Sender: linux-kernel-owner@vger.kernel.org
+From: mathieu.poirier@linaro.org
+Subject: [PATCH v3] netfilter: xtables: add quota support to nfacct
+Date: Mon, 27 Jan 2014 10:08:02 -0700
+Message-ID: <1390842482-2294-1-git-send-email-mathieu.poirier@linaro.org>
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Andrey Vagin <avagin@openvz.org>
-Cc: netfilter-devel@vger.kernel.org, Eric Dumazet <eric.dumazet@gmail.com>, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, vvs@openvz.org, Florian Westphal <fw@strlen.de>, Cyrill Gorcunov <gorcunov@openvz.org>, Vasiliy Averin <vvs@parallels.com>
+To: pablo@netfilter.org, kaber@trash.net, kadlec@blackhole.kfki.hu
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, mathieu.poirier@linaro.org, john.stultz@linaro.org
 
-On Tue, Jan 14, 2014 at 09:35:48PM +0400, Andrey Vagin wrote:
-> ----
-> Eric and Florian, could you look at this patch. When you say,
-> that it looks good, I will ask the user to validate it.
-> I can't reorder these actions, because it's reproduced on a real host
-> with real users. Thanks.
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-We didn't get new reports from users for the last week, so these patches
-fix the problem.
+Adding packet and byte quota support.  Once a quota has been
+reached a noticifaction is sent to user space that includes
+the name of the accounting object along with the current byte
+and packet count.
 
-> ----
-> 
-> nf_conntrack_free can't be called for a conntract with non-zero ref-counter,
-> because it can race with nf_conntrack_find_get().
-> 
-> A conntrack slab is created with SLAB_DESTROY_BY_RCU. Non-zero
-> ref-conunter says that this conntrack is used now. So when we release a
-> conntrack with non-zero counter, we break this assumption.
-> 
-> CPU1                                    CPU2
-> ____nf_conntrack_find()
->                                         nf_ct_put()
->                                          destroy_conntrack()
->                                         ...
->                                         init_conntrack
->                                          __nf_conntrack_alloc (set use = 1)
-> atomic_inc_not_zero(&ct->use) (use = 2)
->                                          if (!l4proto->new(ct, skb, dataoff, timeouts))
->                                           nf_conntrack_free(ct); (use = 2 !!!)
->                                         ...
->                                         __nf_conntrack_alloc (set use = 1)
->  if (!nf_ct_key_equal(h, tuple, zone))
->   nf_ct_put(ct); (use = 0)
->    destroy_conntrack()
->                                         /* continue to work with CT */
-> 
-> After applying the path "[PATCH] netfilter: nf_conntrack: fix RCU race
-> in nf_conntrack_find_get (v3)" another bug was triggered in
-> destroy_conntrack():
-> <4>[67096.759334] ------------[ cut here ]------------
-> <2>[67096.759353] kernel BUG at net/netfilter/nf_conntrack_core.c:211!
-> ...
-> <4>[67096.759837] Pid: 498649, comm: atdd veid: 666 Tainted: G         C ---------------    2.6.32-042stab084.18 #1 042stab084_18 /DQ45CB
-> <4>[67096.759932] RIP: 0010:[<ffffffffa03d99ac>]  [<ffffffffa03d99ac>] destroy_conntrack+0x15c/0x190 [nf_conntrack]
-> <4>[67096.760255] Call Trace:
-> <4>[67096.760255]  [<ffffffff814844a7>] nf_conntrack_destroy+0x17/0x30
-> <4>[67096.760255]  [<ffffffffa03d9bb5>] nf_conntrack_find_get+0x85/0x130 [nf_conntrack]
-> <4>[67096.760255]  [<ffffffffa03d9fb2>] nf_conntrack_in+0x352/0xb60 [nf_conntrack]
-> <4>[67096.760255]  [<ffffffffa048c771>] ipv4_conntrack_local+0x51/0x60 [nf_conntrack_ipv4]
-> <4>[67096.760255]  [<ffffffff81484419>] nf_iterate+0x69/0xb0
-> <4>[67096.760255]  [<ffffffff814b5b00>] ? dst_output+0x0/0x20
-> <4>[67096.760255]  [<ffffffff814845d4>] nf_hook_slow+0x74/0x110
-> <4>[67096.760255]  [<ffffffff814b5b00>] ? dst_output+0x0/0x20
-> <4>[67096.760255]  [<ffffffff814b66d5>] raw_sendmsg+0x775/0x910
-> <4>[67096.760255]  [<ffffffff8104c5a8>] ? flush_tlb_others_ipi+0x128/0x130
-> <4>[67096.760255]  [<ffffffff8100bc4e>] ? apic_timer_interrupt+0xe/0x20
-> <4>[67096.760255]  [<ffffffff8100bc4e>] ? apic_timer_interrupt+0xe/0x20
-> <4>[67096.760255]  [<ffffffff814c136a>] inet_sendmsg+0x4a/0xb0
-> <4>[67096.760255]  [<ffffffff81444e93>] ? sock_sendmsg+0x13/0x140
-> <4>[67096.760255]  [<ffffffff81444f97>] sock_sendmsg+0x117/0x140
-> <4>[67096.760255]  [<ffffffff8102e299>] ? native_smp_send_reschedule+0x49/0x60
-> <4>[67096.760255]  [<ffffffff81519beb>] ? _spin_unlock_bh+0x1b/0x20
-> <4>[67096.760255]  [<ffffffff8109d930>] ? autoremove_wake_function+0x0/0x40
-> <4>[67096.760255]  [<ffffffff814960f0>] ? do_ip_setsockopt+0x90/0xd80
-> <4>[67096.760255]  [<ffffffff8100bc4e>] ? apic_timer_interrupt+0xe/0x20
-> <4>[67096.760255]  [<ffffffff8100bc4e>] ? apic_timer_interrupt+0xe/0x20
-> <4>[67096.760255]  [<ffffffff814457c9>] sys_sendto+0x139/0x190
-> <4>[67096.760255]  [<ffffffff810efa77>] ? audit_syscall_entry+0x1d7/0x200
-> <4>[67096.760255]  [<ffffffff810ef7c5>] ? __audit_syscall_exit+0x265/0x290
-> <4>[67096.760255]  [<ffffffff81474daf>] compat_sys_socketcall+0x13f/0x210
-> <4>[67096.760255]  [<ffffffff8104dea3>] ia32_sysret+0x0/0x5
-> 
-> Cc: Eric Dumazet <eric.dumazet@gmail.com>
-> Cc: Florian Westphal <fw@strlen.de>
-> Cc: Cyrill Gorcunov <gorcunov@openvz.org>
-> Cc: Vasiliy Averin <vvs@parallels.com>
-> Signed-off-by: Andrey Vagin <avagin@openvz.org>
-> ---
->  include/net/netfilter/nf_conntrack.h |  1 -
->  net/netfilter/nf_conntrack_core.c    | 18 +++++++++++-------
->  net/netfilter/nf_conntrack_netlink.c |  2 +-
->  net/netfilter/nf_synproxy_core.c     |  4 ++--
->  net/netfilter/xt_CT.c                |  2 +-
->  5 files changed, 15 insertions(+), 12 deletions(-)
-> 
-> diff --git a/include/net/netfilter/nf_conntrack.h b/include/net/netfilter/nf_conntrack.h
-> index 01ea6ee..d338316 100644
-> --- a/include/net/netfilter/nf_conntrack.h
-> +++ b/include/net/netfilter/nf_conntrack.h
-> @@ -243,7 +243,6 @@ void nf_ct_untracked_status_or(unsigned long bits);
->  void nf_ct_iterate_cleanup(struct net *net,
->  			   int (*iter)(struct nf_conn *i, void *data),
->  			   void *data, u32 portid, int report);
-> -void nf_conntrack_free(struct nf_conn *ct);
->  struct nf_conn *nf_conntrack_alloc(struct net *net, u16 zone,
->  				   const struct nf_conntrack_tuple *orig,
->  				   const struct nf_conntrack_tuple *repl,
-> diff --git a/net/netfilter/nf_conntrack_core.c b/net/netfilter/nf_conntrack_core.c
-> index b56e53b..c38cc74 100644
-> --- a/net/netfilter/nf_conntrack_core.c
-> +++ b/net/netfilter/nf_conntrack_core.c
-> @@ -198,6 +198,8 @@ clean_from_lists(struct nf_conn *ct)
->  	nf_ct_remove_expectations(ct);
->  }
->  
-> +static void nf_conntrack_free(struct nf_conn *ct);
-> +
->  static void
->  destroy_conntrack(struct nf_conntrack *nfct)
->  {
-> @@ -226,9 +228,8 @@ destroy_conntrack(struct nf_conntrack *nfct)
->  	 * too. */
->  	nf_ct_remove_expectations(ct);
->  
-> -	/* We overload first tuple to link into unconfirmed or dying list.*/
-> -	BUG_ON(hlist_nulls_unhashed(&ct->tuplehash[IP_CT_DIR_ORIGINAL].hnnode));
-> -	hlist_nulls_del_rcu(&ct->tuplehash[IP_CT_DIR_ORIGINAL].hnnode);
-> +	if (!hlist_nulls_unhashed(&ct->tuplehash[IP_CT_DIR_ORIGINAL].hnnode))
-> +		hlist_nulls_del_rcu(&ct->tuplehash[IP_CT_DIR_ORIGINAL].hnnode);
->  
->  	NF_CT_STAT_INC(net, delete);
->  	spin_unlock_bh(&nf_conntrack_lock);
-> @@ -772,18 +773,21 @@ struct nf_conn *nf_conntrack_alloc(struct net *net, u16 zone,
->  }
->  EXPORT_SYMBOL_GPL(nf_conntrack_alloc);
->  
-> -void nf_conntrack_free(struct nf_conn *ct)
-> +static void nf_conntrack_free(struct nf_conn *ct)
->  {
->  	struct net *net = nf_ct_net(ct);
->  
-> +	/* A freed object has refcnt == 0, thats
-> +	 * the golden rule for SLAB_DESTROY_BY_RCU
-> +	 */
-> +	NF_CT_ASSERT(atomic_read(&ct->ct_general.use) == 0);
-> +
->  	nf_ct_ext_destroy(ct);
->  	nf_ct_ext_free(ct);
->  	kmem_cache_free(net->ct.nf_conntrack_cachep, ct);
->  	smp_mb__before_atomic_dec();
->  	atomic_dec(&net->ct.count);
->  }
-> -EXPORT_SYMBOL_GPL(nf_conntrack_free);
-> -
->  
->  /* Allocate a new conntrack: we return -ENOMEM if classification
->     failed due to stress.  Otherwise it really is unclassifiable. */
-> @@ -835,7 +839,7 @@ init_conntrack(struct net *net, struct nf_conn *tmpl,
->  	}
->  
->  	if (!l4proto->new(ct, skb, dataoff, timeouts)) {
-> -		nf_conntrack_free(ct);
-> +		nf_ct_put(ct);
->  		pr_debug("init conntrack: can't track with proto module\n");
->  		return NULL;
->  	}
-> diff --git a/net/netfilter/nf_conntrack_netlink.c b/net/netfilter/nf_conntrack_netlink.c
-> index 3e91ad3..fadd0f3 100644
-> --- a/net/netfilter/nf_conntrack_netlink.c
-> +++ b/net/netfilter/nf_conntrack_netlink.c
-> @@ -1732,7 +1732,7 @@ ctnetlink_create_conntrack(struct net *net, u16 zone,
->  err2:
->  	rcu_read_unlock();
->  err1:
-> -	nf_conntrack_free(ct);
-> +	nf_ct_put(ct);
->  	return ERR_PTR(err);
->  }
->  
-> diff --git a/net/netfilter/nf_synproxy_core.c b/net/netfilter/nf_synproxy_core.c
-> index 9858e3e..d12234c 100644
-> --- a/net/netfilter/nf_synproxy_core.c
-> +++ b/net/netfilter/nf_synproxy_core.c
-> @@ -381,7 +381,7 @@ static int __net_init synproxy_net_init(struct net *net)
->  err3:
->  	free_percpu(snet->stats);
->  err2:
-> -	nf_conntrack_free(ct);
-> +	nf_ct_put(ct);
->  err1:
->  	return err;
->  }
-> @@ -390,7 +390,7 @@ static void __net_exit synproxy_net_exit(struct net *net)
->  {
->  	struct synproxy_net *snet = synproxy_pernet(net);
->  
-> -	nf_conntrack_free(snet->tmpl);
-> +	nf_ct_put(snet->tmpl);
->  	synproxy_proc_exit(net);
->  	free_percpu(snet->stats);
->  }
-> diff --git a/net/netfilter/xt_CT.c b/net/netfilter/xt_CT.c
-> index da35ac0..da4edfe 100644
-> --- a/net/netfilter/xt_CT.c
-> +++ b/net/netfilter/xt_CT.c
-> @@ -237,7 +237,7 @@ out:
->  	return 0;
->  
->  err3:
-> -	nf_conntrack_free(ct);
-> +	nf_ct_put(ct);
->  err2:
->  	nf_ct_l3proto_module_put(par->family);
->  err1:
-> -- 
-> 1.8.4.2
-> 
+Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
+---
+ include/linux/netfilter/nfnetlink_acct.h      |  11 ++-
+ include/uapi/linux/netfilter/nfnetlink.h      |   2 +
+ include/uapi/linux/netfilter/nfnetlink_acct.h |   1 +
+ include/uapi/linux/netfilter/xt_nfacct.h      |  15 ++++
+ net/netfilter/Kconfig                         |   3 +-
+ net/netfilter/nfnetlink_acct.c                |  35 ++++++---
+ net/netfilter/xt_nfacct.c                     | 108 +++++++++++++++++++++++---
+ 7 files changed, 152 insertions(+), 23 deletions(-)
+
+diff --git a/include/linux/netfilter/nfnetlink_acct.h b/include/linux/netfilter/nfnetlink_acct.h
+index b2e85e5..490b83e 100644
+--- a/include/linux/netfilter/nfnetlink_acct.h
++++ b/include/linux/netfilter/nfnetlink_acct.h
+@@ -3,11 +3,18 @@
+ 
+ #include <uapi/linux/netfilter/nfnetlink_acct.h>
+ 
+-
+-struct nf_acct;
++struct nf_acct {
++	atomic64_t		pkts;
++	atomic64_t		bytes;
++	struct list_head	head;
++	atomic_t		refcnt;
++	char			name[NFACCT_NAME_MAX];
++	struct rcu_head		rcu_head;
++};
+ 
+ struct nf_acct *nfnl_acct_find_get(const char *filter_name);
+ void nfnl_acct_put(struct nf_acct *acct);
+ void nfnl_acct_update(const struct sk_buff *skb, struct nf_acct *nfacct);
++void nfnl_quota_event(struct nf_acct *cur);
+ 
+ #endif /* _NFNL_ACCT_H */
+diff --git a/include/uapi/linux/netfilter/nfnetlink.h b/include/uapi/linux/netfilter/nfnetlink.h
+index 596ddd4..354a7e5 100644
+--- a/include/uapi/linux/netfilter/nfnetlink.h
++++ b/include/uapi/linux/netfilter/nfnetlink.h
+@@ -20,6 +20,8 @@ enum nfnetlink_groups {
+ #define NFNLGRP_CONNTRACK_EXP_DESTROY	NFNLGRP_CONNTRACK_EXP_DESTROY
+ 	NFNLGRP_NFTABLES,
+ #define NFNLGRP_NFTABLES                NFNLGRP_NFTABLES
++	NFNLGRP_ACCT_QUOTA,
++#define NFNLGRP_ACCT_QUOTA		NFNLGRP_ACCT_QUOTA
+ 	__NFNLGRP_MAX,
+ };
+ #define NFNLGRP_MAX	(__NFNLGRP_MAX - 1)
+diff --git a/include/uapi/linux/netfilter/nfnetlink_acct.h b/include/uapi/linux/netfilter/nfnetlink_acct.h
+index c7b6269..ae8ea0a 100644
+--- a/include/uapi/linux/netfilter/nfnetlink_acct.h
++++ b/include/uapi/linux/netfilter/nfnetlink_acct.h
+@@ -19,6 +19,7 @@ enum nfnl_acct_type {
+ 	NFACCT_PKTS,
+ 	NFACCT_BYTES,
+ 	NFACCT_USE,
++	NFACCT_QUOTA,
+ 	__NFACCT_MAX
+ };
+ #define NFACCT_MAX (__NFACCT_MAX - 1)
+diff --git a/include/uapi/linux/netfilter/xt_nfacct.h b/include/uapi/linux/netfilter/xt_nfacct.h
+index 3e19c8a..23f536c 100644
+--- a/include/uapi/linux/netfilter/xt_nfacct.h
++++ b/include/uapi/linux/netfilter/xt_nfacct.h
+@@ -3,11 +3,26 @@
+ 
+ #include <linux/netfilter/nfnetlink_acct.h>
+ 
++enum xt_quota_flags {
++	XT_NFACCT_QUOTA_PKTS	= 1 << 0,
++	XT_NFACCT_QUOTA		= 1 << 1,
++};
++
+ struct nf_acct;
++struct nf_acct_quota;
+ 
+ struct xt_nfacct_match_info {
+ 	char		name[NFACCT_NAME_MAX];
+ 	struct nf_acct	*nfacct;
+ };
+ 
++struct xt_nfacct_match_info_v1 {
++	char		name[NFACCT_NAME_MAX];
++	struct nf_acct	*nfacct;
++
++	__u32 flags;
++	__aligned_u64 quota;
++	/* used internally by kernel */
++	struct nf_acct_quota	*priv __attribute__((aligned(8)));
++};
+ #endif /* _XT_NFACCT_MATCH_H */
+diff --git a/net/netfilter/Kconfig b/net/netfilter/Kconfig
+index 748f304..ce184951 100644
+--- a/net/netfilter/Kconfig
++++ b/net/netfilter/Kconfig
+@@ -1108,7 +1108,8 @@ config NETFILTER_XT_MATCH_NFACCT
+ 	select NETFILTER_NETLINK_ACCT
+ 	help
+ 	  This option allows you to use the extended accounting through
+-	  nfnetlink_acct.
++	  nfnetlink_acct.  It is also possible to add quotas at the
++	  packet and byte level.
+ 
+ 	  To compile it as a module, choose M here.  If unsure, say N.
+ 
+diff --git a/net/netfilter/nfnetlink_acct.c b/net/netfilter/nfnetlink_acct.c
+index c7b6d46..d825f60 100644
+--- a/net/netfilter/nfnetlink_acct.c
++++ b/net/netfilter/nfnetlink_acct.c
+@@ -29,15 +29,6 @@ MODULE_DESCRIPTION("nfacct: Extended Netfilter accounting infrastructure");
+ 
+ static LIST_HEAD(nfnl_acct_list);
+ 
+-struct nf_acct {
+-	atomic64_t		pkts;
+-	atomic64_t		bytes;
+-	struct list_head	head;
+-	atomic_t		refcnt;
+-	char			name[NFACCT_NAME_MAX];
+-	struct rcu_head		rcu_head;
+-};
+-
+ static int
+ nfnl_acct_new(struct sock *nfnl, struct sk_buff *skb,
+ 	     const struct nlmsghdr *nlh, const struct nlattr * const tb[])
+@@ -92,7 +83,7 @@ nfnl_acct_new(struct sock *nfnl, struct sk_buff *skb,
+ 	return 0;
+ }
+ 
+-static int
++int
+ nfnl_acct_fill_info(struct sk_buff *skb, u32 portid, u32 seq, u32 type,
+ 		   int event, struct nf_acct *acct)
+ {
+@@ -134,6 +125,7 @@ nla_put_failure:
+ 	nlmsg_cancel(skb, nlh);
+ 	return -1;
+ }
++EXPORT_SYMBOL_GPL(nfnl_acct_fill_info);
+ 
+ static int
+ nfnl_acct_dump(struct sk_buff *skb, struct netlink_callback *cb)
+@@ -336,6 +328,29 @@ void nfnl_acct_update(const struct sk_buff *skb, struct nf_acct *nfacct)
+ }
+ EXPORT_SYMBOL_GPL(nfnl_acct_update);
+ 
++void
++nfnl_quota_event(struct nf_acct *cur)
++{
++	int ret;
++	struct sk_buff *skb;
++
++	skb = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_ATOMIC);
++	if (skb == NULL)
++		return;
++
++	ret = nfnl_acct_fill_info(skb, 0, 0, NFACCT_QUOTA,
++				 NFNL_MSG_ACCT_NEW, cur);
++
++	if (ret <= 0) {
++		kfree_skb(skb);
++		return;
++	}
++
++	netlink_broadcast(init_net.nfnl, skb, 0,
++			 NFNLGRP_ACCT_QUOTA, GFP_ATOMIC);
++}
++EXPORT_SYMBOL_GPL(nfnl_quota_event);
++
+ static int __init nfnl_acct_init(void)
+ {
+ 	int ret;
+diff --git a/net/netfilter/xt_nfacct.c b/net/netfilter/xt_nfacct.c
+index b3be0ef..c557620 100644
+--- a/net/netfilter/xt_nfacct.c
++++ b/net/netfilter/xt_nfacct.c
+@@ -8,9 +8,12 @@
+  */
+ #include <linux/module.h>
+ #include <linux/skbuff.h>
++#include <linux/spinlock.h>
+ 
++#include <net/netlink.h>
+ #include <linux/netfilter/x_tables.h>
+ #include <linux/netfilter/nfnetlink_acct.h>
++#include <linux/netfilter/nfnetlink.h>
+ #include <linux/netfilter/xt_nfacct.h>
+ 
+ MODULE_AUTHOR("Pablo Neira Ayuso <pablo@netfilter.org>");
+@@ -19,6 +22,11 @@ MODULE_LICENSE("GPL");
+ MODULE_ALIAS("ipt_nfacct");
+ MODULE_ALIAS("ip6t_nfacct");
+ 
++struct nf_acct_quota {
++	spinlock_t lock;
++	bool quota_reached; /* true if quota has been reached. */
++};
++
+ static bool nfacct_mt(const struct sk_buff *skb, struct xt_action_param *par)
+ {
+ 	const struct xt_nfacct_match_info *info = par->targinfo;
+@@ -28,6 +36,36 @@ static bool nfacct_mt(const struct sk_buff *skb, struct xt_action_param *par)
+ 	return true;
+ }
+ 
++static bool
++nfacct_mt_v1(const struct sk_buff *skb, struct xt_action_param *par)
++{
++	u64 val;
++	const struct xt_nfacct_match_info_v1 *info = par->matchinfo;
++	bool ret = true;
++
++	nfnl_acct_update(skb, info->nfacct);
++
++	if (info->flags & XT_NFACCT_QUOTA) {
++		spin_lock_bh(&info->priv->lock);
++		val = (info->flags & XT_NFACCT_QUOTA_PKTS) ?
++				atomic64_read(&info->nfacct->pkts) :
++				atomic64_read(&info->nfacct->bytes);
++		if (val <= info->quota) {
++			ret = !ret;
++			info->priv->quota_reached = false;
++		}
++
++		if (val >= info->quota && !info->priv->quota_reached) {
++			info->priv->quota_reached = true;
++			nfnl_quota_event(info->nfacct);
++		}
++
++		spin_unlock_bh(&info->priv->lock);
++	}
++
++	return ret;
++}
++
+ static int
+ nfacct_mt_checkentry(const struct xt_mtchk_param *par)
+ {
+@@ -44,6 +82,34 @@ nfacct_mt_checkentry(const struct xt_mtchk_param *par)
+ 	return 0;
+ }
+ 
++static int
++nfacct_mt_checkentry_v1(const struct xt_mtchk_param *par)
++{
++	struct xt_nfacct_match_info_v1 *info = par->matchinfo;
++	struct nf_acct *nfacct;
++
++	nfacct = nfnl_acct_find_get(info->name);
++	if (nfacct == NULL) {
++		pr_info("xt_nfacct: invalid accounting object `%s'\n",
++		       info->name);
++		return -ENOENT;
++	}
++
++	info->nfacct = nfacct;
++
++	if ((info->flags & XT_NFACCT_QUOTA) && !info->priv) {
++		info->priv =  kmalloc(sizeof(struct nf_acct_quota), GFP_KERNEL);
++		if (info->priv == NULL) {
++			nfnl_acct_put(info->nfacct);
++			return -ENOMEM;
++		}
++		spin_lock_init(&info->priv->lock);
++		info->priv->quota_reached = false;
++	}
++
++	return 0;
++}
++
+ static void
+ nfacct_mt_destroy(const struct xt_mtdtor_param *par)
+ {
+@@ -52,24 +118,46 @@ nfacct_mt_destroy(const struct xt_mtdtor_param *par)
+ 	nfnl_acct_put(info->nfacct);
+ }
+ 
+-static struct xt_match nfacct_mt_reg __read_mostly = {
+-	.name       = "nfacct",
+-	.family     = NFPROTO_UNSPEC,
+-	.checkentry = nfacct_mt_checkentry,
+-	.match      = nfacct_mt,
+-	.destroy    = nfacct_mt_destroy,
+-	.matchsize  = sizeof(struct xt_nfacct_match_info),
+-	.me         = THIS_MODULE,
++static void
++nfacct_mt_destroy_v1(const struct xt_mtdtor_param *par)
++{
++	const struct xt_nfacct_match_info_v1 *info = par->matchinfo;
++
++	nfnl_acct_put(info->nfacct);
++	kfree(info->priv);
++}
++
++static struct xt_match nfacct_mt_reg[] __read_mostly = {
++	{
++		.name       = "nfacct",
++		.family     = NFPROTO_UNSPEC,
++		.checkentry = nfacct_mt_checkentry,
++		.match      = nfacct_mt,
++		.destroy    = nfacct_mt_destroy,
++		.matchsize  = sizeof(struct xt_nfacct_match_info),
++		.me         = THIS_MODULE,
++	},
++	{
++		.name       = "nfacct",
++		.revision   = 1,
++		.family     = NFPROTO_UNSPEC,
++		.checkentry = nfacct_mt_checkentry_v1,
++		.match      = nfacct_mt_v1,
++		.destroy    = nfacct_mt_destroy_v1,
++		.matchsize  = sizeof(struct xt_nfacct_match_info_v1),
++		.me         = THIS_MODULE,
++	},
++
+ };
+ 
+ static int __init nfacct_mt_init(void)
+ {
+-	return xt_register_match(&nfacct_mt_reg);
++	return xt_register_matches(nfacct_mt_reg, ARRAY_SIZE(nfacct_mt_reg));
+ }
+ 
+ static void __exit nfacct_mt_exit(void)
+ {
+-	xt_unregister_match(&nfacct_mt_reg);
++	xt_unregister_matches(nfacct_mt_reg, ARRAY_SIZE(nfacct_mt_reg));
+ }
+ 
+ module_init(nfacct_mt_init);
+-- 
+1.8.3.2
+
