@@ -1,65 +1,48 @@
-From: Al Grant <bigal.nz@gmail.com>
-Subject: Transparent proxy mitm
-Date: Tue, 28 Jan 2014 10:01:24 +1300
-Message-ID: <CAODtcdexW_mcvWbZOH=P9ATt8t+4m0+y288MY7bCmqe1Wuaq-Q@mail.gmail.com>
+From: Bob Reiber <bob@bkss.net>
+Subject: RE: Public IP to Private IP
+Date: Mon, 27 Jan 2014 20:46:57 +0000
+Message-ID: <86ea7ff85aee4b38b99afb2970247d79@BLUPR07MB146.namprd07.prod.outlook.com>
+References: <CAFPGR9jhpurA644xdfWc6dF58iVCc5t7mbUw6NsjxPqYQxtUHw@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=bvcaf5ycktYBZBshGqf+UmLwIFXisPAdw18CBJkjCQA=;
-        b=tU3+aKnyfORHMlOLJ9ALLqxXKpX+pHhx0Pq0DPU9zoeKCb3W/LL+RAcacwRVeuvaTL
-         IyFhid6ey2qXxZO0c4NtvUtSl4boTkUkzXd+pNYFzhfCUXKzy8R4/Xdx8O4gc4V70z7n
-         +lue+dupdhpc+OKZh/KVMuygKzNBoJZdbbBl5A2nHOqw0mkeee1DJu7oFTE5e9W6jR92
-         FEgI3U8R3VDOX5h/mDpm2UIhGCQYjzLTzjwPKTQFkEtiK8x72kkMRg38th3pXW4vGkkG
-         BY+tPXZz89Jdx1el7sZO/D8IwS9YGpQlAAA1jt6jCbRuURxDDhPNwLTfazUy7F91Fp6A
-         Cz7A==
+In-Reply-To: <CAFPGR9jhpurA644xdfWc6dF58iVCc5t7mbUw6NsjxPqYQxtUHw@mail.gmail.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter <netfilter@vger.kernel.org>
+To: Scott Mayo <scotgmayo@gmail.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi All,
-
-First thigns first. What I am doing, I am doing on my own network for
-learning. Now with that out of the way this is my problem:
-
-I have a linux machine which I want to use to conduct a simulated man
-in the middle attack.
-
-My target I am using is my android phone (10.2.1.3).
-
-I am arppoisoning the network with :
-
-arpspoof -i wlan0 -t 10.2.1.3 -r 10.2.1.1
-IP forwarding is enabled
-
-Now at this point google shows two methods for the next step of the attack:
-
-(1) dnsspoof (this works); or
-(2) add some iptables rules:
-
-iptables -F
-iptables -t nat -F
-iptables -P INPUT ACCEPT
-iptables -P FORWARD ACCEPT
-iptables -P OUTPUT ACCEPT
-iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-ports 8080
-iptables -t nat -A PREROUTING -p tcp --dport 443 -j REDIRECT --to-ports 8080
-
-Then run burpsuite which does transparent proxying and you should be
-able to see, and even modfy traffic between the target and the
-website.
-
-The problem is that once I add those iptable rules I cant browse at all.
-
-Any ideas?
-
-Cheers
-
-Al
-
--- 
-"Beat it punk!"
-- Clint Eastwood
+TXkgZ3Vlc3MgaXMgdGhhdCBleGFtcGxlLm9yZyByZXNvbHZlcyB0byB5b3VyIHB1YmxpYyBpcCBh
+ZGRyZXNzLiBBZGQgZXhhbXBsZS5vcmcgdG8geW91ciBob3N0cyBmaWxlLiBUaGlzIHdpbGwgcmVz
+b2x2ZSBleGFtcGxlLm9yZyB0byB0aGUgbG9jYWwgaXAgYWRkcmVzcyB3aGVuIHlvdSBhcmUgaW5z
+aWRlIHRoZSBmaXJld2FsbC4gDQoNCkJvYiBSZWliZXINCkJLIFNhbGVzIGFuZCBTZXJ2aWNlDQpU
+ZWw6ICg2NTApIDM3Ni0xMTIyDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBu
+ZXRmaWx0ZXItb3duZXJAdmdlci5rZXJuZWwub3JnIFttYWlsdG86bmV0ZmlsdGVyLW93bmVyQHZn
+ZXIua2VybmVsLm9yZ10gT24gQmVoYWxmIE9mIFNjb3R0IE1heW8NClNlbnQ6IE1vbmRheSwgSmFu
+dWFyeSAyNywgMjAxNCAxMToyMiBBTQ0KVG86IG5ldGZpbHRlckB2Z2VyLmtlcm5lbC5vcmcNClN1
+YmplY3Q6IFB1YmxpYyBJUCB0byBQcml2YXRlIElQDQoNCkkgYW0gaGF2aW5nIHNvbWUgdHJvdWJs
+ZXMgZ2V0dGluZyBteSBwdWJsaWMgSVBzIHJvdXRlZCB0byBteSBwcml2YXRlIElQcy4NCg0KSGVy
+ZSBpcyBhbiBleGFtcGxlLg0KUHJpdmF0ZSBJUCBvZiB0aGUgbWFpbiBzZXJ2ZXIgd2l0aCBteSBJ
+UFRhYmxlczogIDE5Mi4xNjguMC4xIFB1YmxpYyBJUCBvZiB0aGUgbWFpbiBzZXJ2ZXI6ICAxLjEu
+MS4xIEkgYWxzbyBoYXZlIDEuMS4xLjIgYW5kIDEuMS4xLjMgYXMgcHVibGljIElQcyBhdHRhY2hl
+ZCB0byB0aGUgcHVibGljIG5pYy4NCkRvbWFpbiBuYW1lIGV4YW1wbGUub3JnIGlzIHBvaW50ZWQg
+dG8gMS4xLjEuMg0KDQpJIGFtIHRyeWluZyB0byBnZXQgdGhlIGZvbGxvd2luZyBwdWJsaWMgSVBz
+IHRvIFByaXZhdGUgSVBzOg0KMS4xLjEuMiAtPiAxOTIuMTY4LjAuMg0KMS4xLjEuMyAtPiAxOTIu
+MTY4LjAuMw0KDQpJZiBJIGFtIG91dHNpZGUgbXkgbmV0d29yayBhbmQgZ28gdG8gZXhhbXBsZS5v
+cmcsIGl0IHNlZW1zIHRvIHdvcmsgZmluZS4NCklmIEkgYW0gaW5zaWRlIG15IG5ldHdvcmsgYW5k
+IGdvIHRvIDE5Mi4xNjguMC4yIHRoZW4gaXQgd29ya3MgZmluZS4NCklmIEkgZ28gdG8gZXhhbXBs
+ZS5vcmcgZnJvbSBpbnNpZGUgbXkgbmV0d29yayB0aGVuIGl0IGdvZXMgYmFjayB0bw0KMTkyLjE2
+OC4wLjEgaW5zdGVhZCBvZiAxOTIuMTY4LjAuMg0KDQpNYXliZSB0aGlzIGRvZXMgbm90IGhhdmUg
+dG8gZG8gd2l0aCBJUFRhYmxlcyBldmVuIHNpbmNlIGl0IHdvcmtzIHdpdGggYW4gSVAsIGJ1dCBJ
+IHRob3VnaHQgSSB3b3VsZCBhc2sgaGVyZS4gIEkgZG8gbm90IGhhdmUgYW4gaW50ZXJuYWwgRE5T
+IHNlcnZlci4NCg0KSGVyZSBhcmUgdGhlIHJ1bGVzIHRoYXQgSSBoYXZlOg0KDQpJUFRBQkxFUyAt
+dCBuYXQgLUEgUFJFUk9VVElORyAtZCAxLjEuMS4yIC1wIHRjcCAtaiBETkFUIC0tdG8tZGVzdGlu
+YXRpb24gMTkyLjE2OC4wLjIgSVBUQUJMRVMgLXQgbmF0IC1BIFBPU1RST1VUSU5HIC1kIDE5Mi4x
+NjguMC4yIC1qIFNOQVQgLS10by1kZXN0aW5hdGlvbiAxLjEuMS4yDQoNCkFueSBzdWdnZXN0aW9u
+cyB3b3VsZCBiZSBhcHByZWNpYXRlZC4NClRoYW5rcy4NCg0KLS0NClNjb3R0IE1heW8NCk1heW8n
+cyBQaW9uZWVyIFNlZWRzICAgUEg6IDU3My01NjgtMzIzNSAgIENFOiA1NzMtNjE0LTIxMzgNCi0t
+DQpUbyB1bnN1YnNjcmliZSBmcm9tIHRoaXMgbGlzdDogc2VuZCB0aGUgbGluZSAidW5zdWJzY3Jp
+YmUgbmV0ZmlsdGVyIiBpbiB0aGUgYm9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIu
+a2VybmVsLm9yZyBNb3JlIG1ham9yZG9tbyBpbmZvIGF0ICBodHRwOi8vdmdlci5rZXJuZWwub3Jn
+L21ham9yZG9tby1pbmZvLmh0bWwNCg==
