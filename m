@@ -1,55 +1,42 @@
-From: "Rob Sterenborg (lists)" <lists@sterenborg.info>
-Subject: Re: Public IP to Private IP
-Date: Tue, 28 Jan 2014 08:32:29 +0100
-Message-ID: <52E75D0D.50007@sterenborg.info>
-References: <CAFPGR9jhpurA644xdfWc6dF58iVCc5t7mbUw6NsjxPqYQxtUHw@mail.gmail.com>
+From: Steve Miller <stmille@gmail.com>
+Subject: LOG target with console=ttyS0,9600
+Date: Wed, 29 Jan 2014 09:30:49 -0800
+Message-ID: <CAFs0UtY4de7uwhc8TgbO-P_Qy9cy-uGO0CY+Ancs17V6G4R-Cg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAFPGR9jhpurA644xdfWc6dF58iVCc5t7mbUw6NsjxPqYQxtUHw@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to:content-type;
+        bh=m4toIKCS4AafoLJoDn/WKedEv7y19LDPNXkKwEg/uBE=;
+        b=J2hyJfK0grZY2s7wT9fTKn2cvjGZZReNyT+zg6+Ml1KZM9kKqOaNwvmZ3KG/n/b63v
+         cP9L8I1/eUko8pGseczc9b+SFOwfjj3GN7N4vVxw27eaSYaEGoS9E2TYDMQ08Pmz6aRJ
+         fU6fJODTbKyA8n1XX8EbSPoa6E6GSFXWK5At/nlrXoh+3pCeUFcU/BZtA8pf3h8bCKTm
+         KrLO0FmfBVMC+dPj5qAN9mQXP3xK/hfWTEyAaMXarXLhehnGuiEi/ZdjSTE2TBx4pJDP
+         vIxXTXVMuHBDvItCUo0u3CoWCbMcOmbTHm0qf1RttUanl9V7J9eE5vi8HCUer9AX/TWO
+         JcLA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Scott Mayo <scotgmayo@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 01/27/2014 08:22 PM, Scott Mayo wrote:
-> I am having some troubles getting my public IPs routed to my private IPs.
->
-> Here is an example.
-> Private IP of the main server with my IPTables:  192.168.0.1
-> Public IP of the main server:  1.1.1.1
-> I also have 1.1.1.2 and 1.1.1.3 as public IPs attached to the public nic.
-> Domain name example.org is pointed to 1.1.1.2
->
-> I am trying to get the following public IPs to Private IPs:
-> 1.1.1.2 -> 192.168.0.2
-> 1.1.1.3 -> 192.168.0.3
->
-> If I am outside my network and go to example.org, it seems to work fine.
-> If I am inside my network and go to 192.168.0.2 then it works fine.
-> If I go to example.org from inside my network then it goes back to
-> 192.168.0.1 instead of 192.168.0.2
->
-> Maybe this does not have to do with IPTables even since it works with
-> an IP, but I thought I would ask here.  I do not have an internal DNS
-> server.
->
-> Here are the rules that I have:
->
-> IPTABLES -t nat -A PREROUTING -d 1.1.1.2 -p tcp -j DNAT
-> --to-destination 192.168.0.2
-> IPTABLES -t nat -A POSTROUTING -d 192.168.0.2 -j SNAT --to-destination 1.1.1.2
->
-> Any suggestions would be appreciated.
-> Thanks.
+Hi everyone,
 
-As already explained, NAT-ing packets from your LAN back into your LAN 
-via the public IP (and receiving the answer packets) is a pain.
+We ran into some issues due to what appeared to be an non rate-limited
+LOG target rule on our INPUT chain before the final DROP.  It looks
+like that was set up to log to the console... no bueno!
 
-If you don't have split-DNS and don't want to install DNS, you might 
-want to look into a reverse proxy (I have good experiences with Nginx).
+We saw lots of connection and and system resource related issues crop
+up when that LOG rule started getting hit repeatedly..  A hypothesis
+was formed around the idea that iptables was getting backpressure from
+klogd due to the slow writes to console.
 
+This idea doesn't sit well with me... I really don't like the idea
+that a LOG target rule (albeit configured mindlessly) can have such
+catastrophic results.
 
---
-Rob
+Does anyone have a moment to speak about what may have happened or to
+explain possibly why?
 
+Thanks!
+Steve
