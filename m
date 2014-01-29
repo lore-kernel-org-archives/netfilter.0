@@ -1,42 +1,60 @@
-From: Steve Miller <stmille@gmail.com>
-Subject: LOG target with console=ttyS0,9600
-Date: Wed, 29 Jan 2014 09:30:49 -0800
-Message-ID: <CAFs0UtY4de7uwhc8TgbO-P_Qy9cy-uGO0CY+Ancs17V6G4R-Cg@mail.gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH] netfilter: nf_conntrack: fix RCU race in
+ nf_conntrack_find_get (v3)
+Date: Wed, 29 Jan 2014 20:21:37 +0100
+Message-ID: <20140129192136.GA7151@localhost>
+References: <1389188841.26646.87.camel@edumazet-glaptop2.roam.corp.google.com>
+ <1389549033-23523-1-git-send-email-avagin@openvz.org>
+ <1389558074.31367.187.camel@edumazet-glaptop2.roam.corp.google.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:from:date:message-id:subject:to:content-type;
-        bh=m4toIKCS4AafoLJoDn/WKedEv7y19LDPNXkKwEg/uBE=;
-        b=J2hyJfK0grZY2s7wT9fTKn2cvjGZZReNyT+zg6+Ml1KZM9kKqOaNwvmZ3KG/n/b63v
-         cP9L8I1/eUko8pGseczc9b+SFOwfjj3GN7N4vVxw27eaSYaEGoS9E2TYDMQ08Pmz6aRJ
-         fU6fJODTbKyA8n1XX8EbSPoa6E6GSFXWK5At/nlrXoh+3pCeUFcU/BZtA8pf3h8bCKTm
-         KrLO0FmfBVMC+dPj5qAN9mQXP3xK/hfWTEyAaMXarXLhehnGuiEi/ZdjSTE2TBx4pJDP
-         vIxXTXVMuHBDvItCUo0u3CoWCbMcOmbTHm0qf1RttUanl9V7J9eE5vi8HCUer9AX/TWO
-         JcLA==
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <linux-kernel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1389558074.31367.187.camel@edumazet-glaptop2.roam.corp.google.com>
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Eric Dumazet <eric.dumazet@gmail.com>
+Cc: Andrey Vagin <avagin@openvz.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, vvs@openvz.org, Florian Westphal <fw@strlen.de>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>, Cyrill Gorcunov <gorcunov@openvz.org>
 
-Hi everyone,
+On Sun, Jan 12, 2014 at 12:21:14PM -0800, Eric Dumazet wrote:
+> On Sun, 2014-01-12 at 21:50 +0400, Andrey Vagin wrote:
+> > Lets look at destroy_conntrack:
+> > 
+> > hlist_nulls_del_rcu(&ct->tuplehash[IP_CT_DIR_ORIGINAL].hnnode);
+> > ...
+> > nf_conntrack_free(ct)
+> > 	kmem_cache_free(net->ct.nf_conntrack_cachep, ct);
+> > 
+> > net->ct.nf_conntrack_cachep is created with SLAB_DESTROY_BY_RCU.
+> > 
+> > The hash is protected by rcu, so readers look up conntracks without
+> > locks.
+> > A conntrack is removed from the hash, but in this moment a few readers
+> > still can use the conntrack. Then this conntrack is released and another
+> > thread creates conntrack with the same address and the equal tuple.
+> > After this a reader starts to validate the conntrack:
+> > * It's not dying, because a new conntrack was created
+> > * nf_ct_tuple_equal() returns true.
+> ...
+> 
+> 
+> > v2: move nf_ct_is_confirmed into the unlikely() annotation
+> > v3: Eric suggested to fix refcnt, so that it becomes zero before adding
+> >     in a hash, but we can't find a way how to do that. Another way is to
+> >     interpret the confirm bit as part of a search key and check it in
+> >     ____nf_conntrack_find() too.
+> > 
+> > Cc: Eric Dumazet <eric.dumazet@gmail.com>
+> > Cc: Florian Westphal <fw@strlen.de>
+> > Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+> > Cc: Patrick McHardy <kaber@trash.net>
+> > Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+> > Cc: "David S. Miller" <davem@davemloft.net>
+> > Cc: Cyrill Gorcunov <gorcunov@openvz.org>
+> > Signed-off-by: Andrey Vagin <avagin@openvz.org>
+> > ---
+> 
+> Acked-by: Eric Dumazet <edumazet@google.com>
 
-We ran into some issues due to what appeared to be an non rate-limited
-LOG target rule on our INPUT chain before the final DROP.  It looks
-like that was set up to log to the console... no bueno!
-
-We saw lots of connection and and system resource related issues crop
-up when that LOG rule started getting hit repeatedly..  A hypothesis
-was formed around the idea that iptables was getting backpressure from
-klogd due to the slow writes to console.
-
-This idea doesn't sit well with me... I really don't like the idea
-that a LOG target rule (albeit configured mindlessly) can have such
-catastrophic results.
-
-Does anyone have a moment to speak about what may have happened or to
-explain possibly why?
-
-Thanks!
-Steve
+Applied, thanks everyone!
