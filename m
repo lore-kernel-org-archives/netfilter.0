@@ -1,60 +1,79 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH] netfilter: nf_conntrack: fix RCU race in
- nf_conntrack_find_get (v3)
-Date: Wed, 29 Jan 2014 20:21:37 +0100
-Message-ID: <20140129192136.GA7151@localhost>
-References: <1389188841.26646.87.camel@edumazet-glaptop2.roam.corp.google.com>
- <1389549033-23523-1-git-send-email-avagin@openvz.org>
- <1389558074.31367.187.camel@edumazet-glaptop2.roam.corp.google.com>
+From: astx <astx@aws-it.at>
+Subject: Re: OOPS in nf_ct_unlink_expect_report using Polycom RealPresence
+ Mobile
+Date: Fri, 31 Jan 2014 17:04:02 +0100
+Message-ID: <20140131170402.Horde.yIFUeQVjLycuS_8PGQoKmg5@aws-it.at>
+References: <20140131120527.Horde.-3YzQu5S8WWBx7vuVVNdBA2@bigboss.aws-it.at>
+ <20140131125014.Horde.G2TRlt-60JJ0Nl_3Y8IniQ2@bigboss.aws-it.at>
 Mime-Version: 1.0
 Return-path: <linux-kernel-owner@vger.kernel.org>
+In-Reply-To: <20140131125014.Horde.G2TRlt-60JJ0Nl_3Y8IniQ2@bigboss.aws-it.at>
 Content-Disposition: inline
-In-Reply-To: <1389558074.31367.187.camel@edumazet-glaptop2.roam.corp.google.com>
 Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="Yes"
 Content-Transfer-Encoding: 7bit
-To: Eric Dumazet <eric.dumazet@gmail.com>
-Cc: Andrey Vagin <avagin@openvz.org>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, vvs@openvz.org, Florian Westphal <fw@strlen.de>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>, Cyrill Gorcunov <gorcunov@openvz.org>
+To: linux-kernel@vger.kernel.org
+Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org
 
-On Sun, Jan 12, 2014 at 12:21:14PM -0800, Eric Dumazet wrote:
-> On Sun, 2014-01-12 at 21:50 +0400, Andrey Vagin wrote:
-> > Lets look at destroy_conntrack:
-> > 
-> > hlist_nulls_del_rcu(&ct->tuplehash[IP_CT_DIR_ORIGINAL].hnnode);
-> > ...
-> > nf_conntrack_free(ct)
-> > 	kmem_cache_free(net->ct.nf_conntrack_cachep, ct);
-> > 
-> > net->ct.nf_conntrack_cachep is created with SLAB_DESTROY_BY_RCU.
-> > 
-> > The hash is protected by rcu, so readers look up conntracks without
-> > locks.
-> > A conntrack is removed from the hash, but in this moment a few readers
-> > still can use the conntrack. Then this conntrack is released and another
-> > thread creates conntrack with the same address and the equal tuple.
-> > After this a reader starts to validate the conntrack:
-> > * It's not dying, because a new conntrack was created
-> > * nf_ct_tuple_equal() returns true.
-> ...
-> 
-> 
-> > v2: move nf_ct_is_confirmed into the unlikely() annotation
-> > v3: Eric suggested to fix refcnt, so that it becomes zero before adding
-> >     in a hash, but we can't find a way how to do that. Another way is to
-> >     interpret the confirm bit as part of a search key and check it in
-> >     ____nf_conntrack_find() too.
-> > 
-> > Cc: Eric Dumazet <eric.dumazet@gmail.com>
-> > Cc: Florian Westphal <fw@strlen.de>
-> > Cc: Pablo Neira Ayuso <pablo@netfilter.org>
-> > Cc: Patrick McHardy <kaber@trash.net>
-> > Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-> > Cc: "David S. Miller" <davem@davemloft.net>
-> > Cc: Cyrill Gorcunov <gorcunov@openvz.org>
-> > Signed-off-by: Andrey Vagin <avagin@openvz.org>
-> > ---
-> 
-> Acked-by: Eric Dumazet <edumazet@google.com>
+Dear Alexey,
 
-Applied, thanks everyone!
+seems to help. Thank you for your quick response. Kernel 3.10.28 is  
+now stable using h323 / Polycom.
+
+Will test this patch with different kernel versions the next days.
+
+Best Regards,
+Toni
+
+
+Original message from Alexey Dobriyan:
+--------------------------------------------------------------------------------------
+Date	Fri, 31 Jan 2014 16:29:58 +0300
+Subject	Re: OOPS in nf_ct_unlink_expect_report using Polycom  
+RealPresence Mobile
+From	Alexey Dobriyan <>
+
+
+> Disabling nf_nat_h323 and nf_conntrack_h323 avoids crash -
+> but video conferencing software is no more usable.
+>
+> BUG: unable to handle kernel paging request at 00100104
+> IP: [<f8214f07>] nf_ct_unlink_expect_report
+
+This must be the same bug fixed in SIP module:
+commit 3f509c689a07a4aa989b426893d8491a7ffcc410
+netfilter: nf_nat_sip: fix incorrect handling of EBUSY for RTCP expectation
+
+Try attached patch (if this is mangled):
+
+--- a/net/ipv4/netfilter/nf_nat_h323.c
++++ b/net/ipv4/netfilter/nf_nat_h323.c
+@@ -229,7 +229,10 @@ static int nat_rtp_rtcp(struct sk_buff *skb,
+struct nf_conn *ct,
+   ret = nf_ct_expect_related(rtcp_exp);
+   if (ret == 0)
+   break;
+- else if (ret != -EBUSY) {
++ else if (ret == -EBUSY) {
++ nf_ct_unexpect_related(rtp_exp);
++ continue;
++ } else if (ret < 0) {
+   nf_ct_unexpect_related(rtp_exp);
+   nated_port = 0;
+   break;--- a/net/ipv4/netfilter/nf_nat_h323.c
++++ b/net/ipv4/netfilter/nf_nat_h323.c
+@@ -229,7 +229,10 @@ static int nat_rtp_rtcp(struct sk_buff *skb,  
+struct nf_conn *ct,
+  			ret = nf_ct_expect_related(rtcp_exp);
+  			if (ret == 0)
+  				break;
+-			else if (ret != -EBUSY) {
++			else if (ret == -EBUSY) {
++				nf_ct_unexpect_related(rtp_exp);
++				continue;
++			} else if (ret < 0) {
+  				nf_ct_unexpect_related(rtp_exp);
+  				nated_port = 0;
+  				break;
+
