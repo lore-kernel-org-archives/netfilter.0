@@ -1,78 +1,52 @@
-From: Florian Westphal <fw@strlen.de>
-Subject: Re: [PATCH RESEND v3] netfilter: xtables: add quota support to nfacct
-Date: Sat, 1 Feb 2014 23:57:26 +0100
-Message-ID: <20140201225726.GF776@breakpoint.cc>
-References: <1391292671-26466-1-git-send-email-mathieu.poirier@linaro.org>
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Subject: Re: Public IP to Private IP
+Date: Sun, 02 Feb 2014 16:45:15 +0100
+Message-ID: <52EE680B.6090407@plouf.fr.eu.org>
+References: <CAFPGR9jhpurA644xdfWc6dF58iVCc5t7mbUw6NsjxPqYQxtUHw@mail.gmail.com>	<CALFTrnO7SAm0ghr7b1p+o9cWnbwtRJQMtSmtJy_VXJxd-xxkcw@mail.gmail.com> <CAFPGR9guTGspBJ8yfOVNZAAMy44YGS+UeV+QmYNLpAJ+ZxTuxw@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1391292671-26466-1-git-send-email-mathieu.poirier@linaro.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <CAFPGR9guTGspBJ8yfOVNZAAMy44YGS+UeV+QmYNLpAJ+ZxTuxw@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: mathieu.poirier@linaro.org
-Cc: pablo@netfilter.org, kaber@trash.net, kadlec@blackhole.kfki.hu, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, fw@strlen.de
+Content-Type: text/plain; charset="iso-8859-1"
+To: Scott Mayo <scotgmayo@gmail.com>
+Cc: Ray Soucy <rps@maine.edu>, netfilter list <netfilter@vger.kernel.org>
 
-mathieu.poirier@linaro.org <mathieu.poirier@linaro.org> wrote:
-> +struct xt_nfacct_match_info_v1 {
-> +	char		name[NFACCT_NAME_MAX];
-> +	struct nf_acct	*nfacct;
-> +
-> +	__u32 flags;
-> +	__aligned_u64 quota;
-> +	/* used internally by kernel */
-> +	struct nf_acct_quota	*priv __attribute__((aligned(8)));
-> +};
+Hello,
 
-I think *nfacct pointer is also kernel internal, so it should also get
-aligned (might also be possible to stash it in *private struct).
+Scott Mayo a =E9crit :
+> On Mon, Jan 27, 2014 at 2:48 PM, Ray Soucy <rps@maine.edu> wrote:
+>> The term you're looking for is "NAT reflection" or "hairpin NAT".
+>>
+>> If you're not running split DNS, then trying to reach a system via i=
+ts
+>> "outside" IP from an internal system will present a problem because
+>> the source IP of the request is seen as on-link by the server, so th=
+e
+>> server responds directly from an unexpected source IP and the
+>> requesting host drops the request.
+>>
+>> You can get around this issue by NATing the return traffic when its =
+to
+>> and from the internal network.
+>>
+>> Assuming that your inside interface is eth1, and your inside IP
+>> network is 192.168.0.0/23:
+>>
+>> iptables -A POSTROUTING -s 192.168.0.0/23 -d 192.168.0.0/23 -o eth1 =
+-j
+>> MASQUERADE
 
-> +	if (info->flags & XT_NFACCT_QUOTA) {
-> +		spin_lock_bh(&info->priv->lock);
-> +		val = (info->flags & XT_NFACCT_QUOTA_PKTS) ?
-> +				atomic64_read(&info->nfacct->pkts) :
-> +				atomic64_read(&info->nfacct->bytes);
-> +		if (val <= info->quota) {
-> +			ret = !ret;
-> +			info->priv->quota_reached = false;
+Instead of masquerading I would suggest to 1:1 map the source addresses
+to a different (unused) private subnet, so that the source address seen
+by the final server can be mapped back to the real source address.
 
-Why quota_reached = false
-assignment?
+E.g. :
+iptables -A POSTROUTING -s 192.168.0.0/23 -d 192.168.0.0/23 -o eth1 \
+  -j NETMAP --to 192.168.8.0/23
 
-[ How is this toggled (other than transition to 'true' below)? ]
+> That did not seem to work either.  Getting the same results.  Thanks.
 
-> +		if (val >= info->quota && !info->priv->quota_reached) {
-> +			info->priv->quota_reached = true;
-> +			nfnl_quota_event(info->nfacct);
-> +		}
-> +
-> +		spin_unlock_bh(&info->priv->lock);
-> +	}
-
-Hm.  Not sure why the lock has to be hold during all tests.  What about:
-
-if (info->flags & XT_NFACCT_QUOTA) {
-		val = (info->flags & XT_NFACCT_QUOTA_PKTS) ?
-				atomic64_read(&info->nfacct->pkts) :
-				atomic64_read(&info->nfacct->bytes);
-		/* normal case: quota not reached */
-		if (val <= info->quota)
-			return !ret;
-
-		/* other case: quota reached AND event sent */
-		if (info->priv->quota_reached)
-		       return ret;
-
-		spin_lock_bh(&info->priv->lock);
-
-		if (!info->priv->quota_reached) {
-			info->priv->quota_reached = true;
-			nfnl_quota_event(info->nfacct);
-		}
-
-		spin_unlock_bh(&info->priv->lock);
-
-[ could also cmpxchg instead of spinlock ]
-
-Other than that this looks good to me.
+Also make sure that "reflected" packets from eth1 to eth1 (replace with
+the real internal interface name) in the FORWARD chain are ACCEPTed.
