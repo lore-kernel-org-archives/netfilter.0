@@ -1,29 +1,36 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: iptables: Distinguishing packets from bridge-nf-call-iptables
-Date: Wed, 05 Feb 2014 12:53:48 +0100
-Message-ID: <52F2264C.2060500@chello.at>
-References: <BC2A25BE-4E4F-4270-855A-E0D092F4A7C0@alex.org.uk>
-Reply-To: mart.frauenlob@chello.at
+From: Sophal Lee <sophal@esolute.com>
+Subject: Bridging issues: Issues with IP packets with multicast MAC address
+Date: Thu, 6 Feb 2014 00:01:51 +0000
+Message-ID: <0DEFA0384E6CC8469FBD21EC20CA73C0E3074798@MAILSTORE-A.hitech.vision-network.info>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <BC2A25BE-4E4F-4270-855A-E0D092F4A7C0@alex.org.uk>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Alex Bligh <alex@alex.org.uk>
-Cc: netfilter list <netfilter@vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 05.02.2014 12:24, Alex Bligh wrote:
-> I am trying to run two pieces of software X and Y on a linux box.
->
-> X assumes /proc/sys/net/bridge/bridge-nf-call-iptables is set to 1. I am not able to modify this.
->
-> Y assumes /proc/sys/net/bridge/bridge-nf-call-iptables is set to 0. This is my software and I can modify it.
->
-> I want to adapt my rules for Y so that it copes with /proc/sys/net/bridge/bridge-nf-call-iptables=1 by ignoring (in the iptables rule) any traffic which is purely bridged, and simply doing the ebtables rules on these packets.
->
-> In the iptables rules, how do I differentiate ip forwarded traffic from bridged traffic? The bridge interfaces may or may not carry IP addresses.
->
+Hi 
 
--m physdev ... ?
+I'm having issues with multicast Ethernet frames getting forwarding to all my virtual guest in a KVM virtualised environment. 
+
+Some information about ow the system's configure, ebtables and iptables are used for L2/L3 filtering. A virtual IP. (192.168.1.1) has a multicast MAC paired with it (03:11:11:11:11:11). 
+
+Bridge networking has been setup i.e. shared physical device. So my interfaces are the bridge interface (br0) and multiple virtual interface for the guest (vnet0, vnet1, vnet2, etc.).
+
+Here's a few articles I've been referring to for setting up my bridge: 
+https://wiki.debian.org/BridgeNetworkConnections
+http://wiki.libvirt.org/page/Networking
+
+I've configured the kernel state to have arp/iptables ignore bridge traffic through changing the following fields
+* bridge-nf-call-arptables
+* bridge-nf-call-iptables
+* bridge-nf-call-ip6tables
+From my understanding and how I've configured the bridge, it should behave just like a switch, so I'd expect that multicast MAC address to be forwarded to all virtual interfaces by the bridge interface. However, only certain multicast frames are going through to the KVM guest such as Microsoft NLB packets, ARP and other types of multicast/broadcast traffic.  However, IP packets with the multicast MAC address is not getting forwarded.
+
+Running a few test, I can see these IP packets (with the multicast Ethernet frame) arrive at the bridge interface but doesn't get forwarded to any of the virtual net interface. 
+
+ebtables has been configured to filter by bridging, so it should be forwarding packets to the virtual interfaces based on MAC multicasting. In the brouting chain, I've left the policy ACCEPT which should be making decision on the link-layer.
+
+Judging from what's happening, it might be possible they are being routed instead. Is there a way to see where  and what's happening to these packets? Which chains the packets are going from and what rules are being applied? Thanks.
