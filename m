@@ -1,36 +1,43 @@
-From: Sophal Lee <sophal@esolute.com>
-Subject: Bridging issues: Issues with IP packets with multicast MAC address
-Date: Thu, 6 Feb 2014 00:01:51 +0000
-Message-ID: <0DEFA0384E6CC8469FBD21EC20CA73C0E3074798@MAILSTORE-A.hitech.vision-network.info>
-Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+From: Alex Bligh <alex@alex.org.uk>
+Subject: Re: iptables: Distinguishing packets from bridge-nf-call-iptables
+Date: Thu, 6 Feb 2014 00:58:32 +0000
+Message-ID: <7A426D4F-5833-467D-9DBE-CF137450DEB2@alex.org.uk>
+References: <BC2A25BE-4E4F-4270-855A-E0D092F4A7C0@alex.org.uk> <52F2264C.2060500@chello.at>
+Mime-Version: 1.0 (Apple Message framework v1085)
 Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+In-Reply-To: <52F2264C.2060500@chello.at>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: mart.frauenlob@chello.at
+Cc: Alex Bligh <alex@alex.org.uk>, netfilter list <netfilter@vger.kernel.org>
 
-Hi 
 
-I'm having issues with multicast Ethernet frames getting forwarding to all my virtual guest in a KVM virtualised environment. 
+On 5 Feb 2014, at 11:53, Mart Frauenlob wrote:
 
-Some information about ow the system's configure, ebtables and iptables are used for L2/L3 filtering. A virtual IP. (192.168.1.1) has a multicast MAC paired with it (03:11:11:11:11:11). 
+> On 05.02.2014 12:24, Alex Bligh wrote:
+>> I am trying to run two pieces of software X and Y on a linux box.
+>> 
+>> X assumes /proc/sys/net/bridge/bridge-nf-call-iptables is set to 1. I am not able to modify this.
+>> 
+>> Y assumes /proc/sys/net/bridge/bridge-nf-call-iptables is set to 0. This is my software and I can modify it.
+>> 
+>> I want to adapt my rules for Y so that it copes with /proc/sys/net/bridge/bridge-nf-call-iptables=1 by ignoring (in the iptables rule) any traffic which is purely bridged, and simply doing the ebtables rules on these packets.
+>> 
+>> In the iptables rules, how do I differentiate ip forwarded traffic from bridged traffic? The bridge interfaces may or may not carry IP addresses.
+>> 
+> 
+> -m physdev ... ?
 
-Bridge networking has been setup i.e. shared physical device. So my interfaces are the bridge interface (br0) and multiple virtual interface for the guest (vnet0, vnet1, vnet2, etc.).
+Ah "-m physdev --physdev-is-bridged" - thanks
 
-Here's a few articles I've been referring to for setting up my bridge: 
-https://wiki.debian.org/BridgeNetworkConnections
-http://wiki.libvirt.org/page/Networking
+If I want to return to ebtables checking etc. (i.e. do nothing) I take it -j ACCEPT
+will do this (i.e. ACCEPT does not mean 'override ebtables rejection')?
 
-I've configured the kernel state to have arp/iptables ignore bridge traffic through changing the following fields
-* bridge-nf-call-arptables
-* bridge-nf-call-iptables
-* bridge-nf-call-ip6tables
-From my understanding and how I've configured the bridge, it should behave just like a switch, so I'd expect that multicast MAC address to be forwarded to all virtual interfaces by the bridge interface. However, only certain multicast frames are going through to the KVM guest such as Microsoft NLB packets, ARP and other types of multicast/broadcast traffic.  However, IP packets with the multicast MAC address is not getting forwarded.
+-- 
+Alex Bligh
 
-Running a few test, I can see these IP packets (with the multicast Ethernet frame) arrive at the bridge interface but doesn't get forwarded to any of the virtual net interface. 
 
-ebtables has been configured to filter by bridging, so it should be forwarding packets to the virtual interfaces based on MAC multicasting. In the brouting chain, I've left the policy ACCEPT which should be making decision on the link-layer.
 
-Judging from what's happening, it might be possible they are being routed instead. Is there a way to see where  and what's happening to these packets? Which chains the packets are going from and what rules are being applied? Thanks.
+
