@@ -1,29 +1,36 @@
-From: Phil Oester <kernel@linuxace.com>
-Subject: Re: PREROUTING in nat table isn't working as aspected
-Date: Mon, 10 Feb 2014 07:48:34 -0800
-Message-ID: <20140210154834.GA6570@home>
-References: <F57C6B5920056B48955ABFCF0A95493603BDAA42@mail-01.trends.nl>
-Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <F57C6B5920056B48955ABFCF0A95493603BDAA42@mail-01.trends.nl>
-Sender: netfilter-owner@vger.kernel.org
+From: mathieu.poirier@linaro.org
+Subject: [PATCH v4 0/2] Add quota capabilities to nfacct
+Date: Mon, 10 Feb 2014 19:27:06 -0700
+Message-ID: <1392085628-24804-1-git-send-email-mathieu.poirier@linaro.org>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Theo Belder <T.Belder@trends.nl>
-Cc: netfilter@vger.kernel.org
+To: pablo@netfilter.org
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, fw@strlen.de, mathieu.poirier@linaro.org
 
-On Mon, Feb 10, 2014 at 01:52:42PM +0100, Theo Belder wrote:
-> ... So the redirect table
-> works for new connections. But for continuous existing traffic the
-> PREROUTING rule isn't working...
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-Exactly as expected.
+For this iteration the synchronisation of packet and byte
+accounting in 'nfnl_acct_update' was added.  That allowed
+for the removal of spinlocks from the match function
+in xt_nfacct.  Comments from v3 were also addressed.
 
-> Do you have tips for redirecting traffic for an active traffic flood??
+Mathieu Poirier (2):
+  netfilter: nfnetlink_acct: make shared objects SMP safe
+  netfilter: xtables: add quota support for nfacct
 
-Clear the traffic from conntrack table by using the conntrack tool?  Then
-the next packet which arrives WILL go through your PREROUTING rules.
+ include/linux/netfilter/nfnetlink_acct.h      |  15 ++-
+ include/uapi/linux/netfilter/nfnetlink.h      |   2 +
+ include/uapi/linux/netfilter/nfnetlink_acct.h |   1 +
+ include/uapi/linux/netfilter/xt_nfacct.h      |  14 ++-
+ net/netfilter/Kconfig                         |   3 +-
+ net/netfilter/nfnetlink_acct.c                |  57 ++++++++---
+ net/netfilter/xt_nfacct.c                     | 139 ++++++++++++++++++++++++--
+ 7 files changed, 202 insertions(+), 29 deletions(-)
 
-Phil
+-- 
+1.8.3.2
+
