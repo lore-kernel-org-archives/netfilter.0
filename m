@@ -1,63 +1,52 @@
-From: Eric Leblond <eric@regit.org>
-Subject: [ANNOUNCE] 10th Netfilter Workshop in Montpellier, France
-Date: Tue, 11 Feb 2014 17:34:26 +0100
-Message-ID: <1392136466.17306.48.camel@ice-age2.regit.org>
+From: Mike Boyer <netfilter@netcare-il.com>
+Subject: PPTP through NAT fails
+Date: Tue, 11 Feb 2014 14:06:12 -0600
+Message-ID: <52FA82B4.7010806@netcare-il.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
-	boundary="=-p1xyDOtUvGbjour66qW6"
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-To: Netfilter Development Mailing list <netfilter-devel@vger.kernel.org>
-Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>, Christophe Brocas <christophe@brocas.org>
-
-
---=-p1xyDOtUvGbjour66qW6
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-We are happy to remind you the next edition in the workshop series. This
-year the event will be co-hosted with the Libre Software Meeting 2014
-[1] in Montpellier, France from 7th to 11th July, 2014.
-
-Monday 7th will be the traditional user day where developers present
-their work to the public. With nftables just being released, that will
-be one great place to get updated and meet in person the people
-responsible for the latest big Netfilter evolution.
-
-We are looking for sponsors, if you think you can help us to get
-funds to run the workshop, please, contact me and I'll be glad to send
-you our sponsorship policy. Among other things, sponsor logo will figure
-on website, event T-shirts. The sponsoring the Netfilter workshop is a
-really good way to show your love and support to the Netfilter project
-and help us to build more common goods.
-
-The official workshop website [2] will collect the important
-information regarding this event. You may notice that some areas still
-lack of important information, we are working to deliver those as soon
-as possible. So, please, be patient.
-
-Best regards.
-
-[1] https://2014.rmll.info/
-[2] http://workshop.netfilter.org/2014/
---=20
-Eric Leblond <eric@regit.org>
-
---=-p1xyDOtUvGbjour66qW6
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
 Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+LAN -> Linux Router -> Internet -> PPTP Server
+           NAT
 
-iD8DBQBS+lESnxA7CdMWjzIRAgm1AJwKhdML3NhcSU2Oenb3CRtzKiQegQCffJov
-uanzFNEUnD3wF3YqjMFEjZM=
-=4N5J
------END PGP SIGNATURE-----
+192.168.90.1 -> Linux Router -> Public IP -> Internet -> PPTP Server
+                     NAT
 
---=-p1xyDOtUvGbjour66qW6--
+Kernel: 2.4.34
+Iptables: 1.4.12.1
+Chain: INPUT ACCEPT
+Chain: OUTPUT ACCEPT
+Chain: FORWARD ACCEPT
 
+Problem: PPTP connections fail to certain PPTP servers but only when 
+being NAT'ed
+
+Using the stock windows xp vpn client I can connect to a windows SBS 
+2003 server using the PPTP vpn connection whether using a private IP
+that is being NAT'ed or a public IP.  However tring to connect to a 
+Nortel PPTP server fails when using a private IP that is NAT'ed at the 
+LINUX router.  For kicks I've thrown in an off the shelf router that is 
+NATing its traffic and it works OK connecting to the SBS Server or the 
+Nortel PPTP server.  Based on the above tests I assume something is 
+happening during the NATing process that in some way causes the Nortel 
+PPTP server (and several others) not to make a successful connection.
+
+Looking out on the forums I see a lot of people referencing trying to 
+tunnel back inside the NAT gateway but not any posts saying they were 
+unable to connect from the private side to the public side.
+
+I've seen references to a PPTP_NAT helper module but once again this 
+appeared to be from going from the outside in not the other way round.
+
+I'm really just looking for a best direction to try next in the trouble 
+shooting process or fishing for someone who has had a similar issue and 
+says "Oh yea I had that problem you have to do this".
+
+Any suggestions would be greatly appreciated.  If more information is 
+required just let me know and I'll provide it.  Thanks!
+
+--Mike
