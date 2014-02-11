@@ -1,83 +1,35 @@
-From: "Carlos R. Pasqualini" <cpasqualini@concordia.gob.ar>
-Subject: Nat troubles or just a plain error?
-Date: Tue, 11 Feb 2014 08:26:08 -0300
-Message-ID: <1392117968.19963.21.camel@cpasqualini-nb.concordia.gob.ar>
-Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+From: Francois-Xavier Le Bail <fx.lebail@yahoo.com>
+Subject: [PATCH] netfilter: nf_nat_snmp_basic: fix duplicates in if/else branches
+Date: Tue, 11 Feb 2014 15:49:25 +0100
+Message-ID: <1392130165-4313-1-git-send-email-fx.lebail@yahoo.com>
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: netfilter@vger.kernel.org
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: NETDEV <netdev@vger.kernel.org>, David Miller <davem@davemloft.net>, Patrick McHardy <kaber@trash.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
 
-Hi list!
+The solution was found by Patrick in 2.4 kernel sources.
 
+Cc: Patrick McHardy <kaber@trash.net>
+Signed-off-by: Francois-Xavier Le Bail <fx.lebail@yahoo.com>
+---
+ net/ipv4/netfilter/nf_nat_snmp_basic.c |    4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-i have a firewall/gateway on our network, upgraded it from an old Debia=
-n
-Lenny to Wheezy (3.2) but things do not work as before.
-
-
-=C2=BFwas there some change that i may be missing?
-or i am doing something wrong this time?
-
-
-the firewall it's placed between the LAN (and some VLANs), DMZ, VPN and
-two internet links (plain DHCP on eth0 and a pppoe DSL on ppp0)
-
-/sbin/iptables -t filter -F
-/sbin/iptables -t filter -X
-/sbin/iptables -t filter -Z
-/sbin/iptables -t mangle -F
-/sbin/iptables -t mangle -X
-/sbin/iptables -t mangle -Z
-/sbin/iptables -t nat -F
-/sbin/iptables -t nat -X
-/sbin/iptables -t nat -Z
-/sbin/iptables -N bad_tcp_packets
-/sbin/iptables -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -=
-j
-REJECT
-/sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-/sbin/iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
-/sbin/iptables -t nat -A POSTROUTING -s 192.168.0.0/16 -o eth1 -j
-MASQUERADE
-/sbin/iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
-/sbin/iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEP=
-T
-=2E...
-/sbin/iptables -A FORWARD -p tcp -i eth2 -o eth0 --dport 443 -j ACCEPT
-/sbin/iptables -A FORWARD -p tcp -i eth2 -o ppp0 --dport 443 -j ACCEPT
-/sbin/iptables -A FORWARD -p udp -i eth2 -o eth0 --dport 443 -j ACCEPT
-/sbin/iptables -A FORWARD -p udp -i eth2 -o ppp0 --dport 443 -j ACCEPT
-=2E..
-/sbin/iptables -A INPUT -p tcp -i eth2 --dport 3128 -j ACCEPT
-/sbin/iptables -t nat -A PREROUTING -i eth2 -p tcp --dport 80 ! -d
-192.168.0.0/16 -j REDIRECT --to-port 3128
-/sbin/iptables -t nat -A PREROUTING -i eth2 -p tcp --dport 8080 -j
-REDIRECT --to-port 3128
-=2E.....
-# the last rules:
-/sbin/iptables -A FORWARD -j REJECT
-/sbin/iptables -A INPUT -j REJECT
-
-
-
-As you can see, i'm not doing DROP neither a DROP policy; i'm using an
-ACCEPT policy and REJECTs for debugging as sugested on
-http://major.io/2010/04/12/best-practices-iptables/ (and seems to be
-helping me on other things).
-
-The default gw is on ppp0, the second ISP (on eth0) is used to access
-only some IP ranges, and another ones are routed through the DMZ.
-
-
-I'm having trouble to see some https sites that should go on the ppp0
-interface if i don't use the proxy and i need it to be transparent (on
-plain HTTP).
-
-
-
-Thanks!
-
-
+diff --git a/net/ipv4/netfilter/nf_nat_snmp_basic.c b/net/ipv4/netfilter/nf_nat_snmp_basic.c
+index d551e31..7c67667 100644
+--- a/net/ipv4/netfilter/nf_nat_snmp_basic.c
++++ b/net/ipv4/netfilter/nf_nat_snmp_basic.c
+@@ -1198,8 +1198,8 @@ static int snmp_translate(struct nf_conn *ct,
+ 		map.to = NOCT1(&ct->tuplehash[!dir].tuple.dst.u3.ip);
+ 	} else {
+ 		/* DNAT replies */
+-		map.from = NOCT1(&ct->tuplehash[dir].tuple.src.u3.ip);
+-		map.to = NOCT1(&ct->tuplehash[!dir].tuple.dst.u3.ip);
++		map.from = NOCT1(&ct->tuplehash[!dir].tuple.src.u3.ip);
++		map.to = NOCT1(&ct->tuplehash[dir].tuple.dst.u3.ip);
+ 	}
+ 
+ 	if (map.from == map.to)
