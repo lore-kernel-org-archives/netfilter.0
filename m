@@ -1,52 +1,83 @@
-From: Simon Schlumpf <sim@netmess.org>
-Subject: Unknown symbol inet_frag_maybe_warn_overflow
-Date: Tue, 11 Feb 2014 10:29:53 +0100
-Message-ID: <52F9ED91.9030404@netmess.org>
+From: "Carlos R. Pasqualini" <cpasqualini@concordia.gob.ar>
+Subject: Nat troubles or just a plain error?
+Date: Tue, 11 Feb 2014 08:26:08 -0300
+Message-ID: <1392117968.19963.21.camel@cpasqualini-nb.concordia.gob.ar>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: netfilter@vger.kernel.org
 
-Hey List
+Hi list!
 
-I have a problem on my digitalocean VPS which is virtualized with KVM I 
-think.
 
-When I try to add an ip6tables rule, I see this:
+i have a firewall/gateway on our network, upgraded it from an old Debia=
+n
+Lenny to Wheezy (3.2) but things do not work as before.
 
-sudo ip6tables -A INPUT -p tcp --destination-port 22 --match state 
---state NEW -j ACCEPT
-ip6tables: Protocol wrong type for socket.
 
-It works without the --match..
+=C2=BFwas there some change that i may be missing?
+or i am doing something wrong this time?
 
-My Linux version is:
-Linux www.host.name 3.2.0-4-amd64 #1 SMP Debian 3.2.41-2+deb7u2 x86_64 
-GNU/Linux
 
-On boot, the kernel says something I'm not able to understand:
+the firewall it's placed between the LAN (and some VLANs), DMZ, VPN and
+two internet links (plain DHCP on eth0 and a pppoe DSL on ppp0)
 
-[    5.629314] ip6_tables: (C) 2000-2006 Netfilter Core Team
-[    5.664445] nf_defrag_ipv6: Unknown symbol 
-inet_frag_maybe_warn_overflow (err 0)
-[    5.665391] cannot load conntrack support for proto=10
-[   14.256084] eth0: no IPv6 routers present
+/sbin/iptables -t filter -F
+/sbin/iptables -t filter -X
+/sbin/iptables -t filter -Z
+/sbin/iptables -t mangle -F
+/sbin/iptables -t mangle -X
+/sbin/iptables -t mangle -Z
+/sbin/iptables -t nat -F
+/sbin/iptables -t nat -X
+/sbin/iptables -t nat -Z
+/sbin/iptables -N bad_tcp_packets
+/sbin/iptables -A bad_tcp_packets -p tcp ! --syn -m state --state NEW -=
+j
+REJECT
+/sbin/iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+/sbin/iptables -t nat -A POSTROUTING -o ppp0 -j MASQUERADE
+/sbin/iptables -t nat -A POSTROUTING -s 192.168.0.0/16 -o eth1 -j
+MASQUERADE
+/sbin/iptables -A INPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+/sbin/iptables -A FORWARD -m state --state ESTABLISHED,RELATED -j ACCEP=
+T
+=2E...
+/sbin/iptables -A FORWARD -p tcp -i eth2 -o eth0 --dport 443 -j ACCEPT
+/sbin/iptables -A FORWARD -p tcp -i eth2 -o ppp0 --dport 443 -j ACCEPT
+/sbin/iptables -A FORWARD -p udp -i eth2 -o eth0 --dport 443 -j ACCEPT
+/sbin/iptables -A FORWARD -p udp -i eth2 -o ppp0 --dport 443 -j ACCEPT
+=2E..
+/sbin/iptables -A INPUT -p tcp -i eth2 --dport 3128 -j ACCEPT
+/sbin/iptables -t nat -A PREROUTING -i eth2 -p tcp --dport 80 ! -d
+192.168.0.0/16 -j REDIRECT --to-port 3128
+/sbin/iptables -t nat -A PREROUTING -i eth2 -p tcp --dport 8080 -j
+REDIRECT --to-port 3128
+=2E.....
+# the last rules:
+/sbin/iptables -A FORWARD -j REJECT
+/sbin/iptables -A INPUT -j REJECT
 
-If I try to ping6 google, I see this:
 
-$ ping6 www.google.com
-PING www.google.com(vc-in-x68.1e100.net) 56 data bytes
- From xxx.tunnel.tserv4.nyc4.ipv6.he.net icmp_seq=1 Destination 
-unreachable: Address unreachable
 
-even if all policies are on ACCEPT and no rules are present at the moment.
+As you can see, i'm not doing DROP neither a DROP policy; i'm using an
+ACCEPT policy and REJECTs for debugging as sugested on
+http://major.io/2010/04/12/best-practices-iptables/ (and seems to be
+helping me on other things).
 
-The IPv6 connectivity is made over tunnelbroker.net which works fine on 
-an other DO VPS.
+The default gw is on ppp0, the second ISP (on eth0) is used to access
+only some IP ranges, and another ones are routed through the DMZ.
 
-Can anyone point me to what I'm doing wrong here?
 
-Thanks, Simon
+I'm having trouble to see some https sites that should go on the ppp0
+interface if i don't use the proxy and i need it to be transparent (on
+plain HTTP).
+
+
+
+Thanks!
+
+
