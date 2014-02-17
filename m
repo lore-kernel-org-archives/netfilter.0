@@ -1,27 +1,47 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH] netfilter: nf_nat_snmp_basic: fix duplicates in if/else
- branches
-Date: Fri, 14 Feb 2014 18:00:54 +0100
-Message-ID: <20140214170054.GA7506@localhost>
-References: <1392130165-4313-1-git-send-email-fx.lebail@yahoo.com>
- <ff58928d-2f4e-4572-a8c3-71a0ce1844c9@email.android.com>
+From: "Daniel Lopez" <daniel.lopez@asistp.com>
+Subject: log iptables
+Date: Mon, 17 Feb 2014 15:20:56 -0500
+Message-ID: <469712C03B2D4FC2AF14F1DB8A789247@asistp.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <ff58928d-2f4e-4572-a8c3-71a0ce1844c9@email.android.com>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Patrick McHardy <kaber@trash.net>
-Cc: Francois-Xavier Le Bail <fx.lebail@yahoo.com>, NETDEV <netdev@vger.kernel.org>, David Miller <davem@davemloft.net>, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="response"
+To: netfilter@vger.kernel.org
 
-On Tue, Feb 11, 2014 at 04:11:02PM +0000, Patrick McHardy wrote:
-> On 11. Februar 2014 14:49:25 GMT+00:00, Francois-Xavier Le Bail <fx.lebail@yahoo.com> wrote:
-> >The solution was found by Patrick in 2.4 kernel sources.
-> >
-> >Cc: Patrick McHardy <kaber@trash.net>
-> 
-> Acked-by: Patrick McHardy <kaber@trash.net>
+Hello
 
-Applied, thanks!
+I want to save the log of iptables and for this I have set up the file 
+/etc/rsyslog.d/iptables.log :
+
+:msg, contains, "" -/var/log/iptables.log
+& ~
+
+Packets arrive correctly because I can connect to the servers, but does not 
+save the log of these lines :
+
+$IPTABLES -t nat -A PREROUTING -p TCP -i $INTERNET_IFACE -d 
+$INTERNET_IP --dport 8181 -j DNAT --to-destination 192.168.2.26
+$IPTABLES -A FORWARD -p TCP -i $INTERNET_IFACE -o $LAN_IFACE -d 
+192.168.2.26 --dport 8181 -j LOG --log-prefix "Port 8181:"
+$IPTABLES -A FORWARD -p TCP -i $INTERNET_IFACE -o $LAN_IFACE -d 
+192.168.2.26 --dport 8181 -j allowed
+$IPTABLES -A FORWARD -p TCP --sport 8181 -s 192.168.2.26 -i $LAN_IFACE -o 
+$INTERNET_IFACE -j ACCEPT
+
+But these lines if you save:
+
+$IPTABLES -A FORWARD -m limit --limit 3/minute --limit-burst 3 -j 
+LOG --log-level DEBUG --log-prefix "forward packet died:"
+
+Use:
+
+CentOS 6.3 64 Bits
+iptables 1.4.7
+rsyslogd 5.8.10
+
+Please could help correct my problem?
+
+Thank you,
+
