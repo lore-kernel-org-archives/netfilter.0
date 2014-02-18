@@ -1,27 +1,85 @@
-From: Mark Fox <mark.fox@gmail.com>
-Subject: Implications of a permissive FORWARD chain
-Date: Tue, 18 Feb 2014 17:53:35 +0000 (UTC)
-Message-ID: <loom.20140218T183628-993@post.gmane.org>
+From: "Daniel Lopez" <daniel.lopez@asistp.com>
+Subject: Re: log iptables
+Date: Tue, 18 Feb 2014 14:16:36 -0500
+Message-ID: <D26AD5BB2F7E497C8A41BFEF9BB3C23E@asistp.com>
+References: <469712C03B2D4FC2AF14F1DB8A789247@asistp.com><CAHEKYV77HjarvFKzZosMutq5GCyB-orZGU8sopzvgZM7bYpfaw@mail.gmail.com><5E35AAC666964D0A977C79F5315ED5DB@asistp.com> <CAHEKYV6r+crMVMLu2h=b0cPTjvkZwgJmedy9NZqMuC0XV=5XUg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; format="flowed"; charset="us-ascii"; reply-type="original"
+To: Netfilter <netfilter@vger.kernel.org>
 
-I've been waffling over a permissive or restrictive FORWARD chain and have
-realized that my understanding of the implications is lacking. So I'll just
-ask: What are the implications of a permissive FORWARD chain?
+The http server (8181) log if saved:
 
-My situation is that I am deploying a virtualization/containerization host
-at a facility that has one big network for everything (servers, desktop
-workstations, etc.). There is no DMZ. As one would expect, the network is
-really chatty.
+$IPTABLES -t nat -A PREROUTING -p TCP -i $INTERNET_IFACE -d 
+$INTERNET_IP --dport 8181 -j DNAT --to-destination 192.168.2.26
+$IPTABLES -A FORWARD -p TCP -i $INTERNET_IFACE -o $LAN_IFACE -d 
+192.168.2.26 --dport 8181 -j LOG --log-prefix "IPT HTTP 8181:"
+$IPTABLES -A FORWARD -p TCP -i $INTERNET_IFACE -o $LAN_IFACE -d 
+192.168.2.26 --dport 8181 -j allowed
+$IPTABLES -A FORWARD -p TCP --sport 8181 -s 192.168.2.26 -i $LAN_IFACE -o 
+$INTERNET_IFACE -j ACCEPT
 
-Traffic has to be forwarded to/from the VM/container host to/from the VMs or
-containers, so a DROP policy on the FORWARD chain means carefully crafting
-rules to allow traffic to be forwarded to the VMs/containers. I have no
-issues with that, but it does mean that the future users of the VM/container
-host would have to craft their own rules when they add new VMs/containers.
+The https server (443) log not saved:
+
+$IPTABLES -t nat -A PREROUTING -p TCP -i $INTERNET_IFACE -d 
+$INTERNET_IP --dport 443 -j DNAT --to-destination 192.168.2.30
+$IPTABLES -A FORWARD -p TCP -i $INTERNET_IFACE -o $LAN_IFACE -d 
+192.168.2.30 --dport 443 -j LOG --log-prefix "IPT HTTPS 443:"
+$IPTABLES -A FORWARD -p TCP -i $INTERNET_IFACE -o $LAN_IFACE -d 
+192.168.2.30 --dport 443 -j allowed
+$IPTABLES -A FORWARD -p TCP --sport 443 -s 192.168.2.30 -i $LAN_IFACE -o 
+$INTERNET_IFACE -j ACCEPT
+
+Packets arrive correctly because I can connect to both servers.
+
+The contents of my configuration files is:
+
+#cat /etc/rsyslog.d/iptables.conf
+:msg, contains, "IPT " -/var/log/iptables.log
+& ~
+
+#cat /var/log/iptables.log
+Feb 18 12:32:46 fw0 kernel: IPT HTTP 8181:IN=eth4 OUT=eth1 
+SRC=10.128.126.138 DST=192.168.2.26 LEN=40 TOS=0x00 PREC=0x00 TTL=108 
+ID=4248 PROTO=TCP SPT=6868 DPT=8181 WINDOW=0 RES=0x00 RST URGP=0
+Feb 18 13:38:18 fw0 kernel: IPT HTTP 8181:IN=eth4 OUT=eth1 SRC=34.97.192.148 
+DST=192.168.2.26 LEN=60 TOS=0x00 PREC=0x00 TTL=53 ID=9815 DF PROTO=TCP 
+SPT=3624 DPT=8181 WINDOW=5840 RES=0x00 SYN URGP=0
+
+I think the problem originates with the HTTPS connection, then in addition 
+to saving LOG TCP connections, what else should I keep?
+HTTPS packets arrive at the server itself because I can connect with.
+
+----- Original Message ----- 
+From: Mauricio Tavares
+To: Netfilter
+Sent: Monday, February 17, 2014 5:22 PM
+Subject: Re: log iptables
+
+
+On Mon, Feb 17, 2014 at 4:41 PM, Daniel Lopez <daniel.lopez@asistp.com> 
+wrote:
+I do not understand what you mean, can you please correct my iptables lines 
+to know where is the mistake.
+
+I have a feeling instead of
+
+$IPTABLES -t nat -A PREROUTING -p TCP -i $INTERNET_IFACE -d 
+$INTERNET_IP --dport 8181 -j DNAT --to-destination 192.168.2.26
+$IPTABLES -A FORWARD -p TCP -i $INTERNET_IFACE -o $LAN_IFACE -d 
+192.168.2.26 --dport 8181 -j LOG --log-prefix "Port 8181:"
+
+What you wanted is
+
+$IPTABLES -t nat -A PREROUTING -p TCP -i $INTERNET_IFACE -d 
+$INTERNET_IP --dport 8181 -j DNAT --to-destination 192.168.2.26
+$IPTABLES -t nat -A PREROUTING -p TCP -i $INTERNET_IFACE -d 
+$INTERNET_IP --dport 8181 -j LOG --log-prefix "Port 8181:"
+
+Do you see what I did?
+
+Thanks
 
