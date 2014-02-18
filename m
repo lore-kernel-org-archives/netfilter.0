@@ -1,112 +1,82 @@
-From: Mauricio Tavares <raubvogel@gmail.com>
-Subject: Re: log iptables
-Date: Tue, 18 Feb 2014 14:24:50 -0500
-Message-ID: <CAHEKYV6GN6=aW2V9T0vdtwSsihByMOa=AxOeMXdZu9fFyFDdvw@mail.gmail.com>
-References: <469712C03B2D4FC2AF14F1DB8A789247@asistp.com>
-	<CAHEKYV77HjarvFKzZosMutq5GCyB-orZGU8sopzvgZM7bYpfaw@mail.gmail.com>
-	<5E35AAC666964D0A977C79F5315ED5DB@asistp.com>
-	<CAHEKYV6r+crMVMLu2h=b0cPTjvkZwgJmedy9NZqMuC0XV=5XUg@mail.gmail.com>
-	<D26AD5BB2F7E497C8A41BFEF9BB3C23E@asistp.com>
+From: Leonardo Rodrigues <leolistas@solutti.com.br>
+Subject: Re: Implications of a permissive FORWARD chain
+Date: Tue, 18 Feb 2014 16:29:20 -0300
+Message-ID: <5303B490.6070606@solutti.com.br>
+References: <loom.20140218T183628-993@post.gmane.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :content-type;
-        bh=HV6FS267pH9lLYiIT4PghNHvHKiJWUntX/3S9qDe1VM=;
-        b=dQJOkl60Y6PKywTQ4wz702YVdToxqF98/g5ZL/afVOSHAKOHo7eVhRgk/MsUIwoNAh
-         K716skBc/yBh7jo2YUMopfPduXGoXON6NUVSzL0yfObiDPnJyJ4/ZtDsyPjbZbteTak1
-         Ct6ptAnamtKz9B5pwjX8YyNus66SGDGM9aIlscb4Q/lCOyUvhzPPDUtvIbqUvDoIfA5Q
-         fjeEWnFiSVUNRY2eqE+FU5yTgfqGEzi54lYwpE67fDi7df3xgONU/sAaQDqhOScut9vO
-         oBpdnbEHwC/wGDVKBRvn4cEUu3yOEV9oAPIqPDi9qWzN0XyzgA3+QESU8WZBDiXchEjE
-         XTow==
-In-Reply-To: <D26AD5BB2F7E497C8A41BFEF9BB3C23E@asistp.com>
+        d=solutti.com.br; s=google;
+        h=message-id:date:from:user-agent:mime-version:to:subject:references
+         :in-reply-to:content-type:content-transfer-encoding;
+        bh=muvIZSHSv4qeEtCMuxeX/tqDfOkNFGUZrWWpDhM861k=;
+        b=CeoRKPRChDD4Vq7D9/4xtd8pweoRaKBy9UgIHPhsBGNE554LvGxS5bPSfJO5/iqPP9
+         c/9lV2/J8NHEXPWOa4OI3yxJsRGEX1KgPmeidhp7WW93yccegcj6TwCMf4L3ZwtNZip2
+         KGO3dbIdxePK6tHqnd3gXH+h+FzE5IHFJ0ks4=
+In-Reply-To: <loom.20140218T183628-993@post.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: ML netfilter <netfilter@vger.kernel.org>
 
-On Tue, Feb 18, 2014 at 2:16 PM, Daniel Lopez <daniel.lopez@asistp.com> wrote:
-> The http server (8181) log if saved:
+Em 18/02/14 14:53, Mark Fox escreveu:
+> I've been waffling over a permissive or restrictive FORWARD chain and=
+ have
+> realized that my understanding of the implications is lacking. So I'l=
+l just
+> ask: What are the implications of a permissive FORWARD chain?
 >
+> My situation is that I am deploying a virtualization/containerization=
+ host
+> at a facility that has one big network for everything (servers, deskt=
+op
+> workstations, etc.). There is no DMZ. As one would expect, the networ=
+k is
+> really chatty.
 >
-> $IPTABLES -t nat -A PREROUTING -p TCP -i $INTERNET_IFACE -d $INTERNET_IP
-> --dport 8181 -j DNAT --to-destination 192.168.2.26
-> $IPTABLES -A FORWARD -p TCP -i $INTERNET_IFACE -o $LAN_IFACE -d 192.168.2.26
-> --dport 8181 -j LOG --log-prefix "IPT HTTP 8181:"
+> Traffic has to be forwarded to/from the VM/container host to/from the=
+ VMs or
+> containers, so a DROP policy on the FORWARD chain means carefully cra=
+fting
+> rules to allow traffic to be forwarded to the VMs/containers. I have =
+no
+> issues with that, but it does mean that the future users of the VM/co=
+ntainer
+> host would have to craft their own rules when they add new VMs/contai=
+ners.
 >
-> $IPTABLES -A FORWARD -p TCP -i $INTERNET_IFACE -o $LAN_IFACE -d 192.168.2.26
-> --dport 8181 -j allowed
-> $IPTABLES -A FORWARD -p TCP --sport 8181 -s 192.168.2.26 -i $LAN_IFACE -o
-> $INTERNET_IFACE -j ACCEPT
->
-> The https server (443) log not saved:
->
-> $IPTABLES -t nat -A PREROUTING -p TCP -i $INTERNET_IFACE -d $INTERNET_IP
-> --dport 443 -j DNAT --to-destination 192.168.2.30
-> $IPTABLES -A FORWARD -p TCP -i $INTERNET_IFACE -o $LAN_IFACE -d 192.168.2.30
-> --dport 443 -j LOG --log-prefix "IPT HTTPS 443:"
-> $IPTABLES -A FORWARD -p TCP -i $INTERNET_IFACE -o $LAN_IFACE -d 192.168.2.30
-> --dport 443 -j allowed
-> $IPTABLES -A FORWARD -p TCP --sport 443 -s 192.168.2.30 -i $LAN_IFACE -o
-> $INTERNET_IFACE -j ACCEPT
->
-> Packets arrive correctly because I can connect to both servers.
->
-> The contents of my configuration files is:
->
-> #cat /etc/rsyslog.d/iptables.conf
-> :msg, contains, "IPT " -/var/log/iptables.log
-> & ~
->
-> #cat /var/log/iptables.log
-> Feb 18 12:32:46 fw0 kernel: IPT HTTP 8181:IN=eth4 OUT=eth1
-> SRC=10.128.126.138 DST=192.168.2.26 LEN=40 TOS=0x00 PREC=0x00 TTL=108
-> ID=4248 PROTO=TCP SPT=6868 DPT=8181 WINDOW=0 RES=0x00 RST URGP=0
-> Feb 18 13:38:18 fw0 kernel: IPT HTTP 8181:IN=eth4 OUT=eth1 SRC=34.97.192.148
-> DST=192.168.2.26 LEN=60 TOS=0x00 PREC=0x00 TTL=53 ID=9815 DF PROTO=TCP
-> SPT=3624 DPT=8181 WINDOW=5840 RES=0x00 SYN URGP=0
->
-> I think the problem originates with the HTTPS connection, then in addition
-> to saving LOG TCP connections, what else should I keep?
-> HTTPS packets arrive at the server itself because I can connect with.
->
-      Er, I just picked one of the rules and showed you what I meant.
-The idea is that you would then see what was going on and then try it
-out on the rest on your own.
 
->
-> ----- Original Message ----- From: Mauricio Tavares
-> To: Netfilter
-> Sent: Monday, February 17, 2014 5:22 PM
-> Subject: Re: log iptables
->
->
-> On Mon, Feb 17, 2014 at 4:41 PM, Daniel Lopez <daniel.lopez@asistp.com>
-> wrote:
-> I do not understand what you mean, can you please correct my iptables lines
-> to know where is the mistake.
->
-> I have a feeling instead of
->
-> $IPTABLES -t nat -A PREROUTING -p TCP -i $INTERNET_IFACE -d $INTERNET_IP
-> --dport 8181 -j DNAT --to-destination 192.168.2.26
-> $IPTABLES -A FORWARD -p TCP -i $INTERNET_IFACE -o $LAN_IFACE -d 192.168.2.26
-> --dport 8181 -j LOG --log-prefix "Port 8181:"
->
-> What you wanted is
->
-> $IPTABLES -t nat -A PREROUTING -p TCP -i $INTERNET_IFACE -d $INTERNET_IP
-> --dport 8181 -j DNAT --to-destination 192.168.2.26
-> $IPTABLES -t nat -A PREROUTING -p TCP -i $INTERNET_IFACE -d $INTERNET_IP
-> --dport 8181 -j LOG --log-prefix "Port 8181:"
->
-> Do you see what I did?
->
-> Thanks
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+     There's no right or wrong on how your FORWARD default rule should=20
+be. Being DROP or ACCEPT depends on your network security policies.
+
+     Being ACCEPT the default action for FORWARD, your linux router wil=
+l=20
+forward anything from one side to the other, unless it's explicity=20
+DROPped on the rules. Being DROP the default action, everything will be=
+=20
+dropped, except explicitely ACCEPTed by your rules.
+
+     Which one fullfit you demands ? So that's the right one for you !=20
+No one can tell you, giving only the information you wrote, that DROP o=
+r=20
+ACCEPT is right or wrong. There's really no right or wrong here, there'=
+s=20
+what fullfilts your demands/needs and what doesnt.
+
+
+
+--=20
+
+
+	Atenciosamente / Sincerily,
+	Leonardo Rodrigues
+	Solutti Tecnologia
+	http://www.solutti.com.br
+
+	Minha armadilha de SPAM, N=C3O mandem email
+	gertrudes@solutti.com.br
+	My SPAMTRAP, do not email it
+
+
+
