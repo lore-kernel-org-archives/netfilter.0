@@ -1,65 +1,43 @@
-From: Amos Jeffries <squid3@treenet.co.nz>
-Subject: Re: Implications of a permissive FORWARD chain
-Date: Wed, 19 Feb 2014 10:03:38 +1300
-Message-ID: <f076ff4850264eaf59f4fe96b8ba5169@treenet.co.nz>
-References: <loom.20140218T183628-993@post.gmane.org>
- <5303B490.6070606@solutti.com.br> <loom.20140218T205158-486@post.gmane.org>
+From: "Bob Sauvage" <Bob.sauvage@gmx.fr>
+Subject: Some packets flagged INVALID
+Date: Tue, 18 Feb 2014 22:52:18 +0100
+Message-ID: <20140218215218.194660@gmx.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <loom.20140218T205158-486@post.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Mark Fox <mark.fox@gmail.com>
-Cc: netfilter@vger.kernel.org, netfilter-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On 2014-02-19 09:02, Mark Fox wrote:
-> Leonardo Rodrigues writes:
->>      There's no right or wrong on how your FORWARD default rule should
->> be. Being DROP or ACCEPT depends on your network security policies.
->> 
->>      Being ACCEPT the default action for FORWARD, your linux router 
->> will
->> forward anything from one side to the other, unless it's explicity
->> DROPped on the rules. Being DROP the default action, everything will 
->> be
->> dropped, except explicitely ACCEPTed by your rules.
->> 
->>      Which one fullfit you demands ? So that's the right one for you !
->> No one can tell you, giving only the information you wrote, that DROP 
->> or
->> ACCEPT is right or wrong. There's really no right or wrong here, 
->> there's
->> what fullfilts your demands/needs and what doesnt.
-> 
-> Thanks for the reply, Leonardo. I'm not asking someone else to tell me 
-> what
-> is the right thing to do. What I'm wondering is what kind of damage 
-> someone
-> else on the network could use a machine with a permissive forwarding 
-> policy
-> to do. Spoofing obviously, but anything else?
-> 
-> With that better understanding, I'll be equipped to make that call.
-> 
-> In the larger context, the fact that several popular Linux 
-> distributions
-> come configured with a firewall that allows all forwarding, all 
-> incoming
-> connections and all outgoing connections is somewhat surprising.
+Hi *, 
 
-That "all incoming connections" surprises me to. But then you are asking 
-about FORWARD not INPUT.
+I'm running a high volume web application that uses Apache 2.2.15 mod_proxy to reverse proxy content from apache to JBoss 6. 
 
+I found 503 errors which happen sporadically throughout the day on random requests (perhaps 1/1000 of daily requests).
 
-Like you surmised earlier the implications for the client hosts is the 
-same as if your forwarding host was not there at all.
+After investigations, I noticed that every error coincides with an invalid tcp packet: 
 
-IMHO, a permissive rule is warranted but you can do somewhat better than 
-the black and white situation of accept all. Your host is in the 
-position to set a few basic security policies for specific ports and 
-services (eg FINGER, Windows RPC perhapse) and definitely block bogon 
-traffic.
+kernel: invalid:IN=lo OUT= MAC=00:00:00:00:00:00:00:00:00:00:00:00:08:00 SRC=127.0.0.1 DST=127.0.0.1 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=33082 DF PROTO=TCP SPT=48340 DPT=8080 WINDOW=32792 RES=0x00 SYN URGP=0
 
-Amos
+After some investigations, this SYN packet is not acknowledged by JBoss in order to perform the TCP 3-Way Handshake. Mhmm, strange, I decide to investigate in firewall rules, build by another sysadmin:
+
+In the INPUT chain, I found a rule that logs and REJECTS all INVALID packets: 
+
+iptables -A INPUT -m state --state INVALID -j LOG --log-prefix "invalid:" 
+iptables -A INPUT -m state --state INVALID -j REJECT
+
+Then logs and REJECTS not SYN but new: 
+
+iptables -A INPUT -p tcp ! --syn -m state --state NEW -j LOG --log-prefix "new-not-syn:"
+iptables -A INPUT -p tcp ! --syn -m state --state NEW -j REJECT --reject-with tcp-reset
+
+I decided to add a rule in order to ACCEPT all packets from 127.0.0.1 to or from port 8080.
+
+Since this update, I don't see this kind of errors anymore.
+
+Why does iptables tag this packet as invalid ?
+
+Thanks,
+
+Bob
