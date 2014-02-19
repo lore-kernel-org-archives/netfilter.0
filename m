@@ -1,54 +1,49 @@
-From: Mark Fox <mark.fox@gmail.com>
-Subject: Re: Implications of a permissive FORWARD chain
-Date: Wed, 19 Feb 2014 14:38:46 +0000 (UTC)
-Message-ID: <loom.20140219T152148-367@post.gmane.org>
-References: <loom.20140218T183628-993@post.gmane.org> <201402181710.01163.neal.p.murphy@alum.wpi.edu> <loom.20140219T022735-831@post.gmane.org> <201402182152.38155.neal.p.murphy@alum.wpi.edu>
+From: Dennis Jacobfeuerborn <dennisml@conversis.de>
+Subject: Re: Nftables HOWTO documentation updates
+Date: Wed, 19 Feb 2014 16:13:37 +0100
+Message-ID: <5304CA21.9040309@conversis.de>
+References: <20140218112543.GA4799@localhost>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <20140218112543.GA4799@localhost>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Pablo Neira Ayuso <pablo@netfilter.org>, netfilter@vger.kernel.org
+Cc: netfilter-devel@vger.kernel.org
 
-Neal Murphy <neal.p.murphy <at> alum.wpi.edu> writes:
+On 18.02.2014 12:25, Pablo Neira Ayuso wrote:
+> Hi,
+>
+> I have registered a subdomain for nftables that hosts the nftables
+> user HOWTO, you can reach it via:
+>
+>          http://wiki.nftables.org
 
-> Oh. On a wired LAN, outside of programming switches to prevent host-to-host 
-> comms that pass through the switch (bridge), you can do almost nothing to 
-> prevent hosts from talking to each other.
+I checked out the HOWTO and it gives a really nice concise introduction 
+to how nftables work. Good work!
 
-That I understand. In my situation, I have a containerization host that runs
-several containers. The host can do some sanitization of the traffic coming
-from the network, but only so far before it forces creators of new
-containers to add new rules.
+After browsing through the pages I have two questions:
 
-> If you're talking about VMs on a single Linux host talking through a bridge 
-> (virtual LAN) on that Linux host, then you can probably use ebtables to 
-> control the bridge because, again, the Linux host will not see IP traffic 
-> between VMs.
+Is it possible to comment rules like in iptables? Comments in iptables 
+made it really easy to manage rules on a logical level i.e. I could 
+define rule "types" by adding a special comment like "TYPE:X" and then 
+use that to grep for these rules to batch-remove them or retrieve the 
+counter values. It would be nice to be able to tag rules like this.
 
-That was my expectation, but I'm no longer sure that it is the case. I
-haven't checked on whether the host sees communication between the
-containers specifically, but my guess at this point is that it does. I'm
-quite sure that disabling all forwarding completely cuts off the containers
-from the rest of the LAN.
+How do I insert multiple rules? The insertion example show the addition 
+of a single rule after a known handle but what if I want to add a second 
+rule after that? As far as I can tell from the example the add rule 
+command does not return the handle of the inserted rule so I have no 
+idea where to insert the second rule. Even if the command returned the 
+handle it would still require scripting to add multiple consecutive 
+rules so there should be a way to specify to add a list of rules 
+(atomically?) after a given handle.
 
-My understanding was that a bridge was a layer 2 device and netfilter would
-be completely out of the loop on traffic travelling across the bridge. So I
-disabled all forwarding on the container host, but was surprised when that
-cut the containers off.
+Not sure if these features are not available or just not documented yet 
+but I'm approaching this by thinking about the use-cases I encounter and 
+looking at how I would implement these using nftables instead of iptables.
 
-I don't get the impression that this is specific to containers. There is
-documentation
-(http://docs.fedoraproject.org/en-US/Fedora/13/html/Virtualization_Guide/sect-Virtualization-Network_Configuration-Bridged_networking_with_libvirt.html)
-saying that one should do a 'iptables -I FORWARD -m physdev
---physdev-is-bridged -j ACCEPT' to allow traffic between a host and any KVM
-guests.
-
-> In short, outside of using a managed switch/bridge, you cannot firewall hosts 
-> on a LAN from other hosts on that same LAN.
-
-Agreed in the general case. However, in the case of a VM or container host,
-it seems that one can do some fire-walling. On a better implemented network,
-there wouldn't be much need, but in my case the network shouldn't be trusted.
-
+Regards,
+   Dennis
