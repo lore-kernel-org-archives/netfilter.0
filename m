@@ -1,52 +1,54 @@
-From: Patrick McHardy <kaber@trash.net>
-Subject: Re: Nftables HOWTO documentation updates
-Date: Wed, 19 Feb 2014 15:59:46 +0000
-Message-ID: <20140219155945.GA9425@macbook.localnet>
-References: <20140218112543.GA4799@localhost>
- <5304CA21.9040309@conversis.de>
- <20140219155502.GA18700@localhost>
+From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
+Subject: Re: Implications of a permissive FORWARD chain
+Date: Wed, 19 Feb 2014 13:12:13 -0500
+Message-ID: <201402191312.13229.neal.p.murphy@alum.wpi.edu>
+References: <loom.20140218T183628-993@post.gmane.org> <201402182152.38155.neal.p.murphy@alum.wpi.edu> <loom.20140219T152148-367@post.gmane.org>
+Reply-To: neal.p.murphy@alum.wpi.edu
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140219155502.GA18700@localhost>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: Dennis Jacobfeuerborn <dennisml@conversis.de>, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <loom.20140219T152148-367@post.gmane.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: Text/Plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Wed, Feb 19, 2014 at 04:55:02PM +0100, Pablo Neira Ayuso wrote:
-> > 
-> > Is it possible to comment rules like in iptables? Comments in
-> > iptables made it really easy to manage rules on a logical level i.e.
-> > I could define rule "types" by adding a special comment like
-> > "TYPE:X" and then use that to grep for these rules to batch-remove
-> > them or retrieve the counter values. It would be nice to be able to
-> > tag rules like this.
+On Wednesday, February 19, 2014 09:38:46 AM Mark Fox wrote:
+> That I understand. In my situation, I have a containerization host that
+> runs several containers. The host can do some sanitization of the traffic
+> coming from the network, but only so far before it forces creators of new
+> containers to add new rules.
 > 
-> As Arturo said, that's not yet implemented. I've been trying to find a
-> way which doesn't involve to store that comment string in the kernel,
-> given that this information is not used by the kernel in any way, but
-> all what I come out with was overly complicated and not nice.
+> > If you're talking about VMs on a single Linux host talking through a
+> > bridge (virtual LAN) on that Linux host, then you can probably use
+> > ebtables to control the bridge because, again, the Linux host will not
+> > see IP traffic between VMs.
 > 
-> So, assuming we store this comment string in kernel-space, I see
-> several possibilities at this moment:
-> 
-> * Add an expression for comments, which is sort of abuse since we'll
->   iterate in nft_do_chain() over one expression which does nothing,
->   so it adds some runtime overhead to the packet handling. This is
->   what the iptables comment match current does, btw.
-> 
-> * Adding a comment field to nft_rule structure, which means that we
->   have to consume a 4/8 extra bytes in the nft_rule structure for a
->   feature that may not be used by everyone.
-> 
-> * Attach this this at the end of the expression data area (but *not*
->   abusing the expression infrastructure). I think this has no runtime
->   overhead and no extra memory consumption for those that don't need
->   this comment feature, so it's the way to go IMO.
+> That was my expectation, but I'm no longer sure that it is the case. I
+> haven't checked on whether the host sees communication between the
+> containers specifically, but my guess at this point is that it does. I'm
+> quite sure that disabling all forwarding completely cuts off the containers
+> from the rest of the LAN.
 
-Sounds very reasonable. I'd suggest to not make this specific to comments,
-but simply call it "userdata" or something so we we can put whatever we
-like in there. Interpretation would be up to userspace.
+Containers *are* a different beast.
+> 
+> My understanding was that a bridge was a layer 2 device and netfilter would
+> be completely out of the loop on traffic travelling across the bridge. So I
+> disabled all forwarding on the container host, but was surprised when that
+> cut the containers off.
+
+Depends. Reasonably modern systems have the ebtables pkg available; it is the 
+layer 2 version of iptables. Since the host creates and operates the virtual 
+bridge and tap devices, it handles all traffic passing to and from containers; 
+but I would've expected it to work at layer 2, where bridging normally 
+happens. Said differently, I would expect a Linux virtual bridge to behave the 
+same as a physical bridge (switch) in that each port's traffic is not visible 
+to nodes on another port.
+
+Logically at layer 2, you would:
+  - allow all traffic to and from the host's IF (the bridge)
+  - allow all traffic to and from the physical NIC(s)
+  - block all other traffic (which should include only VM-to-VM traffic)
+
+I've never worked at layer 2 and don't know the nuances; I'm only aware it can 
+be done. You've probably just reached the limit of my knowledge.
