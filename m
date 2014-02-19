@@ -1,42 +1,44 @@
-From: =?UTF-8?Q?Csord=C3=A1s_Csaba_Ifj=2E?= <cscsordas@gmail.com>
-Subject: nf_conntrack_helper=0 module parameter together with nf_nat_ftp module
-Date: Wed, 19 Feb 2014 21:10:06 +0100
-Message-ID: <CABpXQ7aSYv+eoNx8gGSyLAaMHpxFD_EP=-vEByaD4KQoHk74Qg@mail.gmail.com>
+From: Franklin Wang <frank21st@gmail.com>
+Subject: Re: ipset mac only set ?
+Date: Thu, 20 Feb 2014 07:36:39 +0800
+Message-ID: <53054007.8020909@gmail.com>
+References: <loom.20140219T131625-556@post.gmane.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=wFW3ysz1eAA4fiD++U8JRvk5YHvZ++6/nw7pP4UjZbw=;
-        b=XEwk0Eoo2M29bbZ66JvjaoNZFrGT2nrkHM4h97g4KVD1JmLsXg2xt80kEcoEdL9S+p
-         HmjyP4uuH3o7falw+TnIvzKvs1GPcywPWBCFat2voluVrKzQ8I/ONlT89woED15WctAO
-         0R4ARjes+ZOeBTx0yrL6LBMR6hQAklHfqt9POYtUffP8hkq/DIIV6UFNGDz5PcM6oW5q
-         Y1xZsmB5dMsYZuYExJMR7gHyeQti6GAYUHqk8EA5cf5IqxjUgnmfa48SJ3mxxO6QcfH5
-         cfgqnHT6ORB28kRi3ulKqOjAxrr/VW6sWx9/6LyKQ5Cb2SBPUon2IR4WHTKa2qXx4BeA
-         b4lg==
+        h=message-id:date:from:user-agent:mime-version:to:cc:subject
+         :references:in-reply-to:content-type:content-transfer-encoding;
+        bh=Ef0hW74i3wHe5gX917IHL/2FFV6ZKeHnQ2dwjtJf2cI=;
+        b=UpjKOyvTvRbyJVvOANz7leHucSrOkIiyrmPF/wZYyRw7Z02qc8bGGRS0hy1+sqbdSj
+         bl9J0kLvNr7wFPsnrqsTP7QMv7RxeBiKdwEmBNXJWZG9tjXrV/84R9nJ8go8lIXArYuY
+         vN5uZ6jUx1k794lvCe3KCvYoSkrmkTX46p4QJ5IZnIjVEtmY+xy111p+dCNTnMxfHtnf
+         vdbuGs4fIquhW4q5LGhsIGp3MYbxiTcgRoFypaTGrASuowk+hGLBFtt9zLZ2+gtlxeQI
+         BKC7L2IiUMIL50vEPgndZR7phkOTEVZ6s62TNPrr9TenmoubL9L6dNj88zbzI/laj5l1
+         6FJg==
+In-Reply-To: <loom.20140219T131625-556@post.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: Alex <arodenberg@danmagi.com>
+Cc: netfilter@vger.kernel.org
 
-Hi List,
+I prefer Linux and BSD, and slackware 14.1 now. What about the security
+of Mac?
 
-When I load nf_conntrack with
+On 2014=E5=B9=B402=E6=9C=8819=E6=97=A5 20:17, Alex wrote:
+> Hello
+>
+> Is anyone still working on a mac only ipset ? I saw some messages bac=
+k in=20
+> October that mentioned it.
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> .
+>
 
-modprobe --first-time nf_conntrack nf_conntrack_helper=0
-
-as described in the document "Secure use of iptables and connection
-tracking helpers" and use the CT target in the raw table to attach the
-ftp helper to specific flows then everything is working when the
-corresponding firewalls are either on the client side or on the server
-side AND they are directly connected. But, when there is a gateway
-between them which is performing SNAT then active ftp works only when
-nf_conntrack is loaded without the module parameter mentioned in
-$SUBJECT. There is no filtering on the gw. To be more precise the
-problem is that the server is considering the client's PORT command as
-ILLEGAL, because it contains the client's own IP address. Seems like
-that nf_nat_ftp is not triggered in this case.
-Is there a way to get it working using -j CT somewhere on the gateway
-also? nf_nat_ftp also does not accept the "ports" parameter since
-2.6.10. My kernel version is 3.11.
