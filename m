@@ -1,49 +1,74 @@
-From: Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 Subject: Re: Nftables HOWTO documentation updates
-Date: Wed, 19 Feb 2014 16:48:26 +0100
-Message-ID: <CAOkSjBgUNcY=vNTdDMi3FWTjRFk6xYaWRt5QaL2d3_nLL_F-Eg@mail.gmail.com>
-References: <20140218112543.GA4799@localhost> <5304CA21.9040309@conversis.de>
+Date: Wed, 19 Feb 2014 16:55:02 +0100
+Message-ID: <20140219155502.GA18700@localhost>
+References: <20140218112543.GA4799@localhost>
+ <5304CA21.9040309@conversis.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-type:content-transfer-encoding;
-        bh=p2kAw7YhlUEMk686Add+R/WN94GxFXXMty6Gb8M2Lj4=;
-        b=LBaljYysv5CCsQOPsH5dmt9G6GXJOK41wc0pr8RkNiBRVmkH0CwixrqKJoA6Y3koNJ
-         ogcEktRyJ2fxf/ZdtZTjGF0EkzuC1d60pyH1kWTCrwGsmk0FToeUA/HLfbMwaL5/Lmwu
-         ATSjpMLzzZg3R37bDTpjpyM1AsdjBCnrdZ6M95MJRim4RbcVjCtXkLJg2wkMcVEkXL3A
-         fz7vTR8i8XGc8KqBoryhxAV26zCToGtKF83R291CT3/AqJpBGkFLTRUk5ATrseLKqo3m
-         LdEYDyquKNIDl5i9Ak5n49Gw5zUkw0r8oE2lB85r1t+ch95fmVvNtQYiM/KJTdsK7xyv
-         s9cg==
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
 In-Reply-To: <5304CA21.9040309@conversis.de>
-Sender: netfilter-owner@vger.kernel.org
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: Dennis Jacobfeuerborn <dennisml@conversis.de>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Netfilter Users Mailing list <netfilter@vger.kernel.org>, Netfilter Development Mailing list <netfilter-devel@vger.kernel.org>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-On 19 February 2014 16:13, Dennis Jacobfeuerborn <dennisml@conversis.de=
-> wrote:
-> Is it possible to comment rules like in iptables? Comments in iptable=
-s made
-> it really easy to manage rules on a logical level i.e. I could define=
- rule
-> "types" by adding a special comment like "TYPE:X" and then use that t=
-o grep
-> for these rules to batch-remove them or retrieve the counter values. =
-It
-> would be nice to be able to tag rules like this.
->
+Hi,
 
-Not possible yet.
-There are some details about the implementation that have to be
-discussed. For example: how/where to store the comment.
+On Wed, Feb 19, 2014 at 04:13:37PM +0100, Dennis Jacobfeuerborn wrote:
+> On 18.02.2014 12:25, Pablo Neira Ayuso wrote:
+> >Hi,
+> >
+> >I have registered a subdomain for nftables that hosts the nftables
+> >user HOWTO, you can reach it via:
+> >
+> >         http://wiki.nftables.org
+> 
+> I checked out the HOWTO and it gives a really nice concise
+> introduction to how nftables work. Good work!
+> 
+> After browsing through the pages I have two questions:
+> 
+> Is it possible to comment rules like in iptables? Comments in
+> iptables made it really easy to manage rules on a logical level i.e.
+> I could define rule "types" by adding a special comment like
+> "TYPE:X" and then use that to grep for these rules to batch-remove
+> them or retrieve the counter values. It would be nice to be able to
+> tag rules like this.
 
-As user, I'm also interested in this feature. Maybe we can add to the T=
-ODO list.
+As Arturo said, that's not yet implemented. I've been trying to find a
+way which doesn't involve to store that comment string in the kernel,
+given that this information is not used by the kernel in any way, but
+all what I come out with was overly complicated and not nice.
 
-regards
---=20
-Arturo Borrero Gonz=E1lez
+So, assuming we store this comment string in kernel-space, I see
+several possibilities at this moment:
+
+* Add an expression for comments, which is sort of abuse since we'll
+  iterate in nft_do_chain() over one expression which does nothing,
+  so it adds some runtime overhead to the packet handling. This is
+  what the iptables comment match current does, btw.
+
+* Adding a comment field to nft_rule structure, which means that we
+  have to consume a 4/8 extra bytes in the nft_rule structure for a
+  feature that may not be used by everyone.
+
+* Attach this this at the end of the expression data area (but *not*
+  abusing the expression infrastructure). I think this has no runtime
+  overhead and no extra memory consumption for those that don't need
+  this comment feature, so it's the way to go IMO.
+
+> How do I insert multiple rules? The insertion example show the
+> addition of a single rule after a known handle but what if I want to
+> add a second rule after that? As far as I can tell from the example
+> the add rule command does not return the handle of the inserted rule
+> so I have no idea where to insert the second rule. Even if the
+> command returned the handle it would still require scripting to add
+> multiple consecutive rules so there should be a way to specify to
+> add a list of rules (atomically?) after a given handle.
+
+That's not yet support either. I think we'll need to keep some context
+information in the batch handling so you can add several list after a
+given handle.
