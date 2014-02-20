@@ -1,35 +1,40 @@
-From: "Johan" <johan.grahn@kolumbus.fi>
-Subject: IPTABLES Logging and Forwarding problem
-Date: Thu, 20 Feb 2014 21:30:40 +0200
-Message-ID: <000001cf2e72$3d880eb0$b8982c10$@kolumbus.fi>
+From: Florian Westphal <fw@strlen.de>
+Subject: Re: BUG: ip6tables IPv6-REDIRECT over bridges
+Date: Thu, 20 Feb 2014 20:32:31 +0100
+Message-ID: <20140220193231.GB7119@breakpoint.cc>
+References: <1392920071.66303.YahooMailNeo@web172306.mail.ir2.yahoo.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: fi
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1392920071.66303.YahooMailNeo@web172306.mail.ir2.yahoo.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Artie Hamilton <artiemhamilton@yahoo.com>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "\"David S. Miller\"" <davem@davemloft.net>, Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>, James Morris <jmorris@namei.org>, Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>, "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, "coreteam@netfilter.org" <coreteam@netfilter.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 
-Hello,
+Artie Hamilton <artiemhamilton@yahoo.com> wrote:
+> Now the same thing should be done for IPv6. It should works quite sim=
+ilar
+> (I just=A0assume the above mentioned steps are already done):
+>=20
+> $ sysctl -w net.ipv6.conf.br0.accept_ra=3D2
+> $ sysctl -w net.bridge.bridge-nf-call-ip6tables=3D1
+> $ ip6tables -t nat -A PREROUTING -p tcp -m tcp --dport 8080 -j REDIRE=
+CT --to-ports 81
+>=20
+> But here is the problem: Connections will not be started. I see for e=
+xample
+> connections getting started to the service like this on the client:
 
-I was trying to fowards some TCP traffic to port 8080 (tomcat) with the
-following rule:
+Yes, because bridge layer does not detect when addresses have been
+rewritten.
 
-# iptables -t nat -A PREROUTING -p tcp --dport 80 -j REDIRECT --to-port 8080
-iptables: No chain/target/match by that name.
-
-I also encountered the same problem when attempting to create logging
-(simple example, I removed all the params and I do have a chain called
-LOGGING, so it is the LOG target that is missing):
-# iptables -A LOGGING -j LOG
-iptables: No chain/target/match by that name.
-
-My personal guess is that I'm missing some modules or they are disabled. I
-have been searching for help in forums and such to no avail, so it was time
-to try the official list. 
-I'm running CentOS release 6.5 minimal.
-
-R
-Johan
-
+The check is only implemented for ipv4, see dnat_took_place use in br_n=
+etfilter.c
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
+el" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
