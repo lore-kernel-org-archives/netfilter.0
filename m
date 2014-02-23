@@ -1,99 +1,95 @@
-From: Joe Perches <joe@perches.com>
-Subject: [PATCH 2/2] bridge: netfilter: Use ether_addr_copy
-Date: Sun, 23 Feb 2014 00:05:26 -0800
-Message-ID: <8ffb523682d29d344873ad09b9c27faddcb90b5f.1393142669.git.joe@perches.com>
-References: <06d3e7e463c2bbfa8b5264e67daace1181ada090.1393142669.git.joe@perches.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <06d3e7e463c2bbfa8b5264e67daace1181ada090.1393142669.git.joe@perches.com>
-Sender: linux-kernel-owner@vger.kernel.org
+From: test account <850.test.email@gmail.com>
+Subject: Unable to Block Individual Ports from the LAN to the Internet
+Date: Sun, 23 Feb 2014 13:46:20 -0500
+Message-ID: <CAPNjXEmGdBJaFFRs0xsLHQxBui6SFZ9ku=sr816Pd+xcw_nU8A@mail.gmail.com>
+Mime-Version: 1.0
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=cMEe0qsGfqCXWCpwNr7OOZDkYi7K3paVoqBhnIZvXAs=;
+        b=pMb8YGuEd3QaXOmMaOh8WyxLxe5CBQuvkt5eXS8XnjBL9JhlTDvpnGSqXh5z2oK91/
+         +oLZyXHzoW9WeUk1NjqHBIMrXjvrnE1uRL4jrpoAdZf7M9q5Y8940ljcBopBHzxtNVVz
+         amLowg2E1fh7heNHW0H9ohy/LUjuMMj+e14im0Hnuon08uKD0SNAPz+uQLVDxiSsQTVl
+         Xcltlt24kNZHF0XGaa1kpkTlfpZj+wqlbQGpbIsdsrF/UvALTb/UygM5fTnItkPfs+mQ
+         rnydws6oQuAf8654/Z7iXIgjGRmTcYTSpSTINcsaHU0aBnivif1uzy59Ja6DzSgCbWO7
+         mryQ==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netdev@vger.kernel.org
-Cc: Stephen Hemminger <stephen@networkplumber.org>, "David S. Miller" <davem@davemloft.net>, Bart De Schuymer <bart.de.schuymer@pandora.be>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, bridge@lists.linux-foundation.org, linux-kernel@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org
+To: netfilter@vger.kernel.org
 
-Convert the uses of memcpy to ether_addr_copy because
-for some architectures it is smaller and faster.
+I am doing something wrong but I am at a loss to know what it is.   I
+am using Slackware with the 3.10.30 kernel and iptables v1.4.20 with
+eth0 as Internet side and eth1 as the LAN user's side.
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
- net/bridge/br_netfilter.c           | 2 +-
- net/bridge/netfilter/ebt_among.c    | 2 +-
- net/bridge/netfilter/ebt_dnat.c     | 2 +-
- net/bridge/netfilter/ebt_redirect.c | 6 +++---
- net/bridge/netfilter/ebt_snat.c     | 2 +-
- 5 files changed, 7 insertions(+), 7 deletions(-)
+If I set up the following in rc.iptables
 
-diff --git a/net/bridge/br_netfilter.c b/net/bridge/br_netfilter.c
-index b008c59..df0f114 100644
---- a/net/bridge/br_netfilter.c
-+++ b/net/bridge/br_netfilter.c
-@@ -506,7 +506,7 @@ bridged_dnat:
- 					       1);
- 				return 0;
- 			}
--			memcpy(eth_hdr(skb)->h_dest, dev->dev_addr, ETH_ALEN);
-+			ether_addr_copy(eth_hdr(skb)->h_dest, dev->dev_addr);
- 			skb->pkt_type = PACKET_HOST;
- 		}
- 	} else {
-diff --git a/net/bridge/netfilter/ebt_among.c b/net/bridge/netfilter/ebt_among.c
-index 3fb3c84..9024283 100644
---- a/net/bridge/netfilter/ebt_among.c
-+++ b/net/bridge/netfilter/ebt_among.c
-@@ -28,7 +28,7 @@ static bool ebt_mac_wormhash_contains(const struct ebt_mac_wormhash *wh,
- 	uint32_t cmp[2] = { 0, 0 };
- 	int key = ((const unsigned char *)mac)[5];
- 
--	memcpy(((char *) cmp) + 2, mac, ETH_ALEN);
-+	ether_addr_copy(((char *) cmp) + 2, mac);
- 	start = wh->table[key];
- 	limit = wh->table[key + 1];
- 	if (ip) {
-diff --git a/net/bridge/netfilter/ebt_dnat.c b/net/bridge/netfilter/ebt_dnat.c
-index c59f7bf..4e0b0c3 100644
---- a/net/bridge/netfilter/ebt_dnat.c
-+++ b/net/bridge/netfilter/ebt_dnat.c
-@@ -22,7 +22,7 @@ ebt_dnat_tg(struct sk_buff *skb, const struct xt_action_param *par)
- 	if (!skb_make_writable(skb, 0))
- 		return EBT_DROP;
- 
--	memcpy(eth_hdr(skb)->h_dest, info->mac, ETH_ALEN);
-+	ether_addr_copy(eth_hdr(skb)->h_dest, info->mac);
- 	return info->target;
- }
- 
-diff --git a/net/bridge/netfilter/ebt_redirect.c b/net/bridge/netfilter/ebt_redirect.c
-index 46624bb..20396499 100644
---- a/net/bridge/netfilter/ebt_redirect.c
-+++ b/net/bridge/netfilter/ebt_redirect.c
-@@ -25,10 +25,10 @@ ebt_redirect_tg(struct sk_buff *skb, const struct xt_action_param *par)
- 
- 	if (par->hooknum != NF_BR_BROUTING)
- 		/* rcu_read_lock()ed by nf_hook_slow */
--		memcpy(eth_hdr(skb)->h_dest,
--		       br_port_get_rcu(par->in)->br->dev->dev_addr, ETH_ALEN);
-+		ether_addr_copy(eth_hdr(skb)->h_dest,
-+				br_port_get_rcu(par->in)->br->dev->dev_addr);
- 	else
--		memcpy(eth_hdr(skb)->h_dest, par->in->dev_addr, ETH_ALEN);
-+		ether_addr_copy(eth_hdr(skb)->h_dest, par->in->dev_addr);
- 	skb->pkt_type = PACKET_HOST;
- 	return info->target;
- }
-diff --git a/net/bridge/netfilter/ebt_snat.c b/net/bridge/netfilter/ebt_snat.c
-index 0f6b118..e56ccd0 100644
---- a/net/bridge/netfilter/ebt_snat.c
-+++ b/net/bridge/netfilter/ebt_snat.c
-@@ -24,7 +24,7 @@ ebt_snat_tg(struct sk_buff *skb, const struct xt_action_param *par)
- 	if (!skb_make_writable(skb, 0))
- 		return EBT_DROP;
- 
--	memcpy(eth_hdr(skb)->h_source, info->mac, ETH_ALEN);
-+	ether_addr_copy(eth_hdr(skb)->h_source, info->mac);
- 	if (!(info->target & NAT_ARP_BIT) &&
- 	    eth_hdr(skb)->h_proto == htons(ETH_P_ARP)) {
- 		const struct arphdr *ap;
--- 
-1.8.1.2.459.gbcd45b4.dirty
+           #!/bin/sh
+           # define the path to the iptables executable
+           IPTABLES=/usr/sbin/iptables
+
+           # FLUSH TABLE RULES
+           $IPTABLES -F
+
+           # FLUSH NAT-CHAIN TABLE RULES
+           $IPTABLES -t nat -F
+
+           # ENABLE IP FORWARDING
+           echo 1 > /proc/sys/net/ipv4/ip_forward
+
+ IPTABLES looks like this.
+
+          Chain INPUT (policy ACCEPT)
+          target     prot opt source               destination
+
+          Chain FORWARD (policy ACCEPT)
+          target     prot opt source               destination
+
+          Chain OUTPUT (policy ACCEPT)
+          target     prot opt source               destination
+
+I would think with this configuration I should be able to browse the
+Internet from a LAN PC, but I cannot.  ??????
+
+If I add this rule to rc.iptables
+
+          $IPTABLES -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+
+The output of  $IPTABLES -t nat -L  adds the following to IPTABLES
+
+          MASQUERADE  all  --  anywhere             anywhere
+
+I can now use a browser on the LAN side to reach a web site on the Internet.
+
+If I then add this rule.
+
+          IPTABLES -A INPUT -i eth1 -p tcp --dport 1:1054 -j DROP
+
+Which results in this
+
+          Chain INPUT (policy ACCEPT)
+          target     prot opt source               destination
+          DROP       tcp  --  anywhere             anywhere
+ tcp dpts:tcpmux:1054
+
+          Chain FORWARD (policy ACCEPT)
+          target     prot opt source               destination
+
+          Chain OUTPUT (policy ACCEPT)
+          target     prot opt source               destination
+
+ I would think that would block just about everything again, but I can
+use a browser on the LAN side and see Internet sites just fine.
+
+ I have also tried to configure it in other ways with different rules
+and/or IP addresses instead of eth0 or eth1 including the order the
+rules are applied, but I always end up with the same results.  Either
+it passes nothing or when it does pass traffic, the drop rules do not
+seem to work.
+
+ Ideally I would like the LAN side on eth1 to be able to reach
+anything on eth0, the Internet side, except those ports and IP
+addresses that I would specifically block but I am obviously not
+applying the rules correctly.   Any hints or suggestions?
