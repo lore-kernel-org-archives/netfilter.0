@@ -1,427 +1,202 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH v5] netfilter: xtables: add quota support for nfacct
-Date: Tue, 25 Feb 2014 18:54:10 +0100
-Message-ID: <20140225175410.GA25784@localhost>
-References: <1392740402-14952-1-git-send-email-mathieu.poirier@linaro.org>
+From: Scott Mayo <scotgmayo@gmail.com>
+Subject: Re: Public IP to Private IP
+Date: Tue, 25 Feb 2014 12:06:02 -0600
+Message-ID: <CAFPGR9i8pwkL+ws+20NoRVatgmX4ZPZAau5seyCWTA2Ziffwzg@mail.gmail.com>
+References: <CAFPGR9jhpurA644xdfWc6dF58iVCc5t7mbUw6NsjxPqYQxtUHw@mail.gmail.com>
+	<CAFPGR9jQFUyQhjyH-kBdDj7cJvNrub5uFaGmStXRtWRfO6NFWQ@mail.gmail.com>
+	<CAFPGR9hjWxAUxkP_EerkWr5NiWRZpWZa7=8UfNfaDbYRBgBASg@mail.gmail.com>
+	<CAFPGR9gxAsMskRaO1CNkdf5Wvg6zX+oSd0-xrqaYNHYcNLEGtg@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1392740402-14952-1-git-send-email-mathieu.poirier@linaro.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :content-type;
+        bh=7aRGadHYwWl73UzifG+oowsm//LmbFcQDWG4/V7k49M=;
+        b=wviHcRfQIx1Whjs6MuuC8Iv++Dbb5kjB0VLFt9krZ0UYnBWrFMMJrRsXeYOQTR0XGE
+         QrCdQxh0SI8BFqSNcMi62wo7zmtOMF1CphL5MtiLHymt6EdQ7rHjY1O9q9BaXjl4sQAj
+         hwPHi7de+s5zQWEiFOA5PIn3933J6LDtQ8WCl24odvXTuHOqqOZmyMTTbKuepSPAwAPX
+         fa1RVY8Un/Bx0BjKHj0OIn1FF+dPmnH7ym5sq6qiMMRCpQzWDIbfB4aShcXRNRlLanVv
+         OIvxzCDsE/OlddkHKE5AbLhdv8yCbmyBTcIEXS/ZXtbKm3PvzFJx27ql8JSOQ/juz4EQ
+         n38A==
+In-Reply-To: <CAFPGR9gxAsMskRaO1CNkdf5Wvg6zX+oSd0-xrqaYNHYcNLEGtg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: mathieu.poirier@linaro.org
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Hi Mathieu,
+On Mon, Feb 24, 2014 at 3:56 PM, Scott Mayo <scotgmayo@gmail.com> wrote:
+> On Mon, Feb 24, 2014 at 1:13 PM, Scott Mayo <scotgmayo@gmail.com> wrote:
+>> On Mon, Feb 24, 2014 at 12:22 PM, Scott Mayo <scotgmayo@gmail.com> wrote:
+>>> On Mon, Jan 27, 2014 at 1:22 PM, Scott Mayo <scotgmayo@gmail.com> wrote:
+>>>> I am having some troubles getting my public IPs routed to my private IPs.
+>>>>
+>>>> Here is an example.
+>>>> Private IP of the main server with my IPTables:  192.168.0.1
+>>>> Public IP of the main server:  1.1.1.1
+>>>> I also have 1.1.1.2 and 1.1.1.3 as public IPs attached to the public nic.
+>>>> Domain name example.org is pointed to 1.1.1.2
+>>>>
+>>>> I am trying to get the following public IPs to Private IPs:
+>>>> 1.1.1.2 -> 192.168.0.2
+>>>> 1.1.1.3 -> 192.168.0.3
+>>>>
+>>>> If I am outside my network and go to example.org, it seems to work fine.
+>>>> If I am inside my network and go to 192.168.0.2 then it works fine.
+>>>> If I go to example.org from inside my network then it goes back to
+>>>> 192.168.0.1 instead of 192.168.0.2
+>>>>
+>>>> Maybe this does not have to do with IPTables even since it works with
+>>>> an IP, but I thought I would ask here.  I do not have an internal DNS
+>>>> server.
+>>>>
+>>>> Here are the rules that I have:
+>>>>
+>>>> IPTABLES -t nat -A PREROUTING -d 1.1.1.2 -p tcp -j DNAT
+>>>> --to-destination 192.168.0.2
+>>>> IPTABLES -t nat -A POSTROUTING -d 192.168.0.2 -j SNAT --to-destination 1.1.1.2
+>>>>
+>>>> Any suggestions would be appreciated.
+>>>> Thanks.
+>>>
+>>>
+>>> I ended up finishing my setup on my new filter server.  I had not
+>>> messed with this problem and wanted to wait until I got it into place.
+>>>  I am back to it now.  I appreciate the suggestions so far.  I am
+>>> getting ready to setup an internal DNS server, but until I do, I would
+>>> like to get the IPTABLES working.
+>>>
+>>> Here are the IPTABLE rules that I have in place:
+>>>
+>>> $IPTABLES -t nat -A PREROUTING -d 1.1.1.2 -p tcp -j DNAT
+>>> --to-destination 192.168.0.2
+>>> $IPTABLES -t nat -A POSTROUTING -d 192.168.0.2 -s 192.168.0.0/16 -j
+>>> SNAT --to-source 1.1.1.2
+>>> $IPTABLES -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 1.1.1.1
+>>>
+>>> Here is quick breakdown
+>>> ifcfg-eth0 = 1.1.1.1  #public IP of the main Squid/IPTABLES box
+>>> ifcfg-eth0:0 = 1.1.1.2   #Virtual IP which I want to forward on to the
+>>> other webserver box: example.org
+>>> example.org resolves to 1.1.1.2 fine
+>>> ifcfg-eth1 = 192.168.1.1  #private IP of the main Squid/IPTABLES box
+>>> 192.168.1.2  #Is the private IP that I want forward on to the other
+>>> webserver box: example.org
+>>>
+>>> My IPTABLES are on my Squid box.  I have just played some more and
+>>> found that if I take the proxy settings out of my browser and type in
+>>> example.org in the URL, it works fine.
+>>>
+>>> If I leave the proxy settings in and type in example.org then it comes
+>>> back to the main Squid box address of 192.168.1.1.
+>>>
+>>> Any idea why that would matter?  I do drop port 80 and port 3128 so
+>>> that the proxy cannot be gone around.  For testing purposes though, I
+>>> took those two drops out and it is still doing it.
+>>>
+>>> I'll get a copy of my IPTABLE rules and post also.  Just thought I
+>>> would post this first and see if someone had an idea of what I might
+>>> be looking for.
+>>
+>>
+>> It just dawned on me that this may be pulling from the Squid cache so
+>> I'll wait until after school and clear that.  Maybe my IP rules are
+>> correct now since it is working without going through the proxy.
+>
+>
+> I just wiped my Squid cache and that was not it.  I have even put in a
+> very, very simple set of rules that I will post below.  example.org is
+> pointed to the 1.1.1.2 IP address.
+>
+> If I go to example.org (private = 192.168.0.2/public = 1.1.1.2)
+> without the proxy settings in the browser to point to my Squid box
+> (192.168.0.1) then it resolves fine.
+>
+> If I go to example.org with the proxy settings in my browser to point
+> to my Squid box then it takes me to the webserver on 192.168.0.1
+> (which is my squid box and has the IPTABLES on it).
+>
+> I guess I am not understanding why it would make any difference if I
+> am directed through the proxy or not since everything goes through
+> this box one way or another.  Here is the simple IPTABLES that I used
+> to test with.
+>
+> Thanks for any info.
+>
+> #!/bin/sh
+> EXT_IP="1.1.1.0/24"
+> EXT_IFACE="eth0"
+> EXT_BROADCAST="1.1.1.255"
+>
+> INT_IP="192.168.0.1"
+> INT_IP_RANGE="192.168.0.0/16"
+> INT_IFACE="eth1"
+>
+> LO_IFACE="lo"
+> LO_IP="127.0.0.1"
+>
+> IPTABLES="/sbin/iptables"
+>
+> /sbin/depmod -a
+>
+> /sbin/modprobe ip_tables
+> /sbin/modprobe ip_conntrack
+> /sbin/modprobe iptable_filter
+> /sbin/modprobe iptable_mangle
+> /sbin/modprobe iptable_nat
+> /sbin/modprobe ipt_LOG
+> /sbin/modprobe ipt_limit
+> /sbin/modprobe ipt_state
+>
+> #Non required modules
+> /sbin/modprobe ipt_owner
+> /sbin/modprobe ipt_REJECT
+> #/sbin/modprobe ipt_MASQUERADE
+> #/sbin/modprobe ip_conntrack_ftp
+> #/sbin/modprobe ip_conntrack_irc
+> #/sbin/modprobe ip_nat_ftp
+> #/sbin/modprobe ip_nat_irc
+>
+> echo "1" > /proc/sys/net/ipv4/ip_forward
+>
+> #Create default policies and FLUSH the chains
+> $IPTABLES -P INPUT ACCEPT
+> $IPTABLES -F INPUT
+> $IPTABLES -P OUTPUT ACCEPT
+> $IPTABLES -F OUTPUT
+> $IPTABLES -P FORWARD ACCEPT
+> $IPTABLES -F FORWARD
+>
+> $IPTABLES -F
+> $IPTABLES -t nat -F
+> $IPTABLES -t mangle -F
+>
+> #Allow the local network
+>
+> $IPTABLES -t nat -A PREROUTING -d 1.1.1.2 -p tcp -j DNAT
+> --to-destination 192.168.0.2
+> $IPTABLES -t nat -A POSTROUTING -d 192.168.0.2 -s 192.168.0.0/16 -j
+> SNAT --to-source 1.1.1.2
+> $IPTABLES -t nat -A POSTROUTING -o eth0 -j SNAT --to-source 1.1.1.1
+>
 
-This is looking better, but still more comments to address, see below.
+I am not sure if this thinking is correct or not, but here is what I
+did.  I got to looking at:
+$IPTABLES -t nat -A POSTROUTING -d 192.168.0.2 -s 192.168.0.0/16 -j
+SNAT --to-source 1.1.1.2
 
-On Tue, Feb 18, 2014 at 09:20:02AM -0700, mathieu.poirier@linaro.org wrote:
-> From: Mathieu Poirier <mathieu.poirier@linaro.org>
-> 
-> Adding packet and byte quota support.  Once a quota has been
-> reached a noticifaction is sent to user space that includes
-> the name of the accounting object along with the current byte
-> and packet count.
-> 
-> Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> ---
-> Changes for v5:
-> - Removed spinlock from 'nfnl_acct_update'.
-> - Added accounting object store.
-> ---
->  include/linux/netfilter/nfnetlink_acct.h      |  17 ++-
->  include/uapi/linux/netfilter/nfnetlink.h      |   2 +
->  include/uapi/linux/netfilter/nfnetlink_acct.h |   1 +
->  include/uapi/linux/netfilter/xt_nfacct.h      |  18 ++-
->  net/netfilter/Kconfig                         |   3 +-
->  net/netfilter/nfnetlink_acct.c                |  46 +++++--
->  net/netfilter/xt_nfacct.c                     | 179 ++++++++++++++++++++++++--
->  7 files changed, 238 insertions(+), 28 deletions(-)
-> 
-> diff --git a/include/linux/netfilter/nfnetlink_acct.h b/include/linux/netfilter/nfnetlink_acct.h
-> index b2e85e5..bb04204 100644
-> --- a/include/linux/netfilter/nfnetlink_acct.h
-> +++ b/include/linux/netfilter/nfnetlink_acct.h
-> @@ -3,11 +3,24 @@
->  
->  #include <uapi/linux/netfilter/nfnetlink_acct.h>
->  
-> +struct nf_acct {
-> +	atomic64_t		pkts;
-> +	atomic64_t		bytes;
-> +	struct list_head	head;
-> +	atomic_t		refcnt;
-> +	char			name[NFACCT_NAME_MAX];
-> +	struct rcu_head		rcu_head;
-> +};
->  
-> -struct nf_acct;
-> +enum nfnl_acct_udt_type {
-> +	NFNL_ACCT_UDT_PACKETS,
-> +	NFNL_ACCT_UDT_BYTES,
-> +};
+Since the browsers are pointed to the proxy at 192.168.0.1, I thought
+that maybe once it comes from the squid box that maybe it is using the
+public IP from eth0 instead of the private from eth1?  I don't know
+how all that works technically so I just removed the -s 192.168.0.0/16
+in case it was trying to come from the public side which is
+1.1.1.0/24.
 
-I prefer some like this instead of the one above:
+As I said, not really sure if that is correct thinking or not, but now
+it works fine.
 
-enum nfacct_quota_type {
-        NFACCT_QUOTA_PACKETS = 0,
-        NFACCT_QUOTA_BYTES
-};
 
->  struct nf_acct *nfnl_acct_find_get(const char *filter_name);
->  void nfnl_acct_put(struct nf_acct *acct);
-> -void nfnl_acct_update(const struct sk_buff *skb, struct nf_acct *nfacct);
-> +extern u64 nfnl_acct_update(const struct sk_buff *skb,
-> +			   struct nf_acct *nfacct, int mode);
-> +void nfnl_quota_event(struct nf_acct *cur);
->  
->  #endif /* _NFNL_ACCT_H */
-> diff --git a/include/uapi/linux/netfilter/nfnetlink.h b/include/uapi/linux/netfilter/nfnetlink.h
-> index 596ddd4..354a7e5 100644
-> --- a/include/uapi/linux/netfilter/nfnetlink.h
-> +++ b/include/uapi/linux/netfilter/nfnetlink.h
-> @@ -20,6 +20,8 @@ enum nfnetlink_groups {
->  #define NFNLGRP_CONNTRACK_EXP_DESTROY	NFNLGRP_CONNTRACK_EXP_DESTROY
->  	NFNLGRP_NFTABLES,
->  #define NFNLGRP_NFTABLES                NFNLGRP_NFTABLES
-> +	NFNLGRP_ACCT_QUOTA,
-> +#define NFNLGRP_ACCT_QUOTA		NFNLGRP_ACCT_QUOTA
->  	__NFNLGRP_MAX,
->  };
->  #define NFNLGRP_MAX	(__NFNLGRP_MAX - 1)
-> diff --git a/include/uapi/linux/netfilter/nfnetlink_acct.h b/include/uapi/linux/netfilter/nfnetlink_acct.h
-> index c7b6269..ae8ea0a 100644
-> --- a/include/uapi/linux/netfilter/nfnetlink_acct.h
-> +++ b/include/uapi/linux/netfilter/nfnetlink_acct.h
-> @@ -19,6 +19,7 @@ enum nfnl_acct_type {
->  	NFACCT_PKTS,
->  	NFACCT_BYTES,
->  	NFACCT_USE,
-> +	NFACCT_QUOTA,
-
-This is wrong. You are using this new attribute (which defines another
-TLV in the payload of a message) instead of the netlink message type
-in nfnl_acct_fill_info(). This needs a specific message type to
-announce that the quota has been exceeded.
-
->  	__NFACCT_MAX
->  };
->  #define NFACCT_MAX (__NFACCT_MAX - 1)
-> diff --git a/include/uapi/linux/netfilter/xt_nfacct.h b/include/uapi/linux/netfilter/xt_nfacct.h
-> index 3e19c8a..7c35ce0 100644
-> --- a/include/uapi/linux/netfilter/xt_nfacct.h
-> +++ b/include/uapi/linux/netfilter/xt_nfacct.h
-> @@ -3,11 +3,27 @@
->  
->  #include <linux/netfilter/nfnetlink_acct.h>
->  
-> +enum xt_quota_flags {
-> +	XT_NFACCT_QUOTA_PKTS	= 1 << 0,
-> +	XT_NFACCT_QUOTA		= 1 << 1,
-> +};
-> +
->  struct nf_acct;
-> +struct nf_acct_quota;
->  
->  struct xt_nfacct_match_info {
->  	char		name[NFACCT_NAME_MAX];
-> -	struct nf_acct	*nfacct;
-> +	struct nf_acct	*nfacct __aligned(8);
->  };
->  
-> +struct xt_nfacct_match_info_v1 {
-> +	char		name[NFACCT_NAME_MAX];
-> +	struct nf_acct	*nfacct __aligned(8);
-
-You have to move at the bottom of the structure, before the new
-nf_acct_quota.
-
-The extension from userspace sets the .userspacesize field, which
-helps iptables to skip internal pointers that are set by the kernel,
-If you don't fix this, iptables -D to delete a rule with nfacct will
-not work.
-
-> +	__u32 flags;
-> +	__aligned_u64 quota;
-> +
-> +	/* used internally by kernel */
-> +	struct nf_acct_quota *priv __aligned(8);
-> +};
->  #endif /* _XT_NFACCT_MATCH_H */
-> diff --git a/net/netfilter/Kconfig b/net/netfilter/Kconfig
-> index 748f304..ce184951 100644
-> --- a/net/netfilter/Kconfig
-> +++ b/net/netfilter/Kconfig
-> @@ -1108,7 +1108,8 @@ config NETFILTER_XT_MATCH_NFACCT
->  	select NETFILTER_NETLINK_ACCT
->  	help
->  	  This option allows you to use the extended accounting through
-> -	  nfnetlink_acct.
-> +	  nfnetlink_acct.  It is also possible to add quotas at the
-> +	  packet and byte level.
->  
->  	  To compile it as a module, choose M here.  If unsure, say N.
->  
-> diff --git a/net/netfilter/nfnetlink_acct.c b/net/netfilter/nfnetlink_acct.c
-> index c7b6d46..5c580a7 100644
-> --- a/net/netfilter/nfnetlink_acct.c
-> +++ b/net/netfilter/nfnetlink_acct.c
-> @@ -29,15 +29,6 @@ MODULE_DESCRIPTION("nfacct: Extended Netfilter accounting infrastructure");
->  
->  static LIST_HEAD(nfnl_acct_list);
->  
-> -struct nf_acct {
-> -	atomic64_t		pkts;
-> -	atomic64_t		bytes;
-> -	struct list_head	head;
-> -	atomic_t		refcnt;
-> -	char			name[NFACCT_NAME_MAX];
-> -	struct rcu_head		rcu_head;
-> -};
-> -
->  static int
->  nfnl_acct_new(struct sock *nfnl, struct sk_buff *skb,
->  	     const struct nlmsghdr *nlh, const struct nlattr * const tb[])
-> @@ -92,7 +83,7 @@ nfnl_acct_new(struct sock *nfnl, struct sk_buff *skb,
->  	return 0;
->  }
->  
-> -static int
-> +int
->  nfnl_acct_fill_info(struct sk_buff *skb, u32 portid, u32 seq, u32 type,
->  		   int event, struct nf_acct *acct)
->  {
-> @@ -134,6 +125,7 @@ nla_put_failure:
->  	nlmsg_cancel(skb, nlh);
->  	return -1;
->  }
-> +EXPORT_SYMBOL_GPL(nfnl_acct_fill_info);
-
-I think you don't need to export this symbol.
-
->  static int
->  nfnl_acct_dump(struct sk_buff *skb, struct netlink_callback *cb)
-> @@ -329,13 +321,41 @@ void nfnl_acct_put(struct nf_acct *acct)
->  }
->  EXPORT_SYMBOL_GPL(nfnl_acct_put);
->  
-> -void nfnl_acct_update(const struct sk_buff *skb, struct nf_acct *nfacct)
-> +u64 nfnl_acct_update(const struct sk_buff *skb,
-> +		    struct nf_acct *nfacct, int mode)
->  {
-> -	atomic64_inc(&nfacct->pkts);
-> -	atomic64_add(skb->len, &nfacct->bytes);
-> +	u64 pkts, bytes;
-> +
-> +	pkts = atomic64_inc_return(&nfacct->pkts);
-> +	bytes = atomic64_add_return(skb->len, &nfacct->bytes);
-> +
-> +	return (mode == NFNL_ACCT_UDT_PACKETS) ? pkts : bytes;
->  }
->  EXPORT_SYMBOL_GPL(nfnl_acct_update);
->  
-> +void
-> +nfnl_quota_event(struct nf_acct *cur)
-> +{
-> +	int ret;
-> +	struct sk_buff *skb;
-> +
-> +	skb = nlmsg_new(NLMSG_DEFAULT_SIZE, GFP_ATOMIC);
-> +	if (skb == NULL)
-> +		return;
-> +
-> +	ret = nfnl_acct_fill_info(skb, 0, 0, NFACCT_QUOTA,
-> +				 NFNL_MSG_ACCT_NEW, cur);
-> +
-
-Remove empty line above.
-
-> +	if (ret <= 0) {
-> +		kfree_skb(skb);
-> +		return;
-> +	}
-> +
-> +	netlink_broadcast(init_net.nfnl, skb, 0,
-> +			 NFNLGRP_ACCT_QUOTA, GFP_ATOMIC);
-> +}
-> +EXPORT_SYMBOL_GPL(nfnl_quota_event);
-> +
->  static int __init nfnl_acct_init(void)
->  {
->  	int ret;
-> diff --git a/net/netfilter/xt_nfacct.c b/net/netfilter/xt_nfacct.c
-> index b3be0ef..d1bd5ea 100644
-> --- a/net/netfilter/xt_nfacct.c
-> +++ b/net/netfilter/xt_nfacct.c
-> @@ -9,8 +9,10 @@
->  #include <linux/module.h>
->  #include <linux/skbuff.h>
->  
-> +#include <net/netlink.h>
->  #include <linux/netfilter/x_tables.h>
->  #include <linux/netfilter/nfnetlink_acct.h>
-> +#include <linux/netfilter/nfnetlink.h>
->  #include <linux/netfilter/xt_nfacct.h>
->  
->  MODULE_AUTHOR("Pablo Neira Ayuso <pablo@netfilter.org>");
-> @@ -19,15 +21,62 @@ MODULE_LICENSE("GPL");
->  MODULE_ALIAS("ipt_nfacct");
->  MODULE_ALIAS("ip6t_nfacct");
->  
-> +static LIST_HEAD(nfacct_list);
-> +static DEFINE_MUTEX(nfacct_list_mutex);
-> +
-> +struct nf_acct_quota {
-> +	char			name[NFACCT_NAME_MAX];
-> +	int			count;
-> +	u32			flags;
-> +	u64			quota;
-> +	struct list_head	node;
-> +	atomic_t		notified;
-> +};
-> +
->  static bool nfacct_mt(const struct sk_buff *skb, struct xt_action_param *par)
->  {
->  	const struct xt_nfacct_match_info *info = par->targinfo;
-> +	u64 __always_unused val;
-> -	nfnl_acct_update(skb, info->nfacct);
-> +	val = nfnl_acct_update(skb, info->nfacct, 0);
-
-I think you can just do:
-
-        nfnl_acct_update(skb, info->nfacct...);
-
-and ignore the returned value in this case.
-
->  	return true;
->  }
->  
-> +static bool
-> +nfacct_mt_v1(const struct sk_buff *skb, struct xt_action_param *par)
-> +{
-> +	int mode;
-> +	u64 val;
-> +	const struct xt_nfacct_match_info_v1 *info = par->matchinfo;
-> +	struct nf_acct_quota *acct_quota = info->priv;
-> +	bool ret = true;
-> +
-> +	mode = (acct_quota->flags & XT_NFACCT_QUOTA_PKTS) ?
-> +	       NFNL_ACCT_UDT_PACKETS : NFNL_ACCT_UDT_BYTES;
-> +
-> +	/* upgrade accounting stats */
-> +	val = nfnl_acct_update(skb, info->nfacct, mode);
-> +
-> +	/* no need to go further if we don't have a quota */
-> +	if (!(acct_quota->flags & XT_NFACCT_QUOTA))
-> +		return ret;
-> +
-> +	/* are we over the limit ? */
-> +	if (val <= info->quota) {
-
-You use <=, I think this should be <. Not further below you're using >=.
-
-> +		/* reset flag in case userspace cleared the counters */
-> +		atomic_set(&acct_quota->notified, 0)
-
-This has runtime overhead and I think it's racy. I think we can avoid
-this if the quota object management is moved to nfnetlink_acct (see
-below for further explanation). The idea is to iterate over the list
-of quota objects (to find notified flags that need to be reset) by
-when NFNL_MSG_ACCT_GET_CTRZERO is called.
-
-> +		ret = !ret;
-> +	}
-> +
-> +	if (val >= info->quota)
-
-You have to use brackets here:
-
-        if (...) {
-                ...
-        }
-
-> +		/* cmpxchg guarantees only one CPU can send a notification */
-> +		if (atomic_cmpxchg(&acct_quota->notified, 0, 1) == 0)
-> +			nfnl_quota_event(info->nfacct);
-> +
-> +	return ret;
-> +}
-> +
->  static int
->  nfacct_mt_checkentry(const struct xt_mtchk_param *par)
->  {
-> @@ -44,32 +93,140 @@ nfacct_mt_checkentry(const struct xt_mtchk_param *par)
->  	return 0;
->  }
->  
-> +static
-> +struct nf_acct_quota *nfacct_find_quota(char *name)
-> +{
-> +	struct nf_acct_quota *curr, *match = NULL;
-> +
-> +	mutex_lock(&nfacct_list_mutex);
-> +	list_for_each_entry(curr, &nfacct_list, node)
-
-missing brackets here in list_for_each_entry too.
-
-> +		if (strncmp(curr->name, name, NFACCT_NAME_MAX) == 0) {
-> +			match = curr;
-> +			match->count++;
-> +			break;
-> +		}
-> +
-> +	mutex_unlock(&nfacct_list_mutex);
-> +
-> +	return match;
-> +}
-> +
-> +static struct  nf_acct_quota *
-> +nfacct_create_quota(struct xt_nfacct_match_info_v1 *info)
-
-Thinking of nftables and the reset notified flag above, I think it's
-better if you move the quota object management to nfnetlink_acct.c by
-adding new nfacct commands. The idea is to maintain a quota object
-base that can be used by xt_nfacct. You have to add the following
-commands:
-
-enum nfnl_acct_msg_types {
-        ...
-        NFNL_MSG_ACCT_QUOTA_NEW,
-        NFNL_MSG_ACCT_QUOTA_GET,
-        NFNL_MSG_ACCT_QUOTA_DEL,
-        NFNL_MSG_ACCT_MAX
-};
-
-Then, extend nfnl_callback to include this new commands. The idea is
-to create/delete quota objects from the netlink interface, then attach
-them from the iptables nfacct extension.
-
-You won't need the mutex anymore btw, since it's already protected by
-nfnl_lock.
-
-> +{
-> +	struct nf_acct_quota *acct_quota;
-> +
-> +	mutex_lock(&nfacct_list_mutex);
-> +
-> +	acct_quota = kmalloc(sizeof(struct nf_acct_quota), GFP_ATOMIC);
-> +
-
-remove empty line above.
-
-> +	if (!acct_quota) {
-> +		mutex_unlock(&nfacct_list_mutex);
-> +		return NULL;
-> +	}
-> +
-> +	strncpy(acct_quota->name, info->name, NFACCT_NAME_MAX);
-> +	acct_quota->flags = info->flags;
-> +	acct_quota->quota = info->quota;
-> +	acct_quota->count = 1;
-> +	atomic_set(&acct_quota->notified, 0);
-> +	list_add_tail(&acct_quota->node, &nfacct_list);
-
-This needs to be converted to _rcu.
+-- 
+Scott Mayo
+Mayo's Pioneer Seeds
