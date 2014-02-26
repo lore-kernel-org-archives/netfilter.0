@@ -1,45 +1,61 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Matteo Croce <technoboy85@gmail.com>
 Subject: Re: nft error
-Date: Wed, 26 Feb 2014 11:25:30 +0100
-Message-ID: <20140226102530.GA4093@localhost>
+Date: Wed, 26 Feb 2014 11:27:21 +0100
+Message-ID: <CAFnufp3m2OOYs=pdOhTO4t-N1Hy3ZvHJDgJy7fMVqPXNME-NDg@mail.gmail.com>
 References: <CAFnufp3Wzw9fLk2SU16kR1vfAbwaFQfhAo9dwNqk_80LVUfx4g@mail.gmail.com>
+ <CAFpD06QcWdVkfM1wdA_neoLreewAvR65h5yvmHNX8nvB2h80ow@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAFnufp3Wzw9fLk2SU16kR1vfAbwaFQfhAo9dwNqk_80LVUfx4g@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc:content-type;
+        bh=GMChap8JLmlNkMvW9RfH8sUyB0Yu568J0hdJ1dWYBYo=;
+        b=ypQZaYR6H3gBAyQhqltedpNXIyGlydAulHC8YkijajHUBMjy9+H/C4lbPYVkqaIrN3
+         DdkE8cmgPy1qGkKm7crog5hV4OYLOrEwErqGESiWNE4aL41kB9GqZm6Lovk0RnNmW/Ye
+         5xZ6ggcdNJIeeKwbo3V56BWnuC2ITqtUXU1WhmEv5PoHRoyndXGbwESjmVqNVSC5mWF9
+         41WB2Zhc4fm3NKQj6U06KmwQK8TZaArwEulfu9P/hYgpfAMpKNKbEztvFBQW3lOQecFG
+         gnpx3/xoXUTiY4PyGEWgkAqD6anRfT+4yKhkOiYoLtazCL8JeiTQL1rsAhKorDxZvzwe
+         xOgw==
+In-Reply-To: <CAFpD06QcWdVkfM1wdA_neoLreewAvR65h5yvmHNX8nvB2h80ow@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Matteo Croce <technoboy85@gmail.com>
+To: Giuseppe Longo <giuseppelng@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-On Wed, Feb 26, 2014 at 11:12:29AM +0100, Matteo Croce wrote:
-> Hi,
-> 
-> I'm trying to run nftables on Debian with a vanilla 3.13 kernel.
-> I've compiled libnftnl and nftables from git, but when I try to start
-> ntf I get this error:
-> 
-> # nft list table filter
-> <cmdline>:1:1-17: Error: Could not receive sets from kernel: Address
-> family not supported by protocol
-> list table filter
-> ^^^^^^^^^^^^^^^^^
-> 
-> I think I have all modules loaded:
-> 
-> lsmod |grep nf
-> nfnetlink_log          12935  0
-> nft_ct                 12486  0
-> nft_compat             12844  0
-> nft_nat                12459  0
-> nf_tables              36626  3 nft_nat,nft_ct,nft_compat
-> nfnetlink              12818  3 nf_tables,nfnetlink_log,nft_compat
-> nf_conntrack_ipv4      13078  1
-> nf_defrag_ipv4         12443  1 nf_conntrack_ipv4
-> nf_nat_ipv4            12757  1 iptable_nat
-> 
-> What can it be?
+Hi,
 
-I don't see the nf_tables_ipv4 and nf_tables_ipv6 modules there.
+if I create the filter chain I can see it as empty.
+
+Actually I'm using iptables-nftables to use my old firewall, and it works.
+Is there any way to see the iptables-nftables chains?
+
+2014-02-26 11:23 GMT+01:00 Giuseppe Longo <giuseppelng@gmail.com>:
+> Hi Matteo,
+>
+> try to run: nft -f files/example/ipv4-filter
+>
+> (into nftables directory)
+>
+> BR
+
+
+
+-- 
+Matteo Croce
+OpenWrt Developer
+  _______                     ________        __
+ |       |.-----.-----.-----.|  |  |  |.----.|  |_
+ |   -   ||  _  |  -__|     ||  |  |  ||   _||   _|
+ |_______||   __|_____|__|__||________||__|  |____|
+          |__| W I R E L E S S   F R E E D O M
+ -----------------------------------------------------
+ BARRIER BREAKER
+ -----------------------------------------------------
+  * 1/2 oz Galliano         Pour all ingredients into
+  * 4 oz cold Coffee        an irish coffee mug filled
+  * 1 1/2 oz Dark Rum       with crushed ice. Stir.
+  * 2 tsp. Creme de Cacao
+ -----------------------------------------------------
