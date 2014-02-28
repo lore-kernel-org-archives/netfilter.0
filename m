@@ -1,47 +1,50 @@
-From: Stefan Sabolowitsch <Stefan.Sabolowitsch@felten-group.com>
-Subject: Need help with drop rules and nfqueue
-Date: Fri, 28 Feb 2014 09:16:36 +0000
-Message-ID: <5E9F3882-4A77-43C6-9E17-434876B8D00F@felten-group.com>
+From: Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: change kmalloc into vmalloc for large memory
+	allocations
+Date: Fri, 28 Feb 2014 09:11:38 -0500
+Message-ID: <20140228091138.39b90f52@gandalf.local.home>
+References: <35FD53F367049845BC99AC72306C23D102844605F38C@CNBJMBX05.corpusers.net>
 Mime-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple; d=felten-group.com;
-	s=feltengroup_com; l=869; t=1393579002; x=1394183802; q=dns/txt;
-	h=DomainKey-Signature:Received:VBR-Info:Received:From:To:Subject:
-	Thread-Topic:Thread-Index:Date:Message-ID:Accept-Language:
-	Content-Language:Content-Type:Content-ID:
-	Content-Transfer-Encoding:MIME-Version; bh=/7B+wCWPIuJp9yKXjR5yf
-	ptWi8joGi5jxM6wjbfQo+0=; b=i8wOSFo8KDD496IcPEr1dJe7GRP0r6iur2MBn
-	0XhxGEuIZnYIfF1vlKqNV5+PUTbJiay2mIUT6BfzaionneqhffEuGKPRgoHIEFRz
-	dxyqIdnvRHpw8Z8by97dgq/ayK8ioYaU94ISTkNb/9U5IFIqAK1hGY/rm1TtNth0
-	GgCGCc=
-Content-Language: de-DE
-Content-ID: <143635D5C12DC14CA746CE13031F15E3@felten-group.com>
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <35FD53F367049845BC99AC72306C23D102844605F38C@CNBJMBX05.corpusers.net>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>, 
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: "Wang, Yalin" <Yalin.Wang@sonymobile.com>
+Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "'linux-usb@vger.kernel.org'" <linux-usb@vger.kernel.org>, "'tiwai@suse.de'" <tiwai@suse.de>, "'fweisbec@gmail.com'" <fweisbec@gmail.com>, "'dmitry.torokhov@gmail.com'" <dmitry.torokhov@gmail.com>, "'mingo@redhat.com'" <mingo@redhat.com>, "'linux-input@vger.kernel.org'" <linux-input@vger.kernel.org>, "'rydberg@euromail.se'" <rydberg@euromail.se>, "'lrg@ti.com'" <lrg@ti.com>, "'pablo@netfilter.org'" <pablo@netfilter.org>, "'coreteam@netfilter.org'" <coreteam@netfilter.org>, "'linux-arm-msm@vger.kernel.org'" <linux-arm-msm@vger.kernel.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, "'linux-arm-kernel@lists.infradead.org'" <linux-arm-kernel@lists.infradead.org>, "'gregkh@linuxfoundation.org'" <gregkh@linuxfoundation.org>, "'broonie@opensource.wolfsonmicro.com'" <broonie@opensource.wolfsonmicro.>
 
-Hi all,
-need help with a drop rule and nfqueue
-Currently i have this filter rule, that sends all traffic from the bridge bra to nfqueue (IPS System).
+On Fri, 28 Feb 2014 16:15:23 +0800
+"Wang, Yalin" <Yalin.Wang@sonymobile.com> wrote:
 
--A FORWARD -i br0 -j NFQUEUE --queue-balance 0:3 --queue-bypass
+> Kfree(ptr)
+> {
+> 	If (is_vmalloc_addr(ptr))
+> 		Vfree(ptr);
+> 	Else
+> 		Kfree(ptr);
+> }
+> 
+> 
+> But we need add some flags to ensure always use kmalloc for
+> Some special use (dma etc..)
+> 
+> How do you think of it ?
 
-But i want to send there only certain traffic, example:
+But vmalloc also takes up tlb entries. The more vmalloc space you have,
+the more tlb entries that will need to be used, which will have a
+performance affect on the entire system.
 
--A FORWARD -i br0 -p udp -j NFQUEUE --queue-balance 0:3 --queue-bypass
--A FORWARD -i br0 -p icmp -j NFQUEUE --queue-balance 0:3 --queue-bypass
--A FORWARD ! -s 192.168.1.43/32 -i br0 -p tcp -m multiport ! --ports 80,443 -j NFQUEUE --queue-balance 0:3 --queue-bypass
+I would be against making kmalloc() secretly doing a vmalloc. If it is
+better for a driver to use a vmalloc on large items, than change the
+driver. Don't change a core function.
 
-This will not work 100%. With this filter rules not all traffic go to the nfqueue.
-
-Therefore my question.
-How can i prevent that an IP address (example 192.168.1.43) to certain ports (80,443) comes to nfqueue.
-It is important that no traffic in br0 is lost.
-
-Thanks for any help here.
-Stefan
- 
-
-
+-- Steve
