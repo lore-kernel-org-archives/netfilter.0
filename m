@@ -1,47 +1,60 @@
-From: "'gregkh@linuxfoundation.org'" <gregkh@linuxfoundation.org>
-Subject: Re: change kmalloc into vmalloc for large memory
-	allocations
-Date: Fri, 28 Feb 2014 08:33:04 -0800
-Message-ID: <20140228163304.GA15614@kroah.com>
-References: <35FD53F367049845BC99AC72306C23D102844605F38C@CNBJMBX05.corpusers.net>
- <53104ECA.4010702@freescale.com>
- <35FD53F367049845BC99AC72306C23D102844605F38D@CNBJMBX05.corpusers.net>
+From: =?ISO-8859-1?Q?Humberto_Juc=E1?= <betolj@gmail.com>
+Subject: Multipath routing x kernel > 3.6 (without routing cache)
+Date: Sun, 2 Mar 2014 09:09:04 -0400
+Message-ID: <CACuyg26ntrABcy39_Obtf+cUKMnOcMtwoE45ZEJkdR=WtwvPdA@mail.gmail.com>
 Mime-Version: 1.0
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=ru4I+iZ/8fM+ESQvReWBqsvByBlA2qwnXWkMsgxbb3k=;
+        b=bnf6zU0tgqb71263Pp0JPdCJ5gZAd8/J8ZOQIGjYzhXPsQl1mirqSPbz52q1ULl4HO
+         pNoOA+pXzwKXKJi2Q3QJQTXv+ACKqlBIly4c1uG6pdiz5SoB4q7yVd4miKz8EW9CZRYP
+         riS1iw67jaXbugERgt481fUOyVzFIfXhy89TnOW34uCGyzQKiVdk6l4NzE5LOnE5EyCP
+         nuCT3qj+cZ4I13ZcPki/V7+h6CXKAB/08GebYph3mZOr4yODM8bo5vMWs8T3v79kWOgZ
+         oAzfoudK/la1lOWa9zptbvFUMW4WjKbMohLGJW34a8DwujURlz/Y9gdGRio20feHTtBS
+         OaXg==
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <alsa-devel-bounces@alsa-project.org>
-Content-Disposition: inline
-In-Reply-To: <35FD53F367049845BC99AC72306C23D102844605F38D@CNBJMBX05.corpusers.net>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>, 
- <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
-List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
-List-Post: <mailto:alsa-devel@alsa-project.org>
-List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
-List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
- <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
-Errors-To: alsa-devel-bounces@alsa-project.org
-Sender: alsa-devel-bounces@alsa-project.org
-To: "Wang, Yalin" <Yalin.Wang@sonymobile.com>
-Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "'broonie@opensource.wolfsonmicro.com'" <broonie@opensource.wolfsonmicro.com>, "'tiwai@suse.de'" <tiwai@suse.de>, "'fweisbec@gmail.com'" <fweisbec@gmail.com>, "'mingo@redhat.com'" <mingo@redhat.com>, "'linux-input@vger.kernel.org'" <linux-input@vger.kernel.org>, "'rydberg@euromail.se'" <rydberg@euromail.se>, "'lrg@ti.com'" <lrg@ti.com>, "'pablo@netfilter.org'" <pablo@netfilter.org>, "'coreteam@netfilter.org'" <coreteam@netfilter.org>, "'linux-arm-msm@vger.kernel.org'" <linux-arm-msm@vger.kernel.org>, "'rostedt@goodmis.org'" <rostedt@goodmis.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, "'linux-arm-kernel@lists.infradead.org'" <linux-arm-kernel@lists.infradead.org>, "'netdev@vger.kernel.org'" <netdev@vger.kernel.org>, "'dmitry.torokhov@gmail.com'" <dmitry.torokhov@gmail.com>, 'linux-kern
+To: netfilter@vger.kernel.org
 
-On Fri, Feb 28, 2014 at 05:20:08PM +0800, Wang, Yalin wrote:
-> Hi  
-> 
-> 
-> Yeah,  
-> Dma buffer must be allocated by kmalloc,
-> 
-> But the modules I list should can all be changed to use
-> vmalloc, because the buffer is only used by software,
-> Not by any hardware .
+Hi,
 
-Are you sure about that?  The USB gadget driver needs DMA memory from
-what I can tell, have you tried your change out on a system that does
-not allow the USB controller to access non-DMA memory?
+This issue has already been discussed here, but we have not reached a
+conclusion. I'm reviewing my firewall script (iptables yet) and I
+would like to review the configuration of link load balancing.
 
-And I agree with Steve, just fix the individual drivers, don't do a
-"hidden" change of where the memory is allocated from, that's not a good
-idea and will cause problems later.
+The problem is that setting too complicated without the routing cache.
 
-greg k-h
+With cache I could set a per-flow balancing. To do this, i configured
+"gc_interval" as 1 and defined a higher value for "gc_timeout". Thus I
+forced distribution by origin and destination every second (1s), but
+the routing path was maintained by "gc_timeout".
+
+This was the best way I found to balancing Internet links. IMHO, this
+worked well because it was a flow load balance. So, my connection
+could be distributed by different links, but not in a short time to
+the same destination. This avoided problems with HTTS sessions or
+webmail, for example.
+
+From what I understand... without routing cache, i need to do a
+firewall configuration via CONNMARK. To do this its simple. However
+this creates a balancing per connection, not per flow. I didn't like
+to see a routing path changed in a https session - In many cases,
+local socket is changed constantly.
+
+I know that I can set the path for certain cases by the firewall rule,
+but that would be too much unproductive.
+
+I don't understand why such a radical step in the kernel code. Would
+have been much better to have the possibility to enable or disable the
+routing cache instead of removing the code completely. Recently I
+needed to return the kernel version of one firewall (I need to review
+my scripts first).
+
+How do the load balancing per flow without routing cache?
+Any ideas?
+
+Thanks
