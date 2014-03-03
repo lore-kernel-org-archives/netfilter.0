@@ -1,60 +1,140 @@
-From: =?ISO-8859-1?Q?Humberto_Juc=E1?= <betolj@gmail.com>
-Subject: Multipath routing x kernel > 3.6 (without routing cache)
-Date: Sun, 2 Mar 2014 09:09:04 -0400
-Message-ID: <CACuyg26ntrABcy39_Obtf+cUKMnOcMtwoE45ZEJkdR=WtwvPdA@mail.gmail.com>
+From: "Wang, Yalin" <Yalin.Wang@sonymobile.com>
+Subject: Re: change kmalloc into vmalloc for large memory
+	allocations
+Date: Mon, 3 Mar 2014 09:55:15 +0800
+Message-ID: <35FD53F367049845BC99AC72306C23D102844605F38E@CNBJMBX05.corpusers.net>
+References: <35FD53F367049845BC99AC72306C23D102844605F38C@CNBJMBX05.corpusers.net>
+ <s5hlhwvb9q8.wl%tiwai@suse.de>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=ru4I+iZ/8fM+ESQvReWBqsvByBlA2qwnXWkMsgxbb3k=;
-        b=bnf6zU0tgqb71263Pp0JPdCJ5gZAd8/J8ZOQIGjYzhXPsQl1mirqSPbz52q1ULl4HO
-         pNoOA+pXzwKXKJi2Q3QJQTXv+ACKqlBIly4c1uG6pdiz5SoB4q7yVd4miKz8EW9CZRYP
-         riS1iw67jaXbugERgt481fUOyVzFIfXhy89TnOW34uCGyzQKiVdk6l4NzE5LOnE5EyCP
-         nuCT3qj+cZ4I13ZcPki/V7+h6CXKAB/08GebYph3mZOr4yODM8bo5vMWs8T3v79kWOgZ
-         oAzfoudK/la1lOWa9zptbvFUMW4WjKbMohLGJW34a8DwujURlz/Y9gdGRio20feHTtBS
-         OaXg==
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Return-path: <alsa-devel-bounces@alsa-project.org>
+In-Reply-To: <s5hlhwvb9q8.wl%tiwai@suse.de>
+Content-Language: en-US
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <http://mailman.alsa-project.org/mailman/options/alsa-devel>, 
+ <mailto:alsa-devel-request@alsa-project.org?subject=unsubscribe>
+List-Archive: <http://mailman.alsa-project.org/pipermail/alsa-devel/>
+List-Post: <mailto:alsa-devel@alsa-project.org>
+List-Help: <mailto:alsa-devel-request@alsa-project.org?subject=help>
+List-Subscribe: <http://mailman.alsa-project.org/mailman/listinfo/alsa-devel>, 
+ <mailto:alsa-devel-request@alsa-project.org?subject=subscribe>
+Errors-To: alsa-devel-bounces@alsa-project.org
+Sender: alsa-devel-bounces@alsa-project.org
+To: 'Takashi Iwai' <tiwai@suse.de>
+Cc: "'alsa-devel@alsa-project.org'" <alsa-devel@alsa-project.org>, "'broonie@opensource.wolfsonmicro.com'" <broonie@opensource.wolfsonmicro.com>, "'fweisbec@gmail.com'" <fweisbec@gmail.com>, "'dmitry.torokhov@gmail.com'" <dmitry.torokhov@gmail.com>, "'coreteam@netfilter.org'" <coreteam@netfilter.org>, "'linux-input@vger.kernel.org'" <linux-input@vger.kernel.org>, "'rydberg@euromail.se'" <rydberg@euromail.se>, "'lrg@ti.com'" <lrg@ti.com>, "'pablo@netfilter.org'" <pablo@netfilter.org>, "'linux-arm-msm@vger.kernel.org'" <linux-arm-msm@vger.kernel.org>, "'rostedt@goodmis.org'" <rostedt@goodmis.org>, "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>, "'mingo@redhat.com'" <mingo@redhat.com>, "'linux-arm-kernel@lists.infradead.org'" <linux-arm-kernel@lists.infradead.org>, "'gregkh@linuxfoundation.org'" <gregkh@linuxfoundation.org>, "'linux-usb@vger.kernel.org'" <linux-us>
 
-Hi,
+Hi  Takashi,
 
-This issue has already been discussed here, but we have not reached a
-conclusion. I'm reviewing my firewall script (iptables yet) and I
-would like to review the configuration of link load balancing.
+For this one:
+https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/sound/soc/soc-core.c?h=master#n3772
 
-The problem is that setting too complicated without the routing cache.
+in my kernel log,
+the allocation size 62496,
+about 62KB,
+I think need to  change to vmalloc .
+How do you think of it ?
 
-With cache I could set a per-flow balancing. To do this, i configured
-"gc_interval" as 1 and defined a higher value for "gc_timeout". Thus I
-forced distribution by origin and destination every second (1s), but
-the routing path was maintained by "gc_timeout".
+Logs:
+<4>[   11.469789] ------------[ cut here ]------------
+<4>[   11.469803] WARNING: at /media/00DE7FE2DE7FCE82/jb-mr2-yukon/kernel/include/linux/slub_def.h:265 __kmalloc+0x38/0x29c()
+<4>[   11.469811] size=62496 flags=80d0
+<4>[   11.469815] Modules linked in:
+<4>[   11.469835] [<c010c534>] (unwind_backtrace+0x0/0x11c) from [<c018ab04>] (warn_slowpath_common+0x4c/0x64)
+<4>[   11.469850] [<c018ab04>] (warn_slowpath_common+0x4c/0x64) from [<c018ab9c>] (warn_slowpath_fmt+0x2c/0x3c)
+<4>[   11.469864] [<c018ab9c>] (warn_slowpath_fmt+0x2c/0x3c) from [<c0249ab4>] (__kmalloc+0x38/0x29c)
+<4>[   11.469879] [<c0249ab4>] (__kmalloc+0x38/0x29c) from [<c06a0124>] (snd_soc_register_card+0x184/0x104c)
+<4>[   11.469896] [<c06a0124>] (snd_soc_register_card+0x184/0x104c) from [<c088183c>] (msm8226_asoc_machine_probe+0x298/0x7f0)
+<4>[   11.469913] [<c088183c>] (msm8226_asoc_machine_probe+0x298/0x7f0) from [<c044b1fc>] (platform_drv_probe+0x14/0x18)
+<4>[   11.469927] [<c044b1fc>] (platform_drv_probe+0x14/0x18) from [<c0449f2c>] (driver_probe_device+0x134/0x334)
+<4>[   11.469940] [<c0449f2c>] (driver_probe_device+0x134/0x334) from [<c044a194>] (__driver_attach+0x68/0x8c)
+<4>[   11.469953] [<c044a194>] (__driver_attach+0x68/0x8c) from [<c044849c>] (bus_for_each_dev+0x48/0x80)
+<4>[   11.469965] [<c044849c>] (bus_for_each_dev+0x48/0x80) from [<c0449528>] (bus_add_driver+0x100/0x26c)
+<4>[   11.469978] [<c0449528>] (bus_add_driver+0x100/0x26c) from [<c044a66c>] (driver_register+0x9c/0x120)
+<4>[   11.469992] [<c044a66c>] (driver_register+0x9c/0x120) from [<c010052c>] (do_one_initcall+0x90/0x160)
+<4>[   11.470007] [<c010052c>] (do_one_initcall+0x90/0x160) from [<c0d00b74>] (kernel_init+0xec/0x1a8)
+<4>[   11.470022] [<c0d00b74>] (kernel_init+0xec/0x1a8) from [<c0106aec>] (kernel_thread_exit+0x0/0x8)
+<4>[   11.470030] ---[ end trace 1b75b31a2719ed4d ]---
 
-This was the best way I found to balancing Internet links. IMHO, this
-worked well because it was a flow load balance. So, my connection
-could be distributed by different links, but not in a short time to
-the same destination. This avoided problems with HTTS sessions or
-webmail, for example.
+BRs/ Yalin
+-----Original Message-----
+From: Takashi Iwai [mailto:tiwai@suse.de] 
+Sent: Friday, February 28, 2014 10:20 PM
+To: Wang, Yalin
+Cc: 'linux-kernel@vger.kernel.org'; 'linux-arm-msm@vger.kernel.org'; 'linux-arm-kernel@lists.infradead.org'; 'linux-input@vger.kernel.org'; 'balbi@ti.com'; 'gregkh@linuxfoundation.org'; 'lrg@ti.com'; 'broonie@opensource.wolfsonmicro.com'; 'perex@perex.cz'; 'pablo@netfilter.org'; 'kaber@trash.net'; 'davem@davemloft.net'; 'rostedt@goodmis.org'; 'fweisbec@gmail.com'; 'mingo@redhat.com'; 'dmitry.torokhov@gmail.com'; 'rydberg@euromail.se'; 'linux-usb@vger.kernel.org'; 'alsa-devel@alsa-project.org'; 'netfilter-devel@vger.kernel.org'; 'netfilter@vger.kernel.org'; 'coreteam@netfilter.org'; 'netdev@vger.kernel.org'
+Subject: Re: change kmalloc into vmalloc for large memory allocations
 
-From what I understand... without routing cache, i need to do a
-firewall configuration via CONNMARK. To do this its simple. However
-this creates a balancing per connection, not per flow. I didn't like
-to see a routing path changed in a https session - In many cases,
-local socket is changed constantly.
+At Fri, 28 Feb 2014 16:15:23 +0800,
+Wang, Yalin wrote:
+> 
+> Hi
+> 
+> 
+> I find there is some drivers use kmalloc to allocate large Memorys 
+> during module_init,  some can be changed to use vmalloc To save some 
+> low mem, I add log in kernel to track , And list them here:
+> 
+> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/drive
+> rs/usb/gadget/f_mass_storage.c?h=master#n2724
+> 
+> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/sound
+> /soc/soc-core.c?h=master#n3772
 
-I know that I can set the path for certain cases by the firewall rule,
-but that would be too much unproductive.
+At least the ASoC runtime case doesn't use the allocated memory as buffer, and they are allocated only once per device, thus it shouldn't be the problem you stated.  If it really consumes so much memory, we need to rethink, instead of allocating an array but allocate each object, for example.
 
-I don't understand why such a radical step in the kernel code. Would
-have been much better to have the possibility to enable or disable the
-routing cache instead of removing the code completely. Recently I
-needed to return the kernel version of one firewall (I need to review
-my scripts first).
 
-How do the load balancing per flow without routing cache?
-Any ideas?
+thanks,
 
-Thanks
+Takashi
+
+
+> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/n
+> etfilter/nf_conntrack_ftp.c?h=master#n603
+> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/n
+> etfilter/nf_conntrack_h323_main.c?h=master#n1849
+> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/n
+> etfilter/nf_conntrack_irc.c?h=master#n247
+> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/net/n
+> etfilter/nf_conntrack_sane.c?h=master#n195
+> 
+> https://git.kernel.org/cgit/linux/kernel/git/will/linux.git/tree/drive
+> rs/input/evdev.c?h=master#n403
+> 
+> 
+> they allocate large memory from 10k~64K , this will use lots of low 
+> mem, instead if we use vmalloc for these drivers , it will be good for 
+> some devices like smart phone, we often encounter some errors like 
+> kmalloc failed because there is not enough low mem , especially when 
+> the device has physical memory less than 1GB .
+> 
+> 
+> could this module change the memory allocation into vmalloc ?
+> 
+> I was thinking that if we can introduce a helper function in kmalloc.h like this :
+> 
+> Kmalloc(size, flags)
+> {
+> 	If (size > PAGE_SIZE && flags&CAN_USE_VMALLOC_FLAG)
+> 		return vmalloc(size);
+> 	Else
+> 		return real_kmalloc(size);
+> }
+> 
+> Kfree(ptr)
+> {
+> 	If (is_vmalloc_addr(ptr))
+> 		Vfree(ptr);
+> 	Else
+> 		Kfree(ptr);
+> }
+> 
+> 
+> But we need add some flags to ensure always use kmalloc for Some 
+> special use (dma etc..)
+> 
+> How do you think of it ?
+> 
+> Thanks
+> 
+> 
+> 
