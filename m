@@ -1,108 +1,126 @@
-From: =?ISO-8859-1?Q?Humberto_Juc=E1?= <betolj@gmail.com>
-Subject: Re: Multipath routing x kernel > 3.6 (without routing cache)
-Date: Tue, 4 Mar 2014 09:34:13 -0400
-Message-ID: <CACuyg24+Wyo-gjWhGNkgyh4chts=hrwwtm5dMy+t7NMGcKekbA@mail.gmail.com>
-References: <CACuyg26ntrABcy39_Obtf+cUKMnOcMtwoE45ZEJkdR=WtwvPdA@mail.gmail.com>
-	<CACuyg25Jzj6VAXhTOj3sz4TYaP6Y13vAhwVEPyer6M3LBcGHSw@mail.gmail.com>
-	<1393923397.15202.5.camel@rybalov.eng.ttk.net>
+From: Anthony Taylor <ataylor@fallsgeek.com>
+Subject: Re: Some oddities while setting up outbound filtering on a web server
+Date: Tue, 4 Mar 2014 10:52:28 -0600
+Message-ID: <CA+5v4QC81A2gU8i566G3Nh_dERTv6LbkssZDfSe664BXj=9NEg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :content-type:content-transfer-encoding;
-        bh=9LaIs3NEYG476yM3yFEWZlLfauIh1an0qr1/4xjcqcM=;
-        b=1I10hcNcisvHmEHrhZHCHkRYOR5Crki6FmWviGN1AAjbOtCYIBnqqGO3IVibRz02a/
-         vYso1MxppBD2K8LNjx7ToIo8Q6FCubwtfiYQV2szyqFLdvkheeElX+Qn2H0tr2mT1oIP
-         EU3BFT29ElNE441DoAhULtgI8PCoch3zaMGzAphKXbKVvEQwELpPzyAM9HyiDXF978fk
-         6ITLXr3U7xH3m7k2C2v+Uzpkhl1g/L8Yxf0M4G0NsEyMSbYZEXY6jGLendvpKc5eStZ4
-         qaY1QL5QEvbV2R4R49Evor2I96FpvoNKXZtfUdRK3IhgfwuQaPjd/5EgQukVaW8MCpXg
-         BUdA==
-In-Reply-To: <1393923397.15202.5.camel@rybalov.eng.ttk.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: "Nikolay S." <nowhere@hakkenden.ath.cx>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Thanks for reply.
-
-My intention was try to reproduce the logic of the routing cache using
-the firewall rules (by conntrack).
-
-The problem with using only the CONNTRACK/CONNMARK is a balancing per
-connection. Many web applications use a control session internally.
-And most of the time we do not have this persistence by socket. I've
-had problems with this before. Imagine your public IP addr changing
-between a connection and another for the same destination. For this
-reason I wanted to find a way to control it by "flow".
-
-Apparently I got a better result than the routing cache.
-
-Before I increased the amount of gc_timeout just to ensure a greater
-time for the flow in question. The problem is that it forced me to
-have a script in the background to handle failover. And decrease the
-value of gc_timeout would bring me more problems (a lot of people
-recommended to do this as failover, but it certainly brings you
-problems with the control session).
-
-Now i define and update the timeout by ipset. If the link becomes
-unavailable, the packet is retransmitted in round-robin and the next
-link is attempted. The result was better than that obtained previously
-with gc_timeout. May not need more failover script (I'm still not sure
-about this). Now I see this as a real advantage.
-
-
-I changed the logic of my firewall script to generate this:
-
--N GETMARK
--A GETMARK -m mark --mark 0x0 -m set --match-set lb_link1 src,dst,dst
--j MARK --set-xmark 0x301/0xffffffff
--A GETMARK -m mark --mark 0x0 -m set --match-set lb_link2 src,dst,dst
--j MARK --set-xmark 0x302/0xffffffff
-
--N SETMARK
--A SETMARK -o eth0 -m mark --mark 0x0 -j MARK --set-xmark 0x301/0xfffff=
-fff
--A SETMARK -m mark --mark 0x301 -j SET --add-set lb_link1 src,dst,dst
---exist --timeout 1200
--A SETMARK -o eth1 -m mark --mark 0x0 -j MARK --set-xmark 0x302/0xfffff=
-fff
--A SETMARK -m mark --mark 0x302 -j SET --add-set lb_link2 src,dst,dst
---exist --timeout 1200
-
--N CNTRACK
--A CNTRACK -o lo -j RETURN
--A CNTRACK -o eth0 -j SETMARK
--A CNTRACK -o eth1 -j SETMARK
--A CNTRACK -m mark ! --mark 0x0 -j CONNMARK --save-mark --nfmask
-0xffffffff --ctmask 0xffffffff
-
-
-
--P OUTPUT ACCEPT
--A OUTPUT -m mark --mark 0x0 -j GETMARK
--A OUTPUT -m mark --mark 0x0 -j CONNMARK --restore-mark --nfmask
-0xffffffff --ctmask 0xffffffff
-
--P PREROUTING ACCEPT
--A PREROUTING -m mark --mark 0x0 -j CONNMARK --restore-mark --nfmask
-0xffffffff --ctmask 0xffffffff
--A PREROUTING -m mark --mark 0x0 -j GETMARK
-
--P POSTROUTING ACCEPT
--A POSTROUTING -j CNTRACK
-
-Thanks!
-
-
-2014-03-04 4:56 GMT-04:00 Nikolay S. <nowhere@hakkenden.ath.cx>:
-> =D0=92 =D0=9F=D0=BD, 03/03/2014 =D0=B2 13:54 -0400, Humberto Juc=C3=A1=
- =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+On Sat, Feb 22, 2014 at 4:37 AM, Mart Frauenlob
+<mart.frauenlob@chello.at> wrote:
 >
-> Just an idea. Grab HMARK in prerouting, use this mark to select routi=
-ng
-> table. Then in input/output/forward/postrouting chains you can re-use
-> fwmark for queue selection or anything else.
+> On 21.02.2014 23:36, Anthony Taylor wrote:
+>>
+>> I'm attempting to set up outbound filtering on a server to satisfy
+>> PCI requirements.  Here is what I have so far:
+>>
+>> iptables -L OUTPUT -n --line-numbers Chain OUTPUT (policy ACCEPT)
 >
 >
+> policy of ACCEPT??? where's the filtering?
+> only ACCEPT rules below, you want logging only?
+
+Sorry I didn't explain.  The last rule will be a DROP all, however for
+now in the interest of not breaking anything I'm logging results
+instead.
+
+>
+> use output of iptables -S .... -N is bad formatting for mail. also it
+> needs -v to be complete like for rule #1 (guess that's for the lo iface)..
+
+Here is the output of iptables -S OUTPUT -v
+
+iptables -S OUTPUT -v
+-P OUTPUT ACCEPT -c 5039 319910
+-A OUTPUT -o lo -c 294541 22016298 -j ACCEPT
+-A OUTPUT -m state --state RELATED,ESTABLISHED -c 11077878 13836891689 -j ACCEPT
+-A OUTPUT -p icmp -m icmp --icmp-type 0 -c 0 0 -j ACCEPT
+-A OUTPUT -p icmp -m icmp --icmp-type 8 -c 193399 5415172 -j ACCEPT
+-A OUTPUT -p tcp -m tcp --dport 53 -c 0 0 -j ACCEPT
+-A OUTPUT -p udp -m udp --dport 53 -c 233937 16828408 -j ACCEPT
+-A OUTPUT -p tcp -m tcp --dport 43 -c 50 3000 -j ACCEPT
+-A OUTPUT -p tcp -m tcp --dport 25 -c 344 20640 -j ACCEPT
+-A OUTPUT -d 74.125.0.0/16 -p tcp -m tcp --dport 80 -c 1319 79140 -j ACCEPT
+-A OUTPUT -d 66.135.58.62/32 -p tcp -m tcp --dport 80 -c 153 9180 -j ACCEPT
+-A OUTPUT -d 192.0.80.244/32 -p tcp -m tcp --dport 80 -c 139 8340 -j ACCEPT
+-A OUTPUT -d 66.135.58.61/32 -p tcp -m tcp --dport 80 -c 112 6720 -j ACCEPT
+-A OUTPUT -d 192.0.80.246/32 -p tcp -m tcp --dport 80 -c 109 6540 -j ACCEPT
+-A OUTPUT -d 91.189.92.201/32 -p tcp -m tcp --dport 80 -c 0 0 -j ACCEPT
+-A OUTPUT -d 91.189.88.149/32 -p tcp -m tcp --dport 80 -c 0 0 -j ACCEPT
+-A OUTPUT -d 91.189.91.13/32 -p tcp -m tcp --dport 80 -c 3 180 -j ACCEPT
+-A OUTPUT -d 91.189.92.200/32 -p tcp -m tcp --dport 80 -c 0 0 -j ACCEPT
+-A OUTPUT -d 91.189.91.14/32 -p tcp -m tcp --dport 80 -c 2 120 -j ACCEPT
+-A OUTPUT -d 91.189.91.15/32 -p tcp -m tcp --dport 80 -c 7 420 -j ACCEPT
+-A OUTPUT -d 66.155.40.249/32 -p tcp -m tcp --dport 80 -c 0 0 -j ACCEPT
+-A OUTPUT -d 66.155.40.250/32 -p tcp -m tcp --dport 80 -c 0 0 -j ACCEPT
+-A OUTPUT -m state --state INVALID -c 10200 425557 -j DROP
+-A OUTPUT -c 5039 319910 -j LOG --log-prefix "fw-outbound: "
+
+
+>>
+>> My problem is I'm seeing some traffic that I'm not sure I should be
+>> seeing.  I get periodically some traffic from source port 80.  It's
+>> my understanding that rule 2 above would filter these out.  When I
+>> try to access the webserver I don't get anything to show up in logs.
+>> Yet still I'm getting entries like these:
+>> <snip>
+>
+>
+> -m state --state INVALID -j DROP
+> look if they still come up...
+> also this might have influence:
+
+I have added this rule as you can see above, and although it seems to
+have stopped some of it, my 'phantom' traffic with source ports 80,443
+still continues.
+
+>
+> nf_conntrack_tcp_be_liberal - BOOLEAN
+>         0 - disabled (default)
+>         not 0 - enabled
+>
+>         Be conservative in what you do, be liberal in what you accept
+> from others.
+>         If it's non-zero, we mark only out of window RST segments as
+> INVALID.
+>
+> see:
+> Documentation/networking/nf_conntrack-sysctl.txt
+
+
+cat /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal
+0
+
+This appears to be disabled.
+
+>
+> I'd suggest to use ipset for all the IPs, ie:
+>
+> ipset create webservers hash:ip
+> ipset add webservers 91.189.92.201
+> and so on
+>
+> iptables -A OUTPUT -m set --match-set webservers dst -p tcp --dport 80 -m state --state NEW -j ACCEPT
+
+
+I have looked into ipset.  I will try to implement it shortly, but
+this won't help my problems unfortunately.
+
+>
+> Best regards
+>
+> Mart
+
+
+Thank you Mart for answering me.
+
+Anthony Taylor
+---------------------
+http://www.fallsgeek.com
+(940)228-4580
+Wichita Falls, TX
+Your connection for everything geek...
