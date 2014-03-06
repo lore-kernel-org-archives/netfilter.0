@@ -1,68 +1,38 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [ANNOUNCE] ipset 6.21 released
-Date: Thu, 6 Mar 2014 10:25:59 +0100 (CET)
-Message-ID: <alpine.DEB.2.10.1403061024450.27979@blackhole.kfki.hu>
-References: <alpine.DEB.2.10.1403042207250.17838@blackhole.kfki.hu> <5316CC91.2080704@fastest.cc>
-Mime-Version: 1.0
+From: Francisco Javier Sanchez-Roselly <fnavarro@ujaen.es>
+Subject: arp for SNATed addresses
+Date: Thu, 6 Mar 2014 10:21:49 +0100
+Message-ID: <8FD4D791-550A-4AD2-AD8B-8A6F8BBD01D6@ujaen.es>
+Mime-Version: 1.0 (Mac OS X Mail 7.2 \(1874\))
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <5316CC91.2080704@fastest.cc>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: AllKind <AllKind@fastest.cc>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Type: text/plain; charset="windows-1252"
+To: netfilter@vger.kernel.org
+Cc: Francisco Javier Sanchez-Roselly <fnavarro@ujaen.es>
 
-Hi,
+dear All,
 
-On Wed, 5 Mar 2014, AllKind wrote:
+i am running IPTables in a two interfaced Ubuntu box 12.04. i have conf=
+igured a SNAT for the addresses in the =91inside=92 network to VALID ad=
+dresses in the =91outside=92 one.
 
-> On 04.03.2014 22:12, Jozsef Kadlecsik wrote:
-> > Hi,
-> > 
-> > I'm happy to announce ipset 6.21, which, besides bugfixes and corrections,
-> > includes the new set type hash:ip,mark from Vytas Dauksa and the forceadd
-> > option from Josh Hunt. See the updated manpage about these new features.
-> [...]
-> Hello,
-> 
-> unfortunately the utils were not updated with this release.
+the box translates nicely, but its =91outside=92 interface does not res=
+pond to ARP request asking for the MAC address associated to the VALID =
+addresses used for translation. this implies =91inside=92 hosts can not=
+ communicate with =91outside=92 ones. nevertheless, MASQUERADing or SNA=
+Ting to the IP address configured in the box =91outside=92 interface wo=
+rks nicely. this implies it is surely an ARP issue.
 
-Oh, I forgot to pull the changes - I'm going to release 6.21.1 with the 
-utils updated.
+i guess this is an odd behaviour, as previously i have used the same ne=
+twork scheme without any problem.
 
-Best regards,
-Jozsef
-  
-> You can download the newest version of ipset_bash_completion including
-> markmask and forceadd support from here:
-> 
-> https://sourceforge.net/projects/ipset-bashcompl/files/latest/download?source=navbar
-> 
-> 
-> Also a newer and more powerful version of ipset_list is available here:
-> 
-> https://sourceforge.net/projects/ipset-list/files/latest/download
-> 
-> 
-> Something that also might be useful to you is the current development version
-> of iptables-bash_completion, which includes the features that are currently
-> only available via the netfilter git repository:
-> 
-> https://sourceforge.net/p/ipt-bashcompl/code/ci/dev/tree/
-> 
-> Best regards
-> 
-> AllKind
-> 
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter-devel" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+any advice?
 
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+thanks, regards.
+
+francisco javier
+
+
+
+
