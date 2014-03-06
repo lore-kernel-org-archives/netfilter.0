@@ -1,136 +1,125 @@
-From: Mart Frauenlob <mart.frauenlob@chello.at>
-Subject: Re: Some oddities while setting up outbound filtering on a web server
-Date: Thu, 06 Mar 2014 19:26:54 +0100
-Message-ID: <5318BDEE.6080606@chello.at>
-References: <CA+5v4QC81A2gU8i566G3Nh_dERTv6LbkssZDfSe664BXj=9NEg@mail.gmail.com>
-Reply-To: mart.frauenlob@chello.at
+From: behanw@converseincode.com
+Subject: [PATCH] net: inetfilter: LLVMLinux: vlais-netfilter
+Date: Thu,  6 Mar 2014 11:56:08 -0800
+Message-ID: <1394135768-27621-1-git-send-email-behanw@converseincode.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CA+5v4QC81A2gU8i566G3Nh_dERTv6LbkssZDfSe664BXj=9NEg@mail.gmail.com>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=converseincode.com; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version:content-type
+         :content-transfer-encoding;
+        bh=DrmhZuDEEP55GWm5l7sogEF2S3gS0Pn7pbi6vXX3do8=;
+        b=TJmuo0LHryvNmH3ABE0LCkBtifa0oc4k6/XBicPTOAn5W9YAK5Pa2F2BrgjY/SKGpo
+         Ch/jxExmKQ4Ito10BP5fVLDZkyzbjHiCQsZQvKkz53gkYOAy/ErsuRgQbixe8cTudEQT
+         tFuI0avtJpIOJn/z1eHMugBcP27owTfVSdemQ=
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Anthony Taylor <ataylor@fallsgeek.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="macroman"
+To: davem@davemloft.net
+Cc: pablo@netfilter.org, kaber@trash.net, kadlec@blackhole.kfki.hu, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, dwmw2@infradead.org, pageexec@freemail.hu, Mark Charlebois <charlebm@gmail.com>, Behan Webster <behanw@converseincode.com>, =?UTF-8?q?Vin=C3=ADcius=20Tinti?= <viniciustinti@gmail.com>
 
-On 04.03.2014 17:52, Anthony Taylor wrote:
-> On Sat, Feb 22, 2014 at 4:37 AM, Mart Frauenlob
-> <mart.frauenlob@chello.at> wrote:
->>
->> On 21.02.2014 23:36, Anthony Taylor wrote:
->>>
->>> I'm attempting to set up outbound filtering on a server to satisfy
->>> PCI requirements.  Here is what I have so far:
->>>
->>> iptables -L OUTPUT -n --line-numbers Chain OUTPUT (policy ACCEPT)
->>
->>
->> policy of ACCEPT??? where's the filtering?
->> only ACCEPT rules below, you want logging only?
->
-> Sorry I didn't explain.  The last rule will be a DROP all, however for
-> now in the interest of not breaking anything I'm logging results
-> instead.
+=46rom: Mark Charlebois <charlebm@gmail.com>
 
-no need to put a last drop rule, that's what the policy is for.
+Replaced non-standard C use of Variable Length Arrays In Structs (VLAIS=
+) in
+xt_repldata.h with a C99 compliant flexible array member and then calcu=
+lated
+offsets to the other struct members. These other members aren't referen=
+ced by
+name in this code, however this patch maintains the same memory layout =
+and
+padding as was previously accomplished using VLAIS.
 
->
->>
->> use output of iptables -S .... -N is bad formatting for mail. also it
->> needs -v to be complete like for rule #1 (guess that's for the lo iface)..
->
-> Here is the output of iptables -S OUTPUT -v
->
-> iptables -S OUTPUT -v
-> -P OUTPUT ACCEPT -c 5039 319910
-> -A OUTPUT -o lo -c 294541 22016298 -j ACCEPT
-> -A OUTPUT -m state --state RELATED,ESTABLISHED -c 11077878 13836891689 -j ACCEPT
-> -A OUTPUT -p icmp -m icmp --icmp-type 0 -c 0 0 -j ACCEPT
-> -A OUTPUT -p icmp -m icmp --icmp-type 8 -c 193399 5415172 -j ACCEPT
-> -A OUTPUT -p tcp -m tcp --dport 53 -c 0 0 -j ACCEPT
-> -A OUTPUT -p udp -m udp --dport 53 -c 233937 16828408 -j ACCEPT
-> -A OUTPUT -p tcp -m tcp --dport 43 -c 50 3000 -j ACCEPT
-> -A OUTPUT -p tcp -m tcp --dport 25 -c 344 20640 -j ACCEPT
-> -A OUTPUT -d 74.125.0.0/16 -p tcp -m tcp --dport 80 -c 1319 79140 -j ACCEPT
-> -A OUTPUT -d 66.135.58.62/32 -p tcp -m tcp --dport 80 -c 153 9180 -j ACCEPT
-> -A OUTPUT -d 192.0.80.244/32 -p tcp -m tcp --dport 80 -c 139 8340 -j ACCEPT
-> -A OUTPUT -d 66.135.58.61/32 -p tcp -m tcp --dport 80 -c 112 6720 -j ACCEPT
-> -A OUTPUT -d 192.0.80.246/32 -p tcp -m tcp --dport 80 -c 109 6540 -j ACCEPT
-> -A OUTPUT -d 91.189.92.201/32 -p tcp -m tcp --dport 80 -c 0 0 -j ACCEPT
-> -A OUTPUT -d 91.189.88.149/32 -p tcp -m tcp --dport 80 -c 0 0 -j ACCEPT
-> -A OUTPUT -d 91.189.91.13/32 -p tcp -m tcp --dport 80 -c 3 180 -j ACCEPT
-> -A OUTPUT -d 91.189.92.200/32 -p tcp -m tcp --dport 80 -c 0 0 -j ACCEPT
-> -A OUTPUT -d 91.189.91.14/32 -p tcp -m tcp --dport 80 -c 2 120 -j ACCEPT
-> -A OUTPUT -d 91.189.91.15/32 -p tcp -m tcp --dport 80 -c 7 420 -j ACCEPT
-> -A OUTPUT -d 66.155.40.249/32 -p tcp -m tcp --dport 80 -c 0 0 -j ACCEPT
-> -A OUTPUT -d 66.155.40.250/32 -p tcp -m tcp --dport 80 -c 0 0 -j ACCEPT
-> -A OUTPUT -m state --state INVALID -c 10200 425557 -j DROP
-> -A OUTPUT -c 5039 319910 -j LOG --log-prefix "fw-outbound: "
->
->
->>>
->>> My problem is I'm seeing some traffic that I'm not sure I should be
->>> seeing.  I get periodically some traffic from source port 80.  It's
->>> my understanding that rule 2 above would filter these out.  When I
->>> try to access the webserver I don't get anything to show up in logs.
->>> Yet still I'm getting entries like these:
->>> <snip>
+Had the original structure been ordered differently, with the entries V=
+LA at
+the end, then it could have been a flexible member, and this patch woul=
+d have
+been a lot simpler. However since the data stored in this structure is
+ultimately exported to userspace, the order of this structure can't be =
+changed.
 
-bad idea to snip here ;-p
-bad idea also not to allow icmp error messages (type 3).
+This patch makes no attempt to change the existing behavior, merely the=
+ way in
+which the current layout is accomplished using standard C99 constructs.=
+ As such
+the code can now be compiled with either gcc or clang.
 
->>
->>
->> -m state --state INVALID -j DROP
->> look if they still come up...
->> also this might have influence:
->
-> I have added this rule as you can see above, and although it seems to
-> have stopped some of it, my 'phantom' traffic with source ports 80,443
-> still continues.
+Author: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+Signed-off-by: Vin=C3=ADcius Tinti <viniciustinti@gmail.com>
+---
+ net/netfilter/xt_repldata.h | 34 ++++++++++++++++++++++++++++------
+ 1 file changed, 28 insertions(+), 6 deletions(-)
 
-do the filtering for state INVALID in INPUT/FORWARD chain!
+diff --git a/net/netfilter/xt_repldata.h b/net/netfilter/xt_repldata.h
+index 6efe4e5..c138fea 100644
+--- a/net/netfilter/xt_repldata.h
++++ b/net/netfilter/xt_repldata.h
+@@ -5,29 +5,51 @@
+  * they serve as the hanging-off data accessed through repl.data[].
+  */
+=20
++#define padbytes(offset, type) ((-offset) & (__alignof__(type)-1))
++
++/* tbl has the following structure equivalent, but is C99 compliant:
++ * struct {
++ *	struct type##_replace repl;
++ *	struct type##_standard entries[nhooks];
++ *	struct type##_error term;
++ * } *tbl;
++ */
++
+ #define xt_alloc_initial_table(type, typ2) ({ \
+ 	unsigned int hook_mask =3D info->valid_hooks; \
+ 	unsigned int nhooks =3D hweight32(hook_mask); \
+ 	unsigned int bytes =3D 0, hooknum =3D 0, i =3D 0; \
+ 	struct { \
+ 		struct type##_replace repl; \
+-		struct type##_standard entries[nhooks]; \
+-		struct type##_error term; \
+-	} *tbl =3D kzalloc(sizeof(*tbl), GFP_KERNEL); \
++		char data[0]; \
++	} *tbl; \
++	struct type##_standard *entries; \
++	struct type##_error *term; \
++	size_t entries_offset =3D padbytes(sizeof(tbl->repl), *entries); \
++	size_t entries_end =3D entries_offset + nhooks * sizeof(*entries); \
++	size_t term_offset =3D entries_end \
++		+ padbytes(sizeof(tbl->repl) + entries_end, *term); \
++	size_t term_end =3D term_offset + sizeof(*term); \
++	size_t data_sz =3D term_end \
++		+ padbytes(sizeof(tbl->repl) + term_end, tbl->repl); \
++	size_t tbl_sz =3D sizeof(tbl->repl) + data_sz; \
++	tbl =3D kzalloc(tbl_sz, GFP_KERNEL); \
+ 	if (tbl =3D=3D NULL) \
+ 		return NULL; \
++	entries =3D (struct type##_standard *)&tbl->data[entries_offset]; \
++	term =3D (struct type##_error *)&tbl->data[term_offset]; \
+ 	strncpy(tbl->repl.name, info->name, sizeof(tbl->repl.name)); \
+-	tbl->term =3D (struct type##_error)typ2##_ERROR_INIT;  \
++	*term =3D (struct type##_error)typ2##_ERROR_INIT;  \
+ 	tbl->repl.valid_hooks =3D hook_mask; \
+ 	tbl->repl.num_entries =3D nhooks + 1; \
+ 	tbl->repl.size =3D nhooks * sizeof(struct type##_standard) + \
+-	                 sizeof(struct type##_error); \
++			 sizeof(struct type##_error); \
+ 	for (; hook_mask !=3D 0; hook_mask >>=3D 1, ++hooknum) { \
+ 		if (!(hook_mask & 1)) \
+ 			continue; \
+ 		tbl->repl.hook_entry[hooknum] =3D bytes; \
+ 		tbl->repl.underflow[hooknum]  =3D bytes; \
+-		tbl->entries[i++] =3D (struct type##_standard) \
++		entries[i++] =3D (struct type##_standard) \
+ 			typ2##_STANDARD_INIT(NF_ACCEPT); \
+ 		bytes +=3D sizeof(struct type##_standard); \
+ 	} \
+--=20
+1.8.3.2
 
->
->>
->> nf_conntrack_tcp_be_liberal - BOOLEAN
->>          0 - disabled (default)
->>          not 0 - enabled
->>
->>          Be conservative in what you do, be liberal in what you accept
->> from others.
->>          If it's non-zero, we mark only out of window RST segments as
->> INVALID.
->>
->> see:
->> Documentation/networking/nf_conntrack-sysctl.txt
->
->
-> cat /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal
-> 0
->
-> This appears to be disabled.
->
-
-Then try to enable it???
-
->>
->> I'd suggest to use ipset for all the IPs, ie:
->>
->> ipset create webservers hash:ip
->> ipset add webservers 91.189.92.201
->> and so on
->>
->> iptables -A OUTPUT -m set --match-set webservers dst -p tcp --dport 80 -m state --state NEW -j ACCEPT
->
->
-> I have looked into ipset.  I will try to implement it shortly, but
-> this won't help my problems unfortunately.
-
-Of course not, but it'll shorten your ruleset make it more readable and 
-will speed up everything, besides saving memory.
-
-Best regards
-
-Mart
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
+el" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
