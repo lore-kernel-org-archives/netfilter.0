@@ -1,41 +1,40 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: [ANNOUNCE] ipset 6.21.1 released
-Date: Fri, 7 Mar 2014 21:07:22 +0100 (CET)
-Message-ID: <alpine.DEB.2.10.1403072058470.3887@blackhole.kfki.hu>
-References: <alpine.DEB.2.10.1403071328240.32311@blackhole.kfki.hu> <alpine.LSU.2.11.1403071705010.22956@nerf08.vanv.qr>
+From: shawn wilson <ag4ve.us@gmail.com>
+Subject: logging process associated with a connection
+Date: Fri, 7 Mar 2014 16:54:29 -0500
+Message-ID: <CAH_OBie81XZ+MLwRMHKkNdJ12DLDwB0CXKHVxMqaLubXZ6me=Q@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <alpine.LSU.2.11.1403071705010.22956@nerf08.vanv.qr>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to:content-type;
+        bh=TklMHriN3bd7+u19zF5QhauMFHNPg9bN8W/kArXi+LY=;
+        b=N1rku4BB72Hes2+dFnUroAtR25l22w52JEtkCT7rHTQJsGaqrj85Jl0HkrzCW7gDsj
+         K7k0eY8lA+ZUY3sEKlkHmm9yg5O9pSYydlNDwyDifaLn6370ODJvcp2LSeVjYfRri/9t
+         3x3IaOE3Es+e6cv3pDchMZFNd5Wis4lJU2OEfO74di3revJK5Y1nw0o+KNc8TXdsBwoU
+         F+zDIljanW3MIm8SVXMcf7CgH9XMjTubtKcerGDhgfAUGJMdg0ONIsxMmKHcvh5zWYB6
+         ngsFGAtyH+H6XH06KUYr3X4emgLoULmPoGlhKnWLtUhoOhGSLg2nCpT+jwknZzicLHfO
+         bk/A==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jan Engelhardt <jengelh@inai.de>
-Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On Fri, 7 Mar 2014, Jan Engelhardt wrote:
+What I ideally want is to log the cmdline associated with an outbound
+packet. However, I'm open to suggestions.
 
-> On Friday 2014-03-07 13:32, Jozsef Kadlecsik wrote:
-> 
-> >Userspace changes:
-> >  - Fix libipset library release versioning (reported by Mathieu Bridon)
-> 
-> AFAICS, functions were only added, yet the SONAME was changed.
-> (-version-info 7:0:4 should have been -version-info 7:0:5)
+What I have is:
+Mar  7 16:30:25 name kernel: [618790.917928] FW: output REJECT IN=
+OUT=eth1 SRC=1.2.3.4 DST=5.6.7.8 LEN=94 TOS=0x00 PREC=0x00 TTL=64
+ID=56030 DF PROTO=UDP SPT=55207 DPT=514 LEN=74
+(as one example - I can break out tshark and probably figure out what
+it is, but I want something more in my logs)
 
-6.20.1 was released with LIBVERSION = 5:0:2 (libipset.so.3.2.0). The 
-hash:ip,mark patch increased only age to 5:0:3, which was an unnoticed 
-mistake. That was then incremented to 6:0:4 in the forceadd patch.
-
-Now we have 7:0:4 which results libipset.so.3.4.0.
-
-I'm going to add an extra warning text to Make_global.am about double 
-checking LIBVERSION.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+I see this about auditd:
+http://serverfault.com/questions/192893/how-i-can-identify-which-process-is-making-udp-traffic-on-linux
+Specifically: # auditctl -a exit,always -F arch=b64 -F a0=2 -F a1=2 -S
+socket -k SOCKET
+Which isn't telling me what I want to know (or really, doesn't seem to
+be reporting for each log I'm getting from ipt). Besides, if I've
+already got an ipt LOG, why should I be using another tool for similar
+info - this seems wasteful?
