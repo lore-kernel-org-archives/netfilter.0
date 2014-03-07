@@ -1,25 +1,42 @@
-From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
-Subject: Re: Some oddities while setting up outbound filtering on a web server
-Date: Fri, 7 Mar 2014 00:01:50 -0500
-Message-ID: <201403070001.51011.neal.p.murphy@alum.wpi.edu>
-References: <CA+5v4QC81A2gU8i566G3Nh_dERTv6LbkssZDfSe664BXj=9NEg@mail.gmail.com> <CA+5v4QAeWp6Azau3nYpL2ev-jqstSs+-BGBMuyavbKSK85JiAg@mail.gmail.com> <53194F19.90708@chello.at>
-Reply-To: neal.p.murphy@alum.wpi.edu
+From: Ken-ichirou MATSUZAWA <chamaken@gmail.com>
+Subject: Python bindings for libmnl and libnetfilter_conntrack
+Date: Fri, 7 Mar 2014 15:45:00 +0900
+Message-ID: <CAGCkEt0wynDgeydhT=PSFuLq2Km8QnmfSPY9Rx8gN8fvtCGx3A@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <53194F19.90708@chello.at>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=qcN+rTx5LwoaH3uYKXwKRKm/ySl/n9gLoaz9oLrK+tM=;
+        b=lm8V1qqlk/Wu/ACNSEPg6l+iYFxISdkxs3F0oaZ58izIRKNTc0dGJ7KQOqZiW3jZL+
+         aScbh8db8eWBTTAhXB5GFFy9w6VjyJBOes2IzISaQZLgY+qP1V6RHWRsm+YmPAdmJPBb
+         uWCyZ9AQeniJLwq2BCMPkyF+2imnoSiI2bUYIz6xvZGiLaqNNPzM02YNUUnVJD6YkKJ0
+         vqYW3O+EmMa0y6B3pT9iGeXpg72ocsPcI00ND1vAVjnO96Gkr+yFVQLwjMNlKPDNWQSg
+         RybqSY0igDm69sLIm7S1Hl0wC9TX7uV5MWTtq+E/w1eBje7U0tHp7ZwWX2UT9ICZ+dRA
+         9onA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-On Thursday, March 06, 2014 11:46:17 PM Mart Frauenlob wrote:
-> >> Then try to enable it???
-> > 
-> > echo 1 > /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal
-> > -su: /proc/sys/net/netfilter/nf_conntrack_tcp_be_liberal: Permission
-> > denied
-> 
-> strange, don't know what is the problem there...
+  Hello,
 
-Module nf_conntrack_ipv4 has not been INSed.
+I've started python bindings to handle nf_conntrack.
+
+    https://github.com/chamaken/cpylmnl
+    https://github.com/chamaken/cpylmnfct
+
+I'm glad if someone advice me on these. There is graphite examples
+in examples/nfct-mnl-graphite.py, seems working fine for me. I wrote
+comments to set up iptables, iproute and ebtables to work in it, but I'm
+afraid that is wrong or there are more efficient way.
+
+I've started go bindings too, but have written nothing about it.
+
+    https://github.com/chamaken/cgolmnl
+    https://github.com/chamaken/cgolmnfct
+
+If there is someone who is interested in these, please advice me too.
+
+Thanks.
