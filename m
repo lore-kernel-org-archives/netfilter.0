@@ -1,38 +1,41 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [PATCH] net: inetfilter: LLVMLinux: vlais-netfilter
-Date: Fri, 7 Mar 2014 18:26:27 +0100
-Message-ID: <20140307172627.GA4856@localhost>
-References: <1394135768-27621-1-git-send-email-behanw@converseincode.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: [ANNOUNCE] ipset 6.21.1 released
+Date: Fri, 7 Mar 2014 21:07:22 +0100 (CET)
+Message-ID: <alpine.DEB.2.10.1403072058470.3887@blackhole.kfki.hu>
+References: <alpine.DEB.2.10.1403071328240.32311@blackhole.kfki.hu> <alpine.LSU.2.11.1403071705010.22956@nerf08.vanv.qr>
 Mime-Version: 1.0
 Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1394135768-27621-1-git-send-email-behanw@converseincode.com>
+In-Reply-To: <alpine.LSU.2.11.1403071705010.22956@nerf08.vanv.qr>
 Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: behanw@converseincode.com
-Cc: davem@davemloft.net, kaber@trash.net, kadlec@blackhole.kfki.hu, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, dwmw2@infradead.org, pageexec@freemail.hu, Mark Charlebois <charlebm@gmail.com>, =?iso-8859-1?Q?Vin=EDcius?= Tinti <viniciustinti@gmail.com>
+To: Jan Engelhardt <jengelh@inai.de>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-On Thu, Mar 06, 2014 at 11:56:08AM -0800, behanw@converseincode.com wrote:
-> From: Mark Charlebois <charlebm@gmail.com>
-> 
-> Replaced non-standard C use of Variable Length Arrays In Structs (VLAIS) in
-> xt_repldata.h with a C99 compliant flexible array member and then calculated
-> offsets to the other struct members. These other members aren't referenced by
-> name in this code, however this patch maintains the same memory layout and
-> padding as was previously accomplished using VLAIS.
-> 
-> Had the original structure been ordered differently, with the entries VLA at
-> the end, then it could have been a flexible member, and this patch would have
-> been a lot simpler. However since the data stored in this structure is
-> ultimately exported to userspace, the order of this structure can't be changed.
-> 
-> This patch makes no attempt to change the existing behavior, merely the way in
-> which the current layout is accomplished using standard C99 constructs. As such
-> the code can now be compiled with either gcc or clang.
+On Fri, 7 Mar 2014, Jan Engelhardt wrote:
 
-I think we already agreed on not accepting macro tricks to get this
-compiling with clang:
+> On Friday 2014-03-07 13:32, Jozsef Kadlecsik wrote:
+> 
+> >Userspace changes:
+> >  - Fix libipset library release versioning (reported by Mathieu Bridon)
+> 
+> AFAICS, functions were only added, yet the SONAME was changed.
+> (-version-info 7:0:4 should have been -version-info 7:0:5)
 
-http://comments.gmane.org/gmane.comp.security.firewalls.netfilter.devel/45138
+6.20.1 was released with LIBVERSION = 5:0:2 (libipset.so.3.2.0). The 
+hash:ip,mark patch increased only age to 5:0:3, which was an unnoticed 
+mistake. That was then incremented to 6:0:4 in the forceadd patch.
+
+Now we have 7:0:4 which results libipset.so.3.4.0.
+
+I'm going to add an extra warning text to Make_global.am about double 
+checking LIBVERSION.
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
