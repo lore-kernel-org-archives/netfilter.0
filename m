@@ -1,42 +1,37 @@
-From: Ken-ichirou MATSUZAWA <chamaken@gmail.com>
-Subject: Python bindings for libmnl and libnetfilter_conntrack
-Date: Fri, 7 Mar 2014 15:45:00 +0900
-Message-ID: <CAGCkEt0wynDgeydhT=PSFuLq2Km8QnmfSPY9Rx8gN8fvtCGx3A@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset 6.21.1 released
+Date: Fri, 7 Mar 2014 13:32:26 +0100 (CET)
+Message-ID: <alpine.DEB.2.10.1403071328240.32311@blackhole.kfki.hu>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=qcN+rTx5LwoaH3uYKXwKRKm/ySl/n9gLoaz9oLrK+tM=;
-        b=lm8V1qqlk/Wu/ACNSEPg6l+iYFxISdkxs3F0oaZ58izIRKNTc0dGJ7KQOqZiW3jZL+
-         aScbh8db8eWBTTAhXB5GFFy9w6VjyJBOes2IzISaQZLgY+qP1V6RHWRsm+YmPAdmJPBb
-         uWCyZ9AQeniJLwq2BCMPkyF+2imnoSiI2bUYIz6xvZGiLaqNNPzM02YNUUnVJD6YkKJ0
-         vqYW3O+EmMa0y6B3pT9iGeXpg72ocsPcI00ND1vAVjnO96Gkr+yFVQLwjMNlKPDNWQSg
-         RybqSY0igDm69sLIm7S1Hl0wC9TX7uV5MWTtq+E/w1eBje7U0tHp7ZwWX2UT9ICZ+dRA
-         9onA==
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-  Hello,
+Hi,
 
-I've started python bindings to handle nf_conntrack.
+The library version was messed up in 6.21 which is fixed in 
+this release. The bash utilities are updated as well.
 
-    https://github.com/chamaken/cpylmnl
-    https://github.com/chamaken/cpylmnfct
+Userspace changes:
+  - The bash utilities are updated
+  - Fix libipset library release versioning (reported by Mathieu Bridon)
 
-I'm glad if someone advice me on these. There is graphite examples
-in examples/nfct-mnl-graphite.py, seems working fine for me. I wrote
-comments to set up iptables, iproute and ebtables to work in it, but I'm
-afraid that is wrong or there are more efficient way.
+Kernel part changes:
+  - netfilter: ip_set: rename nfnl_dereference()/nfnl_set()
+    (Patrick McHardy)
 
-I've started go bindings too, but have written nothing about it.
+You can download the source code of ipset from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
 
-    https://github.com/chamaken/cgolmnl
-    https://github.com/chamaken/cgolmnfct
-
-If there is someone who is interested in these, please advice me too.
-
-Thanks.
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
