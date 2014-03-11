@@ -1,7 +1,7 @@
 From: Thiago Oliveira <cpv.thiago@gmail.com>
 Subject: Re: Syn Flood and DDoS Protect
-Date: Tue, 11 Mar 2014 13:35:32 -0300
-Message-ID: <CAB0UdF1pdhuzh6LHQOXC9jAkHM34YyWEWyJMpVUg-CU526AL=g@mail.gmail.com>
+Date: Tue, 11 Mar 2014 14:12:37 -0300
+Message-ID: <CAB0UdF3XqND20T4MZM0iUBjmZyh0qicDUxEd5y2wy2xzkpAheQ@mail.gmail.com>
 References: <CAB0UdF1KjZtOiddUGq8sOKkVWs6BLJ1rfb5CVfdknjvpDw7Z6g@mail.gmail.com>
 	<20140311121932.2f3eda9d@brouer.com>
 Mime-Version: 1.0
@@ -10,13 +10,13 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=mime-version:in-reply-to:references:date:message-id:subject:from:to
          :cc:content-type;
-        bh=m/wGvr1E8GPqDazjZJa8imjCr7LGjy2siGymtKQdZBs=;
-        b=V24N3YT7pBgYPYF97jyxJCGs3Z4/rf5DgyOhMGYn0Lcxk/hHx+jssa9FF66mXcrrIV
-         +iQKXFFjxiIsYRAeiIIYTpRVtgc5RGQMjjlJ61sBgvMSpMLI4GYHlzFsYtPint2PraZh
-         xXr/gwtkrg2q4kT0sTvAc+C9ggAE2wdkrP5BEfbibtwXRdWZrTLjqmVJpeZCIEHr8EDK
-         S9JrXuSFZ3r4ubhh2dE+hygDHoG68h6JmZbjp9st3GUsKG5rf2R/lB/HML5EXuElmCwm
-         huV74EnNc7tf4OB4dLhbsFNdzknAOkqrkbLWol5CYnq1TpsPTHfS5HO4IMQYjEEJpn9n
-         ErHA==
+        bh=hQgS+f4e7AUmxltD1TYAIlLpHrFZPp0XxcMbwT4TWn8=;
+        b=JCHNVpztwLEN7kIbfGU49QJkX5jwBr9k30daEfLCstjTo3nViBkFp8Tl2xkcvh6J1P
+         0sFP/WjEssUw7WhrVsJEvlaTZUou3Kzij1bZMEcUeq3hEX8XVUEc6qhrUONCT0xjamsU
+         bBn5kMnpS6WEjENAspCXoYJj6CC/lvmZBwx3Otmi5dZYU1LBIy8c02Hgd1YNfyE/00WY
+         vVgk+e/9H4XowMGXr4wkfNbv1u7uDuQRRT2MmmGXxx+z7jLMzgKfSYm7HZXhk45cyjIm
+         SxN2KB/++fF5tX0xSp9q+v/S85k2N9ZwdOCg4oWBIKw1UI+66orQTjLmdzrru7vZscx1
+         oHeg==
 In-Reply-To: <20140311121932.2f3eda9d@brouer.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
@@ -25,18 +25,36 @@ Content-Transfer-Encoding: 7bit
 To: Jesper Dangaard Brouer <netdev@brouer.com>
 Cc: netfilter@vger.kernel.org
 
-The Great Jesper,
+Mr. Jesper,
 
-After my post here, I came across your video and slide!
+I had a time now and I did execute the script SYN-PROXY and getting this Ouput.
 
-I did the download, and probably tonight (UTC -3) I will learn about
-and implement into my firewalls.
+root@spweb02:~# ./syn-proxy.sh -v -i eth0 -p 80
+WARNING: Shell env variable IPTABLES_CMD is undefined
+WARNING: Fallback to default IPTABLES_CMD=/sbin/iptables
+iptables: No chain/target/match by that name.
+WARNING -- Error (1) when executing the iptables command:
+ "iptables -t raw -I PREROUTING -i eth0 -p tcp -m tcp --syn --dport 80
+-j CT --notrack"
+iptables v1.4.8: unknown option `--sack-perm'
+Try `iptables -h' or 'iptables --help' for more information.
+WARNING -- Error (2) when executing the iptables command:
+ "iptables -A INPUT -i eth0 -p tcp -m tcp --dport 80 -m state --state
+INVALID,UNTRACKED -j SYNPROXY --sack-perm --timestamp --wscale 7 --mss
+1460"
+iptables -A INPUT -i eth0 -p tcp -m tcp --dport 80 -m state --state
+INVALID -j DROP
 
-I will let you know about that.
-
-Thank you!
+Maybe my iptables version doesn't support this?
 
 Thiago
+
+
+
+
+
+
+
 
 On Tue, Mar 11, 2014 at 8:19 AM, Jesper Dangaard Brouer
 <netdev@brouer.com> wrote:
