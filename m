@@ -1,77 +1,53 @@
-From: "Ing. Juan Cardoza" <ing.jcardoza@gmail.com>
-Subject: RE: Quick IP Blocking question
-Date: Fri, 14 Mar 2014 09:17:25 -0600
-Message-ID: <003d01cf3f98$82ca0410$885e0c30$@gmail.com>
-References: <20140314135851.GA32244@fever.havannah.local> <1394808599.4771.39.camel@bigboy.gregfolkert.net>
+From: =?utf-8?Q?Bram_van_den_Hout?= <bram@legno.nl>
+Subject: Rewrite destination IP
+Date: Mon, 17 Mar 2014 12:42:08 +0100
+Message-ID: <zarafa.5326df90.0b5a.15412cab2d2a09ca@detroit>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=from:to:cc:references:in-reply-to:subject:date:message-id
-         :mime-version:content-type:content-transfer-encoding:thread-index
-         :content-language;
-        bh=DAOMwF28HfDCet3RpD1TOB0HTE3LlhY8roZWFXbvNFg=;
-        b=IeGk78UhwQrl/UF2cMrjCohmSkIIph/o3L2jX0bpRwd3U6SwFWVOfIgxjb2o1xDdDH
-         liaVKIjaNuhc91rnBvmK8QryCL0Wt205YZQ8YStOJt5lcm8+F8n3GCYEaG1aV55Oj7/B
-         iYNRL7j0N8NwAx9elal6/mmsTLwITOZdKOwZBroOkUVPQwfAsdiUFNnKuFT1MQKNE3LR
-         cPAHjGJf5NV8I3HVrETYSgmVIajM1OonAAoLQBAAwI/PIBxac5dBNswPmiITPOhSEFE/
-         BNjvKzq/Q5tMc/NJ1x/Iz0ubnZ5nFKaoOBTXGOlCNfrje/QX/OlHMDloXZKUudbE5/Q9
-         I6RA==
-In-Reply-To: <1394808599.4771.39.camel@bigboy.gregfolkert.net>
-Content-Language: es-mx
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Greg Folkert' <greg@donor.com>, 'Danny' <dannydebont@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: =?utf-8?Q?netfilter=40vger=2Ekernel=2Eorg?= <netfilter@vger.kernel.org>
 
-You can use squid integrated with squidgard, that is the best option to manage youtube.
+Hi,
 
-I redirect the requests to a warning webpage with they try to use it during HOO.
+Is it possible to change the destination IP address of an incoming pack=
+et and have a local running server proces on application layer answer t=
+o the changed IP address ?
 
-Regards
+To be more clear. I have a hosting software suite that is configured to=
+ run on a registered public IP address (a.b.c.d).
+The actual server is behind a firewall and has a private IP address. I =
+have configured a virtual interface with the public IP address a.b.c.d.
 
------Original Message-----
-From: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.kernel.org] On Behalf Of Greg Folkert
-Sent: viernes 14 de marzo de 2014 08:50 a.m.
-To: Danny
-Cc: netfilter@vger.kernel.org
-Subject: Re: Quick IP Blocking question
+eth0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Link encap:Ethernet=C2=A0 HWaddr 00:=
+0c:29:f5:10:9f=C2=A0=20
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 inet addr:192.16=
+8.100.11=C2=A0 Bcast:192.168.100.255=C2=A0 Mask:255.255.255.0
 
-On Fri, 2014-03-14 at 15:58 +0200, Danny wrote:
-> Hi,
-> 
-> Can you please check if the following rule is correct. The purpose of 
-> this rule is to allow only access to youtube from 15:00 to 18:00
-> 
-> iptables -A OUTPUT -p tcp --dport 80 -d 208.65.153.238 -m time 
-> --timestart 15:00 --timeend 18:00 -j ACCEPT iptables -A OUTPUT -p tcp 
-> --dport 80 -d 208.65.153.238 -j REJECT
-> 
-> How can I modify the above rule to block a specific IP or MAC address 
-> from my internal network to access youtube at specific times?
-> 
-> Thank you guys
-> 
-> Have a nice day
-> 
-> Danny
-Danny,
+eth0:0=C2=A0=C2=A0=C2=A0 Link encap:Ethernet=C2=A0 HWaddr 00:0c:29:f5:1=
+0:9f=C2=A0=20
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 inet addr:a.b.c.=
+d=C2=A0 Bcast:a.b.c.d=C2=A0 Mask:255.255.255.255
 
-I hate to break this to you... but Youtube is served by hundreds of IP Addresses. Depnding on time of day, the round robin DNS, the cname rotation and various other things like locations and source netowrk (your ISP). My current list shows a completely different set of IP Addresses that even is close your IP Address here at home (173.194.46.32-46), at Work I get a different set (74.125.225.192-206)
+Incoming packets have destination IP : 192.168.100.11.
+I would like to change the destination to a.b.c.d and have for instance=
+ a webserver listening on a.b.c.d:80 and with directive <virtualhost a.=
+b.c.d:80> answer to that request.
 
-If you are going to do that properly, you'll need to use either transparent proxy or force the browsers to use something like squid and then use name based ACLs with the time restrictions.
+I have tried :
 
-Good Luck.
---
-greg folkert - systems administration and support
-web:    donor.com
-email:  greg@donor.com
-phone:  877-751-3300 x416
-direct: 616-328-6449 (direct dial and fax) "There's something to be said in favor of working in isolation in the real world."
-    -- A. R. Ammons
+iptables -t nat -A PREROUTING -i eth0 -d 192.168.100.11 -j NETMAP --to =
+a.b.c.d/32
 
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in the body of a message to majordomo@vger.kernel.org More majordomo info at  http://vger.kernel.org/majordomo-info.html
+When checking the result of this command with tcpdump, I don't see any =
+translation.
 
+What am I missing ?
+
+Thank you very much for your response !
+
+Cheers,
+
+Bram
