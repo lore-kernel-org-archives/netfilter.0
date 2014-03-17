@@ -1,53 +1,50 @@
-From: =?utf-8?Q?Bram_van_den_Hout?= <bram@legno.nl>
-Subject: Rewrite destination IP
-Date: Mon, 17 Mar 2014 12:42:08 +0100
-Message-ID: <zarafa.5326df90.0b5a.15412cab2d2a09ca@detroit>
+From: Warren Dixon <wdixon@caffeinedriven.com>
+Subject: return to source MAC
+Date: Mon, 17 Mar 2014 20:27:18 +0000
+Message-ID: <CAGgS43EzZkEyWbYz8smkOUD=EZuoHfETitE-KffaMAd0_yT8Kw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: =?utf-8?Q?netfilter=40vger=2Ekernel=2Eorg?= <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hi,
+Hi All,
 
-Is it possible to change the destination IP address of an incoming pack=
-et and have a local running server proces on application layer answer t=
-o the changed IP address ?
+I have a solution where a gateway may have multiple network interfaces
+but only a single IP and I am trying to return the packet to the
+source MAC.  I think I have missunderstood the connmark config.
 
-To be more clear. I have a hosting software suite that is configured to=
- run on a registered public IP address (a.b.c.d).
-The actual server is behind a firewall and has a private IP address. I =
-have configured a virtual interface with the public IP address a.b.c.d.
+client network is 10.x.x.x
+network between the gateway and squidbox (where I am trying to install
+this routing) is 2.0.0.0/24
+Squid box has eth2  0.0.0.0
+I have added a bridge interface with eth2 as a member and IP address 2.0.0.2/24
+the Squidbox then has a second interface on public IP eth3
 
-eth0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Link encap:Ethernet=C2=A0 HWaddr 00:=
-0c:29:f5:10:9f=C2=A0=20
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 inet addr:192.16=
-8.100.11=C2=A0 Bcast:192.168.100.255=C2=A0 Mask:255.255.255.0
+default route if via eth3
+#ip ro add 10.1.1.0/24 via 2.0.0.2
 
-eth0:0=C2=A0=C2=A0=C2=A0 Link encap:Ethernet=C2=A0 HWaddr 00:0c:29:f5:1=
-0:9f=C2=A0=20
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 inet addr:a.b.c.=
-d=C2=A0 Bcast:a.b.c.d=C2=A0 Mask:255.255.255.255
+iptables -A PREROUTING -t mangle  -m mac --mac-source
+aa:aa:aa:aa:aa:aa -j MARK --set-mark 1
+iptables -A PREROUTING -t mangle -j CONNMARK --save-mark
+iptables -A POSTROUTING -t mangle -j CONNMARK --restore-mark
 
-Incoming packets have destination IP : 192.168.100.11.
-I would like to change the destination to a.b.c.d and have for instance=
- a webserver listening on a.b.c.d:80 and with directive <virtualhost a.=
-b.c.d:80> answer to that request.
+ebtables -t nat -A OUTPUT  -p ipv4 --ip-proto tcp  --mark 1 -j dnat
+--to-destination aa:aa:aa:aa:aa:aa
 
-I have tried :
+iptables -t nat -A POSTROUTING -o eth3 -j MASQUERADE
 
-iptables -t nat -A PREROUTING -i eth0 -d 192.168.100.11 -j NETMAP --to =
-a.b.c.d/32
+[root]# cat /proc/net/nf_conntrack
+ipv4     2 tcp      6 58 SYN_RECV src=10.1.1.80 dst=212.58.246.91
+sport=1864 dport=80 src=212.58.246.91 dst=10.1.1.55 sport=80
+dport=1864 mark=0 secmark=0 use=2
 
-When checking the result of this command with tcpdump, I don't see any =
-translation.
+The issue seems to be that the Mark is not being restored, a tcpdump
+on the interfaces shows the flows being forwarded correctly, but
+without the MAC mangling taking place.
 
-What am I missing ?
+Many Thanks
 
-Thank you very much for your response !
-
-Cheers,
-
-Bram
+Warren.
