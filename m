@@ -1,36 +1,86 @@
-From: David Laight <David.Laight@ACULAB.COM>
-Subject: RE: [PATCH v2] net: netfilter: LLVMLinux: vlais-netfilter
-Date: Tue, 18 Mar 2014 09:41:50 +0000
-Message-ID: <063D6719AE5E284EB5DD2968C1650D6D0F6E0065@AcuExch.aculab.com>
-References: <022D9517-4804-47BB-B789-CCF25F25C1ED@me.com>
- <1395123121-27053-1-git-send-email-behanw@converseincode.com>
+From: Aleksey Kashin <aleksey.kashin@gmail.com>
+Subject: using ebtables for dnat mac address
+Date: Tue, 18 Mar 2014 16:36:14 +0600
+Message-ID: <CAPJYFP-tr8cX2D6Wga+sMCsWUu-XdOT_JO=GSgC4oOvM7YuE7A@mail.gmail.com>
+References: <CAPJYFP_X0swMyaLugsUB2Z4DjweU_RG6=VXoenHpG-HbUfqGVQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-In-Reply-To: <1395123121-27053-1-git-send-email-behanw@converseincode.com>
-Content-Language: en-US
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :content-type;
+        bh=oKoI+s7fEVOyPzsrwPgFez5XrwBgyRV7a483UwuJtIg=;
+        b=C+FVUO4r1/D6B76rkQ2bhZ8AhcEt6N+nGp1v9zGa/cUH6dPnPitFuo8WBnfwzIYxkl
+         GxpS6SibrpSa1DQeKL+MMIY7Ab5A3l+DcS5GKSSg/b2tlu/o9pZ3s0ZXyMMoGkOlY0B0
+         ULxSawRC6O5tXfj9zSgu5Nhul5vcj5QUNbGcCnzUnjmgd9ZWVZZSEJz+9Bq6WOVWyNpV
+         RnPqYVunl6B4oGvd+LZNKjr44vHHj+xIIMmbs1C4C6LOoO3/3BvY7W8A+J8Gb/PQDcEh
+         BCPrAHbds//MWP9eR6v/FRe8QkgcHPnLFvRZNJeY9vzz+SdS104oo+cPGZsCLch3BFjB
+         Ur6A==
+In-Reply-To: <CAPJYFP_X0swMyaLugsUB2Z4DjweU_RG6=VXoenHpG-HbUfqGVQ@mail.gmail.com>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1254"
-To: "'behanw@converseincode.com'" <behanw@converseincode.com>, "davem@davemloft.net" <davem@davemloft.net>
-Cc: "pablo@netfilter.org" <pablo@netfilter.org>, "kaber@trash.net" <kaber@trash.net>, "kadlec@blackhole.kfki.hu" <kadlec@blackhole.kfki.hu>, "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, "coreteam@netfilter.org" <coreteam@netfilter.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "dwmw2@infradead.org" <dwmw2@infradead.org>, "pageexec@freemail.hu" <pageexec@freemail.hu>, Mark Charlebois <charlebm@gmail.com>, =?utf-8?B?Vmluw61jaXVzIFRpbnRp?= <viniciustinti@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@vger.kernel.org>
 
-RnJvbTogIGJlaGFud0Bjb252ZXJzZWluY29kZS5jb20NCj4gRnJvbTogTWFyayBDaGFybGVib2lz
-IDxjaGFybGVibUBnbWFpbC5jb20+DQo+IA0KPiBSZXBsYWNlZCBub24tc3RhbmRhcmQgQyB1c2Ug
-b2YgVmFyaWFibGUgTGVuZ3RoIEFycmF5cyBJbiBTdHJ1Y3RzIChWTEFJUykgaW4NCj4geHRfcmVw
-bGRhdGEuaCB3aXRoIGEgQzk5IGNvbXBsaWFudCBmbGV4aWJsZSBhcnJheSBtZW1iZXIgYW5kIHRo
-ZW4gY2FsY3VsYXRlZA0KPiBvZmZzZXRzIHRvIHRoZSBvdGhlciBzdHJ1Y3QgbWVtYmVycy4gVGhl
-c2Ugb3RoZXIgbWVtYmVycyBhcmVuJ3QgcmVmZXJlbmNlZCBieQ0KPiBuYW1lIGluIHRoaXMgY29k
-ZSwgaG93ZXZlciB0aGlzIHBhdGNoIG1haW50YWlucyB0aGUgc2FtZSBtZW1vcnkgbGF5b3V0IGFu
-ZA0KPiBwYWRkaW5nIGFzIHdhcyBwcmV2aW91c2x5IGFjY29tcGxpc2hlZCB1c2luZyBWTEFJUy4N
-Cj4gDQo+IEhhZCB0aGUgb3JpZ2luYWwgc3RydWN0dXJlIGJlZW4gb3JkZXJlZCBkaWZmZXJlbnRs
-eSwgd2l0aCB0aGUgZW50cmllcyBWTEEgYXQNCj4gdGhlIGVuZCwgdGhlbiBpdCBjb3VsZCBoYXZl
-IGJlZW4gYSBmbGV4aWJsZSBtZW1iZXIsIGFuZCB0aGlzIHBhdGNoIHdvdWxkIGhhdmUNCj4gYmVl
-biBhIGxvdCBzaW1wbGVyLiBIb3dldmVyIHNpbmNlIHRoZSBkYXRhIHN0b3JlZCBpbiB0aGlzIHN0
-cnVjdHVyZSBpcw0KPiB1bHRpbWF0ZWx5IGV4cG9ydGVkIHRvIHVzZXJzcGFjZSwgdGhlIG9yZGVy
-IG9mIHRoaXMgc3RydWN0dXJlIGNhbid0IGJlIGNoYW5nZWQuDQoNCldoeSBub3QganVzdCByZW1v
-dmUgdGhlIGxhc3QgZWxlbWVudCBhbmQgYWxsb2NhdGUgc3BhY2UgZm9yIGl0IGFmdGVyIHRoZQ0K
-c3RydWN0dXJlPw0KVGhhdCB3b3VsZCByZWR1Y2UgdGhlIGNvbXBsZXhpdHkgb2YgdGhlIHBhdGNo
-IGFuZCB0aGUgdW5yZWFkYWJpbGl0eQ0Kb2YgdGhlIG5ldyBjb2RlLg0KSSByZWFsaXNlIHRoYXQg
-dGhlIGFsaWdubWVudCBvZiB0eXBlIyNfZXJyb3IgaXMgJ3RyaWNreScgdG8gZGV0ZXJtaW5lLg0K
-DQoJRGF2aWQNCg0K
+Hello,
+
+I need to handle mirrored traffic. For this I need to change
+destination mac address of mirrored traffic to mac on network
+interface on which I accept mirrored traffic.
+
+Here is example mirrored traffic
+15:59:29.114520 00:25:ba:5b:c9:11 (oui Unknown) > 34:40:b5:81:6c:ac
+(oui Unknown), ethertype IPv4 (0x0800), length 84: 1.1.1.1.2052 >
+2.2.2.2.domain: 43161+ A? dnl-01.geo.kaspersky.com. (42)
+
+Here is network interface on which I want handle mirrored traffic
+eth1      Link encap:Ethernet  HWaddr fe:f9:b4:d5:08:c3
+          inet addr:X.X.X.X  Bcast:0.0.0.0  Mask:255.255.255.248
+          inet6 addr: fe80::fcf9:b4ff:fed5:8c3/64 Scope:Link
+          UP BROADCAST RUNNING PROMISC MULTICAST  MTU:1500  Metric:1
+          RX packets:6424655 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:6 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000
+          RX bytes:1088214395 (1.0 GiB)  TX bytes:468 (468.0 B)
+          Interrupt:30
+
+Here is rules for ebtables
+
+root@ns4:~# ebtables -t nat -L --Lc
+Bridge table: nat
+
+Bridge chain: PREROUTING, entries: 1, policy: ACCEPT
+-d 34:40:b5:81:6c:ac -i eth1 -j dnat --to-dst fe:f9:b4:d5:8:c3
+--dnat-target ACCEPT, pcnt = 0 -- bcnt = 0
+
+Bridge chain: OUTPUT, entries: 0, policy: ACCEPT
+
+Bridge chain: POSTROUTING, entries: 0, policy: ACCEPT
+
+root@ns4:~# ebtables  -L --Lc
+Bridge table: filter
+
+Bridge chain: INPUT, entries: 0, policy: ACCEPT
+
+Bridge chain: FORWARD, entries: 0, policy: ACCEPT
+
+Bridge chain: OUTPUT, entries: 0, policy: ACCEPT
+
+But no one frame doesn't satisfy this rule. Where I'm wrong?
+
+OS and package version:
+root@ns4:~# uname -r
+3.2.0-4-amd64
+root@ns4:~# lsb_release -a
+No LSB modules are available.
+Distributor ID:	Debian
+Description:	Debian GNU/Linux 7.4 (wheezy)
+Release:	7.4
+Codename:	wheezy
+root@ns4:~# dpkg -l | grep ebtables
+ii  ebtables                           2.0.10.4-1
+amd64        Ethernet bridge frame table administration
+
+
+Thank you.
