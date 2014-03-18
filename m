@@ -1,52 +1,66 @@
-From: Warren Dixon <wdixon@caffeinedriven.com>
-Subject: return to source MAC
-Date: Mon, 17 Mar 2014 20:37:16 +0000
-Message-ID: <CAGgS43HNZNMVUOQL5wo8A2Prphp=owSEkkj4gjmzotccu0NAvg@mail.gmail.com>
+From: Vigneswaran R <vignesh@atc.tcs.com>
+Subject: Re: Rewrite destination IP
+Date: Tue, 18 Mar 2014 09:51:08 +0530
+Message-ID: <5327C9B4.1050601@atc.tcs.com>
+References: <zarafa.5326df90.0b5a.15412cab2d2a09ca@detroit>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <zarafa.5326df90.0b5a.15412cab2d2a09ca@detroit>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Bram van den Hout <bram@legno.nl>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi All,
+On 03/17/2014 05:12 PM, Bram van den Hout wrote:
+> Hi,
+>
+> Is it possible to change the destination IP address of an incoming packet and have a local running server proces on application layer answer to the changed IP address ?
+>
+> To be more clear. I have a hosting software suite that is configured to run on a registered public IP address (a.b.c.d).
+> The actual server is behind a firewall and has a private IP address. I have configured a virtual interface with the public IP address a.b.c.d.
+>
+> eth0      Link encap:Ethernet  HWaddr 00:0c:29:f5:10:9f
+>            inet addr:192.168.100.11  Bcast:192.168.100.255  Mask:255.255.255.0
+>
+> eth0:0    Link encap:Ethernet  HWaddr 00:0c:29:f5:10:9f
+>            inet addr:a.b.c.d  Bcast:a.b.c.d  Mask:255.255.255.255
+>
+> Incoming packets have destination IP : 192.168.100.11.
+> I would like to change the destination to a.b.c.d and have for instance a webserver listening on a.b.c.d:80 and with directive <virtualhost a.b.c.d:80> answer to that request.
+>
+> I have tried :
+>
+> iptables -t nat -A PREROUTING -i eth0 -d 192.168.100.11 -j NETMAP --to a.b.c.d/32
+>
+> When checking the result of this command with tcpdump, I don't see any translation.
 
-I have a solution where a gateway may have multiple network interfaces
-but only a single IP and I am trying to return the packet to the
-source MAC.  I think I have miss-understood the connmark config.
+Better, try to log the packets and see whether the translation happened 
+or not. Add the following rule,
 
-client network is 10.x.x.x
-network between the gateway and squidbox (where I am trying to install
-this routing) is 2.0.0.0/24
-Squid box has eth2  0.0.0.0
-I have added a bridge interface with eth2 as a member and IP address 2.0.0.2/24
-the Squidbox then has a second interface on public IP eth3
+     iptables -I INPUT -d a.b.c.d -j LOG --log-prefix "[netfilter] "
 
-default route if via eth3
+Then ping 192.168.100.11 from another node. Now the log 
+(/var/log/messages or other custom log file) should have the 
+corresponding entries, if the translation happened properly. I just 
+tested now.
 
-add route to client network
-#ip ro add 10.1.1.0/24 via 2.0.0.2
 
-iptables -A PREROUTING -t mangle  -m mac --mac-source
-aa:aa:aa:aa:aa:aa -j MARK --set-mark 1
-iptables -A PREROUTING -t mangle -j CONNMARK --save-mark
-iptables -A POSTROUTING -t mangle -j CONNMARK --restore-mark
+Regards,
+Vignesh
 
-ebtables -t nat -A OUTPUT  -p ipv4 --ip-proto tcp  --mark 1 -j dnat
---to-destination aa:aa:aa:aa:aa:aa
+>
+> What am I missing ?
+>
+> Thank you very much for your response !
+>
+> Cheers,
+>
+> Bram
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
 
-iptables -t nat -A POSTROUTING -o eth3 -j MASQUERADE
-
-[root]# cat /proc/net/nf_conntrack
-ipv4     2 tcp      6 58 SYN_RECV src=10.1.1.80 dst=212.58.246.91
-sport=1864 dport=80 src=212.58.246.91 dst=10.1.1.55 sport=80
-dport=1864 mark=0 secmark=0 use=2
-
-The issue seems to be that the Mark is not being restored, a tcpdump
-on the interfaces shows the flows being forwarded correctly, but
-without the MAC mangling taking place.
-
-Many Thanks,
-
-Warren.
