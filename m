@@ -1,67 +1,39 @@
-From: Al Grant <bigal.nz@gmail.com>
-Subject: Block connections to company VPN from within own LAN
-Date: Thu, 20 Mar 2014 06:59:29 +1300
-Message-ID: <CAODtcddO6VjX8eP1j0gBAxYDZMU3+=w3=VKWErrb4MMdOm7jTQ@mail.gmail.com>
+From: David Miller <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>
+Subject: Re: [PATCH] core, nfqueue,
+ openvswitch: Orphan frags in skb_zerocopy and handle errors
+Date: Wed, 19 Mar 2014 16:24:59 -0400 (EDT)
+Message-ID: <20140319.162459.897793286761249454.davem@davemloft.net>
+References: <1395177455-2077-1-git-send-email-zoltan.kiss@citrix.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=3dQ3eLYjVRinqJJIIpCOXzDc7dmuej5Hgy7TXxUG/M0=;
-        b=QkfA+9P5nAixfRsvMJnrovtfHpaMV5AuT1g8S7evu+xVTafGGpm5eNCDV/z1f5aC7Y
-         jgIHDbxh7guPMtZCXjsE5pmkUGPQx3Z8dmYCsSN/7rokZtziXtKIY1Gwcz/BBtMC3hjR
-         1phlNut5dYBdhVrYfGdJMNbxqLJzmXAZcXRg0bNq2rVKTlFDNNXbRB0OkuISMmDB4Fp6
-         pItnqasEfnYsN4Ye2dW+rD3Nuik0OfwomCeRvLiLM3E4UXd3d27Dl7aXMkc9/TfCgvvn
-         h1RnaFJlA8WIU4USpbbTVE4G3JrQtwii9d1WyT3jMRCQiIMtA8bTu1KEJ9H3EUdgLUsS
-         ixEA==
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter <netfilter@vger.kernel.org>
+Return-path: <dev-bounces-yBygre7rU0TnMu66kgdUjQ@public.gmane.org>
+In-Reply-To: <1395177455-2077-1-git-send-email-zoltan.kiss-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <http://openvswitch.org/mailman/options/dev>,
+ <mailto:dev-request-yBygre7rU0TnMu66kgdUjQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://openvswitch.org/pipermail/dev>
+List-Post: <mailto:dev-yBygre7rU0TnMu66kgdUjQ@public.gmane.org>
+List-Help: <mailto:dev-request-yBygre7rU0TnMu66kgdUjQ@public.gmane.org?subject=help>
+List-Subscribe: <http://openvswitch.org/mailman/listinfo/dev>,
+ <mailto:dev-request-yBygre7rU0TnMu66kgdUjQ@public.gmane.org?subject=subscribe>
+Errors-To: dev-bounces-yBygre7rU0TnMu66kgdUjQ@public.gmane.org
+Sender: "dev" <dev-bounces-yBygre7rU0TnMu66kgdUjQ@public.gmane.org>
+To: zoltan.kiss-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org
+Cc: netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mszeredi-AlSwsSmVLrQ@public.gmane.org, kvm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mst-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, jasowang-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, edumazet-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, JBeulich-IBi9RG/b67k@public.gmane.org, therbert-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, dev-yBygre7rU0TnMu66kgdUjQ@public.gmane.org, herbert-lOAM2aK0SrRLBo1qDEOMRrpzq4S04n8Q@public.gmane.org, coreteam-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org, kadlec-K40Dz/62t/MgiyqX0sVFJYdd74u8MsAO@public.gmane.org, xen-devel-GuqFBffKawtpuQazS67q72D2FQJk+8+b@public.gmane.org, pablo-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org, jiri-rHqAuBHg3fBzbRFIqnYvSA@public.gmane.org, Paul.Durrant-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dborkman-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org, kaber-dcUjhNyLwpNeoWH0uzbU5w@public.gmane.org
 
- Hi All,
+From: Zoltan Kiss <zoltan.kiss-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org>
+Date: Tue, 18 Mar 2014 21:17:35 +0000
 
-I want to set a rule to DROP client connections to our VPN server IF
-they originate from within the company?
+> skb_zerocopy can copy elements of the frags array between skbs, but it doesn't
+> orphan them. Also, it doesn't handle errors, so this patch takes care of that
+> as well.
+> 
+> Signed-off-by: Zoltan Kiss <zoltan.kiss-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org>
+> ---
+>  net/openvswitch/datapath.c |    6 ++++++
 
-In other words our road warriors VPN connections which are nailed up,
-work when on the road, but they default back to the company wifi or
-wired LAN when in the office, because the drop rule will prevent them
-the VPN from connecting.
+Something is seriously wrong with the diffstat generated for
+your submission, please fix this and resubmit.
 
-Public IP: 203.123.123.123
-Our LAN subnet is 10.1.1.0
-LAN Gateway is 10.1.1.1
-OpenVPN server: 10.1.1.5 (tun adapters are in the VPN subnet 10.8.0.0)
-
-And finally because the OpenVPN server is behind the router, and not
-on it, I am making the openvpn server NAT the client connections to
-the LAN subnet. (I couldn't use routing).
-
-So my question is, what should the rule be?
-
-I need to obviously block:
-protocol UDP
-port 1194
-
-But if a LAN client behind the GW router (203.123.123.123) tries to
-connect back to 203.123.123.123 (which port forwards to the OpenVPN
-server, what will the src of that packet be?
-
-Does the router let traffic destined for its own public IP let that
-traffic leave the WAN interface, or does it realize that its traffic
-for itself and route internally?
-
-In any event for the purposes of my rule do I want to block the public
-IP address (from itself essentially) when on 1194/udp?
-
-Cheers
-
--Al
-
-
-
--- 
-"Beat it punk!"
-- Clint Eastwood
+Thank you.
