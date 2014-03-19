@@ -1,109 +1,80 @@
-From: behanw@converseincode.com
-Subject: [PATCH v3] net: netfilter: LLVMLinux: vlais-netfilter
-Date: Tue, 18 Mar 2014 18:50:41 -0700
-Message-ID: <1395193841-2886-1-git-send-email-behanw@converseincode.com>
+From: David Laight <David.Laight@ACULAB.COM>
+Subject: RE: [PATCH v3] net: netfilter: LLVMLinux: vlais-netfilter
+Date: Wed, 19 Mar 2014 09:52:40 +0000
+Message-ID: <063D6719AE5E284EB5DD2968C1650D6D0F6E0F8D@AcuExch.aculab.com>
 References: <063D6719AE5E284EB5DD2968C1650D6D0F6E0286@AcuExch.aculab.com>
+ <1395193841-2886-1-git-send-email-behanw@converseincode.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=converseincode.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-type:content-transfer-encoding;
-        bh=9pEvanVmJ+8zVTNaDZIqQtYBZFwcsbbfwEWN9PM5eFw=;
-        b=K0Hvydn3rBld27kAzzZfjLeWTAui8kzZT8T0wQUXmyES1VlaJWOe6mDfewvH0D4+6q
-         OVc4XS1vva0lxvIBoYHKA+7qVCREx+iA85GcIQwxDui7ydRDXADkSxwQlsdpv1kgRn5Z
-         GkcxEL83rUJAUjs65IBun52ZLVIbsFHD1px4o=
-In-Reply-To: <063D6719AE5E284EB5DD2968C1650D6D0F6E0286@AcuExch.aculab.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Transfer-Encoding: base64
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+In-Reply-To: <1395193841-2886-1-git-send-email-behanw@converseincode.com>
+Content-Language: en-US
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="macroman"
-To: davem@davemloft.net
-Cc: pablo@netfilter.org, kaber@trash.net, kadlec@blackhole.kfki.hu, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, torvalds@linux-foundation.org, dwmw2@infradead.org, pageexec@freemail.hu, David.Laight@ACULAB.COM, Mark Charlebois <charlebm@gmail.com>, Behan Webster <behanw@converseincode.com>, =?UTF-8?q?Vin=C3=ADcius=20Tinti?= <viniciustinti@gmail.com>
+To: "'behanw@converseincode.com'" <behanw@converseincode.com>, "davem@davemloft.net" <davem@davemloft.net>
+Cc: "pablo@netfilter.org" <pablo@netfilter.org>, "kaber@trash.net" <kaber@trash.net>, "kadlec@blackhole.kfki.hu" <kadlec@blackhole.kfki.hu>, "netfilter-devel@vger.kernel.org" <netfilter-devel@vger.kernel.org>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, "coreteam@netfilter.org" <coreteam@netfilter.org>, "netdev@vger.kernel.org" <netdev@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>, "dwmw2@infradead.org" <dwmw2@infradead.org>, "pageexec@freemail.hu" <pageexec@freemail.hu>, Mark Charlebois <charlebm@gmail.com>, =?utf-8?B?Vmluw61jaXVzIFRpbnRp?= <viniciustinti@gmail.com>
 
-=46rom: Mark Charlebois <charlebm@gmail.com>
-
-Replaced non-standard C use of Variable Length Arrays In Structs (VLAIS=
-) in
-xt_repldata.h with a C99 compliant flexible array member and then calcu=
-lated
-offsets to the other struct members. These other members aren't referen=
-ced by
-name in this code, however this patch maintains the same memory layout =
-and
-padding as was previously accomplished using VLAIS.
-
-Had the original structure been ordered differently, with the entries V=
-LA at
-the end, then it could have been a flexible member, and this patch woul=
-d have
-been a lot simpler. However since the data stored in this structure is
-ultimately exported to userspace, the order of this structure can't be =
-changed.
-
-This patch makes no attempt to change the existing behavior, merely the=
- way in
-which the current layout is accomplished using standard C99 constructs.=
- As such
-the code can now be compiled with either gcc or clang.
-
-Author: Mark Charlebois <charlebm@gmail.com>
-Signed-off-by: Mark Charlebois <charlebm@gmail.com>
-Signed-off-by: Behan Webster <behanw@converseincode.com>
-Signed-off-by: Vin=C3=ADcius Tinti <viniciustinti@gmail.com>
----
- net/netfilter/xt_repldata.h | 27 ++++++++++++++++++++++-----
- 1 file changed, 22 insertions(+), 5 deletions(-)
-
-diff --git a/net/netfilter/xt_repldata.h b/net/netfilter/xt_repldata.h
-index 6efe4e5..343599e 100644
---- a/net/netfilter/xt_repldata.h
-+++ b/net/netfilter/xt_repldata.h
-@@ -5,23 +5,40 @@
-  * they serve as the hanging-off data accessed through repl.data[].
-  */
-=20
-+/* tbl has the following structure equivalent, but is C99 compliant:
-+ * struct {
-+ *	struct type##_replace repl;
-+ *	struct type##_standard entries[nhooks];
-+ *	struct type##_error term;
-+ * } *tbl;
-+ */
-+
- #define xt_alloc_initial_table(type, typ2) ({ \
- 	unsigned int hook_mask =3D info->valid_hooks; \
- 	unsigned int nhooks =3D hweight32(hook_mask); \
- 	unsigned int bytes =3D 0, hooknum =3D 0, i =3D 0; \
- 	struct { \
- 		struct type##_replace repl; \
--		struct type##_standard entries[nhooks]; \
--		struct type##_error term; \
--	} *tbl =3D kzalloc(sizeof(*tbl), GFP_KERNEL); \
-+		struct type##_standard entries[]; \
-+	} *tbl; \
-+	struct type##_error *term; \
-+	size_t entries_end =3D offsetof(typeof(*tbl), \
-+		entries[nhooks-1]) + sizeof(tbl->entries[0]); \
-+	size_t term_offset =3D (entries_end + __alignof__(*term) - 1) \
-+		& ~(__alignof__(*term) - 1); \
-+	size_t term_end =3D term_offset + sizeof(*term); \
-+	size_t tbl_sz =3D (term_end + __alignof__(tbl->repl) - 1) \
-+		& ~(__alignof__(tbl->repl) - 1); \
-+	tbl =3D kzalloc(tbl_sz, GFP_KERNEL); \
- 	if (tbl =3D=3D NULL) \
- 		return NULL; \
-+	term =3D (struct type##_error *)&(((char *)tbl)[term_offset]); \
- 	strncpy(tbl->repl.name, info->name, sizeof(tbl->repl.name)); \
--	tbl->term =3D (struct type##_error)typ2##_ERROR_INIT;  \
-+	*term =3D (struct type##_error)typ2##_ERROR_INIT;  \
- 	tbl->repl.valid_hooks =3D hook_mask; \
- 	tbl->repl.num_entries =3D nhooks + 1; \
- 	tbl->repl.size =3D nhooks * sizeof(struct type##_standard) + \
--	                 sizeof(struct type##_error); \
-+			 sizeof(struct type##_error); \
- 	for (; hook_mask !=3D 0; hook_mask >>=3D 1, ++hooknum) { \
- 		if (!(hook_mask & 1)) \
- 			continue; \
---=20
-1.8.3.2
+RnJvbTogYmVoYW53QGNvbnZlcnNlaW5jb2RlLmNvbSANCj4gRnJvbTogTWFyayBDaGFybGVib2lz
+IDxjaGFybGVibUBnbWFpbC5jb20+DQo+IA0KPiBSZXBsYWNlZCBub24tc3RhbmRhcmQgQyB1c2Ug
+b2YgVmFyaWFibGUgTGVuZ3RoIEFycmF5cyBJbiBTdHJ1Y3RzIChWTEFJUykgaW4NCj4geHRfcmVw
+bGRhdGEuaCB3aXRoIGEgQzk5IGNvbXBsaWFudCBmbGV4aWJsZSBhcnJheSBtZW1iZXIgYW5kIHRo
+ZW4gY2FsY3VsYXRlZA0KPiBvZmZzZXRzIHRvIHRoZSBvdGhlciBzdHJ1Y3QgbWVtYmVycy4gVGhl
+c2Ugb3RoZXIgbWVtYmVycyBhcmVuJ3QgcmVmZXJlbmNlZCBieQ0KPiBuYW1lIGluIHRoaXMgY29k
+ZSwgaG93ZXZlciB0aGlzIHBhdGNoIG1haW50YWlucyB0aGUgc2FtZSBtZW1vcnkgbGF5b3V0IGFu
+ZA0KPiBwYWRkaW5nIGFzIHdhcyBwcmV2aW91c2x5IGFjY29tcGxpc2hlZCB1c2luZyBWTEFJUy4N
+Cj4gDQo+IEhhZCB0aGUgb3JpZ2luYWwgc3RydWN0dXJlIGJlZW4gb3JkZXJlZCBkaWZmZXJlbnRs
+eSwgd2l0aCB0aGUgZW50cmllcyBWTEEgYXQNCj4gdGhlIGVuZCwgdGhlbiBpdCBjb3VsZCBoYXZl
+IGJlZW4gYSBmbGV4aWJsZSBtZW1iZXIsIGFuZCB0aGlzIHBhdGNoIHdvdWxkIGhhdmUNCj4gYmVl
+biBhIGxvdCBzaW1wbGVyLiBIb3dldmVyIHNpbmNlIHRoZSBkYXRhIHN0b3JlZCBpbiB0aGlzIHN0
+cnVjdHVyZSBpcw0KPiB1bHRpbWF0ZWx5IGV4cG9ydGVkIHRvIHVzZXJzcGFjZSwgdGhlIG9yZGVy
+IG9mIHRoaXMgc3RydWN0dXJlIGNhbid0IGJlIGNoYW5nZWQuDQo+IA0KPiBUaGlzIHBhdGNoIG1h
+a2VzIG5vIGF0dGVtcHQgdG8gY2hhbmdlIHRoZSBleGlzdGluZyBiZWhhdmlvciwgbWVyZWx5IHRo
+ZSB3YXkgaW4NCj4gd2hpY2ggdGhlIGN1cnJlbnQgbGF5b3V0IGlzIGFjY29tcGxpc2hlZCB1c2lu
+ZyBzdGFuZGFyZCBDOTkgY29uc3RydWN0cy4gQXMgc3VjaA0KPiB0aGUgY29kZSBjYW4gbm93IGJl
+IGNvbXBpbGVkIHdpdGggZWl0aGVyIGdjYyBvciBjbGFuZy4NCj4gDQo+IEF1dGhvcjogTWFyayBD
+aGFybGVib2lzIDxjaGFybGVibUBnbWFpbC5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IE1hcmsgQ2hh
+cmxlYm9pcyA8Y2hhcmxlYm1AZ21haWwuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBCZWhhbiBXZWJz
+dGVyIDxiZWhhbndAY29udmVyc2VpbmNvZGUuY29tPg0KPiBTaWduZWQtb2ZmLWJ5OiBWaW7DrWNp
+dXMgVGludGkgPHZpbmljaXVzdGludGlAZ21haWwuY29tPg0KPiAtLS0NCj4gIG5ldC9uZXRmaWx0
+ZXIveHRfcmVwbGRhdGEuaCB8IDI3ICsrKysrKysrKysrKysrKysrKysrKystLS0tLQ0KPiAgMSBm
+aWxlIGNoYW5nZWQsIDIyIGluc2VydGlvbnMoKyksIDUgZGVsZXRpb25zKC0pDQo+IA0KPiBkaWZm
+IC0tZ2l0IGEvbmV0L25ldGZpbHRlci94dF9yZXBsZGF0YS5oIGIvbmV0L25ldGZpbHRlci94dF9y
+ZXBsZGF0YS5oDQo+IGluZGV4IDZlZmU0ZTUuLjM0MzU5OWUgMTAwNjQ0DQo+IC0tLSBhL25ldC9u
+ZXRmaWx0ZXIveHRfcmVwbGRhdGEuaA0KPiArKysgYi9uZXQvbmV0ZmlsdGVyL3h0X3JlcGxkYXRh
+LmgNCj4gQEAgLTUsMjMgKzUsNDAgQEANCj4gICAqIHRoZXkgc2VydmUgYXMgdGhlIGhhbmdpbmct
+b2ZmIGRhdGEgYWNjZXNzZWQgdGhyb3VnaCByZXBsLmRhdGFbXS4NCj4gICAqLw0KPiANCj4gKy8q
+IHRibCBoYXMgdGhlIGZvbGxvd2luZyBzdHJ1Y3R1cmUgZXF1aXZhbGVudCwgYnV0IGlzIEM5OSBj
+b21wbGlhbnQ6DQo+ICsgKiBzdHJ1Y3Qgew0KPiArICoJc3RydWN0IHR5cGUjI19yZXBsYWNlIHJl
+cGw7DQo+ICsgKglzdHJ1Y3QgdHlwZSMjX3N0YW5kYXJkIGVudHJpZXNbbmhvb2tzXTsNCj4gKyAq
+CXN0cnVjdCB0eXBlIyNfZXJyb3IgdGVybTsNCj4gKyAqIH0gKnRibDsNCj4gKyAqLw0KPiArDQo+
+ICAjZGVmaW5lIHh0X2FsbG9jX2luaXRpYWxfdGFibGUodHlwZSwgdHlwMikgKHsgXA0KPiAgCXVu
+c2lnbmVkIGludCBob29rX21hc2sgPSBpbmZvLT52YWxpZF9ob29rczsgXA0KPiAgCXVuc2lnbmVk
+IGludCBuaG9va3MgPSBod2VpZ2h0MzIoaG9va19tYXNrKTsgXA0KPiAgCXVuc2lnbmVkIGludCBi
+eXRlcyA9IDAsIGhvb2tudW0gPSAwLCBpID0gMDsgXA0KPiAgCXN0cnVjdCB7IFwNCj4gIAkJc3Ry
+dWN0IHR5cGUjI19yZXBsYWNlIHJlcGw7IFwNCj4gLQkJc3RydWN0IHR5cGUjI19zdGFuZGFyZCBl
+bnRyaWVzW25ob29rc107IFwNCj4gLQkJc3RydWN0IHR5cGUjI19lcnJvciB0ZXJtOyBcDQo+IC0J
+fSAqdGJsID0ga3phbGxvYyhzaXplb2YoKnRibCksIEdGUF9LRVJORUwpOyBcDQo+ICsJCXN0cnVj
+dCB0eXBlIyNfc3RhbmRhcmQgZW50cmllc1tdOyBcDQo+ICsJfSAqdGJsOyBcDQo+ICsJc3RydWN0
+IHR5cGUjI19lcnJvciAqdGVybTsgXA0KPiArCXNpemVfdCBlbnRyaWVzX2VuZCA9IG9mZnNldG9m
+KHR5cGVvZigqdGJsKSwgXA0KPiArCQllbnRyaWVzW25ob29rcy0xXSkgKyBzaXplb2YodGJsLT5l
+bnRyaWVzWzBdKTsgXA0KDQpJcyB0aGUgY29tcGlsZXIgY29tcGxhaW5pbmcgYWJvdXQ6DQoJb2Zm
+c2V0b2YodHlwZW9mKCp0YmwpLCBlbnRyaWVzW25ob29rc10pDQpJZiBpdCBkb2VzIGl0IGlzIGEg
+UElUQS4NCg0KPiArCXNpemVfdCB0ZXJtX29mZnNldCA9IChlbnRyaWVzX2VuZCArIF9fYWxpZ25v
+Zl9fKCp0ZXJtKSAtIDEpIFwNCj4gKwkJJiB+KF9fYWxpZ25vZl9fKCp0ZXJtKSAtIDEpOyBcDQoN
+CllvdSd2ZSBub3QgdGVzdGVkIHRoaXMgLSB0aGUgKCkgYXJlIGluIHRoZSB3cm9uZyBwbGFjZXMu
+DQoNCj4gKwlzaXplX3QgdGVybV9lbmQgPSB0ZXJtX29mZnNldCArIHNpemVvZigqdGVybSk7IFwN
+Cj4gKwlzaXplX3QgdGJsX3N6ID0gKHRlcm1fZW5kICsgX19hbGlnbm9mX18odGJsLT5yZXBsKSAt
+IDEpIFwNCj4gKwkJJiB+KF9fYWxpZ25vZl9fKHRibC0+cmVwbCkgLSAxKTsgXA0KPiArCXRibCA9
+IGt6YWxsb2ModGJsX3N6LCBHRlBfS0VSTkVMKTsgXA0KDQpUaGUgbnVtYmVyIG9mIHRlbXBvcmFy
+eSB2YXJpYWJsZXMgbWFrZSB0aGUgYWJvdmUgaGFyZCB0byByZWFkLg0KSSdtIG5vdCBhdCBhbGwg
+c3VyZSB5b3UgbmVlZCB0byB3b3JyeSBhYm91dCB0aGUgdHJhaWxpbmcgYWxpZ25tZW50Lg0KSXQg
+cmF0aGVyIGRlcGVuZHMgb24gaG93IHRoZSBmaW5hbCBkYXRhIGlzIHVzZWQuDQpJZiB0aGUgY29t
+YmluZWQgYnVmZmVyIGlzIGNvcGllZCB0byB1c2Vyc3BhY2UgeW91IG1heSBub3QNCmJlIGNvcHlp
+bmcgYWxsIG9mIHRoZSByZXF1aXJlZCBkYXRhLg0KSXQgbWlnaHQgYmUgZWFzaWVyIHRvIGNhbGwg
+Y29weXRvdXNlcigpIHR3aWNlLg0KDQo+ICAJaWYgKHRibCA9PSBOVUxMKSBcDQo+ICAJCXJldHVy
+biBOVUxMOyBcDQo+ICsJdGVybSA9IChzdHJ1Y3QgdHlwZSMjX2Vycm9yICopJigoKGNoYXIgKil0
+YmwpW3Rlcm1fb2Zmc2V0XSk7IFwNCj4gIAlzdHJuY3B5KHRibC0+cmVwbC5uYW1lLCBpbmZvLT5u
+YW1lLCBzaXplb2YodGJsLT5yZXBsLm5hbWUpKTsgXA0KPiAtCXRibC0+dGVybSA9IChzdHJ1Y3Qg
+dHlwZSMjX2Vycm9yKXR5cDIjI19FUlJPUl9JTklUOyAgXA0KPiArCSp0ZXJtID0gKHN0cnVjdCB0
+eXBlIyNfZXJyb3IpdHlwMiMjX0VSUk9SX0lOSVQ7ICBcDQoNCglEYXZpZA0KDQo=
