@@ -1,57 +1,51 @@
-From: <mabra@manfbraun.de>
-Subject: Understanding ebtables
-Date: Thu, 20 Mar 2014 02:34:52 +0100
-Message-ID: <!&!AAAAAAAAAAAYAAAAAAAAAOosgHnoPqdNlUO2DUrQ/DfCgAAAEAAAAJaSRNSuhhtBl/bJLBd3XYsBAAAAAA==@manfbraun.de>
+From: Thomas Graf <tgraf-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+Subject: Re: [PATCH v2] core, nfqueue,
+ openvswitch: Orphan frags in skb_zerocopy and handle errors
+Date: Thu, 20 Mar 2014 13:33:20 +0100
+Message-ID: <532AE010.9050903@redhat.com>
+References: <1395263249-16450-1-git-send-email-zoltan.kiss@citrix.com>
+ <532ADC33.5040607@redhat.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: de
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Return-path: <dev-bounces-yBygre7rU0TnMu66kgdUjQ@public.gmane.org>
+In-Reply-To: <532ADC33.5040607-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <http://openvswitch.org/mailman/options/dev>,
+ <mailto:dev-request-yBygre7rU0TnMu66kgdUjQ@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://openvswitch.org/pipermail/dev>
+List-Post: <mailto:dev-yBygre7rU0TnMu66kgdUjQ@public.gmane.org>
+List-Help: <mailto:dev-request-yBygre7rU0TnMu66kgdUjQ@public.gmane.org?subject=help>
+List-Subscribe: <http://openvswitch.org/mailman/listinfo/dev>,
+ <mailto:dev-request-yBygre7rU0TnMu66kgdUjQ@public.gmane.org?subject=subscribe>
+Errors-To: dev-bounces-yBygre7rU0TnMu66kgdUjQ@public.gmane.org
+Sender: "dev" <dev-bounces-yBygre7rU0TnMu66kgdUjQ@public.gmane.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Zoltan Kiss <zoltan.kiss-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org>, Jesse Gross <jesse-l0M0P4e3n4LQT0dZR+AlfA@public.gmane.org>, pshelar-l0M0P4e3n4LQT0dZR+AlfA@public.gmane.org, dev-yBygre7rU0TnMu66kgdUjQ@public.gmane.org
+Cc: netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Miklos Szeredi <mszeredi-AlSwsSmVLrQ@public.gmane.org>, kvm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "Michael S. Tsirkin" <mst-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Jason Wang <jasowang-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Eric Dumazet <edumazet-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Jan Beulich <JBeulich-IBi9RG/b67k@public.gmane.org>, Tom Herbert <therbert-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Herbert Xu <herbert-lOAM2aK0SrRLBo1qDEOMRrpzq4S04n8Q@public.gmane.org>, Jozsef Kadlecsik <kadlec-K40Dz/62t/MgiyqX0sVFJYdd74u8MsAO@public.gmane.org>, xen-devel-GuqFBffKawtpuQazS67q72D2FQJk+8+b@public.gmane.org, Pablo Neira Ayuso <pablo-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org>, Jiri Pirko <jiri-rHqAuBHg3fBzbRFIqnYvSA@public.gmane.org>, Paul Durrant <Paul.Durrant-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org>, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Florian Westphal <fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Daniel Borkmann <dborkman-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Joe Perches <joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org>, "David S. Miller" <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>
 
-Hello !
+On 03/20/2014 01:16 PM, Thomas Graf wrote:
+> On 03/19/2014 10:07 PM, Zoltan Kiss wrote:
+>> skb_zerocopy can copy elements of the frags array between skbs, but it
+>> doesn't
+>> orphan them. Also, it doesn't handle errors, so this patch takes care
+>> of that
+>> as well.
+>>
+>> Signed-off-by: Zoltan Kiss <zoltan.kiss-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org>
+>
+> Acked-by: Thomas Graf <tgraf-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
 
-I am on the road to learn to protect my server and I want
-to suppress the unrequested ARPs, coming from the
-WAN side of my linux router from the KabelBW network.
+I take this back ;)
 
-I am using debian squeeze and I installed ebtables
-successfully [ebtables v2.0.9-2].
+>> ---
+>> +    if (unlikely(skb_orphan_frags(to, GFP_ATOMIC))) {
+>> +        skb_tx_error(to);
+>> +        return -ENOMEM;
+>> +    }
 
-I just started with a simple rule:
+Just noticed that you orphan the Netlink skb frags which do not
+exist yet instead of the source skb frags.
 
-ebtables -t filter -A INPUT -i eth1 -d ff:ff:ff:ff:ff:ff -j CONTINUE
-
-
-This is simply to allow me to see the counters. But nothing is shown:
-
->>>
-[/ops/fw]ebtables -L --Lc
-Bridge table: filter
-
-Bridge chain: INPUT, entries: 1, policy: ACCEPT
--d Broadcast -i eth1 -j CONTINUE , pcnt = 0 -- bcnt = 0
-
-Bridge chain: FORWARD, entries: 1, policy: ACCEPT
--p ARP -i eth1 -j DROP , pcnt = 0 -- bcnt = 0
-
-Bridge chain: OUTPUT, entries: 0, policy: ACCEPT
-<<<
-
-I am running tcpdump and I am seeing a lot of this
-packets with the dest address like in the rule above.
-
-I do not have a separate bridge configured, just use
-my WAN interface.
-
-Any help would be really great!
-
-Thanks anyway and
-best regards,
-
-Manfred
-
-
-
+> Did you consider calling skb_tx_error() for Netlink message
+> allocation failures for the upcall as well? That memory pressure
+> is currently not reported back.
