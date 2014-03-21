@@ -1,14 +1,13 @@
-From: Zoltan Kiss <zoltan.kiss-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org>
-Subject: Re: [PATCH v3] core, nfqueue,
+From: Thomas Graf <tgraf-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+Subject: Re: [PATCH v4] core, nfqueue,
  openvswitch: Orphan frags in skb_zerocopy and handle errors
-Date: Fri, 21 Mar 2014 10:35:13 +0000
-Message-ID: <532C15E1.4070501@citrix.com>
-References: <1395331354-23659-1-git-send-email-zoltan.kiss@citrix.com>
- <532B6A3D.1060600@redhat.com>
+Date: Fri, 21 Mar 2014 12:07:32 +0100
+Message-ID: <532C1D74.50008@redhat.com>
+References: <1395397894-9493-1-git-send-email-zoltan.kiss@citrix.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <dev-bounces-yBygre7rU0TnMu66kgdUjQ@public.gmane.org>
-In-Reply-To: <532B6A3D.1060600-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
+In-Reply-To: <1395397894-9493-1-git-send-email-zoltan.kiss-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org>
 List-Id: <netfilter.vger.kernel.org>
 List-Unsubscribe: <http://openvswitch.org/mailman/options/dev>,
  <mailto:dev-request-yBygre7rU0TnMu66kgdUjQ@public.gmane.org?subject=unsubscribe>
@@ -20,38 +19,26 @@ List-Subscribe: <http://openvswitch.org/mailman/listinfo/dev>,
 Errors-To: dev-bounces-yBygre7rU0TnMu66kgdUjQ@public.gmane.org
 Sender: "dev" <dev-bounces-yBygre7rU0TnMu66kgdUjQ@public.gmane.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Thomas Graf <tgraf-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Jesse Gross <jesse-l0M0P4e3n4LQT0dZR+AlfA@public.gmane.org>, pshelar-l0M0P4e3n4LQT0dZR+AlfA@public.gmane.org, dev-yBygre7rU0TnMu66kgdUjQ@public.gmane.org
+To: Zoltan Kiss <zoltan.kiss-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org>, Jesse Gross <jesse-l0M0P4e3n4LQT0dZR+AlfA@public.gmane.org>, pshelar-l0M0P4e3n4LQT0dZR+AlfA@public.gmane.org, dev-yBygre7rU0TnMu66kgdUjQ@public.gmane.org
 Cc: netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Miklos Szeredi <mszeredi-AlSwsSmVLrQ@public.gmane.org>, kvm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, "Michael S. Tsirkin" <mst-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Jason Wang <jasowang-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, Eric Dumazet <edumazet-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Jan Beulich <JBeulich-IBi9RG/b67k@public.gmane.org>, Tom Herbert <therbert-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org>, Herbert Xu <herbert-lOAM2aK0SrRLBo1qDEOMRrpzq4S04n8Q@public.gmane.org>, Jozsef Kadlecsik <kadlec-K40Dz/62t/MgiyqX0sVFJYdd74u8MsAO@public.gmane.org>, xen-devel-GuqFBffKawtpuQazS67q72D2FQJk+8+b@public.gmane.org, Pablo Neira Ayuso <pablo-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org>, Jiri Pirko <jiri-rHqAuBHg3fBzbRFIqnYvSA@public.gmane.org>, Paul Durrant <Paul.Durrant-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org>, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Florian Westphal <fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org>, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Daniel Borkmann <dborkman-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Joe Perches <joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org>, "David S. Miller" <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>
 
-On 20/03/14 22:22, Thomas Graf wrote:
-> On 03/20/2014 05:02 PM, Zoltan Kiss wrote:
->> --- a/net/openvswitch/datapath.c
->> +++ b/net/openvswitch/datapath.c
->> @@ -464,7 +464,9 @@ static int queue_userspace_packet(struct datapath
->> *dp, struct sk_buff *skb,
->>       }
->>       nla->nla_len = nla_attr_size(skb->len);
->>
->> -    skb_zerocopy(user_skb, skb, skb->len, hlen);
->> +    err = skb_zerocopy(user_skb, skb, skb->len, hlen);
->> +    if (err)
->> +        goto out;
->>
->>       /* Pad OVS_PACKET_ATTR_PACKET if linear copy was performed */
->>       if (!(dp->user_features & OVS_DP_F_UNALIGNED)) {
->> @@ -478,6 +480,7 @@ static int queue_userspace_packet(struct datapath
->> *dp, struct sk_buff *skb,
->>
->>       err = genlmsg_unicast(ovs_dp_get_net(dp), user_skb,
->> upcall_info->portid);
->>   out:
->> +    skb_tx_error(skb);
+On 03/21/2014 11:31 AM, Zoltan Kiss wrote:
+> skb_zerocopy can copy elements of the frags array between skbs, but it doesn't
+> orphan them. Also, it doesn't handle errors, so this patch takes care of that
+> as well, and modify the callers accordingly. skb_tx_error() is also added to
+> the callers so they will signal the failed delivery towards the creator of the
+> skb.
 >
-> Really sorry to bug you again. We'll get this right ;-)
+> Signed-off-by: Zoltan Kiss <zoltan.kiss-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org>
+> ---
+> v2: orphan the frags right before touching the frags
 >
-> Patch looks great except for this call to skb_tx_error() which is now
-> done in the error *and* success path. Make the call conditional on
-> if (err) and we're good.
-Ah, sorry, I'm really sloppy with this patch. I've sent a fixed one.
+> v3:
+> - orphan 'from' instead of 'to'
+> - call skb_tx_error() in the callers if something went wrong
+>
+> v4: correctly use error path in queue_userspace_packet
 
-Zoli
+LGTM now
+
+Acked-by: Thomas Graf <tgraf-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org>
