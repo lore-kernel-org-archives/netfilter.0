@@ -1,325 +1,113 @@
-From: Noel Kuntze <noel@familie-kuntze.de>
-Subject: IPsec peer with SNAT not working
-Date: Sun, 23 Mar 2014 00:14:37 +0100
-Message-ID: <532E195D.3020502@familie-kuntze.de>
+From: behanw@converseincode.com
+Subject: [PATCH v4] net: netfilter: LLVMLinux: vlais-netfilter
+Date: Sat, 22 Mar 2014 23:55:44 -0700
+Message-ID: <1395557744-25248-1-git-send-email-behanw@converseincode.com>
+References: <063D6719AE5E284EB5DD2968C1650D6D0F6E0F8D@AcuExch.aculab.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed;
- boundary="------------070200070704020803060902"
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=converseincode.com; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-type:content-transfer-encoding;
+        bh=ilB7JjChXnEweu/D2/HNApCMZAVE7pK5yXq3jXz3LXQ=;
+        b=Q9/jC5KdDxiljxcG1w8+54sOkR1d7C0Svk+m13soNCOlMiZEvJ5cf3kWnjR7NWsSzR
+         QC/0usx5q4zFw66RmK8buKPct+6vtbaAviSw/b4hMpN33WrzxaJaXXs+J6JvL3f1w79s
+         2IzY8BE9xJ4+rxc9xLl8fFhclFDvFAhQlxMcg=
+In-Reply-To: <063D6719AE5E284EB5DD2968C1650D6D0F6E0F8D@AcuExch.aculab.com>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="macroman"
+To: davem@davemloft.net
+Cc: pablo@netfilter.org, kaber@trash.net, kadlec@blackhole.kfki.hu, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, dwmw2@infradead.org, pageexec@freemail.hu, Mark Charlebois <charlebm@gmail.com>, Behan Webster <behanw@converseincode.com>, =?UTF-8?q?Vin=C3=ADcius=20Tinti?= <viniciustinti@gmail.com>
 
-This is a multi-part message in MIME format.
---------------070200070704020803060902
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+=46rom: Mark Charlebois <charlebm@gmail.com>
 
+Replaced non-standard C use of Variable Length Arrays In Structs (VLAIS=
+) in
+xt_repldata.h with a C99 compliant flexible array member and then calcu=
+lated
+offsets to the other struct members. These other members aren't referen=
+ced by
+name in this code, however this patch maintains the same memory layout =
+and
+padding as was previously accomplished using VLAIS.
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+Had the original structure been ordered differently, with the entries V=
+LA at
+the end, then it could have been a flexible member, and this patch woul=
+d have
+been a lot simpler. However since the data stored in this structure is
+ultimately exported to userspace, the order of this structure can't be =
+changed.
 
-Hello list,
+This patch makes no attempt to change the existing behavior, merely the=
+ way in
+which the current layout is accomplished using standard C99 constructs.=
+ As such
+the code can now be compiled with either gcc or clang.
 
-I have an issue with conntrack on kernel 3.10.33-1-lts on Arch Linux.
-There are peers connected to  a box on the network, that runs the strongSwan IPsec daemon, which handles the establishment of the IPsec tunnels and
-then gives them IPs from the from me reserved range to them.
-I use the 192.168.178.0/24 address space in the LAN and 172.16.19.0/24 for the IPsec peers.
-The box that the peers connect to, does SNAT to hide the unknown IP addresses from the LAN hosts, so they can communicate with the IPsec peers.
+This version of the patch removes the trailing alignment that the VLAIS
+structure would allocate in order to simplify the patch.
 
-I can not do without SNAT in this situation. Please do not recommend getting the NAT out. That is not an option.
-Neither is connecting the peers to the LAN on layer two.
+Author: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+Signed-off-by: Behan Webster <behanw@converseincode.com>
+Signed-off-by: Vin=C3=ADcius Tinti <viniciustinti@gmail.com>
+---
+ net/netfilter/xt_repldata.h | 22 +++++++++++++++++-----
+ 1 file changed, 17 insertions(+), 5 deletions(-)
 
-When the peers send out an TCP SYN packet to hosts on the LAN, they get SNATed correctly, but the response does not get translated.
-The response just gets dropped after *mangle prerouting.
-The rules I used to find that out are attached to the email.
+diff --git a/net/netfilter/xt_repldata.h b/net/netfilter/xt_repldata.h
+index 6efe4e5..8fd3241 100644
+--- a/net/netfilter/xt_repldata.h
++++ b/net/netfilter/xt_repldata.h
+@@ -5,23 +5,35 @@
+  * they serve as the hanging-off data accessed through repl.data[].
+  */
+=20
++/* tbl has the following structure equivalent, but is C99 compliant:
++ * struct {
++ *	struct type##_replace repl;
++ *	struct type##_standard entries[nhooks];
++ *	struct type##_error term;
++ * } *tbl;
++ */
++
+ #define xt_alloc_initial_table(type, typ2) ({ \
+ 	unsigned int hook_mask =3D info->valid_hooks; \
+ 	unsigned int nhooks =3D hweight32(hook_mask); \
+ 	unsigned int bytes =3D 0, hooknum =3D 0, i =3D 0; \
+ 	struct { \
+ 		struct type##_replace repl; \
+-		struct type##_standard entries[nhooks]; \
+-		struct type##_error term; \
+-	} *tbl =3D kzalloc(sizeof(*tbl), GFP_KERNEL); \
++		struct type##_standard entries[]; \
++	} *tbl; \
++	struct type##_error *term; \
++	size_t term_offset =3D (offsetof(typeof(*tbl), entries[nhooks]) + \
++		__alignof__(*term) - 1) & ~(__alignof__(*term) - 1); \
++	tbl =3D kzalloc(term_offset + sizeof(*term), GFP_KERNEL); \
+ 	if (tbl =3D=3D NULL) \
+ 		return NULL; \
++	term =3D (struct type##_error *)&(((char *)tbl)[term_offset]); \
+ 	strncpy(tbl->repl.name, info->name, sizeof(tbl->repl.name)); \
+-	tbl->term =3D (struct type##_error)typ2##_ERROR_INIT;  \
++	*term =3D (struct type##_error)typ2##_ERROR_INIT;  \
+ 	tbl->repl.valid_hooks =3D hook_mask; \
+ 	tbl->repl.num_entries =3D nhooks + 1; \
+ 	tbl->repl.size =3D nhooks * sizeof(struct type##_standard) + \
+-	                 sizeof(struct type##_error); \
++			 sizeof(struct type##_error); \
+ 	for (; hook_mask !=3D 0; hook_mask >>=3D 1, ++hooknum) { \
+ 		if (!(hook_mask & 1)) \
+ 			continue; \
+--=20
+1.8.3.2
 
-Short info to the rules:
-I use connmark to mark connections from the IPsec peers with hexadecimal 0xAA (decimal 170).
-I then use -j LOG to get the packets that run through *mangle prerouting and see the mark contnrack sets on them.
-The SYN packets have them, the response does not.
-A log snippet showing that is attached to the email.
-
-Also, the output of "conntrack -L -s 172.16.19.1 -d 192.168.178.43" is attached to the email.
-
-The packet capture and the log files show the same traffic that is an IPsec peer trying to connect to 192.168.178.43 tcp port 8080.
-
-IPs:
-192.168.178.48 LAN side IP of the IPsec responder (Where the tunnel terminates and the SNAT is on)
-192.168.178.43 LAN IP of the box I tried to connect to.
-
-IP ranges:
-192.168.178.0/24 for LAN
-172.16.19.0/24 IPsec peers
-172.16.20.0/24 IPsec peers
-
-It would be very nice if anyone could tell me what could be the cause of this.
-
-
-Regards
-
-Noel Kuntze
-
-Attachements:
-
-The iptables rules I used to find out, that the packets don't get tracked: debug.ipt
-A packet capture from a box on the lan with an IPsec peer trying to connect to it on port 8080 tcp: capture.pcapng
-A log snippet from the box the SNAT is working on and the IPsec tunnels terminate: snippet.log
-Signature files for them.
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2.0.22 (GNU/Linux)
-Comment: Using GnuPG with Thunderbird - http://www.enigmail.net/
-
-iQIcBAEBCAAGBQJTLhldAAoJEDg5KY9j7GZYIxkP/2mwliDE2hzbTV94G4TX+McI
-/l4mGaTC7EutQQ7xzM/h80yZFzZO9ucfRJoltTalAX/EDXx9oGryAzgN1bzn6W61
-UV89Gzbr3MlN0Qjz4X1/9PQAPcnYoze5wI9P3N1f+FpN0gPEAiBPWYNTtG1Sweg3
-VwWGqjwdk+nsvB3QN7TV8RSADraTcmHb7/ENmyxKCxuf+j5QHOFhLjb9KfBl01Qh
-LqEOGNPLk7Kwxaq4egp47wLqEtUELeKHKl7kR/WTo+aIh+F23YRhc71ld60x+PGJ
-QJLOUJeAwl+HN6I+fTR7oD8dKsHJvmBpk0yOX4gRe1mOSRzwC+NVh1mrHJbmJQ0o
-YtpAF4jADhtvmldLqyCCEQ4OWFK/ksiC4ktBUMbUeJqoNIID+ogwikLz8u/FiB5T
-cXEaPWVDhPV++SYBqD6daHODbeuUswzP0wAd1R+PkYdzkDUi4tMzGKbEj3fkhHzD
-lR61RKYInbwiDuBJWAKgoskUtojJS9k3otwDzk8xNadyQz1vnAGAo0x8cSzQvest
-DPmRT2suu5uhB1U1A+7nSPFdlGjLNB/0OUsNQIXMjcTFwIshms4yQEqK9Q6IHR5W
-Z5Q0qYyXf7tVacNbdJV53+w2oQRh2m25EprPwklvijr4OSxhzwhpji37Fih3RePC
-Y3tO7PvIZ8mh7reyLdmX
-=lkdZ
------END PGP SIGNATURE-----
-
-
---------------070200070704020803060902
-Content-Type: application/octet-stream;
- name="capture.pcapng"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="capture.pcapng"
-
-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
-AAAAAAAAAAAAAGwAAAA=
---------------070200070704020803060902
-Content-Type: text/x-log;
- name="conntrack.log"
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
- filename="conntrack.log"
-
-conntrack -L -s 172.16.19.1 -d 192.168.178.43
-tcp      6 58 SYN_RECV src=172.16.19.1 dst=192.168.178.43 sport=57532 dport=8080 src=192.168.178.43 dst=192.168.178.48 sport=8080 dport=4127 mark=170 use=1
-tcp      6 37 SYN_RECV src=172.16.19.1 dst=192.168.178.43 sport=57531 dport=8080 src=192.168.178.43 dst=192.168.178.48 sport=8080 dport=4126 mark=170 use=1
-conntrack v1.4.2 (conntrack-tools): 2 flow entries have been shown.
-
-
---------------070200070704020803060902
-Content-Type: text/x-log;
- name="snippet.log"
-Content-Transfer-Encoding: 8bit
-Content-Disposition: attachment;
- filename="snippet.log"
-
-M������r 22 22:43:25 vms.thermi kernel: TRACE: raw:PREROUTING:policy:3 IN=br0 OUT= MAC=38:ea:a7:a4:a1:a1:00:1b:11:f0:5f:62:08:00 SRC=172.16.19.1 DST=192.168.178.43 LEN=60 TOS=0x00 PREC=0x00 TTL=6
-4 ID=18047 DF PROTO=TCP SPT=57561 DPT=8080 SEQ=3919038838 ACK=0 WINDOW=13600 RES=0x00 SYN URGP=0 OPT (020405500402080A00908F090000000001030301) 
-M������r 22 22:43:25 vms.thermi kernel: TRACE: mangle:PREROUTING:rule:2 IN=br0 OUT= MAC=38:ea:a7:a4:a1:a1:00:1b:11:f0:5f:62:08:00 SRC=172.16.19.1 DST=192.168.178.43 LEN=60 TOS=0x00 PREC=0x00 TTL=
-64 ID=18047 DF PROTO=TCP SPT=57561 DPT=8080 SEQ=3919038838 ACK=0 WINDOW=13600 RES=0x00 SYN URGP=0 OPT (020405500402080A00908F090000000001030301) 
-M������r 22 22:43:25 vms.thermi kernel: TRACE: mangle:PREROUTING:rule:5 IN=br0 OUT= MAC=38:ea:a7:a4:a1:a1:00:1b:11:f0:5f:62:08:00 SRC=172.16.19.1 DST=192.168.178.43 LEN=60 TOS=0x00 PREC=0x00 TTL=
-64 ID=18047 DF PROTO=TCP SPT=57561 DPT=8080 SEQ=3919038838 ACK=0 WINDOW=13600 RES=0x00 SYN URGP=0 OPT (020405500402080A00908F090000000001030301) MARK=0xaa 
-M������r 22 22:43:25 vms.thermi kernel: PREROUTING IN=br0 OUT= MAC=38:ea:a7:a4:a1:a1:00:1b:11:f0:5f:62:08:00 SRC=172.16.19.1 DST=192.168.178.43 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=18047 DF PROTO=
-TCP SPT=57561 DPT=8080 WINDOW=13600 RES=0x00 SYN URGP=0 MARK=0xaa 
-M������r 22 22:43:25 vms.thermi kernel: TRACE: mangle:PREROUTING:policy:7 IN=br0 OUT= MAC=38:ea:a7:a4:a1:a1:00:1b:11:f0:5f:62:08:00 SRC=172.16.19.1 DST=192.168.178.43 LEN=60 TOS=0x00 PREC=0x00 TT
-L=64 ID=18047 DF PROTO=TCP SPT=57561 DPT=8080 SEQ=3919038838 ACK=0 WINDOW=13600 RES=0x00 SYN URGP=0 OPT (020405500402080A00908F090000000001030301) MARK=0xaa 
-M������r 22 22:43:25 vms.thermi kernel: TRACE: nat:PREROUTING:policy:1 IN=br0 OUT= MAC=38:ea:a7:a4:a1:a1:00:1b:11:f0:5f:62:08:00 SRC=172.16.19.1 DST=192.168.178.43 LEN=60 TOS=0x00 PREC=0x00 TTL=6
-4 ID=18047 DF PROTO=TCP SPT=57561 DPT=8080 SEQ=3919038838 ACK=0 WINDOW=13600 RES=0x00 SYN URGP=0 OPT (020405500402080A00908F090000000001030301) MARK=0xaa 
-M������r 22 22:43:25 vms.thermi kernel: TRACE: mangle:FORWARD:rule:1 IN=br0 OUT=br0 MAC=38:ea:a7:a4:a1:a1:00:1b:11:f0:5f:62:08:00 SRC=172.16.19.1 DST=192.168.178.43 LEN=60 TOS=0x00 PREC=0x00 TTL=
-63 ID=18047 DF PROTO=TCP SPT=57561 DPT=8080 SEQ=3919038838 ACK=0 WINDOW=13600 RES=0x00 SYN URGP=0 OPT (020405500402080A00908F090000000001030301) MARK=0xaa 
-M������r 22 22:43:25 vms.thermi kernel: FORWARD IN=br0 OUT=br0 MAC=38:ea:a7:a4:a1:a1:00:1b:11:f0:5f:62:08:00 SRC=172.16.19.1 DST=192.168.178.43 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=18047 DF PROTO=
-TCP SPT=57561 DPT=8080 WINDOW=13600 RES=0x00 SYN URGP=0 MARK=0xaa 
-M������r 22 22:43:25 vms.thermi kernel: TRACE: mangle:FORWARD:policy:5 IN=br0 OUT=br0 MAC=38:ea:a7:a4:a1:a1:00:1b:11:f0:5f:62:08:00 SRC=172.16.19.1 DST=192.168.178.43 LEN=60 TOS=0x00 PREC=0x00 TT
-L=63 ID=18047 DF PROTO=TCP SPT=57561 DPT=8080 SEQ=3919038838 ACK=0 WINDOW=13600 RES=0x00 SYN URGP=0 OPT (020405500402080A00908F090000000001030301) MARK=0xaa 
-M������r 22 22:43:25 vms.thermi kernel: TRACE: filter:FORWARD:policy:1 IN=br0 OUT=br0 MAC=38:ea:a7:a4:a1:a1:00:1b:11:f0:5f:62:08:00 SRC=172.16.19.1 DST=192.168.178.43 LEN=60 TOS=0x00 PREC=0x00 TT
-L=63 ID=18047 DF PROTO=TCP SPT=57561 DPT=8080 SEQ=3919038838 ACK=0 WINDOW=13600 RES=0x00 SYN URGP=0 OPT (020405500402080A00908F090000000001030301) MARK=0xaa 
-M������r 22 22:43:25 vms.thermi kernel: TRACE: mangle:POSTROUTING:rule:2 IN= OUT=br0 SRC=172.16.19.1 DST=192.168.178.43 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=18047 DF PROTO=TCP SPT=57561 DPT=8080 S
-EQ=3919038838 ACK=0 WINDOW=13600 RES=0x00 SYN URGP=0 OPT (020405500402080A00908F090000000001030301) MARK=0xaa 
-M������r 22 22:43:25 vms.thermi kernel: POSTROUTING IN= OUT=br0 SRC=172.16.19.1 DST=192.168.178.43 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=18047 DF PROTO=TCP SPT=57561 DPT=8080 WINDOW=13600 RES=0x00 
-SYN URGP=0 MARK=0xaa 
-M������r 22 22:43:25 vms.thermi kernel: TRACE: mangle:POSTROUTING:policy:3 IN= OUT=br0 SRC=172.16.19.1 DST=192.168.178.43 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=18047 DF PROTO=TCP SPT=57561 DPT=8080
- SEQ=3919038838 ACK=0 WINDOW=13600 RES=0x00 SYN URGP=0 OPT (020405500402080A00908F090000000001030301) MARK=0xaa 
-M������r 22 22:43:25 vms.thermi kernel: TRACE: nat:POSTROUTING:rule:1 IN= OUT=br0 SRC=172.16.19.1 DST=192.168.178.43 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=18047 DF PROTO=TCP SPT=57561 DPT=8080 SEQ=
-3919038838 ACK=0 WINDOW=13600 RES=0x00 SYN URGP=0 OPT (020405500402080A00908F090000000001030301) MARK=0xaa 
-M������r 22 22:43:25 vms.thermi kernel: TRACE: raw:PREROUTING:policy:3 IN=br0 OUT= PHYSIN=eth0 MAC=38:ea:a7:a4:a1:a1:00:23:54:45:e6:ac:08:00 SRC=192.168.178.43 DST=192.168.178.48 LEN=40 TOS=0x00 
-PREC=0x00 TTL=64 ID=34223 DF PROTO=TCP SPT=8080 DPT=4096 SEQ=0 ACK=3919038839 WINDOW=0 RES=0x00 ACK RST URGP=0 
-M������r 22 22:43:25 vms.thermi kernel: TRACE: mangle:PREROUTING:rule:6 IN=br0 OUT= PHYSIN=eth0 MAC=38:ea:a7:a4:a1:a1:00:23:54:45:e6:ac:08:00 SRC=192.168.178.43 DST=192.168.178.48 LEN=40 TOS=0x00
- PREC=0x00 TTL=64 ID=34223 DF PROTO=TCP SPT=8080 DPT=4096 SEQ=0 ACK=3919038839 WINDOW=0 RES=0x00 ACK RST URGP=0 
-M������r 22 22:43:25 vms.thermi kernel: PREROUTING IN=br0 OUT= PHYSIN=eth0 MAC=38:ea:a7:a4:a1:a1:00:23:54:45:e6:ac:08:00 SRC=192.168.178.43 DST=192.168.178.48 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=
-34223 DF PROTO=TCP SPT=8080 DPT=4096 WINDOW=0 RES=0x00 ACK RST URGP=0 
-M������r 22 22:43:25 vms.thermi kernel: TRACE: mangle:PREROUTING:policy:7 IN=br0 OUT= PHYSIN=eth0 MAC=38:ea:a7:a4:a1:a1:00:23:54:45:e6:ac:08:00 SRC=192.168.178.43 DST=192.168.178.48 LEN=40 TOS=0x
-00 PREC=0x00 TTL=64 ID=34223 DF PROTO=TCP SPT=8080 DPT=4096 SEQ=0 ACK=3919038839 WINDOW=0 RES=0x00 ACK RST URGP=0 
-M������r 22 22:43:28 vms.thermi kernel: TRACE: raw:PREROUTING:policy:3 IN=br0 OUT= MAC=38:ea:a7:a4:a1:a1:00:1b:11:f0:5f:62:08:00 SRC=172.16.19.1 DST=192.168.178.43 LEN=60 TOS=0x00 PREC=0x00 TTL=6
-4 ID=18048 DF PROTO=TCP SPT=57561 DPT=8080 SEQ=3919038838 ACK=0 WINDOW=13600 RES=0x00 SYN URGP=0 OPT (020405500402080A0090908A0000000001030301) 
-M������r 22 22:43:28 vms.thermi kernel: TRACE: mangle:PREROUTING:rule:2 IN=br0 OUT= MAC=38:ea:a7:a4:a1:a1:00:1b:11:f0:5f:62:08:00 SRC=172.16.19.1 DST=192.168.178.43 LEN=60 TOS=0x00 PREC=0x00 TTL=
-64 ID=18048 DF PROTO=TCP SPT=57561 DPT=8080 SEQ=3919038838 ACK=0 WINDOW=13600 RES=0x00 SYN URGP=0 OPT (020405500402080A0090908A0000000001030301) 
-M������r 22 22:43:28 vms.thermi kernel: TRACE: mangle:PREROUTING:rule:5 IN=br0 OUT= MAC=38:ea:a7:a4:a1:a1:00:1b:11:f0:5f:62:08:00 SRC=172.16.19.1 DST=192.168.178.43 LEN=60 TOS=0x00 PREC=0x00 TTL=
-64 ID=18048 DF PROTO=TCP SPT=57561 DPT=8080 SEQ=3919038838 ACK=0 WINDOW=13600 RES=0x00 SYN URGP=0 OPT (020405500402080A0090908A0000000001030301) MARK=0xaa 
-M������r 22 22:43:28 vms.thermi kernel: PREROUTING IN=br0 OUT= MAC=38:ea:a7:a4:a1:a1:00:1b:11:f0:5f:62:08:00 SRC=172.16.19.1 DST=192.168.178.43 LEN=60 TOS=0x00 PREC=0x00 TTL=64 ID=18048 DF PROTO=
-TCP SPT=57561 DPT=8080 WINDOW=13600 RES=0x00 SYN URGP=0 MARK=0xaa 
-M������r 22 22:43:28 vms.thermi kernel: TRACE: mangle:POSTROUTING:policy:3 IN= OUT=br0 SRC=172.16.19.1 DST=192.168.178.43 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=18048 DF PROTO=TCP SPT=57561 DPT=8080 SEQ=3919038838 ACK=0 WINDOW=13600 RES=0x00 SYN URGP=0 OPT (020405500402080A0090908A0000000001030301) MARK=0xaa 
-M������r 22 22:43:28 vms.thermi kernel: TRACE: nat:POSTROUTING:rule:1 IN= OUT=br0 SRC=172.16.19.1 DST=192.168.178.43 LEN=60 TOS=0x00 PREC=0x00 TTL=63 ID=18048 DF PROTO=TCP SPT=57561 DPT=8080 SEQ=3919038838 ACK=0 WINDOW=13600 RES=0x00 SYN URGP=0 OPT (020405500402080A0090908A0000000001030301) MARK=0xaa 
-M������r 22 22:43:28 vms.thermi kernel: TRACE: raw:PREROUTING:policy:3 IN=br0 OUT= PHYSIN=eth0 MAC=38:ea:a7:a4:a1:a1:00:23:54:45:e6:ac:08:00 SRC=192.168.178.43 DST=192.168.178.48 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=34224 DF PROTO=TCP SPT=8080 DPT=4096 SEQ=0 ACK=3919038839 WINDOW=0 RES=0x00 ACK RST URGP=0 
-M������r 22 22:43:28 vms.thermi kernel: TRACE: mangle:PREROUTING:rule:6 IN=br0 OUT= PHYSIN=eth0 MAC=38:ea:a7:a4:a1:a1:00:23:54:45:e6:ac:08:00 SRC=192.168.178.43 DST=192.168.178.48 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=34224 DF PROTO=TCP SPT=8080 DPT=4096 SEQ=0 ACK=3919038839 WINDOW=0 RES=0x00 ACK RST URGP=0 
-M������r 22 22:43:28 vms.thermi kernel: PREROUTING IN=br0 OUT= PHYSIN=eth0 MAC=38:ea:a7:a4:a1:a1:00:23:54:45:e6:ac:08:00 SRC=192.168.178.43 DST=192.168.178.48 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=34224 DF PROTO=TCP SPT=8080 DPT=4096 WINDOW=0 RES=0x00 ACK RST URGP=0 
-M������r 22 22:43:28 vms.thermi kernel: TRACE: mangle:PREROUTING:policy:7 IN=br0 OUT= PHYSIN=eth0 MAC=38:ea:a7:a4:a1:a1:00:23:54:45:e6:ac:08:00 SRC=192.168.178.43 DST=192.168.178.48 LEN=40 TOS=0x00 PREC=0x00 TTL=64 ID=34224 DF PROTO=TCP SPT=8080 DPT=4096 SEQ=0 ACK=3919038839 WINDOW=0 RES=0x00 ACK RST URGP=0 
-
-
---------------070200070704020803060902
-Content-Type: text/plain; charset=UTF-8;
- name="debug.ipt"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="debug.ipt"
-
-IyBHZW5lcmF0ZWQgYnkgaXB0YWJsZXMtc2F2ZSB2MS40LjIxIG9uIFdlZCBNYXIgMTkgMDE6
-MzA6NDAgMjAxNAoqZmlsdGVyCjpJTlBVVCBBQ0NFUFQgWzE4OTA1NzoxOTgxMDI0NjldCjpG
-T1JXQVJEIEFDQ0VQVCBbMjEyMjoxMzU5NTRdCjpPVVRQVVQgQUNDRVBUIFsxMDk1MzQ6MzY0
-NDEyODFdCkNPTU1JVAojIENvbXBsZXRlZCBvbiBXZWQgTWFyIDE5IDAxOjMwOjQwIDIwMTQK
-IyBHZW5lcmF0ZWQgYnkgaXB0YWJsZXMtc2F2ZSB2MS40LjIxIG9uIFdlZCBNYXIgMTkgMDE6
-MzA6NDAgMjAxNAoqbmF0CjpQUkVST1VUSU5HIEFDQ0VQVCBbMTA1MzoxNTUwOTZdCjpJTlBV
-VCBBQ0NFUFQgWzIyNzozMDEwNl0KOk9VVFBVVCBBQ0NFUFQgWzIyOToxNzUwMl0KOlBPU1RS
-T1VUSU5HIEFDQ0VQVCBbMjI5OjE3NTAyXQotQSBQT1NUUk9VVElORyAtcCB0Y3AgLW0gY29u
-bm1hcmsgLS1tYXJrIDB4YWEgLWogU05BVCAtLXRvLXNvdXJjZSAxOTIuMTY4LjE3OC40ODo0
-MDk2LTMyMDAwCi1BIFBPU1RST1VUSU5HIC1wIHVkcCAtbSBjb25ubWFyayAtLW1hcmsgMHhh
-YSAtaiBTTkFUIC0tdG8tc291cmNlIDE5Mi4xNjguMTc4LjQ4OjQwOTYtMzIwMDAKLUEgUE9T
-VFJPVVRJTkcgLXAgdGNwIC1tIGNvbm5tYXJrIC0tbWFyayAweGJhIC1qIFNOQVQgLS10by1z
-b3VyY2UgMTkyLjE2OC4xNzguNDg6NDA5Ni0zMjAwMAotQSBQT1NUUk9VVElORyAtcCB1ZHAg
-LW0gY29ubm1hcmsgLS1tYXJrIDB4YmEgLWogU05BVCAtLXRvLXNvdXJjZSAxOTIuMTY4LjE3
-OC40ODo0MDk2LTMyMDAwCkNPTU1JVAojIENvbXBsZXRlZCBvbiBXZWQgTWFyIDE5IDAxOjMw
-OjQwIDIwMTQKIyBHZW5lcmF0ZWQgYnkgaXB0YWJsZXMtc2F2ZSB2MS40LjIxIG9uIFdlZCBN
-YXIgMTkgMDE6MzA6NDAgMjAxNAoqbWFuZ2xlCjpQUkVST1VUSU5HIEFDQ0VQVCBbMTU4ODE1
-OjE5MzA2NDQ3OF0KOklOUFVUIEFDQ0VQVCBbMTU3MjM5OjE5MjkxNzgxOF0KOkZPUldBUkQg
-QUNDRVBUIFs1MzY6MzQ3OTJdCjpPVVRQVVQgQUNDRVBUIFs4NzQ3MDoxOTA0NDc5OV0KOlBP
-U1RST1VUSU5HIEFDQ0VQVCBbODgwMjE6MTkwODAyOTFdCi1BIFBSRVJPVVRJTkcgLXMgMTcy
-LjE2LjIwLjAvMjQgLW0gcG9saWN5IC0tZGlyIGluIC0tcG9sIGlwc2VjIC1qIENPTk5NQVJL
-IC0tc2V0LXhtYXJrIDB4YmEvMHhmZmZmZmZmZgotQSBQUkVST1VUSU5HIC1zIDE3Mi4xNi4x
-OS4wLzI0IC1tIHBvbGljeSAtLWRpciBpbiAtLXBvbCBpcHNlYyAtaiBDT05OTUFSSyAtLXNl
-dC14bWFyayAweGFhLzB4ZmZmZmZmZmYKLUEgUFJFUk9VVElORyAtZCAxNzIuMTYuMjAuMC8y
-NCAtbSBwb2xpY3kgLS1kaXIgaW4gLS1wb2wgaXBzZWMgLWogQ09OTk1BUksgLS1zZXQteG1h
-cmsgMHhiYi8weGZmZmZmZmZmCi1BIFBSRVJPVVRJTkcgLWQgMTcyLjE2LjE5LjAvMjQgLW0g
-cG9saWN5IC0tZGlyIGluIC0tcG9sIGlwc2VjIC1qIENPTk5NQVJLIC0tc2V0LXhtYXJrIDB4
-YWIvMHhmZmZmZmZmZgotQSBQUkVST1VUSU5HIC1wIHRjcCAtbSB0Y3AgLS1kcG9ydCA4MDgw
-IC1qIExPRyAtLWxvZy1wcmVmaXggIlBSRVJPVVRJTkcgIgotQSBQUkVST1VUSU5HIC1wIHRj
-cCAtbSB0Y3AgLS1zcG9ydCA4MDgwIC1qIExPRyAtLWxvZy1wcmVmaXggIlBSRVJPVVRJTkcg
-IgotQSBJTlBVVCAtcCB0Y3AgLW0gdGNwIC0tc3BvcnQgODA4MCAtaiBMT0cgLS1sb2ctcHJl
-Zml4ICJJTlBVVCAiCi1BIEZPUldBUkQgLXAgdGNwIC1tIHRjcCAtLWRwb3J0IDgwODAgLWog
-TE9HIC0tbG9nLXByZWZpeCAiRk9SV0FSRCAiCi1BIEZPUldBUkQgLXAgdGNwIC1tIHRjcCAt
-LXNwb3J0IDgwODAgLWogTE9HIC0tbG9nLXByZWZpeCAiRk9SV0FSRCAiCi1BIEZPUldBUkQg
-LWQgMTcyLjE2LjE5LjAvMjQgLW0gcG9saWN5IC0tZGlyIGluIC0tcG9sIGlwc2VjIC1qIENP
-Tk5NQVJLIC0tc2V0LXhtYXJrIDB4YWIvMHhmZmZmZmZmZgotQSBGT1JXQVJEIC1kIDE3Mi4x
-Ni4yMC4wLzI0IC1tIHBvbGljeSAtLWRpciBpbiAtLXBvbCBpcHNlYyAtaiBDT05OTUFSSyAt
-LXNldC14bWFyayAweGJiLzB4ZmZmZmZmZmYKLUEgUE9TVFJPVVRJTkcgLXAgdGNwIC1tIHRj
-cCAtLXNwb3J0IDgwODAgLWogTE9HIC0tbG9nLXByZWZpeCAiUE9TVFJPVVRJTkcgIgotQSBQ
-T1NUUk9VVElORyAtcCB0Y3AgLW0gdGNwIC0tZHBvcnQgODA4MCAtaiBMT0cgLS1sb2ctcHJl
-Zml4ICJQT1NUUk9VVElORyAiCkNPTU1JVAojIENvbXBsZXRlZCBvbiBXZWQgTWFyIDE5IDAx
-OjMwOjQwIDIwMTQKIyBHZW5lcmF0ZWQgYnkgaXB0YWJsZXMtc2F2ZSB2MS40LjIxIG9uIFdl
-ZCBNYXIgMTkgMDE6MzA6NDAgMjAxNAoqcmF3CjpQUkVST1VUSU5HIEFDQ0VQVCBbMTkzNzg3
-OjE5ODUwODQ0MF0KOk9VVFBVVCBBQ0NFUFQgWzEwOTUzNjozNjQ0MTQ0OV0KLUEgUFJFUk9V
-VElORyAtcyAxNzIuMTYuMTkuMS8yNCAtZCAxOTIuMTY4LjE3OC40MyAtcCB0Y3AgLS1kcG9y
-dCA4MDgwIC1qIFRSQUNFCi1BIFBSRVJPVVRJTkcgLXMgMTkyLjE2OC4xNzguNDMgLXAgdGNw
-IC0tc3BvcnQgODA4MCAtaiBUUkFDRQpDT01NSVQKIyBDb21wbGV0ZWQgb24gV2VkIE1hciAx
-OSAwMTozMDo0MCAyMDE0CgoK
---------------070200070704020803060902
-Content-Type: application/pgp-signature;
- name="capture.pcapng.sig"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="capture.pcapng.sig"
-
-iQIcBAABAgAGBQJTLhldAAoJEDg5KY9j7GZY11YP/3COj5gRcz9+gDagSeeybdhAhEYzNFZ5
-EhIaNg0hewGEuameIbTbEdigADfn431N558y7Z2k3wa1oLutI4NcuQWl3tJxTVj+HrKmGjLk
-YnBIqAdFw3lID7d2EfZIw7Mf/EJOLiRMEIAnZtBOzWYvBeOv1zsV+lmFLfZHMYgo4uH2ETU3
-POJcid8PHqYI6+nQH2+yYUAgab3cQuEJqg64IfphxHrze5pzK1is0t6Uoh00kl9LDtK/Y5Bp
-0e9X7mHhbO59MnfdeW8MxvXC3jza3AttILRpga9JqEl6RFPQB1ny/AgRh+qprUBa1ggtq1A0
-ozK74IG6VCz43zbqbOsTP7Z9in8TTe4NvcQntcVPt4x30+ynyU3uh9wHTlrRtDX0r8mp1kHT
-9MGuCKOdsE8ZXyrQelPwwuNDvoaT4yui3egVF74xISp7IHrRLVHTfITmjPST4QM1hbBz5iVm
-sPE/XBjIZ8SUjJlynJQxTJOTupM3JFQ0dDeCCqkd9ao5SI8Uw5+kWVKvhv1eFkeANktR9xu4
-lMrpLoHzwVO1EwUim15mCYRQQaT9G96PxI49MVVtWmidC1Ob54v96KxQLSlvSe/KSx8hVHzQ
-8NBHmCvT7uuOGBhnwT1ev4OjFqS+raKpjh9vfm9APGMF8md0UddlgALFK12BirBLbgDS6vz+
-/fqp
---------------070200070704020803060902
-Content-Type: application/pgp-signature;
- name="conntrack.log.sig"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="conntrack.log.sig"
-
-iQIcBAABAgAGBQJTLhldAAoJEDg5KY9j7GZYIlUQAJDj4sWc24qwr2Q97/0/UzDkPoui49Co
-XVQ1D8CcoanCGiD7rN3VPPqGk44Qv2f0mkwAhXX0fjlLTs2zeZXyqCu24nTr009Co24tmTvU
-JoYxrk710TuaA8Rg85MNswFSLXlABFfrCEnhODgX2F+4W6+EPXz/Mf6cjRd/P7Iz+n4X1Kae
-rjubp73aFGKu8dbQ3sZ6itA2Tue5euadpm/qUyUWOY4t8h5PUC1Bk1KcT74mgACiSQYQPcKe
-AzDmCKZkcHtomlemlK+sS5XPHJj5UgvE1fSCgip6WrQi0b0HVCNvwwCj8DzZb2FPUUOimE+V
-JeEMinR5YTI3fCnciEvkGXMRb1C4VbvYN4X2v2hsrjSizhKlJe5WMbn0KE+enOiPmIrL8trF
-SeLKQx+feHkJq6swdLtCKGPZblmG7X/WrIedqAK/LS5ED15utC0/2/aYMVlma5I7zh0vpQ6o
-fbpH/4CNCB0YmJU6jQC617yYY+A8XfT7gqwN/mYtrEP3WT5/QztE0teizydP1oZS/n9+PoGH
-a2NSXxFk/o4OCTt//XEPMEfA7LC8uWT3mWsxh/pPjUG310MJE4OOrWxutHOM/VQiRB2RIMBE
-KS2t/EIAebTq6kcq+DcKWUVjIYfxSkmDBZ4OUsOFfNc8+wo1J/BRSmG4PBkAYPc4yLEf4/Su
-qKvb
---------------070200070704020803060902
-Content-Type: application/pgp-signature;
- name="snippet.log.sig"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="snippet.log.sig"
-
-iQIcBAABAgAGBQJTLhldAAoJEDg5KY9j7GZYieYP/2uzJpsP0cGkTD9eCmhlTAywgYJSInyT
-agzxrf19nviywRQZqKji1v+NCKi90MGAo6Y0i3YFmFSvpgOYvrBu2xQH00/IXUYFUCXvQCFq
-FP9urho93sqCK2woAAniVDmnxrxLJRvmtKEEbnmxRRsPqaVUAQ3dJ+jfhXgfS/Gh/Z04ZoXC
-4av8IzduG7WqrMhSxKA2HJJTftDrrfqySPznR+ELqfUfRW6yA/SNptg27IT02wsGkNrUI7uK
-cemIaijrAbtMyTfCDZvVwW56243ZkkTajEe7Q25Htp2wZ+kHhZv/idwj/xi49UETpOAxLUJU
-RyJ+xmhQ60fjJbX8jpUckSeTJNZL/PBqqrI9fCYz0MiweeREDtru45aq+qPrv7HG/5vlfogR
-wKoCMRwC8o4TNyG5PTS9ybOnM55KpOhfiKXzOWA5gUoOBpvnTcLsu6GXeqcItclKhEsk8a9m
-2CFNDRXXOn2uXIhnJvt/ILHe2Oje1xLNyZg4535Vgg2fCjVFeLf7Lj0XVHFnmx9Jc0kbNslU
-Cf82cF9VMBxYluTrrkOlqSTpsIKUar56BWGSU1U6mHLEfTiKFOrsXMmCOu7lYyD0cFD+x6XG
-mR9oe8NOFlb+C7CEHDakxUdbDOUUO88P6zVsgGLSglMLumtxNoLQxThelYQHp4okNHVjPCpq
-Yv4A
---------------070200070704020803060902
-Content-Type: application/pgp-signature;
- name="debug.ipt.sig"
-Content-Transfer-Encoding: base64
-Content-Disposition: attachment;
- filename="debug.ipt.sig"
-
-iQIcBAABAgAGBQJTLhldAAoJEDg5KY9j7GZYAacP/2/woNir1q5MeKjtusfSWHegCgU6zmPx
-+2gwemgWKgLIAN5KyJt+mz7F5HpcsOlPw8aZBz7SIyAmoPymDPdFpfBqK5gBpX6qL/juUKCk
-YSfo32VomVpZrVcg+/KQ2KEnV09lao3S94xi5N7zvpuY1JBS1S6wMSggc9Ygfq+GGlP4EBUI
-OxXq0Tghhw+srnoWepRApjeipdoRmLc2mXrFkt3pBfmTe3yxwBsxVD2TQjBUdm/oi1IJci8t
-znX0vi+sJwanjhoD+KLsSC/XLddvSLDk/yWTrAeSDwLlsLDpK94qgXREe4sqIomfdiXVCGKr
-DqhAVJfZFmIQUx7YNzG3DRHfsaFLB+eh/9rfiMXvuguJ734s8Re5UJCt7WGJ8KM+NVIas04n
-dpn5uVICyVBO8lHkHNsXFUmXsvFuDLuo1v7wIYMK8yePKg0HPCAd6VPXvL4eLhwGSZBjecPC
-NVdCQBR0mDAipc8MaLDK8/bcB1ShN55sCXrp+0LiG1KiGQJid6/aEcWqZtKVrm0RREz35Qwc
-yzdciRZWtUAtf+sZlk7NoxPLTEng9R2o/aWnHoQLlJKTlF4H7PxsK2ugZhSgIOWaawBEyLq0
-7xGD9jKc90d2qJ3zwVI2w8h12ULl1w58nugEWlmCETFNAFEKmIwYg4d1d61GOZndf1Ki1syj
-kGtE
---------------070200070704020803060902--
+--
+To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
+el" in
+the body of a message to majordomo@vger.kernel.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
