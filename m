@@ -1,113 +1,81 @@
-From: behanw@converseincode.com
-Subject: [PATCH v4] net: netfilter: LLVMLinux: vlais-netfilter
-Date: Sat, 22 Mar 2014 23:55:44 -0700
-Message-ID: <1395557744-25248-1-git-send-email-behanw@converseincode.com>
-References: <063D6719AE5E284EB5DD2968C1650D6D0F6E0F8D@AcuExch.aculab.com>
+From: /dev/rob0 <rob0@gmx.co.uk>
+Subject: Re: forwarding between subnets
+Date: Sun, 23 Mar 2014 16:42:44 -0500
+Message-ID: <20140323214244.GO13999@harrier.slackbuilds.org>
+References: <1395441794.23816.495.camel@worklian>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=converseincode.com; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-type:content-transfer-encoding;
-        bh=ilB7JjChXnEweu/D2/HNApCMZAVE7pK5yXq3jXz3LXQ=;
-        b=Q9/jC5KdDxiljxcG1w8+54sOkR1d7C0Svk+m13soNCOlMiZEvJ5cf3kWnjR7NWsSzR
-         QC/0usx5q4zFw66RmK8buKPct+6vtbaAviSw/b4hMpN33WrzxaJaXXs+J6JvL3f1w79s
-         2IzY8BE9xJ4+rxc9xLl8fFhclFDvFAhQlxMcg=
-In-Reply-To: <063D6719AE5E284EB5DD2968C1650D6D0F6E0F8D@AcuExch.aculab.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1395441794.23816.495.camel@worklian>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
-To: davem@davemloft.net
-Cc: pablo@netfilter.org, kaber@trash.net, kadlec@blackhole.kfki.hu, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, dwmw2@infradead.org, pageexec@freemail.hu, Mark Charlebois <charlebm@gmail.com>, Behan Webster <behanw@converseincode.com>, =?UTF-8?q?Vin=C3=ADcius=20Tinti?= <viniciustinti@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-=46rom: Mark Charlebois <charlebm@gmail.com>
+On Fri, Mar 21, 2014 at 03:43:14PM -0700, Bob Miller wrote:
+> I have a firewall with 3 network ports; one for internet an 
+> connection and two for segregated subnets that share the
+> internet connection.
+> 
+> I want to allow one computer on one subnetA to reach another 
+> computer on the other subnetB.  It is not reaching its
+> destination.  When problems like this arise, I turn to the 
+> nf-packet-flow diagram and set up logging rules to make sure
+> the packets are going where I think they are.
 
-Replaced non-standard C use of Variable Length Arrays In Structs (VLAIS=
-) in
-xt_repldata.h with a C99 compliant flexible array member and then calcu=
-lated
-offsets to the other struct members. These other members aren't referen=
-ced by
-name in this code, however this patch maintains the same memory layout =
-and
-padding as was previously accomplished using VLAIS.
+Good procedure. You can use -j TRACE in -t raw for excruciating 
+detail, or just -j LOG rules in relevant places in other tables' 
+chains.
 
-Had the original structure been ordered differently, with the entries V=
-LA at
-the end, then it could have been a flexible member, and this patch woul=
-d have
-been a lot simpler. However since the data stored in this structure is
-ultimately exported to userspace, the order of this structure can't be =
-changed.
+> I have an existing rule in nat/PREROUTING to do SNAT on all
+> packets from subnetA --to the internet-facing IP, so I write
+> a rule before that to ACCEPT packets from source IP in
+> subnetA to dest IP in subnetB.
 
-This patch makes no attempt to change the existing behavior, merely the=
- way in
-which the current layout is accomplished using standard C99 constructs.=
- As such
-the code can now be compiled with either gcc or clang.
+Why is nat/PREROUTING relevant? Your SNAT rule should limit by 
+outgoing interface, "-o ethX" for example. Packets from A to B 
+(including the reverse) should never match your SNAT rule.
 
-This version of the patch removes the trailing alignment that the VLAIS
-structure would allocate in order to simplify the patch.
+> I write two LOG rules to match packets with the dest and place
+> one immediately before and immediately after my ACCEPT rule.
+> The packet is logged before but not after the ACCEPT rule.  I
+> believe this to mean the packet is accepted at nat/PREROUTING
+> and should move to the next step in the diagram.
 
-Author: Mark Charlebois <charlebm@gmail.com>
-Signed-off-by: Mark Charlebois <charlebm@gmail.com>
-Signed-off-by: Behan Webster <behanw@converseincode.com>
-Signed-off-by: Vin=C3=ADcius Tinti <viniciustinti@gmail.com>
----
- net/netfilter/xt_repldata.h | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
+I would concur.
 
-diff --git a/net/netfilter/xt_repldata.h b/net/netfilter/xt_repldata.h
-index 6efe4e5..8fd3241 100644
---- a/net/netfilter/xt_repldata.h
-+++ b/net/netfilter/xt_repldata.h
-@@ -5,23 +5,35 @@
-  * they serve as the hanging-off data accessed through repl.data[].
-  */
-=20
-+/* tbl has the following structure equivalent, but is C99 compliant:
-+ * struct {
-+ *	struct type##_replace repl;
-+ *	struct type##_standard entries[nhooks];
-+ *	struct type##_error term;
-+ * } *tbl;
-+ */
-+
- #define xt_alloc_initial_table(type, typ2) ({ \
- 	unsigned int hook_mask =3D info->valid_hooks; \
- 	unsigned int nhooks =3D hweight32(hook_mask); \
- 	unsigned int bytes =3D 0, hooknum =3D 0, i =3D 0; \
- 	struct { \
- 		struct type##_replace repl; \
--		struct type##_standard entries[nhooks]; \
--		struct type##_error term; \
--	} *tbl =3D kzalloc(sizeof(*tbl), GFP_KERNEL); \
-+		struct type##_standard entries[]; \
-+	} *tbl; \
-+	struct type##_error *term; \
-+	size_t term_offset =3D (offsetof(typeof(*tbl), entries[nhooks]) + \
-+		__alignof__(*term) - 1) & ~(__alignof__(*term) - 1); \
-+	tbl =3D kzalloc(term_offset + sizeof(*term), GFP_KERNEL); \
- 	if (tbl =3D=3D NULL) \
- 		return NULL; \
-+	term =3D (struct type##_error *)&(((char *)tbl)[term_offset]); \
- 	strncpy(tbl->repl.name, info->name, sizeof(tbl->repl.name)); \
--	tbl->term =3D (struct type##_error)typ2##_ERROR_INIT;  \
-+	*term =3D (struct type##_error)typ2##_ERROR_INIT;  \
- 	tbl->repl.valid_hooks =3D hook_mask; \
- 	tbl->repl.num_entries =3D nhooks + 1; \
- 	tbl->repl.size =3D nhooks * sizeof(struct type##_standard) + \
--	                 sizeof(struct type##_error); \
-+			 sizeof(struct type##_error); \
- 	for (; hook_mask !=3D 0; hook_mask >>=3D 1, ++hooknum) { \
- 		if (!(hook_mask & 1)) \
- 			continue; \
---=20
-1.8.3.2
+> On the diagram, the next thing is a routing decision, then
+> the packet should show up in mangle/INPUT or mangle/FORWARD.
+> I again write a log rule to match the dest IP for each of 
+> mangle/INPUT and mangle/FORWARD. They are the only rules on
+> those chains, but the packet is not logged on either chain.
 
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+No idea about that. I definitely would not have created a new, 
+otherwise unused table just to try to track a packet.
+
+> Examining the diagram, the packet is either being dropped down
+> into the link layer or the routing decision is doing something
+> else with the packet.  I understand that the link layer
+> requires ebtables and that is not installed on this firewall,
+> so the problem must be the routing decision.
+
+Huh? Did you put any -j LOG rules in filter/FORWARD? Why not?
+
+> If I check the routing table, I have 4 routes, one to each of
+> the respective subnets for each port, and a default via the
+> internet port. These routes are apparently working as expected
+> in that packets are finding their way to the internet and back.
+> 
+> It seems either my troubleshooting process is broken, or
+> something unexpected (to me) is happening in that routing
+> process.  Can anyone drop me a clue?
+
+I don't know why your -t mangle rules are not logging, but that
+seems to have distracted your troubleshooting with the false idea
+about the routing decision quietly eating your packets. Again, 
+filter/FORWARD is the place you want to be.
+-- 
+  http://rob0.nodns4.us/
+  Offlist GMX mail is seen only if "/dev/rob0" is in the Subject:
