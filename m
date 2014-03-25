@@ -1,69 +1,60 @@
-From: Bob Miller <bob@computerisms.ca>
-Subject: Re: forwarding between subnets
-Date: Mon, 24 Mar 2014 14:06:17 -0700
-Message-ID: <1395695177.28040.20.camel@worklian>
-References: <1395441794.23816.495.camel@worklian>
-	 <20140323214244.GO13999@harrier.slackbuilds.org>
-Reply-To: bob@computerisms.ca
+From: Bill Shirley <bill@philly.polymerindustries.biz>
+Subject: ipsec using mark on kernel 3.13.5-101.fc19.x86_64 is broken
+Date: Tue, 25 Mar 2014 00:56:47 -0400
+Message-ID: <53310C8F.8070106@philly.polymerindustries.biz>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20140323214244.GO13999@harrier.slackbuilds.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Thanks for your reply,
+This may be difficult to describe, but here goes:
 
-> > I have an existing rule in nat/PREROUTING to do SNAT on all
-> > packets from subnetA --to the internet-facing IP, so I write
-> > a rule before that to ACCEPT packets from source IP in
-> > subnetA to dest IP in subnetB.
-> 
-> Why is nat/PREROUTING relevant? Your SNAT rule should limit by 
-> outgoing interface, "-o ethX" for example. Packets from A to B 
-> (including the reverse) should never match your SNAT rule.
+I have set up an ipsec tunnel between Server-A and Server-B using public IP addresses and configured the ip xfrm state 
+and ip xfrm policy database to use marks.  This works correctly if both servers are not using a newer kernel.  I have 
+this working with (1st setup) :
+Server-A kernel 3.6.9-2.fc17.x86_64 <-> Server-B kernel 3.6.3-1.fc17.x86_64 (no marks this side)
+also:
+Server-A kernel 3.6.9-2.fc17.x86_64 <-> Server-B kernel 3.4.2-1.fc16.x86_64
 
-It's actually not relevant, this was just me confusing myself further.
-SNAT happens in POSTROUTING, not PREROUTING.  The point I was after was
-that I was paying attention to the fact that order matters.
+However, this setup doesn't work completely with this setup (2nd setup) :
+Server-A kernel 3.4.2-1.fc16.x86_64 <-> Server-B kernel 3.13.5-101.fc19.x86_64
+nor with:
+Server-A kernel 2.6.33.7-server-2mnb (Mandriva 2010, no marks this side) <-> Server-B kernel 3.12.11-201.fc19.x86_64
 
-> > On the diagram, the next thing is a routing decision, then
-> > the packet should show up in mangle/INPUT or mangle/FORWARD.
-> > I again write a log rule to match the dest IP for each of 
-> > mangle/INPUT and mangle/FORWARD. They are the only rules on
-> > those chains, but the packet is not logged on either chain.
-> 
-> No idea about that. I definitely would not have created a new, 
-> otherwise unused table just to try to track a packet.
+Keep in mind that this is a TUNNEL ipsec using MARKS (mark 12032/0xff00).  On the 2nd setup, all traffic flows for:
+PC-A <-> Server-A <-> Server-B <-> PC-B
+PC-A <-> Server-A <-> Server-B
+                   Server-A <-> Server-B <-> PC-B
 
-I am under the impression from the man page that these are built in
-chains.  Do packets simply not traverse these chains if there are no
-rules in them? regardless:
+Actual values (10.0.0.0/8 and 192.168.64.0/23 (yes, /23)):
+10.96.0.8 = PC-A
+10.96.0.9 = Server-A
+192.168.64.1 = Server-B
+192.168.65.137 = PC-B
 
-> > Examining the diagram, the packet is either being dropped down
-> > into the link layer or the routing decision is doing something
-> > else with the packet.  I understand that the link layer
-> > requires ebtables and that is not installed on this firewall,
-> > so the problem must be the routing decision.
-> 
-> Huh? Did you put any -j LOG rules in filter/FORWARD? Why not?
+However, SSH doesn't work for (either direction):
+Server-A <-> Server-B
 
-Yes, I did, actually one of the very first things I did, it is listed as
-the very first rule in filter/FORWARD.  The packet did not get logged
-there either.  My expectations being that the packet would get logged
-before any decision is made to block it.  Which is what prompted me to
-start logging the packet before it arrived at filter/FORWARD to see
-where it was getting lost...
+These do work:
+ping
+dig axfr
+telnet imap
+links http://
 
-> I don't know why your -t mangle rules are not logging, but that
-> seems to have distracted your troubleshooting with the false idea
-> about the routing decision quietly eating your packets. Again, 
-> filter/FORWARD is the place you want to be.
+I get incomplete response (takes a long time):
+from Server-B: smbclient -L 10.96.0.9
 
-Accepted, if not fully understood.  If my conclusion about the routing
-decision is false, then there is clearly still some detail I am
-overlooking or am unaware of.  Google is my friend, he will tell me
-eventually...
+However this works swiftly:
+from Server-A: smbclient -L 192.168.64.1
+
+Something about ipsec in the OUTPUT chain on newer kernels is broken.  In the Server-A mangle table I can put a dummy 
+mark (outside the xfrm mask, of course) on outgoing SSH traffic and ESP traffic and observe that the ssh daemon on the 
+3.13.5 kernel DOES respond to all packets but not all packets are encrypted (-p esp).
+
+Anyone else using marks for an ipsec tunnel on the newer kernels? How do I fix this?  Wrong list?
+
+Bill Shirley
 
