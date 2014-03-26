@@ -1,60 +1,89 @@
-From: Bill Shirley <bill@philly.polymerindustries.biz>
-Subject: ipsec using mark on kernel 3.13.5-101.fc19.x86_64 is broken
-Date: Tue, 25 Mar 2014 00:56:47 -0400
-Message-ID: <53310C8F.8070106@philly.polymerindustries.biz>
+From: Jack Bates <uo4zau@nottheoilrig.com>
+Subject: ICMP redirects routing non-web traffic to proxy
+Date: Wed, 26 Mar 2014 09:46:27 -0700
+Message-ID: <53330463.8090506@nottheoilrig.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=nottheoilrig.com;
+	s=mail; t=1395852391;
+	bh=2A1SPRMflmD8TvjTW2wWnE7AfuhFrGstpdXpXRz0dKk=;
+	h=Message-ID:Date:From:MIME-Version:To:Subject:Content-Type:
+	 Content-Transfer-Encoding;
+	b=oGBf+in0oNHKyX3g5h0Uqq+y9EpdXELrzQ9XuNLvvb5AD3Bl0Zh0gc+Vx9DYpUa3Z
+	 matZMQXDFjbnEkqoUuiwB6vMG/+byEIRpIxzn6pjhkCa7qT7rzvcbJabp81MTu2PTK
+	 f1YB87799rtm+XR8oYT9+dlQMcmwrshALl0mMxQ0=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-This may be difficult to describe, but here goes:
+I've read cautions that ICMP redirects are a sign you should fix your 
+routing, but we've been using them in our small network as a poor man's 
+routing protocol. We have a wifi point-to-multipoint setup connecting 
+five routers (five subnetworks) and a default gateway. Static routes to 
+each of the subnets are manually configured in the default gateway. We 
+want to keep traffic between the subnets off the main gateway, but ICMP 
+redirects already achieve this pretty effectively. The network is at a 
+school in East Africa with limited network administration capacity, so 
+we decided that relying on ICMP redirects (which work out of the box) 
+was preferable to manually keeping static routes synchronized, or 
+setting up RIP. I confirmed that the routing cache in each router 
+contains routes directly to the other subnets, and that traffic reaching 
+the main gateway mostly doesn't include traffic between the subnets.
 
-I have set up an ipsec tunnel between Server-A and Server-B using public IP addresses and configured the ip xfrm state 
-and ip xfrm policy database to use marks.  This works correctly if both servers are not using a newer kernel.  I have 
-this working with (1st setup) :
-Server-A kernel 3.6.9-2.fc17.x86_64 <-> Server-B kernel 3.6.3-1.fc17.x86_64 (no marks this side)
-also:
-Server-A kernel 3.6.9-2.fc17.x86_64 <-> Server-B kernel 3.4.2-1.fc16.x86_64
+Great.
 
-However, this setup doesn't work completely with this setup (2nd setup) :
-Server-A kernel 3.4.2-1.fc16.x86_64 <-> Server-B kernel 3.13.5-101.fc19.x86_64
-nor with:
-Server-A kernel 2.6.33.7-server-2mnb (Mandriva 2010, no marks this side) <-> Server-B kernel 3.12.11-201.fc19.x86_64
+Until we installed an intercepting proxy. We installed a caching proxy 
+to cut down on latency and save bandwidth, and we decided against an 
+explicit proxy to avoid reconfiguring workstations, again because there 
+is limited network administration capacity available.
 
-Keep in mind that this is a TUNNEL ipsec using MARKS (mark 12032/0xff00).  On the 2nd setup, all traffic flows for:
-PC-A <-> Server-A <-> Server-B <-> PC-B
-PC-A <-> Server-A <-> Server-B
-                   Server-A <-> Server-B <-> PC-B
+We added the proxy (192.168.1.2) to the wifi point-to-multipoint network 
+(192.168.1.0/24) it's on the same switch as the main gateway 
+(192.168.1.1). The gateway is running OpenWrt and the proxy is running 
+Apache Traffic Server on Debian.
 
-Actual values (10.0.0.0/8 and 192.168.64.0/23 (yes, /23)):
-10.96.0.8 = PC-A
-10.96.0.9 = Server-A
-192.168.64.1 = Server-B
-192.168.65.137 = PC-B
+We use the following commands on the gateway to route web traffic to the 
+proxy:
 
-However, SSH doesn't work for (either direction):
-Server-A <-> Server-B
+# Route web traffic to the proxy, except traffic already originating
+# from the proxy.  Matching web traffic by port number isn't perfect,
+# but it's good enough.  This is the MAC address of the proxy.
+# Because it's configured to make origin connections transparent, this
+# is the only way to match traffic already originating from the proxy:
+# 
+http://thread.gmane.org/gmane.comp.security.firewalls.netfilter.general/45405
 
-These do work:
-ping
-dig axfr
-telnet imap
-links http://
+ip route add table 1 via 192.168.1.2
+ip rule add fwmark 1/1 table 1
 
-I get incomplete response (takes a long time):
-from Server-B: smbclient -L 10.96.0.9
+iptables -A PREROUTING -t mangle -m mac --mac-source 00:23:8b:3c:a3:14 
+-j RETURN
+iptables -A PREROUTING -t mangle -p tcp --dport 80 -j MARK --set-mark 1/1
+iptables -A PREROUTING -t mangle -i eth1 -p tcp --sport 80 -j MARK 
+--set-mark 1/1
 
-However this works swiftly:
-from Server-A: smbclient -L 192.168.64.1
+On the proxy we use the following commands to deliver traffic to the 
+proxy software:
 
-Something about ipsec in the OUTPUT chain on newer kernels is broken.  In the Server-A mangle table I can put a dummy 
-mark (outside the xfrm mask, of course) on outgoing SSH traffic and ESP traffic and observe that the ssh daemon on the 
-3.13.5 kernel DOES respond to all packets but not all packets are encrypted (-p esp).
+ip route add local default table 1 dev lo
+ip rule add fwmark 1/1 table 1
 
-Anyone else using marks for an ipsec tunnel on the newer kernels? How do I fix this?  Wrong list?
+iptables -A PREROUTING -t mangle -m addrtype --dst-type LOCAL -j RETURN\
+iptables -A PREROUTING -t mangle -p tcp -j TPROXY --on-port 8080 
+--tproxy-mark 1/1\
 
-Bill Shirley
+When a client in one of the subnets visits a website 
+(http://example.com) the gateway routes the request to the proxy and the 
+proxy routes the response back to the client via the gateway. No problem.
 
+The problem is that the gateway then sends an ICMP redirect to the 
+router in the client's subnet which caches a route to the origin 
+(example.com) via the proxy (192.168.1.2). This is a problem if any 
+client in the same subnet then attempts to exchange any non-web traffic 
+with the same origin, e.g. if the client is redirected from 
+http://example.com to https://example.com. The cache routes traffic to 
+the proxy that we wouldn't normally intercept. Fail.
+
+Do you see any simple or elegant solutions to this problem?
