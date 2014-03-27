@@ -1,54 +1,53 @@
-From: Zoltan Kiss <zoltan.kiss-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org>
-Subject: Re: [PATCH v4] core, nfqueue,
- openvswitch: Orphan frags in skb_zerocopy and handle errors
-Date: Wed, 26 Mar 2014 22:38:48 +0000
-Message-ID: <533356F8.7070307@citrix.com>
-References: <1395397894-9493-1-git-send-email-zoltan.kiss@citrix.com>	<20140326.155958.1928261590856069753.davem@davemloft.net>
- <20140326.161242.576245997077162750.davem@davemloft.net>
-Mime-Version: 1.0
-Content-Transfer-Encoding: base64
-Return-path: <dev-bounces-yBygre7rU0TnMu66kgdUjQ@public.gmane.org>
-In-Reply-To: <20140326.161242.576245997077162750.davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://openvswitch.org/mailman/options/dev>,
- <mailto:dev-request-yBygre7rU0TnMu66kgdUjQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://openvswitch.org/pipermail/dev>
-List-Post: <mailto:dev-yBygre7rU0TnMu66kgdUjQ@public.gmane.org>
-List-Help: <mailto:dev-request-yBygre7rU0TnMu66kgdUjQ@public.gmane.org?subject=help>
-List-Subscribe: <http://openvswitch.org/mailman/listinfo/dev>,
- <mailto:dev-request-yBygre7rU0TnMu66kgdUjQ@public.gmane.org?subject=subscribe>
-Errors-To: dev-bounces-yBygre7rU0TnMu66kgdUjQ@public.gmane.org
-Sender: "dev" <dev-bounces-yBygre7rU0TnMu66kgdUjQ@public.gmane.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: David Miller <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>
-Cc: netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mszeredi-AlSwsSmVLrQ@public.gmane.org, kvm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mst-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, jasowang-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, edumazet-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, JBeulich-IBi9RG/b67k@public.gmane.org, therbert-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, dev-yBygre7rU0TnMu66kgdUjQ@public.gmane.org, herbert-lOAM2aK0SrRLBo1qDEOMRrpzq4S04n8Q@public.gmane.org, kadlec-K40Dz/62t/MgiyqX0sVFJYdd74u8MsAO@public.gmane.org, xen-devel-GuqFBffKawtpuQazS67q72D2FQJk+8+b@public.gmane.org, pablo-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org, jiri-rHqAuBHg3fBzbRFIqnYvSA@public.gmane.org, Paul.Durrant-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dborkman-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org
+From: Andrey Vagin <avagin@openvz.org>
+Subject: [PATCH] netfilter: nf_conntrack: reserve two bytes for nf_ct_ext->len
+Date: Thu, 27 Mar 2014 19:32:34 +0400
+Message-ID: <1395934354-13226-1-git-send-email-avagin@openvz.org>
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: linux-kernel@vger.kernel.org
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, vvs@parallels.com, Andrey Vagin <avagin@openvz.org>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>
 
-T24gMjYvMDMvMTQgMjA6MTIsIERhdmlkIE1pbGxlciB3cm90ZToKPiBGcm9tOiBEYXZpZCBNaWxs
-ZXIgPGRhdmVtQGRhdmVtbG9mdC5uZXQ+Cj4gRGF0ZTogV2VkLCAyNiBNYXIgMjAxNCAxNTo1OTo1
-OCAtMDQwMCAoRURUKQo+Cj4+IEZyb206IFpvbHRhbiBLaXNzIDx6b2x0YW4ua2lzc0BjaXRyaXgu
-Y29tPgo+PiBEYXRlOiBGcmksIDIxIE1hciAyMDE0IDEwOjMxOjM0ICswMDAwCj4+Cj4+PiBza2Jf
-emVyb2NvcHkgY2FuIGNvcHkgZWxlbWVudHMgb2YgdGhlIGZyYWdzIGFycmF5IGJldHdlZW4gc2ti
-cywgYnV0IGl0IGRvZXNuJ3QKPj4+IG9ycGhhbiB0aGVtLiBBbHNvLCBpdCBkb2Vzbid0IGhhbmRs
-ZSBlcnJvcnMsIHNvIHRoaXMgcGF0Y2ggdGFrZXMgY2FyZSBvZiB0aGF0Cj4+PiBhcyB3ZWxsLCBh
-bmQgbW9kaWZ5IHRoZSBjYWxsZXJzIGFjY29yZGluZ2x5LiBza2JfdHhfZXJyb3IoKSBpcyBhbHNv
-IGFkZGVkIHRvCj4+PiB0aGUgY2FsbGVycyBzbyB0aGV5IHdpbGwgc2lnbmFsIHRoZSBmYWlsZWQg
-ZGVsaXZlcnkgdG93YXJkcyB0aGUgY3JlYXRvciBvZiB0aGUKPj4+IHNrYi4KPj4+Cj4+PiBTaWdu
-ZWQtb2ZmLWJ5OiBab2x0YW4gS2lzcyA8em9sdGFuLmtpc3NAY2l0cml4LmNvbT4KPj4KPj4gQXBw
-bGllZCwgdGhhbmtzIFpvbHRhbi4KPgo+IEFjdHVhbGx5LCBab2x0YW4sIHlvdSBoYXZlIHRvIGZp
-eCB0aGlzOgo+Cj4gbmV0L2NvcmUvc2tidWZmLmM6IEluIGZ1bmN0aW9uIKFza2JfemVyb2NvcHmi
-Ogo+IG5ldC9jb3JlL3NrYnVmZi5jOjIxNzI6Mjogd2FybmluZzogcGFzc2luZyBhcmd1bWVudCAx
-IG9mIKFza2Jfb3JwaGFuX2ZyYWdzoiBkaXNjYXJkcyChY29uc3SiIHF1YWxpZmkKPiBlciBmcm9t
-IHBvaW50ZXIgdGFyZ2V0IHR5cGUgW2VuYWJsZWQgYnkgZGVmYXVsdF0KPiBJbiBmaWxlIGluY2x1
-ZGVkIGZyb20gaW5jbHVkZS9saW51eC90Y3AuaDoyMTowLAo+ICAgICAgICAgICAgICAgICAgIGZy
-b20gbmV0L2NvcmUvc2tidWZmLmM6NTA6Cj4gaW5jbHVkZS9saW51eC9za2J1ZmYuaDoxOTA0OjE5
-OiBub3RlOiBleHBlY3RlZCChc3RydWN0IHNrX2J1ZmYgKqIgYnV0IGFyZ3VtZW50IGlzIG9mIHR5
-cGUgoWNvbnN0IHN0cgo+IHVjdCBza19idWZmICqiCj4gbmV0L2NvcmUvc2tidWZmLmM6MjE3Mzoz
-OiB3YXJuaW5nOiBwYXNzaW5nIGFyZ3VtZW50IDEgb2YgoXNrYl90eF9lcnJvcqIgZGlzY2FyZHMg
-oWNvbnN0oiBxdWFsaWZpZXIgZgo+IHJvbSBwb2ludGVyIHRhcmdldCB0eXBlIFtlbmFibGVkIGJ5
-IGRlZmF1bHRdCj4gbmV0L2NvcmUvc2tidWZmLmM6NjQyOjY6IG5vdGU6IGV4cGVjdGVkIKFzdHJ1
-Y3Qgc2tfYnVmZiAqoiBidXQgYXJndW1lbnQgaXMgb2YgdHlwZSChY29uc3Qgc3RydWN0IHNrXwo+
-IGJ1ZmYgKqIKPgoKT2ssIHJlc3VibWl0dGVkLiAnZnJvbScgaXMgbm93IG5vdCBhIGNvbnN0IHBh
-cmFtZXRlciwgYmVjYXVzZSAKc2tiLT5wZm1lbWFsbG9jIG1pZ2h0IGNoYW5nZS4KClpvbGkKX19f
-X19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18KZGV2IG1haWxpbmcg
-bGlzdApkZXZAb3BlbnZzd2l0Y2gub3JnCmh0dHA6Ly9vcGVudnN3aXRjaC5vcmcvbWFpbG1hbi9s
-aXN0aW5mby9kZXYK
+"len" contains sizeof(nf_ct_ext) and size of extensions. In a worst
+case it can contain all extensions. Bellow you can find sizes for all
+types of extensions. Their sum is definitely bigger than 256.
+
+nf_ct_ext_types[0]->len = 24
+nf_ct_ext_types[1]->len = 32
+nf_ct_ext_types[2]->len = 24
+nf_ct_ext_types[3]->len = 32
+nf_ct_ext_types[4]->len = 152
+nf_ct_ext_types[5]->len = 2
+nf_ct_ext_types[6]->len = 16
+nf_ct_ext_types[7]->len = 8
+
+I have seen "len" up to 280 and my host has crashes w/o this patch.
+
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Patrick McHardy <kaber@trash.net>
+Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: "David S. Miller" <davem@davemloft.net>
+Signed-off-by: Andrey Vagin <avagin@openvz.org>
+---
+ include/net/netfilter/nf_conntrack_extend.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/net/netfilter/nf_conntrack_extend.h b/include/net/netfilter/nf_conntrack_extend.h
+index 956b175..36fd6bf 100644
+--- a/include/net/netfilter/nf_conntrack_extend.h
++++ b/include/net/netfilter/nf_conntrack_extend.h
+@@ -48,7 +48,7 @@ enum nf_ct_ext_id {
+ struct nf_ct_ext {
+ 	struct rcu_head rcu;
+ 	u8 offset[NF_CT_EXT_NUM];
+-	u8 len;
++	u16 len;
+ 	char data[0];
+ };
+ 
+-- 
+1.8.5.3
+
