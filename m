@@ -1,35 +1,67 @@
-From: Bob Miller <bob@computerisms.ca>
-Subject: Re: forwarding between subnets
-Date: Thu, 27 Mar 2014 16:00:03 -0700
-Message-ID: <1395961203.28040.151.camel@worklian>
-References: <1395441794.23816.495.camel@worklian>
-	 <20140323214244.GO13999@harrier.slackbuilds.org>
-	 <1395695177.28040.20.camel@worklian>
-Reply-To: bob@computerisms.ca
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+From: Andrey Vagin <avagin@openvz.org>
+Subject: [PATCH] netfilter: nf_conntrack: reserve two bytes for nf_ct_ext->len (v3)
+Date: Fri, 28 Mar 2014 13:54:32 +0400
+Message-ID: <1396000472-6130-1-git-send-email-avagin@openvz.org>
+References: <20140328092449.GA20844@paralelels.com>
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1395695177.28040.20.camel@worklian>
+In-Reply-To: <20140328092449.GA20844@paralelels.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: linux-kernel@vger.kernel.org
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, vvs@parallels.com, Andrey Vagin <avagin@openvz.org>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "David S. Miller" <davem@davemloft.net>
 
-Hello List,
+"len" contains sizeof(nf_ct_ext) and size of extensions. In a worst
+case it can contain all extensions. Bellow you can find sizes for all
+types of extensions. Their sum is definitely bigger than 256.
 
-Follow up for the sake of completeness:
+nf_ct_ext_types[0]->len = 24
+nf_ct_ext_types[1]->len = 32
+nf_ct_ext_types[2]->len = 24
+nf_ct_ext_types[3]->len = 32
+nf_ct_ext_types[4]->len = 152
+nf_ct_ext_types[5]->len = 2
+nf_ct_ext_types[6]->len = 16
+nf_ct_ext_types[7]->len = 8
 
-> Accepted, if not fully understood.  If my conclusion about the routing
-> decision is false, then there is clearly still some detail I am
-> overlooking or am unaware of.  Google is my friend, he will tell me
-> eventually...
+I have seen "len" up to 280 and my host has crashes w/o this patch.
 
-I TRACE'd, LOG'd, and ACCEPT'd.  I fsck'd, listchecked, and
-googlechecked.  I devalued and revalued /proc/this and /proc/that.  I
-logged packets, programs and martians.  I updated, upgraded, and
-upyours'd it.  I took the nics out and put them in them in a newly built
-box, copied the config files, and (queue gleaming beam of sunshine and
-chorus of glorious angel voices) TADAHHH!  It just works....
+The right way to fix this problem is reducing the size of the ecache
+extension (4) and Florian is going to do this, but these changes will
+be quite large to be appropriate for a stable tree.
 
-Thanks for taking the time to provide input, much appreciated...
+v2: rearrange the extension so ECACHE comes last. This is required to
+prevent overflow of nf_ct_ext->offset.
+v3: The previous attempt of rearranging constants doesn't work here,
+because extensions may be added in a random order.
+
+Fixes: 5b423f6a40a0 (netfilter: nf_conntrack: fix racy timer handling with reliable)
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: Patrick McHardy <kaber@trash.net>
+Cc: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Cc: "David S. Miller" <davem@davemloft.net>
+Signed-off-by: Andrey Vagin <avagin@openvz.org>
+---
+ include/net/netfilter/nf_conntrack_extend.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/include/net/netfilter/nf_conntrack_extend.h b/include/net/netfilter/nf_conntrack_extend.h
+index 956b175..55d1504 100644
+--- a/include/net/netfilter/nf_conntrack_extend.h
++++ b/include/net/netfilter/nf_conntrack_extend.h
+@@ -47,8 +47,8 @@ enum nf_ct_ext_id {
+ /* Extensions: optional stuff which isn't permanently in struct. */
+ struct nf_ct_ext {
+ 	struct rcu_head rcu;
+-	u8 offset[NF_CT_EXT_NUM];
+-	u8 len;
++	u16 offset[NF_CT_EXT_NUM];
++	u16 len;
+ 	char data[0];
+ };
+ 
+-- 
+1.8.5.3
 
