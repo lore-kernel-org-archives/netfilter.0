@@ -1,38 +1,40 @@
-From: Laurent GUERBY <laurent@guerby.net>
-Subject: nftables: nft @nh segfault
-Date: Sun, 30 Mar 2014 13:34:41 +0200
-Message-ID: <1396179281.15058.469.camel@pc2>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+From: mathieu.poirier@linaro.org
+Subject: [RFC PATCH 0/2] netfilter: Adding quota capabilities to nfnetlink
+Date: Sun, 30 Mar 2014 15:10:42 -0600
+Message-ID: <1396213844-10528-1-git-send-email-mathieu.poirier@linaro.org>
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: pablo@netfilter.org
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, mathieu.poirier@linaro.org
 
-Hi,
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
 
-While trying to use @nh I got nft to segfault:
+This is another re-spin on adding quota capabilities to the nfnetlink
+accounting framework.  This time most of the quota support is located
+in the framework itself rather than the filter.
 
-root@h7:~# nft --version
-nftables v0.100 (keith-alexander-filter)
-root@h7:~# cat /proc/version 
-Linux version 3.14-rc7-amd64 (debian-kernel@lists.debian.org) (gcc
-version 4.8.2 (Debian 4.8.2-16) ) #1 SMP Debian 3.14~rc7-1~exp1
-(2014-03-17)
-root@h7:~# nft add rule filter output @nh,16,4 8.8.8.8 counter
-Segmentation fault
+Comments welcomed.
 
-I infered the syntax from src/parser.y:
+Thanks,
+Mathieu
 
-payload_raw_expr	:	AT	payload_base_spec	COMMA	NUM	COMMA	NUM
-payload_base_spec	:	LL_HDR		{ $$ = PAYLOAD_BASE_LL_HDR; }
-			|	NETWORK_HDR	{ $$ = PAYLOAD_BASE_NETWORK_HDR; }
+Mathieu Poirier (1):
+  netfilter: xt_nfacct: Add quota to nfacct filter
 
+Pablo Neira Ayuso (1):
+  netfilter: nfnetlink_acct: Adding quota support to nf_acct objects
 
-But may be I made a mistake, I could not find documentation.
+ include/linux/netfilter/nfnetlink_acct.h      |  3 +-
+ include/uapi/linux/netfilter/nfnetlink.h      |  2 +
+ include/uapi/linux/netfilter/nfnetlink_acct.h |  9 +++
+ net/netfilter/nfnetlink_acct.c                | 93 +++++++++++++++++++++++++++
+ net/netfilter/xt_nfacct.c                     | 13 ++++
+ 5 files changed, 119 insertions(+), 1 deletion(-)
 
-Sincerely,
-
-Laurent
+-- 
+1.8.3.2
 
