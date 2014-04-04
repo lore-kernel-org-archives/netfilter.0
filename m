@@ -1,212 +1,47 @@
-From: mathieu.poirier@linaro.org
-Subject: [PATCH 2/2] Extend accounting capabilities to support quotas
-Date: Tue,  1 Apr 2014 16:52:52 -0600
-Message-ID: <1396392772-22581-2-git-send-email-mathieu.poirier@linaro.org>
-References: <1396392772-22581-1-git-send-email-mathieu.poirier@linaro.org>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: nftables: nft @nh segfault
+Date: Fri, 4 Apr 2014 11:55:33 +0200
+Message-ID: <20140404095533.GA4413@localhost>
+References: <1396179281.15058.469.camel@pc2>
+Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1396392772-22581-1-git-send-email-mathieu.poirier@linaro.org>
+Content-Disposition: inline
+In-Reply-To: <1396179281.15058.469.camel@pc2>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: pablo@netfilter.org
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, mathieu.poirier@linaro.org
+To: Laurent GUERBY <laurent@guerby.net>
+Cc: netfilter@vger.kernel.org
 
-From: Mathieu Poirier <mathieu.poirier@linaro.org>
+On Sun, Mar 30, 2014 at 01:34:41PM +0200, Laurent GUERBY wrote:
+> Hi,
+> 
+> While trying to use @nh I got nft to segfault:
+> 
+> root@h7:~# nft --version
+> nftables v0.100 (keith-alexander-filter)
+> root@h7:~# cat /proc/version 
+> Linux version 3.14-rc7-amd64 (debian-kernel@lists.debian.org) (gcc
+> version 4.8.2 (Debian 4.8.2-16) ) #1 SMP Debian 3.14~rc7-1~exp1
+> (2014-03-17)
+> root@h7:~# nft add rule filter output @nh,16,4 8.8.8.8 counter
+> Segmentation fault
 
-The accounting framework already supports accounting at the
-quota and byte level.  As such it is a natural extention to
-add a ceiling limit to those metrics.
+that shouldn't crash indeed. Please, retry with latest git snapshot
+and if the problem is still there file a bug to netfilter's bugzilla.
+Thanks.
 
-Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
----
- include/libnetfilter_acct/libnetfilter_acct.h |  2 +
- include/linux/netfilter/nfnetlink.h           |  4 ++
- include/linux/netfilter/nfnetlink_acct.h      |  9 ++++
- src/libnetfilter_acct.c                       | 67 +++++++++++++++++++++++++--
- 4 files changed, 78 insertions(+), 4 deletions(-)
+> I infered the syntax from src/parser.y:
+> 
+> payload_raw_expr	:	AT	payload_base_spec	COMMA	NUM	COMMA	NUM
+> payload_base_spec	:	LL_HDR		{ $$ = PAYLOAD_BASE_LL_HDR; }
+> 			|	NETWORK_HDR	{ $$ = PAYLOAD_BASE_NETWORK_HDR; }
+> 
+> 
+> But may be I made a mistake, I could not find documentation.
 
-diff --git a/include/libnetfilter_acct/libnetfilter_acct.h b/include/libnetfilter_acct/libnetfilter_acct.h
-index b00e366..c6ed858 100644
---- a/include/libnetfilter_acct/libnetfilter_acct.h
-+++ b/include/libnetfilter_acct/libnetfilter_acct.h
-@@ -14,6 +14,8 @@ enum nfacct_attr_type {
- 	NFACCT_ATTR_NAME = 0,
- 	NFACCT_ATTR_PKTS,
- 	NFACCT_ATTR_BYTES,
-+	NFACCT_ATTR_FLAGS,
-+	NFACCT_ATTR_QUOTA,
- };
- 
- struct nfacct *nfacct_alloc(void);
-diff --git a/include/linux/netfilter/nfnetlink.h b/include/linux/netfilter/nfnetlink.h
-index 4a4efaf..d3e0ea8 100644
---- a/include/linux/netfilter/nfnetlink.h
-+++ b/include/linux/netfilter/nfnetlink.h
-@@ -18,6 +18,10 @@ enum nfnetlink_groups {
- #define NFNLGRP_CONNTRACK_EXP_UPDATE	NFNLGRP_CONNTRACK_EXP_UPDATE
- 	NFNLGRP_CONNTRACK_EXP_DESTROY,
- #define NFNLGRP_CONNTRACK_EXP_DESTROY	NFNLGRP_CONNTRACK_EXP_DESTROY
-+	NFNLGRP_NFTABLES,
-+#define NFNLGRP_NFTABLES		NFNLGRP_NFTABLES
-+	NFNLGRP_ACCT_QUOTA,
-+#define NFNLGRP_ACCT_QUOTA		NFNLGRP_ACCT_QUOTA
- 	__NFNLGRP_MAX,
- };
- #define NFNLGRP_MAX	(__NFNLGRP_MAX - 1)
-diff --git a/include/linux/netfilter/nfnetlink_acct.h b/include/linux/netfilter/nfnetlink_acct.h
-index c7b6269..6b8c935 100644
---- a/include/linux/netfilter/nfnetlink_acct.h
-+++ b/include/linux/netfilter/nfnetlink_acct.h
-@@ -10,15 +10,24 @@ enum nfnl_acct_msg_types {
- 	NFNL_MSG_ACCT_GET,
- 	NFNL_MSG_ACCT_GET_CTRZERO,
- 	NFNL_MSG_ACCT_DEL,
-+	NFNL_MSG_ACCT_OVERQUOTA,
- 	NFNL_MSG_ACCT_MAX
- };
- 
-+enum nfnl_acct_flags {
-+	NFACCT_F_QUOTA_PKTS     = (1 << 0),
-+	NFACCT_F_QUOTA_BYTES    = (1 << 1),
-+	NFACCT_F_OVERQUOTA      = (1 << 2), /* can't be set from userspace */
-+};
-+
- enum nfnl_acct_type {
- 	NFACCT_UNSPEC,
- 	NFACCT_NAME,
- 	NFACCT_PKTS,
- 	NFACCT_BYTES,
- 	NFACCT_USE,
-+	NFACCT_FLAGS,
-+	NFACCT_QUOTA,
- 	__NFACCT_MAX
- };
- #define NFACCT_MAX (__NFACCT_MAX - 1)
-diff --git a/src/libnetfilter_acct.c b/src/libnetfilter_acct.c
-index 77f58ce..0c1a758 100644
---- a/src/libnetfilter_acct.c
-+++ b/src/libnetfilter_acct.c
-@@ -61,6 +61,8 @@ struct nfacct {
- 	uint64_t	pkts;
- 	uint64_t	bytes;
- 	uint32_t	bitset;
-+	uint32_t	flags;
-+	uint64_t	quota;
- };
- 
- /**
-@@ -114,6 +116,14 @@ nfacct_attr_set(struct nfacct *nfacct, enum nfacct_attr_type type,
- 		nfacct->bytes = *((uint64_t *) data);
- 		nfacct->bitset |= (1 << NFACCT_ATTR_BYTES);
- 		break;
-+	case NFACCT_ATTR_FLAGS:
-+		nfacct->flags = *((uint32_t *) data);
-+		nfacct->bitset |= (1 << NFACCT_ATTR_FLAGS);
-+		break;
-+	case NFACCT_ATTR_QUOTA:
-+		nfacct->quota = *((uint64_t *) data);
-+		nfacct->bitset |= (1 << NFACCT_ATTR_QUOTA);
-+		break;
- 	}
- }
- EXPORT_SYMBOL(nfacct_attr_set);
-@@ -164,6 +174,12 @@ nfacct_attr_unset(struct nfacct *nfacct, enum nfacct_attr_type type)
- 	case NFACCT_ATTR_BYTES:
- 		nfacct->bitset &= ~(1 << NFACCT_ATTR_BYTES);
- 		break;
-+	case NFACCT_ATTR_FLAGS:
-+		nfacct->bitset &= ~(1 << NFACCT_ATTR_FLAGS);
-+		break;
-+	case NFACCT_ATTR_QUOTA:
-+		nfacct->bitset &= ~(1 << NFACCT_ATTR_QUOTA);
-+		break;
- 	}
- }
- EXPORT_SYMBOL(nfacct_attr_unset);
-@@ -193,6 +209,14 @@ const void *nfacct_attr_get(struct nfacct *nfacct, enum nfacct_attr_type type)
- 		if (nfacct->bitset & (1 << NFACCT_ATTR_BYTES))
- 			ret = &nfacct->bytes;
- 		break;
-+	case NFACCT_ATTR_FLAGS:
-+		if (nfacct->bitset & (1 << NFACCT_ATTR_FLAGS))
-+			ret = &nfacct->flags;
-+		break;
-+	case NFACCT_ATTR_QUOTA:
-+		if (nfacct->bitset & (1 << NFACCT_ATTR_QUOTA))
-+			ret = &nfacct->quota;
-+		break;
- 	}
- 	return ret;
- }
-@@ -232,13 +256,35 @@ static int
- nfacct_snprintf_plain(char *buf, size_t rem, struct nfacct *nfacct,
- 		      uint16_t flags)
- {
--	int ret;
-+	int ret, temp;
-+	char *walking_buf;
-+
-+	temp = rem;
-+	walking_buf = buf;
- 
- 	if (flags & NFACCT_SNPRINTF_F_FULL) {
--		ret = snprintf(buf, rem,
--			"{ pkts = %.20"PRIu64", bytes = %.20"PRIu64" } = %s;",
-+		ret = snprintf(walking_buf, temp,
-+			"{ pkts = %.20"PRIu64", bytes = %.20"PRIu64"",
- 			nfacct_attr_get_u64(nfacct, NFACCT_ATTR_PKTS),
--			nfacct_attr_get_u64(nfacct, NFACCT_ATTR_BYTES),
-+			nfacct_attr_get_u64(nfacct, NFACCT_ATTR_BYTES));
-+
-+		if (nfacct->flags) {
-+			uint32_t mode;
-+
-+			mode = nfacct_attr_get_u64(nfacct, NFACCT_ATTR_FLAGS);
-+
-+			walking_buf += ret;
-+			temp -= ret;
-+			ret = snprintf(walking_buf, temp,
-+				", quota = %.20"PRIu64", mode = %s",
-+				nfacct_attr_get_u64(nfacct, NFACCT_ATTR_QUOTA),
-+				mode == NFACCT_F_QUOTA_BYTES ?
-+				"byte" : "packet");
-+		}
-+
-+		walking_buf += ret;
-+		temp -= ret;
-+		ret = snprintf(walking_buf, temp, " } = %s;",
- 			nfacct_attr_get_str(nfacct, NFACCT_ATTR_NAME));
- 	} else {
- 		ret = snprintf(buf, rem, "%s\n",
-@@ -424,6 +470,12 @@ void nfacct_nlmsg_build_payload(struct nlmsghdr *nlh, struct nfacct *nfacct)
- 
- 	if (nfacct->bitset & (1 << NFACCT_ATTR_BYTES))
- 		mnl_attr_put_u64(nlh, NFACCT_BYTES, htobe64(nfacct->bytes));
-+
-+	if (nfacct->bitset & (1 << NFACCT_ATTR_FLAGS))
-+		mnl_attr_put_u32(nlh, NFACCT_FLAGS, htobe32(nfacct->flags));
-+
-+	if (nfacct->bitset & (1 << NFACCT_ATTR_QUOTA))
-+		mnl_attr_put_u64(nlh, NFACCT_QUOTA, htobe64(nfacct->quota));
- }
- EXPORT_SYMBOL(nfacct_nlmsg_build_payload);
- 
-@@ -479,6 +531,13 @@ nfacct_nlmsg_parse_payload(const struct nlmsghdr *nlh, struct nfacct *nfacct)
- 	nfacct_attr_set_u64(nfacct, NFACCT_ATTR_BYTES,
- 			    be64toh(mnl_attr_get_u64(tb[NFACCT_BYTES])));
- 
-+	if (tb[NFACCT_FLAGS] && tb[NFACCT_QUOTA]) {
-+		uint32_t flags = be32toh(mnl_attr_get_u32(tb[NFACCT_FLAGS]));
-+		nfacct_attr_set(nfacct, NFACCT_ATTR_FLAGS, &flags);
-+		nfacct_attr_set_u64(nfacct, NFACCT_ATTR_QUOTA,
-+			    be64toh(mnl_attr_get_u64(tb[NFACCT_QUOTA])));
-+	}
-+
- 	return 0;
- }
- EXPORT_SYMBOL(nfacct_nlmsg_parse_payload);
--- 
-1.8.3.2
+Have a look at http://wiki.nftables.org
 
+Let me know if you find some missing information, I'll schedule time
+to expand/enhance it.
