@@ -1,50 +1,68 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: /proc/net/netfilter/nf_log boot setup / persistence
-Date: Sun, 06 Apr 2014 18:51:44 +0200
-Message-ID: <1396803104.21935.4.camel@ice-age2.regit.org>
-References: <001a11c16772e52ced04f661a84d@google.com>
-	 <0828E69AE2D243E4AFDB81850D33C0B8@PEGGYPC>
+From: John Rockwell <jerockwell@gmail.com>
+Subject: iptables + iproute2 policy-based routing issue
+Date: Sun, 6 Apr 2014 21:29:05 -0400
+Message-ID: <CALswCXkt9g+gkKCwgH-7eVb_g9Hw4eVNFX7K=_-LWB-=sNoTgw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <0828E69AE2D243E4AFDB81850D33C0B8@PEGGYPC>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to:content-type;
+        bh=sG+YRQxl4xERBPLCJa+I1rQHxnUvbTWqNy5HO6n4c+Q=;
+        b=JYl6ApEJpOWfpEas9FIT2DYbskQBqezudst2hS3MK4N3miHVrNJZhsSMbCBXHhnEM1
+         Cm2YPyGKB3ToJQpc9/F+wht8LqETxJ0Mz8RhMl1DmtmufQWPxmfNPY4Jfb93hd3cPHMK
+         omFi8NDTh5p4hrcWCtgffgpD/PVu2l/rSbXMtwtn2VZ9zMUxeT3G+luNzwRfyrmfjNqj
+         NdaWAz6zCdU5yXhMLP7kshRoVcXGF9vjOGm+533hercyzb3vdPuSRiTeWkHZs2LNk7BT
+         Uw8homrJaeqgyzA4U0rm7ubkG0LHWqo8mAae14RIG1saBBZvLNHmqpHPy16DDjLzNW+f
+         zMCQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: oatech <oatech7402@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@vger.kernel.org>
 
-Bonjour,
+I'm currently working on a setup utilizing iptables + iproute2 to
+force traffic from the localhost to any destination on TCP/80 or
+TCP/443 out my physical Ethernet NIC while everything else flows out
+tun0 (with return traffic flowing back through the corresponding
+interfaces).  I do not have split tunneling enabled in OpenVPN so all
+traffic is routing out tun0 prior to implementing the iptables +
+iproute2 rules/routes.  The host operating system is FC20.  Below are
+my configs:
 
-On Sun, 2014-04-06 at 18:24 +0200, oatech wrote:
-> 
-> Hi
-> 
-> I manage to change the /proc/net/netfilter/nf_log flags using echo > 
-> /process/sys/netfilter/nf_log/ ...
-> ( For IPv6 nflogging )
-> 
-> But it gets deleted at reboot.
-> Worse, using a boot-time script fails ( the flags get overwritten )
-> Using /etc/sysctl.conf doesn't seem to work.
+ip route flush cache
+ip route add default table novpn via 10.0.87.1
+ip route add 10.0.87.0/24 dev p4p1 table novpn
+ip rule add fwmark 1 table novpn
+ip rule add from 10.0.87.16 table novpn
+iptables -t mangle -A OUTPUT -p tcp --dport 80 -j MARK --set-mark 1
+iptables -t mangle -A OUTPUT -p tcp --dport 443 -j MARK --set-mark 1
+iptables -t nat -A POSTROUTING -o p4p1 -j SNAT --to 10.0.87.16
 
-I fear your firewall script is running after sysctl.conf settings are
-installed. Usually the firewall script is triggering the loading of
-logging modules.
+I've got everything allowed outbound from the localhost and have
+opened up everything inbound while testing to no avail.
 
-> I end up using a 1minute cron job that rewrites the flags each minute.
-> 
-> Is there a better way ? Or a sysctl.conf kind config file ?
+With iptables logging rules I was able to verify that the outbound
+packets are being marked properly by iptables.  Wireshark shows
+bidirectional traffic between the proper source and destination, but
+that's where it begins to get strange...
 
-The most handy way can be to load the Netfilter modules at start For
-example by putting them in /etc/modules (at least for debian). Then when
-sysctl settings will be evaluated you should get a working config.
+The flow looks something like:
 
-> Thanks  :-)
+<my_ip> SYN TCP/60079 -> <dest_ip> TCP/80 Seq=0
+<dest_ip> SYN,ACK TCP/80 -> <my_ip> TCP/60079 Seq=0
+<my_ip> SYN TCP/60080 -> <dest_ip> TCP/80 Seq=0
+<dest_ip> SYN,ACK TCP/80 -> <my_ip> TCP/60080 Seq=0
 
-You're welcome (if my suggestion works) ;)
+It then bounces back and forth with TCP/60079 and TCP/60080
+retransmissions for a while (all with a seq of 0) and eventually the
+far end sends a TCP RST which Wireshark identifies as being due to a
+packet being sent with a nonzero seq ID without the ACK bit being set.
 
-BR,
--- 
-Eric Leblond <eric@regit.org>
+It seems like a TCP state issue, but despite reading everything I
+could find on the topic this one has me stumped.  Hopefully it's
+something simple that I've missed.
 
+Any advice that you could lend would be greatly appreciated.  Thanks!
+
+
+--JER
