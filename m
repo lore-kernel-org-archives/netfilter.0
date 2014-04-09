@@ -1,87 +1,97 @@
-From: "Daniel Tiebler" <daniel.tiebler@tik.uni-stuttgart.de>
-Subject: iptables-normalizet: argument normalization and DNS resolution?
-Date: Wed, 09 Apr 2014 14:10:53 +0200
-Message-ID: <web-181154039@uni-stuttgart.de>
+From: Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
+Subject: Re: iptables-normalizet: argument normalization and DNS resolution?
+Date: Wed, 9 Apr 2014 16:00:56 +0200
+Message-ID: <CAOkSjBiFCZP4CBvj1K=tD1ApaWJ+6LswezqLemNwiQzOvv5FGA@mail.gmail.com>
+References: <web-181154039@uni-stuttgart.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
-	rus.uni-stuttgart.de; h=content-transfer-encoding:content-type
-	:content-type:message-id:date:date:x-mailer:subject:subject:from
-	:from:received:received:received; s=dkim20100209; t=1397045456;
-	 x=1398859857; bh=p63e52prHXgNetWsFqi1s1gGr6D2uKIXYpquPgGyG4s=; b=
-	jytV9I0GO4hQKLgKZA/cv9IRzGpdXmfL3g9SOnvczB2Oo/zwLDjBr8q2kQPPe+S5
-	XTH3Om7dgV4K+GXrkennnS7gL9/fK0gsnK8LhCI0h0+qnqak0ETcb4UulGNmqT0D
-	BIe6dsOskU62GD4OJ8hsf8FZAO0758z7LuMdk5ovtSI=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc:content-type:content-transfer-encoding;
+        bh=dE0KeKykki9x+monW1kojq2IPsnGwlqDESrn9Cit/M8=;
+        b=JDKTaugORf9vpLq1iHJCKFozJiDLqh3a0D1w6yYumxjlinMT7HTsS5tngp8O01tXT5
+         LqMWz8wnQ72W57PTEyyQpQRQQpoTS5J9DMFrG+nDa2QDxRVSc8jZBddO6v5LaDZAstQf
+         5wh/0MRHdo6R6611HcQ5pgTiTbwPoza2L3m1Y2s3boM2cvm1mwC5Ib9BqI0N/0ooC+SI
+         9+eIhdkF4J10UgS70cg/juDVIk5sT6c0+W0XovZYHpFAY4XfAFqHg0Vb/HbUmdeRlTuL
+         pJuPGzXFjqZfTa99KJfDAit25oAQZNmBsCxZGqq9hQdyEehM5Bp79euBS2kh2WJOcVag
+         R2og==
+In-Reply-To: <web-181154039@uni-stuttgart.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Daniel Tiebler <daniel.tiebler@tik.uni-stuttgart.de>
+Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-Hello,
+On 9 April 2014 14:10, Daniel Tiebler
+<daniel.tiebler@tik.uni-stuttgart.de> wrote:
+[...]
+> * Is something similar possible with nftables?
+>
 
-I found a thread on the mailing list "netfilter", where 
-somebody else was also looking for a normalization (see 
-http://marc.info/?t=127538152000002&r=1&w=2 ), but there 
-was no solution.
+In nftables, you can know a low-level (netlink) representation of all
+nftables objects (tables, sets, chains, rules...) in userspace (using
+libnftnl).
 
-I am looking for the features
-* normalization of commandline arguments and
-* resolution of DNS names
-to convert a configuration file into iptables-save format.
+This representation is either XML or JSON, where DNS name resolution,
+service name resolution and friends are translations to the internal
+kernel data structures.
 
-As the manpage constitutes using DNS has its quirks, but 
-we want to introduce monitoring against our running 
-configuration for cases, where we do see a benefit of 
-using DNS names.
+To know if two rules are the same, you could check if the expressions
+set is the same.
 
-If this has been already discussed or fixed elsewhere, 
-please do not hesitate to point me to any relevant 
-documentation. I'll be happy to RTFM.
+=46or these nftables rules:
+ * nft add rule test test tcp dport 22 accept
+ * nft add rule test test tcp dport ssh accept
 
-The current state of the firewall can be obtained using 
-iptables-save. That's clear. But our configuration files 
-are calling iptables, so that we cannot compare the output 
-of iptables-save with our configuration files directly. We 
-could save the state of the firewall immediately after a 
-new configuration, but we also want to track changes of IP 
-adresses resolved from DNS names. The resulting diff would 
-also catch cases, where some "hotfix" has been accidently 
-rolled out to the machine, however not yet been added to 
-the configuration.
+The list of expressions in XML is exactly the same. The handle
+attribute is unique for each rule.
 
-We started to implement a tool, that is parsing the 
-commandline arguments of iptables and generating an output 
-comparable to the output of iptables-save. However, the 
-more complex the rules are the more expensive is the 
-development. So we thought of reusing the iptables source 
-code.
+<rule>
+  <family>ip</family>
+  <table>test</table>
+  <chain>test</chain>
+  <handle>3</handle>
+  <flags>0</flags>
+  <expr type=3D"payload">
+    <dreg>1</dreg>
+    <offset>9</offset>
+    <len>1</len>
+    <base>network</base>
+  </expr>
+  <expr type=3D"cmp">
+    <sreg>1</sreg>
+    <op>eq</op>
+    <cmpdata>
+      <data_reg type=3D"value">
+        <len>1</len>
+        <data0>0x00000006</data0>
+      </data_reg>
+    </cmpdata>
+  </expr>
+  <expr type=3D"payload">
+    <dreg>1</dreg>
+    <offset>2</offset>
+    <len>2</len>
+    <base>transport</base>
+  </expr>
+  <expr type=3D"cmp">
+    <sreg>1</sreg>
+    <op>eq</op>
+    <cmpdata>
+      <data_reg type=3D"value">
+        <len>2</len>
+        <data0>0x00001600</data0>
+      </data_reg>
+    </cmpdata>
+  </expr>
+</rule>
 
-The idea is the following: Use the parser of iptables and, 
-instead of loading the rules into the kernel, output them 
-with the generator of iptables-save. I tried the following 
-(with version 1.4.12 of iptables on Ubuntu Server 12.04.4 
-LTS): I copied the do_output() function from 
-iptables-save.c to iptables-restore.c and added the 
-missing includes and variable declarations. Then I added 
-the struct iptc_handle as an additional argument to this 
-function. When iptables-restore reaches the COMMIT line, 
-instead of iptc_commit() the function do_output() is 
-called. Well, this works pretty well, at first glance. 
-But, there are still many calls to the kernel loading the 
-data structure iptc_handle and this normalization should 
-happen without touching the data structures of the kernel. 
-It would be great, if there would be an API, that provides 
-this functionality, or even a programm (called 
-iptables-convert?).
+If you are using a recent nftables, you can run `nft export
+{xml|json}' to get your current ruleset in XML or JSON format.
+We plan to add `nft import {xml|json}' operation as well.
 
-So our questions are:
-* Does a program exists, that can parse calls to iptables 
-and output something comparable to iptables-save?
-* Is there another solution to our problem?
-* Is something similar possible with nftables?
-
-Many thanks in advance.
-
-With kind regards,
-Daniel Tiebler
+Tracking FQDNs changes is another, different issue.
+--=20
+Arturo Borrero Gonz=E1lez
