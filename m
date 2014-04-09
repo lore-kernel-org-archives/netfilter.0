@@ -1,92 +1,87 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: /proc/net/netfilter/nf_log boot setup / persistence
-Date: Wed, 09 Apr 2014 11:44:45 +0200
-Message-ID: <1397036685.31949.22.camel@ice-age2.regit.org>
-References: <001a11c16772e52ced04f661a84d@google.com>
-	 <0828E69AE2D243E4AFDB81850D33C0B8@PEGGYPC>
-	 <1396803104.21935.4.camel@ice-age2.regit.org>
-	 <7C01E827EED843848848C75555310BB2@PEGGYPC>
+From: "Daniel Tiebler" <daniel.tiebler@tik.uni-stuttgart.de>
+Subject: iptables-normalizet: argument normalization and DNS resolution?
+Date: Wed, 09 Apr 2014 14:10:53 +0200
+Message-ID: <web-181154039@uni-stuttgart.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <7C01E827EED843848848C75555310BB2@PEGGYPC>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+	rus.uni-stuttgart.de; h=content-transfer-encoding:content-type
+	:content-type:message-id:date:date:x-mailer:subject:subject:from
+	:from:received:received:received; s=dkim20100209; t=1397045456;
+	 x=1398859857; bh=p63e52prHXgNetWsFqi1s1gGr6D2uKIXYpquPgGyG4s=; b=
+	jytV9I0GO4hQKLgKZA/cv9IRzGpdXmfL3g9SOnvczB2Oo/zwLDjBr8q2kQPPe+S5
+	XTH3Om7dgV4K+GXrkennnS7gL9/fK0gsnK8LhCI0h0+qnqak0ETcb4UulGNmqT0D
+	BIe6dsOskU62GD4OJ8hsf8FZAO0758z7LuMdk5ovtSI=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: oatech <oatech7402@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
 Hello,
 
-On Wed, 2014-04-09 at 10:50 +0200, oatech wrote:
-> 
-> >Subject: Re: /proc/net/netfilter/nf_log boot setup / persistence
-> >
-> >Bonjour,
-> >
-> >On Sun, 2014-04-06 at 18:24 +0200, oatech wrote:
-> >>
-> >> Hi
-> >>
-> >> I manage to change the /proc/net/netfilter/nf_log flags using echo >
-> >> /process/sys/netfilter/nf_log/ ...
-> >> ( For IPv6 nflogging )
-> >>
-> >> But it gets deleted at reboot.
-> >> Worse, using a boot-time script fails ( the flags get overwritten )
-> >> Using /etc/sysctl.conf doesn't seem to work.
-> >
-> >I fear your firewall script is running after sysctl.conf settings are
-> >installed. Usually the firewall script is triggering the loading of
-> >logging modules.
-> >
-> >> I end up using a 1minute cron job that rewrites the flags each minute.
-> >>
-> >> Is there a better way ? Or a sysctl.conf kind config file ?
-> >
-> >The most handy way can be to load the Netfilter modules at start For
-> >example by putting them in /etc/modules (at least for debian). Then when
-> >sysctl settings will be evaluated you should get a working config.
-> >
-> >> Thanks  :-)
-> >
-> >You're welcome (if my suggestion works) ;)
-> >
-> >BR,
-> >-- 
-> >Eric . <eric@.>
-> 
-> Hi
-> 
-> Thanks for the answer
-> I'm not a Linux Sysadmin ( I'm a network admin mostly, just using Linux
-> networking daemons for learning ) so I tried
-> your suggestion but got confused.
-> I'm Using Ubuntu Trusty Beta ( almost Debian so ).
-> I did found /etc/modules and try to play with it, but just managed
-> to breack the whole nflog thing : cat .../netfilter/nflog went totally
-> emptied.
-> Did reinstall thus ..
-> 
-> Please could someone help me precise what would need to be :
-> 1) in /etc/modules
+I found a thread on the mailing list "netfilter", where 
+somebody else was also looking for a normalization (see 
+http://marc.info/?t=127538152000002&r=1&w=2 ), but there 
+was no solution.
 
-You should add to that file:
+I am looking for the features
+* normalization of commandline arguments and
+* resolution of DNS names
+to convert a configuration file into iptables-save format.
 
-xt_NFLOG
-xt_LOG
+As the manpage constitutes using DNS has its quirks, but 
+we want to introduce monitoring against our running 
+configuration for cases, where we do see a benefit of 
+using DNS names.
 
-Second line being needed if you use -j LOG target.
+If this has been already discussed or fixed elsewhere, 
+please do not hesitate to point me to any relevant 
+documentation. I'll be happy to RTFM.
 
-> 2) in the firewall start script ( just the main lines ... some modprobes 
-> maybe ?
-> ....)
+The current state of the firewall can be obtained using 
+iptables-save. That's clear. But our configuration files 
+are calling iptables, so that we cannot compare the output 
+of iptables-save with our configuration files directly. We 
+could save the state of the firewall immediately after a 
+new configuration, but we also want to track changes of IP 
+adresses resolved from DNS names. The resulting diff would 
+also catch cases, where some "hotfix" has been accidently 
+rolled out to the machine, however not yet been added to 
+the configuration.
 
-Here you can add at top modprobe of previously mentioned modules. And do
-the sysctl tuning as following step.
+We started to implement a tool, that is parsing the 
+commandline arguments of iptables and generating an output 
+comparable to the output of iptables-save. However, the 
+more complex the rules are the more expensive is the 
+development. So we thought of reusing the iptables source 
+code.
 
+The idea is the following: Use the parser of iptables and, 
+instead of loading the rules into the kernel, output them 
+with the generator of iptables-save. I tried the following 
+(with version 1.4.12 of iptables on Ubuntu Server 12.04.4 
+LTS): I copied the do_output() function from 
+iptables-save.c to iptables-restore.c and added the 
+missing includes and variable declarations. Then I added 
+the struct iptc_handle as an additional argument to this 
+function. When iptables-restore reaches the COMMIT line, 
+instead of iptc_commit() the function do_output() is 
+called. Well, this works pretty well, at first glance. 
+But, there are still many calls to the kernel loading the 
+data structure iptc_handle and this normalization should 
+happen without touching the data structures of the kernel. 
+It would be great, if there would be an API, that provides 
+this functionality, or even a programm (called 
+iptables-convert?).
 
-BR,
--- 
-Eric Leblond <eric@regit.org>
+So our questions are:
+* Does a program exists, that can parse calls to iptables 
+and output something comparable to iptables-save?
+* Is there another solution to our problem?
+* Is something similar possible with nftables?
 
+Many thanks in advance.
+
+With kind regards,
+Daniel Tiebler
