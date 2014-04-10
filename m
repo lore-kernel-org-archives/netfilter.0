@@ -1,39 +1,73 @@
-From: Rohit Bhat <rohitbhat.nitk@gmail.com>
-Subject: Read stats for a single rule
-Date: Wed, 9 Apr 2014 21:52:13 -0500
-Message-ID: <CAD2=Ax2nR5fwWqNa5K+AQ7DN_gbEWD1gSx_uNB0esu2cEQri_w@mail.gmail.com>
+From: "Daniel Tiebler" <daniel.tiebler@tik.uni-stuttgart.de>
+Subject: Re: iptables-normalizet: argument normalization and DNS
+ resolution?
+Date: Thu, 10 Apr 2014 15:16:21 +0200
+Message-ID: <web-181218610@uni-stuttgart.de>
+References: <web-181154039@uni-stuttgart.de>
+ <CAOkSjBiFCZP4CBvj1K=tD1ApaWJ+6LswezqLemNwiQzOvv5FGA@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=C/n3EjpoGk6b9hM7LI4UHwsSjvMQGz36Bbu/qY/xQjQ=;
-        b=LnM1UMVllcQe5u+vuYivfFYCPFnJHbEMmUppL5dwbrTCmkGcb60JR/z6rqVWCtPVxn
-         kMEGmOuYehvYJ1C44L/1JUuNTOhb3dIm45+cIMYPHxL7i8iJsos9IA+xWD1DnufqaA7E
-         gRGwG+q7+y/BzZ5R1RDrCUNAAYYKqHJCPmnPjBQiU3w5JbCD3iXBG8QMH36FNYw8LxwT
-         1kZCl0eoS3c1H2/n8K/eAiJvVupFZwRI13xn3oFRPbZ6/AmA+a2Yz5JnEHRo7ENb85js
-         uuXg+lsZ6YBtqwVIYHW1ohtaqqIFfLddXxhUjNdeLQmk6RSfb/JjteyIuvD7tNBsLmf2
-         n7Cg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=
+	rus.uni-stuttgart.de; h=content-transfer-encoding:content-type
+	:content-type:references:in-reply-to:message-id:date:date
+	:x-mailer:subject:subject:from:from:received:received:received;
+	 s=dkim20100209; t=1397135787; x=1398950188; bh=k1hpzujWaCioywTU
+	FhQ0gXomqP7X7QNcHk6UOYCthD4=; b=twMMEoAQWu9d84TE2yJmh4Lueh3QMOKM
+	j4bcfCkiPUrm0vCBxacJAf9J0cGZxIQ8iWsWZ5zbBoR6LuNM+3CrduewTgLIvHpg
+	RKL4moVl176Tx8F7N634T01jEccbq0XZj2Hf4KU5b30OxauBPfwJhL3Hdmrnji7I
+	SUsoRz+qA1A=
+In-Reply-To: <CAOkSjBiFCZP4CBvj1K=tD1ApaWJ+6LswezqLemNwiQzOvv5FGA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
+Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-Hi,
+Hello,
 
-I have installed multiple rules using iptables on my machines. These
-rules keep a track of how much data has been sent to/from my machine
-on a specific TCP socket.
+On Wed, 9 Apr 2014 16:00:56 +0200
+  Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com> 
+wrote:
+> On 9 April 2014 14:10, Daniel Tiebler
+> <daniel.tiebler@tik.uni-stuttgart.de> wrote:
+> [...]
+>> * Is something similar possible with nftables?
+> 
+> In nftables, you can know a low-level (netlink) 
+> representation of all nftables objects (tables,
+> sets, chains, rules...) in userspace (using
+> libnftnl).
 
-Once a TCP connection terminates, i want to read the data transferred
-over that socket.
-Currently i am using "iptables -vnL <chain_name>" to read stats of all
-installed rules and then filter out the one that matches the recently
-closed socket.
+Userspace is great.
+Is it necessary to load the rules into the kernel 
+beforehand?
+It would be nice to operate in userspace completely to be 
+able to compare two sets of rules.
 
-Is there a way by which i can just get stats of a specific rule rather
-then fetching data for all installed rules?
 
-Thanks,
-Rohit
+
+> This representation is either XML or JSON, where DNS 
+> name resolution, service name resolution and friends
+> are translations to the internal kernel data structures.
+
+If every exported or generated data has the same format, 
+that is okay.
+
+
+
+> Tracking FQDNs changes is another, different issue.
+
+That's right.
+The normalization has a higher priority for us.
+
+
+
+At the moment we are using iptables, but if nftables will 
+replace iptables, it would be nice, if it would have the 
+requested features.
+
+
+
+With kind regards,
+Daniel Tiebler
