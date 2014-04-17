@@ -1,50 +1,123 @@
-From: Nikolai Lusan <nikolai@lusan.id.au>
-Subject: QoS in Netfilter
-Date: Wed, 16 Apr 2014 18:57:43 +1000
-Message-ID: <1397638663.12394.1.camel@localhost>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: [ANNOUNCE] libnftnl 1.0.1 release
+Date: Thu, 17 Apr 2014 13:09:08 +0200
+Message-ID: <20140417110908.GA23125@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="=-oDMedC2u5HjQVE/1YIyW"
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
+Content-Type: multipart/mixed; boundary="IS0zKkzwUGydFO0o"
+Content-Transfer-Encoding: 8bit
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter@vger.kernel.org
+To: netfilter-devel@vger.kernel.org
+Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
 
---=-oDMedC2u5HjQVE/1YIyW
-Content-Type: text/plain; charset="UTF-8"
+--IS0zKkzwUGydFO0o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+Hi!
+
+The Netfilter project proudly presents:
+
+        libnftnl 1.0.1
+
+libnftnl is a userspace library providing a low-level netlink
+programming interface (API) to the in-kernel nf_tables subsystem. The
+library libnftnl has been previously known as libnftables. This
+library is currently used by the nft command line tool.
+
+This release comes with new features available in 3.14 and fixes.
+See ChangeLog that comes attached to this email for more details.
+
+You can download it from:
+
+http://www.netfilter.org/projects/libnftnl/downloads.html
+ftp://ftp.netfilter.org/pub/libnftnl/
+
+Have fun!
+
+--IS0zKkzwUGydFO0o
+Content-Type: text/plain; charset="iso-8859-1"
+Content-Disposition: attachment; filename="changes-libnftnl-1.0.1.txt"
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+Ana Rey (9):
+      tests: Use getopt_long to parse the command-line arguments.
+      xml, json: Delete a cmpdata label in xml and json file
+      xml, json: Delete an immediatedate label in xml and json file
+      tests: New tools to update xml and json testfiles
+      tests: Add support to check a json or xml testfile
+      tests: Fix a memory leak
+      target, match: Fix an invalid read
+      set-elem: fix a memory leak
+      lookup: Fix an invalid read
 
-So the merits of MARK vs. CLASSIFY? What do people think is the best way
-of using QoS?
+Arturo Borrero (8):
+      src: update meta expr
+      examples: nft-set-get: retrieve all sets via unspec
+      examples: add nft-ruleset-get
+      include: add stdint.h to common.h
+      src: check if netlink parsing fails
+      set_elems: delete unexisting exported symbol
+      set_elem: parse family from Netlink message
+      examples: complete nft-events example
 
---=20
-Nikolai Lusan <nikolai@lusan.id.au>
+Arturo Borrero Gonzalez (1):
+      tests: add table 'use' attr to testfiles
 
---=-oDMedC2u5HjQVE/1YIyW
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+Eric Leblond (2):
+      expr: add support for nfnetlink queue
+      test: add tests for expr queue
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
+Florian Westphal (1):
+      expr: add conntrack label match support
 
-iQIcBAABCgAGBQJTTkYIAAoJEJOjmtAqHQSLp7UQAI6MfLn6W34oFVmHg1MWg930
-oOwguG4bTqb2PHbdilRFrHcJyJvreJVbYuqNNFeVPg9BcwicDsQOt3giqddjj25t
-8roqT+hr5iCPdVQmeUS6iCxTO7GjEFewMuFYdRywedmW4jVIoL4owu5gsjn5V/Fp
-3uwxOo1oIIdxy+mwgabOWDyATiZK/gWRfYhH/UOtYmY/d+nkhPA03Z8EctV5OEff
-VAPvLFqe1Wq2Wu4m0hj28FfaUzlGMuCfWnl6jvHqKnH0D+EgT1Lm3TWKnONm6lL1
-Pm1DX6p53HesAafD5oBMgU3jD8do38EyKZE9HA/+BkcXOkSEu+hrJ8p3R+0I+IOC
-4FCD4qJyCl5MauMy6iHGT4cevR9bX1iJ6GQa5x02lO5xSXNGDPRLREeBq2Z7LfpS
-BH2CLxWHIijsNNhzj2yCuBSmWdQ1fowRIeFFII1TO3xSqrjwH9/ZIq0NOARNtvEF
-ANcC4hahLJ5UXOVh4liP4cx/dQkD8E8pqlbQG04ZrsNngR+J9dUu5cyzUA8kha5Z
-ZGNS0Xs2Z3lrLVroMBIBPIXqevMlASNM6Yd/X5jr3TAvBcXdQCvi1EeQzTe1ehJj
-ld47da2uXUDTDWPsFmUxe6CGKJivhLplS886SOpd2OMME51dizA27lrH2uCcuSuu
-NNe64ddLzsZHgy431a3m
-=axSN
------END PGP SIGNATURE-----
+Jan Engelhardt (2):
+      build: resolve build failure involving linux/netlink.h
+      build: resolve compile error involving XT_EXTENSION_MAXNAMELEN
 
---=-oDMedC2u5HjQVE/1YIyW--
+Kristian Evensen (2):
+      meta: Let user specify any combination of sreg/dreg
+      expr: ct: Add support for setting the mark
 
+Pablo Neira Ayuso (17):
+      src: fix compilation due to missing NFPROTO_INET definition
+      build: fix final report after configuration
+      include: add cached copy of linux/kernel.h
+      Merge branch 'master' into next-3.14
+      chain: print usage counter for base chain via default output as well
+      src: compile queue expression support
+      src: early attribute type validation in nft_*_attr_set
+      src: add assertion infrastructure to validate attribute types
+      src: add nft_*_attr_{set|get}_data interface
+      src: fix wrong type in NFT_ATTR_*_FAMILY
+      include: get linux/netfilter/nf_tables.h in sync with kernel header
+      example: nft-rule-add: simplify example
+      rule: add NFT_RULE_ATTR_USERDATA support
+      examples: remove nft-rule-insert from Makefile.am
+      src: fix bogus assertion for unset attributes
+      include: add missing netfilter.h
+      bump version to 1.0.1
+
+Patrick McHardy (4):
+      libnftables: add support for inet family and mete nfproto/l4proto exp=
+ressions
+      Merge branch 'next-3.14' of git.netfilter.org:libnftables into inet
+      libnftables: replace netfilter.h by sanitized header
+      expr/cmp: fix type size
+
+Tomasz Bursztyka (2):
+      table: Add support for NFTA_TABLE_USE attribute
+      build: Ensure pkg-config file provides the right informations
+
+=C1lvaro Neira Ayuso (5):
+      examples: nft-rule-del: fix missing batching headers
+      examples: nft-rule-insert: fix and merge it to nft-rule-add
+      examples: nft-rule-del: removed printf rule function
+      rule: don't print unset attributes
+      rule: don't enforce attributes when parsing
+
+
+--IS0zKkzwUGydFO0o--
