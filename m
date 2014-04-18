@@ -1,123 +1,117 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] libnftnl 1.0.1 release
-Date: Thu, 17 Apr 2014 13:09:08 +0200
-Message-ID: <20140417110908.GA23125@localhost>
+From: Behan Webster <behanw@converseincode.com>
+Subject: Re: [PATCH v4] net: netfilter: LLVMLinux: vlais-netfilter
+Date: Thu, 17 Apr 2014 17:40:42 -0700
+Message-ID: <5350748A.1060105@converseincode.com>
+References: <063D6719AE5E284EB5DD2968C1650D6D0F6E0F8D@AcuExch.aculab.com> <1395557744-25248-1-git-send-email-behanw@converseincode.com>
 Mime-Version: 1.0
-Content-Type: multipart/mixed; boundary="IS0zKkzwUGydFO0o"
-Content-Transfer-Encoding: 8bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <linux-kernel-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=converseincode.com; s=google;
+        h=message-id:date:from:user-agent:mime-version:to:cc:subject
+         :references:in-reply-to:content-type:content-transfer-encoding;
+        bh=FXmcv2zuQCGEEOqfcE4sD1l9BflpphvgeXblPIEsF1s=;
+        b=uo5OvXIMvnO6L8hV8HwO739JvVgmP1b0oFLyjH/8KSNT8IRy57gFB/E86U9fEj4MSm
+         IAlbwWU40Cv70ahF2WmtBoEwpvCwnlH+PKHU226WH8331OCMwXH/MC5bP/fCBWzRsymz
+         3JauAkAhxpIDonX8UiyUhnQ3j8y8Nh3lspdns=
+In-Reply-To: <1395557744-25248-1-git-send-email-behanw@converseincode.com>
+Sender: linux-kernel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter-devel@vger.kernel.org
-Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
+Content-Type: text/plain; charset="macroman"; format="flowed"
+To: davem@davemloft.net
+Cc: pablo@netfilter.org, kaber@trash.net, kadlec@blackhole.kfki.hu, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, dwmw2@infradead.org, pageexec@freemail.hu, Mark Charlebois <charlebm@gmail.com>, =?UTF-8?B?Vmluw61jaXVzIFRpbnRp?= <viniciustinti@gmail.com>
 
+On 03/22/14 23:55, behanw@converseincode.com wrote:
+> From: Mark Charlebois <charlebm@gmail.com>
+>
+> Replaced non-standard C use of Variable Length Arrays In Structs (VLA=
+IS) in
+> xt_repldata.h with a C99 compliant flexible array member and then cal=
+culated
+> offsets to the other struct members. These other members aren't refer=
+enced by
+> name in this code, however this patch maintains the same memory layou=
+t and
+> padding as was previously accomplished using VLAIS.
+>
+> Had the original structure been ordered differently, with the entries=
+ VLA at
+> the end, then it could have been a flexible member, and this patch wo=
+uld have
+> been a lot simpler. However since the data stored in this structure i=
+s
+> ultimately exported to userspace, the order of this structure can't b=
+e changed.
+>
+> This patch makes no attempt to change the existing behavior, merely t=
+he way in
+> which the current layout is accomplished using standard C99 construct=
+s. As such
+> the code can now be compiled with either gcc or clang.
+>
+> This version of the patch removes the trailing alignment that the VLA=
+IS
+> structure would allocate in order to simplify the patch.
+>
+> Author: Mark Charlebois <charlebm@gmail.com>
+> Signed-off-by: Mark Charlebois <charlebm@gmail.com>
+> Signed-off-by: Behan Webster <behanw@converseincode.com>
+> Signed-off-by: Vin=C3=ADcius Tinti <viniciustinti@gmail.com>
+> ---
+>   net/netfilter/xt_repldata.h | 22 +++++++++++++++++-----
+>   1 file changed, 17 insertions(+), 5 deletions(-)
+>
+> diff --git a/net/netfilter/xt_repldata.h b/net/netfilter/xt_repldata.=
+h
+> index 6efe4e5..8fd3241 100644
+> --- a/net/netfilter/xt_repldata.h
+> +++ b/net/netfilter/xt_repldata.h
+> @@ -5,23 +5,35 @@
+>    * they serve as the hanging-off data accessed through repl.data[].
+>    */
+>  =20
+> +/* tbl has the following structure equivalent, but is C99 compliant:
+> + * struct {
+> + *	struct type##_replace repl;
+> + *	struct type##_standard entries[nhooks];
+> + *	struct type##_error term;
+> + * } *tbl;
+> + */
+> +
+>   #define xt_alloc_initial_table(type, typ2) ({ \
+>   	unsigned int hook_mask =3D info->valid_hooks; \
+>   	unsigned int nhooks =3D hweight32(hook_mask); \
+>   	unsigned int bytes =3D 0, hooknum =3D 0, i =3D 0; \
+>   	struct { \
+>   		struct type##_replace repl; \
+> -		struct type##_standard entries[nhooks]; \
+> -		struct type##_error term; \
+> -	} *tbl =3D kzalloc(sizeof(*tbl), GFP_KERNEL); \
+> +		struct type##_standard entries[]; \
+> +	} *tbl; \
+> +	struct type##_error *term; \
+> +	size_t term_offset =3D (offsetof(typeof(*tbl), entries[nhooks]) + \
+> +		__alignof__(*term) - 1) & ~(__alignof__(*term) - 1); \
+> +	tbl =3D kzalloc(term_offset + sizeof(*term), GFP_KERNEL); \
+>   	if (tbl =3D=3D NULL) \
+>   		return NULL; \
+> +	term =3D (struct type##_error *)&(((char *)tbl)[term_offset]); \
+>   	strncpy(tbl->repl.name, info->name, sizeof(tbl->repl.name)); \
+> -	tbl->term =3D (struct type##_error)typ2##_ERROR_INIT;  \
+> +	*term =3D (struct type##_error)typ2##_ERROR_INIT;  \
+>   	tbl->repl.valid_hooks =3D hook_mask; \
+>   	tbl->repl.num_entries =3D nhooks + 1; \
+>   	tbl->repl.size =3D nhooks * sizeof(struct type##_standard) + \
+> -	                 sizeof(struct type##_error); \
+> +			 sizeof(struct type##_error); \
+>   	for (; hook_mask !=3D 0; hook_mask >>=3D 1, ++hooknum) { \
+>   		if (!(hook_mask & 1)) \
+>   			continue; \
 
---IS0zKkzwUGydFO0o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Any further feedback about this patch?
 
-Hi!
+Behan
 
-The Netfilter project proudly presents:
-
-        libnftnl 1.0.1
-
-libnftnl is a userspace library providing a low-level netlink
-programming interface (API) to the in-kernel nf_tables subsystem. The
-library libnftnl has been previously known as libnftables. This
-library is currently used by the nft command line tool.
-
-This release comes with new features available in 3.14 and fixes.
-See ChangeLog that comes attached to this email for more details.
-
-You can download it from:
-
-http://www.netfilter.org/projects/libnftnl/downloads.html
-ftp://ftp.netfilter.org/pub/libnftnl/
-
-Have fun!
-
---IS0zKkzwUGydFO0o
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: attachment; filename="changes-libnftnl-1.0.1.txt"
-Content-Transfer-Encoding: quoted-printable
-
-Ana Rey (9):
-      tests: Use getopt_long to parse the command-line arguments.
-      xml, json: Delete a cmpdata label in xml and json file
-      xml, json: Delete an immediatedate label in xml and json file
-      tests: New tools to update xml and json testfiles
-      tests: Add support to check a json or xml testfile
-      tests: Fix a memory leak
-      target, match: Fix an invalid read
-      set-elem: fix a memory leak
-      lookup: Fix an invalid read
-
-Arturo Borrero (8):
-      src: update meta expr
-      examples: nft-set-get: retrieve all sets via unspec
-      examples: add nft-ruleset-get
-      include: add stdint.h to common.h
-      src: check if netlink parsing fails
-      set_elems: delete unexisting exported symbol
-      set_elem: parse family from Netlink message
-      examples: complete nft-events example
-
-Arturo Borrero Gonzalez (1):
-      tests: add table 'use' attr to testfiles
-
-Eric Leblond (2):
-      expr: add support for nfnetlink queue
-      test: add tests for expr queue
-
-Florian Westphal (1):
-      expr: add conntrack label match support
-
-Jan Engelhardt (2):
-      build: resolve build failure involving linux/netlink.h
-      build: resolve compile error involving XT_EXTENSION_MAXNAMELEN
-
-Kristian Evensen (2):
-      meta: Let user specify any combination of sreg/dreg
-      expr: ct: Add support for setting the mark
-
-Pablo Neira Ayuso (17):
-      src: fix compilation due to missing NFPROTO_INET definition
-      build: fix final report after configuration
-      include: add cached copy of linux/kernel.h
-      Merge branch 'master' into next-3.14
-      chain: print usage counter for base chain via default output as well
-      src: compile queue expression support
-      src: early attribute type validation in nft_*_attr_set
-      src: add assertion infrastructure to validate attribute types
-      src: add nft_*_attr_{set|get}_data interface
-      src: fix wrong type in NFT_ATTR_*_FAMILY
-      include: get linux/netfilter/nf_tables.h in sync with kernel header
-      example: nft-rule-add: simplify example
-      rule: add NFT_RULE_ATTR_USERDATA support
-      examples: remove nft-rule-insert from Makefile.am
-      src: fix bogus assertion for unset attributes
-      include: add missing netfilter.h
-      bump version to 1.0.1
-
-Patrick McHardy (4):
-      libnftables: add support for inet family and mete nfproto/l4proto exp=
-ressions
-      Merge branch 'next-3.14' of git.netfilter.org:libnftables into inet
-      libnftables: replace netfilter.h by sanitized header
-      expr/cmp: fix type size
-
-Tomasz Bursztyka (2):
-      table: Add support for NFTA_TABLE_USE attribute
-      build: Ensure pkg-config file provides the right informations
-
-=C1lvaro Neira Ayuso (5):
-      examples: nft-rule-del: fix missing batching headers
-      examples: nft-rule-insert: fix and merge it to nft-rule-add
-      examples: nft-rule-del: removed printf rule function
-      rule: don't print unset attributes
-      rule: don't enforce attributes when parsing
-
-
---IS0zKkzwUGydFO0o--
+--=20
+Behan Webster
+behanw@converseincode.com
