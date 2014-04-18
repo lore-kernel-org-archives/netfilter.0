@@ -1,117 +1,30 @@
-From: Behan Webster <behanw@converseincode.com>
-Subject: Re: [PATCH v4] net: netfilter: LLVMLinux: vlais-netfilter
-Date: Thu, 17 Apr 2014 17:40:42 -0700
-Message-ID: <5350748A.1060105@converseincode.com>
-References: <063D6719AE5E284EB5DD2968C1650D6D0F6E0F8D@AcuExch.aculab.com> <1395557744-25248-1-git-send-email-behanw@converseincode.com>
+From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
+Subject: Re: QoS in Netfilter
+Date: Thu, 17 Apr 2014 21:08:07 -0400
+Message-ID: <201404172108.07951.neal.p.murphy@alum.wpi.edu>
+Reply-To: neal.p.murphy@alum.wpi.edu
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <linux-kernel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=converseincode.com; s=google;
-        h=message-id:date:from:user-agent:mime-version:to:cc:subject
-         :references:in-reply-to:content-type:content-transfer-encoding;
-        bh=FXmcv2zuQCGEEOqfcE4sD1l9BflpphvgeXblPIEsF1s=;
-        b=uo5OvXIMvnO6L8hV8HwO739JvVgmP1b0oFLyjH/8KSNT8IRy57gFB/E86U9fEj4MSm
-         IAlbwWU40Cv70ahF2WmtBoEwpvCwnlH+PKHU226WH8331OCMwXH/MC5bP/fCBWzRsymz
-         3JauAkAhxpIDonX8UiyUhnQ3j8y8Nh3lspdns=
-In-Reply-To: <1395557744-25248-1-git-send-email-behanw@converseincode.com>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"; format="flowed"
-To: davem@davemloft.net
-Cc: pablo@netfilter.org, kaber@trash.net, kadlec@blackhole.kfki.hu, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, dwmw2@infradead.org, pageexec@freemail.hu, Mark Charlebois <charlebm@gmail.com>, =?UTF-8?B?Vmluw61jaXVzIFRpbnRp?= <viniciustinti@gmail.com>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On 03/22/14 23:55, behanw@converseincode.com wrote:
-> From: Mark Charlebois <charlebm@gmail.com>
->
-> Replaced non-standard C use of Variable Length Arrays In Structs (VLA=
-IS) in
-> xt_repldata.h with a C99 compliant flexible array member and then cal=
-culated
-> offsets to the other struct members. These other members aren't refer=
-enced by
-> name in this code, however this patch maintains the same memory layou=
-t and
-> padding as was previously accomplished using VLAIS.
->
-> Had the original structure been ordered differently, with the entries=
- VLA at
-> the end, then it could have been a flexible member, and this patch wo=
-uld have
-> been a lot simpler. However since the data stored in this structure i=
-s
-> ultimately exported to userspace, the order of this structure can't b=
-e changed.
->
-> This patch makes no attempt to change the existing behavior, merely t=
-he way in
-> which the current layout is accomplished using standard C99 construct=
-s. As such
-> the code can now be compiled with either gcc or clang.
->
-> This version of the patch removes the trailing alignment that the VLA=
-IS
-> structure would allocate in order to simplify the patch.
->
-> Author: Mark Charlebois <charlebm@gmail.com>
-> Signed-off-by: Mark Charlebois <charlebm@gmail.com>
-> Signed-off-by: Behan Webster <behanw@converseincode.com>
-> Signed-off-by: Vin=C3=ADcius Tinti <viniciustinti@gmail.com>
-> ---
->   net/netfilter/xt_repldata.h | 22 +++++++++++++++++-----
->   1 file changed, 17 insertions(+), 5 deletions(-)
->
-> diff --git a/net/netfilter/xt_repldata.h b/net/netfilter/xt_repldata.=
-h
-> index 6efe4e5..8fd3241 100644
-> --- a/net/netfilter/xt_repldata.h
-> +++ b/net/netfilter/xt_repldata.h
-> @@ -5,23 +5,35 @@
->    * they serve as the hanging-off data accessed through repl.data[].
->    */
->  =20
-> +/* tbl has the following structure equivalent, but is C99 compliant:
-> + * struct {
-> + *	struct type##_replace repl;
-> + *	struct type##_standard entries[nhooks];
-> + *	struct type##_error term;
-> + * } *tbl;
-> + */
-> +
->   #define xt_alloc_initial_table(type, typ2) ({ \
->   	unsigned int hook_mask =3D info->valid_hooks; \
->   	unsigned int nhooks =3D hweight32(hook_mask); \
->   	unsigned int bytes =3D 0, hooknum =3D 0, i =3D 0; \
->   	struct { \
->   		struct type##_replace repl; \
-> -		struct type##_standard entries[nhooks]; \
-> -		struct type##_error term; \
-> -	} *tbl =3D kzalloc(sizeof(*tbl), GFP_KERNEL); \
-> +		struct type##_standard entries[]; \
-> +	} *tbl; \
-> +	struct type##_error *term; \
-> +	size_t term_offset =3D (offsetof(typeof(*tbl), entries[nhooks]) + \
-> +		__alignof__(*term) - 1) & ~(__alignof__(*term) - 1); \
-> +	tbl =3D kzalloc(term_offset + sizeof(*term), GFP_KERNEL); \
->   	if (tbl =3D=3D NULL) \
->   		return NULL; \
-> +	term =3D (struct type##_error *)&(((char *)tbl)[term_offset]); \
->   	strncpy(tbl->repl.name, info->name, sizeof(tbl->repl.name)); \
-> -	tbl->term =3D (struct type##_error)typ2##_ERROR_INIT;  \
-> +	*term =3D (struct type##_error)typ2##_ERROR_INIT;  \
->   	tbl->repl.valid_hooks =3D hook_mask; \
->   	tbl->repl.num_entries =3D nhooks + 1; \
->   	tbl->repl.size =3D nhooks * sizeof(struct type##_standard) + \
-> -	                 sizeof(struct type##_error); \
-> +			 sizeof(struct type##_error); \
->   	for (; hook_mask !=3D 0; hook_mask >>=3D 1, ++hooknum) { \
->   		if (!(hook_mask & 1)) \
->   			continue; \
+On Wednesday, April 16, 2014 04:57:43 AM Nikolai Lusan wrote:
+> Hi,
+> 
+> So the merits of MARK vs. CLASSIFY? What do people think is the best way
+> of using QoS?
 
-Any further feedback about this patch?
+In a short sentence: Use CONNMARK to identify types of traffic (even when 
+using a higher-layer sniffer); use CLASSIFY to assign types of traffic to 
+classes. That's really the best you can hope to do until a simple and well-
+supported layer 7 analyzer is available. And don't even think about trying to 
+classify encrypted streams.
 
-Behan
-
---=20
-Behan Webster
-behanw@converseincode.com
+Alas, Traffic Control needs a complete rewrite to handle modern traffic flows. 
+HTB is nice. And works very well once it's understood. But it's far too 
+complicated and doesn't really handle today's net usages very well. I've an 
+idea what to do, but don't have the time to experiment. Think amalgamation of 
+HTB and conntrack.
