@@ -1,59 +1,51 @@
-From: Luis Henriques <luis.henriques-Z7WLFzj8eWMS+FvcfC7Uqw@public.gmane.org>
-Subject: Re: [PATCH v5] core, nfqueue,
- openvswitch: Orphan frags in skb_zerocopy and handle errors
-Date: Mon, 21 Apr 2014 12:26:01 +0100
-Message-ID: <20140421112601.GC3200@hercules>
-References: <1395873465-22282-1-git-send-email-zoltan.kiss@citrix.com>
- <20140327.152956.1528740039185894234.davem@davemloft.net>
+From: Joel Gerber <Joel.Gerber@corp.eastlink.ca>
+Subject: RE: Whitelist with domains that pulls stuff from other domains
+Date: Mon, 21 Apr 2014 08:26:50 -0300
+Message-ID: <405CDB4498600447A16CCC4ED3BFCAD301ACA754DF@SCOOBY.corp.eastlink.ca>
+References: <CAFNm86RxdZW7d6PJAV5W+dTOwpK+-yzqqoWGRNFb3nEK2k6+zg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Transfer-Encoding: quoted-printable
-Return-path: <dev-bounces-yBygre7rU0TnMu66kgdUjQ@public.gmane.org>
-Content-Disposition: inline
-In-Reply-To: <20140327.152956.1528740039185894234.davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <http://openvswitch.org/mailman/options/dev>,
- <mailto:dev-request-yBygre7rU0TnMu66kgdUjQ@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://openvswitch.org/pipermail/dev>
-List-Post: <mailto:dev-yBygre7rU0TnMu66kgdUjQ@public.gmane.org>
-List-Help: <mailto:dev-request-yBygre7rU0TnMu66kgdUjQ@public.gmane.org?subject=help>
-List-Subscribe: <http://openvswitch.org/mailman/listinfo/dev>,
- <mailto:dev-request-yBygre7rU0TnMu66kgdUjQ@public.gmane.org?subject=subscribe>
-Errors-To: dev-bounces-yBygre7rU0TnMu66kgdUjQ@public.gmane.org
-Sender: "dev" <dev-bounces-yBygre7rU0TnMu66kgdUjQ@public.gmane.org>
-To: David Miller <davem-fT/PcQaiUtIeIZ0/mPfg9Q@public.gmane.org>
-Cc: netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mszeredi-AlSwsSmVLrQ@public.gmane.org, kvm-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, mst-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, jasowang-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, edumazet-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, JBeulich-IBi9RG/b67k@public.gmane.org, therbert-hpIqsD4AKlfQT0dZR+AlfA@public.gmane.org, dev-yBygre7rU0TnMu66kgdUjQ@public.gmane.org, herbert-lOAM2aK0SrRLBo1qDEOMRrpzq4S04n8Q@public.gmane.org, kadlec-K40Dz/62t/MgiyqX0sVFJYdd74u8MsAO@public.gmane.org, xen-devel-GuqFBffKawtpuQazS67q72D2FQJk+8+b@public.gmane.org, pablo-Cap9r6Oaw4JrovVCs/uTlw@public.gmane.org, jiri-rHqAuBHg3fBzbRFIqnYvSA@public.gmane.org, Paul.Durrant-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org, netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, fw-HFFVJYpyMKqzQB+pC5nmwQ@public.gmane.org, linux-kernel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, dborkman-H+wXaHxf7aLQT0dZR+AlfA@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, joe-6d6DIl74uiNBDgjK7y7TUQ@public.gmane.org
+Content-Transfer-Encoding: base64
+Return-path: <netfilter-owner@vger.kernel.org>
+In-reply-to: <CAFNm86RxdZW7d6PJAV5W+dTOwpK+-yzqqoWGRNFb3nEK2k6+zg@mail.gmail.com>
+Content-language: en-US
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Martin Braun <yellowgoldmine@gmail.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi David,
-
-On Thu, Mar 27, 2014 at 03:29:56PM -0400, David Miller wrote:
-> From: Zoltan Kiss <zoltan.kiss-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org>
-> Date: Wed, 26 Mar 2014 22:37:45 +0000
-> =
-
-> > skb_zerocopy can copy elements of the frags array between skbs, but it =
-doesn't
-> > orphan them. Also, it doesn't handle errors, so this patch takes care o=
-f that
-> > as well, and modify the callers accordingly. skb_tx_error() is also add=
-ed to
-> > the callers so they will signal the failed delivery towards the creator=
- of the
-> > skb.
-> > =
-
-> > Signed-off-by: Zoltan Kiss <zoltan.kiss-Sxgqhf6Nn4DQT0dZR+AlfA@public.gmane.org>
-> =
-
-> Fingers crossed :-)  Applied, thanks Zoltan.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netdev" in
-> the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-Could you please queue this for stable as well?  It has CVE-2014-2568
-assigned to it and I believe it is applicable to some of the trees.
-
-Cheers,
---
-Lu=EDs
+V2l0aG91dCBnZXR0aW5nIGludG8gZ3JlYXQgZGV0YWlsLCBJJ20gcXVpdGUgc3VyZSB0aGF0IHRo
+ZSBMaW51eCBrZXJuZWwgTmV0ZmlsdGVyIGNvZGUgZG9lc24ndCBoYXZlIGFueSBjb25jZXB0IG9m
+IEROUy4gV2hlbiB5b3Ugc3BlY2lmeSBhIEROUyBob3N0bmFtZSBpbiB5b3VyIHJ1bGVzLCBpdCBq
+dXN0IGRvZXMgYW4gQSByZWNvcmQgbG9va3VwIGFuZCBzdG9yZXMgdGhlIElQIGFkZHJlc3MgaW4g
+eW91ciBydWxlcy4NCg0KSWYgeW91IHdhbnQgdG8gZW1wbG95IGFuIEhUVFAgd2hpdGVsaXN0IG9u
+IExpbnV4LCBJIHJlY29tbWVuZCB1c2luZyBhIFdlYiBQcm94eSBzZXJ2ZXIgbGlrZSBzcXVpZC4g
+SXQgd2lsbCBhbGxvdyB5b3UgdG8gZG8gYXBwbGljYXRpb24gbGF5ZXIgZmlsdGVyaW5nIHdoaWNo
+IHdvdWxkIGJlIG11Y2ggZWFzaWVyIHRvIGltcGxlbWVudCwgYW5kIG1vcmUgbGlrZWx5IHRvIHdv
+cmsuDQoNCkpvZWwgR2VyYmVyDQpOZXR3b3JrIFNwZWNpYWxpc3QNCk5ldHdvcmsgT3BlcmF0aW9u
+cw0KRWFzdGxpbmsNCkU6IEpvZWwuR2VyYmVyQGNvcnAuZWFzdGxpbmsuY2EgVDogNTE5Ljc4Ni4x
+MjQxDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9tOiBuZXRmaWx0ZXItb3duZXJA
+dmdlci5rZXJuZWwub3JnIFttYWlsdG86bmV0ZmlsdGVyLW93bmVyQHZnZXIua2VybmVsLm9yZ10g
+T24gQmVoYWxmIE9mIE1hcnRpbiBCcmF1bg0KU2VudDogQXByaWwtMjEtMTQgMTI6NTQgQU0NClRv
+OiBuZXRmaWx0ZXJAdmdlci5rZXJuZWwub3JnDQpTdWJqZWN0OiBXaGl0ZWxpc3Qgd2l0aCBkb21h
+aW5zIHRoYXQgcHVsbHMgc3R1ZmYgZnJvbSBvdGhlciBkb21haW5zDQoNCkhpDQoNCkkgd2FudGVk
+IHRvIG1ha2UgYSB3aGl0ZSBsaXN0IHVzaW5nIHRoZSBzZXR0aW5ncyBiZWxvdy4NCg0KPFNOSVA+
+DQppcHRhYmxlcyAtTiB3YW5vdXQNCmlwdGFibGVzIC1JIEZPUldBUkQgLWkgYG52cmFtIGdldCBs
+YW5faWZuYW1lYCAtaiB3YW5vdXQNCg0KaXB0YWJsZXMgLUkgd2Fub3V0IC1tIG1hYyAtLW1hYy1z
+b3VyY2UgMDE6MjY6Zjc6NDY6NzE6NGIgLWogQUNDRVBUIGlwdGFibGVzIC1JIHdhbm91dCAtbSBt
+YWMgLS1tYWMtc291cmNlIGQyOjM3OmI1OmYyOjM5OmYzIC1qIEFDQ0VQVA0KDQppcHRhYmxlcyAt
+SSB3YW5vdXQgLWQgZ2FtZXBlZGlhLmNvbSAtaiBBQ0NFUFQgaXB0YWJsZXMgLUkgd2Fub3V0IC1k
+IHRveXNydXMuY29tIC1qIEFDQ0VQVA0KDQppcHRhYmxlcyAtQSB3YW5vdXQgLWogUkVKRUNUIC0t
+cmVqZWN0LXdpdGggaWNtcC1wcm90by11bnJlYWNoYWJsZSA8L1NOSVA+DQoNClNvIHRoZSBib3hl
+cyB3aXRoIHRoZSBNQUNzIHNwZWNpZmllZCBhcmUgZXhlbXB0IGZyb20gYmxvY2tpbmcuIFRoZSBk
+b21haW5zICJnYW1lcGVkaWEuY29tIiBhbmQgInRveXNydXMuY29tIiBhcmUgYWNjZXNpYmxlIHRv
+IGFsbC4NCg0KQnV0IHRoZSBwcm9ibGVtIGlzIHRoYXQgdGhvc2UgZG9tYWlucyBwdWxscyBzdHVm
+ZiBpbiBmcm9tIG90aGVyIGRvbWFpbnMgdXNpbmcgPGlmcmFtZT4gb3Igc29tZXRoaW5nLCB3aGlj
+aCBtYWtlcyB0aGUgSVBUYWJsZSBibG9jayB0aGUgbG9hZGluZyBvZiB0aGUgd2Vic2l0ZSB0byBj
+b21wbGV0ZS4NCg0KSG93IGRvIEkgZGVhbCB3aXRoIHRoYXQgaW4gdGhlIGJlc3Qgd2F5PyBJIGRv
+bid0IHdhbnQgdG8gbG9vayB1cCBldmVyeXRoaW5nIHRoZXkgcHVsbCBpbiBhbmQgd2hpdGUgbGlz
+dCB0aGF0IGFzIHdlbGwuIEFsc28gaXQgbWlnaHQgY2hhbmdlLg0KDQpJc24ndCB0aGVyZSBhIHdh
+eSB0byBzYXkgImFjY2VwdCBhbGwgZnJvbSB0aGlzIGRvbWFpbiwgZXZlbiB1bnJlbGF0ZWQgc3R1
+ZmYiPw0KDQpLaW5kIHJlZ2FyZHMuDQotLQ0KVG8gdW5zdWJzY3JpYmUgZnJvbSB0aGlzIGxpc3Q6
+IHNlbmQgdGhlIGxpbmUgInVuc3Vic2NyaWJlIG5ldGZpbHRlciIgaW4gdGhlIGJvZHkgb2YgYSBt
+ZXNzYWdlIHRvIG1ham9yZG9tb0B2Z2VyLmtlcm5lbC5vcmcgTW9yZSBtYWpvcmRvbW8gaW5mbyBh
+dCAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpvcmRvbW8taW5mby5odG1sDQo=
