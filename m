@@ -1,55 +1,70 @@
-From: Josh Boyer <jwboyer@fedoraproject.org>
-Subject: Re: [PATCH 3.13] core, nfqueue, openvswitch: Orphan frags in
- skb_zerocopy and handle errors
-Date: Wed, 23 Apr 2014 09:31:25 -0400
-Message-ID: <CA+5PVA4pPG9yVO1C1JnkxV3mSdAqh3QB44Y8xsVRvQv5PHM-Ag@mail.gmail.com>
-References: <1395873465-22282-1-git-send-email-zoltan.kiss@citrix.com>
-	<20140327.152956.1528740039185894234.davem@davemloft.net>
-	<20140421112601.GC3200@hercules>
-	<1398181118.3624.203.camel@deadeye.wl.decadent.org.uk>
-	<5356AEBF.5010505@citrix.com>
-	<1398194284.7767.101.camel@deadeye.wl.decadent.org.uk>
+From: ratheesh kannoth <ratheesh.ksz@gmail.com>
+Subject: performance decrease ?
+Date: Thu, 24 Apr 2014 15:45:48 +0530
+Message-ID: <CAGZFCEEYy9qULvzSr9JyBJtA6h+_NvL3gqxLF4dSy1yMupM2xQ@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:sender:in-reply-to:references:date:message-id:subject
-         :from:to:cc:content-type;
-        bh=RhMdFN+AE0iiJ2eE4SeEb++ok1joCiIM8TqgFzi6bL4=;
-        b=Vf/xrCDQa+8nQlG2HtzF4lFnILqATpxh/WLOBl3/qKBYphinuYGHIuzPy6euEl0Bjc
-         i0bPLzl/mEovajU2Db4GZKn2w46YG16xpMjMNNnn52igOWkjmeCpTYAjpZD1PicPvCBc
-         iWcWpH1isQP+15kG50KundMkOZSiQddnzYy1hKZCV2bhtQnv0qB3re63fUwihlmT+CHW
-         8tsjtSW0D5GmJBA7YNu4YivqlkyHOVjt7Ks4PIWwzY6yqH7qYXI4gKqVsq2qPmRtM0Yp
-         13fn34y6dEhFW2UslHpAy7o267TgRSWBp0ti9PK0nGQCRW2XQo0Eot6xuWWR0W81omGx
-         sCfA==
-In-Reply-To: <1398194284.7767.101.camel@deadeye.wl.decadent.org.uk>
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Ben Hutchings <ben@decadent.org.uk>
-Cc: Zoltan Kiss <zoltan.kiss@citrix.com>, Luis Henriques <luis.henriques@canonical.com>, David Miller <davem@davemloft.net>, jesse@nicira.com, pshelar@nicira.com, Thomas Graf <tgraf@redhat.com>, dev@openvswitch.org, pablo@netfilter.org, kadlec@blackhole.kfki.hu, edumazet@google.com, Daniel Borkmann <dborkman@redhat.com>, Tom Herbert <therbert@google.com>, jasowang@redhat.com, fw@strlen.de, Joe Perches <joe@perches.com>, horms@verge.net.au, jiri@resnulli.us, mst@redhat.com, Paul.Durrant@citrix.com, Jan Beulich <JBeulich@suse.com>, Herbert Xu <herbert@gondor.apana.org.au>, mszeredi@suse.cz, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, xen-devel@lists.xenproject.org, netdev <netdev@vger.kernel.org>, "Linux-Kernel@Vger. Kernel. Org" <linux-kernel@vger.kernel.org>, KVM list <kvm@vger.kernel.org>
+Return-path: <e1000-devel-bounces@lists.sourceforge.net>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/e1000-devel>, 
+	<mailto:e1000-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=e1000-devel>
+List-Post: <mailto:e1000-devel@lists.sourceforge.net>
+List-Help: <mailto:e1000-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/e1000-devel>,
+	<mailto:e1000-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: e1000-devel-bounces@lists.sourceforge.net
+To: netdev <netdev@vger.kernel.org>, Netfilter mailing list <netfilter@vger.kernel.org>, "e1000-devel@lists.sourceforge.net" <e1000-devel@lists.sourceforge.net>
 
-On Tue, Apr 22, 2014 at 3:18 PM, Ben Hutchings <ben@decadent.org.uk> wrote:
-> From: Zoltan Kiss <zoltan.kiss@citrix.com>
->
-> commit 36d5fe6a000790f56039afe26834265db0a3ad4c upstream.
->
-> skb_zerocopy can copy elements of the frags array between skbs, but it doesn't
-> orphan them. Also, it doesn't handle errors, so this patch takes care of that
-> as well, and modify the callers accordingly. skb_tx_error() is also added to
-> the callers so they will signal the failed delivery towards the creator of the
-> skb.
->
-> Signed-off-by: Zoltan Kiss <zoltan.kiss@citrix.com>
-> Signed-off-by: David S. Miller <davem@davemloft.net>
-> [bwh: Backported to 3.13: skb_zerocopy() is new in 3.14, but was moved from a
->  static function in nfnetlink_queue.  We need to patch that and its caller, but
->  not openvswitch.]
-> Signed-off-by: Ben Hutchings <ben@decadent.org.uk>
+I did an experiment  and this experiment gave me an unexpected result
+( for me). I would like to get any clue or hint on this.
+[ ubuntu  kernel version  3.11 ]
 
-Deja-vu.  I sent almost the same patch to netdev a while ago and you
-acked it there.  So I guess I'll ack your copy as well :).  Not sure
-why either version wasn't picked up by Dave.
+i wrote an userpace program to create two tap devices( tap77 and tap88
+) and will epoll on these fds. if a packet is received on  tap77 fd,
+it will be read() and write to tap88 fd  and vice versa. Basically
+this program will send pkts from tap88 to tap77 and vice versa.  when
+i sent 10  icmp packets (using ping ); i got  rtt min/avg/max/mdev
+=.825/1.006/2.052/.310 ms.
 
-josh
+
+I modified  tun_net_xmit() function in tun.c and created another
+driver and ran the above test.
+
+   tun_net_xmit() {
+
+          skb_orphan(skb);
+
+         if( skb->dev == tap77_dev ) skb->dev= tap88_dev
+         else if (skb->dev == tap88_dev ) skb->dev = tap77_dev;
+
+         skb_reset_mac_header(skb);
+         skb_reset_network_header(skb);
+         skb_reset_transport_header(skb);
+
+         netif_rx_ni(skb);
+ }
+
+
+i got rtt min/avg/max/mdev = .778/1.023/2.662/.549.
+
+
+With the modified driver,  Although we avoided   2 packet copies and 2
+system call, it did not result in  performance
+improvement ( it did decrease by a small delta ).
+
+Thanks,
+Ratheesh
+
+------------------------------------------------------------------------------
+Start Your Social Network Today - Download eXo Platform
+Build your Enterprise Intranet with eXo Platform Software
+Java Based Open Source Intranet - Social, Extensible, Cloud Ready
+Get Started Now And Turn Your Intranet Into A Collaboration Platform
+http://p.sf.net/sfu/ExoPlatform
+_______________________________________________
+E1000-devel mailing list
+E1000-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/e1000-devel
+To learn more about Intel&#174; Ethernet, visit http://communities.intel.com/community/wired
