@@ -1,34 +1,85 @@
-From: William Taylor <williamt@corp.sonic.net>
-Subject: reading positions with the u32 module
-Date: Thu, 24 Apr 2014 09:24:25 -0700
-Message-ID: <53593AB9.6030706@corp.sonic.net>
+From: zhuyj <zyjzyj2000@gmail.com>
+Subject: Re: performance decrease ?
+Date: Fri, 25 Apr 2014 16:18:31 +0800
+Message-ID: <535A1A57.50007@gmail.com>
+References: <CAGZFCEEYy9qULvzSr9JyBJtA6h+_NvL3gqxLF4dSy1yMupM2xQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <e1000-devel-bounces@lists.sourceforge.net>
+In-Reply-To: <CAGZFCEEYy9qULvzSr9JyBJtA6h+_NvL3gqxLF4dSy1yMupM2xQ@mail.gmail.com>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.sourceforge.net/lists/listinfo/e1000-devel>, 
+	<mailto:e1000-devel-request@lists.sourceforge.net?subject=unsubscribe>
+List-Archive: <http://sourceforge.net/mailarchive/forum.php?forum_name=e1000-devel>
+List-Post: <mailto:e1000-devel@lists.sourceforge.net>
+List-Help: <mailto:e1000-devel-request@lists.sourceforge.net?subject=help>
+List-Subscribe: <https://lists.sourceforge.net/lists/listinfo/e1000-devel>,
+	<mailto:e1000-devel-request@lists.sourceforge.net?subject=subscribe>
+Errors-To: e1000-devel-bounces@lists.sourceforge.net
+To: ratheesh kannoth <ratheesh.ksz@gmail.com>, netdev <netdev@vger.kernel.org>, Netfilter mailing list <netfilter@vger.kernel.org>, "e1000-devel@lists.sourceforge.net" <e1000-devel@lists.sourceforge.net>
 
-I'm trying to find out if it's possible to read a value from a packet
-and skip forward by that amount and start processing the packet from
-that offset.
-I tried something like this where 28&0xFF was the position where I
-wanted to read my value from but couldn't seem to get it to work.
+On 04/24/2014 06:15 PM, ratheesh kannoth wrote:
+> I did an experiment  and this experiment gave me an unexpected result
+> ( for me). I would like to get any clue or hint on this.
+> [ ubuntu  kernel version  3.11 ]
+>
+> i wrote an userpace program to create two tap devices( tap77 and tap88
+> ) and will epoll on these fds. if a packet is received on  tap77 fd,
+> it will be read() and write to tap88 fd  and vice versa. Basically
+> this program will send pkts from tap88 to tap77 and vice versa.  when
+> i sent 10  icmp packets (using ping ); i got  rtt min/avg/max/mdev
+> =.825/1.006/2.052/.310 ms.
+>
+>
+> I modified  tun_net_xmit() function in tun.c and created another
+> driver and ran the above test.
+>
+>     tun_net_xmit() {
+>
+>            skb_orphan(skb);
+>
+>           if( skb->dev == tap77_dev ) skb->dev= tap88_dev
+>           else if (skb->dev == tap88_dev ) skb->dev = tap77_dev;
+>
+>           skb_reset_mac_header(skb);
+>           skb_reset_network_header(skb);
+>           skb_reset_transport_header(skb);
+>
+>           netif_rx_ni(skb);
+netif_rx_ni(skb); will insert the skb into a queue. We can not make sure 
+when this skb is handled. So use this function is not accurate to 
+performance.
 
-0>>22&0x3C@28&0xFF000000>>@0&0xDFDFDFDF=0x464F4F4F
+Best Regards!
+Zhu Yanjun
+>   }
+>
+>
+> i got rtt min/avg/max/mdev = .778/1.023/2.662/.549.
+>
+>
+> With the modified driver,  Although we avoided   2 packet copies and 2
+> system call, it did not result in  performance
+> improvement ( it did decrease by a small delta ).
+>
+> Thanks,
+> Ratheesh
+> --
+> To unsubscribe from this list: send the line "unsubscribe netdev" in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
 
-For a little more context I'm trying to do this so I can block dns
-requests that have random hostnames prepended to the domain. The idea being
-I can generate a rule that matches the domain and it will work with
-whatever hostname is attached to it.
 
-Read 0x03 jump 3 bytes forward then start matching on 0x04666F6F6F0x03636F6D
-www.fooo.com : 0x037777770x04666F6F6F0x03636F6D00
-
-
-Is this possible?  Any help would be appreciated.
-
-
-Thanks,
-  William
+------------------------------------------------------------------------------
+Start Your Social Network Today - Download eXo Platform
+Build your Enterprise Intranet with eXo Platform Software
+Java Based Open Source Intranet - Social, Extensible, Cloud Ready
+Get Started Now And Turn Your Intranet Into A Collaboration Platform
+http://p.sf.net/sfu/ExoPlatform
+_______________________________________________
+E1000-devel mailing list
+E1000-devel@lists.sourceforge.net
+https://lists.sourceforge.net/lists/listinfo/e1000-devel
+To learn more about Intel&#174; Ethernet, visit http://communities.intel.com/community/wired
