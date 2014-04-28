@@ -1,80 +1,73 @@
-From: Vigneswaran R <vignesh@atc.tcs.com>
-Subject: Re: proxy_arp
-Date: Mon, 28 Apr 2014 09:23:31 +0530
-Message-ID: <535DD0BB.7050503@atc.tcs.com>
-References: <20140425193531.55f41d258f184710b44487a2@lucassen.org>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [RESEND PATCH 2/2] nfacct: adding quota capabilities
+Date: Mon, 28 Apr 2014 10:56:25 +0200
+Message-ID: <20140428085625.GA18836@localhost>
+References: <1398041896-8479-1-git-send-email-mathieu.poirier@linaro.org>
+ <1398041896-8479-2-git-send-email-mathieu.poirier@linaro.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20140425193531.55f41d258f184710b44487a2@lucassen.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <1398041896-8479-2-git-send-email-mathieu.poirier@linaro.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
-Cc: richard lucassen <mailinglists@lucassen.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: mathieu.poirier@linaro.org
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, john.stultz@linaro.org
 
-On 04/25/2014 11:05 PM, richard lucassen wrote:
-> Hello list,
->
-> I have two identical Linux servers, two identical vanilla kernels
-> (3.2.57). I start an arping on srv1 to the *external* ip of srv2 using
-> the *internal* rfc1918 addressed NIC (eth2)
->
->             +------+                        +------+
-> eth0       |      |  eth2            eth2  |      |  eth0
-> ip1a-------+ srv1 +--ip1b--<------>--ip2b--+ srv2 +--ip2a
-> outside    |      |  inside        inside  |      |  outside
->             +------+                        +------+
->
->      arping using eth1 ^^  --via-> eth2 ^^ to this ip --^^^
->
-> root@srv1# arping -I eth1 ip2a
-> ARPING 213.34.90.190 from 172.31.255.249 eth2
-> Unicast reply from 213.34.90.190 [00:15:17:F4:41:46]  0.891ms
-> Unicast reply from 213.34.90.190 [00:15:17:F4:41:46]  0.799ms
-> ^CSent 2 probes (1 broadcast(s))
-> Received 2 response(s)
->
-> No problem, it works as expected. The other way round however:
->
->             +------+                        +------+
-> eth0       |      |  eth2            eth2  |      |  eth0
-> ip1a-------+ srv1 +--ip1b--<------>--ip2b--+ srv2 +--ip2a
-> outside    |      |  inside        inside  |      |  outside
->             +------+                        +------+
->
->   ^^--<- arping to this ip <--via--- ^^ using eth2
->
-> root@srv2# arping -I eth2 213.34.90.130
-> ARPING 213.34.90.130 from 172.31.255.250 eth2
-> ^CSent 15 probes (15 broadcast(s))
-> Received 0 response(s)
->
-> srv1 does NOT reply to arp requests, even if I add an:
->
-> "arp -sD eth1 ip1a" (which is not necessary)
->
-> I compared all sysctl settings, they are equal. ip_forward is set to 1
-> on both machines. The srv1 has a large iptables rulebase, the srv2 just
-> some simple rules. A tcpdump shows that srv1 receives the arp requests
-> but is not willing to honour the arp requests of srv2.
+On Sun, Apr 20, 2014 at 06:58:16PM -0600, mathieu.poirier@linaro.org wrote:
+> From: Mathieu Poirier <mathieu.poirier@linaro.org>
+> 
+> The accounting framework now supports quota at the packet and byte
+> level.  The tool is simply enhanced with two optional arguments to
+> specify the whether accounting for byte of packet and the limit
+> associated with each.  Also adding a monitor mode that listens for
+> quota attainment notification.
+> 
+> Examples:
+> 
+> /* create an accounting object that isn't associated to a quota */
+> $ nfacct add first_no_quota
+> 
+> /* create a quota object with byte count limited to 50 byte */
+> $ nfacct add second_quota byte 50
+> 
+> /* create a quota object with packet count limited to 5 */
+> $ nfacct add third_quota packet 5
+> 
+> From there the accounting objects can be used in iptables the same
+> way as they did before:
+> 
+> /* limit the number of icmp packets allowed through the OUTPUT chain */
+> $ iptables -I OUTPUT -p icmp -m nfacct --nfacct-name third_quota --jump REJECT
+> 
+> /* listening for quota attainment notification */
+> $ nfacct listen
 
-It seems, iptable rules will not affect the ARP. By any chance you have 
-arptables or ebtables installed on srv1 which is causing the problem?
+I'm going to rename this to 'monitor' instead.
 
-http://www.linuxcommand.org/man_pages/arptables8.html
-http://ebtables.sourceforge.net/examples/basic.html#ex_config
+> @@ -526,28 +569,93 @@ static int nfacct_cmd_help(int argc, char *argv[])
+>  
+>  static int nfacct_cmd_restore(int argc, char *argv[])
+>  {
+> -	uint64_t pkts, bytes;
+> -	char name[512];
+> -	char buffer[512];
+> -	int ret;
+> +	uint64_t pkts, bytes, quota;
+> +	char name[512], mode[512], buffer[512];
+> +	int ret, flags;
+>  
+>  	while (fgets(buffer, sizeof(buffer), stdin)) {
+>  		char *semicolon = strchr(buffer, ';');
+> +
+>  		if (semicolon == NULL) {
+>  			nfacct_perror("invalid line");
+>  			return -1;
+>  		}
+> +
+> +		/* a single ';' terminates the input */
+> +		if (strncmp(buffer, ";", 1) == 0)
+> +			break;
 
-
-Regards,
-Vignesh
->
-> The goal is proxy_arping (which unexpectedly did not work), and I
-> found out that the machine srv1 even does not reply to arp requests of
-> its own ip addresses.
->
-> Any thoughts or hints on this matter?
->
-> R.
->
-
+This chunk seems new, why is it needed there?
