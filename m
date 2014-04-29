@@ -1,35 +1,52 @@
-From: Vigneswaran R <vignesh@atc.tcs.com>
-Subject: Re: proxy_arp [resolved]
-Date: Tue, 29 Apr 2014 16:49:18 +0530
-Message-ID: <535F8AB6.10503@atc.tcs.com>
-References: <20140425193531.55f41d258f184710b44487a2@lucassen.org> <535DD0BB.7050503@atc.tcs.com> <20140428190404.2786b822002cc5ad8f001ff7@lucassen.org> <535F18C4.5000803@atc.tcs.com> <20140429131333.60542255030542ac9fdd7456@lucassen.org>
+From: Mathieu Poirier <mathieu.poirier@linaro.org>
+Subject: Re: [RESEND PATCH 2/2] nfacct: adding quota capabilities
+Date: Tue, 29 Apr 2014 08:03:51 -0600
+Message-ID: <CANLsYkx11G7ZE6E58dgzRbRjJKDiPOGvj5z5kh1p=pLyHCKpZA@mail.gmail.com>
+References: <1398041896-8479-1-git-send-email-mathieu.poirier@linaro.org>
+	<1398041896-8479-2-git-send-email-mathieu.poirier@linaro.org>
+	<20140428085625.GA18836@localhost>
+	<20140428102033.GA3842@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20140429131333.60542255030542ac9fdd7456@lucassen.org>
+In-Reply-To: <20140428102033.GA3842@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
-Cc: richard lucassen <mailinglists@lucassen.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, John Stultz <john.stultz@linaro.org>
 
-On 04/29/2014 04:43 PM, richard lucassen wrote:
-> On Tue, 29 Apr 2014 08:43:08 +0530
-> Vigneswaran R <vignesh@atc.tcs.com> wrote:
->
->>> I just don't understand why srv1 is not arp-replying to the ip
->>> addresses it owns...
->> Did you check the rp_filter also? Try disabling the rp_filter on srv1
->> (if it is not disabled already) and check.
->> (Just in case the source IP of the arp request and the incoming
->> Interface are not matching according to the routing table entries).
+On 28 April 2014 04:20, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
+> On Mon, Apr 28, 2014 at 10:56:25AM +0200, Pablo Neira Ayuso wrote:
+>> > @@ -526,28 +569,93 @@ static int nfacct_cmd_help(int argc, char *argv[])
+>> >
+>> >  static int nfacct_cmd_restore(int argc, char *argv[])
+>> >  {
+>> > -   uint64_t pkts, bytes;
+>> > -   char name[512];
+>> > -   char buffer[512];
+>> > -   int ret;
+>> > +   uint64_t pkts, bytes, quota;
+>> > +   char name[512], mode[512], buffer[512];
+>> > +   int ret, flags;
+>> >
+>> >     while (fgets(buffer, sizeof(buffer), stdin)) {
+>> >             char *semicolon = strchr(buffer, ';');
+>> > +
+>> >             if (semicolon == NULL) {
+>> >                     nfacct_perror("invalid line");
+>> >                     return -1;
+>> >             }
+>> > +
+>> > +           /* a single ';' terminates the input */
+>> > +           if (strncmp(buffer, ";", 1) == 0)
+>> > +                   break;
 >>
->> echo "0" > /proc/sys/net/ipv4/conf/eth1/rp_filter
-> No, but echoing "2" (relaxed) did the job. Thnx! AFAIK this is still a
-> bug: the 0 does not work anymore, 0 or 1, it's equal. I reported this a
-> few years ago, but the error still remains.
+>> This chunk seems new, why is it needed there?
+>
+> I have applied this patch, we can clarify this or remove it in a
+> follow up patch.
 
-Ok.
-
-Regards,
-Vignesh
+I found what I think is a problem with the restore command.  I will
+setup the environment and get back to you with a printout of the
+condition - just give me a few days.
