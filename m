@@ -1,47 +1,55 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [RESEND PATCH 2/2] nfacct: adding quota capabilities
-Date: Mon, 28 Apr 2014 12:20:33 +0200
-Message-ID: <20140428102033.GA3842@localhost>
-References: <1398041896-8479-1-git-send-email-mathieu.poirier@linaro.org>
- <1398041896-8479-2-git-send-email-mathieu.poirier@linaro.org>
- <20140428085625.GA18836@localhost>
+From: Vigneswaran R <vignesh@atc.tcs.com>
+Subject: Re: proxy_arp
+Date: Tue, 29 Apr 2014 08:43:08 +0530
+Message-ID: <535F18C4.5000803@atc.tcs.com>
+References: <20140425193531.55f41d258f184710b44487a2@lucassen.org> <535DD0BB.7050503@atc.tcs.com> <20140428190404.2786b822002cc5ad8f001ff7@lucassen.org>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140428085625.GA18836@localhost>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: mathieu.poirier@linaro.org
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, john.stultz@linaro.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <20140428190404.2786b822002cc5ad8f001ff7@lucassen.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
+Cc: richard lucassen <mailinglists@lucassen.org>
 
-On Mon, Apr 28, 2014 at 10:56:25AM +0200, Pablo Neira Ayuso wrote:
-> > @@ -526,28 +569,93 @@ static int nfacct_cmd_help(int argc, char *argv[])
-> >  
-> >  static int nfacct_cmd_restore(int argc, char *argv[])
-> >  {
-> > -	uint64_t pkts, bytes;
-> > -	char name[512];
-> > -	char buffer[512];
-> > -	int ret;
-> > +	uint64_t pkts, bytes, quota;
-> > +	char name[512], mode[512], buffer[512];
-> > +	int ret, flags;
-> >  
-> >  	while (fgets(buffer, sizeof(buffer), stdin)) {
-> >  		char *semicolon = strchr(buffer, ';');
-> > +
-> >  		if (semicolon == NULL) {
-> >  			nfacct_perror("invalid line");
-> >  			return -1;
-> >  		}
-> > +
-> > +		/* a single ';' terminates the input */
-> > +		if (strncmp(buffer, ";", 1) == 0)
-> > +			break;
-> 
-> This chunk seems new, why is it needed there?
+On 04/28/2014 10:34 PM, richard lucassen wrote:
+> On Mon, 28 Apr 2014 09:23:31 +0530
+> Vigneswaran R <vignesh@atc.tcs.com> wrote:
+>
+>> It seems, iptable rules will not affect the ARP.
+> No, it should not :)
+>
+>> By any chance you
+>> have arptables or ebtables installed on srv1 which is causing the
+>> problem?
+> Nope:
+>
+> # ebtables -L
+> Bridge table: filter
+>
+> Bridge chain: INPUT, entries: 0, policy: ACCEPT
+>
+> Bridge chain: FORWARD, entries: 0, policy: ACCEPT
+>
+> Bridge chain: OUTPUT, entries: 0, policy: ACCEPT
+>
+> # arptables -L
+> Chain INPUT (policy ACCEPT)
+>
+> Chain OUTPUT (policy ACCEPT)
+>
+> Chain FORWARD (policy ACCEPT)
+>
+> I just don't understand why srv1 is not arp-replying to the ip
+> addresses it owns...
 
-I have applied this patch, we can clarify this or remove it in a
-follow up patch.
+Did you check the rp_filter also? Try disabling the rp_filter on srv1 
+(if it is not disabled already) and check.
+(Just in case the source IP of the arp request and the incoming 
+Interface are not matching according to the routing table entries).
+
+echo "0" > /proc/sys/net/ipv4/conf/eth1/rp_filter
+
+regards,
+Vignesh
