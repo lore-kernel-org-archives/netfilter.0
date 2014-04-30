@@ -1,7 +1,7 @@
 From: Mathieu Poirier <mathieu.poirier@linaro.org>
 Subject: Re: [RESEND PATCH 2/2] nfacct: adding quota capabilities
-Date: Tue, 29 Apr 2014 08:03:51 -0600
-Message-ID: <CANLsYkx11G7ZE6E58dgzRbRjJKDiPOGvj5z5kh1p=pLyHCKpZA@mail.gmail.com>
+Date: Wed, 30 Apr 2014 14:30:22 -0600
+Message-ID: <CANLsYky2jcZF=hxMaXaYj_7jjn1GjtqTEXbSv9mBJ_Vn8sdJ4w@mail.gmail.com>
 References: <1398041896-8479-1-git-send-email-mathieu.poirier@linaro.org>
 	<1398041896-8479-2-git-send-email-mathieu.poirier@linaro.org>
 	<20140428085625.GA18836@localhost>
@@ -47,6 +47,9 @@ On 28 April 2014 04:20, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
 > I have applied this patch, we can clarify this or remove it in a
 > follow up patch.
 
-I found what I think is a problem with the restore command.  I will
-setup the environment and get back to you with a printout of the
-condition - just give me a few days.
+I've investigated this a little more to find out that my EOF character
+wasn't coming in properly on my target.  After correction the original
+code works properly and as such the highlighted chunk is not needed.
+
+I can send a new patch or you can edit it out directly - pls get back
+to me with that you prefer.
