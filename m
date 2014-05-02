@@ -1,55 +1,31 @@
-From: Mathieu Poirier <mathieu.poirier@linaro.org>
-Subject: Re: [RESEND PATCH 2/2] nfacct: adding quota capabilities
-Date: Wed, 30 Apr 2014 14:30:22 -0600
-Message-ID: <CANLsYky2jcZF=hxMaXaYj_7jjn1GjtqTEXbSv9mBJ_Vn8sdJ4w@mail.gmail.com>
-References: <1398041896-8479-1-git-send-email-mathieu.poirier@linaro.org>
-	<1398041896-8479-2-git-send-email-mathieu.poirier@linaro.org>
-	<20140428085625.GA18836@localhost>
-	<20140428102033.GA3842@localhost>
+From: David Hagood <david.hagood@gmail.com>
+Subject: How to interpret time stamps in xt_recent?
+Date: Fri, 02 May 2014 06:21:14 -0500
+Message-ID: <53637FAA.9060203@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20140428102033.GA3842@localhost>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=message-id:date:from:user-agent:mime-version:to:subject
+         :content-type:content-transfer-encoding;
+        bh=WtjWprHMrQt7E8aLcjZCL8L1mAYRAipqPhPZU0chl4k=;
+        b=bGunfk3i7OqY7j9DL60vJazhMC97AewUAYSsj4maBlJLiriD+wFwm8yPbF/f1YIftT
+         twhUJz0ucRhq0qdQyrHop2G2LcRqKFQKizdyo/h1PP+CfIXITX9GHAeEY1z3Lpn3UDdb
+         7v5jHIonknYOEnLBDPzNz3M65oN9zZ72774SpbAvJcjlx6JzWvsCszx71av0C8v4dPNr
+         Rs1dNWsnMIo7nNL3yelN+MtbIbbVUfj1xu+khFa1h++zmOjsJLXUKUbKOV4dn6kqLWTg
+         bxdwiLI6wWqi4jS5E4AEjQpoK+S6Y4r/2Lj1pHvT5J3Bl4ysx2fbuGHY+LHH5xE5S+VU
+         NrvQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, John Stultz <john.stultz@linaro.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-On 28 April 2014 04:20, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> On Mon, Apr 28, 2014 at 10:56:25AM +0200, Pablo Neira Ayuso wrote:
->> > @@ -526,28 +569,93 @@ static int nfacct_cmd_help(int argc, char *argv[])
->> >
->> >  static int nfacct_cmd_restore(int argc, char *argv[])
->> >  {
->> > -   uint64_t pkts, bytes;
->> > -   char name[512];
->> > -   char buffer[512];
->> > -   int ret;
->> > +   uint64_t pkts, bytes, quota;
->> > +   char name[512], mode[512], buffer[512];
->> > +   int ret, flags;
->> >
->> >     while (fgets(buffer, sizeof(buffer), stdin)) {
->> >             char *semicolon = strchr(buffer, ';');
->> > +
->> >             if (semicolon == NULL) {
->> >                     nfacct_perror("invalid line");
->> >                     return -1;
->> >             }
->> > +
->> > +           /* a single ';' terminates the input */
->> > +           if (strncmp(buffer, ";", 1) == 0)
->> > +                   break;
->>
->> This chunk seems new, why is it needed there?
->
-> I have applied this patch, we can clarify this or remove it in a
-> follow up patch.
+I am trying to use the xt_recent netfilter under Linux 3.11 to implement 
+a more reactive firewall. I want to be able to review when the most 
+recent packet in any blocklist came in, but I don't know how to convert 
+the last_seen and oldest_pkt fields into anything meaningful.
 
-I've investigated this a little more to find out that my EOF character
-wasn't coming in properly on my target.  After correction the original
-code works properly and as such the highlighted chunk is not needed.
+What exactly are these values representing? How can I convert them to a 
+wall-clock time?
 
-I can send a new patch or you can edit it out directly - pls get back
-to me with that you prefer.
