@@ -1,60 +1,32 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [RESEND PATCH 2/2] nfacct: adding quota capabilities
-Date: Sun, 4 May 2014 14:30:43 +0200
-Message-ID: <20140504123043.GA26519@localhost>
-References: <1398041896-8479-1-git-send-email-mathieu.poirier@linaro.org>
- <1398041896-8479-2-git-send-email-mathieu.poirier@linaro.org>
- <20140428085625.GA18836@localhost>
- <20140428102033.GA3842@localhost>
- <CANLsYky2jcZF=hxMaXaYj_7jjn1GjtqTEXbSv9mBJ_Vn8sdJ4w@mail.gmail.com>
+From: Scott McWhirter <scottm@saucelabs.com>
+Subject: Kernel Panic in nf_nat_cleanup_conntrack
+Date: Mon, 5 May 2014 13:47:36 -0700
+Message-ID: <CANB1jnDFqnTJLGmVMyVWNW45dEbpQ2rzZSd-k=+YtTi0zFMAZQ@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CANLsYky2jcZF=hxMaXaYj_7jjn1GjtqTEXbSv9mBJ_Vn8sdJ4w@mail.gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Mathieu Poirier <mathieu.poirier@linaro.org>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, John Stultz <john.stultz@linaro.org>
+To: netfilter@vger.kernel.org
 
-On Wed, Apr 30, 2014 at 02:30:22PM -0600, Mathieu Poirier wrote:
-> On 28 April 2014 04:20, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> > On Mon, Apr 28, 2014 at 10:56:25AM +0200, Pablo Neira Ayuso wrote:
-> >> > @@ -526,28 +569,93 @@ static int nfacct_cmd_help(int argc, char *argv[])
-> >> >
-> >> >  static int nfacct_cmd_restore(int argc, char *argv[])
-> >> >  {
-> >> > -   uint64_t pkts, bytes;
-> >> > -   char name[512];
-> >> > -   char buffer[512];
-> >> > -   int ret;
-> >> > +   uint64_t pkts, bytes, quota;
-> >> > +   char name[512], mode[512], buffer[512];
-> >> > +   int ret, flags;
-> >> >
-> >> >     while (fgets(buffer, sizeof(buffer), stdin)) {
-> >> >             char *semicolon = strchr(buffer, ';');
-> >> > +
-> >> >             if (semicolon == NULL) {
-> >> >                     nfacct_perror("invalid line");
-> >> >                     return -1;
-> >> >             }
-> >> > +
-> >> > +           /* a single ';' terminates the input */
-> >> > +           if (strncmp(buffer, ";", 1) == 0)
-> >> > +                   break;
-> >>
-> >> This chunk seems new, why is it needed there?
-> >
-> > I have applied this patch, we can clarify this or remove it in a
-> > follow up patch.
-> 
-> I've investigated this a little more to find out that my EOF character
-> wasn't coming in properly on my target.  After correction the original
-> code works properly and as such the highlighted chunk is not needed.
-> 
-> I can send a new patch or you can edit it out directly - pls get back
-> to me with that you prefer.
+Hi all,
 
-Please, send me a follow up patch. This is already in master. Thanks.
+We've been bumping into this bug
+https://bugzilla.kernel.org/show_bug.cgi?id=65191 on several of our
+research machines when using lxc with nat.
+
+I see that Pablo has been working on that area of netfilter lately and
+was wondering if there were a set of patches that would help us with
+this issue?
+
+I've already applied a couple to no success. I can replicate the panic
+fairly easily, so I can test if the patches work if I can get an idea
+of which ones to apply. We've been working with 3.11.10 and 3.13.0 on
+ubuntu.
+
+Thanks,
+
+
+-- 
+Scott
