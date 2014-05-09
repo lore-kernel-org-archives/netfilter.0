@@ -1,40 +1,126 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: conntrackd, internal cache keeps filling up
-Date: Fri, 9 May 2014 13:31:29 +0200
-Message-ID: <20140509113129.GA8031@localhost>
-References: <20140505104058.GA30297@finrod>
+From: Hangbin Liu <liuhangbin@gmail.com>
+Subject: Re: [contrack-tools PATCH] build: do not compile nfct if we disabled
+ cttimeout
+Date: Fri, 9 May 2014 19:54:11 +0800
+Message-ID: <20140509115411.GJ25631@localhost.localdomain>
+References: <1399543345-3634-1-git-send-email-liuhangbin@gmail.com>
+ <20140509112959.GA3812@localhost>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-type:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=phdnWT42wl+qh1AX8p4l+9OOd4zUrG+DUe0qAAme2GU=;
+        b=iRpIaz1r/bXOHKAWL5GcrrCRxSuvLOlo84fXxuqleAnGIz+Jz2LRQcn7BQBIAaBHiP
+         wrCMgUvnlEq2PNW4nkllkele4IyJyfIC7SxFhq2szKuj9vl4KhlS2nphUzUg0goA2kGk
+         4dA1Fvx5lNgxzmokCZi1QZqEmWSDABo45E+44bdEnqleLGIeM68qt2kjoI4H5dvqyKdj
+         EqkDB8A/B9c+iu57bVXIydkTUulDMlSlBEecxLulsyL0gcacRK+AMoQkPcxwFDUuFCiJ
+         uuzL7ptuskcd2dLaQdz4ZFfXDRKBquIZo1slmGNmrPS6hEPDcMqRQIfSmyBDfdJm0R9P
+         G/vQ==
 Content-Disposition: inline
-In-Reply-To: <20140505104058.GA30297@finrod>
+In-Reply-To: <20140509112959.GA3812@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Martin Kraus <lists_mk@wujiman.net>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter dev <netfilter@vger.kernel.org>, netfilter-devel@vger.kernel.org
 
-On Mon, May 05, 2014 at 12:40:58PM +0200, Martin Kraus wrote:
-> Hi.
-> I'm running conntrackd 1.2.1 on debian wheezy between two routers with 
-> conntrackd external cache disabled.
->
-> After running for some time the states stop replicating due to conntrackd hitting
-> HashLimit in the internal cache. When I looked at it it's basically broadcast
-> and multicast connections that never time out even though they are no longer
-> in the conntrack tables on both routers. I filtered some of it out using
-> NOTRACK in iptables. That helped for a while but now it's back with 
-> tcp LAST_ACK state.
-> 
-> tcp      6 LAST_ACK src=172.20.6.74 dst=172.20.20.23 sport=48818 dport=445 src=172.20.20.23 dst=172.20.6.74 sport=445 dport=48818 [ASSURED] [active since 249398s]
-> tcp      6 LAST_ACK src=172.20.6.119 dst=172.20.20.21 sport=55843 dport=80 src=172.20.20.21 dst=172.20.6.119 sport=80 dport=55843 [ASSURED] [active since 15458s]
-> tcp      6 LAST_ACK src=172.20.6.119 dst=172.20.20.21 sport=58573 dport=80 src=172.20.20.21 dst=172.20.6.119 sport=80 dport=58573 [ASSURED] [active since 7426s]
-> tcp      6 LAST_ACK src=172.20.6.119 dst=172.20.20.21 sport=57923 dport=80 src=172.20.20.21 dst=172.20.6.119 sport=80 dport=57923 [ASSURED] [active since 9946s]
-> tcp      6 LAST_ACK src=172.20.6.74 dst=172.20.20.23 sport=47560 dport=445 src=172.20.20.23 dst=172.20.6.74 sport=445 dport=47560 [ASSURED] [active since 252927s]
-> 
-> There's thousands of these entries and in a few days they'll fill up the
-> internal cache and break internal routing.
+On Fri, May 09, 2014 at 01:29:59PM +0200, Pablo Neira Ayuso wrote:
+> On Thu, May 08, 2014 at 06:02:25PM +0800, Hangbin Liu wrote:
+> > If we do not have libnetfilter_cttimeout and disabled cttimeout, co=
+nntrack-tools
+> > will compile fail because nfct.c include nfnetlink_cttimeout.h. Fix=
+ it by only
+> > compile nfct when we have enabled cttimeout
+>=20
+> Strange. The nfnetlink_cttimeout.h file is cached inside the
+> conntrack-tools tree:
+>=20
+> conntrack-tools/include/linux/netfilter/nfnetlink_cttimeout.h
+>=20
+> Here this compiles fine with my current tree and using:
+>=20
+> ./configure --prefix=3D/usr --disable-cthelper --disable-cttimeout
+>=20
+> Please, investigate this issue a bit further.
 
-Could you retry with lastest conntrackd version? 1.4.2.
+That's weird, on my system without libnetfilter_cttimeout.
+# ./configure --prefix=3D/usr
+checking build system type... x86_64-unknown-linux-gnu
+checking host system type... x86_64-unknown-linux-gnu
+checking for a BSD-compatible install... /usr/bin/install -c
+checking whether build environment is sane... yes
 
-You didn't specify your Linux kernel version either. Thanks.
+<snip>
+
+checking for LIBNETFILTER_CONNTRACK... yes
+checking for LIBNETFILTER_CTTIMEOUT... no
+configure: error: Package requirements (libnetfilter_cttimeout >=3D 1.0=
+=2E0) were not met:
+
+No package 'libnetfilter_cttimeout' found
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+Alternatively, you may set the environment variables LIBNETFILTER_CTTIM=
+EOUT_CFLAGS
+and LIBNETFILTER_CTTIMEOUT_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.
+
+# ./configure --prefix=3D/usr --disable-cthelper --disable-cttimeout
+
+<snip>
+
+config.status: executing depfiles commands
+config.status: executing libtool commands
+
+conntrack-tools configuration:
+  userspace conntrack helper support:   no
+  conntrack timeout support:            no
+
+# make
+Making all in extensions
+make[1]: Entering directory `/root/conntrack-tools/extensions'
+  CC       libct_proto_tcp.lo
+  CCLD     libct_proto_tcp.la
+
+<snip>
+
+  YACC     read_config_yy.c
+updating read_config_yy.h
+  CC       read_config_yy.o
+  LEX      read_config_lex.c
+  CC       read_config_lex.o
+read_config_lex.c: In function =E2=80=98yylex=E2=80=99:
+read_config_lex.c:2333:23: warning: comparison between signed and unsig=
+ned integer expressions [-Wsign-compare]
+    for ( yyl =3D 0; yyl < yyleng; ++yyl )
+                       ^
+read_config_lex.c: In function =E2=80=98yy_scan_bytes=E2=80=99:
+read_config_lex.c:3658:17: warning: comparison between signed and unsig=
+ned integer expressions [-Wsign-compare]
+  for ( i =3D 0; i < _yybytes_len; ++i )
+                 ^
+  CC       stack.o
+  CCLD     conntrackd
+  CC       nfct.o
+nfct.c:26:59: fatal error: libnetfilter_cttimeout/libnetfilter_cttimeou=
+t.h: No such file or directory
+ #include <libnetfilter_cttimeout/libnetfilter_cttimeout.h>
+                                                           ^
+compilation terminated.
+make[2]: *** [nfct.o] Error 1
+make[2]: Leaving directory `/root/conntrack-tools/src'
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory `/root/conntrack-tools/src'
+make: *** [all-recursive] Error 1
+
+It didn't check our library path, should we add it in LIBRARY_PATH?
+--=20
+
+Thanks & Best Regards
+Hangbin Liu <liuhangbin@gmail.com>
