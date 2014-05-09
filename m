@@ -1,32 +1,40 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [contrack-tools PATCH] build: do not compile nfct if we disabled
- cttimeout
-Date: Fri, 9 May 2014 13:29:59 +0200
-Message-ID: <20140509112959.GA3812@localhost>
-References: <1399543345-3634-1-git-send-email-liuhangbin@gmail.com>
+Subject: Re: conntrackd, internal cache keeps filling up
+Date: Fri, 9 May 2014 13:31:29 +0200
+Message-ID: <20140509113129.GA8031@localhost>
+References: <20140505104058.GA30297@finrod>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <1399543345-3634-1-git-send-email-liuhangbin@gmail.com>
+In-Reply-To: <20140505104058.GA30297@finrod>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Hangbin Liu <liuhangbin@gmail.com>
-Cc: netfilter dev <netfilter@vger.kernel.org>, netfilter-devel@vger.kernel.org
+To: Martin Kraus <lists_mk@wujiman.net>
+Cc: netfilter@vger.kernel.org
 
-On Thu, May 08, 2014 at 06:02:25PM +0800, Hangbin Liu wrote:
-> If we do not have libnetfilter_cttimeout and disabled cttimeout, conntrack-tools
-> will compile fail because nfct.c include nfnetlink_cttimeout.h. Fix it by only
-> compile nfct when we have enabled cttimeout
+On Mon, May 05, 2014 at 12:40:58PM +0200, Martin Kraus wrote:
+> Hi.
+> I'm running conntrackd 1.2.1 on debian wheezy between two routers with 
+> conntrackd external cache disabled.
+>
+> After running for some time the states stop replicating due to conntrackd hitting
+> HashLimit in the internal cache. When I looked at it it's basically broadcast
+> and multicast connections that never time out even though they are no longer
+> in the conntrack tables on both routers. I filtered some of it out using
+> NOTRACK in iptables. That helped for a while but now it's back with 
+> tcp LAST_ACK state.
+> 
+> tcp      6 LAST_ACK src=172.20.6.74 dst=172.20.20.23 sport=48818 dport=445 src=172.20.20.23 dst=172.20.6.74 sport=445 dport=48818 [ASSURED] [active since 249398s]
+> tcp      6 LAST_ACK src=172.20.6.119 dst=172.20.20.21 sport=55843 dport=80 src=172.20.20.21 dst=172.20.6.119 sport=80 dport=55843 [ASSURED] [active since 15458s]
+> tcp      6 LAST_ACK src=172.20.6.119 dst=172.20.20.21 sport=58573 dport=80 src=172.20.20.21 dst=172.20.6.119 sport=80 dport=58573 [ASSURED] [active since 7426s]
+> tcp      6 LAST_ACK src=172.20.6.119 dst=172.20.20.21 sport=57923 dport=80 src=172.20.20.21 dst=172.20.6.119 sport=80 dport=57923 [ASSURED] [active since 9946s]
+> tcp      6 LAST_ACK src=172.20.6.74 dst=172.20.20.23 sport=47560 dport=445 src=172.20.20.23 dst=172.20.6.74 sport=445 dport=47560 [ASSURED] [active since 252927s]
+> 
+> There's thousands of these entries and in a few days they'll fill up the
+> internal cache and break internal routing.
 
-Strange. The nfnetlink_cttimeout.h file is cached inside the
-conntrack-tools tree:
+Could you retry with lastest conntrackd version? 1.4.2.
 
-conntrack-tools/include/linux/netfilter/nfnetlink_cttimeout.h
-
-Here this compiles fine with my current tree and using:
-
-./configure --prefix=/usr --disable-cthelper --disable-cttimeout
-
-Please, investigate this issue a bit further.
+You didn't specify your Linux kernel version either. Thanks.
