@@ -1,72 +1,50 @@
-From: Bruno de Paula Larini <bruno.larini@riosoft.com.br>
-Subject: Re: Losing connection between nat and filter tables
-Date: Fri, 09 May 2014 21:31:49 -0300
-Message-ID: <536D7375.9090909@riosoft.com.br>
-References: <536CECA8.1000604@riosoft.com.br>	<CAEzD07JLeCTxUT_rR3H6QDv6_jVH2mFH1q8B2T4EvtJsDGqF1g@mail.gmail.com>	<536CFE75.90005@riosoft.com.br> <CAEzD07LqPgQiftaS6831c2-7Kw0XM=3i84+4WX6XN2GSX0k6Qw@mail.gmail.com> <536D3E84.5020102@riosoft.com.br> <536D4983.8040105@chello.at>
+From: Hangbin Liu <liuhangbin@gmail.com>
+Subject: Re: [contrack-tools PATCH] build: do not compile nfct if we disabled
+ cttimeout
+Date: Sat, 10 May 2014 10:51:23 +0800
+Message-ID: <20140510025123.GK25631@localhost.localdomain>
+References: <1399543345-3634-1-git-send-email-liuhangbin@gmail.com>
+ <20140509112959.GA3812@localhost>
+ <20140509115411.GJ25631@localhost.localdomain>
+ <20140509135942.GA11325@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <536D4983.8040105@chello.at>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-type:content-disposition:in-reply-to:user-agent;
+        bh=qQANF0IISrpwfHfIB6UwzOjfgrSA8MBVbFTRLbU+28Y=;
+        b=PLCW99QlTKgtZLwA0swFczdTcj5PXRaPk874gNfO2TW/gDxdhWfKsU7sMWuuS3iWsF
+         BUCHbup2SI5lYVDWyncLUaxjHb5+XvbFX/qjOMCHpL/os3a7xJ8s/L6pGhymwkbaLg5/
+         cyflisuWq7yTL/ZgflLfFySYYTmSi4AWNfyI4CA4HGRJQwWU/9hc5alA8QVYwbv6iIPC
+         Ckcid60BUljpyIXCg1jXO+4cFbMtz85jahGHpxVJZBVIs0dghb7EuWTW/2SoXWmlsxof
+         lLZp2TOtzDRkBvCYG1sHZD7ek8b5DERjVIAsxnaJv9qlzndiYY2MR1gQOH5iCENsqrOU
+         aihQ==
+Content-Disposition: inline
+In-Reply-To: <20140509135942.GA11325@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: mart.frauenlob@chello.at, Anton Danilov <littlesmilingcloud@gmail.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter dev <netfilter@vger.kernel.org>, netfilter-devel@vger.kernel.org
 
-Wow, thank you Mart! I didn't really think that the rp_filter would have 
-anything to do with it, but in fact it had! Even though I had disabled 
-for "all" interfaces, it seems that the rp_filter files for each 
-interface overlaps "all".
-So,
+On Fri, May 09, 2014 at 03:59:42PM +0200, Pablo Neira Ayuso wrote:
+> On Fri, May 09, 2014 at 07:54:11PM +0800, Hangbin Liu wrote:
+> > On Fri, May 09, 2014 at 01:29:59PM +0200, Pablo Neira Ayuso wrote:
+> > > On Thu, May 08, 2014 at 06:02:25PM +0800, Hangbin Liu wrote:
+> > > > If we do not have libnetfilter_cttimeout and disabled cttimeout, conntrack-tools
+> > > > will compile fail because nfct.c include nfnetlink_cttimeout.h. Fix it by only
+> > > > compile nfct when we have enabled cttimeout
+> 
+> OK, I see. That's not nfnetlink_cttimeout.h, it's
+> libnetfilter_cttimeout.h.
 
-echo 0 > /proc/sys/net/ipv4/conf/eth2/rp_filter
+Ah, sorry, my mistake
+> 
+> Let me check if I can come up with some alternative solution.
 
-solved the problem of disappearing packets.
+-- 
 
-But unlike the eth1 interface, the RELATED state isn't allowing (or 
-recognizing) the data channel. After doing a DNAT from port 49152 to 
-65535, the default data ports for MS FTP, I can now successfully connect 
-through the second interface. I don't think there's a workaround for 
-that, right?
-Even so, I'm glad you guys could help me.
-Thanks a lot!
-
-
-Em 09/05/2014 18:32, Mart Frauenlob escreveu:
-> On 09.05.2014 23:07, netfilter-owner@vger.kernel.org wrote:
->> No deal yet. After inserting the new routing tables and rules it didn't
->> really change anything.
->> The eth2 doesn't have a gateway set in the config file, only eth1 have
->> it. Plus, these two interfaces are in the same subnet and there's only
->> one gateway on it (180.1.2.1).
->>
->> [root@firewall ~]# ip route show table T1
->> default via 180.1.2.1 dev eth1
->>
->> [root@firewall ~]# ip route show table T2
->> default via 180.1.2.1 dev eth2
->>
->> [root@firewall ~]# ip rule show
->> 0:      from all lookup local
->> 10:     from 180.1.2.11 lookup T1
->> 20:     from 180.1.2.12 lookup T2
->> 32766:  from all lookup main
->> 32767:  from all lookup default
->>
->> (I had to add the tables T1 and T2 in the file /etc/iproute2/rt_tables)
->>
->> Even so, I see it reach the PREROUTING chain in eth2 but it still
->> disappears after that. Connections reaching in the eth1 still works.
->>
->> There's something else to try?
->
-> Check values of /proc/sys/net/ipv4/conf/*/rp_filter
-> and disable them.
-> To use the TRACE target just put a -j TRACE on the desired place.
->
->
->
->
->
-
-
+Thanks & Best Regards
+Hangbin Liu <liuhangbin@gmail.com>
