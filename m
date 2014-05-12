@@ -1,65 +1,40 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [ANNOUNCE] nft-sync: nftables ruleset synchronization software
-Date: Mon, 12 May 2014 19:49:51 +0200
-Message-ID: <20140512174951.GA13725@localhost>
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Subject: Re: Losing connection between nat and filter tables
+Date: Tue, 13 May 2014 00:40:49 +0200
+Message-ID: <53714DF1.70407@plouf.fr.eu.org>
+References: <536CECA8.1000604@riosoft.com.br>	<CAEzD07JLeCTxUT_rR3H6QDv6_jVH2mFH1q8B2T4EvtJsDGqF1g@mail.gmail.com>	<536CFE75.90005@riosoft.com.br> <CAEzD07LqPgQiftaS6831c2-7Kw0XM=3i84+4WX6XN2GSX0k6Qw@mail.gmail.com> <536D3E84.5020102@riosoft.com.br> <536D4983.8040105@chello.at> <536D7375.9090909@riosoft.com.br> <536E602E.5070103@plouf.fr.eu.org> <5370CAA5.1010805@riosoft.com.br>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: QUOTED-PRINTABLE
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <5370CAA5.1010805@riosoft.com.br>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
-Cc: Michiel Leenaars <michiel@nlnet.nl>, Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>, kaber@trash.net
+Content-Type: text/plain; charset="iso-8859-1"
+To: Bruno de Paula Larini <bruno.larini@riosoft.com.br>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi!
+Bruno de Paula Larini a =E9crit :
+> yes, the two interfaces are in the same network, but it's a limitatio=
+n=20
+> that our ISP imposes to us, as we have a limited range of public IPs =
+in=20
+> only one /28 subnet. The objective this "messy" configuration is that=
+=20
+> two different groups of users have access to different FTP sites with=
+out=20
+> having to set a non default port.
 
-We just finished the initial codebase for a new Netfilter project in
-the frame of the nftables subproject, its name is nft-sync [1].
+But why did you connect two interfaces to the same network ? If you nee=
+d
+two public IP adresses on the box, couldn't you just assign them to the
+same interface ?
 
-Basically, this software aims to support two different setups:
+> Would you do that in a different way?
 
-1) Rule-set repository server. The software serves the nft rule-set to
-   clients that request the ruleset. Basically from the system that acts
-   as repository, you have to run:
+If possible, I would assign the two public IP addresses to the same
+interface. And I would also assign two private addresses to the
+(interface of the) final server. Then I would setup two FTP server
+instances to listen on one different private address and port 21 each,
+and DNAT each public IP address to the corresponding private address.
+This way you would not need to mangle the FTP ports.
 
- # nft-sync -c ../contrib/nft-sync.conf.server
-
-Then, from the client:
-
- # nft-sync -c ../contrib/nft-sync.conf.client --fetch
-
-Which displays the nft rule-set in the standard output, so you can
-inspect the nft rule-set.  Alternatively, the client can also retrieve
-and apply the nft rule-set using the pull command instead:
-
- # nft-sync -c ../contrib/nft-sync.conf.client --pull
-
-[ Note that this command above does not work in this bootstrap yet ]
-
-2) Rule-set synchronization: In case of primary-backup and
-   multiprimary firewall configurations, the software makes sure that the
-   firewall cluster is deploying the same filtering policy. In this case,
-   you have to launch the process:
-
- # nft-sync -c ../contrib/nft-sync.conf --sync
-
-[ Note that this command above does not work in this bootstrap yet ]
-
-This bootstrap provides the basic infrastructure as a
-proof-of-concept. Many of the necessary features are still lacking:
-
-* Implement --sync and --pull commands.
-* SSL support, specifically the repository mode needs it to make sure
-  nobody can evesdrop your filtering policy from the network too
-  easily.
-* IPv6 support.
-* Allow to serve different rule-sets in the repository mode.
-
-And many others that will be added progressively.
-
-I would like to thank the NLnet Foundation [2] for sponsoring the
-bootstrap of nft-sync.
-
-[1] http://git.netfilter.org/nft-sync/
-[2] http://nlnet.nl
