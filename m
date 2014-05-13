@@ -1,67 +1,93 @@
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-Subject: Re: [net] BUG: unable to handle kernel NULL pointer dereference at
- 000000000000022f
-Date: Tue, 13 May 2014 09:43:54 +0200
-Message-ID: <5371CD3A.9020500@pengutronix.de>
-References: <537188D4.6050201@intel.com> <5371AA32.6070407@hartkopp.net>
+From: Martin Kraus <lists_mk@wujiman.net>
+Subject: Re: conntrackd, internal cache keeps filling up
+Date: Tue, 13 May 2014 13:45:35 +0200
+Message-ID: <20140513114535.GA9209@finrod>
+References: <20140505104058.GA30297@finrod>
+ <20140509113129.GA8031@localhost>
+ <20140510061743.GA32197@finrod>
+ <20140512163538.GA13344@localhost>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
- protocol="application/pgp-signature";
- boundary="aE5Cpud0re1qwkow6nH8No27ccbAfE4wm"
-Return-path: <linux-can-owner@vger.kernel.org>
-In-Reply-To: <5371AA32.6070407@hartkopp.net>
-Sender: linux-can-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140512163538.GA13344@localhost>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Jet Chen <jet.chen@intel.com>
-Cc: Fengguang Wu <fengguang.wu@intel.com>, linux-crypto@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, netdev@vger.kernel.org, linux-can@vger.kernel.org, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---aE5Cpud0re1qwkow6nH8No27ccbAfE4wm
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+On Mon, May 12, 2014 at 06:35:38PM +0200, Pablo Neira Ayuso wrote:
+> > current kernel is 3.13.7. 
+> > 
+> > we already hit a bug in the official 3.2 kernel packaged with wheezy where 
+> > our scan for heartbleed vulnerability would cause conntrackd to kernel panic
+> > the router.
+> 
+> Please, provide more information on how to reproduce the problem that
+> you're noticing. Thank you.
 
-On 05/13/2014 07:14 AM, Oliver Hartkopp wrote:
-> Hello Jet,
->=20
-> this is likely not CAN related, as
->=20
-> # CONFIG_CAN is not set
->=20
-> and all the CAN changes introduced by Marc's merge are not even compile=
-d in
-> your setup.
->=20
-> So I assume the issue somewhere in the netlink or ipv6 stuff (see commi=
-t at
-> the end.
+regarding the kernel panic on 3.2 a colleague of mine was using nmap with it's
+heartbleed plugin
 
-Yes, I my merge is probably broken. That was an attempt to merge net
-into net-next, but I'm going to ask David Miller to do so. As I'm going
-to rebase this branch onto David's net-next (after the net merge), we
-can ignore this for now.
+nmap --script ssl-heartbleed -sT -oX logfile.log 10.0.0.0/20
 
-Thanks,
-Marc
+http://nmap.org/nsedoc/scripts/ssl-heartbleed.html
 
---=20
-Pengutronix e.K.                  | Marc Kleine-Budde           |
-Industrial Linux Solutions        | Phone: +49-231-2826-924     |
-Vertretung West/Dortmund          | Fax:   +49-5121-206917-5555 |
-Amtsgericht Hildesheim, HRA 2686  | http://www.pengutronix.de   |
+it took about 30 minutes to trigger the problem.
 
+regarding the internal cache fill up. we have two routers and some vlans using
+one and some vlans using the other router as the default gateway. 
 
---aE5Cpud0re1qwkow6nH8No27ccbAfE4wm
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+this is the conntrackd config on both routers.
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1
-Comment: Using GnuPG with Icedove - http://www.enigmail.net/
+Sync {
+        Mode FTFW {
+                ResendQueueSize 131072
+                ACKWindowSize 300
+                DisableExternalCache On
+        }
+        UDP {
+                IPv4_address 192.168.100.200
+                IPv4_Destination_Address 192.168.100.100
+                Port 3780
+                Interface eth0
+                Checksum on
+        }
+        Options {
+                TCPWindowTracking On
+        }
+}
 
-iEUEARECAAYFAlNxzToACgkQjTAFq1RaXHNFhgCePnlpFMg20DmQ41uY84kmf4dR
-+W4AmL25rmtvz5Ukx1sawbuHARW9Wbw=
-=+9h6
------END PGP SIGNATURE-----
+General {
+        Nice -20
 
---aE5Cpud0re1qwkow6nH8No27ccbAfE4wm--
+        HashSize 65536
+        HashLimit 262144
+
+        Syslog on
+        LockFile /var/lock/conntrack.lock
+        UNIX {
+                Path /var/run/conntrackd.ctl
+                Backlog 20
+        }
+
+        NetlinkBufferSize 2097152
+        NetlinkBufferSizeMaxGrowth 8388608
+        NetlinkEventsReliable On
+        NetlinkOverrunResync Off
+
+        Filter From Kernelspace {
+                Address Ignore {
+                        IPv4_address 127.0.0.1 # loopback
+                }
+        }
+}
+
+We have about 80 users, some of them running window or macs, so there is
+plenty of multicasts and broadcasts that fill the conntrack table. some of
+these then get stuck in the conntrackd internal cache. We can see the
+LAST_ACK tcp states stuck in the internal cache as well, but I think these are
+related to TCPWindowTracking On.
+
+mk
