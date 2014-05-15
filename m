@@ -1,34 +1,51 @@
-From: Martin Kraus <martin.kraus@wujiman.net>
-Subject: Re: conntrackd, internal cache keeps filling up
-Date: Tue, 13 May 2014 16:57:40 +0200
-Message-ID: <20140513145740.GC9209@finrod>
-References: <20140505104058.GA30297@finrod>
- <20140509113129.GA8031@localhost>
- <20140510061743.GA32197@finrod>
- <20140512163538.GA13344@localhost>
- <20140513114535.GA9209@finrod>
- <20140513124044.GA3738@localhost>
+From: "Ethy H. Brito" <ethy.brito@inexo.com.br>
+Subject: randomly SNATed devices after reboot
+Date: Thu, 15 May 2014 10:42:38 -0300
+Message-ID: <20140515104238.26ce6626@pulsar>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20140513124044.GA3738@localhost>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Tue, May 13, 2014 at 02:40:44PM +0200, Pablo Neira Ayuso wrote:
-> > it took about 30 minutes to trigger the problem.
-> 
-> Did you annotate the kernel oops backtrace? Without that information,
-> this is pretty much like looking for the needle in the stack.
 
-Unfortunately we don't have any other information. I could reboot to the old
-kernel and trigger it again but I'll need to do that in the evening.
+Hi All
 
-Is there a better way to get the oops backtrace than a redirect to the serial
-console? 
+I have this setup in which there are lots of static IPs "SNATed" IP-Phones
+behind a Linux machine. A very simply NAT machine. Just one SNAT rule for the
+phones' network.
 
-mk
+At every Linux machine reboot, some of those phones, randomly, simply does not
+register at some outside-nat SIP server.
+
+Investigating with tcpdump I can see, at the external interface, "not snated"
+packets from those not registered phones. Packets from the other phones are
+correctly "snatted".
+
+Rebooting the Linux machine scatters this behavior among the phones: some are
+randomly registered and some not. Rebooting the phone, and just the phone
+itself, does not change anything.
+
+Some background I think relevant:
+
+	1) The Linux ip address is added (one interface, two IPs in two
+	different nets) further during boot, at rc.local, immediately before
+	the SNAT rule; No NAT rule was added up to this point.
+
+	2) if I change the ip address, under the same netmask, of any
+	non-registered phone, it registers immediately; But this does not assure
+	it will register again after a new Linux reboot. In fact it may not
+	register again after that. Already happened.
+
+	3) All IP-Phones have "keep alive SIP connection" active.
+
+I have a suspicious about what is going on: some race condition. 
+But I'd like your thoughts.
+
+Thanx in advance
+
+Regards
+
+Ethy
