@@ -1,51 +1,61 @@
-From: Pascal Hambourg <pascal@plouf.fr.eu.org>
+From: "Ethy H. Brito" <ethy.brito@inexo.com.br>
 Subject: Re: randomly SNATed devices after reboot
-Date: Fri, 16 May 2014 21:01:53 +0200
-Message-ID: <537660A1.9060907@plouf.fr.eu.org>
-References: <20140515104238.26ce6626@pulsar> <53759AB5.6050101@atc.tcs.com>
+Date: Fri, 16 May 2014 16:59:31 -0300
+Message-ID: <20140516165931.274ae0c2@pulsar>
+References: <20140515104238.26ce6626@pulsar>
+	<53759AB5.6050101@atc.tcs.com>
+	<537660A1.9060907@plouf.fr.eu.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <53759AB5.6050101@atc.tcs.com>
+In-Reply-To: <537660A1.9060907@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Vigneswaran R <vignesh@atc.tcs.com>
-Cc: "Ethy H. Brito" <ethy.brito@inexo.com.br>, netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-Hello,
+> > 
+> > May be, some phones are trying to register via ESTABLISHED connections 
+> > which not getting SNATed. So, the registration fails.
+> 
+> Not ESTABLISHED (that would require return traffic, but existing (NEW).
+> 
+> If a phone sends a SIP packet before the SNAT rule is active, then the
+> whole SIP flow, including further packets, will not be SNATed until the
+> related conntrack entry expires. Expiration never happens if the sending
+> period is shorter than the UDP conntrack expiration delay.
 
-Vigneswaran R a =E9crit :
-> On 05/15/2014 07:12 PM, Ethy H. Brito wrote:
->> Hi All
->>
->> I have this setup in which there are lots of static IPs "SNATed" IP-=
-Phones
->> behind a Linux machine. A very simply NAT machine. Just one SNAT rul=
-e for the
->> phones' network.
->>
->> At every Linux machine reboot, some of those phones, randomly, simpl=
-y does not
->> register at some outside-nat SIP server.
->>
->> Investigating with tcpdump I can see, at the external interface, "no=
-t snated"
->> packets from those not registered phones. Packets from the other pho=
-nes are
->> correctly "snatted".
->=20
-> May be, some phones are trying to register via ESTABLISHED connection=
-s=20
-> which not getting SNATed. So, the registration fails.
+The phone must send keep-alive in a period shorter than conntrack expiration
+period.
+If they don't what is the point sending the refresh, right?
 
-Not ESTABLISHED (that would require return traffic, but existing (NEW).
+> 
+> If you don't want this to happen, just DROP all FORWARDed traffic until
+> the SNAT rule is active.
 
-If a phone sends a SIP packet before the SNAT rule is active, then the
-whole SIP flow, including further packets, will not be SNATed until the
-related conntrack entry expires. Expiration never happens if the sendin=
-g
-period is shorter than the UDP conntrack expiration delay.
+<side comment>
+Hmmm! I am looking to Jan Engelhardt's Packet Flow picture (2014-Feb-28) and
+can not find conntrack in the output path for forwarded packets. I think we
+found a glitch in his drawing. Does he read this list?
+</side comment>
 
-If you don't want this to happen, just DROP all FORWARDed traffic until
-the SNAT rule is active.
+Nope. I think this is not a ultimate solution because packets still may flow
+before FORWARD DROP rule is in place. Your suggestion does not kill the race
+condition.
+This is what I see, please correct me if I'm wrong:
+	1) IP stack is in place during boot 
+	2) network parameters are configured (ip addrs, routes, etc)
+	3) nf modules are loaded (/etc/modules.d??)
+	4) conntrack modules are loaded (also /etc/modules.d)
+	5) user scripts are loaded (iptables snat or FORWARD rules included)
+
+If any packets slip between 2 and 5, conntrack already saw the incorrect src
+addr.
+
+I need to ensure no packet cross at least before conntrack is loaded, therefore,
+before any action I can take via normal boot scripts given the above scenario.
+
+Regards
+
+Ethy
