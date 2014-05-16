@@ -1,61 +1,58 @@
-From: "Ethy H. Brito" <ethy.brito@inexo.com.br>
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
 Subject: Re: randomly SNATed devices after reboot
-Date: Fri, 16 May 2014 16:59:31 -0300
-Message-ID: <20140516165931.274ae0c2@pulsar>
-References: <20140515104238.26ce6626@pulsar>
-	<53759AB5.6050101@atc.tcs.com>
-	<537660A1.9060907@plouf.fr.eu.org>
+Date: Fri, 16 May 2014 22:25:10 +0200
+Message-ID: <53767426.8080003@plouf.fr.eu.org>
+References: <20140515104238.26ce6626@pulsar>	<53759AB5.6050101@atc.tcs.com>	<537660A1.9060907@plouf.fr.eu.org> <20140516165931.274ae0c2@pulsar>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <537660A1.9060907@plouf.fr.eu.org>
+In-Reply-To: <20140516165931.274ae0c2@pulsar>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: "Ethy H. Brito" <ethy.brito@inexo.com.br>
 Cc: netfilter <netfilter@vger.kernel.org>
 
-> > 
-> > May be, some phones are trying to register via ESTABLISHED connections 
-> > which not getting SNATed. So, the registration fails.
-> 
-> Not ESTABLISHED (that would require return traffic, but existing (NEW).
-> 
-> If a phone sends a SIP packet before the SNAT rule is active, then the
-> whole SIP flow, including further packets, will not be SNATed until the
-> related conntrack entry expires. Expiration never happens if the sending
-> period is shorter than the UDP conntrack expiration delay.
+Ethy H. Brito a =E9crit :
+>=20
+>> If you don't want this to happen, just DROP all FORWARDed traffic un=
+til
+>> the SNAT rule is active.
+>=20
+> <side comment>
+> Hmmm! I am looking to Jan Engelhardt's Packet Flow picture (2014-Feb-=
+28) and
+> can not find conntrack in the output path for forwarded packets. I th=
+ink we
+> found a glitch in his drawing. Does he read this list?
+> </side comment>
 
-The phone must send keep-alive in a period shorter than conntrack expiration
-period.
-If they don't what is the point sending the refresh, right?
+The conntrack for forwarded packets is in the PREROUTING path.
 
-> 
-> If you don't want this to happen, just DROP all FORWARDed traffic until
-> the SNAT rule is active.
+> Nope. I think this is not a ultimate solution because packets still m=
+ay flow
+> before FORWARD DROP rule is in place. Your suggestion does not kill t=
+he race
+> condition.
 
-<side comment>
-Hmmm! I am looking to Jan Engelhardt's Packet Flow picture (2014-Feb-28) and
-can not find conntrack in the output path for forwarded packets. I think we
-found a glitch in his drawing. Does he read this list?
-</side comment>
+Well, that's because I put filtering rules in place with default DROP
+before enabling the network for obvious safety reasons, and assumed
+everyone did the same.
 
-Nope. I think this is not a ultimate solution because packets still may flow
-before FORWARD DROP rule is in place. Your suggestion does not kill the race
-condition.
-This is what I see, please correct me if I'm wrong:
-	1) IP stack is in place during boot 
-	2) network parameters are configured (ip addrs, routes, etc)
-	3) nf modules are loaded (/etc/modules.d??)
-	4) conntrack modules are loaded (also /etc/modules.d)
-	5) user scripts are loaded (iptables snat or FORWARD rules included)
+> This is what I see, please correct me if I'm wrong:
+> 	1) IP stack is in place during boot=20
+> 	2) network parameters are configured (ip addrs, routes, etc)
+> 	3) nf modules are loaded (/etc/modules.d??)
+> 	4) conntrack modules are loaded (also /etc/modules.d)
+> 	5) user scripts are loaded (iptables snat or FORWARD rules included)
 
-If any packets slip between 2 and 5, conntrack already saw the incorrect src
-addr.
+The order is sysadmin-dependent. You decide. My iptables initscript is
+run before the network is configured and activated.
 
-I need to ensure no packet cross at least before conntrack is loaded, therefore,
-before any action I can take via normal boot scripts given the above scenario.
+> I need to ensure no packet cross at least before conntrack is loaded
 
-Regards
-
-Ethy
+Not necessarily. You're also safe if any forwarded packet is dropped (o=
+r
+forwarding is disabled) until the SNAT rule is in place. The packets
+will be discarded and the conntrack entry will be destroyed immediately=
+=2E
