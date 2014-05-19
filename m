@@ -1,45 +1,134 @@
-From: Sven-Haegar Koch <haegar@sdinet.de>
-Subject: Re: randomly SNATed devices after reboot
-Date: Sat, 17 May 2014 15:09:48 +0200 (CEST)
-Message-ID: <alpine.DEB.2.10.1405171507460.2664@aurora.sdinet.de>
-References: <20140515104238.26ce6626@pulsar> <53759AB5.6050101@atc.tcs.com> <537660A1.9060907@plouf.fr.eu.org> <20140516165931.274ae0c2@pulsar> <53767426.8080003@plouf.fr.eu.org>
+From: Julia Lawall <Julia.Lawall@lip6.fr>
+Subject: [PATCH 0/13] make return of 0 explicit
+Date: Mon, 19 May 2014 06:31:02 +0200
+Message-ID: <1400473875-22228-1-git-send-email-Julia.Lawall@lip6.fr>
 Mime-Version: 1.0
-Content-Type: MULTIPART/MIXED; BOUNDARY="8323328-2027346802-1400332190=:2664"
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <53767426.8080003@plouf.fr.eu.org>
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-To: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Cc: "Ethy H. Brito" <ethy.brito@inexo.com.br>, netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <driverdev-devel-bounces@linuxdriverproject.org>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <http://driverdev.linuxdriverproject.org/mailman/options/driverdev-devel>, 
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=unsubscribe>
+List-Archive: <http://driverdev.linuxdriverproject.org/pipermail/driverdev-devel>
+List-Post: <mailto:driverdev-devel@linuxdriverproject.org>
+List-Help: <mailto:driverdev-devel-request@linuxdriverproject.org?subject=help>
+List-Subscribe: <http://driverdev.linuxdriverproject.org/mailman/listinfo/driverdev-devel>, 
+ <mailto:driverdev-devel-request@linuxdriverproject.org?subject=subscribe>
+Errors-To: driverdev-devel-bounces@linuxdriverproject.org
+Sender: driverdev-devel-bounces@linuxdriverproject.org
+To: brcm80211-dev-list@broadcom.com
+Cc: devel@driverdev.osuosl.org, linux-s390@vger.kernel.org, alsa-devel@alsa-project.org, linux-scsi@vger.kernel.org, libertas-dev@lists.infradead.org, linux-wireless@vger.kernel.org, linux-usb@vger.kernel.org, kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org, coreteam@netfilter.org, netfilter-devel@vger.kernel.org, netdev@vger.kernel.org, oprofile-list@lists.sf.net, netfilter@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+Sometimes a local variable is used as a return value in a case where the
+return value is always 0.  The result is more apparent if this variable is
+just replaced by 0.  This is done by the following semantic patch, although
+some cleanups may be needed. (http://coccinelle.lip6.fr/)
 
---8323328-2027346802-1400332190=:2664
-Content-Type: TEXT/PLAIN; charset=ISO-8859-15
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+// <smpl>
+@r exists@
+local idexpression ret;
+identifier reti;
+expression e;
+position p;
+@@
 
-On Fri, 16 May 2014, Pascal Hambourg wrote:
+ret@reti = 0;
+... when != \(ret = e\|ret &= e\|ret |= e\|ret += e\|ret -= e\|ret *= e\|ret ^= e\)
+    when != \(++ret\|--ret\|ret++\|ret--\)
+    when != &ret
+return ret;@p
 
-> Ethy H. Brito a =E9crit :
-> > This is what I see, please correct me if I'm wrong:
-> > =091) IP stack is in place during boot=20
-> > =092) network parameters are configured (ip addrs, routes, etc)
-> > =093) nf modules are loaded (/etc/modules.d??)
-> > =094) conntrack modules are loaded (also /etc/modules.d)
-> > =095) user scripts are loaded (iptables snat or FORWARD rules included)
->=20
-> The order is sysadmin-dependent. You decide. My iptables initscript is
-> run before the network is configured and activated.
+@bad1 exists@
+expression e != 0;
+local idexpression r.ret;
+position r.p;
+@@
 
-And if you are unable for whatever reasons to do it correctly you can=20
-use the "conntrack" tool after iptables rule setup to flush/delete all=20
-conntrack connections existing at that time.
+ \(ret = e\|ret &= e\|ret |= e\|ret += e\|ret -= e\|ret *= e\|ret ^= e\|++ret\|--ret\|ret++\|ret--\|&ret\)
+ ...
+ return ret;@p
 
-c'ya
-sven-haegar
+@bad2 exists@
+identifier r.reti;
+position r.p;
+identifier f;
+type T;
+@@
 
---=20
-Three may keep a secret, if two of them are dead.
-- Ben F.
---8323328-2027346802-1400332190=:2664--
+f(...,T reti,...) {
+ ...
+ return reti;@p
+}
+
+@change depends on !bad1 && !bad2@
+position r.p;
+local idexpression r.ret;
+identifier f;
+@@
+
+f(...) { <+...
+return 
+-ret
++0
+;@p
+...+> }
+
+@rewrite@
+local idexpression r.ret;
+expression e;
+position p;
+identifier change.f;
+@@
+
+f(...) { <+...
+ \(ret@p = e\|&ret@p\)
+...+> }
+
+@depends on change@
+local idexpression r.ret;
+position p != rewrite.p;
+identifier change.f;
+@@
+
+f(...) { <+...
+(
+break;
+|
+ret = 0;
+... when exists
+ret@p
+... when any
+|
+- ret = 0;
+)
+...+> }
+
+@depends on change@
+identifier r.reti;
+type T;
+constant C;
+identifier change.f;
+@@
+
+f(...) { ... when any
+-T reti = C;
+ ... when != reti
+     when strict
+ }
+
+@depends on change@
+identifier r.reti;
+type T;
+identifier change.f;
+@@
+
+f(...) { ... when any
+-T reti;
+ ... when != reti
+     when strict
+ }
+// </smpl>
+
+The first four rules detect cases where only 0 reaches a return.  The
+remaining rules clean up any variable initializations or declarations that
+are made unnecessary by this change.
