@@ -1,129 +1,121 @@
-From: ebiederm-aS9lmoZGLiVWk0Htik3J/w@public.gmane.org (Eric W. Biederman)
-Subject: [RFC][PATCH] net: Allow xt_owner in any user namespace
-Date: Sun, 25 May 2014 00:39:48 -0700
-Message-ID: <87vbsus3wb.fsf_-_@x220.int.ebiederm.org>
-References: <537B7FF6.9050103@elastichosts.com>
-	<877g5eg7wy.fsf@x220.int.ebiederm.org> <537D706D.4010303@1h.com>
+From: Ibrahim Sulaiman <isukity@gmail.com>
+Subject: Error when adding iptables from my C code using the iptc library
+ "Error commit: Invalid argument"
+Date: Sun, 25 May 2014 20:03:29 +0100
+Message-ID: <CAARRidoGG2f+XOO=S3_zppcD5mdqF2q2i8eaGCb-Lw6xfcnmog@mail.gmail.com>
 Mime-Version: 1.0
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:cc:content-type;
+        bh=LAv7s9GsNrqRGEhV4MLlXhm60eRGdzMOvZOK+ZZthSY=;
+        b=Im/ICA7XCYh1zqLCFd00Uq33lhomzcZc9z+iW3LYA8A2ZWSZzHfM7B3hoyp6hmOq84
+         rM07yyhMmN8UpTrmxxzyvgWat1tIU1zW4f4bNlOtLBI/hIyZmBVSyducdIK6jAba5BY1
+         upXGi1NehJCcZgRpfyYvSCssiq5T2xa4FJO1zrPXCey1wsenPpxpKWEFi8vCZecZmIj/
+         zNM/uv5LYB8iTxkPV6BxTOyd1L9AjMHb1vIlwPkXy7w1CJlmGbDyL2uYqnnexxCIWja8
+         DqZ4ciF4bBuNivMEdy9GfPOOSdOqTfH2rVDJ5r7h3V0QaLWJyRuhXrRu1G3nH/fkF7zh
+         MPDQ==
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-Return-path: <containers-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-In-Reply-To: <537D706D.4010303-108MBtLGafw@public.gmane.org> (Marian Marinov's message of "Thu, 22
-	May 2014 06:35:09 +0300")
-List-Id: <netfilter.vger.kernel.org>
-List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/containers>, 
-	<mailto:containers-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
-List-Archive: <http://lists.linuxfoundation.org/pipermail/containers/>
-List-Post: <mailto:containers-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
-List-Help: <mailto:containers-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
-List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/containers>,
-	<mailto:containers-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
-Sender: containers-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-Errors-To: containers-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
-To: Marian Marinov <mm-108MBtLGafw@public.gmane.org>
-Cc: , containers-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Alin Dobre <alin.dobre-1hSFou9RDDldEee+Cai+ZQ@public.gmane.org>, Jan Engelhardt <jengelh-nopoi9nDyk+ELgA04lAiVw@public.gmane.org>
+To: netfilter <netfilter@vger.kernel.org>
+Cc: "Edwards, Christopher" <c.edwards@lancaster.ac.uk>
+
+Hello,
+
+The C code below is equivalent to the following iptables command:
+ip6tables -A OUTPUT -t mangle -s 2001:db8:222:2::/64 -j MARK --set-mark 20
 
 
-Making this work is a little tricky as it really isn't kosher to
-change the xt_owner_match_info in a check function.
+However, the iptables command is working fine from the command line
+but when I execute the code it gives the error
+Error commit: Invalid Argument
+although it is compiled successfully. I have also tried it with
+setting the DSCP value and it worked fine, so I guess something wrong
+with the MARK module
 
-Without changing xt_owner_match_info we need to know the user
-namespace the uids and gids are specified in.  In the common case
-net->user_ns == current_user_ns().  Verify net->user_ns ==
-current_user_ns() in owner_check so we can later assume it in
-owner_mt.
+Linux kernel 3.8.2
+iptables version 1.4.12 (I also tried 1.4.21 but didn't work)
 
-In owner_check also verify that all of the uids and gids specified are
-in net->user_ns and that the expected min/max relationship exists
-between the uids and gids in xt_owner_match_info.
 
-In owner_mt get the network namespace from the outgoing socket, as this
-must be the same network namespace as the netfilter rules, and use that
-network namespace to find the user namespace the uids and gids in
-xt_match_owner_info are encoded in.  Then convert from their encoded
-from into the kernel internal format for uids and gids and perform the
-owner match.
+The code
 
-Signed-off-by: "Eric W. Biederman" <ebiederm-aS9lmoZGLiVWk0Htik3J/w@public.gmane.org>
----
- net/netfilter/xt_owner.c | 40 ++++++++++++++++++++++++++++++++++------
- 1 file changed, 34 insertions(+), 6 deletions(-)
+struct ip6tc_handle *h;
+const ip6t_chainlabel chain = "OUTPUT";
+const char *tablename = "mangle";
 
-diff --git a/net/netfilter/xt_owner.c b/net/netfilter/xt_owner.c
-index ca2e577ed8ac..8111d8a19113 100644
---- a/net/netfilter/xt_owner.c
-+++ b/net/netfilter/xt_owner.c
-@@ -20,11 +20,37 @@
- static int owner_check(const struct xt_mtchk_param *par)
- {
- 	struct xt_owner_match_info *info = par->matchinfo;
-+	struct net *net = par->net;
- 
--	/* For now only allow adding matches from the initial user namespace */
-+	/* Only allow the common case where the userns of the writer
-+	 * matches the userns of the network namespace.
-+	 */
- 	if ((info->match & (XT_OWNER_UID|XT_OWNER_GID)) &&
--	    (current_user_ns() != &init_user_ns))
-+	    (current_user_ns() != net->user_ns))
- 		return -EINVAL;
-+
-+	/* Ensure the uids are valid */
-+	if (info->match & XT_OWNER_UID) {
-+		kuid_t uid_min = make_kuid(net->user_ns, info->uid_min);
-+		kuid_t uid_max = make_kuid(net->user_ns, info->uid_max);
-+		if (!uid_valid(uid_min) || !uid_valid(uid_max) ||
-+		    (info->uid_max <= info->uid_min) ||
-+		    uid_lte(uid_max, uid_min)) {
-+			return -EINVAL;
-+		}
-+	}
-+
-+	/* Ensure the gids are valid */
-+	if (info->match & XT_OWNER_GID) {
-+		kgid_t gid_min = make_kgid(net->user_ns, info->gid_min);
-+		kgid_t gid_max = make_kgid(net->user_ns, info->gid_max);
-+		if (!gid_valid(gid_min) || !gid_valid(gid_max) ||
-+		    (info->gid_max <= info->gid_min) ||
-+		    gid_lte(gid_max, gid_min)) {
-+			return -EINVAL;
-+		}
-+	}
-+
- 	return 0;
- }
- 
-@@ -33,6 +59,7 @@ owner_mt(const struct sk_buff *skb, struct xt_action_param *par)
- {
- 	const struct xt_owner_match_info *info = par->matchinfo;
- 	const struct file *filp;
-+	const struct net *net;
- 
- 	if (skb->sk == NULL || skb->sk->sk_socket == NULL)
- 		return (info->match ^ info->invert) == 0;
-@@ -48,9 +75,10 @@ owner_mt(const struct sk_buff *skb, struct xt_action_param *par)
- 		return ((info->match ^ info->invert) &
- 		       (XT_OWNER_UID | XT_OWNER_GID)) == 0;
- 
-+	net = sock_net(skb->sk);
- 	if (info->match & XT_OWNER_UID) {
--		kuid_t uid_min = make_kuid(&init_user_ns, info->uid_min);
--		kuid_t uid_max = make_kuid(&init_user_ns, info->uid_max);
-+		kuid_t uid_min = make_kuid(net->user_ns, info->uid_min);
-+		kuid_t uid_max = make_kuid(net->user_ns, info->uid_max);
- 		if ((uid_gte(filp->f_cred->fsuid, uid_min) &&
- 		     uid_lte(filp->f_cred->fsuid, uid_max)) ^
- 		    !(info->invert & XT_OWNER_UID))
-@@ -58,8 +86,8 @@ owner_mt(const struct sk_buff *skb, struct xt_action_param *par)
- 	}
- 
- 	if (info->match & XT_OWNER_GID) {
--		kgid_t gid_min = make_kgid(&init_user_ns, info->gid_min);
--		kgid_t gid_max = make_kgid(&init_user_ns, info->gid_max);
-+		kgid_t gid_min = make_kgid(net->user_ns, info->gid_min);
-+		kgid_t gid_max = make_kgid(net->user_ns, info->gid_max);
- 		if ((gid_gte(filp->f_cred->fsgid, gid_min) &&
- 		     gid_lte(filp->f_cred->fsgid, gid_max)) ^
- 		    !(info->invert & XT_OWNER_GID))
--- 
-1.9.1
+struct ip6t_entry * e;
+struct ip6t_entry_target * target;
+struct xt_mark_tginfo2 *pmark;
+unsigned int size_ip6t_entry, size_ip6t_entry_target,  size_pmark, total_length;
+
+size_ip6t_entry = XT_ALIGN(sizeof(struct ip6t_entry));
+size_ip6t_entry_target = XT_ALIGN(sizeof(struct ip6t_entry_target));
+size_pmark = XT_ALIGN(sizeof(struct xt_mark_tginfo2));
+total_length =  size_ip6t_entry +  size_ip6t_entry_target + size_pmark ;
+
+e = calloc(1, total_length);
+if(e == NULL)
+{
+        printf("malloc failure");
+        exit(1);
+}
+
+//offsets to the other bits:
+//target struct begining
+e->target_offset = size_ip6t_entry ;
+//next "e" struct, end of the current one
+e->next_offset = total_length;
+
+char *temps = malloc(128);
+temps = "2001:db8:222:2::";
+inet_pton(AF_INET6, temps, &e->ipv6.src);
+char *temps2 = malloc(128);
+temps2 = "FFFF:FFFF:FFFF:FFFF::";
+inet_pton(AF_INET6, temps2, &e->ipv6.smsk);
+ //e->ipv6.proto = 58 ;
+//strcpy(e->ipv6.iniface, "wlan1");
+
+//target struct
+target = (struct ip6t_entry_target *) e->elems;
+target->u.target_size = size_ip6t_entry_target;
+strcpy(target->u.user.name, "MARK");
+target->u.user.revision = 2;
+
+ pmark = (struct xt_mark_tginfo2 *) target->data;
+ pmark->mark = 0x14;
+ pmark->mask = 0xff;
+
+h = ip6tc_init(tablename);
+if ( !h )
+{
+      printf("Error initializing: %s\n", iptc_strerror(errno));
+      exit(errno);
+}
+
+int x = ip6tc_append_entry(chain, e, h);
+if (!x)
+{
+        printf("Error append_entry: %s\n", iptc_strerror(errno));
+        exit(errno);
+}
+
+printf("%s", target->data);
+int y = ip6tc_commit(h);
+if (!y)
+{
+        printf("Error commit: %s\n", iptc_strerror(errno));
+        exit(errno);
+}
+
+exit(0);
+
+
+
+Any Idea?
+Thanks
+
+
+Best wishes
+Ibrahim
