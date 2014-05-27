@@ -1,41 +1,31 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: [HEADS UP] Migrating ebtables and arptables to netfilter.org
-Date: Tue, 27 May 2014 10:33:59 +0200
-Message-ID: <20140527083359.GA4342@localhost>
+From: "vivek.reddykadaru@freescale.com" <vivek.reddykadaru@freescale.com>
+Subject: Netlink Events for iptables
+Date: Tue, 27 May 2014 08:52:47 +0000
+Message-ID: <3f8093c4086d408c962d352879ff3c43@BLUPR03MB407.namprd03.prod.outlook.com>
+References: <20140527083359.GA4342@localhost>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <20140527083359.GA4342@localhost>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter-devel@vger.kernel.org
-Cc: netfilter@vger.kernel.org, bridge@lists.linux-foundation.org, Bart De Schuymer <bdschuym@pandora.be>
+To: netfilter <netfilter@vger.kernel.org>
+Cc: Pablo Neira Ayuso <pablo@netfilter.org>
 
-Hi!
 
-We're migrating arptables and ebtables to git.netfilter.org. The new
-location for the repositories are:
+Hello,
 
-1) arptables:
+Is there any kernel patch available to generate netlink messages for events like add/modify/delete from iptables.
 
-        git://git.netfilter.org/arptables
-        http://git.netfilter.org/arptables/
+If there is none , will it at least be possible to try create one ?? . As I know there is no specific NETLINK family for iptables as such .
 
-2) ebtables:
+With all the generic nature that iptables provides is it a good approach to start from ground up by defining new NETLINK family and then creating a netlink event system .
 
-        git://git.netfilter.org/ebtables
-        http://git.netfilter.org/ebtables/
+If so could you give me some pointers regarding it .
 
-Originally, these two applications were located in the same repository
-which has been kept at:
+Thanks for you replies 
 
-        http://git.netfilter.org/ebtables.old-history/
-
-just for the record.
-
-I have git-filter-branch the original repository to separate the
-ebtables and the arptables in two independent repositories.
-
-Let me know if you experience any problem in this migration,
-Thanks.
+Thanks ,
+K.Vivek
