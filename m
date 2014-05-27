@@ -1,31 +1,41 @@
-From: "vivek.reddykadaru@freescale.com" <vivek.reddykadaru@freescale.com>
-Subject: Netlink Events for iptables
-Date: Tue, 27 May 2014 08:52:47 +0000
-Message-ID: <3f8093c4086d408c962d352879ff3c43@BLUPR03MB407.namprd03.prod.outlook.com>
-References: <20140527083359.GA4342@localhost>
+From: Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
+Subject: Re: Netlink Events for iptables
+Date: Tue, 27 May 2014 10:58:52 +0200
+Message-ID: <CAOkSjBint-ej-45+M-OnuynVrJBu3+ueAQqG_kpYNyXNA4VK9A@mail.gmail.com>
+References: <20140527083359.GA4342@localhost> <3f8093c4086d408c962d352879ff3c43@BLUPR03MB407.namprd03.prod.outlook.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20140527083359.GA4342@localhost>
-Content-Language: en-US
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc:content-type:content-transfer-encoding;
+        bh=8jP1mOB4vRReOCr1h3Vh3R/pNMxmXVYZAw9pSmyL2Gc=;
+        b=UzYSvyITfNDu+/4x0nzOQ5NBbo25Z2tJPbEyMHsvASi8XT05AlJi8xm5gBtLscrFdw
+         80gIuSRMlonVN2XlFCPqKkj+8RtCvj4Lw3Iy3UPvE5HGlkeQ4W0pjGnXO1fuCEgit3PO
+         4rJi61bT6uphg/i5d7m2voHtn/QPWItd+SeqG7+Kig/R+0VEERLQPyIl7ksaWLOC5dOk
+         Jp63CiKOE4th3am8JHYvULcwXEdUBNR3VALFJmjUmgSWXl9yoNtzuAERncvZZjnInrC1
+         Gdz1pbj5UdIBAvpTln3zWuM9P2c9mK/4gEjpsw5KlhKXSkC/p6XaATyI6inY+Vg85ReE
+         Pv+w==
+In-Reply-To: <3f8093c4086d408c962d352879ff3c43@BLUPR03MB407.namprd03.prod.outlook.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: netfilter <netfilter@vger.kernel.org>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>
+Content-Type: text/plain; charset="macroman"
+To: "vivek.reddykadaru@freescale.com" <vivek.reddykadaru@freescale.com>
+Cc: netfilter <netfilter@vger.kernel.org>, Pablo Neira Ayuso <pablo@netfilter.org>
 
+On 27 May 2014 10:52, vivek.reddykadaru@freescale.com
+<vivek.reddykadaru@freescale.com> wrote:
+>
+> Hello,
+>
+> Is there any kernel patch available to generate netlink messages for =
+events like add/modify/delete from iptables.
 
-Hello,
+Hi there!
 
-Is there any kernel patch available to generate netlink messages for events like add/modify/delete from iptables.
+Just for the record: nftables includes that feature.
 
-If there is none , will it at least be possible to try create one ?? . As I know there is no specific NETLINK family for iptables as such .
-
-With all the generic nature that iptables provides is it a good approach to start from ground up by defining new NETLINK family and then creating a netlink event system .
-
-If so could you give me some pointers regarding it .
-
-Thanks for you replies 
-
-Thanks ,
-K.Vivek
+regards.
+--=20
+Arturo Borrero Gonz=C3=A1lez
