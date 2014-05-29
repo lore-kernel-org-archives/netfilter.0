@@ -1,73 +1,29 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: [HEADS UP] Migrating ebtables and arptables to netfilter.org
-Date: Thu, 29 May 2014 11:00:32 +0200
-Message-ID: <20140529090032.GA14999@localhost>
-References: <20140527083359.GA4342@localhost>
- <CAHo-OoxDb6rREH1kZNKSGWzVL6pwwuzgEgYbHWA-NAUX9fRJqg@mail.gmail.com>
+From: Alin Dobre <alin.dobre-1hSFou9RDDldEee+Cai+ZQ@public.gmane.org>
+Subject: Re: [RFC][PATCH] net: Allow xt_owner in any user namespace
+Date: Thu, 29 May 2014 14:39:15 +0100
+Message-ID: <53873883.4060408@elastichosts.com>
+References: <537B7FF6.9050103@elastichosts.com>	<877g5eg7wy.fsf@x220.int.ebiederm.org>
+	<537D706D.4010303@1h.com> <87vbsus3wb.fsf_-_@x220.int.ebiederm.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAHo-OoxDb6rREH1kZNKSGWzVL6pwwuzgEgYbHWA-NAUX9fRJqg@mail.gmail.com>
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Maciej =?utf-8?Q?=C5=BBenczykowski?= <zenczykowski@gmail.com>
-Cc: Netfilter Development Mailinglist <netfilter-devel@vger.kernel.org>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>, bridge@lists.linux-foundation.org, Bart De Schuymer <bdschuym@pandora.be>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+Return-path: <containers-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+In-Reply-To: <87vbsus3wb.fsf_-_-JOvCrm2gF+uungPnsOpG7nhyD016LWXt@public.gmane.org>
+List-Id: <netfilter.vger.kernel.org>
+List-Unsubscribe: <https://lists.linuxfoundation.org/mailman/options/containers>, 
+	<mailto:containers-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=unsubscribe>
+List-Archive: <http://lists.linuxfoundation.org/pipermail/containers/>
+List-Post: <mailto:containers-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org>
+List-Help: <mailto:containers-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=help>
+List-Subscribe: <https://lists.linuxfoundation.org/mailman/listinfo/containers>,
+	<mailto:containers-request-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org?subject=subscribe>
+Sender: containers-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+Errors-To: containers-bounces-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org
+To: "Eric W. Biederman" <ebiederm-aS9lmoZGLiVWk0Htik3J/w@public.gmane.org>, Marian Marinov <mm-108MBtLGafw@public.gmane.org>
+Cc: containers-cunTk1MwBs9QetFLy7KEm3xJsTq8ys+cHZ5vskTnxNA@public.gmane.org, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, Jan Engelhardt <jengelh-nopoi9nDyk+ELgA04lAiVw@public.gmane.org>
 
-On Thu, May 29, 2014 at 01:37:43AM -0700, Maciej =C5=BBenczykowski wrot=
-e:
-> Missing tags if there were any previously.
+Thanks, Eric. I'll give this a try and come back with some results if
+interested.
 
-It seems there is no tags, according to what I see in
-ebtables.old-history which is a copy of the original tree.
-
-BTW, please, stop top posting.
-
-These are the mailing list rules:
-
-http://www.netfilter.org/mailinglists.html#list-rules
-
-Thank you.
-
-> On Tue, May 27, 2014 at 1:33 AM, Pablo Neira Ayuso <pablo@netfilter.o=
-rg> wrote:
-> > Hi!
-> >
-> > We're migrating arptables and ebtables to git.netfilter.org. The ne=
-w
-> > location for the repositories are:
-> >
-> > 1) arptables:
-> >
-> >         git://git.netfilter.org/arptables
-> >         http://git.netfilter.org/arptables/
-> >
-> > 2) ebtables:
-> >
-> >         git://git.netfilter.org/ebtables
-> >         http://git.netfilter.org/ebtables/
-> >
-> > Originally, these two applications were located in the same reposit=
-ory
-> > which has been kept at:
-> >
-> >         http://git.netfilter.org/ebtables.old-history/
-> >
-> > just for the record.
-> >
-> > I have git-filter-branch the original repository to separate the
-> > ebtables and the arptables in two independent repositories.
-> >
-> > Let me know if you experience any problem in this migration,
-> > Thanks.
-> > --
-> > To unsubscribe from this list: send the line "unsubscribe netfilter=
--devel" in
-> > the body of a message to majordomo@vger.kernel.org
-> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
---
-To unsubscribe from this list: send the line "unsubscribe netfilter-dev=
-el" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at  http://vger.kernel.org/majordomo-info.html
+Cheers,
+Alin.
