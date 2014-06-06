@@ -1,13 +1,12 @@
 From: Nicolas RENAULT <nicolas_renault@yahoo.fr>
 Subject: Re: conntrackd crash after few seconds
-Date: Fri, 06 Jun 2014 09:49:39 +0200
-Message-ID: <53917293.6010705@yahoo.fr>
+Date: Fri, 06 Jun 2014 14:37:54 +0200
+Message-ID: <5391B622.8030808@yahoo.fr>
 References: <53908A7E.4020802@yahoo.fr> <20140605154944.GA29302@finrod> <CAOkSjBifDQQNNQJbkdraYxNvStvK9CrWRNO7LtawpJJ5n=cTMg@mail.gmail.com> <20140605160639.GB29302@finrod>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.fr; s=s1024; t=1402040983; bh=hVQIIPF6mGCryO8aCxvSvJi7gCqJnBKzMPnunOjDQf0=; h=Received:Received:Received:DKIM-Signature:X-Yahoo-Newman-Id:X-Yahoo-Newman-Property:X-YMail-OSG:X-Yahoo-SMTP:X-Rocket-Received:Message-ID:Date:From:User-Agent:MIME-Version:To:Subject:References:In-Reply-To:Content-Type:Content-Transfer-Encoding; b=5H6geoleo/NiHIxtLGRpKOg6PmJMFCzTa5eMAlOc5lkPd6Ddv7hJKdMWOKT0zvBl0+3nv5IOxrvLCDb7FJWQRWecd35f9PTOcye9Yrh493sORfX1QvJP02Ayg6OqQkpnJqVPFCkiV0syVHChCUoEFlVkavlWoEB0HYIgP18wLYQ=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.fr; s=s1024; t=1402040983; bh=hVQIIPF6mGCryO8aCxvSvJi7gCqJnBKzMPnunOjDQf0=; h=X-Yahoo-Newman-Id:X-Yahoo-Newman-Property:X-YMail-OSG:X-Yahoo-SMTP:X-Rocket-Received:Message-ID:Date:From:User-Agent:MIME-Version:To:Subject:References:In-Reply-To:Content-Type:Content-Transfer-Encoding; b=NsDcT/+xfAJjw2u5X4uahEqSaiEUdByF6P4nqUjyDnKHyujlBCb3i/xfGaoqJ0TV5lQ/9JyVuKpoWrjI1gWvNMQk1AeeLB6QES+PMJuzkTjN5f4NQSDrro5x/jOcaALMBJ0cO6NAKF3atJMgjko8dfhml6D2aW6DFv9/hVrTgPk=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.fr; s=s1024; t=1402058279; bh=m8whJJ4Qt1/KzkshHxfthzdVYC2MogG9WD4Y09CqdeE=; h=X-Yahoo-Newman-Id:X-Yahoo-Newman-Property:X-YMail-OSG:X-Yahoo-SMTP:X-Rocket-Received:Message-ID:Date:From:User-Agent:MIME-Version:To:Subject:References:In-Reply-To:Content-Type:Content-Transfer-Encoding; b=Wk+ANOeYJWK+yD5pMllNy5pcndu98J7XFo18I1T7SEL9NlG/jcGFtdaw2yPaxBxbQT+bS/P1NbTqW0fYvjUsOeOsfXaF4BOQ9TDHIZ/5OF9OEn/x0Sf074HXU+qb2tMZ6fc3s09iTl3S9J0yHCTHDTfwkDzVo+Qtpp9BB8xwl7Y=
 In-Reply-To: <20140605160639.GB29302@finrod>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
@@ -41,28 +40,69 @@ u core running
 > mk
 Hi,
 
-thanks for the reply.
-
-some more informations :
-
-I don't have kernel panic and so on , as i say in the first post it's=20
-just conntrackd that stop running after about 10 secondes. no message i=
-n=20
-syslog or messages or deamon.log or conntrackd.log....
-
-I use conntrackd but i'm not a specialist so when i say that a try to=20
-run it with
-
-conntrackd -C /etc/conntrackd/conntrackd.conf         i'm right ?
-
-on the firt post my conntrackd.conf is good or not ?  perhaps i made a=20
-mistake on the buffer size or thinks like that ?
-
-I will try to update to  linux-image-3.13-0.bpo.1-amd64 but i hope that=
+I find the solution , the proble come from conntrackd.conf it was made=20
+from the one on a squeeze and with the example bring with the package a=
 =20
-it will not broke others thinks :)
+made this one :
+
+Sync {
+     Mode FTFW {
+         DisableExternalCache On
+     }
+     UDP {
+         IPv4_address 10.98.145.5
+         IPv4_Destination_Address 10.98.145.6
+         Port 3780
+         Interface eth2
+         SndSocketBuffer 1249280
+         RcvSocketBuffer 1249280
+         Checksum on
+     }
+}
+General {
+     HashSize 8192
+     HashLimit 65535
+     Syslog on
+     LockFile /var/lock/conntrackd.lock
+     UNIX {
+         Path /var/run/conntrackd.sock
+         Backlog 20
+     }
+     SocketBufferSize 262142
+     SocketBufferSizeMaxGrown 655355
+     Filter {
+         Protocol Accept {
+             TCP
+         }
+         Address Ignore {
+             IPv4_address 10.98.0.0/16     #dedicated link #
+         }
+     }
+}
+
+
+diff :
+                 old         new
+HashSize  32768   8192
+HashLimit 131072 65535
+
+- NetlinkBufferSize 2097152
+- NetlinkBufferSizeMaxGrowth 8388608
+- NetlinkOverrunResync On
+- NetlinkEventsReliable Off
+- PollSecs 15
+- EventIterationLimit 100
+- Filter From Userspace {
+
++ SocketBufferSize 262142
++ SocketBufferSizeMaxGrown 655355
++ Filter {
+
+can someone look at my new conntrackd.conf and says if i forget=20
+somethinks important ?.
 
 regards
+
 
 --=20
 Nicolas
