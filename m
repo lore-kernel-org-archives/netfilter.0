@@ -1,68 +1,47 @@
-From: Michael <pistenflitzer@alpenjodel.de>
-Subject: Problems to get started with nftables
-Date: Wed, 11 Jun 2014 20:25:11 +0200
-Message-ID: <op.xiag4xyrdwu75w@alpenjodel.de>
+From: "Cade Robinson" <cade.robinson@gmail.com>
+Subject: Default netfilter kernel buffer size?
+Date: Thu, 12 Jun 2014 16:29:36 -0500
+Message-ID: <007501cf8685$69b9a460$3d2ced20$@gmail.com>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=from:to:subject:date:message-id:mime-version:content-type
+         :content-transfer-encoding:thread-index:content-language;
+        bh=saHfOH4Npb40iFxCk44r//UQhRF7paP4AYPC29K2tVc=;
+        b=U5JIXMMFvHgrD0DqERABoIJOTEibP1mD6p0E1KTx0YQJ74vcUWh59e5eu9ytFgc/j3
+         TeLXjc0Xd2Yav/J5jnC/mHAgEiObG23lAXK/mBBvkN3yjvdYbtSP++uSiEvW5LMyNJoj
+         jX3UAUqIpjXBXbjM2R6FKTx88M8O9A5/yxxh7xbBlN4It6YiyF2/K3WA2tmzw8nQIJrG
+         shaeELgiOgxMl75R4a7JW6CvkUFCZgqd8lpUFKpDk2dcCAI9eyRGofaE3EgkYqb1DaQX
+         rlvNeErXjdRp6R6+4LK5pKeRidlrXDmzZwq8c8OrvcDkHeYw2i6GAFN2tCpja8MKS4sf
+         BYYQ==
+Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter user mailinglist <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Dear all,
+I have been searching around and can't find it so maybe someone can tell me.
 
-I have some problems, that might well be due to my lack of understanding
-nftables: My rules look like this:
+I am looking for the default size of the kernel queue netfilter uses and if
+there is a /proc file to see what the current setting is?
 
-table filter {
-        chain input {
-                 type filter hook input priority 0;
-                 icmp type { echo-request } limit rate 5/second counter accept
-        }
-}
+ 
 
-table ip6 filter {
-        chain input {
-                 type filter hook input priority 0;
-                 icmpv6 type { nd-neighbor-advert, nd-neighbor-solicit, nd-router-advert } ip6 hoplimit 255 counter log prefix "log1: " accept
-                 icmpv6 type { echo-request } limit rate 5/second counter accept
-        }
-}
+The story is I have a program that marks packets coming into netfilter.
 
-table inet filter {
-        chain input {
-                 type filter hook input priority 1;
-                 ct state { established, related } accept
-                 ct state invalid counter log prefix "log2: " drop
-                 iif lo accept
-#                 udp sport bootps dport bootpc accept
-                 counter log prefix "log3: " drop
-        }
+On slower devices while a blacklist loads I have run into ENOBUFS error from
+recv.
 
-        chain output {
-                 type filter hook output priority 1;
-                 ct state { new, established, related } accept
-                 ct state invalid counter log prefix "log4: " drop
-                 oif lo accept
-        }
-}
+I am thinking that if I use nfq_set_queue_maxlen to set this to a higher
+number I won't get the ENOBUFS error but I can't find the default to know
+what may be a larger number.
 
+Also I can't find any /proc file to show me the current number.  Does one
+exist and is it the same for 2.6.20+ kernels?
 
-What I observe when I load these rules is that the accept in the log1 line is
-not enough to accept the packets. They are ultimately dropped in the log3
-rule. How do I get the packets through both rule chains?
+ 
 
-The second problem is in the
-#                 udp sport bootps dport bootpc accept
-line. I've seen examples with this syntax, but it's not accepted for me. What
-is the correct syntax to filter on both dport and sport? I've tried using and
-or &, but that didn't work either.
+This is on a 3.14.6 kernel with netfiler 1.0.2 and nfnetlink 1.0.1
 
-And finally: Is there a way to match the destination mac address of an
-incoming packet?
-
-I'm running nftables 0.2 on kernel 3.14.4.
-
-Best,
-Michael
