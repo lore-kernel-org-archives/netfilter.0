@@ -1,41 +1,45 @@
 From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Default netfilter kernel buffer size?
-Date: Mon, 16 Jun 2014 11:35:02 +0200
-Message-ID: <20140616093502.GA8007@localhost>
-References: <007501cf8685$69b9a460$3d2ced20$@gmail.com>
+Subject: Re: conntrackd  crash after few seconds
+Date: Mon, 16 Jun 2014 14:08:11 +0200
+Message-ID: <20140616120811.GA17711@localhost>
+References: <53908A7E.4020802@yahoo.fr>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <007501cf8685$69b9a460$3d2ced20$@gmail.com>
+In-Reply-To: <53908A7E.4020802@yahoo.fr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Cade Robinson <cade.robinson@gmail.com>
+To: Nicolas RENAULT <nicolas_renault@yahoo.fr>
 Cc: netfilter@vger.kernel.org
 
-Hi,
+On Thu, Jun 05, 2014 at 05:19:26PM +0200, Nicolas RENAULT wrote:
+> General {
+>     Nice -20
+>     Scheduler {
+>         Type FIFO
+>         Priority 99
+>     }
+>     HashSize 32768
+>     HashLimit 131072
+>     LogFile on
+>     Syslog off
+>     LockFile /var/lock/conntrack.lock
+>     UNIX {
+>         Path /var/run/conntrackd.ctl
+>         Backlog 20
+>     }
+>     NetlinkBufferSize 2097152
+>     NetlinkBufferSizeMaxGrowth 8388608
+>     NetlinkOverrunResync On
+>     NetlinkEventsReliable Off
+>     PollSecs 15
 
-I guess you're refering to libnetfilter_queue.
+I guess the assertion happens after 15 seconds.
 
-On Thu, Jun 12, 2014 at 04:29:36PM -0500, Cade Robinson wrote:
-> I have been searching around and can't find it so maybe someone can tell me.
-> 
-> I am looking for the default size of the kernel queue netfilter uses and if
-> there is a /proc file to see what the current setting is?
->  
-> 
-> The story is I have a program that marks packets coming into netfilter.
-> 
-> On slower devices while a blacklist loads I have run into ENOBUFS error from
-> recv.
-> 
-> I am thinking that if I use nfq_set_queue_maxlen to set this to a higher
-> number I won't get the ENOBUFS error but I can't find the default to know
-> what may be a larger number.
+conntrack-tools 1.2 includes expectation support which is broken with
+PollSecs. The code for polling expectations is missing. Thus, the
+assertion problem that you're reporting.
 
-Please, have a look at the documentation:
-
-http://www.netfilter.org/projects/libnetfilter_queue/doxygen/
-
-It refers to this problem.
+The problem is still there in 1.4.x, this needs a patch.
