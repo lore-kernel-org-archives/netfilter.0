@@ -1,43 +1,84 @@
-From: "Cade Robinson" <cade.robinson@gmail.com>
-Subject: RE: Default netfilter kernel buffer size?
-Date: Mon, 16 Jun 2014 08:28:55 -0500
-Message-ID: <01e601cf8966$ed0b6450$c7222cf0$@gmail.com>
-References: <007501cf8685$69b9a460$3d2ced20$@gmail.com> <20140616093502.GA8007@localhost>
+From: pistenflitzer@alpenjodel.de
+Subject: Aw: Re: Problems to get started with nftables
+Date: Mon, 16 Jun 2014 17:19:54 +0200
+Message-ID: <trinity-3a9fb6b3-7e0d-45aa-b7a5-6be4a31a2a5d-1402931994020@3capp-gmx-bs50>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=from:to:cc:references:in-reply-to:subject:date:message-id
-         :mime-version:content-type:content-transfer-encoding:thread-index
-         :content-language;
-        bh=fX9sLEPGzCR5gMbFVjtUlIXDmeB4WR/UeSyi1P2CYVI=;
-        b=RzilnmKbe9vPcUJicVNUOIXnB9VKTwLRNHMT/WzYieyuycCJ+XxdFT/rvRqXAL09fx
-         x8VbJqAFw2tVbhgF8eXSJyD/UJYwS95K84+tRzXdUYe8wEL51lZzCmnnihnEAblld7Nx
-         I1Iz8WY0kqfjhqn5u8YyJrGK47ZJ6SqpanlUrm9ML5V5zZCXE3zyCyHFUL6K5qo+OOXo
-         C7Sxd1tzRmsC/XIarDy8JdmHBtLWbf8DOLy1JNG+6yCaScI3rE187QnH2mlujbpKsnhk
-         53V+l1n0kFU53B0Mo4QoNKHdVZlUpbWYoegGvIvTV09wMSKu9rc6SQyGpMSI9rox0VxC
-         WrZw==
-In-Reply-To: <20140616093502.GA8007@localhost>
-Content-Language: en-us
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: 'Pablo Neira Ayuso' <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1252"
+To: =?UTF-8?Q?=22=C3=81lvaro_Neira_Ayuso=22?= <alvaroneay@gmail.com>
+Cc: netfilter user mailinglist <netfilter@vger.kernel.org>
 
-> Please, have a look at the documentation:
+Dear =C3=81lvaro,
 
-> http://www.netfilter.org/projects/libnetfilter_queue/doxygen/
+thank you for your detailed answers. Some questions still remain, unfor=
+tunately.
 
-> It refers to this problem.
+> >                   icmp type { echo-request } limit rate 5/second co=
+unter accept
+>                             ^^^^^^^^^^^^^^^^
+> It's a single element, you don't need to use a set. You can use the r=
+ule=20
 
-Thanks - that gives me more ideas of what to do if my current fix doesn't
-work.
-What I have done is added code to set queue length using
-nfq_set_queue_maxlen.
-This seems to have worked as well so far.
+I just added the braces to be consistent throughout the ruleset.
 
-But what I am looking for and can't find is what is the default queue length
-and is there a /proc file that shows the current length?
+> > What I observe when I load these rules is that the accept in the lo=
+g1 line is
+> > not enough to accept the packets. They are ultimately dropped in th=
+e log3
+> > rule. How do I get the packets through both rule chains?
+>
+> Because you have a table inet and a table ip6. The table ip6 filter
+> sees the ip6 traffic and the table inet filter sees the ip4 and ip6=20
+> traffic. You have defined the priority of the first chain at 0 so=20
+> nftables checks the rules there and after nftables checks the rules=20
+> inside of the filter chain in inet.
+>
+> I suggest you to use one singles filter table like inet.
 
+How would the rule look like? I tried to just copy it to the inet secti=
+on,
+but I get "Error: conflicting protocols specified: inet-service vs. icm=
+pv6".
+
+I created the separate ip and ip6 tables only for icmp and icmp, becaus=
+e I
+couldn't get past this issue:
+$ nft add rule inet filter input icmp type { echo-request } limit rate =
+5/second counter accept
+<cmdline>:1:28-36: Error: conflicting protocols specified: inet-service=
+ vs. icmp
+$ sudo nft add rule inet filter input icmpv6 type { echo-request } limi=
+t rate 5/second counter accept
+<cmdline>:1:28-38: Error: conflicting protocols specified: inet-service=
+ vs. icmpv6
+$ nft add rule ip6 filter input icmpv6 type { echo-request } limit rate=
+ 5/second counter accept
+<works>
+
+> > #                 udp sport bootps dport bootpc accept
+>
+> The rules is like that:
+>
+> nft add rule filter input udp sport bootps udp dport bootpc accept
+
+OK, I overlooked the second udp. Now, it works fine.
+
+> > And finally: Is there a way to match the destination mac address of=
+ an
+> > incoming packet?
+>
+> You must to add a rule with ether like this:
+>
+> nft add rule filter input ether daddr 20:16:d8:a2:59:33 counter
+
+In what section would that go? When I just execute the command, I get:
+"<cmdline>:1:1-59: Error: Could not process rule: No such file or direc=
+tory
+add rule filter input ether daddr 20:16:d8:a2:59:33 counter"
+
+Thanks again,
+Michael
+=2E
