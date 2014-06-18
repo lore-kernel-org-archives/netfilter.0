@@ -1,128 +1,37 @@
-From: =?UTF-8?B?w4FsdmFybyBOZWlyYSBBeXVzbw==?= <alvaroneay@gmail.com>
-Subject: Re: Aw: Re: Problems to get started with nftables
-Date: Wed, 18 Jun 2014 13:10:41 +0200
-Message-ID: <53A173B1.3030308@gmail.com>
-References: <trinity-3a9fb6b3-7e0d-45aa-b7a5-6be4a31a2a5d-1402931994020@3capp-gmx-bs50>
+From: =?UTF-8?Q?Fejes_J=C3=B3zsef?= <jozsef.fejes@gmail.com>
+Subject: nftables&iptables coexistence
+Date: Wed, 18 Jun 2014 21:49:01 +0200
+Message-ID: <CALU-w99A94oGuedx=tr_5vASnYLHFLx1CF3_288dwMvcYi-M9w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=message-id:date:from:user-agent:mime-version:to:cc:subject
-         :references:in-reply-to:content-type:content-transfer-encoding;
-        bh=NTsnx0MqdrSJyUJvxrCAob446w6wRbv63qFyBCeIkD4=;
-        b=ZNspr1MRAXIZesMmAeGHqWKV4KJpb6sZI0rImQNUQ5cP/0ApvppVtT5YE5mAcfLfzT
-         /PGd8dKs+7Qs0JhQqlAnoWC9uqBJb/5P6nR3WuZ3maIGIEW0hbFDHfUSugJHydApUXhN
-         PS+/eloWxA/dZIDbc0DWqsPfdNfKh8azFaFm9oOuuv4ieVIlyPFU4mPPwbuRO6jQ7Wun
-         LktnVFKoV+9uqG09GCYdh+z+O2dJY/W9Hj80A6l/WSNekrpWrD5qCXCTbkHZCRclO1/u
-         FOW5RHneNzIYewvUVMH4JB2bXmQCQJZXX2rZ9bs6qHt41bAWqyqruH4WX03MfZCR2Kam
-         IBBg==
-In-Reply-To: <trinity-3a9fb6b3-7e0d-45aa-b7a5-6be4a31a2a5d-1402931994020@3capp-gmx-bs50>
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=CiiYhvR5Oy+hq8di0imuGVI+9i1PAGZ5dOjP3WvQHXM=;
+        b=RsIUHnk7DJx8YVPLomHkRgBAJbTrl8Iy5tBxOQAclI/fXYiUBpEb3OUUs18eSBL1PX
+         Kxog73iGCL0slMmgRCk4uYs9YdrVj663K1sHANfIhixCq6PO6I/PFjaR00m6o40Bm6AF
+         XCKZWRhtubtyW13OiAhEGCOfZRyBtjOahs90NAl9YcK/s6TNlfaR3ndvP+Vvf6riNvtf
+         YwdtHv68Y1O8fAJ6x/tcSH3SuLCKt6RwYUsJi9YFKzo/WkUJ0/0FNabflQj7X+y/cGhc
+         jxAFopvfj1JbqBGNU/c+HlmyHm51gVZjY4G6JTNqegTlyB+ytf5lvB4ArdP+j1Ew1vUU
+         ClDw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: pistenflitzer@alpenjodel.de
-Cc: netfilter user mailinglist <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Dear Michael
+Hi,
 
-El 16/06/14 17:19, pistenflitzer@alpenjodel.de escribi=C3=B3:
-> Dear =C3=81lvaro,
->
-> thank you for your detailed answers. Some questions still remain, unf=
-ortunately.
->
->>>                    icmp type { echo-request } limit rate 5/second c=
-ounter accept
->>                              ^^^^^^^^^^^^^^^^
->> It's a single element, you don't need to use a set. You can use the =
-rule
->
-> I just added the braces to be consistent throughout the ruleset.
+I would like to start using nftables, but I'm playing with a headless
+box and it would be too inconvenient if I locked myself out, so let me
+ask this one safety question before I start experimenting. I have lots
+of iptables rules. If I compile nftables into my kernel, and also
+leave iptables there, and reboot, what will happen? Will packets go
+through both iptables and nftables? In what order? Without any
+configuration from user space, does nftables pass along each packet
+without intervention?
 
-Ok, if you want to do that but the kernel creates a set with only one=20
-element (in your case). It's overkill.
+Please CC me, I'm not on the list.
 
->
->>> What I observe when I load these rules is that the accept in the lo=
-g1 line is
->>> not enough to accept the packets. They are ultimately dropped in th=
-e log3
->>> rule. How do I get the packets through both rule chains?
->>
->> Because you have a table inet and a table ip6. The table ip6 filter
->> sees the ip6 traffic and the table inet filter sees the ip4 and ip6
->> traffic. You have defined the priority of the first chain at 0 so
->> nftables checks the rules there and after nftables checks the rules
->> inside of the filter chain in inet.
->>
->> I suggest you to use one singles filter table like inet.
->
-> How would the rule look like? I tried to just copy it to the inet sec=
-tion,
-> but I get "Error: conflicting protocols specified: inet-service vs. i=
-cmpv6".
->
-> I created the separate ip and ip6 tables only for icmp and icmp, beca=
-use I
-> couldn't get past this issue:
-> $ nft add rule inet filter input icmp type { echo-request } limit rat=
-e 5/second counter accept
-> <cmdline>:1:28-36: Error: conflicting protocols specified: inet-servi=
-ce vs. icmp
-> $ sudo nft add rule inet filter input icmpv6 type { echo-request } li=
-mit rate 5/second counter accept
-> <cmdline>:1:28-38: Error: conflicting protocols specified: inet-servi=
-ce vs. icmpv6
-> $ nft add rule ip6 filter input icmpv6 type { echo-request } limit ra=
-te 5/second counter accept
-> <works>
-
-You have found a bug. A temporary solution is use the rules adding meta=
-=20
-nfproto, for example:
-
-nft add rule inet filter input meta nfproto ipv4 \
-	icmp type echo-request counter accept
-
-nft add rule inet filter input meta nfproto ipv6 \
-	icmp6 type echo-request counter accept
-
-I'm working in a fix for that.
-
->
->>> #                 udp sport bootps dport bootpc accept
->>
->> The rules is like that:
->>
->> nft add rule filter input udp sport bootps udp dport bootpc accept
->
-> OK, I overlooked the second udp. Now, it works fine.
->
->>> And finally: Is there a way to match the destination mac address of=
- an
->>> incoming packet?
->>
->> You must to add a rule with ether like this:
->>
->> nft add rule filter input ether daddr 20:16:d8:a2:59:33 counter
->
-> In what section would that go? When I just execute the command, I get=
-:
-> "<cmdline>:1:1-59: Error: Could not process rule: No such file or dir=
-ectory
-> add rule filter input ether daddr 20:16:d8:a2:59:33 counter"
-
-If you follow this trace:
-
-nft add table filter
-nft add chain filter input { type filter hook input priority 0 \; }
-nft add rule filter input ether daddr 20:16:d8:a2:59:33 counter
-
-it works for me. Try it and tell me if you have problem. Maybe you have=
-=20
-forgot to add the table or the chain?
-
-Regards
-
-=C3=81lvaro
+Thanks,
+Jozsef
