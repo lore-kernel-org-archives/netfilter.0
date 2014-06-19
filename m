@@ -1,37 +1,58 @@
-From: =?UTF-8?Q?Fejes_J=C3=B3zsef?= <jozsef.fejes@gmail.com>
-Subject: nftables&iptables coexistence
-Date: Wed, 18 Jun 2014 21:49:01 +0200
-Message-ID: <CALU-w99A94oGuedx=tr_5vASnYLHFLx1CF3_288dwMvcYi-M9w@mail.gmail.com>
+From: =?UTF-8?B?SmnFmcOtIFByY2hhbA==?= <jiri.prchal@aksignal.cz>
+Subject: [BUG] nf: xt_LED: led-always-blink invisible
+Date: Thu, 19 Jun 2014 11:17:49 +0200
+Message-ID: <53A2AABD.8000109@aksignal.cz>
+Reply-To: jiri.prchal@aksignal.cz
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=CiiYhvR5Oy+hq8di0imuGVI+9i1PAGZ5dOjP3WvQHXM=;
-        b=RsIUHnk7DJx8YVPLomHkRgBAJbTrl8Iy5tBxOQAclI/fXYiUBpEb3OUUs18eSBL1PX
-         Kxog73iGCL0slMmgRCk4uYs9YdrVj663K1sHANfIhixCq6PO6I/PFjaR00m6o40Bm6AF
-         XCKZWRhtubtyW13OiAhEGCOfZRyBtjOahs90NAl9YcK/s6TNlfaR3ndvP+Vvf6riNvtf
-         YwdtHv68Y1O8fAJ6x/tcSH3SuLCKt6RwYUsJi9YFKzo/WkUJ0/0FNabflQj7X+y/cGhc
-         jxAFopvfj1JbqBGNU/c+HlmyHm51gVZjY4G6JTNqegTlyB+ytf5lvB4ArdP+j1Ew1vUU
-         ClDw==
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: coreteam@netfilter.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, kadlec@blackhole.kfki.hu, kaber@trash.net, pablo@netfilter.org
 
-Hi,
+Hi all,
+probably I found bug in kernel 3.14.0 in xt_LED module when set led-always-blink. If it is set, then between switch led 
+OFF and ON is almost zero time. So blink is invisible. I did some fix, but I'm not sure if this way would be good. 
+Please, help to direct me. This is not final patch so don't punish me for coding style.
 
-I would like to start using nftables, but I'm playing with a headless
-box and it would be too inconvenient if I locked myself out, so let me
-ask this one safety question before I start experimenting. I have lots
-of iptables rules. If I compile nftables into my kernel, and also
-leave iptables there, and reboot, what will happen? Will packets go
-through both iptables and nftables? In what order? Without any
-configuration from user space, does nftables pass along each packet
-without intervention?
+diff --git a/net/netfilter/xt_LED.c b/net/netfilter/xt_LED.c
+index 993de2b..430584b 100644
+--- a/net/netfilter/xt_LED.c
++++ b/net/netfilter/xt_LED.c
+@@ -54,30 +54,32 @@ static unsigned int
+  led_tg(struct sk_buff *skb, const struct xt_action_param *par)
+  {
+  	const struct xt_led_info *ledinfo = par->targinfo;
+  	struct xt_led_info_internal *ledinternal = ledinfo->internal_data;
++        unsigned long t=50;
 
-Please CC me, I'm not on the list.
+  	/*
+  	 * If "always blink" is enabled, and there's still some time until the
+  	 * LED will switch off, briefly switch it off now.
+  	 */
+  	if ((ledinfo->delay > 0) && ledinfo->always_blink &&
+  	    timer_pending(&ledinternal->timer))
+-		led_trigger_event(&ledinternal->netfilter_led_trigger, LED_OFF);
+-
+-	led_trigger_event(&ledinternal->netfilter_led_trigger, LED_FULL);
++		//led_trigger_event(&ledinternal->netfilter_led_trigger, LED_OFF);
++          led_trigger_blink_oneshot(&ledinternal->netfilter_led_trigger, &t, &t, 1);
++        else
++                led_trigger_event(&ledinternal->netfilter_led_trigger, LED_FULL);
 
-Thanks,
-Jozsef
+  	/* If there's a positive delay, start/update the timer */
+  	if (ledinfo->delay > 0) {
+  		mod_timer(&ledinternal->timer,
+  			  jiffies + msecs_to_jiffies(ledinfo->delay));
+
+  	/* Otherwise if there was no delay given, blink as fast as possible */
+  	} else if (ledinfo->delay == 0) {
+  		led_trigger_event(&ledinternal->netfilter_led_trigger, LED_OFF);
+  	}
+
+  	/* else the delay is negative, which means switch on and stay on */
+
+  	return XT_CONTINUE;
+  }
+
