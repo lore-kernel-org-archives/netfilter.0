@@ -1,58 +1,32 @@
-From: =?UTF-8?B?SmnFmcOtIFByY2hhbA==?= <jiri.prchal@aksignal.cz>
-Subject: [BUG] nf: xt_LED: led-always-blink invisible
-Date: Thu, 19 Jun 2014 11:17:49 +0200
-Message-ID: <53A2AABD.8000109@aksignal.cz>
-Reply-To: jiri.prchal@aksignal.cz
+From: Sourabh Nanoti <snanoti@parallelwireless.com>
+Subject: libiptc - 'string' match module - --hex-string
+Date: Thu, 19 Jun 2014 18:08:50 +0530
+Message-ID: <2d22d536c6674e70b5d453a2d7a803df@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Transfer-Encoding: base64
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: coreteam@netfilter.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, kadlec@blackhole.kfki.hu, kaber@trash.net, pablo@netfilter.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-Hi all,
-probably I found bug in kernel 3.14.0 in xt_LED module when set led-always-blink. If it is set, then between switch led 
-OFF and ON is almost zero time. So blink is invisible. I did some fix, but I'm not sure if this way would be good. 
-Please, help to direct me. This is not final patch so don't punish me for coding style.
-
-diff --git a/net/netfilter/xt_LED.c b/net/netfilter/xt_LED.c
-index 993de2b..430584b 100644
---- a/net/netfilter/xt_LED.c
-+++ b/net/netfilter/xt_LED.c
-@@ -54,30 +54,32 @@ static unsigned int
-  led_tg(struct sk_buff *skb, const struct xt_action_param *par)
-  {
-  	const struct xt_led_info *ledinfo = par->targinfo;
-  	struct xt_led_info_internal *ledinternal = ledinfo->internal_data;
-+        unsigned long t=50;
-
-  	/*
-  	 * If "always blink" is enabled, and there's still some time until the
-  	 * LED will switch off, briefly switch it off now.
-  	 */
-  	if ((ledinfo->delay > 0) && ledinfo->always_blink &&
-  	    timer_pending(&ledinternal->timer))
--		led_trigger_event(&ledinternal->netfilter_led_trigger, LED_OFF);
--
--	led_trigger_event(&ledinternal->netfilter_led_trigger, LED_FULL);
-+		//led_trigger_event(&ledinternal->netfilter_led_trigger, LED_OFF);
-+          led_trigger_blink_oneshot(&ledinternal->netfilter_led_trigger, &t, &t, 1);
-+        else
-+                led_trigger_event(&ledinternal->netfilter_led_trigger, LED_FULL);
-
-  	/* If there's a positive delay, start/update the timer */
-  	if (ledinfo->delay > 0) {
-  		mod_timer(&ledinternal->timer,
-  			  jiffies + msecs_to_jiffies(ledinfo->delay));
-
-  	/* Otherwise if there was no delay given, blink as fast as possible */
-  	} else if (ledinfo->delay == 0) {
-  		led_trigger_event(&ledinternal->netfilter_led_trigger, LED_OFF);
-  	}
-
-  	/* else the delay is negative, which means switch on and stay on */
-
-  	return XT_CONTINUE;
-  }
-
+SGVsbG8sDQpJIHdhbnRlZCB0byBrbm93IGhvdyB0byBoYXZlIGEgcnVsZSBpbiBpcHRhYmxlcyB0
+aGF0IHVzZXMgdGhlIOKAk2hleC1zdHJpbmcNCnBhdHRlcm4gbWF0Y2hpbmcgbW9kdWxlIHZpYSBs
+aWJpcHRjLg0KDQpGb2xsb3dpbmcgYXJlIG15IHh0X3N0cmluZ19pbmZvIHN0cnVjdHVyZToNCg0K
+MSkNCg0KwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN0cmNweShzdHJpbmZvLT5hbGdv
+LCJibSIpOw0KwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN0cmNweShzdHJpbmZvLT5w
+YXR0ZXJuLCJ8MDUwMTAwMDF8XFwiKTsNCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoCBz
+dHJpbmZvLT5mcm9tX29mZnNldCA9IDMyOw0KwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IHN0cmluZm8tPnRvX29mZnNldCA9IDM2Ow0KwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKg
+IHN0cmluZm8tPnBhdGxlbiA9IDExOw0KDQpXaGVuIEkgZG8gaXB0YWJsZXMgwqAtTCBJIGdldCB0
+aGUgZm9sbG93aW5nOg0KU1RSSU5HIG1hdGNowqAgInw3YzMwMzUzMDMxMzAzMDMwMzE3YzVjfCIg
+QUxHTyBuYW1lIGJtIEZST00gMzIgVE8gMzYNCg0KMikNCsKgwqDCoMKgwqDCoMKgwqDCoMKgwqDC
+oMKgwqDCoCBzdHJjcHkoc3RyaW5mby0+YWxnbywiYm0iKTsNCsKgwqDCoMKgwqDCoMKgwqDCoMKg
+wqDCoMKgwqDCoCBzdHJjcHkoc3RyaW5mby0+cGF0dGVybiwiMDUwMTAwMDFcXCIpOw0KwqDCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgIHN0cmluZm8tPmZyb21fb2Zmc2V0ID0gMzI7DQrCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RyaW5mby0+dG9fb2Zmc2V0ID0gMzY7DQrCoMKg
+wqDCoMKgwqDCoMKgwqDCoMKgwqDCoMKgwqAgc3RyaW5mby0+cGF0bGVuID0gOTsNCg0KV2hlbiBJ
+IGRvIGlwdGFibGVzIMKgLUwgSSBnZXQgdGhlIGZvbGxvd2luZzoNClNUUklORyBtYXRjaMKgICJ8
+MzAzNTMwMzEzMDMwMzAzMTVjfCIgQUxHTyBuYW1lIGJtIEZST00gMzIgVE8gMzYNCg0KDQpCb3Ro
+IHNlZW0gaW5jb3JyZWN0LiBXaGF0IGFtIEkgbWlzc2luZyBoZXJlID8NCg0KVGhhbmtzDQpTb3Vy
+YWJoDQo=
