@@ -1,55 +1,54 @@
-From: Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
-Subject: Re: nftables&iptables coexistence
-Date: Fri, 20 Jun 2014 08:43:33 +0200
-Message-ID: <CAOkSjBgKhF4r2ex6mmcCSfJh_401ei+=bCb1ZQnqp3g2kK6c1A@mail.gmail.com>
-References: <CALU-w99A94oGuedx=tr_5vASnYLHFLx1CF3_288dwMvcYi-M9w@mail.gmail.com>
+From: Thierry Du Tre <thierry.dutre.tch@gmail.com>
+Subject: How to mark RTSP child connections with different value.
+Date: Mon, 23 Jun 2014 15:48:19 +0200
+Message-ID: <CALUesLixvZPSeJOr7-0KXTKkmagUW4N5Xb88XqrOVLgCchrshg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-type:content-transfer-encoding;
-        bh=UWWcPxMegsrThWR2DjR4DObqL6TiEhcYmgPp1w6ChDI=;
-        b=k4ZnCzivoIHyyQi+8R2QvuWyWRWvqstlvYwtgPJGpd2urb0LuwMiG+deeHP+5tp4cU
-         PcbOYmwcu4PGDD+mms4zr8ti22DQuLGMl9j1CjQaufIP0nwXeUqnZaBQ7/EIzj/yh+98
-         IzxWFdepX22CPbpSjbwD0SgXyH+8SzYVweGDo9G6TCcR9/UOPXOosTtYgjXQxXCOFASQ
-         UMOBqOHU3Dn3O1rsUqOsNltRLWspMc+6LjbYBCMTp/TUbfxzrvWk42o4UYX5AgLrYPS6
-         Cb9oO7q6wh4HD6W5zXXdNeQtS/UHb8sZ5kPE8hocJvlsi5MYCcL5Kif1BK2IyaA/o64p
-         GkkA==
-In-Reply-To: <CALU-w99A94oGuedx=tr_5vASnYLHFLx1CF3_288dwMvcYi-M9w@mail.gmail.com>
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=6s4ix2g2fONu2Ke3EEeiWqG8SfemNcC76BOd3NPHr4w=;
+        b=NVIiEO/8ONsjazW+QVHjEQoZ36cid14LoFj8OXRPoM/NLFqV67fgG0VJlwC+59/YCl
+         +/Ynt7JsnujwaQzmC3fdYhBEAbwNtRTVaGICMhoDV4cXodiW/WYH09ToZQ3S+lHjJaAj
+         PgmWo3B4It5dghoZnMNuke3XzHIYZkSK+7E0xBjqJZTbVCYfhUZ+k9GqbMKV+Gde86rd
+         XB7l94w+PTrgSE4Rq/LR/saVDrFim9FWxESZKZjfw8U/xMoZouqygE782dCDGGBnWXko
+         yFDUcfSQeF4Qb7FAIfjlUUJRnWMZgdnyhzyfVC1kx2Vsu3roPDJLNmITtnuhje42aY/n
+         A2jg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: =?UTF-8?Q?Fejes_J=C3=B3zsef?= <jozsef.fejes@gmail.com>
-Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 18 June 2014 21:49, Fejes J=C3=B3zsef <jozsef.fejes@gmail.com> wrote=
-:
-> Hi,
->
-> I would like to start using nftables, but I'm playing with a headless
-> box and it would be too inconvenient if I locked myself out, so let m=
-e
-> ask this one safety question before I start experimenting. I have lot=
-s
-> of iptables rules. If I compile nftables into my kernel, and also
-> leave iptables there, and reboot, what will happen? Will packets go
-> through both iptables and nftables? In what order? Without any
-> configuration from user space, does nftables pass along each packet
-> without intervention?
->
+Hi,
 
-I would not recommend mixing two different rulesets from two different
-frameworks.
-Is an experimental situation, and your server networking can be hurt.
+I am trying to apply some QoS for RTSP traffic forwarded by an OpenWRT
+gateway (Attitude Adjustment + patches).
 
-While the next version of iptables (userspace) is expected to natively
-use the nf_tables kernel subsystem, the latest iptables (1.4.21) still
-uses his own subsystem.
+The RTSP helper is loaded and succesfully expects the incoming
+streams, which arrive at the client in the NAT'ed lan.
+Multiwan is also active, this is using part of the marking bits (i.e.
+0xF0000000 ) to select the appropriate routing table.
 
-That being said, test it and get back to the list with the results :-)
+In this product, interface drivers sort outgoing frames in different
+queues based on part of the marking bits (i.e. 0x0F000000).
+Netfilter rules are present in the forwarding chain to mark streams
+destined at tcp port 554 with specific qos value (i.e 0x08000000).
+This mark is saved as connmark at the end of the forwarding chain, and
+restored at the start. If after restore, the mark is still 0, only
+then all qos rules are being evaluated.
 
-regards.
---=20
-Arturo Borrero Gonz=C3=A1lez
+When RTSP helper succesfully predicts incoming streams, these childs
+automatically inherit the connection mark, and as such will be marked
+with the same mwan and qos bits as the parent connection. For mwan
+this is ok, but for qos a different (higher) value would be prefered
+(i.e. 0x0A000000).
+Ideally, the child streams should be assigned a specified connmark
+value when RTSP helper is predicting them.
+A generic solution that would be applicable to parent-child
+connections handled by other helpers would be nice :-)
+
+So ... what are my options ?
+
+--
+Thierry
