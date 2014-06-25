@@ -1,22 +1,38 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: LKM with hook that catches iptables hits
-Date: Wed, 25 Jun 2014 14:03:14 +0200
-Message-ID: <20140625120314.GA8655@localhost>
-References: <53AA7C40.2010707@gmail.com>
+From: Kamal Kumar <malkarikamalkumar@gmail.com>
+Subject: Sub: nat issue in netfilter
+Date: Wed, 25 Jun 2014 19:02:57 +0530
+Message-ID: <CAJQ3KZWTUWAZ4VHq-tt86FY=cZnC1qhUBn5AqccaqQaE98BVhw@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <53AA7C40.2010707@gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=xBgX1E0HZNqbpwXLSDt70Ly8F9X3nFwmPyIRwFruNFU=;
+        b=u2c9lfpJ6Gsr1OySr8kI2WyvErPrdktxVnl7hIli7+IK+tzka+O7FFCqIDfTA2NzDL
+         VTnjM0FEbGg5D8WhwXmN/A+jJr/XqwQvtxAO7HH+aa5e1Nj/+1izfScxgWfw0nkSLvLb
+         bCMivEQnMTvVNeZauuKwzlZGQxIyJKWegoPHzLKVKlZRcafmxiJjFcJ+YKibirx5tBw0
+         mAmDNDKlGbMEiEX4aUgfI6cl5HZyga/10zq44pSe78KEjW+zmL6u7WZEsrK4LIf/n0nP
+         Z/N+6VOEcjXE5FJTNCj7g1+8M9klq2nCfa/2iqtiLQbxyIJY86K4FTk2dDJcudkXXwtd
+         n7SA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Alexandru Gheorghe <alghe.global@gmail.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Wed, Jun 25, 2014 at 10:37:36AM +0300, Alexandru Gheorghe wrote:
-> Hi guys. I am trying to think of an LKM which could have a general hook
-> in the sense that whatever iptables defines from user space this hook
-> will catch when a rule is hit (every rule) and will log it (KERN_INFO).
+Dear netfilter,
+                     I have an issue regarding nat in netfilter. When
+I configure the following rule "iptables -t nat -A POSTROUTING -s
+0.0.0.0/0 -d 0.0.0.0/0  -i eth0 -o eth1 -j SNAT --to A.B.C.D" and run
+some ip traffic from eth0 to eth1 found packets from eth1 with
+translated source ip A.B.C.D, its fine but when I flush the nat
+entries with traffic running from eth0 to eth1, I found packets on
+eth1 with translated source ip A.B.C.D . Is this a problem if it is
+then how to overcome it (when I flush the entries I should not see
+packets from eth1 with translated source ip ).
 
-That sounds like the rule tracing feature (see the TRACE target).
+                                        Thank you,
+
+                    yours failthfully,
+
+                     M KAMAL KUMAR.
