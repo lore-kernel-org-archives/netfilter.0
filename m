@@ -1,75 +1,80 @@
-From: Jonathan Johnson <ecybernard@gmail.com>
-Subject: Re: errors found in nftable docs on wiki
-Date: Sun, 29 Jun 2014 09:51:13 -0500
-Message-ID: <CALLvB8K7dnprfQdozF1RCsUhiy_hjp3A09T8M9U+BRVNkKA+Gg@mail.gmail.com>
-References: <CALLvB8LPbBQpGD-QAmPW3L9GT6CYZ2TAMh+E9koYBq7OWBUCkw@mail.gmail.com>
- <20140629101250.GA3615@localhost>
+From: Patrick Hemmer <kernel@stormcloud9.net>
+Subject: MASQUERADE doesn't work unless bridge is in promiscuous mode
+Date: Tue, 01 Jul 2014 01:05:49 -0400
+Message-ID: <53B241AD.2070907@stormcloud9.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-type;
-        bh=012KDDMgw2OZ26jYO5Dd0cCYyLoznSmyHkgcUaCDlLk=;
-        b=zwWy6GsgNaj+efvYGk5ZMPgvrvnEg0XSfBr/X9uhWph1svsknA05ziWR37/0jpdvCg
-         ben2l9KlaOm/88fS0fSbCInjgaxbFfdYRNslfZYrJc3OwOdVEwHhLhd1do/FHwnDNJbV
-         bcD1bmBIKRN0F87ffOXHjb4j6a0PeI9ewjtuTw67KGEl67m0NARCH2WszPv6/oKJRXQh
-         sQZMZZaSgFIpx67LR8Yae9myBsz9S3tfHrNUbYUvGu5fWltGl7sUPJ4t/8c1D2bolh/O
-         a0zuiV1BVU6Ji6kD1RJCnT0Oe32HGwWkBd1/eEliDsvjXY2I3/tLCID6WeMdy/PuaV5L
-         ZDNQ==
-In-Reply-To: <20140629101250.GA3615@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-I followed your example and no go.
+I've got a setup where I'm using network namespaces, a bridge, and
+trying to masquerade traffic from the namespace.
+I have a POSTROUTING rule which MASQUERADEs all traffic coming from the
+namespace'd subnet. I then have a DNAT rule setup to send all traffic to
+a certain port to an IP inside the namespace. Both these work perfectly
+fine except when a process inside the namespace tries to use the DNAT
+rule (which sends traffic back into the container). When this happens, I
+can tcpdump the non-namespaced virtual interface (with promiscuous mode
+off) and see the packet. But if I tcpdump the bridge, there is no such
+packet. But as soon as I turn promiscuous mode on for the bridge, it
+works perfectly.
 
-/sbin/nft add table ip  blackhole
-nft list tables
-results:  blackhole
+Here's how you can replicate the setup:
 
-nft add set filter blackhole { type ipv4_addr\;}
-<cmdline>:1:26-42: Error: Could not add set: No such file or directory
+    ip netns add brtest
+    ip link add brtest0 type veth peer name brtest1
+    ip link set brtest1 netns brtest
+    ip link set brtest0 up
+    ip netns exec brtest ip link set brtest1 up
+    brctl addbr brtest
+    ip link set brtest up
+    brctl addif brtest brtest0
+    ip addr add 169.254.0.1/29 dev brtest
+    ip netns exec brtest ip addr add 169.254.0.2/29 dev brtest1
+    sysctl -w net.ipv4.conf.brtest.forwarding=1
+    sysctl -w net.ipv4.conf.brtest0.forwarding=1
+    sysctl -w net.ipv4.conf.$(ip route get 8.8.8.8|grep -oP 'dev
+\K\S+').forwarding=1
+    ip netns exec brtest ip route add default via 169.254.0.1 dev
+brtest1          
+    iptables -t nat -I POSTROUTING -s 169.254.0.0/29 -j MASQUERADE
+    iptables -t nat -I PREROUTING -m addrtype --dst-type LOCAL -p tcp
+--dport 1000 -j DNAT --to-destination 169.254.0.2:3000
+    iptables -t nat -I OUTPUT -m addrtype --dst-type LOCAL -p tcp
+--dport 1000 -j DNAT --to-destination 169.254.0.2:3000
+    while :; do ip netns exec brtest nc -v -l -p 3000; done
+
+With that running, open another terminal and do:
+
+    echo hello | ip netns exec brtest nc --send-only -n -v $(ip route
+get 8.8.8.8|grep -oP 'src \K\S+') 1000
+
+Notice it just hangs. However you can watch the iptables counters
+increment on the DNAT rule, so the DNAT rule is matching, but not the
+MASQUERADE rule.
+Now try:
+
+    ip link set brtest promisc on
+    echo hello | ip netns exec brtest nc --send-only -n -v $(ip route
+get 8.8.8.8|grep -oP 'src \K\S+') 1000
+
+Notice it works now.
+
+You also can verify the MASQUERADE and DNAT rules are working for other
+traffic by the following commands
+
+    ip link set brtest promisc off
+    ip netns exec brtest ping 8.8.8.8 -c 1
+    echo hello | nc --send-only -n -v $(ip route get 8.8.8.8|grep -oP
+'src \K\S+') 1000
 
 
-Please send me a complete example.
-I am trying to migrate my blacklist from ipset/iptables to nft since I
-have 33,110 entries and counting.  I want to block all forms of
-communication with there ip addresses.  I want to see how nft performs
-by comparison.  Does nft have the 65,535 limit for list size?
-
-Jonathan
+So why does the MASQUERADE from the namespace only work when promiscuous
+mode is on for the bridge?
 
 
+-Patrick
 
-On Sun, Jun 29, 2014 at 5:12 AM, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> On Sat, Jun 28, 2014 at 02:13:35PM -0500, Jonathan Johnson wrote:
->> http://wiki.nftables.org/wiki-nftables/index.php/Sets
->>
->> States this works and it does not.
->>
->>
->> nft add set filter blackhole { type ipv4_address\;}
->>
->> after reviewing the source code I discovered this is correct:
->>
->>
->> nft add set filter blackhole { type ipv4_addr\;}
->
-> Fixed, thanks for reporting.
->
->> after using the correct syntax I get this error, which I have not
->> troubleshooted.
->>
->>
->> I modprobed all the modules starting with nft* one at a time.
->>
->>
->> <cmdline>:1:26-42: Error: Could not add set: No such file or directory
->
-> I guess you forgot to create the filter table?
->
-> http://wiki.nftables.org/wiki-nftables/index.php/Configuring_tables
