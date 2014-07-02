@@ -1,55 +1,59 @@
-From: Eliezer Croitoru <eliezer@ngtech.co.il>
-Subject: Re: help needed preventing bruteforce behind a reverse proxy
-Date: Wed, 02 Jul 2014 05:34:58 +0300
-Message-ID: <53B36FD2.70509@ngtech.co.il>
-References: <53B26B4C.4030002@gmail.com> <53B2ED11.4020902@ngtech.co.il> <CAMEq33fMwz-iufG+kVsrvdXwf7m9HZoE_0vF4Er5vZ8yyHk_9g@mail.gmail.com>
+From: Jonathan Johnson <ecybernard@gmail.com>
+Subject: Re: errors found in nftable docs on wiki
+Date: Tue, 1 Jul 2014 23:44:33 -0500
+Message-ID: <CALLvB8KbqmQT1YQLj9D8mD=wuxW4CY6DkWirP8za4iPZ067d0Q@mail.gmail.com>
+References: <CALLvB8LPbBQpGD-QAmPW3L9GT6CYZ2TAMh+E9koYBq7OWBUCkw@mail.gmail.com>
+ <20140629101250.GA3615@localhost> <CALLvB8K7dnprfQdozF1RCsUhiy_hjp3A09T8M9U+BRVNkKA+Gg@mail.gmail.com>
+ <CAOkSjBhBVBLHWWNRC7qZrks0ug_qQ8RH9g_gJQGDA6vZPcNqLA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-reply-to: <CAMEq33fMwz-iufG+kVsrvdXwf7m9HZoE_0vF4Er5vZ8yyHk_9g@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc:content-type:content-transfer-encoding;
+        bh=yxN72rqNOr0isgfyDE/S0MG9I1FS+JwFua5DH8mz1Xw=;
+        b=GVOL34qJo8E1o51Bi7Oxcc0YOeM0j+CD3hw3JE2vHFdjymKPObQ3pUbj/nB3zmp0wz
+         47jnruHW85NsHfFRsXfNX5OB9GTltSCBcYPkUKFpVck4JBHMeIMWgdK+quQVkBBS37wt
+         GL0a0mmmbX12/lSUo4XEkzbiZtQ17Yg/fgu/YP0aofzCOTKfgqKVUs9ptwHw7rMDhfQ7
+         IFrchmAIoef1kETssBrfW8erXdCCUQV4mpPiTlA+wocCvGC7XDpEFQMvmCM2DYo6B53G
+         h+rcVPWFu5y2kv3s5WDlVIhvFbnWx/UOb+fxwT2gKbHkVykN8qzYU2+IdfV1qjM54Ao5
+         7qLA==
+In-Reply-To: <CAOkSjBhBVBLHWWNRC7qZrks0ug_qQ8RH9g_gJQGDA6vZPcNqLA@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Francesco Morosinotto <francescomorosinotto@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="macroman"
+To: Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
+Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-Indeed you got the point of the issue.
+I tried to implement the syntax above with no luck.  I have no idea
+what I am supposed to do, and I am blindly stabbing around with trial
+and error trying to figure this out.  Why don't you just provide me
+with a complete example and make it easy for me?  All the examples I
+find are broken,wrong, or incomplete.
 
-Just to let you know that squid can knock out many products out-there as 
-a reverse proxy... and is very simple to setup(for me less then a minute)
-But you can use haproxy which is very simple to implement or squid.
-Nginx is nice and can perform nice as long as it doesn't supply cache, 
-and also it's far more complicated to setup then squid and maybe also 
-haproxy.
-- Haproxy will handle more requests per second and is preferred by many 
-admins for this task.
-- Squid now(3.4.X and since 3.2) has SMP function which allows it to be 
-even more then it was in the past.
-With the right setup and settings it can be scaled on a 10GBps 
-links.(not necessarily will benefit from all of it but faster then 
-teamed\bonded 4 1GBps nics for sure)
+Jonathan
 
-If you want to try squid(I am the CentOS RPMs builder for squid) feel 
-free to contact me and I can compile for you a squid.conf that will be 
-good for your setup.
-
-All The Bests,
-Eliezer
-
-On 07/01/2014 11:26 PM, Francesco Morosinotto wrote:
+On Tue, Jul 1, 2014 at 1:32 AM, Arturo Borrero Gonzalez
+<arturo.borrero.glez@gmail.com> wrote:
+> On 29 June 2014 16:51, Jonathan Johnson <ecybernard@gmail.com> wrote:
+>> I followed your example and no go.
+>>
+>> /sbin/nft add table ip  blackhole
+>> nft list tables
+>> results:  blackhole
+>>
+>> nft add set filter blackhole { type ipv4_addr\;}
+>> <cmdline>:1:26-42: Error: Could not add set: No such file or directo=
+ry
+>>
 >
->     My suggestion is to implement the fail2ban rules on the reverse
->     proxy machine and not on the origin server.
->     If and only if you can't or doesn't want to, then use a PUSH throw
->     SSH or any other mean to blakclist the IP in the Reverse proxy iptables.
+> The syntax is:
 >
+> nft add set <family> <table> <setname> { type ... }
 >
-> So my problem will only be to pass the to-be-banned ip from server B
-> (that can decide if an ip has to be banned or not) to server A (that can
-> ban the ip using iptables)?
+> So, you are adding a set named 'blackhole' in a table named 'filter'.
 >
->
-> cheers
->
-> francesco
-
+> I would suggest to create the filter table.
+> --
+> Arturo Borrero Gonz=C3=A1lez
