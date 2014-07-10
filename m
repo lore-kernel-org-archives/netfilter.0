@@ -1,97 +1,65 @@
-From: Sascha Frey <sf@TechFak.NET>
-Subject: conntrackd: inject-add2: Invalid argument
-Date: Thu, 10 Jul 2014 17:00:06 +0200
-Message-ID: <20140710150006.GB9616@TechFak.Uni-Bielefeld.DE>
+From: Kyeyoon Park <kyeyoonp@qca.qualcomm.com>
+Subject: IEEE 802.11 Proxy ARP using netfilter?
+Date: Thu, 10 Jul 2014 15:23:19 -0700
+Message-ID: <53BF1257.80308@qca.qualcomm.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=qca.qualcomm.com; i=@qca.qualcomm.com; q=dns/txt;
+  s=qcdkim; t=1405031002; x=1436567002;
+  h=message-id:date:from:mime-version:to:cc:subject:
+   content-transfer-encoding;
+  bh=4uo4Kprgv/cJI3h3c2GHW/Bmd3xVZ2Pl0H6zjnYRDis=;
+  b=KXvps4UhUT+JwVMRrIkjghztot45MaPnnngM0VAKIE0vUmC5uhZW2ugS
+   qyr8+GsNvE1xFPLs7TykrP2EJaN1wKRuRwTvlid0YATABsOeb7m7nEPhB
+   3zU+AdGhQOOXuQr5fKjPSMnf+yAC076sNv+cDatN/SPNgmDvWmPH8/Mts
+   g=;
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
+Cc: "Malinen, Jouni" <jouni@qca.qualcomm.com>
 
-Hi list,
+Hi guys,
 
-I did set up conntrackd in sync mode on two firewall hosts.
+I am trying to use netfilter infrastructure to implement Proxy ARP in 
+IEEE 802.11. This is different from proxy_arp that can be enabled via 
+/proc/sys/net/ipv4/conf/<iface>/proxy_arp.
 
-I get a lot of errors in the log:
+I initially tried to implement this feature entirely in the mac80211 
+stack, but was asked to look at alternative designs (i.e. netfilter). 
+The relevant discussion can be found at:
 
-conntrack-tools[6607]: inject-add2: Invalid argument
-conntrack-tools[6607]: tcp      6 ESTABLISHED src=yyy.yyy.yyy.55 dst=10.255.255.1 sport=51505 dport=22 [UNREPLIED]
-conntrack-tools[6607]: inject-upd1: Invalid argument
-conntrack-tools[6607]: tcp      6 FIN_WAIT src=yyy.yyy.yyy.55 dst=10.255.255.1 sport=51505 dport=22 [UNREPLIED]
-conntrack-tools[6607]: inject-add2: Invalid argument
-conntrack-tools[6607]: tcp      6 ESTABLISHED src=yyy.yyy.yyy.55 dst=10.255.255.1 sport=51505 dport=22 [UNREPLIED]
+http://comments.gmane.org/gmane.linux.kernel.wireless.general/123342
 
-Any idea what's wrong here?
+In a nutshell, I am trying to keep track of MAC <-> IP address mapping
+for only the associated stations for the access point (AP). Of course, 
+as the stations associate and disassociate from the AP, I will need to 
+update whether to keep track of a particular MAC address or not. When an 
+entity asks for the IP address of one of the associated stations, the AP 
+will reply on behalf of the station and drop the broadcast ARP request 
+that would go out to the wireless-medium.
 
-Both machines run Debian Wheezy with backports kernel
-(3.14.7-1~bpo70+1) and conntrackd (1.2.1-1).
+I was thinking about implementing this using the target extension for 
+ebtables (i.e. a target extension module for "ebtable_filter" something 
+that would look similar to "ebt_arpreply.c").
 
+Then I saw that I cannot dynamically change the data that is being used 
+by my own target extension module. So when a new station associates or
+when an associated station disassociates, I cannot dynamically alter 
+database within my own target extension module; the dynamic data being 
+the database of the MAC addresses to keep track of.
 
-My conntrackd.conf:
+I COULD rewrite the whole table every time, but this is obviously not 
+scalable (i.e. imagine rewriting the table of 100 MAC addresses from the 
+userspace on every association/disassociation).
 
-Sync {  
-        Mode FTFW {
-                DisableExternalCache On
-                CommitTimeout 1800
-                PurgeTimeout 5
-        }
-        
-        # Dedicated link
-        UDP Default {
-                IPv4_address 192.168.109.2
-                IPv4_Destination_Address 192.168.109.3
-                Port 3780 
-                Interface bond1 
-                SndSocketBuffer 134217728
-                RcvSocketBuffer 134217728
-                Checksum on
-        }
-        
-        # Fallback
-        UDP {   
-                IPv4_address xxx.xxx.xxx.162
-                IPv4_Destination_Address xxx.xxx.xxx.163
-                Port 3780 
-                Interface bond0 
-                SndSocketBuffer 134217728
-                RcvSocketBuffer 134217728
-                Checksum on
-        }
-}
+What do you think is the best way to approach this? I don't even have to 
+use the target extension necessarily. I just thought it was the most 
+suitable solution on a first glance.
 
-General {
-        Nice -20 
-        HashSize 262144
-        HashLimit 1048576
-        LogFile off
-        Syslog local6
-        LockFile /var/lock/conntrackd.lock
-        UNIX {  
-                Path /var/run/conntrackd.sock
-                Backlog 20
-        }
-        SocketBufferSize 16777216
-        SocketBufferSizeMaxGrown 67108864
-        
-        Filter From Kernelspace {
-                Protocol Accept {
-                        TCP
-                        UDP
-                        ICMP
-                }
-                
-                Address Ignore {
-                        IPv4_address 127.0.0.k
-                        IPv6_address ::1 # loopback
-                        
-                        IPv4_address xxx.xxx.xxx.160/28
-                        IPv4_address 192.168.109.0/24
-                }
-        }
-}
+Your comment on this would be greatly appreciated.
 
-Cheers,
-Sascha
+Best Regards,
+Kyeyoon
