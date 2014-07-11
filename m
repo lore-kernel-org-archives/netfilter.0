@@ -1,65 +1,114 @@
-From: Kyeyoon Park <kyeyoonp@qca.qualcomm.com>
-Subject: IEEE 802.11 Proxy ARP using netfilter?
-Date: Thu, 10 Jul 2014 15:23:19 -0700
-Message-ID: <53BF1257.80308@qca.qualcomm.com>
+From: Martin Kraus <lists_mk@wujiman.net>
+Subject: Re: conntrackd, internal cache keeps filling up
+Date: Fri, 11 Jul 2014 18:27:55 +0200
+Message-ID: <20140711162755.GB3977@finrod>
+References: <20140505104058.GA30297@finrod>
+ <20140509113129.GA8031@localhost>
+ <20140510061743.GA32197@finrod>
+ <20140512163538.GA13344@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=qca.qualcomm.com; i=@qca.qualcomm.com; q=dns/txt;
-  s=qcdkim; t=1405031002; x=1436567002;
-  h=message-id:date:from:mime-version:to:cc:subject:
-   content-transfer-encoding;
-  bh=4uo4Kprgv/cJI3h3c2GHW/Bmd3xVZ2Pl0H6zjnYRDis=;
-  b=KXvps4UhUT+JwVMRrIkjghztot45MaPnnngM0VAKIE0vUmC5uhZW2ugS
-   qyr8+GsNvE1xFPLs7TykrP2EJaN1wKRuRwTvlid0YATABsOeb7m7nEPhB
-   3zU+AdGhQOOXuQr5fKjPSMnf+yAC076sNv+cDatN/SPNgmDvWmPH8/Mts
-   g=;
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20140512163538.GA13344@localhost>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
-Cc: "Malinen, Jouni" <jouni@qca.qualcomm.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org
 
-Hi guys,
+On Mon, May 12, 2014 at 06:35:38PM +0200, Pablo Neira Ayuso wrote:
+> > will try 1.4.2. we just need to package it.
 
-I am trying to use netfilter infrastructure to implement Proxy ARP in 
-IEEE 802.11. This is different from proxy_arp that can be enabled via 
-/proc/sys/net/ipv4/conf/<iface>/proxy_arp.
+Hi. 
 
-I initially tried to implement this feature entirely in the mac80211 
-stack, but was asked to look at alternative designs (i.e. netfilter). 
-The relevant discussion can be found at:
+we've been running 1.4.2 since the end of May but the problem persists. We've
+managed to keep it down to a restart once a month through NOTRACK rules but 
+that's not a nice solution.
 
-http://comments.gmane.org/gmane.linux.kernel.wireless.general/123342
+> Please, provide more information on how to reproduce the problem that
+> you're noticing. Thank you.
 
-In a nutshell, I am trying to keep track of MAC <-> IP address mapping
-for only the associated stations for the access point (AP). Of course, 
-as the stations associate and disassociate from the AP, I will need to 
-update whether to keep track of a particular MAC address or not. When an 
-entity asks for the IP address of one of the associated stations, the AP 
-will reply on behalf of the station and drop the broadcast ARP request 
-that would go out to the wireless-medium.
+We have two office routers (router1, router2) which are connected to our internal
+vlans and then to the uplinks. Both routers are active and there is a dedicated 
+line used for conntrackd synchronization.
 
-I was thinking about implementing this using the target extension for 
-ebtables (i.e. a target extension module for "ebtable_filter" something 
-that would look similar to "ebt_arpreply.c").
+An example of state that keeps filling the conntrackd internal cache is dns
+traffic to our nat64 proxy.
 
-Then I saw that I cannot dynamically change the data that is being used 
-by my own target extension module. So when a new station associates or
-when an associated station disassociates, I cannot dynamically alter 
-database within my own target extension module; the dynamic data being 
-the database of the MAC addresses to keep track of.
+A user from vlan6 goes to our nat64 proxy in vlan20. vlan6 has a default
+gateway to router2, vlan20 has a default gateway to vlan1. 
 
-I COULD rewrite the whole table every time, but this is obviously not 
-scalable (i.e. imagine rewriting the table of 100 MAC addresses from the 
-userspace on every association/disassociation).
+User ipv6 address is 2001:1488:fffe:6:c941:fae:4505:7a22.
+Nat64 ipv6 address is 2001:1488:fffe:20::34.
 
-What do you think is the best way to approach this? I don't even have to 
-use the target extension necessarily. I just thought it was the most 
-suitable solution on a first glance.
+The dns packet from the user goes to router2 and then directly to vlan20 where the 
+nat64 host is located.
 
-Your comment on this would be greatly appreciated.
+The dns reply packet from nat64 then goes to router1 and then directly to
+vlan6 back to the user.
 
-Best Regards,
-Kyeyoon
+Now on router2 when I run conntrackd -i I can see
+
+udp      17 src=2001:1488:fffe:6:c941:fae:4505:7a22 dst=2001:1488:fffe:20::34 sport=6728 dport=53 [UNREPLIED] src=2001:1488:fffe:20::34 dst=2001:1488:fffe:6:c941:fae:4505:7a22 sport=53 dport=6728 [active since 192159s]
+udp      17 src=2001:1488:fffe:6:c941:fae:4505:7a22 dst=2001:1488:fffe:20::34 sport=6961 dport=53 [UNREPLIED] src=2001:1488:fffe:20::34 dst=2001:1488:fffe:6:c941:fae:4505:7a22 sport=53 dport=6961 [active since 191949s]
+udp      17 src=2001:1488:fffe:6:c941:fae:4505:7a22 dst=2001:1488:fffe:20::34 sport=6977 dport=53 [UNREPLIED] src=2001:1488:fffe:20::34 dst=2001:1488:fffe:6:c941:fae:4505:7a22 sport=53 dport=6977 [active since 191962s]
+udp      17 src=2001:1488:fffe:6:c941:fae:4505:7a22 dst=2001:1488:fffe:20::34 sport=6979 dport=53 [UNREPLIED] src=2001:1488:fffe:20::34 dst=2001:1488:fffe:6:c941:fae:4505:7a22 sport=53 dport=6979 [active since 168352s]
+
+and another 126000 entries like this. router1 is similar except that the state
+is not UNREPLIED. kernel conntrack table doesn't have any of these entries.
+
+Interesting thing is that it's usually 1 ipv[46] address that generates most
+of these stale entries. 
+
+This is the config file used
+
+Sync {
+        Mode FTFW {
+                ResendQueueSize 131072
+                ACKWindowSize 300
+                DisableExternalCache On
+        }
+        UDP {
+                IPv4_address 192.168.100.100
+                IPv4_Destination_Address 192.168.100.200
+                Port 3780
+                Interface eth0
+                Checksum on
+        }
+        Options {
+                TCPWindowTracking On
+        }
+
+}
+
+General {
+        Nice -20
+
+        HashSize 65536
+        HashLimit 262144
+
+        Syslog on
+        LockFile /var/lock/conntrack.lock
+        UNIX {
+                Path /var/run/conntrackd.ctl
+                Backlog 20
+        }
+
+        NetlinkBufferSize 2097152
+        NetlinkBufferSizeMaxGrowth 8388608
+        NetlinkEventsReliable Off
+        NetlinkOverrunResync On
+
+        Filter From Kernelspace {
+                Address Ignore {             
+                        IPv4_address 127.0.0.1 # loopback
+                }
+        }
+}
+
+I always assumed that the internal cache is a copy of the kernel conntrack table
+plus entries that have not yet been synchronized to the other router so I
+don't understand why is it getting this huge.
+
+mk
