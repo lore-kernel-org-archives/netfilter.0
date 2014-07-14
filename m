@@ -1,61 +1,28 @@
-From: Ruben Herold <ruben@insecure.pw>
-Subject: Searching NAT46 and NAT64 solution
-Date: Sun, 13 Jul 2014 01:49:29 +0200
-Message-ID: <20140712234929.GS2822@insecure.pw>
-Reply-To: Ruben Herold <ruben@insecure.pw>
+From: Sascha Frey <sf@techfak.net>
+Subject: Re: conntrackd: inject-add2: Invalid argument
+Date: Mon, 14 Jul 2014 10:34:54 +0200
+Message-ID: <20140714083454.GA4109@TechFak.Uni-Bielefeld.DE>
+References: <20140710150006.GB9616@TechFak.Uni-Bielefeld.DE>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="tBhgiDt8dP1efIIJ"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=insecure.pw;
-	s=default; t=1405208970;
-	bh=CT/1HMPUT53HmEKChyxZGARswmThq5lzs5y8d/XBXHo=;
-	h=Date:From:To:Subject:Reply-To;
-	b=XAHnxuPP+ZromO1rIoRh92m7ZWnro3D+4SLTfZePehV7kB6TMGIUkVMrYxX41PgoL
-	 E9caiWehBlheUluMHMvdMZgXoyiRWdQicN+NKKYvS1YSAnCaqqKxMFGx6oN58+1Kqp
-	 ALdDYm2EmRVZkZL8mISrR/CviVytRbqJS5mVAW8M=
 Content-Disposition: inline
+In-Reply-To: <20140710150006.GB9616@TechFak.Uni-Bielefeld.DE>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
+Sascha Frey wrote:
 
---tBhgiDt8dP1efIIJ
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+[...]
+>Both machines run Debian Wheezy with backports kernel
+>(3.14.7-1~bpo70+1) and conntrackd (1.2.1-1).
 
+I built conntrack-tools 1.4.2 from source including all the necessary
+libraries (libmnl-1.0.3, libnetfilter_conntrack-1.0.4,
+libnetfilter_cthelper-1.0.0, libnetfilter_cttimeout-1.0.0,
+libnetfilter_queue-1.0.2, libnfnetlink-1.0.1).
 
-            hi,
-
-I found nothing in the netfilter documentation and via google I found
-only nat64 solutions for linux like:
-
-        jool.mx
-        tayga
-        ecdysis
-
-But I did not found any nat46 solution. Does somebody has an idea=20
-for an stable working nat46 and nat64 solution?
-
-        thx
-
-            Ruben
-   =20
---=20
-Ruben Herold=20
-ruben@insecure.pw
-
---tBhgiDt8dP1efIIJ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: Digital signature
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
-
-iEYEARECAAYFAlPByYkACgkQgHHssbUmOEIFHACeL5u/8hRbaH495sXr+zhGFz/k
-72IAoNf2mBE5Jv9eYgLrjMdMe2NeHJx3
-=V2Et
------END PGP SIGNATURE-----
-
---tBhgiDt8dP1efIIJ--
+Unfortunately, I get the same errors with 1.4.2 when external cache is
+disabled.
