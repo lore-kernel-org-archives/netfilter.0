@@ -1,42 +1,45 @@
-From: Abogholo A <abogholo@gmail.com>
-Subject: why scapy packet no effected by ip tables
-Date: Wed, 16 Jul 2014 17:16:21 +0430
-Message-ID: <CAPpnho=+jciiQzpa9gnihrJsBRnRkniQtfWHPcrr7s4-3KHSDw@mail.gmail.com>
-Mime-Version: 1.0
+From: Ryo Fujita <rfujita@redhat.com>
+Subject: nftables, after adding a rule without any action, nft doesn't return correctly
+Date: Thu, 17 Jul 2014 00:37:43 +0900
+Message-ID: <DA2F5FF8-CA37-48D0-BEFC-F1D78A0C8415@redhat.com>
+Mime-Version: 1.0 (Mac OS X Mail 7.3 \(1878.6\))
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=yV/w6NEUwxqzcaRSsHrOIG6XCPiD9IHhqZ27i8S6SHk=;
-        b=x+OfYm52LmbXcfUsoWQIIceGi3VjpbX3LMLHn7Lt0ltcK5yNt0+wz7h+ScjZGk/r/r
-         8hahMQUDg9SU1Z94HAxRXkvx6g+xQvu10onNYdGGgRSSp8+szu76Av/c2PwjtP3sWOvU
-         7BN4McDbL8SonGjijvogDC1bsPp3pb9l4oBSRb/FPBAVBd75USDUJh46K/+Wi0jCkfDT
-         wDnoIBgWzPKn95BT4mFBqvB63XWEP1xWOu7JU+GCWO8Nl2gepCNqjs/PplGgJNViKyGW
-         xA1ds0RLlm5avsg3nJh/AKGTvSzl5QcprNYb+q1w1zpsuzPinxIR/V7YjwwnYrZNh1Zd
-         xGyQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
 To: netfilter@vger.kernel.org
 
-HI
+Hi,
 
+I=E2=80=99m still a newbie to nftables and couldn=E2=80=99t distinguish=
+ right behavior from a bug.
 
-i wrote this rule for change all udp destination ip address to 8.8.8.8
-when dport is 53:
+I found a weird behavior of nft command.
 
-iptables -t nat -A OUTPUT -p udp -m udp --dport 53 -j DNAT
---to-destination 8.8.8.8
+# nft -f /etc/nftables/inet-filter
+# nft add rule inet filter input log drop
+# nft add rule inet filter input ip saddr 192.168.1.21 // without any a=
+ction like =E2=80=98drop=E2=80=99, =E2=80=98accept=E2=80=99, =E2=80=98l=
+og=E2=80=99 and so on
+# nft list chain inet filter input
+table inet filter {
+	chain input {
+		 type filter hook input priority 0;
+		 log drop
+^C << - - - - - - - break
 
-but when send this packet
+I have 2 questions.
 
-sr1(IP(dst="4.2.2.4")/UDP()/DNS(rd=1,qd=DNSQR(qname="iranled.com")))
+1. Adding a rule without any action didn=E2=80=99t result any error. Wa=
+s it correct behavior?
 
-iptables no effected to them
+2. After adding a rule, nft didn=E2=80=99t return, needed to break, ^C.=
+ Was it a bug?
 
-why?
+My environment was as followings.
+nftables-0.100-3.20140704git.fc21.x86_64
+libnftnl-1.0.2-1.fc21.x86_64
+kernel-3.15.4-200.fc20.x86_64
 
-more details:
-
-http://unix.stackexchange.com/questions/144729/iptables-rule-no-actions-on-scapy-packets
+Best Rio.
