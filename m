@@ -1,56 +1,34 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nftables, after adding a rule without any action, nft doesn't
- return correctly
-Date: Thu, 17 Jul 2014 16:14:28 +0200
-Message-ID: <20140717141428.GA4063@salvia>
-References: <DA2F5FF8-CA37-48D0-BEFC-F1D78A0C8415@redhat.com>
- <20140716160716.GA7906@salvia>
- <9D590D9F-92DE-4832-8382-54E3C42BA881@redhat.com>
+From: Phil Oester <kernel@linuxace.com>
+Subject: Re: why scapy packet no effected by ip tables
+Date: Thu, 17 Jul 2014 08:23:50 -0700
+Message-ID: <20140717152350.GA4553@home>
+References: <CAPpnho=+jciiQzpa9gnihrJsBRnRkniQtfWHPcrr7s4-3KHSDw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-In-Reply-To: <9D590D9F-92DE-4832-8382-54E3C42BA881@redhat.com>
+In-Reply-To: <CAPpnho=+jciiQzpa9gnihrJsBRnRkniQtfWHPcrr7s4-3KHSDw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Ryo Fujita <rfujita@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Abogholo A <abogholo@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-On Thu, Jul 17, 2014 at 08:13:12AM +0900, Ryo Fujita wrote:
-> Hi Pablo-san and all,
->=20
-> Thank you so much!
-> You made me clear.
->=20
-> > You can add rules without any action.
->=20
-> I understand it=E2=80=99s the spec not a bug.
->=20
-> > Try -n to disabling name resolution:
-> >=20
-> > # nft -n list table inet filter
->=20
->=20
-> Yes, I check that reverse lookup fails as you pointed out.
->=20
-> >> My environment was as followings.
-> >> nftables-0.100-3.20140704git.fc21.x86_64
-> >=20
-> > Please, use latest when testing.
-> >=20
-> > http://www.netfilter.org/projects/nftables/downloads.html
->=20
->=20
-> The reason why I=E2=80=99m using the slight old version is to write a
-> magazine article introducing nftables. It=E2=80=99s easy for readers =
-to
-> install the version I checked with RPM or archive like
-> 'nftables-0.3=E2=80=99.  Anyway, I=E2=80=99ll test the latest before =
-sending a
-> report to this ML.
+On Wed, Jul 16, 2014 at 05:16:21PM +0430, Abogholo A wrote:
+> i wrote this rule for change all udp destination ip address to 8.8.8.8
+> when dport is 53:
+> 
+> iptables -t nat -A OUTPUT -p udp -m udp --dport 53 -j DNAT
+> --to-destination 8.8.8.8
+> 
+> but when send this packet
+> 
+> sr1(IP(dst="4.2.2.4")/UDP()/DNS(rd=1,qd=DNSQR(qname="iranled.com")))
+> 
+> iptables no effected to them
+> 
+> why?
 
-Not a good idea to stick to old versions. We're still changing syntax
-in some aspects and resolving bugs at this stage. The user document
-aims to be in sync with latest. You should recommend people to stick
-to latest until 1.0 comes out.
+Scapy uses raw sockets, which don't go through iptables.
+
+Phil
