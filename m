@@ -1,53 +1,125 @@
-From: Paul Robert Marino <prmarino1@gmail.com>
-Subject: Re: why scapy packet no effected by ip tables
-Date: Sun, 20 Jul 2014 12:27:55 -0400
-Message-ID: <CAPJdpdA7JGd6g9G99sxFUhMTX4-KWkYdnwLjcoxA26C47BPOrw@mail.gmail.com>
-References: <CAPpnho=+jciiQzpa9gnihrJsBRnRkniQtfWHPcrr7s4-3KHSDw@mail.gmail.com>
-	<20140717152350.GA4553@home>
+From: Thomas Martin <tmartincpp@gmail.com>
+Subject: Re: ipset and hash:net,iface type
+Date: Mon, 21 Jul 2014 12:07:39 +0000 (UTC)
+Message-ID: <loom.20140721T133934-700@post.gmane.org>
+References: <CAO1iXZ+-i+vQt64ZSwUEiwqGOeNs9=DkMg-Vptz5x3i=1k7_KA@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=U1k5jIys7kGKNG1rzOPYxKqasDvXpe8KVGqDov+kJUc=;
-        b=TU/2oRXDWFo0L9aAAStbwR09fu6IZFs/4kdtyNU57/V7ysTB6Xasu0HqC/cDeepnxq
-         z+2VAmrzfZ/7+nZNeQCdhwoZp8n5b64tnUlBh4IhkjHASxufe0GcnZRvIlPqgXZJt+wE
-         inDlyQvF69CFVwv0DtzFgP3o8B3O+urq0bpc2cvKzDmg8J8E/rQ/qqziXgbGGg8EGz4G
-         w9kl976lGFvI6u81MflGJWndhaW1+thOxn0Asb5hIJjRIUFCX13ZoXTuyjvHhrFeSfoF
-         rePysZ198dy3ObGnfok3svivyXVpHqqoyZalZ4cADOgF9TYTQaKZl2IsADG6Q4JGILff
-         dO4A==
-In-Reply-To: <20140717152350.GA4553@home>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Phil Oester <kernel@linuxace.com>
-Cc: Abogholo A <abogholo@gmail.com>, netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-look at ebtables instead.
+This is it.
+When I try without renaming my vlans interfaces this is working...
+
+Here is a simple test:
+
+1) initial test
+a) no iptables configuration (accep all)
+# iptables -L -vn
+Chain INPUT (policy ACCEPT 1090 packets, 216K bytes)
+ pkts bytes target     prot opt in     out     source              
+destination         
+Chain FORWARD (policy ACCEPT 13 packets, 708 bytes)
+ pkts bytes target     prot opt in     out     source              
+destination         
+Chain OUTPUT (policy ACCEPT 1044 packets, 223K bytes)
+ pkts bytes target     prot opt in     out     source               destination
+
+b) telnet from 172.20.128.41 (work as expected):
+$ telnet 172.20.130.200 631
+Trying 172.20.130.200...
+Connected to 172.20.130.200.
+Escape character is '^]'.
+^]quit
+telnet> quit
+Connection closed.
 
 
-On Thu, Jul 17, 2014 at 11:23 AM, Phil Oester <kernel@linuxace.com> wrote:
-> On Wed, Jul 16, 2014 at 05:16:21PM +0430, Abogholo A wrote:
->> i wrote this rule for change all udp destination ip address to 8.8.8.8
->> when dport is 53:
->>
->> iptables -t nat -A OUTPUT -p udp -m udp --dport 53 -j DNAT
->> --to-destination 8.8.8.8
->>
->> but when send this packet
->>
->> sr1(IP(dst="4.2.2.4")/UDP()/DNS(rd=1,qd=DNSQR(qname="iranled.com")))
->>
->> iptables no effected to them
->>
->> why?
->
-> Scapy uses raw sockets, which don't go through iptables.
->
-> Phil
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+2) ipset's configuration:
+ipset list all_users_if
+Name: all_users_if
+Type: hash:net,iface
+Revision: 0
+Header: family inet hashsize 4096 maxelem 65536
+Size in memory: 33168
+References: 1
+Members:
+172.20.130.0/24,vlan130
+172.20.130.0/24,internal.130
+
+
+3) I will try to block the telnet without renaming the interface
+a)
+# ifconfig internal.130
+internal.130 Link encap:Ethernet  HWaddr blablabla  
+          inet addr:172.20.130.252  Bcast:172.20.130.255  Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:440 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:22 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:18840 (18.3 KiB)  TX bytes:1572 (1.5 KiB)
+
+b)
+# iptables -L -vn
+Chain INPUT (policy ACCEPT 26 packets, 2770 bytes)
+ pkts bytes target     prot opt in     out     source              
+destination         
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source              
+destination         
+    0     0 REJECT     all  --  *      *       0.0.0.0/0           
+0.0.0.0/0            state NEW match-set all_users_if dst,dst reject-with
+icmp-port-unreachable
+Chain OUTPUT (policy ACCEPT 22 packets, 3441 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+
+c) As expected the telnet was blocked
+$ telnet 172.20.130.200 631
+Trying 172.20.130.200...
+telnet: Unable to connect to remote host: Connection refused
+
+Ipset works as expected!
+
+
+4) I will do the exact same test with internal.130 renamed to vlan130:
+a) ifrename -i internal.130 -n vlan130
+# ifconfig vlan130
+vlan130   Link encap:Ethernet  HWaddr blablabla
+          inet addr:172.20.130.252  Bcast:172.20.130.255  Mask:255.255.255.0
+          UP BROADCAST RUNNING MULTICAST  MTU:1500  Metric:1
+          RX packets:2 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:3 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:84 (84.0 B)  TX bytes:238 (238.0 B)
+
+b)
+# iptables -L -vn
+Chain INPUT (policy ACCEPT 14 packets, 1371 bytes)
+ pkts bytes target     prot opt in     out     source              
+destination         
+Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
+ pkts bytes target     prot opt in     out     source              
+destination         
+    0     0 REJECT     all  --  *      *       0.0.0.0/0           
+0.0.0.0/0            state NEW match-set all_users_if dst,dst reject-with
+icmp-port-unreachable
+Chain OUTPUT (policy ACCEPT 11 packets, 1606 bytes)
+ pkts bytes target     prot opt in     out     source               destination
+
+c) This time the telnet is still working:
+$ telnet 172.20.130.200 631
+Trying 172.20.130.200...
+Connected to 172.20.130.200.
+Escape character is '^]'.
+^]quit
+telnet> quit
+Connection closed.
+
+
+So it seems that ipset is having some issue working with ifrename.
+
+
+
