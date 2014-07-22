@@ -1,55 +1,39 @@
-From: Jeff White <jaw171@pitt.edu>
-Subject: Re: why scapy packet no effected by ip tables
-Date: Mon, 21 Jul 2014 08:38:26 -0400
-Message-ID: <53CD09C2.2090604@pitt.edu>
-References: <CAPpnho=+jciiQzpa9gnihrJsBRnRkniQtfWHPcrr7s4-3KHSDw@mail.gmail.com>
- <20140717152350.GA4553@home>
- <CAPJdpdA7JGd6g9G99sxFUhMTX4-KWkYdnwLjcoxA26C47BPOrw@mail.gmail.com>
+From: Sourabh Nanoti <sourabh.nanoti@gmail.com>
+Subject: Fwd: Performance issue with iptables and nf-accounting
+Date: Tue, 22 Jul 2014 16:49:02 +0530
+Message-ID: <CADTxiuwmMMCy8y44Z7-59TP683c8mifDTAk5sfYTp-pnxUoK9Q@mail.gmail.com>
+References: <CADTxiuyVJ_MB3G82P0PbTfYk1KtDd8W=FArraKeJZGDZrUz99w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-reply-to: <CAPJdpdA7JGd6g9G99sxFUhMTX4-KWkYdnwLjcoxA26C47BPOrw@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :content-type;
+        bh=182/Apf5L3gDWli7EO2vDmbi0eouUcw7aCiIEy4O/FA=;
+        b=PlKOEQ1oWbw/nyOTWKJCPCh40+tU/43S1J5D+3I4NBFa8B7pm1NglsBUQxmxEh4Jf4
+         yrO/3Gs5IdPKufx7QoJ5lFKLMLWQgKsZtiZJcHdVpUkiVo/S1IrMKBgGd6JdtIdoGK2X
+         8DdSAb5sm8vl4gq+BgVfORi5nLa4uSUEUEtXXwvD670TUS60juHgp9UrrJpAwnzqNZEf
+         IGtfzac0H9XtxnUu1TVQY0DP7yzrLhddZCtAhXKi7j688WkgfzVVdTc2YBpaTj7AUnax
+         V/xuV5kRnEvN/HJ1YVUSTVD7jfcf10ZjJZkP5r7lshI9j6wmKHqolhOPo2lei+KDPPin
+         YtsA==
+In-Reply-To: <CADTxiuyVJ_MB3G82P0PbTfYk1KtDd8W=FArraKeJZGDZrUz99w@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; format="flowed"; charset="us-ascii"
-To: Paul Robert Marino <prmarino1@gmail.com>, Phil Oester <kernel@linuxace.com>
-Cc: Abogholo A <abogholo@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Obviously you are doing this for DNS, you need TCP too.  If a DNS 
-request or response is larger than 512 bytes it will use TCP.
+Hi,
 
-Jeff White - GNU+Linux Systems Administrator
-University of Pittsburgh - CSSD
+I have a customized target while inserting iptables rules. The
+iptables target module modifies some part of the packet and routes the
+packet to the destination.
+With this setup, when I enable the netfilter-accounting, I am not able
+to reach the performance numbers that I used to get before (enabling
+nf-accounting).
 
-On 07/20/2014 12:27 PM, Paul Robert Marino wrote:
-> look at ebtables instead.
->
->
-> On Thu, Jul 17, 2014 at 11:23 AM, Phil Oester <kernel@linuxace.com> wrote:
->> On Wed, Jul 16, 2014 at 05:16:21PM +0430, Abogholo A wrote:
->>> i wrote this rule for change all udp destination ip address to 8.8.8.8
->>> when dport is 53:
->>>
->>> iptables -t nat -A OUTPUT -p udp -m udp --dport 53 -j DNAT
->>> --to-destination 8.8.8.8
->>>
->>> but when send this packet
->>>
->>> sr1(IP(dst="4.2.2.4")/UDP()/DNS(rd=1,qd=DNSQR(qname="iranled.com")))
->>>
->>> iptables no effected to them
->>>
->>> why?
->>
->> Scapy uses raw sockets, which don't go through iptables.
->>
->> Phil
->> --
->> To unsubscribe from this list: send the line "unsubscribe netfilter" in
->> the body of a message to majordomo@vger.kernel.org
->> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
->
+Has someone faced a similar problem where in the performance of
+iptables slows down when the nf-acct is enabled?
+
+Thanks,
+Sourabh
