@@ -1,39 +1,44 @@
-From: Sourabh Nanoti <sourabh.nanoti@gmail.com>
-Subject: Fwd: Performance issue with iptables and nf-accounting
-Date: Tue, 22 Jul 2014 16:49:02 +0530
-Message-ID: <CADTxiuwmMMCy8y44Z7-59TP683c8mifDTAk5sfYTp-pnxUoK9Q@mail.gmail.com>
-References: <CADTxiuyVJ_MB3G82P0PbTfYk1KtDd8W=FArraKeJZGDZrUz99w@mail.gmail.com>
+From: =?UTF-8?B?0JrQsNC30LjQvNC40YAg0JzQsNC70LXQstC40Yc=?= 
+	<nvinside@gmail.com>
+Subject: Do we need these iptables patches for our project?
+Date: Wed, 23 Jul 2014 20:39:54 +0200
+Message-ID: <CAPhnrU+KxNJugg+ss_5OoAf-QodAbbZ68zxw0k9ofOiDeuQvww@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :content-type;
-        bh=182/Apf5L3gDWli7EO2vDmbi0eouUcw7aCiIEy4O/FA=;
-        b=PlKOEQ1oWbw/nyOTWKJCPCh40+tU/43S1J5D+3I4NBFa8B7pm1NglsBUQxmxEh4Jf4
-         yrO/3Gs5IdPKufx7QoJ5lFKLMLWQgKsZtiZJcHdVpUkiVo/S1IrMKBgGd6JdtIdoGK2X
-         8DdSAb5sm8vl4gq+BgVfORi5nLa4uSUEUEtXXwvD670TUS60juHgp9UrrJpAwnzqNZEf
-         IGtfzac0H9XtxnUu1TVQY0DP7yzrLhddZCtAhXKi7j688WkgfzVVdTc2YBpaTj7AUnax
-         V/xuV5kRnEvN/HJ1YVUSTVD7jfcf10ZjJZkP5r7lshI9j6wmKHqolhOPo2lei+KDPPin
-         YtsA==
-In-Reply-To: <CADTxiuyVJ_MB3G82P0PbTfYk1KtDd8W=FArraKeJZGDZrUz99w@mail.gmail.com>
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=5THZP+VgFhBv58+LUeY4II85Ku5j1bfbncRyI1VBtjg=;
+        b=FV1dIQFu2noTc3p4DihhQDxZxQs1qF8VwKMxI7Pjm/e1BIsN/RNI0BxBWLWmFndVC2
+         96ad8OHUW5DWpqZrtxqLwyO1UqpM5gi2sJP422+TaTh6AlUailMshZh+VqMmOjMYkaEK
+         pJ/WRXVloa+/z+ve1B5uZkcKdKjMtRz+RJw+yDgvP2zsM8e2/9+ZrrMDWj+PKGIejW0j
+         ImOBhepCEJzbkcGWhrgdWtwNAeWq7pFMdcQBerDemwQ3ks9iSdgnTjtYW1GNeZP9TX6p
+         JHxWLMyN1h5IjbfnhNLy8aTl8M5O75M868aJkoj+KRGN61D9az6Tgx1TPXYKxIQqIemq
+         ZoMQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi,
+Hello,
+I'm one of the Android developer trying to build iptables for Android
+for an external firewall project, we actually use some patches, and my
+question is do we really need it, or is there a better way to handle
+it? And if yes, why it's not already adopted in the branch? Or is it
+better to implement nftables?
 
-I have a customized target while inserting iptables rules. The
-iptables target module modifies some part of the packet and routes the
-packet to the destination.
-With this setup, when I enable the netfilter-accounting, I am not able
-to reach the performance numbers that I used to get before (enabling
-nf-accounting).
+Project page and source
+https://github.com/ukanth/afwall
 
-Has someone faced a similar problem where in the performance of
-iptables slows down when the nf-acct is enabled?
+9 patches can be found under:
+\external\dist\iptables-patches
 
-Thanks,
-Sourabh
+I not posted this in the developer mailing list because I'm unsure if
+we need already need it or not and I'm not that expert to make a clear
+statement about the necessary of these patches.
+
+It would be fine to find some useful documentation about iptables on
+Android, and what is necessary or important.
+
+Thanks for helping me/us!
