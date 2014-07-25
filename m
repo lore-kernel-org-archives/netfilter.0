@@ -1,63 +1,71 @@
-From: James Lamanna <james@warp2biz.com>
-Subject: Re: Disable port translation in SNAT
-Date: Thu, 24 Jul 2014 15:09:09 -0400
-Message-ID: <53D159D5.3090904@warp2biz.com>
-References: <2F6A61C9-C112-4C17-9BE7-9B6438B19893@warp2biz.com> <53D153B7.6000302@plouf.fr.eu.org>
+From: Eric Leblond <eric@regit.org>
+Subject: Re: ulogd2, netfilter, and link-layer information
+Date: Fri, 25 Jul 2014 03:35:42 +0200
+Message-ID: <6bc3c4df-fbfb-48a4-9fd1-ccea193b4ada@email.android.com>
+References: <CAKrqPw_gn1g4b6AQ3hq6xzKKyRuYHB_zubeRv9ETtHDaWHarxQ@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <53D153B7.6000302@plouf.fr.eu.org>
+In-Reply-To: <CAKrqPw_gn1g4b6AQ3hq6xzKKyRuYHB_zubeRv9ETtHDaWHarxQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: Laurent Parenteau <laurent.parenteau@gmail.com>, netfilter@vger.kernel.org
 
-Hi,
-I have one device (an IP phone) on an AirRouter (based on linux, uses i=
-ptables).
-it still is translating ports in the 16000 range all the way down to 10=
-25, which breaks RTP (it apparently doens't have very good SIP/SDP=20
-conn-tracking on it).
+Hello Laurent,
 
-That's why I was a bit puzzled as to why it keeps translating the ports=
- down to the low 1000s. I had thought it was the default to preserve it=
-=2E
-
--- James
-
-
-On 7/24/2014 2:43 PM, Pascal Hambourg wrote:
-> Hello,
+On 24 juillet 2014 15:24:43 CEST, Laurent Parenteau <laurent.parenteau@=
+gmail.com> wrote:
+>Hi,
 >
-> James Lamanna a =E9crit :
->> Hi,
->> Is there a way to disable port translation during SNAT so that traff=
-ic
->> originates from the same external port as it did internally?
+>I have recently used ulogd2 & netfilter to capture some traffic and
+>create a pcap file.
 >
-> When possible this is already the default when you don't specify a po=
-rt
-> range nor --random. From the man page :
+>In the resulting pcap file, there is no link-layer information.
+>Everything else is pretty much the same as what I get from a tcpdump
+>capture; the only missing information is the link-layer (layer 2)
+>information.
 >
-> --to-source  ipaddr[-ipaddr][:port-port]
->       which  can  specify a single new source IP address, an inclusiv=
-e
->       range of IP addresses, and optionally, a port  range  (which  i=
-s
->       only  valid if the rule also specifies -p tcp or -p udp).	 If n=
-o
->       port range is specified, then source ports  below	 512  will  b=
-e
->       mapped  to  other	 ports	below  512: those between 512 and 1023
->       inclusive will be mapped to ports below 1024,  and  other	 port=
-s
->       will  be mapped to 1024 or above. Where possible, no port alter=
--
->       ation will occur.
+>In wireshark, that missing information is displayed as a "Raw packet
+>data" section, with the content being "No link information available".
+>That sits between the Frame information and the IPv4 information.
 >
-> Sometimes the source port must be translated in order to avoid a
-> conflict with an existing connection to the same destination which
-> already uses that source port.
->
+>So my question is, is it possible to capture the link-layer (layer 2)
+>information as well using ulogd2 & netfilter, or is this a limitation
+>of the tools?
 
+Ulogd2 has to handle the generic case: logged packets can come from mul=
+tiple interfaces and encapsulation can vary on these different interfac=
+es. So logging raw data is the only setup that will always work in ulog=
+d2 case.
+
+A possible solution would be to add an option to use pcapng storage for=
+mat (when libpcap is recent enough on system). This should allow to spe=
+cify the layer 2 interface for each packets.
+
+I'm currently away from a computer with wireshark so I don't know how I=
+ can test if it does handle correctly this type of files.
+
+Another solution would be to add an options forcing the layer2 type for=
+ all logged packets of given pcap output. This would allow to use kerne=
+l provided layer2 information and write fully qualified packets for enc=
+apsulation like Ethernet.
+
+This second solution looks far easier to implement and should be enough=
+ for you. Feel free to open a ticket on bugzilla if you are interested =
+in that.
+
+BR,
+
+>
+>Thanks,
+>Laurent
+>--
+>To unsubscribe from this list: send the line "unsubscribe netfilter" i=
+n
+>the body of a message to majordomo@vger.kernel.org
+>More majordomo info at  http://vger.kernel.org/majordomo-info.html
+
+--=20
+Envoy=C3=A9 de mon t=C3=A9l=C3=A9phone Android avec K-9 Mail. Excusez l=
+a bri=C3=A8vet=C3=A9.
