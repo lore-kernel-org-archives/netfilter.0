@@ -1,25 +1,35 @@
-From: Thomas Witt <lists@thwitt.de>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 Subject: Re: nftables: no table for ipv6
-Date: Mon, 28 Jul 2014 18:28:40 +0200
-Message-ID: <53D67A38.1090405@thwitt.de>
-References: <53D67106.2070600@thwitt.de> <53D6757C.7090801@gmail.com>
+Date: Tue, 29 Jul 2014 00:08:35 +0200
+Message-ID: <20140728220835.GA4243@salvia>
+References: <53D67106.2070600@thwitt.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <53D6757C.7090801@gmail.com>
+Content-Disposition: inline
+In-Reply-To: <53D67106.2070600@thwitt.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Thomas Witt <lists@thwitt.de>
+Cc: netfilter@vger.kernel.org
 
-On 28/07/14 18:08, =C3=81lvaro Neira Ayuso wrote:
-> If you write nft list tables, you will see only the tables of ipv4. T=
-ry
-> with nft list tables ip6 for ipv6 or nft list tables inet for inet.
->=20
-> Try with that and tell me the result.
->=20
-> I hope that I have helped you.
+On Mon, Jul 28, 2014 at 05:49:26PM +0200, Thomas Witt wrote:
+> Hi, I am trying to configure nftables on a new server.
+> 
+> I can add tables for ip4:
+> 
+> # nft add table ip filter
+> 
+> but not for ip6 or inet:
+> 
+> # nft add table ip6 filter6
+> # nft add table inet filterboth
+> # nft list tables
+> table filter
 
+nft list ip6 tables
+nft list inet tables
 
-That indeed helped me, thank you.
+You have to specify the family. I'll including this in the wiki page
+to clarify this.
