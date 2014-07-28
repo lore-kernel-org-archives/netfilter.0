@@ -1,112 +1,65 @@
-From: Thomas Witt <lists@thwitt.de>
-Subject: nftables: no table for ipv6
-Date: Mon, 28 Jul 2014 17:49:26 +0200
-Message-ID: <53D67106.2070600@thwitt.de>
+From: =?UTF-8?B?w4FsdmFybyBOZWlyYSBBeXVzbw==?= <alvaroneay@gmail.com>
+Subject: Re: nftables: no table for ipv6
+Date: Mon, 28 Jul 2014 18:08:28 +0200
+Message-ID: <53D6757C.7090801@gmail.com>
+References: <53D67106.2070600@thwitt.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=message-id:date:from:user-agent:mime-version:to:subject:references
+         :in-reply-to:content-type:content-transfer-encoding;
+        bh=5WiLea/jKnez40TMH0nQJyc1HwHT4SgqGZRCtcMxRsg=;
+        b=FBE8U2cy7ldpn//ppXSurEMjWb1syADEB+ilu/GYwLdjHl0YiS0kGN5pJ6qlK1QwMz
+         95DKqqM2Gel5T6FCMK8nKg88FIJLag0dWkTG6jG0e1GURk7EDcZdSgVcTzlmP85PlhJh
+         2RScFj8MVKwN7exVCBsEQic0EK8oZlVwB2zDfIQA3kPUHBp06ghG/bDcbfR1W0wUNVQ4
+         b+fjtW+/aUHZwW7t2tW0lWJvn1IqeOmrlRi3O+E6O6LBwYsjt2yBWx0+JBwZE/B0PqJw
+         u3QZVsqCuWmKgRnNjs64CuckJ5X0/zlvUmi8evEbM/+GXzRX9iwnYj9uipaVFN6kxsnZ
+         UZjA==
+In-Reply-To: <53D67106.2070600@thwitt.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Thomas Witt <lists@thwitt.de>, netfilter@vger.kernel.org
 
-Hi, I am trying to configure nftables on a new server.
 
-I can add tables for ip4:
+Hello Thomas
 
-# nft add table ip filter
+El 28/07/14 17:49, Thomas Witt escribi=C3=B3:
+> Hi, I am trying to configure nftables on a new server.
+>
+> I can add tables for ip4:
+>
+> # nft add table ip filter
+>
+> but not for ip6 or inet:
+>
+> # nft add table ip6 filter6
+> # nft add table inet filterboth
+> # nft list tables
 
-but not for ip6 or inet:
+If you write nft list tables, you will see only the tables of ipv4. Try=
+=20
+with nft list tables ip6 for ipv6 or nft list tables inet for inet.
 
-# nft add table ip6 filter6
-# nft add table inet filterboth
-# nft list tables
-table filter
+Try with that and tell me the result.
 
-So, a table gets added for ipv4, but not for v6. What do I need to do in
-order for nft to support ip6? And why does nft returns 0 instead of an
-error?
+I hope that I have helped you.
 
-Versions:
-nftables-0.3
-libmnl-1.0.3
-libnftnl-1.0.2
+> table filter
+>
+> So, a table gets added for ipv4, but not for v6. What do I need to do=
+ in
+> order for nft to support ip6? And why does nft returns 0 instead of a=
+n
+> error?
+>
+> Versions:
+> nftables-0.3
+> libmnl-1.0.3
+> libnftnl-1.0.2
 
-I tried kernels 3.15.6 and 3.16-rc7 with the following .config:
+Regards
 
-#
-# Core Netfilter Configuration
-#
-CONFIG_NETFILTER_NETLINK=y
-# CONFIG_NETFILTER_NETLINK_ACCT is not set
-# CONFIG_NETFILTER_NETLINK_QUEUE is not set
-# CONFIG_NETFILTER_NETLINK_LOG is not set
-# CONFIG_NF_CONNTRACK is not set
-CONFIG_NF_TABLES=y
-CONFIG_NF_TABLES_INET=y
-CONFIG_NFT_EXTHDR=y
-CONFIG_NFT_META=y
-CONFIG_NFT_RBTREE=y
-CONFIG_NFT_HASH=y
-CONFIG_NFT_COUNTER=y
-CONFIG_NFT_LOG=y
-CONFIG_NFT_LIMIT=y
-CONFIG_NFT_REJECT=y
-CONFIG_NFT_REJECT_INET=y
-# CONFIG_NETFILTER_XTABLES is not set
-CONFIG_IP_SET=y
-CONFIG_IP_SET_MAX=256
-CONFIG_IP_SET_BITMAP_IP=y
-# CONFIG_IP_SET_BITMAP_IPMAC is not set
-# CONFIG_IP_SET_BITMAP_PORT is not set
-CONFIG_IP_SET_HASH_IP=y
-# CONFIG_IP_SET_HASH_IPMARK is not set
-# CONFIG_IP_SET_HASH_IPPORT is not set
-# CONFIG_IP_SET_HASH_IPPORTIP is not set
-# CONFIG_IP_SET_HASH_IPPORTNET is not set
-# CONFIG_IP_SET_HASH_NETPORTNET is not set
-# CONFIG_IP_SET_HASH_NET is not set
-# CONFIG_IP_SET_HASH_NETNET is not set
-# CONFIG_IP_SET_HASH_NETPORT is not set
-# CONFIG_IP_SET_HASH_NETIFACE is not set
-# CONFIG_IP_SET_LIST_SET is not set
-# CONFIG_IP_VS is not set
-
-#
-# IP: Netfilter Configuration
-#
-# CONFIG_NF_DEFRAG_IPV4 is not set
-CONFIG_NF_TABLES_IPV4=y
-CONFIG_NFT_CHAIN_ROUTE_IPV4=y
-CONFIG_NFT_REJECT_IPV4=y
-# CONFIG_NF_TABLES_ARP is not set
-# CONFIG_IP_NF_IPTABLES is not set
-# CONFIG_IP_NF_ARPTABLES is not set
-
-#
-# IPv6: Netfilter Configuration
-#
-# CONFIG_NF_DEFRAG_IPV6 is not set
-CONFIG_NF_TABLES_IPV6=y
-CONFIG_NFT_CHAIN_ROUTE_IPV6=y
-CONFIG_NFT_REJECT_IPV6=y
-# CONFIG_IP6_NF_IPTABLES is not set
-# CONFIG_NF_TABLES_BRIDGE is not set
-# CONFIG_IP_DCCP is not set
-# CONFIG_IP_SCTP is not set
-# CONFIG_RDS is not set
-# CONFIG_TIPC is not set
-# CONFIG_ATM is not set
-# CONFIG_L2TP is not set
-# CONFIG_BRIDGE is not set
-CONFIG_HAVE_NET_DSA=y
-# CONFIG_VLAN_8021Q is not set
-# CONFIG_DECNET is not set
-# CONFIG_LLC2 is not set
-# CONFIG_IPX is not set
-# CONFIG_ATALK is not set
-# CONFIG_X25 is not set
-# CONFIG_LAPB is not set
-# CONFIG_PHONET is not set
-# CONFIG_IEEE802154 is not set
-CONFIG_NET_SCHED=y
+Alvaro
