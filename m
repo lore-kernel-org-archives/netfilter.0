@@ -1,23 +1,38 @@
-From: Paul Greenberg <paul@greenberg.pro>
-Subject: firewalld and iptables
-Date: Thu, 31 Jul 2014 13:37:50 +0000
-Message-ID: <1406813861186.50144@greenberg.pro>
+From: Dennis Jacobfeuerborn <dennisml@conversis.de>
+Subject: multicast traffic no longer working after reboot
+Date: Thu, 31 Jul 2014 15:22:52 +0200
+Message-ID: <53DA432C.7050907@conversis.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
 Hi,
+today a couple of Hypervisors got restarted due to a power outage. While
+the systems and the VMs on the are running fine multicast traffic
+between the guests is no longer working.
 
-I installed CentOS 7 a few days ago. It seems that iptables commands are still working.  For example, I can still execute:
-$ iptables-restore iptables.rules
-However, I am unable to permanently store the rules. 
+I generate multicast udp packet using iperf in the guest and check on
+the host using tcpdump:
 
-CentOS has a new deamon, called firewalld, with firewalld.conf file. Does any one know how how to force the rules in iptables-save to be permanently saved by firewalld daemon?
+tcpdump vnet0 => multicast packets are visible
+tcpdump vlanbr8 => multicast packets are visible
+tcpdump em1.8 => no multicast packets visible
+
+vlanbr8 is the bridge, vnet0 the interface of the guest and em1.8 the
+physical interface for vlan 8.
+
+I compared the settings in /sys/class/net/vlanbr8/bridge/multicast_*
+with a system where multicast works fine and see no differences. brctl
+showstp also shows "mc router" to be 1 for both interfaces and the
+bridge. All settings in /proc/sys/net/bridge/* are 0.
+
+Any ideas why the bridge doesn't seem to forward multicast packets?
+iperf with unicast udp also works fine so it's just multicast that is
+the problem.
 
 Regards,
-Paul
+  Dennis
