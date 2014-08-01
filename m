@@ -1,54 +1,60 @@
-From: Dennis Jacobfeuerborn <dennisml@conversis.de>
-Subject: Re: multicast traffic no longer working after reboot
-Date: Thu, 31 Jul 2014 17:24:07 +0200
-Message-ID: <53DA5F97.7010905@conversis.de>
-References: <53DA432C.7050907@conversis.de>
+From: Paolo Tezza <paolo.tezza@gmail.com>
+Subject: SNAT problem with alias IP
+Date: Fri, 1 Aug 2014 10:00:32 +0200
+Message-ID: <CAKvhcF8_D8tC=qSUUb2Xa-Astu76KiDqakULYpk25uS6U1S8Vg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <53DA432C.7050907@conversis.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=t4NLZG/mThip/wtyUTKQ3RWrvQRSNW1Mn29yIr8GDtU=;
+        b=ab9p2KhA3SqIBSXOaTi+2OgYL2WSmnsyx6JehYYmwt08rtTv32NvDTiSjviKn9NsW4
+         K3RAu+cHPyDoc8I5pEj23dO/rUOj8I6YvJSrAMkAGhlpgmA3QnOBc+PkeYXrFJ/esbVX
+         H5D89zJowsOjvHK5pph41Z4k0D+pBh+KU2BbyPNCQ++IGUjFZqPb6FNOr3AIF8mHMD74
+         cqRJjE4jT4zvQzVgxotKcjvG/x4B1JBTjQj0HOxVuhOpSqbn5mLDSmbFEdPXmP0lRHA0
+         aLWPcB8t2Nq27n1R1c1RFBlZ4Z3N1d2oVn3ATqgB/RBC2ZvUsWKwwYPUJepekSs8/8ux
+         UFgw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-On 31.07.2014 15:22, Dennis Jacobfeuerborn wrote:
-> Hi,
-> today a couple of Hypervisors got restarted due to a power outage. While
-> the systems and the VMs on the are running fine multicast traffic
-> between the guests is no longer working.
-> 
-> I generate multicast udp packet using iperf in the guest and check on
-> the host using tcpdump:
-> 
-> tcpdump vnet0 => multicast packets are visible
-> tcpdump vlanbr8 => multicast packets are visible
-> tcpdump em1.8 => no multicast packets visible
-> 
-> vlanbr8 is the bridge, vnet0 the interface of the guest and em1.8 the
-> physical interface for vlan 8.
-> 
-> I compared the settings in /sys/class/net/vlanbr8/bridge/multicast_*
-> with a system where multicast works fine and see no differences. brctl
-> showstp also shows "mc router" to be 1 for both interfaces and the
-> bridge. All settings in /proc/sys/net/bridge/* are 0.
-> 
-> Any ideas why the bridge doesn't seem to forward multicast packets?
-> iperf with unicast udp also works fine so it's just multicast that is
-> the problem.
-> 
-> Regards,
->   Dennis
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-> 
+Hi all
 
-I did some further testing and strangely enough after booting the HV and
-the guest things work as expected but after 2-3 minutes I suddenly don't
-see the the packets anymore on em1.8. This is really bizarre behavior.
+I have a a firewall with 3 phisical nic (LAN, WAN, DMZ)
+I have 8 public IP I can use on WAN's nic (eth0)
 
-Regards,
-  Dennis
+so I configured some alias on eth0:
+eth0  x.x.x.234 Mask:255.255.255.248
+eth0:0 x.x.x.235  Mask:255.255.255.248
+eth0:1 x.x.x.237  Mask:255.255.255.248
+eth0:2 x.x.x.238 Mask:255.255.255.248
 
+eth1  10.0.0.254  Bcast:10.0.0.255  Mask:255.255.255.0
+
+eth2  192.168.1.254  Bcast:192.168.1.255  Mask:255.255.255.0
+
+
+I have added this iptables rule that work like a charm
+iptables -t nat -A POSTROUTING -o eth0 -j SNAT --to-source x.x.x.234
+
+both my LAN (eth2) and my DMZ (eth1) surf internet with phisical IP
+
+
+Now I need that one host 192.168.1.201 will be "masqueraded" with x.x.x.238
+so I add the rule ABOVE the first one
+iptables -t nat -A POSTROUTING -s 192.168.1.201 -o eth0 -j SNAT
+--to-source x.x.x.238
+
+
+
+The issue is that 192.168.1.201 keep to use physical IP x.x.x.234 and
+not x.x.x.238
+
+Some hint?
+
+thanks
+
+
+Paolo
