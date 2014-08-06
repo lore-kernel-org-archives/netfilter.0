@@ -1,61 +1,90 @@
-From: Matteo Croce <technoboy85@gmail.com>
-Subject: nftables dnat not working
-Date: Tue, 5 Aug 2014 10:14:27 +0200
-Message-ID: <CAFnufp1PoD3=rg2xTykR7ejw2mA3ceZuTwaZv6fKNCXuyKmO2Q@mail.gmail.com>
+From: Cormac Long <cormac.long@openmindnetworks.com>
+Subject: conntrack issue with SIP SDP
+Date: Wed, 6 Aug 2014 15:30:38 +0100
+Message-ID: <CA+A7gQY+ygtrre77VDpXVAzM_bw3699mbhmCOiUBBV_3mFsCQw@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:from:date:message-id:subject:to:content-type;
-        bh=7KTib6kxX5M1D40VUyOmPrN2TeEe38t3cNxAf1sP3YA=;
-        b=MaNTtHkNA74pcv7NjSuX5SPvvUUSV/EtChYcuemSbBUBdz2vPEiPv+RRVB8gUOqvEN
-         CgOAdPCQ/0RJUItq132T/bCSq8AehdAvBD+C1h2X2IOD8L5Dx1vuixelZc7lXB3IFzGf
-         KfObJic2qOFvHMRD2sTLxcGOmSGOcDbHCJN9IiRI+iH0NSjW8zJT66RwaTU7VbKx0pks
-         BXEQl1WMeMn33MrfmzTZHO11gE1PUwZOCeK7AwajTow3vfzFu6gYXaqbopkjCM4Ia0Nq
-         pEwGcFCzSBDAw/CA+htnKbbgoUeaBKqmqKGm9cIsm1GHo0oPUad+jBlKlDlkTHLw63ov
-         r9dg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Netfilter Users Mailing list <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Hi,
+Folks,
+   I'm trying to expose an RCS IMS Core from our internal LAN to
+external users using NAT.
 
-I'm using nftables on a vanilla 3.16 kernel and nft 0.3.
-I want to do port forwarding for TCP port 51413 to host 192.168.0.20 and
-I've configured my firewall like this:
+I'm getting an issue when we go to relay a 200 OK with SDP out to the
+Internet client.
 
+The iptables does change the details of the SDP in the 200 OK from our
+internal IP but substitutes an invalid IP address.
 
-table ip nat {
-        chain post {
-                 type nat hook postrouting priority 0;
-                 ip saddr 192.168.0.0/24 oif eth0 snat 192.168.1.2
-        }
+So the INVITE came in and routed end to end through the Core and RCS
+AS. The receiving phone gave back its 200 OK with its SDP and that
+then trickled back to the SBC which issued the last 200 OK intended
+for the inviting RCS client..
 
-        chain pre {
-                 type nat hook prerouting priority 0;
-                 iif eth0 tcp dport 51413 dnat 192.168.0.20
-        }
-}
+This is the SDP the SBC sends..
+v=0
+o=OpenmindAccess 1407332491 1407332491 IN IP4 192.168.116.50
+s=-
+c=IN IP4 192.168.116.50
+t=0 0
+m=message 20122 TCP/MSRP *
+a=path:msrp://192.168.116.2:2855/03ed0082;tcp
+a=accept-types:application/im-iscomposing+xml message/cpim
+a=accept-wrapped-types:message/imdn+xml text/plain
+application/vnd.gsma.rcspushlocation+xml
+application/vnd.gsma.rcs-ft-http+xml
+a=sendrecv
+a=setup:passive
 
+So the above SDP is informing the client to connect to 192.168.116.50
+on port 20122. This is the internal LAN address for the SBC and its
+own media steering NAT for the MSRP chat.
 
-no filter chain at all.
-from the router I can find the port open:
+The SDP we then send to the client is
 
-HPING 192.168.0.20 (br0 192.168.0.20): S set, 40 headers + 0 data bytes
-len=44 ip=192.168.0.20 ttl=64 DF id=0 sport=51413 flags=SA seq=0
-len=44 ip=192.168.0.20 ttl=64 DF id=0 sport=51413 flags=SA seq=1
+v=0
+o=OpenmindAccess 1407332491 1407332491 IN IP4 245.43.0.0
+s=-
+c=IN IP4 245.43.0.0
+t=0 0
+m=message 20122 TCP/MSRP *
+a=path:msrp://192.168.116.2:2855/03ed0082;tcp
+a=accept-types:application/im-iscomposing+xml message/cpim
+a=accept-wrapped-types:message/imdn+xml text/plain
+application/vnd.gsma.rcspushlocation+xml
+application/vnd.gsma.rcs-ft-http+xml
+a=sendrecv
+a=setup:passive
 
-from the outside is closed:
+We see the o= and c= fields have their IP address changed to 245.43.0.0
 
-HPING 188.218.168.147 (eth0 188.218.168.147): S set, 40 headers + 0 data bytes
-len=46 ip=188.218.168.147 ttl=51 DF id=39456 sport=51413 flags=RA seq=0
-len=46 ip=188.218.168.147 ttl=51 DF id=39467 sport=51413 flags=RA seq=1
+These should have been changed to 83.71.xxx.xxx (can't disclose here)
 
-if I sniff in the LAN nothing gets forwarded
+That substitution of 245.43.0.0 is just totally wrong and I'm stumped
+as to why it is happening.
 
-Cheers,
+Has anyone ever noticed this kind of behavior?
+
+I've installed contrack-tools and have used the contrack -E and -L
+options to list activity and existing tracking but nowhere can I see
+it indicate using this dodgy IP address. I can see the SIP
+registrations fine for the external clients but nothing else.
+
+Hopefully someone will have an idea.
+
+Regards,
+    Cormac
+
+Cormac Long
+Lead Engineer, Innovative Business Unit
+Openmind Networks
+www.openmindnetworks.com
+
 -- 
-Matteo Croce
-OpenWrt Developer
+ <http://www.golgi.io/>
+<https://www.linkedin.com/company/openmind-networks?trk=fc_badge>   
+<https://twitter.com/Openmind_Ntwks>   <http://openmindnetworks.com>
