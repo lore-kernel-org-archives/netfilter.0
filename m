@@ -1,40 +1,38 @@
-From: Jean-Louis Dupond <jean-louis@dupond.be>
-Subject: Match EUI64 in IPv6 Address
-Date: Thu, 07 Aug 2014 22:51:01 +0200
-Message-ID: <53E3E6B5.4000300@dupond.be>
+From: Jeff Haran <Jeff.Haran@citrix.com>
+Subject: RE: Match EUI64 in IPv6 Address
+Date: Thu, 7 Aug 2014 21:14:15 +0000
+Message-ID: <4E5779AD88B2F040B8A7E83ECF544D1A538AA5@SJCPEX01CL02.citrite.net>
+References: <53E3E6B5.4000300@dupond.be>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=dupond.be; s=mail;
-	t=1407444663; bh=l7d7/IBXtOg3GmJya4uvBsesVqJOVrTlrRJeHV/ohOA=;
-	h=Date:From:To:Subject:From;
-	b=O5FjQCdB+qtXE+rXry6EC+sX266v4/9un9cWfcTIAXzG0TKdogkCF98HUX+j2kIX+
-	 U1bLiYT09Y5ztwTFA1CLZpR3P29z6n+hnQI2Jn0tSJonv3IUxW8dTUdYCvjraZ2wA7
-	 N3EVCYKguT7FybfCKtBLiPByH34zR7GkpM6NkDug=
+In-Reply-To: <53E3E6B5.4000300@dupond.be>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: Jean-Louis Dupond <jean-louis@dupond.be>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi,
-
-I'm in the following situation.
-My ISP gives me native IPv6 connectivity, a /56 range.
-
-The only thing is, the prefix is dynamic, it changes every 96hours.
-
-Now my router announces this range to my clients, and everything works fine.
-But then comes the issue.
-
-I firewall my LAN on my router, so there is no need for a firewall on al
-the clients.
-But as the prefix is dynamic, I can't just fix this in a clean way.
-
-Every time the prefix changes, I need to adjust my ip6tables rules.
-
-So my question: Is there a way to make an ip6tables rule that only
-matches the last 64 bits (the EUI64)?
-This would solve the issue that i've got.
-
-Thanks
-Jean-Louis
+PiAtLS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KPiBGcm9tOiBuZXRmaWx0ZXItb3duZXJAdmdl
+ci5rZXJuZWwub3JnIFttYWlsdG86bmV0ZmlsdGVyLW93bmVyQHZnZXIua2VybmVsLm9yZ10gT24g
+QmVoYWxmIE9mIEplYW4tTG91aXMgRHVwb25kDQo+IFNlbnQ6IFRodXJzZGF5LCBBdWd1c3QgMDcs
+IDIwMTQgMTo1MSBQTQ0KPiBUbzogbmV0ZmlsdGVyQHZnZXIua2VybmVsLm9yZw0KPiBTdWJqZWN0
+OiBNYXRjaCBFVUk2NCBpbiBJUHY2IEFkZHJlc3MNCj4gDQo+IEhpLA0KPiANCj4gSSdtIGluIHRo
+ZSBmb2xsb3dpbmcgc2l0dWF0aW9uLg0KPiBNeSBJU1AgZ2l2ZXMgbWUgbmF0aXZlIElQdjYgY29u
+bmVjdGl2aXR5LCBhIC81NiByYW5nZS4NCj4gDQo+IFRoZSBvbmx5IHRoaW5nIGlzLCB0aGUgcHJl
+Zml4IGlzIGR5bmFtaWMsIGl0IGNoYW5nZXMgZXZlcnkgOTZob3Vycy4NCj4gDQo+IE5vdyBteSBy
+b3V0ZXIgYW5ub3VuY2VzIHRoaXMgcmFuZ2UgdG8gbXkgY2xpZW50cywgYW5kIGV2ZXJ5dGhpbmcg
+d29ya3MgZmluZS4NCj4gQnV0IHRoZW4gY29tZXMgdGhlIGlzc3VlLg0KPiANCj4gSSBmaXJld2Fs
+bCBteSBMQU4gb24gbXkgcm91dGVyLCBzbyB0aGVyZSBpcyBubyBuZWVkIGZvciBhIGZpcmV3YWxs
+IG9uIGFsDQo+IHRoZSBjbGllbnRzLg0KPiBCdXQgYXMgdGhlIHByZWZpeCBpcyBkeW5hbWljLCBJ
+IGNhbid0IGp1c3QgZml4IHRoaXMgaW4gYSBjbGVhbiB3YXkuDQo+IA0KPiBFdmVyeSB0aW1lIHRo
+ZSBwcmVmaXggY2hhbmdlcywgSSBuZWVkIHRvIGFkanVzdCBteSBpcDZ0YWJsZXMgcnVsZXMuDQo+
+IA0KPiBTbyBteSBxdWVzdGlvbjogSXMgdGhlcmUgYSB3YXkgdG8gbWFrZSBhbiBpcDZ0YWJsZXMg
+cnVsZSB0aGF0IG9ubHkNCj4gbWF0Y2hlcyB0aGUgbGFzdCA2NCBiaXRzICh0aGUgRVVJNjQpPw0K
+PiBUaGlzIHdvdWxkIHNvbHZlIHRoZSBpc3N1ZSB0aGF0IGkndmUgZ290Lg0KPiANCj4gVGhhbmtz
+DQo+IEplYW4tTG91aXMNCg0KVGhlIGlwNnRhYmxlcyBtYW4gcGFnZSBzdGF0ZXMgdGhhdCBvbmUg
+Y2FuIGZvbGxvd2luZyB0aGUgSVB2NiBhZGRyZXNzIGluIGEgLXMgb3IgLWQgbWF0Y2ggd2l0aCBh
+IG1hc2suDQoNClNvIHByZXN1bWFibHkgc29tZXRoaW5nIGxpa2UgdGhpcyBzaG91bGQgd29yazoN
+Cg0KaXA2dGFibGVzIC4uLiAtcyA6OjxFVUk2ND4vOjpmZmZmOmZmZmY6ZmZmZjpmZmZmIC4uLg0K
+DQpUaG91Z2ggSSBhZG1pdCwgSSd2ZSBuZXZlciB0cmllZCB0aGlzIG15c2VsZi4NCg0KSmVmZiBI
+YXJhbg0KDQo=
