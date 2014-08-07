@@ -1,61 +1,40 @@
-From: Takero Funaki <raphanus@gmail.com>
-Subject: [PATCH] netfilter: xt_u32: Accept negative offset in AT operation
-Date: Fri,  8 Aug 2014 02:24:37 +0900
-Message-ID: <1407432277-2032-1-git-send-email-raphanus@gmail.com>
-Return-path: <linux-kernel-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=from:to:cc:subject:date:message-id;
-        bh=PiJd6oGOW7c5EBLtFNWWFYgw/DZOdqN8LgGV0Yvpa1Q=;
-        b=eWaa+irEYRuurQCMgLNJWq9VFQUPnJFQqz2DgrBoMB7Ko6D2jWlDwY3Ds4BgnMgfd4
-         FICg3PafTUykgK1UpVzvgCFtvGXvbmuIYYK9laNGc/o/aQiokKysYy2Oms2S5T/ROc4g
-         0OEmJpONJqOBfiGIka8TvEZGZSi5g7n6LUjmeu2OfkgPR1CUL4YU4ZWGFaL+0xrlnXM5
-         X5C+othSlUQ4mCaEZAuyJ9AOegiFUcShBweyCcdcgclD6jlN1VeNsgKDIUXXko7PM+vR
-         oEWIG99TRPut7HXJIot2TSAFAopS0PbOn8QTOGlALBJDMKdmNUuohvv54JZvD6z72V+l
-         0+fQ==
-Sender: linux-kernel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
+From: Jean-Louis Dupond <jean-louis@dupond.be>
+Subject: Match EUI64 in IPv6 Address
+Date: Thu, 07 Aug 2014 22:51:01 +0200
+Message-ID: <53E3E6B5.4000300@dupond.be>
+Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-To: davem@davemloft.net
-Cc: Takero Funaki <raphanus@gmail.com>, Pablo Neira Ayuso <pablo@netfilter.org>, Patrick McHardy <kaber@trash.net>, Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>, "open list:NETFILTER/IPTABLES" <netfilter-devel@vger.kernel.org>, "open list:NETFILTER/IPTABLES" <netfilter@vger.kernel.org>, "open list:NETFILTER/IPTABLES" <coreteam@netfilter.org>, "open list:NETWORKING [GENERAL]" <netdev@vger.kernel.org>, open list <linux-kernel@vger.kernel.org>
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=dupond.be; s=mail;
+	t=1407444663; bh=l7d7/IBXtOg3GmJya4uvBsesVqJOVrTlrRJeHV/ohOA=;
+	h=Date:From:To:Subject:From;
+	b=O5FjQCdB+qtXE+rXry6EC+sX266v4/9un9cWfcTIAXzG0TKdogkCF98HUX+j2kIX+
+	 U1bLiYT09Y5ztwTFA1CLZpR3P29z6n+hnQI2Jn0tSJonv3IUxW8dTUdYCvjraZ2wA7
+	 N3EVCYKguT7FybfCKtBLiPByH34zR7GkpM6NkDug=
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Remove unnecessary uint wraparound checks which prohibited two's
-complement representation of negative number in "@" operation.
-It is required to test last N bytes of variable length formats and to be
-consistent with libxt parser which silently replaces negative number by
-its compliment.
+Hi,
 
-For example, --u32 '0&0xFFFF@-4=0' will read IPv4 total length header
-then add complement of -4 to test if the last 4 bytes are 0. Previously,
-it would never match as (total length)+0xFFFFFFFC always overflow.
+I'm in the following situation.
+My ISP gives me native IPv6 connectivity, a /56 range.
 
-Signed-off-by: Takero Funaki <raphanus@gmail.com>
----
- net/netfilter/xt_u32.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+The only thing is, the prefix is dynamic, it changes every 96hours.
 
-diff --git a/net/netfilter/xt_u32.c b/net/netfilter/xt_u32.c
-index a95b5034..9de339d 100644
---- a/net/netfilter/xt_u32.c
-+++ b/net/netfilter/xt_u32.c
-@@ -57,12 +57,12 @@ static bool u32_match_it(const struct xt_u32 *data,
- 				val >>= number;
- 				break;
- 			case XT_U32_AT:
--				if (at + val < at)
--					return false;
- 				at += val;
- 				pos = number;
--				if (at + 4 < at || skb->len < at + 4 ||
--				    pos > skb->len - at - 4)
-+				/* unsigned integer may wraparound
-+				 * to represent negative offset
-+				 */
-+				if (at + pos > skb->len - 4)
- 					return false;
- 
- 				if (skb_copy_bits(skb, at + pos, &n,
--- 
-1.9.1
+Now my router announces this range to my clients, and everything works fine.
+But then comes the issue.
+
+I firewall my LAN on my router, so there is no need for a firewall on al
+the clients.
+But as the prefix is dynamic, I can't just fix this in a clean way.
+
+Every time the prefix changes, I need to adjust my ip6tables rules.
+
+So my question: Is there a way to make an ip6tables rule that only
+matches the last 64 bits (the EUI64)?
+This would solve the issue that i've got.
+
+Thanks
+Jean-Louis
