@@ -1,64 +1,41 @@
-From: Jean-Louis Dupond <jean-louis@dupond.be>
-Subject: Re: Match EUI64 in IPv6 Address
-Date: Thu, 07 Aug 2014 23:30:40 +0200
-Message-ID: <53E3F000.2030004@dupond.be>
-References: <53E3E6B5.4000300@dupond.be> <4E5779AD88B2F040B8A7E83ECF544D1A538AA5@SJCPEX01CL02.citrite.net>
+From: lejeczek <peljasz@yahoo.co.uk>
+Subject: a missing rule / incomplete routing
+Date: Mon, 11 Aug 2014 11:01:19 +0100
+Message-ID: <53E8946F.2070403@yahoo.co.uk>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=dupond.be; s=mail;
-	t=1407447043; bh=lho7oHU/9p8oyqIPU4s50o6ZfprKWek1iiohImt5+3Q=;
-	h=Date:From:To:Subject:References:In-Reply-To:From;
-	b=SLdIuloMl73UNS9PvMMuuDMM3/z4ACBRyW8UCmaQRnmfRzfxcroSfbkJQIr1PW/L1
-	 8z53IVJD1wlOYWEc1gLUfTBWaqOZkkq8oT2lePrEDw1bGIzsJRHZroN5dfc3yKr0nS
-	 pdWkQqMekWeg1LqLGjAMAb2Zq/WM4fjAGD4YSMBk=
-In-Reply-To: <4E5779AD88B2F040B8A7E83ECF544D1A538AA5@SJCPEX01CL02.citrite.net>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.co.uk; s=s2048; t=1407751280; bh=H4jUyqKFH4mHogHdbAOj26WQU+nS2VgL4lNZcm68bbQ=; h=Received:Received:Received:DKIM-Signature:X-Yahoo-Newman-Id:X-Yahoo-Newman-Property:X-YMail-OSG:X-Yahoo-SMTP:Message-ID:Date:From:User-Agent:MIME-Version:To:Subject:Content-Type:Content-Transfer-Encoding; b=g8muWz7hD7rNCVBT7f6Kx1fWqCpOtxeEk2EJxQu2UckWvoszrnyhUJSHStZuERV/sjAP/ToOTL8qUXRH7qEbAvj3w4+yUm8itIDcJ/uLYrWrP+cEWDmdbJdk4WVH5vGLRu79LFwV+WoNPXNGIH7uxwIuespeD4j+QM9AbdUToRCTLa11OlfwvZwcq0PfEtvMdB0AsfDvOgcrhzev9x0I6KUR2PU1S8B4YUbwuFNV5wloNSaquEUF/4ju5w9FaNK2xb/q0A2JbGMK12t6DGnualrCQhhI5UCWG/Iw8PNIyC/W9UuM8Np/eY5kGyzsv8ijxUhLwej3fM9+AMXQGPMLAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.co.uk; s=s1024; t=1407751280; bh=H4jUyqKFH4mHogHdbAOj26WQU+nS2VgL4lNZcm68bbQ=; h=X-Yahoo-Newman-Id:X-Yahoo-Newman-Property:X-YMail-OSG:X-Yahoo-SMTP:Message-ID:Date:From:User-Agent:MIME-Version:To:Subject:Content-Type:Content-Transfer-Encoding; b=25KpAcHOT+7FGSGbOE5TyWRrQouhFbZkrqlXTn8Ejx4Z8M9NzaTrwtW0BHMg01WYoAC5galIKSx1odkuHKtJ5xqmF+dF8vUdKldn1/zG2EtXsJa3oOtAe1ObylR4qgSxoOZ7/ffxZ4V254p38dYtyDLQNebnbYKuwKOSU+wiBfI=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Jeff Haran <Jeff.Haran@citrix.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter <netfilter@vger.kernel.org>
 
-Op 07-08-14 om 23:14 schreef Jeff Haran:
->> -----Original Message-----
->> From: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.kernel.org] On Behalf Of Jean-Louis Dupond
->> Sent: Thursday, August 07, 2014 1:51 PM
->> To: netfilter@vger.kernel.org
->> Subject: Match EUI64 in IPv6 Address
->>
->> Hi,
->>
->> I'm in the following situation.
->> My ISP gives me native IPv6 connectivity, a /56 range.
->>
->> The only thing is, the prefix is dynamic, it changes every 96hours.
->>
->> Now my router announces this range to my clients, and everything works fine.
->> But then comes the issue.
->>
->> I firewall my LAN on my router, so there is no need for a firewall on al
->> the clients.
->> But as the prefix is dynamic, I can't just fix this in a clean way.
->>
->> Every time the prefix changes, I need to adjust my ip6tables rules.
->>
->> So my question: Is there a way to make an ip6tables rule that only
->> matches the last 64 bits (the EUI64)?
->> This would solve the issue that i've got.
->>
->> Thanks
->> Jean-Louis
-> The ip6tables man page states that one can following the IPv6 address in a -s or -d match with a mask.
->
-> So presumably something like this should work:
->
-> ip6tables ... -s ::<EUI64>/::ffff:ffff:ffff:ffff ...
->
-> Though I admit, I've never tried this myself.
->
-> Jeff Haran
->
+dear experts
 
-Thanks alot! This seems to work fine indeed.
+I'm looking for ideas/suggestion why the following does not work
 
-Thx
-Jean-Louis
+there is a:
+* box A - 172.17.166.199 --  then there is 172./8 net -- box 
+B - 172.25.12.101 (phys0), 192.168.2.100 (phys1) -- and one 
+more net behind 192.168.2.100
+
+a 192.168.2.81 from behind box B can ping172.17.166.199
+but not the other way around, box A cannot get to box B's 
+phys1 but it does get to phys0
+
+I can control box A but have no control over the nets 
+between it and box B's phys0
+I can control box B
+
+I thought my route rules on box B are complete, box A is a 
+winbox
+I though box B' firewall is ready
+but I obviously miss something
+
+there is no masquerading for phys0 nor phys1 one box B
+
+any ideas/thoughts? greatly appreciated
+thanks
+P.
