@@ -1,76 +1,43 @@
-From: George Amanakis <gamanakis@gmail.com>
-Subject: Re: tc filter connmark
-Date: Thu, 14 Aug 2014 08:54:46 +0200
-Message-ID: <53EC5D36.5010105@gmail.com>
-References: <53EB7DA3.8020505@gmail.com> <1407942856.9948.15.camel@andy-laptop>
+From: tomekx1000 <tomekx1000@lutel.pl>
+Subject: nftables and FTP connection tracking
+Date: Thu, 14 Aug 2014 11:29:57 +0200
+Message-ID: <4ae8314bdfec48fe944b03977bb140ff@lutel.pl>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=message-id:date:from:user-agent:mime-version:to:cc:subject
-         :references:in-reply-to:content-type:content-transfer-encoding;
-        bh=3Pbf54zpgMHJoPoWqPz3Fe9WHly7yoNOhTicoaV2tb4=;
-        b=gIkNtilSAwXVZZ5xsDa5fvuvp9TAoI/Ck5TZOawGsHqE7e1W2MvsSiKVYkbY9jS3Q3
-         s5PD2DjeuW8r/76RRKVJoMhio8CnsNjCWLk3wku6FxCJCrfUrQbBwbIXHg5gt2NN+msp
-         QJY9ChCPfRQHfR2+x411eiTJkojRYhd9heUEp05qIKFW9eT/DKUJo74pv76YrZ8Gw1xl
-         DRbhuqQ7Iie5dS+GCiuJaF2FPmv19Ri1YU7TwkTvcExfSpXDQKSojpbgZ1irz9oMXTUl
-         7oTmmljM45IN5e10GP2cXuEhnyqHByLOKFHUmRTlEUnvIxLiySeMaigV+nGO6SStFE86
-         0ayA==
-In-Reply-To: <1407942856.9948.15.camel@andy-laptop>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lutel.pl; h=
+	user-agent:message-id:subject:subject:from:from:date:date
+	:content-transfer-encoding:content-type:content-type
+	:mime-version:received; s=key; t=1408008597; bh=IRNun/O1J81JPljQ
+	iUwZCDF/7xAxp/UPjo+IB9465YQ=; b=YTXRjVmDQMwDHE5dd3xGLuroDL8VGAin
+	uRxqqtlT+/S1ikhZfssS7/gWfcHkKhPbhj6wxe56X2YzyrDopYKuG8FtUSTWEIM1
+	V91wkKwVbIfaZhn2rWFbCsdcw9jbbp9nwOrUXoshmAelkZmyQRpFHpaC6AijvSvB
+	BiX8Xt+WReE=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Andrew Beverley <andy@andybev.com>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Yes but in this case how could someone handle SNAT on INGRESS by using IFB?
+Dear All,
 
-On 13.08.2014 17:14, Andrew Beverley wrote:
-> On Wed, 2014-08-13 at 17:00 +0200, George Amanakis wrote:
->> Dear All,
->>
->> I would be glad if you could help me out. I am running the following
->> script:
->>
->> -------------- cut - here -----------------
->>
->> iptables -t mangle -N QOS
->> iptables -t mangle -A FORWARD -o eth0 -j QOS
->> iptables -t mangle -A OUTPUT -o eth0 -j QOS
->> iptables -t mangle -A QOS -j MARK --set-mark 3
->>
->> iptables -t mangle -A PREROUTING -m mark --mark 3 -j ACCEPT ### (counter)
->>
->> tc qdisc add dev eth0 root handle 1: htb
->> tc filter add dev eth0 parent 1: protocol ip prio 1 u32 \
->>       match u32 0 0 classid :1 \
->> action xt -j CONNMARK --save-mark
->>
->> tc qdisc add dev eth0 ingress handle ffff:
->> tc filter add dev eth0 parent ffff: protocol ip prio 1 u32 \
->>       match u32 0 0 classid :1 \
->> action xt -j CONNMARK --restore-mark
->>
->> -------------- cut - here -----------------
->>
->> Now if I insert (-I) in "PREROUTING" a "CONNMARK --restore-mark", my
->> counter shows that egress filter "tc filter ... parent 1: ... CONNMARK
->> --save-mark"marked them correctly.
->>
->> However, if I remove the "CONNMARK --restore-mark" from "PREROUTING" my
->> counter shows no traffic. This means that the ingress filter "tc filter
->> ... parent ffff: ... CONNMARK --restore-mark" is not working.
-> If I've understood correctly, you're trying to restore a netfilter MARK
-> during ingress? If so, I'm not sure this will be possible, as any
-> ingress processing is done before the traffic hits the netfilter stack,
-> so it will have no knowledge of connection tracking:
->
-> http://inai.de/images/nf-packet-flow.svg
->
-> Happy to be corrected if I'm wrong!
->
-> Andy
->
->
+Could you have a look at my simple nft firewall script below, I've used 
+ct related, established, but it doesnt work with passive mode FTP - the 
+data session on high ports is dropped by firewall. Does NFTables have 
+connection tracking helper for FTP? If not - is it planned in foreseable 
+future to add it?
 
+table ip filter {
+  chain input {
+  type filter hook input priority 0;
+  dport {21} ct state new limit rate 2/second counter accept
+  ct state {established, related} counter accept
+  counter limit rate 100/second log group 2 prefix "RULE=Default drop"
+  counter drop
+  }
+
+  chain output {
+  type filter hook output priority 0;
+  ct state {established, related} counter accept
+  }
+
+}
