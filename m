@@ -1,43 +1,68 @@
-From: tomekx1000 <tomekx1000@lutel.pl>
-Subject: nftables and FTP connection tracking
-Date: Thu, 14 Aug 2014 11:29:57 +0200
-Message-ID: <4ae8314bdfec48fe944b03977bb140ff@lutel.pl>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: nftables and FTP connection tracking
+Date: Thu, 14 Aug 2014 20:02:05 +0200
+Message-ID: <20140814180205.GA5928@salvia>
+References: <4ae8314bdfec48fe944b03977bb140ff@lutel.pl>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lutel.pl; h=
-	user-agent:message-id:subject:subject:from:from:date:date
-	:content-transfer-encoding:content-type:content-type
-	:mime-version:received; s=key; t=1408008597; bh=IRNun/O1J81JPljQ
-	iUwZCDF/7xAxp/UPjo+IB9465YQ=; b=YTXRjVmDQMwDHE5dd3xGLuroDL8VGAin
-	uRxqqtlT+/S1ikhZfssS7/gWfcHkKhPbhj6wxe56X2YzyrDopYKuG8FtUSTWEIM1
-	V91wkKwVbIfaZhn2rWFbCsdcw9jbbp9nwOrUXoshmAelkZmyQRpFHpaC6AijvSvB
-	BiX8Xt+WReE=
+Content-Disposition: inline
+In-Reply-To: <4ae8314bdfec48fe944b03977bb140ff@lutel.pl>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: tomekx1000 <tomekx1000@lutel.pl>
+Cc: netfilter@vger.kernel.org
 
-Dear All,
+On Thu, Aug 14, 2014 at 11:29:57AM +0200, tomekx1000 wrote:
+> Dear All,
+> 
+> Could you have a look at my simple nft firewall script below, I've
+> used ct related, established, but it doesnt work with passive mode
+> FTP - the data session on high ports is dropped by firewall. Does
+> NFTables have connection tracking helper for FTP?
 
-Could you have a look at my simple nft firewall script below, I've used 
-ct related, established, but it doesnt work with passive mode FTP - the 
-data session on high ports is dropped by firewall. Does NFTables have 
-connection tracking helper for FTP? If not - is it planned in foreseable 
-future to add it?
+Yes, no changes in that regard.
 
-table ip filter {
-  chain input {
-  type filter hook input priority 0;
-  dport {21} ct state new limit rate 2/second counter accept
-  ct state {established, related} counter accept
-  counter limit rate 100/second log group 2 prefix "RULE=Default drop"
-  counter drop
-  }
+> If not - is it planned in foreseable future to add it?
+> 
+> table ip filter {
+>  chain input {
+>  type filter hook input priority 0;
+>  dport {21} ct state new limit rate 2/second counter accept
 
-  chain output {
-  type filter hook output priority 0;
-  ct state {established, related} counter accept
-  }
+The brackets have special meaning. If you uses brackets to wrap
+elements, the kernel will create a set for it with one single element.
+Better use the brackets when you have multiple elements. In this case,
+I suggest you to use:
 
-}
+   tcp dport 21 ...
+
+>  ct state {established, related} counter accept
+            ^                    ^
+
+No need to use the brackets here:
+
+   ct state established,related ...
+
+The ct state allows enumeration of several states using commas. This
+is due to the fact that ct state internally represents the states as a
+bitmask.
+
+You can check that use the describe command:
+
+# nft describe ct state
+ct expression, datatype ct_state (conntrack state) (basetype bitmask,
+integer), 32 bits
+
+pre-defined symbolic constants:
+        invalid                         0x00000001
+        new                             0x00000008
+        established                     0x00000002
+        related                         0x00000004
+        untracked                       0x00000040
+
+Basically, all bitmask types can use the comma-separated enumeration
+notation to combine the supported flags.
+
+You can use describe to inquire for other selectors in case of doubt.
