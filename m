@@ -1,128 +1,93 @@
-From: Leonardo Rodrigues <leolistas@solutti.com.br>
-Subject: where's my return traffic going?!?!
-Date: Mon, 25 Aug 2014 14:54:06 -0300
-Message-ID: <53FB783E.2060801@solutti.com.br>
+From: Michael Schwartzkopff <ms@sys4.de>
+Subject: Source NAT in  POSTROUTING chain for locally generated packets
+Date: Tue, 26 Aug 2014 08:38:32 +0200
+Message-ID: <1613016.CfItKYvQAW@nb003>
+Reply-To: ms@sys4.de
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/signed; boundary="nextPart1810896.WoBWNDzM7N"; micalg="pgp-sha256"; protocol="application/pgp-signature"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=solutti.com.br; s=google;
-        h=message-id:date:from:user-agent:mime-version:to:subject
-         :content-type:content-transfer-encoding;
-        bh=3AysHJ/qKW2xbceFAXKruo0fwaMVn4r06StV+6qYT8U=;
-        b=t1+mBY5JCCrdmMvQm3UbXKNH81NrbpcNCC78Th+ecagu/pRyNdV5DNFt/EhiamayNo
-         5riAciOCsLGOkmJvgRr31LAhqtSDb46lA5oMo75d1hOYtFxozQfufC3oehsHS8/9GJLS
-         +52zL+b0yub1r7VgFlfaNlPqYQOpYNYdaQjcY=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=sys4.de; h=
+	content-type:content-type:mime-version:user-agent:organization
+	:message-id:date:date:subject:subject:reply-to:from:from; s=
+	mail201310; t=1409035119; x=1410849520; bh=I4zKOtYnmx4kPhqkITC5u
+	1zmgf+RcVYArUsZwz7kI9k=; b=pwgoXofRvqc8XFFKD7AJSw+f/eI6/rpbfdbvU
+	tcQTFNuv+xPpTTKEQOkdh4zt3jR4MqJj3NWmNf013HLLWOz7rpjKJw73ESEHjN11
+	zqWN0EEaPpZTl7mhF3kAR2XOCgj3tqnMQrUdiIDjmIjB/yBQpG8VhX7j+2aSR8O3
+	5nPnbyzTuK5E/YY6JUkD95mkL8m5BlDMBZc7SQ9FWUDjf2hooFbvkcdaA0Y4ckFk
+	gDlAz0lPpc1QS0yictsob/7SLjLo+x7668p9O4Wg+MB8mRh+4CnpWRpuMImE2WVI
+	bBojkg8X8bhYp/s5S9CSA4pn4U4t7fjPu2lylOmRDdPRWiTeA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
 To: netfilter@vger.kernel.org
 
 
-     I have updated a small OpenWRT based router, it's running on a=20
-simple network. It's running on a RB450 board
+--nextPart1810896.WoBWNDzM7N
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="iso-8859-1"
 
-br-lan is the LAN side, 172.20.0.0/16
-eth0 is the WAN side, 192.168.25.x/24 (dhcp provided)
+Hi,
 
-     i have just a few iptables rules and NAT. Basically it's a 'allow=20
-everything' router with some very few exceptions:
+For some special reasons I want to alter the IP address of outgoing pac=
+kets=20
+that are generated locally to a secondary IP address on my machine. For=
+ a test=20
+I use the udp/echo service. Without any rules a tcpdump looks like this=
+:
 
--A FORWARD -d 192.168.25.1/32 -i br-lan -o eth0 -j ACCEPT
--A FORWARD -s 172.20.1.0/24 -i br-lan -o eth0 -j ACCEPT
--A FORWARD -d 192.168.0.0/16 -i br-lan -o eth0 -j DROP
--A FORWARD -d 10.0.0.0/8 -i br-lan -o eth0 -j DROP
--A FORWARD -d 172.16.0.0/12 -i br-lan -o eth0 -j DROP
--A FORWARD -s 172.20.0.0/16 -i br-lan -o eth0 -j ACCEPT
--A FORWARD -i eth0 -o br-lan -m state ! --state NEW -j ACCEPT
+192.168.56.101 is the primary address of the echo server and 192.168.56=
+.16 is=20
+the secondary address of the interface.
 
--A POSTROUTING -s 172.20.0.0/16 -o eth0 -j MASQUERADE
+08:24:04.063987 IP 192.168.56.1.48462 > 192.168.56.16.echo: UDP, length=
+ 6
+08:24:04.064522 IP 192.168.56.101.echo > 192.168.56.1.48462: UDP, lengt=
+h 6
 
+So I add the iptables rule:
 
-     traffic on br-lan (internal) and eth0 (external) interfaces is=20
-almost the same, only with RX and TX inverted, which is fine and=20
-expected, as this is a router with almost no traffic to/from itself
+iptables -t nat -I POSTROUTING -p udp -s 192.168.56.101 --sport 7 \
+  -j SNAT --to-source 192.168.56.16
 
+now tcpdump shows that no answer packet is sent out any more:
 
-root@firewall:/# ifconfig br-lan
-br-lan    Link encap:Ethernet  HWaddr 00:0C:42:3D:FC:CD
-           inet addr:172.20.1.1 Bcast:172.20.255.255  Mask:255.255.0.0
-           UP BROADCAST RUNNING MULTICAST MTU:1500  Metric:1
-           RX packets:1862835 errors:0 dropped:0 overruns:0 frame:0
-           TX packets:2704211 errors:0 dropped:0 overruns:0 carrier:0
-           collisions:0 txqueuelen:0
-           RX bytes:586769410 (559.5 MiB)  TX bytes:3337034105 (3.1 GiB=
-)
-
-root@firewall:/# ifconfig eth0
-eth0      Link encap:Ethernet  HWaddr 00:0C:42:3D:FC:CC
-           inet addr:192.168.25.22 Bcast:192.168.25.255  Mask:255.255.2=
-55.0
-           UP BROADCAST RUNNING MULTICAST MTU:1500  Metric:1
-           RX packets:2730189 errors:0 dropped:16202 overruns:0 frame:0
-           TX packets:1847701 errors:0 dropped:0 overruns:0 carrier:0
-           collisions:0 txqueuelen:1000
-           RX bytes:3348006946 (3.1 GiB)  TX bytes:609083798 (580.8 MiB=
-)
-           Interrupt:5
+08:24:16.851095 IP 192.168.56.1.55362 > 192.168.56.16.echo: UDP, length=
+ 6
 
 
-     However, when watching my iptables rules, i'm not seeing the=20
-'return' traffic hitting the 'in eth0 out br-lan' ruleand not hitting=20
-the default ACCEPT rule as well.
+With iptables -t nat -L POSTROUTING I can see that the rule is hit sinc=
+e the=20
+counter increases. Also a iptables TRACE shows me that the rule is hit.=
+ No=20
+filter appears in the TRACE log.
+
+Any ideas where the packet vanished?
 
 
-Chain FORWARD (policy ACCEPT 1278 packets, 91872 bytes)
-     pkts      bytes target     prot opt in out     source             =
- =20
-destination
-        6      412 ACCEPT     all  --  br-lan eth0   =20
-0.0.0.0/0            192.168.25.1
-     9609   552193 ACCEPT     all  --  br-lan eth0   =20
-172.20.1.0/24        0.0.0.0/0
-        0        0 DROP       all  --  br-lan eth0   =20
-0.0.0.0/0            192.168.0.0/16
-        0        0 DROP       all  --  br-lan eth0   =20
-0.0.0.0/0            10.0.0.0/8
-        0        0 DROP       all  --  br-lan eth0   =20
-0.0.0.0/0            172.16.0.0/12
-    23145  1562899 ACCEPT     all  --  br-lan eth0   =20
-172.20.0.0/16        0.0.0.0/0
-      231    21457 ACCEPT     all  --  eth0 br-lan  0.0.0.0/0=20
-0.0.0.0/0            ! state NEW
+Mit freundlichen Gr=FC=DFen,
 
-
-
-     Question: what is happening to my return traffic ? Where is it=20
-going to (which rule) ?? The network is working, so i'm sure the return=
-=20
-traffic isnot being blocked. However, i'm not seeing it on the rules it=
-=20
-was supposed to be 'hitting'.
-
-     is this some new behavior from new iptables/netfilter versions ? i=
-s=20
-this some behavior exclusively to OpenWRT, maybe some patch they apply=20
-to iptables/netfilter ?
-
-root@firewall:/# uname -r
-3.10.49
-
-root@firewall:/# iptables --version
-iptables v1.4.21
-
+Michael Schwartzkopff
 
 --=20
+[*] sys4 AG
 
+http://sys4.de, +49 (89) 30 90 46 64, +49 (162) 165 0044
+Franziskanerstra=DFe 15, 81669 M=FCnchen
 
-	Atenciosamente / Sincerily,
-	Leonardo Rodrigues
-	Solutti Tecnologia
-	http://www.solutti.com.br
+Sitz der Gesellschaft: M=FCnchen, Amtsgericht M=FCnchen: HRB 199263
+Vorstand: Patrick Ben Koetter, Marc Schiffbauer
+Aufsichtsratsvorsitzender: Florian Kirstein
+--nextPart1810896.WoBWNDzM7N
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
 
-	Minha armadilha de SPAM, N=C3O mandem email
-	gertrudes@solutti.com.br
-	My SPAMTRAP, do not email it
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
+iF4EABEIAAYFAlP8K2gACgkQsmtesqLuBDQGOQEAwXCx5ty6IXSqcxuC4b2yL6rV
+RLvvuXjCsnKfRjLH8NwA/RzoUsZMQtGwGv9QDJp4u32qLCr2DlrfaFDwD7+4yxWQ
+=A7c4
+-----END PGP SIGNATURE-----
 
+--nextPart1810896.WoBWNDzM7N--
 
