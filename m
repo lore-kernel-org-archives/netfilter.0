@@ -1,73 +1,63 @@
-From: k-yo@digmore.net
-Subject: unexpected behavior of ebtables' BROUTING target redirect
-Date: Thu, 28 Aug 2014 11:28:34 +0200
-Message-ID: <50558c54090512288e32c423bbf06fb4@digmore.net>
+From: Alex Chapman <ajchapman88@hotmail.co.uk>
+Subject: RE: nft json export interpretation
+Date: Thu, 28 Aug 2014 11:30:05 +0100
+Message-ID: <DUB109-W39C1A019AE93ED33A7E6E4E1DA0@phx.gbl>
+References: <DUB109-W39D1AB0F5D620C8276F7FE1DD0@phx.gbl>,<CAOkSjBjkEzW78oPs1sJriLOOAqS1iA+pHiV+KehTr1+rX3j3bg@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <CAOkSjBjkEzW78oPs1sJriLOOAqS1iA+pHiV+KehTr1+rX3j3bg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="windows-1252"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
+Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hello,
+Thanks Arturo. That makes sense. I think for my use case it would be fa=
+r easier to convert the nft high level output to json.
 
-I have a bridge with a single ebtables rule to redirect all=20
-IPv4-containing frames to layer 3 filtering:
 
-# ebtables -t broute -A BROUTING -p IPV4 -j redirect --redirect-target=20
-DROP --log-level notice --log-prefix "br_br_br:   "
-
-then, if I send a frame containing IPv4 from one host to another one=20
-connected on another port of the bridge, I am supposed to get the=20
-destination MAC address to be the one of the bridge port it entered the=
-=20
-bridge if I believe the documentation.
-
-Or, logging packets with iptables, I see the source MAC address to=20
-become the bridge port address, and the destination MAC address the one=
-=20
-of the host the message came from.
-
-I am lost on this issue, it does not make sense to me and wonder where =
-I=20
-failed=E2=80=A6
-
-Thanks a lot for any help, see below for details.
-
----- log on the bridge -----
-
-Aug 28 11:15:08 spy kernel: [ 4952.682369] br_br_br:   IN=3Deth0 OUT=3D=
- MAC=20
-source =3D 08:00:27:d5:24:36 MAC dest =3D 08:00:27:17:49:6d proto =3D 0=
-x0800
-Aug 28 11:15:08 spy kernel: [ 4952.682406] ip_raw_pre: IN=3Deth0 OUT=3D=
-=20
-MAC=3D08:00:27:df:b7:98:08:00:27:d5:24:36:08:00 SRC=3D192.168.142.103=20
-DST=3D192.168.142.254 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D1 P=
-ROTO=3DTCP=20
-SPT=3D20 DPT=3D80 WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0
-Aug 28 11:15:08 spy kernel: [ 4952.682443] ip_man_pre: IN=3Deth0 OUT=3D=
-=20
-MAC=3D08:00:27:df:b7:98:08:00:27:d5:24:36:08:00 SRC=3D192.168.142.103=20
-DST=3D192.168.142.254 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D1 P=
-ROTO=3DTCP=20
-SPT=3D20 DPT=3D80 WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0
-Aug 28 11:15:08 spy kernel: [ 4952.682464] ip_nat_pre: IN=3Deth0 OUT=3D=
-=20
-MAC=3D08:00:27:df:b7:98:08:00:27:d5:24:36:08:00 SRC=3D192.168.142.103=20
-DST=3D192.168.142.254 LEN=3D40 TOS=3D0x00 PREC=3D0x00 TTL=3D64 ID=3D1 P=
-ROTO=3DTCP=20
-SPT=3D20 DPT=3D80 WINDOW=3D8192 RES=3D0x00 SYN URGP=3D0
-
----- ip a on bridge ----
-
-2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast=20
-master br0 state UP qlen 1000
-     link/ether 08:00:27:df:b7:98 brd ff:ff:ff:ff:ff:ff
-3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast=20
-master br0 state UP qlen 1000
-     link/ether 08:00:27:d8:32:61 brd ff:ff:ff:ff:ff:ff
-4: br0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state=20
-UP
-     link/ether 08:00:27:d8:32:61 brd ff:ff:ff:ff:ff:ff
+----------------------------------------
+> From: arturo.borrero.glez@gmail.com
+> Date: Wed, 27 Aug 2014 16:50:03 +0200
+> Subject: Re: nft json export interpretation
+> To: ajchapman88@hotmail.co.uk
+> CC: netfilter@vger.kernel.org
+>
+> On 27 August 2014 16:06, Alex Chapman <ajchapman88@hotmail.co.uk> wro=
+te:
+>> Hi,
+>>
+>> I am working on getting the nftables ruleset into a human readable J=
+SON format and would like to understand how the output of the built in =
+JSON export functionality should be interpreted. Does it require a deep=
+ level of understanding of the application? Are there some reference po=
+ints that could be followed? And by that I mean how the output would re=
+late to an IP address or port number for example.
+>>
+>> The other option would be to do this through text manipulation on th=
+e standard nft list output but it makes sense to try and use the built =
+in export functionality if possible.
+>>
+>
+> The JSON is a representation of the low-level 'pseudocode' of nftable=
+s
+> objects. By objects I mean tables, chains, sets, set_elems, rules,
+> expressions.
+>
+> For example, the statement 'tcp dport 22' is translated by nft to
+> several expressions: payload, cmp:
+>
+> [ payload load 1b @ network header + 9 =3D> reg 1 ]
+> [ cmp eq reg 1 0x00000006 ]
+> [ payload load 2b @ transport header + 2 =3D> reg 1 ]
+> [ cmp eq reg 1 0x00001600 ]
+>
+> To translate this low level code back to a higher level statement, yo=
+u
+> need to perform the same operations that nft does internally.
+>
+> Same applies to the XML format, both generated by libnftnl.
+> --
+> Arturo Borrero Gonz=E1lez
+ 		 	   		  
