@@ -1,59 +1,56 @@
 From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: Source NAT in  POSTROUTING chain for locally generated packets
-Date: Fri, 29 Aug 2014 00:08:38 +0200
-Message-ID: <53FFA866.6020908@plouf.fr.eu.org>
-References: <1613016.CfItKYvQAW@nb003>
+Subject: Re: unexpected behavior of ebtables' BROUTING target redirect
+Date: Fri, 29 Aug 2014 00:21:47 +0200
+Message-ID: <53FFAB7B.2060108@plouf.fr.eu.org>
+References: <50558c54090512288e32c423bbf06fb4@digmore.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <1613016.CfItKYvQAW@nb003>
+In-Reply-To: <50558c54090512288e32c423bbf06fb4@digmore.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: ms@sys4.de
+To: k-yo@digmore.net
 Cc: netfilter@vger.kernel.org
 
 Hello,
 
-Michael Schwartzkopff a =E9crit :
+k-yo@digmore.net a =E9crit :
 >=20
-> For some special reasons I want to alter the IP address of outgoing p=
-ackets=20
-> that are generated locally to a secondary IP address on my machine. F=
-or a test=20
-> I use the udp/echo service. Without any rules a tcpdump looks like th=
-is:
+> I have a bridge with a single ebtables rule to redirect all=20
+> IPv4-containing frames to layer 3 filtering:
 >=20
-> 192.168.56.101 is the primary address of the echo server and 192.168.=
-56.16 is=20
-> the secondary address of the interface.
+> # ebtables -t broute -A BROUTING -p IPV4 -j redirect --redirect-targe=
+t=20
+> DROP --log-level notice --log-prefix "br_br_br:   "
 >=20
-> 08:24:04.063987 IP 192.168.56.1.48462 > 192.168.56.16.echo: UDP, leng=
-th 6
-> 08:24:04.064522 IP 192.168.56.101.echo > 192.168.56.1.48462: UDP, len=
-gth 6
+> then, if I send a frame containing IPv4 from one host to another one=20
+> connected on another port of the bridge, I am supposed to get the=20
+> destination MAC address to be the one of the bridge port it entered t=
+he=20
+> bridge if I believe the documentation.
 >=20
-> So I add the iptables rule:
+> Or, logging packets with iptables, I see the source MAC address to=20
+> become the bridge port address, and the destination MAC address the o=
+ne=20
+> of the host the message came from.
 >=20
-> iptables -t nat -I POSTROUTING -p udp -s 192.168.56.101 --sport 7 \
->   -j SNAT --to-source 192.168.56.16
+> ---- log on the bridge -----
 >=20
-> now tcpdump shows that no answer packet is sent out any more:
->=20
-> 08:24:16.851095 IP 192.168.56.1.55362 > 192.168.56.16.echo: UDP, leng=
-th 6
->=20
->=20
-> With iptables -t nat -L POSTROUTING I can see that the rule is hit si=
-nce the=20
-> counter increases. Also a iptables TRACE shows me that the rule is hi=
-t. No=20
-> filter appears in the TRACE log.
->=20
-> Any ideas where the packet vanished?
+> Aug 28 11:15:08 spy kernel: [ 4952.682369] br_br_br:   IN=3Deth0 OUT=3D=
+ MAC=20
+> source =3D 08:00:27:d5:24:36 MAC dest =3D 08:00:27:17:49:6d proto =3D=
+ 0x0800
+> Aug 28 11:15:08 spy kernel: [ 4952.682406] ip_raw_pre: IN=3Deth0 OUT=3D=
+=20
+> MAC=3D08:00:27:df:b7:98:08:00:27:d5:24:36:08:00 SRC=3D192.168.142.103=
+=20
 
-Clash with an existing connection entry (the one created by the incomin=
-g
-packet) -> source port changed or packet dropped.
-What was the full tcpdump command used ? Any filters ?
+> ---- ip a on bridge ----
+>=20
+> 2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast=20
+> master br0 state UP qlen 1000
+>      link/ether 08:00:27:df:b7:98 brd ff:ff:ff:ff:ff:ff
 
+I see nothing wrong here. The value following MAC=3D is the Ethernet
+header in network order, i.e. destination:source:protocol.
