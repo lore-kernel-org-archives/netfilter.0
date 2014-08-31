@@ -1,23 +1,23 @@
 From: Michael Schwartzkopff <ms@sys4.de>
 Subject: Re: Source NAT in  POSTROUTING chain for locally generated packets
-Date: Sun, 31 Aug 2014 14:05:29 +0200
-Message-ID: <4930481.2zCM96A4n3@nb003>
+Date: Sun, 31 Aug 2014 16:19:31 +0200
+Message-ID: <1871539.DT9Mib6pZX@nb003>
 References: <1613016.CfItKYvQAW@nb003> <53FFA866.6020908@plouf.fr.eu.org>
 Reply-To: ms@sys4.de
 Mime-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2372444.ibUYIdcTcq"; micalg="pgp-sha256"; protocol="application/pgp-signature"
+Content-Type: multipart/signed; boundary="nextPart11478685.Y1iSOK8n3M"; micalg="pgp-sha256"; protocol="application/pgp-signature"
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=sys4.de; h=
 	content-type:content-type:mime-version:references:in-reply-to
 	:user-agent:organization:message-id:date:date:subject:subject
-	:reply-to:from:from; s=mail201310; t=1409486742; x=1411301143;
-	 bh=haircg6RkZtm2k4RWk4A2t8HmOkyoCsc8aidsujQI9Q=; b=r7rCq6D4pNyf
-	d3GUJBCrkFEULAYbqTYky9eLJig2zmvHPPD2KtAGIlNuwzqW2L/GawbSVb+UAYle
-	XdomVgK2T2waqWiLqHds5as3E0GneVMo/gsquj90mQvKG6mo07P5JiXcFh+MAlrL
-	ugb2NWIxL9eFSO8LlNHdFhjltcb6g8TsSjinB9WeDUQdMVVaQb2QPN3gKFMzKsdB
-	FTCeDTZvqRxGp7AXfjh7CWM4kNtVmlwzTMNNOLtvgoHGPDAe+tox4VzBkS1hGRti
-	AbuT87pp/akQu7PFo0oUpSdx+Iuh0Z+BR/Yv2IiVWwgFXxogWYmVeCwkWzlb/iOK
-	tL5l2URUcg==
+	:reply-to:from:from; s=mail201310; t=1409494775; x=1411309176;
+	 bh=5XgdSfiymtYJcMFK/2bTtq1koagZF/ldpbTHyV8HbSs=; b=XX57SPSGx7lj
+	F2senYd1Pwex/O0hA4Yqf8pQZEAjcYPds1RAth3DNoEm3ICVt4lbWI0smX4limiY
+	Ba5AwYjm9HwdjY/XgM7+/PqRG/QRlK40wcTwtD3EZ20kdpUv16r/6g2+H7c6rIYe
+	nLDT5+2jLHvVUmuU0Tph2lcvEKv/qTNKOOr6wjuUa3bNobj8/Fk3Tt1gI7rJmzCs
+	TZ0fp75DUWqujRrLI1y9cUY+/8xJ1LDDUZTYmDdLQKh0q+OWqUj+PuoCzgiuMltu
+	z+SY0NZvxDLJeuqTQBdVUjjNGdZNs1IDu3O2GbNwD2j561wj4JkSJuxy968g3Miz
+	f4AY33H1mA==
 In-Reply-To: <53FFA866.6020908@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
@@ -25,7 +25,7 @@ To: Pascal Hambourg <pascal@plouf.fr.eu.org>
 Cc: netfilter@vger.kernel.org
 
 
---nextPart2372444.ibUYIdcTcq
+--nextPart11478685.Y1iSOK8n3M
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset="iso-8859-1"
 
@@ -76,19 +76,10 @@ since
 ing
 > packet) -> source port changed or packet dropped.
 
-Since I so not filter on existing state, the packet should not be dropp=
-ed=20
-anyway.
-
-
-> What was the full tcpdump command used ?
-
-Yes. tcpdump should have captured the package.
-
-
-> Any filters ?
-
-No filters at all.
+SNAT indeed alters the source port that is why the client does not reco=
+gnizes=20
+the packet now. But I did not find any way not to alter the source port=
+.
 
 Mit freundlichen Gr=FC=DFen,
 
@@ -103,7 +94,7 @@ Franziskanerstra=DFe 15, 81669 M=FCnchen
 Sitz der Gesellschaft: M=FCnchen, Amtsgericht M=FCnchen: HRB 199263
 Vorstand: Patrick Ben Koetter, Marc Schiffbauer
 Aufsichtsratsvorsitzender: Florian Kirstein
---nextPart2372444.ibUYIdcTcq
+--nextPart11478685.Y1iSOK8n3M
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part.
 Content-Transfer-Encoding: 7Bit
@@ -111,10 +102,10 @@ Content-Transfer-Encoding: 7Bit
 -----BEGIN PGP SIGNATURE-----
 Version: GnuPG v1.4.12 (GNU/Linux)
 
-iF4EABEIAAYFAlQDD4kACgkQsmtesqLuBDRFsAD/fn0JOxiEr4sr0XxezKUAEDhG
-EaO8SVIX3A4S7pNSoP0A/0fMxpfxS2X+kZYuqUC5bbm6P6uhFcA4J+Gnc+LRhPAS
-=s7Zl
+iF4EABEIAAYFAlQDLvMACgkQsmtesqLuBDQ6GQEAjVouxHkVc8B0mVv/gjmAmwT1
+9aT/RiQShvHiwMP+NT0A/3yC0cj2A2G5GMsH3XW+SEzzX6sgEnAy4x8mxBe999wv
+=6//G
 -----END PGP SIGNATURE-----
 
---nextPart2372444.ibUYIdcTcq--
+--nextPart11478685.Y1iSOK8n3M--
 
