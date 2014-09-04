@@ -1,36 +1,36 @@
-From: "Vitthaladevuni, Pavan Kumar" <pavanv@qti.qualcomm.com>
-Subject: Reading packets larger than MTU size from netfilter queue
-Date: Tue, 2 Sep 2014 20:28:01 +0000
-Message-ID: <80a719e3475b44f580d8f0494ea688b0@NASANEXM01D.na.qualcomm.com>
+From: Dale Mellor <dale@rdmp.org>
+Subject: How to stop kernel TCP responses on a port
+Date: Thu, 04 Sep 2014 16:17:47 +0100
+Message-ID: <1409843867.3026.9.camel@l3>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="=-icVPjVTHI0MB4kT4nrDM"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=qti.qualcomm.com; i=@qti.qualcomm.com; q=dns/txt;
-  s=qcdkim; t=1409689701; x=1441225701;
-  h=from:to:subject:date:message-id:
-   content-transfer-encoding:mime-version;
-  bh=SEXPWWhM2jQt8fJtzBSGcwPwgR3KCgTfZopirUIggkw=;
-  b=SnP3ZnNEjZfIqGm7nWT7HL+ZtXemWHV/Fcnnptpgez8DWPZe154VDYSj
-   7y5PJ3ElYwHT3B9UZvJibAyWkOH1w2i8oincLOgfTZf5e8WlpgBYQ9r3j
-   yOhGe22j7hykn9vd9cs4UnJiRn5EZ01pWF++CZugZNOnxVxbqmzUGq3rl
-   A=;
-Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Hello,
 
-I am trying to read incoming TCP packets. TCPdump shows that there are packets of size 20-30KB that are arriving.The IP header of these packets has the "Do Not Fragment" flag set to true. 
+--=-icVPjVTHI0MB4kT4nrDM
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-When I try to read them from the netfilter queue, I am failing. I am using this command: 
+  I want to do TCP with raw sockets.  How can I filter away the kernel's
+RST/ACK/SYN response messages when I want to do this myself?
 
-"status = recv(nfq_fd(_NFQHandle), buf, sizeof(buf), MSG_WAITALL)." 
 
-Even with MSG_PEEK or MSG_MSG_DONTWAIT, these packets are not being read. I am able to increase the MTU size only upto 9KB. Any packet that is larger than this MTU size is not being read by the recv function.
+--=-icVPjVTHI0MB4kT4nrDM
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-My question is: Is it possible to read un-fragmented packets that are larger than MTU size using the recv function from the netfilter queue?
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1.4.12 (GNU/Linux)
 
-Thanks
+iEYEABEKAAYFAlQIgpsACgkQykcf1QFhiknhmQCfV49eHSWaE+shI2ey0DT5jrYF
+i7gAn3WNwRMbqRSfOfZMxksVi8zymdR/
+=BK0b
+-----END PGP SIGNATURE-----
+
+--=-icVPjVTHI0MB4kT4nrDM--
+
