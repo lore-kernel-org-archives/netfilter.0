@@ -1,36 +1,49 @@
-From: Dale Mellor <dale@rdmp.org>
-Subject: How to stop kernel TCP responses on a port
-Date: Thu, 04 Sep 2014 16:17:47 +0100
-Message-ID: <1409843867.3026.9.camel@l3>
+From: Leonardo Rodrigues <leolistas@solutti.com.br>
+Subject: Re: How to stop kernel TCP responses on a port
+Date: Thu, 04 Sep 2014 13:16:41 -0300
+Message-ID: <54089069.8010603@solutti.com.br>
+References: <1409843867.3026.9.camel@l3>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="=-icVPjVTHI0MB4kT4nrDM"
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=solutti.com.br; s=google;
+        h=message-id:date:from:user-agent:mime-version:to:subject:references
+         :in-reply-to:content-type:content-transfer-encoding;
+        bh=4yOTZ7DG6RI6VJlWIBHOOMSgUlHcn+W9WQIA3Q6bc74=;
+        b=QRtP8Dx70HEFNFD8G2IimY2PmK+zS0wfNvGTJIV+ybOcHQRrd0nzY2NNIBHOlT3brt
+         0nN0uW83sF+MFXTVOi4F4B5eiGn9uipHOhLHW9M3y4KuBajg9Ii/N9r1g9tpBV3NKHF4
+         GxjDYN4jmJBfEokxtu5/ZW4Y5UMjnpjFJC+8w=
+In-Reply-To: <1409843867.3026.9.camel@l3>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="macroman"; format="flowed"
 To: netfilter@vger.kernel.org
 
 
---=-icVPjVTHI0MB4kT4nrDM
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-  I want to do TCP with raw sockets.  How can I filter away the kernel's
-RST/ACK/SYN response messages when I want to do this myself?
+     you'll probably need to tweak the kernel itself for that. If you=20
+wanna do all the 'dirty work', why not use UDP instead of TCP ??
 
 
---=-icVPjVTHI0MB4kT4nrDM
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+On 04/09/14 12:17, Dale Mellor wrote:
+>    I want to do TCP with raw sockets.  How can I filter away the kern=
+el's
+> RST/ACK/SYN response messages when I want to do this myself?
+>
 
-iEYEABEKAAYFAlQIgpsACgkQykcf1QFhiknhmQCfV49eHSWaE+shI2ey0DT5jrYF
-i7gAn3WNwRMbqRSfOfZMxksVi8zymdR/
-=BK0b
------END PGP SIGNATURE-----
 
---=-icVPjVTHI0MB4kT4nrDM--
+--=20
+
+
+	Atenciosamente / Sincerily,
+	Leonardo Rodrigues
+	Solutti Tecnologia
+	http://www.solutti.com.br
+
+	Minha armadilha de SPAM, N=C3=83O mandem email
+	gertrudes@solutti.com.br
+	My SPAMTRAP, do not email it
+
+
 
