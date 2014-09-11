@@ -1,85 +1,47 @@
-From: Dale Mellor <dale@rdmp.org>
-Subject: Re: How to stop kernel TCP responses on a port
-Date: Tue, 09 Sep 2014 14:49:19 +0100
-Message-ID: <1410270559.5380.9.camel@l3>
-References: <1409843867.3026.9.camel@l3> <54089069.8010603@solutti.com.br>
-		 <1409891253.15027.24.camel@l3>
-	 <CBD8736BE6044AE0B06076D69855AF85@gmail.com> <1409895712.16431.7.camel@l3>
-	 <540D1E4F.4000704@fnarfbargle.com>
+From: Younes Manton <younes.m@gmail.com>
+Subject: Established UDP connection seems to have the wrong timeout.
+Date: Thu, 11 Sep 2014 12:21:22 -0400
+Message-ID: <CAMVNhxSUy32rqZ-RpMHvxHFBU9sLnCRvuYGYpcJETPC16f-5kA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="=-oZk6XAPq6fjGWub+YjqZ"
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <540D1E4F.4000704@fnarfbargle.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to:content-type;
+        bh=SRKfp9rHylDR8+k8mv6PXimnqikNGri3WKFgYILbdhQ=;
+        b=SRdOL3mM4HwXS5ydEztXq/k8++dga0cRWRcQwAS+U2zUfe2poh4VUE9iHIKY5VmZLB
+         KfSDtOzw1Uhtiqpqi9Mbs6rppuIoxZCHtXEPo0XKG43R+NlaA//j3f+wFEIcDn/JO74a
+         hYBPVuVb31lrhKe/hlsPE1uqziWNaUR4VdERAvoWcLiThgV03q5Nrk0DfSsKWt6F3Ln9
+         W2GwhnNJ8Vnd6CXXySCtCu96KCyEsolCvGaJgQwi83NnxxBP9/HNokt8OyvKDslLOK77
+         GhQ5V/ZZHQYDxEtx2X6TvUqkZvaogU49kZJGt4I1mc8Qq4r1HLrW3G94cae/pHF7h2Eh
+         RLrA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: Brad Campbell <lists2009@fnarfbargle.com>
-Cc: netfilter@vger.kernel.org
-
-
---=-oZk6XAPq6fjGWub+YjqZ
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Mon, 2014-09-08 at 11:11 +0800, Brad Campbell wrote:
-> On 05/09/14 13:41, Dale Mellor wrote:
-> >
->=20
-> > Anyway, the point is I don't want the syn-ack to come from the ground,
-> > but the Linux kernel insists on sending it.  That's what I want to
-> > filter out, or otherwise stop.
->=20
->=20
-> The kernel only does that if there is a piece of application code that=
-=20
-> is bound to that socket.
->=20
-> > In case I haven't been clear, the PC is the gateway to the spacecraft;
-> > effectively, it _is_ the proxy.  When a telnet client (on the ground)
-> > connects to the gateway (on the ground), the gateway is responding to
-> > the SYN when I don't want it to.
->=20
-> Ok, so the ground station PC is acting as a proxy and you don't want=20
-> that. You want it to *route* the IP packets rather than be an=20
-> application level proxy.
->=20
-> So at the moment you are connecting to a socket that is bound in the=20
-> ground station PC. There is a piece of code there than binds and then=20
-> accepts the connection. Stop doing that and have iptables forward/nat=20
-> the packets instead.
->=20
-> If all that is incorrect, then you have not provided anywhere enough=20
-> information on the how's and why's.
-
-
-Thanks for all your thoughts.  It is likely true I didn't give enough
-information for you to fully understand my problem, but I didn't have
-time to write an essay and there is only so much I'm allowed to
-disclose.
-
-Anyway, for information, my solution was to vector packets to my port in
-the PREROUTING chain of the mangle table to target QUEUE, and then have
-a user-land program feed the packet to the space link.  This program
-instructs the kernel to DROP the frame, and the kernel does not then
-send any SYN-ACK or RST itself to the connecting client, which is what I
-wanted to achieve.
-
-Thanks again,
-Dale
-
-
---=-oZk6XAPq6fjGWub+YjqZ
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
+To: netfilter <netfilter@vger.kernel.org>
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v1.4.12 (GNU/Linux)
+Hi,
 
-iEYEABEKAAYFAlQPBWAACgkQykcf1QFhiklbgACfROfumksns0IeSXMg4b4Zn4+w
-Sk0Anj6kGiQUNM5F0P7SSmKq6A/cAejI
-=g998
------END PGP SIGNATURE-----
+I have a NATted client behind a router that sends a single UDP
+keepalive packet to a server. The server responds with a single
+packet. According to the output of /proc/net/ip_conntrack however the
+mapping that is created is not in the ASSURED state and is therefore
+only kept alive for 30s. Is this expected? I was expecting the
+connection to be ASSURED and to have a 180s timeout. Router is running
+2.6.22.19, which is old, but I'm stuck on it. I took a look at the
+source for that version and the latest kernel and it looks essentially
+the same to me and seems to suggest that if both a send and a response
+is seen then that's enough to make the connection ASSURED, so I
+thought to ask here.
 
---=-oZk6XAPq6fjGWub+YjqZ--
+Background:
 
+I have an Android phone and am using the built in SIP client behind a
+Netgear router running Tomato. Router's UDP assured timeout is set to
+180s, unreplied is 30s. The SIP client is trying to be smart and find
+the longest keepalive that works; it has an algorithm that starts at
+10s and is supposed to work up to 120s over time/depending on battery
+level/possibly some other voodoo, but it sometimes gets into a state
+where it goes over 120s and even over 180s. By the time it gets to
+keepalives >180s I hit the above problem where the router is only
+keeping the hole open for 30s.
