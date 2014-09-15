@@ -1,47 +1,90 @@
-From: Younes Manton <younes.m@gmail.com>
-Subject: Established UDP connection seems to have the wrong timeout.
-Date: Thu, 11 Sep 2014 12:21:22 -0400
-Message-ID: <CAMVNhxSUy32rqZ-RpMHvxHFBU9sLnCRvuYGYpcJETPC16f-5kA@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset 6.22 released
+Date: Mon, 15 Sep 2014 23:13:12 +0200 (CEST)
+Message-ID: <alpine.DEB.2.10.1409152304001.10006@blackhole.kfki.hu>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:from:date:message-id:subject:to:content-type;
-        bh=SRKfp9rHylDR8+k8mv6PXimnqikNGri3WKFgYILbdhQ=;
-        b=SRdOL3mM4HwXS5ydEztXq/k8++dga0cRWRcQwAS+U2zUfe2poh4VUE9iHIKY5VmZLB
-         KfSDtOzw1Uhtiqpqi9Mbs6rppuIoxZCHtXEPo0XKG43R+NlaA//j3f+wFEIcDn/JO74a
-         hYBPVuVb31lrhKe/hlsPE1uqziWNaUR4VdERAvoWcLiThgV03q5Nrk0DfSsKWt6F3Ln9
-         W2GwhnNJ8Vnd6CXXySCtCu96KCyEsolCvGaJgQwi83NnxxBP9/HNokt8OyvKDslLOK77
-         GhQ5V/ZZHQYDxEtx2X6TvUqkZvaogU49kZJGt4I1mc8Qq4r1HLrW3G94cae/pHF7h2Eh
-         RLrA==
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
 Hi,
 
-I have a NATted client behind a router that sends a single UDP
-keepalive packet to a server. The server responds with a single
-packet. According to the output of /proc/net/ip_conntrack however the
-mapping that is created is not in the ASSURED state and is therefore
-only kept alive for 30s. Is this expected? I was expecting the
-connection to be ASSURED and to have a 180s timeout. Router is running
-2.6.22.19, which is old, but I'm stuck on it. I took a look at the
-source for that version and the latest kernel and it looks essentially
-the same to me and seems to suggest that if both a send and a response
-is seen then that's enough to make the connection ASSURED, so I
-thought to ask here.
+I'm happy to announce ipset 6.22, which, besides bugfixes and corrections, 
+includes the new set type hash:mac and the skbinfo extension from Anton 
+Danilov. The skbinfo extension makes possible to store fw mark, tc class 
+and/or hardware queue parameters together with the set elements and then 
+attach them to the matchig packets by the SET target. Example
 
-Background:
+ipset create mark_values hash:net skbinfo
+ipset add mark_values 8.8.8.8/32 skbmark 0x1/0xffff
+...
+iptables -t mangle -A OUTPUT -p tcp -o iface \
+	-j SET --map-set mark_values dst --map-mark
 
-I have an Android phone and am using the built in SIP client behind a
-Netgear router running Tomato. Router's UDP assured timeout is set to
-180s, unreplied is 30s. The SIP client is trying to be smart and find
-the longest keepalive that works; it has an algorithm that starts at
-10s and is supposed to work up to 120s over time/depending on battery
-level/possibly some other voodoo, but it sometimes gets into a state
-where it goes over 120s and even over 180s. By the time it gets to
-keepalives >180s I hit the above problem where the router is only
-keeping the hole open for 30s.
+(At the moment the support of the --map-set options of
+the SET target is available in the ipset branch of the iptables
+git tree.)
+
+Userspace changes:
+  - hash:mac type added to ipset
+  - Add test to check mark mapping
+  - ipset: remove extran newline on debug output (Holger Eitzenberger)
+  - ipset: avoid duplicate command flags (Holger Eitzenberger)
+  - Remove a duplicate debug print (Holger Eitzenberger)
+  - ipset: man: Add the skbinfo extension documentation. (Anton Danilov)
+  - libipset: Add userspace support of the skbinfo extension of the list
+    set type. (Anton Danilov)
+  - libipset: Add userspace support of the skbinfo extension of the hash
+    set types. (Anton Danilov)
+  - libipset: Add userspace support of the skbinfo extension of the
+    bitmap set types. (Anton Danilov)
+  - libipset: Add userspace code for the skbinfo extension support.
+    (Anton Danilov)
+  - Make possible to compile ipset with IPSET_DEBUG from the dist.
+    (Clinton Roy)
+  - libipset: print third element in debugging (Sergey Popovich)
+  - ipset: Handle missing leading zeros in ethernet address parser
+    (Janeks Jaunups)
+  - ipset: Pass IPSET_BIN to test scripts to change binary location
+    (Neutron Soutmun)
+  - ipset: Fix grammar error in manpage (Neutron Soutmun)
+  - ipset: Fix printf format warning (Neutron Soutmun)
+
+Kernel part changes:
+  - hash:mac type added to ipset
+  - skbinfo extension: send nonzero extension elements only to userspace
+  - netfilter: Convert pr_warning to pr_warn (Joe Perches)
+  - netfilter: ipset: Add skbinfo extension support to SET target.
+    (Anton Danilov)
+  - netfilter: ipset: Add skbinfo extension kernel support for the list
+    set type. (Anton Danilov)
+  - netfilter: ipset: Add skbinfo extension kernel support for the hash
+    set types. (Anton Danilov)
+  - netfilter: ipset: Add skbinfo extension kernel support for the
+    bitmap set types. (Anton Danilov)
+  - netfilter: ipset: Add skbinfo extension kernel support in the ipset
+    core. (Anton Danilov)
+  - Fix static checker warning in ip_set_core.c (reported by Dan 
+    Carpenter)
+  - Fix warn: integer overflows 'sizeof(*map) + size * set->dsize'
+    (reported by Dan Carpenter)
+  - net/netfilter/ipset: Resolve missing-field-initializer warnings
+    (Mark Rustad)
+  - netnet,netportnet: Fix value range support for IPv4 (Sergey Popovich)
+  - Removed invalid IPSET_ATTR_MARKMASK validation (Vytas Dauksa) 
+
+You can download the source code of ipset from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
