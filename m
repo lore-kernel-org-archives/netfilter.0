@@ -1,90 +1,75 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset 6.22 released
-Date: Mon, 15 Sep 2014 23:13:12 +0200 (CEST)
-Message-ID: <alpine.DEB.2.10.1409152304001.10006@blackhole.kfki.hu>
+From: Ben Gamari <ben@smart-cactus.org>
+Subject: Minor language issues in documentation
+Date: Tue, 16 Sep 2014 12:56:24 -0400
+Message-ID: <87vbon33nr.fsf@gmail.com>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Type: multipart/signed; boundary="=-=-=";
+	micalg=pgp-sha1; protocol="application/pgp-signature"
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+	d=mail.smart-cactus.org; s=mail; t=1410886434;
+	bh=DkeVEonGOEs5UNnwdto7xr5Vhk8PuktRFcdmT9DERK8=;
+	h=From:To:Subject:Date:From;
+	b=HLmYaJ6S6/ddskpA/PWtbi3v+O/RvvQHsP0erhq2P3Aav9lJv07IDKUToRaBM0ziY
+	 gpZRA2l7qCn7X+xAA6hdOhHtErWndNkYIpdu47rEOqr0nuck/3Yfmz/a+3Q3vF8KnP
+	 L+wAeWcp00u6Mqj+SUGev/L7kvQvPgnT69NcVZ14=
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Hi,
+--=-=-=
+Content-Type: text/plain
 
-I'm happy to announce ipset 6.22, which, besides bugfixes and corrections, 
-includes the new set type hash:mac and the skbinfo extension from Anton 
-Danilov. The skbinfo extension makes possible to store fw mark, tc class 
-and/or hardware queue parameters together with the set elements and then 
-attach them to the matchig packets by the SET target. Example
 
-ipset create mark_values hash:net skbinfo
-ipset add mark_values 8.8.8.8/32 skbmark 0x1/0xffff
-...
-iptables -t mangle -A OUTPUT -p tcp -o iface \
-	-j SET --map-set mark_values dst --map-mark
+Hello all,
 
-(At the moment the support of the --map-set options of
-the SET target is available in the ipset branch of the iptables
-git tree.)
+While browsing the nftables documentation I noticed that the word
+"performance" is often misused in a variety of ways. For instance,
+on the main page[1],
 
-Userspace changes:
-  - hash:mac type added to ipset
-  - Add test to check mark mapping
-  - ipset: remove extran newline on debug output (Holger Eitzenberger)
-  - ipset: avoid duplicate command flags (Holger Eitzenberger)
-  - Remove a duplicate debug print (Holger Eitzenberger)
-  - ipset: man: Add the skbinfo extension documentation. (Anton Danilov)
-  - libipset: Add userspace support of the skbinfo extension of the list
-    set type. (Anton Danilov)
-  - libipset: Add userspace support of the skbinfo extension of the hash
-    set types. (Anton Danilov)
-  - libipset: Add userspace support of the skbinfo extension of the
-    bitmap set types. (Anton Danilov)
-  - libipset: Add userspace code for the skbinfo extension support.
-    (Anton Danilov)
-  - Make possible to compile ipset with IPSET_DEBUG from the dist.
-    (Clinton Roy)
-  - libipset: print third element in debugging (Sergey Popovich)
-  - ipset: Handle missing leading zeros in ethernet address parser
-    (Janeks Jaunups)
-  - ipset: Pass IPSET_BIN to test scripts to change binary location
-    (Neutron Soutmun)
-  - ipset: Fix grammar error in manpage (Neutron Soutmun)
-  - ipset: Fix printf format warning (Neutron Soutmun)
+    Fast lookups through performance data structures: The new syntax
+    allows you to arrange you rule-set in a very performance way
+    contrary to purely linear-list based filtering policies.
 
-Kernel part changes:
-  - hash:mac type added to ipset
-  - skbinfo extension: send nonzero extension elements only to userspace
-  - netfilter: Convert pr_warning to pr_warn (Joe Perches)
-  - netfilter: ipset: Add skbinfo extension support to SET target.
-    (Anton Danilov)
-  - netfilter: ipset: Add skbinfo extension kernel support for the list
-    set type. (Anton Danilov)
-  - netfilter: ipset: Add skbinfo extension kernel support for the hash
-    set types. (Anton Danilov)
-  - netfilter: ipset: Add skbinfo extension kernel support for the
-    bitmap set types. (Anton Danilov)
-  - netfilter: ipset: Add skbinfo extension kernel support in the ipset
-    core. (Anton Danilov)
-  - Fix static checker warning in ip_set_core.c (reported by Dan 
-    Carpenter)
-  - Fix warn: integer overflows 'sizeof(*map) + size * set->dsize'
-    (reported by Dan Carpenter)
-  - net/netfilter/ipset: Resolve missing-field-initializer warnings
-    (Mark Rustad)
-  - netnet,netportnet: Fix value range support for IPv4 (Sergey Popovich)
-  - Removed invalid IPSET_ATTR_MARKMASK validation (Vytas Dauksa) 
+The use in the first sentence might be acceptable as a colloquialism but
+really could be improved by replacing "performance" with "high
+performance".
 
-You can download the source code of ipset from:
-        http://ipset.netfilter.org
-        ftp://ftp.netfilter.org/pub/ipset/
-        git://git.netfilter.org/ipset.git
+The second sentence is a bit more serious as it uses "performance", a
+noun, as an adjective. You might consider replacing this with
+"performance-oriented" or a similar rewrite. I've found this same
+mix-up in a few other places as well[2].
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+I also noticed a couple other small issues,
+
+  * [3] misspells "hybrid"
+  * The "Basic operational" section of the documentation ToC would be
+    named "Basic operation"
+
+Otherwise thanks for the great packet mangling framework and thorough
+documentation!
+
+Cheers,
+
+- Ben
+
+
+[1] http://www.netfilter.org/projects/nftables/
+[2] http://wiki.nftables.org/wiki-nftables/index.php/Main_differences_with_iptables
+[3] http://wiki.nftables.org/wiki-nftables/index.php/Configuring_tables
+
+--=-=-=
+Content-Type: application/pgp-signature
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQEcBAEBAgAGBQJUGGu5AAoJEErkyLZmeNiDXhQIAI2Cl+GCbYazzJLCRJlHMdDr
+NU7JM2dvh0WHZZ8rbRfpaDM0ElAWPVH9wYQNJkyY5ghlfsNEU27M5M5M+8Cav8lO
+z6fafAy/XJGAmc4y3McfLlHf5pxMd1Ab7ryPtUoG2ISiZSJxYBhq2HdY5iUTmxCm
+QjnpMToGOfEwPxzaPGeW5QgRfyi8kBI+MF+32IpaG5dvZhOfMO6RdNghy/gb2PN6
+WxRJ4xqM30Ip33ihekFh1rYklnTJlujpwzfJ4IQ9C4VMN82OQXlU/Z9Cv7SO4tUx
+bD5EVlvpB3Lfc1oZoEYF2q8ZR0nGwRP+ag5NP7KAknIBGTBFrabgmyqHJxKEEeM=
+=Bl8s
+-----END PGP SIGNATURE-----
+--=-=-=--
