@@ -1,85 +1,78 @@
-From: Rob Jones <rob.jones@codethink.co.uk>
-Subject: [PATCH] net/netfilter/x_tables.c: use __seq_open_private()
-Date: Thu, 18 Sep 2014 17:48:31 +0100
-Message-ID: <1411058911-17655-1-git-send-email-rob.jones@codethink.co.uk>
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
+From: Lars Dam <l.p.dam@amity.nl>
+Subject: RE: FW: Can IPTables check for a valid IP address
+Date: Thu, 18 Sep 2014 19:48:20 +0200
+Message-ID: <D4669F1AE5CE3D4293C4658A698E502904B637068E50@SELENIUM.amity.local>
+References: <D4669F1AE5CE3D4293C4658A698E502904B637068E4C@SELENIUM.amity.local>
+ <541AF628.8090509@sterenborg.org> <1888551.XEiLyKG9NI@nb003>
+ <D4669F1AE5CE3D4293C4658A698E502904B637068E4F@SELENIUM.amity.local>
+ <541B0887.5090108@familie-kuntze.de>
+Mime-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <541B0887.5090108@familie-kuntze.de>
+Content-Language: nl-NL
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: davem@davemloft.net
-Cc: netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kernel@codethink.co.uk, rob.jones@codethink.co.uk
+To: "'netfilter@vger.kernel.org'" <netfilter@vger.kernel.org>
 
-Reduce boilerplate code by using __seq_open_private() instead of seq_open()
-in xt_match_open() and xt_target_open().
-
-Signed-off-by: Rob Jones <rob.jones@codethink.co.uk>
----
-
-This patch uses an existing variant of seq_open() to reduce the kernel code
-size.
-
-The only significant variation from the pre-existing code is the fact that
-__seq_open_private() calls kzalloc() rather than kmalloc(), which could
-conceivably have an impact on timing.
-
- net/netfilter/x_tables.c |   30 ++++--------------------------
- 1 file changed, 4 insertions(+), 26 deletions(-)
-
-diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
-index 227aa11..89aa680 100644
---- a/net/netfilter/x_tables.c
-+++ b/net/netfilter/x_tables.c
-@@ -1137,22 +1137,11 @@ static const struct seq_operations xt_match_seq_ops = {
- 
- static int xt_match_open(struct inode *inode, struct file *file)
- {
--	struct seq_file *seq;
- 	struct nf_mttg_trav *trav;
--	int ret;
--
--	trav = kmalloc(sizeof(*trav), GFP_KERNEL);
--	if (trav == NULL)
-+	trav = __seq_open_private(file, &xt_match_seq_ops, sizeof(*trav));
-+	if (!trav)
- 		return -ENOMEM;
- 
--	ret = seq_open(file, &xt_match_seq_ops);
--	if (ret < 0) {
--		kfree(trav);
--		return ret;
--	}
--
--	seq = file->private_data;
--	seq->private = trav;
- 	trav->nfproto = (unsigned long)PDE_DATA(inode);
- 	return 0;
- }
-@@ -1201,22 +1190,11 @@ static const struct seq_operations xt_target_seq_ops = {
- 
- static int xt_target_open(struct inode *inode, struct file *file)
- {
--	struct seq_file *seq;
- 	struct nf_mttg_trav *trav;
--	int ret;
--
--	trav = kmalloc(sizeof(*trav), GFP_KERNEL);
--	if (trav == NULL)
-+	trav = __seq_open_private(file, &xt_target_seq_ops, sizeof(*trav));
-+	if (!trav)
- 		return -ENOMEM;
- 
--	ret = seq_open(file, &xt_target_seq_ops);
--	if (ret < 0) {
--		kfree(trav);
--		return ret;
--	}
--
--	seq = file->private_data;
--	seq->private = trav;
- 	trav->nfproto = (unsigned long)PDE_DATA(inode);
- 	return 0;
- }
--- 
-1.7.10.4
+VGhhbmtzIQ0KDQpJIHdpbGwgY2VydGFpbmx5IGludmVzdGlnYXRlIHRoaXMgb3B0aW9uLg0KDQpS
+ZWdhcmRzIQ0KDQotLS0tLU9vcnNwcm9ua2VsaWprIGJlcmljaHQtLS0tLQ0KVmFuOiBOb2VsIEt1
+bnR6ZSBbbWFpbHRvOm5vZWxAZmFtaWxpZS1rdW50emUuZGVdIA0KVmVyem9uZGVuOiBUaHVyc2Rh
+eSwgU2VwdGVtYmVyIDE4LCAyMDE0IDY6MzAgUE0NCkFhbjogTGFycyBEYW07IG5ldGZpbHRlckB2
+Z2VyLmtlcm5lbC5vcmcNCk9uZGVyd2VycDogUmU6IEZXOiBDYW4gSVBUYWJsZXMgY2hlY2sgZm9y
+IGEgdmFsaWQgSVAgYWRkcmVzcw0KDQoNCi0tLS0tQkVHSU4gUEdQIFNJR05FRCBNRVNTQUdFLS0t
+LS0NCkhhc2g6IFNIQTI1Ng0KDQpIZWxsbywNCg0KSWYgd2l0aCAiaW52YWxpZCIsIHlvdSBtZWFu
+IGFkZHJlc3NlcyBvZiBhIGNlcnRhaW4gdHlwZSAobXVsdGljYXN0LCBhbnljYXN0LCBicm9hZGNh
+c3QsIHJlc2VydmVkIGFkZHJlc3Mgc3BhY2UsIGV0YyksIGxvb2sgYXQgdGhlIGFkZHJ0eXBlIG1v
+ZHVsZS4NCg0KTWl0IGZyZXVuZGxpY2hlbiBHcsO8w59lbi9SZWdhcmRzLA0KTm9lbCBLdW50emUN
+Cg0KR1BHIEtleSBJRDogMHg2M0VDNjY1OA0KRmluZ2VycHJpbnQ6IDIzQ0EgQkI2MCAyMTQ2IDA1
+RTcgNzI3OCA2NTkyIDM4MzkgMjk4RiA2M0VDIDY2NTggQW0gMTguMDkuMjAxNCB1bSAxNzo1MyBz
+Y2hyaWViIExhcnMgRGFtOg0KPiBUaGFua3MuIEkga25vdyB3aGF0IHRvIGRvLg0KPg0KPiBSZWdh
+cmRzLA0KPg0KPiBMYXJzIERhLA0KPg0KPiAtLS0tLU9vcnNwcm9ua2VsaWprIGJlcmljaHQtLS0t
+LQ0KPiBWYW46IG5ldGZpbHRlci1vd25lckB2Z2VyLmtlcm5lbC5vcmcgDQo+IFttYWlsdG86bmV0
+ZmlsdGVyLW93bmVyQHZnZXIua2VybmVsLm9yZ10gTmFtZW5zIE1pY2hhZWwgU2Nod2FydHprb3Bm
+Zg0KPiBWZXJ6b25kZW46IFRodXJzZGF5LCBTZXB0ZW1iZXIgMTgsIDIwMTQgNTozMSBQTQ0KPiBB
+YW46IG5ldGZpbHRlckB2Z2VyLmtlcm5lbC5vcmcNCj4gT25kZXJ3ZXJwOiBSZTogQ2FuIElQVGFi
+bGVzIGNoZWNrIGZvciBhIHZhbGlkIElQIGFkZHJlc3MNCj4NCj4gQW0gRG9ubmVyc3RhZywgMTgu
+IFNlcHRlbWJlciAyMDE0LCAxNzoxMTozNiBzY2hyaWViIFIuIFN0ZXJlbmJvcmc6DQo+PiBPbiAw
+OS8xOC8yMDE0IDAzOjUwIFBNLCBMYXJzIERhbSB3cm90ZToNCj4+PiBXZSBzdWZmZXIgZnJvbSBE
+TlMgbG9va3VwcyB3aXRoIGEgcmVzcG9uc2UgSVAgYWRkcmVzcyB3aGljaCBpcyBub3QgDQo+Pj4g
+ZXhpc3RpbmcuDQo+Pj4NCj4+PiBDYW4gSXB0YWJsZXMgY2hlY2sgb24gdGhpcz8NCj4+DQo+PiBX
+aGF0IGlzIGl0IHlvdSBhY3R1YWxseSB3YW50IGlwdGFibGVzIHRvIGRvPyBEbyB5b3Ugd2FudCBp
+dCB0byBjaGVjayANCj4+IGlmIHRoZSBJUCBhZGRyZXNzIHRoYXQgdGhlIEROUyBzZXJ2ZXIgcmVz
+cG9uZHMgd2l0aCBleGlzdHMgYW5kIGlzIGluIHVzZT8NCj4+IE9yLi4/IE1heWJlIHRoZSBETlMg
+c2VydmVyIHNob3VsZCBiZSBmaXhlZCBpbnN0ZWFkIG9mIHRyeWluZyB0byBnbyB0aGlzIHdheS4N
+Cj4+DQo+PiBJcHRhYmxlcyAod2VsbCwgTmV0ZmlsdGVyKSBpcyBhIHBhY2tldCBmaWx0ZXIuIFlv
+dSBjYW4gZmlsdGVyIHBhY2tldHMgDQo+PiB0aGF0IG1hdGNoIGEgcnVsZSB0aGF0IHlvdSBkZWZp
+bmUuIEl0IGNhbid0IHZhbGlkYXRlIHlvdXIgRE5TIA0KPj4gc2VydmVyJ3Mgb3V0cHV0DQo+DQo+
+IGlwdGFibGVzIGNhbm5vdCBoZWxwIHlvdSBzaW5jZSB0aGUgc291cmNlIElQIGFkZHJlc3MgcHJl
+c3VtYWJseSB2YXJpZXMuIElmIHRoZSBzb3VyY2UgYWRkcmVzcyBkb2VzIG5vdCB2YXJ5IHRoYW4g
+aXB0YWJsZXMgY2FuIGhlbHAgeW91Lg0KPg0KPiBKdXN0IGdvb2dsZSAiaXB0YWJsZXMgcmF0ZSBs
+aW1pdCINCj4NCj4NCj4gQW55d2F5LCBpdCBzZWVtcyB0aGF0IHlvdSBvcGVyYXRlIGEgb3BlbiBy
+ZXNvbHZlciBvbiB5b3VyIHNlcnZlci4gUGxlYXNlIGdvb2dsZSwgd2h5IHRoaXMgaXMgbm90IGEg
+Z29vZCBpZGVhLiBCdXQgaWYgeW91IHJlYWxseSB3YW50IHRvIHJ1biBhIG9wZW4gcmVzb2x2ZXIs
+IHRoYW4gcmVhZCB0aGUgZG9jcyBvZiB5b3VyIEROUyBzZXJ2ZXIgaG93IHRvIGxpbWl0IHRoZSBy
+ZXF1ZXN0IHJhdGVzLiBGb3IgYmluZCwgc2VlOg0KPg0KPiBodHRwOi8vc3Mudml4LnN1L352anMv
+cmwtYXJtLmh0bWwNCj4gIC4NCj4NCj4NCj4NCj4gTWl0IGZyZXVuZGxpY2hlbiBHcsO8w59lbiwN
+Cj4NCj4gTWljaGFlbCBTY2h3YXJ0emtvcGZmDQo+DQo+IC0tDQo+IFsqXSBzeXM0IEFHDQo+DQo+
+IGh0dHA6Ly9zeXM0LmRlLCArNDkgKDg5KSAzMCA5MCA0NiA2NCwgKzQ5ICgxNjIpIDE2NSAwMDQ0
+IA0KPiBGcmFuemlza2FuZXJzdHJhw59lIDE1LCA4MTY2OSBNw7xuY2hlbg0KPg0KPiBTaXR6IGRl
+ciBHZXNlbGxzY2hhZnQ6IE3DvG5jaGVuLCBBbXRzZ2VyaWNodCBNw7xuY2hlbjogSFJCIDE5OTI2
+Mw0KPiBWb3JzdGFuZDogUGF0cmljayBCZW4gS29ldHRlciwgTWFyYyBTY2hpZmZiYXVlcg0KPiBB
+dWZzaWNodHNyYXRzdm9yc2l0emVuZGVyOiBGbG9yaWFuIEtpcnN0ZWluDQoNCi0tLS0tQkVHSU4g
+UEdQIFNJR05BVFVSRS0tLS0tDQpWZXJzaW9uOiBHbnVQRyB2Mg0KDQppUUljQkFFQkNBQUdCUUpV
+R3dpSEFBb0pFRGc1S1k5ajdHWlllRFlQLzJoZjlsLzJCeVp4MUl6TUhaZm5IRS9KDQpibVFZbmlw
+OGJnUlFjNTFMY2w0SzNsMDZBTWxCYWk5NDdkREh2aEZXYllSZEphTUlQVExKNnY2SHVkaC9hc1N0
+DQpUZmEyRmR1MmNJaVNBV1dCQ2N5UlcwR3FzSmRYTnJmZndBV3dXejV3MHh2OVR2WDAyRnJkMEZG
+eUI5Ukp0bVhMDQp5UGlvZStqTFFTODY3N2YvYk00U3krelJEaXJHYlBzQ2RCT2xiMHlzcUtGT0N1
+ZStYaXBlbDY0MG9Qc3ArSEl0DQpDMEd1ZGpVTUZLZFFYNjZWby9wNjlmV2RwT0VKZXFuaHBRMzc1
+Zkg4OVk4ZHFqQ3BUUmlPU1VuZzNKL05OckNjDQp5bHpmQlpWNkdSb1BjYTUzNWVYbTJPaEdjWGJr
+ZEprTnlLNmpKTXBvUU1qWjZwTWlXRDdyQnpQcjRTaFZjQ0E3DQoyZllPVGs2OFBKUndLcDNVSkZQ
+UCtvSWRnMW1vOGFqYy93OGlkUDcya2FiRUc3aStwc2FWVXh5cjNIdzUrTGF5DQoyTGdGV2lPRFdj
+OUkzS0RENi9wcWFUN0J2YkM5VXZrMGxMeHgyTG9Xd3J3b2MrUU8rc1czOVA0TmtCdldVdHJ0DQpq
+UDRhQ0FLV3Fjc2gvRkhob0kyMkQ3R1J1clJhN2NkREpJbFpNYStFKzVaZzZvMm4wRlRuUTIvVUc4
+dVNrMEVBDQo2Y2V2a2N1RVp0SjJzam96dllqZnB6MGp4MGJGK2p2bDBuaXZEcUxjL3dVd0xmMVdL
+dDdtc25peTg0NTFzZWVUDQplcXE5Y0MyWXRoc29pNWkrZ3NSeEM5UzZwenorczVpY2RxZVA0dG1G
+MTQ0VHlsak1mZXdOeDBUamhEZTNBdXkwDQpJL3Q5dllJbGdGbElvMDhFYXByMQ0KPVVGSXINCi0t
+LS0tRU5EIFBHUCBTSUdOQVRVUkUtLS0tLQ0KDQo=
