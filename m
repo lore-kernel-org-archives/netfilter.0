@@ -1,111 +1,85 @@
-From: Noel Kuntze <noel@familie-kuntze.de>
-Subject: Re: FW: Can IPTables check for a valid IP address
-Date: Thu, 18 Sep 2014 18:29:59 +0200
-Message-ID: <541B0887.5090108@familie-kuntze.de>
-References: <D4669F1AE5CE3D4293C4658A698E502904B637068E4C@SELENIUM.amity.local> <541AF628.8090509@sterenborg.org> <1888551.XEiLyKG9NI@nb003> <D4669F1AE5CE3D4293C4658A698E502904B637068E4F@SELENIUM.amity.local>
-Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <D4669F1AE5CE3D4293C4658A698E502904B637068E4F@SELENIUM.amity.local>
-Sender: netfilter-owner@vger.kernel.org
+From: Rob Jones <rob.jones@codethink.co.uk>
+Subject: [PATCH] net/netfilter/x_tables.c: use __seq_open_private()
+Date: Thu, 18 Sep 2014 17:48:31 +0100
+Message-ID: <1411058911-17655-1-git-send-email-rob.jones@codethink.co.uk>
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Lars Dam <l.p.dam@amity.nl>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: davem@davemloft.net
+Cc: netfilter@vger.kernel.org, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kernel@codethink.co.uk, rob.jones@codethink.co.uk
 
+Reduce boilerplate code by using __seq_open_private() instead of seq_open()
+in xt_match_open() and xt_target_open().
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+Signed-off-by: Rob Jones <rob.jones@codethink.co.uk>
+---
 
-Hello,
+This patch uses an existing variant of seq_open() to reduce the kernel code
+size.
 
-If with "invalid", you mean addresses of a certain type
-(multicast, anycast, broadcast, reserved address space, etc), look at t=
-he addrtype module.
+The only significant variation from the pre-existing code is the fact that
+__seq_open_private() calls kzalloc() rather than kmalloc(), which could
+conceivably have an impact on timing.
 
-Mit freundlichen Gr=C3=BC=C3=9Fen/Regards,
-Noel Kuntze
+ net/netfilter/x_tables.c |   30 ++++--------------------------
+ 1 file changed, 4 insertions(+), 26 deletions(-)
 
-GPG Key ID: 0x63EC6658
-=46ingerprint: 23CA BB60 2146 05E7 7278 6592 3839 298F 63EC 6658
-Am 18.09.2014 um 17:53 schrieb Lars Dam:
-> Thanks. I know what to do.
->
-> Regards,
->
-> Lars Da,
->
-> -----Oorspronkelijk bericht-----
-> Van: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.ker=
-nel.org] Namens Michael Schwartzkopff
-> Verzonden: Thursday, September 18, 2014 5:31 PM
-> Aan: netfilter@vger.kernel.org
-> Onderwerp: Re: Can IPTables check for a valid IP address
->
-> Am Donnerstag, 18. September 2014, 17:11:36 schrieb R. Sterenborg:
->> On 09/18/2014 03:50 PM, Lars Dam wrote:
->>> We suffer from DNS lookups with a response IP address which is not
->>> existing.
->>>
->>> Can Iptables check on this?
->>
->> What is it you actually want iptables to do? Do you want it to check
->> if the IP address that the DNS server responds with exists and is in=
- use?
->> Or..? Maybe the DNS server should be fixed instead of trying to go t=
-his way.
->>
->> Iptables (well, Netfilter) is a packet filter. You can filter packet=
-s
->> that match a rule that you define. It can't validate your DNS server=
-'s
->> output
->
-> iptables cannot help you since the source IP address presumably varie=
-s. If the source address does not vary than iptables can help you.
->
-> Just google "iptables rate limit"
->
->
-> Anyway, it seems that you operate a open resolver on your server. Ple=
-ase google, why this is not a good idea. But if you really want to run =
-a open resolver, than read the docs of your DNS server how to limit the=
- request rates. For bind, see:
->
-> http://ss.vix.su/~vjs/rl-arm.html
->  .
->
->
->
-> Mit freundlichen Gr=C3=BC=C3=9Fen,
->
-> Michael Schwartzkopff
->
-> --
-> [*] sys4 AG
->
-> http://sys4.de, +49 (89) 30 90 46 64, +49 (162) 165 0044 Franziskaner=
-stra=C3=9Fe 15, 81669 M=C3=BCnchen
->
-> Sitz der Gesellschaft: M=C3=BCnchen, Amtsgericht M=C3=BCnchen: HRB 19=
-9263
-> Vorstand: Patrick Ben Koetter, Marc Schiffbauer
-> Aufsichtsratsvorsitzender: Florian Kirstein
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJUGwiHAAoJEDg5KY9j7GZYeDYP/2hf9l/2ByZx1IzMHZfnHE/J
-bmQYnip8bgRQc51Lcl4K3l06AMlBai947dDHvhFWbYRdJaMIPTLJ6v6Hudh/asSt
-Tfa2Fdu2cIiSAWWBCcyRW0GqsJdXNrffwAWwWz5w0xv9TvX02Frd0FFyB9RJtmXL
-yPioe+jLQS8677f/bM4Sy+zRDirGbPsCdBOlb0ysqKFOCue+Xipel640oPsp+HIt
-C0GudjUMFKdQX66Vo/p69fWdpOEJeqnhpQ375fH89Y8dqjCpTRiOSUng3J/NNrCc
-ylzfBZV6GRoPca535eXm2OhGcXbkdJkNyK6jJMpoQMjZ6pMiWD7rBzPr4ShVcCA7
-2fYOTk68PJRwKp3UJFPP+oIdg1mo8ajc/w8idP72kabEG7i+psaVUxyr3Hw5+Lay
-2LgFWiODWc9I3KDD6/pqaT7BvbC9Uvk0lLxx2LoWwrwoc+QO+sW39P4NkBvWUtrt
-jP4aCAKWqcsh/FHhoI22D7GRurRa7cdDJIlZMa+E+5Zg6o2n0FTnQ2/UG8uSk0EA
-6cevkcuEZtJ2sjozvYjfpz0jx0bF+jvl0nivDqLc/wUwLf1WKt7msniy8451seeT
-eqq9cC2Ythsoi5i+gsRxC9S6pzz+s5icdqeP4tmF144TyljMfewNx0TjhDe3Auy0
-I/t9vYIlgFlIo08Eapr1
-=3DUFIr
------END PGP SIGNATURE-----
-
+diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
+index 227aa11..89aa680 100644
+--- a/net/netfilter/x_tables.c
++++ b/net/netfilter/x_tables.c
+@@ -1137,22 +1137,11 @@ static const struct seq_operations xt_match_seq_ops = {
+ 
+ static int xt_match_open(struct inode *inode, struct file *file)
+ {
+-	struct seq_file *seq;
+ 	struct nf_mttg_trav *trav;
+-	int ret;
+-
+-	trav = kmalloc(sizeof(*trav), GFP_KERNEL);
+-	if (trav == NULL)
++	trav = __seq_open_private(file, &xt_match_seq_ops, sizeof(*trav));
++	if (!trav)
+ 		return -ENOMEM;
+ 
+-	ret = seq_open(file, &xt_match_seq_ops);
+-	if (ret < 0) {
+-		kfree(trav);
+-		return ret;
+-	}
+-
+-	seq = file->private_data;
+-	seq->private = trav;
+ 	trav->nfproto = (unsigned long)PDE_DATA(inode);
+ 	return 0;
+ }
+@@ -1201,22 +1190,11 @@ static const struct seq_operations xt_target_seq_ops = {
+ 
+ static int xt_target_open(struct inode *inode, struct file *file)
+ {
+-	struct seq_file *seq;
+ 	struct nf_mttg_trav *trav;
+-	int ret;
+-
+-	trav = kmalloc(sizeof(*trav), GFP_KERNEL);
+-	if (trav == NULL)
++	trav = __seq_open_private(file, &xt_target_seq_ops, sizeof(*trav));
++	if (!trav)
+ 		return -ENOMEM;
+ 
+-	ret = seq_open(file, &xt_target_seq_ops);
+-	if (ret < 0) {
+-		kfree(trav);
+-		return ret;
+-	}
+-
+-	seq = file->private_data;
+-	seq->private = trav;
+ 	trav->nfproto = (unsigned long)PDE_DATA(inode);
+ 	return 0;
+ }
+-- 
+1.7.10.4
