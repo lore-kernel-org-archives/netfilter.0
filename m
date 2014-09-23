@@ -1,42 +1,40 @@
-From: Pavel Volkov <sailor@lists.xtsubasa.org>
-Subject: Error configuring NAT with nftables
-Date: Tue, 23 Sep 2014 21:35:38 +0400
-Message-ID: <86bab9a1-ef10-4d20-aaac-22889659815f@lists.xtsubasa.org>
+From: Eliezer Croitoru <eliezer@ngtech.co.il>
+Subject: Re: advanced routing with NAT: returning UDP traffic
+Date: Tue, 23 Sep 2014 20:41:08 +0300
+Message-ID: <5421B0B4.4040106@ngtech.co.il>
+References: <1955116.aThXd60LEg@localhost.localdomain>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-reply-to: <1955116.aThXd60LEg@localhost.localdomain>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Maarten <maarten@ba.be>, netfilter@vger.kernel.org
 
-I've used nftables to perform filtering for a while and today I tried to 
-configure it for NAT.
+Hey Maarten,
 
-I took the example from nftables wiki [1]:
-% nft add table nat
-% nft add chain nat prerouting { type nat hook prerouting priority 0 \; }
-% nft add chain nat postrouting { type nat hook postrouting priority 0 \; }
+As long as I remember conntrack and conntrack are working together.
+Which means that udp traffic will be distinguished the same way as TCP 
+as long the connection tracking categorized it under the same connection 
+stream.
+(I think for unestablished connection 30 secs and more for an 
+"established" one)
 
-The first command completes fine, but the second gives me an error:
-# nft add chain nat prerouting { type nat hook prerouting priority 0 \; }
-<cmdline>:1:1-66: Error: Could not process rule: No such file or directory
-add chain nat prerouting { type nat hook prerouting priority 0 ; }
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Eliezer
 
-Also tried this way:
-# nft -f /etc/nftables/ipv4-nat 
-/etc/nftables/ipv4-nat:3:1-2: Error: Could not process rule: No such file 
-or directory
-table nat {
-^^
-/etc/nftables/ipv4-nat:3:1-2: Error: Could not process rule: No such file 
-or directory
-table nat {
-^^
+On 09/23/2014 03:46 PM, Maarten wrote:
+> Hi,
+>
+> until now, i've done multiple ISPs with nexthop default route, 2 extra tables,
+> ip rule and TCP connmark.
+>
+> but, how does this involve UDP traffic...
+>
+> if for example i have in my NAT LAN an NTP server, how would i get the udp
+> packet out the same interface where it was originally coming in from?
+>
+> please advise...
+>
+> Maarten
 
-I'm using nftables 0.3 with kernel 3.16.3. Can you help me with it?
-
-
-[1] 
-http://wiki.nftables.org/wiki-nftables/index.php/Performing_Network_Address_Translation_%28NAT%29
