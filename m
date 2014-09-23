@@ -1,97 +1,42 @@
-From: Rob Jones <rob.jones@codethink.co.uk>
-Subject: [PATCH v2] net/netfilter/x_tables.c: use __seq_open_private()
-Date: Tue, 23 Sep 2014 18:05:55 +0100
-Message-ID: <1411491955-9131-1-git-send-email-rob.jones@codethink.co.uk>
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+From: Pavel Volkov <sailor@lists.xtsubasa.org>
+Subject: Error configuring NAT with nftables
+Date: Tue, 23 Sep 2014 21:35:38 +0400
+Message-ID: <86bab9a1-ef10-4d20-aaac-22889659815f@lists.xtsubasa.org>
+Mime-Version: 1.0
+Content-Transfer-Encoding: 8BIT
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: davem@davemloft.net
-Cc: netfilter@vger.kernel.org, coreteam@netfilter.org, netfilter-devel@vger.kernel.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, linux-kernel@codethink.co.uk, rob.jones@codethink.co.uk
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Reduce boilerplate code by using __seq_open_private() instead of seq_open()
-in xt_match_open() and xt_target_open().
+I've used nftables to perform filtering for a while and today I tried to 
+configure it for NAT.
 
-Signed-off-by: Rob Jones <rob.jones@codethink.co.uk>
----
+I took the example from nftables wiki [1]:
+% nft add table nat
+% nft add chain nat prerouting { type nat hook prerouting priority 0 \; }
+% nft add chain nat postrouting { type nat hook postrouting priority 0 \; }
 
-This patch uses an existing variant of seq_open() to reduce the kernel code
-size.
+The first command completes fine, but the second gives me an error:
+# nft add chain nat prerouting { type nat hook prerouting priority 0 \; }
+<cmdline>:1:1-66: Error: Could not process rule: No such file or directory
+add chain nat prerouting { type nat hook prerouting priority 0 ; }
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The only significant variation from the pre-existing code is the fact that
-__seq_open_private() calls kzalloc() rather than kmalloc(), which could
-conceivably have an impact on timing.
+Also tried this way:
+# nft -f /etc/nftables/ipv4-nat 
+/etc/nftables/ipv4-nat:3:1-2: Error: Could not process rule: No such file 
+or directory
+table nat {
+^^
+/etc/nftables/ipv4-nat:3:1-2: Error: Could not process rule: No such file 
+or directory
+table nat {
+^^
 
-This version 2 incorporates a minor initialisation simplification (resulting
-from kzalloc() being used) requested by netfilter-devel@vger.kernel.org
+I'm using nftables 0.3 with kernel 3.16.3. Can you help me with it?
 
- net/netfilter/x_tables.c |   31 ++++---------------------------
- 1 file changed, 4 insertions(+), 27 deletions(-)
 
-diff --git a/net/netfilter/x_tables.c b/net/netfilter/x_tables.c
-index 227aa11..393f17b 100644
---- a/net/netfilter/x_tables.c
-+++ b/net/netfilter/x_tables.c
-@@ -1080,7 +1080,6 @@ static void *xt_mttg_seq_start(struct seq_file *seq, loff_t *pos,
- 	struct nf_mttg_trav *trav = seq->private;
- 	unsigned int j;
- 
--	trav->class = MTTG_TRAV_INIT;
- 	for (j = 0; j < *pos; ++j)
- 		if (xt_mttg_seq_next(seq, NULL, NULL, is_target) == NULL)
- 			return NULL;
-@@ -1137,22 +1136,11 @@ static const struct seq_operations xt_match_seq_ops = {
- 
- static int xt_match_open(struct inode *inode, struct file *file)
- {
--	struct seq_file *seq;
- 	struct nf_mttg_trav *trav;
--	int ret;
--
--	trav = kmalloc(sizeof(*trav), GFP_KERNEL);
--	if (trav == NULL)
-+	trav = __seq_open_private(file, &xt_match_seq_ops, sizeof(*trav));
-+	if (!trav)
- 		return -ENOMEM;
- 
--	ret = seq_open(file, &xt_match_seq_ops);
--	if (ret < 0) {
--		kfree(trav);
--		return ret;
--	}
--
--	seq = file->private_data;
--	seq->private = trav;
- 	trav->nfproto = (unsigned long)PDE_DATA(inode);
- 	return 0;
- }
-@@ -1201,22 +1189,11 @@ static const struct seq_operations xt_target_seq_ops = {
- 
- static int xt_target_open(struct inode *inode, struct file *file)
- {
--	struct seq_file *seq;
- 	struct nf_mttg_trav *trav;
--	int ret;
--
--	trav = kmalloc(sizeof(*trav), GFP_KERNEL);
--	if (trav == NULL)
-+	trav = __seq_open_private(file, &xt_target_seq_ops, sizeof(*trav));
-+	if (!trav)
- 		return -ENOMEM;
- 
--	ret = seq_open(file, &xt_target_seq_ops);
--	if (ret < 0) {
--		kfree(trav);
--		return ret;
--	}
--
--	seq = file->private_data;
--	seq->private = trav;
- 	trav->nfproto = (unsigned long)PDE_DATA(inode);
- 	return 0;
- }
--- 
-1.7.10.4
-
+[1] 
+http://wiki.nftables.org/wiki-nftables/index.php/Performing_Network_Address_Translation_%28NAT%29
