@@ -1,51 +1,47 @@
-From: Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
-Subject: Re: typo on wiki
-Date: Tue, 23 Sep 2014 09:01:29 +0200
-Message-ID: <CAOkSjBjUQ-RyB2pp53af87XxmZdoNmYn-VB_d4C-XvDBVRSgjw@mail.gmail.com>
-References: <20140923012420.GA6301@vega.jjdev.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset 6.23 released
+Date: Tue, 23 Sep 2014 13:34:12 +0200 (CEST)
+Message-ID: <alpine.DEB.2.10.1409231328160.30582@blackhole.kfki.hu>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-type:content-transfer-encoding;
-        bh=FBlQqqpK85EGj5TI9wH49O8NHFTvbYQoj9JomnJpF04=;
-        b=ZI1094HiwNgGR6WpHCBEL+w5qjMpgGrV/ywhXJVbFc4YukZ34PNjFI7II554JmurwI
-         XnGSUnzpjwPaTGo/Q3mQqYxYZepJ1VeAwk3NyE2RIsQ4h3KjDVwi6xxhhJVT+NJ8LYkV
-         c9lY4M8o+h+OZZbT14s9bs5QRT+y1aQXNazSrs37u5ZeEFfM/NrqTFI6W6jt/RpTt60e
-         bcAWSEwVp2gzUEG7T1flrI5Nd8AZa2JnXj8YJjYb5x63dP2zdKo64WQdgNsrfmtzWwiK
-         Kl/QzAEg4By8sxgANGShcaCP/cM9RWAVBHgbkl56qF7Fq9mhBoJ5feVqqTJyTa8Wg0Tj
-         z19A==
-In-Reply-To: <20140923012420.GA6301@vega.jjdev.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
-To: John de la Garza <john@jjdev.com>
-Cc: Netfilter Users Mailing list <netfilter@vger.kernel.org>
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-On 23 September 2014 03:24, John de la Garza <john@jjdev.com> wrote:
-> http://wiki.nftables.org/wiki-nftables/index.php/Configuring_chains
->
-> it says:
->
-> Deleting chains
->
->    You can delete the chains that you don't need, eg.
->    % nft add chain ip filter input
->
->
->
->
-> should read
->
-> Deleting chains
->
->    You can delete the chains that you don't need, eg.
->    % nft delete chain ip filter input
+Hi,
 
-=46ixed,
+Here comes the new version of ipset with small bugfixes, corrections
+and manpage updates. The package contains the updated bash utilities as 
+well:
 
-thanks for the report.
---=20
-Arturo Borrero Gonz=C3=A1lez
+Userspace changes:
+  - The utils are updated from their sources
+  - Order create and add options in manpage so that generic ones
+    come first
+  - Centralise generic create options (family, hashsize, maxelem)
+    on top of man page in the generic options section. (Mart Frauenlob)
+  - Support glibc < 2.9 (fixes bugzilla id #891)
+  - Add description of hash:mac set type to man page. (Mart Frauenlob)
+  - Add missing space for skbinfo option synopsis. (Mart Frauenlob)
+  - The library/API versions were forgotten to bump (reported by
+    Sergei Zhirikov)
+  - Retry printing when sprintf fails (reported by Stig Thormodsrud)
+
+Kernel part changes:
+  - Support updating extensions when the set is full
+    (fixes bugzilla id #880)
+
+You can download the source code of ipset from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
