@@ -1,50 +1,49 @@
-From: Ben Hutchings <ben.hutchings@codethink.co.uk>
-Subject: Re: [PATCH v2] net/netfilter/x_tables.c: use
- __seq_open_private()
-Date: Tue, 23 Sep 2014 18:46:27 +0100
-Message-ID: <1411494387.32579.138.camel@xylophone>
-References: <1411491955-9131-1-git-send-email-rob.jones@codethink.co.uk>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: Error configuring NAT with nftables
+Date: Tue, 23 Sep 2014 20:31:31 +0200
+Message-ID: <20140923183131.GA18253@salvia>
+References: <86bab9a1-ef10-4d20-aaac-22889659815f@lists.xtsubasa.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <1411491955-9131-1-git-send-email-rob.jones@codethink.co.uk>
-Sender: linux-kernel-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <86bab9a1-ef10-4d20-aaac-22889659815f@lists.xtsubasa.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Rob Jones <rob.jones@codethink.co.uk>
-Cc: davem@davemloft.net, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@codethink.co.uk, linux-kernel@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: Pavel Volkov <sailor@lists.xtsubasa.org>
+Cc: netfilter@vger.kernel.org
 
-On Tue, 2014-09-23 at 18:05 +0100, Rob Jones wrote:
-> Reduce boilerplate code by using __seq_open_private() instead of seq_open()
-> in xt_match_open() and xt_target_open().
+On Tue, Sep 23, 2014 at 09:35:38PM +0400, Pavel Volkov wrote:
+> I've used nftables to perform filtering for a while and today I
+> tried to configure it for NAT.
 > 
-> Signed-off-by: Rob Jones <rob.jones@codethink.co.uk>
-> ---
+> I took the example from nftables wiki [1]:
+> % nft add table nat
+> % nft add chain nat prerouting { type nat hook prerouting priority 0 \; }
+> % nft add chain nat postrouting { type nat hook postrouting priority 0 \; }
 > 
-> This patch uses an existing variant of seq_open() to reduce the kernel code
-> size.
+> The first command completes fine, but the second gives me an error:
+> # nft add chain nat prerouting { type nat hook prerouting priority 0 \; }
+> <cmdline>:1:1-66: Error: Could not process rule: No such file or directory
+> add chain nat prerouting { type nat hook prerouting priority 0 ; }
+> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 > 
-> The only significant variation from the pre-existing code is the fact that
-> __seq_open_private() calls kzalloc() rather than kmalloc(), which could
-> conceivably have an impact on timing.
+> Also tried this way:
+> # nft -f /etc/nftables/ipv4-nat /etc/nftables/ipv4-nat:3:1-2: Error:
+> Could not process rule: No such file or directory
+> table nat {
+> ^^
+> /etc/nftables/ipv4-nat:3:1-2: Error: Could not process rule: No such
+> file or directory
+> table nat {
+> ^^
 > 
-> This version 2 incorporates a minor initialisation simplification (resulting
-> from kzalloc() being used) requested by netfilter-devel@vger.kernel.org
-[...]
-> --- a/net/netfilter/x_tables.c
-> +++ b/net/netfilter/x_tables.c
-> @@ -1080,7 +1080,6 @@ static void *xt_mttg_seq_start(struct seq_file *seq, loff_t *pos,
->         struct nf_mttg_trav *trav = seq->private;
->         unsigned int j;
->  
-> -       trav->class = MTTG_TRAV_INIT;
->         for (j = 0; j < *pos; ++j)
->                 if (xt_mttg_seq_next(seq, NULL, NULL, is_target) == NULL)
->                         return NULL;
-[...]
+> I'm using nftables 0.3 with kernel 3.16.3. Can you help me with it?
 
-I'm fairly sure this simplification is wrong, as xt_mttg_seq_start() is
-potentially called multiple times on the same file handle.
+Does your .config contain:
 
-Ben.
+CONFIG_NFT_CHAIN_NAT_IPV4=m
 
+# lsmod | grep nft_chain_nat_ipv4
+nft_chain_nat_ipv4     12684  2
