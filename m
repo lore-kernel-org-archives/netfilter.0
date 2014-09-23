@@ -1,47 +1,28 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: [ANNOUNCE] ipset 6.23 released
-Date: Tue, 23 Sep 2014 13:34:12 +0200 (CEST)
-Message-ID: <alpine.DEB.2.10.1409231328160.30582@blackhole.kfki.hu>
+From: Maarten <maarten@ba.be>
+Subject: advanced routing with NAT: returning UDP traffic
+Date: Tue, 23 Sep 2014 14:46:17 +0200
+Message-ID: <1955116.aThXd60LEg@localhost.localdomain>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Sender: netfilter-devel-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <netfilter-owner@vger.kernel.org>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: netfilter@vger.kernel.org
 
 Hi,
 
-Here comes the new version of ipset with small bugfixes, corrections
-and manpage updates. The package contains the updated bash utilities as 
-well:
+until now, i've done multiple ISPs with nexthop default route, 2 extra tables, 
+ip rule and TCP connmark.
 
-Userspace changes:
-  - The utils are updated from their sources
-  - Order create and add options in manpage so that generic ones
-    come first
-  - Centralise generic create options (family, hashsize, maxelem)
-    on top of man page in the generic options section. (Mart Frauenlob)
-  - Support glibc < 2.9 (fixes bugzilla id #891)
-  - Add description of hash:mac set type to man page. (Mart Frauenlob)
-  - Add missing space for skbinfo option synopsis. (Mart Frauenlob)
-  - The library/API versions were forgotten to bump (reported by
-    Sergei Zhirikov)
-  - Retry printing when sprintf fails (reported by Stig Thormodsrud)
+but, how does this involve UDP traffic...
 
-Kernel part changes:
-  - Support updating extensions when the set is full
-    (fixes bugzilla id #880)
+if for example i have in my NAT LAN an NTP server, how would i get the udp 
+packet out the same interface where it was originally coming in from?
 
-You can download the source code of ipset from:
-        http://ipset.netfilter.org
-        ftp://ftp.netfilter.org/pub/ipset/
-        git://git.netfilter.org/ipset.git
+please advise...
 
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+Maarten
+-- 
+BA NV
+IT & Security
