@@ -1,65 +1,55 @@
-From: Rob Jones <rob.jones@codethink.co.uk>
-Subject: Re: [PATCH v2] net/netfilter/x_tables.c: use __seq_open_private()
-Date: Wed, 24 Sep 2014 09:14:53 +0100
-Message-ID: <54227D7D.6020909@codethink.co.uk>
-References: <1411491955-9131-1-git-send-email-rob.jones@codethink.co.uk> <1411494387.32579.138.camel@xylophone> <20140923214021.GA4206@salvia>
+From: Maarten Vanraes <maarten@ba.be>
+Subject: Re: advanced routing with NAT: returning UDP traffic
+Date: Wed, 24 Sep 2014 11:35:59 +0200
+Message-ID: <4623776.NNCmRlCAkc@localhost>
+References: <1955116.aThXd60LEg@localhost.localdomain> <5421B0B4.4040106@ngtech.co.il>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <linux-kernel-owner@vger.kernel.org>
-In-Reply-To: <20140923214021.GA4206@salvia>
-Sender: linux-kernel-owner@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7Bit
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <5421B0B4.4040106@ngtech.co.il>
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Pablo Neira Ayuso <pablo@netfilter.org>, Ben Hutchings <ben.hutchings@codethink.co.uk>
-Cc: davem@davemloft.net, coreteam@netfilter.org, netdev@vger.kernel.org, linux-kernel@codethink.co.uk, linux-kernel@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: Eliezer Croitoru <eliezer@ngtech.co.il>
+Cc: netfilter@vger.kernel.org
 
+conntrack and conntrack ? i'm assuming this is a typo?
 
+so, even some kind of odd udp reply will still be the same connection if it's 
+within 30seconds?
 
-On 23/09/14 22:40, Pablo Neira Ayuso wrote:
-> On Tue, Sep 23, 2014 at 06:46:27PM +0100, Ben Hutchings wrote:
->> On Tue, 2014-09-23 at 18:05 +0100, Rob Jones wrote:
->>> Reduce boilerplate code by using __seq_open_private() instead of seq_open()
->>> in xt_match_open() and xt_target_open().
->>>
->>> Signed-off-by: Rob Jones <rob.jones@codethink.co.uk>
->>> ---
->>>
->>> This patch uses an existing variant of seq_open() to reduce the kernel code
->>> size.
->>>
->>> The only significant variation from the pre-existing code is the fact that
->>> __seq_open_private() calls kzalloc() rather than kmalloc(), which could
->>> conceivably have an impact on timing.
->>>
->>> This version 2 incorporates a minor initialisation simplification (resulting
->>> from kzalloc() being used) requested by netfilter-devel@vger.kernel.org
->> [...]
->>> --- a/net/netfilter/x_tables.c
->>> +++ b/net/netfilter/x_tables.c
->>> @@ -1080,7 +1080,6 @@ static void *xt_mttg_seq_start(struct seq_file *seq, loff_t *pos,
->>>          struct nf_mttg_trav *trav = seq->private;
->>>          unsigned int j;
->>>
->>> -       trav->class = MTTG_TRAV_INIT;
->>>          for (j = 0; j < *pos; ++j)
->>>                  if (xt_mttg_seq_next(seq, NULL, NULL, is_target) == NULL)
->>>                          return NULL;
->> [...]
->>
->> I'm fairly sure this simplification is wrong, as xt_mttg_seq_start() is
->> potentially called multiple times on the same file handle.
+so, i can use connmark on not just TCP, but on all protocols?
 
-Well spotted Ben.
+Regards,
 
->
-> Right. I'm going to take v1 of this patch instead, sorry for the
-> inconvenience Rob.
+Maarten
 
-No problem at all. It gave me something to do on the train home last
-night :-)
-
+Op dinsdag 23 september 2014 20:41:08 schreef Eliezer Croitoru:
+> Hey Maarten,
+> 
+> As long as I remember conntrack and conntrack are working together.
+> Which means that udp traffic will be distinguished the same way as TCP
+> as long the connection tracking categorized it under the same connection
+> stream.
+> (I think for unestablished connection 30 secs and more for an
+> "established" one)
+> 
+> Eliezer
+> 
+> On 09/23/2014 03:46 PM, Maarten wrote:
+> > Hi,
+> > 
+> > until now, i've done multiple ISPs with nexthop default route, 2 extra
+> > tables, ip rule and TCP connmark.
+> > 
+> > but, how does this involve UDP traffic...
+> > 
+> > if for example i have in my NAT LAN an NTP server, how would i get the udp
+> > packet out the same interface where it was originally coming in from?
+> > 
+> > please advise...
+> > 
+> > Maarten
 -- 
-Rob Jones
-Codethink Ltd
-mailto:rob.jones@codethink.co.uk
-tel:+44 161 236 5575
+BA NV
+IT & Security
