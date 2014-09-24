@@ -1,36 +1,32 @@
-From: Maarten Vanraes <maarten@ba.be>
+From: Eliezer Croitoru <eliezer@ngtech.co.il>
 Subject: Re: advanced routing with NAT: returning UDP traffic
-Date: Wed, 24 Sep 2014 12:16:10 +0200
-Message-ID: <2942322.0b85jGZzF5@localhost>
-References: <1955116.aThXd60LEg@localhost.localdomain> <4623776.NNCmRlCAkc@localhost> <5422938E.2030104@plouf.fr.eu.org>
+Date: Wed, 24 Sep 2014 15:38:26 +0300
+Message-ID: <5422BB42.6040707@ngtech.co.il>
+References: <1955116.aThXd60LEg@localhost.localdomain> <4623776.NNCmRlCAkc@localhost> <5422938E.2030104@plouf.fr.eu.org> <2942322.0b85jGZzF5@localhost>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <5422938E.2030104@plouf.fr.eu.org>
+In-reply-to: <2942322.0b85jGZzF5@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: Maarten Vanraes <maarten@ba.be>, Pascal Hambourg <pascal@plouf.fr.eu.org>
 Cc: netfilter@vger.kernel.org
 
-Op woensdag 24 september 2014 11:49:02 schreef Pascal Hambourg:
-> Maarten Vanraes a =E9crit :
-> > so, even some kind of odd udp reply will still be the same connecti=
-on if
-> > it's within 30seconds?
->=20
-> Not odd. The reply packet has to match the addresses and ports in the
-> original packet (with source and destination swapped).
->=20
-> > so, i can use connmark on not just TCP, but on all protocols?
->=20
-> Not all protocols, but any protocol implementation which behaves in t=
-he
-> way expected by conntrack.
+On 09/24/2014 01:16 PM, Maarten Vanraes wrote:
+> ok, thanks,
+>
+> so, this is why streaming/voip stuff will still have issues...
+Yes indeed.
+and I Meant conntrack and connmark...
+VOIP and STREAMING are beasts!!!
+There are modules which analyze them and also recognize them but you 
+will need to enable them first.
 
-ok, thanks,
+The issue is not UDP by itself as you understand.
+It's a well known issue with multi IP nat machines in ISPS.
+In many cases a SIP proxy helps to fix couple things.
+I haven't tried it yet but it seems like there are commercial products 
+that implement these SIP proxy.
 
-so, this is why streaming/voip stuff will still have issues...
---=20
-BA NV
-IT & Security
+Eliezer
