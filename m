@@ -1,22 +1,37 @@
-From: "Bruce, Paul" <Paul.Bruce@integratelecom.com>
-Subject: Filtering inbound DNS traffic
-Date: Thu, 25 Sep 2014 19:33:54 +0000
-Message-ID: <6934F1F151D32B4383192F5ACCEFC2EE214970E1@IDCPRDMBX1.ads.integratelecom.com>
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Subject: Re: advanced routing with NAT: returning UDP traffic
+Date: Fri, 26 Sep 2014 15:18:42 +0200
+Message-ID: <542567B2.4060800@plouf.fr.eu.org>
+References: <1955116.aThXd60LEg@localhost.localdomain> <2942322.0b85jGZzF5@localhost> <5422BB42.6040707@ngtech.co.il> <3545996.7GKZQHL5tP@localhost>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: en-US
+In-Reply-To: <3545996.7GKZQHL5tP@localhost>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"
+To: Maarten Vanraes <maarten@ba.be>
+Cc: netfilter@vger.kernel.org
 
-I want to filter malicious inbound DNS traffic, specifically DNS requests with invalid opcodes.  Is anyone out there doing this?  Interested in your methodology.   I started experimenting with u32 but I'm not sure I'm on the right track, maybe there is a better way?
+Maarten Vanraes a =E9crit :
+> Op woensdag 24 september 2014 15:38:26 schreef Eliezer Croitoru:
+>> VOIP and STREAMING are beasts!!!
+>> There are modules which analyze them and also recognize them but you
+>> will need to enable them first.
+>=20
+> what kind of modules do you know that help conntracking this kind of =
+stuff?
 
-iptables --insert INPUT -p udp --dport 53 -m u32 --u32 "0x2a=0x35313020" -j logdrop -m comment --comment "dropping non-query opcode packets"  
+=46or SIP : nf_conntrack_sip. There is a nf_conntrack_<protocol> helper
+for each supported "complex" protocol (FTP, IRC, PPTP...). Their purpos=
+e
+is to set the state of the first packet of the data connection to
+RELATED, and copy the connmark of the control connection to the data
+connection. On a box doing NAT, you also need the related
+nf_nat_<protocol> module.
 
+> and... what about ipv6 and multiple ISPs? (but without natting, but s=
+till no=20
+> bgp or something), won't i still have the same problem?
 
-I've been using packet captures to try and identify what I should be blocking but I don't have this pinned down correctly.  The relative position of the opcode is moving?
-
-
-
+Yes.
