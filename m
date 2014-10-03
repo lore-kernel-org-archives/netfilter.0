@@ -1,7 +1,7 @@
 From: Al Grant <bigal.nz@gmail.com>
 Subject: Re: ban traffic per country
-Date: Sat, 4 Oct 2014 12:58:41 +1300
-Message-ID: <CAODtcdexRYUmOkrDtGF0fZn7kVNNqyC6SHZ__qHePA5LA_3tnw@mail.gmail.com>
+Date: Sat, 4 Oct 2014 12:59:12 +1300
+Message-ID: <CAODtcdfM_v2k8V9jim9PuZYzKLCfvn2Gz1pjTCZzRTqsN1DkCA@mail.gmail.com>
 References: <CAODtcdfJrgtXcoQUVkJ=kcUuf-p1MkVnz8DDqLXdSEyMkYzH7A@mail.gmail.com>
 	<542D8CF4.8060505@familie-kuntze.de>
 	<CAODtcdfiOBFeSgX6kE+waWrvh4Gk+BhxTOrdbhLEcwG3EaDe1A@mail.gmail.com>
@@ -14,13 +14,13 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=mime-version:in-reply-to:references:date:message-id:subject:from:to
          :cc:content-type:content-transfer-encoding;
-        bh=1H7MeoNk/6m02ROHQeJp9EAnLEU4AaslUmSonTChfl0=;
-        b=oJS2qlW47QmxrEY0B27FQybDPdWPAYoCg/WSsa6+Ub0r5JyGs1j7bjAvENkhFshjPK
-         3dIXCeJN8x7p1WbIVPlDKqxa/P4T6+g9gGF04VEqqE20xap08PX/+IhVePQiKjf65S1f
-         FZoAlrsQCXYB/8aSPG3ddRqhBaxUBhbi1xrTKsVtE57s/HEtpkAhUGeK4C2i2PLnEZtN
-         f0atiRFAFhpOTNSNeuqPkvr31d9L6J5XY0hBXyHbNEOuhcPrTwkV3wN8/vUbhwLlvFMB
-         zsncKY19oy8LoYotuQuAJtyoyqdreA/mCWh2UfNTMGPjMJTzypuyXBNVSG2IbCENKZUc
-         bRIw==
+        bh=X5AEcAC6LXjkehdIIBBno1KbGAgGsF2ziIyIEZdtRx4=;
+        b=iZO5fEVjYFSAg962s7Bf0RDQx9PlmP+BZGgFccKMn3xOlYmejWWCr3TVqQyMPrEGGv
+         w67awMUsf6HSdBcQRK+keGeKsayupl6wHko5ZW9mPWWM2YVhLK30EGmh/MZjIRej0aWv
+         KGGYtK89kts9npZv+ekA7secjaqn656dxNaygkq5L9v47zBcBE2wOmaF2DA5zUdpznnR
+         GNoPXg14ByPAXNoQPUN80XTDUeIEgmDZ2phtuXD4pThAFmF+pL5v0LhGKW2POObq1THb
+         nUCGcgqwL7C3iQBfHA7O8kyS0o/QgSatZ63bPUV8egpirmylgq949UxQSfiY8N62VXhm
+         vZew==
 In-Reply-To: <CACuyg24jYJiACrawuVK7ok6ga3xfZCS41zA_v1HkZp_0=mfiBg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
@@ -28,16 +28,7 @@ Content-Type: text/plain; charset="utf-8"
 To: =?UTF-8?Q?Humberto_Juc=C3=A1?= <betolj@gmail.com>
 Cc: Noel Kuntze <noel@familie-kuntze.de>, netfilter <netfilter@vger.kernel.org>
 
-Thanks for that.
-
-I will read up on both.
-
-The number of attacks coming out of China and Russia is amazing.
-
-Cheers
-
--Al
-
+I am running Pbx In a Flash (PIAF) which is on Red Hat BTW.
 
 On Fri, Oct 3, 2014 at 9:42 AM, Humberto Juc=C3=A1 <betolj@gmail.com> w=
 rote:
