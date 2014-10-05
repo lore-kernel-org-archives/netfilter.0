@@ -1,200 +1,147 @@
-From: Noel Kuntze <noel@familie-kuntze.de>
-Subject: Re: ban traffic per country
-Date: Sun, 05 Oct 2014 13:20:53 +0200
-Message-ID: <54312995.1000305@familie-kuntze.de>
-References: <CAODtcdfJrgtXcoQUVkJ=kcUuf-p1MkVnz8DDqLXdSEyMkYzH7A@mail.gmail.com>	<542D8CF4.8060505@familie-kuntze.de>	<CAODtcdfiOBFeSgX6kE+waWrvh4Gk+BhxTOrdbhLEcwG3EaDe1A@mail.gmail.com>	<542D909B.6030507@familie-kuntze.de> <CAODtcdeBDUXHcjSXCV1t3SKFGNP-eifPOhn6mynvzCShxstLLA@mail.gmail.com>
+From: John Lister <john.lister@kickstone.com>
+Subject: Re: Basic routing
+Date: Sun, 05 Oct 2014 16:41:25 +0100
+Message-ID: <543166A5.5090808@kickstone.com>
+References: <m0nhf2$oqq$1@ger.gmane.org> <201410032134.59160.neal.p.murphy@alum.wpi.edu> <m0nncm$t77$1@ger.gmane.org> <542F9BEE.9070802@kickstone.com> <m0okc1$g5m$1@ger.gmane.org> <542FFCA2.3010208@bringe.com> <m0p2g0$clr$1@ger.gmane.org> <m0pbme$ifl$1@ger.gmane.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAODtcdeBDUXHcjSXCV1t3SKFGNP-eifPOhn6mynvzCShxstLLA@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kickstone.com; h=
+	content-transfer-encoding:content-type:content-type:in-reply-to
+	:references:subject:subject:to:mime-version:user-agent:from:from
+	:date:date:message-id; s=dkim; t=1412523670; x=1413387671; bh=6a
+	UvbHJ9PoiuTOCgfPOQIAMMrJB9ZE54P4qmObzEuOg=; b=br8AingizwVz4pdu6U
+	lbZ6nks3hbd4+5zhs8op4SBmuoZty9iMGEPy7rBALhYkT/Fz5f+VvHAJHwsErzvW
+	eajLjPLH4fKAuqUqmqZxGFFeAFXJW30lEetbz3BCTWkFs4Gf8gbNjB0it2lwi3I8
+	KNG8tKCoyzuo6oIFCQkZb9zLk=
+In-Reply-To: <m0pbme$ifl$1@ger.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Al Grant <bigal.nz@gmail.com>, netfilter <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: John Smithee <for-gmane@mutluit.com>, netfilter@vger.kernel.org
 
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
-
-Hello Al,
-
-I'm going to break it down for you.
-
-The reason for storing it as a hash is, that that hash:net is the only =
-storage type that only requires a subnet.
-Every other type requires either more arguments (hash:net,net, hash:net=
-,port) or doesn't support the :net data type.
-
-You need family inet, because you're working IPv4 addresses. If you wan=
-t to work with ipv6 addresses, you need to use
-family inet6.
-
-hashsize and maxelem aren't really needed, as I just gave you the defau=
-lt values for those.
-
-If your distro doesn't come with a default ipset.conf file, you should =
-create one.
-The file "ipset.conf" just contains the ipset structure with the member=
-s.
-If you created an ipset using the "ipset" tool, you can store it using =
-"ipset -f <pathToTheSaveFile> save".
-To load the ipset before you load the iptables rules, you also need cre=
-ate a service with the correct dependencies.
-
-
-Mit freundlichen Gr=C3=BC=C3=9Fen/Regards,
-Noel Kuntze
-
-GPG Key ID: 0x63EC6658
-=46ingerprint: 23CA BB60 2146 05E7 7278 6592 3839 298F 63EC 6658
-
-Am 05.10.2014 um 04:56 schrieb Al Grant:
->  Hi Noel,
->
-> So I have started to read manpages on ipset. Its left me with a few q=
-uestions.
->
-> Could you break the command down into pieces?
->
-> I get "ipset create new-Zealand" but why store it as a hash?
->
-> What datatypes doesn't net include for example?
->
-> The explanation in the manual for the rest " inet hashsize 1024
-> maxelem 65535" I didn't understand either.
->
-> It would be nice to understand what I am doing rather than blindly
-> copying your commands - where's the learning in that!
->
-> The iptables rule I am ok with.
->
-> Finally you talk about ipset.conf ? I have installed ipset - but a
-> "find / -name ipset.conf" didn't find anything so Im not sure that
-> file exists anywhere on my system (RedHat).
->
-> What should I be adding to ipset.conf when I find it.
->
-> Thanks in advance,
->
-> -Al
->
->
->
->
-> On Fri, Oct 3, 2014 at 6:51 AM, Noel Kuntze <noel@familie-kuntze.de> =
-wrote:
+On 04/10/2014 18:44, John Smithee wrote:
+> John Smithee wrote, On 10/04/2014 05:07 PM:
+>> Thomas B=E4tzler wrote, On 10/04/2014 03:56 PM:
+>>> Hi,
+>>>
+>>> Am 04.10.2014 um 13:06 schrieb John Smithee:
+>>>> Ok, I admit using "ping -I" was a bad example. The whole point I t=
+ried
+>>>> to make is, that the second net (69.0) cannot reach any other IP
+>>>> outside its own net.
+>>>> The goal is to let 69.0 reach the world via this gateway machine
+>>>> 68.22/69.22.
+>>>> Is some iptables needed in this case?
+>>>
+>>> You do have IP forwarding enabled?
+>>>
+>>> If not,  enable it using
+>>>    echo "1" > /proc/sys/net/ipv4/ip_forward
+>>> and try again.
+>>>
+>>>
+>>> HTH,
+>>> Thomas
 >>
-> Hello Al,
->
-> Please keep it on the list.
-> An ipset is basicly external storage in kernel space. It can contain =
-a couple of layer
-> three and four information, like IP addresses or ports. You can match=
- on said
-> characteristica with the "set" iptables match module.
-> You need to load the ipset before you load the rules, otherwise you c=
-an't
-> load them.
-> Example rules and ipset:
->
-> Rule: -A INPUT -m set ! --match-set new-zealand src -j DROP
->
-> ipset:
-> create new-zealand hash:net family inet hashsize 1024 maxelem 65535
-> add new-zealand 10.0.0.0/8
-> add new-zealand 172.16.0.0/12
->
-> The rule matches on all traffic, that does not come from an IP that i=
-s contained in
-> any of the networks contained in the set "new-zealand".
-> I don't know what distribution you use, so I can't tell you where it'=
-s supposed to go
-> on your host. On Arch Linux, you have /etc/ipset.conf.
->
-> Mit freundlichen Gr=C3=BC=C3=9Fen/Regards,
-> Noel Kuntze
->
-> GPG Key ID: 0x63EC6658
-> Fingerprint: 23CA BB60 2146 05E7 7278 6592 3839 298F 63EC 6658
->
-> Am 02.10.2014 um 19:45 schrieb Al Grant:
-> >>> Thanks for the fast reply Noel.
-> >>>
-> >>> Im not particularly good with iptables or ipset. Would you mind
-> >>> providing a little more detail?
-> >>>
-> >>> Thanks in advance,
-> >>>
-> >>> -Al
-> >>>
-> >>>
-> >>> On Fri, Oct 3, 2014 at 6:35 AM, Noel Kuntze <noel@familie-kuntze.=
-de> wrote:
-> >>>>
-> >>> Hello Al,
-> >>>
-> >>> Yes, that is possible. Get the list of subnets that is assigned t=
-o the ISPs in
-> >>> New Zealand and put it into an ipset. Then match on said ipset wi=
-th the "set"
-> >>> match module.
-> >>>
-> >>> Mit freundlichen Gr=C3=BC=C3=9Fen/Regards,
-> >>> Noel Kuntze
-> >>>
-> >>> GPG Key ID: 0x63EC6658
-> >>> Fingerprint: 23CA BB60 2146 05E7 7278 6592 3839 298F 63EC 6658
-> >>>
-> >>> Am 02.10.2014 um 19:27 schrieb Al Grant:
-> >>>>>> Hi All,
-> >>>>>>
-> >>>>>> I have a Amazon instance running asterisk. I think it also has=
- fail2ban running.
-> >>>>>>
-> >>>>>> I want to lock it down a little as I have opened up some ports=
- for
-> >>>>>> asterisk to run.
-> >>>>>>
-> >>>>>> In essence no traffic should connect to it except from my coun=
-try .nz
-> >>>>>>
-> >>>>>> Is there a way to do this? I see a few websites list some very=
- long
-> >>>>>> lists of iptables per country.
-> >>>>>>
-> >>>>>> Cheers
-> >>>>>>
-> >>>>>> -Al
-> >>>>>>
-> >>>>>>
-> >>>
-> >>>>
-> >>>
-> >>>
-> >>>
->
->
 >>
+>> Yes, ip frowarding is enabled.
+>>
+>> After doing much research on the net and experimenting
+>> I think (still testing) I finally found a solution,
+>> but it's unfortunately a little bit complicated.
+>> I'll summarize later.
 >
 >
+> I finally managed to get it working with these steps:
+>
+> IF0=3D"eth0"
+> NW0=3D"192.168.68.0/24"
+> ET0=3D"192.168.68.22"
+> GW0=3D"192.168.68.254"
+> TAB0=3D"my0"  # must be defined in /etc/iproute2/rt_tables, f.e. 100 =
+my0
+>
+> IF1=3D"eth1"
+> NW1=3D"192.168.69.0/24"
+> ET1=3D"192.168.69.22"
+> GW1=3D"192.168.69.7"
+> TAB1=3D"my1"  # must be defined in /etc/iproute2/rt_tables, f.e. 101 =
+my1
+>
+> ip route add $NW0 dev $IF0 src $ET0 table $TAB0
+> ip route add default via $GW0 table $TAB0
+>
+> ip route add $NW1 dev $IF1 src $ET1 table $TAB1
+> ip route add default via $GW1 table $TAB1
+>
+> ip route add $NW0 dev $IF0 src $ET0
+> ip route add $NW1 dev $IF1 src $ET1
+>
+> # your preference for default route:
+> ip route add default via $GW0
+>
+> ip rule add from $ET0 table $TAB0
+> ip rule add from $ET1 table $TAB1
+> ip rule add to   $ET0 table $TAB0
+> ip rule add to   $ET1 table $TAB1
+>
+> iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+>
+>
+> This solution is not that bad, though IMHO complicated.
+> But one thing is still missing: 69.* cannot ping
+> the IP 68.22, but other than that it can reach everything else.
+>
+> If someone knows a simpler solution pls let me know, thx.
+>
+>
+> Here are some references where I found the above stuff:
+>
+> http://kindlund.wordpress.com/2007/11/19/configuring-multiple-default=
+-routes-in-linux/=20
+>
+> http://www.linuxhorizon.ro/iproute2.html
+> http://www.lartc.org/howto/lartc.rpdb.html
+> http://www.lartc.org/howto/lartc.rpdb.multiple-links.html
 >
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+This seems overly complicated for what sounds like a simple routing=20
+solution. I'm guessing there must be something slightly out of the=20
+ordinary about your setup or I'm mising something. I'm assuming=20
+something like this
 
-iQIcBAEBCAAGBQJUMSmVAAoJEDg5KY9j7GZYIbMQAJvh8r/K5FQwRDmQocmR/+em
-r0pfykS5ti76+sj1yX1Rei5q1jBWmvkVRFwxNQP9ShPr9C/f9Kj0ivS9S/vgCXDT
-b/Tg+ykCYnutf5n2bM4oX3dby0+Pn0Q33yZws6QKT/YQIiOnvgitVIKhMpHuZCvm
-+GawpF/6iEz8uZ4z9Ib2Z9PABLrvHfpMC4Dt+EhOGqwCb3ZAYaCFAiB0rrTSWPVq
-daBRmpgMasKXUNo2fZSXkt9tGYifLHRpBagqiIkMBcMvh2TlQJK3jyIVrjd8DRWh
-DHVV+C7tID6OhayFivjz1jOoaynini/spJ7WIMbMI3udIN3XMxZt9ZtmrjOctKQI
-ge4C0mDcdUDvc9opbenzOO7k6ZcXC+wdYpQ5FAC9onxgajpOKsDiPcBzf6Xgrnc6
-61aQcdc/py2aBol6zvYMOssa1a0gL8AqwGGkI6RRsLkD45sz7f7B2dPfSYqmTzEo
-CMOwusRFefHBNDIRDuMRLA5lYAyu8j48GxoGtppj0XF+Adcr58vcUU9dF7eSQsqS
-fhIzkk4DJaLq7LH4x9RQ05SP6ke2LRCMFPbh/zvBUQ+fLoJ5gTZveypZxN6mE3MR
-f7d2NQgBuxieZPCwr4yY2yGc+j+DURSooJv1+/Gb6zrxSbEWsAVQfoF5+vyT7rtX
-1tpgxsf7get0hciX23Di
-=3DYyjO
------END PGP SIGNATURE-----
 
+MACHINE1-x.69.7  ---->  .69.22 - MACHINE2 - .68.22 ----> .68.254 -=20
+DEFAULT ROUTER --> internet
+
+
+the routing table for machine1 should be
+default 192.168.69.22 0.0.0.0 eth0
+192.168.69.0 * 255.255.255.0 eth0
+
+and for machine2 is should be
+default 192.168.68.254 0.0.0.0 eth0
+192.168.68.0 * 255.255.255.0 eth0
+192.168.69.0 * 255.255.255.0 eth1
+
+
+The only issue you have is that there either needs to be a route on you=
+r=20
+external router to 192.68.69.0/24 via 192.168.68.22 or as you have it=20
+above an iptables rule to masquerade any address on the 192.168.69=20
+domain to the eth0 address so that the replies from outside your networ=
+k=20
+know how to get back to your private subnet.
+
+John
+
+>
+>
+> --=20
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
 
