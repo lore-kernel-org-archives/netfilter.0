@@ -1,7 +1,7 @@
 From: Al Grant <bigal.nz@gmail.com>
 Subject: Re: ban traffic per country
-Date: Sun, 5 Oct 2014 15:56:35 +1300
-Message-ID: <CAODtcdeBDUXHcjSXCV1t3SKFGNP-eifPOhn6mynvzCShxstLLA@mail.gmail.com>
+Date: Sun, 5 Oct 2014 16:19:54 +1300
+Message-ID: <CAODtcdew5+wZEJL5FC1fd6sKSGM0cYM6BT3shyqyY3vX50E57A@mail.gmail.com>
 References: <CAODtcdfJrgtXcoQUVkJ=kcUuf-p1MkVnz8DDqLXdSEyMkYzH7A@mail.gmail.com>
 	<542D8CF4.8060505@familie-kuntze.de>
 	<CAODtcdfiOBFeSgX6kE+waWrvh4Gk+BhxTOrdbhLEcwG3EaDe1A@mail.gmail.com>
@@ -13,48 +13,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
         h=mime-version:in-reply-to:references:date:message-id:subject:from:to
          :content-type:content-transfer-encoding;
-        bh=VuYHt9/4EYfUU5lrLoCPCvKBDWHgLfugjIVPluvzaW4=;
-        b=ZAayUjb28NsfHuAqIPD1vJXfY/AHz6u3M/TwGeyuuDbhoZLb4M8z/4VdWn9iKQv3lf
-         xLTEJ8L+DIJJ8hpiH+sC2l38+CFbC1vjCgzWTot4KjzGvqcXf+GOmPoLb4tFo5Jx26ZY
-         3dyCsZH7BZVgMTDBnXKe7OJrT3LjaAj9KrxUu5jxx4rrRPA7so1u/2QWPa9On/iFBOSX
-         g64y4AXiqo+Vi9hsVgvyt3rrbcDjFH03+7fqgBwSRMD2lL7m0IeJzxoBmgqUKXAJoXcH
-         Lp4liAagNgWemQHcqqZphShKvjd0Cf53sGRlpNIHNHZVgzH6nNkTNg8XP1RwZHLo+6ru
-         csEg==
+        bh=XcUbaTLo/IHxSjgguR/8XwsVCI3mIpe+WIho/KF5lUo=;
+        b=tdz7lTznp3OYiKfY3j9YpN+XQr5KYMQrzHAO8hGnuCRvCjsfG7su3DXxrzkj3SfMFj
+         tNXh4jCdz77RX9up8KsDIfgZMkykknw/3Aysh1mazRFY9U1b9qlLrSgzXWPy+Ob/3+6W
+         27/8ekqDA2t9sBONrZeaU4+OAuKOF1jWQNME/nzTLhhotxV70Cla6yVT5cb+mZeuT4O+
+         IjybOEt9J6QQUsjop5u16nMixVQJ+Q970A5NQz5T+vWk2vDYUproKrr6hjlrdQ5XG2zf
+         x7UzvdLWNHpesad77rqgDq3FitSE5Stz3gMOdaLd1pLGfXugnOm8FWUtL6XoKWcF0lTF
+         eVBA==
 In-Reply-To: <542D909B.6030507@familie-kuntze.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="utf-8"
 To: Noel Kuntze <noel@familie-kuntze.de>, netfilter <netfilter@vger.kernel.org>
 
- Hi Noel,
-
-So I have started to read manpages on ipset. Its left me with a few que=
-stions.
-
-Could you break the command down into pieces?
-
-I get "ipset create new-Zealand" but why store it as a hash?
-
-What datatypes doesn't net include for example?
-
-The explanation in the manual for the rest " inet hashsize 1024
-maxelem 65535" I didn't understand either.
-
-It would be nice to understand what I am doing rather than blindly
-copying your commands - where's the learning in that!
-
-The iptables rule I am ok with.
-
-=46inally you talk about ipset.conf ? I have installed ipset - but a
-"find / -name ipset.conf" didn't find anything so Im not sure that
-file exists anywhere on my system (RedHat).
-
-What should I be adding to ipset.conf when I find it.
-
-Thanks in advance,
-
--Al
-
+ PS: The Amazon server is NAT'd so I presume I need to add the local
+(LAN) subnet to be allowed too?
 
 
 
