@@ -1,50 +1,48 @@
-From: Aravindhan Dhanasekaran <adhanas@ncsu.edu>
-Subject: Re: Help: Marking UDP packets in a bridge
-Date: Mon, 13 Oct 2014 00:58:42 -0400
-Message-ID: <543B5C02.8090906@ncsu.edu>
-References: <5437FB00.3030806@ncsu.edu> <543B5046.7000200@atc.tcs.com>
+From: =?UTF-8?Q?Rapha=C3=ABl_Berlamont?= <raphael.berlamont@raphux.com>
+Subject: conntrack-tools[]: can't get kernel conntrack table
+Date: Mon, 13 Oct 2014 18:37:07 +0200
+Message-ID: <CANNOT2BvZxngo7=OY8_vrHEVTuadqhSs3dL=oUSPZs+x+r4N3g@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <543B5046.7000200@atc.tcs.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-To: Vigneswaran R <vignesh@atc.tcs.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-On 10/13/2014 12:08 AM, Vigneswaran R wrote:
-> On 10/10/2014 08:58 PM, Aravindhan Dhanasekaran wrote:
->> Hello,
->>
->> I'm trying to mark UDP packets entering (or leaving) a bridge, destined to a
->> particular UDP port on a machine on the other side of the bridge.
->>
->> My simple topology looks like:
->> host1 [eth1] <-----> [s1-eth1] bridge [s1-eth2] <-----> [eth1] host2
->>
->>
->> I've added a rule to the FORWARD chain on the mangle table in the bridge to mark
->> the packets that I require:
->> $ sudo iptables -t mangle -A FORWARD -p udp --dport 9917 -j MARK --set-mark 17
->> $ iptables -L FORWARD -t mangle -v
->> Chain FORWARD (policy ACCEPT 0 packets, 0 bytes)
->>   pkts bytes target     prot opt in     out     source       destination
->>      0     0 MARK       udp  --  any    any     anywhere     anywhere      udp
->> dpt:9917 MARK set 0x11
->>
->>
->> But, looks like none of packets are being marked (counters are all 0s in
->> iptables output as shown above). I have traffic matching the above rule flowing
->> through the bridge which I verified using tcpdump.
->> $ sudo tcpdump -i s1-eth1 udp dst port 9917
->> ...
->> 11:22:14.774417 IP 10.0.0.2.49774 > 10.0.0.1.9917: UDP, length 1470
->> 11:22:14.774597 IP 10.0.0.2.49774 > 10.0.0.1.9917: UDP, length 1470
->> 11:22:14.774731 IP 10.0.0.2.49774 > 10.0.0.1.9917: UDP, length 1470^C
-> 
-> May be, we should do the packet marking using ebtables (instead of 
-> iptables) for Ethernet bridge. I am not sure..
+Hello list,
 
-When I added the above rule as a filter to my qdiscs, it worked as expected. So,
-I guess my packets were actually marked, just  that the counters were 0.
+I can't make conntrack-tool work on my system.
+Tried with vanilla kernels 2.6.39.4, 3.0.99, 3.6.11.
 
+I compiled/install those tools/libs :
+- libnetfilter_queue/libnetfilter_queue-1.0.2
+- libnfnetlink/libnfnetlink-1.0.1
+- libmnl-1.0.3
+- libnetfilter_cttimeout-1.0.0
+- libnetfilter_cthelper-1.0.0
+- libnetfilter_conntrack-1.0.4
+- conntrack-tools-1.4.2
+
+My kernel config is available here :
+http://pastebin.com/8tjVuRVT
+
+My conntrackd config :
+http://pastebin.com/wLZF3TZ9
+
+When I launch conntrackd, I have the following message in the log :
+-----
+[Mon Oct 13 16:49:20 2014] (pid=3D5388) [ERROR] can't get kernel conntr=
+ack table
+-----
+
+I don't know what to do now=E2=80=A6 I tried to read the sources, but I=
+'m not
+fluent with C, at-all.
+
+As you'll see in the kernel configuration, allmost all *CONN* options
+were enabled.
+
+Any idea ? Anyone ?
+--=20
+Rapha=C3=ABl Berlamont
