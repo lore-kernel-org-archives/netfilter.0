@@ -1,48 +1,46 @@
-From: Eric Leblond <eric@regit.org>
-Subject: Re: ulogd_inppkt_NFLOG.c:503 forcing unbind of existing log handler
- for protocol
-Date: Sun, 19 Oct 2014 13:13:30 +0200
-Message-ID: <1413717210.14410.8.camel@regit.org>
-References: <CAB1i-Sx05bSH5hEgEzAPqeJ_8kq4SqFM106nBrmw+U0cfwb1Xw@mail.gmail.com>
+From: vDev <vijaypas@gmail.com>
+Subject: TCP LAST ACK incorrectly treated as invalid
+Date: Mon, 20 Oct 2014 20:58:10 -0500
+Message-ID: <CAC=w+U4oyXTXX1v04=yAYzt-+n5Lt=tLaKmD16m-QgjmUB9wNQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAB1i-Sx05bSH5hEgEzAPqeJ_8kq4SqFM106nBrmw+U0cfwb1Xw@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=OvYXlw3Ka04111/7sSBp2j5W0td+iIyQrRRbkJuF6KY=;
+        b=Lq5exiWp6oxIXyxfwzT/CdI3jAL3iaD8Pth9MRTHZQkwkRZXhe8q5xpOB5BxdhJbhc
+         KwnUBKWE1iIVufI93PN/qoBK9EIgjeE5o+QSJ7k8EJgnMJrvagsbgCn83r8rD7j8g2xP
+         oOrcbo/PF2pYh3XIP/XV/Rt8OCcjZRlSi629ZZh3bGonCP2FRamdUhOAqIc39MVGLruA
+         TftbygvS9dDIeRr08T7BVDxRf2ptWpBElcR0RsLAu66DrooUVvYpMyfbqTZA/Q6sKVts
+         c0/On4fJL/EbZ9p9WX0ZvUfNiXQ0YxZRqXcJ6COsTZImRHN5zsRKBrG3hGZIp9riTcq6
+         KW5w==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: E R <ears.box@gmail.com>
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-Hello,
+It looks like TCP conntrack is incorrectly treating "LAST ACK" (ACK
+from peer for last FIN) as the sequence number comparison does not
+take into account that the last ACK sequence number will be one
+greater than the previous sequence number.
 
+Here's the code that seems to be the cause of it in tcp_in_window()
+[nf_conntrack_proto_tcp.c]:
 
-On Sat, 2014-10-18 at 12:49 -1000, E R wrote:
-> Hi All,
-> 
-> I noticed using NFLOG for ulogd 2.0.2, when ulogd starts, in
-> /var/log/ulogd.log I'm seeing these three messages;
-> 
-> Thu Oct 16 22:05:22 2014 <5> ulogd_inppkt_NFLOG.c:503 forcing unbind
-> of existing log handler for protocol 2
-> Thu Oct 16 22:05:22 2014 <5> ulogd_inppkt_NFLOG.c:503 forcing unbind
-> of existing log handler for protocol 10
-> Thu Oct 16 22:05:22 2014 <5> ulogd_inppkt_NFLOG.c:503 forcing unbind
-> of existing log handler for protocol 7
-> 
-> I made a bug report for this;
-> 
-> https://bugzilla.netfilter.org/show_bug.cgi?id=977
-> 
-> Does anyone know anything about this, if it's a bug or end-user error I can fix?
+       pr_debug("tcp_in_window: I=%i II=%i III=%i IV=%i\n",
+                 before(seq, sender->td_maxend + 1),
+                 after(end, sender->td_end - receiver->td_maxwin - 1),
+                 before(sack, receiver->td_end + 1),
+                 after(sack, receiver->td_end - MAXACKWINDOW(sender) - 1));
 
-This is just a normal message. It warns you that ulogd is trying to
-remove other software that could have declared log handler for the
-protocols.
+        if (before(seq, sender->td_maxend + 1) &&
+            after(end, sender->td_end - receiver->td_maxwin - 1) &&
+            before(sack, receiver->td_end + 1) &&
+            after(sack, receiver->td_end - MAXACKWINDOW(sender) - 1)) {
 
-So this does not explain the issue described in bugzilla.
+III in pr_debug will be 0 as "before(sack, receiver->td_end + 1)" will
+evaluate to false as sack will be equal to (receiver->td_end + 1) for
+the last ACK. The sequence number will be one greater in the last ACK.
 
-BR,
--- 
-Eric Leblond <eric@regit.org>
-
+Any feedback will be helpful. Thanks for looking into this.
