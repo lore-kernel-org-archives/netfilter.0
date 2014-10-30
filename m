@@ -1,78 +1,104 @@
-From: Loganaden Velvindron <loganaden@gmail.com>
-Subject: Simple NFT example
-Date: Thu, 30 Oct 2014 23:43:29 +0400
-Message-ID: <CAOp4FwSrETzG=UUocA56zYbDjHb=tmuGQdMYq27UHe3eO01FvA@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: Re: ipset 6.23 hangs on CentOS6 with hash:mac
+Date: Thu, 30 Oct 2014 22:07:30 +0100 (CET)
+Message-ID: <alpine.DEB.2.10.1410302157320.30524@blackhole.kfki.hu>
+References: <CADuigkVMK8T12S=k4iAj=wX7m7bNna8fW4ZDK_PX5apZjoZWsw@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=C+3HvvzTfx9ZgYSnbkLfUjdJbDvZdW3dUKDLwuEZdAU=;
-        b=LO0g2/CVT/XGT7D3b9GMGEAGuO5KDbPC0fweiq+9sKgv7meVrbp6I1GIa0t+itVawT
-         a9GFP4tEPwDPwzRV1+ZrCikRBuM7Ok5baGBokPg3N8stVpIIHAkn5ZoHv5LerhzTAH3W
-         OwVjv1Cay8q4+sbakcuD1ctVaSxsnPlEEtM1W0gWpVLP9aQJD71XT2YcIdMGUuIVPUyz
-         RSO3Uno3YHSKP/ydKlXzmX3FMtqOpt2s/nVS3IMkqRW5ddM6mYT9O39a/iqkpHcNdnr9
-         tffGaqiNdRuy7sEmi66rLEP5t5Crf1Wxm7QGn70glyleVstr4JWGZpd0yoyTVRdnV7Ex
-         BxCQ==
+In-Reply-To: <CADuigkVMK8T12S=k4iAj=wX7m7bNna8fW4ZDK_PX5apZjoZWsw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Ricardo Klein <klein.rfk@gmail.com>
+Cc: netfilter <netfilter@vger.kernel.org>
 
-Hi guys,
+On Thu, 30 Oct 2014, Ricardo Klein wrote:
 
-I tried to cook up a simple example.
+> If I try to create a hash:mac set, like this:
+> ipset create MACSFREE hash:mac
+> 
+> The console never returns, only if I hit CTRL+C, it works for other
+> types of sets, here is the strace:
+> 
+> strace ipset create MACSFREE hash:mac
+> execve("/usr/local/sbin/ipset", ["ipset", "create", "MACSFREE",
+> "hash:mac"], [/* 30 vars */]) = 0
+> brk(0)                                  = 0x247e000
+> mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
+> 0) = 0x7f45b83d5000
+> access("/etc/ld.so.preload", R_OK)      = -1 ENOENT (No such file or directory)
+> open("/etc/ld.so.cache", O_RDONLY)      = 3
+> fstat(3, {st_mode=S_IFREG|0644, st_size=31216, ...}) = 0
+> mmap(NULL, 31216, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7f45b83cd000
+> close(3)                                = 0
+> open("/usr/lib64/libmnl.so.0", O_RDONLY) = 3
+> read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0
+> \31\0\0\0\0\0\0"..., 832) = 832
+> fstat(3, {st_mode=S_IFREG|0755, st_size=18056, ...}) = 0
+> mmap(NULL, 2113224, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3,
+> 0) = 0x7f45b7fb3000
+> mprotect(0x7f45b7fb7000, 2093056, PROT_NONE) = 0
+> mmap(0x7f45b81b6000, 4096, PROT_READ|PROT_WRITE,
+> MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x3000) = 0x7f45b81b6000
+> close(3)                                = 0
+> open("/lib64/libdl.so.2", O_RDONLY)     = 3
+> read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\340\r\0\0\0\0\0\0"...,
+> 832) = 832
+> fstat(3, {st_mode=S_IFREG|0755, st_size=19536, ...}) = 0
+> mmap(NULL, 2109696, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3,
+> 0) = 0x7f45b7daf000
+> mprotect(0x7f45b7db1000, 2097152, PROT_NONE) = 0
+> mmap(0x7f45b7fb1000, 8192, PROT_READ|PROT_WRITE,
+> MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x2000) = 0x7f45b7fb1000
+> close(3)                                = 0
+> open("/lib64/libc.so.6", O_RDONLY)      = 3
+> read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0p\356\1\0\0\0\0\0"...,
+> 832) = 832
+> fstat(3, {st_mode=S_IFREG|0755, st_size=1921176, ...}) = 0
+> mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
+> 0) = 0x7f45b83cc000
+> mmap(NULL, 3750152, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3,
+> 0) = 0x7f45b7a1b000
+> mprotect(0x7f45b7ba5000, 2097152, PROT_NONE) = 0
+> mmap(0x7f45b7da5000, 20480, PROT_READ|PROT_WRITE,
+> MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x18a000) = 0x7f45b7da5000
+> mmap(0x7f45b7daa000, 18696, PROT_READ|PROT_WRITE,
+> MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7f45b7daa000
+> close(3)                                = 0
+> mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
+> 0) = 0x7f45b83cb000
+> mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
+> 0) = 0x7f45b83ca000
+> arch_prctl(ARCH_SET_FS, 0x7f45b83cb700) = 0
+> mprotect(0x7f45b7da5000, 16384, PROT_READ) = 0
+> mprotect(0x7f45b7fb1000, 4096, PROT_READ) = 0
+> mprotect(0x7f45b83d6000, 4096, PROT_READ) = 0
+> munmap(0x7f45b83cd000, 31216)           = 0
+> brk(0)                                  = 0x247e000
+> brk(0x24a2000)                          = 0x24a2000
+> socket(PF_NETLINK, SOCK_RAW, 12)        = 3
+> bind(3, {sa_family=AF_NETLINK, pid=0, groups=00000000}, 12) = 0
+> getsockname(3, {sa_family=AF_NETLINK, pid=42575, groups=00000000}, [12]) = 0
+> sendto(3, "\34\0\0\0\1\6\1\0\27\214RT\0\0\0\0\2\0\0\0\5\0\1\0\6\0\0\0",
+> 28, 0, {sa_family=AF_NETLINK, pid=0, groups=00000000}, 12) = 28
+> recvmsg(3, {msg_name(12)={sa_family=AF_NETLINK, pid=0,
+> groups=00000000},
+> msg_iov(1)=[{"\34\0\0\0\1\6\0\0\27\214RTO\246\0\0\2\0\0\0\5\0\1\0\6\0\0\0\0\0\0\0"...,
+> 256}], msg_controllen=0, msg_flags=0}, 0) = 28
+> sendto(3, "4\0\0\0\r\6\1\0\30\214RT\0\0\0\0\2\0\0\0\5\0\1\0\6\0\0\0\r\0\3\0"...,
+> 52, 0, {sa_family=AF_NETLINK, pid=0, groups=00000000}, 12
 
-Pablo sent me feedback on my example.
+What is your kernel version? Isn't there any message logged by the kernel?
 
-First we setup a basic table for IPv4.
+I'm unable to reproduce this at my system, so please recompile ipset with 
+debugging enabled ("configure --enable-debug") and re-run the command 
+above.
 
-table ip means that "ip" implicitly means IPv4.
-
-The input chain is the "incoming" traffic on a machine. For example,
-assuming that you have a desktop running SSH, and you would like to
-have a simple ruleset which is suitable for a desktop. You'd want to
-allow ping (so that you can ping your laptop on the network).
-
-Some deamons bind to localhost interface. It's a good idea to accept
-connections on local interface, so this should be allowed.
-
-The rest is rejected.
-
-For example, if your desktop runs a web server on port 80, it won't be
-accessible. You need to enable it by adding another rule.
-
-fw.basic:
-
-table ip filter {
-     chain input {
-
-          type filter hook input priority 0;
-
-          ct state established,related accept
-
-          # accept connections for localhost interface
-          iif lo accept
-
-          # Accept SSH connections on port 22
-          tcp dport 22 accept
-
-          # Allow ICMP packets such as "ping"
-          ip protocol icmp accept
-
-          # Reject any other connections
-          reject
-     }
-}
-
-
-You can run this simply by typing:
-
-nft -f fw.basic
-
-Any feedback welcomed.
-
--- 
-This message is strictly personal and the opinions expressed do not
-represent those of my employers, either past or present.
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
