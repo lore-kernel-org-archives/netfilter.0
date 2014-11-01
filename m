@@ -1,170 +1,142 @@
-From: Pietro Paolini <pulsarpietro@aol.com>
-Subject: Re: recent module
-Date: Fri, 31 Oct 2014 04:59:35 -0400
-Message-ID: <8D1C30020A85581-7C0-2EBBC@webmail-vm135.sysops.aol.com>
-References: <8D1C2445F7A6741-7C0-28755@webmail-vm135.sysops.aol.com> <CAKYdRA9cEw2LjsAsdcG+TaoG8U5JwG0D-TKdiirLrhL87nmu3A@mail.gmail.com>
+From: prasad zambare <prasadzambare@gmail.com>
+Subject: System becomes unresponsive due to kernel oops (IP: dev_queue_xmit+0x256/0x3f4)
+Date: Sat, 1 Nov 2014 19:14:20 +0530
+Message-ID: <CADMv6S=oOo9cuGLpBy3Ap10SDa=MvcjaR+v=FCHEFj0ur_aZkw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Type: multipart/mixed; boundary=001a113796a27e5f500506cc4f73
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAKYdRA9cEw2LjsAsdcG+TaoG8U5JwG0D-TKdiirLrhL87nmu3A@mail.gmail.com>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mx.aol.com;
-	s=20140625; t=1414745975;
-	bh=UDF+ksp/mi+gro6J+g6jZ2crYEsvBfmU7CJr99SVLRM=;
-	h=From:To:Subject:Message-Id:Date:MIME-Version:Content-Type;
-	b=dLyY6k14UEqjw6xViG7rqQuyP5sqZHW2qxw9hCJzp4JQBYdpMDUYYESREIwdFgmau
-	 TUmgOpX8CxOMVZig11CSICjOPitLtIa8tTfqDp16zIIeisTdo4FImeotkeTDnzJKkf
-	 48u0mtt9QeNAj2jRknHD/nP2Z5CU7FfWg8MXa194=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=k85MRmpIG/t/OkN67e6CtkCRBBHPZGQasTP2kJ6iJ5g=;
+        b=FoMx9lWXivhHgbddOyKtd0ph+8SvWuKXVS1voHvO3xiL3ZRi0QnJNuXWJPhyALl8OI
+         YKTgdyYBhtoDnzkfyG5Kk98uXIhVOvMoNwGYKzLvhbYo5cnOmF9+vQp7U24XBDzV05pk
+         SiWKaYd2YXE/Jajl+BnRBK1qd+4frjpS46qZ+Bbckxcv5pxP6kwVU+J5qbhrmpjaacAn
+         m+Pp1EtRFh0TArb9evGxKOP+uG452Sjxs6d1C3dPW77UaInNfggS+sWcYLuP82RZ6c7Z
+         7niIM0QwgpAptTfSjgiAErsI/gO5Juu7Ljw4O1YNdJjNKBN9flzVCHEb2N02lar+IvRy
+         S40g==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: luke@osnz.co.nz
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Thanks for your answer.=0D
-=0D
-Does not make any sense to me since rules drop packets .. I am puzzled =
-=0D
-=2E.=0D
-=0D
-The DROP rule takes effect only of the IP address is in the list, but =0D
-in fact it is the other rule to put those IPs in the list therefore it =
-=0D
-cannot be the first packets.=0D
-=0D
-=0D
-Another question pops up in my mind, what is the difference between =0D
-state and conntrack ?=0D
-=0D
->Chain INPUT (policy ACCEPT 44517 packets, 5130K bytes)=0D
-> pkts bytes target     prot opt in     out     source               =0D
-destination=0D
-> 240 12948 LOG        tcp  --  *      *       0.0.0.0/0            =0D
-0.0.0.0/0            state NEW tcp dpt:22 LOG flags 0 level 4=0D
-> 106  5684 DROP       tcp  --  eth0   *       0.0.0.0/0            =0D
-0.0.0.0/0            tcp dpt:22 state NEW recent: UPDATE seconds: 1800 =
-=0D
-hit_count: 5 name: ssh-defensive side: source=0D
-> 134  7264            tcp  --  eth0   *       0.0.0.0/0            =0D
-0.0.0.0/0            tcp dpt:22 state NEW recent: SET name: =0D
-ssh-defensive side: source=0D
-=0D
-=0D
->You're matching state NEW, which (if I'm not mistaken) only matches =0D
-the initial SYN packet of a transaction. Everything after that is =0D
-ESTABLISHED or RELATED.=0D
-=0D
-=0D
-On 30 October 2014 23:35, Pietro Paolini <pulsarpietro@aol.com> wrote:=0D
-=0D
-Hi all,=0D
-=0D
-=0D
-=0D
-I am trying to use the recent module to stop the slate of attacks I get=
-=0D
-everyday, but I am not sure my understanding of its logic it is correct=
-=2E=0D
-=0D
-=0D
-=0D
--A INPUT -i eth0 -p tcp -m tcp --dport 22 -m state --state NEW -m=C2=A0=
-=0D
-recent --update --seconds 1800 --hitcount 5 --name ssh-defensive=0D
---rsource -j DROP=0D
-=0D
--A INPUT -i eth0 -p tcp -m tcp --dport 22 -m state --state NEW -m=0D
-recent --set --name ssh-defensive --rsource=0D
-=0D
-=0D
-=0D
-I am testing this solution - which works as intended - but the packet=0D
-counters do not make=C2=A0 sense to me, during my test=0D
-=0D
-I start the ssh client, I get the prompt asking for the password and I=0D
-immediately check the iptables counters:=0D
-=0D
-=0D
-=0D
-Chain INPUT (policy ACCEPT 81 packets, 8996 bytes)=0D
-=0D
-=C2=A0pkts bytes target=C2=A0 =C2=A0 =C2=A0prot opt in=C2=A0 =C2=A0 =C2=
-=A0out=C2=A0 =C2=A0 =C2=A0source=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- =C2=A0 =C2=A0=0D
-destination=0D
-=0D
-=C2=A0 =C2=A0 1=C2=A0 =C2=A0 52 LOG=C2=A0 =C2=A0 =C2=A0 =C2=A0 tcp=C2=A0=
- --=C2=A0 *=C2=A0 =C2=A0 =C2=A0 *=C2=A0 =C2=A0 =C2=A0 =C2=A00.0.0.0/0=C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=0D
-0.0.0.0/0=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 state NEW tcp dpt:22=
- LOG flags 0 level 4=0D
-=0D
-=C2=A0 =C2=A0 0=C2=A0 =C2=A0 =C2=A00 DROP=C2=A0 =C2=A0 =C2=A0 =C2=A0tcp=
-=C2=A0 --=C2=A0 eth0=C2=A0 =C2=A0*=C2=A0 =C2=A0 =C2=A0 =C2=A00.0.0.0/0=C2=
-=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=0D
-0.0.0.0/0=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 tcp dpt:22 state NEW=
- recent: UPDATE seconds: 1800=0D
-hit_count: 5 name: ssh-defensive side: source=0D
-=0D
-=C2=A0 =C2=A0 1=C2=A0 =C2=A0 52=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=
- tcp=C2=A0 --=C2=A0 eth0=C2=A0 =C2=A0*=C2=A0 =C2=A0 =C2=A0 =C2=A00.0.0.=
-0/0=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0=0D
-0.0.0.0/0=C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 tcp dpt:22 state NEW=
- recent: SET name:=0D
-ssh-defensive side: source=0D
-=0D
-=0D
-=0D
-=0D
-=0D
-I expected to see more packets, what about the TCP handshake ?=0D
-=0D
-=0D
-=0D
-Thanks in advance,=0D
-=0D
-Pietro=0D
-=0D
-=0D
-=0D
-=0D
-=0D
-=0D
-=0D
-"And therefore never send to know for whom the bell tolls"=0D
-=0D
-pulsarpietro@aol.com=0D
-=0D
-=0D
-=0D
-=0D
-=0D
-=0D
---=0D
-To unsubscribe from this list: send the line "unsubscribe netfilter" in=
-=0D
-the body of a message to majordomo@vger.kernel.org=0D
-More majordomo info at=C2=A0 http://vger.kernel.org/majordomo-info.html=
-=0D
-=0D
-=0D
-=0D
-=0D
-=0D
-=0D
---=0D
-=0D
-Luke Pascoe=0D
-=0D
-=0D
-=0D
-E luke@osnz.co.nz=0D
-P +64 (9) 296 2961=0D
-M +64 (27) 426 6649=0D
-W www.osnz.co.nz=0D
-=0D
-24 Wellington St=0D
-Papakura=0D
-Auckland, 2110=0D
-New Zealand=0D
-=0D
+--001a113796a27e5f500506cc4f73
+Content-Type: text/plain; charset=UTF-8
 
+Hi All,
+
+From past few days I am trying to debug an issue but I am not able to
+get a break through.
+
+Linux system is consistently getting unresponsive with below serial
+console output. The similar serial console output is observed every
+time the issue is occurred.
+
+Steps to reproduce this issue are unknown to me. But, this issue is
+not observed when all parameters related to acpi are disabled from
+BIOS.
+
+I am newbie to debugging kernel oops. I am using Fedora 13 and I can
+not upgrade to latest release. Please let me know what could be the
+problem and how can I resolve this issue. Any pointer or help will be
+of great importance.
+
+Please find the kernel oops message below
+
+Thank You,
+Prasad
+
+--001a113796a27e5f500506cc4f73
+Content-Type: application/octet-stream; name=stack_trace3
+Content-Disposition: attachment; filename=stack_trace3
+Content-Transfer-Encoding: base64
+X-Attachment-Id: f_i1yp1gcc0
+
+CUJVRzogdW5hYmxlIHRvIGhhbmRsZSBrZXJuZWwgTlVMTCBwb2ludGVyIGRlcmVmZXJlbmNlIGF0
+IChudWxsKQoJSVA6IFs8YzA2ZmJjZGQ+XSBkZXZfcXVldWVfeG1pdCsweDI1Ni8weDNmNAoJKnBk
+cHQgPSAwMDAwMDAwMDJlY2IzMDAxICpwZGUgPSAwMDAwMDAwMTI5NzRjMDY3IAoJT29wczogMDAw
+MCBbIzFdIFNNUCAKCWxhc3Qgc3lzZnMgZmlsZTogL3N5cy9kZXZpY2VzL3BjaTAwMDA6MDAvMDAw
+MDowMDoxYy4wLzAwMDA6MDE6MDAuMC9uZXQvZXRoMC9icm9hZGNhc3QKCU1vZHVsZXMgbGlua2Vk
+IGluOiB0dW4gbmZuZXRsaW5rX3F1ZXVlIG5mbmV0bGluayBibHVldG9vdGggcmZraWxsIHRzX2tt
+cCB4dF9zdHJpbmcgODAyMXEgZ2FycCBuZl9uYXRfcHB0cCBuZl9jb25udHJhY2tfcHB0cCBuZl9j
+b25udHJhY2tfcHJvdG9fXQoKCVBpZDogMTQxMTMsIGNvbW06IHNub3J0IE5vdCB0YWludGVkIDIu
+Ni4zMy4zLTg1LmZjMTMuaTY4Ni5QQUUgIzEgVG8gYmUgZmlsbGVkIGJ5IE8uRS5NLi9UbyBCZSBG
+aWxsZWQgQnkgTy5FLk0uCglFSVA6IDAwNjA6WzxjMDZmYmNkZD5dIEVGTEFHUzogMDAyMTAyMDIg
+Q1BVOiAxCglFSVAgaXMgYXQgZGV2X3F1ZXVlX3htaXQrMHgyNTYvMHgzZjQKCUVBWDogZjY5MjIw
+MDAgRUJYOiBmNmJmNWE4MCBFQ1g6IGVkNTI0MTQwIEVEWDogZjYxMjMzODAKCUVTSTogZjYyNDgw
+MDAgRURJOiAwMDAwMDAwMCBFQlA6IGVlZjdkYmYwIEVTUDogZWVmN2RiZGMKCSBEUzogMDA3YiBF
+UzogMDA3YiBGUzogMDBkOCBHUzogMDBlMCBTUzogMDA2OAoJUHJvY2VzcyBzbm9ydCAocGlkOiAx
+NDExMywgdGk9ZWVmN2MwMDAgdGFzaz1lZWYyOGNjMCB0YXNrLnRpPWVlZjdjMDAwKQoJU3RhY2s6
+CgkgZWVmN2RiZWMgZjY5MjMzMDAgZjZiZjVhODAgZWY0OGYzNjAgZWQ1MjQxMDggZWVmN2RjMTQg
+YzA3MjI1MDAgMDAxYWE4YjQKCTwwPiAwMDAwMDAwMCBlZjQ4ZjM1MCBlZjQ4ZjMwMCAwMDAwMDAy
+OCBmNmJmNWE4MCAwMDFhYThiNCBlZWY3ZGMyMCBjMDcyMjU5MQoJPDA+IGY2YmY1YTgwIGVlZjdk
+YzJjIGMwNzIyODE5IGYwZmM0ODAwIGVlZjdkYzM0IGMwNzIxNmQ1IGVlZjdkYzRjIGMwNzEzYjEy
+CglDYWxsIFRyYWNlOgoJIFs8YzA3MjI1MDA+XSA/IGlwX2ZpbmlzaF9vdXRwdXQyKzB4MThlLzB4
+MWM2CgkgWzxjMDcyMjU5MT5dID8gaXBfZmluaXNoX291dHB1dCsweDU5LzB4NWMKCSBbPGMwNzIy
+ODE5Pl0gPyBpcF9vdXRwdXQrMHg3NC8weDc5CgkgWzxjMDcyMTZkNT5dID8gZHN0X291dHB1dCsw
+eDkvMHhiCgkgWzxjMDcxM2IxMj5dID8gbmZfcmVpbmplY3QrMHhhMy8weGU2CgkgWzxmODBhYjQy
+Nz5dID8gbmZxbmxfcmVjdl92ZXJkaWN0KzB4MWNmLzB4MWUwIFtuZm5ldGxpbmtfcXVldWVdCgkg
+WzxmN2U2YjFhYj5dID8gbmZuZXRsaW5rX3Jjdl9tc2crMHgxMTgvMHgxNDkgW25mbmV0bGlua10K
+CSBbPGY3ZTZiMGI5Pl0gPyBuZm5ldGxpbmtfcmN2X21zZysweDI2LzB4MTQ5IFtuZm5ldGxpbmtd
+CgkgWzxjMDcxMTkwMz5dID8gbmV0bGlua19zZW5kbXNnKzB4NzIvMHgyMjEKCSBbPGY3ZTZiMDkz
+Pl0gPyBuZm5ldGxpbmtfcmN2X21zZysweDAvMHgxNDkgW25mbmV0bGlua10KCSBbPGMwNzExMTMw
+Pl0gPyBuZXRsaW5rX3Jjdl9za2IrMHgzMC8weDc2CgkgWzxmN2U2YjA4Yz5dID8gbmZuZXRsaW5r
+X3JjdisweDFiLzB4MjIgW25mbmV0bGlua10KCSBbPGMwNzEwZjZmPl0gPyBuZXRsaW5rX3VuaWNh
+c3QrMHhiZS8weDExOQoJIFs8YzA3MTFhYTU+XSA/IG5ldGxpbmtfc2VuZG1zZysweDIxNC8weDIy
+MQoJIFs8YzA2ZWRmYWQ+XSA/IF9fc29ja19zZW5kbXNnKzB4NDUvMHg0ZQoJIFs8YzA2ZWUyNTQ+
+XSA/IHNvY2tfc2VuZG1zZysweDkzLzB4YTcKCSBbPGMwNDQyYmZjPl0gPyBpcnFfZXhpdCsweDM5
+LzB4NWMKCSBbPGMwNDA5YzA1Pl0gPyBkb19JUlErMHg4Ni8weDlhCgkgWzxjMDQwOGRmMD5dID8g
+Y29tbW9uX2ludGVycnVwdCsweDMwLzB4MzgKCSBbPGMwNmY2MjVmPl0gPyB2ZXJpZnlfaW92ZWMr
+MHg1Ny8weDZjCgkgWzxjMDZlZTY3Nj5dID8gc3lzX3NlbmRtc2crMHgxODcvMHgxZWIKCSBbPGMw
+NmVlNGMyPl0gPyBzb2NrZmRfbG9va3VwX2xpZ2h0KzB4MTYvMHg0MwoJIFs8YzA2ZWU0YWE+XSA/
+IGZwdXRfbGlnaHQrMHhjLzB4ZQoJIFs8YzA2ZWY2ZDc+XSA/IHN5c19yZWN2ZnJvbSsweDEwMi8w
+eDEyMQoJIFs8YzA2ZmJmMDQ+XSA/IGRldl9rZnJlZV9za2JfYW55KzB4MjcvMHgzMgoJIFs8Zjg4
+YzNkZmI+XSA/IGUxMDAwX3B1dF90eGJ1ZisweDUwLzB4NjUgW2UxMDAwZV0KCSBbPGY4OGMzZWU4
+Pl0gPyBlMTAwMF9jbGVhbl90eF9pcnErMHhhNy8weDFkYyBbZTEwMDBlXQoJIFs8YzA1YTY2ODA+
+XSA/IG1pZ2h0X2ZhdWx0KzB4MTkvMHgxYgoJIFs8YzA1YTY4ZWI+XSA/IGNvcHlfdG9fdXNlcisw
+eDJmLzB4MTA4CgkgWzxjMDVhNjY4MD5dID8gbWlnaHRfZmF1bHQrMHgxOS8weDFiCgkgWzxjMDZl
+ZmU4MD5dID8gc3lzX3NvY2tldGNhbGwrMHgxNWUvMHgxYTUKCSBbPGMwNDBmZjAxPl0gPyBzeXNj
+YWxsX3RyYWNlX2xlYXZlKzB4YTUvMHhiOAoJIFs8YzA3ODJiZGM+XSA/IHN5c2NhbGxfY2FsbCsw
+eDcvMHhiCgkgWzxjMDc4MDAwMD5dID8gYWNwaV9wcm9jZXNzb3JfYWRkKzB4MWYvMHg3NGIKCUNv
+ZGU6IDU3IDBjIDY2IDg5IDgzIDgwIDAwIDAwIDAwIDhiIDk2IDAwIDAyIDAwIDAwIDBmIGI3IGMw
+IGMxIGUwIDA3IDAxIGQwIDg5IDQ1IGYwIDhiIDc4IDA0IDY2IDhiIDQzIDdlIDgwIGU0IGNmIDgw
+IGNjIDIwIDY2IDg5IDQzIDdlIDw4Mz4gM2YgIAoJRUlQOiBbPGMwNmZiY2RkPl0gZGV2X3F1ZXVl
+X3htaXQrMHgyNTYvMHgzZjQgU1M6RVNQIDAwNjg6ZWVmN2RiZGMKCUNSMjogMDAwMDAwMDAwMDAw
+MDAwMAoJLS0tWyBlbmQgdHJhY2UgNWU5ZGI0Zjk5YzllOTAyMSBdLS0tCgoJS2VybmVsIHBhbmlj
+IC0gbm90IHN5bmNpbmc6IEZhdGFsIGV4Y2VwdGlvbiBpbiBpbnRlcnJ1cHQKCU1lc3NhZ2UgZnJv
+bSBzeXNsb2dkQG1hY2hpbmUgUGlkOiAxNDExMywgY29tbTogc25vcnQgVGFpbnRlZDogRyAgICAg
+IEQgICAgMi42LjMzLjMtODUuZmMxMy5pNjg2LlBBRSAjMQoJQ2FsbCBUcmFjZToKCSBbPGMwNzgw
+YjRmPl0gPyBwcmludGsrMHhmLzB4MTgKCSBbPGMwNzgwYThkPl0gcGFuaWMrMHgzOS8weGVjCgkg
+WzxjMDc4M2M5MD5dIG9vcHNfZW5kKzB4OTIvMHhhMQoJIFs8YzA0MjYxYzE+XSBub19jb250ZXh0
+KzB4MTNlLzB4MTQ4CgkgWzxjMDQyNjJiNz5dIF9fYmFkX2FyZWFfbm9zZW1hcGhvcmUrMHhlYy8w
+eGY0CgkgWzxjMDc4NGU4Nz5dID8gZG9fcGFnZV9mYXVsdCsweDAvMHgyZmEKCSBbPGMwNDI2MmNj
+Pl0gYmFkX2FyZWFfbm9zZW1hcGhvcmUrMHhkLzB4MTAKCSBbPGMwNzg1MDFiPl0gZG9fcGFnZV9m
+YXVsdCsweDE5NC8weDJmYQoJIFs8YzA3ODRlODc+XSA/IGRvX3BhZ2VfZmF1bHQrMHgwLzB4MmZh
+CgkgWzxjMDc4MzJkZj5dIGVycm9yX2NvZGUrMHg3My8weDc4CgkgWzxjMDZmYmNkZD5dID8gZGV2
+X3F1ZXVlX3htaXQrMHgyNTYvMHgzZjQKCSBbPGMwNzIyNTAwPl0gaXBfZmluaXNoX291dHB1dDIr
+MHgxOGUvMHgxYzYKCSBbPGMwNzIyNTkxPl0gaXBfZmluaXNoX291dHB1dCsweDU5LzB4NWMKCSBb
+PGMwNzIyODE5Pl0gaXBfb3V0cHV0KzB4NzQvMHg3OQoJIFs8YzA3MjE2ZDU+XSBkc3Rfb3V0cHV0
+KzB4OS8weGIKCSBbPGMwNzEzYjEyPl0gbmZfcmVpbmplY3QrMHhhMy8weGU2CgkgWzxmODBhYjQy
+Nz5dIG5mcW5sX3JlY3ZfdmVyZGljdCsweDFjZi8weDFlMCBbbmZuZXRsaW5rX3F1ZXVlXQoJIFs8
+ZjdlNmIxYWI+XSBuZm5ldGxpbmtfcmN2X21zZysweDExOC8weDE0OSBbbmZuZXRsaW5rXQoJIFs8
+ZjdlNmIwYjk+XSA/IG5mbmV0bGlua19yY3ZfbXNnKzB4MjYvMHgxNDkgW25mbmV0bGlua10KCSBb
+PGMwNzExOTAzPl0gPyBuZXRsaW5rX3NlbmRtc2crMHg3Mi8weDIyMQoJIFs8ZjdlNmIwOTM+XSA/
+IG5mbmV0bGlua19yY3ZfbXNnKzB4MC8weDE0OSBbbmZuZXRsaW5rXQoJIFs8YzA3MTExMzA+XSBu
+ZXRsaW5rX3Jjdl9za2IrMHgzMC8weDc2CgkgWzxmN2U2YjA4Yz5dIG5mbmV0bGlua19yY3YrMHgx
+Yi8weDIyIFtuZm5ldGxpbmtdCgkgWzxjMDcxMGY2Zj5dIG5ldGxpbmtfdW5pY2FzdCsweGJlLzB4
+MTE5CgkgWzxjMDcxMWFhNT5dIG5ldGxpbmtfc2VuZG1zZysweDIxNC8weDIyMQoJIFs8YzA2ZWRm
+YWQ+XSBfX3NvY2tfc2VuZG1zZysweDQ1LzB4NGUKCSBbPGMwNmVlMjU0Pl0gc29ja19zZW5kbXNn
+KzB4OTMvMHhhNwoJIFs8YzA0NDJiZmM+XSA/IGlycV9leGl0KzB4MzkvMHg1YwoJIFs8YzA0MDlj
+MDU+XSA/IGRvX0lSUSsweDg2LzB4OWEKCSBbPGMwNDA4ZGYwPl0gPyBjb21tb25faW50ZXJydXB0
+KzB4MzAvMHgzOAoJIFs8YzA2ZjYyNWY+XSA/IHZlcmlmeV9pb3ZlYysweDU3LzB4NmMKCSBbPGMw
+NmVlNjc2Pl0gc3lzX3NlbmRtc2crMHgxODcvMHgxZWIKCSBbPGMwNmVlNGMyPl0gPyBzb2NrZmRf
+bG9va3VwX2xpZ2h0KzB4MTYvMHg0MwoJIFs8YzA2ZWU0YWE+XSA/IGZwdXRfbGlnaHQrMHhjLzB4
+ZQoJIFs8YzA2ZWY2ZDc+XSA/IHN5c19yZWN2ZnJvbSsweDEwMi8weDEyMQoJIFs8YzA2ZmJmMDQ+
+XSA/IGRldl9rZnJlZV9za2JfYW55KzB4MjcvMHgzMgoJIFs8Zjg4YzNkZmI+XSA/IGUxMDAwX3B1
+dF90eGJ1ZisweDUwLzB4NjUgW2UxMDAwZV0KCSBbPGY4OGMzZWU4Pl0gPyBlMTAwMF9jbGVhbl90
+eF9pcnErMHhhNy8weDFkYyBbZTEwMDBlXQoJIFs8YzA1YTY2ODA+XSA/IG1pZ2h0X2ZhdWx0KzB4
+MTkvMHgxYgoJIFs8YzA1YTY4ZWI+XSA/IGNvcHlfdG9fdXNlcisweDJmLzB4MTA4CgkgWzxjMDVh
+NjY4MD5dID8gbWlnaHRfZmF1bHQrMHgxOS8weDFiCgkgWzxjMDZlZmU4MD5dIHN5c19zb2NrZXRj
+YWxsKzB4MTVlLzB4MWE1CgkgWzxjMDQwZmYwMT5dID8gc3lzY2FsbF90cmFjZV9sZWF2ZSsweGE1
+LzB4YjgKCSBbPGMwNzgyYmRjPl0gc3lzY2FsbF9jYWxsKzB4Ny8weGIKCSBbPGMwNzgwMDAwPl0g
+PyBhY3BpX3Byb2Nlc3Nvcl9hZGQrMHgxZi8weDc0Ygo=
+--001a113796a27e5f500506cc4f73--
