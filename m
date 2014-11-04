@@ -1,98 +1,78 @@
-From: Noel Kuntze <noel@familie-kuntze.de>
-Subject: Re: Static mapping of private subnet to different private subnet
-Date: Tue, 04 Nov 2014 18:23:27 +0100
-Message-ID: <54590B8F.2060703@familie-kuntze.de>
-References: <F1992426-119C-4B69-ACE5-44772A062125@tannador.com>
+From: prasad zambare <prasadzambare@gmail.com>
+Subject: Re: System becomes unresponsive due to kernel oops (IP: dev_queue_xmit+0x256/0x3f4)
+Date: Tue, 4 Nov 2014 23:50:00 +0530
+Message-ID: <CADMv6SnvnVo6Fq-_LVQEAq70wChoVPJFvJLONjL_LKr9FqZT1w@mail.gmail.com>
+References: <CADMv6S=oOo9cuGLpBy3Ap10SDa=MvcjaR+v=FCHEFj0ur_aZkw@mail.gmail.com>
+	<5458F80F.7060405@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <F1992426-119C-4B69-ACE5-44772A062125@tannador.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :cc:content-type;
+        bh=fw3q59tfNmRnf7YNun/6fCovT3vKF3cA0AmBpHOIyhg=;
+        b=FySTycuqeGQLeQSugW1WrvHuouZdRwxIEm5AnAVlXJkLWoliYzXfe2JvVEPQJJXrUv
+         tOFK3VVfJbQaxd8xm2SrzxRN7hxgziyGDsuTR8ZJBg3Cx4kylCmkKejhFID60+Yf9qFe
+         iVgbc1e6Pj0Kn0Ctx8rjl304XpEr33DUJDj7p0iFNoFRHJ21IgVSuv7KGjpiC1LZuAnQ
+         x+90VDOYtbUwuJLqs32psQ/fsp6pvUSPXg4X/RoopWS92eM8soYk70q6CVKfu/SORYod
+         rnX7aYplz8QPwqm+oAoonviyKfjMnzKoouuSihv8Qs5HDozwPXNzNjB5U5/PVUDT16V9
+         wmkA==
+In-Reply-To: <5458F80F.7060405@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Tannador <mail@tannador.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Marcelo Ricardo Leitner <marcelo.leitner@gmail.com>
+Cc: netfilter@vger.kernel.org
 
+HI Marcelo,
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+Thank you for your reply.
 
-Hello Tannador,
+I am ready deploy custom kernel. Today itself I have started to work
+on this. I have prepared 2.6.39 kernel rpm and installed it on the
+system.When observed that network interfaces are using e1000e deriver
+(by ethtool -i <interface name> command), it is also updated to latest
+version. Tomorrow, I am going to see if this resolves the issue.
 
-Did you look at the NETMAP iptables target?
+I guess using custom kernel or upgrading related packages is the only
+available option. But this is only trial and error approach as exact
+reproduction steps are unknown. Please share if there are any pointers
+to understand this issue better or for its resolution.
 
-Mit freundlichen Gr=C3=BC=C3=9Fen/Regards,
-Noel Kuntze
+Thank You,
+Prasad
 
-GPG Key ID: 0x63EC6658
-=46ingerprint: 23CA BB60 2146 05E7 7278 6592 3839 298F 63EC 6658
-
-Am 04.11.2014 um 15:47 schrieb Tannador:
-> Hello list,
+On Tue, Nov 4, 2014 at 9:30 PM, Marcelo Ricardo Leitner
+<marcelo.leitner@gmail.com> wrote:
+> On 01-11-2014 11:44, prasad zambare wrote:
+>>
+>> Hi All,
+>>
+>>  From past few days I am trying to debug an issue but I am not able to
+>> get a break through.
+>>
+>> Linux system is consistently getting unresponsive with below serial
+>> console output. The similar serial console output is observed every
+>> time the issue is occurred.
+>>
+>> Steps to reproduce this issue are unknown to me. But, this issue is
+>> not observed when all parameters related to acpi are disabled from
+>> BIOS.
+>>
+>> I am newbie to debugging kernel oops. I am using Fedora 13 and I can
+>> not upgrade to latest release. Please let me know what could be the
+>> problem and how can I resolve this issue. Any pointer or help will be
+>> of great importance.
+>>
+>> Please find the kernel oops message below
+>>
+>> Thank You,
+>> Prasad
 >
-> I am currently tinkering with a system that has two network interface=
-s which are both configured by the remote peer (DHCP and PPP). Now, I a=
-m facing the scenario that I might be assigned the same private network=
- on both interfaces.
 >
-> I would like to transparently map the ip adresses of incoming packets=
- on one interface to a different private network. That is, for applicat=
-ions, it should look like the interface has been assigned to this diffe=
-rent private network.
+> If you can't upgrade, are you willing/able to deploy a custom kernel with a
+> fix? Otherwise I'm afraid there isn't much to do in here.
 >
-> Example
-> nif0 (nif =3D network interface)
-> IP 192.168.1.145
-> Gateway 192.168.1.1
-> DNS1 192.168.1.2
-> DNS2 192.168.1.3
+> Marcelo
 >
-> nif1 (before mapping)
-> IP 192.168.1.203
-> Gateway 192.168.1.3
-> DNS1 192.168.1.3
-> DNS2 192.168.1.54
->
-> nif1 (after mapping to 10.0.0.0/8)
-> IP 10.168.1.203
-> Gateway 10.168.1.3
-> DNS1 10.168.1.3
-> DNS2 10.168.1.54
->
-> In essence, I would like to provide a network address and a subnet ma=
-sk and have the corresponding parts of all ip addresses on a certain in=
-terface mapped. Such that 192.168.1.3 is mapped to 10.168.1.3 iff the p=
-acket is received via nif1. Since this is a purely static operation, I =
-guess it cannot be that difficult.
->
-> My first approach was to use NAT but that does not seem to do the tri=
-ck. After a lot more googling, I give up. Am I looking at the wrong pla=
-ces? Do I have to use MANGLE or RAW on PREROUTING and POSTROUTING?
->
-> I would write a script that is called whenever on link is configured =
-by the remote peer. So I am able to change rules whenever there is a co=
-llision.
->
-> I can hardly believe to be the first to ask this question but I am un=
-able to find a solution anyway :/
->
-> Kind regards,
-> tannador
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJUWQuOAAoJEDg5KY9j7GZYTGkP/AjnmpZX74mqiYeJonWVUa23
-qboYAssLW1XiSPGSdJT+DzG3axSELslWPf4ek7Rj5uJCe8XJTeWpUnTDmGd+lu2W
-r7vtCVr3aUpxe8HcdYugvfOptBzhteQCz3I7F6iNg/mGBUp6siCnBbutBYyfIEFg
-e1myXEooEQa9IN6JhnIEpa27Bj9gWEEW3rjBD78hytrJLw+wQXwHznl1dpGGYqlB
-J82HEOcIWRb1aNcmeC/SxABI/cm3HxRmwSBGfK5lQkDbCSOwgMZ45u8OnYspLb6a
-/cjkUbbS4q/yIHHNThcTTKstaH8AJRlZu5qvog0Kn3BN2guDJ7/BxI+/twekL3EY
-gHr1Hf5Z1rTkpiADmHE/6SME8fHxEjNWKD+Ec6viYudAWUehGs47vF8OdmW/J9pn
-MEVpqN+Y1lOnT4R3nqGd/W0BtK/EilWSxfcLURcBTeKKbcxTyubT9gkGqLn2doGa
-kJe6xd2Xo1rm/L8xJF4LK/ka7ZetMzfbHuNs+S/LdOXPrxeQzeF33dmFbx+66U26
-RhwojgxtltySaCO/zeRC7rtmyMK0S5dHOgBpyJZvvfrmSTHBokNcnLWRR2AViMiw
-8vQx58VGjx83APahynTb5L+p4GgsYfvSv9RiXo0o9cuZh8Kr61UM5vo4Zt/1jqhA
-CPm4MUB4n/qIXPSyNEks
-=3D3qMw
------END PGP SIGNATURE-----
-
