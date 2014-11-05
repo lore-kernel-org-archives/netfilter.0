@@ -1,107 +1,46 @@
 From: Ricardo Klein <klein.rfk@gmail.com>
-Subject: Re: ipset 6.23 hangs on CentOS6 with hash:mac
-Date: Wed, 5 Nov 2014 14:36:34 -0200
-Message-ID: <CADuigkXA5KzxnQ6oX=vY1y=uxw9X-gcKnB4c+t7tVuwyV2C=ug@mail.gmail.com>
-References: <CADuigkVMK8T12S=k4iAj=wX7m7bNna8fW4ZDK_PX5apZjoZWsw@mail.gmail.com>
-	<alpine.DEB.2.10.1410302157320.30524@blackhole.kfki.hu>
-	<CADuigkUWQrXZ_N1gHE67aP5JKRfFbgpX5guLLJe__28cWCgFnw@mail.gmail.com>
-	<alpine.DEB.2.10.1411042054570.30301@blackhole.kfki.hu>
-	<CADuigkVXZ5W2YPXmJi-8YBGVwo=SzN-mgrch3tS73E7cy9Nhcw@mail.gmail.com>
-	<CADuigkWr7Lvj3Sz0N0VttM=uptDv80Nbu30mUE01BP7MoUFYoQ@mail.gmail.com>
+Subject: Linux Firewall Active/Active
+Date: Wed, 5 Nov 2014 17:15:23 -0200
+Message-ID: <CADuigkVbB2nt5P6y-JCaW_bh6v_GhjL9BRBiHRyvA_yH81v4RA@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=CBctQNXZJHUyrscsD8csBT4vOSIN1jB6VqjPs5fXeFk=;
-        b=XLwjXQRpGjLn0t2jLsU1csZHd/vTq0Mgisf/NqISh5CIG+7ZEcWFjTqrVfkBFr834c
-         cvCBetIPZtKvFeLgS0Kr9MZOcHNw1IK4UzRcSJcZTGZbfT5fokCi4m3TQGVsvkkM4wYT
-         /BXYCL6Rm511/xb5oPfbmSQPaFCz73sgdfObrtYHsnnUBOYgUoMQqwWiGgg/QY+9o8Cl
-         ng+JLgsSOu3rNIbb8PXD23qnD3x8oSQMsJLOeoZ+Yx6YIDUvSAMvRHeBCGdWUPy8JYr/
-         4mFd2B2le9aIWOyj37SBsmQrP/LqPb2/KcGpgbv2pon3W3EpAafRPoWbWEqTgh57N1yl
-         2cYA==
-In-Reply-To: <CADuigkWr7Lvj3Sz0N0VttM=uptDv80Nbu30mUE01BP7MoUFYoQ@mail.gmail.com>
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=QiiDtyrr48doU/gNPre13WAEfJQ1JeJ3Qv2FiWq1l38=;
+        b=bp19LcEmFsriJL8hUu8F0yVs2aBdbOnPi2DAhU3Pqu76bdYXsHEicj1OxbJ6JcxIBw
+         CeZjhwEzgwfAYGBB/m3tGbA/GZZie+eafUrlhjx2c+QK/Dva+wadfy+nehup2d0RkPgF
+         z5oo//5L8qtfB/ogZfxXzfZpaUiabDMDK6P8RHzBGmmKCujakEpACqJtllBg2AQkGS0H
+         eElhX4MOxJm7T9U5eE+U7dPIGThURekSQNuAqTtvMnktH3Sthjo4UoxG2eTiK9jtXpUn
+         9IEld25SZF0wRJSgvGgSLd5+oOOX96zGwfa7tLZ15xhsAkMCoqE2KNOiW754RmN3w5s9
+         1XGQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter <netfilter@vger.kernel.org>
+To: netfilter <netfilter@vger.kernel.org>
 
-Found it, the problem on CentOS 6.6 is on "make modules", here is the
-log: http://pastebin.com/S4CgE5sS
---
-Att...
+Hi there,
+
+I need to build a scenario with 2 linux servers (probably CentOS7)
+acting as active/active firewall servers. What tools should I use?
+I saw some articles with:
+ - conntrackd + keepalived
+ - conntrackd + corosync + pacemaker
+
+But, what is the most used/stable?
+
+
+AND, if there is a chance, I have 4 lan networks (each one in a
+different VLAN) and it should be good if I can set something like
+"preffered master" to each one for load distribution, because I will
+run SQUID in those servers too.
+
+I just need to know which way to go, so, I can learn the tools and
+configure it all here.
+
+
+regards,
 
 Ricardo Felipe Klein
 klein.rfk@gmail.com
-
-
-On Wed, Nov 5, 2014 at 2:04 PM, Ricardo Klein <klein.rfk@gmail.com> wrote:
-> the sad part is that im my "HomeServer" (which runs slackware) it
-> works, but here at work we use only CentOS across all servers :-(
-> --
-> Att...
->
-> Ricardo Felipe Klein
-> klein.rfk@gmail.com
->
->
-> On Wed, Nov 5, 2014 at 1:55 PM, Ricardo Klein <klein.rfk@gmail.com> wrote:
->> gcc version (default from CentOS 6.6):
->> gcc version 4.4.7 20120313 (Red Hat 4.4.7-11) (GCC)
->>
->> Here is the configure log:
->> https://www.dropbox.com/s/itr6ccfuvqcvi4f/configure_log_01?dl=0
->> And here the make log:
->> https://www.dropbox.com/s/wx96654q4y2xcx2/make_log_01?dl=0
->> --
->> Att...
->>
->> Ricardo Felipe Klein
->> klein.rfk@gmail.com
->>
->>
->> On Tue, Nov 4, 2014 at 6:00 PM, Jozsef Kadlecsik
->> <kadlec@blackhole.kfki.hu> wrote:
->>> On Mon, 3 Nov 2014, Ricardo Klein wrote:
->>>
->>>> with the option "--enable-debug" I get make errors (I dont get them
->>>> when I run ./configure without this option)
->>>> [root@r2d2 ipset-6.23]# make -j 8
->>>> make  all-recursive
->>>> make[1]: Entering directory `/root/div/ipset-6.23'
->>>> Making all in include/libipset
->>>> make[2]: Entering directory `/root/div/ipset-6.23/include/libipset'
->>>> make[2]: Nothing to be done for `all'.
->>>> make[2]: Leaving directory `/root/div/ipset-6.23/include/libipset'
->>>> Making all in lib
->>>> make[2]: Entering directory `/root/div/ipset-6.23/lib'
->>>>   CC       parse.lo
->>>> cc1: warnings being treated as errors
->>>> parse.c: In function 'ipset_strchr':
->>>> parse.c:53: error: logical '&&' with non-zero constant will always
->>>> evaluate as true
->>>> make[2]: *** [parse.lo] Error 1
->>>> make[2]: Leaving directory `/root/div/ipset-6.23/lib'
->>>> make[1]: *** [all-recursive] Error 1
->>>> make[1]: Leaving directory `/root/div/ipset-6.23'
->>>> make: *** [all] Error 2
->>>
->>> I'm unable to reproduce this either. What is your gcc version? That looks
->>> like as an invalid error message, generated by the -Wlogical-op flag.
->>>
->>>> And my kernel is the default one from CentOS 6.6:
->>>> 2.6.32-504.el6.x86_64
->>>
->>> Ohh, that's a pretty old kernel version, but the ipset package should
->>> still work with it. Wasn't there any warning message at compile time?
->>>
->>> Best regards,
->>> Jozsef
->>> -
->>> E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
->>> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
->>> Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
->>>           H-1525 Budapest 114, POB. 49, Hungary
