@@ -1,34 +1,29 @@
-From: Tannador <mail@tannador.com>
-Subject: Re: Static mapping of private subnet to different private subnet
-Date: Wed, 05 Nov 2014 16:38:15 +0100
-Message-ID: <C19A8444-32E3-42C7-A646-7232BED5E809@tannador.com>
-References: <F1992426-119C-4B69-ACE5-44772A062125@tannador.com> <54590B8F.2060703@familie-kuntze.de>
+From: Karsten Hohmeier <karsten.hohmeier@tu-ilmenau.de>
+Subject: conntrack + fragmentation: What are the timeouts?
+Date: Wed, 05 Nov 2014 16:11:31 +0100
+Message-ID: <545A3E23.2060506@tu-ilmenau.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <54590B8F.2060703@familie-kuntze.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Thanks for the quick reply.
+Hi everybody,
 
-Unfortunately, NETMAP seems to be a static version of standard NAT.
-What I need is to replace the source address during prerouting and the =
-destination address during postrouting. Thereby hiding the true IP of a=
-n interface from the system.
+I'm currently playing around with stateful packet filtering/mangling and
+fragmented IPv4/IPv6 traffic.
 
-Any ideas?
+I was wondering if the conntrack timeouts for collecting all fragments
+of an IP packet are these values from sysctl:
 
-Kind regards,
-tannador
---=20
-Sent from my smartphone. Pardon typos and the short form.
+net.ipv4.ipfrag_time = 30
+net.ipv6.ip6frag_time = 60
 
+Or does it have separate timeouts somewhere else?
 
->Did you look at the NETMAP iptables target?
->
->Mit freundlichen Gr=C3=BC=C3=9Fen/Regards,
->Noel Kuntze
+Best regards
+
+Karsten Hohmeier
 
