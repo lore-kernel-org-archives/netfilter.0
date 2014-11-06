@@ -1,41 +1,67 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
+From: Robert Sander <r.sander@heinlein-support.de>
 Subject: Re: Linux Firewall Active/Active
-Date: Thu, 6 Nov 2014 00:55:38 +0100
-Message-ID: <20141105235538.GA3599@salvia>
-References: <CADuigkVbB2nt5P6y-JCaW_bh6v_GhjL9BRBiHRyvA_yH81v4RA@mail.gmail.com>
- <CAOkSjBgMu_wdy0_oJ=yQqtYHeRz0yiTy1C-LO-qO3xiE0gPDCg@mail.gmail.com>
- <CAH_OBifYvkOK-RqS76ODT2En1r0bN99oU8cCQFJdDE7CGH67_g@mail.gmail.com>
- <CAPJdpdBj2va5U_PZs_WSWe0XWX4jreSdMBEpOFO-_Fpi=EEKdA@mail.gmail.com>
+Date: Thu, 06 Nov 2014 13:43:36 +0100
+Message-ID: <545B6CF8.9040603@heinlein-support.de>
+References: <CADuigkVbB2nt5P6y-JCaW_bh6v_GhjL9BRBiHRyvA_yH81v4RA@mail.gmail.com> <CAOkSjBgMu_wdy0_oJ=yQqtYHeRz0yiTy1C-LO-qO3xiE0gPDCg@mail.gmail.com>
 Mime-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha1;
+ protocol="application/pgp-signature";
+ boundary="xI9PxhtI7m0rawV11QeB6utsL3XsTJxB4"
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAPJdpdBj2va5U_PZs_WSWe0XWX4jreSdMBEpOFO-_Fpi=EEKdA@mail.gmail.com>
+In-Reply-To: <CAOkSjBgMu_wdy0_oJ=yQqtYHeRz0yiTy1C-LO-qO3xiE0gPDCg@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Paul Robert Marino <prmarino1@gmail.com>
-Cc: shawn wilson <ag4ve.us@gmail.com>, Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>, Ricardo Klein <klein.rfk@gmail.com>, netfilter <netfilter@vger.kernel.org>
+To: netfilter <netfilter@vger.kernel.org>
 
-On Wed, Nov 05, 2014 at 05:43:39PM -0500, Paul Robert Marino wrote:
-> I've actually been doing this successfully with conntrakd, keepalived,
-> and quagga
-> 
-> Essentially I'm using quaga for OSPF and BGP externally with equal cost paths.
-> 
-> For conntrackd with FTFW and "DisableExternalCache On"
->
-> Do NOT use the howto's on the web or the examples that come with
-> conntrakd or keepalived for configuring keepalived they are outdated
-> and can cause major problems.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--xI9PxhtI7m0rawV11QeB6utsL3XsTJxB4
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-It would be great if you can contribute a patch to extend the
-conntrack-tools manual to document this. The documentation is
-available in docbook format in the git tree. People asks for this
-configuration on the mailing list from time to time.
+On 05.11.2014 21:40, Arturo Borrero Gonzalez wrote:
+>=20
+> I would recommend Debian, corosync + pacemaker.
 
-Thanks.
+Keepalived easily outperforms corosync + pacemaker if all you need are
+managed IP addresses and routes in your firewall cluster.
 
-P.S: I think that update should also indicate that possible race
-conditions may happen between the synchronization and packets in
-active/active asymmetric path, so people are aware of it too.
+Regards
+--=20
+Robert Sander
+Heinlein Support GmbH
+Schwedter Str. 8/9b, 10119 Berlin
+
+http://www.heinlein-support.de
+
+Tel: 030 / 405051-43
+Fax: 030 / 405051-19
+
+Zwangsangaben lt. =C2=A735a GmbHG:
+HRB 93818 B / Amtsgericht Berlin-Charlottenburg,
+Gesch=C3=A4ftsf=C3=BChrer: Peer Heinlein -- Sitz: Berlin
+
+
+--xI9PxhtI7m0rawV11QeB6utsL3XsTJxB4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v1
+
+iQIcBAEBAgAGBQJUW2z4AAoJEPC7kVgj3lsoYncQAJM/wmedbND4M6Plw6SlNhED
+AXWZjKS7ekDEFmfCgy4wxp92Pla4aMeMU70mivK68NXajBbXiBPeegLz0AZSJyNB
+VFO0l/iExc3NaT6W+tnqQ3oUJmi6iqCq5yC4fwf4LXTw7V542T7MqXNiqpmKbAbg
+Tv4FbaKXCMv0bSAw/icGzHwUuWUNAHJzLqAymTn6aGYI7TWCSDmQwSX6MAxMNFP6
+FhPqRMtaWXq8fIEoYn2vy0mIcHgTJql/6RIvxewOPU+F9TYdKpusEb9TVlt2xz/2
+01ZMDD/KWRwnPQPdNN1vpi5sbbtu7p/Hl9A6RYIt1Fggy7FlC7aolaoz+/KBSuvP
+L6TjpyLJbfgxk1gAkWDqqWUoA1sD0JSE6WYAgyPr81y0biL/VDIAHOizy2AYvFyP
+SXoIadJ/gucfhZ6p6iacuv8bQ/zoAXf2g5r2J2uFArFv/vCnIyuvbd46Z04qh1Hp
+oQRqLPKpN20XnI0a07LDfWyD2RXzp8qEVqild7zIzDbtfadenhvVBzZ5KxBTGQXu
+8uqVjET4Kdmfnkh6xrXQaSq5oAVmjl8IzKA9hulDp6YNfsOfYaQEkZpYTTNGIhS8
+8st8VNiXTLqzQVtQNqd7TITeIq7HHfS3fe8v0epQ1nv5+5wOKfeDLbS30LTp9MOG
+lJ+VmvGEr2H12h4EL6sz
+=tN1D
+-----END PGP SIGNATURE-----
+
+--xI9PxhtI7m0rawV11QeB6utsL3XsTJxB4--
