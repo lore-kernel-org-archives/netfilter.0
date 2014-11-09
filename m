@@ -1,48 +1,42 @@
-From: Dennis Jacobfeuerborn <dennisml@conversis.de>
-Subject: Re: Recommended hardware for iptables based firewall/router
-Date: Sun, 09 Nov 2014 15:52:25 +0100
-Message-ID: <545F7FA9.40704@conversis.de>
-References: <CAL-yc88QPD5w8wLbm6u0skP-6DpMfsFdu0EvQi+6NY7ZYZGUow@mail.gmail.com> <545F74B5.3050401@conversis.de>
+From: shawn wilson <ag4ve.us@gmail.com>
+Subject: Hardware benchmark list (was: Recommended hardware for iptables based firewall/router)
+Date: Sun, 9 Nov 2014 15:39:35 -0500
+Message-ID: <CAH_OBic9zg25y16HKhkHqBCvujrHXoGhb8E4tY+Z99CO0WrEAw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <545F74B5.3050401@conversis.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to:content-type;
+        bh=RTUdwYByMQUk8szAbL/HJi3hJSIsT78Up1c8uH1aR7M=;
+        b=HvHKeg21Cr7iZiQz6EiYVjVpvj3zkXRioxjGEB7f8nH3gFskXuwWEGer3HRZRgiGsh
+         iMtpL55CGq2DIhV3dbkNO77axNlmTZBltxjZ2H7k5QIkDDZJ6OT4zJJ0NxtEOBitv2dI
+         cw9O5xUWFhLbVYeTZ8zbg8z0urZvDrIMqA7Jdj/GlIUpkbppc6huOPZYg7Q0zZtBAwsc
+         ggXrjxjGJe/iI45yEKGK3M7iSOcoTrJmKMEul8CRHE5lGc/sBOEiBb1KL22/H/eioXUG
+         N5mtd9/gvlBGZr5hUTkBjZQcwstRGS1gyziejSddpIYxNnZ03VMH93OEJmyep5bsvvtB
+         3bzg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Stig Thormodsrud <stig@ubnt.com>, netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 09.11.2014 15:05, Dennis Jacobfeuerborn wrote:
-> On 09.11.2014 06:15, Stig Thormodsrud wrote:
->> On 09.11.2014 01:49, Yucong Sun wrote:
->>> Dennis Jacobfeuerborn <dennisml@conversis.de>
->>>
->>> The EdgeRouter 's asic couldn't handle all use cases ,  Having some
->>> special rule will make it go to "offload" disabled mode.  You should
->>> research if that's the problem.
->>
->> I'm a developer on this product.  I'd be interested in the test cases
->> that it couldn't handle.
-> 
-> This isn't a test case the system is already in live use.
-> 
-> We are only using zone based firewalling, NAT and network/port groups so
-> basically just iptables+ipset and a couple of vlan interfaces.
-> 
-> In its default configuration both cpus are pegged at 95% soft-irq usage.
-> Enabling vlan offloading reduces that quite a bit...but apparently make
-> the system reboot itself about once every two days.
-> 
-> Right at this moment on the wan interface I see 34.273 rx pps and 57.232
-> tx pps which is going to increase a bit in the coming hours but gives a
-> good picture about the the system has to handle right now.
-> 
-> Regards,
->   Dennis
+(I include the original email subjec to show what spawned this)
 
-Here you can find a sanitized version of the config we have running
-right now:
-http://community.ubnt.com/t5/EdgeMAX/CPUs-show-incredibly-high-softirq-usage/m-p/1079417#U1079829
+What would be cool is to have a hardware benchmark list for network
+cards and processors (similar to JTR's list for hashes per second
+[1]).
 
-Regards,
-  Dennis
+What I've been thinking for a while is how to benchmark network
+hardware. Obviously there's issues with doing this and in order for
+this to work everyone would need to be on the same page (or there'd
+need to be a link showing settings used that someone could revise if
+they found something that was off).
+
+I think the biggest issue with this idea is figuring out affordable
+hardware to test cards with. I'm unsure if this is possible so just
+figured I'd throw this out there. Though since most machines have two
+stacked interfaces, a decent benchmark might just be to plug one
+interface into the other as that should shoe hardware noise issues,
+PCI bus limitations (on that board), and driver issue.
+
+1. http://openwall.info/wiki/john/benchmarks
