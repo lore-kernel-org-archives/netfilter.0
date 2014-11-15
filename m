@@ -1,121 +1,28 @@
-From: Ricardo Klein <klein.rfk@gmail.com>
-Subject: Re: ipset 6.23 hangs on CentOS6 with hash:mac
-Date: Sun, 9 Nov 2014 20:59:54 -0200
-Message-ID: <CADuigkWpLu9A0CeOoKCsQ609+fyPz905z==cYWz7-4_Xe1VHCQ@mail.gmail.com>
-References: <CADuigkVMK8T12S=k4iAj=wX7m7bNna8fW4ZDK_PX5apZjoZWsw@mail.gmail.com>
-	<alpine.DEB.2.10.1410302157320.30524@blackhole.kfki.hu>
-	<CADuigkUWQrXZ_N1gHE67aP5JKRfFbgpX5guLLJe__28cWCgFnw@mail.gmail.com>
-	<alpine.DEB.2.10.1411042054570.30301@blackhole.kfki.hu>
-	<CADuigkVXZ5W2YPXmJi-8YBGVwo=SzN-mgrch3tS73E7cy9Nhcw@mail.gmail.com>
-	<CADuigkWr7Lvj3Sz0N0VttM=uptDv80Nbu30mUE01BP7MoUFYoQ@mail.gmail.com>
-	<CADuigkXA5KzxnQ6oX=vY1y=uxw9X-gcKnB4c+t7tVuwyV2C=ug@mail.gmail.com>
+From: Akshat Kakkar <akshat.1984@gmail.com>
+Subject: Iptables limit match dropping packets
+Date: Sat, 15 Nov 2014 19:39:15 +0530
+Message-ID: <CAA5aLPggVxvrWEKn4pRTW_cQ-rpuY78adHEexo+jcZ6pTXwvNw@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=8wKf+TnHQSW8yfBi4Sy9NvLVz7jYF1WSNmLRad+Bgzc=;
-        b=vgLJakMHVxJRDWmzEACgWmoTjAZHSieRKTRQ/uciCByqkTf9IHaIJjuZ2r6jj3osHz
-         U0Aga6vYMCBYyo032r2ri+nnjXB/WHvVOU2AQpfr2Rfkp2tCxECZo70JvKuVgdq6Nzen
-         v1Hg/G9/LP8Js6CGE0H6tW8RuhHy7/wvzGKHyrtPzkAww8vvKNv6PdsWsFqxGXoAC7cQ
-         G80/obz0a+mskDSkrNaHmJ/JYpoYX5vx2R1/2ZLIv5MpkMv6StdRMnHpz+/VKTWdCGDn
-         kjOnljhFOhfKoBaFcReQuZH0qZBVcOFJUKiuxoVEEoaLCy0bTR3bIV/YlFocXrVmFIcE
-         /rlw==
-In-Reply-To: <CADuigkXA5KzxnQ6oX=vY1y=uxw9X-gcKnB4c+t7tVuwyV2C=ug@mail.gmail.com>
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=vFSVlVzmkkQAZ6geJn9Bjl9UXj4dV59SNalT5ljuOf4=;
+        b=wM1WhTBEHlef3LUp7I+66Rbfc4lbR3Onmj8UJyhS9S83wGaOpkFWZekMWn2+pQvK4u
+         1ObKkpXthxg+Az9UHOWmJAmOE+CWp4+a/y7Ajq05DBod2q2HecmLQ7ZlSaEjCDbgSFRG
+         Az2SjXGOnOBxbw6D6aP2FMF7VNfeK1nhfM2oCd/yTYjw7C/2CO2ajjN+FeEa5afhRE+H
+         zoNc6p27uHAtp2iwxNKR7wUKK1K7vv8xDEPTgWXirJxIjCx3rgNmBJ8FDKlDr3u9kFGx
+         TvCrYF5+PvwMI3Dezk0ssyQXb2XpgFr3f20iIJKlGGRoFiPgShuU+8pEnxLabY95mD6P
+         XaSw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Cc: netfilter <netfilter@vger.kernel.org>
+To: netfilter@vger.kernel.org
 
-Jozsef,
+I have an iptables rule with limit as 1000/sec. When I am sending pkts
+at 1000/sec there is a pkt drop observed around 2%. Why is that so?
 
-I will run CentOS7 on this firewall, and, on CentOS7 ipset works, so,
-not a problem anymore.
-thanks anyway.
---
-Att...
-
-Ricardo Felipe Klein
-klein.rfk@gmail.com
-
-
-On Wed, Nov 5, 2014 at 2:36 PM, Ricardo Klein <klein.rfk@gmail.com> wrote:
-> Found it, the problem on CentOS 6.6 is on "make modules", here is the
-> log: http://pastebin.com/S4CgE5sS
-> --
-> Att...
->
-> Ricardo Felipe Klein
-> klein.rfk@gmail.com
->
->
-> On Wed, Nov 5, 2014 at 2:04 PM, Ricardo Klein <klein.rfk@gmail.com> wrote:
->> the sad part is that im my "HomeServer" (which runs slackware) it
->> works, but here at work we use only CentOS across all servers :-(
->> --
->> Att...
->>
->> Ricardo Felipe Klein
->> klein.rfk@gmail.com
->>
->>
->> On Wed, Nov 5, 2014 at 1:55 PM, Ricardo Klein <klein.rfk@gmail.com> wrote:
->>> gcc version (default from CentOS 6.6):
->>> gcc version 4.4.7 20120313 (Red Hat 4.4.7-11) (GCC)
->>>
->>> Here is the configure log:
->>> https://www.dropbox.com/s/itr6ccfuvqcvi4f/configure_log_01?dl=0
->>> And here the make log:
->>> https://www.dropbox.com/s/wx96654q4y2xcx2/make_log_01?dl=0
->>> --
->>> Att...
->>>
->>> Ricardo Felipe Klein
->>> klein.rfk@gmail.com
->>>
->>>
->>> On Tue, Nov 4, 2014 at 6:00 PM, Jozsef Kadlecsik
->>> <kadlec@blackhole.kfki.hu> wrote:
->>>> On Mon, 3 Nov 2014, Ricardo Klein wrote:
->>>>
->>>>> with the option "--enable-debug" I get make errors (I dont get them
->>>>> when I run ./configure without this option)
->>>>> [root@r2d2 ipset-6.23]# make -j 8
->>>>> make  all-recursive
->>>>> make[1]: Entering directory `/root/div/ipset-6.23'
->>>>> Making all in include/libipset
->>>>> make[2]: Entering directory `/root/div/ipset-6.23/include/libipset'
->>>>> make[2]: Nothing to be done for `all'.
->>>>> make[2]: Leaving directory `/root/div/ipset-6.23/include/libipset'
->>>>> Making all in lib
->>>>> make[2]: Entering directory `/root/div/ipset-6.23/lib'
->>>>>   CC       parse.lo
->>>>> cc1: warnings being treated as errors
->>>>> parse.c: In function 'ipset_strchr':
->>>>> parse.c:53: error: logical '&&' with non-zero constant will always
->>>>> evaluate as true
->>>>> make[2]: *** [parse.lo] Error 1
->>>>> make[2]: Leaving directory `/root/div/ipset-6.23/lib'
->>>>> make[1]: *** [all-recursive] Error 1
->>>>> make[1]: Leaving directory `/root/div/ipset-6.23'
->>>>> make: *** [all] Error 2
->>>>
->>>> I'm unable to reproduce this either. What is your gcc version? That looks
->>>> like as an invalid error message, generated by the -Wlogical-op flag.
->>>>
->>>>> And my kernel is the default one from CentOS 6.6:
->>>>> 2.6.32-504.el6.x86_64
->>>>
->>>> Ohh, that's a pretty old kernel version, but the ipset package should
->>>> still work with it. Wasn't there any warning message at compile time?
->>>>
->>>> Best regards,
->>>> Jozsef
->>>> -
->>>> E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
->>>> PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
->>>> Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
->>>>           H-1525 Budapest 114, POB. 49, Hungary
+Also, even if I increase limit to higher value at 5000 and send
+sending pkts at 1000/sec only then also 2% pkt drop is observed. Why
+is that so? Is there some limit as per design ?
