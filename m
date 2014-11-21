@@ -1,35 +1,47 @@
-From: Akshat Kakkar <akshat.1984@gmail.com>
-Subject: iptables logging using ulog : which can handle high traffic, writing
- in db or json or xml?
-Date: Fri, 21 Nov 2014 18:06:22 +0530
-Message-ID: <CAA5aLPimjDRd4X5uJYEtFp=j8miNBiy7r=HoqGwanNZQM2hFEA@mail.gmail.com>
+From: Joel Gerber <Joel.Gerber@corp.eastlink.ca>
+Subject: RE: iptables logging using ulog : which can handle high traffic,
+ writing in db or json or xml?
+Date: Fri, 21 Nov 2014 08:43:09 -0400
+Message-ID: <405CDB4498600447A16CCC4ED3BFCAD301B832C2C7@SCOOBY.corp.eastlink.ca>
+References: <CAA5aLPimjDRd4X5uJYEtFp=j8miNBiy7r=HoqGwanNZQM2hFEA@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=1K6nq1Oyon+lCipr9KiBBTPmJtJSpLQDf4jASZVeQd0=;
-        b=Z9S7KPzVM9V5Xv0rsH9Bi4Q+erlM+ciH6J0FH+Ab8t1TpOr7wsx7tDmsEptyoLSQLM
-         e6lQhGQanA3iBiSZ8aoi5vELq/ThsGhaGRre8ljuFY1O8gmFxDUIo47SR6sS/H1e6It+
-         bw3B19/MD2O7oD1GezDJp8OzTB0WQ+In83sbMf2EdMIwc7XTX8TMUsE60ysAOjHjpdKo
-         iypSfZu+xdbn9tiQCcY+5EII8yVyCoFNmw/qC6csUsD6iooAofPYxdb3K1HrD7skhtdz
-         W+HUR0e9PSyrXXvUSxEAKJ8SrUTQfOS8BIaHUwbjW3rSFtXdjJCOTAvwtY4fFh9y86dl
-         abeA==
+In-reply-to: <CAA5aLPimjDRd4X5uJYEtFp=j8miNBiy7r=HoqGwanNZQM2hFEA@mail.gmail.com>
+Content-language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="windows-1254"
 To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-i want to do logging of traffic iptables rules.
-Traffic can go upto 10000pkts/sec.
-
-While using ulog and writing in mysql db, I could not get good
-results. Max around 300 pkts/sec were able to handle. Further traffic
-was delayed in db.
-
-Then I used json, it was able to handle around 1700 pkts/sec, beyond
-that there is traffic loss in json file.
-
-Is there any other mode which can be faster than json without losing
-any traffic?
+V2hhdCB0eXBlIG9mIHN0b3JhZ2UgYXJlIHlvdSB3cml0aW5nIHRvPyBUaGUgc2xvdy1kb3duIG1p
+Z2h0IGJlIGRpc2sgYWNjZXNzLg0KDQpJZiB5b3UgcmVhbGx5IHdhbnQgdG8gbG9nIHRyYWZmaWMg
+aW4gdGhlIDEwLDAwMCBwa3Qvc2VjIHJhbmdlLCBJIHdvdWxkIHN0YXJ0IGJ5IHdyaXRpbmcgdG8g
+bWVtb3J5IHN0b3JhZ2UsIGFuZCB0aGVuIGhhdmUgYSBwcm9jZXNzIGluIHRoZSBiYWNrZ3JvdW5k
+IHN5bmMgdG8gZGlzay4gSG9wZWZ1bGx5IHRoZSBzeW5jIHdpbGwgYmUgYWJsZSB0byBrZWVwIHVw
+IHJlbGF0aXZlbHkgd2VsbC4NCg0KWW91J2xsIGFsc28gd2FudCBhIHdyaXRpbmcgc3lzdGVtIHdp
+dGggdmVyeSBsaXR0bGUgb3ZlcmhlYWQuIFdyaXRpbmcgZGlyZWN0bHkgdG8gYSBmaWxlIHdpdGgg
+bm8gYWJzdHJhY3Rpb24gbGF5ZXIsIHVzaW5nIGJpbmFyeSBvdXRwdXQsIG1pZ2h0IGJlIHRoZSBm
+YXN0ZXN0IHRoaW5nIHBvc3NpYmxlLCBzaG9ydCBvZiB3cml0aW5nIHRvIGEgcmF3IHBhcnRpdGlv
+biB0YWJsZS4NCg0KVGhlIG90aGVyIHRoaW5nIHRvIGNvbnNpZGVyLCBpcyBldmVuIHdpdGggYWxs
+IG9mIHRoZSBkYXRhIHdyaXR0ZW4sIGhvdyB3aWxsIHlvdSByZWFkIGl0PyBIYXZpbmcgYSBmaWxl
+IGNvbnN0YW50bHkgb3BlbiBmb3Igd3JpdGluZywgcHJlY2x1ZGVzIGJlaW5nIGFibGUgdG8gcmVs
+aWFibHkgcmVhZCBmcm9tIGl0Lg0KDQpKb2VsIEdlcmJlcg0KTmV0d29yayBTcGVjaWFsaXN0DQpO
+ZXR3b3JrIE9wZXJhdGlvbnMNCkVhc3RsaW5rDQpFOiBKb2VsLkdlcmJlckBjb3JwLmVhc3RsaW5r
+LmNhIFQ6IDUxOS43ODYuMTI0MQ0KDQoNCi0tLS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQpGcm9t
+OiBuZXRmaWx0ZXItb3duZXJAdmdlci5rZXJuZWwub3JnIFttYWlsdG86bmV0ZmlsdGVyLW93bmVy
+QHZnZXIua2VybmVsLm9yZ10gT24gQmVoYWxmIE9mIEFrc2hhdCBLYWtrYXINClNlbnQ6IE5vdmVt
+YmVyLTIxLTE0IDc6MzYgQU0NClRvOiBuZXRmaWx0ZXJAdmdlci5rZXJuZWwub3JnDQpTdWJqZWN0
+OiBpcHRhYmxlcyBsb2dnaW5nIHVzaW5nIHVsb2cgOiB3aGljaCBjYW4gaGFuZGxlIGhpZ2ggdHJh
+ZmZpYywgd3JpdGluZyBpbiBkYiBvciBqc29uIG9yIHhtbD8NCg0KaSB3YW50IHRvIGRvIGxvZ2dp
+bmcgb2YgdHJhZmZpYyBpcHRhYmxlcyBydWxlcy4NClRyYWZmaWMgY2FuIGdvIHVwdG8gMTAwMDBw
+a3RzL3NlYy4NCg0KV2hpbGUgdXNpbmcgdWxvZyBhbmQgd3JpdGluZyBpbiBteXNxbCBkYiwgSSBj
+b3VsZCBub3QgZ2V0IGdvb2QgcmVzdWx0cy4gTWF4IGFyb3VuZCAzMDAgcGt0cy9zZWMgd2VyZSBh
+YmxlIHRvIGhhbmRsZS4gRnVydGhlciB0cmFmZmljIHdhcyBkZWxheWVkIGluIGRiLg0KDQpUaGVu
+IEkgdXNlZCBqc29uLCBpdCB3YXMgYWJsZSB0byBoYW5kbGUgYXJvdW5kIDE3MDAgcGt0cy9zZWMs
+IGJleW9uZCB0aGF0IHRoZXJlIGlzIHRyYWZmaWMgbG9zcyBpbiBqc29uIGZpbGUuDQoNCklzIHRo
+ZXJlIGFueSBvdGhlciBtb2RlIHdoaWNoIGNhbiBiZSBmYXN0ZXIgdGhhbiBqc29uIHdpdGhvdXQg
+bG9zaW5nIGFueSB0cmFmZmljPw0KLS0NClRvIHVuc3Vic2NyaWJlIGZyb20gdGhpcyBsaXN0OiBz
+ZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmliZSBuZXRmaWx0ZXIiIGluIHRoZSBib2R5IG9mIGEgbWVz
+c2FnZSB0byBtYWpvcmRvbW9Admdlci5rZXJuZWwub3JnIE1vcmUgbWFqb3Jkb21vIGluZm8gYXQg
+IGh0dHA6Ly92Z2VyLmtlcm5lbC5vcmcvbWFqb3Jkb21vLWluZm8uaHRtbA0K
