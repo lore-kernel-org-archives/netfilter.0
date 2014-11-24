@@ -1,51 +1,65 @@
-From: Vijay Kumar K <kvijay@gmail.com>
-Subject: Issue with specifying interface/NIC name with drop packets rule
-Date: Mon, 24 Nov 2014 19:42:30 +0530
-Message-ID: <CAHRwiV37vEOmsFThw+Hhfjqb1SA05aZEUGBm1JQEB+-2WfnWWQ@mail.gmail.com>
+From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
+Subject: [ANNOUNCE] ipset 6.24 released
+Date: Mon, 24 Nov 2014 22:05:47 +0100 (CET)
+Message-ID: <alpine.DEB.2.10.1411242200400.31300@blackhole.kfki.hu>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=0xzYhilHg07tiM7UaC2J2CdgdUHa+4hS3b25YgfZrkY=;
-        b=OgwEHypDKZyN0eWq0wo9QCmuJDdiEc5FJnYVivHtLY+sG8IsG+nG+1+zJmXfSh8z/u
-         iVbwVQd6pOX6j/lu/Bbz06OMVrhfnArkqTVFQQtgGFhm6lkC8vhpOn9eqjz1lleqW7cB
-         9qhNqDLD9P4Ypmo+DVJl3LhRWhisIdHxBS5QZ1+eVoIn6gOTG50lntlA8TuHQykRXCRW
-         X6vYvirb06Bn7UPK99s1bB1pQRnHkcKGQ9WNqBVnmh9ImXVqzajVChjM+uJPOvhj4gK7
-         Sz89O6f/9dfAno1JdcckBXFx0EzXft0jOi2f3mjZoJYa9wxmOJlhV3S8ChVjw6KLCKfO
-         jv5Q==
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netfilter-devel-owner@vger.kernel.org>
+Sender: netfilter-devel-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-Hi ,
- I am using iptables library 1.4.15 on my linux machine and building
-it to define and add the iptables rules. And I have multiple NIC
-cards("eth0" and "eth1") on my machine and i need to add the rules
-specific to some of these NICs. Allow and drop rules are working fine
-as long as the NIC is not specified, but when I add rule with the
-specific NIC name like "eth0" to drop packets,
-i see it is droping packets for all the interfaces. Is there any known
-issue with specifying NIC name.
+Hi,
 
-the invocation path is like this:
-   addMyRule(srcIp, srcIpNetmask, destIp, destIpNetmask,nicName,
-proto, sport_min,sport_max, dport_min, dport_max,precedence, action,
-0) -> iptc_insert_entry
-   Invocation with the values:  addMyRule(inaddr_any, 0, inaddr_any,
-0,"eth0", 0, 0, 65535,80,80,2,0,0)
-In the implementation of addMyRule, ipt_entry is instantiated and NIC
-name is copied to "iniface" attribute of the "ipt_ip" in "ipt_entry"
-e = (struct ipt_entry *)malloc(total_length);
-    if (nicName)
-    {
-        strcpy(e->ip.iniface, nicName)
-     }
+I'm happy to announce ipset 6.24, which includes a couple of fixes,
+backports from the kernel tree and a nice performance improvement by
+the introduction of RCUs at the set level instead of the rwlocks.
 
- I searched in the net for the known issues, but I could not find any
-related. Any help in this regard would be highly appreciated.
+Userspace changes:
+  - The "extra" subdirectory for kernel modules may have a full subtree
+    (reported by Jesper Dangaard Brouer)
+  - Add more compatibility checkings to support older kernel releases
+  - Make_global.am: Don't include host headers (Baruch Siach)
+  - Alignment problem between 64bit kernel 32bit userspace fixed
+    (reported by Sven-Haegar Koch)
+  - Add script to check libipset.map for missing symbols
+  - Update libipset.map with ipset_parse_tcp_udp_port (Thomas Backlund)
+  - libipset: Bump lib version and update map file (Neutron Soutmun)
+  - Bash utilities updated
+  - ipset: Fix hyphen used as minus sign in manpage (Neutron Soutmun)
+Kernel part changes:
+  - netfilter: ipset: small potential read beyond the end of buffer
+    (Dan Carpenter)
+  - Fix parallel resizing and listing of the same set
+  - styles warned by checkpatch.pl fixed
+  - Introduce RCU in all set types instead of rwlock per set
+    (performance tested by Jesper Dangaard Brouer)
+  - Remove rbtree from hash:net,iface in order to run under RCU
+  - Explicitly add padding elements to hash:net,net and hash:net,port,net
+  - Allocate the proper size of memory when /0 networks are supported
+  - Simplify cidr handling for hash:*net* types
+  - Indicate when /0 networks are supported
+  - Kernel API changes in em_ipset.c, support both old and new ones
+  - netfilter: Convert uses of __constant_<foo> to <foo> (Joe Perches)
+  - net: use the new API kvfree() (WANG Cong)
+  - treewide: fix errors in print (Masanari Iida)
+  - netfilter: use IS_ENABLED(CONFIG_BRIDGE_NETFILTER) (Pablo Neira Ayuso)
+  - Use IS_ENABLED macro and define it if required
+  - Alignment problem between 64bit kernel 32bit userspace fixed
+    (reported by Sven-Haegar Koch)
+  - netfilter: ipset: off by one in ip_set_nfnl_get_byindex()
+    (Dan Carpenter)
 
-Thanks&Regards
-Vijay
+You can download the source code of ipset from:
+        http://ipset.netfilter.org
+        ftp://ftp.netfilter.org/pub/ipset/
+        git://git.netfilter.org/ipset.git
+
+Best regards,
+Jozsef
+-
+E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
+PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
+Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
+          H-1525 Budapest 114, POB. 49, Hungary
