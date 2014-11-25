@@ -1,77 +1,90 @@
-From: stoffl4ever <stoffl4ever@gmail.com>
-Subject: nft icmpv6 mld-listener-query rule not honored?
-Date: Tue, 25 Nov 2014 14:27:15 +0100
-Message-ID: <547483B3.6040207@gmail.com>
+From: Vijay Viswanathan <vijay.vishy@gmail.com>
+Subject: Re: Issue with specifying interface/NIC name with drop packets rule
+Date: Tue, 25 Nov 2014 09:45:35 -0800
+Message-ID: <CALPbv19G704czh3jKZmRpEgfdd65wxHsNpje=5n_UCr7qOOxsQ@mail.gmail.com>
+References: <CAHRwiV37vEOmsFThw+Hhfjqb1SA05aZEUGBm1JQEB+-2WfnWWQ@mail.gmail.com>
+	<CALPbv18W=zE5Eq0Wt+Dve10nGvwtB16gHzkFQo3qbkKpukhF4w@mail.gmail.com>
+	<CAHRwiV0AxxPXj7OW=V4_SLKKXirdDpb5mQj1eV4Pjia9JzHTBQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=message-id:date:from:user-agent:mime-version:to:subject
-         :content-type:content-transfer-encoding;
-        bh=Fge1fGoxGSj1eIGGUe4u5Uk4AKm/U5aFgwi6fQ0AzqY=;
-        b=AaeANg4+X/JgdAzZ5lN/SbnUT+sAeEg4o0mQwtu+QFZvR0/9YYLz13JikkFi47oBG2
-         3TqCfZUMYHGk15MlV24gc4CCMvlR1p6VgNYaM2bBKMRQJVa2/NYn5cEpY89YwmRBHSWZ
-         Y44Gbv+NjmV/HLJ0mBXz3E2/mYyb2TWJiacp4h21VWsLmZVlK1ZjEJA+RbsGy6/yZRkL
-         3DYTv7DCjbwmq6Y3VO5s6Eg9CjAhMWC1dd2rIwYZLjCAZhFX1dOkGTehHAy8Qfsxnnou
-         +RbI43QYCfC6oCj7Xa8RgnGPYxSA9bOqUl+AzbSSXqI2G08o6LHDS6F/ANaeybE5OkuZ
-         guXQ==
+        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
+         :content-type;
+        bh=vmO7KdP7h2z1hLoBzUD1aFYg3JYYvnUxYiUHi7kZfYA=;
+        b=CymPf4lLV+XINyGJ5cEAQvNLBdP0++xw5BukpknLZvPTJRNNhNnJs/D0G+mBVoAt56
+         fZA3nDQLZCbHv+yper4QFr1AbjtKEDv1A3jO5YmCEk8n4g/IbWqx5vtYQOODhBgATHxD
+         Nq0D824ODTyCxTPejVhKuhfjINooPf8bod4O875YJoRGAW1WRfsQ2DAKd/u/vBn9VM/0
+         UyUmfE3tbuy9B8JwC6SNyZdJx0RXJzd92b4+IADIfU/VaIZRPDZMqm9EfGfTwCQzcZWz
+         uiCuPHLCsHnuwrMPe05RcZtxvVkCI9hS3z1qMbqa4nCZRGryx2bLmULhtBb7LRF/ufhf
+         6oUQ==
+In-Reply-To: <CAHRwiV0AxxPXj7OW=V4_SLKKXirdDpb5mQj1eV4Pjia9JzHTBQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: Vijay Kumar K <kvijay@gmail.com>, Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-Hallo,
+ya,
+I faced same issue, the ipt library cannot be used directly. They
+warned in the Readme.
 
-I am trying to get a basic nftables set up working but i cannot figure
-out why  the packets get rejected despite the afaik correct rule to all
-this traffic. The overall result is that IPv6 connectivity is lost
-because the router seams not to be able to route any IPv6 Traffic to the
-host if Type=130 aka. mld-listener-query packets are rejected. May be
-someone could help me and correct me where i am wrong or point me to
-some documentation that would explain my misconceptions.
-
-SysInfo:
-kernel: 3.17.4.201411220955-1-grsec (all nf* modules loaded)
-nft: nftables v0.3
-Network setup via systemd-networkd: br0(bridge) is attached to
-eth0(physical nic)
-
-nft rule set:
-
-table inet filter {
-        chain input {
-                 type filter hook input priority 0;
-                 ip protocol icmp icmp type { echo-request} accept
-                 ip6 nexthdr ipv6-icmp icmpv6 type { packet-too-big,
-mld-listener-query, nd-router-advert, mld-listener-report,
-nd-neighbor-advert, nd-neighbor-solicit, echo-reply,
-mld-listener-reduction, echo-request, destination-unreachable} accept
-                 log prefix "REJECTED - " counter packets 211 bytes
-11718 reject
-        }
-
-        chain forward {
-                 type filter hook forward priority 0;
-        }
-
-        chain output {
-                 type filter hook output priority 0;
-        }
-}
+You can do fork-exec of iptables or iptables-restore
 
 
-From Log: (interesting message is the second one)
 
-kernel: REJECTED - IN=br0 OUT= PHYSIN=eth0
-MAC=01:00:5e:00:00:01:fe:54:00:02:14:8a:08:00 SRC=0.0.0.0 DST=224.0.0.1
-LEN=32 TOS=0x00 PREC=0xC0 TTL=1 ID=0 DF PROTO=2
-Nov 25 13:49:57
-kernel: REJECTED - IN=br0 OUT= PHYSIN=eth0
-MAC=33:33:00:00:00:01:fe:54:00:02:14:8a:86:dd
-SRC=fe80:0000:0000:0000:8497:04ff:fee4:07e0
-DST=ff02:0000:0000:0000:0000:0000:0000:0001 LEN=72 TC=0 HOPLIMIT=1
-FLOWLBL=0 PROTO=ICMPv6 TYPE=130 CODE=0
-
-Thank you with best regards,
-chris
+On Mon, Nov 24, 2014 at 8:58 PM, Vijay Kumar K <kvijay@gmail.com> wrote:
+> Hi Vishy,
+>     Thanks for the quick response, we have tried with command line, that
+> seems to work fine. But we need to use it through a program, are there any
+> known issues with iptables library for this kind of usage?  What options we
+> have to reuse the iptables in a programming model instead of command line to
+> add rules to allow or drop packets on specific NICs?
+>
+> Please clarify.
+>
+> Thanks&Regards
+> VijayK
+>
+> On Tue, Nov 25, 2014 at 2:06 AM, Vijay Viswanathan <vijay.vishy@gmail.com>
+> wrote:
+>>
+>> Have you tried it from command line iptables ... ?
+>> The readme of iptables says not to use library/API.
+>>
+>> On Mon, Nov 24, 2014 at 6:12 AM, Vijay Kumar K <kvijay@gmail.com> wrote:
+>> > Hi ,
+>> >  I am using iptables library 1.4.15 on my linux machine and building
+>> > it to define and add the iptables rules. And I have multiple NIC
+>> > cards("eth0" and "eth1") on my machine and i need to add the rules
+>> > specific to some of these NICs. Allow and drop rules are working fine
+>> > as long as the NIC is not specified, but when I add rule with the
+>> > specific NIC name like "eth0" to drop packets,
+>> > i see it is droping packets for all the interfaces. Is there any known
+>> > issue with specifying NIC name.
+>> >
+>> > the invocation path is like this:
+>> >    addMyRule(srcIp, srcIpNetmask, destIp, destIpNetmask,nicName,
+>> > proto, sport_min,sport_max, dport_min, dport_max,precedence, action,
+>> > 0) -> iptc_insert_entry
+>> >    Invocation with the values:  addMyRule(inaddr_any, 0, inaddr_any,
+>> > 0,"eth0", 0, 0, 65535,80,80,2,0,0)
+>> > In the implementation of addMyRule, ipt_entry is instantiated and NIC
+>> > name is copied to "iniface" attribute of the "ipt_ip" in "ipt_entry"
+>> > e = (struct ipt_entry *)malloc(total_length);
+>> >     if (nicName)
+>> >     {
+>> >         strcpy(e->ip.iniface, nicName)
+>> >      }
+>> >
+>> >  I searched in the net for the known issues, but I could not find any
+>> > related. Any help in this regard would be highly appreciated.
+>> >
+>> > Thanks&Regards
+>> > Vijay
+>> > --
+>> > To unsubscribe from this list: send the line "unsubscribe netfilter" in
+>> > the body of a message to majordomo@vger.kernel.org
+>> > More majordomo info at  http://vger.kernel.org/majordomo-info.html
+>
+>
