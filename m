@@ -1,23 +1,45 @@
-From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
-Subject: Re: Issue with specifying interface/NIC name with drop packets rule
-Date: Tue, 25 Nov 2014 15:09:16 -0500
-Message-ID: <201411251509.16662.neal.p.murphy@alum.wpi.edu>
-References: <CAHRwiV37vEOmsFThw+Hhfjqb1SA05aZEUGBm1JQEB+-2WfnWWQ@mail.gmail.com> <CAHRwiV0AxxPXj7OW=V4_SLKKXirdDpb5mQj1eV4Pjia9JzHTBQ@mail.gmail.com> <CALPbv19G704czh3jKZmRpEgfdd65wxHsNpje=5n_UCr7qOOxsQ@mail.gmail.com>
-Reply-To: neal.p.murphy@alum.wpi.edu
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: issue with nftable - goto : Operation not supported
+Date: Wed, 26 Nov 2014 14:00:42 +0100
+Message-ID: <20141126130042.GA1533@salvia>
+References: <5474BC91.6060108@c-s.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CALPbv19G704czh3jKZmRpEgfdd65wxHsNpje=5n_UCr7qOOxsQ@mail.gmail.com>
+Content-Disposition: inline
+In-Reply-To: <5474BC91.6060108@c-s.fr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: leroy christophe <christophe.leroy@c-s.fr>
+Cc: netfilter@vger.kernel.org
 
-On Tuesday, November 25, 2014 12:45:35 PM Vijay Viswanathan wrote:
-> ya,
-> I faced same issue, the ipt library cannot be used directly. They
-> warned in the Readme.
+On Tue, Nov 25, 2014 at 06:29:53PM +0100, leroy christophe wrote:
+> Using nft, i'm trying to jump to another table from the end of a
+> table and I get the following error.
+> 
+> root@localhost:~# nft add rule filter input  goto accs
+> <cmdline>:1:1-31: Error: Could not process rule: Operation not supported
+> add rule filter input goto accs
+> ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 
+> What could be the reason ?
+> 
+> I'm using
+> * nftables-20141121
+> * gmp-4.3.2
+> * libmnl-1.0.3
+> * libnfnetlink-1.0.1
+> * libnftnl-20141121
+> * libnetfilter_conntrack-1.0.4
 
-Using libip4tc and libip6tc from 1.4.14 works for custom programs. Did this 
-change after v1.4.14? If not, it *can* be done; it just has to be done 
-carefully.
+Kernel version?
+
+Could you run this command with strace:
+
+strace nft add rule ...
+
+Could you post the relevant part of your ruleset (table and chain
+configuration)?
+
+Thanks.
