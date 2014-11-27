@@ -1,30 +1,65 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: unable to install libnftnl Error : "XT_EXTENSION_MAXNAMELEN
- undeclared here"
-Date: Thu, 27 Nov 2014 13:01:56 +0100
-Message-ID: <20141127120156.GA22329@salvia>
-References: <CAA5aLPgXUgF4JsTh6YR-0Mw9+NSW8bmMAp2wJLGf85QdsVKErQ@mail.gmail.com>
- <20141127103549.GA3271@salvia>
- <CAA5aLPih82HGtTugrE9ekiMcj-xkwH4KhV7t5FB=f0PpOU9bow@mail.gmail.com>
+From: leroy christophe <christophe.leroy@c-s.fr>
+Subject: Re: issue with nftable - goto : Operation not supported
+Date: Thu, 27 Nov 2014 13:31:52 +0100
+Message-ID: <547719B8.6040302@c-s.fr>
+References: <5474BC91.6060108@c-s.fr> <20141126130042.GA1533@salvia> <54760ABA.4040900@c-s.fr> <20141126174721.GA3815@salvia> <5476152E.8010400@c-s.fr> <20141126181312.GA25447@salvia>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAA5aLPih82HGtTugrE9ekiMcj-xkwH4KhV7t5FB=f0PpOU9bow@mail.gmail.com>
+In-Reply-To: <20141126181312.GA25447@salvia>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Akshat Kakkar <akshat.1984@gmail.com>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Pablo Neira Ayuso <pablo@netfilter.org>
+Cc: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
-On Thu, Nov 27, 2014 at 04:53:16PM +0530, Akshat Kakkar wrote:
-> Thanks for the info.
-> 
-> I downloaded latest snapshot. It installed atleast on 2.6.36.
-> 
-> I want it to test skbinfo feature of ipset (released in 6.22), so I
-> was installing iptables which required libnftnl
 
-I think you're mixing up things.
+Le 26/11/2014 19:13, Pablo Neira Ayuso a =E9crit :
+>> How can it interpret the below output which seems buggy ?
+>>
+>> root@vgoip:~# nft list table filter
+>> table ip filter {
+>>          chain input {
+>>                   type filter hook input priority 0;
+>>                   oifname "lo" accept
+>>                   ip protocol icmp accept
+>>                   ct state 8 unknown unknown 0x16 [invalid type] acc=
+ept
+>>                   ct state { 4, 2} accept
+>>                   reject with icmp type 10
+>>          }
+> What is the original ruleset you loaded? This should not happen. Any
+> relevant information regarding your testbed?
+Ruleset is:
+nft add table ip filter
+nft add chain ip filter input { type filter hook input priority 0 \; }
+nft add rule filter input meta oifname lo accept
+nft add rule filter input ip protocol icmp accept
+nft add rule filter input ct state new tcp dport 22 accept
+nft add rule filter input ct state {established, related} accept
+nft add rule filter input reject with icmp type host-prohibited
 
-You seem to be refering to ipset, while installing nftables libraries.
+Target is a powerpc
+All building is done on a x86 PC, using home built cross-compile gnu=20
+tools (binutils, gcc, glibc, ....)
+
+I just ran 'nft' with gdb, and I have seen something wrong with byte=20
+ordering.
+It looks like in symbolic_constant_print(), mpz_export_data() return a=20
+strange val.
+=46irst time we get there, we get 0x800000000
+Next time, we get 0x400000000
+Last time, we get 0x200000000
+While we expect 8(new), 4(related), 2(established)
+
+Any idea on how I can fix that ?
+
+Kernel 3.17.4
+nftables-20141121
+gmp-4.3.2
+libmnl-1.0.3
+libnfnetlink-1.0.1
+libnftnl-20141121
+libnetfilter_conntrack-1.0.4
+
+Christophe
