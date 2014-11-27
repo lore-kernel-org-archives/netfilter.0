@@ -1,43 +1,48 @@
-From: stoffl4ever <stoffl4ever@gmail.com>
-Subject: Re: issue with nftable - goto : Operation not supported
-Date: Wed, 26 Nov 2014 22:45:16 +0100
-Message-ID: <547649EC.2090200@gmail.com>
-References: <5474BC91.6060108@c-s.fr> <20141126130042.GA1533@salvia> <54760ABA.4040900@c-s.fr> <20141126174721.GA3815@salvia> <5476152E.8010400@c-s.fr> <20141126181312.GA25447@salvia>
+From: Akshat Kakkar <akshat.1984@gmail.com>
+Subject: unable to install libnftnl Error : "XT_EXTENSION_MAXNAMELEN
+ undeclared here"
+Date: Thu, 27 Nov 2014 15:47:50 +0530
+Message-ID: <CAA5aLPgXUgF4JsTh6YR-0Mw9+NSW8bmMAp2wJLGf85QdsVKErQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=message-id:date:from:user-agent:mime-version:to:subject:references
-         :in-reply-to:content-type:content-transfer-encoding;
-        bh=djkMvQRbaNtfz4i0iAYArMrJ7pfIk33HkFl5zuCP0Qo=;
-        b=mGsZ+V6g6ST6XJrF5cLVCshAZiE8aKILxzXKJLnvORboOtda9MQWP8etKvWY6/xq2U
-         bM2UuWImPH58cLcFJqek/DvqyTc1pP3KugelLV5Wdx3rZhxEzrk4mBbGSUVAy6LB46oM
-         IktZ6/vRTVsgDo9+aHywMjkWuKZwEaTN7/LUxHUpiBmdOw2f+U7TjCiPNa86QR644PZN
-         t63SdzZsAXTDc2HRY1HnLeTIcWGx8RcOE2fZEb8+IP8g2cYLP3pbPWzRTU23KMbe4mUS
-         LXNcNjuYhMkf6BBochtuiilgBzUZB2MCYZr9beQ4qv8d19Qs57pnI5V625hIv837uQ90
-         xAqQ==
-In-Reply-To: <20141126181312.GA25447@salvia>
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=ewyfj1JUcWrBFh5fCmhDIcfx2UF7/HYO3W9FcAjm74U=;
+        b=LV/bRgue+HIasGNcNKbxxWr/oo0OX+0x2GOjUuKvp7l37JegxlZkyfD9YL196DvW+6
+         dlhJfQz9JxFXx/usI9tHTJZikxBJWy6AghqQeJNSs9miqCGVjiuoO4mDOdv67KKI8+oH
+         HXaiijgvPj7lj0XPaFrk0inI8aijZPaR/ZGINCnGfKwgGVVlOpHV0Z2i+bT452BG0ddZ
+         IVmzFyngBUBTwwH7R+5W5KS8f+NiAzYYuj64ziz9CJP7bzS9TpAmTLM6TC/ZJGmPxyvc
+         OUDE1rfUVYP02Trgln4BbXS1L1lj3dQH3CuUIf1/C7JwSHomq4KJFwIOw55nEjMcEyqZ
+         8nZw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 26.11.2014 19:13, Pablo Neira Ayuso wrote:
->> > I tried it, it adds rules but doesn't remove the previous ones. How
->> > can I replace previous rules in one go with 'nft -f' ?
-> You have to prepend:
->
->  flush table filter
->
-> to the output of 'nft list table filter'.
->
-> Since 3.18, you can also use:
->
->  flush ruleset
->
-> that removes everything, including the existing table and chain
-> configuration.
-Also named sets?
-I was running into this before that sets are not removed when only using:
-flush table filter
+My kernel is 2.6.36
+I am trying to install libnftnl-1.0.2
+I executed following commands
+
+tar xvf libnftnl-1.0.2.tar.bz2
+cd libnftnl-1.0.2
+./configure
+
+
+Till this point everything is OK.
+When I execute command ""make""
+I get following error
+
+make  all-recursive
+make[1]: Entering directory `/usr/local/libnftnl-1.0.2'
+Making all in src
+make[2]: Entering directory `/usr/local/libnftnl-1.0.2/src'
+  CC     expr/match.lo
+expr/match.c:31: error: 'XT_EXTENSION_MAXNAMELEN' undeclared here (not
+in a function)
+make[2]: *** [expr/match.lo] Error 1
+make[2]: Leaving directory `/usr/local/libnftnl-1.0.2/src'
+make[1]: *** [all-recursive] Error 1
+make[1]: Leaving directory `/usr/local/libnftnl-1.0.2'
+make: *** [all] Error 2
