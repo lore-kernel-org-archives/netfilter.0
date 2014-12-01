@@ -1,53 +1,85 @@
-From: Akshat Kakkar <akshat.1984@gmail.com>
-Subject: Re: unable to install libnftnl Error : "XT_EXTENSION_MAXNAMELEN
- undeclared here"
-Date: Thu, 27 Nov 2014 18:08:55 +0530
-Message-ID: <CAA5aLPjWiopxcPCNF=_87zbFSd4BT-C4yvVDShRe6WOodGOapA@mail.gmail.com>
-References: <CAA5aLPgXUgF4JsTh6YR-0Mw9+NSW8bmMAp2wJLGf85QdsVKErQ@mail.gmail.com>
-	<20141127103549.GA3271@salvia>
-	<CAA5aLPih82HGtTugrE9ekiMcj-xkwH4KhV7t5FB=f0PpOU9bow@mail.gmail.com>
-	<20141127120156.GA22329@salvia>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: nft icmpv6 mld-listener-query rule not honored?
+Date: Mon, 1 Dec 2014 13:59:40 +0100
+Message-ID: <20141201125940.GA11047@salvia>
+References: <547483B3.6040207@gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type;
-        bh=9kwx5mziN6+NpA7LPpWbWxE0PCfynFS7lPm6p+I6+Qs=;
-        b=okt8I+DwfzRQXuKIw74FeCiS1PKO5FFxCue2WIrPI+lbJywjbqQLwdC5kuNQS4SiQ2
-         y2UxXBOU2L3Pb9NWmMy8tzgnGo75Sii8ANMTPGCQGfMtuH5+wdB7R+JjDjLoUFh8O0OH
-         CiLeopGNGV8XS6YII0MkLxRVB/PSNeE+H254suVnGNWYYHQT2tXmt0DzNRjQI8IL9HOY
-         OQRtAhNGXHcjnbxzNicJtA4rb51nI8FWlUdoD9fOs/gFzR2b+0B/cjD5Lv7WzmgZFJ3c
-         IlQxSkTfn49bSn2fKrbb7XDcR2EA63Um/HadRv4aTeu+gU5yfE+oS1ps1FpO9PNj4MRa
-         n29A==
-In-Reply-To: <20141127120156.GA22329@salvia>
+Content-Disposition: inline
+In-Reply-To: <547483B3.6040207@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: stoffl4ever <stoffl4ever@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-In ipset 6.22, anton has added support of skbinfo extension
-in order to use this feature, corresponding iptables should use something like
-""
--j SET --map-set mark_values dst --map-mark
+On Tue, Nov 25, 2014 at 02:27:15PM +0100, stoffl4ever wrote:
+> Hallo,
+> 
+> I am trying to get a basic nftables set up working but i cannot figure
+> out why  the packets get rejected despite the afaik correct rule to all
+> this traffic. The overall result is that IPv6 connectivity is lost
+> because the router seams not to be able to route any IPv6 Traffic to the
+> host if Type=130 aka. mld-listener-query packets are rejected. May be
+> someone could help me and correct me where i am wrong or point me to
+> some documentation that would explain my misconceptions.
+> 
+> SysInfo:
+> kernel: 3.17.4.201411220955-1-grsec (all nf* modules loaded)
+> nft: nftables v0.3
+> Network setup via systemd-networkd: br0(bridge) is attached to
+> eth0(physical nic)
+> 
+> nft rule set:
+> 
+> table inet filter {
+>         chain input {
+>                  type filter hook input priority 0;
+>                  ip protocol icmp icmp type { echo-request} accept
+>                  ip6 nexthdr ipv6-icmp icmpv6 type { packet-too-big,
+> mld-listener-query, nd-router-advert, mld-listener-report,
+> nd-neighbor-advert, nd-neighbor-solicit, echo-reply,
+> mld-listener-reduction, echo-request, destination-unreachable} accept
+>                  log prefix "REJECTED - " counter packets 211 bytes 11718 reject
+>         }
+> 
+>         chain forward {
+>                  type filter hook forward priority 0;
+>         }
+> 
+>         chain output {
+>                  type filter hook output priority 0;
+>         }
+> }
+> 
+> 
+> From Log: (interesting message is the second one)
+> 
+> kernel: REJECTED - IN=br0 OUT= PHYSIN=eth0
+> MAC=01:00:5e:00:00:01:fe:54:00:02:14:8a:08:00 SRC=0.0.0.0 DST=224.0.0.1
+> LEN=32 TOS=0x00 PREC=0xC0 TTL=1 ID=0 DF PROTO=2
+> Nov 25 13:49:57
+> kernel: REJECTED - IN=br0 OUT= PHYSIN=eth0
+> MAC=33:33:00:00:00:01:fe:54:00:02:14:8a:86:dd
+> SRC=fe80:0000:0000:0000:8497:04ff:fee4:07e0
+> DST=ff02:0000:0000:0000:0000:0000:0000:0001 LEN=72 TC=0 HOPLIMIT=1
+> FLOWLBL=0 PROTO=ICMPv6 TYPE=130 CODE=0
 
-""
+You need these two patches:
 
-For this, I need to install latest snapshot iptables and for that I
-require libnftnl
+http://git.kernel.org/cgit/linux/kernel/git/pablo/nf-next.git/commit/?id=68b0faa87d167ec87ba2a26be62241ad94eb449b
+http://git.kernel.org/cgit/linux/kernel/git/pablo/nf-next.git/commit/?id=1b63d4b9b54cee6002757a8d20b537aa4037ae8f
 
+They apply to Linux kernel 3.18-rc.
 
-On Thu, Nov 27, 2014 at 5:31 PM, Pablo Neira Ayuso <pablo@netfilter.org> wrote:
-> On Thu, Nov 27, 2014 at 04:53:16PM +0530, Akshat Kakkar wrote:
->> Thanks for the info.
->>
->> I downloaded latest snapshot. It installed atleast on 2.6.36.
->>
->> I want it to test skbinfo feature of ipset (released in 6.22), so I
->> was installing iptables which required libnftnl
->
-> I think you're mixing up things.
->
-> You seem to be refering to ipset, while installing nftables libraries.
+The second patch sets the transport layer offset to get layer 4
+protocol matching from the bridge. Please, I'd appreciate if you can
+give them a test and report, those two are scheduled for 3.19.
+
+BTW, I noticed that you're using the 'inet' family. I guess you're
+using bridge netfilter. I think you should use the 'bridge' family
+instead, it comes with native working reject support since the
+upcoming 3.18.
+
+One of the goals of nftables is to supersede br_netfilter.
