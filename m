@@ -1,77 +1,83 @@
-From: leroy christophe <christophe.leroy@c-s.fr>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
 Subject: Re: How are ct helper to be configured with NFT ?
-Date: Fri, 05 Dec 2014 08:27:11 +0100
-Message-ID: <54815E4F.10500@c-s.fr>
+Date: Fri, 5 Dec 2014 11:38:27 +0100
+Message-ID: <20141205103827.GB3746@salvia>
 References: <54761724.9060201@c-s.fr>
+ <54815E4F.10500@c-s.fr>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <54761724.9060201@c-s.fr>
+Content-Disposition: inline
+In-Reply-To: <54815E4F.10500@c-s.fr>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
-To: netfilter@vger.kernel.org, Pablo Neira Ayuso <pablo@netfilter.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: leroy christophe <christophe.leroy@c-s.fr>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+On Fri, Dec 05, 2014 at 08:27:11AM +0100, leroy christophe wrote:
+> Hi,
+> 
+> I still get the warning from the kernel
+> 
+> # tftp -g server -r test.c
+> [ 1359.853269] nf_conntrack: automatic helper assignment is
+> deprecated and it will be removed soon. Use the iptables CT target
+> to attach helpers instead.
 
-I still get the warning from the kernel
+This is related to nf_conntrack. Read this:
 
-# tftp -g server -r test.c
-[ 1359.853269] nf_conntrack: automatic helper assignment is deprecated=20
-and it will be removed soon. Use the iptables CT target to attach=20
-helpers instead.
-test.c               100%=20
-|**********************************************************************=
-**|=20
-804   0:00:00 ETA
+https://home.regit.org/netfilter-en/secure-use-of-helpers/
 
-# nft list ruleset
-table ip filter {
-         chain output {
-                  type filter hook output priority 0;
-                  udp dport tftp ct helper "tftp"
-         }
 
-         chain input {
-                  type filter hook input priority 0;
-                  oifname "lo" accept
-                  ct state { established, related} accept
-                  ct state new tcp dport ssh accept
-                  ip protocol icmp accept
-                  drop
-         }
+> test.c               100% |************************************************************************|
+> 804   0:00:00 ETA
+> 
+> # nft list ruleset
+> table ip filter {
+>         chain output {
+>                  type filter hook output priority 0;
+>                  udp dport tftp ct helper "tftp"
 
-         chain forward {
-                  type filter hook forward priority 0;
-                  drop
-         }
-}
+The right syntax is:
 
-Can you help ?
+        udp dport tftp ct helper set "tftp"
+                                 ^^^
 
-Thanks
-Christophe
+your rule above does something different:
 
-Le 26/11/2014 19:08, leroy christophe a =E9crit :
-> I need to do something equivalent to
->
->     iptables -t raw -A OUTPUT -p udp -d 192.168.2.1 --dport tftp -j C=
-T=20
-> --helper tftp
->
->
-> I tried the following
->
-> nft add rule filter output ct helper "tftp" udp dport tftp
->
-> But it looks like it doesn't work, I still get.
->
-> [ 1113.706274] nf_conntrack: automatic helper assignment is deprecate=
-d=20
-> and it will be removed soon. Use the iptables CT target to attach=20
-> helpers instead.
->
-> What is the correct syntaxe for that ?
->
-> Christophe
+1) udp dport tftp
 
+and
+
+2) the ct helper is "tftp"
+
+However, userspace supports this but unfortunately the kernel code is
+still missing.  So you'll have to wait for this feature or
+(temporarily) rely on the automagic helper assignment (from that
+message, I understand you already do).
+
+>         }
+> 
+>         chain input {
+>                  type filter hook input priority 0;
+>                  oifname "lo" accept
+>                  ct state { established, related} accept
+
+I think I already mentioned that ct state are flags.
+
+# nft describe ct state
+ct expression, datatype ct_state (conntrack state) (basetype bitmask, integer), 32 bits
+
+pre-defined symbolic constants:
+        invalid                         0x00000001
+        new                             0x00000008
+        established                     0x00000002
+        related                         0x00000004
+        untracked                       0x00000040
+
+so you can express that as command separated values, ie.
+
+        ct state established,related accept
+
+This only works if the basetype is a bitmask.
