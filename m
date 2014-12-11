@@ -1,42 +1,41 @@
-From: Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
-Subject: Re: Problem setting up nftables dnat : dport set to 0 instead of
- requested value (22)
-Date: Wed, 10 Dec 2014 21:29:58 +0100
-Message-ID: <CAOkSjBgiXs3b1zrQ8vKgnnf=sDBVFQbbH7zfP+PAbnhhQzvQSg@mail.gmail.com>
-References: <54885B08.1010700@c-s.fr> <20141210182244.GA5622@salvia>
+From: Richard Guy Briggs <rgb-3laFzeAjKYZe04CwrWwdBg@public.gmane.org>
+Subject: NetDev 0.1 Registration open
+Date: Wed, 10 Dec 2014 20:03:31 -0500
+Message-ID: <20141211010331.GP21601@toccata2.tricolour.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
-         :cc:content-type:content-transfer-encoding;
-        bh=dk/YngOpK+NESTzSqAXNS+8fzgymdt7GbGw2jRlrw4M=;
-        b=BYN8A6jrerBXwTsWghMGq04kkwDsslmnUym4yyyLO7rLLULTG0GLps9j+1WQVlNR3d
-         i8Vec+8VjGJe08O9cyvQa99CwZkslK3xgXtG1qZix5UiwOG3+S1oJqPrr9lkuUt+Z8Xm
-         dW/Eg9/6QBaUMFu1tUY+xRJal4CF6jnv9R0W3nqwkeGAXf730ov/4Fk87XPM0LEiEkPS
-         Ve4PPFM/x9BInYqween/4P6KbBncZCToUmhAl502OJEAdmXe47xwZtrlGbXmHV16/U1u
-         Z6jpMnLPAvlUPRFzIUhawUVBc3prbJYrSHppQc1lvh75RaOIlywMGAPeg/HaraeR7LGD
-         aI/A==
-In-Reply-To: <20141210182244.GA5622@salvia>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org>
+Content-Disposition: inline
+Sender: linux-wireless-owner-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
-To: Pablo Neira Ayuso <pablo@netfilter.org>
-Cc: leroy christophe <christophe.leroy@c-s.fr>, Netfilter Users Mailing list <netfilter@vger.kernel.org>, GUITTON Alex <alex.guitton@c-s.fr>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netdev-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, linux-wireless-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, lwn-T1hC0tSOHrs@public.gmane.org, netdev01-wool9L35kiczKOhml7GhPkB+6BGkLq7r@public.gmane.org, lartc-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-u79uwXL29TY76Z2rM5mHXA@public.gmane.org, netfilter-devel-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
 
-On 10 December 2014 at 19:22, Pablo Neira Ayuso <pablo@netfilter.org> w=
-rote:
->
-> @Arturo: Could you add documentation for your 'redirect' support to ?
->
+We are pleased to announce that registration is now open for netdev 0.1, the
+community-driven Linux networking conference held back-to-back with netconf in 
+Ottawa, Canada, February 14-17, 2015.
 
-Done:
+Registration is now open at https://onlineregistrations.ca/netdev01.
+Fees: $100/day, or $350 for 4 days (Canadian Dollars)
 
-http://wiki.nftables.org/wiki-nftables/index.php/Performing_Network_Add=
-ress_Translation_(NAT)#Redirect
+Online registration closes Feb 12.
 
-regards.
 
---=20
-Arturo Borrero Gonz=C3=A1lez
+Main site:                      https://www.netdev01.org/
+Announcement:                   https://www.netdev01.org/announce
+CFP:                            https://www.netdev01.org/cfp
+Travel/hotel/weather/clothing:  https://www.netdev01.org/travel
+
+
+
+	slainte mhath, RGB
+
+--
+Richard Guy Briggs               --  ~\    -- ~\
+<www.TriColour.ca>                 --  \___   o \@       @
+Ottawa, ON, CANADA                  --  Lo_>__M__\\/\%__\\/\%
+_____________________________GTVS6#790__(*)__(*)________(*)(*)_________________
+--
+To unsubscribe from this list: send the line "unsubscribe linux-wireless" in
+the body of a message to majordomo-u79uwXL29TY76Z2rM5mHXA@public.gmane.org
+More majordomo info at  http://vger.kernel.org/majordomo-info.html
