@@ -1,50 +1,24 @@
-From: John Miller <johnmill@brandeis.edu>
-Subject: Re: iptables DNAT algorithm -- another way?
-Date: Sat, 13 Dec 2014 14:52:20 -0500
-Message-ID: <CAGYMsbuauVpzw+sF8mfKxwT=NMVt3OgBEw7DvF-T=ewKk=doYQ@mail.gmail.com>
-References: <548B8069.4020802@brandeis.edu>
-	<201412121950.59768.neal.p.murphy@alum.wpi.edu>
-	<548C0500.8030408@plouf.fr.eu.org>
+From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
+Subject: Re: Issue with specifying interface/NIC name with drop packets rule
+Date: Sat, 13 Dec 2014 15:13:29 -0500
+Message-ID: <201412131513.30049.neal.p.murphy@alum.wpi.edu>
+References: <CAHRwiV37vEOmsFThw+Hhfjqb1SA05aZEUGBm1JQEB+-2WfnWWQ@mail.gmail.com> <CAHRwiV0AxxPXj7OW=V4_SLKKXirdDpb5mQj1eV4Pjia9JzHTBQ@mail.gmail.com> <CALPbv19G704czh3jKZmRpEgfdd65wxHsNpje=5n_UCr7qOOxsQ@mail.gmail.com>
+Reply-To: neal.p.murphy@alum.wpi.edu
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <548C0500.8030408@plouf.fr.eu.org>
+In-Reply-To: <CALPbv19G704czh3jKZmRpEgfdd65wxHsNpje=5n_UCr7qOOxsQ@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: 
-Cc: netfilter@vger.kernel.org
+Content-Type: Text/Plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Sat, Dec 13, 2014 at 4:21 AM, Pascal Hambourg <pascal@plouf.fr.eu.or=
-g> wrote:
-> Hello,
->
-> Neal Murphy a =C3=A9crit :
->> On Friday, December 12, 2014 06:55:21 PM John Miller wrote:
->>>
->>> My solution thus far has been to use DNAT to trick our scanning pro=
-gram
->>> into thinking it's using local addresses.
->>>
->>> iptables -t nat -A OUTPUT -d 172.16.x.y -j DNAT \
->>>      --to-destination 129.64.x.y
->>
->> This might point you in the right direction:
->>
->> iptables -t nat -A PREROUTING -s 172.16.0.0/16 \
->>   -j DNAT --to-destination 129.64.0.0-129.64.255.255
->>
->> But I don't know if it provides predictable 1:1 mapping.
->
-> It doesn't. You want to use NETMAP instead of DNAT.
+On Tuesday, November 25, 2014 12:45:35 PM Vijay Viswanathan wrote:
+> ya,
+> I faced same issue, the ipt library cannot be used directly. They
+> warned in the Readme.
 
-Beautiful!  That's exactly what I was looking for.  Thank you!
+This doesn't really make sense; iptables itself has to use the lib directly. 
+Miniupnpd and Smoothwall's ipbatch both use the lib directly.
 
-Sounds like
-
-iptables -t mangle -A OUTPUT -d 172.16.0.0/16 -j NETMAP --to 129.64.0.0=
-/16
-
-will do the trick.
-
-John
+N
