@@ -1,26 +1,33 @@
 From: Tim Nelson <tnelson@rockbochs.com>
 Subject: Re: Bridging / VLANs / ebtables
-Date: Wed, 17 Dec 2014 10:56:36 -0600 (CST)
-Message-ID: <6072563.350672.1418835396663.JavaMail.root@rockbochs.com>
-References: <CAA5aLPi--5H-+SVDvv9tDc7SNSnYtxpW1rAStAhQrgr0qpwHOw@mail.gmail.com>
+Date: Wed, 17 Dec 2014 11:30:39 -0600 (CST)
+Message-ID: <5298570.350969.1418837439866.JavaMail.root@rockbochs.com>
+References: <549119ce.ca25e00a.053d.1a62@mx.google.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAA5aLPi--5H-+SVDvv9tDc7SNSnYtxpW1rAStAhQrgr0qpwHOw@mail.gmail.com>
+In-Reply-To: <549119ce.ca25e00a.053d.1a62@mx.google.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
------ Original Message -----
-> Its not about finding a workaround or something.
-> 
-> If we bridge two vlans on the same interface, then what should be the
-> VLAN-tag on the packets moving out of the box? As it might not be
-> possible to decide this, thats why we cannot bridge two vlans on the
-> same interface.
-> 
+----- Original Message ----- 
+> I get the scenario but not the why. Is it a subset of specific things
+> you need to do a layer 2 bridge for or do you need it for something
+> else.
+>
+> For example I have a firewall where I need to forward broadcast (
+> 255.255.255.255 ,xxx.xxx.xxx.255) messages between different
+> segments in the network. Most people would think of bridging for
+> this but I did something completely different involving setting both
+> interfaces to a /32, adding a static route for each subnet, adding a
+> static arp table entry on each interface for the broadcast IP
+> addresses mapped to the broadcast mac addresses then simple iptables
+> rules.
 
-My assumption (wrongful?) would be some sort of state tracking wherein the kernel notes the interface the traffic is sourced from, and return traffic goes back via the same path (including layer 2 characteristics including VLAN ID).
+In this case, there is a device on a switchport (untagged VLAN 3) which needs to have layer 2 access to/from devices connected to a different broadcast domain, available on a different switchport. Both the untagged network, as well as VLAN3 networks are available to this 'host in the middle'. Given an inability to manage the switch in this very specialized case, I'd like to make that bridge happen within the connected host.
+
+Would you be open to providing more specifics on your /32 setup you noted?
 
 --Tim
