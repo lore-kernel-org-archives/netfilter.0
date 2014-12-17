@@ -1,42 +1,40 @@
-From: Tim Nelson <tnelson@rockbochs.com>
-Subject: Re: Bridging / VLANs / ebtables
-Date: Tue, 16 Dec 2014 15:46:59 -0600 (CST)
-Message-ID: <31506370.345790.1418766419268.JavaMail.root@rockbochs.com>
-References: <20141216213425.GU967@titan.lakedaemon.net>
+From: "Hassan Sultan" <hsultan@thefroid.net>
+Subject: Intercepting connection creation/close with libnetfilter_conntrack
+Date: Tue, 16 Dec 2014 16:06:58 -0800
+Message-ID: <op.xqzjxwt51jp0b1@win8mac>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20141216213425.GU967@titan.lakedaemon.net>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=thefroid.net; h=
+	content-type:to:date:subject:mime-version
+	:content-transfer-encoding:from:message-id; s=thefroid.net; bh=a
+	J3KIbBaHQ49YX6ip0s6EWhHJTk=; b=GC1AuVjngtljnkq9dAhw9YOj5jGMKGRwV
+	dKAFDcBDPAmd6z7/HOoiyucHeyIfoMemY/wOpHzeLiOnV1iUMUfZD9atUcI3NcSx
+	sK19f+pQoJGV1OFrKp8EKI3rFdOLePodsuQhM5yK/q2rynG5tSTVQ0vvgdChWacU
+	X6KYWsAi6Q=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"; delsp="yes"
 To: netfilter@vger.kernel.org
 
------ Original Message -----
-> iiuc, you have the following types of packets on eth0:
-> 
-> 	x.x.x.x/24
-> 	y.y.y.y/24
-> 	z.z.z.z/24
-> 	vlan2:a.a.a.a/24
-> 	vlan3:b.b.b.b/24
-> 
-> So, you need x.x.x.x/24, y.y.y.y/24, and z.z.z.z/24 to get routed
-> into
-> vlan3.  Does traffic need to go the other way?  Is there broadcast or
-> multicast traffic to worry about?
-> 
+Hi,
 
-Greetings Jason-
+I am trying to write a simple app, that will intercept all connection  
+creation/close (any TCP connection and hopefully also any UDP  
+reception/emission).
 
-Specifically, I have:
+I tried simply copying examples (I'm on Ubuntu 14.04 x64 with a 3.13-032  
+kernel) like this one :
 
-eth0: x.x.x.x/24
-eth0.2: y.y.y.y/29
-eth0.3: z.z.z.z/24
+https://git.netfilter.org/libnetfilter_conntrack/plain/utils/conntrack_events.c
 
-After bridging eth0 and eth0.3, devices on eth0.3 will utilize the same address space as that present on eth0 native (x.x.x.x/24). Of course, traffic to/from eth0.2 would continue to be functional. Traffic *does* need to operate in both directions, and yes there will be broadcast traffic originating from eth0.3, as a DHCP request, which would be answered by a DHCP server on the eth0 native connected network.
+However, when I launch it (using sudo so it's as root) and then create a  
+tcp connection (to localhost using telnet, confirming the connection was  
+created), nothing shows up.
 
-Thanks!
+What am I missing ? Do I need to enable auditing in the kernel/iptables  
+somehow ?
 
---Tim
+Thanks,
+
+Hassan
