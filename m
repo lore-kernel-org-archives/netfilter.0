@@ -1,24 +1,24 @@
 From: Jason Cooper <jason@lakedaemon.net>
 Subject: Re: Bridging / VLANs / ebtables
-Date: Tue, 16 Dec 2014 21:41:46 -0500
-Message-ID: <20141217024146.GV967@titan.lakedaemon.net>
-References: <20141216213425.GU967@titan.lakedaemon.net>
- <31506370.345790.1418766419268.JavaMail.root@rockbochs.com>
+Date: Tue, 16 Dec 2014 21:55:14 -0500
+Message-ID: <20141217025514.GW967@titan.lakedaemon.net>
+References: <4829673.301498.1418414563731.JavaMail.root@rockbochs.com>
+ <12631645.301499.1418414592170.JavaMail.root@rockbochs.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lakedaemon.net;
-	s=mail; t=1418784106;
-	bh=cy/XDIQULviZnJCTN3kNGx7Vd4l+eLBi/S8EV3n9vJY=;
+	s=mail; t=1418784914;
+	bh=n51F4xtvgD7Z409J8CRit0E6wWGj3ZcI/R7S0pAh17w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
 	 Content-Type:In-Reply-To;
-	b=juzbSykNb8BES1iTy0GtxegqxdcC9QCNvG8v7Mg1MwQThd84/+fB5fC26wpRBgwr/
-	 6wzJJWUCDhYwEXtlnWf1jWdyjufs5SmSMFNCbLqtbzfJ/pB9XjawB9sp/yBhoraeYU
-	 SZZIHgW3EHDp9lMLL0UYkda5XAFMcvqOPT+CqAymQ8Hjvcb1BQ1VZ+tOIXHnk9AlKi
-	 qCUuLfu7PKNAt96rDyU8VUENTngeyMJS1fQvcv2/p4lod+v716v3l6p3V+CUVmIOk8
-	 7cNM620R8DhKUzpBDAYsn7QtTU3lCBpSCuRwRulzHDJn3REE6tFTQnrTAHherds0ra
-	 SFx+IT3zky1Dg==
+	b=Ya/dqiG76Gh4+DgRbs2prorsu2zR/7T25nql+Pe90kGMp65Oc0X3duPBE5ISUrDX8
+	 mXE6hulXkbfLgzorroR17opIv1W/qmhhyj3Gogr1EcLBzlCu7obgONSytW9DF8/I2c
+	 pMfMIqPqaBcRn7nL0GXIwkKLTM+0DS7GdBTLC/Q4cB5qcs/vP2v7HNO+Bse/uK+dZF
+	 594s8S6AYvuQpmysl/YyPBDVjE8cNYcJ2DV+Xaue399XSGvTJoH9uyww1Rde7GtVXM
+	 iK8TCFsrZFp7aq0b2jtW22tx9Pwi+h7rlpSrJYblcRiohwwzhj4mCuyTvfJ9n9ye8G
+	 tqN2R5zlJcdOQ==
 Content-Disposition: inline
-In-Reply-To: <31506370.345790.1418766419268.JavaMail.root@rockbochs.com>
+In-Reply-To: <12631645.301499.1418414592170.JavaMail.root@rockbochs.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
@@ -26,48 +26,56 @@ Content-Transfer-Encoding: 7bit
 To: Tim Nelson <tnelson@rockbochs.com>
 Cc: netfilter@vger.kernel.org
 
-On Tue, Dec 16, 2014 at 03:46:59PM -0600, Tim Nelson wrote:
-> ----- Original Message -----
-> > iiuc, you have the following types of packets on eth0:
-> > 
-> > 	x.x.x.x/24
-> > 	y.y.y.y/24
-> > 	z.z.z.z/24
-> > 	vlan2:a.a.a.a/24
-> > 	vlan3:b.b.b.b/24
-> > 
-> > So, you need x.x.x.x/24, y.y.y.y/24, and z.z.z.z/24 to get routed
-> > into vlan3.  Does traffic need to go the other way?  Is there
-> > broadcast or multicast traffic to worry about?
-> > 
-> 
-> Greetings Jason-
-> 
-> Specifically, I have:
-> 
-> eth0: x.x.x.x/24
-> eth0.2: y.y.y.y/29
-> eth0.3: z.z.z.z/24
-> 
-> After bridging eth0 and eth0.3, devices on eth0.3 will utilize the
-> same address space as that present on eth0 native (x.x.x.x/24). Of
-> course, traffic to/from eth0.2 would continue to be functional.
-> Traffic *does* need to operate in both directions, and yes there will
-> be broadcast traffic originating from eth0.3, as a DHCP request, which
-> would be answered by a DHCP server on the eth0 native connected
-> network.
+Tim,
 
-I'm sure I'm missing something, but a quick test in a VM worked:
+Ah crap.  I should've read the OP first.  Definitely some scenario lost
+in quote-trimming...
 
-[root@triton] # brctl show
-bridge name     bridge id               STP enabled     interfaces
-br0             8000.00163e1c9a87       no              eth126
-                                                        eth126.3
+On Fri, Dec 12, 2014 at 02:03:12PM -0600, Tim Nelson wrote:
+> Greetings-
+> 
+> I have an interesting situation that requires bridging some VLAN
+> enabled interfaces together on a Debian 7.x x86 system. On the host,
+> there is a single physical interface passing traffic natively (eth0),
+> and two tagged VLANs also passing traffic (eth0.2 and eth0.3).
+> 
+> The use case is that I need to bridge eth0 with eth0.2, allowing layer
+> two traffic to pass seamlessly between interfaces, and still leave
+> eth0.3 in a usable state. The switch this system is connected to is
+> outside of my control, which is the reason for the odd network setup.
+> 
+> What I'm finding by simply creating a new bridge br0 with members eth0
+> and eth0.2 is no connectivity on eth0.2, and slow/quirky connectivity
+> on eth0 (native connectivity to Debian 7.x host). 
 
-eth126.3 did not have an ip address.  eth126 did, but you have to set
-both interfaces promiscuous and 0.0.0.0.  Then, assign an IP in the
-range z.z.z.z/24 to br0.
+This sounds a bit like an IP address / routing rule conflict.  Did you
+set eth0 and eth0.2 0.0.0.0 and promiscuous?  Did you assign one IP
+address to the bridge?  Would you mind sending the output of:
 
-hth,
+# ip addr show
+
+and
+
+# route -n
+
+?
+
+> It has been suggested to use ebtables to filter the VLANs from the
+> eth0 interface on the bridge, yet allow operation to the system
+> interface eth0.2/eth0.3. I found a very specific reference on the
+> ebtables site for this scenario [1], usage suggested (modified to fit
+> my environment):
+> 
+> ebtables -t broute -A BROUTING -i eth0 -p 802_1Q --vlan-id 3 -j DROP
+> ebtables -t broute -A BROUTING -i eth0 -p 802_1Q --vlan-id 2 -j DROP
+> 
+> If my understanding of the ebtables usage as a brouter, and the
+> kernel's interaction between all components involved, this should
+> work. However, as noted, no change in operation is observed.
+
+Yes, based on your description of the network you are going to need the
+above rules.
+
+thx,
 
 Jason.
