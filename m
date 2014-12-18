@@ -1,33 +1,42 @@
-From: Tim Nelson <tnelson@rockbochs.com>
-Subject: Re: Bridging / VLANs / ebtables
-Date: Wed, 17 Dec 2014 11:30:39 -0600 (CST)
-Message-ID: <5298570.350969.1418837439866.JavaMail.root@rockbochs.com>
-References: <549119ce.ca25e00a.053d.1a62@mx.google.com>
+From: Richard Guy Briggs <rgb@tricolour.ca>
+Subject: netdev01 twitter feed, first proposal accepted
+Date: Wed, 17 Dec 2014 23:30:24 -0500
+Message-ID: <20141218043024.GW1343@toccata2.tricolour.ca>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <549119ce.ca25e00a.053d.1a62@mx.google.com>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, lwn@lwn.net, netdev01@lists.netfilter.org, lartc@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
 
------ Original Message ----- 
-> I get the scenario but not the why. Is it a subset of specific things
-> you need to do a layer 2 bridge for or do you need it for something
-> else.
->
-> For example I have a firewall where I need to forward broadcast (
-> 255.255.255.255 ,xxx.xxx.xxx.255) messages between different
-> segments in the network. Most people would think of bridging for
-> this but I did something completely different involving setting both
-> interfaces to a /32, adding a static route for each subnet, adding a
-> static arp table entry on each interface for the broadcast IP
-> addresses mapped to the broadcast mac addresses then simple iptables
-> rules.
+We are pleased to announce that the first proposal has been accepted and a
+Twitter feed has been set up to announce the rest as they are accepted for
+netdev 0.1, the community-driven Linux networking conference held back-to-back
+with netconf in Ottawa, Canada, February 14-17, 2015.
 
-In this case, there is a device on a switchport (untagged VLAN 3) which needs to have layer 2 access to/from devices connected to a different broadcast domain, available on a different switchport. Both the untagged network, as well as VLAN3 networks are available to this 'host in the middle'. Given an inability to manage the switch in this very specialized case, I'd like to make that bridge happen within the connected host.
+The twitter feed is: @netdev01
+https://twitter.com/netdev01
 
-Would you be open to providing more specifics on your /32 setup you noted?
+Wireless Workshop Proposal Accepted
+The wireless workshop will bring together the Linux wireless stack and driver
+maintainers to discuss the continued development of the stack regarding Linux
+implementation of existing standards, new requirements coming from 802.11
+specification development, Android integration, new products and similar.
+https://www.netdev01.org/news/11
 
---Tim
+
+Main site:                      https://www.netdev01.org/
+Announcement:                   https://www.netdev01.org/announce
+CFP:                            https://www.netdev01.org/cfp
+Travel/hotel/weather/clothing:  https://www.netdev01.org/travel
+
+
+	slainte mhath, RGB
+
+--
+Richard Guy Briggs               --  ~\    -- ~\             <hpv.tricolour.ca>
+<www.TriColour.ca>                 --  \___   o \@      @        Ride yer bike!
+Ottawa, ON, CANADA                  --  Lo_>__M__\\/\%__\\/\%
+_____________________________GTVS6#790__(*)__(*)________(*)(*)_________________
