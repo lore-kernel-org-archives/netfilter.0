@@ -1,42 +1,38 @@
-From: Richard Guy Briggs <rgb@tricolour.ca>
-Subject: netdev01 twitter feed, first proposal accepted
-Date: Wed, 17 Dec 2014 23:30:24 -0500
-Message-ID: <20141218043024.GW1343@toccata2.tricolour.ca>
+From: Vijay Viswanathan <vijay.vishy@gmail.com>
+Subject: NAT and listen on random ports
+Date: Fri, 19 Dec 2014 12:46:24 -0800
+Message-ID: <CALPbv1-PYS25HSkMvCD_otVVd0iPpN9jBL+D2dh6GQCRJDeObA@mail.gmail.com>
 Mime-Version: 1.0
-Return-path: <netdev-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: netdev-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=g5z8fEwOlxso1rMTzMwv5ABkDYeIPk+Afa3qVjhCwTI=;
+        b=sqJ8/PsbVasN58snY1joXVdmz7NFaOAjJH3Uwl6spLeZtnbeRavhPFhQWlz5YxaYsk
+         lAI+w3YdC3WCcPmhrR1IWqNWR+1WF70eP+iyTK9ZggR9n11etJ31/1CDSbylJgA6FBxT
+         MSZafs+zfeHpQzS9CWCY0XCKRgezl4ztpSbuWb+eVYz2ERhKh1tY9DUZ/Rtm9I50dwCJ
+         0q3sbVpf0b6eiv6x36avqxs4qibLWvg6cKoj6RfXSw/rPF+Zng3BGX4mzbQce6iRWjll
+         rI6r0WW3Q40tfZPSdE6zEDkwu+t1dOTSo9MpYEr4TlYbZZC2VLmnSGqqvR23SnJCPlW9
+         6Dgg==
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, lwn@lwn.net, netdev01@lists.netfilter.org, lartc@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+To: Netfilter Users Mailing list <netfilter@vger.kernel.org>
 
-We are pleased to announce that the first proposal has been accepted and a
-Twitter feed has been set up to announce the rest as they are accepted for
-netdev 0.1, the community-driven Linux networking conference held back-to-back
-with netconf in Ottawa, Canada, February 14-17, 2015.
+With MASQUERADE & DNAT
+Iam able to run servers on veth and be able to access network.
 
-The twitter feed is: @netdev01
-https://twitter.com/netdev01
+e.g., for SNMPD on veth3 ( 192.168.10.3 ) I do this on the host
+-A POSTROUTING -s 192.168.10.0/24 -j MASQUERADE
+-A PREROUTING -p udp -m state --state NEW,ESTABLISHED --dport 161 -j
+DNAT --to 192.168.10.3:161
 
-Wireless Workshop Proposal Accepted
-The wireless workshop will bring together the Linux wireless stack and driver
-maintainers to discuss the continued development of the stack regarding Linux
-implementation of existing standards, new requirements coming from 802.11
-specification development, Android integration, new products and similar.
-https://www.netdev01.org/news/11
+Lot of protocols go out on random ports and listen on the same source port .
+How do I achieve network access for protocols that goes out on random
+ports and listen on random ports ?
+Do I need to add the PREROUTING rule on the host before I
+socket:listen, so the traffic gets forwarded to the right veth ?
 
-
-Main site:                      https://www.netdev01.org/
-Announcement:                   https://www.netdev01.org/announce
-CFP:                            https://www.netdev01.org/cfp
-Travel/hotel/weather/clothing:  https://www.netdev01.org/travel
-
-
-	slainte mhath, RGB
-
---
-Richard Guy Briggs               --  ~\    -- ~\             <hpv.tricolour.ca>
-<www.TriColour.ca>                 --  \___   o \@      @        Ride yer bike!
-Ottawa, ON, CANADA                  --  Lo_>__M__\\/\%__\\/\%
-_____________________________GTVS6#790__(*)__(*)________(*)(*)_________________
+Thanks.
+VIjay.
