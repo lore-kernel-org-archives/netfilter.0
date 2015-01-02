@@ -1,39 +1,66 @@
-From: Stig Thormodsrud <stig@ubnt.com>
-Subject: Re: Parsing conntrack entries
-Date: Thu, 1 Jan 2015 16:26:31 -0800
-Message-ID: <CAL-yc890hQjr0TnH3B4CFks_=1RCTHOABiKA+YkmC17vQpGR-Q@mail.gmail.com>
-References: <54A5C6CE.6090409@conversis.de>
-	<m84nn2$mv7$1@ger.gmane.org>
+From: Neven Vrenko <neven.vrenko@gmail.com>
+Subject: IPset v6.24 - make modules fails
+Date: Fri, 2 Jan 2015 01:29:16 +0000 (UTC)
+Message-ID: <loom.20150102T020804-673@post.gmane.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <m84nn2$mv7$1@ger.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Karsten Hohmeier <karsten.hohmeier@tu-ilmenau.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"
+To: netfilter@vger.kernel.org
 
-I wrote this script to parse nat translations, maybe it could be a
-starting point.
-https://github.com/vyos/vyatta-nat/blob/lithium/scripts/vyatta-nat-translations.pl
+Hi guys,
 
-On Thu, Jan 1, 2015 at 4:10 PM, Karsten Hohmeier
-<karsten.hohmeier@tu-ilmenau.de> wrote:
-> Hi Dennis,
->
->> What is the best way to parse this information in a reliable way?
->
-> Maybe you could try dumping the table in XML as mentioned by the manpage?
->
-> conntrack -L -o xml
->     Dump the connection tracking table in XML
->
-> Best Regards
->
-> Karsten
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+I'm having problem with IPset v.6.24.
+I compiled and installed kernel 2.6.39 on CentOS 6.5, without any
+customisation and system is running fine. There was no previous ipset
+version installed on system.
+
+I've noticed error when I ran: "make modules" during ipset install. I'v=
+e got
+following error:
+
+[root@localhost ipset-6.24]# make modules
+make -C /lib/modules/`uname -r`/build M=3D$PWD/kernel/net V=3D \
+			KCFLAGS=3D"-DPACKAGE_VERSION=3D6.24" \
+			IP_SET_MAX=3D256 KDIR=3D$PWD/kernel modules
+make[1]: Entering directory `/usr/src/kernels/linux-2.6.39'
+Makefile:634: "WARNING: Appending $KCFLAGS (-DPACKAGE_VERSION=3D6.24) f=
+rom
+command line to kernel $CFLAGS"
+  CC [M]  /root/ipset-6.24/kernel/net/netfilter/xt_set.o
+  CC [M]  /root/ipset-6.24/kernel/net/netfilter/ipset/ip_set_core.o
+/root/ipset-6.24/kernel/net/netfilter/ipset/ip_set_core.c: In function
+=E2=80=98call_ad=E2=80=99:
+/root/ipset-6.24/kernel/net/netfilter/ipset/ip_set_core.c:1449: error:
+=E2=80=98SIZE_MAX=E2=80=99 undeclared (first use in this function)
+/root/ipset-6.24/kernel/net/netfilter/ipset/ip_set_core.c:1449: error: =
+(Each
+undeclared identifier is reported only once
+/root/ipset-6.24/kernel/net/netfilter/ipset/ip_set_core.c:1449: error: =
+for
+each function it appears in.)
+/root/ipset-6.24/kernel/net/netfilter/ipset/ip_set_core.c:1449: warning=
+:
+type defaults to =E2=80=98int=E2=80=99 in declaration of =E2=80=98_min1=
+=E2=80=99
+/root/ipset-6.24/kernel/net/netfilter/ipset/ip_set_core.c:1449: warning=
+:
+comparison of distinct pointer types lacks a cast
+make[4]: *** [/root/ipset-6.24/kernel/net/netfilter/ipset/ip_set_core.o=
+] Error 1
+make[3]: *** [/root/ipset-6.24/kernel/net/netfilter/ipset] Error 2
+make[2]: *** [/root/ipset-6.24/kernel/net/netfilter] Error 2
+make[1]: *** [_module_/root/ipset-6.24/kernel/net] Error 2
+make[1]: Leaving directory `/usr/src/kernels/linux-2.6.39'
+make: *** [modules] Error 2
+
+I'm not sure what this error actually means and how to debug it, please=
+ can
+you help me on this or give me in which direction I should investigate.
+
+P.S. Other steps as ./autogen.sh, ./configure and make are passing just=
+ fine
+
+
