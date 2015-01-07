@@ -1,104 +1,66 @@
-From: Richard Guy Briggs <rgb@tricolour.ca>
-Subject: NetDev 0.1 Deadline Extension(Jan 24) and Talk Summary
-Date: Wed, 7 Jan 2015 13:03:58 -0500
-Message-ID: <20150107180358.GU1343@toccata2.tricolour.ca>
+From: "U.Mutlu" <for-gmane@mutluit.com>
+Subject: Re: Transparent proxy requirement
+Date: Wed, 07 Jan 2015 22:40:51 +0100
+Message-ID: <m8k953$vu2$1@ger.gmane.org>
+References: <m768fd$cqt$1@ger.gmane.org> <54AA58A9.10502@ngtech.co.il>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, lwn@lwn.net, netdev01@lists.netfilter.org, lartc@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <54AA58A9.10502@ngtech.co.il>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Fellow netheads:
+Eliezer Croitoru wrote, On 01/05/2015 10:26 AM:
+> -----BEGIN PGP SIGNED MESSAGE-----
+> Hash: SHA1
+>
+> Hey,
+>
+> For the example:
+> A client from ip 192.168.0.1 tries to access "serverpgm" which is
+> using an tcp based protocol... and has the IP 192.168.0.2.
+> Tproxy will not help you since the server needs to understand it and
+> since the proxypgm might be able to understand it.. still it cannot
+> pass the connection details to the serverpgm which talks plain TCP and
+> cannot be modified.
 
-Due to several submitter requests we would like to accomodate, we have extended
-the proposal submission deadline to Jan 24.  https://netdev01.org/cfp 
+Why is it so?
+I just want the same functionality every router device does:
+it passes the originating ip, even thru NAT, to the serverpgm.
 
+> What do you need proxypgm to do? it depends on what you need to do...
+> Maybe there is some component in the linux kernel which can do what
+> you need.
 
-A reminder that the Westin Hotel is holding a block of rooms for Netdev01 at a
-guaranteed rate of $159.00 or $179.00 (depending on the type of room required)
-and the rooms are going fast due to Winterlude bookings.  That guarantee
-expires on January 23, so book now to avoid disappointment and get the low
-rate. The rooms are going faster than we expected!
-Reservations: https://www.starwoodmeeting.com/StarGroupsWeb/res?id=1412035802&key=1AC9C1F8
-
-
-Here is a post-holiday update of the activity so far in NetDev 0.1 you may have
-missed if you aren't following the RSS feed or twitter:
-
-
-Confirmed keynote speaker:
-==========================
-David S. Miller - The Current State of Linux kernel Networking.
-
-
-Accepted talks: (All listed: https://www.netdev01.org/sessions )
-===============
-Rocker: switchdev prototyping vehicle
-Scott Feldman
-https://www.netdev01.org/sessions/2
-
-How to not just do a demo with DPDK or Lessons learned making a software dataplane
-Stephen Hemminger
-https://www.netdev01.org/sessions/3
-
-Picking low hanging fruit from the FIB tree
-Alexander Duyck
-https://www.netdev01.org/sessions/4
-
-Rtnetlink dump filtering in the kernel
-Roopa Prabhu
-https://www.netdev01.org/sessions/5
-
-Hardware Switches - The Opensource Approach 
-Jiri Pirko
-https://www.netdev01.org/sessions/6
-
-hello UML, meet LibOS and friends - h/w independent unadulterated reuse of Linux kernel networking code in userspace
-Hajime Tazaki
-https://www.netdev01.org/sessions/7
-
-Distributing Linux tc filter-action packet processing across disparate nodes
-Jamal Hadi Salim and Damascene M. Joachimpillai
-https://www.netdev01.org/sessions/9
-
-All About UDP Encapsulation
-Tom Herbert
-https://www.netdev01.org/sessions/11
-
-Accepted workshops:
-===================
-Wireless Workshop
-https://www.netdev01.org/sessions/1
-
-Hardware Offloading BoF
-https://www.netdev01.org/sessions/10
-
-All of the accepted proposals are new work.  A couple of proposals have been
-returned for rework prior to acceptance.  There are many more excellent
-proposals currently making their way through the technical committee vetting
-process.  The committee has so far been very impressed with the quality of
-proposals submitted.
+I wanted to write the said proxypgm that does a kind of gateway functionality:
+it shall accept the connection, analyse the originating ip and the
+protocol hdr data, and finally pass the data to the serverpgm;
+ie. play a transparent proxy between the internet client and the serverpgm.
 
 
-Registration https://onlineregistrations.ca/netdev01/
-$100/day, or $350 for 4 days (Cdn dollars). (online reg closes Feb 12th)
-Registering helps us plan properly for numbers of attendees,
-ensuring venue sizes and supplies are appropriate without
-wasting resources.
+>
+> Eliezer
+
+> On 12/21/2014 12:47 PM, U.Mutlu wrote:
+>> Hi everybody,
+>>
+>> I've this scenario: internet <--> proxypgm <--> serverpgm
+>>
+>> whith these requirements: 1) only ipv4 is used 2) protocol is tcp
+>> 3) proxypgm and serverpgm are one the same host (linux with recent
+>> kernel) 4) serverpgm is reachable only thru the proxypgm 5)
+>> serverpgm needs to know the originating ip:port of the client 6)
+>> serverpgm cannot be modified (it does not know of TPROXY or
+>> IP_TRANSPARENT socket option etc.) 7) proxypgm needs to be
+>> developed (in C/C++)
+>>
+>> And now the question: Can TPROXY be used for this?
+>>
+>> Are there other alternatives? What about doing this with raw
+>> sockets?
+>>
+>> Thx
 
 
-Travel advice: https://netdev01.org/travel
-
-Sponsors: https://netdev01.org/sponsors
-Verizon http://www.verizon.com/
-Cumulus Networks http://cumulusnetworks.com/ 
-Mojatatu Networks http://mojatatu.com/ 
-
-THE Technical Conference on Linux Networking, February 14-17, 2015, Ottawa, Canada
-https://netdev01.org/
-
-RSS feed: https://netdev01.org/atom
-Follow us on Twitter: @netdev01 https://twitter.com/netdev01
