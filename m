@@ -1,49 +1,44 @@
-From: Mike <debian@good-with-numbers.com>
-Subject: DHCP broadcasts coming from a "mystery" interface
-Date: Thu, 8 Jan 2015 03:53:39 +0000
-Message-ID: <20150108035339.GA17214@64-142-29-25.dsl.static.sonic.net>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: tproxy with nftables
+Date: Thu, 8 Jan 2015 11:56:25 +0100
+Message-ID: <20150108105625.GA3735@salvia>
+References: <1981739983.1515764.1420466742999.JavaMail.zimbra@tpip.net>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
+In-Reply-To: <1981739983.1515764.1420466742999.JavaMail.zimbra@tpip.net>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: Andreas Schultz <aschultz@tpip.net>
+Cc: netfilter@vger.kernel.org
 
-I just installed a barebones Debian "Wheezy" on a SuperMicro A1SRi-2558F.
-http://www.supermicro.com/products/motherboard/Atom/A1SRi-2558F.cfm
+On Mon, Jan 05, 2015 at 02:05:43PM +0000, Andreas Schultz wrote:
+> Hi,
+> 
+> Is it possible to use tproxy with nftables?
 
-I then noticed DHCP broadcasts on the VLAN on which its eth0 is connected.
-(None of the other three LAN ports, nor the IPMI port, are connected.)
+No native tproxy support yet and noone is scheduled to work on that
+anytime soon, sorry.
 
-19:29:50.972187 00:25:90:__:__:__ > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 590: 0.0.0.0.68 > 255.255.255.255.67: BOOTP/DHCP, Request from 00:25:90:__:__:__, length 548
-19:29:54.062182 00:25:90:__:__:__ > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 590: 0.0.0.0.68 > 255.255.255.255.67: BOOTP/DHCP, Request from 00:25:90:__:__:__, length 548
-19:30:17.212146 00:25:90:__:__:__ > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 590: 0.0.0.0.68 > 255.255.255.255.67: BOOTP/DHCP, Request from 00:25:90:__:__:__, length 548
-19:30:20.302188 00:25:90:__:__:__ > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 590: 0.0.0.0.68 > 255.255.255.255.67: BOOTP/DHCP, Request from 00:25:90:__:__:__, length 548
-19:30:23.392586 00:25:90:__:__:__ > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 590: 0.0.0.0.68 > 255.255.255.255.67: BOOTP/DHCP, Request from 00:25:90:__:__:__, length 548
-19:30:46.542248 00:25:90:__:__:__ > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 590: 0.0.0.0.68 > 255.255.255.255.67: BOOTP/DHCP, Request from 00:25:90:__:__:__, length 548
-19:30:49.632095 00:25:90:__:__:__ > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 590: 0.0.0.0.68 > 255.255.255.255.67: BOOTP/DHCP, Request from 00:25:90:__:__:__, length 548
-19:30:52.722288 00:25:90:__:__:__ > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 590: 0.0.0.0.68 > 255.255.255.255.67: BOOTP/DHCP, Request from 00:25:90:__:__:__, length 548
-19:30:54.361734 00:25:90:__:__:__ > 33:33:00:01:00:02, ethertype IPv6 (0x86dd), length 98: fe80::225:90ff:fe__:____.546 > ff02::1:2.547: dhcp6 inf-req
-19:31:15.871399 00:25:90:__:__:__ > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 590: 0.0.0.0.68 > 255.255.255.255.67: BOOTP/DHCP, Request from 00:25:90:__:__:__, length 548
-19:31:18.962200 00:25:90:__:__:__ > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 590: 0.0.0.0.68 > 255.255.255.255.67: BOOTP/DHCP, Request from 00:25:90:__:__:__, length 548
-19:31:22.052291 00:25:90:__:__:__ > ff:ff:ff:ff:ff:ff, ethertype IPv4 (0x0800), length 590: 0.0.0.0.68 > 255.255.255.255.67: BOOTP/DHCP, Request from 00:25:90:__:__:__, length 548
+> It seem that nft has no support for the tproxy table. It might
+> be possible to use a mix of nft and xtable-compat to get tproxy
+> to work on nft.
 
-My switch associates the MAC with this new system, so I know it's the source.
-But on this system:
+I posted a patch time ago to:
 
-# cat /sys/class/net/eth*/address
-0c:c4:7a:__:__:04
-0c:c4:7a:__:__:05
-0c:c4:7a:__:__:06
-0c:c4:7a:__:__:07
+http://patchwork.ozlabs.org/patch/255896/
 
-(All of these are SuperMicro OUIs.)
+the main problem was that getopt() gets confused when this is used
+from the command-line (so it works fine with nft -f). The internal
+state of getopt() needs to be reset before calling libxtables to parse
+the options.
 
-So how can I find the interface from which the 00:25:90:... packet originates,
-and squelch it?
+> But I would like to use a map to lookup a match and then use tproxy
+> as action. I there a way to get this working?
 
-I changed "filter" INPUT policy on the source machine to DROP, but had to
-explicitly DROP --dst-type BROADCAST to keep it from passing through anyway.
-The packets don't hit "filter" OUTPUT at all.
+I would need to know more on your use-case to be sure that the patch
+above will help you to achieve this, otherwise wait for the native
+tproxy support :-(.
+
