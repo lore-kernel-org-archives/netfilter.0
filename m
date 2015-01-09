@@ -1,57 +1,32 @@
-From: Andreas Schultz <aschultz@tpip.net>
-Subject: BUG: using smp_processor_id() in preemptible [00000000] code:
- iptables-compat/498
-Date: Thu, 8 Jan 2015 17:54:46 +0000 (UTC)
-Message-ID: <313639491.1562295.1420739686846.JavaMail.zimbra@tpip.net>
+From: =?UTF-8?B?6YKT5bCn?= <torshie@gmail.com>
+Subject: NFQUEUE and TCP retransmission
+Date: Fri, 9 Jan 2015 10:28:30 +0800
+Message-ID: <CAOb3iuj5sx3iaQDezPp7BLZk=-48mDGR0o_3Bab8qz9fOA_ppA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=VD/BZ1XXnTP3CWlujRvmraqIj3nvaiLQDx3Z0abhE1Q=;
+        b=egaXgpGIOcqFa9OVLhdBkIkH5nWRh8I3zlMWRzSqc1jt1r+N7mrS8vRFAMIHqXdkpg
+         GIUjv+0dhxiZrEdyEYT+BeMM2mdZjKgwhJZ+ezsGiafCX88sgkFdNuNKtNHqoSLaJaP6
+         lrgA1Qw0l+iPlwZXYE65bBH3My2MJbGLcM6NGF/fvowV60gtbTpRCGSYP2ZfsLBx481z
+         okF3Iw5Zn7necshXD1rlKb8ItX6ZyYPXUSg1gH+tHu4CfvPzZuPtm3sS1sur6JEL1pdT
+         nwyJg8+E9vLZGelq8yDfCSUYY4VTiafN1njSPq/jnPY5jCdRlBK57skaSbY4mqhmsijM
+         GanQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
 Hi,
+When the following iptables rule is used:
+iptables -A INPUT -p tcp --dport 1234 -j NFQUEUE --queue-num 0
 
-With iptables-compat from git.netfilter.org/iptables, on Linux 3.17.6 I get
-this  kernel BUG message:
+If a TCP packet is retransmitted, will the userspace program receive
+the retransmitted packet ? or it just receive one packet, and the
+retransmitted one is dropped in kernel space ?
 
-BUG: using smp_processor_id() in preemptible [00000000] code: iptables-compat/498
-caller is debug_smp_processor_id+0x17/0x20
-CPU: 3 PID: 498 Comm: iptables-compat Tainted: G           O   3.17.6-tplino-standard #3
-Hardware name: To be filled by O.E.M. To be filled by O.E.M./MAHOBAY, BIOS 4.6.5 08/20/2012
- ffffffff81cd1768 ffff8800d1733990 ffffffff81892927 0000000000000003
- ffff8800d17339b8 ffffffff81425f10 ffffffff81eeb7d8 000060fee0a03d90
- ffff8800d51e0b00 ffff8800d17339c8 ffffffff81425f37 ffff8800d1733a08
-Call Trace:
- [<ffffffff81892927>] dump_stack+0x4e/0x7a
- [<ffffffff81425f10>] check_preemption_disabled+0xf0/0x100
- [<ffffffff81425f37>] debug_smp_processor_id+0x17/0x20
- [<ffffffffa01fb0b2>] nft_stats_alloc+0xa2/0x110 [nf_tables]
- [<ffffffffa01fdbb1>] nf_tables_newchain+0x4b1/0x900 [nf_tables]
- [<ffffffff81431ed9>] ? nla_parse+0xb9/0x120
- [<ffffffffa005b93e>] nfnetlink_rcv+0x2fe/0x497 [nfnetlink]
- [<ffffffffa005b7f9>] ? nfnetlink_rcv+0x1b9/0x497 [nfnetlink]
- [<ffffffff817afd76>] netlink_unicast+0x166/0x210
- [<ffffffff817b0130>] netlink_sendmsg+0x310/0x420
- [<ffffffff81766723>] sock_sendmsg+0x73/0x90
- [<ffffffff8114e517>] ? pagevec_lru_move_fn+0xe7/0x100
- [<ffffffff8176890c>] ? move_addr_to_kernel+0x2c/0x50
- [<ffffffff81776233>] ? verify_iovec+0x43/0xc0
- [<ffffffff81767300>] ___sys_sendmsg+0x3a0/0x3b0
- [<ffffffff8189a626>] ? _raw_spin_unlock+0x16/0x30
- [<ffffffff8116c3f5>] ? handle_mm_fault+0x605/0xb40
- [<ffffffff81041d84>] ? __do_page_fault+0x214/0x5a0
- [<ffffffff81097c3d>] ? get_parent_ip+0xd/0x50
- [<ffffffff81074133>] ? __local_bh_enable_ip+0x43/0xb0
- [<ffffffff8189a90a>] ? _raw_spin_unlock_bh+0x1a/0x20
- [<ffffffff8176c3b5>] ? release_sock+0x145/0x170
- [<ffffffff81768f82>] __sys_sendmsg+0x42/0x80
- [<ffffffff81768fd2>] SyS_sendmsg+0x12/0x20
- [<ffffffff8189b1d2>] system_call_fastpath+0x16/0x1b
-
-Has this been fixed in 3.18 or later?
-
-Andreas
--- 
-Andreas Schultz
+Thanks
+Deng Yao
