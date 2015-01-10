@@ -1,53 +1,68 @@
-From: Jan Engelhardt <jengelh@inai.de>
-Subject: Re: Stateless NAT with iptables
-Date: Sat, 10 Jan 2015 00:54:16 +0100 (CET)
-Message-ID: <alpine.LSU.2.11.1501100027160.13352@nerf60.vanv.qr>
+From: Eliezer Croitoru <eliezer@ngtech.co.il>
+Subject: Re: Transparent proxy requirement
+Date: Sat, 10 Jan 2015 19:37:35 +0200
+Message-ID: <54B1635F.5040101@ngtech.co.il>
+References: <m768fd$cqt$1@ger.gmane.org> <54AA58A9.10502@ngtech.co.il> <m8k953$vu2$1@ger.gmane.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-reply-to: <m8k953$vu2$1@ger.gmane.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Glen Miner <shaggie76@hotmail.com>
-Cc: Netfilter user mailing list <netfilter@vger.kernel.org>, Kristian Evensen <kristian.evensen@gmail.com>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
+Cc: "U.Mutlu" <for-gmane@mutluit.com>
 
+Hey,
 
-> What we're trying to do is set up UDP NAT proxy for a pair of
-> clients on demand. The mappings are preceded by some application
-> layer traffic used to figure out where the mapping should go --
-> we're essentially trying to use the netfilter stack to do a blazing
-> fast STUN/TURN server with no packet overhead.
+To understand what you are talking about you need to understand the 
+specific case you are talking about.
+Since the destination software doesn't know a thing about tproxy the 
+only way that it can receive a packet would be either a full blown proxy 
+between it and the internet.. which would in many case be weird...
+Or some other solutions.
+If you will do what you seek using two different OS stacks(IE two 
+servers) which one is the default GW for the other you would be able to 
+do so and there is a way to do it with haproxy if I remember right.
+
+You main issue\demand is that these two pieces of software will sit on 
+the same machine.
+In this specific case you cannot use tproxy since there are issues with 
+that.
+You can try.... And see the result your self.
+If something was changed in tproxy since the last time I have used and 
+analyzed it.. it would be possible.
+
+All The Bests,
+Eliezer
+
+On 07/01/2015 23:40, U.Mutlu wrote:
+> Eliezer Croitoru wrote, On 01/05/2015 10:26 AM:
+>> -----BEGIN PGP SIGNED MESSAGE-----
+>> Hash: SHA1
+>>
+>> Hey,
+>>
+>> For the example:
+>> A client from ip 192.168.0.1 tries to access "serverpgm" which is
+>> using an tcp based protocol... and has the IP 192.168.0.2.
+>> Tproxy will not help you since the server needs to understand it and
+>> since the proxypgm might be able to understand it.. still it cannot
+>> pass the connection details to the serverpgm which talks plain TCP and
+>> cannot be modified.
 >
-> In my prototype this works but there's a problem: nf_conntrac gets
-> in the way of the hand-off between the application layer socket and
-> the NAT rule. I've tried telling iptables to go stateless: 
-> iptables -t raw -F
-> iptables -t raw -I PREROUTING -j NOTRACK
-> iptables -t raw -I OUTPUT -j NOTRACK
+> Why is it so?
+> I just want the same functionality every router device does:
+> it passes the originating ip, even thru NAT, to the serverpgm.
+>
+>> What do you need proxypgm to do? it depends on what you need to do...
+>> Maybe there is some component in the linux kernel which can do what
+>> you need.
+>
+> I wanted to write the said proxypgm that does a kind of gateway
+> functionality:
+> it shall accept the connection, analyse the originating ip and the
+> protocol hdr data, and finally pass the data to the serverpgm;
+> ie. play a transparent proxy between the internet client and the serverpgm.
 
-Rules are rather static, but your described scenario requires
-rather dynamic changes. There is a much more targeted solution:
 
-Once your application decides it is time to switch, it needs to
-change the conntrack entry for the UDP session. conntrack(8)
-can be used, and there is also a C interface with
-libnetfilter_conntrack.
-
-(With the conntrack command line utility, updating certain parameters is 
-not possible because of the program's way of option parsing. This 
-limitation may be gone in the C interface. With the command-line 
-utility, one could however recreate the entry, if the lack of atomicity 
-between the operations is bearable.)
-
-conntrack -D -p udp \
-	--src client_addr --dst stun_addr \
-	--sport client_port --dport stun_port
-conntrack -I -p udp \
-	--src client_addr --dst stun_addr \
-	--sport client_port --dport stun_port \
-	--reply-src real_server_addr --reply-dst client_addr \
-	--reply-src-port real_server_port \
-	--reply-dst-port client_port
-
-At least, that is the general idea.. whether it works, or if it needs
-additional commands, I have not tried.
