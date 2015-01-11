@@ -1,68 +1,58 @@
-From: Eliezer Croitoru <eliezer@ngtech.co.il>
-Subject: Re: Transparent proxy requirement
-Date: Sat, 10 Jan 2015 19:37:35 +0200
-Message-ID: <54B1635F.5040101@ngtech.co.il>
-References: <m768fd$cqt$1@ger.gmane.org> <54AA58A9.10502@ngtech.co.il> <m8k953$vu2$1@ger.gmane.org>
+From: David Hagood <david.hagood@gmail.com>
+Subject: Usefulness of xt_recent's "last seen" and "oldest_pkt" on a tickless
+ system
+Date: Sat, 10 Jan 2015 19:27:21 -0600
+Message-ID: <54B1D179.7000802@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-reply-to: <m8k953$vu2$1@ger.gmane.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=message-id:date:from:user-agent:mime-version:to:subject
+         :content-type:content-transfer-encoding;
+        bh=RtzdNTpDcvokjmBai4hYFrN2X/QaGyZxe10RkDnujSI=;
+        b=NTHlXwo10m0k/QQi3OZIYBdZX6/RH7ez7U14h1Wx5NebZ02Z3PyuyDlU8AKKQuYznB
+         9GO0hfdLUbh7NYxdYQqop9uSVQIYBTUUcMuYDmT/LMFc2uLaNCXNfV6B0vLGHqRLdnKf
+         M9iwpN1eUjVdFiWWVjhbO07df8T+J6sk5ulsAB5vlHBtQ7iI8PowzRlQ6PgQskZq2DDn
+         RumXx2mR2oDfN8+Ar9VEo9Ygdl5y7IBGntL3CVJXWdK5XN2MQ5buZGfempd/J5r98Ik/
+         5uAkYktUS89pD50IdCW9vc/2lfADlhn9NVzh+d9DH9Q0ZracVe17zovED6+glUuAYjsR
+         dGLw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
-Cc: "U.Mutlu" <for-gmane@mutluit.com>
 
-Hey,
+First of all, this is about the third time I've asked about this subject 
+on this mailing list, and I've never had anybody reply.
+/taps microphone
+Is this thing on?
 
-To understand what you are talking about you need to understand the 
-specific case you are talking about.
-Since the destination software doesn't know a thing about tproxy the 
-only way that it can receive a packet would be either a full blown proxy 
-between it and the internet.. which would in many case be weird...
-Or some other solutions.
-If you will do what you seek using two different OS stacks(IE two 
-servers) which one is the default GW for the other you would be able to 
-do so and there is a way to do it with haproxy if I remember right.
+I have been trying for several months to work out a way to parse the the 
+output of "cat /proc/net/xt_recent/<name of rule>", and return 
+meaningful numbers for the "last_seen" and "oldest_pkt" fields. As best 
+as I can determine, these are just a count of the number of jiffies 
+since boot. However, on a tickless kernel, there is really no well 
+defined number of jiffies per second as far as I can tell - it's going 
+to be a function of how often things need the system to wake up, and 
+will vary from moment to moment based upon the workload of the system.
 
-You main issue\demand is that these two pieces of software will sit on 
-the same machine.
-In this specific case you cannot use tproxy since there are issues with 
-that.
-You can try.... And see the result your self.
-If something was changed in tproxy since the last time I have used and 
-analyzed it.. it would be possible.
+If this is so, then this calls into question the utility of reporting 
+jiffies to the user - there's no way the user has to relate those values 
+to anything meaningful. It also calls into question the whole idea that 
+a recent rule can meaningfully specify a number of seconds for a packet 
+to be tested, if all that is stored is a number of jiffies.
 
-All The Bests,
-Eliezer
+So, the first question I have is: is there any meaningful way a 
+userspace tool can convert the values reported by /proc/net/xt_recent/* 
+into a wall clock time?
 
-On 07/01/2015 23:40, U.Mutlu wrote:
-> Eliezer Croitoru wrote, On 01/05/2015 10:26 AM:
->> -----BEGIN PGP SIGNED MESSAGE-----
->> Hash: SHA1
->>
->> Hey,
->>
->> For the example:
->> A client from ip 192.168.0.1 tries to access "serverpgm" which is
->> using an tcp based protocol... and has the IP 192.168.0.2.
->> Tproxy will not help you since the server needs to understand it and
->> since the proxypgm might be able to understand it.. still it cannot
->> pass the connection details to the serverpgm which talks plain TCP and
->> cannot be modified.
->
-> Why is it so?
-> I just want the same functionality every router device does:
-> it passes the originating ip, even thru NAT, to the serverpgm.
->
->> What do you need proxypgm to do? it depends on what you need to do...
->> Maybe there is some component in the linux kernel which can do what
->> you need.
->
-> I wanted to write the said proxypgm that does a kind of gateway
-> functionality:
-> it shall accept the connection, analyse the originating ip and the
-> protocol hdr data, and finally pass the data to the serverpgm;
-> ie. play a transparent proxy between the internet client and the serverpgm.
+The second question is: if the answer to the first question is no, then 
+why report those values at all? The whole point of a procfile interface 
+is to report data to userspace, but if there is no meaningful way to use 
+that information, what good is it?
 
+The third question is: wouldn't make more sense to capture the actual 
+wall-clock time of a packet, and report that to user space in a 
+meaningful way from the procfile interface? At least report time from 
+epoch in seconds - something that can be manipulated in a meaningful way?
 
