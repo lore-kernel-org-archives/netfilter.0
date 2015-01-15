@@ -1,73 +1,148 @@
-From: =?UTF-8?Q?St=C3=A9phane_Charette?= <stephanecharette@gmail.com>
-Subject: Re: TAP interface and iptables forwarding/nat/masquerading
-Date: Wed, 14 Jan 2015 16:16:56 -0800
-Message-ID: <CA+HxBUJ81GNZuzweK_KGn+cjs1ho2URZPjLKVF8XOpoOrhPjGQ@mail.gmail.com>
-References: <CA+HxBU+vzVOhY-iCMty=87Mo3yMnzo5Lw=x5E54D3Rud4GXSTA@mail.gmail.com>
-	<54B6E620.9070800@plouf.fr.eu.org>
+From: Alexandre Chaves <achaves@rbscomp.com.br>
+Subject: Iptables and ipsec racoon
+Date: Thu, 15 Jan 2015 10:55:55 -0200
+Message-ID: <CABt0TT8rcd8Ng6i_n7zRDW+oW4yfmazmKb3nuvP2GRoe31cQMw@mail.gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:in-reply-to:references:date:message-id:subject:from:to
-         :cc:content-type:content-transfer-encoding;
-        bh=9BLMjNJu2R3hf7YDX5/R8yRKpe265hAkMeEkS5b0zPY=;
-        b=KJaMGCksLXeqhh8vz0aLmnJNNrEJEpamc0T9IpegiKHcATULYtBUFy30//pCd+18lQ
-         W2ya46WcBMTW7vXrUTTpMf6eIs6nApx3hYfMbspCsA7/v/aB7TDzF3kNTIAIIHBHx0nF
-         zjMsVMUusCoDHyXZguJnSoFUZoq+5ig/TsyYyLQ3jPvnmyOGyGc+iKGjNt5dA4clmEev
-         PbFPX5l9iijTNBAVnX+WEJGB424H73SXzSmtDfQYZpHh3iUzLB7wZGYjQZrN12/iRIWC
-         jFjlpu96FG5iQC7zy2YhXI8x90Vvgf0K40/yzeHDWx899Deps1nS9pz+z9GSwEctrBvo
-         ya9g==
-In-Reply-To: <54B6E620.9070800@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="macroman"
+To: netfilter@vger.kernel.org
 
-On Wed, Jan 14, 2015 at 1:56 PM, Pascal Hambourg <pascal@plouf.fr.eu.or=
-g> wrote:
-> St=C3=A9phane Charette a =C3=A9crit :
->> This gives me a working home router with nat/masquerading capability=
-=2E
->
-> IIUC, this acts as a "stub" router routing between two networks on th=
-e
-> same interface. Correct ?
+Dear Friends,
 
-Yes, I have one interface connected to my cable modem which DHCPs a
-192.168.1.x address, and I'm using the alias (or the TAP interface) to
-bring up a different 10.x network for my local machines.
+I made up a Ipsec connection between my firewall ( in a debian 7.0)
+and a Checkpoint.
+I worked fine, the net admin from Checkpoint asked me that all packets
+to be source nated to 192.168.191.231.
+by that point everything was OK.
 
->> But if instead of creating an alias with the ifconfig command, I
->> instead use a TAP device opened up from some C++ code with the same
->> 10.0.1.1/24 address, I don't see any traffic coming into the TAP
->> interface.
->
-> How do you send trafic through the TAP interface ?
+Lan -------------- Firewall Debian
+--------------------------Checkpoint ------------- Remote Lan
+192.168.3.0/24             nated to 192.168.191.231
+                       172.26.51.27/32
 
-This is the part I'm thinking I did wrong.  How should I get traffic
-to flow through the TAP interface?
+So I did:
 
-When I bring up an alias and give it a 10.0.1.1/24 address, all my
-other machines are set to use 10.0.1.1 as their router, and everything
-works.  All traffic goes to that box, and using "sudo conntrack
---dump" I see all flows.  But when I try to use the TAP interface
-instead of the alias, no traffic is flowing through the TAP.  I'm
-guessing there is some tap/route/iptables magic needs to happen so the
-TAP interface with a 10.0.1.1 address can be seen?
+echo 1 > /proc/sys/net/ipv4/ip_forward
+iptables -t nat -A POSTROUTING  -s 192.168.3.0/24 -j SNAT --to 192.168.=
+191.231
 
->> What I eventually want is to have a user-space C++ application that
->> can examine traffic, and make decisions on what traffic to drop,
->> modify packets, or packets to log.  Then that C++ application sends
->> the remaining packets on their way.  Is it possible to use iptables
->> for this?
->
-> You may want to check the QUEUE and NFQUEUE targets.
+This firewall is used just to this ipsec connection.
 
-Ah!  Thank you for that hint.  My iptables man page (on Ubuntu 14.10)
-is incomplete, and I didn't realize what NFQUEUE did!  Just did a
-google search for it, and wow!  I think this may be exactly what I
-need.
+When I "tcdpump -i any"  I see the connection from my lan machine
+going throught firewall (src 192.168.3.10, dst 172.26.51.27). I see
+the connection nated src 192.168.191.231 and dst 172.26.51.27. I see
+the return from 172.26.51.27 and dst 192.168.191.231, but seens that
+my firewall cant take out the nat to delivery the packet to
+192.168.3.10
 
-St=C3=A9phane
+I changed the nat to
+iptables -t nat -A POSTROUTING  -j SNAT --to 192.168.191.231
+
+And tryed to telnet 172.26.51.27 80 from the firewall. I see the nated
+packets going and the return to 192.168.191.231, but it doesnt connect
+anyway.
+
+
+Have someone seen something like this? I have no Idea what should I do.
+
+Thanks in advance,
+#####################
+07:50:49.502784 IP 179.253.9.161.56956 > 172.26.51.27.23: Flags [S],
+seq 2265898310, win 14600, options [mss 1460,sackOK,TS val 62146 ecr
+0,nop,wscale 5], length 0
+07:50:51.506794 IP 179.253.9.161.56956 > 172.26.51.27.23: Flags [S],
+seq 2265898310, win 14600, options [mss 1460,sackOK,TS val 62647 ecr
+0,nop,wscale 5], length 0
+07:50:55.667629 IP 179.253.9.161.36936 > 172.26.51.27.80: Flags [S],
+seq 801693741, win 14600, options [mss 1460,sackOK,TS val 63687 ecr
+0,nop,wscale 5], length 0
+07:50:56.666790 IP 179.253.9.161.36936 > 172.26.51.27.80: Flags [S],
+seq 801693741, win 14600, options [mss 1460,sackOK,TS val 63937 ecr
+0,nop,wscale 5], length 0
+07:50:58.670793 IP 179.253.9.161.36936 > 172.26.51.27.80: Flags [S],
+seq 801693741, win 14600, options [mss 1460,sackOK,TS val 64438 ecr
+0,nop,wscale 5], length 0
+07:52:05.124955 IP 192.168.191.231.49751 > 172.26.51.27.80: Flags [S],
+seq 3949439034, win 8192, options [mss 1460,nop,wscale
+8,nop,nop,sackOK], length 0
+07:52:05.125044 IP 192.168.191.231.49752 > 172.26.51.27.80: Flags [S],
+seq 3520292356, win 8192, options [mss 1460,nop,wscale
+8,nop,nop,sackOK], length 0
+07:52:05.153495 IP 172.26.51.27.80 > 192.168.191.231.49751: Flags
+[S.], seq 4066140458, ack 3949439035, win 8192, options [mss
+1460,nop,wscale 8,nop,nop,sackOK], length 0
+07:52:05.153540 IP 172.26.51.27.80 > 192.168.191.231.49752: Flags
+[S.], seq 1445843914, ack 3520292357, win 8192, options [mss
+1460,nop,wscale 8,nop,nop,sackOK], length 0
+07:52:07.181609 IP 192.168.191.231.49777 > 172.26.51.27.80: Flags [S],
+seq 3551917745, win 8192, options [mss 1460,nop,wscale
+8,nop,nop,sackOK], length 0
+07:52:07.205838 IP 172.26.51.27.80 > 192.168.191.231.49777: Flags
+[S.], seq 3920706595, ack 3551917746, win 8192, options [mss
+1460,nop,wscale 8,nop,nop,sackOK], length 0
+07:52:08.122247 IP 192.168.191.231.49751 > 172.26.51.27.80: Flags [S],
+seq 3949439034, win 8192, options [mss 1460,nop,wscale
+8,nop,nop,sackOK], length 0
+07:52:08.122309 IP 192.168.191.231.49752 > 172.26.51.27.80: Flags [S],
+seq 3520292356, win 8192, options [mss 1460,nop,wscale
+8,nop,nop,sackOK], length 0
+07:52:08.145803 IP 172.26.51.27.80 > 192.168.191.231.49752: Flags
+[S.], seq 1445843914, ack 3520292357, win 8192, options [mss
+1460,nop,wscale 8,nop,nop,sackOK], length 0
+07:52:08.153569 IP 172.26.51.27.80 > 192.168.191.231.49751: Flags
+[S.], seq 4066140458, ack 3949439035, win 8192, options [mss
+1460,nop,wscale 8,nop,nop,sackOK], length 0
+07:52:10.177842 IP 192.168.191.231.49777 > 172.26.51.27.80: Flags [S],
+seq 3551917745, win 8192, options [mss 1460,nop,wscale
+8,nop,nop,sackOK], length 0
+07:52:10.206642 IP 172.26.51.27.80 > 192.168.191.231.49777: Flags
+[S.], seq 3920706595, ack 3551917746, win 8192, options [mss
+1460,nop,wscale 8,nop,nop,sackOK], length 0
+07:52:14.118140 IP 192.168.191.231.49751 > 172.26.51.27.80: Flags [S],
+seq 3949439034, win 8192, options [mss 1460,nop,nop,sackOK], length 0
+07:52:14.118195 IP 192.168.191.231.49752 > 172.26.51.27.80: Flags [S],
+seq 3520292356, win 8192, options [mss 1460,nop,nop,sackOK], length 0
+07:52:14.146954 IP 172.26.51.27.80 > 192.168.191.231.49752: Flags
+[S.], seq 1445843914, ack 3520292357, win 65535, options [mss
+1460,nop,nop,sackOK], length 0
+07:52:14.153770 IP 172.26.51.27.80 > 192.168.191.231.49751: Flags
+[S.], seq 4066140458, ack 3949439035, win 65535, options [mss
+1460,nop,nop,sackOK], length 0
+07:52:16.177248 IP 192.168.191.231.49777 > 172.26.51.27.80: Flags [S],
+seq 3551917745, win 8192, options [mss 1460,nop,nop,sackOK], length 0
+07:52:16.206543 IP 172.26.51.27.80 > 192.168.191.231.49777: Flags
+[S.], seq 3920706595, ack 3551917746, win 65535, options [mss
+1460,nop,nop,sackOK], length 0
+07:52:26.148287 IP 172.26.51.27.80 > 192.168.191.231.49752: Flags [R],
+seq 1445843915, win 0, length 0
+07:52:26.155181 IP 172.26.51.27.80 > 192.168.191.231.49751: Flags [R],
+seq 4066140459, win 0, length 0
+07:52:28.181149 IP 192.168.191.231.49806 > 172.26.51.27.80: Flags [S],
+seq 2491764335, win 8192, options [mss 1460,nop,wscale
+8,nop,nop,sackOK], length 0
+07:52:28.205334 IP 172.26.51.27.80 > 192.168.191.231.49806: Flags
+[S.], seq 3075031182, ack 2491764336, win 8192, options [mss
+1460,nop,wscale 8,nop,nop,sackOK], length 0
+07:52:28.206865 IP 172.26.51.27.80 > 192.168.191.231.49777: Flags [R],
+seq 3920706596, win 0, length 0
+07:52:31.190385 IP 192.168.191.231.49806 > 172.26.51.27.80: Flags [S],
+seq 2491764335, win 8192, options [mss 1460,nop,wscale
+8,nop,nop,sackOK], length 0
+07:52:31.208032 IP 172.26.51.27.80 > 192.168.191.231.49806: Flags
+[S.], seq 3075031182, ack 2491764336, win 8192, options [mss
+1460,nop,wscale 8,nop,nop,sackOK], length 0
+07:52:37.190906 IP 192.168.191.231.49806 > 172.26.51.27.80: Flags [S],
+seq 2491764335, win 8192, options [mss 1460,nop,nop,sackOK], length 0
+07:52:37.208951 IP 172.26.51.27.80 > 192.168.191.231.49806: Flags
+[S.], seq 3075031182, ack 2491764336, win 65535, options [mss
+1460,nop,nop,sackOK], length 0
+07:52:49.208786 IP 172.26.51.27.80 > 192.168.191.231.49806: Flags [R], =
+seq 3
+
+Abra=C3=A7os,
+
+Alexandre Chaves
++55 61 9244-4654
