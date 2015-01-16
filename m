@@ -1,47 +1,45 @@
-From: "U.Mutlu" <for-gmane@mutluit.com>
+From: =?UTF-8?Q?P=2Do_L=C3=A9vesque?= <olygraph.po@gmail.com>
 Subject: Re: IPTABLES + PREROUTING + --set-mark + Ubuntu
-Date: Fri, 16 Jan 2015 04:31:45 +0100
-Message-ID: <m9a0n1$rp1$1@ger.gmane.org>
-References: <CAJb3rWA+2mHMZh3BUVkvmv_ok0pnvx5kavFx3esOBupnFh600g@mail.gmail.com>
+Date: Thu, 15 Jan 2015 22:49:57 -0500
+Message-ID: <CAJb3rWC06PWq97tsgY0cK_oSjpkyavyi+faY-VWBqUPSv305XA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAJb3rWA+2mHMZh3BUVkvmv_ok0pnvx5kavFx3esOBupnFh600g@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=PS34FwQuG7vr3fG3hkQJlUpJekmxFvfQZVoFSyGc374=;
+        b=wGkI6Qqm5YiOxELZ87gVzTPXx6x7xrbW8u6A3Jc8n29AIycMAHTVRCuH7/xfZPR8ds
+         S9E6KS8af0Ihwg/mu/PDnPYxBTLx4TBf99kkR4npZ0v8ZiWinjt/fqKjaAlkPUS1RA+r
+         wh6zJC9KkKo8m2vf8kws8wotCpezP0LBwq8scLxNfOn050DjHQyG7cox25qV4n+78a1r
+         p742C1B9RXFd4nBpBgEYqn0/K1DI51ratXMH4cONZxfWkWsNuM9xPbrwKVeaIKBiA70s
+         s7KIrXBZSvb4mU0Y98JwTvdDW+fi9faRjAYzGjGZ3rSspDWpBSnmJ3mqzoaeceMYn6c5
+         G5cQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-The Media Server wrote, On 01/16/2015 04:12 AM:
-> both port are forwarded to my linux pc 80 and 22 in my router ;)
+> Ok, now I understand your problem :-)
+> In this case try this instead of the above (I think this you even had in your
+> prev postings):
+>  ip rule add fwmark 2 table 2
 >
-> Public ip address is block because of my vpn enabled...
+> And add this for marking the pkts based on port(s):
+> iptables -t mangle -A PREROUTING -p tcp -m multiport --ports 80,22 -j MARK
+> --set-mark 2
 >
-> like i said if I deviate my connections to my table 2 like so with vpn enabled:
-> ip rule add from 192.168.2.0/24 table 2
-> all my inbound connection works with my public ip address and that is the goal.
-> I just want the thing to work on a port basis.
+> Both commands should be placed as early as possible within your script.
 
-Ok, now I understand your problem :-)
-In this case try this instead of the above (I think this you even had in your 
-prev postings):
-  ip rule add fwmark 2 table 2
+That is exactly what I want and what i try to say! but that is also
+exactly what is not working!
 
-And add this for marking the pkts based on port(s):
-iptables -t mangle -A PREROUTING -p tcp -m multiport --ports 80,22 -j MARK 
---set-mark 2
+..my rp_filter is set to 0 in the kernel..
 
-Both commands should be placed as early as possible within your script.
+So i assume there is a bug in iptables for ubuntu, something missing
+somewhere or a config to enable somewhere.. beacause it is a very
+simple set of rules... the OUTPUT rules works fine. and the rule: ip
+rule add from 192.168.2.0/24 table 2 all   works..
+Just the PREROUTING rules that does not work for me..
 
-
-> Anyways i'll experiment.. i will try to remove all table, stop vpn.
-> make an empty or wrong table main..
-> and try to mark my packets and forward them to table 2
->
-> I will give you the results.. if that doesn't work we will know there
-> is problem with the marking system, if it works, the problem is
-> somewhere in my vpn setup..
->
-> thks again!
-
-
+Thks
