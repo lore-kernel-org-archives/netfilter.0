@@ -1,7 +1,7 @@
 From: The Media Server <info@themediaserver.com>
-Subject: netfilter@vger.kernel.org
-Date: Thu, 15 Jan 2015 22:05:26 -0500
-Message-ID: <CAJb3rWDuNVk8iUPWbVvbxEtP9Ymho4yc1J3qKsnHE3_QWN5-Wg@mail.gmail.com>
+Subject: Re: IPTABLES + PREROUTING + --set-mark + Ubuntu
+Date: Thu, 15 Jan 2015 22:12:55 -0500
+Message-ID: <CAJb3rWA+2mHMZh3BUVkvmv_ok0pnvx5kavFx3esOBupnFh600g@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 Sender: netfilter-owner@vger.kernel.org
