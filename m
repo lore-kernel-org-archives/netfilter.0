@@ -1,33 +1,45 @@
-From: "U.Mutlu" <for-gmane@mutluit.com>
+From: The Media Server <info@themediaserver.com>
 Subject: Re: IPTABLES + PREROUTING + --set-mark + Ubuntu
-Date: Fri, 16 Jan 2015 03:35:03 +0100
-Message-ID: <m99tcn$a38$1@ger.gmane.org>
-References: <CAJb3rWCR1R0kmY9u+MUUvS7Eo133zcp4u63hBSwno2L+mbXEiw@mail.gmail.com>
+Date: Thu, 15 Jan 2015 21:45:03 -0500
+Message-ID: <CAJb3rWB-MCW_U3NMNNo-yUnRH1LWCFxs_aeT-oAP=JvVWBpfRw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAJb3rWCR1R0kmY9u+MUUvS7Eo133zcp4u63hBSwno2L+mbXEiw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-The Media Server wrote, On 01/16/2015 03:24 AM:
->> A hint:
->> I think you have to send packets from another host to this host
->> to let the pkts go thru the PREROUTING chain of the mangle table.
->
-> I am accessing my port 81 from another computer via my public ISP address..
-> http://198.xx.x.xx.x
->
-> I can see my connection in tcpdump port 80 trying to get in and the
-> MARK packet increasing in iptables -t mangle -nvL. But my connection
-> is still timing out.
->
-> my goal is to bypass my vpn for a specific port..
+Yes sorry for my english.
 
-Does ssh login to your host from another host work? Ie.:
-ssh -p22 username@hostname_or_ip
-(change 22 if your ssh-server on your host is operating at an other port)
+I will do more experiment and I understand it is pretty complicated indeed.
+
+Just to clarify.. when I type my public ip address on a browser. I get
+a time out error.
+But I can see my packets marked, and my tcp connection trying to acces
+in tcpdump port 80 like so:
+21:35:32.336899 IP xxx.xxx.xxx.xxx.com.54727 > 192.168.2.20.http:
+Flags [S], seq 1143628041, win 8192, options [mss 1352,nop,wscale
+8,nop,nop,sackOK], length 0
+
+but when i add this rule ( to go straight in my table ht (2) for
+incoming connections)
+ip rule add from 192.168.2.0/24 table ht
+I mean when, in a web browser I type my public ip, it works, no time
+out error and i see my html content. The connection work.
+
+thks!
 
 
+> Does ssh login to your host from another host work? Ie.:
+> ssh -p22 username@hostname_or_ip
+> (change 22 if your ssh-server on your host is operating at an other port)
+
+it works on my network 192.168.2.20 from another computer
+but not if I try to connect with my public ip address from another computer
+
+but it works with public ip with this rule:
+ip rule add from 192.168.2.0/24 table ht
+
+
+** my gateway address is my router
