@@ -1,24 +1,26 @@
-From: The Media Server <info@themediaserver.com>
+From: "U.Mutlu" <for-gmane@mutluit.com>
 Subject: Re: IPTABLES + PREROUTING + --set-mark + Ubuntu
-Date: Thu, 15 Jan 2015 21:24:47 -0500
-Message-ID: <CAJb3rWCR1R0kmY9u+MUUvS7Eo133zcp4u63hBSwno2L+mbXEiw@mail.gmail.com>
+Date: Fri, 16 Jan 2015 03:27:23 +0100
+Message-ID: <m99sub$4k7$1@ger.gmane.org>
+References: <CAJb3rWA-Xy5MwqtyKP4X96NtrKw9Wm5-d-uMYwN4oG2cymOvYw@mail.gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <CAJb3rWA-Xy5MwqtyKP4X96NtrKw9Wm5-d-uMYwN4oG2cymOvYw@mail.gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-> A hint:
-> I think you have to send packets from another host to this host
-> to let the pkts go thru the PREROUTING chain of the mangle table.
+The Media Server wrote, On 01/16/2015 03:15 AM:
+> You have an idea why it still timing out
+> tho? and not timing out with this:
+> sudo ip rule add from 192.168.2.0/24 table ht
 
-I am accessing my port 81 from another computer via my public ISP address..
-http://198.xx.x.xx.x
+I don't know what you mean by "timing out", and I think you didn't mention 
+that in the previous postings.
+I must admit that that stuff is not easy, it's called "advanced routing"
+or "policy routing", so you will need to do some more experiments.
+I would suggest to simplify the problem by deactivating everything else.
 
-I can see my connection in tcpdump port 80 trying to get in and the
-MARK packet increasing in iptables -t mangle -nvL. But my connection
-is still timing out.
 
-my goal is to bypass my vpn for a specific port..
