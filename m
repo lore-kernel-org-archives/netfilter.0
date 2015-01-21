@@ -1,23 +1,27 @@
-From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
-Subject: Re: installing error
-Date: Mon, 19 Jan 2015 13:31:33 -0500
-Message-ID: <201501191331.33276.neal.p.murphy@alum.wpi.edu>
-References: <54BCE03B.2080700@gmx.de>
-Reply-To: neal.p.murphy@alum.wpi.edu
+From: Eliezer Croitoru <eliezer@ngtech.co.il>
+Subject: Re: conntrack GRE behaves differently in 3.17 / 3.18
+Date: Wed, 21 Jan 2015 04:01:18 +0200
+Message-ID: <54BF086E.5080906@ngtech.co.il>
+References: <f37def15eb82a2685c1041db1b37454e@d119.x-mailer.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <54BCE03B.2080700@gmx.de>
+In-reply-to: <f37def15eb82a2685c1041db1b37454e@d119.x-mailer.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: Text/Plain; charset="us-ascii"
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
+Cc: Jan Niggemann <jn@hz6.de>
 
-On Monday, January 19, 2015 05:45:15 AM Samir wrote:
-> hi everyone,
-> i'm having a problem with xtables-addons-2.6
-> 
-> when i type  ".\configure" it doesn't create a "Makefile"....hence i do
-> get a no target error after typing the "make" command
+On 19/01/2015 15:04, Jan Niggemann wrote:
+> Machine
+> Lenovo T400, Debian 7.8
 
-Wrong slash. Try "./configure".
+As in a desktop?
+Can you show the lsmod output?
+I am not quite sure how the INPUT should be related directly to the GRE 
+since the origin of the GRE(if I remember right) is from the client side 
+and not the server side.
+
+Eliezer
+
