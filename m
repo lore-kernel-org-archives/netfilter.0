@@ -1,26 +1,33 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Sad news - our Netfilter collegue Holger Eitzenberger passed away
-Date: Fri, 23 Jan 2015 21:25:22 +0100
-Message-ID: <20150123202522.GA3738@salvia>
+From: Thomas Preissler <thomas@preissler.co.uk>
+Subject: Order of iptables vs. ip6tables chains
+Date: Fri, 23 Jan 2015 22:31:16 +0000
+Message-ID: <20150123223116.GA3522@blackhole.tracing.lan>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
+Return-path: <netfilter-owner@vger.kernel.org>
 Content-Disposition: inline
-Sender: netfilter-devel-owner@vger.kernel.org
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter-devel@vger.kernel.org
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-Dear Netfilter community,
+Hello folks,
 
-We want to inform you that earlier this week we learnt that our
-colleague and friend Holger Eitzenberger had died unexpectedly.
+I am wondering in which order are iptables/ip6tables rules executed?
+So for example I have the same rules on v4 and v6 on INPUT and FORWARD
+matching MAC addresses, interestingly only ipv4's counters are <> 0.
+(I know about ebtables.)
 
-Holger was a long term Netfilter contributor during the last 10 years.
-We will remember all the fun we have had during the Netfilter
-Workshops and Linux Meetings.
+So I guess the order is v4 INPUT then v6, after that v4 FORWARD then v6
+- for example?
 
-Our thoughts go out to his family.
+And yes, I can't wait for nftables to go live...
 
-He will be greatly missed.
+
+Kind Regards
+
+Thomas
+
+-- 
+www.preissler.co.uk | Twitter: @module0x90 | PGP-Key: 75889415
+GPG Fingerprint:  CCBD 153A D257 CA7E A217  FDF7 5928 03D1 7588 9415
