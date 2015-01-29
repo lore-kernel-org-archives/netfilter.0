@@ -1,101 +1,29 @@
-From: Jamal Hadi Salim <jhs@mojatatu.com>
-Subject: NetDev 0.1 Schedule delay update
-Date: Wed, 28 Jan 2015 08:24:47 -0500
-Message-ID: <54C8E31F.5080808@mojatatu.com>
-Reply-To: info@netdev01.org
+From: Oleg <lego12239@yandex.ru>
+Subject: nft & notrack
+Date: Fri, 30 Jan 2015 00:01:32 +0300
+Message-ID: <20150129210132.GA21938@localhost>
+Reply-To: Oleg <lego12239@yandex.ru>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-Return-path: <netdev-owner@vger.kernel.org>
-Sender: netdev-owner@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1422565393;
+	bh=JEmvUTRaWIUMnhilEklqT1+6amSWVkKNJ4iSDktKKd8=;
+	h=Date:From:To:Subject:Message-ID:Reply-To:MIME-Version:
+	 Content-Type:Content-Disposition:User-Agent;
+	b=jJKguAzipyraFQJhn3su1PpUGTqQsUJgMS8jdZqKJpzyTqnD9Vx2Ry44dmSSCqBnR
+	 cLEknRJEa9dlNbi0ndtvPG+6ffu5Dj8eG36P3lDtil/h/ggJ39rQZnWZb7tzIA5R61
+	 EzJ8rj0O+Xs3D2e5na10zzJtrJflxL3AqdS5nCMg=
+Content-Disposition: inline
+Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, lwn@lwn.net, netdev01@lists.netfilter.org, lartc@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
-Cc: info@netdev01.org, speakers@netdev01.org, attendees@netdev01.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
+  Hi, list.
 
-Fellow netheads,
+Is anybody known how to replace the next iptables rule with nft:
 
-On behalf of rgb and the tech committee:
+iptables -t raw -A PREROUTING -i eth0 -j CT --notrack
 
-Schedule update
-----------------
-We apologize, the schedule will not be ready until Thursday.
-The content is so good we are having a hard time coming up
-with a schedule which is not going to conflict with anybody's interest.
-
-We have finalized all the technical content. Every accepted proposal is
-now listed at:
-https://www.netdev01.org/sessions
-
-To help you plan your trip it should be understood that we are planning
-to have the first two days to be tutorial, workshop and BOF days. The
-next two days to be talks. There are some non-technical BOFs which
-are still in the pipeline - watch the RSS feed or twitter.
-
-New talks since last time:
---------------------------
-John Fastabend - Flow API: An abstraction for hardware flow tables
-https://www.netdev01.org/news/50
-
-New Tutorials since last time:
-------------------------------
-1) Cong Wang, Jamal Hadi Salim - Linux Traffic Control (TC) tutorial
-https://www.netdev01.org/news/48
-2) Jon Maloy - Introduction to basics of TIPC
-https://www.netdev01.org/news/49
-
-And as rgb already posted,Hotel update:
-
-The hotel has agreed, on a best effort basis to extend the
-netdev01 rate of $159.00 or $179.00 (depending on the type of room
-required).  Please dont procastinate and book now.  We are competing
-against a few tourist activities for hotel rooms going on around the
-area at the same time (example:
-http://www.ottawafestivals.ca/events/winterlude-2/).
-
-Do your reservations at:
-https://www.starwoodmeeting.com/StarGroupsWeb/res?id=1412035802&key=1AC9C1F8
-
-If you dont succeed getting the reservation, send us email at
-info at netdev01.org; we will try to bat for you but we cant guarantee
-results.
-
-conference registration at:
-https://onlineregistrations.ca/netdev01/
-
-Sponsors:
-=========
-NetDev 0.1 would like to gratefully acknowledge all our sponsors:
-https://netdev01.org/sponsors
-CENGN                   http://www.cengn.ca/
-Google                  https://www.google.ca
-Qualcomm                https://www.qualcomm.com/
-Verizon                 http://www.verizon.com/
-Cumulus Networks        http://cumulusnetworks.com/
-Mojatatu Networks       http://mojatatu.com/
-
-Important Dates:
-==========================
-December 2, 2014        Call for Papers opens
-December 10, 2014       Registration opens
-January 23, 2015        Hotel discount rates deadline
-January 24, 2015        Call for sessions deadline
-February 12, 2015       On-line registration closes
-February 14-17, 2015    Conference days
-
--------------------------------------------------------------------------------
-THE Technical Conference on Linux Networking, February 14-17, 2015, 
-Ottawa, Canada
-https://netdev01.org/
-
-Contact:                        info@xxxxxxxxxxxxx
-Main site:                      https://www.netdev01.org/
-Announcement:                   https://www.netdev01.org/announce
-CFP:                            https://www.netdev01.org/cfp
-Travel/hotel/weather/clothing:  https://www.netdev01.org/travel
-RSS feed:                       https://netdev01.org/atom
-Follow us on Twitter: @netdev01 https://twitter.com/netdev01
-
-
-cheers,
-jamal
+-- 
+Nemanov Oleg
