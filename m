@@ -1,29 +1,89 @@
-From: Oleg <lego12239@yandex.ru>
-Subject: nft & notrack
-Date: Fri, 30 Jan 2015 00:01:32 +0300
-Message-ID: <20150129210132.GA21938@localhost>
-Reply-To: Oleg <lego12239@yandex.ru>
+From: Jamal Hadi Salim <jhs@mojatatu.com>
+Subject: NetDev 0.1 Preliminary schedule posted
+Date: Fri, 30 Jan 2015 10:07:33 -0500
+Message-ID: <54CB9E35.4060606@mojatatu.com>
+Reply-To: info@netdev01.org
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail; t=1422565393;
-	bh=JEmvUTRaWIUMnhilEklqT1+6amSWVkKNJ4iSDktKKd8=;
-	h=Date:From:To:Subject:Message-ID:Reply-To:MIME-Version:
-	 Content-Type:Content-Disposition:User-Agent;
-	b=jJKguAzipyraFQJhn3su1PpUGTqQsUJgMS8jdZqKJpzyTqnD9Vx2Ry44dmSSCqBnR
-	 cLEknRJEa9dlNbi0ndtvPG+6ffu5Dj8eG36P3lDtil/h/ggJ39rQZnWZb7tzIA5R61
-	 EzJ8rj0O+Xs3D2e5na10zzJtrJflxL3AqdS5nCMg=
-Content-Disposition: inline
-Sender: netfilter-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+Sender: netdev-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, lwn@lwn.net, netdev01@lists.netfilter.org, lartc@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Cc: info@netdev01.org, speakers@netdev01.org, attendees@netdev01.org
 
-  Hi, list.
+Fellow netheads:
 
-Is anybody known how to replace the next iptables rule with nft:
+Yours truly posting on behalf of rgb.
 
-iptables -t raw -A PREROUTING -i eth0 -j CT --notrack
+The preliminary schedule was published late yesterday.
+https://www.netdev01.org/schedule
 
--- 
-Nemanov Oleg
+We wanted to get something out quickly while we make it pretty
+afterwards. There will be some minor changes later on.
+Talks are all on Mon/Tuesday and Tutorials/BoFs/Workshops are
+Sat/Sunday.
+
+There will be a click-able version of the schedule later, for now
+please correlate the schedule against the sessions at:
+https://www.netdev01.org/sessions
+
+We appologize for the inconvinience (all volunteers are hard at
+work to make this a fantastic conference for you).
+
+If you have been waiting for the schedule to register, now is the
+time:
+https://onlineregistrations.ca/netdev01/
+
+Hotel update:
+------------
+The hotel has agreed, on a best effort basis to extend the
+netdev01 rate of $159.00 or $179.00 (depending on the type of room
+required).  Please dont procastinate and book now.  We are competing
+against a few tourist activities for hotel rooms going on around the
+area at the same time (example:
+http://www.ottawafestivals.ca/events/winterlude-2/).
+
+Avoid disappointment and do your reservations at:
+https://www.starwoodmeeting.com/StarGroupsWeb/res?id=1412035802&key=1AC9C1F8
+
+If you dont succeed getting the reservation, send us email at
+info at netdev01.org; we will try to bat for you but we cant guarantee
+results. We are also putting effort into talking to other local hotels.
+
+Sponsors:
+=========
+NetDev 0.1 would like to gratefully acknowledge all our sponsors:
+https://netdev01.org/sponsors
+CENGN                   http://www.cengn.ca/
+Google                  https://www.google.ca
+Qualcomm                https://www.qualcomm.com/
+Verizon                 http://www.verizon.com/
+Cumulus Networks        http://cumulusnetworks.com/
+Mojatatu Networks       https://mojatatu.com/
+
+
+Important Dates:
+==========================
+December 2, 2014        Call for Papers opens
+December 10, 2014       Registration opens
+January 23, 2015        Hotel discount rates deadline
+January 24, 2015        Call for sessions deadline
+February 12, 2015       On-line registration closes
+February 14-17, 2015    Conference days
+
+-------------------------------------------------------------------------------
+THE Technical Conference on Linux Networking, February 14-17, 2015, 
+Ottawa, Canada
+https://netdev01.org/
+
+Contact:                        info@xxxxxxxxxxxxx
+Main site:                      https://www.netdev01.org/
+Announcement:                   https://www.netdev01.org/announce
+CFP:                            https://www.netdev01.org/cfp
+Travel/hotel/weather/clothing:  https://www.netdev01.org/travel
+RSS feed:                       https://netdev01.org/atom
+Follow us on Twitter: @netdev01 https://twitter.com/netdev01
+
+cheers,
+jamal (on behalf of Richard Guy Briggs)
