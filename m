@@ -1,101 +1,382 @@
-From: Martin <develop@imagmbh.de>
-Subject: Strange / irritating behaviour with NAT using Mark-based-Routing
-Date: Fri, 30 Jan 2015 16:05:41 +0100
-Message-ID: <1454470.IdrAbzO46p@term0>
+From: Jason Sipula <alupis1@gmail.com>
+Subject: iptables build error when using musl-libc and kernel 3.18.x targeting ARM
+Date: Mon, 2 Feb 2015 00:50:31 -0800
+Message-ID: <CAJCcFsiwEBFv5EvjB6L4W6PV=yc2HwZGmp3OHjK8fk=qAXNDxw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7Bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=1Fe91scX2iVNz+lGSeeJeVtH8dkMxapFw9Dwgr2qgmU=;
+        b=FMAwmPIJmN5C+5+RmhcL1arMvXVBCKhXZoch8e2KST91BN1kkipIS3OaOgP/9f4+LO
+         NAEg+aWATDZBk4DYMrUXHXwubaKePLyrMDKWJvJpvBBAJYjE7s4Dm9jVy8o7kGzB4H9D
+         08QGyTLoGuiZH8bHhH8wK3haTSNcJiUHgdTczzV+zazgegpWtVEo6WE2Au2JBCoAbHlL
+         WI81E0RR6k7DfcvgTHMQ4PefbnGX36pbFLPHDqfsV2JpXdzsABQsHG0tR1I/nuOadG67
+         s1cBlVgIVdQFSbul/7rdvDwPNPvfyuXISIT4tDYec3QbWlXJWT8hcF1JpBr7o0qC1XAP
+         uiLw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello!
+I'm trying to compile iptables targeting an ARM, but running into
+quite a bit of compilation trouble.
 
-I have the following szenario:
+I'm using linux kernel 3.18.x, which perhaps is some of my problems (too new).
 
- - client in a private net,
- - firewall (Ubuntu 14.04) with two uplinks (different providers and subnets) to 
-internet,
- - I want to route some packets via provider1, some packets via provider2 
-based on some criteria, selected by iptables-marks.
+I've downloaded a new config.guess and config.sub so that iptables
+recognizes musl-libc.
 
-To simulate the szenario, I built some virtual machines:
- (a) my client (10.253.1.2/24) and gateway 10.253.1.1
- (b) my firewall
-   - 10.253.1.1/24 (my private net)
-   - 10.251.1.15/24 (simulation of "internet" of provider1)
-   - 10.252.1.15/24 (simulation of "internet" of provider2)
- (c) the gateway of provider1
-   - 10.251.1.11/24
-   - 10.250.1.11/24 (upstream to destination server)
- (d) the gateway of provider2
-   - 10.252.1.11/24
-   - 10.250.1.12/24 (upstream to destination server)
- (e) the destination-server-firewall
-   - 10.250.1.1/24
-   - 10.249.1.1/24
- (f) the destination-server
-    - 10.249.1.10/24
+./configure completes normally
 
-All machines have the default policy: accept and 
-echo 1 > /proc/sys/net/ipv4/ip_forward
+My configure opts are:
 
-On the firewall (b) I did
+--build="x86_64-cross-linux-gnu"
+--host="arm-linux-musleabihf"
+--prefix=/usr
+--sbin=/sbin
+--with-xtlibdir=/lib/xtables
+--enable-libipq
+--with-ksource="${TOOLS}/arm-linux-musleabihf"
 
-ip route add default via 10.251.1.11 table provider1
-ip route add default via 10.252.1.11 table provider2
+Issues come up when running make pretty much right away. I was trying
+with the latest official release of iptables version 1.4.21, but I get
+the same compilation problem using the latest nightly build
+iptables-20150202 as well.
 
-ip route add 10.253.1.0/24 dev eth2 table provider1
-ip route add 10.253.1.0/24 dev eth2 table provider2
+I might be able to work around some of the unknown type errors (shown
+below) by just patching in a custom include to typedef map them (ex:
+typedef u_int16_t uint16_t;), but there's a lot of other issues and
+I'm not sure that path would be the correct one to head down.
 
-ip rule add from all fwmark 0x02/0x02 prohibit
-ip rule add from all fwmark 0x02/0x02 table provider2
+~~~
 
-ip rule add from all fwmark 0x01/0x01 prohibit
-ip rule add from all fwmark 0x01/0x01 table provider1
+Since my config.log is very long, here is a link:
+http://pastebin.com/raw.php?i=qMfqvbux
 
-ip route add default via 10.251.1.11 table main
-iptables -A POSTROUTING -t nat -o eth0 -j SNAT --to 10.251.1.15
-iptables -A POSTROUTING -t nat -o eth1 -j SNAT --to 10.252.1.15
+Below is the start of 'make' and it's errors.
 
-iptables -A PREROUTING -t mangle -p icmp -j MARK --set-mark 0x02/0x02
+Both are from the nightly build 20150202, however things look the same
+to me when using the official 1.4.21 release.
 
-For debugging purpose I did a logging of martian-packages.
+~~~
 
-If I ping from my client (10.253.1.2) to the server (10.249.1.10),  the 
-packages where correctly natted and answerd by the server. On the external 
-interface of the firewall (b) routing to provider2 I can see the reply-packages 
-from 10.249.1.10 to 10.252.1.15. Seems to be correct.
+Iptables Configuration:
+  IPv4 support: yes
+  IPv6 support: yes
+  Devel support: yes
+  IPQ support: yes
+  Large file support: yes
+  BPF utils support: no
+  nfsynproxy util support: no
+  nftables support: yes
 
-But these reply-packets were not de-natted and sent to my client. I can see, 
-these packets were de-nattet to
-"from 10.249.1.10 to 10.253.1.2"
-but they were sent back to the external interface they came in.
+Build parameters:
+  Put plugins into executable (static): no
+  Support plugins via dlopen (shared): yes
+  Installation prefix (--prefix): /usr
+  Xtables extension directory: /lib/xtables
+  Pkg-config directory: /usr/lib/pkgconfig
+  Kernel source directory: /root/LiLi/target/cross-tools/arm-linux-musleabihf
+  Host: arm-unknown-linux-musleabihf
+  GCC binary: /root/LiLi/target/cross-tools/bin/arm-linux-musleabihf-gcc
 
-If I do a 
-"echo 2 > /proc/sys/net/ipv4/conf/all/rp_filter" or
-"echo 0 > /proc/sys/net/ipv4/conf/all/rp_filter"
-I can see the packages two times on the external interface routing to 
-provider2. Once "from 10.249.1.10  to 10.252.1.15" and once "from 10.249.1.10 
-to 10.253.1.2".
-
-So why does the kernel send these packages back to the external interface 
-instead of sending them to the internal one?
-
-And, very strange in my opinion: If I do the decision based on the IP address
-ip rule add from 10.253.1.2/32 prohibit
-ip rule add from 10.232.1.2/table provider2
-it works fine, no martian packages.
-
-Do you have any idea what is wrong?
-
-Thanks!
-
-Martin
-
-
-
-
-
-
+Iptables modules that will not be built:  connlabel
+make[1]: Entering directory '/root/LiLi/target/sources/iptables-20150202'
+make  all-recursive
+make[2]: Entering directory '/root/LiLi/target/sources/iptables-20150202'
+Making all in libiptc
+make[3]: Entering directory
+'/root/LiLi/target/sources/iptables-20150202/libiptc'
+/bin/sh ../libtool --tag=CC   --mode=compile
+/root/LiLi/target/cross-tools/bin/arm-linux-musleabihf-gcc
+-DHAVE_CONFIG_H -I. -I..  -D_LARGEFILE_SOURCE=1 -D_LARGE_FILES
+-D_FILE_OFFSET_BITS=64 -D_REENTRANT  -DXTABLES_LIBDIR=\"/lib/xtables\"
+-DXTABLES_INTERNAL -I../include -I../include
+-I/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/uapi
+-I/root/LiLi/target/cross-tools/arm-linux-musleabihf/include  -Wall
+-Waggregate-return -Wmissing-declarations  -Wmissing-prototypes
+-Wredundant-decls -Wshadow -Wstrict-prototypes  -Winline -pipe -g -O2
+-MT libip4tc.lo -MD -MP -MF .deps/libip4tc.Tpo -c -o libip4tc.lo
+libip4tc.c
+libtool: compile:
+/root/LiLi/target/cross-tools/bin/arm-linux-musleabihf-gcc
+-DHAVE_CONFIG_H -I. -I.. -D_LARGEFILE_SOURCE=1 -D_LARGE_FILES
+-D_FILE_OFFSET_BITS=64 -D_REENTRANT -DXTABLES_LIBDIR=\"/lib/xtables\"
+-DXTABLES_INTERNAL -I../include -I../include
+-I/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/uapi
+-I/root/LiLi/target/cross-tools/arm-linux-musleabihf/include -Wall
+-Waggregate-return -Wmissing-declarations -Wmissing-prototypes
+-Wredundant-decls -Wshadow -Wstrict-prototypes -Winline -pipe -g -O2
+-MT libip4tc.lo -MD -MP -MF .deps/libip4tc.Tpo -c libip4tc.c  -fPIC
+-DPIC -o .libs/libip4tc.o
+In file included from ../include/libiptc/libiptc.h:12:0,
+                 from libip4tc.c:29:
+../include/linux/netfilter_ipv4/ip_tables.h:76:2: error: unknown type
+name 'u_int16_t'
+  u_int16_t proto;
+  ^
+../include/linux/netfilter_ipv4/ip_tables.h:79:2: error: unknown type
+name 'u_int8_t'
+  u_int8_t flags;
+  ^
+../include/linux/netfilter_ipv4/ip_tables.h:81:2: error: unknown type
+name 'u_int8_t'
+  u_int8_t invflags;
+  ^
+../include/linux/netfilter_ipv4/ip_tables.h:109:2: error: unknown type
+name 'u_int16_t'
+  u_int16_t target_offset;
+  ^
+../include/linux/netfilter_ipv4/ip_tables.h:111:2: error: unknown type
+name 'u_int16_t'
+  u_int16_t next_offset;
+  ^
+../include/linux/netfilter_ipv4/ip_tables.h:144:2: error: unknown type
+name 'u_int8_t'
+  u_int8_t type;    /* type to match */
+  ^
+../include/linux/netfilter_ipv4/ip_tables.h:145:2: error: unknown type
+name 'u_int8_t'
+  u_int8_t code[2];   /* range of code */
+  ^
+../include/linux/netfilter_ipv4/ip_tables.h:146:2: error: unknown type
+name 'u_int8_t'
+  u_int8_t invflags;   /* Inverse flags */
+  ^
+In file included from ../include/xtables.h:15:0,
+                 from libiptc.c:37,
+                 from libip4tc.c:113:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/netinet/in.h:14:8:
+error: redefinition of 'struct in_addr'
+ struct in_addr { in_addr_t s_addr; };
+        ^
+In file included from ../include/libiptc/ipt_kernel_headers.h:19:0,
+                 from ../include/libiptc/libiptc.h:6,
+                 from libip4tc.c:29:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/linux/in.h:79:8:
+note: originally defined here
+ struct in_addr {
+        ^
+In file included from ../include/xtables.h:15:0,
+                 from libiptc.c:37,
+                 from libip4tc.c:113:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/netinet/in.h:16:8:
+error: redefinition of 'struct sockaddr_in'
+ struct sockaddr_in
+        ^
+In file included from ../include/libiptc/ipt_kernel_headers.h:19:0,
+                 from ../include/libiptc/libiptc.h:6,
+                 from libip4tc.c:29:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/linux/in.h:217:8:
+note: originally defined here
+ struct sockaddr_in {
+        ^
+In file included from ../include/xtables.h:15:0,
+                 from libiptc.c:37,
+                 from libip4tc.c:113:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/netinet/in.h:24:8:
+error: redefinition of 'struct in6_addr'
+ struct in6_addr
+        ^
+In file included from ../include/libiptc/ipt_kernel_headers.h:25:0,
+                 from ../include/libiptc/libiptc.h:6,
+                 from libip4tc.c:29:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/linux/in6.h:32:8:
+note: originally defined here
+ struct in6_addr {
+        ^
+In file included from ../include/xtables.h:15:0,
+                 from libiptc.c:37,
+                 from libip4tc.c:113:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/netinet/in.h:36:8:
+error: redefinition of 'struct sockaddr_in6'
+ struct sockaddr_in6
+        ^
+In file included from ../include/libiptc/ipt_kernel_headers.h:25:0,
+                 from ../include/libiptc/libiptc.h:6,
+                 from libip4tc.c:29:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/linux/in6.h:49:8:
+note: originally defined here
+ struct sockaddr_in6 {
+        ^
+In file included from ../include/xtables.h:15:0,
+                 from libiptc.c:37,
+                 from libip4tc.c:113:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/netinet/in.h:45:8:
+error: redefinition of 'struct ipv6_mreq'
+ struct ipv6_mreq
+        ^
+In file included from ../include/libiptc/ipt_kernel_headers.h:25:0,
+                 from ../include/libiptc/libiptc.h:6,
+                 from libip4tc.c:29:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/linux/in6.h:59:8:
+note: originally defined here
+ struct ipv6_mreq {
+        ^
+In file included from ../include/xtables.h:15:0,
+                 from libiptc.c:37,
+                 from libip4tc.c:113:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/netinet/in.h:247:8:
+error: redefinition of 'struct ip_mreq'
+ struct ip_mreq
+        ^
+In file included from ../include/libiptc/ipt_kernel_headers.h:19:0,
+                 from ../include/libiptc/libiptc.h:6,
+                 from libip4tc.c:29:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/linux/in.h:157:8:
+note: originally defined here
+ struct ip_mreq  {
+        ^
+In file included from ../include/xtables.h:15:0,
+                 from libiptc.c:37,
+                 from libip4tc.c:113:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/netinet/in.h:253:8:
+error: redefinition of 'struct ip_mreqn'
+ struct ip_mreqn
+        ^
+In file included from ../include/libiptc/ipt_kernel_headers.h:19:0,
+                 from ../include/libiptc/libiptc.h:6,
+                 from libip4tc.c:29:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/linux/in.h:162:8:
+note: originally defined here
+ struct ip_mreqn {
+        ^
+In file included from ../include/xtables.h:15:0,
+                 from libiptc.c:37,
+                 from libip4tc.c:113:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/netinet/in.h:260:8:
+error: redefinition of 'struct ip_mreq_source'
+ struct ip_mreq_source {
+        ^
+In file included from ../include/libiptc/ipt_kernel_headers.h:19:0,
+                 from ../include/libiptc/libiptc.h:6,
+                 from libip4tc.c:29:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/linux/in.h:168:8:
+note: originally defined here
+ struct ip_mreq_source {
+        ^
+In file included from ../include/xtables.h:15:0,
+                 from libiptc.c:37,
+                 from libip4tc.c:113:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/netinet/in.h:266:8:
+error: redefinition of 'struct ip_msfilter'
+ struct ip_msfilter {
+        ^
+In file included from ../include/libiptc/ipt_kernel_headers.h:19:0,
+                 from ../include/libiptc/libiptc.h:6,
+                 from libip4tc.c:29:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/linux/in.h:174:8:
+note: originally defined here
+ struct ip_msfilter {
+        ^
+In file included from ../include/xtables.h:15:0,
+                 from libiptc.c:37,
+                 from libip4tc.c:113:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/netinet/in.h:277:8:
+error: redefinition of 'struct group_req'
+ struct group_req {
+        ^
+In file included from ../include/libiptc/ipt_kernel_headers.h:19:0,
+                 from ../include/libiptc/libiptc.h:6,
+                 from libip4tc.c:29:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/linux/in.h:186:8:
+note: originally defined here
+ struct group_req {
+        ^
+In file included from ../include/xtables.h:15:0,
+                 from libiptc.c:37,
+                 from libip4tc.c:113:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/netinet/in.h:282:8:
+error: redefinition of 'struct group_source_req'
+ struct group_source_req {
+        ^
+In file included from ../include/libiptc/ipt_kernel_headers.h:19:0,
+                 from ../include/libiptc/libiptc.h:6,
+                 from libip4tc.c:29:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/linux/in.h:191:8:
+note: originally defined here
+ struct group_source_req {
+        ^
+In file included from ../include/xtables.h:15:0,
+                 from libiptc.c:37,
+                 from libip4tc.c:113:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/netinet/in.h:288:8:
+error: redefinition of 'struct group_filter'
+ struct group_filter {
+        ^
+In file included from ../include/libiptc/ipt_kernel_headers.h:19:0,
+                 from ../include/libiptc/libiptc.h:6,
+                 from libip4tc.c:29:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/linux/in.h:197:8:
+note: originally defined here
+ struct group_filter {
+        ^
+In file included from ../include/xtables.h:15:0,
+                 from libiptc.c:37,
+                 from libip4tc.c:113:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/netinet/in.h:299:8:
+error: redefinition of 'struct in_pktinfo'
+ struct in_pktinfo
+        ^
+In file included from ../include/libiptc/ipt_kernel_headers.h:19:0,
+                 from ../include/libiptc/libiptc.h:6,
+                 from libip4tc.c:29:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/linux/in.h:209:8:
+note: originally defined here
+ struct in_pktinfo {
+        ^
+In file included from ../include/xtables.h:16:0,
+                 from libiptc.c:37,
+                 from libip4tc.c:113:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/net/if.h:65:8:
+error: redefinition of 'struct ifmap'
+ struct ifmap {
+        ^
+In file included from ../include/libiptc/ipt_kernel_headers.h:20:0,
+                 from ../include/libiptc/libiptc.h:6,
+                 from libip4tc.c:29:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/linux/if.h:169:8:
+note: originally defined here
+ struct ifmap {
+        ^
+In file included from ../include/xtables.h:16:0,
+                 from libiptc.c:37,
+                 from libip4tc.c:113:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/net/if.h:77:8:
+error: redefinition of 'struct ifreq'
+ struct ifreq {
+        ^
+In file included from ../include/libiptc/ipt_kernel_headers.h:20:0,
+                 from ../include/libiptc/libiptc.h:6,
+                 from libip4tc.c:29:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/linux/if.h:203:8:
+note: originally defined here
+ struct ifreq {
+        ^
+In file included from ../include/xtables.h:16:0,
+                 from libiptc.c:37,
+                 from libip4tc.c:113:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/net/if.h:117:8:
+error: redefinition of 'struct ifconf'
+ struct ifconf {
+        ^
+In file included from ../include/libiptc/ipt_kernel_headers.h:20:0,
+                 from ../include/libiptc/libiptc.h:6,
+                 from libip4tc.c:29:
+/root/LiLi/target/cross-tools/arm-linux-musleabihf/include/linux/if.h:252:8:
+note: originally defined here
+ struct ifconf  {
+        ^
+Makefile:401: recipe for target 'libip4tc.lo' failed
+make[3]: *** [libip4tc.lo] Error 1
+make[3]: Leaving directory '/root/LiLi/target/sources/iptables-20150202/libiptc'
+Makefile:365: recipe for target 'all-recursive' failed
+make[2]: *** [all-recursive] Error 1
+make[2]: Leaving directory '/root/LiLi/target/sources/iptables-20150202'
+Makefile:292: recipe for target 'all' failed
+make[1]: *** [all] Error 2
+make[1]: Leaving directory '/root/LiLi/target/sources/iptables-20150202'
+Makefile:9: recipe for target 'system' failed
+make: *** [system] Error 2
