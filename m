@@ -1,54 +1,69 @@
-From: jack Linux <ilinuxer.85@gmail.com>
-Subject: Limit transfer speed rate by Iptables Rules
-Date: Thu, 5 Feb 2015 14:26:37 +0200
-Message-ID: <CAGHcRxYH5j1M-=QqTqJBFgC0iZBk8+Htuwd_xF5aFGk9qNab0A@mail.gmail.com>
+From: Richard Guy Briggs <rgb@tricolour.ca>
+Subject: NetDev 0.1 final schedule and new sponsor update
+Date: Thu, 5 Feb 2015 08:05:18 -0500
+Message-ID: <20150205130518.GK4239@toccata2.tricolour.ca>
 Mime-Version: 1.0
-Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=NV9M/oBl033aftocsk0T4pGbA/4RaJPBQt6aKzyOhmk=;
-        b=erSOTQw0/NA5IMFm9cykrDQRbk94xsTujTKuwy/RTZHTEaBfGDUVaEnxYYnD1BCWwu
-         SPTDYWcWsR03g19sks8essXyHoGBzbA8wP57p/sneeqAFrmYrHlJBf4rOoR1gpvWG0+V
-         uD6rI00ATZeuaL0FnExcv81HjLXxjEQGrapAEtbYmbGXoWDnez0krxtv0latIau2p2XH
-         IAVhDkM6BQmVdcVXd6KJhafZBuWTNx3dJnjr3gkuuG91b5VxliLF7r6ojewRTenpi851
-         3Ce10qvMih49g9QyZIZ7MhOP+2C0DGreBlzyyMBJ9HVkyOHs1Bitfv3v7vLSnL/4SbXb
-         7NoQ==
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+Content-Disposition: inline
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: netdev@vger.kernel.org, linux-wireless@vger.kernel.org, lwn@lwn.net, netdev01@lists.netfilter.org, lartc@vger.kernel.org, netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org
+Cc: info@netdev01.org, speakers@netdev01.org, attendees@netdev01.org
 
-I have D-Link Router DSL-2730U that support busybox OS and iptables
-version 1.4.0
-I managed successfully to block the host for being connect to the
-internet using the following command
-
-block by ip address
+Fellow netheads:
 
 
-iptables -I  FORWARD -d 192.168.1.6 -j DROP
+New Sponsor:
+==========================
+We thank Intel for supporting Netdev01. Intel is well known in its
+tradition for supporting open source projects.  http://www.intel.com/
 
 
-Or By mac source
+Schedule:
+==========================
+The final schedule is out coded with session links.
+	https://www.netdev01.org/schedule
 
 
-iptables -I FORWARD -m mac --mac-source bc:20:a4:ff:79:80 -j DROP
+Registration:
+==========================
+https://onlineregistrations.ca/netdev01/
+$100/day, or $350 for 4 days (Cdn dollars). (online reg closes Feb 12th)
+Please register as early as practical.  Registering helps us plan properly for
+numbers of attendees, ensuring venue sizes and supplies are appropriate without
+wasting resources.
 
 
-The only problem now i have is trying to limit transfer speed rate
-(upload & download) to be only serve 30/kbps by MAC Address using
-iptables
-I tried to make iptables rule like
+Hotel discount rates deadline extended
+==========================
+The Westin Hotel may still have rooms for Netdev01 available.
+There are lots of big and small hotels in Ottawa, but they will fill up
+fast as Winterlude approaches, so book something soon.  There may be
+some possibilities to billet locally, but don't leave it last minute.
+Make your reservations at:
+https://www.starwoodmeeting.com/StarGroupsWeb/res?id=1412035802&key=1AC9C1F8
 
 
-iptables -I FORWARD -m mac --mac-source bc:20:a4:ff:79:80 -m state
---state RELATED,ESTABLISHED -m limit --limit 100/second --limit-burst
-30 -j ACCEPT
-But it didn't work
+Sponsors:
+=========
+NetDev 0.1 would like to gratefully acknowledge all our sponsors: 
+https://netdev01.org/sponsors
+CENGN			http://www.cengn.ca/
+Google			https://www.google.ca
+Qualcomm		https://www.qualcomm.com/
+Verizon			http://www.verizon.com/
+Cumulus Networks	http://cumulusnetworks.com/
+Mojatatu Networks	http://mojatatu.com/
 
-Note : this router cannot modify , delete or add any files . i cannot
-make a bash or script file inside the router run , and unfortunately
-the iptables connlimit module not supported in this iptables version
-too
+
+-------------------------------------------------------------------------------
+THE Technical Conference on Linux Networking, February 14-17, 2015, Ottawa, Canada
+https://netdev01.org/
+
+Contact:			info@netdev01.info
+Main site:			https://www.netdev01.org/
+Travel/hotel/weather/clothing:	https://www.netdev01.org/travel
+RSS feed:			https://netdev01.org/atom
+Follow us on Twitter: @netdev01	https://twitter.com/netdev01
