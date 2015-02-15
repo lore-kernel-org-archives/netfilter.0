@@ -1,64 +1,50 @@
-From: Noel Kuntze <noel@familie-kuntze.de>
-Subject: Re: how to bind NF_ARP family in netfilter queue
-Date: Sat, 14 Feb 2015 21:40:32 +0100
-Message-ID: <54DFB2C0.8020608@familie-kuntze.de>
-References: <CA+HxBUK5wPU69xV+xvtFKMk9qyVbiDxcz0O=vqx+t7Tg3hibuA@mail.gmail.com> <54DF9E7F.9020205@familie-kuntze.de> <54DFB100.4000700@plouf.fr.eu.org>
+From: richard lucassen <mailinglists@lucassen.org>
+Subject: bug in iptables-restore and "recent" module
+Date: Sun, 15 Feb 2015 13:31:47 +0100
+Message-ID: <20150215133147.6fb4589991419ad29180222a@lucassen.org>
+Reply-To: netfilter@vger.kernel.org
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <54DFB100.4000700@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Pascal Hambourg <pascal@plouf.fr.eu.org>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
+When using the "recent" module and when the hitcount max (defaults to
+20) is violated, "iptables-restore" is testing the file OK, but fails
+on loading the filter table:
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+The file "iptables.save" contains the rule (note: "--hitcount 21"
+exceeds the default max of 20):
 
-Hello Pascal,
+-A INPUT  -m state --state NEW -p tcp --dport 443 -m recent --update
+--name https --seconds 50 --hitcount 21 -j REJECT
 
-It is correct that neither have nfqueue support.
-I specifically checked the arptables and ebtables man pages for nflog t=
-hough
-and found it for ebtables.
-The versions I checked were 0.0.4 for arptables
-and 2.0.10_4 for ebtables. The kernel version was 3.14.32.
+The -t option (test file) shows an OK:
 
-Mit freundlichen Gr=C3=BC=C3=9Fen/Regards,
-Noel Kuntze
+# iptables-restore -t < iptables.save
+# echo $?
+0
 
-GPG Key ID: 0x63EC6658
-=46ingerprint: 23CA BB60 2146 05E7 7278 6592 3839 298F 63EC 6658
+But:
 
-Am 14.02.2015 um 21:33 schrieb Pascal Hambourg:
-> Noel Kuntze a =C3=A9crit :
->>
->> You need to use ebtables to get arp messages.
->
-> Or arptables. ebtables only works with a bridge. But AFAICS neither
-> arptables nor ebtables seems to have a queue or nfqueue target.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+# iptables-restore < iptables.save
+iptables-restore: line 180 failed
 
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
+On line 180 there is the "COMMIT" of the filter table.
 
-iQIcBAEBCAAGBQJU37K+AAoJEDg5KY9j7GZYeGQP/iV6iktFAR8T9q2WWFMTcMwA
-DoP5zGUiwwGMNX2gSTl/RbJq/JA5ClBEfpV9sitdm7aPTm3Et4cZ0oGUMtq9QfBY
-p7TBUZOvgynbMiTVOlcbRp5uQlrRiqXmXYsnr6VgpLHN2E0SKXZQCzSEn4jmi+J3
-bn7p2MSjH9UmB2LCd3KcYexkszPz3DZk4ckvF/hoExH6ZzF5yVLhRgDFLctSe0Nz
-OV2qApWHdGc3Cq6b8jXAkd2auFSq2lrzmcqdL+ppWEAjHVE/n65JuebU6jwbcbqm
-cksOFGKCaR9fkO4kppYd3Dg7iMrWcyNzX2JPVoWmk77GGARFUj8pTDqGAdmfoQD2
-OBhlyXfaGb0O0ok5O9ytC3fcwuGHTyGZtg1tBh4K0gRXfoupufSsYLOho8m8lnP+
-hENhDQ9K4Izf7xcWmemTtLGNXlUddvt8p2ofGETmayQbk3iLLMqQzjKywOQlB5qm
-o3SGJne0gMy/Im553FLMWegjX1QTDUDnxVE6Rmel0JiH0O4rgS8kHbVvMBnJlLyC
-C31xjy56tANhWZtDFwnNQZeZlml4pcCyU+jnza2bmJTpAfA6Hj74JoBuBYo2KfX+
-zJJXvLmzBKgR2Tq2a3cyoWStggbxxBvHL62l1PWeCapiHWwmCBhCmr7fr6ASyOLT
-8f4qAYr1EEd74psZmkb8
-=3DzXwD
------END PGP SIGNATURE-----
+Distro: Debian testing
+# iptables --version
+iptables v1.4.21
 
+R.
+
+-- 
+___________________________________________________________________
+It is better to remain silent and be thought a fool, than to speak
+aloud and remove all doubt.
+
++------------------------------------------------------------------+
+| Richard Lucassen, Utrecht                                        |
++------------------------------------------------------------------+
