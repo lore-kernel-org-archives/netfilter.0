@@ -1,35 +1,31 @@
-From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
-Subject: Re: bug in iptables-restore and "recent" module
-Date: Fri, 20 Feb 2015 16:22:42 -0500
-Message-ID: <201502201622.42411.neal.p.murphy@alum.wpi.edu>
-References: <20150215133147.6fb4589991419ad29180222a@lucassen.org> <54E30166.1090406@plouf.fr.eu.org> <20150220220544.9df9143e2fb9fbb6f8e5c397@lucassen.org>
-Reply-To: neal.p.murphy@alum.wpi.edu
+From: David Miller <davem@davemloft.net>
+Subject: Re: [PATCH] net: Remove state argument from skb_find_text()
+Date: Fri, 20 Feb 2015 17:22:33 -0500 (EST)
+Message-ID: <20150220.172233.1250644959779215916.davem@davemloft.net>
+References: <1424301408-3659-1-git-send-email-prtvar.b@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
-Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20150220220544.9df9143e2fb9fbb6f8e5c397@lucassen.org>
-Sender: netfilter-owner@vger.kernel.org
+Return-path: <netdev-owner@vger.kernel.org>
+In-Reply-To: <1424301408-3659-1-git-send-email-prtvar.b@gmail.com>
+Sender: netdev-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: Text/Plain; charset="us-ascii"
-To: netfilter@vger.kernel.org
+To: prtvar.b@gmail.com
+Cc: netdev@vger.kernel.org, tgraf@suug.ch, netfilter-devel@vger.kernel.org, netfilter@vger.kernel.org, dan.carpenter@oracle.com
 
-On Friday, February 20, 2015 04:05:44 PM richard lucassen wrote:
-> On Tue, 17 Feb 2015 09:52:54 +0100
-> 
-> Pascal Hambourg <pascal@plouf.fr.eu.org> wrote:
-> > > I'd say in iptables-restore. Apparently the -t (test) does not
-> > > notice that there is a problem while the real iptables-restore does.
-> > 
-> > Sorry, my question was not clear enough. Let me rephrase.
-> > 
-> > As -t does not commit the tables to the kernel, I do not expect it to
-> > detect errors related to the kernel configuration. So I do not see any
-> > bug in your description, it sounds like expected behaviour to me.
-> > Where do you see a bug in that behaviour ?
-> 
-> You have a point :) And I agree with Dennis to add it to the
-> manpage.
+From: Bojan Prtvar <prtvar.b@gmail.com>
+Date: Thu, 19 Feb 2015 00:16:48 +0100
 
-To state it a little more explicitly:
-  o '-t' can only validate the syntax; it cannot check the data
-  o 'the kernel' validates the data
+> Although it is clear that textsearch state is intentionally passed
+> to skb_find_text() as uninitialized argument, it was never used by
+> the callers. Therefore, we can simplify skb_find_text() by making it
+> local variable.
+> 
+> Signed-off-by: Bojan Prtvar <prtvar.b@gmail.com>
+
+Although I partially agree with Pablo's response these interfaces were
+designed to be able to hold state across calls, nobody uses them this
+way yet.  So this change is fine and we can resurrect the argument
+if a use appears in the future.
+
+However, your patch doesn't apply cleanly, please respin.
