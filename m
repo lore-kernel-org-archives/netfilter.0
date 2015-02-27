@@ -1,34 +1,22 @@
-From: "Enders A, Anouk" <a.enders@st.hanze.nl>
-Subject: Help-desk Service Center requires your immediate re-activation of
- your Email
-Date: Fri, 27 Feb 2015 03:43:58 +0000
-Message-ID: <9F88D89CF7055C41BB9D7016AC88DB53586A5C35@HPEMB08W28.hanze.nl>
-Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+From: nfnty <arch@nfnty.se>
+Subject: NFLOG and Namespaces
+Date: Fri, 27 Feb 2015 21:39:25 +0100
+Message-ID: <54F0D5FD.4030304@nfnty.se>
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Language: nl-NL
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: 
+MIME-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Help-desk Service Center requires your immediate re-activation of your =
-Email
+Why aren't packets between bridge and namespace logged via NFLOG?
 
-account. This is to upgrade email account to the new anti spam virus de=
-tector
+Related:
 
-sever 2014. Inability to complete this procedure will render your accou=
-nt
+https://docs.docker.com/articles/networking/#building-a-point-to-point-connection
+http://www.spinics.net/lists/netfilter-devel/msg24503.html
+https://lkml.org/lkml/2011/7/1/233
+https://lists.linux-foundation.org/pipermail/containers/2013-February/031730.html
 
-inactivate. Activate by completing the survey procedure.
-
-CLICK LINK:  to activate.
-
-CLICK HERE:<http://hanzennll.wix.com/henzen>
-
-Thank you for using Webmail
-
-Copyright =A9 2014 Webmail Help Desk
-
-Updating Webmail Technical Center
+//nfnty
