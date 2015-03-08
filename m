@@ -1,53 +1,87 @@
-From: prmarino1@gmail.com
-Subject: Re: Forward all incoming connection to other address
-Date: Sun, 08 Mar 2015 13:32:43 -0400
-Message-ID: <20150308173243.5927060.22776.4225@gmail.com>
-References: <20150308162558.44F3AD5428@emkei.cz>
+From: Mike Mestnik <cheako@mikemestnik.net>
+Subject: Statefull tcp failovers.
+Date: Sun, 8 Mar 2015 16:34:48 -0500
+Message-ID: <CAF8px57o8K8hgqzTdv3JhSwRM9_Y6uAPVBc1pR+hi_qDhF1ggw@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=content-type:mime-version:content-transfer-encoding:message-id:date
-         :subject:from:in-reply-to:references:to;
-        bh=OkMMCPXOXDdvhGsz8TEBUgN4QrZgpDY91dG9rJJOjqE=;
-        b=HkRyWs9CfMIbFxbDYcf1WIkXuusaFCGmES+zV/C4XE3SxgJAFeMDBxgmIMIZ6x11Hc
-         wH1300PizaT/96wdnR6CCtJFk7cG3DGd75Corj0+LNbDGXHGppAOQu2rhckKgqJq1okI
-         ceJeqaaU2WDMFDmDjeaLWG9+3vkD4VcEIATcQj0RAwgQG1e8AzlGlXTHYT8disFllldg
-         +Syu4WGw5hWc0CmpEAwhTsPM2K5afGRuO5gHaCxuaIrnR3RdyciwwavZbwxxNenDOuME
-         kcqwHP2Y1Tz8Fxh2qns9NSD19iquCK8d3bWN9jur0PIxDZQp17dSQmAINVcz00RyuasB
-         UVTg==
-In-Reply-To: <20150308162558.44F3AD5428@emkei.cz>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: nima.afshari.1389@gmail.com, netfilter@vger.kernel.org
-
-You may also need to alter the mac address as well because unless this =
-box is the default gateway for the destination host the responses would=
- be coming from a different mac address so the clients will th=E2=80=8E=
-ink you are trying to spoof the traffic.
-
-Sent from my BlackBerry 10 smartphone.
-=C2=A0 Original Message =C2=A0
-=46rom: Nima Afshari
-Sent: Sunday, March 8, 2015 12:27
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
-Reply To: nima.afshari.1389@gmail.com
-Subject: Forward all incoming connection to other address
 
-Hello Folks.
-I want to Forward all incoming connection to other address. I use Below=
- iptable rule :
+I'm actually just looking for somebody to do the work for me or to put
+enough building blocks in front of me so I can assemble them.  With
+enough iptables foo I wrote this letter, because it should be simple.
 
-iptables -t nat -A PREROUTING -p tcp -m tcp ! --dport 22 -j DNAT --to 1=
-=2E2.3.4
+The goal is to catch the, someone just kill9ed one of n web-servers
+behind a DNAT or reverse web proxy on a REDIRECT.  I've looked at port
+knock examples and I think that'd be the basis, plus some statistic so
+it's a bit fuzzy on the logic.  The knocks I think would be like so,
+this should look something like a state filter, so perhaps conntrack
+can help with some of the heavy lifting.
 
-But not worked? I added same rule with "udp" protocol too but when I sc=
-anning my system With Nmap, Nmap scan my address and not 1.2.3.4
+Client is receiving disconnections, if the client wishes to disconnect
+I doubt we'll have much of a chance.
+1. Not connected.
+2. SYN, cache it till we get to 4n.
+3. not SYN ACK, like RST
+4y. *Knock over to another node, chance to get this one again or the
+last one we were just at.  Decrease probability for anyone getting
+this DNAT|REDIRECT.
+4n. Continue.
+5. RST, could just be goodby.  Knock for a bit to see if followed by SYN.
+6. SYN make sure to redirect elsewhere, no point in going back to
+where we were just kicked out.  Slight decrease in probability for
+anyone getting this DNAT|REDIRECT.
+7. See 3.
 
-Any idea to solve it?
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at http://vger.kernel.org/majordomo-info.html
+* I'd really like this to be magical, if possible.  Don't relay the
+packet back, ignore/drop it. Re-use the previous SYN.
+
+The next server to client packet after SYM=0,ACK=1 should be scored as
+well, increasing the probability for anyone getting this port.
+
+iptables -N APACHE_IS; # 1 -p tcp/-[sd]port -j APACHE_IS?
+iptables -N APACHE_IS_IN; # 2+
+iptables -N APACHE_IS_IN_SYN; # 2
+iptables -N APACHE_IS_OUT; # 3+
+iptables -N APACHE_IS_OUT_SYNACK; # 4n
+iptables -N APACHE_IS_OUT_RST; # 4y
+iptables -N APACHE_IS_OUT_ACK; # 5
+iptables -N APACHE_IS_IN_SYNTWO; # 6
+
+iptables -A APACHE_IS -m conntrack --ctdir ORIGINAL -j APACHE_IS_IN
+iptables -A APACHE_IS -m conntrack --ctdir REPLY -j APACHE_IS_OUT
+
+iptables -A APACHE_IS_OUT ??? -m recent --name SAD_APACHE --set; #
+Mark for this Apache instants to every one else.
+iptables -A APACHE_IS_OUT_RST ??? -m recent --name CRY_APACHE --set; #
+Along with this my phone/pager cries as well.
+iptables -A APACHE_IS_OUT_ACK ??? -m recent --name HOME_APACHE --set;
+# Could be useful?
+iptables -A APACHE_IS_IN_SYNTWO ??? -m recent --rdest --name
+YELL_APACHE --set; # Too much, where is my tomahawk?
+
+iptables -A APACHE_IS_OUT ??? -m recent --rdest --name APACHE_A_MAD
+--set; # This user can still recover unbeknownst.
+iptables -A APACHE_IS_OUT_RST ??? -m recent --rdest --name
+APACHE_A_BAD --set; # This user SYN retry, squelch the RST?
+iptables -A APACHE_IS_OUT_ACK ??? -m recent --rdest --name
+APACHE_A_BYE --set; # This user could be done or come back.
+iptables -A APACHE_IS_IN_SYNTWO ??? -m recent --name APACHE_A_HOT
+--set; # This user is promiscuous.
+iptables -A APACHE_IS_OUT ??? -m recent --rdest --name APACHE_B_MAD --set
+iptables -A APACHE_IS_OUT_RST ??? -m recent --rdest --name APACHE_B_BAD --set
+iptables -A APACHE_IS_OUT_ACK ??? -m recent --rdest --name
+APACHE_A_BYE --set; # This user could be done or come back.
+iptables -A APACHE_IS_IN_SYNTWO ??? -m recent --name APACHE_A_HOT
+--set; # This user is promiscuous.
+iptables -A APACHE_IS_OUT ??? -m recent --rdest --name APACHE_C_MAD --set
+iptables -A APACHE_IS_OUT_RST ??? -m recent --rdest --name APACHE_C_BAD --set
+iptables -A APACHE_IS_OUT_ACK ??? -m recent --rdest --name APACHE_C_BYE --set
+iptables -A APACHE_IS_IN_SYNTWO ??? -m recent --name APACHE_C_HOT --set
+...
+
+This is where I either get lazy or get board, well too many unknowns
+up to this point anyway.
