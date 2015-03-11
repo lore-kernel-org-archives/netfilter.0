@@ -1,55 +1,17 @@
-From: Murugan Venugopal <muruga86@gmail.com>
-Subject: Issue in conntrack udpate cmd for UDP -- "conntrack -U -p udp -t xx"
- updates only unreplied connections
-Date: Wed, 11 Mar 2015 17:32:40 +0530
-Message-ID: <CAMVHObOzkWxn2ivJsT=R0xdT59wj2y09C7cxGYhh+Rqcnwz0kw@mail.gmail.com>
+From: jack seth <bird_112@hotmail.com>
+Subject: Is my connection timing out here?
+Date: Wed, 11 Mar 2015 12:46:33 -0500
+Message-ID: <SNT152-W63AE5FC6C5440BC174F5A8BF190@phx.gbl>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=kVy/igbUW/Y7yh9blmkusvXcl4G/2z+MkYMpe9vxtao=;
-        b=EIpmdCHo5RXPdMxwDobgRWUfHsw/DWkBCmeE3431unaetCPOM0RKR8czg0vU/MYwg1
-         t1SIYmy8RRGQB9mRx+cH+ZSMLxm1VGUJ1doaAiYqywXMZ72j2M1H3sEeF4TmejI+lNiZ
-         X1y+JgubYkJbbBRCnmcT/NdeJkshPVQsQZvw9F+JIhK58fCqdTY42UskOmfeYobMJJZu
-         xC82anpCQsbGpDpEowRADCNZPze5SLTWcD491l51LV92KNq445qr25hvpYiAc1tC0gJW
-         4wBigwOGfZOwz849JPFatmAI1jrC6MmLlHuxYvqdiZXMO0Yd9hGIxfef7TBlIo7eLcve
-         O8SQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-Hi,
+I am trying to out my Openvpn config using DH parameters 16384 size keys (I know I know but it is testing :)). I am using my working config except for substituting my large keys. My config works with a 8192 sized DH but not with 16384. I am getting a 'inactivity timeout' from the server after about 3 minutes during the TLS handshake. I have read it will take longer to negotiate with these large keys. Based on other replies I have gotten I suspect that it is the linux/iptables connection that is timing out and not OpenVPN.
 
-I face an Issue in conntrack udpate cmd for UDP.
- "conntrack -U -p udp -t xx" cmd only updates unreplied connections,
-while ASSURED UDP connections are left out.
+I have tried changing this command to a higher timeout number but it doesn't help. sudo sysctl -w net.netfilter.nf_conntrack_udp_timeout_stream=???
 
-# conntrack -U -p udp -t 60
-
-
-# conntrack -L -p udp | grep ASSU
-conntrack v1.0.0 (conntrack-tools): 23 flow entries have been shown.
-udp      17 598 src=125.17.98.97 dst=8.8.8.8 sport=33029 dport=53
-packets=5 bytes=340 src=8.8.8.8 dst=125.17.98.97 sport=53 dport=33029
-packets=5 bytes=508 [ASSURED] mark=0 use=3
-udp      17 598 src=125.17.98.97 dst=8.8.8.8 sport=49407 dport=53
-packets=15 bytes=900 src=8.8.8.8 dst=125.17.98.97 sport=53 dport=49407
-packets=15 bytes=1635 [ASSURED] mark=0 use=2
-
-Packages used:
-conntrack-tools-1.0.0
-libnetfilter_conntrack-0.9.1
-libnfnetlink-1.0.0
-iptables-1.4.16
-Linux kernel 2.6.34.8
-
-
-Please let me know, whether there are any reason to skip assured
-connection out of updation. If possible, how to update assured
-connection too.
-
-Regards,
-Murugan
+How can I track down what is happening here? 		 	   		  
