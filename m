@@ -1,89 +1,121 @@
-From: Michael Vallaly <netfilter@nolatency.com>
-Subject: Re: dst nat failover only while port is closed
-Date: Fri, 13 Mar 2015 09:45:25 -0500
-Message-ID: <20150313094525.43d7a91eec673de618a9081e@nolatency.com>
-References: <CAPhFQCvTHxvx+aExK1DkxutqONq-67ypApKUowQdFyj6fvbvfA@mail.gmail.com>
-	<CAOkSjBh+iMWtJwrbDQ9jMFUxUuaCPoYvp_6Qk54PA70Z2BZghw@mail.gmail.com>
+From: Murugan Venugopal <muruga86@gmail.com>
+Subject: Remote telnet session - "conntrack -L" TO value displays incorrectly
+Date: Sat, 14 Mar 2015 14:30:30 +0530
+Message-ID: <CAMVHObNhJyq6UkAuXRoyvfoFCsi+jotKaqYi34W1-G7fzK8N1w@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAOkSjBh+iMWtJwrbDQ9jMFUxUuaCPoYvp_6Qk54PA70Z2BZghw@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=5Gix7KwIyNEWBpbQFr26duwZLB8DMkdJMnOlCFFZ2vE=;
+        b=AdZEfpNVhwL5wc8/UF/1mlC/XqcUKohYtf4C9iiJhm5WQTL8yrSIiackWrEwrLJVPd
+         b4Z6s9TVJfheOS04RJI8PoYZSP2u68lLlzdHXIanqCq6UPqIN92WBnqREm4elB0Nu1GB
+         MRckLhVsas9qJUbngjJ9CudaoY8p9ZG6OaJx7AZtC4+KYRkQ7+/mu9sPdOVq2OR15Z27
+         /EiPVTHUtiW0YGdLDwAgbWNvw8zvFDV9xWMGfKMoiOioCSAItdRLhlV17dPqoi7V0T3m
+         rgVOJYmtYOh0gfhzAfDdyzAzGmA8VIZz3nXS4+rRzIZwq7XCBVc1naXh6h3W4H0Mm+eO
+         G6kQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
-Cc: Stefan Certic <stefan@cs-networks.net>, Netfilter Users Mailing list <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
+
+Hi Everyone,
+
+I face an peculiar issue.
+I have a Linux server box from where telnet session is done via remote PC.
+"conntrack -L" displays correct details in Linux server box, while in
+the remote telnet session (To value is displayed as 299 for
+established tcp connection).
+Then i created one more telnet sessions, here too for the current
+telnet connection entry the TO value is being displayed in correctly.
+
+Logs:
+
+// In TELNET SESSION1 (sport=1369 dport=23)
+
+#conntrack -L -p tcp --dport=23
+conntrack v1.0.0 (conntrack-tools): 2 flow entries have been shown.
+tcp      6 299 ESTABLISHED src=192.168.1.64 dst=192.168.1.254
+sport=1369 dport=23 packets=252 bytes=14212 src=192.168.1.254
+dst=192.168.1.64 sport=23 dport=1369 packets=231 bytes=63012 [ASSURED]
+mark=0 use=3
 
 
-AFAIK There isn't any functionality for this in netfilter directly. The=
- best I think you could do with solely iptables would be instrument you=
-r monit/startup scripts to alter your iptable rules pre/post action. (T=
-urning your local application machine into a router with NAT may not be=
- desired)
+// In TELNET SESSION1 (sport=1369 dport=23)---> 2 telnet sessions
 
-With LVS you would also need to enable some sort of monitoring to modif=
-y the LVS node weights (ldirectord), which will still require periodic =
-polling.
+#conntrack -L -p tcp --dport=23
+conntrack v1.0.0 (conntrack-tools): 2 flow entries have been shown.
+tcp      6 299 ESTABLISHED src=192.168.1.64 dst=192.168.1.254
+sport=1369 dport=23 packets=372 bytes=15239 src=192.168.1.254
+dst=192.168.1.64 sport=23 dport=1369 packets=258 bytes=63295 [ASSURED]
+mark=0 use=3
+tcp      6 7495 ESTABLISHED src=192.168.1.64 dst=192.168.1.254
+sport=1415 dport=23 packets=90 bytes=3747 src=192.168.1.254
+dst=192.168.1.64 sport=23 dport=1415 packets=67 bytes=7115 [ASSURED]
+mark=0 use=2
+#
 
-A much better approach in this case would be to use a proxy (such as HA=
-proxy), which will allow you to "redirect" the request to a working nod=
-e, if the local process has failed, or is unresponsive.=20
+// In TELNET SESSION2 (sport=1415 dport=23) ---> 2 telnet sessions
 
--Mike
+#conntrack -L -p tcp --dport=23
+conntrack v1.0.0 (conntrack-tools): 2 flow entries have been shown.
+tcp      6 7496 ESTABLISHED src=192.168.1.64 dst=192.168.1.254
+sport=1369 dport=23 packets=374 bytes=15319 src=192.168.1
+.254 dst=192.168.1.64 sport=23 dport=1369 packets=259 bytes=63823
+[ASSURED] mark=0 use=2
+tcp      6 299 ESTABLISHED src=192.168.1.64 dst=192.168.1.254
+sport=1415 dport=23 packets=97 bytes=4036 src=192.168.1.25
+4 dst=192.168.1.64 sport=23 dport=1415 packets=71 bytes=7340 [ASSURED]
+mark=0 use=3
+#
 
-On Fri, 13 Mar 2015 08:52:32 +0100
-Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com> wrote:
+On further analysis, i notice the strange value 299 is obtained from
+value 300 set in
+/proc/sys/net/netfilter/nf_conntrack_tcp_timeout_unacknowledged 300.
+When i modify this value from 300 to 400 then both the telnet sessions
+display 399 instead of 299.
 
-> On 13 March 2015 at 04:15, Stefan Certic <stefan@cs-networks.net> wro=
-te:
-> > Hello World :)
-> >
-> > I am interested in following scenario with iptables (if such is pos=
-sible).
-> >
-> > Setup:
-> >
-> > 1. Ext Firewall nats port Z to server A.
-> > 2. Application X listens on port Z of server A
-> > 3. It happens that application X crashes for a couple of seconds an=
-d
-> > get's restarted by a monit.
-> >
-> > Question:
-> >
-> > Is it possible to perform Nat on server A itself, to server B, that
-> > will took place only until application is restarted (only while no =
-one
-> > is listening on port Z) otherwise expose port Z to back to
-> > application.
-> >
-> > Reason:
-> >
-> > The idea is to provide a failover, uninterrupted service even when =
-app
-> > crash occurs.
->=20
-> I think this is what LVS does.
->=20
-> You can configure a loadbalancer which listen on a virtual address.
-> Then, you have several real servers in the backend. The LVS can do
-> health checks and deliver connection to real servers in the backend i=
-f
-> they are alive.
->=20
-> Your "firewall --> server A --> server B" architecture seems very wei=
-rd.
->=20
-> best regards.
->=20
-> --=20
-> Arturo Borrero Gonz=E1lez
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+// In Telnet1 (sport=1566 dport=23) --> 1 telnet session
+
+#conntrack -L -p tcp --dport=23
+tcp      6 399 ESTABLISHED src=192.168.1.64 dst=192.168.1.254
+sport=1566 dport=23 packets=101 bytes=4151 src=192.168.1.254
+dst=192.168.1.64 sport=23 dport=1566 packets=75 bytes=3557 [ASSURED]
+mark=0 use=3
+conntrack v1.0.0 (conntrack-tools): 1 flow entries have been shown.
+#
+
+// In Telnet1 (sport=1566 dport=23) --> 2 telnet sessions
+
+#conntrack -L -p tcp --dport=23
+tcp      6 7497 ESTABLISHED src=192.168.1.64 dst=192.168.1.254
+sport=1567 dport=23 packets=86 bytes=3540 src=192.168.1.254
+dst=192.168.1.64 sport=23 dport=1567 packets=67 bytes=3907 [ASSURED]
+mark=0 use=3
+tcp      6 399 ESTABLISHED src=192.168.1.64 dst=192.168.1.254
+sport=1566 dport=23 packets=110 bytes=4520 src=192.168.1.254
+dst=192.168.1.64 sport=23 dport=1566 packets=80 bytes=4291 [ASSURED]
+mark=0 use=3
+conntrack v1.0.0 (conntrack-tools): 2 flow entries have been shown.
+#
+#
+// In Telnet2 (sport=1567 dport=23) ---> 2 telnet sessions
+#
+#conntrack -L -p tcp --dport=23
+tcp      6 399 ESTABLISHED src=192.168.1.64 dst=192.168.1.254
+sport=1567 dport=23 packets=93 bytes=3829 src=192.168.1.254
+dst=192.168.1.64 sport=23 dport=1567 packets=70 bytes=4074 [ASSURED]
+mark=0 use=4
+tcp      6 7454 ESTABLISHED src=192.168.1.64 dst=192.168.1.254
+sport=1566 dport=23 packets=112 bytes=4600 src=192.168.1.254
+dst=192.168.1.64 sport=23 dport=1566 packets=81 bytes=4610 [ASSURED]
+mark=0 use=2
+conntrack v1.0.0 (conntrack-tools): 2 flow entries have been shown.
 
 
---=20
-Michael Vallaly <mvallaly@nolatency.com>
+I feel this anomaly is strange and could some one clarify whether this
+is normal expected behaviour or some error.
+
+Thanks in advance.
+Murugan
