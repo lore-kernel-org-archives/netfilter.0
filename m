@@ -1,86 +1,87 @@
-From: "Danilo Magat" <danny@ezelink.com>
-Subject: RE: ebtables vlan captive portal
-Date: Sat, 14 Mar 2015 15:13:34 +0400
-Message-ID: <003201d05e47$eb3f7d80$c1be7880$@ezelink.com>
-References: <e83b24aadd74fe6ca9f82d7d4a38de82@ezelink.com> <CAOkSjBgGu80ajXEE3Z3GWfXOjn3BcpBKAt=XevswvsshV+y7TQ@mail.gmail.com>
+From: Ryan <ryan_gerstenkorn@fastmail.fm>
+Subject: Outbound SNAT on non-local connections
+Date: Sat, 14 Mar 2015 14:29:00 -0700
+Message-ID: <1426368540.2642076.240424705.3B907A6A@webmail.messagingengine.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAOkSjBgGu80ajXEE3Z3GWfXOjn3BcpBKAt=XevswvsshV+y7TQ@mail.gmail.com>
-Content-language: en-us
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=fastmail.fm; h=
+	message-id:x-sasl-enc:from:to:mime-version
+	:content-transfer-encoding:content-type:subject:date; s=mesmtp;
+	 bh=zPmKxb7zCju8wi34udRRANwiGCM=; b=qWfQWfA2oSbBd4acTngIN/HIdnj4
+	gdqy3exBYBwMMECQAV5JeYVo+3NLVYv7t1T+E3dFut4mE4Qg8l3zyTLnoR3P9l6y
+	33rDclhdhoT6rpWcjjPkamC6qOniKJ85YNM/fFygUy5jXQHpEbDdO5GI6uPa1L7o
+	TKAYPVp9ECHZVxo=
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
+	messagingengine.com; h=message-id:x-sasl-enc:from:to
+	:mime-version:content-transfer-encoding:content-type:subject
+	:date; s=smtpout; bh=zPmKxb7zCju8wi34udRRANwiGCM=; b=AR6XYPjrub8
+	pippsdpOWxjTZUkMzYKujrDxS3uItfDtVnhHFVa5mjlO/R+P01YPylcl1njy5Ida
+	d1BGkVfPwvKmfmTzNq7kNiT2u/H5nl7LpYbv4Tf5nIcMHIrfvpw68m8OJU4oT9nh
+	7fjq3EodA1bOnR8M4SnUt9drzgDHAzuc=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: 'Arturo Borrero Gonzalez' <arturo.borrero.glez@gmail.com>
-Cc: 'Netfilter Users Mailing list' <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-Hi guys,
+Hello,
+I have been trying to set up a linux box as a L3 DSR backend and in
+order for this to work I need to rewrite the source IP on a outbound
+reply to a inbound connection.
 
-Any Idea about this?:
+So what is happening is I have three machines, client, load balancer,
+and server.
 
-[root@localhost nftables]# make
-make  all-recursive
-make[1]: Entering directory `/root/nftables'
-Making all in src
-make[2]: Entering directory `/root/nftables/src'
-make  all-am
-make[3]: Entering directory `/root/nftables/src'
-  CC     main.o
-In file included from ../include/netlink.h:10,
-                 from main.c:25:
-/usr/include/linux/netlink.h:35: error: expected specifier-qualifier-li=
-st before =E2=80=98sa_family_t=E2=80=99
-make[3]: *** [main.o] Error 1
-make[3]: Leaving directory `/root/nftables/src'
-make[2]: *** [all] Error 2
-make[2]: Leaving directory `/root/nftables/src'
-make[1]: *** [all-recursive] Error 1
-make[1]: Leaving directory `/root/nftables'
-make: *** [all] Error 2
+The client sends a TCP (in my testing i'm using ICMP though) to the load
+balancer. The load balancer then does DNAT to rewrite the destination
+address to the server.
+
+So now the server has a connection coming in from the load balancer
+however it has the source IP of the client.
+
+The server will respond directly to the client (which is what I want)
+however because the client see's the connection coming from a different
+IP it will ignore it.
+
+I think the simplest solution here is to have SNAT on the server that
+rewrites the source address to the load balancer IP however this does
+not seem to work.
+
+If i put log rules for every chain in both the filter and nat tables
+(and have no other rules) and send a single ICMP request from the client
+to the load balancer I see this on the server:
+
+Mar 14 21:15:35 vagrant-ubuntu-precise-64 kernel: [16634.197968] NAT
+PREROUTING IN=eth1 OUT= MAC=08:00:27:d1:0d:09:08:00:27:94:ad:1b:08:00
+SRC=192.168.54.20 DST=192.168.54.10 LEN=84 TOS=0x00 PREC=0x00 TTL=64
+ID=17427 DF PROTO=ICMP TYPE=8 CODE=0 ID=3724 SEQ=1 
+Mar 14 21:15:35 vagrant-ubuntu-precise-64 kernel: [16634.199879] INPUT
+IN=eth1 OUT= MAC=08:00:27:d1:0d:09:08:00:27:94:ad:1b:08:00
+SRC=192.168.54.20 DST=192.168.54.10 LEN=84 TOS=0x00 PREC=0x00 TTL=64
+ID=17427 DF PROTO=ICMP TYPE=8 CODE=0 ID=3724 SEQ=1 
+Mar 14 21:15:35 vagrant-ubuntu-precise-64 kernel: [16634.201220] NAT
+INPUT IN=eth1 OUT= MAC=08:00:27:d1:0d:09:08:00:27:94:ad:1b:08:00
+SRC=192.168.54.20 DST=192.168.54.10 LEN=84 TOS=0x00 PREC=0x00 TTL=64
+ID=17427 DF PROTO=ICMP TYPE=8 CODE=0 ID=3724 SEQ=1 
+Mar 14 21:15:35 vagrant-ubuntu-precise-64 kernel: [16634.201891] OUTPUT
+IN= OUT=eth1 SRC=192.168.54.10 DST=192.168.54.20 LEN=84 TOS=0x00
+PREC=0x00 TTL=64 ID=29751 PROTO=ICMP TYPE=0 CODE=0 ID=3724 SEQ=1 
+
+It seems to hit the PREROUTING chain and never touches POSTROUTING.
+
+If I do a connmark -L after the ping I will see the ICMP connection show
+up there:
+
+icmp     1 28 src=192.168.54.20 dst=192.168.54.10 type=8 code=0 id=3729
+src=192.168.54.10 dst=192.168.54.20 type=0 code=0 id=3729 mark=0 use=1
+
+If I understand correctly the nat table won't be consulted if a
+connection exists in conntrack already. However because I can't have
+SNAT in PREROUTING I can't really do what I want.
+
+Am I doing something wrong or is am I understanding this behavor
+correctly? If so is there a way to work around this issue?
 
 
-=20
-Thanks & Best Regards,=20
-Danilo Magat=20
-eZeLink Telecom
-www.ezelink.com
-Ph: +971 4 457 2218 Ext: 110 =20
-=46acebook - Twitter - LinkedIn - G+ - Pinterest - Instagram
-Bay Square Building 06 - Office No 105 - Business Bay
-P.O Box 111581, Dubai, UAE
-Note: My Email Id is changed from danny@sb-ps.ae to danny@ezelink.com, =
-please update in your record.
-
-
-
------Original Message-----
-=46rom: Arturo Borrero Gonzalez [mailto:arturo.borrero.glez@gmail.com]=20
-Sent: Thursday, March 12, 2015 3:27 PM
-To: danny@ezelink.com
-Cc: Netfilter Users Mailing list
-Subject: Re: ebtables vlan captive portal
-
-On 12 March 2015 at 04:39,  <danny@ezelink.com> wrote:
-> http://s16.postimg.org/e5nu6g1md/bridgevlancaptive.png
->
-> The above image link is based on my project about captive portal. As=20
-> you can see on the image i have a diagram on LEFT side which is=20
-> WORKING without a problem on a normal scenario without any vlan.
->
-> On RIGHT side however, it is similar to the setup on left side but it=
-=20
-> is with multiple VLAN.
->
-> I am having difficulties on finding the solution on this. need your i=
-nput.
->
-> Currently im looking at ebtables form the link
->
-
-If you're planning a new project based on ebtables, would you consider =
-taking a look into nftables?
-
-best regards.
---
-Arturo Borrero Gonz=C3=A1lez
-
+Thanks!
+Ryan G.
