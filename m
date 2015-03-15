@@ -1,43 +1,70 @@
-From: Santiago Vila <sanvila@unex.es>
-Subject: iptables rules still working after being flushed (?)
-Date: Sun, 15 Mar 2015 14:16:31 +0100 (CET)
-Message-ID: <alpine.DEB.2.11.1503151144110.8487@cantor.unex.es>
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Subject: Re: Outbound SNAT on non-local connections
+Date: Sun, 15 Mar 2015 15:49:07 +0100
+Message-ID: <55059BE3.4030702@plouf.fr.eu.org>
+References: <1426368540.2642076.240424705.3B907A6A@webmail.messagingengine.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <1426368540.2642076.240424705.3B907A6A@webmail.messagingengine.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Ryan <ryan_gerstenkorn@fastmail.fm>
+Cc: netfilter@vger.kernel.org
 
-Hello.
+Hello,
 
-I have a system where iptables rules still work after being flushed.
-Yes, I know this will sound as an "X-File" or "The Twilight Zone",
-but that's exactly what happens.
+Ryan a =E9crit :
+>=20
+> The client sends a TCP (in my testing i'm using ICMP though) to the l=
+oad
+> balancer. The load balancer then does DNAT to rewrite the destination
+> address to the server.
+>=20
+> So now the server has a connection coming in from the load balancer
+> however it has the source IP of the client.
+>=20
+> The server will respond directly to the client (which is what I want)
 
-I've reported this problem to Debian here:
+Why ?
 
-http://bugs.debian.org/780494
+> however because the client see's the connection coming from a differe=
+nt
+> IP it will ignore it.
 
-Unfortunately, I can only reproduce it on a server used by many
-people, so I can't make a lot of experiments there.
+As expected.
 
-The system is running Debian jessie, with Linux 3.16.7 and iptables 1.4.21
-(and also systemd, in case it matters).
+> I think the simplest solution here is to have SNAT on the server that
+> rewrites the source address to the load balancer IP however this does
+> not seem to work.
 
-Simple questions:
+Indeed.
 
-* Is there any kind of "version coupling" between Linux and iptables?
+> If I understand correctly the nat table won't be consulted if a
+> connection exists in conntrack already.
 
-(Say, "your kernel is too old / too new for the iptables version you are using")
+Correct.
 
-If so: How am I supposed to know if iptables does not complain?
+> However because I can't have
+> SNAT in PREROUTING I can't really do what I want.
 
-* Is there a reason why "iptables -L -n" could not be showing the *real*
-tables being used?
+I do not see how SNAT in PREROUTING would help in any way. Recent
+kernels can do SNAT in INPUT, however it wouldn't help either.
 
-* Any known bug (already fixed in the latest version) in Linux 3.16.7
-or iptables 1.4.21 that may be the reason for this strange behaviour?
+> Am I doing something wrong
 
-Thanks.
+Yes, this :
+
+"The server will respond directly to the client (which is what I want)"
+
+Stateful NAT (DNAT, SNAT) needs connection tracking and requires
+symmetric routing. If you break symmetric routing, you break stateful N=
+AT.
+
+> If so is there a way to work around this issue?
+
+As you found out, you can use stateless NAT on the server (RAWSNAT) and
+also on the load balancer (RAWDNAT, no need to waste resources for
+stateful NAT). Or you can just make the routing symmetric and route the
+reply traffic through the load balancer.
