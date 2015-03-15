@@ -1,38 +1,43 @@
-From: Ryan <ryan_gerstenkorn@fastmail.fm>
-Subject: Re: Outbound SNAT on non-local connections
-Date: Sat, 14 Mar 2015 16:18:21 -0700
-Message-ID: <1426375101.2661616.240448837.5E6CC314@webmail.messagingengine.com>
-References: <1426368540.2642076.240424705.3B907A6A@webmail.messagingengine.com>
+From: Santiago Vila <sanvila@unex.es>
+Subject: iptables rules still working after being flushed (?)
+Date: Sun, 15 Mar 2015 14:16:31 +0100 (CET)
+Message-ID: <alpine.DEB.2.11.1503151144110.8487@cantor.unex.es>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=fastmail.fm; h=
-	message-id:x-sasl-enc:from:to:mime-version
-	:content-transfer-encoding:content-type:in-reply-to:references
-	:subject:date; s=mesmtp; bh=jdspKIdfySZOPRUe8yuppPpAAxE=; b=Ctwt
-	ZOqDGZZWhcoRw55XGBmfgvZbfx45hMJ2AMsGBQpwlixiCEgKVl5H4HXoKM4/cSmP
-	crI42Da+n74OnIofECsIWmVzqzkmO40ZfS06Gxlm9m63Q3ROt7bd1sMgd5ufJH0g
-	p4C50soDz+jHihQSF4UVefPHnTgEWwLatfeHCWc=
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
-	messagingengine.com; h=message-id:x-sasl-enc:from:to
-	:mime-version:content-transfer-encoding:content-type:in-reply-to
-	:references:subject:date; s=smtpout; bh=jdspKIdfySZOPRUe8yuppPpA
-	AxE=; b=aBpcRBsUxQoinv04CS9+1e3y0CvwIW1/eKJuc+1qUenQTYpqTO3H/0Of
-	a2Fq288ycBXbQ0ietTTBYr62DdnLF/nc+w5ktu8ngfUleSGwEVprCMufZkwDTpkY
-	XUY1QZ1Sr/li1olvYhwl0u7KfW6EAE/VycFyr+5YVln6HzYZofY=
-In-Reply-To: <1426368540.2642076.240424705.3B907A6A@webmail.messagingengine.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: TEXT/PLAIN; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-So just to follow up on my email I did find a solution to my issue by
-using the RAWSNAT from the xtables-addons package. This target works in
-either raw or rawpost however I also needed to use connection tracking
-which doesn't work in raw.  Connection tracking does seem to work in
-rawpost but I do not know why as there is no real documentation on
-rawpost and it's a xtables specific table.
+Hello.
 
+I have a system where iptables rules still work after being flushed.
+Yes, I know this will sound as an "X-File" or "The Twilight Zone",
+but that's exactly what happens.
 
-Thanks!
-Ryan G.
+I've reported this problem to Debian here:
+
+http://bugs.debian.org/780494
+
+Unfortunately, I can only reproduce it on a server used by many
+people, so I can't make a lot of experiments there.
+
+The system is running Debian jessie, with Linux 3.16.7 and iptables 1.4.21
+(and also systemd, in case it matters).
+
+Simple questions:
+
+* Is there any kind of "version coupling" between Linux and iptables?
+
+(Say, "your kernel is too old / too new for the iptables version you are using")
+
+If so: How am I supposed to know if iptables does not complain?
+
+* Is there a reason why "iptables -L -n" could not be showing the *real*
+tables being used?
+
+* Any known bug (already fixed in the latest version) in Linux 3.16.7
+or iptables 1.4.21 that may be the reason for this strange behaviour?
+
+Thanks.
