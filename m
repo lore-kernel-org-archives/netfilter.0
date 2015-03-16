@@ -1,55 +1,80 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: Issue in conntrack udpate cmd for UDP -- "conntrack -U -p udp -t
- xx" updates only unreplied connections
-Date: Sun, 15 Mar 2015 21:44:31 +0100
-Message-ID: <20150315204431.GA3673@salvia>
-References: <CAMVHObOzkWxn2ivJsT=R0xdT59wj2y09C7cxGYhh+Rqcnwz0kw@mail.gmail.com>
+From: Ryan <ryan_gerstenkorn@fastmail.fm>
+Subject: Re: Outbound SNAT on non-local connections
+Date: Sun, 15 Mar 2015 18:16:43 -0700
+Message-ID: <1426468603.3944396.240747921.14A2017D@webmail.messagingengine.com>
+References: <1426368540.2642076.240424705.3B907A6A@webmail.messagingengine.com>
+ <55059BE3.4030702@plouf.fr.eu.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <CAMVHObOzkWxn2ivJsT=R0xdT59wj2y09C7cxGYhh+Rqcnwz0kw@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=fastmail.fm; h=
+	message-id:x-sasl-enc:from:to:cc:mime-version
+	:content-transfer-encoding:content-type:subject:date:in-reply-to
+	:references; s=mesmtp; bh=H+hzJzWe9FrLc2+xP+I6SepzUAc=; b=XkHq8z
+	ebJINmdTnH05E5E9JYOXK6LBICN3doEpNHLw+pE84b1p1T4aSw4bsCWslcJUda5p
+	Qbks+NuRUhn33AOUVTC55sI/b3mEsag8HBm5GQoCajIhShb6NHqqr8Z1ZwwKtoTQ
+	Kg0uw6QhhP6GDUsT0f+VI50BB/TG+G9ABaPfY=
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
+	messagingengine.com; h=message-id:x-sasl-enc:from:to:cc
+	:mime-version:content-transfer-encoding:content-type:subject
+	:date:in-reply-to:references; s=smtpout; bh=H+hzJzWe9FrLc2+xP+I6
+	SepzUAc=; b=KWq5XFoiCvnhgX+vEcEbWIlhnqrhZC54NGxaikZ+lm0hIj+lQnwg
+	+e3nEg+S1WFEdmfxDCWL5HhSjp8jynLG9E8zpnA8608Z/7YNNKFpObCszLsi0yaF
+	n56M1Pu7Xk3uOD2f2U64vDvao4rdAbjIdm0+z8oGGiMlw3wMfSCri7M=
+In-Reply-To: <55059BE3.4030702@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: Murugan Venugopal <muruga86@gmail.com>
+To: Pascal Hambourg <pascal@plouf.fr.eu.org>
 Cc: netfilter@vger.kernel.org
 
-On Wed, Mar 11, 2015 at 05:32:40PM +0530, Murugan Venugopal wrote:
-> Hi,
-> 
-> I face an Issue in conntrack udpate cmd for UDP.
->  "conntrack -U -p udp -t xx" cmd only updates unreplied connections,
-> while ASSURED UDP connections are left out.
-> 
-> # conntrack -U -p udp -t 60
-> 
-> 
-> # conntrack -L -p udp | grep ASSU
-> conntrack v1.0.0 (conntrack-tools): 23 flow entries have been shown.
-> udp      17 598 src=125.17.98.97 dst=8.8.8.8 sport=33029 dport=53
-> packets=5 bytes=340 src=8.8.8.8 dst=125.17.98.97 sport=53 dport=33029
-> packets=5 bytes=508 [ASSURED] mark=0 use=3
-> udp      17 598 src=125.17.98.97 dst=8.8.8.8 sport=49407 dport=53
-> packets=15 bytes=900 src=8.8.8.8 dst=125.17.98.97 sport=53 dport=49407
-> packets=15 bytes=1635 [ASSURED] mark=0 use=2
-> 
-> Packages used:
-> conntrack-tools-1.0.0
-> libnetfilter_conntrack-0.9.1
-> libnfnetlink-1.0.0
-> iptables-1.4.16
-> Linux kernel 2.6.34.8
-> 
-> 
-> Please let me know, whether there are any reason to skip assured
-> connection out of updation. If possible, how to update assured
-> connection too.
 
-Note that the follow up packet resets the timeout to what the default
-timeout policy specifies.
+> > 
+> > The server will respond directly to the client (which is what I want)
+> 
+> Why ?
+Because the connection to the server from the LB has the source address
+of the client. 
 
-If you want to adopt specific timeout policies for a subset of flows,
-you have to use the cttimeout infrastructure [1].
+ 
+> I do not see how SNAT in PREROUTING would help in any way. Recent
+> kernels can do SNAT in INPUT, however it wouldn't help either.
 
-[1] http://lwn.net/Articles/485195/
+You're right that doesn't make sense, forget what I was thinking
+there...
+
+I think we experimented with putting the LB's IP on lo and DNAT'ing to
+it on inbound but
+didn't seem to work either.
+
+> 
+> > Am I doing something wrong
+> 
+> Yes, this :
+> 
+> "The server will respond directly to the client (which is what I want)"
+> 
+> Stateful NAT (DNAT, SNAT) needs connection tracking and requires
+> symmetric routing. If you break symmetric routing, you break stateful
+> NAT.
+> 
+> > If so is there a way to work around this issue?
+> 
+> As you found out, you can use stateless NAT on the server (RAWSNAT) and
+> also on the load balancer (RAWDNAT, no need to waste resources for
+> stateful NAT). Or you can just make the routing symmetric and route the
+> reply traffic through the load balancer.
+
+Yeah I think that makes sense, just not obvious without understanding
+how
+iptables works. This is working for us now using those targets in
+xtables
+however unfortunately it looks like RAWDNAT and RAWSNAT has been removed
+from the latest version of xtables. The other options are iproute
+(deprecated) and 
+tc, which I didn't look into much for this but has always been a pain to
+use in the past.
+
+
+
+ 
