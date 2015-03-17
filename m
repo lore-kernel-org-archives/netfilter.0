@@ -1,80 +1,38 @@
-From: Ryan <ryan_gerstenkorn@fastmail.fm>
-Subject: Re: Outbound SNAT on non-local connections
-Date: Sun, 15 Mar 2015 18:16:43 -0700
-Message-ID: <1426468603.3944396.240747921.14A2017D@webmail.messagingengine.com>
-References: <1426368540.2642076.240424705.3B907A6A@webmail.messagingengine.com>
- <55059BE3.4030702@plouf.fr.eu.org>
+From: Peter Chen <peter.feifan.chen@gmail.com>
+Subject: transparent proxy with iptable redirect
+Date: Mon, 16 Mar 2015 23:37:57 -0700
+Message-ID: <CAMGYKAewXqwykFeHWSxLeW-MJP9xqujuRMT6pwOEsjUDtGQFtA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=fastmail.fm; h=
-	message-id:x-sasl-enc:from:to:cc:mime-version
-	:content-transfer-encoding:content-type:subject:date:in-reply-to
-	:references; s=mesmtp; bh=H+hzJzWe9FrLc2+xP+I6SepzUAc=; b=XkHq8z
-	ebJINmdTnH05E5E9JYOXK6LBICN3doEpNHLw+pE84b1p1T4aSw4bsCWslcJUda5p
-	Qbks+NuRUhn33AOUVTC55sI/b3mEsag8HBm5GQoCajIhShb6NHqqr8Z1ZwwKtoTQ
-	Kg0uw6QhhP6GDUsT0f+VI50BB/TG+G9ABaPfY=
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; d=
-	messagingengine.com; h=message-id:x-sasl-enc:from:to:cc
-	:mime-version:content-transfer-encoding:content-type:subject
-	:date:in-reply-to:references; s=smtpout; bh=H+hzJzWe9FrLc2+xP+I6
-	SepzUAc=; b=KWq5XFoiCvnhgX+vEcEbWIlhnqrhZC54NGxaikZ+lm0hIj+lQnwg
-	+e3nEg+S1WFEdmfxDCWL5HhSjp8jynLG9E8zpnA8608Z/7YNNKFpObCszLsi0yaF
-	n56M1Pu7Xk3uOD2f2U64vDvao4rdAbjIdm0+z8oGGiMlw3wMfSCri7M=
-In-Reply-To: <55059BE3.4030702@plouf.fr.eu.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:from:date:message-id:subject:to:content-type;
+        bh=OZcrMAhpUpaGHgiZcJ2j8Qv4Nj3Roz3iQcuZu83jALA=;
+        b=eXpusHvQcfCE1Xq5KMT6W7a5RVEX1JQNUIcaW5hRUG+go3PIJDQEq+5eBnyyD5ZlW7
+         96KimWBt0sIDidQX2KVVdfLe0I9UtzbfdGu7VcN03hTE1Bt9vFY3gu6iebf4HifJFtJC
+         kfk9ptUadcKTAQPSvoPaLEZkQkksXBAXJvSuHM0Gi0F0B3SPZ7AtCOF/V7UK94cJUDqu
+         O3DBytlbn0RL2/1BZmvh1HyiPJBfamCQoZLymO7Z6crpOcSlZYgBjWGUx+ZKOvEvKknZ
+         X7XgnEfMhH+84CZKo2ETzVGfn7G1sR8Tdqhs31cu1rtjjnhrpZo0+cPYx7JLQW/BlBhF
+         4OiQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Cc: netfilter@vger.kernel.org
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
+I have a pretty straightforward question that I've been wondering. If
+I add an iptable redirect rule (e.g. dst tcp port 80 to tcp port
+8080), it would change every tcp packet with port 80 as its
+destination to a tcp packet with destination 8080. Now if my
+application listening on 8080 were to reply to the source, it would
+transmit a tcp packet with src port 8080, but the source side is
+expecting a tcp packet with src port 80.
 
-> > 
-> > The server will respond directly to the client (which is what I want)
-> 
-> Why ?
-Because the connection to the server from the LB has the source address
-of the client. 
+So my question is, how does the reverse path from dest back to the
+src, at what point does the port number get rewritten from 8080 back
+to 80, making the redirect transparent? Is this done by iptable
+automatically on a redirect target?
 
- 
-> I do not see how SNAT in PREROUTING would help in any way. Recent
-> kernels can do SNAT in INPUT, however it wouldn't help either.
+Thanks,
 
-You're right that doesn't make sense, forget what I was thinking
-there...
-
-I think we experimented with putting the LB's IP on lo and DNAT'ing to
-it on inbound but
-didn't seem to work either.
-
-> 
-> > Am I doing something wrong
-> 
-> Yes, this :
-> 
-> "The server will respond directly to the client (which is what I want)"
-> 
-> Stateful NAT (DNAT, SNAT) needs connection tracking and requires
-> symmetric routing. If you break symmetric routing, you break stateful
-> NAT.
-> 
-> > If so is there a way to work around this issue?
-> 
-> As you found out, you can use stateless NAT on the server (RAWSNAT) and
-> also on the load balancer (RAWDNAT, no need to waste resources for
-> stateful NAT). Or you can just make the routing symmetric and route the
-> reply traffic through the load balancer.
-
-Yeah I think that makes sense, just not obvious without understanding
-how
-iptables works. This is working for us now using those targets in
-xtables
-however unfortunately it looks like RAWDNAT and RAWSNAT has been removed
-from the latest version of xtables. The other options are iproute
-(deprecated) and 
-tc, which I didn't look into much for this but has always been a pain to
-use in the past.
-
-
-
- 
+Peter
