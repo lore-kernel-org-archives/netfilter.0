@@ -1,63 +1,151 @@
-From: =?utf-8?B?QW5kcsOpIFBhdWxzYmVyZy1Dc2liaQ==?= 
-	<Andre.Paulsberg-Csibi@evry.com>
-Subject: RE: DROP policy, serious vulnerability?
-Date: Thu, 19 Mar 2015 11:25:42 +0000
-Message-ID: <838AB161BE491743AE3CA3A916CF1CC648BB45AF@CCDEX015.corp.corpcommon.com>
-References: <550A63F0.2030400@gmail.com>
+From: Noel Kuntze <noel@familie-kuntze.de>
+Subject: Re: DROP policy, serious vulnerability?
+Date: Thu, 19 Mar 2015 12:34:45 +0100
+Message-ID: <550AB455.1040705@familie-kuntze.de>
+References: <550A63F0.2030400@gmail.com> <838AB161BE491743AE3CA3A916CF1CC648BB45AF@CCDEX015.corp.corpcommon.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <550A63F0.2030400@gmail.com>
-Content-Language: en-US
+In-Reply-To: <838AB161BE491743AE3CA3A916CF1CC648BB45AF@CCDEX015.corp.corpcommon.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="macroman"
-To: dE <de.techno@gmail.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+Content-Type: text/plain; charset="utf-8"
+To: =?UTF-8?B?QW5kcsOpIFBhdWxzYmVyZy1Dc2liaQ==?= <Andre.Paulsberg-Csibi@evry.com>, dE <de.techno@gmail.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-SSBrbm93IHlvdSBhbHJlYWR5IGhhdmUgeW91ciBhbnN3ZXIgKGZyb20gTmVhbCBNdXJwaHkpICwg
-YnV0IEkgZmVlbCBJIG5lZWQgdG8gbWVudGlvbiB0aGF0IHlvdXIgUlVMRSBtYWtlcyBubyBzZW5z
-ZSBpbiBhIHByYXRpY2FsIG1hbm5lciAhDQoNCk5vdyB5b3VyIHJ1bGVzIGFyZSBub3Qgd29ya2lu
-ZyBiZWNhdXNlIHRoZSBvcmRlciBpcyBpbmNvcnJlY3QgZm9yIHlvdXIgKnBsYW5zKiAsDQpidXQg
-dGhpcyBldmVuIGlmIHlvdSBjaGFuZ2UgdGhlIG9yZGVyICwgeW91ciBzZXR1cCBtYWtlcyBsZXNz
-IHNlbnNlIHRoYW4gZG8gdGhpbmdzIHRoZSAibm9ybWFsIiB3YXkgLg0KDQpUbyBtYWtlIHRoZSBj
-dXJyZW50IHNldCB3b3JrIHlvdSB3b3VsZCBub3Qgb25seSBoYXZlIHRvIGNoYW5nZSB0aGUgb3Jk
-ZXIgLA0KQnV0IG1ha2luZyBuZXcgb3BlbmluZ3Mgd291bGQgcmVxdWlyZSB5b3UgdG8gY2hhbmdl
-IG9uZSBzaW5nbGUgcnVsZSB3aXRoIHJlbW92aW5nIHNvbWUgcG9ydHMgZnJvbSB5b3VyIERST1Ag
-cnVsZSAuDQoNCmlwdGFibGVzIC1BIElOUFVUIC1wIHRjcCAhIC1pIGxvIC1tIG11bHRpcG9ydCAt
-LWRwb3J0cyAwOjc5LDgxOjY1NTM1IC1tIHN0YXRlIC0tc3RhdGUgTkVXIC1qIERST1ANCmlwdGFi
-bGVzIC1BIElOUFVUIC1wIHRjcCAtaiBBQ0NFUFQNCmlwdGFibGVzIC1BIElOUFVUIC1wIHVkcCAt
-aiBBQ0NFUFQNCg0KbmV4dCB0aW1lIHlvdSB3b3VsZCBtYWtlIGEgbW9yZSBjb21wbGV4IG11bHRp
-cG9ydCBydWxlIC4uLg0KDQppcHRhYmxlcyAtQSBJTlBVVCAtcCB0Y3AgISAtaSBsbyAtbSBtdWx0
-aXBvcnQgLS1kcG9ydHMgMDoyMSwyMzo3OSw4MTo2NTUzNSAtbSBzdGF0ZSAtLXN0YXRlIE5FVyAt
-aiBEUk9QDQppcHRhYmxlcyAtQSBJTlBVVCAtcCB0Y3AgLWogQUNDRVBUDQppcHRhYmxlcyAtQSBJ
-TlBVVCAtcCB1ZHAgLWogQUNDRVBUDQoNCm5leHQgdGltZSB5b3Ugd291bGQgbWFrZSBhIGV2ZW4g
-bW9yZSBjb21wbGV4IG11bHRpcG9ydCBydWxlIC4uLg0KDQppcHRhYmxlcyAtQSBJTlBVVCAtcCB0
-Y3AgISAtaSBsbyAtbSBtdWx0aXBvcnQgLS1kcG9ydHMgMDoyMSwyMzo3OSw4MTo0NDIsNDQ0OjY1
-NTM1IC1tIHN0YXRlIC0tc3RhdGUgTkVXIC1qIERST1ANCmlwdGFibGVzIC1BIElOUFVUIC1wIHRj
-cCAtaiBBQ0NFUFQNCmlwdGFibGVzIC1BIElOUFVUIC1wIHVkcCAtaiBBQ0NFUFQNCg0KVGhpcyBt
-YWtlcyB2ZXJ5IGxpdHRsZSBzZW5zZSB3aGVuIHlvdSBjYW4ganVzdCBtYWtlIE9ORSBhY2NlcHQg
-Zm9yIGFsbCAsIGFuZCBkcm9wIHRoZSByZXN0ICENCg0KaXB0YWJsZXMgLUEgSU5QVVQgLXAgdGNw
-IC1pIGxvIC1tIG11bHRpcG9ydCAtLWRwb3J0cyAyMiw4MCw0NDMgLWogQUNDRVBUDQppcHRhYmxl
-cyAtQSBJTlBVVCAtaiBEUk9QDQoNCkkgd2lsbCBtZW50aW9uIEkgYWxzbyByZW1vdmVkIHlvdXIg
-ImlwdGFibGVzIC1BIElOUFVUIC1wIHVkcCAtaiBBQ0NFUFQiICwNCmFuZCBJIHdvdWxkIGhhdmUg
-cmVwbGFjZWQgdGhhdCB3aXRoIG9uZSB0aGF0IGdpdmVzIHRoZSBwb3J0cyB5b3Ugd2FudCBvcGVu
-ZWQgYmVmb3JlIHRoZSBEUk9QIHJ1bGUgLg0KDQoNCktpbmQgUmVnYXJkcyBBbmRyw6kNCg0KDQot
-LS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogbmV0ZmlsdGVyLW93bmVyQHZnZXIua2Vy
-bmVsLm9yZyBbbWFpbHRvOm5ldGZpbHRlci1vd25lckB2Z2VyLmtlcm5lbC5vcmddIE9uIEJlaGFs
-ZiBPZiBkRQ0KU2VudDogMTkuIG1hcnMgMjAxNSAwNjo1Mg0KVG86IG5ldGZpbHRlckB2Z2VyLmtl
-cm5lbC5vcmcNClN1YmplY3Q6IERST1AgcG9saWN5LCBzZXJpb3VzIHZ1bG5lcmFiaWxpdHk/DQoN
-CkhpIQ0KDQpJJ20gdXNpbmcgdGhlIGRyb3AgcG9saWN5IGZvciBpcHRhYmxlcyB1c2luZyB0aGUg
-Zm9sbG93aW5nIC0tDQoNCmlwdGFibGVzIC1QIElOUFVUIERST1ANCmlwdGFibGVzIC1QIE9VVFBV
-VCBEUk9QDQppcHRhYmxlcyAtUCBGT1JXQVJEIERST1ANCmlwdGFibGVzIC1BIElOUFVUIC1wIHRj
-cCAtaiBBQ0NFUFQNCmlwdGFibGVzIC1BIElOUFVUIC1wIHVkcCAtaiBBQ0NFUFQNCmlwdGFibGVz
-IC1BIElOUFVUIC1wIHRjcCAhIC1pIGxvIC1tIG11bHRpcG9ydCAtLWRwb3J0cyAwOjc5LDgxOjY1
-NTM1IC1tIA0Kc3RhdGUgLS1zdGF0ZSBORVcgLWogRFJPUA0KVW5mb3J0dW5hdGVseSwgaW4gdGhp
-cyBjb25maWd1cmF0aW9uLCBub25lIG9mIHRoZSBwb3J0cyBnZXQgYmxvY2tzLg0KDQpUaGlzIGlt
-cGxpZXMgdGhhdCBhZnRlciBhbiBBQ0NFUFQsIGZ1cnRoZXIgcnVsZXMgYXJlIG5vdCBtYXRjaGVk
-LiBJcyANCnRoaXMgYSBidWcgb3IgaW50ZW5kZWQgYnkgZGVzaWduPw0KDQpJZiB0aGlzIGlzIGJ5
-IGRlc2lnbiwgaG93IGFtIEkgc3VwcG9zZWQgdG8gdXNlIG1vZHVsZXMgbGlrZSBjb25ubGltaXQg
-DQp3aXRoIERST1AgcG9saWN5Lg0KDQpUaGFua3MgZm9yIGFueSBoZWxwIQ0KLS0NClRvIHVuc3Vi
-c2NyaWJlIGZyb20gdGhpcyBsaXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmliZSBuZXRmaWx0
-ZXIiIGluDQp0aGUgYm9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVsLm9y
-Zw0KTW9yZSBtYWpvcmRvbW8gaW5mbyBhdCAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpvcmRv
-bW8taW5mby5odG1sDQo=
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+Hello,
+
+Additionally, you will never be able to communicate this host, because
+the policy in OUTPUT is DROP:
+
+"iptables -P OUTPUT DROP"
+
+Please read these docs on iptables rules and design to fix your setup:
+http://inai.de/links/iptables/
+https://github.com/QueuingKoala/netfilter-samples
+http://sfvlug.editthis.info/wiki/Things_You_Should_Know_About_Netfilter
+http://inai.de/images/nf-packet-flow.png
+
+You do a lot of things wrong in your rule set. Please find out what the=
+se
+are and fix them yourself using the documents I referenced.
+
+Mit freundlichen Gr=C3=BC=C3=9Fen/Kind Regards,
+Noel Kuntze
+
+GPG Key ID: 0x63EC6658
+=46ingerprint: 23CA BB60 2146 05E7 7278 6592 3839 298F 63EC 6658
+
+Am 19.03.2015 um 12:25 schrieb Andr=C3=A9 Paulsberg-Csibi:
+> I know you already have your answer (from Neal Murphy) , but I feel I=
+ need to mention that your RULE makes no sense in a pratical manner !
+>
+> Now your rules are not working because the order is incorrect for you=
+r *plans* ,
+> but this even if you change the order , your setup makes less sense t=
+han do things the "normal" way .
+>
+> To make the current set work you would not only have to change the or=
+der ,
+> But making new openings would require you to change one single rule w=
+ith removing some ports from your DROP rule .
+>
+> iptables -A INPUT -p tcp ! -i lo -m multiport --dports 0:79,81:65535 =
+-m state --state NEW -j DROP
+> iptables -A INPUT -p tcp -j ACCEPT
+> iptables -A INPUT -p udp -j ACCEPT
+>
+> next time you would make a more complex multiport rule ...
+>
+> iptables -A INPUT -p tcp ! -i lo -m multiport --dports 0:21,23:79,81:=
+65535 -m state --state NEW -j DROP
+> iptables -A INPUT -p tcp -j ACCEPT
+> iptables -A INPUT -p udp -j ACCEPT
+>
+> next time you would make a even more complex multiport rule ...
+>
+> iptables -A INPUT -p tcp ! -i lo -m multiport --dports 0:21,23:79,81:=
+442,444:65535 -m state --state NEW -j DROP
+> iptables -A INPUT -p tcp -j ACCEPT
+> iptables -A INPUT -p udp -j ACCEPT
+>
+> This makes very little sense when you can just make ONE accept for al=
+l , and drop the rest !
+>
+> iptables -A INPUT -p tcp -i lo -m multiport --dports 22,80,443 -j ACC=
+EPT
+> iptables -A INPUT -j DROP
+>
+> I will mention I also removed your "iptables -A INPUT -p udp -j ACCEP=
+T" ,
+> and I would have replaced that with one that gives the ports you want=
+ opened before the DROP rule .
+>
+>
+> Kind Regards Andr=C3=A9
+>
+>
+> -----Original Message-----
+> From: netfilter-owner@vger.kernel.org [mailto:netfilter-owner@vger.ke=
+rnel.org] On Behalf Of dE
+> Sent: 19. mars 2015 06:52
+> To: netfilter@vger.kernel.org
+> Subject: DROP policy, serious vulnerability?
+>
+> Hi!
+>
+> I'm using the drop policy for iptables using the following --
+>
+> iptables -P INPUT DROP
+> iptables -P OUTPUT DROP
+> iptables -P FORWARD DROP
+> iptables -A INPUT -p tcp -j ACCEPT
+> iptables -A INPUT -p udp -j ACCEPT
+> iptables -A INPUT -p tcp ! -i lo -m multiport --dports 0:79,81:65535 =
+-m
+> state --state NEW -j DROP
+> Unfortunately, in this configuration, none of the ports get blocks.
+>
+> This implies that after an ACCEPT, further rules are not matched. Is
+> this a bug or intended by design?
+>
+> If this is by design, how am I supposed to use modules like connlimit
+> with DROP policy.
+>
+> Thanks for any help!
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
+> N=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BDr=EF=BF=BD=EF=BF=BDy=EF=
+=BF=BD=EF=BF=BD=EF=BF=BDb=EF=BF=BDX=EF=BF=BD=EF=BF=BD=C7=A7v=EF=BF=BD^=EF=
+=BF=BD)=DE=BA{.n=EF=BF=BD+=EF=BF=BD=EF=BF=BD=EF=BF=BDz=EF=BF=BD=EF=BF=BD=
+=D7=AB=EF=BF=BD{ay=EF=BF=BD=1D=CA=87=DA=99=EF=BF=BD,j=07=EF=BF=BD=EF=BF=
+=BDf=EF=BF=BD=EF=BF=BD=EF=BF=BDh=EF=BF=BD=EF=BF=BD=EF=BF=BDz=EF=BF=BD=1E=
+=EF=BF=BDw=EF=BF=BD=EF=BF=BD=EF=BF=BD=0C=EF=BF=BD=EF=BF=BD=EF=BF=BDj:+v=
+=EF=BF=BD=EF=BF=BD=EF=BF=BDw=EF=BF=BDj=EF=BF=BDm=EF=BF=BD=EF=BF=BD=EF=BF=
+=BD=EF=BF=BD=07=EF=BF=BD=EF=BF=BD=EF=BF=BD=EF=BF=BDzZ+=EF=BF=BD=EF=BF=BD=
+=EF=BF=BD=EF=BF=BD=EF=BF=BD=DD=A2j"=EF=BF=BD=EF=BF=BD!tml=3D
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iQIcBAEBCAAGBQJVCrRSAAoJEDg5KY9j7GZYgnQP/jaMJbcnPRpROwVk5s49ozPc
+0urtcfmNkMLvAS1wwWm67P4r0SEkU8nN6+6Zr/2Lr5M+TjVsqfleIjdxi/eK2Ph6
+oz9AX+b/PMwEBbNDOTB5zQ1NzOSAF6ChmTfFmVQiAWKRl/wjxLBP5YjKp7cSEV6H
+EOXlFeY7SETxcw/OuOgGD1FsJ0W4z3DcvYTpns5waVXVfon/t+3S6FfGIaFxONuo
+RBiJiEAtqRnUD4jpEnnOraUQ4U/lXXSfzchwASVwe1+BMdPozCJVGMFaofOtMxjA
+GPHkr2TDBrLNt0VpC6HQCNNXKBVuktEgZ7oAQVXjwBev1GtZm32DsEPuGDXsvsSJ
+q1/Yb9uq1hNoqiJmaT0Pa/BTaWSJMTYXucwL1qTKbbid6SuIrd5fWcgE2DLm7Igw
+8Z4V7XXuzetdqhyo3znv/qp0pzt46vQRfcvsBr0l1LLRQhAg++Obm9CFKHIWnh1U
+O4B754e4Lx2LhpMdOrsjVrA04dHq7IK7CDxtahRUcn8Ml66fhCWAR8D9rWNjoKBp
+NJ2f/3W+ohYD/Jj0e+CG2hA80gy7vfuUs+nvxOWSznCK103yA8zuyTCnmgCu3xK3
+bdYHf6qkLQq8R/YVrUkAgb7GOxYwjitlVJSvbEhxtDxh8LFHfXm2jdSyXgMdnkNL
+G/yeZ+p0nFF8GtLwCjUE
+=3DjHen
+-----END PGP SIGNATURE-----
+
