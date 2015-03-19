@@ -1,69 +1,63 @@
-From: dE <de.techno@gmail.com>
-Subject: Re: DROP policy, serious vulnerability?
-Date: Thu, 19 Mar 2015 12:51:13 +0530
-Message-ID: <550A78E9.8040708@gmail.com>
-References: <550A63F0.2030400@gmail.com> <201503190243.44018.neal.p.murphy@alum.wpi.edu>
+From: =?utf-8?B?QW5kcsOpIFBhdWxzYmVyZy1Dc2liaQ==?= 
+	<Andre.Paulsberg-Csibi@evry.com>
+Subject: RE: DROP policy, serious vulnerability?
+Date: Thu, 19 Mar 2015 11:25:42 +0000
+Message-ID: <838AB161BE491743AE3CA3A916CF1CC648BB45AF@CCDEX015.corp.corpcommon.com>
+References: <550A63F0.2030400@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=message-id:date:from:user-agent:mime-version:to:subject:references
-         :in-reply-to:content-type:content-transfer-encoding;
-        bh=6d68GIrKS4Rv5bfIHk4eYuKpDgYRLNG1xabSLW4mn2Q=;
-        b=B/hiwaIyS8z8Ir1qdkbDKA02dzgLNhLJMfeltb1iz3ePODW6im7OtSzYX5I8DCJMu9
-         orf6dHkEpKc4FBt+HH4qUFduNDJrlAQS0SRKtENv8FFCUrKT1r2yHYrapDCQybtrSdKa
-         E3X67c3wOXQzmD/0fLzKOhSZ9kR/tI+Zast54873qoAwO08mJ4EZLdntcf/plmlT/whp
-         md0I5s/uurCRzkJsoBm98olKck+WmAIB8pn/rNZYDPg8Cp+AgsDngCiEvaxkZxb+wTwS
-         ys5Wqr9mVQg/Q9JJVkVjMU4wPvjRBvR7X7HDCH3VTmaMbDD/CbeiSbgyllEI8VM8r/Nr
-         wbgA==
-In-Reply-To: <201503190243.44018.neal.p.murphy@alum.wpi.edu>
+In-Reply-To: <550A63F0.2030400@gmail.com>
+Content-Language: en-US
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="macroman"
+To: dE <de.techno@gmail.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 03/19/15 12:13, Neal Murphy wrote:
-> On Thursday, March 19, 2015 01:51:44 AM dE wrote:
->> Hi!
->>
->> I'm using the drop policy for iptables using the following --
->>
->> iptables -P INPUT DROP
->> iptables -P OUTPUT DROP
->> iptables -P FORWARD DROP
->> iptables -A INPUT -p tcp -j ACCEPT
->> iptables -A INPUT -p udp -j ACCEPT
->> iptables -A INPUT -p tcp ! -i lo -m multiport --dports 0:79,81:65535 -m
->> state --state NEW -j DROP
->>
->> Unfortunately, in this configuration, none of the ports get blocks.
->>
->> This implies that after an ACCEPT, further rules are not matched. Is
->> this a bug or intended by design?
->>
->> If this is by design, how am I supposed to use modules like connlimit
->> with DROP policy.
-> By design. Once a packet is accepted, no more rules are processed. To do
-> otherwise would be akin to continuing to execute a program after an exit()
-> statement.
->
-> In a mathmetical sense, netfilter rules are not commutative. Nor are they
-> sorted into a most-specific to most-general order.
->
-> Rules are processed in the order in which they are added. Because you added a
-> rule that ACCEPTS all TCP packets before the rule that REJECTs certain TCP
-> packets, the prior rule always fires on TCP packets and the latter rule never
-> fires.
->
-> If you want to affect specific packets, you must add such rules before you add
-> the broader-reaching rules. Or you must insert such rules ahead of the broader
-> rules.
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
-Ok, thanks everyone for the quick response!
-
-Hope this help others too.
+SSBrbm93IHlvdSBhbHJlYWR5IGhhdmUgeW91ciBhbnN3ZXIgKGZyb20gTmVhbCBNdXJwaHkpICwg
+YnV0IEkgZmVlbCBJIG5lZWQgdG8gbWVudGlvbiB0aGF0IHlvdXIgUlVMRSBtYWtlcyBubyBzZW5z
+ZSBpbiBhIHByYXRpY2FsIG1hbm5lciAhDQoNCk5vdyB5b3VyIHJ1bGVzIGFyZSBub3Qgd29ya2lu
+ZyBiZWNhdXNlIHRoZSBvcmRlciBpcyBpbmNvcnJlY3QgZm9yIHlvdXIgKnBsYW5zKiAsDQpidXQg
+dGhpcyBldmVuIGlmIHlvdSBjaGFuZ2UgdGhlIG9yZGVyICwgeW91ciBzZXR1cCBtYWtlcyBsZXNz
+IHNlbnNlIHRoYW4gZG8gdGhpbmdzIHRoZSAibm9ybWFsIiB3YXkgLg0KDQpUbyBtYWtlIHRoZSBj
+dXJyZW50IHNldCB3b3JrIHlvdSB3b3VsZCBub3Qgb25seSBoYXZlIHRvIGNoYW5nZSB0aGUgb3Jk
+ZXIgLA0KQnV0IG1ha2luZyBuZXcgb3BlbmluZ3Mgd291bGQgcmVxdWlyZSB5b3UgdG8gY2hhbmdl
+IG9uZSBzaW5nbGUgcnVsZSB3aXRoIHJlbW92aW5nIHNvbWUgcG9ydHMgZnJvbSB5b3VyIERST1Ag
+cnVsZSAuDQoNCmlwdGFibGVzIC1BIElOUFVUIC1wIHRjcCAhIC1pIGxvIC1tIG11bHRpcG9ydCAt
+LWRwb3J0cyAwOjc5LDgxOjY1NTM1IC1tIHN0YXRlIC0tc3RhdGUgTkVXIC1qIERST1ANCmlwdGFi
+bGVzIC1BIElOUFVUIC1wIHRjcCAtaiBBQ0NFUFQNCmlwdGFibGVzIC1BIElOUFVUIC1wIHVkcCAt
+aiBBQ0NFUFQNCg0KbmV4dCB0aW1lIHlvdSB3b3VsZCBtYWtlIGEgbW9yZSBjb21wbGV4IG11bHRp
+cG9ydCBydWxlIC4uLg0KDQppcHRhYmxlcyAtQSBJTlBVVCAtcCB0Y3AgISAtaSBsbyAtbSBtdWx0
+aXBvcnQgLS1kcG9ydHMgMDoyMSwyMzo3OSw4MTo2NTUzNSAtbSBzdGF0ZSAtLXN0YXRlIE5FVyAt
+aiBEUk9QDQppcHRhYmxlcyAtQSBJTlBVVCAtcCB0Y3AgLWogQUNDRVBUDQppcHRhYmxlcyAtQSBJ
+TlBVVCAtcCB1ZHAgLWogQUNDRVBUDQoNCm5leHQgdGltZSB5b3Ugd291bGQgbWFrZSBhIGV2ZW4g
+bW9yZSBjb21wbGV4IG11bHRpcG9ydCBydWxlIC4uLg0KDQppcHRhYmxlcyAtQSBJTlBVVCAtcCB0
+Y3AgISAtaSBsbyAtbSBtdWx0aXBvcnQgLS1kcG9ydHMgMDoyMSwyMzo3OSw4MTo0NDIsNDQ0OjY1
+NTM1IC1tIHN0YXRlIC0tc3RhdGUgTkVXIC1qIERST1ANCmlwdGFibGVzIC1BIElOUFVUIC1wIHRj
+cCAtaiBBQ0NFUFQNCmlwdGFibGVzIC1BIElOUFVUIC1wIHVkcCAtaiBBQ0NFUFQNCg0KVGhpcyBt
+YWtlcyB2ZXJ5IGxpdHRsZSBzZW5zZSB3aGVuIHlvdSBjYW4ganVzdCBtYWtlIE9ORSBhY2NlcHQg
+Zm9yIGFsbCAsIGFuZCBkcm9wIHRoZSByZXN0ICENCg0KaXB0YWJsZXMgLUEgSU5QVVQgLXAgdGNw
+IC1pIGxvIC1tIG11bHRpcG9ydCAtLWRwb3J0cyAyMiw4MCw0NDMgLWogQUNDRVBUDQppcHRhYmxl
+cyAtQSBJTlBVVCAtaiBEUk9QDQoNCkkgd2lsbCBtZW50aW9uIEkgYWxzbyByZW1vdmVkIHlvdXIg
+ImlwdGFibGVzIC1BIElOUFVUIC1wIHVkcCAtaiBBQ0NFUFQiICwNCmFuZCBJIHdvdWxkIGhhdmUg
+cmVwbGFjZWQgdGhhdCB3aXRoIG9uZSB0aGF0IGdpdmVzIHRoZSBwb3J0cyB5b3Ugd2FudCBvcGVu
+ZWQgYmVmb3JlIHRoZSBEUk9QIHJ1bGUgLg0KDQoNCktpbmQgUmVnYXJkcyBBbmRyw6kNCg0KDQot
+LS0tLU9yaWdpbmFsIE1lc3NhZ2UtLS0tLQ0KRnJvbTogbmV0ZmlsdGVyLW93bmVyQHZnZXIua2Vy
+bmVsLm9yZyBbbWFpbHRvOm5ldGZpbHRlci1vd25lckB2Z2VyLmtlcm5lbC5vcmddIE9uIEJlaGFs
+ZiBPZiBkRQ0KU2VudDogMTkuIG1hcnMgMjAxNSAwNjo1Mg0KVG86IG5ldGZpbHRlckB2Z2VyLmtl
+cm5lbC5vcmcNClN1YmplY3Q6IERST1AgcG9saWN5LCBzZXJpb3VzIHZ1bG5lcmFiaWxpdHk/DQoN
+CkhpIQ0KDQpJJ20gdXNpbmcgdGhlIGRyb3AgcG9saWN5IGZvciBpcHRhYmxlcyB1c2luZyB0aGUg
+Zm9sbG93aW5nIC0tDQoNCmlwdGFibGVzIC1QIElOUFVUIERST1ANCmlwdGFibGVzIC1QIE9VVFBV
+VCBEUk9QDQppcHRhYmxlcyAtUCBGT1JXQVJEIERST1ANCmlwdGFibGVzIC1BIElOUFVUIC1wIHRj
+cCAtaiBBQ0NFUFQNCmlwdGFibGVzIC1BIElOUFVUIC1wIHVkcCAtaiBBQ0NFUFQNCmlwdGFibGVz
+IC1BIElOUFVUIC1wIHRjcCAhIC1pIGxvIC1tIG11bHRpcG9ydCAtLWRwb3J0cyAwOjc5LDgxOjY1
+NTM1IC1tIA0Kc3RhdGUgLS1zdGF0ZSBORVcgLWogRFJPUA0KVW5mb3J0dW5hdGVseSwgaW4gdGhp
+cyBjb25maWd1cmF0aW9uLCBub25lIG9mIHRoZSBwb3J0cyBnZXQgYmxvY2tzLg0KDQpUaGlzIGlt
+cGxpZXMgdGhhdCBhZnRlciBhbiBBQ0NFUFQsIGZ1cnRoZXIgcnVsZXMgYXJlIG5vdCBtYXRjaGVk
+LiBJcyANCnRoaXMgYSBidWcgb3IgaW50ZW5kZWQgYnkgZGVzaWduPw0KDQpJZiB0aGlzIGlzIGJ5
+IGRlc2lnbiwgaG93IGFtIEkgc3VwcG9zZWQgdG8gdXNlIG1vZHVsZXMgbGlrZSBjb25ubGltaXQg
+DQp3aXRoIERST1AgcG9saWN5Lg0KDQpUaGFua3MgZm9yIGFueSBoZWxwIQ0KLS0NClRvIHVuc3Vi
+c2NyaWJlIGZyb20gdGhpcyBsaXN0OiBzZW5kIHRoZSBsaW5lICJ1bnN1YnNjcmliZSBuZXRmaWx0
+ZXIiIGluDQp0aGUgYm9keSBvZiBhIG1lc3NhZ2UgdG8gbWFqb3Jkb21vQHZnZXIua2VybmVsLm9y
+Zw0KTW9yZSBtYWpvcmRvbW8gaW5mbyBhdCAgaHR0cDovL3ZnZXIua2VybmVsLm9yZy9tYWpvcmRv
+bW8taW5mby5odG1sDQo=
