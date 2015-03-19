@@ -1,44 +1,51 @@
-From: dE <de.techno@gmail.com>
-Subject: DROP policy, serious vulnerability?
-Date: Thu, 19 Mar 2015 11:21:44 +0530
-Message-ID: <550A63F0.2030400@gmail.com>
+From: Neal Murphy <neal.p.murphy@alum.wpi.edu>
+Subject: Re: DROP policy, serious vulnerability?
+Date: Thu, 19 Mar 2015 02:43:43 -0400
+Message-ID: <201503190243.44018.neal.p.murphy@alum.wpi.edu>
+References: <550A63F0.2030400@gmail.com>
+Reply-To: neal.p.murphy@alum.wpi.edu
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=message-id:date:from:user-agent:mime-version:to:subject
-         :content-type:content-transfer-encoding;
-        bh=7F0DJ686cR96cH8RBxZDiJq8cZK5Un54U/Ombz6qv44=;
-        b=v7vKGx+Z5rydRKSDq+Qvmmry0kUtC9ae9JpoL6MHqq47iCmS6SBcJJ8MIOWqW/icTs
-         rVYEK4KQsXj9W3QL34oISkxi5uLDFwft97mCYd8JSPlWq/UQHvhHv0aIbhlHSRH3XVml
-         rq1oEehAK8iAxI6zNMD06pBUpQtsY6zEvIhMN822hBa3aellGjCvdfynHXU1JeN0w0uL
-         RtJL0QpAc7/XYRKQtOgSGZCH84ZgPt2jMmkdQ9v36vMcPWTu2TD2EBCqHGsoTla7vwQk
-         UY3kblwOASQyzVCbczz5q9tYMRZUuvpBqruHHW/0KG3PI8fu6SFQZE1k9dPdhxNF/7Xo
-         A3aQ==
+In-Reply-To: <550A63F0.2030400@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: Text/Plain; charset="us-ascii"
 To: netfilter@vger.kernel.org
 
-Hi!
+On Thursday, March 19, 2015 01:51:44 AM dE wrote:
+> Hi!
+> 
+> I'm using the drop policy for iptables using the following --
+> 
+> iptables -P INPUT DROP
+> iptables -P OUTPUT DROP
+> iptables -P FORWARD DROP
+> iptables -A INPUT -p tcp -j ACCEPT
+> iptables -A INPUT -p udp -j ACCEPT
+> iptables -A INPUT -p tcp ! -i lo -m multiport --dports 0:79,81:65535 -m
+> state --state NEW -j DROP
+> 
+> Unfortunately, in this configuration, none of the ports get blocks.
+> 
+> This implies that after an ACCEPT, further rules are not matched. Is
+> this a bug or intended by design?
+> 
+> If this is by design, how am I supposed to use modules like connlimit
+> with DROP policy.
 
-I'm using the drop policy for iptables using the following --
+By design. Once a packet is accepted, no more rules are processed. To do 
+otherwise would be akin to continuing to execute a program after an exit() 
+statement.
 
-iptables -P INPUT DROP
-iptables -P OUTPUT DROP
-iptables -P FORWARD DROP
-iptables -A INPUT -p tcp -j ACCEPT
-iptables -A INPUT -p udp -j ACCEPT
-iptables -A INPUT -p tcp ! -i lo -m multiport --dports 0:79,81:65535 -m 
-state --state NEW -j DROP
+In a mathmetical sense, netfilter rules are not commutative. Nor are they 
+sorted into a most-specific to most-general order.
 
-Unfortunately, in this configuration, none of the ports get blocks.
+Rules are processed in the order in which they are added. Because you added a 
+rule that ACCEPTS all TCP packets before the rule that REJECTs certain TCP 
+packets, the prior rule always fires on TCP packets and the latter rule never 
+fires.
 
-This implies that after an ACCEPT, further rules are not matched. Is 
-this a bug or intended by design?
-
-If this is by design, how am I supposed to use modules like connlimit 
-with DROP policy.
-
-Thanks for any help!
+If you want to affect specific packets, you must add such rules before you add 
+the broader-reaching rules. Or you must insert such rules ahead of the broader 
+rules.
