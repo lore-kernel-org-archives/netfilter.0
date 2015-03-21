@@ -1,42 +1,53 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: 11th Netfilter Workshop coming up soon
-Date: Sat, 21 Mar 2015 20:40:18 +0100
-Message-ID: <20150321194018.GA13667@salvia>
+From: Laurent Bercot <ska-devel@skarnet.org>
+Subject: Re: nftables: nft fails to add rules to chains
+Date: Sat, 21 Mar 2015 21:16:17 +0100
+Message-ID: <550DD191.6060105@skarnet.org>
+References: <550B3069.7080209@skarnet.org>
 Mime-Version: 1.0
-Return-path: <netfilter-devel-owner@vger.kernel.org>
-Content-Disposition: inline
-Sender: netfilter-devel-owner@vger.kernel.org
-List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org, netfilter-devel@vger.kernel.org, lvs-devel@vger.kernel.org
+Return-path: <netfilter-owner@vger.kernel.org>
+In-Reply-To: <550B3069.7080209@skarnet.org>
+Sender: netfilter-owner@vger.kernel.org
+List-ID: <netfilter.vger.kernel.org>
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-Hi!
 
-We're already working on the next edition in the Netfilter workshop
-series. This year this event will take place in Budapest, Hungary,
-from 22th to 26th June, 2015 [1].
+  Bumping, since it looks like there are people from the project
+reading this list at this time.
 
-Attendance is free but it requires an invitation, and we have very
-limited number of invitations this year! You may consider attending if
-you are involved in any aspect of the Linux networking development,
-and more specifically the development of Netfilter and the Linux
-Virtual Server (IPVS) projects.
+  Any idea on what is happening and how to solve it ? This is
+preventing me from using nftables in my project. On the other
+hand, if nftables, which is supposed to be the shiny new thing,
+is still considered alpha and not to be used yet in real life,
+it would be nice to know it ASAP.
 
-If you want to apply for attendance, please, send us an email to
-coreteam@netfilter.org before 31th March (strict deadline) including a
-Netfilter topic/proposal you would like to present to the developer
-community. Your proposal must include a title, short abstract (500
-words maximum) and estimated time to present it.
+  Thanks.
 
-We also welcome presentations on Netfilter-related third party
-software (using our framework and libraries) as long as they are
-released under a FOSS license.
+On 19/03/2015 21:24, Laurent Bercot wrote:
+>
+>   Hello,
+>
+>   (Platform: Intel Atom (x86_64), Linux 3.19.1, musl 1.1.7,
+> latest nftables/libnftnl/libmnl from git. All iptables modules
+> out of the kernel, all necessary nftables modules in.)
+>
+>   I can flush tables, create tables and create chains with nft
+> without trouble; however, every time I try and add a rule to
+> a chain, no matter what chain, no matter in what table, I get
+> the following error:
+>
+>   netlink.c:182: Memory allocation failure
+>
+>   I dug a bit and found that the error always happens when
+> alloc_nft_expr() is called for the *first* time (which is also
+> the last, since nft exits at that point...) and it is always
+> called with the argument "payload".
+>
+>   What is happening ? Anything I could do to help fix it ?
+>   Thanks,
+>
 
-We are looking for sponsors too, if you think you can help us to get
-funds to run the workshop, please, contact me and I'll be glad to send
-you our sponsorship policy.
+-- 
+  Laurent
 
-Regards.
-
-[1] http://workshop.netfilter.org/2015/
