@@ -1,53 +1,41 @@
-From: Laurent Bercot <ska-devel@skarnet.org>
-Subject: Re: nftables: nft fails to add rules to chains
-Date: Sat, 21 Mar 2015 21:16:17 +0100
-Message-ID: <550DD191.6060105@skarnet.org>
-References: <550B3069.7080209@skarnet.org>
+From: Albert K <alberk@gmail.com>
+Subject: Status of Nftables.
+Date: Sun, 22 Mar 2015 12:01:48 +0800
+Message-ID: <CACjDgAN14zE8KRh06i4uh1G98fLhE4z+s+Q0Gm5eMZjeHNwdnQ@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <550B3069.7080209@skarnet.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=EI7iVJjk/RTbjod4oz0SmARtzhmECRAuTAM5UIpfxHo=;
+        b=d6/JvblaN2XQB2uqxfnzJ55UoXs4cQ4HXZXt5hEg93N35hKvfiOg4DuEZuh7zXYkO2
+         UcPCZQQdV9LrhoDsKxVZfRlkVfQIQhNvaW28cqVBs/iLhe8W6kjnAebEoMzxOAbE5d6S
+         KuX7oVT30FeYlzk/3fLqj55dL9AGLT6Iz2RDxo8cqqM0uMa6iO20aIL1mSQzluMqds+N
+         sxbxohNgxY4eCjzxn3DRKqwQb3O+hxX/2C4beRp0NA1VdQCV6zj/CXyt1rAUXCa2tGKr
+         /LNb6KYn/KU4DSIbQgeAs7Eb1/LPbBV4N73TpUtWbwb3d7aixM/CfdB8m6x9u8QoWRLc
+         0QoA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
+Hi,
 
-  Bumping, since it looks like there are people from the project
-reading this list at this time.
+I have been kicking the tires of nftables and love the structured way
+to implement filter/rules and have the following questions?
 
-  Any idea on what is happening and how to solve it ? This is
-preventing me from using nftables in my project. On the other
-hand, if nftables, which is supposed to be the shiny new thing,
-is still considered alpha and not to be used yet in real life,
-it would be nice to know it ASAP.
+1) When is the (xt_classify.c and xt_physdev.c) from iptables
+extensions going to be implement in nft?  I want to use it to classify
+traffic in conjunction with HTB qdisc in a transparent bridge setting.
 
-  Thanks.
+ 2) Is the a schedule anywhere to indicate the approximate time for
+all iptables extensions to be ported over?  I guess some will be
+dropped or merged and it would be good to know in advance.
 
-On 19/03/2015 21:24, Laurent Bercot wrote:
->
->   Hello,
->
->   (Platform: Intel Atom (x86_64), Linux 3.19.1, musl 1.1.7,
-> latest nftables/libnftnl/libmnl from git. All iptables modules
-> out of the kernel, all necessary nftables modules in.)
->
->   I can flush tables, create tables and create chains with nft
-> without trouble; however, every time I try and add a rule to
-> a chain, no matter what chain, no matter in what table, I get
-> the following error:
->
->   netlink.c:182: Memory allocation failure
->
->   I dug a bit and found that the error always happens when
-> alloc_nft_expr() is called for the *first* time (which is also
-> the last, since nft exits at that point...) and it is always
-> called with the argument "payload".
->
->   What is happening ? Anything I could do to help fix it ?
->   Thanks,
->
+3) When would be nftables be good enough to be in production.
 
--- 
-  Laurent
+Thank you.
 
+Regards,
+Albert.
