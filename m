@@ -1,25 +1,31 @@
-From: Laurent Bercot <ska-devel@skarnet.org>
-Subject: Re: nftables feature request: don't fail "flush" on nonexistent tables
-Date: Tue, 24 Mar 2015 11:06:46 +0100
-Message-ID: <55113736.6060508@skarnet.org>
-References: <550B3069.7080209@skarnet.org> <20150322183106.GA4150@salvia> <550F0DBE.7000905@skarnet.org> <20150322190033.GA7145@salvia> <550F1155.5000501@skarnet.org> <20150323114515.GA5552@salvia> <551015F2.7060801@skarnet.org> <CAOkSjBgWSF1Nj6WD+cp8_w+=ESd-6m74_Ev=7dB5PNeonyXhEg@mail.gmail.com>
+From: "Spenst, Aleksej" <Aleksej.Spenst@harman.com>
+Subject: Why SYN-ACK packets are dropped as INVALID?
+Date: Thu, 26 Mar 2015 08:41:21 +0000
+Message-ID: <CBA35483CE5B4D4B804BF128A77A61651B66E56B@HIKAWSEXMB02.ad.harman.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAOkSjBgWSF1Nj6WD+cp8_w+=ESd-6m74_Ev=7dB5PNeonyXhEg@mail.gmail.com>
+Content-Language: de-DE
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Arturo Borrero Gonzalez <arturo.borrero.glez@gmail.com>
-Cc: Pablo Neira Ayuso <pablo@netfilter.org>, Netfilter Users Mailing list <netfilter@vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 23/03/2015 20:42, Arturo Borrero Gonzalez wrote:
-> perhaps `flush ruleset'.
->
-> That doesn't fail if there is no ruleset.
-
-  It's exactly what I was looking for, thanks.
-
--- 
-  Laurent
-
+SGkgQWxsLA0KDQpJ4oCZbSBzZW5kaW5nIFRDUCBTWU4gcGFja2V0cyB0byB0aGUgc2VydmVyLiBU
+aGUgcHJvYmxlbSBpcyB0aGF0IHRoZSBTWU4tQUNLIHBhY2tldHMgY29taW5nIGZyb20gdGhlIHNl
+cnZlciBpbiByZXNwb25zZSBhcmUgc29tZXRpbWVzIGRyb3BwZWQgYnkgbXkgZmlyZXdhbGwgKGlw
+dGFibGVzKSBhcyBJTlZBTElELiBJIGNhbuKAmXQgZmlndXJlIG91dCB3aHkgdGhlIGZpcmV3YWxs
+IHNlZXMgdGhlc2UgcGFja2V0cyBpbnZhbGlkLiBUaGV5IHNlZW0gdG8gYmUgT2suIFdoYXQgcGFy
+YW1ldGVycyBhcmUgdGFrZW4gaW50byBhY2NvdW50IGJ5IHRoZSBmaXJld2FsbCB3aGVuIG1ha2lu
+ZyBhIGRlY2lzaW9uIGFib3V0IGludmFsaWRpdHkgb2YgYSBwYWNrZXQ/DQoNCkV4YW1wbGUgZnJv
+bSB0Y3BkdW1wOg0KDQoxOToyOToyMi4wNDUxMDbCoCA8bXkgSVA+wqDCoMKgwqDCoCA8U2VydmVy
+IElQPsKgIFRDUMKgIDYwNzEw4oaSODA4MCBbU1lOXSBTZXE9MjY0NjE5NDkzNiBXaW49MTQ2MDAg
+TGVuPTAgTVNTPTE0NjAgU0FDS19QRVJNPTEgVFN2YWw9MTM1NjkyMCBUU2Vjcj0wIFdTPTE2DQox
+OToyOToyMi44MTc4NTnCoCA8U2VydmVyIElQPsKgIDxteSBJUD7CoMKgwqDCoMKgIFRDUMKgIDgw
+ODDihpI2MDcxMCBbU1lOLCBBQ0tdIFNlcT0zOTIwODU2MjMzIEFjaz0yNjQ2MTk0OTM3IFdpbj02
+NTUzNSBMZW49MCBNU1M9MTIwMCBTQUNLX1BFUk09MQ0KDQpUaGUgQUNLIHNlcXVlbmNlIG51bWJl
+ciAoQWNrPTI2NDYxOTQ5MzcpIGlzIE9LLCBidXQgSSBzZWUgaW4gbXkgaXB0YWJsZXMgbG9ncyB0
+aGF0IHRoaXMgU1lOLUFDSyBwYWNrZXQgaXMgbWFya2VkIGFzIElOVkFMSUQgYW5kIGRyb3BwZWQu
+IA0KV2hlbiB0aGUgU1lOLUFDSyBwYWNrZXQgY29tZXMgdGhlIFRDUCBzZXNzaW9uIGlzIGluIHRo
+ZSBzdGF0ZSBTWU5fU0VOVCAtPiBTbywgdGhlIHN0YXRlcyBhcmUgYWxzbyBPSy4gV2h5IGlzIHRo
+aXMgcGFja2V0IGludmFsaWQgdGhlbj8NCg0KVGhhbmsgeW91IQ0KQWxla3Nlai4NCg0KDQoNCg==
