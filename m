@@ -1,41 +1,53 @@
-From: Tomofumi Hayashi <s1061123@gmail.com>
-Subject: [Call for testing!] miniupnpd with nftables!
-Date: Tue, 31 Mar 2015 17:50:38 +0900
-Message-ID: <CAOUi3w+J1t+6N7RiOKw36EYxbLiKw23pNBx_SFaf+_YaNx5KBg@mail.gmail.com>
+From: Matt Killock <lists@killock.net>
+Subject: Routing traffic over two gateways by fwmark
+Date: Tue, 31 Mar 2015 23:52:06 +0100
+Message-ID: <b2ca7b1036797bf4b84622f88540585d@killock.net>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=aj/vfqEOhtTWqTG6G0MXWSSgDruN0jZgarh45uZaPwg=;
-        b=JsQUEHMGE1hbTIhbuM3iEyPD26s9pzZdvuFvv1L1VkWqIscFEJ57xqGJWg2J8/j9DP
-         MHmlG3e6Dko7e7hnDnrIm0CoJnaiC7rdtNLmlIKKmC4/N+PCNI861PAquqdSipc1Ondg
-         YF7PWWFerdus4tc4LfexHEskKn02tnhC9TlKjSVDhQYtawnTslBLsgsZke5NZ3Tbg9Du
-         l+o6d9MUc9d9lM7mr3KY7DiRKdXXHF4xQyek4PM2i/8RlYYcD3H9+DGlEoFGc7XKC8eQ
-         s2ryh2gASQtttIBDZS0VuG77UxED/3k5ED0c6vyZ8dpoLh/T5HacFhLEPWrfdwECKlDv
-         KInw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=killock.net; s=mail;
+	t=1427842326; bh=5tJDBO0R266eMjHJso3nXk3sDCGsNVjmZBnN5ZHR9lY=;
+	h=To:Subject:Date:From:From;
+	b=lnHoGAH10d3ryoYMPJHEJ7Kpq/6Y55ZkWoKO5xY+QKPoxIt0b1zbZ1XS/OSdFLjRH
+	 wyNg3xGbMBTyu8FUpR/nwRrd4x4OEfWJ2cfgmduczylK18eug+BVrJ00mFUMVpu2U1
+	 +zXwWnTeeipnFm0lr46e8PjS4Ic7N+iN9QlCO9vU=
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi folks,
+Hello,
 
-I am interested in nftables and currently working miniupnpd to support
-nftables in following github.
-https://github.com/s1061123/miniupnp
+I am having trouble re-using scripts that worked in kernel 2.6.24 with a 
+more recent 3.16.0 series kernel. The essence of what I am trying to do 
+is this:
 
-Currently simple functions (SNAT/port forwarding) are ready so I decide
-to start to call for testing.
+iptables mark all packets arriving from anywhere on interface 1 with 
+'10'
+iptables mark all packets arriving from anywhere on interface 2 with 
+'20'
 
-Here is the wiki which contains generic info, including "how to build".
-https://github.com/s1061123/miniupnp/wiki/miniupnp-nftables-support
+iptables DNAT incoming traffic on interface 1 on port 1111 to internal 
+server via interface 3
+iptables DNAT incoming traffic on interface 2 on port 1111 to internal 
+server via interface 3
 
-I appreciate if you are interested in miniupnpd as well as nftables
-and you start to test it!
-Comments, fixes, and some testing reports are very welcome.
+ip rule from all fwmark 10 table T1
+ip rule from all fwmark 20 table T2
 
+default gateway in table T1 is through interface 1
+default gateway in table T2 is through interface 2
 
-Cheers,
-Tomofumi
+With the view to make everything that arrives on a particular interface 
+leave via that interface. The above approach worked fine in kernel 2.6 
+but does not seem to work any more. With no default gateway in the main 
+routing table, the packets arrive on the external interfaces but do not 
+appear on the LAN interface, almost as if DNAT is having no effect at 
+all. One of the two DNAT rules works if I add a default gateway to the 
+main routing table, but then it appears that the policy routing tables 
+or firewall marks are ignored.
+
+Should the above approach be possible still? If not, then could someone 
+advise what approach I should use nowadays please?
+
+Matt
