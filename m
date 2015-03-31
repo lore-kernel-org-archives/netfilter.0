@@ -1,64 +1,41 @@
-From: Dmitry Melekhov <dm@belkam.com>
-Subject: connmark and nat
-Date: Tue, 31 Mar 2015 11:10:02 +0400
-Message-ID: <551A484A.7050208@belkam.com>
+From: Tomofumi Hayashi <s1061123@gmail.com>
+Subject: [Call for testing!] miniupnpd with nftables!
+Date: Tue, 31 Mar 2015 17:50:38 +0900
+Message-ID: <CAOUi3w+J1t+6N7RiOKw36EYxbLiKw23pNBx_SFaf+_YaNx5KBg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=aj/vfqEOhtTWqTG6G0MXWSSgDruN0jZgarh45uZaPwg=;
+        b=JsQUEHMGE1hbTIhbuM3iEyPD26s9pzZdvuFvv1L1VkWqIscFEJ57xqGJWg2J8/j9DP
+         MHmlG3e6Dko7e7hnDnrIm0CoJnaiC7rdtNLmlIKKmC4/N+PCNI861PAquqdSipc1Ondg
+         YF7PWWFerdus4tc4LfexHEskKn02tnhC9TlKjSVDhQYtawnTslBLsgsZke5NZ3Tbg9Du
+         l+o6d9MUc9d9lM7mr3KY7DiRKdXXHF4xQyek4PM2i/8RlYYcD3H9+DGlEoFGc7XKC8eQ
+         s2ryh2gASQtttIBDZS0VuG77UxED/3k5ED0c6vyZ8dpoLh/T5HacFhLEPWrfdwECKlDv
+         KInw==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hello!
+Hi folks,
 
-I'm trying to do DNAT/SNAT on the same host with connmark and can't get 
-it working.
+I am interested in nftables and currently working miniupnpd to support
+nftables in following github.
+https://github.com/s1061123/miniupnp
 
-My host has static ip 192.168.22.252 and it can get address 
-192.168.22.99 from VRRP, so bind doesn't listen on 192.168.22.99,
-but if host got this address it has to answer on it the same as on 
-192.168.22.252.
+Currently simple functions (SNAT/port forwarding) are ready so I decide
+to start to call for testing.
 
-So , if traffic goes to 192.168.22.99 port 53 udp, I need to redirect it 
-to 192.168.22.252:53,
-and if it was to 192.168.22.99 host need to reply from this address.
+Here is the wiki which contains generic info, including "how to build".
+https://github.com/s1061123/miniupnp/wiki/miniupnp-nftables-support
 
-DNAT part works:
-
-#mark
-iptables -t mangle -A PREROUTING -d 192.168.22.99 -p udp --dport 53 -j 
-CONNMARK --set-mark 0x100
-
-#restore mark inside connection
-iptables -t mangle -A PREROUTING -d 192.168.22.99 -p udp --dport 53 -j 
-CONNMARK --restore-mark
+I appreciate if you are interested in miniupnpd as well as nftables
+and you start to test it!
+Comments, fixes, and some testing reports are very welcome.
 
 
-#do NAT
-iptables -t nat -A PREROUTING -m mark --mark 0x100 -j DNAT 
---to-destination 192.168.22.252
-
-
-Don't know is is correct or not, but at least it works.
-
-
-But SNAT doesn't:
-
-#restore mark
-iptables -A POSTROUTING -t mangle -j CONNMARK --restore-mark
-
-#do nat
-iptables -t nat -A POSTROUTING -m mark --mark 0x100 -j SNAT --to-source 
-192.168.22.99
-
-
-I see that no packets hit rule:
-
-     0     0 SNAT       all  --  *      *       0.0.0.0/0 
-0.0.0.0/0            connmark match  0x100 to:192.168.22.99
-
-
-Could you, please, tell me what is wrong here?
-
-Thank you!
+Cheers,
+Tomofumi
