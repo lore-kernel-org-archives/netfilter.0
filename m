@@ -1,53 +1,77 @@
-From: Matt Killock <lists@killock.net>
-Subject: Routing traffic over two gateways by fwmark
-Date: Tue, 31 Mar 2015 23:52:06 +0100
-Message-ID: <b2ca7b1036797bf4b84622f88540585d@killock.net>
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Subject: Re: connmark and nat
+Date: Wed, 01 Apr 2015 23:58:42 +0200
+Message-ID: <551C6A12.6020404@plouf.fr.eu.org>
+References: <551A484A.7050208@belkam.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=killock.net; s=mail;
-	t=1427842326; bh=5tJDBO0R266eMjHJso3nXk3sDCGsNVjmZBnN5ZHR9lY=;
-	h=To:Subject:Date:From:From;
-	b=lnHoGAH10d3ryoYMPJHEJ7Kpq/6Y55ZkWoKO5xY+QKPoxIt0b1zbZ1XS/OSdFLjRH
-	 wyNg3xGbMBTyu8FUpR/nwRrd4x4OEfWJ2cfgmduczylK18eug+BVrJ00mFUMVpu2U1
-	 +zXwWnTeeipnFm0lr46e8PjS4Ic7N+iN9QlCO9vU=
+In-Reply-To: <551A484A.7050208@belkam.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Dmitry Melekhov <dm@belkam.com>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+Dmitry Melekhov a =E9crit :
+>=20
+> I'm trying to do DNAT/SNAT on the same host with connmark and can't g=
+et=20
+> it working.
+>=20
+> My host has static ip 192.168.22.252 and it can get address=20
+> 192.168.22.99 from VRRP, so bind doesn't listen on 192.168.22.99,
 
-I am having trouble re-using scripts that worked in kernel 2.6.24 with a 
-more recent 3.16.0 series kernel. The essence of what I am trying to do 
-is this:
+Why not ?
 
-iptables mark all packets arriving from anywhere on interface 1 with 
-'10'
-iptables mark all packets arriving from anywhere on interface 2 with 
-'20'
+> but if host got this address it has to answer on it the same as on=20
+> 192.168.22.252.
+>=20
+> So , if traffic goes to 192.168.22.99 port 53 udp, I need to redirect=
+ it=20
+> to 192.168.22.252:53,
 
-iptables DNAT incoming traffic on interface 1 on port 1111 to internal 
-server via interface 3
-iptables DNAT incoming traffic on interface 2 on port 1111 to internal 
-server via interface 3
+Not if you can have BIND to listen on 192.168.22.99 when your host gets
+the address.
 
-ip rule from all fwmark 10 table T1
-ip rule from all fwmark 20 table T2
+> and if it was to 192.168.22.99 host need to reply from this address.
 
-default gateway in table T1 is through interface 1
-default gateway in table T2 is through interface 2
+This is automatic with stateful destination NAT (DNAT).
 
-With the view to make everything that arrives on a particular interface 
-leave via that interface. The above approach worked fine in kernel 2.6 
-but does not seem to work any more. With no default gateway in the main 
-routing table, the packets arrive on the external interfaces but do not 
-appear on the LAN interface, almost as if DNAT is having no effect at 
-all. One of the two DNAT rules works if I add a default gateway to the 
-main routing table, but then it appears that the policy routing tables 
-or firewall marks are ignored.
+> DNAT part works:
+>=20
+> #mark
+> iptables -t mangle -A PREROUTING -d 192.168.22.99 -p udp --dport 53 -=
+j=20
+> CONNMARK --set-mark 0x100
+>=20
+> #restore mark inside connection
+> iptables -t mangle -A PREROUTING -d 192.168.22.99 -p udp --dport 53 -=
+j=20
+> CONNMARK --restore-mark
+>=20
+> #do NAT
+> iptables -t nat -A PREROUTING -m mark --mark 0x100 -j DNAT=20
+> --to-destination 192.168.22.252
 
-Should the above approach be possible still? If not, then could someone 
-advise what approach I should use nowadays please?
+What a complicated setup. Why not just this :
 
-Matt
+iptables -t nat -A PREROUTING -d 192.168.22.99 -p udp --dport 53 \
+  -j DNAT --to-destination 192.168.22.252
+
+> But SNAT doesn't:
+>=20
+> #restore mark
+> iptables -A POSTROUTING -t mangle -j CONNMARK --restore-mark
+>=20
+> #do nat
+> iptables -t nat -A POSTROUTING -m mark --mark 0x100 -j SNAT --to-sour=
+ce=20
+> 192.168.22.99
+>=20
+> I see that no packets hit rule:
+
+Of course not. Stateful NAT automatically takes care of reply packets
+and replaces addresses as expected by the original sender. Only the
+first packet of a new connection goes throught the chains of the nat ta=
+ble.
