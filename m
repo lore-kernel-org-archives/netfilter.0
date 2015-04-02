@@ -1,42 +1,56 @@
-From: Dmitry Melekhov <dm@belkam.com>
-Subject: Re: connmark and nat
-Date: Thu, 02 Apr 2015 19:05:45 +0400
-Message-ID: <551D5AC9.60300@belkam.com>
-References: <551A484A.7050208@belkam.com> <551C6A12.6020404@plouf.fr.eu.org> <551CC3FB.2070903@belkam.com> <551D4F6B.1070005@conversis.de>
+From: Justin Michael Schwartzbeck <justinmschw@gmail.com>
+Subject: Connection tracking stores wrong port for DNAT
+Date: Thu, 2 Apr 2015 11:00:29 -0500
+Message-ID: <CAGEc96kf8zFrcXj5Q2b1cTV9LC_pyfh6EDV_DjGD1Y3BDT9NCA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <551D4F6B.1070005@conversis.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=JbQXdP/tyGtdgqen2JWi1RECJXC8bhn1TU9YNi6uc6Y=;
+        b=SlgNGSy68JXgXJsV3FU3ncEyBu+HBIGi4TtNvZHMS30zkTpW6aywbjducnO5BPDj6z
+         FHj0IFUXLh7V8PlkL9/fVwoOtH4xiQWEa0NJhNgfXSudhDfQ4VNDICugPfLYnDfZok8N
+         0tWoKBureY3l6IcUNtM5SxROGt31JPWlhKkwx3IFsnZ+HrK6UoXKzM98FTnsq8gXl2+S
+         D2EB8qf2wpeF0moqQWTjcS5eU5yxiA0GueW32GPHOfdfIyNDWbj9aPl5HBUYByyrnxUt
+         nzHLkDvNnWuKT+tnJa+qws2eq9tmJbQE50IeBGGfHE11m5Xk/fEEv5riIDtGYOm0jnvM
+         +Qew==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Dennis Jacobfeuerborn <dennisml@conversis.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-02.04.2015 18:17, Dennis Jacobfeuerborn =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> On 02.04.2015 06:22, Dmitry Melekhov wrote:
->> 02.04.2015 01:58, Pascal Hambourg =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>> Dmitry Melekhov a =C3=A9crit :
->>>> I'm trying to do DNAT/SNAT on the same host with connmark and can'=
-t get
->>>> it working.
->>>>
->>>> My host has static ip 192.168.22.252 and it can get address
->>>> 192.168.22.99 from VRRP, so bind doesn't listen on 192.168.22.99,
->>> Why not ?
->> because there is no such address on interface, it becomes available =
-only
->> at VRRP state change to master :-)
-> Have you tried using /proc/sys/net/ipv4/ip_nonlocal_bind? Then you co=
-uld
-> bind to that address even if it isn't configured yet.
->
->
-Thank you very much, this helps :-)
-I didn't know about this option.
-Turned it on, changed bind to
-listen-on { 192.168.22.99; any; };
+Hello,
 
-and it works :-)
+I have a box that DNATs incoming HTTP/HTTPS traffic transparently to a
+proxy server and also masquerades all other outgoing traffic (like a
+NAT box). I am using the nf_conntrack_find_get to try and find the
+associated connection for an outgoing HTTP connection from the client.
+Here are the details for this packet:
 
+Source IP: 192.168.4.1
+Dest IP: 23.235.43.73
+Source Port: 60324
+Destination Port: 80
 
+When I create a tuple for this packet and do a lookup, it is unable to
+find the associated connection. Now here's the interesting part. When
+I do a cat on /proc/net/nf_conntrack I see the following line that is
+associated with the connection:
+
+ipv4     2 tcp      6 299 ESTABLISHED src=192.168.4.1 dst=23.235.43.73
+sport=1048 dport=80 src=10.10.1.5 dst=10.10.1.151 sport=8080
+dport=1048 [ASSURED] mark=0 secmark=0 use=2
+
+This is obviously the associated connection with that packet. However,
+the sport for the client side is wrong. It is set equal to the dport
+for the reply tuple. Does anyone know why this would be? How exactly
+does connection tracking work, and why would it be showing the wrong
+port here? Could this be because of the IP masquerading? There must be
+a place where the connection mapping is done properly otherwise the
+IPTables firewall wouldn't know where to route the packet in question.
+Is there perhaps another lookup function somewhere that would give me
+the proper information?
+
+Thanks in advance!
+-Justin
