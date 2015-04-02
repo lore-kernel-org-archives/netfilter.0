@@ -1,74 +1,92 @@
-From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: Routing traffic over two gateways by fwmark
-Date: Thu, 02 Apr 2015 00:13:20 +0200
-Message-ID: <551C6D80.8010506@plouf.fr.eu.org>
-References: <b2ca7b1036797bf4b84622f88540585d@killock.net>
+From: Dmitry Melekhov <dm@belkam.com>
+Subject: Re: connmark and nat
+Date: Thu, 02 Apr 2015 08:22:19 +0400
+Message-ID: <551CC3FB.2070903@belkam.com>
+References: <551A484A.7050208@belkam.com> <551C6A12.6020404@plouf.fr.eu.org>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <b2ca7b1036797bf4b84622f88540585d@killock.net>
+In-Reply-To: <551C6A12.6020404@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Matt Killock <lists@killock.net>
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: Pascal Hambourg <pascal@plouf.fr.eu.org>
 Cc: netfilter@vger.kernel.org
 
-Matt Killock a =E9crit :
->=20
-> I am having trouble re-using scripts that worked in kernel 2.6.24 wit=
-h a=20
-> more recent 3.16.0 series kernel. The essence of what I am trying to =
-do=20
-> is this:
->=20
-> iptables mark all packets arriving from anywhere on interface 1 with=20
-> '10'
-> iptables mark all packets arriving from anywhere on interface 2 with=20
-> '20'
->=20
-> iptables DNAT incoming traffic on interface 1 on port 1111 to interna=
-l=20
-> server via interface 3
-> iptables DNAT incoming traffic on interface 2 on port 1111 to interna=
-l=20
-> server via interface 3
->=20
-> ip rule from all fwmark 10 table T1
-> ip rule from all fwmark 20 table T2
->=20
-> default gateway in table T1 is through interface 1
-> default gateway in table T2 is through interface 2
->=20
-> With the view to make everything that arrives on a particular interfa=
-ce=20
-> leave via that interface. The above approach worked fine in kernel 2.=
-6=20
+02.04.2015 01:58, Pascal Hambourg =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> Dmitry Melekhov a =C3=A9crit :
+>> I'm trying to do DNAT/SNAT on the same host with connmark and can't =
+get
+>> it working.
+>>
+>> My host has static ip 192.168.22.252 and it can get address
+>> 192.168.22.99 from VRRP, so bind doesn't listen on 192.168.22.99,
+> Why not ?
 
-I don't think so. You must mark packets from the server arriving from
-the server at interface 3, not packets arriving at interface 1 and 2.
-Packets arriving at interface 1 and 2 are all routed via interface 3, s=
-o
-they have no need for advanced routing.
+because there is no such address on interface, it becomes available onl=
+y=20
+at VRRP state change to master :-)
 
-> but does not seem to work any more. With no default gateway in the ma=
-in=20
-> routing table, the packets arrive on the external interfaces but do n=
-ot=20
-> appear on the LAN interface, almost as if DNAT is having no effect at=
-=20
-> all.
+>> but if host got this address it has to answer on it the same as on
+>> 192.168.22.252.
+>>
+>> So , if traffic goes to 192.168.22.99 port 53 udp, I need to redirec=
+t it
+>> to 192.168.22.252:53,
+> Not if you can have BIND to listen on 192.168.22.99 when your host ge=
+ts
+> the address.
 
-Check the value of rp_filter for interface 1, interface 2 and all.
-Since some kernel version the logic has changed from AND to MAX.
+Yes, really, I can, but I'd like to solve this by using iptables, just=20
+for fun, you know ;-)
 
-> One of the two DNAT rules works if I add a default gateway to the=20
-> main routing table, but then it appears that the policy routing table=
-s=20
-> or firewall marks are ignored.
+>> and if it was to 192.168.22.99 host need to reply from this address.
+> This is automatic with stateful destination NAT (DNAT).
 
-You must mark packets arriving from the server at interface 3. For this
-you must mark the incoming connections (CONNMARK) and transfer the
-connection mark to the packets arriving at interface 3.
+Really not, bind uses udp, so it will reply from 192.168.22.252, i.e.=20
+from address it listens.
+>
+>> DNAT part works:
+>>
+>> #mark
+>> iptables -t mangle -A PREROUTING -d 192.168.22.99 -p udp --dport 53 =
+-j
+>> CONNMARK --set-mark 0x100
+>>
+>> #restore mark inside connection
+>> iptables -t mangle -A PREROUTING -d 192.168.22.99 -p udp --dport 53 =
+-j
+>> CONNMARK --restore-mark
+>>
+>> #do NAT
+>> iptables -t nat -A PREROUTING -m mark --mark 0x100 -j DNAT
+>> --to-destination 192.168.22.252
+> What a complicated setup. Why not just this :
+>
+> iptables -t nat -A PREROUTING -d 192.168.22.99 -p udp --dport 53 \
+>    -j DNAT --to-destination 192.168.22.252
 
-Another method not requiring connection marking is to use the original
-destination address (-m conntrack --ctorigdst) to mark the packets.
+Please, see above, in this case replies are go from
+
+192.168.22.252
+
+and clients just drop such packets.
+
+>
+>> But SNAT doesn't:
+>>
+>> #restore mark
+>> iptables -A POSTROUTING -t mangle -j CONNMARK --restore-mark
+>>
+>> #do nat
+>> iptables -t nat -A POSTROUTING -m mark --mark 0x100 -j SNAT --to-sou=
+rce
+>> 192.168.22.99
+>>
+>> I see that no packets hit rule:
+> Of course not. Stateful NAT automatically takes care of reply packets
+> and replaces addresses as expected by the original sender. Only the
+> first packet of a new connection goes throught the chains of the nat =
+table.
+Sorry, no.
+
