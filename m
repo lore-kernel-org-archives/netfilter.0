@@ -1,59 +1,38 @@
-From: Dmitry Melekhov <dm@belkam.com>
-Subject: Re: connmark and nat
-Date: Fri, 03 Apr 2015 08:03:34 +0400
-Message-ID: <551E1116.4000101@belkam.com>
-References: <551A484A.7050208@belkam.com> <551C6A12.6020404@plouf.fr.eu.org> <551CC3FB.2070903@belkam.com> <551D4F6B.1070005@conversis.de> <551D5AC9.60300@belkam.com>
+From: "otik@e-posta.sk" <otik@e-posta.sk>
+Subject: ebtables fix changing source MAC
+Date: Sat, 04 Apr 2015 09:26:44 +0200
+Message-ID: <551F9234.2040308@e-posta.sk>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <551D5AC9.60300@belkam.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Dennis Jacobfeuerborn <dennisml@conversis.de>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"; format="flowed"
+To: netfilter@vger.kernel.org
 
-02.04.2015 19:05, Dmitry Melekhov =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> 02.04.2015 18:17, Dennis Jacobfeuerborn =D0=BF=D0=B8=D1=88=D0=B5=D1=82=
-:
->> On 02.04.2015 06:22, Dmitry Melekhov wrote:
->>> 02.04.2015 01:58, Pascal Hambourg =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
->>>> Dmitry Melekhov a =C3=A9crit :
->>>>> I'm trying to do DNAT/SNAT on the same host with connmark and=20
->>>>> can't get
->>>>> it working.
->>>>>
->>>>> My host has static ip 192.168.22.252 and it can get address
->>>>> 192.168.22.99 from VRRP, so bind doesn't listen on 192.168.22.99,
->>>> Why not ?
->>> because there is no such address on interface, it becomes available=
-=20
->>> only
->>> at VRRP state change to master :-)
->> Have you tried using /proc/sys/net/ipv4/ip_nonlocal_bind? Then you c=
-ould
->> bind to that address even if it isn't configured yet.
->>
->>
-> Thank you very much, this helps :-)
-> I didn't know about this option.
-> Turned it on, changed bind to
-> listen-on { 192.168.22.99; any; };
->
-> and it works :-)
->
->
-Hmm, tried this once again- and doesn't work, looks like this is bind=20
-problem, I guess I have to enumerate all interfaces, don't use any,
-but there are more than 10 interfaces on this server, and I'm too lazy =
-;-)
+Hi all,
 
-So, looks like only solution is no force rndc reconfigure on vrrp state=
-=20
-change,
-which I just implemented.
+I need to connect LINUX to ethernet device. Everything would work except 
+that device after SYN packet starts to send packet with 
+changing/random/mascilious MAC. It seems linux would drop such(mac and 
+IP not match records) packet. This is expected to reduce 
+Inject/Man-On-Side attack.
 
-Very pity this can't be solved by using netfilter.
+Device computer is too expensive to be replaced. Also original box can 
+comunicate with it with no problem making change with no point. Original 
+solution runs on Windows which seems to be more permissive on this 
+issue. I can confirm this. I ran simple SW to resend stream on Windows 
+and all communications was ok. However i can not use this solution in 
+production.
 
-Thank you!
+The things are even more complicated as my Linux box is located 12 hour 
+fly and another 4 driving, with no internet access. I got last shot to 
+try it, so I'm waiting even your brain storm ideas.
+
+My basic idea was to have ebtables SNAT rule, but I need it to run 
+before routing decision to work. As I understand SNAT works on 
+postrouting - too late. Im running bridge on my box to remove need have 
+external switch.
+
+Oto
 
