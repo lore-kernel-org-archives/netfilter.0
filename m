@@ -1,93 +1,64 @@
-From: Noel Kuntze <noel@familie-kuntze.de>
-Subject: Re: ebtables fix changing source MAC
-Date: Sat, 04 Apr 2015 15:38:39 +0200
-Message-ID: <551FE95F.8080005@familie-kuntze.de>
-References: <551F9234.2040308@e-posta.sk>
+From: Todor Todorov <root@4vendeta.com>
+Subject: Re: SYNPROXY module with bridge
+Date: Sun, 05 Apr 2015 15:52:10 +0300
+Message-ID: <55212FFA.9050204@4vendeta.com>
+References: <551F008F.6050200@4vendeta.com> <20150405114729.GC23433@acer.localdomain>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <551F9234.2040308@e-posta.sk>
+In-Reply-To: <20150405114729.GC23433@acer.localdomain>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: "otik@e-posta.sk" <otik@e-posta.sk>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: Patrick McHardy <kaber@trash.net>, netfilter@vger.kernel.org, kadlec@netfilter.org, fw@strlen.de, marc+nf@mbsi.ca, gandalf@netfilter.org, yasuyuki@netfilter.org
 
+Hello,
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+I was check and as you said REJECT target also doesn't work in Bridge.
+Where is the problem - in "br.c" or it must add a check in=20
+"ipt_synproxy.c" for is the packet coming from bridged interface?
+I find this patch for reject in bridge but doesn't work -=20
+http://markmail.org/message/zkd57gfh7htcbyvc#query:+page:1+mid:spwhgpx2=
+jl6iholn+state:results
 
-Hello Oto,
+Any help would be useful to me...
 
-You can use arptables to do that. ebtables can't do that.
+Thank you!
 
-arptables -A INPUT -s StupidEthernetDeviceIP --destination-mac MyOwnMac=
-Address -j mangle --mangle-mac-s TheMACAddressIwant
+----------------------------
+Kind regards,
+Todor Todorov
+System Administrator
+4 Vendeta LTD
+GSM: +359 895 935 835
+root@4vendeta.com
+----------------------------
 
-You can of course replace the -s StupidEthernetDeviceIP with another fi=
-lter. However, as you are using a bridge device and probably
-a lot of other devices communicate over the virtual bridge, you should =
-construct a filter for a rule
-that guarantees (either by logical constraint or physical constraint [e=
-=2Eg: The only device connected to eth0 is the stupid ethernet device, =
-assuming eth0 is slaved to br0])
-that only traffic from that host is mangled. Otherwise, you will not be=
- able to establish a connection to any other host.
-
-Mit freundlichen Gr=C3=BC=C3=9Fen/Kind Regards,
-Noel Kuntze
-
-GPG Key ID: 0x63EC6658
-=46ingerprint: 23CA BB60 2146 05E7 7278 6592 3839 298F 63EC 6658
-
-Am 04.04.2015 um 09:26 schrieb otik@e-posta.sk:
-> Hi all,
->
-> I need to connect LINUX to ethernet device. Everything would work exc=
-ept that device after SYN packet starts to send packet with changing/ra=
-ndom/mascilious MAC. It seems linux would drop such(mac and IP not matc=
-h records) packet. This is expected to reduce Inject/Man-On-Side attack=
-=2E
->
-> Device computer is too expensive to be replaced. Also original box ca=
-n comunicate with it with no problem making change with no point. Origi=
-nal solution runs on Windows which seems to be more permissive on this =
-issue. I can confirm this. I ran simple SW to resend stream on Windows =
-and all communications was ok. However i can not use this solution in p=
-roduction.
->
-> The things are even more complicated as my Linux box is located 12 ho=
-ur fly and another 4 driving, with no internet access. I got last shot =
-to try it, so I'm waiting even your brain storm ideas.
->
-> My basic idea was to have ebtables SNAT rule, but I need it to run be=
-fore routing decision to work. As I understand SNAT works on postroutin=
-g - too late. Im running bridge on my box to remove need have external =
-switch.
->
-> Oto
->
-> --
-> To unsubscribe from this list: send the line "unsubscribe netfilter" =
-in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJVH+laAAoJEDg5KY9j7GZYWsUQAImanjlFoTA17WHSpyoFfDJk
-eSMv2hatWODkrUjG4y+nabJKcgEIP+Hg+WgaOVcWjdGPlJ65EWnrr/Q6j5GcYY7l
-x9zR/9YsysiNaDQbGBh9r6+rvKot/F8Putm6/dzL1GwX5jBrCLjhGQX2qi8VKyRP
-3xqYwXEZ/iple24r729V9X+W1LHTqMHCvx+X3XpSeE5srddTA7eSWxMRNGdNJ7ib
-YLn3cOEyYRfP5qtHJNzvjjzf2wPvFAWGdVTw9fqOGM2Asb/C21K3mkPT9nLUGbIx
-VvaFI7t6uo0NQCUShhS+SbHGNrUfFD2EJfhkweMLd0CB2SomUDB1V66TRwtIJZgx
-NQ+/HVdlL8fs93j634VScYITtBiRLXgF4p/n/nTDisbDltbtT7Hd+AuHwhTUJwds
-VUy23PsG2zQUeNQiN6mkmsgF/uG5lGyPygFdprkm5bv7QbTtdCAep8ZUY1KqwdTT
-BHWRYVUHi9YiSy8SifVfej0BrljGFF9QNu7t9IVEso5HCmI/h99qbowfbPtZwN57
-/v8vpKtP/+bAOFnpjVPTTC0oPY/+LCUYeTzy4+B3FHuZkXHb4vZxkQBpVPonSs0B
-NeGkoyXVj8+Els98Fv+oI4dVMnFrDAHWqrJR+3uejD01OrY7Q0fa5MU5ZbW2cJQa
-gRQo3WBaC5XKU5zyNM0S
-=3DNtuh
------END PGP SIGNATURE-----
-
+=D0=9D=D0=B0 05.4.2015 =D0=B3. =D0=B2 14:47, Patrick McHardy =D0=BD=D0=B0=
+=D0=BF=D0=B8=D1=81=D0=B0:
+> On 04.04, Todor Todorov wrote:
+>> Hello,
+>>
+>>  From 1 week ago I'm trying to patch synproxy module to work in brid=
+ge mode.
+>> The problem is that SYNPROXY is not send syn-ack by bridge, its send=
+ by
+>> default route.
+>> I know roughly C language but failed to rewrite and work..
+>>
+>> This is the topology of the problem:
+>>
+>> User -----> SYN ------> Firewall - br0 - physdev vlan10
+>> Firewall - eth0? -------> SYN-ACK ------> User
+>>
+>> Should be like:
+>>
+>> Firewall - br0 - physdev vlan10 -------> SYN-ACK ------> User
+>>
+>> Please help or some guidance on how to fix this problem.
+> You should have a look at the REJECT target, which faces the same pro=
+blem.
+> Also please CC the netfilter-devel list on questions like that, someo=
+ne
+> might jump in to help.
 
