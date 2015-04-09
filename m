@@ -1,45 +1,44 @@
-From: "otik@e-posta.sk" <otik@e-posta.sk>
-Subject: Re: ebtables fix changing source MAC
-Date: Sun, 05 Apr 2015 18:47:46 +0200
-Message-ID: <55216732.4040200@e-posta.sk>
-References: <551F9234.2040308@e-posta.sk> <551FE95F.8080005@familie-kuntze.de>
+From: "Vince Cooper" <swUjefra@dcemail.com>
+Subject: Clarification needed on use of -m owner --uid-owner
+Date: Wed, 8 Apr 2015 20:53:58 -0700
+Message-ID: <20150408205358.39C1E112@m0005309.ppops.net>
+Reply-To: <swUjefra@dcemail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <551FE95F.8080005@familie-kuntze.de>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"; format="flowed"
-To: Noel Kuntze <noel@familie-kuntze.de>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-On 2015-04-04 15:38, Noel Kuntze wrote:
-> Hello Oto,
->
-> You can use arptables to do that. ebtables can't do that.
->
-> arptables -A INPUT -s StupidEthernetDeviceIP --destination-mac MyOwnM=
-acAddress -j mangle --mangle-mac-s TheMACAddressIwant
->
-> You can of course replace the -s StupidEthernetDeviceIP with another =
-filter. However, as you are using a bridge device and probably
-> a lot of other devices communicate over the virtual bridge, you shoul=
-d construct a filter for a rule
-> that guarantees (either by logical constraint or physical constraint =
-[e.g: The only device connected to eth0 is the stupid ethernet device, =
-assuming eth0 is slaved to br0])
-> that only traffic from that host is mangled. Otherwise, you will not =
-be able to establish a connection to any other host.
+Hi,
 
-Thanks for proposed solution it seems to be good on first look. I'll=20
-test it on end of the month. And let you know.
-I never heard of arptables before, but all got its first time :)
+I'm new to iptables and would appreciate it if someone could point out to me if -m owner --uid-owner spring can be used in the following rules:
 
-As I wrote I got just one shot, so if anybody have other solution pls=20
-let me know.
+(1) iptables -A OUTPUT -o lo -m owner --uid-owner spring -j ACCEPT
 
->
-> Mit freundlichen Gr=C3=BC=C3=9Fen/Kind Regards,
-> Noel Kuntze
->
->
+(2) iptables -A OUTPUT -o eth0 -m owner --uid-owner spring -j REJECT
 
+(3) iptables -A OUTPUT -p tcp -m tcp -m conntrack -d 123.123.123.123 -o eth0 -m owner --uid-owner spring --dport 443 -j ACCEPT --ctstate NEW,ESTABLISHED 
+
+(4)
+(a) iptables -A OUTPUT -p tcp -m tcp -m conntrack -o tun0 -m owner --uid-owner spring --dport 80 -j ACCEPT  --ctstate NEW,ESTABLISHED
+
+(b) iptables -A OUTPUT -p tcp -m tcp -m conntrack -o tun0 -m owner --uid-owner spring --dport 443 -j ACCEPT  --ctstate NEW,ESTABLISHED
+
+(c) iptables -A OUTPUT -p udp -m udp -m conntrack -o tun0 -m owner --uid-owner spring --dport 53 -j ACCEPT  --ctstate NEW,ESTABLISHED
+
+(d) iptables -A OUTPUT -p tcp -m tcp -m conntrack -o tun0 -m owner --uid-owner spring --dport 53 -j ACCEPT  --ctstate NEW,ESTABLISHED
+
+Additional info:
+
+I.  No root account was created during installation of Debian Wheezy
+II. Name of account of user is spring
+
+Thanks.
+
+Vince
+
+_____________________________________________________________
+Washington DC's Largest FREE Email service. ---> http://www.DCemail.com ---> A Washington Online Community Member --->
+http://www.DCpages.com
