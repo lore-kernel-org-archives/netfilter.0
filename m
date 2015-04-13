@@ -1,27 +1,33 @@
-From: Koen Zandberg <hydrazine@bergzand.net>
-Subject: Re: Atomic changes to IP sets
-Date: Mon, 13 Apr 2015 12:31:47 +0200
-Message-ID: <552B9B13.2080906@bergzand.net>
-References: <ECC8F67CE961104EB2AFE8F7FD50F5D045F1E6@exchange2010.sirrix.de> <ECC8F67CE961104EB2AFE8F7FD50F5D045F21A@exchange2010.sirrix.de>
+From: Kees-Jan Hermans <hermans@fox-it.com>
+Subject: Modifying a packet's length using netfilter queue
+Date: Mon, 13 Apr 2015 13:14:13 +0000
+Message-ID: <29474E30-2E0F-4046-80D6-3D66CB73BC62@fox-it.com>
 Mime-Version: 1.0
+Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <ECC8F67CE961104EB2AFE8F7FD50F5D045F21A@exchange2010.sirrix.de>
+Content-Language: en-US
+Content-ID: <465B644B5C71A74F9F50542E41C670EF@fox-it.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: Anna Fischer <a.fischer@sirrix.com>, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-On 13/04/15 10:23, Anna Fischer wrote:
-> Hi,
->
-> I'm using ip sets in my iptables firwall rules. I don't just use those for firewalling, but also for packet mangling (marking). Now I'm quite frequently changing these sets and also the firewall rules. I know that I can atomically switch firewall rules by using iptables-restore. But how can I make changes to ip sets atomic? It seems to be as if packets are always passing the firewall whilst I do ipset commands. Currently I flush all ip sets, and then rebuild them. I understand this will cause problems because at times my ip sets are empty and so the firewall does not behave how I want it to behave. But what is the correct way to atomically update ip sets? I have seen that there is a command to swap an ip set. So I would build up a new set, then swap it with the old one, and then delete t
- he old one. Is that the right way of changing ip sets? The other option would be to create a whole new set of ipsets and the a new set of iptables rules with these sets, and then I use iptables-restor
->   e to atomically switch the full firewall table. This seems like quite a bit of overkill though, doesn't it? Does anyone have an idea about how to best work with ip sets without building glitches into my firewall whilst reconfiguring ip sets?
->
-> Thanks for any pointers.
->
-> Anna
-The way I learned to do this atomically was by creating a new set and 
-using "ipset swap $OLDLIST $NEWLIST" to swap your old set with your new set.
+Hello everyone. I am new to this list, and I'd like to know if I can make a packet, captured through netfilter queueing, bigger. I have created the following function:
 
+#include <libnfnetlink/libnfnetlink.h>
+#include <libnetfilter_queue/libnetfilter_queue.h>
+
+struct nfq_data {
+  struct nfattr **data;
+};
+
+void nfq_set_payload_length
+  (struct nfq_data *nfad, unsigned length)
+{
+  //.. could be an error here if length + NFA_LENGTH(0) > 0xffff..
+  (nfad->data[NFQA_PAYLOAD-1])->nfa_len = (length + NFA_LENGTH(0));
+}
+
+In order to be able to modify the length of a captured packet (in NFQNL_COPY_PACKET mode). Everything about the packet will be in order - recalculated checksums etc). Is this an acceptable approach?
+
+KJ
