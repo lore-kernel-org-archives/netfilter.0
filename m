@@ -1,55 +1,29 @@
-From: Chris Burroughs <christopher@addthis.com>
-Subject: spooky RST with DNAT rules;  macvlan + namespace
-Date: Fri, 10 Apr 2015 15:56:02 -0400
-Message-ID: <55282AD2.9040009@addthis.com>
+From: Anna Fischer <a.fischer@sirrix.com>
+Subject: Atomic changes to IP sets
+Date: Mon, 13 Apr 2015 08:23:16 +0000
+Message-ID: <ECC8F67CE961104EB2AFE8F7FD50F5D045F21A@exchange2010.sirrix.de>
+References: <ECC8F67CE961104EB2AFE8F7FD50F5D045F1E6@exchange2010.sirrix.de>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=addthis.com; s=google;
-        h=message-id:date:from:user-agent:mime-version:to:subject
-         :content-type:content-transfer-encoding;
-        bh=rE0EOcPqTCjykl3fX1WHOwusNOqL0K5QY+n4Q0Tk2HI=;
-        b=DdPbYczkWrVNrumibCFF8kFdkIjOu19yWruDEEq0jFt6hwv8YPOZEs0HzB63HXRn/J
-         FNp73hTyD03/vrpUWzXy+T8mrZpH4ibWU3qJphalZcuUapFSpqROVNiQdCLI/EfHVsB2
-         Jve7CntWAzL2omKzAVUqc01MrdHkumn6DsTFQ=
+In-Reply-To: <ECC8F67CE961104EB2AFE8F7FD50F5D045F1E6@exchange2010.sirrix.de>
+Content-Language: de-DE
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-I have an existing application that relies on some custom iptables logic 
-to function inside our network.  It uses several simple rules along the 
-lines of:
 
-iptables -t nat -A OUTPUT -j DNAT -p tcp --dst x.x.x.x --dport 7000 -o 
-eth0 --to-destination y.y.y.y
+Hi,
 
-There are several nodes and there is a DNAT rule for each node.  I've 
-successfully been using rules like this on physical nodes for a few 
-years without difficulty.
+I'm using ip sets in my iptables firwall rules. I don't just use those for firewalling, but also for packet mangling (marking). Now I'm quite frequently changing these sets and also the firewall rules. I know that I can atomically switch firewall rules by using iptables-restore. But how can I make changes to ip sets atomic? It seems to be as if packets are always passing the firewall whilst I do ipset commands. Currently I flush all ip sets, and then rebuild them. I understand this will cause problems because at times my ip sets are empty and so the firewall does not behave how I want it to behave. But what is the correct way to atomically update ip sets? I have seen that there is a command to swap an ip set. So I would build up a new set, then swap it with the old one, and then delete the
+  old one. Is that the right way of changing ip sets? The other option would be to create a whole new set of ipsets and the a new set of iptables rules with these sets, and then I use iptables-restore to atomically switch the full firewall table. This seems like quite a bit of overkill though, doesn't it? Does anyone have an idea about how to best work with ip sets without building glitches into my firewall whilst reconfiguring ip sets?
 
-I'm trying to replace these nodes with 'containers' on centos6. 
-Specifically by 'containers' I mean lxc with:
-  * privileged containers
-  * macvlan in bridge mode
-  * network namespace
+Thanks for any pointers.
 
-And running into trouble with the same iptables rules.  Specifically 
-what happens between container A (initiates connection) on host X and 
-container B (listening daemon) on host Y.
+Anna
 
-  * A: syn
-  * B: syn+ack
-  * A: rst
 
-I've detected the RST with tcpdump from both within the container and on 
-the host.  Visually in wireshark it looks like: 
-http://i.imgur.com/lo1PF6k.png  Basic DROP rules like 'block inbound on 
-this port' appear to work fine.
 
-To add to the confusion, if A & B are co-located on the same physical 
-host it appears to work okay.
 
-I'm at at loss to explain where the RST is coming from or how to make 
-the DNAT rule work correctly.
+
