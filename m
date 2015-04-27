@@ -1,37 +1,62 @@
-From: Jose Miguel Sanchez Ales <josem+netfilter@iescyedra.es>
-Subject: IP SNAT only for a bridge port, =?UTF-8?Q?=C2=BFis=20it=20possibl?=
- =?UTF-8?Q?e=3F?=
-Date: Sat, 25 Apr 2015 19:02:17 +0200
-Message-ID: <90ba4ebbeb4ab8f03cf5db4ebd5d6063@iescyedra.es>
+From: Matthew Smith <gizmosmith@gmail.com>
+Subject: Packets being reflected back from firewall unintentionally...
+Date: Sun, 26 Apr 2015 22:03:50 -0700
+Message-ID: <CANDZmsURcr3k3msVhHe4ZUrHEW_B8kbHHNMom_uByWPcr2eoKA@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=IjBGHR8699BCdqMmyFKA8RV+BdYRCuA6wJHM/vu/Xak=;
+        b=xYCYCu/hCT35x5HI4XUB/TvSuhwQ2Ey/I+5oOR0FL0SZvFzg0xaLp7+WMUyA8tW99z
+         V+SelgizZpp7iTX5FYkNgfoobkUGTykTIseEVaYbLa4ykc8AQ8KlbH5wnsziCchxcoUF
+         gYd4vEWkIpAhSaLvfKkAnkKjXYhvutAyOGtTa2pXHN6xI4/I/N7Y9FFjQlsZ6PqSJ382
+         5OiCNVdilGjScgi0tzM+ANPQsUpQjdemm6gWhNatoyY4QosX8I9KQc0E9RrmU37vUZxq
+         /necDTPxwnKhz22sLMu+FUdQiOTN5vZvjErbIRRhjraYctbgZpjOXMnmO+M70Wd/bJ6/
+         LbHg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-Hi subscribers,
+I have a 192.168.1.14 host behind a linux firewall with ip
+192.168.1.1.  The interface of the firewall facing the internet is
+"em1" and the private interface is "p1p1"
+I've enabled "masquerading" via SNAT for the whole 192.168.1/24 subnet
+with the following iptables rules:
 
-In this case:
+-t nat -A POSTROUTING -s 192.168.1/24 -o em1 -j SNAT --to (MY_PUBLIC_IP)
+-A FORWARD -i em1 -o p1p1 -m state --state RELATED,ESTABLISHED -j ACCEPT
+-A FORWARD -i p1p1 -o em1 -j ACCEPT
 
+This works fine as all hosts in the 192.168.1/24 subnet can get out to
+the internet just fine.
 
-                   +-------+      eth1
-              eth0 |       |br0  +-----    NETWORK 2
-  NETWORK 1 -------+ HOST  +-----+
-                   |       |     +-----    NETWORK 2
-                   +-------+      eth2
+I opened a port forward up to an asterisk server inside the subnet to
+allow a remote asterisk server to connect to my asterisk server
+inside:
 
-when a packet arrives from eth0, I'd like to change its source IP
-*only* if it leaves the host through bridge port eth1.
+$IPT -t nat -A PREROUTING -i em1 -s (REMOTE_ASTERISK_SERVER_IP) -d
+(MY_PUBLIC_IP) -p udp --dport 4569 -j DNAT --to-destination
+(PRIVATE_INTERNAL_ASTERISK_IP)
+$IPT -A FORWARD -s (REMOTE_ASTERISK_SERVER_IP) -p udp --dport 4569 -j ACCEPT
 
-I've take a look at "packet flow scheme":
+So, the remote asterisk server can connect in just fine.  Packets
+coming from it to my asterisk server are handled perfectly accoridng
+to tcpdump.  The trouble is my internal asterisk server can't get out
+port 4569.  If it tries to send a packet to REMOTE_ASTERISK_SERVER_IP
+it gets reflected back from interface p1p1 on the firewall.  The
+packet doesn't even make it to em1 of the firewall.
 
-http://inai.de/images/nf-packet-flow.png
+Here's the header of the packet leaving the asterisk server:
+Source: (PRIVATE_INTERNAL_ASTERISK_IP)
+Destination: (REMOTE_ASTERISK_SERVER_IP)
 
-but the packet pass the ebtables output chain *after* passing
-iptables nat postrouting chain. Passing ebtables output chain is
-the first time that I can check the output bridge port, so I think
-it's impossible, is it?
+This packet hits p1p1 and is immediately returned back to the internal
+asterisk server with the following header:
+Source:  (MY_PUBLIC_IP)
+Destination:  (PRIVATE_INTERNAL_ASTERISK_IP)
 
-Thanks in advance.
+So, both addresses are changed and the packet never gets past the
+firewall.  Any reason why this happens?
