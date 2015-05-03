@@ -1,7 +1,7 @@
-From: =?UTF-8?B?SHViZXJ0IFN0cmF1w58=?= <strauss.hubert@gmx.de>
+From: herraffe <herraffe@freenet.de>
 Subject: Modify SSL packets with Scapy
-Date: Sun, 03 May 2015 20:11:39 +0200
-Message-ID: <554664DB.4040007@gmx.de>
+Date: Sun, 03 May 2015 19:58:40 +0200
+Message-ID: <554661D0.3010903@freenet.de>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -26,11 +26,11 @@ def callback(i,payload):
 
    payload.set_verdict(nfqueue.NF_ACCEPT)
 
-So far everything works fine, if I create a SSL connection between A and 
-B, the packets get redirected through the nfqueue. If the Client Hello 
-shows up, it will be displayed. It should also be noted that I use the 
-scapy-ssl_tls library (https://github.com/tintinweb/scapy-ssl_tls) to 
-get a SSL layer for scapy.
+  So far everything works fine, if I create a SSL connection between A 
+and B, the packets get redirected through the nfqueue. If the Client 
+Hello shows up, it will be displayed. It should also be noted that I use 
+the scapy-ssl_tls library (https://github.com/tintinweb/scapy-ssl_tls) 
+to get a SSL layer for scapy.
 But displaying Client Hello is not everything I want to do, I actually 
 want to modify it. So I tried the following:
 def callback(i,payload):
@@ -58,4 +58,4 @@ forwarding (set_verdict) does work because the packet is not modified.
 Hopefully someone can help me with this quite specific problem.
 
 Best regards,
-Hubert
+mint
