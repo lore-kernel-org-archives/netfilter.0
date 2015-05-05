@@ -1,61 +1,57 @@
-From: herraffe <herraffe@freenet.de>
-Subject: Modify SSL packets with Scapy
-Date: Sun, 03 May 2015 19:58:40 +0200
-Message-ID: <554661D0.3010903@freenet.de>
+From: Petr Pisar <petr.pisar@atlas.cz>
+Subject: conntrack -L fails with Linux 4.0: Operation not supported
+Date: Tue, 5 May 2015 22:48:00 +0200
+Message-ID: <20150505204800.GA2660@album.bayer.uni.cx>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="IS0zKkzwUGydFO0o"
 Return-path: <netfilter-owner@vger.kernel.org>
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi,
-currently I am trying to modify SSL Client Hello packets that are sent 
-from client A to server B.
-I have set up iptables to move packets into nfqueue:
-iptables -t mangle -A PREROUTING -p tcp --dport 443 -j NFQUEUE
-Here is the definition of the callback function for the received SSL 
-packets:
-def callback(i,payload):
-   data = payload.get_data()
-   pkt = IP(data)
 
-   if pkt.haslayer(SSLv2ClientHello):
-     pkt.show()
+--IS0zKkzwUGydFO0o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-   payload.set_verdict(nfqueue.NF_ACCEPT)
+Hello,
 
-  So far everything works fine, if I create a SSL connection between A 
-and B, the packets get redirected through the nfqueue. If the Client 
-Hello shows up, it will be displayed. It should also be noted that I use 
-the scapy-ssl_tls library (https://github.com/tintinweb/scapy-ssl_tls) 
-to get a SSL layer for scapy.
-But displaying Client Hello is not everything I want to do, I actually 
-want to modify it. So I tried the following:
-def callback(i,payload):
-   data = payload.get_data()
-   pkt = IP(data)
+after upgrading Linux to 4.0.0, listing conntrack table with conntrack tool
+does not work fork me:
 
-   if pkt.haslayer(SSLv2ClientHello):
-     pkt.show()
+# conntrack -L
+conntrack v1.4.2 (conntrack-tools): Operation failed: Operation not supported
 
-   ret = payload.set_verdict_modified(nfqueue.NF_ACCEPT, str(pkt), len(pkt))
-   print ("ret = {}".format(ret))
+This happens with Linux 4.0.0 as well as 4.0.1. If I reboot back to 3.19.3, it
+will work again. I have no changes in my Linux configuration regarding netfilter,
+conntracking or netlink.
 
-This should not modify the packet at all. Basically I just use 
-set_verdict_modified instead of set_verdict. I used this simple test to 
-see if the method that I will need later on, for real modification, 
-works. Also there is no need to recompute the length or checksum (at 
-least I think so). But now the trouble begins, If I create a SSL 
-connection between A and B, the connection will not be established. The 
-method returns "88" (I could not find a source to figure out what that 
-means) and Wireshark shows a lot of TCP Retransmissions for Client Hello.
+Otherwise kernel tracks connections properly and /proc/net/nf_conntrack lists
+them.
 
-My guess is that the packet gets modified somehow and therefore a manual 
-forward (set_verdict_modified) does not work, whereas the automatic 
-forwarding (set_verdict) does work because the packet is not modified. 
-Hopefully someone can help me with this quite specific problem.
+Have anybody already seen this failure?
 
-Best regards,
-mint
+I have this user space:
+
+conntrack-tools-1.4.2
+libnetfilter_conntrack-1.0.4
+libnetfilter_cthelper-1.0.0
+libnetfilter_cttimeout-1.0.0
+libnetfilter_queue-1.0.2
+
+-- Petr
+
+--IS0zKkzwUGydFO0o
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iF4EABEIAAYFAlVJLIAACgkQEsnFx2fG+qJVnQEAoJPqqtqo4bwvOyZ+FG6AZ7Q8
+vxP1VZNGen4lWRRpOMgBAIXh+U6UuZX+eQYwJaM7mDHZzaSjESKvobVEoRNVfJj5
+=FOZ7
+-----END PGP SIGNATURE-----
+
+--IS0zKkzwUGydFO0o--
