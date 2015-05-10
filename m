@@ -1,42 +1,76 @@
-From: Foxtrot Mike <foxtrotmike59@gmail.com>
-Subject: Reroute VPN server outgoing traffic to TOR
-Date: Sun, 10 May 2015 18:04:20 +0800
-Message-ID: <554F2D24.6040603@gmail.com>
+From: Eric Leblond <eric@regit.org>
+Subject: [ANNOUNCE] ulogd 2.0.5 release
+Date: Sun, 10 May 2015 21:40:35 +0200
+Message-ID: <1431286835.21627.3.camel@regit.org>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg="pgp-sha1"; protocol="application/pgp-signature";
+	boundary="=-j3PVfRiGTQbNzXmJyRnT"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=message-id:date:from:user-agent:mime-version:to:subject
-         :content-type:content-transfer-encoding;
-        bh=Ebkdv0BU43dqcuqo6KJq1jhTASPTzLbeupfkWIiSQow=;
-        b=CZfd9lA5chTKjf+Fs/hkzzDCupE9g7bmthpBDU20qM8gLTuGGEGJcQY+wocgk/lm3V
-         Qghy25yrt4p4rSopAGHeOkzejrZvq4yt7egOBWC+fxmxdOZtiBP1M5Prf69y1kG9olPo
-         e58b3KNEWMbaHcfLQeEoriSzMspee22IJloujXJecSLFkGh5iBolHKRjYGcFMRvlOXxu
-         TzxGe8q0d2PVznMjjXmakgtbTsOwnTZ2xoBugozrJuR5H8wfKqQjQLEYsNWyKPGEon1I
-         POp8sIeWD12NR9MFKQJx6pLcRTCzXtXSIwY5/eYnPdWPZjAlSiAfHsD1WC6JG1EDLc+B
-         egAQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
-To: netfilter@vger.kernel.org
+To: Netfilter Devel <netfilter-devel@vger.kernel.org>
+Cc: netdev@vger.kernel.org, netfilter@vger.kernel.org, netfilter-announce@lists.netfilter.org, lwn@lwn.net
 
-Hi people
 
-After three days of following HowTos, guides, some debugging and help 
-from guys at users@lists.strongswan.org I was able to setup a VPN server 
-on my spare PC (Ubuntu Server 14.04) using StrongSwan. The clients are 
-able to connect to the VPN server successfully.
+--=-j3PVfRiGTQbNzXmJyRnT
+Content-Type: multipart/mixed; boundary="=-cee/EmCTJ/vU7XRMMarL"
 
-I want the VPN server to redirect all the outgoing traffic to TOR. IPsec 
-VPN is listening at default 0.0.0.0:500 and TOR is listening at 
-localhost:9050. Ideally, all my clients would connect to the VPN server 
-which would then send all the traffic over TOR.
 
-I have very little knowledge of iptables. I tried understanding it but 
-it requires a lot of TCP/IP and networking knowledge which I lack. I was 
-wondering if someone here could provide me a solution, or atleast guide 
-me  in the right direction.
+--=-cee/EmCTJ/vU7XRMMarL
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Regards,
-Foxtrot
+Hi!
+
+The Netfilter project proudly presents:
+
+	ulogd 2.0.5
+
+This release fixes build on recent systems where Linux headers don't
+contain anymore ULOG header files. It also fixes JSON output on big
+endian system.
+
+A big thanks to Jimmy Jones, Vincent Bernat for their contributions. See
+ChangeLog that comes attached to this email for more details.
+
+You can download it from:
+
+http://www.netfilter.org/projects/ulogd/downloads.html
+ftp://ftp.netfilter.org/pub/ulogd/
+
+Have fun!
+--=20
+Eric Leblond <eric@regit.org>
+Blog: https://home.regit.org/
+
+--=-cee/EmCTJ/vU7XRMMarL
+Content-Disposition: attachment; filename="changes-ulogd-2.0.5.txt"
+Content-Type: text/plain; name="changes-ulogd-2.0.5.txt"; charset="UTF-8"
+Content-Transfer-Encoding: base64
+
+RXJpYyBMZWJsb25kICg0KToKICAgICAgZ2l0aWdub3JlOiBhZGQgbWFucGFnZQogICAgICBTZXQg
+cmVsZWFzZSBudW1iZXIgdG8gMi4wLjUuCiAgICAgIEFkZCBmbGFnIHRvIGRpc2FibGUgVUxPRyBp
+bnB1dCBwbHVnaW4KICAgICAgQWRkIG1pc3NpbmcgZW5hYmxldmFsIHRvIGNvbmZpZ3VyZQoKSmlt
+bXkgSm9uZXMgKDEpOgogICAgICBGaXggSlNPTiBvdXRwdXQgb24gYmlnIGVuZGlhbiBzeXN0ZW1z
+CgpQYWJsbyBOZWlyYSBBeXVzbyAoMSk6CiAgICAgIGluY2x1ZGU6IGtlZXAgYSBjb3B5IG9mIGxp
+bnV4L25ldGZpbHRlcl9pcHY0L2lwdF9VTE9HLmgKClZpbmNlbnQgQmVybmF0ICgxKToKICAgICAg
+Z2l0aWdub3JlOiBpZ25vcmUgZ2VuZXJhdGVkIGRvY3VtZW50YXRpb24KCg==
+
+
+--=-cee/EmCTJ/vU7XRMMarL--
+
+--=-j3PVfRiGTQbNzXmJyRnT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
+
+iEYEABECAAYFAlVPtDgACgkQnxA7CdMWjzJF3QCcCXab7R7495m2aDNKwcTtGr2u
+7BEAnR2l8irddUK20I/eMKYEMm7Hleox
+=d1Pp
+-----END PGP SIGNATURE-----
+
+--=-j3PVfRiGTQbNzXmJyRnT--
+
