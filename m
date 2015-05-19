@@ -1,39 +1,34 @@
-From: Tomek L <tl-netfilter@gazeta.pl>
-Subject: Re: FTP connection tracking doesn't work with nftables
-Date: Mon, 18 May 2015 07:58:54 +0200
-Message-ID: <CANfWn6Vtio5yQb8h1aEyj1dsO8+Z9o4vUERoHSV6447RA5OmmA@mail.gmail.com>
-References: <CANfWn6Wp0bJ5=Q=dw3L+ychgO0f4d5VCdu_gL_9tz3B3stvBvw@mail.gmail.com>
- <CANfWn6XaT_AnCYaikj+vKGiZJUSGE6hokean5v4orn0DxLv4iQ@mail.gmail.com>
- <CAJO99Tm9G3H+jMibWBj2pkAgg1SdFTVS_pqEQ6P=COMqe7Ppcg@mail.gmail.com>
- <CANfWn6W0XdeHUwWFWbYsXQta7O4KBZ0CahATetLZ553fHHd-Bg@mail.gmail.com>
- <55589864.2010008@plouf.fr.eu.org> <CANfWn6XQfrmDkYLiBOS8qQLLvngpC0iu5FAUQf-Hz=pE7uAcZA@mail.gmail.com>
- <5559014E.7070803@plouf.fr.eu.org>
+From: Shaun Crampton <shaun@cantab.net>
+Subject: ipset hash:net performance
+Date: Mon, 18 May 2015 22:39:15 -0700
+Message-ID: <CAB3ewxNnOq0GUaP79cWkqLGb=TD0eNspJXMTSrUakwRRSV_pcg@mail.gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <5559014E.7070803@plouf.fr.eu.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:sender:date:message-id:subject:from:to:content-type;
+        bh=D529ATYJy3+eBsCCV1+kBlx5Pt/1sMWIY1iU5/achWk=;
+        b=NVaZ1Wp8nGQI8lXv/GxmIz0PDSg9lR3HCOz5Xis3zwSr/uRMQgqbW5evyar8rzWcg7
+         fM2ioqRsaKROpCGjcRHnx4s13uqw1gODfeIY/V0Ld/48At3ay9KbBtDV1jUEg/bVi9bM
+         pEgdEwFRE5tax7TmsstgsWgRGVbPAkFkzOk00N+188Er5emH1fD0yd/Kw1GSXNnfI1/b
+         Rg6O+o3dDxUxFMnyNSnBSUT+OB6M82EV3UKixGiOlgWMd+j5mMFWbO2iACQuUiXqFc+N
+         83imdrW/1ssT6PINi3O3J7AV3I7Fi3GDv1bO6jXPiotAKbwALG1gv28+ShLasPXBwGlb
+         ZeOA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Cc: Tomek L <tl-netfilter@gazeta.pl>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: netfilter@vger.kernel.org
 
-I would say it is better to have high ports open on demand (after AUTH
-TLS) than have them open all the time. NFTables are now useless to me,
-as their FTP/TLS passive mode is not supported neither by helper or by
-"recent" extension.
+Hi,
 
-2015-05-17 22:59 GMT+02:00 Pascal Hambourg <pascal@plouf.fr.eu.org>:
-> Tomek L a =C3=A9crit :
->> I agree on source port issue, but I don't think that in case of TLS
->> there is nothing that can be done with FTP helper. Still we can assu=
-me
->> that just after TLS AUTH negotiation, client will connect on high po=
-rt
->> with new connection to server. Now we are in situation, where if TLS
->> is used, high ports on server side must be open all the time.
->
-> IMO, it is not much better to open all passive ports to any host whic=
-h
-> has established a connection to port 21 regardless of whether a
-> PASV/EPSV command was acknowledged by the server.
+The manpage for ipset's hash:net type says that "The lookup time grows
+linearly with the number of the different prefix values added to the
+set.".  Just wanted to check whether "prefix value" means the "prefix
+length" or whether it means "the value of the prefix as whole".
+
+As an example: if I have 10.0.0.0/8, 11.0.0.0/8 in my hash:net ipset
+then is that one "prefix value" (because they share "/8") or two
+(because they have two addresses)?
+
+Thanks!
