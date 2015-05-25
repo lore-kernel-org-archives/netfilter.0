@@ -1,96 +1,49 @@
-From: =?UTF-8?B?Tml5YXppIFPEsXJ0?= <nyzsirt@gmail.com>
-Subject: SynProxy Problem with Asymmetric dual bridge topology
-Date: Mon, 25 May 2015 12:55:48 +0300
-Message-ID: <5562F1A4.9080101@gmail.com>
+From: Nikolai Lusan <nikolai@lusan.id.au>
+Subject: nftables kernel integration tracking
+Date: Mon, 25 May 2015 21:44:44 +1000
+Message-ID: <1432554284.2897.2.camel@lusan.id.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="=-MvvWg35n5XHU/5Mtrn/H"
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=message-id:date:from:user-agent:mime-version:to:subject
-         :content-type:content-transfer-encoding;
-        bh=iHZME41ZiwGs/AEnpyTAm+2OL+zEMBUM/88InjYwjRE=;
-        b=0j/ismVQCthlkUvmnMfVWshJspNYlvHKlUMhk/KeLeacmUmUhjkB/VcQH37aAhvpPK
-         yAqHgCNf9R/BqMtrOoU7w4znymdplph7ESb0p0RTpWoqF1IZXwTZuyruBJgKF+aACoP8
-         AmAJazVchNflufXGnseCe9AlkhJRezGx5QV+XAtd5kP6MywOzFzB97EukyyWHOQn3TV7
-         2prNnqGrXDX5PytdXRXghFJlgRAzPnWkPFHOrQC87vosQRVbmfNnGawz65HQiT73xgUM
-         j3jNyY5A00UIoO7bbqgIMrJByL+OSVAaR4vY1uhKNhJDwQJDRKJT9iPZOsN1R6ORZI4c
-         SnCA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-Hi,
 
-I have a asymmetric dual bridge topology as shown below:
+--=-MvvWg35n5XHU/5Mtrn/H
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-                       -------
-                       |     |
-                       ---o--- 172.16.11.5
-                          |
-                          |
-                     -----o----- 172.16.11.6
-                     |         |
-                     |         | default gw 1.1.1.1
-                     |         |
-          1.1.1.2/30 --o----o--- 2.2.2.2/30
-                       |    |
-                       |    |
-                       |    | (enp10s0f0)
-                   ----o----o-----
-                   |             |
-                   |     XXX     |
-                   |             |
-                   |  br1   br0  | synproxy
-                   |             |
-                   ----o----o-----
-                       |    |
-                       |    |
-                       |    |
-          1.1.1.1/30 --o----o--- 2.2.2.1/30
-                     |         |
-                     |         | default gw 2.2.2.2
-                     |         |
-                     -----o----- 172.16.10.1
-                          |
-                          |
-                       ---o--- 172.16.10.6
-                       |     |
-                       -------
+Hey everybody,
+Is there some easy way to track the progress of nftables feature
+integration into the kernel tree?
 
-On all machines between 172.16.11.5 and 172.16.10.6
-"rp filtering" is off and "ip forwarding" is on.
-There is a machine at the middle of topology which is
-called "XXX" machine. XXX has two bridges and a SynProxy.
+--=20
+Nikolai Lusan <nikolai@lusan.id.au>
 
+--=-MvvWg35n5XHU/5Mtrn/H
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-When SynProxy is turned OFF on XXX, I can ping from
-172.16.11.5 to 172.16.10.6 and icmp packets follow
-this path: br1->172.16.10.1->172.16.10.6->172.16.10.1->br0.
-In addition, I can access from 172.16.11.5 to
-172.16.10.6 with ssh. So the TCP traffic works as I expect.
+-----BEGIN PGP SIGNATURE-----
+Version: GnuPG v2
 
+iQIcBAABCgAGBQJVYwssAAoJEJOjmtAqHQSLEksP/A6KXsTJSwrvFeHJGRdgzmnp
+50mufmuRf5XmPpCJWG3mHSJAST4OsJtIDv88MtYrRVqK3f/saIonXHqFSjvcguT7
+ON+BMR+duWOv5Exd03/igOMkOkISNpuK8zp1IGkfnB1dTuziVOjqAFk3GGBcPBIe
+CXigvg28p5AODvDwrko61UfF5pjWx1AZBcTPUmZYeTl1VGokGqh1ScN2DlAMMnuE
+AP43DVT9eisGAgziM3QZCRX3WEtzviMItd+avm0w156D5uuh4xR7B68RkDz7PTaP
+ZmahZlX0WnmfpouLlYYx68QFI/zoTzkpe/t7eMPI85B6Wh+Yzg2uAhWlBLcGM0PI
+0BwCZHTLzqKq4nReYy/7FWWwzTnTwU4cXNdZ4LdAdW+OQbBWsQrC3Ad7jaXz1C4H
+sPg8UlPTBS6952VItlqrOz3LLQSwZLPhs5iRQLO1DvS1t+WLkwKzX9EV+W+NqJWA
+xlWAmo6GA6c/1/WFEJ7/D0+xHsBH1zdXAvdKa8/rxiyuvOuO5VyWxePj3dg6fJGX
+1BFqPCKN9ZdoI48w4XSSpSwffpNhcy099vou/szrIyn8Faz4iHNQeVCsHUNI5rx0
+/+hrFmrchj98lfuRkOcl63Ppx0VIxbAjmK69pBN2L9c/wq6n23VKNnYEZ7pfUZg/
+pEQJb4YYuGXxSVJ5yc9a
+=5wzm
+-----END PGP SIGNATURE-----
 
-However, when SynProxy is turned ON on XXX, I can ping
-from 172.16.11.5 to 172.16.10.6 and icmp packets follow
-the same path. But I can not access from 172.16.11.5
-to 172.16.10.6 using ssh. This is because synproxy can
-not send syn ack replies through br1 iface. If I add a
-route for synack packets on XXX, i can connect from
-172.16.11.5 to 172.16.10.6 with ssh.
+--=-MvvWg35n5XHU/5Mtrn/H--
 
-route add 172.16.11.5 dev enp10s0f0
-
-
-But this is not acceptable because 172.16.11.0 network
-is cloud. So i could not add route all cloud network
-to route table and could not add mac address to arp
-table.
-
-How can I connect from 172.16.11.5 to the 172.16.10.6
-machine using ssh when SynProxy is turned ON on XXX?
-
-Thanks in advance,
-
-Niyazi
