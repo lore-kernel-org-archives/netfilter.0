@@ -1,42 +1,96 @@
-From: Yan Seiner <yan@seiner.com>
-Subject: proxy and quotas
-Date: Sun, 24 May 2015 12:11:03 -0700
-Message-ID: <55622247.90308@seiner.com>
+From: =?UTF-8?B?Tml5YXppIFPEsXJ0?= <nyzsirt@gmail.com>
+Subject: SynProxy Problem with Asymmetric dual bridge topology
+Date: Mon, 25 May 2015 12:55:48 +0300
+Message-ID: <5562F1A4.9080101@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=message-id:date:from:user-agent:mime-version:to:subject
+         :content-type:content-transfer-encoding;
+        bh=iHZME41ZiwGs/AEnpyTAm+2OL+zEMBUM/88InjYwjRE=;
+        b=0j/ismVQCthlkUvmnMfVWshJspNYlvHKlUMhk/KeLeacmUmUhjkB/VcQH37aAhvpPK
+         yAqHgCNf9R/BqMtrOoU7w4znymdplph7ESb0p0RTpWoqF1IZXwTZuyruBJgKF+aACoP8
+         AmAJazVchNflufXGnseCe9AlkhJRezGx5QV+XAtd5kP6MywOzFzB97EukyyWHOQn3TV7
+         2prNnqGrXDX5PytdXRXghFJlgRAzPnWkPFHOrQC87vosQRVbmfNnGawz65HQiT73xgUM
+         j3jNyY5A00UIoO7bbqgIMrJByL+OSVAaR4vY1uhKNhJDwQJDRKJT9iPZOsN1R6ORZI4c
+         SnCA==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"; format="flowed"
 To: netfilter@vger.kernel.org
 
-I'm trying to get quotas working.  Earlier I posted a query about the 
-proxy module not working correctly.  In my attempts to diagnose the 
-problem I came up with another issue.
+Hi,
 
-Right now, the 'guests' - those users who do not have credentials - use 
-an unsecured network.  I am trying to figure out how to limit them to a 
-quota.
+I have a asymmetric dual bridge topology as shown below:
 
-However, I also have  proxy which gives my guests the ability to get to 
-the internet either directly through the FORWARD chain or via the proxy 
-through the INPUT chain.
+                       -------
+                       |     |
+                       ---o--- 172.16.11.5
+                          |
+                          |
+                     -----o----- 172.16.11.6
+                     |         |
+                     |         | default gw 1.1.1.1
+                     |         |
+          1.1.1.2/30 --o----o--- 2.2.2.2/30
+                       |    |
+                       |    |
+                       |    | (enp10s0f0)
+                   ----o----o-----
+                   |             |
+                   |     XXX     |
+                   |             |
+                   |  br1   br0  | synproxy
+                   |             |
+                   ----o----o-----
+                       |    |
+                       |    |
+                       |    |
+          1.1.1.1/30 --o----o--- 2.2.2.1/30
+                     |         |
+                     |         | default gw 2.2.2.2
+                     |         |
+                     -----o----- 172.16.10.1
+                          |
+                          |
+                       ---o--- 172.16.10.6
+                       |     |
+                       -------
 
-So....  If I want to limit a user to a hard quota, how should I 
-structure my iptables rules?
+On all machines between 172.16.11.5 and 172.16.10.6
+"rp filtering" is off and "ip forwarding" is on.
+There is a machine at the middle of topology which is
+called "XXX" machine. XXX has two bridges and a SynProxy.
 
-Not all packets go through the PREROUTING chain, and once the routing 
-decision is done, they go either through the INPUT chain to the proxy or 
-through the FORWARD chain to the outside via POSTROUTING.
 
-On the return leg they repeat the process; come in on PREROUTING, get 
-de-MASQ'd, and either go through FORWARD or INPUT and then out to the 
-guest user via POSTROUTING.
+When SynProxy is turned OFF on XXX, I can ping from
+172.16.11.5 to 172.16.10.6 and icmp packets follow
+this path: br1->172.16.10.1->172.16.10.6->172.16.10.1->br0.
+In addition, I can access from 172.16.11.5 to
+172.16.10.6 with ssh. So the TCP traffic works as I expect.
 
-I could put my accounting rules in POSTROUTING but then I lose the 
-source or destination information.
 
-Is there a place in PRE- or POSTROUTING that is guaranteed to see every 
-packet?
+However, when SynProxy is turned ON on XXX, I can ping
+from 172.16.11.5 to 172.16.10.6 and icmp packets follow
+the same path. But I can not access from 172.16.11.5
+to 172.16.10.6 using ssh. This is because synproxy can
+not send syn ack replies through br1 iface. If I add a
+route for synack packets on XXX, i can connect from
+172.16.11.5 to 172.16.10.6 with ssh.
 
-Thanks.
+route add 172.16.11.5 dev enp10s0f0
+
+
+But this is not acceptable because 172.16.11.0 network
+is cloud. So i could not add route all cloud network
+to route table and could not add mac address to arp
+table.
+
+How can I connect from 172.16.11.5 to the 172.16.10.6
+machine using ssh when SynProxy is turned ON on XXX?
+
+Thanks in advance,
+
+Niyazi
