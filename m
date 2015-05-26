@@ -1,54 +1,72 @@
-From: prmarino1@gmail.com
+From: shawn wilson <ag4ve.us@gmail.com>
 Subject: Re: Netfilter Book
-Date: Tue, 26 May 2015 07:57:35 -0400
-Message-ID: <20150526115735.5931153.77710.10851@gmail.com>
-References: <fa89ed417b780ec4b94c17bddf2025a6.cm1@countermail.com>
+Date: Tue, 26 May 2015 12:07:03 -0400
+Message-ID: <CAH_OBifrp5LmEtYMabFc+_Ce86io9dNYK5u=W3c28KijL32xig@mail.gmail.com>
+References: <fa89ed417b780ec4b94c17bddf2025a6.cm1@countermail.com> <20150526115735.5931153.77710.10851@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=content-type:mime-version:content-transfer-encoding:message-id:date
-         :subject:from:in-reply-to:references:to;
-        bh=97dY6bah+BtYKK+wiZtpJ7VzeU54ce2faF/k7uaSMkU=;
-        b=Nd9jdbL6hsPnYJYnt7VvX8iJky2tIDNpi5HJ4a73Keu/tVmDQ2cmkUBb8T0VE+ToIF
-         0fhguNfYo24t2PCI6Hx5dDJgoBsKSSCqIUZNtBd3AQmd9hphIMIS+luKQVdXNnTU/ZiA
-         Yt2gaR4BVVFf/MGkkCuaiAEN1TWjUen5uPNWllv8a4NRMaA90T5iRE8hErMCzQ34yjCw
-         pBOteVpdeFO8m347wotWQ3O3/b6GHoNKPpfi+GbTwWh1PPPabxZoh+AstqjpMkt83RPf
-         k2fzxSKz/hO76tIfdPiV60LRzNa7+702zGp7F83VOMU27SZqzNq9lNvD01eBuPrSRwe+
-         HKVg==
-In-Reply-To: <fa89ed417b780ec4b94c17bddf2025a6.cm1@countermail.com>
+        h=mime-version:in-reply-to:references:from:date:message-id:subject:to
+         :cc:content-type:content-transfer-encoding;
+        bh=wlU7Ad4nRitc4XKe2xUFk0zPxotKCerSvWopWd0nB4o=;
+        b=ey52ibr50VyJkoJcGA3JYGipfrwf1QPL/X/uUW+vLJf35S+ndVjVVVIEb814tUoYOk
+         cJYPl7uv6h9TsEvIWOaXZbcijxD1cZnkqvZUWlkNhdNABPkjMHsbnGsQJIV/WI07/H4J
+         5Iwusgw/uhNcL4YH8ovSifV1J9Z82K9iwdYz5oniIaorBAK+orpFheBcrlrhGa6NHe5N
+         m1DxCNMiQq77KhxaexVHJwwvZPryPbPf13pNC8Q1dQfLLPdQplEEd9wMF8UyPM3sCbX7
+         G1gJQcup0C7SLO/Gr9hBJycTwVMzond1m0YuG1GzONHzzCVHl5CBM854v6BlF2bZ+Bi1
+         3guA==
+In-Reply-To: <20150526115735.5931153.77710.10851@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: raskolnikov@countermail.com, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="windows-1252"
+To: prmarino1@gmail.com
+Cc: raskolnikov@countermail.com, "netfilter@vger.kernel.org" <netfilter@vger.kernel.org>
 
-I always advise people to start =E2=80=8Ewith Troubleshooting Linux fir=
-ewalls published by adison wesly, It's old but accurate and a good foun=
-dation for understanding the principals. The next one is an iptables bo=
-ok published by Novel press.
+Also: http://www.amazon.com/Linux-Firewalls-Detection-Response-iptables=
+/dp/1593271417
 
-Sent from my BlackBerry 10 smartphone.
-=C2=A0 Original Message =C2=A0
-=46rom: raskolnikov@countermail.com
-Sent: Monday, May 25, 2015 14:28
-To: netfilter@vger.kernel.org
-Subject: Netfilter Book
+Which shows ipt, goes into what some nmap scans look like and
+surrounding tools/scripts (most of which the author wrote).
 
-Hi all, hope you're ok :)
+IDR if it goes into iptables-save and other xtables-multi commands,
+but I liked it as a good, short read with not too many language
+errors.
 
-I'm not sure if this is the right place, but i have looking for books a=
-bout netfilter, iptables and so on, unfortunetely i didn't find anythin=
-g recent about the subject and i'd like to know if you could give me so=
-me tips about good netfilter books.
-
-Thanks in advance!
-
-All the best!
-
-Alan
-
---
-To unsubscribe from this list: send the line "unsubscribe netfilter" in
-the body of a message to majordomo@vger.kernel.org
-More majordomo info at http://vger.kernel.org/majordomo-info.html
+On Tue, May 26, 2015 at 7:57 AM,  <prmarino1@gmail.com> wrote:
+> I always advise people to start =E2=80=8Ewith Troubleshooting Linux f=
+irewalls published by adison wesly, It's old but accurate and a good fo=
+undation for understanding the principals. The next one is an iptables =
+book published by Novel press.
+>
+> Sent from my BlackBerry 10 smartphone.
+>   Original Message
+> From: raskolnikov@countermail.com
+> Sent: Monday, May 25, 2015 14:28
+> To: netfilter@vger.kernel.org
+> Subject: Netfilter Book
+>
+> Hi all, hope you're ok :)
+>
+> I'm not sure if this is the right place, but i have looking for books=
+ about netfilter, iptables and so on, unfortunetely i didn't find anyth=
+ing recent about the subject and i'd like to know if you could give me =
+some tips about good netfilter books.
+>
+> Thanks in advance!
+>
+> All the best!
+>
+> Alan
+>
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at http://vger.kernel.org/majordomo-info.html
+> --
+> To unsubscribe from this list: send the line "unsubscribe netfilter" =
+in
+> the body of a message to majordomo@vger.kernel.org
+> More majordomo info at  http://vger.kernel.org/majordomo-info.html
