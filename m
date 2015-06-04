@@ -1,31 +1,33 @@
-From: Jozsef Kadlecsik <kadlec@blackhole.kfki.hu>
-Subject: Re: TCP sequence checking
-Date: Wed, 3 Jun 2015 21:00:01 +0200 (CEST)
-Message-ID: <alpine.DEB.2.10.1506032057540.24366@blackhole.kfki.hu>
-References: <556EFE9A.2020003@students.fhnw.ch> <alpine.DEB.2.10.1506031915590.23917@blackhole.kfki.hu> <556F3ED5.6000205@students.fhnw.ch>
+From: causeless <causeless@gmail.com>
+Subject: length module documentation mismatch
+Date: Thu, 04 Jun 2015 23:56:18 +0900
+Message-ID: <55706712.7040705@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <556F3ED5.6000205@students.fhnw.ch>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=message-id:date:from:user-agent:mime-version:to:subject
+         :content-type:content-transfer-encoding;
+        bh=odTE1zH4NGOmAPyVfBXrqU9UTrEiUoHErM5LWr9zHUA=;
+        b=PcpHs3Qi9pfNJ0/Fptu+gZNdVd/RpoKLqY8TaCYfTBsnuoRu5AKXZtzYcP7LG147F0
+         iA3JG/LFBhEKwLRzjdF5do/v9CDh/Tta4s7/F4rb7duCGSK5BxD4D+ltLFXMLBHeGEuN
+         qEbl7AQcaxZ6/GCzy7dC0Q6EyK7T2yiYMzg2bHiXMWDR7TMdOLW9UP5+QGRFY+AxRwtx
+         6qNt1nyQwn28K0YfW9VUT1N33nvFVeYT6p+rrI+yE8Vjk6qaK/9GFLU6UU3AyFqoE71Y
+         MU7tT68rK4ciFMx4p1WymDbfFPRhU/b+l36GdSleGEWDfAZ9cuv4NGf28dGeSliEhfhQ
+         MOlg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: TEXT/PLAIN; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: "Lukas Hubschmid (s)" <lukas.hubschmid@students.fhnw.ch>
-Cc: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="us-ascii"
+To: netfilter@vger.kernel.org
 
-On Wed, 3 Jun 2015, Lukas Hubschmid (s) wrote:
+In iptables-extension man page, it says length module matches the payload of L3.
+but xt_length.c matches the total length of IPv4/v6 packet.
 
-> I am not quite sure if I read the C-code correctly - so TCP sequence checking
-> seems to be enabled by default, right? Or do I need to set some flag when
-> adding a rule?
+https://github.com/torvalds/linux/blob/4f671fe2f9523a1ea206f63fe60a7c7b3a56d5c7/net/netfilter/xt_length.c#L27
+>	u_int16_t pktlen = ntohs(ip_hdr(skb)->tot_len);
 
-No, it's default enabled. You can (partiall) switch it off globally via a 
-sysctl setting, not with some flag in a rule.
-
-Best regards,
-Jozsef
--
-E-mail  : kadlec@blackhole.kfki.hu, kadlecsik.jozsef@wigner.mta.hu
-PGP key : http://www.kfki.hu/~kadlec/pgp_public_key.txt
-Address : Wigner Research Centre for Physics, Hungarian Academy of Sciences
-          H-1525 Budapest 114, POB. 49, Hungary
+http://git.netfilter.org/iptables/tree/extensions/libxt_length.man
+> This module matches the length of the layer-3 payload (e.g. layer-4 packet)
+should have been, perhaps,
+> This module matches the length of the layer-3 packet (e.g. layer-2 payload)
