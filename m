@@ -1,33 +1,28 @@
-From: causeless <causeless@gmail.com>
-Subject: length module documentation mismatch
-Date: Thu, 04 Jun 2015 23:56:18 +0900
-Message-ID: <55706712.7040705@gmail.com>
+From: aikipooh@gmail.com (=?utf-8?B?0K7RgNC40Lkg0J/Rg9GF0LDQu9GM0YHQutC4?=
+	=?utf-8?B?0Lk=?=)
+Subject: Mangling packets & routing in kernels>3.17
+Date: Thu, 04 Jun 2015 21:47:26 +0300
+Message-ID: <87h9qnz4xt.fsf@gmail.com>
 Mime-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=message-id:date:from:user-agent:mime-version:to:subject
-         :content-type:content-transfer-encoding;
-        bh=odTE1zH4NGOmAPyVfBXrqU9UTrEiUoHErM5LWr9zHUA=;
-        b=PcpHs3Qi9pfNJ0/Fptu+gZNdVd/RpoKLqY8TaCYfTBsnuoRu5AKXZtzYcP7LG147F0
-         iA3JG/LFBhEKwLRzjdF5do/v9CDh/Tta4s7/F4rb7duCGSK5BxD4D+ltLFXMLBHeGEuN
-         qEbl7AQcaxZ6/GCzy7dC0Q6EyK7T2yiYMzg2bHiXMWDR7TMdOLW9UP5+QGRFY+AxRwtx
-         6qNt1nyQwn28K0YfW9VUT1N33nvFVeYT6p+rrI+yE8Vjk6qaK/9GFLU6UU3AyFqoE71Y
-         MU7tT68rK4ciFMx4p1WymDbfFPRhU/b+l36GdSleGEWDfAZ9cuv4NGf28dGeSliEhfhQ
-         MOlg==
+        h=from:to:subject:date:message-id:user-agent:mime-version
+         :content-type;
+        bh=PAKUyafBfPHsr5dEc4/VvcYShJhA0Yp6wCMnqq4vHFU=;
+        b=BHXUbgeZoevE7O9I2pQtavpLoGp8yuCI0btrEjkToHJnQ/bKGOnVYX4SdEZJlrdvP0
+         9ax1agxbslt1lmdH0dup53DsnH9AvHNSllrCmrfGOqeAcsBngnY5UdzDYGmixota0GSE
+         turwZ1WdWoxALTqYgjsWr9E4E84W25xj/G59LCermuhudt+dzrlG0g5TRH9scc7O+jeN
+         QAdbF0oRQJWDs+pibq/qyehGgaZS6seT2Zu3yMh/3U/YQzMjsUe3qzL3VKHY1lOHYHpR
+         1P1qnKjhDhLkWRT5o6TK8RoVa6AexZOmTyyF4kSHUGgg/X5wSKXftXOhDKEUss+tE0oz
+         q+yQ==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-In iptables-extension man page, it says length module matches the payload of L3.
-but xt_length.c matches the total length of IPv4/v6 packet.
+I have an application and an iptables kernel module to change src/dst addr/port of the packets going from different interfaces. Application uses libnetfilter_queue. It worked ok with 3.17.2 (embedded gentoo) where kernel module works and also on 3.14 on regular linux where libnetfilter application works. After I've upgraded to 3.18 both stopped working. The packet comes, I change addresses and ports and don't see it coming out. I've tried to route it manually in kernel module but it didn't help.
+Locally originated packets were mangled and sent out correctly with the module. So it must be something with the forwarding/routing part probably.
 
-https://github.com/torvalds/linux/blob/4f671fe2f9523a1ea206f63fe60a7c7b3a56d5c7/net/netfilter/xt_length.c#L27
->	u_int16_t pktlen = ntohs(ip_hdr(skb)->tot_len);
-
-http://git.netfilter.org/iptables/tree/extensions/libxt_length.man
-> This module matches the length of the layer-3 payload (e.g. layer-4 packet)
-should have been, perhaps,
-> This module matches the length of the layer-3 packet (e.g. layer-2 payload)
+Can you think of any changes between 3.17 and 3.18 that could have broken it?
