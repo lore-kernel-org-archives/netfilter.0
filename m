@@ -1,62 +1,49 @@
-From: alvin <alvin.sm@Mail.Linux-Consulting.com>
+From: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
 Subject: Re: iptables based appliances - ipset
-Date: Mon, 8 Jun 2015 07:02:12 -0700 (PDT)
-Message-ID: <201506081402.t58E2CrZ021258@Mail.Linux-Consulting.com>
+Date: Mon, 8 Jun 2015 12:02:42 -0400
+Message-ID: <20150608120242.577d3ff1@playground>
 References: <20150607155120.43e0eab8@playground>
+	<201506081402.t58E2CrZ021258@Mail.Linux-Consulting.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <20150607155120.43e0eab8@playground>
+In-Reply-To: <201506081402.t58E2CrZ021258@Mail.Linux-Consulting.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
-To: "Neal P. Murphy" <neal.p.murphy@alum.wpi.edu>
-Cc: netfilter@vger.kernel.org, alvin <alvin.sm@Mail.Linux-Consulting.com>
+To: alvin <alvin.sm@Mail.Linux-Consulting.com>
+Cc: netfilter@vger.kernel.org
 
+On Mon, 8 Jun 2015 07:02:12 -0700 (PDT)
+alvin <alvin.sm@Mail.Linux-Consulting.com> wrote:
 
-hi neal
-
-> On Sun, 7 Jun 2015 08:04:40 -0700 (PDT)
-....
-> > even if the src IP# might be spoof'd, you, i still do NOT want those
-> > incoming DDoS attacks coming in at 1,000 or 10,000 packets per second
 > 
-> Yes, 1000 rules is a little overboard.
+> hi neal
+> 
+> > On Sun, 7 Jun 2015 08:04:40 -0700 (PDT)
+> ....
+> > > even if the src IP# might be spoof'd, you, i still do NOT want
+> > > those incoming DDoS attacks coming in at 1,000 or 10,000 packets
+> > > per second
+> > 
+> > Yes, 1000 rules is a little overboard.
+> 
+> and if there's 10,000 iptables rules, it's galacticly overboard ?
+> 
+> 	- it was also a test to see if iptables would fail
+> 	and it didnt seem to break iptables
 
-and if there's 10,000 iptables rules, it's galacticly overboard ?
+A few years ago, I tested iptables and a similar program. I used each
+to add 250 000 rules (don't remember if I tried 1M). I found they had
+to be added in batches of 15 000 to 20 000. (And it turned out that the
+other program took about 5% less time than iptables to complete.)
 
-	- it was also a test to see if iptables would fail
-	and it didnt seem to break iptables
+> ...
+> my other iptables todo would be to AutoExpire the DDoS attackers 
+> to minimize the list of active ddos attackers  ... manually deleting
+> the attackers that went away is for the birds :-)
 
-> Have you tried ipset? Last I knew, it becomes more efficient than
-> individual rules when there are more than 16 IPs to check.
+IIRC, ipset has a way to auto-expire entries; I think it is a set
+setting.
 
-ipset is on the todo list ... but since most of the heavy DDoS attackers,
-5,000 or ddos packets per hour, that i see are using just 1 ip# out of 
-thier class-C, i thought ipset might not work as good since there's
-no "classC" to tarpit ... 
-
-i'd assume the script kiddies are the ones using the zombie hosts at 
-*.11 *.12 *.13 *.14 doing silly things like portscans
-
-my other iptables todo would be to AutoExpire the DDoS attackers 
-to minimize the list of active ddos attackers  ... manually deleting
-the attackers that went away is for the birds :-)
-
-	iptables -N AutoExpire
-	iptables -p tcp -A AutoExpire attacker0001
-	iptables -p tcp -A AutoExpire attacker0002
-	iptables -p tcp -A AutoExpire attacker0003
-	iptables -p tcp -A AutoExpire attacker2000	# 2,000 ddos attackers
-	...
-	# tarpit if still attacking within 24hrs
-	iptables -p tcp ... -m recent --name AutoExpire --rcheck --seconds 86400  -j TARPIT
-	iptables -p tcp ... -m recent --name AutoExpire --remove
-	iptables -p tcp ... -m recent --name AutoExpire --set  -j TARPIT 
-
-one day, i will need to sit down figure out the --remove syntax 
-for 5,000 DDoS attackers
-
-thanx
-alvin
-IPtables-BlackList.net
+N
