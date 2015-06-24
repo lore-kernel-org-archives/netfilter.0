@@ -1,61 +1,46 @@
-From: Andreas Herz <andi@geekosphere.org>
-Subject: Question about packet processing in iptables/netfilter
-Date: Wed, 24 Jun 2015 14:51:59 +0200
-Message-ID: <20150624125159.GN21348@kvmbude>
+From: Christian Ruppert <idl0r@qasl.de>
+Subject: Re: SYNPROXY *NAT/redirects etc.
+Date: Wed, 24 Jun 2015 20:07:35 +0200
+Message-ID: <8abd0f5b62a44563cb0de95f9a39ee6c@qasl.de>
+References: <e662686ca44f5edf617a50d78fa4444d@qasl.de>
+ <5589D08C.1000601@plouf.fr.eu.org>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
+In-Reply-To: <5589D08C.1000601@plouf.fr.eu.org>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"; format="flowed"
+To: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Cc: netfilter@vger.kernel.org
 
-Hi,
+Hi Pascal,
 
-i'm trying to understand the packet processing in iptables/netfilter in
-regard to sequential and parallel processing.
+On 2015-06-23 23:33, Pascal Hambourg wrote:
+> Christian Ruppert a =C3=A9crit :
+>>=20
+>> I noticed that neither *NAT nor redirects will work when using the
+>> SYNPROXY module with e.g. those settings:
+>> net.netfilter.nf_conntrack_tcp_loose=3D0
+>> sysctl -w net.ipv4.tcp_syncookies=3D1
+>> sysctl -w net.netfilter.nf_conntrack_tcp_loose=3D0
+>> sysctl -w net.ipv4.tcp_timestamps=3D1
+>>=20
+>> iptables -t raw -I PREROUTING -p tcp -m tcp --syn -j CT --notrack
+>=20
+> This rule disables connection tracking which is required for stateful
+> NAT operation.
 
-I know the packet flow from raw -> mangle -> nat -> filter etc. as shown
-in the graph:
+Thanks! From what I've seen/read, this rule is required or am I wrong?=20
+It needs to do the complete handshake and upon success it will=20
+pass/forward the connection or act somehow like a real proxy.
 
-https://en.wikipedia.org/wiki/File:Netfilter-packet-flow.svg
+>=20
+>> iptables -I INPUT -p tcp -m tcp -m conntrack --ctstate=20
+>> INVALID,UNTRACKED
+>> -j SYNPROXY --sack-perm --timestamp --wscale 7 --mss 1460
+>> iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
 
-What i want to know is the processing of successive packets. Are they
-processed packet after packet sequentially or in parallel (on a normal
-intel nic without special multiqueue support)?
-
-Let's take an example with an scan from one source 1.0.0.1 to X
-destinations 2.0.0.1-2.0.0.100. 
-
-Does the first packet A (1.0.0.1 - 2.0.0.1) have to go through every
-matching rule before the second packet B (1.0.0.1 - 2.0.0.2) gets
-analysed?
-Or does netfilter analyse B already while A is going through the
-ruleset?
-And is it possible that B (or any other following packet) overhauls A?
-Or is it limited to the tables like mangle, nat, filter, so A goes
-through mangle and as soon as A enters nat B enters mangle and waits
-until A went through nat table to enter itself?
-
-The reason is that with a rather huge ruleset i get some conditions that
-it looks like parallel processing or at least the way witht he dedicated
-tables.
-
-A ruleset might look like:
-
-a) iptables -t mangle -m set --match-set test src -j DROP
-[...]
-z) iptables -t filter -m foobar -j SET --add-set test src
-
-Is it possible that packet B already got to the rule a) and skip the
-drop while packet A did not reach the rule z) although it would have
-matched and thus B should have been dropped?
-This wouldn't be possible if B waits for A to finish it processing but
-this would be rather bad in terms of perfomance although it would
-prevent the "race condition".
-
-Thanks so far :)
-
--- 
-Andreas Herz
+--=20
+Regards,
+Christian Ruppert
