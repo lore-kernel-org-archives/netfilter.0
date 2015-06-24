@@ -1,35 +1,26 @@
-From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: SYNPROXY *NAT/redirects etc.
-Date: Tue, 23 Jun 2015 23:33:00 +0200
-Message-ID: <5589D08C.1000601@plouf.fr.eu.org>
-References: <e662686ca44f5edf617a50d78fa4444d@qasl.de>
+From: Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: nftables kernel integration tracking
+Date: Wed, 24 Jun 2015 10:48:55 +0200
+Message-ID: <20150624083900.GA3896@salvia>
+References: <1432554284.2897.2.camel@lusan.id.au>
 Mime-Version: 1.0
-Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <e662686ca44f5edf617a50d78fa4444d@qasl.de>
+Content-Disposition: inline
+In-Reply-To: <1432554284.2897.2.camel@lusan.id.au>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="iso-8859-1"
-To: Christian Ruppert <idl0r@qasl.de>
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
+To: Nikolai Lusan <nikolai@lusan.id.au>
 Cc: netfilter@vger.kernel.org
 
-Christian Ruppert a =E9crit :
->=20
-> I noticed that neither *NAT nor redirects will work when using the=20
-> SYNPROXY module with e.g. those settings:
-> net.netfilter.nf_conntrack_tcp_loose=3D0
-> sysctl -w net.ipv4.tcp_syncookies=3D1
-> sysctl -w net.netfilter.nf_conntrack_tcp_loose=3D0
-> sysctl -w net.ipv4.tcp_timestamps=3D1
->=20
-> iptables -t raw -I PREROUTING -p tcp -m tcp --syn -j CT --notrack
+On Mon, May 25, 2015 at 09:44:44PM +1000, Nikolai Lusan wrote:
+> Hey everybody,
+> Is there some easy way to track the progress of nftables feature
+> integration into the kernel tree?
 
-This rule disables connection tracking which is required for stateful
-NAT operation.
+I have just quickly created this section on the nftables documentation site:
 
-> iptables -I INPUT -p tcp -m tcp -m conntrack --ctstate INVALID,UNTRAC=
-KED=20
-> -j SYNPROXY --sack-perm --timestamp --wscale 7 --mss 1460
-> iptables -A INPUT -m conntrack --ctstate INVALID -j DROP
+http://wiki.nftables.org/wiki-nftables/index.php/Main_Page#Development_progress
 
-
+We'll be enhancing this progressively.
