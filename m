@@ -1,26 +1,31 @@
-From: Pablo Neira Ayuso <pablo@netfilter.org>
-Subject: Re: nftables kernel integration tracking
-Date: Wed, 24 Jun 2015 10:48:55 +0200
-Message-ID: <20150624083900.GA3896@salvia>
-References: <1432554284.2897.2.camel@lusan.id.au>
+From: =?UTF-8?Q?Humberto_Juc=C3=A1?= <betolj@gmail.com>
+Subject: ndpi-netfilter v2.0
+Date: Wed, 24 Jun 2015 07:04:12 -0400
+Message-ID: <CACuyg24AUA7r34puJ7bOhD1tgRvqtr1LyK+M3q+anrHom=q04Q@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <1432554284.2897.2.camel@lusan.id.au>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=6mdMgqB89rEBzGKjY7HRu7q4PwUmS1IWyTqU9f56UZ4=;
+        b=0Av/l4RMIopof2+1WDHZUBG7jIB4uB01w9WDfE6wDT8FTfynCeVifUUAFxN9Jau7tE
+         g8aSGcanX6+ECyAQQvzqJYaxWE/8gNq0Qu7YSY6UZYgJLRtN7+SyoaKJhKVPJvxt/CbT
+         X0JGynVlrk2rBlrBBV19C+xY0t7BjI2jKSEP/uvGE114dxJq7Kckm9eeMZL9e8UThCc8
+         TNoBF/yz2Uv0KiOB8LkhCK6qgLEa4bhwfgJU5LA9S3DtSy12IOEED5jhSNtwq0T6pLfE
+         45WO8DTei6ZwIXZvsNXszMyAqsZcWZvDya7+DvyVeYO7zKaWoqRNkxmJqHK0lCnZLzEi
+         Jmeg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: 7bit
-To: Nikolai Lusan <nikolai@lusan.id.au>
-Cc: netfilter@vger.kernel.org
+To: netfilter@vger.kernel.org
 
-On Mon, May 25, 2015 at 09:44:44PM +1000, Nikolai Lusan wrote:
-> Hey everybody,
-> Is there some easy way to track the progress of nftables feature
-> integration into the kernel tree?
+Hi,
 
-I have just quickly created this section on the nftables documentation site:
+I made some fixes into my ndpi-netfilter fork and improve detection
+system for http hosts. In this version, i removed the code that
+requires kernel patch and include a new garbage collector to solve
+idle flows. And force the update flow for each new connection.
 
-http://wiki.nftables.org/wiki-nftables/index.php/Main_Page#Development_progress
-
-We'll be enhancing this progressively.
+It is working very well in my tests.
+https://github.com/betolj/ndpi-netfilter
