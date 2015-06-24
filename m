@@ -1,19 +1,10 @@
-From: =?UTF-8?Q?Humberto_Juc=C3=A1?= <betolj@gmail.com>
-Subject: ndpi-netfilter v2.0
-Date: Wed, 24 Jun 2015 07:04:12 -0400
-Message-ID: <CACuyg24AUA7r34puJ7bOhD1tgRvqtr1LyK+M3q+anrHom=q04Q@mail.gmail.com>
+From: Andreas Herz <andi@geekosphere.org>
+Subject: Question about packet processing in iptables/netfilter
+Date: Wed, 24 Jun 2015 14:51:59 +0200
+Message-ID: <20150624125159.GN21348@kvmbude>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
-        bh=6mdMgqB89rEBzGKjY7HRu7q4PwUmS1IWyTqU9f56UZ4=;
-        b=0Av/l4RMIopof2+1WDHZUBG7jIB4uB01w9WDfE6wDT8FTfynCeVifUUAFxN9Jau7tE
-         g8aSGcanX6+ECyAQQvzqJYaxWE/8gNq0Qu7YSY6UZYgJLRtN7+SyoaKJhKVPJvxt/CbT
-         X0JGynVlrk2rBlrBBV19C+xY0t7BjI2jKSEP/uvGE114dxJq7Kckm9eeMZL9e8UThCc8
-         TNoBF/yz2Uv0KiOB8LkhCK6qgLEa4bhwfgJU5LA9S3DtSy12IOEED5jhSNtwq0T6pLfE
-         45WO8DTei6ZwIXZvsNXszMyAqsZcWZvDya7+DvyVeYO7zKaWoqRNkxmJqHK0lCnZLzEi
-         Jmeg==
+Content-Disposition: inline
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
@@ -22,10 +13,49 @@ To: netfilter@vger.kernel.org
 
 Hi,
 
-I made some fixes into my ndpi-netfilter fork and improve detection
-system for http hosts. In this version, i removed the code that
-requires kernel patch and include a new garbage collector to solve
-idle flows. And force the update flow for each new connection.
+i'm trying to understand the packet processing in iptables/netfilter in
+regard to sequential and parallel processing.
 
-It is working very well in my tests.
-https://github.com/betolj/ndpi-netfilter
+I know the packet flow from raw -> mangle -> nat -> filter etc. as shown
+in the graph:
+
+https://en.wikipedia.org/wiki/File:Netfilter-packet-flow.svg
+
+What i want to know is the processing of successive packets. Are they
+processed packet after packet sequentially or in parallel (on a normal
+intel nic without special multiqueue support)?
+
+Let's take an example with an scan from one source 1.0.0.1 to X
+destinations 2.0.0.1-2.0.0.100. 
+
+Does the first packet A (1.0.0.1 - 2.0.0.1) have to go through every
+matching rule before the second packet B (1.0.0.1 - 2.0.0.2) gets
+analysed?
+Or does netfilter analyse B already while A is going through the
+ruleset?
+And is it possible that B (or any other following packet) overhauls A?
+Or is it limited to the tables like mangle, nat, filter, so A goes
+through mangle and as soon as A enters nat B enters mangle and waits
+until A went through nat table to enter itself?
+
+The reason is that with a rather huge ruleset i get some conditions that
+it looks like parallel processing or at least the way witht he dedicated
+tables.
+
+A ruleset might look like:
+
+a) iptables -t mangle -m set --match-set test src -j DROP
+[...]
+z) iptables -t filter -m foobar -j SET --add-set test src
+
+Is it possible that packet B already got to the rule a) and skip the
+drop while packet A did not reach the rule z) although it would have
+matched and thus B should have been dropped?
+This wouldn't be possible if B waits for A to finish it processing but
+this would be rather bad in terms of perfomance although it would
+prevent the "race condition".
+
+Thanks so far :)
+
+-- 
+Andreas Herz
