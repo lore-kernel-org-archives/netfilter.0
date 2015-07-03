@@ -1,7 +1,7 @@
 From: Andreas Schultz <aschultz@tpip.net>
-Subject: nft: bitoperations between ct and nf mark
-Date: Fri, 3 Jul 2015 11:23:17 +0200 (CEST)
-Message-ID: <1998516528.1793161.1435915397699.JavaMail.zimbra@tpip.net>
+Subject: nft: ranges in named maps?
+Date: Fri, 3 Jul 2015 13:55:31 +0200 (CEST)
+Message-ID: <1197812766.1794730.1435924531931.JavaMail.zimbra@tpip.net>
 Mime-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Return-path: <netfilter-owner@vger.kernel.org>
@@ -12,22 +12,14 @@ To: netfilter@vger.kernel.org
 
 Hi,
 
-With iptables CONNMARK, one could something like:
+How do I specify ranges in named maps?
 
- ... -j CONNMARK --restore-mark --nfmask 0xAA --ctmask 0x0F
+I would like to have something like this:
 
-There seems to be no way to replicate this with nftables meta ct
-and mark.
+nft add map nat setnat { type ipv4_addr . inet_service : ipv4_addr\;}
+nft add element net setnat { 10.10.0.1 . 1000-2000 : 192.168.1.1 };
 
-Attemting so use something like:
+However, it seems I can't tell nft in any way that inet_service
+is supposed to be a range.
 
-meta mark set (meta & 0xffffff55) | (ct mark & 0xfffffff0)
-
-results in:
-
-> Error: Right hand side of binary operation (&) must be constant
-
-How i can replicate the restore mark with masks behavior in nft?
-
-Regards
 Andreas
