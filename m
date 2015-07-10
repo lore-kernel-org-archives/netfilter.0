@@ -1,32 +1,47 @@
-From: Glen Huang <hey.hgl@gmail.com>
-Subject: Network slowing down by masquerade
-Date: Thu, 9 Jul 2015 20:58:22 +0800
-Message-ID: <C20C16F2-3345-4B9F-835B-7C35207A3A88@gmail.com>
-Mime-Version: 1.0 (Mac OS X Mail 8.2 \(2102\))
-Content-Transfer-Encoding: 8BIT
+From: Geoffrey Said <geoffrey.said@gmail.com>
+Subject: Nf_nat_range structure flags oring not working.
+Date: Fri, 10 Jul 2015 14:47:06 +0200
+Message-ID: <CAPnTfuTk+9dCPbCvkv5DuxW_Ly=0Tp66PQXPRtcqVVWajqzn6Q@mail.gmail.com>
+Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=from:content-type:content-transfer-encoding:subject:message-id:date
-         :to:mime-version;
-        bh=si96zqRaCTdQ9w2Xz0jXt2GNKR+tGguAx4aaieDGakg=;
-        b=oJlIgj0eTFmuAz1OUB0Hc1HLnsXWi6Xnbz06nn7tmaIMWJ2p53RvfvPP3pGST24hGR
-         CbmSkEXqtDywSsp5he1nPZm2dCNTTdzwLQNy5BeKKjpRpgnUyZbvypSOhaObpWPjWz/F
-         k0PsnUPEA3OmVswe9ez1EykvOaYFGYBhJjdVRpFQIHbf13UZCYAmFW9/HHGb7nKpzZFl
-         pkXkSXt0OrYHiXJpuTB+5zEW9+snc0ZDq97nNFcXg5nuGM2HEXb6fAq5TyM79Cv9DRA3
-         hiDSb/tQ5iMpGokDLBDLyHR8JzcFZJ6TwjgJdYdBqDNAgkhHeNQ5SW+o/3zC1//EKUrq
-         K3SA==
+        h=mime-version:date:message-id:subject:from:to:content-type;
+        bh=XPEHaqyOoAhYUmd2Avj5dNtsiRE30lh7JIiyHi560ig=;
+        b=cTSCytADXrrUmSZ2YlyFw2m47Z7NxsJUzIQ1X3KQa6po6XDLmoiJs5fDcTMY00hKoQ
+         5Q1nYDb8SvWuQuRhlEiOqbyvPFxjWyio/OO0I6ZNnE+5SA6MmZiEHym1pWzPO2ANt33V
+         UXH+HbMCeDeiaakTikOydiiTfubCRUWrWhrKVl2VN6zGK7AK+1TNbs0IC0x93FNfP4e+
+         fx/6KXL13Z0iPJZT4QwDxHVyuTssxVaV/FPgu4o8/szpxNn+t15WnjloUgw8N49+fDWH
+         faJSBTrKo3E0BMyr6s/hRxadBurfPZ8ZEOzT2KKC2l4jPui0+4bsjH7hQxrS6kG/Ejqo
+         vSow==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 To: netfilter@vger.kernel.org
 
-I have a pptp client connection (ppp1) on a gateway. If I directly using curl --interface ppp1 to download a file, I get full download speed very quickly (2m/s). But if I route my lan host to ppp1 and -o ppp1 -j MASQUERADE, running curl to download the same file on the host starts very slow (less than 100k/s), then the speed *slowly* increases(about 50k per second), until it reach about 1.8m/s. While downloading the file on the host, the gateway's cpu usage never reach 1 from the output of top.
+Hi,
 
-If I directly establish the pptp client connection on host, I quickly get full speed again.
+I am currently writing a Netfilter module to use the NAT sub-system to
+route UDP packets to a specific destination contained in the packet
+itself.
 
-I wonder what might slow down the network when the packets are forwarded. I'm currently guess it's the masquerade target, but I'm not sure. How do I test it? If it's masquerade, is it possible to speed it up?
+After parsing the packet and retrieving the IP, I am creating a
+nf_nat_range structure and setting the min_proto and min_addr
+structures.
 
-I'm using iptables v1.4.21, kernel v3.18.14.
+Then I am oring the NF_NAT_RANGE_MAP_IPS and the NF_NAT_RANGE_PROTO_SPECIFIED.
 
-Thanks in advance.
+After the structure has been properly configured I am calling the
+nf_nat_setup_info function and passing it the ct, the nf_nat_range
+structure, and NF_NAT_MANIP_DST.
+
+The issu is that the oring is not working.  If the flags parameter is
+not assigned directly to the NF_NAT_RANGE_MAP_IPS the packet is not
+natted and forwarded to the destination.
+
+I cannot work out why this is happening.  My ultimate aim is to be
+able to nat the packet to a different IP and port.
+
+Thanks
+Geoffrey
