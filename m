@@ -1,20 +1,20 @@
-From: Vitaly Repin <vitaly.repin@gmail.com>
+From: Vitaly Repin <vitaly_repin@fsfe.org>
 Subject: SNAT and connection tracker: should established connections be
  dropped when a rule is removed from nat table?
-Date: Fri, 10 Jul 2015 19:26:23 +0300
-Message-ID: <CAH+_UjXdghtMhmdovrim1LBqBNGLFht7qJ4Y70wkwN6dw+SfPw@mail.gmail.com>
+Date: Fri, 10 Jul 2015 19:28:11 +0300
+Message-ID: <CAH+_UjWYim1b3+hZQN_P_uAQXSioX1+kooAry0pbpE0hdEWgHg@mail.gmail.com>
 Mime-Version: 1.0
 Return-path: <netfilter-owner@vger.kernel.org>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20120113;
-        h=mime-version:date:message-id:subject:from:to:content-type;
+        h=mime-version:sender:date:message-id:subject:from:to:content-type;
         bh=FxyTKPkrT7NbhWgogMVqB9g+D7R+6JCqcxbAko6uo8o=;
-        b=D2CyrK23uuarayf2db4/+TQNgIPiMelp8T7QFRVB5KASelu9TkrnKCC7QWE5bFwpAw
-         0qDM1zJEe+ytqje6G9u1C5H023eRMHprbMQFurfPePjNx1fk6nN+gZ/U0IfxB4sQbUKS
-         V7jtTJmfW6q4Og/t3NILJ20AT987B0lkwyJ9Y8LwzgEsBybdiMneXqH4pM5qPYofdv8v
-         VmeR0Kpj0CrQ/M59uMhrcS8nZt2s93coSHkoReLRMYWSOS0ss0TcOnQv9PaLa7I5AwJ3
-         8Ygm4WXYSG+hYNhbJN/i6RqZl/4KpWO5vTHIxmYjqnpGHrX9R2zH8CPBlpRaUyWu/gN3
-         BzJw==
+        b=I/BsS+m0yMZrEmz38ORumeJlvOSFSvVuacvoU1AnzX9vb+9JOUwq3o5/nMH4uH9tWA
+         etTcWyenIoM0qEGm4V7MeiDr6XuexbBlCPcsEl3n8C/7tl3CZLGPsGunuXiXJSoPB7Ma
+         HmpNMnqXZ0tiLBWZ7lTF8Mv0Ke1lofkRUg+BiMhRqtXYcVtBuS/imxddDw2ZA3Uj46p/
+         mlf1Zi8KnZJyJJqh14smXHehgw2F3e28CR/ie9oIAOnbPWYKjp2bkwkDmmMDtUbjVIJX
+         toenkCAeC4Xx4aq6Jrzmzm6yGi9hcLcbd/OunKPVLNDmxsFrLnqXKC7he/UKWbabHWIP
+         4gyg==
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="us-ascii"
