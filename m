@@ -1,97 +1,61 @@
-From: Noel Kuntze <noel@familie-kuntze.de>
-Subject: Re: SNAT and connection tracker: should established connections be
- dropped when a rule is removed from nat table?
-Date: Fri, 10 Jul 2015 18:29:22 +0200
-Message-ID: <559FF2E2.1030703@familie-kuntze.de>
-References: <CAH+_UjXdghtMhmdovrim1LBqBNGLFht7qJ4Y70wkwN6dw+SfPw@mail.gmail.com>
+From: Donald Schlicht <dschlic1@gmail.com>
+Subject: Help with routing ping requests
+Date: Fri, 10 Jul 2015 18:07:23 -0400
+Message-ID: <14e7a023590.279f.a66e0210b6f036863bfeb88685b7aa6c@gmail.com>
+References: <14e79fd9210.279f.a66e0210b6f036863bfeb88685b7aa6c@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <CAH+_UjXdghtMhmdovrim1LBqBNGLFht7qJ4Y70wkwN6dw+SfPw@mail.gmail.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20120113;
+        h=from:to:date:message-id:in-reply-to:user-agent:subject:mime-version
+         :content-type:content-transfer-encoding;
+        bh=yJAuaB1ljYEQ3o813GgYrQ69dTRsWV5b0Xbn67xa3t8=;
+        b=TXYCDC++aV5JzK4e1H3Vra4fZtQ0YruNhXF3HDoQ/hEToBcyD9Z43xAh3oDvMaFaJW
+         iqXDftgKrzuJsVXB5LFZmCYAWx3KmAkmtd8AhWhLfen0GxXXqTvPQ9/60aK9krUu6KxI
+         X+evAPmnoJmXcAPGAAHGUgQUCObYeaEZJCTbcWJSiMPeKb2H5q8WJLM0AMZgBrm+buYQ
+         /K02gSbLP4K4ua5pUjQSNe5rTTnFGnrkYrnD8LsncjqhPxa369VUCjKvRwGSecBSW+Fs
+         2pTLV3Fvt25/fv7mXvUFUyLCLvAu/GWof18eQBK197r1MecpsyIWqKI0Lo+eNMSFVXZH
+         6efg==
+In-Reply-To: <14e79fd9210.279f.a66e0210b6f036863bfeb88685b7aa6c@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="utf-8"
-To: Vitaly Repin <vitaly.repin@gmail.com>, netfilter@vger.kernel.org
+Content-Type: text/plain; charset="utf-8"; format="flowed"
+To: netfilter@vger.kernel.org
 
+I have an application where I need to configure a router to pass throug=
+h=20
+ping requests (ICMP type 8) through to the LAN port. I have a Linksys=20
+WRT54GS with tiny DD-WRT V24 SP2 installed. I am adding the following=20
+iptables rules:=C2=A0
 
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
+iptables -t nat -I PREROUTING -p icmp --icmp-type 8 -s 72.64.140.50 -j =
+DNAT=20
+--to-destination 192.168.1.200=C2=A0
+iptables -t filter -I FORWARD -p icmp --icmp-type 8 -s 72.64.140.50 -d=20
+192.168.1.200 -j ACCEPT
+=C2=A0iptables -t nat -I POSTROUTING -p icmp --icmp-type 8 -s 72.64.140=
+=2E50 -d=20
+192.168.1.200 -j ACCEPT
 
-Hello Vitaly,
+=C2=A0The intent is that the first rule will change an incoming echo re=
+quest=20
+destination to the unit on the LAN which I want to receive the ping req=
+uest.=C2=A0
 
-Create a drop rule in *filter FORWARD, that drops incoming
-packets for SNATed IPs without a matching policy
+The second rule allows the modified echo request to pass through the=20
+=46ORWARD table.=C2=A0And the last one allows the modified echo request=
+ to pass=20
+through the POSTROUTING table.=C2=A0When I send a ping to the router wi=
+th four=20
+tries, I get no pings out the LAN. Using iptables -L -v -n I can see we=
+re=20
+rule #1 passes one packet (but not four), rule #2 passes four packets=20
+(good!) and rule #3 passes 1 packet.=C2=A0At this point I am at loss as=
+ to why=20
+this is not working. Can someone help me out here?
 
-- -A FORWARD -m ipset --set snatedIPs dst -m policy --pol none --dir ou=
-t -j DROP
+Sent with AquaMail for Android
+http://www.aqua-mail.com
 
-Mit freundlichen Gr=C3=BC=C3=9Fen/Kind Regards,
-Noel Kuntze
-
-GPG Key ID: 0x63EC6658
-=46ingerprint: 23CA BB60 2146 05E7 7278 6592 3839 298F 63EC 6658
-
-Am 10.07.2015 um 18:26 schrieb Vitaly Repin:
-> Hello,
->
-> I need am advice on SNAT.
->
-> There is SNAT setup where my clients connected through ipsec. Wheneve=
-r
-> new connection appears, SNAT rule for respective IP is created.
-> Whenever client disconnects, corresponding SNAT rule is dropped.
->
-> In general it works, but this schema leads to the packets leakage thr=
-ough NIC:
->
-> 1) IPSEC client disconnects
-> 2) Rule for this client is deleted from the nat table
-> 3) But incoming messages (from remote servers) for already establishe=
-d
-> connections are continuing to come! They are "de-NATed" regardless of
-> the fact the rule does not exist anymore.
-> 4) They come to xfrm subsystem which does not take them (as no SA
-> associated with this IP exists)
-> 5) As a result these packets (addressed to the private addresses) are
-> appearing on the eth0 interface
->
-> As of now my solution is to drop these packets using ebtables. But I
-> am still not sure it's an optimal one.
->
-> So, my questions:
->
-> - Do I understand it right that when SNAT rule is deleted from the na=
-t
-> table, it does not mean that already established connections are
-> stopped from being tracked? And the they are continuing to flow using
-> the rule which was assigned to them at the moment when corresponding
-> connection was created?  Can this behavior be changed?
-> - Any idea how can current schema be improved?   The first option I
-> see is to be able to stop SNATting of the connections for which the
-> rule was deleted. In theory I can do it even from userland. The secon=
-d
-> option is to ask xfrm to drop all the packets from specific network i=
-f
-> there no SA for dest IP address of the packet (sounds weird).
->
-> Thanks in advance!
->
-
------BEGIN PGP SIGNATURE-----
-Version: GnuPG v2
-
-iQIcBAEBCAAGBQJVn/LdAAoJEDg5KY9j7GZYfBAP/18DtqJMLoLu/1AG0u+8aZLO
-LmjHXjM71vHzccTOvhEyZxIzqXSiuPmDjBE5jq9Q353aloQwkwJaO8XOJVhnUpuN
-qmx+niDhkXOiRtZGhm+C5qiewx4ZW7V+njljYapZkRd93GIVdVViVffiIM8/VMeA
-pOy5Wax4KK1J/68grBU6U5dObDGWhvJschb3bTIZEEoJdR5H7+3/utYGemyghqtR
-k3UjGvfRONWoSF/kX7vUgnKkzmI0ZgsneenHMuD4Jr1UaQ1hdxXu6iwZ3b8b88u5
-a7drQkqal5CLoINBPPhlYwemC7hVwEJLfLC6eEfvwpvhwNB9dtgStwFSZjfwJQ/d
-q5K/qpHMW79WNUwalKsjXzfAUzndUk9ZoZhPwZrzML5UqbzRimN1v3QlpH9ERCAc
-b0h1z0LcsPXkexh24PyjgAw2GGJk1AlCip4VYT8XLw1+xSes67C2hxlhWwq0upDF
-HBpgUzJqmrLQYuuBcwQhBF2syTFxFwZvTQzKXF07gJmKAFrXuO1tQghi3/BOMiWt
-f1hlGws4AJrhL6a00/Y53eXWjM36vYDDSvh8ClqHMvimNQksTozGjupmMd0ME9ar
-1S76/RGz2FhL1ZmKcGXANY9hevlvoOlbsypxyE5gBpZOK77gNILDztBmP2QfMCfv
-Rr2/8zvxsgYevPG1fwIU
-=3DmuPm
------END PGP SIGNATURE-----
 
