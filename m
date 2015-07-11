@@ -1,43 +1,57 @@
 From: Pascal Hambourg <pascal@plouf.fr.eu.org>
-Subject: Re: Network slowing down by masquerade
-Date: Sat, 11 Jul 2015 23:05:06 +0200
-Message-ID: <55A18502.6090201@plouf.fr.eu.org>
-References: <C20C16F2-3345-4B9F-835B-7C35207A3A88@gmail.com>
+Subject: Re: Help with routing ping requests
+Date: Sat, 11 Jul 2015 23:32:42 +0200
+Message-ID: <55A18B7A.4010702@plouf.fr.eu.org>
+References: <14e79fd9210.279f.a66e0210b6f036863bfeb88685b7aa6c@gmail.com> <14e7a023590.279f.a66e0210b6f036863bfeb88685b7aa6c@gmail.com>
 Mime-Version: 1.0
 Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-In-Reply-To: <C20C16F2-3345-4B9F-835B-7C35207A3A88@gmail.com>
+In-Reply-To: <14e7a023590.279f.a66e0210b6f036863bfeb88685b7aa6c@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
 Content-Type: text/plain; charset="iso-8859-1"
-To: Glen Huang <hey.hgl@gmail.com>
+To: Donald Schlicht <dschlic1@gmail.com>
 Cc: netfilter@vger.kernel.org
 
-Glen Huang a =E9crit :
-> I have a pptp client connection (ppp1) on a gateway. If I directly
-> using curl --interface ppp1 to download a file, I get full download
-> speed very quickly (2m/s).
-
-Why do you have to use --interface ?
-
-> But if I route my lan host to ppp1 and -o ppp1 -j MASQUERADE, running
-> curl to download the same file on the host starts very slow (less tha=
-n
-> 100k/s), then the speed *slowly* increases(about 50k per second), unt=
-il
-> it reach about 1.8m/s. While downloading the file on the host, the
-> gateway's cpu usage never reach 1 from the output of top.
+Donald Schlicht a =E9crit :
+> I have an application where I need to configure a router to pass thro=
+ugh=20
+> ping requests (ICMP type 8) through to the LAN port. I have a Linksys=
+=20
+> WRT54GS with tiny DD-WRT V24 SP2 installed. I am adding the following=
+=20
+> iptables rules:=20
 >=20
-> If I directly establish the pptp client connection on host, I quickly
-> get full speed again.
+> iptables -t nat -I PREROUTING -p icmp --icmp-type 8 -s 72.64.140.50 -=
+j DNAT=20
+> --to-destination 192.168.1.200=20
+> iptables -t filter -I FORWARD -p icmp --icmp-type 8 -s 72.64.140.50 -=
+d=20
+> 192.168.1.200 -j ACCEPT
+>  iptables -t nat -I POSTROUTING -p icmp --icmp-type 8 -s 72.64.140.50=
+ -d=20
+> 192.168.1.200 -j ACCEPT
 >=20
-> I wonder what might slow down the network when the packets are
-> forwarded. I'm currently guess it's the masquerade target, but I'm no=
-t sure.
+>  The intent is that the first rule will change an incoming echo reque=
+st=20
+> destination to the unit on the LAN which I want to receive the ping r=
+equest.=20
+>=20
+> The second rule allows the modified echo request to pass through the=20
+> FORWARD table. And the last one allows the modified echo request to p=
+ass=20
+> through the POSTROUTING table. When I send a ping to the router with =
+four=20
+> tries, I get no pings out the LAN.
 
-I don't think MASQUERADE is the culprit. I would suspect first MTU
-issues (fragmentation, path MTU discovery).
+What do you mean exactly ? How do you know ?
 
-> How do I test it?
+> Using iptables -L -v -n I can see were=20
+> rule #1 passes one packet (but not four), rule #2 passes four packets=
+=20
+> (good!) and rule #3 passes 1 packet.
 
-Lower the MTU of the client host LAN interface below ~1460.
+This is expected behaviour. Chains in the nat table see only the first
+packet of any "connection". NAT operations applied to this packet are
+implicitly applied to subsequent packets of the same connection. A ping
+sequence is considered as a connection.
