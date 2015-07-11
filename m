@@ -1,39 +1,43 @@
-From: Vitaly Repin <vitaly_repin@fsfe.org>
-Subject: Re: SNAT and connection tracker: should established connections be
- dropped when a rule is removed from nat table?
-Date: Sat, 11 Jul 2015 16:47:21 +0300
-Message-ID: <CAH+_UjXguANiZ_OVZNT2PKNSp3OwjeD7NEnD4S0ScbaS3c851A@mail.gmail.com>
-References: <CAH+_UjXdghtMhmdovrim1LBqBNGLFht7qJ4Y70wkwN6dw+SfPw@mail.gmail.com>
-	<559FF2E2.1030703@familie-kuntze.de>
+From: Pascal Hambourg <pascal@plouf.fr.eu.org>
+Subject: Re: Network slowing down by masquerade
+Date: Sat, 11 Jul 2015 23:05:06 +0200
+Message-ID: <55A18502.6090201@plouf.fr.eu.org>
+References: <C20C16F2-3345-4B9F-835B-7C35207A3A88@gmail.com>
 Mime-Version: 1.0
+Content-Transfer-Encoding: QUOTED-PRINTABLE
 Return-path: <netfilter-owner@vger.kernel.org>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20120113;
-        h=mime-version:sender:in-reply-to:references:date:message-id:subject
-         :from:to:content-type;
-        bh=jcMiVA3mht/pWNrhxIRk3RJj6zCdb8cYDwgIJweatPc=;
-        b=g1A6RfmYj94/Qdj6RN/W9pOIcQMIJT0X1I57gwwjB3pypNWNEbBnxDggZnO16b3Oe7
-         zpjRjQDAJ7a9/o30YQr48C7oFm4pScrfi1+b6hCevAv64bioEtviF9egsPnaES5whxL7
-         CBGJgOwwcnK21U1qheDyUcuQHl3ipxJQtba9S2+nnMZhSFInNSufHMG1WgV5cKuBvFdL
-         iATTjyPCJ30R0U7wg1JpnPk7xoObgYcJYFjpKZmJ3KqkY4sdYGRN5oYydaGBKY7MAjuS
-         Q0JbVCecj5H/Xyf2tDnT2qvfN2kF/SkdOlIGOLtfWlP3D80TkMZJgkML1i4N05tEg+eZ
-         R9zQ==
-In-Reply-To: <559FF2E2.1030703@familie-kuntze.de>
+In-Reply-To: <C20C16F2-3345-4B9F-835B-7C35207A3A88@gmail.com>
 Sender: netfilter-owner@vger.kernel.org
 List-ID: <netfilter.vger.kernel.org>
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 7bit
-To: netfilter@vger.kernel.org
+Content-Type: text/plain; charset="iso-8859-1"
+To: Glen Huang <hey.hgl@gmail.com>
+Cc: netfilter@vger.kernel.org
 
-Hello,
+Glen Huang a =E9crit :
+> I have a pptp client connection (ppp1) on a gateway. If I directly
+> using curl --interface ppp1 to download a file, I get full download
+> speed very quickly (2m/s).
 
-Thanks! Confirmed that it works as expected.
+Why do you have to use --interface ?
 
-2015-07-10 19:29 GMT+03:00 Noel Kuntze <noel@familie-kuntze.de>:
-> Create a drop rule in *filter FORWARD, that drops incoming
-> packets for SNATed IPs without a matching policy
->
-> - -A FORWARD -m ipset --set snatedIPs dst -m policy --pol none --dir out -j DROP
+> But if I route my lan host to ppp1 and -o ppp1 -j MASQUERADE, running
+> curl to download the same file on the host starts very slow (less tha=
+n
+> 100k/s), then the speed *slowly* increases(about 50k per second), unt=
+il
+> it reach about 1.8m/s. While downloading the file on the host, the
+> gateway's cpu usage never reach 1 from the output of top.
+>=20
+> If I directly establish the pptp client connection on host, I quickly
+> get full speed again.
+>=20
+> I wonder what might slow down the network when the packets are
+> forwarded. I'm currently guess it's the masquerade target, but I'm no=
+t sure.
 
---
-WBR & WBW, Vitaly
+I don't think MASQUERADE is the culprit. I would suspect first MTU
+issues (fragmentation, path MTU discovery).
+
+> How do I test it?
+
+Lower the MTU of the client host LAN interface below ~1460.
